@@ -2,96 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855F84D76F4
-	for <lists+bpf@lfdr.de>; Sun, 13 Mar 2022 17:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730434D78A9
+	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 00:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbiCMQnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Mar 2022 12:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
+        id S235582AbiCMXCy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Mar 2022 19:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbiCMQnF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Mar 2022 12:43:05 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A576162
-        for <bpf@vger.kernel.org>; Sun, 13 Mar 2022 09:41:57 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id z3so11658564plg.8
-        for <bpf@vger.kernel.org>; Sun, 13 Mar 2022 09:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CbrnaGEc2Ha5JAqOzocKA2rWH1QtHTPkTA8Sp4SL09A=;
-        b=JNZgQaDnqCkwpDeZA1cRHWylsx6jBa2IZis+vOpr3582YiINkafo3+6KR27NUnXt5z
-         Pwd0q4Py7SssuK7mqKLzU5/Al1j4VoDsV2C9RLU3VrNwKkFKjnwmhXthBmPBD6BLAmME
-         fWg9RttoFCNCr5hoVLVwrEQMCgwfNrMBMAzPNMMDiGSR4kIdezWdC0c4ClmMOXPVTZVP
-         GuB7RcuYHncNk8+4V4OeCuZgWi7Dv1H67OJPBvkoeP8WfzhPd/4CNjtqWyAELdWK2FUR
-         k8P5gfHhvUktOyyHDsIlFa2a3z01ZGUxm64DlddIUwoErLP3L8wEn4A/v7UfnNz008yP
-         gvwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CbrnaGEc2Ha5JAqOzocKA2rWH1QtHTPkTA8Sp4SL09A=;
-        b=7tFVC9MFYqaZ6/obNrn5rnOBGJQ3CvUi5Af17SIom1pARUa7nuFxmba9oBBVjwQnHq
-         geVzxYmJI5JwcUArTmnukOphjiob54FEJxBV2YVwAKic/ZLjoALbnzzy3379/uY2PTXz
-         IvaQ40oXIi7QtG/FfAs+xSTlrnCXNGi18+ZLfGwUgyqzwDPp1SoUsvC7KSm9muhvQchq
-         rRaF/7Zc16ASbnPnM13t1BjwguJVHGzZzh4p/go7X6DGPG1kUNpSEtGdWotmaTeArLCp
-         /qUMRyULOAaUcRIl+brtHXvdMv7d2pF3+LNvC4ktlvdLeayQkdvQl1Cz0rYmGMpAHKvg
-         zcyg==
-X-Gm-Message-State: AOAM530sZcGjwfi8gvPz493N2rkkhxHRYXwTFT8YHzMXHdplY0vGPcwV
-        pu7wahNaWw1mSUBJGmznCD/0IC00Gq87HAcD
-X-Google-Smtp-Source: ABdhPJwr1Q+0lEK0DintBK8aqwXCl8TxVKU8d5mTk6Hty92c79GBBXA1qIW/Y/k7ScgqrvAEdgwVCw==
-X-Received: by 2002:a17:90b:f8a:b0:1be:dccd:e4f7 with SMTP id ft10-20020a17090b0f8a00b001bedccde4f7mr20948864pjb.92.1647189717343;
-        Sun, 13 Mar 2022 09:41:57 -0700 (PDT)
-Received: from localhost.localdomain ([2409:8a20:4835:ff60:5c2a:e570:2bbf:d409])
-        by smtp.gmail.com with ESMTPSA id e13-20020a63370d000000b003810782e0cdsm8012765pga.56.2022.03.13.09.41.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Mar 2022 09:41:56 -0700 (PDT)
-From:   fankaixi.li@bytedance.com
-To:     shuah@kernel.org, bpf@vger.kernel.org
-Cc:     "kaixi.fan" <fankaixi.li@bytedance.com>
-Subject: [PATCH] selftests/bpf: fix tunnel remote ip comments
-Date:   Mon, 14 Mar 2022 00:41:16 +0800
-Message-Id: <20220313164116.5889-1-fankaixi.li@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        with ESMTP id S235529AbiCMXCx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Mar 2022 19:02:53 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD9678058;
+        Sun, 13 Mar 2022 16:01:44 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 72E905C0175;
+        Sun, 13 Mar 2022 19:01:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 13 Mar 2022 19:01:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; bh=IYDs9sc8CZWwGN2YWUzzkzbqy9h9TzeQqqKGJhDYOyg=; b=VaNMM
+        Y6htFQ1IOtt3JepcdIIILrK8Nrs1VHjfmT4r+I9Pnd2CR/e4FgqNmmmrJtRlOB+/
+        Ad+EBCBSvT1bafkDnfYEEA3YcvowA/rgo3pZEijzaY46ulHg/3CMu/HBce1GiTm5
+        LcRZy8UFPx6I2sm50NugEq6+zQv4PLHgZCvyz8G/eYe8iXMTyPmFfDKBVQe8iPKg
+        r306pNNnt3NqUvYQ0VLb6kKrSG3PWY/6TOCVttdQ5Fe0soA4loRkKGySUNw/7ZKj
+        0bmggydtyAEwIbFtzytJlf9IKiFirx4HpzwqkbOcymBw03UNn1V4JPVfx20VBQH1
+        G6b8F6giVqxak2XNg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm2; bh=IYDs9sc8CZWwGN2YWUzzkzbqy9h9T
+        zeQqqKGJhDYOyg=; b=btOWXUv+FylGBCjdTzkEvmw7dtHXJOLFVpcMheEt5RzGD
+        G5OtqWBJGwDNkwPDu4aUbX/4WipE7t0v1oRESRwmGelFoF7UxQa55aZEcsebIC/P
+        ixb7J1CjZQWDtt4H0+r/7FX+rjxdg0/9h3LBICbyr61Zqf90VXE+D0HLD37sZuiH
+        O6kc3Qw3VagpQr1C5MwoTe/sRi2Ss8YflBr0ShQNOI8u3RJZOqSZr6F/rN2IxsA6
+        aUgL3s8VLBcRABoTLjNoht3eXLJW1MbVoMcuW/eKLrmYU64ojWHDhQUwWD/KtvvN
+        vgrM7sPbM54AZvPsU7AKwc65F1uxqFoJ9wyV7dKnw==
+X-ME-Sender: <xms:1ncuYkWCfFZm3HTIxg4AhozwPN68LJSuEKPzoW-UWt18jd-1O-ZsHw>
+    <xme:1ncuYomRn-V1_jc2CYh0rjBxb8c0V6Xqvxx0c53Jj8sd_X0JIBqsjdDK3Z0hVhGYv
+    RQY_2qoxeDGZOtnfg>
+X-ME-Received: <xmr:1ncuYoZlXhHuDN2FxIEr2IQsBjtEq7K39_9raHVPFrpqp-DOnkBx1LqBSANpUGYl-znwP6-xdY2QuyjX-fyE6sweIVSVL2uxi14V0X7JcfC0LA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddruddvjedgtdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
+    effeeivdefheeiveevjeduieeigfetieevieffffenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:1ncuYjUK00Sa5zLb-pgByauFxUaAUISX9OPJYvVPzkciS-zBr3SweA>
+    <xmx:1ncuYum6JoTi-zBM5SFibGK_YOj0YgPBqhLzTsLMjlJJMbX-3ecYsw>
+    <xmx:1ncuYoeHHe54oQj3BOM2MG_I_yDOFAAbRrhc4lEUgFNnu7--CqZSyA>
+    <xmx:1ncuYvC94GKVHo2QxTUlQEKUkaxMscssKnv1stOkfT35zcINSvXAYw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 13 Mar 2022 19:01:41 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpftool: Add SPDX identifier to btf-dump-file output
+Date:   Sun, 13 Mar 2022 16:01:26 -0700
+Message-Id: <1d2931e80c03f4d3f7263beaf8f19a4867e9fe32.1647212431.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        FROM_SUSPICIOUS_NTLD_FP,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "kaixi.fan" <fankaixi.li@bytedance.com>
+A concern about potential GPL violations came up at the new $DAYJOB when
+I tried to vendor the vmlinux.h output. The central point was that the
+generated vmlinux.h does not embed a license string -- making the
+licensing of the file non-obvious.
 
-In namespace at_ns0, the ip address of tnl dev is 10.1.1.100 which
-is the overlay ip, and the ip address of veth0 is 172.16.1.100
-which is the vtep ip.
-When doing 'ping 10.1.1.100' from root namespace, the
-remote_ip should be 172.16.1.100.
+This commit adds a LGPL-2.1 OR BSD-2-Clause SPDX license identifier to
+the generated vmlinux.h output. This is line with what bpftool generates
+in object file skeletons.
 
-Fixs: 933a741e ("selftests/bpf: bpf tunnel test.")
-Signed-off-by: kaixi.fan <fankaixi.li@bytedance.com>
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- tools/testing/selftests/bpf/test_tunnel.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/bpftool/btf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
-index ca1372924023..2817d9948d59 100755
---- a/tools/testing/selftests/bpf/test_tunnel.sh
-+++ b/tools/testing/selftests/bpf/test_tunnel.sh
-@@ -39,7 +39,7 @@
- # from root namespace, the following operations happen:
- # 1) Route lookup shows 10.1.1.100/24 belongs to tnl dev, fwd to tnl dev.
- # 2) Tnl device's egress BPF program is triggered and set the tunnel metadata,
--#    with remote_ip=172.16.1.200 and others.
-+#    with remote_ip=172.16.1.100 and others.
- # 3) Outer tunnel header is prepended and route the packet to veth1's egress
- # 4) veth0's ingress queue receive the tunneled packet at namespace at_ns0
- # 5) Tunnel protocol handler, ex: vxlan_rcv, decap the packet
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index a2c665beda87..fca810a27768 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -425,6 +425,7 @@ static int dump_btf_c(const struct btf *btf,
+ 	if (err)
+ 		return err;
+ 
++	printf("/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */\n\n");
+ 	printf("#ifndef __VMLINUX_H__\n");
+ 	printf("#define __VMLINUX_H__\n");
+ 	printf("\n");
 -- 
-2.24.3 (Apple Git-128)
+2.35.1
 
