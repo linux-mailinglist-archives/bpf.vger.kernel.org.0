@@ -2,76 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B04454D8A91
-	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 18:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AF74D8ACF
+	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 18:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238758AbiCNROD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Mar 2022 13:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51042 "EHLO
+        id S241929AbiCNRaU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Mar 2022 13:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233904AbiCNROB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Mar 2022 13:14:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34A0271D;
-        Mon, 14 Mar 2022 10:12:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1983160F3B;
-        Mon, 14 Mar 2022 17:12:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B97C340E9;
-        Mon, 14 Mar 2022 17:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647277967;
-        bh=GEY5cKGvA2rl2PigOsyiq7MnGmDB/pky0S3ErxRuSCk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nt4X6hyiY9aAs5k99yBOnO+JmQiOfPRMOI1+KMBG13zKzbJ5QXgoxnyRbZzoDennH
-         wyucaNOjjNByzNozmYuuJ/AaP9dX/8ImGm+M2xF1hMDpjYko+k7z8Y87juWN+98uuj
-         jAxz+wiMinO+1Be+KldpWOTpDsaM1fAck6SAWBnKgddeLXYpNJgyHYN2GUz/2qZlHb
-         tN3yuzM/aU8zLKe9Bb8fT+sj30Bhx1mJxjqOVp+2Ur8vFZzurJAJQ1gURawPuFm5R5
-         B+AfS0VIMbBH0zOAqgC2hIWUyvp8/6Vdjcsh3HHizc4jpJU5r9XnFS7zJb1Aw+cfG4
-         TMSGFJRfqizkw==
-Date:   Mon, 14 Mar 2022 10:12:45 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     gregkh@linuxfoundation.org, stephen@networkplumber.org,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] hv_netvsc: Add check for kvmalloc_array
-Message-ID: <20220314101245.1589ec82@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20220314083500.2501146-1-jiasheng@iscas.ac.cn>
-References: <20220314083500.2501146-1-jiasheng@iscas.ac.cn>
+        with ESMTP id S229899AbiCNRaT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Mar 2022 13:30:19 -0400
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55979DEB6;
+        Mon, 14 Mar 2022 10:29:09 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id h11so22992523ljb.2;
+        Mon, 14 Mar 2022 10:29:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wluxvZZRX4EKbcVvJ/eg3d1hoy/ZEcP65mxSGZfR8b8=;
+        b=XbwNDwKpXgp1ZuRwvwpoko54IbbMOYB3f1jXrHsKFNnutQZZNr2zneAW2SgB6xN+qn
+         dN/hzwHJFHB8afHyFrbl6J74UeRKU2KkqC3f/GBNuktY0xYCeR4+UNEToPpvnZ9YW9ut
+         nMvRm/eRguVIFYH9ghX9fnnHD9GVQU8Aek6vb1TPx1aD5nsRHeczjDx+47RaQ6MBYzIo
+         SlFGtgi70yQItdbHaJWwlzzaOfJDoxA5O7tPZ64YFiH9b9pUMIYvTqVgzBvwQLzzSF40
+         g5VEGw3PqIabA8fMo6+FxNlf2JAQQoP+uUje1WomJBKVCFGx4rjHN2OjsCwu+XydO38h
+         /5qg==
+X-Gm-Message-State: AOAM532HCYcmQI0A876T+uTQh98UvI4mVZVv+I+FC7PXcKF+4aQNX6MF
+        TaLgdh/H1oMxo6EP0j84dWRVE6mm3DY+H/e87M0=
+X-Google-Smtp-Source: ABdhPJyDjw6SAJ1pG95ESM8cb9VMKIADALppkjSv7LXf4LGBo6GrfONjwX+IxH0EO7+FzyBugxipqjskb8vqlGjBREY=
+X-Received: by 2002:a05:651c:1051:b0:247:ea0d:a57c with SMTP id
+ x17-20020a05651c105100b00247ea0da57cmr14118926ljm.204.1647278947501; Mon, 14
+ Mar 2022 10:29:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220310082202.1229345-1-namhyung@kernel.org> <20220310082202.1229345-2-namhyung@kernel.org>
+ <CAEf4BzZUEvCqz-zGdKAeyg3vywEEnFWuZ4Q446BrTGOsFqNqyQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZUEvCqz-zGdKAeyg3vywEEnFWuZ4Q446BrTGOsFqNqyQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 14 Mar 2022 10:28:56 -0700
+Message-ID: <CAM9d7chtq2DV28GU=_eb+MSUTPFg8oGX8NDeeLdnf=Vr+7E1Yg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] bpf/selftests: Test skipping stacktrace
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eugene Loh <eugene.loh@oracle.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 14 Mar 2022 16:35:00 +0800 Jiasheng Jiang wrote:
-> On Mon, Mar 14, 2022 at 04:13:59PM +0800, Greg KH wrote:
-> >> The failure of allocation is not included in the tests.
-> >> And as far as I know, there is not any tool that has the
-> >> ability to fail the allocation.  
-> > 
-> > There are tools that do this.
-> >   
-> 
-> Thanks, could you please tell me the tools?
+Hello,
 
-Google "linux kernel fail allocation test"
-second result is "Fault injection capabilities infrastructure"
-which is what you're looking for.
+On Fri, Mar 11, 2022 at 2:23 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Mar 10, 2022 at 12:22 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> > +SEC("tracepoint/sched/sched_switch")
+> > +int oncpu(struct sched_switch_args *ctx)
+> > +{
+> > +       __u32 max_len = TEST_STACK_DEPTH * sizeof(__u64);
+> > +       __u32 key = 0, val = 0, *value_p;
+> > +       __u64 *stack_p;
+> > +
+>
+> please also add filtering by PID to avoid interference from other
+> selftests when run in parallel mode
 
-Please try harder next time.
+Will do!
+
+Thanks,
+Namhyung
+
+>
+> > +       value_p = bpf_map_lookup_elem(&control_map, &key);
+> > +       if (value_p && *value_p)
+> > +               return 0; /* skip if non-zero *value_p */
+> > +
+> > +       /* it should allow skipping whole buffer size entries */
+> > +       key = bpf_get_stackid(ctx, &stackmap, TEST_STACK_DEPTH);
+> > +       if ((int)key >= 0) {
+> > +               /* The size of stackmap and stack_amap should be the same */
+> > +               bpf_map_update_elem(&stackid_hmap, &key, &val, 0);
+> > +               stack_p = bpf_map_lookup_elem(&stack_amap, &key);
+> > +               if (stack_p) {
+> > +                       bpf_get_stack(ctx, stack_p, max_len, TEST_STACK_DEPTH);
+> > +                       /* it wrongly skipped all the entries and filled zero */
+> > +                       if (stack_p[0] == 0)
+> > +                               failed = 1;
+> > +               }
+> > +       } else if ((int)key == -14/*EFAULT*/) {
+> > +               /* old kernel doesn't support skipping that many entries */
+> > +               failed = 2;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > --
+> > 2.35.1.723.g4982287a31-goog
+> >
