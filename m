@@ -2,98 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D30984D8EFA
-	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 22:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044B04D8F23
+	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 22:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245306AbiCNVp3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Mar 2022 17:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S243340AbiCNWBE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Mar 2022 18:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237993AbiCNVp2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Mar 2022 17:45:28 -0400
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA256193ED;
-        Mon, 14 Mar 2022 14:44:17 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id g17so29643280lfh.2;
-        Mon, 14 Mar 2022 14:44:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2VfnhbEGoaJMBxbZk/tXhcsK9P2W1Pv5LMv/tBwaIfo=;
-        b=gqFwpR5aJyOGQqvePQE5NWYaKTi370jQjW/2L/ts1xGaTpQ4QfjMv+JqadXeoG2FTw
-         mjp1/0l276dQdWj/+SRBx3x0JzTYWYjo8c4L+LrpDDADSeG3+OtxwjaDk2t9gMNeZEho
-         +wKDwLsEcpCd2B83UZCr4tVfMAmfnMZT/GDyZvP2Bimk8rK7XtyH/p80yBFLOhITHEzx
-         x1fpZ3uqS8IDwy8jtaY3fLCbmByDlTjfOBCKcupRPfVllV2Gx3WH9lEAnjjodGsQvPfj
-         5g9YiexxqUSOXfGWlFWHBJ+yIZsbsOM257QOpd+c1lGPNgAVdIkoPxhU4MAzVMJe8L7d
-         thjg==
-X-Gm-Message-State: AOAM533ZKh0AX2An3UQlx45daYnlDk8VY/k5RknXre2Ug1mNCEN89VtA
-        EDEihZWJWhLfhFNclONFHrOxQaGAEI7/AGcVg8Q=
-X-Google-Smtp-Source: ABdhPJwxEXoBr4ZBfHBu6jBT617TwgtgRa+XqjNS61tSGsjG05PbvU4akXVAa/APfYJL6iDAN9GZoTYHduL2i9Q84ZU=
-X-Received: by 2002:a19:6b0d:0:b0:448:53c6:702b with SMTP id
- d13-20020a196b0d000000b0044853c6702bmr14479332lfa.528.1647294256086; Mon, 14
- Mar 2022 14:44:16 -0700 (PDT)
+        with ESMTP id S238329AbiCNWBD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Mar 2022 18:01:03 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570573BF8A;
+        Mon, 14 Mar 2022 14:59:51 -0700 (PDT)
+Received: from [78.46.152.42] (helo=sslproxy04.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nTsjE-000650-7K; Mon, 14 Mar 2022 22:59:48 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nTsjD-000ELb-RG; Mon, 14 Mar 2022 22:59:47 +0100
+Subject: Re: [net-next v10 1/2] net: sched: use queue_mapping to pick tx queue
+To:     xiangxia.m.yue@gmail.com, netdev@vger.kernel.org
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Talal Ahmad <talalahmad@google.com>,
+        Kevin Hao <haokexin@gmail.com>, ast@kernel.org,
+        bpf@vger.kernel.org
+References: <20220314141508.39952-1-xiangxia.m.yue@gmail.com>
+ <20220314141508.39952-2-xiangxia.m.yue@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <015e903a-f4b4-a905-1cd2-11d10aefec8a@iogearbox.net>
+Date:   Mon, 14 Mar 2022 22:59:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20220301010412.431299-1-namhyung@kernel.org> <20220301010412.431299-3-namhyung@kernel.org>
- <Yh3heodejlBiwqLj@hirez.programming.kicks-ass.net>
-In-Reply-To: <Yh3heodejlBiwqLj@hirez.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 14 Mar 2022 14:44:04 -0700
-Message-ID: <CAM9d7ciHObwkvyy9Uz5NRb=KBY-HtXAtAJTgXocA6C42aBoAyg@mail.gmail.com>
-Subject: Re: [PATCH 2/4] locking: Apply contention tracepoints in the slow path
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Radoslaw Burny <rburny@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20220314141508.39952-2-xiangxia.m.yue@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26481/Mon Mar 14 09:39:13 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 1, 2022 at 1:04 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Feb 28, 2022 at 05:04:10PM -0800, Namhyung Kim wrote:
-> > @@ -1718,9 +1726,11 @@ static __always_inline void __sched rtlock_slowlock(struct rt_mutex_base *lock)
-> >  {
-> >       unsigned long flags;
-> >
-> > +     trace_contention_begin(lock, _RET_IP_, LCB_F_RT | TASK_RTLOCK_WAIT);
-> >       raw_spin_lock_irqsave(&lock->wait_lock, flags);
-> >       rtlock_slowlock_locked(lock);
-> >       raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
-> > +     trace_contention_end(lock);
-> >  }
->
-> Same, if you do it one level in, you can have the tracepoint itself look
-> at current->__state.
+On 3/14/22 3:15 PM, xiangxia.m.yue@gmail.com wrote:
+[...]
+>   include/linux/netdevice.h |  3 +++
+>   include/linux/rtnetlink.h |  1 +
+>   net/core/dev.c            | 31 +++++++++++++++++++++++++++++--
+>   net/sched/act_skbedit.c   |  6 +++++-
+>   4 files changed, 38 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 0d994710b335..f33fb2d6712a 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -3065,6 +3065,9 @@ struct softnet_data {
+>   	struct {
+>   		u16 recursion;
+>   		u8  more;
+> +#ifdef CONFIG_NET_EGRESS
+> +		u8  skip_txqueue;
+> +#endif
+>   	} xmit;
+>   #ifdef CONFIG_RPS
+>   	/* input_queue_head should be written by cpu owning this struct,
+> diff --git a/include/linux/rtnetlink.h b/include/linux/rtnetlink.h
+> index 7f970b16da3a..ae2c6a3cec5d 100644
+> --- a/include/linux/rtnetlink.h
+> +++ b/include/linux/rtnetlink.h
+> @@ -100,6 +100,7 @@ void net_dec_ingress_queue(void);
+>   #ifdef CONFIG_NET_EGRESS
+>   void net_inc_egress_queue(void);
+>   void net_dec_egress_queue(void);
+> +void netdev_xmit_skip_txqueue(bool skip);
+>   #endif
+>   
+>   void rtnetlink_init(void);
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 75bab5b0dbae..8e83b7099977 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -3908,6 +3908,25 @@ sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
+>   
+>   	return skb;
+>   }
+> +
+> +static struct netdev_queue *
+> +netdev_tx_queue_mapping(struct net_device *dev, struct sk_buff *skb)
+> +{
+> +	int qm = skb_get_queue_mapping(skb);
+> +
+> +	return netdev_get_tx_queue(dev, netdev_cap_txqueue(dev, qm));
+> +}
+> +
+> +static bool netdev_xmit_txqueue_skipped(void)
+> +{
+> +	return __this_cpu_read(softnet_data.xmit.skip_txqueue);
+> +}
+> +
+> +void netdev_xmit_skip_txqueue(bool skip)
+> +{
+> +	__this_cpu_write(softnet_data.xmit.skip_txqueue, skip);
+> +}
+> +EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
+>   #endif /* CONFIG_NET_EGRESS */
+>   
+>   #ifdef CONFIG_XPS
+> @@ -4078,7 +4097,7 @@ struct netdev_queue *netdev_core_pick_tx(struct net_device *dev,
+>   static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>   {
+>   	struct net_device *dev = skb->dev;
+> -	struct netdev_queue *txq;
+> +	struct netdev_queue *txq = NULL;
+>   	struct Qdisc *q;
+>   	int rc = -ENOMEM;
+>   	bool again = false;
+> @@ -4106,11 +4125,17 @@ static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>   			if (!skb)
+>   				goto out;
+>   		}
+> +
+> +		netdev_xmit_skip_txqueue(false);
+> +
+>   		nf_skip_egress(skb, true);
+>   		skb = sch_handle_egress(skb, &rc, dev);
+>   		if (!skb)
+>   			goto out;
+>   		nf_skip_egress(skb, false);
+> +
+> +		if (netdev_xmit_txqueue_skipped())
+> +			txq = netdev_tx_queue_mapping(dev, skb);
+>   	}
+>   #endif
+>   	/* If device/qdisc don't need skb->dst, release it right now while
+> @@ -4121,7 +4146,9 @@ static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>   	else
+>   		skb_dst_force(skb);
+>   
+> -	txq = netdev_core_pick_tx(dev, skb, sb_dev);
+> +	if (likely(!txq))
 
-So I tried this by reading the state in the trace like below:
+nit: Drop likely(). If the feature is used from sch_handle_egress(), then this would always be the case.
 
-+       TP_fast_assign(
-+               __entry->lock_addr = lock;
-+               __entry->flags = flags | get_current_state();
-+       ),
+> +		txq = netdev_core_pick_tx(dev, skb, sb_dev);
+> +
+>   	q = rcu_dereference_bh(txq->qdisc);
 
-But I sometimes see unrelated values which contain
-__TASK_TRACED or __TASK_STOPPED and some unexpected values
-like TASK_UNINTERRUPTIBLE for rwlocks.  Maybe I missed something.
+How will the `netdev_xmit_skip_txqueue(true)` be usable from BPF side (see bpf_convert_ctx_access() ->
+queue_mapping)?
 
-Anyway I think it's confusing and complicates things unnecessarily.
-Probably it'd better using new flags like LCB_F_SPIN and LCB_F_WAIT.
+>   	trace_net_dev_queue(skb);
+> diff --git a/net/sched/act_skbedit.c b/net/sched/act_skbedit.c
+> index ceba11b198bb..d5799b4fc499 100644
+> --- a/net/sched/act_skbedit.c
+> +++ b/net/sched/act_skbedit.c
+> @@ -58,8 +58,12 @@ static int tcf_skbedit_act(struct sk_buff *skb, const struct tc_action *a,
+>   		}
+>   	}
+>   	if (params->flags & SKBEDIT_F_QUEUE_MAPPING &&
+> -	    skb->dev->real_num_tx_queues > params->queue_mapping)
+> +	    skb->dev->real_num_tx_queues > params->queue_mapping) {
+> +#ifdef CONFIG_NET_EGRESS
+> +		netdev_xmit_skip_txqueue(true);
+> +#endif
+>   		skb_set_queue_mapping(skb, params->queue_mapping);
+> +	}
+>   	if (params->flags & SKBEDIT_F_MARK) {
+>   		skb->mark &= ~params->mask;
+>   		skb->mark |= params->mark & params->mask;
+> 
 
-Thanks,
-Namhyung
