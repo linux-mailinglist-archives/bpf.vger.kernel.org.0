@@ -2,58 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 497E94D793D
-	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 03:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853604D79F4
+	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 05:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235801AbiCNCDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Mar 2022 22:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43242 "EHLO
+        id S233808AbiCNEr6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Mar 2022 00:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235795AbiCNCCu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Mar 2022 22:02:50 -0400
-Received: from cstnet.cn (smtp23.cstnet.cn [159.226.251.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E228FDF06;
-        Sun, 13 Mar 2022 19:01:40 -0700 (PDT)
-Received: from localhost.localdomain (unknown [124.16.138.126])
-        by APP-03 (Coremail) with SMTP id rQCowAAnLsL2oS5iZce+Ag--.26001S2;
-        Mon, 14 Mar 2022 10:01:26 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     stephen@networkplumber.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH v2] hv_netvsc: Add check for kvmalloc_array
-Date:   Mon, 14 Mar 2022 10:01:25 +0800
-Message-Id: <20220314020125.2365084-1-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S233749AbiCNEr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Mar 2022 00:47:58 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9012BF6C;
+        Sun, 13 Mar 2022 21:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1647233209; x=1678769209;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=sEiIvTYYo93UXL1HxYUQnT7+eD388VAG63gAqlE21ns=;
+  b=mObKCh1rQUnpIe1RJhdOXJ82EW0d4gtAeq4P6VU6QP/5o9J5ywj06DSl
+   4o3Zb3bA2ELv9pE0IdYK2zOglGwTbaqvtiFiWdgxG37D3dnosrwxRqt19
+   3Q0iMkoxRycJm2fQurrKYC675UH5ID1kaUsgCe/OniSzavo3QxvZpoVFj
+   z0mCBrKkVGHyXLvrRcxVKgy7IpVY4ksLGq5XLxHcKCc1o+I5IB5t3HTP4
+   ZAcURUmxxnZgAaLaGzhueQ3kJ5pL00OOBwJbT7kxqh8rtTxQDgnao5dbQ
+   AaINuCbhKxPFgOXa0P5JKhvCpYaeRqQ8H65i2iQSEojH2o0WnqUF5UyTz
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10285"; a="253493434"
+X-IronPort-AV: E=Sophos;i="5.90,179,1643702400"; 
+   d="scan'208";a="253493434"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2022 21:46:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,179,1643702400"; 
+   d="scan'208";a="597749617"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by fmsmga008.fm.intel.com with ESMTP; 13 Mar 2022 21:46:49 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sun, 13 Mar 2022 21:46:48 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sun, 13 Mar 2022 21:46:48 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21 via Frontend Transport; Sun, 13 Mar 2022 21:46:48 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.21; Sun, 13 Mar 2022 21:46:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cTT5XVepQnkyS2wetV5LAERsjbygbdQoyYkWYIQzLkA3q3243rMg9WpL/HR9IHQCZYbi7KIYdID+GOLrAS5GtFC3ODcm1J4hcMya6d4IKG0eyuH8BeLhA+PPTk9pn2ocU6jHwtrIyUR98Tm/WRBn4jdCFCG8TscDAT4iQIXaaqjzDwQol+8sQmyFbIofUL7ibOMc0fsIyMY/V1kB6RadbFsldEVvic4H1qTm/yoth/Cr7fenTk7vpuQnkUfy5PZTqXvb8ryTuGwXta80JMr7C3HaV8UgGQbVfntgy6i4zN2KMNkkP8DxWup08vXFYDFA4h7ORGjMRIYNVHAPNAqmCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cDmCkf9wMVmadH7At4z7nClakvT0zEPtBneqEXeDjrI=;
+ b=RUoIGr4QeKfR9TR4aC6lZItbED5DSgd1tROVBpaYk1ndQxcGouFJ5Hc3MXj+VSicmuk0hVWbvpcUC0CDOYYbw7KRrCnCYUZuIsJVCp3ld9VVbvV8tJ6biV+L8lIIFbSa9Oid5r8UfGgxbFftTGZb8qJpv8DzQ3/shPm5E32BzNR0lzqLIiQwGC0gEKTQgbBvp1uw+iq8F+olVPaKz5rRJ7JPlTngC5+K+xhzsVnm9zofHkJr8hR2tAX75BLVIL0S/sPEanD8eO56ZG94+/XyoyXdvbaDRGa4XBXjVeQ0on8ntAXO0/La4gMS+fQlrXAycJdwKJMEYLwO2kcL+h0Hyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BYAPR11MB3367.namprd11.prod.outlook.com (2603:10b6:a03:79::29)
+ by BYAPR11MB3670.namprd11.prod.outlook.com (2603:10b6:a03:f8::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.22; Mon, 14 Mar
+ 2022 04:46:44 +0000
+Received: from BYAPR11MB3367.namprd11.prod.outlook.com
+ ([fe80::8113:f21a:30e7:26db]) by BYAPR11MB3367.namprd11.prod.outlook.com
+ ([fe80::8113:f21a:30e7:26db%4]) with mapi id 15.20.5061.026; Mon, 14 Mar 2022
+ 04:46:44 +0000
+From:   "G, GurucharanX" <gurucharanx.g@intel.com>
+To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: RE: [Intel-wired-lan] [PATCH intel-net] ice: fix NULL pointer
+ dereference in ice_update_vsi_tx_ring_stats()
+Thread-Topic: [Intel-wired-lan] [PATCH intel-net] ice: fix NULL pointer
+ dereference in ice_update_vsi_tx_ring_stats()
+Thread-Index: AQHYMkuJs2Mo/SzbmUKsvvxxRI+3uay+WDYA
+Date:   Mon, 14 Mar 2022 04:46:44 +0000
+Message-ID: <BYAPR11MB3367D9730C0C04E6626D744FFC0F9@BYAPR11MB3367.namprd11.prod.outlook.com>
+References: <20220307174739.55899-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220307174739.55899-1-maciej.fijalkowski@intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3523080a-655d-4d25-e43f-08da0575a3f6
+x-ms-traffictypediagnostic: BYAPR11MB3670:EE_
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-microsoft-antispam-prvs: <BYAPR11MB36708780E934427286819589FC0F9@BYAPR11MB3670.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jU69+l5CReQSadSA1Pqr61OWr1tMAeddI5TuCweiUr/81lKltv3FFVXXqPlP7aix5AZ+3Nq6iH42L5XlDAjMzwrr9xig4rk8j2tE2AsPCCSd/xdiaZ+MQ7s3qL0WM98lsTagEueOmRFdSe+RV6o42t4FN87oQQpxhXBouSUTru+zzI5aFlRDKjf4q63lhllyK/P7LXnWIk6InOaej076eOr8/lk26+A59+APJ3Cy4wqWAY8L7m8Ywv9IXYBTMU2kCmLQSd+S4wqiOg1xVJVTgQis6PiIGIazIlj+yT8wWHdClWHPNDkYcXbdcy26ldILFHwvTIOwejGloqeDfGfRRANlVgsrCqnV/k0RzW7sx3ExOMcC7phTK0tKoh6qDrGY03Jp54WnGOFa3lXvGc1D160jN8YGFoR6eV4N+qRmSfLtMAHSCaVWvGNzOmIKH70LHoIarXgFnl0ZulraSFDZIbUqazXncvYey1Cv87wGix+Pg52M2W5beBEggTza1lsnn+0EMxX2XAGJsjt5qKDTqzTd2DMO9xn8qYAvmogiK9DsmHbZgUU3p79KYQGB+T1xZIBuS+g9DUWyenVVLkdUoSZWRtUkCVT148l4BwJ9kt9P6Q4w0dyu5i9vl+dTByNpSzykZBTiIvGRva561pnSwEFuI1igPhl0W0qpulpnH02HI7y0olbIGYNR8sLmB4zivtLavdZnCggJVNd+0/l7fA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3367.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(26005)(186003)(122000001)(71200400001)(38070700005)(107886003)(86362001)(6506007)(7696005)(2906002)(53546011)(9686003)(82960400001)(38100700002)(508600001)(76116006)(4326008)(8676002)(66946007)(66476007)(66556008)(66446008)(64756008)(5660300002)(52536014)(8936002)(55016003)(33656002)(83380400001)(110136005)(54906003)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?kbhirwPictLTD2BrJqpUTdXs7k1/MBVeIo4Ek3v6zV0/WqVRuNqU9anQzG8v?=
+ =?us-ascii?Q?977xNF+cpoKhR12c+cXTYOe5Wv/bdH3fer8tvcF00yDcbmZWr5M3/7o2EhI9?=
+ =?us-ascii?Q?tVxob8f9w6MhMLB8tPhMs8GB4b2Yak3n3YfqcO9SEc+OEHCTnd+dBYw8Y+xr?=
+ =?us-ascii?Q?aeGtM5w9wu1OuXyBoxt7cj7AVrCzJTRQXZHCeeZQAWNJ8r23DaFFJ0GzJHbl?=
+ =?us-ascii?Q?RAHWrA7bo/9cYAEG9w92YPDuOi2W0aCwCj7cMUiiB/xb84xQGe7kXhG1LrkF?=
+ =?us-ascii?Q?WLbJOMCr58zNt7awmpyrmvnK7vJUuP8A30uz6Y65OlVodqv5tgYbvS3eo36/?=
+ =?us-ascii?Q?YmjClqpH29kDfbms5NkJ66l1E3olXpsjLuOnQAnPDOPl22N7kc3JY1yh4jn8?=
+ =?us-ascii?Q?GyVc7y+6/NEnM+IS+m0Hk1VqJX/o7YtZ33In+8+/yCnxaGsjmffRA5YE9qrK?=
+ =?us-ascii?Q?7PezUhcJSpHCpaVNOOPxSWTu3P1dK/kHsPbFbuhFm4vfuAGz01d+zqgVJiIl?=
+ =?us-ascii?Q?Atk1bdXeUfyU8u86gFJCyQQyK7SW/8p5IbvLhqgz2Tbu1ZfZ7S+Uwn+GEZTR?=
+ =?us-ascii?Q?D0yl6J2MKU6GtJqYFwIJUSLVp7E8xi9xau+/XZMwDSpcwR6sIvpbUYIYrQUb?=
+ =?us-ascii?Q?0LrKC+O6WF2lXfnkSewBJAk+1UcS4z6Q8bw4c52OtywJnN/zfAX2mr7kALcN?=
+ =?us-ascii?Q?wgHgc8PaiQ/AUSzzVsBuuEC/lOvQ7Pw9ssJxPi4R5BzuuJr/aBr2bbr3/4VB?=
+ =?us-ascii?Q?2Z1DAUGod6HdQgU0ME2FZYEiRNL/yNf2jOPwPJq0tsvhOxlK0toil+nyrCv2?=
+ =?us-ascii?Q?Aqm5KR5YZsPfmdj5aOX8xHcPtGCv6h4zvvxlifQmZprmG6Ai/wkFXttltBqD?=
+ =?us-ascii?Q?gY82N+zcRvNn0550C7gzTyzZyI7rbT9lsCDCK5omsnjxlQtIfyqipa+qvc+K?=
+ =?us-ascii?Q?Lyi86F7qe633Rzqdc7MCc+TQVDCt0Zmuuu1oCvXzpJPMSa/EE9paEVQBCzZ5?=
+ =?us-ascii?Q?abUhlIzUjNsVbJl/5kRLaFZgWrwf52djD6d1iEgoTR/t1kr7Gqk/U8Prp9vG?=
+ =?us-ascii?Q?NQVcw7I2D0vPir2f7ZuwrFRzM/jvYMV9qly7otUsxnKQxBVlavsoPu6cxZmU?=
+ =?us-ascii?Q?zzLMgYhpBNN/6BOKMg1CgpRlGYVc8oRx3Js3BFAnCRGDqz3SJf+b4aV1qFwR?=
+ =?us-ascii?Q?uEQjVPDsw5DJqNcS+qRn51EYfntzVGZ16IT/HbHCtORDAk3jY+bhc44Zuy1K?=
+ =?us-ascii?Q?c4KCVPNnv4KOXMxIhpOLM8fT0a1twY9sKhFuyE9HVrCexbim7oZUEHsT81H5?=
+ =?us-ascii?Q?+XGVcR/JNcpR3Ojx3AjtAw5SU4/4HuGva21hF0CIKsEZHR6fcpCferag1uq7?=
+ =?us-ascii?Q?JTdewjs7VjM6d2Y1M3M0aPOALEv5wLKZl/Er8GTrR2pVnwxO5BiQFRAlBrCv?=
+ =?us-ascii?Q?Lqmi9S+Z2wN9CIWDgm0wdZ8IrLqUpw/0?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: rQCowAAnLsL2oS5iZce+Ag--.26001S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFW3Jw4xCrW3Wr15tr1fJFb_yoWDZwb_Cr
-        48urnxur47CryrKF42gFy7Xr9Yyw1qqF1fAFW2qrZxJFy8ArW7Ww1rZrnrXr4fur45uF9x
-        C3ZrAa1Yv39FgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbS8FF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7Cj
-        xVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_GFv_Wrylc2xSY4AK67AK6r4UMxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF
-        04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRLNVgUUUUU=
-X-Originating-IP: [124.16.138.126]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3367.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3523080a-655d-4d25-e43f-08da0575a3f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Mar 2022 04:46:44.5275
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2gvaoU1etculdBjlEc6pjW5qRsSYZfPAgs1u/TUpBY8dzzjT8QAxIfNevOs5pHqDNHFILMLd7zuPEEnX6hZ9EQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3670
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,37 +156,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As the potential failure of the kvmalloc_array(),
-it should be better to check and restore the 'data'
-if fails in order to avoid the dereference of the
-NULL pointer.
 
-Fixes: 6ae746711263 ("hv_netvsc: Add per-cpu ethtool stats for netvsc")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
-Changelog:
 
-v1 -> v2
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> Maciej Fijalkowski
+> Sent: Monday, March 7, 2022 11:18 PM
+> To: intel-wired-lan@lists.osuosl.org
+> Cc: netdev@vger.kernel.org; dan.carpenter@oracle.com; kuba@kernel.org;
+> bpf@vger.kernel.org; davem@davemloft.net; Karlsson, Magnus
+> <magnus.karlsson@intel.com>
+> Subject: [Intel-wired-lan] [PATCH intel-net] ice: fix NULL pointer derefe=
+rence
+> in ice_update_vsi_tx_ring_stats()
+>=20
+> It is possible to do NULL pointer dereference in routine that updates Tx =
+ring
+> stats. Currently only stats and bytes are updated when ring pointer is va=
+lid,
+> but later on ring is accessed to propagate gathered Tx stats onto VSI sta=
+ts.
+>=20
+> Change the existing logic to move to next ring when ring is NULL.
+>=20
+> Fixes: e72bba21355d ("ice: split ice_ring onto Tx/Rx separate structs")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_main.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
 
-* Change 1. Remove the unrolled zero.
----
- drivers/net/hyperv/netvsc_drv.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 3646469433b1..fde1c492ca02 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -1587,6 +1587,9 @@ static void netvsc_get_ethtool_stats(struct net_device *dev,
- 	pcpu_sum = kvmalloc_array(num_possible_cpus(),
- 				  sizeof(struct netvsc_ethtool_pcpu_stats),
- 				  GFP_KERNEL);
-+	if (!pcpu_sum)
-+		return;
-+
- 	netvsc_get_pcpu_stats(dev, pcpu_sum);
- 	for_each_present_cpu(cpu) {
- 		struct netvsc_ethtool_pcpu_stats *this_sum = &pcpu_sum[cpu];
--- 
-2.25.1
-
+Tested-by: Gurucharan <gurucharanx.g@intel.com> (A Contingent worker at Int=
+el)
