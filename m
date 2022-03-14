@@ -2,131 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C31914D78B7
-	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 00:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525E64D7931
+	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 02:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbiCMXVG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Mar 2022 19:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
+        id S231411AbiCNB53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Mar 2022 21:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbiCMXVF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Mar 2022 19:21:05 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C51E60CE8;
-        Sun, 13 Mar 2022 16:19:57 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 812F45C01B2;
-        Sun, 13 Mar 2022 19:19:56 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sun, 13 Mar 2022 19:19:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm3; bh=GQnfiVadh5tJPgz9kVDqRB8PL7TA82b3EqJMgiDYnGE=; b=ThRpt
-        SBvrrPwL0MLX7cBs4jTHqpm9gUsSWzMFzlLO/b185o9oidsZISSF/YOX4jcEWYOz
-        THfrjtFESdfaxzbQCBvpg0wNgrPSUs9zdzGrixXm1rc6kcepurbbJvrNgAlqGj75
-        SyA9u7ewsHz621RCnT/hBv0hty9J14UTtnP+kJV8moi9s/8kPMPzP31PM0cNo8/7
-        JQ64zTkIP56gzyIanuaKQGsktGrPHyqmiNhN0RObcuhIxxwdbeejL+Foe2wwsvDz
-        AfUTdqdvtCiaadQAsw5yiVcXdqM3tOfp0HL/ByPbUmzbkR94jTRsRDWG9VaBowZ6
-        Z9nFcoB7U69ulYxkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; bh=GQnfiVadh5tJPgz9kVDqRB8PL7TA8
-        2b3EqJMgiDYnGE=; b=gtaWEwGkbvdS7/i5ygDPlkZom8rLcFKhR4cphLXDI7rO2
-        1dHebc0Xd63/l5hhd1Hx8aMwev+el1kVbKIxbam8ml11kVDDBdVJXGOEaCEOsJyw
-        IquxVcG/xYc3RnoYrTs7zU3XziuAcnXBrmtyZasTHQYVs47aiVk1gubiGsW+ZFOQ
-        HwnofgFA2dB+cH5M50Bkzmugsi6AX+Wc3A2PlMKVwagVvddXLG5s6IYF2uvmfaYY
-        iTmoLzL70QTtylScPyEuXW4x5Q8MVNUUDr+hWhdyq0XT+FG/19hKSq0AnkxEGH1i
-        z8TdjR/swlkqZmBUPv253bKD3rmwsmyo43m59162A==
-X-ME-Sender: <xms:HHwuYs-K0OF8ByeVUAdqDTUrMwtnwgKwo9U1refrteRHUlt45vHROw>
-    <xme:HHwuYkswS0NxUW_2fOzME5ZJzsW-8rC2Cjpravv8HeIvNRHH47av03HFQf2w1DFag
-    scTnCggclz3xadyfg>
-X-ME-Received: <xmr:HHwuYiBK67q180leylEYILm7dV15PK6GkNp5WWetfFPXD-LesauEoBqk4r1Jnv4MY4KoolQKVcui9Ev2KcORmq3q7ZVk2Ap08XjfgxtQA3jLnQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddruddvjedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
-    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
-    effeeivdefheeiveevjeduieeigfetieevieffffenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:HHwuYse7KlVCWwVtT3p0C39ub2vKu3y3sAr_LCYegY2sNACdHk9yAg>
-    <xmx:HHwuYhOCnpEWJ_U6ajTILLbBzwmVE3rouMwhmTCqxhta8GaTbo6WiQ>
-    <xmx:HHwuYmkQxU0LmfhevW5pDtNDSFUX_olI0uVA5BPpFMjNsPzZFMRKPg>
-    <xmx:HHwuYmqfRQKh-lwEP4kGUc4wIt1xjnkke7siwKs_Av0VCDmB8OK49A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 13 Mar 2022 19:19:55 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] bpftool: man: Add missing top level docs
-Date:   Sun, 13 Mar 2022 16:19:46 -0700
-Message-Id: <3049ef5dc509c0d1832f0a8b2dba2ccaad0af688.1647213551.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S229771AbiCNB52 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Mar 2022 21:57:28 -0400
+Received: from cstnet.cn (smtp23.cstnet.cn [159.226.251.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 174C93EF1C;
+        Sun, 13 Mar 2022 18:56:18 -0700 (PDT)
+Received: from localhost.localdomain (unknown [124.16.138.126])
+        by APP-03 (Coremail) with SMTP id rQCowAA3P8O0oC5iprG+Ag--.41815S2;
+        Mon, 14 Mar 2022 09:56:04 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     stephen@networkplumber.org
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH] hv_netvsc: Add check for kvmalloc_array
+Date:   Mon, 14 Mar 2022 09:56:03 +0800
+Message-Id: <20220314015603.2364882-1-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        FROM_SUSPICIOUS_NTLD_FP,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-CM-TRANSID: rQCowAA3P8O0oC5iprG+Ag--.41815S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFW3Ar1ftF1rWF15uFWruFg_yoWxArg_WF
+        1qvFnxCrZ5JF4ftF45Z343Xryftwn8tF1kJF90q3ykAw1YkrW5tFy8Wr95XFW7WrZakr9x
+        KF17C3ySv3Z0qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3kFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
+        628vn2kIc2xKxwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1U
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUmQ6LUUUUU=
+X-Originating-IP: [124.16.138.126]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The top-level (bpftool.8) man page was missing docs for a few
-subcommands and their respective sub-sub-commands.
+On Sat, 12 Mar 2022 01:25:38 +0800
+Stephen Hemminger <stephen@networkplumber.org> wrote:
 
-This commit brings the top level man page up to date. Note that I've
-kept the ordering of the subcommands the same as in `bpftool help`.
+>> +	if (!pcpu_sum) {
+>> +		for (j = 0; j < i; j++)
+>> +			data[j] = 0;
+>> +		return;
+>> +	}
+> 
+> I don't think you understood what my comment was.
+> 
+> The zeroing here is not necessary. Just do:
+>         if (!pcpu_sum)
+>                return;
+> 
+> The data pointer is to buffer allocated here:
+> 
+> static int ethtool_get_stats(struct net_device *dev, void __user *useraddr)
+> {
+> ...
+> 	if (n_stats) {
+> 		data = vzalloc(array_size(n_stats, sizeof(u64)));  <<<<< is already zeroed.
+> 		if (!data)
+> 			return -ENOMEM;
+> 		ops->get_ethtool_stats(dev, &stats, data);
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/bpf/bpftool/Documentation/bpftool.rst | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+OK, I will submit a v2 to remove them.
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
-index 7084dd9fa2f8..6965c94dfdaf 100644
---- a/tools/bpf/bpftool/Documentation/bpftool.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool.rst
-@@ -20,7 +20,8 @@ SYNOPSIS
- 
- 	**bpftool** **version**
- 
--	*OBJECT* := { **map** | **program** | **cgroup** | **perf** | **net** | **feature** }
-+	*OBJECT* := { **map** | **program** | **link** | **cgroup** | **perf** | **net** | **feature** |
-+	**btf** | **gen** | **struct_ops** | **iter** }
- 
- 	*OPTIONS* := { { **-V** | **--version** } | |COMMON_OPTIONS| }
- 
-@@ -31,6 +32,8 @@ SYNOPSIS
- 	*PROG-COMMANDS* := { **show** | **list** | **dump jited** | **dump xlated** | **pin** |
- 	**load** | **attach** | **detach** | **help** }
- 
-+	*LINK-COMMANDS* := { **show** | **list** | **pin** | **detach** | **help** }
-+
- 	*CGROUP-COMMANDS* := { **show** | **list** | **attach** | **detach** | **help** }
- 
- 	*PERF-COMMANDS* := { **show** | **list** | **help** }
-@@ -39,6 +42,14 @@ SYNOPSIS
- 
- 	*FEATURE-COMMANDS* := { **probe** | **help** }
- 
-+	*BTF-COMMANDS* := { **show** | **list** | **dump** | **help** }
-+
-+	*GEN-COMMANDS* := { **object** | **skeleton** | **min_core_btf** | **help** }
-+
-+	*STRUCT-OPS-COMMANDS* := { **show** | **list** | **dump** | **register** | **unregister** | **help** }
-+
-+	*ITER-COMMANDS* := { **pin** | **help** }
-+
- DESCRIPTION
- ===========
- 	*bpftool* allows for inspection and simple modification of BPF objects
--- 
-2.35.1
+Jiang
 
