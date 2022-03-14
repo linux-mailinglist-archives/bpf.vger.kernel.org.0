@@ -2,110 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216C54D8EF6
-	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 22:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D30984D8EFA
+	for <lists+bpf@lfdr.de>; Mon, 14 Mar 2022 22:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239080AbiCNVnS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Mar 2022 17:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32814 "EHLO
+        id S245306AbiCNVp3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Mar 2022 17:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237993AbiCNVnR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Mar 2022 17:43:17 -0400
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0161DA54;
-        Mon, 14 Mar 2022 14:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:Subject:
-        From:References:Cc:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=5fYJDkb70nOkHbd2/M46rkppX6DCn4ZobzkUMoM9LVo=; b=FdI76ZQ7Kt7g2yLPyuZKT6vKGD
-        Etuf79OkUCGcAdgGg7lvX6URaStuopjbS5spn4BeqhVvVJIQf9Mt4o5kdPG+P3zGPeJ4grLvus4Te
-        ilrumcKphbkpc4dpmxPOCEbO1w0CNXP+Czm2SilPLC7+3++PWsSw4YtNapgfCcRSAa5g=;
-Received: from p200300daa7204f00f1d305288d0030be.dip0.t-ipconnect.de ([2003:da:a720:4f00:f1d3:528:8d00:30be] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1nTsS4-0000JU-Dt; Mon, 14 Mar 2022 22:42:04 +0100
-Message-ID: <4ff44a95-2818-32d9-c907-20e84f24a3e6@nbd.name>
-Date:   Mon, 14 Mar 2022 22:42:03 +0100
+        with ESMTP id S237993AbiCNVp2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Mar 2022 17:45:28 -0400
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA256193ED;
+        Mon, 14 Mar 2022 14:44:17 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id g17so29643280lfh.2;
+        Mon, 14 Mar 2022 14:44:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2VfnhbEGoaJMBxbZk/tXhcsK9P2W1Pv5LMv/tBwaIfo=;
+        b=gqFwpR5aJyOGQqvePQE5NWYaKTi370jQjW/2L/ts1xGaTpQ4QfjMv+JqadXeoG2FTw
+         mjp1/0l276dQdWj/+SRBx3x0JzTYWYjo8c4L+LrpDDADSeG3+OtxwjaDk2t9gMNeZEho
+         +wKDwLsEcpCd2B83UZCr4tVfMAmfnMZT/GDyZvP2Bimk8rK7XtyH/p80yBFLOhITHEzx
+         x1fpZ3uqS8IDwy8jtaY3fLCbmByDlTjfOBCKcupRPfVllV2Gx3WH9lEAnjjodGsQvPfj
+         5g9YiexxqUSOXfGWlFWHBJ+yIZsbsOM257QOpd+c1lGPNgAVdIkoPxhU4MAzVMJe8L7d
+         thjg==
+X-Gm-Message-State: AOAM533ZKh0AX2An3UQlx45daYnlDk8VY/k5RknXre2Ug1mNCEN89VtA
+        EDEihZWJWhLfhFNclONFHrOxQaGAEI7/AGcVg8Q=
+X-Google-Smtp-Source: ABdhPJwxEXoBr4ZBfHBu6jBT617TwgtgRa+XqjNS61tSGsjG05PbvU4akXVAa/APfYJL6iDAN9GZoTYHduL2i9Q84ZU=
+X-Received: by 2002:a19:6b0d:0:b0:448:53c6:702b with SMTP id
+ d13-20020a196b0d000000b0044853c6702bmr14479332lfa.528.1647294256086; Mon, 14
+ Mar 2022 14:44:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Content-Language: en-US
-To:     "Jesper D. Brouer" <netdev@brouer.com>, netdev@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>
-Cc:     brouer@redhat.com, Toke Hoiland Jorgensen <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20220314102210.92329-1-nbd@nbd.name>
- <86137924-b3cb-3d96-51b1-19923252f092@brouer.com>
-From:   Felix Fietkau <nbd@nbd.name>
-Subject: Re: [PATCH] net: xdp: allow user space to request a smaller packet
- headroom requirement
-In-Reply-To: <86137924-b3cb-3d96-51b1-19923252f092@brouer.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220301010412.431299-1-namhyung@kernel.org> <20220301010412.431299-3-namhyung@kernel.org>
+ <Yh3heodejlBiwqLj@hirez.programming.kicks-ass.net>
+In-Reply-To: <Yh3heodejlBiwqLj@hirez.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 14 Mar 2022 14:44:04 -0700
+Message-ID: <CAM9d7ciHObwkvyy9Uz5NRb=KBY-HtXAtAJTgXocA6C42aBoAyg@mail.gmail.com>
+Subject: Re: [PATCH 2/4] locking: Apply contention tracepoints in the slow path
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Radoslaw Burny <rburny@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Mar 1, 2022 at 1:04 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Feb 28, 2022 at 05:04:10PM -0800, Namhyung Kim wrote:
+> > @@ -1718,9 +1726,11 @@ static __always_inline void __sched rtlock_slowlock(struct rt_mutex_base *lock)
+> >  {
+> >       unsigned long flags;
+> >
+> > +     trace_contention_begin(lock, _RET_IP_, LCB_F_RT | TASK_RTLOCK_WAIT);
+> >       raw_spin_lock_irqsave(&lock->wait_lock, flags);
+> >       rtlock_slowlock_locked(lock);
+> >       raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
+> > +     trace_contention_end(lock);
+> >  }
+>
+> Same, if you do it one level in, you can have the tracepoint itself look
+> at current->__state.
 
-On 14.03.22 21:39, Jesper D. Brouer wrote:
-> (Cc. BPF list and other XDP maintainers)
-> 
-> On 14/03/2022 11.22, Felix Fietkau wrote:
->> Most ethernet drivers allocate a packet headroom of NET_SKB_PAD. Since it is
->> rounded up to L1 cache size, it ends up being at least 64 bytes on the most
->> common platforms.
->> On most ethernet drivers, having a guaranteed headroom of 256 bytes for XDP
->> adds an extra forced pskb_expand_head call when enabling SKB XDP, which can
->> be quite expensive.
->> Many XDP programs need only very little headroom, so it can be beneficial
->> to have a way to opt-out of the 256 bytes headroom requirement.
-> 
-> IMHO 64 bytes is too small.
-> We are using this area for struct xdp_frame and also for metadata
-> (XDP-hints).  This will limit us from growing this structures for
-> the sake of generic-XDP.
-> 
-> I'm fine with reducting this to 192 bytes, as most Intel drivers
-> have this headroom, and have defacto established that this is
-> a valid XDP headroom, even for native-XDP.
-> 
-> We could go a small as two cachelines 128 bytes, as if xdp_frame
-> and metadata grows above a cache-line (64 bytes) each, then we have
-> done something wrong (performance wise).
-Here's some background on why I chose 64 bytes: I'm currently 
-implementing a userspace + xdp program to act as generic fastpath to 
-speed network bridging.
-For that I need to support a very diverse set of network drivers 
-(including a lot of WLAN drivers).
-My XDP program only needs up to 4 bytes extra headroom (for a VLAN header).
-I made this headroom reduction opt-in, so that by default generic-XDP 
-programs can still rely on 256 bytes headroom.
+So I tried this by reading the state in the trace like below:
 
-If we make the small version any bigger than 64 bytes, it limits my 
-options to:
-1) bump NET_SKB_PAD accordingly at the risk of creating issues with 
-buffer management for some affected drivers (IMHO not likely to be 
-accepted upstream)
-2) create patches for each and every driver that could possibly get used 
-on OpenWrt to make my approach viable (there's so many of them, so I 
-think that's not really feasible either)
-3) stick with non-upstream hacks for dealing with this in OpenWrt
-I don't really like any of those options, but I can't think of any other 
-solution right now.
++       TP_fast_assign(
++               __entry->lock_addr = lock;
++               __entry->flags = flags | get_current_state();
++       ),
 
-If I take the pskb_expand_head hit from the headroom mismatch, the 
-result is that my bridge accelerator code actually decreases performance 
-instead of making anything better.
+But I sometimes see unrelated values which contain
+__TASK_TRACED or __TASK_STOPPED and some unexpected values
+like TASK_UNINTERRUPTIBLE for rwlocks.  Maybe I missed something.
 
-- Felix
+Anyway I think it's confusing and complicates things unnecessarily.
+Probably it'd better using new flags like LCB_F_SPIN and LCB_F_WAIT.
+
+Thanks,
+Namhyung
