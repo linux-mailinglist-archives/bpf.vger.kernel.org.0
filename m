@@ -2,217 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D704DA0DF
-	for <lists+bpf@lfdr.de>; Tue, 15 Mar 2022 18:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAC54DA11F
+	for <lists+bpf@lfdr.de>; Tue, 15 Mar 2022 18:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350494AbiCORIO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Mar 2022 13:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
+        id S1350454AbiCOR3G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Mar 2022 13:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350485AbiCORHy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Mar 2022 13:07:54 -0400
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474C5580C0;
-        Tue, 15 Mar 2022 10:06:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1647364002; x=1678900002;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0XG+gX0DCjUrifLHVo4uvhwaHh2d9IKH+kZXF/KXoOE=;
-  b=O0Wh72+SxpnY1kunIVWqpRmr4AoABFX7eBbg6y+nSJgqUhsBCnEzaG8k
-   CkiKrh4J0d+op01OFDYi7NSYbt2AZoblb8vOYGgjfeXa5uOmCCdTTDPQf
-   sCrvxbs/tamlcpN8vfo0SiPc3BcYFBDzIbtR06QihMJtb6PGuSQXR3PQT
-   CwvRoLg8D/gOfFUHOFsVO7+eQWVQX0qiiuk/ELn7Bxu7eeIiaF/DTKICF
-   X9Xl+kDS9gY29uor9gAaWFpl+cVlmxl4VzX1uPhLBcPt+XUQqYPEAY1vi
-   OgGFKcBoRk1mU1i4prehYC61GUjh0bsg4CUs9dCcHvL8DNiyTDYm86NkR
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="317085653"
-X-IronPort-AV: E=Sophos;i="5.90,184,1643702400"; 
-   d="scan'208";a="317085653"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2022 10:04:26 -0700
-X-IronPort-AV: E=Sophos;i="5.90,184,1643702400"; 
-   d="scan'208";a="690269219"
-Received: from lepple-mobl1.ger.corp.intel.com (HELO [10.252.56.30]) ([10.252.56.30])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2022 10:04:21 -0700
-Message-ID: <84435254-b072-661f-f108-81a00178d7bc@linux.intel.com>
-Date:   Tue, 15 Mar 2022 19:04:19 +0200
+        with ESMTP id S242015AbiCOR3F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Mar 2022 13:29:05 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BD71142
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 10:27:52 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id v14so12108500qta.2
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 10:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2dR5ednAuivheslMdbA8lSv7LtQURKSYeYic+EaoGiM=;
+        b=KzkYQqtRQrG2h9DQbzl9S69dP29Ym/FTat20XRl3lHJ6CbIUEoeND6fpndc0FcXgUh
+         ePyYdd7xUuKYn1NSqAi7Lc73xdRg7v3t2vZcTaMhGijbG85YYfG7UyFRMs/QGcmRH+Q8
+         YRT64JUCzcHXp1FQAKJszjOf3fWqhFqc+3RV78rDaiv6inKoHZbAwNttUBYkTe/BRDz4
+         TVaxgDHrxMksZkaQMcaDKWsl2CrZJkR9PX9Hnw5BhR41T5V+hy8mkuS+OtyC9qY8ghtp
+         DKxeeJH9ttzPbuQUHFCT9kgxELydtbRRyvaa3Oznpy7yGmQHp4oHWKhh8KL3ySzHnqPG
+         G+2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2dR5ednAuivheslMdbA8lSv7LtQURKSYeYic+EaoGiM=;
+        b=7ThG0aZJ30QV6QZQiZHwWoIrXxvqEI9ZwDaIs9zAi4fQZl7IvuOwnn0IKShdRIE3kJ
+         ifl7rdnCopE2+S/nsHro/ZyJLbf75O6q9i30aQzYqJp4ujXY8j0ErMcjrSla7B7zsHqU
+         Y6fkTLoXQou7+ZKtOqKefeRm5uTPyfO8xXdvfiEKvdRWLd7WfVdGNPe7pLORTQ9KWkPD
+         Ubgi7jZ9kOyqZw9xiF3OvARCZsv44xvXz/JZP9+GmZR0aYgegMlYQgR4wBALvl87VJaR
+         u16anT/J92sZ4jFOkEznKiniVfhn3MVT/cJQ/N6MeXfJ6di+a6ZJ2UWjzSLiv26lqyqr
+         51ZA==
+X-Gm-Message-State: AOAM531GNYFvbvv8MfA3ewVFaMyt7pCTwXO/7vuhhP8R0Qo/hQDaAOuy
+        Z2+Hb4mhc+LUkms3VfqR6lzgdx+9YXGmLZAgs11RPw==
+X-Google-Smtp-Source: ABdhPJx1++PpaWMWUFpwAInRieMduBGSPX6FQuyqDVX1DvQJlTCYBiCVuK425IpwF7LmCBiVsVrafIxb6cIaekQvmIs=
+X-Received: by 2002:ac8:7c4f:0:b0:2e1:a763:da87 with SMTP id
+ o15-20020ac87c4f000000b002e1a763da87mr22988918qtv.478.1647365271174; Tue, 15
+ Mar 2022 10:27:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH bpf-next v2 00/28] Introduce eBPF support for HID devices
-Content-Language: en-US
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20220225234339.2386398-1-haoluo@google.com> <20220225234339.2386398-2-haoluo@google.com>
+ <YiwXnSGf9Nb79wnm@zeniv-ca.linux.org.uk> <CA+khW7g+T2sAkP1aycmts_82JKWgYk5Y0ZJp+EvjFUyNY8W_5w@mail.gmail.com>
+ <Yi/LaZ5id4ZjqFmL@zeniv-ca.linux.org.uk>
+In-Reply-To: <Yi/LaZ5id4ZjqFmL@zeniv-ca.linux.org.uk>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 15 Mar 2022 10:27:39 -0700
+Message-ID: <CA+khW7jhD0+s9kivrd6PsNEaxmDCewhk_egrsxwdHPZNkubJYA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/9] bpf: Add mkdir, rmdir, unlink syscalls
+ for prog_bpf_syscall
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
-From:   Tero Kristo <tero.kristo@linux.intel.com>
-In-Reply-To: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joe Burton <jevburton.kernel@gmail.com>,
+        Tejun Heo <tj@kernel.org>, joshdon@google.com, sdf@google.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Benjamin,
+On Mon, Mar 14, 2022 at 4:12 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Mon, Mar 14, 2022 at 10:07:31AM -0700, Hao Luo wrote:
+> > Hello Al,
+>
+> > > In which contexts can those be called?
+> > >
+> >
+> > In a sleepable context. The plan is to introduce a certain tracepoints
+> > as sleepable, a program that attaches to sleepable tracepoints is
+> > allowed to call these functions. In particular, the first sleepable
+> > tracepoint introduced in this patchset is one at the end of
+> > cgroup_mkdir(). Do you have any advices?
+>
+> Yes - don't do it, unless you really want a lot of user-triggerable
+> deadlocks.
+>
+> Pathname resolution is not locking-agnostic.  In particular, you can't
+> do it if you are under any ->i_rwsem, whether it's shared or exclusive.
+> That includes cgroup_mkdir() callchains.  And if the pathname passed
+> to these functions will have you walk through the parent directory,
+> you would get screwed (e.g. if the next component happens to be
+> inexistent, triggering a lookup, which takes ->i_rwsem shared).
 
-On 04/03/2022 19:28, Benjamin Tissoires wrote:
-> Hi,
->
-> This is a followup of my v1 at [0].
->
-> The short summary of the previous cover letter and discussions is that
-> HID could benefit from BPF for the following use cases:
->
-> - simple fixup of report descriptor:
->    benefits are faster development time and testing, with the produced
->    bpf program being shipped in the kernel directly (the shipping part
->    is *not* addressed here).
->
-> - Universal Stylus Interface:
->    allows a user-space program to define its own kernel interface
->
-> - Surface Dial:
->    somehow similar to the previous one except that userspace can decide
->    to change the shape of the exported device
->
-> - firewall:
->    still partly missing there, there is not yet interception of hidraw
->    calls, but it's coming in a followup series, I promise
->
-> - tracing:
->    well, tracing.
->
->
-> I tried to address as many comments as I could and here is the short log
-> of changes:
->
-> v2:
-> ===
->
-> - split the series by subsystem (bpf, HID, libbpf, selftests and
->    samples)
->
-> - Added an extra patch at the beginning to not require CAP_NET_ADMIN for
->    BPF_PROG_TYPE_LIRC_MODE2 (please shout if this is wrong)
->
-> - made the bpf context attached to HID program of dynamic size:
->    * the first 1 kB will be able to be addressed directly
->    * the rest can be retrieved through bpf_hid_{set|get}_data
->      (note that I am definitivey not happy with that API, because there
->      is part of it in bits and other in bytes. ouch)
->
-> - added an extra patch to prevent non GPL HID bpf programs to be loaded
->    of type BPF_PROG_TYPE_HID
->    * same here, not really happy but I don't know where to put that check
->      in verifier.c
->
-> - added a new flag BPF_F_INSERT_HEAD for BPF_LINK_CREATE syscall when in
->    used with HID program types.
->    * this flag is used for tracing, to be able to load a program before
->      any others that might already have been inserted and that might
->      change the data stream.
->
-> Cheers,
-> Benjamin
+I'm thinking of two options, let's see if either can work out:
 
-I posted a couple of comments to the series, but other than that for the 
-whole series you can use:
+Option 1: We can put restrictions on the pathname passed into this
+helper. We can explicitly require the parameter dirfd to be in bpffs
+(we can verify). In addition, we check pathname to be not containing
+any dot or dotdot, so the resolved path will end up inside bpffs,
+therefore won't take ->i_rwsem that is in the callchain of
+cgroup_mkdir().
 
-Reviewed-by: Tero Kristo <tero.kristo@linux.intel.com>
+Option 2: We can avoid pathname resolution entirely. Like above, we
+can adjust the semantics of this helper to be: making an immediate
+directory under the dirfd passed in. In particular, like above, we can
+enforce the dirfd to be in bpffs and pathname to consist of only
+alphabet and numbers. With these restrictions, we call vfs_mkdir() to
+create directories.
 
-Tested-by: Tero Kristo <tero.kristo@linux.intel.com>
+Being able to mkdir from bpf has useful use cases, let's try to make
+it happen even with many limitations.
 
-I did test this with my USI-BPF program + userspace code, they work with 
-few minor updates compared to previous version.
-
--Tero
-
->
->
->
-> [0] https://lore.kernel.org/linux-input/20220224110828.2168231-1-benjamin.tissoires@redhat.com/T/#t
->
->
-> Benjamin Tissoires (28):
->    bpf: add new is_sys_admin_prog_type() helper
->    bpf: introduce hid program type
->    HID: hook up with bpf
->    libbpf: add HID program type and API
->    selftests/bpf: add tests for the HID-bpf initial implementation
->    samples/bpf: add new hid_mouse example
->    bpf/hid: add a new attach type to change the report descriptor
->    HID: allow to change the report descriptor from an eBPF program
->    libbpf: add new attach type BPF_HID_RDESC_FIXUP
->    selftests/bpf: add report descriptor fixup tests
->    samples/bpf: add a report descriptor fixup
->    bpf/hid: add hid_{get|set}_data helpers
->    HID: bpf: implement hid_bpf_get|set_data
->    selftests/bpf: add tests for hid_{get|set}_data helpers
->    bpf/hid: add new BPF type to trigger commands from userspace
->    libbpf: add new attach type BPF_HID_USER_EVENT
->    selftests/bpf: add test for user call of HID bpf programs
->    selftests/bpf: hid: rely on uhid event to know if a test device is
->      ready
->    bpf/hid: add bpf_hid_raw_request helper function
->    HID: add implementation of bpf_hid_raw_request
->    selftests/bpf: add tests for bpf_hid_hw_request
->    bpf/verifier: prevent non GPL programs to be loaded against HID
->    HID: bpf: compute only the required buffer size for the device
->    HID: bpf: only call hid_bpf_raw_event() if a ctx is available
->    bpf/hid: Add a flag to add the program at the beginning of the list
->    libbpf: add handling for BPF_F_INSERT_HEAD in HID programs
->    selftests/bpf: Add a test for BPF_F_INSERT_HEAD
->    samples/bpf: fix bpf_program__attach_hid() api change
->
->   drivers/hid/Makefile                         |   1 +
->   drivers/hid/hid-bpf.c                        | 361 +++++++++
->   drivers/hid/hid-core.c                       |  34 +-
->   include/linux/bpf-hid.h                      | 129 +++
->   include/linux/bpf_types.h                    |   4 +
->   include/linux/hid.h                          |  25 +
->   include/uapi/linux/bpf.h                     |  59 ++
->   include/uapi/linux/bpf_hid.h                 |  50 ++
->   kernel/bpf/Makefile                          |   3 +
->   kernel/bpf/hid.c                             | 652 +++++++++++++++
->   kernel/bpf/syscall.c                         |  26 +-
->   kernel/bpf/verifier.c                        |   7 +
->   samples/bpf/.gitignore                       |   1 +
->   samples/bpf/Makefile                         |   4 +
->   samples/bpf/hid_mouse_kern.c                 |  91 +++
->   samples/bpf/hid_mouse_user.c                 | 129 +++
->   tools/include/uapi/linux/bpf.h               |  59 ++
->   tools/lib/bpf/libbpf.c                       |  22 +-
->   tools/lib/bpf/libbpf.h                       |   2 +
->   tools/lib/bpf/libbpf.map                     |   1 +
->   tools/testing/selftests/bpf/prog_tests/hid.c | 788 +++++++++++++++++++
->   tools/testing/selftests/bpf/progs/hid.c      | 216 +++++
->   22 files changed, 2649 insertions(+), 15 deletions(-)
->   create mode 100644 drivers/hid/hid-bpf.c
->   create mode 100644 include/linux/bpf-hid.h
->   create mode 100644 include/uapi/linux/bpf_hid.h
->   create mode 100644 kernel/bpf/hid.c
->   create mode 100644 samples/bpf/hid_mouse_kern.c
->   create mode 100644 samples/bpf/hid_mouse_user.c
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/hid.c
->   create mode 100644 tools/testing/selftests/bpf/progs/hid.c
->
+Thanks!
