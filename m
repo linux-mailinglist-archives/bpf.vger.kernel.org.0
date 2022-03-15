@@ -2,41 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6AC4D9CF2
-	for <lists+bpf@lfdr.de>; Tue, 15 Mar 2022 15:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB1A4D9DF3
+	for <lists+bpf@lfdr.de>; Tue, 15 Mar 2022 15:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348988AbiCOOD5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Mar 2022 10:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60270 "EHLO
+        id S1349387AbiCOOni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Mar 2022 10:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349017AbiCOODz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Mar 2022 10:03:55 -0400
+        with ESMTP id S1349382AbiCOOnh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Mar 2022 10:43:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531BE5469B;
-        Tue, 15 Mar 2022 07:02:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C383355BD1;
+        Tue, 15 Mar 2022 07:42:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E36E861685;
-        Tue, 15 Mar 2022 14:02:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A864C340E8;
-        Tue, 15 Mar 2022 14:02:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6008A60EF2;
+        Tue, 15 Mar 2022 14:42:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 417C9C340EE;
+        Tue, 15 Mar 2022 14:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647352962;
-        bh=gYl4Kdz77UQE5JD3kUI4FvgjNtnkg0CruIjvyq/cUEQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gIykNzyR/1l/mQrXCe7Qiz1hbCWb986Y5AWpAQYS4EpFO+wHWBDx4TGtlKnkPTKmv
-         DaVMA7zO4LCirp2Qu+Lz7ml2vVsdxlEy7uvocsRzALwfySfAfEINpec9jt9eva7Z+W
-         XZ3bJxXiVE7RibfK0UYuSYoCso6wFPI4t1PUtHIeWnMPbfqmIlpvie4H9hTrd8Gk9b
-         5c5gJKDpP0Mc66Nn1AlzfX6tExsvdtWuFi4ZYJC1Pr0G0pWt/Iu6t8rgOnqfMrbBZ4
-         XXwsI55sOSs7S9IejouR5zNjcSdJQiUJJ+QINpTYSCd9uksJZkVT4vCR4ZBTkm2Bfe
-         kyFm2dyAyCLlQ==
+        s=k20201202; t=1647355340;
+        bh=5n0xBkaFOIdU9mVDR5qVSvVvGAOz04JEo64OXCp4opI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dP17JQFCg6ehWM3a7uT5yOW6ACxF0Ek+UH8tru8urs9QSY0gIhAHmY5uowM0ooSIW
+         GOa/KLnQwB+vdUEjNK1nbrKM1FdixTo0ME9pgz63pXjbkaI4eCEyCOh1bQBRu86vOL
+         ppI04yj6SxB9sorGMppVnKDdgvjVsS09HGD8JG33WfDYeY/LMByiBDaPb3oNkmEUIe
+         BNs5/p/9nsUpmxsbLMbdRddaa2vhiz44usjk4XicDi9mDG4XYMCVooB1Y8+MvEjygx
+         OcZkFv4BeKUZRl2rkM0xTpN1E/prEJN4pbEId1D2IEr/g+UPqihOwUuHdI+5hyrfpS
+         qvx6IrOmSvPfA==
+Date:   Tue, 15 Mar 2022 23:42:14 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -46,260 +47,143 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
         Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
         "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH v12 bpf-next 12/12] fprobe: Add a selftest for fprobe
-Date:   Tue, 15 Mar 2022 23:02:35 +0900
-Message-Id: <164735295554.1084943.18347620679928750960.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH v12 bpf-next 00/12] fprobe: Introduce fprobe function
+ entry/exit probe
+Message-Id: <20220315234214.c9dee345347be30450061ac8@kernel.org>
 In-Reply-To: <164735281449.1084943.12438881786173547153.stgit@devnote2>
 References: <164735281449.1084943.12438881786173547153.stgit@devnote2>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a KUnit based selftest for fprobe interface.
+On Tue, 15 Mar 2022 23:00:14 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v11:
-  - Build selftest only if KUNIT=y.
- Changes in v9:
-  - Rename fprobe_target* to fprobe_selftest_target*.
-  - Find the correct expected ip by ftrace_location_range().
-  - Since the ftrace_location_range() is not exposed to module, make
-    this test only for embedded.
-  - Add entry only test.
-  - Reset the fprobe structure before reuse it.
----
- lib/Kconfig.debug |   12 ++++
- lib/Makefile      |    2 +
- lib/test_fprobe.c |  174 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 188 insertions(+)
- create mode 100644 lib/test_fprobe.c
+> Hi,
+> 
+> Here is the 12th version of fprobe. This version fixes a possible gcc-11 issue which
+> was reported as kretprobes on arm issue, and also I updated the fprobe document.
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 72ca4684beda..b0bf0d224b2c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2118,6 +2118,18 @@ config KPROBES_SANITY_TEST
- 
- 	  Say N if you are unsure.
- 
-+config FPROBE_SANITY_TEST
-+	bool "Self test for fprobe"
-+	depends on DEBUG_KERNEL
-+	depends on FPROBE
-+	depends on KUNIT=y
-+	help
-+	  This option will enable testing the fprobe when the system boot.
-+	  A series of tests are made to verify that the fprobe is functioning
-+	  properly.
-+
-+	  Say N if you are unsure.
-+
- config BACKTRACE_SELF_TEST
- 	tristate "Self test for the backtrace code"
- 	depends on DEBUG_KERNEL
-diff --git a/lib/Makefile b/lib/Makefile
-index 300f569c626b..154008764b16 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -103,6 +103,8 @@ obj-$(CONFIG_TEST_HMM) += test_hmm.o
- obj-$(CONFIG_TEST_FREE_PAGES) += test_free_pages.o
- obj-$(CONFIG_KPROBES_SANITY_TEST) += test_kprobes.o
- obj-$(CONFIG_TEST_REF_TRACKER) += test_ref_tracker.o
-+CFLAGS_test_fprobe.o += $(CC_FLAGS_FTRACE)
-+obj-$(CONFIG_FPROBE_SANITY_TEST) += test_fprobe.o
- #
- # CFLAGS for compiling floating point code inside the kernel. x86/Makefile turns
- # off the generation of FPU/SSE* instructions for kernel proper but FPU_FLAGS
-diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
-new file mode 100644
-index 000000000000..ed70637a2ffa
---- /dev/null
-+++ b/lib/test_fprobe.c
-@@ -0,0 +1,174 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * test_fprobe.c - simple sanity test for fprobe
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/fprobe.h>
-+#include <linux/random.h>
-+#include <kunit/test.h>
-+
-+#define div_factor 3
-+
-+static struct kunit *current_test;
-+
-+static u32 rand1, entry_val, exit_val;
-+
-+/* Use indirect calls to avoid inlining the target functions */
-+static u32 (*target)(u32 value);
-+static u32 (*target2)(u32 value);
-+static unsigned long target_ip;
-+static unsigned long target2_ip;
-+
-+static noinline u32 fprobe_selftest_target(u32 value)
-+{
-+	return (value / div_factor);
-+}
-+
-+static noinline u32 fprobe_selftest_target2(u32 value)
-+{
-+	return (value / div_factor) + 1;
-+}
-+
-+static notrace void fp_entry_handler(struct fprobe *fp, unsigned long ip, struct pt_regs *regs)
-+{
-+	KUNIT_EXPECT_FALSE(current_test, preemptible());
-+	/* This can be called on the fprobe_selftest_target and the fprobe_selftest_target2 */
-+	if (ip != target_ip)
-+		KUNIT_EXPECT_EQ(current_test, ip, target2_ip);
-+	entry_val = (rand1 / div_factor);
-+}
-+
-+static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip, struct pt_regs *regs)
-+{
-+	unsigned long ret = regs_return_value(regs);
-+
-+	KUNIT_EXPECT_FALSE(current_test, preemptible());
-+	if (ip != target_ip) {
-+		KUNIT_EXPECT_EQ(current_test, ip, target2_ip);
-+		KUNIT_EXPECT_EQ(current_test, ret, (rand1 / div_factor) + 1);
-+	} else
-+		KUNIT_EXPECT_EQ(current_test, ret, (rand1 / div_factor));
-+	KUNIT_EXPECT_EQ(current_test, entry_val, (rand1 / div_factor));
-+	exit_val = entry_val + div_factor;
-+}
-+
-+/* Test entry only (no rethook) */
-+static void test_fprobe_entry(struct kunit *test)
-+{
-+	struct fprobe fp_entry = {
-+		.entry_handler = fp_entry_handler,
-+	};
-+
-+	current_test = test;
-+
-+	/* Before register, unregister should be failed. */
-+	KUNIT_EXPECT_NE(test, 0, unregister_fprobe(&fp_entry));
-+	KUNIT_EXPECT_EQ(test, 0, register_fprobe(&fp_entry, "fprobe_selftest_target*", NULL));
-+
-+	entry_val = 0;
-+	exit_val = 0;
-+	target(rand1);
-+	KUNIT_EXPECT_NE(test, 0, entry_val);
-+	KUNIT_EXPECT_EQ(test, 0, exit_val);
-+
-+	entry_val = 0;
-+	exit_val = 0;
-+	target2(rand1);
-+	KUNIT_EXPECT_NE(test, 0, entry_val);
-+	KUNIT_EXPECT_EQ(test, 0, exit_val);
-+
-+	KUNIT_EXPECT_EQ(test, 0, unregister_fprobe(&fp_entry));
-+}
-+
-+static void test_fprobe(struct kunit *test)
-+{
-+	struct fprobe fp = {
-+		.entry_handler = fp_entry_handler,
-+		.exit_handler = fp_exit_handler,
-+	};
-+
-+	current_test = test;
-+	KUNIT_EXPECT_EQ(test, 0, register_fprobe(&fp, "fprobe_selftest_target*", NULL));
-+
-+	entry_val = 0;
-+	exit_val = 0;
-+	target(rand1);
-+	KUNIT_EXPECT_NE(test, 0, entry_val);
-+	KUNIT_EXPECT_EQ(test, entry_val + div_factor, exit_val);
-+
-+	entry_val = 0;
-+	exit_val = 0;
-+	target2(rand1);
-+	KUNIT_EXPECT_NE(test, 0, entry_val);
-+	KUNIT_EXPECT_EQ(test, entry_val + div_factor, exit_val);
-+
-+	KUNIT_EXPECT_EQ(test, 0, unregister_fprobe(&fp));
-+}
-+
-+static void test_fprobe_syms(struct kunit *test)
-+{
-+	static const char *syms[] = {"fprobe_selftest_target", "fprobe_selftest_target2"};
-+	struct fprobe fp = {
-+		.entry_handler = fp_entry_handler,
-+		.exit_handler = fp_exit_handler,
-+	};
-+
-+	current_test = test;
-+	KUNIT_EXPECT_EQ(test, 0, register_fprobe_syms(&fp, syms, 2));
-+
-+	entry_val = 0;
-+	exit_val = 0;
-+	target(rand1);
-+	KUNIT_EXPECT_NE(test, 0, entry_val);
-+	KUNIT_EXPECT_EQ(test, entry_val + div_factor, exit_val);
-+
-+	entry_val = 0;
-+	exit_val = 0;
-+	target2(rand1);
-+	KUNIT_EXPECT_NE(test, 0, entry_val);
-+	KUNIT_EXPECT_EQ(test, entry_val + div_factor, exit_val);
-+
-+	KUNIT_EXPECT_EQ(test, 0, unregister_fprobe(&fp));
-+}
-+
-+static unsigned long get_ftrace_location(void *func)
-+{
-+	unsigned long size, addr = (unsigned long)func;
-+
-+	if (!kallsyms_lookup_size_offset(addr, &size, NULL) || !size)
-+		return 0;
-+
-+	return ftrace_location_range(addr, addr + size - 1);
-+}
-+
-+static int fprobe_test_init(struct kunit *test)
-+{
-+	do {
-+		rand1 = prandom_u32();
-+	} while (rand1 <= div_factor);
-+
-+	target = fprobe_selftest_target;
-+	target2 = fprobe_selftest_target2;
-+	target_ip = get_ftrace_location(target);
-+	target2_ip = get_ftrace_location(target2);
-+
-+	return 0;
-+}
-+
-+static struct kunit_case fprobe_testcases[] = {
-+	KUNIT_CASE(test_fprobe_entry),
-+	KUNIT_CASE(test_fprobe),
-+	KUNIT_CASE(test_fprobe_syms),
-+	{}
-+};
-+
-+static struct kunit_suite fprobe_test_suite = {
-+	.name = "fprobe_test",
-+	.init = fprobe_test_init,
-+	.test_cases = fprobe_testcases,
-+};
-+
-+kunit_test_suites(&fprobe_test_suite);
-+
-+MODULE_LICENSE("GPL");
+Here is the gcc-11 build issue thread for reference.
 
+https://lore.kernel.org/all/202203150516.KTorSVVU-lkp@intel.com/T/#u
+
+Thank you,
+
+> 
+> The previous version (v11) is here[1];
+> 
+> [1] https://lore.kernel.org/all/164701432038.268462.3329725152949938527.stgit@devnote2/T/#u
+> 
+> This series introduces the fprobe, the function entry/exit probe
+> with multiple probe point support for x86, arm64 and powerpc64le.
+> This also introduces the rethook for hooking function return as same as
+> the kretprobe does. This abstraction will help us to generalize the fgraph
+> tracer, because we can just switch to it from the rethook in fprobe,
+> depending on the kernel configuration.
+> 
+> The patch [1/12] is from Jiri's series[2].
+> 
+> [2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+> 
+> And the patch [9/10] adds the FPROBE_FL_KPROBE_SHARED flag for the case
+> if user wants to share the same code (or share a same resource) on the
+> fprobe and the kprobes.
+> 
+> I forcibly updated my kprobes/fprobe branch, you can pull this series
+> from:
+> 
+>  https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/fprobe
+> 
+> Thank you,
+> 
+> ---
+> 
+> Jiri Olsa (1):
+>       ftrace: Add ftrace_set_filter_ips function
+> 
+> Masami Hiramatsu (11):
+>       fprobe: Add ftrace based probe APIs
+>       rethook: Add a generic return hook
+>       rethook: x86: Add rethook x86 implementation
+>       arm64: rethook: Add arm64 rethook implementation
+>       powerpc: Add rethook support
+>       ARM: rethook: Add rethook arm implementation
+>       fprobe: Add exit_handler support
+>       fprobe: Add sample program for fprobe
+>       fprobe: Introduce FPROBE_FL_KPROBE_SHARED flag for fprobe
+>       docs: fprobe: Add fprobe description to ftrace-use.rst
+>       fprobe: Add a selftest for fprobe
+> 
+> 
+>  Documentation/trace/fprobe.rst                |  174 +++++++++++++
+>  Documentation/trace/index.rst                 |    1 
+>  arch/arm/Kconfig                              |    1 
+>  arch/arm/include/asm/stacktrace.h             |    4 
+>  arch/arm/kernel/stacktrace.c                  |    6 
+>  arch/arm/probes/Makefile                      |    1 
+>  arch/arm/probes/rethook.c                     |  103 ++++++++
+>  arch/arm64/Kconfig                            |    1 
+>  arch/arm64/include/asm/stacktrace.h           |    2 
+>  arch/arm64/kernel/probes/Makefile             |    1 
+>  arch/arm64/kernel/probes/rethook.c            |   25 ++
+>  arch/arm64/kernel/probes/rethook_trampoline.S |   87 +++++++
+>  arch/arm64/kernel/stacktrace.c                |    7 -
+>  arch/powerpc/Kconfig                          |    1 
+>  arch/powerpc/kernel/Makefile                  |    1 
+>  arch/powerpc/kernel/rethook.c                 |   72 +++++
+>  arch/x86/Kconfig                              |    1 
+>  arch/x86/include/asm/unwind.h                 |    8 +
+>  arch/x86/kernel/Makefile                      |    1 
+>  arch/x86/kernel/kprobes/common.h              |    1 
+>  arch/x86/kernel/rethook.c                     |  119 +++++++++
+>  include/linux/fprobe.h                        |  105 ++++++++
+>  include/linux/ftrace.h                        |    3 
+>  include/linux/kprobes.h                       |    3 
+>  include/linux/rethook.h                       |  100 ++++++++
+>  include/linux/sched.h                         |    3 
+>  kernel/exit.c                                 |    2 
+>  kernel/fork.c                                 |    3 
+>  kernel/trace/Kconfig                          |   26 ++
+>  kernel/trace/Makefile                         |    2 
+>  kernel/trace/fprobe.c                         |  332 +++++++++++++++++++++++++
+>  kernel/trace/ftrace.c                         |   58 ++++
+>  kernel/trace/rethook.c                        |  317 ++++++++++++++++++++++++
+>  lib/Kconfig.debug                             |   12 +
+>  lib/Makefile                                  |    2 
+>  lib/test_fprobe.c                             |  174 +++++++++++++
+>  samples/Kconfig                               |    7 +
+>  samples/Makefile                              |    1 
+>  samples/fprobe/Makefile                       |    3 
+>  samples/fprobe/fprobe_example.c               |  120 +++++++++
+>  40 files changed, 1876 insertions(+), 14 deletions(-)
+>  create mode 100644 Documentation/trace/fprobe.rst
+>  create mode 100644 arch/arm/probes/rethook.c
+>  create mode 100644 arch/arm64/kernel/probes/rethook.c
+>  create mode 100644 arch/arm64/kernel/probes/rethook_trampoline.S
+>  create mode 100644 arch/powerpc/kernel/rethook.c
+>  create mode 100644 arch/x86/kernel/rethook.c
+>  create mode 100644 include/linux/fprobe.h
+>  create mode 100644 include/linux/rethook.h
+>  create mode 100644 kernel/trace/fprobe.c
+>  create mode 100644 kernel/trace/rethook.c
+>  create mode 100644 lib/test_fprobe.c
+>  create mode 100644 samples/fprobe/Makefile
+>  create mode 100644 samples/fprobe/fprobe_example.c
+> 
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
