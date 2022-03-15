@@ -2,238 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FC04DA009
-	for <lists+bpf@lfdr.de>; Tue, 15 Mar 2022 17:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47704DA00E
+	for <lists+bpf@lfdr.de>; Tue, 15 Mar 2022 17:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350029AbiCOQaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Mar 2022 12:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        id S1350058AbiCOQaq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Mar 2022 12:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350010AbiCOQaS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Mar 2022 12:30:18 -0400
-X-Greylist: delayed 105 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Mar 2022 09:29:06 PDT
-Received: from conssluserg-03.nifty.com (conssluserg-03.nifty.com [210.131.2.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D3E56C38;
-        Tue, 15 Mar 2022 09:29:06 -0700 (PDT)
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 22FGSqlW026839;
-        Wed, 16 Mar 2022 01:28:52 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 22FGSqlW026839
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1647361732;
-        bh=kto8rSbm3Q3xiCM3iwqUkTy1Lz+u7MD+xAW0APggEBU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=B36aTK1eOn+/DzeSKGQletXIVYZrcXnog3sAaflmoIeR8H/7rpVhq+y+D6//2VaeO
-         vVDy0Sa8nS1yzua+ySP4gGoK9GZNq7HgLBaN53Q90UhxYqn0A4IP+U75WLtf/R6AYf
-         GO6JRuP+WZlvpvKRBE6+iX/aEVe/LCa+BhMC5Rb/H4GkfYaO64IlQKzEsMzEGSYwV4
-         0zTJkF/9RrsFTgLsvzRicpoRoLgT2BnnoHErkpYziHeRdDynhDEsJ8SL1dF4ZDxhUZ
-         YAwJEZJhRQttDsojavllWVGf8W9or0rsUWfb3v0BRYJsrs0sYONIfF5dJmM8533BJZ
-         pl+AeSF69MbgQ==
-X-Nifty-SrcIP: [209.85.216.44]
-Received: by mail-pj1-f44.google.com with SMTP id m11-20020a17090a7f8b00b001beef6143a8so2914770pjl.4;
-        Tue, 15 Mar 2022 09:28:52 -0700 (PDT)
-X-Gm-Message-State: AOAM531Gy75IXSaPIJcsaU9KNUukIzfI7XD4enmH5/cQHrblVPfMRf9n
-        bOExu+0NC4zBX3qQ4EPvpg2YgBJORLLM1Rag3xY=
-X-Google-Smtp-Source: ABdhPJyQQCiK2kYc6VKY4osuuaLXqfBSrRdu+1+tQj6ir64AFa+GJSuGhwO7V/BFO7Ul0tkdLmMYa9LM+xz47pi9Cqw=
-X-Received: by 2002:a17:90a:ab17:b0:1b9:b61a:aadb with SMTP id
- m23-20020a17090aab1700b001b9b61aaadbmr5506333pjq.77.1647361731601; Tue, 15
- Mar 2022 09:28:51 -0700 (PDT)
+        with ESMTP id S1350010AbiCOQap (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Mar 2022 12:30:45 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D4A56C3E;
+        Tue, 15 Mar 2022 09:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1647361773; x=1678897773;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5bWJ1aLHhnxNHrTHdW/lDQbheo4ws+MyK4EncLb5sbM=;
+  b=KvA5YrFx2G3CWHBYBaMaGVg4YJiB5keas9t0cFEsg/KYBk8nj5f7PlT2
+   pTCIQ7j8m+XRM8oC835CmeZM8gnjMyO1r3U3VP4MXdtk/ZQTA0iNoxp1l
+   T5P+S5Gi+cpz2HQZCgmL+Cf7Kbj6MFDvl7QK6gMsTMXOQKiP/6+FC/OH9
+   jsD1BM6kQdHqPlbqg1Qwr8skEi7CKPhYpsq0+SSM5itpK5fwgEwahJF0I
+   WFPGzUQ4GkpC1fxAoCGRxN3POkrJ9irLvVlh0b39sqv/y8zfDjXbmMmcQ
+   tVBVg8VveMqafE/jyMWbVJ/WTR2MB2DErzTgbUDHzicxDL2OXBjJ1qTCR
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10286"; a="281125062"
+X-IronPort-AV: E=Sophos;i="5.90,184,1643702400"; 
+   d="scan'208";a="281125062"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2022 09:29:19 -0700
+X-IronPort-AV: E=Sophos;i="5.90,184,1643702400"; 
+   d="scan'208";a="690255507"
+Received: from lepple-mobl1.ger.corp.intel.com (HELO [10.252.56.30]) ([10.252.56.30])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2022 09:29:14 -0700
+Message-ID: <daf2136a-d6ff-558c-e9bb-c7a45dd1c43f@linux.intel.com>
+Date:   Tue, 15 Mar 2022 18:29:12 +0200
 MIME-Version: 1.0
-References: <20220309190917.w3tq72alughslanq@ast-mbp.dhcp.thefacebook.com>
- <YinGZObp37b27LjK@hirez.programming.kicks-ass.net> <YioBZmicMj7aAlLf@hirez.programming.kicks-ass.net>
- <YionV0+v/cUBiOh0@hirez.programming.kicks-ass.net> <YisnG9lW6kp8lBp3@hirez.programming.kicks-ass.net>
- <CAADnVQJfffD9tH_cWThktCCwXeoRV1XLZq69rKK5vKy_y6BN8A@mail.gmail.com>
- <20220312154407.GF28057@worktop.programming.kicks-ass.net>
- <CAADnVQL7xrafAviUJg47LfvFSJpgZLwyP18Bm3S_KQwRyOpheQ@mail.gmail.com>
- <20220313085214.GK28057@worktop.programming.kicks-ass.net>
- <Yi9YOdn5Nbq9BBwd@hirez.programming.kicks-ass.net> <20220315081522.GA8939@worktop.programming.kicks-ass.net>
-In-Reply-To: <20220315081522.GA8939@worktop.programming.kicks-ass.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 16 Mar 2022 01:28:08 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAReAKXT97NHEnC-1UXozdcPdYNHR55knNRDatJr_GqrrA@mail.gmail.com>
-Message-ID: <CAK7LNAReAKXT97NHEnC-1UXozdcPdYNHR55knNRDatJr_GqrrA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/45] x86: Kernel IBT
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        X86 ML <x86@kernel.org>, joao@overdrivepizza.com,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, alyssa.milburn@intel.com,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH bpf-next v2 03/28] HID: hook up with bpf
+Content-Language: en-US
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
+ <20220304172852.274126-4-benjamin.tissoires@redhat.com>
+From:   Tero Kristo <tero.kristo@linux.intel.com>
+In-Reply-To: <20220304172852.274126-4-benjamin.tissoires@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-8.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 5:15 PM Peter Zijlstra <peterz@infradead.org> wrote:
+Hi Benjamin,
+
+On 04/03/2022 19:28, Benjamin Tissoires wrote:
+> Now that BPF can be compatible with HID, add the capability into HID.
+> drivers/hid/hid-bpf.c takes care of the glue between bpf and HID, and
+> hid-core can then inject any incoming event from the device into a BPF
+> program to filter/analyze it.
 >
-> On Mon, Mar 14, 2022 at 03:59:05PM +0100, Peter Zijlstra wrote:
-> > On Sun, Mar 13, 2022 at 09:52:14AM +0100, Peter Zijlstra wrote:
-> > > On Sat, Mar 12, 2022 at 05:33:39PM -0800, Alexei Starovoitov wrote:
-> > > > During the build with gcc 8.5 I see:
-> > > >
-> > > > arch/x86/crypto/crc32c-intel.o: warning: objtool: file already has
-> > > > .ibt_endbr_seal, skipping
-> > > > arch/x86/crypto/crc32c-intel.o: warning: objtool: file already has
-> > > > .orc_unwind section, skipping
-> > > >   LD [M]  crypto/async_tx/async_xor.ko
-> > > >   LD [M]  crypto/authenc.ko
-> > > > make[3]: *** [../scripts/Makefile.modfinal:61:
-> > > > arch/x86/crypto/crc32c-intel.ko] Error 255
-> > > > make[3]: *** Waiting for unfinished jobs....
-> > > >
-> > > > but make clean cures it.
-> > > > I suspect it's some missing makefile dependency.
-> > >
-> > > Yes, I recently ran into it; I've been trying to kick Makefile into
-> > > submission but have not had success yet. Will try again on Monday.
-> > >
-> > > Problem appears to be that it will re-link .ko even though .o hasn't
-> > > changed, resulting in duplicate objtool runs. I've been trying to have
-> > > makefile generate .o.objtool empty file to serve as dependency marker to
-> > > avoid doing second objtool run, but like said, no luck yet.
-> >
-> > Masahiro-san, I'm trying the below, but afaict it's not working because
-> > the rule for the .o file itself:
-> >
-> Ha, sleep, it is marvelous!
->
-> The below appears to be working as desired.
+> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 >
 > ---
-> Index: linux-2.6/scripts/Makefile.build
-> ===================================================================
-> --- linux-2.6.orig/scripts/Makefile.build
-> +++ linux-2.6/scripts/Makefile.build
-> @@ -86,12 +86,18 @@ ifdef need-builtin
->  targets-for-builtin += $(obj)/built-in.a
->  endif
 >
-> -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> +targets-for-modules :=
-
-
-Why do you need to change this line?
-
-
-
+> changes in v2:
+> - split the series by bpf/libbpf/hid/selftests and samples
+> - addressed review comments from v1
+> ---
+>   drivers/hid/Makefile   |   1 +
+>   drivers/hid/hid-bpf.c  | 157 +++++++++++++++++++++++++++++++++++++++++
+>   drivers/hid/hid-core.c |  21 +++++-
+>   include/linux/hid.h    |  11 +++
+>   4 files changed, 187 insertions(+), 3 deletions(-)
+>   create mode 100644 drivers/hid/hid-bpf.c
 >
->  ifdef CONFIG_LTO_CLANG
->  targets-for-modules += $(patsubst %.o, %.lto.o, $(filter %.o, $(obj-m)))
->  endif
->
-> +ifdef CONFIG_X86_KERNEL_IBT
-> +targets-for-modules += $(patsubst %.o, %.objtool, $(filter %.o, $(obj-m)))
-> +endif
+> diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+> index 6d3e630e81af..08d2d7619937 100644
+> --- a/drivers/hid/Makefile
+> +++ b/drivers/hid/Makefile
+> @@ -4,6 +4,7 @@
+>   #
+>   hid-y			:= hid-core.o hid-input.o hid-quirks.o
+>   hid-$(CONFIG_DEBUG_FS)		+= hid-debug.o
+> +hid-$(CONFIG_BPF)		+= hid-bpf.o
+>   
+>   obj-$(CONFIG_HID)		+= hid.o
+>   obj-$(CONFIG_UHID)		+= uhid.o
+> diff --git a/drivers/hid/hid-bpf.c b/drivers/hid/hid-bpf.c
+> new file mode 100644
+> index 000000000000..8120e598de9f
+> --- /dev/null
+> +++ b/drivers/hid/hid-bpf.c
+> @@ -0,0 +1,157 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + *  BPF in HID support for Linux
+> + *
+> + *  Copyright (c) 2022 Benjamin Tissoires
+> + */
 > +
-> +targets-for-modules += $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
+> +#include <linux/filter.h>
+> +#include <linux/mutex.h>
+> +#include <linux/slab.h>
 > +
->  ifdef need-modorder
->  targets-for-modules += $(obj)/modules.order
->  endif
-> @@ -276,6 +282,19 @@ cmd_mod = { \
->  $(obj)/%.mod: $(obj)/%$(mod-prelink-ext).o FORCE
->         $(call if_changed,mod)
->
-> +#
-> +# Since objtool will re-write the file it will change the timestamps, therefore
-> +# it is critical that the %.objtool file gets a timestamp *after* objtool runs.
-
-
-Thanks for explaining how stupidly this works.
-NACK.
-
-
-I guess re-using the current clang-lto rule is much cleaner.
-(but please rename  %.lto.o  to  %.prelink.o)
-
-
-Roughly like this:
-
-
-if CONFIG_LTO_CLANG || CONFIG_X86_KERNEL_IBT
-
-$(obj)/%.prelink:  $(obj)/%.o FORCE
-        [  $(LD) if CONFIG_LTO_CLANG ]   +  $(cmd_objtool)
-
-endif
-
-
-
-
-
-
-
-> +#
-> +# Additionally, care must be had with ordering this rule against the other rules
-> +# that take %.o as a dependency.
-> +#
-> +cmd_objtool_mod =                                                      \
-> +       true $(cmd_objtool) ; touch $@
+> +#include <uapi/linux/bpf_hid.h>
+> +#include <linux/hid.h>
 > +
-> +$(obj)/%.objtool: $(obj)/%$(mod-prelink-ext).o FORCE
-> +       $(call if_changed,objtool_mod)
+> +static int __hid_bpf_match_sysfs(struct device *dev, const void *data)
+> +{
+> +	struct kernfs_node *kn = dev->kobj.sd;
+> +	struct kernfs_node *uevent_kn;
 > +
->  quiet_cmd_cc_lst_c = MKLST   $@
->        cmd_cc_lst_c = $(CC) $(c_flags) -g -c -o $*.o $< && \
->                      $(CONFIG_SHELL) $(srctree)/scripts/makelst $*.o \
-> Index: linux-2.6/scripts/Makefile.lib
-> ===================================================================
-> --- linux-2.6.orig/scripts/Makefile.lib
-> +++ linux-2.6/scripts/Makefile.lib
-> @@ -552,9 +552,8 @@ objtool_args =                                                              \
->         $(if $(CONFIG_FTRACE_MCOUNT_USE_OBJTOOL), --mcount)             \
->         $(if $(CONFIG_SLS), --sls)
->
-> -cmd_objtool = $(if $(objtool-enabled), ; $(objtool) $(objtool_args) $@)
-> -cmd_objtool_mod = $(if $(objtool-enabled), $(objtool) $(objtool_args) $(@:.ko=.o) ; )
-> -cmd_gen_objtooldep = $(if $(objtool-enabled), { echo ; echo '$@: $$(wildcard $(objtool))' ; } >> $(dot-target).cmd)
-> +cmd_objtool = $(if $(objtool-enabled), ; $(objtool) $(objtool_args) $(@:.objtool=.o))
-> +cmd_gen_objtooldep = $(if $(objtool-enabled), { echo ; echo '$(@:.objtool=.o): $$(wildcard $(objtool))' ; } >> $(dot-target).cmd)
->
->  endif # CONFIG_STACK_VALIDATION
->
-> @@ -575,8 +574,8 @@ $(obj)/%.o: objtool-enabled :=
->
->  # instead run objtool on the module as a whole, right before
->  # the final link pass with the linker script.
-> -%.ko: objtool-enabled = y
-> -%.ko: part-of-module := y
-> +$(obj)/%.objtool: objtool-enabled = y
-> +$(obj)/%.objtool: part-of-module := y
->
->  else
->
-> Index: linux-2.6/scripts/Makefile.modfinal
-> ===================================================================
-> --- linux-2.6.orig/scripts/Makefile.modfinal
-> +++ linux-2.6/scripts/Makefile.modfinal
-> @@ -32,7 +32,6 @@ ARCH_POSTLINK := $(wildcard $(srctree)/a
->
->  quiet_cmd_ld_ko_o = LD [M]  $@
->        cmd_ld_ko_o +=                                                   \
-> -       $(cmd_objtool_mod)                                              \
->         $(LD) -r $(KBUILD_LDFLAGS)                                      \
->                 $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)              \
->                 -T scripts/module.lds -o $@ $(filter %.o, $^);          \
+> +	uevent_kn = kernfs_find_and_get_ns(kn, "uevent", NULL);
+> +
+> +	return uevent_kn == data;
+> +}
+> +
+> +static struct hid_device *hid_bpf_fd_to_hdev(int fd)
+> +{
+> +	struct device *dev;
+> +	struct hid_device *hdev;
+> +	struct fd f = fdget(fd);
+> +	struct inode *inode;
+> +	struct kernfs_node *node;
+> +
+> +	if (!f.file) {
+> +		hdev = ERR_PTR(-EBADF);
+> +		goto out;
+> +	}
+> +
+> +	inode = file_inode(f.file);
+> +	node = inode->i_private;
+> +
+> +	dev = bus_find_device(&hid_bus_type, NULL, node, __hid_bpf_match_sysfs);
+> +
+> +	if (dev)
+> +		hdev = to_hid_device(dev);
+> +	else
+> +		hdev = ERR_PTR(-EINVAL);
+> +
+> + out:
+> +	fdput(f);
+> +	return hdev;
+> +}
+> +
+> +static int hid_bpf_link_attach(struct hid_device *hdev, enum bpf_hid_attach_type type)
+> +{
+> +	int err = 0;
+> +
+> +	switch (type) {
+> +	case BPF_HID_ATTACH_DEVICE_EVENT:
+> +		if (!hdev->bpf.ctx) {
+> +			hdev->bpf.ctx = bpf_hid_allocate_ctx(hdev, HID_BPF_MAX_BUFFER_SIZE);
+> +			if (IS_ERR(hdev->bpf.ctx)) {
+> +				err = PTR_ERR(hdev->bpf.ctx);
+> +				hdev->bpf.ctx = NULL;
+> +			}
+> +		}
+> +		break;
+> +	default:
+> +		/* do nothing */
+
+These cause following error:
 
 
+   CC      drivers/hid/hid-bpf.o
+drivers/hid/hid-bpf.c: In function ‘hid_bpf_link_attach’:
+drivers/hid/hid-bpf.c:88:2: error: label at end of compound statement
+    88 |  default:
+       |  ^~~~~~~
+drivers/hid/hid-bpf.c: In function ‘hid_bpf_link_attached’:
+drivers/hid/hid-bpf.c:101:2: error: label at end of compound statement
+   101 |  default:
+       |  ^~~~~~~
+drivers/hid/hid-bpf.c: In function ‘hid_bpf_array_detached’:
+drivers/hid/hid-bpf.c:116:2: error: label at end of compound statement
+   116 |  default:
+       |  ^~~~~~~
+make[2]: *** [scripts/Makefile.build:288: drivers/hid/hid-bpf.o] Error 1
+make[1]: *** [scripts/Makefile.build:550: drivers/hid] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1831: drivers] Error 2
 
--- 
-Best Regards
-Masahiro Yamada
+To fix that, you need to add a break statement at end:
+
+default:
+
+     /* do nothing */
+
+     break;
+
+Same for couple of other occurrences in the file.
+
+-Tero
+
+
