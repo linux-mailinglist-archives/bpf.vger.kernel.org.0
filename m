@@ -2,121 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0914D9AEC
-	for <lists+bpf@lfdr.de>; Tue, 15 Mar 2022 13:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CBD4D9B57
+	for <lists+bpf@lfdr.de>; Tue, 15 Mar 2022 13:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348169AbiCOMQb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Mar 2022 08:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60450 "EHLO
+        id S240188AbiCOMhJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Mar 2022 08:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242335AbiCOMQa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Mar 2022 08:16:30 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46492640
-        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 05:15:17 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id bg10so40851410ejb.4
-        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 05:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Vi+2325S3UhNuSwEkzE7zxDYlg80Gl90oVsQ1baVx6k=;
-        b=lXVeCHFZnVPl27HaQHK4dOGSxioAyOLmcaZ/jiS+FruLEekLCNYigdBkQBJ5q1ApYD
-         SFM0ziU6uMyn/RupOG6NClEswmDnENZLmayFZ+eJBq0Uby5QXkzbEOdy6PhGnks4/xb3
-         vyGDK2r5EE1+5tIMnnruypjXPtijUx9/clMN4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=Vi+2325S3UhNuSwEkzE7zxDYlg80Gl90oVsQ1baVx6k=;
-        b=B3+oYnhmFIk5BBkRzhky3BPt5nuhFG7VD8/CmPPwgCcBOJAtFR1z8l/cMJP/WwbHhS
-         bxd8riPhQP1d+ZEG5YlpTBoUYWOO17PU1I85GYhcZK81ci4M+mHRBuA7tJb8nT4hlNzJ
-         E1gKfgneY0vdKcFilFXnEIOHDzC1UKzDLbd202wdCKpykH3EAPo1XJTGDMfn7Z7kNzJQ
-         pSvSq6IyyG8K2elBbRUuywKigwmOaArz7un9//G9CGGjrQihtS6yZJU/OzsVzHYbPTW5
-         avV0KG0GcY3Pf98RcwNLrceaE4cjOiK8KIv7DV546Lxqr5dpCIpHmnhDx4JC+LQ+RORv
-         M5pw==
-X-Gm-Message-State: AOAM530J456vo7hLhGIUgWPY7LYHtjbubWqwBqyv5r3BZvl1ZgHR4kSV
-        S1uECT65C42DQ5ypGPuwpB2XLDTE5ziztg==
-X-Google-Smtp-Source: ABdhPJwFooSX0DMCKphFL7uky55Q/OKWuvI2PKtqCcJCzp4TfqCEVQGpMc4BkqsFXywWBhD05MKwxQ==
-X-Received: by 2002:a17:907:6da8:b0:6db:f0cf:af75 with SMTP id sb40-20020a1709076da800b006dbf0cfaf75mr3141069ejc.548.1647346516084;
-        Tue, 15 Mar 2022 05:15:16 -0700 (PDT)
-Received: from cloudflare.com ([2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id k3-20020a05640212c300b0041605b2d9c1sm9104431edx.58.2022.03.15.05.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Mar 2022 05:15:15 -0700 (PDT)
-References: <20220314124432.3050394-1-wangyufen@huawei.com>
- <87sfrky2bt.fsf@cloudflare.com>
- <ff9d0ecf-315b-00a3-8140-424714b204ff@huawei.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     wangyufen <wangyufen@huawei.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, daniel@iogearbox.net,
-        lmb@cloudflare.com, davem@davemloft.net, kafai@fb.com,
-        dsahern@kernel.org, kuba@kernel.org, songliubraving@fb.com,
-        yhs@fb.com, kpsingh@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf, sockmap: Manual deletion of sockmap
- elements in user mode is not allowed
-Date:   Tue, 15 Mar 2022 13:12:08 +0100
-In-reply-to: <ff9d0ecf-315b-00a3-8140-424714b204ff@huawei.com>
-Message-ID: <87fsnjxvho.fsf@cloudflare.com>
+        with ESMTP id S235413AbiCOMhI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Mar 2022 08:37:08 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C1B53B4A;
+        Tue, 15 Mar 2022 05:35:56 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KHt864HwHz9sYl;
+        Tue, 15 Mar 2022 20:32:06 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Tue, 15 Mar
+ 2022 20:35:53 +0800
+From:   Liu Jian <liujian56@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <sdf@google.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <liujian56@huawei.com>
+Subject: [PATCH bpf-next] net: Use skb->len to check the validity of the parameters in bpf_skb_load_bytes
+Date:   Tue, 15 Mar 2022 20:39:16 +0800
+Message-ID: <20220315123916.110409-1-liujian56@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 03:24 PM +08, wangyufen wrote:
-> =E5=9C=A8 2022/3/14 23:30, Jakub Sitnicki =E5=86=99=E9=81=93:
->> On Mon, Mar 14, 2022 at 08:44 PM +08, Wang Yufen wrote:
->>> A tcp socket in a sockmap. If user invokes bpf_map_delete_elem to delete
->>> the sockmap element, the tcp socket will switch to use the TCP protocol
->>> stack to send and receive packets. The switching process may cause some
->>> issues, such as if some msgs exist in the ingress queue and are cleared
->>> by sk_psock_drop(), the packets are lost, and the tcp data is abnormal.
->>>
->>> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
->>> ---
->> Can you please tell us a bit more about the life-cycle of the socket in
->> your workload? Questions that come to mind:
->>
->> 1) What triggers the removal of the socket from sockmap in your case?
-> We use sk_msg to redirect with sock hash, like this:
->
-> =C2=A0skA=C2=A0=C2=A0 redirect=C2=A0=C2=A0=C2=A0 skB
-> =C2=A0Tx <-----------> skB,Rx
->
-> And construct a scenario where the packet sending speed is high, the
-> packet receiving speed is slow, so the packets are stacked in the ingress
-> queue on the receiving side. In this case, if run bpf_map_delete_elem() to
-> delete the sockmap entry, will trigger the following procedure:
->
-> sock_hash_delete_elem()
-> =C2=A0 sock_map_unref()
-> =C2=A0=C2=A0=C2=A0 sk_psock_put()
-> =C2=A0=C2=A0=C2=A0 =C2=A0 sk_psock_drop()
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 sk_psock_stop()
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0 __sk_psock_zap_ingress()
-> =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 __sk_psock_purge=
-_ingress_msg()
->
->> 2) Would it still be a problem if removal from sockmap did not cause any
->> packets to get dropped?
-> Yes, it still be a problem. If removal from sockmap=C2=A0 did not cause a=
-ny
-> packets to get dropped, packet receiving process switches to use TCP
-> protocol stack. The packets in the psock ingress queue cannot be received
->
-> by the user.
+The data length of skb frags + frag_list may be greater than 0xffff,
+so here use skb->len to check the validity of the parameters.
 
-Thanks for the context. So, if I understand correctly, you want to avoid
-breaking the network pipe by updating the sockmap from user-space.
+And modify bpf_flow_dissector_load_bytes and bpf_skb_load_bytes_relative
+in the same way.
 
-This sounds awfully similar to BPF_MAP_FREEZE. Have you considered that?
+Fixes: 05c74e5e53f6 ("bpf: add bpf_skb_load_bytes helper")
+Fixes: 4e1ec56cdc59 ("bpf: add skb_load_bytes_relative helper")
+Fixes: 089b19a9204f ("flow_dissector: switch kernel context to struct bpf_flow_dissector")
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+---
+ net/core/filter.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 9eb785842258..61c353caf141 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -1722,7 +1722,7 @@ BPF_CALL_4(bpf_skb_load_bytes, const struct sk_buff *, skb, u32, offset,
+ {
+ 	void *ptr;
+ 
+-	if (unlikely(offset > 0xffff))
++	if (unlikely(offset >= skb->len))
+ 		goto err_clear;
+ 
+ 	ptr = skb_header_pointer(skb, offset, len, to);
+@@ -1753,10 +1753,10 @@ BPF_CALL_4(bpf_flow_dissector_load_bytes,
+ {
+ 	void *ptr;
+ 
+-	if (unlikely(offset > 0xffff))
++	if (unlikely(!ctx->skb))
+ 		goto err_clear;
+ 
+-	if (unlikely(!ctx->skb))
++	if (unlikely(offset >= ctx->skb->len))
+ 		goto err_clear;
+ 
+ 	ptr = skb_header_pointer(ctx->skb, offset, len, to);
+@@ -1787,7 +1787,7 @@ BPF_CALL_5(bpf_skb_load_bytes_relative, const struct sk_buff *, skb,
+ 	u8 *end = skb_tail_pointer(skb);
+ 	u8 *start, *ptr;
+ 
+-	if (unlikely(offset > 0xffff))
++	if (unlikely(offset >= skb->len))
+ 		goto err_clear;
+ 
+ 	switch (start_header) {
+-- 
+2.17.1
+
