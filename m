@@ -2,38 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADE64DBB27
-	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 00:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B2A4DBB29
+	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 00:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241862AbiCPXio (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 19:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        id S242047AbiCPXiu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 19:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237131AbiCPXin (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 19:38:43 -0400
+        with ESMTP id S237131AbiCPXit (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 19:38:49 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E9015A3B
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 16:37:28 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22GHCfHt029189
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 16:37:28 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F72F15A3B
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 16:37:32 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22GHCdML028583
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 16:37:32 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
- date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=hfZ+7B8+rQME8aGAg2CqRdxuQ+JlW8/OtWtmBF5Lva8=;
- b=Yg0Uc8GZ49BikCPLfGKjXIjD1jutT5g5O/jDyiQefeL8GytW6UeFmYa7nMxwllKbqywG
- XnBTocXJgYbj5gCCfU3B91IpHmj2d584iv7iNJ9nYgx9OQ76YEb6WR+xtgkfr0LuSL+U
- BpyGrkRYe3JzZJKybC6LSb0CPDtsIpZXnUQ= 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3et9d0m35c-4
+ date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=5fO4svkCr3PwRb8jSJ+pvIL+NbYbOh266RPYEgeqZNA=;
+ b=eU0l/Cm1Hgm+HXFaYtr5VdK8yn8JCxPG4Ci2i5xHv4/G9Y3amKNGcsqPgCa5RtohrbdI
+ D7xh4jU8lcDveEdUa83pAvA9KFiZbXjzqb+tC99k8t4+wMlzAcQTMkOrNWG3FCHRfVaj
+ h+dgO/7RUbqfgpRDWP1j5jXWL6ygd66x+gw= 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eucf464d8-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 16:37:28 -0700
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 16:37:31 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CB/NKR5BWSvhn6qokATr5SwPsFtovPzJ24/jxSxoRpzed6FJAvpeweT+1APUNtBsOZh7Jr54zpuA1OmSc2He0kwQhYnVqxqyKE5PWWzbrxzg67tUAo9iFkoJhfCIm5ZRCW4oIp3jwcBIC2Rx8oy3BMk4qdvN5WID7X6LXVKn70xW6JQSuUGBd6Q4E9Y94kEaWG1ww1wlG9VCo8YoGZYUoejJGHSuOtHQ4/89AnAe1X1DWxjxJa7EJaQph79ETfFq8hs7q2m+m6ThVglYD5nby2ga75sMJsvPqL36UYLXD8QIEZD/lNV58/r0xPITgnYc1yqoD5SztPBDFRG6m0lCMQ==
+ b=cD5azFLb5G0T/Y+yf3eD1fPbbm/hnPndUhXrrwakS6RSrpgdqglN5RrAC0DIjGvv1/j0flIz1Fsg/3XaQ6xnRVZ1tV/yOW56q/6mxatUh6WXUHuHzZUmSdOQjUIHWd5+NeY8h+KowEeCsHNHRtSPt2U09Kzf5PJPbSWJi2uggDoXnq46fMlxC/4I7XdVctOLTnuYhOBQoxpGLpodfqFfmL0qZjgdaxff6EdAvBcvL5LDWF8bBtnw5Yn8KntWU+io4iR5KtMCpw/Ng8UayTSJdMp1JKtOzs/AxHE0OTFeH25Dm5WTG/qO81UXk+7z86IIlLOMrEadyf3ACCghI5z6hA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hfZ+7B8+rQME8aGAg2CqRdxuQ+JlW8/OtWtmBF5Lva8=;
- b=XSgf49mMIJbWSsNGx6Whrc0WuPgcjKNuD4dcwaXdkOxX93RH1AjTWHZ77PI3hbuYG+/oE/xc76RW25nBzLG2qY236dyK3EvB+Hoh5LuCtX00jbQlvA4e0ckoJ+4tC3bk5xuvnUYSEFo/BTuX1cqLzXGv4L165ylo+MtAcRTtST6OmTqm6jkBucuqtCD3+PXMQMhUfozWQ3IIDKyCrcbgBNcWJh5TvEEwi41xICevNK+qBCQzGF57gyL/BDIjt0OlV8gNN/z//fODv3FUqKOrTPmyYWCOcdMFg8vKJbuwd10FCn55yAsAE21BSoSRor4jVtP4MyKyF9u9xqa4UCRLDg==
+ bh=5fO4svkCr3PwRb8jSJ+pvIL+NbYbOh266RPYEgeqZNA=;
+ b=YDHM6QKO0fznQn4+trSI9Xg5UyKNFAaPP9j0osaw//lluiOoPzdBRyurMruGcnex1nlCucEnA/ON3M77hWdIJOqE560cNE+kRUERZ4rRbNh482rDtheKKsplLhciNVKxKCaxQY/S49UXto9uE3C8ibdLjYkPeLsPqt53n1wC6k9IGqslNe3XU0TweWq8nofk25jWhFL11Hy8Pa3QT6bjHgCHYXev5TGlJGTbPYDCHWCGIu9ukcb1+/AP4/g5DsVAl17/TNkTVU/rLDcSo92QKGvu+mV88UqPbTeODYR+rG3b7aO9PV8SO+Tx0VtgPZUpq+5wiQWOFeTLI9h9B8+r8w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
@@ -41,79 +42,81 @@ Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
  by DM5PR1501MB2182.namprd15.prod.outlook.com (2603:10b6:4:a4::32) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5081.15; Wed, 16 Mar
- 2022 23:37:26 +0000
+ 2022 23:37:28 +0000
 Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::90c1:20f8:4fc6:d7a3]) by SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::90c1:20f8:4fc6:d7a3%6]) with mapi id 15.20.5081.014; Wed, 16 Mar 2022
- 23:37:26 +0000
+ 23:37:28 +0000
 From:   Delyan Kratunov <delyank@fb.com>
 To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
         "andrii@kernel.org" <andrii@kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next v4 0/5] Subskeleton support for BPF libraries
-Thread-Topic: [PATCH bpf-next v4 0/5] Subskeleton support for BPF libraries
-Thread-Index: AQHYOY7L7euRD8cX1kW99D7F9mQrmA==
-Date:   Wed, 16 Mar 2022 23:37:26 +0000
-Message-ID: <cover.1647473511.git.delyank@fb.com>
+Subject: [PATCH bpf-next v4 4/5] bpftool: add support for subskeletons
+Thread-Topic: [PATCH bpf-next v4 4/5] bpftool: add support for subskeletons
+Thread-Index: AQHYOY7MxVWv4HADZU+Uy5daEh1FbA==
+Date:   Wed, 16 Mar 2022 23:37:28 +0000
+Message-ID: <ca8a48b4841c72d285ecce82371bef4a899756cb.1647473511.git.delyank@fb.com>
+References: <cover.1647473511.git.delyank@fb.com>
+In-Reply-To: <cover.1647473511.git.delyank@fb.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1c41044c-07bf-48b6-4789-08da07a5ed88
+x-ms-office365-filtering-correlation-id: 9a9df5c4-a05f-4ffc-f955-08da07a5eebb
 x-ms-traffictypediagnostic: DM5PR1501MB2182:EE_
-x-microsoft-antispam-prvs: <DM5PR1501MB2182C010CA6671B21ADBB19DC1119@DM5PR1501MB2182.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <DM5PR1501MB21825788C01632FF4E28E30AC1119@DM5PR1501MB2182.namprd15.prod.outlook.com>
 x-fb-source: Internal
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CsO1ZWivMRT6KxtcCB0sx2qDF9Lwk1fOAlPJryTr0oN9XtjuCos/46kWkuMWIeXgicnp6suG7p/GHvJouEv77ruS8uIrF6Bqbk2JDwS8xQqpzEWUtdmj/88aM9JEt6wUTWHbKVF8T7K8XSBuMxvuwYQ6AvQi3z8UyYoM9s+x/8I3gK7kJw1yWoAiC+BhOhAVNWrqzFUThMqZg2/F73IeE22mspDrlfGS41J515w0Xo4IEz4b/FO9gmjJr8RkY7LDVUInEov/GXK8Pm2t4AOqhXwd76ETQtav5phAIzyit+AXEahzLPFf6/e/CPfDp3Bxnmer5flxPU3pxuBGYurIsXBbKQe/YewzJfx9HVcrrgzFEHe7F1Z6MK+5hNjNJT/SVkWRipoduf/gih/+hPAQAdk1Rz1Blg1sTQ9aRK09cggHwV6JpBtHHd5VDVZ2i6fuXGdONjVsQMTuG0ItmhQAqZ4z3ZfGBZYD3wEPTC3Wc0ZEUpyz1elronmxuZWdWpfK7Vhq9QAz6h1Ux8qtybd7iT4pI0KYfFQrvu/dOomqKejDP/3CnxrEe+GArwdDoSp/1yJX5erqLUMZmkR66GGc7FFXGt4tkM4bpOTxWVoOAPUVWPj+BRC5VzlzES31YRJhJj8eFG4h3R2WLou/HG8UDmgYUlnNlpQxqQQXIwHXJlIfF5wXNne6/XuPdHtOAflqxRzf2R2pvrAWlao+JuoMMw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8936002)(2616005)(5660300002)(110136005)(316002)(38070700005)(6486002)(71200400001)(508600001)(64756008)(8676002)(6512007)(122000001)(6506007)(66476007)(66446008)(86362001)(76116006)(66946007)(66556008)(91956017)(38100700002)(36756003)(186003)(83380400001)(2906002);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: qHcxI1HsyA9w3TIsb4CPVvUpZdmlDMt8jpIohBIctGvzrOcSRvkWqNb0GyEukEWCxKf5BfNsTzTH10iv9m/MM26DxOnXakheYmSrGSgOuz4w/qpRGT7p+hNJyLpzM+v5CC+vsxvRBYfq8LLnv1OpfIUwlbgHo6F9Vunpm+G88ZkgCcP3lg7wf0uRu1G2a79I1gGO2cjK+s9e2UZbdEZeh0xUP7zfo1YJDuNxMbEp9QYFitFvGKGsBpJtunKyqUt2X/O9BVmMtbZITbSER4CSzFFjMwn3CO158M9qqYbe1bPvbAwHZLON47DCkio5XafUmVYbhzKKgR6Z4GlgCMLg5w+Dmvj/8QdFOOzvl8cHod35YzS3x7h7ohsMEfCaBFoWFhgIN03lBJjfnF4vfJNP37ePg8Utsde3CxGnUxfazBHnMlbUQCd9FuO/6RqZjPLjVgeHAQbIN3xxYoc6CnRSIHvWaT9jVmL9FOzC4fWBF6L8GqtSJmiTvnAvKvc+kpB9h2ZaFbZrepeV9QxXoRB33131vMK2SWb/RHTxXmTaziNYbBnlCnquOc0yAGr76qLS9PYrNFtoNo4rKNtWRS4D1hWcuYjUA5N1GGJCOjeXA+V8euP62xqV1tnDzbBcMdLEXcDPxGWhi6LLzRru5rBjrq5q6WNkdjNd0F1h95APVlZ+UPOg0DYSw9jEo87JfDIyHz4c/qHCu8EMiDz4/aKWJw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8936002)(2616005)(5660300002)(110136005)(316002)(38070700005)(6486002)(71200400001)(508600001)(64756008)(8676002)(6512007)(122000001)(6506007)(66476007)(66446008)(86362001)(76116006)(66946007)(66556008)(91956017)(38100700002)(36756003)(186003)(83380400001)(2906002)(30864003)(559001)(579004);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?qg9Gn4mPKJVxAdw/uvlsAcDltuu4vafLAv4ttVJcbgefh68qhhKL+WVuzJ?=
- =?iso-8859-1?Q?2pRG5N1VOskXJhrxUg/mWUM0jixtuu+OjW35As+q9xyLW3Jv77mKDJ5Wms?=
- =?iso-8859-1?Q?5J/QqVp875Sr2G9WE/SnA7xl+ou3wcd6Wo0XPOV4y+fAuk7setC4NcMa1k?=
- =?iso-8859-1?Q?/snCL67FwLbQ9/lrxlEIJPnyxs4AHgxi1cDYUqu6KCsjoImgKZimsQ8uqF?=
- =?iso-8859-1?Q?EGlOViS4jiA9ZBDklY2LOl7Uy/SKQcsQ6l56JhreFLvXCsfF/njdZHl1qJ?=
- =?iso-8859-1?Q?ODSngaT2/wFQx77rnBm5ZEcB1noqoIY0Iv5Bdy8gROXCIsBBnSUGiFaL5T?=
- =?iso-8859-1?Q?igCltmip6cCHa72PqbVbinp30Um6LsPKKSYFB1I+QPZBvEKlt3NODufzwg?=
- =?iso-8859-1?Q?ZD5rtXU3rnSesAWGyngIUCFaKdaMeny2IUOs+8UV5UbBkiDuGKNomMqHKd?=
- =?iso-8859-1?Q?qz1adYQDe2i5nNISkkYFceDSiJEZVSMwbahngadOIZGSvjXg6asYNrblQY?=
- =?iso-8859-1?Q?7krYqNrF+kxB0nmH4A2ls6H52zSiTn6B/6k5FU/CUJze+0mAZ5gKT+sAW7?=
- =?iso-8859-1?Q?u7B+TIK/kLxUDuDv8OQASReiXrm6Mr40QkRLVJ0zmvUpYP+Slw/LUO9Rpy?=
- =?iso-8859-1?Q?2QrUutqwbqjdO1VNq7kQlYkOyklbd+Lu0GVjidRbREX+fBJV7488jZmk+3?=
- =?iso-8859-1?Q?yTt0SnsVusPIfsUnzPCcv6cFMSNY9A6DRfufVs5C5+1UEoHzt2cZXIYeru?=
- =?iso-8859-1?Q?9kYS9OUrxHJ4z8workzzv24zGH7tgNOWGkfQeSggH7S6YK7D6MvEeg0epj?=
- =?iso-8859-1?Q?ncIeI4HtCZPT6m9fj2KY2mpQmP6keWfQJ2YR/R9N39Eyj33umg6hnkz/L+?=
- =?iso-8859-1?Q?S/cKbaTuNrRTxWKWdn1l1Qzwdtxv9R2Gp42kFf3oU9xyA5hy4EBXW2pZkD?=
- =?iso-8859-1?Q?V/m/MnLP6m6V6kdpuWy5IdA0F5RFkf1MU24xORwzhhBe+7I6XPreMrgjwt?=
- =?iso-8859-1?Q?p3/Rk/wjyU2CMSbXvZKT7A7K4WQIjKl6kdwtJhKEEDltv1SlsCMyQqn4Lu?=
- =?iso-8859-1?Q?a0so0bR//bYNMxch8q5ty9M+kbT0Ey4ydq0xCm7t2w0VmOZCZIPA1/9WJ3?=
- =?iso-8859-1?Q?Pfc2eBBNTI26kmhcPvI+fWNdl/kW4T2lgMBBfMLImkB55wm5jAD5B1xtYB?=
- =?iso-8859-1?Q?kMt7D3sTmxHE2rCQWhJ7sqqwLKrEVa4fvv72oaCTErO5FcFA+hnXMAeRtH?=
- =?iso-8859-1?Q?AMZb6P/RWmDE20gcf0D2BDszRUeKTEZTUD8shsZP8Dbrua6mVgCe/CjeSL?=
- =?iso-8859-1?Q?QZCMWrCXivGmDXLCO8KFLrqpwFIyqDA8sXyfxCo7aPIifUJFCbhsoDGh0E?=
- =?iso-8859-1?Q?PhAmeef8X84E/wW+8hQQ5CPBB56Gtel8hvL6gm8YZwT4JAj47hK4Vfrwa5?=
- =?iso-8859-1?Q?+Z9oNZR4Gcx2mOV0yPYk7Ejd3R9n9SK0povfA0GUqbopufFsKxn9n7hTtV?=
- =?iso-8859-1?Q?sgbJzTGtkBFCTG5tUZ4Y9irEXcAdoZJ4IYj0ak83nYxptHKENg1H4gd6D0?=
- =?iso-8859-1?Q?SNZNSEM=3D?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?5FfrFubDMKBJKJkzxPsRQdtGVpLzyJ2/rxr+e8INiVrorkj6szH8Nu0cFe?=
+ =?iso-8859-1?Q?Qx49TBnohTarPiV5YqYaaAHpEkS5QNtTf7bNUA42YxMIwkmSJInFDwohm5?=
+ =?iso-8859-1?Q?gcR4OWPVXnrvWECSgkYEi3oitQ/az8WzrBCg1FdiOFUSW7RIjDCPeOdylr?=
+ =?iso-8859-1?Q?PUxM4qSI+bsAVW6OuTNQPqHx88CRBlkitDKsC1J9mAwXp4qLNXB/1kyW5e?=
+ =?iso-8859-1?Q?6S1tPs1lH3h84T7c5h01ERzZZuMm+VX2JsnpgFaW7E8MtKeySXfH+Y+XtQ?=
+ =?iso-8859-1?Q?2+wMElsgz/ninfKsJB48ps1Tcm/qVFR1qJGXpio0Pv/qUuQNpim/PI2VzM?=
+ =?iso-8859-1?Q?MW9tEYfMLaHJodln0Q2VJyNd54nFoOozHj38XKu9ABt4oeo+XpgMRW2F3p?=
+ =?iso-8859-1?Q?ZK+qCACrH8mSzur0Y4N4QMknxW99zyph/5Ji9KkcsBXgASj0nenX5hHgsZ?=
+ =?iso-8859-1?Q?8N4zXUCEmF1OOmYtFPTg8wtPWTPg00492xUbKIyH453iJgHu5K3dGnIlau?=
+ =?iso-8859-1?Q?+llLfNK8VneZ6tbKfxVS3vk9PYGNR7TEK7Le06lVNX64aQRV+aHt6TxxAg?=
+ =?iso-8859-1?Q?IBYLtuZh2wDBpyR9fQYsFvES1XpJXkLxy3QgBoy21SZrF1YYmzUCb9CxkH?=
+ =?iso-8859-1?Q?M0QbpBLlRE9SxdVnR/ydpkLakmR0v+fRVV7x09VW45gupiZzMZmxwbx4cG?=
+ =?iso-8859-1?Q?V41wtyTl0HcUqy0FzQX21nGD/ybGPS7Mra5flsQTheVuEfLwhqC5odWoQe?=
+ =?iso-8859-1?Q?nmGqc24yCXCElyTb9aNICQz5RphNNJaDySDv3fhb+fHoMNNkBOusKxbEJe?=
+ =?iso-8859-1?Q?jBiwlDmIX3IxKUsrNfV6FHRVQbZpOm0+jJXHdzF5yR68nCca4jk/GhwseG?=
+ =?iso-8859-1?Q?ES1yVmp++e9I7rvRNNQq8hnMGh8Tv9l4wuG1rsKEfMaeP5QXHKl0IgsLOq?=
+ =?iso-8859-1?Q?e8JFEU7zzlb1+YMoY+/sKhMJxsqPIGNAlhTDIRo3HSjQa+ONBK4XvFceox?=
+ =?iso-8859-1?Q?dAgrqsQg9/g7z1tYx+95wUDty3sjQErB61z8MyInUT4hgONX+1qKiVQdas?=
+ =?iso-8859-1?Q?PCI2X4Dm6mLqe5v3dQuzcx1vrAVtmr+o340u8ol/5P381mV4+NG8dP+zDf?=
+ =?iso-8859-1?Q?BWq2xNZtOLCWhX2ieV94RraChBTyh621eRir9zCjg3qkwcev86FNf8LLS4?=
+ =?iso-8859-1?Q?h456sKvntnHuGgcYERL8ONK4fNJrZr3pE6QgQ4MpjV9cliw+YhB2mBvNfl?=
+ =?iso-8859-1?Q?W8MiSA0EdiiU2XU1KuiVUgEkXHXDyJ02DLE1CytKtg9vskouFvCTeBDIDp?=
+ =?iso-8859-1?Q?botAtd60o7Ah/lfa28MlWgHqu4dTqjaXrVofjpbE1PsKxbY3oVGZKnZi9g?=
+ =?iso-8859-1?Q?eK5XhaZL3D0hVrigNBi6WfIvzJwh3g6R9KULoVc0G0LawiTn/6SUTnPFiS?=
+ =?iso-8859-1?Q?ie8adg8/rW7f+enYDi101HX6zkbPxLY+Bq8jp04/4E29LUnyMjyySdLe45?=
+ =?iso-8859-1?Q?00yuN6UoQKVyCq30/k438N5xC7sNtMt4MLMe5Bf7lCTT3Q+RHGJQYPgq7j?=
+ =?iso-8859-1?Q?xGpxwkg=3D?=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: fb.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c41044c-07bf-48b6-4789-08da07a5ed88
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2022 23:37:26.1538
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a9df5c4-a05f-4ffc-f955-08da07a5eebb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2022 23:37:28.1391
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zFy2WGy4Md9mh7iFCLgNU36EtAKNzrlqJ4/M56xIW01HBK3hCY9ntrDa3Phn6Mhq
+X-MS-Exchange-CrossTenant-userprincipalname: csx7FYPJZ0NvV+rCcxxNgQsAJBdf6ftiz+2qTXbuoD9Fv9/FI1nTcvDefWZoeWTo
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1501MB2182
-X-Proofpoint-ORIG-GUID: rSYeRhxJGODcUKPF6modVNjz6UW5E5dC
-X-Proofpoint-GUID: rSYeRhxJGODcUKPF6modVNjz6UW5E5dC
+X-Proofpoint-ORIG-GUID: vBA_h01H3BnWMRi10oY9ow-hLQoA3rR5
+X-Proofpoint-GUID: vBA_h01H3BnWMRi10oY9ow-hLQoA3rR5
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-16_09,2022-03-15_01,2022-02-23_01
@@ -127,163 +130,815 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the quest for ever more modularity, a new need has arisen - the ability =
-to
-access data associated with a BPF library from a corresponding userspace li=
-brary.
-The catch is that we don't want the userspace library to know about the str=
-ucture of the
-final BPF object that the BPF library is linked into.
+Subskeletons are headers which require an already loaded program to
+operate.
 
-In pursuit of this modularity, this patch series introduces *subskeletons.*
-Subskeletons are similar in use and design to skeletons with a couple of di=
-fferences:
+For example, when a BPF library is linked into a larger BPF object file,
+the library userspace needs a way to access its own global variables
+without requiring knowledge about the larger program at build time.
 
-1. The generated storage types do not rely on contiguous storage for the li=
-brary's
-variables because they may be interspersed randomly throughout the final BP=
-F object's sections.
+As a result, subskeletons require a loaded bpf_object to open().
+Further, they find their own symbols in the larger program by
+walking BTF type data at run time.
 
-2. Subskeletons do not own objects and instead require a loaded bpf_object*=
- to
-be passed at runtime in order to be initialized. By extension, symbols are =
-resolved at
-runtime by parsing the final object's BTF.
+At this time, programs, maps, and globals are supported through
+non-owning pointers.
 
-3. Subskeletons allow access to all global variables, programs, and custom =
-maps. They also expose
-the internal maps *of the final object*. This allows bpf_var_skeleton objec=
-ts to contain a bpf_map**
-instead of a section name.
-
-Changes since v3:
- - Re-add key/value type lookup for legacy user maps (fixing btf test)
- - Minor cleanups (missed sanitize_identifier call, error messages, formatt=
-ing)
-
-Changes since v2:
- - Reuse SEC_NAME strict mode flag
- - Init bpf_map->btf_value_type_id on open for internal maps *and* user BTF=
- maps
- - Test custom section names (.data.foo) and overlapping kconfig externs be=
-tween the final object and the library
- - Minor review comments in gen.c & libbpf.c
-
-Changes since v1:
- - Introduced new strict mode knob for single-routine-in-.text compatibilit=
-y behavior, which
-   disproportionately affects library objects. bpftool works in 1.0 mode so=
- subskeleton generation
-   doesn't have to worry about this now.
- - Made bpf_map_btf_value_type_id available earlier and used it wherever ap=
-plicable.
- - Refactoring in bpftool gen.c per review comments.
- - Subskels now use typeof() for array and func proto globals to avoid the =
-need for runtime split btf.
- - Expanded the subskeleton test to include arrays, custom maps, extern map=
-s, weak symbols, and kconfigs.
- - selftests/bpf/Makefile now generates a subskel.h for every skel.h it wou=
-ld make.
-
-For reference, here is a shortened subskeleton header:
-
-#ifndef __TEST_SUBSKELETON_LIB_SUBSKEL_H__
-#define __TEST_SUBSKELETON_LIB_SUBSKEL_H__
-
-struct test_subskeleton_lib {
-	struct bpf_object *obj;
-	struct bpf_object_subskeleton *subskel;
-	struct {
-		struct bpf_map *map2;
-		struct bpf_map *map1;
-		struct bpf_map *data;
-		struct bpf_map *rodata;
-		struct bpf_map *bss;
-		struct bpf_map *kconfig;
-	} maps;
-	struct {
-		struct bpf_program *lib_perf_handler;
-	} progs;
-	struct test_subskeleton_lib__data {
-		int *var6;
-		int *var2;
-		int *var5;
-	} data;
-	struct test_subskeleton_lib__rodata {
-		int *var1;
-	} rodata;
-	struct test_subskeleton_lib__bss {
-		struct {
-			int var3_1;
-			__s64 var3_2;
-		} *var3;
-		int *libout1;
-		typeof(int[4]) *var4;
-		typeof(int (*)()) *fn_ptr;
-	} bss;
-	struct test_subskeleton_lib__kconfig {
-		_Bool *CONFIG_BPF_SYSCALL;
-	} kconfig;
-
-static inline struct test_subskeleton_lib *
-test_subskeleton_lib__open(const struct bpf_object *src)
-{
-	struct test_subskeleton_lib *obj;
-	struct bpf_object_subskeleton *s;
-	int err;
-
-	...
-	s =3D (struct bpf_object_subskeleton *)calloc(1, sizeof(*s));
-	...
-
-	s->var_cnt =3D 9;
-	...
-
-	s->vars[0].name =3D "var6";
-	s->vars[0].map =3D &obj->maps.data;
-	s->vars[0].addr =3D (void**) &obj->data.var6;
-  ...
-
-	/* maps */
-	...
-
-	/* programs */
-	s->prog_cnt =3D 1;
-	...
-
-	err =3D bpf_object__open_subskeleton(s);
-  ...
-	return obj;
-}
-#endif /* __TEST_SUBSKELETON_LIB_SUBSKEL_H__ */
-
-Delyan Kratunov (5):
-  libbpf: .text routines are subprograms in strict mode
-  libbpf: init btf_{key,value}_type_id on internal map open
-  libbpf: add subskeleton scaffolding
-  bpftool: add support for subskeletons
-  selftests/bpf: test subskeleton functionality
-
+Signed-off-by: Delyan Kratunov <delyank@fb.com>
+---
  .../bpf/bpftool/Documentation/bpftool-gen.rst |  25 +
  tools/bpf/bpftool/bash-completion/bpftool     |  14 +-
  tools/bpf/bpftool/gen.c                       | 588 +++++++++++++++---
- tools/lib/bpf/libbpf.c                        | 161 ++++-
- tools/lib/bpf/libbpf.h                        |  29 +
- tools/lib/bpf/libbpf.map                      |   2 +
- tools/lib/bpf/libbpf_legacy.h                 |   4 +
- tools/testing/selftests/bpf/.gitignore        |   1 +
- tools/testing/selftests/bpf/Makefile          |  12 +-
- .../selftests/bpf/prog_tests/subskeleton.c    |  78 +++
- .../selftests/bpf/progs/test_subskeleton.c    |  28 +
- .../bpf/progs/test_subskeleton_lib.c          |  61 ++
- .../bpf/progs/test_subskeleton_lib2.c         |  16 +
- 13 files changed, 910 insertions(+), 109 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/subskeleton.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib.=
-c
- create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib2=
-.c
+ 3 files changed, 542 insertions(+), 85 deletions(-)
 
---
-2.34.1=
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bp=
+ftool/Documentation/bpftool-gen.rst
+index 18d646b571ec..68454ef28f58 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+@@ -25,6 +25,7 @@ GEN COMMANDS
+=20
+ |	**bpftool** **gen object** *OUTPUT_FILE* *INPUT_FILE* [*INPUT_FILE*...]
+ |	**bpftool** **gen skeleton** *FILE* [**name** *OBJECT_NAME*]
++|	**bpftool** **gen subskeleton** *FILE* [**name** *OBJECT_NAME*]
+ |	**bpftool** **gen min_core_btf** *INPUT* *OUTPUT* *OBJECT* [*OBJECT*...]
+ |	**bpftool** **gen help**
+=20
+@@ -150,6 +151,30 @@ DESCRIPTION
+ 		  (non-read-only) data from userspace, with same simplicity
+ 		  as for BPF side.
+=20
++	**bpftool gen subskeleton** *FILE*
++		  Generate BPF subskeleton C header file for a given *FILE*.
++
++		  Subskeletons are similar to skeletons, except they do not own
++		  the corresponding maps, programs, or global variables. They
++		  require that the object file used to generate them is already
++		  loaded into a *bpf_object* by some other means.
++
++		  This functionality is useful when a library is included into a
++		  larger BPF program. A subskeleton for the library would have
++		  access to all objects and globals defined in it, without
++		  having to know about the larger program.
++
++		  Consequently, there are only two functions defined
++		  for subskeletons:
++
++		  - **example__open(bpf_object\*)**
++		    Instantiates a subskeleton from an already opened (but not
++		    necessarily loaded) **bpf_object**.
++
++		  - **example__destroy()**
++		    Frees the storage for the subskeleton but *does not* unload
++		    any BPF programs or maps.
++
+ 	**bpftool** **gen min_core_btf** *INPUT* *OUTPUT* *OBJECT* [*OBJECT*...]
+ 		  Generate a minimum BTF file as *OUTPUT*, derived from a given
+ 		  *INPUT* BTF file, containing all needed BTF types so one, or
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/=
+bash-completion/bpftool
+index 958e1fd71b5c..5df8d72c5179 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -1003,13 +1003,25 @@ _bpftool()
+                             ;;
+                     esac
+                     ;;
++                subskeleton)
++                    case $prev in
++                        $command)
++                            _filedir
++                            return 0
++                            ;;
++                        *)
++                            _bpftool_once_attr 'name'
++                            return 0
++                            ;;
++                    esac
++                    ;;
+                 min_core_btf)
+                     _filedir
+                     return 0
+                     ;;
+                 *)
+                     [[ $prev =3D=3D $object ]] && \
+-                        COMPREPLY=3D( $( compgen -W 'object skeleton help =
+min_core_btf' -- "$cur" ) )
++                        COMPREPLY=3D( $( compgen -W 'object skeleton subsk=
+eleton help min_core_btf' -- "$cur" ) )
+                     ;;
+             esac
+             ;;
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 145734b4fe41..42614ac94d46 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -64,11 +64,11 @@ static void get_obj_name(char *name, const char *file)
+ 	sanitize_identifier(name);
+ }
+=20
+-static void get_header_guard(char *guard, const char *obj_name)
++static void get_header_guard(char *guard, const char *obj_name, const char=
+ *suffix)
+ {
+ 	int i;
+=20
+-	sprintf(guard, "__%s_SKEL_H__", obj_name);
++	sprintf(guard, "__%s_%s__", obj_name, suffix);
+ 	for (i =3D 0; guard[i]; i++)
+ 		guard[i] =3D toupper(guard[i]);
+ }
+@@ -231,6 +231,17 @@ static const struct btf_type *find_type_for_map(struct=
+ btf *btf, const char *map
+ 	return NULL;
+ }
+=20
++static bool is_internal_mmapable_map(const struct bpf_map *map, char *buf,=
+ size_t sz)
++{
++	if (!bpf_map__is_internal(map) || !(bpf_map__map_flags(map) & BPF_F_MMAPA=
+BLE))
++		return false;
++
++	if (!get_map_ident(map, buf, sz))
++		return false;
++
++	return true;
++}
++
+ static int codegen_datasecs(struct bpf_object *obj, const char *obj_name)
+ {
+ 	struct btf *btf =3D bpf_object__btf(obj);
+@@ -247,12 +258,7 @@ static int codegen_datasecs(struct bpf_object *obj, co=
+nst char *obj_name)
+=20
+ 	bpf_object__for_each_map(map, obj) {
+ 		/* only generate definitions for memory-mapped internal maps */
+-		if (!bpf_map__is_internal(map))
+-			continue;
+-		if (!(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+-			continue;
+-
+-		if (!get_map_ident(map, map_ident, sizeof(map_ident)))
++		if (!is_internal_mmapable_map(map, map_ident, sizeof(map_ident)))
+ 			continue;
+=20
+ 		sec =3D find_type_for_map(btf, map_ident);
+@@ -280,6 +286,96 @@ static int codegen_datasecs(struct bpf_object *obj, co=
+nst char *obj_name)
+ 	return err;
+ }
+=20
++static bool btf_is_ptr_to_func_proto(const struct btf *btf,
++				     const struct btf_type *v)
++{
++	return btf_is_ptr(v) && btf_is_func_proto(btf__type_by_id(btf, v->type));
++}
++
++static int codegen_subskel_datasecs(struct bpf_object *obj, const char *ob=
+j_name)
++{
++	struct btf *btf =3D bpf_object__btf(obj);
++	struct btf_dump *d;
++	struct bpf_map *map;
++	const struct btf_type *sec, *var;
++	const struct btf_var_secinfo *sec_var;
++	int i, err =3D 0, vlen;
++	char map_ident[256], sec_ident[256];
++	bool strip_mods =3D false, needs_typeof =3D false;
++	const char *sec_name, *var_name;
++	__u32 var_type_id;
++
++	d =3D btf_dump__new(btf, codegen_btf_dump_printf, NULL, NULL);
++	if (!d)
++		return -errno;
++
++	bpf_object__for_each_map(map, obj) {
++		/* only generate definitions for memory-mapped internal maps */
++		if (!is_internal_mmapable_map(map, map_ident, sizeof(map_ident)))
++			continue;
++
++		sec =3D find_type_for_map(btf, map_ident);
++		if (!sec)
++			continue;
++
++		sec_name =3D btf__name_by_offset(btf, sec->name_off);
++		if (!get_datasec_ident(sec_name, sec_ident, sizeof(sec_ident)))
++			continue;
++
++		strip_mods =3D strcmp(sec_name, ".kconfig") !=3D 0;
++		printf("	struct %s__%s {\n", obj_name, sec_ident);
++
++		sec_var =3D btf_var_secinfos(sec);
++		vlen =3D btf_vlen(sec);
++		for (i =3D 0; i < vlen; i++, sec_var++) {
++			DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts,
++				.indent_level =3D 2,
++				.strip_mods =3D strip_mods,
++				/* we'll print the name separately */
++				.field_name =3D "",
++			);
++
++			var =3D btf__type_by_id(btf, sec_var->type);
++			var_name =3D btf__name_by_offset(btf, var->name_off);
++			var_type_id =3D var->type;
++
++			/* static variables are not exposed through BPF skeleton */
++			if (btf_var(var)->linkage =3D=3D BTF_VAR_STATIC)
++				continue;
++
++			/* The datasec member has KIND_VAR but we want the
++			 * underlying type of the variable (e.g. KIND_INT).
++			 */
++			var =3D skip_mods_and_typedefs(btf, var->type, NULL);
++
++			printf("\t\t");
++			/* Func and array members require special handling.
++			 * Instead of producing `typename *var`, they produce
++			 * `typeof(typename) *var`. This allows us to keep a
++			 * similar syntax where the identifier is just prefixed
++			 * by *, allowing us to ignore C declaration minutiae.
++			 */
++			needs_typeof =3D btf_is_array(var) || btf_is_ptr_to_func_proto(btf, var=
+);
++			if (needs_typeof)
++				printf("typeof(");
++
++			err =3D btf_dump__emit_type_decl(d, var_type_id, &opts);
++			if (err)
++				goto out;
++
++			if (needs_typeof)
++				printf(")");
++
++			printf(" *%s;\n", var_name);
++		}
++		printf("	} %s;\n", sec_ident);
++	}
++
++out:
++	btf_dump__free(d);
++	return err;
++}
++
+ static void codegen(const char *template, ...)
+ {
+ 	const char *src, *end;
+@@ -389,11 +485,7 @@ static void codegen_asserts(struct bpf_object *obj, co=
+nst char *obj_name)
+ 		", obj_name);
+=20
+ 	bpf_object__for_each_map(map, obj) {
+-		if (!bpf_map__is_internal(map))
+-			continue;
+-		if (!(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+-			continue;
+-		if (!get_map_ident(map, map_ident, sizeof(map_ident)))
++		if (!is_internal_mmapable_map(map, map_ident, sizeof(map_ident)))
+ 			continue;
+=20
+ 		sec =3D find_type_for_map(btf, map_ident);
+@@ -608,11 +700,7 @@ static int gen_trace(struct bpf_object *obj, const cha=
+r *obj_name, const char *h
+ 		const void *mmap_data =3D NULL;
+ 		size_t mmap_size =3D 0;
+=20
+-		if (!get_map_ident(map, ident, sizeof(ident)))
+-			continue;
+-
+-		if (!bpf_map__is_internal(map) ||
+-		    !(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
++		if (!is_internal_mmapable_map(map, ident, sizeof(ident)))
+ 			continue;
+=20
+ 		codegen("\
+@@ -671,11 +759,7 @@ static int gen_trace(struct bpf_object *obj, const cha=
+r *obj_name, const char *h
+ 	bpf_object__for_each_map(map, obj) {
+ 		const char *mmap_flags;
+=20
+-		if (!get_map_ident(map, ident, sizeof(ident)))
+-			continue;
+-
+-		if (!bpf_map__is_internal(map) ||
+-		    !(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
++		if (!is_internal_mmapable_map(map, ident, sizeof(ident)))
+ 			continue;
+=20
+ 		if (bpf_map__map_flags(map) & BPF_F_RDONLY_PROG)
+@@ -727,10 +811,95 @@ static int gen_trace(struct bpf_object *obj, const ch=
+ar *obj_name, const char *h
+ 	return err;
+ }
+=20
++static void
++codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped)
++{
++	struct bpf_map *map;
++	char ident[256];
++	size_t i;
++
++	if (!map_cnt)
++		return;
++
++	codegen("\
++		\n\
++									\n\
++			/* maps */				    \n\
++			s->map_cnt =3D %zu;			    \n\
++			s->map_skel_sz =3D sizeof(*s->maps);	    \n\
++			s->maps =3D (struct bpf_map_skeleton *)calloc(s->map_cnt, s->map_skel_s=
+z);\n\
++			if (!s->maps)				    \n\
++				goto err;			    \n\
++		",
++		map_cnt
++	);
++	i =3D 0;
++	bpf_object__for_each_map(map, obj) {
++		if (!get_map_ident(map, ident, sizeof(ident)))
++			continue;
++
++		codegen("\
++			\n\
++									\n\
++				s->maps[%zu].name =3D \"%s\";	    \n\
++				s->maps[%zu].map =3D &obj->maps.%s;   \n\
++			",
++			i, bpf_map__name(map), i, ident);
++		/* memory-mapped internal maps */
++		if (mmaped && is_internal_mmapable_map(map, ident, sizeof(ident))) {
++			printf("\ts->maps[%zu].mmaped =3D (void **)&obj->%s;\n",
++				i, ident);
++		}
++		i++;
++	}
++}
++
++static void
++codegen_progs_skeleton(struct bpf_object *obj, size_t prog_cnt, bool popul=
+ate_links)
++{
++	struct bpf_program *prog;
++	int i;
++
++	if (!prog_cnt)
++		return;
++
++	codegen("\
++		\n\
++									\n\
++			/* programs */				    \n\
++			s->prog_cnt =3D %zu;			    \n\
++			s->prog_skel_sz =3D sizeof(*s->progs);	    \n\
++			s->progs =3D (struct bpf_prog_skeleton *)calloc(s->prog_cnt, s->prog_sk=
+el_sz);\n\
++			if (!s->progs)				    \n\
++				goto err;			    \n\
++		",
++		prog_cnt
++	);
++	i =3D 0;
++	bpf_object__for_each_program(prog, obj) {
++		codegen("\
++			\n\
++									\n\
++				s->progs[%1$zu].name =3D \"%2$s\";    \n\
++				s->progs[%1$zu].prog =3D &obj->progs.%2$s;\n\
++			",
++			i, bpf_program__name(prog));
++
++		if (populate_links) {
++			codegen("\
++				\n\
++					s->progs[%1$zu].link =3D &obj->links.%2$s;\n\
++				",
++				i, bpf_program__name(prog));
++		}
++		i++;
++	}
++}
++
+ static int do_skeleton(int argc, char **argv)
+ {
+ 	char header_guard[MAX_OBJ_NAME_LEN + sizeof("__SKEL_H__")];
+-	size_t i, map_cnt =3D 0, prog_cnt =3D 0, file_sz, mmap_sz;
++	size_t map_cnt =3D 0, prog_cnt =3D 0, file_sz, mmap_sz;
+ 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
+ 	char obj_name[MAX_OBJ_NAME_LEN] =3D "", *obj_data;
+ 	struct bpf_object *obj =3D NULL;
+@@ -821,7 +990,7 @@ static int do_skeleton(int argc, char **argv)
+ 		prog_cnt++;
+ 	}
+=20
+-	get_header_guard(header_guard, obj_name);
++	get_header_guard(header_guard, obj_name, "SKEL_H");
+ 	if (use_loader) {
+ 		codegen("\
+ 		\n\
+@@ -1024,66 +1193,10 @@ static int do_skeleton(int argc, char **argv)
+ 		",
+ 		obj_name
+ 	);
+-	if (map_cnt) {
+-		codegen("\
+-			\n\
+-									    \n\
+-				/* maps */				    \n\
+-				s->map_cnt =3D %zu;			    \n\
+-				s->map_skel_sz =3D sizeof(*s->maps);	    \n\
+-				s->maps =3D (struct bpf_map_skeleton *)calloc(s->map_cnt, s->map_skel_=
+sz);\n\
+-				if (!s->maps)				    \n\
+-					goto err;			    \n\
+-			",
+-			map_cnt
+-		);
+-		i =3D 0;
+-		bpf_object__for_each_map(map, obj) {
+-			if (!get_map_ident(map, ident, sizeof(ident)))
+-				continue;
+=20
+-			codegen("\
+-				\n\
+-									    \n\
+-					s->maps[%zu].name =3D \"%s\";	    \n\
+-					s->maps[%zu].map =3D &obj->maps.%s;   \n\
+-				",
+-				i, bpf_map__name(map), i, ident);
+-			/* memory-mapped internal maps */
+-			if (bpf_map__is_internal(map) &&
+-			    (bpf_map__map_flags(map) & BPF_F_MMAPABLE)) {
+-				printf("\ts->maps[%zu].mmaped =3D (void **)&obj->%s;\n",
+-				       i, ident);
+-			}
+-			i++;
+-		}
+-	}
+-	if (prog_cnt) {
+-		codegen("\
+-			\n\
+-									    \n\
+-				/* programs */				    \n\
+-				s->prog_cnt =3D %zu;			    \n\
+-				s->prog_skel_sz =3D sizeof(*s->progs);	    \n\
+-				s->progs =3D (struct bpf_prog_skeleton *)calloc(s->prog_cnt, s->prog_s=
+kel_sz);\n\
+-				if (!s->progs)				    \n\
+-					goto err;			    \n\
+-			",
+-			prog_cnt
+-		);
+-		i =3D 0;
+-		bpf_object__for_each_program(prog, obj) {
+-			codegen("\
+-				\n\
+-									    \n\
+-					s->progs[%1$zu].name =3D \"%2$s\";    \n\
+-					s->progs[%1$zu].prog =3D &obj->progs.%2$s;\n\
+-					s->progs[%1$zu].link =3D &obj->links.%2$s;\n\
+-				",
+-				i, bpf_program__name(prog));
+-			i++;
+-		}
+-	}
++	codegen_maps_skeleton(obj, map_cnt, true /*mmaped*/);
++	codegen_progs_skeleton(obj, prog_cnt, true /*populate_links*/);
++
+ 	codegen("\
+ 		\n\
+ 									    \n\
+@@ -1141,6 +1254,311 @@ static int do_skeleton(int argc, char **argv)
+ 	return err;
+ }
+=20
++/* Subskeletons are like skeletons, except they don't own the bpf_object,
++ * associated maps, links, etc. Instead, they know about the existence of
++ * variables, maps, programs and are able to find their locations
++ * _at runtime_ from an already loaded bpf_object.
++ *
++ * This allows for library-like BPF objects to have userspace counterparts
++ * with access to their own items without having to know anything about th=
+e
++ * final BPF object that the library was linked into.
++ */
++static int do_subskeleton(int argc, char **argv)
++{
++	char header_guard[MAX_OBJ_NAME_LEN + sizeof("__SUBSKEL_H__")];
++	size_t i, len, file_sz, map_cnt =3D 0, prog_cnt =3D 0, mmap_sz, var_cnt =
+=3D 0, var_idx =3D 0;
++	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
++	char obj_name[MAX_OBJ_NAME_LEN] =3D "", *obj_data;
++	struct bpf_object *obj =3D NULL;
++	const char *file, *var_name;
++	char ident[256];
++	int fd, err =3D -1, map_type_id;
++	const struct bpf_map *map;
++	struct bpf_program *prog;
++	struct btf *btf;
++	const struct btf_type *map_type, *var_type;
++	const struct btf_var_secinfo *var;
++	struct stat st;
++
++	if (!REQ_ARGS(1)) {
++		usage();
++		return -1;
++	}
++	file =3D GET_ARG();
++
++	while (argc) {
++		if (!REQ_ARGS(2))
++			return -1;
++
++		if (is_prefix(*argv, "name")) {
++			NEXT_ARG();
++
++			if (obj_name[0] !=3D '\0') {
++				p_err("object name already specified");
++				return -1;
++			}
++
++			strncpy(obj_name, *argv, MAX_OBJ_NAME_LEN - 1);
++			obj_name[MAX_OBJ_NAME_LEN - 1] =3D '\0';
++		} else {
++			p_err("unknown arg %s", *argv);
++			return -1;
++		}
++
++		NEXT_ARG();
++	}
++
++	if (argc) {
++		p_err("extra unknown arguments");
++		return -1;
++	}
++
++	if (use_loader) {
++		p_err("cannot use loader for subskeletons");
++		return -1;
++	}
++
++	if (stat(file, &st)) {
++		p_err("failed to stat() %s: %s", file, strerror(errno));
++		return -1;
++	}
++	file_sz =3D st.st_size;
++	mmap_sz =3D roundup(file_sz, sysconf(_SC_PAGE_SIZE));
++	fd =3D open(file, O_RDONLY);
++	if (fd < 0) {
++		p_err("failed to open() %s: %s", file, strerror(errno));
++		return -1;
++	}
++	obj_data =3D mmap(NULL, mmap_sz, PROT_READ, MAP_PRIVATE, fd, 0);
++	if (obj_data =3D=3D MAP_FAILED) {
++		obj_data =3D NULL;
++		p_err("failed to mmap() %s: %s", file, strerror(errno));
++		goto out;
++	}
++	if (obj_name[0] =3D=3D '\0')
++		get_obj_name(obj_name, file);
++
++	/* The empty object name allows us to use bpf_map__name and produce
++	 * ELF section names out of it. (".data" instead of "obj.data")
++	 */
++	opts.object_name =3D "";
++	obj =3D bpf_object__open_mem(obj_data, file_sz, &opts);
++	if (!obj) {
++		char err_buf[256];
++
++		libbpf_strerror(errno, err_buf, sizeof(err_buf));
++		p_err("failed to open BPF object file: %s", err_buf);
++		obj =3D NULL;
++		goto out;
++	}
++
++	btf =3D bpf_object__btf(obj);
++	if (!btf) {
++		err =3D -1;
++		p_err("need btf type information for %s", obj_name);
++		goto out;
++	}
++
++	bpf_object__for_each_program(prog, obj) {
++		prog_cnt++;
++	}
++
++	/* First, count how many variables we have to find.
++	 * We need this in advance so the subskel can allocate the right
++	 * amount of storage.
++	 */
++	bpf_object__for_each_map(map, obj) {
++		if (!get_map_ident(map, ident, sizeof(ident)))
++			continue;
++
++		/* Also count all maps that have a name */
++		map_cnt++;
++
++		if (!is_internal_mmapable_map(map, ident, sizeof(ident)))
++			continue;
++
++		map_type_id =3D bpf_map__btf_value_type_id(map);
++		if (map_type_id <=3D 0) {
++			err =3D map_type_id;
++			goto out;
++		}
++		map_type =3D btf__type_by_id(btf, map_type_id);
++
++		var =3D btf_var_secinfos(map_type);
++		len =3D btf_vlen(map_type);
++		for (i =3D 0; i < len; i++, var++) {
++			var_type =3D btf__type_by_id(btf, var->type);
++
++			if (btf_var(var_type)->linkage =3D=3D BTF_VAR_STATIC)
++				continue;
++
++			var_cnt++;
++		}
++	}
++
++	get_header_guard(header_guard, obj_name, "SUBSKEL_H");
++	codegen("\
++	\n\
++	/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */	    \n\
++									    \n\
++	/* THIS FILE IS AUTOGENERATED! */				    \n\
++	#ifndef %2$s							    \n\
++	#define %2$s							    \n\
++									    \n\
++	#include <errno.h>						    \n\
++	#include <stdlib.h>						    \n\
++	#include <bpf/libbpf.h>						    \n\
++									    \n\
++	struct %1$s {							    \n\
++		struct bpf_object *obj;					    \n\
++		struct bpf_object_subskeleton *subskel;			    \n\
++	", obj_name, header_guard);
++
++	if (map_cnt) {
++		printf("\tstruct {\n");
++		bpf_object__for_each_map(map, obj) {
++			if (!get_map_ident(map, ident, sizeof(ident)))
++				continue;
++			printf("\t\tstruct bpf_map *%s;\n", ident);
++		}
++		printf("\t} maps;\n");
++	}
++
++	if (prog_cnt) {
++		printf("\tstruct {\n");
++		bpf_object__for_each_program(prog, obj) {
++			printf("\t\tstruct bpf_program *%s;\n",
++				bpf_program__name(prog));
++		}
++		printf("\t} progs;\n");
++	}
++
++	err =3D codegen_subskel_datasecs(obj, obj_name);
++	if (err)
++		goto out;
++
++	/* emit code that will allocate enough storage for all symbols */
++	codegen("\
++		\n\
++									    \n\
++		#ifdef __cplusplus					    \n\
++			static inline struct %1$s *open(const struct bpf_object *src);\n\
++			static inline void destroy(struct %1$s *skel);	    \n\
++		#endif /* __cplusplus */				    \n\
++		};							    \n\
++									    \n\
++		static inline void					    \n\
++		%1$s__destroy(struct %1$s *skel)			    \n\
++		{							    \n\
++			if (!skel)					    \n\
++				return;					    \n\
++			if (skel->subskel)				    \n\
++				bpf_object__destroy_subskeleton(skel->subskel);\n\
++			free(skel);					    \n\
++		}							    \n\
++									    \n\
++		static inline struct %1$s *				    \n\
++		%1$s__open(const struct bpf_object *src)		    \n\
++		{							    \n\
++			struct %1$s *obj;				    \n\
++			struct bpf_object_subskeleton *s;		    \n\
++			int err;					    \n\
++									    \n\
++			obj =3D (struct %1$s *)calloc(1, sizeof(*obj));	    \n\
++			if (!obj) {					    \n\
++				errno =3D ENOMEM;				    \n\
++				goto err;				    \n\
++			}						    \n\
++			s =3D (struct bpf_object_subskeleton *)calloc(1, sizeof(*s));\n\
++			if (!s) {					    \n\
++				errno =3D ENOMEM;				    \n\
++				goto err;				    \n\
++			}						    \n\
++			s->sz =3D sizeof(*s);				    \n\
++			s->obj =3D src;					    \n\
++			s->var_skel_sz =3D sizeof(*s->vars);		    \n\
++			obj->subskel =3D s;				    \n\
++									    \n\
++			/* vars */					    \n\
++			s->var_cnt =3D %2$d;				    \n\
++			s->vars =3D (struct bpf_var_skeleton *)calloc(%2$d, sizeof(*s->vars));\=
+n\
++			if (!s->vars) {					    \n\
++				errno =3D ENOMEM;				    \n\
++				goto err;				    \n\
++			}						    \n\
++									    \n\
++		",
++		obj_name, var_cnt
++	);
++
++	/* walk through each symbol and emit the runtime representation */
++	bpf_object__for_each_map(map, obj) {
++		if (!is_internal_mmapable_map(map, ident, sizeof(ident)))
++			continue;
++
++		map_type_id =3D bpf_map__btf_value_type_id(map);
++		if (map_type_id <=3D 0)
++			/* skip over internal maps with no type*/
++			continue;
++
++		map_type =3D btf__type_by_id(btf, map_type_id);
++		var =3D btf_var_secinfos(map_type);
++		len =3D btf_vlen(map_type);
++		for (i =3D 0; i < len; i++, var++) {
++			var_type =3D btf__type_by_id(btf, var->type);
++			var_name =3D btf__name_by_offset(btf, var_type->name_off);
++
++			if (btf_var(var_type)->linkage =3D=3D BTF_VAR_STATIC)
++				continue;
++
++			/* Note that we use the dot prefix in .data as the
++			 * field access operator i.e. maps%s becomes maps.data
++			 */
++			codegen("\
++			\n\
++				s->vars[%3$d].name =3D \"%1$s\";		    \n\
++				s->vars[%3$d].map =3D &obj->maps.%2$s;	    \n\
++				s->vars[%3$d].addr =3D (void **) &obj->%2$s.%1$s;\n\
++			", var_name, ident, var_idx);
++
++			var_idx++;
++		}
++	}
++
++	codegen_maps_skeleton(obj, map_cnt, false /*mmaped*/);
++	codegen_progs_skeleton(obj, prog_cnt, false /*links*/);
++
++	codegen("\
++		\n\
++									    \n\
++			err =3D bpf_object__open_subskeleton(s);		    \n\
++			if (err)					    \n\
++				goto err;				    \n\
++									    \n\
++			return obj;					    \n\
++		err:							    \n\
++			%1$s__destroy(obj);				    \n\
++			errno =3D -err;					    \n\
++			return NULL;					    \n\
++		}							    \n\
++									    \n\
++		#ifdef __cplusplus					    \n\
++		struct %1$s *%1$s::open(const struct bpf_object *src) { return %1$s__ope=
+n(src); }\n\
++		void %1$s::destroy(struct %1$s *skel) { %1$s__destroy(skel); }\n\
++		#endif /* __cplusplus */				    \n\
++									    \n\
++		#endif /* %2$s */					    \n\
++		",
++		obj_name, header_guard);
++	err =3D 0;
++out:
++	bpf_object__close(obj);
++	if (obj_data)
++		munmap(obj_data, mmap_sz);
++	close(fd);
++	return err;
++}
++
+ static int do_object(int argc, char **argv)
+ {
+ 	struct bpf_linker *linker;
+@@ -1192,6 +1610,7 @@ static int do_help(int argc, char **argv)
+ 	fprintf(stderr,
+ 		"Usage: %1$s %2$s object OUTPUT_FILE INPUT_FILE [INPUT_FILE...]\n"
+ 		"       %1$s %2$s skeleton FILE [name OBJECT_NAME]\n"
++		"       %1$s %2$s subskeleton FILE [name OBJECT_NAME]\n"
+ 		"       %1$s %2$s min_core_btf INPUT OUTPUT OBJECT [OBJECT...]\n"
+ 		"       %1$s %2$s help\n"
+ 		"\n"
+@@ -1788,6 +2207,7 @@ static int do_min_core_btf(int argc, char **argv)
+ static const struct cmd cmds[] =3D {
+ 	{ "object",		do_object },
+ 	{ "skeleton",		do_skeleton },
++	{ "subskeleton",	do_subskeleton },
+ 	{ "min_core_btf",	do_min_core_btf},
+ 	{ "help",		do_help },
+ 	{ 0 }
+--=20
+2.34.1
