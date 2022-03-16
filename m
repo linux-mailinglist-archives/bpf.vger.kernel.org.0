@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA9B4DA9D7
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 06:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269124DA9D8
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 06:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241644AbiCPFaI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 01:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39044 "EHLO
+        id S1348564AbiCPFaR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 01:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243212AbiCPFaI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 01:30:08 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35782DAB9
-        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 22:28:54 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id w7so1191202ioj.5
-        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 22:28:54 -0700 (PDT)
+        with ESMTP id S243212AbiCPFaP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 01:30:15 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A9333E29
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 22:28:59 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id l18so1207630ioj.2
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 22:28:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZPQuSlYsXZsu0VPE0Be4xsl9/iOFXxYt6CgNEPjUx6E=;
-        b=h+8FbqSAV5h4yXZDq8dLDjxqQ/M8LzGY6D7bT6gBRlNsinBm8M88dfhmd1VW+HfdNP
-         uWb37BeH5UhuFjxuGCzLRYgI3OMO/R0tpsoK0AubCupNpirbaNAuBUUvD9v/fUkfqQgA
-         o1tZrrs8tq3jxWyxfvwlnMmouu1QDgJXdcX4TqdeM+SDxH3876x4FLy7FDdQ/fx9jAYd
-         C4hPLJ7YBgZ/+wpUv/bTxT5lVOpeXvLDU0ynCOZgg3GRQ81fd8XUae1GJ7UfEbmwoODy
-         AxVt/ewOdujioH47ab9z8rjbWF99PLaVwdML/dVyjzlWrmMpn7Y2Nt5eiVY/7oBi6QjP
-         RsIw==
+        bh=u4ARQQuFqc/6t3iLmmkXreqXQ7Dgdxm1JmyYfMj+Eac=;
+        b=B9BFWFNv1Fohb54Zcutmzr3LLWfiupUISBv3QjBFn2gxljCKzcFBytgx5aFeNNIE/E
+         WWvPXqYAfgz3b+apQi/edZSOpp5AyEtEr2a/ly9bCL7nE2+HuwnJ+NHt2X9hD99N2AMy
+         LgokxnQfFRyp8mDrNQ/ZZRtrmQf5rvt/v+arTstiRVLz4OpohdYySoIk8HCI/TnkiIvl
+         BgZ1kyONCv6Td6zAUX6241X/Hego/VaVKNTnOmSiBj/8WzSxOFzAWfAumbZOij1+jDbh
+         M+5F78yYGfaV0Gdxi/YPCCLR+a+13KrmJHkaHArxDhBHJ9mP6hDCPF+oKj8hGabEuc6g
+         qNoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZPQuSlYsXZsu0VPE0Be4xsl9/iOFXxYt6CgNEPjUx6E=;
-        b=EnNEHqPHNlN/XnVvhc1WiR9G2390RST+876FZ1S9X7q4unjX7PGMo8WwJZyluN8FUU
-         NMGbeEcAzX2KtPR3DWR8+gRLJDPI5GUvYC4r2j1ZeoC8tkBMN+C12PqyAeW2x8Bx/3SL
-         qw7chtFWruTpnnaG+R0weQZ0v8077pP9cajEFCeYmkKxYNrbVo90a7+LMZMFrApe3rvT
-         Qdh3vtsYcIqK99dSL4ynYBGFLp4ZcGdeH942NwRNMXeT6beTPujsZubXH0fNe8Zhdrhx
-         yZH7F81KWRUcLRGU8ESMnAlfxTxaEVTES9h2zeLxTkETWGRlYkHe+1kWljlRe9SzAFg9
-         rm9A==
-X-Gm-Message-State: AOAM530PfkuBuS4zuehsiOSvqwoXUzt53wC9oUi2F7VUPQsH8JCfaEpf
-        h84laLGQQji7HT0cfpElL6vKbAGxhZ1kTn5NsN0=
-X-Google-Smtp-Source: ABdhPJwvwMemuB2M9kfkETxy82Uyq/iFFjYLaTQqEz8nhegHj8vdxlcOMqgfM2UgrckvGPvAq66W55Bz+5jfx52XryE=
-X-Received: by 2002:a05:6602:3c6:b0:63d:cac9:bd35 with SMTP id
- g6-20020a05660203c600b0063dcac9bd35mr23992684iov.144.1647408534445; Tue, 15
- Mar 2022 22:28:54 -0700 (PDT)
+        bh=u4ARQQuFqc/6t3iLmmkXreqXQ7Dgdxm1JmyYfMj+Eac=;
+        b=snTQhWu3774Nmz+q8l2Ws5NcRcksTArPuaZ1ZxPIwBHzkEvNxQQoydlt3/gr3p6xyI
+         6f0OcBbz9UadG/+xX9y+NQRCANXPtUxqjmQ6GS6C9SaJzq0DJ8wQOUwuOq85CcDCl9pa
+         D9Vo7K7LGPf4F9p+i5nJfWtRnx2YhuBAMwy3IHyECOzKJBipR9pHLcFbA3dFn7Yv0dF0
+         yxkUICJoi//oZzsn5wr0eFSV7taQLvg9JNEoiQOvnnlyECtxuL/E7Fwn7sbxOyHdC4DC
+         dX0tHB2+R+KbtcMZ8nqMhulECYHRbHhb2Z0/ppk7KQTGVCYkliWF1b977MOr9+sH4ZJv
+         VXPg==
+X-Gm-Message-State: AOAM53047ThivhNnACc101I4AgxWBZiHllQxXVYTIzRVn4urZ6V6kirC
+        tgkTFuRYWLoOjo6X58Jm6P6sWTy2c6B2fFrrzv/EUV2SICc=
+X-Google-Smtp-Source: ABdhPJzO046dmHfADKYU/OfMySAuXj6KScEHT1BdROd2fCbaET2Tm/e1G5S6x15y5Tnar28VN8hsRWdjSLt8XhzO8hw=
+X-Received: by 2002:a05:6602:185a:b0:645:d914:35e9 with SMTP id
+ d26-20020a056602185a00b00645d91435e9mr23424273ioi.154.1647408539009; Tue, 15
+ Mar 2022 22:28:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1647382072.git.delyank@fb.com> <b239588581c1a1367b3ae901a9e3058bbb7a9eb7.1647382072.git.delyank@fb.com>
-In-Reply-To: <b239588581c1a1367b3ae901a9e3058bbb7a9eb7.1647382072.git.delyank@fb.com>
+References: <cover.1647382072.git.delyank@fb.com> <efe839eb138d33cb7c6c9971ef79ce12d439753e.1647382072.git.delyank@fb.com>
+In-Reply-To: <efe839eb138d33cb7c6c9971ef79ce12d439753e.1647382072.git.delyank@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 15 Mar 2022 22:28:43 -0700
-Message-ID: <CAEf4BzYoNDmGBQn6UrS8NAOt0TBB8A-jQ4Az0a+NtwfT2LH15g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/5] libbpf: .text routines are subprograms in
- strict mode
+Date:   Tue, 15 Mar 2022 22:28:48 -0700
+Message-ID: <CAEf4BzY29hy1BcDmgz=MRBn3PcXy+YzZ7qRX44HsH+dVKGMdhw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/5] libbpf: add subskeleton scaffolding
 To:     Delyan Kratunov <delyank@fb.com>
 Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
@@ -70,57 +69,103 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Mar 15, 2022 at 3:15 PM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> Currently, libbpf considers a single routine in .text to be a program. This
-> is particularly confusing when it comes to library objects - a single routine
-> meant to be used as an extern will instead be considered a bpf_program.
->
-> This patch hides this compatibility behavior behind the pre-existing
-> SEC_NAME strict mode flag.
+> In symmetry with bpf_object__open_skeleton(),
+> bpf_object__open_subskeleton() performs the actual walking and linking
+> of maps, progs, and globals described by bpf_*_skeleton objects.
 >
 > Signed-off-by: Delyan Kratunov <delyank@fb.com>
 > ---
->  tools/lib/bpf/libbpf.c        | 7 +++++++
->  tools/lib/bpf/libbpf_legacy.h | 4 +++-
->  2 files changed, 10 insertions(+), 1 deletion(-)
+>  tools/lib/bpf/libbpf.c   | 136 +++++++++++++++++++++++++++++++++------
+>  tools/lib/bpf/libbpf.h   |  29 +++++++++
+>  tools/lib/bpf/libbpf.map |   2 +
+>  3 files changed, 146 insertions(+), 21 deletions(-)
 >
 > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 43161fdd44bb..aa26163e4ca1 100644
+> index e98a8381aad8..dac905171aaf 100644
 > --- a/tools/lib/bpf/libbpf.c
 > +++ b/tools/lib/bpf/libbpf.c
-> @@ -3832,7 +3832,14 @@ static bool prog_is_subprog(const struct bpf_object *obj,
->          * .text programs are subprograms (even if they are not called from
->          * other programs), because libbpf never explicitly supported mixing
->          * SEC()-designated BPF programs and .text entry-point BPF programs.
-> +        *
-> +        * In libbpf 1.0 strict mode, we always consider .text
-> +        * programs to be subprograms.
->          */
-> +
-> +       if (libbpf_mode & LIBBPF_STRICT_SEC_NAME)
-> +               return prog->sec_idx == obj->efile.text_shndx;
-> +
->         return prog->sec_idx == obj->efile.text_shndx && obj->nr_programs > 1;
+> @@ -11812,6 +11812,49 @@ int libbpf_num_possible_cpus(void)
+>         return tmp_cpus;
 >  }
 >
-> diff --git a/tools/lib/bpf/libbpf_legacy.h b/tools/lib/bpf/libbpf_legacy.h
-> index a283cf031665..8d2e632aec79 100644
-> --- a/tools/lib/bpf/libbpf_legacy.h
-> +++ b/tools/lib/bpf/libbpf_legacy.h
-> @@ -53,7 +53,9 @@ enum libbpf_strict_mode {
->          * SEC("xdp") and SEC("perf_event").
->          *
->          * Note, in this mode the program pin path will be based on the
-> -        * function name instead of section name.
-> +        * function name instead of section name. Additionally, routines in the
-> +        * .text section are always considered sub-programs. (Legacy behavior
-> +        * allows for a single routine in .text to be a program.)
 
-nit: pinning doesn't have much in common with this, so please put the
-new text on a separate paragraph
+[...]
 
+> +int bpf_object__open_subskeleton(struct bpf_object_subskeleton *s)
+> +{
+> +       int err, len, var_idx, i;
+> +       const char *var_name;
+> +       const struct bpf_map *map;
+> +       struct btf *btf;
+> +       __u32 map_type_id;
+> +       const struct btf_type *map_type, *var_type;
+> +       const struct bpf_var_skeleton *var_skel;
+> +       struct btf_var_secinfo *var;
+> +
+> +       if (!s->obj)
+> +               return libbpf_err(-EINVAL);
+> +
+> +       btf = bpf_object__btf(s->obj);
+> +       if (!btf)
+> +               return libbpf_err(-errno);
 
->          */
->         LIBBPF_STRICT_SEC_NAME = 0x04,
->         /*
-> --
-> 2.34.1
+can you please add an error message here that subskeletons expect
+bpf_object to have BTF? Might be very confusing to users to understand
+what's wrong if this happens
+
+> +
+> +       err = populate_skeleton_maps(s->obj, s->maps, s->map_cnt);
+> +       if (err) {
+> +               pr_warn("failed to populate subskeleton maps: %d\n", err);
+> +               return libbpf_err(err);
+>         }
+>
+> -       for (i = 0; i < s->prog_cnt; i++) {
+> -               struct bpf_program **prog = s->progs[i].prog;
+> -               const char *name = s->progs[i].name;
+> +       err = populate_skeleton_progs(s->obj, s->progs, s->prog_cnt);
+> +       if (err) {
+> +               pr_warn("failed to populate subskeleton maps: %d\n", err);
+> +               return libbpf_err(err);
+> +       }
+>
+> -               *prog = bpf_object__find_program_by_name(obj, name);
+> -               if (!*prog) {
+> -                       pr_warn("failed to find skeleton program '%s'\n", name);
+> -                       return libbpf_err(-ESRCH);
+> +       for (var_idx = 0; var_idx < s->var_cnt; var_idx++) {
+> +               var_skel = &s->vars[var_idx];
+> +               map = *var_skel->map;
+> +               map_type_id = bpf_map__btf_value_type_id(map);
+> +               map_type = btf__type_by_id(btf, map_type_id);
+> +
+> +               if (!btf_is_datasec(map_type)) {
+> +                       pr_warn("Type for map '%1$s' is not a datasec: %2$s",
+> +                               bpf_map__name(map),
+> +                               __btf_kind_str(btf_kind(map_type)));
+
+nit: other messages in this function start with lower case, let's keep
+it consistent. But I think this is very unlikely error, so I think it
+would be fine without pr_warn() altogether (missing BTF above seems
+more probable)
+
+> +                       return libbpf_err(-EINVAL);
+>                 }
+> -       }
+>
+> +               len = btf_vlen(map_type);
+> +               var = btf_var_secinfos(map_type);
+> +               for (i = 0; i < len; i++, var++) {
+> +                       var_type = btf__type_by_id(btf, var->type);
+> +                       var_name = btf__name_by_offset(btf, var_type->name_off);
+> +                       if (strcmp(var_name, var_skel->name) == 0) {
+> +                               *var_skel->addr = map->mmaped + var->offset;
+> +                               break;
+> +                       }
+> +               }
+> +       }
+>         return 0;
+>  }
+>
+
+[...]
