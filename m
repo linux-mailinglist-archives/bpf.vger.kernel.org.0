@@ -2,89 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E484DB9CB
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 21:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 465FC4DBA9D
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 23:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344587AbiCPU5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 16:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58144 "EHLO
+        id S229651AbiCPWVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 18:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344217AbiCPU5J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 16:57:09 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4405DB91;
-        Wed, 16 Mar 2022 13:55:54 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id DE7985C0094;
-        Wed, 16 Mar 2022 16:55:51 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 16 Mar 2022 16:55:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kkourt.io; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=mesmtp; bh=G3OtiOQY8nhGOQhzRFrCBxUr4ceMCbICwiB
-        AU9ewMYo=; b=KFYR6cFQhPH2h30o0mQoW1Mrt3Cnyri4T3aBFiEoBYQ7wcFUzc0
-        39wC0ABJ0rjXHtOUPFG1ZFIc5Sfm933fGT9XffZgr+kiNgXwWPiwnOCNVKuN6Wqn
-        ndRBdDUrQfs23x8D3QaDi4MgNx0eM/UfJpntBSK++Ph0uyGpVgrjrVBQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=G3OtiOQY8nhGOQhzR
-        FrCBxUr4ceMCbICwiBAU9ewMYo=; b=UdVzep+2lewk2ku3GgUSxWeEfu7u4+YgZ
-        hN0QEIBZg+dQOJthmI1k4t4UliDby/Ub6zvIvApHafRksN/fQGTDEWiJoUKx+fxj
-        8bqxMBaN0AJIXU/MgFA6/mWoJY94xfxl3MYR0w/ON97K9XvA1LJkkymJD9RyP+k+
-        lEB/L1ph6esSlCyyW995kf6BIa9GQSAyfrMuhrt6rwB7BDRz5vSar0KXZYOIAXo8
-        vpJDqTs8InV920h4BYbOqTePAIpARZlU4x4tIoLdBqyeDHztgqNrzDHeJ5SQ+Z77
-        RaXOrZZ+9rujNDcbJqBu7SHMmd/v35RQfAbcDNOpbDCzlSKA1m3SA==
-X-ME-Sender: <xms:104yYnMdz5R_-Llat6E2FDg4wWTSGD8TNcFjpxtDboS0jswrpp1zkw>
-    <xme:104yYh_4nphR-jDgZRdI2bgZUNigI8vfSkn1aVbeSr33HVZZeCOoecKRtNCqjB7HV
-    rvkI4RF3ubT0uhtnA>
-X-ME-Received: <xmr:104yYmTXj2R5Fi1TStTwJszdT3kJmaMXLVMUbJ0zx2iFRDwjhq2zvcz6wrd0Ls5-OamYnssDu9v5zRucID24yzY9Jpme>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudefvddgudeflecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefmohhrnhhilhhiohhsucfmohhurhhtihhsuceokhhkohhu
-    rhhtsehkkhhouhhrthdrihhoqeenucggtffrrghtthgvrhhnpeevhfdtleehhffhkeeufe
-    egffdtueefheegveffledtueegtedvieeutedtueeugfenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkkhhouhhrtheskhhkohhurhhtrdhioh
-X-ME-Proxy: <xmx:104yYrv51Zn0EXv0twrbZr4kORy26fW4E_bEy_9o2gj5QqJcBiTQKw>
-    <xmx:104yYvcaIV3z0fc_b5etRBQvaYNt_wmIPjWKbXXSUVvcLAIB1IKuBA>
-    <xmx:104yYn0B7fNM71qG0oSkqLSYrTCXrdHYTt1xV_kxLDcD2--VP5chTg>
-    <xmx:104yYr45M2X6og59r-AMadGzcSHFZXDxy7t4Aa76ohWeGFVGQk1o-g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Mar 2022 16:55:51 -0400 (EDT)
-Received: by kkourt.io (Postfix, from userid 1000)
-        id 016822541B5C; Wed, 16 Mar 2022 21:55:48 +0100 (CET)
-Date:   Wed, 16 Mar 2022 21:55:48 +0100
-From:   Kornilios Kourtis <kkourt@kkourt.io>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kornilios Kourtis <kornilios@isovalent.com>
-Subject: Re: [PATCH 2/2] dwarves: cus__load_files: set errno if load fails
-Message-ID: <YjJO1HrKlf4CiZQD@tinh>
-References: <YjHjLkYBk/XfXSK0@tinh>
- <20220316132354.3226908-1-kkourt@kkourt.io>
- <YjJNt0GpA5fAm8PQ@kernel.org>
+        with ESMTP id S231197AbiCPWV3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 18:21:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E21E2DC5
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 15:20:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 10B01B81D95
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 22:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 89762C340EE;
+        Wed, 16 Mar 2022 22:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647469211;
+        bh=EwbVVjTZpawudrMrhlh2JbHVN0zZSTWWrGq+rCvTql8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=vDmq2KeyDehWVCrbIzXSyKr5WCHKkIGAPWL8heSz0r6EOuQ647pVNm/MusIFXS4I6
+         yo1/oTeC03ni2G9nZMaO6uCHTusnSe30fFHH2cCzU1jscZqm57pcZlfi6jFM2gPyy8
+         fP2VQQfH1rY0dtRWbTBwaTbAzsZeoVOirgEcCLyqa3hDIjEx4FanCQ0F/ARBWhOzke
+         EcLSZexktz+usNsStYPThwyXFYdiduwE9MFXVaQ3dv9izAo1QP2qO0emeSNu7A8+wV
+         umj86ucjz0Y5j9DGfC/iQaLuL0Uyh0bEptn5kj8oaRc9LGgUk+gtshsBxs289srvEj
+         FslnVbDbyv5UQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6AFF0E6BBCA;
+        Wed, 16 Mar 2022 22:20:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YjJNt0GpA5fAm8PQ@kernel.org>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next 0/3] Remove libcap dependency from bpf selftests
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164746921143.11329.12401305118912926154.git-patchwork-notify@kernel.org>
+Date:   Wed, 16 Mar 2022 22:20:11 +0000
+References: <20220316173816.2035581-1-kafai@fb.com>
+In-Reply-To: <20220316173816.2035581-1-kafai@fb.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kernel-team@fb.com,
+        sdf@google.com
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 16, 2022 at 05:51:03PM -0300, Arnaldo Carvalho de Melo wrote:
-> Agreed? I'll fix it up here and apply if so.
+Hello:
 
-Agreed, thanks!
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-cheers,
-Kornilios.
+On Wed, 16 Mar 2022 10:38:16 -0700 you wrote:
+> After upgrading to the newer libcap (>= 2.60),
+> the libcap commit aca076443591 ("Make cap_t operations thread safe.")
+> added a "__u8 mutex;" to the "struct _cap_struct".  It caused a few byte
+> shift that breaks the assumption made in the "struct libcap" definition
+> in test_verifier.c.
+> 
+> This set is to remove the libcap dependency from the bpf selftests.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,bpf-next,1/3] bpf: selftests: Add helpers to directly use the capget and capset syscall
+    https://git.kernel.org/bpf/bpf-next/c/663af70aabb7
+  - [v2,bpf-next,2/3] bpf: selftests: Remove libcap usage from test_verifier
+    https://git.kernel.org/bpf/bpf-next/c/b1c2768a82b9
+  - [v2,bpf-next,3/3] bpf: selftests: Remove libcap usage from test_progs
+    https://git.kernel.org/bpf/bpf-next/c/82cb2b30773e
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
