@@ -2,74 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D0F4DA99F
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 06:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7E04DA9D6
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 06:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346461AbiCPFZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 01:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        id S1344629AbiCPFaI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 01:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239007AbiCPFZV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 01:25:21 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A5347074;
-        Tue, 15 Mar 2022 22:24:07 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id l18so1200241ioj.2;
-        Tue, 15 Mar 2022 22:24:07 -0700 (PDT)
+        with ESMTP id S241644AbiCPFaH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 01:30:07 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8964129826
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 22:28:50 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id c23so1197471ioi.4
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 22:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=DMZ5PftV8DqRLo/y5qiKFG9FrFg2iKzN2l+qxxDoH0s=;
-        b=IykPSqEE23eGzWLWCPSMSwWu+X8QOnNQyyXzLU+rEAy2swdo2XOo4N4sBF+7r409Ef
-         O8NbCOGvxNuxwATlN5FpoZhP9LlP3FBBAPq5E+94AxKawq7SrLy2x7Pp4zpWerWcjAhW
-         xZqWz3uhgRU/yfpKkfjUQ/oZUti9zGzi8GQaFDg5ATBdn3uXOnjkPjN5JRi0w5Q5Eg3Q
-         /xfK5uCnrXW4nQ8gRO5kmyWEFIxD4G/VDbwOD4nxq/nF+idM0jx29o//hbthLSijPSXd
-         h3lIwmdll3z2nkDH0YHza2NTDeKKQkSvtil4SNBfq3wP5RNw7Xxr1CGGHcrM3zSmnwzR
-         E4Sg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KFUbP6JOltAkWw+SsUOxB8OdytIrvaX8G07wXFADUz0=;
+        b=OTHFUtFD0i9AEtBbgnaKW7xvxPRa4CukTSyxotSqM8kQqe7qewtSV4yptDt7/cKz7d
+         Tbu0JVIFUHhFIXSR72Ax1UxsIlRjr0U9WKMEtWE1dZzio0a2Yteo37viyvoh+eoWR97e
+         kHXig6+DMMjAATvI7F4x9ZobQFko7FbBdYxsk5h0kDOKIoB2N03gvRi2W+TCavPVJF87
+         F9BCAs1W9bCe5ypNNTLDACc4LnUSjyg0BImVXxeEwotHqEFc2pWU2ezN6lJ9XRia8e5Q
+         CZrANaPsAoW6TCHqrQlwpSx/Sbn0WtVCyeSTNvQL45la6kzd2SV7wKgE6l0K+3CUHXG9
+         Gd+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=DMZ5PftV8DqRLo/y5qiKFG9FrFg2iKzN2l+qxxDoH0s=;
-        b=cnTsHI9LVaXRGeS5gleVtjfBvFKiMCNZgh80wZ0Gigp2f5l5xBTotfQtblYuhZIg0s
-         xiE08D5d4YdarIUtLNEnEDxpt5SHqz1HkGD9sOn5B1+Li5szk1gpAThk9Y/Ydcszq7Xt
-         caRjFCSsWWix3MuLlA4EPeVVhN12D6aP41RlVLuM7yD80o390Oml0uWb8YnNGyvVAso2
-         8NveJBBiLBtMfkszMpZjtKTtnaGaBxzPOgDyp48F8DrAJ+2W2057Z/clxeYtB8cqIoE5
-         o30agFONskU1xNiFjUss1JiMuZhE6Mo2ShTOj97vTOy+gHKrVuPTaY+Sdw9blO1i60EJ
-         SEAQ==
-X-Gm-Message-State: AOAM533IDhbvilit0RIInulM5fmgtSrGs0tkv82NRW+U79mMTLKdoDZR
-        zaf6USjZNl5E9sRXDbWr0/M=
-X-Google-Smtp-Source: ABdhPJzXonFhECtM8pmbNEiIfrjb0sg0qdhkfAqRYIAe4BfH0Jdb8uJCKysFkS5z1SZk7EiGAh6s9A==
-X-Received: by 2002:a05:6638:408e:b0:319:b899:d1b9 with SMTP id m14-20020a056638408e00b00319b899d1b9mr23937379jam.221.1647408246974;
-        Tue, 15 Mar 2022 22:24:06 -0700 (PDT)
-Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id b24-20020a5d8d98000000b006409ad493fbsm512509ioj.21.2022.03.15.22.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Mar 2022 22:24:06 -0700 (PDT)
-Date:   Tue, 15 Mar 2022 22:23:58 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     wangyufen <wangyufen@huawei.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, lmb@cloudflare.com,
-        davem@davemloft.net, kafai@fb.com, dsahern@kernel.org,
-        kuba@kernel.org, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <6231746e8e561_ad0208bf@john.notmuch>
-In-Reply-To: <f5a45e95-bac2-e1be-2d7b-5e6d55f9b408@huawei.com>
-References: <20220314124432.3050394-1-wangyufen@huawei.com>
- <87sfrky2bt.fsf@cloudflare.com>
- <ff9d0ecf-315b-00a3-8140-424714b204ff@huawei.com>
- <87fsnjxvho.fsf@cloudflare.com>
- <79281351-b412-2c54-265b-c0ddf537fae1@iogearbox.net>
- <f5a45e95-bac2-e1be-2d7b-5e6d55f9b408@huawei.com>
-Subject: Re: [PATCH bpf-next] bpf, sockmap: Manual deletion of sockmap
- elements in user mode is not allowed
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KFUbP6JOltAkWw+SsUOxB8OdytIrvaX8G07wXFADUz0=;
+        b=7+nksFDOAXPUaOb3tyWGBPNQGZmK9GT20felB8NRK5xHOqr0Ii2JHG8XyAs/iqIATZ
+         xd4rqQYpbvJCzog+aNIjhKCAh/TdHbwQroY1semBHJ0CpCSH7tmaxZ4JvJRRQyuZLyLG
+         pXlkjvB8mZDg29lCN06EWkmVn3Be77VbJQq9u+yPlTuQi1Dl5jAhbSYe6Lj3d2LRxigR
+         nKVGsJzRF0OnorkYUEl3uZueIY6kkmXSqOaGMDZy/+zRGQFopZd8QuKMPLg9gGCqJOmD
+         EMbAjZGFSLnbhmRvxtJ0nppwAEQ3bagzY6RNxmbCVdG56CpJm8duFu12V+ToBSAAUhSd
+         E+dw==
+X-Gm-Message-State: AOAM5321qYMAoHgfrozDdzVp09mU55Y8wEUwcXLPn//hFYRYd8PQFzPX
+        z+8O+SsNmnCMNdoyKn2V74heTEVnTgLEVAcGIfS7NWMdn2E=
+X-Google-Smtp-Source: ABdhPJxmULGFsau3VyXWdrs9EBBLJJIXloo7JbvALzvICrCHOx2jdlLiHbEOcib6QrXEYDeblhPTfSjxGjgkfUFyZsg=
+X-Received: by 2002:a6b:8bd7:0:b0:646:2804:5c73 with SMTP id
+ n206-20020a6b8bd7000000b0064628045c73mr23550142iod.112.1647408529855; Tue, 15
+ Mar 2022 22:28:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1647382072.git.delyank@fb.com>
+In-Reply-To: <cover.1647382072.git.delyank@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Mar 2022 22:28:38 -0700
+Message-ID: <CAEf4BzaeyfiH3_8+56Lctehmef8WvQqEkit0uh26z6iG-HYZBw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/5] Subskeleton support for BPF libraries
+To:     Delyan Kratunov <delyank@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,163 +67,152 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-wangyufen wrote:
-> =
+On Tue, Mar 15, 2022 at 3:15 PM Delyan Kratunov <delyank@fb.com> wrote:
+>
+> In the quest for ever more modularity, a new need has arisen - the ability to
+> access data associated with a BPF library from a corresponding userspace library.
+> The catch is that we don't want the userspace library to know about the structure of the
+> final BPF object that the BPF library is linked into.
+>
+> In pursuit of this modularity, this patch series introduces *subskeletons.*
+> Subskeletons are similar in use and design to skeletons with a couple of differences:
+>
+> 1. The generated storage types do not rely on contiguous storage for the library's
+> variables because they may be interspersed randomly throughout the final BPF object's sections.
+>
+> 2. Subskeletons do not own objects and instead require a loaded bpf_object* to
+> be passed at runtime in order to be initialized. By extension, symbols are resolved at
+> runtime by parsing the final object's BTF. This has the interesting effect that the same
+> userspace code can interoperate with the library BPF code *linked into different final objects.*
+>
+> 3. Subskeletons allow access to all global variables, programs, and custom maps. They also expose
+> the internal maps *of the final object*. This allows bpf_var_skeleton objects to contain a bpf_map**
+> instead of a section name.
+>
+> Changes since v2:
+>  - Reuse SEC_NAME strict mode flag
+>  - Init bpf_map->btf_value_type_id on open for internal maps *and* user BTF maps
+>  - Test custom section names (.data.foo) and overlapping kconfig externs between the final object and the library
+>  - Minor review comments in gen.c & libbpf.c
+>
+> Changes since v1:
+>  - Introduced new strict mode knob for single-routine-in-.text compatibility behavior, which
+>    disproportionately affects library objects. bpftool works in 1.0 mode so subskeleton generation
+>    doesn't have to worry about this now.
+>  - Made bpf_map_btf_value_type_id available earlier and used it wherever applicable.
+>  - Refactoring in bpftool gen.c per review comments.
+>  - Subskels now use typeof() for array and func proto globals to avoid the need for runtime split btf.
+>  - Expanded the subskeleton test to include arrays, custom maps, extern maps, weak symbols, and kconfigs.
+>  - selftests/bpf/Makefile now generates a subskel.h for every skel.h it would make.
+>
+> For reference, here is a shortened subskeleton header:
+>
+> #ifndef __TEST_SUBSKELETON_LIB_SUBSKEL_H__
+> #define __TEST_SUBSKELETON_LIB_SUBSKEL_H__
+>
+> struct test_subskeleton_lib {
+>         struct bpf_object *obj;
+>         struct bpf_object_subskeleton *subskel;
+>         struct {
+>                 struct bpf_map *map2;
+>                 struct bpf_map *map1;
+>                 struct bpf_map *data;
+>                 struct bpf_map *rodata;
+>                 struct bpf_map *bss;
+>                 struct bpf_map *kconfig;
+>         } maps;
+>         struct {
+>                 struct bpf_program *lib_perf_handler;
+>         } progs;
+>         struct test_subskeleton_lib__data {
+>                 int *var6;
+>                 int *var2;
+>                 int *var5;
+>         } data;
+>         struct test_subskeleton_lib__rodata {
+>                 int *var1;
+>         } rodata;
+>         struct test_subskeleton_lib__bss {
+>                 struct {
+>                         int var3_1;
+>                         __s64 var3_2;
+>                 } *var3;
+>                 int *libout1;
+>                 typeof(int[4]) *var4;
+>                 typeof(int (*)()) *fn_ptr;
+>         } bss;
+>         struct test_subskeleton_lib__kconfig {
+>                 _Bool *CONFIG_BPF_SYSCALL;
+>         } kconfig;
+>
+> static inline struct test_subskeleton_lib *
+> test_subskeleton_lib__open(const struct bpf_object *src)
+> {
+>         struct test_subskeleton_lib *obj;
+>         struct bpf_object_subskeleton *s;
+>         int err;
+>
+>         ...
+>         s = (struct bpf_object_subskeleton *)calloc(1, sizeof(*s));
+>         ...
+>
+>         s->var_cnt = 9;
+>         ...
+>
+>         s->vars[0].name = "var6";
+>         s->vars[0].map = &obj->maps.data;
+>         s->vars[0].addr = (void**) &obj->data.var6;
+>   ...
+>
+>         /* maps */
+>         ...
+>
+>         /* programs */
+>         s->prog_cnt = 1;
+>         ...
+>
+>         err = bpf_object__open_subskeleton(s);
+>   ...
+>         return obj;
+> }
+> #endif /* __TEST_SUBSKELETON_LIB_SUBSKEL_H__ */
+>
+> Delyan Kratunov (5):
+>   libbpf: .text routines are subprograms in strict mode
+>   libbpf: init btf_{key,value}_type_id on internal map open
+>   libbpf: add subskeleton scaffolding
+>   bpftool: add support for subskeletons
+>   selftests/bpf: test subskeleton functionality
+>
 
-> =E5=9C=A8 2022/3/16 0:25, Daniel Borkmann =E5=86=99=E9=81=93:
-> > On 3/15/22 1:12 PM, Jakub Sitnicki wrote:
-> >> On Tue, Mar 15, 2022 at 03:24 PM +08, wangyufen wrote:
-> >>> =E5=9C=A8 2022/3/14 23:30, Jakub Sitnicki =E5=86=99=E9=81=93:
-> >>>> On Mon, Mar 14, 2022 at 08:44 PM +08, Wang Yufen wrote:
-> >>>>> A tcp socket in a sockmap. If user invokes bpf_map_delete_elem to=
- =
+CI fails at test #18 (btf) ([0]), please take a look. I was able to
+repro it locally as well.
 
-> >>>>> delete
-> >>>>> the sockmap element, the tcp socket will switch to use the TCP =
+  [0] https://github.com/kernel-patches/bpf/runs/5562170931?check_suite_focus=true
 
-> >>>>> protocol
-> >>>>> stack to send and receive packets. The switching process may caus=
-e =
+Given you are going to resubmit, I left a few more nits that I'd
+otherwise fix while applying.
 
-> >>>>> some
-> >>>>> issues, such as if some msgs exist in the ingress queue and are =
 
-> >>>>> cleared
-> >>>>> by sk_psock_drop(), the packets are lost, and the tcp data is =
 
-> >>>>> abnormal.
-> >>>>>
-> >>>>> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-> >>>>> ---
-> >>>> Can you please tell us a bit more about the life-cycle of the =
-
-> >>>> socket in
-> >>>> your workload? Questions that come to mind:
-> >>>>
-> >>>> 1) What triggers the removal of the socket from sockmap in your ca=
-se?
-> >>> We use sk_msg to redirect with sock hash, like this:
-> >>>
-> >>> =C2=A0=C2=A0skA=C2=A0=C2=A0 redirect=C2=A0=C2=A0=C2=A0 skB
-> >>> =C2=A0=C2=A0Tx <-----------> skB,Rx
-> >>>
-> >>> And construct a scenario where the packet sending speed is high, th=
-e
-> >>> packet receiving speed is slow, so the packets are stacked in the =
-
-> >>> ingress
-> >>> queue on the receiving side. In this case, if run =
-
-> >>> bpf_map_delete_elem() to
-> >>> delete the sockmap entry, will trigger the following procedure:
-> >>>
-> >>> sock_hash_delete_elem()
-> >>> =C2=A0=C2=A0 sock_map_unref()
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0 sk_psock_put()
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 sk_psock_drop()
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 sk_psock_stop()
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0 __sk_psock_zap_i=
-ngress()
-> >>> =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 __sk=
-_psock_purge_ingress_msg()
-> >>>
-> >>>> 2) Would it still be a problem if removal from sockmap did not =
-
-> >>>> cause any
-> >>>> packets to get dropped?
-> >>> Yes, it still be a problem. If removal from sockmap=C2=A0 did not c=
-ause any
-> >>> packets to get dropped, packet receiving process switches to use TC=
-P
-> >>> protocol stack. The packets in the psock ingress queue cannot be =
-
-> >>> received
-> >>>
-> >>> by the user.
-> >>
-> >> Thanks for the context. So, if I understand correctly, you want to a=
-void
-> >> breaking the network pipe by updating the sockmap from user-space.
-> >>
-> >> This sounds awfully similar to BPF_MAP_FREEZE. Have you considered t=
-hat?
-> >
-> > +1
-> >
-> > Aside from that, the patch as-is also fails BPF CI in a lot of places=
-, =
-
-> > please
-> > make sure to check selftests:
-> >
-> > https://github.com/kernel-patches/bpf/runs/5537367301?check_suite_foc=
-us=3Dtrue =
-
-> >
-> >
-> > =C2=A0 [...]
-> > =C2=A0 #145/73 sockmap_listen/sockmap IPv6 test_udp_redir:OK
-> > =C2=A0 #145/74 sockmap_listen/sockmap IPv6 test_udp_unix_redir:OK
-> > =C2=A0 #145/75 sockmap_listen/sockmap Unix test_unix_redir:OK
-> > =C2=A0 #145/76 sockmap_listen/sockmap Unix test_unix_redir:OK
-> > =C2=A0 ./test_progs:test_ops_cleanup:1424: map_delete: expected =
-
-> > EINVAL/ENOENT: Operation not supported
-> > =C2=A0 test_ops_cleanup:FAIL:1424
-> > =C2=A0 ./test_progs:test_ops_cleanup:1424: map_delete: expected =
-
-> > EINVAL/ENOENT: Operation not supported
-> > =C2=A0 test_ops_cleanup:FAIL:1424
-> > =C2=A0 #145/77 sockmap_listen/sockhash IPv4 TCP test_insert_invalid:F=
-AIL
-> > =C2=A0 ./test_progs:test_ops_cleanup:1424: map_delete: expected =
-
-> > EINVAL/ENOENT: Operation not supported
-> > =C2=A0 test_ops_cleanup:FAIL:1424
-> > =C2=A0 ./test_progs:test_ops_cleanup:1424: map_delete: expected =
-
-> > EINVAL/ENOENT: Operation not supported
-> > =C2=A0 test_ops_cleanup:FAIL:1424
-> > =C2=A0 #145/78 sockmap_listen/sockhash IPv4 TCP test_insert_opened:FA=
-IL
-> > =C2=A0 ./test_progs:test_ops_cleanup:1424: map_delete: expected =
-
-> > EINVAL/ENOENT: Operation not supported
-> > =C2=A0 test_ops_cleanup:FAIL:1424
-> > =C2=A0 ./test_progs:test_ops_cleanup:1424: map_delete: expected =
-
-> > EINVAL/ENOENT: Operation not supported
-> > =C2=A0 test_ops_cleanup:FAIL:1424
-> > =C2=A0 #145/79 sockmap_listen/sockhash IPv4 TCP test_insert_bound:FAI=
-L
-> > =C2=A0 ./test_progs:test_ops_cleanup:1424: map_delete: expected =
-
-> > EINVAL/ENOENT: Operation not supported
-> > =C2=A0 test_ops_cleanup:FAIL:1424
-> > =C2=A0 ./test_progs:test_ops_cleanup:1424: map_delete: expected =
-
-> > EINVAL/ENOENT: Operation not supported
-> > =C2=A0 test_ops_cleanup:FAIL:1424
-> > =C2=A0 [...]
-> >
-> > Thanks,
-> > Daniel
-> > .
-> =
-
-> I'm not sure about this patch. The main purpose is to point out the =
-
-> possible problems
-> =
-
-> when the socket is deleted from the map.I'm sorry for the trouble.
-> =
-
-> Thanks.
-
-If you want to delete a socket you should flush it first. To do this
-stop redirecting traffic to it and then read all the data out. At
-the moment its a bit tricky to know when the recieving socket is
-empty though. Adding a flag on delete to only delete when the
-ingress qlen =3D=3D 0 might be a possibility if you need delete to
-work and are trying to work out how to safely delete sockets.=
+>  .../bpf/bpftool/Documentation/bpftool-gen.rst |  25 +
+>  tools/bpf/bpftool/bash-completion/bpftool     |  14 +-
+>  tools/bpf/bpftool/gen.c                       | 595 +++++++++++++++---
+>  tools/lib/bpf/libbpf.c                        | 155 ++++-
+>  tools/lib/bpf/libbpf.h                        |  29 +
+>  tools/lib/bpf/libbpf.map                      |   2 +
+>  tools/lib/bpf/libbpf_legacy.h                 |   4 +-
+>  tools/testing/selftests/bpf/.gitignore        |   1 +
+>  tools/testing/selftests/bpf/Makefile          |  12 +-
+>  .../selftests/bpf/prog_tests/subskeleton.c    |  78 +++
+>  .../selftests/bpf/progs/test_subskeleton.c    |  28 +
+>  .../bpf/progs/test_subskeleton_lib.c          |  61 ++
+>  .../bpf/progs/test_subskeleton_lib2.c         |  16 +
+>  13 files changed, 910 insertions(+), 110 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/subskeleton.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib2.c
+>
+> --
+> 2.34.1
