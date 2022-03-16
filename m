@@ -2,63 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 458AF4DA73B
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 02:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 684984DA78B
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 02:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349637AbiCPBLN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 15 Mar 2022 21:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        id S1347548AbiCPBuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Mar 2022 21:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234875AbiCPBLM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Mar 2022 21:11:12 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB7A43EE2;
-        Tue, 15 Mar 2022 18:09:58 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KJBwD1GD5zCqjR;
-        Wed, 16 Mar 2022 09:07:56 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (7.192.105.118) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+        with ESMTP id S236455AbiCPBuG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Mar 2022 21:50:06 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA23955BEA
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 18:48:52 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22FNkfro008445
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 18:48:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=oGvbSS2+PujNG/ErEt2D6LUGbCd+y2QCR4QjvwXxA0c=;
+ b=FXMtA55ii0NEbto4rr8Q/hF6/eC8DvdpTUfE3BqbDeXAj56pkf/TEMXPDSb2m8ATQglX
+ UDH7Qg5D6qZDFssyqWyS7cBoK9zm2ngA4zfCsqGX1MBVqJ1RVDVYdw2sRXJF08Hg6au5
+ GWhR9W8xV6Ot2xewKiG1HL1SZXz0k10ijS0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3etac8bgc8-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 18:48:52 -0700
+Received: from twshared29473.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 16 Mar 2022 09:09:56 +0800
-Received: from canpemm500010.china.huawei.com ([7.192.105.118]) by
- canpemm500010.china.huawei.com ([7.192.105.118]) with mapi id 15.01.2308.021;
- Wed, 16 Mar 2022 09:09:56 +0800
-From:   "liujian (CE)" <liujian56@huawei.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-CC:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH bpf-next] net: Use skb->len to check the validity of the
- parameters in bpf_skb_load_bytes
-Thread-Topic: [PATCH bpf-next] net: Use skb->len to check the validity of the
- parameters in bpf_skb_load_bytes
-Thread-Index: AQHYOGk2O/XwDW4Ml0q7jRHCigZ/yqzAVx0AgADbdhA=
-Date:   Wed, 16 Mar 2022 01:09:56 +0000
-Message-ID: <4f937ace70a3458580c6242fa68ea549@huawei.com>
-References: <20220315123916.110409-1-liujian56@huawei.com>
- <20220315195822.sonic5avyizrufsv@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220315195822.sonic5avyizrufsv@kafai-mbp.dhcp.thefacebook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.93]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+ 15.1.2308.21; Tue, 15 Mar 2022 18:48:51 -0700
+Received: by devbig933.frc1.facebook.com (Postfix, from userid 6611)
+        id B24342103F6A; Tue, 15 Mar 2022 18:48:41 -0700 (PDT)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/3] Remove libcap dependency from bpf selftests
+Date:   Tue, 15 Mar 2022 18:48:41 -0700
+Message-ID: <20220316014841.2255248-1-kafai@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: UuF8awuS8RSl6b3eeZlhJPHhklCiM-aA
+X-Proofpoint-ORIG-GUID: UuF8awuS8RSl6b3eeZlhJPHhklCiM-aA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-15_11,2022-03-15_01,2022-02-23_01
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,21 +61,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+After upgrading to the newer libcap (>=3D 2.60),
+the libcap commit aca076443591 ("Make cap_t operations thread safe.")
+added a "__u8 mutex;" to the "struct _cap_struct".  It caused a few byte
+shift that breaks the assumption made in the "struct libcap" definition
+in test_verifier.c.
 
+This set is to remove the libcap dependency from the bpf selftests.
 
-> -----Original Message-----
-> From: Martin KaFai Lau [mailto:kafai@fb.com]
-> Sent: Wednesday, March 16, 2022 3:58 AM
-> To: liujian (CE) <liujian56@huawei.com>
-> Cc: ast@kernel.org; daniel@iogearbox.net; andrii@kernel.org;
-> songliubraving@fb.com; yhs@fb.com; john.fastabend@gmail.com;
-> kpsingh@kernel.org; davem@davemloft.net; kuba@kernel.org;
-> sdf@google.com; netdev@vger.kernel.org; bpf@vger.kernel.org
-> Subject: Re: [PATCH bpf-next] net: Use skb->len to check the validity of the
-> parameters in bpf_skb_load_bytes
-> 
-> On Tue, Mar 15, 2022 at 08:39:16PM +0800, Liu Jian wrote:
-> > The data length of skb frags + frag_list may be greater than 0xffff,
-> > so here use skb->len to check the validity of the parameters.
-> What is the use case that needs to look beyond 0xffff ?
-I use sockmap with strparser, the stm->strp.offset (the begin of one application layer protocol message) maybe beyond 0xffff, but i need load the message head to do something.
+Martin KaFai Lau (3):
+  bpf: selftests: Add helpers to directly use the capget and capset
+    syscall
+  bpf: selftests: Remove libcap usage from test_verifier
+  bpf: selftests: Remove libcap usage from test_progs
+
+ tools/testing/selftests/bpf/Makefile          |  8 +-
+ tools/testing/selftests/bpf/cap_helpers.c     | 68 ++++++++++++++
+ tools/testing/selftests/bpf/cap_helpers.h     | 10 +++
+ .../selftests/bpf/prog_tests/bind_perm.c      | 45 ++--------
+ tools/testing/selftests/bpf/test_verifier.c   | 89 ++++++-------------
+ 5 files changed, 118 insertions(+), 102 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/cap_helpers.c
+ create mode 100644 tools/testing/selftests/bpf/cap_helpers.h
+
+--=20
+2.30.2
+
