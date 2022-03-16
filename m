@@ -2,475 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D604DB916
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 20:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ED44DB9C2
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 21:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243880AbiCPT4k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 15:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
+        id S1358096AbiCPUwY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 16:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237645AbiCPT4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 15:56:39 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748CB66C9D
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 12:55:24 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22GHD19e012066
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 12:55:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=LpsicoWum46srjes9wVXzIIffn7VuEVVI/YxeWdGkYQ=;
- b=RogtLdDKd3BtSiQqw5ICyAOdJ6w1grKqcoPPmTMJqHDloJ24Lqrxs3PYuSaqyunsd0BS
- XGxMsj3Qhgc0+GOSNlbU9fcoHL8CMx/Jvna95NeLTIb29eUW7FA4WQ/Qn0Sd+MPTyaZP
- QOi+hjXtDWx32qGagbfE85yfFh5dKTHzI5s= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eu6bc6n5r-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 12:55:23 -0700
-Received: from twshared8508.05.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 16 Mar 2022 12:55:21 -0700
-Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
-        id 2C9A59B8C983; Wed, 16 Mar 2022 12:55:17 -0700 (PDT)
-From:   Joanne Koong <joannekoong@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <kafai@fb.com>, <kpsingh@kernel.org>, <memxor@gmail.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <tj@kernel.org>, <davemarchevsky@fb.com>,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH bpf-next v2] bpf: Enable non-atomic allocations in local storage
-Date:   Wed, 16 Mar 2022 12:54:00 -0700
-Message-ID: <20220316195400.2998326-1-joannekoong@fb.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S1358089AbiCPUwX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 16:52:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC83F6E4EF;
+        Wed, 16 Mar 2022 13:51:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9284AB81D65;
+        Wed, 16 Mar 2022 20:51:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02D5EC340E9;
+        Wed, 16 Mar 2022 20:51:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647463866;
+        bh=+HuG5Y6nJnoHSDgnSkgLUxN1bJmKug6pEGnJtApwr1A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JDpmBNqFUegg535TbNiHKQgjpfoDq1KgLrOH4ZfhxszXezKJRQsW0VztRlA4avp8c
+         fDzG3BaUFhozIAHQ+DG8oNUFi1rTmmNnjmSZ3N8KwKzens25XPmdPYisYVpqsmjSuT
+         eoSiEy62NnB0bnVoB+oR7tmF3VQG/6EC5h5+qjWHfNgkkDeTo59ZjHIoV9qhDoyeqR
+         lfKr+WQOgE+RtlJuCCaHeDWcpdsvfSrrHiKbzVDg+zDHGVR+tF/Ea7gp+ebrBHNhBR
+         qtm2ZKqFJm7RoGFlDsFgxyzW9XTlU0n9wLbcaAJdZ40JJpOtf5iyfREg1CUtOwjNub
+         BhbWptanBn06Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5114D40407; Wed, 16 Mar 2022 17:51:03 -0300 (-03)
+Date:   Wed, 16 Mar 2022 17:51:03 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kkourt@kkourt.io
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kornilios Kourtis <kornilios@isovalent.com>
+Subject: Re: [PATCH 2/2] dwarves: cus__load_files: set errno if load fails
+Message-ID: <YjJNt0GpA5fAm8PQ@kernel.org>
+References: <YjHjLkYBk/XfXSK0@tinh>
+ <20220316132354.3226908-1-kkourt@kkourt.io>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: ov1LWN1BpDYOZl1q-JewLZVg_NdzoTng
-X-Proofpoint-ORIG-GUID: ov1LWN1BpDYOZl1q-JewLZVg_NdzoTng
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-16_09,2022-03-15_01,2022-02-23_01
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220316132354.3226908-1-kkourt@kkourt.io>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Joanne Koong <joannelkoong@gmail.com>
+Em Wed, Mar 16, 2022 at 02:23:54PM +0100, kkourt@kkourt.io escreveu:
+> From: Kornilios Kourtis <kornilios@isovalent.com>
+> 
+> This patch improves the error seen by the user by setting errno in
+> cus__load_files(). Otherwise, we get a "No such file or directory" error
+> which might be confusing.
+> 
+> Before the patch, using a bogus file:
+> $ ./pahole -J ./vmlinux-5.3.18-24.102-default.debug
+> pahole: ./vmlinux-5.3.18-24.102-default.debug: No such file or directory
+> $ ls ./vmlinux-5.3.18-24.102-default.debug
+> /home/kkourt/src/hubble-fgs/vmlinux-5.3.18-24.102-default.debug
+> 
+> After the patch:
+> $ ./pahole -J ./vmlinux-5.3.18-24.102-default.debug
+> pahole: ./vmlinux-5.3.18-24.102-default.debug: Unknown error -22
+> 
+> Which is not very helpful, but less confusing.
 
-Currently, local storage memory can only be allocated atomically
-(GFP_ATOMIC). This restriction is too strict for sleepable bpf
-programs.
+Humm, because you should've set errno to -err back in cus__load_files(),
+with this on top of your two patches we should get the:
 
-In this patch, the verifier detects whether the program is sleepable,
-and passes the corresponding GFP_KERNEL or GFP_ATOMIC flag as a
-5th argument to bpf_task/sk/inode_storage_get. This flag will propagate
-down to the local storage functions that allocate memory.
+#define EINVAL          22      /* Invalid argument */
 
-Please note that bpf_task/sk/inode_storage_update_elem functions are
-invoked by userspace applications through syscalls. Preemption is
-disabled before bpf_task/sk/inode_storage_update_elem is called, which
-means they will always have to allocate memory atomically.
 
-The existing local storage selftests cover both the GFP_ATOMIC and the
-GFP_KERNEL cases in bpf_local_storage_update.
+"Invalid argument" or so from getting.
 
-v2 <- v1:
-* Allocate the memory before/after the raw_spin_lock_irqsave, depending
-on the gfp flags
-* Rename mem_flags to gfp_flags
-* Reword the comment "*mem_flags* is set by the bpf verifier" to
-"*gfp_flags* is a hidden argument provided by the verifier"
-* Add a sentence to the commit message about existing local storage
-selftests covering both the GFP_ATOMIC and GFP_KERNEL paths in
-bpf_local_storage_update.
-
-Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-Acked-by: KP Singh <kpsingh@kernel.org>
----
- include/linux/bpf_local_storage.h |  7 ++--
- kernel/bpf/bpf_inode_storage.c    |  9 ++---
- kernel/bpf/bpf_local_storage.c    | 58 ++++++++++++++++++++-----------
- kernel/bpf/bpf_task_storage.c     | 10 +++---
- kernel/bpf/verifier.c             | 20 +++++++++++
- net/core/bpf_sk_storage.c         | 21 ++++++-----
- 6 files changed, 84 insertions(+), 41 deletions(-)
-
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_=
-storage.h
-index 37b3906af8b1..493e63258497 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -154,16 +154,17 @@ void bpf_selem_unlink_map(struct bpf_local_storage_=
-elem *selem);
-=20
- struct bpf_local_storage_elem *
- bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner, void *v=
-alue,
--		bool charge_mem);
-+		bool charge_mem, gfp_t gfp_flags);
-=20
- int
- bpf_local_storage_alloc(void *owner,
- 			struct bpf_local_storage_map *smap,
--			struct bpf_local_storage_elem *first_selem);
-+			struct bpf_local_storage_elem *first_selem,
-+			gfp_t gfp_flags);
-=20
- struct bpf_local_storage_data *
- bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap=
-,
--			 void *value, u64 map_flags);
-+			 void *value, u64 map_flags, gfp_t gfp_flags);
-=20
- void bpf_local_storage_free_rcu(struct rcu_head *rcu);
-=20
-diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storag=
-e.c
-index e29d9e3d853e..96be8d518885 100644
---- a/kernel/bpf/bpf_inode_storage.c
-+++ b/kernel/bpf/bpf_inode_storage.c
-@@ -136,7 +136,7 @@ static int bpf_fd_inode_storage_update_elem(struct bp=
-f_map *map, void *key,
-=20
- 	sdata =3D bpf_local_storage_update(f->f_inode,
- 					 (struct bpf_local_storage_map *)map,
--					 value, map_flags);
-+					 value, map_flags, GFP_ATOMIC);
- 	fput(f);
- 	return PTR_ERR_OR_ZERO(sdata);
- }
-@@ -169,8 +169,9 @@ static int bpf_fd_inode_storage_delete_elem(struct bp=
-f_map *map, void *key)
- 	return err;
- }
-=20
--BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *,=
- inode,
--	   void *, value, u64, flags)
-+/* *gfp_flags* is a hidden argument provided by the verifier */
-+BPF_CALL_5(bpf_inode_storage_get, struct bpf_map *, map, struct inode *,=
- inode,
-+	   void *, value, u64, flags, gfp_t, gfp_flags)
- {
- 	struct bpf_local_storage_data *sdata;
-=20
-@@ -196,7 +197,7 @@ BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, m=
-ap, struct inode *, inode,
- 	if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
- 		sdata =3D bpf_local_storage_update(
- 			inode, (struct bpf_local_storage_map *)map, value,
--			BPF_NOEXIST);
-+			BPF_NOEXIST, gfp_flags);
- 		return IS_ERR(sdata) ? (unsigned long)NULL :
- 					     (unsigned long)sdata->data;
- 	}
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storag=
-e.c
-index 092a1ac772d7..01aa2b51ec4d 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -63,7 +63,7 @@ static bool selem_linked_to_map(const struct bpf_local_=
-storage_elem *selem)
-=20
- struct bpf_local_storage_elem *
- bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
--		void *value, bool charge_mem)
-+		void *value, bool charge_mem, gfp_t gfp_flags)
- {
- 	struct bpf_local_storage_elem *selem;
-=20
-@@ -71,7 +71,7 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, voi=
-d *owner,
- 		return NULL;
-=20
- 	selem =3D bpf_map_kzalloc(&smap->map, smap->elem_size,
--				GFP_ATOMIC | __GFP_NOWARN);
-+				gfp_flags | __GFP_NOWARN);
- 	if (selem) {
- 		if (value)
- 			memcpy(SDATA(selem)->data, value, smap->map.value_size);
-@@ -282,7 +282,8 @@ static int check_flags(const struct bpf_local_storage=
-_data *old_sdata,
-=20
- int bpf_local_storage_alloc(void *owner,
- 			    struct bpf_local_storage_map *smap,
--			    struct bpf_local_storage_elem *first_selem)
-+			    struct bpf_local_storage_elem *first_selem,
-+			    gfp_t gfp_flags)
- {
- 	struct bpf_local_storage *prev_storage, *storage;
- 	struct bpf_local_storage **owner_storage_ptr;
-@@ -293,7 +294,7 @@ int bpf_local_storage_alloc(void *owner,
- 		return err;
-=20
- 	storage =3D bpf_map_kzalloc(&smap->map, sizeof(*storage),
--				  GFP_ATOMIC | __GFP_NOWARN);
-+				  gfp_flags | __GFP_NOWARN);
- 	if (!storage) {
- 		err =3D -ENOMEM;
- 		goto uncharge;
-@@ -350,10 +351,10 @@ int bpf_local_storage_alloc(void *owner,
-  */
- struct bpf_local_storage_data *
- bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap=
-,
--			 void *value, u64 map_flags)
-+			 void *value, u64 map_flags, gfp_t gfp_flags)
- {
- 	struct bpf_local_storage_data *old_sdata =3D NULL;
--	struct bpf_local_storage_elem *selem;
-+	struct bpf_local_storage_elem *selem =3D NULL;
- 	struct bpf_local_storage *local_storage;
- 	unsigned long flags;
- 	int err;
-@@ -365,6 +366,9 @@ bpf_local_storage_update(void *owner, struct bpf_loca=
-l_storage_map *smap,
- 		     !map_value_has_spin_lock(&smap->map)))
- 		return ERR_PTR(-EINVAL);
-=20
-+	if (gfp_flags =3D=3D GFP_KERNEL && (map_flags & ~BPF_F_LOCK) !=3D BPF_N=
-OEXIST)
-+		return ERR_PTR(-EINVAL);
-+
- 	local_storage =3D rcu_dereference_check(*owner_storage(smap, owner),
- 					      bpf_rcu_lock_held());
- 	if (!local_storage || hlist_empty(&local_storage->list)) {
-@@ -373,11 +377,11 @@ bpf_local_storage_update(void *owner, struct bpf_lo=
-cal_storage_map *smap,
- 		if (err)
- 			return ERR_PTR(err);
-=20
--		selem =3D bpf_selem_alloc(smap, owner, value, true);
-+		selem =3D bpf_selem_alloc(smap, owner, value, true, gfp_flags);
- 		if (!selem)
- 			return ERR_PTR(-ENOMEM);
-=20
--		err =3D bpf_local_storage_alloc(owner, smap, selem);
-+		err =3D bpf_local_storage_alloc(owner, smap, selem, gfp_flags);
+diff --git a/dwarves.c b/dwarves.c
+index 5d0b420f0110452e..89609e96c46747ce 100644
+--- a/dwarves.c
++++ b/dwarves.c
+@@ -2401,7 +2401,7 @@ int cus__load_files(struct cus *cus, struct conf_load *conf,
+ 	while (filenames[i] != NULL) {
+ 		int err = cus__load_file(cus, conf, filenames[i]);
  		if (err) {
- 			kfree(selem);
- 			mem_uncharge(smap, owner, smap->elem_size);
-@@ -404,6 +408,12 @@ bpf_local_storage_update(void *owner, struct bpf_loc=
-al_storage_map *smap,
+-			errno = err;
++			errno = -err;
+ 			return -++i;
  		}
- 	}
-=20
-+	if (gfp_flags =3D=3D GFP_KERNEL) {
-+		selem =3D bpf_selem_alloc(smap, owner, value, true, gfp_flags);
-+		if (!selem)
-+			return ERR_PTR(-ENOMEM);
-+	}
-+
- 	raw_spin_lock_irqsave(&local_storage->lock, flags);
-=20
- 	/* Recheck local_storage->list under local_storage->lock */
-@@ -429,19 +439,21 @@ bpf_local_storage_update(void *owner, struct bpf_lo=
-cal_storage_map *smap,
- 		goto unlock;
- 	}
-=20
--	/* local_storage->lock is held.  Hence, we are sure
--	 * we can unlink and uncharge the old_sdata successfully
--	 * later.  Hence, instead of charging the new selem now
--	 * and then uncharge the old selem later (which may cause
--	 * a potential but unnecessary charge failure),  avoid taking
--	 * a charge at all here (the "!old_sdata" check) and the
--	 * old_sdata will not be uncharged later during
--	 * bpf_selem_unlink_storage_nolock().
--	 */
--	selem =3D bpf_selem_alloc(smap, owner, value, !old_sdata);
--	if (!selem) {
--		err =3D -ENOMEM;
--		goto unlock_err;
-+	if (gfp_flags !=3D GFP_KERNEL) {
-+		/* local_storage->lock is held.  Hence, we are sure
-+		 * we can unlink and uncharge the old_sdata successfully
-+		 * later.  Hence, instead of charging the new selem now
-+		 * and then uncharge the old selem later (which may cause
-+		 * a potential but unnecessary charge failure),  avoid taking
-+		 * a charge at all here (the "!old_sdata" check) and the
-+		 * old_sdata will not be uncharged later during
-+		 * bpf_selem_unlink_storage_nolock().
-+		 */
-+		selem =3D bpf_selem_alloc(smap, owner, value, !old_sdata, gfp_flags);
-+		if (!selem) {
-+			err =3D -ENOMEM;
-+			goto unlock_err;
-+		}
- 	}
-=20
- 	/* First, link the new selem to the map */
-@@ -463,6 +475,10 @@ bpf_local_storage_update(void *owner, struct bpf_loc=
-al_storage_map *smap,
-=20
- unlock_err:
- 	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-+	if (selem) {
-+		mem_uncharge(smap, owner, smap->elem_size);
-+		kfree(selem);
-+	}
- 	return ERR_PTR(err);
- }
-=20
-diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.=
-c
-index 5da7bed0f5f6..6638a0ecc3d2 100644
---- a/kernel/bpf/bpf_task_storage.c
-+++ b/kernel/bpf/bpf_task_storage.c
-@@ -174,7 +174,8 @@ static int bpf_pid_task_storage_update_elem(struct bp=
-f_map *map, void *key,
-=20
- 	bpf_task_storage_lock();
- 	sdata =3D bpf_local_storage_update(
--		task, (struct bpf_local_storage_map *)map, value, map_flags);
-+		task, (struct bpf_local_storage_map *)map, value, map_flags,
-+		GFP_ATOMIC);
- 	bpf_task_storage_unlock();
-=20
- 	err =3D PTR_ERR_OR_ZERO(sdata);
-@@ -226,8 +227,9 @@ static int bpf_pid_task_storage_delete_elem(struct bp=
-f_map *map, void *key)
- 	return err;
- }
-=20
--BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_stru=
-ct *,
--	   task, void *, value, u64, flags)
-+/* *gfp_flags* is a hidden argument provided by the verifier */
-+BPF_CALL_5(bpf_task_storage_get, struct bpf_map *, map, struct task_stru=
-ct *,
-+	   task, void *, value, u64, flags, gfp_t, gfp_flags)
- {
- 	struct bpf_local_storage_data *sdata;
-=20
-@@ -250,7 +252,7 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, ma=
-p, struct task_struct *,
- 	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE))
- 		sdata =3D bpf_local_storage_update(
- 			task, (struct bpf_local_storage_map *)map, value,
--			BPF_NOEXIST);
-+			BPF_NOEXIST, gfp_flags);
-=20
- unlock:
- 	bpf_task_storage_unlock();
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0db6cd8dcb35..392fdaabedbd 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -13491,6 +13491,26 @@ static int do_misc_fixups(struct bpf_verifier_en=
-v *env)
- 			goto patch_call_imm;
- 		}
-=20
-+		if (insn->imm =3D=3D BPF_FUNC_task_storage_get ||
-+		    insn->imm =3D=3D BPF_FUNC_sk_storage_get ||
-+		    insn->imm =3D=3D BPF_FUNC_inode_storage_get) {
-+			if (env->prog->aux->sleepable)
-+				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, GFP_KERNEL);
-+			else
-+				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, GFP_ATOMIC);
-+			insn_buf[1] =3D *insn;
-+			cnt =3D 2;
-+
-+			new_prog =3D bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-+			if (!new_prog)
-+				return -ENOMEM;
-+
-+			delta +=3D cnt - 1;
-+			env->prog =3D prog =3D new_prog;
-+			insn =3D new_prog->insnsi + i + delta;
-+			goto patch_call_imm;
-+		}
-+
- 		/* BPF_EMIT_CALL() assumptions in some of the map_gen_lookup
- 		 * and other inlining handlers are currently limited to 64 bit
- 		 * only.
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index d9c37fd10809..7aff1206a851 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -141,7 +141,7 @@ static int bpf_fd_sk_storage_update_elem(struct bpf_m=
-ap *map, void *key,
- 	if (sock) {
- 		sdata =3D bpf_local_storage_update(
- 			sock->sk, (struct bpf_local_storage_map *)map, value,
--			map_flags);
-+			map_flags, GFP_ATOMIC);
- 		sockfd_put(sock);
- 		return PTR_ERR_OR_ZERO(sdata);
- 	}
-@@ -172,7 +172,7 @@ bpf_sk_storage_clone_elem(struct sock *newsk,
- {
- 	struct bpf_local_storage_elem *copy_selem;
-=20
--	copy_selem =3D bpf_selem_alloc(smap, newsk, NULL, true);
-+	copy_selem =3D bpf_selem_alloc(smap, newsk, NULL, true, GFP_ATOMIC);
- 	if (!copy_selem)
- 		return NULL;
-=20
-@@ -230,7 +230,7 @@ int bpf_sk_storage_clone(const struct sock *sk, struc=
-t sock *newsk)
- 			bpf_selem_link_map(smap, copy_selem);
- 			bpf_selem_link_storage_nolock(new_sk_storage, copy_selem);
- 		} else {
--			ret =3D bpf_local_storage_alloc(newsk, smap, copy_selem);
-+			ret =3D bpf_local_storage_alloc(newsk, smap, copy_selem, GFP_ATOMIC);
- 			if (ret) {
- 				kfree(copy_selem);
- 				atomic_sub(smap->elem_size,
-@@ -255,8 +255,9 @@ int bpf_sk_storage_clone(const struct sock *sk, struc=
-t sock *newsk)
- 	return ret;
- }
-=20
--BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
--	   void *, value, u64, flags)
-+/* *gfp_flags* is a hidden argument provided by the verifier */
-+BPF_CALL_5(bpf_sk_storage_get, struct bpf_map *, map, struct sock *, sk,
-+	   void *, value, u64, flags, gfp_t, gfp_flags)
- {
- 	struct bpf_local_storage_data *sdata;
-=20
-@@ -277,7 +278,7 @@ BPF_CALL_4(bpf_sk_storage_get, struct bpf_map *, map,=
- struct sock *, sk,
- 	    refcount_inc_not_zero(&sk->sk_refcnt)) {
- 		sdata =3D bpf_local_storage_update(
- 			sk, (struct bpf_local_storage_map *)map, value,
--			BPF_NOEXIST);
-+			BPF_NOEXIST, gfp_flags);
- 		/* sk must be a fullsock (guaranteed by verifier),
- 		 * so sock_gen_put() is unnecessary.
- 		 */
-@@ -417,14 +418,16 @@ static bool bpf_sk_storage_tracing_allowed(const st=
-ruct bpf_prog *prog)
- 	return false;
- }
-=20
--BPF_CALL_4(bpf_sk_storage_get_tracing, struct bpf_map *, map, struct soc=
-k *, sk,
--	   void *, value, u64, flags)
-+/* *gfp_flags* is a hidden argument provided by the verifier */
-+BPF_CALL_5(bpf_sk_storage_get_tracing, struct bpf_map *, map, struct soc=
-k *, sk,
-+	   void *, value, u64, flags, gfp_t, gfp_flags)
- {
- 	WARN_ON_ONCE(!bpf_rcu_lock_held());
- 	if (in_hardirq() || in_nmi())
- 		return (unsigned long)NULL;
-=20
--	return (unsigned long)____bpf_sk_storage_get(map, sk, value, flags);
-+	return (unsigned long)____bpf_sk_storage_get(map, sk, value, flags,
-+						     gfp_flags);
- }
-=20
- BPF_CALL_2(bpf_sk_storage_delete_tracing, struct bpf_map *, map,
---=20
-2.30.2
+ 		++i;
 
+
+
+Agreed? I'll fix it up here and apply if so.
+
+- Arnaldo
+ 
+> Signed-off-by: Kornilios Kourtis <kornilios@isovalent.com>
+> ---
+>  dwarves.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/dwarves.c b/dwarves.c
+> index 89b58ef..5d0b420 100644
+> --- a/dwarves.c
+> +++ b/dwarves.c
+> @@ -2399,8 +2399,11 @@ int cus__load_files(struct cus *cus, struct conf_load *conf,
+>  	int i = 0;
+>  
+>  	while (filenames[i] != NULL) {
+> -		if (cus__load_file(cus, conf, filenames[i]))
+> +		int err = cus__load_file(cus, conf, filenames[i]);
+> +		if (err) {
+> +			errno = err;
+>  			return -++i;
+> +		}
+>  		++i;
+>  	}
+>  
+> -- 
+> 2.25.1
+
+-- 
+
+- Arnaldo
