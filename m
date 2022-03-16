@@ -2,65 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E45404DB063
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 14:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6107E4DB141
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 14:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347344AbiCPNJm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 09:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
+        id S1345410AbiCPNWh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 09:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239772AbiCPNJl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 09:09:41 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAB51CB19;
-        Wed, 16 Mar 2022 06:08:26 -0700 (PDT)
-Received: from canpemm100009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KJVsr50QczfYsf;
-        Wed, 16 Mar 2022 21:06:56 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (7.192.105.118) by
- canpemm100009.china.huawei.com (7.192.105.213) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 16 Mar 2022 21:08:24 +0800
-Received: from canpemm500010.china.huawei.com ([7.192.105.118]) by
- canpemm500010.china.huawei.com ([7.192.105.118]) with mapi id 15.01.2308.021;
- Wed, 16 Mar 2022 21:08:24 +0800
-From:   "liujian (CE)" <liujian56@huawei.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
-CC:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH bpf-next] net: Use skb->len to check the validity of the
- parameters in bpf_skb_load_bytes
-Thread-Topic: [PATCH bpf-next] net: Use skb->len to check the validity of the
- parameters in bpf_skb_load_bytes
-Thread-Index: AQHYOGk2O/XwDW4Ml0q7jRHCigZ/yqzAVx0AgADbdhD//6smgIABGg3Q
-Date:   Wed, 16 Mar 2022 13:08:24 +0000
-Message-ID: <5cee2fb729624f168415d303cff4ee8f@huawei.com>
-References: <20220315123916.110409-1-liujian56@huawei.com>
- <20220315195822.sonic5avyizrufsv@kafai-mbp.dhcp.thefacebook.com>
- <4f937ace70a3458580c6242fa68ea549@huawei.com>
- <623160c966680_94df20819@john.notmuch>
-In-Reply-To: <623160c966680_94df20819@john.notmuch>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.93]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S238918AbiCPNWg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 09:22:36 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2F010AE;
+        Wed, 16 Mar 2022 06:21:22 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id BA62F32020D9;
+        Wed, 16 Mar 2022 09:16:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 16 Mar 2022 09:16:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kkourt.io; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=mesmtp; bh=90OeKVGOPpYqWEU3AOG66DxVVcdCRb3E77c
+        fePRVBC0=; b=MWxdSfT861B2tYyIRaJ+WUyoikI+ZX/ZKtjkPE6nZIRXtxOouzg
+        8KpXZIl0AFP52HDmWrSw3IThNZdBcNQeNZqqouoJ0M0TdEzHitIeMsMHuXj40r3q
+        9FzEWSTIz6VLRRTVjtBsxUMWl0sT/bCPBJ6N9w0Gz1AQMloLWfyZibeg=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=90OeKVGOPpYqWEU3A
+        OG66DxVVcdCRb3E77cfePRVBC0=; b=kUn8kfdsDssEkJs9xDkx0+uLsI0LxzGkx
+        gmOOHI+8wxUYDm9PjdeqRaFlHji7DyvaB45cpFbSbRw+NAZbjuDuSCml0Mku+XRS
+        NJiJxial2dyxjCfm3S2d3/gMFLxqrv3hmMuFy5oArrTAXJbpk+EH5jpqT84Gc5SA
+        UMfCeG/YvpvzAwZOUoD0Y9Vco0/f18xT8OcbAxvvtnqRV3d1MeFqBOoZOY3Di8UD
+        QFigDpk/2iNUT+rvF6uEsLnU/TP88ze8LlLVZGJoJfN7geUFyo9ik0CS+SMmJX4O
+        +BX7QOvL+Sm8QbVSqysA3FC+Ak07ZlqotQAuRe8jMRy40t+D5eq0Q==
+X-ME-Sender: <xms:MeMxYoiRlM_UjO5ZBpk0v9vxfvogvrc_l7-E9RAImB5ZsmqR5WhhmQ>
+    <xme:MeMxYhBDWD7_otaXemqKxHCWZ-hz1eqIL1fBkQ6mS7E_HqMIiBhMlLisORYed7xn1
+    271C-gmfXBQ3pH0sw>
+X-ME-Received: <xmr:MeMxYgFG9YGFHpyM87QpB2z82FrKucTUwI0VZfhHL1c3fvobYIftb6_CJf6WCrL4r-Gr01rpKgp9DVZoT4NLbYPKeUqX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudefvddggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepmfhorhhnihhlihhoshcumfhouhhrthhishcuoehkkhhouhhr
+    theskhhkohhurhhtrdhioheqnecuggftrfgrthhtvghrnhepvefhtdelhefhhfekueefge
+    fftdeufeehgeevffeltdeugeetvdeiueettdeuuefgnecuvehluhhsthgvrhfuihiivgep
+    tdenucfrrghrrghmpehmrghilhhfrhhomhepkhhkohhurhhtsehkkhhouhhrthdrihho
+X-ME-Proxy: <xmx:MeMxYpQgI15Wrrp0PV1AtdRZyTNuzKqYTikTQjAW_MFDeTTWC1n8PQ>
+    <xmx:MeMxYlyb7UBs9fVKPP2E6Ws9aqLHr5NXgm1HsxJygI-vMCExsA-5rg>
+    <xmx:MeMxYn5qdqDPk1KwHonMDelOISi5zUUpVjLS0UizJcG5cVOnOWFO2Q>
+    <xmx:MeMxYt9hRsdVX6ce1HQiRmZho2KGcNmBPMpm8dBOCE5GrDJqAv6oiA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Mar 2022 09:16:32 -0400 (EDT)
+Received: by kkourt.io (Postfix, from userid 1000)
+        id 371C82541AD8; Wed, 16 Mar 2022 14:16:30 +0100 (CET)
+Date:   Wed, 16 Mar 2022 14:16:30 +0100
+From:   Kornilios Kourtis <kkourt@kkourt.io>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kornilios Kourtis <kornilios@isovalent.com>
+Subject: Re: [PATCH] pahole: avoid segfault when parsing a problematic file
+Message-ID: <YjHjLkYBk/XfXSK0@tinh>
+References: <20220304113821.2366328-1-kkourt@kkourt.io>
+ <YiOw06rlBwdw2uYx@kernel.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YiOw06rlBwdw2uYx@kernel.org>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,43 +80,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9obiBGYXN0YWJlbmQg
-W21haWx0bzpqb2huLmZhc3RhYmVuZEBnbWFpbC5jb21dDQo+IFNlbnQ6IFdlZG5lc2RheSwgTWFy
-Y2ggMTYsIDIwMjIgMTI6MDAgUE0NCj4gVG86IGxpdWppYW4gKENFKSA8bGl1amlhbjU2QGh1YXdl
-aS5jb20+OyBNYXJ0aW4gS2FGYWkgTGF1IDxrYWZhaUBmYi5jb20+DQo+IENjOiBhc3RAa2VybmVs
-Lm9yZzsgZGFuaWVsQGlvZ2VhcmJveC5uZXQ7IGFuZHJpaUBrZXJuZWwub3JnOw0KPiBzb25nbGl1
-YnJhdmluZ0BmYi5jb207IHloc0BmYi5jb207IGpvaG4uZmFzdGFiZW5kQGdtYWlsLmNvbTsNCj4g
-a3BzaW5naEBrZXJuZWwub3JnOyBkYXZlbUBkYXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmc7
-DQo+IHNkZkBnb29nbGUuY29tOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBicGZAdmdlci5rZXJu
-ZWwub3JnDQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0ggYnBmLW5leHRdIG5ldDogVXNlIHNrYi0+bGVu
-IHRvIGNoZWNrIHRoZSB2YWxpZGl0eSBvZiB0aGUNCj4gcGFyYW1ldGVycyBpbiBicGZfc2tiX2xv
-YWRfYnl0ZXMNCj4gDQo+IGxpdWppYW4gKENFKSB3cm90ZToNCj4gPg0KPiA+DQo+ID4gPiAtLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gRnJvbTogTWFydGluIEthRmFpIExhdSBbbWFp
-bHRvOmthZmFpQGZiLmNvbV0NCj4gPiA+IFNlbnQ6IFdlZG5lc2RheSwgTWFyY2ggMTYsIDIwMjIg
-Mzo1OCBBTQ0KPiA+ID4gVG86IGxpdWppYW4gKENFKSA8bGl1amlhbjU2QGh1YXdlaS5jb20+DQo+
-ID4gPiBDYzogYXN0QGtlcm5lbC5vcmc7IGRhbmllbEBpb2dlYXJib3gubmV0OyBhbmRyaWlAa2Vy
-bmVsLm9yZzsNCj4gPiA+IHNvbmdsaXVicmF2aW5nQGZiLmNvbTsgeWhzQGZiLmNvbTsgam9obi5m
-YXN0YWJlbmRAZ21haWwuY29tOw0KPiA+ID4ga3BzaW5naEBrZXJuZWwub3JnOyBkYXZlbUBkYXZl
-bWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmc7DQo+ID4gPiBzZGZAZ29vZ2xlLmNvbTsgbmV0ZGV2
-QHZnZXIua2VybmVsLm9yZzsgYnBmQHZnZXIua2VybmVsLm9yZw0KPiA+ID4gU3ViamVjdDogUmU6
-IFtQQVRDSCBicGYtbmV4dF0gbmV0OiBVc2Ugc2tiLT5sZW4gdG8gY2hlY2sgdGhlDQo+ID4gPiB2
-YWxpZGl0eSBvZiB0aGUgcGFyYW1ldGVycyBpbiBicGZfc2tiX2xvYWRfYnl0ZXMNCj4gPiA+DQo+
-ID4gPiBPbiBUdWUsIE1hciAxNSwgMjAyMiBhdCAwODozOToxNlBNICswODAwLCBMaXUgSmlhbiB3
-cm90ZToNCj4gPiA+ID4gVGhlIGRhdGEgbGVuZ3RoIG9mIHNrYiBmcmFncyArIGZyYWdfbGlzdCBt
-YXkgYmUgZ3JlYXRlciB0aGFuDQo+ID4gPiA+IDB4ZmZmZiwgc28gaGVyZSB1c2Ugc2tiLT5sZW4g
-dG8gY2hlY2sgdGhlIHZhbGlkaXR5IG9mIHRoZSBwYXJhbWV0ZXJzLg0KPiA+ID4gV2hhdCBpcyB0
-aGUgdXNlIGNhc2UgdGhhdCBuZWVkcyB0byBsb29rIGJleW9uZCAweGZmZmYgPw0KPiANCj4gPiBJ
-IHVzZSBzb2NrbWFwIHdpdGggc3RycGFyc2VyLCB0aGUgc3RtLT5zdHJwLm9mZnNldCAodGhlIGJl
-Z2luIG9mIG9uZQ0KPiA+IGFwcGxpY2F0aW9uIGxheWVyIHByb3RvY29sIG1lc3NhZ2UpIG1heWJl
-IGJleW9uZCAweGZmZmYsIGJ1dCBpIG5lZWQNCj4gPiBsb2FkIHRoZSBtZXNzYWdlIGhlYWQgdG8g
-ZG8gc29tZXRoaW5nLg0KPiANCj4gVGhpcyB3b3VsZCBleHBsYWluIHNrYl9sb2FkX2J5dGVzIGJ1
-dCBub3QgdGhlIG90aGVyIHR3byByaWdodD8gQWxzbyBpZiB3ZQ0KWWVzLCBJIGp1c3Qgc2VlIHRo
-YXQgdGhlc2UgdHdvIGZ1bmN0aW9ucyBoYXZlIHRoZSBzYW1lIGp1ZGdtZW50Lg0KPiBhcmUgZG9p
-bmcgdGhpcyB3aHkgbm90IGp1c3QgcmVtb3ZlIHRob3NlIHR3byBjaGVja3MgaW4NCj4gZmxvd19k
-aXNzZWN0b3JfbG9hZCgpIEkgdGhpbmsgc2tiX2hlYWRlcl9wb2ludGVyKCkgZG9lcyBkdXBsaWNh
-dGUgY2hlY2tzLg0KPiBQbGVhc2UgY2hlY2suDQpZZXMsIHNrYl9oZWFkZXJfcG9pbnRlcigpIGhh
-dmUgY2hlY2tlZCBhcyBiZWxvdywgYW5kIEkgd2lsbCBzZW5kIHYyIHRvIHJlbW92ZSAweGZmZmYg
-Y2hlY2suDQotLS0tc2tiX2hlYWRlcl9wb2ludGVyDQotLS0tLS0tLSBfX3NrYl9oZWFkZXJfcG9p
-bnRlcg0KLS0tLS0tLS0tLS0tc2tiX2NvcHlfYml0cw0KLS0tLS0tLS0tLS0tLS0tLSBpZiAob2Zm
-c2V0ID4gKGludClza2ItPmxlbiAtIGxlbikNCi0tLS0tLS0tLS0tLS0tLS0tLS0tZ290byBmYXVs
-dDsNCg0KVGhhbmsgeW91fg0K
+Hi Arnaldo,
+
+Apologies for the delayed reply.
+
+On Sat, Mar 05, 2022 at 03:49:55PM -0300, Arnaldo Carvalho de Melo wrote:
+> Can you break this into two patches, one for checking dwfl_getmodules()
+> failure and the second setting errno?
+> 
+> We should try to avoid these patches that do multiple fixes, as
+> sometimes one of the fixes isn't really correct and we end up not being
+> able to use 'git revert' which should be the case when we figure out
+> that some previous fix wasn't correct.
+
+Yap, makes perfect sense. I will reply to this email with the two patches
+momentarily.
+
+-- 
+Kornilios Kourtis.
