@@ -2,71 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5D24DB157
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 14:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 113F54DB159
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 14:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241948AbiCPNZG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 09:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42376 "EHLO
+        id S1348851AbiCPNZO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 09:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241443AbiCPNZF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 09:25:05 -0400
+        with ESMTP id S1348712AbiCPNZN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 09:25:13 -0400
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B8D33E37;
-        Wed, 16 Mar 2022 06:23:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0A135874;
+        Wed, 16 Mar 2022 06:23:59 -0700 (PDT)
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 49B613202010;
-        Wed, 16 Mar 2022 09:23:51 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id 447013201FCE;
+        Wed, 16 Mar 2022 09:23:58 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 16 Mar 2022 09:23:51 -0400
+  by compute2.internal (MEProxy); Wed, 16 Mar 2022 09:23:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kkourt.io; h=cc
         :cc:content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=mesmtp; bh=bENHhIi915KsPjgABUpRtuQfqeP
-        QoymgG+Vo887wrCc=; b=ThPMiqaRipdQRREPicRBAfL5RZN0Arp5CRNwQRMghW7
-        IWz9jCKtOtIPwN8ER78Y66h6G6DnWYO6Vgh6+uQQf2A4aCYckDwBJSg2Ypi58Ono
-        GAxxHyXJ5SmCAjmWMtaQufccAPWVZArFiePoH1oHzVNPKRtUR9oR8JTxko8GIS8Q
+        :subject:subject:to:to; s=mesmtp; bh=dYa12N5Sg9tXSwbjxJtKclSjJTp
+        ajHZmkUfVIRdsj38=; b=kSE4RlqsmHUlUktT1PSYJiifZBMJXmA7efnOjx/hwwJ
+        Uy8o5Q4sl/yz4DY2KwKd95VBJ/06Xc8+LhBbSRy9gZ+SnagsUTtJWPnRRIOEi+Kp
+        h/oMn5RpJzN1bDrgujfX7bNetJSExCS8D8vULTy+bhYq8a9Igu9vNp31f0cGSn2Y
         =
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
         :from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=bENHhI
-        i915KsPjgABUpRtuQfqePQoymgG+Vo887wrCc=; b=GVZ8IFqGGnEylI1Gd/HqP1
-        BfIk46n62ljKMPRmki2auOerraMtzlXsbxc4dZa0QlbMEsi9b8nAR++hkFbEusys
-        iAS7QayhoYvUtlstxONb2pF87IfH46xrXAgivb8d18f3Fn+DEInCdwi53Q1we6bW
-        6YONofyrAvqBwD+by6PFo7guABjStb22r23a/fz2UgPuzN1i+JF6FAucjErcR/sH
-        E+P2Atu1XxOAe3yff8zkSn9Px6JQcKG2TBQvhjNMRiLKjpH64BsJZ+MvY69JZFil
-        JQVI7nykMKDhajiabYjZsDCd+iNLVSgnYaIVQNm3KWilkdQ98i5mLWTTBwvNbSrg
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=dYa12N
+        5Sg9tXSwbjxJtKclSjJTpajHZmkUfVIRdsj38=; b=Q8MW9/qbn9j5vhUiHHiBPY
+        wZj3ebXeZKapMmVBeEceGP7kmMgbcz8vrqw5DR80o+qyZ0zeYnIDZTcdMZLi+Ztm
+        9wDaR6wXMfyLUGEn4BqdUSn+4rJ0lOW6arGUpbkirMg69AG5MZoJKPOvRY/6ESd1
+        XQJ38vyebIWYGHoxPO27w/GTZLaITGe55O/8vpa0Tds9DbAfztWcV9nO2EFsdAQg
+        O3Zhi+6oBTZNjrOh1Bijf3KaA6Uc6OInoHsBBkpnK3EZJ1lpc7FsdM+mlkHJbYct
+        q0y+JFYls1OdLmGkapjQ2a1VAEUO4/UFv2RJCppdda1DrBX3kLm1JsB67VzgKZBA
         ==
-X-ME-Sender: <xms:5uQxYn0pDrlAMbNSDk19o4i1qtD3t7HHPn8_NAup1QG2Wdw_zEZmtQ>
-    <xme:5uQxYmEUgHHBa__jXd8X3RlbUQRhfB7PW-xj6VTi4ABhWy_fz7_dO4BBAk95fMEk9
-    f7uesZVvzdZ1veafQ>
-X-ME-Received: <xmr:5uQxYn4rpERdhR5jNEuXxiQSyh6A87jqkbY7rLuOLS4ts3QbUu4NMzSKjVZQq9qCnBgzbcoLDNwqNj_hGZ4KmxBa0ydt>
+X-ME-Sender: <xms:7eQxYlHYgfJvfcBe73lbkVpMZ7ZFuCE3S92FFZFODzzFi8pfxl3pRw>
+    <xme:7eQxYqX8Q9o6P3S45zPmIc5VIvLF-HrYLHmh6Hx1Sga-1ZtytKn4sZ8laMrgBbHxx
+    eu5hV9MZJ8vkW-H1g>
+X-ME-Received: <xmr:7eQxYnIoa_kIqP216-nIivS94p2req-tiDgxdJmQCBwi2Nigbv6zOjAcs8Uwl_Iu71QKBluqZhmsz7hIDQkQCVn9xB6g>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudefvddggeelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpehkkhhouhhr
-    theskhhkohhurhhtrdhiohenucggtffrrghtthgvrhhnpeekkeeuiedujeekvdefjefffe
-    eggfdugeettdeiieevgffghfelgeetffeijeegffenucffohhmrghinhepshhouhhrtggv
-    figrrhgvrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepkhhkohhurhhtsehkkhhouhhrthdrihho
-X-ME-Proxy: <xmx:5uQxYs0kBVqKuW6gupNhMVxNHyW9QEmCNykD0J9JsknrQGSWdtJkNw>
-    <xmx:5uQxYqGdgOKLIN6XWKs1jzVIw7Je3EumIP4hsOuemNYLzjvow6Rb0w>
-    <xmx:5uQxYt9ftG2Z7JlzeUVBdWbrgPLBZQdtC67LtWhXQek2K1Kb1gXjAA>
-    <xmx:5uQxYmBCr21vwoVnVYoFGMfW0GDTyeGZOG4cw2A9tg-22XgTB9OAKA>
+    theskhhkohhurhhtrdhiohenucggtffrrghtthgvrhhnpedtfeeileevgfetgfehjedthe
+    fgvdetheetgeeuffejgeekjeefteetgfegffevfeenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpehkkhhouhhrtheskhhkohhurhhtrdhioh
+X-ME-Proxy: <xmx:7eQxYrEQ8uITEuEiOQeiIz7vJb4LgC_5JyYIUV8HDIreWR1qpyEmbQ>
+    <xmx:7eQxYrXlfzngyCuzxNbXdZ9CpeBbLxbiivClGD2i2wUCGIa1vnyE7A>
+    <xmx:7eQxYmMImJ2N7r1uKz8Prx7h7q3umZEMVzxAUQnyj5XlZYtDaKeZ3w>
+    <xmx:7eQxYmT3xVa_rPdk2JWklO0ewz9efk2KU3aFUINhZLCMvK49BAd-fA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Mar 2022 09:23:50 -0400 (EDT)
+ 16 Mar 2022 09:23:57 -0400 (EDT)
 Received: by kkourt.io (Postfix, from userid 1000)
-        id 21ADB2541B5C; Wed, 16 Mar 2022 14:23:48 +0100 (CET)
+        id 4C1682541B5C; Wed, 16 Mar 2022 14:23:56 +0100 (CET)
 From:   kkourt@kkourt.io
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Kornilios Kourtis <kornilios@isovalent.com>
-Subject: [PATCH 1/2] pahole: avoid segfault when parsing bogus file
-Date:   Wed, 16 Mar 2022 14:23:38 +0100
-Message-Id: <20220316132338.3226871-1-kkourt@kkourt.io>
+Subject: [PATCH 2/2] dwarves: cus__load_files: set errno if load fails
+Date:   Wed, 16 Mar 2022 14:23:54 +0100
+Message-Id: <20220316132354.3226908-1-kkourt@kkourt.io>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <YjHjLkYBk/XfXSK0@tinh>
 References: <YjHjLkYBk/XfXSK0@tinh>
@@ -84,66 +83,44 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Kornilios Kourtis <kornilios@isovalent.com>
 
-When trying to use btf encoding for an apparently problematic kernel
-file, pahole segfaults. As can be seen below [1], the problem is that we
-are trying to dereference a NULL decoder.
+This patch improves the error seen by the user by setting errno in
+cus__load_files(). Otherwise, we get a "No such file or directory" error
+which might be confusing.
 
-Fix this by checking the return value of dwfl_getmodules which [2] whill
-return -1 on errors or an offset if one of the modules did not return
-DWARF_CB_OK. (In this specific case, it was __cus__load_debug_types that
-returned DWARF_CB_ABORT.)
+Before the patch, using a bogus file:
+$ ./pahole -J ./vmlinux-5.3.18-24.102-default.debug
+pahole: ./vmlinux-5.3.18-24.102-default.debug: No such file or directory
+$ ls ./vmlinux-5.3.18-24.102-default.debug
+/home/kkourt/src/hubble-fgs/vmlinux-5.3.18-24.102-default.debug
 
-[1]:
-$ gdb -q --args ./pahole -J vmlinux-5.3.18-24.102-default.debug
-Reading symbols from ./pahole...
-(gdb) r
-Starting program: /tmp/pahole/build/pahole -J vmlinux-5.3.18-24.102-default.debug
-[Thread debugging using libthread_db enabled]
-Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+After the patch:
+$ ./pahole -J ./vmlinux-5.3.18-24.102-default.debug
+pahole: ./vmlinux-5.3.18-24.102-default.debug: Unknown error -22
 
-Program received signal SIGSEGV, Segmentation fault.
-0x00007ffff7f4000e in gobuffer__size (gb=0x18) at /tmp/pahole/gobuffer.h:39
-39              return gb->index;
-(gdb) bt
-(gdb) frame 1
-1042            if (gobuffer__size(&encoder->percpu_secinfo) != 0)
-(gdb) list
-1037
-1038    int btf_encoder__encode(struct btf_encoder *encoder)
-1039    {
-1040            int err;
-1041
-1042            if (gobuffer__size(&encoder->percpu_secinfo) != 0)
-1043                    btf_encoder__add_datasec(encoder, PERCPU_SECTION);
-1044
-1045            /* Empty file, nothing to do, so... done! */
-1046            if (btf__get_nr_types(encoder->btf) == 0)
-(gdb) print encoder
-$1 = (struct btf_encoder *) 0x0
-
-[2] https://sourceware.org/git/?p=elfutils.git;a=blob;f=libdwfl/libdwfl.h;h=f98f1d525d94bc7bcfc7c816890de5907ee4bd6d;hb=HEAD#l200
+Which is not very helpful, but less confusing.
 
 Signed-off-by: Kornilios Kourtis <kornilios@isovalent.com>
 ---
- dwarf_loader.c | 5 ++++-
+ dwarves.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index 151bc83..c87378b 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -3268,7 +3268,10 @@ static int cus__process_file(struct cus *cus, struct conf_load *conf, int fd,
- 	};
+diff --git a/dwarves.c b/dwarves.c
+index 89b58ef..5d0b420 100644
+--- a/dwarves.c
++++ b/dwarves.c
+@@ -2399,8 +2399,11 @@ int cus__load_files(struct cus *cus, struct conf_load *conf,
+ 	int i = 0;
  
- 	/* Process the one or more modules gleaned from this file. */
--	dwfl_getmodules(dwfl, cus__process_dwflmod, &parms, 0);
-+	int err = dwfl_getmodules(dwfl, cus__process_dwflmod, &parms, 0);
-+	if (err) {
-+		return -1;
-+	}
+ 	while (filenames[i] != NULL) {
+-		if (cus__load_file(cus, conf, filenames[i]))
++		int err = cus__load_file(cus, conf, filenames[i]);
++		if (err) {
++			errno = err;
+ 			return -++i;
++		}
+ 		++i;
+ 	}
  
- 	// We can't call dwfl_end(dwfl) here, as we keep pointers to strings
- 	// allocated by libdw that will be freed at dwfl_end(), so leave this for
 -- 
 2.25.1
 
