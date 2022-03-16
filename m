@@ -2,93 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B354DAA50
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 07:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033EC4DAA8D
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 07:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243440AbiCPGGX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 02:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        id S1352836AbiCPGSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 02:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239737AbiCPGGW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 02:06:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4538E2B27B;
-        Tue, 15 Mar 2022 23:05:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF967617A5;
-        Wed, 16 Mar 2022 06:05:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28635C340F2;
-        Wed, 16 Mar 2022 06:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647410708;
-        bh=9u56X5trjDPRUeXIbiXX2WgWMHiQeCwaMD920ZfRi8s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kc/I2DRyrHvrgXU4oXkzFIkF9sFInZFOl+OfPblLYNxgfZbu4INP1YHZgxKSlgVTY
-         jOZ+3aH9aLNfZLH8TSfxhdoz2+IRoL9KQWru0qiP3xt8Bd3N3XBDQF9mWN8KsDteTB
-         SGwlr1EtPeo1r9XqiLJnBiZs2nysC41wMtI7VoOaN7BtI6CYW4DRuRoP/lp1vNfpKk
-         yJccTxZdroLG7a8zFUBdTbVUgQQab2HUgS3gX5MTK0lCEGF/w6CYMEbG9rUmPOaAFL
-         lP8OJpOfAbyNXEzqw5Mo2NzyRCY+rzAZzc3/39F0eaLDUWvFTEpHCClOPC+D0zjfnu
-         UD4RFJxxNoc8Q==
-Received: by mail-yb1-f176.google.com with SMTP id y142so2544674ybe.11;
-        Tue, 15 Mar 2022 23:05:08 -0700 (PDT)
-X-Gm-Message-State: AOAM531SyRVTG6sxsejTysWvHQQc+wlE1E5++NGONbwOf9A3IqnwHX7M
-        MLsfZ/oAEEw4d1rZI9GwZwA5Bu5j9gDQQER05GI=
-X-Google-Smtp-Source: ABdhPJwAyANThQc/psRngeReotj5/ZyxPDf+piaKRNAk+DtYgApdzmZEdzyAshMC7HoL0mJweq4RnHNoZOr+6dhyU0s=
-X-Received: by 2002:a05:6902:1ca:b0:624:e2a1:2856 with SMTP id
- u10-20020a05690201ca00b00624e2a12856mr26465539ybh.389.1647410707221; Tue, 15
- Mar 2022 23:05:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
-In-Reply-To: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 15 Mar 2022 23:04:56 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5qHSZNSEh8CQK3wYqtJ4XB+EwFEJWKA9SkA+wGFbvNCg@mail.gmail.com>
-Message-ID: <CAPhsuW5qHSZNSEh8CQK3wYqtJ4XB+EwFEJWKA9SkA+wGFbvNCg@mail.gmail.com>
-Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
-To:     Yosry Ahmed <yosryahmed@google.com>
+        with ESMTP id S240985AbiCPGSo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 02:18:44 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A3D3701C
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 23:17:30 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id h63so1226700iof.12
+        for <bpf@vger.kernel.org>; Tue, 15 Mar 2022 23:17:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=73Jw8dBrV6CThchpLZBZWuU5Om36ScocMTunWCuFxX4=;
+        b=Z67nPPzHrC3KLefMNI0TLkwsi3ib+kRN+qQ7eWGZKZcgteV3GveMGt43MU2fgshOd9
+         lnPx6Uy+TR46yFWuUcjnOW0LukTnV4hMSab7+L80W5+EWgZS0otIlGL8DOt+nQGzBSVw
+         /eGZ2hGFZEHC2N2HnEYrzBjyaW548kjl8O0VhyOteCdM4LcubiSR7bZz8sDFDSOt01xK
+         6TovUUwdXPwljgnm3He7Kv6IAIt8TWfkOMpiVyCu74ARYjsn2wnWLkB2u7BF/Se/Mk5n
+         bFmph7lSCxpKmiCfl1mBcM3X7L6YsSL5S0ekSHVJIE/W4lQ4frTx7V255Vb2vAHxVdU2
+         XznA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=73Jw8dBrV6CThchpLZBZWuU5Om36ScocMTunWCuFxX4=;
+        b=pCHxNeAuN3sSxuLi02nteukivxNNeA8F349uwQUEOZi7HvZwhUFpUv4r0/ZUTrJ1p1
+         ljO5STjBbaTenEXvU9cMQ7rVDOmgN2u3SytN+tDeNjBiNVTWNiNVmtTuMStOLcaQd2l4
+         vCSROwm/3pQFTcQ1EdpZLB47BcYTUiXKeMc0E1Vd3X/4bQgXbT9I0q81kCxcXfLInUBL
+         uRdgDR4cafncNV6VhySUdUMqHzSLg1QGOAYTnJfZaFLIj5bMEhDoglPevAvFSZIQkoTv
+         h2+lgEf3YI9mlk4Jk0/19wEItr9FBaeX8XzpyriwAV9/kdJVr/wgzjDn0BLd5Ug2LgVr
+         Noyw==
+X-Gm-Message-State: AOAM533qlQyqQRmE6LQAkIctWMPDA2QlDNUUQVYhnka0bNnuMAWSxukz
+        5cA3IhRhZHlYj4vS1vMEwjU=
+X-Google-Smtp-Source: ABdhPJy78FfQENktjOcdS9o2/5QCGE9n2z27bGHADbl9k3GGQ8HNIJxVHeaCT+zEMCG4qCzEKfoOgw==
+X-Received: by 2002:a05:6638:258f:b0:31a:1c77:f6ef with SMTP id s15-20020a056638258f00b0031a1c77f6efmr3621664jat.25.1647411450321;
+        Tue, 15 Mar 2022 23:17:30 -0700 (PDT)
+Received: from localhost ([99.197.200.79])
+        by smtp.gmail.com with ESMTPSA id d16-20020a05660225d000b00645c8db7767sm585318iop.35.2022.03.15.23.17.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Mar 2022 23:17:30 -0700 (PDT)
+Date:   Tue, 15 Mar 2022 23:17:23 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Message-ID: <623180f35efff_1761208fd@john.notmuch>
+In-Reply-To: <20220316014847.2256135-1-kafai@fb.com>
+References: <20220316014841.2255248-1-kafai@fb.com>
+ <20220316014847.2256135-1-kafai@fb.com>
+Subject: RE: [PATCH bpf-next 1/3] bpf: selftests: Add helpers to directly use
+ the capget and capset syscall
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 9, 2022 at 12:27 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-[...]
->
-> The map usage by BPF programs and integration with rstat can be as follows:
-> - Internally, each map entry has per-cpu arrays, a total array, and a
-> pending array. BPF programs and user space only see one array.
-> - The update interface is disabled. BPF programs use helpers to modify
-> elements. Internally, the modifications are made to per-cpu arrays,
-> and invoke a call to cgroup_bpf_updated()  or an equivalent.
-> - Lookups (from BPF programs or user space) invoke an rstat flush and
-> read from the total array.
+Martin KaFai Lau wrote:
+> After upgrading to the newer libcap (>= 2.60),
+> the libcap commit aca076443591 ("Make cap_t operations thread safe.")
+> added a "__u8 mutex;" to the "struct _cap_struct".  It caused a few byte
+> shift that breaks the assumption made in the "struct libcap" definition
+> in test_verifier.c.
+> 
+> The bpf selftest usage only needs to enable and disable the effective
+> caps of the running task.  It is easier to directly syscall the
+> capget and capset instead.  It can also remove the libcap
+> library dependency.
+> 
+> The cap_helpers.{c,h} is added.  One __u64 is used for all CAP_*
+> bits instead of two __u32.
+> 
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+>  tools/testing/selftests/bpf/cap_helpers.c | 68 +++++++++++++++++++++++
+>  tools/testing/selftests/bpf/cap_helpers.h | 10 ++++
+>  2 files changed, 78 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/cap_helpers.c
+>  create mode 100644 tools/testing/selftests/bpf/cap_helpers.h
+> 
+> diff --git a/tools/testing/selftests/bpf/cap_helpers.c b/tools/testing/selftests/bpf/cap_helpers.c
+> new file mode 100644
+> index 000000000000..e83eab902657
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/cap_helpers.c
 
-Lookups invoke a rstat flush, so we still walk every node of a subtree for
-each lookup, no? So the actual cost should be similar than walking the
-subtree with some BPF program? Did I miss something?
+LGTM
 
-Thanks,
-Song
-
-> - In cgroup_rstat_flush_locked() flush BPF stats as well.
->
-[...]
+Acked-by: John Fastabend <john.fastabend@gmail.com>
