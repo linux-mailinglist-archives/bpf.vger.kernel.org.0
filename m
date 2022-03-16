@@ -2,115 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C16C34DB5B5
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 17:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2FD4DB5BE
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 17:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243475AbiCPQOy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 12:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
+        id S1350508AbiCPQQW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 12:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242693AbiCPQOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 12:14:54 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9496DB7CF
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 09:13:37 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id o23so570101pgk.13
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 09:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z02blqoxThuGkhi9wvej2czZDkzHuDmLTnoYf50M1uc=;
-        b=cGZXSXrsgc31cO4Sk0bWUlfS1YHAUJEfGTBf5TIBee1N2O1v51N7loA1ZZpKIMLhQU
-         ZL4G+LW3sc0mD2+VrXcSsn2ki9iK3vUoZBFy+e+ymKKFCYoQ+YANqSB0U4QAHY9uDFXB
-         SafWbfwTRZGMBUkBvqQatRHY7TtVrEWAZlgYsjZQpgb3TmjgnxKesoFw28mzwz8qsMx3
-         NyfJIBCq/S3dp8Nn2WH5a8J4Z0pUttEIw8/bVGsy6obvllTS6Lt/V7qPFQ8r+oGvrktt
-         7x5mr0KfJ+CGeeCF427uudGKR4pMiwgAi/lgMMyclVWd9GIeS9bxCskxGnxeAA+7BFqV
-         Ye+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z02blqoxThuGkhi9wvej2czZDkzHuDmLTnoYf50M1uc=;
-        b=WL5LtNIrQQFAhmBeQK2QspZqHF/8OaTpNkkXlVnTJlWB62nT1McfhT1FxNug1OTm5N
-         vtLAlo0txlUa24aUjYl4PfRGVJzR8ZaAugDo2JX6yCq04nnPLg+qYj3IUTLrhDcdrWyS
-         jBfKo9LsDD9oaXOY2100NEz157p9pS7z0P9i9nSl4166KG8EffPcPPET+UulIre2S9E+
-         4dKdlIvKGaA09iAwL5PU0Dd0PS8w+5Qqa5W0oTLM+z7sbzyHyjxbnnnvb296M2swKF5U
-         kXjSB1FM6/vB808K765nybuzcNRyN9pyN+L9AMoyt2QMYKSs9UYFqKQw70xT+2E/+Wuv
-         m3zw==
-X-Gm-Message-State: AOAM53386JGz/FSAHe+QE8RhuWPNFigtQF/XC3XQD5fEuSSuq+5vZv0q
-        EUQKKTO7jTJD8I0TlML6t+yLqAlqBZs6Ccr1qN5zjA==
-X-Google-Smtp-Source: ABdhPJzy/6N3/PYQ7f+k69lwS1R1FqLXCJ2jyBfTrGN9DVuznSeyY9IHKWkgrsllbUI26ZmLok3HTwQWVmcOo994kQ4=
-X-Received: by 2002:a65:6091:0:b0:35e:d274:5f54 with SMTP id
- t17-20020a656091000000b0035ed2745f54mr306553pgu.200.1647447216944; Wed, 16
- Mar 2022 09:13:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
- <CAPhsuW5qHSZNSEh8CQK3wYqtJ4XB+EwFEJWKA9SkA+wGFbvNCg@mail.gmail.com>
-In-Reply-To: <CAPhsuW5qHSZNSEh8CQK3wYqtJ4XB+EwFEJWKA9SkA+wGFbvNCg@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 16 Mar 2022 09:13:00 -0700
-Message-ID: <CAJD7tkYGXVX+ehGsOMidfaKCbjuB2HeAK=Up_2evg6iOZD1z-Q@mail.gmail.com>
-Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S243895AbiCPQQV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 12:16:21 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5A9B7CF
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 09:15:05 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KJZx72SYRzcbMW;
+        Thu, 17 Mar 2022 00:10:03 +0800 (CST)
+Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
+ (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Thu, 17 Mar
+ 2022 00:15:01 +0800
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Hou Tao <houtao1@huawei.com>, Fuad Tabba <tabba@google.com>,
+        James Morse <james.morse@arm.com>
+Subject: [PATCH bpf-next v3 0/4] bpf, arm64: Optimize BPF store/load using
+Date:   Wed, 16 Mar 2022 12:26:17 -0400
+Message-ID: <20220316162621.3842604-1-xukuohai@huawei.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.197]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 11:05 PM Song Liu <song@kernel.org> wrote:
->
-> On Wed, Mar 9, 2022 at 12:27 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> [...]
-> >
-> > The map usage by BPF programs and integration with rstat can be as follows:
-> > - Internally, each map entry has per-cpu arrays, a total array, and a
-> > pending array. BPF programs and user space only see one array.
-> > - The update interface is disabled. BPF programs use helpers to modify
-> > elements. Internally, the modifications are made to per-cpu arrays,
-> > and invoke a call to cgroup_bpf_updated()  or an equivalent.
-> > - Lookups (from BPF programs or user space) invoke an rstat flush and
-> > read from the total array.
->
-> Lookups invoke a rstat flush, so we still walk every node of a subtree for
-> each lookup, no? So the actual cost should be similar than walking the
-> subtree with some BPF program? Did I miss something?
->
+The current BPF store/load instruction is translated by the JIT into two
+instructions. The first instruction moves the immediate offset into a
+temporary register. The second instruction uses this temporary register
+to do the real store/load.
 
-Hi Song,
+In fact, arm64 supports addressing with immediate offsets. So This series
+introduces optimization that uses arm64 str/ldr instruction with immediate
+offset when the offset fits.
 
-Thanks for taking the time to read my proposal.
+Example of generated instuction for r2 = *(u64 *)(r1 + 0):
 
-The rstat framework maintains a tree that contains only updated
-cgroups. An rstat flush only traverses this tree, not the cgroup
-subtree/hierarchy.
+Without optimization:
+mov x10, 0
+ldr x1, [x0, x10]
 
-This also ensures that consecutive readers do not have to do any
-traversals unless new updates happen, because the first reader will
-have already flushed the stats.
+With optimization:
+ldr x1, [x0, 0]
 
->
-> Thanks,
-> Song
->
-> > - In cgroup_rstat_flush_locked() flush BPF stats as well.
-> >
-> [...]
+For the following bpftrace command:
+
+  bpftrace -e 'kprobe:do_sys_open { printf("opening: %s\n", str(arg1)); }'
+
+Without this series, jited code(fragment):
+
+   0:   bti     c
+   4:   stp     x29, x30, [sp, #-16]!
+   8:   mov     x29, sp
+   c:   stp     x19, x20, [sp, #-16]!
+  10:   stp     x21, x22, [sp, #-16]!
+  14:   stp     x25, x26, [sp, #-16]!
+  18:   mov     x25, sp
+  1c:   mov     x26, #0x0                       // #0
+  20:   bti     j
+  24:   sub     sp, sp, #0x90
+  28:   add     x19, x0, #0x0
+  2c:   mov     x0, #0x0                        // #0
+  30:   mov     x10, #0xffffffffffffff78        // #-136
+  34:   str     x0, [x25, x10]
+  38:   mov     x10, #0xffffffffffffff80        // #-128
+  3c:   str     x0, [x25, x10]
+  40:   mov     x10, #0xffffffffffffff88        // #-120
+  44:   str     x0, [x25, x10]
+  48:   mov     x10, #0xffffffffffffff90        // #-112
+  4c:   str     x0, [x25, x10]
+  50:   mov     x10, #0xffffffffffffff98        // #-104
+  54:   str     x0, [x25, x10]
+  58:   mov     x10, #0xffffffffffffffa0        // #-96
+  5c:   str     x0, [x25, x10]
+  60:   mov     x10, #0xffffffffffffffa8        // #-88
+  64:   str     x0, [x25, x10]
+  68:   mov     x10, #0xffffffffffffffb0        // #-80
+  6c:   str     x0, [x25, x10]
+  70:   mov     x10, #0xffffffffffffffb8        // #-72
+  74:   str     x0, [x25, x10]
+  78:   mov     x10, #0xffffffffffffffc0        // #-64
+  7c:   str     x0, [x25, x10]
+  80:   mov     x10, #0xffffffffffffffc8        // #-56
+  84:   str     x0, [x25, x10]
+  88:   mov     x10, #0xffffffffffffffd0        // #-48
+  8c:   str     x0, [x25, x10]
+  90:   mov     x10, #0xffffffffffffffd8        // #-40
+  94:   str     x0, [x25, x10]
+  98:   mov     x10, #0xffffffffffffffe0        // #-32
+  9c:   str     x0, [x25, x10]
+  a0:   mov     x10, #0xffffffffffffffe8        // #-24
+  a4:   str     x0, [x25, x10]
+  a8:   mov     x10, #0xfffffffffffffff0        // #-16
+  ac:   str     x0, [x25, x10]
+  b0:   mov     x10, #0xfffffffffffffff8        // #-8
+  b4:   str     x0, [x25, x10]
+  b8:   mov     x10, #0x8                       // #8
+  bc:   ldr     x2, [x19, x10]
+  [...]
+
+With this series, jited code(fragment):
+
+   0:   bti     c
+   4:   stp     x29, x30, [sp, #-16]!
+   8:   mov     x29, sp
+   c:   stp     x19, x20, [sp, #-16]!
+  10:   stp     x21, x22, [sp, #-16]!
+  14:   stp     x25, x26, [sp, #-16]!
+  18:   stp     x27, x28, [sp, #-16]!
+  1c:   mov     x25, sp
+  20:   sub     x27, x25, #0x88
+  24:   mov     x26, #0x0                       // #0
+  28:   bti     j
+  2c:   sub     sp, sp, #0x90
+  30:   add     x19, x0, #0x0
+  34:   mov     x0, #0x0                        // #0
+  38:   str     x0, [x27]
+  3c:   str     x0, [x27, #8]
+  40:   str     x0, [x27, #16]
+  44:   str     x0, [x27, #24]
+  48:   str     x0, [x27, #32]
+  4c:   str     x0, [x27, #40]
+  50:   str     x0, [x27, #48]
+  54:   str     x0, [x27, #56]
+  58:   str     x0, [x27, #64]
+  5c:   str     x0, [x27, #72]
+  60:   str     x0, [x27, #80]
+  64:   str     x0, [x27, #88]
+  68:   str     x0, [x27, #96]
+  6c:   str     x0, [x27, #104]
+  70:   str     x0, [x27, #112]
+  74:   str     x0, [x27, #120]
+  78:   str     x0, [x27, #128]
+  7c:   ldr     x2, [x19, #8]
+  [...]
+
+Tested with test_bpf on both big-endian and little-endian arm64 qemu:
+
+ test_bpf: Summary: 1026 PASSED, 0 FAILED, [1014/1014 JIT'ed]
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [8/8 JIT'ed]
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+v2 -> v3:
+1. Split the v2 patch into 2 patches, one for arm64 instruction encoder,
+   the other for BPF JIT
+2. Add tests for BPF_LDX/BPF_STX with different offsets
+3. Adjust the offset of str/ldr(immediate) to positive number
+
+v1 -> v2:
+1. Remove macro definition that causes checkpatch to fail
+2. Append result to commit message
+
+Xu Kuohai (4):
+  arm64: insn: add ldr/str with immediate offset
+  bpf, arm64: Optimize BPF store/load using str/ldr with immediate offset
+  bpf/tests: Add tests for BPF_LDX/BPF_STX with different offsets
+  bpf, arm64: adjust the offset of str/ldr(immediate) to positive number
+
+ arch/arm64/include/asm/insn.h |   9 ++
+ arch/arm64/lib/insn.c         |  67 ++++++--
+ arch/arm64/net/bpf_jit.h      |  14 ++
+ arch/arm64/net/bpf_jit_comp.c | 212 ++++++++++++++++++++++---
+ lib/test_bpf.c                | 285 +++++++++++++++++++++++++++++++++-
+ 5 files changed, 549 insertions(+), 38 deletions(-)
+
+-- 
+2.30.2
+
