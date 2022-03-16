@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA584DB776
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 18:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F464DB775
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 18:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242215AbiCPRjz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Mar 2022 13:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
+        id S1350743AbiCPRj6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Mar 2022 13:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244497AbiCPRjy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Mar 2022 13:39:54 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1DC3B2AB
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 10:38:39 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22GHCivT029255
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 10:38:39 -0700
+        with ESMTP id S1348212AbiCPRj5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Mar 2022 13:39:57 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581203B2AB
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 10:38:41 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22GHCee7016469
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 10:38:40 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=euxNyIhrYVpEVv7cn0NDQtMqqKHiYDgU9iDu0KEgr30=;
- b=qPFo9+8H3BgUG+uzijkcu9cYwRbPiBlaSjJ5Z3WCapSlxDuRPSXZNuCypD33xsttrXKk
- 5bjwfYhFD5P0ZebYqvrgPaDvGrSXSMk60+SqxYc+4Duc0XQpOvipx7E+cO7BLnoyNFCO
- xbgDK0pePnGTmIPTvgjWJUBrD4L/d4moQJU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3et9d0hngy-1
+ bh=tkkGZM4qrDtDVMFyXTalmkVs/dWF6ighWJuR4ImVaAc=;
+ b=P4GqLS2fou4sDbWaLnrBjOl573pSL9BF3Ydqun4T8Bs+pMgucBBmh3xLEVgessQGvejx
+ eJ6txc7OPeCXv6dts4NKSk7OZD35x7fr1fTfUObL9/Pohhsob3RD9bB/jpxpqf2s9Oxh
+ GT935zGWmtp4Pg1O/iaOAGpym4bC+uSX1hA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eue4bk4c1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 10:38:39 -0700
-Received: from twshared5730.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 16 Mar 2022 10:38:40 -0700
+Received: from twshared27297.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 16 Mar 2022 10:38:37 -0700
+ 15.1.2308.21; Wed, 16 Mar 2022 10:38:38 -0700
 Received: by devbig933.frc1.facebook.com (Postfix, from userid 6611)
-        id 8E471218668D; Wed, 16 Mar 2022 10:38:29 -0700 (PDT)
+        id D98A62186705; Wed, 16 Mar 2022 10:38:35 -0700 (PDT)
 From:   Martin KaFai Lau <kafai@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -41,9 +41,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
         <kernel-team@fb.com>, Stanislav Fomichev <sdf@google.com>
-Subject: [PATCH v2 bpf-next 2/3] bpf: selftests: Remove libcap usage from test_verifier
-Date:   Wed, 16 Mar 2022 10:38:29 -0700
-Message-ID: <20220316173829.2038682-1-kafai@fb.com>
+Subject: [PATCH v2 bpf-next 3/3] bpf: selftests: Remove libcap usage from test_progs
+Date:   Wed, 16 Mar 2022 10:38:35 -0700
+Message-ID: <20220316173835.2039334-1-kafai@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220316173816.2035581-1-kafai@fb.com>
 References: <20220316173816.2035581-1-kafai@fb.com>
@@ -51,8 +51,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: cU05Bvu4b9vLKf44AfNme6mrz-qSSpG7
-X-Proofpoint-GUID: cU05Bvu4b9vLKf44AfNme6mrz-qSSpG7
+X-Proofpoint-GUID: dPm_yzBDUsCew_yZw6fmGdwlWQ5Yu0oQ
+X-Proofpoint-ORIG-GUID: dPm_yzBDUsCew_yZw6fmGdwlWQ5Yu0oQ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-16_07,2022-03-15_01,2022-02-23_01
@@ -66,177 +66,131 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch removes the libcap usage from test_verifier.
-The cap_*_effective() helpers added in the earlier patch are
-used instead.
+This patch removes the libcap usage from test_progs.
+bind_perm.c is the only user.  cap_*_effective() helpers added in the
+earlier patch are directly used instead.
+
+No other selftest binary is using libcap, so '-lcap' is also removed
+from the Makefile.
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 ---
- tools/testing/selftests/bpf/Makefile        |  3 +-
- tools/testing/selftests/bpf/test_verifier.c | 88 ++++++---------------
- 2 files changed, 27 insertions(+), 64 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |  5 ++-
+ .../selftests/bpf/prog_tests/bind_perm.c      | 44 ++++---------------
+ 2 files changed, 11 insertions(+), 38 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
 ts/bpf/Makefile
-index fe12b4f5fe20..1c6e55740019 100644
+index 1c6e55740019..11f5883636c3 100644
 --- a/tools/testing/selftests/bpf/Makefile
 +++ b/tools/testing/selftests/bpf/Makefile
-@@ -195,6 +195,7 @@ $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(BPFOB=
-J)
- CGROUP_HELPERS	:=3D $(OUTPUT)/cgroup_helpers.o
- TESTING_HELPERS	:=3D $(OUTPUT)/testing_helpers.o
- TRACE_HELPERS	:=3D $(OUTPUT)/trace_helpers.o
-+CAP_HELPERS	:=3D $(OUTPUT)/cap_helpers.o
+@@ -25,7 +25,7 @@ CFLAGS +=3D -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) =
+$(SAN_CFLAGS)	\
+ 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
+ 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
+ LDFLAGS +=3D $(SAN_CFLAGS)
+-LDLIBS +=3D -lcap -lelf -lz -lrt -lpthread
++LDLIBS +=3D -lelf -lz -lrt -lpthread
 =20
- $(OUTPUT)/test_dev_cgroup: $(CGROUP_HELPERS) $(TESTING_HELPERS)
- $(OUTPUT)/test_skb_cgroup_id_user: $(CGROUP_HELPERS) $(TESTING_HELPERS)
-@@ -211,7 +212,7 @@ $(OUTPUT)/test_lirc_mode2_user: $(TESTING_HELPERS)
- $(OUTPUT)/xdping: $(TESTING_HELPERS)
- $(OUTPUT)/flow_dissector_load: $(TESTING_HELPERS)
- $(OUTPUT)/test_maps: $(TESTING_HELPERS)
--$(OUTPUT)/test_verifier: $(TESTING_HELPERS)
-+$(OUTPUT)/test_verifier: $(TESTING_HELPERS) $(CAP_HELPERS)
-=20
- BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
- $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefi=
-le)    \
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/=
-selftests/bpf/test_verifier.c
-index 92e3465fbae8..a2cd236c32eb 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -22,8 +22,6 @@
- #include <limits.h>
- #include <assert.h>
-=20
+ # Silence some warnings when compiled with clang
+ ifneq ($(LLVM),)
+@@ -480,7 +480,8 @@ TRUNNER_TESTS_DIR :=3D prog_tests
+ TRUNNER_BPF_PROGS_DIR :=3D progs
+ TRUNNER_EXTRA_SOURCES :=3D test_progs.c cgroup_helpers.c trace_helpers.c=
+	\
+ 			 network_helpers.c testing_helpers.c		\
+-			 btf_helpers.c flow_dissector_load.h
++			 btf_helpers.c flow_dissector_load.h		\
++			 cap_helpers.c
+ TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko=
+	\
+ 		       ima_setup.sh					\
+ 		       $(wildcard progs/btf_dump_test_case_*.c)
+diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c b/tools/t=
+esting/selftests/bpf/prog_tests/bind_perm.c
+index eac71fbb24ce..a1766a298bb7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bind_perm.c
++++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+@@ -4,9 +4,9 @@
+ #include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
 -#include <sys/capability.h>
--
- #include <linux/unistd.h>
- #include <linux/filter.h>
- #include <linux/bpf_perf_event.h>
-@@ -42,6 +40,7 @@
- #  define CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS 1
- # endif
- #endif
+=20
+ #include "test_progs.h"
 +#include "cap_helpers.h"
- #include "bpf_rand.h"
- #include "bpf_util.h"
- #include "test_btf.h"
-@@ -62,6 +61,10 @@
- #define F_NEEDS_EFFICIENT_UNALIGNED_ACCESS	(1 << 0)
- #define F_LOAD_WITH_STRICT_ALIGNMENT		(1 << 1)
+ #include "bind_perm.skel.h"
 =20
-+/* need CAP_BPF, CAP_NET_ADMIN, CAP_PERFMON to load progs */
-+#define ADMIN_CAPS (1ULL << CAP_NET_ADMIN |	\
-+		    1ULL << CAP_PERFMON |	\
-+		    1ULL << CAP_BPF)
- #define UNPRIV_SYSCTL "kernel/unprivileged_bpf_disabled"
- static bool unpriv_disabled =3D false;
- static int skips;
-@@ -973,47 +976,19 @@ struct libcap {
-=20
- static int set_admin(bool admin)
- {
--	cap_t caps;
--	/* need CAP_BPF, CAP_NET_ADMIN, CAP_PERFMON to load progs */
--	const cap_value_t cap_net_admin =3D CAP_NET_ADMIN;
--	const cap_value_t cap_sys_admin =3D CAP_SYS_ADMIN;
--	struct libcap *cap;
--	int ret =3D -1;
--
--	caps =3D cap_get_proc();
--	if (!caps) {
--		perror("cap_get_proc");
--		return -1;
--	}
--	cap =3D (struct libcap *)caps;
--	if (cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_sys_admin, CAP_CLEAR)) {
--		perror("cap_set_flag clear admin");
--		goto out;
--	}
--	if (cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_admin,
--				admin ? CAP_SET : CAP_CLEAR)) {
--		perror("cap_set_flag set_or_clear net");
--		goto out;
--	}
--	/* libcap is likely old and simply ignores CAP_BPF and CAP_PERFMON,
--	 * so update effective bits manually
--	 */
-+	int err;
-+
- 	if (admin) {
--		cap->data[1].effective |=3D 1 << (38 /* CAP_PERFMON */ - 32);
--		cap->data[1].effective |=3D 1 << (39 /* CAP_BPF */ - 32);
-+		err =3D cap_enable_effective(ADMIN_CAPS, NULL);
-+		if (err)
-+			perror("cap_enable_effective(ADMIN_CAPS)");
- 	} else {
--		cap->data[1].effective &=3D ~(1 << (38 - 32));
--		cap->data[1].effective &=3D ~(1 << (39 - 32));
--	}
--	if (cap_set_proc(caps)) {
--		perror("cap_set_proc");
--		goto out;
-+		err =3D cap_disable_effective(ADMIN_CAPS, NULL);
-+		if (err)
-+			perror("cap_disable_effective(ADMIN_CAPS)");
- 	}
--	ret =3D 0;
--out:
--	if (cap_free(caps))
--		perror("cap_free");
--	return ret;
-+
-+	return err;
+ static int duration;
+@@ -49,41 +49,11 @@ void try_bind(int family, int port, int expected_errn=
+o)
+ 		close(fd);
  }
 =20
- static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_=
-val,
-@@ -1291,31 +1266,18 @@ static void do_test_single(struct bpf_test *test,=
- bool unpriv,
-=20
- static bool is_admin(void)
- {
--	cap_flag_value_t net_priv =3D CAP_CLEAR;
--	bool perfmon_priv =3D false;
--	bool bpf_priv =3D false;
--	struct libcap *cap;
+-bool cap_net_bind_service(cap_flag_value_t flag)
+-{
+-	const cap_value_t cap_net_bind_service =3D CAP_NET_BIND_SERVICE;
+-	cap_flag_value_t original_value;
+-	bool was_effective =3D false;
 -	cap_t caps;
 -
--#ifdef CAP_IS_SUPPORTED
--	if (!CAP_IS_SUPPORTED(CAP_SETFCAP)) {
--		perror("cap_get_flag");
--		return false;
--	}
--#endif
 -	caps =3D cap_get_proc();
--	if (!caps) {
--		perror("cap_get_proc");
-+	__u64 caps;
-+
-+	/* The test checks for finer cap as CAP_NET_ADMIN,
-+	 * CAP_PERFMON, and CAP_BPF instead of CAP_SYS_ADMIN.
-+	 * Thus, disable CAP_SYS_ADMIN at the beginning.
-+	 */
-+	if (cap_disable_effective(1ULL << CAP_SYS_ADMIN, &caps)) {
-+		perror("cap_disable_effective(CAP_SYS_ADMIN)");
- 		return false;
- 	}
--	cap =3D (struct libcap *)caps;
--	bpf_priv =3D cap->data[1].effective & (1 << (39/* CAP_BPF */ - 32));
--	perfmon_priv =3D cap->data[1].effective & (1 << (38/* CAP_PERFMON */ - =
-32));
--	if (cap_get_flag(caps, CAP_NET_ADMIN, CAP_EFFECTIVE, &net_priv))
--		perror("cap_get_flag NET");
--	if (cap_free(caps))
--		perror("cap_free");
--	return bpf_priv && perfmon_priv && net_priv =3D=3D CAP_SET;
-+
-+	return (caps & ADMIN_CAPS) =3D=3D ADMIN_CAPS;
- }
+-	if (CHECK(!caps, "cap_get_proc", "errno %d", errno))
+-		goto free_caps;
+-
+-	if (CHECK(cap_get_flag(caps, CAP_NET_BIND_SERVICE, CAP_EFFECTIVE,
+-			       &original_value),
+-		  "cap_get_flag", "errno %d", errno))
+-		goto free_caps;
+-
+-	was_effective =3D (original_value =3D=3D CAP_SET);
+-
+-	if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
+-			       flag),
+-		  "cap_set_flag", "errno %d", errno))
+-		goto free_caps;
+-
+-	if (CHECK(cap_set_proc(caps), "cap_set_proc", "errno %d", errno))
+-		goto free_caps;
+-
+-free_caps:
+-	CHECK(cap_free(caps), "cap_free", "errno %d", errno);
+-	return was_effective;
+-}
+-
+ void test_bind_perm(void)
+ {
+-	bool cap_was_effective;
++	const __u64 net_bind_svc_cap =3D 1ULL << CAP_NET_BIND_SERVICE;
+ 	struct bind_perm *skel;
++	__u64 old_caps =3D 0;
+ 	int cgroup_fd;
 =20
- static void get_unpriv_disabled()
+ 	if (create_netns())
+@@ -105,7 +75,8 @@ void test_bind_perm(void)
+ 	if (!ASSERT_OK_PTR(skel, "bind_v6_prog"))
+ 		goto close_skeleton;
+=20
+-	cap_was_effective =3D cap_net_bind_service(CAP_CLEAR);
++	ASSERT_OK(cap_disable_effective(net_bind_svc_cap, &old_caps),
++		  "cap_disable_effective");
+=20
+ 	try_bind(AF_INET, 110, EACCES);
+ 	try_bind(AF_INET6, 110, EACCES);
+@@ -113,8 +84,9 @@ void test_bind_perm(void)
+ 	try_bind(AF_INET, 111, 0);
+ 	try_bind(AF_INET6, 111, 0);
+=20
+-	if (cap_was_effective)
+-		cap_net_bind_service(CAP_SET);
++	if (old_caps & net_bind_svc_cap)
++		ASSERT_OK(cap_enable_effective(net_bind_svc_cap, NULL),
++			  "cap_enable_effective");
+=20
+ close_skeleton:
+ 	bind_perm__destroy(skel);
 --=20
 2.30.2
 
