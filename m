@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2441E4DA908
-	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 04:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE204DA911
+	for <lists+bpf@lfdr.de>; Wed, 16 Mar 2022 04:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353487AbiCPDuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Mar 2022 23:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        id S1352102AbiCPDwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Mar 2022 23:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbiCPDux (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Mar 2022 23:50:53 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6714B85D;
-        Tue, 15 Mar 2022 20:49:40 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id r2so1018379iod.9;
-        Tue, 15 Mar 2022 20:49:40 -0700 (PDT)
+        with ESMTP id S1353510AbiCPDwK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Mar 2022 23:52:10 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEDA5F8FB;
+        Tue, 15 Mar 2022 20:50:57 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id r11so1014240ioh.10;
+        Tue, 15 Mar 2022 20:50:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=tllLYjeihl3WCpZ+6bZN55rZeTQGri6ijEtDDgRvbe4=;
-        b=LxWJKfE5jaE1eUPu+QzevjWsHseVQJmmUqPt35Eu2/PvGk5JtyqsS2wTt7Jl0vDNuX
-         xpkiYQH+0GMg+J5AcSoxZ1687AgKCZNDbH/cBwespePhcHI1ZEmQ6dgYFRhZTEt2Jrm/
-         +ZQ/iOQjfnlS+sTpmaSG4R2tr+AnOggCcEc5BrGu9776QstcOcm3EMpoaseX1biVWgam
-         6ecuZKAewwtehYRj6jwUg0uEPKYRgD/iMGIBH/i/Np9bAMuR9JcUV5+HoXPwRRzOKE2V
-         GFX2IYhjWYNDIUhD6pALRp/yKYLE3uCS3kofYZP81CiBo4kokVlNSmDPWT+4wLlYrs4C
-         VzWw==
+        bh=2YWxnhGUr74RaA4Fgl+4zc1b50wr4mfFgMA+iq41ak4=;
+        b=o/lz198jRvsibNYSqyw3ViIzpHrrgK9q6aYamrFp9Jfp4zWkxSLpU9chGHYWYC0v8A
+         8E4ieefk0+31bTHvQUElhD5/JpzBWMfIiuzc45MNfYb3sXbVZb9qoXgXWMUWczsVZwto
+         waIH0lLisRW62rByXg9hWAMTwC2OGoEakIezCj6fl7vq3duUqjFn3M/Dg3UvdAtwIhEW
+         YpHJwhUuNhL2gmT7Ib5ESD9dn+X9X0x3kU/xyqdw8WgSssArH4xwRCILIVc1bvmy8rBw
+         yPu0KRj8P4d8TcFkrWUHz5tpgnx/MTQNRfBLrkP54eARSwXcW1B+zJrCKmtTvNd16Fqb
+         RVgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=tllLYjeihl3WCpZ+6bZN55rZeTQGri6ijEtDDgRvbe4=;
-        b=cUpgEmgvHrSqDHwDSj+J/dYozCpLBM3Ot1PmAJf+CsAROgy+9bOEiXP/pKWIxheybE
-         FKAaeLNIYlDOf7jgNnTOLVn1ahQmtXLRPIl0JpboiDvpsJE4hweIXrmHtY8svyUAO/9Z
-         7KjmZ27SZKwVInEl/zjU12ahjhAuSPIoxHzefWW9gwH40dnFP6SADyWIpLPy9eyJ4/YN
-         CFWlnXbKod1CusXOEK0miPEdJsLUu3BWMqaZufawPTK+PNzhoCnNo00nnoHj/RFlUlj9
-         Q9WyFd15Kj+M/RkrsqZEaei+d8QbfNm2VZaguW7rwFBM1tYpnr2b67DaQ0mHyOyc3zpS
-         QHBQ==
-X-Gm-Message-State: AOAM532FzkPL5/i4ucmGPReGq3jpiiZoWFvYTvUbbqQ0jVf/VPIeYHUr
-        A0tFGJX8yN92b34WdREjKTl+s5U51iErgA==
-X-Google-Smtp-Source: ABdhPJziaLtJ5+FR+AXVhlTL1FqrjjadNaHkTfQIKdKkeXtdkIH9sP1RjmU1ux7c1KXxZPsRw1fv1Q==
-X-Received: by 2002:a02:6383:0:b0:314:d9da:13b2 with SMTP id j125-20020a026383000000b00314d9da13b2mr24698552jac.99.1647402579786;
-        Tue, 15 Mar 2022 20:49:39 -0700 (PDT)
+        bh=2YWxnhGUr74RaA4Fgl+4zc1b50wr4mfFgMA+iq41ak4=;
+        b=yoIM55yBWnppnuOssGMmZM3+chfYIczboh8Xe68hBm6bJJzIefR1F/pVH2SUfTPTgQ
+         BVmJP1nEGHesOpeo5k7K/Y4E1oQqccb6nQsf788uye/ydSKGBfAMnHFO1MFHs0ppPQMQ
+         zUza5rLqy4ZG6X6MgJlyeTx7g0ifGuY8auo8ku3xZrHNDhRXLtX3s946pt1/oDpvy1cT
+         WfR3RhM7bp9LBxXde+IWHeCYcXMby2ZDKxt8cQ5Bbb9kKzSV4pgqxnPpqJDVYPWScCBd
+         0Z86UMw0YB9xIWJeXwaEG248xcJ6YYsuMoShSGAzhI4lHMqTTftDyPzR00S5yNhU0wLD
+         htdw==
+X-Gm-Message-State: AOAM531efFg5KqkYQavM7DdEkBfo4o2mOk5nDbxR7U3GcfOVcj6ZIxjQ
+        shiTiscLv4gp88Kmdx6uRc8=
+X-Google-Smtp-Source: ABdhPJwwAp0GszTQYy7vNBG0qrRUvl6Ugq29iZ5kHySCCaseDTpZvwEIZ2uk97Sgfla93mx8LzSzMA==
+X-Received: by 2002:a02:666b:0:b0:31a:104a:c484 with SMTP id l43-20020a02666b000000b0031a104ac484mr6114487jaf.172.1647402656568;
+        Tue, 15 Mar 2022 20:50:56 -0700 (PDT)
 Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id u15-20020a056e021a4f00b002c665afb993sm595481ilv.11.2022.03.15.20.49.37
+        by smtp.gmail.com with ESMTPSA id l1-20020a056e021aa100b002c790f388c6sm531750ilv.77.2022.03.15.20.50.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Mar 2022 20:49:39 -0700 (PDT)
-Date:   Tue, 15 Mar 2022 20:49:32 -0700
+        Tue, 15 Mar 2022 20:50:56 -0700 (PDT)
+Date:   Tue, 15 Mar 2022 20:50:49 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
         netdev@vger.kernel.org
@@ -56,12 +56,11 @@ Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
         pabeni@redhat.com, echaudro@redhat.com,
         lorenzo.bianconi@redhat.com, toshiaki.makita1@gmail.com,
         andrii@kernel.org
-Message-ID: <62315e4c32c26_94df20814@john.notmuch>
-In-Reply-To: <8d228b106bc1903571afd1d77e797bffe9a5ea7c.1646989407.git.lorenzo@kernel.org>
+Message-ID: <62315e99df50b_94df208c8@john.notmuch>
+In-Reply-To: <d5dc039c3d4123426e7023a488c449181a7bc57f.1646989407.git.lorenzo@kernel.org>
 References: <cover.1646989407.git.lorenzo@kernel.org>
- <8d228b106bc1903571afd1d77e797bffe9a5ea7c.1646989407.git.lorenzo@kernel.org>
-Subject: RE: [PATCH v5 bpf-next 2/3] veth: rework veth_xdp_rcv_skb in order to
- accept non-linear skb
+ <d5dc039c3d4123426e7023a488c449181a7bc57f.1646989407.git.lorenzo@kernel.org>
+Subject: RE: [PATCH v5 bpf-next 3/3] veth: allow jumbo frames in xdp mode
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -77,16 +76,12 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Lorenzo Bianconi wrote:
-> Introduce veth_convert_skb_to_xdp_buff routine in order to
-> convert a non-linear skb into a xdp buffer. If the received skb
-> is cloned or shared, veth_convert_skb_to_xdp_buff will copy it
-> in a new skb composed by order-0 pages for the linear and the
-> fragmented area. Moreover veth_convert_skb_to_xdp_buff guarantees
-> we have enough headroom for xdp.
-> This is a preliminary patch to allow attaching xdp programs with frags
-> support on veth devices.
+> Allow increasing the MTU over page boundaries on veth devices
+> if the attached xdp program declares to support xdp fragments.
 > 
 > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 > ---
+
+Thanks!
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
