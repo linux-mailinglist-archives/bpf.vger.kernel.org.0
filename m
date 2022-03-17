@@ -2,94 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC3A4DCDB8
-	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 19:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71CF4DCEE5
+	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 20:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237474AbiCQSjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Mar 2022 14:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        id S229758AbiCQTiL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Mar 2022 15:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237479AbiCQSjB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 14:39:01 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C80B114DDE;
-        Thu, 17 Mar 2022 11:37:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1647542263; x=1679078263;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+aM5r8r1moVYf5XPT33TV5YGB8tm7BfoYyZ/LZfWi6A=;
-  b=K3mA1IR+WkA9j+KieCSbx2AgK3o1EDSy0RXXo0vPtPYpaRujAlcG15cd
-   fveqqVoXIRXi1YfH9qnAW2UQSPQ0HLPa+0yo2FpH+rBomutpea2fZzYpR
-   6PEyFYp2cbAUNAXvpiupi3Ueml2bGoDSDDnBTOMGPtGlTozgPq1Lekm83
-   2DOo2qEWby7dqEWxtsrNprQSp5elXt2GI9JzM99TGMwZrlAFhuus92Up8
-   Rrna4Z7LcSAG5Xw3Ud0WXjp6Ca3YbOXXri3ubUa+S8EwOoZ3Zv2is5Ipa
-   C0UwktBZdnupXQGZbbkwPeoI+Y4ePJuMOItzXMLMCKCippuwIgs/jc2iV
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="244405597"
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; 
-   d="scan'208";a="244405597"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2022 11:37:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,188,1643702400"; 
-   d="scan'208";a="558057204"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orsmga008.jf.intel.com with ESMTP; 17 Mar 2022 11:37:40 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, davem@davemloft.net,
-        magnus.karlsson@intel.com, alexandr.lobakin@intel.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH intel-net 3/3] ice: clear cmd_type_offset_bsz for TX rings
-Date:   Thu, 17 Mar 2022 19:36:29 +0100
-Message-Id: <20220317183629.340350-4-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20220317183629.340350-1-maciej.fijalkowski@intel.com>
-References: <20220317183629.340350-1-maciej.fijalkowski@intel.com>
+        with ESMTP id S229445AbiCQTiK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Mar 2022 15:38:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C89622B6D4;
+        Thu, 17 Mar 2022 12:36:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zya69H4T73q6+dj6a2oty/2yQG0Z1p5MEjn65dgAoAo=; b=nR5h0znrFXAEivgsTPEPKLrACx
+        +lDItqrslGaapsjlNjLsfewEkLWlBp+nl+C7ItjmaTzKhbEqzodg+aFrv3qf1JpNSTwm9cydLfLX8
+        VVvIT1WJXtI4TS3LeuM06LZ90y6l+nl+K4BgoEHuu9ntVBwPuMYsKCYcYqqekMvjn7pMokzgdeILY
+        g2ZkwCvm5R8W66pcJemJrhylC1nEPwregLgnNxUxL6ecIWMmQoX71dpJXnDIPsuOeE76XLMxiH/3y
+        S8OxR2rxvyZW9Jpe968bvh5rQxLNoZlPVhRtSebaI+wkzT2szqM0rDwsxw60wTNPTQjDt58CErB5Y
+        nfEucpbw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nUvv4-007GDz-7R; Thu, 17 Mar 2022 19:36:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1B9163001EA;
+        Thu, 17 Mar 2022 20:36:19 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E4E4E30C650C4; Thu, 17 Mar 2022 20:36:18 +0100 (CET)
+Date:   Thu, 17 Mar 2022 20:36:18 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        X86 ML <x86@kernel.org>, joao@overdrivepizza.com,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mark Rutland <mark.rutland@arm.com>, alyssa.milburn@intel.com,
+        Miroslav Benes <mbenes@suse.cz>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v4 00/45] x86: Kernel IBT
+Message-ID: <YjONspga4Ahoqxx4@hirez.programming.kicks-ass.net>
+References: <YinGZObp37b27LjK@hirez.programming.kicks-ass.net>
+ <YioBZmicMj7aAlLf@hirez.programming.kicks-ass.net>
+ <YionV0+v/cUBiOh0@hirez.programming.kicks-ass.net>
+ <YisnG9lW6kp8lBp3@hirez.programming.kicks-ass.net>
+ <CAADnVQJfffD9tH_cWThktCCwXeoRV1XLZq69rKK5vKy_y6BN8A@mail.gmail.com>
+ <20220312154407.GF28057@worktop.programming.kicks-ass.net>
+ <CAADnVQL7xrafAviUJg47LfvFSJpgZLwyP18Bm3S_KQwRyOpheQ@mail.gmail.com>
+ <20220313085214.GK28057@worktop.programming.kicks-ass.net>
+ <Yi9YOdn5Nbq9BBwd@hirez.programming.kicks-ass.net>
+ <CAK7LNASOjsSRixifxxUBKiFdR_Q_pSoBu98zYU_u_z1rtUD=zA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNASOjsSRixifxxUBKiFdR_Q_pSoBu98zYU_u_z1rtUD=zA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently when XDP rings are created, each descriptor gets its DD bit
-set, which turns out to be the wrong approach as it can lead to a
-situation where more descriptors get cleaned than it was supposed to,
-e.g. when AF_XDP busy poll is run with a large batch size. In this
-situation, the driver would request for more buffers than it is able to
-handle.
+On Wed, Mar 16, 2022 at 01:26:25AM +0900, Masahiro Yamada wrote:
+> Help?
+> 
+> I had never noticed this thread before because
+> you did not CC me or kbuild ML.
 
-Fix this by not setting the DD bits in ice_xdp_alloc_setup_rings(). They
-should be initialized to zero instead.
-
-Fixes: 9610bd988df9 ("ice: optimize XDP_TX workloads")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index c3c73a61bfd0..5332bb24001a 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -2533,7 +2533,7 @@ static int ice_xdp_alloc_setup_rings(struct ice_vsi *vsi)
- 		spin_lock_init(&xdp_ring->tx_lock);
- 		for (j = 0; j < xdp_ring->count; j++) {
- 			tx_desc = ICE_TX_DESC(xdp_ring, j);
--			tx_desc->cmd_type_offset_bsz = cpu_to_le64(ICE_TX_DESC_DTYPE_DESC_DONE);
-+			tx_desc->cmd_type_offset_bsz = 0;
- 		}
- 	}
- 
--- 
-2.27.0
-
+I thought I did.. the copy in my sent folder has you on Cc. Sorry if it
+went MIA. I'll go look at the patch.
