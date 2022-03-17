@@ -2,64 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 587804DD085
-	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 23:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B6C4DD138
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 00:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbiCQWJh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Mar 2022 18:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43564 "EHLO
+        id S230100AbiCQXgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Mar 2022 19:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiCQWJh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 18:09:37 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1186F329AE
-        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 15:08:19 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id b28so11303664lfc.4
-        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 15:08:18 -0700 (PDT)
+        with ESMTP id S230060AbiCQXgA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Mar 2022 19:36:00 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD00221B88
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 16:34:42 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id r2so7691727iod.9
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 16:34:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TGamtKyrfgLFxbZY8oE7yL8f+PF1XMRWIA3JmZfK0lE=;
-        b=AdzgWooYjKs6NDZJrVV9aMMb2PbZ0Thk9xk2yeF9W5EWWdMJSI0yxx2mXXvw0ne+dO
-         4VGgXqclQ21sAjAFZIAtKlW6xW9rCO+hjrTOBompuKD08VXVcqo4HNqC+7+spagJMjW8
-         bH8edRj/wob9oy2ePviH+2NED+3aWm3aE8q9eHnEF5EZSVoqEOqnMlZKKNhaoUq4CnPV
-         Ih4K5JxmrI1s+Qsfe4S3gIiYlSRW4WlOXxy//RZQoLg1bn3OXfsvyBnCQwp7WqKMOJGu
-         05hmElD+Q8b2US4dzdv+xlbHQDikmmfc3+7sxez//Lg9g+Z28J1H55L65Ik9F5dUqddx
-         7rJg==
+        bh=/80TYwdmZPytCnABRzYkRDicIJ5Gpr362hQj9hMXBQI=;
+        b=dleoHZ6QI2oMHPUJMjYoANKl3IfUoK5QZBR2oQKRP/oq1OeefYEXAjx25Xvw8kvrcE
+         BQM2AaiKpCrVMy0IaDzahjlyoU6zTkn0z9AkAJAbgtknLhEOdkhZzaApJwxXCFRR5AHS
+         k++iqjDhm5NlugLMGLZviuhyaRvPuY9G43J4RRSw6CGKdAE1pnJrq3PLyZNKrADMsNtq
+         kRlPBhuQD9rcGQFVqPmLnUWcN9ISWXYErBEfn/VX5X7lw4ZfR8q33OY2c9FXrsE0671P
+         6fvGr707EDVROnDYWS6hlhF0FQfTR7vMiAG4cntrdLCoAhBKQRhiCbsKBU5JWBFG+uFr
+         bxiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TGamtKyrfgLFxbZY8oE7yL8f+PF1XMRWIA3JmZfK0lE=;
-        b=DhhJQS1yftuvXtzF+/5nmWdha5MOeiHlmgLb61vic5B/K3GrgNXDchDm1jGBnY5Ni8
-         gsPUBpYOCYAcO6AuN73EbiScP4ib2an4KmMxOo+y2Pfe6zVoeNVoAtzw80GXytx/aPDt
-         QXzr9gkvcQjpl2n6OeJBlaNLsFF9nGCwtOu727/CUjt2zf6Nfkf/CZS/a14u0Qtsyguf
-         nCKsyde8g/2WBxIJ+6gTfZ/mJVWVkCm8RzsmHV1KtbWOVLe6UqJihv6/9+F0wk4n2Pc5
-         4b7West+4rp1fvMylY0mbQhY6ORW1ZnORY54xGm9x5IXzS9oaIZV9+cAxQX3UjcUatQB
-         3+aA==
-X-Gm-Message-State: AOAM530Ze+sJ9VL5yKhOe381NGT5JBtT/CRTs9B0wFy4UdLS1/NYzqlJ
-        NJBUxqTOlMCVhzqLoXJgEmc+xsekjd5uFrCiuS8=
-X-Google-Smtp-Source: ABdhPJxB1hfHAIiCZZIX5gfUSRu4K7rCAqdb848EXu0hAir7PSmnwZ7ZVXKCneSxK3INBAoc+ScGhW9dj7qDS1m5upg=
-X-Received: by 2002:a05:6512:36d4:b0:449:f469:2353 with SMTP id
- e20-20020a05651236d400b00449f4692353mr3670508lfs.437.1647554897167; Thu, 17
- Mar 2022 15:08:17 -0700 (PDT)
+        bh=/80TYwdmZPytCnABRzYkRDicIJ5Gpr362hQj9hMXBQI=;
+        b=Vs8Z7RQ10DFb3F+xpIYAqfxxxxv+IrFBUxHqYjf31XJ2Ks+v0dyodxgbG3TfA15fgp
+         4ZyVjMyDCN5iniV9pMeTEMtKKJpS8j0ztYy2DfzRWmdYTFvQ0Wtx3UTNXF17uKIFFvBi
+         gkWGTJUJ7HUiM9w+Wcx6CppTPl/mzEc5jwaEveH2ZJ7cYTUSHB9PaaF+AkAWiCaEAbKh
+         sqtjTvjywbWSMStG/1F1SIyDz/0hmNsqwaWd8OvR5XogS2esgN3FeHb221HiM88lqVdY
+         1ka7N3AQf/MXTIFKJPEwjcqx1qCWAEGbBGjlsy9dvkl49HVV/yPNbJLS28AmvaWo9gEJ
+         IJug==
+X-Gm-Message-State: AOAM533eFAJzHdZS5SDeej5gyy+vTg4Ey+fPOsji8EU0yp8ZcC4WAyCI
+        d21w4gi1FB+wjGcvluo5nrrtqqY1nCViMfmA11ue3Vml
+X-Google-Smtp-Source: ABdhPJzmH6ghlz9usS3BMVCggu4cSuW2DHKCmc/lPk5auAXGPxA5vlHFCwym6/ZGaUGgl4f/sQ1rxK52Uno0IWFnwwI=
+X-Received: by 2002:a6b:6f0c:0:b0:648:ea2d:41fe with SMTP id
+ k12-20020a6b6f0c000000b00648ea2d41femr3355568ioc.63.1647560081768; Thu, 17
+ Mar 2022 16:34:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220316195400.2998326-1-joannekoong@fb.com> <20220317022329.7wpltaqviw45qabl@kafai-mbp.dhcp.thefacebook.com>
- <CAJnrk1Z=hX_zayU084mJjd_UDqw4dBkTgoRy+9xGeGoSYfL1TQ@mail.gmail.com> <20220317180431.nfdo27ux65w53xlv@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220317180431.nfdo27ux65w53xlv@kafai-mbp.dhcp.thefacebook.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Thu, 17 Mar 2022 15:08:06 -0700
-Message-ID: <CAJnrk1YtwjWCZFOYNZNx9nxWyukk9z7tPGEzXVDLeKoP6xhSyg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Enable non-atomic allocations in local storage
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>
+References: <cover.1647473511.git.delyank@fb.com>
+In-Reply-To: <cover.1647473511.git.delyank@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 17 Mar 2022 16:34:30 -0700
+Message-ID: <CAEf4BzYvQkXRABzbds9xZhofA6K_S7L=_m849dsZddgp2BHizg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/5] Subskeleton support for BPF libraries
+To:     Delyan Kratunov <delyank@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -71,137 +67,147 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 17, 2022 at 11:04 AM Martin KaFai Lau <kafai@fb.com> wrote:
+On Wed, Mar 16, 2022 at 4:37 PM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> On Wed, Mar 16, 2022 at 10:26:57PM -0700, Joanne Koong wrote:
-> > On Wed, Mar 16, 2022 at 7:23 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Wed, Mar 16, 2022 at 12:54:00PM -0700, Joanne Koong wrote:
-> > > > From: Joanne Koong <joannelkoong@gmail.com>
-> > > >
-> > > > Currently, local storage memory can only be allocated atomically
-> > > > (GFP_ATOMIC). This restriction is too strict for sleepable bpf
-> > > > programs.
-> > > >
-> > > > In this patch, the verifier detects whether the program is sleepable,
-> > > > and passes the corresponding GFP_KERNEL or GFP_ATOMIC flag as a
-> > > > 5th argument to bpf_task/sk/inode_storage_get. This flag will propagate
-> > > > down to the local storage functions that allocate memory.
-> > > >
-> > > > Please note that bpf_task/sk/inode_storage_update_elem functions are
-> > > > invoked by userspace applications through syscalls. Preemption is
-> > > > disabled before bpf_task/sk/inode_storage_update_elem is called, which
-> > > > means they will always have to allocate memory atomically.
-> > > >
-> > > > The existing local storage selftests cover both the GFP_ATOMIC and the
-> > > > GFP_KERNEL cases in bpf_local_storage_update.
-> > > >
-> > > > v2 <- v1:
-> > > > * Allocate the memory before/after the raw_spin_lock_irqsave, depending
-> > > > on the gfp flags
-> > > > * Rename mem_flags to gfp_flags
-> > > > * Reword the comment "*mem_flags* is set by the bpf verifier" to
-> > > > "*gfp_flags* is a hidden argument provided by the verifier"
-> > > > * Add a sentence to the commit message about existing local storage
-> > > > selftests covering both the GFP_ATOMIC and GFP_KERNEL paths in
-> > > > bpf_local_storage_update.
-> > >
-> > > [ ... ]
-> > >
-> > > >  struct bpf_local_storage_data *
-> > > >  bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
-> > > > -                      void *value, u64 map_flags)
-> > > > +                      void *value, u64 map_flags, gfp_t gfp_flags)
-> > > >  {
-> > > >       struct bpf_local_storage_data *old_sdata = NULL;
-> > > > -     struct bpf_local_storage_elem *selem;
-> > > > +     struct bpf_local_storage_elem *selem = NULL;
-> > > >       struct bpf_local_storage *local_storage;
-> > > >       unsigned long flags;
-> > > >       int err;
-> > > > @@ -365,6 +366,9 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
-> > > >                    !map_value_has_spin_lock(&smap->map)))
-> > > >               return ERR_PTR(-EINVAL);
-> > > >
-> > > > +     if (gfp_flags == GFP_KERNEL && (map_flags & ~BPF_F_LOCK) != BPF_NOEXIST)
-> > > > +             return ERR_PTR(-EINVAL);
-> > > > +
-> > > >       local_storage = rcu_dereference_check(*owner_storage(smap, owner),
-> > > >                                             bpf_rcu_lock_held());
-> > > >       if (!local_storage || hlist_empty(&local_storage->list)) {
-> > > > @@ -373,11 +377,11 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
-> > > >               if (err)
-> > > >                       return ERR_PTR(err);
-> > > >
-> > > > -             selem = bpf_selem_alloc(smap, owner, value, true);
-> > > > +             selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
-> > > >               if (!selem)
-> > > >                       return ERR_PTR(-ENOMEM);
-> > > >
-> > > > -             err = bpf_local_storage_alloc(owner, smap, selem);
-> > > > +             err = bpf_local_storage_alloc(owner, smap, selem, gfp_flags);
-> > > >               if (err) {
-> > > >                       kfree(selem);
-> > > >                       mem_uncharge(smap, owner, smap->elem_size);
-> > > > @@ -404,6 +408,12 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
-> > > >               }
-> > > >       }
-> > > >
-> > > > +     if (gfp_flags == GFP_KERNEL) {
-> > > > +             selem = bpf_selem_alloc(smap, owner, value, true, gfp_flags);
-> > > I think this new path is not executed by the existing
-> > > "progs/local_storage.c" test which has sleepable lsm prog.  At least a second
-> > > BPF_MAP_TYPE_TASK_STORAGE map (or SK_STORAGE) is needed?
-> > > or there is other selftest covering this new path that I missed?
-> > Thanks for your feedback. I think I'm misunderstanding how the
-> > progs/local_storage.c test and/or local storage works then. Would you
-> > mind explaining why a second map is needed?
-> >
-> > This is my (faulty) understanding of what is happening:
-> > 1) In "local_storage.c" in "SEC("lsm.s/inode_rename")" there is a call
-> > to bpf_inode_storage_get with the BPF_LOCAL_STORAGE_GET_F_CREATE flag
-> > set, which will call into bpf_local_storage_update (which will create
-> > the local storage + the selem, and put it in the RCU for that
-> > inode_storage_map)
-> From reading the comment above the bpf_inode_storage_get(BPF_LOCAL_STORAGE_GET_F_CREATE):
-> "new_dentry->d_inode can be NULL", so it is expected to fail.
-> Meaning no storage is created.
+> In the quest for ever more modularity, a new need has arisen - the ability to
+> access data associated with a BPF library from a corresponding userspace library.
+> The catch is that we don't want the userspace library to know about the structure of the
+> final BPF object that the BPF library is linked into.
 >
-> >
-> > 2) Then, further down in the "local_storage.c" file in
-> > "SEC("lsm.s/bprm_committed_creds")", there is another call to
-> > bpf_inode_storage_get on the same inode_storage_map but on a different
-> > inode, also with the BPF_LOCAL_STORAGE_GET_F_CREATE flag set. This
-> > will also call into bpf_local_storage_update.
-> I belive this is the inode and the storage that the second
-> bpf_inode_storage_get(..., 0) in the "inode_rename" bpf-prog is supposed
-> to get.  Otherwise, I don't see how the test can pass.
+> In pursuit of this modularity, this patch series introduces *subskeletons.*
+> Subskeletons are similar in use and design to skeletons with a couple of differences:
 >
-> >
-> > 3) In bpf_local_storage_update from the call in #2, it sees that there
-> > is a local storage associated with this map in the RCU, it tries to
-> > look for the inode but doesn't find it, so it needs to allocate with
-> > GFP_KERNEL a new selem and then update with the new selem.
-> Correct, that will be the very first storage created for this inode
-> and it will go through the "if (!local_storage || hlist_empty(&local_storage->list))"
-> allocation code path in bpf_local_storage_update() which is
-> an existing code path.
+> 1. The generated storage types do not rely on contiguous storage for the library's
+> variables because they may be interspersed randomly throughout the final BPF object's sections.
 >
-Ah, I see. I mistakenly thought inodes shared local storages if you
-passed in the same map.
-Thanks for the clarification!
+> 2. Subskeletons do not own objects and instead require a loaded bpf_object* to
+> be passed at runtime in order to be initialized. By extension, symbols are resolved at
+> runtime by parsing the final object's BTF.
+>
+> 3. Subskeletons allow access to all global variables, programs, and custom maps. They also expose
+> the internal maps *of the final object*. This allows bpf_var_skeleton objects to contain a bpf_map**
+> instead of a section name.
+>
+> Changes since v3:
+>  - Re-add key/value type lookup for legacy user maps (fixing btf test)
+>  - Minor cleanups (missed sanitize_identifier call, error messages, formatting)
+>
+> Changes since v2:
+>  - Reuse SEC_NAME strict mode flag
+>  - Init bpf_map->btf_value_type_id on open for internal maps *and* user BTF maps
+>  - Test custom section names (.data.foo) and overlapping kconfig externs between the final object and the library
+>  - Minor review comments in gen.c & libbpf.c
+>
+> Changes since v1:
+>  - Introduced new strict mode knob for single-routine-in-.text compatibility behavior, which
+>    disproportionately affects library objects. bpftool works in 1.0 mode so subskeleton generation
+>    doesn't have to worry about this now.
+>  - Made bpf_map_btf_value_type_id available earlier and used it wherever applicable.
+>  - Refactoring in bpftool gen.c per review comments.
+>  - Subskels now use typeof() for array and func proto globals to avoid the need for runtime split btf.
+>  - Expanded the subskeleton test to include arrays, custom maps, extern maps, weak symbols, and kconfigs.
+>  - selftests/bpf/Makefile now generates a subskel.h for every skel.h it would make.
+>
+> For reference, here is a shortened subskeleton header:
+>
+> #ifndef __TEST_SUBSKELETON_LIB_SUBSKEL_H__
+> #define __TEST_SUBSKELETON_LIB_SUBSKEL_H__
+>
+> struct test_subskeleton_lib {
+>         struct bpf_object *obj;
+>         struct bpf_object_subskeleton *subskel;
+>         struct {
+>                 struct bpf_map *map2;
+>                 struct bpf_map *map1;
+>                 struct bpf_map *data;
+>                 struct bpf_map *rodata;
+>                 struct bpf_map *bss;
+>                 struct bpf_map *kconfig;
+>         } maps;
+>         struct {
+>                 struct bpf_program *lib_perf_handler;
+>         } progs;
+>         struct test_subskeleton_lib__data {
+>                 int *var6;
+>                 int *var2;
+>                 int *var5;
+>         } data;
+>         struct test_subskeleton_lib__rodata {
+>                 int *var1;
+>         } rodata;
+>         struct test_subskeleton_lib__bss {
+>                 struct {
+>                         int var3_1;
+>                         __s64 var3_2;
+>                 } *var3;
+>                 int *libout1;
+>                 typeof(int[4]) *var4;
+>                 typeof(int (*)()) *fn_ptr;
+>         } bss;
+>         struct test_subskeleton_lib__kconfig {
+>                 _Bool *CONFIG_BPF_SYSCALL;
+>         } kconfig;
+>
+> static inline struct test_subskeleton_lib *
+> test_subskeleton_lib__open(const struct bpf_object *src)
+> {
+>         struct test_subskeleton_lib *obj;
+>         struct bpf_object_subskeleton *s;
+>         int err;
+>
+>         ...
+>         s = (struct bpf_object_subskeleton *)calloc(1, sizeof(*s));
+>         ...
+>
+>         s->var_cnt = 9;
+>         ...
+>
+>         s->vars[0].name = "var6";
+>         s->vars[0].map = &obj->maps.data;
+>         s->vars[0].addr = (void**) &obj->data.var6;
+>   ...
+>
+>         /* maps */
+>         ...
+>
+>         /* programs */
+>         s->prog_cnt = 1;
+>         ...
+>
+>         err = bpf_object__open_subskeleton(s);
+>   ...
+>         return obj;
+> }
+> #endif /* __TEST_SUBSKELETON_LIB_SUBSKEL_H__ */
+>
 
-> I was talking specifically about the "if (gfp_flags == GFP_KERNEL)"
-> allocation code path.  Thus, it needs a second inode local storage (i.e.
-> a second inode map) for the same inode.  A second inode storage map
-> and another "bpf_inode_storage_get(&second_inode_storage_map, ...
-> BPF_LOCAL_STORAGE_GET_F_CREATE)" should be enough.
->
-> It seems it needs a re-spin because of the sparse warning.
-> I don't see an issue from the code, just thinking it will
-> be useful to have a test to exercise this path.  It
-> could be a follow up as an individual patch if not in v3.
+Looks great, applied to bpf-next. Thanks!
 
-I will submit a v3 that fixes the sparse warning and adds a case to
-exercise this path.
-Thanks for reviewing this, Martin!
+> Delyan Kratunov (5):
+>   libbpf: .text routines are subprograms in strict mode
+>   libbpf: init btf_{key,value}_type_id on internal map open
+>   libbpf: add subskeleton scaffolding
+>   bpftool: add support for subskeletons
+>   selftests/bpf: test subskeleton functionality
+>
+>  .../bpf/bpftool/Documentation/bpftool-gen.rst |  25 +
+>  tools/bpf/bpftool/bash-completion/bpftool     |  14 +-
+>  tools/bpf/bpftool/gen.c                       | 588 +++++++++++++++---
+>  tools/lib/bpf/libbpf.c                        | 161 ++++-
+>  tools/lib/bpf/libbpf.h                        |  29 +
+>  tools/lib/bpf/libbpf.map                      |   2 +
+>  tools/lib/bpf/libbpf_legacy.h                 |   4 +
+>  tools/testing/selftests/bpf/.gitignore        |   1 +
+>  tools/testing/selftests/bpf/Makefile          |  12 +-
+>  .../selftests/bpf/prog_tests/subskeleton.c    |  78 +++
+>  .../selftests/bpf/progs/test_subskeleton.c    |  28 +
+>  .../bpf/progs/test_subskeleton_lib.c          |  61 ++
+>  .../bpf/progs/test_subskeleton_lib2.c         |  16 +
+>  13 files changed, 910 insertions(+), 109 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/subskeleton.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib2.c
+>
+> --
+> 2.34.1
