@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95624DC556
-	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 13:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD244DC558
+	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 13:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbiCQMBg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Mar 2022 08:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
+        id S233268AbiCQMBh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Mar 2022 08:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbiCQMBd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 08:01:33 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2374F1760FA
-        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:14 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id l4-20020a17090a49c400b001c6840df4a3so1485902pjm.0
-        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:14 -0700 (PDT)
+        with ESMTP id S233293AbiCQMBh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Mar 2022 08:01:37 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07EEB1760CD
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:20 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a5so6665838pfv.2
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IxLGm3TUBTeiJ1cDt6BO0dvnlK6yfOCgL7OZiRlNqQ4=;
-        b=Bv7TEHZLd5NL9cg0JZRhv/jxo78YuELLiZE7LWl0vombEt0LtiJdAZIZ985tMdcnC3
-         1AoWJUkMy2n4X84V/NGOBBhgrXyomE6meYc57uht+NsNJ6ok+3fSv6CQm2Ow7Q4Q7x+m
-         1DmptP4957Lw94qXy88Ec222ZzcviNIkMxdGDdzoMJyXiGLy1ixUAmqlM8ghyRgTqivG
-         FRBqnW872PiWhm+YGk4tepjIW/Wiq2a57Xib3l0V9Roqs3P+gcH3kNEM6Lp4hWw0yTmR
-         FrVIPnsrx/wuLG3WN968n/Gywa+9vmrZLHheLb5bBmRFgzQv8En4HfpBdgfZBjuIVcgk
-         bddQ==
+        bh=6lS9OJlBjNMZdnkgsFi69QcDmAKhm7RM6gkY8j+NtWI=;
+        b=h1ikUmpOg8VD/XBbQttuqD09ENu6bHkk65P2v/tr73sbzLtFiuH3lcQxUI/a37Kv8z
+         SjWsUbLSTNGt5FVlpHVOgMhWLitlHbZXUFVhyN3LkmR83V9lC1DXp2KUgplUCtWbZ+KG
+         LdJ6+r4uWHZWBkxWOxWlA1FUpJekNA2B45vTq8CZZB72WMVsUxh9lVmPZWsFkTNei6/3
+         w40EIB6CnQEmOA1mMRjhGWtUwf2P1wSyOgxqgay4v775JKGvhE0TKCt+i/mdjj69fGY2
+         GuOpgdJQkefAnwpwNn1etzZvzzFXZzJpN83Mj2zXK58DghRTannSnxDppAIUzVyTlpeG
+         1mQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IxLGm3TUBTeiJ1cDt6BO0dvnlK6yfOCgL7OZiRlNqQ4=;
-        b=zrwCwY8GL8tJ1H39sy/Hr5sdtvnPMfm6Wlu6/4zbKtk2PoKbj7B66uAs8rT1/BuP8W
-         CKuY2i7cWl0veCLPBLIgL6gaosGtGSsRz50VKVviPmn0Pmi7C/mSeBtxS9EHHbY7+eS8
-         SU9xTkDkp2kO84mHmMASV0m80fJtMNO+yJ+s0hcQOwA6LlFc89kXUYbp7ihxacayuui7
-         0VdDCLRjaoWeuyZWanS+WzjFk7hi+sxNfJymVH3EhtCgOaBoIrwwLrNIGd6vEmYYtuoC
-         r9X+AabLmTwTUATqnjnEhLEroTRE0h8PywDtzEGKBuB+BAURxTz+dOXbRKyUuhXkhI6Y
-         WRuw==
-X-Gm-Message-State: AOAM531tsxNuq1066Ri5Dz0ws1GESxE8V5HhTyv9QYBRS6EDcqa6e7FT
-        2g0zSNYUPazEi9vq9gSF19b40Nev5s8=
-X-Google-Smtp-Source: ABdhPJwf5IhqoRLLga/sKTLbrGIZkLutchABlNe6BDL7hO0EgEiktiQpMLlNp1NReARrFYqB3KMg8A==
-X-Received: by 2002:a17:90b:3b42:b0:1bf:b72:30e9 with SMTP id ot2-20020a17090b3b4200b001bf0b7230e9mr15321319pjb.135.1647518412620;
-        Thu, 17 Mar 2022 05:00:12 -0700 (PDT)
+        bh=6lS9OJlBjNMZdnkgsFi69QcDmAKhm7RM6gkY8j+NtWI=;
+        b=LwcrhpOisbJhi8Xv8xsO6rlHukcrghBYqMBMxl5/kk46MaoDkBjfZuj6n22eh5siDb
+         cMXBcBuE6qFy8eE/dZMdMZvyiOl9Fc3UQ105oD2HgC7OenXzdYeKWCq66n2+1C2yZdyt
+         xpLFTxZsejpvU7PhcrWxBI4okNHsRhd7V0b54bgKsIg5iWKb+Tay1JL9E5XJHEq1iZ59
+         fohzZVUaGV589JBrOkMtNpR1BbVaZaS24tw6sgNRw67wtiJv9JamPS7B7AUvpaG1MaCI
+         aZ4gdrEeyhfrTWxdcrfZzlgHxyHaDY6KW9NWBsT/gHSGdnGnNqYYbRx/lNInS8DtbZTs
+         ICug==
+X-Gm-Message-State: AOAM530oq/u6UyNkHkkFaI80l5EnoVzQRHY/rAVFJb7+NVbxAkczcs2D
+        Grg+Re6oh5f5Ty+reT1ZrnaXk4EU+N0=
+X-Google-Smtp-Source: ABdhPJy0L67y2Af4FgkxKUJWgCohTduKkkl/QYJSdz+CLbhnX3N3MWdt1snWY39K1piyUYJ5ghsyjg==
+X-Received: by 2002:a65:494b:0:b0:380:6517:cb32 with SMTP id q11-20020a65494b000000b003806517cb32mr3458054pgs.145.1647518418702;
+        Thu, 17 Mar 2022 05:00:18 -0700 (PDT)
 Received: from localhost ([157.51.20.101])
-        by smtp.gmail.com with ESMTPSA id h8-20020a056a00170800b004fa0e231f31sm7344927pfc.132.2022.03.17.05.00.11
+        by smtp.gmail.com with ESMTPSA id j14-20020a056a00174e00b004f66ce6367bsm7805637pfc.147.2022.03.17.05.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Mar 2022 05:00:12 -0700 (PDT)
+        Thu, 17 Mar 2022 05:00:18 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -54,14 +54,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH bpf-next v2 03/15] bpf: Allow storing unreferenced kptr in map
-Date:   Thu, 17 Mar 2022 17:29:45 +0530
-Message-Id: <20220317115957.3193097-4-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 04/15] bpf: Allow storing referenced kptr in map
+Date:   Thu, 17 Mar 2022 17:29:46 +0530
+Message-Id: <20220317115957.3193097-5-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220317115957.3193097-1-memxor@gmail.com>
 References: <20220317115957.3193097-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=27345; h=from:subject; bh=wqrud5Rb/MhuPWdDiPs1qwJ6Cta3XZAdJuaxOnEKMcg=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiMyKj9/I17gNxhAGthjFv/Inc7JGg+ITxV0zlxTQL IQLkTs2JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYjMiowAKCRBM4MiGSL8RyjQrEA Cm81s63zYR5XX/w015sPMoA0wKdMbYHdzy3iPQt36I7AHi7GSSLhRMycBRKoU82DSfxkGJ0HMrT69b ZXKT8GrzqA6fyogghCEXjbEUPzadj2qYAstnnxXA9rjhTFKNB7hG9el/PF8ZpdAUc5kqwvGxlAL4+O v716d8HnWpikRDey94yRNtDj0thvDodFNLJ05kJktwm5m0vMI2gjHbep8F3OH125kTs6xjVKyzqZho Lmoo+vnl5RceavIVb402wgb8V+5wxxQ0Nu0zo2Zb4cxMn2yMMYQ6pZmxY+iwwcihBpu1/i/yrtUGmK yPePELxp520BccNXM8c92tWuSKM4Vm71rsqSgENLHkmjvT4X7U626rssYOWVyDPeco7CHl27UpJqMw QlnxyQ1KfK9LO+FTZ3/izN42XRONOlkYRqg+C4YUnuRFTFkp6aiQkPDbW5mKuBdmQF2mQ/DMygjkmQ 6xD/MlSq3ScbjlVo8J1YkcmDU49lTpsdviZJSVegOc30ah6Rc19ByUdt+TGp/isR9GtI2qR8fF5ne0 8deqN10K3IV61QEX0o9CQp9dConVtfYJPy2VXIWj7y605DVC+1KoJvQkOcFxdAzeO0c04KtdIBOPX1 NEo6GuYZbRBBFWa2qvn5UW2UU06U2dMVDh80l3Bifjj9gStJuzcJl/1Is79A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=21149; h=from:subject; bh=0+hQeKd47+6mfEtztUdxy0m2jv0Tl1WOvS8D0q+hXZk=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiMyKjnBQsOavMxYT2wxybzitohwYJvk72HftwU5rn rHmR6dOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYjMiowAKCRBM4MiGSL8RyrfMEA CMvg6A+O3/+9lWZjWSZR9pr5vAl/LYqxSTygb8KXW1Zd+CasiFQaS2/z7Y85fP1r71BXjHCG8R+ElR jzOiivS7gxMtvv7pf9oQQe1020ZbqmtTt6+FKwQZTem+JvWB6D1yPwQZbCJendl1tEAFXznKaTkmml fD+XuRdzn0fnrjOpWrwS/JBpnHl3jYR8Lj+AeAHGhFWv1yJ/w1JqsUQGVgBuiwArJJLTsHD1cd++9z MGp/WfT6rVjMomWqEZfOoZLCgWauTkQMzTs5Z1W8G9ecMZajrRyYp41nm2J7J+hMsG2bo6FCx3VRij zgAvwN3Wl4wjVmZhbup2HuNU2YvUbWrghfdsNMn5RUF4A/7TX/uIRZWP7so+l9d7PtT536px1YP3q0 VgyIYmhJdIgfoMwP1pRwNNMoPFIUvAxGmKAJsSqMEgnIbuEpnZIehOQ9ud3M1j2OH6D0UDDr1v6afw 3+IEk6RVmBXwmZbNqgnp662dUXDV6xjDtkgP8z+7SJs/pjeNCmC1jGRKtq1M3zk9uRNr/X63tTdDj0 wHR3Ah9CG2JHlA3xn/S5hSIpx+dwz7e3Ln2QGnwl6pBHmSfpi5hFM3XE0+pJ2q85OCg/msll7QSYHg X65MOv3yB6wTvuFYaxye2ZJTp2eebRgnK2OZbbOkhKGCJe/IfNChaMszGiXg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,836 +74,571 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit introduces a new pointer type 'kptr' which can be embedded
-in a map value as holds a PTR_TO_BTF_ID stored by a BPF program during
-its invocation. Storing to such a kptr, BPF program's PTR_TO_BTF_ID
-register must have the same type as in the map value's BTF, and loading
-a kptr marks the destination register as PTR_TO_BTF_ID with the correct
-kernel BTF and BTF ID.
+Extending the code in previous commit, introduce referenced kptr
+support, which needs to be tagged using 'kptr_ref' tag instead. Unlike
+unreferenced kptr, referenced kptr have a lot more restrictions. In
+addition to the type matching, only a newly introduced bpf_kptr_xchg
+helper is allowed to modify the map value at that offset. This transfers
+the referenced pointer being stored into the map, releasing the
+references state for the program, and returning the old value and
+creating new reference state for the returned pointer.
 
-Such kptr are unreferenced, i.e. by the time another invocation of the
-BPF program loads this pointer, the object which the pointer points to
-may not longer exist. Since PTR_TO_BTF_ID loads (using BPF_LDX) are
-patched to PROBE_MEM loads by the verifier, it would safe to allow user
-to still access such invalid pointer, but passing such pointers into
-BPF helpers and kfuncs should not be permitted. A future patch in this
-series will close this gap.
+Similar to unreferenced pointer case, return value for this case will
+also be PTR_TO_BTF_ID_OR_NULL. The reference for the returned pointer
+must either be eventually released by calling the corresponding release
+function, otherwise it must be transferred into another map.
 
-The flexibility offered by allowing programs to dereference such invalid
-pointers while being safe at runtime frees the verifier from doing
-complex lifetime tracking. As long as the user may ensure that the
-object remains valid, it can ensure data read by it from the kernel
-object is valid.
+It is also allowed to call bpf_kptr_xchg with a NULL pointer, to clear
+the value, and obtain the old value if any.
 
-The user indicates that a certain pointer must be treated as kptr
-capable of accepting stores of PTR_TO_BTF_ID of a certain type, by using
-a BTF type tag 'kptr' on the pointed to type of the pointer. Then, this
-information is recorded in the object BTF which will be passed into the
-kernel by way of map's BTF information. The name and kind from the map
-value BTF is used to look up the in-kernel type, and the actual BTF and
-BTF ID is recorded in the map struct in a new kptr_off_tab member. For
-now, only storing pointers to structs is permitted.
+BPF_LDX, BPF_STX, and BPF_ST cannot access referenced kptr. A future
+commit will permit using BPF_LDX for such pointers, but attempt at
+making it safe, since the lifetime of object won't be guaranteed.
 
-An example of this specification is shown below:
+There are valid reasons to enforce the restriction of permitting only
+bpf_kptr_xchg to operate on referenced kptr. The pointer value must be
+consistent in face of concurrent modification, and any prior values
+contained in the map must also be released before a new one is moved
+into the map. To ensure proper transfer of this ownership, bpf_kptr_xchg
+returns the old value, which the verifier would require the user to
+either free or move into another map, and releases the reference held
+for the pointer being moved in.
 
-	#define __kptr __attribute__((btf_type_tag("kptr")))
-
-	struct map_value {
-		...
-		struct task_struct __kptr *task;
-		...
-	};
-
-Then, in a BPF program, user may store PTR_TO_BTF_ID with the type
-task_struct into the map, and then load it later.
-
-Note that the destination register is marked PTR_TO_BTF_ID_OR_NULL, as
-the verifier cannot know whether the value is NULL or not statically, it
-must treat all potential loads at that map value offset as loading a
-possibly NULL pointer.
-
-Only BPF_LDX, BPF_STX, and BPF_ST with insn->imm = 0 (to denote NULL)
-are allowed instructions that can access such a pointer. On BPF_LDX, the
-destination register is updated to be a PTR_TO_BTF_ID, and on BPF_STX,
-it is checked whether the source register type is a PTR_TO_BTF_ID with
-same BTF type as specified in the map BTF. The access size must always
-be BPF_DW.
-
-For the map in map support, the kptr_off_tab for outer map is copied
-from the inner map's kptr_off_tab. It was chosen to do a deep copy
-instead of introducing a refcount to kptr_off_tab, because the copy only
-needs to be done when paramterizing using inner_map_fd in the map in map
-case, hence would be unnecessary for all other users.
-
-It is not permitted to use MAP_FREEZE command and mmap for BPF map
-having kptr, similar to the bpf_timer case.
+In the future, direct BPF_XCHG instruction may also be permitted to work
+like bpf_kptr_xchg helper.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h     |  29 +++++-
- include/linux/btf.h     |   2 +
- kernel/bpf/btf.c        | 151 +++++++++++++++++++++++++----
- kernel/bpf/map_in_map.c |   5 +-
- kernel/bpf/syscall.c    | 110 ++++++++++++++++++++-
- kernel/bpf/verifier.c   | 207 ++++++++++++++++++++++++++++++++--------
- 6 files changed, 442 insertions(+), 62 deletions(-)
+ include/linux/bpf.h            |   7 ++
+ include/uapi/linux/bpf.h       |  12 +++
+ kernel/bpf/btf.c               |  20 +++-
+ kernel/bpf/helpers.c           |  21 +++++
+ kernel/bpf/verifier.c          | 167 +++++++++++++++++++++++++++++----
+ tools/include/uapi/linux/bpf.h |  12 +++
+ 6 files changed, 219 insertions(+), 20 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 88449fbbe063..f35920d279dd 100644
+index f35920d279dd..702aa882e4a3 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -155,6 +155,22 @@ struct bpf_map_ops {
- 	const struct bpf_iter_seq_info *iter_seq_info;
+@@ -160,10 +160,15 @@ enum {
+ 	BPF_MAP_VALUE_OFF_MAX = 8,
  };
  
 +enum {
-+	/* Support at most 8 pointers in a BPF map value */
-+	BPF_MAP_VALUE_OFF_MAX = 8,
++	BPF_MAP_VALUE_OFF_F_REF = (1U << 0),
 +};
 +
-+struct bpf_map_value_off_desc {
-+	u32 offset;
-+	u32 btf_id;
-+	struct btf *btf;
-+};
-+
-+struct bpf_map_value_off {
-+	u32 nr_off;
-+	struct bpf_map_value_off_desc off[];
-+};
-+
- struct bpf_map {
- 	/* The first two cachelines with read-mostly members of which some
- 	 * are also accessed in fast-path (e.g. ops, max_entries).
-@@ -171,6 +187,7 @@ struct bpf_map {
- 	u64 map_extra; /* any per-map-type extra fields */
- 	u32 map_flags;
- 	int spin_lock_off; /* >=0 valid offset, <0 error */
-+	struct bpf_map_value_off *kptr_off_tab;
- 	int timer_off; /* >=0 valid offset, <0 error */
- 	u32 id;
- 	int numa_node;
-@@ -184,7 +201,7 @@ struct bpf_map {
- 	char name[BPF_OBJ_NAME_LEN];
- 	bool bypass_spec_v1;
- 	bool frozen; /* write-once; write-protected by freeze_mutex */
--	/* 14 bytes hole */
-+	/* 6 bytes hole */
+ struct bpf_map_value_off_desc {
+ 	u32 offset;
+ 	u32 btf_id;
+ 	struct btf *btf;
++	int flags;
+ };
  
- 	/* The 3rd and 4th cacheline with misc members to avoid false sharing
- 	 * particularly with refcounting.
-@@ -217,6 +234,11 @@ static inline bool map_value_has_timer(const struct bpf_map *map)
- 	return map->timer_off >= 0;
- }
+ struct bpf_map_value_off {
+@@ -413,6 +418,7 @@ enum bpf_arg_type {
+ 	ARG_PTR_TO_STACK,	/* pointer to stack */
+ 	ARG_PTR_TO_CONST_STR,	/* pointer to a null terminated read-only string */
+ 	ARG_PTR_TO_TIMER,	/* pointer to bpf_timer */
++	ARG_PTR_TO_KPTR,	/* pointer to kptr */
+ 	__BPF_ARG_TYPE_MAX,
  
-+static inline bool map_value_has_kptr(const struct bpf_map *map)
-+{
-+	return !IS_ERR_OR_NULL(map->kptr_off_tab);
-+}
-+
- static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
- {
- 	if (unlikely(map_value_has_spin_lock(map)))
-@@ -1497,6 +1519,11 @@ void bpf_prog_put(struct bpf_prog *prog);
- void bpf_prog_free_id(struct bpf_prog *prog, bool do_idr_lock);
- void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock);
+ 	/* Extended arg_types. */
+@@ -422,6 +428,7 @@ enum bpf_arg_type {
+ 	ARG_PTR_TO_SOCKET_OR_NULL	= PTR_MAYBE_NULL | ARG_PTR_TO_SOCKET,
+ 	ARG_PTR_TO_ALLOC_MEM_OR_NULL	= PTR_MAYBE_NULL | ARG_PTR_TO_ALLOC_MEM,
+ 	ARG_PTR_TO_STACK_OR_NULL	= PTR_MAYBE_NULL | ARG_PTR_TO_STACK,
++	ARG_PTR_TO_BTF_ID_OR_NULL	= PTR_MAYBE_NULL | ARG_PTR_TO_BTF_ID,
  
-+struct bpf_map_value_off_desc *bpf_map_kptr_off_contains(struct bpf_map *map, u32 offset);
-+void bpf_map_free_kptr_off_tab(struct bpf_map *map);
-+struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map);
-+bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b);
-+
- struct bpf_map *bpf_map_get(u32 ufd);
- struct bpf_map *bpf_map_get_with_uref(u32 ufd);
- struct bpf_map *__bpf_map_get(struct fd f);
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 36bc09b8e890..5b578dc81c04 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -123,6 +123,8 @@ bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
- 			   u32 expected_offset, u32 expected_size);
- int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t);
- int btf_find_timer(const struct btf *btf, const struct btf_type *t);
-+struct bpf_map_value_off *btf_find_kptr(const struct btf *btf,
-+					const struct btf_type *t);
- bool btf_type_is_void(const struct btf_type *t);
- s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind);
- const struct btf_type *btf_type_skip_modifiers(const struct btf *btf,
+ 	/* This must be the last entry. Its purpose is to ensure the enum is
+ 	 * wide enough to hold the higher bits reserved for bpf_type_flag.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 99fab54ae9c0..d45568746e79 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5129,6 +5129,17 @@ union bpf_attr {
+  *		The **hash_algo** is returned on success,
+  *		**-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
+  *		invalid arguments are passed.
++ *
++ * void *bpf_kptr_xchg(void *map_value, void *ptr)
++ *	Description
++ *		Exchange kptr at pointer *map_value* with *ptr*, and return the
++ *		old value. *ptr* can be NULL, otherwise it must be a referenced
++ *		pointer which will be released when this helper is called.
++ *	Return
++ *		The old value of kptr (which can be NULL). The returned pointer
++ *		if not NULL, is a reference which must be released using its
++ *		corresponding release function, or moved into a BPF map before
++ *		program exit.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5325,6 +5336,7 @@ union bpf_attr {
+ 	FN(copy_from_user_task),	\
+ 	FN(skb_set_tstamp),		\
+ 	FN(ima_file_hash),		\
++	FN(kptr_xchg),			\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 5b2824332880..9ac9364ef533 100644
+index 9ac9364ef533..7b4179667bf1 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -3164,33 +3164,79 @@ static void btf_struct_log(struct btf_verifier_env *env,
- enum {
- 	BTF_FIELD_SPIN_LOCK,
- 	BTF_FIELD_TIMER,
-+	BTF_FIELD_KPTR,
-+};
-+
-+enum {
-+	BTF_FIELD_IGNORE = 0,
-+	BTF_FIELD_FOUND  = 1,
- };
- 
+@@ -3175,6 +3175,7 @@ enum {
  struct btf_field_info {
-+	const struct btf_type *type;
+ 	const struct btf_type *type;
  	u32 off;
++	int flags;
  };
  
  static int btf_find_field_struct(const struct btf *btf, const struct btf_type *t,
--				 u32 off, int sz, struct btf_field_info *info)
-+				 u32 off, int sz, struct btf_field_info *info,
-+				 int info_cnt, int idx)
+@@ -3196,7 +3197,8 @@ static int btf_find_field_kptr(const struct btf *btf, const struct btf_type *t,
+ 			       u32 off, int sz, struct btf_field_info *info,
+ 			       int info_cnt, int idx)
  {
- 	if (!__btf_type_is_struct(t))
--		return 0;
-+		return BTF_FIELD_IGNORE;
- 	if (t->size != sz)
--		return 0;
--	if (info->off != -ENOENT)
--		/* only one such field is allowed */
-+		return BTF_FIELD_IGNORE;
-+	if (idx >= info_cnt)
- 		return -E2BIG;
-+	info[idx].off = off;
- 	info->off = off;
--	return 0;
-+	return BTF_FIELD_FOUND;
-+}
-+
-+static int btf_find_field_kptr(const struct btf *btf, const struct btf_type *t,
-+			       u32 off, int sz, struct btf_field_info *info,
-+			       int info_cnt, int idx)
-+{
-+	bool kptr_tag = false;
-+
-+	/* For PTR, sz is always == 8 */
-+	if (!btf_type_is_ptr(t))
-+		return BTF_FIELD_IGNORE;
-+	t = btf_type_by_id(btf, t->type);
-+
-+	while (btf_type_is_type_tag(t)) {
-+		if (!strcmp("kptr", __btf_name_by_offset(btf, t->name_off))) {
+-	bool kptr_tag = false;
++	bool kptr_tag = false, kptr_ref_tag = false;
++	int tags;
+ 
+ 	/* For PTR, sz is always == 8 */
+ 	if (!btf_type_is_ptr(t))
+@@ -3209,12 +3211,21 @@ static int btf_find_field_kptr(const struct btf *btf, const struct btf_type *t,
+ 			if (kptr_tag)
+ 				return -EEXIST;
+ 			kptr_tag = true;
++		} else if (!strcmp("kptr_ref", __btf_name_by_offset(btf, t->name_off))) {
 +			/* repeated tag */
-+			if (kptr_tag)
++			if (kptr_ref_tag)
 +				return -EEXIST;
-+			kptr_tag = true;
-+		}
-+		/* Look for next tag */
-+		t = btf_type_by_id(btf, t->type);
-+	}
-+	if (!kptr_tag)
-+		return BTF_FIELD_IGNORE;
++			kptr_ref_tag = true;
+ 		}
+ 		/* Look for next tag */
+ 		t = btf_type_by_id(btf, t->type);
+ 	}
+-	if (!kptr_tag)
 +
-+	/* Get the base type */
-+	if (btf_type_is_modifier(t))
-+		t = btf_type_skip_modifiers(btf, t->type, NULL);
-+	/* Only pointer to struct is allowed */
-+	if (!__btf_type_is_struct(t))
++	tags = kptr_tag + kptr_ref_tag;
++	if (!tags)
+ 		return BTF_FIELD_IGNORE;
++	else if (tags > 1)
 +		return -EINVAL;
-+
-+	if (idx >= info_cnt)
-+		return -E2BIG;
-+	info[idx].type = t;
-+	info[idx].off = off;
-+	return BTF_FIELD_FOUND;
- }
  
- static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t,
- 				 const char *name, int sz, int align, int field_type,
--				 struct btf_field_info *info)
-+				 struct btf_field_info *info, int info_cnt)
- {
- 	const struct btf_member *member;
-+	int ret, idx = 0;
- 	u32 i, off;
--	int ret;
+ 	/* Get the base type */
+ 	if (btf_type_is_modifier(t))
+@@ -3225,6 +3236,10 @@ static int btf_find_field_kptr(const struct btf *btf, const struct btf_type *t,
  
- 	for_each_member(i, t, member) {
- 		const struct btf_type *member_type = btf_type_by_id(btf,
-@@ -3210,24 +3256,33 @@ static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t
- 		switch (field_type) {
- 		case BTF_FIELD_SPIN_LOCK:
- 		case BTF_FIELD_TIMER:
--			ret = btf_find_field_struct(btf, member_type, off, sz, info);
-+			ret = btf_find_field_struct(btf, member_type, off, sz, info, info_cnt, idx);
-+			if (ret < 0)
-+				return ret;
-+			break;
-+		case BTF_FIELD_KPTR:
-+			ret = btf_find_field_kptr(btf, member_type, off, sz, info, info_cnt, idx);
- 			if (ret < 0)
- 				return ret;
- 			break;
- 		default:
- 			return -EFAULT;
- 		}
-+
-+		if (ret == BTF_FIELD_IGNORE)
-+			continue;
-+		++idx;
+ 	if (idx >= info_cnt)
+ 		return -E2BIG;
++	if (kptr_ref_tag)
++		info[idx].flags = BPF_MAP_VALUE_OFF_F_REF;
++	else
++		info[idx].flags = 0;
+ 	info[idx].type = t;
+ 	info[idx].off = off;
+ 	return BTF_FIELD_FOUND;
+@@ -3402,6 +3417,7 @@ struct bpf_map_value_off *btf_find_kptr(const struct btf *btf,
+ 		tab->off[i].offset = info_arr[i].off;
+ 		tab->off[i].btf_id = id;
+ 		tab->off[i].btf = off_btf;
++		tab->off[i].flags = info_arr[i].flags;
+ 		tab->nr_off = i + 1;
  	}
--	return 0;
-+	return idx;
+ 	return tab;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 315053ef6a75..cb717bfbda19 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1374,6 +1374,25 @@ void bpf_timer_cancel_and_free(void *val)
+ 	kfree(t);
  }
  
- static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
- 				const char *name, int sz, int align, int field_type,
--				struct btf_field_info *info)
-+				struct btf_field_info *info, int info_cnt)
- {
- 	const struct btf_var_secinfo *vsi;
-+	int ret, idx = 0;
- 	u32 i, off;
--	int ret;
- 
- 	for_each_vsi(i, t, vsi) {
- 		const struct btf_type *var = btf_type_by_id(btf, vsi->type);
-@@ -3245,25 +3300,34 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
- 		switch (field_type) {
- 		case BTF_FIELD_SPIN_LOCK:
- 		case BTF_FIELD_TIMER:
--			ret = btf_find_field_struct(btf, var_type, off, sz, info);
-+			ret = btf_find_field_struct(btf, var_type, off, sz, info, info_cnt, idx);
-+			if (ret < 0)
-+				return ret;
-+			break;
-+		case BTF_FIELD_KPTR:
-+			ret = btf_find_field_kptr(btf, var_type, off, sz, info, info_cnt, idx);
- 			if (ret < 0)
- 				return ret;
- 			break;
- 		default:
- 			return -EFAULT;
- 		}
-+
-+		if (ret == BTF_FIELD_IGNORE)
-+			continue;
-+		++idx;
- 	}
--	return 0;
-+	return idx;
- }
- 
- static int btf_find_field(const struct btf *btf, const struct btf_type *t,
- 			  const char *name, int sz, int align, int field_type,
--			  struct btf_field_info *info)
-+			  struct btf_field_info *info, int info_cnt)
- {
- 	if (__btf_type_is_struct(t))
--		return btf_find_struct_field(btf, t, name, sz, align, field_type, info);
-+		return btf_find_struct_field(btf, t, name, sz, align, field_type, info, info_cnt);
- 	else if (btf_type_is_datasec(t))
--		return btf_find_datasec_var(btf, t, name, sz, align, field_type, info);
-+		return btf_find_datasec_var(btf, t, name, sz, align, field_type, info, info_cnt);
- 	return -EINVAL;
- }
- 
-@@ -3279,7 +3343,7 @@ int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t)
- 	ret = btf_find_field(btf, t, "bpf_spin_lock",
- 			     sizeof(struct bpf_spin_lock),
- 			     __alignof__(struct bpf_spin_lock),
--			     BTF_FIELD_SPIN_LOCK, &info);
-+			     BTF_FIELD_SPIN_LOCK, &info, 1);
- 	if (ret < 0)
- 		return ret;
- 	return info.off;
-@@ -3293,12 +3357,61 @@ int btf_find_timer(const struct btf *btf, const struct btf_type *t)
- 	ret = btf_find_field(btf, t, "bpf_timer",
- 			     sizeof(struct bpf_timer),
- 			     __alignof__(struct bpf_timer),
--			     BTF_FIELD_TIMER, &info);
-+			     BTF_FIELD_TIMER, &info, 1);
- 	if (ret < 0)
- 		return ret;
- 	return info.off;
- }
- 
-+struct bpf_map_value_off *btf_find_kptr(const struct btf *btf,
-+					const struct btf_type *t)
++BPF_CALL_2(bpf_kptr_xchg, void *, map_value, void *, ptr)
 +{
-+	struct btf_field_info info_arr[BPF_MAP_VALUE_OFF_MAX];
-+	struct bpf_map_value_off *tab;
-+	int ret, i, nr_off;
++	unsigned long *kptr = map_value;
 +
-+	/* Revisit stack usage when bumping BPF_MAP_VALUE_OFF_MAX */
-+	BUILD_BUG_ON(BPF_MAP_VALUE_OFF_MAX != 8);
-+
-+	ret = btf_find_field(btf, t, NULL, sizeof(u64), __alignof__(u64),
-+			     BTF_FIELD_KPTR, info_arr, ARRAY_SIZE(info_arr));
-+	if (ret < 0)
-+		return ERR_PTR(ret);
-+	if (!ret)
-+		return 0;
-+
-+	nr_off = ret;
-+	tab = kzalloc(offsetof(struct bpf_map_value_off, off[nr_off]), GFP_KERNEL | __GFP_NOWARN);
-+	if (!tab)
-+		return ERR_PTR(-ENOMEM);
-+
-+	tab->nr_off = 0;
-+	for (i = 0; i < nr_off; i++) {
-+		const struct btf_type *t;
-+		struct btf *off_btf;
-+		s32 id;
-+
-+		t = info_arr[i].type;
-+		id = bpf_find_btf_id(__btf_name_by_offset(btf, t->name_off), BTF_INFO_KIND(t->info),
-+				     &off_btf);
-+		if (id < 0) {
-+			ret = id;
-+			goto end;
-+		}
-+
-+		tab->off[i].offset = info_arr[i].off;
-+		tab->off[i].btf_id = id;
-+		tab->off[i].btf = off_btf;
-+		tab->nr_off = i + 1;
-+	}
-+	return tab;
-+end:
-+	while (tab->nr_off--)
-+		btf_put(tab->off[tab->nr_off].btf);
-+	kfree(tab);
-+	return ERR_PTR(ret);
++	return xchg(kptr, (unsigned long)ptr);
 +}
 +
- static void __btf_struct_show(const struct btf *btf, const struct btf_type *t,
- 			      u32 type_id, void *data, u8 bits_offset,
- 			      struct btf_show *show)
-diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-index 5cd8f5277279..135205d0d560 100644
---- a/kernel/bpf/map_in_map.c
-+++ b/kernel/bpf/map_in_map.c
-@@ -52,6 +52,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
- 	inner_map_meta->max_entries = inner_map->max_entries;
- 	inner_map_meta->spin_lock_off = inner_map->spin_lock_off;
- 	inner_map_meta->timer_off = inner_map->timer_off;
-+	inner_map_meta->kptr_off_tab = bpf_map_copy_kptr_off_tab(inner_map);
- 	if (inner_map->btf) {
- 		btf_get(inner_map->btf);
- 		inner_map_meta->btf = inner_map->btf;
-@@ -71,6 +72,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
- 
- void bpf_map_meta_free(struct bpf_map *map_meta)
- {
-+	bpf_map_free_kptr_off_tab(map_meta);
- 	btf_put(map_meta->btf);
- 	kfree(map_meta);
- }
-@@ -83,7 +85,8 @@ bool bpf_map_meta_equal(const struct bpf_map *meta0,
- 		meta0->key_size == meta1->key_size &&
- 		meta0->value_size == meta1->value_size &&
- 		meta0->timer_off == meta1->timer_off &&
--		meta0->map_flags == meta1->map_flags;
-+		meta0->map_flags == meta1->map_flags &&
-+		bpf_map_equal_kptr_off_tab(meta0, meta1);
- }
- 
- void *bpf_map_fd_get_ptr(struct bpf_map *map,
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 9beb585be5a6..87263b07f40b 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -6,6 +6,7 @@
- #include <linux/bpf_trace.h>
- #include <linux/bpf_lirc.h>
- #include <linux/bpf_verifier.h>
-+#include <linux/bsearch.h>
- #include <linux/btf.h>
- #include <linux/syscalls.h>
- #include <linux/slab.h>
-@@ -472,12 +473,95 @@ static void bpf_map_release_memcg(struct bpf_map *map)
- }
- #endif
- 
-+static int bpf_map_kptr_off_cmp(const void *a, const void *b)
-+{
-+	const struct bpf_map_value_off_desc *off_desc1 = a, *off_desc2 = b;
++static u32 bpf_kptr_xchg_btf_id;
 +
-+	if (off_desc1->offset < off_desc2->offset)
-+		return -1;
-+	else if (off_desc1->offset > off_desc2->offset)
-+		return 1;
-+	return 0;
-+}
++const struct bpf_func_proto bpf_kptr_xchg_proto = {
++	.func        = bpf_kptr_xchg,
++	.gpl_only    = false,
++	.ret_type    = RET_PTR_TO_BTF_ID_OR_NULL,
++	.ret_btf_id  = &bpf_kptr_xchg_btf_id,
++	.arg1_type   = ARG_PTR_TO_KPTR,
++	.arg2_type   = ARG_PTR_TO_BTF_ID_OR_NULL,
++	.arg2_btf_id = &bpf_kptr_xchg_btf_id,
++};
 +
-+struct bpf_map_value_off_desc *bpf_map_kptr_off_contains(struct bpf_map *map, u32 offset)
-+{
-+	/* Since members are iterated in btf_find_field in increasing order,
-+	 * offsets appended to kptr_off_tab are in increasing order, so we can
-+	 * do bsearch to find exact match.
-+	 */
-+	struct bpf_map_value_off *tab;
-+
-+	if (!map_value_has_kptr(map))
-+		return NULL;
-+	tab = map->kptr_off_tab;
-+	return bsearch(&offset, tab->off, tab->nr_off, sizeof(tab->off[0]), bpf_map_kptr_off_cmp);
-+}
-+
-+void bpf_map_free_kptr_off_tab(struct bpf_map *map)
-+{
-+	struct bpf_map_value_off *tab = map->kptr_off_tab;
-+	int i;
-+
-+	if (!map_value_has_kptr(map))
-+		return;
-+	for (i = 0; i < tab->nr_off; i++) {
-+		struct btf *btf = tab->off[i].btf;
-+
-+		btf_put(btf);
-+	}
-+	kfree(tab);
-+	map->kptr_off_tab = NULL;
-+}
-+
-+struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map)
-+{
-+	struct bpf_map_value_off *tab = map->kptr_off_tab, *new_tab;
-+	int size, i, ret;
-+
-+	if (!map_value_has_kptr(map))
-+		return ERR_PTR(-ENOENT);
-+	/* Do a deep copy of the kptr_off_tab */
-+	for (i = 0; i < tab->nr_off; i++)
-+		btf_get(tab->off[i].btf);
-+
-+	size = offsetof(struct bpf_map_value_off, off[tab->nr_off]);
-+	new_tab = kzalloc(size, GFP_KERNEL | __GFP_NOWARN);
-+	if (!new_tab) {
-+		ret = -ENOMEM;
-+		goto end;
-+	}
-+	memcpy(new_tab, tab, size);
-+	return new_tab;
-+end:
-+	while (i--)
-+		btf_put(tab->off[i].btf);
-+	return ERR_PTR(ret);
-+}
-+
-+bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b)
-+{
-+	struct bpf_map_value_off *tab_a = map_a->kptr_off_tab, *tab_b = map_b->kptr_off_tab;
-+	bool a_has_kptr = map_value_has_kptr(map_a), b_has_kptr = map_value_has_kptr(map_b);
-+	int size;
-+
-+	if (!a_has_kptr && !b_has_kptr)
-+		return true;
-+	if ((a_has_kptr && !b_has_kptr) || (!a_has_kptr && b_has_kptr))
-+		return false;
-+	if (tab_a->nr_off != tab_b->nr_off)
-+		return false;
-+	size = offsetof(struct bpf_map_value_off, off[tab_a->nr_off]);
-+	return !memcmp(tab_a, tab_b, size);
-+}
-+
- /* called from workqueue */
- static void bpf_map_free_deferred(struct work_struct *work)
- {
- 	struct bpf_map *map = container_of(work, struct bpf_map, work);
- 
- 	security_bpf_map_free(map);
-+	bpf_map_free_kptr_off_tab(map);
- 	bpf_map_release_memcg(map);
- 	/* implementation dependent freeing */
- 	map->ops->map_free(map);
-@@ -639,7 +723,7 @@ static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
- 	int err;
- 
- 	if (!map->ops->map_mmap || map_value_has_spin_lock(map) ||
--	    map_value_has_timer(map))
-+	    map_value_has_timer(map) || map_value_has_kptr(map))
- 		return -ENOTSUPP;
- 
- 	if (!(vma->vm_flags & VM_SHARED))
-@@ -819,9 +903,29 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
- 			return -EOPNOTSUPP;
- 	}
- 
--	if (map->ops->map_check_btf)
-+	map->kptr_off_tab = btf_find_kptr(btf, value_type);
-+	if (map_value_has_kptr(map)) {
-+		if (map->map_flags & BPF_F_RDONLY_PROG) {
-+			ret = -EACCES;
-+			goto free_map_tab;
-+		}
-+		if (map->map_type != BPF_MAP_TYPE_HASH &&
-+		    map->map_type != BPF_MAP_TYPE_LRU_HASH &&
-+		    map->map_type != BPF_MAP_TYPE_ARRAY) {
-+			ret = -EOPNOTSUPP;
-+			goto free_map_tab;
-+		}
-+	}
-+
-+	if (map->ops->map_check_btf) {
- 		ret = map->ops->map_check_btf(map, btf, key_type, value_type);
-+		if (ret < 0)
-+			goto free_map_tab;
-+	}
- 
-+	return ret;
-+free_map_tab:
-+	bpf_map_free_kptr_off_tab(map);
- 	return ret;
- }
- 
-@@ -1638,7 +1742,7 @@ static int map_freeze(const union bpf_attr *attr)
- 		return PTR_ERR(map);
- 
- 	if (map->map_type == BPF_MAP_TYPE_STRUCT_OPS ||
--	    map_value_has_timer(map)) {
-+	    map_value_has_timer(map) || map_value_has_kptr(map)) {
- 		fdput(f);
- 		return -ENOTSUPP;
+ const struct bpf_func_proto bpf_get_current_task_proto __weak;
+ const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+@@ -1452,6 +1471,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_timer_start_proto;
+ 	case BPF_FUNC_timer_cancel:
+ 		return &bpf_timer_cancel_proto;
++	case BPF_FUNC_kptr_xchg:
++		return &bpf_kptr_xchg_proto;
+ 	default:
+ 		break;
  	}
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index cf92f9c01556..881d1381757b 100644
+index 881d1381757b..f8738054aa52 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -3469,6 +3469,143 @@ static int check_mem_region_access(struct bpf_verifier_env *env, u32 regno,
+@@ -257,6 +257,7 @@ struct bpf_call_arg_meta {
+ 	struct btf *ret_btf;
+ 	u32 ret_btf_id;
+ 	u32 subprogno;
++	struct bpf_map_value_off_desc *kptr_off_desc;
+ };
+ 
+ struct btf *btf_vmlinux;
+@@ -479,7 +480,8 @@ static bool is_release_function(enum bpf_func_id func_id)
+ {
+ 	return func_id == BPF_FUNC_sk_release ||
+ 	       func_id == BPF_FUNC_ringbuf_submit ||
+-	       func_id == BPF_FUNC_ringbuf_discard;
++	       func_id == BPF_FUNC_ringbuf_discard ||
++	       func_id == BPF_FUNC_kptr_xchg;
+ }
+ 
+ static bool may_be_acquire_function(enum bpf_func_id func_id)
+@@ -488,7 +490,8 @@ static bool may_be_acquire_function(enum bpf_func_id func_id)
+ 		func_id == BPF_FUNC_sk_lookup_udp ||
+ 		func_id == BPF_FUNC_skc_lookup_tcp ||
+ 		func_id == BPF_FUNC_map_lookup_elem ||
+-	        func_id == BPF_FUNC_ringbuf_reserve;
++		func_id == BPF_FUNC_ringbuf_reserve ||
++		func_id == BPF_FUNC_kptr_xchg;
+ }
+ 
+ static bool is_acquire_function(enum bpf_func_id func_id,
+@@ -499,7 +502,8 @@ static bool is_acquire_function(enum bpf_func_id func_id,
+ 	if (func_id == BPF_FUNC_sk_lookup_tcp ||
+ 	    func_id == BPF_FUNC_sk_lookup_udp ||
+ 	    func_id == BPF_FUNC_skc_lookup_tcp ||
+-	    func_id == BPF_FUNC_ringbuf_reserve)
++	    func_id == BPF_FUNC_ringbuf_reserve ||
++	    func_id == BPF_FUNC_kptr_xchg)
+ 		return true;
+ 
+ 	if (func_id == BPF_FUNC_map_lookup_elem &&
+@@ -3509,10 +3513,12 @@ int check_ptr_off_reg(struct bpf_verifier_env *env,
+ 
+ static int map_kptr_match_type(struct bpf_verifier_env *env,
+ 			       struct bpf_map_value_off_desc *off_desc,
+-			       struct bpf_reg_state *reg, u32 regno)
++			       struct bpf_reg_state *reg, u32 regno,
++			       bool ref_ptr)
+ {
+ 	const char *targ_name = kernel_type_name(off_desc->btf, off_desc->btf_id);
+ 	const char *reg_name = "";
++	bool fixed_off_ok = true;
+ 
+ 	if (reg->type != PTR_TO_BTF_ID && reg->type != PTR_TO_BTF_ID_OR_NULL)
+ 		goto bad_type;
+@@ -3524,7 +3530,26 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
+ 	/* We need to verify reg->type and reg->btf, before accessing reg->btf */
+ 	reg_name = kernel_type_name(reg->btf, reg->btf_id);
+ 
+-	if (__check_ptr_off_reg(env, reg, regno, true))
++	if (ref_ptr) {
++		if (!reg->ref_obj_id) {
++			verbose(env, "R%d must be referenced %s%s\n", regno,
++				reg_type_str(env, PTR_TO_BTF_ID), targ_name);
++			return -EACCES;
++		}
++		/* reg->off can be used to store pointer to a certain type formed by
++		 * incrementing pointer of a parent structure the object is embedded in,
++		 * e.g. map may expect unreferenced struct path *, and user should be
++		 * allowed a store using &file->f_path. However, in the case of
++		 * referenced pointer, we cannot do this, because the reference is only
++		 * for the parent structure, not its embedded object(s), and because
++		 * the transfer of ownership happens for the original pointer to and
++		 * from the map (before its eventual release).
++		 */
++		if (reg->off)
++			fixed_off_ok = false;
++	}
++	/* var_off is rejected by __check_ptr_off_reg for PTR_TO_BTF_ID */
++	if (__check_ptr_off_reg(env, reg, regno, fixed_off_ok))
+ 		return -EACCES;
+ 
+ 	if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
+@@ -3550,6 +3575,7 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
+ 	struct bpf_map_value_off_desc *off_desc;
+ 	int insn_class = BPF_CLASS(insn->code);
+ 	struct bpf_map *map = reg->map_ptr;
++	bool ref_ptr = false;
+ 
+ 	/* Things we already checked for in check_map_access:
+ 	 *  - Reject cases where variable offset may touch BTF ID pointer
+@@ -3574,9 +3600,15 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
+ 		return -EPERM;
+ 	}
+ 
++	ref_ptr = off_desc->flags & BPF_MAP_VALUE_OFF_F_REF;
++
+ 	if (insn_class == BPF_LDX) {
+ 		if (WARN_ON_ONCE(value_regno < 0))
+ 			return -EFAULT;
++		if (ref_ptr) {
++			verbose(env, "accessing referenced kptr disallowed\n");
++			return -EACCES;
++		}
+ 		val_reg = reg_state(env, value_regno);
+ 		/* We can simply mark the value_regno receiving the pointer
+ 		 * value from map as PTR_TO_BTF_ID, with the correct type.
+@@ -3587,11 +3619,19 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
+ 	} else if (insn_class == BPF_STX) {
+ 		if (WARN_ON_ONCE(value_regno < 0))
+ 			return -EFAULT;
++		if (ref_ptr) {
++			verbose(env, "accessing referenced kptr disallowed\n");
++			return -EACCES;
++		}
+ 		val_reg = reg_state(env, value_regno);
+ 		if (!register_is_null(val_reg) &&
+-		    map_kptr_match_type(env, off_desc, val_reg, value_regno))
++		    map_kptr_match_type(env, off_desc, val_reg, value_regno, false))
+ 			return -EACCES;
+ 	} else if (insn_class == BPF_ST) {
++		if (ref_ptr) {
++			verbose(env, "accessing referenced kptr disallowed\n");
++			return -EACCES;
++		}
+ 		if (insn->imm) {
+ 			verbose(env, "BPF_ST imm must be 0 when storing to kptr at off=%u\n",
+ 				off_desc->offset);
+@@ -5265,6 +5305,63 @@ static int process_timer_func(struct bpf_verifier_env *env, int regno,
  	return 0;
  }
  
-+static int __check_ptr_off_reg(struct bpf_verifier_env *env,
-+			       const struct bpf_reg_state *reg, int regno,
-+			       bool fixed_off_ok)
++static int process_kptr_func(struct bpf_verifier_env *env, int regno,
++			     struct bpf_call_arg_meta *meta)
 +{
-+	/* Access to this pointer-typed register or passing it to a helper
-+	 * is only allowed in its original, unmodified form.
-+	 */
-+
-+	if (reg->off < 0) {
-+		verbose(env, "negative offset %s ptr R%d off=%d disallowed\n",
-+			reg_type_str(env, reg->type), regno, reg->off);
-+		return -EACCES;
-+	}
-+
-+	if (!fixed_off_ok && reg->off) {
-+		verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
-+			reg_type_str(env, reg->type), regno, reg->off);
-+		return -EACCES;
-+	}
-+
-+	if (!tnum_is_const(reg->var_off) || reg->var_off.value) {
-+		char tn_buf[48];
-+
-+		tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
-+		verbose(env, "variable %s access var_off=%s disallowed\n",
-+			reg_type_str(env, reg->type), tn_buf);
-+		return -EACCES;
-+	}
-+
-+	return 0;
-+}
-+
-+int check_ptr_off_reg(struct bpf_verifier_env *env,
-+		      const struct bpf_reg_state *reg, int regno)
-+{
-+	return __check_ptr_off_reg(env, reg, regno, false);
-+}
-+
-+static int map_kptr_match_type(struct bpf_verifier_env *env,
-+			       struct bpf_map_value_off_desc *off_desc,
-+			       struct bpf_reg_state *reg, u32 regno)
-+{
-+	const char *targ_name = kernel_type_name(off_desc->btf, off_desc->btf_id);
-+	const char *reg_name = "";
-+
-+	if (reg->type != PTR_TO_BTF_ID && reg->type != PTR_TO_BTF_ID_OR_NULL)
-+		goto bad_type;
-+
-+	if (!btf_is_kernel(reg->btf)) {
-+		verbose(env, "R%d must point to kernel BTF\n", regno);
-+		return -EINVAL;
-+	}
-+	/* We need to verify reg->type and reg->btf, before accessing reg->btf */
-+	reg_name = kernel_type_name(reg->btf, reg->btf_id);
-+
-+	if (__check_ptr_off_reg(env, reg, regno, true))
-+		return -EACCES;
-+
-+	if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
-+				  off_desc->btf, off_desc->btf_id))
-+		goto bad_type;
-+	return 0;
-+bad_type:
-+	verbose(env, "invalid kptr access, R%d type=%s%s ", regno,
-+		reg_type_str(env, reg->type), reg_name);
-+	verbose(env, "expected=%s%s\n", reg_type_str(env, PTR_TO_BTF_ID), targ_name);
-+	return -EINVAL;
-+}
-+
-+/* Returns an error, or 0 if ignoring the access, or 1 if register state was
-+ * updated, in which case later updates must be skipped.
-+ */
-+static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
-+				 int off, int size, int value_regno,
-+				 enum bpf_access_type t, int insn_idx)
-+{
-+	struct bpf_reg_state *reg = reg_state(env, regno), *val_reg;
-+	struct bpf_insn *insn = &env->prog->insnsi[insn_idx];
++	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
 +	struct bpf_map_value_off_desc *off_desc;
-+	int insn_class = BPF_CLASS(insn->code);
-+	struct bpf_map *map = reg->map_ptr;
-+
-+	/* Things we already checked for in check_map_access:
-+	 *  - Reject cases where variable offset may touch BTF ID pointer
-+	 *  - size of access (must be BPF_DW)
-+	 *  - off_desc->offset == off + reg->var_off.value
-+	 */
-+	if (!tnum_is_const(reg->var_off))
-+		return 0;
-+
-+	off_desc = bpf_map_kptr_off_contains(map, off + reg->var_off.value);
-+	if (!off_desc)
-+		return 0;
-+
-+	if (WARN_ON_ONCE(size != bpf_size_to_bytes(BPF_DW)))
-+		return -EACCES;
-+
-+	if (BPF_MODE(insn->code) != BPF_MEM)
-+		goto end;
++	struct bpf_map *map_ptr = reg->map_ptr;
++	u32 kptr_off;
++	int ret;
 +
 +	if (!env->bpf_capable) {
 +		verbose(env, "kptr access only allowed for CAP_BPF and CAP_SYS_ADMIN\n");
 +		return -EPERM;
 +	}
-+
-+	if (insn_class == BPF_LDX) {
-+		if (WARN_ON_ONCE(value_regno < 0))
-+			return -EFAULT;
-+		val_reg = reg_state(env, value_regno);
-+		/* We can simply mark the value_regno receiving the pointer
-+		 * value from map as PTR_TO_BTF_ID, with the correct type.
-+		 */
-+		mark_btf_ld_reg(env, cur_regs(env), value_regno, PTR_TO_BTF_ID, off_desc->btf,
-+				off_desc->btf_id, PTR_MAYBE_NULL);
-+		val_reg->id = ++env->id_gen;
-+	} else if (insn_class == BPF_STX) {
-+		if (WARN_ON_ONCE(value_regno < 0))
-+			return -EFAULT;
-+		val_reg = reg_state(env, value_regno);
-+		if (!register_is_null(val_reg) &&
-+		    map_kptr_match_type(env, off_desc, val_reg, value_regno))
-+			return -EACCES;
-+	} else if (insn_class == BPF_ST) {
-+		if (insn->imm) {
-+			verbose(env, "BPF_ST imm must be 0 when storing to kptr at off=%u\n",
-+				off_desc->offset);
-+			return -EACCES;
-+		}
-+	} else {
-+		goto end;
++	if (!tnum_is_const(reg->var_off)) {
++		verbose(env,
++			"R%d doesn't have constant offset. kptr has to be at the constant offset\n",
++			regno);
++		return -EINVAL;
 +	}
-+	return 1;
-+end:
-+	verbose(env, "kptr in map can only be accessed using BPF_LDX/BPF_STX/BPF_ST\n");
-+	return -EACCES;
++	if (!map_ptr->btf) {
++		verbose(env, "map '%s' has to have BTF in order to use bpf_kptr_xchg\n",
++			map_ptr->name);
++		return -EINVAL;
++	}
++	if (!map_value_has_kptr(map_ptr)) {
++		ret = PTR_ERR(map_ptr->kptr_off_tab);
++		if (ret == -E2BIG)
++			verbose(env, "map '%s' has more than %d kptr\n", map_ptr->name,
++				BPF_MAP_VALUE_OFF_MAX);
++		else if (ret == -EEXIST)
++			verbose(env, "map '%s' has repeating kptr BTF tags\n", map_ptr->name);
++		else
++			verbose(env, "map '%s' has no valid kptr\n", map_ptr->name);
++		return -EINVAL;
++	}
++
++	meta->map_ptr = map_ptr;
++	/* Check access for BPF_WRITE */
++	meta->raw_mode = true;
++	ret = check_helper_mem_access(env, regno, sizeof(u64), false, meta);
++	if (ret < 0)
++		return ret;
++
++	kptr_off = reg->off + reg->var_off.value;
++	off_desc = bpf_map_kptr_off_contains(map_ptr, kptr_off);
++	if (!off_desc) {
++		verbose(env, "off=%d doesn't point to kptr\n", kptr_off);
++		return -EACCES;
++	}
++	if (!(off_desc->flags & BPF_MAP_VALUE_OFF_F_REF)) {
++		verbose(env, "off=%d kptr isn't referenced kptr\n", kptr_off);
++		return -EACCES;
++	}
++	meta->kptr_off_desc = off_desc;
++	return 0;
 +}
 +
- /* check read/write into a map element with possible variable offset */
- static int check_map_access(struct bpf_verifier_env *env, u32 regno,
- 			    int off, int size, bool zero_size_allowed)
-@@ -3507,6 +3644,32 @@ static int check_map_access(struct bpf_verifier_env *env, u32 regno,
- 			return -EACCES;
+ static bool arg_type_is_mem_ptr(enum bpf_arg_type type)
+ {
+ 	return base_type(type) == ARG_PTR_TO_MEM ||
+@@ -5400,6 +5497,7 @@ static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
+ static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
+ static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
+ static const struct bpf_reg_types timer_types = { .types = { PTR_TO_MAP_VALUE } };
++static const struct bpf_reg_types kptr_types = { .types = { PTR_TO_MAP_VALUE } };
+ 
+ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+ 	[ARG_PTR_TO_MAP_KEY]		= &map_key_value_types,
+@@ -5427,11 +5525,13 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+ 	[ARG_PTR_TO_STACK]		= &stack_ptr_types,
+ 	[ARG_PTR_TO_CONST_STR]		= &const_str_ptr_types,
+ 	[ARG_PTR_TO_TIMER]		= &timer_types,
++	[ARG_PTR_TO_KPTR]		= &kptr_types,
+ };
+ 
+ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+ 			  enum bpf_arg_type arg_type,
+-			  const u32 *arg_btf_id)
++			  const u32 *arg_btf_id,
++			  struct bpf_call_arg_meta *meta)
+ {
+ 	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+ 	enum bpf_reg_type expected, type = reg->type;
+@@ -5484,8 +5584,15 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+ 			arg_btf_id = compatible->btf_id;
  		}
- 	}
-+	if (map_value_has_kptr(map)) {
-+		struct bpf_map_value_off *tab = map->kptr_off_tab;
-+		int i;
-+
-+		for (i = 0; i < tab->nr_off; i++) {
-+			u32 p = tab->off[i].offset;
-+
-+			if (reg->smin_value + off < p + sizeof(u64) &&
-+			    p < reg->umax_value + off + size) {
-+				if (!tnum_is_const(reg->var_off)) {
-+					verbose(env, "kptr access cannot have variable offset\n");
-+					return -EACCES;
-+				}
-+				if (p != off + reg->var_off.value) {
-+					verbose(env, "kptr access misaligned expected=%u off=%llu\n",
-+						p, off + reg->var_off.value);
-+					return -EACCES;
-+				}
-+				if (size != bpf_size_to_bytes(BPF_DW)) {
-+					verbose(env, "kptr access size must be BPF_DW\n");
-+					return -EACCES;
-+				}
-+				break;
+ 
+-		if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
+-					  btf_vmlinux, *arg_btf_id)) {
++		if (meta->func_id == BPF_FUNC_kptr_xchg) {
++			if (!meta->kptr_off_desc) {
++				verbose(env, "verifier internal error: meta.kptr_off_desc unset\n");
++				return -EFAULT;
 +			}
-+		}
-+	}
- 	return err;
- }
++			if (map_kptr_match_type(env, meta->kptr_off_desc, reg, regno, true))
++				return -EACCES;
++		} else if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
++						 btf_vmlinux, *arg_btf_id)) {
+ 			verbose(env, "R%d is of type %s but %s is expected\n",
+ 				regno, kernel_type_name(reg->btf, reg->btf_id),
+ 				kernel_type_name(btf_vmlinux, *arg_btf_id));
+@@ -5595,7 +5702,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 		 */
+ 		goto skip_type_check;
  
-@@ -3980,44 +4143,6 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
- }
- #endif
+-	err = check_reg_type(env, regno, arg_type, fn->arg_btf_id[arg]);
++	err = check_reg_type(env, regno, arg_type, fn->arg_btf_id[arg], meta);
+ 	if (err)
+ 		return err;
  
--static int __check_ptr_off_reg(struct bpf_verifier_env *env,
--			       const struct bpf_reg_state *reg, int regno,
--			       bool fixed_off_ok)
--{
--	/* Access to this pointer-typed register or passing it to a helper
--	 * is only allowed in its original, unmodified form.
--	 */
--
--	if (reg->off < 0) {
--		verbose(env, "negative offset %s ptr R%d off=%d disallowed\n",
--			reg_type_str(env, reg->type), regno, reg->off);
--		return -EACCES;
--	}
--
--	if (!fixed_off_ok && reg->off) {
--		verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
--			reg_type_str(env, reg->type), regno, reg->off);
--		return -EACCES;
--	}
--
--	if (!tnum_is_const(reg->var_off) || reg->var_off.value) {
--		char tn_buf[48];
--
--		tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
--		verbose(env, "variable %s access var_off=%s disallowed\n",
--			reg_type_str(env, reg->type), tn_buf);
--		return -EACCES;
--	}
--
--	return 0;
--}
--
--int check_ptr_off_reg(struct bpf_verifier_env *env,
--		      const struct bpf_reg_state *reg, int regno)
--{
--	return __check_ptr_off_reg(env, reg, regno, false);
--}
--
- static int __check_buffer_access(struct bpf_verifier_env *env,
- 				 const char *buf_info,
- 				 const struct bpf_reg_state *reg,
-@@ -4421,6 +4546,10 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 		if (err)
- 			return err;
- 		err = check_map_access(env, regno, off, size, false);
-+		err = err ?: check_map_kptr_access(env, regno, off, size, value_regno, t, insn_idx);
-+		if (err < 0)
-+			return err;
-+		/* if err == 0, check_map_kptr_access ignored the access */
- 		if (!err && t == BPF_READ && value_regno >= 0) {
- 			struct bpf_map *map = reg->map_ptr;
- 
-@@ -4442,6 +4571,8 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 				mark_reg_unknown(env, regs, value_regno);
- 			}
+@@ -5760,6 +5867,14 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 			verbose(env, "string is not zero-terminated\n");
+ 			return -EINVAL;
  		}
-+		/* clear err == 1 */
-+		err = err < 0 ? err : 0;
- 	} else if (base_type(reg->type) == PTR_TO_MEM) {
- 		bool rdonly_mem = type_is_rdonly_mem(reg->type);
++	} else if (arg_type == ARG_PTR_TO_KPTR) {
++		if (meta->func_id == BPF_FUNC_kptr_xchg) {
++			if (process_kptr_func(env, regno, meta))
++				return -EACCES;
++		} else {
++			verbose(env, "verifier internal error\n");
++			return -EFAULT;
++		}
+ 	}
  
+ 	return err;
+@@ -6102,10 +6217,10 @@ static bool check_btf_id_ok(const struct bpf_func_proto *fn)
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(fn->arg_type); i++) {
+-		if (fn->arg_type[i] == ARG_PTR_TO_BTF_ID && !fn->arg_btf_id[i])
++		if (base_type(fn->arg_type[i]) == ARG_PTR_TO_BTF_ID && !fn->arg_btf_id[i])
+ 			return false;
+ 
+-		if (fn->arg_type[i] != ARG_PTR_TO_BTF_ID && fn->arg_btf_id[i])
++		if (base_type(fn->arg_type[i]) != ARG_PTR_TO_BTF_ID && fn->arg_btf_id[i])
+ 			return false;
+ 	}
+ 
+@@ -6830,7 +6945,15 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 	}
+ 
+ 	if (is_release_function(func_id)) {
+-		err = release_reference(env, meta.ref_obj_id);
++		err = -EINVAL;
++		if (meta.ref_obj_id)
++			err = release_reference(env, meta.ref_obj_id);
++		/* Only bpf_kptr_xchg is a release function that accepts a
++		 * possibly NULL reg, hence meta.ref_obj_id can only be unset
++		 * for it.
++		 */
++		else if (func_id == BPF_FUNC_kptr_xchg)
++			err = 0;
+ 		if (err) {
+ 			verbose(env, "func %s#%d reference has not been acquired before\n",
+ 				func_id_name(func_id), func_id);
+@@ -6963,21 +7086,29 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 			regs[BPF_REG_0].btf_id = meta.ret_btf_id;
+ 		}
+ 	} else if (base_type(ret_type) == RET_PTR_TO_BTF_ID) {
++		struct btf *ret_btf;
+ 		int ret_btf_id;
+ 
+ 		mark_reg_known_zero(env, regs, BPF_REG_0);
+ 		regs[BPF_REG_0].type = PTR_TO_BTF_ID | ret_flag;
+-		ret_btf_id = *fn->ret_btf_id;
++		if (func_id == BPF_FUNC_kptr_xchg) {
++			if (!meta.kptr_off_desc) {
++				verbose(env, "verifier internal error: meta.kptr_off_desc unset\n");
++				return -EFAULT;
++			}
++			ret_btf = meta.kptr_off_desc->btf;
++			ret_btf_id = meta.kptr_off_desc->btf_id;
++		} else {
++			ret_btf = btf_vmlinux;
++			ret_btf_id = *fn->ret_btf_id;
++		}
+ 		if (ret_btf_id == 0) {
+ 			verbose(env, "invalid return type %u of func %s#%d\n",
+ 				base_type(ret_type), func_id_name(func_id),
+ 				func_id);
+ 			return -EINVAL;
+ 		}
+-		/* current BPF helper definitions are only coming from
+-		 * built-in code with type IDs from  vmlinux BTF
+-		 */
+-		regs[BPF_REG_0].btf = btf_vmlinux;
++		regs[BPF_REG_0].btf = ret_btf;
+ 		regs[BPF_REG_0].btf_id = ret_btf_id;
+ 	} else {
+ 		verbose(env, "unknown return type %u of func %s#%d\n",
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 99fab54ae9c0..d45568746e79 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5129,6 +5129,17 @@ union bpf_attr {
+  *		The **hash_algo** is returned on success,
+  *		**-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
+  *		invalid arguments are passed.
++ *
++ * void *bpf_kptr_xchg(void *map_value, void *ptr)
++ *	Description
++ *		Exchange kptr at pointer *map_value* with *ptr*, and return the
++ *		old value. *ptr* can be NULL, otherwise it must be a referenced
++ *		pointer which will be released when this helper is called.
++ *	Return
++ *		The old value of kptr (which can be NULL). The returned pointer
++ *		if not NULL, is a reference which must be released using its
++ *		corresponding release function, or moved into a BPF map before
++ *		program exit.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5325,6 +5336,7 @@ union bpf_attr {
+ 	FN(copy_from_user_task),	\
+ 	FN(skb_set_tstamp),		\
+ 	FN(ima_file_hash),		\
++	FN(kptr_xchg),			\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 -- 
 2.35.1
 
