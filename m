@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA904DC551
+	by mail.lfdr.de (Postfix) with ESMTP id 5A81C4DC552
 	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 13:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbiCQMBe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S233240AbiCQMBe (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Thu, 17 Mar 2022 08:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbiCQMBc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 08:01:32 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C68413D5B
-        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:07 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id mm4-20020a17090b358400b001c68e836fa6so823020pjb.3
-        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:07 -0700 (PDT)
+        with ESMTP id S233272AbiCQMBd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Mar 2022 08:01:33 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73ED1728BB
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:10 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id bc27so2489390pgb.4
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VVGW695k2bQR/34ISjGMABXY2NYsUrhuxKwJRWKKln8=;
-        b=fkMuYBp+z1E1H7tGUmmfLxzxyW54MMhf3RepZXSE/i+d8gnnC2Xa7YhbQH+RC424NA
-         JPcVaWEoNNKsSirMQ1wNWYMPjnatPIKhOBhWoX4YyfLufRmQyU/BsJjw3puH/iT/C9fV
-         q43c/lqNYNgtBMY9l8GqkiSNDs8yk6ys6mcuqUPV/wHBUiBbrOdranUaS0HVCW0RlhBe
-         FcgX7YkZpdech9M4SOnj+BSwviB5A9+O7HNIEv+KSoVasIkn2Wu0zZL28Mg795iMDkDP
-         SkuZp9rB4DyPtHAVon/u7zfGxpsnGha/cO4STC2QRpZPphH5jh99AeCWwZQ8z7v9CAd6
-         ZmnQ==
+        bh=1xnofddMkNTcDFZInC+2fEJ7GbWtFI3i+E0bEfzZz5w=;
+        b=dy0Uc5rJB3hxOJXRXmJvJukDo2O8nwQWlGFtWc6U8u5KYdJbmBNGBZlVWnzP1+N/Aw
+         P08lf1TF+7m/HPJQa0h+GTnaX17vaoBFMHvTCdtmXk4kKLeG7SoIFOfpRxEU6XuO1UIP
+         p2vmHNM6LfthNDksd2CQwyvYbCrPVujvBWVtjdvcKrxZlPX/jDP/gPUZx4vU06iQpMDL
+         VYbGjNcbPrznq6ZxaVi+Ra5YjRTHhfOJMKP5ojoLq9GXq5101yRTcozgrRqvRL5yoczX
+         J9BC8eA13fDXeL0kk5T7AidHhWRzfWBwr+BDn64AgkW+1rT6L6VAeKlMNaz4gldWtdrB
+         6Mvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VVGW695k2bQR/34ISjGMABXY2NYsUrhuxKwJRWKKln8=;
-        b=OYoY8t1PWHRy7eucXoVS9FJt/5LGDffzrSuHsttJqfK6hAZ2Pj2x4ttH62beE0qTlU
-         OBVwum6CRZIyA03qmFNaInSFF5hsT8FQoP5JNA0iej0dm8aEwh8YfONgY5mmtdiJ+JG9
-         BfxzKvlOUUGv6/2cS47k+Wy6o/qCpDIxfes+fBVPqdFJaGAJntKYCLgpX5X5HyrCNmZU
-         I6rpiuZ8lwkuUU6R12FweZlWtvgMapoB3R1phog/XrtvKPmpEgR+edAXYWgzxb+g8Sa8
-         /W/88LdzoTd5QB/HDzlZN4NtoOE3Ys1hWl+VLyL6D4a+G+zBmZvsz3E7RIUT3kKsue0u
-         OOTQ==
-X-Gm-Message-State: AOAM532/oJ2gnNKLTCcO0cdAydLE6Q1tAFecX+eQexTZQjo/mJSNLv+0
-        TAqSDQgIMl4vF02EeVGJfpNqm+jSawc=
-X-Google-Smtp-Source: ABdhPJwCJcH1q5XwOL2OWmCSH4k4ScS8+qV3rSOvzZUzhaMUL+l5s5gFxvQH180i7NmLaLdKPK6skA==
-X-Received: by 2002:a17:902:a40d:b0:153:7213:1584 with SMTP id p13-20020a170902a40d00b0015372131584mr4300291plq.56.1647518405419;
-        Thu, 17 Mar 2022 05:00:05 -0700 (PDT)
+        bh=1xnofddMkNTcDFZInC+2fEJ7GbWtFI3i+E0bEfzZz5w=;
+        b=I4+dO5HyEo/5jnATGjvnFTqY1/jXE0bF3seiIBt7a3etww9RN2mMiXqnh+sdPBA87O
+         HrTWBkYCI+KTvEbLfgSvNKBnVQytBxcRBAhRdSiWqIoopWwZzj05/tiPdbGhAyXUG3vY
+         UTvb3UxMApP2+J0U2zkLyv5UA0EgCI02qX332RnpllC90PwdTwDYPM6gmkeQHrnEeNjL
+         0mIFPwrwOSpAsGTnGClcLxS/kMNXpmDJ7WKZISuZG/W/K56OmCecJpSLsRJwcSCtKtCH
+         pn7pV+38ZbilnncdwkchkbL7f3AMqtLDuHvYfJdM+v9L6/B0YiCR7Nrfkf0l2B8XKWaO
+         m0Jg==
+X-Gm-Message-State: AOAM533f0IWGNerAQ+wl0Hyg/kyblPKFi9ecObua35RvxuSsrWhuw02Q
+        zKfk4usRVgnN5xI9N70o9qbPO2GUrEI=
+X-Google-Smtp-Source: ABdhPJxjZS/AzKE6amXlCNFzyRr4weAui1P0s3niQnYbKZEwK/ao9XJipTOGJlAckY84l3w+ZFXk+A==
+X-Received: by 2002:a05:6a00:848:b0:4f7:ba8b:4429 with SMTP id q8-20020a056a00084800b004f7ba8b4429mr4535509pfk.4.1647518408952;
+        Thu, 17 Mar 2022 05:00:08 -0700 (PDT)
 Received: from localhost ([157.51.20.101])
-        by smtp.gmail.com with ESMTPSA id s12-20020a056a00194c00b004f7c1da7dd5sm7021696pfk.1.2022.03.17.05.00.04
+        by smtp.gmail.com with ESMTPSA id e10-20020a17090a630a00b001c685cfd9d1sm1807466pjj.20.2022.03.17.05.00.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Mar 2022 05:00:05 -0700 (PDT)
+        Thu, 17 Mar 2022 05:00:08 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -54,14 +54,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH bpf-next v2 01/15] bpf: Factor out fd returning from bpf_btf_find_by_name_kind
-Date:   Thu, 17 Mar 2022 17:29:43 +0530
-Message-Id: <20220317115957.3193097-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 02/15] bpf: Make btf_find_field more generic
+Date:   Thu, 17 Mar 2022 17:29:44 +0530
+Message-Id: <20220317115957.3193097-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220317115957.3193097-1-memxor@gmail.com>
 References: <20220317115957.3193097-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4065; h=from:subject; bh=mEucVWjysFRwDDL2pGu0jaQ8Nu+5PARelACOeyG3/LQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiMyKj0I8Pz4STHL5jon2GahPTQ03JM0SO8OY0N0Ec BCoG8fOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYjMiowAKCRBM4MiGSL8RyrrZEA Cg9u5R+QvXbJHPQi4dVBkaB4/0jkPOPbGgsB95wa4ibQpHFEhnoVS3ikOUhvPs/m+zWPQXAVOnVk79 SBV6QhYabJjryL+BMVF1TfJyZdCWC7j6p2IdOKhbvDmL0NrNPsN36Tl0IHLOR79rzkzNw6kXZel5BA Az0gQC5lZqR4G5p7Rr+xvKdd6ox9Cu5ouTyj7A7QDJW2+WONL5+XZrPkIB6kMRTLsOEV2T6zZLeP8S XecU0dFcc5/S5bV6Z05mWFbC33RA1aMzBFn0jtlxo2xd6lLzMBiG1xDY1Bow/OVXZeCqRj4dFq6PYW DLlVXXdpP78rmSl2MpCgTr2iEG6zZmtUKvSjwwq5yWjQqFzrmR/Sw5Enx8mh0sbpUsqF8Igher1te1 HKIbnLR/XuUULAj7KIoFtbPCtu0aWMgGPst+IuQm0giKA9IWlcmzYqM8YCj41yf9TQuS4Wy1hYq6GU ybiKDasuXUR4FZKm823YHlHDt+ElRJ9w3SAzEc1ZGeRpA7K2MDBsH95ZjhQgxQyReKRFxQnHVQiTET UMDz264WNZj+0YJAgMirwEMG43Q4J05tU5VCpghUUxobo9tvUmLjh3tfS63AzADN8S3V1mOH35x68A DPybiOcht0VxNPtAX8O+RXyae2m7w4eXK8WeqbfsWDw/ykqmB8iEqzxLg8sw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6325; h=from:subject; bh=XSc+SV+o0eQj7pghct5rJv85GETTRhmgvbDxI5yFDTs=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiMyKjRHQvtlku1j33GwW5V9KFJFYYbAhPTBmuzFnq pTavhQ6JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYjMiowAKCRBM4MiGSL8RyoeyD/ 9BpKvmpMQC4Vo9NgakZsLucmqrDy7qRMuojBy9aYktl0NclNkMx34aVlLnMfIObT0djFLYpCDboTL6 lVPrtflJvDmAGvsfcRqN64asHhZMpOXZPzuFFVjWQkezy36IcVbmjJSi6SJUP3/abZAdZ9PChWqRNM zrBlyEKCz4koFQiONuFojs4MkgnPxNAuFDV8fgYwnMlEbbJ08CxOdFijoEUkvYCEPW9SehBtYMq9MO 8pNxA5xsWDIJwGnw6S4VvwjVkQq+7ODoJevGokV47jynXlSz0F86kegWpOY6WjFRY/PQY+V0/AJVzQ tdkxmREv2RnaawHb+cuA60aobqbyD7DyhQw3dmd6BgjBNPQ7y79wQdJI+JZBm9/PRmWszYJQxUxncq e0WRLk9H5RubTvxkRNICr8PefKLcBxr6aVI4fj5v+eUvK/9Vv1/xuBDpIYkatm311arpo9KBNQZAbm XAZYOWvYl9vi7Q5H+J1U46V7l6yNZMpPcI2k6BE76SJdaaif/wLs6dVuji4zfa7B+wOMeZFwuUb0P/ MkYUvC1IacpLAsAsQ52GoHSL1MTM++N8Y0TTU3Bngxz1gzKp8+mBsVXSGlsbJ01TL7T+P9zaNnIbq0 e+pFLuw1JGXDni3MJ9xTlnLaToFX4PMTYtZCKA3Ud/5SVYL67wrLunBIacHA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,140 +74,210 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In next few patches, we need a helper that searches all kernel BTFs
-(vmlinux and module BTFs), and finds the type denoted by 'name' and
-'kind'. Turns out bpf_btf_find_by_name_kind already does the same thing,
-but it instead returns a BTF ID and optionally fd (if module BTF). This
-is used for relocating ksyms in BPF loader code (bpftool gen skel -L).
+Next commit's field type will not be struct, but pointer, and it will
+not be limited to one offset, but multiple ones. Make existing
+btf_find_struct_field and btf_find_datasec_var functions amenable to use
+for finding BTF ID pointers in map value, by taking a moving spin_lock
+and timer specific checks into their own function.
 
-We extract the core code out into a new helper bpf_find_btf_id, which
-returns the BTF ID in the return value, and BTF pointer in an out
-parameter. The reference for the returned BTF pointer is always raised,
-hence user must either transfer it (e.g. to a fd), or release it after
-use.
+The alignment, and name are checked before the function is called, so it
+is the last point where we can skip field or return an error before the
+next loop iteration happens. This is important, because we'll be
+potentially reallocating memory inside this function in next commit, so
+being able to do that when everything else is in order is going to be
+more convenient.
+
+The name parameter is now optional, and only checked if it is not NULL.
+
+The size must be checked in the function, because in case of PTR it will
+instead point to the underlying BTF ID it is pointing to (or modifiers),
+so the check becomes wrong to do outside of function, and the base type
+has to be obtained by removing modifiers.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/btf.c | 90 ++++++++++++++++++++++++++++--------------------
- 1 file changed, 53 insertions(+), 37 deletions(-)
+ kernel/bpf/btf.c | 120 +++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 86 insertions(+), 34 deletions(-)
 
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 8b34563a832e..17b9adcd88d3 100644
+index 17b9adcd88d3..5b2824332880 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -525,6 +525,48 @@ s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
- 	return -ENOENT;
+@@ -3161,71 +3161,109 @@ static void btf_struct_log(struct btf_verifier_env *env,
+ 	btf_verifier_log(env, "size=%u vlen=%u", t->size, btf_type_vlen(t));
  }
  
-+static s32 bpf_find_btf_id(const char *name, u32 kind, struct btf **btf_p)
++enum {
++	BTF_FIELD_SPIN_LOCK,
++	BTF_FIELD_TIMER,
++};
++
++struct btf_field_info {
++	u32 off;
++};
++
++static int btf_find_field_struct(const struct btf *btf, const struct btf_type *t,
++				 u32 off, int sz, struct btf_field_info *info)
 +{
-+	struct btf *btf;
-+	s32 ret;
-+	int id;
-+
-+	btf = bpf_get_btf_vmlinux();
-+	if (IS_ERR(btf))
-+		return PTR_ERR(btf);
-+
-+	ret = btf_find_by_name_kind(btf, name, kind);
-+	/* ret is never zero, since btf_find_by_name_kind returns
-+	 * positive btf_id or negative error.
-+	 */
-+	if (ret > 0) {
-+		btf_get(btf);
-+		*btf_p = btf;
-+		return ret;
-+	}
-+
-+	/* If name is not found in vmlinux's BTF then search in module's BTFs */
-+	spin_lock_bh(&btf_idr_lock);
-+	idr_for_each_entry(&btf_idr, btf, id) {
-+		if (!btf_is_module(btf))
-+			continue;
-+		/* linear search could be slow hence unlock/lock
-+		 * the IDR to avoiding holding it for too long
-+		 */
-+		btf_get(btf);
-+		spin_unlock_bh(&btf_idr_lock);
-+		ret = btf_find_by_name_kind(btf, name, kind);
-+		if (ret > 0) {
-+			*btf_p = btf;
-+			return ret;
-+		}
-+		spin_lock_bh(&btf_idr_lock);
-+		btf_put(btf);
-+	}
-+	spin_unlock_bh(&btf_idr_lock);
-+	return ret;
++	if (!__btf_type_is_struct(t))
++		return 0;
++	if (t->size != sz)
++		return 0;
++	if (info->off != -ENOENT)
++		/* only one such field is allowed */
++		return -E2BIG;
++	info->off = off;
++	return 0;
 +}
 +
- const struct btf_type *btf_type_skip_modifiers(const struct btf *btf,
- 					       u32 id, u32 *res_id)
+ static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t,
+-				 const char *name, int sz, int align)
++				 const char *name, int sz, int align, int field_type,
++				 struct btf_field_info *info)
  {
-@@ -6562,7 +6604,8 @@ static struct btf *btf_get_module_btf(const struct module *module)
+ 	const struct btf_member *member;
+-	u32 i, off = -ENOENT;
++	u32 i, off;
++	int ret;
  
- BPF_CALL_4(bpf_btf_find_by_name_kind, char *, name, int, name_sz, u32, kind, int, flags)
- {
--	struct btf *btf;
-+	struct btf *btf = NULL;
-+	int btf_obj_fd = 0;
- 	long ret;
- 
- 	if (flags)
-@@ -6571,44 +6614,17 @@ BPF_CALL_4(bpf_btf_find_by_name_kind, char *, name, int, name_sz, u32, kind, int
- 	if (name_sz <= 1 || name[name_sz - 1])
- 		return -EINVAL;
- 
--	btf = bpf_get_btf_vmlinux();
--	if (IS_ERR(btf))
--		return PTR_ERR(btf);
--
--	ret = btf_find_by_name_kind(btf, name, kind);
--	/* ret is never zero, since btf_find_by_name_kind returns
--	 * positive btf_id or negative error.
--	 */
--	if (ret < 0) {
--		struct btf *mod_btf;
--		int id;
--
--		/* If name is not found in vmlinux's BTF then search in module's BTFs */
--		spin_lock_bh(&btf_idr_lock);
--		idr_for_each_entry(&btf_idr, mod_btf, id) {
--			if (!btf_is_module(mod_btf))
--				continue;
--			/* linear search could be slow hence unlock/lock
--			 * the IDR to avoiding holding it for too long
--			 */
--			btf_get(mod_btf);
--			spin_unlock_bh(&btf_idr_lock);
--			ret = btf_find_by_name_kind(mod_btf, name, kind);
--			if (ret > 0) {
--				int btf_obj_fd;
--
--				btf_obj_fd = __btf_new_fd(mod_btf);
--				if (btf_obj_fd < 0) {
--					btf_put(mod_btf);
--					return btf_obj_fd;
--				}
--				return ret | (((u64)btf_obj_fd) << 32);
--			}
--			spin_lock_bh(&btf_idr_lock);
--			btf_put(mod_btf);
-+	ret = bpf_find_btf_id(name, kind, &btf);
-+	if (ret > 0 && btf_is_module(btf)) {
-+		btf_obj_fd = __btf_new_fd(btf);
-+		if (btf_obj_fd < 0) {
-+			btf_put(btf);
-+			return btf_obj_fd;
- 		}
--		spin_unlock_bh(&btf_idr_lock);
-+		return ret | (((u64)btf_obj_fd) << 32);
+ 	for_each_member(i, t, member) {
+ 		const struct btf_type *member_type = btf_type_by_id(btf,
+ 								    member->type);
+-		if (!__btf_type_is_struct(member_type))
+-			continue;
+-		if (member_type->size != sz)
+-			continue;
+-		if (strcmp(__btf_name_by_offset(btf, member_type->name_off), name))
+-			continue;
+-		if (off != -ENOENT)
+-			/* only one such field is allowed */
+-			return -E2BIG;
++
+ 		off = __btf_member_bit_offset(t, member);
++
++		if (name && strcmp(__btf_name_by_offset(btf, member_type->name_off), name))
++			continue;
+ 		if (off % 8)
+ 			/* valid C code cannot generate such BTF */
+ 			return -EINVAL;
+ 		off /= 8;
+ 		if (off % align)
+ 			return -EINVAL;
++
++		switch (field_type) {
++		case BTF_FIELD_SPIN_LOCK:
++		case BTF_FIELD_TIMER:
++			ret = btf_find_field_struct(btf, member_type, off, sz, info);
++			if (ret < 0)
++				return ret;
++			break;
++		default:
++			return -EFAULT;
++		}
  	}
-+	if (ret > 0)
-+		btf_put(btf);
- 	return ret;
+-	return off;
++	return 0;
  }
  
+ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+-				const char *name, int sz, int align)
++				const char *name, int sz, int align, int field_type,
++				struct btf_field_info *info)
+ {
+ 	const struct btf_var_secinfo *vsi;
+-	u32 i, off = -ENOENT;
++	u32 i, off;
++	int ret;
+ 
+ 	for_each_vsi(i, t, vsi) {
+ 		const struct btf_type *var = btf_type_by_id(btf, vsi->type);
+ 		const struct btf_type *var_type = btf_type_by_id(btf, var->type);
+ 
+-		if (!__btf_type_is_struct(var_type))
+-			continue;
+-		if (var_type->size != sz)
++		off = vsi->offset;
++
++		if (name && strcmp(__btf_name_by_offset(btf, var_type->name_off), name))
+ 			continue;
+ 		if (vsi->size != sz)
+ 			continue;
+-		if (strcmp(__btf_name_by_offset(btf, var_type->name_off), name))
+-			continue;
+-		if (off != -ENOENT)
+-			/* only one such field is allowed */
+-			return -E2BIG;
+-		off = vsi->offset;
+ 		if (off % align)
+ 			return -EINVAL;
++
++		switch (field_type) {
++		case BTF_FIELD_SPIN_LOCK:
++		case BTF_FIELD_TIMER:
++			ret = btf_find_field_struct(btf, var_type, off, sz, info);
++			if (ret < 0)
++				return ret;
++			break;
++		default:
++			return -EFAULT;
++		}
+ 	}
+-	return off;
++	return 0;
+ }
+ 
+ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
+-			  const char *name, int sz, int align)
++			  const char *name, int sz, int align, int field_type,
++			  struct btf_field_info *info)
+ {
+-
+ 	if (__btf_type_is_struct(t))
+-		return btf_find_struct_field(btf, t, name, sz, align);
++		return btf_find_struct_field(btf, t, name, sz, align, field_type, info);
+ 	else if (btf_type_is_datasec(t))
+-		return btf_find_datasec_var(btf, t, name, sz, align);
++		return btf_find_datasec_var(btf, t, name, sz, align, field_type, info);
+ 	return -EINVAL;
+ }
+ 
+@@ -3235,16 +3273,30 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
+  */
+ int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t)
+ {
+-	return btf_find_field(btf, t, "bpf_spin_lock",
+-			      sizeof(struct bpf_spin_lock),
+-			      __alignof__(struct bpf_spin_lock));
++	struct btf_field_info info = { .off = -ENOENT };
++	int ret;
++
++	ret = btf_find_field(btf, t, "bpf_spin_lock",
++			     sizeof(struct bpf_spin_lock),
++			     __alignof__(struct bpf_spin_lock),
++			     BTF_FIELD_SPIN_LOCK, &info);
++	if (ret < 0)
++		return ret;
++	return info.off;
+ }
+ 
+ int btf_find_timer(const struct btf *btf, const struct btf_type *t)
+ {
+-	return btf_find_field(btf, t, "bpf_timer",
+-			      sizeof(struct bpf_timer),
+-			      __alignof__(struct bpf_timer));
++	struct btf_field_info info = { .off = -ENOENT };
++	int ret;
++
++	ret = btf_find_field(btf, t, "bpf_timer",
++			     sizeof(struct bpf_timer),
++			     __alignof__(struct bpf_timer),
++			     BTF_FIELD_TIMER, &info);
++	if (ret < 0)
++		return ret;
++	return info.off;
+ }
+ 
+ static void __btf_struct_show(const struct btf *btf, const struct btf_type *t,
 -- 
 2.35.1
 
