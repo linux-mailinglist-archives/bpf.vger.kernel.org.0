@@ -2,142 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC804DCB9D
-	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 17:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B844DCBE4
+	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 17:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbiCQQoZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Mar 2022 12:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
+        id S236723AbiCQQ75 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Mar 2022 12:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234572AbiCQQoX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 12:44:23 -0400
-Received: from mail.efficios.com (mail.efficios.com [167.114.26.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B5ED0829;
-        Thu, 17 Mar 2022 09:43:06 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3220E3F12FB;
-        Thu, 17 Mar 2022 12:43:06 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id WfkQh1S7sllS; Thu, 17 Mar 2022 12:43:05 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 97C833F12FA;
-        Thu, 17 Mar 2022 12:43:05 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 97C833F12FA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1647535385;
-        bh=5AJ+jdGzB5VC3ygMKOoPElKPln3rM1dEMPBCPv/N7+c=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=sWuyKjvgg62rsf6OstOn1yLtnyrjIRalB4iJ/Atqg8uhCFi4jAKFVCZJGkk+AxnpJ
-         gaR6uuaDn3NAGUyTAy8760ImP8bwRYhpATrNa8cxdUvJ1GKI7zXRjfzgoS9oyMRo2t
-         6ipXT3irQmEVAhxmFH5wte97QN1xNn+iUDvJKdpCmXp7Wyg/YeR65Gb7EJ9PJu97gw
-         niQzS1dKvo2fOXoq7QQjJWZPUCsSKK7przRnSryQqKtlUHn4seU2/+yJM5I2klj+LF
-         DoJPuyzlwq+tZwDHofEo5NXmGnNeVewqBxoKM06nkLzDgSXg57YpZnm7ugdiJ4uaqZ
-         pM7COTV4OGWSg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id vOUprICtB_LA; Thu, 17 Mar 2022 12:43:05 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 81E613F15C0;
-        Thu, 17 Mar 2022 12:43:05 -0400 (EDT)
-Date:   Thu, 17 Mar 2022 12:43:05 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Byungchul Park <byungchul.park@lge.com>,
-        paulmck <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Radoslaw Burny <rburny@google.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Message-ID: <1325267700.157591.1647535385417.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20220317121055.33812ac1@gandalf.local.home>
-References: <20220316224548.500123-1-namhyung@kernel.org> <20220316224548.500123-3-namhyung@kernel.org> <365529974.156362.1647524728813.JavaMail.zimbra@efficios.com> <20220317121055.33812ac1@gandalf.local.home>
-Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow
- path
+        with ESMTP id S236716AbiCQQ7r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Mar 2022 12:59:47 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0644975610
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 09:58:29 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id y17so8002808ljd.12
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 09:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WcrG6+VkE47r6ZOz+XMo3HPYTrzJFWjCVoQmfct9yaU=;
+        b=IMicaJVRm3S3zjhvmLDgF78ntl4fG7zHIxnZkbJmV2lFPU5nB4Aml94Tm/TPAq6DoO
+         eCatqFz6g3QZlI1sT4dyRAIgpQijPKWJ3c8IiDFqWiZX3WKtyXaCl9iPaazVhq7ljX3x
+         BJfyWRy6ervIbjP0STDFYidq++yGDMzhUkZEo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WcrG6+VkE47r6ZOz+XMo3HPYTrzJFWjCVoQmfct9yaU=;
+        b=6Pjg17QewQKkVur68jLF0vDDCsUyr8VoGYraogNF2Rtls/7Qs1isK9Q7LKTmjW7Gks
+         3Tfeggln0vl8zjFr49EPZ0N8+KZwRZ0RabTnM+vq3JD4CgibEwPojbv3vsVCPSgv0BMj
+         6ZIN2gRP12I7tYdksjrrp7mBzGRZljO7uAy6IuGWDc/Uxyqh9N/bzWVN4AHj369LdVQS
+         D6Wb+gqbXcv5KJkTa+AMaYhevKNsx2lcLL0Bu8J55OlvvT75a+TZva++P8RZhFdBWqlX
+         wa9DXj765XNfa5odMkY39pJhTPvzYI0VwRnL6Hcz8F1+JuZDS46POPMrHbvBTdHMJ2os
+         FuCQ==
+X-Gm-Message-State: AOAM5330l9NB0+PR9AgUA6e11Fi++utkGaRzSyHSDuY9IYGhGxVodhYe
+        JW4shFAbolANosMAX13/tltqXHNzBaJyBw==
+X-Google-Smtp-Source: ABdhPJx4o4zcl/fDVtho5sQUzbFOwRS4G7JCaYOdwizlVqL6nIpXNg9+qOzK2QlPoijHRkQXdH/Fgw==
+X-Received: by 2002:a2e:a0c9:0:b0:249:171b:1b06 with SMTP id f9-20020a2ea0c9000000b00249171b1b06mr3450600ljm.420.1647536307144;
+        Thu, 17 Mar 2022 09:58:27 -0700 (PDT)
+Received: from cloudflare.com ([2a01:110f:4809:d800::f9c])
+        by smtp.gmail.com with ESMTPSA id cf12-20020a056512280c00b004485b8f37b7sm485833lfb.277.2022.03.17.09.58.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Mar 2022 09:58:26 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@cloudflare.com, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH bpf-next 0/3] Make 2-byte access to bpf_sk_lookup->remote_port endian-agnostic
+Date:   Thu, 17 Mar 2022 17:58:23 +0100
+Message-Id: <20220317165826.1099418-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4203 (ZimbraWebClient - FF98 (Linux)/8.8.15_GA_4232)
-Thread-Topic: locking: Apply contention tracepoints in the slow path
-Thread-Index: XtYNwpD1Kl95+SVBT3UlFooWB7QYrg==
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
------ On Mar 17, 2022, at 12:10 PM, rostedt rostedt@goodmis.org wrote:
+This patch set is a result of a discussion we had around the RFC patchset from
+Ilya [1]. The fix for the narrow loads from the RFC series is still relevant,
+but this series does not depend on it. Nor is it required to unbreak sk_lookup
+tests on BE, if this series gets applied.
 
-> On Thu, 17 Mar 2022 09:45:28 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->> > *sem, bool reader)
->> > 		schedule();
->> > 	}
->> > 	__set_current_state(TASK_RUNNING);
->> > +	trace_contention_end(sem, 0);
->> 
->> So for the reader-write locks, and percpu rwlocks, the "trace contention end"
->> will always
->> have ret=0. Likewise for qspinlock, qrwlock, and rtlock. It seems to be a waste
->> of trace
->> buffer space to always have space for a return value that is always 0.
->> 
->> Sorry if I missed prior dicussions of that topic, but why introduce this single
->> "trace contention begin/end" muxer tracepoint with flags rather than
->> per-locking-type
->> tracepoint ? The per-locking-type tracepoint could be tuned to only have the
->> fields
->> that are needed for each locking type.
-> 
-> per-locking-type tracepoint will also add a bigger footprint.
+To summarize the takeaways from [1]:
 
-If you are talking about code and data size footprint in the kernel, yes, we agree
-there.
+ 1) we want to make 2-byte load from ctx->remote_port portable across LE and BE,
+ 2) we keep the 4-byte load from ctx->remote_port as it is today - result varies
+    on endianess of the platform.
 
-> 
-> One extra byte is not an issue.
+[1] https://lore.kernel.org/bpf/20220222182559.2865596-2-iii@linux.ibm.com/
 
-The implementation uses a 32-bit integer.
+Jakub Sitnicki (3):
+  bpf: Treat bpf_sk_lookup remote_port as a 2-byte field
+  selftests/bpf: Fix u8 narrow load checks for bpf_sk_lookup remote_port
+  selftests/bpf: Fix test for 4-byte load from remote_port on big-endian
 
-But given that this only traces contention, it's probably not as important to
-shrink the event size as if it would be for tracing every uncontended lock/unlock.
-
-> This is just the tracepoints. You can still
-> attach your own specific LTTng trace events that ignores the zero
-> parameter, and can multiplex into specific types of trace events on your
-> end.
-
-Indeed, I could, as I do for system call entry/exit tracing. But I suspect it would
-not be worth it for contended locks, because I don't expect those events to be frequent
-enough in the trace to justify the added code/data footprint, as you pointed out.
-
-> 
-> I prefer the current approach as it keeps the tracing footprint down.
-
-Likewise. I just wanted to make sure this was done knowing the trace buffer vs kernel
-code/data overhead trade-off.
-
-Thanks,
-
-Mathieu
-
-> 
-> -- Steve
+ net/core/filter.c                             | 20 +++++++++++++++++--
+ .../selftests/bpf/progs/test_sk_lookup.c      | 13 ++++++++----
+ 2 files changed, 27 insertions(+), 6 deletions(-)
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.35.1
+
