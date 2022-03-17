@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF114DC559
-	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 13:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9B24DC55C
+	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 13:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbiCQMBu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Mar 2022 08:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S233304AbiCQMBz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Mar 2022 08:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233304AbiCQMBu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 08:01:50 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC0017DCA6
-        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:34 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id h5so4246601plf.7
-        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:34 -0700 (PDT)
+        with ESMTP id S233315AbiCQMBy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Mar 2022 08:01:54 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7576A180205
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:38 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id e13so4260743plh.3
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 05:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HQQ2O0CJkKadJhQ3DG7ltpqnIn2bih78Mpe73SZTUjU=;
-        b=SG4d89wkuyNWx50JmFbRFeP3FfFjzJzaAV8Fx4JSExN90wiZmXylA93sY9WkDWNh+4
-         vvgTP/EMLfBCxEwLPfObSrVgrV/gysA8FCBLzeNKIhkxJ3wxlkwq4sGra2092JzQF1vg
-         kb5pjLmDXGEsO32JYNAxcxH3Vp0PT3g9Xy7dFf2EmZCb3v3DSiwxhykbOFBerqaatlfj
-         3z+PQE6G0yJLJMcmfION8p+hozfhNz5MZrCmnTHV/BnmugNAnavpBLbDbs6huIYg9tcW
-         7eZK3+1nD1peA9/b9/PYOf47ncIAIj+OZ7hZOyP0q+i3q3g7GOqqhHLULEowKkJDUTI3
-         EZhw==
+        bh=LRfwtizGo5opgZZb7U54UsHzhcwLuWkNo1YXQ3d8L2A=;
+        b=otW3hxb8zZXHfnUbXyRwB8j7XC/dlQRI2DKlGRV1sQhgKhsaxUeYb1CXslTV8aR9mp
+         y9xWM/nRZ7haU4fWgLPVIXhXnmFhLZlukSAupbhY4881SGOgYtxuu+D1dyMYU4Wo9RgK
+         qauQ9sTL1NhvcjfplQB4gMeNgkk+S86neTCDo63XYhGOwVGWwAwv8D+QSEHWoI4wkXOF
+         F5y8XRuo2j8kyyUZMZTpcLRp5blvVyluuz3YjPIJGEHoQmp25RW+n3DHc6yjpJA1Qa6D
+         sGBVq68HXz9FWXejuH+nmWOYVxqgNAuXnXr/JHjFlwxp9Hwnv8pVicfmCpEMtHqbOyTS
+         nk3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HQQ2O0CJkKadJhQ3DG7ltpqnIn2bih78Mpe73SZTUjU=;
-        b=D8k2JmAvjRkN0HahoQoHiudeUDOCNvcwOZWLCxlXrDPRVw8jA4JUk/b6RDcSgCA5oe
-         eY53an3CjTgeMsXsudXCYsHVpp8C7oDegpyj1YHqPHcxett8TmeGWB3qSCAN/TztSVlc
-         bR28zmCbRpa2q716130N2Xmf9FG8mMFnufjlCX4AwGz0Ss14SzuTBl/Xs6o+r0Z6oGQj
-         KIpAzeJDTPysPB3VEOrJNBfJpjM/YgWkJylj57r/kpb8HelKhi9OC5ygnxcwar37MiDy
-         M3+fjb8ssv445nOwDhr7BjdW3HuBcf/9mY/AoJdKBkB9k1EonGv//sDQBxw9oKhZMT04
-         881Q==
-X-Gm-Message-State: AOAM532x74du4pvRaO8XzZgweQH8yAFQXE8B5TkDTuFExTOUwke843wZ
-        YHCpm/rUAZ2N+bKRi43zkoCx/aHDXcs=
-X-Google-Smtp-Source: ABdhPJzOspTFgMmR1mzyaEVduhSBnPVR7AfRzzq5FKQgL7bjIp6W+C4fQYsut5QRFqDdmGKoP2Krug==
-X-Received: by 2002:a17:90a:fe14:b0:1c3:4c3:3148 with SMTP id ck20-20020a17090afe1400b001c304c33148mr4822142pjb.51.1647518433298;
-        Thu, 17 Mar 2022 05:00:33 -0700 (PDT)
+        bh=LRfwtizGo5opgZZb7U54UsHzhcwLuWkNo1YXQ3d8L2A=;
+        b=jABVUq9SIk0jiGMHnJFi6eIHHiXdnO42XmxOpnxeQJ/2mzF7l4kWVZbMBSWIYWjq1A
+         mshBc5CZuw+oo/FgJiNGUn/JQt7cEszFfSsIvPi/obidGqmL/ErDNZFj9IriXZOEwCLa
+         i9NcNqKEwTtPjbyCJkEe2yZJR3ZlqvGFXeCFIycd9G6sVHIbLdGq6Rjy0N/W6Fhk7OHK
+         UH34VYkpchSHA71obXjRA7FCWDGGDTDntBW63X5GZ7uteYdibDWf8k5dyb0I4I5Nkobl
+         Hq8enYPqafbIqy1z7NbRcKihOZcyBqlMhp6M+qrBGufVmPwRgaVBHOEaB9EZX+gR7p/t
+         QB9g==
+X-Gm-Message-State: AOAM530rJ1cZk73bkRq7xsutfWn1drLfLJp+xa8vVQUhSctA59WF55qx
+        mzMqgOJdvevmuIBFNEzhmGX+5xK1LfM=
+X-Google-Smtp-Source: ABdhPJxe3HCc98tHQL3cn1gDRzF4T3IpcaRE0n3K6sbtpp8NTUWmDRUbVhFV5HAjee0nqIxvflHbEg==
+X-Received: by 2002:a17:903:1c9:b0:152:af89:5c97 with SMTP id e9-20020a17090301c900b00152af895c97mr4808491plh.52.1647518437546;
+        Thu, 17 Mar 2022 05:00:37 -0700 (PDT)
 Received: from localhost ([157.51.20.101])
-        by smtp.gmail.com with ESMTPSA id h6-20020a056a00218600b004f65315bb37sm7119385pfi.13.2022.03.17.05.00.32
+        by smtp.gmail.com with ESMTPSA id d2-20020a056a0024c200b004f6b6817549sm7032044pfv.173.2022.03.17.05.00.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Mar 2022 05:00:33 -0700 (PDT)
+        Thu, 17 Mar 2022 05:00:37 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -54,14 +54,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH bpf-next v2 07/15] bpf: Prevent escaping of kptr loaded from maps
-Date:   Thu, 17 Mar 2022 17:29:49 +0530
-Message-Id: <20220317115957.3193097-8-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 08/15] bpf: Adapt copy_map_value for multiple offset case
+Date:   Thu, 17 Mar 2022 17:29:50 +0530
+Message-Id: <20220317115957.3193097-9-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220317115957.3193097-1-memxor@gmail.com>
 References: <20220317115957.3193097-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5853; h=from:subject; bh=W7weng3wgd2EWIyYcrfcFOy/TDa2nur6ENjXQAwFpLQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiMyKjwJEr3E5YPj+z0rDexrU6MKgDsPAbL0KImk+A hKILgyGJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYjMiowAKCRBM4MiGSL8RykMJEA CNNi2YT7qpC6x94cI3L9v7y6rkEvR4D5pVx2jKQeJnnD/5MeiCHxFJ7rlV5mH4Awd5XrlM6YnGFBYl wwDl0JJfMLyHEXcoRVPWfYzkGrviZCUy59nw2ORT4SwyugY6XN4sg5wHH2cVzbXIwiJnAIiPK9j3R0 c0dpaa5EKlT6ycQVgWS1KPZxG2BbpT+nI1pRr1PBL8jqEUf7+mq7JtAv+lI7nNfcbez8RtzYOAckNg R/wsDh/aeH5pmwdt1caJzMyOkTGQezkDe+qfZY5um1S+aAd4SC66zn4gNeJeJttPWlIINH5fS3u0dj iuFMviKkoQwRIO+eeSL02BP4+w50vDavnnbIuUV8nS+WSwSqiBw/2ugHODW1CvqCVKpCkEP0vW3Phv pONjZGul42NbzExqlZBWEvnTEyD+swhTMcVpIIgmLgpvblUKVbFoEdWjzE19nsNFMxbvuSQPc8Fp7h q/RfDp8AHrRTWvrDw/CINHMRncZbAwXROeDNe1I6VvRFUPqCMnJuofuQhnZG63ow8fAuOeJiUuhYAr 1ytAfaORetj4nAeqkUiQhkV0w0fUctPadC8qaahEYmTzWhA3J/Htf4sCl0SwhyW3fbV8eZSXBIEqE8 N23SmA4X9nd5r5VdtNenFhISrcUWTHCIYgQ9RROBTh6+FH5cKS2YdjDXoGng==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5892; h=from:subject; bh=XzKckFcAoEpntyLgPdR9OSWkdPjjfJU0k/Mz7S/iZaM=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiMyKjlONjdAOmw76hF5ueeTVHMj9a0pTZANVTfF1H Z9V+WA+JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYjMiowAKCRBM4MiGSL8RyhojD/ 9DxAZDeH1zw1qSiwNHRMNMuav1uX3bx+BK5+8V+9tcXiRy39IUvpbRWoRb3B9Y7B9jbpP3bjseWHaA M/yBP1tj2O/KmNHI7rEAbtXeX+y8ZNCJKljnpXWtzPuEF2pl8bseGR+850c1HwKmN4RuDmX2enHwID 8EH0C0liPoTsvFQwBOFSgzq51OU/knAp6/Wat8HEAQfNvTOPGBGolLNV/DJQk9SqBOY8U1ePi9fLfJ zCAQ7eFiNtOVHb7c7HdqlyYwttJ1bKioSQpX2edgyzPWAtukBiUV1i5W6MAl0psB3Cxl1Zyy2k/T1l o5GVKxq33eCJ/OopDYt/ptZO2qr3KSUv4Ut464APagol7/4YJZIq/dVXx/PvdEmSO6q07o8vcbyzBZ vV9PXzWRMHb/rXEiv58dOVkkazihJ3+sKuTyuym67oit6XQLWoRlf1UcomB489oxEdO0YDal+OEczO 3d/bq8gFMQWOgUlHNVAqhsnzPSmHrIB5CfP4N1dP2D6ZiNR2vJNjK+rlZUWh88Q4AhLRIVO7E0BULG 2x0RxdkQPe4W8Swv2EhxkK+zPYinT1W9eMpxy/Y9RH+KwpdvB7q7vQHmei9iqQZq0ViHpxXsq1kaOm FUrg/rsWTRb9X4YTqiKGIZS6Vsnujhn07dpkLH7yW+JKHjHfSxB0V05XYhzQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,148 +74,190 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While we can guarantee that even for unreferenced kptr, the object
-pointer points to being freed etc. can be handled by the verifier's
-exception handling (normal load patching to PROBE_MEM loads), we still
-cannot allow the user to pass these pointers to BPF helpers and kfunc,
-because the same exception handling won't be done for accesses inside
-the kernel. The same is true if a referenced pointer is loaded using
-normal load instruction. Since the reference is not guaranteed to be
-held while the pointer is used, it must be marked as untrusted.
+Since now there might be at most 10 offsets that need handling in
+copy_map_value, the manual shuffling and special case is no longer going
+to work. Hence, let's generalise the copy_map_value function by using
+a sorted array of offsets to skip regions that must be avoided while
+copying into and out of a map value.
 
-Hence introduce a new type flag, PTR_UNTRUSTED, which is used to mark
-all registers loading unreferenced and referenced kptr from BPF maps,
-and ensure they can never escape the BPF program and into the kernel by
-way of calling stable/unstable helpers.
+When the map is created, we populate the offset array in struct map,
+with one extra element for map->value_size, which is used as the final
+offset to subtract previous offset from. Since there can only be three
+sizes, we can avoid recording the size in the struct map, and only store
+sorted offsets. Later we can determine the size for each offset by
+comparing it to timer_off and spin_lock_off, otherwise it must be
+sizeof(u64) for kptr.
 
-In check_ptr_to_btf_access, the !type_may_be_null check to reject type
-flags is still correct, as apart from PTR_MAYBE_NULL, only MEM_USER,
-MEM_PERCPU, and PTR_UNTRUSTED may be set for PTR_TO_BTF_ID. The first
-two are checked inside the function and rejected using a proper error
-message, but we still want to allow dereference of untrusted case.
-
-Also, we make sure to inherit PTR_UNTRUSTED when chain of pointers are
-walked, so that this flag is never dropped once it has been set on a
-PTR_TO_BTF_ID (i.e. trusted to untrusted transition can only be in one
-direction).
-
-In convert_ctx_accesses, extend the switch case to consider untrusted
-PTR_TO_BTF_ID in addition to normal PTR_TO_BTF_ID for PROBE_MEM
-conversion for BPF_LDX.
+Then, copy_map_value uses this sorted offset array is used to memcpy
+while skipping timer, spin lock, and kptr.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h   | 10 +++++++++-
- kernel/bpf/verifier.c | 29 +++++++++++++++++++++++------
- 2 files changed, 32 insertions(+), 7 deletions(-)
+ include/linux/bpf.h  | 59 +++++++++++++++++++++++++-------------------
+ kernel/bpf/syscall.c | 47 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 80 insertions(+), 26 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 989f47334215..8ac3070aa5e6 100644
+index 8ac3070aa5e6..f0f1e0d3bb2e 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -371,7 +371,15 @@ enum bpf_type_flag {
- 	 */
- 	MEM_PERCPU		= BIT(4 + BPF_BASE_TYPE_BITS),
- 
--	__BPF_TYPE_LAST_FLAG	= MEM_PERCPU,
-+	/* PTR is not trusted. This is only used with PTR_TO_BTF_ID, to mark
-+	 * unreferenced and referenced kptr loaded from map value using a load
-+	 * instruction, so that they can only be dereferenced but not escape the
-+	 * BPF program into the kernel (i.e. cannot be passed as arguments to
-+	 * kfunc or bpf helpers).
-+	 */
-+	PTR_UNTRUSTED		= BIT(5 + BPF_BASE_TYPE_BITS),
-+
-+	__BPF_TYPE_LAST_FLAG	= PTR_UNTRUSTED,
+@@ -158,6 +158,10 @@ struct bpf_map_ops {
+ enum {
+ 	/* Support at most 8 pointers in a BPF map value */
+ 	BPF_MAP_VALUE_OFF_MAX = 8,
++	BPF_MAP_OFF_ARR_MAX   = BPF_MAP_VALUE_OFF_MAX +
++				1 + /* for bpf_spin_lock */
++				1 + /* for bpf_timer */
++				1,  /* for map->value_size sentinel */
  };
  
- /* Max number of base types. */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5325cc37797a..1130a74ad864 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -579,6 +579,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
- 		strncpy(prefix, "user_", 32);
- 	if (type & MEM_PERCPU)
- 		strncpy(prefix, "percpu_", 32);
-+	if (type & PTR_UNTRUSTED)
-+		strncpy(prefix, "untrusted_", 32);
+ enum {
+@@ -208,7 +212,12 @@ struct bpf_map {
+ 	char name[BPF_OBJ_NAME_LEN];
+ 	bool bypass_spec_v1;
+ 	bool frozen; /* write-once; write-protected by freeze_mutex */
+-	/* 6 bytes hole */
++	/* 2 bytes hole */
++	struct {
++		u32 off[BPF_MAP_OFF_ARR_MAX];
++		u32 cnt;
++	} off_arr;
++	/* 20 bytes hole */
  
- 	snprintf(env->type_str_buf, TYPE_STR_BUF_LEN, "%s%s%s",
- 		 prefix, str[base_type(type)], postfix);
-@@ -3529,10 +3531,16 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
- 		if (reg->type != (PTR_TO_BTF_ID | MEM_PERCPU) &&
- 		    reg->type != (PTR_TO_BTF_ID | PTR_MAYBE_NULL | MEM_PERCPU))
- 			goto bad_type;
--	} else { /* referenced and unreferenced case */
-+	} else if (off_desc->flags & BPF_MAP_VALUE_OFF_F_REF) {
- 		if (reg->type != PTR_TO_BTF_ID &&
- 		    reg->type != (PTR_TO_BTF_ID | PTR_MAYBE_NULL))
- 			goto bad_type;
-+	} else { /* only unreferenced case accepts untrusted pointers */
-+		if (reg->type != PTR_TO_BTF_ID &&
-+		    reg->type != (PTR_TO_BTF_ID | PTR_MAYBE_NULL) &&
-+		    reg->type != (PTR_TO_BTF_ID | PTR_UNTRUSTED) &&
-+		    reg->type != (PTR_TO_BTF_ID | PTR_MAYBE_NULL | PTR_UNTRUSTED))
-+			goto bad_type;
+ 	/* The 3rd and 4th cacheline with misc members to avoid false sharing
+ 	 * particularly with refcounting.
+@@ -252,36 +261,34 @@ static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+ 		memset(dst + map->spin_lock_off, 0, sizeof(struct bpf_spin_lock));
+ 	if (unlikely(map_value_has_timer(map)))
+ 		memset(dst + map->timer_off, 0, sizeof(struct bpf_timer));
++	if (unlikely(map_value_has_kptr(map))) {
++		struct bpf_map_value_off *tab = map->kptr_off_tab;
++		int i;
++
++		for (i = 0; i < tab->nr_off; i++)
++			*(u64 *)(dst + tab->off[i].offset) = 0;
++	}
+ }
+ 
+ /* copy everything but bpf_spin_lock and bpf_timer. There could be one of each. */
+ static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+ {
+-	u32 s_off = 0, s_sz = 0, t_off = 0, t_sz = 0;
+-
+-	if (unlikely(map_value_has_spin_lock(map))) {
+-		s_off = map->spin_lock_off;
+-		s_sz = sizeof(struct bpf_spin_lock);
+-	}
+-	if (unlikely(map_value_has_timer(map))) {
+-		t_off = map->timer_off;
+-		t_sz = sizeof(struct bpf_timer);
+-	}
+-
+-	if (unlikely(s_sz || t_sz)) {
+-		if (s_off < t_off || !s_sz) {
+-			swap(s_off, t_off);
+-			swap(s_sz, t_sz);
+-		}
+-		memcpy(dst, src, t_off);
+-		memcpy(dst + t_off + t_sz,
+-		       src + t_off + t_sz,
+-		       s_off - t_off - t_sz);
+-		memcpy(dst + s_off + s_sz,
+-		       src + s_off + s_sz,
+-		       map->value_size - s_off - s_sz);
+-	} else {
+-		memcpy(dst, src, map->value_size);
++	int i;
++
++	memcpy(dst, src, map->off_arr.off[0]);
++	for (i = 1; i < map->off_arr.cnt; i++) {
++		u32 curr_off = map->off_arr.off[i - 1];
++		u32 next_off = map->off_arr.off[i];
++		u32 curr_sz;
++
++		if (map_value_has_spin_lock(map) && map->spin_lock_off == curr_off)
++			curr_sz = sizeof(struct bpf_spin_lock);
++		else if (map_value_has_timer(map) && map->timer_off == curr_off)
++			curr_sz = sizeof(struct bpf_timer);
++		else
++			curr_sz = sizeof(u64);
++		curr_off += curr_sz;
++		memcpy(dst + curr_off, src + curr_off, next_off - curr_off);
+ 	}
+ }
+ void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 87263b07f40b..69e8ea1be432 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -30,6 +30,7 @@
+ #include <linux/pgtable.h>
+ #include <linux/bpf_lsm.h>
+ #include <linux/poll.h>
++#include <linux/sort.h>
+ #include <linux/bpf-netns.h>
+ #include <linux/rcupdate_trace.h>
+ #include <linux/memcontrol.h>
+@@ -850,6 +851,50 @@ int map_check_no_btf(const struct bpf_map *map,
+ 	return -ENOTSUPP;
+ }
+ 
++static int map_off_arr_cmp(const void *_a, const void *_b)
++{
++	const u32 a = *(const u32 *)_a;
++	const u32 b = *(const u32 *)_b;
++
++	if (a < b)
++		return -1;
++	else if (a > b)
++		return 1;
++	return 0;
++}
++
++static void map_populate_off_arr(struct bpf_map *map)
++{
++	u32 i;
++
++	map->off_arr.cnt = 0;
++	if (map_value_has_spin_lock(map)) {
++		i = map->off_arr.cnt;
++
++		map->off_arr.off[i] = map->spin_lock_off;
++		map->off_arr.cnt++;
++	}
++	if (map_value_has_timer(map)) {
++		i = map->off_arr.cnt;
++
++		map->off_arr.off[i] = map->timer_off;
++		map->off_arr.cnt++;
++	}
++	if (map_value_has_kptr(map)) {
++		struct bpf_map_value_off *tab = map->kptr_off_tab;
++		u32 j = map->off_arr.cnt;
++
++		for (i = 0; i < tab->nr_off; i++)
++			map->off_arr.off[j + i] = tab->off[i].offset;
++		map->off_arr.cnt += tab->nr_off;
++	}
++
++	map->off_arr.off[map->off_arr.cnt++] = map->value_size;
++	if (map->off_arr.cnt == 1)
++		return;
++	sort(map->off_arr.off, map->off_arr.cnt, sizeof(map->off_arr.off[0]), map_off_arr_cmp, NULL);
++}
++
+ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+ 			 u32 btf_key_id, u32 btf_value_id)
+ {
+@@ -1015,6 +1060,8 @@ static int map_create(union bpf_attr *attr)
+ 			attr->btf_vmlinux_value_type_id;
  	}
  
- 	if (!btf_is_kernel(reg->btf)) {
-@@ -3622,18 +3630,20 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
- 	ref_ptr = off_desc->flags & BPF_MAP_VALUE_OFF_F_REF;
- 	percpu_ptr = off_desc->flags & BPF_MAP_VALUE_OFF_F_PERCPU;
- 	user_ptr = off_desc->flags & BPF_MAP_VALUE_OFF_F_USER;
++	map_populate_off_arr(map);
 +
- 	if (percpu_ptr)
- 		reg_flags |= MEM_PERCPU;
- 	else if (user_ptr)
- 		reg_flags |= MEM_USER;
-+	else
-+		reg_flags |= PTR_UNTRUSTED;
- 
- 	if (insn_class == BPF_LDX) {
- 		if (WARN_ON_ONCE(value_regno < 0))
- 			return -EFAULT;
--		if (ref_ptr) {
--			verbose(env, "accessing referenced kptr disallowed\n");
--			return -EACCES;
--		}
-+		/* We allow loading referenced kptr, since it will be marked as
-+		 * untrusted, similar to unreferenced kptr.
-+		 */
- 		val_reg = reg_state(env, value_regno);
- 		/* We can simply mark the value_regno receiving the pointer
- 		 * value from map as PTR_TO_BTF_ID, with the correct type.
-@@ -4414,6 +4424,12 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
- 	if (ret < 0)
- 		return ret;
- 
-+	/* If this is an untrusted pointer, all pointers formed by walking it
-+	 * also inherit the untrusted flag.
-+	 */
-+	if (type_flag(reg->type) & PTR_UNTRUSTED)
-+		flag |= PTR_UNTRUSTED;
-+
- 	if (atype == BPF_READ && value_regno >= 0)
- 		mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
- 
-@@ -13109,7 +13125,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 		if (!ctx_access)
- 			continue;
- 
--		switch (env->insn_aux_data[i + delta].ptr_type) {
-+		switch ((int)env->insn_aux_data[i + delta].ptr_type) {
- 		case PTR_TO_CTX:
- 			if (!ops->convert_ctx_access)
- 				continue;
-@@ -13126,6 +13142,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 			convert_ctx_access = bpf_xdp_sock_convert_ctx_access;
- 			break;
- 		case PTR_TO_BTF_ID:
-+		case PTR_TO_BTF_ID | PTR_UNTRUSTED:
- 			if (type == BPF_READ) {
- 				insn->code = BPF_LDX | BPF_PROBE_MEM |
- 					BPF_SIZE((insn)->code);
+ 	err = security_bpf_map_alloc(map);
+ 	if (err)
+ 		goto free_map;
 -- 
 2.35.1
 
