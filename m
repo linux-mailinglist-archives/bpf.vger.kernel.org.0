@@ -2,118 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D91424DCEFA
-	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 20:45:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191384DCF08
+	for <lists+bpf@lfdr.de>; Thu, 17 Mar 2022 20:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229493AbiCQTql (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Mar 2022 15:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
+        id S229453AbiCQTvc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Mar 2022 15:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiCQTql (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 15:46:41 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A5D23D461;
-        Thu, 17 Mar 2022 12:45:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JIZOHSN9Cp/RhF5NPH12ZhlfFlJw2FESR1XfKMbt/b0=; b=Nnbn7ThouyfyEnMTAAbC/NugI/
-        ReXFd9lVFS2bfNkuzgeHtM5x0ZTmQ/bBF4G83n23OhSw/hGN1bKocVK1hePguJn/Pm7Gw/cLqU580
-        XSKL4YDgBE/HsRQd2DFIQR6IVCoT/B1eaVB2r1vZXID6aIOJ4T9ENGyY0ukV5TYZhVwm2q478CNmH
-        NIFX1tkoTjnip9Dsr5xq/G6/B/aTqx9YD6f6os8lszxdGEKNIt92kqqMdh6h191C0LiJZR2gWRUgr
-        OJHpv0Q/mtvNtxlzL5sreFFDINtblmHnPpxHVe4YnIpj723e7zUZtMV9T29wm8a+ZitvvUEuXZkqO
-        PWXdfZ5w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nUw3G-001yvc-Bh; Thu, 17 Mar 2022 19:44:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0B44530003A;
-        Thu, 17 Mar 2022 20:44:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BF2DD30C650C5; Thu, 17 Mar 2022 20:44:47 +0100 (CET)
-Date:   Thu, 17 Mar 2022 20:44:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        X86 ML <x86@kernel.org>, joao@overdrivepizza.com,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, alyssa.milburn@intel.com,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v4 00/45] x86: Kernel IBT
-Message-ID: <YjOPrwZSEYR96/5D@hirez.programming.kicks-ass.net>
-References: <YioBZmicMj7aAlLf@hirez.programming.kicks-ass.net>
- <YionV0+v/cUBiOh0@hirez.programming.kicks-ass.net>
- <YisnG9lW6kp8lBp3@hirez.programming.kicks-ass.net>
- <CAADnVQJfffD9tH_cWThktCCwXeoRV1XLZq69rKK5vKy_y6BN8A@mail.gmail.com>
- <20220312154407.GF28057@worktop.programming.kicks-ass.net>
- <CAADnVQL7xrafAviUJg47LfvFSJpgZLwyP18Bm3S_KQwRyOpheQ@mail.gmail.com>
- <20220313085214.GK28057@worktop.programming.kicks-ass.net>
- <Yi9YOdn5Nbq9BBwd@hirez.programming.kicks-ass.net>
- <20220315081522.GA8939@worktop.programming.kicks-ass.net>
- <CAK7LNAReAKXT97NHEnC-1UXozdcPdYNHR55knNRDatJr_GqrrA@mail.gmail.com>
+        with ESMTP id S229640AbiCQTvb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Mar 2022 15:51:31 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993BA264545
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 12:50:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 34CA1B81FB8
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 19:50:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B1C1CC340EC;
+        Thu, 17 Mar 2022 19:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647546610;
+        bh=70pzwYJVMvRdZONF9AauKdogAW+ri8j14cXweNVHM1E=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qhZISAnVgfZwpe91cC2Hg6UN8cxcjJiRRYcWo1SoUcOXSoItsZvSQycxW/HEqU5S2
+         G5SWtsz9YVaU/NaSl9gcJwnTPAUwf7jyS9Q8RWxqXrM/CRXgg+OACXOTjfBr9MU6b+
+         U8egdpHBN39ehuJS0qHkkwYsc8SrX65HkldbrKBbCiyBGixnA70rNB1D3bYRdlvFFH
+         /kShYEgqUT6hZMGg2b+LE5/rM8Aeyw9RhYUpiPPmUSD2tcfDi2H4gX/fBglXQmKlRn
+         6Q1lynCP0ENiKAZgVQT8yJBYS1DL+S7GhUWk5V+soWJqJ+wd5zTzptMF3TgKKydzxW
+         Vvt5vnBCOZdAA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 981F1EAC09C;
+        Thu, 17 Mar 2022 19:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAReAKXT97NHEnC-1UXozdcPdYNHR55knNRDatJr_GqrrA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] selftests/bpf: fix tunnel remote ip comments
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164754661061.28349.11270630176951579438.git-patchwork-notify@kernel.org>
+Date:   Thu, 17 Mar 2022 19:50:10 +0000
+References: <20220313164116.5889-1-fankaixi.li@bytedance.com>
+In-Reply-To: <20220313164116.5889-1-fankaixi.li@bytedance.com>
+To:     =?utf-8?b?6IyD5byA5ZacIDxmYW5rYWl4aS5saUBieXRlZGFuY2UuY29tPg==?=@ci.codeaurora.org
+Cc:     shuah@kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 16, 2022 at 01:28:08AM +0900, Masahiro Yamada wrote:
-> On Tue, Mar 15, 2022 at 5:15 PM Peter Zijlstra <peterz@infradead.org> wrote:
+Hello:
 
-> > Index: linux-2.6/scripts/Makefile.build
-> > ===================================================================
-> > --- linux-2.6.orig/scripts/Makefile.build
-> > +++ linux-2.6/scripts/Makefile.build
-> > @@ -86,12 +86,18 @@ ifdef need-builtin
-> >  targets-for-builtin += $(obj)/built-in.a
-> >  endif
-> >
-> > -targets-for-modules := $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> > +targets-for-modules :=
-> 
-> 
-> Why do you need to change this line?
-> 
-> 
-> 
-> >
-> >  ifdef CONFIG_LTO_CLANG
-> >  targets-for-modules += $(patsubst %.o, %.lto.o, $(filter %.o, $(obj-m)))
-> >  endif
-> >
-> > +ifdef CONFIG_X86_KERNEL_IBT
-> > +targets-for-modules += $(patsubst %.o, %.objtool, $(filter %.o, $(obj-m)))
-> > +endif
-> > +
-> > +targets-for-modules += $(patsubst %.o, %.mod, $(filter %.o, $(obj-m)))
-> > +
-> >  ifdef need-modorder
-> >  targets-for-modules += $(obj)/modules.order
-> >  endif
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-The thinking was that by having the .objtool rule before the .mod rule,
-objtool runs first. If mod runs before objtool, objtool will change the
-timestamp and then mod will get remade, even if nothing's changed.
+On Mon, 14 Mar 2022 00:41:16 +0800 you wrote:
+> From: "kaixi.fan" <fankaixi.li@bytedance.com>
+> 
+> In namespace at_ns0, the ip address of tnl dev is 10.1.1.100 which
+> is the overlay ip, and the ip address of veth0 is 172.16.1.100
+> which is the vtep ip.
+> When doing 'ping 10.1.1.100' from root namespace, the
+> remote_ip should be 172.16.1.100.
+> 
+> [...]
+
+Here is the summary with links:
+  - selftests/bpf: fix tunnel remote ip comments
+    https://git.kernel.org/bpf/bpf-next/c/a50cbac6d81a
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
