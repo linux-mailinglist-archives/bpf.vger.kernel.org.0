@@ -2,159 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B24F54DDA89
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 14:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C6B4DDAA1
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 14:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236685AbiCRNaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 09:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
+        id S236136AbiCRNh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 09:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbiCRNaA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 09:30:00 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC7F180041;
-        Fri, 18 Mar 2022 06:28:41 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id n2so6959689plf.4;
-        Fri, 18 Mar 2022 06:28:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=T8TYfEa1ru48XVVByk53Qi+iGu8psJDdH3gD/7G0awo=;
-        b=oO8RZTq8u1xW4mLhlxq08I5LajCSO8NlGkg5Vwh7s2awgG2XSUSC6a3P+nJy+retw/
-         LCiXMgUxnM9xlH4jpZaRNrRRMHvJWTMjLyl+q1yLDPpi/a1ZLsDQHkrXv40owQEvs73R
-         QGDAMsc3akoKBKZTcgCeaOVSQ87uL4Pk0r3HQDG1hKObjGWQtbU+/+D6tYg7yW9TTbuN
-         8MwUUWNUZdEyCDf3FEsv4T2qZ08fOfSIzj7RQlCn9polG6uoGcRMTsk8v+s1RAY92tdQ
-         UF1ka9AbmXK8VK1k/yH43dJD8o0OsO8hH5v+hOHxqHLJEOS6MG3DRwY/XBpxt+jCrqDH
-         0bcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=T8TYfEa1ru48XVVByk53Qi+iGu8psJDdH3gD/7G0awo=;
-        b=gTI5cTMU+q3gvrYk+vNZPgt4+ZovM6e0nCOW0lSMs1xbMPDFdDxq1m4uHu2yrmKk9S
-         LyfM5gONoU79tHWx8DUWbVDwTjapG6H55tdHm8+yNp8TyC3mREF8r94Kfg401zoiuxR5
-         zW5N94NCSVN68kEmG+fW42C7DWjytCIUbHmXgxFbtwvRE2qUiuJ0D/mWaDzBqO550poK
-         pSfzrL7dwc13lSXHmzY2g0Ivpq+E+wNr93Us9Nr6GyKVHSGm8HEpGiW1blLKnYk60l29
-         ubdKk4SW3pX4Qt9YGIlU5VpyjsTEG3BT4vdDCBK8pXdyUwojpTa7UQbv9W46Hr6XygG6
-         VD5A==
-X-Gm-Message-State: AOAM531znkZ9TtDDa+nmdlWOexSocv076iROQGnl4+vEYGRqI2z9cIVL
-        geR0/JbNnlzbYQpZRJLvi3M=
-X-Google-Smtp-Source: ABdhPJwPvzGyge1l9ML5FOiHonA62LG+hA/D3eyn/oX5UYdtkXemyceYIAS/eXsTqa3iLkL5Up/fqA==
-X-Received: by 2002:a17:90b:1bc7:b0:1c6:c3ac:894a with SMTP id oa7-20020a17090b1bc700b001c6c3ac894amr1347498pjb.125.1647610120543;
-        Fri, 18 Mar 2022 06:28:40 -0700 (PDT)
-Received: from odroid ([114.29.23.97])
-        by smtp.gmail.com with ESMTPSA id l10-20020a056a00140a00b004c55d0dcbd1sm9635671pfu.120.2022.03.18.06.28.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Mar 2022 06:28:40 -0700 (PDT)
-Date:   Fri, 18 Mar 2022 13:28:33 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Radoslaw Burny <rburny@google.com>, linux-arch@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow
- path
-Message-ID: <20220318132833.GB1665646@odroid>
-References: <20220316224548.500123-1-namhyung@kernel.org>
- <20220316224548.500123-3-namhyung@kernel.org>
- <YjSBRNxzaE9c+F/1@boqun-archlinux>
- <20220318132424.GA1665646@odroid>
+        with ESMTP id S236746AbiCRNhw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 09:37:52 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F9ABF039;
+        Fri, 18 Mar 2022 06:36:29 -0700 (PDT)
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nVCmI-00006i-HE; Fri, 18 Mar 2022 14:36:26 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nVCmI-000ITL-5H; Fri, 18 Mar 2022 14:36:26 +0100
+Subject: Re: [net-next v10 1/2] net: sched: use queue_mapping to pick tx queue
+To:     Paolo Abeni <pabeni@redhat.com>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Talal Ahmad <talalahmad@google.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+References: <20220314141508.39952-1-xiangxia.m.yue@gmail.com>
+ <20220314141508.39952-2-xiangxia.m.yue@gmail.com>
+ <015e903a-f4b4-a905-1cd2-11d10aefec8a@iogearbox.net>
+ <CAMDZJNUO9k8xmrJwrXnj+LVG=bEv5Zwe=YkjOqSBrDS348OQfA@mail.gmail.com>
+ <7d4b0c51460dec351bbbaf9be85c4a25cb6cec4f.camel@redhat.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f61e4a34-e7e5-198b-dde6-816654775b21@iogearbox.net>
+Date:   Fri, 18 Mar 2022 14:36:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220318132424.GA1665646@odroid>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <7d4b0c51460dec351bbbaf9be85c4a25cb6cec4f.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26485/Fri Mar 18 09:26:47 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 18, 2022 at 01:24:24PM +0000, Hyeonggon Yoo wrote:
-> On Fri, Mar 18, 2022 at 08:55:32PM +0800, Boqun Feng wrote:
-> > On Wed, Mar 16, 2022 at 03:45:48PM -0700, Namhyung Kim wrote:
-> > [...]
-> > > @@ -209,6 +210,7 @@ static inline int __sched __down_common(struct semaphore *sem, long state,
-> > >  								long timeout)
-> > >  {
-> > >  	struct semaphore_waiter waiter;
-> > > +	bool tracing = false;
-> > >  
-> > >  	list_add_tail(&waiter.list, &sem->wait_list);
-> > >  	waiter.task = current;
-> > > @@ -220,18 +222,28 @@ static inline int __sched __down_common(struct semaphore *sem, long state,
-> > >  		if (unlikely(timeout <= 0))
-> > >  			goto timed_out;
-> > >  		__set_current_state(state);
-> > > +		if (!tracing) {
-> > > +			trace_contention_begin(sem, 0);
-> > 
-> > This looks a littl ugly ;-/
-> 
-> I agree this can be simplified a bit.
-> 
-> > Maybe we can rename __down_common() to
-> > ___down_common() and implement __down_common() as:
-> > 
-> > 	static inline int __sched __down_common(...)
-> > 	{
-> > 		int ret;
-> > 		trace_contention_begin(sem, 0);
-> > 		ret = ___down_common(...);
-> > 		trace_contention_end(sem, ret);
-> > 		return ret;
-> > 	}
-> > 
-> > Thoughts?
-> >
-> 
-> But IMO inlining tracepoints is generally not a good idea.
-> Will increase kernel size a lot.
->
+On 3/17/22 9:20 AM, Paolo Abeni wrote:
+> On Tue, 2022-03-15 at 20:48 +0800, Tonghao Zhang wrote:
+>> On Tue, Mar 15, 2022 at 5:59 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>> On 3/14/22 3:15 PM, xiangxia.m.yue@gmail.com wrote:
+>>> [...]
+>>>>    include/linux/netdevice.h |  3 +++
+>>>>    include/linux/rtnetlink.h |  1 +
+>>>>    net/core/dev.c            | 31 +++++++++++++++++++++++++++++--
+>>>>    net/sched/act_skbedit.c   |  6 +++++-
+>>>>    4 files changed, 38 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>>>> index 0d994710b335..f33fb2d6712a 100644
+>>>> --- a/include/linux/netdevice.h
+>>>> +++ b/include/linux/netdevice.h
+>>>> @@ -3065,6 +3065,9 @@ struct softnet_data {
+>>>>        struct {
+>>>>                u16 recursion;
+>>>>                u8  more;
+>>>> +#ifdef CONFIG_NET_EGRESS
+>>>> +             u8  skip_txqueue;
+>>>> +#endif
+>>>>        } xmit;
+>>>>    #ifdef CONFIG_RPS
+>>>>        /* input_queue_head should be written by cpu owning this struct,
+>>>> diff --git a/include/linux/rtnetlink.h b/include/linux/rtnetlink.h
+>>>> index 7f970b16da3a..ae2c6a3cec5d 100644
+>>>> --- a/include/linux/rtnetlink.h
+>>>> +++ b/include/linux/rtnetlink.h
+>>>> @@ -100,6 +100,7 @@ void net_dec_ingress_queue(void);
+>>>>    #ifdef CONFIG_NET_EGRESS
+>>>>    void net_inc_egress_queue(void);
+>>>>    void net_dec_egress_queue(void);
+>>>> +void netdev_xmit_skip_txqueue(bool skip);
+>>>>    #endif
+>>>>
+>>>>    void rtnetlink_init(void);
+>>>> diff --git a/net/core/dev.c b/net/core/dev.c
+>>>> index 75bab5b0dbae..8e83b7099977 100644
+>>>> --- a/net/core/dev.c
+>>>> +++ b/net/core/dev.c
+>>>> @@ -3908,6 +3908,25 @@ sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
+>>>>
+>>>>        return skb;
+>>>>    }
+>>>> +
+>>>> +static struct netdev_queue *
+>>>> +netdev_tx_queue_mapping(struct net_device *dev, struct sk_buff *skb)
+>>>> +{
+>>>> +     int qm = skb_get_queue_mapping(skb);
+>>>> +
+>>>> +     return netdev_get_tx_queue(dev, netdev_cap_txqueue(dev, qm));
+>>>> +}
+>>>> +
+>>>> +static bool netdev_xmit_txqueue_skipped(void)
+>>>> +{
+>>>> +     return __this_cpu_read(softnet_data.xmit.skip_txqueue);
+>>>> +}
+>>>> +
+>>>> +void netdev_xmit_skip_txqueue(bool skip)
+>>>> +{
+>>>> +     __this_cpu_write(softnet_data.xmit.skip_txqueue, skip);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(netdev_xmit_skip_txqueue);
+>>>>    #endif /* CONFIG_NET_EGRESS */
+>>>>
+>>>>    #ifdef CONFIG_XPS
+>>>> @@ -4078,7 +4097,7 @@ struct netdev_queue *netdev_core_pick_tx(struct net_device *dev,
+>>>>    static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>>>>    {
+>>>>        struct net_device *dev = skb->dev;
+>>>> -     struct netdev_queue *txq;
+>>>> +     struct netdev_queue *txq = NULL;
+>>>>        struct Qdisc *q;
+>>>>        int rc = -ENOMEM;
+>>>>        bool again = false;
+>>>> @@ -4106,11 +4125,17 @@ static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>>>>                        if (!skb)
+>>>>                                goto out;
+>>>>                }
+>>>> +
+>>>> +             netdev_xmit_skip_txqueue(false);
+>>>> +
+>>>>                nf_skip_egress(skb, true);
+>>>>                skb = sch_handle_egress(skb, &rc, dev);
+>>>>                if (!skb)
+>>>>                        goto out;
+>>>>                nf_skip_egress(skb, false);
+>>>> +
+>>>> +             if (netdev_xmit_txqueue_skipped())
+>>>> +                     txq = netdev_tx_queue_mapping(dev, skb);
+>>>>        }
+>>>>    #endif
+>>>>        /* If device/qdisc don't need skb->dst, release it right now while
+>>>> @@ -4121,7 +4146,9 @@ static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>>>>        else
+>>>>                skb_dst_force(skb);
+>>>>
+>>>> -     txq = netdev_core_pick_tx(dev, skb, sb_dev);
+>>>> +     if (likely(!txq))
+>>>
+>>> nit: Drop likely(). If the feature is used from sch_handle_egress(), then this would always be the case.
+>> Hi Daniel
+>> I think in most case, we don't use skbedit queue_mapping in the
+>> sch_handle_egress() , so I add likely in fast path.
 
-Ah, it's already inlined. Sorry.
+Yeah, but then let branch predictor do its work ? We can still change and drop the
+likely() once we add support for BPF though..
 
-> > Regards,
-> > Boqun
-> > 
-> > > +			tracing = true;
-> > > +		}
-> > >  		raw_spin_unlock_irq(&sem->lock);
-> > >  		timeout = schedule_timeout(timeout);
-> > >  		raw_spin_lock_irq(&sem->lock);
-> > > -		if (waiter.up)
-> > > +		if (waiter.up) {
-> > > +			trace_contention_end(sem, 0);
-> > >  			return 0;
-> > > +		}
-> > >  	}
-> > >  
-> > >   timed_out:
-> > > +	if (tracing)
-> > > +		trace_contention_end(sem, -ETIME);
-> > >  	list_del(&waiter.list);
-> > >  	return -ETIME;
-> > >  
-> > >   interrupted:
-> > > +	if (tracing)
-> > > +		trace_contention_end(sem, -EINTR);
-> > >  	list_del(&waiter.list);
-> > >  	return -EINTR;
-> > >  }
-> > > -- 
-> > > 2.35.1.894.gb6a874cedc-goog
-> > > 
+>>>> +             txq = netdev_core_pick_tx(dev, skb, sb_dev);
+>>>> +
+>>>>        q = rcu_dereference_bh(txq->qdisc);
+>>>
+>>> How will the `netdev_xmit_skip_txqueue(true)` be usable from BPF side (see bpf_convert_ctx_access() ->
+>>> queue_mapping)?
+>> Good questions, In other patch, I introduce the
+>> bpf_netdev_skip_txqueue, so we can use netdev_xmit_skip_txqueue in bpf
+>> side
+
+Yeah, that bpf_netdev_skip_txqueue() won't fly. It's basically a helper doing quirk for
+an implementation detail (aka calling netdev_xmit_skip_txqueue()). Was hoping you have
+something better we could use along with the context rewrite of __sk_buff's queue_mapping,
+but worst case we need to rework a bit for BPF. :/
+
+Thanks,
+Daniel
