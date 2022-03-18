@@ -2,113 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD10F4DE310
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 21:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282F14DE32E
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 22:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbiCRU74 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 16:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
+        id S238390AbiCRVDW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 17:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237010AbiCRU7y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 16:59:54 -0400
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692107EB19;
-        Fri, 18 Mar 2022 13:58:35 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id p15so5185973lfk.8;
-        Fri, 18 Mar 2022 13:58:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QZpUmnv5nnCuerIF7dNzjzviRvOSuKnz8K3jWowIdqs=;
-        b=c90c+Pd+UrrZcjk+b9FTklSYMbXSJbiGqfqXoQMqUhtNKbRJa5j2griTt74ionRKPf
-         0Ok2ToT/ihxwFuj9UsoSgo6gXXgTQR553auH+2EZJximyzPKKN4iZrB+89vfw5li2KgN
-         2WuJWqVbxnsg7iV5+j1bTbtl39i7hso5Xr40qKlP2ofT4Z/ZJRojGNhR8HKgbAj5OgqJ
-         AHI39hm9FNYckmavgaS40QW6qE+1+5J0Txb2OLSU33K2+V3dJMFS9tt7soyWKhygAF2j
-         bD+RThKwzZgzLoIX8J/ES+zvO5+Sr+kG2jRNPF1TTiKYu4CqLWSSFYZpcC7mdJx1QqSg
-         ozgw==
-X-Gm-Message-State: AOAM531wP2bvURoBcMS2zciPLhMe4Cbgd9TD9tv/oj5ip2SS1lMS6fOW
-        LMByqmlqbamidKExs9l4QReivFzVERQzsupwTKw=
-X-Google-Smtp-Source: ABdhPJwoznZL5xlVNeXYbcK4SKeRSHWd60J2ZCeqZmXj8bdxiTTr8C7LJLZPR7iQXYZEJMuVERuKSgO2a6Qf6ceXzOU=
-X-Received: by 2002:ac2:4e04:0:b0:449:f68e:c7d1 with SMTP id
- e4-20020ac24e04000000b00449f68ec7d1mr5801959lfr.586.1647637113538; Fri, 18
- Mar 2022 13:58:33 -0700 (PDT)
+        with ESMTP id S233725AbiCRVDV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 17:03:21 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9512DF3C8;
+        Fri, 18 Mar 2022 14:02:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D6B0AB82584;
+        Fri, 18 Mar 2022 21:02:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30459C340E8;
+        Fri, 18 Mar 2022 21:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647637319;
+        bh=/GpQ4N6hhrN3D8ouvzjMJqXG0gXZidH3kDz4f2MPDLM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HkCijFl/oV+GsvrqIM28miZDn7/+/0YG8rqCaJcHVguONz5RxWkFqWD32Kmm5wzUk
+         cXwBtCT1lN7twuqKnxIse8J7CXm8nL6XivOQybI0CXLT4xRWsXitHt+ZsHdnSd5h6m
+         an+g8TX+O/ys0zOkxnztBvzIX5GU0hmgNMPOqa+t1GGRJb9ueDcAeHaq7IgODTEpE+
+         xgeXuwBhiNjyVlPoVmrWREG3yzawr9448KdVE/a+lBQXKry64d8vvW7hwI1c8C9Z0/
+         vftqhIMDlpkbCbzFrLLz8V4tl2vPvkoHLPxZ9orFfF5g8T0GNOywVSfUVwWar5TMBD
+         w3MF85tGQ2H2A==
+Date:   Fri, 18 Mar 2022 14:01:53 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, brouer@redhat.com, pabeni@redhat.com,
+        toke@redhat.com, andrii@kernel.org, nbd@nbd.name
+Subject: Re: [PATCH bpf-next] net: xdp: introduce XDP_PACKET_HEADROOM_MIN
+ for veth and generic-xdp
+Message-ID: <20220318140153.592ac996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YjTji4qgDbrXg4D+@lore-desk>
+References: <039064e87f19f93e0d0347fc8e5c692c789774e6.1647630686.git.lorenzo@kernel.org>
+        <20220318123323.75973f84@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YjTji4qgDbrXg4D+@lore-desk>
 MIME-Version: 1.0
-References: <20220316224548.500123-1-namhyung@kernel.org> <20220316224548.500123-2-namhyung@kernel.org>
- <636955156.156341.1647523975127.JavaMail.zimbra@efficios.com>
- <20220317120753.4cd73f9e@gandalf.local.home> <1649265824.157580.1647535061743.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1649265824.157580.1647535061743.JavaMail.zimbra@efficios.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 18 Mar 2022 13:58:22 -0700
-Message-ID: <CAM9d7chSR7DtUsVtKUDp94kCFtTgL4tWqvck1qSqwWMX8ov8Eg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] locking: Add lock contention tracepoints
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Byungchul Park <byungchul.park@lge.com>,
-        paulmck <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Radoslaw Burny <rburny@google.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Mathieu and Steve,
+On Fri, 18 Mar 2022 20:54:51 +0100 Lorenzo Bianconi wrote:
+> > IIUC the initial purpose of SKB mode was to be able to test or
+> > experiment with XDP "until drivers add support". If that's still
+> > the case the semantics of XDP SKB should be as close to ideal
+> > XDP implementation as possible.
+> 
+> XDP in skb-mode is useful if we want to perform a XDP_REDIRECT from
+> an ethernet driver into a wlan device since mac80211 requires a skb.
 
-On Thu, Mar 17, 2022 at 9:37 AM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> ----- On Mar 17, 2022, at 12:07 PM, rostedt rostedt@goodmis.org wrote:
->
-> > On Thu, 17 Mar 2022 09:32:55 -0400 (EDT)
-> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> >
-> >> Unless there is a particular reason for using preprocessor defines here, the
-> >> following form is typically better because it does not pollute the preprocessor
-> >> defines, e.g.:
-> >>
-> >> enum lock_contention_flags {
-> >>         LCB_F_SPIN =   1U << 0;
-> >>         LCB_F_READ =   1U << 1;
-> >>         LCB_F_WRITE =  1U << 2;
-> >>         LCB_F_RT =     1U << 3;
-> >>         LCB_F_PERCPU = 1U << 4;
-> >> };
-> >
-> > If you do this, then to use the __print_flags(), You'll also need to add:
-> >
-> > TRACE_DEFINE_ENUM(LCB_F_SPIN);
-> > TRACE_DEFINE_ENUM(LCB_F_READ);
-> > TRACE_DEFINE_ENUM(LCB_F_WRITE);
-> > TRACE_DEFINE_ENUM(LCB_F_RT);
-> > TRACE_DEFINE_ENUM(LCB_F_PERCPU);
-> >
-> > Which does slow down boot up slightly.
->
-> So it looks like there is (currently) a good reason for going with the #define.
+Ack, I understand the use case is real, but given that the TC
+alternative exists we can apply more scrutiny to the trade offs.
+IMO production use of XDP skb mode would be a mistake, the thing 
+is a layering violation by nature. Our time is better spent making
+TC / XDP code portability effortless.
 
-Thanks for your suggestions, I'd go with define this time and we could
-convert it to enum later (hopefully after the boot time is resolved).
-
-Thanks,
-Namhyung
-
+> > We had a knob for specifying needed headroom, is that thing not
+> > working / not a potentially cleaner direction?
+> >
 >
-> As a side-discussion, I keep finding it odd that this adds overhead on boot. I suspect
-> this is also implemented as a linked list which needs to be iterated over at boot-time.
->
-> With a few changes to these macros, these linked lists could be turned into arrays,
-> and thus remove the boot-time overhead.
+> which one do you mean? I guess it would be useful :)
+
+We have ndo_set_rx_headroom and dev->needed_headroom.
+Sorry for brevity, I'm on the move today, referring to things 
+from memory :)
