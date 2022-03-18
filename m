@@ -2,163 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC554DD703
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 10:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2084DD7D3
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 11:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234393AbiCRJYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 05:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
+        id S234929AbiCRKTq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 06:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234377AbiCRJYJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 05:24:09 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61B72C57B2;
-        Fri, 18 Mar 2022 02:22:50 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id a17so8487631edm.9;
-        Fri, 18 Mar 2022 02:22:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W2BhzbMIByCZCKGXGolyoW4FwzuuDiEDyr4ehhR2zyc=;
-        b=HgFmGCQP2uTDIsl/xFIfE3vd5PETPCWDs5LQ3H64TKvccSJQeJoaCj43JkWIJF3DJW
-         1rtlolw3oz5oaytS7J/v9VJuEk4wbKgxq4hBMKl3j8ZGeZ/JnsYjK+8M/mFh7jNCbm/t
-         wiJFEyIXgCCsb519wE3RHEb331heGql31QY6EhR5yLjq597xCAkV30bHCkc/qyH0Htrx
-         wdtxcxRvPrksfCGxgih6UZTuZEuApZq8uVpomJD1XPbWjPvbrpE+c9Rbmb+OYQwC5L9U
-         Th1KwQRPna9N3GM/mXUgWDJmIwUSh3c4zNCrLpOkrFBa+rEaVVE98xKcSCKHivQVvtE/
-         a2Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W2BhzbMIByCZCKGXGolyoW4FwzuuDiEDyr4ehhR2zyc=;
-        b=d7JT2aB7jcIWvU4+0E/g/N9ynNrvdcuOxMFKPah4+8YfjUVfz0MZMXGRLvxdZELFPT
-         jyTJ92gIdhDytogPc1unpfiysuFz3QKdR67IhWCCybhgXlhfnb7g6u3o5xh6vWIGM6YY
-         SQqKitAEPZXNNMzhi/fUVyYygBijFe/NKHpWGDrsuJvLwSWuOaJjbj6UHthsLK0SHfYD
-         v1HuS8h/rMCbk5QsdK+gJ1BqamePXk34jFx38spT+LfvBAAithISBo9VbjMogkkqX6FE
-         33cGqbRMvDo9RRlq0RqAOlQkMUj9vsKS1lBZBqd/NM93F5ZF4FzB8mIpLQHG2MqFsLGY
-         CgaQ==
-X-Gm-Message-State: AOAM531/PRf1EklM01eai1KTqYzqGS3B3+3evD1Qb+PMdohbNScSvT7S
-        RarFnyrLmkE+Op9JtBsbsxjgkQz4p8KW1A==
-X-Google-Smtp-Source: ABdhPJxy4bt20DgxAxj4YsKg7TlYGZk8fXVnHcX4FUnQ8m6rjF8wTHhqAqGKwF19CkbU/q18ww4waw==
-X-Received: by 2002:a05:6402:d7:b0:413:673:ba2f with SMTP id i23-20020a05640200d700b004130673ba2fmr8456637edu.29.1647595369200;
-        Fri, 18 Mar 2022 02:22:49 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id bn14-20020a170906c0ce00b006c5ef0494besm3430520ejb.86.2022.03.18.02.22.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Mar 2022 02:22:48 -0700 (PDT)
-Date:   Fri, 18 Mar 2022 10:22:46 +0100
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        with ESMTP id S234924AbiCRKTp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 06:19:45 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796001FB518;
+        Fri, 18 Mar 2022 03:18:22 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KKg0f6BlmzfYnH;
+        Fri, 18 Mar 2022 18:16:50 +0800 (CST)
+Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
+ (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Fri, 18 Mar
+ 2022 18:18:19 +0800
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCHv3 bpf-next 09/13] libbpf: Add
- bpf_program__attach_kprobe_multi_opts function
-Message-ID: <YjRPZj6Z8vuLeEZo@krava>
-References: <20220316122419.933957-1-jolsa@kernel.org>
- <20220316122419.933957-10-jolsa@kernel.org>
- <CAADnVQ+tNLEtbPY+=sZSoBicdSTx1YLgZJwnNuhnBkUcr5xozQ@mail.gmail.com>
- <CAEf4BzZtQaiUxQ-sm_hH2qKPRaqGHyOfEsW96DxtBHRaKLoL3Q@mail.gmail.com>
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf-next] bpf, arm64: sign return address for jited code
+Date:   Fri, 18 Mar 2022 06:29:36 -0400
+Message-ID: <20220318102936.838459-1-xukuohai@huawei.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZtQaiUxQ-sm_hH2qKPRaqGHyOfEsW96DxtBHRaKLoL3Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.197]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 17, 2022 at 10:14:28PM -0700, Andrii Nakryiko wrote:
+Sign return address for jited code when the kernel is built with pointer
+authentication enabled.
 
-SNIP
+1. Sign lr with paciasp instruction before lr is pushed to stack. Since
+   paciasp acts like landing pads for function entry, no need to insert
+   bti instruction before paciasp.
 
-> > But the above needs more work.
-> > Currently test_progs -t kprobe_multi
-> > takes 4 seconds on lockdep+debug kernel.
-> > Mainly because of the above loop.
-> >
-> >     18.05%  test_progs       [kernel.kallsyms]   [k]
-> > kallsyms_expand_symbol.constprop.4
-> >     12.53%  test_progs       libc-2.28.so        [.] _IO_vfscanf
-> >      6.31%  test_progs       [kernel.kallsyms]   [k] number
-> >      4.66%  test_progs       [kernel.kallsyms]   [k] format_decode
-> >      4.65%  test_progs       [kernel.kallsyms]   [k] string_nocheck
-> >
-> > Single test_skel_api() subtest takes almost a second.
-> >
-> > A cache inside libbpf probably won't help.
-> > Maybe introduce a bpf iterator for kallsyms?
-> 
-> BPF iterator for kallsyms is a great idea! So many benefits:
+2. Authenticate lr with autiasp instruction after lr is poped from stack.
 
->   - it should be significantly more efficient *and* simpler than
-> parsing /proc/kallsyms;
->   - there were some upstream patches recording ksym length (i.e.,
-> function size), don't remember if that ever landed or not, but besides
-> that the other complication of even exposing that to user space were
-> concerns about /proc/kallsyms format being an ABI. With the BPF
-> iterator we can easily provide that symbol size without any breakage.
-> This would be great!
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+---
+ arch/arm64/net/bpf_jit.h      |  3 +++
+ arch/arm64/net/bpf_jit_comp.c | 11 +++++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-yes, great idea.. I was cc-ed on patches adding extra stuff to kallsyms:
-  https://lore.kernel.org/lkml/20220208184309.148192-7-nick.alcock@oracle.com/
+diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
+index dd59b5ad8fe4..679c80aa1f2e 100644
+--- a/arch/arm64/net/bpf_jit.h
++++ b/arch/arm64/net/bpf_jit.h
+@@ -249,6 +249,9 @@
+ /* HINTs */
+ #define A64_HINT(x) aarch64_insn_gen_hint(x)
+ 
++#define A64_PACIASP A64_HINT(AARCH64_INSN_HINT_PACIASP)
++#define A64_AUTIASP A64_HINT(AARCH64_INSN_HINT_AUTIASP)
++
+ /* BTI */
+ #define A64_BTI_C  A64_HINT(AARCH64_INSN_HINT_BTIC)
+ #define A64_BTI_J  A64_HINT(AARCH64_INSN_HINT_BTIJ)
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index e850c69e128c..5dcf45e5944e 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -192,7 +192,7 @@ static bool is_addsub_imm(u32 imm)
+ }
+ 
+ /* Tail call offset to jump into */
+-#if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
++#if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) || IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL)
+ #define PROLOGUE_OFFSET 8
+ #else
+ #define PROLOGUE_OFFSET 7
+@@ -233,8 +233,11 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+ 	 *
+ 	 */
+ 
++	/* Sign lr */
++	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
++		emit(A64_PACIASP, ctx);
+ 	/* BTI landing pad */
+-	if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
++	else if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+ 		emit(A64_BTI_C, ctx);
+ 
+ 	/* Save FP and LR registers to stay align with ARM64 AAPCS */
+@@ -529,6 +532,10 @@ static void build_epilogue(struct jit_ctx *ctx)
+ 	/* Set return value */
+ 	emit(A64_MOV(1, A64_R(0), r0), ctx);
+ 
++	/* Authenticate lr */
++	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
++		emit(A64_AUTIASP, ctx);
++
+ 	emit(A64_RET(A64_LR), ctx);
+ }
+ 
+-- 
+2.30.2
 
-this could be way out ;-) cc-ing Nick
-
->   - we can allow parameterizing iterator with options like: skip or
-> include module symbols, specify a set of types of symbols (function,
-> variable, etc), etc. This would speed everything up in common cases by
-> not even decompressing irrelevant names.
-> 
-> In short, kallsyms iterator would be an immensely useful for any sort
-> of tracing tool that deals with kernel stack traces or kallsyms in
-> general.
-
-I wonder we could make some use of it in perf as well, there's some
-guessing wrt symbol sizes when we parse kallsyms, so we could get
-rid of it.. I will work on that and try to add this
-
-> 
-> But in this particular case, kprobe_multi_resolve_syms()
-> implementation is extremely suboptimal. I didn't realize during review
-> that kallsyms_lookup_name() is a linear scan... If that's not going to
-> be changed to O(log(N)) some time soon, we need to reimplement
-> kprobe_multi_resolve_syms(), probably.
-> 
-> One way would be to sort user strings lexicographically and then do a
-> linear scan over all kallsyms, for each symbol perform binary search
-> over a sorted array of user strings. Stop once all the positions were
-> "filled in" (we'd need to keep a bitmap or bool[], probably). This way
-> it's going to be O(MlogN) instead of O(MN) as it is right now.
-
-ok, I did something similar in multi-trampoline patchset that you
-suggested, I think that will work here as well
-
-> 
-> BTW, Jiri, libbpf.map is supposed to have an alphabetically ordered
-> list of functions, it would be good to move
-> bpf_program__attach_kprobe_multi_opts a bit higher before libbpf_*
-> functions.
-
-ah right, sry.. I'll send fix with follow up changes
-
-thanks,
-jirka
