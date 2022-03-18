@@ -2,84 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2E74DE1B0
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 20:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 080DB4DE1D1
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 20:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239040AbiCRTWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 15:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        id S238522AbiCRTez (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 15:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239449AbiCRTWi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 15:22:38 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479A92EDC0D
-        for <bpf@vger.kernel.org>; Fri, 18 Mar 2022 12:21:19 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id i11so7052743plr.1
-        for <bpf@vger.kernel.org>; Fri, 18 Mar 2022 12:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5YX1gn/VwOJyuBdRtlgzCdAIYacDg/GfKPHkufM3WR0=;
-        b=LELYuKHaIWSL5H38CLHKmc6A+eQd005DG7uRtssWj8EfpAoQDk2v/fKQWNZ0CHX3qC
-         ZCczRsgzivZfMw8thnV2l7tH6FjA4zAECJKrb1OxJTP86wD3CCFGjTorRjzSxsxJ4h3T
-         vrpfwo7xsA/k/yca4QcNaSVbqLZoY6MQMLNUdwH0TMbY4vwcsdbHfajtsQ+AeZdwjQi8
-         37hwbOcvLcr0KZwiYy3PrMyyzfiAK0wJdtvUHIZDubFt31FC5aakdmDfPqWzwZpuQDeI
-         zxZIAbUq5gJi3y2Y/79X/1FkNFi7enkPs20m03brTcHocFKZvV+tRmSSg/4nUeijoe2o
-         KVYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5YX1gn/VwOJyuBdRtlgzCdAIYacDg/GfKPHkufM3WR0=;
-        b=U22u+89fTSeK7prZoEk/b57eKu4lXZ5g2cTX8thsPyIhxNkETzq3hFqm6dWztSQTe1
-         r86bnDoqmc1VJX6uAxAOZFvN0GoTcxVDGVsd81IIlCz07HaWgTPKubh4gvKoL3B2u7mL
-         QE90UxlvYg+xoiEWTklxxT9GxO1eVAyhvAhhZqsDqs+QeDk72ZnnL36LiLDvJEFSvfrm
-         2WjRm9DDI0JkAYXAuEfmWefk9Jqd1r7ZhbHHcUsOgu8UN2C4MXcoFHEwCWZotxwpqbah
-         FBUtJyLl2hzSHx82AOZCRggr0thDPGB8QC7XAUvkBoC88ZFMrKlmwZY+DlUfEt61HoRh
-         k9Mg==
-X-Gm-Message-State: AOAM530E/lWgekV5mWeC2tuvxbXMa+8eMg9JjTRzd1453KU3jXn4Ubee
-        XFIbxAh5pngFUMzuQTTiy9cfJOdn+3g=
-X-Google-Smtp-Source: ABdhPJzhpskqn1VXv4Didl8JIPgNTo3RQJaWsjTP9bKGMnkCEXo5o2J2jHcanKqLOPj+YPYCxKkCNA==
-X-Received: by 2002:a17:90b:1bc5:b0:1bf:1c96:66ac with SMTP id oa5-20020a17090b1bc500b001bf1c9666acmr23119508pjb.167.1647631278728;
-        Fri, 18 Mar 2022 12:21:18 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:7e8b])
-        by smtp.gmail.com with ESMTPSA id f30-20020a63755e000000b00381f6b7ef30sm6981358pgn.54.2022.03.18.12.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Mar 2022 12:21:18 -0700 (PDT)
-Date:   Fri, 18 Mar 2022 12:21:14 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-Subject: Re: [PATCH bpf-next v2 4/4] selftest/bpf: The test cses of BPF
- cookie for fentry/fexit/fmod_ret.
-Message-ID: <20220318192114.pacmegfl3uglju6l@ast-mbp>
-References: <20220316004231.1103318-1-kuifeng@fb.com>
- <20220316004231.1103318-5-kuifeng@fb.com>
+        with ESMTP id S240335AbiCRTey (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 15:34:54 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE84615FF2;
+        Fri, 18 Mar 2022 12:33:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id B57C7CE2A37;
+        Fri, 18 Mar 2022 19:33:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7487CC340E8;
+        Fri, 18 Mar 2022 19:33:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647632009;
+        bh=rlCNB/iC0DSgJFF6MWt8576T/eRMP/b77KCnIge0EAY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=S6eVDNtrG69YM9lKe6VIc7V8uSO+LylXRFp8tZTO9gJaxvAbhiDXfFYSidDro+23C
+         EUalQJFuZ3QBGrxunNjzgHy0W2FDkiFq0GGnDFR55gJRQloy1tsJj8l1GpAxn9IUO4
+         dRXJvx92pZla/5IJeILG4Wmi6bfWKb1uCs42MzInz8cyKQVA7GNL5qa8tXSAh5GMqf
+         tUYjTXYk0t8pRaiSoAO2p2wPWwEFVtzJ2xNAY9Oxy+08UptaJ0pHR5eVDXiMkgH2ho
+         xpr+SyKJKlt9ZA/puso4iydnJIIgS7ZDaSK4b4RSE1DVvt5gd0jvkJ5q/erH3s/YD3
+         +8h+zaqi3+hWw==
+Date:   Fri, 18 Mar 2022 12:33:23 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        pabeni@redhat.com, toke@redhat.com, lorenzo.bianconi@redhat.com,
+        andrii@kernel.org, nbd@nbd.name
+Subject: Re: [PATCH bpf-next] net: xdp: introduce XDP_PACKET_HEADROOM_MIN
+ for veth and generic-xdp
+Message-ID: <20220318123323.75973f84@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <039064e87f19f93e0d0347fc8e5c692c789774e6.1647630686.git.lorenzo@kernel.org>
+References: <039064e87f19f93e0d0347fc8e5c692c789774e6.1647630686.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220316004231.1103318-5-kuifeng@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 05:42:31PM -0700, Kui-Feng Lee wrote:
+On Fri, 18 Mar 2022 20:19:29 +0100 Lorenzo Bianconi wrote:
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index ba69ddf85af6..92d560e648ab 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4737,7 +4737,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+>  	 * native XDP provides, thus we need to do it here as well.
+>  	 */
+>  	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
+> -	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
+> +	    skb_headroom(skb) < XDP_PACKET_HEADROOM_MIN) {
+>  		int hroom = XDP_PACKET_HEADROOM - skb_headroom(skb);
+>  		int troom = skb->tail + skb->data_len - skb->end;
 >  
-> +SEC("fentry/bpf_fentry_test1")
 
-Did we discuss whether it makes sense to specify cookie in the SEC() ?
+IIUC the initial purpose of SKB mode was to be able to test or
+experiment with XDP "until drivers add support". If that's still
+the case the semantics of XDP SKB should be as close to ideal
+XDP implementation as possible.
 
-Probably no one will be using cookie when prog is attached to a specific
-function, but with support for poor man regex in SEC the cookie
-might be useful?
-Would we need a way to specify a set of cookies in SEC()?
-Or specify a set of pairs of kernel_func+cookie?
-None of it might be worth it.
+We had a knob for specifying needed headroom, is that thing not 
+working / not a potentially cleaner direction?
