@@ -2,151 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A41CF4DD3C6
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 04:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB334DD405
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 05:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbiCRDyq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Mar 2022 23:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
+        id S232425AbiCRE6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 00:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbiCRDyp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 23:54:45 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8310B1760D8;
-        Thu, 17 Mar 2022 20:53:27 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n18so6084512plg.5;
-        Thu, 17 Mar 2022 20:53:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rI0FrmQ3+ceiLgNiqpfsxdYGbjB79Df3AZRI5bRwQ0o=;
-        b=Hn4JBwIy1jFjd69nBo+JFJCVJTNTD+3bEmjId2ADMgJLcte32nRtt93TpmWQRS4c7x
-         rR3dQlzClV0KAYsGDhtSw8cDWKQ2t/uiy5tlnOJIYD3VY9RESUiS6CnLqkdazkns/6pv
-         UAHAKywoeebHtivA1rdf1btn57gw/UFuxxO4ILGRDP6jhPc3W8CRA2pVUs0Y4QvLIuQ9
-         x/i37jh/SlO7Rj/lk0Raz/Wv5GvcU34ithzP8JXKVzYdvCz/gMAuQT76Qps4bLfKGpS9
-         iF44e0+FX8XLrJ9zp8D1QK50IQKSEpT/T09RfNixVI/NIZzXht9u9PY/z2YmhBY4TxEL
-         sTbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rI0FrmQ3+ceiLgNiqpfsxdYGbjB79Df3AZRI5bRwQ0o=;
-        b=myUwgMgfEjOURmVrguPuQL9F8B5CNc1nQiHx/I80q0un7b06zcJaODO6zf8R1fhcl5
-         cfU96kCzCnOQGnXIGOg+GVM5r/HKFTeeTh+6/7FIwaEPxME3ZgD8RQWafCAVPNZ4zsjc
-         XJN1vNvvBT9/ijLM/kMkUgdohg2aGgtf1ixdXlhDYhZtESjoxZVn77NSxVS/zYDC9S9T
-         hmqmQ/L5Lb1wnp9Y866Kitm0NIHrWONju26Kb8WWt+taIKxilD2dC97Jg4TILumxF+EG
-         G/uEKaDPpPhwKzGgZZkfaC4PK5PjKvRqNsgmVs16ccYAO85sG+yL3x+bvPhjiIH8jyUG
-         KJIQ==
-X-Gm-Message-State: AOAM531jsO0adzyj4QqFwvrZIXWHA97+o89aGO3B1ZXeYX/d7CyWG+xH
-        iYnpEKWKB4sKUZ5iEdAGjubpn1kg1ihRN9whnu8=
-X-Google-Smtp-Source: ABdhPJy2ZGzSwNJVYvTAvFyGkHdWwb9m7G9msiWNB29nrOy+gUScs5WGun2fBr8MEIsKK9zmWNETbCkreSoUzE6cdEU=
-X-Received: by 2002:a17:902:ab10:b0:153:b520:dbbe with SMTP id
- ik16-20020a170902ab1000b00153b520dbbemr7875333plb.55.1647575606916; Thu, 17
- Mar 2022 20:53:26 -0700 (PDT)
+        with ESMTP id S232424AbiCRE6D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 00:58:03 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FE5268C03
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 21:56:45 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22I14mZR024714
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 21:56:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=o93ZB+i8GjIQrJaHPc8kE5LG4gGapbhEHIBxDpKsMKU=;
+ b=rOvp5g3DCF+I57tAicd5wXiEDhoT9ltnMKk+CW0S31+zlfDYCbYgTxjPkktdn/9LmgTG
+ ZuEGIGi7uRsPtMVd8ggoXvX7FzzTy1kSWybdCqPli6utfH/6d3KuJ4G+ScUSK+MwYuBb
+ X1OZfFMv1WXTOm9KdpgTcxEnbMiv+dR86LI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3evg3kgt37-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 17 Mar 2022 21:56:45 -0700
+Received: from twshared5730.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 17 Mar 2022 21:56:43 -0700
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id 9C5659C8E634; Thu, 17 Mar 2022 21:56:35 -0700 (PDT)
+From:   Joanne Koong <joannekoong@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <kafai@fb.com>, <kpsingh@kernel.org>, <memxor@gmail.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <tj@kernel.org>, <davemarchevsky@fb.com>,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v3 0/2] Enable non-atomic allocations in local storage
+Date:   Thu, 17 Mar 2022 21:55:51 -0700
+Message-ID: <20220318045553.3091807-1-joannekoong@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220316122419.933957-1-jolsa@kernel.org> <20220316122419.933957-10-jolsa@kernel.org>
-In-Reply-To: <20220316122419.933957-10-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 17 Mar 2022 20:53:15 -0700
-Message-ID: <CAADnVQ+tNLEtbPY+=sZSoBicdSTx1YLgZJwnNuhnBkUcr5xozQ@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 09/13] libbpf: Add bpf_program__attach_kprobe_multi_opts
- function
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: xkiPTAmwHXxxhMViTkDYM6wguKAr4-q6
+X-Proofpoint-ORIG-GUID: xkiPTAmwHXxxhMViTkDYM6wguKAr4-q6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-18_05,2022-03-15_01,2022-02-23_01
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 16, 2022 at 5:26 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> +
-> +struct bpf_link *
-> +bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
-> +                                     const char *pattern,
-> +                                     const struct bpf_kprobe_multi_opts *opts)
-> +{
-> +       LIBBPF_OPTS(bpf_link_create_opts, lopts);
-> +       struct kprobe_multi_resolve res = {
-> +               .pattern = pattern,
-> +       };
-> +       struct bpf_link *link = NULL;
-> +       char errmsg[STRERR_BUFSIZE];
-> +       const unsigned long *addrs;
-> +       int err, link_fd, prog_fd;
-> +       const __u64 *cookies;
-> +       const char **syms;
-> +       bool retprobe;
-> +       size_t cnt;
-> +
-> +       if (!OPTS_VALID(opts, bpf_kprobe_multi_opts))
-> +               return libbpf_err_ptr(-EINVAL);
-> +
-> +       syms    = OPTS_GET(opts, syms, false);
-> +       addrs   = OPTS_GET(opts, addrs, false);
-> +       cnt     = OPTS_GET(opts, cnt, false);
-> +       cookies = OPTS_GET(opts, cookies, false);
-> +
-> +       if (!pattern && !addrs && !syms)
-> +               return libbpf_err_ptr(-EINVAL);
-> +       if (pattern && (addrs || syms || cookies || cnt))
-> +               return libbpf_err_ptr(-EINVAL);
-> +       if (!pattern && !cnt)
-> +               return libbpf_err_ptr(-EINVAL);
-> +       if (addrs && syms)
-> +               return libbpf_err_ptr(-EINVAL);
-> +
-> +       if (pattern) {
-> +               err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
-> +               if (err)
-> +                       goto error;
-> +               if (!res.cnt) {
-> +                       err = -ENOENT;
-> +                       goto error;
-> +               }
-> +               addrs = res.addrs;
-> +               cnt = res.cnt;
-> +       }
+From: Joanne Koong <joannelkoong@gmail.com>
 
-Thanks Jiri.
-Great stuff and a major milestone!
-I've applied Masami's and your patches to bpf-next.
+Currently, local storage memory can only be allocated atomically
+(GFP_ATOMIC). This restriction is too strict for sleepable bpf
+programs.
 
-But the above needs more work.
-Currently test_progs -t kprobe_multi
-takes 4 seconds on lockdep+debug kernel.
-Mainly because of the above loop.
+In this patchset, sleepable programs can allocate memory in local
+storage using GFP_KERNEL, while non-sleepable programs always default to
+GFP_ATOMIC.
 
-    18.05%  test_progs       [kernel.kallsyms]   [k]
-kallsyms_expand_symbol.constprop.4
-    12.53%  test_progs       libc-2.28.so        [.] _IO_vfscanf
-     6.31%  test_progs       [kernel.kallsyms]   [k] number
-     4.66%  test_progs       [kernel.kallsyms]   [k] format_decode
-     4.65%  test_progs       [kernel.kallsyms]   [k] string_nocheck
+v3 <- v2:
+* Add extra case to local_storage.c selftest to test associating multiple
+elements with the local storage, which triggers a GFP_KERNEL allocation i=
+n
+local_storage_update().
+* Cast gfp_t to __s32 in verifier to fix the sparse warnings
 
-Single test_skel_api() subtest takes almost a second.
+v2 <- v1:
+* Allocate the memory before/after the raw_spin_lock_irqsave, depending
+on the gfp flags
+* Rename mem_flags to gfp_flags
+* Reword the comment "*mem_flags* is set by the bpf verifier" to
+"*gfp_flags* is a hidden argument provided by the verifier"
+* Add a sentence to the commit message about existing local storage
+selftests covering both the GFP_ATOMIC and GFP_KERNEL paths in
+bpf_local_storage_update.
 
-A cache inside libbpf probably won't help.
-Maybe introduce a bpf iterator for kallsyms?
+Joanne Koong (2):
+  bpf: Enable non-atomic allocations in local storage
+  selftests/bpf: Test for associating multiple elements with the local
+    storage
 
-On the kernel side kprobe_multi_resolve_syms() looks similarly inefficient.
-I'm not sure whether it would be a bottle neck though.
+ include/linux/bpf_local_storage.h             |  7 ++-
+ kernel/bpf/bpf_inode_storage.c                |  9 +--
+ kernel/bpf/bpf_local_storage.c                | 58 ++++++++++++-------
+ kernel/bpf/bpf_task_storage.c                 | 10 ++--
+ kernel/bpf/verifier.c                         | 20 +++++++
+ net/core/bpf_sk_storage.c                     | 21 ++++---
+ .../selftests/bpf/progs/local_storage.c       | 19 ++++++
+ 7 files changed, 103 insertions(+), 41 deletions(-)
 
-Orthogonal to this issue please add a new stress test
-to selftest/bpf that attaches to a lot of functions.
+--=20
+2.30.2
+
