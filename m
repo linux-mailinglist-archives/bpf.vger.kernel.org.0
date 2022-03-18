@@ -2,223 +2,335 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AFA4DE34F
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 22:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB7B4DE364
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 22:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237552AbiCRVOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 17:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
+        id S241039AbiCRVUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 17:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240990AbiCRVOM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 17:14:12 -0400
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF3D53A49;
-        Fri, 18 Mar 2022 14:12:52 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id p15so5228579lfk.8;
-        Fri, 18 Mar 2022 14:12:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ksuX6MNNVKcpHa2cJxv8Npehy7dLW5BZP8Nd24HsaFA=;
-        b=XSCNq5gPxnqtXW1aGcvA1pn28uVm8lQZLYralUh8/p8/vPtEeeQN2nrW67DCYZEtL4
-         pdxeZ+ZKHgDTzBFmPDkn0xuitRVLqzN/ibCiPrF8uTNYa38e/5VZgY6XZuQCmbDGAT39
-         Ic8V+U0QrzKv9cJYGHdoqKKSZHcDHG+LDon862LyGZFk4WJRBN6Y0oywSB39FHp8KOCW
-         O3yIu9L4edG1p4WuKrdxI8uS9N/kG5IdVhvlqf2AK5B0HWMt1U1Z8GyaL4pjXcQnAqVE
-         v747Cn+ROgiNB4x8KqqUUGRWlU3xO99cphcH/5Fk6L0r3DfG7Z0KXLtzBSKTJzFwll9W
-         94RQ==
-X-Gm-Message-State: AOAM532CjMjuyCqC52iGPwjnAIm+h0vY9MKmlYiT3qsWDYMjJYVHv3Ae
-        bJJV1P48osQKvQ/+6By7N0hmSGyy46xQ9IXi6Kg=
-X-Google-Smtp-Source: ABdhPJwAoZP/Evj9WuqznTWvuq6qRzv5hLg45b2J0BU02fW2LyOukiW0H/T59dTOSxGuzYiY/OINHNMgru0MhYiP1ts=
-X-Received: by 2002:a05:6512:1195:b0:448:4fcc:34f2 with SMTP id
- g21-20020a056512119500b004484fcc34f2mr6997466lfr.454.1647637971048; Fri, 18
- Mar 2022 14:12:51 -0700 (PDT)
+        with ESMTP id S234158AbiCRVUn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 17:20:43 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271D11F0C9F;
+        Fri, 18 Mar 2022 14:19:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D0B47B825BC;
+        Fri, 18 Mar 2022 21:19:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90D1CC340F6;
+        Fri, 18 Mar 2022 21:19:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647638359;
+        bh=9tuvgnia34L1XS4rl4416f2el/BaTA8mE5F1nqmABUE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nAu2ViPjmtfru6j4TxIRjFQxfUNnDf3aynoH0nOcx7tJ8BdJfgqRPJ2PHxnfvu6ck
+         9+BIGdE01PylzmyWZVQXxh8GXHdC7NsxlVB2QNqZNvHbCutllkqU2thGM2Hvafwy33
+         5kB9xu4fkrHds7luMx3Bkj6DKLt/IzBHFmcg0TNgczVXgdDimuxO5RPe10lNI733Zk
+         UWwIrsmthHWA7b4SYBO6INS39LHxiwIw9ULWfQA1BhZEBlgnbngAkJgsqmu5Thn+T7
+         OSMeiUwfrRGU8ppXfuX5otzdTdWSsHcAd3dQAyQQuf7fhRzPuCYpbPYQN8rJSUKynt
+         A4bCjyZCswpMA==
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-2db2add4516so104504187b3.1;
+        Fri, 18 Mar 2022 14:19:19 -0700 (PDT)
+X-Gm-Message-State: AOAM530Vz2h3MCVSlMmCjnO4NkiwKdkD/kyAHl4sDtc6qKbF0xhS4v1D
+        v4XUJ74jvQED4yWMuXYwZ6spKxXU4Bk4SIuyqsA=
+X-Google-Smtp-Source: ABdhPJz37hm7uFMyBniSh26oqQn3KIcdYmUGr128oXucI91E+Sjqx0HF42Men1l9k2IzYwwE1aUi6Lbp8+Y+xMBbY3w=
+X-Received: by 2002:a81:79d5:0:b0:2e5:9d33:82ab with SMTP id
+ u204-20020a8179d5000000b002e59d3382abmr13387727ywc.460.1647638358473; Fri, 18
+ Mar 2022 14:19:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220316224548.500123-1-namhyung@kernel.org> <YjNwq+YrUULI/3QC@ip-172-31-19-208.ap-northeast-1.compute.internal>
-In-Reply-To: <YjNwq+YrUULI/3QC@ip-172-31-19-208.ap-northeast-1.compute.internal>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 18 Mar 2022 14:12:39 -0700
-Message-ID: <CAM9d7cjgN2BM4Jy9R=18=0eRJkLdi5SB2EbqELLLnbnxOJJ12g@mail.gmail.com>
-Subject: Re: [PATCH 0/2] locking: Add new lock contention tracepoints (v3)
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Radoslaw Burny <rburny@google.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+References: <20220318161528.1531164-1-benjamin.tissoires@redhat.com> <20220318161528.1531164-13-benjamin.tissoires@redhat.com>
+In-Reply-To: <20220318161528.1531164-13-benjamin.tissoires@redhat.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 18 Mar 2022 14:19:07 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5K9cdKCAf8mBu6zV2BSXjqdsB3bZ5i60=vfnHrYbh6vQ@mail.gmail.com>
+Message-ID: <CAPhsuW5K9cdKCAf8mBu6zV2BSXjqdsB3bZ5i60=vfnHrYbh6vQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 12/17] bpf/hid: add more HID helpers
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Hyeonggon,
-
-On Thu, Mar 17, 2022 at 10:32 AM Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
+On Fri, Mar 18, 2022 at 9:18 AM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
 >
-> On Wed, Mar 16, 2022 at 03:45:46PM -0700, Namhyung Kim wrote:
-> > Hello,
-> >
-> > There have been some requests for low-overhead kernel lock contention
-> > monitoring.  The kernel has CONFIG_LOCK_STAT to provide such an infra
-> > either via /proc/lock_stat or tracepoints directly.
-> >
-> > However it's not light-weight and hard to be used in production.  So
-> > I'm trying to add new tracepoints for lock contention and using them
-> > as a base to build a new monitoring system.
+> When we process an incoming HID report, it is common to have to account
+> for fields that are not aligned in the report. HID is using 2 helpers
+> hid_field_extract() and implement() to pick up any data at any offset
+> within the report.
 >
-> Hello Namhyung,
-> I like this series so much.
-> Lock contentions became much more visible without serious overhead.
+> Export those 2 helpers in BPF programs so users can also rely on them.
+> The second net worth advantage of those helpers is that now we can
+> fetch data anywhere in the report without knowing at compile time the
+> location of it. The boundary checks are done in hid-bpf.c, to prevent
+> a memory leak.
 >
-> For the series:
-> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-
-Thanks!
-
+> The third exported helper allows to communicate with the HID device.
+> We give a data buffer, and call either HID_GET_REPORT or HID_SET_REPORT
+> on the device.
 >
-> How would you use these tracepoints, is there a script you use?
-
-Not yet.  But I'm thinking something similar to your script.
-Probably I'll extend 'perf lock' command to have this kind of output
-but it doesn't have lock name and use avg/min/max time instead of
-histogram.
-
-Thanks,
-Namhyung
-
-
-> For testing, I just wrote a simple bpftrace script:
+> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 >
-> $ sudo bpftrace -e 'BEGIN
-> {
->         printf("Collecting lockstats... Hit Ctrl-C to end.\n");
-> }
+> ---
 >
-> tracepoint:lock:contention_begin
-> {
->         @start_us[tid] = nsecs / 1000;
-> }
+> changes in v3:
+> - renamed hid_{get|set}_data into hid_{get|set}_bits
+> - squashed with bpf/hid: add bpf_hid_raw_request helper function
 >
-> tracepoint:lock:contention_end
-> {
->         if (args->ret == 0) {
->                 @stats[kstack] = hist(nsecs / 1000 - @start_us[tid]);
+> changes in v2:
+> - split the patch with libbpf and HID left outside.
+> ---
+>  include/linux/bpf-hid.h        |  6 +++
+>  include/uapi/linux/bpf.h       | 36 +++++++++++++++++
+>  kernel/bpf/hid.c               | 73 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 36 +++++++++++++++++
+>  4 files changed, 151 insertions(+)
+>
+> diff --git a/include/linux/bpf-hid.h b/include/linux/bpf-hid.h
+> index 7f596554fe8c..82b7466b5008 100644
+> --- a/include/linux/bpf-hid.h
+> +++ b/include/linux/bpf-hid.h
+> @@ -102,6 +102,12 @@ struct bpf_hid_hooks {
+>         int (*pre_link_attach)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+>         void (*post_link_attach)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+>         void (*array_detach)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+> +       int (*hid_get_bits)(struct hid_device *hdev, u8 *buf, size_t buf_size,
+> +                           u64 offset, u32 n, u32 *data);
+> +       int (*hid_set_bits)(struct hid_device *hdev, u8 *buf, size_t buf_size,
+> +                           u64 offset, u32 n, u32 data);
+> +       int (*hid_raw_request)(struct hid_device *hdev, u8 *buf, size_t size,
+> +                              u8 rtype, u8 reqtype);
+>  };
+>
+>  #ifdef CONFIG_BPF
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0e8438e93768..41ab1d068369 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5155,6 +5155,39 @@ union bpf_attr {
+>   *             by a call to bpf_hid_discard;
+>   *     Return
+>   *             The pointer to the data. On error, a null value is returned.
+> + *
+> + * int bpf_hid_get_bits(void *ctx, u64 offset, u32 n, u32 *data)
+> + *     Description
+> + *             Get the data of size n (in bits) at the given offset (bits) in the
+> + *             ctx->event.data field and store it into data.
+> + *
+> + *             n must be less or equal than 32, and we can address with bit
+> + *             precision the value in the buffer. data must be a pointer
+> + *             to a u32.
+> + *     Return
+> + *             The length of data copied into data. On error, a negative value
+> + *             is returned.
+> + *
+> + * int bpf_hid_set_bits(void *ctx, u64 offset, u32 n, u32 data)
+> + *     Description
+> + *             Set the data of size n (in bits) at the given offset (bits) in the
+> + *             ctx->event.data field.
+> + *
+> + *             n must be less or equal than 32, and we can address with bit
+> + *             precision the value in the buffer.
+> + *     Return
+> + *             The length of data copied into ctx->event.data. On error, a negative
+> + *             value is returned.
+> + *
+ Please use annotations like *offset*.
+
+> + * int bpf_hid_raw_request(void *ctx, void *buf, u64 size, u8 report_type, u8 request_type)
+> + *     Description
+> + *             communicate with the HID device
+> + *
+> + *             report_type is one of HID_INPUT_REPORT, HID_OUTPUT_REPORT, HID_FEATURE_REPORT
+> + *             request_type is one of HID_REQ_SET_REPORT or HID_REQ_GET_REPORT
+> + *     Return
+> + *             0 on success.
+> + *             negative value on error.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -5352,6 +5385,9 @@ union bpf_attr {
+>         FN(skb_set_tstamp),             \
+>         FN(ima_file_hash),              \
+>         FN(hid_get_data),               \
+> +       FN(hid_get_bits),               \
+> +       FN(hid_set_bits),               \
+> +       FN(hid_raw_request),            \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/hid.c b/kernel/bpf/hid.c
+> index 2dfeaaa8a83f..30a62e8e0f0a 100644
+> --- a/kernel/bpf/hid.c
+> +++ b/kernel/bpf/hid.c
+> @@ -66,12 +66,85 @@ static const struct bpf_func_proto bpf_hid_get_data_proto = {
+>         .arg3_type = ARG_CONST_ALLOC_SIZE_OR_ZERO,
+>  };
+>
+> +BPF_CALL_4(bpf_hid_get_bits, struct hid_bpf_ctx_kern*, ctx, u64, offset, u32, n, u32*, data)
+> +{
+> +       if (!hid_hooks.hid_get_bits)
+> +               return -EOPNOTSUPP;
+
+Shall we also check offset and n are valid here?
+
+> +
+> +       return hid_hooks.hid_get_bits(ctx->hdev,
+> +                                     ctx->data,
+> +                                     ctx->allocated_size,
+> +                                     offset, n,
+> +                                     data);
+> +}
+> +
+> +static const struct bpf_func_proto bpf_hid_get_bits_proto = {
+> +       .func      = bpf_hid_get_bits,
+> +       .gpl_only  = true,
+> +       .ret_type  = RET_INTEGER,
+> +       .arg1_type = ARG_PTR_TO_CTX,
+> +       .arg2_type = ARG_ANYTHING,
+> +       .arg3_type = ARG_ANYTHING,
+> +       .arg4_type = ARG_PTR_TO_INT,
+> +};
+> +
+> +BPF_CALL_4(bpf_hid_set_bits, struct hid_bpf_ctx_kern*, ctx, u64, offset, u32, n, u32, data)
+> +{
+> +       if (!hid_hooks.hid_set_bits)
+> +               return -EOPNOTSUPP;
+> +
+> +       hid_hooks.hid_set_bits(ctx->hdev,
+> +                              ctx->data,
+> +                              ctx->allocated_size,
+> +                              offset, n,
+> +                              data);
+> +       return 0;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_hid_set_bits_proto = {
+> +       .func      = bpf_hid_set_bits,
+> +       .gpl_only  = true,
+> +       .ret_type  = RET_INTEGER,
+> +       .arg1_type = ARG_PTR_TO_CTX,
+> +       .arg2_type = ARG_ANYTHING,
+> +       .arg3_type = ARG_ANYTHING,
+> +       .arg4_type = ARG_ANYTHING,
+> +};
+> +
+> +BPF_CALL_5(bpf_hid_raw_request, struct hid_bpf_ctx_kern*, ctx, void*, buf, u64, size,
+> +          u8, report_type, u8, request_type)
+> +{
+> +       if (!hid_hooks.hid_raw_request)
+> +               return -EOPNOTSUPP;
+> +
+> +       return hid_hooks.hid_raw_request(ctx->hdev, buf, size, report_type, request_type);
+> +}
+> +
+> +static const struct bpf_func_proto bpf_hid_raw_request_proto = {
+> +       .func      = bpf_hid_raw_request,
+> +       .gpl_only  = true, /* hid_raw_request is EXPORT_SYMBOL_GPL */
+> +       .ret_type  = RET_INTEGER,
+> +       .arg1_type = ARG_PTR_TO_CTX,
+> +       .arg2_type = ARG_PTR_TO_MEM,
+> +       .arg3_type = ARG_CONST_SIZE_OR_ZERO,
+> +       .arg4_type = ARG_ANYTHING,
+> +       .arg5_type = ARG_ANYTHING,
+> +};
+> +
+>  static const struct bpf_func_proto *
+>  hid_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  {
+>         switch (func_id) {
+>         case BPF_FUNC_hid_get_data:
+>                 return &bpf_hid_get_data_proto;
+> +       case BPF_FUNC_hid_get_bits:
+> +               return &bpf_hid_get_bits_proto;
+> +       case BPF_FUNC_hid_set_bits:
+> +               return &bpf_hid_set_bits_proto;
+> +       case BPF_FUNC_hid_raw_request:
+> +               if (prog->expected_attach_type != BPF_HID_DEVICE_EVENT)
+> +                       return &bpf_hid_raw_request_proto;
+> +               return NULL;
+>         default:
+>                 return bpf_base_func_proto(func_id);
 >         }
-> }
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 0e8438e93768..41ab1d068369 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -5155,6 +5155,39 @@ union bpf_attr {
+>   *             by a call to bpf_hid_discard;
+>   *     Return
+>   *             The pointer to the data. On error, a null value is returned.
+> + *
+> + * int bpf_hid_get_bits(void *ctx, u64 offset, u32 n, u32 *data)
+> + *     Description
+> + *             Get the data of size n (in bits) at the given offset (bits) in the
+> + *             ctx->event.data field and store it into data.
+> + *
+> + *             n must be less or equal than 32, and we can address with bit
+> + *             precision the value in the buffer. data must be a pointer
+> + *             to a u32.
+> + *     Return
+> + *             The length of data copied into data. On error, a negative value
+> + *             is returned.
+> + *
+> + * int bpf_hid_set_bits(void *ctx, u64 offset, u32 n, u32 data)
+> + *     Description
+> + *             Set the data of size n (in bits) at the given offset (bits) in the
+> + *             ctx->event.data field.
+> + *
+> + *             n must be less or equal than 32, and we can address with bit
+> + *             precision the value in the buffer.
+> + *     Return
+> + *             The length of data copied into ctx->event.data. On error, a negative
+> + *             value is returned.
+> + *
+> + * int bpf_hid_raw_request(void *ctx, void *buf, u64 size, u8 report_type, u8 request_type)
+> + *     Description
+> + *             communicate with the HID device
+> + *
+> + *             report_type is one of HID_INPUT_REPORT, HID_OUTPUT_REPORT, HID_FEATURE_REPORT
+> + *             request_type is one of HID_REQ_SET_REPORT or HID_REQ_GET_REPORT
+> + *     Return
+> + *             0 on success.
+> + *             negative value on error.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -5352,6 +5385,9 @@ union bpf_attr {
+>         FN(skb_set_tstamp),             \
+>         FN(ima_file_hash),              \
+>         FN(hid_get_data),               \
+> +       FN(hid_get_bits),               \
+> +       FN(hid_set_bits),               \
+> +       FN(hid_raw_request),            \
+>         /* */
 >
-> END
-> {
->         clear(@start_us);
-> }'
->
-> And it shows its distribution of slowpath wait time like below. Great.
->
-> @stats[
->     __traceiter_contention_end+76
->     __traceiter_contention_end+76
->     queued_spin_lock_slowpath+556
->     _raw_spin_lock+108
->     rmqueue_bulk+80
->     rmqueue+1060
->     get_page_from_freelist+372
->     __alloc_pages+208
->     alloc_pages_vma+160
->     alloc_zeroed_user_highpage_movable+72
->     do_anonymous_page+92
->     handle_pte_fault+320
->     __handle_mm_fault+252
->     handle_mm_fault+244
->     do_page_fault+340
->     do_translation_fault+100
->     do_mem_abort+76
->     el0_da+60
->     el0t_64_sync_handler+232
->     el0t_64_sync+420
-> ]:
-> [2, 4)                 1 |@                                                   |
-> [4, 8)                30 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@     |
-> [8, 16)               25 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@             |
-> [16, 32)              33 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> [32, 64)              29 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@       |
-> [64, 128)             13 |@@@@@@@@@@@@@@@@@@@@                                |
-> [128, 256)             2 |@@@                                                 |
->
->
-> @stats[
->     __traceiter_contention_end+76
->     __traceiter_contention_end+76
->     rwsem_down_write_slowpath+1216
->     down_write_killable+100
->     do_mprotect_pkey.constprop.0+176
->     __arm64_sys_mprotect+40
->     invoke_syscall+80
->     el0_svc_common.constprop.0+76
->     do_el0_svc+52
->     el0_svc+48
->     el0t_64_sync_handler+164
->     el0t_64_sync+420
-> ]:
-> [1]                   13 |@@@@@@@@@@@                                         |
-> [2, 4)                42 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                |
-> [4, 8)                 5 |@@@@                                                |
-> [8, 16)               10 |@@@@@@@@                                            |
-> [16, 32)              60 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> [32, 64)              41 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                 |
-> [64, 128)             40 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                  |
-> [128, 256)            14 |@@@@@@@@@@@@                                        |
-> [256, 512)             7 |@@@@@@                                              |
-> [512, 1K)              6 |@@@@@                                               |
-> [1K, 2K)               2 |@                                                   |
-> [2K, 4K)               1 |                                                    |
->
-> @stats[
->     __traceiter_contention_end+76
->     __traceiter_contention_end+76
->     queued_spin_lock_slowpath+556
->     _raw_spin_lock+108
->     futex_wake+168
->     do_futex+200
->     __arm64_sys_futex+112
->     invoke_syscall+80
->     el0_svc_common.constprop.0+76
->     do_el0_svc+52
->     el0_svc+48
->     el0t_64_sync_handler+164
->     el0t_64_sync+420
-> ]:
-> [0]                    3 |                                                    |
-> [1]                 2515 |@                                                   |
-> [2, 4)              8747 |@@@@@                                               |
-> [4, 8)             17052 |@@@@@@@@@@                                          |
-> [8, 16)            46706 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                       |
-> [16, 32)           82105 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> [32, 64)           46918 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                       |
-> [64, 128)             99 |                                                    |
-> [128, 256)             1 |                                                    |
-> [256, 512)             8 |                                                    |
-> [512, 1K)              0 |                                                    |
-> [1K, 2K)               0 |                                                    |
-> [2K, 4K)               0 |                                                    |
-> [4K, 8K)               0 |                                                    |
-> [8K, 16K)              0 |                                                    |
-> [16K, 32K)             5 |                                                    |
-> [32K, 64K)            12 |                                                    |
-> [64K, 128K)           34 |                                                    |
-> [128K, 256K)          68 |                                                    |
-> [256K, 512K)           7 |                                                    |
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> --
+> 2.35.1
 >
