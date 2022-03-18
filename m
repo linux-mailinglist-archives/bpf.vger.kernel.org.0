@@ -2,102 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF314DE216
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 21:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF214DE281
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 21:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239026AbiCRUAq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 16:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
+        id S235658AbiCRU34 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 16:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234208AbiCRUAq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 16:00:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B4A18A781;
-        Fri, 18 Mar 2022 12:59:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B202161BBE;
-        Fri, 18 Mar 2022 19:59:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20528C340ED;
-        Fri, 18 Mar 2022 19:59:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647633566;
-        bh=Q/AneTN6VK0FKM8VUMmAL24sxlKXjApD+7URsOBBLys=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fzwYuq1QWgluY2rLULh5F1cIB7CH4nKOrZPexeaBZc3eqdzDEUv+4hdZPHE/gD7lm
-         AAWg2sHe+IiUwHYpGjhmmFn5/PJ2zjgbwMhfdLGS2H4SxfTP4N/NOfvFRAMnW8VWFy
-         yimWypwcTTA3MjnqBAZ/RlnvhG/U3n37aFDxPygWEA81gV6QKBLBs2RYCQF9DB2v91
-         DGKG6Ks4/cjqlRTweaFd53BWPIsYf+32FeAKYmVzVF6K4w3tUr6MFX6ZQbUEMbqBe0
-         bYnXIIXo0to0tqAWBxdDupDHEA7/xxy6GoWnuMHPSl0tcZIz3z+LTQEt8ewmEK/H4d
-         SXiYQbiRZVVrg==
-Received: by mail-yb1-f180.google.com with SMTP id u3so17696238ybh.5;
-        Fri, 18 Mar 2022 12:59:26 -0700 (PDT)
-X-Gm-Message-State: AOAM5321N2kEUImHsjIIlhCLyT0v2iFyKwOpHVtd/d16IRIdwkLMSbPQ
-        VKIR+9JM4cQxxSjYBhZPfi7wei/sIflAx2Rfc5A=
-X-Google-Smtp-Source: ABdhPJz60lYU2HlnD1hDpuqy9kgjbRFCqrqnEE+OGFeSw2OQ9ikRZ7G7LryM455CYwDhOylz4jvJGp735eCzAMh/9ms=
-X-Received: by 2002:a25:40d3:0:b0:633:bb21:2860 with SMTP id
- n202-20020a2540d3000000b00633bb212860mr4386656yba.9.1647633565201; Fri, 18
- Mar 2022 12:59:25 -0700 (PDT)
+        with ESMTP id S240684AbiCRU3z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 16:29:55 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AAB2A3A5E
+        for <bpf@vger.kernel.org>; Fri, 18 Mar 2022 13:28:35 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id qa43so19068634ejc.12
+        for <bpf@vger.kernel.org>; Fri, 18 Mar 2022 13:28:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z+/MS9ElbOM4o1aPEm6MKeyVpGIJ9I4RDGjl/xsQpzE=;
+        b=ghyaPZStBQprd9VvITu53ig3o2QTzFPSoPy0MSBFGnMO81gBMKnSxKF2zJazX7wKyM
+         Rb+rfj5AMt2X0opxurfrFWErrJlgjJX+O+0TwxSSJdDsLHo/fJQxl8NvvjYZvv+OzRRg
+         uwxoMpqOs/nNLL+IV5ebTai3Cna7lOm9N6RB/mfjMVIXYfeqArQlcslBLlQfg1iuC8Js
+         kqAdWpDBQ1zS5boFa4otooFNhYCLzvdoc9yw6TGg/bFsjLRstf6WTscuFKTnk3BD7VH2
+         XUOZo3CuVpiT/CCx7+JRh6GRa7SR/UTtZooxJNQ4jfGbCsslxbLBhWAzttH13g9K1/O8
+         4K/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z+/MS9ElbOM4o1aPEm6MKeyVpGIJ9I4RDGjl/xsQpzE=;
+        b=bCv+Z9xCvyrhx8W4AMFJXvwf1xgUQ0BsrgW8ISVcN+0CbancYOTeMTxn3Wmiqzbzkv
+         GaVFVcn/sWwWu7HyIC+RXY5mLt07gQnH1V7zvZw08uj4akuZZd3Xo6LVqcohr97i+ovc
+         T/6Fjy1/mNJlofj/+HKtDmnBeTykN2rLNz/eUjtZz5e6C5KSjxQA2gTqMRKs93VCZag0
+         0G63mqSsqv4JxV4olVOo/smWmhpc8e+EZtF62M9WTg6HmzVmBnIw1XHyPos0aFkZ0HHM
+         v+8m0FMs2TbdSBvQQwrPIAzUyEWpCXTL0I4Xb9Mkkgl93WXXqMbPxM6IIlklNKpS5T0L
+         fSIQ==
+X-Gm-Message-State: AOAM530F+1uSRPVefcBAI76tyHb1L+NNwjZC9TUKXGiiqShn9NQTirJn
+        FzbSva6CMvOgm4VwyI9rXrs=
+X-Google-Smtp-Source: ABdhPJxESKChoad7OiTi7ueGZQq3H4FS9/XId+KUqjfjhlh9i4mZwaUFEme917pu8lMiCvlTQtX5ug==
+X-Received: by 2002:a17:907:7d9e:b0:6df:9fe8:856a with SMTP id oz30-20020a1709077d9e00b006df9fe8856amr7947802ejc.373.1647635314089;
+        Fri, 18 Mar 2022 13:28:34 -0700 (PDT)
+Received: from krava ([83.240.61.119])
+        by smtp.gmail.com with ESMTPSA id dd6-20020a1709069b8600b006df08710d00sm4128200ejc.85.2022.03.18.13.28.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Mar 2022 13:28:33 -0700 (PDT)
+Date:   Fri, 18 Mar 2022 21:28:31 +0100
+From:   Jiri Olsa <olsajiri@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] bpftool: add BPF_TRACE_KPROBE_MULTI to attach
+ type names table
+Message-ID: <YjTrb3xpkpmLaM8V@krava>
+References: <20220318150106.2933343-1-andrii@kernel.org>
 MIME-Version: 1.0
-References: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
-In-Reply-To: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 18 Mar 2022 12:59:14 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6QTaCVekkT8Ah0N2K4JY7yiiO2wZjk6pVKuraEqjkoXQ@mail.gmail.com>
-Message-ID: <CAPhsuW6QTaCVekkT8Ah0N2K4JY7yiiO2wZjk6pVKuraEqjkoXQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Hao Luo <haoluo@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220318150106.2933343-1-andrii@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 9, 2022 at 12:27 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> Hey everyone,
->
-> I would like to discuss an idea to facilitate collection of
-> hierarchical cgroup stats using BPF programs. We want to provide a
-> simple interface for BPF programs to collect hierarchical cgroup stats
-> and integrate with the existing rstat aggregation mechanism in the
-> kernel. The most prominent use case is the ability to extend memcg
-> stats (and histograms) by BPF programs.
->
+On Fri, Mar 18, 2022 at 08:01:06AM -0700, Andrii Nakryiko wrote:
+> BPF_TRACE_KPROBE_MULTI is a new attach type name, add it to bpftool's
+> table. This fixes a currently failing CI bpftool check.
 
-+ Namhyung,
+right, I forgot about this
 
-I forgot to mention this in the office hour. The aggregation efficiency
-problem is actually similar to Namhyung's work to use BPF programs
-to aggregate perf counters. Check:
-     tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/bpf/bpftool/common.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index 606743c6db41..b091923c71cb 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -56,7 +56,6 @@ const char * const attach_type_name[__MAX_BPF_ATTACH_TYPE] = {
+>  	[BPF_CGROUP_UDP6_RECVMSG]	= "recvmsg6",
+>  	[BPF_CGROUP_GETSOCKOPT]		= "getsockopt",
+>  	[BPF_CGROUP_SETSOCKOPT]		= "setsockopt",
+> -
+>  	[BPF_SK_SKB_STREAM_PARSER]	= "sk_skb_stream_parser",
+>  	[BPF_SK_SKB_STREAM_VERDICT]	= "sk_skb_stream_verdict",
+>  	[BPF_SK_SKB_VERDICT]		= "sk_skb_verdict",
+> @@ -76,6 +75,7 @@ const char * const attach_type_name[__MAX_BPF_ATTACH_TYPE] = {
+>  	[BPF_SK_REUSEPORT_SELECT]	= "sk_skb_reuseport_select",
+>  	[BPF_SK_REUSEPORT_SELECT_OR_MIGRATE]	= "sk_skb_reuseport_select_or_migrate",
+>  	[BPF_PERF_EVENT]		= "perf_event",
+> +	[BPF_TRACE_KPROBE_MULTI]	= "trace_kprobe_bulti",
 
-Namhyung's solution is to walk up the cgroup tree on cgroup switch
-events. This may not be as efficient as rstat flush logic, but I think it
-is good enough for many use cases (unless the cgroup tree is very
-deep). It also demonstrates how we can implement some cgroup
-logic in BPF.
+typo ;-)                                                ^
 
-I hope this helps.
+jirka
 
-Thanks,
-Song
-
-[...]
+>  };
+>  
+>  void p_err(const char *fmt, ...)
+> -- 
+> 2.30.2
+> 
