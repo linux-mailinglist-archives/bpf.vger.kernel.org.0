@@ -2,180 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0EE4DE371
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 22:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BFD4DE39A
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 22:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241099AbiCRVW2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 17:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
+        id S235433AbiCRVg2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 17:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241103AbiCRVW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 17:22:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEC421FC6F;
-        Fri, 18 Mar 2022 14:21:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AE6B612AC;
-        Fri, 18 Mar 2022 21:21:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8EF4C36AE3;
-        Fri, 18 Mar 2022 21:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647638467;
-        bh=Vk5mzHbIg17vZ6G2aaaTRJ/qc3wtRp4U3dpTA+mQTzk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ELbYGJ5s13fJLbEKv95M5pVw7hO7DtSYZ0YpTw3usN05tXHbv2RI/LMOrZ9RvazFC
-         LKvWI9DHFrTXTdQ5NF2TNzFoQuiFV6G24Br9GEyC8hQHayVOTzJDPf+w1s2IMdy6yU
-         wqF+2/LEOGg59KR03baTx/feAPOiwR72Cu1smHzVen/JSY4ll7IJwKloDR1RUnuTLT
-         VhrSdPTUQt8lLE52izSQjSw/0mKq7ehBlQSqMiyXv70d3eNWHEPv3ZQT6CKSIbG/Sj
-         DYF2fr/vqXxhPOxtVSzMbHqaZm5yjFlwapmRWSrtHJHkI9yDBsyOZH82JGzw9qNIDQ
-         B+0vj43BUdwXQ==
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-2e5a8a8c1cdso95489317b3.3;
-        Fri, 18 Mar 2022 14:21:07 -0700 (PDT)
-X-Gm-Message-State: AOAM533GGYVhVaqQnOb4korkjuBryjjBMfznHfUsdMGF1bnP4djVeMdf
-        ZLWUzWnKjaszKkuxcQGEnm4POyxOMHcn3X9XavU=
-X-Google-Smtp-Source: ABdhPJy9p6xLR9FKRtMxw8beAYraAaLqJ52YfwUWGPSjxPQqNRKqdW6sylYGLO220Y1ivS1CkbruJKJ4SGRK3Hm/jho=
-X-Received: by 2002:a81:a006:0:b0:2e5:963a:4c42 with SMTP id
- x6-20020a81a006000000b002e5963a4c42mr12976417ywg.73.1647638466787; Fri, 18
- Mar 2022 14:21:06 -0700 (PDT)
+        with ESMTP id S231609AbiCRVg1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 17:36:27 -0400
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5CB223858;
+        Fri, 18 Mar 2022 14:35:07 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id bx44so6358711ljb.13;
+        Fri, 18 Mar 2022 14:35:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tmNrK/0TVfWJk8R0ovTzUXynuF+kFI2QuCNhtLcQl8I=;
+        b=HAUZVqkX9chRsevOejcswOUKI5oD2Q5wf5k8CRTwz5UXydLO/N6eEAwR4+zXEke/yl
+         XrR/EAH5TNfhTEoE0yKyTqD7RxDYetHUO4mq4v/ktuYEcyclearYyHszg/TDPy1mvXdE
+         ZbuAxIUJm1nJoqNIWxTxvnma6axcjxhBwev0RSa6R9qp6QbAo8qJGK/1JzUfSk1jyIrb
+         DuYjZsH5MSNXyAcQjragjyYEvRR2grhoUn9APNPyb5ILs5ShoCqMjLviVDP1wOcEAYJm
+         Ad1J90lMoFImJws8kIyCQXVLjfb2NEgXRvn9kilL0CCDectsY0qqxcxQlEOrg/Gk5hbi
+         6ZsA==
+X-Gm-Message-State: AOAM5328cHbF+7MKzwxXZalqe6N3I00i/nBDckKW5dPJ6ZDgnTaGHA83
+        uFpA+6M2PLrn/zHInm4vgWha/iC3fHErziTBa2M=
+X-Google-Smtp-Source: ABdhPJwiLPmoLHdEN2HDYWChXlmjkxr2z/nl8WdGLQzSzWtV0HJp8/eiCaUH5zCVt6teYO1o0i0tz7MpMs80E3aFZVE=
+X-Received: by 2002:a05:651c:516:b0:249:23ef:d9c7 with SMTP id
+ o22-20020a05651c051600b0024923efd9c7mr7177966ljp.202.1647639304557; Fri, 18
+ Mar 2022 14:35:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220318161528.1531164-1-benjamin.tissoires@redhat.com> <20220318161528.1531164-14-benjamin.tissoires@redhat.com>
-In-Reply-To: <20220318161528.1531164-14-benjamin.tissoires@redhat.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 18 Mar 2022 14:20:56 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5mKPT+Vw4FVFBokwnY1kkCm9i_HA3Pd2DUznHJfqV+4A@mail.gmail.com>
-Message-ID: <CAPhsuW5mKPT+Vw4FVFBokwnY1kkCm9i_HA3Pd2DUznHJfqV+4A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 13/17] HID: bpf: implement hid_bpf_get|set_bits
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+References: <20220316224548.500123-1-namhyung@kernel.org> <20220316224548.500123-3-namhyung@kernel.org>
+ <365529974.156362.1647524728813.JavaMail.zimbra@efficios.com>
+In-Reply-To: <365529974.156362.1647524728813.JavaMail.zimbra@efficios.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 18 Mar 2022 14:34:53 -0700
+Message-ID: <CAM9d7chFVp6SPGoZPJF6+CMkbZyp1Fmxxu2Xn3Ks=DYcgbUG5w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow path
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        paulmck <paulmck@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Radoslaw Burny <rburny@google.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 18, 2022 at 9:18 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
+On Thu, Mar 17, 2022 at 6:45 AM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> Export implement() outside of hid-core.c and use this and
+> ----- On Mar 16, 2022, at 6:45 PM, Namhyung Kim namhyung@kernel.org wrote:
+>
+> > Adding the lock contention tracepoints in various lock function slow
+> > paths.  Note that each arch can define spinlock differently, I only
+> > added it only to the generic qspinlock for now.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> > kernel/locking/mutex.c        |  3 +++
+> > kernel/locking/percpu-rwsem.c |  3 +++
+> > kernel/locking/qrwlock.c      |  9 +++++++++
+> > kernel/locking/qspinlock.c    |  5 +++++
+> > kernel/locking/rtmutex.c      | 11 +++++++++++
+> > kernel/locking/rwbase_rt.c    |  3 +++
+> > kernel/locking/rwsem.c        |  9 +++++++++
+> > kernel/locking/semaphore.c    | 14 +++++++++++++-
+> > 8 files changed, 56 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+> > index ee2fd7614a93..c88deda77cf2 100644
+> > --- a/kernel/locking/mutex.c
+> > +++ b/kernel/locking/mutex.c
+> > @@ -644,6 +644,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state,
+> > unsigned int subclas
+> >       }
+> >
+> >       set_current_state(state);
+> > +     trace_contention_begin(lock, 0);
+>
+> This should be LCB_F_SPIN rather than the hardcoded 0.
 
-Maybe rename implement() to something that makes sense?
+I don't think so.  LCB_F_SPIN is for spin locks indicating that
+it's spinning on a cpu.  And the value is not 0.
 
-> hid_field_extract() to implement the helprs for hid-bpf.
 >
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> >       for (;;) {
+> >               bool first;
+> >
+> > @@ -710,6 +711,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state,
+> > unsigned int subclas
+> > skip_wait:
+> >       /* got the lock - cleanup and rejoice! */
+> >       lock_acquired(&lock->dep_map, ip);
+> > +     trace_contention_end(lock, 0);
+> >
+> >       if (ww_ctx)
+> >               ww_mutex_lock_acquired(ww, ww_ctx);
+> > @@ -721,6 +723,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state,
+> > unsigned int subclas
+> > err:
+> >       __set_current_state(TASK_RUNNING);
+> >       __mutex_remove_waiter(lock, &waiter);
+> > +     trace_contention_end(lock, ret);
+> > err_early_kill:
+> >       raw_spin_unlock(&lock->wait_lock);
+> >       debug_mutex_free_waiter(&waiter);
+> > diff --git a/kernel/locking/percpu-rwsem.c b/kernel/locking/percpu-rwsem.c
+> > index c9fdae94e098..833043613af6 100644
+> > --- a/kernel/locking/percpu-rwsem.c
+> > +++ b/kernel/locking/percpu-rwsem.c
+> > @@ -9,6 +9,7 @@
+> > #include <linux/sched/task.h>
+> > #include <linux/sched/debug.h>
+> > #include <linux/errno.h>
+> > +#include <trace/events/lock.h>
+> >
+> > int __percpu_init_rwsem(struct percpu_rw_semaphore *sem,
+> >                       const char *name, struct lock_class_key *key)
+> > @@ -154,6 +155,7 @@ static void percpu_rwsem_wait(struct percpu_rw_semaphore
+> > *sem, bool reader)
+> >       }
+> >       spin_unlock_irq(&sem->waiters.lock);
+> >
+> > +     trace_contention_begin(sem, LCB_F_PERCPU | (reader ? LCB_F_READ :
+> > LCB_F_WRITE));
+> >       while (wait) {
+> >               set_current_state(TASK_UNINTERRUPTIBLE);
+> >               if (!smp_load_acquire(&wq_entry.private))
+> > @@ -161,6 +163,7 @@ static void percpu_rwsem_wait(struct percpu_rw_semaphore
+> > *sem, bool reader)
+> >               schedule();
+> >       }
+> >       __set_current_state(TASK_RUNNING);
+> > +     trace_contention_end(sem, 0);
 >
-> ---
+> So for the reader-write locks, and percpu rwlocks, the "trace contention end" will always
+> have ret=0. Likewise for qspinlock, qrwlock, and rtlock. It seems to be a waste of trace
+> buffer space to always have space for a return value that is always 0.
+
+Right, I think it'd be better to have a new tracepoint for the error cases
+and get rid of the return value in the contention_end.
+
+Like contention_error or contention_return ?
+
 >
-> changes in v3:
-> - renamed hid_{get|set}_data into hid_{get|set}_bits
->
-> changes in v2:
-> - split the series by bpf/libbpf/hid/selftests and samples
-> - allow for n > 32, by relying on memcpy
-> ---
->  drivers/hid/hid-bpf.c  | 29 +++++++++++++++++++++++++++++
->  drivers/hid/hid-core.c |  4 ++--
->  include/linux/hid.h    |  2 ++
->  3 files changed, 33 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/hid/hid-bpf.c b/drivers/hid/hid-bpf.c
-> index 45c87ff47324..650dd5e54919 100644
-> --- a/drivers/hid/hid-bpf.c
-> +++ b/drivers/hid/hid-bpf.c
-> @@ -122,6 +122,33 @@ static void hid_bpf_array_detach(struct hid_device *hdev, enum bpf_hid_attach_ty
->         }
->  }
->
-> +static int hid_bpf_get_bits(struct hid_device *hdev, u8 *buf, size_t buf_size, u64 offset, u32 n,
-> +                           u32 *data)
-> +{
-> +       if (n > 32)
-> +               return -EINVAL;
-> +
-> +       if (((offset + n) >> 3) >= buf_size)
-> +               return -E2BIG;
-> +
-> +       *data = hid_field_extract(hdev, buf, offset, n);
-> +       return n;
-> +}
-> +
-> +static int hid_bpf_set_bits(struct hid_device *hdev, u8 *buf, size_t buf_size, u64 offset, u32 n,
-> +                           u32 data)
-> +{
-> +       if (n > 32)
-> +               return -EINVAL;
-> +
-> +       if (((offset + n) >> 3) >= buf_size)
-> +               return -E2BIG;
-> +
-> +       /* data must be a pointer to a u32 */
-> +       implement(hdev, buf, offset, n, data);
-> +       return n;
-> +}
-> +
->  static int hid_bpf_run_progs(struct hid_device *hdev, struct hid_bpf_ctx_kern *ctx)
->  {
->         enum bpf_hid_attach_type type;
-> @@ -223,6 +250,8 @@ int __init hid_bpf_module_init(void)
->                 .pre_link_attach = hid_bpf_pre_link_attach,
->                 .post_link_attach = hid_bpf_post_link_attach,
->                 .array_detach = hid_bpf_array_detach,
-> +               .hid_get_bits = hid_bpf_get_bits,
-> +               .hid_set_bits = hid_bpf_set_bits,
->         };
->
->         bpf_hid_set_hooks(&hooks);
-> diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-> index 3182c39db006..4f669dcddc08 100644
-> --- a/drivers/hid/hid-core.c
-> +++ b/drivers/hid/hid-core.c
-> @@ -1416,8 +1416,8 @@ static void __implement(u8 *report, unsigned offset, int n, u32 value)
->         }
->  }
->
-> -static void implement(const struct hid_device *hid, u8 *report,
-> -                     unsigned offset, unsigned n, u32 value)
-> +void implement(const struct hid_device *hid, u8 *report, unsigned int offset, unsigned int n,
-> +              u32 value)
->  {
->         if (unlikely(n > 32)) {
->                 hid_warn(hid, "%s() called with n (%d) > 32! (%s)\n",
-> diff --git a/include/linux/hid.h b/include/linux/hid.h
-> index 66d949d10b78..7454e844324c 100644
-> --- a/include/linux/hid.h
-> +++ b/include/linux/hid.h
-> @@ -944,6 +944,8 @@ bool hid_compare_device_paths(struct hid_device *hdev_a,
->  s32 hid_snto32(__u32 value, unsigned n);
->  __u32 hid_field_extract(const struct hid_device *hid, __u8 *report,
->                      unsigned offset, unsigned n);
-> +void implement(const struct hid_device *hid, u8 *report, unsigned int offset, unsigned int n,
-> +              u32 value);
->
->  #ifdef CONFIG_PM
->  int hid_driver_suspend(struct hid_device *hdev, pm_message_t state);
-> --
-> 2.35.1
->
+> Sorry if I missed prior dicussions of that topic, but why introduce this single
+> "trace contention begin/end" muxer tracepoint with flags rather than per-locking-type
+> tracepoint ? The per-locking-type tracepoint could be tuned to only have the fields
+> that are needed for each locking type.
+
+No prior discussions on that topic and thanks for bringing it out.
+
+Having per-locking-type tracepoints will help if you want to filter
+out specific types of locks efficiently.  Otherwise it'd be simpler
+for users to have a single set of tracepoints to handle all locking
+types like the existing lockdep tracepoints do.
+
+As it's in a contended path, I think it's allowed to be a little bit
+less efficient and the flags can tell which type of locks it's tracing
+so you can filter it out anyway.
+
+Thanks,
+Namhyung
