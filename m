@@ -2,151 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF4C4DDF44
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 17:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A98F24DDFB9
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 18:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236328AbiCRQpP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 12:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
+        id S239554AbiCRRVd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 13:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232621AbiCRQpP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 12:45:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFB325E32B;
-        Fri, 18 Mar 2022 09:43:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n32rgjP/yXbwdJvAGnm4un77KkghAXw5J0rcdgYFEwE=; b=QaXW0TKkaRn4ogxp5y8lTjILNH
-        OQzo5+PUAwOnKCcNGrboJ6stcnq9DOUbuVXYAZL6e0LG+c9pxWnQwUyJgmPlxj9DjQNoafks27pXR
-        SUrpOmQILEA9/371YJ17dWpkYPYSxvizY12WwQjB3SOu8PuggBa8mhwm5wxqrZkMg9ijgS3vczrdJ
-        3DgbIc2q5+5cEx0SxEpjI0TTJbWyAH2mfZDsJeousMDVXUYZ7uaJMmWrURD5I4H8HQNWPpFjYQSm+
-        n4alG9/UaaC4PhF/d2/cu5G2Bbkl+qmNv5TTMhBUEKQOZqIbRjo1PIjELldEtEhG4lp249fMzWFkc
-        s+BWtUUw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nVFhK-00872d-8j; Fri, 18 Mar 2022 16:43:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DAF4A30007E;
-        Fri, 18 Mar 2022 17:43:26 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 71C2A200B82FA; Fri, 18 Mar 2022 17:43:26 +0100 (CET)
-Date:   Fri, 18 Mar 2022 17:43:26 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Radoslaw Burny <rburny@google.com>, linux-arch@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow
- path
-Message-ID: <YjS2rlezTh9gdlDh@hirez.programming.kicks-ass.net>
-References: <20220316224548.500123-1-namhyung@kernel.org>
- <20220316224548.500123-3-namhyung@kernel.org>
- <YjSBRNxzaE9c+F/1@boqun-archlinux>
+        with ESMTP id S235952AbiCRRVc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 13:21:32 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E169190E98;
+        Fri, 18 Mar 2022 10:20:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 504DDB82386;
+        Fri, 18 Mar 2022 17:20:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B62ECC340EC;
+        Fri, 18 Mar 2022 17:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647624010;
+        bh=su8ZevchIlNuFpQhDvRvybZhdAJ4Gax+0h7kl4q65bw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pMoFh23JQpjMQrAV+vNiQq38R7yKBuMb2/JrjqkFkMjOrO7tyTJ4lP24buDDFucBW
+         Yvosla82tfWWYo1Od+x7vvhVHeutFces+O4CE48Md68dip/E3AFNJZYhlPRC2TkK7N
+         WFyaqDxG6cM2FqKF4KHzS/MBsa0nWOB/Sh6oVQVerpN7B/4+BXKaLyZsu/0ru1ovq/
+         wWQpbHcLDxAX7Q97UxQ5XfU/Q9guTLWhceucAT0tbg0DqVD3WE8aJydztvOsLeEbHK
+         glxpmzsY48pRNPr4eXs8NwsVGIxkbY06ZphIFh/1lzRkHAMuXeBY4i7gnE3W6Mxv8r
+         KQXmcv72ao33Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 92E2FEAC09C;
+        Fri, 18 Mar 2022 17:20:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YjSBRNxzaE9c+F/1@boqun-archlinux>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf 2022-03-18
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164762401059.27083.8906082654501657452.git-patchwork-notify@kernel.org>
+Date:   Fri, 18 Mar 2022 17:20:10 +0000
+References: <20220318152418.28638-1-daniel@iogearbox.net>
+In-Reply-To: <20220318152418.28638-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 18, 2022 at 08:55:32PM +0800, Boqun Feng wrote:
-> On Wed, Mar 16, 2022 at 03:45:48PM -0700, Namhyung Kim wrote:
+Hello:
+
+This pull request was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 18 Mar 2022 16:24:18 +0100 you wrote:
+> Hi David, hi Jakub,
+> 
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 2 non-merge commits during the last 18 day(s) which contain
+> a total of 2 files changed, 50 insertions(+), 20 deletions(-).
+> 
 > [...]
-> > @@ -209,6 +210,7 @@ static inline int __sched __down_common(struct semaphore *sem, long state,
-> >  								long timeout)
-> >  {
-> >  	struct semaphore_waiter waiter;
-> > +	bool tracing = false;
-> >  
-> >  	list_add_tail(&waiter.list, &sem->wait_list);
-> >  	waiter.task = current;
-> > @@ -220,18 +222,28 @@ static inline int __sched __down_common(struct semaphore *sem, long state,
-> >  		if (unlikely(timeout <= 0))
-> >  			goto timed_out;
-> >  		__set_current_state(state);
-> > +		if (!tracing) {
-> > +			trace_contention_begin(sem, 0);
-> 
-> This looks a littl ugly ;-/ Maybe we can rename __down_common() to
-> ___down_common() and implement __down_common() as:
-> 
-> 	static inline int __sched __down_common(...)
-> 	{
-> 		int ret;
-> 		trace_contention_begin(sem, 0);
-> 		ret = ___down_common(...);
-> 		trace_contention_end(sem, ret);
-> 		return ret;
-> 	}
-> 
-> Thoughts?
 
-Yeah, that works, except I think he wants a few extra
-__set_current_state()'s like so:
+Here is the summary with links:
+  - pull-request: bpf 2022-03-18
+    https://git.kernel.org/netdev/net/c/6bd0c76bd704
 
-diff --git a/kernel/locking/semaphore.c b/kernel/locking/semaphore.c
-index 9ee381e4d2a4..e2049a7e0ea4 100644
---- a/kernel/locking/semaphore.c
-+++ b/kernel/locking/semaphore.c
-@@ -205,8 +205,7 @@ struct semaphore_waiter {
-  * constant, and thus optimised away by the compiler.  Likewise the
-  * 'timeout' parameter for the cases without timeouts.
-  */
--static inline int __sched __down_common(struct semaphore *sem, long state,
--								long timeout)
-+static __always_inline int ___down_common(struct semaphore *sem, long state, long timeout)
- {
- 	struct semaphore_waiter waiter;
- 
-@@ -227,15 +226,28 @@ static inline int __sched __down_common(struct semaphore *sem, long state,
- 			return 0;
- 	}
- 
-- timed_out:
-+timed_out:
- 	list_del(&waiter.list);
- 	return -ETIME;
- 
-- interrupted:
-+interrupted:
- 	list_del(&waiter.list);
- 	return -EINTR;
- }
- 
-+static __always_inline int __down_common(struct semaphore *sem, long state, long timeout)
-+{
-+	int ret;
-+
-+	__set_current_state(state);
-+	trace_contention_begin(sem, 0);
-+	ret = ___down_common(sem, state, timeout);
-+	__set_current_state(TASK_RUNNING);
-+	trace_contention_end(sem, ret);
-+
-+	return ret;
-+}
-+
- static noinline void __sched __down(struct semaphore *sem)
- {
- 	__down_common(sem, TASK_UNINTERRUPTIBLE, MAX_SCHEDULE_TIMEOUT);
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
