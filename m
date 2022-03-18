@@ -2,110 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B904DD3B7
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 04:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A41CF4DD3C6
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 04:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbiCRDvg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Mar 2022 23:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58230 "EHLO
+        id S231861AbiCRDyq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Mar 2022 23:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbiCRDvf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Mar 2022 23:51:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8F12A1E86;
-        Thu, 17 Mar 2022 20:50:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F0E1617D0;
-        Fri, 18 Mar 2022 03:50:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DD85BC340EF;
-        Fri, 18 Mar 2022 03:50:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647575417;
-        bh=Uww6/9D2y4nrBnsntLSUJMYy+n/up9CmgOV1aFDe+/Q=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dOv/Uujl9pEJcAqB+LODtHpJLJ80rxhJeDXwyrL9JTkTVz14Umc0lowWy421cDpAo
-         Hj/dH7hksmsbKo6HaZ10YjT2YXDANizwe57mdiWiZU1jjI/A9CBt4/Vz4cQqQg4Ee3
-         JbxqLcEZFQIw4zO9AtV/S+jAGhUTKMIXJFGdxcsEYrsXxqwsqQp10Cs2ouGoZ8+xdr
-         gZvtbVSYpVMJb+Woczqqmd/DZSiIdCjcoVYTFNN8E/6VO2BM8RwXbCPXR1xe5qh72U
-         +In97hQSh8/xWOGxQmTL1JXfqUwrn0M9kayGy8U6b3NvTDrk8eCh+K+HFX6635V+xp
-         x6kH4Ilo+Ajog==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BA1F9F03841;
-        Fri, 18 Mar 2022 03:50:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230156AbiCRDyp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Mar 2022 23:54:45 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8310B1760D8;
+        Thu, 17 Mar 2022 20:53:27 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id n18so6084512plg.5;
+        Thu, 17 Mar 2022 20:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rI0FrmQ3+ceiLgNiqpfsxdYGbjB79Df3AZRI5bRwQ0o=;
+        b=Hn4JBwIy1jFjd69nBo+JFJCVJTNTD+3bEmjId2ADMgJLcte32nRtt93TpmWQRS4c7x
+         rR3dQlzClV0KAYsGDhtSw8cDWKQ2t/uiy5tlnOJIYD3VY9RESUiS6CnLqkdazkns/6pv
+         UAHAKywoeebHtivA1rdf1btn57gw/UFuxxO4ILGRDP6jhPc3W8CRA2pVUs0Y4QvLIuQ9
+         x/i37jh/SlO7Rj/lk0Raz/Wv5GvcU34ithzP8JXKVzYdvCz/gMAuQT76Qps4bLfKGpS9
+         iF44e0+FX8XLrJ9zp8D1QK50IQKSEpT/T09RfNixVI/NIZzXht9u9PY/z2YmhBY4TxEL
+         sTbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rI0FrmQ3+ceiLgNiqpfsxdYGbjB79Df3AZRI5bRwQ0o=;
+        b=myUwgMgfEjOURmVrguPuQL9F8B5CNc1nQiHx/I80q0un7b06zcJaODO6zf8R1fhcl5
+         cfU96kCzCnOQGnXIGOg+GVM5r/HKFTeeTh+6/7FIwaEPxME3ZgD8RQWafCAVPNZ4zsjc
+         XJN1vNvvBT9/ijLM/kMkUgdohg2aGgtf1ixdXlhDYhZtESjoxZVn77NSxVS/zYDC9S9T
+         hmqmQ/L5Lb1wnp9Y866Kitm0NIHrWONju26Kb8WWt+taIKxilD2dC97Jg4TILumxF+EG
+         G/uEKaDPpPhwKzGgZZkfaC4PK5PjKvRqNsgmVs16ccYAO85sG+yL3x+bvPhjiIH8jyUG
+         KJIQ==
+X-Gm-Message-State: AOAM531jsO0adzyj4QqFwvrZIXWHA97+o89aGO3B1ZXeYX/d7CyWG+xH
+        iYnpEKWKB4sKUZ5iEdAGjubpn1kg1ihRN9whnu8=
+X-Google-Smtp-Source: ABdhPJy2ZGzSwNJVYvTAvFyGkHdWwb9m7G9msiWNB29nrOy+gUScs5WGun2fBr8MEIsKK9zmWNETbCkreSoUzE6cdEU=
+X-Received: by 2002:a17:902:ab10:b0:153:b520:dbbe with SMTP id
+ ik16-20020a170902ab1000b00153b520dbbemr7875333plb.55.1647575606916; Thu, 17
+ Mar 2022 20:53:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v12 bpf-next 00/12] fprobe: Introduce fprobe function
- entry/exit probe
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164757541675.26179.17727138330733641017.git-patchwork-notify@kernel.org>
-Date:   Fri, 18 Mar 2022 03:50:16 +0000
-References: <164735281449.1084943.12438881786173547153.stgit@devnote2>
-In-Reply-To: <164735281449.1084943.12438881786173547153.stgit@devnote2>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     jolsa@kernel.org, ast@kernel.org, andrii.nakryiko@gmail.com,
-        daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, rostedt@goodmis.org,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220316122419.933957-1-jolsa@kernel.org> <20220316122419.933957-10-jolsa@kernel.org>
+In-Reply-To: <20220316122419.933957-10-jolsa@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 17 Mar 2022 20:53:15 -0700
+Message-ID: <CAADnVQ+tNLEtbPY+=sZSoBicdSTx1YLgZJwnNuhnBkUcr5xozQ@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 09/13] libbpf: Add bpf_program__attach_kprobe_multi_opts
+ function
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Mar 16, 2022 at 5:26 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> +
+> +struct bpf_link *
+> +bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
+> +                                     const char *pattern,
+> +                                     const struct bpf_kprobe_multi_opts *opts)
+> +{
+> +       LIBBPF_OPTS(bpf_link_create_opts, lopts);
+> +       struct kprobe_multi_resolve res = {
+> +               .pattern = pattern,
+> +       };
+> +       struct bpf_link *link = NULL;
+> +       char errmsg[STRERR_BUFSIZE];
+> +       const unsigned long *addrs;
+> +       int err, link_fd, prog_fd;
+> +       const __u64 *cookies;
+> +       const char **syms;
+> +       bool retprobe;
+> +       size_t cnt;
+> +
+> +       if (!OPTS_VALID(opts, bpf_kprobe_multi_opts))
+> +               return libbpf_err_ptr(-EINVAL);
+> +
+> +       syms    = OPTS_GET(opts, syms, false);
+> +       addrs   = OPTS_GET(opts, addrs, false);
+> +       cnt     = OPTS_GET(opts, cnt, false);
+> +       cookies = OPTS_GET(opts, cookies, false);
+> +
+> +       if (!pattern && !addrs && !syms)
+> +               return libbpf_err_ptr(-EINVAL);
+> +       if (pattern && (addrs || syms || cookies || cnt))
+> +               return libbpf_err_ptr(-EINVAL);
+> +       if (!pattern && !cnt)
+> +               return libbpf_err_ptr(-EINVAL);
+> +       if (addrs && syms)
+> +               return libbpf_err_ptr(-EINVAL);
+> +
+> +       if (pattern) {
+> +               err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
+> +               if (err)
+> +                       goto error;
+> +               if (!res.cnt) {
+> +                       err = -ENOENT;
+> +                       goto error;
+> +               }
+> +               addrs = res.addrs;
+> +               cnt = res.cnt;
+> +       }
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Thanks Jiri.
+Great stuff and a major milestone!
+I've applied Masami's and your patches to bpf-next.
 
-On Tue, 15 Mar 2022 23:00:14 +0900 you wrote:
-> Hi,
-> 
-> Here is the 12th version of fprobe. This version fixes a possible gcc-11 issue which
-> was reported as kretprobes on arm issue, and also I updated the fprobe document.
-> 
-> The previous version (v11) is here[1];
-> 
-> [...]
+But the above needs more work.
+Currently test_progs -t kprobe_multi
+takes 4 seconds on lockdep+debug kernel.
+Mainly because of the above loop.
 
-Here is the summary with links:
-  - [v12,bpf-next,01/12] ftrace: Add ftrace_set_filter_ips function
-    https://git.kernel.org/bpf/bpf-next/c/4f554e955614
-  - [v12,bpf-next,02/12] fprobe: Add ftrace based probe APIs
-    https://git.kernel.org/bpf/bpf-next/c/cad9931f64dc
-  - [v12,bpf-next,03/12] rethook: Add a generic return hook
-    https://git.kernel.org/bpf/bpf-next/c/54ecbe6f1ed5
-  - [v12,bpf-next,04/12] rethook: x86: Add rethook x86 implementation
-    https://git.kernel.org/bpf/bpf-next/c/75caf33eda24
-  - [v12,bpf-next,05/12] arm64: rethook: Add arm64 rethook implementation
-    https://git.kernel.org/bpf/bpf-next/c/83acdce68949
-  - [v12,bpf-next,06/12] powerpc: Add rethook support
-    https://git.kernel.org/bpf/bpf-next/c/02752bd99dc2
-  - [v12,bpf-next,07/12] ARM: rethook: Add rethook arm implementation
-    https://git.kernel.org/bpf/bpf-next/c/515a49173b80
-  - [v12,bpf-next,08/12] fprobe: Add exit_handler support
-    https://git.kernel.org/bpf/bpf-next/c/5b0ab78998e3
-  - [v12,bpf-next,09/12] fprobe: Add sample program for fprobe
-    https://git.kernel.org/bpf/bpf-next/c/6ee64cc3020b
-  - [v12,bpf-next,10/12] fprobe: Introduce FPROBE_FL_KPROBE_SHARED flag for fprobe
-    https://git.kernel.org/bpf/bpf-next/c/ab51e15d535e
-  - [v12,bpf-next,11/12] docs: fprobe: Add fprobe description to ftrace-use.rst
-    https://git.kernel.org/bpf/bpf-next/c/aba09b44a985
-  - [v12,bpf-next,12/12] fprobe: Add a selftest for fprobe
-    https://git.kernel.org/bpf/bpf-next/c/f4616fabab39
+    18.05%  test_progs       [kernel.kallsyms]   [k]
+kallsyms_expand_symbol.constprop.4
+    12.53%  test_progs       libc-2.28.so        [.] _IO_vfscanf
+     6.31%  test_progs       [kernel.kallsyms]   [k] number
+     4.66%  test_progs       [kernel.kallsyms]   [k] format_decode
+     4.65%  test_progs       [kernel.kallsyms]   [k] string_nocheck
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Single test_skel_api() subtest takes almost a second.
 
+A cache inside libbpf probably won't help.
+Maybe introduce a bpf iterator for kallsyms?
 
+On the kernel side kprobe_multi_resolve_syms() looks similarly inefficient.
+I'm not sure whether it would be a bottle neck though.
+
+Orthogonal to this issue please add a new stress test
+to selftest/bpf that attaches to a lot of functions.
