@@ -2,170 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441874DE1AC
-	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 20:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2E74DE1B0
+	for <lists+bpf@lfdr.de>; Fri, 18 Mar 2022 20:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240321AbiCRTVq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 15:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
+        id S239040AbiCRTWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 15:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbiCRTVp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 15:21:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0C32EAF4B;
-        Fri, 18 Mar 2022 12:20:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C1991B821D9;
-        Fri, 18 Mar 2022 19:20:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0027DC340E8;
-        Fri, 18 Mar 2022 19:20:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647631223;
-        bh=BcbMamWqB7X7hyYcrYu0goi4CGE0gY5RL3cSYirqkVU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CxgyXSCHfA+SKpSGg4BbQ502oE8N1bmLmQvu3boOjdvuYihM1pi8eEZeQx2Gf+Hwv
-         oyFVKPv7ST5zZ8wn7jR+wflqiIToLOiUcZTZMq0TsFNQvY2FzDqSONcbCCNyzNOSrG
-         f+yxuakkuqipT4cpdQ8eFeRQKNbWszB/UvzSLfLXKA4ROACLkrS82ixKnbng5TRhWJ
-         YdIXXnbUKoAOmfMXRDDBVwxttZdecs2DMaHWCBJ5IAu1r3e+eZJ8c4BeCvqyMjiixk
-         2ksKCjGezxCCHxan72BKIUlDXT/RxnyUZO+oJG2Kik+Qq1viaROLrBZ+SslFVViI6n
-         TitxbsNr3ar5g==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, brouer@redhat.com, pabeni@redhat.com,
-        toke@redhat.com, lorenzo.bianconi@redhat.com, andrii@kernel.org,
-        nbd@nbd.name
-Subject: [PATCH bpf-next] net: xdp: introduce XDP_PACKET_HEADROOM_MIN for veth and generic-xdp
-Date:   Fri, 18 Mar 2022 20:19:29 +0100
-Message-Id: <039064e87f19f93e0d0347fc8e5c692c789774e6.1647630686.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S239449AbiCRTWi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 15:22:38 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479A92EDC0D
+        for <bpf@vger.kernel.org>; Fri, 18 Mar 2022 12:21:19 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id i11so7052743plr.1
+        for <bpf@vger.kernel.org>; Fri, 18 Mar 2022 12:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5YX1gn/VwOJyuBdRtlgzCdAIYacDg/GfKPHkufM3WR0=;
+        b=LELYuKHaIWSL5H38CLHKmc6A+eQd005DG7uRtssWj8EfpAoQDk2v/fKQWNZ0CHX3qC
+         ZCczRsgzivZfMw8thnV2l7tH6FjA4zAECJKrb1OxJTP86wD3CCFGjTorRjzSxsxJ4h3T
+         vrpfwo7xsA/k/yca4QcNaSVbqLZoY6MQMLNUdwH0TMbY4vwcsdbHfajtsQ+AeZdwjQi8
+         37hwbOcvLcr0KZwiYy3PrMyyzfiAK0wJdtvUHIZDubFt31FC5aakdmDfPqWzwZpuQDeI
+         zxZIAbUq5gJi3y2Y/79X/1FkNFi7enkPs20m03brTcHocFKZvV+tRmSSg/4nUeijoe2o
+         KVYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5YX1gn/VwOJyuBdRtlgzCdAIYacDg/GfKPHkufM3WR0=;
+        b=U22u+89fTSeK7prZoEk/b57eKu4lXZ5g2cTX8thsPyIhxNkETzq3hFqm6dWztSQTe1
+         r86bnDoqmc1VJX6uAxAOZFvN0GoTcxVDGVsd81IIlCz07HaWgTPKubh4gvKoL3B2u7mL
+         QE90UxlvYg+xoiEWTklxxT9GxO1eVAyhvAhhZqsDqs+QeDk72ZnnL36LiLDvJEFSvfrm
+         2WjRm9DDI0JkAYXAuEfmWefk9Jqd1r7ZhbHHcUsOgu8UN2C4MXcoFHEwCWZotxwpqbah
+         FBUtJyLl2hzSHx82AOZCRggr0thDPGB8QC7XAUvkBoC88ZFMrKlmwZY+DlUfEt61HoRh
+         k9Mg==
+X-Gm-Message-State: AOAM530E/lWgekV5mWeC2tuvxbXMa+8eMg9JjTRzd1453KU3jXn4Ubee
+        XFIbxAh5pngFUMzuQTTiy9cfJOdn+3g=
+X-Google-Smtp-Source: ABdhPJzhpskqn1VXv4Didl8JIPgNTo3RQJaWsjTP9bKGMnkCEXo5o2J2jHcanKqLOPj+YPYCxKkCNA==
+X-Received: by 2002:a17:90b:1bc5:b0:1bf:1c96:66ac with SMTP id oa5-20020a17090b1bc500b001bf1c9666acmr23119508pjb.167.1647631278728;
+        Fri, 18 Mar 2022 12:21:18 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:7e8b])
+        by smtp.gmail.com with ESMTPSA id f30-20020a63755e000000b00381f6b7ef30sm6981358pgn.54.2022.03.18.12.21.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Mar 2022 12:21:18 -0700 (PDT)
+Date:   Fri, 18 Mar 2022 12:21:14 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+Subject: Re: [PATCH bpf-next v2 4/4] selftest/bpf: The test cses of BPF
+ cookie for fentry/fexit/fmod_ret.
+Message-ID: <20220318192114.pacmegfl3uglju6l@ast-mbp>
+References: <20220316004231.1103318-1-kuifeng@fb.com>
+ <20220316004231.1103318-5-kuifeng@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220316004231.1103318-5-kuifeng@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Reduce mandatory xdp headroom for generic-xdp and veth driver to 192B
-(instead of 256B) in order to reduce unnecessary skb re-allocations in
-both veth and generic-xdp code.
-This patch has been tested running the xdp_redirect_map sample in
-skb-mode on a ixgbe NIC and redirecting received traffic on a veth pair
-where a simple XDP_DROP program is used to discard received packets:
+On Tue, Mar 15, 2022 at 05:42:31PM -0700, Kui-Feng Lee wrote:
+>  
+> +SEC("fentry/bpf_fentry_test1")
 
-  bpf-next master:
-  ----------------
-  xdp_redirect (ixgbe): ~ 1.38Mpps
-  xdp_drop (veth):      ~ 1.38Mpps
+Did we discuss whether it makes sense to specify cookie in the SEC() ?
 
-  bpf-next master + reduced xdp headroom:
-  ---------------------------------------
-  xdp_redirect (ixgbe): ~ 2.82Mpps
-  xdp_drop (veth):      ~ 2.82Mpps
-
-  bpf-next master:
-  ----------------
-  5.16%  ksoftirqd/1   [kernel.vmlinux]   [k] page_frag_free
-  4.42%  ksoftirqd/1   [kernel.vmlinux]   [k] ixgbe_poll
-  4.19%  ksoftirqd/1   [kernel.vmlinux]   [k] check_preemption_disabled
-  3.74%  ksoftirqd/1   [kernel.vmlinux]   [k] kmem_cache_free
-  3.69%  ksoftirqd/1   [kernel.vmlinux]   [k] get_page_from_freelist
-  3.36%  ksoftirqd/1   [kernel.vmlinux]   [k] veth_xdp_rcv_skb
-  3.06%  ksoftirqd/1   [kernel.vmlinux]   [k] memcpy_erms
-  3.01%  ksoftirqd/1   [kernel.vmlinux]   [k] pskb_expand_head
-  2.80%  ksoftirqd/1   [kernel.vmlinux]   [k] __copy_skb_header
-  2.50%  ksoftirqd/1   [kernel.vmlinux]   [k] bpf_prog_run_generic_xdp
-  2.15%  ksoftirqd/1   [kernel.vmlinux]   [k] memcg_slab_free_hook
-  2.03%  ksoftirqd/1   [kernel.vmlinux]   [k] __slab_free
-  2.01%  ksoftirqd/1   [kernel.vmlinux]   [k] xdp_do_generic_redirect
-
-  bpf-next master + reduced xdp headroom:
-  ---------------------------------------
-  8.24%  ksoftirqd/5   [ixgbe]            [k] ixgbe_poll
-  5.65%  ksoftirqd/5   [kernel.vmlinux]   [k] check_preemption_disabled
-  4.93%  ksoftirqd/5   [kernel.vmlinux]   [k] napi_build_skb
-  4.16%  ksoftirqd/5   [kernel.vmlinux]   [k] xdp_do_generic_redirect
-  3.69%  ksoftirqd/5   [veth]             [k] veth_xdp_rcv_skb
-  3.48%  ksoftirqd/5   [veth]             [k] veth_xmit
-  3.15%  ksoftirqd/5   [kernel.vmlinux]   [k] kmem_cache_free
-  3.05%  ksoftirqd/5   [kernel.vmlinux]   [k] __dev_forward_skb2
-  3.01%  ksoftirqd/5   [kernel.vmlinux]   [k] eth_type_trans
-  2.96%  ksoftirqd/5   [kernel.vmlinux]   [k] bpf_prog_run_generic_xdp
-  2.65%  ksoftirqd/5   [kernel.vmlinux]   [k] __netif_receive_skb_core
-  2.32%  ksoftirqd/5   [veth]             [k] veth_xdp_rcv
-  1.94%  ksoftirqd/5   [kernel.vmlinux]   [k] napi_gro_receive
-
-Co-developed-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- drivers/net/veth.c             | 2 +-
- include/uapi/linux/bpf.h       | 3 ++-
- net/core/dev.c                 | 2 +-
- tools/include/uapi/linux/bpf.h | 3 ++-
- 4 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 1b5714926d81..c6ec57891708 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -766,7 +766,7 @@ static int veth_convert_skb_to_xdp_buff(struct veth_rq *rq,
- 
- 		consume_skb(skb);
- 		skb = nskb;
--	} else if (skb_headroom(skb) < XDP_PACKET_HEADROOM &&
-+	} else if (skb_headroom(skb) < XDP_PACKET_HEADROOM_MIN &&
- 		   pskb_expand_head(skb, VETH_XDP_HEADROOM, 0, GFP_ATOMIC)) {
- 		goto drop;
- 	}
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 7604e7d5438f..29fd4991cbcb 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5717,7 +5717,8 @@ struct bpf_xdp_sock {
- 	__u32 queue_id;
- };
- 
--#define XDP_PACKET_HEADROOM 256
-+#define XDP_PACKET_HEADROOM	256
-+#define XDP_PACKET_HEADROOM_MIN	192
- 
- /* User return codes for XDP prog type.
-  * A valid XDP program must return one of these defined values. All other
-diff --git a/net/core/dev.c b/net/core/dev.c
-index ba69ddf85af6..92d560e648ab 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4737,7 +4737,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	 * native XDP provides, thus we need to do it here as well.
- 	 */
- 	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
--	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
-+	    skb_headroom(skb) < XDP_PACKET_HEADROOM_MIN) {
- 		int hroom = XDP_PACKET_HEADROOM - skb_headroom(skb);
- 		int troom = skb->tail + skb->data_len - skb->end;
- 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 7604e7d5438f..29fd4991cbcb 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5717,7 +5717,8 @@ struct bpf_xdp_sock {
- 	__u32 queue_id;
- };
- 
--#define XDP_PACKET_HEADROOM 256
-+#define XDP_PACKET_HEADROOM	256
-+#define XDP_PACKET_HEADROOM_MIN	192
- 
- /* User return codes for XDP prog type.
-  * A valid XDP program must return one of these defined values. All other
--- 
-2.35.1
-
+Probably no one will be using cookie when prog is attached to a specific
+function, but with support for poor man regex in SEC the cookie
+might be useful?
+Would we need a way to specify a set of cookies in SEC()?
+Or specify a set of pairs of kernel_func+cookie?
+None of it might be worth it.
