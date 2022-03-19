@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2494DEA24
-	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 19:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3014DEA27
+	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 19:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243926AbiCSSfa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Mar 2022 14:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
+        id S243943AbiCSSf3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Mar 2022 14:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243914AbiCSSfW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Mar 2022 14:35:22 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB702986E2
-        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 11:34:01 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id p15so8079342lfk.8
+        with ESMTP id S243927AbiCSSfX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Mar 2022 14:35:23 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B952986F2
+        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 11:34:02 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id g24so13917978lja.7
         for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 11:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qPPQj9ItVfe1R+y/cRdtBrWh+vYyFPZ0Vdz4dbbnHxA=;
-        b=GgSox0CBISUzBNHpwQRpVYkZodqL1GmusqJl3ZG7YpnJL0cAUSA8bHZDUgqZLOH4CA
-         pkBo9UVAmWb9s6SjJUmmW2nsWsxPDwYwukl50uH8s2npKUSCAp07Hpg08jsAH47IAECd
-         ISsMr+5HWlT5iSjI9c1mjtMVraKZUGnFEfjiU=
+        bh=HJf9hjmlU8ooiir4NWlBaONurfCvBP7drmCxAIcE+pM=;
+        b=VLqU3oFb2kAvIf18xDmAfaYRL66Xl/BNJCKWKUmIpbbLFfs7X0XbDfqXKYZGgdBGq1
+         YNyagsngccVrEPRWm0w2l6TUhF4Wpqn5osbedBU99T6eSOPQHsZkhRxbdqsMwaxF1c3n
+         Il4K7gAKMKSLhEiRr8fQnYguRGmIgU9QVKGVc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qPPQj9ItVfe1R+y/cRdtBrWh+vYyFPZ0Vdz4dbbnHxA=;
-        b=7tPuUF/jgd8ZhjJHFa+MdZSwqLW7it+mcFvavrg6gfAAxP70yOSkorc9ZmX/dh8TmD
-         KPaYmGl5jcv8Bk3Ouqif+B6Yht/842UiGKR97NrWWSqi21+2UB1MTgr5uemkkB4iu6YK
-         TTqwt4NWgzOUCkXVfgNYLU732i0LvJJ4U4b9Cuo/WXnolApNMl+3iBKtT7+Pa3bJrt/+
-         4wNjdJ+9GqlLmGQlXpBDM4IwPL8TDwtT5JY7RnyINuUgdL7Ahmejgz+mmm2scWPW8QCu
-         wDxavn++pHC3X4CnoSB1R7l1i5eP0S9NWabUX/Xq3IE8yWB+/o6FC4OYiYT92QyXIiSP
-         FCGw==
-X-Gm-Message-State: AOAM531/80rqSzgHX+QAyiA6D5SjGTLW+Z9S7CEx+KdeDZWphKWFn9rW
-        W3n3wDpzfAJRVs9XdGStdPqLLsKmGnWsbQ==
-X-Google-Smtp-Source: ABdhPJxRvEPyfXs52HdvEeThnMOdcgxoyS2uOkJtk0UaiCitq7i+/2T8/ud8rxkMWY+W2mgdDmIt1g==
-X-Received: by 2002:a05:6512:3a90:b0:448:a18f:4b82 with SMTP id q16-20020a0565123a9000b00448a18f4b82mr9325673lfu.307.1647714839284;
-        Sat, 19 Mar 2022 11:33:59 -0700 (PDT)
+        bh=HJf9hjmlU8ooiir4NWlBaONurfCvBP7drmCxAIcE+pM=;
+        b=NUEkVDHaJ8VqPeggpGDRnz+NRBmWfK10Q2u6lAUL1EzM8MQgMtw0R6VBMDfi15ihGA
+         uszocPC+JvrB+jQg3Ao1KwtO+zLJI03KgoBFV/OQ9wHBBTijy7h0FDek/jGPJGF+5Dzc
+         QmiJj5y8oUwayoZcNgLTpuhUJ/CUyOxlhzZJPCssHHpKXtmZgHolUZMmwz1dn2owWFCW
+         6GCDIHgl7jYJHWn5pIPaF4+tm30MetFsQzRR73SsxZgccT8CqKEFzJVcKKe8+VIWVd3b
+         c7sVNuJWzRH/McrY2kVjN+ysuypntgEHDFBfGx/qTltFTKp81tTaJNUgMBD+JULe3vJ9
+         pYzA==
+X-Gm-Message-State: AOAM531iqBYZ6L+jCmXFVMRW4Kgp3r3y5QRuNJz5Tja6jIYIrdBYg3iG
+        MiB5R12O04e4nrl9uTLvsV7yoRpIZHbc2w==
+X-Google-Smtp-Source: ABdhPJwdknscv6JyO7SeEx1hBY9N4iMvMM/MkGLNDngTm3RU8c3ZnAJludotXKO926Rc3568NUTX3A==
+X-Received: by 2002:a2e:9e4b:0:b0:247:e9f3:2eda with SMTP id g11-20020a2e9e4b000000b00247e9f32edamr10021412ljk.378.1647714840178;
+        Sat, 19 Mar 2022 11:34:00 -0700 (PDT)
 Received: from cloudflare.com ([2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id l4-20020a2e9084000000b00244cb29e3e4sm1613912ljg.133.2022.03.19.11.33.58
+        by smtp.gmail.com with ESMTPSA id k7-20020ac257c7000000b0044854f11248sm1347688lfo.55.2022.03.19.11.33.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Mar 2022 11:33:58 -0700 (PDT)
+        Sat, 19 Mar 2022 11:33:59 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -53,9 +53,9 @@ Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Ilya Leoshkevich <iii@linux.ibm.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH bpf-next v2 2/3] selftests/bpf: Fix u8 narrow load checks for bpf_sk_lookup remote_port
-Date:   Sat, 19 Mar 2022 19:33:55 +0100
-Message-Id: <20220319183356.233666-3-jakub@cloudflare.com>
+Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Fix test for 4-byte load from remote_port on big-endian
+Date:   Sat, 19 Mar 2022 19:33:56 +0100
+Message-Id: <20220319183356.233666-4-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220319183356.233666-1-jakub@cloudflare.com>
 References: <20220319183356.233666-1-jakub@cloudflare.com>
@@ -71,61 +71,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In commit 9a69e2b385f4 ("bpf: Make remote_port field in struct
-bpf_sk_lookup 16-bit wide") ->remote_port field changed from __u32 to
-__be16.
+The context access converter rewrites the 4-byte load from
+bpf_sk_lookup->remote_port to a 2-byte load from bpf_sk_lookup_kern
+structure.
 
-However, narrow load tests which exercise 1-byte sized loads from
-offsetof(struct bpf_sk_lookup, remote_port) were not adopted to reflect the
-change.
+It means that we cannot treat the destination register contents as a 32-bit
+value, or the code will not be portable across big- and little-endian
+architectures.
 
-As a result, on little-endian we continue testing loads from addresses:
+This is exactly the same case as with 4-byte loads from bpf_sock->dst_port
+so follow the approach outlined in [1] and treat the register contents as a
+16-bit value in the test.
 
- - (__u8 *)&ctx->remote_port + 3
- - (__u8 *)&ctx->remote_port + 4
+[1]: https://lore.kernel.org/bpf/20220317113920.1068535-5-jakub@cloudflare.com/
 
-which map to the zero padding following the remote_port field, and don't
-break the tests because there is no observable change.
-
-While on big-endian, we observe breakage because tests expect to see zeros
-for values loaded from:
-
- - (__u8 *)&ctx->remote_port - 1
- - (__u8 *)&ctx->remote_port - 2
-
-Above addresses map to ->remote_ip6 field, which precedes ->remote_port,
-and are populated during the bpf_sk_lookup IPv6 tests.
-
-Unsurprisingly, on s390x we observe:
-
-  #136/38 sk_lookup/narrow access to ctx v4:OK
-  #136/39 sk_lookup/narrow access to ctx v6:FAIL
-
-Fix it by removing the checks for 1-byte loads from offsets outside of the
-->remote_port field.
-
-Fixes: 9a69e2b385f4 ("bpf: Make remote_port field in struct bpf_sk_lookup 16-bit wide")
-Suggested-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Fixes: 2ed0dc5937d3 ("selftests/bpf: Cover 4-byte load from remote_port in bpf_sk_lookup")
 Acked-by: Martin KaFai Lau <kafai@fb.com>
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- tools/testing/selftests/bpf/progs/test_sk_lookup.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/testing/selftests/bpf/progs/test_sk_lookup.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-index bf5b7caefdd0..38b7a1fe67b6 100644
+index 38b7a1fe67b6..6058dcb11b36 100644
 --- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
 +++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-@@ -413,8 +413,7 @@ int ctx_narrow_access(struct bpf_sk_lookup *ctx)
- 
- 	/* Narrow loads from remote_port field. Expect SRC_PORT. */
- 	if (LSB(ctx->remote_port, 0) != ((SRC_PORT >> 0) & 0xff) ||
--	    LSB(ctx->remote_port, 1) != ((SRC_PORT >> 8) & 0xff) ||
--	    LSB(ctx->remote_port, 2) != 0 || LSB(ctx->remote_port, 3) != 0)
-+	    LSB(ctx->remote_port, 1) != ((SRC_PORT >> 8) & 0xff))
- 		return SK_DROP;
+@@ -418,9 +418,15 @@ int ctx_narrow_access(struct bpf_sk_lookup *ctx)
  	if (LSW(ctx->remote_port, 0) != SRC_PORT)
  		return SK_DROP;
+ 
+-	/* Load from remote_port field with zero padding (backward compatibility) */
++	/*
++	 * NOTE: 4-byte load from bpf_sk_lookup at remote_port offset
++	 * is quirky. It gets rewritten by the access converter to a
++	 * 2-byte load for backward compatibility. Treating the load
++	 * result as a be16 value makes the code portable across
++	 * little- and big-endian platforms.
++	 */
+ 	val_u32 = *(__u32 *)&ctx->remote_port;
+-	if (val_u32 != bpf_htonl(bpf_ntohs(SRC_PORT) << 16))
++	if (val_u32 != SRC_PORT)
+ 		return SK_DROP;
+ 
+ 	/* Narrow loads from local_port field. Expect DST_PORT. */
 -- 
 2.35.1
 
