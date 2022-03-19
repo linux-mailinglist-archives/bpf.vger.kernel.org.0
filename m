@@ -2,67 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD9A4DEA17
-	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 19:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B8C4DEA1B
+	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 19:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbiCSS3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Mar 2022 14:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
+        id S236328AbiCSSbx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Mar 2022 14:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243900AbiCSS3i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Mar 2022 14:29:38 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5941010
-        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 11:28:16 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id v4so9941974pjh.2
-        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 11:28:16 -0700 (PDT)
+        with ESMTP id S233591AbiCSSbw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Mar 2022 14:31:52 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9497237013
+        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 11:30:31 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n18so9533483plg.5
+        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 11:30:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=+To/R+NnVFAU/xAg5Xct/HTY5anwcz9uD3bLfRK2LNU=;
-        b=k8/V6s1CP93NGIQq7q6r7fxAIaCPWIuyJm6w40oxdXOooojDgegmn/KM4mwZdwT89Z
-         NBy90xAVzC34IUoEm9bzzvk8J1q/ZGuL6UqlLrIOd3SNum9GeCo4D+LG2a0cqR33uSif
-         d9S02Y3xfnXSKHgC+eCGnJLI2Wdw2TcS7lILhod2N+MjBlb9BjOQMgJCpWDt6eg7GGan
-         7pVtUKqOdTqP4FIhA2sxfTUep8K4pdkislNbGzIqzfPa4P+FnYew7o1YlEGQKrcYtY0G
-         ePbxLlnapspFMAFmfOs6LqaJKFxeO5OpTdjNVWsTwhP01v32vjsK1qWBexugI3kGG0Jj
-         S32w==
+        bh=+1FRkxmGjBJKvSmmH1vnoLHzLvR7ZC2SvKnWi1bLC4c=;
+        b=UvAioAl6WuTBsy2MmDrsvUEJ7px5cNOjIl3Br+OoZ4C4EHhzPGq03m8b4ZHhvO6XY6
+         80oHVoGgng5vUJ+fvr7nrmqW6blQxZBBzlf78hC0WCuQqAEwHTtExnVgLm6jWCYOQS4P
+         vQaDEbaXZkAoDqOFYYC8lGORdxDkQL953EkaiC2jrw0WC5cyYsznCTJDo45OnYeceWVZ
+         JmDtVkhZOPSsgBQMxmy626u5djEaD8s41f7zn0lD+/g7guS1Ts2tqOxGBmAhYoZe7Vac
+         kEVL3AfVSH99eXJ8RvlhBGDAZN/jLAQkdM4QpfeyvVfpGPaojRGkUgTvMF4oaF0GFFAY
+         YNbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+To/R+NnVFAU/xAg5Xct/HTY5anwcz9uD3bLfRK2LNU=;
-        b=yWTM5/K77pHRnrV69xO1bPcJo3c/pVt9dEQNHbE5LgnBw+7Dv/JSqjXd+jbIN9Q3ps
-         o+Uhl0MO/TQPaSH8OoV81h1GiudL9aiO2fyDY4aIk5XmPmUUIKy8DNesomXNAS6DCUGn
-         5xTo22Ymqc6Ue8Y076OplacwszHzohxTsno/DxmKWUoCb5SJJGjUYHTDq7nVLK/438gc
-         ozeF4D90oJHleQTnYQHruFT6kO2XcE3azWrqgpr55uauShbrcp56QqqXceCSUsTId/Os
-         j4YD+mzUc3kpHTDFs1RP1pBKNQ37YCs4p20bVAkTENnt4Jqj6gSrOtOpG293nX8szz6R
-         a5BQ==
-X-Gm-Message-State: AOAM532AvHYtkwba030lTT/y4Z6oyCw6+4mt3aAkANGvOijiizpiV818
-        5Sm+GnjHEkCbZgnolz3qBZ0=
-X-Google-Smtp-Source: ABdhPJzWDJQk+vavXGTQZ5PJx/pq6LG0wSJznUPF02xreqQqYAVpbyLaEvMiy+7hmJj9cuxg9pVQcw==
-X-Received: by 2002:a17:902:8d8f:b0:153:6546:2530 with SMTP id v15-20020a1709028d8f00b0015365462530mr5326400plo.81.1647714496401;
-        Sat, 19 Mar 2022 11:28:16 -0700 (PDT)
+        bh=+1FRkxmGjBJKvSmmH1vnoLHzLvR7ZC2SvKnWi1bLC4c=;
+        b=KHMwnBflts3pPIKZtB5kR+wfN7506Kl5DNj1TedrPTwg9mhYoQKiBy1I0kZsmRQ8qM
+         XSnWXFPaX0heMMvjMU5VNsdQfh8987FM0q24WLCVOecq3lMOjWe0YOE0rPDn94qPVU4m
+         5GFX5jyukG7N05thL8fBMSrTkKf7Uh7jmVPEnwL+m92zTi6JFF/A2d40oFOcMX2KSwie
+         60zsXlndTjlSPU5GoNeTaabwTyMhOymwHngTNVcbwgoWG6z2SGgkPHJmEYpNpbA65bHt
+         xgW+g2QQDmWVz5Hjm8V7/AXFJrUtQ+9lQ8E6sgDZXsxLyo6P0WaYz1sRIjJ/RVBgkwTP
+         ti7w==
+X-Gm-Message-State: AOAM5332TGxexvFJ+XZbdJoT6N64ftZREqsGj7OoMvXm7pZtatOCo859
+        VMQea5aqp6BZUBS4kHhEn94=
+X-Google-Smtp-Source: ABdhPJwiho8CavNoM7p5fMsXGAO6cpZya7wjlPVRw8TE0a6fcYx/ts90H6MPNgSynzNgpS0KpHoIgQ==
+X-Received: by 2002:a17:90b:180b:b0:1bf:27c5:2c51 with SMTP id lw11-20020a17090b180b00b001bf27c52c51mr17902172pjb.142.1647714631101;
+        Sat, 19 Mar 2022 11:30:31 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:a65d])
-        by smtp.gmail.com with ESMTPSA id j6-20020a63b606000000b003808b0ea96fsm9893875pgf.66.2022.03.19.11.28.15
+        by smtp.gmail.com with ESMTPSA id t9-20020a056a0021c900b004f7b425211bsm12895085pfj.36.2022.03.19.11.30.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Mar 2022 11:28:16 -0700 (PDT)
-Date:   Sat, 19 Mar 2022 11:28:13 -0700
+        Sat, 19 Mar 2022 11:30:30 -0700 (PDT)
+Date:   Sat, 19 Mar 2022 11:30:28 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf@vger.kernel.org, Hao Luo <haoluo@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v2 06/15] bpf: Allow storing user kptr in map
-Message-ID: <20220319182813.issitd7s3c5b6qw3@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v2 05/15] bpf: Allow storing percpu kptr in map
+Message-ID: <20220319183028.pwzaoz2qogek6nwz@ast-mbp.dhcp.thefacebook.com>
 References: <20220317115957.3193097-1-memxor@gmail.com>
- <20220317115957.3193097-7-memxor@gmail.com>
+ <20220317115957.3193097-6-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220317115957.3193097-7-memxor@gmail.com>
+In-Reply-To: <20220317115957.3193097-6-memxor@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,38 +74,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 17, 2022 at 05:29:48PM +0530, Kumar Kartikeya Dwivedi wrote:
-> Recently, verifier gained __user annotation support [0] where it
-> prevents BPF program from normally derefering user memory pointer in the
-> kernel, and instead requires use of bpf_probe_read_user. We can allow
-> the user to also store these pointers in BPF maps, with the logic that
-> whenever user loads it from the BPF map, it gets marked as MEM_USER. The
-> tag 'kptr_user' is used to tag such pointers.
+On Thu, Mar 17, 2022 at 05:29:47PM +0530, Kumar Kartikeya Dwivedi wrote:
+> Make adjustments to the code to allow storing percpu PTR_TO_BTF_ID in a
+> map. Similar to 'kptr_ref' tag, a new 'kptr_percpu' allows tagging types
+> of pointers accepting stores of such register types. On load, verifier
+> marks destination register as having type PTR_TO_BTF_ID | MEM_PERCPU |
+> PTR_MAYBE_NULL.
 > 
->   [0]: https://lore.kernel.org/bpf/20220127154555.650886-1-yhs@fb.com
-> 
+> Cc: Hao Luo <haoluo@google.com>
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  include/linux/bpf.h   |  1 +
+>  include/linux/bpf.h   |  3 ++-
 >  kernel/bpf/btf.c      | 13 ++++++++++---
->  kernel/bpf/verifier.c | 15 ++++++++++++---
->  3 files changed, 23 insertions(+), 6 deletions(-)
+>  kernel/bpf/verifier.c | 26 +++++++++++++++++++++-----
+>  3 files changed, 33 insertions(+), 9 deletions(-)
 > 
 > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 433f5cb161cf..989f47334215 100644
+> index 702aa882e4a3..433f5cb161cf 100644
 > --- a/include/linux/bpf.h
 > +++ b/include/linux/bpf.h
-> @@ -163,6 +163,7 @@ enum {
+> @@ -161,7 +161,8 @@ enum {
+>  };
+>  
 >  enum {
->  	BPF_MAP_VALUE_OFF_F_REF    = (1U << 0),
->  	BPF_MAP_VALUE_OFF_F_PERCPU = (1U << 1),
-> +	BPF_MAP_VALUE_OFF_F_USER   = (1U << 2),
-...
-> +		} else if (!strcmp("kptr_user", __btf_name_by_offset(btf, t->name_off))) {
+> -	BPF_MAP_VALUE_OFF_F_REF = (1U << 0),
+> +	BPF_MAP_VALUE_OFF_F_REF    = (1U << 0),
+> +	BPF_MAP_VALUE_OFF_F_PERCPU = (1U << 1),
 
-I don't see a use case where __user pointer would need to be stored into a map.
-That pointer is valid in the user task context.
-When bpf prog has such pointer it can read user mem through it,
-but storing it for later makes little sense. The user context will certainly change.
-Reading it later from the map is more or less reading random number.
-Lets drop this patch until real use case arises.
+What is the use case for storing __percpu pointer into a map?
