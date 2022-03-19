@@ -2,71 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C6F4DEAFB
-	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 22:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C12F4DEAFC
+	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 22:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238705AbiCSVo3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Mar 2022 17:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        id S236574AbiCSVqb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Mar 2022 17:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234541AbiCSVo2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Mar 2022 17:44:28 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A286184ECA
-        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 14:43:05 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id v4so10153278pjh.2
-        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 14:43:05 -0700 (PDT)
+        with ESMTP id S234541AbiCSVqa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Mar 2022 17:46:30 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E5316F06C
+        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 14:45:09 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id o6-20020a17090a9f8600b001c6562049d9so11333481pjp.3
+        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 14:45:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=UqtV0sA6am1PG8OrsaZwoVNFPOXqg06kiugHXJNvLeQ=;
-        b=WU18js+rK16bib1QhvI03yI7kYULUGMKW9nv1dI9eXfe2mluLPgIirzeDjUJ4XlT2y
-         yNr67a+T3sd/sXFTOfEpg7+OVQxSEeX6fh6FU97KR7IOleY2ejNVIjf3LmgifB0RyVSJ
-         RLzN05a1+wgbQNtUq6AAvuDR8CZ6K4xCVaLaLrnjd96XdW95M6SOQOslFv1XN2tvPHMR
-         ZfC6/tc7k5pbi54zaceULNs6c0g0s4jw10QaWu0H1tXjJrBfS5twU/wkXsz5I3YeCMSZ
-         /0ZR1LvM5Il+y1dikf+6nODUNqfK/zN7J0Q8SoDlu6Vrn5b9+/iRRxdEh72jp+Y/gWCA
-         9Ulw==
+        bh=mMfjqaHJH0YZhpqH/hF3yGU6z7ZfQo+N+O7D8kwxeq0=;
+        b=NirrHSKetB0k3LXrqTf0xBNqmTOssHdr1dXiEFGMoKhH6n6E8d81rcOfJQ4xaSdJcK
+         8fJYTlDNFJED/Z25nosf8ljGafdUbdJB8WNIeRfIYv+YYE20ht+8s1A32nFjfFTWpkNu
+         NqEPK7WZ/RluXXO8aQbP/ln3Oph1u4PdyWValMmrUDAuKhJivX7BdJCYZ0B2IBZ09n69
+         jCEa11gjjqnLDdMc8nC3vw3uf4InRSDpk6wGRSl75/z5hZvAu2zIcwsYBAIG2MOBUWMi
+         TpxGBx46eX5HmAEevlse4XvRur6QtDg30bpWvYjfV/Ae2Sc4UTxM6C3oBpnKQ9riImzT
+         rsEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=UqtV0sA6am1PG8OrsaZwoVNFPOXqg06kiugHXJNvLeQ=;
-        b=SePbR9REZCCN+PNjwOproZy1OcQ2GHviR1v7xG6EmfQGoy++uzTbvXNeMhKo8g1iWa
-         aJ/JpbyLPBD0HSFIJ2mTGQ9po1P4s7OlCDU9yYH4pv2hOOYVnV92bOOSWruicrRc6oAS
-         JUIYia2k1zxEwse5WLVpQI4L2NmGFlOs4e6LWjvhNseBFFkDWvy/DPbDyz3ye7a9Wf1X
-         FCbRO4BCqVazIHdCzwbVAh+Bi75b/P+fW9/UoV0nln+e10YgGB8sKUcp2CoBXQhRSK3m
-         r22FrvdEdyhL3uiHosSU8/fW66ZNG6YJeicsUu5ZQSskOAjveNlIMkmGyOCnvTwWhXHM
-         EbdA==
-X-Gm-Message-State: AOAM530J9W04U9F4HQA+FYndv+3BOl6uQ8Lw0tvpgVWTxBq1r90sbsGZ
-        pFuzzhRDRobCTUJGPhCdEfc=
-X-Google-Smtp-Source: ABdhPJy+QsHGjhQJmyVYaQGH6fnXI2vB/fqpMUaEdJ70K9M1mxqOrV9EVS8I4pWL8590mgRNiILz+w==
-X-Received: by 2002:a17:902:a40d:b0:153:7213:1584 with SMTP id p13-20020a170902a40d00b0015372131584mr5818730plq.56.1647726185188;
-        Sat, 19 Mar 2022 14:43:05 -0700 (PDT)
+        bh=mMfjqaHJH0YZhpqH/hF3yGU6z7ZfQo+N+O7D8kwxeq0=;
+        b=QkLJ1mTg/PlY/AiEwKmw+Ot6jpMkYi+plKRdHtj1PSH7LmnR4/9VomViD9j5i4o7Lr
+         s2RXzYYQjo8OL9wLh/RYVIa0Q188B9RPm7H41YNCVrFRMHIzbQl2bdMX+ovQJTAz2IxF
+         04v04O2AgPG0WZTHf6o0dFu5ppSgqieYKsWVLnB+tJlMFlU0FcXk6PPXmQNMbjkTJEpl
+         kbdoud2UIWQ9e9XmvfcIN8RYpRyxzBcTo+jjz7p2GGRw+6uyoy9DBZg8BT7HnUq/iewY
+         d/5zgnjdbFNdGdvGiBY4qsIZt/TyAFjDz73CdJ/WIAKx8P+mIIlvnHD93S2L1uY4TKzW
+         CKAQ==
+X-Gm-Message-State: AOAM533O802zEjRmfrJcI6lLRN5OlEmg/eeVHCU6gC4G47+rgvrL6KYf
+        cADeABxPNzjrfcVgwLBCBHKxflAtWyI=
+X-Google-Smtp-Source: ABdhPJzcdnHIFG9bnJWecjQdwNykwHdQgXMukRLsJtuExH3+jtRsXl5dk3WfIYnD6zposdh+4Yy7aA==
+X-Received: by 2002:a17:902:e551:b0:154:48d5:4210 with SMTP id n17-20020a170902e55100b0015448d54210mr595209plf.2.1647726308916;
+        Sat, 19 Mar 2022 14:45:08 -0700 (PDT)
 Received: from localhost ([14.139.187.71])
-        by smtp.gmail.com with ESMTPSA id s12-20020a056a00194c00b004f7c1da7dd5sm14236222pfk.1.2022.03.19.14.43.04
+        by smtp.gmail.com with ESMTPSA id mw7-20020a17090b4d0700b001b8baf6b6f5sm12270441pjb.50.2022.03.19.14.45.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Mar 2022 14:43:04 -0700 (PDT)
-Date:   Sun, 20 Mar 2022 03:13:03 +0530
+        Sat, 19 Mar 2022 14:45:07 -0700 (PDT)
+Date:   Sun, 20 Mar 2022 03:15:05 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf@vger.kernel.org, Hao Luo <haoluo@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v2 04/15] bpf: Allow storing referenced kptr in
- map
-Message-ID: <20220319214303.n3aogzbz3fjaohcy@apollo>
+Subject: Re: [PATCH bpf-next v2 05/15] bpf: Allow storing percpu kptr in map
+Message-ID: <20220319214505.yn5a24jrfwdhzpfv@apollo>
 References: <20220317115957.3193097-1-memxor@gmail.com>
- <20220317115957.3193097-5-memxor@gmail.com>
- <20220319182407.amdeiliph36zdwlg@ast-mbp.dhcp.thefacebook.com>
- <20220319185904.dq5h6tnspwx77dze@apollo>
- <20220319212320.oos7tao6mybsjt6i@ast-mbp.dhcp.thefacebook.com>
+ <20220317115957.3193097-6-memxor@gmail.com>
+ <20220319183028.pwzaoz2qogek6nwz@ast-mbp.dhcp.thefacebook.com>
+ <20220319190409.7n3bkjdp67finojx@apollo>
+ <20220319212620.vbzfxsn2xitkzv5t@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220319212320.oos7tao6mybsjt6i@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220319212620.vbzfxsn2xitkzv5t@ast-mbp.dhcp.thefacebook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -77,48 +77,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 20, 2022 at 02:53:20AM IST, Alexei Starovoitov wrote:
-> On Sun, Mar 20, 2022 at 12:29:04AM +0530, Kumar Kartikeya Dwivedi wrote:
+On Sun, Mar 20, 2022 at 02:56:20AM IST, Alexei Starovoitov wrote:
+> On Sun, Mar 20, 2022 at 12:34:09AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > On Sun, Mar 20, 2022 at 12:00:28AM IST, Alexei Starovoitov wrote:
+> > > On Thu, Mar 17, 2022 at 05:29:47PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > > Make adjustments to the code to allow storing percpu PTR_TO_BTF_ID in a
+> > > > map. Similar to 'kptr_ref' tag, a new 'kptr_percpu' allows tagging types
+> > > > of pointers accepting stores of such register types. On load, verifier
+> > > > marks destination register as having type PTR_TO_BTF_ID | MEM_PERCPU |
+> > > > PTR_MAYBE_NULL.
 > > > >
-> > > >  	if (is_release_function(func_id)) {
-> > > > -		err = release_reference(env, meta.ref_obj_id);
-> > > > +		err = -EINVAL;
-> > > > +		if (meta.ref_obj_id)
-> > > > +			err = release_reference(env, meta.ref_obj_id);
-> > > > +		/* Only bpf_kptr_xchg is a release function that accepts a
-> > > > +		 * possibly NULL reg, hence meta.ref_obj_id can only be unset
-> > > > +		 * for it.
+> > > > Cc: Hao Luo <haoluo@google.com>
+> > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > > ---
+> > > >  include/linux/bpf.h   |  3 ++-
+> > > >  kernel/bpf/btf.c      | 13 ++++++++++---
+> > > >  kernel/bpf/verifier.c | 26 +++++++++++++++++++++-----
+> > > >  3 files changed, 33 insertions(+), 9 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > index 702aa882e4a3..433f5cb161cf 100644
+> > > > --- a/include/linux/bpf.h
+> > > > +++ b/include/linux/bpf.h
+> > > > @@ -161,7 +161,8 @@ enum {
+> > > >  };
+> > > >
+> > > >  enum {
+> > > > -	BPF_MAP_VALUE_OFF_F_REF = (1U << 0),
+> > > > +	BPF_MAP_VALUE_OFF_F_REF    = (1U << 0),
+> > > > +	BPF_MAP_VALUE_OFF_F_PERCPU = (1U << 1),
 > > >
-> > > Could you rephrase the comment? I'm not following what it's trying to convey.
-> > >
+> > > What is the use case for storing __percpu pointer into a map?
 > >
-> > All existing release helpers never take a NULL register, so their
-> > meta.ref_obj_id will never be unset, but bpf_kptr_xchg can, so it needs some
-> > special handling. In check_func_arg, when it jumps to skip_type_check label,
-> > reg->ref_obj_id won't be set for NULL value.
+> > No specific use case for me, just thought it would be useful, especially now
+> > that __percpu tag is understood by verifier for kernel BTF, so it may also refer
+> > to dynamically allocated per-CPU memory, not just global percpu variables. But
+> > fine with dropping both this and user kptr if you don't feel like keeping them.
 >
-> I still don't follow.
-> What do you mean 'unset meta.ref_obj_id' ?
-> It's either set or not.
+> I prefer to drop it for now.
+> The patch is trivial but kptr_percpu tag would stay forever.
 
-By unset I meant it is the default (0).
+Ok, I'll drop both this and user kptr for now.
 
-> meta->ref_obj_id will stay zero when arg == NULL.
-> Above 'if (meta.ref_obj_id)' makes sense.
-> But the code below with extra func_id check looks like defensive programming again.
->
+> Maybe we can allow storing percpu pointers in a map with just kptr tag.
+> The verifier should be able to understand from btf whether that pointer
+> is percpu or not.
 
-Ok, so I'll just write it like:
-
-if (is_release_function(...) && meta.ref_obj_id) {
-	err = release_reference(...);
-	if (err)
-		...
-}
-
-> > > > +		 */
-> > > > +		else if (func_id == BPF_FUNC_kptr_xchg)
-> > > > +			err = 0;
+This won't work (unless I missed something), it is possible to see the type when
+a store is being done, but we cannot know whether the pointer was percpu or not
+when doing a load (which is needed to decide whether it will be marked with
+MEM_PERCPU, so that user has to call bpf_this_cpu_ptr or bpf_per_cpu_ptr to
+obtain actual pointer). So some extra tagging is needed.
 
 --
 Kartikeya
