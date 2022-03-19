@@ -2,114 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 347F54DE4C3
-	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 01:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D1D4DE547
+	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 04:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbiCSAN3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Mar 2022 20:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53254 "EHLO
+        id S241875AbiCSDHT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Mar 2022 23:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235207AbiCSAN2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Mar 2022 20:13:28 -0400
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599B22F09FA;
-        Fri, 18 Mar 2022 17:12:07 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id q5so13156665ljb.11;
-        Fri, 18 Mar 2022 17:12:07 -0700 (PDT)
+        with ESMTP id S241856AbiCSDHS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Mar 2022 23:07:18 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39C62A4FAB
+        for <bpf@vger.kernel.org>; Fri, 18 Mar 2022 20:05:58 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id q19so6324475pgm.6
+        for <bpf@vger.kernel.org>; Fri, 18 Mar 2022 20:05:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q3ia6wCbpVQWit3xdQJewn3rY3869SZEpU5RAz2gTQ8=;
+        b=HUdH8e84Erzu4o1lWmUmtvhVgnB/4x4fKWMp1cUdUSnN/rLw/JhOaOPk16hKpbqnHV
+         eVJ54SZ2tt/HqUUVUwVyrYJxFq2Sok1TqZvpYwSI/JcdYUcaRjvBfNzWTmRG6rOZV2R4
+         Z5PG6JrcF12cdc7lE5G/EGZsm7BHoWu1GdjNwd10tlOaUNNVrfYsv2BijJsgHPynjXH2
+         gY1mZ/6Tgkcv6bhWXGCnWUvRL6oGyanQ+q0NlOwLjKcHOOj5m7Y0cwMZKkfDV5jV+jZC
+         r1To6R6+JhfGGDkY7kqR35CbiQpILFc4kHzXUibqhOz0iZu2skriULMEvRiEnB1fllLg
+         6KEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RefRx5po0WHZQRy5R4kPGcVNk3NZW9epOkJFzUWcdCM=;
-        b=voMGWsSsW9PVH18lzz2o1FiGKYOCoFdP9pYQCBJ5FloBVmP0kIQETHTirgBiOpXKCX
-         u2OSEL1KPa+xzSWFKp+3HbIdpnSOtIXo2YbxjseCdkypWbxFyuRCGh5DFv/XqUcitzNk
-         1Qo+FS8Kn1zYtd0dB8bBTIdFJ0bDt2dkdlICEY4Iplgborrtyx3Q0oNy2DHU0DGdepxD
-         GGpwjuKFjpbAwu1l1y8zjDK287CbmUP/9vUKFPv51CN63zwX46z6Apk8ZVuuwpmPxEQV
-         oueQ4eYOfEd/6OvBuey2zhJyso6LWzB8W12BMRm7Bt7dc51qhhoeD5VDsSirZERqY/7R
-         Osfw==
-X-Gm-Message-State: AOAM532qhM/xHEyc4VmlHUm99lfwsLbAFapv95lcwH93LzqS8G1smWvG
-        XLXVjGKzH0Hwr+nLSUyykX/D5hmLNQ+AwGIb0k4=
-X-Google-Smtp-Source: ABdhPJyfkYN6A81HjzmJTCnynG8RKBtKMXJZnaNF5lbqXCG4MD+NtaaJEofHQBy7mJLyD8zPsbitqKp3/8sBZMUGMWE=
-X-Received: by 2002:a2e:82c5:0:b0:247:e81f:8b02 with SMTP id
- n5-20020a2e82c5000000b00247e81f8b02mr7698337ljh.90.1647648725489; Fri, 18 Mar
- 2022 17:12:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q3ia6wCbpVQWit3xdQJewn3rY3869SZEpU5RAz2gTQ8=;
+        b=I7akXPTM3SnF/xNYMi8Ln5Xuhd1SeiUuafx9VLQANzF3TArikkb3dO8rxm5J2k6SuL
+         +H7rG/NTEnYBTyGfnVXR95zs5cltsA02aRiqZRIW55ix4/2U9kIPpMSDKxlO71no+Xut
+         /FTKCoJr6RyapgINtpyCxXNimB2bb8Gdg8wuxf685oRJA8vf3DJsQt1oPNG6AsUXm2+f
+         ccz19xdQhBAtwqyC+oS6BxpyRvu/UIrKj1+X2TGLY1SXY4OVBsnKfUrQ2qwUtyQDiaGN
+         a97TC87i+ZwimyccZVqVb8MZTi5Qu/I4nEmBKJMurLmbc5EiCiBjTjtLph+L1egQkNew
+         YCFQ==
+X-Gm-Message-State: AOAM5304Vf9ZCERy72OWH4vb8JfkbHLEqwlnZ5YOKV26JNUZhLH5PkhX
+        2ZR8T1x5m1WU3k8xINtBALXz7WtZ8EI=
+X-Google-Smtp-Source: ABdhPJxfFU5KufeIofIaUjrEQGMErPw/hOVWvIuB+MRKL7q03lQO+rNzTOtgBJ1z30Qy8VOSB03ytQ==
+X-Received: by 2002:a63:c50:0:b0:381:5118:62d6 with SMTP id 16-20020a630c50000000b00381511862d6mr10041300pgm.420.1647659158329;
+        Fri, 18 Mar 2022 20:05:58 -0700 (PDT)
+Received: from localhost.localdomain ([119.28.83.143])
+        by smtp.gmail.com with ESMTPSA id s12-20020a056a00194c00b004f7c1da7dd5sm11322449pfk.1.2022.03.18.20.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Mar 2022 20:05:58 -0700 (PDT)
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     hengqi.chen@gmail.com
+Subject: [PATCH v2 bpf-next] libbpf: Close fd in bpf_object__reuse_map
+Date:   Sat, 19 Mar 2022 11:05:33 +0800
+Message-Id: <20220319030533.3132250-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220316224548.500123-1-namhyung@kernel.org> <20220316224548.500123-3-namhyung@kernel.org>
- <YjSBRNxzaE9c+F/1@boqun-archlinux> <YjS2rlezTh9gdlDh@hirez.programming.kicks-ass.net>
- <CAM9d7cjUR6shddKM2h9uFXgQf+0F504fnJmKRSfc3+PG3TmEyg@mail.gmail.com> <20220318180750.744f08d4@gandalf.local.home>
-In-Reply-To: <20220318180750.744f08d4@gandalf.local.home>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 18 Mar 2022 17:11:54 -0700
-Message-ID: <CAM9d7ci-91efxreUvLBhkAcs0rpngzR9+3BnZBDb4zLai2Ewcw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow path
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Radoslaw Burny <rburny@google.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 18, 2022 at 3:07 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Fri, 18 Mar 2022 14:55:27 -0700
-> Namhyung Kim <namhyung@kernel.org> wrote:
->
-> > > > This looks a littl ugly ;-/ Maybe we can rename __down_common() to
-> > > > ___down_common() and implement __down_common() as:
-> > > >
-> > > >       static inline int __sched __down_common(...)
-> > > >       {
-> > > >               int ret;
-> > > >               trace_contention_begin(sem, 0);
-> > > >               ret = ___down_common(...);
-> > > >               trace_contention_end(sem, ret);
-> > > >               return ret;
-> > > >       }
-> > > >
-> > > > Thoughts?
-> > >
-> > > Yeah, that works, except I think he wants a few extra
-> > > __set_current_state()'s like so:
-> >
-> > Not anymore, I decided not to because of noise in the task state.
-> >
-> > Also I'm considering two tracepoints for the return path to reduce
-> > the buffer size as Mathieu suggested.  Normally it'd return with 0
-> > so we can ignore it in the contention_end.  For non-zero cases,
-> > we can add a new tracepoint to save the return value.
->
-> I don't think you need two tracepoints, but one that you can override.
->
-> We have eprobes that let you create a trace event on top of a current trace
-> event that can limit or extend what is traced in the buffer.
->
-> And I also have custom events that can be placed on top of any existing
-> tracepoint that has full access to what is sent into the tracepoint on not
-> just what is available to the trace event:
->
->   https://lore.kernel.org/all/20220312232551.181178712@goodmis.org/
+pin_fd is dup-ed and assigned in bpf_map__reuse_fd. Close it
+in bpf_object__reuse_map after reuse.
 
-Thanks for the info.  But it's unclear to me if it provides the custom
-event with the same or different name.  Can I use both of the original
-and the custom events at the same time?
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Namhyung
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 43161fdd44bb..843389c24dd1 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4800,8 +4800,8 @@ bpf_object__reuse_map(struct bpf_map *map)
+ 	}
+
+ 	err = bpf_map__reuse_fd(map, pin_fd);
++	close(pin_fd);
+ 	if (err) {
+-		close(pin_fd);
+ 		return err;
+ 	}
+ 	map->pinned = true;
+--
+2.25.1
