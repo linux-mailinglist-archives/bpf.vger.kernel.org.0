@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A7A4DE819
+	by mail.lfdr.de (Postfix) with ESMTP id 184814DE818
 	for <lists+bpf@lfdr.de>; Sat, 19 Mar 2022 14:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbiCSNHX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Mar 2022 09:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        id S234812AbiCSNHY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Mar 2022 09:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239864AbiCSNHV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Mar 2022 09:07:21 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB5525DAB0
-        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 06:05:57 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id p5so5687016pfo.5
-        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 06:05:57 -0700 (PDT)
+        with ESMTP id S243015AbiCSNHX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Mar 2022 09:07:23 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA8925DABF
+        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 06:06:01 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id o26so7012999pgb.8
+        for <bpf@vger.kernel.org>; Sat, 19 Mar 2022 06:06:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HP0YNW+0u96Ia8rwBJd6p/ML7EekNHcaKnhFQtsT8es=;
-        b=I3il8GrQfe/e/Vo6r8XUBgv0dLjzc1+j8icdM90ZnR/l4fpENH2o7ZFwHkWvNqDxN6
-         llNfbY7FcJhM4cI2V805POCJ2H7ezW/+6HsNP3QJGmKzhCL569EDKLDoDvkSyxW5AfuG
-         0l3QYjM1taibWggJqW3gSv8WZvf6oQVeHGHqGpIai1LcfB7dwnUcAQvopcmXJtVsfvW2
-         CeBzG/mgsNvd9jKnDkQNatpTLe9rm2IGIyigvztjjGk0uHerCAYhxD+sNCHjSmXnVxqY
-         99DgmdrRnw9heeD1jfMAZewVvoZE31jm1aIxWU55B7Jh+gUJf1ooNthCqlJ+bsQfUTuP
-         GSyg==
+        bh=vLh8VB2FgOtuTNgCu+bhu5c/jRPPojDpdYo5s0iuYlQ=;
+        b=D0ebZh4OMVWcr/tkFFdMXCuZ6PWgkqEuCjiWgyM4TvqwofTIj/PJS6KP8gHPvLf57T
+         P0JpBrYovIG0cF2+vI4k1DeIyEVJN/BbYDIlqCvcVr1DiIMzHkfQAyHKMTamq6z568mk
+         vf4G8n/3yxVAAK7FduUwAund+cP3098nuhKP9OdcfgSO+22FkAn0mr/NKCgjPnf6oLma
+         e4TC5EvaezI7zQ8YC1m9hT/Ak3iLRhJtJd3owFlLNM3vyMwN4/lHJ2FR6lHBp6B4op1T
+         oG7PIanXHCHeFR+y7oEjjZecOSANTbQ+EK7/DP9PirMsFI02dQ9V+cj0PAonKW1Os6Az
+         TsQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HP0YNW+0u96Ia8rwBJd6p/ML7EekNHcaKnhFQtsT8es=;
-        b=4WxU193XNS/JlFp+T7J8EbjvkjI8weGYGwjOiDp2ltm/0wuGv1NmlYHs3YLwNry4fL
-         0cYJINxNepIqGw4dC1ZbgUOhsEeO7hq0o3CLaw9ZhLKWNQ4QwYHyTTbA+pgPPgBRoxxb
-         f8KVtj/7QXFpig6TEg8UsqsXfXdV764DjL7BCt/RneCES1T0yNLKLBkjw5TfmTORcj2o
-         X6t/Kt5sxqWU+3bvvB8EVbXDoqWnRePkixfmEAblFU8/rVBu5arEY1OND/gqbEe3rkv/
-         aYk+r7GZsqpsiEBIdmC83T7WPEcivVOTFQrbXe0CFxgqb0S1YeJgF4AFjdF8AaoYL7vm
-         E44g==
-X-Gm-Message-State: AOAM531cOgflAlpaadfsugWgU8ezsQnrezvLAjFq8C//NYsubz2UuCcH
-        XL47t0tlghAEtj96u3q5OY+ahA==
-X-Google-Smtp-Source: ABdhPJz2vO6FtVbgacZVIB88QfyR0bfokeYzB+rKD329m0gcyHUnVhjK7URU45RDqFalbBPueKlITQ==
-X-Received: by 2002:a05:6a00:1a11:b0:4f7:bf07:c068 with SMTP id g17-20020a056a001a1100b004f7bf07c068mr14851221pfv.81.1647695156718;
-        Sat, 19 Mar 2022 06:05:56 -0700 (PDT)
+        bh=vLh8VB2FgOtuTNgCu+bhu5c/jRPPojDpdYo5s0iuYlQ=;
+        b=wB6jQLAYYk8TSQx11yR/w8Ptl/8oD3Da+bw/S2dHz2Rwh49RHM0rfqKTGvx+NfmOTh
+         4v9bMFv+0hbhnyeDohFHWOoXPnS8bPrODdgxKbwQb3OYobz96QLFWanv4A8wnk7unSyz
+         A2oG2pe8DTW86CRCsPg5VJztmhvzLQcxwv8tNHGC8PJ8pS1hPsOr5FUau7WLB7x1f52C
+         kbv+Vt+vKf6C38LgwqjU02Y3ibrUEkacYpfquzgTfwsAL0v+7k0RytZL65i+ieQuN2Jf
+         engcFOZOTWqVJGwjKFl59exenapY8XFVrnNET/5BpYhdD5Qm5yVZpofLK8/RkiyoPvhI
+         niIw==
+X-Gm-Message-State: AOAM530XPWoa3EN3ossKXCUEj5YcUeER8MK9vCRdNObH52Tdd4yOWttw
+        b3mY8aoJrQ2oBaWZdAgDfnl8uQ==
+X-Google-Smtp-Source: ABdhPJwLTHMayABpo6L6GVb/JygfZyURFgCIqBgcO75LZNXOrMZYj2gRiIcmYs/vWdFtVnjUKi/i4w==
+X-Received: by 2002:a62:402:0:b0:4f7:81a3:7c47 with SMTP id 2-20020a620402000000b004f781a37c47mr14694257pfe.9.1647695161004;
+        Sat, 19 Mar 2022 06:06:01 -0700 (PDT)
 Received: from localhost.localdomain ([2409:8a20:483a:72c0:bdf5:8ebe:6be8:a257])
-        by smtp.gmail.com with ESMTPSA id c11-20020a056a000acb00b004f35ee129bbsm14007797pfl.140.2022.03.19.06.05.52
+        by smtp.gmail.com with ESMTPSA id c11-20020a056a000acb00b004f35ee129bbsm14007797pfl.140.2022.03.19.06.05.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Mar 2022 06:05:56 -0700 (PDT)
+        Sat, 19 Mar 2022 06:06:00 -0700 (PDT)
 From:   fankaixi.li@bytedance.com
 To:     john.fastabend@gmail.com, kafai@fb.com, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net,
         "kaixi.fan" <fankaixi.li@bytedance.com>
-Subject: [PATCH bpf-next 1/3] bpf: Add source ip in "struct bpf_tunnel_key"
-Date:   Sat, 19 Mar 2022 21:05:36 +0800
-Message-Id: <20220319130538.55741-2-fankaixi.li@bytedance.com>
+Subject: [PATCH bpf-next 2/3] selftests/bpf: add ipv4 vxlan tunnel source testcase
+Date:   Sat, 19 Mar 2022 21:05:37 +0800
+Message-Id: <20220319130538.55741-3-fankaixi.li@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20220319130538.55741-1-fankaixi.li@bytedance.com>
 References: <20220319130538.55741-1-fankaixi.li@bytedance.com>
@@ -70,96 +70,166 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: "kaixi.fan" <fankaixi.li@bytedance.com>
 
-Add tunnel source ip field in "struct bpf_tunnel_key".
-Add code in "bpf_skb_set_tunnel_key" and "bpf_skb_get_tunnel_key" to set
-and get this field based on the tunnel key from "struct ip_tunnel_info".
+Vxlan tunnel is chosen to test bpf code could configure tunnel
+source ipv4 address. It's sufficient to prove that other types
+tunnels could also do it.
+In the vxlan tunnel testcase, two underlay ipv4 addresses
+are configured on veth device in root namespace. Test bpf kernel
+code would configure the secondary ipv4 address as the tunnel
+source ip.
 
 Signed-off-by: kaixi.fan <fankaixi.li@bytedance.com>
 ---
- include/uapi/linux/bpf.h       | 4 ++++
- net/core/filter.c              | 9 +++++++++
- tools/include/uapi/linux/bpf.h | 4 ++++
- 3 files changed, 17 insertions(+)
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 60 +++++++++++++++++++
+ tools/testing/selftests/bpf/test_tunnel.sh    | 38 +++++++++++-
+ 2 files changed, 97 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 4eebea830613..3007d3bc1f7a 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5562,6 +5562,10 @@ struct bpf_tunnel_key {
- 	__u8 tunnel_ttl;
- 	__u16 tunnel_ext;	/* Padding, future use. */
- 	__u32 tunnel_label;
-+	union {
-+		__u32 local_ipv4;
-+		__u32 local_ipv6[4];
-+	};
- };
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+index ef0dde83b85a..4a39556ef609 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -676,4 +676,64 @@ int _xfrm_get_state(struct __sk_buff *skb)
+ 	return TC_ACT_OK;
+ }
  
- /* user accessible mirror of in-kernel xfrm_state.
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 88767f7da150..cbd8471f4db4 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4498,6 +4498,7 @@ BPF_CALL_4(bpf_skb_get_tunnel_key, struct sk_buff *, skb, struct bpf_tunnel_key
- 	if (unlikely(size != sizeof(struct bpf_tunnel_key))) {
- 		err = -EINVAL;
- 		switch (size) {
-+		case offsetof(struct bpf_tunnel_key, local_ipv6[0]):
- 		case offsetof(struct bpf_tunnel_key, tunnel_label):
- 		case offsetof(struct bpf_tunnel_key, tunnel_ext):
- 			goto set_compat;
-@@ -4523,10 +4524,14 @@ BPF_CALL_4(bpf_skb_get_tunnel_key, struct sk_buff *, skb, struct bpf_tunnel_key
- 	if (flags & BPF_F_TUNINFO_IPV6) {
- 		memcpy(to->remote_ipv6, &info->key.u.ipv6.src,
- 		       sizeof(to->remote_ipv6));
-+		memcpy(to->local_ipv6, &info->key.u.ipv6.dst,
-+		       sizeof(to->local_ipv6));
- 		to->tunnel_label = be32_to_cpu(info->key.label);
- 	} else {
- 		to->remote_ipv4 = be32_to_cpu(info->key.u.ipv4.src);
- 		memset(&to->remote_ipv6[1], 0, sizeof(__u32) * 3);
-+		to->local_ipv4 = be32_to_cpu(info->key.u.ipv4.dst);
-+		memset(&to->local_ipv6[1], 0, sizeof(__u32) * 3);
- 		to->tunnel_label = 0;
- 	}
++SEC("vxlan_set_tunnel_src")
++int _vxlan_set_tunnel_src(struct __sk_buff *skb)
++{
++	int ret;
++	struct bpf_tunnel_key key;
++	struct vxlan_metadata md;
++
++	__builtin_memset(&key, 0x0, sizeof(key));
++	key.local_ipv4 = 0xac100114; /* 172.16.1.20 */
++	key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
++	key.tunnel_id = 2;
++	key.tunnel_tos = 0;
++	key.tunnel_ttl = 64;
++
++	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
++				     BPF_F_ZERO_CSUM_TX);
++	if (ret < 0) {
++		ERROR(ret);
++		return TC_ACT_SHOT;
++	}
++
++	md.gbp = 0x800FF; /* Set VXLAN Group Policy extension */
++	ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
++	if (ret < 0) {
++		ERROR(ret);
++		return TC_ACT_SHOT;
++	}
++
++	return TC_ACT_OK;
++}
++
++SEC("vxlan_get_tunnel_src")
++int _vxlan_get_tunnel_src(struct __sk_buff *skb)
++{
++	int ret;
++	struct bpf_tunnel_key key;
++	struct vxlan_metadata md;
++	char fmt[] = "key %d remote ip 0x%x source ip 0x%x\n";
++	char fmt2[] = "vxlan gbp 0x%x\n";
++
++	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
++	if (ret < 0) {
++		ERROR(ret);
++		return TC_ACT_SHOT;
++	}
++
++	ret = bpf_skb_get_tunnel_opt(skb, &md, sizeof(md));
++	if (ret < 0) {
++		ERROR(ret);
++		return TC_ACT_SHOT;
++	}
++
++	bpf_trace_printk(fmt, sizeof(fmt),
++			 key.tunnel_id, key.remote_ipv4, key.local_ipv4);
++	bpf_trace_printk(fmt2, sizeof(fmt2),
++			 md.gbp);
++
++	return TC_ACT_OK;
++}
++
+ char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_tunnel.sh b/tools/testing/selftests/bpf/test_tunnel.sh
+index ca1372924023..62ef5c998b6a 100755
+--- a/tools/testing/selftests/bpf/test_tunnel.sh
++++ b/tools/testing/selftests/bpf/test_tunnel.sh
+@@ -62,6 +62,11 @@ config_device()
+ 	ip addr add dev veth1 172.16.1.200/24
+ }
  
-@@ -4597,6 +4602,7 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
- 		return -EINVAL;
- 	if (unlikely(size != sizeof(struct bpf_tunnel_key))) {
- 		switch (size) {
-+		case offsetof(struct bpf_tunnel_key, local_ipv6[0]):
- 		case offsetof(struct bpf_tunnel_key, tunnel_label):
- 		case offsetof(struct bpf_tunnel_key, tunnel_ext):
- 		case offsetof(struct bpf_tunnel_key, remote_ipv6[1]):
-@@ -4639,10 +4645,13 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
- 		info->mode |= IP_TUNNEL_INFO_IPV6;
- 		memcpy(&info->key.u.ipv6.dst, from->remote_ipv6,
- 		       sizeof(from->remote_ipv6));
-+		memcpy(&info->key.u.ipv6.src, from->local_ipv6,
-+		       sizeof(from->local_ipv6));
- 		info->key.label = cpu_to_be32(from->tunnel_label) &
- 				  IPV6_FLOWLABEL_MASK;
- 	} else {
- 		info->key.u.ipv4.dst = cpu_to_be32(from->remote_ipv4);
-+		info->key.u.ipv4.src = cpu_to_be32(from->local_ipv4);
- 	}
++add_second_ip()
++{
++  ip addr add dev veth1 172.16.1.20/24
++}
++
+ add_gre_tunnel()
+ {
+ 	# at_ns0 namespace
+@@ -164,7 +169,7 @@ add_vxlan_tunnel()
+ 	# at_ns0 namespace
+ 	ip netns exec at_ns0 \
+ 		ip link add dev $DEV_NS type $TYPE \
+-		id 2 dstport 4789 gbp remote 172.16.1.200
++		id 2 dstport 4789 gbp remote $REMOTE_IP
+ 	ip netns exec at_ns0 \
+ 		ip link set dev $DEV_NS address 52:54:00:d9:01:00 up
+ 	ip netns exec at_ns0 ip addr add dev $DEV_NS 10.1.1.100/24
+@@ -408,6 +413,7 @@ test_vxlan()
+ 	TYPE=vxlan
+ 	DEV_NS=vxlan00
+ 	DEV=vxlan11
++	REMOTE_IP=172.16.1.200
+ 	ret=0
  
- 	return 0;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4eebea830613..3007d3bc1f7a 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5562,6 +5562,10 @@ struct bpf_tunnel_key {
- 	__u8 tunnel_ttl;
- 	__u16 tunnel_ext;	/* Padding, future use. */
- 	__u32 tunnel_label;
-+	union {
-+		__u32 local_ipv4;
-+		__u32 local_ipv6[4];
-+	};
- };
+ 	check $TYPE
+@@ -661,6 +667,32 @@ test_xfrm_tunnel()
+ 	echo -e ${GREEN}"PASS: xfrm tunnel"${NC}
+ }
  
- /* user accessible mirror of in-kernel xfrm_state.
++test_vxlan_tunsrc()
++{
++	TYPE=vxlan
++	DEV_NS=vxlan00
++	DEV=vxlan11
++	REMOTE_IP=172.16.1.20
++	ret=0
++
++	check $TYPE
++	config_device
++	add_second_ip
++	add_vxlan_tunnel
++	attach_bpf $DEV vxlan_set_tunnel_src vxlan_get_tunnel_src
++	ping $PING_ARG 10.1.1.100
++	check_err $?
++	ip netns exec at_ns0 ping $PING_ARG 10.1.1.200
++	check_err $?
++	cleanup
++
++	if [ $ret -ne 0 ]; then
++                echo -e ${RED}"FAIL: $TYPE"${NC}
++                return 1
++        fi
++        echo -e ${GREEN}"PASS: $TYPE"${NC}
++}
++
+ attach_bpf()
+ {
+ 	DEV=$1
+@@ -782,6 +814,10 @@ bpf_tunnel_test()
+ 	test_xfrm_tunnel
+ 	errors=$(( $errors + $? ))
+ 
++	echo "Testing VXLAN tunnel source..."
++	test_vxlan_tunsrc
++	errors=$(( $errors + $? ))
++
+ 	return $errors
+ }
+ 
 -- 
 2.24.3 (Apple Git-128)
 
