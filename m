@@ -2,91 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C497C4E1F07
-	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 03:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C26A4E20AA
+	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 07:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbiCUCbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Mar 2022 22:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
+        id S1344631AbiCUGoo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Mar 2022 02:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344168AbiCUCbh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Mar 2022 22:31:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4336757B12;
-        Sun, 20 Mar 2022 19:30:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S1344625AbiCUGoi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Mar 2022 02:44:38 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EAA13DE9;
+        Sun, 20 Mar 2022 23:43:12 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E7192B81062;
-        Mon, 21 Mar 2022 02:30:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 816A8C340EE;
-        Mon, 21 Mar 2022 02:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647829810;
-        bh=kM4pAdRUerTimRuR7pRzFlmQ8d7hQ17c7SQgBjafwmc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IDkC6YEFBZYRjCxnDaEUdK9j7OkIgrTtG4lW2orET3v+cvZR7OkLeWYaMVlXAxyem
-         zutqYR40ZnVdGjclS+R+hQZ0UuP3VgxCD3iIpytKbCs5OblqqkzkdhFMXMVKW5GQtn
-         XS+Hh6c64UYdldrhaYEJk/Krl+d+Dob6u/8oIDVE9U2obSKb5XefyXow6AeLLc6GKf
-         mrAJJkP2Hyrszdr6DUuT8QhvtUGrdBTXJkAn8ZzMeRPYHgXPlhPRg6LTRcmFPZQ4DQ
-         IO0G3oG9zki1nmQC/u23LFYFzFFl1dQEosfNFnDduVwxHf1CWIB7GiApDVylZ/mITj
-         JO5QcS8/pHu5w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 633BCF03846;
-        Mon, 21 Mar 2022 02:30:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4KMQ6c2Vkpz4xRB;
+        Mon, 21 Mar 2022 17:43:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1647844987;
+        bh=cz6ekqfIqPBFlhDzuYDWDUWzUPqnlYRI1w9LAehsuAE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mFOxCJvnp2pYkscfBSN2sxCg84CmEYDSoPeDggoxT7Pp4EfxB1xjWbosMpKjj+ASJ
+         7/3rydam24YBQpv5U7Lv58GFYFxNYYp/349uv8WRU3f4Dg1B5PWV+nMNmIhn3fsJt2
+         IyiSQWi5D0WFgTMONKAUIMSfn39RSqHOaLN0JNU+G5NlM1AW7zFHOTHEcZ6r/KI0Al
+         9bTYGDHAIiZbH2iCzZC/5mrRRjet3PLUtU8vzIJOQqG0m5WGx+fe+HQpIzHAgjfAZ8
+         5mTpUMLtHayPv1rqo5I1OmTJ9egP5hO+6aAbsKwLygHeOoCeYdQ9hu50L/R0Hby01b
+         kn9EUMlqrXX0w==
+Date:   Mon, 21 Mar 2022 17:43:01 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Ayaan Zaidi <zaidi.ayaan@gmail.com>,
+        Boris-Chengbiao Zhou <bobo1239@web.de>,
+        Finn Behrens <me@kloenk.de>, Gary Guo <gary@garyguo.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Milan Landaverde <milan@mdaverde.com>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Subject: linux-next: manual merge of the rust tree with the bpf-next tree
+Message-ID: <20220321174301.3a1b3943@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 1/2] bpf: Adjust BPF stack helper functions to accommodate
- skip > 0
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164782981040.13314.15450443324560487136.git-patchwork-notify@kernel.org>
-Date:   Mon, 21 Mar 2022 02:30:10 +0000
-References: <20220314182042.71025-1-namhyung@kernel.org>
-In-Reply-To: <20220314182042.71025-1-namhyung@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, acme@kernel.org,
-        peterz@infradead.org, eugene.loh@oracle.com, haoluo@google.com
-X-Spam-Status: No, score=-8.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/=q_KJTYcwUDjXRGJHMvX+7q";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+--Sig_/=q_KJTYcwUDjXRGJHMvX+7q
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Hi all,
 
-On Mon, 14 Mar 2022 11:20:41 -0700 you wrote:
-> Let's say that the caller has storage for num_elem stack frames.  Then,
-> the BPF stack helper functions walk the stack for only num_elem frames.
-> This means that if skip > 0, one keeps only 'num_elem - skip' frames.
-> 
-> This is because it sets init_nr in the perf_callchain_entry to the end
-> of the buffer to save num_elem entries only.  I believe it was because
-> the perf callchain code unwound the stack frames until it reached the
-> global max size (sysctl_perf_event_max_stack).
-> 
-> [...]
+Today's linux-next merge of the rust tree got a conflict in:
 
-Here is the summary with links:
-  - [v3,1/2] bpf: Adjust BPF stack helper functions to accommodate skip > 0
-    https://git.kernel.org/bpf/bpf-next/c/ee2a098851bf
-  - [v3,2/2] bpf/selftests: Test skipping stacktrace
-    https://git.kernel.org/bpf/bpf-next/c/e1cc1f39981b
+  samples/Makefile
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+between commit:
 
+  6ee64cc3020b ("fprobe: Add sample program for fprobe")
 
+from the bpf-next tree and commit:
+
+  44d687f85cc3 ("samples: add Rust examples")
+
+from the rust tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc samples/Makefile
+index 701e912ab5af,fc5e9760ea32..000000000000
+--- a/samples/Makefile
++++ b/samples/Makefile
+@@@ -34,4 -33,4 +34,5 @@@ subdir-$(CONFIG_SAMPLE_WATCHDOG)	+=3D wat
+  subdir-$(CONFIG_SAMPLE_WATCH_QUEUE)	+=3D watch_queue
+  obj-$(CONFIG_DEBUG_KMEMLEAK_TEST)	+=3D kmemleak/
+  obj-$(CONFIG_SAMPLE_CORESIGHT_SYSCFG)	+=3D coresight/
+ +obj-$(CONFIG_SAMPLE_FPROBE)		+=3D fprobe/
++ obj-$(CONFIG_SAMPLES_RUST)		+=3D rust/
+
+--Sig_/=q_KJTYcwUDjXRGJHMvX+7q
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmI4HnUACgkQAVBC80lX
+0Gx+TAf/ZUzpK+OgNBF8vnv5tJEOS9KA2q9qTLkp/oAxS+GoPBwlE29XtqcNsM3C
+0jvHhQRHhQX2EHwYicsStxfoCy8DA5PL5ECmSCGv66Kc2Hen7hbkEr+MoS5ARaCQ
+DLDz/mE31dw2MqGaGWPQXfmCJCd4V0dMRVqa4ZUs+J5YhUFC3SPH9lY6C179ET7G
+LXWowatY5BhHPQ3fIO7jCrumVhYkSLd0BkejTwfDat61rUQCygICgfv8WJBLmiak
+Wpwy13DKjEJlAHfsamtE8eKramai//72OrWbkBivU3wRZ49XsBayTSF7iS2kv+lD
+taRDgLA3mI8EFJeOQO0oT+9vFxobNQ==
+=7Vas
+-----END PGP SIGNATURE-----
+
+--Sig_/=q_KJTYcwUDjXRGJHMvX+7q--
