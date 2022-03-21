@@ -2,263 +2,496 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEC84E2C76
-	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 16:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89414E2D1E
+	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 17:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350380AbiCUPkt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Mar 2022 11:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
+        id S1350639AbiCUQJH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Mar 2022 12:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348735AbiCUPks (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Mar 2022 11:40:48 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1632339690
-        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 08:39:22 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22L9nhE1024297;
-        Mon, 21 Mar 2022 08:39:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=GJNK0/o+LzKo262FgwzH7g42xh7t0jsncuJlsA3L8V4=;
- b=URBEXK+f/jv01en52ySAVhkMHGHkLNSJN9S0bgkbJwD3YKJVJb5SYkcMS+HGKFc6cf18
- 8VIWiXGzFU9xuGgT5wfRcfqa/m2dSywjU7c0Nm1XhUWIjbUHab4/02CnbDifl6SK6rja
- WSI9S2fGbgCMb2ClOlmjiJ+pbnc87VPjXKc= 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3exq2kt2uc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Mar 2022 08:39:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JhSXC54lp//gZxqPZgTayWMZ2ISqJdUCNn/Il+EUHlaT7tCFGm4yYxvWVwBrrfzKv1xjDo7kG0qH6NPAJiK8b9IDqjgamFOTmbd4p96+uy9PEortwa7mxzRRc/75wYo6Ghv0mPlPIx3aaN9vDvJCh7ziHRcWyMDd0GlVIg7lO2TLCen8BMRt8FCRgJa1yjhR4NNOh/aNqlt8Uc+HIva2gmHnxppMZgBIL13DjGrm+FOj8APZYk0ssGBPSxWJ3GZ9YhQpc3h2A/JElqXDo2iU9t8WmkZfc0Z5pd1sb5SCvg4WaeR5oNHCwftkIm4Y8lTginYSDeO05n+0S0VjE3UNLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GJNK0/o+LzKo262FgwzH7g42xh7t0jsncuJlsA3L8V4=;
- b=NCOXlxHc8t3S4EjEpnvhLXSEmiPpqCM4edV2hh56Ycakl8UJnP2nK6mSncawbjpMbP2xHgHqXvyEb3AJ7lfNngs7G1L2XrY5fXt9ASmG4bl/G5dsqKrDbS3Dy7VMgxTLaZtP3HFNalvdJUYCrkEA9FJBFCCn/oAOmzpUvFqL/fjpTpyyO6lptQhGb6jQ7+CU+KLmXeILaNktPcE+fLLv4yyZkhs4Qis/c9ETazV6ToMQCG0VfNbB5GfXCGmTf4LU9+YmZBybASQ2pIC1PKE6OdbqzAiYpL//zg1apgWsU43K+DjjTBIizw42ba4fNG/Hekeg+WI7JhvlMiEYGAQpig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by CH2PR15MB4279.namprd15.prod.outlook.com (2603:10b6:610:9::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5081.22; Mon, 21 Mar
- 2022 15:39:07 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::4da5:c3b4:371e:28c2]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::4da5:c3b4:371e:28c2%7]) with mapi id 15.20.5081.023; Mon, 21 Mar 2022
- 15:39:06 +0000
-Message-ID: <1284e957-bcd5-a562-2233-d193b28432fe@fb.com>
-Date:   Mon, 21 Mar 2022 08:39:03 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [PATCH bpf-next] bpftool: fix a bug in subskeleton code
- generation
-Content-Language: en-US
-To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel-team@fb.com,
-        Delyan Kratunov <delyank@fb.com>
-References: <20220320032009.3106133-1-yhs@fb.com>
- <f469d022-7b3c-2181-0fea-6cf877f7c014@iogearbox.net>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <f469d022-7b3c-2181-0fea-6cf877f7c014@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MWHPR15CA0062.namprd15.prod.outlook.com
- (2603:10b6:301:4c::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S1349034AbiCUQJG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Mar 2022 12:09:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2ADB966F9C
+        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 09:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1647878856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zpcoCC4yHq3ajeXZ8IqHbBVz9eP4OTlopTuEhplFUg4=;
+        b=YRRelgP1Bq7UKmw5Wh12l2+EU1/4pmrF7Zw1ltp6cnEJwmvjFTXG1P4DN5EXVzi/rkC+oe
+        WZB/a+RDxwG36n/L9FL6ow/Ee+4xCI1UOUlPZ4qsAg+dapr9qu5D1zqHf9UYrNVdW8s9JU
+        zYXJerjTgBZjNmPCXR2D9jewW+kBV8Y=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-88-PeXvIizMMpWRONy0LwHiiw-1; Mon, 21 Mar 2022 12:07:34 -0400
+X-MC-Unique: PeXvIizMMpWRONy0LwHiiw-1
+Received: by mail-pj1-f71.google.com with SMTP id o12-20020a17090a420c00b001c65aec76c0so8662758pjg.8
+        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 09:07:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zpcoCC4yHq3ajeXZ8IqHbBVz9eP4OTlopTuEhplFUg4=;
+        b=BWx6II0LrgXbF7ZTXs7Niqk7khvk6skbFJ2j6JqUfh6cLVj97TUPyKno0jUoWWWOvu
+         U0ZhujakkDWRNwMiyJNzMMqMRgYMU67WV3qsrZE1a8zJffuK6krZ53jus3iUXXzPoDKd
+         dVCQx0xQyvqYXdr+rK6RojKjVhXYeUL7GMa1k1HPuKCQsvC3nzsYqVr99Ed9s0gdPkjT
+         4S1j0BJfEfTYRWplJVy3x+cw7FLhh4NW4PbRFICGUGjnmTd0nBskz/6K+VYjyqOF6VTe
+         kwR5CfgiEAt5jWhFw+IgQ4l1QjsK5lFBK7Zo+xooZNW3QWZlT66+f2fIVVLD4UI3bmOh
+         nKkw==
+X-Gm-Message-State: AOAM533LpOfeIaivACEp51772NjLYJw6n2BvYER417xJxx0bJTK2KtYa
+        FOcxKTn1AK0qeWhyzQ4REN3os5wN1MytgRMs6uuylTQoHumaj4YxI5W/H6G5+/t86K823D7OuCC
+        XZUqkfJezBNN7eviP4GEHi7ILbewn
+X-Received: by 2002:a17:902:c401:b0:154:1398:a16b with SMTP id k1-20020a170902c40100b001541398a16bmr13429807plk.67.1647878853105;
+        Mon, 21 Mar 2022 09:07:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfR7xojQGSh+SlE52ZB3p3sYi5T6jUKMUP6HdTYmBdE+aOadzDpu21O7Hr0mDvNquBoaR05abTWhccSffR0dM=
+X-Received: by 2002:a17:902:c401:b0:154:1398:a16b with SMTP id
+ k1-20020a170902c40100b001541398a16bmr13429769plk.67.1647878852756; Mon, 21
+ Mar 2022 09:07:32 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8b1f6098-f2a6-4440-e8c8-08da0b50ef34
-X-MS-TrafficTypeDiagnostic: CH2PR15MB4279:EE_
-X-Microsoft-Antispam-PRVS: <CH2PR15MB427938100500AD8ADDE0580CD3169@CH2PR15MB4279.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 62b/uP1sFROfHHwQmyyQamNzeI0OEarQTDanRia1wyLYCxCXff6GppTc4mnys+E+VHr1tEHW/NTS2CE+tpWeiIFZcbR8GWZUy+bVR2MQpOMQty8Pft3BLVokDbj81xefpMpW0R4jRQDuKVNlF+eB4FJSaEuUHEy/FNCKHvgBJdb1wMXFsoAgVHIaqpqc/0DaySof2hQmCMAQ2ngXBTzoiqkozQMmVRITlMQ5tYmvlH1sdhYM33jvAykYQKNXAqKc/nNJyXwRA4NaPWAsNYH7ZkzxCZOI9zZoxw/BXvhoGovDGfUIAzPby5a3cUrVNpkEM74XXYWoYbWuREoqfhX6lMtcb/txhUNiPCjSL5qbO2+O5laJ20F4QlnCXGR0D6HGKExupvP2wije9Muhn37P8UCBuJGqB7Z9wP/145blJW4hojg2VeqDP84/0yhwoopPskBB13fxxCbb+EX3i9sCnWwcUOguH2CE3HM28KbjTvC8v9cS9kO2KEZqLrJAELFvyV/if+TciOWwwmIi6h8ToZ88BSwmaPbPQSvx2kHWQC5sV675Ispvsk2I06F1rbC8LPCEGQYOi8KXfijkgfovFslF13SvSEhtQVDfgzi59bbbkSvybXULlN4zATykB/SxpD+Trl1lk4XNWR5VsdO3rUBJ9wt4V7EiBCpgBYavMs5cKq4mAPcIthVbLwkdzRklFAowgLHTz+3Bw3UCOF4Lt8vkjA4Lga+F0ieoItfD1Ng=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(2906002)(38100700002)(53546011)(6512007)(6506007)(186003)(52116002)(83380400001)(2616005)(6486002)(36756003)(31686004)(508600001)(8936002)(54906003)(86362001)(316002)(31696002)(4326008)(66476007)(66556008)(66946007)(8676002)(5660300002)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M1Y4dng3NGpNUHptUlI3b21XYUVnQUUwYnFaUmlCNitnTFhBNGJoV04zeEh2?=
- =?utf-8?B?c29KdVEzTE9TWWZpV2Y4YWp5TitYUVdiNkJ2bkh3VnBBbDBNNENOejJFa2pz?=
- =?utf-8?B?NmNUbGw2RTJvZzR1SmZuTXE2M0JXazgrdmJ2OFFPM0orMGljRzlkLzdpd1Zo?=
- =?utf-8?B?eGhObkcxQTkzRWRRTlVCdm5sZ2hEUkh5TW5NbEtPUmpROW9YZFhYN040THRW?=
- =?utf-8?B?bm9SbWdtbGs5cHJFdlIwK3FrcithMmpBbStCL3J5elVLL3VkcGV0dUhFTmxG?=
- =?utf-8?B?c2hSeGsyMnU3V3hZU0doSXRqMlFRdVlxM1ErSFJtMUtVbEw4YW5remdDU3Nq?=
- =?utf-8?B?YjYyMm5iOGdYUlhRYVRjZ1RvNlBKTWNtV24zSjJDYmhxZGxWa1ZmV0FJR09G?=
- =?utf-8?B?aHNFN2FmRXhKejdlUEJuQXpYcE9zc3JNQ3BEellOMzBxamQzaDZ4UGlUR2FH?=
- =?utf-8?B?N1V2UkQ5SjFub3hCVGJWVkZwKzVKR3BBZUJpYksrN1p0TFZnWkdnU3A4Tkl6?=
- =?utf-8?B?WmV5VlhZUStvSkIyRG5uSUQzeG1Ra0JtcjkwTmFJbCtRRnZML21pRGZNcXND?=
- =?utf-8?B?UzJPOFlUSTRsVXpsWmZkNllpVkhpZE9ncHExdlc2TmFaRncxeUNuczVLdUFF?=
- =?utf-8?B?THphb2x2UDNYdkIxS1plRGhrOGp3YU0va1duUWZwSlg3dUprWjBUdTJpQ2FM?=
- =?utf-8?B?bFVKampKUHFyZCtWVjhuSGRzS0d4WDl4Y01OOGlpZ1hGQnlxYWE3Wldxa3ZF?=
- =?utf-8?B?cXlWTTcvc2xNQ21qMFhia1MvdEFsVnlOSG0rYS8wRFhTckVtV0ZjajBudk9U?=
- =?utf-8?B?RmFXMUl2Y29Uc250L2FBRjQyelp3Q28yamN1WFFjd2RITkdqZnpYZExSSnB5?=
- =?utf-8?B?ZzRHbDd6Vk13Ty9LWGNKNVRLUksyWjJPSko3V0REdER5WGJmOVJDSHMyS3pV?=
- =?utf-8?B?SG1kaDdVZGtTMkUvdEl6RjcrWDd2RWZBempMSldFQ2hWUDhZVmZNV2ZGRkVC?=
- =?utf-8?B?WVcvNDhIcW5JSnNpZUJrRHpyTXpKOHgvcWFCdHVZOFFGZTVlam5Eb1IrdE1T?=
- =?utf-8?B?VWxaM1V3MGhWOWFTUHBXd2RneElLV0RWaGh2d3ZhT2dSSXRqSnhXNHkyRXM0?=
- =?utf-8?B?dnIzTFo2b2t3TURBVHhhMFkzcWgwK0dHOWJFTXFzU0tXQmNiZitWMDM1amlj?=
- =?utf-8?B?bjJOd3dEQzNRZnNnUktMY0ZlN2Q2T25VNkY4OUdTakV3NGdiVisycjBodDdj?=
- =?utf-8?B?dkhldmpYTWdFY1ZEOHMxdDFmbjd2SEswRUVUY0hxV1VHUDFyb0JJcCtxL21p?=
- =?utf-8?B?MDB6WGVDV1FlNFU3MTBJOXhlSmE0ejE2ZkkyVVQ1QVhBdzlsZDlGdnBpWUp1?=
- =?utf-8?B?NEE2S0drNVQ5eGRaT1NFc2xwWkc4RWZSRzhzQmduYzNTSjZBbUFITm55RTBC?=
- =?utf-8?B?WFZ4NHl1dWo5T3dVa3pINFRlM1RPQVJhNTEzMGk5b1VjNkhoQ3NqSDdUYTdn?=
- =?utf-8?B?RkV5ZTlUcStvRWJMK0Zkc1lIKzA1VUtUTExDMlF1QkxYSkxuWWVnY01RWnJh?=
- =?utf-8?B?eHNVTWtTWWhjYWx4cTdYSGR0MmZRQ0pScTlmOFFrNSt5RlUySCtLdjZxSHBS?=
- =?utf-8?B?ODZNRjZhRDBJZnRhRTNveU0xOGlvRDczb2pZUU9nSUczWnJzNVFPYzNjNnZk?=
- =?utf-8?B?ekVJdHpFVTFITlh2RnVnTUV3WXBCY2E3eEZNRlExSEFudGI2YUJTVWxrdEx6?=
- =?utf-8?B?YUFPeUdwYmI2alFpb0ZBOE43MHFvYVNTNUkrTkc5NCtYQ1k1TmVlQXZ3TG1B?=
- =?utf-8?B?Q2cwU0hCTUJhRTUyOUtLMEN5cEN2L1A3V014QnQwMlkyOG5zb3NmTWJhYkJV?=
- =?utf-8?B?WUswa1RYOVl5NzdBc3NyUGtaNEluUFN1NmU3ZjBKMkQvT056RE5sWmcrNmJK?=
- =?utf-8?B?bTkzVlYydjRJUGhVKzd5cG5vWU04UWt4L3czMllxUFV4eW1PNExGcWtsZlNT?=
- =?utf-8?B?aGVvSFV1ZVdBPT0=?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b1f6098-f2a6-4440-e8c8-08da0b50ef34
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2022 15:39:06.6263
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TUJF63JJGSYDny9R1PSySihCo4Cy8dmBAAZ3FBFWWvw0qIAyKnioMZPmLFYy+DWk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB4279
-X-Proofpoint-GUID: ZcL38F-TNFQpLvUzjqsrncS7zjnJxhp6
-X-Proofpoint-ORIG-GUID: ZcL38F-TNFQpLvUzjqsrncS7zjnJxhp6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-21_07,2022-03-21_01,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220318161528.1531164-1-benjamin.tissoires@redhat.com>
+ <20220318161528.1531164-3-benjamin.tissoires@redhat.com> <CAPhsuW5qseqVs4=hz3VvSJ2ObqB2kTbKXoaOCh=5vjoU_AXnKQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW5qseqVs4=hz3VvSJ2ObqB2kTbKXoaOCh=5vjoU_AXnKQ@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 21 Mar 2022 17:07:21 +0100
+Message-ID: <CAO-hwJ+WSi645HhNV_BYACoJe2UTc4KZzqH0oHocfnBR8xUYEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 02/17] bpf: introduce hid program type
+To:     Song Liu <song@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Song,
 
+many thanks for the quick response.
 
-On 3/21/22 7:31 AM, Daniel Borkmann wrote:
-> On 3/20/22 4:20 AM, Yonghong Song wrote:
->> Compiled with clang by adding LLVM=1 both kernel and selftests/bpf
->> build, I hit the following compilation error:
->>
->> In file included from 
->> /.../tools/testing/selftests/bpf/prog_tests/subskeleton.c:6:
->>    ./test_subskeleton_lib.subskel.h:168:6: error: variable 'err' is 
->> used uninitialized whenever
->>        'if' condition is true [-Werror,-Wsometimes-uninitialized]
->>            if (!s->progs)
->>                ^~~~~~~~~
->>    ./test_subskeleton_lib.subskel.h:181:11: note: uninitialized use 
->> occurs here
->>            errno = -err;
->>                     ^~~
->>    ./test_subskeleton_lib.subskel.h:168:2: note: remove the 'if' if 
->> its condition is always false
->>            if (!s->progs)
->>            ^~~~~~~~~~~~~~
->>
->> The compilation error is triggered by the following code
->>          ...
->>          int err;
->>
->>          obj = (struct test_subskeleton_lib *)calloc(1, sizeof(*obj));
->>          if (!obj) {
->>                  errno = ENOMEM;
->>                  goto err;
->>          }
->>          ...
->>
->>    err:
->>          test_subskeleton_lib__destroy(obj);
->>          errno = -err;
->>          ...
->> in test_subskeleton_lib__open(). The 'err' is not initialized, yet it
->> is used in 'errno = -err' later.
->>
->> The fix is to remove 'errno = -err' since errno has been set properly
->> in all incoming branches.
-> 
-> If we remove this one here in which locations is it missing then? Do 
-> these then
-> need an extra errno = -err statement before they goto err?
+On Fri, Mar 18, 2022 at 9:48 PM Song Liu <song@kernel.org> wrote:
+>
+> On Fri, Mar 18, 2022 at 9:16 AM Benjamin Tissoires
+> <benjamin.tissoires@redhat.com> wrote:
+> >
+> [...]
+> >
+> > diff --git a/include/linux/bpf-hid.h b/include/linux/bpf-hid.h
+> > new file mode 100644
+> > index 000000000000..9c8dbd389995
+> > --- /dev/null
+> > +++ b/include/linux/bpf-hid.h
+> >
+> [...]
+> > +
+> > +struct hid_bpf_ctx_kern {
+> > +       enum hid_bpf_event type;        /* read-only */
+> > +       struct hid_device *hdev;        /* read-only */
+> > +
+> > +       u16 size;                       /* used size in data (RW) */
+> > +       u8 *data;                       /* data buffer (RW) */
+> > +       u32 allocated_size;             /* allocated size of data (RO) */
+>
+> Why u16 size vs. u32 allocated_size?
 
-Everything should be covered. The following are all 'goto err' returns:
+Probably an oversight because I wrote u32 in the public uapi. Will
+change this into u16 too.
 
-         obj = (struct test_subskeleton_lib *)calloc(1, sizeof(*obj));
-         if (!obj) {
-                 errno = ENOMEM;
-                 goto err;
-         }
-         s = (struct bpf_object_subskeleton *)calloc(1, sizeof(*s));
-         if (!s) {
-                 errno = ENOMEM;
-                 goto err;
-         }
-	...
-         s->vars = (struct bpf_var_skeleton *)calloc(10, sizeof(*s->vars));
-         if (!s->vars) {
-                 errno = ENOMEM;
-                 goto err;
-         }
-	...
+> Also, maybe shuffle the members
+> to remove some holes?
 
-==> for all maps
+Ack will do in the next version.
 
-         /* maps */
-         s->map_cnt = 7;
-         s->map_skel_sz = sizeof(*s->maps);
-         s->maps = (struct bpf_map_skeleton *)calloc(s->map_cnt, 
-s->map_skel_sz);
-         if (!s->maps)
-                 goto err;
-==> calloc should set error number properly if failed.
-	...
+>
+> > +
+> > +       s32 retval;                     /* in use when BPF_HID_ATTACH_USER_EVENT (RW) */
+> > +};
+> > +
+> [...]
+>
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>
+> We need to mirror these changes to tools/include/uapi/linux/bpf.h.
 
-==> for all progs
-	/* programs */
-         s->prog_cnt = 1;
-         s->prog_skel_sz = sizeof(*s->progs);
-         s->progs = (struct bpf_prog_skeleton *)calloc(s->prog_cnt, 
-s->prog_skel_sz);
-         if (!s->progs)
-                 goto err;
-==> calloc should set error number properly if failed.
-	
-         err = bpf_object__open_subskeleton(s);
-         if (err)
-                 goto err;
+OK. I did that in patch 4/17 but I can bring in the changes there too.
 
-	return obj;
+>
+> > index 99fab54ae9c0..0e8438e93768 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -952,6 +952,7 @@ enum bpf_prog_type {
+> >         BPF_PROG_TYPE_LSM,
+> >         BPF_PROG_TYPE_SK_LOOKUP,
+> >         BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+> > +       BPF_PROG_TYPE_HID,
+> >  };
+> [...]
+> > +
+> >  /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
+> >   * the following extensions:
+> >   *
+> > @@ -5129,6 +5145,16 @@ union bpf_attr {
+> >   *             The **hash_algo** is returned on success,
+> >   *             **-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
+> >   *             invalid arguments are passed.
+> > + *
+> > + * void *bpf_hid_get_data(void *ctx, u64 offset, u64 size)
+> > + *     Description
+> > + *             Returns a pointer to the data associated with context at the given
+> > + *             offset and size (in bytes).
+> > + *
+> > + *             Note: the returned pointer is refcounted and must be dereferenced
+> > + *             by a call to bpf_hid_discard;
+> > + *     Return
+> > + *             The pointer to the data. On error, a null value is returned.
+>
+> Please use annotations like *size*, **NULL**.
 
-==> bpf_object__open_subskeleton() in libbpf.c does set errno probably 
-if 'err' is not 0.
+Ack
 
+>
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -5325,6 +5351,7 @@ union bpf_attr {
+> >         FN(copy_from_user_task),        \
+> >         FN(skb_set_tstamp),             \
+> >         FN(ima_file_hash),              \
+> > +       FN(hid_get_data),               \
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > @@ -5925,6 +5952,10 @@ struct bpf_link_info {
+> >                 struct {
+> >                         __u32 ifindex;
+> >                 } xdp;
+> > +               struct  {
+> > +                       __s32 hidraw_number;
+> > +                       __u32 attach_type;
+> > +               } hid;
+> >         };
+> >  } __attribute__((aligned(8)));
+> >
+> > diff --git a/include/uapi/linux/bpf_hid.h b/include/uapi/linux/bpf_hid.h
+> > new file mode 100644
+> > index 000000000000..64a8b9dd8809
+> > --- /dev/null
+> > +++ b/include/uapi/linux/bpf_hid.h
+> > @@ -0,0 +1,31 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+> > +
+> > +/*
+> > + *  HID BPF public headers
+> > + *
+> > + *  Copyright (c) 2022 Benjamin Tissoires
+> > + */
+> > +
+> > +#ifndef _UAPI__LINUX_BPF_HID_H__
+> > +#define _UAPI__LINUX_BPF_HID_H__
+> > +
+> > +#include <linux/types.h>
+> > +
+> > +enum hid_bpf_event {
+> > +       HID_BPF_UNDEF = 0,
+> > +       HID_BPF_DEVICE_EVENT,           /* when attach type is BPF_HID_DEVICE_EVENT */
+> > +       HID_BPF_RDESC_FIXUP,            /* ................... BPF_HID_RDESC_FIXUP */
+> > +       HID_BPF_USER_EVENT,             /* ................... BPF_HID_USER_EVENT */
+>
+> Why don't we have a DRIVER_EVENT type here?
 
-> 
->> Cc: Delyan Kratunov <delyank@fb.com>
->> Fixes: 00389c58ffe9 ("00389c58ffe993782a8ba4bb5a34a102b1f6fe24")
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
->>   tools/bpf/bpftool/gen.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
->> index 96bd2b33ccf6..7ba7ff55d2ea 100644
->> --- a/tools/bpf/bpftool/gen.c
->> +++ b/tools/bpf/bpftool/gen.c
->> @@ -1538,7 +1538,6 @@ static int do_subskeleton(int argc, char **argv)
->>               return obj;                        \n\
->>           err:                                \n\
->>               %1$s__destroy(obj);                    \n\
->> -            errno = -err;                        \n\
->>               return NULL;                        \n\
->>           }                                \n\
->>                                           \n\
->>
-> 
+For driver event, I want to have a little bit more of information
+which tells which event we have:
+- HID_BPF_DRIVER_PROBE
+- HID_BPF_DRIVER_SUSPEND
+- HID_BPF_DRIVER_RAW_REQUEST
+- HID_BPF_DRIVER_RAW_REQUEST_ANSWER
+- etc...
+
+However, I am not entirely sure on the implementation of all of those,
+so I left them aside for now.
+
+I'll work on that for v4.
+
+>
+> >
+> [...]
+> > +
+> > +BPF_CALL_3(bpf_hid_get_data, struct hid_bpf_ctx_kern*, ctx, u64, offset, u64, size)
+> > +{
+> > +       if (!size)
+> > +               return 0UL;
+> > +
+> > +       if (offset + size > ctx->allocated_size)
+> > +               return 0UL;
+> > +
+> > +       return (unsigned long)(ctx->data + offset);
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_hid_get_data_proto = {
+> > +       .func      = bpf_hid_get_data,
+> > +       .gpl_only  = true,
+> > +       .ret_type  = RET_PTR_TO_ALLOC_MEM_OR_NULL,
+> > +       .arg1_type = ARG_PTR_TO_CTX,
+> > +       .arg2_type = ARG_ANYTHING,
+> > +       .arg3_type = ARG_CONST_ALLOC_SIZE_OR_ZERO,
+>
+> I think we should use ARG_CONST_SIZE or ARG_CONST_SIZE_OR_ZERO?
+
+I initially tried this with ARG_CONST_SIZE_OR_ZERO but it doesn't work
+for 2 reasons:
+- we need to pair the argument ARG_CONST_SIZE_* with a pointer to a
+memory just before, which doesn't really make sense here
+- ARG_CONST_SIZE_* isn't handled in the same way
+ARG_CONST_ALLOC_SIZE_OR_ZERO is. The latter tells the verifier that
+the given size is the available size of the returned
+PTR_TO_ALLOC_MEM_OR_NULL, which is exactly what we want.
+
+>
+> > +};
+> > +
+> > +static const struct bpf_func_proto *
+> > +hid_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> > +{
+> > +       switch (func_id) {
+> > +       case BPF_FUNC_hid_get_data:
+> > +               return &bpf_hid_get_data_proto;
+> > +       default:
+> > +               return bpf_base_func_proto(func_id);
+> > +       }
+> > +}
+> [...]
+> > +
+> > +static int hid_bpf_prog_test_run(struct bpf_prog *prog,
+> > +                                const union bpf_attr *attr,
+> > +                                union bpf_attr __user *uattr)
+> > +{
+> > +       struct hid_device *hdev = NULL;
+> > +       struct bpf_prog_array *progs;
+> > +       bool valid_prog = false;
+> > +       int i;
+> > +       int target_fd, ret;
+> > +       void __user *data_out = u64_to_user_ptr(attr->test.data_out);
+> > +       void __user *data_in = u64_to_user_ptr(attr->test.data_in);
+> > +       u32 user_size_in = attr->test.data_size_in;
+> > +       u32 user_size_out = attr->test.data_size_out;
+> > +       u32 allocated_size = max(user_size_in, user_size_out);
+> > +       struct hid_bpf_ctx_kern ctx = {
+> > +               .type = HID_BPF_USER_EVENT,
+> > +               .allocated_size = allocated_size,
+> > +       };
+> > +
+> > +       if (!hid_hooks.hdev_from_fd)
+> > +               return -EOPNOTSUPP;
+> > +
+> > +       if (attr->test.ctx_size_in != sizeof(int))
+> > +               return -EINVAL;
+>
+> ctx_size_in is always 4 bytes?
+
+Yes. Basically what I had in mind is that the "ctx" for
+user_prog_test_run is the file descriptor to the sysfs that represent
+the HID device.
+This seemed to me to be the easiest to handle for users.
+
+I'm open to suggestions though.
+
+>
+> > +
+> > +       if (allocated_size > HID_MAX_BUFFER_SIZE)
+> > +               return -E2BIG;
+> > +
+> > +       if (copy_from_user(&target_fd, (void *)attr->test.ctx_in, attr->test.ctx_size_in))
+> > +               return -EFAULT;
+> > +
+> > +       hdev = hid_hooks.hdev_from_fd(target_fd);
+> > +       if (IS_ERR(hdev))
+> > +               return PTR_ERR(hdev);
+> > +
+> > +       if (allocated_size) {
+> > +               ctx.data = kzalloc(allocated_size, GFP_KERNEL);
+> > +               if (!ctx.data)
+> > +                       return -ENOMEM;
+> > +
+> > +               ctx.allocated_size = allocated_size;
+> > +       }
+> > +       ctx.hdev = hdev;
+> > +
+> > +       ret = mutex_lock_interruptible(&bpf_hid_mutex);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       /* check if the given program is of correct type and registered */
+> > +       progs = rcu_dereference_protected(hdev->bpf.run_array[BPF_HID_ATTACH_USER_EVENT],
+> > +                                         lockdep_is_held(&bpf_hid_mutex));
+> > +       if (!progs) {
+> > +               ret = -EFAULT;
+> > +               goto unlock;
+> > +       }
+> > +
+> > +       for (i = 0; i < bpf_prog_array_length(progs); i++) {
+> > +               if (progs->items[i].prog == prog) {
+> > +                       valid_prog = true;
+> > +                       break;
+> > +               }
+> > +       }
+> > +
+> > +       if (!valid_prog) {
+> > +               ret = -EINVAL;
+> > +               goto unlock;
+> > +       }
+> > +
+> > +       /* copy data_in from userspace */
+> > +       if (user_size_in) {
+> > +               if (copy_from_user(ctx.data, data_in, user_size_in)) {
+> > +                       ret = -EFAULT;
+> > +                       goto unlock;
+> > +               }
+> > +
+> > +               ctx.size = user_size_in;
+> > +       }
+> > +
+> > +       migrate_disable();
+> > +
+> > +       ret = bpf_prog_run(prog, &ctx);
+> > +
+> > +       migrate_enable();
+> > +
+> > +       if (user_size_out && data_out) {
+> > +               user_size_out = min3(user_size_out, (u32)ctx.size, allocated_size);
+> > +
+> > +               if (copy_to_user(data_out, ctx.data, user_size_out)) {
+> > +                       ret = -EFAULT;
+> > +                       goto unlock;
+> > +               }
+> > +
+> > +               if (copy_to_user(&uattr->test.data_size_out,
+> > +                                &user_size_out,
+> > +                                sizeof(user_size_out))) {
+> > +                       ret = -EFAULT;
+> > +                       goto unlock;
+> > +               }
+> > +       }
+> > +
+> > +       if (copy_to_user(&uattr->test.retval, &ctx.retval, sizeof(ctx.retval)))
+> > +               ret = -EFAULT;
+> > +
+> > +unlock:
+> > +       kfree(ctx.data);
+> > +
+> > +       mutex_unlock(&bpf_hid_mutex);
+> > +       return ret;
+> > +}
+> > +
+> > +const struct bpf_prog_ops hid_prog_ops = {
+> > +       .test_run = hid_bpf_prog_test_run,
+> > +};
+> > +
+> > +int bpf_hid_init(struct hid_device *hdev)
+> > +{
+> > +       int type;
+> > +
+> > +       for (type = 0; type < MAX_BPF_HID_ATTACH_TYPE; type++)
+> > +               INIT_LIST_HEAD(&hdev->bpf.links[type]);
+> > +
+> > +       return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(bpf_hid_init);
+> > +
+> > +void bpf_hid_exit(struct hid_device *hdev)
+> > +{
+> > +       enum bpf_hid_attach_type type;
+> > +       struct bpf_hid_link *hid_link;
+> > +
+> > +       mutex_lock(&bpf_hid_mutex);
+> > +       for (type = 0; type < MAX_BPF_HID_ATTACH_TYPE; type++) {
+> > +               bpf_hid_run_array_detach(hdev, type);
+> > +               list_for_each_entry(hid_link, &hdev->bpf.links[type], node) {
+> > +                       hid_link->hdev = NULL; /* auto-detach link */
+> > +               }
+> > +       }
+> > +       mutex_unlock(&bpf_hid_mutex);
+> > +}
+> > +EXPORT_SYMBOL_GPL(bpf_hid_exit);
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index b88688264ad0..d1c05011e5ab 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -3,6 +3,7 @@
+> >   */
+> >  #include <linux/bpf.h>
+> >  #include <linux/bpf-cgroup.h>
+> > +#include <linux/bpf-hid.h>
+> >  #include <linux/bpf_trace.h>
+> >  #include <linux/bpf_lirc.h>
+> >  #include <linux/bpf_verifier.h>
+> > @@ -2205,6 +2206,7 @@ static bool is_sys_admin_prog_type(enum bpf_prog_type prog_type)
+> >  {
+> >         switch (prog_type) {
+> >         case BPF_PROG_TYPE_LIRC_MODE2:
+> > +       case BPF_PROG_TYPE_HID:
+> >                 return true;
+> >         default:
+> >                 return false;
+> > @@ -3199,6 +3201,11 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+> >                 return BPF_PROG_TYPE_SK_LOOKUP;
+> >         case BPF_XDP:
+> >                 return BPF_PROG_TYPE_XDP;
+> > +       case BPF_HID_DEVICE_EVENT:
+> > +       case BPF_HID_RDESC_FIXUP:
+> > +       case BPF_HID_USER_EVENT:
+> > +       case BPF_HID_DRIVER_EVENT:
+> > +               return BPF_PROG_TYPE_HID;
+> >         default:
+> >                 return BPF_PROG_TYPE_UNSPEC;
+> >         }
+> > @@ -3342,6 +3349,11 @@ static int bpf_prog_query(const union bpf_attr *attr,
+> >         case BPF_SK_MSG_VERDICT:
+> >         case BPF_SK_SKB_VERDICT:
+> >                 return sock_map_bpf_prog_query(attr, uattr);
+> > +       case BPF_HID_DEVICE_EVENT:
+> > +       case BPF_HID_RDESC_FIXUP:
+> > +       case BPF_HID_USER_EVENT:
+> > +       case BPF_HID_DRIVER_EVENT:
+> > +               return bpf_hid_prog_query(attr, uattr);
+> >         default:
+> >                 return -EINVAL;
+> >         }
+> > @@ -4336,6 +4348,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+> >                 ret = bpf_perf_link_attach(attr, prog);
+> >                 break;
+> >  #endif
+> > +       case BPF_PROG_TYPE_HID:
+> > +               return bpf_hid_link_create(attr, prog);
+> >         default:
+> >                 ret = -EINVAL;
+> >         }
+> > --
+> > 2.35.1
+> >
+>
+
+Cheers,
+Benjamin
+
