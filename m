@@ -2,122 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 400E24E1E71
-	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 01:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D9E4E1EEE
+	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 03:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241716AbiCUAZC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Mar 2022 20:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        id S1344114AbiCUCBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Mar 2022 22:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234559AbiCUAZC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Mar 2022 20:25:02 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17215F4A;
-        Sun, 20 Mar 2022 17:23:35 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        with ESMTP id S1344113AbiCUCBk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Mar 2022 22:01:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A15C1262F
+        for <bpf@vger.kernel.org>; Sun, 20 Mar 2022 19:00:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4KMFhd2nhGz4xXV;
-        Mon, 21 Mar 2022 11:23:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1647822210;
-        bh=RuuiFlNkjNtu9E3EPgnh5FZnovH/65omnlAq2qT/hAE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uRX2XAZr56jSMQwQtqZoDTLdNe7rJglq7RhdzcXUsgZ38Sg4t7ON7KltHsCYHnTeC
-         ipOXdBPb+kknLE7W+3W4juszfdxSNfZX3voLaTGKe1sEjxh0FL6ufC2Gh7nzdqODWB
-         UW27cjBXbQVXpPvmPC9+uBNFKN3zEMQ6SXodEDTD71Go/jDHlRTGjwY86rlGkGMmpc
-         tCMQsbD9bKCCg31YFnao+ko5b9QT+GVsLX8iCzOQFQbq9ktsYN6kmGaQacgZIf33cb
-         R3ff1Ota8L9DeG1a+1YnAoseBHRZrHoAClVyrF7+5fmf06x01+QkOuYDuyoPn6QcP4
-         0DUUTDxFxsLZg==
-Date:   Mon, 21 Mar 2022 11:23:28 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: linux-next: manual merge of the bpf-next tree with the arm tree
-Message-ID: <20220321112328.1dce5df9@canb.auug.org.au>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3FF74B80FAE
+        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 02:00:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AC531C340ED;
+        Mon, 21 Mar 2022 02:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647828010;
+        bh=LuSLRBDS21GizpqSnBQp3LNmGT2fWBzZpYV+39D2chY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fgUIVF3K4TFbEcy+/ZPQSG5qBpidpK6moQFwJ4N0QVjmm5xOeY/hoVrDc7oIX5Kwr
+         dFWzGqvD9JNgQI66Lb9A4UWBBdEm9S12640lOeGnVgxgWbGLaCJ8Zv4fDxecaHUnVw
+         TvwCM67MB3OAWAf1+usGg9rxoKqzshdW5StRXwl6NZJzvZBJjCDv4n5HtMW42MuBu7
+         Xx6+aMnOMYJdc77slVfwN23jHem1xUDuu9LJohSkCv+WHUmsE5HhE6ImtvLFgmKS5g
+         RmWyNcfbyQ2xHlMPCe25S/6TCEdiPw5+tHktrh4N6IYhQqnWGrytJc7HEmTSv+RxzI
+         yL1vWVX2bfi2Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 90993E6D406;
+        Mon, 21 Mar 2022 02:00:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/SVLHDKxF8CNBt6gcxfeOYSK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 0/2] Enable non-atomic allocations in local
+ storage
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164782801058.32327.2805354676305440542.git-patchwork-notify@kernel.org>
+Date:   Mon, 21 Mar 2022 02:00:10 +0000
+References: <20220318045553.3091807-1-joannekoong@fb.com>
+In-Reply-To: <20220318045553.3091807-1-joannekoong@fb.com>
+To:     Joanne Koong <joannekoong@fb.com>
+Cc:     bpf@vger.kernel.org, kafai@fb.com, kpsingh@kernel.org,
+        memxor@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, tj@kernel.org, davemarchevsky@fb.com,
+        joannelkoong@gmail.com
+X-Spam-Status: No, score=-8.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/SVLHDKxF8CNBt6gcxfeOYSK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+On Thu, 17 Mar 2022 21:55:51 -0700 you wrote:
+> From: Joanne Koong <joannelkoong@gmail.com>
+> 
+> Currently, local storage memory can only be allocated atomically
+> (GFP_ATOMIC). This restriction is too strict for sleepable bpf
+> programs.
+> 
+> In this patchset, sleepable programs can allocate memory in local
+> storage using GFP_KERNEL, while non-sleepable programs always default to
+> GFP_ATOMIC.
+> 
+> [...]
 
-  arch/arm/include/asm/stacktrace.h
+Here is the summary with links:
+  - [bpf-next,v3,1/2] bpf: Enable non-atomic allocations in local storage
+    https://git.kernel.org/bpf/bpf-next/c/b00fa38a9c1c
+  - [bpf-next,v3,2/2] selftests/bpf: Test for associating multiple elements with the local storage
+    https://git.kernel.org/bpf/bpf-next/c/0e790cbb1af9
 
-between commit:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  538b9265c063 ("ARM: unwind: track location of LR value in stack frame")
 
-from the arm tree and commit:
-
-  515a49173b80 ("ARM: rethook: Add rethook arm implementation")
-
-from the bpf-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm/include/asm/stacktrace.h
-index 3e78f921b8b2,babed1707ca8..000000000000
---- a/arch/arm/include/asm/stacktrace.h
-+++ b/arch/arm/include/asm/stacktrace.h
-@@@ -14,10 -14,7 +14,10 @@@ struct stackframe=20
-  	unsigned long sp;
-  	unsigned long lr;
-  	unsigned long pc;
- +
- +	/* address of the LR value on the stack */
- +	unsigned long *lr_addr;
-- #ifdef CONFIG_KRETPROBES
-+ #if defined(CONFIG_KRETPROBES) || defined(CONFIG_RETHOOK)
-  	struct llist_node *kr_cur;
-  	struct task_struct *tsk;
-  #endif
-
---Sig_/SVLHDKxF8CNBt6gcxfeOYSK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmI3xYAACgkQAVBC80lX
-0Gyy6QgAm6aIs5yr6ctuyzmpFOISt2CgsbDsvX1tdN5PhCRrRAUTKA4KMzEuYiMk
-f3aQOSKnS4X/KmzDNyuVeODsHABxsGkFy8fOEnCTYDGThjvO19cJSxWUrcSVwXtM
-TZoNU7I8XBo6GSRKy4HVb1NGXdZPJ7DggpuRrSxdr5JLBuhiJIOQbMPElNTnYb9g
-B3qHsWEWDF7bjAM4iQlmtvCgCfR+JEctKQg76snBRkeQZw8x+/oQn/BNCI0Pqanz
-13jGjaj26U/V1PL/vImnyLZuXDJ21ka+tx/a5OeBDGEKRbaSnF948nKiLE7uXqsz
-dfdIA4iPDTtuxS4PPaWgnLQbeRPQ7A==
-=dM5E
------END PGP SIGNATURE-----
-
---Sig_/SVLHDKxF8CNBt6gcxfeOYSK--
