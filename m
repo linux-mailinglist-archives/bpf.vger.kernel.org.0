@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F16A4E2BA4
-	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 16:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AC84E2BA5
+	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 16:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235225AbiCUPSw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Mar 2022 11:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        id S1349898AbiCUPTL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Mar 2022 11:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349898AbiCUPSv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Mar 2022 11:18:51 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE90EDF0B
-        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 08:17:25 -0700 (PDT)
+        with ESMTP id S233189AbiCUPTK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Mar 2022 11:19:10 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1FAEDF0B
+        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 08:17:45 -0700 (PDT)
 Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KMdWw6zTBz1GClf;
-        Mon, 21 Mar 2022 23:17:16 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KMdVg1MXqzfYr8;
+        Mon, 21 Mar 2022 23:16:11 +0800 (CST)
 Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
  (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Mon, 21 Mar
- 2022 23:17:22 +0800
+ 2022 23:17:42 +0800
 From:   Xu Kuohai <xukuohai@huawei.com>
 To:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
 CC:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -38,14 +38,14 @@ CC:     Catalin Marinas <catalin.marinas@arm.com>,
         Hou Tao <houtao1@huawei.com>, Fuad Tabba <tabba@google.com>,
         James Morse <james.morse@arm.com>
 Subject: [PATCH -next v5 0/5] bpf, arm64: Optimize BPF store/load using arm64 str/ldr(immediate)
-Date:   Mon, 21 Mar 2022 11:28:32 -0400
-Message-ID: <20220321152832.2334229-1-xukuohai@huawei.com>
+Date:   Mon, 21 Mar 2022 11:28:47 -0400
+Message-ID: <20220321152852.2334294-1-xukuohai@huawei.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.67.174.197]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemi500013.china.huawei.com (7.221.188.120)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
