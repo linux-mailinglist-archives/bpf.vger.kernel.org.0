@@ -2,117 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB694E2636
-	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 13:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 983594E26A5
+	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 13:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347286AbiCUMT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Mar 2022 08:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        id S1347274AbiCUMhB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Mar 2022 08:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347284AbiCUMTZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Mar 2022 08:19:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387132610;
-        Mon, 21 Mar 2022 05:17:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S236565AbiCUMhA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Mar 2022 08:37:00 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FAE1F619;
+        Mon, 21 Mar 2022 05:35:34 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 385F3B81113;
-        Mon, 21 Mar 2022 12:17:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC92C340ED;
-        Mon, 21 Mar 2022 12:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647865075;
-        bh=hbP3AhpoO/lToYp8LoQ9mqTkP3bOAZmEeLFUOjeqlE0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IXofndBYpDF6Q4ynAxlesxXvjWCdKNz59sdZq+XJnYTyu3dO+ckC4OcdxtMyveGXe
-         ekYwKCfFGR+Jrck/p22LsfOEToc0KC+6aua9e/k+7Z/qtyjqbJ+hqhcc4vDq/XtTNh
-         VFa0KYZKd15OYX6B6fFzPvik4/A8JdNp42YMrwA1d8FpE9EbH8ZpRXrcsNrw06iSmj
-         KoPpIHjXCoEaCBjZ1iceEjUQc2LdkO5NAaFhl/P78AWlgC55Go7J5R7OdmQ/WCrTaL
-         qGS6nacRL9bOgSHN3/zWUBuyYpoTGyjPEd1/Bi0E39yxl9dxCTRRI2q4XRwM5DTnMS
-         A34kP1r6jS23w==
-Date:   Mon, 21 Mar 2022 13:17:51 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
-        pabeni@redhat.com, toke@redhat.com, andrii@kernel.org, nbd@nbd.name
-Subject: Re: [PATCH bpf-next] net: xdp: introduce XDP_PACKET_HEADROOM_MIN for
- veth and generic-xdp
-Message-ID: <Yjhs73opbYZtALO9@lore-desk>
-References: <039064e87f19f93e0d0347fc8e5c692c789774e6.1647630686.git.lorenzo@kernel.org>
- <20220318123323.75973f84@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YjTji4qgDbrXg4D+@lore-desk>
- <20220318140153.592ac996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4KMYxG5SyMz4xNq;
+        Mon, 21 Mar 2022 23:35:30 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1647866131;
+        bh=NQKo9FIKqY9u7TjgkhyAI+6zVMUtISL0WDla4R4QnWY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RGe5FZYqDVS+g8AiLbzcC55LJJdJ2t7SweK6Z/nuzS5n11ncToziEunFnMQa7zFD1
+         9qLabWGzHV8lU0dJfVKTQHJ/Ia7LdUOcRzuuhDD01Tn0Pfd1hbYKY2w1EDzi6/sRDL
+         m9NX9OkM+2mMnJNfijhYfm+M+i6L3tbM69HdMBn2RxQQv314qvMfD0LEB1oX4vFEXR
+         8kXU9qG3RY+dYJA29Nqd7svbPI5CzLSAybGaTj1Xm6/hrfz1raUb1VFRzZlVmHC6l+
+         WwRZF332vH/Km8RAlRqgTpVHUBVyxuFEDm0Km508A0DK3wtj2oAkjLEMSCOSy3EuvJ
+         sjP8kKpMpi4mg==
+Date:   Mon, 21 Mar 2022 23:35:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: run time failure after merge of the bpf-next tree
+Message-ID: <20220321233524.5fdb66b6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FG50AM7opr1QyoaJ"
-Content-Disposition: inline
-In-Reply-To: <20220318140153.592ac996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/o4KJpFsc9Wpo_db5+dCT+kq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---FG50AM7opr1QyoaJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/o4KJpFsc9Wpo_db5+dCT+kq
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-> On Fri, 18 Mar 2022 20:54:51 +0100 Lorenzo Bianconi wrote:
-> > > IIUC the initial purpose of SKB mode was to be able to test or
-> > > experiment with XDP "until drivers add support". If that's still
-> > > the case the semantics of XDP SKB should be as close to ideal
-> > > XDP implementation as possible.
-> >=20
-> > XDP in skb-mode is useful if we want to perform a XDP_REDIRECT from
-> > an ethernet driver into a wlan device since mac80211 requires a skb.
->=20
-> Ack, I understand the use case is real, but given that the TC
-> alternative exists we can apply more scrutiny to the trade offs.
-> IMO production use of XDP skb mode would be a mistake, the thing=20
-> is a layering violation by nature. Our time is better spent making
-> TC / XDP code portability effortless.
+Hi all,
 
-ack, got your point, but I guess there is still a value running the same xdp
-program instead of switching to a tc one if the driver does not support
-native xdp. Anyway I am fine dropping this patch.
+After merging the bpf-next tree, today's linux-next qemu run (powerpc
+pseries_le_defconfig) failed with a NULL dererence.
 
->=20
-> > > We had a knob for specifying needed headroom, is that thing not
-> > > working / not a potentially cleaner direction?
-> > >
-> >
-> > which one do you mean? I guess it would be useful :)
->=20
-> We have ndo_set_rx_headroom and dev->needed_headroom.
-> Sorry for brevity, I'm on the move today, referring to things=20
-> from memory :)
-:)
+This has been fixed in the bpf-next tree after I merged it today, so I
+have cherry-picked the fix patch into today's linux-next.
 
-Do you mean set dev->needed_headroom based on XDP_HEADROOM if the device is
-running in xdp mode, right? I guess this is doable for veth, but what is
-the right value for generic-xdp? Am I missing something?
+--=20
+Cheers,
+Stephen Rothwell
 
-Regards,
-Lorenzo
-
---FG50AM7opr1QyoaJ
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/o4KJpFsc9Wpo_db5+dCT+kq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYjhs7wAKCRA6cBh0uS2t
-rItiAP41uEM2CZGE/+VdpLQICO7PdhduEKGyyVNOWXBq7a1ekQEA3n/RP33f3c6e
-FOotPhLQ68xpRAdH7sHjfHha9OF3EgE=
-=UVOv
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmI4cQwACgkQAVBC80lX
+0GziLAf9GiPXtltX35sPgenejdvmBoh/gRuPEaWzz2GbvgA1Ygk1n68yq40Sz21H
+7xqzccfAvitHCAld45rky2CnnqlJN0zFv9wDlWNe8ew1Zw+Zl2Yn/YmuJRFU4itk
+CYKmrxU3CumsDOBy8uGrjtyABg/OIEwVLOon13J6++fcEU4nEV4Sl6z2mkZ/ufDH
+bB+OS1hMgPqFTZ4jY69ZAALZC1f6Qm0Qz16KNxOkz0BMT9+NPNgaMeYsIlL4uxCK
+yENIRPQoLxs4B/XQopcsqwc7bYGxAyiIu/N3xMCxsTspy1PWzDZ//OqaZNyjWvVc
+OoE9uZ43fH3Npv0XF6EgcAP8r+WVvQ==
+=33je
 -----END PGP SIGNATURE-----
 
---FG50AM7opr1QyoaJ--
+--Sig_/o4KJpFsc9Wpo_db5+dCT+kq--
