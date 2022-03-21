@@ -2,58 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A0C4E3485
-	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 00:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D914E348B
+	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 00:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbiCUXiH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Mar 2022 19:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36220 "EHLO
+        id S233015AbiCUXjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Mar 2022 19:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233289AbiCUXiG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Mar 2022 19:38:06 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DE411D792
-        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 16:36:39 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id n16so11399513ile.11
-        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 16:36:39 -0700 (PDT)
+        with ESMTP id S232838AbiCUXjE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Mar 2022 19:39:04 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E28B91553
+        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 16:37:37 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id k25so18475985iok.8
+        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 16:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gWeRzxrWPK8f6kVCl8Oou3lVmU3AfVYWjz6HmKK2JaA=;
-        b=QX35oZd+krqEzzDC0shvrZVnSa7+NR//8aDxDXSsJAx/MN8d22J//8OZNpW0C37+Nu
-         FI3uDwJrunjBQIqcPF8YfjE9+ZxTQtWleL+L6NhtBZQZUBGgstDZRtsGt1N374broe6v
-         kPsUQ8A3XHldW4g5ejhxdZdmE/IxtMFyaR5SStkb+p11ao5BuZnQr1SyZ8KzMDBku0eq
-         kXkARB+3eFrthMQ1ey2Dug+BSfh+MHTNfMtTfUXxKCkAM6eepHz854ib81PHCrCd04QR
-         MnwPjoS9mDoYLR7f3HyTAzuLZkuIRAl4PXV2IxthRrsomV988Q7CvM1YkOnzhzypo42y
-         PSRA==
+        bh=y+1u2wIuaCBpeWxhRB8yetL19FdikjxXN+dlrigcZF8=;
+        b=fEtW0aAXPLAkF+Ga3SjGCA7uoARHGAzKbZivyruvOZNVGG5vR4e5gJMZueXWolwZnV
+         FaeUfrQoMDXbGCt4Bkb6uZAsLcjKsv2+8fKKp/zS6a5Na+UIS9RureqXUlaySOX2sKy8
+         0t2OJDS9W2bXEfjJyLcChRF8WMdFvyq+ITTBeXRsoWXSvoypttZAFhVfG7M+f5gyv23q
+         jnxTOeDqbIvUFCTgaU/mvGtUYsIc0lZ6KcReMiMdiqHsv0HhcB9aRfX4JOFth8g1iOYw
+         jPOAEJ+i6T6rbn1uWg/7KgVcmTXgOOL8dRPkYxyqb5jyJNNq5ZL/7aDh87GPtGzTNVXL
+         Zjxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gWeRzxrWPK8f6kVCl8Oou3lVmU3AfVYWjz6HmKK2JaA=;
-        b=kgMc9bV5QHtUn6Xj0fS95nBigNxK/Q1BsDqt1km2FTl64AwH7ZuTDP+OuC4z4cHF50
-         YDah5JQ5wXSAYBLKokiqAKsi9c3UiyMgjGnWXS77Ufuj5XkcDI4WKKTyfPmCQi84U901
-         RVMVoq3T0Ena0IzTbgQjDAdzsSvR9LUQg0ltxOnstFL6rynGX3kjqY9IFqUWJvwC+c52
-         /BkpF6pnuVJE3X446wcKgLC8sT4t+lgc7BSNX8GWF6TXmowNilwB41q4o+sYL7ejFjXa
-         YDwvMOWR//dFULU/8xabwVRrB2o86updnGaS7gF+9C05Hw1NZZpA6HUOQ+EsuSQqFEqw
-         hN3A==
-X-Gm-Message-State: AOAM530/D5Qjwr9bHQYzv7Uq4C3s6HYPY1ExYSOLzFidvFA2LoiCjrO6
-        xRtcOhwOvdTsWEsJTEX4AS32EVAxojxiUtC05WE=
-X-Google-Smtp-Source: ABdhPJzYRlucYYBMZbdrFvgvMpkpTkyXtmJNq0tSWlALTtcT1RDlplOGJgwjemXlH6BpA4na9Tf3PFQH1Vvd2RKTMn4=
-X-Received: by 2002:a92:ca0c:0:b0:2c7:7983:255f with SMTP id
- j12-20020a92ca0c000000b002c77983255fmr10241428ils.252.1647905799118; Mon, 21
- Mar 2022 16:36:39 -0700 (PDT)
+        bh=y+1u2wIuaCBpeWxhRB8yetL19FdikjxXN+dlrigcZF8=;
+        b=UH+RLRUGlrKY0YcPnuwMdcBMllZyYFj1JoB+dE+M0a4gtetuQhQoiYci0NM3jUjI81
+         uKxgVr6NZ+kpoh2nAdo4ymVL+fv8VR45N2ozSqiCyPczchnu22m02kEB9XFv+5l74qLU
+         tftHfI6K2kMpAX7wuuaZwP5xRM3a6izlMqtlL8RrR/i/p426Wj4get40ZvdcQdGvi3A5
+         tVPyrXsqi+MYzC0AG3BvsEKJZG8a8x345UkjY64DlQBGT7VnVBJG36O3d5QKmqggQBLz
+         leZbTmSbj3K7ewHaQ9uWL+g4qkzi8O8rBVZUOXZqJMVm2xqANjyHoeHx+KowqLYI8Y9+
+         +w8A==
+X-Gm-Message-State: AOAM531ohQudAwd7jzAaX4wQ99k70xRlceEuw7kOA7j4i8JfYzvkWxh8
+        SPu2OSQnjdi5X/hIS+gVuMNV7rrGJZW3kyr4qkg=
+X-Google-Smtp-Source: ABdhPJy+Pbht6gXvKg6aTGmX7zr5rX/PnbjolyXzoAvEObQVSBY0pcP73ONyWHPOoN3t0SUnPHN3XEQyjJzHz3QAM74=
+X-Received: by 2002:a05:6602:3c6:b0:63d:cac9:bd35 with SMTP id
+ g6-20020a05660203c600b0063dcac9bd35mr11147771iov.144.1647905856804; Mon, 21
+ Mar 2022 16:37:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220316004231.1103318-1-kuifeng@fb.com> <20220316004231.1103318-5-kuifeng@fb.com>
-In-Reply-To: <20220316004231.1103318-5-kuifeng@fb.com>
+References: <20220316004231.1103318-1-kuifeng@fb.com> <20220316004231.1103318-4-kuifeng@fb.com>
+ <20220318191332.7qsztafrjyu7bjtc@ast-mbp> <CAEf4BzZF02Jn3PP8LJ7oF55ogPOePt0Wt8+Dtmj5fN0r7PfU0w@mail.gmail.com>
+In-Reply-To: <CAEf4BzZF02Jn3PP8LJ7oF55ogPOePt0Wt8+Dtmj5fN0r7PfU0w@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Mar 2022 16:36:28 -0700
-Message-ID: <CAEf4BzaaMmv7NXpg4KT9X6-eeRa3Hfi652GRYUPLawVfH1EHog@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] selftest/bpf: The test cses of BPF cookie
- for fentry/fexit/fmod_ret.
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 21 Mar 2022 16:37:25 -0700
+Message-ID: <CAEf4Bzb4d-BT9kVPCAPHmh2nZztx9q+GT4O6ap=HKKNUA3kmKw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] bpf, x86: Support BPF cookie for fentry/fexit/fmod_ret.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -67,150 +68,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 5:44 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
+On Mon, Mar 21, 2022 at 4:24 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Make sure BPF cookies are correct for fentry/fexit/fmod_ret.
+> On Fri, Mar 18, 2022 at 12:13 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Mar 15, 2022 at 05:42:30PM -0700, Kui-Feng Lee wrote:
+> > > Add a bpf_cookie field to attach a cookie to an instance of struct
+> > > bpf_link.  The cookie of a bpf_link will be installed when calling the
+> > > associated program to make it available to the program.
+> > >
+> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> > > ---
+> > >  arch/x86/net/bpf_jit_comp.c    |  4 ++--
+> > >  include/linux/bpf.h            |  1 +
+> > >  include/uapi/linux/bpf.h       |  1 +
+> > >  kernel/bpf/syscall.c           | 11 +++++++----
+> > >  kernel/trace/bpf_trace.c       | 17 +++++++++++++++++
+> > >  tools/include/uapi/linux/bpf.h |  1 +
+> > >  tools/lib/bpf/bpf.c            | 14 ++++++++++++++
+> > >  tools/lib/bpf/bpf.h            |  1 +
+> > >  tools/lib/bpf/libbpf.map       |  1 +
+> > >  9 files changed, 45 insertions(+), 6 deletions(-)
+> >
+> > please split kernel and libbpf changes into two different patches.
+> >
 >
-> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/bpf_cookie.c     | 61 +++++++++++++++++++
->  .../selftests/bpf/progs/test_bpf_cookie.c     | 24 ++++++++
->  2 files changed, 85 insertions(+)
+> +1
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> index 0612e79a9281..6d06c5046e9c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> @@ -237,6 +237,65 @@ static void pe_subtest(struct test_bpf_cookie *skel)
->         bpf_link__destroy(link);
->  }
+> > > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> > > index f69ce3a01385..dbbf09c84c21 100644
+> > > --- a/tools/lib/bpf/bpf.c
+> > > +++ b/tools/lib/bpf/bpf.c
+> > > @@ -1133,6 +1133,20 @@ int bpf_raw_tracepoint_open(const char *name, int prog_fd)
+> > >       return libbpf_err_errno(fd);
+> > >  }
+> > >
+> > > +int bpf_raw_tracepoint_cookie_open(const char *name, int prog_fd, __u64 bpf_cookie)
+> >
+> > lets introduce opts style to raw_tp_open instead.
 >
-> +static void tracing_subtest(struct test_bpf_cookie *skel)
-> +{
-> +       __u64 cookie;
-> +       int prog_fd;
-> +       int fentry_fd = -1, fexit_fd = -1, fmod_ret_fd = -1;
-> +       struct bpf_test_run_opts opts;
-> +
-> +       skel->bss->fentry_res = 0;
-> +       skel->bss->fexit_res = 0;
-> +
-> +       cookie = 0x100000;
-> +       prog_fd = bpf_program__fd(skel->progs.fentry_test1);
-> +       if (!ASSERT_GE(prog_fd, 0, "fentry.prog_fd"))
-> +               return;
+> I remember I brought this up earlier, but I forgot the outcome. What
+> if don't touch BPF_RAW_TRACEPOINT_OPEN and instead allow to create all
+> the same links through more universal BPF_LINK_CREATE command. And
+> only there we add bpf_cookie? There are few advantages:
+>
+> 1. We can separate raw_tracepoint and trampoline-based programs more
+> cleanly in UAPI (it will be two separate structs: link_create.raw_tp
+> with raw tracepoint name vs link_create.trampoline, or whatever the
+> name, with cookie and stuff). Remember that raw_tp won't support
+> bpf_cookie for now, so it would be another advantage not to promise
+> cookie in UAPI.
+>
+> 2. libbpf can be smart enough to pick either RAW_TRACEPOINT_OPEN (and
+> reject it if bpf_cookie is non-zero) or BPF_LINK_CREATE, depending on
+> kernel support. So users would need to only use bpf_link_create()
+> moving forward with all the backwards compatibility preserved.
+>
+>
 
-this can't return <= 0 if skeleton was loaded, don't bother doing
-these checks, they just distract from the main objective of the test
+Oh, and we need bpf_program__attach_trace_opts() as well (regardless
+of whether it is BPF_RAW_TRACEPOINT_OPEN or BPF_LINK_CREATE).
 
-> +       fentry_fd = bpf_raw_tracepoint_cookie_open(NULL, prog_fd, cookie);
-> +       if (!ASSERT_GE(fentry_fd, 0, "fentry.open"))
-> +               return;
-> +
-> +       cookie = 0x200000;
-> +       prog_fd = bpf_program__fd(skel->progs.fexit_test1);
-> +       if (!ASSERT_GE(prog_fd, 0, "fexit.prog_fd"))
-> +               goto cleanup;
-> +       fexit_fd = bpf_raw_tracepoint_cookie_open(NULL, prog_fd, cookie);
-> +       if (!ASSERT_GE(fexit_fd, 0, "fexit.open"))
-> +               goto cleanup;
-> +
-> +       cookie = 0x300000;
-> +       prog_fd = bpf_program__fd(skel->progs.fmod_ret_test);
-> +       if (!ASSERT_GE(prog_fd, 0, "fmod_ret.prog_fd"))
-> +               goto cleanup;
-> +       fmod_ret_fd = bpf_raw_tracepoint_cookie_open(NULL, prog_fd, cookie);
-> +       if (!ASSERT_GE(fmod_ret_fd, 0, "fmod_ret.opoen"))
-> +               goto cleanup;
-> +
-> +       bzero(&opts, sizeof(opts));
-> +       opts.sz = sizeof(opts);
-> +       opts.repeat = 1;
-
-We have LIBBPF_OPTS() macro for working with opts, please use that.
-But I think in this case NULL for opts will be equivalent. Seems like
-kernel just ignores repeat parameter for tracing programs (and for
-others repeat == 0 means repeat == 1).
-
-> +       prog_fd = bpf_program__fd(skel->progs.fentry_test1);
-> +       bpf_prog_test_run_opts(prog_fd, &opts);
-> +
-> +       bzero(&opts, sizeof(opts));
-> +       opts.sz = sizeof(opts);
-> +       opts.repeat = 1;
-> +       prog_fd = bpf_program__fd(skel->progs.fmod_ret_test);
-> +       bpf_prog_test_run_opts(prog_fd, &opts);
-> +
-> +       ASSERT_EQ(skel->bss->fentry_res, 0x100000, "fentry_res");
-> +       ASSERT_EQ(skel->bss->fexit_res, 0x200000, "fexit_res");
-> +       ASSERT_EQ(skel->bss->fmod_ret_res, 0x300000, "fmod_ret_res");
-> +
-> +cleanup:
-> +       if (fentry_fd >= 0)
-> +               close(fentry_fd);
-> +       if (fexit_fd >= 0)
-> +               close(fexit_fd);
-> +       if (fmod_ret_fd >= 0)
-> +               close(fmod_ret_fd);
-> +}
-> +
->  void test_bpf_cookie(void)
->  {
->         struct test_bpf_cookie *skel;
-> @@ -255,6 +314,8 @@ void test_bpf_cookie(void)
->                 tp_subtest(skel);
->         if (test__start_subtest("perf_event"))
->                 pe_subtest(skel);
-> +       if (test__start_subtest("tracing"))
-> +               tracing_subtest(skel);
-
-kprobes are also tracing, but this one is specifically about BPF
-trampoline-based programs. Let's use "trampoline" here to
-disambiguate.
-
+> >
+> > > +{
+> > > +     union bpf_attr attr;
+> > > +     int fd;
+> > > +
+> > > +     memset(&attr, 0, sizeof(attr));
+> > > +     attr.raw_tracepoint.name = ptr_to_u64(name);
+> > > +     attr.raw_tracepoint.prog_fd = prog_fd;
+> > > +     attr.raw_tracepoint.bpf_cookie = bpf_cookie;
+> > > +
+> > > +     fd = sys_bpf_fd(BPF_RAW_TRACEPOINT_OPEN, &attr, sizeof(attr));
+> > > +     return libbpf_err_errno(fd);
+> > > +}
+> > > +
+> > >  int bpf_btf_load(const void *btf_data, size_t btf_size, const struct bpf_btf_load_opts *opts)
+> > >  {
+> > >       const size_t attr_sz = offsetofend(union bpf_attr, btf_log_level);
+> > > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> > > index 5253cb4a4c0a..23bebcdaf23b 100644
+> > > --- a/tools/lib/bpf/bpf.h
+> > > +++ b/tools/lib/bpf/bpf.h
+> > > @@ -477,6 +477,7 @@ LIBBPF_API int bpf_prog_query(int target_fd, enum bpf_attach_type type,
+> > >                             __u32 query_flags, __u32 *attach_flags,
+> > >                             __u32 *prog_ids, __u32 *prog_cnt);
+> > >  LIBBPF_API int bpf_raw_tracepoint_open(const char *name, int prog_fd);
+> > > +LIBBPF_API int bpf_raw_tracepoint_cookie_open(const char *name, int prog_fd, __u64 bpf_cookie);
+> > >  LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf,
+> > >                                __u32 *buf_len, __u32 *prog_id, __u32 *fd_type,
+> > >                                __u64 *probe_offset, __u64 *probe_addr);
+> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > > index df1b947792c8..20f947a385fa 100644
+> > > --- a/tools/lib/bpf/libbpf.map
+> > > +++ b/tools/lib/bpf/libbpf.map
+> > > @@ -434,6 +434,7 @@ LIBBPF_0.7.0 {
+> > >               bpf_xdp_detach;
+> > >               bpf_xdp_query;
+> > >               bpf_xdp_query_id;
+> > > +             bpf_raw_tracepoint_cookie_open;
 >
->         test_bpf_cookie__destroy(skel);
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-> index 2d3a7710e2ce..a9f83f46e7b7 100644
-> --- a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-> +++ b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-> @@ -14,6 +14,9 @@ int uprobe_res;
->  int uretprobe_res;
->  int tp_res;
->  int pe_res;
-> +int fentry_res;
-> +int fexit_res;
-> +int fmod_ret_res;
+> this (if still needed) should go into 0.8.0 section
 >
->  static void update(void *ctx, int *res)
->  {
-> @@ -82,4 +85,25 @@ int handle_pe(struct pt_regs *ctx)
->         return 0;
->  }
->
-> +SEC("fentry/bpf_fentry_test1")
-> +int BPF_PROG(fentry_test1, int a)
-> +{
-> +       update(ctx, &fentry_res);
-> +       return 0;
-> +}
-> +
-> +SEC("fexit/bpf_fentry_test1")
-> +int BPF_PROG(fexit_test1, int a, int ret)
-> +{
-> +       update(ctx, &fexit_res);
-> +       return 0;
-> +}
-> +
-> +SEC("fmod_ret/bpf_modify_return_test")
-> +int BPF_PROG(fmod_ret_test, int _a, int *_b, int _ret)
-> +{
-> +       update(ctx, &fmod_ret_res);
-> +       return 1234;
-> +}
-> +
->  char _license[] SEC("license") = "GPL";
-> --
-> 2.30.2
->
+> > >               libbpf_probe_bpf_helper;
+> > >               libbpf_probe_bpf_map_type;
+> > >               libbpf_probe_bpf_prog_type;
+> > > --
+> > > 2.30.2
+> > >
+> >
+> > --
