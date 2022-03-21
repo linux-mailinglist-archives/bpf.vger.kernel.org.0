@@ -2,21 +2,21 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AC84E2BA5
-	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 16:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BDD4E2BA6
+	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 16:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349898AbiCUPTL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S233189AbiCUPTL (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 21 Mar 2022 11:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbiCUPTK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Mar 2022 11:19:10 -0400
+        with ESMTP id S1349773AbiCUPTL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Mar 2022 11:19:11 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1FAEDF0B
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA09810EC5A
         for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 08:17:45 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KMdVg1MXqzfYr8;
-        Mon, 21 Mar 2022 23:16:11 +0800 (CST)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KMdXK1cZkzcbFq;
+        Mon, 21 Mar 2022 23:17:37 +0800 (CST)
 Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
  (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Mon, 21 Mar
@@ -37,10 +37,12 @@ CC:     Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Hou Tao <houtao1@huawei.com>, Fuad Tabba <tabba@google.com>,
         James Morse <james.morse@arm.com>
-Subject: [PATCH -next v5 0/5] bpf, arm64: Optimize BPF store/load using arm64 str/ldr(immediate)
-Date:   Mon, 21 Mar 2022 11:28:47 -0400
-Message-ID: <20220321152852.2334294-1-xukuohai@huawei.com>
+Subject: [PATCH bpf-next v5 1/5] arm64: insn: add ldr/str with immediate offset
+Date:   Mon, 21 Mar 2022 11:28:48 -0400
+Message-ID: <20220321152852.2334294-2-xukuohai@huawei.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220321152852.2334294-1-xukuohai@huawei.com>
+References: <20220321152852.2334294-1-xukuohai@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -57,159 +59,153 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The current BPF store/load instruction is translated by the JIT into two
-instructions. The first instruction moves the immediate offset into a
-temporary register. The second instruction uses this temporary register
-to do the real store/load.
+This patch introduces ldr/str with immediate offset support to simplify
+the JIT implementation of BPF LDX/STX instructions on arm64. Although
+arm64 ldr/str immediate is available in pre-index, post-index and
+unsigned offset forms, the unsigned offset form is sufficient for BPF,
+so this patch only adds this type.
 
-In fact, arm64 supports addressing with immediate offsets. So This series
-introduces optimization that uses arm64 str/ldr instruction with immediate
-offset when the offset fits.
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+---
+ arch/arm64/include/asm/insn.h |  9 +++++
+ arch/arm64/lib/insn.c         | 67 +++++++++++++++++++++++++++--------
+ 2 files changed, 62 insertions(+), 14 deletions(-)
 
-Example of generated instuction for r2 = *(u64 *)(r1 + 0):
-
-Without optimization:
-mov x10, 0
-ldr x1, [x0, x10]
-
-With optimization:
-ldr x1, [x0, 0]
-
-For the following bpftrace command:
-
-  bpftrace -e 'kprobe:do_sys_open { printf("opening: %s\n", str(arg1)); }'
-
-Without this series, jited code(fragment):
-
-   0:   bti     c
-   4:   stp     x29, x30, [sp, #-16]!
-   8:   mov     x29, sp
-   c:   stp     x19, x20, [sp, #-16]!
-  10:   stp     x21, x22, [sp, #-16]!
-  14:   stp     x25, x26, [sp, #-16]!
-  18:   mov     x25, sp
-  1c:   mov     x26, #0x0                       // #0
-  20:   bti     j
-  24:   sub     sp, sp, #0x90
-  28:   add     x19, x0, #0x0
-  2c:   mov     x0, #0x0                        // #0
-  30:   mov     x10, #0xffffffffffffff78        // #-136
-  34:   str     x0, [x25, x10]
-  38:   mov     x10, #0xffffffffffffff80        // #-128
-  3c:   str     x0, [x25, x10]
-  40:   mov     x10, #0xffffffffffffff88        // #-120
-  44:   str     x0, [x25, x10]
-  48:   mov     x10, #0xffffffffffffff90        // #-112
-  4c:   str     x0, [x25, x10]
-  50:   mov     x10, #0xffffffffffffff98        // #-104
-  54:   str     x0, [x25, x10]
-  58:   mov     x10, #0xffffffffffffffa0        // #-96
-  5c:   str     x0, [x25, x10]
-  60:   mov     x10, #0xffffffffffffffa8        // #-88
-  64:   str     x0, [x25, x10]
-  68:   mov     x10, #0xffffffffffffffb0        // #-80
-  6c:   str     x0, [x25, x10]
-  70:   mov     x10, #0xffffffffffffffb8        // #-72
-  74:   str     x0, [x25, x10]
-  78:   mov     x10, #0xffffffffffffffc0        // #-64
-  7c:   str     x0, [x25, x10]
-  80:   mov     x10, #0xffffffffffffffc8        // #-56
-  84:   str     x0, [x25, x10]
-  88:   mov     x10, #0xffffffffffffffd0        // #-48
-  8c:   str     x0, [x25, x10]
-  90:   mov     x10, #0xffffffffffffffd8        // #-40
-  94:   str     x0, [x25, x10]
-  98:   mov     x10, #0xffffffffffffffe0        // #-32
-  9c:   str     x0, [x25, x10]
-  a0:   mov     x10, #0xffffffffffffffe8        // #-24
-  a4:   str     x0, [x25, x10]
-  a8:   mov     x10, #0xfffffffffffffff0        // #-16
-  ac:   str     x0, [x25, x10]
-  b0:   mov     x10, #0xfffffffffffffff8        // #-8
-  b4:   str     x0, [x25, x10]
-  b8:   mov     x10, #0x8                       // #8
-  bc:   ldr     x2, [x19, x10]
-  [...]
-
-With this series, jited code(fragment):
-
-   0:   bti     c
-   4:   stp     x29, x30, [sp, #-16]!
-   8:   mov     x29, sp
-   c:   stp     x19, x20, [sp, #-16]!
-  10:   stp     x21, x22, [sp, #-16]!
-  14:   stp     x25, x26, [sp, #-16]!
-  18:   stp     x27, x28, [sp, #-16]!
-  1c:   mov     x25, sp
-  20:   sub     x27, x25, #0x88
-  24:   mov     x26, #0x0                       // #0
-  28:   bti     j
-  2c:   sub     sp, sp, #0x90
-  30:   add     x19, x0, #0x0
-  34:   mov     x0, #0x0                        // #0
-  38:   str     x0, [x27]
-  3c:   str     x0, [x27, #8]
-  40:   str     x0, [x27, #16]
-  44:   str     x0, [x27, #24]
-  48:   str     x0, [x27, #32]
-  4c:   str     x0, [x27, #40]
-  50:   str     x0, [x27, #48]
-  54:   str     x0, [x27, #56]
-  58:   str     x0, [x27, #64]
-  5c:   str     x0, [x27, #72]
-  60:   str     x0, [x27, #80]
-  64:   str     x0, [x27, #88]
-  68:   str     x0, [x27, #96]
-  6c:   str     x0, [x27, #104]
-  70:   str     x0, [x27, #112]
-  74:   str     x0, [x27, #120]
-  78:   str     x0, [x27, #128]
-  7c:   ldr     x2, [x19, #8]
-  [...]
-
-Tested with test_bpf on both big-endian and little-endian arm64 qemu:
-
- test_bpf: Summary: 1026 PASSED, 0 FAILED, [1014/1014 JIT'ed]
- test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-
-v4->v5:
-1. Fix incorrect FP offset in tail call scenario pointed out by Daniel,
-   and add a tail call test case for this issue
-2. Align down fpb_offset to 8 bytes to avoid unaligned offsets
-3. Style and spelling fix
-
-v3->v4:
-1. Fix compile error reported by kernel test robot
-2. Add one more test case for load/store in different offsets, and move
-   test case to last patch
-3. Fix some obvious bugs
-
-v2 -> v3:
-1. Split the v2 patch into 2 patches, one for arm64 instruction encoder,
-   the other for BPF JIT
-2. Add tests for BPF_LDX/BPF_STX with different offsets
-3. Adjust the offset of str/ldr(immediate) to positive number
-
-v1 -> v2:
-1. Remove macro definition that causes checkpatch to fail
-2. Append result to commit message
-
-Xu Kuohai (5):
-  arm64: insn: add ldr/str with immediate offset
-  bpf, arm64: Optimize BPF store/load using str/ldr with immediate
-    offset
-  bpf, arm64: adjust the offset of str/ldr(immediate) to positive number
-  bpf/tests: Add tests for BPF_LDX/BPF_STX with different offsets
-  bpf, arm64: add load store test case for tail call
-
- arch/arm64/include/asm/insn.h |   9 +
- arch/arm64/lib/insn.c         |  67 ++++++--
- arch/arm64/net/bpf_jit.h      |  14 ++
- arch/arm64/net/bpf_jit_comp.c | 243 ++++++++++++++++++++++++--
- lib/test_bpf.c                | 315 +++++++++++++++++++++++++++++++++-
- 5 files changed, 613 insertions(+), 35 deletions(-)
-
+diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
+index 0b6b31307e68..d507acfdf02d 100644
+--- a/arch/arm64/include/asm/insn.h
++++ b/arch/arm64/include/asm/insn.h
+@@ -200,6 +200,8 @@ enum aarch64_insn_size_type {
+ enum aarch64_insn_ldst_type {
+ 	AARCH64_INSN_LDST_LOAD_REG_OFFSET,
+ 	AARCH64_INSN_LDST_STORE_REG_OFFSET,
++	AARCH64_INSN_LDST_LOAD_IMM_OFFSET,
++	AARCH64_INSN_LDST_STORE_IMM_OFFSET,
+ 	AARCH64_INSN_LDST_LOAD_PAIR_PRE_INDEX,
+ 	AARCH64_INSN_LDST_STORE_PAIR_PRE_INDEX,
+ 	AARCH64_INSN_LDST_LOAD_PAIR_POST_INDEX,
+@@ -334,6 +336,7 @@ __AARCH64_INSN_FUNCS(load_pre,	0x3FE00C00, 0x38400C00)
+ __AARCH64_INSN_FUNCS(store_post,	0x3FE00C00, 0x38000400)
+ __AARCH64_INSN_FUNCS(load_post,	0x3FE00C00, 0x38400400)
+ __AARCH64_INSN_FUNCS(str_reg,	0x3FE0EC00, 0x38206800)
++__AARCH64_INSN_FUNCS(str_imm,	0x3FC00000, 0x39000000)
+ __AARCH64_INSN_FUNCS(ldadd,	0x3F20FC00, 0x38200000)
+ __AARCH64_INSN_FUNCS(ldclr,	0x3F20FC00, 0x38201000)
+ __AARCH64_INSN_FUNCS(ldeor,	0x3F20FC00, 0x38202000)
+@@ -341,6 +344,7 @@ __AARCH64_INSN_FUNCS(ldset,	0x3F20FC00, 0x38203000)
+ __AARCH64_INSN_FUNCS(swp,	0x3F20FC00, 0x38208000)
+ __AARCH64_INSN_FUNCS(cas,	0x3FA07C00, 0x08A07C00)
+ __AARCH64_INSN_FUNCS(ldr_reg,	0x3FE0EC00, 0x38606800)
++__AARCH64_INSN_FUNCS(ldr_imm,	0x3FC00000, 0x39400000)
+ __AARCH64_INSN_FUNCS(ldr_lit,	0xBF000000, 0x18000000)
+ __AARCH64_INSN_FUNCS(ldrsw_lit,	0xFF000000, 0x98000000)
+ __AARCH64_INSN_FUNCS(exclusive,	0x3F800000, 0x08000000)
+@@ -500,6 +504,11 @@ u32 aarch64_insn_gen_load_store_reg(enum aarch64_insn_register reg,
+ 				    enum aarch64_insn_register offset,
+ 				    enum aarch64_insn_size_type size,
+ 				    enum aarch64_insn_ldst_type type);
++u32 aarch64_insn_gen_load_store_imm(enum aarch64_insn_register reg,
++				    enum aarch64_insn_register base,
++				    unsigned int imm,
++				    enum aarch64_insn_size_type size,
++				    enum aarch64_insn_ldst_type type);
+ u32 aarch64_insn_gen_load_store_pair(enum aarch64_insn_register reg1,
+ 				     enum aarch64_insn_register reg2,
+ 				     enum aarch64_insn_register base,
+diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
+index 5e90887deec4..695d7368fadc 100644
+--- a/arch/arm64/lib/insn.c
++++ b/arch/arm64/lib/insn.c
+@@ -299,29 +299,24 @@ static u32 aarch64_insn_encode_register(enum aarch64_insn_register_type type,
+ 	return insn;
+ }
+ 
++static const u32 aarch64_insn_ldst_size[] = {
++	[AARCH64_INSN_SIZE_8] = 0,
++	[AARCH64_INSN_SIZE_16] = 1,
++	[AARCH64_INSN_SIZE_32] = 2,
++	[AARCH64_INSN_SIZE_64] = 3,
++};
++
+ static u32 aarch64_insn_encode_ldst_size(enum aarch64_insn_size_type type,
+ 					 u32 insn)
+ {
+ 	u32 size;
+ 
+-	switch (type) {
+-	case AARCH64_INSN_SIZE_8:
+-		size = 0;
+-		break;
+-	case AARCH64_INSN_SIZE_16:
+-		size = 1;
+-		break;
+-	case AARCH64_INSN_SIZE_32:
+-		size = 2;
+-		break;
+-	case AARCH64_INSN_SIZE_64:
+-		size = 3;
+-		break;
+-	default:
++	if (type < AARCH64_INSN_SIZE_8 || type > AARCH64_INSN_SIZE_64) {
+ 		pr_err("%s: unknown size encoding %d\n", __func__, type);
+ 		return AARCH64_BREAK_FAULT;
+ 	}
+ 
++	size = aarch64_insn_ldst_size[type];
+ 	insn &= ~GENMASK(31, 30);
+ 	insn |= size << 30;
+ 
+@@ -504,6 +499,50 @@ u32 aarch64_insn_gen_load_store_reg(enum aarch64_insn_register reg,
+ 					    offset);
+ }
+ 
++u32 aarch64_insn_gen_load_store_imm(enum aarch64_insn_register reg,
++				    enum aarch64_insn_register base,
++				    unsigned int imm,
++				    enum aarch64_insn_size_type size,
++				    enum aarch64_insn_ldst_type type)
++{
++	u32 insn;
++	u32 shift;
++
++	if (size < AARCH64_INSN_SIZE_8 || size > AARCH64_INSN_SIZE_64) {
++		pr_err("%s: unknown size encoding %d\n", __func__, type);
++		return AARCH64_BREAK_FAULT;
++	}
++
++	shift = aarch64_insn_ldst_size[size];
++	if (imm & ~(BIT(12 + shift) - BIT(shift))) {
++		pr_err("%s: invalid imm: %d\n", __func__, imm);
++		return AARCH64_BREAK_FAULT;
++	}
++
++	imm >>= shift;
++
++	switch (type) {
++	case AARCH64_INSN_LDST_LOAD_IMM_OFFSET:
++		insn = aarch64_insn_get_ldr_imm_value();
++		break;
++	case AARCH64_INSN_LDST_STORE_IMM_OFFSET:
++		insn = aarch64_insn_get_str_imm_value();
++		break;
++	default:
++		pr_err("%s: unknown load/store encoding %d\n", __func__, type);
++		return AARCH64_BREAK_FAULT;
++	}
++
++	insn = aarch64_insn_encode_ldst_size(size, insn);
++
++	insn = aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RT, insn, reg);
++
++	insn = aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RN, insn,
++					    base);
++
++	return aarch64_insn_encode_immediate(AARCH64_INSN_IMM_12, insn, imm);
++}
++
+ u32 aarch64_insn_gen_load_store_pair(enum aarch64_insn_register reg1,
+ 				     enum aarch64_insn_register reg2,
+ 				     enum aarch64_insn_register base,
 -- 
 2.30.2
 
