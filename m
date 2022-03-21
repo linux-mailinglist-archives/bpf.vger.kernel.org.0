@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E754E20DC
-	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 08:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB694E2636
+	for <lists+bpf@lfdr.de>; Mon, 21 Mar 2022 13:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344691AbiCUHDI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Mar 2022 03:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
+        id S1347286AbiCUMT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Mar 2022 08:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344736AbiCUHDG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Mar 2022 03:03:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C51BEF;
-        Mon, 21 Mar 2022 00:01:41 -0700 (PDT)
+        with ESMTP id S1347284AbiCUMTZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Mar 2022 08:19:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387132610;
+        Mon, 21 Mar 2022 05:17:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CA9260F87;
-        Mon, 21 Mar 2022 07:01:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79D30C340E8;
-        Mon, 21 Mar 2022 07:01:37 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 385F3B81113;
+        Mon, 21 Mar 2022 12:17:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC92C340ED;
+        Mon, 21 Mar 2022 12:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647846100;
-        bh=puLQDTiFTDL4+6lJJT8R6d0QSTr8Crkduhdp395IOrk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gmP8Yz2Emselwfr2/YGSJ6mDNqr1Pva2gGvBFdqECMY42RAhzp4xorRbqQ9T8HGIs
-         5jhpTeLSb/mdPUSlOkR2kwlw8hXbQ1WW4ERgl3hh7wQN9vliDwJByPGC1yLO0GwTyx
-         FFTswONw+Rd0L0hJnuw4wZpL1GTm2CihhRn6jowqqFJJKfn7PPoI8mtNNbhtCZGYqX
-         eVFz7wph6tXPz75hkJrdDn08EdU3h/wgg+cQiAYFpNXcdDsN6bGpod4RDOutComzJX
-         KgVLX2ebwLA/HKuIUWljo/k7TSW8lC/GlgIo2yuo8LLjEuyjaNHt3oKtbp0rA1yC60
-         qxeP6pqqp6RUg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH bpf-next 2/2] bpf: Fix kprobe_multi return probe backtrace
-Date:   Mon, 21 Mar 2022 08:01:13 +0100
-Message-Id: <20220321070113.1449167-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220321070113.1449167-1-jolsa@kernel.org>
-References: <20220321070113.1449167-1-jolsa@kernel.org>
+        s=k20201202; t=1647865075;
+        bh=hbP3AhpoO/lToYp8LoQ9mqTkP3bOAZmEeLFUOjeqlE0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IXofndBYpDF6Q4ynAxlesxXvjWCdKNz59sdZq+XJnYTyu3dO+ckC4OcdxtMyveGXe
+         ekYwKCfFGR+Jrck/p22LsfOEToc0KC+6aua9e/k+7Z/qtyjqbJ+hqhcc4vDq/XtTNh
+         VFa0KYZKd15OYX6B6fFzPvik4/A8JdNp42YMrwA1d8FpE9EbH8ZpRXrcsNrw06iSmj
+         KoPpIHjXCoEaCBjZ1iceEjUQc2LdkO5NAaFhl/P78AWlgC55Go7J5R7OdmQ/WCrTaL
+         qGS6nacRL9bOgSHN3/zWUBuyYpoTGyjPEd1/Bi0E39yxl9dxCTRRI2q4XRwM5DTnMS
+         A34kP1r6jS23w==
+Date:   Mon, 21 Mar 2022 13:17:51 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        pabeni@redhat.com, toke@redhat.com, andrii@kernel.org, nbd@nbd.name
+Subject: Re: [PATCH bpf-next] net: xdp: introduce XDP_PACKET_HEADROOM_MIN for
+ veth and generic-xdp
+Message-ID: <Yjhs73opbYZtALO9@lore-desk>
+References: <039064e87f19f93e0d0347fc8e5c692c789774e6.1647630686.git.lorenzo@kernel.org>
+ <20220318123323.75973f84@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YjTji4qgDbrXg4D+@lore-desk>
+ <20220318140153.592ac996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FG50AM7opr1QyoaJ"
+Content-Disposition: inline
+In-Reply-To: <20220318140153.592ac996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -61,178 +60,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii reported that backtraces from kprobe_multi program attached
-as return probes are not complete and showing just initial entry [1].
 
-It's caused by changing registers to have original function ip address
-as instruction pointer even for return probe, which will screw backtrace
-from return probe.
+--FG50AM7opr1QyoaJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This change keeps registers intact and store original entry ip and
-link address on the stack in bpf_kprobe_multi_run_ctx struct, where
-bpf_get_func_ip and bpf_get_attach_cookie helpers for kprobe_multi
-programs can find it.
+> On Fri, 18 Mar 2022 20:54:51 +0100 Lorenzo Bianconi wrote:
+> > > IIUC the initial purpose of SKB mode was to be able to test or
+> > > experiment with XDP "until drivers add support". If that's still
+> > > the case the semantics of XDP SKB should be as close to ideal
+> > > XDP implementation as possible.
+> >=20
+> > XDP in skb-mode is useful if we want to perform a XDP_REDIRECT from
+> > an ethernet driver into a wlan device since mac80211 requires a skb.
+>=20
+> Ack, I understand the use case is real, but given that the TC
+> alternative exists we can apply more scrutiny to the trade offs.
+> IMO production use of XDP skb mode would be a mistake, the thing=20
+> is a layering violation by nature. Our time is better spent making
+> TC / XDP code portability effortless.
 
-[1] https://lore.kernel.org/bpf/CAEf4BzZDDqK24rSKwXNp7XL3ErGD4bZa1M6c_c4EvDSt3jrZcg@mail.gmail.com/T/#m8d1301c0ea0892ddf9dc6fba57a57b8cf11b8c51
-Fixes: ca74823c6e16 ("bpf: Add cookie support to programs attached with kprobe multi link")
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/trace/bpf_trace.c | 67 ++++++++++++++++++++++------------------
- 1 file changed, 37 insertions(+), 30 deletions(-)
+ack, got your point, but I guess there is still a value running the same xdp
+program instead of switching to a tc one if the driver does not support
+native xdp. Anyway I am fine dropping this patch.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 52c2998e1dc3..172ef545730d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -80,7 +80,8 @@ u64 bpf_get_stack(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- static int bpf_btf_printf_prepare(struct btf_ptr *ptr, u32 btf_ptr_size,
- 				  u64 flags, const struct btf **btf,
- 				  s32 *btf_id);
--static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx, u64 ip);
-+static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx);
-+static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx);
- 
- /**
-  * trace_call_bpf - invoke BPF program
-@@ -1042,7 +1043,7 @@ static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
- 
- BPF_CALL_1(bpf_get_func_ip_kprobe_multi, struct pt_regs *, regs)
- {
--	return instruction_pointer(regs);
-+	return bpf_kprobe_multi_entry_ip(current->bpf_ctx);
- }
- 
- static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe_multi = {
-@@ -1054,7 +1055,7 @@ static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe_multi = {
- 
- BPF_CALL_1(bpf_get_attach_cookie_kprobe_multi, struct pt_regs *, regs)
- {
--	return bpf_kprobe_multi_cookie(current->bpf_ctx, instruction_pointer(regs));
-+	return bpf_kprobe_multi_cookie(current->bpf_ctx);
- }
- 
- static const struct bpf_func_proto bpf_get_attach_cookie_proto_kmulti = {
-@@ -2219,15 +2220,16 @@ struct bpf_kprobe_multi_link {
- 	struct bpf_link link;
- 	struct fprobe fp;
- 	unsigned long *addrs;
--	/*
--	 * The run_ctx here is used to get struct bpf_kprobe_multi_link in
--	 * get_attach_cookie helper, so it can't be used to store data.
--	 */
--	struct bpf_run_ctx run_ctx;
- 	u64 *cookies;
- 	u32 cnt;
- };
- 
-+struct bpf_kprobe_multi_run_ctx {
-+	struct bpf_run_ctx run_ctx;
-+	struct bpf_kprobe_multi_link *link;
-+	unsigned long entry_ip;
-+};
-+
- static void bpf_kprobe_multi_link_release(struct bpf_link *link)
- {
- 	struct bpf_kprobe_multi_link *kmulti_link;
-@@ -2281,18 +2283,21 @@ static int bpf_kprobe_multi_cookie_cmp(const void *a, const void *b, const void
- 	return __bpf_kprobe_multi_cookie_cmp(a, b);
- }
- 
--static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx, u64 ip)
-+static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx)
- {
-+	struct bpf_kprobe_multi_run_ctx *run_ctx;
- 	struct bpf_kprobe_multi_link *link;
-+	u64 *cookie, entry_ip;
- 	unsigned long *addr;
--	u64 *cookie;
- 
- 	if (WARN_ON_ONCE(!ctx))
- 		return 0;
--	link = container_of(ctx, struct bpf_kprobe_multi_link, run_ctx);
-+	run_ctx = container_of(current->bpf_ctx, struct bpf_kprobe_multi_run_ctx, run_ctx);
-+	link = run_ctx->link;
- 	if (!link->cookies)
- 		return 0;
--	addr = bsearch(&ip, link->addrs, link->cnt, sizeof(ip),
-+	entry_ip = run_ctx->entry_ip;
-+	addr = bsearch(&entry_ip, link->addrs, link->cnt, sizeof(entry_ip),
- 		       __bpf_kprobe_multi_cookie_cmp);
- 	if (!addr)
- 		return 0;
-@@ -2300,10 +2305,22 @@ static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx, u64 ip)
- 	return *cookie;
- }
- 
-+static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
-+{
-+	struct bpf_kprobe_multi_run_ctx *run_ctx;
-+
-+	run_ctx = container_of(current->bpf_ctx, struct bpf_kprobe_multi_run_ctx, run_ctx);
-+	return run_ctx->entry_ip;
-+}
-+
- static int
- kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
--			   struct pt_regs *regs)
-+			   unsigned long entry_ip, struct pt_regs *regs)
- {
-+	struct bpf_kprobe_multi_run_ctx run_ctx = {
-+		.link = link,
-+		.entry_ip = entry_ip,
-+	};
- 	struct bpf_run_ctx *old_run_ctx;
- 	int err;
- 
-@@ -2314,7 +2331,7 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
- 
- 	migrate_disable();
- 	rcu_read_lock();
--	old_run_ctx = bpf_set_run_ctx(&link->run_ctx);
-+	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
- 	err = bpf_prog_run(link->link.prog, regs);
- 	bpf_reset_run_ctx(old_run_ctx);
- 	rcu_read_unlock();
-@@ -2329,24 +2346,10 @@ static void
- kprobe_multi_link_handler(struct fprobe *fp, unsigned long entry_ip,
- 			  struct pt_regs *regs)
- {
--	unsigned long saved_ip = instruction_pointer(regs);
- 	struct bpf_kprobe_multi_link *link;
- 
--	/*
--	 * Because fprobe's regs->ip is set to the next instruction of
--	 * dynamic-ftrace instruction, correct entry ip must be set, so
--	 * that the bpf program can access entry address via regs as same
--	 * as kprobes.
--	 *
--	 * Both kprobe and kretprobe see the entry ip of traced function
--	 * as instruction pointer.
--	 */
--	instruction_pointer_set(regs, entry_ip);
--
- 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
--	kprobe_multi_link_prog_run(link, regs);
--
--	instruction_pointer_set(regs, saved_ip);
-+	kprobe_multi_link_prog_run(link, entry_ip, regs);
- }
- 
- static int
-@@ -2513,7 +2516,11 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- {
- 	return -EOPNOTSUPP;
- }
--static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx, u64 ip)
-+static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx)
-+{
-+	return 0;
-+}
-+static u64 bpf_kprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- {
- 	return 0;
- }
--- 
-2.35.1
+>=20
+> > > We had a knob for specifying needed headroom, is that thing not
+> > > working / not a potentially cleaner direction?
+> > >
+> >
+> > which one do you mean? I guess it would be useful :)
+>=20
+> We have ndo_set_rx_headroom and dev->needed_headroom.
+> Sorry for brevity, I'm on the move today, referring to things=20
+> from memory :)
+:)
 
+Do you mean set dev->needed_headroom based on XDP_HEADROOM if the device is
+running in xdp mode, right? I guess this is doable for veth, but what is
+the right value for generic-xdp? Am I missing something?
+
+Regards,
+Lorenzo
+
+--FG50AM7opr1QyoaJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYjhs7wAKCRA6cBh0uS2t
+rItiAP41uEM2CZGE/+VdpLQICO7PdhduEKGyyVNOWXBq7a1ekQEA3n/RP33f3c6e
+FOotPhLQ68xpRAdH7sHjfHha9OF3EgE=
+=UVOv
+-----END PGP SIGNATURE-----
+
+--FG50AM7opr1QyoaJ--
