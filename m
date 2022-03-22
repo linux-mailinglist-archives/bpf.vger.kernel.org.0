@@ -2,321 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA434E4649
-	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 19:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AEF4E4658
+	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 19:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbiCVSyB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Mar 2022 14:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        id S229763AbiCVS6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Mar 2022 14:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiCVSyA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Mar 2022 14:54:00 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FFC8CDB9
-        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 11:52:32 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id z7so21341579iom.1
-        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 11:52:32 -0700 (PDT)
+        with ESMTP id S229670AbiCVS6l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Mar 2022 14:58:41 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8235291548;
+        Tue, 22 Mar 2022 11:57:13 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id bc27so13270276pgb.4;
+        Tue, 22 Mar 2022 11:57:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k+HFPZJkMQ8Gpd8OOaaNp3lE16NYVQ8vNrG0egyXRjQ=;
-        b=ohw9m390CsfpgLi3HfgBgHC89TIm0ujLD/Lwu0rHy6rskJULf83JyMbh29acOBd2u7
-         kLihX5NQsERTjSGcVuNsOF3KsfQoPgF+4PZfJI+92Hh0eS6pe9ZozHJrGbo/W/geOXfv
-         EhuWwlV62d0iqFIBh2cGF+8CniaSRZSdB4udT3CIYXewHoZ+eD22so5yCAPpn5PTw7yq
-         0+jD2D5XMef5NlZGeXlZVlinGBgQuIqIXYqcxk78DU1w3i7dVZMNSiUsqZGGxy1EZuul
-         LWQi/PufRZzkJ3tFD6LIz4vqz1dXu3IXa1JNELD58Ho0wXus0aM2A9wvAvpr6HznjFur
-         Stgw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7/C+r+DGfxoX8ATQDf4s+Is3SaexFRtpbLCXDVcWdio=;
+        b=kSfHfmNgWSWJBBFWfVDRwsGt99pDFf9+abSF3um81FCUeThZCoB4o7i9fADQsiluTL
+         r8VcwMtkwPV6YJeUxjOzY+7jVrj3pEcOaqlYrHks2c+sYaAQsZuRNDwRj5WqeyT/NSTP
+         K1jBl8+cDjcZJC0XlKIxgw2G5RHHEZyyfPvWjmp0hdcF/v0IREWtnMGiz9j8fpOIUoao
+         NIdUZJFwXF3MhpUTQJ2gOU+htX24hh12s2wf8VSFP061H4YAxbODwx5xVrHr7ME/Aqdb
+         3si7wURU5mCd7aGLgRfuSDBukrDxw++G2mXVdE3apZuesLAvAZjv22M4X8KsACSKMwOd
+         GNWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k+HFPZJkMQ8Gpd8OOaaNp3lE16NYVQ8vNrG0egyXRjQ=;
-        b=vhEbkcqXSg7iqF7hCTi10kuZmGthfqbSXj8LUM3Pp/35lQlAqqCCdWAO16uboDJTE8
-         RsBFkaZS1OPgAWeNRP1CVUyxP/+rxtBu8KRydTlJyCUGv75gbtvXBcHV41Kgx3/DfIPM
-         uUFhS0ciymiJSsQBySdFnx74imSp/18AMdaenaN0fDlemuQnxj5EPXJw+3l7hqlmKReV
-         bag4HKhhcN4oo7astP/HFwUfcS34SczIUesgy+5VPN3StHwUkY4us2noPQXB3vim17V5
-         LUOqAzodvK+Qs4dQfXgBoLO4s4uXnbYziKWWqAxqMUjsdCKM43EanvVitqBVUHjRz2VD
-         z8Kw==
-X-Gm-Message-State: AOAM531VCg/Twx7CC5a/aX1xMBQr/RV/OmN54XVf68qrFYqSZu3MXdXQ
-        jLFlcMKNnc8s/hqJFSYuRv20sp1X/tGLe29PSrE=
-X-Google-Smtp-Source: ABdhPJwTSQXq2g5RausHxvBVFD+ND3F9zV6diapu2YdtRAJOyFQYx4bO6O6Fd55iJJT/mG3geuqCinTXcxWBPmOB8QM=
-X-Received: by 2002:a5d:948a:0:b0:645:b742:87c0 with SMTP id
- v10-20020a5d948a000000b00645b74287c0mr12638042ioj.79.1647975151577; Tue, 22
- Mar 2022 11:52:31 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=7/C+r+DGfxoX8ATQDf4s+Is3SaexFRtpbLCXDVcWdio=;
+        b=U40oswWIVzcC1lriX3n51LepF73FwQ1jAdoXebZIxBkfYv+K0xUFL6qEdcyBPF804t
+         xe4ck53i7KY2+t94ABNKnIbyNU3taz22SIEOv7mAP37w5GaOQ/g6iWNFsa6WY7COCemJ
+         0eWz/yr4rINL6XorEPrlvOK8wejqaq6qwVJcF3Dpf/mcVzvgL+Ol6mJwBh/czpCYDXzf
+         pEbIG+2E7C0qDxoDXHKfd1b4oV1TDQ6xWj03J4ckdHWkQLG8JWWxE44KY3srhlArISq2
+         PtUIDlQYHJrPQQQbYW+PKOdgM47lrxDk8Fr1WDF5jMKHJt8+hyp5oRdyg0ZiI2Q+T2yI
+         Jv0w==
+X-Gm-Message-State: AOAM530k1/XeYBi7WMyXiNz8AmCfCAybf5GRDuSoi6842/Uf+BcLv9J5
+        orY35O93nUFT1KohUYW+mxz/Qm4HXBo=
+X-Google-Smtp-Source: ABdhPJxfagjRc+kiSTPP2nVajfWpYTsYr0uvUXeR0af+I1dJ+0wOKYuvefOGneiaCuv7gk2acOP/JA==
+X-Received: by 2002:a63:af06:0:b0:378:3582:a49f with SMTP id w6-20020a63af06000000b003783582a49fmr23051758pge.125.1647975432914;
+        Tue, 22 Mar 2022 11:57:12 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4800:3540:c09f:7727:246c:bda2])
+        by smtp.gmail.com with ESMTPSA id u14-20020a056a00124e00b004fab8f3245fsm3772681pfi.149.2022.03.22.11.57.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Mar 2022 11:57:12 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Radoslaw Burny <rburny@google.com>, linux-arch@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 0/2] locking: Add new lock contention tracepoints (v4)
+Date:   Tue, 22 Mar 2022 11:57:07 -0700
+Message-Id: <20220322185709.141236-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.35.1.894.gb6a874cedc-goog
 MIME-Version: 1.0
-References: <20220320155510.671497-1-memxor@gmail.com> <20220320155510.671497-4-memxor@gmail.com>
- <CAEf4BzaJuW8tdmFz_NDe8K2qeNuLcOjVo3ZP4g5H1Yp60sQrTA@mail.gmail.com> <20220322071640.nqc2he44grixyhle@apollo>
-In-Reply-To: <20220322071640.nqc2he44grixyhle@apollo>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 22 Mar 2022 11:52:20 -0700
-Message-ID: <CAEf4BzYCuueZwFeGHxqcx=fZ5mEg2vQas7mKb2bj0MWp70VxCg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 03/13] bpf: Allow storing unreferenced kptr in map
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 22, 2022 at 12:16 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Tue, Mar 22, 2022 at 11:15:42AM IST, Andrii Nakryiko wrote:
-> > On Sun, Mar 20, 2022 at 8:55 AM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > This commit introduces a new pointer type 'kptr' which can be embedded
-> > > in a map value as holds a PTR_TO_BTF_ID stored by a BPF program during
-> > > its invocation. Storing to such a kptr, BPF program's PTR_TO_BTF_ID
-> > > register must have the same type as in the map value's BTF, and loading
-> > > a kptr marks the destination register as PTR_TO_BTF_ID with the correct
-> > > kernel BTF and BTF ID.
-> > >
-> > > Such kptr are unreferenced, i.e. by the time another invocation of the
-> > > BPF program loads this pointer, the object which the pointer points to
-> > > may not longer exist. Since PTR_TO_BTF_ID loads (using BPF_LDX) are
-> > > patched to PROBE_MEM loads by the verifier, it would safe to allow user
-> > > to still access such invalid pointer, but passing such pointers into
-> > > BPF helpers and kfuncs should not be permitted. A future patch in this
-> > > series will close this gap.
-> > >
-> > > The flexibility offered by allowing programs to dereference such invalid
-> > > pointers while being safe at runtime frees the verifier from doing
-> > > complex lifetime tracking. As long as the user may ensure that the
-> > > object remains valid, it can ensure data read by it from the kernel
-> > > object is valid.
-> > >
-> > > The user indicates that a certain pointer must be treated as kptr
-> > > capable of accepting stores of PTR_TO_BTF_ID of a certain type, by using
-> > > a BTF type tag 'kptr' on the pointed to type of the pointer. Then, this
-> > > information is recorded in the object BTF which will be passed into the
-> > > kernel by way of map's BTF information. The name and kind from the map
-> > > value BTF is used to look up the in-kernel type, and the actual BTF and
-> > > BTF ID is recorded in the map struct in a new kptr_off_tab member. For
-> > > now, only storing pointers to structs is permitted.
-> > >
-> > > An example of this specification is shown below:
-> > >
-> > >         #define __kptr __attribute__((btf_type_tag("kptr")))
-> > >
-> > >         struct map_value {
-> > >                 ...
-> > >                 struct task_struct __kptr *task;
-> > >                 ...
-> > >         };
-> > >
-> > > Then, in a BPF program, user may store PTR_TO_BTF_ID with the type
-> > > task_struct into the map, and then load it later.
-> > >
-> > > Note that the destination register is marked PTR_TO_BTF_ID_OR_NULL, as
-> > > the verifier cannot know whether the value is NULL or not statically, it
-> > > must treat all potential loads at that map value offset as loading a
-> > > possibly NULL pointer.
-> > >
-> > > Only BPF_LDX, BPF_STX, and BPF_ST with insn->imm = 0 (to denote NULL)
-> > > are allowed instructions that can access such a pointer. On BPF_LDX, the
-> > > destination register is updated to be a PTR_TO_BTF_ID, and on BPF_STX,
-> > > it is checked whether the source register type is a PTR_TO_BTF_ID with
-> > > same BTF type as specified in the map BTF. The access size must always
-> > > be BPF_DW.
-> > >
-> > > For the map in map support, the kptr_off_tab for outer map is copied
-> > > from the inner map's kptr_off_tab. It was chosen to do a deep copy
-> > > instead of introducing a refcount to kptr_off_tab, because the copy only
-> > > needs to be done when paramterizing using inner_map_fd in the map in map
-> > > case, hence would be unnecessary for all other users.
-> > >
-> > > It is not permitted to use MAP_FREEZE command and mmap for BPF map
-> > > having kptr, similar to the bpf_timer case.
-> > >
-> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > ---
-> > >  include/linux/bpf.h     |  29 +++++++-
-> > >  include/linux/btf.h     |   2 +
-> > >  kernel/bpf/btf.c        | 161 ++++++++++++++++++++++++++++++++++------
-> > >  kernel/bpf/map_in_map.c |   5 +-
-> > >  kernel/bpf/syscall.c    | 112 +++++++++++++++++++++++++++-
-> > >  kernel/bpf/verifier.c   | 120 ++++++++++++++++++++++++++++++
-> > >  6 files changed, 401 insertions(+), 28 deletions(-)
-> > >
-> >
-> > [...]
-> >
-> > > +static int btf_find_field_kptr(const struct btf *btf, const struct btf_type *t,
-> > > +                              u32 off, int sz, struct btf_field_info *info)
-> > > +{
-> > > +       /* For PTR, sz is always == 8 */
-> > > +       if (!btf_type_is_ptr(t))
-> > > +               return BTF_FIELD_IGNORE;
-> > > +       t = btf_type_by_id(btf, t->type);
-> > > +
-> > > +       if (!btf_type_is_type_tag(t))
-> > > +               return BTF_FIELD_IGNORE;
-> > > +       /* Reject extra tags */
-> > > +       if (btf_type_is_type_tag(btf_type_by_id(btf, t->type)))
-> > > +               return -EINVAL;
-> >
-> > Can we have tag -> const -> tag -> volatile -> tag in BTF? Wouldn't
-> > you assume there are no more tags with just this check?
-> >
->
-> All tags are supposed to be before other modifiers, so tags come first, in
-> continuity. See [0].
+Hello,
 
-Doesn't seem like kernel's BTF validator enforces this, we should
-probably tighten that up a bit. Clang won't emit such BTF, but nothing
-prevents user from generating non-conformant BTF on its own either.
+There have been some requests for low-overhead kernel lock contention
+monitoring.  The kernel has CONFIG_LOCK_STAT to provide such an infra
+either via /proc/lock_stat or tracepoints directly.
 
->
-> Alexei suggested to reject all other tags for now.
->
->  [0]: https://lore.kernel.org/bpf/20220127154627.665163-1-yhs@fb.com
->
-> >
-> > > +       if (strcmp("kptr", __btf_name_by_offset(btf, t->name_off)))
-> > > +               return -EINVAL;
-> > > +
-> > > +       /* Get the base type */
-> > > +       if (btf_type_is_modifier(t))
-> > > +               t = btf_type_skip_modifiers(btf, t->type, NULL);
-> > > +       /* Only pointer to struct is allowed */
-> > > +       if (!__btf_type_is_struct(t))
-> > > +               return -EINVAL;
-> > > +
-> > > +       info->type = t;
-> > > +       info->off = off;
-> > > +       return BTF_FIELD_FOUND;
-> > >  }
+However it's not light-weight and hard to be used in production.  So
+I'm trying to add new tracepoints for lock contention and using them
+as a base to build a new monitoring system.
 
-[...]
+* Changes in v4
+ - use __print_flags in the TP_printk()
+ - reworked __down_common for semaphore
+ - add Tested-by from Hyeonggon Yoo
+ 
+* Changes in v3
+ - move the tracepoints deeper in the slow path
+ - remove the caller ip
+ - don't use task state in the flags
+ - add 'ret' field to the contention end tracepoint
 
-> > > +       if (map_value_has_kptr(map)) {
-> > > +               if (!bpf_capable())
-> > > +                       return -EPERM;
-> > > +               if (map->map_flags & BPF_F_RDONLY_PROG) {
-> > > +                       ret = -EACCES;
-> > > +                       goto free_map_tab;
-> > > +               }
-> > > +               if (map->map_type != BPF_MAP_TYPE_HASH &&
-> > > +                   map->map_type != BPF_MAP_TYPE_LRU_HASH &&
-> > > +                   map->map_type != BPF_MAP_TYPE_ARRAY) {
-> >
-> > what about PERCPU_ARRAY, for instance? Is there something
-> > fundamentally wrong to support it for local storage maps?
-> >
->
-> Plugging in support into maps that already take timers was easier to begin, I
-> can do percpu support as a follow up.
->
-> In case of local storage, I'm a little worried about how we prevent creating
-> reference cycles. There was a thread where find_get_task_by_pid was proposed as
-> unstable helper, once we e.g. support embedding task_struct in map, and allow
-> storing such pointer in task local storage, it would be pretty easy to construct
-> a circular reference cycle.
->
-> Should we think about this now, or should we worry about this when task_struct
-> is actually supported as kptr? It's not only task_struct, same applies to sock.
->
-> There's a discussion to be had, hence I left it out for now.
+* Changes in v2
+ - do not use lockdep infrastructure
+ - add flags argument to lock:contention_begin tracepoint
 
-PERCPU_ARRAY seemed (and still seems) like a safe map to support (same
-as PERCPU_HASH), which is why I asked. I see concerns about local
-storage, though, thanks.
+I added a flags argument in the contention_begin to classify locks in
+question.  It can tell whether it's a spinlock, reader-writer lock or
+a mutex.  With stacktrace, users can identify which lock is contended.
 
->
-> > > +                       ret = -EOPNOTSUPP;
-> > > +                       goto free_map_tab;
-> > > +               }
-> > > +       }
-> > > +
-> > > +       if (map->ops->map_check_btf) {
-> > >                 ret = map->ops->map_check_btf(map, btf, key_type, value_type);
-> > > +               if (ret < 0)
-> > > +                       goto free_map_tab;
-> > > +       }
-> > >
-> > > +       return ret;
-> > > +free_map_tab:
-> > > +       bpf_map_free_kptr_off_tab(map);
-> > >         return ret;
-> > >  }
-> > >
-> > > @@ -1639,7 +1745,7 @@ static int map_freeze(const union bpf_attr *attr)
-> > >                 return PTR_ERR(map);
-> > >
-> > >         if (map->map_type == BPF_MAP_TYPE_STRUCT_OPS ||
-> > > -           map_value_has_timer(map)) {
-> > > +           map_value_has_timer(map) || map_value_has_kptr(map)) {
-> > >                 fdput(f);
-> > >                 return -ENOTSUPP;
-> > >         }
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 4ce9a528fb63..744b7362e52e 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -3507,6 +3507,94 @@ int check_ptr_off_reg(struct bpf_verifier_env *env,
-> > >         return __check_ptr_off_reg(env, reg, regno, false);
-> > >  }
-> > >
-> > > +static int map_kptr_match_type(struct bpf_verifier_env *env,
-> > > +                              struct bpf_map_value_off_desc *off_desc,
-> > > +                              struct bpf_reg_state *reg, u32 regno)
-> > > +{
-> > > +       const char *targ_name = kernel_type_name(off_desc->btf, off_desc->btf_id);
-> > > +       const char *reg_name = "";
-> > > +
-> > > +       if (reg->type != PTR_TO_BTF_ID && reg->type != PTR_TO_BTF_ID_OR_NULL)
-> >
-> > base_type(reg->type) != PTR_TO_BTF_ID ?
-> >
-> > > +               goto bad_type;
-> > > +
-> > > +       if (!btf_is_kernel(reg->btf)) {
-> > > +               verbose(env, "R%d must point to kernel BTF\n", regno);
-> > > +               return -EINVAL;
-> > > +       }
-> > > +       /* We need to verify reg->type and reg->btf, before accessing reg->btf */
-> > > +       reg_name = kernel_type_name(reg->btf, reg->btf_id);
-> > > +
-> > > +       if (__check_ptr_off_reg(env, reg, regno, true))
-> > > +               return -EACCES;
-> > > +
-> > > +       if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
-> > > +                                 off_desc->btf, off_desc->btf_id))
-> > > +               goto bad_type;
-> > > +       return 0;
-> > > +bad_type:
-> > > +       verbose(env, "invalid kptr access, R%d type=%s%s ", regno,
-> > > +               reg_type_str(env, reg->type), reg_name);
-> > > +       verbose(env, "expected=%s%s\n", reg_type_str(env, PTR_TO_BTF_ID), targ_name);
-> >
-> > why two separate verbose calls, you can easily combine them (and they
-> > should be output on a single line given it's a single error)
-> >
->
-> reg_type_str cannot be called more than once in the same statement, since it
-> reuses the same buffer.
->
+The patch 01 added the tracepoints and move the definition to the
+mutex.c file so that it can see the tracepoints without lockdep.
 
-ah, subtle, ok, never mind then, no big deal to have two verbose()
-calls if there is a reason for it
+The patch 02 actually installs the tracepoints in the locking code.
+To minimize the overhead, they were added in the slow path of the code
+separately.  As spinlocks are defined in the arch headers, I couldn't
+handle them all.  I've just added it to generic queued spinlock and
+rwlocks only.  Each arch can add the tracepoints later.
 
-> > > +       return -EINVAL;
-> > > +}
-> > > +
-> >
-> > [...]
->
-> --
-> Kartikeya
+This series base on the current tip/locking/core and you get it from
+'locking/tracepoint-v4' branch in my tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (2):
+  locking: Add lock contention tracepoints
+  locking: Apply contention tracepoints in the slow path
+
+ include/trace/events/lock.h   | 61 +++++++++++++++++++++++++++++++++--
+ kernel/locking/lockdep.c      |  1 -
+ kernel/locking/mutex.c        |  6 ++++
+ kernel/locking/percpu-rwsem.c |  3 ++
+ kernel/locking/qrwlock.c      |  9 ++++++
+ kernel/locking/qspinlock.c    |  5 +++
+ kernel/locking/rtmutex.c      | 11 +++++++
+ kernel/locking/rwbase_rt.c    |  3 ++
+ kernel/locking/rwsem.c        |  9 ++++++
+ kernel/locking/semaphore.c    | 15 ++++++++-
+ 10 files changed, 118 insertions(+), 5 deletions(-)
+
+
+base-commit: cd27ccfc727e99352321c0c75012ab9c5a90321e
+-- 
+2.35.1.894.gb6a874cedc-goog
+
