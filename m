@@ -2,61 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4B14E4820
-	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 22:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E732A4E4822
+	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 22:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbiCVVL7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Mar 2022 17:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
+        id S230099AbiCVVMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Mar 2022 17:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233863AbiCVVL6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Mar 2022 17:11:58 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C42BE36
-        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 14:10:30 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id s8so19186131pfk.12
-        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 14:10:30 -0700 (PDT)
+        with ESMTP id S230087AbiCVVMk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Mar 2022 17:12:40 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC642662;
+        Tue, 22 Mar 2022 14:11:12 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id w7so21733125ioj.5;
+        Tue, 22 Mar 2022 14:11:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=N45Yl/mRt1WCXhv3Pa5BOFlDvRsGJBWlQ128EjJRBq4=;
-        b=V0y7zK4pl8TJrUH2Ay2zCdWsUDIhsGTgkAHxmo354kR20BVz4dt8nFWB2fCGnK87yt
-         APLIpnYMBi+bDaRIh/zhZEQ0hZtc/S+T0etC1vrFYgqYltZdZrZpS2ug7qErVg5dTnhr
-         e5VpSSTpki6AeAlC4TQt7G/FQiumkIhbbKU7LvhDIOdTYqQUQyB7jDTYwZmgQq5rl81B
-         UjqWHm/hWH7at9Q6yKofqJYO9SW7GvIFNRCZ/X/3T7+U3DFssHFmjnABTg1kYix9MCzA
-         7IrHcQvFW6Zs0oBKguDVtub6EhdaNn/lbnjo9pmashK0fVKRQobW1dI/MF4lpEzlC+QT
-         ARrA==
+        bh=DOYK8So+AZd7TCdsavhK7vVzd9phodxyXPohOzcUiLk=;
+        b=EBOGdm18SbzOZ7SoijcSpi89A8Gqmkx7spYqqvHhu/4nSaNWG5/41Lt3FtfJKHCYTB
+         FE5dyMMy688ylsK9sbe0xNWkmo5UxHfQ5Q5WHzmK+5ekxQX28j7l85nexRBOFOtlGegG
+         QrpOp7Fb136h56arpx54x2LvF+9jmLevFqhKyp9A18V7XhpjR2q0Eo0wlJa73sR+aPBa
+         QnlpvemHgShB2Y32sHehxPxKUXS7SfH7UW94UkIsDszM1n1VvwGEjn7QlTioaNV6ZhjY
+         Y0hxvH1GR7kevyMoiJCyZ2dPsWdE+svvPYUntdD1FNXZp+LAGtJcw7vcmf5vnv1lWCIU
+         9Hyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=N45Yl/mRt1WCXhv3Pa5BOFlDvRsGJBWlQ128EjJRBq4=;
-        b=IXsoaQV7RSZdBbSRsRIE52KEaL0FwCGpPN3R13f2LZMT+h/NYMfINTcGt2LdbgHcmF
-         V+5JvJe9kV8t0nT8OtO3c1lDrVyCG1Gux4GxaiTNJwYyjXAY9COrnG+EHroJTKt9pjL6
-         HQt240blJuE1Y0IsvwOUli3IGBH5vy/xTM+n1QG7yFlb0/5n1Cyy3dMyAvEk7Mwj9ebh
-         uzhs2G9CcSAE0y9nxbsOoSlJxzClhQeMIC75LjJ/YF6HhNdWyRheq0EiBXHV5GRW0IbJ
-         a7RKsI9d3fIR1jbPM2/nmcouygkLe+WEO+mf+jtkNcPOyeHn21dtNtn3RT7y11VQu6Oa
-         75TQ==
-X-Gm-Message-State: AOAM533JMjJuMbGo4EFm36xUIbgQU88sGZ7rDE/gXc3RCzVyxNOjuUUz
-        RGJha38no8/0wdXSAiGvnDgvYPqMvTi8wHrJwqM=
-X-Google-Smtp-Source: ABdhPJxZ8YYAqfEhucbHLAatNgwhMQs80T5vq/SHwpXdRlT/EoUQ+s1/6uiasmUJErs3p+odY0VVsbaxGEn6IcUr1uk=
-X-Received: by 2002:a63:6809:0:b0:37c:68d3:1224 with SMTP id
- d9-20020a636809000000b0037c68d31224mr22835528pgc.287.1647983429676; Tue, 22
- Mar 2022 14:10:29 -0700 (PDT)
+        bh=DOYK8So+AZd7TCdsavhK7vVzd9phodxyXPohOzcUiLk=;
+        b=sHVGOFSbZjstXtdeWXZYz/+KLmRkLM4QNycG8gJXPKHCW4GnTMwHlXFwsz9erMrHxn
+         FqJdn1EA8blA6ZW/WoFeNivU+F6sO4+HRjLGdvJzPb8w/ca/lVQuvxmM3djUt0D9EeUj
+         kf8eBYPmRUqf2rnGTgugTJxoekgixfqepZqNLGCydUTMSSId/ZTwiWgsEQkVD87e6S09
+         zdShW0Fp9JMOUrxJqEzue3FY22GMOpXS6FL6mzFi6QLJ/MJPklCWW26NZVUZx/xzYVSL
+         6ZogmZ8ZVk68yuDQqKHt9HhXaoSaWTXSG6aGlgG+2kTATHUYidDIpv5F4iZfhsZN0yKM
+         FJ2g==
+X-Gm-Message-State: AOAM531F3TlYyZrXNMX1qiq1afOiQCPpan9zsddUyo6mCdy2DLdP1UeL
+        6eWcHyL55AfTAVxSrtU/T1qEjZ5G3MNGEF971ZA=
+X-Google-Smtp-Source: ABdhPJxQ8ciZugCOaMDEqnXzdB8fCr1OaU+2a+phF5zQ6eW1zI6UgiSFdoJ96ZoyKdT2wraBHpWmXCVjtzoq+gFSLXA=
+X-Received: by 2002:a05:6638:4516:b0:321:4911:c292 with SMTP id
+ bs22-20020a056638451600b003214911c292mr4901855jab.145.1647983472263; Tue, 22
+ Mar 2022 14:11:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220320155510.671497-1-memxor@gmail.com> <20220320155510.671497-10-memxor@gmail.com>
-In-Reply-To: <20220320155510.671497-10-memxor@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 22 Mar 2022 14:10:17 -0700
-Message-ID: <CAADnVQJd8E6T1GRMVS+XZxKDdnMjo-WQ-CdM7+x18VPj9ufpFQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 09/13] bpf: Wire up freeing of referenced kptr
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20220322112843.6687-1-hanyihao@vivo.com>
+In-Reply-To: <20220322112843.6687-1-hanyihao@vivo.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 22 Mar 2022 14:11:01 -0700
+Message-ID: <CAEf4Bza5Lo8eyx3bkwV9jfoHFLm0sRSE8UFoatzVA0y4sJQr9A@mail.gmail.com>
+Subject: Re: [PATCH] bpf: use vmemdup_user instead of kvmalloc and copy_from_user
+To:     Yihao Han <hanyihao@vivo.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, kernel@vivo.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,87 +74,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 20, 2022 at 8:55 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Mar 22, 2022 at 4:29 AM Yihao Han <hanyihao@vivo.com> wrote:
 >
-> +               /* Find and stash the function pointer for the destruction function that
-> +                * needs to be eventually invoked from the map free path.
-> +                */
-> +               if (info_arr[i].flags & BPF_MAP_VALUE_OFF_F_REF) {
-> +                       const struct btf_type *dtor_func, *dtor_func_proto;
-> +                       const struct btf_param *args;
-> +                       const char *dtor_func_name;
-> +                       unsigned long addr;
-> +                       s32 dtor_btf_id;
-> +                       u32 nr_args;
-> +
-> +                       /* This call also serves as a whitelist of allowed objects that
-> +                        * can be used as a referenced pointer and be stored in a map at
-> +                        * the same time.
-> +                        */
-> +                       dtor_btf_id = btf_find_dtor_kfunc(off_btf, id);
-> +                       if (dtor_btf_id < 0) {
-> +                               ret = dtor_btf_id;
-> +                               btf_put(off_btf);
-> +                               goto end;
-> +                       }
-> +
-> +                       dtor_func = btf_type_by_id(off_btf, dtor_btf_id);
-> +                       if (!dtor_func || !btf_type_is_func(dtor_func)) {
-> +                               ret = -EINVAL;
-> +                               btf_put(off_btf);
-> +                               goto end;
-> +                       }
-> +
-> +                       dtor_func_proto = btf_type_by_id(off_btf, dtor_func->type);
-> +                       if (!dtor_func_proto || !btf_type_is_func_proto(dtor_func_proto)) {
-> +                               ret = -EINVAL;
-> +                               btf_put(off_btf);
-> +                               goto end;
-> +                       }
-> +
-> +                       /* Make sure the prototype of the destructor kfunc is 'void func(type *)' */
-> +                       t = btf_type_by_id(off_btf, dtor_func_proto->type);
-> +                       if (!t || !btf_type_is_void(t)) {
-> +                               ret = -EINVAL;
-> +                               btf_put(off_btf);
-> +                               goto end;
-> +                       }
-> +
-> +                       nr_args = btf_type_vlen(dtor_func_proto);
-> +                       args = btf_params(dtor_func_proto);
-> +
-> +                       t = NULL;
-> +                       if (nr_args)
-> +                               t = btf_type_by_id(off_btf, args[0].type);
-> +                       /* Allow any pointer type, as width on targets Linux supports
-> +                        * will be same for all pointer types (i.e. sizeof(void *))
-> +                        */
-> +                       if (nr_args != 1 || !t || !btf_type_is_ptr(t)) {
-> +                               ret = -EINVAL;
-> +                               btf_put(off_btf);
-> +                               goto end;
-> +                       }
-> +
-> +                       if (btf_is_module(btf)) {
-> +                               mod = btf_try_get_module(off_btf);
-> +                               if (!mod) {
-> +                                       ret = -ENXIO;
-> +                                       btf_put(off_btf);
-> +                                       goto end;
-> +                               }
-> +                       }
-> +
-> +                       dtor_func_name = __btf_name_by_offset(off_btf, dtor_func->name_off);
-> +                       addr = kallsyms_lookup_name(dtor_func_name);
-> +                       if (!addr) {
-> +                               ret = -EINVAL;
-> +                               module_put(mod);
-> +                               btf_put(off_btf);
-> +                               goto end;
-> +                       }
-> +                       tab->off[i].dtor = (void *)addr;
+> fix memdup_user.cocci warning:
+> kernel/trace/bpf_trace.c:2450:12-20: WARNING opportunity
+> for vmemdup_user
+>
+> Signed-off-by: Yihao Han <hanyihao@vivo.com>
+> ---
+>  kernel/trace/bpf_trace.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 7fa2ebc07f60..aff2461c1ea2 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2447,13 +2447,9 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>
+>         ucookies = u64_to_user_ptr(attr->link_create.kprobe_multi.cookies);
+>         if (ucookies) {
+> -               cookies = kvmalloc(size, GFP_KERNEL);
+> -               if (!cookies) {
+> -                       err = -ENOMEM;
+> -                       goto error;
+> -               }
+> -               if (copy_from_user(cookies, ucookies, size)) {
+> -                       err = -EFAULT;
+> +               cookies = vmemdup_user(ucookies, size);
 
-Most of the above should probably be in register_btf_id_dtor_kfuncs().
-It's best to fail early.
-Here we'll just remember dtor function pointer to speed up release.
+does kvfree() handle ERR_PTR() values properly? I doubt so. Did you
+validate your change or just blindly applied some tool?
+
+> +               if (IS_ERR(cookies)) {
+> +                       err = PTR_ERR(cookies);
+>                         goto error;
+>                 }
+>         }
+> --
+> 2.17.1
+>
