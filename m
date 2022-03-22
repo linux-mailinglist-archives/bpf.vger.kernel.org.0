@@ -2,67 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A774E388D
-	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 06:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCE94E388F
+	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 06:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236818AbiCVFou (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Mar 2022 01:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S236692AbiCVFrX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Mar 2022 01:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236692AbiCVFon (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Mar 2022 01:44:43 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B33626D7;
-        Mon, 21 Mar 2022 22:43:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 16BA6CE1C55;
-        Tue, 22 Mar 2022 05:43:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8867EC340EC;
-        Tue, 22 Mar 2022 05:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647927792;
-        bh=XXsgQplv5tsDsp+JpjAV2mFQ8BN34vMZd+O0m7OTm1U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dJSy6/yFohhy868TQqhKWePp8sp9qI4GmvX4XE39sYWTU0FjgDaJKEVGmJ30rAmEC
-         UMmFUkAd7JJ+rto2ebWs0Q+YgD2VaO/JvYtsHWesaLwin8O+8uyi9Fsh441O0Tb0TB
-         yGj0jdBi75V07P4vYn3eAdKL4PkORFIPrE9enzVSjPdVhWReP8xJSdLvMMSD6/37pw
-         0rPC3PTh9tTjnyxCASMTyYKkGS4pvK9ZfcSsMenXpJDJJG0lrCkGD0GRvAam60c6GE
-         dja41NNMX2W0eMf6r2AnBrpPBFj9U0buTbrYCeEeh2qZx2fSUbJ9hB24urwHFXwRs5
-         2MXGUSUg/Bgxw==
-Date:   Tue, 22 Mar 2022 14:43:07 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        with ESMTP id S236774AbiCVFrW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Mar 2022 01:47:22 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CB120F4F
+        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 22:45:54 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e18so2822115ilr.2
+        for <bpf@vger.kernel.org>; Mon, 21 Mar 2022 22:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e4SMBB2X0yWW0o++H/U+3OwYdZxFv7FKq/2SqkhP1J8=;
+        b=ZcmTVINEADiNGXeIW+WgIZa5jBZUluZFmREXt/LWJjYJtNDe7M8P1npqLQ/Ckf/5e3
+         Fe6GjFzhjZUdLhadTiIvZWpl7BRoLohDcmpcA/aEl/w1QP6qIvz/W2IGGtQFaGA1hVuZ
+         B7Hqan6HgeManzz+9AfbW4qehbILy7M+fI0DLOOwRW4smAy6Ce7Gadkt/HDA/1pdQphj
+         DU9gcbXnIIMoX8fdX09ZleDnIskbkZck+87Ncdj6sfl9rX7C76ofpX9cG+c3my5A7deT
+         taXDnDJj4dOWc+Ao/Xg/hJJ0oDj0Ns82WwHiTdDLIkMtiDPRk0Zy4pa63PfJo00Dyy2X
+         02BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e4SMBB2X0yWW0o++H/U+3OwYdZxFv7FKq/2SqkhP1J8=;
+        b=wU5WoS59DqmWrjfAfqIVlewnN2U/tzxlbUeeYGkg0lD/NZQbTPpQNp7W49plqC93Rj
+         kdIXY6L32d1sRhw1T8KCeKbnwgIMOnI7dmHMXBZHdd4HaiPH7eVtP91i3QyKnl+SZ9my
+         WMFdpVQE4udm8Knbwjl33OEpraz2JpiSQphFovTO7r3xgniPtiDMdHKmXPAFZ4SK7/yV
+         0k2is/EGjipF7pHFccL2FN91eF/s8TvCxqYeoEbHRj7IBYzvjf5SDrNwX97FqMnhIlDD
+         cUUPLYrXpsAgYHcMMjeMx3U9rJU9LqiNIRcYPxpnEVjf1Hk5HrKRaIcoQ+V3faNAG+xX
+         SGCg==
+X-Gm-Message-State: AOAM531+DL8xO5ysFCPt2Gnf5rYIKgDzWHYn0uYf+EdXjeUKJx8SVrpz
+        vHIdbo0/LTV2TuGytK9MFo32Uy0+XbGa2kh1iaw=
+X-Google-Smtp-Source: ABdhPJx7kBHT8KQHgEqTSscpiSM2/K9yX2/DcVtGq9mmmsRQqILTg64v9J5paayot0hlZCb4W9l4HMtOYUpMZxM6rKg=
+X-Received: by 2002:a92:ca0c:0:b0:2c7:7983:255f with SMTP id
+ j12-20020a92ca0c000000b002c77983255fmr10670398ils.252.1647927954062; Mon, 21
+ Mar 2022 22:45:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220320155510.671497-1-memxor@gmail.com> <20220320155510.671497-4-memxor@gmail.com>
+In-Reply-To: <20220320155510.671497-4-memxor@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 21 Mar 2022 22:45:42 -0700
+Message-ID: <CAEf4BzaJuW8tdmFz_NDe8K2qeNuLcOjVo3ZP4g5H1Yp60sQrTA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 03/13] bpf: Allow storing unreferenced kptr in map
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: pull-request: bpf-next 2022-03-21
-Message-Id: <20220322144307.72e040b482728241f7aeb5ad@kernel.org>
-In-Reply-To: <CAADnVQKXi_sO-3ouBM0DnGvtEp0SjdzctPRD-E_ODv=XxH+SFw@mail.gmail.com>
-References: <20220321224608.55798-1-alexei.starovoitov@gmail.com>
-        <CAHk-=wheGrBxOfMpWhQg1iswCKYig8vADnFVsA4oFWTY9NU5jA@mail.gmail.com>
-        <CAADnVQK=JsytH_OtT6Q6fnijkTyv7NANV2902woQ6XT-fwWXQA@mail.gmail.com>
-        <CAHk-=wi0fNH+FS-ng2Nvq2p1Jbfn+-G1AsK-XY7MD4gTJZg5ZA@mail.gmail.com>
-        <CAADnVQKreLtGkfAVXxwLGUVKobqYhBS5r+GtNa6Oc8BUzYa92Q@mail.gmail.com>
-        <20220322113641.763885257f741ac5c0cb2c06@kernel.org>
-        <CAADnVQ+HEeBXm0qXdnxn1of-dPr7THcVZxb9Adud0t9epVsWKQ@mail.gmail.com>
-        <20220322140537.d3f3fa3600d3b80c4f226e7c@kernel.org>
-        <CAADnVQKXi_sO-3ouBM0DnGvtEp0SjdzctPRD-E_ODv=XxH+SFw@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,128 +68,445 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 21 Mar 2022 22:18:04 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Sun, Mar 20, 2022 at 8:55 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> This commit introduces a new pointer type 'kptr' which can be embedded
+> in a map value as holds a PTR_TO_BTF_ID stored by a BPF program during
+> its invocation. Storing to such a kptr, BPF program's PTR_TO_BTF_ID
+> register must have the same type as in the map value's BTF, and loading
+> a kptr marks the destination register as PTR_TO_BTF_ID with the correct
+> kernel BTF and BTF ID.
+>
+> Such kptr are unreferenced, i.e. by the time another invocation of the
+> BPF program loads this pointer, the object which the pointer points to
+> may not longer exist. Since PTR_TO_BTF_ID loads (using BPF_LDX) are
+> patched to PROBE_MEM loads by the verifier, it would safe to allow user
+> to still access such invalid pointer, but passing such pointers into
+> BPF helpers and kfuncs should not be permitted. A future patch in this
+> series will close this gap.
+>
+> The flexibility offered by allowing programs to dereference such invalid
+> pointers while being safe at runtime frees the verifier from doing
+> complex lifetime tracking. As long as the user may ensure that the
+> object remains valid, it can ensure data read by it from the kernel
+> object is valid.
+>
+> The user indicates that a certain pointer must be treated as kptr
+> capable of accepting stores of PTR_TO_BTF_ID of a certain type, by using
+> a BTF type tag 'kptr' on the pointed to type of the pointer. Then, this
+> information is recorded in the object BTF which will be passed into the
+> kernel by way of map's BTF information. The name and kind from the map
+> value BTF is used to look up the in-kernel type, and the actual BTF and
+> BTF ID is recorded in the map struct in a new kptr_off_tab member. For
+> now, only storing pointers to structs is permitted.
+>
+> An example of this specification is shown below:
+>
+>         #define __kptr __attribute__((btf_type_tag("kptr")))
+>
+>         struct map_value {
+>                 ...
+>                 struct task_struct __kptr *task;
+>                 ...
+>         };
+>
+> Then, in a BPF program, user may store PTR_TO_BTF_ID with the type
+> task_struct into the map, and then load it later.
+>
+> Note that the destination register is marked PTR_TO_BTF_ID_OR_NULL, as
+> the verifier cannot know whether the value is NULL or not statically, it
+> must treat all potential loads at that map value offset as loading a
+> possibly NULL pointer.
+>
+> Only BPF_LDX, BPF_STX, and BPF_ST with insn->imm = 0 (to denote NULL)
+> are allowed instructions that can access such a pointer. On BPF_LDX, the
+> destination register is updated to be a PTR_TO_BTF_ID, and on BPF_STX,
+> it is checked whether the source register type is a PTR_TO_BTF_ID with
+> same BTF type as specified in the map BTF. The access size must always
+> be BPF_DW.
+>
+> For the map in map support, the kptr_off_tab for outer map is copied
+> from the inner map's kptr_off_tab. It was chosen to do a deep copy
+> instead of introducing a refcount to kptr_off_tab, because the copy only
+> needs to be done when paramterizing using inner_map_fd in the map in map
+> case, hence would be unnecessary for all other users.
+>
+> It is not permitted to use MAP_FREEZE command and mmap for BPF map
+> having kptr, similar to the bpf_timer case.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h     |  29 +++++++-
+>  include/linux/btf.h     |   2 +
+>  kernel/bpf/btf.c        | 161 ++++++++++++++++++++++++++++++++++------
+>  kernel/bpf/map_in_map.c |   5 +-
+>  kernel/bpf/syscall.c    | 112 +++++++++++++++++++++++++++-
+>  kernel/bpf/verifier.c   | 120 ++++++++++++++++++++++++++++++
+>  6 files changed, 401 insertions(+), 28 deletions(-)
+>
 
-> On Mon, Mar 21, 2022 at 10:05 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Mon, 21 Mar 2022 21:35:55 -0700
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> >
-> > > On Mon, Mar 21, 2022 at 7:36 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > >
-> > > > Hi Linus and Alexei,
-> > > >
-> > > > At first, sorry about this issue. I missed to Cc'ed to arch maintainers.
-> > > >
-> > > > On Mon, 21 Mar 2022 17:31:28 -0700
-> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > > On Mon, Mar 21, 2022 at 4:59 PM Linus Torvalds
-> > > > > <torvalds@linux-foundation.org> wrote:
-> > > > > >
-> > > > > > On Mon, Mar 21, 2022 at 4:11 PM Alexei Starovoitov
-> > > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > >
-> > > > > > > Did you look at the code?
-> > > > > > > In particular:
-> > > > > > > https://lore.kernel.org/bpf/164735286243.1084943.7477055110527046644.stgit@devnote2/
-> > > > > > >
-> > > > > > > it's a copy paste of arch/x86/kernel/kprobes/core.c
-> > > > > > >
-> > > > > > > How is it "bad architecture code" ?
-> > > > > >
-> > > > > > It's "bad architecture code" because the architecture maintainers have
-> > > > > > made changes to check ENDBR in the meantime.
-> > > > > >
-> > > > > > So it used to be perfectly fine. It's not any longer - and the
-> > > > > > architecture maintainers were clearly never actually cc'd on the
-> > > > > > changes, so they didn't find out until much too late.
-> > > >
-> > > > Let me retry porting fprobe on top of ENDBR things and confirm with
-> > > > arch maintainers.
-> > >
-> > > Just look at linux-next.
-> > > objtool warning is the only issue.
-> >
-> > Actually, there are conflicts with arm tree and Rust tree too.
-> > I found I missed the objtool annotation patch on IBT series and fixed it.
-> 
-> 4 arch patches were reverted.
-> 
-> > >
-> > > > >
-> > > > > Not denying that missing cc was an issue.
-> > > > >
-> > > > > We can drop just arch patches:
-> > > > >       rethook: x86: Add rethook x86 implementation
-> > > > >       arm64: rethook: Add arm64 rethook implementation
-> > > > >       powerpc: Add rethook support
-> > > > >       ARM: rethook: Add rethook arm implementation
-> > > > >
-> > > > > or everything including Jiri's work on top of it.
-> > > > > Which would be a massive 27 patches.
-> > > > >
-> > > > > We'd prefer the former, of course.
-> > > > > Later during the merge window we can add a single
-> > > > > 'rethook: x86' patch that takes endbr into account,
-> > > > > so that multi-kprobe feature will work on x86.
-> > > > > For the next merge window we can add other archs.
-> > > > > Would that work?
-> > > >
-> > > > BTW, As far as I can see the ENDBR things, the major issue on fprobe
-> > > > is that the ftrace'ed ip address will be different from the symbol
-> > > > address (even) on x86. That must be ensured to work before merge.
-> > > > Let me check it on Linus's tree at first.
-> > >
-> > > That's not an issue. Peter tweaked ftrace logic and fprobe plugs
-> > > into that.
-> > > The fprobe/multi-kprobe works fine in linux-next.
-> >
-> > Yeah, I think fprobe should work because it uses
-> > ftrace_location_range(func-entry, func-end) for non-x86 arch.
-> >
-> > >
-> > > bpf selftest for multi kprobe needs this hack:
-> > > diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c
-> > > b/tools/testing/selftests/bpf/progs/kprobe_multi.c
-> > > index af27d2c6fce8..530a64e2996a 100644
-> > > --- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
-> > > +++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
-> > > @@ -45,7 +45,7 @@ static void kprobe_multi_check(void *ctx, bool is_return)
-> > >         __u64 addr = bpf_get_func_ip(ctx);
-> > >
-> > >  #define SET(__var, __addr, __cookie) ({                        \
-> > > -       if (((const void *) addr == __addr) &&          \
-> > > +       if (((const void *) addr == __addr + 4) &&              \
-> > >              (!test_cookie || (cookie == __cookie)))    \
-> >
-> > Hmm, this is an ugly hack... You need to use actual ftrace addr, instead of
-> > symbol addr. With IBT series, you can use ftrace_location(symbol-addr) to
-> > get the ftrace-addr. (e.g. addr == ftrace_location(__addr) should work)
-> 
-> It's a temporary hack.
-> bpf prog cannot call an arbitrary function like ftrace_location.
+[...]
 
-Ah, OK. Then you may need to check the addr in some range.
+> +static int btf_find_field_kptr(const struct btf *btf, const struct btf_type *t,
+> +                              u32 off, int sz, struct btf_field_info *info)
+> +{
+> +       /* For PTR, sz is always == 8 */
+> +       if (!btf_type_is_ptr(t))
+> +               return BTF_FIELD_IGNORE;
+> +       t = btf_type_by_id(btf, t->type);
+> +
+> +       if (!btf_type_is_type_tag(t))
+> +               return BTF_FIELD_IGNORE;
+> +       /* Reject extra tags */
+> +       if (btf_type_is_type_tag(btf_type_by_id(btf, t->type)))
+> +               return -EINVAL;
+
+Can we have tag -> const -> tag -> volatile -> tag in BTF? Wouldn't
+you assume there are no more tags with just this check?
 
 
-> > > to pass when both CONFIG_FPROBE=y and CONFIG_X86_KERNEL_IBT=y.
-> > > The test is too strict. It didn't account for the possibility of endbr.
-> > >
-> > > So I'm inclined to drop only 4 arch patches instead of the whole thing.
-> >
-> > OK, but it is hard to understand how it works without knowing rethook itself.
-> > I would like to send whole v13 patch series to arch maintainers.
-> 
-> fprobe is a glorified kprobe and pretty simple code by itself.
-> It's too late for v13. Please send 'rethook: x86' patch only
-> with endbr annotations and get it acked.
-> The other archs will wait until the next merge window.
+> +       if (strcmp("kptr", __btf_name_by_offset(btf, t->name_off)))
+> +               return -EINVAL;
+> +
+> +       /* Get the base type */
+> +       if (btf_type_is_modifier(t))
+> +               t = btf_type_skip_modifiers(btf, t->type, NULL);
+> +       /* Only pointer to struct is allowed */
+> +       if (!__btf_type_is_struct(t))
+> +               return -EINVAL;
+> +
+> +       info->type = t;
+> +       info->off = off;
+> +       return BTF_FIELD_FOUND;
+>  }
+>
+>  static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t,
+>                                  const char *name, int sz, int align, int field_type,
+> -                                struct btf_field_info *info)
+> +                                struct btf_field_info *info, int info_cnt)
+>  {
+>         const struct btf_member *member;
+> +       int ret, idx = 0;
+>         u32 i, off;
+> -       int ret;
+>
+>         for_each_member(i, t, member) {
+>                 const struct btf_type *member_type = btf_type_by_id(btf,
+> @@ -3210,24 +3242,35 @@ static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t
+>                 switch (field_type) {
+>                 case BTF_FIELD_SPIN_LOCK:
+>                 case BTF_FIELD_TIMER:
+> -                       ret = btf_find_field_struct(btf, member_type, off, sz, info);
+> +                       ret = btf_find_field_struct(btf, member_type, off, sz, &info[idx]);
+> +                       if (ret < 0)
+> +                               return ret;
+> +                       break;
+> +               case BTF_FIELD_KPTR:
+> +                       ret = btf_find_field_kptr(btf, member_type, off, sz, &info[idx]);
+>                         if (ret < 0)
+>                                 return ret;
+>                         break;
+>                 default:
+>                         return -EFAULT;
+>                 }
+> +
+> +               if (ret == BTF_FIELD_FOUND && idx >= info_cnt)
 
-OK. I'll send the patch.
+hm.. haven't you already written info[info_cnt] above by now? I see
+that above you do (info_cnt - 1), but why such tricks if you can have
+a temporary struct btf_field_info on the stack, write into it, and if
+BTF_FIELD_FOUND and idx < info_cnt then write it into info[idx]?
 
-Thank you,
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> +                       return -E2BIG;
+> +               else if (ret == BTF_FIELD_IGNORE)
+> +                       continue;
+> +               ++idx;
+>         }
+> -       return 0;
+> +       return idx;
+>  }
+>
+>  static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+>                                 const char *name, int sz, int align, int field_type,
+> -                               struct btf_field_info *info)
+> +                               struct btf_field_info *info, int info_cnt)
+>  {
+>         const struct btf_var_secinfo *vsi;
+> +       int ret, idx = 0;
+>         u32 i, off;
+> -       int ret;
+>
+>         for_each_vsi(i, t, vsi) {
+>                 const struct btf_type *var = btf_type_by_id(btf, vsi->type);
+> @@ -3245,19 +3288,30 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+>                 switch (field_type) {
+>                 case BTF_FIELD_SPIN_LOCK:
+>                 case BTF_FIELD_TIMER:
+> -                       ret = btf_find_field_struct(btf, var_type, off, sz, info);
+> +                       ret = btf_find_field_struct(btf, var_type, off, sz, &info[idx]);
+> +                       if (ret < 0)
+> +                               return ret;
+> +                       break;
+> +               case BTF_FIELD_KPTR:
+> +                       ret = btf_find_field_kptr(btf, var_type, off, sz, &info[idx]);
+>                         if (ret < 0)
+>                                 return ret;
+>                         break;
+>                 default:
+>                         return -EFAULT;
+>                 }
+> +
+> +               if (ret == BTF_FIELD_FOUND && idx >= info_cnt)
+
+same, already writing past the end of array?
+
+> +                       return -E2BIG;
+> +               if (ret == BTF_FIELD_IGNORE)
+> +                       continue;
+> +               ++idx;
+>         }
+> -       return 0;
+> +       return idx;
+>  }
+>
+>  static int btf_find_field(const struct btf *btf, const struct btf_type *t,
+> -                         int field_type, struct btf_field_info *info)
+> +                         int field_type, struct btf_field_info *info, int info_cnt)
+>  {
+>         const char *name;
+>         int sz, align;
+> @@ -3273,14 +3327,20 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
+>                 sz = sizeof(struct bpf_timer);
+>                 align = __alignof__(struct bpf_timer);
+>                 break;
+> +       case BTF_FIELD_KPTR:
+> +               name = NULL;
+> +               sz = sizeof(u64);
+> +               align = __alignof__(u64);
+
+can be 4 on 32-bit arch, is that ok?
+
+> +               break;
+>         default:
+>                 return -EFAULT;
+>         }
+>
+> +       /* The maximum allowed fields of a certain type will be info_cnt - 1 */
+>         if (__btf_type_is_struct(t))
+> -               return btf_find_struct_field(btf, t, name, sz, align, field_type, info);
+> +               return btf_find_struct_field(btf, t, name, sz, align, field_type, info, info_cnt - 1);
+
+why -1, to avoid overwriting past the end of array?
+
+>         else if (btf_type_is_datasec(t))
+> -               return btf_find_datasec_var(btf, t, name, sz, align, field_type, info);
+> +               return btf_find_datasec_var(btf, t, name, sz, align, field_type, info, info_cnt - 1);
+>         return -EINVAL;
+>  }
+>
+> @@ -3290,24 +3350,79 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
+>   */
+>  int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t)
+>  {
+> -       struct btf_field_info info = { .off = -ENOENT };
+> +       /* btf_find_field requires array of size max + 1 */
+
+ok, right, as I expected above, but see also suggestion to not have
+these weird implicit expectations
+
+> +       struct btf_field_info info_arr[2];
+>         int ret;
+>
+> -       ret = btf_find_field(btf, t, BTF_FIELD_SPIN_LOCK, &info);
+> +       ret = btf_find_field(btf, t, BTF_FIELD_SPIN_LOCK, info_arr, ARRAY_SIZE(info_arr));
+>         if (ret < 0)
+>                 return ret;
+> -       return info.off;
+> +       if (!ret)
+> +               return -ENOENT;
+> +       return info_arr[0].off;
+>  }
+>
+>  int btf_find_timer(const struct btf *btf, const struct btf_type *t)
+>  {
+> -       struct btf_field_info info = { .off = -ENOENT };
+> +       /* btf_find_field requires array of size max + 1 */
+> +       struct btf_field_info info_arr[2];
+>         int ret;
+>
+> -       ret = btf_find_field(btf, t, BTF_FIELD_TIMER, &info);
+> +       ret = btf_find_field(btf, t, BTF_FIELD_TIMER, info_arr, ARRAY_SIZE(info_arr));
+>         if (ret < 0)
+>                 return ret;
+> -       return info.off;
+> +       if (!ret)
+> +               return -ENOENT;
+> +       return info_arr[0].off;
+> +}
+> +
+> +struct bpf_map_value_off *btf_find_kptr(const struct btf *btf,
+> +                                       const struct btf_type *t)
+> +{
+> +       /* btf_find_field requires array of size max + 1 */
+> +       struct btf_field_info info_arr[BPF_MAP_VALUE_OFF_MAX + 1];
+> +       struct bpf_map_value_off *tab;
+> +       int ret, i, nr_off;
+> +
+> +       /* Revisit stack usage when bumping BPF_MAP_VALUE_OFF_MAX */
+> +       BUILD_BUG_ON(BPF_MAP_VALUE_OFF_MAX != 8);
+
+you can store u32 type_id instead of full btf_type pointer, type
+looking below in the loop is cheap and won't fail
+
+
+> +
+> +       ret = btf_find_field(btf, t, BTF_FIELD_KPTR, info_arr, ARRAY_SIZE(info_arr));
+> +       if (ret < 0)
+> +               return ERR_PTR(ret);
+> +       if (!ret)
+> +               return NULL;
+> +
+
+[...]
+
+> +
+> +bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b)
+> +{
+> +       struct bpf_map_value_off *tab_a = map_a->kptr_off_tab, *tab_b = map_b->kptr_off_tab;
+> +       bool a_has_kptr = map_value_has_kptr(map_a), b_has_kptr = map_value_has_kptr(map_b);
+> +       int size;
+> +
+> +       if (!a_has_kptr && !b_has_kptr)
+> +               return true;
+> +       if ((a_has_kptr && !b_has_kptr) || (!a_has_kptr && b_has_kptr))
+> +               return false;
+
+if (a_has_kptr != b_has_kptr)
+    return false;
+
+> +       if (tab_a->nr_off != tab_b->nr_off)
+> +               return false;
+> +       size = offsetof(struct bpf_map_value_off, off[tab_a->nr_off]);
+> +       return !memcmp(tab_a, tab_b, size);
+> +}
+> +
+>  /* called from workqueue */
+>  static void bpf_map_free_deferred(struct work_struct *work)
+>  {
+>         struct bpf_map *map = container_of(work, struct bpf_map, work);
+>
+>         security_bpf_map_free(map);
+> +       bpf_map_free_kptr_off_tab(map);
+>         bpf_map_release_memcg(map);
+>         /* implementation dependent freeing */
+>         map->ops->map_free(map);
+> @@ -640,7 +724,7 @@ static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
+>         int err;
+>
+>         if (!map->ops->map_mmap || map_value_has_spin_lock(map) ||
+> -           map_value_has_timer(map))
+> +           map_value_has_timer(map) || map_value_has_kptr(map))
+>                 return -ENOTSUPP;
+>
+>         if (!(vma->vm_flags & VM_SHARED))
+> @@ -820,9 +904,31 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+>                         return -EOPNOTSUPP;
+>         }
+>
+> -       if (map->ops->map_check_btf)
+> +       map->kptr_off_tab = btf_find_kptr(btf, value_type);
+
+btf_find_kptr() is so confusingly named. It certainly can find more
+than one kptr, so at least it should be btf_find_kptrs(). Combining
+with Joanne's suggestion, btf_parse_kptrs() would indeed be better.
+
+> +       if (map_value_has_kptr(map)) {
+> +               if (!bpf_capable())
+> +                       return -EPERM;
+> +               if (map->map_flags & BPF_F_RDONLY_PROG) {
+> +                       ret = -EACCES;
+> +                       goto free_map_tab;
+> +               }
+> +               if (map->map_type != BPF_MAP_TYPE_HASH &&
+> +                   map->map_type != BPF_MAP_TYPE_LRU_HASH &&
+> +                   map->map_type != BPF_MAP_TYPE_ARRAY) {
+
+what about PERCPU_ARRAY, for instance? Is there something
+fundamentally wrong to support it for local storage maps?
+
+> +                       ret = -EOPNOTSUPP;
+> +                       goto free_map_tab;
+> +               }
+> +       }
+> +
+> +       if (map->ops->map_check_btf) {
+>                 ret = map->ops->map_check_btf(map, btf, key_type, value_type);
+> +               if (ret < 0)
+> +                       goto free_map_tab;
+> +       }
+>
+> +       return ret;
+> +free_map_tab:
+> +       bpf_map_free_kptr_off_tab(map);
+>         return ret;
+>  }
+>
+> @@ -1639,7 +1745,7 @@ static int map_freeze(const union bpf_attr *attr)
+>                 return PTR_ERR(map);
+>
+>         if (map->map_type == BPF_MAP_TYPE_STRUCT_OPS ||
+> -           map_value_has_timer(map)) {
+> +           map_value_has_timer(map) || map_value_has_kptr(map)) {
+>                 fdput(f);
+>                 return -ENOTSUPP;
+>         }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 4ce9a528fb63..744b7362e52e 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3507,6 +3507,94 @@ int check_ptr_off_reg(struct bpf_verifier_env *env,
+>         return __check_ptr_off_reg(env, reg, regno, false);
+>  }
+>
+> +static int map_kptr_match_type(struct bpf_verifier_env *env,
+> +                              struct bpf_map_value_off_desc *off_desc,
+> +                              struct bpf_reg_state *reg, u32 regno)
+> +{
+> +       const char *targ_name = kernel_type_name(off_desc->btf, off_desc->btf_id);
+> +       const char *reg_name = "";
+> +
+> +       if (reg->type != PTR_TO_BTF_ID && reg->type != PTR_TO_BTF_ID_OR_NULL)
+
+base_type(reg->type) != PTR_TO_BTF_ID ?
+
+> +               goto bad_type;
+> +
+> +       if (!btf_is_kernel(reg->btf)) {
+> +               verbose(env, "R%d must point to kernel BTF\n", regno);
+> +               return -EINVAL;
+> +       }
+> +       /* We need to verify reg->type and reg->btf, before accessing reg->btf */
+> +       reg_name = kernel_type_name(reg->btf, reg->btf_id);
+> +
+> +       if (__check_ptr_off_reg(env, reg, regno, true))
+> +               return -EACCES;
+> +
+> +       if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
+> +                                 off_desc->btf, off_desc->btf_id))
+> +               goto bad_type;
+> +       return 0;
+> +bad_type:
+> +       verbose(env, "invalid kptr access, R%d type=%s%s ", regno,
+> +               reg_type_str(env, reg->type), reg_name);
+> +       verbose(env, "expected=%s%s\n", reg_type_str(env, PTR_TO_BTF_ID), targ_name);
+
+why two separate verbose calls, you can easily combine them (and they
+should be output on a single line given it's a single error)
+
+> +       return -EINVAL;
+> +}
+> +
+
+[...]
