@@ -2,170 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 279144E493A
-	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 23:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D91FF4E4954
+	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 23:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbiCVWkM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Mar 2022 18:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
+        id S229919AbiCVWv7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Mar 2022 18:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbiCVWkL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Mar 2022 18:40:11 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6ACA3335A
-        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 15:38:42 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id q14so12638652ljc.12
-        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 15:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9TgYlWmM7uhnWN+D8arI0fqEIh0rS+ISe+Ck+JBkN2o=;
-        b=K4wRLnurTCZOQfG6VzbSyzlgcCV52Rj8JxMEmfotNPafyNxGsMHFaHgQVO+rddyOH7
-         x/sWvPpGvpS5Pb6QF47ymdOOW1CWg/pD88hbkCzCsI5JW9jXiHxi6RTHcEL59RRR7ecQ
-         idMAC/GnbOu5uiJcnLXsXZcS9dMx+HDMwTLY5BbL8ZAPs1k7m4nUYMNU9PN9WNrQnTrF
-         bQ2Mf6T7PuU9XPl+yr+Yur/QNlD/SWpRCVXGJmrvNwco+mxGYHpQc7g0nKxiDdxhS2Yo
-         6X9uAY/RO4IPy+EeVhNuO7BE0SHljI9Erfs14RIhILxDJh914Jck7HzKW5PxmGSQXsIZ
-         45tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9TgYlWmM7uhnWN+D8arI0fqEIh0rS+ISe+Ck+JBkN2o=;
-        b=lgRLNE39p13jrxTLYXKeedCY7bkjUSLqKFP/qqMMbA5ocpyXkEQYS4MQc2HRc0pYvp
-         BputedDQ/MCdncmxnOvKNzRYPeXmVk5eAwDEEsukhavOGiO8c3bp6hHAA78kMUSIy9U7
-         jNAMTVPYhn7MD1dj3TRKJJVWZNj3/OHUSHgxSO6xkUBKgh0b3wEIzrbX865Gx1bszlp/
-         S8SEnguJ6jvHE9q1pI0sfw2PBJwuQ4/xJKx6CpDuvuJrpNnGE9RJHZGzM+a6vCMgB8bG
-         X7d3TEgszfS6xjGaNz5R61mxtRZbkWzjZ8tKLrJ4+v+L3rS+dFLzlrnKXGiYAAsOG26b
-         n5bQ==
-X-Gm-Message-State: AOAM532s+MfduMzBEqrghI8U5CKrzEDh/IBPGo9ltjEb4M4IKfLyedDM
-        IvJJ/U0BOvwueztQZ02wL/TwUf+As0IQ2XN8ROU=
-X-Google-Smtp-Source: ABdhPJwlEgfMlJkQ7ZUnRtL4KiehESBFDTni4/ii7yhxJG4CiL1bhgj/ZoYKGs+//W64YqfTK08YpJfDB0k/QkH65jM=
-X-Received: by 2002:a2e:b946:0:b0:244:beb1:72b2 with SMTP id
- 6-20020a2eb946000000b00244beb172b2mr20466224ljs.240.1647988720949; Tue, 22
- Mar 2022 15:38:40 -0700 (PDT)
+        with ESMTP id S229778AbiCVWv6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Mar 2022 18:51:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0365DA5E;
+        Tue, 22 Mar 2022 15:50:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8903560F76;
+        Tue, 22 Mar 2022 22:50:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D91DFC340F2;
+        Tue, 22 Mar 2022 22:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647989426;
+        bh=FFKP6nY5FeetNs2/Moob5TkdE8pyS6iLSMf135q2HJc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KPfmW0b7VuxIvri2aGnCqEvFhTRJ+IyNWHq09z0Ls3gFifvuWgDWUb2KH4s4ZGEBM
+         oYn/LB1z8ZqiecChKlGbkpbH4EHQXfqnkO4Clrwx4zLSIYfxV8nQkw4gkzVIzoRUut
+         b4/YFDbIKTQ/HIf+obcdQaI63vbgOe0eoCGPq/ALqTj1QlKT8okOQGQMe+4jAxP9kw
+         HQwshC72Foi19zbDdrpyz01AN1+Gey60H0Im+p1GA1lvWB0MairGIrqJtGJ4s7BJ+O
+         f4XWmvYNhnv1v8uVo0jqQ2Wbu383BGxMEPD7HUBadjuJc9wmbXOK2pg+/BC/h7xSpz
+         eeKL9ADchBv4g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BD7D3EAC081;
+        Tue, 22 Mar 2022 22:50:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220322211513.3994356-1-joannekoong@fb.com> <20220322215656.xkfzvuc3blrl7mlq@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220322215656.xkfzvuc3blrl7mlq@kafai-mbp.dhcp.thefacebook.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Tue, 22 Mar 2022 15:38:29 -0700
-Message-ID: <CAJnrk1aRAXeDQKQq7zUPoJSb8oOFbb+jgtdF2_ttjcQL+Oo13A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] bpf: bpf_local_storage_update fixes
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf-next 2022-03-21 v2
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164798942677.23339.9509425257963920048.git-patchwork-notify@kernel.org>
+Date:   Tue, 22 Mar 2022 22:50:26 +0000
+References: <20220322050159.5507-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20220322050159.5507-1-alexei.starovoitov@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, peterz@infradead.org,
+        rostedt@goodmis.org, mhiramat@kernel.org, kuba@kernel.org,
+        andrii@kernel.org, torvalds@linux-foundation.org,
+        sfr@canb.auug.org.au, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 22, 2022 at 2:57 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Tue, Mar 22, 2022 at 02:15:13PM -0700, Joanne Koong wrote:
-> > From: Joanne Koong <joannelkoong@gmail.com>
-> >
-> > This fixes two things in bpf_local_storage_update:
-> >
-> > 1) A memory leak where if bpf_selem_alloc is called right before we
-> > acquire the spinlock and we hit the case where we can copy the new
-> > value into old_sdata directly, we need to free the selem allocation
-> > and uncharge the memory before we return. This was reported by the
-> > kernel test robot.
-> >
-> > 2) A charge leak where if bpf_selem_alloc is called right before we
-> > acquire the spinlock and we hit the case where old_sdata exists and we
-> > need to unlink the old selem, we need to make sure the old selem gets
-> > uncharged.
-> >
-> > Fixes: b00fa38a9c1c ("bpf: Enable non-atomic allocations in local storage")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > ---
-> >  kernel/bpf/bpf_local_storage.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> > index 01aa2b51ec4d..2d33af0368ba 100644
-> > --- a/kernel/bpf/bpf_local_storage.c
-> > +++ b/kernel/bpf/bpf_local_storage.c
-> > @@ -435,8 +435,12 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
-> >       if (old_sdata && (map_flags & BPF_F_LOCK)) {
-> >               copy_map_value_locked(&smap->map, old_sdata->data, value,
-> >                                     false);
-> > -             selem = SELEM(old_sdata);
-> > -             goto unlock;
-> > +             raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> > +             if (selem) {
-> There is an earlier test ensures GFP_KERNEL can only
-> be used with BPF_NOEXIST.
->
+Hello:
 
-I agree, we currently will never run into this case (since the
-GFP_KERNEL case will error out if old_sdata exists), but my thinking
-was that maybe in the future it may not always hold that GFP_KERNEL
-will always be coupled with BPF_NOEXIST, so this change would
-defensively protect against that.
+This pull request was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-> The check_flags() before this should have error out.
->
-> Can you share a pointer to the report from kernel test robot?
->
-I'm unable to find a link to the report, so I will copy/paste the contents:
+On Mon, 21 Mar 2022 22:01:59 -0700 you wrote:
+> Hi David, hi Jakub,
+> 
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 137 non-merge commits during the last 17 day(s) which contain
+> a total of 143 files changed, 7123 insertions(+), 1092 deletions(-).
+> 
+> [...]
 
-From: kernel test robot <lkp@intel.com>
-Date: Tue, Mar 22, 2022 at 11:36 AM
-Subject: [bpf-next:master] BUILD SUCCESS
-e52b8f5bd3d2f7b2f4b98067db33bc2fdc125643
-To: BPF build status <bpf@iogearbox.net>
+Here is the summary with links:
+  - pull-request: bpf-next 2022-03-21 v2
+    https://git.kernel.org/netdev/net-next/c/0db8640df595
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-master
-branch HEAD: e52b8f5bd3d2f7b2f4b98067db33bc2fdc125643  selftests/bpf:
-Fix kprobe_multi test.
-
-Unverified Warning (likely false positive, please contact us if interested):
-
-kernel/bpf/bpf_local_storage.c:473:2: warning: Potential leak of
-memory pointed to by 'selem' [clang-analyzer-unix.Malloc]
-
-Warning ids grouped by kconfigs:
-
-clang_recent_errors
-`-- i386-randconfig-c001
-    `-- kernel-bpf-bpf_local_storage.c:warning:Potential-leak-of-memory-pointed-to-by-selem-clang-analyzer-unix.Malloc
-
-elapsed time: 723m
-
-> > +                     mem_uncharge(smap, owner, smap->elem_size);
-> > +                     kfree(selem);
-> > +             }
-> > +             return old_sdata;
-> >       }
-> >
-> >       if (gfp_flags != GFP_KERNEL) {
-> > @@ -466,10 +470,9 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
-> >       if (old_sdata) {
-> >               bpf_selem_unlink_map(SELEM(old_sdata));
-> >               bpf_selem_unlink_storage_nolock(local_storage, SELEM(old_sdata),
-> > -                                             false);
-> > +                                             gfp_flags == GFP_KERNEL);
-> >       }
-> >
-> > -unlock:
-> >       raw_spin_unlock_irqrestore(&local_storage->lock, flags);
-> >       return SDATA(selem);
-> >
-> > --
-> > 2.30.2
-> >
