@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9574E47A5
-	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 21:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A32C4E47C8
+	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 21:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbiCVUkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Mar 2022 16:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
+        id S233341AbiCVUxh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Mar 2022 16:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234105AbiCVUkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Mar 2022 16:40:17 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A0969282
-        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 13:38:48 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id b9so13283842ila.8
-        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 13:38:48 -0700 (PDT)
+        with ESMTP id S229828AbiCVUxg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Mar 2022 16:53:36 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B402DE1
+        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 13:52:07 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id z7so21718813iom.1
+        for <bpf@vger.kernel.org>; Tue, 22 Mar 2022 13:52:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MkXbtzKxVOQqsoiIN3SqXpTKVr6wtC4Y4soo/dn7JRs=;
-        b=cxGDf+swb8b+eo939F7pJDrIhNF8Ey/Sng0hA2A+PTDfARCpLFAKsfn82kfnRUDj7T
-         a7hkhCoNxr53kFMso12+kLct65HXJYK2X/55laN3rZZQS8u4c3y7pdIRAXTYIRendpU1
-         MiYRdOd5tWQWqodKqqCHoHcweufdQdH2U13Lm5QfMDIukh7/82pySw9Awusfp000MzSu
-         0QcR38H343nNWBAB3jiXRoOLyKr94igfLYMuZzLr63aqxfxFWuq/J9deWheKIBRKR5kp
-         hvjk38R4/0XSrGJe5DtzDhQOVVMjiut49u9NAlwi909GbMdqsf4JqDjlWjRodVFc9UlW
-         88tw==
+        bh=177/hRdpdIJUv+MhzFyUWtLhDaWXi+C8lI8UOTgcidk=;
+        b=Ks3PlpfzKXZmDUHBydQop174F4P28emWaszvVwwkeJ92wLph8M2EhZqxpSv39VWWYC
+         kK0SW3IdY9eEJBwVaLxYByTkEt2lWHRwnZD9et3Evpp5lF3rZDhdDXNyMK8WmKyJnR9r
+         RBzUnnId5wQLzKK38sMU8TPbbzz8khcVSYLuEd6BmBaBNLdqawjz4D3Ojk26LZblTLrY
+         qMRLjh+FqL5m/oPPil9QS55qJepAS9q5wN2J9D1ERIGOYQdO4Y75Tqo6+Z9y9ilFwssn
+         dqmm5eFM3EqbwuKZec8EM/vAsxaQV+GekxXJWypxpoTDrvZklBr6lnNV9xbrdR+8rM4y
+         86wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MkXbtzKxVOQqsoiIN3SqXpTKVr6wtC4Y4soo/dn7JRs=;
-        b=r0E7pI5dW1IYnp9w6awg7tB4ieP5tkDm+cUbBgF03lAF0vDIWkxxyjTxe5B2vTJvfN
-         mqQvQN75PUQSiB+fdc4kJ26Vt6AroWe5XPFdVAmYxT9ZAeZK5+sIvUauoMlPlL3v3YXM
-         EzCYFleSM9G2RSP1edQ0fOnNHzEzENm3vNc1ToWNlKXdtHrKfQqokJRIB3VVQd40wxLB
-         PB6go4rwZr8RGI3XciSsCu9OOtMtSYxw4be71/fFL+0DLwZyl2BvJApmnwq6qw0u9yfP
-         OldX6G5G/NgbzwjkrfZKUv754mslM6c7ZrVi9LbcW4y2v/9WK08w5VdgwGmQUem9CoZH
-         cYzw==
-X-Gm-Message-State: AOAM530W+dLFRYQbSSU8y0Bt6p5D6owa0OrPJb2uZbo5bbFmlUody7R6
-        wQ/4WCGvVHA6fAtXhGNvCNDvm/s5DgVp6VXA2X0=
-X-Google-Smtp-Source: ABdhPJxULPLsKh/4DPlk+U3X0IFTIh+ROlm6tLNtaLNR2sXfGah39h8NA434B2bMy3cAVbzPPZl0UxmXTB8AnKjvOsE=
-X-Received: by 2002:a05:6e02:16c7:b0:2c7:e458:d863 with SMTP id
- 7-20020a056e0216c700b002c7e458d863mr12302872ilx.71.1647981527993; Tue, 22 Mar
- 2022 13:38:47 -0700 (PDT)
+        bh=177/hRdpdIJUv+MhzFyUWtLhDaWXi+C8lI8UOTgcidk=;
+        b=cWOvQ2WPAq7kcgtoK7eGTGa11VW6S6EI6L/Sm++yPA78yu0x7X1PGgK0fwfthM+NhZ
+         dIHOxGafRC9zXTnZXQxqLwRjzoeHBeqdM3cQx6vcyohnEfjtfPMnwkblBa1PWVcAxiJH
+         hoWrJ0DteoYQZDjYQCL6NjUBF/8g2rJ6agX4p6aezpihOVDyW7T5lrLeVrzJFo7dehS/
+         L1M39/DfTvIY3uMgOhXnmDTRgNrJ56+VFKOpKadVqaDUwNi2yxVfbN5R8m0faE47ENkX
+         DQKyMT832k/BB1obdQ52525BN1F7WfDvEO6G9lMKeoBUicf0YsbC125aIPZtWkY12Zjs
+         65gw==
+X-Gm-Message-State: AOAM531kxWmbp09myLF+jkD+2DprLowFkI9W5QR5itvk6VLZ2LNtRvEd
+        AWAp5v/ylCstydBkb0U05WVQMui7NKFPNy0X0d8=
+X-Google-Smtp-Source: ABdhPJxItBL6I5e+c8hNYaslR0cFcTKgHZ54ZJwcvw3zNYHKJIxjj3s4pfNbrFDTqUVZS/Ccps+OsOpNTMbjJgmOUTs=
+X-Received: by 2002:a5d:9481:0:b0:649:db3d:5141 with SMTP id
+ v1-20020a5d9481000000b00649db3d5141mr85783ioj.63.1647982327155; Tue, 22 Mar
+ 2022 13:52:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220320155510.671497-1-memxor@gmail.com> <20220320155510.671497-8-memxor@gmail.com>
-In-Reply-To: <20220320155510.671497-8-memxor@gmail.com>
+References: <20220320155510.671497-1-memxor@gmail.com> <20220320155510.671497-10-memxor@gmail.com>
+In-Reply-To: <20220320155510.671497-10-memxor@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 22 Mar 2022 13:38:36 -0700
-Message-ID: <CAEf4BzayMZcghFEKtbG58b9yC76P1wzc==wrape89bdS9wQemA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 07/13] bpf: Adapt copy_map_value for multiple
- offset case
+Date:   Tue, 22 Mar 2022 13:51:56 -0700
+Message-ID: <CAEf4BzaGkTBR_Fi+fmEBy8C5PbySKtHOC_pu++h2g3J1Fqcn_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 09/13] bpf: Wire up freeing of referenced kptr
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -72,233 +71,150 @@ X-Mailing-List: bpf@vger.kernel.org
 On Sun, Mar 20, 2022 at 8:55 AM Kumar Kartikeya Dwivedi
 <memxor@gmail.com> wrote:
 >
-> Since now there might be at most 10 offsets that need handling in
-> copy_map_value, the manual shuffling and special case is no longer going
-> to work. Hence, let's generalise the copy_map_value function by using
-> a sorted array of offsets to skip regions that must be avoided while
-> copying into and out of a map value.
+> A destructor kfunc can be defined as void func(type *), where type may
+> be void or any other pointer type as per convenience.
 >
-> When the map is created, we populate the offset array in struct map,
-> with one extra element for map->value_size, which is used as the final
-> offset to subtract previous offset from. Then, copy_map_value uses this
-> sorted offset array is used to memcpy while skipping timer, spin lock,
-> and kptr.
+> In this patch, we ensure that the type is sane and capture the function
+> pointer into off_desc of ptr_off_tab for the specific pointer offset,
+> with the invariant that the dtor pointer is always set when 'kptr_ref'
+> tag is applied to the pointer's pointee type, which is indicated by the
+> flag BPF_MAP_VALUE_OFF_F_REF.
+>
+> Note that only BTF IDs whose destructor kfunc is registered, thus become
+> the allowed BTF IDs for embedding as referenced kptr. Hence it serves
+> the purpose of finding dtor kfunc BTF ID, as well acting as a check
+> against the whitelist of allowed BTF IDs for this purpose.
+>
+> Finally, wire up the actual freeing of the referenced pointer if any at
+> all available offsets, so that no references are leaked after the BPF
+> map goes away and the BPF program previously moved the ownership a
+> referenced pointer into it.
+>
+> The behavior is similar to BPF timers, where bpf_map_{update,delete}_elem
+> will free any existing referenced kptr. The same case is with LRU map's
+> bpf_lru_push_free/htab_lru_push_free functions, which are extended to
+> reset unreferenced and free referenced kptr.
+>
+> Note that unlike BPF timers, kptr is not reset or freed when map uref
+> drops to zero.
 >
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  include/linux/bpf.h  | 55 +++++++++++++++++++++++---------------------
->  kernel/bpf/syscall.c | 52 +++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 81 insertions(+), 26 deletions(-)
+>  include/linux/bpf.h   |  4 ++
+>  include/linux/btf.h   |  2 +
+>  kernel/bpf/arraymap.c | 14 ++++++-
+>  kernel/bpf/btf.c      | 86 ++++++++++++++++++++++++++++++++++++++++++-
+>  kernel/bpf/hashtab.c  | 29 ++++++++++-----
+>  kernel/bpf/syscall.c  | 57 +++++++++++++++++++++++++---
+>  6 files changed, 173 insertions(+), 19 deletions(-)
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 9d424d567dd3..6474d2d44b78 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -158,6 +158,10 @@ struct bpf_map_ops {
->  enum {
->         /* Support at most 8 pointers in a BPF map value */
->         BPF_MAP_VALUE_OFF_MAX = 8,
-> +       BPF_MAP_OFF_ARR_MAX   = BPF_MAP_VALUE_OFF_MAX +
-> +                               1 + /* for bpf_spin_lock */
-> +                               1 + /* for bpf_timer */
-> +                               1,  /* for map->value_size sentinel */
->  };
->
->  enum {
-> @@ -206,9 +210,17 @@ struct bpf_map {
->         char name[BPF_OBJ_NAME_LEN];
->         bool bypass_spec_v1;
->         bool frozen; /* write-once; write-protected by freeze_mutex */
-> -       /* 6 bytes hole */
-> -
-> -       /* The 3rd and 4th cacheline with misc members to avoid false sharing
-> +       /* 2 bytes hole */
-> +       struct {
-> +               struct {
-> +                       u32 off;
-> +                       u8 sz;
 
-So here we are wasting 11 * 3 == 33 bytes of padding, right? And it
-will only increase as we add bpf_dynptr support soon.
+[...]
 
-But if we split this struct into two arrays you won't be wasting any of that:
+> +                       /* This call also serves as a whitelist of allowed objects that
+> +                        * can be used as a referenced pointer and be stored in a map at
+> +                        * the same time.
+> +                        */
+> +                       dtor_btf_id = btf_find_dtor_kfunc(off_btf, id);
+> +                       if (dtor_btf_id < 0) {
+> +                               ret = dtor_btf_id;
+> +                               btf_put(off_btf);
 
-struct {
-    u32 cnt;
-    u32 field_offs[BPF_MAP_OFF_ARR_MAX];
-    u8 szs[BPF_MAP_OFF_ARR_MAX]
-} off_arr;
+do btf_put() in end section instead of copy/pasting it in every single
+branch here and below?
 
-?
-
-Further, given the majority of BPF maps in the system probably won't
-use any of these special fields, would it make sense to dynamically
-allocate this portion of struct bpf_map?
-
-> +               } field[BPF_MAP_OFF_ARR_MAX];
-> +               u32 cnt;
-> +       } off_arr;
-> +       /* 40 bytes hole */
+> +                               goto end;
+> +                       }
 > +
-> +       /* The 4th and 5th cacheline with misc members to avoid false sharing
->          * particularly with refcounting.
->          */
->         atomic64_t refcnt ____cacheline_aligned;
-> @@ -250,36 +262,27 @@ static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
->                 memset(dst + map->spin_lock_off, 0, sizeof(struct bpf_spin_lock));
->         if (unlikely(map_value_has_timer(map)))
->                 memset(dst + map->timer_off, 0, sizeof(struct bpf_timer));
-> +       if (unlikely(map_value_has_kptr(map))) {
-> +               struct bpf_map_value_off *tab = map->kptr_off_tab;
-> +               int i;
+> +                       dtor_func = btf_type_by_id(off_btf, dtor_btf_id);
+> +                       if (!dtor_func || !btf_type_is_func(dtor_func)) {
+> +                               ret = -EINVAL;
+> +                               btf_put(off_btf);
+> +                               goto end;
+> +                       }
 > +
-> +               for (i = 0; i < tab->nr_off; i++)
-> +                       *(u64 *)(dst + tab->off[i].offset) = 0;
+
+[...]
+
+> -       while (tab->nr_off--)
+> +       while (tab->nr_off--) {
+>                 btf_put(tab->off[tab->nr_off].btf);
+> +               if (tab->off[tab->nr_off].module)
+> +                       module_put(tab->off[tab->nr_off].module);
 > +       }
+>         kfree(tab);
+>         return ERR_PTR(ret);
+>  }
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 65877967f414..fa4a0a8754c5 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -725,12 +725,16 @@ static int htab_lru_map_gen_lookup(struct bpf_map *map,
+>         return insn - insn_buf;
 >  }
 >
->  /* copy everything but bpf_spin_lock and bpf_timer. There could be one of each. */
->  static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+> -static void check_and_free_timer(struct bpf_htab *htab, struct htab_elem *elem)
+> +static void check_and_free_timer_and_kptr(struct bpf_htab *htab,
+
+we'll need to rename this to
+check_and_free_timer_and_kptrs_and_dynptrs() pretty soon, so let's
+better figure out more generic name now? :)
+
+Don't know, something like "release_fields" or something?
+
+> +                                         struct htab_elem *elem,
+> +                                         bool free_kptr)
 >  {
-> -       u32 s_off = 0, s_sz = 0, t_off = 0, t_sz = 0;
-> +       int i;
->
-> -       if (unlikely(map_value_has_spin_lock(map))) {
-> -               s_off = map->spin_lock_off;
-> -               s_sz = sizeof(struct bpf_spin_lock);
-> -       }
-> -       if (unlikely(map_value_has_timer(map))) {
-> -               t_off = map->timer_off;
-> -               t_sz = sizeof(struct bpf_timer);
-> -       }
-> +       memcpy(dst, src, map->off_arr.field[0].off);
-> +       for (i = 1; i < map->off_arr.cnt; i++) {
-> +               u32 curr_off = map->off_arr.field[i - 1].off;
-> +               u32 next_off = map->off_arr.field[i].off;
->
-> -       if (unlikely(s_sz || t_sz)) {
-> -               if (s_off < t_off || !s_sz) {
-> -                       swap(s_off, t_off);
-> -                       swap(s_sz, t_sz);
-> -               }
-> -               memcpy(dst, src, t_off);
-> -               memcpy(dst + t_off + t_sz,
-> -                      src + t_off + t_sz,
-> -                      s_off - t_off - t_sz);
-> -               memcpy(dst + s_off + s_sz,
-> -                      src + s_off + s_sz,
-> -                      map->value_size - s_off - s_sz);
-> -       } else {
-> -               memcpy(dst, src, map->value_size);
-> +               curr_off += map->off_arr.field[i - 1].sz;
-> +               memcpy(dst + curr_off, src + curr_off, next_off - curr_off);
->         }
+> +       void *map_value = elem->key + round_up(htab->map.key_size, 8);
+> +
+>         if (unlikely(map_value_has_timer(&htab->map)))
+> -               bpf_timer_cancel_and_free(elem->key +
+> -                                         round_up(htab->map.key_size, 8) +
+> -                                         htab->map.timer_off);
+> +               bpf_timer_cancel_and_free(map_value + htab->map.timer_off);
+> +       if (unlikely(map_value_has_kptr(&htab->map)) && free_kptr)
+> +               bpf_map_free_kptr(&htab->map, map_value);
 
-We can also get away with value_size sentinel value if we rewrite this
-logic as follows:
-
-u32 cur_off = 0;
-int i;
-
-for (i = 0; i < map->off_arr.cnt; i++) {
-    memcpy(dst + cur_off, src + cur_off,  map->off_arr.field[i].off - cur_off);
-    cur_off += map->off_arr.field[i].sz;
-}
-
-memcpy(dst + cur_off, src + cur_off, map->value_size - cur_off);
-
-
-It will be as optimal but won't require value_size sentinel.
+kptrs (please use plural consistently for functions that actually
+handle multiple kptrs).
 
 >  }
->  void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 5990d6fa97ab..7b32537bd81f 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -30,6 +30,7 @@
->  #include <linux/pgtable.h>
->  #include <linux/bpf_lsm.h>
->  #include <linux/poll.h>
-> +#include <linux/sort.h>
->  #include <linux/bpf-netns.h>
->  #include <linux/rcupdate_trace.h>
->  #include <linux/memcontrol.h>
-> @@ -851,6 +852,55 @@ int map_check_no_btf(const struct bpf_map *map,
->         return -ENOTSUPP;
->  }
 >
-> +static int map_off_arr_cmp(const void *_a, const void *_b)
-> +{
-> +       const u32 a = *(const u32 *)_a;
-> +       const u32 b = *(const u32 *)_b;
-> +
-> +       if (a < b)
-> +               return -1;
-> +       else if (a > b)
-> +               return 1;
-> +       return 0;
-> +}
-> +
-> +static void map_populate_off_arr(struct bpf_map *map)
-> +{
-> +       u32 i;
-> +
-> +       map->off_arr.cnt = 0;
-> +       if (map_value_has_spin_lock(map)) {
-> +               i = map->off_arr.cnt;
-> +
-> +               map->off_arr.field[i].off = map->spin_lock_off;
-> +               map->off_arr.field[i].sz = sizeof(struct bpf_spin_lock);
-> +               map->off_arr.cnt++;
-> +       }
-> +       if (map_value_has_timer(map)) {
-> +               i = map->off_arr.cnt;
-> +
-> +               map->off_arr.field[i].off = map->timer_off;
-> +               map->off_arr.field[i].sz = sizeof(struct bpf_timer);
-> +               map->off_arr.cnt++;
-> +       }
-> +       if (map_value_has_kptr(map)) {
-> +               struct bpf_map_value_off *tab = map->kptr_off_tab;
-> +               u32 j = map->off_arr.cnt;
-> +
-> +               for (i = 0; i < tab->nr_off; i++) {
-> +                       map->off_arr.field[j + i].off = tab->off[i].offset;
-> +                       map->off_arr.field[j + i].sz = sizeof(u64);
-> +               }
-> +               map->off_arr.cnt += tab->nr_off;
-> +       }
-> +
-> +       map->off_arr.field[map->off_arr.cnt++].off = map->value_size;
+>  /* It is called from the bpf_lru_list when the LRU needs to delete
 
-Using a pointer for map->off_arr.field[j + i] and incrementing it
-along the cnt would make this code more succinct, and possibly even a
-bit more efficient. With my above suggestion to split offs from szs,
-you'll need two pointers, but still might be cleaner.
+[...]
 
-> +       if (map->off_arr.cnt == 1)
-> +               return;
-> +       sort(map->off_arr.field, map->off_arr.cnt, sizeof(map->off_arr.field[0]),
-> +            map_off_arr_cmp, NULL);
-
-See how Jiri is using sort_r() to sort two related arrays and keep
-them in sync w.r.t. order.
-
-> +}
-> +
->  static int map_check_btf(struct bpf_map *map, const struct btf *btf,
->                          u32 btf_key_id, u32 btf_value_id)
+>  static void htab_lru_push_free(struct bpf_htab *htab, struct htab_elem *elem)
 >  {
-> @@ -1018,6 +1068,8 @@ static int map_create(union bpf_attr *attr)
->                         attr->btf_vmlinux_value_type_id;
+> -       check_and_free_timer(htab, elem);
+> +       check_and_free_timer_and_kptr(htab, elem, true);
+>         bpf_lru_push_free(&htab->lru, &elem->lru_node);
+>  }
+>
+> @@ -1420,7 +1424,10 @@ static void htab_free_malloced_timers(struct bpf_htab *htab)
+>                 struct htab_elem *l;
+>
+>                 hlist_nulls_for_each_entry(l, n, head, hash_node)
+> -                       check_and_free_timer(htab, l);
+> +                       /* We don't reset or free kptr on uref dropping to zero,
+> +                        * hence set free_kptr to false.
+> +                        */
+> +                       check_and_free_timer_and_kptr(htab, l, false);
+
+ok, now reading this, I wonder if it's better to keep timer and kptrs
+clean ups separate? And then dynptrs separate still? Instead of adding
+all these flags.
+
+>                 cond_resched_rcu();
 >         }
+>         rcu_read_unlock();
+> @@ -1430,6 +1437,7 @@ static void htab_map_free_timers(struct bpf_map *map)
+>  {
+>         struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
 >
-> +       map_populate_off_arr(map);
-> +
->         err = security_bpf_map_alloc(map);
->         if (err)
->                 goto free_map;
-> --
-> 2.35.1
->
+> +       /* We don't reset or free kptr on uref dropping to zero. */
+>         if (likely(!map_value_has_timer(&htab->map)))
+>                 return;
+>         if (!htab_is_prealloc(htab))
+
+[...]
