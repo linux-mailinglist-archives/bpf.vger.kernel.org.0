@@ -2,67 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDE94E4403
-	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 17:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CD24E4457
+	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 17:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237965AbiCVQP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Mar 2022 12:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48390 "EHLO
+        id S239160AbiCVQjx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Mar 2022 12:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbiCVQP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Mar 2022 12:15:57 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDC94CD78;
-        Tue, 22 Mar 2022 09:14:29 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id j15so2608389ila.13;
-        Tue, 22 Mar 2022 09:14:29 -0700 (PDT)
+        with ESMTP id S239162AbiCVQjw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Mar 2022 12:39:52 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18125DA0E;
+        Tue, 22 Mar 2022 09:38:19 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id s8so18574421pfk.12;
+        Tue, 22 Mar 2022 09:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZIzlYH948l+CJycdMBUZ9/fbCooDhR48Kgko0AcT0Io=;
-        b=O0chmLZ0Xgk7GypkOs6BWwedvaI2xtLe3YGrRgZIcR8sPpWkN/qCZhjnwBvbVjKDwk
-         Wrsnuvq9FIXB1lFWbiILFabrqvoi7ZJFCo728NKwLiI6nd4CW6NqjRm4cWPiiGjHBzHI
-         sU43TMwmrWQvNT1GLB0bPjtcHGkXGHCYpcZjleJWLf0Syw3edJeF/iNyA/Hjv34VP1OR
-         d7lrSLL7yjjQoGJqDd4X5b1NU9frDTD1oIoFSm2GjwltXbXe13qFsyVDc9d042Lxooh4
-         7dNrUyQvItPiQF2Q6elNtdmXyg3YnyjIkoFAf9d6atJX0J5IFRMk35BYq3/jAkr9VFco
-         dwGQ==
+         :cc;
+        bh=NJN6cvug/10iiAJgDTC9S5tiBDNsJnlTHUuBYkSpNaU=;
+        b=TX05opdSyTQAGNgrLionRFhZE5NFzupFeD+ib2R3QPiYbtviA8jY03vzwWVQPr7KvE
+         8bQaqte4UcRs8NqVL4EkP5WfJFwHDLQyY99ibP4Epfphhy5Zq0yVRR0o7HL9ez8uGC8w
+         laacPJRNqtdR6q10lzfy0Etb6F/Sx9Tr3HCPp0l/14Ak5pR/pCEF8xjM0RFPPWYD5qde
+         Bbg84M+fG4cAFMKB9RpG5DWafFn8V2K6rDOU7pCPRkfkN0F9SUpq3DrhqTC1y0TtW1sN
+         QoIkeqKdyAAtSRf5JkNjApf+6g0XJYIXah3XHDP+aBjM/R0Gt0HzSqMwhVkkKtUN/cDw
+         4rEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZIzlYH948l+CJycdMBUZ9/fbCooDhR48Kgko0AcT0Io=;
-        b=aQyo3ZqPCfhLAHL9U3gKJJ2X3VCw5GBpjDPpQlNu+EG4qd6R/EnYgcoR+YGroR+cQZ
-         WrxDbnrjbulf867wbw/KAW7cB7csC8h4eLZ2217epJhDmy/38hIYl8UNm5ili2576mm5
-         9VHwA7j0p/GQKi8JYGxGVRaNX+H8Kk6q3wowI4GsTznVQdSwNaRdi7BnyAvU4pVurvPu
-         rpqn8B1KF7c9MXnqFmEYfCwj8Y1cnaoWvKOm0IM5esFwzB9zBV4w9dceOpuXMZHXafQz
-         CENnMkYD0P2uRBHIjxSmCaGFu5s831vGOYZhElrwCZNMoN5eAbg8Jmy361l3z2qB5bgo
-         d7PA==
-X-Gm-Message-State: AOAM533AkJ1PWUG3vJgm8sZ7sPvt8uXeOHftON61INoIDZnKMmUnxFRO
-        zJM/2mxJOYBaKsn21fBB2+eDKJFoDMK3rofV220=
-X-Google-Smtp-Source: ABdhPJzK8Hba9brFYO7yxZKQsZDDTcOdJeTkQaAOTADCF6rRwfG10UCUu+wzBGfp0WQ9/qz2ewDT6fxR9Fzn4Q16Knc=
-X-Received: by 2002:a05:6e02:216f:b0:2c8:2ed0:bba1 with SMTP id
- s15-20020a056e02216f00b002c82ed0bba1mr4644883ilv.87.1647965669045; Tue, 22
- Mar 2022 09:14:29 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=NJN6cvug/10iiAJgDTC9S5tiBDNsJnlTHUuBYkSpNaU=;
+        b=ErHFlhBquxsk3nM/RvRbDC4utdosMRemIPWoaX5Kz1FVKDY9m3LzqKDH5syA3S/5Bp
+         Va6h++SeAOkRmZ6hBY5SzoQiIo8IFc57/f2C+BR3rhGtye/5WytG8Enh4PWcP8azHIny
+         PjvtUtjF2kUZ8O23cPg5EXJxOjUP9YvLG3oce76YgI3SlhOE+9nDD6mXUuTNo8W9U+kB
+         SZh18LVs3t0XiSsCuadYBCTnTKF1F0hxhAbpB7zphxeW1b+v+hwUAxriMjlcFG9S/+tm
+         iXFTPNOfVDAWXvxdtAKxw9ElzwNDg082nXjOFTAfACfWpHbdbNm4teWivcKU979GCIcI
+         UPPw==
+X-Gm-Message-State: AOAM532m0AIIwgbndWV5ZbdHIOvK4lw1erNlimraoFYQ0XNQz/17EyQs
+        DfWtm0udn7VxNWEzSl6PhAYjw1OTVZrraj6LGYw=
+X-Google-Smtp-Source: ABdhPJzVmN2QuKjSAGNcvDAtl//mEJbdUogh2Y/rnDOeObr1Gjnhoo2BZ3DF01U9IoG04OUs3CJBcZGQxdIuLiRBlvE=
+X-Received: by 2002:a63:6809:0:b0:37c:68d3:1224 with SMTP id
+ d9-20020a636809000000b0037c68d31224mr22092354pgc.287.1647967099353; Tue, 22
+ Mar 2022 09:38:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220320060815.7716-2-laoar.shao@gmail.com> <0D674EA5-3626-4885-9ADC-5B7847CC967D@linux.dev>
- <CAEf4BzbpoYbPzYRA8bW=f48=wX0jJPuWX=Jr_uNnC_Jq80Bz3Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzbpoYbPzYRA8bW=f48=wX0jJPuWX=Jr_uNnC_Jq80Bz3Q@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 23 Mar 2022 00:13:50 +0800
-Message-ID: <CALOAHbB7jUTNUb7QESpjU=w3xgBOY=oJL=DdsMc4zpW=YKF1qg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: selftests: cleanup RLIMIT_MEMLOCK
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20220322050159.5507-1-alexei.starovoitov@gmail.com> <20220322233223.5e1a3c418f6d60081fae973e@kernel.org>
+In-Reply-To: <20220322233223.5e1a3c418f6d60081fae973e@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 22 Mar 2022 09:38:07 -0700
+Message-ID: <CAADnVQK0OrNHZRj3M8J8cOpyS99guMSc7103Ac+=EUp+8ubgyw@mail.gmail.com>
+Subject: Re: pull-request: bpf-next 2022-03-21 v2
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,46 +73,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 22, 2022 at 8:13 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Mar 22, 2022 at 7:32 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
-> On Sun, Mar 20, 2022 at 9:58 AM Roman Gushchin <roman.gushchin@linux.dev>=
- wrote:
-> >
-> >
-> > > On Mar 19, 2022, at 11:08 PM, Yafang Shao <laoar.shao@gmail.com> wrot=
-e:
-> > >
-> > > =EF=BB=BFSince we have alread switched to memcg-based memory accoutin=
-g and control,
-> > > we don't need RLIMIT_MEMLOCK any more.
-> > >
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> > >
-> > > ---
-> > > RLIMIT_MEMLOCK is still used in bpftool and libbpf, but it may be use=
-ful
-> > > for backward compatibility, so I don't cleanup them.
-> >
-> > Hi Yafang!
-> >
-> > As I remember, we haven=E2=80=99t cleaned selftests up with the same lo=
-gic: it=E2=80=99s nice to be able to run the same version of tests on older=
- kernels.
-> >
+> Hi Alexei,
 >
-> It should be fine, at least for test_progs and test_progs-no_alu32.
-> Libbpf now does this automatically if running in "libbpf 1.0" mode.
+> So after this is merged, would you have a plan to merge the tip tree
+> which has IBT to the bpf-next? Or should I wait for merging this series
+> or IBT(ENDBR) series in Linus tree?
 >
-> Yafang, please make sure that all the test binaries you are cleaning
-> up have libbpf_set_strict_mode(LIBBPF_STRICT_ALL) (test_progs does
-> already). You might need to clean up some SEC() definitions, in case
-> we still missed some non-conforming ones, though.
->
+> If I add the no ENDBR annotation to the x86 rethook trampoline on this
+> bpf-next branch, it will cause a build error...
 
-Thanks for the suggestion. I will do it.
+Right now (after arch bits revert) there are no build errors in bpf-next
+and won't be any after the merge into Linus's tree either.
 
---=20
-Thanks
-Yafang
+linux-next is a proxy of what Linus's tree will look like in a few days.
+Please create a single x86 arch patch against linux-next and make sure
+Peter is happy with it.
+We will land that patch at that time.
+
+That patch will be pretty much the same as what you had earlier
+with ENDBR annotation. And maybe regs->ss set which is future proofing
+optional bit and not a functional part of the patch.
