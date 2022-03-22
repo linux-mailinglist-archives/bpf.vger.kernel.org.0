@@ -2,99 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1EA4E3685
-	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 03:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A474E36BF
+	for <lists+bpf@lfdr.de>; Tue, 22 Mar 2022 03:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235370AbiCVCRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Mar 2022 22:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
+        id S235505AbiCVCiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Mar 2022 22:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235395AbiCVCRg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Mar 2022 22:17:36 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4431FA74;
-        Mon, 21 Mar 2022 19:15:08 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1647915306;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jYNLCxTmIoThWrGCuegM5gDTHrucNh1xrWSH6I5PEO0=;
-        b=fXdQwjSAoV9xZV35ZvSbWJs3jpn2qSq2PfgdJQcu2TasdcwY3RuP5CanKxtsNCrtRJAESD
-        49FfRjVPltdpY/yuBC6za22uugHxL5tCWHlWhKW/zWb3A0aW1oY6dLWeBcccVG4tCOoHpA
-        uyV9baq9EFq+BQAAObUL1F3mmaP0X7I=
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: selftests: cleanup RLIMIT_MEMLOCK
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-In-Reply-To: <CAEf4BzbpoYbPzYRA8bW=f48=wX0jJPuWX=Jr_uNnC_Jq80Bz3Q@mail.gmail.com>
-Date:   Mon, 21 Mar 2022 19:15:03 -0700
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S235474AbiCVCiP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Mar 2022 22:38:15 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0004DDF6A;
+        Mon, 21 Mar 2022 19:36:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B97ACB81B2A;
+        Tue, 22 Mar 2022 02:36:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1C7DC340E8;
+        Tue, 22 Mar 2022 02:36:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647916606;
+        bh=H2U/BMwBsbk4jfUZgJSssTVvNeLCmKRIuki0dtsxEJ4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LD0mmBPGGcmYLHc2zdAZwSvK+uwqVzLTEgQU8CzJ0cKjxMVsjgi98LYP6LyRiDVFz
+         vG6yoY3dyuiEV81m10c0iWsANnPFAsC7xlxV/s1pq+CyDvqM7U9cS38XU65bwcUpRM
+         FBvbKM4V9Jzk076hunuQy9uJk0GbRUp8XX/29ros5wAeh12xnJKfA8PJf6dUh0x4EE
+         SOnV6mirN2Lsb0DENfrdisTaCg/VOWYYypV7gcSaVlrT2nHWSD1jLqa3HoayakNX5I
+         +nJ4oULTOsY7pWnIeM1RDIFypxqfu9VKgV6Kn6EdZ3N+TmnRR2peKEd2Di1oRg9DPt
+         75HogcuFPVLhw==
+Date:   Tue, 22 Mar 2022 11:36:41 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Message-Id: <F7652433-EED5-4F56-A062-06AFE4B08576@linux.dev>
-References: <CAEf4BzbpoYbPzYRA8bW=f48=wX0jJPuWX=Jr_uNnC_Jq80Bz3Q@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: pull-request: bpf-next 2022-03-21
+Message-Id: <20220322113641.763885257f741ac5c0cb2c06@kernel.org>
+In-Reply-To: <CAADnVQKreLtGkfAVXxwLGUVKobqYhBS5r+GtNa6Oc8BUzYa92Q@mail.gmail.com>
+References: <20220321224608.55798-1-alexei.starovoitov@gmail.com>
+        <CAHk-=wheGrBxOfMpWhQg1iswCKYig8vADnFVsA4oFWTY9NU5jA@mail.gmail.com>
+        <CAADnVQK=JsytH_OtT6Q6fnijkTyv7NANV2902woQ6XT-fwWXQA@mail.gmail.com>
+        <CAHk-=wi0fNH+FS-ng2Nvq2p1Jbfn+-G1AsK-XY7MD4gTJZg5ZA@mail.gmail.com>
+        <CAADnVQKreLtGkfAVXxwLGUVKobqYhBS5r+GtNa6Oc8BUzYa92Q@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Linus and Alexei,
 
-> On Mar 21, 2022, at 5:13 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
->=20
-> =EF=BB=BFOn Sun, Mar 20, 2022 at 9:58 AM Roman Gushchin <roman.gushchin@li=
-nux.dev> wrote:
->>=20
->>=20
->>>> On Mar 19, 2022, at 11:08 PM, Yafang Shao <laoar.shao@gmail.com> wrote:=
+At first, sorry about this issue. I missed to Cc'ed to arch maintainers.
 
->>>=20
->>> =EF=BB=BFSince we have alread switched to memcg-based memory accouting a=
-nd control,
->>> we don't need RLIMIT_MEMLOCK any more.
->>>=20
->>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->>> Cc: Roman Gushchin <roman.gushchin@linux.dev>
->>>=20
->>> ---
->>> RLIMIT_MEMLOCK is still used in bpftool and libbpf, but it may be useful=
+On Mon, 21 Mar 2022 17:31:28 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
->>> for backward compatibility, so I don't cleanup them.
->>=20
->> Hi Yafang!
->>=20
->> As I remember, we haven=E2=80=99t cleaned selftests up with the same logi=
-c: it=E2=80=99s nice to be able to run the same version of tests on older ke=
-rnels.
->>=20
->=20
-> It should be fine, at least for test_progs and test_progs-no_alu32.
-> Libbpf now does this automatically if running in "libbpf 1.0" mode.
+> On Mon, Mar 21, 2022 at 4:59 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Mon, Mar 21, 2022 at 4:11 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > Did you look at the code?
+> > > In particular:
+> > > https://lore.kernel.org/bpf/164735286243.1084943.7477055110527046644.stgit@devnote2/
+> > >
+> > > it's a copy paste of arch/x86/kernel/kprobes/core.c
+> > >
+> > > How is it "bad architecture code" ?
+> >
+> > It's "bad architecture code" because the architecture maintainers have
+> > made changes to check ENDBR in the meantime.
+> >
+> > So it used to be perfectly fine. It's not any longer - and the
+> > architecture maintainers were clearly never actually cc'd on the
+> > changes, so they didn't find out until much too late.
 
-Didn=E2=80=99t know this, thanks! Do we link all tests with it?
+Let me retry porting fprobe on top of ENDBR things and confirm with
+arch maintainers.
 
->=20
-> Yafang, please make sure that all the test binaries you are cleaning
-> up have libbpf_set_strict_mode(LIBBPF_STRICT_ALL) (test_progs does
-> already). You might need to clean up some SEC() definitions, in case
-> we still missed some non-conforming ones, though.
+> 
+> Not denying that missing cc was an issue.
+> 
+> We can drop just arch patches:
+>       rethook: x86: Add rethook x86 implementation
+>       arm64: rethook: Add arm64 rethook implementation
+>       powerpc: Add rethook support
+>       ARM: rethook: Add rethook arm implementation
+> 
+> or everything including Jiri's work on top of it.
+> Which would be a massive 27 patches.
+> 
+> We'd prefer the former, of course.
+> Later during the merge window we can add a single
+> 'rethook: x86' patch that takes endbr into account,
+> so that multi-kprobe feature will work on x86.
+> For the next merge window we can add other archs.
+> Would that work?
 
-If so, no objections to the patch from my side.
+BTW, As far as I can see the ENDBR things, the major issue on fprobe
+is that the ftrace'ed ip address will be different from the symbol
+address (even) on x86. That must be ensured to work before merge.
+Let me check it on Linus's tree at first.
 
-Thank you!=
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
