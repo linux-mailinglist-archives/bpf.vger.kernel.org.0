@@ -2,39 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A68C74E523F
-	for <lists+bpf@lfdr.de>; Wed, 23 Mar 2022 13:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA114E541E
+	for <lists+bpf@lfdr.de>; Wed, 23 Mar 2022 15:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242437AbiCWMhK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Mar 2022 08:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
+        id S244723AbiCWOUo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Mar 2022 10:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbiCWMhI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Mar 2022 08:37:08 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13E97B54C;
-        Wed, 23 Mar 2022 05:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CrfM5P6uQxUgoVxVGucVUuZlS+SIBC3DY3b2Hzvq/N8=; b=eHGDgEWUrAEh/h/uGdBgZzUPRH
-        E2Kp9T0tjRBRrthBXloHB4LoTJ4Hhrn5vH0yzofryiU8eKW/Dm6KuR27nZzFwDZKj4dig/51VpznY
-        vO8RV9JJcYNqHT1LVNH5nyQGRsDwISqbumMrmVyGDaw0zM4fON//yeo64Bn36bDZpaz4jOGAFRDxQ
-        IPA6fSwHrRBKvynnM61kDPAA8m8ILcHFB7CAHPEEfIIIYWkED/Q5rlWyJ7lcib78lECZ/K968pJj2
-        UPbW4wRS/uIvAYCbMJOmkXvpxTiwfE9EuCWneWbA4gmIowWqU39R7N9nyqNNOJov1rAhK+ocIUKt3
-        9pfaUkgA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nX0CW-003lG5-Dy; Wed, 23 Mar 2022 12:34:56 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 318A99861FD; Wed, 23 Mar 2022 13:34:54 +0100 (CET)
-Date:   Wed, 23 Mar 2022 13:34:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
+        with ESMTP id S244700AbiCWOUW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Mar 2022 10:20:22 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AEF1A7CDC6;
+        Wed, 23 Mar 2022 07:18:52 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57972D6E;
+        Wed, 23 Mar 2022 07:18:52 -0700 (PDT)
+Received: from lakrids (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4BE903F73D;
+        Wed, 23 Mar 2022 07:18:49 -0700 (PDT)
+Date:   Wed, 23 Mar 2022 14:18:40 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
 To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
         Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
@@ -48,35 +40,63 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
         Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v13 bpf-next 1/1] rethook: x86: Add rethook x86
- implementation
-Message-ID: <20220323123454.GW8939@worktop.programming.kicks-ass.net>
+        "David S . Miller" <davem@davemloft.net>, catalin.marinas@arm.com,
+        will@kernel.org
+Subject: Re: [PATCH v13 bpf-next 0/1] fprobe: Introduce fprobe function
+ entry/exit probe
+Message-ID: <YjssQKblWeKqr/x8@lakrids>
 References: <164800288611.1716332.7053663723617614668.stgit@devnote2>
- <164800289923.1716332.9772144337267953560.stgit@devnote2>
- <YjrUxmABaohh1I8W@hirez.programming.kicks-ass.net>
- <20220323204119.1feac1af0a1d58b8e63acd5d@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220323204119.1feac1af0a1d58b8e63acd5d@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <164800288611.1716332.7053663723617614668.stgit@devnote2>
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 08:41:19PM +0900, Masami Hiramatsu wrote:
+On Wed, Mar 23, 2022 at 11:34:46AM +0900, Masami Hiramatsu wrote:
+> Hi,
 
-> > Also, what's rethook for anyway?
+Hi Masami,
+
+> Here is the 13th version of rethook x86 port. This is developed for a part
+> of fprobe series [1] for hooking function return. But since I forgot to send
+> it to arch maintainers, that caused conflict with IBT and SLS mitigation series.
+> Now I picked the x86 rethook part and send it to x86 maintainers to be
+> reviewed.
 > 
-> Rethook is a feature which hooks the function return. Most of the
-> logic came from the kretprobe. Simply to say, 'kretprobe - kprobe' is 
-> the rethook :)
+> [1] https://lore.kernel.org/all/164735281449.1084943.12438881786173547153.stgit@devnote2/T/#u
 
-I got that far, but why did you take the bother to do these patches? Why
-wasn't 'use kretprobe' a good enough option?
+As mentioned elsewhere, I have similar (though not identical) concerns
+to Peter for the arm64 patch, which was equally unreviewed by
+maintainers, and the overall structure.
+
+> Note that this patch is still for the bpf-next since the rethook itself
+> is on the bpf-next tree. But since this also uses the ANNOTATE_NOENDBR
+> macro which has been introduced by IBT/ENDBR patch, to build this series
+> you need to merge the tip/master branch with the bpf-next.
+> (hopefully, it is rebased soon)
+
+I thought we were going to drop the series from the bpf-next tree so
+that this could all go through review it had missed thusfar.
+
+Is that still the plan? What's going on?
+
+> The fprobe itself is for providing the function entry/exit probe
+> with multiple probe point. The rethook is a sub-feature to hook the
+> function return as same as kretprobe does. Eventually, I would like
+> to replace the kretprobe's trampoline with this rethook.
+
+Can we please start by converting each architecture to rethook?
+
+Ideally we'd unify things such that each architecture only needs *one*
+return trampoline that both ftrace and krpboes can use, which'd be
+significantly easier to get right and manage.
+
+Thanks,
+Mark.
