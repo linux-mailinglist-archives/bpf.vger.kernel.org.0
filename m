@@ -2,114 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D79064E54FD
-	for <lists+bpf@lfdr.de>; Wed, 23 Mar 2022 16:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4454E5607
+	for <lists+bpf@lfdr.de>; Wed, 23 Mar 2022 17:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245077AbiCWPQ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Mar 2022 11:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        id S238413AbiCWQKM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Mar 2022 12:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234324AbiCWPQ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Mar 2022 11:16:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764D119297;
-        Wed, 23 Mar 2022 08:14:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF327617AA;
-        Wed, 23 Mar 2022 15:14:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C901EC340E8;
-        Wed, 23 Mar 2022 15:14:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648048495;
-        bh=0RaEF1b9P3k1oz8Z7XnrYmqYZ5f88R8iXz9iiAuahRc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gMWZEYPI2LLlFt3ir9aK2sg/rZ3WQzNXxT2kyNVgGlWolZmTuCsAp+4g8Hrfm5C6q
-         +btg0ABnm7UBwvD3jeJL/rviI/8ie7blCVa5EF4QrGRfRY7JGRcUt+J78sBFsKS+b/
-         iRv4BRMZrx/kzhtzWsvOrrCmSL+Dmn2JQxD16CN0IBkabg71Vb2uI0pkAQbK7HmoqN
-         xrn60Ku/hZGwAjhKT6sO3XuIXYaDHbPxXOBjNhvIgGlToG92w53ck4GPdt0Vg/+R17
-         hC2o1KBWCe6SMLCWxrg1qBpbs7aRkX/6YbWAadOwUCyuozun5kwK6NHWalTWwrpnRg
-         b1zBvC4pPdlEQ==
-Date:   Thu, 24 Mar 2022 00:14:48 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Jiri Olsa <jolsa@kernel.org>,
+        with ESMTP id S238203AbiCWQKM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Mar 2022 12:10:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61A7A2CCA1
+        for <bpf@vger.kernel.org>; Wed, 23 Mar 2022 09:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1648051720;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jojw5f7wnm9EHe+O1hZXC5y0oSm+5NVhYv4rzpOxMAw=;
+        b=XtvX8PJjdkUpd5aN+xHXH2kxNaBCgb6l1XZfDne31/qfpIhy5Bc19lNqKlJzCvfJOgU5Ul
+        2q6W5kIPGnuBYLEeirAjhjNL8aPWw46vwiiaYd3l9ZsMWIUoUJyzl9WrLPupb1m98Z8Ime
+        rMnyNqzD9mHnl766SH8pKZd0zxrzmq4=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-563-QUSZWgfUOjSlGseztRg2Kw-1; Wed, 23 Mar 2022 12:08:39 -0400
+X-MC-Unique: QUSZWgfUOjSlGseztRg2Kw-1
+Received: by mail-pj1-f69.google.com with SMTP id j15-20020a17090a2a8f00b001c6d6b729f1so1338948pjd.3
+        for <bpf@vger.kernel.org>; Wed, 23 Mar 2022 09:08:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jojw5f7wnm9EHe+O1hZXC5y0oSm+5NVhYv4rzpOxMAw=;
+        b=P+Io88ULFVtn2MtpP/KU4aKV1/mDD/OLa87KlQnkxQ3VF2ZCqvQJWdinyVige3LIKl
+         uGPil4RnWuFLhbNJQFaHZSdzjWtteWtWyjGjTQxMfoSSpfYUMS1+DK7HFtsQQn48ekCA
+         XU0qXFPIoWIopdsVvw1B9ZEk5bpzIfQW8BcUJJUAxDZ8BjEM34yYGOGlgK53Ic1p3SsB
+         ynPQQq+nV1BuHeWd24hw8spGZXiXcE1Co6ABh/J8x9Y9KYM5i6SX5N3NU4GbvLXdD9/L
+         fUOv/cHQM1b8VQkCIo7t37faYqoSm//ima+dkyKusbF/YvX1AT9MEe+gzYYD+ON11j/x
+         cAog==
+X-Gm-Message-State: AOAM533uUxhc6vBBbqUIQIHjjAUt4IWqq49VC/0n8l6+TfOiPQ8myvxv
+        RDptCTmNFJg9Vn+71kVaVqS9h5BIytDDFVotuX872DqZ/Urn0FjlWwpYxt14VdOT1FCDu6WcW1B
+        GDkkzYtTimGF2AzFG3Ssq2LeF6+Nk
+X-Received: by 2002:a05:6a00:2182:b0:4fa:6d20:d95d with SMTP id h2-20020a056a00218200b004fa6d20d95dmr255505pfi.83.1648051717807;
+        Wed, 23 Mar 2022 09:08:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwXs0W2sqJvvyH5rSFI3YPUX3kkRaojzc998a5Iv1JVOvvGHml++AVdio6zxhwzppY5Sd1fQUrROiDnPqcnr1E=
+X-Received: by 2002:a05:6a00:2182:b0:4fa:6d20:d95d with SMTP id
+ h2-20020a056a00218200b004fa6d20d95dmr255474pfi.83.1648051717452; Wed, 23 Mar
+ 2022 09:08:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220318161528.1531164-1-benjamin.tissoires@redhat.com>
+ <20220318161528.1531164-7-benjamin.tissoires@redhat.com> <CAADnVQLvhWxEtHETg0tasJ7Fp5JHNRYWdjhnxi1y1gBpXS=bvQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLvhWxEtHETg0tasJ7Fp5JHNRYWdjhnxi1y1gBpXS=bvQ@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Wed, 23 Mar 2022 17:08:25 +0100
+Message-ID: <CAO-hwJJXR3jtAvLF1phUa5pKZzVkDxAAHO5+7R50hL-fVhDYyA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 06/17] HID: allow to change the report
+ descriptor from an eBPF program
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v13 bpf-next 1/1] rethook: x86: Add rethook x86
- implementation
-Message-Id: <20220324001448.c39861064d776973f7811578@kernel.org>
-In-Reply-To: <20220323123454.GW8939@worktop.programming.kicks-ass.net>
-References: <164800288611.1716332.7053663723617614668.stgit@devnote2>
-        <164800289923.1716332.9772144337267953560.stgit@devnote2>
-        <YjrUxmABaohh1I8W@hirez.programming.kicks-ass.net>
-        <20220323204119.1feac1af0a1d58b8e63acd5d@kernel.org>
-        <20220323123454.GW8939@worktop.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 23 Mar 2022 13:34:54 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+Hi Alexei,
 
-> On Wed, Mar 23, 2022 at 08:41:19PM +0900, Masami Hiramatsu wrote:
-> 
-> > > Also, what's rethook for anyway?
-> > 
-> > Rethook is a feature which hooks the function return. Most of the
-> > logic came from the kretprobe. Simply to say, 'kretprobe - kprobe' is 
-> > the rethook :)
-> 
-> I got that far, but why did you take the bother to do these patches? Why
-> wasn't 'use kretprobe' a good enough option?
+On Tue, Mar 22, 2022 at 11:51 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Mar 18, 2022 at 9:16 AM Benjamin Tissoires
+> <benjamin.tissoires@redhat.com> wrote:
+> >
+> > +u8 *hid_bpf_report_fixup(struct hid_device *hdev, u8 *rdesc, unsigned int *size)
+> > +{
+> > +       int ret;
+> > +       struct hid_bpf_ctx_kern ctx = {
+> > +               .type = HID_BPF_RDESC_FIXUP,
+> > +               .hdev = hdev,
+> > +               .size = *size,
+> > +       };
+> > +
+> > +       if (bpf_hid_link_empty(&hdev->bpf, BPF_HID_ATTACH_RDESC_FIXUP))
+> > +               goto ignore_bpf;
+> > +
+> > +       ctx.data = kmemdup(rdesc, HID_MAX_DESCRIPTOR_SIZE, GFP_KERNEL);
+> > +       if (!ctx.data)
+> > +               goto ignore_bpf;
+> > +
+> > +       ctx.allocated_size = HID_MAX_DESCRIPTOR_SIZE;
+> > +
+> > +       ret = hid_bpf_run_progs(hdev, &ctx);
+> > +       if (ret)
+> > +               goto ignore_bpf;
+> > +
+> > +       if (ctx.size > ctx.allocated_size)
+> > +               goto ignore_bpf;
+> > +
+> > +       *size = ctx.size;
+> > +
+> > +       if (*size) {
+> > +               rdesc = krealloc(ctx.data, *size, GFP_KERNEL);
+> > +       } else {
+> > +               rdesc = NULL;
+> > +               kfree(ctx.data);
+> > +       }
+> > +
+> > +       return rdesc;
+> > +
+> > + ignore_bpf:
+> > +       kfree(ctx.data);
+> > +       return kmemdup(rdesc, *size, GFP_KERNEL);
+> > +}
+> > +
+> >  int __init hid_bpf_module_init(void)
+> >  {
+> >         struct bpf_hid_hooks hooks = {
+> >                 .hdev_from_fd = hid_bpf_fd_to_hdev,
+> >                 .pre_link_attach = hid_bpf_pre_link_attach,
+> > +               .post_link_attach = hid_bpf_post_link_attach,
+> >                 .array_detach = hid_bpf_array_detach,
+> >         };
+> >
+> > diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+> > index 937fab7eb9c6..3182c39db006 100644
+> > --- a/drivers/hid/hid-core.c
+> > +++ b/drivers/hid/hid-core.c
+> > @@ -1213,7 +1213,8 @@ int hid_open_report(struct hid_device *device)
+> >                 return -ENODEV;
+> >         size = device->dev_rsize;
+> >
+> > -       buf = kmemdup(start, size, GFP_KERNEL);
+> > +       /* hid_bpf_report_fixup() ensures we work on a copy of rdesc */
+> > +       buf = hid_bpf_report_fixup(device, start, &size);
+>
+> Looking at this patch and the majority of other patches...
+> the code is doing a lot of work to connect HID side with bpf.
+> At the same time the evolution of the patch series suggests
+> that these hook points are not quite stable. More hooks and
+> helpers are being added.
+> It tells us that it's way too early to introduce a stable
+> interface between HID and bpf.
 
-Ah, sorry about lacking the background story.
+I understand that you might be under the impression that the interface
+is changing a lot, but this is mostly due to my poor knowledge of all
+the arcanes of eBPF.
+The overall way HID-BPF works is to work on a single array, and we
+should pretty much be sorted out. There are a couple of helpers to be
+able to communicate with the device, but the API has been stable in
+the kernel for those for quite some time now.
 
-Actually this came from Jiri's request of multiple kprobe for bpf[1].
-He tried to solve an issue that starting bpf with multiple kprobe will
-take a long time because bpf-kprobe will wait for RCU grace period for
-sync rcu events.
+The variations in the hooks is mostly because I don't know what is the
+best representation we can use in eBPF for those, and the review
+process is changing that.
 
-Jiri wanted to attach a single bpf handler to multiple kprobes and
-he tried to introduce multiple-probe interface to kprobe. So I asked
-him to use ftrace and kretprobe-like hook if it is only for the
-function entry and exit, instead of adding ad-hoc interface
-to kprobes. So I introduced fprobe (kprobe like interface for ftrace)
-and rethook (this is a generic return hook feature for fprobe exit handler)[2].
+> We suggest to use __weak global functions and unstable kfunc helpers
+> to achieve the same goal.
+> This way HID side and bpf side can evolve without introducing
+> stable uapi burden.
+> For example this particular patch can be compressed to:
+> __weak int hid_bpf_report_fixup(struct hid_device *hdev, u8 *rdesc,
+> unsigned int *size)
+> {
+>    return 0;
+> }
+> ALLOW_ERROR_INJECTION(ALLOW_ERROR_INJECTION, ERRNO);
+>
+> - buf = kmemdup(start, size, GFP_KERNEL);
+> + if (!hid_bpf_report_fixup(device, start, &size))
+> +   buf = kmemdup(start, size, GFP_KERNEL);
+>
+> Then bpf program can replace hid_bpf_report_fixup function and adjust its
+> return value while reading args.
 
-[1] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
-[2] https://lore.kernel.org/all/164191321766.806991.7930388561276940676.stgit@devnote2/T/#u
+I appreciate the suggestion and gave it a try, but AFAICT this doesn't
+work for HID (please correct me if I am wrong):
 
-This is the reason why I need to split the kretprobe's trampoline as
-rethook. Kretprobe is only for probing a single function entry/exit,
-thus it does not suit for this purpose.
+- I tried to use __weak to replace the ugly struct bpf_hid_hooks
 
-Thank you,
+This struct is in place simply because the HID module can be compiled
+in as a kernel module and we might not have the symbols available from
+kernel/bpf when it is a separate module.
+Either I did something wrong, but it seems that when we load the
+module in the kernel, there is no magic that overrides the weak
+symbols from the ones from the modules.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+- for hid_bpf_report_fixup(), this would mean that a BPF program could
+overwrite the function
+
+This is great, but I need to have one program per device, not one
+globally defined function.
+I can not have a generic report_fixup in the system, simply because
+you might need 2 different functions for 2 different devices.
+
+We could solve that by auto-generating the bpf program based on which
+devices are available, but that would mean that users will see a
+reconnect of all of their input devices when they plug in a new one,
+and will also require them to have LLVM installed, which I do not
+want.
+
+- for stuff like hid_bpf_raw_event(), I want to have multiple programs
+attached to the various devices, and not necessarily the same across
+devices.
+
+This is basically the same as above, except that I need to chain programs.
+
+For instance, we could have a program that "fixes" one device, but I
+also want to attach a tracing program on top of it to monitor what is
+happening.
+
+>
+> Similar approach can be done with all other hooks.
+>
+> Once api between HID and bpf stabilizes we can replace nop functions
+> with writeable tracepoints to make things a bit more stable
+> while still allowing for change of the interface in the future.
+>
+> The amount of bpf specific code in HID core will be close to zero
+> while bpf can be used to flexibly tweak it.
+
+Again, I like the idea, but I clearly don't see where you want to go.
+From what I see, this is incompatible with the use cases I have.
+
+>
+> kfunc is a corresponding mechanism to introduce unstable api
+> from bpf into the kernel instead of stable helpers.
+> Just whitelist some functions as unstable kfunc helpers and call them
+> from bpf progs.
+> See net/bpf/test_run.c and bpf_kfunc_call* for inspiration.
+>
+
+I also like this idea.
+
+However, for hid_hw_raw_request() I can not blindly enable that
+function in all program types. This function makes the kernel sleep,
+and so we can not use it while in IRQ context.
+I think I can detect if we are in IRQ or not, but is it really worth
+enabling it across all BPF program types when we know that only
+SEC("hid/user_event") will use it?
+
+Also, I am not sure how we can make bpf_hid_get_data() work with that.
+We need to teach the verifier how much memory is provided, and I do
+not see how you can do that with kfunc.
+
+Cheers,
+Benjamin
+
