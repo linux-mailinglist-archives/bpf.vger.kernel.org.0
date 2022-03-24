@@ -2,178 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C427E4E62AE
-	for <lists+bpf@lfdr.de>; Thu, 24 Mar 2022 12:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EC04E672A
+	for <lists+bpf@lfdr.de>; Thu, 24 Mar 2022 17:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347711AbiCXLuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Mar 2022 07:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        id S1345007AbiCXQoU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Mar 2022 12:44:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbiCXLux (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Mar 2022 07:50:53 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E84E90248;
-        Thu, 24 Mar 2022 04:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1648122561; x=1679658561;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fECszOYEZOUyl14+HZj9rYJBYIJYg6fObv2pkVS8d9o=;
-  b=B5sOk4XyQj0Lpwo50B9gjIhJQ6aaPuld4gpjmuC0hZLzp0pwN3nQFu5y
-   eaIado3IGjGAIkALWxZDX02LjOLWNFdYxVUyWYc7QMN8Sw/8iqGBIkGxd
-   Fj5V878OuUdTLtaPslHKrkw4kzlLd4Q+AsdOGWJQLQ/sIdWqSxzibacvJ
-   8svquKQi+TwahJr4W028LU24rrjgv4T2u2z0byzmiP0BIRCS9ygdPB0Zg
-   IQIxzmrE5np1vDb5JYTLpVXg/aJOESwNYQVSj6yRVFnprY5sIy/KRJBoD
-   vqKOSmOOgHVZomQCbgQugEyYHVzq/kiaqWKl68mG7mfEVHSveNXtEN4hz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10295"; a="238297364"
-X-IronPort-AV: E=Sophos;i="5.90,207,1643702400"; 
-   d="scan'208";a="238297364"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2022 04:49:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,207,1643702400"; 
-   d="scan'208";a="717788188"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orsmga005.jf.intel.com with ESMTP; 24 Mar 2022 04:49:17 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, davem@davemloft.net,
-        magnus.karlsson@intel.com, alexandr.lobakin@intel.com,
-        pabeni@redhat.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH intel-next] ice: introduce common helper for retrieving VSI by vsi_num
-Date:   Thu, 24 Mar 2022 12:49:07 +0100
-Message-Id: <20220324114907.73459-1-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.33.1
+        with ESMTP id S1343904AbiCXQoT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Mar 2022 12:44:19 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC339F393;
+        Thu, 24 Mar 2022 09:42:47 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id w21so4261723pgm.7;
+        Thu, 24 Mar 2022 09:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IHzG2Bc1iEc3DkxvoIR2nYYwik8/uVlYKPuVvvDNKG0=;
+        b=QNlvUnQ8opRbo/8qjMjhuNNly3CK6ylgBXed9nXw52TH5thCkE4vMCjuwCYADYW8By
+         OzZL0VC3oJdPAnfwDuybO4uN/qYh6b8L0IGwkLUOa4YiJ+4nwce22Hzku4istL4fdgo1
+         KH4Kx0zjoGP1F+FJjXwAs6iDk81NK/R9umkOp3PyTrgiCM/02fe2wb7NQca7zoZR5Uag
+         y+aecWmvmC7k5acY6jH/REUoBjcnxJUc59wJW8xFs8jCaoACYuwTsjKa//0+kiwsueeW
+         B1oYK8DXNuYOW5wIy9xlO8MR4/RS1Wbsp15JDFGFGq3S8D29oumO8PcjrTnMf+EygKet
+         ceEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IHzG2Bc1iEc3DkxvoIR2nYYwik8/uVlYKPuVvvDNKG0=;
+        b=FqxK1E9VseOEluyi+gZSERes/AhOWkCp6kVr3AFsTksBlnsMeRY/pkqqT2g9srhpaR
+         SFxbP6mIhX+glBb5NRuu4HEvaPhrGSUw9rr6C2Dt8Xx8+DA6dcMZqPJn1Qsw0lJoWkm+
+         iQWefM+3sk4YXdspOzwCElzhUdzgfOj2F9YqjC4APue5dVtBCpfaZIb2zw10wBbRjlP2
+         f7IRWxVrjMMLF9ROPYa8lci/iQCQoQGstfUy+GswLfZLQA+56w9tSTAcJgynrwoz4J3z
+         WV1bqMmK6hXe7J2qeObTqrGTWcBV5mcU2RDQUzwH0z4Tl1CnSoAFggGC8fkWnxEHoz+J
+         jjzg==
+X-Gm-Message-State: AOAM533PppQG2JAvBGfFWRb2hjeXTGwoibxrQNFjq3WqDmq/Ar5AhD9t
+        Qhj9UoD0H1HHYgvtHsfnXkWAO1sHOMy8UQ==
+X-Google-Smtp-Source: ABdhPJwjYjJbOpUAfEPi8cUxFAVZqrinaguZED2+9dMPmc9Ufmoe40VsI3WLGaWGQBxJI24Wn/yKGg==
+X-Received: by 2002:a63:ba07:0:b0:382:4739:8941 with SMTP id k7-20020a63ba07000000b0038247398941mr4753971pgf.293.1648140166863;
+        Thu, 24 Mar 2022 09:42:46 -0700 (PDT)
+Received: from localhost.localdomain ([223.212.58.71])
+        by smtp.gmail.com with ESMTPSA id il3-20020a17090b164300b001c6d5ed3cacsm4024945pjb.1.2022.03.24.09.42.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Mar 2022 09:42:46 -0700 (PDT)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH bpf-next] bpf: Fix maximum permitted number of arguments check
+Date:   Fri, 25 Mar 2022 00:42:38 +0800
+Message-Id: <20220324164238.1274915-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Both ice_idc.c and ice_virtchnl.c carry their own implementation of a
-helper function that is looking for a given VSI based on provided
-vsi_num. Their functionality is the same, so let's introduce the common
-function in ice.h that both of the mentioned sites will use.
+Since the m->arg_size array can hold up to MAX_BPF_FUNC_ARGS argument
+sizes, it's ok that nargs is equal to MAX_BPF_FUNC_ARGS.
 
-This is a strictly cleanup thing, no functionality is changed.
-
-Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
- drivers/net/ethernet/intel/ice/ice.h          | 15 +++++++++++++
- drivers/net/ethernet/intel/ice/ice_idc.c      | 15 -------------
- drivers/net/ethernet/intel/ice/ice_virtchnl.c | 22 ++-----------------
- 3 files changed, 17 insertions(+), 35 deletions(-)
+ kernel/bpf/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index e9aa1fb43c3a..a541446b96e8 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -756,6 +756,21 @@ static inline struct ice_vsi *ice_get_ctrl_vsi(struct ice_pf *pf)
- 	return pf->vsi[pf->ctrl_vsi_idx];
- }
- 
-+/**
-+ * ice_find_vsi - Find the VSI from VSI ID
-+ * @pf: The PF pointer to search in
-+ * @vsi_num: The VSI ID to search for
-+ */
-+static inline struct ice_vsi *ice_find_vsi(struct ice_pf *pf, u16 vsi_num)
-+{
-+	int i;
-+
-+	ice_for_each_vsi(pf, i)
-+		if (pf->vsi[i] && pf->vsi[i]->vsi_num == vsi_num)
-+			return  pf->vsi[i];
-+	return NULL;
-+}
-+
- /**
-  * ice_is_switchdev_running - check if switchdev is configured
-  * @pf: pointer to PF structure
-diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c b/drivers/net/ethernet/intel/ice/ice_idc.c
-index 73aa520317d4..56e03d0e319f 100644
---- a/drivers/net/ethernet/intel/ice/ice_idc.c
-+++ b/drivers/net/ethernet/intel/ice/ice_idc.c
-@@ -44,21 +44,6 @@ void ice_send_event_to_aux(struct ice_pf *pf, struct iidc_event *event)
- 	device_unlock(&pf->adev->dev);
- }
- 
--/**
-- * ice_find_vsi - Find the VSI from VSI ID
-- * @pf: The PF pointer to search in
-- * @vsi_num: The VSI ID to search for
-- */
--static struct ice_vsi *ice_find_vsi(struct ice_pf *pf, u16 vsi_num)
--{
--	int i;
--
--	ice_for_each_vsi(pf, i)
--		if (pf->vsi[i] && pf->vsi[i]->vsi_num == vsi_num)
--			return  pf->vsi[i];
--	return NULL;
--}
--
- /**
-  * ice_add_rdma_qset - Add Leaf Node for RDMA Qset
-  * @pf: PF struct
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl.c b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-index 3f1a63815bac..8ddb462e1af2 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-@@ -514,24 +514,6 @@ static void ice_vc_reset_vf_msg(struct ice_vf *vf)
- 		ice_reset_vf(vf, 0);
- }
- 
--/**
-- * ice_find_vsi_from_id
-- * @pf: the PF structure to search for the VSI
-- * @id: ID of the VSI it is searching for
-- *
-- * searches for the VSI with the given ID
-- */
--static struct ice_vsi *ice_find_vsi_from_id(struct ice_pf *pf, u16 id)
--{
--	int i;
--
--	ice_for_each_vsi(pf, i)
--		if (pf->vsi[i] && pf->vsi[i]->vsi_num == id)
--			return pf->vsi[i];
--
--	return NULL;
--}
--
- /**
-  * ice_vc_isvalid_vsi_id
-  * @vf: pointer to the VF info
-@@ -544,7 +526,7 @@ bool ice_vc_isvalid_vsi_id(struct ice_vf *vf, u16 vsi_id)
- 	struct ice_pf *pf = vf->pf;
- 	struct ice_vsi *vsi;
- 
--	vsi = ice_find_vsi_from_id(pf, vsi_id);
-+	vsi = ice_find_vsi(pf, vsi_id);
- 
- 	return (vsi && (vsi->vf == vf));
- }
-@@ -559,7 +541,7 @@ bool ice_vc_isvalid_vsi_id(struct ice_vf *vf, u16 vsi_id)
-  */
- static bool ice_vc_isvalid_q_id(struct ice_vf *vf, u16 vsi_id, u8 qid)
- {
--	struct ice_vsi *vsi = ice_find_vsi_from_id(vf->pf, vsi_id);
-+	struct ice_vsi *vsi = ice_find_vsi(vf->pf, vsi_id);
- 	/* allocated Tx and Rx queues should be always equal for VF VSI */
- 	return (vsi && (qid < vsi->alloc_txq));
- }
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 24788ce564a0..0918a39279f6 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5507,7 +5507,7 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 	}
+ 	args = (const struct btf_param *)(func + 1);
+ 	nargs = btf_type_vlen(func);
+-	if (nargs >= MAX_BPF_FUNC_ARGS) {
++	if (nargs > MAX_BPF_FUNC_ARGS) {
+ 		bpf_log(log,
+ 			"The function %s has %d arguments. Too many.\n",
+ 			tname, nargs);
 -- 
-2.27.0
+2.35.1
 
