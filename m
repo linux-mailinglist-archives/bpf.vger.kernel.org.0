@@ -2,102 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3794E576D
-	for <lists+bpf@lfdr.de>; Wed, 23 Mar 2022 18:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB89D4E5C3C
+	for <lists+bpf@lfdr.de>; Thu, 24 Mar 2022 01:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343553AbiCWR2F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Mar 2022 13:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
+        id S1345719AbiCXAPJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Mar 2022 20:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343621AbiCWR17 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Mar 2022 13:27:59 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479D27484B;
-        Wed, 23 Mar 2022 10:26:29 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id t25so3860369lfg.7;
-        Wed, 23 Mar 2022 10:26:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lJMU8Tjj10gJIssCAW7AkaMCyOQjnDJPbnD9fw6PuNY=;
-        b=Jj84XPQ5C/gHSM/F8OloJ0YA9t7Myr9aNZwBuMjA5p7hhTpI8iWWVoLPmMMW6MiIXW
-         UP5wYHlnuUn1WRx9TsdqnyBo2/eIGgjK/PtPVmj5YoeuvPGTkBL5wBo1CC2ylxx6Cl3O
-         6mPYKSa9oLl4csI7iTI5I7DKnKOnQ+YCqi3oP2PZHsTubo4PI8UYcb5iKjSZuBd5uN1/
-         iDyXGdl9EV7J3iMK2Qw3/WA8Pf4s5VRXonRL31AmfQcfcl1BYDynbWZwAR1H2R+dDm0N
-         8xHVWWuhwnr3CbOUzIe79K3p0VJuHsZ/w53us1Xa3vv5lBtqj9RAByv3pVY7ddAM/IzG
-         CyQQ==
+        with ESMTP id S1346753AbiCXAPJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Mar 2022 20:15:09 -0400
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC10140A6
+        for <bpf@vger.kernel.org>; Wed, 23 Mar 2022 17:13:38 -0700 (PDT)
+Received: by mail-il1-f199.google.com with SMTP id m3-20020a056e02158300b002b6e3d1f97cso1816070ilu.19
+        for <bpf@vger.kernel.org>; Wed, 23 Mar 2022 17:13:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lJMU8Tjj10gJIssCAW7AkaMCyOQjnDJPbnD9fw6PuNY=;
-        b=hTnGEp60Ym1wUvGH67YJU4Cj/g4zzgHz8rp87ch4YBIo7cpiINq/OFP5wUl4GMAPx4
-         CBKMcGCJIy/z0MvyBUqviVZamOgQL0zPMcK405ywbflEXeS8nIVaID/Wr7v2CU614n0h
-         aLVck5YnL3bgc+E1H8Ro4B3bFKG9Lcqy2MeNgznQb6ngDyg5n/5otBDzVJPstkeupyOd
-         VstkSzVWyy+upRnn5Ri/b9cXFe+zcoP3Pinwv4Ny3SP54iOMsyuzB+w+woTedG3ABibE
-         gacytIPV1tLJNWHA7SQfkR/RGemwiJ0Q3Lu4/nWHoWzXJ+rcorz2Dmwg8HANd6fqwWMA
-         r7/g==
-X-Gm-Message-State: AOAM533VBZ1+PaCOLyMBW/5wLygvY4iDKyf2JnG/+mozZNW6FouBhmt2
-        OxGe0CISeYAZYaaPP8Q12GwEnOfCl0mMTcTc4rM=
-X-Google-Smtp-Source: ABdhPJxrzbbwHDEQCPzyvg+d0htD1vm0vt/GTP4iwjUv4s0MhezDd0P8jXWhvksuWMba0Va98h6c0V6FCWfuY+sfAWk=
-X-Received: by 2002:a05:6512:1155:b0:448:bcee:3df0 with SMTP id
- m21-20020a056512115500b00448bcee3df0mr687432lfg.442.1648056387505; Wed, 23
- Mar 2022 10:26:27 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=V+6A96zcUHBo/1Vd9cbgrqSOLXByL/HQVaxu+/o75IY=;
+        b=kiLEVFN+hpja6j2EN7NomSWYrgf29RPY9tubczkYgXBp+s8eWcAd1zWJigwxmTi6Vv
+         z+sNM4TOfAMmIIsi+v9IrFUXixLPdDzKu6mrq0lJhL71W2Wrt4gLhUp0zjLSubXIG7T5
+         MC1Q/d+sFodjoFbzuDSHVIiEnQWnbVbgOx27t86sPfXGJTc9AUtnvw3CTm0b0wDx79cg
+         rPPlthSxaBJhPxIulP4C9hZJOrtPVJ19kEh/QhGDQguBJphJZ+pkANlPQIiBM+9nNIp5
+         +sJYSrCo3U6jZpFYT2g0V+nd2tQcpjyT23Iv7XOqwkK6ly5ZouEK/UfcgC52SygaR2P9
+         Mwsg==
+X-Gm-Message-State: AOAM531AnWoUKlEBfIsH1KgbIs2yDZWtoXzdxYy2Z3fSaZPUsQyeR3gO
+        kEOyCh1R5BeqXU+jrozdGpJ7LSvO6PvnUG68dHPId2wUOJdh
+X-Google-Smtp-Source: ABdhPJwhGqpJ45ABs6FnJ2w8RR9JPgROyxztusezrFVT7uaQWYKGlAH76DqYNK3/06j6SIAWT26iBIMGqNSJD5FDoOmpcIvLXPsd
 MIME-Version: 1.0
-References: <20220323073626.958652-1-ytcoode@gmail.com>
-In-Reply-To: <20220323073626.958652-1-ytcoode@gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Wed, 23 Mar 2022 10:26:15 -0700
-Message-ID: <CAJnrk1YF3PiiHFgQu2K4LN2P-Lx4obQOoQohdgXhG4Fg6WogHg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Remove redundant assignment to smap->map.value_size
-To:     Yuntao Wang <ytcoode@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org
+X-Received: by 2002:a5d:848a:0:b0:648:b2f4:d5cd with SMTP id
+ t10-20020a5d848a000000b00648b2f4d5cdmr1347523iom.53.1648080817286; Wed, 23
+ Mar 2022 17:13:37 -0700 (PDT)
+Date:   Wed, 23 Mar 2022 17:13:37 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000acf1e405daebb7c7@google.com>
+Subject: [syzbot] BUG: unable to handle kernel NULL pointer dereference in __tcp_transmit_skb
+From:   syzbot <syzbot+090d23ddbd5cd185c2e0@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 2:21 AM Yuntao Wang <ytcoode@gmail.com> wrote:
->
-> The attr->value_size is already assigned to smap->map.value_size
-> in bpf_map_init_from_attr(), there is no need to do it again in
-> stack_map_alloc()
->
-> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+Hello,
 
-LGTM.
-Acked-by: Joanne Koong <joannelkoong@gmail.com>
+syzbot found the following issue on:
 
-> ---
->  kernel/bpf/stackmap.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 34725bfa1e97..6131b4a19572 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -106,7 +106,6 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
->                 return ERR_PTR(-ENOMEM);
->
->         bpf_map_init_from_attr(&smap->map, attr);
-> -       smap->map.value_size = value_size;
->         smap->n_buckets = n_buckets;
->
->         err = get_callchain_buffers(sysctl_perf_event_max_stack);
-> --
-> 2.35.0.rc2
->
+HEAD commit:    36c2e31ad25b net: geneve: add missing netlink policy and s..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c308a5700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4a15e2288cf165c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=090d23ddbd5cd185c2e0
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171eadbd700000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12cacda3700000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+090d23ddbd5cd185c2e0@syzkaller.appspotmail.com
+
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 13fd5067 P4D 13fd5067 PUD 77ebc067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 7423 Comm: syz-executor720 Not tainted 5.17.0-rc8-syzkaller-02803-g36c2e31ad25b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc900001d0a60 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88801e00cd10 RCX: 0000000000000100
+RDX: 1ffff11003c019a3 RSI: ffff8880155c5c80 RDI: ffff888014bac800
+RBP: ffff888014bac800 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff87bccdc7 R11: 0000000000000000 R12: ffff8880155c5c80
+R13: 0000000000000000 R14: ffff888014bacf60 R15: ffff88807527012c
+FS:  000055555733b3c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 00000000757b0000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ __tcp_transmit_skb+0x1098/0x38b0 net/ipv4/tcp_output.c:1371
+ tcp_transmit_skb net/ipv4/tcp_output.c:1420 [inline]
+ tcp_xmit_probe_skb+0x28c/0x320 net/ipv4/tcp_output.c:4006
+ tcp_write_wakeup+0x1bd/0x610 net/ipv4/tcp_output.c:4059
+ tcp_send_probe0+0x44/0x560 net/ipv4/tcp_output.c:4074
+ tcp_probe_timer net/ipv4/tcp_timer.c:398 [inline]
+ tcp_write_timer_handler+0x9ed/0xbc0 net/ipv4/tcp_timer.c:626
+ tcp_write_timer+0xa2/0x2b0 net/ipv4/tcp_timer.c:642
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
+ expire_timers kernel/time/timer.c:1466 [inline]
+ __run_timers.part.0+0x67c/0xa30 kernel/time/timer.c:1734
+ __run_timers kernel/time/timer.c:1715 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1747
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+ invoke_softirq kernel/softirq.c:432 [inline]
+ __irq_exit_rcu+0x123/0x180 kernel/softirq.c:637
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:649
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:lock_acquire+0x1ef/0x510 kernel/locking/lockdep.c:5607
+Code: e4 a4 7e 83 f8 01 0f 85 b4 02 00 00 9c 58 f6 c4 02 0f 85 9f 02 00 00 48 83 7c 24 08 00 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c3 48 c7 03 00 00 00 00 48 c7 43 08 00 00 00 00 48 8b 84 24
+RSP: 0018:ffffc90002eaf888 EFLAGS: 00000206
+RAX: dffffc0000000000 RBX: 1ffff920005d5f13 RCX: 5ad5b746ce328923
+RDX: 1ffff1100e5374eb RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8fe0c947
+R10: fffffbfff1fc1928 R11: 0000000000000001 R12: 0000000000000002
+R13: 0000000000000000 R14: ffffffff8bb84ca0 R15: 0000000000000000
+ rcu_lock_acquire include/linux/rcupdate.h:268 [inline]
+ rcu_read_lock include/linux/rcupdate.h:694 [inline]
+ fib_lookup.constprop.0+0x8f/0x460 include/net/ip_fib.h:377
+ ip_route_output_key_hash_rcu+0xf54/0x2c80 net/ipv4/route.c:2737
+ ip_route_output_key_hash+0x183/0x2f0 net/ipv4/route.c:2627
+ __ip_route_output_key include/net/route.h:127 [inline]
+ ip_route_output_flow+0x23/0x150 net/ipv4/route.c:2857
+ ip_route_newports include/net/route.h:343 [inline]
+ tcp_v4_connect+0x12a5/0x1d00 net/ipv4/tcp_ipv4.c:283
+ __inet_stream_connect+0x8cf/0xed0 net/ipv4/af_inet.c:660
+ inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:724
+ smc_connect+0x230/0x450 net/smc/af_smc.c:1522
+ __sys_connect_file+0x155/0x1a0 net/socket.c:1900
+ __sys_connect+0x161/0x190 net/socket.c:1917
+ __do_sys_connect net/socket.c:1927 [inline]
+ __se_sys_connect net/socket.c:1924 [inline]
+ __x64_sys_connect+0x6f/0xb0 net/socket.c:1924
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f23b4ec0889
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffce8f74658 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: ffffffffffffffda RBX: 00007ffce8f746b0 RCX: 00007f23b4ec0889
+RDX: 0000000000000010 RSI: 00000000200001c0 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 000000000000cf1c R09: 000000000000cf1c
+R10: 0000000000000004 R11: 0000000000000246 R12: 00007ffce8f746a0
+R13: 000000000000cf1c R14: 00007ffce8f7469c R15: 431bde82d7b634db
+ </TASK>
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc900001d0a60 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88801e00cd10 RCX: 0000000000000100
+RDX: 1ffff11003c019a3 RSI: ffff8880155c5c80 RDI: ffff888014bac800
+RBP: ffff888014bac800 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff87bccdc7 R11: 0000000000000000 R12: ffff8880155c5c80
+R13: 0000000000000000 R14: ffff888014bacf60 R15: ffff88807527012c
+FS:  000055555733b3c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 00000000757b0000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	e4 a4                	in     $0xa4,%al
+   2:	7e 83                	jle    0xffffff87
+   4:	f8                   	clc
+   5:	01 0f                	add    %ecx,(%rdi)
+   7:	85 b4 02 00 00 9c 58 	test   %esi,0x589c0000(%rdx,%rax,1)
+   e:	f6 c4 02             	test   $0x2,%ah
+  11:	0f 85 9f 02 00 00    	jne    0x2b6
+  17:	48 83 7c 24 08 00    	cmpq   $0x0,0x8(%rsp)
+  1d:	74 01                	je     0x20
+  1f:	fb                   	sti
+  20:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  27:	fc ff df
+* 2a:	48 01 c3             	add    %rax,%rbx <-- trapping instruction
+  2d:	48 c7 03 00 00 00 00 	movq   $0x0,(%rbx)
+  34:	48 c7 43 08 00 00 00 	movq   $0x0,0x8(%rbx)
+  3b:	00
+  3c:	48                   	rex.W
+  3d:	8b                   	.byte 0x8b
+  3e:	84                   	.byte 0x84
+  3f:	24                   	.byte 0x24
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
