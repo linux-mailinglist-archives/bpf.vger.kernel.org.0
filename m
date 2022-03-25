@@ -2,129 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9134E6C9A
-	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 03:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CB04E6D31
+	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 05:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346040AbiCYCmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Mar 2022 22:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
+        id S1350249AbiCYEaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Mar 2022 00:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232525AbiCYCmp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Mar 2022 22:42:45 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC69186E35;
-        Thu, 24 Mar 2022 19:41:12 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id jx9so6333671pjb.5;
-        Thu, 24 Mar 2022 19:41:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YhbHvKOe3R9wr4WqHvvvMBja08hCbQeffvIT8N9J4tY=;
-        b=lSD69GpG3fScXZeIiFhxLUpG7zr6II06PDD3LiZ/yFNZpViixqk1oVGH+ZIv9YsmFF
-         JuD0HVFNEkKEKGmFjXBEHItS29+7VHjlEpcZHBbR35jvTZFNQ9q+ohKHhbAAU4hOZs1u
-         esCibAlKYdQDmXnnGixMs07Ow6L8iVgfqAzon9mdbzl11CpCR8deFFfotcFePhlTELFY
-         M97urpuWR79ToiJ4Ni6RaX1ezlCJp5vhp4aowfkBgT3tvDFAdCskFtxT72gGy9+WTi/Q
-         Zslw1aCnM9yovxGWFx3pEr23MOknGo8M7r4pHYgiR9RGy+ALNpYQXL+sX1A9KCZlDMRN
-         Xvnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YhbHvKOe3R9wr4WqHvvvMBja08hCbQeffvIT8N9J4tY=;
-        b=TZ+JuPG/17QaPc0MiWt91R4apW4ijXneVC1tSfLa6AhzT3lDI/rLA5V2M3dvUBH/V1
-         WTs5jhyNEB/lbNYkSHA98PUvYE+/ss7ZYt7R5PO/sRkZ2asv3Grqav3qta8Tr/CAuouf
-         UJYYs+223F6xl0tld8KETVYq+UDoRHBziDOkpq/8qIvOIvO5Od80AgUei/hXhYx11or+
-         ArwVBgOQQ4OuU+DIVV3jIgJkKz32a2MHD16/gBuBPSl4t9V+WgboDjCjZUV5KBCqg0j5
-         jGrNh49YOWyqIy5ZTTWX1NVuZdePVJaR96J2rkGqZC3BhaTgNlY1LXLLthQcD+azHuwE
-         eSMg==
-X-Gm-Message-State: AOAM533G39ZFTAsN/nZoFV68jumivdQSG3oM56mf5wgYT/HoceY2yJd5
-        ZaJ4wRmBr7v3lo61NH3W4VEswJlGLaRko1romUA=
-X-Google-Smtp-Source: ABdhPJz6WZrBEX0skuDL82D0kkGisFThl7BLfGbFbH6DvyzjO9DwCGSj4rIRO8W4F4hWkqTxSnDM8yhN8EcCWa7+bJ0=
-X-Received: by 2002:a17:90b:1a81:b0:1bc:c3e5:27b2 with SMTP id
- ng1-20020a17090b1a8100b001bcc3e527b2mr21991347pjb.20.1648176072202; Thu, 24
- Mar 2022 19:41:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <164800288611.1716332.7053663723617614668.stgit@devnote2>
- <164800289923.1716332.9772144337267953560.stgit@devnote2> <YjrUxmABaohh1I8W@hirez.programming.kicks-ass.net>
- <20220323204119.1feac1af0a1d58b8e63acd5d@kernel.org> <CAADnVQLfu+uDUmovM8sOJSnH=HGxMEtmjk4+nWsAR+Mdj2TTYg@mail.gmail.com>
- <20220325112114.4604291a58ee5b214ee334da@kernel.org>
-In-Reply-To: <20220325112114.4604291a58ee5b214ee334da@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 24 Mar 2022 19:41:01 -0700
-Message-ID: <CAADnVQ+uFiFJKPcsPuLW2CU+VfoSLM4fL1KzJWC2ZXEMt7jHAQ@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 1/1] rethook: x86: Add rethook x86 implementation
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        with ESMTP id S1345757AbiCYEaT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Mar 2022 00:30:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A949F6EC;
+        Thu, 24 Mar 2022 21:28:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE7A461899;
+        Fri, 25 Mar 2022 04:28:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5918C340E9;
+        Fri, 25 Mar 2022 04:28:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648182525;
+        bh=gOiPWU8wrRmexEr1ivSLPchYDDewRCSdulnwqXQ4f/o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=P4jVjsO+EHL1LKPavvbkOvI0HBq3wTyXS+FPSi5LmcBVvnfbXIO8GXShrfjalUnVv
+         1E6f7COLYa9AZyYtDWwFqK8a+H1sl8bItlSMb85xpss6i8Mn9FIR9Y532cMV+dydZ8
+         Nf2mCrz1DhXfjM/4eFUfZZyWg6WnbZ6bKy4ykh2PHaaDGPY68jYsslm4fZS0yxzA30
+         g7EbJi683OqWQGxtvma29xs6lpRtpnP8wSdK/frKPOXWsh+F6Ss5zx5Ew/Rx19Lmsn
+         IRtPkWjriX9XZCFITr6DGCNAppotJcD1OfLy/zGrbZ0UOGZ4ie1ZjnQofJf0f1RHsX
+         rKhEgf/dLg+xA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel-janitors@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] kprobes: rethook: x86: Replace kretprobe trampoline with rethook
+Date:   Fri, 25 Mar 2022 13:28:39 +0900
+Message-Id: <164818251899.2252200.7306353689206167903.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 24, 2022 at 7:21 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> On Thu, 24 Mar 2022 19:03:43 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > On Wed, Mar 23, 2022 at 4:41 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > >
-> > > On Wed, 23 Mar 2022 09:05:26 +0100
-> > > Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > > On Wed, Mar 23, 2022 at 11:34:59AM +0900, Masami Hiramatsu wrote:
-> > > > > Add rethook for x86 implementation. Most of the code has been copied from
-> > > > > kretprobes on x86.
-> > > >
-> > > > Right; as said, I'm really unhappy with growing a carbon copy of this
-> > > > stuff instead of sharing. Can we *please* keep it a single instance?
-> > >
-> > > OK, then let me update the kprobe side too.
-> > >
-> > > > Them being basically indentical, it should be trivial to have
-> > > > CONFIG_KPROBE_ON_RETHOOK (or somesuch) and just share this.
-> > >
-> > > Yes, ideally it should use CONFIG_HAVE_RETHOOK since the rethook arch port
-> > > must be a copy of the kretprobe implementation. But for safety, I think
-> > > having CONFIG_KPROBE_ON_RETHOOK is a good idea until replacing all kretprobe
-> > > implementations.
-> >
-> > Masami,
-> >
-> > you're respinning this patch to combine
-> > arch_rethook_trampoline and __kretprobe_trampoline
-> > right?
->
-> Yes, let me send the first patch set (for x86 at first).
+Hi,
 
-great
+Here are the patch set for generic kretprobe and kretprobe on x86 for
+replacing the kretprobe trampoline with rethook. For the other archs,
+I will port rethook to those after this has been merged.
+This is previously called as "rethook: x86: Add rethook x86 implementation"
+The previous thread is here[1].
 
-> BTW, can you review these 2 patches? These are only for the fprobes,
-> so it can be picked to bpf-next.
->
-> https://lore.kernel.org/all/164802091567.1732982.1242854551611267542.stgit@devnote2/T/#u
+[1] https://lore.kernel.org/all/164800288611.1716332.7053663723617614668.stgit@devnote2/T/#u
 
-Yes. They look good. Will push them soon.
+Background:
+
+This rethook came from Jiri's request of multiple kprobe for bpf[1].
+He tried to solve an issue that starting bpf with multiple kprobe will
+take a long time because bpf-kprobe will wait for RCU grace period for
+sync rcu events.
+
+Jiri wanted to attach a single bpf handler to multiple kprobes and
+he tried to introduce multiple-probe interface to kprobe. So I asked
+him to use ftrace and kretprobe-like hook if it is only for the
+function entry and exit, instead of adding ad-hoc interface
+to kprobes.
+For this purpose, I introduced the fprobe (kprobe like interface for
+ftrace) with the rethook (this is a generic return hook feature for
+fprobe exit handler)[2].
+
+[1] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+[2] https://lore.kernel.org/all/164191321766.806991.7930388561276940676.stgit@devnote2/T/#u
+
+The rethook is basically same as the kretprobe trampoline. I just made
+it decoupled from kprobes. Eventually, the all arch dependent kretprobe
+trampolines will be replaced with the rethook trampoline instead of
+cloning and set HAVE_RETHOOK=y.
+When I port the rethook for all arch which supports kretprobe, the
+legacy kretprobe specific code (which is for CONFIG_KRETPROBE_ON_RETHOOK=n)
+will be removed eventually.
+
+BTW, this patch can be applied to next-20220324, not the bpf-next tree
+directly, because this depends on ANNOTATE_NOENDBR macro. However, since
+the fprobe is merged in the bpf-next, I marked this for bpf-next.
+So until merging the both of fprobes and ENDBR series, to compile this
+you need below 2 lines in arch/x86/kernel/rethook.c.
+
+#ifndef ANNOTATE_NOENDBR
+#define ANNOTATE_NOENDBR
+
+But after those are merged, these lines will be unneeded. How should I
+handle this issue? (Just remove ANNOTATE_NOENDBR line in bpf-next?)
+
+Thank you,
+
+---
+
+Masami Hiramatsu (2):
+      kprobes: Use rethook for kretprobe if possible
+      rethook: kprobes: x86: Replace kretprobe with rethook on x86
+
+
+ arch/Kconfig                     |    7 ++
+ arch/x86/Kconfig                 |    1 
+ arch/x86/include/asm/unwind.h    |   23 +++----
+ arch/x86/kernel/Makefile         |    1 
+ arch/x86/kernel/kprobes/common.h |    1 
+ arch/x86/kernel/kprobes/core.c   |  107 ---------------------------------
+ arch/x86/kernel/rethook.c        |  121 +++++++++++++++++++++++++++++++++++++
+ include/linux/kprobes.h          |   51 +++++++++++++++-
+ kernel/kprobes.c                 |  124 ++++++++++++++++++++++++++++++++------
+ kernel/trace/trace_kprobe.c      |    4 +
+ 10 files changed, 296 insertions(+), 144 deletions(-)
+ create mode 100644 arch/x86/kernel/rethook.c
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
