@@ -2,69 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6384E7580
-	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 15:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61844E7602
+	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 16:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351553AbiCYO6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Mar 2022 10:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
+        id S1348201AbiCYPJq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Mar 2022 11:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345512AbiCYO6i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Mar 2022 10:58:38 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0826C52E42
-        for <bpf@vger.kernel.org>; Fri, 25 Mar 2022 07:57:04 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id c23so8304700plo.0
-        for <bpf@vger.kernel.org>; Fri, 25 Mar 2022 07:57:04 -0700 (PDT)
+        with ESMTP id S1359871AbiCYPIO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Mar 2022 11:08:14 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81A9A7741
+        for <bpf@vger.kernel.org>; Fri, 25 Mar 2022 08:06:39 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id jx9so7790784pjb.5
+        for <bpf@vger.kernel.org>; Fri, 25 Mar 2022 08:06:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ckddkhYGSwJjQQNyOevqezIBOoRFXRGmwAx6K/ttG5g=;
-        b=GNIzjboYHCkYKZ5YxTNCp8+DSjqcS/l83h3uDUYegbhNjyg20GhoibXTtv1pbFCVhW
-         Sq1w4jw/9s0vPwUt5itYBfp8d9Iaahw8bfoC35J8AKfuJsZ4qh9onEn6x81lT10REWn6
-         d2kAV6uoMf3HbM7qgSJZbgBifzMSlFBbTm9I3npqFeofd9ms9L9DYSMDbvYK5ruUllt5
-         PwVTPLX5/FL8q9y0N3JoaKrsW4PvVIOkuCfT1Ot9OEMlWI3SLSqAiv4E58K3Dm5qbt7J
-         TupdlPaeNBCiYBtMpDAhLGe+ZaF6FlofcbiKa1ZvJ+EdgIXORIrxd9oXwNNa9Gc2Pzv5
-         1spA==
+        bh=GBku90AupFIne1jZANCrIvTNqpqO+pDrsrySmIH0P+A=;
+        b=T3N9lghWNRKWSxDLjIV3W+9qpNCAgIQalnhu/mxAfOIklcCarRu3Zjk2FtYU8vOdaX
+         C50mG2IFMKdRvfnyXWhO96+t65UoJEvSsflL44SeQ30C4PmenSkinBTyg3zaBByP99tJ
+         H/tEj3S/OjLBzj9KTsGpBvNs0UYG6UTnKh624kbRo9KnXuTBckIkytwyApCoJnKSA0Mn
+         4ZSKDgkRY62+VwUCZ5EYEzCoDUFQmX+Q6YXvcff35sVI3fP9KFNk+fmKmTPyTvct+C6P
+         GzOj2gx0sk9tvYEj1jq6Qza5+OlLlSzaZ6PC7zJ3Laaruwl5QT1vZ8VDXScBXl+bImxJ
+         9EEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ckddkhYGSwJjQQNyOevqezIBOoRFXRGmwAx6K/ttG5g=;
-        b=69s5WPBttUeTuKmjgRXXynS3mdStIux6xizMP95yO3ilEgLWnvHv74v3CMZ3YhK11r
-         Tq988Q0gJnpvb65iejdnIBNrWGo609TIR0JeIYZ+WNAimLAxJ5l9m+gv5WBOBq1m1bbH
-         +z5acnND2oiiDYqSdw4PDsiIQBg6tV85MBTshQmZBHDmttcjhHzcKWRxuLiymQrRdqEF
-         Vvvhu+Q5hHI0K/hMHoWV31yV6jxI/SWMac+X/mfv4hwQgXHMfXVEi47Gj61qzkildBU8
-         plhxwM/lGZahiw25M0NvS0HH0kp3j+2DYQRaMbSG25RuoV1Fsc9BJKGSGptJ7zfdJyNa
-         uOog==
-X-Gm-Message-State: AOAM531949AiRya1LMeFcswzs9Iu1QAe0xSoUUWNRY36BS8CnGADRAId
-        nNG0BnTaCfP6VFb6MX3fWWIU3h+ccmQ=
-X-Google-Smtp-Source: ABdhPJwsJ7bk2PRXbU63sMa5gav8ZOeEyZLfCpl0q50vahkHkhspjA6YIwgp3dRCzPvaDn/f4CfrcA==
-X-Received: by 2002:a17:90b:4b0d:b0:1bc:4cdb:ebe3 with SMTP id lx13-20020a17090b4b0d00b001bc4cdbebe3mr13039020pjb.176.1648220223512;
-        Fri, 25 Mar 2022 07:57:03 -0700 (PDT)
+        bh=GBku90AupFIne1jZANCrIvTNqpqO+pDrsrySmIH0P+A=;
+        b=UZBjRB6rObDExLRqsOqJl/SFNLsrsIS6wiR40o45FlnQQjKSPGoZNVmGMTWfZoURxP
+         dPowxD3xD7Fqf8J/vfFM07WFal9+b08xPWl/lBvY3NDnzXtYSiuzOaNOMk+DXuYqDm2h
+         BvQTDKZ+Xyd26aTJWEqEr2+oopQ2Zl3oEBJZ88gN0jgZwtfwq2V1SEZcSOZ9wTVwOP4n
+         N+IHfUB1MZeUH3JgJT8cN1ctkPYpwsnbOHJm+jUc2o1Py3P9tVJAoCXH1wPm45/H7cH8
+         kpG8C7+J48uJPKKDpyYUfmqeE/dT8g6zpp+v7U/F167nrKWuG0OhtKTy8KWXuRH3PtXc
+         rOUA==
+X-Gm-Message-State: AOAM530dpOjVYXKARhqPpn+cWziiGig0jNuAGwzdCPyJJLiS1cnJLjXi
+        o1Lbrqg4VPvp+WUm9NYrlTA=
+X-Google-Smtp-Source: ABdhPJzT4p6unai5O5bkI0az2kMiw90SaIkAn8cqJiW5F7GOIePHVlZ3SnjW4vke5Kgxpw+8/tFUDA==
+X-Received: by 2002:a17:902:ce0a:b0:14f:bdcd:a56 with SMTP id k10-20020a170902ce0a00b0014fbdcd0a56mr12094459plg.97.1648220798934;
+        Fri, 25 Mar 2022 08:06:38 -0700 (PDT)
 Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id rj13-20020a17090b3e8d00b001c77bc09541sm10231841pjb.51.2022.03.25.07.57.02
+        by smtp.gmail.com with ESMTPSA id s20-20020aa78d54000000b004fac74c83b3sm7113955pfe.186.2022.03.25.08.06.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Mar 2022 07:57:03 -0700 (PDT)
-Date:   Fri, 25 Mar 2022 20:27:00 +0530
+        Fri, 25 Mar 2022 08:06:38 -0700 (PDT)
+Date:   Fri, 25 Mar 2022 20:36:35 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v3 05/13] bpf: Allow storing referenced kptr in
- map
-Message-ID: <20220325145700.li3ap2nii52qeyr6@apollo>
+Subject: Re: [PATCH bpf-next v3 07/13] bpf: Adapt copy_map_value for multiple
+ offset case
+Message-ID: <20220325150635.ebrdzxjlt2bhqjt4@apollo>
 References: <20220320155510.671497-1-memxor@gmail.com>
- <20220320155510.671497-6-memxor@gmail.com>
- <20220322205912.h3pd4qc36zn2uepp@kafai-mbp.dhcp.thefacebook.com>
+ <20220320155510.671497-8-memxor@gmail.com>
+ <CAEf4BzayMZcghFEKtbG58b9yC76P1wzc==wrape89bdS9wQemA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220322205912.h3pd4qc36zn2uepp@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <CAEf4BzayMZcghFEKtbG58b9yC76P1wzc==wrape89bdS9wQemA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,102 +75,255 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 02:29:12AM IST, Martin KaFai Lau wrote:
-> On Sun, Mar 20, 2022 at 09:25:02PM +0530, Kumar Kartikeya Dwivedi wrote:
-> >  static int map_kptr_match_type(struct bpf_verifier_env *env,
-> >  			       struct bpf_map_value_off_desc *off_desc,
-> > -			       struct bpf_reg_state *reg, u32 regno)
-> > +			       struct bpf_reg_state *reg, u32 regno,
-> > +			       bool ref_ptr)
-> >  {
-> >  	const char *targ_name = kernel_type_name(off_desc->btf, off_desc->btf_id);
-> >  	const char *reg_name = "";
-> > +	bool fixed_off_ok = true;
+On Wed, Mar 23, 2022 at 02:08:36AM IST, Andrii Nakryiko wrote:
+> On Sun, Mar 20, 2022 at 8:55 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
 > >
-> >  	if (reg->type != PTR_TO_BTF_ID && reg->type != PTR_TO_BTF_ID_OR_NULL)
-> >  		goto bad_type;
-> > @@ -3525,7 +3530,26 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
-> >  	/* We need to verify reg->type and reg->btf, before accessing reg->btf */
-> >  	reg_name = kernel_type_name(reg->btf, reg->btf_id);
+> > Since now there might be at most 10 offsets that need handling in
+> > copy_map_value, the manual shuffling and special case is no longer going
+> > to work. Hence, let's generalise the copy_map_value function by using
+> > a sorted array of offsets to skip regions that must be avoided while
+> > copying into and out of a map value.
 > >
-> > -	if (__check_ptr_off_reg(env, reg, regno, true))
-> > +	if (ref_ptr) {
-> > +		if (!reg->ref_obj_id) {
-> > +			verbose(env, "R%d must be referenced %s%s\n", regno,
-> > +				reg_type_str(env, PTR_TO_BTF_ID), targ_name);
-> > +			return -EACCES;
-> > +		}
-> The is_release_function() checkings under check_helper_call() is
-> not the same?
->
-> > +		/* reg->off can be used to store pointer to a certain type formed by
-> > +		 * incrementing pointer of a parent structure the object is embedded in,
-> > +		 * e.g. map may expect unreferenced struct path *, and user should be
-> > +		 * allowed a store using &file->f_path. However, in the case of
-> > +		 * referenced pointer, we cannot do this, because the reference is only
-> > +		 * for the parent structure, not its embedded object(s), and because
-> > +		 * the transfer of ownership happens for the original pointer to and
-> > +		 * from the map (before its eventual release).
-> > +		 */
-> > +		if (reg->off)
-> > +			fixed_off_ok = false;
-> I thought the new check_func_arg_reg_off() is supposed to handle the
-> is_release_function() case.  The check_func_arg_reg_off() called
-> in check_func_arg() can not handle this case?
->
-
-The difference there is, it wouldn't check for reg->off == 0 if reg->ref_obj_id
-is 0. So in that case, I should probably check reg->ref_obj_id to be non-zero
-when ref_ptr is true, and then call check_func_arg_reg_off, with the comment
-that this would eventually be an argument to the release function, so the
-argument should be checked with check_func_arg_reg_off.
-
-> > +	}
-> > +	/* var_off is rejected by __check_ptr_off_reg for PTR_TO_BTF_ID */
-> > +	if (__check_ptr_off_reg(env, reg, regno, fixed_off_ok))
-> >  		return -EACCES;
+> > When the map is created, we populate the offset array in struct map,
+> > with one extra element for map->value_size, which is used as the final
+> > offset to subtract previous offset from. Then, copy_map_value uses this
+> > sorted offset array is used to memcpy while skipping timer, spin lock,
+> > and kptr.
 > >
-> >  	if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
->
-> [ ... ]
->
-> > @@ -5390,6 +5473,7 @@ static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
-> >  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
-> >  static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
-> >  static const struct bpf_reg_types timer_types = { .types = { PTR_TO_MAP_VALUE } };
-> > +static const struct bpf_reg_types kptr_types = { .types = { PTR_TO_MAP_VALUE } };
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf.h  | 55 +++++++++++++++++++++++---------------------
+> >  kernel/bpf/syscall.c | 52 +++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 81 insertions(+), 26 deletions(-)
 > >
-> >  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> >  	[ARG_PTR_TO_MAP_KEY]		= &map_key_value_types,
-> > @@ -5417,11 +5501,13 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> >  	[ARG_PTR_TO_STACK]		= &stack_ptr_types,
-> >  	[ARG_PTR_TO_CONST_STR]		= &const_str_ptr_types,
-> >  	[ARG_PTR_TO_TIMER]		= &timer_types,
-> > +	[ARG_PTR_TO_KPTR]		= &kptr_types,
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 9d424d567dd3..6474d2d44b78 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -158,6 +158,10 @@ struct bpf_map_ops {
+> >  enum {
+> >         /* Support at most 8 pointers in a BPF map value */
+> >         BPF_MAP_VALUE_OFF_MAX = 8,
+> > +       BPF_MAP_OFF_ARR_MAX   = BPF_MAP_VALUE_OFF_MAX +
+> > +                               1 + /* for bpf_spin_lock */
+> > +                               1 + /* for bpf_timer */
+> > +                               1,  /* for map->value_size sentinel */
 > >  };
 > >
-> >  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> >  			  enum bpf_arg_type arg_type,
-> > -			  const u32 *arg_btf_id)
-> > +			  const u32 *arg_btf_id,
-> > +			  struct bpf_call_arg_meta *meta)
-> >  {
-> >  	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
-> >  	enum bpf_reg_type expected, type = reg->type;
-> > @@ -5474,8 +5560,11 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> >  			arg_btf_id = compatible->btf_id;
-> >  		}
+> >  enum {
+> > @@ -206,9 +210,17 @@ struct bpf_map {
+> >         char name[BPF_OBJ_NAME_LEN];
+> >         bool bypass_spec_v1;
+> >         bool frozen; /* write-once; write-protected by freeze_mutex */
+> > -       /* 6 bytes hole */
+> > -
+> > -       /* The 3rd and 4th cacheline with misc members to avoid false sharing
+> > +       /* 2 bytes hole */
+> > +       struct {
+> > +               struct {
+> > +                       u32 off;
+> > +                       u8 sz;
+>
+> So here we are wasting 11 * 3 == 33 bytes of padding, right? And it
+> will only increase as we add bpf_dynptr support soon.
+>
+> But if we split this struct into two arrays you won't be wasting any of that:
+>
+> struct {
+>     u32 cnt;
+>     u32 field_offs[BPF_MAP_OFF_ARR_MAX];
+>     u8 szs[BPF_MAP_OFF_ARR_MAX]
+> } off_arr;
+>
+> ?
+
+Ok, will switch to this.
+
+>
+> Further, given the majority of BPF maps in the system probably won't
+> use any of these special fields, would it make sense to dynamically
+> allocate this portion of struct bpf_map?
+>
+
+Yes, dynamically allocating also makes sense. I'll go with that for v4.
+
+> > +               } field[BPF_MAP_OFF_ARR_MAX];
+> > +               u32 cnt;
+> > +       } off_arr;
+> > +       /* 40 bytes hole */
+> > +
+> > +       /* The 4th and 5th cacheline with misc members to avoid false sharing
+> >          * particularly with refcounting.
+> >          */
+> >         atomic64_t refcnt ____cacheline_aligned;
+> > @@ -250,36 +262,27 @@ static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+> >                 memset(dst + map->spin_lock_off, 0, sizeof(struct bpf_spin_lock));
+> >         if (unlikely(map_value_has_timer(map)))
+> >                 memset(dst + map->timer_off, 0, sizeof(struct bpf_timer));
+> > +       if (unlikely(map_value_has_kptr(map))) {
+> > +               struct bpf_map_value_off *tab = map->kptr_off_tab;
+> > +               int i;
+> > +
+> > +               for (i = 0; i < tab->nr_off; i++)
+> > +                       *(u64 *)(dst + tab->off[i].offset) = 0;
+> > +       }
+> >  }
 > >
-> > -		if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
-> > -					  btf_vmlinux, *arg_btf_id)) {
-> > +		if (meta->func_id == BPF_FUNC_kptr_xchg) {
-> > +			if (map_kptr_match_type(env, meta->kptr_off_desc, reg, regno, true))
-> > +				return -EACCES;
-> > +		} else if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
-> > +						 btf_vmlinux, *arg_btf_id)) {
-> >  			verbose(env, "R%d is of type %s but %s is expected\n",
-> >  				regno, kernel_type_name(reg->btf, reg->btf_id),
-> >  				kernel_type_name(btf_vmlinux, *arg_btf_id));
+> >  /* copy everything but bpf_spin_lock and bpf_timer. There could be one of each. */
+> >  static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+> >  {
+> > -       u32 s_off = 0, s_sz = 0, t_off = 0, t_sz = 0;
+> > +       int i;
+> >
+> > -       if (unlikely(map_value_has_spin_lock(map))) {
+> > -               s_off = map->spin_lock_off;
+> > -               s_sz = sizeof(struct bpf_spin_lock);
+> > -       }
+> > -       if (unlikely(map_value_has_timer(map))) {
+> > -               t_off = map->timer_off;
+> > -               t_sz = sizeof(struct bpf_timer);
+> > -       }
+> > +       memcpy(dst, src, map->off_arr.field[0].off);
+> > +       for (i = 1; i < map->off_arr.cnt; i++) {
+> > +               u32 curr_off = map->off_arr.field[i - 1].off;
+> > +               u32 next_off = map->off_arr.field[i].off;
+> >
+> > -       if (unlikely(s_sz || t_sz)) {
+> > -               if (s_off < t_off || !s_sz) {
+> > -                       swap(s_off, t_off);
+> > -                       swap(s_sz, t_sz);
+> > -               }
+> > -               memcpy(dst, src, t_off);
+> > -               memcpy(dst + t_off + t_sz,
+> > -                      src + t_off + t_sz,
+> > -                      s_off - t_off - t_sz);
+> > -               memcpy(dst + s_off + s_sz,
+> > -                      src + s_off + s_sz,
+> > -                      map->value_size - s_off - s_sz);
+> > -       } else {
+> > -               memcpy(dst, src, map->value_size);
+> > +               curr_off += map->off_arr.field[i - 1].sz;
+> > +               memcpy(dst + curr_off, src + curr_off, next_off - curr_off);
+> >         }
+>
+> We can also get away with value_size sentinel value if we rewrite this
+> logic as follows:
+>
+> u32 cur_off = 0;
+> int i;
+>
+> for (i = 0; i < map->off_arr.cnt; i++) {
+>     memcpy(dst + cur_off, src + cur_off,  map->off_arr.field[i].off - cur_off);
+>     cur_off += map->off_arr.field[i].sz;
+> }
+>
+> memcpy(dst + cur_off, src + cur_off, map->value_size - cur_off);
+>
+
+Looks better, will switch.
+
+>
+> It will be as optimal but won't require value_size sentinel.
+>
+> >  }
+> >  void copy_map_value_locked(struct bpf_map *map, void *dst, void *src,
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 5990d6fa97ab..7b32537bd81f 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -30,6 +30,7 @@
+> >  #include <linux/pgtable.h>
+> >  #include <linux/bpf_lsm.h>
+> >  #include <linux/poll.h>
+> > +#include <linux/sort.h>
+> >  #include <linux/bpf-netns.h>
+> >  #include <linux/rcupdate_trace.h>
+> >  #include <linux/memcontrol.h>
+> > @@ -851,6 +852,55 @@ int map_check_no_btf(const struct bpf_map *map,
+> >         return -ENOTSUPP;
+> >  }
+> >
+> > +static int map_off_arr_cmp(const void *_a, const void *_b)
+> > +{
+> > +       const u32 a = *(const u32 *)_a;
+> > +       const u32 b = *(const u32 *)_b;
+> > +
+> > +       if (a < b)
+> > +               return -1;
+> > +       else if (a > b)
+> > +               return 1;
+> > +       return 0;
+> > +}
+> > +
+> > +static void map_populate_off_arr(struct bpf_map *map)
+> > +{
+> > +       u32 i;
+> > +
+> > +       map->off_arr.cnt = 0;
+> > +       if (map_value_has_spin_lock(map)) {
+> > +               i = map->off_arr.cnt;
+> > +
+> > +               map->off_arr.field[i].off = map->spin_lock_off;
+> > +               map->off_arr.field[i].sz = sizeof(struct bpf_spin_lock);
+> > +               map->off_arr.cnt++;
+> > +       }
+> > +       if (map_value_has_timer(map)) {
+> > +               i = map->off_arr.cnt;
+> > +
+> > +               map->off_arr.field[i].off = map->timer_off;
+> > +               map->off_arr.field[i].sz = sizeof(struct bpf_timer);
+> > +               map->off_arr.cnt++;
+> > +       }
+> > +       if (map_value_has_kptr(map)) {
+> > +               struct bpf_map_value_off *tab = map->kptr_off_tab;
+> > +               u32 j = map->off_arr.cnt;
+> > +
+> > +               for (i = 0; i < tab->nr_off; i++) {
+> > +                       map->off_arr.field[j + i].off = tab->off[i].offset;
+> > +                       map->off_arr.field[j + i].sz = sizeof(u64);
+> > +               }
+> > +               map->off_arr.cnt += tab->nr_off;
+> > +       }
+> > +
+> > +       map->off_arr.field[map->off_arr.cnt++].off = map->value_size;
+>
+> Using a pointer for map->off_arr.field[j + i] and incrementing it
+> along the cnt would make this code more succinct, and possibly even a
+> bit more efficient. With my above suggestion to split offs from szs,
+> you'll need two pointers, but still might be cleaner.
+>
+
+Ack.
+
+> > +       if (map->off_arr.cnt == 1)
+> > +               return;
+> > +       sort(map->off_arr.field, map->off_arr.cnt, sizeof(map->off_arr.field[0]),
+> > +            map_off_arr_cmp, NULL);
+>
+> See how Jiri is using sort_r() to sort two related arrays and keep
+> them in sync w.r.t. order.
+>
+
+Thanks for the pointer.
+
+> > +}
+> > +
+> >  static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+> >                          u32 btf_key_id, u32 btf_value_id)
+> >  {
+> > @@ -1018,6 +1068,8 @@ static int map_create(union bpf_attr *attr)
+> >                         attr->btf_vmlinux_value_type_id;
+> >         }
+> >
+> > +       map_populate_off_arr(map);
+> > +
+> >         err = security_bpf_map_alloc(map);
+> >         if (err)
+> >                 goto free_map;
+> > --
+> > 2.35.1
+> >
 
 --
 Kartikeya
