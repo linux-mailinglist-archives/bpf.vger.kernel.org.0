@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BFC4E6DC2
-	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 06:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB3E4E6DC1
+	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 06:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354761AbiCYFbk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 25 Mar 2022 01:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
+        id S1354767AbiCYFbj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 25 Mar 2022 01:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354825AbiCYFbi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Mar 2022 01:31:38 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA2B583A8
+        with ESMTP id S1354761AbiCYFbh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Mar 2022 01:31:37 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F074580E8
         for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:04 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22P0IYjO027218
-        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:04 -0700
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22P0IVC7003746
+        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:03 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f02uw6mt3-9
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f0rh6dum1-12
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:04 -0700
+        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:03 -0700
 Received: from twshared4295.42.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.21; Thu, 24 Mar 2022 22:30:02 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 89EDF14CB0B96; Thu, 24 Mar 2022 22:29:53 -0700 (PDT)
+        id 9C6BB14CB0B9C; Thu, 24 Mar 2022 22:29:55 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Alan Maguire <alan.maguire@oracle.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 4/7] libbpf: wire up spec management and other arch-independent USDT logic
-Date:   Thu, 24 Mar 2022 22:29:38 -0700
-Message-ID: <20220325052941.3526715-5-andrii@kernel.org>
+Subject: [PATCH bpf-next 5/7] libbpf: add x86-specific USDT arg spec parsing logic
+Date:   Thu, 24 Mar 2022 22:29:39 -0700
+Message-ID: <20220325052941.3526715-6-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220325052941.3526715-1-andrii@kernel.org>
 References: <20220325052941.3526715-1-andrii@kernel.org>
@@ -42,295 +42,156 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 7ubKxmpWtY5OCTws_q6Hfmm8jdG5AKtu
-X-Proofpoint-GUID: 7ubKxmpWtY5OCTws_q6Hfmm8jdG5AKtu
+X-Proofpoint-GUID: Y2o7Uo0bzCfxdFrm8fgDdECj4Kys6fLL
+X-Proofpoint-ORIG-GUID: Y2o7Uo0bzCfxdFrm8fgDdECj4Kys6fLL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-25_01,2022-03-24_01,2022-02-23_01
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
         RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Last part of architecture-agnostic user-space USDT handling logic is to
-set up BPF spec and, optionally, IP-to-ID maps from user-space.
-usdt_manager performs a compact spec ID allocation to utilize
-fixed-sized BPF maps as efficiently as possible. We also use hashmap to
-deduplicate USDT arg spec strings and map identical strings to single
-USDT spec, minimizing the necessary BPF map size. usdt_manager supports
-arbitrary sequences of attachment and detachment, both of the same USDT
-and multiple different USDTs and internally maintains a free list of
-unused spec IDs. bpf_link_usdt's logic is extended with proper setup and
-teardown of this spec ID free list and supporting BPF maps.
+Add x86/x86_64-specific USDT argument specification parsing. Each
+architecture will require their own logic, as all this is arch-specific
+assembly-based notation. Architectures that libbpf doesn't support for
+USDTs will pr_warn() with specific error and return -ENOTSUP.
+
+We use sscanf() as a very powerful and easy to use string parser. Those
+spaces in sscanf's format string mean "skip any whitespaces", which is
+pretty nifty (and somewhat little known) feature.
+
+All this was tested on little-endian architecture, so bit shifts are
+probably off on big-endian, which our CI will hopefully prove.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/usdt.c | 167 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 166 insertions(+), 1 deletion(-)
+ tools/lib/bpf/usdt.c | 105 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 105 insertions(+)
 
 diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index 86d5d8390eb1..22f5f56992f8 100644
+index 22f5f56992f8..5cf809db60aa 100644
 --- a/tools/lib/bpf/usdt.c
 +++ b/tools/lib/bpf/usdt.c
-@@ -74,6 +74,10 @@ struct usdt_manager {
- 	struct bpf_map *specs_map;
- 	struct bpf_map *ip_to_id_map;
- 
-+	int *free_spec_ids;
-+	size_t free_spec_cnt;
-+	size_t next_free_spec_id;
-+
- 	bool has_bpf_cookie;
- 	bool has_sema_refcnt;
- };
-@@ -118,6 +122,7 @@ void usdt_manager_free(struct usdt_manager *man)
- 	if (!man)
- 		return;
- 
-+	free(man->free_spec_ids);
- 	free(man);
- }
- 
-@@ -623,6 +628,9 @@ struct bpf_link_usdt {
- 
- 	struct usdt_manager *usdt_man;
- 
-+	size_t spec_cnt;
-+	int *spec_ids;
-+
- 	size_t uprobe_cnt;
- 	struct {
- 		long abs_ip;
-@@ -633,11 +641,52 @@ struct bpf_link_usdt {
- static int bpf_link_usdt_detach(struct bpf_link *link)
- {
- 	struct bpf_link_usdt *usdt_link = container_of(link, struct bpf_link_usdt, link);
-+	struct usdt_manager *man = usdt_link->usdt_man;
- 	int i;
- 
- 	for (i = 0; i < usdt_link->uprobe_cnt; i++) {
- 		/* detach underlying uprobe link */
- 		bpf_link__destroy(usdt_link->uprobes[i].link);
-+		/* there is no need to update specs map because it will be
-+		 * unconditionally overwritten on subsequent USDT attaches,
-+		 * but if BPF cookies are not used we need to remove entry
-+		 * from ip_to_id map, otherwise we'll run into false
-+		 * conflicting IP errors
-+		 */
-+		if (!man->has_bpf_cookie) {
-+			/* not much we can do about errors here */
-+			(void)bpf_map_delete_elem(bpf_map__fd(man->ip_to_id_map),
-+						  &usdt_link->uprobes[i].abs_ip);
-+		}
-+	}
-+
-+	/* try to return the list of previously used spec IDs to usdt_manager
-+	 * for future reuse for subsequent USDT attaches
-+	 */
-+	if (!man->free_spec_ids) {
-+		/* if there were no free spec IDs yet, just transfer our IDs */
-+		man->free_spec_ids = usdt_link->spec_ids;
-+		man->free_spec_cnt = usdt_link->spec_cnt;
-+		usdt_link->spec_ids = NULL;
-+	} else {
-+		/* otherwise concat IDs */
-+		size_t new_cnt = man->free_spec_cnt + usdt_link->spec_cnt;
-+		int *new_free_ids;
-+
-+		new_free_ids = libbpf_reallocarray(man->free_spec_ids, new_cnt,
-+						   sizeof(*new_free_ids));
-+		/* If we couldn't resize free_spec_ids, we'll just leak
-+		 * a bunch of free IDs; this is very unlikely to happen and if
-+		 * system is so exausted on memory, it's the least of user's
-+		 * concerns, probably.
-+		 * So just do our best here to return those IDs to usdt_manager.
-+		 */
-+		if (new_free_ids) {
-+			memcpy(new_free_ids + man->free_spec_cnt, usdt_link->spec_ids,
-+			       usdt_link->spec_cnt * sizeof(*usdt_link->spec_ids));
-+			man->free_spec_ids = new_free_ids;
-+			man->free_spec_cnt = new_cnt;
-+		}
- 	}
- 
+@@ -1007,8 +1007,113 @@ static int parse_usdt_spec(struct usdt_spec *spec, const struct usdt_note *note,
  	return 0;
-@@ -647,17 +696,82 @@ static void bpf_link_usdt_dealloc(struct bpf_link *link)
- {
- 	struct bpf_link_usdt *usdt_link = container_of(link, struct bpf_link_usdt, link);
- 
-+	free(usdt_link->spec_ids);
- 	free(usdt_link->uprobes);
- 	free(usdt_link);
  }
  
-+static int prepare_spec_id(struct usdt_manager *man, struct bpf_link_usdt *link,
-+			   struct hashmap *specs_hash, struct usdt_target *target,
-+			   int *spec_id, bool *id_exists)
-+{
-+	void *tmp;
-+	bool reused;
-+	int err;
++/* Architecture-specific logic for parsing USDT argument location specs */
 +
-+	/* check if we already assigned spec ID for this spec string */
-+	if (hashmap__find(specs_hash, target->spec_str, &tmp)) {
-+		*id_exists = true;
-+		*spec_id = (long)tmp;
-+		return 0;
++#if defined(__x86_64__) || defined(__i386__)
++
++static int calc_pt_regs_off(const char *reg_name)
++{
++	static struct {
++		const char *names[4];
++		size_t pt_regs_off;
++	} reg_map[] = {
++#if __x86_64__
++#define reg_off(reg64, reg32) offsetof(struct pt_regs, reg64)
++#else
++#define reg_off(reg64, reg32) offsetof(struct pt_regs, reg32)
++#endif
++		{ {"rip", "eip", "", ""}, reg_off(rip, eip) },
++		{ {"rax", "eax", "ax", "al"}, reg_off(rax, eax) },
++		{ {"rbx", "ebx", "bx", "bl"}, reg_off(rbx, ebx) },
++		{ {"rcx", "ecx", "cx", "cl"}, reg_off(rcx, ecx) },
++		{ {"rdx", "edx", "dx", "dl"}, reg_off(rdx, edx) },
++		{ {"rsi", "esi", "si", "sil"}, reg_off(rsi, esi) },
++		{ {"rdi", "edi", "di", "dil"}, reg_off(rdi, edi) },
++		{ {"rbp", "ebp", "bp", "bpl"}, reg_off(rbp, ebp) },
++		{ {"rsp", "esp", "sp", "spl"}, reg_off(rsp, esp) },
++#undef reg_off
++#if __x86_64__
++		{ {"r8", "r8d", "r8w", "r8b"}, offsetof(struct pt_regs, r8) },
++		{ {"r9", "r9d", "r9w", "r9b"}, offsetof(struct pt_regs, r9) },
++		{ {"r10", "r10d", "r10w", "r10b"}, offsetof(struct pt_regs, r10) },
++		{ {"r11", "r11d", "r11w", "r11b"}, offsetof(struct pt_regs, r11) },
++		{ {"r12", "r12d", "r12w", "r12b"}, offsetof(struct pt_regs, r12) },
++		{ {"r13", "r13d", "r13w", "r13b"}, offsetof(struct pt_regs, r13) },
++		{ {"r14", "r14d", "r14w", "r14b"}, offsetof(struct pt_regs, r14) },
++		{ {"r15", "r15d", "r15w", "r15b"}, offsetof(struct pt_regs, r15) },
++#endif
++	};
++	int i, j;
++
++	for (i = 0; i < ARRAY_SIZE(reg_map); i++) {
++		for (j = 0; j < ARRAY_SIZE(reg_map[i].names); j++) {
++			if (strcmp(reg_name, reg_map[i].names[j]) == 0)
++				return reg_map[i].pt_regs_off;
++		}
 +	}
 +
-+	/* otherwise get next free spec ID, giving preference to free list */
-+	tmp = libbpf_reallocarray(link->spec_ids, link->spec_cnt + 1, sizeof(*link->spec_ids));
-+	if (!tmp)
-+		return -ENOMEM;
-+	link->spec_ids = tmp;
++	pr_warn("usdt: unrecognized register '%s'\n", reg_name);
++	return -ENOENT;
++}
 +
-+	if (man->free_spec_cnt) {
-+		*spec_id = man->free_spec_ids[man->free_spec_cnt - 1];
-+		man->free_spec_cnt--;
-+		reused = true;
++static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
++{
++	char *reg_name = NULL;
++	int arg_sz, len, reg_off;
++	long off;
++
++	if (3 == sscanf(arg_str, " %d @ %ld ( %%%m[^)] ) %n", &arg_sz, &off, &reg_name, &len)) {
++		/* -4@-20(%rbp) */
++		arg->arg_type = USDT_ARG_REG_DEREF;
++		arg->val_off = off;
++		reg_off = calc_pt_regs_off(reg_name);
++		free(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
++	} else if (2 == sscanf(arg_str, " %d @ %%%ms %n", &arg_sz, &reg_name, &len)) {
++		/* -4@%eax */
++		arg->arg_type = USDT_ARG_REG;
++		arg->val_off = 0;
++
++		reg_off = calc_pt_regs_off(reg_name);
++		free(reg_name);
++		if (reg_off < 0)
++			return reg_off;
++		arg->reg_off = reg_off;
++	} else if (2 == sscanf(arg_str, " %d @ $%ld %n", &arg_sz, &off, &len)) {
++		/* 4@$71 */
++		arg->arg_type = USDT_ARG_CONST;
++		arg->val_off = off;
++		arg->reg_off = 0;
 +	} else {
-+		*spec_id = man->next_free_spec_id;
-+		man->next_free_spec_id++;
-+		reused = false;
++		pr_warn("usdt: unrecognized arg #%d spec '%s'\n", arg_num, arg_str);
++		return -EINVAL;
 +	}
 +
-+	/* cache spec ID for current spec string for future lookups */
-+	err = hashmap__add(specs_hash, target->spec_str, (void *)(long)*spec_id);
-+	if (err) {
-+		/* undo usdt_manager state changes, if we got an error */
-+		if (reused)
-+			man->free_spec_cnt++;
-+		else
-+			man->next_free_spec_id--;
-+		return err;
++	arg->arg_signed = arg_sz < 0;
++	if (arg_sz < 0)
++		arg_sz = -arg_sz;
++
++	switch (arg_sz) {
++	case 1: case 2: case 4: case 8:
++		arg->arg_bitshift = 64 - arg_sz * 8;
++		break;
++	default:
++		pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
++			arg_num, arg_str, arg_sz);
++		return -EINVAL;
 +	}
 +
-+	*id_exists = false;
-+	link->spec_ids[link->spec_cnt] = *spec_id;
-+	link->spec_cnt++;
-+	return 0;
++	return len;
 +}
 +
-+static size_t specs_hash_fn(const void *key, void *ctx)
-+{
-+	const char *s = key;
++#else
 +
-+	return str_hash(s);
-+}
-+
-+static bool specs_equal_fn(const void *key1, const void *key2, void *ctx)
-+{
-+	const char *s1 = key1;
-+	const char *s2 = key2;
-+
-+	return strcmp(s1, s2) == 0;
-+}
-+
- struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct bpf_program *prog,
- 					  pid_t pid, const char *path,
- 					  const char *usdt_provider, const char *usdt_name,
- 					  long usdt_cookie)
+ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
  {
--	int i, fd, err;
-+	int i, fd, err, spec_map_fd, ip_map_fd;
- 	LIBBPF_OPTS(bpf_uprobe_opts, opts);
-+	struct hashmap *specs_hash = NULL;
- 	struct bpf_link_usdt *link = NULL;
- 	struct usdt_target *targets = NULL;
- 	size_t target_cnt;
-@@ -669,6 +783,9 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 		return libbpf_err_ptr(-EINVAL);
- 	}
- 
-+	spec_map_fd = bpf_map__fd(man->specs_map);
-+	ip_map_fd = bpf_map__fd(man->ip_to_id_map);
+ 	pr_warn("usdt: libbpf doesn't support USDTs on current architecture\n");
+ 	return -ENOTSUP;
+ }
 +
- 	/* TODO: perform path resolution similar to uprobe's */
- 	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
-@@ -704,6 +821,12 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 		goto err_out;
- 	}
- 
-+	specs_hash = hashmap__new(specs_hash_fn, specs_equal_fn, NULL);
-+	if (IS_ERR(specs_hash)) {
-+		err = PTR_ERR(specs_hash);
-+		goto err_out;
-+	}
-+
- 	link = calloc(1, sizeof(*link));
- 	if (!link) {
- 		err = -ENOMEM;
-@@ -723,8 +846,48 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 	for (i = 0; i < target_cnt; i++) {
- 		struct usdt_target *target = &targets[i];
- 		struct bpf_link *uprobe_link;
-+		bool reused;
-+		int spec_id;
-+
-+		/* Spec ID can be either reused or newly allocated. If it is
-+		 * newly allocated, we'll need to fill out spec map, otherwise
-+		 * entire spec should be valid and can be just used by a new
-+		 * uprobe. We reuse spec when USDT arg spec is identical. We
-+		 * also never share specs between two different USDT
-+		 * attachments ("links"), so all the reused specs already
-+		 * share USDT cookie value implicitly.
-+		 */
-+		err = prepare_spec_id(man, link, specs_hash, target, &spec_id, &reused);
-+		if (err)
-+			goto err_out;
-+
-+		if (!reused &&
-+		    bpf_map_update_elem(spec_map_fd, &spec_id, &target->spec, BPF_ANY)) {
-+			err = -errno;
-+			pr_warn("usdt: failed to set USDT spec #%d for '%s:%s' in '%s': %d\n",
-+				spec_id, usdt_provider, usdt_name, path, err);
-+			/* make sure we don't return this bad spec ID into the
-+			 * pool of free spec IDs
-+			 */
-+			link->spec_cnt--;
-+			goto err_out;
-+		}
-+		if (!man->has_bpf_cookie &&
-+		    bpf_map_update_elem(ip_map_fd, &target->abs_ip, &spec_id, BPF_NOEXIST)) {
-+			err = -errno;
-+			if (err == -EEXIST) {
-+				pr_warn("usdt: IP collision detected for spec #%d for '%s:%s' in '%s'\n",
-+				        spec_id, usdt_provider, usdt_name, path);
-+			} else {
-+				pr_warn("usdt: failed to map IP 0x%lx to spec #%d for '%s:%s' in '%s': %d\n",
-+					target->abs_ip, spec_id, usdt_provider, usdt_name,
-+					path, err);
-+			}
-+			goto err_out;
-+		}
- 
- 		opts.ref_ctr_offset = target->sema_off;
-+		opts.bpf_cookie = man->has_bpf_cookie ? spec_id : 0;
- 		uprobe_link = bpf_program__attach_uprobe_opts(prog, pid, path,
- 							      target->rel_ip, &opts);
- 		err = libbpf_get_error(link);
-@@ -740,6 +903,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 	}
- 
- 	free(targets);
-+	hashmap__free(specs_hash);
- 	elf_end(elf);
- 	close(fd);
- 
-@@ -749,6 +913,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- 	bpf_link__destroy(&link->link);
- 
- 	free(targets);
-+	hashmap__free(specs_hash);
- 	if (elf)
- 		elf_end(elf);
- 	close(fd);
++#endif
 -- 
 2.30.2
 
