@@ -2,477 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC434E6DC4
-	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 06:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF744E70E5
+	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 11:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355100AbiCYFbo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 25 Mar 2022 01:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
+        id S1359359AbiCYKOA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Mar 2022 06:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354901AbiCYFbo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Mar 2022 01:31:44 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64EB58835
-        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:10 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22P2b6C5019202
-        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:10 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f153u0mgp-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:10 -0700
-Received: from twshared31479.05.prn5.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 24 Mar 2022 22:30:09 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id C56C114CB0BA2; Thu, 24 Mar 2022 22:29:59 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 7/7] selftests/bpf: add urandom_read shared lib and USDTs
-Date:   Thu, 24 Mar 2022 22:29:41 -0700
-Message-ID: <20220325052941.3526715-8-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220325052941.3526715-1-andrii@kernel.org>
-References: <20220325052941.3526715-1-andrii@kernel.org>
+        with ESMTP id S1358687AbiCYKMV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Mar 2022 06:12:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C45270929;
+        Fri, 25 Mar 2022 03:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VRexANbzMtWcQlHpMlOt6xn11ZKelygzpbZu1vRfJaw=; b=UQPDMBAwUSPnjtKI/vgn2IVqxK
+        uF+8teDZkpbs4588gkl1GCr1D9Zr4CXZ7BsSGiRZ0FtweXgiEjArX2IT4vusFGP1UE16XQV3SRb3m
+        7N2JI1DSFiq7tq/K+xrEzv485whVPyYu8HMA/xXfRkP1n6lH1Tk6FXt0WLxvFudSdHKlhIiC5BPRK
+        iUuwHK7D1gx7G0y8D+2EPVQ4CxaM8Fpci/fsOgU35Nr0xYBB7Dzd5ut2UcaQoUguH4g5Bs2ikHGaF
+        kf5/x5RzSS2U0fWjz8X2CDqT3iSIIR6CJrDs1SmHDajqlhJfm98pf4BhHKhsRgkFK8Tv0M4WbfOvt
+        00PHHdIg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nXgt5-004LKX-O7; Fri, 25 Mar 2022 10:09:43 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C4C919862A6; Fri, 25 Mar 2022 11:09:40 +0100 (CET)
+Date:   Fri, 25 Mar 2022 11:09:40 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        kernel-janitors@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH bpf-next 2/2] rethook: kprobes: x86: Replace kretprobe
+ with rethook on x86
+Message-ID: <20220325100940.GM8939@worktop.programming.kicks-ass.net>
+References: <164818251899.2252200.7306353689206167903.stgit@devnote2>
+ <164818254148.2252200.5054811796192907193.stgit@devnote2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: mSlXIORt8CikynSaZy_CghTf7QWqI6pa
-X-Proofpoint-GUID: mSlXIORt8CikynSaZy_CghTf7QWqI6pa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-25_01,2022-03-24_01,2022-02-23_01
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <164818254148.2252200.5054811796192907193.stgit@devnote2>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend urandom_read helper binary to include USDTs of 4 combinations:
-semaphore/semaphoreless (refcounted and non-refcounted) and based in
-executable or shared library. We also extend urandom_read with ability
-to report it's own PID to parent process and wait for parent process to
-ready itself up for tracing urandom_read. We utilize popen() and
-underlying pipe properties for proper signaling.
+On Fri, Mar 25, 2022 at 01:29:01PM +0900, Masami Hiramatsu wrote:
+> Replaces the kretprobe code with rethook on x86. With this patch,
+> kretprobe on x86 uses the rethook instead of kretprobe specific
+> trampoline code.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  arch/x86/Kconfig                 |    1 
+>  arch/x86/include/asm/unwind.h    |   23 +++----
+>  arch/x86/kernel/Makefile         |    1 
+>  arch/x86/kernel/kprobes/common.h |    1 
+>  arch/x86/kernel/kprobes/core.c   |  107 ----------------------------------
+>  arch/x86/kernel/rethook.c        |  121 ++++++++++++++++++++++++++++++++++++++
+>  6 files changed, 135 insertions(+), 119 deletions(-)
+>  create mode 100644 arch/x86/kernel/rethook.c
 
-Once urandom_read is ready, we add few tests to validate that libbpf's
-USDT attachment handles all the above combinations of semaphore (or lack
-of it) and static or shared library USDTs. Also, we validate that libbpf
-handles shared libraries both with PID filter and without one (i.e., -1
-for PID argument).
+I'm thinking you'll find it builds much better with this on...
 
-Having the shared library case tested with and without PID is important
-because internal logic differs on kernels that don't support BPF
-cookies. On such older kernels, attaching to USDTs in shared libraries
-without specifying concrete PID doesn't work in principle, because it's
-impossible to determine shared library's load address to derive absolute
-IPs for uprobe attachments. Without absolute IPs, it's impossible to
-perform correct look up of USDT spec based on uprobe's absolute IP (the
-only kind available from BPF at runtime). This is not the problem on
-newer kernels with BPF cookie as we don't need IP-to-ID lookup because
-BPF cookie value *is* spec ID.
-
-So having those two situations as separate subtests is good because
-libbpf CI is able to test latest selftests against old kernels (e.g.,
-4.9 and 5.5), so we'll be able to disable PID-less shared lib attachment
-for old kernels, but will still leave PID-specific one enabled to validate
-this legacy logic is working correctly.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/Makefile          |  11 +-
- tools/testing/selftests/bpf/prog_tests/usdt.c | 107 ++++++++++++++++++
- .../selftests/bpf/progs/test_urandom_usdt.c   |  70 ++++++++++++
- tools/testing/selftests/bpf/urandom_read.c    |  63 ++++++++++-
- .../testing/selftests/bpf/urandom_read_aux.c  |   9 ++
- .../testing/selftests/bpf/urandom_read_lib1.c |  13 +++
- .../testing/selftests/bpf/urandom_read_lib2.c |   8 ++
- 7 files changed, 274 insertions(+), 7 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_urandom_usdt.c
- create mode 100644 tools/testing/selftests/bpf/urandom_read_aux.c
- create mode 100644 tools/testing/selftests/bpf/urandom_read_lib1.c
- create mode 100644 tools/testing/selftests/bpf/urandom_read_lib2.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 18e22def3bdb..58da22c019a8 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -168,9 +168,15 @@ $(OUTPUT)/%:%.c
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(LINK.c) $^ $(LDLIBS) -o $@
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 2de3c8c5eba9..794fdef2501a 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -550,15 +550,15 @@ bool unwind_next_frame(struct unwind_state *state)
+ 		}
+ 		/*
+ 		 * There is a small chance to interrupt at the entry of
+-		 * __kretprobe_trampoline() where the ORC info doesn't exist.
+-		 * That point is right after the RET to __kretprobe_trampoline()
++		 * arch_rethook_trampoline() where the ORC info doesn't exist.
++		 * That point is right after the RET to arch_rethook_trampoline()
+ 		 * which was modified return address.
+-		 * At that point, the @addr_p of the unwind_recover_kretprobe()
++		 * At that point, the @addr_p of the unwind_recover_rethook()
+ 		 * (this has to point the address of the stack entry storing
+ 		 * the modified return address) must be "SP - (a stack entry)"
+ 		 * because SP is incremented by the RET.
+ 		 */
+-		state->ip = unwind_recover_kretprobe(state, state->ip,
++		state->ip = unwind_recover_rethook(state, state->ip,
+ 				(unsigned long *)(state->sp - sizeof(long)));
+ 		state->regs = (struct pt_regs *)sp;
+ 		state->prev_regs = NULL;
+@@ -573,7 +573,7 @@ bool unwind_next_frame(struct unwind_state *state)
+ 			goto err;
+ 		}
+ 		/* See UNWIND_HINT_TYPE_REGS case comment. */
+-		state->ip = unwind_recover_kretprobe(state, state->ip,
++		state->ip = unwind_recover_rethook(state, state->ip,
+ 				(unsigned long *)(state->sp - sizeof(long)));
  
--$(OUTPUT)/urandom_read: urandom_read.c
-+$(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
-+	$(call msg,LIB,,$@)
-+	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
-+
-+$(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
- 	$(call msg,BINARY,,$@)
--	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $< $(LDLIBS) -Wl,--build-id=sha1 -o $@
-+	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.c,$^)			       \
-+		  liburandom_read.so $(LDLIBS)	       			       \
-+		  -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
- 
- $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
- 	$(call msg,MOD,,$@)
-@@ -492,6 +498,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
- 			 btf_helpers.c flow_dissector_load.h		\
- 			 cap_helpers.c
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
-+		       $(OUTPUT)/liburandom_read.so			\
- 		       ima_setup.sh					\
- 		       $(wildcard progs/btf_dump_test_case_*.c)
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
-index 44a20d8c45d7..b4c070bcac48 100644
---- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-@@ -305,10 +305,117 @@ static void subtest_multispec_usdt(void)
- 	test_usdt__destroy(skel);
- }
- 
-+static FILE *urand_spawn(int *pid)
-+{
-+	FILE *f;
-+
-+	/* urandom_read's stdout is wired into f */
-+	f = popen("./urandom_read 1 report-pid", "r");
-+	if (!f)
-+		return NULL;
-+
-+	if (fscanf(f, "%d", pid) != 1) {
-+		pclose(f);
-+		return NULL;
-+	}
-+
-+	return f;
-+}
-+
-+static int urand_trigger(FILE **urand_pipe)
-+{
-+	int exit_code;
-+
-+	/* pclose() waits for child process to exit and returns their exit code */
-+	exit_code = pclose(*urand_pipe);
-+	*urand_pipe = NULL;
-+
-+	return exit_code;
-+}
-+
-+static void subtest_urandom_usdt(bool auto_attach)
-+{
-+	struct test_urandom_usdt *skel;
-+	struct test_urandom_usdt__bss *bss;
-+	struct bpf_link *l;
-+	FILE *urand_pipe = NULL;
-+	int err, urand_pid = 0;
-+
-+	skel = test_urandom_usdt__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	urand_pipe = urand_spawn(&urand_pid);
-+	if (!ASSERT_OK_PTR(urand_pipe, "urand_spawn"))
-+		goto cleanup;
-+
-+	bss = skel->bss;
-+	bss->urand_pid = urand_pid;
-+
-+	if (auto_attach) {
-+		err = test_urandom_usdt__attach(skel);
-+		if (!ASSERT_OK(err, "skel_auto_attach"))
-+			goto cleanup;
-+	} else {
-+		l = bpf_program__attach_usdt(skel->progs.urand_read_without_sema,
-+					     urand_pid, "./urandom_read",
-+					     "urand", "read_without_sema", NULL);
-+		if (!ASSERT_OK_PTR(l, "urand_without_sema_attach"))
-+			goto cleanup;
-+		skel->links.urand_read_without_sema = l;
-+
-+		l = bpf_program__attach_usdt(skel->progs.urand_read_with_sema,
-+					     urand_pid, "./urandom_read",
-+					     "urand", "read_with_sema", NULL);
-+		if (!ASSERT_OK_PTR(l, "urand_with_sema_attach"))
-+			goto cleanup;
-+		skel->links.urand_read_with_sema = l;
-+
-+		l = bpf_program__attach_usdt(skel->progs.urandlib_read_without_sema,
-+					     urand_pid, "./liburandom_read.so",
-+					     "urandlib", "read_without_sema", NULL);
-+		if (!ASSERT_OK_PTR(l, "urandlib_without_sema_attach"))
-+			goto cleanup;
-+		skel->links.urandlib_read_without_sema = l;
-+
-+		l = bpf_program__attach_usdt(skel->progs.urandlib_read_with_sema,
-+					     urand_pid, "./liburandom_read.so",
-+					     "urandlib", "read_with_sema", NULL);
-+		if (!ASSERT_OK_PTR(l, "urandlib_with_sema_attach"))
-+			goto cleanup;
-+		skel->links.urandlib_read_with_sema = l;
-+
-+	}
-+
-+	/* trigger urandom_read USDTs */
-+	ASSERT_OK(urand_trigger(&urand_pipe), "urand_exit_code");
-+
-+	ASSERT_EQ(bss->urand_read_without_sema_call_cnt, 1, "urand_wo_sema_cnt");
-+	ASSERT_EQ(bss->urand_read_without_sema_buf_sz_sum, 256, "urand_wo_sema_sum");
-+
-+	ASSERT_EQ(bss->urand_read_with_sema_call_cnt, 1, "urand_w_sema_cnt");
-+	ASSERT_EQ(bss->urand_read_with_sema_buf_sz_sum, 256, "urand_w_sema_sum");
-+
-+	ASSERT_EQ(bss->urandlib_read_without_sema_call_cnt, 1, "urandlib_wo_sema_cnt");
-+	ASSERT_EQ(bss->urandlib_read_without_sema_buf_sz_sum, 256, "urandlib_wo_sema_sum");
-+
-+	ASSERT_EQ(bss->urandlib_read_with_sema_call_cnt, 1, "urandlib_w_sema_cnt");
-+	ASSERT_EQ(bss->urandlib_read_with_sema_buf_sz_sum, 256, "urandlib_w_sema_sum");
-+
-+cleanup:
-+	if (urand_pipe)
-+		pclose(urand_pipe);
-+	test_urandom_usdt__destroy(skel);
-+}
-+
- void test_usdt(void)
- {
- 	if (test__start_subtest("basic"))
- 		subtest_basic_usdt();
- 	if (test__start_subtest("multispec"))
- 		subtest_multispec_usdt();
-+	if (test__start_subtest("urand_auto_attach"))
-+		subtest_urandom_usdt(true /* auto_attach */);
-+	if (test__start_subtest("urand_pid_attach"))
-+		subtest_urandom_usdt(false /* auto_attach */);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_urandom_usdt.c b/tools/testing/selftests/bpf/progs/test_urandom_usdt.c
-new file mode 100644
-index 000000000000..3539b02bd5f7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_urandom_usdt.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/usdt.bpf.h>
-+
-+int urand_pid;
-+
-+int urand_read_without_sema_call_cnt;
-+int urand_read_without_sema_buf_sz_sum;
-+
-+SEC("usdt/./urandom_read:urand:read_without_sema")
-+int BPF_USDT(urand_read_without_sema, int iter_num, int iter_cnt, int buf_sz)
-+{
-+	if (urand_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	__sync_fetch_and_add(&urand_read_without_sema_call_cnt, 1);
-+	__sync_fetch_and_add(&urand_read_without_sema_buf_sz_sum, buf_sz);
-+
-+	return 0;
-+}
-+
-+int urand_read_with_sema_call_cnt;
-+int urand_read_with_sema_buf_sz_sum;
-+
-+SEC("usdt/./urandom_read:urand:read_with_sema")
-+int BPF_USDT(urand_read_with_sema, int iter_num, int iter_cnt, int buf_sz)
-+{
-+	if (urand_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	__sync_fetch_and_add(&urand_read_with_sema_call_cnt, 1);
-+	__sync_fetch_and_add(&urand_read_with_sema_buf_sz_sum, buf_sz);
-+
-+	return 0;
-+}
-+
-+int urandlib_read_without_sema_call_cnt;
-+int urandlib_read_without_sema_buf_sz_sum;
-+
-+SEC("usdt/./liburandom_read.so:urandlib:read_without_sema")
-+int BPF_USDT(urandlib_read_without_sema, int iter_num, int iter_cnt, int buf_sz)
-+{
-+	if (urand_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	__sync_fetch_and_add(&urandlib_read_without_sema_call_cnt, 1);
-+	__sync_fetch_and_add(&urandlib_read_without_sema_buf_sz_sum, buf_sz);
-+
-+	return 0;
-+}
-+
-+int urandlib_read_with_sema_call_cnt;
-+int urandlib_read_with_sema_buf_sz_sum;
-+
-+SEC("usdt/./liburandom_read.so:urandlib:read_with_sema")
-+int BPF_USDT(urandlib_read_with_sema, int iter_num, int iter_cnt, int buf_sz)
-+{
-+	if (urand_pid != (bpf_get_current_pid_tgid() >> 32))
-+		return 0;
-+
-+	__sync_fetch_and_add(&urandlib_read_with_sema_call_cnt, 1);
-+	__sync_fetch_and_add(&urandlib_read_with_sema_buf_sz_sum, buf_sz);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/urandom_read.c b/tools/testing/selftests/bpf/urandom_read.c
-index db781052758d..0366f36e2174 100644
---- a/tools/testing/selftests/bpf/urandom_read.c
-+++ b/tools/testing/selftests/bpf/urandom_read.c
-@@ -1,32 +1,85 @@
-+#include <stdbool.h>
- #include <stdio.h>
- #include <unistd.h>
-+#include <errno.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <stdlib.h>
-+#include <signal.h>
-+
-+#define _SDT_HAS_SEMAPHORES 1
-+#include <sys/sdt.h>
-+
-+#define SEC(name) __attribute__((section(name), used))
- 
- #define BUF_SIZE 256
- 
-+/* defined in urandom_read_aux.c */
-+void urand_read_without_sema(int iter_num, int iter_cnt, int read_sz);
-+/* these are coming from urandom_read_lib{1,2}.c */
-+void urandlib_read_with_sema(int iter_num, int iter_cnt, int read_sz);
-+void urandlib_read_without_sema(int iter_num, int iter_cnt, int read_sz);
-+
-+unsigned short urand_read_with_sema_semaphore SEC(".probes");
-+
- static __attribute__((noinline))
- void urandom_read(int fd, int count)
- {
--       char buf[BUF_SIZE];
--       int i;
-+	char buf[BUF_SIZE];
-+	int i;
-+
-+	for (i = 0; i < count; ++i) {
-+		read(fd, buf, BUF_SIZE);
-+
-+		/* trigger USDTs defined in executable itself */
-+		urand_read_without_sema(i, count, BUF_SIZE);
-+		STAP_PROBE3(urand, read_with_sema, i, count, BUF_SIZE);
- 
--       for (i = 0; i < count; ++i)
--               read(fd, buf, BUF_SIZE);
-+		/* trigger USDTs defined in shared lib */
-+		urandlib_read_without_sema(i, count, BUF_SIZE);
-+		urandlib_read_with_sema(i, count, BUF_SIZE);
-+	}
-+}
-+
-+static volatile bool parent_ready;
-+
-+static void handle_sigpipe(int sig)
-+{
-+	parent_ready = true;
- }
- 
- int main(int argc, char *argv[])
- {
- 	int fd = open("/dev/urandom", O_RDONLY);
- 	int count = 4;
-+	bool report_pid = false;
- 
- 	if (fd < 0)
- 		return 1;
- 
--	if (argc == 2)
-+	if (argc >= 2)
- 		count = atoi(argv[1]);
-+	if (argc >= 3) {
-+		report_pid = true;
-+		/* install SIGPIPE handler to catch when parent closes their
-+		 * end of the pipe (on the other side of our stdout)
-+		 */
-+		signal(SIGPIPE, handle_sigpipe);
-+	}
-+
-+	/* report PID and wait for parent process to send us "signal" by
-+	 * closing stdout
-+	 */
-+	if (report_pid) {
-+		while (!parent_ready) {
-+			fprintf(stdout, "%d\n", getpid());
-+			fflush(stdout);
-+		}
-+		/* at this point stdout is closed, parent process knows our
-+		 * PID and is ready to trace us
-+		 */
-+	}
- 
- 	urandom_read(fd, count);
- 
-diff --git a/tools/testing/selftests/bpf/urandom_read_aux.c b/tools/testing/selftests/bpf/urandom_read_aux.c
-new file mode 100644
-index 000000000000..88026f21ebfb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/urandom_read_aux.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+#include <sys/sdt.h>
-+
-+void urand_read_without_sema(int iter_num, int iter_cnt, int read_sz)
-+{
-+	/* semaphore-less USDT */
-+	STAP_PROBE3(urand, read_without_sema, iter_num, iter_cnt, read_sz);
-+}
-diff --git a/tools/testing/selftests/bpf/urandom_read_lib1.c b/tools/testing/selftests/bpf/urandom_read_lib1.c
-new file mode 100644
-index 000000000000..3e1b63b00dfb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/urandom_read_lib1.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+#define _SDT_HAS_SEMAPHORES 1
-+#include <sys/sdt.h>
-+
-+#define SEC(name) __attribute__((section(name), used))
-+
-+unsigned short urandlib_read_with_sema_semaphore SEC(".probes");
-+
-+void urandlib_read_with_sema(int iter_num, int iter_cnt, int read_sz)
-+{
-+	STAP_PROBE3(urandlib, read_with_sema, iter_num, iter_cnt, read_sz);
-+}
-diff --git a/tools/testing/selftests/bpf/urandom_read_lib2.c b/tools/testing/selftests/bpf/urandom_read_lib2.c
-new file mode 100644
-index 000000000000..e307a52d07e9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/urandom_read_lib2.c
-@@ -0,0 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+#include <sys/sdt.h>
-+
-+void urandlib_read_without_sema(int iter_num, int iter_cnt, int read_sz)
-+{
-+	STAP_PROBE3(urandlib, read_without_sema, iter_num, iter_cnt, read_sz);
-+}
--- 
-2.30.2
-
+ 		if (state->full_regs)
