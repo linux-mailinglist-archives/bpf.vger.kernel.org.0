@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0B64E6DBF
-	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 06:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B09A94E6DC0
+	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 06:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbiCYFbh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 25 Mar 2022 01:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        id S1352996AbiCYFbi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 25 Mar 2022 01:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352996AbiCYFbg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Mar 2022 01:31:36 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F97580E8
-        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:02 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 22P0IV2w028869
-        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:01 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3f0rh9dupa-1
+        with ESMTP id S1354767AbiCYFbh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Mar 2022 01:31:37 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F7B57B1D
+        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:03 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22P0daNJ011288
+        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:02 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f13d0125u-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:01 -0700
-Received: from twshared23935.04.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 24 Mar 2022 22:30:02 -0700
+Received: from twshared13345.18.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.21; Thu, 24 Mar 2022 22:30:00 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 4A68814CB0B83; Thu, 24 Mar 2022 22:29:46 -0700 (PDT)
+        id 5EE3714CB0B85; Thu, 24 Mar 2022 22:29:49 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Alan Maguire <alan.maguire@oracle.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next 1/7] libbpf: add BPF-side of USDT support
-Date:   Thu, 24 Mar 2022 22:29:35 -0700
-Message-ID: <20220325052941.3526715-2-andrii@kernel.org>
+Subject: [PATCH bpf-next 2/7] libbpf: wire up USDT API and bpf_link integration
+Date:   Thu, 24 Mar 2022 22:29:36 -0700
+Message-ID: <20220325052941.3526715-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220325052941.3526715-1-andrii@kernel.org>
 References: <20220325052941.3526715-1-andrii@kernel.org>
@@ -42,8 +42,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: qS6mkP0gCTJ0aVdiXG9_7wgoJ2bKYfN1
-X-Proofpoint-GUID: qS6mkP0gCTJ0aVdiXG9_7wgoJ2bKYfN1
+X-Proofpoint-ORIG-GUID: qUaBNA8CuHDGyQTg4cnMsYSKUQKVxmz2
+X-Proofpoint-GUID: qUaBNA8CuHDGyQTg4cnMsYSKUQKVxmz2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-25_01,2022-03-24_01,2022-02-23_01
@@ -57,321 +57,608 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add BPF-side implementation of libbpf-provided USDT support. This
-consists of single header library, usdt.bpf.h, which is meant to be used
-from user's BPF-side source code. This header is added to the list of
-installed libbpf header, along bpf_helpers.h and others.
+Wire up libbpf USDT support APIs without yet implementing all the
+nitty-gritty details of USDT discovery, spec parsing, and BPF map
+initialization.
 
-BPF-side implementation consists of two BPF maps:
-  - spec map, which contains "a USDT spec" which encodes information
-    necessary to be able to fetch USDT arguments and other information
-    (argument count, user-provided cookie value, etc) at runtime;
-  - IP-to-spec-ID map, which is only used on kernels that don't support
-    BPF cookie feature. It allows to lookup spec ID based on the place
-    in user application that triggers USDT program.
+User-visible user-space API is simple and is conceptually very similar
+to uprobe API.
 
-These maps have default sizes, 256 and 1024, which are chosen
-conservatively to not waste a lot of space, but handling a lot of common
-cases. But there could be cases when user application needs to either
-trace a lot of different USDTs, or USDTs are heavily inlined and their
-arguments are located in a lot of differing locations. For such cases it
-might be necessary to size those maps up, which libbpf allows to do by
-overriding BPF_USDT_MAX_SPEC_CNT and BPF_USDT_MAX_IP_CNT macros.
+bpf_program__attach_usdt() API allows to programmatically attach given
+BPF program to a USDT, specified through binary path (executable or
+shared lib), USDT provider and name. Also, just like in uprobe case, PID
+filter is specified (0 - self, -1 - any process, or specific PID).
+Optionally, USDT cookie value can be specified. Such single API
+invocation will try to discover given USDT in specified binary and will
+use (potentially many) BPF uprobes to attach this program in correct
+locations.
 
-It is an important aspect to keep in mind. Single USDT (user-space
-equivalent of kernel tracepoint) can have multiple USDT "call sites".
-That is, single logical USDT is triggered from multiple places in user
-application. This can happen due to function inlining. Each such inlined
-instance of USDT invocation can have its own unique USDT argument
-specification (instructions about the location of the value of each of
-USDT arguments). So while USDT looks very similar to usual uprobe or
-kernel tracepoint, under the hood it's actually a collection of uprobes,
-each potentially needing different spec to know how to fetch arguments.
+Just like any bpf_program__attach_xxx() APIs, bpf_link is returned that
+represents this attachment. It is a virtual BPF link that doesn't have
+direct kernel object, as it can consist of multiple underlying BPF
+uprobe links. As such, attachment is not atomic operation and there can
+be brief moment when some USDT call sites are attached while others are
+still in the process of attaching. This should be taken into
+consideration by user. But bpf_program__attach_usdt() guarantees that
+in the case of success all USDT call sites are successfully attached, or
+all the successfuly attachments will be detached as soon as some USDT
+call sites failed to be attached. So, in theory, there could be cases of
+failed bpf_program__attach_usdt() call which did trigger few USDT
+program invocations. This is unavoidable due to multi-uprobe nature of
+USDT and has to be handled by user, if it's important to create an
+illusion of atomicity.
 
-User-visible API consists of three helper functions:
-  - bpf_usdt_arg_cnt(), which returns number of arguments of current USDT;
-  - bpf_usdt_arg(), which reads value of specified USDT argument (by
-    it's zero-indexed position) and returns it as 64-bit value;
-  - bpf_usdt_cookie(), which functions like BPF cookie for USDT
-    programs; this is necessary as libbpf doesn't allow specifying actual
-    BPF cookie and utilizes it internally for USDT support implementation.
+USDT BPF programs themselves are marked in BPF source code as either
+SEC("usdt"), in which case they won't be auto-attached through
+skeleton's <skel>__attach() method, or it can have a full definition,
+which follows the spirit of fully-specified uprobes:
+SEC("usdt/<path>:<provider>:<name>"). In the latter case skeleton's
+attach method will attempt auto-attachment. Similarly, generic
+bpf_program__attach() will have enought information to go off of for
+parameterless attachment.
 
-Each bpf_usdt_xxx() APIs expect struct pt_regs * context, passed into
-BPF program. On kernels that don't support BPF cookie it is used to
-fetch absolute IP address of the underlying uprobe.
+USDT BPF programs are actually uprobes, and as such for kernel they are
+marked as BPF_PROG_TYPE_KPROBE.
 
-usdt.bpf.h also provides BPF_USDT() macro, which functions like
-BPF_PROG() and BPF_KPROBE() and allows much more user-friendly way to
-get access to USDT arguments, if USDT definition is static and known to
-the user. It is expected that majority of use cases won't have to use
-bpf_usdt_arg_cnt() and bpf_usdt_arg() directly and BPF_USDT() will cover
-all their needs.
+Another part of this patch is USDT-related feature probing:
+  - BPF cookie support detection from user-space;
+  - detection of kernel support for auto-refcounting of USDT semaphore.
 
-Last, usdt.bpf.h is utilizing BPF CO-RE for one single purpose: to
-detect kernel support for BPF cookie. If BPF CO-RE dependency is
-undesirable, user application can redefine BPF_USDT_HAS_BPF_COOKIE to
-either a boolean constant (or equivalently zero and non-zero), or even
-point it to its own .rodata variable that can be specified from user's
-application user-space code. It is important that
-BPF_USDT_HAS_BPF_COOKIE is known to BPF verifier as static value (thus
-.rodata and not just .data), as otherwise BPF code will still contain
-bpf_get_attach_cookie() BPF helper call and will fail validation at
-runtime, if not dead-code eliminated.
+The latter is optional. If kernel doesn't support such feature and USDT
+doesn't rely on USDT semaphores, no error is returned. But if libbpf
+detects that USDT requires setting semaphores and kernel doesn't support
+this, libbpf errors out with explicit pr_warn() message. Libbpf doesn't
+support poking process's memory directly to increment semaphore value,
+like BCC does on legacy kernels, due to inherent raciness and danger of
+such process memory manipulation. Libbpf let's kernel take care of this
+properly or gives up.
+
+Logistically, all the extra USDT-related infrastructure of libbpf is put
+into a separate usdt.c file and abstracted behind struct usdt_manager.
+Each bpf_object has lazily-initialized usdt_manager pointer, which is
+only instantiated if USDT programs are attempted to be attached. Closing
+BPF object frees up usdt_manager resources. usdt_manager keeps track of
+USDT spec ID assignment and few other small things.
+
+Subsequent patches will fill out remaining missing pieces of USDT
+initialization and setup logic.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/Makefile   |   2 +-
- tools/lib/bpf/usdt.bpf.h | 228 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 229 insertions(+), 1 deletion(-)
- create mode 100644 tools/lib/bpf/usdt.bpf.h
+ tools/lib/bpf/Build             |   3 +-
+ tools/lib/bpf/libbpf.c          |  92 ++++++++++-
+ tools/lib/bpf/libbpf.h          |  15 ++
+ tools/lib/bpf/libbpf.map        |   1 +
+ tools/lib/bpf/libbpf_internal.h |  19 +++
+ tools/lib/bpf/usdt.c            | 270 ++++++++++++++++++++++++++++++++
+ 6 files changed, 391 insertions(+), 9 deletions(-)
+ create mode 100644 tools/lib/bpf/usdt.c
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index b8b37fe76006..b4fbe8bed555 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -239,7 +239,7 @@ install_lib: all_cmd
+diff --git a/tools/lib/bpf/Build b/tools/lib/bpf/Build
+index 94f0a146bb7b..31a1a9015902 100644
+--- a/tools/lib/bpf/Build
++++ b/tools/lib/bpf/Build
+@@ -1,3 +1,4 @@
+ libbpf-y := libbpf.o bpf.o nlattr.o btf.o libbpf_errno.o str_error.o \
+ 	    netlink.o bpf_prog_linfo.o libbpf_probes.o xsk.o hashmap.o \
+-	    btf_dump.o ringbuf.o strset.o linker.o gen_loader.o relo_core.o
++	    btf_dump.o ringbuf.o strset.o linker.o gen_loader.o relo_core.o \
++	    usdt.o
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 809fe209cdcc..8841499f5f12 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -483,6 +483,8 @@ struct elf_state {
+ 	int st_ops_shndx;
+ };
  
- SRC_HDRS := bpf.h libbpf.h btf.h libbpf_common.h libbpf_legacy.h xsk.h	     \
- 	    bpf_helpers.h bpf_tracing.h bpf_endian.h bpf_core_read.h	     \
--	    skel_internal.h libbpf_version.h
-+	    skel_internal.h libbpf_version.h usdt.bpf.h
- GEN_HDRS := $(BPF_GENERATED)
++struct usdt_manager;
++
+ struct bpf_object {
+ 	char name[BPF_OBJ_NAME_LEN];
+ 	char license[64];
+@@ -545,6 +547,8 @@ struct bpf_object {
+ 	size_t fd_array_cap;
+ 	size_t fd_array_cnt;
  
- INSTALL_PFX := $(DESTDIR)$(prefix)/include/bpf
-diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
-new file mode 100644
-index 000000000000..8ee084b2e6b5
---- /dev/null
-+++ b/tools/lib/bpf/usdt.bpf.h
-@@ -0,0 +1,228 @@
-+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+#ifndef __USDT_BPF_H__
-+#define __USDT_BPF_H__
++	struct usdt_manager *usdt_man;
 +
-+#include <linux/errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+/* Below types and maps are internal implementation details of libpf's USDT
-+ * support and are subjects to change. Also, usdt_xxx() API helpers should be
-+ * considered an unstable API as well and might be adjusted based on user
-+ * feedback from using libbpf's USDT support in production.
-+ */
-+
-+/* User can override BPF_USDT_MAX_SPEC_CNT to change default size of internal
-+ * map that keeps track of USDT argument specifications. This might be
-+ * necessary if there are a lot of USDT attachments.
-+ */
-+#ifndef BPF_USDT_MAX_SPEC_CNT
-+#define BPF_USDT_MAX_SPEC_CNT 256
-+#endif
-+/* User can override BPF_USDT_MAX_IP_CNT to change default size of internal
-+ * map that keeps track of IP (memory address) mapping to USDT argument
-+ * specification.
-+ * Note, if kernel supports BPF cookies, this map is not used and could be
-+ * resized all the way to 1 to save a bit of memory.
-+ */
-+#ifndef BPF_USDT_MAX_IP_CNT
-+#define BPF_USDT_MAX_IP_CNT 1024
-+#endif
-+/* We use BPF CO-RE to detect support for BPF cookie from BPF side. This is
-+ * the only dependency on CO-RE, so if it's undesirable, user can override
-+ * BPF_USDT_HAS_BPF_COOKIE to specify whether to BPF cookie is supported or not.
-+ */
-+#ifndef BPF_USDT_HAS_BPF_COOKIE
-+#define BPF_USDT_HAS_BPF_COOKIE \
-+	bpf_core_enum_value_exists(enum bpf_func_id___usdt, BPF_FUNC_get_attach_cookie___usdt)
-+#endif
-+
-+enum __bpf_usdt_arg_type {
-+	BPF_USDT_ARG_CONST,
-+	BPF_USDT_ARG_REG,
-+	BPF_USDT_ARG_REG_DEREF,
-+};
-+
-+struct __bpf_usdt_arg_spec {
-+	__u64 val_off;
-+	enum __bpf_usdt_arg_type arg_type;
-+	short reg_off;
-+	bool arg_signed;
-+	char arg_bitshift;
-+};
-+
-+/* should match USDT_MAX_ARG_CNT in usdt.c exactly */
-+#define BPF_USDT_MAX_ARG_CNT 12
-+struct __bpf_usdt_spec {
-+	struct __bpf_usdt_arg_spec args[BPF_USDT_MAX_ARG_CNT];
-+	__u64 usdt_cookie;
-+	short arg_cnt;
-+};
-+
-+__weak struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, BPF_USDT_MAX_SPEC_CNT);
-+	__type(key, int);
-+	__type(value, struct __bpf_usdt_spec);
-+} __bpf_usdt_specs SEC(".maps");
-+
-+__weak struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, BPF_USDT_MAX_IP_CNT);
-+	__type(key, long);
-+	__type(value, struct __bpf_usdt_spec);
-+} __bpf_usdt_specs_ip_to_id SEC(".maps");
-+
-+/* don't rely on user's BPF code to have latest definition of bpf_func_id */
-+enum bpf_func_id___usdt {
-+	BPF_FUNC_get_attach_cookie___usdt = 0xBAD, /* value doesn't matter */
-+};
-+
-+static inline int __bpf_usdt_spec_id(struct pt_regs *ctx)
+ 	char path[];
+ };
+ 
+@@ -4678,6 +4682,18 @@ static int probe_perf_link(void)
+ 	return link_fd < 0 && err == -EBADF;
+ }
+ 
++static int probe_kern_bpf_cookie(void)
 +{
-+	if (!BPF_USDT_HAS_BPF_COOKIE) {
-+		long ip = PT_REGS_IP(ctx);
-+		int *spec_id_ptr;
++	struct bpf_insn insns[] = {
++		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_get_attach_cookie),
++		BPF_EXIT_INSN(),
++	};
++	int ret, insn_cnt = ARRAY_SIZE(insns);
 +
-+		spec_id_ptr = bpf_map_lookup_elem(&__bpf_usdt_specs_ip_to_id, &ip);
-+		return spec_id_ptr ? *spec_id_ptr : -ESRCH;
++	ret = bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, "GPL", insns, insn_cnt, NULL);
++	return probe_fd(ret);
++}
++
+ enum kern_feature_result {
+ 	FEAT_UNKNOWN = 0,
+ 	FEAT_SUPPORTED = 1,
+@@ -4740,6 +4756,9 @@ static struct kern_feature_desc {
+ 	[FEAT_MEMCG_ACCOUNT] = {
+ 		"memcg-based memory accounting", probe_memcg_account,
+ 	},
++	[FEAT_BPF_COOKIE] = {
++		"BPF cookie support", probe_kern_bpf_cookie,
++	},
+ };
+ 
+ bool kernel_supports(const struct bpf_object *obj, enum kern_feature_id feat_id)
+@@ -8200,6 +8219,9 @@ void bpf_object__close(struct bpf_object *obj)
+ 	if (obj->clear_priv)
+ 		obj->clear_priv(obj, obj->priv);
+ 
++	usdt_manager_free(obj->usdt_man);
++	obj->usdt_man = NULL;
++
+ 	bpf_gen__free(obj->gen_loader);
+ 	bpf_object__elf_finish(obj);
+ 	bpf_object_unload(obj);
+@@ -8630,6 +8652,7 @@ int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log
+ }
+ 
+ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf_link **link);
++static int attach_usdt(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+ static int attach_tp(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+ static int attach_raw_tp(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+ static int attach_trace(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+@@ -8647,6 +8670,7 @@ static const struct bpf_sec_def section_defs[] = {
+ 	SEC_DEF("uretprobe/",		KPROBE, 0, SEC_NONE),
+ 	SEC_DEF("kprobe.multi/",	KPROBE,	BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
+ 	SEC_DEF("kretprobe.multi/",	KPROBE,	BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
++	SEC_DEF("usdt+",		KPROBE,	0, SEC_NONE, attach_usdt),
+ 	SEC_DEF("tc",			SCHED_CLS, 0, SEC_NONE),
+ 	SEC_DEF("classifier",		SCHED_CLS, 0, SEC_NONE | SEC_SLOPPY_PFX | SEC_DEPRECATED),
+ 	SEC_DEF("action",		SCHED_ACT, 0, SEC_NONE | SEC_SLOPPY_PFX),
+@@ -9692,14 +9716,6 @@ int bpf_prog_load_deprecated(const char *file, enum bpf_prog_type type,
+ 	return bpf_prog_load_xattr2(&attr, pobj, prog_fd);
+ }
+ 
+-struct bpf_link {
+-	int (*detach)(struct bpf_link *link);
+-	void (*dealloc)(struct bpf_link *link);
+-	char *pin_path;		/* NULL, if not pinned */
+-	int fd;			/* hook FD, -1 if not applicable */
+-	bool disconnected;
+-};
+-
+ /* Replace link's underlying BPF program with the new one */
+ int bpf_link__update_program(struct bpf_link *link, struct bpf_program *prog)
+ {
+@@ -10599,6 +10615,66 @@ struct bpf_link *bpf_program__attach_uprobe(const struct bpf_program *prog,
+ 	return bpf_program__attach_uprobe_opts(prog, pid, binary_path, func_offset, &opts);
+ }
+ 
++struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
++					  pid_t pid, const char *binary_path,
++					  const char *usdt_provider, const char *usdt_name,
++					  const struct bpf_usdt_opts *opts)
++{
++	struct bpf_object *obj = prog->obj;
++	struct bpf_link *link;
++	long usdt_cookie;
++	int err;
++
++	if (!OPTS_VALID(opts, bpf_uprobe_opts))
++		return libbpf_err_ptr(-EINVAL);
++
++	/* USDT manager is instantiated lazily on first USDT attach. It will
++	 * be destroyed together with BPF object in bpf_object__close().
++	 */
++	if (!obj->usdt_man) {
++		obj->usdt_man = usdt_manager_new(obj);
++		if (!obj->usdt_man)
++			return libbpf_err_ptr(-ENOMEM);
 +	}
 +
-+	return bpf_get_attach_cookie(ctx);
++	usdt_cookie = OPTS_GET(opts, usdt_cookie, 0);
++	link = usdt_manager_attach_usdt(obj->usdt_man, prog, pid, binary_path,
++				        usdt_provider, usdt_name, usdt_cookie);
++	err = libbpf_get_error(link);
++	if (err)
++		return libbpf_err_ptr(err);
++	return link;
 +}
 +
-+/* Return number of USDT arguments defined for currently traced USDT. */
-+__hidden __weak
-+int bpf_usdt_arg_cnt(struct pt_regs *ctx)
++static int attach_usdt(const struct bpf_program *prog, long cookie, struct bpf_link **link)
 +{
-+	struct __bpf_usdt_spec *spec;
-+	int spec_id;
++	char *path = NULL, *provider = NULL, *name = NULL;
++	const char *sec_name;
 +
-+	spec_id = __bpf_usdt_spec_id(ctx);
-+	if (spec_id < 0)
++	sec_name = bpf_program__section_name(prog);
++	if (strcmp(sec_name, "usdt") == 0) {
++		/* no auto-attach for just SEC("usdt") */
++		*link = NULL;
++		return 0;
++	}
++
++	if (3 != sscanf(sec_name, "usdt/%m[^:]:%m[^:]:%m[^:]", &path, &provider, &name)) {
++		pr_warn("invalid section '%s', expected SEC(\"usdt/<path>:<provider>:<name>\")\n",
++			sec_name);
++		free(path);
++		free(provider);
++		free(name);
 +		return -EINVAL;
++	}
 +
-+	spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
-+	if (!spec)
-+		return -EINVAL;
-+
-+	return spec->arg_cnt;
++	*link = bpf_program__attach_usdt(prog, -1 /* any process */, path,
++					 provider, name, NULL);
++	free(path);
++	free(provider);
++	free(name);
++	return libbpf_get_error(*link);
 +}
 +
-+/* Fetch USDT argument *arg* (zero-indexed) and put its value into *res.
-+ * Returns 0 on success; negative error, otherwise.
-+ * On error *res is guaranteed to be set to zero.
-+ */
-+__hidden __weak
-+int bpf_usdt_arg(struct pt_regs *ctx, int arg, long *res)
+ static int determine_tracepoint_id(const char *tp_category,
+ 				   const char *tp_name)
+ {
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 05dde85e19a6..318eecaa14e7 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -503,6 +503,21 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+ 				const char *binary_path, size_t func_offset,
+ 				const struct bpf_uprobe_opts *opts);
+ 
++struct bpf_usdt_opts {
++	/* size of this struct, for forward/backward compatibility */
++	size_t sz;
++	/* custom user-provided value accessible through usdt_cookie() */
++	__u64 usdt_cookie;
++	size_t :0;
++};
++#define bpf_usdt_opts__last_field usdt_cookie
++
++LIBBPF_API struct bpf_link *
++bpf_program__attach_usdt(const struct bpf_program *prog,
++			 pid_t pid, const char *binary_path,
++			 const char *usdt_provider, const char *usdt_name,
++			 const struct bpf_usdt_opts *opts);
++
+ struct bpf_tracepoint_opts {
+ 	/* size of this struct, for forward/backward compatiblity */
+ 	size_t sz;
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index dd35ee58bfaa..82f6d62176dd 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -444,6 +444,7 @@ LIBBPF_0.8.0 {
+ 	global:
+ 		bpf_object__destroy_subskeleton;
+ 		bpf_object__open_subskeleton;
++		bpf_program__attach_usdt;
+ 		libbpf_register_prog_handler;
+ 		libbpf_unregister_prog_handler;
+ 		bpf_program__attach_kprobe_multi_opts;
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index b6247dc7f8eb..dd0d4ccfa649 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -148,6 +148,15 @@ do {				\
+ #ifndef __has_builtin
+ #define __has_builtin(x) 0
+ #endif
++
++struct bpf_link {
++	int (*detach)(struct bpf_link *link);
++	void (*dealloc)(struct bpf_link *link);
++	char *pin_path;		/* NULL, if not pinned */
++	int fd;			/* hook FD, -1 if not applicable */
++	bool disconnected;
++};
++
+ /*
+  * Re-implement glibc's reallocarray() for libbpf internal-only use.
+  * reallocarray(), unfortunately, is not available in all versions of glibc,
+@@ -329,6 +338,8 @@ enum kern_feature_id {
+ 	FEAT_BTF_TYPE_TAG,
+ 	/* memcg-based accounting for BPF maps and progs */
+ 	FEAT_MEMCG_ACCOUNT,
++	/* BPF cookie (bpf_get_attach_cookie() BPF helper) support */
++	FEAT_BPF_COOKIE,
+ 	__FEAT_CNT,
+ };
+ 
+@@ -543,4 +554,12 @@ int bpf_core_add_cands(struct bpf_core_cand *local_cand,
+ 		       struct bpf_core_cand_list *cands);
+ void bpf_core_free_cands(struct bpf_core_cand_list *cands);
+ 
++struct usdt_manager *usdt_manager_new(struct bpf_object *obj);
++void usdt_manager_free(struct usdt_manager *man);
++struct bpf_link * usdt_manager_attach_usdt(struct usdt_manager *man,
++					   const struct bpf_program *prog,
++					   pid_t pid, const char *path,
++					   const char *usdt_provider, const char *usdt_name,
++					   long usdt_cookie);
++
+ #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+new file mode 100644
+index 000000000000..8481e300598e
+--- /dev/null
++++ b/tools/lib/bpf/usdt.c
+@@ -0,0 +1,270 @@
++// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++#include <ctype.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <libelf.h>
++#include <gelf.h>
++#include <unistd.h>
++#include <linux/ptrace.h>
++#include <linux/kernel.h>
++
++#include "bpf.h"
++#include "libbpf.h"
++#include "libbpf_common.h"
++#include "libbpf_internal.h"
++#include "hashmap.h"
++
++#define PERF_UPROBE_REF_CTR_OFFSET_SHIFT 32
++
++struct usdt_target {
++	long abs_ip;
++	long rel_ip;
++	long sema_off;
++};
++
++struct usdt_manager {
++	struct bpf_map *specs_map;
++	struct bpf_map *ip_to_id_map;
++
++	bool has_bpf_cookie;
++	bool has_sema_refcnt;
++};
++
++struct usdt_manager *usdt_manager_new(struct bpf_object *obj)
 +{
-+	struct __bpf_usdt_spec *spec;
-+	struct __bpf_usdt_arg_spec *arg_spec;
-+	unsigned long val;
-+	int err, spec_id;
++	static const char *ref_ctr_sysfs_path = "/sys/bus/event_source/devices/uprobe/format/ref_ctr_offset";
++	struct usdt_manager *man;
++	struct bpf_map *specs_map, *ip_to_id_map;
 +
-+	*res = 0;
++	specs_map = bpf_object__find_map_by_name(obj, "__bpf_usdt_specs");
++	ip_to_id_map = bpf_object__find_map_by_name(obj, "__bpf_usdt_specs_ip_to_id");
++	if (!specs_map || !ip_to_id_map) {
++		pr_warn("usdt: failed to find USDT support BPF maps, did you forget to include bpf/usdt.bpf.h?\n");
++		return NULL;
++	}
 +
-+	spec_id = __bpf_usdt_spec_id(ctx);
-+	if (spec_id < 0)
-+		return -ESRCH;
++	man = calloc(1, sizeof(*man));
++	if (!man)
++		return NULL;
 +
-+	spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
-+	if (!spec)
-+		return -ESRCH;
++	man->specs_map = specs_map;
++	man->ip_to_id_map = ip_to_id_map;
 +
-+	if (arg >= spec->arg_cnt)
-+		return -ENOENT;
++        /* Detect if BPF cookie is supported for kprobes.
++	 * We don't need IP-to-ID mapping if we can use BPF cookies.
++         * Added in: 7adfc6c9b315 ("bpf: Add bpf_get_attach_cookie() BPF helper to access bpf_cookie value")
++         */
++	man->has_bpf_cookie = kernel_supports(obj, FEAT_BPF_COOKIE);
 +
-+	arg_spec = &spec->args[arg];
-+	switch (arg_spec->arg_type) {
-+	case BPF_USDT_ARG_CONST:
-+		val = arg_spec->val_off;
++	/* Detect kernel support for automatic refcounting of USDT semaphore.
++	 * If this is not supported, USDTs with semaphores will not be supported.
++	 * Added in: a6ca88b241d5 ("trace_uprobe: support reference counter in fd-based uprobe")
++	 */
++	man->has_sema_refcnt = access(ref_ctr_sysfs_path, F_OK) == 0;
++
++	return man;
++}
++
++void usdt_manager_free(struct usdt_manager *man)
++{
++	if (!man)
++		return;
++
++	free(man);
++}
++
++static int sanity_check_usdt_elf(Elf *elf, const char *path)
++{
++	GElf_Ehdr ehdr;
++	int endianness;
++
++	if (elf_kind(elf) != ELF_K_ELF) {
++		pr_warn("usdt: unrecognized ELF kind %d for '%s'\n", elf_kind(elf), path);
++		return -EBADF;
++	}
++
++	switch (gelf_getclass(elf)) {
++	case ELFCLASS64:
++		if (sizeof(void *) != 8) {
++			pr_warn("usdt: attaching to 64-bit ELF binary '%s' is not supported\n", path);
++			return -EBADF;
++		}
 +		break;
-+	case BPF_USDT_ARG_REG:
-+		err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
-+		if (err)
-+			return err;
-+		break;
-+	case BPF_USDT_ARG_REG_DEREF:
-+		err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
-+		if (err)
-+			return err;
-+		err = bpf_probe_read_user(&val, sizeof(val), (void *)val + arg_spec->val_off);
-+		if (err)
-+			return err;
++	case ELFCLASS32:
++		if (sizeof(void *) != 4) {
++			pr_warn("usdt: attaching to 32-bit ELF binary '%s' is not supported\n", path);
++			return -EBADF;
++		}
 +		break;
 +	default:
-+		return -EINVAL;
++		pr_warn("usdt: unsupported ELF class for '%s'\n", path);
++		return -EBADF;
 +	}
 +
-+	val <<= arg_spec->arg_bitshift;
-+	if (arg_spec->arg_signed)
-+		val = ((long)val) >> arg_spec->arg_bitshift;
-+	else
-+		val = val >> arg_spec->arg_bitshift;
-+	*res = val;
++	if (!gelf_getehdr(elf, &ehdr))
++		return -EINVAL;
++
++	if (ehdr.e_type != ET_EXEC && ehdr.e_type != ET_DYN) {
++		pr_warn("usdt: unsupported type of ELF binary '%s' (%d), only ET_EXEC and ET_DYN are supported\n",
++			path, ehdr.e_type);
++		return -EBADF;
++	}
++
++#if __BYTE_ORDER == __LITTLE_ENDIAN
++	endianness = ELFDATA2LSB;
++#elif __BYTE_ORDER == __BIG_ENDIAN
++	endianness = ELFDATA2MSB;
++#else
++# error "Unrecognized __BYTE_ORDER__"
++#endif
++	if (endianness != ehdr.e_ident[EI_DATA]) {
++		pr_warn("usdt: ELF endianness mismatch for '%s'\n", path);
++		return -EBADF;
++	}
++
 +	return 0;
 +}
 +
-+/* Retrieve user-specified cookie value provided during attach as
-+ * bpf_usdt_opts.usdt_cookie. This serves the same purpose as BPF cookie
-+ * returned by bpf_get_attach_cookie(). Libbpf's support for USDT is itself
-+ * utilizaing BPF cookies internally, so user can't use BPF cookie directly
-+ * for USDT programs and has to use bpf_usdt_cookie() API instead.
-+ */
-+__hidden __weak
-+long bpf_usdt_cookie(struct pt_regs *ctx)
++static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *path, pid_t pid,
++				const char *usdt_provider, const char *usdt_name, long usdt_cookie,
++				struct usdt_target **out_targets, size_t *out_target_cnt)
 +{
-+	struct __bpf_usdt_spec *spec;
-+	int spec_id;
-+
-+	spec_id = __bpf_usdt_spec_id(ctx);
-+	if (spec_id < 0)
-+		return 0;
-+
-+	spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
-+	if (!spec)
-+		return 0;
-+
-+	return spec->usdt_cookie;
++	return -ENOTSUP;
 +}
 +
-+/* we rely on ___bpf_apply() and ___bpf_narg() macros already defined in bpf_tracing.h */
-+#define ___bpf_usdt_args0() ctx
-+#define ___bpf_usdt_args1(x) ___bpf_usdt_args0(), ({ long _x; bpf_usdt_arg(ctx, 0, &_x); (void *)_x; })
-+#define ___bpf_usdt_args2(x, args...) ___bpf_usdt_args1(args), ({ long _x; bpf_usdt_arg(ctx, 1, &_x); (void *)_x; })
-+#define ___bpf_usdt_args3(x, args...) ___bpf_usdt_args2(args), ({ long _x; bpf_usdt_arg(ctx, 2, &_x); (void *)_x; })
-+#define ___bpf_usdt_args4(x, args...) ___bpf_usdt_args3(args), ({ long _x; bpf_usdt_arg(ctx, 3, &_x); (void *)_x; })
-+#define ___bpf_usdt_args5(x, args...) ___bpf_usdt_args4(args), ({ long _x; bpf_usdt_arg(ctx, 4, &_x); (void *)_x; })
-+#define ___bpf_usdt_args6(x, args...) ___bpf_usdt_args5(args), ({ long _x; bpf_usdt_arg(ctx, 5, &_x); (void *)_x; })
-+#define ___bpf_usdt_args7(x, args...) ___bpf_usdt_args6(args), ({ long _x; bpf_usdt_arg(ctx, 6, &_x); (void *)_x; })
-+#define ___bpf_usdt_args8(x, args...) ___bpf_usdt_args7(args), ({ long _x; bpf_usdt_arg(ctx, 7, &_x); (void *)_x; })
-+#define ___bpf_usdt_args9(x, args...) ___bpf_usdt_args8(args), ({ long _x; bpf_usdt_arg(ctx, 8, &_x); (void *)_x; })
-+#define ___bpf_usdt_args10(x, args...) ___bpf_usdt_args9(args), ({ long _x; bpf_usdt_arg(ctx, 9, &_x); (void *)_x; })
-+#define ___bpf_usdt_args11(x, args...) ___bpf_usdt_args10(args), ({ long _x; bpf_usdt_arg(ctx, 10, &_x); (void *)_x; })
-+#define ___bpf_usdt_args12(x, args...) ___bpf_usdt_args11(args), ({ long _x; bpf_usdt_arg(ctx, 11, &_x); (void *)_x; })
-+#define ___bpf_usdt_args(args...) ___bpf_apply(___bpf_usdt_args, ___bpf_narg(args))(args)
++struct bpf_link_usdt {
++	struct bpf_link link;
 +
-+/*
-+ * BPF_USDT serves the same purpose for USDT handlers as BPF_PROG for
-+ * tp_btf/fentry/fexit BPF programs and BPF_KPROBE for kprobes.
-+ * Original struct pt_regs * context is preserved as 'ctx' argument.
-+ */
-+#define BPF_USDT(name, args...)						    \
-+name(struct pt_regs *ctx);						    \
-+static __attribute__((always_inline)) typeof(name(0))			    \
-+____##name(struct pt_regs *ctx, ##args);				    \
-+typeof(name(0)) name(struct pt_regs *ctx)				    \
-+{									    \
-+        _Pragma("GCC diagnostic push")					    \
-+        _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")		    \
-+        return ____##name(___bpf_usdt_args(args));			    \
-+        _Pragma("GCC diagnostic pop")					    \
-+}									    \
-+static __attribute__((always_inline)) typeof(name(0))			    \
-+____##name(struct pt_regs *ctx, ##args)
++	struct usdt_manager *usdt_man;
 +
-+#endif /* __USDT_BPF_H__ */
++	size_t uprobe_cnt;
++	struct {
++		long abs_ip;
++		struct bpf_link *link;
++	} *uprobes;
++};
++
++static int bpf_link_usdt_detach(struct bpf_link *link)
++{
++	struct bpf_link_usdt *usdt_link = container_of(link, struct bpf_link_usdt, link);
++	int i;
++
++	for (i = 0; i < usdt_link->uprobe_cnt; i++) {
++		/* detach underlying uprobe link */
++		bpf_link__destroy(usdt_link->uprobes[i].link);
++	}
++
++	return 0;
++}
++
++static void bpf_link_usdt_dealloc(struct bpf_link *link)
++{
++	struct bpf_link_usdt *usdt_link = container_of(link, struct bpf_link_usdt, link);
++
++	free(usdt_link->uprobes);
++	free(usdt_link);
++}
++
++struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct bpf_program *prog,
++					  pid_t pid, const char *path,
++					  const char *usdt_provider, const char *usdt_name,
++					  long usdt_cookie)
++{
++	int i, fd, err;
++	LIBBPF_OPTS(bpf_uprobe_opts, opts);
++	struct bpf_link_usdt *link = NULL;
++	struct usdt_target *targets = NULL;
++	size_t target_cnt;
++	Elf *elf;
++
++	if (bpf_program__fd(prog) < 0) {
++		pr_warn("prog '%s': can't attach BPF program w/o FD (did you load it?)\n",
++			bpf_program__name(prog));
++		return libbpf_err_ptr(-EINVAL);
++	}
++
++	/* TODO: perform path resolution similar to uprobe's */
++	fd = open(path, O_RDONLY);
++	if (fd < 0) {
++		err = -errno;
++		pr_warn("usdt: failed to open ELF binary '%s': %d\n", path, err);
++		return libbpf_err_ptr(err);
++	}
++
++	elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
++	if (!elf) {
++		err = -EBADF;
++		pr_warn("usdt: failed to parse ELF binary '%s': %s\n", path, elf_errmsg(-1));
++		goto err_out;
++	}
++
++	err = sanity_check_usdt_elf(elf, path);
++	if (err)
++		goto err_out;
++
++	/* normalize PID filter */
++	if (pid < 0)
++		pid = -1;
++	else if (pid == 0)
++		pid = getpid();
++
++	/* discover USDT in given binary, optionally limiting
++	 * activations to a given PID, if pid > 0
++	 */
++	err = collect_usdt_targets(man, elf, path, pid, usdt_provider, usdt_name,
++				   usdt_cookie, &targets, &target_cnt);
++	if (err <= 0) {
++		err = (err == 0) ? -ENOENT : err;
++		goto err_out;
++	}
++
++	link = calloc(1, sizeof(*link));
++	if (!link) {
++		err = -ENOMEM;
++		goto err_out;
++	}
++
++	link->usdt_man = man;
++	link->link.detach = &bpf_link_usdt_detach;
++	link->link.dealloc = &bpf_link_usdt_dealloc;
++
++	link->uprobes = calloc(target_cnt, sizeof(*link->uprobes));
++	if (!link->uprobes) {
++		err = -ENOMEM;
++		goto err_out;
++	}
++
++	for (i = 0; i < target_cnt; i++) {
++		struct usdt_target *target = &targets[i];
++		struct bpf_link *uprobe_link;
++
++		opts.ref_ctr_offset = target->sema_off;
++		uprobe_link = bpf_program__attach_uprobe_opts(prog, pid, path,
++							      target->rel_ip, &opts);
++		err = libbpf_get_error(link);
++		if (err) {
++			pr_warn("usdt: failed to attach uprobe #%d for '%s:%s' in '%s': %d\n",
++				i, usdt_provider, usdt_name, path, err);
++			goto err_out;
++		}
++
++		link->uprobes[i].link = uprobe_link;
++		link->uprobes[i].abs_ip = target->abs_ip;
++		link->uprobe_cnt++;
++	}
++
++	elf_end(elf);
++	close(fd);
++
++	return &link->link;
++
++err_out:
++	bpf_link__destroy(&link->link);
++
++	if (elf)
++		elf_end(elf);
++	close(fd);
++	return libbpf_err_ptr(err);
++}
 -- 
 2.30.2
 
