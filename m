@@ -2,58 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6358C4E6C53
-	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 03:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A074E6C7C
+	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 03:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241043AbiCYCF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Mar 2022 22:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
+        id S1347423AbiCYCXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Mar 2022 22:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237272AbiCYCF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Mar 2022 22:05:28 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15AD6D1B9;
-        Thu, 24 Mar 2022 19:03:55 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id k6so6612109plg.12;
-        Thu, 24 Mar 2022 19:03:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e8oRVZ23KjzG/ypngzxPfcRE3bvQPKD6JKIf9Qg0x6w=;
-        b=NLa+LKKCEYhiDLBTumzp8eZ2+tl8XDRYFgi2MPSiH9gd75ab5/pWG/yxu4T55oKqy6
-         /a4BLs4P0yXKPJBCZKf5yIMwJnr76H8hnEYYDD4EwqY3RZNwgIdb14BqJYkBsh6cYAXg
-         pZ93xFc63IwBiDpYXIY5EMuzCDCb3f81o5RKFYH0fVrqpc8z4cfGHtcEio4i6Bidx+gf
-         BI2QkGwd8h9zDoYb0+JL00ctWrimYIou0Wt7Gh3K/M/oXp7VneF0XqCanJsFi4rfSzza
-         oD5uOLcDZemYA+CBf7dCg1h7/R1euOE7B6SiM0EI4FhXMzF5qV5PUTHuqcLck5tRPCmF
-         xTpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e8oRVZ23KjzG/ypngzxPfcRE3bvQPKD6JKIf9Qg0x6w=;
-        b=wulo8WGYHrQpOL03DI1XUk5EZRMSMG4WBhyAcjQeZsEv3Aon5tfm4BzrTWClfUrNFz
-         3lSU1L9uRrCTPeENvjeYsuAm+qi5T8PFvKhp4kS20h7FnRMQ7RC9sj4BnOwLw27SOBZe
-         cPM+JvwQ/aBSE2Eyzu2eMLaEfnD6WRPHi4c1XkFHFN3aq2t+l/0oVWXlQob2Ey07wOLp
-         w65Jntg2he7y4H7iGvubD93dOc31/BmetTjhWkGzyLUmHdYb1gywX6BirPQizV340Ylf
-         2bkJ/C8qWbTOKi45Ayp29HlBVKwOYQN0Vi9F2yvExiK9Zg+xyxc2qXAaqtXCIDAOKlWa
-         DRnQ==
-X-Gm-Message-State: AOAM533RW71oi4eigTGFLzLrzMy0Sm9JQENXlCjc5TMA37BwlGTJUcFw
-        QiJcIukOlgEWFuZK6IJQmfZ1aGx9r6EuYpMQTeg=
-X-Google-Smtp-Source: ABdhPJwq8DpvjN2e8Pf+oXugqYDzTIP7B8v8DwphjndqLIDOp3YhE2LtujNv5gkKDEZy8S2luZWi2fJs8MXjEDGili0=
-X-Received: by 2002:a17:90b:4b45:b0:1c7:cc71:fdf7 with SMTP id
- mi5-20020a17090b4b4500b001c7cc71fdf7mr5156663pjb.33.1648173835008; Thu, 24
- Mar 2022 19:03:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <164800288611.1716332.7053663723617614668.stgit@devnote2>
- <164800289923.1716332.9772144337267953560.stgit@devnote2> <YjrUxmABaohh1I8W@hirez.programming.kicks-ass.net>
- <20220323204119.1feac1af0a1d58b8e63acd5d@kernel.org>
-In-Reply-To: <20220323204119.1feac1af0a1d58b8e63acd5d@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 24 Mar 2022 19:03:43 -0700
-Message-ID: <CAADnVQLfu+uDUmovM8sOJSnH=HGxMEtmjk4+nWsAR+Mdj2TTYg@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 1/1] rethook: x86: Add rethook x86 implementation
-To:     Masami Hiramatsu <mhiramat@kernel.org>
+        with ESMTP id S1356215AbiCYCXB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Mar 2022 22:23:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020BAB18A6;
+        Thu, 24 Mar 2022 19:21:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A044AB82791;
+        Fri, 25 Mar 2022 02:21:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D69C340EC;
+        Fri, 25 Mar 2022 02:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648174882;
+        bh=ivwDZgSZMeE+PCD2dfQWcyXhfqsyEJsULXN7F5jCXB4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=l51ZcZz9ljlEyNgyBD5vxxE4D9ZRrROq4aOSgrp4vBYdm/MQHEad82u6Bnclb5rEp
+         NabDQwWGTjhU/aDreeEIiEjiQs8yKcJN/37LE8C80+Ug76RInv5zVn2KrQOnHcsKoQ
+         RkK9qjRzs7IysejMyu6UVWqEEdRuWe/L/KwSg5sRIhjfxCPNf22fShTg/xwR//9IhO
+         LVb2xEnJBDfP4mIz8MFTAVF/fpor8y11eb5nJs7JdPlI6vQH3l66OTlg7kBNgRIRPa
+         m1ic5KqYkQI1uiNUnyEa+Lv+vFzUUErp2ltcoClbbQZmlXQfMBEhJd884BcqZWvl0L
+         GyvWEXXjssxQA==
+Date:   Fri, 25 Mar 2022 11:21:14 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -73,10 +53,22 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
         Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
         "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Subject: Re: [PATCH v13 bpf-next 1/1] rethook: x86: Add rethook x86
+ implementation
+Message-Id: <20220325112114.4604291a58ee5b214ee334da@kernel.org>
+In-Reply-To: <CAADnVQLfu+uDUmovM8sOJSnH=HGxMEtmjk4+nWsAR+Mdj2TTYg@mail.gmail.com>
+References: <164800288611.1716332.7053663723617614668.stgit@devnote2>
+        <164800289923.1716332.9772144337267953560.stgit@devnote2>
+        <YjrUxmABaohh1I8W@hirez.programming.kicks-ass.net>
+        <20220323204119.1feac1af0a1d58b8e63acd5d@kernel.org>
+        <CAADnVQLfu+uDUmovM8sOJSnH=HGxMEtmjk4+nWsAR+Mdj2TTYg@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,30 +76,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 4:41 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> On Wed, 23 Mar 2022 09:05:26 +0100
-> Peter Zijlstra <peterz@infradead.org> wrote:
->
-> > On Wed, Mar 23, 2022 at 11:34:59AM +0900, Masami Hiramatsu wrote:
-> > > Add rethook for x86 implementation. Most of the code has been copied from
-> > > kretprobes on x86.
+On Thu, 24 Mar 2022 19:03:43 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+
+> On Wed, Mar 23, 2022 at 4:41 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > >
-> > Right; as said, I'm really unhappy with growing a carbon copy of this
-> > stuff instead of sharing. Can we *please* keep it a single instance?
->
-> OK, then let me update the kprobe side too.
->
-> > Them being basically indentical, it should be trivial to have
-> > CONFIG_KPROBE_ON_RETHOOK (or somesuch) and just share this.
->
-> Yes, ideally it should use CONFIG_HAVE_RETHOOK since the rethook arch port
-> must be a copy of the kretprobe implementation. But for safety, I think
-> having CONFIG_KPROBE_ON_RETHOOK is a good idea until replacing all kretprobe
-> implementations.
+> > On Wed, 23 Mar 2022 09:05:26 +0100
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > > On Wed, Mar 23, 2022 at 11:34:59AM +0900, Masami Hiramatsu wrote:
+> > > > Add rethook for x86 implementation. Most of the code has been copied from
+> > > > kretprobes on x86.
+> > >
+> > > Right; as said, I'm really unhappy with growing a carbon copy of this
+> > > stuff instead of sharing. Can we *please* keep it a single instance?
+> >
+> > OK, then let me update the kprobe side too.
+> >
+> > > Them being basically indentical, it should be trivial to have
+> > > CONFIG_KPROBE_ON_RETHOOK (or somesuch) and just share this.
+> >
+> > Yes, ideally it should use CONFIG_HAVE_RETHOOK since the rethook arch port
+> > must be a copy of the kretprobe implementation. But for safety, I think
+> > having CONFIG_KPROBE_ON_RETHOOK is a good idea until replacing all kretprobe
+> > implementations.
+> 
+> Masami,
+> 
+> you're respinning this patch to combine
+> arch_rethook_trampoline and __kretprobe_trampoline
+> right?
 
-Masami,
+Yes, let me send the first patch set (for x86 at first).
 
-you're respinning this patch to combine
-arch_rethook_trampoline and __kretprobe_trampoline
-right?
+BTW, can you review these 2 patches? These are only for the fprobes,
+so it can be picked to bpf-next.
+
+https://lore.kernel.org/all/164802091567.1732982.1242854551611267542.stgit@devnote2/T/#u
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
