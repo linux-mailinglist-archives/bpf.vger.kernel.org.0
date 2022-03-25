@@ -2,79 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7E84E7991
-	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 18:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7463E4E79A9
+	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 18:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352550AbiCYRCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Mar 2022 13:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
+        id S1377186AbiCYRJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Mar 2022 13:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbiCYRCK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Mar 2022 13:02:10 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781E24D264;
-        Fri, 25 Mar 2022 10:00:35 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id d62so9551148iog.13;
-        Fri, 25 Mar 2022 10:00:35 -0700 (PDT)
+        with ESMTP id S244508AbiCYRJN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Mar 2022 13:09:13 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63788E6162
+        for <bpf@vger.kernel.org>; Fri, 25 Mar 2022 10:07:39 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id b9so5612899ila.8
+        for <bpf@vger.kernel.org>; Fri, 25 Mar 2022 10:07:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ko4mIxnXaw4yoPYh8PjrmsoS3HvZSH7ww79WhJnpMH4=;
-        b=RZcwA6fQAdjrf7FF2zVeX7H/SIgQ1V7SEWgnpQS/0BC3ukM/0D/WwG6gGAbQG5ImZc
-         UGmTvS87mlznXBvJ1kVI3hPtKqXgHOm0ptW8ycyayeL6iwlw++KIQrcRrAkOdqdTwBzr
-         alue6QBo0GDPgl00OiuO0Qx5tERXuLtAYW9RqQ5LR9KCGpkaqAPpcAD1wmEK9OIeQgHK
-         0Pva+Bl+da6MTyOaVyi9vgELNuIQBy6rUBK2Foqor5PgKGQPEPphLzveoreHurQ28Rxn
-         p6A472lXQuuSwzJVR6xaiWkMF2V9eAIf3VItaO3j6u22XpTetxZwZ9YfAFKzka+BEErN
-         XTvg==
+        bh=vWgA+/2pIvQjK41iFHFvWRydEbuLY4ATf1zz+o+sHkg=;
+        b=j/JaCxK3C6vxIVngeTfYGArKcVm9+W3dmtYzabgN69DecNJ5Oi5qjnetG9fWhbFj5m
+         N5Ct3zR9Fk7NDo438EILWXq6NSxfqQdhWWhQ3fGUdMeQ44RgBdEZzkrjS+J4DJtlcQ8r
+         zOnrMRArk+g+IzgXXK68SZTsekd6Jy8D6M8SiNmSeIQa/QKYpDzs14YozSGg4bkQXNGN
+         iWYyUCjYwcnhjXPjJ+dXpqyFZ3zuoMuQgVn4TR88gZdiDGAN38kUcz+15dKib/u7jTHV
+         xqrZkPGPNk67J7PZRnINztd0g10p50wO73nf8Q6PlDGlSgC3QQKPSr16MYqCvJpciu2Q
+         iT1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ko4mIxnXaw4yoPYh8PjrmsoS3HvZSH7ww79WhJnpMH4=;
-        b=yjJCq26Tysas8gvKBu9614Xwjj8vuqiJzwifNceVnNlXtOt/A1uazSKgBFjOspoguT
-         +qi9AeFR/dCVxV711L3+O0UHSPzC1cO9+8ruVzUvnZBOmgZxGZANWAf3+Ex2eWJKqORq
-         yJk8ApDMokTerOdy79afxGpl2DfvAz77U2qqxwQWKU44VCsQVOgFd6QLyLf1lCOKaQQs
-         UL2+DPUlGX5yWsxP80u4r7uz07l9jGcfxEO6MUUFocDzR7NgYVOZVR9hLxcd1W8NqRM3
-         8KcZ1SlFlFlAV72rt9Zyoph738XwNNZlmci1c5/RJ/m3tZ23x1mgbwc1IpU4W5kpfoSg
-         hQJw==
-X-Gm-Message-State: AOAM533IlxBEkN6mHmA5yKoRoXIkNi70lLyDSLNHnn8prI4XUJmhExie
-        +JGpPJsUDiILE9iOY/x35TyrA5aO0KhU+7oX4YA=
-X-Google-Smtp-Source: ABdhPJwtmZHUYpe+l+4rcOPjK1FPYXhd0eg1b12cJ7I7RJnY7A8ZlX9X9KSb+nUZXQfEUq4sX7mt2noF9X8EP60JQSk=
-X-Received: by 2002:a05:6602:185a:b0:645:d914:35e9 with SMTP id
- d26-20020a056602185a00b00645d91435e9mr6152428ioi.154.1648227634763; Fri, 25
- Mar 2022 10:00:34 -0700 (PDT)
+        bh=vWgA+/2pIvQjK41iFHFvWRydEbuLY4ATf1zz+o+sHkg=;
+        b=aCtNPx/Kijt5W9jb9Idj4SacwJe+oPLZ8LaCQ+8Q2FzNRr909ITmlP6NchTfqibIZZ
+         AmJNRDWVJYXZChZZ7eod9nsSVjuNfQP9CJDciMhtyJsJRK174Qjq2NBQ+goxe8Y++PiT
+         bYee1RJ/lTwwTqR/fczfRDls3i4WmDxsqcShJRU8xLfsrmMjbZWe4GahHAgdoR1XQdeB
+         wUnvCb1DP6dObdS8xm0CT9rvR27f4/iMmWbEteKlfyX5Wx8iY6jqvP8DP1QyRJScFHkk
+         u5ctIRslDSeg5M2+wWiIR1al6uqg4R+4+aZYn/tzpKYeB3Q9ckDl5phmaH1BZerJyufV
+         SA6g==
+X-Gm-Message-State: AOAM531+zVd2gVsk9nr1tE00gLjSpw5Iso1bISbYhoc98KfQ23g2jlhi
+        gYkBtnM3+d2Pa0LoyX0Rk8OgwUolK36HasCj1K1XiPb1
+X-Google-Smtp-Source: ABdhPJx2TmLsBfcXAH8Vy6ycK8RhPLPK77wb5qOUOUpIZjUxkW+ZYg2w12uN9qj8lGLEztjf95g+mZGCd1hDW8QotaE=
+X-Received: by 2002:a92:cd8a:0:b0:2c8:60b7:bed9 with SMTP id
+ r10-20020a92cd8a000000b002c860b7bed9mr5433955ilb.252.1648228058675; Fri, 25
+ Mar 2022 10:07:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220318161528.1531164-1-benjamin.tissoires@redhat.com>
- <20220318161528.1531164-7-benjamin.tissoires@redhat.com> <CAADnVQLvhWxEtHETg0tasJ7Fp5JHNRYWdjhnxi1y1gBpXS=bvQ@mail.gmail.com>
- <CAO-hwJJXR3jtAvLF1phUa5pKZzVkDxAAHO5+7R50hL-fVhDYyA@mail.gmail.com>
-In-Reply-To: <CAO-hwJJXR3jtAvLF1phUa5pKZzVkDxAAHO5+7R50hL-fVhDYyA@mail.gmail.com>
+References: <586a6288-704a-f7a7-b256-e18a675927df@oracle.com>
+ <Yi7qQW+GIz+iOdYZ@syu-laptop> <f6f4a548-8e50-f676-8482-0ca541652cc6@fb.com>
+ <8735jjw4rp.fsf@brennan.io> <YjDT498PfzFT+kT4@kernel.org> <878rt9hogh.fsf@brennan.io>
+In-Reply-To: <878rt9hogh.fsf@brennan.io>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 25 Mar 2022 10:00:23 -0700
-Message-ID: <CAEf4BzYVu9JVJvKZK3S9HGwpyPiWrwKPGsTz3wXC_+vmRYGdNw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 06/17] HID: allow to change the report
- descriptor from an eBPF program
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Date:   Fri, 25 Mar 2022 10:07:27 -0700
+Message-ID: <CAEf4BzbiFNnsu9pji5ifzj4nVEyAYYdqP=QVZ3XFwzL48prP3A@mail.gmail.com>
+Subject: Re: Question: missing vmlinux BTF variable declarations
+To:     Stephen Brennan <stephen@brennan.io>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        bpf <bpf@vger.kernel.org>, Omar Sandoval <osandov@osandov.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -86,109 +70,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 9:08 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
+On Wed, Mar 16, 2022 at 11:11 PM Stephen Brennan <stephen@brennan.io> wrote:
 >
-> Hi Alexei,
->
-> On Tue, Mar 22, 2022 at 11:51 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> Arnaldo Carvalho de Melo <acme@kernel.org> writes:
+> [...]
+> >> I think that kallsyms, BTF, and ORC together will be enough to provide a
+> >> lite debugging experience. Some things will be missing:
 > >
-> > On Fri, Mar 18, 2022 at 9:16 AM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > > +u8 *hid_bpf_report_fixup(struct hid_device *hdev, u8 *rdesc, unsigned int *size)
-> > > +{
-> > > +       int ret;
-> > > +       struct hid_bpf_ctx_kern ctx = {
-> > > +               .type = HID_BPF_RDESC_FIXUP,
-> > > +               .hdev = hdev,
-> > > +               .size = *size,
-> > > +       };
-> > > +
-> > > +       if (bpf_hid_link_empty(&hdev->bpf, BPF_HID_ATTACH_RDESC_FIXUP))
-> > > +               goto ignore_bpf;
-> > > +
-> > > +       ctx.data = kmemdup(rdesc, HID_MAX_DESCRIPTOR_SIZE, GFP_KERNEL);
-> > > +       if (!ctx.data)
-> > > +               goto ignore_bpf;
-> > > +
-> > > +       ctx.allocated_size = HID_MAX_DESCRIPTOR_SIZE;
-> > > +
-> > > +       ret = hid_bpf_run_progs(hdev, &ctx);
-> > > +       if (ret)
-> > > +               goto ignore_bpf;
-> > > +
-> > > +       if (ctx.size > ctx.allocated_size)
-> > > +               goto ignore_bpf;
-> > > +
-> > > +       *size = ctx.size;
-> > > +
-> > > +       if (*size) {
-> > > +               rdesc = krealloc(ctx.data, *size, GFP_KERNEL);
-> > > +       } else {
-> > > +               rdesc = NULL;
-> > > +               kfree(ctx.data);
-> > > +       }
-> > > +
-> > > +       return rdesc;
-> > > +
-> > > + ignore_bpf:
-> > > +       kfree(ctx.data);
-> > > +       return kmemdup(rdesc, *size, GFP_KERNEL);
-> > > +}
-> > > +
-> > >  int __init hid_bpf_module_init(void)
-> > >  {
-> > >         struct bpf_hid_hooks hooks = {
-> > >                 .hdev_from_fd = hid_bpf_fd_to_hdev,
-> > >                 .pre_link_attach = hid_bpf_pre_link_attach,
-> > > +               .post_link_attach = hid_bpf_post_link_attach,
-> > >                 .array_detach = hid_bpf_array_detach,
-> > >         };
-> > >
-> > > diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-> > > index 937fab7eb9c6..3182c39db006 100644
-> > > --- a/drivers/hid/hid-core.c
-> > > +++ b/drivers/hid/hid-core.c
-> > > @@ -1213,7 +1213,8 @@ int hid_open_report(struct hid_device *device)
-> > >                 return -ENODEV;
-> > >         size = device->dev_rsize;
-> > >
-> > > -       buf = kmemdup(start, size, GFP_KERNEL);
-> > > +       /* hid_bpf_report_fixup() ensures we work on a copy of rdesc */
-> > > +       buf = hid_bpf_report_fixup(device, start, &size);
+> >> - mapping backtrace addresses to source code lines
 > >
-> > Looking at this patch and the majority of other patches...
-> > the code is doing a lot of work to connect HID side with bpf.
-> > At the same time the evolution of the patch series suggests
-> > that these hook points are not quite stable. More hooks and
-> > helpers are being added.
-> > It tells us that it's way too early to introduce a stable
-> > interface between HID and bpf.
+> > So, BTF has provisions for that, and its present in the eBPF programs,
+> > perf annotate uses it, see tools/perf/util/annotate.c,
+> > symbol__disassemble_bpf(), it goes like:
+> >
+> >         struct bpf_prog_linfo *prog_linfo = NULL;
+> >
+> >         info_node = perf_env__find_bpf_prog_info(dso->bpf_prog.env,
+> >                                                  dso->bpf_prog.id);
+> >         if (!info_node) {
+> >                 ret = SYMBOL_ANNOTATE_ERRNO__BPF_MISSING_BTF;
+> >                 goto out;
+> >         }
+> >         info_linear = info_node->info_linear;
+> >         sub_id = dso->bpf_prog.sub_id;
+> >
+> >         info.buffer = (void *)(uintptr_t)(info_linear->info.jited_prog_insns);
+> >         info.buffer_length = info_linear->info.jited_prog_len;
+> >
+> >         if (info_linear->info.nr_line_info)
+> >                 prog_linfo = bpf_prog_linfo__new(&info_linear->info);
+> >
+> >                 addr = pc + ((u64 *)(uintptr_t)(info_linear->info.jited_ksyms))[sub_id];
+> >                 count = disassemble(pc, &info);
+> >
+> >                 if (prog_linfo)
+> >                         linfo = bpf_prog_linfo__lfind_addr_func(prog_linfo,
+> >                                                                 addr, sub_id,
+> >                                                                 nr_skip);
+> >                               if (linfo && btf) {
+> >                         srcline = btf__name_by_offset(btf, linfo->line_off);
+> >                         nr_skip++;
+> >                 } else
+> >                         srcline = NULL;
+> >
+> > etc.
+> >
+> > Having this for the kernel proper is thus doable, but then we go on
+> > making BTF info grow.
+> >
+> > Perhaps having this as optional, distros or appliances wanting to have a
+> > kernel with this extra info would add it and then tools would use it if
+> > available?
 >
-> I understand that you might be under the impression that the interface
-> is changing a lot, but this is mostly due to my poor knowledge of all
-> the arcanes of eBPF.
-> The overall way HID-BPF works is to work on a single array, and we
-> should pretty much be sorted out. There are a couple of helpers to be
-> able to communicate with the device, but the API has been stable in
-> the kernel for those for quite some time now.
+> I didn't know about the source code mapping support! And I certainly see
+> the utility of it for BPF programs. However, I'm not sure that a "lite"
+> kernel debugging experience *needs* source line mapping. I suppose I
+> should have made it more clear, but I don't think of that list of
+> "missing" features as a checklist of things we'd want feature parity
+> for.
 >
-> The variations in the hooks is mostly because I don't know what is the
-> best representation we can use in eBPF for those, and the review
-> process is changing that.
+> The advantage of BTF for debugging would be that it is small, and that
+> it is part of the kernel image without referencing any other file,
+> build-id, or kernel version. Ideally, a debugger could load a crash dump
+> with no additional information, and support a reasonable level of
+> debugging. I think looking up typed data structure values via global
+> symbols is part of that level, as well as simple backtraces and other
+> memory access.
+>
+> I wouldn't want to try to re-implement DWARF for debuginfo. If you have
+> the DWARF debuginfo, then your experience should be much better.
+>
+> >> - intelligent stack frame information from DWARF CFI (e.g.
+> >>   register/variable values)
+> >> - probably other things, I'm not a DWARF expert.
+> [...]
+> >> > Currently on my local machine, the vmlinux BTF's size is 4.2MB and
+> >> > adding 1MB would be a big increase. CONFIG_DEBUG_INFO_BTF_ALL is a good
+> >> > idea. But we might be able to just add global variables without this
+> >> > new config if we have strong use case.
+> >
+> >> And unfortunately 1MiB is really just a shot in the dark, guessing
+> >> around 70k variables with no string data.
+> >
+> > Maybe we can have a separate BTF file with all this extra info that
+> > could be fetched from somewhere, keyed by build-id, like is now possible
+> > with debuginfod and DWARF?
+>
+> For me, this ranges into the territory of duplicating DWARF. If you lose
+> the one key advantage of "debuginfoless debugging", then you might as
+> well use the build-id to lookup DWARF debuginfo as we can today.
+>
+> This is why I'm trying to propose the means of combining the kallsyms
+> string data with BTF. Anything that can make the overall size increase
+> manageable so that all the necessary data can stay in the kernel image.
 
-I think such a big feature as this one, especially that most BPF folks
-are (probably) not familiar with the HID subsystem in the kernel,
-would benefit from a bit of live discussion during BPF office hours.
-Do you think you can give a short overview of what you are trying to
-achieve with some background context on HID specifics at one of the
-next BPF office hours? We have a meeting scheduled every week on
-Thursday, 9am Pacific time. But people need to put their topic onto
-the agenda, otherwise the meeting is cancelled. See [0] for
-spreadsheet and links to Zoom meeting, agenda, etc.
+I think this quirk of using kallsyms strings is a no-go. But we should
+experiment and see how much bigger BTF becomes when including all the
+variables. Can you try to prototype pahole's support for this? As you
+said, we can guard this extra information with KConfig and pahole
+flags, so distros can always opt-out of bigger BTF if that's too
+prohibitive. As it is right now, without firm understanding how big
+the final BTF is it's hard to make a good decision about go or no-go
+for this.
 
-  [0] https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU
+As for including source code itself, it going to be prohibitively
+huge, so it's probably out of the question for now as well.
 
-[...]
+>
+> Thanks,
+> Stephen
