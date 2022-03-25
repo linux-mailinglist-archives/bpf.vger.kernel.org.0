@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD5F4E6D34
-	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 05:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF954E6D37
+	for <lists+bpf@lfdr.de>; Fri, 25 Mar 2022 05:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354417AbiCYEab (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Mar 2022 00:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        id S1354546AbiCYEan (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Mar 2022 00:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353658AbiCYEaa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Mar 2022 00:30:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423A1C680B;
-        Thu, 24 Mar 2022 21:28:57 -0700 (PDT)
+        with ESMTP id S1354254AbiCYEam (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Mar 2022 00:30:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746FCC6810;
+        Thu, 24 Mar 2022 21:29:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BEDB5619D2;
-        Fri, 25 Mar 2022 04:28:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 766E4C340E9;
-        Fri, 25 Mar 2022 04:28:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 104E0615BB;
+        Fri, 25 Mar 2022 04:29:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D493C340E9;
+        Fri, 25 Mar 2022 04:29:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648182536;
-        bh=nUY05pK65gv7YynBy69L6DI+o3Uu996Vli2qilfaxLc=;
+        s=k20201202; t=1648182547;
+        bh=u62JfnzmRAb1bWKykz9x0iZwQhPOgr12qSrgPcduMyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uBZunZQokw+Gyk51/jLJLpLF/ewAIjbKMeMVcWTIiUdtODHBPTAWbrk+UGfZ8nB1R
-         HCz2LKa3sR5hLbfjlhtmI/jx7hjGd0z0L7FUR/pKXTqNTc7EiTSUpIIEKYPMO5UetQ
-         lv3dwjAt5dvTuomByqEZqwcwKEVvjfkIRLrC8ApSy1eyPb6bXD/Szd8PuYxEPI++rN
-         PgCkDaUji3T7w8KOvlbe2b/Yl/jeZ6IVuR43H8y+wjvsUMBPgu+37W486s0a9pfmUP
-         d9Tcq2ZTIdxCOc9jjtSbodFiDhyPHYSnCqyi8vBUM2VoQap8vmmFDeInrj29+1+/SH
-         7mmoysPvski5A==
+        b=E+cBv9PYRjnOuriXc1tg2qequgpOXRttoXwHXE9uOhAEFqRb2lihuNJXmHmDyIux0
+         /M8+dlGMGrqu2ODfTZACVEezHYI1dhhz0DhwcUU7y0LkFV7Tp/WPAjHV6QtJgwPS6E
+         Hhsve+nPcij6hiq2sCQmqRkY0uXQ8ETELXNWo+DbvvU6PDbdVeMpMb5bwLP1soO/vg
+         TjQ/TlHETa1jUtGUym6qu6zqrxe3HyygFXqvYbAb5ebaoEsPsHHKacxjuFBN6esM+5
+         bWmsKUd+K4BdJMhrfetE9r1RRv3otr4/HgWtJ+wV5vpXQOEv4W7aNcH5+0KDp2qEcd
+         jASgJNRA2fQxA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>, x86@kernel.org,
@@ -44,9 +44,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 1/2] kprobes: Use rethook for kretprobe if possible
-Date:   Fri, 25 Mar 2022 13:28:50 +0900
-Message-Id: <164818253060.2252200.5974202447477063948.stgit@devnote2>
+Subject: [PATCH bpf-next 2/2] rethook: kprobes: x86: Replace kretprobe with rethook on x86
+Date:   Fri, 25 Mar 2022 13:29:01 +0900
+Message-Id: <164818254148.2252200.5054811796192907193.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <164818251899.2252200.7306353689206167903.stgit@devnote2>
 References: <164818251899.2252200.7306353689206167903.stgit@devnote2>
@@ -64,373 +64,366 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use rethook for kretprobe function return hooking if the arch sets
-CONFIG_HAVE_RETHOOK=y. In this case, CONFIG_KRETPROBE_ON_RETHOOK is
-set to 'y' automatically, and the kretprobe internal data fields
-switches to use rethook. If not, it continues to use kretprobe
-specific function return hooks.
+Replaces the kretprobe code with rethook on x86. With this patch,
+kretprobe on x86 uses the rethook instead of kretprobe specific
+trampoline code.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/Kconfig                |    7 ++
- include/linux/kprobes.h     |   51 +++++++++++++++++-
- kernel/kprobes.c            |  124 ++++++++++++++++++++++++++++++++++++-------
- kernel/trace/trace_kprobe.c |    4 +
- 4 files changed, 161 insertions(+), 25 deletions(-)
+ arch/x86/Kconfig                 |    1 
+ arch/x86/include/asm/unwind.h    |   23 +++----
+ arch/x86/kernel/Makefile         |    1 
+ arch/x86/kernel/kprobes/common.h |    1 
+ arch/x86/kernel/kprobes/core.c   |  107 ----------------------------------
+ arch/x86/kernel/rethook.c        |  121 ++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 135 insertions(+), 119 deletions(-)
+ create mode 100644 arch/x86/kernel/rethook.c
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index e12a4268c01d..9570854c4683 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -164,7 +164,12 @@ config ARCH_USE_BUILTIN_BSWAP
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index db3bedcbf6be..e85b52a6f612 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -224,6 +224,7 @@ config X86
+ 	select HAVE_KPROBES_ON_FTRACE
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+ 	select HAVE_KRETPROBES
++	select HAVE_RETHOOK
+ 	select HAVE_KVM
+ 	select HAVE_LIVEPATCH			if X86_64
+ 	select HAVE_MIXED_BREAKPOINTS_REGS
+diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
+index 2a1f8734416d..7cede4dc21f0 100644
+--- a/arch/x86/include/asm/unwind.h
++++ b/arch/x86/include/asm/unwind.h
+@@ -4,7 +4,7 @@
  
- config KRETPROBES
- 	def_bool y
--	depends on KPROBES && HAVE_KRETPROBES
-+	depends on KPROBES && (HAVE_KRETPROBES || HAVE_RETHOOK)
-+
-+config KRETPROBE_ON_RETHOOK
-+	def_bool y
-+	depends on HAVE_RETHOOK
-+	select RETHOOK
- 
- config USER_RETURN_NOTIFIER
- 	bool
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 312ff997c743..157168769fc2 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -28,6 +28,7 @@
+ #include <linux/sched.h>
  #include <linux/ftrace.h>
- #include <linux/refcount.h>
- #include <linux/freelist.h>
+-#include <linux/kprobes.h>
 +#include <linux/rethook.h>
- #include <asm/kprobes.h>
+ #include <asm/ptrace.h>
+ #include <asm/stacktrace.h>
  
- #ifdef CONFIG_KPROBES
-@@ -149,13 +150,20 @@ struct kretprobe {
- 	int maxactive;
- 	int nmissed;
- 	size_t data_size;
-+#ifdef CONFIG_KRETPROBE_ON_RETHOOK
-+	struct rethook *rh;
-+#else
- 	struct freelist_head freelist;
- 	struct kretprobe_holder *rph;
-+#endif
- };
- 
- #define KRETPROBE_MAX_DATA_SIZE	4096
- 
- struct kretprobe_instance {
-+#ifdef CONFIG_KRETPROBE_ON_RETHOOK
-+	struct rethook_node node;
-+#else
- 	union {
- 		struct freelist_node freelist;
- 		struct rcu_head rcu;
-@@ -164,6 +172,7 @@ struct kretprobe_instance {
- 	struct kretprobe_holder *rph;
- 	kprobe_opcode_t *ret_addr;
- 	void *fp;
-+#endif
- 	char data[];
- };
- 
-@@ -186,10 +195,24 @@ extern void kprobe_busy_begin(void);
- extern void kprobe_busy_end(void);
- 
- #ifdef CONFIG_KRETPROBES
--extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
--				   struct pt_regs *regs);
-+/* Check whether @p is used for implementing a trampoline. */
- extern int arch_trampoline_kprobe(struct kprobe *p);
- 
-+#ifdef CONFIG_KRETPROBE_ON_RETHOOK
-+static nokprobe_inline struct kretprobe *get_kretprobe(struct kretprobe_instance *ri)
-+{
-+	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
-+		"Kretprobe is accessed from instance under preemptive context");
-+
-+	return (struct kretprobe *)READ_ONCE(ri->node.rethook->data);
-+}
-+static nokprobe_inline unsigned long get_kretprobe_retaddr(struct kretprobe_instance *ri)
-+{
-+	return ri->node.ret_addr;
-+}
-+#else
-+extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
-+				   struct pt_regs *regs);
- void arch_kretprobe_fixup_return(struct pt_regs *regs,
- 				 kprobe_opcode_t *correct_ret_addr);
- 
-@@ -232,6 +255,12 @@ static nokprobe_inline struct kretprobe *get_kretprobe(struct kretprobe_instance
- 	return READ_ONCE(ri->rph->rp);
- }
- 
-+static nokprobe_inline unsigned long get_kretprobe_retaddr(struct kretprobe_instance *ri)
-+{
-+	return (unsigned long)ri->ret_addr;
-+}
-+#endif /* CONFIG_KRETPROBE_ON_RETHOOK */
-+
- #else /* !CONFIG_KRETPROBES */
- static inline void arch_prepare_kretprobe(struct kretprobe *rp,
- 					struct pt_regs *regs)
-@@ -395,7 +424,11 @@ void unregister_kretprobe(struct kretprobe *rp);
- int register_kretprobes(struct kretprobe **rps, int num);
- void unregister_kretprobes(struct kretprobe **rps, int num);
- 
-+#ifdef CONFIG_KRETPROBE_ON_RETHOOK
-+#define kprobe_flush_task(tk)	do {} while (0)
-+#else
- void kprobe_flush_task(struct task_struct *tk);
-+#endif
- 
- void kprobe_free_init_mem(void);
- 
-@@ -509,6 +542,19 @@ static inline bool is_kprobe_optinsn_slot(unsigned long addr)
- #endif /* !CONFIG_OPTPROBES */
- 
- #ifdef CONFIG_KRETPROBES
-+#ifdef CONFIG_KRETPROBE_ON_RETHOOK
-+static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
-+{
-+	return is_rethook_trampoline(addr);
-+}
-+
-+static nokprobe_inline
-+unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
-+				      struct llist_node **cur)
-+{
-+	return rethook_find_ret_addr(tsk, (unsigned long)fp, cur);
-+}
-+#else
- static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
- {
- 	return (void *)addr == kretprobe_trampoline_addr();
-@@ -516,6 +562,7 @@ static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
- 
- unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
- 				      struct llist_node **cur);
-+#endif
- #else
- static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
- {
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 185badc780b7..dbe57df2e199 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1237,6 +1237,27 @@ void kprobes_inc_nmissed_count(struct kprobe *p)
- }
- NOKPROBE_SYMBOL(kprobes_inc_nmissed_count);
- 
-+static struct kprobe kprobe_busy = {
-+	.addr = (void *) get_kprobe,
-+};
-+
-+void kprobe_busy_begin(void)
-+{
-+	struct kprobe_ctlblk *kcb;
-+
-+	preempt_disable();
-+	__this_cpu_write(current_kprobe, &kprobe_busy);
-+	kcb = get_kprobe_ctlblk();
-+	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
-+}
-+
-+void kprobe_busy_end(void)
-+{
-+	__this_cpu_write(current_kprobe, NULL);
-+	preempt_enable();
-+}
-+
-+#if !defined(CONFIG_KRETPROBE_ON_RETHOOK)
- static void free_rp_inst_rcu(struct rcu_head *head)
- {
- 	struct kretprobe_instance *ri = container_of(head, struct kretprobe_instance, rcu);
-@@ -1258,26 +1279,6 @@ static void recycle_rp_inst(struct kretprobe_instance *ri)
- }
- NOKPROBE_SYMBOL(recycle_rp_inst);
- 
--static struct kprobe kprobe_busy = {
--	.addr = (void *) get_kprobe,
--};
--
--void kprobe_busy_begin(void)
--{
--	struct kprobe_ctlblk *kcb;
--
--	preempt_disable();
--	__this_cpu_write(current_kprobe, &kprobe_busy);
--	kcb = get_kprobe_ctlblk();
--	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
--}
--
--void kprobe_busy_end(void)
--{
--	__this_cpu_write(current_kprobe, NULL);
--	preempt_enable();
--}
--
- /*
-  * This function is called from delayed_put_task_struct() when a task is
-  * dead and cleaned up to recycle any kretprobe instances associated with
-@@ -1327,6 +1328,7 @@ static inline void free_rp_inst(struct kretprobe *rp)
- 		rp->rph = NULL;
- 	}
- }
-+#endif	/* !CONFIG_KRETPROBE_ON_RETHOOK */
- 
- /* Add the new probe to 'ap->list'. */
- static int add_new_kprobe(struct kprobe *ap, struct kprobe *p)
-@@ -1925,6 +1927,7 @@ static struct notifier_block kprobe_exceptions_nb = {
- 
- #ifdef CONFIG_KRETPROBES
- 
-+#if !defined(CONFIG_KRETPROBE_ON_RETHOOK)
- /* This assumes the 'tsk' is the current task or the is not running. */
- static kprobe_opcode_t *__kretprobe_find_ret_addr(struct task_struct *tsk,
- 						  struct llist_node **cur)
-@@ -2087,6 +2090,57 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 	return 0;
- }
- NOKPROBE_SYMBOL(pre_handler_kretprobe);
-+#else /* CONFIG_KRETPROBE_ON_RETHOOK */
-+/*
-+ * This kprobe pre_handler is registered with every kretprobe. When probe
-+ * hits it will set up the return probe.
-+ */
-+static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
-+{
-+	struct kretprobe *rp = container_of(p, struct kretprobe, kp);
-+	struct kretprobe_instance *ri;
-+	struct rethook_node *rhn;
-+
-+	rhn = rethook_try_get(rp->rh);
-+	if (!rhn) {
-+		rp->nmissed++;
-+		return 0;
-+	}
-+
-+	ri = container_of(rhn, struct kretprobe_instance, node);
-+
-+	if (rp->entry_handler && rp->entry_handler(ri, regs))
-+		rethook_recycle(rhn);
-+	else
-+		rethook_hook(rhn, regs, kprobe_ftrace(p));
-+
-+	return 0;
-+}
-+NOKPROBE_SYMBOL(pre_handler_kretprobe);
-+
-+static void kretprobe_rethook_handler(struct rethook_node *rh, void *data,
-+				      struct pt_regs *regs)
-+{
-+	struct kretprobe *rp = (struct kretprobe *)data;
-+	struct kretprobe_instance *ri;
-+	struct kprobe_ctlblk *kcb;
-+
-+	/* The data must NOT be null. This means rethook data structure is broken. */
-+	if (WARN_ON_ONCE(!data))
-+		return;
-+
-+	__this_cpu_write(current_kprobe, &rp->kp);
-+	kcb = get_kprobe_ctlblk();
-+	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
-+
-+	ri = container_of(rh, struct kretprobe_instance, node);
-+	rp->handler(ri, regs);
-+
-+	__this_cpu_write(current_kprobe, NULL);
-+}
-+NOKPROBE_SYMBOL(kretprobe_rethook_handler);
-+
-+#endif /* !CONFIG_KRETPROBE_ON_RETHOOK */
- 
- /**
-  * kprobe_on_func_entry() -- check whether given address is function entry
-@@ -2155,6 +2209,29 @@ int register_kretprobe(struct kretprobe *rp)
- 		rp->maxactive = num_possible_cpus();
+@@ -16,7 +16,7 @@ struct unwind_state {
+ 	unsigned long stack_mask;
+ 	struct task_struct *task;
+ 	int graph_idx;
+-#ifdef CONFIG_KRETPROBES
++#if defined(CONFIG_RETHOOK)
+ 	struct llist_node *kr_cur;
  #endif
- 	}
-+#ifdef CONFIG_KRETPROBE_ON_RETHOOK
-+	rp->rh = rethook_alloc((void *)rp, kretprobe_rethook_handler);
-+	if (!rp->rh)
-+		return -ENOMEM;
+ 	bool error;
+@@ -104,19 +104,18 @@ void unwind_module_init(struct module *mod, void *orc_ip, size_t orc_ip_size,
+ #endif
+ 
+ static inline
+-unsigned long unwind_recover_kretprobe(struct unwind_state *state,
+-				       unsigned long addr, unsigned long *addr_p)
++unsigned long unwind_recover_rethook(struct unwind_state *state,
++				     unsigned long addr, unsigned long *addr_p)
+ {
+-#ifdef CONFIG_KRETPROBES
+-	return is_kretprobe_trampoline(addr) ?
+-		kretprobe_find_ret_addr(state->task, addr_p, &state->kr_cur) :
+-		addr;
+-#else
+-	return addr;
++#ifdef CONFIG_RETHOOK
++	if (is_rethook_trampoline(addr))
++		return rethook_find_ret_addr(state->task, (unsigned long)addr_p,
++					     &state->kr_cur);
+ #endif
++	return addr;
+ }
+ 
+-/* Recover the return address modified by kretprobe and ftrace_graph. */
++/* Recover the return address modified by rethook and ftrace_graph. */
+ static inline
+ unsigned long unwind_recover_ret_addr(struct unwind_state *state,
+ 				     unsigned long addr, unsigned long *addr_p)
+@@ -125,7 +124,7 @@ unsigned long unwind_recover_ret_addr(struct unwind_state *state,
+ 
+ 	ret = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+ 				    addr, addr_p);
+-	return unwind_recover_kretprobe(state, ret, addr_p);
++	return unwind_recover_rethook(state, ret, addr_p);
+ }
+ 
+ /*
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 6462e3dd98f4..c41ef42adbe8 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -103,6 +103,7 @@ obj-$(CONFIG_FUNCTION_GRAPH_TRACER) += ftrace.o
+ obj-$(CONFIG_FTRACE_SYSCALLS)	+= ftrace.o
+ obj-$(CONFIG_X86_TSC)		+= trace_clock.o
+ obj-$(CONFIG_TRACING)		+= trace.o
++obj-$(CONFIG_RETHOOK)		+= rethook.o
+ obj-$(CONFIG_CRASH_CORE)	+= crash_core_$(BITS).o
+ obj-$(CONFIG_KEXEC_CORE)	+= machine_kexec_$(BITS).o
+ obj-$(CONFIG_KEXEC_CORE)	+= relocate_kernel_$(BITS).o crash.o
+diff --git a/arch/x86/kernel/kprobes/common.h b/arch/x86/kernel/kprobes/common.h
+index 7d3a2e2daf01..c993521d4933 100644
+--- a/arch/x86/kernel/kprobes/common.h
++++ b/arch/x86/kernel/kprobes/common.h
+@@ -6,6 +6,7 @@
+ 
+ #include <asm/asm.h>
+ #include <asm/frame.h>
++#include <asm/insn.h>
+ 
+ #ifdef CONFIG_X86_64
+ 
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 8ef933c03afa..7c4ab8870da4 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -811,18 +811,6 @@ set_current_kprobe(struct kprobe *p, struct pt_regs *regs,
+ 		= (regs->flags & X86_EFLAGS_IF);
+ }
+ 
+-void arch_prepare_kretprobe(struct kretprobe_instance *ri, struct pt_regs *regs)
+-{
+-	unsigned long *sara = stack_addr(regs);
+-
+-	ri->ret_addr = (kprobe_opcode_t *) *sara;
+-	ri->fp = sara;
+-
+-	/* Replace the return addr with trampoline addr */
+-	*sara = (unsigned long) &__kretprobe_trampoline;
+-}
+-NOKPROBE_SYMBOL(arch_prepare_kretprobe);
+-
+ static void kprobe_post_process(struct kprobe *cur, struct pt_regs *regs,
+ 			       struct kprobe_ctlblk *kcb)
+ {
+@@ -1023,101 +1011,6 @@ int kprobe_int3_handler(struct pt_regs *regs)
+ }
+ NOKPROBE_SYMBOL(kprobe_int3_handler);
+ 
+-/*
+- * When a retprobed function returns, this code saves registers and
+- * calls trampoline_handler() runs, which calls the kretprobe's handler.
+- */
+-asm(
+-	".text\n"
+-	".global __kretprobe_trampoline\n"
+-	".type __kretprobe_trampoline, @function\n"
+-	"__kretprobe_trampoline:\n"
+-#ifdef CONFIG_X86_64
+-	ANNOTATE_NOENDBR
+-	/* Push a fake return address to tell the unwinder it's a kretprobe. */
+-	"	pushq $__kretprobe_trampoline\n"
+-	UNWIND_HINT_FUNC
+-	/* Save the 'sp - 8', this will be fixed later. */
+-	"	pushq %rsp\n"
+-	"	pushfq\n"
+-	SAVE_REGS_STRING
+-	"	movq %rsp, %rdi\n"
+-	"	call trampoline_handler\n"
+-	RESTORE_REGS_STRING
+-	/* In trampoline_handler(), 'regs->flags' is copied to 'regs->sp'. */
+-	"	addq $8, %rsp\n"
+-	"	popfq\n"
+-#else
+-	/* Push a fake return address to tell the unwinder it's a kretprobe. */
+-	"	pushl $__kretprobe_trampoline\n"
+-	UNWIND_HINT_FUNC
+-	/* Save the 'sp - 4', this will be fixed later. */
+-	"	pushl %esp\n"
+-	"	pushfl\n"
+-	SAVE_REGS_STRING
+-	"	movl %esp, %eax\n"
+-	"	call trampoline_handler\n"
+-	RESTORE_REGS_STRING
+-	/* In trampoline_handler(), 'regs->flags' is copied to 'regs->sp'. */
+-	"	addl $4, %esp\n"
+-	"	popfl\n"
+-#endif
+-	ASM_RET
+-	".size __kretprobe_trampoline, .-__kretprobe_trampoline\n"
+-);
+-NOKPROBE_SYMBOL(__kretprobe_trampoline);
+-/*
+- * __kretprobe_trampoline() skips updating frame pointer. The frame pointer
+- * saved in trampoline_handler() points to the real caller function's
+- * frame pointer. Thus the __kretprobe_trampoline() doesn't have a
+- * standard stack frame with CONFIG_FRAME_POINTER=y.
+- * Let's mark it non-standard function. Anyway, FP unwinder can correctly
+- * unwind without the hint.
+- */
+-STACK_FRAME_NON_STANDARD_FP(__kretprobe_trampoline);
+-
+-/* This is called from kretprobe_trampoline_handler(). */
+-void arch_kretprobe_fixup_return(struct pt_regs *regs,
+-				 kprobe_opcode_t *correct_ret_addr)
+-{
+-	unsigned long *frame_pointer = &regs->sp + 1;
+-
+-	/* Replace fake return address with real one. */
+-	*frame_pointer = (unsigned long)correct_ret_addr;
+-}
+-
+-/*
+- * Called from __kretprobe_trampoline
+- */
+-__used __visible void trampoline_handler(struct pt_regs *regs)
+-{
+-	unsigned long *frame_pointer;
+-
+-	/* fixup registers */
+-	regs->cs = __KERNEL_CS;
+-#ifdef CONFIG_X86_32
+-	regs->gs = 0;
+-#endif
+-	regs->ip = (unsigned long)&__kretprobe_trampoline;
+-	regs->orig_ax = ~0UL;
+-	regs->sp += sizeof(long);
+-	frame_pointer = &regs->sp + 1;
+-
+-	/*
+-	 * The return address at 'frame_pointer' is recovered by the
+-	 * arch_kretprobe_fixup_return() which called from the
+-	 * kretprobe_trampoline_handler().
+-	 */
+-	kretprobe_trampoline_handler(regs, frame_pointer);
+-
+-	/*
+-	 * Copy FLAGS to 'pt_regs::sp' so that __kretprobe_trapmoline()
+-	 * can do RET right after POPF.
+-	 */
+-	regs->sp = regs->flags;
+-}
+-NOKPROBE_SYMBOL(trampoline_handler);
+-
+ int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
+ {
+ 	struct kprobe *cur = kprobe_running();
+diff --git a/arch/x86/kernel/rethook.c b/arch/x86/kernel/rethook.c
+new file mode 100644
+index 000000000000..3e916361c33b
+--- /dev/null
++++ b/arch/x86/kernel/rethook.c
+@@ -0,0 +1,121 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * x86 implementation of rethook. Mostly copied from arch/x86/kernel/kprobes/core.c.
++ */
++#include <linux/bug.h>
++#include <linux/rethook.h>
++#include <linux/kprobes.h>
++#include <linux/objtool.h>
 +
-+	for (i = 0; i < rp->maxactive; i++) {
-+		inst = kzalloc(sizeof(struct kretprobe_instance) +
-+			       rp->data_size, GFP_KERNEL);
-+		if (inst == NULL) {
-+			rethook_free(rp->rh);
-+			rp->rh = NULL;
-+			return -ENOMEM;
-+		}
-+		rethook_add_node(rp->rh, &inst->node);
-+	}
-+	rp->nmissed = 0;
-+	/* Establish function entry probe point */
-+	ret = register_kprobe(&rp->kp);
-+	if (ret != 0) {
-+		rethook_free(rp->rh);
-+		rp->rh = NULL;
-+	}
-+#else	/* !CONFIG_KRETPROBE_ON_RETHOOK */
- 	rp->freelist.head = NULL;
- 	rp->rph = kzalloc(sizeof(struct kretprobe_holder), GFP_KERNEL);
- 	if (!rp->rph)
-@@ -2179,6 +2256,7 @@ int register_kretprobe(struct kretprobe *rp)
- 	ret = register_kprobe(&rp->kp);
- 	if (ret != 0)
- 		free_rp_inst(rp);
-+#endif
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(register_kretprobe);
-@@ -2217,7 +2295,11 @@ void unregister_kretprobes(struct kretprobe **rps, int num)
- 	for (i = 0; i < num; i++) {
- 		if (__unregister_kprobe_top(&rps[i]->kp) < 0)
- 			rps[i]->kp.addr = NULL;
-+#ifdef CONFIG_KRETPROBE_ON_RETHOOK
-+		rethook_free(rps[i]->rh);
++#include "kprobes/common.h"
++
++__visible void arch_rethook_trampoline_callback(struct pt_regs *regs);
++
++/*
++ * When a target function returns, this code saves registers and calls
++ * arch_rethook_trampoline_callback(), which calls the rethook handler.
++ */
++asm(
++	".text\n"
++	".global arch_rethook_trampoline\n"
++	".type arch_rethook_trampoline, @function\n"
++	"arch_rethook_trampoline:\n"
++#ifdef CONFIG_X86_64
++	ANNOTATE_NOENDBR	/* This is only jumped from ret instruction */
++	/* Push a fake return address to tell the unwinder it's a kretprobe. */
++	"	pushq $arch_rethook_trampoline\n"
++	UNWIND_HINT_FUNC
++	/* Save the 'sp - 8', this will be fixed later. */
++	"	pushq %rsp\n"
++	"	pushfq\n"
++	SAVE_REGS_STRING
++	"	movq %rsp, %rdi\n"
++	"	call arch_rethook_trampoline_callback\n"
++	RESTORE_REGS_STRING
++	/* In the callback function, 'regs->flags' is copied to 'regs->sp'. */
++	"	addq $8, %rsp\n"
++	"	popfq\n"
 +#else
- 		rps[i]->rph->rp = NULL;
++	/* Push a fake return address to tell the unwinder it's a kretprobe. */
++	"	pushl $arch_rethook_trampoline\n"
++	UNWIND_HINT_FUNC
++	/* Save the 'sp - 4', this will be fixed later. */
++	"	pushl %esp\n"
++	"	pushfl\n"
++	SAVE_REGS_STRING
++	"	movl %esp, %eax\n"
++	"	call arch_rethook_trampoline_callback\n"
++	RESTORE_REGS_STRING
++	/* In the callback function, 'regs->flags' is copied to 'regs->sp'. */
++	"	addl $4, %esp\n"
++	"	popfl\n"
 +#endif
- 	}
- 	mutex_unlock(&kprobe_mutex);
- 
-@@ -2225,7 +2307,9 @@ void unregister_kretprobes(struct kretprobe **rps, int num)
- 	for (i = 0; i < num; i++) {
- 		if (rps[i]->kp.addr) {
- 			__unregister_kprobe_bottom(&rps[i]->kp);
-+#ifndef CONFIG_KRETPROBE_ON_RETHOOK
- 			free_rp_inst(rps[i]);
++	ASM_RET
++	".size arch_rethook_trampoline, .-arch_rethook_trampoline\n"
++);
++NOKPROBE_SYMBOL(arch_rethook_trampoline);
++
++/*
++ * Called from arch_rethook_trampoline
++ */
++__used __visible void arch_rethook_trampoline_callback(struct pt_regs *regs)
++{
++	unsigned long *frame_pointer;
++
++	/* fixup registers */
++	regs->cs = __KERNEL_CS;
++#ifdef CONFIG_X86_32
++	regs->gs = 0;
 +#endif
- 		}
- 	}
- }
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index b62fd785b599..47cebef78532 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1433,7 +1433,7 @@ __kretprobe_trace_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 	fbuffer.regs = regs;
- 	entry = fbuffer.entry = ring_buffer_event_data(fbuffer.event);
- 	entry->func = (unsigned long)tk->rp.kp.addr;
--	entry->ret_ip = (unsigned long)ri->ret_addr;
-+	entry->ret_ip = get_kretprobe_retaddr(ri);
- 	store_trace_args(&entry[1], &tk->tp, regs, sizeof(*entry), dsize);
- 
- 	trace_event_buffer_commit(&fbuffer);
-@@ -1628,7 +1628,7 @@ kretprobe_perf_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 		return;
- 
- 	entry->func = (unsigned long)tk->rp.kp.addr;
--	entry->ret_ip = (unsigned long)ri->ret_addr;
-+	entry->ret_ip = get_kretprobe_retaddr(ri);
- 	store_trace_args(&entry[1], &tk->tp, regs, sizeof(*entry), dsize);
- 	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
- 			      head, NULL);
++	regs->ip = (unsigned long)&arch_rethook_trampoline;
++	regs->orig_ax = ~0UL;
++	regs->sp += sizeof(long);
++	frame_pointer = &regs->sp + 1;
++
++	/*
++	 * The return address at 'frame_pointer' is recovered by the
++	 * arch_rethook_fixup_return() which called from this
++	 * rethook_trampoline_handler().
++	 */
++	rethook_trampoline_handler(regs, (unsigned long)frame_pointer);
++
++	/*
++	 * Copy FLAGS to 'pt_regs::sp' so that arch_rethook_trapmoline()
++	 * can do RET right after POPF.
++	 */
++	regs->sp = regs->flags;
++}
++NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
++
++/*
++ * arch_rethook_trampoline() skips updating frame pointer. The frame pointer
++ * saved in arch_rethook_trampoline_callback() points to the real caller
++ * function's frame pointer. Thus the arch_rethook_trampoline() doesn't have
++ * a standard stack frame with CONFIG_FRAME_POINTER=y.
++ * Let's mark it non-standard function. Anyway, FP unwinder can correctly
++ * unwind without the hint.
++ */
++STACK_FRAME_NON_STANDARD_FP(arch_rethook_trampoline);
++
++/* This is called from rethook_trampoline_handler(). */
++void arch_rethook_fixup_return(struct pt_regs *regs,
++			       unsigned long correct_ret_addr)
++{
++	unsigned long *frame_pointer = &regs->sp + 1;
++
++	/* Replace fake return address with real one. */
++	*frame_pointer = correct_ret_addr;
++}
++NOKPROBE_SYMBOL(arch_rethook_fixup_return);
++
++void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
++{
++	unsigned long *stack = (unsigned long *)regs->sp;
++
++	rh->ret_addr = stack[0];
++	rh->frame = regs->sp;
++
++	/* Replace the return addr with trampoline addr */
++	stack[0] = (unsigned long) arch_rethook_trampoline;
++}
++NOKPROBE_SYMBOL(arch_rethook_prepare);
 
