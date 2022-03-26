@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB694E7E91
-	for <lists+bpf@lfdr.de>; Sat, 26 Mar 2022 03:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E144E7E94
+	for <lists+bpf@lfdr.de>; Sat, 26 Mar 2022 03:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbiCZC3O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Mar 2022 22:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
+        id S229915AbiCZC3Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Mar 2022 22:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbiCZC3M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Mar 2022 22:29:12 -0400
+        with ESMTP id S229697AbiCZC3Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Mar 2022 22:29:24 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B1817587A;
-        Fri, 25 Mar 2022 19:27:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A858A1760D5;
+        Fri, 25 Mar 2022 19:27:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2EC0FB829F2;
-        Sat, 26 Mar 2022 02:27:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB7EEC004DD;
-        Sat, 26 Mar 2022 02:27:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5EDCCB82B07;
+        Sat, 26 Mar 2022 02:27:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 188B7C004DD;
+        Sat, 26 Mar 2022 02:27:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648261655;
-        bh=1GFhgKeS6KUc1WQ7GIRpaFxQts0n1D1CDBHsDOitUy4=;
+        s=k20201202; t=1648261666;
+        bh=GPBnrR38vldcM8pzwaRlh5Fu/HDIL2hc4on8+T36Er8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NNd+veJjTdiHnNwa6bJOiNvrp4vFrplbLFG7jtdP0RBJVQOK15sQvyKYs1dYFlQdK
-         SNIMhOwxxCJlyZGqwsWcBS3m5/1A9+GXb7upC/EdxtCGHLgOhZ5pBGqupXyisY+Mvv
-         MGGmJBYm3YReJYO+5TygGlUuWJdxuWJc3J1wuinG3HxYs4WsRAFMn70dHLj8fBY8UQ
-         hDATUaLtm6F9Yutg16e2FwtwiffuWQRVIg4ZhoCjyJ2KvAIYMB59m/hZjmeRcFEElR
-         n2uordJrOmJ2VB7LnbUcmaBXWP7NWaTG/LuOS72j8Pw7kCYwUR//dPWGS6/LaKwom9
-         WlPC51xHGeZiQ==
+        b=rI1w6cxa/iWXTDaYiPp+zlEqF/mtuZP77a/hESaNLrYovCEKe6tK6AHa9c6JKZuBj
+         1pIzbj2rRc4Qrf61oZDUW6EJNz5VJFiaFDf2SqNRR7oYJAUkQ3CYtcMKtpT5eEYsdz
+         AskptYEDy056t5SZNwoS8ta2kwij+myxmx3uoD0CuxzX6PMOlZ0aeBu+Vz4qiP5aI/
+         yTw30lhaZJLSQpEu1AD+KUdf6VnduH3dIVa/XJLWGx8grukC9qARqR8DLrESnoHa+G
+         g3Wopd3Lgtee3JaQ9xOfaGtr586ayQxik2ex5XNtGKiE1tzIZieIWJqDMqwexu0el6
+         S162RJgIqV9VQ==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>, x86@kernel.org,
@@ -44,9 +44,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3 3/4] x86,rethook: Fix arch_rethook_trampoline() to generate a complete pt_regs
-Date:   Sat, 26 Mar 2022 11:27:28 +0900
-Message-Id: <164826164851.2455864.17272661073069737350.stgit@devnote2>
+Subject: [PATCH bpf-next v3 4/4] x86,kprobes: Fix optprobe trampoline to generate complete pt_regs
+Date:   Sat, 26 Mar 2022 11:27:40 +0900
+Message-Id: <164826166027.2455864.14759128090648961900.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <164826160914.2455864.505359679001055158.stgit@devnote2>
 References: <164826160914.2455864.505359679001055158.stgit@devnote2>
@@ -64,100 +64,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+Currently the optprobe trampoline template code ganerate an
+almost complete pt_regs on-stack, everything except regs->ss.
+The 'regs->ss' points to the top of stack, which is not a
+valid segment decriptor.
 
-Currently arch_rethook_trampoline() generates an almost complete
-pt_regs on-stack, everything except regs->ss that is, that currently
-points to the fake return address, which is not a valid segment
-descriptor.
+As same as the rethook does, complete the job by also pushing ss.
 
-Since interpretation of regs->[sb]p should be done in the context of
-regs->ss, and we have code actually doing that (see
-arch/x86/lib/insn-eval.c for instance), complete the job by also
-pushing ss.
-
-This ensures that anybody who does do look at regs->ss doesn't
-mysteriously malfunction, avoiding much future pain.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/x86/kernel/rethook.c |   24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ arch/x86/kernel/kprobes/opt.c |   25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kernel/rethook.c b/arch/x86/kernel/rethook.c
-index af7e6713a07a..8a1c0111ae79 100644
---- a/arch/x86/kernel/rethook.c
-+++ b/arch/x86/kernel/rethook.c
-@@ -29,29 +29,31 @@ asm(
- 	/* Push a fake return address to tell the unwinder it's a rethook. */
- 	"	pushq $arch_rethook_trampoline\n"
- 	UNWIND_HINT_FUNC
--	/* Save the 'sp - 8', this will be fixed later. */
-+	"       pushq $" __stringify(__KERNEL_DS) "\n"
-+	/* Save the 'sp - 16', this will be fixed later. */
- 	"	pushq %rsp\n"
- 	"	pushfq\n"
- 	SAVE_REGS_STRING
- 	"	movq %rsp, %rdi\n"
- 	"	call arch_rethook_trampoline_callback\n"
- 	RESTORE_REGS_STRING
--	/* In the callback function, 'regs->flags' is copied to 'regs->sp'. */
--	"	addq $8, %rsp\n"
-+	/* In the callback function, 'regs->flags' is copied to 'regs->ss'. */
-+	"	addq $16, %rsp\n"
- 	"	popfq\n"
- #else
- 	/* Push a fake return address to tell the unwinder it's a rethook. */
- 	"	pushl $arch_rethook_trampoline\n"
- 	UNWIND_HINT_FUNC
--	/* Save the 'sp - 4', this will be fixed later. */
-+	"	pushl %ss\n"
-+	/* Save the 'sp - 8', this will be fixed later. */
- 	"	pushl %esp\n"
- 	"	pushfl\n"
- 	SAVE_REGS_STRING
- 	"	movl %esp, %eax\n"
- 	"	call arch_rethook_trampoline_callback\n"
- 	RESTORE_REGS_STRING
--	/* In the callback function, 'regs->flags' is copied to 'regs->sp'. */
--	"	addl $4, %esp\n"
-+	/* In the callback function, 'regs->flags' is copied to 'regs->ss'. */
-+	"	addl $8, %esp\n"
- 	"	popfl\n"
+diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
+index b4a54a52aa59..e6b8c5362b94 100644
+--- a/arch/x86/kernel/kprobes/opt.c
++++ b/arch/x86/kernel/kprobes/opt.c
+@@ -106,7 +106,8 @@ asm (
+ 			".global optprobe_template_entry\n"
+ 			"optprobe_template_entry:\n"
+ #ifdef CONFIG_X86_64
+-			/* We don't bother saving the ss register */
++			"       pushq $" __stringify(__KERNEL_DS) "\n"
++			/* Save the 'sp - 8', this will be fixed later. */
+ 			"	pushq %rsp\n"
+ 			"	pushfq\n"
+ 			".global optprobe_template_clac\n"
+@@ -121,14 +122,17 @@ asm (
+ 			".global optprobe_template_call\n"
+ 			"optprobe_template_call:\n"
+ 			ASM_NOP5
+-			/* Move flags to rsp */
++			/* Copy 'regs->flags' into 'regs->ss'. */
+ 			"	movq 18*8(%rsp), %rdx\n"
+-			"	movq %rdx, 19*8(%rsp)\n"
++			"	movq %rdx, 20*8(%rsp)\n"
+ 			RESTORE_REGS_STRING
+-			/* Skip flags entry */
+-			"	addq $8, %rsp\n"
++			/* Skip 'regs->flags' and 'regs->sp'. */
++			"	addq $16, %rsp\n"
++			/* And pop flags register from 'regs->ss'. */
+ 			"	popfq\n"
+ #else /* CONFIG_X86_32 */
++			"	pushl %ss\n"
++			/* Save the 'sp - 4', this will be fixed later. */
+ 			"	pushl %esp\n"
+ 			"	pushfl\n"
+ 			".global optprobe_template_clac\n"
+@@ -142,12 +146,13 @@ asm (
+ 			".global optprobe_template_call\n"
+ 			"optprobe_template_call:\n"
+ 			ASM_NOP5
+-			/* Move flags into esp */
++			/* Copy 'regs->flags' into 'regs->ss'. */
+ 			"	movl 14*4(%esp), %edx\n"
+-			"	movl %edx, 15*4(%esp)\n"
++			"	movl %edx, 16*4(%esp)\n"
+ 			RESTORE_REGS_STRING
+-			/* Skip flags entry */
+-			"	addl $4, %esp\n"
++			/* Skip 'regs->flags' and 'regs->sp'. */
++			"	addl $8, %esp\n"
++			/* And pop flags register from 'regs->ss'. */
+ 			"	popfl\n"
  #endif
- 	ASM_RET
-@@ -73,8 +75,8 @@ __used __visible void arch_rethook_trampoline_callback(struct pt_regs *regs)
- #endif
- 	regs->ip = (unsigned long)&arch_rethook_trampoline;
- 	regs->orig_ax = ~0UL;
--	regs->sp += sizeof(long);
--	frame_pointer = &regs->sp + 1;
-+	regs->sp += 2*sizeof(long);
-+	frame_pointer = (long *)(regs + 1);
- 
- 	/*
- 	 * The return address at 'frame_pointer' is recovered by the
-@@ -84,10 +86,10 @@ __used __visible void arch_rethook_trampoline_callback(struct pt_regs *regs)
- 	rethook_trampoline_handler(regs, (unsigned long)frame_pointer);
- 
- 	/*
--	 * Copy FLAGS to 'pt_regs::sp' so that arch_rethook_trapmoline()
-+	 * Copy FLAGS to 'pt_regs::ss' so that arch_rethook_trapmoline()
- 	 * can do RET right after POPF.
- 	 */
--	regs->sp = regs->flags;
-+	*(unsigned long *)&regs->ss = regs->flags;
- }
- NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
- 
-@@ -105,7 +107,7 @@ STACK_FRAME_NON_STANDARD_FP(arch_rethook_trampoline);
- void arch_rethook_fixup_return(struct pt_regs *regs,
- 			       unsigned long correct_ret_addr)
- {
--	unsigned long *frame_pointer = &regs->sp + 1;
-+	unsigned long *frame_pointer = (void *)(regs + 1);
- 
- 	/* Replace fake return address with real one. */
- 	*frame_pointer = correct_ret_addr;
+ 			".global optprobe_template_end\n"
+@@ -179,6 +184,8 @@ optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs)
+ 		kprobes_inc_nmissed_count(&op->kp);
+ 	} else {
+ 		struct kprobe_ctlblk *kcb = get_kprobe_ctlblk();
++		/* Adjust stack pointer */
++		regs->sp += sizeof(long);
+ 		/* Save skipped registers */
+ 		regs->cs = __KERNEL_CS;
+ #ifdef CONFIG_X86_32
 
