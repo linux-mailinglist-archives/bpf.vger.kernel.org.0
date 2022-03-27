@@ -2,129 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CFE4E852C
-	for <lists+bpf@lfdr.de>; Sun, 27 Mar 2022 04:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052FD4E873E
+	for <lists+bpf@lfdr.de>; Sun, 27 Mar 2022 12:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbiC0C4F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Mar 2022 22:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S232519AbiC0Kh4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Mar 2022 06:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233171AbiC0Cz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Mar 2022 22:55:57 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B571A83D;
-        Sat, 26 Mar 2022 19:54:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S232496AbiC0Khz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Mar 2022 06:37:55 -0400
+Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E4452B26;
+        Sun, 27 Mar 2022 03:36:13 -0700 (PDT)
+Received: from [192.168.1.11] (dynamic-078-055-201-104.78.55.pool.telefonica.de [78.55.201.104])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 1B988CE0DDD;
-        Sun, 27 Mar 2022 02:54:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16FEAC34112;
-        Sun, 27 Mar 2022 02:54:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648349654;
-        bh=2YxArUmIWaOSW8xvnD05K2Cti8aP5kMcCVg4EdTgu0c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CXaL4KiB2EGo1dRW0DnhvnSTqSg32m2XZEjuT6ZgDdXmB9syLmdAWCMhv2cpMNKGP
-         /a4lScH7Upd1L2RepUclM9moRYmWH56imOcwy81pxMv8/IoVHOZdSUJ/C3xur9DhID
-         OGRKJxJJO5uzZItQViqZ1aqN25TkRl7gvV866bQu4O4hsmZmzbYEdAMDxJGof2qHRP
-         X6aV7fGZAoi9nS0BY5+vAP+ELNOZ+N3CDv3chin1SbabOFBZt3C70JjvAIEHEelqWh
-         ZIHefpTCV1B4gsQjMsX2NucI+5pgVbAjZ4x2YDyFPXbyh9Q75pk7QuNhYqllsoSVcv
-         TBtld70GMih7g==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, pabeni@redhat.com, corbet@lwn.net,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org, andrew@lunn.ch,
-        f.fainelli@gmail.com, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net 13/13] docs: netdev: move the netdev-FAQ to the process pages
-Date:   Sat, 26 Mar 2022 19:54:00 -0700
-Message-Id: <20220327025400.2481365-14-kuba@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220327025400.2481365-1-kuba@kernel.org>
-References: <20220327025400.2481365-1-kuba@kernel.org>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id C11CF61EA1923;
+        Sun, 27 Mar 2022 12:36:09 +0200 (CEST)
+Message-ID: <7edcd673-decf-7b4e-1f6e-f2e0e26f757a@molgen.mpg.de>
+Date:   Sun, 27 Mar 2022 12:36:07 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: BUG: Bad page state in process systemd-udevd (was: [PATCH v9
+ bpf-next 1/9] x86/Kconfig: select HAVE_ARCH_HUGE_VMALLOC with
+ HAVE_ARCH_HUGE_VMAP)
+Content-Language: en-US
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+To:     Song Liu <song@kernel.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kernel-team@fb.com, peterz@infradead.org, x86@kernel.org,
+        iii@linux.ibm.com, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+        regressions@lists.linux.dev
+References: <20220204185742.271030-1-song@kernel.org>
+ <20220204185742.271030-2-song@kernel.org>
+ <14444103-d51b-0fb3-ee63-c3f182f0b546@molgen.mpg.de>
+In-Reply-To: <14444103-d51b-0fb3-ee63-c3f182f0b546@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The documentation for the tip tree is really in quite a similar
-spirit to the netdev-FAQ. Move the netdev-FAQ to the process docs
-as well.
+Dear Song,
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
- Documentation/bpf/bpf_devel_QA.rst                             | 2 +-
- Documentation/networking/index.rst                             | 3 ++-
- Documentation/process/maintainer-handbooks.rst                 | 1 +
- .../netdev-FAQ.rst => process/maintainer-netdev.rst}           | 0
- MAINTAINERS                                                    | 1 +
- 5 files changed, 5 insertions(+), 2 deletions(-)
- rename Documentation/{networking/netdev-FAQ.rst => process/maintainer-netdev.rst} (100%)
 
-diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-index 253496af8fef..761474bd7fe6 100644
---- a/Documentation/bpf/bpf_devel_QA.rst
-+++ b/Documentation/bpf/bpf_devel_QA.rst
-@@ -658,7 +658,7 @@ Otherwise, you can use ``bpf`` target. Additionally, you *must* use bpf target
- 
- .. Links
- .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
--.. _netdev-FAQ: ../networking/netdev-FAQ.rst
-+.. _netdev-FAQ: Documentation/process/maintainer-netdev.rst
- .. _selftests:
-    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf/
- .. _Documentation/dev-tools/kselftest.rst:
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index ce017136ab05..72cf33579b78 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -1,12 +1,13 @@
- Linux Networking Documentation
- ==============================
- 
-+Refer to :ref:`netdev-FAQ` for a guide on netdev development process specifics.
-+
- Contents:
- 
- .. toctree::
-    :maxdepth: 2
- 
--   netdev-FAQ
-    af_xdp
-    bareudp
-    batman-adv
-diff --git a/Documentation/process/maintainer-handbooks.rst b/Documentation/process/maintainer-handbooks.rst
-index 6af1abb0da48..d783060b4cc6 100644
---- a/Documentation/process/maintainer-handbooks.rst
-+++ b/Documentation/process/maintainer-handbooks.rst
-@@ -16,3 +16,4 @@ which is supplementary to the general development process handbook
-    :maxdepth: 2
- 
-    maintainer-tip
-+   maintainer-netdev
-diff --git a/Documentation/networking/netdev-FAQ.rst b/Documentation/process/maintainer-netdev.rst
-similarity index 100%
-rename from Documentation/networking/netdev-FAQ.rst
-rename to Documentation/process/maintainer-netdev.rst
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 91c04cb65247..fc1ee838d103 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13499,6 +13499,7 @@ B:	mailto:netdev@vger.kernel.org
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
- F:	Documentation/networking/
-+F:	Documentation/process/maintainer-netdev.rst
- F:	include/linux/in.h
- F:	include/linux/net.h
- F:	include/linux/netdevice.h
--- 
-2.34.1
+Am 26.03.22 um 19:46 schrieb Paul Menzel:
+> #regzbot introduced: fac54e2bfb5be2b0bbf115fe80d45f59fd773048
+> #regzbot title: BUG: Bad page state in process systemd-udevd
 
+> Am 04.02.22 um 19:57 schrieb Song Liu:
+>> From: Song Liu <songliubraving@fb.com>
+>>
+>> This enables module_alloc() to allocate huge page for 2MB+ requests.
+>> To check the difference of this change, we need enable config
+>> CONFIG_PTDUMP_DEBUGFS, and call module_alloc(2MB). Before the change,
+>> /sys/kernel/debug/page_tables/kernel shows pte for this map. With the
+>> change, /sys/kernel/debug/page_tables/ show pmd for thie map.
+>>
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>> ---
+>>   arch/x86/Kconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index 6fddb63271d9..e0e0d00cf103 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -159,6 +159,7 @@ config X86
+>>       select HAVE_ALIGNED_STRUCT_PAGE        if SLUB
+>>       select HAVE_ARCH_AUDITSYSCALL
+>>       select HAVE_ARCH_HUGE_VMAP        if X86_64 || X86_PAE
+>> +    select HAVE_ARCH_HUGE_VMALLOC        if HAVE_ARCH_HUGE_VMAP
+>>       select HAVE_ARCH_JUMP_LABEL
+>>       select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>>       select HAVE_ARCH_KASAN            if X86_64
+> 
+> Testing Linus’ current master branch, Linux logs critical messages like 
+> below:
+> 
+>      BUG: Bad page state in process systemd-udevd  pfn:102e03
+> 
+> I bisected to your commit fac54e2bfb5 (x86/Kconfig: select 
+> HAVE_ARCH_HUGE_VMALLOC with HAVE_ARCH_HUGE_VMAP).
+
+Sorry, I forget to mention, that this is a 32-bit (i686) userspace, but 
+a 64-bit Linux kernel, so it might be the same issue as mentioned in 
+commit eed1fcee556f (x86: Disable HAVE_ARCH_HUGE_VMALLOC on 32-bit x86), 
+but didn’t fix the issue for 64-bit Linux kernel and 32-bit userspace.
+
+
+Kind regards,
+
+Paul
