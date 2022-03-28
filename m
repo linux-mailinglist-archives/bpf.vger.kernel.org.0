@@ -2,137 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 612924E9500
-	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 13:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA0F4E9506
+	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 13:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234153AbiC1Ljo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Mar 2022 07:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
+        id S241523AbiC1Ljw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Mar 2022 07:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241502AbiC1Lbo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Mar 2022 07:31:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F28157B05;
-        Mon, 28 Mar 2022 04:24:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DB2C611D8;
-        Mon, 28 Mar 2022 11:24:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87CE3C340EC;
-        Mon, 28 Mar 2022 11:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648466671;
-        bh=nkCUznEb/nxqNrdjFSYcrmrAOYnmEWFuMdAke85b898=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRKg6CkLhnCjSI5tu94B7KhQYeCQ8qD3WCUcdSV4e0SUZRtsFO5JNjTth6LnWgL7k
-         G5dgT5jNW9TIXI/5nzbZp65OtNi4dXJAGFMvkYUi8ChpnzSilEaet87uyP1ici/oyI
-         8Wni6DNosP/etVk2gAOlRIr63z3g7HJmv8z/ULkjLReFew7yNnh3xjQjj7EL+tCUBv
-         F/FrWJSbXtICTPLBDtDUlt5WgURRO1xXPrtTL3h45eNv5yEVhpOGJ5PnQVuex66cd+
-         aopn9H3hNYKYb+GcxwgJPK5g4+OLeQiJ9XeWPeLpeM24qJ9sY9+xB9zwac7LjPBJ4b
-         AD98TtKfav9Jw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Matt Brown <matthew.brown.dev@gmail.com>,
-        Song Liu <song@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 08/12] lib/raid6/test/Makefile: Use $(pound) instead of \# for Make 4.3
-Date:   Mon, 28 Mar 2022 07:24:13 -0400
-Message-Id: <20220328112417.1556946-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220328112417.1556946-1-sashal@kernel.org>
-References: <20220328112417.1556946-1-sashal@kernel.org>
+        with ESMTP id S244241AbiC1Lh2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Mar 2022 07:37:28 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECED02B241;
+        Mon, 28 Mar 2022 04:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=41L4t1c0ddl1MiDH25v6xSBFdVF9lvzdczk2Kg0lT04=; b=M6Pq7H4xo0r6r8b/a/aDpCechu
+        1rFwGHbmvKNa1TXH+8z7OYS8vywTvGhehp8H2/sys3CRG8JPDgK6VDOBVe7uHWziq/ciU+7iYvfIL
+        Xb+3Ukq9LW13g+/41GMUAI86Ly/6JwcpGGbh6dMMxLK4cQQUe9Kz1ji5/RJDGAc+/iJhqMpQe+RsH
+        YLQcSMMysM7Ne83+OCFOYLhJsedKbhLPv9ZqC4rNHolZRPvcsGHY+xCcciHGJtefkdqtYi4sTHzMC
+        OHpZLBnpeZjY1j8pquXMr8N6OQzI6bcUdn3/puK1nOnLMB7t5KDIi7oUgJdjk9A30C92weviCGPEd
+        +RZ2yuKw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nYnYo-005QWv-Ul; Mon, 28 Mar 2022 11:29:23 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 56F1E9861E7; Mon, 28 Mar 2022 13:29:21 +0200 (CEST)
+Date:   Mon, 28 Mar 2022 13:29:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Radoslaw Burny <rburny@google.com>, linux-arch@vger.kernel.org,
+        bpf@vger.kernel.org, Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow
+ path
+Message-ID: <20220328112921.GZ8939@worktop.programming.kicks-ass.net>
+References: <20220322185709.141236-1-namhyung@kernel.org>
+ <20220322185709.141236-3-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220322185709.141236-3-namhyung@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Paul Menzel <pmenzel@molgen.mpg.de>
+On Tue, Mar 22, 2022 at 11:57:09AM -0700, Namhyung Kim wrote:
+> Adding the lock contention tracepoints in various lock function slow
+> paths.  Note that each arch can define spinlock differently, I only
+> added it only to the generic qspinlock for now.
+> 
+> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  kernel/locking/mutex.c        |  3 +++
+>  kernel/locking/percpu-rwsem.c |  3 +++
+>  kernel/locking/qrwlock.c      |  9 +++++++++
+>  kernel/locking/qspinlock.c    |  5 +++++
+>  kernel/locking/rtmutex.c      | 11 +++++++++++
+>  kernel/locking/rwbase_rt.c    |  3 +++
+>  kernel/locking/rwsem.c        |  9 +++++++++
+>  kernel/locking/semaphore.c    | 15 ++++++++++++++-
+>  8 files changed, 57 insertions(+), 1 deletion(-)
 
-[ Upstream commit 633174a7046ec3b4572bec24ef98e6ee89bce14b ]
+I had conflicts in rwsem.c due to Waiman's patches, but that was simple
+enough to resolve. However, I had a good look at the other sites and
+ended up with the below...
 
-Buidling raid6test on Ubuntu 21.10 (ppc64le) with GNU Make 4.3 shows the
-errors below:
+Yes, I know I'm the one that suggested the percpu thing, but upon
+looking again it missed the largest part of percpu_down_write(), which
+very much includes that RCU grace period and waiting for the readers to
+bugger off
 
-    $ cd lib/raid6/test/
-    $ make
-    <stdin>:1:1: error: stray ‘\’ in program
-    <stdin>:1:2: error: stray ‘#’ in program
-    <stdin>:1:11: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ \
-        before ‘<’ token
+Also, rwbase_rt was missing the entire READ side -- yes, I see that's
+also covered by the rtmuex.c part, but that's on a different address and
+with different flags, and it's very confusing to not have it annotated.
 
-    [...]
+Anyway, I'll queue this patch with the below folded in for post -rc1.
 
-The errors come from the HAS_ALTIVEC test, which fails, and the POWER
-optimized versions are not built. That’s also reason nobody noticed on the
-other architectures.
-
-GNU Make 4.3 does not remove the backslash anymore. From the 4.3 release
-announcment:
-
-> * WARNING: Backward-incompatibility!
->   Number signs (#) appearing inside a macro reference or function invocation
->   no longer introduce comments and should not be escaped with backslashes:
->   thus a call such as:
->     foo := $(shell echo '#')
->   is legal.  Previously the number sign needed to be escaped, for example:
->     foo := $(shell echo '\#')
->   Now this latter will resolve to "\#".  If you want to write makefiles
->   portable to both versions, assign the number sign to a variable:
->     H := \#
->     foo := $(shell echo '$H')
->   This was claimed to be fixed in 3.81, but wasn't, for some reason.
->   To detect this change search for 'nocomment' in the .FEATURES variable.
-
-So, do the same as commit 9564a8cf422d ("Kbuild: fix # escaping in .cmd
-files for future Make") and commit 929bef467771 ("bpf: Use $(pound) instead
-of \# in Makefiles") and define and use a $(pound) variable.
-
-Reference for the change in make:
-https://git.savannah.gnu.org/cgit/make.git/commit/?id=c6966b323811c37acedff05b57
-
-Cc: Matt Brown <matthew.brown.dev@gmail.com>
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Song Liu <song@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/raid6/test/Makefile | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/lib/raid6/test/Makefile b/lib/raid6/test/Makefile
-index 79777645cac9..e7b54ec8ca70 100644
---- a/lib/raid6/test/Makefile
-+++ b/lib/raid6/test/Makefile
-@@ -4,6 +4,8 @@
- # from userspace.
- #
+--- a/kernel/locking/percpu-rwsem.c
++++ b/kernel/locking/percpu-rwsem.c
+@@ -155,7 +155,6 @@ static void percpu_rwsem_wait(struct per
+ 	}
+ 	spin_unlock_irq(&sem->waiters.lock);
  
-+pound := \#
+-	trace_contention_begin(sem, LCB_F_PERCPU | (reader ? LCB_F_READ : LCB_F_WRITE));
+ 	while (wait) {
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		if (!smp_load_acquire(&wq_entry.private))
+@@ -163,7 +162,6 @@ static void percpu_rwsem_wait(struct per
+ 		schedule();
+ 	}
+ 	__set_current_state(TASK_RUNNING);
+-	trace_contention_end(sem, 0);
+ }
+ 
+ bool __sched __percpu_down_read(struct percpu_rw_semaphore *sem, bool try)
+@@ -174,9 +172,11 @@ bool __sched __percpu_down_read(struct p
+ 	if (try)
+ 		return false;
+ 
++	trace_contention_begin(sem, LCB_F_PERCPU | LCB_F_READ);
+ 	preempt_enable();
+ 	percpu_rwsem_wait(sem, /* .reader = */ true);
+ 	preempt_disable();
++	trace_contention_end(sem, 0);
+ 
+ 	return true;
+ }
+@@ -219,6 +219,7 @@ void __sched percpu_down_write(struct pe
+ {
+ 	might_sleep();
+ 	rwsem_acquire(&sem->dep_map, 0, 0, _RET_IP_);
++	trace_contention_begin(sem, LCB_F_PERCPU | LCB_F_WRITE);
+ 
+ 	/* Notify readers to take the slow path. */
+ 	rcu_sync_enter(&sem->rss);
+@@ -240,6 +241,7 @@ void __sched percpu_down_write(struct pe
+ 
+ 	/* Wait for all active readers to complete. */
+ 	rcuwait_wait_event(&sem->writer, readers_active_check(sem), TASK_UNINTERRUPTIBLE);
++	trace_contention_end(sem, 0);
+ }
+ EXPORT_SYMBOL_GPL(percpu_down_write);
+ 
+--- a/kernel/locking/qrwlock.c
++++ b/kernel/locking/qrwlock.c
+@@ -35,7 +35,7 @@ void queued_read_lock_slowpath(struct qr
+ 	}
+ 	atomic_sub(_QR_BIAS, &lock->cnts);
+ 
+-	trace_contention_begin(lock, LCB_F_READ | LCB_F_SPIN);
++	trace_contention_begin(lock, LCB_F_SPIN | LCB_F_READ);
+ 
+ 	/*
+ 	 * Put the reader into the wait queue
+@@ -67,7 +67,7 @@ void queued_write_lock_slowpath(struct q
+ {
+ 	int cnts;
+ 
+-	trace_contention_begin(lock, LCB_F_WRITE | LCB_F_SPIN);
++	trace_contention_begin(lock, LCB_F_SPIN | LCB_F_WRITE);
+ 
+ 	/* Put the writer into the wait queue */
+ 	arch_spin_lock(&lock->wait_lock);
+--- a/kernel/locking/rwbase_rt.c
++++ b/kernel/locking/rwbase_rt.c
+@@ -112,6 +112,8 @@ static int __sched __rwbase_read_lock(st
+ 	 * Reader2 to call up_read(), which might be unbound.
+ 	 */
+ 
++	trace_contention_begin(rwb, LCB_F_RT | LCB_F_READ);
 +
- CC	 = gcc
- OPTFLAGS = -O2			# Adjust as desired
- CFLAGS	 = -I.. -I ../../../include -g $(OPTFLAGS)
-@@ -44,7 +46,7 @@ else ifeq ($(HAS_NEON),yes)
-         OBJS   += neon.o neon1.o neon2.o neon4.o neon8.o recov_neon.o recov_neon_inner.o
-         CFLAGS += -DCONFIG_KERNEL_MODE_NEON=1
- else
--        HAS_ALTIVEC := $(shell printf '\#include <altivec.h>\nvector int a;\n' |\
-+        HAS_ALTIVEC := $(shell printf '$(pound)include <altivec.h>\nvector int a;\n' |\
-                          gcc -c -x c - >/dev/null && rm ./-.o && echo yes)
-         ifeq ($(HAS_ALTIVEC),yes)
-                 CFLAGS += -I../../../arch/powerpc/include
--- 
-2.34.1
-
+ 	/*
+ 	 * For rwlocks this returns 0 unconditionally, so the below
+ 	 * !ret conditionals are optimized out.
+@@ -130,6 +132,8 @@ static int __sched __rwbase_read_lock(st
+ 	raw_spin_unlock_irq(&rtm->wait_lock);
+ 	if (!ret)
+ 		rwbase_rtmutex_unlock(rtm);
++
++	trace_contention_end(rwb, ret);
+ 	return ret;
+ }
+ 
+@@ -247,7 +251,7 @@ static int __sched rwbase_write_lock(str
+ 		goto out_unlock;
+ 
+ 	rwbase_set_and_save_current_state(state);
+-	trace_contention_begin(rwb, LCB_F_WRITE | LCB_F_RT);
++	trace_contention_begin(rwb, LCB_F_RT | LCB_F_WRITE);
+ 	for (;;) {
+ 		/* Optimized out for rwlocks */
+ 		if (rwbase_signal_pending_state(state, current)) {
