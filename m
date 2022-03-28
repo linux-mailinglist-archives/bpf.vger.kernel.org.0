@@ -2,185 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2474E9DC7
-	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 19:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB344E9DD4
+	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 19:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237481AbiC1RsK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Mar 2022 13:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
+        id S240875AbiC1Rux (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Mar 2022 13:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244731AbiC1RsI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Mar 2022 13:48:08 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60B1275E6
-        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 10:46:27 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id k125so12059060qkf.0
-        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 10:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OTiPPMnOln50TZ8P+7s3GLF/+hjvE6KvjSzwQxSGV3c=;
-        b=Fm0ykbJRyPVO/B3M1TtAUj97/2QpePdENLBvycMQl72Et5cFTTucKx3PxPU6vHbyaY
-         2LOpjhVpM6xaSGIEYzZvrkFLwr0Z0NC0lcL7Kzzby+8EdCi1ztrnxpmgI6JDM+kitiKC
-         4JsDfvrMM8cjNdu7pHpgwZwbW2GdCfoVOTBLGG00zBSchkCznKKlNQ0eV3bNZk4hnLNH
-         NmfmYzK32P+srh3+Z/OMLGYTsmjFD0QMI2ZnXcAZuwRdI9KRXJOZ0iR3Cts8fxgcwrK4
-         Nc0mv/b71Azz0yAA6vcTgzNRtHW63qnAwxup4p6/Yg4dlMORS++VXU7xSpjCTJ20Pjtq
-         NNlA==
+        with ESMTP id S238979AbiC1Rux (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Mar 2022 13:50:53 -0400
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D0B3C4B7;
+        Mon, 28 Mar 2022 10:49:12 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id a30so12799584ljq.13;
+        Mon, 28 Mar 2022 10:49:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OTiPPMnOln50TZ8P+7s3GLF/+hjvE6KvjSzwQxSGV3c=;
-        b=yKJekupNkOK0owFOka8hBFzvNqJJSALXg5LNcauoEtMebaxs2IqHxg9dDWvAVbHbrz
-         Ll3Ue4DvHn1wiswrgbdk8kIkURtNxYxmBx1PEg72+yPT+q/SvGYNCzs0fI6JOmEdSLTo
-         YJYnbeRbaG+6aAEcBPxbz12huPArNo+DQLjpTtPL5PKKx6demWo4KOWw0ZoZBeNL15En
-         jNQ170ueIKS4maFFqJQXAQ6z8ktzjEIadAbAT7e9uNilNA475ri8yCINH0rT4idcJ8BB
-         MMtuxJgLklwkSnts3cU86xuAFCGTZ1QusbhGWWY8zya1s0cm8oEiCf7uPkUyExeDi20x
-         7JOQ==
-X-Gm-Message-State: AOAM531VSAFJoJun0I38rxXcfFmY+jqwVws57bmQC6f12te4/NGHxdAO
-        AwNRYxDqHkxbSP/JzD0v5+4hku2yRFfV/uQiivRhFQ==
-X-Google-Smtp-Source: ABdhPJzecbcZJmF/Fy7uF0Uu2GrbQXl/xaZaaQcxtzwDnpxDhCnIw5On4j0ksbMhk7IPAvvWDJ9cEz7ao83mUSO+GpY=
-X-Received: by 2002:a05:620a:4110:b0:680:d70a:376d with SMTP id
- j16-20020a05620a411000b00680d70a376dmr3982436qko.446.1648489586646; Mon, 28
- Mar 2022 10:46:26 -0700 (PDT)
+        bh=EyQ8IXVuGy+MjhTeeviL9/NWr5Oku+oE3kNpUwAlM28=;
+        b=mzUsrqs1v9Oox0FLiZXA0oFdHuqoEo4Bzxx8RTE8IW2/gN/kMRw5hJyIY1cmLV6Vch
+         b6Nuh4yNiUtWICDHF+U+Xi7w19MAMZYQopDF/k/64vSbPj2J08FkzE1YDipEaOJdrHwp
+         i+7eYODLfGrZRKcuVHHvxaO+HAVbX1MsVmpewDujMWBFaIHgdYaKrEJZC4ZFAr7k8t9X
+         hFVDpYaLKnGJsiG8kU0DmOQoHIU5kS2DLvZY89xpazFhW6uNRSc9fd28pfIeFJrlerbB
+         U/r3suyr+U/rD0SEZ0uJV4lF0txJxYuDjEbQGfgMglFrMVwOqvk0Wlkxo9mj4Z9ctItd
+         gKJQ==
+X-Gm-Message-State: AOAM531oqij7enAauyfowhgvcSv9RMgJUMYpCgsdQYG0i3mSfBFW9g8W
+        MaPas58lBD2uy/kRC2pGlmPcRXaile2sd4wAM40=
+X-Google-Smtp-Source: ABdhPJylsb5/U29MfMdIeOIKZdvUSIE4MIawm5G11yaSRrZfEr1IXA3xAF9bfyuvUtx6BVZVZ6Fg7r4xnLNf7VJDTG4=
+X-Received: by 2002:a05:651c:248:b0:245:5b3d:9abb with SMTP id
+ x8-20020a05651c024800b002455b3d9abbmr21451205ljn.366.1648489750323; Mon, 28
+ Mar 2022 10:49:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220324234123.1608337-1-haoluo@google.com> <9cdf860d-8370-95b5-1688-af03265cc874@fb.com>
- <CA+khW7g3hy61qnvtqUizaW+qB6wk=Y9cjivhORshOk=ZzTXJ-A@mail.gmail.com>
-In-Reply-To: <CA+khW7g3hy61qnvtqUizaW+qB6wk=Y9cjivhORshOk=ZzTXJ-A@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 28 Mar 2022 10:46:15 -0700
-Message-ID: <CA+khW7iq+UKsfQxdT3QpSqPUFN8gQWWDLoQ9zxB=uWTs63AZEA@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 0/2] Mmapable task local storage.
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20220322185709.141236-1-namhyung@kernel.org> <20220322185709.141236-3-namhyung@kernel.org>
+ <20220328113946.GA8939@worktop.programming.kicks-ass.net>
+In-Reply-To: <20220328113946.GA8939@worktop.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 28 Mar 2022 10:48:59 -0700
+Message-ID: <CAM9d7ciQQEypvv2a2zQLHNc7p3NNxF59kASxHoFMCqiQicKwBA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow path
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Radoslaw Burny <rburny@google.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Hyeonggon Yoo <42.hyeyoo@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 28, 2022 at 10:39 AM Hao Luo <haoluo@google.com> wrote:
+On Mon, Mar 28, 2022 at 4:39 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> Hi Yonghong,
->
-> On Fri, Mar 25, 2022 at 12:16 PM Yonghong Song <yhs@fb.com> wrote:
+> On Tue, Mar 22, 2022 at 11:57:09AM -0700, Namhyung Kim wrote:
+> > diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+> > index ee2fd7614a93..c88deda77cf2 100644
+> > --- a/kernel/locking/mutex.c
+> > +++ b/kernel/locking/mutex.c
+> > @@ -644,6 +644,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+> >       }
 > >
-> > On 3/24/22 4:41 PM, Hao Luo wrote:
-> > > Some map types support mmap operation, which allows userspace to
-> > > communicate with BPF programs directly. Currently only arraymap
-> > > and ringbuf have mmap implemented.
-> > >
-> > > However, in some use cases, when multiple program instances can
-> > > run concurrently, global mmapable memory can cause race. In that
-> > > case, userspace needs to provide necessary synchronizations to
-> > > coordinate the usage of mapped global data. This can be a source
-> > > of bottleneck.
+> >       set_current_state(state);
+> > +     trace_contention_begin(lock, 0);
+> >       for (;;) {
+> >               bool first;
 > >
-> > I can see your use case here. Each calling process can get the
-> > corresponding bpf program task local storage data through
-> > mmap interface. As you mentioned, there is a tradeoff
-> > between more memory vs. non-global synchronization.
+> > @@ -710,6 +711,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+> >  skip_wait:
+> >       /* got the lock - cleanup and rejoice! */
+> >       lock_acquired(&lock->dep_map, ip);
+> > +     trace_contention_end(lock, 0);
 > >
-> > I am thinking that another bpf_iter approach can retrieve
-> > the similar result. We could implement a bpf_iter
-> > for task local storage map, optionally it can provide
-> > a tid to retrieve the data for that particular tid.
-> > This way, user space needs an explicit syscall, but
-> > does not need to allocate more memory than necessary.
-> >
-> > WDYT?
-> >
+> >       if (ww_ctx)
+> >               ww_mutex_lock_acquired(ww, ww_ctx);
 >
-> Thanks for the suggestion. I have two thoughts about bpf_iter + tid and mmap:
+> (note: it's possible to get to this trace_contention_end() without ever
+> having passed a _begin -- fixed in the below)
 >
-> - mmap prevents the calling task from reading other task's value.
-> Using bpf_iter, one can pass other task's tid to get their values. I
-> assume there are two potential ways of passing tid to bpf_iter: one is
-> to use global data in bpf prog, the other is adding tid parameterized
-> iter_link. For the first, it's not easy for unpriv tasks to use. For
-> the second, we need to create one iter_link object for each interested
-> tid. It may not be easy to use either.
+> > @@ -721,6 +723,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+> >  err:
+> >       __set_current_state(TASK_RUNNING);
+> >       __mutex_remove_waiter(lock, &waiter);
+> > +     trace_contention_end(lock, ret);
+> >  err_early_kill:
+> >       raw_spin_unlock(&lock->wait_lock);
+> >       debug_mutex_free_waiter(&waiter);
 >
-> - Regarding adding an explicit syscall. I thought about adding
-> write/read syscalls for task local storage maps, just like reading
-> values from iter_link. Writing or reading task local storage map
-> updates/reads the current task's value. I think this could achieve the
-> same effect as mmap.
 >
+> So there was one thing here, that might or might not be important, but
+> is somewhat inconsistent with the whole thing. That is, do you want to
+> include optimistic spinning in the contention time or not?
 
-Actually, my use case of using mmap on task local storage is to allow
-userspace to pass FDs into bpf prog. Some of the helpers I want to add
-need to take an FD as parameter and the bpf progs can run
-concurrently, thus using global data is racy. Mmapable task local
-storage is the best solution I can find for this purpose.
+Yes, this was in a grey area and would create begin -> begin -> end
+path for mutexes.  But I think tools can handle it with the flags.
 
-Song also mentioned to me offline, that mmapable task local storage
-may be useful for his use case.
+>
+> Because currently you do it sometimes.
+>
+> Also, if you were to add LCB_F_MUTEX then you could have something like:
 
-I am actually open to other proposals.
+Yep, I'm ok with having the mutex flag.  Do you want me to send
+v5 with this change or would you like to do it by yourself?
 
-> > >
-> > > It would be great to have a mmapable local storage in that case.
-> > > This patch adds that.
-> > >
-> > > Mmap isn't BPF syscall, so unpriv users can also use it to
-> > > interact with maps.
-> > >
-> > > Currently the only way of allocating mmapable map area is using
-> > > vmalloc() and it's only used at map allocation time. Vmalloc()
-> > > may sleep, therefore it's not suitable for maps that may allocate
-> > > memory in an atomic context such as local storage. Local storage
-> > > uses kmalloc() with GFP_ATOMIC, which doesn't sleep. This patch
-> > > uses kmalloc() with GFP_ATOMIC as well for mmapable map area.
-> > >
-> > > Allocating mmapable memory has requirment on page alignment. So we
-> > > have to deliberately allocate more memory than necessary to obtain
-> > > an address that has sdata->data aligned at page boundary. The
-> > > calculations for mmapable allocation size, and the actual
-> > > allocation/deallocation are packaged in three functions:
-> > >
-> > >   - bpf_map_mmapable_alloc_size()
-> > >   - bpf_map_mmapable_kzalloc()
-> > >   - bpf_map_mmapable_kfree()
-> > >
-> > > BPF local storage uses them to provide generic mmap API:
-> > >
-> > >   - bpf_local_storage_mmap()
-> > >
-> > > And task local storage adds the mmap callback:
-> > >
-> > >   - task_storage_map_mmap()
-> > >
-> > > When application calls mmap on a task local storage, it gets its
-> > > own local storage.
-> > >
-> > > Overall, mmapable local storage trades off memory with flexibility
-> > > and efficiency. It brings memory fragmentation but can make programs
-> > > stateless. Therefore useful in some cases.
-> > >
-> > > Hao Luo (2):
-> > >    bpf: Mmapable local storage.
-> > >    selftests/bpf: Test mmapable task local storage.
-> > >
-> > >   include/linux/bpf.h                           |  4 +
-> > >   include/linux/bpf_local_storage.h             |  5 +-
-> > >   kernel/bpf/bpf_local_storage.c                | 73 +++++++++++++++++--
-> > >   kernel/bpf/bpf_task_storage.c                 | 40 ++++++++++
-> > >   kernel/bpf/syscall.c                          | 67 +++++++++++++++++
-> > >   .../bpf/prog_tests/task_local_storage.c       | 38 ++++++++++
-> > >   .../bpf/progs/task_local_storage_mmapable.c   | 38 ++++++++++
-> > >   7 files changed, 257 insertions(+), 8 deletions(-)
-> > >   create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_mmapable.c
-> > >
+Thanks,
+Namhyung
+
+
+>
+>
+> --- a/kernel/locking/mutex.c
+> +++ b/kernel/locking/mutex.c
+> @@ -602,12 +602,14 @@ __mutex_lock_common(struct mutex *lock,
+>         preempt_disable();
+>         mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
+>
+> +       trace_contention_begin(lock, LCB_F_MUTEX | LCB_F_SPIN);
+>         if (__mutex_trylock(lock) ||
+>             mutex_optimistic_spin(lock, ww_ctx, NULL)) {
+>                 /* got the lock, yay! */
+>                 lock_acquired(&lock->dep_map, ip);
+>                 if (ww_ctx)
+>                         ww_mutex_set_context_fastpath(ww, ww_ctx);
+> +               trace_contention_end(lock, 0);
+>                 preempt_enable();
+>                 return 0;
+>         }
+> @@ -644,7 +646,7 @@ __mutex_lock_common(struct mutex *lock,
+>         }
+>
+>         set_current_state(state);
+> -       trace_contention_begin(lock, 0);
+> +       trace_contention_begin(lock, LCB_F_MUTEX);
+>         for (;;) {
+>                 bool first;
+>
+> @@ -684,10 +686,16 @@ __mutex_lock_common(struct mutex *lock,
+>                  * state back to RUNNING and fall through the next schedule(),
+>                  * or we must see its unlock and acquire.
+>                  */
+> -               if (__mutex_trylock_or_handoff(lock, first) ||
+> -                   (first && mutex_optimistic_spin(lock, ww_ctx, &waiter)))
+> +               if (__mutex_trylock_or_handoff(lock, first))
+>                         break;
+>
+> +               if (first) {
+> +                       trace_contention_begin(lock, LCB_F_MUTEX | LCB_F_SPIN);
+> +                       if (mutex_optimistic_spin(lock, ww_ctx, &waiter))
+> +                               break;
+> +                       trace_contention_begin(lock, LCB_F_MUTEX);
+> +               }
+> +
+>                 raw_spin_lock(&lock->wait_lock);
+>         }
+>         raw_spin_lock(&lock->wait_lock);
+> @@ -723,8 +731,8 @@ __mutex_lock_common(struct mutex *lock,
+>  err:
+>         __set_current_state(TASK_RUNNING);
+>         __mutex_remove_waiter(lock, &waiter);
+> -       trace_contention_end(lock, ret);
+>  err_early_kill:
+> +       trace_contention_end(lock, ret);
+>         raw_spin_unlock(&lock->wait_lock);
+>         debug_mutex_free_waiter(&waiter);
+>         mutex_release(&lock->dep_map, ip);
