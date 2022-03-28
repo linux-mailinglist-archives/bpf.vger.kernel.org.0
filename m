@@ -2,223 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84904EA26B
-	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 23:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97684EA2D3
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 00:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbiC1V1h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Mar 2022 17:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S229898AbiC1WPe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Mar 2022 18:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbiC1V1f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Mar 2022 17:27:35 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B500013926C
-        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 14:25:44 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 125-20020a1c0283000000b0038d043aac51so290220wmc.0
-        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 14:25:44 -0700 (PDT)
+        with ESMTP id S229642AbiC1WP0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Mar 2022 18:15:26 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F82C46150;
+        Mon, 28 Mar 2022 15:07:10 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id x31so7507550pfh.9;
+        Mon, 28 Mar 2022 15:07:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1G+GATea/gEtUw/pWJqQ7Ixi4GCktSB1NgpSqf6SUpc=;
-        b=ff3pbwSNU4OAWweoWrN7aL23MQscP4KSYMsHZHsOC017RgC7WbeViHy1tfJAFmN/lQ
-         qFp8xCMw3u+dl/WdgmtmFbZqfFMl58je1HZUNky8io5xTnbaPRkXQ0p9+/bqFsnrV13e
-         87CnLMXfFAyqOPugLMqgnQXA6f0hv+SOIMNb34gnrh6Uz6AI78Fkp4AuyeHzB0d6uLcG
-         24glXp8ngdRF5tzOTnN1VkSFOoL4g8eAO23bcA6Az6CbvyuOLOjBzyYj9FiQnp3FzjIy
-         Oa0ziPsOihA8dfCKzeX/IHsSZgFu39XCtQjS47BWtppn9IvP/uTn5PoEVWvC2O2FdHiy
-         1q2A==
+         :cc:content-transfer-encoding;
+        bh=hlR9qEfCvrZwyaQ5xtdsxElww4Nf53O/UN7Elp2nyOU=;
+        b=jnrn2Qg/DbrQTBXsnE4hyLZDU69939cYb8U50T9Ut8RRmQvnY4DbFGLFg7hNMbHB2a
+         83l6FfeFS0ztLfO0j+anemo2qea+RxUTMOWGp/Sy9ZMwqWUwexq2+VVTl7I2WuKXh5n1
+         0oPGnw5+TvNoKWSONpDFepm6Ce54dsDmuAizaxzKf0zQBfrq8VJRTkvtcZlQi98axaZe
+         UL0qCmYELjFjm+sNaAdhcqBXtFE5KoyeBcDs0hhT4JmELPynN41tERfgLXrfV2pNMnSP
+         gzZ96pxXudnBj77pvtc8orVVOijkHHJ/IMPqVjw5giR//GO6tI2QfrBcU5FVx4mjooUu
+         cnDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1G+GATea/gEtUw/pWJqQ7Ixi4GCktSB1NgpSqf6SUpc=;
-        b=uGvmFqfWnAYEtz3BAlUvK5Ks0onw6hb2BWciVr+x0co2WPvtDctuDpKDSeA+ERoH31
-         UqMHq07v0oyr9EpQFdyy0fE/37d7TBGNXc8br029PRa7q0ua1Q4PGicYHJlvKLPYFD8I
-         0RKZta0zNh7Rpk3R/4onOUN8rw95ZWT4aiNe97Jv5SXhn0s4TAPB4Iv9IiUy8bMRRQLO
-         eRunes3mkr9GJhBd8pT713TrZ97iJM1BIzFpJtsWgdTDFxkpUHYj5rFkg6c9dLN6mxoj
-         XVAWk8H6X3Omqu+ks+A6e2tF22fo+Nq/abAGzpg+6fVzNsYpnQehQ4WHq2q3Ls3tc9Zo
-         qaWA==
-X-Gm-Message-State: AOAM533P83o7BzPEqgmag74sYRsgK5+95Oh7CbMO3gFCp919lGPATQvG
-        Xt0be7dbVrw7NzXKnqVir7UUM+DIU+jmtx2rR6Rp4w==
-X-Google-Smtp-Source: ABdhPJxqDLS9Je1WTyYK6Q9CxOUbLtpYQHy7lZgCBXI5DykbKcNLXZhVSdUAPUvSuW//+FNsHKaW+O1uZ4s6yxxHfHY=
-X-Received: by 2002:a05:600c:2905:b0:381:67e2:3992 with SMTP id
- i5-20020a05600c290500b0038167e23992mr1686003wmd.182.1648502734235; Mon, 28
- Mar 2022 14:25:34 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hlR9qEfCvrZwyaQ5xtdsxElww4Nf53O/UN7Elp2nyOU=;
+        b=pHD/Vy3k6WwISn7VQR/Vorj00yF9doMxiA0g9IlCQ0IE/oNlf5S9HnsiLV62WAjFPd
+         aP4FQlUaLLtFNrPKxRFPBUA9zyiUVtrr+VhohhzEcqVnV/fYoeHlBvbxsHys7KxvLRxl
+         cJXSHO+x4drQ5jVL+e5vxJLP763mXyNuyKj+Ce2UAEMpq6xdt6x8kP22lP2Xvi3xWZYB
+         3wIk7zo4SvsDNRnneffXygezZfj89l0vyGkUWFg8E6ORqoD6I2FTU6ZComVt/VlHaxWh
+         QHxKOMtJHBao9R5CeBr7kgzklLslTB09v3nRoswvWYuKG/xOvTJE7UuihHqpGET+Q7aj
+         56/Q==
+X-Gm-Message-State: AOAM532jwY+oE6HgVmRgbFKrjYEjoeIZ/mIfDKGEQt8q9qn6WJxn+ED2
+        0w3VDsruma9UYKpGHg7+bBOnVp+kZUjAJhiGpXuBGf7m
+X-Google-Smtp-Source: ABdhPJxbCkVUS1w96/yUmEP61b0UEln4kxfwqP/H8HkkIxUSf5PeBhAHE4HJ2jBpooC8lVsRPpXtQkw0lE2AApPJLhg=
+X-Received: by 2002:a05:6e02:1a23:b0:2c9:c008:8ad6 with SMTP id
+ g3-20020a056e021a2300b002c9c0088ad6mr2400965ile.98.1648503127179; Mon, 28 Mar
+ 2022 14:32:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220328062414.1893550-1-irogers@google.com> <20220328062414.1893550-4-irogers@google.com>
- <YkIaYq2alnNUiIfr@kernel.org> <CAP-5=fVfYtu=wcfUQEzwuJMhxexi3d8hVqF5QFLkj_FWPHLK5Q@mail.gmail.com>
- <CE94B4BA-5073-4332-A13E-2CD20379AA19@gmail.com>
-In-Reply-To: <CE94B4BA-5073-4332-A13E-2CD20379AA19@gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 28 Mar 2022 14:25:21 -0700
-Message-ID: <CAP-5=fV+DiB=_+R+g+FLgLOyY5q205OGjfsaZntVKFy4jM4rcg@mail.gmail.com>
-Subject: Re: [PATCH 3/5] perf cpumap: Add intersect function.
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
+References: <20220328083703.2880079-1-jolsa@kernel.org> <9a040393-e478-d14d-8cfd-14dd08e09be0@fb.com>
+ <YkIDfzcUqKed7rCq@krava>
+In-Reply-To: <YkIDfzcUqKed7rCq@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 28 Mar 2022 14:31:56 -0700
+Message-ID: <CAEf4BzaCnG7A+Ns1dw8KYbmzU_q_T96-Niu=1j6o=+KRxYT1bQ@mail.gmail.com>
+Subject: Re: [PATCH] bpftool: Fix generated code in codegen_asserts
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Delyan Kratunov <delyank@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        James Clark <james.clark@arm.com>,
-        German Gomez <german.gomez@arm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 28, 2022 at 2:00 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
+On Mon, Mar 28, 2022 at 11:50 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
+> On Mon, Mar 28, 2022 at 08:41:18AM -0700, Yonghong Song wrote:
+> >
+> >
+> > On 3/28/22 1:37 AM, Jiri Olsa wrote:
+> > > Arnaldo reported perf compilation fail with:
+> > >
+> > >    $ make -k BUILD_BPF_SKEL=3D1 CORESIGHT=3D1 PYTHON=3Dpython3
+> > >    ...
+> > >    In file included from util/bpf_counter.c:28:
+> > >    /tmp/build/perf//util/bpf_skel/bperf_leader.skel.h: In function =
+=E2=80=98bperf_leader_bpf__assert=E2=80=99:
+> > >    /tmp/build/perf//util/bpf_skel/bperf_leader.skel.h:351:51: error: =
+unused parameter =E2=80=98s=E2=80=99 [-Werror=3Dunused-parameter]
+> > >      351 | bperf_leader_bpf__assert(struct bperf_leader_bpf *s)
+> > >          |                          ~~~~~~~~~~~~~~~~~~~~~~~~~^
+> > >    cc1: all warnings being treated as errors
+> > >
+> > > If there's nothing to generate in the new assert function,
+> > > we will get unused 's' warn/error, adding 'unused' attribute to it.
+> >
+> > If there is nothing to generate, should we avoid generating
+> > the assert function itself?
 >
+> good point, will check
+
+we can use this function for some more assertions in the future, so
+instead of trying to be smart about generating or not of this
+function, I think unused attribute is a more robust solution.
+
 >
-> On March 28, 2022 5:54:06 PM GMT-03:00, Ian Rogers <irogers@google.com> wrote:
-> >On Mon, Mar 28, 2022 at 1:28 PM Arnaldo Carvalho de Melo
-> ><acme@kernel.org> wrote:
-> >>
-> >> Em Sun, Mar 27, 2022 at 11:24:12PM -0700, Ian Rogers escreveu:
-> >> > The merge function gives the union of two cpu maps. Add an intersect
-> >> > function which will be used in the next change.
-> >> >
-> >> > Signed-off-by: Ian Rogers <irogers@google.com>
-> >> > ---
-> >> >  tools/lib/perf/cpumap.c              | 38 ++++++++++++++++++++++++++++
-> >> >  tools/lib/perf/include/perf/cpumap.h |  2 ++
-> >> >  2 files changed, 40 insertions(+)
-> >> >
-> >> > diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
-> >> > index 953bc50b0e41..56b4d213039f 100644
-> >> > --- a/tools/lib/perf/cpumap.c
-> >> > +++ b/tools/lib/perf/cpumap.c
-> >> > @@ -393,3 +393,41 @@ struct perf_cpu_map *perf_cpu_map__merge(struct perf_cpu_map *orig,
-> >> >       perf_cpu_map__put(orig);
-> >> >       return merged;
-> >> >  }
-> >> > +
-> >> > +struct perf_cpu_map *perf_cpu_map__intersect(struct perf_cpu_map *orig,
-> >> > +                                          struct perf_cpu_map *other)
-> >> > +{
-> >> > +     struct perf_cpu *tmp_cpus;
-> >> > +     int tmp_len;
-> >> > +     int i, j, k;
-> >> > +     struct perf_cpu_map *merged = NULL;
-> >> > +
-> >> > +     if (perf_cpu_map__is_subset(other, orig))
-> >> > +             return orig;
-> >> > +     if (perf_cpu_map__is_subset(orig, other)) {
-> >> > +             perf_cpu_map__put(orig);
-> >>
-> >> Why this put(orig)?
-> >
-> >As with merge, if orig isn't returned then it is put.
+> jirka
 >
-> For merge I can see it dropping a reference, i.e. get b and merge it into a, after that b was "consumed"
->
-> But for intersect?
-
-The current use case is the intersect of all online CPUs with the
-merge of all CPU maps from evsels. So we can generally just reuse
-all_cpus, or the common case of both maps contain every CPU. I think
-the pattern makes code like:
-
-evlist->cpus = perf_cpu_map__intersect(evlist->cpus, other);
-
-not quite as messy, as without the put you need:
-
-tmp = perf_cpu_map__intersect(evlist->cpus, other);
-perf_cpu_map__put(evlist->cpus);
-evlist->cpus = tmp;
-
-I'm somewhat agnostic on what the API should be, but it'd be nice if
-merge and intersect behaved in a similar way.
-
-Thanks,
-Ian
-
 > >
-> >> > +             return perf_cpu_map__get(other);
-> >>
-> >> And why the get here and not on the first if?
-> >
-> >The first argument orig is either put or returned while the second may
-> >be returned only if the reference count is incremented. We could
-> >change the API for merge and intersect to put both arguments, or to
-> >not put either argument.
-> >
-> >Thanks,
-> >Ian
-> >
-> >> > +     }
-> >> > +
-> >> > +     tmp_len = max(orig->nr, other->nr);
-> >> > +     tmp_cpus = malloc(tmp_len * sizeof(struct perf_cpu));
-> >> > +     if (!tmp_cpus)
-> >> > +             return NULL;
-> >> > +
-> >> > +     i = j = k = 0;
-> >> > +     while (i < orig->nr && j < other->nr) {
-> >> > +             if (orig->map[i].cpu < other->map[j].cpu)
-> >> > +                     i++;
-> >> > +             else if (orig->map[i].cpu > other->map[j].cpu)
-> >> > +                     j++;
-> >> > +             else {
-> >> > +                     j++;
-> >> > +                     tmp_cpus[k++] = orig->map[i++];
-> >> > +             }
-> >> > +     }
-> >> > +     if (k)
-> >> > +             merged = cpu_map__trim_new(k, tmp_cpus);
-> >> > +     free(tmp_cpus);
-> >> > +     perf_cpu_map__put(orig);
-> >> > +     return merged;
-> >> > +}
-> >> > diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
-> >> > index 4a2edbdb5e2b..a2a7216c0b78 100644
-> >> > --- a/tools/lib/perf/include/perf/cpumap.h
-> >> > +++ b/tools/lib/perf/include/perf/cpumap.h
-> >> > @@ -19,6 +19,8 @@ LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
-> >> >  LIBPERF_API struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
-> >> >  LIBPERF_API struct perf_cpu_map *perf_cpu_map__merge(struct perf_cpu_map *orig,
-> >> >                                                    struct perf_cpu_map *other);
-> >> > +LIBPERF_API struct perf_cpu_map *perf_cpu_map__intersect(struct perf_cpu_map *orig,
-> >> > +                                                      struct perf_cpu_map *other);
-> >> >  LIBPERF_API void perf_cpu_map__put(struct perf_cpu_map *map);
-> >> >  LIBPERF_API struct perf_cpu perf_cpu_map__cpu(const struct perf_cpu_map *cpus, int idx);
-> >> >  LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
-> >> > --
-> >> > 2.35.1.1021.g381101b075-goog
-> >>
-> >> --
-> >>
-> >> - Arnaldo
+> > >
+> > > Cc: Delyan Kratunov <delyank@fb.com>
+> > > Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > > Fixes: 08d4dba6ae77 ("bpftool: Bpf skeletons assert type sizes")
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >   tools/bpf/bpftool/gen.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> > > index 7ba7ff55d2ea..91af2850b505 100644
+> > > --- a/tools/bpf/bpftool/gen.c
+> > > +++ b/tools/bpf/bpftool/gen.c
+> > > @@ -477,7 +477,7 @@ static void codegen_asserts(struct bpf_object *ob=
+j, const char *obj_name)
+> > >     codegen("\
+> > >             \n\
+> > >             __attribute__((unused)) static void                      =
+   \n\
+> > > -           %1$s__assert(struct %1$s *s)                             =
+   \n\
+> > > +           %1$s__assert(struct %1$s *s __attribute__((unused)))     =
+   \n\
+> > >             {                                                        =
+   \n\
+> > >             #ifdef __cplusplus                                       =
+   \n\
+> > >             #define _Static_assert static_assert                     =
+   \n\
