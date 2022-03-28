@@ -2,40 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D077E4EA190
-	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 22:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B44B4EA1F0
+	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 22:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244645AbiC1UgQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Mar 2022 16:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        id S1345537AbiC1Ut6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Mar 2022 16:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346274AbiC1UeQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Mar 2022 16:34:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE6232EF8;
-        Mon, 28 Mar 2022 13:32:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A86D6149E;
-        Mon, 28 Mar 2022 20:32:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60CA1C340ED;
-        Mon, 28 Mar 2022 20:32:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648499554;
-        bh=8+UTYWbVLgOBzCkQVECx2w9eUsJDkRhc8E5Y1Jz2ip0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sPy/YTXkdJdSZVHLGbJfXwU8C0JLpFaTNvtev8+HV1HOtIxVNXr8isggfrPXodslo
-         d5/r7Zn4lLeWOpZWcd6/rk9M00q9O4CdS79sdqlXOUUii20ZrQfqN71rPcBUHIPlXt
-         /rEBLI07rQO8OI0qPBNmerM0KlAC0VQ41Z3LCJPahzAQtSjhlJAHJWqJ3PmGy4EGLn
-         zoqohpSev54HbH7NZ3SaAfInKtZs3xSf7/XehKqj/XFM4yzbMcF4aWogKMRHdcrsdC
-         6Lwvr77bWO60aTj9DzWNDIyoBLUkno0z6EB7mdF7+Lxdk/b0X7KepLA0XELxwUDTAR
-         twPi+mbwai4Mw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3A55E40407; Mon, 28 Mar 2022 17:32:31 -0300 (-03)
-Date:   Mon, 28 Mar 2022 17:32:31 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
+        with ESMTP id S1346393AbiC1Usg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Mar 2022 16:48:36 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D87286D8
+        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 13:46:42 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id v206so17041353vsv.2
+        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 13:46:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XsQUCW+gJbF0u5yR61fkU3TsOCnzNiiW+Vxpx9INrJc=;
+        b=MNDWq16FFczuLNyJYyOX7vHHTdWA2Wu9kBX8qv46n3K741rT37IeIbD5nIaONQCbZw
+         ykDGIGbG84boAlB7ETuwBxvrdxO+W+mgFtJ62oabT7/6qxVREQR3w7OLi7valopAvXDs
+         AV7VBcy2wlN3N6BksJRwTutIU587j9Y07p2fp50UjdbZoG4WdtCzvC30Y8HTOdESgA+w
+         0VVUlhmtXEPzAgba0s1aNVkRTMFb72tQDKquGKo/uMscY8thjFyOoFsVZ/92RXSwejP0
+         1RumF0DEYGBBRUsTdmmR9HLRx5PFijQywtx0AE7xJFZqYlsuJfLcyUGEm8N36jj/I/uo
+         1OyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XsQUCW+gJbF0u5yR61fkU3TsOCnzNiiW+Vxpx9INrJc=;
+        b=z74AzSJ8//vlv0qQkH2ARcBsTAM54591F7MgE7G2Vl6B2IpPgicxJfTrPZZBgVofNN
+         qWDS61CYhNYT7eV8afxL2yjH/yaEby7QRuwh+0kz7o3w7wl9GaffgNYhgCohzt9T8NkF
+         TamGR+sk+BPwG+QzrpkCYSkROvzTIco86pnmuvrGirHpOdEA4+yYXPtwPbEZ/l58DQE9
+         FL3QNcLBliGibpCx8XWVzmjNWiJmM3C8azZLXcXqP1ZvX5uFaFgZNvqeN35omvPpiaVn
+         Jw+tkg62WHjwjfBgYMi8KEfPE1om+uK5q+OvY4TnCHdX2RNCFLd/xXG4CJX2DBpeSdbj
+         gKjA==
+X-Gm-Message-State: AOAM532riM2hj8S17lo/zFyQK8OamJptHGtaZLlkaP+SXfPZt/+0tigW
+        qnlMKkj6bWrxNenv5XR5MKPl1iQIM9MnJI3WlcpCAw==
+X-Google-Smtp-Source: ABdhPJzzdXoVPaMj6oTX3qrkIGyEHAVu69MNP7vNBnLGNfBJAsNqF3ReaFVP6i9HdVRszInntBnpHH+cIw0gdA37t+k=
+X-Received: by 2002:a05:6102:c8b:b0:325:983f:9862 with SMTP id
+ f11-20020a0561020c8b00b00325983f9862mr5858756vst.74.1648500401268; Mon, 28
+ Mar 2022 13:46:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220328062414.1893550-1-irogers@google.com> <20220328062414.1893550-5-irogers@google.com>
+ <YkIbXzCYEutqxQRE@kernel.org>
+In-Reply-To: <YkIbXzCYEutqxQRE@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 28 Mar 2022 13:46:29 -0700
+Message-ID: <CAP-5=fXUPTPgKE1TAtBxx4hBNYQJwDbHf+ZNq7AKkaYabYC+KA@mail.gmail.com>
+Subject: Re: [PATCH 4/5] perf stat: Avoid segv if core.user_cpus isn't set.
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -67,62 +84,64 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 4/5] perf stat: Avoid segv if core.user_cpus isn't set.
-Message-ID: <YkIbXzCYEutqxQRE@kernel.org>
-References: <20220328062414.1893550-1-irogers@google.com>
- <20220328062414.1893550-5-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220328062414.1893550-5-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sun, Mar 27, 2022 at 11:24:13PM -0700, Ian Rogers escreveu:
-> Passing null to perf_cpu_map__max doesn't make sense as there is no
-> valid max. Avoid this problem by null checking in
-> perf_stat_init_aggr_mode.
+On Mon, Mar 28, 2022 at 1:32 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Sun, Mar 27, 2022 at 11:24:13PM -0700, Ian Rogers escreveu:
+> > Passing null to perf_cpu_map__max doesn't make sense as there is no
+> > valid max. Avoid this problem by null checking in
+> > perf_stat_init_aggr_mode.
+>
+> Applying this one after changing user_cpus back to cpus as this is a fix
+> independent of this patchset.
+>
+> In the future, please try to have such patches at the beginning of the
+> series, so that  they can get cherry-picked more easily.
 
-Applying this one after changing user_cpus back to cpus as this is a fix
-independent of this patchset.
+Ack. The problem is best exhibited when the intersect happens, without
+it getting a reproducer wasn't something I was able to do.
 
-In the future, please try to have such patches at the beginning of the
-series, so that  they can get cherry-picked more easily.
+Thanks,
+Ian
 
-- Arnaldo
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-stat.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 5bee529f7656..ecd5cf4fd872 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -1472,7 +1472,10 @@ static int perf_stat_init_aggr_mode(void)
->  	 * taking the highest cpu number to be the size of
->  	 * the aggregation translate cpumap.
->  	 */
-> -	nr = perf_cpu_map__max(evsel_list->core.user_cpus).cpu;
-> +	if (evsel_list->core.user_cpus)
-> +		nr = perf_cpu_map__max(evsel_list->core.user_cpus).cpu;
-> +	else
-> +		nr = 0;
->  	stat_config.cpus_aggr_map = cpu_aggr_map__empty_new(nr + 1);
->  	return stat_config.cpus_aggr_map ? 0 : -ENOMEM;
->  }
-> -- 
-> 2.35.1.1021.g381101b075-goog
-
--- 
-
-- Arnaldo
+> - Arnaldo
+>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/builtin-stat.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> > index 5bee529f7656..ecd5cf4fd872 100644
+> > --- a/tools/perf/builtin-stat.c
+> > +++ b/tools/perf/builtin-stat.c
+> > @@ -1472,7 +1472,10 @@ static int perf_stat_init_aggr_mode(void)
+> >        * taking the highest cpu number to be the size of
+> >        * the aggregation translate cpumap.
+> >        */
+> > -     nr = perf_cpu_map__max(evsel_list->core.user_cpus).cpu;
+> > +     if (evsel_list->core.user_cpus)
+> > +             nr = perf_cpu_map__max(evsel_list->core.user_cpus).cpu;
+> > +     else
+> > +             nr = 0;
+> >       stat_config.cpus_aggr_map = cpu_aggr_map__empty_new(nr + 1);
+> >       return stat_config.cpus_aggr_map ? 0 : -ENOMEM;
+> >  }
+> > --
+> > 2.35.1.1021.g381101b075-goog
+>
+> --
+>
+> - Arnaldo
