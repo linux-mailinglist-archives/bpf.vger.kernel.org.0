@@ -2,163 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DC24E9573
-	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 13:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1BA4E9792
+	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 15:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbiC1LqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Mar 2022 07:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
+        id S242842AbiC1NJr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Mar 2022 09:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243298AbiC1Lom (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Mar 2022 07:44:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AA0574AA;
-        Mon, 28 Mar 2022 04:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uSPQzhJnBZpuInXUZRxeTEHXo//rS4RqH+94/ELlhDM=; b=Y319biAt5K6nejbSVQElCizcwH
-        KshO/fhWzu1hp+KwOwUryrxbQeDmHHG3cgOxCgoW7piq2YJneFquQHl2Ypc/fz8B2txGisxU35L2R
-        N+iwuANB4NrRgWyUv6i38FoskJay75oaezYExrIXi0UX84c0fbRbQuG77f++ywMi423bOYWytesMe
-        NF8/Yem5KYG3fpVA9WSly7w6tnLfdCmR+0P9a/P0TmqVb3D/pukv4HvUBP4c5QCf/50ts4JAY5Z/U
-        +BunOWmHS1ASn87GsmDEGL2Y5TnieEE6dGFQbHJi9xxwfX/Sf9Ek/OaluB4mUZhT+B5MgM6Aszsgr
-        g4H6fshw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nYnit-005Qev-7a; Mon, 28 Mar 2022 11:39:47 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 509969861E7; Mon, 28 Mar 2022 13:39:46 +0200 (CEST)
-Date:   Mon, 28 Mar 2022 13:39:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Radoslaw Burny <rburny@google.com>, linux-arch@vger.kernel.org,
-        bpf@vger.kernel.org, Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow
- path
-Message-ID: <20220328113946.GA8939@worktop.programming.kicks-ass.net>
-References: <20220322185709.141236-1-namhyung@kernel.org>
- <20220322185709.141236-3-namhyung@kernel.org>
+        with ESMTP id S243019AbiC1NIL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Mar 2022 09:08:11 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5166633A33
+        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 06:06:20 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id z92so16809039ede.13
+        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 06:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Y3lKHwg6Rmog8XGwJu/58P2Exvr4QzrjkX3wt9eMtW0=;
+        b=KzzYV6d7pJV3i0I0x9jQXkziMteCyDfVHqa+b4uF9vCr4qJ1LiBXKTjpvBbf45XP8T
+         gmshIsVZxsNn43eZVdK2hxetV+VDK4BFUXoq8dC/07NrKPrENzzZTCIvtl7W+6FW4B9S
+         uuRISjV0fjvsRvZlqRNo+sgdWrMYTJSHyMmqCmX+CYZTMmLQh6Eh4WxbQNYJNVRiztRN
+         7Hml33Rf38wdnTJeG4ows9IOOUhKoXRl3o66uAkAsKLE3RsdkToCM6WiwFr6Yd5gWX5C
+         /rOrwP9FdprtJX4pPH1Wc7qGZRwBgUheXVETp/80UT4072DTZ6mPN+QFzZn+WTfn+Cdu
+         TQag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Y3lKHwg6Rmog8XGwJu/58P2Exvr4QzrjkX3wt9eMtW0=;
+        b=RGRnMsGoAKWjmgYz8HZwxX8/lb1Yi8cjPyuslSja6DOFwMEpu+br21Y3VW/Z6tNUWA
+         PTDzjaUvrvvvbYfRQCqVAYbhGfyud3Obvdr3WXujfmlyebnHnnTC7SIviGOyT4X294CT
+         tSJSNmRvZ8kBpCXxh6lkDyvrk2vOiKvUtVV6fYoXlIPxsmbEcrPQS8FVFMpofzuB0y6i
+         qDgZ49Tgk6nzqiX8QKQzOijqLg9sbySGvJicYY1EvnI8jRVwMauMzAvPlKigsa0hIESj
+         aUYg/7jfO+Jal93Wc3P8Jc1XfUpBuUWDJJx3eS+2EmSX6pkHkuBQPajw2oPj5zAl91c/
+         /8qQ==
+X-Gm-Message-State: AOAM5334UAihCqnSYvpUWK3qBjwB3EHUcEs/X7An1aWPv1wmEeUPJM4t
+        Uk9bRuKRgaYZxl2EXde3638=
+X-Google-Smtp-Source: ABdhPJxuybCyH/0nxr5oZuSEQuoFsXi4LnwNVH56mNiIiSvhJ09H0O3m4rDHD2TEoWoPX++T1XXeow==
+X-Received: by 2002:a05:6402:1d4d:b0:419:430b:5734 with SMTP id dz13-20020a0564021d4d00b00419430b5734mr16073817edb.212.1648472778798;
+        Mon, 28 Mar 2022 06:06:18 -0700 (PDT)
+Received: from ddolgov.remote.csb (dslb-094-222-030-091.094.222.pools.vodafone-ip.de. [94.222.30.91])
+        by smtp.gmail.com with ESMTPSA id i12-20020aa7c9cc000000b004197a2d4ae7sm6956633edt.50.2022.03.28.06.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Mar 2022 06:06:18 -0700 (PDT)
+Date:   Mon, 28 Mar 2022 15:06:16 +0200
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, yhs@fb.com
+Subject: Re: [PATCH bpf-next v6] bpftool: Add bpf_cookie to link output
+Message-ID: <20220328130616.5p5qy7eqsdiere6r@ddolgov.remote.csb>
+References: <20220309163112.24141-1-9erthalion6@gmail.com>
+ <a9a2c8ba-ff17-eafe-5cf4-32e5ef19b656@isovalent.com>
+ <20220326090834.f7ukfgjyfhk6sbws@erthalion.local>
+ <6b558a11-7f5e-8a4e-b70b-e4c7d3c3e052@isovalent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220322185709.141236-3-namhyung@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6b558a11-7f5e-8a4e-b70b-e4c7d3c3e052@isovalent.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 22, 2022 at 11:57:09AM -0700, Namhyung Kim wrote:
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index ee2fd7614a93..c88deda77cf2 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -644,6 +644,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
->  	}
->  
->  	set_current_state(state);
-> +	trace_contention_begin(lock, 0);
->  	for (;;) {
->  		bool first;
->  
-> @@ -710,6 +711,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
->  skip_wait:
->  	/* got the lock - cleanup and rejoice! */
->  	lock_acquired(&lock->dep_map, ip);
-> +	trace_contention_end(lock, 0);
->  
->  	if (ww_ctx)
->  		ww_mutex_lock_acquired(ww, ww_ctx);
+> On Sun, Mar 27, 2022 at 11:03:49PM +0100, Quentin Monnet wrote:
+>
+> Correct, it's not implemented yet for multi-attach links. My concern
+> here is to avoid changing the JSON structure in the future (to avoid
+> breaking changes for tools that would process the JSON). If we know
+> we're likely to have several cookies in the future, it may be worth
+> using an array “from start” (since no version has been tagged yet after
+> you added support for the cookie).
 
-(note: it's possible to get to this trace_contention_end() without ever
-having passed a _begin -- fixed in the below)
-
-> @@ -721,6 +723,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
->  err:
->  	__set_current_state(TASK_RUNNING);
->  	__mutex_remove_waiter(lock, &waiter);
-> +	trace_contention_end(lock, ret);
->  err_early_kill:
->  	raw_spin_unlock(&lock->wait_lock);
->  	debug_mutex_free_waiter(&waiter);
-
-
-So there was one thing here, that might or might not be important, but
-is somewhat inconsistent with the whole thing. That is, do you want to
-include optimistic spinning in the contention time or not?
-
-Because currently you do it sometimes.
-
-Also, if you were to add LCB_F_MUTEX then you could have something like:
-
-
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -602,12 +602,14 @@ __mutex_lock_common(struct mutex *lock,
- 	preempt_disable();
- 	mutex_acquire_nest(&lock->dep_map, subclass, 0, nest_lock, ip);
- 
-+	trace_contention_begin(lock, LCB_F_MUTEX | LCB_F_SPIN);
- 	if (__mutex_trylock(lock) ||
- 	    mutex_optimistic_spin(lock, ww_ctx, NULL)) {
- 		/* got the lock, yay! */
- 		lock_acquired(&lock->dep_map, ip);
- 		if (ww_ctx)
- 			ww_mutex_set_context_fastpath(ww, ww_ctx);
-+		trace_contention_end(lock, 0);
- 		preempt_enable();
- 		return 0;
- 	}
-@@ -644,7 +646,7 @@ __mutex_lock_common(struct mutex *lock,
- 	}
- 
- 	set_current_state(state);
--	trace_contention_begin(lock, 0);
-+	trace_contention_begin(lock, LCB_F_MUTEX);
- 	for (;;) {
- 		bool first;
- 
-@@ -684,10 +686,16 @@ __mutex_lock_common(struct mutex *lock,
- 		 * state back to RUNNING and fall through the next schedule(),
- 		 * or we must see its unlock and acquire.
- 		 */
--		if (__mutex_trylock_or_handoff(lock, first) ||
--		    (first && mutex_optimistic_spin(lock, ww_ctx, &waiter)))
-+		if (__mutex_trylock_or_handoff(lock, first))
- 			break;
- 
-+		if (first) {
-+			trace_contention_begin(lock, LCB_F_MUTEX | LCB_F_SPIN);
-+			if (mutex_optimistic_spin(lock, ww_ctx, &waiter))
-+				break;
-+			trace_contention_begin(lock, LCB_F_MUTEX);
-+		}
-+
- 		raw_spin_lock(&lock->wait_lock);
- 	}
- 	raw_spin_lock(&lock->wait_lock);
-@@ -723,8 +731,8 @@ __mutex_lock_common(struct mutex *lock,
- err:
- 	__set_current_state(TASK_RUNNING);
- 	__mutex_remove_waiter(lock, &waiter);
--	trace_contention_end(lock, ret);
- err_early_kill:
-+	trace_contention_end(lock, ret);
- 	raw_spin_unlock(&lock->wait_lock);
- 	debug_mutex_free_waiter(&waiter);
- 	mutex_release(&lock->dep_map, ip);
+Yep, sounds convincing enough to me, will prepare the chance shortly.
