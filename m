@@ -2,104 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9D64E994C
-	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 16:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF76D4E9A1D
+	for <lists+bpf@lfdr.de>; Mon, 28 Mar 2022 16:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243769AbiC1OXc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Mar 2022 10:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
+        id S244122AbiC1OxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Mar 2022 10:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243778AbiC1OXa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Mar 2022 10:23:30 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708B15E14D;
-        Mon, 28 Mar 2022 07:21:49 -0700 (PDT)
+        with ESMTP id S244073AbiC1Owy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Mar 2022 10:52:54 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F033F8A7;
+        Mon, 28 Mar 2022 07:51:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1648477309; x=1680013309;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+hjhWzDPppbU8Ig/L/sPDuJRf/NRdlhNwFafZ9gChwM=;
-  b=GltF4583bh2CnFo0ozV84JWxcYB0aFFDjKHlP4tHg4QJ1EgsiCi6tIef
-   Gl6/jG7Dr6x3N+hK+LqcgnClRAooSGMH7CiQ1IU57rXsOwXVwVzHDc/gw
-   TtS63PYcySxoBVebHBc1oAgQu6SWvz2TvYtX1e1zosjrHoGkZuKlKolXX
-   FPustujleWvl2xp2uivrzIvQhWFf1dqpiIaegDWs2xtz19MA+6jav8pza
-   TM3KleQwgVqYJeSkJDkdpoN7arhkFnSG5SH+KMkkN/3GUJ6RBNJan1yM8
-   QZehsqZl1Gya468V+IMAlcF+s4tBQhr9A+7S5waAbzqehhafoP/979D6F
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10299"; a="259196105"
+  t=1648479074; x=1680015074;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NfAB6q1sKLnFh0vuC4wfIlbov6wWZwy/ABr3cKE3ZmM=;
+  b=nuwR580k3tp9Cz5z8DhEcKfJ1IFx7SbzRUvfXSgkpqgAajWc+GIzxna8
+   9rnQ9MugTX0oqliNNo2FA9ulWejHtUl+lKLpkKVBMhnHsn+QWprhHVFQG
+   NgvnQlcOGPjn7irxhjTdblDwzKPqT8QAgSCVOR+BwOB3fat86UVyNVzEQ
+   NTcJ1jfwVBaMN1GtJtCxc5lxtr9jIOK/QRlHOJwwHgdKp0nljxgRp0+dr
+   W4GKQkTL1GIUafCSGeIC/1LZgELh2h9pcwMTOKuVVZ/KbSZhqoSs9J6Po
+   qgsO71f0r/Z/6By1D1nwczvGQQysjHROO+PLKHy94yIKgPBxNnkcxk/bq
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10300"; a="241169976"
 X-IronPort-AV: E=Sophos;i="5.90,217,1643702400"; 
-   d="scan'208";a="259196105"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2022 07:21:49 -0700
+   d="scan'208";a="241169976"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2022 07:51:13 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,217,1643702400"; 
-   d="scan'208";a="649076548"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Mar 2022 07:21:47 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
-        alexandr.lobakin@intel.com, bjorn@kernel.org,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Ciara Loftus <ciara.loftus@intel.com>
-Subject: [PATCH bpf 4/4] ice: xsk: fix indexing in ice_tx_xsk_pool()
-Date:   Mon, 28 Mar 2022 16:21:23 +0200
-Message-Id: <20220328142123.170157-5-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20220328142123.170157-1-maciej.fijalkowski@intel.com>
-References: <20220328142123.170157-1-maciej.fijalkowski@intel.com>
+   d="scan'208";a="518163954"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga002.jf.intel.com with ESMTP; 28 Mar 2022 07:51:11 -0700
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 22SEpAP5014114;
+        Mon, 28 Mar 2022 15:51:10 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org
+Subject: Re: [PATCH bpf 0/4] xsk: another round of fixes
+Date:   Mon, 28 Mar 2022 16:48:44 +0200
+Message-Id: <20220328142123.170157-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ice driver tries to always create XDP rings array to be
-num_possible_cpus() sized, regardless of user's queue count setting that
-can be changed via ethtool -L for example.
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Date: Mon, 28 Mar 2022 16:21:19 +0200
 
-Currently, ice_tx_xsk_pool() calculates the qid by decrementing the
-ring->q_index by the count of XDP queues, but ring->q_index is set to 'i
-+ vsi->alloc_txq'.
+> Hello,
+> 
+> yet another fixes for XSK from Magnus and me.
+> 
+> Magnus addresses the fact that xp_alloc() can return NULL, so this needs
+> to be handled to avoid clearing entries in the SW ring on driver side.
+> Then he addresses the off-by-one problem in Tx desc cleaning routine for
+> ice ZC driver.
+> 
+> From my side, I am adding protection to ZC Rx processing loop so that
+> cleaning of descriptors wouldn't go over already processed entries.
+> Then I also fix an issue with assigning XSK pool to Tx queues.
 
-When user did ethtool -L $IFACE combined 1, alloc_txq is 1, but
-vsi->num_xdp_txq is still num_possible_cpus(). Then, ice_tx_xsk_pool()
-will do OOB access and in the final result ring would not get xsk_pool
-pointer assigned. Then, each ice_xsk_wakeup() call will fail with error
-and it will not be possible to get into NAPI and do the processing from
-driver side.
+Nice, thanks!
+For the series:
 
-Fix this by decrementing vsi->alloc_txq instead of vsi->num_xdp_txq from
-ring-q_index in ice_tx_xsk_pool() so the calculation is reflected to the
-setting of ring->q_index.
+Acked-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 
-CC: Ciara Loftus <ciara.loftus@intel.com>
-Fixes: 22bf877e528f ("ice: introduce XDP_TX fallback path")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> This is directed to bpf tree.
+> 
+> Thanks!
+> 
+> Maciej Fijalkowski (2):
+>   ice: xsk: stop Rx processing when ntc catches ntu
+>   ice: xsk: fix indexing in ice_tx_xsk_pool()
+> 
+> Magnus Karlsson (2):
+>   xsk: do not write NULL in SW ring at allocation failure
+>   ice: xsk: eliminate unnecessary loop iteration
+> 
+>  drivers/net/ethernet/intel/ice/ice.h     | 2 +-
+>  drivers/net/ethernet/intel/ice/ice_xsk.c | 5 ++++-
+>  net/xdp/xsk_buff_pool.c                  | 8 ++++++--
+>  3 files changed, 11 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.27.0
 
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index b0b27bfcd7a2..d4f1874df7d0 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -710,7 +710,7 @@ static inline struct xsk_buff_pool *ice_tx_xsk_pool(struct ice_tx_ring *ring)
- 	struct ice_vsi *vsi = ring->vsi;
- 	u16 qid;
- 
--	qid = ring->q_index - vsi->num_xdp_txq;
-+	qid = ring->q_index - vsi->alloc_txq;
- 
- 	if (!ice_is_xdp_ena_vsi(vsi) || !test_bit(qid, vsi->af_xdp_zc_qps))
- 		return NULL;
--- 
-2.27.0
-
+Thanks,
+Al
