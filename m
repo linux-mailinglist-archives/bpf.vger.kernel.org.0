@@ -2,81 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F6C4EA2CA
-	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 00:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560344EA2B0
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 00:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbiC1WN0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Mar 2022 18:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S229919AbiC1WQP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Mar 2022 18:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbiC1WNZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Mar 2022 18:13:25 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3332B35843;
-        Mon, 28 Mar 2022 15:02:01 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id z7so18864960iom.1;
-        Mon, 28 Mar 2022 15:02:01 -0700 (PDT)
+        with ESMTP id S229659AbiC1WPq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Mar 2022 18:15:46 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87102141454
+        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 15:12:09 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id o13so13217477pgc.12
+        for <bpf@vger.kernel.org>; Mon, 28 Mar 2022 15:12:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zku73QpalQjK7mBNfRnqmkOyZliZDHv6CNwYX93bSZc=;
-        b=W+nx2Rs6t4ExOmIqnQeOQD4iJiAsZfVSjiPnDOEoC/PKN0duaeeK+1RfeOBQOF0bYR
-         zIVxDalhLdptimGuGHIEcTFR8MpB8preZuosCSp+LNTX5eHhwGbdhODb9JTnZcLPuT1I
-         QLOMdrrNMAqatCzNY/tm4cqE5mqSjVp0Q/Tu8PY7CF8uCnSmvjGF1mYwh7HEitLEIxWD
-         sI6mZA/N2BW2IsplbUB42Bz0gdBt4R2fZZP1qMmENIuO5OiIC+b0U4MAt6670q1CDugT
-         6PPJTaNT+2GePra2dTPgvFff94DWcxW3cdhHlYkEX8UXDhvu6QOPGNs/qFv8HpxukLcj
-         /I4g==
+         :cc:content-transfer-encoding;
+        bh=MVn6/CGk0t4tXJ2stEzPJqGScoAONmSKX2QhcxJllHs=;
+        b=Ez0sZ18vLtgaAAIogDoRIRP2FyKbBZ7onL7+R4Z7F/3Q8eIo09R0cvTkzvOfEp1/WC
+         vLhdbtdsCJ6oWWbttxonTKGqsPLFlH6u8MjYmY0tnWWMmHz8x+BQYyf+q83QVNKPHIQo
+         pMtppb55k4+0j/geQkBmrVbknxDqPyCXwer4Lv4vjWfKcWzH+fP0j5v+aG5B0GCLJ29n
+         5SnJnc/UKpUzJb0ZzNaJbrtkWBKrAfFPeXDPowDBvF6UI2z6tLwpG6/elMfBVrezAJY9
+         SNrB//1cBzqLmeydjULS1BNPRDuV+u7oHs0x0/833cchAla3bHiZN8gXw2HVezGsBxd+
+         Lv/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zku73QpalQjK7mBNfRnqmkOyZliZDHv6CNwYX93bSZc=;
-        b=pdqIzV06jo8SuEFXfdXAT24GbBjOdrLTiH9csBtepeqvT1dJFRX/20EhU+1IKOX8AI
-         w3Y1RbVevhUugNZnjbiytYwsbXj31mGKAVIE8EHewFtuAE7xoBFBl2lnmRX3sswsjbM0
-         5FNRlQgQdA/IA3Iu0jkTYwRatCbdVvrPakVJBW9yIk428y6K7VIGckMKxH1Be2bPECyN
-         /F3ZPg1NhW3bqa0Q0SJ+3ct6VRMkBXKdKgaDJiwKisJdm+dsEmD9LWD4xx35y9AZ+uJp
-         HDArddwVU7y8aZ3ymkYnYATSE2DHdpcFQq9kcmp46EngiMjefqTXQWm9/KOsdWKqwYxJ
-         R7ZQ==
-X-Gm-Message-State: AOAM531DMSrArzbqz4JDBhWCNJIm30453f2DY9Tsq73GWJtIpRx/hhxY
-        x61zTWerfb738B/jmIKuDYZNP5iQ6akyk5SH3KXWiT2m
-X-Google-Smtp-Source: ABdhPJyta6fjjW/oHgljQRh12/jOLrq4xulwQgvJrCe6paXK4K0lFuDYs3HHKwvHP2IIgblrMB9kJD1xtRWcuN06kfM=
-X-Received: by 2002:a05:6e02:1562:b0:2c9:cb97:9a4 with SMTP id
- k2-20020a056e02156200b002c9cb9709a4mr1324007ilu.71.1648503345774; Mon, 28 Mar
- 2022 14:35:45 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MVn6/CGk0t4tXJ2stEzPJqGScoAONmSKX2QhcxJllHs=;
+        b=WMt6yaOw+vpY6LNl8UNetNK27UszvAVeIq5efY8R5rRKzmilwaTiyMBJkMAgGMiuFa
+         KZms6kEqaL0a95TKJQ5rZsAEW3sqtv8SxD3ahvFnn91zqWae9j6RktGxqf4RXhgBHL//
+         kDYzf8szirTpK2E3RTTzk1/RHcKc/mluGmbfDGfTSJBjSXbx+CUx+8jTUAdVZwqc7u5X
+         XpEDNJ1FsiSsdqC/qzjpXv41f23Vhsci4QHi7kJh3LBPTrUbmjBw2Sqs/tWbAaYUD5FD
+         Y6JCnM4PXFt0Q/DL5PPRiJK+GFhqn5IeD69UquKV9zYdPW7rIs8ZOsAJuU7LYGPxB1WU
+         ZnSw==
+X-Gm-Message-State: AOAM5308mlDTVIsYycR1RbP8qa7xYBf0tH1AnDz3cFMub1ek3B+nfeYP
+        GFndisE64YqmyNrelTAn3rVYl2+ngplOXqSjIAbJhCIt
+X-Google-Smtp-Source: ABdhPJx2o4TJO/2lhaN9cXB/URKTTcwzM5EsoQjYymZ9+9rVvFp/IpQOJ1kofuFbnYwuM7rudu2TMNRILoFt2AR0wZU=
+X-Received: by 2002:a05:6602:3c6:b0:63d:cac9:bd35 with SMTP id
+ g6-20020a05660203c600b0063dcac9bd35mr7486833iov.144.1648503574592; Mon, 28
+ Mar 2022 14:39:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220318161528.1531164-1-benjamin.tissoires@redhat.com>
- <20220318161528.1531164-7-benjamin.tissoires@redhat.com> <CAADnVQLvhWxEtHETg0tasJ7Fp5JHNRYWdjhnxi1y1gBpXS=bvQ@mail.gmail.com>
- <CAO-hwJJXR3jtAvLF1phUa5pKZzVkDxAAHO5+7R50hL-fVhDYyA@mail.gmail.com>
- <CAEf4BzYVu9JVJvKZK3S9HGwpyPiWrwKPGsTz3wXC_+vmRYGdNw@mail.gmail.com> <CAO-hwJKPxKCzxCKGpH85j5VG3bQk+7axDYpxYoy-12yL7AQj2w@mail.gmail.com>
-In-Reply-To: <CAO-hwJKPxKCzxCKGpH85j5VG3bQk+7axDYpxYoy-12yL7AQj2w@mail.gmail.com>
+References: <20220309163112.24141-1-9erthalion6@gmail.com> <a9a2c8ba-ff17-eafe-5cf4-32e5ef19b656@isovalent.com>
+ <20220326090834.f7ukfgjyfhk6sbws@erthalion.local> <6b558a11-7f5e-8a4e-b70b-e4c7d3c3e052@isovalent.com>
+In-Reply-To: <6b558a11-7f5e-8a4e-b70b-e4c7d3c3e052@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 28 Mar 2022 14:35:34 -0700
-Message-ID: <CAEf4BzZA7Wmg=N42ib_r9Jm8THXuGGR3CPgTqMyw9n2=gd_+Kg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 06/17] HID: allow to change the report
- descriptor from an eBPF program
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
+Date:   Mon, 28 Mar 2022 14:39:23 -0700
+Message-ID: <CAEf4Bzb=YNCBT5rLoXoYwc_gkSW6ZUhd66CP3RHO2dp462mHnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6] bpftool: Add bpf_cookie to link output
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Dmitry Dolgov <9erthalion6@gmail.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -87,130 +69,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 27, 2022 at 11:57 PM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
+On Sun, Mar 27, 2022 at 3:03 PM Quentin Monnet <quentin@isovalent.com> wrot=
+e:
 >
-> On Fri, Mar 25, 2022 at 6:00 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> 2022-03-26 10:08 UTC+0100 ~ Dmitry Dolgov <9erthalion6@gmail.com>
+> >> On Sat, Mar 26, 2022 at 01:38:36AM +0000, Quentin Monnet wrote:
+> >> 2022-03-09 17:31 UTC+0100 ~ Dmitrii Dolgov <9erthalion6@gmail.com>
+> >>> Commit 82e6b1eee6a8 ("bpf: Allow to specify user-provided bpf_cookie =
+for
+> >>> BPF perf links") introduced the concept of user specified bpf_cookie,
+> >>> which could be accessed by BPF programs using bpf_get_attach_cookie()=
+.
+> >>> For troubleshooting purposes it is convenient to expose bpf_cookie vi=
+a
+> >>> bpftool as well, so there is no need to meddle with the target BPF
+> >>> program itself.
+> >>>
+> >>> [...]
+> >>>
+> >>> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> >>> index 7c384d10e95f..bb6c969a114a 100644
+> >>> --- a/tools/bpf/bpftool/pids.c
+> >>> +++ b/tools/bpf/bpftool/pids.c
+> >>> @@ -78,6 +78,8 @@ static void add_ref(struct hashmap *map, struct pid=
+_iter_entry *e)
+> >>>     ref->pid =3D e->pid;
+> >>>     memcpy(ref->comm, e->comm, sizeof(ref->comm));
+> >>>     refs->ref_cnt =3D 1;
+> >>> +   refs->has_bpf_cookie =3D e->has_bpf_cookie;
+> >>> +   refs->bpf_cookie =3D e->bpf_cookie;
+> >>>
+> >>>     err =3D hashmap__append(map, u32_as_hash_field(e->id), refs);
+> >>>     if (err)
+> >>> @@ -205,6 +207,9 @@ void emit_obj_refs_json(struct hashmap *map, __u3=
+2 id,
+> >>>             if (refs->ref_cnt =3D=3D 0)
+> >>>                     break;
+> >>>
+> >>> +           if (refs->has_bpf_cookie)
+> >>> +                   jsonw_lluint_field(json_writer, "bpf_cookie", ref=
+s->bpf_cookie);
+> >>> +
+> >>
+> >> Thinking again about this patch, shouldn't the JSON output for the
+> >> cookie(s) be an array if we expect to have several cookies for
+> >> multi-attach links in the future?
 > >
-> > On Wed, Mar 23, 2022 at 9:08 AM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > > Hi Alexei,
-> > >
-> > > On Tue, Mar 22, 2022 at 11:51 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Fri, Mar 18, 2022 at 9:16 AM Benjamin Tissoires
-> > > > <benjamin.tissoires@redhat.com> wrote:
-> > > > >
-> > > > > +u8 *hid_bpf_report_fixup(struct hid_device *hdev, u8 *rdesc, unsigned int *size)
-> > > > > +{
-> > > > > +       int ret;
-> > > > > +       struct hid_bpf_ctx_kern ctx = {
-> > > > > +               .type = HID_BPF_RDESC_FIXUP,
-> > > > > +               .hdev = hdev,
-> > > > > +               .size = *size,
-> > > > > +       };
-> > > > > +
-> > > > > +       if (bpf_hid_link_empty(&hdev->bpf, BPF_HID_ATTACH_RDESC_FIXUP))
-> > > > > +               goto ignore_bpf;
-> > > > > +
-> > > > > +       ctx.data = kmemdup(rdesc, HID_MAX_DESCRIPTOR_SIZE, GFP_KERNEL);
-> > > > > +       if (!ctx.data)
-> > > > > +               goto ignore_bpf;
-> > > > > +
-> > > > > +       ctx.allocated_size = HID_MAX_DESCRIPTOR_SIZE;
-> > > > > +
-> > > > > +       ret = hid_bpf_run_progs(hdev, &ctx);
-> > > > > +       if (ret)
-> > > > > +               goto ignore_bpf;
-> > > > > +
-> > > > > +       if (ctx.size > ctx.allocated_size)
-> > > > > +               goto ignore_bpf;
-> > > > > +
-> > > > > +       *size = ctx.size;
-> > > > > +
-> > > > > +       if (*size) {
-> > > > > +               rdesc = krealloc(ctx.data, *size, GFP_KERNEL);
-> > > > > +       } else {
-> > > > > +               rdesc = NULL;
-> > > > > +               kfree(ctx.data);
-> > > > > +       }
-> > > > > +
-> > > > > +       return rdesc;
-> > > > > +
-> > > > > + ignore_bpf:
-> > > > > +       kfree(ctx.data);
-> > > > > +       return kmemdup(rdesc, *size, GFP_KERNEL);
-> > > > > +}
-> > > > > +
-> > > > >  int __init hid_bpf_module_init(void)
-> > > > >  {
-> > > > >         struct bpf_hid_hooks hooks = {
-> > > > >                 .hdev_from_fd = hid_bpf_fd_to_hdev,
-> > > > >                 .pre_link_attach = hid_bpf_pre_link_attach,
-> > > > > +               .post_link_attach = hid_bpf_post_link_attach,
-> > > > >                 .array_detach = hid_bpf_array_detach,
-> > > > >         };
-> > > > >
-> > > > > diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-> > > > > index 937fab7eb9c6..3182c39db006 100644
-> > > > > --- a/drivers/hid/hid-core.c
-> > > > > +++ b/drivers/hid/hid-core.c
-> > > > > @@ -1213,7 +1213,8 @@ int hid_open_report(struct hid_device *device)
-> > > > >                 return -ENODEV;
-> > > > >         size = device->dev_rsize;
-> > > > >
-> > > > > -       buf = kmemdup(start, size, GFP_KERNEL);
-> > > > > +       /* hid_bpf_report_fixup() ensures we work on a copy of rdesc */
-> > > > > +       buf = hid_bpf_report_fixup(device, start, &size);
-> > > >
-> > > > Looking at this patch and the majority of other patches...
-> > > > the code is doing a lot of work to connect HID side with bpf.
-> > > > At the same time the evolution of the patch series suggests
-> > > > that these hook points are not quite stable. More hooks and
-> > > > helpers are being added.
-> > > > It tells us that it's way too early to introduce a stable
-> > > > interface between HID and bpf.
-> > >
-> > > I understand that you might be under the impression that the interface
-> > > is changing a lot, but this is mostly due to my poor knowledge of all
-> > > the arcanes of eBPF.
-> > > The overall way HID-BPF works is to work on a single array, and we
-> > > should pretty much be sorted out. There are a couple of helpers to be
-> > > able to communicate with the device, but the API has been stable in
-> > > the kernel for those for quite some time now.
-> > >
-> > > The variations in the hooks is mostly because I don't know what is the
-> > > best representation we can use in eBPF for those, and the review
-> > > process is changing that.
-> >
-> > I think such a big feature as this one, especially that most BPF folks
-> > are (probably) not familiar with the HID subsystem in the kernel,
-> > would benefit from a bit of live discussion during BPF office hours.
-> > Do you think you can give a short overview of what you are trying to
-> > achieve with some background context on HID specifics at one of the
-> > next BPF office hours? We have a meeting scheduled every week on
-> > Thursday, 9am Pacific time. But people need to put their topic onto
-> > the agenda, otherwise the meeting is cancelled. See [0] for
-> > spreadsheet and links to Zoom meeting, agenda, etc.
+> > Interesting point. My impression is that this could be done together
+> > with the other changes about making multi-attach links possible (I
+> > didn't miss anything, it's not yet implemented, right?). On the other
+> > hand I'm planning to prepare few more patches in similar direction -- s=
+o
+> > if everyone agrees it has to be extended to an array now, I can tackle
+> > this as well.
 >
-> This sounds like a good idea. I just added my topic on the agenda and
-> will prepare some slides.
->
+> Correct, it's not implemented yet for multi-attach links. My concern
+> here is to avoid changing the JSON structure in the future (to avoid
+> breaking changes for tools that would process the JSON). If we know
+> we're likely to have several cookies in the future, it may be worth
+> using an array =E2=80=9Cfrom start=E2=80=9D (since no version has been ta=
+gged yet after
+> you added support for the cookie).
 
-Great! Unfortunately I personally have a conflict this week and won't
-be able to attend, so I'll have to catch up somehow through word of
-mouth :( Next week's BPF office hours would be best, but I don't want
-to delay discussions just because of me.
+The problem with multi-cookie links (like KPROBE_MULTI that was merged
+a week ago) is that cookies by themselves are not that helpful. Also,
+internally we change their order to be sorted according to resolved
+kernel function addresses. So just an array of cookies are not enough,
+but asking kernel to preserve all the addresses just for the sake of
+reporting them in bpftool seems to much.
 
-> Cheers,
-> Benjamin
+So in general, with multi-cookie links, it's not clear what you should
+report at all.
+
 >
-> >
-> >   [0] https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU
-> >
-> > [...]
-> >
->
+> Quentin
