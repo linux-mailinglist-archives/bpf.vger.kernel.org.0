@@ -2,60 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 722664EB0FB
-	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 17:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCC04EB1C9
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 18:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236477AbiC2PvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 11:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56634 "EHLO
+        id S239706AbiC2Q2H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 12:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233532AbiC2PvN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 11:51:13 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B75A5C640;
-        Tue, 29 Mar 2022 08:49:29 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id w21so20897919wra.2;
-        Tue, 29 Mar 2022 08:49:29 -0700 (PDT)
+        with ESMTP id S238973AbiC2Q1r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 12:27:47 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DDC229C85;
+        Tue, 29 Mar 2022 09:26:03 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id v4so18004494pjh.2;
+        Tue, 29 Mar 2022 09:26:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8rq03KLqvSovP38ixoaJUNwayv4xg9/TMu0iVALGThY=;
-        b=HsqA4zfIYvhvLFMUfqiDi+L7VRyP55GTqldHeVzbpHWnqVYyM881EpE3johYU+M4qF
-         P/Cz3ntzF9sHiYMlDp6gaK+agqFSVteyUIWNDwztCZmZvg7ZNd52332Rg1bd1UYH4wLT
-         2+irv48Tp9CBNavfdZaIQppVNnOQpNFOVTH7LEX6nojcn43SzviMgcrnWAx1PUf0DFx1
-         2QNLN6aK3rkUWzyKSPlQXJa422ZDHxkr6L5QNlpbaB4nf5Pn5LUNLXBzrozVDk/Ii37n
-         Q0w8y+ND3p/J2vzd3NcBJGnG0vQ/N4PxU9EGeyapoZs6TES9j80rkp/IRri95tZIrH7E
-         JTJQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zSrzL4RcvPdwRrem0JkeQUvfghxscmF/IIS73/4ISuM=;
+        b=bPfDbjpxT0DjSxL1JWnNIzaPLGLUUme9ZWh2cGwHb8l0KU6et+OSmZSHXDAfDMlBV7
+         x9enOeMebdZsaPVu+3jwjyR3vpUVE315M4onO3XK9p5P/ErHPsG9n/RzTrJM32YLmVB2
+         cjssIk65ai2vA3WifAewBN9c3HxMWnLGaE4Fs7X8RW48MOb4EFTFTm7EajCtTffqUZea
+         BczMb7mH+NRyho4RPrfgnI7gwT47rolAYjj5kOyhWxinpzVAfA6CeoQBHcd/hFn0CqJ7
+         DXvT6jKqwuSmbYPA2nnwELtAawLRF2kERBojv9dTU5loc10Wx26v2/2fkrWPSaqxXx4N
+         ZDiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8rq03KLqvSovP38ixoaJUNwayv4xg9/TMu0iVALGThY=;
-        b=QiZry+wYuoPAAmODzXoWFNiuLIzRUfrXrsXyF2ylGwaFPxHw5THV6+52qt+iDYd/LZ
-         M0TN2aep9e4OoTZRyrB9S5qjGzFipGRyOOfWPOJPDnflsYmXxpqY744M/PguFoSK1VRD
-         NINOjLYYEl29bGZbj12kgJ3RELl7dO1V8vliP3JiI5gBP81wJuwgSUTki7B80PznaQjj
-         0oXsHp/DXd+09DY9zUh0/sGJm1b40uG9InmA3JvoxXGOL9Y/q74HaiqhyYnP5q/pVom8
-         AyGMv5svyIJfMdbMk3T5r2O+9o3o6Mf1EY9HY+B8tHgpiBe5NT+N4KYxJS1p9RaHS3qP
-         mANg==
-X-Gm-Message-State: AOAM530UWfKy4kWMDwOmfmFRZoCwNFVfN7QqlWyj8bhV8tJnVqTrrc2u
-        hSM++nIQO9NHdzKQ3Vk73iVBZBybjAw=
-X-Google-Smtp-Source: ABdhPJypmJjtWPTKHmyNctrk7r4noAAwv3NcWp5HRV1zXReSIaUUGuf3Dphy8z6S6/akBtKtNfR0tA==
-X-Received: by 2002:a5d:588a:0:b0:204:1f46:cf08 with SMTP id n10-20020a5d588a000000b002041f46cf08mr32645157wrf.133.1648568967495;
-        Tue, 29 Mar 2022 08:49:27 -0700 (PDT)
-Received: from jimi.localdomain ([213.57.189.88])
-        by smtp.gmail.com with ESMTPSA id v20-20020a7bcb54000000b0037fa63db8aasm2514242wmj.5.2022.03.29.08.49.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Mar 2022 08:49:26 -0700 (PDT)
-From:   Eyal Birger <eyal.birger@gmail.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Eyal Birger <eyal.birger@gmail.com>
-Subject: [PATCH bpf] selftests/bpf: remove unused variable from bpf_sk_assign test
-Date:   Tue, 29 Mar 2022 18:49:14 +0300
-Message-Id: <20220329154914.3718658-1-eyal.birger@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zSrzL4RcvPdwRrem0JkeQUvfghxscmF/IIS73/4ISuM=;
+        b=YhWl/AWyOvZFl2WiCZGbzG5Fcy0XW5gEzQ+3eozb58oNaDTxJjAVd91c03I20tsQt7
+         G90SUIOSuEDLfttOjksmPSfH7QTWBj97DPFULCJfLBhuXjrI3WufwbZcJZd/C4TTB97P
+         F/F+qrKtKruIkmYEVWAqSez4LUALg3tbYro8NX1YUeJk8OWLrXXIZ6/jTDQ1gYShoYKQ
+         uawOx0ACH34wUOpLxuyLlPMKUboxICi9bIa5tFB+OLaaq8x0lXlBD5xvLPRv/OUBU2/i
+         RPlCTER0dRR7FU5WGr5BdKZ/RygXsYEu70GE4cGxHP0Rss8DVh5yj2Mxa23tJJp/zA6p
+         Uy6g==
+X-Gm-Message-State: AOAM5313NtsQ++66AMAqUzELV9SF6cfcv1LdT4d7680McBSI5YnxZsjt
+        E+vg3XcfGcHvWzRHK1zeRqk4gLk2W1HJ8/a34gY=
+X-Google-Smtp-Source: ABdhPJy1y4rAeGRjAUma3/+QC6ZygqH6gCxyxvl+xjD9wME0wCYbFyY6Gq6YQ7F/SN+20kvJeSyRdQJx/ECNTEFRVzA=
+X-Received: by 2002:a17:902:ba83:b0:154:727e:5fc5 with SMTP id
+ k3-20020a170902ba8300b00154727e5fc5mr31922203pls.55.1648571163362; Tue, 29
+ Mar 2022 09:26:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2059213643.196683.1648499088753.JavaMail.zimbra@efficios.com>
+ <20220329002935.2869-1-beaub@linux.microsoft.com> <1014535694.197402.1648570634323.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1014535694.197402.1648570634323.JavaMail.zimbra@efficios.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 29 Mar 2022 09:25:52 -0700
+Message-ID: <CAADnVQK=GCuhTHz=iwv0r7Y37gYvt_UBzkfFJmNT+uR0z+7Myw@mail.gmail.com>
+Subject: Re: Comments on new user events ABI
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        Beau Belgrave <beaub@microsoft.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -66,45 +75,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Was never used in bpf_sk_assign_test(), and was removed from
-handle_{tcp,udp} in commit 0b9ad56b1ea6
-("selftests/bpf: Use SOCKMAP for server sockets in bpf_sk_assign test")
+On Tue, Mar 29, 2022 at 9:17 AM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> >
+> >> include/uapi/linux/user_events.h:
+> >>
+> >> struct user_bpf_iter {
+> >>
+> >>         /* Offset of the data within the first iovec */
+> >>         __u32 iov_offset;
+> >>
+> >>         /* Number of iovec structures */
+> >>         __u32 nr_segs;
+> >>
+> >>         /* Pointer to iovec structures */
+> >>         const struct iovec *iov;
+> >>
+> >>                            ^ a pointer in a uapi header is usually a no-go. This should be a u64.
+> >> };
+> >>
+> >> include/uapi/linux/user_events.h:
+> >>
+> >> struct user_bpf_context {
+> >>
+> >>         /* Data type being passed (see union below) */
+> >>         __u32 data_type;
+> >>
+> >>         /* Length of the data */
+> >>         __u32 data_len;
+> >>
+> >>         /* Pointer to data, varies by data type */
+> >>         union {
+> >>                 /* Kernel data (data_type == USER_BPF_DATA_KERNEL) */
+> >>                 void *kdata;
+> >>
+> >>                 /* User data (data_type == USER_BPF_DATA_USER) */
+> >>                 void *udata;
+> >>
+> >>                 /* Direct iovec (data_type == USER_BPF_DATA_ITER) */
+> >>                 struct user_bpf_iter *iter;
+> >>
+> >>                                ^ likewise for the 3 pointers above. Should be u64 in uapi headers.
+> >>         };
+> >> };
+> >>
+> >
+> > The bpf structs are only used within a BPF program. At that point the pointer
+> > sizes should all align, right?
+>
+> I must admit I do not know enough about the eBPF uapi practices to answer this.
+> [CCing Alexei on this]
 
-Fixes: 0b9ad56b1ea6 ("selftests/bpf: Use SOCKMAP for server sockets in bpf_sk_assign test")
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
----
- tools/testing/selftests/bpf/progs/test_sk_assign.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Mathieu,
 
-diff --git a/tools/testing/selftests/bpf/progs/test_sk_assign.c b/tools/testing/selftests/bpf/progs/test_sk_assign.c
-index 02f79356d5eb..98c6493d9b91 100644
---- a/tools/testing/selftests/bpf/progs/test_sk_assign.c
-+++ b/tools/testing/selftests/bpf/progs/test_sk_assign.c
-@@ -89,7 +89,6 @@ get_tuple(struct __sk_buff *skb, bool *ipv4, bool *tcp)
- static inline int
- handle_udp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
- {
--	struct bpf_sock_tuple ln = {0};
- 	struct bpf_sock *sk;
- 	const int zero = 0;
- 	size_t tuple_len;
-@@ -121,7 +120,6 @@ handle_udp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
- static inline int
- handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
- {
--	struct bpf_sock_tuple ln = {0};
- 	struct bpf_sock *sk;
- 	const int zero = 0;
- 	size_t tuple_len;
-@@ -161,7 +159,7 @@ handle_tcp(struct __sk_buff *skb, struct bpf_sock_tuple *tuple, bool ipv4)
- SEC("tc")
- int bpf_sk_assign_test(struct __sk_buff *skb)
- {
--	struct bpf_sock_tuple *tuple, ln = {0};
-+	struct bpf_sock_tuple *tuple;
- 	bool ipv4 = false;
- 	bool tcp = false;
- 	int tuple_len;
--- 
-2.32.0
+Thanks for flagging.
 
+Whoever added this user_bpf* stuff please remove it immediately.
+It was never reviewed by bpf maintainers.
+
+It's a hard Nack to add a bpf interface to user_events.
