@@ -2,300 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2004EB2AF
-	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 19:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695C04EB2E3
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 19:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240185AbiC2Rcj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 13:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
+        id S240317AbiC2Rpj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 13:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236824AbiC2Rcj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 13:32:39 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B4FD66D38B;
-        Tue, 29 Mar 2022 10:30:55 -0700 (PDT)
-Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3251620DEDCA;
-        Tue, 29 Mar 2022 10:30:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3251620DEDCA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1648575055;
-        bh=BpAFV/2ecrAe58ZOegidqe+nTAzuTQ+/r8SAWj9bwPo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bsMpHJWNhwsPXG4TYzY8wKI/c2WqCNi7uBvddL4hw6gWJDnzkKIyhfTfrlpU+JuF5
-         UOdNzF2Es0XXhJ0AVRH5yUaggmmRjtxXql3AwitIOGdrGpYYbI/nOnAIQvttKdKcV8
-         44rgBuQyc7iCx3tU9wLZd8tvqZSX6iOrtMQbALLA=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, mhiramat@kernel.org,
-        alexei.starovoitov@gmail.com
-Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arch@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        beaub@linux.microsoft.com
-Subject: [PATCH] tracing/user_events: Remove eBPF interfaces
-Date:   Tue, 29 Mar 2022 10:30:51 -0700
-Message-Id: <20220329173051.10087-1-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S240322AbiC2Rph (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 13:45:37 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3B6241B41
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 10:43:54 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id ke15so14929773qvb.11
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 10:43:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2noiAB4JhD//sQbtMNMDRU7L/9/z/AP4LRXU3Z5+JvY=;
+        b=otNRkeUJnJtKzUMsBnrSWYanbhWeN1Nr/I/fVv2Rq8w/YmJEhFqXr6Rdld/RrqKqq/
+         Q+QQ8gzlwSLGScMxlQeoDphNNODvqG7q/KBtSzPMBramlM33AO68I36uzWljETzdzbWY
+         YsnqA+fY31Sm+w7+q5jq4FGCjr6DS7m2Wlnf1UQ2NgeTlzm8JSaRD+c8FvhlhqMCTFU6
+         WDDWdB+FuCgV80VJHGOOxuoA3iQQa3f+x8z1Q4d4nKPsoKB8P7IkUeG7O41qZTpKYZkC
+         Xa4ZWwSgDht52/RJdVxsEs9kRTRtDL6yjBmtPGOfqbNNYY6pasj9PcjTjlNc+lfWIWNb
+         nKMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2noiAB4JhD//sQbtMNMDRU7L/9/z/AP4LRXU3Z5+JvY=;
+        b=8JAsgivBD16tXXODLe++WlOkdSZHp2jIMtGT2IWORbM4CYSF3UPKABxo64RkYYDcEm
+         QLV+VH97/k5WWnx5R/D2+27YAGeZnVCF/nU/sCZ8SEPjkClmxFwXigtsS7iU+3crcuJL
+         bKao9ZBRR8qzo2XnViIhU9zNYR8Cog0XLGz5zcyInq9lH5xI6b50PSsoF+Y1PpE/aC3g
+         FnkLmmIasR+Eth7fk/betUgJ0zkIguCaPXeSVDwT2NB9Gktqz35BaW122WcaS2VIFyG+
+         U/30vDRYQy2SzQrKWzhe3POvOpxYHrCOt+iauKaYoUF8BWPXu1ilHbQqpLzCgMSneRxq
+         /htg==
+X-Gm-Message-State: AOAM531+8/eOHxCwri/6rTQHckGPOZZIod84P+5m0Rp+46gC9rFejD04
+        fh6BYhGlH9VUxatvA+nJLCxJbPQLly02cyIHDWxDDw==
+X-Google-Smtp-Source: ABdhPJzS0MyLxNl7VoGIMNAjsfEGHGfg+9QRPDqN6YXeAuaXQZzcG+MJ9zzBtsMr7izpJQNsjGTrAhKsvfpztruHfHs=
+X-Received: by 2002:a05:6214:d8d:b0:441:686e:f2c6 with SMTP id
+ e13-20020a0562140d8d00b00441686ef2c6mr27348549qve.44.1648575833484; Tue, 29
+ Mar 2022 10:43:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <20220324234123.1608337-1-haoluo@google.com> <9cdf860d-8370-95b5-1688-af03265cc874@fb.com>
+ <CA+khW7g3hy61qnvtqUizaW+qB6wk=Y9cjivhORshOk=ZzTXJ-A@mail.gmail.com>
+ <CA+khW7iq+UKsfQxdT3QpSqPUFN8gQWWDLoQ9zxB=uWTs63AZEA@mail.gmail.com> <20220329093753.26wc3noelqrwlrcj@apollo.legion>
+In-Reply-To: <20220329093753.26wc3noelqrwlrcj@apollo.legion>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 29 Mar 2022 10:43:42 -0700
+Message-ID: <CA+khW7jW47SALTfxMKfQoA0Qwqd22GC0z4S5juFTbxLfTSbFEQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/2] Mmapable task local storage.
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove eBPF interfaces within user_events to ensure they are fully
-reviewed.
+On Tue, Mar 29, 2022 at 2:37 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Mon, Mar 28, 2022 at 11:16:15PM IST, Hao Luo wrote:
+> > On Mon, Mar 28, 2022 at 10:39 AM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > Hi Yonghong,
+> > >
+> > > On Fri, Mar 25, 2022 at 12:16 PM Yonghong Song <yhs@fb.com> wrote:
+> > > >
+> > > > On 3/24/22 4:41 PM, Hao Luo wrote:
+> > > > > Some map types support mmap operation, which allows userspace to
+> > > > > communicate with BPF programs directly. Currently only arraymap
+> > > > > and ringbuf have mmap implemented.
+> > > > >
+> > > > > However, in some use cases, when multiple program instances can
+> > > > > run concurrently, global mmapable memory can cause race. In that
+> > > > > case, userspace needs to provide necessary synchronizations to
+> > > > > coordinate the usage of mapped global data. This can be a source
+> > > > > of bottleneck.
+> > > >
+> > > > I can see your use case here. Each calling process can get the
+> > > > corresponding bpf program task local storage data through
+> > > > mmap interface. As you mentioned, there is a tradeoff
+> > > > between more memory vs. non-global synchronization.
+> > > >
+> > > > I am thinking that another bpf_iter approach can retrieve
+> > > > the similar result. We could implement a bpf_iter
+> > > > for task local storage map, optionally it can provide
+> > > > a tid to retrieve the data for that particular tid.
+> > > > This way, user space needs an explicit syscall, but
+> > > > does not need to allocate more memory than necessary.
+> > > >
+> > > > WDYT?
+> > > >
+> > >
+> > > Thanks for the suggestion. I have two thoughts about bpf_iter + tid and mmap:
+> > >
+> > > - mmap prevents the calling task from reading other task's value.
+> > > Using bpf_iter, one can pass other task's tid to get their values. I
+> > > assume there are two potential ways of passing tid to bpf_iter: one is
+> > > to use global data in bpf prog, the other is adding tid parameterized
+> > > iter_link. For the first, it's not easy for unpriv tasks to use. For
+> > > the second, we need to create one iter_link object for each interested
+> > > tid. It may not be easy to use either.
+> > >
+> > > - Regarding adding an explicit syscall. I thought about adding
+> > > write/read syscalls for task local storage maps, just like reading
+> > > values from iter_link. Writing or reading task local storage map
+> > > updates/reads the current task's value. I think this could achieve the
+> > > same effect as mmap.
+> > >
+> >
+> > Actually, my use case of using mmap on task local storage is to allow
+> > userspace to pass FDs into bpf prog. Some of the helpers I want to add
+> > need to take an FD as parameter and the bpf progs can run
+> > concurrently, thus using global data is racy. Mmapable task local
+> > storage is the best solution I can find for this purpose.
+> >
+> > Song also mentioned to me offline, that mmapable task local storage
+> > may be useful for his use case.
+> >
+> > I am actually open to other proposals.
+> >
+>
+> You could also use a syscall prog, and use bpf_prog_test_run to update local
+> storage for current. Data can be passed for that specific prog invocation using
+> ctx. You might have to enable bpf_task_storage helpers in it though, since they
+> are not allowed to be called right now.
+>
 
-Link: https://lore.kernel.org/all/20220329165718.GA10381@kbox/
+The loading process needs CAP_BPF to load bpf_prog_test_run. I'm
+thinking of allowing any thread including unpriv ones to be able to
+pass data to the prog and update their own storage.
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
----
- Documentation/trace/user_events.rst | 14 ++----
- include/uapi/linux/user_events.h    | 53 ---------------------
- kernel/trace/trace_events_user.c    | 73 +----------------------------
- 3 files changed, 4 insertions(+), 136 deletions(-)
-
-diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
-index bddedabaca80..c180936f49fc 100644
---- a/Documentation/trace/user_events.rst
-+++ b/Documentation/trace/user_events.rst
-@@ -7,7 +7,7 @@ user_events: User-based Event Tracing
- Overview
- --------
- User based trace events allow user processes to create events and trace data
--that can be viewed via existing tools, such as ftrace, perf and eBPF.
-+that can be viewed via existing tools, such as ftrace and perf.
- To enable this feature, build your kernel with CONFIG_USER_EVENTS=y.
- 
- Programs can view status of the events via
-@@ -67,8 +67,7 @@ The command string format is as follows::
- 
- Supported Flags
- ^^^^^^^^^^^^^^^
--**BPF_ITER** - EBPF programs attached to this event will get the raw iovec
--struct instead of any data copies for max performance.
-+None yet
- 
- Field Format
- ^^^^^^^^^^^^
-@@ -160,7 +159,7 @@ The following values are defined to aid in checking what has been attached:
- 
- **EVENT_STATUS_FTRACE** - Bit set if ftrace has been attached (Bit 0).
- 
--**EVENT_STATUS_PERF** - Bit set if perf/eBPF has been attached (Bit 1).
-+**EVENT_STATUS_PERF** - Bit set if perf has been attached (Bit 1).
- 
- Writing Data
- ------------
-@@ -204,13 +203,6 @@ It's advised for user programs to do the following::
- 
- **NOTE:** *The write_index is not emitted out into the trace being recorded.*
- 
--EBPF
------
--EBPF programs that attach to a user-based event tracepoint are given a pointer
--to a struct user_bpf_context. The bpf context contains the data type (which can
--be a user or kernel buffer, or can be a pointer to the iovec) and the data
--length that was emitted (minus the write_index).
--
- Example Code
- ------------
- See sample code in samples/user_events.
-diff --git a/include/uapi/linux/user_events.h b/include/uapi/linux/user_events.h
-index e570840571e1..736e05603463 100644
---- a/include/uapi/linux/user_events.h
-+++ b/include/uapi/linux/user_events.h
-@@ -32,9 +32,6 @@
- /* Create dynamic location entry within a 32-bit value */
- #define DYN_LOC(offset, size) ((size) << 16 | (offset))
- 
--/* Use raw iterator for attached BPF program(s), no affect on ftrace/perf */
--#define FLAG_BPF_ITER (1 << 0)
--
- /*
-  * Describes an event registration and stores the results of the registration.
-  * This structure is passed to the DIAG_IOCSREG ioctl, callers at a minimum
-@@ -63,54 +60,4 @@ struct user_reg {
- /* Requests to delete a user_event */
- #define DIAG_IOCSDEL _IOW(DIAG_IOC_MAGIC, 1, char*)
- 
--/* Data type that was passed to the BPF program */
--enum {
--	/* Data resides in kernel space */
--	USER_BPF_DATA_KERNEL,
--
--	/* Data resides in user space */
--	USER_BPF_DATA_USER,
--
--	/* Data is a pointer to a user_bpf_iter structure */
--	USER_BPF_DATA_ITER,
--};
--
--/*
-- * Describes an iovec iterator that BPF programs can use to access data for
-- * a given user_event write() / writev() call.
-- */
--struct user_bpf_iter {
--
--	/* Offset of the data within the first iovec */
--	__u32 iov_offset;
--
--	/* Number of iovec structures */
--	__u32 nr_segs;
--
--	/* Pointer to iovec structures */
--	const struct iovec *iov;
--};
--
--/* Context that BPF programs receive when attached to a user_event */
--struct user_bpf_context {
--
--	/* Data type being passed (see union below) */
--	__u32 data_type;
--
--	/* Length of the data */
--	__u32 data_len;
--
--	/* Pointer to data, varies by data type */
--	union {
--		/* Kernel data (data_type == USER_BPF_DATA_KERNEL) */
--		void *kdata;
--
--		/* User data (data_type == USER_BPF_DATA_USER) */
--		void *udata;
--
--		/* Direct iovec (data_type == USER_BPF_DATA_ITER) */
--		struct user_bpf_iter *iter;
--	};
--};
--
- #endif /* _UAPI_LINUX_USER_EVENTS_H */
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 8b3d241a31c2..3bc97e44253f 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -42,9 +42,6 @@
- #define MAX_FIELD_ARRAY_SIZE 1024
- #define MAX_FIELD_ARG_NAME 256
- 
--#define MAX_BPF_COPY_SIZE PAGE_SIZE
--#define MAX_STACK_BPF_DATA 512
--
- static char *register_page_data;
- 
- static DEFINE_MUTEX(reg_mutex);
-@@ -405,19 +402,6 @@ static int user_event_parse_field(char *field, struct user_event *user,
- 				    type[0] != 'u', FILTER_OTHER);
- }
- 
--static void user_event_parse_flags(struct user_event *user, char *flags)
--{
--	char *flag;
--
--	if (flags == NULL)
--		return;
--
--	while ((flag = strsep(&flags, ",")) != NULL) {
--		if (strcmp(flag, "BPF_ITER") == 0)
--			user->flags |= FLAG_BPF_ITER;
--	}
--}
--
- static int user_event_parse_fields(struct user_event *user, char *args)
- {
- 	char *field;
-@@ -713,64 +697,14 @@ static void user_event_ftrace(struct user_event *user, struct iov_iter *i,
- }
- 
- #ifdef CONFIG_PERF_EVENTS
--static void user_event_bpf(struct user_event *user, struct iov_iter *i)
--{
--	struct user_bpf_context context;
--	struct user_bpf_iter bpf_i;
--	char fast_data[MAX_STACK_BPF_DATA];
--	void *temp = NULL;
--
--	if ((user->flags & FLAG_BPF_ITER) && iter_is_iovec(i)) {
--		/* Raw iterator */
--		context.data_type = USER_BPF_DATA_ITER;
--		context.data_len = i->count;
--		context.iter = &bpf_i;
--
--		bpf_i.iov_offset = i->iov_offset;
--		bpf_i.iov = i->iov;
--		bpf_i.nr_segs = i->nr_segs;
--	} else if (i->nr_segs == 1 && iter_is_iovec(i)) {
--		/* Single buffer from user */
--		context.data_type = USER_BPF_DATA_USER;
--		context.data_len = i->count;
--		context.udata = i->iov->iov_base + i->iov_offset;
--	} else {
--		/* Multi buffer from user */
--		struct iov_iter copy = *i;
--		size_t copy_size = min_t(size_t, i->count, MAX_BPF_COPY_SIZE);
--
--		context.data_type = USER_BPF_DATA_KERNEL;
--		context.kdata = fast_data;
--
--		if (unlikely(copy_size > sizeof(fast_data))) {
--			temp = kmalloc(copy_size, GFP_NOWAIT);
--
--			if (temp)
--				context.kdata = temp;
--			else
--				copy_size = sizeof(fast_data);
--		}
--
--		context.data_len = copy_nofault(context.kdata,
--						copy_size, &copy);
--	}
--
--	trace_call_bpf(&user->call, &context);
--
--	kfree(temp);
--}
--
- /*
-- * Writes the user supplied payload out to perf ring buffer or eBPF program.
-+ * Writes the user supplied payload out to perf ring buffer.
-  */
- static void user_event_perf(struct user_event *user, struct iov_iter *i,
- 			    void *tpdata, bool *faulted)
- {
- 	struct hlist_head *perf_head;
- 
--	if (bpf_prog_array_valid(&user->call))
--		user_event_bpf(user, i);
--
- 	perf_head = this_cpu_ptr(user->call.perf_events);
- 
- 	if (perf_head && !hlist_empty(perf_head)) {
-@@ -1136,8 +1070,6 @@ static int user_event_parse(char *name, char *args, char *flags,
- 
- 	user->tracepoint.name = name;
- 
--	user_event_parse_flags(user, flags);
--
- 	ret = user_event_parse_fields(user, args);
- 
- 	if (ret)
-@@ -1575,9 +1507,6 @@ static int user_seq_show(struct seq_file *m, void *p)
- 			busy++;
- 		}
- 
--		if (flags & FLAG_BPF_ITER)
--			seq_puts(m, " FLAG:BPF_ITER");
--
- 		seq_puts(m, "\n");
- 		active++;
- 	}
-
-base-commit: 5efabdadcf4a5b9a37847ecc85ba71cf2eff0fcf
--- 
-2.25.1
-
+> > > > >
+> > > > > It would be great to have a mmapable local storage in that case.
+> > > > > This patch adds that.
+> > > > >
+> > > > > Mmap isn't BPF syscall, so unpriv users can also use it to
+> > > > > interact with maps.
+> > > > >
+> > > > > Currently the only way of allocating mmapable map area is using
+> > > > > vmalloc() and it's only used at map allocation time. Vmalloc()
+> > > > > may sleep, therefore it's not suitable for maps that may allocate
+> > > > > memory in an atomic context such as local storage. Local storage
+> > > > > uses kmalloc() with GFP_ATOMIC, which doesn't sleep. This patch
+> > > > > uses kmalloc() with GFP_ATOMIC as well for mmapable map area.
+> > > > >
+> > > > > Allocating mmapable memory has requirment on page alignment. So we
+> > > > > have to deliberately allocate more memory than necessary to obtain
+> > > > > an address that has sdata->data aligned at page boundary. The
+> > > > > calculations for mmapable allocation size, and the actual
+> > > > > allocation/deallocation are packaged in three functions:
+> > > > >
+> > > > >   - bpf_map_mmapable_alloc_size()
+> > > > >   - bpf_map_mmapable_kzalloc()
+> > > > >   - bpf_map_mmapable_kfree()
+> > > > >
+> > > > > BPF local storage uses them to provide generic mmap API:
+> > > > >
+> > > > >   - bpf_local_storage_mmap()
+> > > > >
+> > > > > And task local storage adds the mmap callback:
+> > > > >
+> > > > >   - task_storage_map_mmap()
+> > > > >
+> > > > > When application calls mmap on a task local storage, it gets its
+> > > > > own local storage.
+> > > > >
+> > > > > Overall, mmapable local storage trades off memory with flexibility
+> > > > > and efficiency. It brings memory fragmentation but can make programs
+> > > > > stateless. Therefore useful in some cases.
+> > > > >
+> > > > > Hao Luo (2):
+> > > > >    bpf: Mmapable local storage.
+> > > > >    selftests/bpf: Test mmapable task local storage.
+> > > > >
+> > > > >   include/linux/bpf.h                           |  4 +
+> > > > >   include/linux/bpf_local_storage.h             |  5 +-
+> > > > >   kernel/bpf/bpf_local_storage.c                | 73 +++++++++++++++++--
+> > > > >   kernel/bpf/bpf_task_storage.c                 | 40 ++++++++++
+> > > > >   kernel/bpf/syscall.c                          | 67 +++++++++++++++++
+> > > > >   .../bpf/prog_tests/task_local_storage.c       | 38 ++++++++++
+> > > > >   .../bpf/progs/task_local_storage_mmapable.c   | 38 ++++++++++
+> > > > >   7 files changed, 257 insertions(+), 8 deletions(-)
+> > > > >   create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_mmapable.c
+> > > > >
+>
+> --
+> Kartikeya
