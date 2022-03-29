@@ -2,96 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AC64EB2F9
-	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 19:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C95F4EB344
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 20:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240375AbiC2R5Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 13:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
+        id S240475AbiC2SVB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 14:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240365AbiC2R5Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 13:57:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B07D775C17
-        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 10:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1648576531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kGMPBJ//O6psjBzV1vVr4GcYMJAivjV7NQg3N1Zfl8Y=;
-        b=Cd82R2C0YPzyHM+8S+NAzSLJCUlCav66xWoQmY0b82enRwEqiHmj6rVvBFPfCm1pH0yzH2
-        /g5iSi5pEC3iAdt91JrzmGulGgYMcOETkh8L9IwDtOUnu3qIXeU+FieRn4FedrV8C5+Xw5
-        VFGbhZp2PpmQvIKT+AAmDNv+CFYJA3g=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-592--kr4w_ZuMVKcTYXJskxZ_Q-1; Tue, 29 Mar 2022 13:55:28 -0400
-X-MC-Unique: -kr4w_ZuMVKcTYXJskxZ_Q-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 26A4D899ED4;
-        Tue, 29 Mar 2022 17:55:27 +0000 (UTC)
-Received: from ceranb (unknown [10.40.192.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B2258401E2A;
-        Tue, 29 Mar 2022 17:55:23 +0000 (UTC)
-Date:   Tue, 29 Mar 2022 19:55:22 +0200
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     netdev@vger.kernel.org, poros@redhat.com, mschmidt@redhat.com,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Krzysztof Kazimierczak <krzysztof.kazimierczak@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
-Subject: Re: [PATCH net] ice: Fix logic of getting XSK pool associated with
- Tx queue
-Message-ID: <20220329195522.63d332fb@ceranb>
-In-Reply-To: <YkL0wfgyCq5s8vdu@boxer>
-References: <20220329102752.1481125-1-ivecera@redhat.com>
-        <YkL0wfgyCq5s8vdu@boxer>
+        with ESMTP id S237003AbiC2SVA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 14:21:00 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D21160C3C;
+        Tue, 29 Mar 2022 11:19:17 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id bc27so15519875pgb.4;
+        Tue, 29 Mar 2022 11:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4V+A8U9+/U1HY+QmUa76p1ZLk5bcF0qKz/18mpVzUpQ=;
+        b=Ff/ZYvYRHhCDvO7p0QwXHMkZZb5HCuQSdZ38sk38zGUcqGghqpsQTCqm8k+KvtuSA9
+         2fWYb2RLdARVlK9R5QyQgebE8Rt6l1h1ntLiwpato2tf2EGadJtkSPqPvo3YooCwwBH1
+         xM88JqP7QskkE8pcO8o/cqkL1zYtlldY9Ww+mvow4EShNqR3cFN1W26Pbpn+P1w4otu9
+         3k3yFnFtXvnCfuW+oBJ3NMZf/F/jVYcTFlJk1JRs2/S0nmnpNjwl4hWJZxQRYqX32eZ2
+         Uucp4/QlBIGzsj1J3I0MMIiQtCTiu1w7u9HrTV1t9Gs0LuvGtsajmoUL5nwfaReBTwW4
+         rkdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4V+A8U9+/U1HY+QmUa76p1ZLk5bcF0qKz/18mpVzUpQ=;
+        b=XN1HXLaOb3C6TcYj2pAcaxuUpoCHX5BlWhIF3lY4oCy8n37pqIM6GFhcPeLgjRfkG9
+         hullzgHex14TDWD10+TCbpgOxb5JjFwEasyZVF03RG9GTaNFuQ6uXrSSp0imwbzDW3Vt
+         d+WSm0pUWDqWRJXV9JWB2OzxhNFgB7DvHjQ8/mJ2H8IJcHMgpHkCBLCbHYhmLdWi9z5o
+         FJonB7EGnTt9CWMQ6MtNZiumxEJrgcNW4qHcAXdagpw9q0KuIWVjoVmLG9IkfvtRU9fS
+         5ORdCoYuT82EJzBWeq3zCMvJ9vtmro/HH1ErRC1B5OwiDJtTsex5xk3xD4xdTvPlcEFQ
+         Fn8w==
+X-Gm-Message-State: AOAM530p/QmwjEfO6fdtHJswcdZDn+R9UNpw2Izpq4dv3Rz0LQhFJQAX
+        0tMK0ub7AbRekLx03rWelm7ooQeLHDSgoha/4siEx5EG
+X-Google-Smtp-Source: ABdhPJy0Q6rWY21BBj88lFiHi3x/iUNMDwcyN5eu27Y5S0YAOy9ROG6O83QyVNFYcMKriy7fPIh2V1r+JGLey8UQoDI=
+X-Received: by 2002:a05:6a00:1c9e:b0:4fa:d946:378b with SMTP id
+ y30-20020a056a001c9e00b004fad946378bmr29229178pfw.46.1648577956565; Tue, 29
+ Mar 2022 11:19:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220329173051.10087-1-beaub@linux.microsoft.com>
+In-Reply-To: <20220329173051.10087-1-beaub@linux.microsoft.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 29 Mar 2022 11:19:05 -0700
+Message-ID: <CAADnVQKG0LxsUMFGsFSEA4AqpSa8Kqg5HpUfKzPo9Ze463UDgw@mail.gmail.com>
+Subject: Re: [PATCH] tracing/user_events: Remove eBPF interfaces
+To:     Beau Belgrave <beaub@linux.microsoft.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 29 Mar 2022 14:00:01 +0200
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
+On Tue, Mar 29, 2022 at 10:30 AM Beau Belgrave
+<beaub@linux.microsoft.com> wrote:
+>
+> Remove eBPF interfaces within user_events to ensure they are fully
+> reviewed.
+>
+> Link: https://lore.kernel.org/all/20220329165718.GA10381@kbox/
+>
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 
-> Thanks for this fix! I did exactly the same patch yesterday and it's
-> already applied to bpf tree:
-> 
-> https://lore.kernel.org/bpf/20220328142123.170157-5-maciej.fijalkowski@intel.com/T/#u
-> 
-> Maciej
+Thanks for the quick revert.
 
-Thanks for info... Nice human race condition ;-)
+Steven,
 
-I.
+since you've applied the initial set please take this one and
+send pull req to Linus asap.
 
+Thanks
