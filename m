@@ -2,104 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E51C84EA7A2
-	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 08:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723F34EA873
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 09:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbiC2GF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 02:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
+        id S233340AbiC2HYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 03:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbiC2GF5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 02:05:57 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E5C340EE;
-        Mon, 28 Mar 2022 23:04:15 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id e5so16706109pls.4;
-        Mon, 28 Mar 2022 23:04:15 -0700 (PDT)
+        with ESMTP id S233343AbiC2HYT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 03:24:19 -0400
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0244724316E;
+        Tue, 29 Mar 2022 00:22:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cHaiaQIME2TQ3hPRlAjtXhCt8wua+8gQtHxEI6CbZtk=;
-        b=Q4mO8z5cfhWgW9a6f2LL2NdkpUte+YKVoSjBJv9J/xTs8ZRrAm2+i+vRdgJDSh6CJk
-         iWz6YMWkqaQ7cxwhD5VIX8pM7nj0qyhjEEahdWXkZNRIME0Pz85tMF6lst9EcOwebnVe
-         DsmYeshd6Cw6Mg7bH2kki8e+K4gdU7WfMpGzp8Aj22ZHLqIrTMurjN+EhPwylEiD9rFV
-         DqPjW0NYg1YTVJwsZ7BzQZz/PdtlBagrv+38g1V0sC9tclEH2fvmRTqDIYiKct0hhGxe
-         rQnd2HyNjgE/ctnDNurQ4gStlxo3lgKcdA/mXPxfaUQeSYyeGwNovOi1oUJbq26dkBeW
-         TQ1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cHaiaQIME2TQ3hPRlAjtXhCt8wua+8gQtHxEI6CbZtk=;
-        b=bd/xVQ9EcOspEPh/HGG3C7sFqEK16k2vj5zBaatrmU2+egyvsIasX+NAbgdvYR/zf6
-         KAW9i7cRmQRwhNnPdaLaSIR9Wccq3mF6XPcn1+4IMAMDCICOyFMtOhbcv4C6brMCS/Sz
-         SXimrBeyRcSqyQcXBrT+cqIMb/UEsnWFyKwNIMLxgTpMbLKvX535dcw78f9E5QYFo2Yl
-         j2RsOn6x//LnjoT1ccf21TT4dFtCWonwJh/OI7rpkU3dUj+4GxFu2tv4IPjXj8PGzTCs
-         0Nixml3TR+FE0FOmEuLJQDQ3G2ECeC4ngR1wCmdJBXVyPhgQNUVhIU7fVAUh/bPjPYnA
-         u8QA==
-X-Gm-Message-State: AOAM533+V1h0aAGnswIo11Rk/OXSkIpSCeF9Z1YT4m0yvkqmWD+txnvm
-        taqcx0jLxxzNvII6fn6/+5A=
-X-Google-Smtp-Source: ABdhPJwpc1mBqz646V7xYK+gns4cYmtoPl5rD1zPom/CyRatt2rrPPiNVAL9QwwnI20vHF/KYoHbsA==
-X-Received: by 2002:a17:903:249:b0:153:857c:a1fe with SMTP id j9-20020a170903024900b00153857ca1femr29078333plh.44.1648533855368;
-        Mon, 28 Mar 2022 23:04:15 -0700 (PDT)
-Received: from localhost.localdomain (192.243.120.99.16clouds.com. [192.243.120.99])
-        by smtp.gmail.com with ESMTPSA id mi18-20020a17090b4b5200b001c9a9b60489sm1415677pjb.7.2022.03.28.23.04.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Mar 2022 23:04:14 -0700 (PDT)
-From:   davidcomponentone@gmail.com
-To:     keescook@chromium.org
-Cc:     davidcomponentone@gmail.com, luto@amacapital.net, wad@chromium.org,
-        shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Guang <yang.guang5@zte.com.cn>
-Subject: [PATCH] selftests/seccomp: Add SKIP for failed unshare()
-Date:   Tue, 29 Mar 2022 14:03:59 +0800
-Message-Id: <d623360ac7fdc3d8e1a8bc34e018f1aba6bd7e73.1648516943.git.yang.guang5@zte.com.cn>
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1648538556; x=1680074556;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ISy1PdTNl86QIZVHuPS0xM2PPd3z/iaIEXnSylN2poQ=;
+  b=BFDbO9wk58ZQt/RAyv9+XjXntuRqhm5LJMbc2Ukz+KMLwe4HRowg6Wrz
+   kv92ieX7ysjTUsXEg3ELFkXerQHRqajG+DIU/7EAicM9xEKvfIV/2ZNYv
+   5yQXViOAVj7oGqFUO2zn3eE8C8gOQbHsA7yA4s/SJI3tCFGUOfNeG/fPy
+   U=;
+X-IronPort-AV: E=Sophos;i="5.90,219,1643673600"; 
+   d="scan'208";a="188496438"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-28a78e3f.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 29 Mar 2022 07:22:34 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2b-28a78e3f.us-west-2.amazon.com (Postfix) with ESMTPS id A1E24A2761;
+        Tue, 29 Mar 2022 07:22:33 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.32; Tue, 29 Mar 2022 07:22:30 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.180) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.32; Tue, 29 Mar 2022 07:22:26 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kuba@kernel.org>
+CC:     <andrew@lunn.ch>, <bpf@vger.kernel.org>, <corbet@lwn.net>,
+        <davem@davemloft.net>, <f.fainelli@gmail.com>,
+        <kuniyu@amazon.co.jp>, <linux-doc@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <pabeni@redhat.com>
+Subject: Re: [PATCH net 00/13] docs: update and move the netdev-FAQ
+Date:   Tue, 29 Mar 2022 16:22:23 +0900
+Message-ID: <20220329072223.6733-1-kuniyu@amazon.co.jp>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220328215247.69d31c4a@kernel.org>
+References: <20220328215247.69d31c4a@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.180]
+X-ClientProxiedBy: EX13D22UWC004.ant.amazon.com (10.43.162.198) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yang Guang <yang.guang5@zte.com.cn>
+From:   Jakub Kicinski <kuba@kernel.org>
+Date:   Mon, 28 Mar 2022 21:52:47 -0700
+> On Tue, 29 Mar 2022 13:38:08 +0900 Kuniyuki Iwashima wrote:
+> > From:   Jakub Kicinski <kuba@kernel.org>
+> > Date:   Sat, 26 Mar 2022 19:53:47 -0700
+> > > A section of documentation for tree-specific process quirks had
+> > > been created a while back. There's only one tree in it, so far,
+> > > the tip tree, but the contents seem to answer similar questions
+> > > as we answer in the netdev-FAQ. Move the netdev-FAQ.
+> > > 
+> > > Take this opportunity to touch up and update a few sections.  
+> > 
+> > Thanks for update!
+> > 
+> > I would like to clarify one thing about this website.
+> > 
+> >   http://vger.kernel.org/~davem/net-next.html
+> > 
+> > I often check this before submitting patches.  I like this much, but it
+> > seems not working properly for now.  Is this no longer maintained or by
+> > coincidence this time?  If I could help something, please let me know :)
+> 
+> Sorry about that, DaveM has been traveling during this merge window. 
+> He said he'll fix it soon.
 
-Running the seccomp tests under the kernel with "defconfig"
-shouldn't fail. Because the CONFIG_USER_NS is not support
-in "defconfig". So skip this test case is better.
+Ah, sorry for noise, and thank you!
 
-Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
-Signed-off-by: David Yang <davidcomponentone@gmail.com>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 313bb0cbfb1e..e9a61cb2eb88 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -3742,7 +3742,10 @@ TEST(user_notification_fault_recv)
- 	struct seccomp_notif req = {};
- 	struct seccomp_notif_resp resp = {};
- 
--	ASSERT_EQ(unshare(CLONE_NEWUSER), 0);
-+	ASSERT_EQ(unshare(CLONE_NEWUSER), 0) {
-+		if (errno == EINVAL)
-+			SKIP(return, "kernel missing CLONE_NEWUSER support");
-+	}
- 
- 	listener = user_notif_syscall(__NR_getppid,
- 				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
--- 
-2.30.2
-
+Have a nice trip, DaveM!
