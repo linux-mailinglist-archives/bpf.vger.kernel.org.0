@@ -2,235 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFAA4EAEDB
-	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 15:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2EB4EB05B
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 17:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237569AbiC2Nzm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 09:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        id S233601AbiC2PaC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 11:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236202AbiC2Nzl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 09:55:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 981951C34BF
-        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 06:53:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1648562036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=un9l7/a+uEq1XogerESBiAijCYeuvtYw94AitMUuZ+M=;
-        b=RcWUOvVIUP2cGJWMfV/ZI8xd8zZS36OghrbFN+RUNUTm+26nKcZ7VKCHemoRPpePP9YVWP
-        yZXfoAoT6zHywE/q25Iic/rg5JJslR4t2/xcTM1JuLB5SVGyIMlSNLY5Ka5jkUg4YfHR16
-        QS8wB3QiQz8+tz2s2H05w+NMFiBh6bw=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-586-QNuqIakGNFupISYrdix9sA-1; Tue, 29 Mar 2022 09:53:54 -0400
-X-MC-Unique: QNuqIakGNFupISYrdix9sA-1
-Received: by mail-pg1-f197.google.com with SMTP id b7-20020a633407000000b0038413d39ca9so8602473pga.4
-        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 06:53:54 -0700 (PDT)
+        with ESMTP id S238560AbiC2PaB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 11:30:01 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF7010B1
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 08:28:16 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id 125so21389037iov.10
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 08:28:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rbCfapO4NIDG1N5wWCt2gtNC01xY1MmMW/+32By2iZU=;
+        b=DNeuoXSedKF6JFW4fZEpRDlhg3gtceUEhH8ds5WqdEbOGjU6iS92QdpByiCno6IM9W
+         dLOVRK4SZKLZ2iFy9YJ2C+XrHT3OlyJ0plYeknoDqP/ts6HLxeqGSNxeNveokN07FQ8a
+         A9M6kXDDGxDyriNL7ESSXXB7GR95ePKFf8lwI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=un9l7/a+uEq1XogerESBiAijCYeuvtYw94AitMUuZ+M=;
-        b=GJCesDm/QfbkrVYU75q7KjEAxTymsfEUtvgRKhtc6T4V++Qd9RVqX3Eh4MAQN7dxXn
-         B575GmFPaBBFskhqL/lZ6TV0pqotD8peevzh4TDzoHyF/2c6KTRBGeHbyp+1KqeHLhus
-         fnLkMeEX846zbdQqc4Y0JfovWnh88TFXXFmWqRT/XABxsVLgNr7+09pnsCUfMojsOy/L
-         vPurCgnQnKNgqpqD6tGcK13nTDdXnMbjbsGO5bqoJTv19vfnMOcyCBiS7JAXWhqRy7SA
-         kunhMxfagJuxYYLYZen0+OsYaGiKNRlH3gxRv05PBKmP7prObVIJ0vLuxlf0u3KmfPbS
-         p+xw==
-X-Gm-Message-State: AOAM5305OfhWcv3TMcMNvPUTAKUWnZvY1/D//gGqyuZ5qKru1C5h1Sj3
-        ZWTzI3+ElECuhnyfcp9qz/p4AY3OKK6prPbyGSmiiOQpbAH0mGzoce6BhfjifQlKXlo9Eq9IcbK
-        NuhJq5u4RdnwbvGgaYfGZY5dx8m6S
-X-Received: by 2002:a63:6c0a:0:b0:398:6bd2:a16a with SMTP id h10-20020a636c0a000000b003986bd2a16amr2123313pgc.191.1648562033319;
-        Tue, 29 Mar 2022 06:53:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGa8CCAa74guVnbIRav3BJCOquPXCu+LU4JQHK3SKWdmRtYE+byETFimsO7Lw1QDDW65u4gI5INxlQXDHGp68=
-X-Received: by 2002:a63:6c0a:0:b0:398:6bd2:a16a with SMTP id
- h10-20020a636c0a000000b003986bd2a16amr2123264pgc.191.1648562032802; Tue, 29
- Mar 2022 06:53:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rbCfapO4NIDG1N5wWCt2gtNC01xY1MmMW/+32By2iZU=;
+        b=65436K9tk4WfZENEcqHTO36G8T5bQqsyqvdDTiSZfauOL5wCv/YZdPspZWbk37GjQQ
+         v7QYaj4IKdmhNG7R8fXl2Th/VdZbCvmJZ3+EfQAQeySO/QmigCjDEVHskcWEUNF/rbeQ
+         +P2ja+ray0G57j5QEUREN4tzSHPH/d6VkqGXITCbRaed2Ojq1Oi9nSgzJQNSngPX4grE
+         zXC2sm7vqEL3zzHn4moaTrKdMjF8ylHNykm91IzkhFIoQ4mMeRlD+BxSrNcb1FdCyLGa
+         5189vTwwOYfL/ly8A4YZdzFhwNUSOXRiJfe6MYCuRArxow08gsDQBBafp9D1qBpeCgeb
+         jOIg==
+X-Gm-Message-State: AOAM530QwbTj+IekEOv6EpYxpFFmxOdx4AwZlBT1OUp1BsetECWRw9ck
+        5fMew4UrLBU3DtgyNgFwsPVdWg==
+X-Google-Smtp-Source: ABdhPJxJ/wUDup2pZUomjDEqgyB7uUDbTkUwJSHqKY5Dr3ShJKsEcYKZUTC/YO7+Hn/4PQQNoiMBGg==
+X-Received: by 2002:a6b:d003:0:b0:646:4652:bd57 with SMTP id x3-20020a6bd003000000b006464652bd57mr9186492ioa.51.1648567695820;
+        Tue, 29 Mar 2022 08:28:15 -0700 (PDT)
+Received: from [192.168.1.128] ([71.205.29.0])
+        by smtp.gmail.com with ESMTPSA id e18-20020a5d85d2000000b00649254a855fsm9095105ios.26.2022.03.29.08.28.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 29 Mar 2022 08:28:15 -0700 (PDT)
+Subject: Re: [PATCH] selftests/seccomp: Add SKIP for failed unshare()
+To:     davidcomponentone@gmail.com, keescook@chromium.org
+Cc:     luto@amacapital.net, wad@chromium.org, shuah@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Guang <yang.guang5@zte.com.cn>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <d623360ac7fdc3d8e1a8bc34e018f1aba6bd7e73.1648516943.git.yang.guang5@zte.com.cn>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <133fac97-f24e-ea4d-6ffb-279581550c51@linuxfoundation.org>
+Date:   Tue, 29 Mar 2022 09:28:14 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20220318161528.1531164-1-benjamin.tissoires@redhat.com>
- <20220318161528.1531164-7-benjamin.tissoires@redhat.com> <CAADnVQLvhWxEtHETg0tasJ7Fp5JHNRYWdjhnxi1y1gBpXS=bvQ@mail.gmail.com>
- <CAO-hwJJXR3jtAvLF1phUa5pKZzVkDxAAHO5+7R50hL-fVhDYyA@mail.gmail.com>
- <CAEf4BzYVu9JVJvKZK3S9HGwpyPiWrwKPGsTz3wXC_+vmRYGdNw@mail.gmail.com>
- <CAO-hwJKPxKCzxCKGpH85j5VG3bQk+7axDYpxYoy-12yL7AQj2w@mail.gmail.com> <CAEf4BzZA7Wmg=N42ib_r9Jm8THXuGGR3CPgTqMyw9n2=gd_+Kg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZA7Wmg=N42ib_r9Jm8THXuGGR3CPgTqMyw9n2=gd_+Kg@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Tue, 29 Mar 2022 15:53:41 +0200
-Message-ID: <CAO-hwJKnnVkJPG6wtLJ6t7ojv5=vS0NGt14un6+nRmxzj+xifw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 06/17] HID: allow to change the report
- descriptor from an eBPF program
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <d623360ac7fdc3d8e1a8bc34e018f1aba6bd7e73.1648516943.git.yang.guang5@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 28, 2022 at 11:35 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sun, Mar 27, 2022 at 11:57 PM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > On Fri, Mar 25, 2022 at 6:00 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Mar 23, 2022 at 9:08 AM Benjamin Tissoires
-> > > <benjamin.tissoires@redhat.com> wrote:
-> > > >
-> > > > Hi Alexei,
-> > > >
-> > > > On Tue, Mar 22, 2022 at 11:51 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Mar 18, 2022 at 9:16 AM Benjamin Tissoires
-> > > > > <benjamin.tissoires@redhat.com> wrote:
-> > > > > >
-> > > > > > +u8 *hid_bpf_report_fixup(struct hid_device *hdev, u8 *rdesc, unsigned int *size)
-> > > > > > +{
-> > > > > > +       int ret;
-> > > > > > +       struct hid_bpf_ctx_kern ctx = {
-> > > > > > +               .type = HID_BPF_RDESC_FIXUP,
-> > > > > > +               .hdev = hdev,
-> > > > > > +               .size = *size,
-> > > > > > +       };
-> > > > > > +
-> > > > > > +       if (bpf_hid_link_empty(&hdev->bpf, BPF_HID_ATTACH_RDESC_FIXUP))
-> > > > > > +               goto ignore_bpf;
-> > > > > > +
-> > > > > > +       ctx.data = kmemdup(rdesc, HID_MAX_DESCRIPTOR_SIZE, GFP_KERNEL);
-> > > > > > +       if (!ctx.data)
-> > > > > > +               goto ignore_bpf;
-> > > > > > +
-> > > > > > +       ctx.allocated_size = HID_MAX_DESCRIPTOR_SIZE;
-> > > > > > +
-> > > > > > +       ret = hid_bpf_run_progs(hdev, &ctx);
-> > > > > > +       if (ret)
-> > > > > > +               goto ignore_bpf;
-> > > > > > +
-> > > > > > +       if (ctx.size > ctx.allocated_size)
-> > > > > > +               goto ignore_bpf;
-> > > > > > +
-> > > > > > +       *size = ctx.size;
-> > > > > > +
-> > > > > > +       if (*size) {
-> > > > > > +               rdesc = krealloc(ctx.data, *size, GFP_KERNEL);
-> > > > > > +       } else {
-> > > > > > +               rdesc = NULL;
-> > > > > > +               kfree(ctx.data);
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       return rdesc;
-> > > > > > +
-> > > > > > + ignore_bpf:
-> > > > > > +       kfree(ctx.data);
-> > > > > > +       return kmemdup(rdesc, *size, GFP_KERNEL);
-> > > > > > +}
-> > > > > > +
-> > > > > >  int __init hid_bpf_module_init(void)
-> > > > > >  {
-> > > > > >         struct bpf_hid_hooks hooks = {
-> > > > > >                 .hdev_from_fd = hid_bpf_fd_to_hdev,
-> > > > > >                 .pre_link_attach = hid_bpf_pre_link_attach,
-> > > > > > +               .post_link_attach = hid_bpf_post_link_attach,
-> > > > > >                 .array_detach = hid_bpf_array_detach,
-> > > > > >         };
-> > > > > >
-> > > > > > diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-> > > > > > index 937fab7eb9c6..3182c39db006 100644
-> > > > > > --- a/drivers/hid/hid-core.c
-> > > > > > +++ b/drivers/hid/hid-core.c
-> > > > > > @@ -1213,7 +1213,8 @@ int hid_open_report(struct hid_device *device)
-> > > > > >                 return -ENODEV;
-> > > > > >         size = device->dev_rsize;
-> > > > > >
-> > > > > > -       buf = kmemdup(start, size, GFP_KERNEL);
-> > > > > > +       /* hid_bpf_report_fixup() ensures we work on a copy of rdesc */
-> > > > > > +       buf = hid_bpf_report_fixup(device, start, &size);
-> > > > >
-> > > > > Looking at this patch and the majority of other patches...
-> > > > > the code is doing a lot of work to connect HID side with bpf.
-> > > > > At the same time the evolution of the patch series suggests
-> > > > > that these hook points are not quite stable. More hooks and
-> > > > > helpers are being added.
-> > > > > It tells us that it's way too early to introduce a stable
-> > > > > interface between HID and bpf.
-> > > >
-> > > > I understand that you might be under the impression that the interface
-> > > > is changing a lot, but this is mostly due to my poor knowledge of all
-> > > > the arcanes of eBPF.
-> > > > The overall way HID-BPF works is to work on a single array, and we
-> > > > should pretty much be sorted out. There are a couple of helpers to be
-> > > > able to communicate with the device, but the API has been stable in
-> > > > the kernel for those for quite some time now.
-> > > >
-> > > > The variations in the hooks is mostly because I don't know what is the
-> > > > best representation we can use in eBPF for those, and the review
-> > > > process is changing that.
-> > >
-> > > I think such a big feature as this one, especially that most BPF folks
-> > > are (probably) not familiar with the HID subsystem in the kernel,
-> > > would benefit from a bit of live discussion during BPF office hours.
-> > > Do you think you can give a short overview of what you are trying to
-> > > achieve with some background context on HID specifics at one of the
-> > > next BPF office hours? We have a meeting scheduled every week on
-> > > Thursday, 9am Pacific time. But people need to put their topic onto
-> > > the agenda, otherwise the meeting is cancelled. See [0] for
-> > > spreadsheet and links to Zoom meeting, agenda, etc.
-> >
-> > This sounds like a good idea. I just added my topic on the agenda and
-> > will prepare some slides.
-> >
->
-> Great! Unfortunately I personally have a conflict this week and won't
-> be able to attend, so I'll have to catch up somehow through word of
-> mouth :( Next week's BPF office hours would be best, but I don't want
-> to delay discussions just because of me.
+On 3/29/22 12:03 AM, davidcomponentone@gmail.com wrote:
+> From: Yang Guang <yang.guang5@zte.com.cn>
+> 
+> Running the seccomp tests under the kernel with "defconfig"
+> shouldn't fail. Because the CONFIG_USER_NS is not support
 
-OK. FWIW, I'll have slides publicly available once I'll do a final
-roundup on them. Hopefully that will give you enough context on HID to
-understand the problem.
-If there are too many conflicts we can surely delay by a week, but I
-would rather have the discussion happening sooner :/
+Nit - supported
 
-Cheers,
-Benjamin
+> in "defconfig". So skip this test case is better.
 
-> >
-> > >
-> > >   [0] https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU
-> > >
-> > > [...]
-> > >
-> >
->
+Nit: "skipping this case instead if failing it."
+> 
+> Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+> Signed-off-by: David Yang <davidcomponentone@gmail.com>
+> ---
+>   tools/testing/selftests/seccomp/seccomp_bpf.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> index 313bb0cbfb1e..e9a61cb2eb88 100644
+> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> @@ -3742,7 +3742,10 @@ TEST(user_notification_fault_recv)
+>   	struct seccomp_notif req = {};
+>   	struct seccomp_notif_resp resp = {};
+>   
+> -	ASSERT_EQ(unshare(CLONE_NEWUSER), 0);
+> +	ASSERT_EQ(unshare(CLONE_NEWUSER), 0) {
+> +		if (errno == EINVAL)
+> +			SKIP(return, "kernel missing CLONE_NEWUSER support");> +	}
+>   
+>   	listener = user_notif_syscall(__NR_getppid,
+>   				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
+> 
+Looks good to me. Looks like this patch is for Linux 5.18 repo.
+With the requested changes to commit log
 
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
