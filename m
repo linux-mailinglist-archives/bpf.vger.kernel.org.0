@@ -2,94 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 723F34EA873
-	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 09:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45F54EA8F6
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 10:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233340AbiC2HYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 03:24:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
+        id S233739AbiC2IIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 04:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbiC2HYT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 03:24:19 -0400
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0244724316E;
-        Tue, 29 Mar 2022 00:22:35 -0700 (PDT)
+        with ESMTP id S233736AbiC2IIc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 04:08:32 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C552332993;
+        Tue, 29 Mar 2022 01:06:49 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id n63-20020a1c2742000000b0038d0c31db6eso958687wmn.1;
+        Tue, 29 Mar 2022 01:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1648538556; x=1680074556;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ISy1PdTNl86QIZVHuPS0xM2PPd3z/iaIEXnSylN2poQ=;
-  b=BFDbO9wk58ZQt/RAyv9+XjXntuRqhm5LJMbc2Ukz+KMLwe4HRowg6Wrz
-   kv92ieX7ysjTUsXEg3ELFkXerQHRqajG+DIU/7EAicM9xEKvfIV/2ZNYv
-   5yQXViOAVj7oGqFUO2zn3eE8C8gOQbHsA7yA4s/SJI3tCFGUOfNeG/fPy
-   U=;
-X-IronPort-AV: E=Sophos;i="5.90,219,1643673600"; 
-   d="scan'208";a="188496438"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-28a78e3f.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 29 Mar 2022 07:22:34 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2b-28a78e3f.us-west-2.amazon.com (Postfix) with ESMTPS id A1E24A2761;
-        Tue, 29 Mar 2022 07:22:33 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.32; Tue, 29 Mar 2022 07:22:30 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.180) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.32; Tue, 29 Mar 2022 07:22:26 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kuba@kernel.org>
-CC:     <andrew@lunn.ch>, <bpf@vger.kernel.org>, <corbet@lwn.net>,
-        <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-doc@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <pabeni@redhat.com>
-Subject: Re: [PATCH net 00/13] docs: update and move the netdev-FAQ
-Date:   Tue, 29 Mar 2022 16:22:23 +0900
-Message-ID: <20220329072223.6733-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220328215247.69d31c4a@kernel.org>
-References: <20220328215247.69d31c4a@kernel.org>
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=25jdPIUFHHKil9p2jrTlL8YhE3fNBfgJbp+Rf3KdpNE=;
+        b=ZI17cIoc/2JKqkowlmyH1j9jeuJrXPsEZ3O01/CI/Xk/mxC8DhW/muUZtt7EJPzNBp
+         EoGu1naPr2ZG/3S4OqkXzpyL6QeEYy2EgrSL4P1paVjbI9wc5HAyy1cXdwx2exXeHS2T
+         2x+4HDg7BWxSjCIX4+Y41K7q286HiDb0+tSSGfgX+vC9iyuyUqXjAQ2Cq1HedOF+QKDm
+         tnLdkPT79EB/l/4+a0t7wmuud2vXNawqdX8e7B7I0L0tHhgVqkBY5Owwq8D7Fh+swF7w
+         UYilQgY2753FXWDJs9eeibNCmX0AGzBUYUjNdJoDKTe+43zGlB5eV8AJURt4DWW1qQGg
+         QmaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=25jdPIUFHHKil9p2jrTlL8YhE3fNBfgJbp+Rf3KdpNE=;
+        b=bDHQbeRqWzBL8Yp9EHrggo7tRZYX4X3oaAgSVKLlsOVabFQLgbTWXMveXjbdZjzZ+X
+         6eoKwIlQTL8AMU3zw8e7T7IkaBUdNs7RKZ9A8N43v16S25HsG8PVBxJ1ebiThk1ut34P
+         EqZ1MYE8iT/dHdVm03BJ9PxadJax47y72VFV5nYnIj2cYgWOX2Eya+YioQzZY14A6MR6
+         1lQKpPnxpMo9bN2/88R0ma48RqNDCNvO9AOonNNAJvjKjEunzoP4jr/nlKkYKE6vdWoz
+         XgBE+HyfC0C07oGGNdkRLAoZgaNy6Yi0dVoomu1PRe+fKTQuY+k2zgXLB6yra1DtB3nb
+         nDdQ==
+X-Gm-Message-State: AOAM53207zmMkKjet7SjSSfsX/UDiCXiB0I3RpW7Kcz/w++iHLtL78AJ
+        Sid6jWudEZkIGs5qWKrX1IM=
+X-Google-Smtp-Source: ABdhPJwdbRTaoW/68CCiCYb+e4cJKfiB8lOPYuMDNNVzhxO3ilyfbQSCDp5AJwmZGdXsG1EEuRRqGA==
+X-Received: by 2002:a05:600c:3b98:b0:38c:b19d:59f2 with SMTP id n24-20020a05600c3b9800b0038cb19d59f2mr5128495wms.205.1648541208241;
+        Tue, 29 Mar 2022 01:06:48 -0700 (PDT)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id j5-20020a05600c1c0500b0038ca4fdf7a5sm2336558wms.9.2022.03.29.01.06.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 29 Mar 2022 01:06:47 -0700 (PDT)
+Date:   Tue, 29 Mar 2022 09:06:45 +0100
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, pabeni@redhat.com,
+        corbet@lwn.net, bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        andrew@lunn.ch, f.fainelli@gmail.com
+Subject: Re: [PATCH net 04/13] docs: netdev: turn the net-next closed into a
+ Warning
+Message-ID: <20220329080645.v5xg4s3zo5zcog4q@gmail.com>
+Mail-Followup-To: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, pabeni@redhat.com, corbet@lwn.net,
+        bpf@vger.kernel.org, linux-doc@vger.kernel.org, andrew@lunn.ch,
+        f.fainelli@gmail.com
+References: <20220327025400.2481365-1-kuba@kernel.org>
+ <20220327025400.2481365-5-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.180]
-X-ClientProxiedBy: EX13D22UWC004.ant.amazon.com (10.43.162.198) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220327025400.2481365-5-kuba@kernel.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Jakub Kicinski <kuba@kernel.org>
-Date:   Mon, 28 Mar 2022 21:52:47 -0700
-> On Tue, 29 Mar 2022 13:38:08 +0900 Kuniyuki Iwashima wrote:
-> > From:   Jakub Kicinski <kuba@kernel.org>
-> > Date:   Sat, 26 Mar 2022 19:53:47 -0700
-> > > A section of documentation for tree-specific process quirks had
-> > > been created a while back. There's only one tree in it, so far,
-> > > the tip tree, but the contents seem to answer similar questions
-> > > as we answer in the netdev-FAQ. Move the netdev-FAQ.
-> > > 
-> > > Take this opportunity to touch up and update a few sections.  
-> > 
-> > Thanks for update!
-> > 
-> > I would like to clarify one thing about this website.
-> > 
-> >   http://vger.kernel.org/~davem/net-next.html
-> > 
-> > I often check this before submitting patches.  I like this much, but it
-> > seems not working properly for now.  Is this no longer maintained or by
-> > coincidence this time?  If I could help something, please let me know :)
+On Sat, Mar 26, 2022 at 07:53:51PM -0700, Jakub Kicinski wrote:
+> Use the sphinx Warning box to make the net-next being closed
+> stand out more.
 > 
-> Sorry about that, DaveM has been traveling during this merge window. 
-> He said he'll fix it soon.
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+>  Documentation/networking/netdev-FAQ.rst | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/networking/netdev-FAQ.rst b/Documentation/networking/netdev-FAQ.rst
+> index 0bff899f286f..c1683ed1faca 100644
+> --- a/Documentation/networking/netdev-FAQ.rst
+> +++ b/Documentation/networking/netdev-FAQ.rst
+> @@ -73,8 +73,9 @@ relating to vX.Y
+>  An announcement indicating when ``net-next`` has been closed is usually
+>  sent to netdev, but knowing the above, you can predict that in advance.
+>  
+> -IMPORTANT: Do not send new ``net-next`` content to netdev during the
+> -period during which ``net-next`` tree is closed.
+> +.. warning::
+> +  Do not send new ``net-next`` content to netdev during the
+> +  period during which ``net-next`` tree is closed.
 
-Ah, sorry for noise, and thank you!
+Similar to the comment from Kuniyuki I was missing a reference to
+ http://vger.kernel.org/~davem/net-next.html
+here.
 
-Have a nice trip, DaveM!
+Martin
+
+>  
+>  Shortly after the two weeks have passed (and vX.Y-rc1 is released), the
+>  tree for ``net-next`` reopens to collect content for the next (vX.Y+1)
+> -- 
+> 2.34.1
