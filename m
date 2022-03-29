@@ -2,113 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C45F54EA8F6
-	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 10:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D2D4EA901
+	for <lists+bpf@lfdr.de>; Tue, 29 Mar 2022 10:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbiC2IIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 04:08:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
+        id S233804AbiC2IMw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 04:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbiC2IIc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 04:08:32 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C552332993;
-        Tue, 29 Mar 2022 01:06:49 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id n63-20020a1c2742000000b0038d0c31db6eso958687wmn.1;
-        Tue, 29 Mar 2022 01:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=25jdPIUFHHKil9p2jrTlL8YhE3fNBfgJbp+Rf3KdpNE=;
-        b=ZI17cIoc/2JKqkowlmyH1j9jeuJrXPsEZ3O01/CI/Xk/mxC8DhW/muUZtt7EJPzNBp
-         EoGu1naPr2ZG/3S4OqkXzpyL6QeEYy2EgrSL4P1paVjbI9wc5HAyy1cXdwx2exXeHS2T
-         2x+4HDg7BWxSjCIX4+Y41K7q286HiDb0+tSSGfgX+vC9iyuyUqXjAQ2Cq1HedOF+QKDm
-         tnLdkPT79EB/l/4+a0t7wmuud2vXNawqdX8e7B7I0L0tHhgVqkBY5Owwq8D7Fh+swF7w
-         UYilQgY2753FXWDJs9eeibNCmX0AGzBUYUjNdJoDKTe+43zGlB5eV8AJURt4DWW1qQGg
-         QmaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=25jdPIUFHHKil9p2jrTlL8YhE3fNBfgJbp+Rf3KdpNE=;
-        b=bDHQbeRqWzBL8Yp9EHrggo7tRZYX4X3oaAgSVKLlsOVabFQLgbTWXMveXjbdZjzZ+X
-         6eoKwIlQTL8AMU3zw8e7T7IkaBUdNs7RKZ9A8N43v16S25HsG8PVBxJ1ebiThk1ut34P
-         EqZ1MYE8iT/dHdVm03BJ9PxadJax47y72VFV5nYnIj2cYgWOX2Eya+YioQzZY14A6MR6
-         1lQKpPnxpMo9bN2/88R0ma48RqNDCNvO9AOonNNAJvjKjEunzoP4jr/nlKkYKE6vdWoz
-         XgBE+HyfC0C07oGGNdkRLAoZgaNy6Yi0dVoomu1PRe+fKTQuY+k2zgXLB6yra1DtB3nb
-         nDdQ==
-X-Gm-Message-State: AOAM53207zmMkKjet7SjSSfsX/UDiCXiB0I3RpW7Kcz/w++iHLtL78AJ
-        Sid6jWudEZkIGs5qWKrX1IM=
-X-Google-Smtp-Source: ABdhPJwdbRTaoW/68CCiCYb+e4cJKfiB8lOPYuMDNNVzhxO3ilyfbQSCDp5AJwmZGdXsG1EEuRRqGA==
-X-Received: by 2002:a05:600c:3b98:b0:38c:b19d:59f2 with SMTP id n24-20020a05600c3b9800b0038cb19d59f2mr5128495wms.205.1648541208241;
-        Tue, 29 Mar 2022 01:06:48 -0700 (PDT)
-Received: from gmail.com ([81.168.73.77])
-        by smtp.gmail.com with ESMTPSA id j5-20020a05600c1c0500b0038ca4fdf7a5sm2336558wms.9.2022.03.29.01.06.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 29 Mar 2022 01:06:47 -0700 (PDT)
-Date:   Tue, 29 Mar 2022 09:06:45 +0100
-From:   Martin Habets <habetsm.xilinx@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, pabeni@redhat.com,
-        corbet@lwn.net, bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        andrew@lunn.ch, f.fainelli@gmail.com
-Subject: Re: [PATCH net 04/13] docs: netdev: turn the net-next closed into a
- Warning
-Message-ID: <20220329080645.v5xg4s3zo5zcog4q@gmail.com>
-Mail-Followup-To: Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, pabeni@redhat.com, corbet@lwn.net,
-        bpf@vger.kernel.org, linux-doc@vger.kernel.org, andrew@lunn.ch,
-        f.fainelli@gmail.com
-References: <20220327025400.2481365-1-kuba@kernel.org>
- <20220327025400.2481365-5-kuba@kernel.org>
+        with ESMTP id S233781AbiC2IMv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 04:12:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 042DB24F23
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 01:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1648541468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=X90O0KMU6UscdyhiWc2/dl9YEQfIncEUdXcssr5AopY=;
+        b=Yzu8lIKG/mx1Hk9mmkoxX7uZHn30/Y9ff8xeoJdNDqp9juy2ujxfgrDcVGbJvYmGNzKj/y
+        YvQapr07QJBiQlXhCMxL4azi0/DG4ubJiRca7GWvXPsyYODvl/9WtRlRIQ/XeOILrw3EmJ
+        ImWJLOpCyJdVmLmwuyRB66oUHhMqL6E=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-460-xdy0N1zHOPWgSOw0cHkbog-1; Tue, 29 Mar 2022 04:11:03 -0400
+X-MC-Unique: xdy0N1zHOPWgSOw0cHkbog-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9597A3817487;
+        Tue, 29 Mar 2022 08:11:03 +0000 (UTC)
+Received: from astarta.redhat.com (unknown [10.39.194.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 74FAD141DEC7;
+        Tue, 29 Mar 2022 08:11:02 +0000 (UTC)
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, jolsa@kernel.org,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
+Subject: [PATCH bpf-next] bpf: test_offload.py: skip base maps without names
+Date:   Tue, 29 Mar 2022 11:11:00 +0300
+Message-Id: <20220329081100.9705-1-ykaliuta@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220327025400.2481365-5-kuba@kernel.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 26, 2022 at 07:53:51PM -0700, Jakub Kicinski wrote:
-> Use the sphinx Warning box to make the net-next being closed
-> stand out more.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->  Documentation/networking/netdev-FAQ.rst | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/networking/netdev-FAQ.rst b/Documentation/networking/netdev-FAQ.rst
-> index 0bff899f286f..c1683ed1faca 100644
-> --- a/Documentation/networking/netdev-FAQ.rst
-> +++ b/Documentation/networking/netdev-FAQ.rst
-> @@ -73,8 +73,9 @@ relating to vX.Y
->  An announcement indicating when ``net-next`` has been closed is usually
->  sent to netdev, but knowing the above, you can predict that in advance.
->  
-> -IMPORTANT: Do not send new ``net-next`` content to netdev during the
-> -period during which ``net-next`` tree is closed.
-> +.. warning::
-> +  Do not send new ``net-next`` content to netdev during the
-> +  period during which ``net-next`` tree is closed.
+The test fails:
 
-Similar to the comment from Kuniyuki I was missing a reference to
- http://vger.kernel.org/~davem/net-next.html
-here.
+  # ./test_offload.py
+  ...
+  Test bpftool bound info reporting (own ns)...
+  FAIL: 3 BPF maps loaded, expected 2
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 1177, in <module>
+      check_dev_info(False, "")
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 645, in check_dev_info
+      maps = bpftool_map_list(expected=2, ns=ns)
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 190, in bpftool_map_list
+      fail(True, "%d BPF maps loaded, expected %d" %
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 86, in fail
+      tb = "".join(traceback.extract_stack().format())
 
-Martin
+Some base maps do not have names and they cannot be added due to
+compatibility with older kernels, see
+https://lore.kernel.org/bpf/CAEf4BzY66WPKQbDe74AKZ6nFtZjq5e+G3Ji2egcVytB9R6_sGQ@mail.gmail.com/
 
->  
->  Shortly after the two weeks have passed (and vX.Y-rc1 is released), the
->  tree for ``net-next`` reopens to collect content for the next (vX.Y+1)
-> -- 
-> 2.34.1
+So, just skip the unnamed maps.
+
+Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
+---
+ tools/testing/selftests/bpf/test_offload.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
+index edaffd43da83..6cd6ef9fc20b 100755
+--- a/tools/testing/selftests/bpf/test_offload.py
++++ b/tools/testing/selftests/bpf/test_offload.py
+@@ -184,7 +184,7 @@ def bpftool_prog_list(expected=None, ns=""):
+ def bpftool_map_list(expected=None, ns=""):
+     _, maps = bpftool("map show", JSON=True, ns=ns, fail=True)
+     # Remove the base maps
+-    maps = [m for m in maps if m not in base_maps and m.get('name') not in base_map_names]
++    maps = [m for m in maps if m not in base_maps and m.get('name') and m.get('name') not in base_map_names]
+     if expected is not None:
+         if len(maps) != expected:
+             fail(True, "%d BPF maps loaded, expected %d" %
+-- 
+2.34.1
+
