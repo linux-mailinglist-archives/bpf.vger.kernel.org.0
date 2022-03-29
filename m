@@ -2,141 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C4E4EB683
-	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 01:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A763E4EB69C
+	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 01:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238186AbiC2XN3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 19:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        id S229955AbiC2XUF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 19:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235262AbiC2XN2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 19:13:28 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6287F18F23C;
-        Tue, 29 Mar 2022 16:11:44 -0700 (PDT)
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CB61E20DEE31;
-        Tue, 29 Mar 2022 16:11:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CB61E20DEE31
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1648595504;
-        bh=zlzTxp+08vt3bMLHgmFGGXahGNx5lIFl8D8SrSqydk8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LpSkVUYEhTTL7DLJeD/qpcTOpkU8sd7SVuQKZqa9PJxD9lH32ZACJSueKOFHMhjix
-         LmAT8ofaPLypSywQivSyPqpOB4Llc69QQNZxDdaC+47FPD4ecm8FlPgBLuQ8k2jXWn
-         DoKloMJnqTrnht7HwRXmsyUhpeRycvRYP3kmqZb0=
-Date:   Tue, 29 Mar 2022 16:11:37 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] tracing/user_events: Add eBPF interface for user_event
- created events
-Message-ID: <20220329231137.GA3357@kbox>
-References: <20220329181935.2183-1-beaub@linux.microsoft.com>
- <CAADnVQ+XpoCjL-rSz2hj05L21s8NtMJuWYC14b9Mvk7XE5KT_g@mail.gmail.com>
- <20220329201057.GA2549@kbox>
- <CAADnVQ+gm4yU9S6y+oeR3TNj82kKX0gk4ey9gVnKXKWy1Js4-A@mail.gmail.com>
+        with ESMTP id S236684AbiC2XUE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 19:20:04 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA8DDED
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 16:18:21 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e18so13468065ilr.2
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 16:18:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0tfPrGqFbuzq7YgqyiPRI9+NBMBLQsDBtsKF/Gah+b4=;
+        b=E12cAXcuHAcQXpRoF0MxIQxvZwWGCHuoISQ/M5zsHvbl4Of7ewpwCCbFgGbtxYsY/j
+         Z2x3qM61hoSGyOhVJoNKX7XHrIyckdMj7Is+HCa2gG4t9Exa88CAxazptpHMqsengakH
+         D/Y7RRAA9cY2zYuygkVq7S7ZDG3lCK7ux7JSSF+QoffYT8B6b8WxLOK23blluxXbh205
+         vu3Qx4sFo12cKPtNhq0lCxO6DgicM7USS6MaARHNF//pgd2W35FWEtd+LrmRC4tzubI8
+         f7iPhFTybY4hvI44SkzkY7zjMl4abHfyQ+Cibrcle0ufgmNf/z4ypUQVauVjF1jkJhZx
+         Z/1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0tfPrGqFbuzq7YgqyiPRI9+NBMBLQsDBtsKF/Gah+b4=;
+        b=7G5fYezQw6H71QLVl7nvgpwElHsd4QJ66gwCgOlYp6ZiOTY+Zj3qeDAPhjEEOgBqQY
+         hn+YQq/kmuqq4VgpA69BVBHOU8c98WmjGBBC1t+h6PcP8xKLXSPYlaEii/tvozqrhgsm
+         k/Jvu7J5BmLOqffn6FTJZAdkTXwOiA23Rt8/p+a9VAElhQHSpe1VOgLl9sG3Jngtlo2i
+         NamL8uItGGPDF+EUgDi0C+9WFDKaqk1goYkB7U4BwOISY1ByE1fF21SDjb3tevJ6Ziae
+         PJPD7OMcV1MRqegwzG4/UkuIimAVPZe5ZiZKI/6mqWI3DaJIl1yGtYamY6xqwsRBpwdT
+         Gyrw==
+X-Gm-Message-State: AOAM533uig+cPCiGvGpfEP0AA5/GaHUGrRkT3Nt1Vxj2dIaDCRQGVIu0
+        dmUU4E6a/+JcUWf0yAoua7bHDt1VDtY1qcgSsN4=
+X-Google-Smtp-Source: ABdhPJyrG/QY6ohUIG3BNOo4A6B0rhg2QxQYlkcxM4DYDpfgRwoisrho/7OiSrLidd6oRyO5JeBnFqZO8gn/TuAxjeY=
+X-Received: by 2002:a05:6e02:1a8f:b0:2c9:da3d:e970 with SMTP id
+ k15-20020a056e021a8f00b002c9da3de970mr1921663ilv.239.1648595900477; Tue, 29
+ Mar 2022 16:18:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+gm4yU9S6y+oeR3TNj82kKX0gk4ey9gVnKXKWy1Js4-A@mail.gmail.com>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+References: <20220326144320.560939-1-hengqi.chen@gmail.com>
+In-Reply-To: <20220326144320.560939-1-hengqi.chen@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 29 Mar 2022 16:18:09 -0700
+Message-ID: <CAEf4BzZzLy2DjJ4pk_wx8KCsErfZE2-eG6pXO+5WnnRHxcfpiA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Allow kprobe attach using legacy debugfs interface
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 03:31:31PM -0700, Alexei Starovoitov wrote:
-> On Tue, Mar 29, 2022 at 1:11 PM Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> >
-> > On Tue, Mar 29, 2022 at 12:50:40PM -0700, Alexei Starovoitov wrote:
-> > > On Tue, Mar 29, 2022 at 11:19 AM Beau Belgrave
-> > > <beaub@linux.microsoft.com> wrote:
-> > > >
-> > > > Send user_event data to attached eBPF programs for user_event based perf
-> > > > events.
-> > > >
-> > > > Add BPF_ITER flag to allow user_event data to have a zero copy path into
-> > > > eBPF programs if required.
-> > > >
-> > > > Update documentation to describe new flags and structures for eBPF
-> > > > integration.
-> > > >
-> > > > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> > >
-> > > The commit describes _what_ it does, but says nothing about _why_.
-> > > At present I see no use out of bpf and user_events connection.
-> > > The whole user_events feature looks redundant to me.
-> > > We have uprobes and usdt. It doesn't look to me that
-> > > user_events provide anything new that wasn't available earlier.
-> >
-> > A lot of the why, in general, for user_events is covered in the first
-> > change in the series.
-> > Link: https://lore.kernel.org/all/20220118204326.2169-1-beaub@linux.microsoft.com/
-> >
-> > The why was also covered in Linux Plumbers Conference 2021 within the
-> > tracing microconference.
-> >
-> > An example of why we want user_events:
-> > Managed code running that emits data out via Open Telemetry.
-> > Since it's managed there isn't a stub location to patch, it moves.
-> > We watch the Open Telemetry spans in an eBPF program, when a span takes
-> > too long we collect stack data and perform other actions.
-> > With user_events and perf we can monitor the entire system from the root
-> > container without having to have relay agents within each
-> > cgroup/namespace taking up resources.
-> > We do not need to enter each cgroup mnt space and determine the correct
-> > patch location or the right version of each binary for processes that
-> > use user_events.
-> >
-> > An example of why we want eBPF integration:
-> > We also have scenarios where we are live decoding the data quickly.
-> > Having user_data fed directly to eBPF lets us cast the data coming in to
-> > a struct and decode very very quickly to determine if something is
-> > wrong.
-> > We can take that data quickly and put it into maps to perform further
-> > aggregation as required.
-> > We have scenarios that have "skid" problems, where we need to grab
-> > further data exactly when the process that had the problem was running.
-> > eBPF lets us do all of this that we cannot easily do otherwise.
-> >
-> > Another benefit from user_events is the tracing is much faster than
-> > uprobes or others using int 3 traps. This is critical to us to enable on
-> > production systems.
-> 
-> None of it makes sense to me.
+On Sat, Mar 26, 2022 at 7:43 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>
+> On some old kernels, kprobe auto-attach may fail when attach to symbols
+> like udp_send_skb.isra.52 . This is because the kernel has kprobe PMU
+> but don't allow attach to a symbol with '.' ([0]). Add a new option to
+> bpf_kprobe_opts to allow using the legacy kprobe attach directly.
+> This way, users can use bpf_program__attach_kprobe_opts in a dedicated
+> custom sec handler to handle such case.
+>
+>   [0]: https://github.com/torvalds/linux/blob/v4.18/kernel/trace/trace_kprobe.c#L340-L343
+>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
 
-Sorry.
+It's sad, but it makes sense. But, let's have a selftests that
+validates uses legacy option explicitly (e.g., in
+prog_tests/attach_probe.c). Also, let's fix this limitation in the
+kernel? It makes no sense to limit attaching to a proper kallsym
+symbol.
 
-> To take advantage of user_events user space has to be modified
-> and writev syscalls inserted.
+>  tools/lib/bpf/libbpf.c | 9 ++++++++-
+>  tools/lib/bpf/libbpf.h | 4 +++-
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+>
 
-Yes, both user_events and lttng require user space modifications to do
-tracing correctly. The syscall overheads are real, and the cost depends
-on the mitigations around spectre/meltdown.
-
-> This is not cheap and I cannot see a production system using this interface.
-
-But you are fine with uprobe costs? uprobes appear to be much more costly
-than a syscall approach on the hardware I've run on.
-
-> All you did is a poor man version of lttng that doesn't rely
-> on such heavy instrumentation.
-
-Well I am a frugal person. :)
-
-This work has solved some critical issues we've been having, and I would
-appreciate a review of the code if possible.
-
-Thanks,
--Beau
+[...]
