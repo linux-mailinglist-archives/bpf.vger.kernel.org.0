@@ -2,320 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 895964EC9C4
-	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 18:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 199384EC9F3
+	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 18:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348876AbiC3QjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Mar 2022 12:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
+        id S239038AbiC3QtP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Mar 2022 12:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236846AbiC3QjB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Mar 2022 12:39:01 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B91C197AC3;
-        Wed, 30 Mar 2022 09:37:15 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id s8so19197285pfk.12;
-        Wed, 30 Mar 2022 09:37:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=ncCMERzhXgEwa8YpsHvGRoleMf6RuPaWT+VsO4MzRgU=;
-        b=h5fB5kqw7kgZZ7GiiqhNgopBgU3OVifclVBFYjbjk/fF+JUwmyGztrIpstEhHgDW7G
-         DDVDY/eqLsaMAWgYG1HvJ6MSMpwLmmI8R1+GDdNNRk6H1xGOjjNqlZHlmLtu1nBEroki
-         7BKd2UF/nOqMNhJ0qSifuYSP5ASJ0e9GbvRbduWaZMoYSRrEWzZmcxd67V7xXNAq+l9q
-         6XdLq/VwNZaql8Pw+d6XGtTG8tkbYyrz5LEaobUjeLRMd/M842YWWZgoobhf2vwAGv86
-         fl9RkvZwvSLbfOvyoGXmkBkosj7DOd5dEBNGUu7Ll15TG2yK6RqRBscNXLa7RgRAbQ6y
-         aL2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ncCMERzhXgEwa8YpsHvGRoleMf6RuPaWT+VsO4MzRgU=;
-        b=tRLivL8GGgp00OJbcGpMd/g07yGuc7ZSfW85a4Ba4bXi3OyYIwdYiiX6BrKqm6sY2B
-         neUYAUiC5BSX7vNw+LWlEx0HMxLEBjP/6wHduLPJrLCTYcqTea247K5jJufJh6BJKh6z
-         FL5YWVwAVMvhj3pItbYyNYrYkb8mNrdI59BqmbiJ4jhZkZvBp7vwwcaRiwNLJ6M8lBgq
-         nnt5Vya7P9QZgodReKzSBVDBEfsYdVt1EI4WwGqdzsgskhtM6mv/3cCM1M9GFmfRYtT1
-         Id4EzmFtcOMZnTCax1ZVYA5d3zPKUck90p0jfeQNa1/YVqqFBJyn8dMT2skAysl5lEgX
-         XrLw==
-X-Gm-Message-State: AOAM531ExNL2XrnNyArSySUxi9ooJZ3ePgBH/I5uDC9N/R3fAc3k7yMP
-        Rt/c1OsTuSraeB0VgtQwdUg=
-X-Google-Smtp-Source: ABdhPJxVHXRIUEJEE/QCW1WbPe8hN9HKop9wh5Lfe9nswdo6G3RkkQq025wlJnoHNeNzjXFPOuBQqw==
-X-Received: by 2002:a65:6e0f:0:b0:382:2f78:4369 with SMTP id bd15-20020a656e0f000000b003822f784369mr6849189pgb.406.1648658234761;
-        Wed, 30 Mar 2022 09:37:14 -0700 (PDT)
-Received: from localhost.localdomain ([182.213.254.91])
-        by smtp.gmail.com with ESMTPSA id m18-20020a639412000000b003820bd9f2f2sm20119791pge.53.2022.03.30.09.37.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Mar 2022 09:37:14 -0700 (PDT)
-From:   Taehee Yoo <ap420073@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        cmclachlan@solarflare.com
-Cc:     ap420073@gmail.com
-Subject: [PATCH net v2] net: sfc: add missing xdp queue reinitialization
-Date:   Wed, 30 Mar 2022 16:37:03 +0000
-Message-Id: <20220330163703.25086-1-ap420073@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S238745AbiC3QtO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Mar 2022 12:49:14 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2E227971B;
+        Wed, 30 Mar 2022 09:47:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1648658846; x=1680194846;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=5cVxqD4ooUyG1Sv+EbX3dcvpbC9xR89Qnh+6edQIYZY=;
+  b=ECQrOT58CXS6h6YVnY2j3ffRGH6E7Ub1mO6KYYGOT2Z/5ApeopyM7cl+
+   izrR+W6RerDaEQn8oYIoZmgAGfetxUbJ7qY+/dT/KenETBLl55e+wQpdw
+   Q2HDcWGvSXczINXNabse8eArefCuEacxNUknRrr6pahh6Yd76IfbwZggk
+   wbCdZX1kumxPzSIrZ/CcGXZJjX2SIUWdM0RtpPigZ38cILpD9vzw7EnOq
+   SCdRdQSBJK5WvNqauhsyXiNGMzefeUdfCNyqCg/BBJ//1vxWbqWjiiIfy
+   5HkqnJbGL+9D4ZO9ZuqgPkS3zSKFMVJjFFOtmElze3P7+GNnftwuhESGG
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="259774441"
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; 
+   d="scan'208";a="259774441"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2022 09:47:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,223,1643702400"; 
+   d="scan'208";a="546930927"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga007.jf.intel.com with ESMTP; 30 Mar 2022 09:47:26 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Wed, 30 Mar 2022 09:47:25 -0700
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Wed, 30 Mar 2022 09:47:25 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27 via Frontend Transport; Wed, 30 Mar 2022 09:47:25 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.177)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.21; Wed, 30 Mar 2022 09:47:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EhRHOPlGeKKhuO9IwAMovjDUiiBZW1UMELyTd4FCgKyJHWlRAnRk0gZBQ1LKGSlRcfSsYEJ3dMz4qycsS7ys4y4eA8iwiTPEOtqWVHXzrPyykBfWKrHSNldb1aGhJI/kOSni5x/bPNMsYa2UshZ78Nf625/w2rUndh3g36L0UB1M2c4ZHJ5YRuaAVO8+rghsLgle+HIkbA+g3jLUGh9s0tVFmVWTdu2v/wi5E0MzEFLFbbFgr1xIiiFsrDnQ4JD33EREyziAa7QPpOxmnON1TTOpEIvf4THFbECkg04e7G77pp7pQ3oXkWeJPjiaCJoxpcnAdrCBAcrSvi9YWl9bqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zMHCaOJBLHpqWDcNh01/QHABLA5+d4qi+FKCdsBpqxQ=;
+ b=E0PXB45+HHFKEC7ZM0tLz16cfUMMEmS0uP0hBjARLFGgIHRFIiI2KWvw2W+/Vv/dEvNAxHqDrqZDanf26KeCbjDKbD07RYOcXu6lRISgJqcdqKY9PhDy6q67vEHXKRkN6gB/HSx9SvL1N7uDVFnB0WNCdu+KIqHn6jBOcj5Gzqaix7aD55GHJSwXJDwmOxgJL/UfJXenIx80Tj/8dI7kBgWNR5pUByps/Ba4cznwLF977VtSRH0t9w//fte9yhFq6bgtdYFeYW8AcV9PA8/piZz8kD2mPv9JSuJMv18Vbo1/eAK8neeuIFVSxH+aIahDvvt0C0oR0A/nxnxj07630Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MWHPR11MB0062.namprd11.prod.outlook.com (2603:10b6:301:67::34)
+ by SA1PR11MB5801.namprd11.prod.outlook.com (2603:10b6:806:23d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.16; Wed, 30 Mar
+ 2022 16:47:18 +0000
+Received: from MWHPR11MB0062.namprd11.prod.outlook.com
+ ([fe80::c3c:359:d9c4:3a54]) by MWHPR11MB0062.namprd11.prod.outlook.com
+ ([fe80::c3c:359:d9c4:3a54%4]) with mapi id 15.20.5123.020; Wed, 30 Mar 2022
+ 16:47:18 +0000
+From:   "Michael, Alice" <alice.michael@intel.com>
+To:     ivecera <ivecera@redhat.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        poros <poros@redhat.com>, mschmidt <mschmidt@redhat.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+Subject: RE: [PATCH net] ice: Fix logic of getting XSK pool associated with Tx
+ queue
+Thread-Topic: [PATCH net] ice: Fix logic of getting XSK pool associated with
+ Tx queue
+Thread-Index: AQHYQ1fKeNKey7PBdUWcO1Lt83Ut1qzWQlmAgABjSQCAAX0xkA==
+Date:   Wed, 30 Mar 2022 16:47:18 +0000
+Message-ID: <MWHPR11MB0062B06CAE27C58EEE54F162E41F9@MWHPR11MB0062.namprd11.prod.outlook.com>
+References: <20220329102752.1481125-1-ivecera@redhat.com>
+        <YkL0wfgyCq5s8vdu@boxer> <20220329195522.63d332fb@ceranb>
+In-Reply-To: <20220329195522.63d332fb@ceranb>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.401.20
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e6717ed2-2049-4d34-c858-08da126cf3e0
+x-ms-traffictypediagnostic: SA1PR11MB5801:EE_
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-microsoft-antispam-prvs: <SA1PR11MB5801E6E4C3390D9A3345B8CAE41F9@SA1PR11MB5801.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: okQF2r2TBMY8v7BK2r4VSBdxAvv5tZTtiqsxs7K0c/LRF/yh5OdklrjP7kQJ9AUT2eS6ak8t0pvQl2aUeJpWfRz90jGw8OvzOaVNGla+HZMhl+cZLfgTRvnuuLpTgIsM3EaaCDi7c5LhgV/v7GEKBCM86h/c868fKuZ9seoDTYJ/Nu34FcQJ8imWDHvYQQrBCQ/+Yy8M8R303lJ4nC4hC5DCKULIQ/4S85E9FluYxNruk2TwtGZoV4elzeb+wAQTE08CCMq8hYz+yn+cTQB3/AGi6MisNrl+BBQAWmaST60DLhqDUyeVGlCV+djU30dC0H0QpVg1cYwUCAr4IGW1Cuo0PUvd25g3b+y/zxiBfA/Z4sopzOzfo48X1QyocOVPgvezQZYP8+l21+rwcON+tjUQctWHu+JSjciywHpS7QejJRrhnqTZb5D1SZ5bPZuThX2C0JP08DC4KBSM49VnY4S9JRVdp5mnQ55oUchihojl9xhuC13vQTqJxB6qmZ8pGeuU6OJ/c1o1K5RtBgnGPi0zIK182ozFGoEKlLTnCdiVlFC0L/3X+VeTK1D4WL+URp5gl0TrH7cdVNLGBZ2KGJLZdeQDRYvOjWPN5vbD1dwfUgkXczOsTTSt5d/Tyxhb0lwrI3r2h/ogRi49uhSNV7k+7/YStrBXR/7myPmBe4p6znbMtf1K8EPgRG+6hf7OXzN/RL2T9yR8ra6nRszjMDLlezBhkQI8he0bbOZjU8Plr/siMPh6/dFbyfgUCHfOgjB89dxAT0ar2MtvtgvsZT7qYhkAOoc+roumzhIyoDE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0062.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(110136005)(26005)(186003)(82960400001)(38100700002)(122000001)(38070700005)(83380400001)(54906003)(6636002)(66556008)(55016003)(4326008)(76116006)(316002)(5660300002)(2906002)(33656002)(8676002)(7696005)(64756008)(8936002)(66946007)(53546011)(52536014)(6506007)(86362001)(9686003)(66476007)(66446008)(7416002)(508600001)(71200400001)(966005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?iSc0O9Mlvq36a1InspykdMkTWfObimaXYW0r9cDYamNSrI7jMlwvPQjj+GRI?=
+ =?us-ascii?Q?KbUO12b5P7+PUrhXBUOu+t2Ix6hHANPZg6toZLsglcEoX8GdGxbEDH180ttu?=
+ =?us-ascii?Q?VcSWNM8PjKAuCl3wGMiJpw9Nnq3SZDnhEXZUA/j2F6bMo4ebo4H1QtZROVTe?=
+ =?us-ascii?Q?IjmWkClKTGFSpuoyH6sTSsuaztiw+xYz5+GuevFZ5fBQZF30MiFL1iVATmhH?=
+ =?us-ascii?Q?crCfZGXwakX31XQ7XrMsBlUYqAYwe/dzuBfrTXlFDQhCg/XfDVv87ARwVG1U?=
+ =?us-ascii?Q?Qh9bu70eRgWEROMW/Y5PyRn12RA8GA52TUu0u4DNL0AyFBOYMIwnQvvDkpBO?=
+ =?us-ascii?Q?kdDegsgXiFUPMFKzVb5+kLODj7FLlaDULq3kWLl2l23StL10p57DbQ2fr4vU?=
+ =?us-ascii?Q?GB4TiysnBoxZI+Pp3idFAXVZEDsKZzkeTb5qeHAaOvmTOkvrA35tkkhgI9Ox?=
+ =?us-ascii?Q?StaWUSXrBoa93kZcbrLIULYsO1rtC0gB7wpOmmBwM1k2b9Wy3jxdpHrid7bL?=
+ =?us-ascii?Q?672jWa0CykLHjQNSO5RWiIdQdom5o4y0H8+BpW5Sgns+ftFuvcddKfleTkLU?=
+ =?us-ascii?Q?FAU3AxciCaIRCgcRrTEmlDsF/L+vK3YdSuew/XePeEtytP31pTLQ1wpbtq/2?=
+ =?us-ascii?Q?XYor6FJQ7JO59pAXOUu4XZVHYvbZjLEKGIDnJoa+L3tLR6+mUC5g/bOe79hd?=
+ =?us-ascii?Q?cvS/5v4O2zWXWnq9TeZ/k0c2Nk40YmoxAj2Ywns/R9tF07voTM5ZENbN/rrA?=
+ =?us-ascii?Q?vLNBWtd10w8C0ORFa8mSQhcwfjEg6jLsPisPcWjDyEK3JxwGcF4d7/f9xm3X?=
+ =?us-ascii?Q?7izKGjzBTo+NnfpIP2C3xy5xvWJ1AspcJ0JC3SC6i3T6YQCdStF38JVHcw4q?=
+ =?us-ascii?Q?P8PSQZ9DFY53QXi1I9q5yUbplLBEZwtHQZ3MiWQmZm6H7rd7MO02mlZwMtMd?=
+ =?us-ascii?Q?0TLL7Y2mKmFVuPdV/SJMCDgHkQQQNc1IYF0F/WdoZSTs8k38o13obv4o7iUb?=
+ =?us-ascii?Q?M5iTDXfPfYdAxcHBwD3OBBRbsaiuPg9lHJWFw6I01pSqkt8ZwfYrnKhkMb9P?=
+ =?us-ascii?Q?GMbwG7W4nJ18aL3EzJSqSAfQjd1UnkhLxd+KzEf9c1yjarHZQ76PMNo8muzL?=
+ =?us-ascii?Q?HN1PG8KyDjI9QhvzjSRBXIZweqsAk92PMOiLyCiFoUbUqAPl7jDyHvbipFmW?=
+ =?us-ascii?Q?1NEzqge1FIyFNa+k0/I2S28PwVsgCKTIlZScwT58MxHeSqAVGcNEShkoT9Yv?=
+ =?us-ascii?Q?O22fTRzUOy/TCelKoLrVkbvbLO7te2t1zH6Aq8nyzR+nxjK1KhTLnv33YQ0o?=
+ =?us-ascii?Q?NmbxMK5dCACXFC33pghdQRKhDaqu3NIVsKi+uKjY/ZctXfuTeGEKzkh9e6hA?=
+ =?us-ascii?Q?+MNoZeRArCaJpw5PpspnIHMwyEKRNGq55Dwr8OHtAV1g5eG3137G0qf9h86Y?=
+ =?us-ascii?Q?CMEg3HzL+w5UY3AoUmI2bIWa9LBrj7DudPnH8Dto7TBteFCczE+i93a8UXZX?=
+ =?us-ascii?Q?JEMdnlk7nK18gkYKBdTgIJ2l3490O2TyhEX2HJis1Xtmef5dnRGnYALlBn4+?=
+ =?us-ascii?Q?Ljv3ZYipv+4ryedxNYoW5DjNEpVSHaB4TYE0uaEB9ihE+hkmcMUq0Sqh962Y?=
+ =?us-ascii?Q?tsmd8vQLTtWuQfU/8RFRF/wrE+9qnzntQY/vVTvi6Pk6+OHIkVndj0V8MWZT?=
+ =?us-ascii?Q?ZSdalSJHMBp494cT3aCz985CAlrQv601aQRvaJySKlvGvfMzz1swif0prdtl?=
+ =?us-ascii?Q?ukFT9GIGuQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0062.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6717ed2-2049-4d34-c858-08da126cf3e0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Mar 2022 16:47:18.3084
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rsikfikX5otiNydBaoDKt+5FGORcXGyd7x2z8eQE7GtFAu/nMIdl9BMKBkUXup8uLnU3vvgta2b6aazhwsV9zw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB5801
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After rx/tx ring buffer size is changed, kernel panic occurs when
-it acts XDP_TX or XDP_REDIRECT.
+> -----Original Message-----
+> From: Ivan Vecera <ivecera@redhat.com>
+> Sent: Tuesday, March 29, 2022 10:55 AM
+> To: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> Cc: netdev@vger.kernel.org; poros <poros@redhat.com>; mschmidt
+> <mschmidt@redhat.com>; Brandeburg, Jesse
+> <jesse.brandeburg@intel.com>; Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com>; David S. Miller <davem@davemloft.net>;
+> Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
+> Alexei Starovoitov <ast@kernel.org>; Daniel Borkmann
+> <daniel@iogearbox.net>; Jesper Dangaard Brouer <hawk@kernel.org>; John
+> Fastabend <john.fastabend@gmail.com>; Andrii Nakryiko
+> <andrii@kernel.org>; Martin KaFai Lau <kafai@fb.com>; Song Liu
+> <songliubraving@fb.com>; Yonghong Song <yhs@fb.com>; KP Singh
+> <kpsingh@kernel.org>; Jeff Kirsher <jeffrey.t.kirsher@intel.com>; Krzyszt=
+of
+> Kazimierczak <krzysztof.kazimierczak@intel.com>; Lobakin, Alexandr
+> <alexandr.lobakin@intel.com>; moderated list:INTEL ETHERNET DRIVERS
+> <intel-wired-lan@lists.osuosl.org>; open list <linux-kernel@vger.kernel.o=
+rg>;
+> open list:XDP (eXpress Data Path) <bpf@vger.kernel.org>
+> Subject: Re: [PATCH net] ice: Fix logic of getting XSK pool associated wi=
+th Tx
+> queue
+>=20
+> On Tue, 29 Mar 2022 14:00:01 +0200
+> Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
+>=20
+> > Thanks for this fix! I did exactly the same patch yesterday and it's
+> > already applied to bpf tree:
+> >
+> > https://lore.kernel.org/bpf/20220328142123.170157-5-maciej.fijalkowski
+> > @intel.com/T/#u
+> >
+> > Maciej
+>=20
+> Thanks for info... Nice human race condition ;-)
+>=20
+> I.
 
-When tx/rx ring buffer size is changed(ethtool -G), sfc driver
-reallocates and reinitializes rx and tx queues and their buffer
-(tx_queue->buffer).
-But it misses reinitializing xdp queues(efx->xdp_tx_queues).
-So, while it is acting XDP_TX or XDP_REDIRECT, it uses the uninitialized
-tx_queue->buffer.
+I'm covering for Tony this week maintaining this tree.  He let me know ther=
+e were a few patches you had to send Ivan and I was waiting on this one.  I=
+f I'm following correctly, this one will be dropped and the other ones are =
+ready to be sent now to net then?
 
-A new function efx_set_xdp_channels() is separated from efx_set_channels()
-to handle only xdp queues.
-
-Splat looks like:
-   BUG: kernel NULL pointer dereference, address: 000000000000002a
-   #PF: supervisor write access in kernel mode
-   #PF: error_code(0x0002) - not-present page
-   PGD 0 P4D 0
-   Oops: 0002 [#4] PREEMPT SMP NOPTI
-   RIP: 0010:efx_tx_map_chunk+0x54/0x90 [sfc]
-   CPU: 2 PID: 0 Comm: swapper/2 Tainted: G      D           5.17.0+ #55 e8beeee8289528f11357029357cf
-   Code: 48 8b 8d a8 01 00 00 48 8d 14 52 4c 8d 2c d0 44 89 e0 48 85 c9 74 0e 44 89 e2 4c 89 f6 48 80
-   RSP: 0018:ffff92f121e45c60 EFLAGS: 00010297
-   RIP: 0010:efx_tx_map_chunk+0x54/0x90 [sfc]
-   RAX: 0000000000000040 RBX: ffff92ea506895c0 RCX: ffffffffc0330870
-   RDX: 0000000000000001 RSI: 00000001139b10ce RDI: ffff92ea506895c0
-   RBP: ffffffffc0358a80 R08: 00000001139b110d R09: 0000000000000000
-   R10: 0000000000000001 R11: ffff92ea414c0088 R12: 0000000000000040
-   R13: 0000000000000018 R14: 00000001139b10ce R15: ffff92ea506895c0
-   FS:  0000000000000000(0000) GS:ffff92f121ec0000(0000) knlGS:0000000000000000
-   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   Code: 48 8b 8d a8 01 00 00 48 8d 14 52 4c 8d 2c d0 44 89 e0 48 85 c9 74 0e 44 89 e2 4c 89 f6 48 80
-   CR2: 000000000000002a CR3: 00000003e6810004 CR4: 00000000007706e0
-   RSP: 0018:ffff92f121e85c60 EFLAGS: 00010297
-   PKRU: 55555554
-   RAX: 0000000000000040 RBX: ffff92ea50689700 RCX: ffffffffc0330870
-   RDX: 0000000000000001 RSI: 00000001145a90ce RDI: ffff92ea50689700
-   RBP: ffffffffc0358a80 R08: 00000001145a910d R09: 0000000000000000
-   R10: 0000000000000001 R11: ffff92ea414c0088 R12: 0000000000000040
-   R13: 0000000000000018 R14: 00000001145a90ce R15: ffff92ea50689700
-   FS:  0000000000000000(0000) GS:ffff92f121e80000(0000) knlGS:0000000000000000
-   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   CR2: 000000000000002a CR3: 00000003e6810005 CR4: 00000000007706e0
-   PKRU: 55555554
-   Call Trace:
-    <IRQ>
-    efx_xdp_tx_buffers+0x12b/0x3d0 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
-    __efx_rx_packet+0x5c3/0x930 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
-    efx_rx_packet+0x28c/0x2e0 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
-    efx_ef10_ev_process+0x5f8/0xf40 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
-    ? enqueue_task_fair+0x95/0x550
-    efx_poll+0xc4/0x360 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
-
-Fixes: 3990a8fffbda ("sfc: allocate channels for XDP tx queues")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
----
-
-v2: Do not use inline in .c file
-
- drivers/net/ethernet/sfc/efx_channels.c | 146 +++++++++++++-----------
- 1 file changed, 81 insertions(+), 65 deletions(-)
-
-diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
-index d6fdcdc530ca..b29ca69aeca5 100644
---- a/drivers/net/ethernet/sfc/efx_channels.c
-+++ b/drivers/net/ethernet/sfc/efx_channels.c
-@@ -789,6 +789,85 @@ void efx_remove_channels(struct efx_nic *efx)
- 	kfree(efx->xdp_tx_queues);
- }
- 
-+static int efx_set_xdp_tx_queue(struct efx_nic *efx, int xdp_queue_number,
-+				struct efx_tx_queue *tx_queue)
-+{
-+	if (xdp_queue_number >= efx->xdp_tx_queue_count)
-+		return -EINVAL;
-+
-+	netif_dbg(efx, drv, efx->net_dev,
-+		  "Channel %u TXQ %u is XDP %u, HW %u\n",
-+		  tx_queue->channel->channel, tx_queue->label,
-+		  xdp_queue_number, tx_queue->queue);
-+	efx->xdp_tx_queues[xdp_queue_number] = tx_queue;
-+	return 0;
-+}
-+
-+static void efx_set_xdp_channels(struct efx_nic *efx)
-+{
-+	struct efx_tx_queue *tx_queue;
-+	struct efx_channel *channel;
-+	unsigned int next_queue = 0;
-+	int xdp_queue_number = 0;
-+	int rc;
-+
-+	/* We need to mark which channels really have RX and TX
-+	 * queues, and adjust the TX queue numbers if we have separate
-+	 * RX-only and TX-only channels.
-+	 */
-+	efx_for_each_channel(channel, efx) {
-+		if (channel->channel < efx->tx_channel_offset)
-+			continue;
-+
-+		if (efx_channel_is_xdp_tx(channel)) {
-+			efx_for_each_channel_tx_queue(tx_queue, channel) {
-+				tx_queue->queue = next_queue++;
-+				rc = efx_set_xdp_tx_queue(efx, xdp_queue_number,
-+							  tx_queue);
-+				if (rc == 0)
-+					xdp_queue_number++;
-+			}
-+		} else {
-+			efx_for_each_channel_tx_queue(tx_queue, channel) {
-+				tx_queue->queue = next_queue++;
-+				netif_dbg(efx, drv, efx->net_dev,
-+					  "Channel %u TXQ %u is HW %u\n",
-+					  channel->channel, tx_queue->label,
-+					  tx_queue->queue);
-+			}
-+
-+			/* If XDP is borrowing queues from net stack, it must
-+			 * use the queue with no csum offload, which is the
-+			 * first one of the channel
-+			 * (note: tx_queue_by_type is not initialized yet)
-+			 */
-+			if (efx->xdp_txq_queues_mode ==
-+			    EFX_XDP_TX_QUEUES_BORROWED) {
-+				tx_queue = &channel->tx_queue[0];
-+				rc = efx_set_xdp_tx_queue(efx, xdp_queue_number,
-+							  tx_queue);
-+				if (rc == 0)
-+					xdp_queue_number++;
-+			}
-+		}
-+	}
-+	WARN_ON(efx->xdp_txq_queues_mode == EFX_XDP_TX_QUEUES_DEDICATED &&
-+		xdp_queue_number != efx->xdp_tx_queue_count);
-+	WARN_ON(efx->xdp_txq_queues_mode != EFX_XDP_TX_QUEUES_DEDICATED &&
-+		xdp_queue_number > efx->xdp_tx_queue_count);
-+
-+	/* If we have more CPUs than assigned XDP TX queues, assign the already
-+	 * existing queues to the exceeding CPUs
-+	 */
-+	next_queue = 0;
-+	while (xdp_queue_number < efx->xdp_tx_queue_count) {
-+		tx_queue = efx->xdp_tx_queues[next_queue++];
-+		rc = efx_set_xdp_tx_queue(efx, xdp_queue_number, tx_queue);
-+		if (rc == 0)
-+			xdp_queue_number++;
-+	}
-+}
-+
- int efx_realloc_channels(struct efx_nic *efx, u32 rxq_entries, u32 txq_entries)
- {
- 	struct efx_channel *other_channel[EFX_MAX_CHANNELS], *channel;
-@@ -860,6 +939,7 @@ int efx_realloc_channels(struct efx_nic *efx, u32 rxq_entries, u32 txq_entries)
- 		efx_init_napi_channel(efx->channel[i]);
- 	}
- 
-+	efx_set_xdp_channels(efx);
- out:
- 	/* Destroy unused channel structures */
- 	for (i = 0; i < efx->n_channels; i++) {
-@@ -892,26 +972,9 @@ int efx_realloc_channels(struct efx_nic *efx, u32 rxq_entries, u32 txq_entries)
- 	goto out;
- }
- 
--static inline int
--efx_set_xdp_tx_queue(struct efx_nic *efx, int xdp_queue_number,
--		     struct efx_tx_queue *tx_queue)
--{
--	if (xdp_queue_number >= efx->xdp_tx_queue_count)
--		return -EINVAL;
--
--	netif_dbg(efx, drv, efx->net_dev, "Channel %u TXQ %u is XDP %u, HW %u\n",
--		  tx_queue->channel->channel, tx_queue->label,
--		  xdp_queue_number, tx_queue->queue);
--	efx->xdp_tx_queues[xdp_queue_number] = tx_queue;
--	return 0;
--}
--
- int efx_set_channels(struct efx_nic *efx)
- {
--	struct efx_tx_queue *tx_queue;
- 	struct efx_channel *channel;
--	unsigned int next_queue = 0;
--	int xdp_queue_number;
- 	int rc;
- 
- 	efx->tx_channel_offset =
-@@ -929,61 +992,14 @@ int efx_set_channels(struct efx_nic *efx)
- 			return -ENOMEM;
- 	}
- 
--	/* We need to mark which channels really have RX and TX
--	 * queues, and adjust the TX queue numbers if we have separate
--	 * RX-only and TX-only channels.
--	 */
--	xdp_queue_number = 0;
- 	efx_for_each_channel(channel, efx) {
- 		if (channel->channel < efx->n_rx_channels)
- 			channel->rx_queue.core_index = channel->channel;
- 		else
- 			channel->rx_queue.core_index = -1;
--
--		if (channel->channel >= efx->tx_channel_offset) {
--			if (efx_channel_is_xdp_tx(channel)) {
--				efx_for_each_channel_tx_queue(tx_queue, channel) {
--					tx_queue->queue = next_queue++;
--					rc = efx_set_xdp_tx_queue(efx, xdp_queue_number, tx_queue);
--					if (rc == 0)
--						xdp_queue_number++;
--				}
--			} else {
--				efx_for_each_channel_tx_queue(tx_queue, channel) {
--					tx_queue->queue = next_queue++;
--					netif_dbg(efx, drv, efx->net_dev, "Channel %u TXQ %u is HW %u\n",
--						  channel->channel, tx_queue->label,
--						  tx_queue->queue);
--				}
--
--				/* If XDP is borrowing queues from net stack, it must use the queue
--				 * with no csum offload, which is the first one of the channel
--				 * (note: channel->tx_queue_by_type is not initialized yet)
--				 */
--				if (efx->xdp_txq_queues_mode == EFX_XDP_TX_QUEUES_BORROWED) {
--					tx_queue = &channel->tx_queue[0];
--					rc = efx_set_xdp_tx_queue(efx, xdp_queue_number, tx_queue);
--					if (rc == 0)
--						xdp_queue_number++;
--				}
--			}
--		}
- 	}
--	WARN_ON(efx->xdp_txq_queues_mode == EFX_XDP_TX_QUEUES_DEDICATED &&
--		xdp_queue_number != efx->xdp_tx_queue_count);
--	WARN_ON(efx->xdp_txq_queues_mode != EFX_XDP_TX_QUEUES_DEDICATED &&
--		xdp_queue_number > efx->xdp_tx_queue_count);
- 
--	/* If we have more CPUs than assigned XDP TX queues, assign the already
--	 * existing queues to the exceeding CPUs
--	 */
--	next_queue = 0;
--	while (xdp_queue_number < efx->xdp_tx_queue_count) {
--		tx_queue = efx->xdp_tx_queues[next_queue++];
--		rc = efx_set_xdp_tx_queue(efx, xdp_queue_number, tx_queue);
--		if (rc == 0)
--			xdp_queue_number++;
--	}
-+	efx_set_xdp_channels(efx);
- 
- 	rc = netif_set_real_num_tx_queues(efx->net_dev, efx->n_tx_channels);
- 	if (rc)
--- 
-2.17.1
-
+Alice.
