@@ -2,128 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0D84EC7EA
-	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 17:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7094EC821
+	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 17:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345204AbiC3POr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Mar 2022 11:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
+        id S1348138AbiC3PYn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Mar 2022 11:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346432AbiC3POo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Mar 2022 11:14:44 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEDA10663B;
-        Wed, 30 Mar 2022 08:12:58 -0700 (PDT)
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4KT8z54Vvqz67yhs;
-        Wed, 30 Mar 2022 23:11:29 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 30 Mar 2022 17:12:57 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Wed, 30 Mar 2022 17:12:57 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>, "Shuah Khan" <shuah@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 05/18] bpf-preload: Generate static variables
-Thread-Topic: [PATCH 05/18] bpf-preload: Generate static variables
-Thread-Index: AQHYQsyWLcVpB05sakWRWVPVfsSzdqzW6LQAgACiZ4CAAH9p4A==
-Date:   Wed, 30 Mar 2022 15:12:57 +0000
-Message-ID: <af5e27aeef544581804b578032fc1b4e@huawei.com>
-References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
- <20220328175033.2437312-6-roberto.sassu@huawei.com>
- <CAEf4BzY9d0pUP2TFkOY41dbjyYrsr5S+sNCpynPtg_9XZHFb-Q@mail.gmail.com> 
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.81.211.106]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S1348132AbiC3PYg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Mar 2022 11:24:36 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015131925A2
+        for <bpf@vger.kernel.org>; Wed, 30 Mar 2022 08:22:51 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id j13so20708474plj.8
+        for <bpf@vger.kernel.org>; Wed, 30 Mar 2022 08:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=rWmpDeUvmPwlMuAa/jUl5NpTSjP3xGaCjNUDWkK+1Zg=;
+        b=AhXUA5+qgVG2seWP3jphLDH5WMNHmVwE/tWVyuOtEUbJWBeM5+TXsL835dWg/k4JIY
+         Rb7QX+SevoZpzAdqPdR9xq2O3j2BzGjf57qGj7lJyDl6TGxk9t0l2zLHpV8gXFhhLDEt
+         VPyM5ekPFzJe426byH978obr4goimI5sG7d74j8vOnamdguZrvTsiz6siXpsFyvqBvZ4
+         BfxIda6JM54xnXOMm2t7ZsPKu54fGRVYTaDf1kSnBpzefZ7UbhnrtVekkV1892crnR5w
+         UanZTTh/wJHsD5lFRep9TeuuS0/atghhKXAz+oE9QezMn1AIgZZ2ItWRTrYekd/dGexg
+         cdqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=rWmpDeUvmPwlMuAa/jUl5NpTSjP3xGaCjNUDWkK+1Zg=;
+        b=hVNcRLTBn/8al8WyFQUCl3jgI56XlGlE94z6yYnrEaebKAaIbbvUGdF4elJfcKADaJ
+         cMjxaVDZKToa+vof6xFd4mIEGT/Y97bHE2pQJ75rlx6CsSYZ+A0BMaCPeddCuR05hc4o
+         gD4YoKYqXN5jqkeqWylm6LPPwVaGv3atgilL8G3nWjaSTYqMkIymZcCb/PKmRQHLl5Pe
+         oHlWuhA53JmR2xPaH+8CDnNBBiPwYSfT8k+lQCd42hWZ0yWkTR6EHbdeM505ownJCRFx
+         8fvBb/s+ulhiZiCvQQ+Wz1zZYf2YgoNLPVxrDi4sUTK1U8zXeeHQNa4st/z/eFL44R/W
+         93qA==
+X-Gm-Message-State: AOAM532zon+6ZipnptRHzUVTtG7tzFcZkVTngmjQaHFDfvfU7sOWQY6N
+        eP+AVmbE18LR+6hgpLan1eU=
+X-Google-Smtp-Source: ABdhPJw36hdy3Zt5ztAReg99kt+mZ2JM+td1NMUKZSWmaEklNVg9zoay/lttfZpESCOOu4hVyQb0LQ==
+X-Received: by 2002:a17:902:e74f:b0:154:6052:55b2 with SMTP id p15-20020a170902e74f00b00154605255b2mr35650903plf.106.1648653771404;
+        Wed, 30 Mar 2022 08:22:51 -0700 (PDT)
+Received: from [192.168.255.10] ([203.205.141.111])
+        by smtp.gmail.com with ESMTPSA id s19-20020aa78d53000000b004fdaae08497sm133975pfe.28.2022.03.30.08.22.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Mar 2022 08:22:51 -0700 (PDT)
+Message-ID: <b11ef0fa-da27-cf96-cb5c-e61c04b5f735@gmail.com>
+Date:   Wed, 30 Mar 2022 23:22:48 +0800
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.1
+Subject: Re: [PATCH bpf-next 1/7] libbpf: add BPF-side of USDT support
+Content-Language: en-US
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net
+Cc:     kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+References: <20220325052941.3526715-1-andrii@kernel.org>
+ <20220325052941.3526715-2-andrii@kernel.org>
+ <176471e1-1221-8eb3-300e-986e3a6eaef8@gmail.com>
+In-Reply-To: <176471e1-1221-8eb3-300e-986e3a6eaef8@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBSb2JlcnRvIFNhc3N1DQo+IFNlbnQ6IFdlZG5lc2RheSwgTWFyY2ggMzAsIDIwMjIg
-OTo0NSBBTQ0KPiA+IEZyb206IEFuZHJpaSBOYWtyeWlrbyBbbWFpbHRvOmFuZHJpaS5uYWtyeWlr
-b0BnbWFpbC5jb21dDQo+ID4gU2VudDogV2VkbmVzZGF5LCBNYXJjaCAzMCwgMjAyMiAxOjUyIEFN
-DQo+ID4gT24gTW9uLCBNYXIgMjgsIDIwMjIgYXQgMTA6NTIgQU0gUm9iZXJ0byBTYXNzdQ0KPiA+
-IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IFRoZSBmaXJz
-dCBwYXJ0IG9mIHRoZSBwcmVsb2FkIGNvZGUgZ2VuZXJhdGlvbiBjb25zaXN0cyBpbiBnZW5lcmF0
-aW5nIHRoZQ0KPiA+ID4gc3RhdGljIHZhcmlhYmxlcyB0byBiZSB1c2VkIGJ5IHRoZSBjb2RlIGl0
-c2VsZjogdGhlIGxpbmtzIGFuZCBtYXBzIHRvIGJlDQo+ID4gPiBwaW5uZWQsIGFuZCB0aGUgc2tl
-bGV0b24uIEdlbmVyYXRpb24gb2YgdGhlIHByZWxvYWQgdmFyaWFibGVzIGFuZA0KPiA+IG1ldGhv
-ZHMNCj4gPiA+IGlzIGVuYWJsZWQgd2l0aCB0aGUgb3B0aW9uIC1QIGFkZGVkIHRvICdicGZ0b29s
-IGdlbiBza2VsZXRvbicuDQo+ID4gPg0KPiA+ID4gVGhlIGV4aXN0aW5nIHZhcmlhYmxlcyBtYXBz
-X2xpbmsgYW5kIHByb2dzX2xpbmtzIGluIGJwZl9wcmVsb2FkX2tlcm4uYw0KPiA+IGhhdmUNCj4g
-PiA+IGJlZW4gcmVuYW1lZCByZXNwZWN0aXZlbHkgdG8gZHVtcF9icGZfbWFwX2xpbmsgYW5kDQo+
-ID4gZHVtcF9icGZfcHJvZ19saW5rLCB0bw0KPiA+ID4gbWF0Y2ggdGhlIG5hbWUgb2YgdGhlIHZh
-cmlhYmxlcyBpbiB0aGUgbWFpbiBzdHJ1Y3R1cmUgb2YgdGhlIGxpZ2h0DQo+ID4gPiBza2VsZXRv
-bi4NCj4gPiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNh
-c3N1QGh1YXdlaS5jb20+DQo+ID4gPiAtLS0NCj4gPiA+ICBrZXJuZWwvYnBmL3ByZWxvYWQvYnBm
-X3ByZWxvYWRfa2Vybi5jICAgICAgICAgfCAgMzUgKy0NCj4gPiA+ICBrZXJuZWwvYnBmL3ByZWxv
-YWQvaXRlcmF0b3JzL01ha2VmaWxlICAgICAgICAgfCAgIDIgKy0NCj4gPiA+ICAuLi4vYnBmL3By
-ZWxvYWQvaXRlcmF0b3JzL2l0ZXJhdG9ycy5sc2tlbC5oICAgfCAzNzggKysrKysrKysrLS0tLS0t
-LS0tDQo+ID4gPiAgLi4uL2JwZi9icGZ0b29sL0RvY3VtZW50YXRpb24vYnBmdG9vbC1nZW4ucnN0
-IHwgICA1ICsNCj4gPiA+ICB0b29scy9icGYvYnBmdG9vbC9iYXNoLWNvbXBsZXRpb24vYnBmdG9v
-bCAgICAgfCAgIDIgKy0NCj4gPiA+ICB0b29scy9icGYvYnBmdG9vbC9nZW4uYyAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMjcgKysNCj4gPiA+ICB0b29scy9icGYvYnBmdG9vbC9tYWluLmMgICAg
-ICAgICAgICAgICAgICAgICAgfCAgIDcgKy0NCj4gPiA+ICB0b29scy9icGYvYnBmdG9vbC9tYWlu
-LmggICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKw0KPiA+ID4gIDggZmlsZXMgY2hhbmdlZCwg
-MjU0IGluc2VydGlvbnMoKyksIDIwMyBkZWxldGlvbnMoLSkNCj4gPiA+DQo+ID4NCj4gPiBbLi4u
-XQ0KPiA+DQo+ID4gPiArX19hdHRyaWJ1dGVfXygodW51c2VkKSkgc3RhdGljIHZvaWQNCj4gPiA+
-ICtpdGVyYXRvcnNfYnBmX19hc3NlcnQoc3RydWN0IGl0ZXJhdG9yc19icGYgKnMpDQo+ID4gPiAr
-ew0KPiA+ID4gKyNpZmRlZiBfX2NwbHVzcGx1cw0KPiA+ID4gKyNkZWZpbmUgX1N0YXRpY19hc3Nl
-cnQgc3RhdGljX2Fzc2VydA0KPiA+ID4gKyNlbmRpZg0KPiA+ID4gKyNpZmRlZiBfX2NwbHVzcGx1
-cw0KPiA+ID4gKyN1bmRlZiBfU3RhdGljX2Fzc2VydA0KPiA+ID4gKyNlbmRpZg0KPiA+ID4gK30N
-Cj4gPiA+ICsNCj4gPiA+ICtzdGF0aWMgc3RydWN0IGJwZl9saW5rICpkdW1wX2JwZl9tYXBfbGlu
-azsNCj4gPiA+ICtzdGF0aWMgc3RydWN0IGJwZl9saW5rICpkdW1wX2JwZl9wcm9nX2xpbms7DQo+
-ID4gPiArc3RhdGljIHN0cnVjdCBpdGVyYXRvcnNfYnBmICpza2VsOw0KPiA+DQo+ID4gSSBkb24n
-dCB1bmRlcnN0YW5kIHdoYXQgaXMgdGhpcyBhbmQgd2hhdCBmb3I/IFlvdSBhcmUgbWFraW5nIGFu
-DQo+ID4gYXNzdW1wdGlvbiB0aGF0IGxpZ2h0IHNrZWxldG9uIGNhbiBiZSBpbnN0YW50aWF0ZWQg
-anVzdCBvbmNlLCB3aHk/IEFuZA0KPiA+IGFkZGluZyBleHRyYSBicGZ0b29sIG9wdGlvbiB0byBs
-aWdodCBza2VsZXRvbiBjb2RlZ2VuIGp1c3QgdG8gc2F2ZSBhDQo+ID4gYml0IG9mIHR5cGluZyBh
-dCB0aGUgcGxhY2Ugd2hlcmUgbGlnaHQgc2tlbGV0b24gaXMgYWN0dWFsbHkNCj4gPiBpbnN0YW50
-aWF0ZWQgYW5kIHVzZWQgZG9lc24ndCBzZWVtcyBsaWtlIGEgcmlnaHQgYXBwcm9hY2guDQo+IA0K
-PiBUcnVlLCBpdGVyYXRvcl9icGYgaXMgc2ltcGxlLiBXcml0aW5nIHRoZSBwcmVsb2FkaW5nIGNv
-ZGUNCj4gZm9yIGl0IGlzIHNpbXBsZS4gQnV0LCB3aGF0IGlmIHlvdSB3YW50ZWQgdG8gcHJlbG9h
-ZCBhbiBMU00NCj4gd2l0aCAxMCBob29rcyBvciBtb3JlPw0KPiANCj4gT2ssIHJlZ2FyZGluZyB3
-aGVyZSB0aGUgcHJlbG9hZGluZyBjb2RlIHNob3VsZCBiZSwgSSB3aWxsDQo+IHRyeSB0byBtb3Zl
-IHRoZSBnZW5lcmF0ZWQgY29kZSB0byB0aGUga2VybmVsIG1vZHVsZSBpbnN0ZWFkDQo+IG9mIHRo
-ZSBsaWdodCBza2VsZXRvbi4NCg0KRG9uZS4gSSBtb3ZlZCBldmVyeXRoaW5nIGZyb20gdGhlIGxp
-Z2h0IHNrZWxldG9uIHRvIHRoZSBrZXJuZWwNCm1vZHVsZS4gVGhlIGNoYW5nZXMgbm93IGFyZSBh
-bHNvIHdlbGwgc2VwYXJhdGVkLCBhbmQNCnJlZ2VuZXJhdGlvbiBvZiB0aGUga2VybmVsIG1vZHVs
-ZSBvY2N1cnMgb25seSBhZnRlciBhbGwgdGhlDQpnZW5lcmF0aW9uIGNvZGUgaXMgYWRkZWQgdG8g
-YnBmdG9vbC4NCg0KSSBwdXNoZWQgYSBuZXcgYnJhbmNoOg0KDQpodHRwczovL2dpdGh1Yi5jb20v
-cm9iZXJ0b3Nhc3N1L2xpbnV4L2NvbW1pdHMvYnBmLXByZWxvYWQtdjItZGV2ZWwtdjINCg0KUm9i
-ZXJ0bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0K
-TWFuYWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIFpob25nIFJvbmdodWENCg==
+
+
+On 2022/3/30 11:10 AM, Hengqi Chen wrote:
+> On 2022/3/25 1:29 PM, Andrii Nakryiko wrote:
+>> Add BPF-side implementation of libbpf-provided USDT support. This
+>> consists of single header library, usdt.bpf.h, which is meant to be used
+>> from user's BPF-side source code. This header is added to the list of
+>> installed libbpf header, along bpf_helpers.h and others.
+>>
+>> BPF-side implementation consists of two BPF maps:
+>>   - spec map, which contains "a USDT spec" which encodes information
+
+...
+
+>> +}
+>> +
+>> +/* Fetch USDT argument *arg* (zero-indexed) and put its value into *res.
+>> + * Returns 0 on success; negative error, otherwise.
+>> + * On error *res is guaranteed to be set to zero.
+>> + */
+>> +__hidden __weak
+>> +int bpf_usdt_arg(struct pt_regs *ctx, int arg, long *res)
+>> +{
+>> +	struct __bpf_usdt_spec *spec;
+>> +	struct __bpf_usdt_arg_spec *arg_spec;
+>> +	unsigned long val;
+>> +	int err, spec_id;
+>> +
+>> +	*res = 0;
+>> +
+>> +	spec_id = __bpf_usdt_spec_id(ctx);
+>> +	if (spec_id < 0)
+>> +		return -ESRCH;
+>> +
+>> +	spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
+>> +	if (!spec)
+>> +		return -ESRCH;
+>> +
+>> +	if (arg >= spec->arg_cnt)
+>> +		return -ENOENT;
+>> +
+>> +	arg_spec = &spec->args[arg];
+>> +	switch (arg_spec->arg_type) {
+>> +	case BPF_USDT_ARG_CONST:
+>> +		val = arg_spec->val_off;
+>> +		break;
+>> +	case BPF_USDT_ARG_REG:
+>> +		err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
+>> +		if (err)
+>> +			return err;
+>> +		break;
+>> +	case BPF_USDT_ARG_REG_DEREF:
+>> +		err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
+>> +		if (err)
+>> +			return err;
+>> +		err = bpf_probe_read_user(&val, sizeof(val), (void *)val + arg_spec->val_off);
+>> +		if (err)
+>> +			return err;
+
+Can you elaborate more on these two probe read call ?
+
+I replace bpf_probe_read_kernel with bpf_probe_read_user, it also works.
+
+Thanks.
+
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	val <<= arg_spec->arg_bitshift;
+>> +	if (arg_spec->arg_signed)
+>> +		val = ((long)val) >> arg_spec->arg_bitshift;
+
+>> + * BPF_USDT serves the same purpose for USDT handlers as BPF_PROG for
+>> + * tp_btf/fentry/fexit BPF programs and BPF_KPROBE for kprobes.
+>> + * Original struct pt_regs * context is preserved as 'ctx' argument.
+>> + */
+>> +#define BPF_USDT(name, args...)						    \
+>> +name(struct pt_regs *ctx);						    \
+>> +static __attribute__((always_inline)) typeof(name(0))			    \
+>> +____##name(struct pt_regs *ctx, ##args);				    \
+>> +typeof(name(0)) name(struct pt_regs *ctx)				    \
+>> +{									    \
+>> +        _Pragma("GCC diagnostic push")					    \
+>> +        _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")		    \
+>> +        return ____##name(___bpf_usdt_args(args));			    \
+>> +        _Pragma("GCC diagnostic pop")					    \
+>> +}									    \
+>> +static __attribute__((always_inline)) typeof(name(0))			    \
+>> +____##name(struct pt_regs *ctx, ##args)
+>> +
+>> +#endif /* __USDT_BPF_H__ */
