@@ -2,140 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 998194EBD52
-	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 11:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A324EBD6B
+	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 11:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243745AbiC3JND (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Mar 2022 05:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
+        id S244688AbiC3JRc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Mar 2022 05:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238507AbiC3JNC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Mar 2022 05:13:02 -0400
-Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD01F2013EA;
-        Wed, 30 Mar 2022 02:11:16 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V8d5iwz_1648631473;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V8d5iwz_1648631473)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 30 Mar 2022 17:11:14 +0800
-Message-ID: <1648631012.1186295-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v2 0/9] virtio: support advance DMA
-Date:   Wed, 30 Mar 2022 17:03:32 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S243827AbiC3JRc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Mar 2022 05:17:32 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44684252A5;
+        Wed, 30 Mar 2022 02:15:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E0A47B81B81;
+        Wed, 30 Mar 2022 09:15:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A38DC340EE;
+        Wed, 30 Mar 2022 09:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648631744;
+        bh=Mv9Ca0iV69MzP6PWM7uHW2ZsllformFhcdx4Ma6/C0k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q4C4jnvcd9mTy4fzyItRHzTmtJjL3ttNp1fxC/K39ClcqCYiodV0Pf1IyPDN5HGGi
+         5r1j2qlr8XeSLX4A/5+R3T8CocBU90wddka68CKEcKZTHho2ph97AZZU4hieS4AGaC
+         WYPmABhsZDEIBtfogNFNAjF2C0ifFJyYny8DmsT5590NUiwhM5Kr1aTpNVKfC4Bxqh
+         svgOJj7xYwpmbhxpa21+MQfGPD9adHa2k/DbJr9PlhFrBtdxMIgmxRmHz4aksu4Fa7
+         u8aLGag2bJ+cJ+T6P4tCZB41aHr8aSWAyVCBBatBapfHcIe+vKWX/QmCFLtjojLxB/
+         nDvAIAfr8mtHg==
+Date:   Wed, 30 Mar 2022 18:15:39 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20220224110402.108161-1-xuanzhuo@linux.alibaba.com>
- <20220330023258-mutt-send-email-mst@kernel.org>
- <CACGkMEvESXv9PfMF9riPraX59j0BiLPfTgxuFVw1x0HWwjtYVQ@mail.gmail.com>
- <1648623508.9711535-4-xuanzhuo@linux.alibaba.com>
- <CACGkMEvE_wUNa=DgumVErTjp5gF4QRMDn6eP7UbDpSfSJSBy2Q@mail.gmail.com>
-In-Reply-To: <CACGkMEvE_wUNa=DgumVErTjp5gF4QRMDn6eP7UbDpSfSJSBy2Q@mail.gmail.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: pull-request: bpf 2022-03-29
+Message-Id: <20220330181539.c1d289f010cf46e873c16b6c@kernel.org>
+In-Reply-To: <20220330135217.b6d0433831f2b3fa420458ae@kernel.org>
+References: <20220329234924.39053-1-alexei.starovoitov@gmail.com>
+        <20220329184123.59cfad63@kernel.org>
+        <CAADnVQJNS_U97aqaNxtAhuvZCK6oiDA-tDoAEyDMYnCBbfaZkg@mail.gmail.com>
+        <20220330135217.b6d0433831f2b3fa420458ae@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 30 Mar 2022 16:38:18 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Wed, Mar 30, 2022 at 2:59 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> >
-> > On Wed, 30 Mar 2022 14:56:17 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> > > On Wed, Mar 30, 2022 at 2:34 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > >
-> > > > On Thu, Feb 24, 2022 at 07:03:53PM +0800, Xuan Zhuo wrote:
-> > > > > virtqueue_add() only supports virtual addresses, dma is completed in
-> > > > > virtqueue_add().
-> > > > >
-> > > > > In some scenarios (such as the AF_XDP scenario), DMA is completed in advance, so
-> > > > > it is necessary for us to support passing the DMA address to virtqueue_add().
-> > > >
-> > > > I picked up a couple of patches. Others are waiting for some acks
-> > > > (Jason?) and improved commit logs for documentation.
+On Wed, 30 Mar 2022 13:52:17 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> On Tue, 29 Mar 2022 18:51:22 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> 
+> > On Tue, Mar 29, 2022 at 6:41 PM Jakub Kicinski <kuba@kernel.org> wrote:
 > > >
-> > > I will review them.
-> >
-> > hi, the core code of premapped, I will merge it into 'virtio pci support
-> > VIRTIO_F_RING_RESET' because this function will be used when reusing the buffer
-> > after resize.
->
-> I still prefer not to do that.
->
-> We can make rest work for resize first and add pre mapping on top. It
-> will simplify the review.
-
-Yes, I am also worried about the review problem, the number of my local resize
-patch has reached 44 (including reuse bufs).
-
-hi, Michael, can we implement resize on top of v8 first? (drop unused bufs directly)
-
-Then we implement premmapd and reuse the bufs after resize.
-
-We need to get the address (DMA address) and len from the reset ring and submit
-it to the new vq through virtqueue_add(). So let virtqueue_add() support
-premapped first.
-
-Thanks.
-
-
->
-> Thanks
->
-> >
-> > Thanks.
-> >
-> >
-> > >
-> > > Thanks
-> > >
+> > > On Tue, 29 Mar 2022 16:49:24 -0700 Alexei Starovoitov wrote:
+> > > > Hi David, hi Jakub,
 > > > >
-> > > > Thanks!
+> > > > The following pull-request contains BPF updates for your *net* tree.
 > > > >
-> > > > > v2:
-> > > > >     1. rename predma -> premapped
-> > > > >     2. virtio net xdp tx use virtio dma api
-> > > > >
-> > > > > v1:
-> > > > >    1. All sgs requested at one time are required to be unified PREDMA, and several
-> > > > >       of them are not supported to be PREDMA
-> > > > >    2. virtio_dma_map() is removed from this patch set and will be submitted
-> > > > >       together with the next time AF_XDP supports virtio dma
-> > > > >    3. Added patch #2 #3 to remove the check for flags when performing unmap
-> > > > >       indirect desc
-> > > > >
-> > > > > Xuan Zhuo (9):
-> > > > >   virtio_ring: rename vring_unmap_state_packed() to
-> > > > >     vring_unmap_extra_packed()
-> > > > >   virtio_ring: remove flags check for unmap split indirect desc
-> > > > >   virtio_ring: remove flags check for unmap packed indirect desc
-> > > > >   virtio_ring: virtqueue_add() support premapped
-> > > > >   virtio_ring: split: virtqueue_add_split() support premapped
-> > > > >   virtio_ring: packed: virtqueue_add_packed() support premapped
-> > > > >   virtio_ring: add api virtio_dma_map() for advance dma
-> > > > >   virtio_ring: introduce virtqueue_add_outbuf_premapped()
-> > > > >   virtio_net: xdp xmit use virtio dma api
-> > > > >
-> > > > >  drivers/net/virtio_net.c     |  42 +++++-
-> > > > >  drivers/virtio/virtio_ring.c | 280 ++++++++++++++++++++++++++---------
-> > > > >  include/linux/virtio.h       |  12 ++
-> > > > >  3 files changed, 254 insertions(+), 80 deletions(-)
-> > > > >
-> > > > > --
-> > > > > 2.31.0
+> > > > We've added 16 non-merge commits during the last 1 day(s) which contain
+> > > > a total of 24 files changed, 354 insertions(+), 187 deletions(-).
 > > > >
+> > > > The main changes are:
+> > > >
+> > > > 1) x86 specific bits of fprobe/rethook, from Masami and Peter.
+> > > >
+> > > > 2) ice/xsk fixes, from Maciej and Magnus.
+> > > >
+> > > > 3) Various small fixes, from Andrii, Yonghong, Geliang and others.
 > > >
-> >
->
+> > > There are some new sparse warnings here that look semi-legit.
+> > > As in harmless but not erroneous.
+> > 
+> > Both are new warnings and not due to these patches, right?
+> > 
+> > > kernel/trace/rethook.c:68:9: error: incompatible types in comparison expression (different address spaces):
+> > > kernel/trace/rethook.c:68:9:    void ( [noderef] __rcu * )( ... )
+> > > kernel/trace/rethook.c:68:9:    void ( * )( ... )
+> > >
+> > > 66 void rethook_free(struct rethook *rh)
+> > > 67 {
+> > > 68         rcu_assign_pointer(rh->handler, NULL);
+> > > 69
+> > > 70         call_rcu(&rh->rcu, rethook_free_rcu);
+> > > 71 }
+> > >
+> > > Looks like this should be a WRITE_ONCE() ?
+> > 
+> > Masami, please take a look.
+> 
+> Yeah, I think we should make this rcu pointer (and read side must use rcu_dereference())
+> because this rh->handler becomes the key to disable this rethook.
+> Let me fix that.
+
+Sorry, please ignore this. Since the handler pointed by rh->handler never
+be removed (unless removed by modules, but this will not happen while
+the rethook is running), YES, WRITE_ONCE() is enough.
+Please add below.
+
+From 92c9c784458f03900823360981812220ce3c7bf3 Mon Sep 17 00:00:00 2001
+From: Masami Hiramatsu <mhiramat@kernel.org>
+Date: Wed, 30 Mar 2022 18:13:42 +0900
+Subject: [PATCH] rethook: Fix to use WRITE_ONCE() for rethook::handler
+
+Since the function pointered by rethook::handler never be removed when
+the rethook is alive, it doesn't need to use rcu_assign_pointer() to
+update it. Just use WRITE_ONCE().
+
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ kernel/trace/rethook.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+index ab463a4d2b23..b56833700d23 100644
+--- a/kernel/trace/rethook.c
++++ b/kernel/trace/rethook.c
+@@ -65,7 +65,7 @@ static void rethook_free_rcu(struct rcu_head *head)
+  */
+ void rethook_free(struct rethook *rh)
+ {
+-	rcu_assign_pointer(rh->handler, NULL);
++	WRITE_ONCE(rh->handler, NULL);
+ 
+ 	call_rcu(&rh->rcu, rethook_free_rcu);
+ }
+-- 
+2.25.1
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
