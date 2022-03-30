@@ -2,66 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4511E4EB873
-	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 04:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C804EB87E
+	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 04:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242087AbiC3CtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 22:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        id S241630AbiC3CwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 22:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236386AbiC3CtN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 22:49:13 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C7B170D9A;
-        Tue, 29 Mar 2022 19:47:29 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id p21so9349232ioj.4;
-        Tue, 29 Mar 2022 19:47:28 -0700 (PDT)
+        with ESMTP id S236875AbiC3CwL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 22:52:11 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D27E173F40
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 19:50:27 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id e22so23286169ioe.11
+        for <bpf@vger.kernel.org>; Tue, 29 Mar 2022 19:50:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fxX+o/81/OXOghFHUsKldyF1Yt6ZGrPzRcjfze93Ug8=;
-        b=I50Dwlel4eUuBfPwkQYokzgXMlBuBvsxy0eJwTShQjHrG8ytWKzUMfdmgUPXCZC3Ks
-         BlQJV5A8XqWHcL6YxaTVduDYhHp5/uLx8mKwqBTS0jjiBcGrQGLmfyVEyn+DwM2w9JE+
-         xNVbriEUNr9F7iSBn3s9gAGUTVEheHRcrgPkC46+Yies7fkmAbxqeL5+7o+D0v5KWvvN
-         yPZ8ue79KPz6/vvIusBCD6ie72QLpezPWd6HyB5qUEzklRrojuJsDMt7dwkuimXnuKhH
-         SGy7/NEH+gBBpo55AWILmOBqQpMIfakIvFMTAAuWIPHXiFh+SwlXHajomb0mCdMoi0KG
-         sj0A==
+        bh=gGBLANkgMIOa5nn6xA81zXQSzVtutGAnfVtu1fNPubY=;
+        b=jmqO2EB3txbD1/ldJ6NXA+iK/KptyakFzEPqPzRzJ3MLwtYYhlHeHGbT/3XRZRci/P
+         OtK4PlmgP08UvEkkzM3vXJkdGusGk2K8wYtpxSXbsZsSRe54DURGx+6rcKOrM6jAl2K5
+         VLqCETghpqyoG4OnomYNInH3meVvuuqXTQC7UqTnnnFIonWthyJoYORvz7hZJCJpF7jy
+         1EKtC9J6cJFgqczlrrrF8DojTSy++f5Qw2vwYYbVtz3smSjuUlLwNvdxp9qhYna3MbWv
+         lZxHo6DUmbqsZXoM/qRHj8AX5WknyLOxf9YFZMhxomSol0p+wNyAevB0+TawbcmqAyY+
+         n+UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fxX+o/81/OXOghFHUsKldyF1Yt6ZGrPzRcjfze93Ug8=;
-        b=uJrZ8gIA3BrD1WD6hgczSnnprsTVTf9V+U+6SQ90DMjRaDmyPxH91J8BmKP1yWAzwn
-         b2+ROSokH+kxH8ECkXmn42w5YoOIQZVE5L+S8T7rRyopCXfBeHPJus+rv5LQEjF3wMx8
-         2L+XgP5nKmgTEwQozoFLDcvcs5qKnWvVpy3xmIonfUowwl0kD8BQ16DBcr2zdZU2Qitd
-         JYn1G+EJlB9tBCCpbUwn3qXXiEeiSS7eX4zqIVcf7CI+ADk5pmoCKwFWq9nNXhz/7mWD
-         SMdnOkqVKRRdS2LNrKpn4h6d2h7Fp0JJxBgyuHvKvd8ZMljS05Vclc3ovQqTzMAfq2Gu
-         5QiA==
-X-Gm-Message-State: AOAM5302PhHjcymd5ljDa+GyzdnvlHPI52R8meZIxUdDrfahzC7N0toc
-        /86vgtLwnIJPLpdsBkKPlpuhRNIywQBEtBFf388=
-X-Google-Smtp-Source: ABdhPJy/MG6DWIdi4YUIC/fT9Q68sZv06a/En/8B7aBeMS8udfkxnhujC03fUJ6sEj2g9FF06TczE21+1qevTG4crI4=
-X-Received: by 2002:a05:6638:2105:b0:323:68db:2e4e with SMTP id
- n5-20020a056638210500b0032368db2e4emr8002688jaj.234.1648608447592; Tue, 29
- Mar 2022 19:47:27 -0700 (PDT)
+        bh=gGBLANkgMIOa5nn6xA81zXQSzVtutGAnfVtu1fNPubY=;
+        b=X9NJAJleHuiydHJDjnZSVqk95JVK6+KKams7ZUW9ITf68/TUFxThvu0MNKycj9A3jc
+         R/agPwO2ArcjBN+fX4S93ou2gmBrnMR8/xGRJvvrYdSIuoutLIc18u9GKx9fxWXVnfKK
+         pmmXC5vU1jJ43ljTMM+JxpnMyB4pZNi/VNvTcZA4sx6hTTawYGRXKoI/q8ZavxLwA/fy
+         +IuPC6vdGLFjFhd8D7ieZMZwV+FgqW4au3OxIpMo51IvYDIFufazQmWr234/kO5FjdV5
+         dmL2T+pyWQZTua2JTyRzw7RcqG3Uucczsri2e/mVkNL2Gs3N/JHMWpeqIT+RA4Q41A/A
+         Bhlw==
+X-Gm-Message-State: AOAM533wI4YVAsJe4p2sXujRuwZd1B/zswgg9lcR1wwhuXI+YGnwJlZ9
+        RocGi7Qhau+4GfA5paSZ2wAN+6IMU6MvX5kj+mY=
+X-Google-Smtp-Source: ABdhPJzxMnBG5DUiaefi94GCOjowCk3afhASI7SMa7kTsGqu6N3bAkuQQ9IrRn/fkUuwxIb4F/jU5Y5THqO3LdGkAB0=
+X-Received: by 2002:a05:6638:3395:b0:323:8a00:7151 with SMTP id
+ h21-20020a056638339500b003238a007151mr2973406jav.93.1648608626037; Tue, 29
+ Mar 2022 19:50:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220329231854.3188647-1-song@kernel.org> <CAEf4BzZCLwzrZPTOBEg88i1Tki6uPL73ujSE-SCSSU16HENUHA@mail.gmail.com>
- <53E87B8F-6BB1-42AB-965B-096C86236926@fb.com>
-In-Reply-To: <53E87B8F-6BB1-42AB-965B-096C86236926@fb.com>
+References: <20220326144320.560939-1-hengqi.chen@gmail.com>
+ <CAEf4BzZzLy2DjJ4pk_wx8KCsErfZE2-eG6pXO+5WnnRHxcfpiA@mail.gmail.com> <5d5a7f05-6c96-49db-6c3f-ae3ca713059a@gmail.com>
+In-Reply-To: <5d5a7f05-6c96-49db-6c3f-ae3ca713059a@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 29 Mar 2022 19:47:16 -0700
-Message-ID: <CAEf4BzbVqM_akAGsHkf4QJdwcA2M-Lg6MF6xLu72rRS8gUjPKw@mail.gmail.com>
-Subject: Re: [PATCH bpf] tools/runqslower: fix handle__sched_switch for
- updated tp sched_switch
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
+Date:   Tue, 29 Mar 2022 19:50:14 -0700
+Message-ID: <CAEf4BzYBzOEDgE+KH9jgUu89=GT7GeMNXx3Rwek4La5wKZZ-AQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Allow kprobe attach using legacy debugfs interface
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -73,125 +66,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 5:39 PM Song Liu <songliubraving@fb.com> wrote:
+On Tue, Mar 29, 2022 at 7:30 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
+> Hello, Andrii
 >
->
-> > On Mar 29, 2022, at 5:00 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Mar 29, 2022 at 4:19 PM Song Liu <song@kernel.org> wrote:
+> On 2022/3/30 7:18 AM, Andrii Nakryiko wrote:
+> > On Sat, Mar 26, 2022 at 7:43 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 > >>
-> >> TP_PROTO of sched_switch is updated with a new arg prev_state, which
-> >> causes runqslower load failure:
+> >> On some old kernels, kprobe auto-attach may fail when attach to symbols
+> >> like udp_send_skb.isra.52 . This is because the kernel has kprobe PMU
+> >> but don't allow attach to a symbol with '.' ([0]). Add a new option to
+> >> bpf_kprobe_opts to allow using the legacy kprobe attach directly.
+> >> This way, users can use bpf_program__attach_kprobe_opts in a dedicated
+> >> custom sec handler to handle such case.
 > >>
-> >> libbpf: prog 'handle__sched_switch': BPF program load failed: Permission denied
-> >> libbpf: prog 'handle__sched_switch': -- BEGIN PROG LOAD LOG --
-> >> R1 type=ctx expected=fp
-> >> 0: R1=ctx(off=0,imm=0) R10=fp0
-> >> ; int handle__sched_switch(u64 *ctx)
-> >> 0: (bf) r7 = r1                       ; R1=ctx(off=0,imm=0) R7_w=ctx(off=0,imm=0)
-> >> ; struct task_struct *next = (struct task_struct *)ctx[2];
-> >> 1: (79) r6 = *(u64 *)(r7 +16)
-> >> func 'sched_switch' arg2 has btf_id 186 type STRUCT 'task_struct'
-> >> 2: R6_w=ptr_task_struct(off=0,imm=0) R7_w=ctx(off=0,imm=0)
-> >> ; struct task_struct *prev = (struct task_struct *)ctx[1];
-> >> 2: (79) r2 = *(u64 *)(r7 +8)          ; R2_w=scalar() R7_w=ctx(off=0,imm=0)
-> >> 3: (b7) r1 = 0                        ; R1_w=0
-> >> ; struct runq_event event = {};
-> >> 4: (7b) *(u64 *)(r10 -8) = r1         ; R1_w=P0 R10=fp0 fp-8_w=00000000
-> >> 5: (7b) *(u64 *)(r10 -16) = r1        ; R1_w=P0 R10=fp0 fp-16_w=00000000
-> >> 6: (7b) *(u64 *)(r10 -24) = r1        ; R1_w=P0 R10=fp0 fp-24_w=00000000
-> >> 7: (7b) *(u64 *)(r10 -32) = r1        ; R1_w=P0 R10=fp0 fp-32_w=00000000
-> >> ; if (prev->__state == TASK_RUNNING)
-> >> 8: (61) r1 = *(u32 *)(r2 +24)
-> >> R2 invalid mem access 'scalar'
-> >> processed 9 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
-> >> -- END PROG LOAD LOG --
-> >> libbpf: failed to load program 'handle__sched_switch'
-> >> libbpf: failed to load object 'runqslower_bpf'
-> >> libbpf: failed to load BPF skeleton 'runqslower_bpf': -13
-> >> failed to load BPF object: -13
+> >>   [0]: https://github.com/torvalds/linux/blob/v4.18/kernel/trace/trace_kprobe.c#L340-L343
 > >>
-> >> Update runqslower to fix this issue. Also, as we are on this, use BPF_PROG
-> >> in runqslower for cleaner code.
-> >>
-> >> Fixes: fa2c3254d7cf ("sched/tracing: Don't re-read p->state when emitting sched_switch event")
-> >> Signed-off-by: Song Liu <song@kernel.org>
+> >> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 > >> ---
-> >> tools/bpf/runqslower/runqslower.bpf.c | 19 +++++--------------
-> >> 1 file changed, 5 insertions(+), 14 deletions(-)
+> >
+> > It's sad, but it makes sense. But, let's have a selftests that
+> > validates uses legacy option explicitly (e.g., in
+> > prog_tests/attach_probe.c). Also, let's fix this limitation in the
+>
+> OK, will add a selftest to exercise the new option.
+>
+> > kernel? It makes no sense to limit attaching to a proper kallsym
+> > symbol.
+>
+> This limitation is lifted in newer kernel. Kernel v5.4 don't have this issue.
+
+Oh, ok. So how about another plan of attack then: if kprobe target
+function has '.' *and* we are on the kernel that doesn't support that,
+switch to legacy kprobe automatically? No need for a new option,
+libbpf handles this transparently.
+
+Still need a test for kprobe with '.' in it, though not sure how
+reliable that will be... We can use kallsyms cache to check if
+expected xxx.isra.0 (or whatever) is present, and if not - skip
+subtest?
+
+>
+> >
+> >>  tools/lib/bpf/libbpf.c | 9 ++++++++-
+> >>  tools/lib/bpf/libbpf.h | 4 +++-
+> >>  2 files changed, 11 insertions(+), 2 deletions(-)
 > >>
 > >
-> > It would be much less disruptive if that prev_state was added after
-> > "next", but oh well...
+> > [...]
 >
-> Maybe we should change that.
->
-> +Valentin and Steven, how about we change the order with the attached
-> diff (not the original patch in this thread, but the one at the end of
-> this email)?
->
-> >
-> > But anyways, let's handle this in a way that can handle both old
-> > kernels and new ones and do the same change in libbpf-tool's
-> > runqslower ([0]). Can you please follow up there as well?
->
-> Yeah, I will also fix that one.
-
-Thanks!
-
->
-> >
-> >
-> > We can use BPF CO-RE to detect which order of arguments running kernel
-> > has by checking prev_state field existence in struct
-> > trace_event_raw_sched_switch. Can you please try that? Use
-> > bpf_core_field_exists() for that.
->
-> Do you mean something like
->
-> if (bpf_core_field_exists(ctx->prev_state))
->     /* use ctx[2] and ctx[3] */
-> else
->     /* use ctx[1] and ctx[2] */
-
-yep, that's what I meant, except you don't have ctx->prev_state, you have to do:
-
-if (bpf_core_field_exists(((struct trace_event_raw_sched_switch
-*)0)->prev_state))
-
->
-> ? I think we will need BTF for the arguments, which doesn't exist yet.
-> Did I miss something?
-
-Probably :) struct trace_event_raw_sched_switch is in vmlinux.h
-already for non-raw sched:sched_switch tracepoint. We just use that
-type information for feature probing. From BPF verifier's perspective,
-ctx[1] or ctx[2] will have proper BTF information (task_struct) during
-program validation.
-
->
-> I was thinking about adding something like struct tp_sched_switch_args
-> for all the raw tracepoints, but haven't got time to look into how.
->
-> Thanks,
-> Song
->
-> >
-> >
-> >  [0] https://github.com/iovisor/bcc/blob/master/libbpf-tools/runqslower.bpf.c
-> >
-> >
-> >> diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-> >> index 9a5c1f008fe6..30e491d8308f 100644
-> >> --- a/tools/bpf/runqslower/runqslower.bpf.c
-> >> +++ b/tools/bpf/runqslower/runqslower.bpf.c
-> >> @@ -2,6 +2,7 @@
-> >> // Copyright (c) 2019 Facebook
-> >> #include "vmlinux.h"
-> >> #include <bpf/bpf_helpers.h>
-> >> +#include <bpf/bpf_tracing.h>
-> >> #include "runqslower.h"
-> >>
-
-[...]
+> --
+> Hengqi
