@@ -2,174 +2,320 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 734484EC9B8
-	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 18:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895964EC9C4
+	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 18:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348841AbiC3QgE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Mar 2022 12:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
+        id S1348876AbiC3QjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Mar 2022 12:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348839AbiC3QgE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Mar 2022 12:36:04 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 870211D320;
-        Wed, 30 Mar 2022 09:34:18 -0700 (PDT)
-Received: from kbox (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E7AF420B96D6;
-        Wed, 30 Mar 2022 09:34:17 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E7AF420B96D6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1648658058;
-        bh=NE1Gzgfcu1RVAQTBcQFmkLsZA71WWxETeZdDl0NVbGk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aPSThqM5IPvFG/nHKA0shVLzXfcjf3BuMxLCBELpv/wumVaQ/8A6ypVhJfck1YAat
-         0bd7iRH9n722EW/ZXFcqE/ULmpv1L/sqLZSiWJ9HfCB8E5L0b1Y1bICMux2PPMkDNv
-         YQZnbdhmN0xtdoPXKTDQMauOZ9yemyA8+fKPIOLs=
-Date:   Wed, 30 Mar 2022 09:34:11 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] tracing/user_events: Add eBPF interface for user_event
- created events
-Message-ID: <20220330163411.GA1812@kbox>
-References: <20220329181935.2183-1-beaub@linux.microsoft.com>
- <CAADnVQ+XpoCjL-rSz2hj05L21s8NtMJuWYC14b9Mvk7XE5KT_g@mail.gmail.com>
- <20220329201057.GA2549@kbox>
- <CAADnVQ+gm4yU9S6y+oeR3TNj82kKX0gk4ey9gVnKXKWy1Js4-A@mail.gmail.com>
- <20220329231137.GA3357@kbox>
- <CAPhsuW4WH4Hn+DaQZui5au=ueG1G5zGYiOACfKm9imG2kGA+KA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW4WH4Hn+DaQZui5au=ueG1G5zGYiOACfKm9imG2kGA+KA@mail.gmail.com>
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S236846AbiC3QjB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Mar 2022 12:39:01 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B91C197AC3;
+        Wed, 30 Mar 2022 09:37:15 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id s8so19197285pfk.12;
+        Wed, 30 Mar 2022 09:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=ncCMERzhXgEwa8YpsHvGRoleMf6RuPaWT+VsO4MzRgU=;
+        b=h5fB5kqw7kgZZ7GiiqhNgopBgU3OVifclVBFYjbjk/fF+JUwmyGztrIpstEhHgDW7G
+         DDVDY/eqLsaMAWgYG1HvJ6MSMpwLmmI8R1+GDdNNRk6H1xGOjjNqlZHlmLtu1nBEroki
+         7BKd2UF/nOqMNhJ0qSifuYSP5ASJ0e9GbvRbduWaZMoYSRrEWzZmcxd67V7xXNAq+l9q
+         6XdLq/VwNZaql8Pw+d6XGtTG8tkbYyrz5LEaobUjeLRMd/M842YWWZgoobhf2vwAGv86
+         fl9RkvZwvSLbfOvyoGXmkBkosj7DOd5dEBNGUu7Ll15TG2yK6RqRBscNXLa7RgRAbQ6y
+         aL2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ncCMERzhXgEwa8YpsHvGRoleMf6RuPaWT+VsO4MzRgU=;
+        b=tRLivL8GGgp00OJbcGpMd/g07yGuc7ZSfW85a4Ba4bXi3OyYIwdYiiX6BrKqm6sY2B
+         neUYAUiC5BSX7vNw+LWlEx0HMxLEBjP/6wHduLPJrLCTYcqTea247K5jJufJh6BJKh6z
+         FL5YWVwAVMvhj3pItbYyNYrYkb8mNrdI59BqmbiJ4jhZkZvBp7vwwcaRiwNLJ6M8lBgq
+         nnt5Vya7P9QZgodReKzSBVDBEfsYdVt1EI4WwGqdzsgskhtM6mv/3cCM1M9GFmfRYtT1
+         Id4EzmFtcOMZnTCax1ZVYA5d3zPKUck90p0jfeQNa1/YVqqFBJyn8dMT2skAysl5lEgX
+         XrLw==
+X-Gm-Message-State: AOAM531ExNL2XrnNyArSySUxi9ooJZ3ePgBH/I5uDC9N/R3fAc3k7yMP
+        Rt/c1OsTuSraeB0VgtQwdUg=
+X-Google-Smtp-Source: ABdhPJxVHXRIUEJEE/QCW1WbPe8hN9HKop9wh5Lfe9nswdo6G3RkkQq025wlJnoHNeNzjXFPOuBQqw==
+X-Received: by 2002:a65:6e0f:0:b0:382:2f78:4369 with SMTP id bd15-20020a656e0f000000b003822f784369mr6849189pgb.406.1648658234761;
+        Wed, 30 Mar 2022 09:37:14 -0700 (PDT)
+Received: from localhost.localdomain ([182.213.254.91])
+        by smtp.gmail.com with ESMTPSA id m18-20020a639412000000b003820bd9f2f2sm20119791pge.53.2022.03.30.09.37.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Mar 2022 09:37:14 -0700 (PDT)
+From:   Taehee Yoo <ap420073@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        cmclachlan@solarflare.com
+Cc:     ap420073@gmail.com
+Subject: [PATCH net v2] net: sfc: add missing xdp queue reinitialization
+Date:   Wed, 30 Mar 2022 16:37:03 +0000
+Message-Id: <20220330163703.25086-1-ap420073@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 09:06:24AM -0700, Song Liu wrote:
-> On Tue, Mar 29, 2022 at 4:11 PM Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> >
-> > On Tue, Mar 29, 2022 at 03:31:31PM -0700, Alexei Starovoitov wrote:
-> > > On Tue, Mar 29, 2022 at 1:11 PM Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > > >
-> > > > On Tue, Mar 29, 2022 at 12:50:40PM -0700, Alexei Starovoitov wrote:
-> > > > > On Tue, Mar 29, 2022 at 11:19 AM Beau Belgrave
-> > > > > <beaub@linux.microsoft.com> wrote:
-> > > > > >
-> > > > > > Send user_event data to attached eBPF programs for user_event based perf
-> > > > > > events.
-> > > > > >
-> > > > > > Add BPF_ITER flag to allow user_event data to have a zero copy path into
-> > > > > > eBPF programs if required.
-> > > > > >
-> > > > > > Update documentation to describe new flags and structures for eBPF
-> > > > > > integration.
-> > > > > >
-> > > > > > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-> > > > >
-> > > > > The commit describes _what_ it does, but says nothing about _why_.
-> > > > > At present I see no use out of bpf and user_events connection.
-> > > > > The whole user_events feature looks redundant to me.
-> > > > > We have uprobes and usdt. It doesn't look to me that
-> > > > > user_events provide anything new that wasn't available earlier.
-> > > >
-> > > > A lot of the why, in general, for user_events is covered in the first
-> > > > change in the series.
-> > > > Link: https://lore.kernel.org/all/20220118204326.2169-1-beaub@linux.microsoft.com/
-> > > >
-> > > > The why was also covered in Linux Plumbers Conference 2021 within the
-> > > > tracing microconference.
-> > > >
-> > > > An example of why we want user_events:
-> > > > Managed code running that emits data out via Open Telemetry.
-> > > > Since it's managed there isn't a stub location to patch, it moves.
-> > > > We watch the Open Telemetry spans in an eBPF program, when a span takes
-> > > > too long we collect stack data and perform other actions.
-> > > > With user_events and perf we can monitor the entire system from the root
-> > > > container without having to have relay agents within each
-> > > > cgroup/namespace taking up resources.
-> > > > We do not need to enter each cgroup mnt space and determine the correct
-> > > > patch location or the right version of each binary for processes that
-> > > > use user_events.
-> > > >
-> > > > An example of why we want eBPF integration:
-> > > > We also have scenarios where we are live decoding the data quickly.
-> > > > Having user_data fed directly to eBPF lets us cast the data coming in to
-> > > > a struct and decode very very quickly to determine if something is
-> > > > wrong.
-> > > > We can take that data quickly and put it into maps to perform further
-> > > > aggregation as required.
-> > > > We have scenarios that have "skid" problems, where we need to grab
-> > > > further data exactly when the process that had the problem was running.
-> > > > eBPF lets us do all of this that we cannot easily do otherwise.
-> > > >
-> > > > Another benefit from user_events is the tracing is much faster than
-> > > > uprobes or others using int 3 traps. This is critical to us to enable on
-> > > > production systems.
-> > >
-> > > None of it makes sense to me.
-> >
-> > Sorry.
-> >
-> > > To take advantage of user_events user space has to be modified
-> > > and writev syscalls inserted.
-> >
-> > Yes, both user_events and lttng require user space modifications to do
-> > tracing correctly. The syscall overheads are real, and the cost depends
-> > on the mitigations around spectre/meltdown.
-> >
-> > > This is not cheap and I cannot see a production system using this interface.
-> >
-> > But you are fine with uprobe costs? uprobes appear to be much more costly
-> > than a syscall approach on the hardware I've run on.
-> 
-> Can we achieve the same/similar performance with sys_bpf(BPF_PROG_RUN)?
-> 
+After rx/tx ring buffer size is changed, kernel panic occurs when
+it acts XDP_TX or XDP_REDIRECT.
 
-I think so, the tough part is how do you let the user-space know which
-program is attached to run? In the current code this is done by the BPF
-program attaching to the event via perf and we run the one there if
-any when data is emitted out via write calls.
+When tx/rx ring buffer size is changed(ethtool -G), sfc driver
+reallocates and reinitializes rx and tx queues and their buffer
+(tx_queue->buffer).
+But it misses reinitializing xdp queues(efx->xdp_tx_queues).
+So, while it is acting XDP_TX or XDP_REDIRECT, it uses the uninitialized
+tx_queue->buffer.
 
-I would want to make sure that operators can decide where the user-space
-data goes (perf/ftrace/eBPF) after the code has been written. With the
-current code this is done via the tracepoint callbacks that perf/ftrace
-hook up when operators enable recording via perf, tracefs, libbpf, etc.
+A new function efx_set_xdp_channels() is separated from efx_set_channels()
+to handle only xdp queues.
 
-We have managed code (C#/Java) where we cannot utilize stubs or traps
-easily due to code movement. So we are limited in how we can approach
-this problem. Having the interface be mmap/write has enabled this
-for us, since it's easy to interact with in most languages and gives us
-lifetime management of the trace objects between user-space and the
-kernel.
+Splat looks like:
+   BUG: kernel NULL pointer dereference, address: 000000000000002a
+   #PF: supervisor write access in kernel mode
+   #PF: error_code(0x0002) - not-present page
+   PGD 0 P4D 0
+   Oops: 0002 [#4] PREEMPT SMP NOPTI
+   RIP: 0010:efx_tx_map_chunk+0x54/0x90 [sfc]
+   CPU: 2 PID: 0 Comm: swapper/2 Tainted: G      D           5.17.0+ #55 e8beeee8289528f11357029357cf
+   Code: 48 8b 8d a8 01 00 00 48 8d 14 52 4c 8d 2c d0 44 89 e0 48 85 c9 74 0e 44 89 e2 4c 89 f6 48 80
+   RSP: 0018:ffff92f121e45c60 EFLAGS: 00010297
+   RIP: 0010:efx_tx_map_chunk+0x54/0x90 [sfc]
+   RAX: 0000000000000040 RBX: ffff92ea506895c0 RCX: ffffffffc0330870
+   RDX: 0000000000000001 RSI: 00000001139b10ce RDI: ffff92ea506895c0
+   RBP: ffffffffc0358a80 R08: 00000001139b110d R09: 0000000000000000
+   R10: 0000000000000001 R11: ffff92ea414c0088 R12: 0000000000000040
+   R13: 0000000000000018 R14: 00000001139b10ce R15: ffff92ea506895c0
+   FS:  0000000000000000(0000) GS:ffff92f121ec0000(0000) knlGS:0000000000000000
+   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   Code: 48 8b 8d a8 01 00 00 48 8d 14 52 4c 8d 2c d0 44 89 e0 48 85 c9 74 0e 44 89 e2 4c 89 f6 48 80
+   CR2: 000000000000002a CR3: 00000003e6810004 CR4: 00000000007706e0
+   RSP: 0018:ffff92f121e85c60 EFLAGS: 00010297
+   PKRU: 55555554
+   RAX: 0000000000000040 RBX: ffff92ea50689700 RCX: ffffffffc0330870
+   RDX: 0000000000000001 RSI: 00000001145a90ce RDI: ffff92ea50689700
+   RBP: ffffffffc0358a80 R08: 00000001145a910d R09: 0000000000000000
+   R10: 0000000000000001 R11: ffff92ea414c0088 R12: 0000000000000040
+   R13: 0000000000000018 R14: 00000001145a90ce R15: ffff92ea50689700
+   FS:  0000000000000000(0000) GS:ffff92f121e80000(0000) knlGS:0000000000000000
+   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   CR2: 000000000000002a CR3: 00000003e6810005 CR4: 00000000007706e0
+   PKRU: 55555554
+   Call Trace:
+    <IRQ>
+    efx_xdp_tx_buffers+0x12b/0x3d0 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
+    __efx_rx_packet+0x5c3/0x930 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
+    efx_rx_packet+0x28c/0x2e0 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
+    efx_ef10_ev_process+0x5f8/0xf40 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
+    ? enqueue_task_fair+0x95/0x550
+    efx_poll+0xc4/0x360 [sfc 84c94b8e32d44d296c17e10a634d3ad454de4ba5]
 
-> Thanks,
-> Song
-> 
-> >
-> > > All you did is a poor man version of lttng that doesn't rely
-> > > on such heavy instrumentation.
-> >
-> > Well I am a frugal person. :)
-> >
-> > This work has solved some critical issues we've been having, and I would
-> > appreciate a review of the code if possible.
-> >
-> > Thanks,
-> > -Beau
+Fixes: 3990a8fffbda ("sfc: allocate channels for XDP tx queues")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+---
 
-Thanks,
--Beau
+v2: Do not use inline in .c file
+
+ drivers/net/ethernet/sfc/efx_channels.c | 146 +++++++++++++-----------
+ 1 file changed, 81 insertions(+), 65 deletions(-)
+
+diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
+index d6fdcdc530ca..b29ca69aeca5 100644
+--- a/drivers/net/ethernet/sfc/efx_channels.c
++++ b/drivers/net/ethernet/sfc/efx_channels.c
+@@ -789,6 +789,85 @@ void efx_remove_channels(struct efx_nic *efx)
+ 	kfree(efx->xdp_tx_queues);
+ }
+ 
++static int efx_set_xdp_tx_queue(struct efx_nic *efx, int xdp_queue_number,
++				struct efx_tx_queue *tx_queue)
++{
++	if (xdp_queue_number >= efx->xdp_tx_queue_count)
++		return -EINVAL;
++
++	netif_dbg(efx, drv, efx->net_dev,
++		  "Channel %u TXQ %u is XDP %u, HW %u\n",
++		  tx_queue->channel->channel, tx_queue->label,
++		  xdp_queue_number, tx_queue->queue);
++	efx->xdp_tx_queues[xdp_queue_number] = tx_queue;
++	return 0;
++}
++
++static void efx_set_xdp_channels(struct efx_nic *efx)
++{
++	struct efx_tx_queue *tx_queue;
++	struct efx_channel *channel;
++	unsigned int next_queue = 0;
++	int xdp_queue_number = 0;
++	int rc;
++
++	/* We need to mark which channels really have RX and TX
++	 * queues, and adjust the TX queue numbers if we have separate
++	 * RX-only and TX-only channels.
++	 */
++	efx_for_each_channel(channel, efx) {
++		if (channel->channel < efx->tx_channel_offset)
++			continue;
++
++		if (efx_channel_is_xdp_tx(channel)) {
++			efx_for_each_channel_tx_queue(tx_queue, channel) {
++				tx_queue->queue = next_queue++;
++				rc = efx_set_xdp_tx_queue(efx, xdp_queue_number,
++							  tx_queue);
++				if (rc == 0)
++					xdp_queue_number++;
++			}
++		} else {
++			efx_for_each_channel_tx_queue(tx_queue, channel) {
++				tx_queue->queue = next_queue++;
++				netif_dbg(efx, drv, efx->net_dev,
++					  "Channel %u TXQ %u is HW %u\n",
++					  channel->channel, tx_queue->label,
++					  tx_queue->queue);
++			}
++
++			/* If XDP is borrowing queues from net stack, it must
++			 * use the queue with no csum offload, which is the
++			 * first one of the channel
++			 * (note: tx_queue_by_type is not initialized yet)
++			 */
++			if (efx->xdp_txq_queues_mode ==
++			    EFX_XDP_TX_QUEUES_BORROWED) {
++				tx_queue = &channel->tx_queue[0];
++				rc = efx_set_xdp_tx_queue(efx, xdp_queue_number,
++							  tx_queue);
++				if (rc == 0)
++					xdp_queue_number++;
++			}
++		}
++	}
++	WARN_ON(efx->xdp_txq_queues_mode == EFX_XDP_TX_QUEUES_DEDICATED &&
++		xdp_queue_number != efx->xdp_tx_queue_count);
++	WARN_ON(efx->xdp_txq_queues_mode != EFX_XDP_TX_QUEUES_DEDICATED &&
++		xdp_queue_number > efx->xdp_tx_queue_count);
++
++	/* If we have more CPUs than assigned XDP TX queues, assign the already
++	 * existing queues to the exceeding CPUs
++	 */
++	next_queue = 0;
++	while (xdp_queue_number < efx->xdp_tx_queue_count) {
++		tx_queue = efx->xdp_tx_queues[next_queue++];
++		rc = efx_set_xdp_tx_queue(efx, xdp_queue_number, tx_queue);
++		if (rc == 0)
++			xdp_queue_number++;
++	}
++}
++
+ int efx_realloc_channels(struct efx_nic *efx, u32 rxq_entries, u32 txq_entries)
+ {
+ 	struct efx_channel *other_channel[EFX_MAX_CHANNELS], *channel;
+@@ -860,6 +939,7 @@ int efx_realloc_channels(struct efx_nic *efx, u32 rxq_entries, u32 txq_entries)
+ 		efx_init_napi_channel(efx->channel[i]);
+ 	}
+ 
++	efx_set_xdp_channels(efx);
+ out:
+ 	/* Destroy unused channel structures */
+ 	for (i = 0; i < efx->n_channels; i++) {
+@@ -892,26 +972,9 @@ int efx_realloc_channels(struct efx_nic *efx, u32 rxq_entries, u32 txq_entries)
+ 	goto out;
+ }
+ 
+-static inline int
+-efx_set_xdp_tx_queue(struct efx_nic *efx, int xdp_queue_number,
+-		     struct efx_tx_queue *tx_queue)
+-{
+-	if (xdp_queue_number >= efx->xdp_tx_queue_count)
+-		return -EINVAL;
+-
+-	netif_dbg(efx, drv, efx->net_dev, "Channel %u TXQ %u is XDP %u, HW %u\n",
+-		  tx_queue->channel->channel, tx_queue->label,
+-		  xdp_queue_number, tx_queue->queue);
+-	efx->xdp_tx_queues[xdp_queue_number] = tx_queue;
+-	return 0;
+-}
+-
+ int efx_set_channels(struct efx_nic *efx)
+ {
+-	struct efx_tx_queue *tx_queue;
+ 	struct efx_channel *channel;
+-	unsigned int next_queue = 0;
+-	int xdp_queue_number;
+ 	int rc;
+ 
+ 	efx->tx_channel_offset =
+@@ -929,61 +992,14 @@ int efx_set_channels(struct efx_nic *efx)
+ 			return -ENOMEM;
+ 	}
+ 
+-	/* We need to mark which channels really have RX and TX
+-	 * queues, and adjust the TX queue numbers if we have separate
+-	 * RX-only and TX-only channels.
+-	 */
+-	xdp_queue_number = 0;
+ 	efx_for_each_channel(channel, efx) {
+ 		if (channel->channel < efx->n_rx_channels)
+ 			channel->rx_queue.core_index = channel->channel;
+ 		else
+ 			channel->rx_queue.core_index = -1;
+-
+-		if (channel->channel >= efx->tx_channel_offset) {
+-			if (efx_channel_is_xdp_tx(channel)) {
+-				efx_for_each_channel_tx_queue(tx_queue, channel) {
+-					tx_queue->queue = next_queue++;
+-					rc = efx_set_xdp_tx_queue(efx, xdp_queue_number, tx_queue);
+-					if (rc == 0)
+-						xdp_queue_number++;
+-				}
+-			} else {
+-				efx_for_each_channel_tx_queue(tx_queue, channel) {
+-					tx_queue->queue = next_queue++;
+-					netif_dbg(efx, drv, efx->net_dev, "Channel %u TXQ %u is HW %u\n",
+-						  channel->channel, tx_queue->label,
+-						  tx_queue->queue);
+-				}
+-
+-				/* If XDP is borrowing queues from net stack, it must use the queue
+-				 * with no csum offload, which is the first one of the channel
+-				 * (note: channel->tx_queue_by_type is not initialized yet)
+-				 */
+-				if (efx->xdp_txq_queues_mode == EFX_XDP_TX_QUEUES_BORROWED) {
+-					tx_queue = &channel->tx_queue[0];
+-					rc = efx_set_xdp_tx_queue(efx, xdp_queue_number, tx_queue);
+-					if (rc == 0)
+-						xdp_queue_number++;
+-				}
+-			}
+-		}
+ 	}
+-	WARN_ON(efx->xdp_txq_queues_mode == EFX_XDP_TX_QUEUES_DEDICATED &&
+-		xdp_queue_number != efx->xdp_tx_queue_count);
+-	WARN_ON(efx->xdp_txq_queues_mode != EFX_XDP_TX_QUEUES_DEDICATED &&
+-		xdp_queue_number > efx->xdp_tx_queue_count);
+ 
+-	/* If we have more CPUs than assigned XDP TX queues, assign the already
+-	 * existing queues to the exceeding CPUs
+-	 */
+-	next_queue = 0;
+-	while (xdp_queue_number < efx->xdp_tx_queue_count) {
+-		tx_queue = efx->xdp_tx_queues[next_queue++];
+-		rc = efx_set_xdp_tx_queue(efx, xdp_queue_number, tx_queue);
+-		if (rc == 0)
+-			xdp_queue_number++;
+-	}
++	efx_set_xdp_channels(efx);
+ 
+ 	rc = netif_set_real_num_tx_queues(efx->net_dev, efx->n_tx_channels);
+ 	if (rc)
+-- 
+2.17.1
+
