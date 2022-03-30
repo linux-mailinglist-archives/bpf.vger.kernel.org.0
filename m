@@ -2,49 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 254274EB818
-	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 04:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8724EB821
+	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 04:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241786AbiC3CBq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Mar 2022 22:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
+        id S240459AbiC3CD6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Mar 2022 22:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241785AbiC3CBo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Mar 2022 22:01:44 -0400
-Received: from mail.meizu.com (edge05.meizu.com [157.122.146.251])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC7D6D19B;
-        Tue, 29 Mar 2022 18:59:58 -0700 (PDT)
-Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail12.meizu.com
- (172.16.1.108) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 30 Mar
- 2022 09:59:58 +0800
-Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
- (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Wed, 30 Mar
- 2022 09:59:56 +0800
-From:   Haowen Bai <baihaowen@meizu.com>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
+        with ESMTP id S235508AbiC3CD4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Mar 2022 22:03:56 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E70DB820C;
+        Tue, 29 Mar 2022 19:02:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BEE3BB81AD3;
+        Wed, 30 Mar 2022 02:02:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24E7BC340ED;
+        Wed, 30 Mar 2022 02:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648605730;
+        bh=rGnBzT+BwzzUK/UCih6GBAbUNSYzQWhQaxlcJYy4cMo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iB69ic/x+0aCRhI/bCnd5qh97PifIo5VQe+T/ARb0od8skzLLHbrXa2nPOzmjO+ly
+         ql/umh/bqJrbxJhax17K3HGCFx15MNQFWoKTODkvefTlQcBBpPByx6uAAOtt/i1i4E
+         7Vn0/q0VasX2dJ63xwDt6TUmJvob2cjIWa7ys8joWsbbZayxcPYNsgVC2WCAL0yjCJ
+         itqaJskIx8dfNFYuyK1tiWWS4+d202ka0RVlZBaRbb8DptHZzaZcz1RdRmq9QviVHe
+         TxLS/k5oDCK/hl/nX7GHR4/JJFollBBkMRSRLTe1hCbU9ITwyIRYDNXQcb0J7i7HK9
+         yZvj507y7j2SA==
+Date:   Tue, 29 Mar 2022 19:02:08 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-CC:     Haowen Bai <baihaowen@meizu.com>,
-        <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2] selftests/bpf: Fix warning comparing pointer to 0
-Date:   Wed, 30 Mar 2022 09:59:48 +0800
-Message-ID: <1648605588-19269-1-git-send-email-baihaowen@meizu.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <29503ac1-69ab-a0b7-53bc-5a7522baa289@linuxfoundation.org>
-References: <29503ac1-69ab-a0b7-53bc-5a7522baa289@linuxfoundation.org>
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Subject: Re: pull-request: bpf 2022-03-29
+Message-ID: <20220329190208.3ef9a045@kernel.org>
+In-Reply-To: <CAADnVQJNS_U97aqaNxtAhuvZCK6oiDA-tDoAEyDMYnCBbfaZkg@mail.gmail.com>
+References: <20220329234924.39053-1-alexei.starovoitov@gmail.com>
+        <20220329184123.59cfad63@kernel.org>
+        <CAADnVQJNS_U97aqaNxtAhuvZCK6oiDA-tDoAEyDMYnCBbfaZkg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.137.70]
-X-ClientProxiedBy: IT-EXMB-1-125.meizu.com (172.16.1.125) To
- IT-EXMB-1-125.meizu.com (172.16.1.125)
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,43 +60,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Avoid pointer type value compared with 0 to make code clear.
+On Tue, 29 Mar 2022 18:51:22 -0700 Alexei Starovoitov wrote:
+> On Tue, Mar 29, 2022 at 6:41 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > On Tue, 29 Mar 2022 16:49:24 -0700 Alexei Starovoitov wrote:  
+> > > Hi David, hi Jakub,
+> > >
+> > > The following pull-request contains BPF updates for your *net* tree.
+> > >
+> > > We've added 16 non-merge commits during the last 1 day(s) which contain
+> > > a total of 24 files changed, 354 insertions(+), 187 deletions(-).
+> > >
+> > > The main changes are:
+> > >
+> > > 1) x86 specific bits of fprobe/rethook, from Masami and Peter.
+> > >
+> > > 2) ice/xsk fixes, from Maciej and Magnus.
+> > >
+> > > 3) Various small fixes, from Andrii, Yonghong, Geliang and others.  
+> >
+> > There are some new sparse warnings here that look semi-legit.
+> > As in harmless but not erroneous.  
+> 
+> Both are new warnings and not due to these patches, right?
 
-reported by coccicheck:
-tools/testing/selftests/bpf/progs/map_ptr_kern.c:370:21-22:
-WARNING comparing pointer to 0
-tools/testing/selftests/bpf/progs/map_ptr_kern.c:397:21-22:
-WARNING comparing pointer to 0
-
-Signed-off-by: Haowen Bai <baihaowen@meizu.com>
----
-V1->V2: include the error/warn message.
-
- tools/testing/selftests/bpf/progs/map_ptr_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-index b64df94..db388f5 100644
---- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-+++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-@@ -367,7 +367,7 @@ static inline int check_array_of_maps(void)
- 
- 	VERIFY(check_default(&array_of_maps->map, map));
- 	inner_map = bpf_map_lookup_elem(array_of_maps, &key);
--	VERIFY(inner_map != 0);
-+	VERIFY(inner_map != NULL);
- 	VERIFY(inner_map->map.max_entries == INNER_MAX_ENTRIES);
- 
- 	return 1;
-@@ -394,7 +394,7 @@ static inline int check_hash_of_maps(void)
- 
- 	VERIFY(check_default(&hash_of_maps->map, map));
- 	inner_map = bpf_map_lookup_elem(hash_of_maps, &key);
--	VERIFY(inner_map != 0);
-+	VERIFY(inner_map != NULL);
- 	VERIFY(inner_map->map.max_entries == INNER_MAX_ENTRIES);
- 
- 	return 1;
--- 
-2.7.4
-
+Erm, you're right. No idea how the build bot can generate a warning
+that's present on both source and target branch :S I'll look into 
+that while the my local build runs...
