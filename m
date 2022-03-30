@@ -2,97 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EF54EBF87
-	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 13:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231C94EBF96
+	for <lists+bpf@lfdr.de>; Wed, 30 Mar 2022 13:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343501AbiC3LHL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Mar 2022 07:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43818 "EHLO
+        id S1343530AbiC3LLH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Mar 2022 07:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343490AbiC3LHK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Mar 2022 07:07:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BDCBC80;
-        Wed, 30 Mar 2022 04:05:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 73E2AB81BC1;
-        Wed, 30 Mar 2022 11:05:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D86BC340F2;
-        Wed, 30 Mar 2022 11:05:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648638321;
-        bh=mzw5GB4F/8hbvfnhA4i+A4Z4haC4e6zVkzrfHcj0Aco=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ulpZ1ak6zfVfsIekorftkORWKmQO+JErManDDmrK2O0/w3mH9mb6ARH2asrb+Ck+u
-         6DrfF4ICRJPJzVtqBVlOFe6PqUuYA2Hab0YVO7Ya/mbTaMHQmkQR2QJrFAV1XUSrwj
-         S6FuuMidErHmFeS4qIqteVA1CcBOCqFMcWhvbzsEJBIvgakdBwupaDTwuu9zQrg0Yc
-         xqldfbSGMhmz5qt65UPppT2CHPZdIjGWTzt2TErFcAoiDoFEPSVZWhqgwMUzPuo3px
-         SAYd9NZ6D4VavYbTa+c+Xp6LwJBwL/xz/z3BMX0xpegkszd1TWuoxU5aJ/6nbFRVvw
-         lX20gG7Y6uYqg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: [PATCH] bpf: Fix sparse warnings in kprobe_multi_resolve_syms
-Date:   Wed, 30 Mar 2022 13:05:10 +0200
-Message-Id: <20220330110510.398558-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S243071AbiC3LLG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Mar 2022 07:11:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFAA3EAAE;
+        Wed, 30 Mar 2022 04:09:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yvZCXQhb37MOgxLXU/XqW9QmTlcuArhm2RsVvTAH3qo=; b=fjbHNdMzCsKzmXBcjUyke+JK+d
+        LjJoer1GnS3wELRRqzIDeA4xu1xsaNcB+otbKA4M7vy7TZ5wN7mAWLpfVHWoNCq7KY5j9NdnhTJiZ
+        ONv7YK0DqZzZVYUnB6dK89OBy2gPfK3C740Nu3xTlE18OrfM3kiCjnaJbNMNja1MPkNW0/QQG2rVM
+        w/5VHCgWvnyjO9hS6iC+ddI+/jgDeI+4yR8a95SDGxI5rpjTd5ajcmyqgqXTCMYXPNtlpi4lROLcN
+        +YIZ9oo0ooPKbvhYnuvGR4qnd2NIW9LuTc+i9g1cmC7CQ5gTlQ4QVeJ0YEMuGIASA75d/cGy82Wim
+        hs0KkJJQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nZWC7-001AYf-Pz; Wed, 30 Mar 2022 11:08:55 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1B233986215; Wed, 30 Mar 2022 13:08:54 +0200 (CEST)
+Date:   Wed, 30 Mar 2022 13:08:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Radoslaw Burny <rburny@google.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow
+ path
+Message-ID: <20220330110853.GK8939@worktop.programming.kicks-ass.net>
+References: <20220322185709.141236-1-namhyung@kernel.org>
+ <20220322185709.141236-3-namhyung@kernel.org>
+ <20220328113946.GA8939@worktop.programming.kicks-ass.net>
+ <CAM9d7ciQQEypvv2a2zQLHNc7p3NNxF59kASxHoFMCqiQicKwBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7ciQQEypvv2a2zQLHNc7p3NNxF59kASxHoFMCqiQicKwBA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding missing __user tags to fix sparse warnings:
+On Mon, Mar 28, 2022 at 10:48:59AM -0700, Namhyung Kim wrote:
+> > Also, if you were to add LCB_F_MUTEX then you could have something like:
+> 
+> Yep, I'm ok with having the mutex flag.  Do you want me to send
+> v5 with this change or would you like to do it by yourself?
 
-kernel/trace/bpf_trace.c:2370:34: warning: incorrect type in argument 2 (different address spaces)
-kernel/trace/bpf_trace.c:2370:34:    expected void const [noderef] __user *from
-kernel/trace/bpf_trace.c:2370:34:    got void const *usyms
-kernel/trace/bpf_trace.c:2376:51: warning: incorrect type in argument 2 (different address spaces)
-kernel/trace/bpf_trace.c:2376:51:    expected char const [noderef] __user *src
-kernel/trace/bpf_trace.c:2376:51:    got char const *
-kernel/trace/bpf_trace.c:2443:49: warning: incorrect type in argument 1 (different address spaces)
-kernel/trace/bpf_trace.c:2443:49:    expected void const *usyms
-kernel/trace/bpf_trace.c:2443:49:    got void [noderef] __user *[assigned] usyms
-
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/trace/bpf_trace.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 7fa2ebc07f60..d8553f46caa2 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2349,11 +2349,11 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long entry_ip,
- }
- 
- static int
--kprobe_multi_resolve_syms(const void *usyms, u32 cnt,
-+kprobe_multi_resolve_syms(const void __user *usyms, u32 cnt,
- 			  unsigned long *addrs)
- {
- 	unsigned long addr, size;
--	const char **syms;
-+	const char __user **syms;
- 	int err = -ENOMEM;
- 	unsigned int i;
- 	char *func;
--- 
-2.35.1
-
+I'll frob my thing on top. No need to repost.
