@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9787F4ED1C3
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 04:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994EF4ED1D0
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 04:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbiCaCcT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Mar 2022 22:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
+        id S229461AbiCaCmB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Mar 2022 22:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbiCaCcB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Mar 2022 22:32:01 -0400
+        with ESMTP id S229457AbiCaCmA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Mar 2022 22:42:00 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF5F689B6;
-        Wed, 30 Mar 2022 19:30:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F4ED3ADD
+        for <bpf@vger.kernel.org>; Wed, 30 Mar 2022 19:40:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27E5E60AD2;
-        Thu, 31 Mar 2022 02:30:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 86FAFC340F0;
-        Thu, 31 Mar 2022 02:30:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 863DD60B2F
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 02:40:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D6278C340F0;
+        Thu, 31 Mar 2022 02:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648693810;
-        bh=aPj1c8RvzvGXAuQsqkTav5kOLpi/LGbYefX1+4dbdjM=;
+        s=k20201202; t=1648694410;
+        bh=XLIeBz7J5/JFC7tjJpo2EvzStz7XJLNPRBpQSFSZBUU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MlUqh7kPJOIW1zapDRtfFqPeNv1DKo5BphJRywVIKcLNqzUDUV/IBZbF9AetL+8L5
-         Bdujwr+KY7sVcC0hbpyGgdJzg7Pk6qdvf6O2q2+9QbHvGnNimkreuY0fWdx1qgBPj0
-         jxc6gTzElSMicfeP4bO9XGpWWew3ln/A7B/6FMYnBYigpyWZthupHapg29/S8+Ud2U
-         8sD1JvxeNA9S/saaK8uwxqm5nIFt98Taca9UU5CF+YrRknqXh3K/u6bagra4kfCZst
-         n5o90eOnC/BltyvufRWrb7dNez4PeyReKb4s9rLVZe8P5YBKzH5MhFYonbZmyLPAdx
-         KEfwqqVNvDzDQ==
+        b=ur5oq085kg46LE0gePMJj+jTYFb8zAe7esNMmiVnB2Nj3CyCTdJkIHwlxC6QO/QVf
+         I93NH6C1eJHBqod75ldVpHbmnxqv/hVllayDKV7yUA9EY45OvTitnZL5XVfm5+xB3M
+         mLHvbs1rEbvo/gXB7WOaNIyNioffbQRj5o2PDmCq5mCq1f5bEIQjyapFwY7Vq0s1fP
+         h4qtWkZGA10s6tKQyQ2sP3avgvr5Cy9/uFHgeWKV674ViFyfx8Y99bdxJrGvaQjtxQ
+         3tZe3QjPwrLw4aAN72dwmc8plk7ae6Kvp/U6hjJYsgecSyZVevBDUlW4TuQ1qnEDi3
+         1MKGie5dL7egQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6A887F0384A;
-        Thu, 31 Mar 2022 02:30:10 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B9990F0384A;
+        Thu, 31 Mar 2022 02:40:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] rethook: Fix to use WRITE_ONCE() for rethook::handler
+Subject: Re: [PATCH bpf 1/2] bpf: Resolve to prog->aux->dst_prog->type only for
+ BPF_PROG_TYPE_EXT
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164869381043.25553.521399058404787775.git-patchwork-notify@kernel.org>
-Date:   Thu, 31 Mar 2022 02:30:10 +0000
-References: <164868907688.21983.1606862921419988152.stgit@devnote2>
-In-Reply-To: <164868907688.21983.1606862921419988152.stgit@devnote2>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     ast@kernel.org, alexei.starovoitov@gmail.com, davem@davemloft.net,
-        daniel@iogearbox.net, peterz@infradead.org, kuba@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
+Message-Id: <164869441075.29895.10529987783959321042.git-patchwork-notify@kernel.org>
+Date:   Thu, 31 Mar 2022 02:40:10 +0000
+References: <20220330011456.2984509-1-kafai@fb.com>
+In-Reply-To: <20220330011456.2984509-1-kafai@fb.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,22 +59,31 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This series was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu, 31 Mar 2022 10:11:17 +0900 you wrote:
-> Since the function pointered by rethook::handler never be removed when
-> the rethook is alive, it doesn't need to use rcu_assign_pointer() to
-> update it. Just use WRITE_ONCE().
+On Tue, 29 Mar 2022 18:14:56 -0700 you wrote:
+> The commit 7e40781cc8b7 ("bpf: verifier: Use target program's type for access verifications")
+> fixes the verifier checking for BPF_PROG_TYPE_EXT (extension)
+> prog such that the verifier looks for things based
+> on the target prog type that it is extending instead of
+> the BPF_PROG_TYPE_EXT itself.
 > 
-> Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> The current resolve_prog_type() returns the target prog type.
+> It checks for nullness on prog->aux->dst_prog.  However,
+> when loading a BPF_PROG_TYPE_TRACING prog and it is tracing another
+> bpf prog instead of a kernel function, prog->aux->dst_prog is not
+> NULL also.  In this case, the verifier should still verify as the
+> BPF_PROG_TYPE_TRACING type instead of the traced prog type in
+> prog->aux->dst_prog->type.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] rethook: Fix to use WRITE_ONCE() for rethook::handler
-    https://git.kernel.org/bpf/bpf/c/a2fb49833cad
+  - [bpf,1/2] bpf: Resolve to prog->aux->dst_prog->type only for BPF_PROG_TYPE_EXT
+    https://git.kernel.org/bpf/bpf/c/4a9c7bbe2ed4
+  - [bpf,2/2] bpf: selftests: Test fentry tracing a struct_ops program
+    https://git.kernel.org/bpf/bpf/c/0a210af6d0a0
 
 You are awesome, thank you!
 -- 
