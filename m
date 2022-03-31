@@ -2,217 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E73EC4EE3E2
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 00:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B524EE413
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 00:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242352AbiCaWQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 18:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54160 "EHLO
+        id S242494AbiCaWeN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 18:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbiCaWQG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 18:16:06 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE13114FDF
-        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 15:14:17 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22VJ37Ld029832;
-        Thu, 31 Mar 2022 22:13:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : content-type :
- mime-version; s=corp-2021-07-09;
- bh=UmiUPlae2UV9Y9UrD+tUmu4xdUD55wo9fF7vWqgmU0c=;
- b=Idb4dBwqyZQ6uszGO/PfxC5V6qdytjA6TD7b9+rWXivB4CATEHJQKiFgLnllys9DfTgv
- QpSnNcKaP75hqH+UweNrFgVB4mCMvLC2QqcL0KK2MabJWgXZbsP+t10926W0XOw1CsTz
- eMuXixhE1mREycwhys5HEkF+0WCETkPp2TugdWrMZRJoYsTx3SUltabkcsIE2xXyNOKl
- pCCq5xRlxfmvBi24gn7TZv+Il4MYB21cVHkW4SEzWRLQbl68+USMMhLXzYHaPRVo2mZG
- Zzh8HzAiyKnLSMC0uPyWasGbxXxu+aqeMofWQEwrP/cWoNid/9m5ze/Y7jXurKE6SOlp AA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3f1tqbdchx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 31 Mar 2022 22:13:57 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 22VMBL1G010578;
-        Thu, 31 Mar 2022 22:13:56 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3f1s95drj6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 31 Mar 2022 22:13:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gJGN3HrBGh2BjhLVRAIc/Ri7HwfU10q8R56GEMhrFTlcHAJiefm1foN9Tu4w3KgeCl4dQt8RJG9IY7IvtxStuYBMl+9YNJGnIV/63dxv196gSBdG41mOAmDIyDl6+M0q5kR1sL6yLqaTgvzOJ5qco1ckp6l1D0THXxVOll9bDszb6Cd26bft71Aeq9A7fn8jacemfzd9Zew0kt+IYNVDheaRgXr5JY28XI34tywUWFok2tpFTaaQ6axLg0HQpC/hCmrelrDVyNqRuG2C8LRF63r68kjLX2+3aE1YX31A9d6cvICUxgpkgsplE6+CZULWumKSwQ7+cMHiQJIV0IoQ3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UmiUPlae2UV9Y9UrD+tUmu4xdUD55wo9fF7vWqgmU0c=;
- b=iozB/WwbTlptAfSlwMNZH3paYjRtpd6gECKnD1vOjJGomj5ey4yQ40hrjO8bG0PXS2apc8+2G1n1LwgqOv0JTAHJszNj69vu5RIrTWx+8uK+MAl8J9yep2WE/jN28v3ubKDfC4vmeYEn0z6ECmK8C2hSwqU7FkKI+V2fpFL2Gw6klAi6dao7FYkOs4U4ZqORdvmdf5Xw0jWKoBKCUEXn/9TfsNWB39/2rdd5IE8aXeitXJKLvUlqGNCNyGwv/Z+/9ZU7O5y3I/ykGzdOXjdjrfHcgEVI8K+0ukkUuaMGh5q6ZPefjatlFjmO5tPkHgcjOcHlfm1oCkzMi385PuTa7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UmiUPlae2UV9Y9UrD+tUmu4xdUD55wo9fF7vWqgmU0c=;
- b=TpH0wrQF4SPBezqPZYng+r7W1t4UzFtQ1Y3D8NLt4Gv87xyKJ63CAzzY/I81acP3uaFvPXbxZ0KmuN/6R3e5UmBa7mdaYo8l/+15REjf3cHs5eGZjPHLLhRioWruZEp36UUbqTuiHn8AOHDbfLQEKSSiYiuhSc6xVtTGVpzxXQQ=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by SN6PR10MB2432.namprd10.prod.outlook.com (2603:10b6:805:46::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.21; Thu, 31 Mar
- 2022 22:13:54 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::1483:5b00:1247:2386]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::1483:5b00:1247:2386%4]) with mapi id 15.20.5123.020; Thu, 31 Mar 2022
- 22:13:54 +0000
-Date:   Thu, 31 Mar 2022 23:13:34 +0100 (IST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@MyRouter
-To:     Andrii Nakryiko <andrii@kernel.org>
-cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: add urandom_read shared lib
- and USDTs
-In-Reply-To: <20220325052941.3526715-8-andrii@kernel.org>
-Message-ID: <alpine.LRH.2.23.451.2203312310230.18524@MyRouter>
-References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-8-andrii@kernel.org>
-Content-Type: text/plain; charset=US-ASCII
-X-ClientProxiedBy: LO2P123CA0050.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1::14) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        with ESMTP id S242474AbiCaWeM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 18:34:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AB11B9FF3
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 15:32:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 66A5C6127D
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 22:32:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8305C3410F
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 22:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648765942;
+        bh=MI8AewDSQkp1S3OGkehy1DQErFde/A/tnZsKwUdv8F4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lhQiSoGpV0ttrCt64gxcdlRVxUPVdVtzxK39qNRHsjzFwqlunr4FujTCAZA3YGNTM
+         xgUHPDHNbMtUSvqMwhVPlHlfebgCm0kwJPMmgj8xcI0BChfVJkDwS8SKQ9rp53UqER
+         ryP+RAa5sa+nvgVr1CCXmoj30PPNzzyLHFrOZx1e9gEwnp7VAsnz3mZ0H1gdul+9AG
+         AngPjloMsCsBKsCyPEO/Ci+jR6ezpCgcSc1eZ0Tr6wq8SMNvPjhci2paEjKCQLTBeF
+         eKuh/b9Ps8iOxP9JJ+W0LiK45jHNwjLO7uO8G+wvUOR/j9m0nNrfNLu2URXBNawQIs
+         Fuvt/K4KNFrlw==
+Received: by mail-ed1-f46.google.com with SMTP id b24so905845edu.10
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 15:32:22 -0700 (PDT)
+X-Gm-Message-State: AOAM530Sa7k4zeMlDf/1zpHORRuKid/B5GxH7tAUuQvgGCutzIxg7PMP
+        TRnb+jPf9pWmlYyH3hB75PGdHufAYpqbMA/IV8Zw5A==
+X-Google-Smtp-Source: ABdhPJwhoWz6DTXp6kj/giCuaqEceu+yembhXjMKP1Iyqzysm3LTuspPTK9zOGnc8SVv2O1RoZgWqcQlxjNXsYO1Wzg=
+X-Received: by 2002:a05:6402:348b:b0:419:172c:e2aa with SMTP id
+ v11-20020a056402348b00b00419172ce2aamr18499542edc.261.1648765940962; Thu, 31
+ Mar 2022 15:32:20 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e424a8c8-c185-405a-90b2-08da1363be7c
-X-MS-TrafficTypeDiagnostic: SN6PR10MB2432:EE_
-X-Microsoft-Antispam-PRVS: <SN6PR10MB24329FCB4B9A882675BBE314EFE19@SN6PR10MB2432.namprd10.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lMY295u2GH4ELBJIZ9Zg5+4/YAVko0pOO9M6mV7BYMztIyCXa+O/KddavfwLTW5YY2hneCnBzzb+/svvBdJBxMg5B/sNdIa9jptZjKaNww8GbnMVurv4nWUdivxq+NOgJHjgJpUtFgNxQ2tfKeKHKTJlrz7NBvuy44eBdkta2AiCHnl6Hzko5hcUIg4v0MrRbB3z7ACv7iDNATvMQw4MOaU5YV/yL5Z8xyv39GpueXOXNh4VnJXe1dvMR3HaAOfdOTH5b8RAXIBwBzQ9BT/QD01yQaEGcPNbfQs6uZc4uwHwtziKdz6ddwrP+APosyE04VexClpuj7ndY5kaWbl/FhuebJYS5xVtTsw/3pR/dbf+uy3MAkLWeXlG/L4gI8C7BDj4CvCCOKkAD20a6bIOn7yy7jM34SCsA45wUVBnUcHIekeU+ZRld9MUH2vvhZGSrWY3INRqPf3m0kgj8J7CRQsEkp8/I5X8giwl+7hUXVnaJLJLOsUuIRRV+LkeED337RzJGjVpAQY6zbEfsbtIZE0dfrGjCToaVSZu+bzbLzE5Z6iT/vTBhREcYYDbe56XKCawIGQwlwlrSh/8lTkKRamFNsLWr3l7BJPo3RFfY2oZQc7/5Jltew9DyPcChjRjzEpwUXqeWoLlX4mj1RHc0Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(366004)(2906002)(8936002)(38100700002)(5660300002)(44832011)(66556008)(66476007)(66946007)(4326008)(8676002)(86362001)(33716001)(54906003)(83380400001)(6486002)(316002)(9686003)(6506007)(6512007)(6666004)(52116002)(186003)(6916009)(508600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u2lcabO5fDerd0OukB2+Td0HekHPaGZLGiTWrlzYlFIpa5QuvXT8ssPsVlV/?=
- =?us-ascii?Q?We+tPtP3t4RbdBMaOGUVoGKDBwuoy4ZceNpRQ7AKnvtP6f8R/vOakDYlpp3Y?=
- =?us-ascii?Q?kBDsY1Et8h6mLW3b9Pi0/ApY8DYuiVK/fVds+osXclRK7bVEu8N6pRDL9bb2?=
- =?us-ascii?Q?aldWUBGctqOsT4lxjGGXF4Q55y0VNrjrjlqavWTUc67O0azLfDbgpas+d1Hk?=
- =?us-ascii?Q?FPp2DUd3hT6Akt556jJg4O0Y4ohKZ9+cbT6bYVZr2XjqzxaV6lBA95y2Bf1/?=
- =?us-ascii?Q?K1DuVcVu2rezFk/+swYcumBuqOqFfM/wmVq9XO6dOaR1eSQ+9OzFvkDRTmQj?=
- =?us-ascii?Q?CSBEFgtIbCVS2nTmlLLMmJzMF+d6JG9rCmlrr1FqsvuK2Bq1oJT9TlohYJ/G?=
- =?us-ascii?Q?aCRzyJut1IBiDMiygUtCDS4cbeqXbYQUzsLbAVsZTg89O6XmjH/qZVSDySEd?=
- =?us-ascii?Q?hXtQjHBkIL6QlnLWJ3k0uRI6u5AruBWt2Cmvt8aBWoydecYJ0s+bl4D88F+C?=
- =?us-ascii?Q?v4jxrDGdqopqB6y4PGeMVUUbAACdWo2U/7B9XGX+HJA/wd23BTRxOC34iY5E?=
- =?us-ascii?Q?IcQT6E83RxsQQZcRtLYzXM4m2m3FnfOBtnqx5NRWFNMVbxPXYsWF96w2s/pJ?=
- =?us-ascii?Q?Xv5JGgUA/64Tl/0FNMrIurW4o7hnjQVyigbgXVBadM1rD4J2w2J2f645Q7zj?=
- =?us-ascii?Q?1i/VmkfukQdbV4fjydn4OgI4rcBQdqqZf8d44be0J47GfbHeSL2RNp57pXMG?=
- =?us-ascii?Q?DWvQEbF4Gy6flWiOhyTlMtMfE/MCAyvAUCz2wCnMysYrKK1WlrB6/BfTed+A?=
- =?us-ascii?Q?fE+H/h1/SBWx/CeoHfax3dn0acNNuN8N6sqYgxxFTpcbaRr0J+2KO2mG49jl?=
- =?us-ascii?Q?hEF/ma1Bl7ScZHsN+I88b0T300LuvVADPloi+EHPXmP4lQdVvYHdZKfiOga7?=
- =?us-ascii?Q?VibNL/r7qO7C6Iyp3u/K25TnSLda5JNK/dQv5QgUrPtN+5LZ3NeiP5dOkZwt?=
- =?us-ascii?Q?XwtzaPL1rViZoyfDm1G4tyL+uW1VlyMvlgjGrpssC61f+NpAAF+ocjMmaTcV?=
- =?us-ascii?Q?/OssiuYZ0l0JhLlUPwkeiZHt4HKROiG6tr7B63ov/OehmtPxua4KhnEIamf4?=
- =?us-ascii?Q?ci6Tk1Xoaa8vG/jgNnRII8VphMEyfmCE7o8FUZZVOnAmBh6R4B6/CK5eDO/y?=
- =?us-ascii?Q?ECBil/jO2xaF9jwu/NaYJlEeyAZKpUBkMQftu39wo+q45Q/BCVcCBoVxVin2?=
- =?us-ascii?Q?lmzBD/umgFq7vF4Kayn/7eKzdplDlv3TPuslhsxN/jsDS9Zh+/O3pCoy4pmm?=
- =?us-ascii?Q?3zkKOnlaEJEy4BVDXNV52cO36RAzdfjHtTsJfi0ImrpeUSBUK8m7lm+xFwr1?=
- =?us-ascii?Q?FXUIl/GEo2MM8KkU8C1O7JQ2SIBhzeJzHqaPAgyjjFsGD0u4tZclp7qo6Qe/?=
- =?us-ascii?Q?2UY9mpRNNJO7EQTE9Kgz13TYeFfOUV2Fo3cLyxTjFzmrZzrBqAro88c1URya?=
- =?us-ascii?Q?mH9LWQvF9awdDc98WuNrv3z+I+6UUkuTPViKBPu4DWnf71NU5/vg+uLTrosl?=
- =?us-ascii?Q?6a67UnNokOwhxsHpR/HTWGGvvQNRc6ntPXJMxHi8lq1MuKUnb7TFHVW2HIET?=
- =?us-ascii?Q?8KpYZFfwFXXw9VdXIwB+TnEYbJDfTw/Ex3bDgZf9ZgSlTErHuAg/DHy3Gnbm?=
- =?us-ascii?Q?WmYZ4aFI0neMMbyNZuNNdTCUoLQHevDjIJNj+WniNX+YgVfUvau14bi3APCz?=
- =?us-ascii?Q?1lHtF/FcOCweX+XQyeyF3ldJOUeMinRYre6caXNirI8ZhOgPBZVO?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e424a8c8-c185-405a-90b2-08da1363be7c
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2022 22:13:54.7525
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J+HL3KsYxQNDfNManmamxw9qtGbQGEoIck/ZP/DMMokbFzpp4aP3tCZKD6mjic98xW+wOUfH46So0g4X61fRkA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR10MB2432
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.850
- definitions=2022-03-31_06:2022-03-30,2022-03-31 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 bulkscore=0 suspectscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203310115
-X-Proofpoint-GUID: 1OGcBAXI5TYKc3ptkYZVNmoOxO8-189P
-X-Proofpoint-ORIG-GUID: 1OGcBAXI5TYKc3ptkYZVNmoOxO8-189P
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220324234123.1608337-1-haoluo@google.com> <9cdf860d-8370-95b5-1688-af03265cc874@fb.com>
+ <CA+khW7g3hy61qnvtqUizaW+qB6wk=Y9cjivhORshOk=ZzTXJ-A@mail.gmail.com>
+ <CA+khW7iq+UKsfQxdT3QpSqPUFN8gQWWDLoQ9zxB=uWTs63AZEA@mail.gmail.com>
+ <20220329093753.26wc3noelqrwlrcj@apollo.legion> <CA+khW7jW47SALTfxMKfQoA0Qwqd22GC0z4S5juFTbxLfTSbFEQ@mail.gmail.com>
+ <20220329232956.gbsr65jdbe4lw2m6@ast-mbp> <CA+khW7jyvp4PKGu5GS8GDf=Lr4EdRUz8kraaTfiZ2oGm704Cpw@mail.gmail.com>
+ <CAADnVQLTBhCTAx1a_nev7CgMZxv1Bb7ecz1AFRin8tHmjPREJA@mail.gmail.com> <CA+khW7iqiKTLi75oSPe+ibV8afR_SPgtg7Q+nEswmMOFZaAebA@mail.gmail.com>
+In-Reply-To: <CA+khW7iqiKTLi75oSPe+ibV8afR_SPgtg7Q+nEswmMOFZaAebA@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 1 Apr 2022 00:32:10 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ6-csGkdMQiGYYr5_DgShPWrUFfs92sUOhwzQt=T13+SA@mail.gmail.com>
+Message-ID: <CACYkzJ6-csGkdMQiGYYr5_DgShPWrUFfs92sUOhwzQt=T13+SA@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/2] Mmapable task local storage.
+To:     Hao Luo <haoluo@google.com>, Jann Horn <jannh@google.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 25 Mar 2022, Andrii Nakryiko wrote:
+On Wed, Mar 30, 2022 at 8:26 PM Hao Luo <haoluo@google.com> wrote:
+>
+> On Wed, Mar 30, 2022 at 11:16 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Mar 30, 2022 at 11:06 AM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > On Tue, Mar 29, 2022 at 4:30 PM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Tue, Mar 29, 2022 at 10:43:42AM -0700, Hao Luo wrote:
+> > > > > On Tue, Mar 29, 2022 at 2:37 AM Kumar Kartikeya Dwivedi
+> > > > > <memxor@gmail.com> wrote:
+> > > > > >
+> > > > > > On Mon, Mar 28, 2022 at 11:16:15PM IST, Hao Luo wrote:
+> > > > > > > On Mon, Mar 28, 2022 at 10:39 AM Hao Luo <haoluo@google.com> wrote:
+> > > > > > > >
+> > > > > > > > Hi Yonghong,
+> > > > > > > >
+> > > > > > > > On Fri, Mar 25, 2022 at 12:16 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > > > > > >
+> > > > > > > > > On 3/24/22 4:41 PM, Hao Luo wrote:
+> > > > > > > > > > Some map types support mmap operation, which allows userspace to
+> > > > > > > > > > communicate with BPF programs directly. Currently only arraymap
+> > > > > > > > > > and ringbuf have mmap implemented.
+> > > > > > > > > >
+> > > > > > > > > > However, in some use cases, when multiple program instances can
+> > > > > > > > > > run concurrently, global mmapable memory can cause race. In that
+> > > > > > > > > > case, userspace needs to provide necessary synchronizations to
+> > > > > > > > > > coordinate the usage of mapped global data. This can be a source
+> > > > > > > > > > of bottleneck.
+> > > > > > > > >
+> > > > > > > > > I can see your use case here. Each calling process can get the
+> > > > > > > > > corresponding bpf program task local storage data through
+> > > > > > > > > mmap interface. As you mentioned, there is a tradeoff
+> > > > > > > > > between more memory vs. non-global synchronization.
+> > > > > > > > >
+> > > > > > > > > I am thinking that another bpf_iter approach can retrieve
+> > > > > > > > > the similar result. We could implement a bpf_iter
+> > > > > > > > > for task local storage map, optionally it can provide
+> > > > > > > > > a tid to retrieve the data for that particular tid.
+> > > > > > > > > This way, user space needs an explicit syscall, but
+> > > > > > > > > does not need to allocate more memory than necessary.
+> > > > > > > > >
+> > > > > > > > > WDYT?
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > Thanks for the suggestion. I have two thoughts about bpf_iter + tid and mmap:
+> > > > > > > >
+> > > > > > > > - mmap prevents the calling task from reading other task's value.
+> > > > > > > > Using bpf_iter, one can pass other task's tid to get their values. I
+> > > > > > > > assume there are two potential ways of passing tid to bpf_iter: one is
+> > > > > > > > to use global data in bpf prog, the other is adding tid parameterized
+> > > > > > > > iter_link. For the first, it's not easy for unpriv tasks to use. For
+> > > > > > > > the second, we need to create one iter_link object for each interested
+> > > > > > > > tid. It may not be easy to use either.
+> > > > > > > >
+> > > > > > > > - Regarding adding an explicit syscall. I thought about adding
+> > > > > > > > write/read syscalls for task local storage maps, just like reading
+> > > > > > > > values from iter_link. Writing or reading task local storage map
+> > > > > > > > updates/reads the current task's value. I think this could achieve the
+> > > > > > > > same effect as mmap.
+> > > > > > > >
+> > > > > > >
+> > > > > > > Actually, my use case of using mmap on task local storage is to allow
+> > > > > > > userspace to pass FDs into bpf prog. Some of the helpers I want to add
+> > > > > > > need to take an FD as parameter and the bpf progs can run
+> > > > > > > concurrently, thus using global data is racy. Mmapable task local
+> > > > > > > storage is the best solution I can find for this purpose.
+> > > > > > >
+> > > > > > > Song also mentioned to me offline, that mmapable task local storage
+> > > > > > > may be useful for his use case.
+> > > > > > >
+> > > > > > > I am actually open to other proposals.
+> > > > > > >
+> > > > > >
+> > > > > > You could also use a syscall prog, and use bpf_prog_test_run to update local
+> > > > > > storage for current. Data can be passed for that specific prog invocation using
+> > > > > > ctx. You might have to enable bpf_task_storage helpers in it though, since they
+> > > > > > are not allowed to be called right now.
+> > > > > >
+> > > > >
+> > > > > The loading process needs CAP_BPF to load bpf_prog_test_run. I'm
+> > > > > thinking of allowing any thread including unpriv ones to be able to
+> > > > > pass data to the prog and update their own storage.
+> > > >
+> > > > If I understand the use case correctly all of this mmap-ing is only to
+> > > > allow unpriv userspace to access a priv map via unpriv mmap() syscall.
+> > > > But the map can be accessed as unpriv already.
+> > > > Pin it with the world read creds and do map_lookup sys_bpf cmd on it.
+> > >
+> > > Right, but, if I understand correctly, with
+> > > sysctl_unprivileged_bpf_disabled, unpriv tasks are not able to make
+> > > use of __sys_bpf(). Is there anything I missed?
+> >
+> > That sysctl is a heavy hammer. Let's fix it instead.
+> > map lookup/update/delete can be allowed for unpriv for certain map types.
+> > There are permissions checks in corresponding lookup/update calls already.
+>
 
-> Extend urandom_read helper binary to include USDTs of 4 combinations:
-> semaphore/semaphoreless (refcounted and non-refcounted) and based in
-> executable or shared library. We also extend urandom_read with ability
-> to report it's own PID to parent process and wait for parent process to
-> ready itself up for tracing urandom_read. We utilize popen() and
-> underlying pipe properties for proper signaling.
-> 
-> Once urandom_read is ready, we add few tests to validate that libbpf's
-> USDT attachment handles all the above combinations of semaphore (or lack
-> of it) and static or shared library USDTs. Also, we validate that libbpf
-> handles shared libraries both with PID filter and without one (i.e., -1
-> for PID argument).
-> 
-> Having the shared library case tested with and without PID is important
-> because internal logic differs on kernels that don't support BPF
-> cookies. On such older kernels, attaching to USDTs in shared libraries
-> without specifying concrete PID doesn't work in principle, because it's
-> impossible to determine shared library's load address to derive absolute
-> IPs for uprobe attachments. Without absolute IPs, it's impossible to
-> perform correct look up of USDT spec based on uprobe's absolute IP (the
-> only kind available from BPF at runtime). This is not the problem on
-> newer kernels with BPF cookie as we don't need IP-to-ID lookup because
-> BPF cookie value *is* spec ID.
-> 
-> So having those two situations as separate subtests is good because
-> libbpf CI is able to test latest selftests against old kernels (e.g.,
-> 4.9 and 5.5), so we'll be able to disable PID-less shared lib attachment
-> for old kernels, but will still leave PID-specific one enabled to validate
-> this legacy logic is working correctly.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+(Adding Jann)
 
+I wonder if we can tag a map as BPF_F_UNPRIVILEGED and allow the writes to
+only maps that are explicitly marked as writable by unprivileged processes.
 
-haven't looked at this in depth yet, but hit a compilation error on 
-aarch64:
+We will have task local storage in LSM programs that we
+won't like unprivileged processes to write to as well.
 
-  LIB      liburandom_read.so
-/usr/bin/ld: /tmp/ccNy8cuv.o: relocation R_AARCH64_ADR_PREL_PG_HI21 
-against symbol `urandlib_read_with_sema_semaphore' which may bind 
-externally can not be used when making a shared object; recompile with 
--fPIC
-/tmp/ccNy8cuv.o: In function `urandlib_read_with_sema':
-/home/opc/src/bpf-next/tools/testing/selftests/bpf/urandom_read_lib1.c:12:(.text+0x10): 
-dangerous relocation: unsupported relocation
-collect2: error: ld returned 1 exit status
-make: *** [Makefile:173: 
-/home/opc/src/bpf-next/tools/testing/selftests/bpf/liburandom_read.so] 
-Error 1
+struct {
+        __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+        __uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_UNPRIVILEGED);
+        __type(key, int);
+        __type(value, struct fd_storage);
+} task_fd_storage_map SEC(".maps");
 
-following did fix it:
+- KP
 
-diff --git a/tools/testing/selftests/bpf/Makefile 
-b/tools/testing/selftests/bpf/Makefile
-index 58da22c019a8..c89e2948276b 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -170,7 +170,7 @@ $(OUTPUT)/%:%.c
- 
- $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
-        $(call msg,LIB,,$@)
--       $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
-+       $(Q)$(CC) $(CFLAGS) -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
- 
- $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c 
-$(OUTPUT)/liburandom_read.so
-        $(call msg,BINARY,,$@)
-
+> This sounds great. If we can allow basic map operations for some map
+> types, it will change many use cases I'm looking at. Let me take a
+> look and report back.
