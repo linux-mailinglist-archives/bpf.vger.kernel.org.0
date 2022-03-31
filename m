@@ -2,123 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA4C4ED4D1
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 09:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329764ED560
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 10:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbiCaHc0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 03:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
+        id S232021AbiCaIXc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 04:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbiCaHcW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 03:32:22 -0400
-Received: from conssluserg-02.nifty.com (conssluserg-02.nifty.com [210.131.2.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E521A1DE594;
-        Thu, 31 Mar 2022 00:30:34 -0700 (PDT)
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 22V7UGG0029675;
-        Thu, 31 Mar 2022 16:30:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 22V7UGG0029675
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1648711817;
-        bh=9Htjky9XkVnyUWia+NbkPjjSVOOOk9oXjJ0/73vR0WE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=09j5XpbnARkHo1663RYGjwTfTBie0lA6g7DBnrSnRwJB/vkVDQBEJ1Tc08L22nx6Q
-         KuZksZsWTQW4Km9WjQSm4ThFKU6eCc4c8yDaNwx/mmVPH6E18M00WxIdU1pcnS7PcZ
-         VdGaWBPoM8XFvo+PvG0E5CziaPO+nHGQwz8OxS48uSULGDoN/5br05H4R2x6fMembO
-         I1iJY+SB4ICnalDIfkFFQ3fy3rKgjT4heOuIqj14Q6P2K1ao1LiEB8EWBr5+J7/ryS
-         qdGiTO56TWr9c0t4xa4c6aAEM4mVeKIoBR1e5snLBY0TRcODSmCmDORA6gvTWFDGEG
-         TrLUpGhQOSxFw==
-X-Nifty-SrcIP: [209.85.214.177]
-Received: by mail-pl1-f177.google.com with SMTP id x2so22632292plm.7;
-        Thu, 31 Mar 2022 00:30:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531n4e5f9Bpi0v/t6Gz6VS4aPojPRmF+cRMFYi7z6khmIkt8WefZ
-        fKrH7EtwpW8tyJVo8KzhulhA9XlufutR/IOA0BQ=
-X-Google-Smtp-Source: ABdhPJxUYlg8xglwS7unqeL3Qg1V0KxRq8m3F9e9rDzp88ArQtlOndUIMBaAh9o1sujNi92PFsOKGmNv02Edcu1ePLA=
-X-Received: by 2002:a17:90b:4d01:b0:1c9:ec79:1b35 with SMTP id
- mw1-20020a17090b4d0100b001c9ec791b35mr4459174pjb.77.1648711815860; Thu, 31
- Mar 2022 00:30:15 -0700 (PDT)
+        with ESMTP id S231983AbiCaIXc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 04:23:32 -0400
+Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1541B98B0;
+        Thu, 31 Mar 2022 01:21:43 -0700 (PDT)
+Received: from [192.168.0.4] (ip5f5ae900.dynamic.kabel-deutschland.de [95.90.233.0])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 3F8B861E64846;
+        Thu, 31 Mar 2022 10:21:37 +0200 (CEST)
+Message-ID: <208cb9f0-09e1-094f-5bca-9a9effbf1da8@molgen.mpg.de>
+Date:   Thu, 31 Mar 2022 10:21:36 +0200
 MIME-Version: 1.0
-References: <20220330201755.29319-1-mathieu.desnoyers@efficios.com> <20220330162152.17b1b660@gandalf.local.home>
-In-Reply-To: <20220330162152.17b1b660@gandalf.local.home>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 31 Mar 2022 16:29:30 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATm5FjZsXL6aKUMhXwQAqTuO9+LmAk3LGjpAib7NZBDmg@mail.gmail.com>
-Message-ID: <CAK7LNATm5FjZsXL6aKUMhXwQAqTuO9+LmAk3LGjpAib7NZBDmg@mail.gmail.com>
-Subject: Re: [PATCH] tracing: do not export user_events uapi
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_SOFTFAIL,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] fbdev: defio: fix the pagelist corruption
+Content-Language: en-US
+To:     Chuansheng Liu <chuansheng.liu@intel.com>
+Cc:     tzimmermann@suse.de, linux-fbdev@vger.kernel.org, deller@gmx.de,
+        dri-devel@lists.freedesktop.org, Song Liu <song@kernel.org>,
+        linux-mm@kvack.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        x86@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, akpm@linux-foundation.org,
+        rick.p.edgecombe@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+References: <20220317054602.28846-1-chuansheng.liu@intel.com>
+ <c058f18b-3dae-9ceb-57b4-ed62fedef50a@molgen.mpg.de>
+ <BL1PR11MB54455684D2A1B4F0A666F861971D9@BL1PR11MB5445.namprd11.prod.outlook.com>
+ <502adc88-740f-fd68-d870-4f5577e1254d@molgen.mpg.de>
+ <BL1PR11MB544534F78BE2AB3502981AE5971D9@BL1PR11MB5445.namprd11.prod.outlook.com>
+ <baebc9c2-a8fc-9b36-6133-7fa8368a93d5@molgen.mpg.de>
+ <BL1PR11MB5445633C68B3039320FE780E97E19@BL1PR11MB5445.namprd11.prod.outlook.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <BL1PR11MB5445633C68B3039320FE780E97E19@BL1PR11MB5445.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 5:21 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
->
-> Adding the build maintainers.
->
-> -- Steve
->
-> On Wed, 30 Mar 2022 16:17:55 -0400
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
->
-> > In addition to mark the USER_EVENTS feature BROKEN until all interested
-> > parties figure out the user-space API, do not install the uapi header.
-> >
-> > This prevents situations where a non-final uapi header would end up
-> > being installed into a distribution image and used to build user-space
-> > programs that would then run against newer kernels that will implement
-> > user events with a different ABI.
-> >
-> > Link: https://lore.kernel.org/all/20220330155835.5e1f6669@gandalf.local.home
-> >
-> > Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > ---
-> >  include/uapi/Kbuild | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/include/uapi/Kbuild b/include/uapi/Kbuild
-> > index 61ee6e59c930..425ea8769ddc 100644
-> > --- a/include/uapi/Kbuild
-> > +++ b/include/uapi/Kbuild
-> > @@ -12,3 +12,6 @@ ifeq ($(wildcard $(objtree)/arch/$(SRCARCH)/include/generated/uapi/asm/kvm_para.
-> >  no-export-headers += linux/kvm_para.h
-> >  endif
-> >  endif
-> > +
-> > +# API is not finalized
-> > +no-export-headers += linux/user_events.h
->
+Dear Chuansheng,
 
 
-Well, the intended usage of no-export-headers is to
-cater to the UAPI supported by only some architectures.
-We have kvm(_para).h here because not all architectures
-support kvm.
+Am 31.03.22 um 02:06 schrieb Liu, Chuansheng:
 
-If you do not want to export the UAPI,
-you should not put it in include/uapi/.
+>> -----Original Message-----
+>> From: Paul Menzel <pmenzel@molgen.mpg.de>
+>> Sent: Thursday, March 31, 2022 12:47 AM
 
-After the API is finalized, you can move it to
-include/uapi.
+[…]
+
+>> Am 29.03.22 um 01:58 schrieb Liu, Chuansheng:
+>>
+>>>> -----Original Message-----
+>>>> From: Paul Menzel
+>>>> Sent: Monday, March 28, 2022 2:15 PM
+>>
+>>>> Am 28.03.22 um 02:58 schrieb Liu, Chuansheng:
+>>>>
+>>>>>> -----Original Message-----
+>>>>
+>>>>>> Sent: Saturday, March 26, 2022 4:11 PM
+>>>>
+>>>>>> Am 17.03.22 um 06:46 schrieb Chuansheng Liu:
+>>>>>>> Easily hit the below list corruption:
+>>>>>>> ==
+>>>>>>> list_add corruption. prev->next should be next (ffffffffc0ceb090), but
+>>>>>>> was ffffec604507edc8. (prev=ffffec604507edc8).
+>>>>>>> WARNING: CPU: 65 PID: 3959 at lib/list_debug.c:26
+>>>>>>> __list_add_valid+0x53/0x80
+>>>>>>> CPU: 65 PID: 3959 Comm: fbdev Tainted: G     U
+>>>>>>> RIP: 0010:__list_add_valid+0x53/0x80
+>>>>>>> Call Trace:
+>>>>>>>      <TASK>
+>>>>>>>      fb_deferred_io_mkwrite+0xea/0x150
+>>>>>>>      do_page_mkwrite+0x57/0xc0
+>>>>>>>      do_wp_page+0x278/0x2f0
+>>>>>>>      __handle_mm_fault+0xdc2/0x1590
+>>>>>>>      handle_mm_fault+0xdd/0x2c0
+>>>>>>>      do_user_addr_fault+0x1d3/0x650
+>>>>>>>      exc_page_fault+0x77/0x180
+>>>>>>>      ? asm_exc_page_fault+0x8/0x30
+>>>>>>>      asm_exc_page_fault+0x1e/0x30
+>>>>>>> RIP: 0033:0x7fd98fc8fad1
+>>>>>>> ==
+>>>>>>>
+>>>>>>> Figure out the race happens when one process is adding &page->lru into
+>>>>>>> the pagelist tail in fb_deferred_io_mkwrite(), another process is
+>>>>>>> re-initializing the same &page->lru in fb_deferred_io_fault(), which is
+>>>>>>> not protected by the lock.
+>>>>>>>
+>>>>>>> This fix is to init all the page lists one time during initialization,
+>>>>>>> it not only fixes the list corruption, but also avoids INIT_LIST_HEAD()
+>>>>>>> redundantly.
+>>>>>>>
+>>>>>>> Fixes: 105a940416fc ("fbdev/defio: Early-out if page is already enlisted")
+>>>>>>> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+>>>>>>> Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
+>>>>>>> ---
+>>>>>>>      drivers/video/fbdev/core/fb_defio.c | 9 ++++++++-
+>>>>>>>      1 file changed, 8 insertions(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
+>>>>>>> index 98b0f23bf5e2..eafb66ca4f28 100644
+>>>>>>> --- a/drivers/video/fbdev/core/fb_defio.c
+>>>>>>> +++ b/drivers/video/fbdev/core/fb_defio.c
+>>>>>>> @@ -59,7 +59,6 @@ static vm_fault_t fb_deferred_io_fault(struct vm_fault *vmf)
+>>>>>>>      		printk(KERN_ERR "no mapping available\n");
+>>>>>>>
+>>>>>>>      	BUG_ON(!page->mapping);
+>>>>>>> -	INIT_LIST_HEAD(&page->lru);
+>>>>>>>      	page->index = vmf->pgoff;
+>>>>>>>
+>>>>>>>      	vmf->page = page;
+>>>>>>> @@ -220,6 +219,8 @@ static void fb_deferred_io_work(struct work_struct *work)
+>>>>>>>      void fb_deferred_io_init(struct fb_info *info)
+>>>>>>>      {
+>>>>>>>      	struct fb_deferred_io *fbdefio = info->fbdefio;
+>>>>>>> +	struct page *page;
+>>>>>>> +	int i;
+>>>>>>>
+>>>>>>>      	BUG_ON(!fbdefio);
+>>>>>>>      	mutex_init(&fbdefio->lock);
+>>>>>>> @@ -227,6 +228,12 @@ void fb_deferred_io_init(struct fb_info *info)
+>>>>>>>      	INIT_LIST_HEAD(&fbdefio->pagelist);
+>>>>>>>      	if (fbdefio->delay == 0) /* set a default of 1 s */
+>>>>>>>      		fbdefio->delay = HZ;
+>>>>>>> +
+>>>>>>> +	/* initialize all the page lists one time */
+>>>>>>> +	for (i = 0; i < info->fix.smem_len; i += PAGE_SIZE) {
+>>>>>>> +		page = fb_deferred_io_page(info, i);
+>>>>>>> +		INIT_LIST_HEAD(&page->lru);
+>>>>>>> +	}
+>>>>>>>      }
+>>>>>>>      EXPORT_SYMBOL_GPL(fb_deferred_io_init);
+>>>>>>>
+>>>>>> Applying your patch on top of current Linus’ master branch, tty0 is
+>>>>>> unusable and looks frozen. Sometimes network card still works, sometimes
+>>>>>> not.
+>>>>>
+>>>>> I don't see how the patch would cause below BUG call stack, need some time to
+>>>>> debug. Just few comments:
+>>>>> 1. Will the system work well without this patch?
+>>>>
+>>>> Yes, the framebuffer works well without the patch.
+>>>>
+>>>>> 2. When you are sure the patch causes the regression you saw, please get free
+>>>> to submit one reverted patch, thanks : )
+>>>>
+>>>> I think you for patch wasn’t submitted yet – at least not pulled by Linus.
+>>> The patch has been in drm-tip, could you have a try with the latest drm-tip to see
+>>> if the Framebuffer works well, in that case, we could revert it in drm-tip then.
+>>
+>> With drm-tip (drm-tip: 2022y-03m-29d-13h-14m-35s UTC integration
+>> manifest) everything works fine. (I had to disable amdgpu driver, as it
+>> failed to build.) Is anyone able to explain that?
+> 
+> My patch is for fixing another patch which is in the drm-tip at least,
+
+The referenced commit 105a940416fc in the Fixes tag is also in Linus’ 
+master branch.
+
+> so I assume applying my patch into Linus tree directly is not
+> completely proper. That's my intention of asking your help for
+> retesting drm-tip.
+If there were such a relation, that would need to be documented in the 
+commit message.
+
+> You mean everything working fine means another issue you hit is also
+> gone?
+No, I just mean the hang when applying your patch.
+
+Anyway, after figuring out, that drm-tip, is actually not behind Linus’ 
+master branch, I tried to figure out the differences, and it turns out 
+it’s also related to commit fac54e2bfb5b (x86/Kconfig: Select 
+HAVE_ARCH_HUGE_VMALLOC with HAVE_ARCH_HUGE_VMAP) [1], which is in Linus’ 
+master branch, but not drm-tip. Note, I am using a 32-bit user space and 
+a 64-bit Linux kernel. Reverting commit fac54e2bfb5b, and having your 
+patch a applied, the hang is gone.
+
+I am adding the people involved in the other discussion to make them 
+aware of this failure case.
 
 
--- 
-Best Regards
-Masahiro Yamada
+Kind regards,
+
+Paul
+
+
+[1]: https://linux-regtracking.leemhuis.info/regzbot/mainline/
