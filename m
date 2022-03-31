@@ -2,208 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 329764ED560
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 10:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C314ED588
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 10:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbiCaIXc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 04:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
+        id S232810AbiCaI1c convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 31 Mar 2022 04:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231983AbiCaIXc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 04:23:32 -0400
-Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1541B98B0;
-        Thu, 31 Mar 2022 01:21:43 -0700 (PDT)
-Received: from [192.168.0.4] (ip5f5ae900.dynamic.kabel-deutschland.de [95.90.233.0])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 3F8B861E64846;
-        Thu, 31 Mar 2022 10:21:37 +0200 (CEST)
-Message-ID: <208cb9f0-09e1-094f-5bca-9a9effbf1da8@molgen.mpg.de>
-Date:   Thu, 31 Mar 2022 10:21:36 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] fbdev: defio: fix the pagelist corruption
+        with ESMTP id S232819AbiCaI1V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 04:27:21 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9C41C391A;
+        Thu, 31 Mar 2022 01:25:25 -0700 (PDT)
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4KTbtK51ctz67KsG;
+        Thu, 31 Mar 2022 16:23:53 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 31 Mar 2022 10:25:23 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
+ Thu, 31 Mar 2022 10:25:23 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     "corbet@lwn.net" <corbet@lwn.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF
+ programs
+Thread-Topic: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF
+ programs
+Thread-Index: AQHYQsxoL5kXhl8+JE6PJPNWV+NOTqzYppqAgABrSsA=
+Date:   Thu, 31 Mar 2022 08:25:22 +0000
+Message-ID: <b9f5995f96da447c851f7c9db8232a9b@huawei.com>
+References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
+ <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
+In-Reply-To: <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Chuansheng Liu <chuansheng.liu@intel.com>
-Cc:     tzimmermann@suse.de, linux-fbdev@vger.kernel.org, deller@gmx.de,
-        dri-devel@lists.freedesktop.org, Song Liu <song@kernel.org>,
-        linux-mm@kvack.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        x86@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, akpm@linux-foundation.org,
-        rick.p.edgecombe@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-References: <20220317054602.28846-1-chuansheng.liu@intel.com>
- <c058f18b-3dae-9ceb-57b4-ed62fedef50a@molgen.mpg.de>
- <BL1PR11MB54455684D2A1B4F0A666F861971D9@BL1PR11MB5445.namprd11.prod.outlook.com>
- <502adc88-740f-fd68-d870-4f5577e1254d@molgen.mpg.de>
- <BL1PR11MB544534F78BE2AB3502981AE5971D9@BL1PR11MB5445.namprd11.prod.outlook.com>
- <baebc9c2-a8fc-9b36-6133-7fa8368a93d5@molgen.mpg.de>
- <BL1PR11MB5445633C68B3039320FE780E97E19@BL1PR11MB5445.namprd11.prod.outlook.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <BL1PR11MB5445633C68B3039320FE780E97E19@BL1PR11MB5445.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.81.200.158]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Chuansheng,
-
-
-Am 31.03.22 um 02:06 schrieb Liu, Chuansheng:
-
->> -----Original Message-----
->> From: Paul Menzel <pmenzel@molgen.mpg.de>
->> Sent: Thursday, March 31, 2022 12:47 AM
-
-[…]
-
->> Am 29.03.22 um 01:58 schrieb Liu, Chuansheng:
->>
->>>> -----Original Message-----
->>>> From: Paul Menzel
->>>> Sent: Monday, March 28, 2022 2:15 PM
->>
->>>> Am 28.03.22 um 02:58 schrieb Liu, Chuansheng:
->>>>
->>>>>> -----Original Message-----
->>>>
->>>>>> Sent: Saturday, March 26, 2022 4:11 PM
->>>>
->>>>>> Am 17.03.22 um 06:46 schrieb Chuansheng Liu:
->>>>>>> Easily hit the below list corruption:
->>>>>>> ==
->>>>>>> list_add corruption. prev->next should be next (ffffffffc0ceb090), but
->>>>>>> was ffffec604507edc8. (prev=ffffec604507edc8).
->>>>>>> WARNING: CPU: 65 PID: 3959 at lib/list_debug.c:26
->>>>>>> __list_add_valid+0x53/0x80
->>>>>>> CPU: 65 PID: 3959 Comm: fbdev Tainted: G     U
->>>>>>> RIP: 0010:__list_add_valid+0x53/0x80
->>>>>>> Call Trace:
->>>>>>>      <TASK>
->>>>>>>      fb_deferred_io_mkwrite+0xea/0x150
->>>>>>>      do_page_mkwrite+0x57/0xc0
->>>>>>>      do_wp_page+0x278/0x2f0
->>>>>>>      __handle_mm_fault+0xdc2/0x1590
->>>>>>>      handle_mm_fault+0xdd/0x2c0
->>>>>>>      do_user_addr_fault+0x1d3/0x650
->>>>>>>      exc_page_fault+0x77/0x180
->>>>>>>      ? asm_exc_page_fault+0x8/0x30
->>>>>>>      asm_exc_page_fault+0x1e/0x30
->>>>>>> RIP: 0033:0x7fd98fc8fad1
->>>>>>> ==
->>>>>>>
->>>>>>> Figure out the race happens when one process is adding &page->lru into
->>>>>>> the pagelist tail in fb_deferred_io_mkwrite(), another process is
->>>>>>> re-initializing the same &page->lru in fb_deferred_io_fault(), which is
->>>>>>> not protected by the lock.
->>>>>>>
->>>>>>> This fix is to init all the page lists one time during initialization,
->>>>>>> it not only fixes the list corruption, but also avoids INIT_LIST_HEAD()
->>>>>>> redundantly.
->>>>>>>
->>>>>>> Fixes: 105a940416fc ("fbdev/defio: Early-out if page is already enlisted")
->>>>>>> Cc: Thomas Zimmermann <tzimmermann@suse.de>
->>>>>>> Signed-off-by: Chuansheng Liu <chuansheng.liu@intel.com>
->>>>>>> ---
->>>>>>>      drivers/video/fbdev/core/fb_defio.c | 9 ++++++++-
->>>>>>>      1 file changed, 8 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
->>>>>>> index 98b0f23bf5e2..eafb66ca4f28 100644
->>>>>>> --- a/drivers/video/fbdev/core/fb_defio.c
->>>>>>> +++ b/drivers/video/fbdev/core/fb_defio.c
->>>>>>> @@ -59,7 +59,6 @@ static vm_fault_t fb_deferred_io_fault(struct vm_fault *vmf)
->>>>>>>      		printk(KERN_ERR "no mapping available\n");
->>>>>>>
->>>>>>>      	BUG_ON(!page->mapping);
->>>>>>> -	INIT_LIST_HEAD(&page->lru);
->>>>>>>      	page->index = vmf->pgoff;
->>>>>>>
->>>>>>>      	vmf->page = page;
->>>>>>> @@ -220,6 +219,8 @@ static void fb_deferred_io_work(struct work_struct *work)
->>>>>>>      void fb_deferred_io_init(struct fb_info *info)
->>>>>>>      {
->>>>>>>      	struct fb_deferred_io *fbdefio = info->fbdefio;
->>>>>>> +	struct page *page;
->>>>>>> +	int i;
->>>>>>>
->>>>>>>      	BUG_ON(!fbdefio);
->>>>>>>      	mutex_init(&fbdefio->lock);
->>>>>>> @@ -227,6 +228,12 @@ void fb_deferred_io_init(struct fb_info *info)
->>>>>>>      	INIT_LIST_HEAD(&fbdefio->pagelist);
->>>>>>>      	if (fbdefio->delay == 0) /* set a default of 1 s */
->>>>>>>      		fbdefio->delay = HZ;
->>>>>>> +
->>>>>>> +	/* initialize all the page lists one time */
->>>>>>> +	for (i = 0; i < info->fix.smem_len; i += PAGE_SIZE) {
->>>>>>> +		page = fb_deferred_io_page(info, i);
->>>>>>> +		INIT_LIST_HEAD(&page->lru);
->>>>>>> +	}
->>>>>>>      }
->>>>>>>      EXPORT_SYMBOL_GPL(fb_deferred_io_init);
->>>>>>>
->>>>>> Applying your patch on top of current Linus’ master branch, tty0 is
->>>>>> unusable and looks frozen. Sometimes network card still works, sometimes
->>>>>> not.
->>>>>
->>>>> I don't see how the patch would cause below BUG call stack, need some time to
->>>>> debug. Just few comments:
->>>>> 1. Will the system work well without this patch?
->>>>
->>>> Yes, the framebuffer works well without the patch.
->>>>
->>>>> 2. When you are sure the patch causes the regression you saw, please get free
->>>> to submit one reverted patch, thanks : )
->>>>
->>>> I think you for patch wasn’t submitted yet – at least not pulled by Linus.
->>> The patch has been in drm-tip, could you have a try with the latest drm-tip to see
->>> if the Framebuffer works well, in that case, we could revert it in drm-tip then.
->>
->> With drm-tip (drm-tip: 2022y-03m-29d-13h-14m-35s UTC integration
->> manifest) everything works fine. (I had to disable amdgpu driver, as it
->> failed to build.) Is anyone able to explain that?
+> From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
+> Sent: Thursday, March 31, 2022 4:27 AM
+> On Mon, Mar 28, 2022 at 07:50:15PM +0200, Roberto Sassu wrote:
+> > eBPF already allows programs to be preloaded and kept running without
+> > intervention from user space. There is a dedicated kernel module called
+> > bpf_preload, which contains the light skeleton of the iterators_bpf eBPF
+> > program. If this module is enabled in the kernel configuration, its loading
+> > will be triggered when the bpf filesystem is mounted (unless the module is
+> > built-in), and the links of iterators_bpf are pinned in that filesystem
+> > (they will appear as the progs.debug and maps.debug files).
+> >
+> > However, the current mechanism, if used to preload an LSM, would not
+> offer
+> > the same security guarantees of LSMs integrated in the security
+> subsystem.
+> > Also, it is not generic enough to be used for preloading arbitrary eBPF
+> > programs, unless the bpf_preload code is heavily modified.
+> >
+> > More specifically, the security problems are:
+> > - any program can be pinned to the bpf filesystem without limitations
+> >   (unless a MAC mechanism enforces some restrictions);
+> > - programs being executed can be terminated at any time by deleting the
+> >   pinned objects or unmounting the bpf filesystem.
 > 
-> My patch is for fixing another patch which is in the drm-tip at least,
+> So many things to untangle here.
 
-The referenced commit 105a940416fc in the Fixes tag is also in Linus’ 
-master branch.
+Hi Alexei
 
-> so I assume applying my patch into Linus tree directly is not
-> completely proper. That's my intention of asking your help for
-> retesting drm-tip.
-If there were such a relation, that would need to be documented in the 
-commit message.
+thanks for taking the time to provide such detailed
+explanation.
 
-> You mean everything working fine means another issue you hit is also
-> gone?
-No, I just mean the hang when applying your patch.
+> The above paragraphs are misleading and incorrect.
+> The commit log sounds like there are security issues that this
+> patch set is fixing.
+> This is not true.
 
-Anyway, after figuring out, that drm-tip, is actually not behind Linus’ 
-master branch, I tried to figure out the differences, and it turns out 
-it’s also related to commit fac54e2bfb5b (x86/Kconfig: Select 
-HAVE_ARCH_HUGE_VMALLOC with HAVE_ARCH_HUGE_VMAP) [1], which is in Linus’ 
-master branch, but not drm-tip. Note, I am using a 32-bit user space and 
-a 64-bit Linux kernel. Reverting commit fac54e2bfb5b, and having your 
-patch a applied, the hang is gone.
+I reiterate the goal: enforce a mandatory policy with
+an out-of-tree LSM (a kernel module is fine), with the
+same guarantees of LSMs integrated in the security
+subsystem.
 
-I am adding the people involved in the other discussion to make them 
-aware of this failure case.
+The root user is not part of the TCB (i.e. is untrusted),
+all the changes that user wants to make must be subject
+of decision by the LSM enforcing the mandatory policy.
 
+I thought about adding support for LSMs from kernel
+modules via a new built-in LSM (called LoadLSM), but
+to me it looks that the bpf LSM is closer to achieve the
+same goal. And in addition, eBPF significantly simplifies
+with its helpers writing an LSM.
 
-Kind regards,
+> Looks like there is a massive misunderstanding on what bpffs is.
+> It's a file system to pin and get bpf objects with normal
+> file access permissions. Nothing else.
+> Do NOT use it to pin LSM or any other security sensitive bpf programs
+> and then complain that root can unpin them.
+> Yes. Root can and should be able to 'rm -rf' anything in bpffs instance.
+> 
+> > The usability problems are:
+> > - only a fixed amount of links can be pinned;
+> 
+> where do you see this limit?
 
-Paul
+static int populate_bpffs(struct dentry *parent)
+{
+        struct bpf_preload_info objs[BPF_PRELOAD_LINKS] = {};
 
+#define BPF_PRELOAD_LINKS 2
 
-[1]: https://linux-regtracking.leemhuis.info/regzbot/mainline/
+> > - only links can be pinned, other object types are not supported;
+> 
+> really? progs, maps can be pinned as well.
+
+struct bpf_preload_info {
+        char link_name[16];
+        struct bpf_link *link;
+};
+
+> > - code to pin objects has to be written manually;
+> 
+> huh?
+
+I meant if you want to extend the bpf_preload kernel
+module.
+
+> > Solve the security problems by mounting the bpf filesystem from the
+> kernel,
+> > by preloading authenticated kernel modules (e.g. with
+> module.sig_enforce)
+> > and by pinning objects to that filesystem. This particular filesystem
+> > instance guarantees that desired eBPF programs run until the very end of
+> > the kernel lifecycle, since even root cannot interfere with it.
+> 
+> No.
+
+Ok. How can the goal I stated above be achieved properly?
+
+> I suspect there is huge confusion on what these two "progs.debug"
+> and "maps.debug" files are in a bpffs instance.
+> They are debug files to pretty pring loaded maps and progs for folks who
+> like to use 'cat' to examine the state of the system instead of 'bpftool'.
+> The root can remove these files from bpffs.
+> 
+> There is no reason for kernel module to pin its bpf progs.
+> If you want to develop DIGLIM as a kernel module that uses light skeleton
+> just do:
+> #include <linux/init.h>
+> #include <linux/module.h>
+> #include "diglim.lskel.h"
+> 
+> static struct diglim_bpf *skel;
+> 
+> static int __init load(void)
+> {
+>         skel = diglim_bpf__open_and_load();
+>         err = diglim_bpf__attach(skel);
+> }
+> /* detach skel in __fini */
+> 
+> It's really that short.
+> 
+> Then you will be able to
+> - insmod diglim.ko -> will load and attach bpf progs.
+> - rmmod diglim -> will detach them.
+
+root can stop the LSM without consulting the security
+policy. The goal of having root untrusted is not achieved.
+
+Maybe there is another way to prevent unloading
+the kernel module. I didn't find it yet. If there was an
+LSM hook called when kernel modules are unloaded,
+that would be sufficient, I guess.
+
+My point was that pinning progs seems to be the
+recommended way of keeping them running. Pinning
+them to unreachable inodes intuitively looked the
+way to go for achieving the stated goal. Or maybe I
+should just increment the reference count of links
+and don't decrement during an rmmod?
+
+If there is something I'm missing, please let me know.
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Zhong Ronghua
