@@ -2,63 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 644B04ED39B
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 07:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302C14ED3C4
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 08:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbiCaF6H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 01:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52920 "EHLO
+        id S230193AbiCaGMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 02:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbiCaF6D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 01:58:03 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D215619BE7C
-        for <bpf@vger.kernel.org>; Wed, 30 Mar 2022 22:56:15 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id b16so27483767ioz.3
-        for <bpf@vger.kernel.org>; Wed, 30 Mar 2022 22:56:15 -0700 (PDT)
+        with ESMTP id S229966AbiCaGME (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 02:12:04 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FA939B9D;
+        Wed, 30 Mar 2022 23:10:17 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id e22so27444192ioe.11;
+        Wed, 30 Mar 2022 23:10:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qVqHNz67k7n15v0kHENXvY+XgVAiCSNba2cuwHmaCL8=;
-        b=P+2Mh4Wpk0fbSSMK1+iudecF/9UgwqvLEzuKwz3Q+hHm3LUXlQlknA5oOoXG2V8xOi
-         2h6XHzP/d3KrrIGmek3afe/VZHNsa94RQ5x84V70w9SgtD+XKwM/Wnk7o1xw/BmMs3ff
-         3WHuWC4ImRPrSDSQgnob8p3/gk3bsIXJrgPZgo4NxuozMJZhU5lEEEkohNoM4Wo+8E/z
-         BHiDuFxUYyzIxL6juKS5Z0Z4w2aV6+vnoHFBsjH6Fn/WhnMpDP4WkYdJy3VrBIgAfwQw
-         4h7Dycm68lgzr8eGewsmD55t51P1voX0burGG6z4HaMyLevLFQMz6MOkar8N9ms+Fxl6
-         kzMw==
+        bh=6XSVjejkLMWuJGJDJ8har4+74Zsm9rbOA8GE9gYlSBo=;
+        b=f1mNuuDCuEjum0gc+TN+LTMRGPqv9VSxYTxN+Weza38PFZsaDw6XwiOmGzey41a+uh
+         qhY/p6iE23TddDWOYOCxPYXwzK76xwr9tFbdKJWUE73qJ1G/0d7SsbtyWnjRAJTD9eSv
+         2fD5hHcxuAzdjB+6nj1zqt71KIfcg0wbOHlT1YWWH9/pJjMkITTBoTcubSYvQsx3RW++
+         EIfkFuwlvkvpBP7J4+e54WGxIAN6Izd0vr1BLP4WSMXguylcLHgZ1+ViuaHtrlEMfSWl
+         kFM3TvkCrsoXb2EQPuPAx3vAE4b+B+IlAmFX5ib6Otgq195X00VBXmo6VFeHyrT4WplX
+         TwNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qVqHNz67k7n15v0kHENXvY+XgVAiCSNba2cuwHmaCL8=;
-        b=VQrwu9ojjQkPOx7DYuUDbo7ZhtfOlq51wg3uKLJ/xw6momRzJvU4wjMSBcgU3RqQmS
-         3NKmkT/xd6GgztdFjv8kHxCp+ibaRSpKZfdcuO2B+sBJIvVjaN3rVmm0nAX0bXnYo3+h
-         oY5DTYrrV/5155udWMQMNCvFCa/WtbPRSA66jhAwEtR22XH9S6U7E2D/tEjChfbMsQtF
-         AWzqO5mwRt8ARd4O7wKpRLzqfySk1/QWup6YIwCHPavJexxn9udS31pNNYqAvqxMc6ZT
-         2cISdPPzkM9yAEw5ObCi9uSQLziiDHqQDuHPIWWp2xlucIAApv9pbozSKVKU5oQCRoQW
-         jJPw==
-X-Gm-Message-State: AOAM530pmHY+6uVVFsDMDXrFpX7KMJHERBch+SWuyiUmaYUi/Uhph5Dl
-        joCyYp9kEY1lO8nZc73557tbF9EBbSfgGKC4ZgU=
-X-Google-Smtp-Source: ABdhPJxrm/1KNRuqwPEY6a2Zdj63EW/rQMez9HJENqBTMc8FClSLyayHUdIp3p5AyNNAKEw8r6LXt2JNHrkof4sx5xU=
+        bh=6XSVjejkLMWuJGJDJ8har4+74Zsm9rbOA8GE9gYlSBo=;
+        b=UfG6z0drwu6qBnyrNOuuqEQ3BLREpa4qAPFWm9bAlrSbKP3zhZfM3QSDkRGXdkz4vR
+         RnQ8y2Z2dJUUKrrvHLEDRI5fn+SVjWlUT31pxWqH2QTyOoeJeclAu8bRWLAs5GBr+cuW
+         4gDkzJEfhBmTFtsFnJ5uycrJPnsszZZTavFFWHiub7Zt/haSKTa8tf8tuSLEOGN5abBF
+         RA3KubHgRnnX/Wc9Lth+/Go32h+v9t0dgnS+TBpWXTP/PiVuD7f/BJYcQen56ZkIKOGd
+         Vxu2bnZfW2b7VxNqypiW6EmK30CyxPJGHwARD84I2jCgm/B2a09tDAKCWIIny4/wsJA/
+         efDw==
+X-Gm-Message-State: AOAM531+ehMuq/3Gwy71eMXIq9QlIsrGwNzVT6JxWc/TaiX09lBQ1gJb
+        kyfNQ31yiUK2cquRNKB7IYMTJA+XJDmGEyO7WRA=
+X-Google-Smtp-Source: ABdhPJwGveqZEvWygCT5hlAQaZQ4o6Lttzhy8EHErPagLxG9vaBy8WG0Bnfe3Jt3p9zZNfEMGxcfj8AK183XqmLADqQ=
 X-Received: by 2002:a05:6638:2642:b0:323:756f:42a7 with SMTP id
- n2-20020a056638264200b00323756f42a7mr2145978jat.145.1648706175180; Wed, 30
- Mar 2022 22:56:15 -0700 (PDT)
+ n2-20020a056638264200b00323756f42a7mr2174798jat.145.1648707017288; Wed, 30
+ Mar 2022 23:10:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-3-andrii@kernel.org>
- <97bc0863-1c02-fd20-a7dd-e64aa663a918@gmail.com>
-In-Reply-To: <97bc0863-1c02-fd20-a7dd-e64aa663a918@gmail.com>
+References: <20220329231854.3188647-1-song@kernel.org> <CAEf4BzZCLwzrZPTOBEg88i1Tki6uPL73ujSE-SCSSU16HENUHA@mail.gmail.com>
+ <53E87B8F-6BB1-42AB-965B-096C86236926@fb.com> <CAEf4BzbVqM_akAGsHkf4QJdwcA2M-Lg6MF6xLu72rRS8gUjPKw@mail.gmail.com>
+ <A68BDAD9-A4D9-48D0-ACAF-7AF6AD38F27B@fb.com> <0BCC6E9C-90E1-4B56-8829-12D180520D71@fb.com>
+In-Reply-To: <0BCC6E9C-90E1-4B56-8829-12D180520D71@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 30 Mar 2022 22:56:04 -0700
-Message-ID: <CAEf4BzYGXAUd9L2iGBTFOxZvWHmh8aCvu-NFL10Skg+tZxV97Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/7] libbpf: wire up USDT API and bpf_link integration
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Wed, 30 Mar 2022 23:10:06 -0700
+Message-ID: <CAEf4BzYkoKv45H4Np6OWMDhYj7GLf19YLfP=V9g1+g0Sq9VU5w@mail.gmail.com>
+Subject: Re: [PATCH bpf] tools/runqslower: fix handle__sched_switch for
+ updated tp sched_switch
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,207 +74,130 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 29, 2022 at 8:25 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Wed, Mar 30, 2022 at 2:11 PM Song Liu <songliubraving@fb.com> wrote:
 >
 >
 >
-> On 2022/3/25 1:29 PM, Andrii Nakryiko wrote:
-> > Wire up libbpf USDT support APIs without yet implementing all the
-> > nitty-gritty details of USDT discovery, spec parsing, and BPF map
-> > initialization.
+> > On Mar 29, 2022, at 11:43 PM, Song Liu <songliubraving@fb.com> wrote:
 > >
-> > User-visible user-space API is simple and is conceptually very similar
-> > to uprobe API.
 > >
-> > bpf_program__attach_usdt() API allows to programmatically attach given
-> > BPF program to a USDT, specified through binary path (executable or
-> > shared lib), USDT provider and name. Also, just like in uprobe case, PID
-> > filter is specified (0 - self, -1 - any process, or specific PID).
-> > Optionally, USDT cookie value can be specified. Such single API
-> > invocation will try to discover given USDT in specified binary and will
-> > use (potentially many) BPF uprobes to attach this program in correct
-> > locations.
 > >
-> > Just like any bpf_program__attach_xxx() APIs, bpf_link is returned that
-> > represents this attachment. It is a virtual BPF link that doesn't have
-> > direct kernel object, as it can consist of multiple underlying BPF
-> > uprobe links. As such, attachment is not atomic operation and there can
-> > be brief moment when some USDT call sites are attached while others are
-> > still in the process of attaching. This should be taken into
-> > consideration by user. But bpf_program__attach_usdt() guarantees that
-> > in the case of success all USDT call sites are successfully attached, or
-> > all the successfuly attachments will be detached as soon as some USDT
-> > call sites failed to be attached. So, in theory, there could be cases of
-> > failed bpf_program__attach_usdt() call which did trigger few USDT
-> > program invocations. This is unavoidable due to multi-uprobe nature of
-> > USDT and has to be handled by user, if it's important to create an
-> > illusion of atomicity.
-> >
-> > USDT BPF programs themselves are marked in BPF source code as either
-> > SEC("usdt"), in which case they won't be auto-attached through
-> > skeleton's <skel>__attach() method, or it can have a full definition,
-> > which follows the spirit of fully-specified uprobes:
-> > SEC("usdt/<path>:<provider>:<name>"). In the latter case skeleton's
-> > attach method will attempt auto-attachment. Similarly, generic
-> > bpf_program__attach() will have enought information to go off of for
-> > parameterless attachment.
-> >
-> > USDT BPF programs are actually uprobes, and as such for kernel they are
-> > marked as BPF_PROG_TYPE_KPROBE.
-> >
-> > Another part of this patch is USDT-related feature probing:
-> >   - BPF cookie support detection from user-space;
-> >   - detection of kernel support for auto-refcounting of USDT semaphore.
-> >
-> > The latter is optional. If kernel doesn't support such feature and USDT
-> > doesn't rely on USDT semaphores, no error is returned. But if libbpf
-> > detects that USDT requires setting semaphores and kernel doesn't support
-> > this, libbpf errors out with explicit pr_warn() message. Libbpf doesn't
-> > support poking process's memory directly to increment semaphore value,
-> > like BCC does on legacy kernels, due to inherent raciness and danger of
-> > such process memory manipulation. Libbpf let's kernel take care of this
-> > properly or gives up.
-> >
-> > Logistically, all the extra USDT-related infrastructure of libbpf is put
-> > into a separate usdt.c file and abstracted behind struct usdt_manager.
-> > Each bpf_object has lazily-initialized usdt_manager pointer, which is
-> > only instantiated if USDT programs are attempted to be attached. Closing
-> > BPF object frees up usdt_manager resources. usdt_manager keeps track of
-> > USDT spec ID assignment and few other small things.
-> >
-> > Subsequent patches will fill out remaining missing pieces of USDT
-> > initialization and setup logic.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/lib/bpf/Build             |   3 +-
-> >  tools/lib/bpf/libbpf.c          |  92 ++++++++++-
-> >  tools/lib/bpf/libbpf.h          |  15 ++
-> >  tools/lib/bpf/libbpf.map        |   1 +
-> >  tools/lib/bpf/libbpf_internal.h |  19 +++
-> >  tools/lib/bpf/usdt.c            | 270 ++++++++++++++++++++++++++++++++
-> >  6 files changed, 391 insertions(+), 9 deletions(-)
-> >  create mode 100644 tools/lib/bpf/usdt.c
-> >
-
-[...]
-
-> > +struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
-> > +                                       pid_t pid, const char *binary_path,
-> > +                                       const char *usdt_provider, const char *usdt_name,
-> > +                                       const struct bpf_usdt_opts *opts)
-> > +{
-> > +     struct bpf_object *obj = prog->obj;
-> > +     struct bpf_link *link;
-> > +     long usdt_cookie;
-> > +     int err;
-> > +
-> > +     if (!OPTS_VALID(opts, bpf_uprobe_opts))
-> > +             return libbpf_err_ptr(-EINVAL);
-> > +
-> > +     /* USDT manager is instantiated lazily on first USDT attach. It will
-> > +      * be destroyed together with BPF object in bpf_object__close().
-> > +      */
-> > +     if (!obj->usdt_man) {
-> > +             obj->usdt_man = usdt_manager_new(obj);
-> > +             if (!obj->usdt_man)
-> > +                     return libbpf_err_ptr(-ENOMEM);
+> >> On Mar 29, 2022, at 7:47 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >>
+> >> On Tue, Mar 29, 2022 at 5:39 PM Song Liu <songliubraving@fb.com> wrote:
+> >>>
+> >>>
+> >>>
+> >>>> On Mar 29, 2022, at 5:00 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >>>>
+> >>>> On Tue, Mar 29, 2022 at 4:19 PM Song Liu <song@kernel.org> wrote:
+> >>>>>
+> >>>>> TP_PROTO of sched_switch is updated with a new arg prev_state, which
+> >>>>> causes runqslower load failure:
+> >>>>>
+> >>>>> libbpf: prog 'handle__sched_switch': BPF program load failed: Permission denied
+> >>>>> libbpf: prog 'handle__sched_switch': -- BEGIN PROG LOAD LOG --
+> >>>>> R1 type=ctx expected=fp
+> >>>>> 0: R1=ctx(off=0,imm=0) R10=fp0
+> >>>>> ; int handle__sched_switch(u64 *ctx)
+> >>>>> 0: (bf) r7 = r1                       ; R1=ctx(off=0,imm=0) R7_w=ctx(off=0,imm=0)
+> >>>>> ; struct task_struct *next = (struct task_struct *)ctx[2];
+> >>>>> 1: (79) r6 = *(u64 *)(r7 +16)
+> >>>>> func 'sched_switch' arg2 has btf_id 186 type STRUCT 'task_struct'
+> >>>>> 2: R6_w=ptr_task_struct(off=0,imm=0) R7_w=ctx(off=0,imm=0)
+> >>>>> ; struct task_struct *prev = (struct task_struct *)ctx[1];
+> >>>>> 2: (79) r2 = *(u64 *)(r7 +8)          ; R2_w=scalar() R7_w=ctx(off=0,imm=0)
+> >>>>> 3: (b7) r1 = 0                        ; R1_w=0
+> >>>>> ; struct runq_event event = {};
+> >>>>> 4: (7b) *(u64 *)(r10 -8) = r1         ; R1_w=P0 R10=fp0 fp-8_w=00000000
+> >>>>> 5: (7b) *(u64 *)(r10 -16) = r1        ; R1_w=P0 R10=fp0 fp-16_w=00000000
+> >>>>> 6: (7b) *(u64 *)(r10 -24) = r1        ; R1_w=P0 R10=fp0 fp-24_w=00000000
+> >>>>> 7: (7b) *(u64 *)(r10 -32) = r1        ; R1_w=P0 R10=fp0 fp-32_w=00000000
+> >>>>> ; if (prev->__state == TASK_RUNNING)
+> >>>>> 8: (61) r1 = *(u32 *)(r2 +24)
+> >>>>> R2 invalid mem access 'scalar'
+> >>>>> processed 9 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+> >>>>> -- END PROG LOAD LOG --
+> >>>>> libbpf: failed to load program 'handle__sched_switch'
+> >>>>> libbpf: failed to load object 'runqslower_bpf'
+> >>>>> libbpf: failed to load BPF skeleton 'runqslower_bpf': -13
+> >>>>> failed to load BPF object: -13
+> >>>>>
+> >>>>> Update runqslower to fix this issue. Also, as we are on this, use BPF_PROG
+> >>>>> in runqslower for cleaner code.
+> >>>>>
+> >>>>> Fixes: fa2c3254d7cf ("sched/tracing: Don't re-read p->state when emitting sched_switch event")
+> >>>>> Signed-off-by: Song Liu <song@kernel.org>
+> >>>>> ---
+> >>>>> tools/bpf/runqslower/runqslower.bpf.c | 19 +++++--------------
+> >>>>> 1 file changed, 5 insertions(+), 14 deletions(-)
+> >>>>>
+> >>>>
+> >>>> It would be much less disruptive if that prev_state was added after
+> >>>> "next", but oh well...
+> >>>
+> >>> Maybe we should change that.
+> >>>
+> >>> +Valentin and Steven, how about we change the order with the attached
+> >>> diff (not the original patch in this thread, but the one at the end of
+> >>> this email)?
+> >>>
+> >>>>
+> >>>> But anyways, let's handle this in a way that can handle both old
+> >>>> kernels and new ones and do the same change in libbpf-tool's
+> >>>> runqslower ([0]). Can you please follow up there as well?
+> >>>
+> >>> Yeah, I will also fix that one.
+> >>
+> >> Thanks!
+> >>
+> >>>
+> >>>>
+> >>>>
+> >>>> We can use BPF CO-RE to detect which order of arguments running kernel
+> >>>> has by checking prev_state field existence in struct
+> >>>> trace_event_raw_sched_switch. Can you please try that? Use
+> >>>> bpf_core_field_exists() for that.
+> >>>
+> >>> Do you mean something like
+> >>>
+> >>> if (bpf_core_field_exists(ctx->prev_state))
+> >>>   /* use ctx[2] and ctx[3] */
+> >>> else
+> >>>   /* use ctx[1] and ctx[2] */
+> >>
+> >> yep, that's what I meant, except you don't have ctx->prev_state, you have to do:
+> >>
+> >> if (bpf_core_field_exists(((struct trace_event_raw_sched_switch
+> >> *)0)->prev_state))
 >
-> usdt_manager_new returns NULL in two cases, ENOMEM is not accurate when map not found.
+> Actually, struct trace_event_raw_sched_switch is not the arguments we
+> have for tp_btf. For both older and newer kernel, it is the same:
 >
+> struct trace_event_raw_sched_switch {
+>         struct trace_entry ent;
+>         char prev_comm[16];
+>         pid_t prev_pid;
+>         int prev_prio;
+>         long int prev_state;
+>         char next_comm[16];
+>         pid_t next_pid;
+>         int next_prio;
+>         char __data[0];
+> };
 >
+> So I guess this check won't work?
 
-True, we can use ERR_PTR() for usdt_manager_new() as it is an internal
-API. I'll update the code accordingly.
+Ah, you are right, we had prev_state in this struct before. There
+seems to be func proto for each raw tracepoint:
 
-> > +     }
-> > +
-> > +     usdt_cookie = OPTS_GET(opts, usdt_cookie, 0);
-> > +     link = usdt_manager_attach_usdt(obj->usdt_man, prog, pid, binary_path,
-> > +                                     usdt_provider, usdt_name, usdt_cookie);
-> > +     err = libbpf_get_error(link);
-> > +     if (err)
-> > +             return libbpf_err_ptr(err);
-> > +     return link;
-> > +}
-> > +
-> > +static int attach_usdt(const struct bpf_program *prog, long cookie, struct bpf_link **link)
-> > +{
-> > +     char *path = NULL, *provider = NULL, *name = NULL;
-> > +     const char *sec_name;
-> > +
-> > +     sec_name = bpf_program__section_name(prog);
-> > +     if (strcmp(sec_name, "usdt") == 0) {
-> > +             /* no auto-attach for just SEC("usdt") */
-> > +             *link = NULL;
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (3 != sscanf(sec_name, "usdt/%m[^:]:%m[^:]:%m[^:]", &path, &provider, &name)) {
->
-> Is yoda condition a good practice ?
+typedef void (*btf_trace_sched_switch)(void *, bool, unsigned int,
+struct task_struct *, struct task_struct *);
 
-I used it to emphasize and make it clear how many parts we expect, but
-I have no strong feeling about doing sscanf() == 3 in this case
-either.
+But I'm not sure if we can use that. I'll need to play with it a bit
+tomorrow to see if any of bpf_core_xxx() checks can be used.
 
 >
-> > +             pr_warn("invalid section '%s', expected SEC(\"usdt/<path>:<provider>:<name>\")\n",
-> > +                     sec_name);
-> > +             free(path);
-> > +             free(provider);
-> > +             free(name);
-> > +             return -EINVAL;
-> > +     }
-> > +
-
-[...]
-
-> > +     man = calloc(1, sizeof(*man));
-> > +     if (!man)
-> > +             return NULL;
-> > +
-> > +     man->specs_map = specs_map;
-> > +     man->ip_to_id_map = ip_to_id_map;
-> > +
-> > +        /* Detect if BPF cookie is supported for kprobes.
-> > +      * We don't need IP-to-ID mapping if we can use BPF cookies.
-> > +         * Added in: 7adfc6c9b315 ("bpf: Add bpf_get_attach_cookie() BPF helper to access bpf_cookie value")
-> > +         */
+> Thanks,
+> Song
 >
->      ^  mixed-indention here.
-
-will fix
-
->
-> > +     man->has_bpf_cookie = kernel_supports(obj, FEAT_BPF_COOKIE);
-> > +
-> > +     /* Detect kernel support for automatic refcounting of USDT semaphore.
-> > +      * If this is not supported, USDTs with semaphores will not be supported.
-> > +      * Added in: a6ca88b241d5 ("trace_uprobe: support reference counter in fd-based uprobe")
-> > +      */
-> > +     man->has_sema_refcnt = access(ref_ctr_sysfs_path, F_OK) == 0;
-> > +
-> > +     return man;
-> > +}
-> > +
-
-[...]
-
-> > +err_out:
-> > +     bpf_link__destroy(&link->link);
-> > +
-> > +     if (elf)
-> > +             elf_end(elf);
-> > +     close(fd);
-> > +     return libbpf_err_ptr(err);
-> > +}
->
-> Will test this series and feedback to you :)
->
-
-Great, thank you!
-
-I'll add a bunch more comments to explain overall "setup" and do few
-more small changes here and there and will post v2 soon-ish. But all
-the APIs and behavior won't change.
