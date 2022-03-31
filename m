@@ -2,57 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4800A4ED147
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 03:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A386D4ED1B8
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 04:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352282AbiCaBYq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Mar 2022 21:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
+        id S229607AbiCaC3W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Mar 2022 22:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbiCaBYq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Mar 2022 21:24:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DB12E9C4;
-        Wed, 30 Mar 2022 18:22:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 15F216191D;
-        Thu, 31 Mar 2022 01:22:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F382C340F0;
-        Thu, 31 Mar 2022 01:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648689778;
-        bh=NWJILtetxPEKc8/hlIa004NMQJu2a/09BnjLlYqqPg8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TyE9YM8MKt+M9uNRj+xDC1911Vd7uLDQyOJTzDhJxYSeWbYABBlwTTn6Se5xFhxxf
-         XaOU6ancOjgWR7UeOYLsbm95v+lrz1Z6LvpF44is7BXZGQdQYsoRDfKDeB1bNepQiS
-         z8mt2pz7CVUZ1KJQqUjFxihCtq5ckqzE+f9mu9UF2xdIwOLVvx9owww3cMPjeXfDPH
-         pzGgGhi0aP5d4aUVAZTDQkC9WkrO96fJm0NROoLjYK5iq1l2glisJxf4O7AVIfryUJ
-         MQRCjbXgVzGvvk99R3VlsnxcueZqIwh1075rCrvbm965BcXqMP/W6BiouOInJs66eV
-         7w5S/hkUI16Ow==
-Date:   Thu, 31 Mar 2022 10:22:53 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] tracing: do not export user_events uapi
-Message-Id: <20220331102253.8793580dbc02c93dd897e52a@kernel.org>
-In-Reply-To: <20220330201755.29319-1-mathieu.desnoyers@efficios.com>
-References: <20220330201755.29319-1-mathieu.desnoyers@efficios.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S230223AbiCaC3U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Mar 2022 22:29:20 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EC67C7BA;
+        Wed, 30 Mar 2022 19:27:32 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id mp6-20020a17090b190600b001c6841b8a52so1351960pjb.5;
+        Wed, 30 Mar 2022 19:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=brGSPXAAKZq1zv7Rz5aMBtmTUSadoAJBmC11PEMAvD8=;
+        b=nlbLJK1J/O6nYUq8evC9fJ339K6x4bHJN538DoapkFJy/VjamB+dwe1Px9feUd1F62
+         AuQA+r+MLCydK2yozMl9JBakx4tVgx+dfV8Gdj/+JlJ2s2PcpC4CMNPP5jLvJ+K0I6D/
+         58ZJKgDGq1VRIj1iby3BwAtIS+ZYXz1m49h/ISmaUaj8PnLMI0kAPXSIXPcLdRTC0j8J
+         U6i3turNOHHTzB3JHSrY9OZO6U8/hg8niDEnBammYq4EML8DPZ5FMpqH75sa8up49yfJ
+         k9LF6ybIF0vVv8TCzRBoa6wHQVGrUOF8KESVyx/8Ef7n7ki7hsvStej2Hwrh4SjR6gie
+         b89Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=brGSPXAAKZq1zv7Rz5aMBtmTUSadoAJBmC11PEMAvD8=;
+        b=DVRXoFphc7gbHAFB1qIcASb6DLjHiTJzwj2bGxTEaaZ34E9ApZMEVor1YGZLkktlar
+         NPqNrbkIvtBvts50S6U48ENs8/kwiCERqbw1lqWhQweX0r+SRV0rQ38B97ormaKs5dd9
+         GSgCC1PVMVfCI4Q5VliqXdoumEHCgYKz+XamQQZsEmwj33cFKmgjLWQYT5bQ8mwv2JpI
+         SwjHll9hfgkMiwm1UkT9kn93pTYYppCCRc8VR2kORYjJ4wa7njSqye7Sk9H38Q8o8Ajt
+         8ibBPsMWF5Pfx4HUH2H9belWSmuMwznv7998XZmsZAM3FTI/+tFUd0z8qV78SYLXk+Gt
+         TnlA==
+X-Gm-Message-State: AOAM5329OTfmj/kAcYd75End/6WfKixomIF9vbTYEv50/zBXfNT1VZzT
+        kDs9iWQKnJFIlIAZG/x15+vJ2R+eCUk=
+X-Google-Smtp-Source: ABdhPJyn/9RKDnn9ebHKMw2O6x7J/GpkAo9yaxB7FFrh7CXFQi1SCyOQyd83zRQ7s2yhmAiT/9wZaA==
+X-Received: by 2002:a17:90b:4a48:b0:1c7:bb62:446c with SMTP id lb8-20020a17090b4a4800b001c7bb62446cmr3463303pjb.146.1648693651949;
+        Wed, 30 Mar 2022 19:27:31 -0700 (PDT)
+Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::5:756c])
+        by smtp.gmail.com with ESMTPSA id f16-20020a056a00229000b004fabe756ba6sm27342617pfe.54.2022.03.30.19.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Mar 2022 19:27:31 -0700 (PDT)
+Date:   Wed, 30 Mar 2022 19:27:27 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     corbet@lwn.net, viro@zeniv.linux.org.uk, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kpsingh@kernel.org,
+        shuah@kernel.org, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, zohar@linux.ibm.com,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF
+ programs
+Message-ID: <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
+References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220328175033.2437312-1-roberto.sassu@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,46 +79,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 30 Mar 2022 16:17:55 -0400
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-
-> In addition to mark the USER_EVENTS feature BROKEN until all interested
-> parties figure out the user-space API, do not install the uapi header.
+On Mon, Mar 28, 2022 at 07:50:15PM +0200, Roberto Sassu wrote:
+> eBPF already allows programs to be preloaded and kept running without
+> intervention from user space. There is a dedicated kernel module called
+> bpf_preload, which contains the light skeleton of the iterators_bpf eBPF
+> program. If this module is enabled in the kernel configuration, its loading
+> will be triggered when the bpf filesystem is mounted (unless the module is
+> built-in), and the links of iterators_bpf are pinned in that filesystem
+> (they will appear as the progs.debug and maps.debug files).
 > 
-> This prevents situations where a non-final uapi header would end up
-> being installed into a distribution image and used to build user-space
-> programs that would then run against newer kernels that will implement
-> user events with a different ABI.
+> However, the current mechanism, if used to preload an LSM, would not offer
+> the same security guarantees of LSMs integrated in the security subsystem.
+> Also, it is not generic enough to be used for preloading arbitrary eBPF
+> programs, unless the bpf_preload code is heavily modified.
 > 
-> Link: https://lore.kernel.org/all/20220330155835.5e1f6669@gandalf.local.home
-> 
+> More specifically, the security problems are:
+> - any program can be pinned to the bpf filesystem without limitations
+>   (unless a MAC mechanism enforces some restrictions);
+> - programs being executed can be terminated at any time by deleting the
+>   pinned objects or unmounting the bpf filesystem.
 
-Looks good to me.
+So many things to untangle here.
 
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+The above paragraphs are misleading and incorrect.
+The commit log sounds like there are security issues that this
+patch set is fixing.
+This is not true.
+Looks like there is a massive misunderstanding on what bpffs is.
+It's a file system to pin and get bpf objects with normal
+file access permissions. Nothing else.
+Do NOT use it to pin LSM or any other security sensitive bpf programs
+and then complain that root can unpin them.
+Yes. Root can and should be able to 'rm -rf' anything in bpffs instance.
 
-Thank you,
+> The usability problems are:
+> - only a fixed amount of links can be pinned;
 
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> ---
->  include/uapi/Kbuild | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/uapi/Kbuild b/include/uapi/Kbuild
-> index 61ee6e59c930..425ea8769ddc 100644
-> --- a/include/uapi/Kbuild
-> +++ b/include/uapi/Kbuild
-> @@ -12,3 +12,6 @@ ifeq ($(wildcard $(objtree)/arch/$(SRCARCH)/include/generated/uapi/asm/kvm_para.
->  no-export-headers += linux/kvm_para.h
->  endif
->  endif
-> +
-> +# API is not finalized
-> +no-export-headers += linux/user_events.h
-> -- 
-> 2.20.1
-> 
+where do you see this limit?
 
+> - only links can be pinned, other object types are not supported;
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+really? progs, maps can be pinned as well.
+
+> - code to pin objects has to be written manually;
+
+huh?
+
+> Solve the security problems by mounting the bpf filesystem from the kernel,
+> by preloading authenticated kernel modules (e.g. with module.sig_enforce)
+> and by pinning objects to that filesystem. This particular filesystem
+> instance guarantees that desired eBPF programs run until the very end of
+> the kernel lifecycle, since even root cannot interfere with it.
+
+No.
+
+I suspect there is huge confusion on what these two "progs.debug"
+and "maps.debug" files are in a bpffs instance.
+They are debug files to pretty pring loaded maps and progs for folks who
+like to use 'cat' to examine the state of the system instead of 'bpftool'.
+The root can remove these files from bpffs.
+
+There is no reason for kernel module to pin its bpf progs.
+If you want to develop DIGLIM as a kernel module that uses light skeleton
+just do:
+#include <linux/init.h>
+#include <linux/module.h>
+#include "diglim.lskel.h"
+
+static struct diglim_bpf *skel;
+
+static int __init load(void)
+{
+        skel = diglim_bpf__open_and_load();
+        err = diglim_bpf__attach(skel);
+}
+/* detach skel in __fini */
+
+It's really that short.
+
+Then you will be able to
+- insmod diglim.ko -> will load and attach bpf progs.
+- rmmod diglim -> will detach them.
+
+Independantly from these two mistunderstandings of bpffs and light skel
+we've been talking about auto exposing loaded bpf progs, maps, links
+in a bpffs without incrementing refcnt of them.
+When progs get unloaded the files will disappear.
+Some folks believe that doing 'ls' in a directory and see one file
+for each bpf prog loaded and then doing 'cat' on that file would be
+useful for debugging. That idea wasn't rejected. We're still thinking
+what would be the best way to auto-expose all bpf objects for debugging
+and whether it's actually makes sense to do considering that
+bpftool already has commands to list all progs, maps, links, etc
+with great detail.
+It's pretty much an argument between 'cat+ls' believers and
+'bpftool' cmdline believers.
+That discussion is orthogonal and should not be mixed with bpffs, lsm,
+security or anything else.
