@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B12B4EE144
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 21:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7908E4EE184
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 21:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238195AbiCaTEL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 15:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58562 "EHLO
+        id S229572AbiCaTPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 15:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238038AbiCaTEJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 15:04:09 -0400
+        with ESMTP id S238640AbiCaTP3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 15:15:29 -0400
 Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7130B20DB26
-        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 12:02:21 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id g21so565150iom.13
-        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 12:02:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE923B84F
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 12:13:41 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id 9so656998iou.5
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 12:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fHDhHSNTlhGXzFJNcm2qijotccc5Ha3Odv6PaFB1Pdw=;
-        b=Peq4r/R8+6si5IUP3HKl8f3dtHuKmcVLL3fxdnYpaJ7Od2wYnr6va10k77MvggVCd1
-         J5ibLE9wtRIMZ1CyOZKxRRD5y3eIENKxOcNsAzTBiG2HojstErXT7hXhugQLZpeF53UK
-         nqu+IcJN3lFKYlu0oP9uBqkRBje436B2xHfxYpepDA/BQ22dZT7lkkcWGFddCqGSF/za
-         dtMSQwwdki9yRuy1amqQulIH502HDlyqxncxDRdx6c7c83d/nGiR8uqqLQZDT1VxNiTs
-         Jf+xvdsTU0Ii7EfwjO8COAOxsE57oafSnPJKeHUXG5lBkTxCwhVZgcSUfQM/xZ+4Mx1Y
-         hMxQ==
+        bh=u3LcbX89G+wJBqf8XgF5XsY+QQwikYzu2pI1pDzqd8g=;
+        b=Q+96iO9GHmMch2AUBwY2MwPPZg1skV37Yt0lqQ2OW3B85LhIyWRKrjpicwrQLC3DHW
+         K/gMNUVN32T5z8fBd9uEZk+ca5a+ptbIQuLZjX6Jk6moXXELyt+oLW4GLY6lv6cftyO4
+         sY6gHo2aO1vIZ1REdkbba6kmxnbqc9rtiyCbxO8r0NUSYT5KzbXkS5oMxXY1rCiKPFJ6
+         3FE0unV2mS/HzPLDMF0xu5X235FgDb8bHvJh1rQmwOWa5TlhtyvONcgLUg5+jyOB2D6V
+         MqoJbo0mYSSeqS8y2hWqc7aFK+rPfX9zeCENsFSdmuP0T+3UppmasH4nbMWfyCo8RP1M
+         RePA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fHDhHSNTlhGXzFJNcm2qijotccc5Ha3Odv6PaFB1Pdw=;
-        b=cDEuD6GriMiE00cHAa3z1pJEwRapgN/22Sy2IdvDMit7rWCL+UO7cymwfOrlYddp4R
-         5eAmxJDl8odlUOFBzyQMKXHElm3+Vks8tpcEUUlFMmDFz6lUPE28MbTNalhP4mm6lpqt
-         c1C3BXSyCvr2Y+8t5wMjbHdBNdCzX6zvFNfaTaifEBAIDP1mxGTv4BZyWg9DnPWsm7eH
-         xWxrbbrMkuTReYWmx997IjCmJx7Qtz3RDw4wgmooVRW9lR0YpbcfA8GaDGs7dCUPt7eK
-         Rz8DpLCJlERrjhc/TlsxIflBMaeIsZ1gmW6e0o9KtjVxsXsFEf3BvuE4F1nUWt2jqHIo
-         mfbg==
-X-Gm-Message-State: AOAM5316gR3OtGOniaeNk6Dz8Yy40V9VtIxvWiR3nr/Rk8CcqKsMH+C3
-        4lX1t5Kb+H2V+tynNFSmqYGETwvTbE3E/eFBYAUVdfuF
-X-Google-Smtp-Source: ABdhPJwTh7QU6YxnMiolQgE0uHYByhK8RxdkA/mIblBRcDQXPPHeNQ06yCFm57kA4JTmD4MPy1poUwNTZof47YXwTFo=
-X-Received: by 2002:a05:6638:3395:b0:323:8a00:7151 with SMTP id
- h21-20020a056638339500b003238a007151mr3749228jav.93.1648753340718; Thu, 31
- Mar 2022 12:02:20 -0700 (PDT)
+        bh=u3LcbX89G+wJBqf8XgF5XsY+QQwikYzu2pI1pDzqd8g=;
+        b=jLyxa/RZ3DOAAD6WncQvoeZPQyREoqAaYYqRFyC5A7mqWPFDxVjUTbxmNFpEIVwWO5
+         sgAyk23MGlKKhdLUnwe5xlow3F0NG8NHXnu7vhCXzICfIaqXGUB+HES6tAw7+OVwKJ7i
+         MJrqxF8ekLbyRFFR1LuDYtC65i7K9ZycgHXCYv2lr6OMz/WQwFlZxWQctJur1kzFFxeq
+         OnM1bUKaRsajNHa9EK436nS0FfIcPBs3DE2qWjYJUndVCBzMGGz/UyLxsAkIpdvfOVIE
+         l7cZpvujUCDcj+yJKwbZyraf7IcjqNqXVdisuH3EODa4ETlTUx14+K7E4cS1e6gU9T48
+         ntZA==
+X-Gm-Message-State: AOAM531vpcz91SMzkvbXWAb9zHAtTa0OL8EO3Ngz1sJNAg78sCp0kFni
+        rWYn0dd34P86AuCl18uQ+z00gekhLB/oS1PXgrwqZCwR
+X-Google-Smtp-Source: ABdhPJyrdNTb6djVA1eW1pQxIuPS8wmMRV8/qzR47+35JL3syYXK+BVoQkSuGKOLdOj4XEEehVr3Wid8KLMYzwm/cyQ=
+X-Received: by 2002:a05:6602:3c6:b0:63d:cac9:bd35 with SMTP id
+ g6-20020a05660203c600b0063dcac9bd35mr15136149iov.144.1648754020993; Thu, 31
+ Mar 2022 12:13:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-3-andrii@kernel.org>
- <alpine.LRH.2.23.451.2203311234080.22159@MyRouter>
-In-Reply-To: <alpine.LRH.2.23.451.2203311234080.22159@MyRouter>
+References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-4-andrii@kernel.org>
+ <alpine.LRH.2.23.451.2203311405350.25204@MyRouter>
+In-Reply-To: <alpine.LRH.2.23.451.2203311405350.25204@MyRouter>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 31 Mar 2022 12:02:09 -0700
-Message-ID: <CAEf4BzaWOA8_qHepBwxPRVzV4TeWzWi7CeMMjtEd-2KTBxwSnA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/7] libbpf: wire up USDT API and bpf_link integration
+Date:   Thu, 31 Mar 2022 12:13:30 -0700
+Message-ID: <CAEf4BzYHx+FwAoG6sSh5xwxTQKOzTmoRB7Es3O3mJ76fLdm5gw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/7] libbpf: add USDT notes parsing and
+ resolution logic
 To:     Alan Maguire <alan.maguire@oracle.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -69,339 +70,330 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 5:14 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Thu, Mar 31, 2022 at 6:38 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
 > On Fri, 25 Mar 2022, Andrii Nakryiko wrote:
 >
-> > Wire up libbpf USDT support APIs without yet implementing all the
-> > nitty-gritty details of USDT discovery, spec parsing, and BPF map
-> > initialization.
+> > Implement architecture-agnostic parts of USDT parsing logic. The code is
+> > the documentation in this case, it's futile to try to succinctly
+> > describe how USDT parsing is done in any sort of concreteness. But
+> > still, USDTs are recorded in special ELF notes section (.note.stapsdt),
+> > where each USDT call site is described separately. Along with USDT
+> > provider and USDT name, each such note contains USDT argument
+> > specification, which uses assembly-like syntax to describe how to fetch
+> > value of USDT argument. USDT arg spec could be just a constant, or
+> > a register, or a register dereference (most common cases in x86_64), but
+> > it technically can be much more complicated cases, like offset relative
+> > to global symbol and stuff like that. One of the later patches will
+> > implement most common subset of this for x86 and x86-64 architectures,
+> > which seems to handle a lot of real-world production application.
 > >
-> > User-visible user-space API is simple and is conceptually very similar
-> > to uprobe API.
+> > USDT arg spec contains a compact encoding allowing usdt.bpf.h from
+> > previous patch to handle the above 3 cases. Instead of recording which
+> > register might be needed, we encode register's offset within struct
+> > pt_regs to simplify BPF-side implementation. USDT argument can be of
+> > different byte sizes (1, 2, 4, and 8) and signed or unsigned. To handle
+> > this, libbpf pre-calculates necessary bit shifts to do proper casting
+> > and sign-extension in a short sequences of left and right shifts.
 > >
-> > bpf_program__attach_usdt() API allows to programmatically attach given
-> > BPF program to a USDT, specified through binary path (executable or
-> > shared lib), USDT provider and name. Also, just like in uprobe case, PID
-> > filter is specified (0 - self, -1 - any process, or specific PID).
-> > Optionally, USDT cookie value can be specified. Such single API
-> > invocation will try to discover given USDT in specified binary and will
-> > use (potentially many) BPF uprobes to attach this program in correct
-> > locations.
-> >
-> > Just like any bpf_program__attach_xxx() APIs, bpf_link is returned that
-> > represents this attachment. It is a virtual BPF link that doesn't have
-> > direct kernel object, as it can consist of multiple underlying BPF
-> > uprobe links. As such, attachment is not atomic operation and there can
-> > be brief moment when some USDT call sites are attached while others are
-> > still in the process of attaching. This should be taken into
-> > consideration by user. But bpf_program__attach_usdt() guarantees that
-> > in the case of success all USDT call sites are successfully attached, or
-> > all the successfuly attachments will be detached as soon as some USDT
-> > call sites failed to be attached. So, in theory, there could be cases of
-> > failed bpf_program__attach_usdt() call which did trigger few USDT
-> > program invocations. This is unavoidable due to multi-uprobe nature of
-> > USDT and has to be handled by user, if it's important to create an
-> > illusion of atomicity.
-> >
-> > USDT BPF programs themselves are marked in BPF source code as either
-> > SEC("usdt"), in which case they won't be auto-attached through
-> > skeleton's <skel>__attach() method, or it can have a full definition,
-> > which follows the spirit of fully-specified uprobes:
-> > SEC("usdt/<path>:<provider>:<name>"). In the latter case skeleton's
-> > attach method will attempt auto-attachment. Similarly, generic
-> > bpf_program__attach() will have enought information to go off of for
-> > parameterless attachment.
-> >
->
-> Might be worth describing briefly the under-the-hood mechanisms; the
-> usdt_manager that is per-BPF-object (so can conceptually represent
-> multiple USDT providers/probes). It is initialized on first use and
-> freed with bpf_object__close(); it is tasked with managing the mapping
-> from usdt provider:name to actual sites+arguments via the spec/ip-to-id
-> maps.
-
-Yeah, I got feedback off-list that some good comment on how all the
-pieces are coming together would be nice. I think I'll add a big
-thorough explanation as a comment for struct usdt_manager, explaining
-all the relations.
-
->
-> > USDT BPF programs are actually uprobes, and as such for kernel they are
-> > marked as BPF_PROG_TYPE_KPROBE.
-> >
-> > Another part of this patch is USDT-related feature probing:
-> >   - BPF cookie support detection from user-space;
-> >   - detection of kernel support for auto-refcounting of USDT semaphore.
-> >
-> > The latter is optional. If kernel doesn't support such feature and USDT
-> > doesn't rely on USDT semaphores, no error is returned. But if libbpf
-> > detects that USDT requires setting semaphores and kernel doesn't support
-> > this, libbpf errors out with explicit pr_warn() message. Libbpf doesn't
-> > support poking process's memory directly to increment semaphore value,
-> > like BCC does on legacy kernels, due to inherent raciness and danger of
-> > such process memory manipulation. Libbpf let's kernel take care of this
-> > properly or gives up.
-> >
-> > Logistically, all the extra USDT-related infrastructure of libbpf is put
-> > into a separate usdt.c file and abstracted behind struct usdt_manager.
-> > Each bpf_object has lazily-initialized usdt_manager pointer, which is
-> > only instantiated if USDT programs are attempted to be attached. Closing
-> > BPF object frees up usdt_manager resources. usdt_manager keeps track of
-> > USDT spec ID assignment and few other small things.
-> >
-> > Subsequent patches will fill out remaining missing pieces of USDT
-> > initialization and setup logic.
+> > The rest is in the code with sometimes extensive comments and references
+> > to external "documentation" for USDTs.
 > >
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 >
-> again mostly nits and small suggestions below; this is fantastic Andrii!
->
-
-Thanks for the thorough review!
-
 > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 >
+> nothing major below, might be no harm to use a common header for
+> some definitions for usdt.bpf.h and usdt.c..
+>
 > > ---
-> >  tools/lib/bpf/Build             |   3 +-
-> >  tools/lib/bpf/libbpf.c          |  92 ++++++++++-
-> >  tools/lib/bpf/libbpf.h          |  15 ++
-> >  tools/lib/bpf/libbpf.map        |   1 +
-> >  tools/lib/bpf/libbpf_internal.h |  19 +++
-> >  tools/lib/bpf/usdt.c            | 270 ++++++++++++++++++++++++++++++++
-> >  6 files changed, 391 insertions(+), 9 deletions(-)
-> >  create mode 100644 tools/lib/bpf/usdt.c
-
-[...]
-
-> > +
-> > +static int attach_usdt(const struct bpf_program *prog, long cookie, struct bpf_link **link)
-> > +{
-> > +     char *path = NULL, *provider = NULL, *name = NULL;
-> > +     const char *sec_name;
-> > +
-> > +     sec_name = bpf_program__section_name(prog);
-> > +     if (strcmp(sec_name, "usdt") == 0) {
-> > +             /* no auto-attach for just SEC("usdt") */
-> > +             *link = NULL;
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (3 != sscanf(sec_name, "usdt/%m[^:]:%m[^:]:%m[^:]", &path, &provider, &name)) {
-> > +             pr_warn("invalid section '%s', expected SEC(\"usdt/<path>:<provider>:<name>\")\n",
-> > +                     sec_name);
->
-> could have an else clause here for the parse success case I suppose to
-> save having two sets of free()s.
-
-you mean like
-
-if (3 == sscanf("")) {
-    *link = bpf_program__attach_usdt(...);
-    err = libbpf_get_error(*link);
-} else {
-    err = -EINVAL;
-}
-
-free(path);
-free(provider);
-free(name);
-
-return err;
-
-?
-
-Can do that, sure.
-
->
-> > +             free(path);
-> > +             free(provider);
-> > +             free(name);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     *link = bpf_program__attach_usdt(prog, -1 /* any process */, path,
-> > +                                      provider, name, NULL);
-> > +     free(path);
-> > +     free(provider);
-> > +     free(name);
-> > +     return libbpf_get_error(*link);
-> > +}
-> > +
-> >  static int determine_tracepoint_id(const char *tp_category,
-> >                                  const char *tp_name)
-> >  {
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index 05dde85e19a6..318eecaa14e7 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -503,6 +503,21 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
-> >                               const char *binary_path, size_t func_offset,
-> >                               const struct bpf_uprobe_opts *opts);
+> >  tools/lib/bpf/usdt.c | 581 ++++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 580 insertions(+), 1 deletion(-)
 > >
-> > +struct bpf_usdt_opts {
-> > +     /* size of this struct, for forward/backward compatibility */
-> > +     size_t sz;
-> > +     /* custom user-provided value accessible through usdt_cookie() */
+> > diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+> > index 8481e300598e..86d5d8390eb1 100644
+> > --- a/tools/lib/bpf/usdt.c
+> > +++ b/tools/lib/bpf/usdt.c
+> > @@ -18,10 +18,56 @@
+> >
+> >  #define PERF_UPROBE_REF_CTR_OFFSET_SHIFT 32
+> >
+>
+> unused?
+
+yep, seems like I just rely on opts.ref_ctr_offset for this
+
+>
+> > +#define USDT_BASE_SEC ".stapsdt.base"
+> > +#define USDT_SEMA_SEC ".probes"
+>
+> unused?
+
+indeed, libbpf will support semaphores defined in any section, not
+just ".probes". But it feels good to have .stapsdt.base, .note.stapsdt
+and .probes (all the ELF sections involved) to be defined as constants
+here. So maybe I'll keep it as a documentation?
+
+>
+> > +#define USDT_NOTE_SEC  ".note.stapsdt"
+> > +#define USDT_NOTE_TYPE 3
+> > +#define USDT_NOTE_NAME "stapsdt"
+> > +
+> > +/* should match exactly enum __bpf_usdt_arg_type from bpf_usdt.bpf.h */
+> > +enum usdt_arg_type {
+> > +     USDT_ARG_CONST,
+> > +     USDT_ARG_REG,
+> > +     USDT_ARG_REG_DEREF,
+> > +};
+> > +
+> > +/* should match exactly struct __bpf_usdt_arg_spec from bpf_usdt.bpf.h */
+> > +struct usdt_arg_spec {
+> > +     __u64 val_off;
+> > +     enum usdt_arg_type arg_type;
+> > +     short reg_off;
+> > +     bool arg_signed;
+> > +     char arg_bitshift;
+> > +};
+> > +
+> > +/* should match BPF_USDT_MAX_ARG_CNT in usdt.bpf.h */
+> > +#define USDT_MAX_ARG_CNT 12
+> > +
+> > +/* should match struct __bpf_usdt_spec from usdt.bpf.h */
+> > +struct usdt_spec {
+> > +     struct usdt_arg_spec args[USDT_MAX_ARG_CNT];
 > > +     __u64 usdt_cookie;
-> > +     size_t :0;
-> > +};
-> > +#define bpf_usdt_opts__last_field usdt_cookie
-> > +
->
-> need doc comment here such as
->
-> /**
->  * @brief **bpf_program__attach_usdt()** is just like
->  * bpf_program__attach_uprobe_opts() except it covers
->  * USDT (Userspace Static Defined Tracing) attachment.
->  *
->  * @param prog BPF program to attach
->  * @param pid Process ID to attach the uprobe to, 0 for self (own
-> process),
->  * -1 for all processes
->  * @param binary_path Path to binary that contains the USDT probe
->  * @param usdt_provider USDT Provider name
->  * @param usdt_name USDT Probe name
->  * @param opts Options for altering USDT attachment
->  * @return Reference to the newly created BPF link; or NULL is returned on
-> error,
->  * error code is stored in errno
->  */
->
-
-Will add, thanks!
-
->
-> > +LIBBPF_API struct bpf_link *
-> > +bpf_program__attach_usdt(const struct bpf_program *prog,
-> > +                      pid_t pid, const char *binary_path,
-> > +                      const char *usdt_provider, const char *usdt_name,
-> > +                      const struct bpf_usdt_opts *opts);
-> > +
-
-[...]
-
-> > +struct usdt_manager {
-> > +     struct bpf_map *specs_map;
-> > +     struct bpf_map *ip_to_id_map;
-> > +
-> > +     bool has_bpf_cookie;
-> > +     bool has_sema_refcnt;
+> > +     short arg_cnt;
 > > +};
 > > +
-> > +struct usdt_manager *usdt_manager_new(struct bpf_object *obj)
-> > +{
-> > +     static const char *ref_ctr_sysfs_path = "/sys/bus/event_source/devices/uprobe/format/ref_ctr_offset";
 >
-> probably deserves a #define, and that would get us under the 100 char
-> limit too..
+> Would it be worth having a usdt.h that both usdt.bpf.h and usdt.c could
+> #include, containing the above definitions, avoiding need to sync?
 
-If you look at a few other places around kprobe and uprobe, I
-consciously don't do that. #define for string constant that is used
-only once just makes reading code harder, as you have to jump around
-more to figure out the exact file path (especially when you are trying
-to follow the steps in the shell). So I'd rather keep it as is.
+that's how I started initially, but then decided that one extra header
+just for two structs and enum is a bit too much. It's quite unlikely
+that they will be changed often or will get out of sync, I think...
 
 >
-> > +     struct usdt_manager *man;
-> > +     struct bpf_map *specs_map, *ip_to_id_map;
-> > +
-> > +     specs_map = bpf_object__find_map_by_name(obj, "__bpf_usdt_specs");
-> > +     ip_to_id_map = bpf_object__find_map_by_name(obj, "__bpf_usdt_specs_ip_to_id");
-> > +     if (!specs_map || !ip_to_id_map) {
-> > +             pr_warn("usdt: failed to find USDT support BPF maps, did you forget to include bpf/usdt.bpf.h?\n");
->
-> nice, I like the fact the error message also tells you how to fix it!
->
-> > +             return NULL;
-> > +     }
-> > +
-
-[...]
-
-> > +struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct bpf_program *prog,
-> > +                                       pid_t pid, const char *path,
-> > +                                       const char *usdt_provider, const char *usdt_name,
-> > +                                       long usdt_cookie)
-> > +{
-> > +     int i, fd, err;
-> > +     LIBBPF_OPTS(bpf_uprobe_opts, opts);
-> > +     struct bpf_link_usdt *link = NULL;
-> > +     struct usdt_target *targets = NULL;
-> > +     size_t target_cnt;
-> > +     Elf *elf;
->
-> Thought we should probably init elf to NULL, though I see we don't goto
-> err_out except in cases where it's been explicitly set.
-
-yep. Though some versions of GCC or Clang sometimes report false
-positive in similar cases, so I might as well init it.
-
->
-> > +
-> > +     if (bpf_program__fd(prog) < 0) {
-> > +             pr_warn("prog '%s': can't attach BPF program w/o FD (did you load it?)\n",
->
-> nit: might be no harm "w/o" to expand to "without", and prefix with usdt:
-> as below..
-
-it's the same check as in all other bpf_program__attach_xxx() APIs, so
-I wanted to keep it consistent. But I just realized that I should
-probably move it into bpf_program__attach_usdt() itself.
-
->
-> > +                     bpf_program__name(prog));
-> > +             return libbpf_err_ptr(-EINVAL);
-> > +     }
-> > +
-> > +     /* TODO: perform path resolution similar to uprobe's */
-> > +     fd = open(path, O_RDONLY);
-> > +     if (fd < 0) {
-> > +             err = -errno;
-> > +             pr_warn("usdt: failed to open ELF binary '%s': %d\n", path, err);
-> > +             return libbpf_err_ptr(err);
-> > +     }
-> > +
-> > +     elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-> > +     if (!elf) {
-> > +             err = -EBADF;
-> > +             pr_warn("usdt: failed to parse ELF binary '%s': %s\n", path, elf_errmsg(-1));
-> > +             goto err_out;
-> > +     }
-> > +
-> > +     err = sanity_check_usdt_elf(elf, path);
-> > +     if (err)
-> > +             goto err_out;
-> > +
-> > +     /* normalize PID filter */
-> > +     if (pid < 0)
-> > +             pid = -1;
-> > +     else if (pid == 0)
-> > +             pid = getpid();
-> > +
-> > +     /* discover USDT in given binary, optionally limiting
-> > +      * activations to a given PID, if pid > 0
+> > +struct usdt_note {
+> > +     const char *provider;
+> > +     const char *name;
+> > +     /* USDT args specification string, e.g.:
+> > +      * "-4@%esi -4@-24(%rbp) -4@%ecx 2@%ax 8@%rdx"
 > > +      */
-> > +     err = collect_usdt_targets(man, elf, path, pid, usdt_provider, usdt_name,
-> > +                                usdt_cookie, &targets, &target_cnt);
-> > +     if (err <= 0) {
+
+[...]
+
+> > -     return -ENOTSUP;
+> > +     size_t off, name_off, desc_off, seg_cnt = 0, lib_seg_cnt = 0, target_cnt = 0;
+> > +     struct elf_seg *segs = NULL, *lib_segs = NULL;
+> > +     struct usdt_target *targets = NULL, *target;
+> > +     long base_addr = 0;
+> > +     Elf_Scn *notes_scn, *base_scn;
+> > +     GElf_Shdr base_shdr, notes_shdr;
+> > +     GElf_Ehdr ehdr;
+> > +     GElf_Nhdr nhdr;
+> > +     Elf_Data *data;
+> > +     int err;
+> > +
+> > +     *out_targets = NULL;
+> > +     *out_target_cnt = 0;
+> > +
+> > +     err = find_elf_sec_by_name(elf, USDT_NOTE_SEC, &notes_shdr, &notes_scn);
+> > +     if (err)
 >
-> we haven't filled out collect_usdt_targets() yet, but might be no harm to
-> have a pr_debug() here "usdt: cannot collect USDT targets for ..." since
-> there are a few cases without warnings in the later patch.
+> since find_elf_sec_by_name() doesn't log anything, would be good to have a
+> pr_warn("usdt: no " USDT_NOTE_SEC " section in '%s'", path);
 
-I'd have to special case -ENOENT, which would be messy. The reason
-some returns don't have pr_warn() in collect_usdt_targets() is that I
-deemed them extremely unlikely (usually it's due to corrupted ELF or
-something along those lines). But I'll double check and add pr_warn
-where appropriate.
+ok
 
+> > +             return err;
+> > +
+> > +     if (notes_shdr.sh_type != SHT_NOTE)
+> > +             return -EINVAL;
+> > +
+> > +     if (!gelf_getehdr(elf, &ehdr))
+> > +             return -EINVAL;
+> > +
+>
+> the above two are unlikely, but could perhaps benefit from an error
+> message like below..
+
+yeah, super unlikely, but I can combine the two and log warning
 
 >
-> > +             err = (err == 0) ? -ENOENT : err;
+> > +     err = parse_elf_segs(elf, path, &segs, &seg_cnt);
+> > +     if (err) {
+> > +             pr_warn("usdt: failed to process ELF program segments for '%s': %d\n", path, err);
 > > +             goto err_out;
 > > +     }
 > > +
+> > +     /* .stapsdt.base ELF section is optional, but is used for prelink
+> > +      * offset compensation (see a big comment further below)
+> > +      */
+> > +     if (find_elf_sec_by_name(elf, USDT_BASE_SEC, &base_shdr, &base_scn) == 0)
+> > +             base_addr = base_shdr.sh_addr;
+> > +
+> > +     data = elf_getdata(notes_scn, 0);
+> > +     off = 0;
+> > +     while ((off = gelf_getnote(data, off, &nhdr, &name_off, &desc_off)) > 0) {
+> > +             long usdt_abs_ip, usdt_rel_ip, usdt_sema_off = 0;
+> > +             struct usdt_note note;
+> > +             struct elf_seg *seg = NULL;
+> > +             void *tmp;
+> > +
+> > +             err = parse_usdt_note(elf, path, base_addr, &nhdr,
+> > +                                   data->d_buf, name_off, desc_off, &note);
+> > +             if (err)
+> > +                     goto err_out;
+> > +
+> > +             if (strcmp(note.provider, usdt_provider) != 0 || strcmp(note.name, usdt_name) != 0)
+> > +                     continue;
+> > +
+> > +             /* We need to compensate "prelink effect". See [0] for details,
+> > +              * relevant parts quoted here:
+> > +              *
+> > +              * Each SDT probe also expands into a non-allocated ELF note. You can
+> > +              * find this by looking at SHT_NOTE sections and decoding the format;
+> > +              * see below for details. Because the note is non-allocated, it means
+> > +              * there is no runtime cost, and also preserved in both stripped files
+> > +              * and .debug files.
+> > +              *
+> > +              * However, this means that prelink won't adjust the note's contents
+> > +              * for address offsets. Instead, this is done via the .stapsdt.base
+> > +              * section. This is a special section that is added to the text. We
+> > +              * will only ever have one of these sections in a final link and it
+> > +              * will only ever be one byte long. Nothing about this section itself
+> > +              * matters, we just use it as a marker to detect prelink address
+> > +              * adjustments.
+> > +              *
+> > +              * Each probe note records the link-time address of the .stapsdt.base
+> > +              * section alongside the probe PC address. The decoder compares the
+> > +              * base address stored in the note with the .stapsdt.base section's
+> > +              * sh_addr. Initially these are the same, but the section header will
+> > +              * be adjusted by prelink. So the decoder applies the difference to
+> > +              * the probe PC address to get the correct prelinked PC address; the
+> > +              * same adjustment is applied to the semaphore address, if any.
+> > +              *
+> > +              *   [0] https://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
+> > +              */
+>
+> ouch. nice explanation!
+>
+> > +             usdt_rel_ip = usdt_abs_ip = note.loc_addr;
+> > +             if (base_addr) {
+> > +                     usdt_abs_ip += base_addr - note.base_addr;
+> > +                     usdt_rel_ip += base_addr - note.base_addr;
+> > +             }
+> > +
+> > +             if (ehdr.e_type == ET_EXEC) {
+>
+> should we use a bool is_shared_library here; might simplify debug
+> messaging below...
 
-[...]
+Heh, I actually started out with is_shared_library variable, but ended
+up preferring more explicit ET_EXEC and ET_DYN constants instead.
+
+>
+> > +                     /* When attaching uprobes (which what USDTs basically
+> > +                      * are) kernel expects a relative IP to be specified,
+> > +                      * so if we are attaching to an executable ELF binary
+> > +                      * (i.e., not a shared library), we need to calculate
+> > +                      * proper relative IP based on ELF's load address
+> > +                      */
+> > +                     seg = find_elf_seg(segs, seg_cnt, usdt_abs_ip, false /* relative */);
+> > +                     if (!seg) {
+> > +                             err = -ESRCH;
+> > +                             pr_warn("usdt: failed to find ELF program segment for '%s:%s' in '%s' at IP 0x%lx\n",
+> > +                                     usdt_provider, usdt_name, path, usdt_abs_ip);
+> > +                             goto err_out;
+> > +                     }
+> > +                     if (!seg->is_exec) {
+> > +                             err = -ESRCH;
+> > +                             pr_warn("usdt: matched ELF binary '%s' segment [0x%lx, 0x%lx) for '%s:%s' at IP 0x%lx is not executable\n",
+> > +                                     path, seg->start, seg->end, usdt_provider, usdt_name,
+> > +                                     usdt_abs_ip);
+> > +                             goto err_out;
+> > +                     }
+> > +
+> > +                     usdt_rel_ip = usdt_abs_ip - (seg->start - seg->offset);
+> > +             } else if (!man->has_bpf_cookie) { /* ehdr.e_type == ET_DYN */
+> > +                     /* If we don't have BPF cookie support but need to
+> > +                      * attach to a shared library, we'll need to know and
+> > +                      * record absolute addresses of attach points due to
+> > +                      * the need to lookup USDT spec by absolute IP of
+> > +                      * triggered uprobe. Doing this resolution is only
+> > +                      * possible when we have a specific PID of the process
+> > +                      * that's using specified shared library. BPF cookie
+> > +                      * removes the absolute address limitation as we don't
+> > +                      * need to do this lookup (we just use BPF cookie as
+> > +                      * an index of USDT spec), so for newer kernels with
+> > +                      * BPF cookie support libbpf supports USDT attachment
+> > +                      * to shared libraries with no PID filter.
+> > +                      */
+> > +                     if (pid < 0) {
+> > +                             pr_warn("usdt: attaching to shared libaries without specific PID is not supported on current kernel\n");
+> > +                             err = -ENOTSUP;
+> > +                             goto err_out;
+> > +                     }
+> > +
+> > +                     /* lib_segs are lazily initialized only if necessary */
+> > +                     if (lib_seg_cnt == 0) {
+> > +                             err = parse_lib_segs(pid, path, &lib_segs, &lib_seg_cnt);
+> > +                             if (err) {
+> > +                                     pr_warn("usdt: failed to get memory segments in PID %d for shared library '%s': %d\n",
+> > +                                             pid, path, err);
+> > +                                     goto err_out;
+> > +                             }
+> > +                     }
+> > +
+> > +                     seg = find_elf_seg(lib_segs, lib_seg_cnt, usdt_rel_ip, true /* relative */);
+> > +                     if (!seg) {
+> > +                             err = -ESRCH;
+> > +                             pr_warn("usdt: failed to find shared lib memory segment for '%s:%s' in '%s' at relative IP 0x%lx\n",
+> > +                                      usdt_provider, usdt_name, path, usdt_rel_ip);
+> > +                             goto err_out;
+> > +                     }
+> > +
+> > +                     usdt_abs_ip = seg->start + (usdt_rel_ip - seg->offset);
+> > +             }
+> > +
+> > +             pr_debug("usdt: probe for '%s:%s' in %s '%s': addr 0x%lx base 0x%lx (resolved abs_ip 0x%lx rel_ip 0x%lx) args '%s' in segment [0x%lx, 0x%lx) at offset 0x%lx\n",
+> > +                      usdt_provider, usdt_name, ehdr.e_type == ET_EXEC ? "exec" : "lib ", path,
+> > +                      note.loc_addr, note.base_addr, usdt_abs_ip, usdt_rel_ip, note.args,
+> > +                      seg ? seg->start : 0, seg ? seg->end : 0, seg ? seg->offset : 0);
+> > +
+> > +             /* Adjust semaphore address to be a relative offset */
+> > +             if (note.sema_addr) {
+> > +                     if (!man->has_sema_refcnt) {
+> > +                             pr_warn("usdt: kernel doesn't support USDT semaphore refcounting for '%s:%s' in '%s'\n",
+> > +                                     usdt_provider, usdt_name, path);
+> > +                             err = -ENOTSUP;
+> > +                             goto err_out;
+> > +                     }
+> > +
+> > +                     seg = find_elf_seg(segs, seg_cnt, note.sema_addr, false /* relative */);
+> > +                     if (!seg) {
+> > +                             err = -ESRCH;
+> > +                             pr_warn("usdt: failed to find ELF loadable segment with semaphore of '%s:%s' in '%s' at 0x%lx\n",
+> > +                                     usdt_provider, usdt_name, path, note.sema_addr);
+> > +                             goto err_out;
+> > +                     }
+> > +                     if (seg->is_exec) {
+> > +                             err = -ESRCH;
+> > +                             pr_warn("usdt: matched ELF binary '%s' segment [0x%lx, 0x%lx] for semaphore of '%s:%s' at 0x%lx is executable\n",
+> > +                                     path, seg->start, seg->end, usdt_provider, usdt_name,
+> > +                                     note.sema_addr);
+> > +                             goto err_out;
+> > +                     }
+> > +
+>
+> could have a bool "exec" arg to find_elf_seg() which allows/disallows the
+> segment to be executable I guess.
+
+find_elf_seg() has already a boolean argument (relative), adding
+another one just for this one place seems wrong. And I can provide a
+better error message if I do seg->is_exec check here. So I'm leaning
+towards leaving it as is.
+
+>
+> Alan
