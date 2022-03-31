@@ -2,92 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994EF4ED1D0
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 04:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FB34ED352
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 07:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbiCaCmB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Mar 2022 22:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
+        id S229823AbiCaFi5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 01:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiCaCmA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Mar 2022 22:42:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F4ED3ADD
-        for <bpf@vger.kernel.org>; Wed, 30 Mar 2022 19:40:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 863DD60B2F
-        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 02:40:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D6278C340F0;
-        Thu, 31 Mar 2022 02:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648694410;
-        bh=XLIeBz7J5/JFC7tjJpo2EvzStz7XJLNPRBpQSFSZBUU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ur5oq085kg46LE0gePMJj+jTYFb8zAe7esNMmiVnB2Nj3CyCTdJkIHwlxC6QO/QVf
-         I93NH6C1eJHBqod75ldVpHbmnxqv/hVllayDKV7yUA9EY45OvTitnZL5XVfm5+xB3M
-         mLHvbs1rEbvo/gXB7WOaNIyNioffbQRj5o2PDmCq5mCq1f5bEIQjyapFwY7Vq0s1fP
-         h4qtWkZGA10s6tKQyQ2sP3avgvr5Cy9/uFHgeWKV674ViFyfx8Y99bdxJrGvaQjtxQ
-         3tZe3QjPwrLw4aAN72dwmc8plk7ae6Kvp/U6hjJYsgecSyZVevBDUlW4TuQ1qnEDi3
-         1MKGie5dL7egQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B9990F0384A;
-        Thu, 31 Mar 2022 02:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229721AbiCaFi4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 01:38:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD39B14865A;
+        Wed, 30 Mar 2022 22:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=p29tzLs7zbArA80t2+AEJP2/7OfrWVSV/z0IMyFFAek=; b=vbhxdY5reNpcS8vZGSC9E30dLW
+        4FHTT4hxSaBUhQ0puWeb0LrMMPJmUY5xhzewVcyxHl1XmUZBLzi8u5jYxjvSnsqbtXori/uBk0uZO
+        TAJk6D1FOMEmPH0m4u51QFSkYYUFRtkM6ks+r5gvy7nFK1U4mc0Kjf52ybRZzndG5KzmDTIrdCPz3
+        S1TxP0dBD1xRVN/itQ5OpMg08jHw280/1395Yh84f4SbTEH9jSVAZJbsPsFOmvF5UO4wCroxwSmhX
+        oTYUIRLnw1fSGPQPc1UxeLBQ0c6zIgpaRUPLAfpMwEZvuqjOjzuvY83VtnvbQ+mewkNcmdDY/yZhp
+        LVIgyCiw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nZnUW-000iTg-Cq; Thu, 31 Mar 2022 05:37:04 +0000
+Date:   Wed, 30 Mar 2022 22:37:04 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Song Liu <song@kernel.org>
+Cc:     linux-mm@kvack.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        x86@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, akpm@linux-foundation.org,
+        pmenzel@molgen.mpg.de, rick.p.edgecombe@intel.com
+Subject: Re: [PATCH bpf 0/4] introduce HAVE_ARCH_HUGE_VMALLOC_FLAG for
+ bpf_prog_pack
+Message-ID: <YkU+ADIeWACbgFNA@infradead.org>
+References: <20220330225642.1163897-1-song@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 1/2] bpf: Resolve to prog->aux->dst_prog->type only for
- BPF_PROG_TYPE_EXT
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164869441075.29895.10529987783959321042.git-patchwork-notify@kernel.org>
-Date:   Thu, 31 Mar 2022 02:40:10 +0000
-References: <20220330011456.2984509-1-kafai@fb.com>
-In-Reply-To: <20220330011456.2984509-1-kafai@fb.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220330225642.1163897-1-song@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Mar 30, 2022 at 03:56:38PM -0700, Song Liu wrote:
+> We prematurely enabled HAVE_ARCH_HUGE_VMALLOC for x86_64, which could cause
+> issues [1], [2].
+>
 
-This series was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Tue, 29 Mar 2022 18:14:56 -0700 you wrote:
-> The commit 7e40781cc8b7 ("bpf: verifier: Use target program's type for access verifications")
-> fixes the verifier checking for BPF_PROG_TYPE_EXT (extension)
-> prog such that the verifier looks for things based
-> on the target prog type that it is extending instead of
-> the BPF_PROG_TYPE_EXT itself.
-> 
-> The current resolve_prog_type() returns the target prog type.
-> It checks for nullness on prog->aux->dst_prog.  However,
-> when loading a BPF_PROG_TYPE_TRACING prog and it is tracing another
-> bpf prog instead of a kernel function, prog->aux->dst_prog is not
-> NULL also.  In this case, the verifier should still verify as the
-> BPF_PROG_TYPE_TRACING type instead of the traced prog type in
-> prog->aux->dst_prog->type.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf,1/2] bpf: Resolve to prog->aux->dst_prog->type only for BPF_PROG_TYPE_EXT
-    https://git.kernel.org/bpf/bpf/c/4a9c7bbe2ed4
-  - [bpf,2/2] bpf: selftests: Test fentry tracing a struct_ops program
-    https://git.kernel.org/bpf/bpf/c/0a210af6d0a0
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Please fix the underlying issues instead of papering over them and
+creating a huge maintainance burden for others.
