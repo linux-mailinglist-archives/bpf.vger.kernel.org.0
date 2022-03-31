@@ -2,208 +2,447 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6EB4ED7B5
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 12:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02E94ED884
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 13:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbiCaKXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 06:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
+        id S232678AbiCaLdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 07:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbiCaKXw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 06:23:52 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3D714866C;
-        Thu, 31 Mar 2022 03:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1648722124; x=1680258124;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=tTIE9mJkVxwK8PQEbU8YTReJktB3ypz9SsOPvXWFoTQ=;
-  b=huqxxwpNDpaMu0ULQFWaC8oXmwAjQKm85nRJiIyeZsBgVE46lrM+VlwI
-   ugwRpoRxncuYkbo2gs3KxyoN4wGabQi9q0sF89ZZJBw19SoRwqJfi9f8q
-   jUc8DR53D2XLLCwO/BXEj4lWgKxAbRnIwEQ2Bexj3HlDhdvZUKXJ0UsIg
-   WOtTY6LOsT+3GtSQHXWBGRFLoIsDBkRNgd6qZcRYP2uI/9FQJCqYTm1Yo
-   Ios0M04F7RldL/IHO/SP2Lh8LIMhhN/KUVdJqYBC8S8N4F8/jRGCI94jL
-   y4/uncedJlL6P/x/gPRjQXu8o3hEaOnvVcJr/+oVSOJL10g4dRpl81CkI
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10302"; a="241938461"
-X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; 
-   d="scan'208";a="241938461"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2022 03:22:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,225,1643702400"; 
-   d="scan'208";a="788359773"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga006.fm.intel.com with ESMTP; 31 Mar 2022 03:22:03 -0700
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Thu, 31 Mar 2022 03:22:03 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Thu, 31 Mar 2022 03:22:02 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Thu, 31 Mar 2022 03:22:02 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.107)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Thu, 31 Mar 2022 03:22:01 -0700
+        with ESMTP id S232647AbiCaLdF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 07:33:05 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4097116BCF6
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 04:31:17 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22V8WVF6027875;
+        Thu, 31 Mar 2022 11:30:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=K9m2nV1uhv6khiWh9wOL6GSAf6z4ANMGK+4FGkwL0sA=;
+ b=EtGdGHUDZwZgfFpTcG7b37O77fzleWbFdXNTf5Yt75W8kpqYsmy+utKZ1KtBkhxzOaYK
+ 7svBgy3Z7EEKBiPlXQMAlnu5zhduukft2l5gGqgalO0LAwDyLrh3xmdFxYOjjxXGQauS
+ tlx+xRpsFNr9httWuaKxOfAYMyjb+vokFnALgT12x5MtNLZ74awoOSHI2in/3jrdWxao
+ nJ74Ap8WW+xZnEfC7VzOxQl7ePmITDLf8IXHeSWFBytqLNR2nl4rYh/Hy5Cd/WuQOAXw
+ YZPNN0LaArhPKp3I/D6GYY+lgA+h2STQSn/nn13ak+GcIwKxpeUVCEuSv8LsFX1uzfrG Og== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3f1sm2m4bk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 31 Mar 2022 11:30:53 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 22VBBKUH032242;
+        Thu, 31 Mar 2022 11:30:52 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3f1s94pjba-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 31 Mar 2022 11:30:52 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IcvgPnXL8DYQBY+N31rjJ+8Bv2i07zspmWm3QEOo/N5F0X2bYnxdhwoa7TChV5lGACHsXLwyOCjcccnsxh0p2cjhnO0RrerFocNu9bZ+o+gKvzIJte6g8noyjCY8T3gmMHaMGaME9x6kq7MRwFbGw1hM+QKdEIbCvWtzKdPIHKtZhWdUgqHgHL0iRz4zdk6Na3r12taV0Wk2d3dtryVSyoIGSn37b0RkDxo1yyaOWKNG3DM3b8csUvp2SlsM0CITVl3dSDvacZfLY4DpZQNEj0LHOMYxWIOYAqyGcFV9rrVwPqMrAzgoIAMf0Y+tujZ9uYluOWmrH/y1yGWPxDg2Uw==
+ b=ZOlGla8K/VEPh2I11sR60M/IbQWDB/D1xfpP2H1ctAKj4uV0nPDQsMsX74uLmnLWTJ06lssO7Mw/iKC1YWsXv6wYc6cRaCpB8gbG0XKJtyATk4D7nbrOxwsX2kmaEJUpe7w2zBnTrXilTqq4fZg5QjPH+4RdWDJh6+4xn2TxCZ0t5bZIxCtTUuixDRCdg+zv5Ou7jngvckhy0j//ndYfFWhE32HjrdqcB08veqM43xv6IoRf594jna8NDECOHXERnWUhUGvg4heA9IcIXgOjVhbioaHT6iy+LB/GE5lJWUM02JHTNo1cM3yijhRnXqkKWDuyhm9NpzeacOuQApaqYA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AU7M8Wz6TY3G/kpYfCUZfhtMcaPHqMAgwIh+rV6AbVY=;
- b=cQgtAtoWNPdzwOXqzcPwQiGXr1dfTVsD6F7NmoKaZXRTvhLPPUvzdxC8VQs0ZCJqYS+e5LrjYNnoxE1KI6HtLGBURHqdFiXzfyFJwkn8mUmj+0wFbr9yJyZYDLCZ1dWlfQ/jktgtmuEevI3zlBXFSZG4g79aQuMNh53vHM5bL/+JiIl62hYnUtJxP89TlFtVajg0ga9iVuRZHkfNknmJnSZD/VqGfAjf/kzQKMeYDHAs/95mJawO1Ke5JnNjDqZWaDJBbRQ2uxZ5FAGaP1UKrQyX8OziJ/W1pzJjObqZywrABuhGkFxTwWEDmV5sLUmE328cZPkf/CAN/4RCd7BMLQ==
+ bh=K9m2nV1uhv6khiWh9wOL6GSAf6z4ANMGK+4FGkwL0sA=;
+ b=ZF7oapDcMCaj1Yoh3SHuBkNLWZZ4sfr41m3TPIqxsYsQSEY0e4DBR+FC9sfxvKOpsSYGuhqRH5KQ54dJ5eml4DChbJJj4sTe9prFzwn2RTKdQEjLTx2kfgSSb6280bEyBXWqleouNrbB0Cd586kKVVoIBK5PxC92bF3UBIsXLxRHQEhH+CwmslIohVv0JMwok//OK4fEQ8lRXVRwfsF1cnyK9VUlNELbA4JaOHTyXf987nElTEeTN0wwIsKx6xnD57526BEKQnRlwuDAYClRpKTJEDBqYqgzPpz/D/OtQ8SuwMc3l8cxALcYUFUyhyiosusiDDMfBZ7VlEtSG9cMgA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MW4PR11MB5822.namprd11.prod.outlook.com (2603:10b6:303:185::9)
- by BN9PR11MB5386.namprd11.prod.outlook.com (2603:10b6:408:11b::16) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K9m2nV1uhv6khiWh9wOL6GSAf6z4ANMGK+4FGkwL0sA=;
+ b=i7xRz0j8Yr2asSS1Y8hyHPfKmaNyD+iQXcU0SgK0Of6NxLiFlFMvnHaa0KAQZtESzMR4cKCICvwfSTGuV5effMk5OP4KG47HaXkWtzprfVc4bWFLLrWsHvyQqxwaf7iqLzvgpISxtBNZkgUhjD/88H9q9pBDodA3714if8rhI00=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by SN6PR10MB2558.namprd10.prod.outlook.com (2603:10b6:805:48::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.21; Thu, 31 Mar
- 2022 10:21:57 +0000
-Received: from MW4PR11MB5822.namprd11.prod.outlook.com
- ([fe80::f40d:5cd8:1ecf:4b95]) by MW4PR11MB5822.namprd11.prod.outlook.com
- ([fe80::f40d:5cd8:1ecf:4b95%7]) with mapi id 15.20.5102.022; Thu, 31 Mar 2022
- 10:21:57 +0000
-From:   "Nagaraju, Shwetha" <shwetha.nagaraju@intel.com>
-To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: RE: [Intel-wired-lan] [PATCH intel-next] ice: xsk: check if Rx ring
- was filled up to the end
-Thread-Topic: [Intel-wired-lan] [PATCH intel-next] ice: xsk: check if Rx ring
- was filled up to the end
-Thread-Index: AQHYOiiOjYwEsOJntkmtQ8AbjXr5rKzZXZaQ
-Date:   Thu, 31 Mar 2022 10:21:57 +0000
-Message-ID: <MW4PR11MB582268F689B8EC10514112B090E19@MW4PR11MB5822.namprd11.prod.outlook.com>
-References: <20220317175727.340251-1-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220317175727.340251-1-maciej.fijalkowski@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.401.20
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fa21ff34-833b-474d-16de-08da1300495b
-x-ms-traffictypediagnostic: BN9PR11MB5386:EE_
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-microsoft-antispam-prvs: <BN9PR11MB53860B378767B56DED4B2C6990E19@BN9PR11MB5386.namprd11.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 81KgcE4lARQofnJBw46DDcXi0ky5l/s2dAnGwqaSibMZ4RLpQRSztC7Ove5/CVzv13mDlaaR4QtPHN5AZVewpgm41biRft+fRS1IaJFaXUx2+apUx4ub5IHPBSDQI714Pf+7kT00ZS1mbTNIhy2w5jUN2VVP0zYG/+klNsQ4TWxlIre0X/nEV4CLTXwcOzBhw0FTDQKCsh0D5XWxltU5sSrPd3L14Goa2/v0NeBuHatkkdCD+ia+IRZ1fSIUIzcnN47ABauekpCH6OHhnXNv6Wci4tAyzg3zkdfoGOuhHNLvjjwyG1B05Lzh679pdrq3LNLB7k8P1tP/mCu/iUw8cHM+ZxH110gtI0eZVWVq7rW5tWsSooquh/FBO0Nt3A8Y1n61RE9x/T9Zp5cUbgvKC1e67IY8UDQIOye0YhzBr884LCMZ6z7O4ZF1bRd39dgWGwAocuqXiRgsnAWk/cixYCfsID6+Zzcwk9jNe+Ix0GCCDrhO+FF27w52A9+2GxhRKynF4gkxhdk8Gs0w0FDuAHDNjSBt6XC66qiDnMzoGqh/GszG5i8g3ZJjvoK+zIwRoX/ptklYcTM2fsu0YGvQgWUee8c62ZcVP0zQ3sRphMtzYRRojoisFvBoxfClg4iOYKc6qCBTBlcyebxrSozvGFJLvMx2GQcE9oZsshfYmTJodOJQbqeZIZ0o+zVcGRntV4flJCa+IKplML7tLVXUkA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5822.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(71200400001)(110136005)(107886003)(54906003)(122000001)(316002)(53546011)(186003)(26005)(55236004)(76116006)(6506007)(7696005)(38100700002)(86362001)(4326008)(8676002)(64756008)(66446008)(66476007)(66556008)(66946007)(2906002)(83380400001)(33656002)(82960400001)(55016003)(508600001)(5660300002)(52536014)(38070700005)(8936002)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4jZYnyzrjjJKW0Eq+SPTHJHcLWAddSJ8IsOvsMDhf3fLvNoV2LT2rwqb8RJ+?=
- =?us-ascii?Q?ch7Ihfw0+hvOEVmwmuIrsE1db9N52jq6l/0naan51lg5M9hmDVTguNMBU0vd?=
- =?us-ascii?Q?oiSkzx7Fe4pGYcCcXTv+KEzsbyFNRHRRCDYvO+UMfjtIdW9KAcPrfEzJR7Ee?=
- =?us-ascii?Q?RW14Xzim7FSn0KWiUhRogrLloPCzySr1iNoyhVQPFeyy8RbxhPhjIn/i6Nu4?=
- =?us-ascii?Q?TDU+j2IgCgpjsFDakUITTdrZKR8ORZeXq3VLudvw8t2xkDz0aWoEJYL27UVL?=
- =?us-ascii?Q?J6TyjZhRBABs6CIf0POq8yaKarRcPRQJ2B0xmnaxw38HM3yw6gSRcedOCZnZ?=
- =?us-ascii?Q?Rwwax+xJTjkM3btgT/8UogupXG671hopkKDrLpEAA+QW7GeSRpqvtjeNttPR?=
- =?us-ascii?Q?kcdcw3G6SE3AH5b7M7YKlg+qM/Rd63eXIDpHS+xh698P5f1wtEBfOcb2cX3s?=
- =?us-ascii?Q?RbDn1ZbO4wlzgupcRdyDN5zniUDIMJyFRGFY0lYcs4ZyNwBBfQZ2zqXIpAT8?=
- =?us-ascii?Q?hRbKn9UkdYLdO2bq3+qJI2rEBxE4Gb3RAbgJC9TcNBNYZHWOMMjaa3nvIwuo?=
- =?us-ascii?Q?SXbEqQkP0Hr5L7nzttMAvkW7AsP0BxY/xq54kH0fKaAm2zDN6TWR+oMMjbaS?=
- =?us-ascii?Q?5O9wte4Q+xz8A0ODYXTeM1+aJhpyMZspjE6ekPtOiYwJYBnPMn1nHnEso9nE?=
- =?us-ascii?Q?Tpy3QCu5U5ELvxtX6B3jL2tarxV9/1wvtmj66LqKlWDwG7T3zlCN7/F/4ze5?=
- =?us-ascii?Q?L6HNczEVpnrlMP7S3r+ShfVzAoffPeCI05VjBqfImXZL8uCWZ/GAUtXV17WU?=
- =?us-ascii?Q?0++W6rphJbltBPExE331FdoIL1IkFwIKWQiyHlHJBBDSOvwO8woBme0h8toy?=
- =?us-ascii?Q?HsteHHF77xCoqQL20LM+BcBkQWQpAG86BRP78rzQSgxWnyL602ANB5CDtWbl?=
- =?us-ascii?Q?TE3f+3aVWBfACCLSz0Vq98Xg3IAf42UGNACcVWMg83tB/2Rk5R5NMPl9LUa2?=
- =?us-ascii?Q?RtNsYU0t3K5/ezdKq75kVMCYjQbl3H1yfjAThTRLu1zMuAYjg9Yv+eHaBve+?=
- =?us-ascii?Q?kxnwI0bpV8MMthlyUDvMhOF/1UEDDhPqgZ75CdAiu35XDoUvV6tpvfsYCybk?=
- =?us-ascii?Q?9HZu4YD5/xyTuS4F9R5xK2ynRSbRRX/Vev+TTJBzpnkpDZvQu31kJljuYfqc?=
- =?us-ascii?Q?O03SbQiVXHr87c80A3aJ6vHnCWzdHi/9G0LVQj3OPtJAeTp2TAEJkeiR1Apl?=
- =?us-ascii?Q?3/fj4a15HMniF47JL+laCk7Qq/HYZtcAkxoTVZ5YFZfKIQ32sfhwGmWWWUMO?=
- =?us-ascii?Q?9pioCdF/9UFvnQFf2Go4q5yXLlnwY0Fu22Z1gQdQT4YGcCKzws2a0n6uz4rb?=
- =?us-ascii?Q?FqqY4W6oYses9UgB8dt5jp+Z+405LFysBdWQMF48T3/s/cg8Lixz/2gVq0+6?=
- =?us-ascii?Q?WdrXU7QC069gPM2D9dVIH/ynL9+T3n/olPJUQGNAaZ0tymVuo9GhdV/D+Wsi?=
- =?us-ascii?Q?8b0szQ7Ah1y2BVuzOljEZ1WTfG929awk2vHA3GwNBn6y9vSvskzP5/q9k/YM?=
- =?us-ascii?Q?u/UNcXaTyXl6xpaQcaTPBGZzqxAHfAwMzFVW+6TzUghkaPR0RdjMQnwF17VS?=
- =?us-ascii?Q?7OAWURpiD01cdsH4HuGw8T53hG2co1Uf1K9CsBMv3UAGnjx+UfL70hkO9Gk9?=
- =?us-ascii?Q?qRc855rdmrpFgDaeu7rtXtnvKgpj8dxtipOquOCaAWyVMMUhMXnEOpC+apgB?=
- =?us-ascii?Q?gC4eiH8U6dTr4o8z2fKVFVVRyJ/VA8o=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.18; Thu, 31 Mar
+ 2022 11:30:49 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::1483:5b00:1247:2386]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::1483:5b00:1247:2386%4]) with mapi id 15.20.5123.020; Thu, 31 Mar 2022
+ 11:30:49 +0000
+Date:   Thu, 31 Mar 2022 12:30:37 +0100 (IST)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@MyRouter
+To:     Andrii Nakryiko <andrii@kernel.org>
+cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: Re: [PATCH bpf-next 1/7] libbpf: add BPF-side of USDT support
+In-Reply-To: <20220325052941.3526715-2-andrii@kernel.org>
+Message-ID: <alpine.LRH.2.23.451.2203311230280.16879@MyRouter>
+References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-2-andrii@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+X-ClientProxiedBy: LNXP265CA0012.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:5e::24) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c342bce9-3dd8-42d7-cf28-08da1309e7b5
+X-MS-TrafficTypeDiagnostic: SN6PR10MB2558:EE_
+X-Microsoft-Antispam-PRVS: <SN6PR10MB255841AE7E804CE0F88EA126EFE19@SN6PR10MB2558.namprd10.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CUoS2F4TR+JjuFYgofWPegzE8DBOeWCbFSi1wIHQs2poDQXIldvb5jwXfW5W3OwaDCuXVyeMdOJcq3ZCBvrJ3ykqibZLwNuxltN499RSlP/RzVlVg/SS2fObG9dKh24CvYOuQvlGZPDRsq4W2KWX99XNK54CMug5xYqKwFYKP9xAmUk2tp5Rp34G6dGnd15TUtqx4Ya6ZXouRe5pX5a/XD2tlXgakem2DCDmJBVL3IVkl3XM6LkM14ixJFzWjvjQJPAQ3HGPaRg58zUCQ6ps4Nt69Dvg2j/XiCmPYWzoE3MzIYrsyD9EbXGM3t+PFTUxoCxSa4ozzyUOPoSFovDymCyk6ZcnAK3yFHdDP8JIIema3JGw8UizQ3RBcNQEy9htYi3HyEQGgUWu7Gok2ArCUqNog4+3rWSblPT7AeTGHndBlxkDGpQc+gF513lvivpXVb5bL8SGzqQ9fDMyhFMb0qI+OAu7jUL9/QdWt5cdxuY6ywqledYcQNRdoef6eiMn7UxuWbRixKiZepIVTLnXbnwx/X8IF9WYfEffcH0E9+cEj0GdttNjNj3CTYGFHfnp1CraPt5GYK0k9NL6bpdN1xoos+0iP0UYAC5xO4+JdQ7aFHIYNn1kYTvW6f8R5A83PH5M95ckXb58QTX2G+g2NnnxxYh+LDkO2noxWxLWziTiGCA+Z8osTId6nrn4PkcwP+lZpz9qLjjM5+lrMBlLVQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(366004)(44832011)(54906003)(6916009)(33716001)(186003)(8676002)(4326008)(66476007)(6666004)(38100700002)(52116002)(6506007)(66556008)(66946007)(8936002)(6512007)(9686003)(6486002)(83380400001)(5660300002)(316002)(2906002)(30864003)(508600001)(86362001)(21314003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KDUhliyTSU732elO0yAflWksnmBeV2Oc9BIpRtY3XgEae0E/Hr5TgVpYQHsm?=
+ =?us-ascii?Q?BWj4/KdoCZ0mynhghNzl8LH6VVKVpTUCZMCZASyokTZrIGZRELL9TUFef0EB?=
+ =?us-ascii?Q?Bq9ZC/7pYJRBy1dmsUdIMtR8WENjvbTjGCiL0DkzqfAuDQycnDK1MO8PKlfm?=
+ =?us-ascii?Q?zTelOIVaqLF2n9Jc6GwR9RDAroFDkbcq8u5QlHzmQSBGQRgVF1j3eE03Wp7o?=
+ =?us-ascii?Q?I7wrQA3jIHSPWKoXeog9ypo9BMroUjij6lZgGYoWlpqKG48rXlHO09+WAfvl?=
+ =?us-ascii?Q?3bX8j3T7sWT9634e6uqelFNdqC9jZ5q6OaGBFAb73s1ylYb7Qv/Huqd1Ynk6?=
+ =?us-ascii?Q?4yLj0b4wZe2SXDlNpCDCqPriETFuihSCdN+qbndWgsLIYnQSnO0hkkPxJ5Qh?=
+ =?us-ascii?Q?OE6Z96M/Fj+KUldw1w6gYDpl/kFzMOgB81r4FQ0j+iTh46e3t1CmDExRNO5A?=
+ =?us-ascii?Q?URtm2fyMZagIKbAXXg4L1+FqINFakOHPMeth8GCA7V3U1c0XZMc31tK6KoRt?=
+ =?us-ascii?Q?QedM53pOFu/tQg9VU93Ylwh20/IaRtR54gw1IvMTrqeOSAYPE4jPagzXJB6v?=
+ =?us-ascii?Q?FDAqPcJEj7cmqTfdO0zyOIHqagPpJFTukVdv0mihsva1kKjqCRtwBMnVKeqj?=
+ =?us-ascii?Q?pbSG10+7C1QlYgA2F8I3vpgv8IK8R3lAPwJzywec0D6y3VkZYptRkuDgkpCE?=
+ =?us-ascii?Q?YdEBIHetFxgg8gud9/uguews919MQegsjSz7+qn3CDECbWxy+Z3+rliZz+20?=
+ =?us-ascii?Q?PL/yHVYZcAVKq4OET2Z3ENyeGEtebkDQdDhRP5aFFN68I92GFuqepIrWC+1C?=
+ =?us-ascii?Q?brrrv4nzR0D2j9Mk/tmCmIzsBiSb8d7gTx9fcVyUddBEIB5ISHpyGG8MJVbj?=
+ =?us-ascii?Q?998hxWQuevX60SMj2jaUEvJ9hdXolksLU6NQ0JglihlcnMC2naAEt3BTAt+E?=
+ =?us-ascii?Q?SF0jGcV+S06jsNJiqhXZIiLGtHX8sB34YLX3ruYPKPshhQxgmcE0rNCZCxyJ?=
+ =?us-ascii?Q?MY9m7+MjrktzZyJpiwscm8nWeJJsqP4q75gBxbHqQxi2wCnQKbIw8CnUNSUX?=
+ =?us-ascii?Q?B2XIII8FrL6iLlOHTURbALQ9EWZx9AmqkQu5FdGhWM/T59TN19JiwyNyKq92?=
+ =?us-ascii?Q?qVW92M8xMpJBnr7go2Vxgm16nvCwCJyQ12motbOmpzQED7jzhrLmF82kyx7p?=
+ =?us-ascii?Q?O12+r6DWKKMgBCPGJpMkQQyngNeSbjYFbEm50f0ckCNdz6nZeOCc4ANhXuPN?=
+ =?us-ascii?Q?YYS4H05yvsqJjWcQhEpi608ZrmAyYcneVGPa2yBzmIL8oDyluUn+MdWd75Hc?=
+ =?us-ascii?Q?G2QvhKVgdg2tbr30TJXJIa6HSJlkvS99MaozC82GIKoZM168BF7nnCUWJG3R?=
+ =?us-ascii?Q?fQ86q8Ge9J45UaoYdz58Gz9oz7jlN2R2AIk754DrekObi9s8AsDhwWc61BX7?=
+ =?us-ascii?Q?imbNp6aDcHI0bs5RxnbjJFmWUX10RKimwlj/5lQgAo5IYQwhAUfxdfGeKsQU?=
+ =?us-ascii?Q?SIANhaIipS0Xc2Nv4CLbqxzJjn+a3yxyG8OCQ5v43dcJ5/bI6hqtFC8Jhtqt?=
+ =?us-ascii?Q?kw9CQdOc2z1y/8+ZGfomSgw3VtFZpnLuGe7beuBbCp1XFWVPKFG+hsOLusUM?=
+ =?us-ascii?Q?fID8dyaWZTLq65TDSnnBcSng/1ZhAUxlD2fKl+olbTmWTEvw1SxO25+std2t?=
+ =?us-ascii?Q?Yppmk7xvbbPGwTGB6RifnSOm6najsIdf2F4hGL0O3zmzHyk1S68RqJhoq57d?=
+ =?us-ascii?Q?8YvOUhGErq5r/Mw8Px4rKJX+aW7Mdie/Dn8iC86k8OxgB8RodZZP?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c342bce9-3dd8-42d7-cf28-08da1309e7b5
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5822.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa21ff34-833b-474d-16de-08da1300495b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2022 10:21:57.7199
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2022 11:30:49.1306
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1KREfvL7E7mRL3Gq/M3Mfiq9i9BYkTMqNmwhA8Rv4GEf8IGY4iZmZH6ZkmgK7LN8gUb9FlmXNuasq8fAecJzwbjYQ/hPWPBGv2k3Fh/ybls=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5386
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lHNhMqio9pd2QLtg0s2ezpRBDfQCptuG8hFlQS2N5TDwzGlgodItJcWF8D+LNO3AHeo3DGQmXXDUR0GjrvIHUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR10MB2558
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.850
+ definitions=2022-03-31_04:2022-03-30,2022-03-31 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 bulkscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203310063
+X-Proofpoint-ORIG-GUID: KMHTWzaPo7EyQHpFU90PnNbZz7OgHGQ_
+X-Proofpoint-GUID: KMHTWzaPo7EyQHpFU90PnNbZz7OgHGQ_
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, 25 Mar 2022, Andrii Nakryiko wrote:
 
+> Add BPF-side implementation of libbpf-provided USDT support. This
+> consists of single header library, usdt.bpf.h, which is meant to be used
+> from user's BPF-side source code. This header is added to the list of
+> installed libbpf header, along bpf_helpers.h and others.
+>
 
-> -----Original Message-----
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
-> Maciej Fijalkowski
-> Sent: Thursday, March 17, 2022 11:27 PM
-> To: intel-wired-lan@lists.osuosl.org
-> Cc: netdev@vger.kernel.org; kuba@kernel.org; bpf@vger.kernel.org;
-> davem@davemloft.net; Karlsson, Magnus <magnus.karlsson@intel.com>
-> Subject: [Intel-wired-lan] [PATCH intel-next] ice: xsk: check if Rx ring =
-was
-> filled up to the end
->=20
-> __ice_alloc_rx_bufs_zc() checks if a number of the descriptors to be
-> allocated would cause the ring wrap. In that case, driver will issue two =
-calls to
-> xsk_buff_alloc_batch() - one that will fill the ring up to the end and th=
-e
-> second one that will start with filling descriptors from the beginning of=
- the
-> ring.
->=20
-> ice_fill_rx_descs() is a wrapper for taking care of what
-> xsk_buff_alloc_batch() gave back to the driver. It works in a best effort
-> approach, so for example when driver asks for 64 buffers,
-> ice_fill_rx_descs() could assign only 32. Such case needs to be checked w=
-hen
-> ring is being filled up to the end, because in that situation ntu might n=
-ot
-> reached the end of the ring.
->=20
-> Fix the ring wrap by checking if nb_buffs_extra has the expected value.
-> If not, bump ntu and go directly to tail update.
->=20
-> Fixes: 3876ff525de7 ("ice: xsk: Handle SW XDP ring wrap and bump tail mor=
-e
-> often")
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_xsk.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->=20
-Tested-by: Shwetha Nagaraju <Shwetha.nagaraju@intel.com>
+<snip>
+
+Some suggestions below, but nothing major.
+
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+ 
+> diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
+> new file mode 100644
+> index 000000000000..8ee084b2e6b5
+> --- /dev/null
+> +++ b/tools/lib/bpf/usdt.bpf.h
+> @@ -0,0 +1,228 @@
+> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+> +#ifndef __USDT_BPF_H__
+> +#define __USDT_BPF_H__
+> +
+> +#include <linux/errno.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_core_read.h>
+> +
+> +/* Below types and maps are internal implementation details of libpf's USDT
+> + * support and are subjects to change. Also, usdt_xxx() API helpers should be
+> + * considered an unstable API as well and might be adjusted based on user
+> + * feedback from using libbpf's USDT support in production.
+> + */
+> +
+> +/* User can override BPF_USDT_MAX_SPEC_CNT to change default size of internal
+> + * map that keeps track of USDT argument specifications. This might be
+> + * necessary if there are a lot of USDT attachments.
+> + */
+> +#ifndef BPF_USDT_MAX_SPEC_CNT
+> +#define BPF_USDT_MAX_SPEC_CNT 256
+> +#endif
+> +/* User can override BPF_USDT_MAX_IP_CNT to change default size of internal
+> + * map that keeps track of IP (memory address) mapping to USDT argument
+> + * specification.
+> + * Note, if kernel supports BPF cookies, this map is not used and could be
+> + * resized all the way to 1 to save a bit of memory.
+> + */
+> +#ifndef BPF_USDT_MAX_IP_CNT
+> +#define BPF_USDT_MAX_IP_CNT 1024
+> +#endif
+
+might be no harm to just make this default to a reasonable multiple of 
+BPF_USDT_MAX_SPEC_CNT; i.e. n specs X m possible sites. Would allow users
+to simply override the MAX_SPEC_CNT in most cases too.
+
+> +/* We use BPF CO-RE to detect support for BPF cookie from BPF side. This is
+> + * the only dependency on CO-RE, so if it's undesirable, user can override
+> + * BPF_USDT_HAS_BPF_COOKIE to specify whether to BPF cookie is supported or not.
+> + */
+> +#ifndef BPF_USDT_HAS_BPF_COOKIE
+> +#define BPF_USDT_HAS_BPF_COOKIE \
+> +	bpf_core_enum_value_exists(enum bpf_func_id___usdt, BPF_FUNC_get_attach_cookie___usdt)
+> +#endif
+> +
+> +enum __bpf_usdt_arg_type {
+> +	BPF_USDT_ARG_CONST,
+> +	BPF_USDT_ARG_REG,
+> +	BPF_USDT_ARG_REG_DEREF,
+> +};
+> +
+> +struct __bpf_usdt_arg_spec {
+> +	__u64 val_off;
+> +	enum __bpf_usdt_arg_type arg_type;
+> +	short reg_off;
+> +	bool arg_signed;
+> +	char arg_bitshift;
+
+would be no harm having a small comment here or below where the 
+bitshifting is done like "for arg sizes less than 8 bytes, this tells
+us how many bits to shift to left then right to
+remove the unused bits, giving correct arg value".
+
+> +};
+> +
+> +/* should match USDT_MAX_ARG_CNT in usdt.c exactly */
+> +#define BPF_USDT_MAX_ARG_CNT 12
+> +struct __bpf_usdt_spec {
+> +	struct __bpf_usdt_arg_spec args[BPF_USDT_MAX_ARG_CNT];
+> +	__u64 usdt_cookie;
+> +	short arg_cnt;
+> +};
+> +
+> +__weak struct {
+> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+> +	__uint(max_entries, BPF_USDT_MAX_SPEC_CNT);
+> +	__type(key, int);
+> +	__type(value, struct __bpf_usdt_spec);
+> +} __bpf_usdt_specs SEC(".maps");
+> +
+> +__weak struct {
+> +	__uint(type, BPF_MAP_TYPE_HASH);
+> +	__uint(max_entries, BPF_USDT_MAX_IP_CNT);
+> +	__type(key, long);
+> +	__type(value, struct __bpf_usdt_spec);
+> +} __bpf_usdt_specs_ip_to_id SEC(".maps");
+> +
+> +/* don't rely on user's BPF code to have latest definition of bpf_func_id */
+> +enum bpf_func_id___usdt {
+> +	BPF_FUNC_get_attach_cookie___usdt = 0xBAD, /* value doesn't matter */
+> +};
+> +
+> +static inline int __bpf_usdt_spec_id(struct pt_regs *ctx)
+> +{
+> +	if (!BPF_USDT_HAS_BPF_COOKIE) {
+> +		long ip = PT_REGS_IP(ctx);
+
+Trying to sort of the permutations of features, I _think_ is it possible 
+the user has CO-RE support, but the clang version doesn't support the
+push of the preserve_access_index attribute? Would it be feasible to
+do an explicit "PT_REGS_IP_CORE(ctx);" here?
+
+> +		int *spec_id_ptr;
+> +
+> +		spec_id_ptr = bpf_map_lookup_elem(&__bpf_usdt_specs_ip_to_id, &ip);
+> +		return spec_id_ptr ? *spec_id_ptr : -ESRCH;
+> +	}
+> +
+> +	return bpf_get_attach_cookie(ctx);
+
+should we grab the result in a u64 and handle the 0 case here - 
+meaning "not specified" - and return -ESRCH?
+
+> +}
+> +
+> +/* Return number of USDT arguments defined for currently traced USDT. */
+> +__hidden __weak
+> +int bpf_usdt_arg_cnt(struct pt_regs *ctx)
+> +{
+> +	struct __bpf_usdt_spec *spec;
+> +	int spec_id;
+> +
+> +	spec_id = __bpf_usdt_spec_id(ctx);
+> +	if (spec_id < 0)
+> +		return -EINVAL;
+
+spec_id can be 0 for the "cookie not set" case (see above).
+
+should we pass through the error value from __bpf_usdt_spec_id()? Looking
+above it's either -ESRCH or 0, but if we catch the 0 case as above we 
+could just pass through the error value.
+ 
+> +
+> +	spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
+> +	if (!spec)
+> +		return -EINVAL;
+> +
+
+should this be -ESRCH? we know from the above we had a valid
+spec_id.
+
+> +	return spec->arg_cnt;
+> +}
+
+also, since in every case (I think) that we call __bpf_usdt_spec_id()
+we co on to look up the spec in the map, would it be easier to
+combine both operations and have
+
+struct __bpf_usdt_spec * __bpf_usdt_spec(struct pt_regs *ctx);
+
+?
+
+> +
+> +/* Fetch USDT argument *arg* (zero-indexed) and put its value into *res.
+> + * Returns 0 on success; negative error, otherwise.
+> + * On error *res is guaranteed to be set to zero.
+> + */
+> +__hidden __weak
+> +int bpf_usdt_arg(struct pt_regs *ctx, int arg, long *res)
+> +{
+> +	struct __bpf_usdt_spec *spec;
+> +	struct __bpf_usdt_arg_spec *arg_spec;
+> +	unsigned long val;
+> +	int err, spec_id;
+> +
+> +	*res = 0;
+> +
+> +	spec_id = __bpf_usdt_spec_id(ctx);
+> +	if (spec_id < 0)
+> +		return -ESRCH;
+> +
+> +	spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
+> +	if (!spec)
+> +		return -ESRCH;
+> +
+> +	if (arg >= spec->arg_cnt)
+> +		return -ENOENT;
+> +
+
+I'm surprised you didn't need to check for negative values or a hard 
+upper bound for the arg index here (to keep the verifier happy for
+the later array indexing using arg). Any dangers that an older
+LLVM+clang would generate code that might get tripped up on
+verification with this?
+
+> +	arg_spec = &spec->args[arg];
+> +	switch (arg_spec->arg_type) {
+> +	case BPF_USDT_ARG_CONST:
+> +		val = arg_spec->val_off;
+> +		break;
+> +	case BPF_USDT_ARG_REG:
+> +		err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
+> +		if (err)
+> +			return err;
+> +		break;
+> +	case BPF_USDT_ARG_REG_DEREF:
+> +		err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
+> +		if (err)
+> +			return err;
+> +		err = bpf_probe_read_user(&val, sizeof(val), (void *)val + arg_spec->val_off);
+> +		if (err)
+> +			return err;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	val <<= arg_spec->arg_bitshift;
+> +	if (arg_spec->arg_signed)
+> +		val = ((long)val) >> arg_spec->arg_bitshift;
+> +	else
+> +		val = val >> arg_spec->arg_bitshift;
+> +	*res = val;
+> +	return 0;
+> +}
+> +
+> +/* Retrieve user-specified cookie value provided during attach as
+> + * bpf_usdt_opts.usdt_cookie. This serves the same purpose as BPF cookie
+> + * returned by bpf_get_attach_cookie(). Libbpf's support for USDT is itself
+> + * utilizaing BPF cookies internally, so user can't use BPF cookie directly
+> + * for USDT programs and has to use bpf_usdt_cookie() API instead.
+> + */
+> +__hidden __weak
+> +long bpf_usdt_cookie(struct pt_regs *ctx)
+> +{
+> +	struct __bpf_usdt_spec *spec;
+> +	int spec_id;
+> +
+> +	spec_id = __bpf_usdt_spec_id(ctx);
+> +	if (spec_id < 0)
+> +		return 0;
+> +
+> +	spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
+> +	if (!spec)
+> +		return 0;
+> +
+> +	return spec->usdt_cookie;
+> +}
+> +
+> +/* we rely on ___bpf_apply() and ___bpf_narg() macros already defined in bpf_tracing.h */
+> +#define ___bpf_usdt_args0() ctx
+> +#define ___bpf_usdt_args1(x) ___bpf_usdt_args0(), ({ long _x; bpf_usdt_arg(ctx, 0, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args2(x, args...) ___bpf_usdt_args1(args), ({ long _x; bpf_usdt_arg(ctx, 1, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args3(x, args...) ___bpf_usdt_args2(args), ({ long _x; bpf_usdt_arg(ctx, 2, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args4(x, args...) ___bpf_usdt_args3(args), ({ long _x; bpf_usdt_arg(ctx, 3, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args5(x, args...) ___bpf_usdt_args4(args), ({ long _x; bpf_usdt_arg(ctx, 4, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args6(x, args...) ___bpf_usdt_args5(args), ({ long _x; bpf_usdt_arg(ctx, 5, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args7(x, args...) ___bpf_usdt_args6(args), ({ long _x; bpf_usdt_arg(ctx, 6, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args8(x, args...) ___bpf_usdt_args7(args), ({ long _x; bpf_usdt_arg(ctx, 7, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args9(x, args...) ___bpf_usdt_args8(args), ({ long _x; bpf_usdt_arg(ctx, 8, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args10(x, args...) ___bpf_usdt_args9(args), ({ long _x; bpf_usdt_arg(ctx, 9, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args11(x, args...) ___bpf_usdt_args10(args), ({ long _x; bpf_usdt_arg(ctx, 10, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args12(x, args...) ___bpf_usdt_args11(args), ({ long _x; bpf_usdt_arg(ctx, 11, &_x); (void *)_x; })
+> +#define ___bpf_usdt_args(args...) ___bpf_apply(___bpf_usdt_args, ___bpf_narg(args))(args)
+> +
+> +/*
+> + * BPF_USDT serves the same purpose for USDT handlers as BPF_PROG for
+> + * tp_btf/fentry/fexit BPF programs and BPF_KPROBE for kprobes.
+> + * Original struct pt_regs * context is preserved as 'ctx' argument.
+> + */
+> +#define BPF_USDT(name, args...)						    \
+> +name(struct pt_regs *ctx);						    \
+> +static __attribute__((always_inline)) typeof(name(0))			    \
+> +____##name(struct pt_regs *ctx, ##args);				    \
+> +typeof(name(0)) name(struct pt_regs *ctx)				    \
+> +{									    \
+> +        _Pragma("GCC diagnostic push")					    \
+> +        _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")		    \
+> +        return ____##name(___bpf_usdt_args(args));			    \
+> +        _Pragma("GCC diagnostic pop")					    \
+> +}									    \
+> +static __attribute__((always_inline)) typeof(name(0))			    \
+> +____##name(struct pt_regs *ctx, ##args)
+> +
+> +#endif /* __USDT_BPF_H__ */
+> -- 
+> 2.30.2
+> 
+> 
