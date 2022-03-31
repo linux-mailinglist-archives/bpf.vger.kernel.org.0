@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A10E4EE114
-	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 20:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B12B4EE144
+	for <lists+bpf@lfdr.de>; Thu, 31 Mar 2022 21:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233979AbiCaSvj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 14:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41914 "EHLO
+        id S238195AbiCaTEL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 15:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbiCaSvi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 14:51:38 -0400
+        with ESMTP id S238038AbiCaTEJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 15:04:09 -0400
 Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61BA164D13
-        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 11:49:49 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id b16so592339ioz.3
-        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 11:49:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7130B20DB26
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 12:02:21 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id g21so565150iom.13
+        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 12:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3W4pZEfEWBm1zS3nGOyfN2rnRb3Tk/oiqCubh9NnFh4=;
-        b=OzGcmlUMXCYc/ApeWgMDLEjckbuA1PSIdnQb9ttlYXmvSZeRV7X9WO9yEhKn8mQz82
-         9/0VSfrmqD5ghJ24Lq0jg0lX0Dvypn8D2Xlf/bKteAuxXYnFZPMIYF3MUCsD38WhFm3p
-         zpy+GeAowMWw4jZHbi0/JMkkstzvfQHMwP9nrlRvS62XKQ4lI23Urkfi4ihB1mQH5pVq
-         2jDrpY/5s/EozgNXBsmOi38L3T45FtyJBJYUc+8yS84lL1/u07eqaSOYoci+LrD+JVXB
-         MeKO7tsPsJXZ0HTepZYVFZugpcrruZepFrl09ahOtHSl1V7+TZjPYEZ2pJM1uOlAVnjb
-         pj6w==
+        bh=fHDhHSNTlhGXzFJNcm2qijotccc5Ha3Odv6PaFB1Pdw=;
+        b=Peq4r/R8+6si5IUP3HKl8f3dtHuKmcVLL3fxdnYpaJ7Od2wYnr6va10k77MvggVCd1
+         J5ibLE9wtRIMZ1CyOZKxRRD5y3eIENKxOcNsAzTBiG2HojstErXT7hXhugQLZpeF53UK
+         nqu+IcJN3lFKYlu0oP9uBqkRBje436B2xHfxYpepDA/BQ22dZT7lkkcWGFddCqGSF/za
+         dtMSQwwdki9yRuy1amqQulIH502HDlyqxncxDRdx6c7c83d/nGiR8uqqLQZDT1VxNiTs
+         Jf+xvdsTU0Ii7EfwjO8COAOxsE57oafSnPJKeHUXG5lBkTxCwhVZgcSUfQM/xZ+4Mx1Y
+         hMxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3W4pZEfEWBm1zS3nGOyfN2rnRb3Tk/oiqCubh9NnFh4=;
-        b=XA8KNYCu4JIv/71ol4EGKUL5HGvg50E0qaYUjH06e0tShhHFoxvq+4l/Jq1xVGhRx3
-         bgldYXTQTZhIbNk56fT7UmLz5mil29me2irK68A9i5z94K7fKIKV2x+d/F/JQwr9oVpn
-         LVr9cr2Epqdt/qAUvNscBORPPVYFkUSuWfDZ8Qx3xev5Uvr2V74MUMaXKZO7D6cvmo6c
-         2JUYfHjs4ZZCgwRsXBSejK22gfqlQX/PtHxN9AEsoYmPhrCO1svHA9CDiwztp2obDbJt
-         0DSwWoPwzxlX/d/1tQL5FcXDtx+DX9G3qwrvCH4N0VTaBzAaizWdLQtdoLfaHJjhHzYA
-         1wtA==
-X-Gm-Message-State: AOAM533Dls1VHMCDr97Q/4TgyrkEiJIo6hKYE5y1EsCXwyfpqNZovtmd
-        hW+ZjZbhOf/uStZZanOtJooji02AuWrUonwYANm+Do6g66w=
-X-Google-Smtp-Source: ABdhPJyzRxzBvR1pwjTulLXGD6vica05HRQQtaxcAU0+yfq5VZeKdHIugr4V2QclH1DRQRGTaZdo5C/CQoBRXhhGruM=
-X-Received: by 2002:a05:6602:735:b0:64c:adf1:ae09 with SMTP id
- g21-20020a056602073500b0064cadf1ae09mr2631699iox.79.1648752589262; Thu, 31
- Mar 2022 11:49:49 -0700 (PDT)
+        bh=fHDhHSNTlhGXzFJNcm2qijotccc5Ha3Odv6PaFB1Pdw=;
+        b=cDEuD6GriMiE00cHAa3z1pJEwRapgN/22Sy2IdvDMit7rWCL+UO7cymwfOrlYddp4R
+         5eAmxJDl8odlUOFBzyQMKXHElm3+Vks8tpcEUUlFMmDFz6lUPE28MbTNalhP4mm6lpqt
+         c1C3BXSyCvr2Y+8t5wMjbHdBNdCzX6zvFNfaTaifEBAIDP1mxGTv4BZyWg9DnPWsm7eH
+         xWxrbbrMkuTReYWmx997IjCmJx7Qtz3RDw4wgmooVRW9lR0YpbcfA8GaDGs7dCUPt7eK
+         Rz8DpLCJlERrjhc/TlsxIflBMaeIsZ1gmW6e0o9KtjVxsXsFEf3BvuE4F1nUWt2jqHIo
+         mfbg==
+X-Gm-Message-State: AOAM5316gR3OtGOniaeNk6Dz8Yy40V9VtIxvWiR3nr/Rk8CcqKsMH+C3
+        4lX1t5Kb+H2V+tynNFSmqYGETwvTbE3E/eFBYAUVdfuF
+X-Google-Smtp-Source: ABdhPJwTh7QU6YxnMiolQgE0uHYByhK8RxdkA/mIblBRcDQXPPHeNQ06yCFm57kA4JTmD4MPy1poUwNTZof47YXwTFo=
+X-Received: by 2002:a05:6638:3395:b0:323:8a00:7151 with SMTP id
+ h21-20020a056638339500b003238a007151mr3749228jav.93.1648753340718; Thu, 31
+ Mar 2022 12:02:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-2-andrii@kernel.org>
- <alpine.LRH.2.23.451.2203311230280.16879@MyRouter>
-In-Reply-To: <alpine.LRH.2.23.451.2203311230280.16879@MyRouter>
+References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-3-andrii@kernel.org>
+ <alpine.LRH.2.23.451.2203311234080.22159@MyRouter>
+In-Reply-To: <alpine.LRH.2.23.451.2203311234080.22159@MyRouter>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 31 Mar 2022 11:49:38 -0700
-Message-ID: <CAEf4BzYTEMEzMRPtEdS2QyXwU1GUdO7-7=vkXbvpdTTWwyTgNQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] libbpf: add BPF-side of USDT support
+Date:   Thu, 31 Mar 2022 12:02:09 -0700
+Message-ID: <CAEf4BzaWOA8_qHepBwxPRVzV4TeWzWi7CeMMjtEd-2KTBxwSnA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/7] libbpf: wire up USDT API and bpf_link integration
 To:     Alan Maguire <alan.maguire@oracle.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -69,259 +69,339 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 4:31 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Thu, Mar 31, 2022 at 5:14 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
 > On Fri, 25 Mar 2022, Andrii Nakryiko wrote:
 >
-> > Add BPF-side implementation of libbpf-provided USDT support. This
-> > consists of single header library, usdt.bpf.h, which is meant to be used
-> > from user's BPF-side source code. This header is added to the list of
-> > installed libbpf header, along bpf_helpers.h and others.
+> > Wire up libbpf USDT support APIs without yet implementing all the
+> > nitty-gritty details of USDT discovery, spec parsing, and BPF map
+> > initialization.
+> >
+> > User-visible user-space API is simple and is conceptually very similar
+> > to uprobe API.
+> >
+> > bpf_program__attach_usdt() API allows to programmatically attach given
+> > BPF program to a USDT, specified through binary path (executable or
+> > shared lib), USDT provider and name. Also, just like in uprobe case, PID
+> > filter is specified (0 - self, -1 - any process, or specific PID).
+> > Optionally, USDT cookie value can be specified. Such single API
+> > invocation will try to discover given USDT in specified binary and will
+> > use (potentially many) BPF uprobes to attach this program in correct
+> > locations.
+> >
+> > Just like any bpf_program__attach_xxx() APIs, bpf_link is returned that
+> > represents this attachment. It is a virtual BPF link that doesn't have
+> > direct kernel object, as it can consist of multiple underlying BPF
+> > uprobe links. As such, attachment is not atomic operation and there can
+> > be brief moment when some USDT call sites are attached while others are
+> > still in the process of attaching. This should be taken into
+> > consideration by user. But bpf_program__attach_usdt() guarantees that
+> > in the case of success all USDT call sites are successfully attached, or
+> > all the successfuly attachments will be detached as soon as some USDT
+> > call sites failed to be attached. So, in theory, there could be cases of
+> > failed bpf_program__attach_usdt() call which did trigger few USDT
+> > program invocations. This is unavoidable due to multi-uprobe nature of
+> > USDT and has to be handled by user, if it's important to create an
+> > illusion of atomicity.
+> >
+> > USDT BPF programs themselves are marked in BPF source code as either
+> > SEC("usdt"), in which case they won't be auto-attached through
+> > skeleton's <skel>__attach() method, or it can have a full definition,
+> > which follows the spirit of fully-specified uprobes:
+> > SEC("usdt/<path>:<provider>:<name>"). In the latter case skeleton's
+> > attach method will attempt auto-attachment. Similarly, generic
+> > bpf_program__attach() will have enought information to go off of for
+> > parameterless attachment.
 > >
 >
-> <snip>
+> Might be worth describing briefly the under-the-hood mechanisms; the
+> usdt_manager that is per-BPF-object (so can conceptually represent
+> multiple USDT providers/probes). It is initialized on first use and
+> freed with bpf_object__close(); it is tasked with managing the mapping
+> from usdt provider:name to actual sites+arguments via the spec/ip-to-id
+> maps.
+
+Yeah, I got feedback off-list that some good comment on how all the
+pieces are coming together would be nice. I think I'll add a big
+thorough explanation as a comment for struct usdt_manager, explaining
+all the relations.
+
 >
-> Some suggestions below, but nothing major.
+> > USDT BPF programs are actually uprobes, and as such for kernel they are
+> > marked as BPF_PROG_TYPE_KPROBE.
+> >
+> > Another part of this patch is USDT-related feature probing:
+> >   - BPF cookie support detection from user-space;
+> >   - detection of kernel support for auto-refcounting of USDT semaphore.
+> >
+> > The latter is optional. If kernel doesn't support such feature and USDT
+> > doesn't rely on USDT semaphores, no error is returned. But if libbpf
+> > detects that USDT requires setting semaphores and kernel doesn't support
+> > this, libbpf errors out with explicit pr_warn() message. Libbpf doesn't
+> > support poking process's memory directly to increment semaphore value,
+> > like BCC does on legacy kernels, due to inherent raciness and danger of
+> > such process memory manipulation. Libbpf let's kernel take care of this
+> > properly or gives up.
+> >
+> > Logistically, all the extra USDT-related infrastructure of libbpf is put
+> > into a separate usdt.c file and abstracted behind struct usdt_manager.
+> > Each bpf_object has lazily-initialized usdt_manager pointer, which is
+> > only instantiated if USDT programs are attempted to be attached. Closing
+> > BPF object frees up usdt_manager resources. usdt_manager keeps track of
+> > USDT spec ID assignment and few other small things.
+> >
+> > Subsequent patches will fill out remaining missing pieces of USDT
+> > initialization and setup logic.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 >
+> again mostly nits and small suggestions below; this is fantastic Andrii!
+>
+
+Thanks for the thorough review!
+
 > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 >
-> > diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
-> > new file mode 100644
-> > index 000000000000..8ee084b2e6b5
-> > --- /dev/null
-> > +++ b/tools/lib/bpf/usdt.bpf.h
-> > @@ -0,0 +1,228 @@
-> > +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-> > +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-> > +#ifndef __USDT_BPF_H__
-> > +#define __USDT_BPF_H__
-> > +
-> > +#include <linux/errno.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +#include <bpf/bpf_core_read.h>
-> > +
-> > +/* Below types and maps are internal implementation details of libpf's USDT
-> > + * support and are subjects to change. Also, usdt_xxx() API helpers should be
-> > + * considered an unstable API as well and might be adjusted based on user
-> > + * feedback from using libbpf's USDT support in production.
-> > + */
-> > +
-> > +/* User can override BPF_USDT_MAX_SPEC_CNT to change default size of internal
-> > + * map that keeps track of USDT argument specifications. This might be
-> > + * necessary if there are a lot of USDT attachments.
-> > + */
-> > +#ifndef BPF_USDT_MAX_SPEC_CNT
-> > +#define BPF_USDT_MAX_SPEC_CNT 256
-> > +#endif
-> > +/* User can override BPF_USDT_MAX_IP_CNT to change default size of internal
-> > + * map that keeps track of IP (memory address) mapping to USDT argument
-> > + * specification.
-> > + * Note, if kernel supports BPF cookies, this map is not used and could be
-> > + * resized all the way to 1 to save a bit of memory.
-> > + */
-> > +#ifndef BPF_USDT_MAX_IP_CNT
-> > +#define BPF_USDT_MAX_IP_CNT 1024
-> > +#endif
->
-> might be no harm to just make this default to a reasonable multiple of
-> BPF_USDT_MAX_SPEC_CNT; i.e. n specs X m possible sites. Would allow users
-> to simply override the MAX_SPEC_CNT in most cases too.
+> > ---
+> >  tools/lib/bpf/Build             |   3 +-
+> >  tools/lib/bpf/libbpf.c          |  92 ++++++++++-
+> >  tools/lib/bpf/libbpf.h          |  15 ++
+> >  tools/lib/bpf/libbpf.map        |   1 +
+> >  tools/lib/bpf/libbpf_internal.h |  19 +++
+> >  tools/lib/bpf/usdt.c            | 270 ++++++++++++++++++++++++++++++++
+> >  6 files changed, 391 insertions(+), 9 deletions(-)
+> >  create mode 100644 tools/lib/bpf/usdt.c
 
-It's not clear what the reasonable multiple is, it will differ for
-different binaries. I can do (4 * BPF_USDT_MAX_SPEC_CNT) to arrive at
-the same default 1024? Do you think that's reasonable?
+[...]
 
->
-> > +/* We use BPF CO-RE to detect support for BPF cookie from BPF side. This is
-> > + * the only dependency on CO-RE, so if it's undesirable, user can override
-> > + * BPF_USDT_HAS_BPF_COOKIE to specify whether to BPF cookie is supported or not.
-> > + */
-> > +#ifndef BPF_USDT_HAS_BPF_COOKIE
-> > +#define BPF_USDT_HAS_BPF_COOKIE \
-> > +     bpf_core_enum_value_exists(enum bpf_func_id___usdt, BPF_FUNC_get_attach_cookie___usdt)
-> > +#endif
 > > +
-> > +enum __bpf_usdt_arg_type {
-> > +     BPF_USDT_ARG_CONST,
-> > +     BPF_USDT_ARG_REG,
-> > +     BPF_USDT_ARG_REG_DEREF,
-> > +};
-> > +
-> > +struct __bpf_usdt_arg_spec {
-> > +     __u64 val_off;
-> > +     enum __bpf_usdt_arg_type arg_type;
-> > +     short reg_off;
-> > +     bool arg_signed;
-> > +     char arg_bitshift;
->
-> would be no harm having a small comment here or below where the
-> bitshifting is done like "for arg sizes less than 8 bytes, this tells
-> us how many bits to shift to left then right to
-> remove the unused bits, giving correct arg value".
-
-sure, I'll add that comment that this is used for casting and
-potentially sign-extending arguments up to u64
-
->
-> > +};
-> > +
-> > +/* should match USDT_MAX_ARG_CNT in usdt.c exactly */
-> > +#define BPF_USDT_MAX_ARG_CNT 12
-> > +struct __bpf_usdt_spec {
-> > +     struct __bpf_usdt_arg_spec args[BPF_USDT_MAX_ARG_CNT];
-> > +     __u64 usdt_cookie;
-> > +     short arg_cnt;
-> > +};
-> > +
-> > +__weak struct {
-> > +     __uint(type, BPF_MAP_TYPE_ARRAY);
-> > +     __uint(max_entries, BPF_USDT_MAX_SPEC_CNT);
-> > +     __type(key, int);
-> > +     __type(value, struct __bpf_usdt_spec);
-> > +} __bpf_usdt_specs SEC(".maps");
-> > +
-> > +__weak struct {
-> > +     __uint(type, BPF_MAP_TYPE_HASH);
-> > +     __uint(max_entries, BPF_USDT_MAX_IP_CNT);
-> > +     __type(key, long);
-> > +     __type(value, struct __bpf_usdt_spec);
-> > +} __bpf_usdt_specs_ip_to_id SEC(".maps");
-> > +
-> > +/* don't rely on user's BPF code to have latest definition of bpf_func_id */
-> > +enum bpf_func_id___usdt {
-> > +     BPF_FUNC_get_attach_cookie___usdt = 0xBAD, /* value doesn't matter */
-> > +};
-> > +
-> > +static inline int __bpf_usdt_spec_id(struct pt_regs *ctx)
+> > +static int attach_usdt(const struct bpf_program *prog, long cookie, struct bpf_link **link)
 > > +{
-> > +     if (!BPF_USDT_HAS_BPF_COOKIE) {
-> > +             long ip = PT_REGS_IP(ctx);
->
-> Trying to sort of the permutations of features, I _think_ is it possible
-> the user has CO-RE support, but the clang version doesn't support the
-> push of the preserve_access_index attribute? Would it be feasible to
-> do an explicit "PT_REGS_IP_CORE(ctx);" here?
-
-
-We don't normally rely on _CORE variants when fetching values from
-pt_regs context, so I didn't want to add more dependency on CO-RE
-here. User can opt out of CO-RE entirely by redefining
-BPF_USDT_HAS_BPF_COOKIE, using PT_REGS_IP_CORE() here would make it
-harder. As for struct pt_regs, in some architectures it's part of
-UAPI, so it's very unlikely that existing fields are going to be moved
-around, so not using _CORE() should be fine, IMO.
-
-
->
-> > +             int *spec_id_ptr;
+> > +     char *path = NULL, *provider = NULL, *name = NULL;
+> > +     const char *sec_name;
 > > +
-> > +             spec_id_ptr = bpf_map_lookup_elem(&__bpf_usdt_specs_ip_to_id, &ip);
-> > +             return spec_id_ptr ? *spec_id_ptr : -ESRCH;
+> > +     sec_name = bpf_program__section_name(prog);
+> > +     if (strcmp(sec_name, "usdt") == 0) {
+> > +             /* no auto-attach for just SEC("usdt") */
+> > +             *link = NULL;
+> > +             return 0;
 > > +     }
 > > +
-> > +     return bpf_get_attach_cookie(ctx);
+> > +     if (3 != sscanf(sec_name, "usdt/%m[^:]:%m[^:]:%m[^:]", &path, &provider, &name)) {
+> > +             pr_warn("invalid section '%s', expected SEC(\"usdt/<path>:<provider>:<name>\")\n",
+> > +                     sec_name);
 >
-> should we grab the result in a u64 and handle the 0 case here -
-> meaning "not specified" - and return -ESRCH?
+> could have an else clause here for the parse success case I suppose to
+> save having two sets of free()s.
 
-But 0 is a perfectly fine spec ID, so why?
+you mean like
+
+if (3 == sscanf("")) {
+    *link = bpf_program__attach_usdt(...);
+    err = libbpf_get_error(*link);
+} else {
+    err = -EINVAL;
+}
+
+free(path);
+free(provider);
+free(name);
+
+return err;
+
+?
+
+Can do that, sure.
 
 >
+> > +             free(path);
+> > +             free(provider);
+> > +             free(name);
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     *link = bpf_program__attach_usdt(prog, -1 /* any process */, path,
+> > +                                      provider, name, NULL);
+> > +     free(path);
+> > +     free(provider);
+> > +     free(name);
+> > +     return libbpf_get_error(*link);
 > > +}
 > > +
-> > +/* Return number of USDT arguments defined for currently traced USDT. */
-> > +__hidden __weak
-> > +int bpf_usdt_arg_cnt(struct pt_regs *ctx)
+> >  static int determine_tracepoint_id(const char *tp_category,
+> >                                  const char *tp_name)
+> >  {
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index 05dde85e19a6..318eecaa14e7 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -503,6 +503,21 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
+> >                               const char *binary_path, size_t func_offset,
+> >                               const struct bpf_uprobe_opts *opts);
+> >
+> > +struct bpf_usdt_opts {
+> > +     /* size of this struct, for forward/backward compatibility */
+> > +     size_t sz;
+> > +     /* custom user-provided value accessible through usdt_cookie() */
+> > +     __u64 usdt_cookie;
+> > +     size_t :0;
+> > +};
+> > +#define bpf_usdt_opts__last_field usdt_cookie
+> > +
+>
+> need doc comment here such as
+>
+> /**
+>  * @brief **bpf_program__attach_usdt()** is just like
+>  * bpf_program__attach_uprobe_opts() except it covers
+>  * USDT (Userspace Static Defined Tracing) attachment.
+>  *
+>  * @param prog BPF program to attach
+>  * @param pid Process ID to attach the uprobe to, 0 for self (own
+> process),
+>  * -1 for all processes
+>  * @param binary_path Path to binary that contains the USDT probe
+>  * @param usdt_provider USDT Provider name
+>  * @param usdt_name USDT Probe name
+>  * @param opts Options for altering USDT attachment
+>  * @return Reference to the newly created BPF link; or NULL is returned on
+> error,
+>  * error code is stored in errno
+>  */
+>
+
+Will add, thanks!
+
+>
+> > +LIBBPF_API struct bpf_link *
+> > +bpf_program__attach_usdt(const struct bpf_program *prog,
+> > +                      pid_t pid, const char *binary_path,
+> > +                      const char *usdt_provider, const char *usdt_name,
+> > +                      const struct bpf_usdt_opts *opts);
+> > +
+
+[...]
+
+> > +struct usdt_manager {
+> > +     struct bpf_map *specs_map;
+> > +     struct bpf_map *ip_to_id_map;
+> > +
+> > +     bool has_bpf_cookie;
+> > +     bool has_sema_refcnt;
+> > +};
+> > +
+> > +struct usdt_manager *usdt_manager_new(struct bpf_object *obj)
 > > +{
-> > +     struct __bpf_usdt_spec *spec;
-> > +     int spec_id;
+> > +     static const char *ref_ctr_sysfs_path = "/sys/bus/event_source/devices/uprobe/format/ref_ctr_offset";
+>
+> probably deserves a #define, and that would get us under the 100 char
+> limit too..
+
+If you look at a few other places around kprobe and uprobe, I
+consciously don't do that. #define for string constant that is used
+only once just makes reading code harder, as you have to jump around
+more to figure out the exact file path (especially when you are trying
+to follow the steps in the shell). So I'd rather keep it as is.
+
+>
+> > +     struct usdt_manager *man;
+> > +     struct bpf_map *specs_map, *ip_to_id_map;
 > > +
-> > +     spec_id = __bpf_usdt_spec_id(ctx);
-> > +     if (spec_id < 0)
-> > +             return -EINVAL;
+> > +     specs_map = bpf_object__find_map_by_name(obj, "__bpf_usdt_specs");
+> > +     ip_to_id_map = bpf_object__find_map_by_name(obj, "__bpf_usdt_specs_ip_to_id");
+> > +     if (!specs_map || !ip_to_id_map) {
+> > +             pr_warn("usdt: failed to find USDT support BPF maps, did you forget to include bpf/usdt.bpf.h?\n");
 >
-> spec_id can be 0 for the "cookie not set" case (see above).
+> nice, I like the fact the error message also tells you how to fix it!
 >
-> should we pass through the error value from __bpf_usdt_spec_id()? Looking
-> above it's either -ESRCH or 0, but if we catch the 0 case as above we
-> could just pass through the error value.
->
-
-See above, zero is correct spec ID. So if the kernel supports cookies
-and bpf_get_attach_cookie() returns zero, that zero is a real value.
-
+> > +             return NULL;
+> > +     }
 > > +
-> > +     spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
-> > +     if (!spec)
-> > +             return -EINVAL;
-> > +
->
-> should this be -ESRCH? we know from the above we had a valid
-> spec_id.
 
-sure, I can change to -ESRCH, though it's more like a -EBUG :)
+[...]
 
->
-> > +     return spec->arg_cnt;
-> > +}
->
-> also, since in every case (I think) that we call __bpf_usdt_spec_id()
-> we co on to look up the spec in the map, would it be easier to
-> combine both operations and have
->
-> struct __bpf_usdt_spec * __bpf_usdt_spec(struct pt_regs *ctx);
->
-> ?
-
-You are right, I think now we always get a spec itself. My earlier
-versions had an extra map for stuff like USDT name, so having spec ID
-separately made sense. I'll update the code to return spec directly.
-
->
-> > +
-> > +/* Fetch USDT argument *arg* (zero-indexed) and put its value into *res.
-> > + * Returns 0 on success; negative error, otherwise.
-> > + * On error *res is guaranteed to be set to zero.
-> > + */
-> > +__hidden __weak
-> > +int bpf_usdt_arg(struct pt_regs *ctx, int arg, long *res)
+> > +struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct bpf_program *prog,
+> > +                                       pid_t pid, const char *path,
+> > +                                       const char *usdt_provider, const char *usdt_name,
+> > +                                       long usdt_cookie)
 > > +{
-> > +     struct __bpf_usdt_spec *spec;
-> > +     struct __bpf_usdt_arg_spec *arg_spec;
-> > +     unsigned long val;
-> > +     int err, spec_id;
-> > +
-> > +     *res = 0;
-> > +
-> > +     spec_id = __bpf_usdt_spec_id(ctx);
-> > +     if (spec_id < 0)
-> > +             return -ESRCH;
-> > +
-> > +     spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
-> > +     if (!spec)
-> > +             return -ESRCH;
-> > +
-> > +     if (arg >= spec->arg_cnt)
-> > +             return -ENOENT;
-> > +
+> > +     int i, fd, err;
+> > +     LIBBPF_OPTS(bpf_uprobe_opts, opts);
+> > +     struct bpf_link_usdt *link = NULL;
+> > +     struct usdt_target *targets = NULL;
+> > +     size_t target_cnt;
+> > +     Elf *elf;
 >
-> I'm surprised you didn't need to check for negative values or a hard
-> upper bound for the arg index here (to keep the verifier happy for
-> the later array indexing using arg). Any dangers that an older
-> LLVM+clang would generate code that might get tripped up on
-> verification with this?
+> Thought we should probably init elf to NULL, though I see we don't goto
+> err_out except in cases where it's been explicitly set.
 
-Great point. I think it's because in all the current code arg is a
-known constant, so verifier just knows that everything is within
-bounds. I'll harden the code a bit and will add a test that provides
-arg as dynamic value.
+yep. Though some versions of GCC or Clang sometimes report false
+positive in similar cases, so I might as well init it.
 
 >
-> > +     arg_spec = &spec->args[arg];
-> > +     switch (arg_spec->arg_type) {
-> > +     case BPF_USDT_ARG_CONST:
-> > +             val = arg_spec->val_off;
-> > +             break;
+> > +
+> > +     if (bpf_program__fd(prog) < 0) {
+> > +             pr_warn("prog '%s': can't attach BPF program w/o FD (did you load it?)\n",
+>
+> nit: might be no harm "w/o" to expand to "without", and prefix with usdt:
+> as below..
+
+it's the same check as in all other bpf_program__attach_xxx() APIs, so
+I wanted to keep it consistent. But I just realized that I should
+probably move it into bpf_program__attach_usdt() itself.
+
+>
+> > +                     bpf_program__name(prog));
+> > +             return libbpf_err_ptr(-EINVAL);
+> > +     }
+> > +
+> > +     /* TODO: perform path resolution similar to uprobe's */
+> > +     fd = open(path, O_RDONLY);
+> > +     if (fd < 0) {
+> > +             err = -errno;
+> > +             pr_warn("usdt: failed to open ELF binary '%s': %d\n", path, err);
+> > +             return libbpf_err_ptr(err);
+> > +     }
+> > +
+> > +     elf = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+> > +     if (!elf) {
+> > +             err = -EBADF;
+> > +             pr_warn("usdt: failed to parse ELF binary '%s': %s\n", path, elf_errmsg(-1));
+> > +             goto err_out;
+> > +     }
+> > +
+> > +     err = sanity_check_usdt_elf(elf, path);
+> > +     if (err)
+> > +             goto err_out;
+> > +
+> > +     /* normalize PID filter */
+> > +     if (pid < 0)
+> > +             pid = -1;
+> > +     else if (pid == 0)
+> > +             pid = getpid();
+> > +
+> > +     /* discover USDT in given binary, optionally limiting
+> > +      * activations to a given PID, if pid > 0
+> > +      */
+> > +     err = collect_usdt_targets(man, elf, path, pid, usdt_provider, usdt_name,
+> > +                                usdt_cookie, &targets, &target_cnt);
+> > +     if (err <= 0) {
+>
+> we haven't filled out collect_usdt_targets() yet, but might be no harm to
+> have a pr_debug() here "usdt: cannot collect USDT targets for ..." since
+> there are a few cases without warnings in the later patch.
+
+I'd have to special case -ENOENT, which would be messy. The reason
+some returns don't have pr_warn() in collect_usdt_targets() is that I
+deemed them extremely unlikely (usually it's due to corrupted ELF or
+something along those lines). But I'll double check and add pr_warn
+where appropriate.
+
+
+>
+> > +             err = (err == 0) ? -ENOENT : err;
+> > +             goto err_out;
+> > +     }
+> > +
 
 [...]
