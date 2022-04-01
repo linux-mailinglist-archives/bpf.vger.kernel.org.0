@@ -2,52 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9A34EE6C7
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 05:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767C14EE82E
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 08:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244638AbiDADjB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 23:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
+        id S245372AbiDAG2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 02:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244625AbiDADjA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 23:39:00 -0400
-Received: from 189.cn (ptr.189.cn [183.61.185.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1D1D1D66CA;
-        Thu, 31 Mar 2022 20:37:10 -0700 (PDT)
-HMM_SOURCE_IP: 10.64.8.41:56850.577092616
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-123.150.8.42 (unknown [10.64.8.41])
-        by 189.cn (HERMES) with SMTP id 7D5331002AF;
-        Fri,  1 Apr 2022 11:37:08 +0800 (CST)
-Received: from  ([123.150.8.42])
-        by gateway-153622-dep-749df8664c-mvcg4 with ESMTP id a969fd7db226468788809b02151552bc for yhs@fb.com;
-        Fri, 01 Apr 2022 11:37:09 CST
-X-Transaction-ID: a969fd7db226468788809b02151552bc
-X-Real-From: chensong_2000@189.cn
-X-Receive-IP: 123.150.8.42
-X-MEDUSA-Status: 0
-Sender: chensong_2000@189.cn
-Message-ID: <306ab457-9f3d-4d90-bb31-e6fb08b6a5ad@189.cn>
-Date:   Fri, 1 Apr 2022 11:37:07 +0800
+        with ESMTP id S233382AbiDAG2P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 02:28:15 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F4725FD5E;
+        Thu, 31 Mar 2022 23:26:26 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id p4-20020a17090ad30400b001c7ca87c05bso4472621pju.1;
+        Thu, 31 Mar 2022 23:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9fHQZIB7lEOQ68Fiz/ieQBcf4TMZ/QdfUXApZz8NUgg=;
+        b=UaOznirKfKonKligOllW8vnuEJEkeWhR8CChTAZkggFNqGQNi+ZC0uoM49LZao7Rnz
+         doLKhS6BlQ5WQjPaoZyg/nDIfWBMFkTs9Zq45/mxpV5iuuIfWysCTpgRFhF864DBAxuC
+         h6FoLmeKKhqNn3f5OrfKVoQMzWFy8NHdv+A8s94XRDB/nnL3utZAjQ2X6Qn7PemQLJkO
+         mFYA2pEarcqnrlhfuapxMyM3HddPEhDsoe8itQ43axG6QV+HLsGDTrOENeCXwoLJO5Qy
+         1fXNyLo5m1D17QaGhWNFYC/sPQsAAcRWP+K6jBUurtAahyShIF2L85kFtg04R6kOOyp6
+         d4IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9fHQZIB7lEOQ68Fiz/ieQBcf4TMZ/QdfUXApZz8NUgg=;
+        b=hfHlXysmtPgPnrQd+2amPjSHxFa1w1uKfegAggCVCVNHHbiiIFqMDf8MzrVJKxO1Tz
+         G3eo4vHrl+aLyLyBg3JbdaabFHH1YxRovWLngtsuw7k1njdxRpmTiuwMJWoD6BOZXBZu
+         4w9QZD+EPFIUQCskGqWpaFHcwk01NaYffQUqkcku+ixuQ7+UA450PMyPYvuQrnoZLnLM
+         sXL2TXrRaIN4PVpcNyL+IFH7caodInZTUnvEuwL9pLyAk5SxLZZNq2Skj5ZIvnVMv+Rx
+         yzB5h7MXjBH6oGbtdjrmD0mhRpXrtLlPnycNZ4VlA0w2yH3OyaLCYgAsLWNcxEJA8FZZ
+         yPQA==
+X-Gm-Message-State: AOAM530zqzERMAy2ymHB1O6xFzJwaJjh7pCIMQJRGP9qbLv+pzrrIVV4
+        DKXgBEU9ygKWrJ8NcNEOD4E=
+X-Google-Smtp-Source: ABdhPJyj0tuiwEwJ+qROZpwB/NOzj5QftX/nkjRseN6sPLBWpd2GqEKAPDS45dsfrkZq0craCACJxw==
+X-Received: by 2002:a17:90a:c28c:b0:1c9:9eef:6e2b with SMTP id f12-20020a17090ac28c00b001c99eef6e2bmr10043854pjt.188.1648794386131;
+        Thu, 31 Mar 2022 23:26:26 -0700 (PDT)
+Received: from google.com ([2601:647:4800:3540:4583:f18f:adab:79b7])
+        by smtp.gmail.com with ESMTPSA id j13-20020a056a00130d00b004f1025a4361sm1578335pfu.202.2022.03.31.23.26.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Mar 2022 23:26:25 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+Date:   Thu, 31 Mar 2022 23:26:17 -0700
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Radoslaw Burny <rburny@google.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: Re: [PATCH 2/2] locking: Apply contention tracepoints in the slow
+ path
+Message-ID: <YkabCQYJmq9G9ZJ4@google.com>
+References: <20220322185709.141236-1-namhyung@kernel.org>
+ <20220322185709.141236-3-namhyung@kernel.org>
+ <20220328113946.GA8939@worktop.programming.kicks-ass.net>
+ <CAM9d7ciQQEypvv2a2zQLHNc7p3NNxF59kASxHoFMCqiQicKwBA@mail.gmail.com>
+ <20220330110853.GK8939@worktop.programming.kicks-ass.net>
+ <CAM9d7cjQnThKgsUfnqJDcmBFseSTk-56a6f0sefo1x8D7LWSZw@mail.gmail.com>
+ <20220331115916.GU8939@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] sample: bpf: syscall_tp_user: print result of verify_map
-Content-Language: en-US
-To:     Yonghong Song <yhs@fb.com>, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1648777272-21473-1-git-send-email-chensong_2000@189.cn>
- <882349c0-123d-3deb-88e8-d400ec702d1f@fb.com>
-From:   Song Chen <chensong_2000@189.cn>
-In-Reply-To: <882349c0-123d-3deb-88e8-d400ec702d1f@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,NICE_REPLY_A,SPF_HELO_PASS,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220331115916.GU8939@worktop.programming.kicks-ass.net>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,77 +89,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-在 2022/4/1 11:01, Yonghong Song 写道:
+On Thu, Mar 31, 2022 at 01:59:16PM +0200, Peter Zijlstra wrote:
+> I've since pushed out the lot to:
 > 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/core
 > 
-> On 3/31/22 6:41 PM, Song Chen wrote:
->> syscall_tp only prints the map id and messages when something goes wrong,
->> but it doesn't print the value passed from bpf map. I think it's better
->> to show that value to users.
->>
->> What's more, i also added a 2-second sleep before calling verify_map,
->> to make the value more obvious.
->>
->> Signed-off-by: Song Chen <chensong_2000@189.cn>
->> ---
->>   samples/bpf/syscall_tp_user.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/samples/bpf/syscall_tp_user.c 
->> b/samples/bpf/syscall_tp_user.c
->> index a0ebf1833ed3..1faa7f08054e 100644
->> --- a/samples/bpf/syscall_tp_user.c
->> +++ b/samples/bpf/syscall_tp_user.c
->> @@ -36,6 +36,9 @@ static void verify_map(int map_id)
->>           fprintf(stderr, "failed: map #%d returns value 0\n", map_id);
->>           return;
->>       }
->> +
->> +    printf("verify map:%d val: %d\n", map_id, val);
+> It builds, but I've not actually used it. Much appreciated if you could
+> test.
 > 
-> I am not sure how useful it is or anybody really cares.
-> This is just a sample to demonstrate how bpf tracepoint works.
-> The error path has error print out already.
-> 
->> +
->>       val = 0;
->>       if (bpf_map_update_elem(map_id, &key, &val, BPF_ANY) != 0) {
->>           fprintf(stderr, "map_update failed: %s\n", strerror(errno));
->> @@ -98,6 +101,7 @@ static int test(char *filename, int num_progs)
->>       }
->>       close(fd);
->> +    sleep(2);
-> 
-> The commit message mentioned this sleep(2) is
-> to make the value more obvious. I don't know what does this mean.
-> sleep(2) can be added only if it fixed a bug.
 
-The value in bpf map means how many times trace_enter_open_at are 
-triggered with tracepoint,sys_enter_openat. Sleep(2) is to enlarge the 
-result, tell the user how many files are opened in the last 2 seconds.
+I've tested it and it worked well.  Thanks for your work!
 
-It shows like this:
+And we need to add the below too..
 
-sudo ./samples/bpf/syscall_tp
-prog #0: map ids 4 5
-verify map:4 val: 253
-verify map:5 val: 252
+Thanks,
+Namhyung
 
-If we work harder, we can also print those files' name and opened by 
-which process.
+----8<----
 
-It's just an improvement instead of a bug fix, i will drop it if 
-reviewers think it's unnecessary.
-
-Thanks.
-
-BR
-
-chensong
-> 
->>       /* verify the map */
->>       for (i = 0; i < num_progs; i++) {
->>           verify_map(map0_fds[i]);
-> 
+diff --git a/include/trace/events/lock.h b/include/trace/events/lock.h
+index db5bdbb9b9c0..9463a93132c3 100644
+--- a/include/trace/events/lock.h
++++ b/include/trace/events/lock.h
+@@ -114,7 +114,8 @@ TRACE_EVENT(contention_begin,
+ 				{ LCB_F_READ,		"READ" },
+ 				{ LCB_F_WRITE,		"WRITE" },
+ 				{ LCB_F_RT,		"RT" },
+-				{ LCB_F_PERCPU,		"PERCPU" }
++				{ LCB_F_PERCPU,		"PERCPU" },
++				{ LCB_F_MUTEX,		"MUTEX" }
+ 			  ))
+ );
+ 
