@@ -2,44 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AAF4EF06F
+	by mail.lfdr.de (Postfix) with ESMTP id A2CD54EF071
 	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 16:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347551AbiDAOf3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 10:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
+        id S239080AbiDAOfb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 10:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347411AbiDAOcb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 10:32:31 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7257B1EC617;
-        Fri,  1 Apr 2022 07:28:57 -0700 (PDT)
+        with ESMTP id S1348243AbiDAOdv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 10:33:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821041EB83D;
+        Fri,  1 Apr 2022 07:31:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1C48BB8250D;
-        Fri,  1 Apr 2022 14:28:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B04C3410F;
-        Fri,  1 Apr 2022 14:28:53 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EA8061C1D;
+        Fri,  1 Apr 2022 14:31:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB95C3410F;
+        Fri,  1 Apr 2022 14:31:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648823334;
-        bh=VxRjH+yePUztBpyRJiPML7F1J4TddIPIrzTvUM1JGE0=;
+        s=k20201202; t=1648823487;
+        bh=kcrTbfdM5LBcgXC2gmjAIGHsb9PqftTcUxe7Aqph+Qo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d/q/YFw14T6YKzP7qYP/MhYEhYguTJsuDGMIPZtZEhmI4/FloN0JBIrTvdvt/QKQF
-         yhySXqiIwD2u6ioQvuwqucbN5K5XiwOWWWgpRs8yBCTnYByBH2u3bSjOE4mQWl2s5Z
-         R/TyYMDHL65BBI5wCcpoB8sR+yWN7DMd9BqEtha0d1ZrbgSbDBphw+zDliCSj4jmhp
-         K7vS/L1s0uK5UjENmcQVEgT/nPom3LGFyCisGLbr1na98wVvBaChUE7d3UB+ltgyuK
-         9ggBTQJdtMCJtktMyzZBIhCbskYGLPqKha67E6qA2glTDDDFwl+fujP4PLSytdasnn
-         bvGF5OG2+fG/g==
+        b=Sf2sJIPe21r9juNheQ75xb9L5sfnhtiulIs3A+PPSwExoec1c6W2iGV6ijyHUxalW
+         TZamdghhVcmVyg811B8SiZGErAJXo75Ba12NpdSRptdx/3DEH/qz7nh96PqfRUJ703
+         FfwkG8qn8EWxJW1r1SMiEGtRXDG1RxIrN1T+rTTqoyuIoMzwT65ztA4hS82RUe6aj8
+         jfUSRVHUHWa6krxc61ioVw347eNUWt2t+yubUKAfRPc1wtXaHlCCCjbtXs6liN2wDa
+         aodXWsb5BG/lq9x3U8YcEZDDDxXLeBTLMb4jwFhatTu/fIKWNrdSb0SazzLXBnASll
+         f5Z0yfL+lvYsg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 062/149] libbpf: Fix accessing the first syscall argument on s390
-Date:   Fri,  1 Apr 2022 10:24:09 -0400
-Message-Id: <20220401142536.1948161-62-sashal@kernel.org>
+Cc:     Harold Huang <baymaxhuang@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        pabeni@redhat.com, mst@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.17 114/149] tuntap: add sanity checks about msg_controllen in sendmsg
+Date:   Fri,  1 Apr 2022 10:25:01 -0400
+Message-Id: <20220401142536.1948161-114-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220401142536.1948161-1-sashal@kernel.org>
 References: <20220401142536.1948161-1-sashal@kernel.org>
@@ -57,51 +62,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Harold Huang <baymaxhuang@gmail.com>
 
-[ Upstream commit 1f22a6f9f9a0f50218a11a0554709fd34a821fa3 ]
+[ Upstream commit 74a335a07a17d131b9263bfdbdcb5e40673ca9ca ]
 
-On s390, the first syscall argument should be accessed via orig_gpr2
-(see arch/s390/include/asm/syscall.h). Currently gpr[2] is used
-instead, leading to bpf_syscall_macro test failure.
+In patch [1], tun_msg_ctl was added to allow pass batched xdp buffers to
+tun_sendmsg. Although we donot use msg_controllen in this path, we should
+check msg_controllen to make sure the caller pass a valid msg_ctl.
 
-orig_gpr2 cannot be added to user_pt_regs, since its layout is a part
-of the ABI. Therefore provide access to it only through
-PT_REGS_PARM1_CORE_SYSCALL() by using a struct pt_regs flavor.
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe8dd45bb7556246c6b76277b1ba4296c91c2505
 
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20220209021745.2215452-11-iii@linux.ibm.com
+Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
+Suggested-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Link: https://lore.kernel.org/r/20220303022441.383865-1-baymaxhuang@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/bpf_tracing.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/tap.c   | 3 ++-
+ drivers/net/tun.c   | 3 ++-
+ drivers/vhost/net.c | 1 +
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index ad62c17919cf..92bf90e716ea 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -112,6 +112,10 @@
+diff --git a/drivers/net/tap.c b/drivers/net/tap.c
+index 8e3a28ba6b28..ba2ef5437e16 100644
+--- a/drivers/net/tap.c
++++ b/drivers/net/tap.c
+@@ -1198,7 +1198,8 @@ static int tap_sendmsg(struct socket *sock, struct msghdr *m,
+ 	struct xdp_buff *xdp;
+ 	int i;
  
- #elif defined(bpf_target_s390)
+-	if (ctl && (ctl->type == TUN_MSG_PTR)) {
++	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
++	    ctl && ctl->type == TUN_MSG_PTR) {
+ 		for (i = 0; i < ctl->num; i++) {
+ 			xdp = &((struct xdp_buff *)ctl->ptr)[i];
+ 			tap_get_user_xdp(q, xdp);
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index fed85447701a..de999e0fedbc 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -2489,7 +2489,8 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+ 	if (!tun)
+ 		return -EBADFD;
  
-+struct pt_regs___s390 {
-+	unsigned long orig_gpr2;
-+};
-+
- /* s390 provides user_pt_regs instead of struct pt_regs to userspace */
- #define __PT_REGS_CAST(x) ((const user_pt_regs *)(x))
- #define __PT_PARM1_REG gprs[2]
-@@ -124,6 +128,8 @@
- #define __PT_RC_REG gprs[2]
- #define __PT_SP_REG gprs[15]
- #define __PT_IP_REG psw.addr
-+#define PT_REGS_PARM1_SYSCALL(x) ({ _Pragma("GCC error \"use PT_REGS_PARM1_CORE_SYSCALL() instead\""); 0l; })
-+#define PT_REGS_PARM1_CORE_SYSCALL(x) BPF_CORE_READ((const struct pt_regs___s390 *)(x), orig_gpr2)
+-	if (ctl && (ctl->type == TUN_MSG_PTR)) {
++	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
++	    ctl && ctl->type == TUN_MSG_PTR) {
+ 		struct tun_page tpage;
+ 		int n = ctl->num;
+ 		int flush = 0;
+diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+index 28ef323882fb..792ab5f23647 100644
+--- a/drivers/vhost/net.c
++++ b/drivers/vhost/net.c
+@@ -473,6 +473,7 @@ static void vhost_tx_batch(struct vhost_net *net,
+ 		goto signal_used;
  
- #elif defined(bpf_target_arm)
- 
+ 	msghdr->msg_control = &ctl;
++	msghdr->msg_controllen = sizeof(ctl);
+ 	err = sock->ops->sendmsg(sock, msghdr, 0);
+ 	if (unlikely(err < 0)) {
+ 		vq_err(&nvq->vq, "Fail to batch sending packets\n");
 -- 
 2.34.1
 
