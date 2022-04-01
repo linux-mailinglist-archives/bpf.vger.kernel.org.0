@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CD54EF071
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 16:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F5F4EF067
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 16:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239080AbiDAOfb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 10:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        id S1347413AbiDAOf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 10:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348243AbiDAOdv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 10:33:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821041EB83D;
-        Fri,  1 Apr 2022 07:31:28 -0700 (PDT)
+        with ESMTP id S1348300AbiDAOdy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 10:33:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BD1BC7;
+        Fri,  1 Apr 2022 07:31:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EA8061C1D;
-        Fri,  1 Apr 2022 14:31:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB95C3410F;
-        Fri,  1 Apr 2022 14:31:25 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C758CB82507;
+        Fri,  1 Apr 2022 14:31:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F9E6C340F2;
+        Fri,  1 Apr 2022 14:31:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648823487;
-        bh=kcrTbfdM5LBcgXC2gmjAIGHsb9PqftTcUxe7Aqph+Qo=;
+        s=k20201202; t=1648823512;
+        bh=779IwsmopQVzwMT4JAhiVrfy59820UbMAuQJyjmPsyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sf2sJIPe21r9juNheQ75xb9L5sfnhtiulIs3A+PPSwExoec1c6W2iGV6ijyHUxalW
-         TZamdghhVcmVyg811B8SiZGErAJXo75Ba12NpdSRptdx/3DEH/qz7nh96PqfRUJ703
-         FfwkG8qn8EWxJW1r1SMiEGtRXDG1RxIrN1T+rTTqoyuIoMzwT65ztA4hS82RUe6aj8
-         jfUSRVHUHWa6krxc61ioVw347eNUWt2t+yubUKAfRPc1wtXaHlCCCjbtXs6liN2wDa
-         aodXWsb5BG/lq9x3U8YcEZDDDxXLeBTLMb4jwFhatTu/fIKWNrdSb0SazzLXBnASll
-         f5Z0yfL+lvYsg==
+        b=aw2L5bwvrQpVeZa0+CLGgxdImC5HLV2ppl1CLnfAYHuAUiHdlay/uY/109sCGmsiF
+         krSIniGRAdk190hdDqvgClhVHbhAxv91B9R1Ge7zsfyXhcz0eN6HvT1S8gH+8sFWsh
+         j+VrDVjUiYe1cVMWy7F2JXxTFu/JK6dskfFxMquVhSNhdV2B70jEYZv195g9ckxJnF
+         xAHywSmfu+FNQAtmSTqJZ3fSjyyyAm1DrHLnESg/BHZj4vLO0yJyX/qWdxFjoAuvJI
+         FhgICMl/09H+23SVGbo5CxlRu6VrrPemKjupNRLxDtNXI/PcBEm3gZd/z4Qs8AZPRj
+         +sqfmv8424y2Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Harold Huang <baymaxhuang@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        pabeni@redhat.com, mst@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 114/149] tuntap: add sanity checks about msg_controllen in sendmsg
-Date:   Fri,  1 Apr 2022 10:25:01 -0400
-Message-Id: <20220401142536.1948161-114-sashal@kernel.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        kernel test robot <lkp@intel.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, akpm@linux-foundation.org,
+        catalin.marinas@arm.com, anshuman.khandual@arm.com,
+        npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.17 123/149] powerpc/64e: Tie PPC_BOOK3E_64 to PPC_FSL_BOOK3E
+Date:   Fri,  1 Apr 2022 10:25:10 -0400
+Message-Id: <20220401142536.1948161-123-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220401142536.1948161-1-sashal@kernel.org>
 References: <20220401142536.1948161-1-sashal@kernel.org>
@@ -62,69 +62,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Harold Huang <baymaxhuang@gmail.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 74a335a07a17d131b9263bfdbdcb5e40673ca9ca ]
+[ Upstream commit 1a76e520ee1831a81dabf8a9a58c6453f700026e ]
 
-In patch [1], tun_msg_ctl was added to allow pass batched xdp buffers to
-tun_sendmsg. Although we donot use msg_controllen in this path, we should
-check msg_controllen to make sure the caller pass a valid msg_ctl.
+Since the IBM A2 CPU support was removed, see commit
+fb5a515704d7 ("powerpc: Remove platforms/wsp and associated pieces"),
+the only 64-bit Book3E CPUs we support are Freescale (NXP) ones.
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe8dd45bb7556246c6b76277b1ba4296c91c2505
+However our Kconfig still allows configurating a kernel that has 64-bit
+Book3E support, but no Freescale CPU support enabled. Such a kernel
+would never boot, it doesn't know about any CPUs.
 
-Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
-Suggested-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/20220303022441.383865-1-baymaxhuang@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+It also causes build errors, as reported by lkp, because
+PPC_BARRIER_NOSPEC is not enabled in such a configuration:
+
+  powerpc64-linux-ld: arch/powerpc/net/bpf_jit_comp64.o:(.toc+0x0):
+  undefined reference to `powerpc_security_features'
+
+To fix this, force PPC_FSL_BOOK3E to be selected whenever we are
+building a 64-bit Book3E kernel.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20220304061222.2478720-1-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/tap.c   | 3 ++-
- drivers/net/tun.c   | 3 ++-
- drivers/vhost/net.c | 1 +
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ arch/powerpc/platforms/Kconfig.cputype | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/tap.c b/drivers/net/tap.c
-index 8e3a28ba6b28..ba2ef5437e16 100644
---- a/drivers/net/tap.c
-+++ b/drivers/net/tap.c
-@@ -1198,7 +1198,8 @@ static int tap_sendmsg(struct socket *sock, struct msghdr *m,
- 	struct xdp_buff *xdp;
- 	int i;
+diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
+index 87bc1929ee5a..e2e1fec91c6e 100644
+--- a/arch/powerpc/platforms/Kconfig.cputype
++++ b/arch/powerpc/platforms/Kconfig.cputype
+@@ -107,6 +107,7 @@ config PPC_BOOK3S_64
  
--	if (ctl && (ctl->type == TUN_MSG_PTR)) {
-+	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
-+	    ctl && ctl->type == TUN_MSG_PTR) {
- 		for (i = 0; i < ctl->num; i++) {
- 			xdp = &((struct xdp_buff *)ctl->ptr)[i];
- 			tap_get_user_xdp(q, xdp);
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index fed85447701a..de999e0fedbc 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -2489,7 +2489,8 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- 	if (!tun)
- 		return -EBADFD;
- 
--	if (ctl && (ctl->type == TUN_MSG_PTR)) {
-+	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
-+	    ctl && ctl->type == TUN_MSG_PTR) {
- 		struct tun_page tpage;
- 		int n = ctl->num;
- 		int flush = 0;
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index 28ef323882fb..792ab5f23647 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -473,6 +473,7 @@ static void vhost_tx_batch(struct vhost_net *net,
- 		goto signal_used;
- 
- 	msghdr->msg_control = &ctl;
-+	msghdr->msg_controllen = sizeof(ctl);
- 	err = sock->ops->sendmsg(sock, msghdr, 0);
- 	if (unlikely(err < 0)) {
- 		vq_err(&nvq->vq, "Fail to batch sending packets\n");
+ config PPC_BOOK3E_64
+ 	bool "Embedded processors"
++	select PPC_FSL_BOOK3E
+ 	select PPC_FPU # Make it a choice ?
+ 	select PPC_SMP_MUXED_IPI
+ 	select PPC_DOORBELL
+@@ -295,7 +296,7 @@ config FSL_BOOKE
+ config PPC_FSL_BOOK3E
+ 	bool
+ 	select ARCH_SUPPORTS_HUGETLBFS if PHYS_64BIT || PPC64
+-	select FSL_EMB_PERFMON
++	imply FSL_EMB_PERFMON
+ 	select PPC_SMP_MUXED_IPI
+ 	select PPC_DOORBELL
+ 	select PPC_KUEP
 -- 
 2.34.1
 
