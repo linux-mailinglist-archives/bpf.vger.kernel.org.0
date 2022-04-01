@@ -2,86 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 408F94EE5C6
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 03:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC354EE5CC
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 03:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243846AbiDABmB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 21:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58548 "EHLO
+        id S234383AbiDABud (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 21:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbiDABmB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 21:42:01 -0400
-Received: from 189.cn (ptr.189.cn [183.61.185.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C0DC8256679;
-        Thu, 31 Mar 2022 18:40:12 -0700 (PDT)
-HMM_SOURCE_IP: 10.64.8.31:54702.941805125
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-123.150.8.43 (unknown [10.64.8.31])
-        by 189.cn (HERMES) with SMTP id 640EC10023D;
-        Fri,  1 Apr 2022 09:34:34 +0800 (CST)
-Received: from  ([123.150.8.43])
-        by gateway-153622-dep-749df8664c-cv9r2 with ESMTP id a0374471ff514ff584f9d185a0405b94 for ast@kernel.org;
-        Fri, 01 Apr 2022 09:34:38 CST
-X-Transaction-ID: a0374471ff514ff584f9d185a0405b94
-X-Real-From: chensong_2000@189.cn
-X-Receive-IP: 123.150.8.43
-X-MEDUSA-Status: 0
-Sender: chensong_2000@189.cn
-From:   Song Chen <chensong_2000@189.cn>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Song Chen <chensong_2000@189.cn>
-Subject: [PATCH] sample: bpf: syscall_tp_user: print result of verify_map
-Date:   Fri,  1 Apr 2022 09:41:12 +0800
-Message-Id: <1648777272-21473-1-git-send-email-chensong_2000@189.cn>
-X-Mailer: git-send-email 2.7.4
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S232466AbiDABud (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 21:50:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AE9674E8;
+        Thu, 31 Mar 2022 18:48:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 788D86191F;
+        Fri,  1 Apr 2022 01:48:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35167C340ED;
+        Fri,  1 Apr 2022 01:48:38 +0000 (UTC)
+Date:   Thu, 31 Mar 2022 21:48:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: ftrace_direct (used by bpf trampoline) conflicts with live
+ patch
+Message-ID: <20220331214836.663bc7cf@rorschach.local.home>
+In-Reply-To: <0962AC9B-2FBD-4578-8B2F-A376A6B3B83F@fb.com>
+References: <0962AC9B-2FBD-4578-8B2F-A376A6B3B83F@fb.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syscall_tp only prints the map id and messages when something goes wrong,
-but it doesn't print the value passed from bpf map. I think it's better
-to show that value to users.
+On Fri, 1 Apr 2022 01:11:01 +0000
+Song Liu <songliubraving@fb.com> wrote:
 
-What's more, i also added a 2-second sleep before calling verify_map,
-to make the value more obvious.
+> Hi Steven, 
+> 
+> We hit an issue with bpf trampoline and kernel live patch on the 
+> same function. 
+> 
+> Basically, we have tracing and live patch on the same function. 
+> If we use kprobe (over ftrace) for tracing, it works fine with 
+> live patch. However, fentry on the same function does not work 
+> with live patch (the one comes later fails to attach).
+> 
+> After digging into this, I found this is because bpf trampoline
+> uses register_ftrace_direct, which enables IPMODIFY by default. 
+> OTOH, it seems that BPF doesn't really need IPMODIFY. As BPF 
+> trampoline does a "goto do_fexit" in jit for BPF_TRAMP_MODIFY_RETURN.
+> 
+> IIUC, we can let bpf trampoline and live patch work together with
+> an ipmodify-less version of register_ftrace_direct, like attached 
+> below. 
+> 
+> Does this make sense to you? Did I miss something?
 
-Signed-off-by: Song Chen <chensong_2000@189.cn>
----
- samples/bpf/syscall_tp_user.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I thought the BPF trampoline does:
 
-diff --git a/samples/bpf/syscall_tp_user.c b/samples/bpf/syscall_tp_user.c
-index a0ebf1833ed3..1faa7f08054e 100644
---- a/samples/bpf/syscall_tp_user.c
-+++ b/samples/bpf/syscall_tp_user.c
-@@ -36,6 +36,9 @@ static void verify_map(int map_id)
- 		fprintf(stderr, "failed: map #%d returns value 0\n", map_id);
- 		return;
- 	}
-+
-+	printf("verify map:%d val: %d\n", map_id, val);
-+
- 	val = 0;
- 	if (bpf_map_update_elem(map_id, &key, &val, BPF_ANY) != 0) {
- 		fprintf(stderr, "map_update failed: %s\n", strerror(errno));
-@@ -98,6 +101,7 @@ static int test(char *filename, int num_progs)
- 	}
- 	close(fd);
- 
-+	sleep(2);
- 	/* verify the map */
- 	for (i = 0; i < num_progs; i++) {
- 		verify_map(map0_fds[i]);
--- 
-2.25.1
+	call bpf_trace_before_function
+	call original_function + X86_PATCH_SIZE
+	call bpf_trace_after_function
 
+Thus, the bpf direct trampoline calls the unpatched version of the
+function call making the live patch useless. Or is this not what it
+does?
+
+-- Steve
