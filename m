@@ -2,52 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C524EF40B
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 17:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93C24EF2DE
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 17:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349740AbiDAO5u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 10:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
+        id S235768AbiDAPDs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 11:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352585AbiDAOu7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 10:50:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5022B3D79;
-        Fri,  1 Apr 2022 07:42:04 -0700 (PDT)
+        with ESMTP id S1346908AbiDAOxd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 10:53:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1FE2B51AC;
+        Fri,  1 Apr 2022 07:42:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C661BB82502;
-        Fri,  1 Apr 2022 14:41:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D55D9C2BBE4;
-        Fri,  1 Apr 2022 14:41:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F140560A53;
+        Fri,  1 Apr 2022 14:42:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00E61C3410F;
+        Fri,  1 Apr 2022 14:42:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648824077;
-        bh=36BEvjQhgTtwogplVLYvptZj3ZgbM6dbvLzk2LibxkE=;
+        s=k20201202; t=1648824161;
+        bh=OZy9dv5isNlN3HZp52aRawqCq6r3c3JsOGv1dvnIUdk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=txTMUW/9U7r6EPVV7AAeRyo8dVdTJA/1gWiP003jvsRXQsIkIUboIyd7s7mxp9Wr8
-         B9bLRa7rSK+3XcDc35jgWYLj3x2D8ypaZpQ9BGU00JixJs6E1VuKuNcXYIFnJ26nUU
-         ibnymzDHKZTT4hG38c4xCHHcToRwt99RaLsMlJU+Nxu7uE9tU0MYjKFqQboK0SJfRW
-         G4EnjF2fzqUvQmqTAqB9O2+H215W/tBcJQ8rA9EHqHoMRNeK/ecs4dd6z3XLokk+RJ
-         UoQOQk3SpRnp8Qb+Os7Wm21t9pI5VnF8RGSr4QVlXm7Mpa/RQpvKlOMoGInxqrbvnP
-         IHsdF8Bao7tqA==
+        b=e+Zt4sQ6Q7GB0sP6hBWwGcmfXPfhx+cIEF+gdb4TPfjM8J0OjF+knqjLjYQsiNyVy
+         n+zlRnxLwrXASusOJBUVL+69dhsrynkVHlfLVk6T+z4s/D1Xb+cB3fxtxT+UfyqqOd
+         MQ07tcG5Kfzp7OoOlHQqPcvePKbR9v49IXFxUvk2NIEEGkGrlxaXg+qIVY2wiDiROI
+         mLVuGtDebwC8d7x+NJHrfsFzjrhvCFikkGtgNT/TpEKYasztTnElOtcU7BvETcSqP4
+         0G/jgHQ38nd1IbWKLr+ta01hI3AYUFnj01N9eDUSDBjfCG05a2sllGVtdlnzns+XLn
+         2iGFl5iwdWIKw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        kernel test robot <lkp@intel.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, anshuman.khandual@arm.com,
-        npiggin@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 76/98] powerpc/64e: Tie PPC_BOOK3E_64 to PPC_FSL_BOOK3E
-Date:   Fri,  1 Apr 2022 10:37:20 -0400
-Message-Id: <20220401143742.1952163-76-sashal@kernel.org>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Menglong Dong <imagedong@tencent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 11/65] bpf: Make dst_port field in struct bpf_sock 16-bit wide
+Date:   Fri,  1 Apr 2022 10:41:12 -0400
+Message-Id: <20220401144206.1953700-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220401143742.1952163-1-sashal@kernel.org>
-References: <20220401143742.1952163-1-sashal@kernel.org>
+In-Reply-To: <20220401144206.1953700-1-sashal@kernel.org>
+References: <20220401144206.1953700-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -62,58 +59,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Jakub Sitnicki <jakub@cloudflare.com>
 
-[ Upstream commit 1a76e520ee1831a81dabf8a9a58c6453f700026e ]
+[ Upstream commit 4421a582718ab81608d8486734c18083b822390d ]
 
-Since the IBM A2 CPU support was removed, see commit
-fb5a515704d7 ("powerpc: Remove platforms/wsp and associated pieces"),
-the only 64-bit Book3E CPUs we support are Freescale (NXP) ones.
+Menglong Dong reports that the documentation for the dst_port field in
+struct bpf_sock is inaccurate and confusing. From the BPF program PoV, the
+field is a zero-padded 16-bit integer in network byte order. The value
+appears to the BPF user as if laid out in memory as so:
 
-However our Kconfig still allows configurating a kernel that has 64-bit
-Book3E support, but no Freescale CPU support enabled. Such a kernel
-would never boot, it doesn't know about any CPUs.
+  offsetof(struct bpf_sock, dst_port) + 0  <port MSB>
+                                      + 8  <port LSB>
+                                      +16  0x00
+                                      +24  0x00
 
-It also causes build errors, as reported by lkp, because
-PPC_BARRIER_NOSPEC is not enabled in such a configuration:
+32-, 16-, and 8-bit wide loads from the field are all allowed, but only if
+the offset into the field is 0.
 
-  powerpc64-linux-ld: arch/powerpc/net/bpf_jit_comp64.o:(.toc+0x0):
-  undefined reference to `powerpc_security_features'
+32-bit wide loads from dst_port are especially confusing. The loaded value,
+after converting to host byte order with bpf_ntohl(dst_port), contains the
+port number in the upper 16-bits.
 
-To fix this, force PPC_FSL_BOOK3E to be selected whenever we are
-building a 64-bit Book3E kernel.
+Remove the confusion by splitting the field into two 16-bit fields. For
+backward compatibility, allow 32-bit wide loads from offsetof(struct
+bpf_sock, dst_port).
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20220304061222.2478720-1-mpe@ellerman.id.au
+While at it, allow loads 8-bit loads at offset [0] and [1] from dst_port.
+
+Reported-by: Menglong Dong <imagedong@tencent.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/r/20220130115518.213259-2-jakub@cloudflare.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/Kconfig.cputype | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/uapi/linux/bpf.h |  3 ++-
+ net/core/filter.c        | 10 +++++++++-
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
-index a208997ade88..87a95cbff2f3 100644
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -111,6 +111,7 @@ config PPC_BOOK3S_64
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 762bf87c26a3..e25446519bcf 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4180,7 +4180,8 @@ struct bpf_sock {
+ 	__u32 src_ip4;
+ 	__u32 src_ip6[4];
+ 	__u32 src_port;		/* host byte order */
+-	__u32 dst_port;		/* network byte order */
++	__be16 dst_port;	/* network byte order */
++	__u16 :16;		/* zero padding */
+ 	__u32 dst_ip4;
+ 	__u32 dst_ip6[4];
+ 	__u32 state;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 659a32802471..fe5e0ec5cd3e 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -7709,6 +7709,7 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 			      struct bpf_insn_access_aux *info)
+ {
+ 	const int size_default = sizeof(__u32);
++	int field_size;
  
- config PPC_BOOK3E_64
- 	bool "Embedded processors"
-+	select PPC_FSL_BOOK3E
- 	select PPC_FPU # Make it a choice ?
- 	select PPC_SMP_MUXED_IPI
- 	select PPC_DOORBELL
-@@ -287,7 +288,7 @@ config FSL_BOOKE
- config PPC_FSL_BOOK3E
- 	bool
- 	select ARCH_SUPPORTS_HUGETLBFS if PHYS_64BIT || PPC64
--	select FSL_EMB_PERFMON
-+	imply FSL_EMB_PERFMON
- 	select PPC_SMP_MUXED_IPI
- 	select PPC_DOORBELL
- 	default y if FSL_BOOKE
+ 	if (off < 0 || off >= sizeof(struct bpf_sock))
+ 		return false;
+@@ -7720,7 +7721,6 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 	case offsetof(struct bpf_sock, family):
+ 	case offsetof(struct bpf_sock, type):
+ 	case offsetof(struct bpf_sock, protocol):
+-	case offsetof(struct bpf_sock, dst_port):
+ 	case offsetof(struct bpf_sock, src_port):
+ 	case offsetof(struct bpf_sock, rx_queue_mapping):
+ 	case bpf_ctx_range(struct bpf_sock, src_ip4):
+@@ -7729,6 +7729,14 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 	case bpf_ctx_range_till(struct bpf_sock, dst_ip6[0], dst_ip6[3]):
+ 		bpf_ctx_record_field_size(info, size_default);
+ 		return bpf_ctx_narrow_access_ok(off, size, size_default);
++	case bpf_ctx_range(struct bpf_sock, dst_port):
++		field_size = size == size_default ?
++			size_default : sizeof_field(struct bpf_sock, dst_port);
++		bpf_ctx_record_field_size(info, field_size);
++		return bpf_ctx_narrow_access_ok(off, size, field_size);
++	case offsetofend(struct bpf_sock, dst_port) ...
++	     offsetof(struct bpf_sock, dst_ip4) - 1:
++		return false;
+ 	}
+ 
+ 	return size == size_default;
 -- 
 2.34.1
 
