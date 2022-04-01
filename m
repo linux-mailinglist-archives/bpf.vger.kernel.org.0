@@ -2,323 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E674EEA8C
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 11:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064904EEBE5
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 13:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344680AbiDAJjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 05:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
+        id S1345280AbiDALCE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 07:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344654AbiDAJjM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 05:39:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1A1326B3A4
-        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 02:37:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1648805840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0M8G++tCAQg6E5BcGRGJH27i6pTcxL9PU4K81djE3PY=;
-        b=RWlgAC5DDbvO8XcoUraZDurzFrNMUCswGFji3Tdivpxm851Gqkg32o5QrHaoYboDUZ8NN3
-        Cf9SHXKAd55TT9tffa6cHVljv22yB+W+h3o8v9n1Z5XPvT8RXY/tHZYcuw71ZZyZ+jXOor
-        5wySFY+Yr4vSQHZtMsH6YerQiiBz4iI=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-616-Pzt-IppJOW63XVBfTPhmFA-1; Fri, 01 Apr 2022 05:37:19 -0400
-X-MC-Unique: Pzt-IppJOW63XVBfTPhmFA-1
-Received: by mail-pf1-f200.google.com with SMTP id j17-20020a62b611000000b004fa6338bd77so1370247pff.10
-        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 02:37:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0M8G++tCAQg6E5BcGRGJH27i6pTcxL9PU4K81djE3PY=;
-        b=fsZrzUiMuMNDXl7sucpPju5XuTi6bmWlcvMf2A6Hnl2pDObWo39hz/thqa8AIdpW+y
-         CMK5aEyZMzYD4t0Zz77Nm0zVaXhEWngE6RLvGPO22jTGDnvlhReizJhOr+484O54khP2
-         96vR26QYmcMYzHzwN2xH0K2ovZwKFB3j110EPDWNpbk6D+xrO8Hvvvmc9n1q/aRX7jez
-         hFJhTGDjjdiVIy7KiTXkxzpwvO5bkdv0eJxzkvHt2YYib9TaE4Kh78vwr26H6Pufc9fz
-         WbWMgejv+x/ayacnISwZrTwql999Wrjvt7+X1a+6Zb+ARdcsZqgHkysRlTSS1fUPC1jT
-         VhoA==
-X-Gm-Message-State: AOAM533H4WN6ZEf07L0vA30my9Q00Eb8AyBdlgjxZTCzTy7ymeFdvPqm
-        1xzo8URHCzSjKLOCwMYawfq1MoLCbxBq2Mjwvt1ArlpCxxyk/Dtur2DAohnArFaI4lb56V9MmCB
-        u0fZ4ZwEg8N3n7GAqta/S0VjBpehD
-X-Received: by 2002:a63:416:0:b0:386:66e:33d9 with SMTP id 22-20020a630416000000b00386066e33d9mr14527114pge.146.1648805838547;
-        Fri, 01 Apr 2022 02:37:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNl+VbItEjD1pMRpgDlFu7TBQ5+iIqlAzQoVMfN+lwbwix5VCsshPmNK4HcxorDlicGYEtlxZYENovQ3UeUKk=
-X-Received: by 2002:a63:416:0:b0:386:66e:33d9 with SMTP id 22-20020a630416000000b00386066e33d9mr14527085pge.146.1648805838169;
- Fri, 01 Apr 2022 02:37:18 -0700 (PDT)
+        with ESMTP id S1345275AbiDALCD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 07:02:03 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0914103DAD;
+        Fri,  1 Apr 2022 04:00:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 60256B82480;
+        Fri,  1 Apr 2022 11:00:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 168B7C34113;
+        Fri,  1 Apr 2022 11:00:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1648810812;
+        bh=NXcJ74xjotiGT+sguDvAml77hcKVu7uhqfFa6KCk7D4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Vcycb6crTjVt6xUcVk1p4k2iLTsJgnG++m8gGY238PNwZeqctQD0dcG/PSOYTtAHt
+         rp4cUj44JAqKB49ynxMkQS9MOgp7wWJRauRCP3LFkyi6djgL07Wby3sb0xECmP1/JZ
+         A/RhJTUcw3F+iSFhfF0CaFLhAAq50Zp8IUi3aWC7LU+sa1V1IcnDxJzOF2T5V5hClR
+         PbjR41vcerhy8ika0ZsSKsOyhGyTclsTR9ntUllDpLyax5jlTQIzUUCEzlemNO7+pZ
+         iHspWrRJzMOMiWbsnL7vTTddLTYMKUCh14FE0kGkzDF5jv1ZpcxeTix/ne3VPREbjH
+         7lVM0v0X3HnOw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E600AF0384A;
+        Fri,  1 Apr 2022 11:00:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220318161528.1531164-1-benjamin.tissoires@redhat.com> <0a30942b-e6c9-72fb-d012-4b8a6a16ae42@linux.intel.com>
-In-Reply-To: <0a30942b-e6c9-72fb-d012-4b8a6a16ae42@linux.intel.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Fri, 1 Apr 2022 11:37:06 +0200
-Message-ID: <CAO-hwJKTxPGc3BO0g2ui5MiN6J9aWybuyRnhyZPWBntnF5ng8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 00/17] Introduce eBPF support for HID devices
-To:     Tero Kristo <tero.kristo@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] net: sfc: add missing xdp queue reinitialization
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164881081193.13357.15286067348950686490.git-patchwork-notify@kernel.org>
+Date:   Fri, 01 Apr 2022 11:00:11 +0000
+References: <20220330163703.25086-1-ap420073@gmail.com>
+In-Reply-To: <20220330163703.25086-1-ap420073@gmail.com>
+To:     Taehee Yoo <ap420073@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        cmclachlan@solarflare.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Tero,
+Hello:
 
-On Tue, Mar 29, 2022 at 3:04 PM Tero Kristo <tero.kristo@linux.intel.com> wrote:
->
-> Hi Benjamin,
->
-> I tested this iteration of the set, and I faced couple of problems with it.
->
-> 1) There were some conflicts as I could not figure out the correct
-> kernel commit on which to apply the series on. I applied this on top of
-> last weeks bpf-next (see below) with some local merge fixes.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Right, there was a new conflict in bpf-next, but you managed it :)
+On Wed, 30 Mar 2022 16:37:03 +0000 you wrote:
+> After rx/tx ring buffer size is changed, kernel panic occurs when
+> it acts XDP_TX or XDP_REDIRECT.
+> 
+> When tx/rx ring buffer size is changed(ethtool -G), sfc driver
+> reallocates and reinitializes rx and tx queues and their buffer
+> (tx_queue->buffer).
+> But it misses reinitializing xdp queues(efx->xdp_tx_queues).
+> So, while it is acting XDP_TX or XDP_REDIRECT, it uses the uninitialized
+> tx_queue->buffer.
+> 
+> [...]
 
->
-> commit 2af7e566a8616c278e1d7287ce86cd3900bed943 (bpf-next/master,
-> bpf-next/for-next)
-> Author: Saeed Mahameed <saeedm@nvidia.com>
-> Date:   Tue Mar 22 10:22:24 2022 -0700
->
->      net/mlx5e: Fix build warning, detected write beyond size of field
->
-> 2) hid_is_valid_access() causes some trouble and it rejects pretty much
-> every BPF program which tries to use ctx->retval. This appears to be
-> because prog->expected_attach_type is not populated, I had to apply
-> below local tweak to overcome this problem:
->
-> diff --git a/kernel/bpf/hid.c b/kernel/bpf/hid.c
-> index 30a62e8e0f0a..bf64411e6e9b 100644
-> --- a/kernel/bpf/hid.c
-> +++ b/kernel/bpf/hid.c
-> @@ -180,8 +180,7 @@ static bool hid_is_valid_access(int off, int size,
->          case offsetof(struct hid_bpf_ctx, retval):
->                  if (size != size_default)
->                          return false;
-> -               return (prog->expected_attach_type == BPF_HID_USER_EVENT ||
-> -                       prog->expected_attach_type == BPF_HID_DRIVER_EVENT);
-> +               return true;
->          default:
->                  if (size != size_default)
->                          return false;
->
-> Proper fix would probably be to actually populate the
-> expected_attach_type, but I could not figure out quickly where this
-> should be done, or whether it is actually done on some other base commit.
+Here is the summary with links:
+  - [net,v2] net: sfc: add missing xdp queue reinitialization
+    https://git.kernel.org/netdev/net/c/059a47f1da93
 
-Hmm, this is not what I would have expected. Anyway, "return true"
-would be a valid solution too, but...
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->
-> With those, for the whole series:
->
-> Tested-by: Tero Kristo <tero.kristo@linux.intel.com>
-
-Thanks a lot. Unfortunately, if you saw the discussion with Alexei in
-patch 6/17, you'll see that there is a push toward a slightly
-different implementation.
-
-I had a meeting with Alexei, and a few other BPF folks yesterday, and
-they convinced me that this series is implementing a BPF feature the
-"old way", and that we should aim at having HID using standard BPF
-facilities instead of having HID messing up with bpf-core.
-
-This will be beneficial in the long term as we won't depend on BPF to
-be able to add new UAPI, being BPF calls or functions.
-
-I'll reply in more detail on 6/17.
-
-Cheers,
-Benjamin
-
->
-> On 18/03/2022 18:15, Benjamin Tissoires wrote:
-> > Hi,
-> >
-> > This is a followup of my v1 at [0] and v2 at [1].
-> >
-> > The short summary of the previous cover letter and discussions is that
-> > HID could benefit from BPF for the following use cases:
-> >
-> > - simple fixup of report descriptor:
-> >    benefits are faster development time and testing, with the produced
-> >    bpf program being shipped in the kernel directly (the shipping part
-> >    is *not* addressed here).
-> >
-> > - Universal Stylus Interface:
-> >    allows a user-space program to define its own kernel interface
-> >
-> > - Surface Dial:
-> >    somehow similar to the previous one except that userspace can decide
-> >    to change the shape of the exported device
-> >
-> > - firewall:
-> >    still partly missing there, there is not yet interception of hidraw
-> >    calls, but it's coming in a followup series, I promise
-> >
-> > - tracing:
-> >    well, tracing.
-> >
-> >
-> > I think I addressed the comments from the previous version, but there are
-> > a few things I'd like to note here:
-> >
-> > - I did not take the various rev-by and tested-by (thanks a lot for those)
-> >    because the uapi changed significantly in v3, so I am not very confident
-> >    in taking those rev-by blindly
-> >
-> > - I mentioned in my discussion with Song that I'll put a summary of the uapi
-> >    in the cover letter, but I ended up adding a (long) file in the Documentation
-> >    directory. So please maybe start by reading 17/17 to have an overview of
-> >    what I want to achieve
-> >
-> > - I added in the libbpf and bpf the new type BPF_HID_DRIVER_EVENT, even though
-> >    I don't have a user of it right now in the kernel. I wanted to have them in
-> >    the docs, but we might not want to have them ready here.
-> >    In terms of code, it just means that we can attach such programs types
-> >    but that they will never get triggered.
-> >
-> > Anyway, I have been mulling on this for the past 2 weeks, and I think that
-> > maybe sharing this now is better than me just starring at the code over and
-> > over.
-> >
-> >
-> > Short summary of changes:
-> >
-> > v3:
-> > ===
-> >
-> > - squashed back together most of the libbpf and bpf changes into bigger
-> >    commits that give a better overview of the whole interactions
-> >
-> > - reworked the user API to not expose .data as a directly accessible field
-> >    from the context, but instead forces everyone to use hid_bpf_get_data (or
-> >    get/set_bits)
-> >
-> > - added BPF_HID_DRIVER_EVENT (see note above)
-> >
-> > - addressed the various nitpicks from v2
-> >
-> > - added a big Documentation file (and so adding now the doc maintainers to the
-> >    long list of recipients)
-> >
-> > v2:
-> > ===
-> >
-> > - split the series by subsystem (bpf, HID, libbpf, selftests and
-> >    samples)
-> >
-> > - Added an extra patch at the beginning to not require CAP_NET_ADMIN for
-> >    BPF_PROG_TYPE_LIRC_MODE2 (please shout if this is wrong)
-> >
-> > - made the bpf context attached to HID program of dynamic size:
-> >    * the first 1 kB will be able to be addressed directly
-> >    * the rest can be retrieved through bpf_hid_{set|get}_data
-> >      (note that I am definitivey not happy with that API, because there
-> >      is part of it in bits and other in bytes. ouch)
-> >
-> > - added an extra patch to prevent non GPL HID bpf programs to be loaded
-> >    of type BPF_PROG_TYPE_HID
-> >    * same here, not really happy but I don't know where to put that check
-> >      in verifier.c
-> >
-> > - added a new flag BPF_F_INSERT_HEAD for BPF_LINK_CREATE syscall when in
-> >    used with HID program types.
-> >    * this flag is used for tracing, to be able to load a program before
-> >      any others that might already have been inserted and that might
-> >      change the data stream.
-> >
-> > Cheers,
-> > Benjamin
-> >
-> >
-> >
-> > [0] https://lore.kernel.org/linux-input/20220224110828.2168231-1-benjamin.tissoires@redhat.com/T/#t
-> > [1] https://lore.kernel.org/linux-input/20220304172852.274126-1-benjamin.tissoires@redhat.com/T/#t
-> >
-> >
-> > Benjamin Tissoires (17):
-> >    bpf: add new is_sys_admin_prog_type() helper
-> >    bpf: introduce hid program type
-> >    bpf/verifier: prevent non GPL programs to be loaded against HID
-> >    libbpf: add HID program type and API
-> >    HID: hook up with bpf
-> >    HID: allow to change the report descriptor from an eBPF program
-> >    selftests/bpf: add tests for the HID-bpf initial implementation
-> >    selftests/bpf: add report descriptor fixup tests
-> >    selftests/bpf: Add a test for BPF_F_INSERT_HEAD
-> >    selftests/bpf: add test for user call of HID bpf programs
-> >    samples/bpf: add new hid_mouse example
-> >    bpf/hid: add more HID helpers
-> >    HID: bpf: implement hid_bpf_get|set_bits
-> >    HID: add implementation of bpf_hid_raw_request
-> >    selftests/bpf: add tests for hid_{get|set}_bits helpers
-> >    selftests/bpf: add tests for bpf_hid_hw_request
-> >    Documentation: add HID-BPF docs
-> >
-> >   Documentation/hid/hid-bpf.rst                | 444 +++++++++++
-> >   Documentation/hid/index.rst                  |   1 +
-> >   drivers/hid/Makefile                         |   1 +
-> >   drivers/hid/hid-bpf.c                        | 328 ++++++++
-> >   drivers/hid/hid-core.c                       |  34 +-
-> >   include/linux/bpf-hid.h                      | 127 +++
-> >   include/linux/bpf_types.h                    |   4 +
-> >   include/linux/hid.h                          |  36 +-
-> >   include/uapi/linux/bpf.h                     |  67 ++
-> >   include/uapi/linux/bpf_hid.h                 |  71 ++
-> >   include/uapi/linux/hid.h                     |  10 +
-> >   kernel/bpf/Makefile                          |   3 +
-> >   kernel/bpf/btf.c                             |   1 +
-> >   kernel/bpf/hid.c                             | 728 +++++++++++++++++
-> >   kernel/bpf/syscall.c                         |  27 +-
-> >   kernel/bpf/verifier.c                        |   7 +
-> >   samples/bpf/.gitignore                       |   1 +
-> >   samples/bpf/Makefile                         |   4 +
-> >   samples/bpf/hid_mouse_kern.c                 | 117 +++
-> >   samples/bpf/hid_mouse_user.c                 | 129 +++
-> >   tools/include/uapi/linux/bpf.h               |  67 ++
-> >   tools/lib/bpf/libbpf.c                       |  23 +-
-> >   tools/lib/bpf/libbpf.h                       |   2 +
-> >   tools/lib/bpf/libbpf.map                     |   1 +
-> >   tools/testing/selftests/bpf/config           |   3 +
-> >   tools/testing/selftests/bpf/prog_tests/hid.c | 788 +++++++++++++++++++
-> >   tools/testing/selftests/bpf/progs/hid.c      | 205 +++++
-> >   27 files changed, 3204 insertions(+), 25 deletions(-)
-> >   create mode 100644 Documentation/hid/hid-bpf.rst
-> >   create mode 100644 drivers/hid/hid-bpf.c
-> >   create mode 100644 include/linux/bpf-hid.h
-> >   create mode 100644 include/uapi/linux/bpf_hid.h
-> >   create mode 100644 kernel/bpf/hid.c
-> >   create mode 100644 samples/bpf/hid_mouse_kern.c
-> >   create mode 100644 samples/bpf/hid_mouse_user.c
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/hid.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/hid.c
-> >
->
 
