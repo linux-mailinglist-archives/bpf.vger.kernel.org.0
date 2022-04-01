@@ -2,66 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA774EE5D4
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 03:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115134EE5F2
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 04:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbiDABy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 21:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
+        id S243989AbiDACRy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 22:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbiDABy0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 21:54:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5832571B7;
-        Thu, 31 Mar 2022 18:52:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7F046B82277;
-        Fri,  1 Apr 2022 01:52:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 869BDC340ED;
-        Fri,  1 Apr 2022 01:52:35 +0000 (UTC)
-Date:   Thu, 31 Mar 2022 21:52:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: ftrace_direct (used by bpf trampoline) conflicts with live
- patch
-Message-ID: <20220331215233.496479fc@rorschach.local.home>
-In-Reply-To: <20220331214836.663bc7cf@rorschach.local.home>
-References: <0962AC9B-2FBD-4578-8B2F-A376A6B3B83F@fb.com>
-        <20220331214836.663bc7cf@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S238832AbiDACRy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 22:17:54 -0400
+Received: from mail.meizu.com (edge07.meizu.com [112.91.151.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E803422451A;
+        Thu, 31 Mar 2022 19:16:04 -0700 (PDT)
+Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail11.meizu.com
+ (172.16.1.15) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 1 Apr 2022
+ 10:15:57 +0800
+Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
+ (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Fri, 1 Apr
+ 2022 10:15:56 +0800
+From:   Haowen Bai <baihaowen@meizu.com>
+To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Martin KaFai Lau" <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+CC:     Haowen Bai <baihaowen@meizu.com>,
+        <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] selftests/bpf: Return true/false (not 1/0) from bool functions
+Date:   Fri, 1 Apr 2022 10:15:54 +0800
+Message-ID: <1648779354-14700-1-git-send-email-baihaowen@meizu.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [172.16.137.70]
+X-ClientProxiedBy: IT-EXMB-1-124.meizu.com (172.16.1.124) To
+ IT-EXMB-1-125.meizu.com (172.16.1.125)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 31 Mar 2022 21:48:36 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Return boolean values ("true" or "false") instead of 1 or 0 from bool
+functions.  This fixes the following warnings from coccicheck:
 
-> > Does this make sense to you? Did I miss something?  
-> 
-> I thought the BPF trampoline does:
-> 
-> 	call bpf_trace_before_function
-> 	call original_function + X86_PATCH_SIZE
-> 	call bpf_trace_after_function
-> 
-> Thus, the bpf direct trampoline calls the unpatched version of the
-> function call making the live patch useless. Or is this not what it
-> does?
+./tools/testing/selftests/bpf/progs/test_xdp_noinline.c:567:9-10: WARNING:
+return of 0/1 in function 'get_packet_dst' with return type bool
+./tools/testing/selftests/bpf/progs/test_l4lb_noinline.c:221:9-10: WARNING:
+return of 0/1 in function 'get_packet_dst' with return type bool
 
-Or perhaps you are only talking about the part of bpf that does not
-trace the end of a function?
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+---
+ tools/testing/selftests/bpf/progs/test_l4lb_noinline.c |  2 +-
+ tools/testing/selftests/bpf/progs/test_xdp_noinline.c  | 12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
--- Steve
+diff --git a/tools/testing/selftests/bpf/progs/test_l4lb_noinline.c b/tools/testing/selftests/bpf/progs/test_l4lb_noinline.c
+index 19e4d20..c8bc0c6 100644
+--- a/tools/testing/selftests/bpf/progs/test_l4lb_noinline.c
++++ b/tools/testing/selftests/bpf/progs/test_l4lb_noinline.c
+@@ -218,7 +218,7 @@ static __noinline bool get_packet_dst(struct real_definition **real,
+ 
+ 	if (hash != 0x358459b7 /* jhash of ipv4 packet */  &&
+ 	    hash != 0x2f4bc6bb /* jhash of ipv6 packet */)
+-		return 0;
++		return false;
+ 
+ 	real_pos = bpf_map_lookup_elem(&ch_rings, &key);
+ 	if (!real_pos)
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
+index 596c4e7..125d872 100644
+--- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
++++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
+@@ -564,22 +564,22 @@ static bool get_packet_dst(struct real_definition **real,
+ 	hash = get_packet_hash(pckt, hash_16bytes);
+ 	if (hash != 0x358459b7 /* jhash of ipv4 packet */  &&
+ 	    hash != 0x2f4bc6bb /* jhash of ipv6 packet */)
+-		return 0;
++		return false;
+ 	key = 2 * vip_info->vip_num + hash % 2;
+ 	real_pos = bpf_map_lookup_elem(&ch_rings, &key);
+ 	if (!real_pos)
+-		return 0;
++		return false;
+ 	key = *real_pos;
+ 	*real = bpf_map_lookup_elem(&reals, &key);
+ 	if (!(*real))
+-		return 0;
++		return false;
+ 	if (!(vip_info->flags & (1 << 1))) {
+ 		__u32 conn_rate_key = 512 + 2;
+ 		struct lb_stats *conn_rate_stats =
+ 		    bpf_map_lookup_elem(&stats, &conn_rate_key);
+ 
+ 		if (!conn_rate_stats)
+-			return 1;
++			return true;
+ 		cur_time = bpf_ktime_get_ns();
+ 		if ((cur_time - conn_rate_stats->v2) >> 32 > 0xffFFFF) {
+ 			conn_rate_stats->v1 = 1;
+@@ -587,14 +587,14 @@ static bool get_packet_dst(struct real_definition **real,
+ 		} else {
+ 			conn_rate_stats->v1 += 1;
+ 			if (conn_rate_stats->v1 >= 1)
+-				return 1;
++				return true;
+ 		}
+ 		if (pckt->flow.proto == IPPROTO_UDP)
+ 			new_dst_lru.atime = cur_time;
+ 		new_dst_lru.pos = key;
+ 		bpf_map_update_elem(lru_map, &pckt->flow, &new_dst_lru, 0);
+ 	}
+-	return 1;
++	return true;
+ }
+ 
+ __attribute__ ((noinline))
+-- 
+2.7.4
+
