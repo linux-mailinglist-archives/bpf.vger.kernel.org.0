@@ -2,48 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 783E44EEF9E
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 16:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CD64EEFE9
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 16:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347125AbiDAO27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 10:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
+        id S1347285AbiDAObT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 10:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346969AbiDAO2a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 10:28:30 -0400
+        with ESMTP id S242275AbiDAOam (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 10:30:42 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF6E234059;
-        Fri,  1 Apr 2022 07:26:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF9228AC59;
+        Fri,  1 Apr 2022 07:27:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6E7B761C43;
-        Fri,  1 Apr 2022 14:26:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06816C36AE3;
-        Fri,  1 Apr 2022 14:26:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C9DA61C4A;
+        Fri,  1 Apr 2022 14:27:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 103FCC340F2;
+        Fri,  1 Apr 2022 14:27:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648823199;
-        bh=jKNvzhTmBysBgJ4fKzDMdHdD5CLp1/4zLk4B3J4TBes=;
+        s=k20201202; t=1648823250;
+        bh=aLld6KZRQXUSWQeHmBhbogz/ELlNHaTEwqpmomHhdk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SkhxT8YTda8seWpz9X8Ydanup3E/1r2Dyt/ubOJd+p3lFpFoEWCLp0JHwq7fuSTYM
-         OzT8R0ARX4cFEJEWlYmI50BAZYhgQZbjipeIaNsEj5r4knYBu4l6AdUU/ioCOpUlPn
-         YP8had8Gv/ip5Q/8UdAs9A+8sMrX0Uza5Mk6GO1BKpaeRmPz9l5rtAjdgsPYhBUHwT
-         dt+uD6+NLMRQX3OqeTe0YaTl2pKaqaVe483vbRrKBPp7CFU+Nv3e/JeulVKoj0TGQm
-         9FRlrEK0pugrRiGdudLDa30L6QMrzEgEDFG1Uh7s8HF143eDufbI5e4X1XR7lIR7F1
-         cI1Vt+emFuhlg==
+        b=rcgHwhDtooFz/04I8LlPVvlRjGColWEa9f6CNu9dmemfPZASSMTeZuhB5ApXCStJF
+         hlEmNrxPuncmvKZHD4kqq3/DeoE7ybus0LZHJgQ4iZUsSCuWbgetSljgT71S2VpMkd
+         XFXGMMqeVwPlXEI9/l/Uf2R//9LBFfEdcANVG7P6KxoWWk08PQVqJ2ErQko3OmQsNb
+         51fawhtIDL7Vz7t74JCCMjlsCswvbtMFyjpPnWYJdS7/VuVCbHtpFaGtwbthxe1Bd4
+         xcP1pH1UBNwqFth1DbA5VNAB1UsVwalXUBP+fA5CLnZ0JU5K5pjkagIlmUcKXAepzO
+         IIqbFunBNSERw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        shuah@kernel.org, andrii@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 019/149] selftests, xsk: Fix bpf_res cleanup test
-Date:   Fri,  1 Apr 2022 10:23:26 -0400
-Message-Id: <20220401142536.1948161-19-sashal@kernel.org>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Menglong Dong <imagedong@tencent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.17 034/149] bpf: Make dst_port field in struct bpf_sock 16-bit wide
+Date:   Fri,  1 Apr 2022 10:23:41 -0400
+Message-Id: <20220401142536.1948161-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220401142536.1948161-1-sashal@kernel.org>
 References: <20220401142536.1948161-1-sashal@kernel.org>
@@ -61,223 +59,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+From: Jakub Sitnicki <jakub@cloudflare.com>
 
-[ Upstream commit 3b22523bca02b0d5618c08b93d8fd1fb578e1cc3 ]
+[ Upstream commit 4421a582718ab81608d8486734c18083b822390d ]
 
-After commit 710ad98c363a ("veth: Do not record rx queue hint in veth_xmit"),
-veth no longer receives traffic on the same queue as it was sent on. This
-breaks the bpf_res test for the AF_XDP selftests as the socket tied to
-queue 1 will not receive traffic anymore.
+Menglong Dong reports that the documentation for the dst_port field in
+struct bpf_sock is inaccurate and confusing. From the BPF program PoV, the
+field is a zero-padded 16-bit integer in network byte order. The value
+appears to the BPF user as if laid out in memory as so:
 
-Modify the test so that two sockets are tied to queue id 0 using a shared
-umem instead. When killing the first socket enter the second socket into
-the xskmap so that traffic will flow to it. This will still test that the
-resources are not cleaned up until after the second socket dies, without
-having to rely on veth supporting rx_queue hints.
+  offsetof(struct bpf_sock, dst_port) + 0  <port MSB>
+                                      + 8  <port LSB>
+                                      +16  0x00
+                                      +24  0x00
 
-Reported-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20220125082945.26179-1-magnus.karlsson@gmail.com
+32-, 16-, and 8-bit wide loads from the field are all allowed, but only if
+the offset into the field is 0.
+
+32-bit wide loads from dst_port are especially confusing. The loaded value,
+after converting to host byte order with bpf_ntohl(dst_port), contains the
+port number in the upper 16-bits.
+
+Remove the confusion by splitting the field into two 16-bit fields. For
+backward compatibility, allow 32-bit wide loads from offsetof(struct
+bpf_sock, dst_port).
+
+While at it, allow loads 8-bit loads at offset [0] and [1] from dst_port.
+
+Reported-by: Menglong Dong <imagedong@tencent.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/r/20220130115518.213259-2-jakub@cloudflare.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/xdpxceiver.c | 80 +++++++++++++++---------
- tools/testing/selftests/bpf/xdpxceiver.h |  2 +-
- 2 files changed, 50 insertions(+), 32 deletions(-)
+ include/uapi/linux/bpf.h |  3 ++-
+ net/core/filter.c        | 10 +++++++++-
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index 0a5d23da486d..4686897181b6 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -266,22 +266,24 @@ static int xsk_configure_umem(struct xsk_umem_info *umem, void *buffer, u64 size
- }
- 
- static int xsk_configure_socket(struct xsk_socket_info *xsk, struct xsk_umem_info *umem,
--				struct ifobject *ifobject, u32 qid)
-+				struct ifobject *ifobject, bool shared)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index b0383d371b9a..1275b08e9deb 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5500,7 +5500,8 @@ struct bpf_sock {
+ 	__u32 src_ip4;
+ 	__u32 src_ip6[4];
+ 	__u32 src_port;		/* host byte order */
+-	__u32 dst_port;		/* network byte order */
++	__be16 dst_port;	/* network byte order */
++	__u16 :16;		/* zero padding */
+ 	__u32 dst_ip4;
+ 	__u32 dst_ip6[4];
+ 	__u32 state;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 9eb785842258..82fcb7533663 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8033,6 +8033,7 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 			      struct bpf_insn_access_aux *info)
  {
--	struct xsk_socket_config cfg;
-+	struct xsk_socket_config cfg = {};
- 	struct xsk_ring_cons *rxr;
- 	struct xsk_ring_prod *txr;
+ 	const int size_default = sizeof(__u32);
++	int field_size;
  
- 	xsk->umem = umem;
- 	cfg.rx_size = xsk->rxqsize;
- 	cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
--	cfg.libbpf_flags = 0;
-+	cfg.libbpf_flags = XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD;
- 	cfg.xdp_flags = ifobject->xdp_flags;
- 	cfg.bind_flags = ifobject->bind_flags;
-+	if (shared)
-+		cfg.bind_flags |= XDP_SHARED_UMEM;
- 
- 	txr = ifobject->tx_on ? &xsk->tx : NULL;
- 	rxr = ifobject->rx_on ? &xsk->rx : NULL;
--	return xsk_socket__create(&xsk->xsk, ifobject->ifname, qid, umem->umem, rxr, txr, &cfg);
-+	return xsk_socket__create(&xsk->xsk, ifobject->ifname, 0, umem->umem, rxr, txr, &cfg);
- }
- 
- static struct option long_options[] = {
-@@ -387,7 +389,6 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
- 	for (i = 0; i < MAX_INTERFACES; i++) {
- 		struct ifobject *ifobj = i ? ifobj_rx : ifobj_tx;
- 
--		ifobj->umem = &ifobj->umem_arr[0];
- 		ifobj->xsk = &ifobj->xsk_arr[0];
- 		ifobj->use_poll = false;
- 		ifobj->pacing_on = true;
-@@ -401,11 +402,12 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
- 			ifobj->tx_on = false;
- 		}
- 
-+		memset(ifobj->umem, 0, sizeof(*ifobj->umem));
-+		ifobj->umem->num_frames = DEFAULT_UMEM_BUFFERS;
-+		ifobj->umem->frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
-+
- 		for (j = 0; j < MAX_SOCKETS; j++) {
--			memset(&ifobj->umem_arr[j], 0, sizeof(ifobj->umem_arr[j]));
- 			memset(&ifobj->xsk_arr[j], 0, sizeof(ifobj->xsk_arr[j]));
--			ifobj->umem_arr[j].num_frames = DEFAULT_UMEM_BUFFERS;
--			ifobj->umem_arr[j].frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
- 			ifobj->xsk_arr[j].rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
- 		}
- 	}
-@@ -947,7 +949,10 @@ static void tx_stats_validate(struct ifobject *ifobject)
- 
- static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
- {
-+	u64 umem_sz = ifobject->umem->num_frames * ifobject->umem->frame_size;
- 	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-+	int ret, ifindex;
-+	void *bufs;
- 	u32 i;
- 
- 	ifobject->ns_fd = switch_namespace(ifobject->nsname);
-@@ -955,23 +960,20 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
- 	if (ifobject->umem->unaligned_mode)
- 		mmap_flags |= MAP_HUGETLB;
- 
--	for (i = 0; i < test->nb_sockets; i++) {
--		u64 umem_sz = ifobject->umem->num_frames * ifobject->umem->frame_size;
--		u32 ctr = 0;
--		void *bufs;
--		int ret;
-+	bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
-+	if (bufs == MAP_FAILED)
-+		exit_with_error(errno);
- 
--		bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
--		if (bufs == MAP_FAILED)
--			exit_with_error(errno);
-+	ret = xsk_configure_umem(ifobject->umem, bufs, umem_sz);
-+	if (ret)
-+		exit_with_error(-ret);
- 
--		ret = xsk_configure_umem(&ifobject->umem_arr[i], bufs, umem_sz);
--		if (ret)
--			exit_with_error(-ret);
-+	for (i = 0; i < test->nb_sockets; i++) {
-+		u32 ctr = 0;
- 
- 		while (ctr++ < SOCK_RECONF_CTR) {
--			ret = xsk_configure_socket(&ifobject->xsk_arr[i], &ifobject->umem_arr[i],
--						   ifobject, i);
-+			ret = xsk_configure_socket(&ifobject->xsk_arr[i], ifobject->umem,
-+						   ifobject, !!i);
- 			if (!ret)
- 				break;
- 
-@@ -982,8 +984,22 @@ static void thread_common_ops(struct test_spec *test, struct ifobject *ifobject)
- 		}
+ 	if (off < 0 || off >= sizeof(struct bpf_sock))
+ 		return false;
+@@ -8044,7 +8045,6 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 	case offsetof(struct bpf_sock, family):
+ 	case offsetof(struct bpf_sock, type):
+ 	case offsetof(struct bpf_sock, protocol):
+-	case offsetof(struct bpf_sock, dst_port):
+ 	case offsetof(struct bpf_sock, src_port):
+ 	case offsetof(struct bpf_sock, rx_queue_mapping):
+ 	case bpf_ctx_range(struct bpf_sock, src_ip4):
+@@ -8053,6 +8053,14 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 	case bpf_ctx_range_till(struct bpf_sock, dst_ip6[0], dst_ip6[3]):
+ 		bpf_ctx_record_field_size(info, size_default);
+ 		return bpf_ctx_narrow_access_ok(off, size, size_default);
++	case bpf_ctx_range(struct bpf_sock, dst_port):
++		field_size = size == size_default ?
++			size_default : sizeof_field(struct bpf_sock, dst_port);
++		bpf_ctx_record_field_size(info, field_size);
++		return bpf_ctx_narrow_access_ok(off, size, field_size);
++	case offsetofend(struct bpf_sock, dst_port) ...
++	     offsetof(struct bpf_sock, dst_ip4) - 1:
++		return false;
  	}
  
--	ifobject->umem = &ifobject->umem_arr[0];
- 	ifobject->xsk = &ifobject->xsk_arr[0];
-+
-+	if (!ifobject->rx_on)
-+		return;
-+
-+	ifindex = if_nametoindex(ifobject->ifname);
-+	if (!ifindex)
-+		exit_with_error(errno);
-+
-+	ret = xsk_setup_xdp_prog(ifindex, &ifobject->xsk_map_fd);
-+	if (ret)
-+		exit_with_error(-ret);
-+
-+	ret = xsk_socket__update_xskmap(ifobject->xsk->xsk, ifobject->xsk_map_fd);
-+	if (ret)
-+		exit_with_error(-ret);
- }
- 
- static void testapp_cleanup_xsk_res(struct ifobject *ifobj)
-@@ -1139,14 +1155,16 @@ static void testapp_bidi(struct test_spec *test)
- 
- static void swap_xsk_resources(struct ifobject *ifobj_tx, struct ifobject *ifobj_rx)
- {
-+	int ret;
-+
- 	xsk_socket__delete(ifobj_tx->xsk->xsk);
--	xsk_umem__delete(ifobj_tx->umem->umem);
- 	xsk_socket__delete(ifobj_rx->xsk->xsk);
--	xsk_umem__delete(ifobj_rx->umem->umem);
--	ifobj_tx->umem = &ifobj_tx->umem_arr[1];
- 	ifobj_tx->xsk = &ifobj_tx->xsk_arr[1];
--	ifobj_rx->umem = &ifobj_rx->umem_arr[1];
- 	ifobj_rx->xsk = &ifobj_rx->xsk_arr[1];
-+
-+	ret = xsk_socket__update_xskmap(ifobj_rx->xsk->xsk, ifobj_rx->xsk_map_fd);
-+	if (ret)
-+		exit_with_error(-ret);
- }
- 
- static void testapp_bpf_res(struct test_spec *test)
-@@ -1405,13 +1423,13 @@ static struct ifobject *ifobject_create(void)
- 	if (!ifobj->xsk_arr)
- 		goto out_xsk_arr;
- 
--	ifobj->umem_arr = calloc(MAX_SOCKETS, sizeof(*ifobj->umem_arr));
--	if (!ifobj->umem_arr)
--		goto out_umem_arr;
-+	ifobj->umem = calloc(1, sizeof(*ifobj->umem));
-+	if (!ifobj->umem)
-+		goto out_umem;
- 
- 	return ifobj;
- 
--out_umem_arr:
-+out_umem:
- 	free(ifobj->xsk_arr);
- out_xsk_arr:
- 	free(ifobj);
-@@ -1420,7 +1438,7 @@ static struct ifobject *ifobject_create(void)
- 
- static void ifobject_delete(struct ifobject *ifobj)
- {
--	free(ifobj->umem_arr);
-+	free(ifobj->umem);
- 	free(ifobj->xsk_arr);
- 	free(ifobj);
- }
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-index 2f705f44b748..62a3e6388632 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.h
-+++ b/tools/testing/selftests/bpf/xdpxceiver.h
-@@ -125,10 +125,10 @@ struct ifobject {
- 	struct xsk_socket_info *xsk;
- 	struct xsk_socket_info *xsk_arr;
- 	struct xsk_umem_info *umem;
--	struct xsk_umem_info *umem_arr;
- 	thread_func_t func_ptr;
- 	struct pkt_stream *pkt_stream;
- 	int ns_fd;
-+	int xsk_map_fd;
- 	u32 dst_ip;
- 	u32 src_ip;
- 	u32 xdp_flags;
+ 	return size == size_default;
 -- 
 2.34.1
 
