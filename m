@@ -2,46 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F377A4EF1BD
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 16:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7B64EF43C
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 17:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348024AbiDAOly (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 10:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        id S1349739AbiDAO5p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 10:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347775AbiDAOlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 10:41:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BC329089A;
-        Fri,  1 Apr 2022 07:34:15 -0700 (PDT)
+        with ESMTP id S1348771AbiDAOoT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 10:44:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A30B296D3D;
+        Fri,  1 Apr 2022 07:35:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7406CB82511;
-        Fri,  1 Apr 2022 14:34:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFF12C3410F;
-        Fri,  1 Apr 2022 14:33:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 721C660A53;
+        Fri,  1 Apr 2022 14:34:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82414C340EE;
+        Fri,  1 Apr 2022 14:34:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648823641;
-        bh=5je8xdC2bPCBaWmhDNpUXYOAhxre1L33fd58POxSqQA=;
+        s=k20201202; t=1648823660;
+        bh=ytgvF2ewlNI9S2LJEK7C6w/ZlZCx2WMRDz9D+04cNy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o0UqQJ7WPEa4B1uEEZTAlNoDVXYNA42A+u4STjNNx5YNACEksDVRhDAjQSS2Xl3Sy
-         pGNKc/QxpKoBpVqr4qW07a0upmSoDXbJMwfoFZ215Ya8ja4BvnAWvhjDEPVBPp4uYs
-         0qWAHqaVqkmUctpY4JznhPPqlfChWQDhTjoJAik/zEmPJTVbPJNiHRRpNio3YfWALc
-         I6B5D6wExmQ2JsOCoKej5m3QI1H69g/XBSM7/zC7dQLIeqO03weTI5Z60UCE/tapmY
-         9AFjmBdRlrCJY+gclVDA6G5XadhysOSMxTi23wusdOhnbPYmKsaxeyl8Au6ewHwzBp
-         3nzeA4OrPkYBw==
+        b=c98k1rfJJMl7ZO0bMkeLnYbIk+IpmQ/o6qDSvl1jtEpwqZGSF0LKvbM0iiwYvBPNe
+         I47JIctDaWIdPtSMsCGttdF09QquUwnMbFuYv5ToIt54B+loVfiBI3he5sypu+HWWX
+         pRc8fk/g02ePxJeyoB50qAt5Kdyvzyj1/SbNrmTbQT2PfoDIInvAFK/ilkjB32lI6z
+         R/LriiokagAhXJ61VFwwk/wQmGBuxwjoX1rbwGHRjV1bgdqyAW+IAGfklgnkf7LVjg
+         333AlJbg5eWX10qg7fXrWsGIZta9z3+SWKRNXHDMCR6msB/yJwD5FlwQmoOSEqS91M
+         bTyqnoxrooOkA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 024/109] bpf: Make dst_port field in struct bpf_sock 16-bit wide
-Date:   Fri,  1 Apr 2022 10:31:31 -0400
-Message-Id: <20220401143256.1950537-24-sashal@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Delyan Kratunov <delyank@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, nathan@kernel.org, ndesaulniers@google.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.16 032/109] libbpf: Fix build issue with llvm-readelf
+Date:   Fri,  1 Apr 2022 10:31:39 -0400
+Message-Id: <20220401143256.1950537-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220401143256.1950537-1-sashal@kernel.org>
 References: <20220401143256.1950537-1-sashal@kernel.org>
@@ -59,92 +58,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jakub Sitnicki <jakub@cloudflare.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 4421a582718ab81608d8486734c18083b822390d ]
+[ Upstream commit 0908a66ad1124c1634c33847ac662106f7f2c198 ]
 
-Menglong Dong reports that the documentation for the dst_port field in
-struct bpf_sock is inaccurate and confusing. From the BPF program PoV, the
-field is a zero-padded 16-bit integer in network byte order. The value
-appears to the BPF user as if laid out in memory as so:
+There are cases where clang compiler is packaged in a way
+readelf is a symbolic link to llvm-readelf. In such cases,
+llvm-readelf will be used instead of default binutils readelf,
+and the following error will appear during libbpf build:
 
-  offsetof(struct bpf_sock, dst_port) + 0  <port MSB>
-                                      + 8  <port LSB>
-                                      +16  0x00
-                                      +24  0x00
+  Warning: Num of global symbols in
+   /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/build/libbpf/sharedobjs/libbpf-in.o (367)
+   does NOT match with num of versioned symbols in
+   /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.so libbpf.map (383).
+   Please make sure all LIBBPF_API symbols are versioned in libbpf.map.
+  --- /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/build/libbpf/libbpf_global_syms.tmp ...
+  +++ /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/build/libbpf/libbpf_versioned_syms.tmp ...
+  @@ -324,6 +324,22 @@
+   btf__str_by_offset
+   btf__type_by_id
+   btf__type_cnt
+  +LIBBPF_0.0.1
+  +LIBBPF_0.0.2
+  +LIBBPF_0.0.3
+  +LIBBPF_0.0.4
+  +LIBBPF_0.0.5
+  +LIBBPF_0.0.6
+  +LIBBPF_0.0.7
+  +LIBBPF_0.0.8
+  +LIBBPF_0.0.9
+  +LIBBPF_0.1.0
+  +LIBBPF_0.2.0
+  +LIBBPF_0.3.0
+  +LIBBPF_0.4.0
+  +LIBBPF_0.5.0
+  +LIBBPF_0.6.0
+  +LIBBPF_0.7.0
+   libbpf_attach_type_by_name
+   libbpf_find_kernel_btf
+   libbpf_find_vmlinux_btf_id
+  make[2]: *** [Makefile:184: check_abi] Error 1
+  make[1]: *** [Makefile:140: all] Error 2
 
-32-, 16-, and 8-bit wide loads from the field are all allowed, but only if
-the offset into the field is 0.
+The above failure is due to different printouts for some ABS
+versioned symbols. For example, with the same libbpf.so,
+  $ /bin/readelf --dyn-syms --wide tools/lib/bpf/libbpf.so | grep "LIBBPF" | grep ABS
+     134: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  ABS LIBBPF_0.5.0
+     202: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  ABS LIBBPF_0.6.0
+     ...
+  $ /opt/llvm/bin/readelf --dyn-syms --wide tools/lib/bpf/libbpf.so | grep "LIBBPF" | grep ABS
+     134: 0000000000000000     0 OBJECT  GLOBAL DEFAULT   ABS LIBBPF_0.5.0@@LIBBPF_0.5.0
+     202: 0000000000000000     0 OBJECT  GLOBAL DEFAULT   ABS LIBBPF_0.6.0@@LIBBPF_0.6.0
+     ...
+The binutils readelf doesn't print out the symbol LIBBPF_* version and llvm-readelf does.
+Such a difference caused libbpf build failure with llvm-readelf.
 
-32-bit wide loads from dst_port are especially confusing. The loaded value,
-after converting to host byte order with bpf_ntohl(dst_port), contains the
-port number in the upper 16-bits.
+The proposed fix filters out all ABS symbols as they are not part of the comparison.
+This works for both binutils readelf and llvm-readelf.
 
-Remove the confusion by splitting the field into two 16-bit fields. For
-backward compatibility, allow 32-bit wide loads from offsetof(struct
-bpf_sock, dst_port).
-
-While at it, allow loads 8-bit loads at offset [0] and [1] from dst_port.
-
-Reported-by: Menglong Dong <imagedong@tencent.com>
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/r/20220130115518.213259-2-jakub@cloudflare.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Delyan Kratunov <delyank@fb.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20220204214355.502108-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/bpf.h |  3 ++-
- net/core/filter.c        | 10 +++++++++-
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ tools/lib/bpf/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b12cfceddb6e..3840308a81ef 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5414,7 +5414,8 @@ struct bpf_sock {
- 	__u32 src_ip4;
- 	__u32 src_ip6[4];
- 	__u32 src_port;		/* host byte order */
--	__u32 dst_port;		/* network byte order */
-+	__be16 dst_port;	/* network byte order */
-+	__u16 :16;		/* zero padding */
- 	__u32 dst_ip4;
- 	__u32 dst_ip6[4];
- 	__u32 state;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index d4cdf11656b3..4721ed65bcc5 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -7975,6 +7975,7 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
- 			      struct bpf_insn_access_aux *info)
- {
- 	const int size_default = sizeof(__u32);
-+	int field_size;
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index b393b5e82380..d1b474f3c586 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -129,7 +129,7 @@ GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
+ 			   sort -u | wc -l)
+ VERSIONED_SYM_COUNT = $(shell readelf --dyn-syms --wide $(OUTPUT)libbpf.so | \
+ 			      sed 's/\[.*\]//' | \
+-			      awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
++			      awk '/GLOBAL/ && /DEFAULT/ && !/UND|ABS/ {print $$NF}' | \
+ 			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
  
- 	if (off < 0 || off >= sizeof(struct bpf_sock))
- 		return false;
-@@ -7986,7 +7987,6 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
- 	case offsetof(struct bpf_sock, family):
- 	case offsetof(struct bpf_sock, type):
- 	case offsetof(struct bpf_sock, protocol):
--	case offsetof(struct bpf_sock, dst_port):
- 	case offsetof(struct bpf_sock, src_port):
- 	case offsetof(struct bpf_sock, rx_queue_mapping):
- 	case bpf_ctx_range(struct bpf_sock, src_ip4):
-@@ -7995,6 +7995,14 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
- 	case bpf_ctx_range_till(struct bpf_sock, dst_ip6[0], dst_ip6[3]):
- 		bpf_ctx_record_field_size(info, size_default);
- 		return bpf_ctx_narrow_access_ok(off, size, size_default);
-+	case bpf_ctx_range(struct bpf_sock, dst_port):
-+		field_size = size == size_default ?
-+			size_default : sizeof_field(struct bpf_sock, dst_port);
-+		bpf_ctx_record_field_size(info, field_size);
-+		return bpf_ctx_narrow_access_ok(off, size, field_size);
-+	case offsetofend(struct bpf_sock, dst_port) ...
-+	     offsetof(struct bpf_sock, dst_ip4) - 1:
-+		return false;
- 	}
- 
- 	return size == size_default;
+ CMD_TARGETS = $(LIB_TARGET) $(PC_FILE)
+@@ -192,7 +192,7 @@ check_abi: $(OUTPUT)libbpf.so $(VERSION_SCRIPT)
+ 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
+ 		readelf --dyn-syms --wide $(OUTPUT)libbpf.so |		 \
+ 		    sed 's/\[.*\]//' |					 \
+-		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
++		    awk '/GLOBAL/ && /DEFAULT/ && !/UND|ABS/ {print $$NF}'|  \
+ 		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
+ 		    sort -u > $(OUTPUT)libbpf_versioned_syms.tmp; 	 \
+ 		diff -u $(OUTPUT)libbpf_global_syms.tmp			 \
 -- 
 2.34.1
 
