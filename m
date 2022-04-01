@@ -2,240 +2,296 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9794EF843
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 18:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24F24EF883
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 18:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349530AbiDAQqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 12:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
+        id S1346903AbiDAQ7A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 12:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349612AbiDAQqN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 12:46:13 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A46103B8A;
-        Fri,  1 Apr 2022 09:29:00 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 231EgN5o010779;
-        Fri, 1 Apr 2022 09:28:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Hc1oJWiKnujbT5SQlh3qfrEjIjJYWRzWKvtTbpcVgaA=;
- b=aAgv/7+kRvM8/gQ+99TzvikvVKwrFUhvSxexGtkKiw7i0NKtKkzBl/cQMU/VMOQueYWc
- Dwc7Ft/PhLdVq1J/hikDraTpzWAQvwbRhWqrp8DkdQX36cCMZp9izK2sscv5lLLiUV+P
- OYv0Obc+HarjzcUxlqxo9n8TOTU8JZHyxZc= 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2175.outbound.protection.outlook.com [104.47.58.175])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f5gpcqput-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Apr 2022 09:28:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k++trdicUz8HWAhEUz1gBIUJ35CihbIO7PdH/6BXPDm3MgdCBqgqhQo8iAkNYig4sCV1Jw36rqflqMhwdOIC37mZ8krNa1aIpOoyPbzwCGkMqYwmaH/I6YUJt2/lHYtylUHowPBdNnM7/RKmeHnUlscuPExsPwWAQei6Gf8YpKX9Ef3vdE9x174m6Cj0MvqTlPASKSqWPUC0owNKnUO1Idy0OpSW5vtNS6Awfl4eHdlW+B1BdPRkoDHNkXA2pEGsd8CqWdYlJky3M4+KxNcEqUdaOeVd19WyZyFgJK5/dJVIkAe3/J7Z8mw2siPh7PqnjPissY1+KcB3lvVpInGiLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hc1oJWiKnujbT5SQlh3qfrEjIjJYWRzWKvtTbpcVgaA=;
- b=Yqi2HIPc7c5BdaH6wNV7woYBjX58dVSg7EiU13jw3EXsVAgNrVo+hbN+MZ/1ELv/ljAaY2J3BLiS8/MjiH4jWpLBqUZhz2UqaZnTb0FJCJ9NWK0/gVwu2z7NYOy/FTHAOSOYcPZXp+AIiDPqw9+A+47QSCh0xfKj4Yf5OkbzRXuNk3V4NvsGG3dyQki4AGLDmy/B8g0kIXHYgMTfFXSVtXYWJoJmjeqWlsimkF7/aXuUCWHrRS0qAuCR1GUCovlfdfD2UnKm2SNlRQHlbPaAqP8FVHs5HwZSwbFvLz5+mGFj4mi54FGRcngWmnQjrDlSiQBt5qUObTY8hsYDzGy2RQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MW4PR15MB4604.namprd15.prod.outlook.com (2603:10b6:303:10d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.26; Fri, 1 Apr
- 2022 16:28:39 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::4da5:c3b4:371e:28c2]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::4da5:c3b4:371e:28c2%7]) with mapi id 15.20.5123.025; Fri, 1 Apr 2022
- 16:28:39 +0000
-Message-ID: <b0b8be03-04e7-eb87-474d-b1584ebe2060@fb.com>
-Date:   Fri, 1 Apr 2022 09:28:35 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [PATCH] sample: bpf: syscall_tp_user: print result of verify_map
-Content-Language: en-US
-To:     Song Chen <chensong_2000@189.cn>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1648777272-21473-1-git-send-email-chensong_2000@189.cn>
- <882349c0-123d-3deb-88e8-d400ec702d1f@fb.com>
- <306ab457-9f3d-4d90-bb31-e6fb08b6a5ad@189.cn>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <306ab457-9f3d-4d90-bb31-e6fb08b6a5ad@189.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR05CA0082.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::23) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S240531AbiDAQ7A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 12:59:00 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE7113369E
+        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 09:57:10 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id b16so3902294ioz.3
+        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 09:57:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7rUB6a1IXmDPqB8md/3wCjR8vTMZ/9wqvEFDJXw5qn0=;
+        b=d3hev1wNE4XPJ+TiLjXHCORSw4n3MyABkOxFZEL4232pPU5cSa4ibp5giF74mwkyRu
+         4GHyod6c0OvoshYMLT5FciXd6K3No0AqxNC3NbSmrr3zAlK9PX0EmO80WKI4DsQmOOsP
+         y0UkiBvw8ZbkJQCF9tdL8Rx/vhp2CX04U8xAJh4ZBlciywFVPg3VcnzQWnpf0bdqEIE9
+         yAzZvIAK7FERuJrIZ78Vs2lo7TSJfsGxpyoQS+5/rC6WDFYZLk5C7I19uRLeGKK6r6aQ
+         jhyxJCCkmypHW+u2bhWTR3M+lWS3gbS29zi0FthQoK5HlCpA7WFz4C/JQ9AChk+/MeK6
+         2feA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7rUB6a1IXmDPqB8md/3wCjR8vTMZ/9wqvEFDJXw5qn0=;
+        b=JifOXNQNgK0T3RAjpSTW3JNgAymPT2bs2TbjMVozB84TreSqAzlc+A4kgZOv4uVzSa
+         wLlf/q8oaXZdM4ppkDqjwXJ7QYhyMMNf9bfdrc/ZDAeTp5baDvrrFqP/vnyYVF2XYavD
+         6Cynsar4OzDztt54R+5Ihuw7TgpZLSPhncycn7CdQbCfd/t1LDHFeNY6UnQsvNuIHsMH
+         zPWo9I4Ase5LhENh2r6w5LGVeXlmXJi+TGg/cHfzrXrca2LomkNUIjN4FGv3MT3D87FN
+         kTIlMrJ8yUni6/3cnB73ZiJ0giM3wGXCt06cSe3rWpkuRyOakZwZJlKE2IeyYm3FTZuq
+         fuug==
+X-Gm-Message-State: AOAM5302LeGwynEgWv9WWOhn5vDxalb5+OGtsUxqUgsgbb/FUry8dEuA
+        E5ltkxfOVBewsRsfea/NdnEdDuy+YSgxrZUqVvP0wO1TaNU=
+X-Google-Smtp-Source: ABdhPJztHiBlEm8t75nf/2T/pJ13y4eYY9xK6+EycJl5rLgE0KJ8iNoAi5Yrh3cV2bXS2da8gS9/R1tlSTFSFKHHMAk=
+X-Received: by 2002:a05:6638:1685:b0:323:9fed:890a with SMTP id
+ f5-20020a056638168500b003239fed890amr6003970jat.103.1648832229371; Fri, 01
+ Apr 2022 09:57:09 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0ae88981-6eb9-4086-4c96-08da13fcad93
-X-MS-TrafficTypeDiagnostic: MW4PR15MB4604:EE_
-X-Microsoft-Antispam-PRVS: <MW4PR15MB4604CAC796F5FE496710FCFFD3E09@MW4PR15MB4604.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kXruU0rZD3VREAGDY00IKMn0q09umgP25COyPHmXxq0Pc+eLh4XSi/r21BziubA94qtQ7CC3fa95gZyguSJViOTdHh/fGTuWsaHIODVCvMZtbkryPEF2znW5l3cqnMXUL2pL8mGzrFvfisNMH5Je4GbA9r2huWoJphh58GczdmVSAlssBB7FgE/K714PLE3fJk1e1QXz12zvTbB6rQz4XHWanBWy402t9WV0pJbEvjxc3W2qBjyDMJkDqH7z3IT2xRVLzQIHSZF7T+sbtNXRlMMG72f1VM+RWElrXtJrOZg45RekTYuKvpwc+KL3fuoqDwrmgAanAf6KFtPjRGj2CHvh/it2HUg8HyZI5S5lZhGY+71u+5Ut6ctXOtxtqZydl8mVXlLhTVpVKhxGfzjyC85CNKt1FELlihsCdEj+wWcBNHBYNOWgWpPEwQAyEnUEJrBignWBIwTf5Ve+JZ7fLrmYpf/TyS38yD34qm4SOjteE+S24Xlbc2S6I9jdBwXg3vNtBU8I4JYdb7WGexVym64GcYJ+LtYVGqPQy1tRb4SPbH0UX/u7AOJ75V39WkB5OrV43xn2fouTqjxGQo2w61aOzVjJO1Du4/88khEjS32WVC9pip6xdGGicTx2tNKGlTTOqRpF46bk0YtIviGoIbiDdHdHPkRF1owhrP/56SKjqscCaZZo4sEo1n9PcgjQw/ssSBTCccykdVBaO5OHEdHGv4ps7AM4t8bqo7O2DNSqruDe5fiSyMy+ZxnYwrIm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6506007)(6666004)(52116002)(53546011)(316002)(36756003)(31686004)(2616005)(921005)(2906002)(83380400001)(186003)(66476007)(66556008)(66946007)(5660300002)(8676002)(38100700002)(31696002)(15650500001)(6486002)(6512007)(86362001)(8936002)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Vndja1pSZ2o5ajVrRVYrSXl5Z25XS25GcGVNYWRhUit2emYyaTVoQWQvaUJJ?=
- =?utf-8?B?NkZOUFc0ZnhKZ3RHSFRIWFhOVXpTQmZtazlUYWw2V1I4blhJSU1pa1RDaUFZ?=
- =?utf-8?B?M2F5NUdwSENqcmxMYmErT0d4amJTbld1Z09PTmQ3ZFJjbXFyU2tJWHhBak16?=
- =?utf-8?B?dmtIRmdKZWd0eFg0OHhJVTBiSjJPSkt5T2l4ZTRhSzN4VW9rQVJ6bXRSaGI3?=
- =?utf-8?B?M0lSOXFxY25lV0xGYUQ3SjlIRjc0aUozS0JBTXEwLyt6SlIwLzVSQWwwT1NM?=
- =?utf-8?B?bEdLK3M4RlhEbE1jRGVIZ3h2NTRhdm9YV0JnNVpSNHQ4c25TbWdVcmRBc1dt?=
- =?utf-8?B?OWFwN2ZFQ2JGY0w2Ym9zMVh3YnF3Wi9pRFdjVjgxK0tuZjQyMFl3WTZnS1lx?=
- =?utf-8?B?MWJ2ZVJSaDNSSy83M29MbUk4d0I3Smk4c1pzWEpVaG50OUh0R3RoK1lvZkNr?=
- =?utf-8?B?TE1LN1VGS2xyVjJvRnFMbFpmZ0xLUlFiNDMyWkJiaWl2VUNDK1FkVE5neTdu?=
- =?utf-8?B?bllJbmJkem5VL3o0WTl6NEJ5QlNBd0oybGNaZzE5VFpRdEtacy8rVmdnUVBM?=
- =?utf-8?B?RU9hYTBSR1pkTDA2Rm93azg4eVlDbHV6SU55dmNVU1VvSVg2WkFCSTVueGZO?=
- =?utf-8?B?RitTU2prN3lMY3JpOUJRZjhhQnNVcGlaMkNmQ2ovSldCQlJ1RlF1YmlqTEli?=
- =?utf-8?B?VmRuK1FJT2pSMk9aMGtBQjJXR0NoTjU2bExxZ1ZoRHpzV1AvNktJWDFEUU8w?=
- =?utf-8?B?QXlwUTVzeTdvanRpcnh3MkY3cXQ0eVlZYWVGN2lnbGNNbWFKYnRRSnR0L2s4?=
- =?utf-8?B?dW1mM2EyUnMzZFhpYWdERlBvUlpNWEVUQUhEN2U0ZzBKK1cvU1ZlY29SYzkv?=
- =?utf-8?B?K0Q2VzQ5d2Z4M21QYnFvb3Q0a0taMjgvYmpHaklVZUthbUd1MGJKZFBKVzVG?=
- =?utf-8?B?NG5LOHJuTW9HaXZMd1VYSjRvM1ptYXBQNmI3WFEweXVDeHQ0R2Fxb1UwUnBW?=
- =?utf-8?B?MktkNldETzU4eFZVRm9nUkg1QytNVFVxMUVxc2tCTGhUR0hRVzFab2pNZ2N3?=
- =?utf-8?B?aEtUbENQSTZNYWhXQzZ4RWxsMFl5VnNqdnFQbU1YOUZmclBmQWN5RlREd0VC?=
- =?utf-8?B?OHZQMVloU0VqR3pIUHpuQVZIU1oyY0VzOUtKeXU3bzlGYVA5ZERwM1FacUU1?=
- =?utf-8?B?NDJQRHpKRDA0TEE2UXRxcFM1WXdUQk1XbU9tSFhCYjdQcDUrNWVoak80V1Mr?=
- =?utf-8?B?bHpMYTdiNHF5Y2VyeTJ3aHNtR2N4bWVNV1VNc1ZiaEc1bGNMYXlpZHd6NFVv?=
- =?utf-8?B?OElHU0I3VU9SZm1EUFpFWUREMVdSd2FLeko5bWZHeU54ek40ZXRjZjdDbjNU?=
- =?utf-8?B?RzF3eUhCSjdyU2x2Zkh3b1c3RjlIUVk0aHlrazcrK3RZV21mMzl4L1plM3Bx?=
- =?utf-8?B?YlErYlROOUlZeG1rOXZhTDhWTlJ5QVh3cVdQalk2V3JnNnVQWWkvVk5aMWhk?=
- =?utf-8?B?cnNiNndIOVlvcUJMWjF1dndWL3dqQk1FT0FzWkFDMlRna0NyNmtFcFV2Yk15?=
- =?utf-8?B?V2oyTTZ3ZlpZN3lyY28xdnR2aDlOR1ZNRThkS2hZOENITW8yK21kcnFyTk9N?=
- =?utf-8?B?cjNJZEZYbTVQVWJpcXUxZmhQTFNVc0V3bkJDdmV5cEF4OHlvbEc2ZVppQVRp?=
- =?utf-8?B?TEVsalkva1ZQalpHTFNWTnhHRndMMVcrWjVReDhtUnZpNFRGRDh6WDV0U21s?=
- =?utf-8?B?Q1Q5a043WlJsRWVSSjRYV3NnVEMwdWxFZ2E1SW5keEhGTkpmY21rTXFSdjB4?=
- =?utf-8?B?RmVnZ0t3dHJuemlMcWlvS1Ayd0grU2E5WDd6VjEydHNqbmpPL2xxbHlMdEds?=
- =?utf-8?B?OW5PS2RHR3NvVFNPZzFKMk5hbzZxQXpSa05RN05VK3ZWWFI4ano5Q3ZYekdx?=
- =?utf-8?B?cTVEc3U2Lzl5M3p4WWl1YmNTN2JnZDc0TlZLTmgwUUVrRkpDY1ZJMTRLM0cy?=
- =?utf-8?B?MWRxMHBUdVdIVTFVZVh5NklZNDFTOHpPcW5wMlB6SytoU1NxdmkxUHU0eWJ3?=
- =?utf-8?B?WllJamlEeUpBNlUyeVJZYThveG5TTS9kOHVFdzg2ZEk0aXBmWG5KNEtPNVRP?=
- =?utf-8?B?Y1NDbk5pVnh1SU1IaFZDWnlleVhwOVBZRnFDNTNnNmdJak8zZnVWdDV0ZlVr?=
- =?utf-8?B?Z0RhcmJpV29xdTBqUGpjR3F4SWJISTNNaVZoZU1wK05wMHU4NzljV3hja3Y3?=
- =?utf-8?B?Ri9nY092eC81SUhiRjVEa25aWks1d0Vhb0lFRWFtY00vdDUzS3RuOHhlRmNK?=
- =?utf-8?B?d3FYdWpmMzVTZFhZVXkya2o4WCttWU5BdzZEQTBsZ2hGQUhITnFhZz09?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ae88981-6eb9-4086-4c96-08da13fcad93
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2022 16:28:39.3019
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UZ1l0gtSWd2NlxixpY9PgLKuhfTkmRYedtqoB2Sk9qQsgijBkZSzaL1Y1TxV7zUt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4604
-X-Proofpoint-ORIG-GUID: xwvYQZNUzDpPlXr4DJLcDT1tVgwNI7Pw
-X-Proofpoint-GUID: xwvYQZNUzDpPlXr4DJLcDT1tVgwNI7Pw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-01_05,2022-03-31_01,2022-02-23_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-2-andrii@kernel.org>
+ <CAADnVQLkYb6NiEq=bkP_AC4pj8OFC1achC8m9UdEhwWp4ahrFw@mail.gmail.com>
+ <CAEf4Bza9_L=biSu_G_ux9vgn05LVTLVdfpfi3P_XH421SeH_4g@mail.gmail.com> <CAADnVQKuxEj63pGfHgB04n2BBNja+2NuRJXMjZrvx-4SB8ZX8A@mail.gmail.com>
+In-Reply-To: <CAADnVQKuxEj63pGfHgB04n2BBNja+2NuRJXMjZrvx-4SB8ZX8A@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 1 Apr 2022 09:56:58 -0700
+Message-ID: <CAEf4BzYHLohBniijHJFS3FA8Ety0LYPuh8r5THSpdiWyCr2MgA@mail.gmail.com>
+Subject: Re: program local storage. Was: [PATCH bpf-next 1/7] libbpf: add
+ BPF-side of USDT support
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Mar 31, 2022 at 5:38 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Mar 31, 2022 at 1:13 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Mar 31, 2022 at 11:34 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Thu, Mar 24, 2022 at 10:30 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+> > > > +
+> > > > +struct __bpf_usdt_arg_spec {
+> > > > +       __u64 val_off;
+> > > > +       enum __bpf_usdt_arg_type arg_type;
+> > > > +       short reg_off;
+> > > > +       bool arg_signed;
+> > > > +       char arg_bitshift;
+> > > > +};
+> > > > +
+> > > > +/* should match USDT_MAX_ARG_CNT in usdt.c exactly */
+> > > > +#define BPF_USDT_MAX_ARG_CNT 12
+> > > > +struct __bpf_usdt_spec {
+> > > > +       struct __bpf_usdt_arg_spec args[BPF_USDT_MAX_ARG_CNT];
+> > > > +       __u64 usdt_cookie;
+> > > > +       short arg_cnt;
+> > > > +};
+> > > > +
+> > > > +__weak struct {
+> > > > +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> > > > +       __uint(max_entries, BPF_USDT_MAX_SPEC_CNT);
+> > > > +       __type(key, int);
+> > > > +       __type(value, struct __bpf_usdt_spec);
+> > > > +} __bpf_usdt_specs SEC(".maps");
+> > > > +
+> > > > +__weak struct {
+> > > > +       __uint(type, BPF_MAP_TYPE_HASH);
+> > > > +       __uint(max_entries, BPF_USDT_MAX_IP_CNT);
+> > > > +       __type(key, long);
+> > > > +       __type(value, struct __bpf_usdt_spec);
+> > > > +} __bpf_usdt_specs_ip_to_id SEC(".maps");
+> > > ...
+> > >
+> > > > +
+> > > > +/* Fetch USDT argument *arg* (zero-indexed) and put its value into *res.
+> > > > + * Returns 0 on success; negative error, otherwise.
+> > > > + * On error *res is guaranteed to be set to zero.
+> > > > + */
+> > > > +__hidden __weak
+> > > > +int bpf_usdt_arg(struct pt_regs *ctx, int arg, long *res)
+> > > > +{
+> > > > +       struct __bpf_usdt_spec *spec;
+> > > > +       struct __bpf_usdt_arg_spec *arg_spec;
+> > > > +       unsigned long val;
+> > > > +       int err, spec_id;
+> > > > +
+> > > > +       *res = 0;
+> > > > +
+> > > > +       spec_id = __bpf_usdt_spec_id(ctx);
+> > > > +       if (spec_id < 0)
+> > > > +               return -ESRCH;
+> > > > +
+> > > > +       spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
+> > > > +       if (!spec)
+> > > > +               return -ESRCH;
+> > > > +
+> > > > +       if (arg >= spec->arg_cnt)
+> > > > +               return -ENOENT;
+> > > > +
+> > > > +       arg_spec = &spec->args[arg];
+> > > > +       switch (arg_spec->arg_type) {
+> > >
+> > > Without bpf_cookie in the kernel each arg access is two lookups.
+> > > With bpf_cookie it's a single lookup in an array that is fast.
+> > > Multiply that cost by number of args.
+> > > Not a huge cost, but we can do better long term.
+> > >
+> > > How about annotating bpf_cookie with PTR_TO_BTF_ID at prog load time.
+> > > So that bpf_get_attach_cookie() returns PTR_TO_BTF_ID instead of long.
+> > > This way bpf_get_attach_cookie() can return
+> > > "struct __bpf_usdt_spec *".
+> > >
+> > > At attach time libbpf will provide populated 'struct __bpf_usdt_spec'
+> > > to the kernel and the kernel will copy the struct's data
+> > > in the bpf_link.
+> > > At detach time that memory is freed.
+> > >
+> > > Advantages:
+> > > - saves an array lookup at runtime
+> > > - no need to provide size for __bpf_usdt_specs map.
+> > >   That map is no longer needed.
+> > >   users don't need to worry about maxing out BPF_USDT_MAX_SPEC_CNT.
+> > > - libbpf doesn't need to populate __bpf_usdt_specs map
+> > >   libbpf doesn't need to allocate spec_id-s.
+> > >   libbpf will keep struct __bpf_usdt_spec per uprobe and
+> > >   pass it to the kernel at attach time to store in bpf_link.
+> > >
+> > > "cookie as ptr_to_btf_id" is a generic mechanism to provide a
+> > > blob of data to the bpf prog instead of a single "long".
+> > > That blob can be read/write too.
+> > > It can be used as per-program + per-attach point scratch area.
+> > > Similar to task/inode local storage...
+> > > That would be (prog, attach_point) local storage.
+> > >
+> > > Thoughts?
+> >
+> > Well, I'm not concerned about ARRAY lookup, as it is inlined and very
+> > fast. Sizing maps is hard and annoying, true, but I think we should
+> > eventually just have resizable or dynamically-sized BPF maps, which
+> > will be useful in a lot of other contexts.
+>
+> Yes. dynamically sized bpf maps would be great.
+> That's orthogonal.
+>
+> > We've had a discussion about a cookie that's bigger than 8 bytes with
+> > Daniel. I argued for simplicity and I still like it. If you think we
+> > should add blobs per attachment, it's fine, but let's keep it separate
+> > from the BPF cookie.
+>
+> Well, Daniel was right.
+> This USDT work is first real use of bpf_cookie and
+> it clearly demonstrates that bpf_cookie alone as 8-byte long
+> is not enough. The bpf progs have to do map lookup.
+> I bet the majority of bpf_cookie use cases will include map lookup.
 
+Well, yeah, absolutely, just how I argued when adding the BPF cookie.
+Map lookup was the idea from the very beginning. It was clear that
+only for most trivial use cases having u64 by itself would be enough,
+it was always the goal to use u64 as a look up key into whatever
+additional map (including hashmap) or global var array necessary.
 
-On 3/31/22 8:37 PM, Song Chen wrote:
-> 
-> 
-> 在 2022/4/1 11:01, Yonghong Song 写道:
->>
->>
->> On 3/31/22 6:41 PM, Song Chen wrote:
->>> syscall_tp only prints the map id and messages when something goes 
->>> wrong,
->>> but it doesn't print the value passed from bpf map. I think it's better
->>> to show that value to users.
->>>
->>> What's more, i also added a 2-second sleep before calling verify_map,
->>> to make the value more obvious.
->>>
->>> Signed-off-by: Song Chen <chensong_2000@189.cn>
->>> ---
->>>   samples/bpf/syscall_tp_user.c | 4 ++++
->>>   1 file changed, 4 insertions(+)
->>>
->>> diff --git a/samples/bpf/syscall_tp_user.c 
->>> b/samples/bpf/syscall_tp_user.c
->>> index a0ebf1833ed3..1faa7f08054e 100644
->>> --- a/samples/bpf/syscall_tp_user.c
->>> +++ b/samples/bpf/syscall_tp_user.c
->>> @@ -36,6 +36,9 @@ static void verify_map(int map_id)
->>>           fprintf(stderr, "failed: map #%d returns value 0\n", map_id);
->>>           return;
->>>       }
->>> +
->>> +    printf("verify map:%d val: %d\n", map_id, val);
->>
->> I am not sure how useful it is or anybody really cares.
->> This is just a sample to demonstrate how bpf tracepoint works.
->> The error path has error print out already.
+> In the case of USDT we were able to get away with array lookup
+> which is cheap, but we won't be that lucky next time.
 
-Considering we already have
-    printf("prog #%d: map ids %d %d\n", i, map0_fds[i], map1_fds[i]);
-I think your proposed additional printout
-    printf("verify map:%d val: %d\n", map_id, val);
-might be okay. The commit message should be rewritten
-to justify this change something like:
-    we already print out
-      prog <some number>: map ids <..> <...>
-    further print out
-       verify map: ...
-    will help user to understand the program runs successfully.
+Retsnoop is the second real use case for BPF cookie and there I just
+have a global var array. Works good as well. I think you are
+micro-optimizing around map look up in this case. Resizability/sizing
+the map is a bigger concern (not even necessarily a real problem) in
+practice, not the map lookup overhead.
 
-I think sleep(2) is unnecessary.
+> Hash lookup will be more costly and dynamically sized map
+> won't help the performance consideration.
 
->>
->>> +
->>>       val = 0;
->>>       if (bpf_map_update_elem(map_id, &key, &val, BPF_ANY) != 0) {
->>>           fprintf(stderr, "map_update failed: %s\n", strerror(errno));
->>> @@ -98,6 +101,7 @@ static int test(char *filename, int num_progs)
->>>       }
->>>       close(fd);
->>> +    sleep(2);
->>
->> The commit message mentioned this sleep(2) is
->> to make the value more obvious. I don't know what does this mean.
->> sleep(2) can be added only if it fixed a bug.
-> 
-> The value in bpf map means how many times trace_enter_open_at are 
-> triggered with tracepoint,sys_enter_openat. Sleep(2) is to enlarge the 
-> result, tell the user how many files are opened in the last 2 seconds.
-> 
-> It shows like this:
-> 
-> sudo ./samples/bpf/syscall_tp
-> prog #0: map ids 4 5
-> verify map:4 val: 253
-> verify map:5 val: 252
-> 
-> If we work harder, we can also print those files' name and opened by 
-> which process.
-> 
-> It's just an improvement instead of a bug fix, i will drop it if 
-> reviewers think it's unnecessary.
-> 
-> Thanks.
-> 
-> BR
-> 
-> chensong
->>
->>>       /* verify the map */
->>>       for (i = 0; i < num_progs; i++) {
->>>           verify_map(map0_fds[i]);
->>
+See above, I personally haven't been concerned with optimizing away
+hash map lookup. In my local benchmarking hash lookup costs 14ns vs
+4ns or ARRAY map lookup and 3ns global var array lookup. Yes, a bit
+slower, but not a huge deal. Given that uprobe activation takes on the
+order of 500ns, adding 14ns for single hashmap lookup seem ok to me.
+
+But to be clear, I think it would be great to have this ability to
+pre-allocate more storage per attachment. But with BPF cookie I wanted
+something simple to use both from BPF program side and set up from
+user-space side. And I think this feature provides that.
+
+Whatever we do with variable-sized per-attach storage won't be as
+straightforward. So it's worthwhile to consider it, but I still stand
+by BPF cookie's approach, which overall is more flexible. E.g., I can
+use the same cookie as a key into multiple independent maps, as
+necessary. I can utilize all the fancy spinlocks, timers, dynptrs,
+kptrs, etc inside map values without any extra verifier machinery and
+extra user-space setup. All the building blocks are at my disposal.
+
+But maybe what you want should be a special kind of local storage map
+where key (bpf_link, presumably) will be implicitly taken from
+bpf_run_ctx. Or something along those lines, so that one can utilize
+all the generic map_value features.
+
+>
+> It would be ok to keep ptr_to_btf_id separate from cookie only if
+> it won't sacrifice performance. The way cookie is shaping up
+> as part of bpf_run_ctx gives hope that they can stay separate.
+
+Yep, I think so.
+
+>
+> > As for the PTR_TO_BTF_ID, I'm a bit confused, as kernel doesn't know
+> > __bpf_usdt_spec type, it's not part of vmlinux BTF, so you are
+> > proposing to have PTR_TO_BTF_ID that points to user-provided type?
+>
+> Yes. It will be pointing to prog's BTF.
+>
+> > I'm
+> > not sure I see how exactly that will work from the verifier's
+> > standpoint, tbh. At least I don't see how verifier can allow more than
+> > just giving direct memory access to a memory buffer.
+>
+> It's a longer discussion, but user provided BTF doesn't mean
+> that it should be limited to scalars only.
+> Such struct can contain pointers too. Not on day one probably.
+> kptr and dynptr can be and should be allowed in user's BTFs eventually.
+
+I see. It seems like this will mean that this BTF ID will have to be
+provided during program load, not attach then? Assuming we have direct
+memory access to the cookie contents.
+
+Alternatively I can see how we can use dynptr to expose this memory to
+user-space. Though probably without BTF info. In any case, I agree
+it's bigger and separate discussion.
+
+>
+> > But then each
+> > uprobe attachment can have differently-sized blob, so statically
+> > verifying that during program load time is impossible.
+>
+> In this USDT case the __bpf_usdt_spec is fixed size for all attach points.
+> One ptr_to_btf_id as a cookie per program is a minor limitation.
+> I don't see a need to support different ptr_to_btf_id-s
+> in different attach points.
+> USDT use case doesn't need it at least.
+>
+> > In any case, I don't think we should wait for any extra kernel
+> > functionality to add USDT support. If we have some of those and they
+> > bring noticeable benefits, we can opportunistically use them, if the
+> > kernel is recent enough.
+>
+> Of course! It's not a blocker for libbpf usdt feature.
+> That's why this discussion is a separate thread.
+
+Ok, wasn't sure so wanted to double check. I guess I missed the new
+thread factor. As I mentioned above, I think this feature should still
+be separate and complementary to BPF cookie (especially that BPF
+cookie is UAPI anyways). And there are a bunch of ways we can go about
+it, with pros and cons each. Sounds like something that can be
+discussed at LSF/MM/BPF?
