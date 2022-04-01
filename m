@@ -2,234 +2,327 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A59C4EE569
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 02:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353444EE599
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 03:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240452AbiDAAkK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Mar 2022 20:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
+        id S240467AbiDABM5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Mar 2022 21:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbiDAAkJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Mar 2022 20:40:09 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1C4C61
-        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 17:38:18 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id w21so1099172pgm.7
-        for <bpf@vger.kernel.org>; Thu, 31 Mar 2022 17:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vCAk3z9cUX7xZG6ututuB3shKMTN3QyXcXoGAZaZQxk=;
-        b=NFRz+W/0cu5FPiOPmqebTNlZwQ7AN+xBYbZaMpzQxgkOyb8QKH2bwDOEMic8RmL0kC
-         tHqzmpEaExVUSt5OyrEP4H5J1aO4IIh7JnV42DHe8d4RyU1SgqbRavHmKUWIM8BuPwFE
-         XZtj2ULX67wWu6XPicBy8DL0Qqs7bOeo7HkvukJHO+Hdb89BgQImu3hgDc21p8zt6RPX
-         i6H41fKaUh6H884tqjaoG+NBzMCdOQ6KOMrkhaCLEKRPsNDrqPtQ7Cf+CYj5k6BB/3vm
-         hU5CuFcuGXMmyHl2KtsefuKgKtDKhHGe8iQbrOuxd7qurEqUgNGefExak+PTLlqMQvm0
-         L1vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vCAk3z9cUX7xZG6ututuB3shKMTN3QyXcXoGAZaZQxk=;
-        b=mhEwsKOxgu8nEWFnhbIirBkIEZHG6DDUsbH3/ZrRj9gZ/R+9ney4WWWUOg2Q+4Bpaj
-         2uDht66AafUds8adcF0SQRpSyhemltrAN9rpPMDDA/QcBVB/FclhScXCpvRbmFibmBAC
-         iSh9xBYjDaOwQBYqeZi/FA3NqyM2OH7QDx/VcPJFoMy6xFXotdor3jdsYqakCeUoJOIQ
-         XzENdiebJgAtbm6Vik+k/ydTjGmZSGKoCeDon1qzLmhqw30ahDbyOJ+xgzSR9ilVOXdw
-         GJfiweH8Y8u8dEwx01n42zVXPw74uvaJmQfmFdwEURr/9w0/edMF9PFieIqmhZPq0CMR
-         lf6w==
-X-Gm-Message-State: AOAM533f0LBs5jqSVIMSlCVEbCHTMrf31m9KqBCKsXoW5Xxtc/B0tziK
-        kRw7Xvh18a3274S4yiTgQrNrTl8y47pC+fw4SXQ=
-X-Google-Smtp-Source: ABdhPJwOoVT4iLYq8Zx5KqKf186aSro0O/c0iqXHxeLNehtFsfUUacY5/gIDcvn8VyB3CIvR8qyRwnQ4k4o6MgcBmRY=
-X-Received: by 2002:a05:6a00:1c9e:b0:4fa:d946:378b with SMTP id
- y30-20020a056a001c9e00b004fad946378bmr8147155pfw.46.1648773497859; Thu, 31
- Mar 2022 17:38:17 -0700 (PDT)
+        with ESMTP id S232280AbiDABM4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Mar 2022 21:12:56 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8627C3DDDC;
+        Thu, 31 Mar 2022 18:11:04 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22VNFrRr010862;
+        Thu, 31 Mar 2022 18:11:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-id : mime-version;
+ s=facebook; bh=qlLgtJFNO9h/QDi5dLuw+sKCjltuxDaqs4oDWfG743Q=;
+ b=Ic7Up5cl+jtBYo7QSRUyLig8FbDJ9DDnshdSuih5q7buXUMiV+wXvOTHKNfGaDtCi+Le
+ Fcdl75th0rwLsW0NG1f5aY+Uro4F+KQfxsOTsgrUyyvd7fBbCnDm5MkQnnOwBCdqpzcc
+ dr1sWTSA7Ek8dkSnSOPnMxlJhkh5oqhhoYc= 
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2173.outbound.protection.outlook.com [104.47.73.173])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f5gpck7k2-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Mar 2022 18:11:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QeMsLvKi4CpLoTs8+CWSyngxh6VPyFF1ZPJcTcXhyPahYNoO+kK/FkD9t9s22w9FiMCmNpAJlZfxygW69+1jt+R7coFRdo9F7Fp90WgGUFQ34mjOXeIQ/12lXKPuKLTanHT6N6clV7gYgV79yqb9ZNgjXkm8tpisPQN0jrtDgAyHvIkIEie6dysYLyiAFQ5q+Oizwgxs7MxpXlMvStP/W9LleAFdr8VpaBFFva0M6Lt1J5nprLeEsgaRKCc0JtCaYTBivQTU8+Vm5gUgHw/+BLMfUG6R/QvrM9pMlweZ7lxzmz3oKt2UJOOz4qf6JjB5VgnYlBRgT2WfFC935GbsGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qlLgtJFNO9h/QDi5dLuw+sKCjltuxDaqs4oDWfG743Q=;
+ b=kRgCiYXyPzl1V7xkJ/t06VTymzb1zTEXfR79Pn+S+aWcy8Dmes88TWZwknSZv2D4hUbiX97l8Yham0GNNYCQdRiVk/bctaewDzSqU9Pj5Ey4Pdnu35qw4Ju88x9UvmS35A1XhOjTVv/EZzbYAMpM/jMklirhGWWYV2gNAcUpzUIPo67Al2z65AxgbCkMHCcwRDBGHcJ8POyn9Uq59QXL5qEglkrgi3yUCHFrAoD59y+DyH7dNj/DOnKmwGAgacWAABKSml+t2vvoaT7Lai/D+s5qFsu/2oCT0TPioVtMRJH2395YtmH3YFJQjtsXYMTJ2rNabOjZ4+V9NxIPDjFkKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SJ0PR15MB4455.namprd15.prod.outlook.com (2603:10b6:a03:374::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.21; Fri, 1 Apr
+ 2022 01:11:01 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::58c9:859d:dc03:3bb4]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::58c9:859d:dc03:3bb4%3]) with mapi id 15.20.5123.021; Fri, 1 Apr 2022
+ 01:11:01 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: ftrace_direct (used by bpf trampoline) conflicts with live patch
+Thread-Topic: ftrace_direct (used by bpf trampoline) conflicts with live patch
+Thread-Index: AQHYRWVZy71R0I55UEO8sKeBatX2ng==
+Date:   Fri, 1 Apr 2022 01:11:01 +0000
+Message-ID: <0962AC9B-2FBD-4578-8B2F-A376A6B3B83F@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3693.60.0.1.1)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8dc4c255-7143-4e1c-7288-08da137c7c7e
+x-ms-traffictypediagnostic: SJ0PR15MB4455:EE_
+x-microsoft-antispam-prvs: <SJ0PR15MB44555C10DF0EF5540BF1BC32B3E09@SJ0PR15MB4455.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bWyhGJUZqCoNV4jxSuv6LC9SvFOOmeP+T6LiaGIxPN7sNwEF4eMh1lp3trswcRdfrzERySQeKUamMAQMG3rfGvHtoPxX1M+GIzf5Bh5+C4PSAGxPR2MbqtIqioj7gHKlN/ZtEl0jRz+WtwCsQymfMVfodEbQY0WjRLSbNgDdzZC1pV7S6zQ3hU/D+mG457v60Qdzbp3EpzZiExDettrHNFXBSeWI5LGqG4aGTaGEJBABmuqDWTFQ+jkxBwF9T84lB1vZGFXKTbCTPx7ZZlVPzBP4kEgEB2bB9pyUshSUkUOGYabOm0PCINxDDYUT85Vo5PpsfFtB3QmACkkRNULFzjs1MQiwnZpFw44T/onvq7ZMhBne5jn8bH+h3eyHQEYe1QnyBL6kB1gPQnzn/aJp9BcXbr47YfSSZ9YBBsnnqgpQfcU526WGBGv5MRP3og+BDr/yZsOcPYBc+wUcn1JQW/RQpWJeyePjk9GCkGrnB/UacBnCEBX/0Tc/wl0HP+9xy7iz1jDAvHFFcol8VRKysXYU+i/Xw9AU5cMVChbb3t7Fu3GAa6a7yvQ3KIxNi3U0RfRouXuUpwjTkHWwfDhCzq+N11jeKaNIszbyLgbYCEDM7ljx3RC85D00R8vWqyj7pwAcx1nJIGLrTM8H1Dj6jR1em2GgXjKp7AT4e7G7xh5jHx9KGrR92HiacrGvBHrPitJZAHCTJmTVKxQgHMhdYM133CgUyMYtfaUJfkA3sp42MtFTh3EsYZLrF0KFGU2P
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(36756003)(54906003)(2616005)(122000001)(38070700005)(2906002)(316002)(6486002)(6512007)(6506007)(6916009)(71200400001)(66946007)(76116006)(86362001)(66556008)(4326008)(5660300002)(8676002)(33656002)(66476007)(508600001)(64756008)(66446008)(38100700002)(91956017)(8936002)(83380400001)(186003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?loeHn04ZAGu8n8XL1Qvo8YAXwIk2EUNLPlpuMT2wA3kOD9S5mRF9Z8cDHNU8?=
+ =?us-ascii?Q?D3OuQO5qqgzf0KfA/7q8Dl8FiHfzaavHnuCpWQPL96NyswVdSFqVG9lJLWvd?=
+ =?us-ascii?Q?pbNC/0ORq1WXA+YIRCEqraUcIaDFUGa+SZ+TOp8SvwB+eJh3i2PXHMnAxtNP?=
+ =?us-ascii?Q?Nrv3CA/cReBV71yIcOTfnR3AUmLH2f1mg8/Or7fdnYzaonDOwbSWP7IDj8bZ?=
+ =?us-ascii?Q?mqg4IkugNvOg6L5CElekqBHmiqHeMs5lG4IPDm0ershLh1R5brzPnxTTrAgt?=
+ =?us-ascii?Q?kVhlxhUYz8Ca1x8OaBkGB9pNsZ++PZM8JFYvbjJCYx+9jHHO+vm0cWHoYvrQ?=
+ =?us-ascii?Q?CcjYXQnKK9My6hD3GTYAstKuJP9PWhlNuqbeDc/x9BHHE3GKctGlT5dbBHkY?=
+ =?us-ascii?Q?VjJWXH1vI9qUQY6dkgR6cv/cdVGNABVnV3xe+DyILqTwy/qtET+akaXYWT3o?=
+ =?us-ascii?Q?cJcTXYYlRu8ks8QUVVVZYMej5iquFUTzeK1dwfQuVn0+wTiwkvsqiKR9SNdl?=
+ =?us-ascii?Q?VafT5XcPYN+eZZop/jwKLlkHPoog+ZlbJUlBpO3P24f7G9DhSyNkKiOGAYm7?=
+ =?us-ascii?Q?VUkrLucUcfGEh20Xauw5kcji5Ezl8G4+noZv5aadR3I3ckUX4zv37BF8qab5?=
+ =?us-ascii?Q?UII3LMlgD9b9nD2lnExsqWUtWVF6v6OtrM2pGxUzcunITkSOOOodDstln+Ys?=
+ =?us-ascii?Q?hI7xOPFq4iZ5Ikp7iJ24u44Qt+d2n3LzL3seOTMSMLrqgZhJqNjKlCePKaEd?=
+ =?us-ascii?Q?YtE5e8hRbU5vGNZKRiqlJ0l6gO/Ytw0Yzhv8RoJAyVDT1PEiqSAjT/lRR61c?=
+ =?us-ascii?Q?JzUNXzPzQ9rn1aE1RfwZ7nyzhrWiE3eweNEY+ORrw6tPnn1ujOdQ0Vo43cp5?=
+ =?us-ascii?Q?N9zQkUD94IFWJyzF94tlf0+IyiPfSIr9gLU7E+Xw7DAo1RYuc+UubB4EqGPA?=
+ =?us-ascii?Q?nJVfESbI5+FeGs8jB8iBffnm4w2cXmLifcVzvfVNb1JRhSrwMwPgqB9XeYU9?=
+ =?us-ascii?Q?AyvmwjXha5sKfAWhvVjesyXgOmvpG4Y6FDn8uPd9+A8vytC43LaKfolAt5//?=
+ =?us-ascii?Q?i8hdCUsjL7ZriapBqrZ8ieikxF8WZtLCpA4j+WlcYRdyZ671DOGJxrZRE/pe?=
+ =?us-ascii?Q?/szYYF97JsvYw9oerXQca9xmfDrXU4dMeHRWB6QWlGm+I9xnXhGVApfAh55S?=
+ =?us-ascii?Q?YgFQe8cQ3j8OnM7svDWDaQ+LbzOe7+BBMiOJOPy+oSEqPsqXrhRiXlAMNNnn?=
+ =?us-ascii?Q?Kh54Y9lgPmj/nVCjUgZKuDvCOiEwKXhGRYu920JynwoQh3SPp0W9JPd250iN?=
+ =?us-ascii?Q?D/o/SUUjNWX4AUHDXbMagQFc3px8fe0uD7vb6HAQqogIRS8O6nJkR68xJMBP?=
+ =?us-ascii?Q?XJ1wED8V3dCaOBThI0nCaCuxNB2sXHV5mIDTGS4f6VzE3fLBkYywZL6MEaAp?=
+ =?us-ascii?Q?geVLd0nhdw/F+OJpHMND0Iuej70YRQMdbTGGbk0pk2XFAJPcHa8Zi7Wcwby4?=
+ =?us-ascii?Q?vjpOozJbJix589Zn6YZTBukwlaPrdGbT2b5mZISSawXNVStYgD1B9yayem0P?=
+ =?us-ascii?Q?Cg5HWPj6Y5rf1ervG8tEJJccRayLPwoXv20Me3SC2WK7r/abTFl7BRIx4xvg?=
+ =?us-ascii?Q?9MsbS3FIAocPm+zmvN4skX8+BqBUKo4zVerhafNMfVjJNMAtsK9ZPCOaXItL?=
+ =?us-ascii?Q?1REB1Ufw3Gt1+7X7wAivMoT79F5+ZVQmnisGx00UczdfebzmZh4WiD1pkExO?=
+ =?us-ascii?Q?y/t8ZEUCl/gZPc+DcWXrQicNY+tXdEWUMr1ld+xQG+r6AIZD8ZyX?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <25FD766B1AF48B43917ABFC70E1DFEBF@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-References: <20220325052941.3526715-1-andrii@kernel.org> <20220325052941.3526715-2-andrii@kernel.org>
- <CAADnVQLkYb6NiEq=bkP_AC4pj8OFC1achC8m9UdEhwWp4ahrFw@mail.gmail.com> <CAEf4Bza9_L=biSu_G_ux9vgn05LVTLVdfpfi3P_XH421SeH_4g@mail.gmail.com>
-In-Reply-To: <CAEf4Bza9_L=biSu_G_ux9vgn05LVTLVdfpfi3P_XH421SeH_4g@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 31 Mar 2022 17:38:07 -0700
-Message-ID: <CAADnVQKuxEj63pGfHgB04n2BBNja+2NuRJXMjZrvx-4SB8ZX8A@mail.gmail.com>
-Subject: Re: program local storage. Was: [PATCH bpf-next 1/7] libbpf: add
- BPF-side of USDT support
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8dc4c255-7143-4e1c-7288-08da137c7c7e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2022 01:11:01.1255
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HiGeaZls1JM2DOA9RRhSI5R9xMa9g4iAY7VRWY518lsdYO6Gk+AumXE37ZXP0CqI4nAlodURCH1wrhSi/pkInQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4455
+X-Proofpoint-ORIG-GUID: mmOVksDYiXRomkPagsRIAjLgwKwgN054
+X-Proofpoint-GUID: mmOVksDYiXRomkPagsRIAjLgwKwgN054
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-31_06,2022-03-31_01,2022-02-23_01
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 1:13 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Mar 31, 2022 at 11:34 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Mar 24, 2022 at 10:30 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> > > +
-> > > +struct __bpf_usdt_arg_spec {
-> > > +       __u64 val_off;
-> > > +       enum __bpf_usdt_arg_type arg_type;
-> > > +       short reg_off;
-> > > +       bool arg_signed;
-> > > +       char arg_bitshift;
-> > > +};
-> > > +
-> > > +/* should match USDT_MAX_ARG_CNT in usdt.c exactly */
-> > > +#define BPF_USDT_MAX_ARG_CNT 12
-> > > +struct __bpf_usdt_spec {
-> > > +       struct __bpf_usdt_arg_spec args[BPF_USDT_MAX_ARG_CNT];
-> > > +       __u64 usdt_cookie;
-> > > +       short arg_cnt;
-> > > +};
-> > > +
-> > > +__weak struct {
-> > > +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > +       __uint(max_entries, BPF_USDT_MAX_SPEC_CNT);
-> > > +       __type(key, int);
-> > > +       __type(value, struct __bpf_usdt_spec);
-> > > +} __bpf_usdt_specs SEC(".maps");
-> > > +
-> > > +__weak struct {
-> > > +       __uint(type, BPF_MAP_TYPE_HASH);
-> > > +       __uint(max_entries, BPF_USDT_MAX_IP_CNT);
-> > > +       __type(key, long);
-> > > +       __type(value, struct __bpf_usdt_spec);
-> > > +} __bpf_usdt_specs_ip_to_id SEC(".maps");
-> > ...
-> >
-> > > +
-> > > +/* Fetch USDT argument *arg* (zero-indexed) and put its value into *res.
-> > > + * Returns 0 on success; negative error, otherwise.
-> > > + * On error *res is guaranteed to be set to zero.
-> > > + */
-> > > +__hidden __weak
-> > > +int bpf_usdt_arg(struct pt_regs *ctx, int arg, long *res)
-> > > +{
-> > > +       struct __bpf_usdt_spec *spec;
-> > > +       struct __bpf_usdt_arg_spec *arg_spec;
-> > > +       unsigned long val;
-> > > +       int err, spec_id;
-> > > +
-> > > +       *res = 0;
-> > > +
-> > > +       spec_id = __bpf_usdt_spec_id(ctx);
-> > > +       if (spec_id < 0)
-> > > +               return -ESRCH;
-> > > +
-> > > +       spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
-> > > +       if (!spec)
-> > > +               return -ESRCH;
-> > > +
-> > > +       if (arg >= spec->arg_cnt)
-> > > +               return -ENOENT;
-> > > +
-> > > +       arg_spec = &spec->args[arg];
-> > > +       switch (arg_spec->arg_type) {
-> >
-> > Without bpf_cookie in the kernel each arg access is two lookups.
-> > With bpf_cookie it's a single lookup in an array that is fast.
-> > Multiply that cost by number of args.
-> > Not a huge cost, but we can do better long term.
-> >
-> > How about annotating bpf_cookie with PTR_TO_BTF_ID at prog load time.
-> > So that bpf_get_attach_cookie() returns PTR_TO_BTF_ID instead of long.
-> > This way bpf_get_attach_cookie() can return
-> > "struct __bpf_usdt_spec *".
-> >
-> > At attach time libbpf will provide populated 'struct __bpf_usdt_spec'
-> > to the kernel and the kernel will copy the struct's data
-> > in the bpf_link.
-> > At detach time that memory is freed.
-> >
-> > Advantages:
-> > - saves an array lookup at runtime
-> > - no need to provide size for __bpf_usdt_specs map.
-> >   That map is no longer needed.
-> >   users don't need to worry about maxing out BPF_USDT_MAX_SPEC_CNT.
-> > - libbpf doesn't need to populate __bpf_usdt_specs map
-> >   libbpf doesn't need to allocate spec_id-s.
-> >   libbpf will keep struct __bpf_usdt_spec per uprobe and
-> >   pass it to the kernel at attach time to store in bpf_link.
-> >
-> > "cookie as ptr_to_btf_id" is a generic mechanism to provide a
-> > blob of data to the bpf prog instead of a single "long".
-> > That blob can be read/write too.
-> > It can be used as per-program + per-attach point scratch area.
-> > Similar to task/inode local storage...
-> > That would be (prog, attach_point) local storage.
-> >
-> > Thoughts?
->
-> Well, I'm not concerned about ARRAY lookup, as it is inlined and very
-> fast. Sizing maps is hard and annoying, true, but I think we should
-> eventually just have resizable or dynamically-sized BPF maps, which
-> will be useful in a lot of other contexts.
+Hi Steven, 
 
-Yes. dynamically sized bpf maps would be great.
-That's orthogonal.
+We hit an issue with bpf trampoline and kernel live patch on the 
+same function. 
 
-> We've had a discussion about a cookie that's bigger than 8 bytes with
-> Daniel. I argued for simplicity and I still like it. If you think we
-> should add blobs per attachment, it's fine, but let's keep it separate
-> from the BPF cookie.
+Basically, we have tracing and live patch on the same function. 
+If we use kprobe (over ftrace) for tracing, it works fine with 
+live patch. However, fentry on the same function does not work 
+with live patch (the one comes later fails to attach).
 
-Well, Daniel was right.
-This USDT work is first real use of bpf_cookie and
-it clearly demonstrates that bpf_cookie alone as 8-byte long
-is not enough. The bpf progs have to do map lookup.
-I bet the majority of bpf_cookie use cases will include map lookup.
-In the case of USDT we were able to get away with array lookup
-which is cheap, but we won't be that lucky next time.
-Hash lookup will be more costly and dynamically sized map
-won't help the performance consideration.
+After digging into this, I found this is because bpf trampoline
+uses register_ftrace_direct, which enables IPMODIFY by default. 
+OTOH, it seems that BPF doesn't really need IPMODIFY. As BPF 
+trampoline does a "goto do_fexit" in jit for BPF_TRAMP_MODIFY_RETURN.
 
-It would be ok to keep ptr_to_btf_id separate from cookie only if
-it won't sacrifice performance. The way cookie is shaping up
-as part of bpf_run_ctx gives hope that they can stay separate.
+IIUC, we can let bpf trampoline and live patch work together with
+an ipmodify-less version of register_ftrace_direct, like attached 
+below. 
 
-> As for the PTR_TO_BTF_ID, I'm a bit confused, as kernel doesn't know
-> __bpf_usdt_spec type, it's not part of vmlinux BTF, so you are
-> proposing to have PTR_TO_BTF_ID that points to user-provided type?
+Does this make sense to you? Did I miss something?
 
-Yes. It will be pointing to prog's BTF.
+Thanks in advance,
+Song
 
-> I'm
-> not sure I see how exactly that will work from the verifier's
-> standpoint, tbh. At least I don't see how verifier can allow more than
-> just giving direct memory access to a memory buffer.
 
-It's a longer discussion, but user provided BTF doesn't mean
-that it should be limited to scalars only.
-Such struct can contain pointers too. Not on day one probably.
-kptr and dynptr can be and should be allowed in user's BTFs eventually.
 
-> But then each
-> uprobe attachment can have differently-sized blob, so statically
-> verifying that during program load time is impossible.
-
-In this USDT case the __bpf_usdt_spec is fixed size for all attach points.
-One ptr_to_btf_id as a cookie per program is a minor limitation.
-I don't see a need to support different ptr_to_btf_id-s
-in different attach points.
-USDT use case doesn't need it at least.
-
-> In any case, I don't think we should wait for any extra kernel
-> functionality to add USDT support. If we have some of those and they
-> bring noticeable benefits, we can opportunistically use them, if the
-> kernel is recent enough.
-
-Of course! It's not a blocker for libbpf usdt feature.
-That's why this discussion is a separate thread.
+diff --git i/include/linux/ftrace.h w/include/linux/ftrace.h
+index ed8cf433a46a..46c40f0e0368 100644
+--- i/include/linux/ftrace.h
++++ w/include/linux/ftrace.h
+@@ -326,6 +326,8 @@ struct dyn_ftrace;
+ extern int ftrace_direct_func_count;
+ int register_ftrace_direct(unsigned long ip, unsigned long addr);
+ int unregister_ftrace_direct(unsigned long ip, unsigned long addr);
++int register_ftrace_direct_no_ipmodify(unsigned long ip, unsigned long addr);
++int unregister_ftrace_direct_no_ipmodify(unsigned long ip, unsigned long addr);
+ int modify_ftrace_direct(unsigned long ip, unsigned long old_addr, unsigned long new_addr);
+ struct ftrace_direct_func *ftrace_find_direct_func(unsigned long addr);
+ int ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
+diff --git i/kernel/bpf/trampoline.c w/kernel/bpf/trampoline.c
+index ada97751ae1b..52ff503692cb 100644
+--- i/kernel/bpf/trampoline.c
++++ w/kernel/bpf/trampoline.c
+@@ -123,7 +123,7 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
+ 	int ret;
+ 
+ 	if (tr->func.ftrace_managed)
+-		ret = unregister_ftrace_direct((long)ip, (long)old_addr);
++		ret = unregister_ftrace_direct_no_ipmodify((long)ip, (long)old_addr);
+ 	else
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
+ 
+@@ -159,7 +159,7 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+ 		return -ENOENT;
+ 
+ 	if (tr->func.ftrace_managed)
+-		ret = register_ftrace_direct((long)ip, (long)new_addr);
++		ret = register_ftrace_direct_no_ipmodify((long)ip, (long)new_addr);
+ 	else
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
+ 
+diff --git i/kernel/trace/ftrace.c w/kernel/trace/ftrace.c
+index 4f1d2f5e7263..afb5598c103f 100644
+--- i/kernel/trace/ftrace.c
++++ w/kernel/trace/ftrace.c
+@@ -2467,6 +2467,20 @@ struct ftrace_ops direct_ops = {
+ 	 */
+ 	.trampoline	= FTRACE_REGS_ADDR,
+ };
++
++struct ftrace_ops no_ipmodify_direct_ops = {
++	.func		= call_direct_funcs,
++	.flags		= FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS
++			  | FTRACE_OPS_FL_PERMANENT,
++	/*
++	 * By declaring the main trampoline as this trampoline
++	 * it will never have one allocated for it. Allocated
++	 * trampolines should not call direct functions.
++	 * The direct_ops should only be called by the builtin
++	 * ftrace_regs_caller trampoline.
++	 */
++	.trampoline	= FTRACE_REGS_ADDR,
++};
+ #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
+ 
+ /**
+@@ -5126,6 +5140,9 @@ static struct ftrace_direct_func *ftrace_alloc_direct_func(unsigned long addr)
+ 	return direct;
+ }
+ 
++static int __register_ftrace_direct(unsigned long ip, unsigned long addr,
++				    struct ftrace_ops *ops);
++
+ /**
+  * register_ftrace_direct - Call a custom trampoline directly
+  * @ip: The address of the nop at the beginning of a function
+@@ -5144,6 +5161,12 @@ static struct ftrace_direct_func *ftrace_alloc_direct_func(unsigned long addr)
+  *  -ENOMEM - There was an allocation failure.
+  */
+ int register_ftrace_direct(unsigned long ip, unsigned long addr)
++{
++	return __register_ftrace_direct(ip, addr, &direct_ops);
++}
++
++static int __register_ftrace_direct(unsigned long ip, unsigned long addr,
++				    struct ftrace_ops *ops)
+ {
+ 	struct ftrace_direct_func *direct;
+ 	struct ftrace_func_entry *entry;
+@@ -5194,14 +5217,14 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
+ 	if (!entry)
+ 		goto out_unlock;
+ 
+-	ret = ftrace_set_filter_ip(&direct_ops, ip, 0, 0);
++	ret = ftrace_set_filter_ip(ops, ip, 0, 0);
+ 	if (ret)
+ 		remove_hash_entry(direct_functions, entry);
+ 
+-	if (!ret && !(direct_ops.flags & FTRACE_OPS_FL_ENABLED)) {
+-		ret = register_ftrace_function(&direct_ops);
++	if (!ret && !(ops->flags & FTRACE_OPS_FL_ENABLED)) {
++		ret = register_ftrace_function(ops);
+ 		if (ret)
+-			ftrace_set_filter_ip(&direct_ops, ip, 1, 0);
++			ftrace_set_filter_ip(ops, ip, 1, 0);
+ 	}
+ 
+ 	if (ret) {
+@@ -5230,6 +5253,29 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
+ }
+ EXPORT_SYMBOL_GPL(register_ftrace_direct);
+ 
++/**
++ * register_ftrace_direct_no_ipmodify - Call a custom trampoline directly.
++ * The custom trampoline should not use IP_MODIFY.
++ * @ip: The address of the nop at the beginning of a function
++ * @addr: The address of the trampoline to call at @ip
++ *
++ * This is used to connect a direct call from the nop location (@ip)
++ * at the start of ftrace traced functions. The location that it calls
++ * (@addr) must be able to handle a direct call, and save the parameters
++ * of the function being traced, and restore them (or inject new ones
++ * if needed), before returning.
++ *
++ * Returns:
++ *  0 on success
++ *  -EBUSY - Another direct function is already attached (there can be only one)
++ *  -ENODEV - @ip does not point to a ftrace nop location (or not supported)
++ *  -ENOMEM - There was an allocation failure.
++ */
++int register_ftrace_direct_no_ipmodify(unsigned long ip, unsigned long addr)
++{
++	return __register_ftrace_direct(ip, addr, &no_ipmodify_direct_ops);
++}
++
+ static struct ftrace_func_entry *find_direct_entry(unsigned long *ip,
+ 						   struct dyn_ftrace **recp)
+ {
+@@ -5257,7 +5303,21 @@ static struct ftrace_func_entry *find_direct_entry(unsigned long *ip,
+ 	return entry;
+ }
+ 
++static int __unregister_ftrace_direct(unsigned long ip, unsigned long addr,
++				      struct ftrace_ops *ops);
++
+ int unregister_ftrace_direct(unsigned long ip, unsigned long addr)
++{
++	return __unregister_ftrace_direct(ip, addr, &direct_ops);
++}
++
++int unregister_ftrace_direct_no_ipmodify(unsigned long ip, unsigned long addr)
++{
++	return __unregister_ftrace_direct(ip, addr, &no_ipmodify_direct_ops);
++}
++
++static int __unregister_ftrace_direct(unsigned long ip, unsigned long addr,
++				      struct ftrace_ops *ops)
+ {
+ 	struct ftrace_direct_func *direct;
+ 	struct ftrace_func_entry *entry;
+@@ -5274,11 +5334,11 @@ int unregister_ftrace_direct(unsigned long ip, unsigned long addr)
+ 	if (!entry)
+ 		goto out_unlock;
+ 
+-	hash = direct_ops.func_hash->filter_hash;
++	hash = ops->func_hash->filter_hash;
+ 	if (hash->count == 1)
+-		unregister_ftrace_function(&direct_ops);
++		unregister_ftrace_function(ops);
+ 
+-	ret = ftrace_set_filter_ip(&direct_ops, ip, 1, 0);
++	ret = ftrace_set_filter_ip(ops, ip, 1, 0);
+ 
+ 	WARN_ON(ret);
+ 
