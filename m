@@ -2,88 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 064904EEBE5
-	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 13:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24784EEC00
+	for <lists+bpf@lfdr.de>; Fri,  1 Apr 2022 13:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345280AbiDALCE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 07:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        id S1345367AbiDALIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 07:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345275AbiDALCD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 07:02:03 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0914103DAD;
-        Fri,  1 Apr 2022 04:00:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 60256B82480;
-        Fri,  1 Apr 2022 11:00:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 168B7C34113;
-        Fri,  1 Apr 2022 11:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648810812;
-        bh=NXcJ74xjotiGT+sguDvAml77hcKVu7uhqfFa6KCk7D4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Vcycb6crTjVt6xUcVk1p4k2iLTsJgnG++m8gGY238PNwZeqctQD0dcG/PSOYTtAHt
-         rp4cUj44JAqKB49ynxMkQS9MOgp7wWJRauRCP3LFkyi6djgL07Wby3sb0xECmP1/JZ
-         A/RhJTUcw3F+iSFhfF0CaFLhAAq50Zp8IUi3aWC7LU+sa1V1IcnDxJzOF2T5V5hClR
-         PbjR41vcerhy8ika0ZsSKsOyhGyTclsTR9ntUllDpLyax5jlTQIzUUCEzlemNO7+pZ
-         iHspWrRJzMOMiWbsnL7vTTddLTYMKUCh14FE0kGkzDF5jv1ZpcxeTix/ne3VPREbjH
-         7lVM0v0X3HnOw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E600AF0384A;
-        Fri,  1 Apr 2022 11:00:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: sfc: add missing xdp queue reinitialization
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164881081193.13357.15286067348950686490.git-patchwork-notify@kernel.org>
-Date:   Fri, 01 Apr 2022 11:00:11 +0000
-References: <20220330163703.25086-1-ap420073@gmail.com>
-In-Reply-To: <20220330163703.25086-1-ap420073@gmail.com>
+        with ESMTP id S1345335AbiDALIA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 07:08:00 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA23226FA;
+        Fri,  1 Apr 2022 04:06:10 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id p26-20020a05600c1d9a00b0038ccbff1951so3178244wms.1;
+        Fri, 01 Apr 2022 04:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wImnV8rTdUbT+D4vFE47rEe27B+UpCvY+mZ1m0Esjpw=;
+        b=SGRTN4hQcmzee66KzYgXLOXEaj1FTFXG6HIDWSLepMIAPz7BkPD+hYMXBfb8YpeKf+
+         RTY3K6ZSHCJv9YDtJm4IHqotp0+FVAjkB5fnC3FjHrdIHjJ1e86QmCXuztqAhZsdq+dY
+         q7BvS73d9J++UH2r5HF/FR88RGLwDIwPF+ZS2cl5G/vhiuFw5ewI5zYkYv2pxuJ1uV28
+         non3US7tD64QzAnuUnjBNRyifIcCyCHItav150T58irYBDYwVQAb5grkCgBDSRsMfD9+
+         3+Ffl5AMuN2vl7VW312/nNLxEYEcFJu7WlKw44f94+xbmWOXa7BXsAF7ECuCjDkFKcwD
+         IZfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=wImnV8rTdUbT+D4vFE47rEe27B+UpCvY+mZ1m0Esjpw=;
+        b=B+3mmWWPIULt5ifVZ6bBwj+XLPsq9lmnFq7PRDefLGtflcGojWbG7CB9mefRIn21FT
+         DBr7QRgt/NK8wTataeGmxQKh5rTMAGgE1NNZKKqGxB2buuRe9MIMNba0hx2N2qwsGDW3
+         6HYd6cRpdxzs+DVlUDEZj+yqJ34lcY+ln33MK1ywTLRVLcXIxQ5VMv7vC2LlwiusLyXF
+         XA2gWTs6idl7roLrR6NX5oFvdW2YqxppxA3rdoC30L3otRbFoDT8TRLNavG5MGcUnGLP
+         Rh/mSKaUaDjWjnZRpbdySrVPyztbA+rGrRrNfVKJPu1MCyGL9pE2XIJj7Qg5z3N6qf/U
+         GfkQ==
+X-Gm-Message-State: AOAM532hTPdnBlqr5ssFLQ945Wtc+SBvw/UFr9OHtiz/bgnjcb+2yd1m
+        KXXiZpVx6lD25wn4FSMC2sA=
+X-Google-Smtp-Source: ABdhPJx8XEBs4xl1nwghvJKsDKaG5UrHLt5e+PVdTit6UZP2JqHDc6JWsZvsHE5Euw38Uqx/7Lo6QA==
+X-Received: by 2002:a05:600c:4110:b0:38c:ba41:9fb with SMTP id j16-20020a05600c411000b0038cba4109fbmr8277399wmi.47.1648811169186;
+        Fri, 01 Apr 2022 04:06:09 -0700 (PDT)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id p8-20020a5d4e08000000b002054b5437f2sm1743650wrt.115.2022.04.01.04.06.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 01 Apr 2022 04:06:08 -0700 (PDT)
+Date:   Fri, 1 Apr 2022 12:06:06 +0100
+From:   Martin Habets <habetsm.xilinx@gmail.com>
 To:     Taehee Yoo <ap420073@gmail.com>
 Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
-        ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        cmclachlan@solarflare.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        ecree.xilinx@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, habetsm.xilinx@gmail.com
+Subject: Re: [PATCH net v2] net: sfc: add missing xdp queue reinitialization
+Message-ID: <20220401110606.whyr5hnesb4ya67q@gmail.com>
+Mail-Followup-To: Taehee Yoo <ap420073@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, ecree.xilinx@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com
+References: <20220330163703.25086-1-ap420073@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220330163703.25086-1-ap420073@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi Taehee,
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+Thanks for looking into this. Unfortunately efx_realloc_channels()
+has turned out to be quite fragile over the years, so I'm
+keen to remove it in stead of patching it up all the time.
 
-On Wed, 30 Mar 2022 16:37:03 +0000 you wrote:
-> After rx/tx ring buffer size is changed, kernel panic occurs when
-> it acts XDP_TX or XDP_REDIRECT.
-> 
-> When tx/rx ring buffer size is changed(ethtool -G), sfc driver
-> reallocates and reinitializes rx and tx queues and their buffer
-> (tx_queue->buffer).
-> But it misses reinitializing xdp queues(efx->xdp_tx_queues).
-> So, while it is acting XDP_TX or XDP_REDIRECT, it uses the uninitialized
-> tx_queue->buffer.
-> 
-> [...]
+Could you try the patch below please?
+If it works ok for you as well we'll be able to remove
+efx_realloc_channels(). The added advantage of this approach
+is that the netdev notifiers get informed of the change.
 
-Here is the summary with links:
-  - [net,v2] net: sfc: add missing xdp queue reinitialization
-    https://git.kernel.org/netdev/net/c/059a47f1da93
+Regards,
+Martin Habets <habetsm.xilinx@gmail.com>
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+---
+ drivers/net/ethernet/sfc/ethtool.c |   13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-
+diff --git a/drivers/net/ethernet/sfc/ethtool.c b/drivers/net/ethernet/sfc/ethtool.c
+index 48506373721a..8cfbe61737bb 100644
+--- a/drivers/net/ethernet/sfc/ethtool.c
++++ b/drivers/net/ethernet/sfc/ethtool.c
+@@ -179,6 +179,7 @@ efx_ethtool_set_ringparam(struct net_device *net_dev,
+ {
+ 	struct efx_nic *efx = netdev_priv(net_dev);
+ 	u32 txq_entries;
++	int rc = 0;
+ 
+ 	if (ring->rx_mini_pending || ring->rx_jumbo_pending ||
+ 	    ring->rx_pending > EFX_MAX_DMAQ_SIZE ||
+@@ -198,7 +199,17 @@ efx_ethtool_set_ringparam(struct net_device *net_dev,
+ 			   "increasing TX queue size to minimum of %u\n",
+ 			   txq_entries);
+ 
+-	return efx_realloc_channels(efx, ring->rx_pending, txq_entries);
++	/* Apply the new settings */
++	efx->rxq_entries = ring->rx_pending;
++	efx->txq_entries = ring->tx_pending;
++
++	/* Update the datapath with the new settings if the interface is up */
++	if (!efx_check_disabled(efx) && netif_running(efx->net_dev)) {
++		dev_close(net_dev);
++		rc = dev_open(net_dev, NULL);
++	}
++
++	return rc;
+ }
+ 
+ static void efx_ethtool_get_wol(struct net_device *net_dev,
