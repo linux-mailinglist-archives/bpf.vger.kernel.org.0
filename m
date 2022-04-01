@@ -2,254 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F2F4EFCC0
-	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 00:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307A14EFD49
+	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 01:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348309AbiDAWX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 18:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
+        id S1347841AbiDAX5f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 19:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236004AbiDAWX5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 18:23:57 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C8D1FD2D1;
-        Fri,  1 Apr 2022 15:22:06 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 231LiNWZ008939;
-        Fri, 1 Apr 2022 15:22:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=CSwGuyNlOfVhx3oR45AF+Ns/BVmACswQhOICLzHAzAs=;
- b=QFk80XA3m0B70o4SxTysPuaq4jHnDiP6jBYvH6nQH+j0uNJCUsnvEL4fi/JfxUkvonqo
- ytBxSaNOf7PM3wNzjS8WEZTeQnvGDZuAdZG8/ttVRb2Y4j8E/B4j++dqcmKMGhy5T6FJ
- XIRaoQUW8fF8AcOlWSSUxz9rTSgvQtCMvDs= 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f5gpf22t8-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Apr 2022 15:22:05 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WFOALSiaCP7BJN/jiFSEO+N1maDnBF3K56V3SyqrXwnRK4QrPmXLCpaT0cURMMyTVYw4/PpIAeD0sLslMmV3eTgKEVQ3xsf9OtKgVjoWawJaOmqgYt6xzsSnPW6kbYto7+Alc2oyl/McdVc3QGRb/ZaQ8zvXjergRiBt7HVqsu4pKanOKRRo3C+CdcSYqZtNhe+YDJXrQuqy/nk+/gl52x4UtkgpqBktyU0sFGFtMzuobSXuuVGhhtGo2DC/UD/XsG8MSw4RDh3qW2Sm0TRdlg2AIyutEaEvYbNdDEBOaKHY+IlI1oxpi2YuDHwyCkmMwzZOgat6Ph9vqbI4KEtKLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CSwGuyNlOfVhx3oR45AF+Ns/BVmACswQhOICLzHAzAs=;
- b=iR7w8m+mSSJOKCT3l7quHPY/hQ68LxirP3GZ8V1ztA+yv4OUVh4NeBp6nBoQKDRBVkKTTRr/sTLyYJmSJo3Zr2BZ7ORYqc2QRx25jCAuAHit4B4IDeI7Qi/h8BDBtyfAcCfcDytfV7QP/yfrTN9XULlsvC1XMldfs7YzzT0w8U+vLqlxkthPvDgORduBFUzi2EWNJL+SrLrvNelGY0QxTAXNVOaRopQTLTxvla9WgVLDPs6B5Uu+AsfWLaTEgolrRf/z6meJIwatRWIdD00QHm5MBPg1L5+84MMX9nAXsszxDntgyvWcMXRBbZevnrJ7yRpnv7deZVIkjdDDYVnyow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from PH0PR15MB5117.namprd15.prod.outlook.com (2603:10b6:510:c4::8)
- by BYAPR15MB3078.namprd15.prod.outlook.com (2603:10b6:a03:fe::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.29; Fri, 1 Apr
- 2022 22:22:02 +0000
-Received: from PH0PR15MB5117.namprd15.prod.outlook.com
- ([fe80::e487:483c:b214:c999]) by PH0PR15MB5117.namprd15.prod.outlook.com
- ([fe80::e487:483c:b214:c999%3]) with mapi id 15.20.5123.026; Fri, 1 Apr 2022
- 22:22:00 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-CC:     Song Liu <song@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S233669AbiDAX5e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 19:57:34 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D03C506F8;
+        Fri,  1 Apr 2022 16:55:43 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id bc27so3514007pgb.4;
+        Fri, 01 Apr 2022 16:55:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ITDDF7wJMqoC4D+CMFddkLEBVT+cz8yxZasDs7bEqHU=;
+        b=lKGmW1uWP9QHlp4AUB8qvKmffBMuUV67+V/VNWVRF6rOOYUbY+74bGyNvz0/RaZGm0
+         /6a1CNZPKF9XX8ufK2skUi/JsjqwRe6QpfBWIMc4Hugbu/pi7xgtDj+QZhrsm47b6P7e
+         MOqTKbiXouVj0rKUrNmMDVRTSskLt1rtHCZgGPxPtO+6WMOtlhB0VeWkxpTII8BpF4Ar
+         ZZYmaNBpe+zxwun2L8jgoYeVVLVEgsbprrzeDw5z0zV8K8N7UqRI1RkpiMq9kECPUC5M
+         X+EyGGzgnmy6ExUyqWapnwBhOaROd4ahOlRCHdELR9gEp0stA9O6L/EGZyJY8XyOLX00
+         1z1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ITDDF7wJMqoC4D+CMFddkLEBVT+cz8yxZasDs7bEqHU=;
+        b=t6m6Wa6ns29KkvIODqEKUi3IJIvq8yJQJ1SAO2CFxrrY4nh34zbp6GZ4VK4yjgitHq
+         gRAbHWUGQ5Tlg7Ff3YhoNSeozgVLUpNs2UqU/M1eenvR+Vf4lLzF5yuyGSUw/YfyUfDm
+         6UxHo3iOwjb1BeZteRXbgchtmbiJFivGh7vleyZtHLjCllFldnlz5khDkoJRhcpIeJ4A
+         4jSUBJsAu6s4ZEndjLA4gjkcf/5FPn9RK61rK6fDnB0b7Eo7smymT/00hW2PCFIMX2QK
+         HyczYje+Hr05tfZEAjlZR8hcNJzolTyyQcC7NTMR2w9JDykMq26Q3eBcgI1r4/6Y8cvO
+         rAkw==
+X-Gm-Message-State: AOAM530tOaF4jSnxTrm7cwfBoa3r+dgUK9RFrtnBdLvGtr0lIn+WwneT
+        2pbiMjQ0EgtwBIRGVS2lfGE=
+X-Google-Smtp-Source: ABdhPJw5mHEx3OXRCJwg5BH/o7y2KBgiA/EPycjlEwRTxtui+XCnm3ENGoJTUYt+IJX/yfQbKijNJA==
+X-Received: by 2002:a62:84d3:0:b0:4fa:72e2:1c64 with SMTP id k202-20020a6284d3000000b004fa72e21c64mr47407413pfd.29.1648857342449;
+        Fri, 01 Apr 2022 16:55:42 -0700 (PDT)
+Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::5:fb6e])
+        by smtp.gmail.com with ESMTPSA id j7-20020a056a00130700b004b9f7cd94a4sm4230615pfu.56.2022.04.01.16.55.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Apr 2022 16:55:41 -0700 (PDT)
+Date:   Fri, 1 Apr 2022 16:55:37 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "andrii@kernel.org" <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>
-Subject: Re: [PATCH bpf 0/4] introduce HAVE_ARCH_HUGE_VMALLOC_FLAG for
- bpf_prog_pack
-Thread-Topic: [PATCH bpf 0/4] introduce HAVE_ARCH_HUGE_VMALLOC_FLAG for
- bpf_prog_pack
-Thread-Index: AQHYRIo6ffSmNDMip0KdC6K8yX1qc6zY+Z8AgAE0IQCAAXb7AA==
-Date:   Fri, 1 Apr 2022 22:22:00 +0000
-Message-ID: <6AA91984-7DF3-4820-91DF-DD6CA251B638@fb.com>
-References: <20220330225642.1163897-1-song@kernel.org>
- <YkU+ADIeWACbgFNA@infradead.org>
- <F3447905-8D42-46C0-B324-988A0E4E52E7@fb.com>
-In-Reply-To: <F3447905-8D42-46C0-B324-988A0E4E52E7@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.80.82.1.1)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7487b96b-0b9d-40dd-e58c-08da142e0acb
-x-ms-traffictypediagnostic: BYAPR15MB3078:EE_
-x-microsoft-antispam-prvs: <BYAPR15MB3078EFDA407B6B1CCB64AB37B3E09@BYAPR15MB3078.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KP8do39+gGHB+TNqOgbbDhSipNfnPekOgSg0HXIlA6LsjVL0VHiqvGTGiR/xO/MI3ErFeEZzgISxsbSnC2kGcrhFwWucGI0kNvD38rafaBck6EUlZWbxwJD6OKbR+xNtlzxocWRjsAQ0IO2z/hQ4eBTcYOv162dwAcE6lqaVFUfRsyAEJptn7bTDFP9hGrS7RpjCLnMiLtekL/2G+awofG98uvr/G9VerDjcce5NFl1zK2l3dJWV6Q0FJU8hz6ZG+9UBiZtm5yA+oUrONVJvj1lX/cfkWpR/soo9txJMoig2NQWXApX6ZADRNUpdDenRWU0tizGbiS3TMfrrj9AcYRrzoIkHCaNzLuNm95jCYQ2ZW0NRDGIgOXQqQn2RjILtGlMjwfgi+N+IDlXtyS6a8t8333jyjmlTzXAZvy8PLMXgxt2ihORMj0aK93hHxCP2jcAm9tk/xA1e9mNMa66UM6qOQgn2FzZIsf85m9x3kOcjtnI6PjCjY+RNA/mcCSfnKDmxkdxlLPhvz65MYKK96zNT/sXOwD13x+TIbKMuXRHbhqH4czfNxKRZlmFsjTWWkcZDOjIxfJcLXgiMXFVu1Tz3hPpqcMzSr61igW+5qEaEwN9mlG8e89a8GG02n9KFa628CsMUKxe3FndRH+tHWHcyJx5S462HoK9fH12pTgquA75QC6fx5FJEyDpr9VyIETc2mS0Nx/gCJQL+mDL7MP0vbQOvVXwUcUHFQPFHNSvh2E9CA2kAtPOOGrNLalCijbzoM9cVbCF6KHEuYpl1dA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5117.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(71200400001)(38100700002)(508600001)(45080400002)(2906002)(6486002)(122000001)(86362001)(110136005)(4326008)(76116006)(66476007)(8676002)(66556008)(66446008)(64756008)(66946007)(8936002)(38070700005)(54906003)(5660300002)(83380400001)(7416002)(316002)(33656002)(36756003)(6512007)(2616005)(6506007)(53546011)(186003)(14583001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?g8/q9cMnyK6vfBt7FKWUcRRl3vybOyZF/h3OD47scsKKoCMl/04fmsmvOovg?=
- =?us-ascii?Q?pwVq2XJ/F5rq6mT7SAIg2bbBbaRiknue0AaG+6qn2dbXMn8KXK+cDz+R/Vzi?=
- =?us-ascii?Q?kgOs+KlJUWjE/nIJgvljIlQcHuuiqMvAFqWAQILAM4sMTB/fOh8NGhn1PmHJ?=
- =?us-ascii?Q?hsq2FwoIwqkI8eeWA3nCzt4ncWvC5YJBxFRbk9xIOtygn0VOoHx9RV+D/EG/?=
- =?us-ascii?Q?IJK8xaJz2B3vfs2XIM8zkOu1TL4R4WHlBCIxo252O5pDTe9I4aYNA6IvWjtC?=
- =?us-ascii?Q?ePXjsXbCzWNf5Cbral08icP/Gt5Z+9WvewGT66h3TxCuX1vC+KUFS3fzUske?=
- =?us-ascii?Q?N+o+n7Xm3DKriQy/Su1n825iS/R65t5e43Y8s8DXB9bzlcikULjrcerZc7LP?=
- =?us-ascii?Q?duut1/wWOGg6zteWKf/hoPC1LXfDIAAYtGAm8+36BKg99F0/Hzn0wnA77wpx?=
- =?us-ascii?Q?reCVbMkyEqK7eNSzSpabt48BwM6ncYiCRZ+dQf8ZRdh05T8TsTHtEFLyrdgh?=
- =?us-ascii?Q?UsLOkYWDIqZ7PGJG9xydYWQl2RPU7zYuxKXkJMw/fDGA2Z9rGmFA5GbMKSFC?=
- =?us-ascii?Q?mqj52RweZ1+nGhrfV9tIcch636QtGGN4wInULzfCSVovK/gfcKhpgl/usIXh?=
- =?us-ascii?Q?G+COl0o6w9+hefKNYeGQU9bug6xgpQ1BXxtMzwYHr7e9BxWdHjubSd4+9LXP?=
- =?us-ascii?Q?QDfREV9SM4oOeWrzsAM+d1WYTsWDvMz0MUBe+qfvWSJRy6gkN624C0l3eXMZ?=
- =?us-ascii?Q?IV7uZsGRk3gvPWRdW/ti1a5LI3rVOeAnxfrths/YGVeyTKgQpOqfxyuCgDpW?=
- =?us-ascii?Q?Rkr77jJoN/s3L9nWybTgw1mN7pHW6wr86fTcZJ/+BKesqTLeP2uSEndojf8s?=
- =?us-ascii?Q?bbWMc/IPb3nP7k6hR36tC1tM9uyndfJWBptMZtiYTcFRA5A/5Q8QyodvZWbF?=
- =?us-ascii?Q?QDaCuKV8cG2t6PB/BK2Hr7AhPc88bfzhu0awgmcWbuB/p+d8vmbN6C00lQ7c?=
- =?us-ascii?Q?F0Qa0pnLWKKKPDqSKYYRtDcR9ne3EzNqCW4c77tHcJdiG5xLkJnKASta6l3B?=
- =?us-ascii?Q?yEJ86cFTXfkEass9XE23n2uxJYOqILey3kDpxlROcUv46EC32oRRpApjuJC7?=
- =?us-ascii?Q?eFFAdoN4tAG3jLA78M6ydaPGh8ZK/Tgy3BC70biQkvyduTJmT2Laop/hw9Ed?=
- =?us-ascii?Q?mUfiemWfMSIiTF7Y5GEuVE1wRiyRdQx4ff69dIqOFI33BnAAJ/S7yquFcHWT?=
- =?us-ascii?Q?DDrc8XiPNwdyWoIa134vBykXr2M4QPa8GHB2mOZO/EFE0NVXvLhZ/zsTLFto?=
- =?us-ascii?Q?sFRb24+E7AO+Ipnv35hlpOBwUFiYGC3gZAowF66khtp/Pur7y3XpUeNAnSut?=
- =?us-ascii?Q?Py9mIrgiDQ3MlsL777RwPZlY7eFjpSq/WLLb48ME9r7snfm7ZZK+H+BDE110?=
- =?us-ascii?Q?DAYB+Fa/3QHAkqkVP5uTEEK+Rm1PCUeUe1i0xIgusn/osxl6XPVNc83Qnsb+?=
- =?us-ascii?Q?HYiDpTdCsj7lRe/MR0srjVjA2Pdu/x3xFuTYj5hZ+Jsg+t1u55fRW3faN0fC?=
- =?us-ascii?Q?ckqYMvOcqq1o2jPKU+RiSt/q+nGCEJFHibp664ZxgWQqeUirFCZyI/W4XezV?=
- =?us-ascii?Q?e/2wAdQIumgBayUzQvabS7ekjyzOFQ1MqYOMi9knIlAXSgWU0/uIr84AIXPh?=
- =?us-ascii?Q?i6Fj7XBmb8mJWsXoOqIobrLOWL1ZqpNdf2tm3yZG88giTucTZviz6K+DW4y3?=
- =?us-ascii?Q?DMwq36ajZNqBPQCpA0kyvOtjZD8XbV1WH1BuVpbi4fLp7j1XGRIV?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A9801FFB5D2C874BB22819CCF286EFCD@namprd15.prod.outlook.com>
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF
+ programs
+Message-ID: <20220401235537.mwziwuo4n53m5cxp@MBP-98dd607d3435.dhcp.thefacebook.com>
+References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
+ <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <b9f5995f96da447c851f7c9db8232a9b@huawei.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR15MB5117.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7487b96b-0b9d-40dd-e58c-08da142e0acb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2022 22:22:00.7751
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zGFC4es0bva4tVEmqkdpML3mc0V/a2huzPlj4cH8DncULIT7k2Mnmjn6R1P6Y9lCYhIooAxZtkICdfU27DkbPg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3078
-X-Proofpoint-ORIG-GUID: OcV5bG9FMVYMJrHMFujyMiiIA3lx4BIu
-X-Proofpoint-GUID: OcV5bG9FMVYMJrHMFujyMiiIA3lx4BIu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-01_07,2022-03-31_01,2022-02-23_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b9f5995f96da447c851f7c9db8232a9b@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-+ Nicholas and Claudio,
-
-
-> On Mar 31, 2022, at 4:59 PM, Song Liu <songliubraving@fb.com> wrote:
+On Thu, Mar 31, 2022 at 08:25:22AM +0000, Roberto Sassu wrote:
+> > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
+> > Sent: Thursday, March 31, 2022 4:27 AM
+> > On Mon, Mar 28, 2022 at 07:50:15PM +0200, Roberto Sassu wrote:
+> > > eBPF already allows programs to be preloaded and kept running without
+> > > intervention from user space. There is a dedicated kernel module called
+> > > bpf_preload, which contains the light skeleton of the iterators_bpf eBPF
+> > > program. If this module is enabled in the kernel configuration, its loading
+> > > will be triggered when the bpf filesystem is mounted (unless the module is
+> > > built-in), and the links of iterators_bpf are pinned in that filesystem
+> > > (they will appear as the progs.debug and maps.debug files).
+> > >
+> > > However, the current mechanism, if used to preload an LSM, would not
+> > offer
+> > > the same security guarantees of LSMs integrated in the security
+> > subsystem.
+> > > Also, it is not generic enough to be used for preloading arbitrary eBPF
+> > > programs, unless the bpf_preload code is heavily modified.
+> > >
+> > > More specifically, the security problems are:
+> > > - any program can be pinned to the bpf filesystem without limitations
+> > >   (unless a MAC mechanism enforces some restrictions);
+> > > - programs being executed can be terminated at any time by deleting the
+> > >   pinned objects or unmounting the bpf filesystem.
+> > 
+> > So many things to untangle here.
 > 
-> Hi Christoph, 
+> Hi Alexei
 > 
->> On Mar 30, 2022, at 10:37 PM, Christoph Hellwig <hch@infradead.org> wrote:
->> 
->> On Wed, Mar 30, 2022 at 03:56:38PM -0700, Song Liu wrote:
->>> We prematurely enabled HAVE_ARCH_HUGE_VMALLOC for x86_64, which could cause
->>> issues [1], [2].
->>> 
->> 
->> Please fix the underlying issues instead of papering over them and
->> creating a huge maintainance burden for others.
+> thanks for taking the time to provide such detailed
+> explanation.
+> 
+> > The above paragraphs are misleading and incorrect.
+> > The commit log sounds like there are security issues that this
+> > patch set is fixing.
+> > This is not true.
+> 
+> I reiterate the goal: enforce a mandatory policy with
+> an out-of-tree LSM (a kernel module is fine), with the
+> same guarantees of LSMs integrated in the security
+> subsystem.
 
-After reading the code a little more, I wonder what would be best strategy. 
-IIUC, most of the kernel is not ready for huge page backed vmalloc memory.
-For example, all the module_alloc cannot work with huge pages at the moment.
-And the error Paul Menzel reported in drm_fb_helper.c will probably hit 
-powerpc with 5.17 kernel as-is? (trace attached below) 
+To make it 100% clear:
+Any in-kernel feature that benefits out-of-tree module will be rejected.
 
-Right now, we have VM_NO_HUGE_VMAP to let a user to opt out of huge pages. 
-However, given there are so many users of vmalloc, vzalloc, etc., we 
-probably do need a flag for the user to opt-in? 
+> The root user is not part of the TCB (i.e. is untrusted),
+> all the changes that user wants to make must be subject
+> of decision by the LSM enforcing the mandatory policy.
+> 
+> I thought about adding support for LSMs from kernel
+> modules via a new built-in LSM (called LoadLSM), but
 
-Does this make sense? Any recommendations are really appreciated. 
+Such approach will be rejected. See above.
 
-Thanks,
-Song 
+> > I suspect there is huge confusion on what these two "progs.debug"
+> > and "maps.debug" files are in a bpffs instance.
+> > They are debug files to pretty pring loaded maps and progs for folks who
+> > like to use 'cat' to examine the state of the system instead of 'bpftool'.
+> > The root can remove these files from bpffs.
+> > 
+> > There is no reason for kernel module to pin its bpf progs.
+> > If you want to develop DIGLIM as a kernel module that uses light skeleton
+> > just do:
+> > #include <linux/init.h>
+> > #include <linux/module.h>
+> > #include "diglim.lskel.h"
+> > 
+> > static struct diglim_bpf *skel;
+> > 
+> > static int __init load(void)
+> > {
+> >         skel = diglim_bpf__open_and_load();
+> >         err = diglim_bpf__attach(skel);
+> > }
+> > /* detach skel in __fini */
+> > 
+> > It's really that short.
+> > 
+> > Then you will be able to
+> > - insmod diglim.ko -> will load and attach bpf progs.
+> > - rmmod diglim -> will detach them.
+> 
+> root can stop the LSM without consulting the security
+> policy. The goal of having root untrusted is not achieved.
 
+Out-of-tree module can do any hack.
+For example:
+1. don't do detach skel in __fini
+  rmmod will remove the module, but bpf progs will keep running.
+2. do module_get(THIS_MODULE) in __init
+  rmmod will return EBUSY
+  and have some out-of-band way of dropping mod refcnt.
+3. hack into sys_delete_module. if module_name==diglem return EBUSY.
+4. add proper LSM hook to delete_module
 
+> My point was that pinning progs seems to be the
+> recommended way of keeping them running. 
 
+Not quite. bpf_link refcnt is what keeps progs attached.
+bpffs is mainly used for:
+- to pass maps/links from one process to another
+when passing fd is not possible.
+- to solve the case of crashing user space.
+The user space agent will restart and will pick up where
+it's left by reading map, link, prog FDs from bpffs.
+- pinning bpf iterators that are later used to 'cat' such files.
+That is what bpf_preload is doing by creating two debug
+files "maps.debug" and "progs.debug".
 
-[    1.687983] BUG: Bad page state in process systemd-udevd  pfn:102e03
-[    1.687992] fbcon: Taking over console
-[    1.688007] page:(____ptrval____) refcount:0 mapcount:0 mapping:0000000000000000 index:0x3 pfn:0x102e03
-[    1.688011] head:(____ptrval____) order:9 compound_mapcount:0 compound_pincount:0
-[    1.688013] flags: 0x2fffc000010000(head|node=0|zone=2|lastcpupid=0x3fff)
-[    1.688018] raw: 002fffc000000000 ffffe815040b8001 ffffe815040b80c8 0000000000000000
-[    1.688020] raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-[    1.688022] head: 002fffc000010000 0000000000000000 dead000000000122 0000000000000000
-[    1.688023] head: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-[    1.688024] page dumped because: corrupted mapping in tail page
-[    1.688025] Modules linked in: r8169(+) k10temp snd_pcm(+) xhci_hcd snd_timer realtek ohci_hcd ehci_pci(+) i2c_piix4 ehci_hcd radeon(+) snd sg drm_ttm_helper ttm soundcore coreboot_table acpi_cpufreq fuse ipv6 autofs4
-[    1.688045] CPU: 1 PID: 151 Comm: systemd-udevd Not tainted 5.16.0-11615-gfac54e2bfb5b #319
-[    1.688048] Hardware name: ASUS F2A85-M_PRO/F2A85-M_PRO, BIOS 4.16-337-gb87986e67b 03/25/2022
-[    1.688050] Call Trace:
-[    1.688051]  <TASK>
-[    1.688053]  dump_stack_lvl+0x34/0x44
-[    1.688059]  bad_page.cold+0x63/0x94
-[    1.688063]  free_tail_pages_check+0xd1/0x110
-[    1.688067]  ? _raw_spin_lock+0x13/0x30
-[    1.688071]  free_pcp_prepare+0x251/0x2e0
-[    1.688075]  free_unref_page+0x1d/0x110
-[    1.688078]  __vunmap+0x28a/0x380
-[    1.688082]  drm_fbdev_cleanup+0x5f/0xb0
-[    1.688085]  drm_fbdev_fb_destroy+0x15/0x30
-[    1.688087]  unregister_framebuffer+0x1d/0x30
-[    1.688091]  drm_client_dev_unregister+0x69/0xe0
-[    1.688095]  drm_dev_unregister+0x2e/0x80
-[    1.688098]  drm_dev_unplug+0x21/0x40
-[    1.688100]  simpledrm_remove+0x11/0x20
-[    1.688103]  platform_remove+0x1f/0x40
-[    1.688106]  __device_release_driver+0x17a/0x240
-[    1.688109]  device_release_driver+0x24/0x30
-[    1.688112]  bus_remove_device+0xd8/0x140
-[    1.688115]  device_del+0x18b/0x3f0
-[    1.688118]  ? _raw_spin_unlock_irqrestore+0x1b/0x30
-[    1.688121]  ? try_to_wake_up+0x94/0x5b0
-[    1.688124]  platform_device_del.part.0+0x13/0x70
-[    1.688127]  platform_device_unregister+0x1c/0x30
-[    1.688130]  drm_aperture_detach_drivers+0xa1/0xd0
-[    1.688134]  drm_aperture_remove_conflicting_pci_framebuffers+0x3f/0x60
-[    1.688137]  radeon_pci_probe+0x54/0xf0 [radeon]
-[    1.688212]  local_pci_probe+0x45/0x80
-[    1.688216]  ? pci_match_device+0xd7/0x130
-[    1.688219]  pci_device_probe+0xc2/0x1d0
-[    1.688223]  really_probe+0x1f5/0x3d0
-[    1.688226]  __driver_probe_device+0xfe/0x180
-[    1.688229]  driver_probe_device+0x1e/0x90
-[    1.688232]  __driver_attach+0xc0/0x1c0
-[    1.688235]  ? __device_attach_driver+0xe0/0xe0
-[    1.688237]  ? __device_attach_driver+0xe0/0xe0
-[    1.688239]  bus_for_each_dev+0x78/0xc0
-[    1.688242]  bus_add_driver+0x149/0x1e0
-[    1.688245]  driver_register+0x8f/0xe0
-[    1.688248]  ? 0xffffffffc051d000
-[    1.688250]  do_one_initcall+0x44/0x200
-[    1.688254]  ? kmem_cache_alloc_trace+0x170/0x2c0
-[    1.688257]  do_init_module+0x5c/0x260
-[    1.688262]  __do_sys_finit_module+0xb4/0x120
-[    1.688266]  __do_fast_syscall_32+0x6b/0xe0
-[    1.688270]  do_fast_syscall_32+0x2f/0x70
-[    1.688272]  entry_SYSCALL_compat_after_hwframe+0x45/0x4d
-[    1.688275] RIP: 0023:0xf7e51549
-[    1.688278] Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 cd 0f 05 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-[    1.688281] RSP: 002b:00000000ffa1666c EFLAGS: 00200292 ORIG_RAX: 000000000000015e
-[    1.688285] RAX: ffffffffffffffda RBX: 0000000000000010 RCX: 00000000f7e30e09
-[    1.688287] RDX: 0000000000000000 RSI: 00000000f9a705d0 RDI: 00000000f9a6f6a0
-[    1.688288] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-[    1.688290] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[    1.688291] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[    1.688294]  </TASK>
-[    1.688355] Disabling lock debugging due to kernel taint
+> Pinning
+> them to unreachable inodes intuitively looked the
+> way to go for achieving the stated goal. 
+
+We can consider inodes in bpffs that are not unlinkable by root
+in the future, but certainly not for this use case.
+
+> Or maybe I
+> should just increment the reference count of links
+> and don't decrement during an rmmod?
+
+I suggest to abandon out-of-tree goal.
+Only then we can help and continue this discussion.
