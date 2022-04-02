@@ -2,241 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 720464EFD8E
-	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 03:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991E24EFDDD
+	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 03:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbiDBBFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 21:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
+        id S232535AbiDBCBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 22:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239147AbiDBBFP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 21:05:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D576C21A1
-        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 18:03:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 77DC2B82674
-        for <bpf@vger.kernel.org>; Sat,  2 Apr 2022 01:03:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E1AC3411C
-        for <bpf@vger.kernel.org>; Sat,  2 Apr 2022 01:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648861401;
-        bh=IbghA2dqiYhWXecxL6uJJ7n1Ce58U1f1jXhOOf0w2DA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qPl5O8et+RIxSlDAMF72fgkZo7E89yXN33hp7R1sFEJRZZh6BeuGyYbe31+nsWmEc
-         lychCTK8y19hzo5zGw/lQUyLA5bXYC+qm8B/x1xWmXJghINq1ML6faKem1ZKnr3Fzc
-         E4cQrFis0nHEZi3xseZkYRPa7elL5NcohH7lQQ7r+2iEzl1P0tMRmgHDZHLzsErNtJ
-         KmjV23iGdMxELFec+B39s1RFnuv2CDg0FC9xCqwdGsndiKVJ79eqpVFPnT1bZab+iP
-         ma3WLnbA+HHVnjUB12xWtiKT9qYsEOKIaAyJ9tPqbEp8SekXaLpN+ybqnhsVVVhbE/
-         ro2upEuXCL9lw==
-Received: by mail-ej1-f41.google.com with SMTP id o10so9222053ejd.1
-        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 18:03:20 -0700 (PDT)
-X-Gm-Message-State: AOAM532d3EhfxTEsz/7cBzWLRyFXmXWyGGO/FmlcFeWe5aK/uogkcOea
-        AzOM0xPbYeuvwx65kH5ytSZJSHfb1kbUa8Gj/6TmeQ==
-X-Google-Smtp-Source: ABdhPJzC1xfADMf8KlFXGnU+O10yqjuLNdQMD6B8hDbX9K5RYwHPXDVlmYgGwvXzZmJ1+ZDG91LG6SDOelwAvnQH2J4=
-X-Received: by 2002:a17:907:3f9e:b0:6da:842e:873e with SMTP id
- hr30-20020a1709073f9e00b006da842e873emr2038636ejc.383.1648861399066; Fri, 01
- Apr 2022 18:03:19 -0700 (PDT)
+        with ESMTP id S229660AbiDBCBn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 22:01:43 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EDBDFDD8
+        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 18:59:52 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2320C7iW031548
+        for <bpf@vger.kernel.org>; Fri, 1 Apr 2022 18:59:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=ro7ArStNOpOEEz06aMJmHOTBWolAbhO1NATXCWGbAfM=;
+ b=AxQv6W50bIcjacZiaWATUjV6y9BM5Nk3QT49pIeR/BTBoRr2pJw6RO+46gWVvDsIrRZQ
+ HInlB15DNQLuztynQT3nNXuZLvqk6t0BAziccFDiJIKbm1jGe8ndsdZkeuPRZmflXh9g
+ VY68qjXCnCJUj3uADgWlhHj843OW/FVr5aA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f5gpgax9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 18:59:51 -0700
+Received: from twshared16483.05.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 1 Apr 2022 18:59:50 -0700
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id 8C488A790673; Fri,  1 Apr 2022 18:59:43 -0700 (PDT)
+From:   Joanne Koong <joannekoong@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v1 0/7] Dynamic pointers
+Date:   Fri, 1 Apr 2022 18:58:19 -0700
+Message-ID: <20220402015826.3941317-1-joannekoong@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
- <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
- <b9f5995f96da447c851f7c9db8232a9b@huawei.com> <20220401235537.mwziwuo4n53m5cxp@MBP-98dd607d3435.dhcp.thefacebook.com>
-In-Reply-To: <20220401235537.mwziwuo4n53m5cxp@MBP-98dd607d3435.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Sat, 2 Apr 2022 03:03:08 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ5QgkucL3HZ4bY5Rcme4ey6U3FW4w2Gz-9rdWq0_RHvgA@mail.gmail.com>
-Message-ID: <CACYkzJ5QgkucL3HZ4bY5Rcme4ey6U3FW4w2Gz-9rdWq0_RHvgA@mail.gmail.com>
-Subject: Re: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+X-Proofpoint-ORIG-GUID: VkX7YFHFiJMAIUCSjoTu4PoU0HqpACvr
+X-Proofpoint-GUID: VkX7YFHFiJMAIUCSjoTu4PoU0HqpACvr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-04-01_08,2022-03-31_01,2022-02-23_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 2, 2022 at 1:55 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Mar 31, 2022 at 08:25:22AM +0000, Roberto Sassu wrote:
-> > > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
-> > > Sent: Thursday, March 31, 2022 4:27 AM
-> > > On Mon, Mar 28, 2022 at 07:50:15PM +0200, Roberto Sassu wrote:
-> > > > eBPF already allows programs to be preloaded and kept running without
-> > > > intervention from user space. There is a dedicated kernel module called
-> > > > bpf_preload, which contains the light skeleton of the iterators_bpf eBPF
-> > > > program. If this module is enabled in the kernel configuration, its loading
-> > > > will be triggered when the bpf filesystem is mounted (unless the module is
-> > > > built-in), and the links of iterators_bpf are pinned in that filesystem
-> > > > (they will appear as the progs.debug and maps.debug files).
-> > > >
-> > > > However, the current mechanism, if used to preload an LSM, would not
-> > > offer
-> > > > the same security guarantees of LSMs integrated in the security
-> > > subsystem.
-> > > > Also, it is not generic enough to be used for preloading arbitrary eBPF
-> > > > programs, unless the bpf_preload code is heavily modified.
-> > > >
-> > > > More specifically, the security problems are:
-> > > > - any program can be pinned to the bpf filesystem without limitations
-> > > >   (unless a MAC mechanism enforces some restrictions);
-> > > > - programs being executed can be terminated at any time by deleting the
-> > > >   pinned objects or unmounting the bpf filesystem.
-> > >
-> > > So many things to untangle here.
-> >
-> > Hi Alexei
-> >
-> > thanks for taking the time to provide such detailed
-> > explanation.
-> >
-> > > The above paragraphs are misleading and incorrect.
-> > > The commit log sounds like there are security issues that this
-> > > patch set is fixing.
-> > > This is not true.
+From: Joanne Koong <joannelkoong@gmail.com>
 
-+1 these are not security issues. They are limitations of your MAC policy.
+This patchset implements the basics of dynamic pointers in bpf.
 
-> >
-> > I reiterate the goal: enforce a mandatory policy with
-> > an out-of-tree LSM (a kernel module is fine), with the
-> > same guarantees of LSMs integrated in the security
-> > subsystem.
->
-> To make it 100% clear:
-> Any in-kernel feature that benefits out-of-tree module will be rejected.
->
-> > The root user is not part of the TCB (i.e. is untrusted),
-> > all the changes that user wants to make must be subject
-> > of decision by the LSM enforcing the mandatory policy.
-> >
-> > I thought about adding support for LSMs from kernel
-> > modules via a new built-in LSM (called LoadLSM), but
+A dynamic pointer (struct bpf_dynptr) is a pointer that stores extra meta=
+data
+alongside the address it points to. This abstraction is useful in bpf, gi=
+ven
+that every memory access in a bpf program must be safe. The verifier and =
+bpf
+helper functions can use the metadata to enforce safety guarantees for th=
+ings=20
+such as dynamically sized strings and kernel heap allocations.
 
-Kernel modules cannot implement LSMs, this has already been
-proposed on the lists and has been rejected.
+From the program side, the bpf_dynptr is an opaque struct and the verifie=
+r
+will enforce that its contents are never written to by the program.
+It can only be written to through specific bpf helper functions.
 
->
-> Such approach will be rejected. See above.
->
-> > > I suspect there is huge confusion on what these two "progs.debug"
-> > > and "maps.debug" files are in a bpffs instance.
-> > > They are debug files to pretty pring loaded maps and progs for folks who
-> > > like to use 'cat' to examine the state of the system instead of 'bpftool'.
-> > > The root can remove these files from bpffs.
-> > >
-> > > There is no reason for kernel module to pin its bpf progs.
-> > > If you want to develop DIGLIM as a kernel module that uses light skeleton
-> > > just do:
-> > > #include <linux/init.h>
-> > > #include <linux/module.h>
-> > > #include "diglim.lskel.h"
-> > >
-> > > static struct diglim_bpf *skel;
-> > >
-> > > static int __init load(void)
-> > > {
-> > >         skel = diglim_bpf__open_and_load();
-> > >         err = diglim_bpf__attach(skel);
-> > > }
-> > > /* detach skel in __fini */
-> > >
-> > > It's really that short.
-> > >
-> > > Then you will be able to
-> > > - insmod diglim.ko -> will load and attach bpf progs.
-> > > - rmmod diglim -> will detach them.
-> >
-> > root can stop the LSM without consulting the security
-> > policy. The goal of having root untrusted is not achieved.
+There are several uses cases for dynamic pointers in bpf programs. A list=
+ of
+some are: dynamically sized ringbuf reservations without any extra memcpy=
+s,
+dynamic string parsing and memory comparisons, dynamic memory allocations=
+ that
+can be persisted in a map, and dynamic parsing of sk_buff and xdp_md pack=
+et
+data.
 
-Ofcourse, this is an issue, if you are using BPF to define a MAC
-policy, the policy
-needs to be comprehensive to prevent itself from being overridden. This is why
-We have so many LSM hooks. If you think some are missing, let's add them.
+At a high-level, the patches are as follows:
+1/7 - Adds MEM_UNINIT as a bpf_type_flag
+2/7 - Adds MEM_RELEASE as a bpf_type_flag
+3/7 - Adds bpf_dynptr_from_mem, bpf_malloc, and bpf_free
+4/7 - Adds bpf_dynptr_read and bpf_dynptr_write
+5/7 - Adds dynptr data slices (ptr to underlying dynptr memory)
+6/7 - Adds dynptr support for ring buffers
+7/7 - Tests to check that verifier rejects certain fail cases and passes
+certain success cases
 
-This is why implementing a policy is not trivial, but we need to allow
-users to build
-such policies with the help from the kernel and not by using
-out-of-tree modules.
+This is the first dynptr patchset in a larger series. The next series of
+patches will add persisting dynamic memory allocations in maps, parsing p=
+acket
+data through dynptrs, dynptrs to referenced objects, convenience helpers =
+for
+using dynptrs as iterators, and more helper functions for interacting wit=
+h
+strings and memory dynamically.
 
-I do think we can add some more helpers (e.g. for modifying xattrs
-from BPF) that
-would help us build complex policies.
+Joanne Koong (7):
+  bpf: Add MEM_UNINIT as a bpf_type_flag
+  bpf: Add MEM_RELEASE as a bpf_type_flag
+  bpf: Add bpf_dynptr_from_mem, bpf_malloc, bpf_free
+  bpf: Add bpf_dynptr_read and bpf_dynptr_write
+  bpf: Add dynptr data slices
+  bpf: Dynptr support for ring buffers
+  bpf: Dynptr tests
 
->
-> Out-of-tree module can do any hack.
-> For example:
-> 1. don't do detach skel in __fini
->   rmmod will remove the module, but bpf progs will keep running.
-> 2. do module_get(THIS_MODULE) in __init
->   rmmod will return EBUSY
->   and have some out-of-band way of dropping mod refcnt.
-> 3. hack into sys_delete_module. if module_name==diglem return EBUSY.
-> 4. add proper LSM hook to delete_module
+ include/linux/bpf.h                           | 107 +++-
+ include/linux/bpf_verifier.h                  |  23 +-
+ include/uapi/linux/bpf.h                      | 100 ++++
+ kernel/bpf/bpf_lsm.c                          |   4 +-
+ kernel/bpf/btf.c                              |   3 +-
+ kernel/bpf/cgroup.c                           |   4 +-
+ kernel/bpf/helpers.c                          | 190 ++++++-
+ kernel/bpf/ringbuf.c                          |  75 ++-
+ kernel/bpf/stackmap.c                         |   6 +-
+ kernel/bpf/verifier.c                         | 406 ++++++++++++--
+ kernel/trace/bpf_trace.c                      |  20 +-
+ net/core/filter.c                             |  28 +-
+ scripts/bpf_doc.py                            |   2 +
+ tools/include/uapi/linux/bpf.h                | 100 ++++
+ .../testing/selftests/bpf/prog_tests/dynptr.c | 303 ++++++++++
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 527 ++++++++++++++++++
+ .../selftests/bpf/progs/dynptr_success.c      | 147 +++++
+ 17 files changed, 1955 insertions(+), 90 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dynptr_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dynptr_success.c
 
-+1 I recommend this (but not from an out of tree module)
+--=20
+2.30.2
 
->
-> > My point was that pinning progs seems to be the
-> > recommended way of keeping them running.
->
-> Not quite. bpf_link refcnt is what keeps progs attached.
-> bpffs is mainly used for:
-> - to pass maps/links from one process to another
-> when passing fd is not possible.
-> - to solve the case of crashing user space.
-> The user space agent will restart and will pick up where
-> it's left by reading map, link, prog FDs from bpffs.
-> - pinning bpf iterators that are later used to 'cat' such files.
-> That is what bpf_preload is doing by creating two debug
-> files "maps.debug" and "progs.debug".
->
-> > Pinning
-> > them to unreachable inodes intuitively looked the
-> > way to go for achieving the stated goal.
->
-> We can consider inodes in bpffs that are not unlinkable by root
-> in the future, but certainly not for this use case.
-
-Can this not be already done by adding a BPF_LSM program to the
-inode_unlink LSM hook?
-
->
-> > Or maybe I
-> > should just increment the reference count of links
-> > and don't decrement during an rmmod?
->
-> I suggest to abandon out-of-tree goal.
-> Only then we can help and continue this discussion.
-
-+1
