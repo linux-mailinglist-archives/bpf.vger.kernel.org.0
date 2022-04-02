@@ -2,196 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D7F4EFD6A
-	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 02:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0420D4EFD6C
+	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 02:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237911AbiDBAXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 20:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        id S231650AbiDBAbo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 1 Apr 2022 20:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353525AbiDBAXS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 20:23:18 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E441AC429
-        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 17:21:27 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id jx9so3730607pjb.5
-        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 17:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PCeSEpgAtHi6EJO0Sku9xQ3d0nyXIPYB8PnS/tGYzkU=;
-        b=WzdnB0sectgMPUhfHZFsVY7GUdZoNXDIUG4z82+SfhT9J8ioAr7Tar3a1Q71NqMqQ0
-         tqZiP515risN4c+G1szneL6h59mL428AKr5vyDJZjWI8MFE+7I8DFYMM4NFix0shJ1zj
-         NA3mv23IXNn8r1rNai2ytagSx2ApkBF1dartM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=PCeSEpgAtHi6EJO0Sku9xQ3d0nyXIPYB8PnS/tGYzkU=;
-        b=zh0Lr2VKR9H24MUse0UL/qRTjWX3UCc2aHuMu0wAXFxgM7naGVLHDwgE+h6GXMTtQS
-         Ptmj8JKZysHyxXGOVAg8zNMYJcC0to9BcuylwuxIL9vJATgnjfd12Zxqi1lp5pEEC7UU
-         Nxkqjtk95PC26rGm+ZTz0jFAuwI+VPgNmrV+uMGzpq3nPORchRhK92OO0BZ+zUA1IYIp
-         aheI28qU0+GjGyTTF8SpQqxyweRc7mYs2rL0VxkaFEKwWL5l8V6FK5CgeMA1TpUrKn+k
-         qZTkRHOvu06V1933WHWTcj/uGIKZeghUY7vWWmtIMysSbdOMYZ8iFXjd7p7CRDbumW5u
-         4dQg==
-X-Gm-Message-State: AOAM531pth9MLscrfrm6tjOm0Huu77jLHVcYTAo4CLA+qtqSpszOJmoA
-        0e5q0hJctnkjBoFbzoM6mCdTfw==
-X-Google-Smtp-Source: ABdhPJxO8BFF9MOpu8VKJ0T0ybqrIQFfG9BYI+gHRClBXgGDwMfpFGKWVDYUV5RSTAIuDQBgGOEBtQ==
-X-Received: by 2002:a17:90b:3447:b0:1c6:fe01:675c with SMTP id lj7-20020a17090b344700b001c6fe01675cmr14294126pjb.59.1648858886266;
-        Fri, 01 Apr 2022 17:21:26 -0700 (PDT)
-Received: from localhost.swdvt.lab.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k10-20020a056a00168a00b004f7e2a550ccsm4295050pfc.78.2022.04.01.17.21.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 01 Apr 2022 17:21:25 -0700 (PDT)
-From:   Michael Chan <michael.chan@broadcom.com>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, kuba@kernel.org, gospo@broadcom.com,
-        bpf@vger.kernel.org, Ray Jui <ray.jui@broadcom.com>
-Subject: [PATCH net 3/3] bnxt_en: Prevent XDP redirect from running when stopping TX queue
-Date:   Fri,  1 Apr 2022 20:21:12 -0400
-Message-Id: <1648858872-14682-4-git-send-email-michael.chan@broadcom.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1648858872-14682-1-git-send-email-michael.chan@broadcom.com>
-References: <1648858872-14682-1-git-send-email-michael.chan@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004476e005dba0e0c7"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S233911AbiDBAbo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 20:31:44 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4361A48A4
+        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 17:29:53 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2320C0se010114
+        for <bpf@vger.kernel.org>; Fri, 1 Apr 2022 17:29:53 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f69yn8kdf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 17:29:53 -0700
+Received: from twshared10896.25.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 1 Apr 2022 17:29:52 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 7685D15EB5185; Fri,  1 Apr 2022 17:29:45 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Hengqi Chen <hengqi.chen@gmail.com>
+Subject: [PATCH v2 bpf-next 0/7] Add libbpf support for USDTs
+Date:   Fri, 1 Apr 2022 17:29:37 -0700
+Message-ID: <20220402002944.382019-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: aNl1HfDeR5b9BAcIcpe_j2YhJ7aLRM1s
+X-Proofpoint-ORIG-GUID: aNl1HfDeR5b9BAcIcpe_j2YhJ7aLRM1s
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-04-01_08,2022-03-31_01,2022-02-23_01
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---0000000000004476e005dba0e0c7
+Add libbpf support for USDT (User Statically-Defined Tracing) probes.
+USDTs is important part of tracing, and BPF, ecosystem, widely used in
+mission-critical production applications for observability, performance
+analysis, and debugging.
 
-From: Ray Jui <ray.jui@broadcom.com>
+And while USDTs themselves are pretty complicated abstraction built on top of
+uprobes, for end-users USDT is as natural a primitive as uprobes themselves.
+And thus it's important for libbpf to provide best possible user experience
+when it comes to build tracing applications relying on USDTs.
 
-Add checks in the XDP redirect callback to prevent XDP from running when
-the TX ring is undergoing shutdown.
+USDTs historically presented a lot of challenges for libbpf's no
+compilation-on-the-fly general approach to BPF tracing. BCC utilizes power of
+on-the-fly source code generation and compilation using its embedded Clang
+toolchain, which was impractical for more lightweight and thus more rigid
+libbpf-based approach. But still, with enough diligence and BPF cookies it's
+possible to implement USDT support that feels as natural as tracing any
+uprobe.
 
-Also remove redundant checks in the XDP redirect callback to validate the
-txr and the flag that indicates the ring supports XDP. The modulo
-arithmetic on 'tx_nr_rings_xdp' already guarantees the derived TX
-ring is an XDP ring.  txr is also guaranteed to be valid after checking
-BNXT_STATE_OPEN and within RCU grace period.
+This patch set is the culmination of such effort to add libbpf USDT support
+following the spirit and philosophy of BPF CO-RE (even though it's not
+inherently relying on BPF CO-RE much, see patch #1 for some notes regarding
+this). Each respective patch has enough details and explanations, so I won't
+go into details here.
 
-Fixes: f18c2b77b2e4 ("bnxt_en: optimized XDP_REDIRECT support")
-Reviewed-by: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
-Signed-off-by: Ray Jui <ray.jui@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+In the end, I think the overall usability of libbpf's USDT support *exceeds*
+the status quo set by BCC due to the elimination of awkward runtime USDT
+supporting code generation. It also exceeds BCC's capabilities due to the use
+of BPF cookie. This eliminates the need to determine a USDT call site (and
+thus specifics about how exactly to fetch arguments) based on its *absolute IP
+address*, which is impossible with shared libraries if no PID is specified (as
+we then just *can't* know absolute IP at which shared library is loaded,
+because it might be different for each process). With BPF cookie this is not
+a problem as we record "call site ID" directly in a BPF cookie value. This
+makes it possible to do a system-wide tracing of a USDT defined in a shared
+library. Think about tracing some USDT in libc across any process in the
+system, both running at the time of attachment and all the new processes
+started *afterwards*. This is a very powerful capability that allows more
+efficient observability and tracing tooling.
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-index c0541ff00ac8..03b1d6c04504 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -229,14 +229,16 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
- 	ring = smp_processor_id() % bp->tx_nr_rings_xdp;
- 	txr = &bp->tx_ring[ring];
- 
-+	if (READ_ONCE(txr->dev_state) == BNXT_DEV_STATE_CLOSING)
-+		return -EINVAL;
-+
- 	if (static_branch_unlikely(&bnxt_xdp_locking_key))
- 		spin_lock(&txr->xdp_tx_lock);
- 
- 	for (i = 0; i < num_frames; i++) {
- 		struct xdp_frame *xdp = frames[i];
- 
--		if (!txr || !bnxt_tx_avail(bp, txr) ||
--		    !(bp->bnapi[ring]->flags & BNXT_NAPI_FLAG_XDP))
-+		if (!bnxt_tx_avail(bp, txr))
- 			break;
- 
- 		mapping = dma_map_single(&pdev->dev, xdp->data, xdp->len,
+Once this functionality lands, the plan is to extend libbpf-bootstrap ([0])
+with an USDT example. It will also become possible to start converting BCC
+tools that rely on USDTs to their libbpf-based counterparts ([1]).
+
+It's worth noting that preliminary version of this code was currently used and
+tested in production code running fleet-wide observability toolkit.
+
+Libbpf functionality is broken down into 5 mostly logically independent parts,
+for ease of reviewing:
+  - patch #1 adds BPF-side implementation;
+  - patch #2 adds user-space APIs and wires bpf_link for USDTs;
+  - patch #3 adds the most mundate pieces: handling ELF, parsing USDT notes,
+    dealing with memory segments, relative vs absolute addresses, etc;
+  - patch #4 adds internal ID allocation and setting up/tearing down of
+    BPF-side state (spec and IP-to-ID mapping);
+  - patch #5 implements x86/x86-64-specific logic of parsing USDT argument
+    specifications;
+  - patch #6 adds testing of various basic aspects of handling of USDT;
+  - patch #7 extends the set of tests with more combinations of semaphore,
+    executable vs shared library, and PID filter options.
+
+  [0] https://github.com/libbpf/libbpf-bootstrap
+  [1] https://github.com/iovisor/bcc/tree/master/libbpf-tools
+
+v1->v2:
+  - huge high-level comment describing how all the moving parts fit together
+    (Alan, Alexei);
+  - switched from `__hidden __weak` to `static inline __noinline` for now, as
+    there is a bug in BPF linker breaking final BPF object file due to invalid
+    .BTF.ext data; I want to fix it separately at which point I'll switch back
+    to __hidden __weak again. The fix isn't trivial, so I don't want to block
+    on that. Same for __weak variable lookup bug that Henqi reported.
+  - various fixes and improvements, addressing other feedback (Alan, Hengqi);
+
+Cc: Alan Maguire <alan.maguire@oracle.com>
+Cc: Dave Marchevsky <davemarchevsky@fb.com>
+Cc: Hengqi Chen <hengqi.chen@gmail.com>
+
+Andrii Nakryiko (7):
+  libbpf: add BPF-side of USDT support
+  libbpf: wire up USDT API and bpf_link integration
+  libbpf: add USDT notes parsing and resolution logic
+  libbpf: wire up spec management and other arch-independent USDT logic
+  libbpf: add x86-specific USDT arg spec parsing logic
+  selftests/bpf: add basic USDT selftests
+  selftests/bpf: add urandom_read shared lib and USDTs
+
+ Documentation/bpf/bpf_devel_QA.rst            |    3 +
+ tools/lib/bpf/Build                           |    3 +-
+ tools/lib/bpf/Makefile                        |    2 +-
+ tools/lib/bpf/libbpf.c                        |  100 +-
+ tools/lib/bpf/libbpf.h                        |   31 +
+ tools/lib/bpf/libbpf.map                      |    1 +
+ tools/lib/bpf/libbpf_internal.h               |   19 +
+ tools/lib/bpf/usdt.bpf.h                      |  256 ++++
+ tools/lib/bpf/usdt.c                          | 1277 +++++++++++++++++
+ tools/testing/selftests/bpf/Makefile          |   25 +-
+ tools/testing/selftests/bpf/prog_tests/usdt.c |  421 ++++++
+ .../selftests/bpf/progs/test_urandom_usdt.c   |   70 +
+ tools/testing/selftests/bpf/progs/test_usdt.c |   96 ++
+ .../selftests/bpf/progs/test_usdt_multispec.c |   32 +
+ tools/testing/selftests/bpf/urandom_read.c    |   63 +-
+ .../testing/selftests/bpf/urandom_read_aux.c  |    9 +
+ .../testing/selftests/bpf/urandom_read_lib1.c |   13 +
+ .../testing/selftests/bpf/urandom_read_lib2.c |    8 +
+ 18 files changed, 2406 insertions(+), 23 deletions(-)
+ create mode 100644 tools/lib/bpf/usdt.bpf.h
+ create mode 100644 tools/lib/bpf/usdt.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/usdt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_urandom_usdt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_usdt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_usdt_multispec.c
+ create mode 100644 tools/testing/selftests/bpf/urandom_read_aux.c
+ create mode 100644 tools/testing/selftests/bpf/urandom_read_lib1.c
+ create mode 100644 tools/testing/selftests/bpf/urandom_read_lib2.c
+
 -- 
-2.18.1
+2.30.2
 
-
---0000000000004476e005dba0e0c7
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-xV4Em+0wQoEIR2kPG6yiZNtUK0tNCaZejYU/Mf/bzdKSwud3pLgHV8ls83y2OU/ha9xgJMLpRswv
-xucFCxMsPmk0yoVmpbr92kIpLm+TomNZsL++LcDRa2ECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUz2bMvqtXpXM0u3vAvRkalz60
-CjswDQYJKoZIhvcNAQELBQADggEBAGUgeqqI/q2pkETeLr6oS7nnm1bkeNmtnJ2bnybNO/RdrbPj
-DHVSiDCCrWr6xrc+q6OiZDKm0Ieq6BN+Wfr8h5mCkZMUdJikI85WcQTRk6EEF2lzIiaULmFD7U15
-FSWQptLx+kiu63idTII4r3k/7+dJ5AhLRr4WCoXEme2GZkfSbYC3fEL46tb1w7w+25OEFCv1MtDZ
-1CHkODrS2JGwDQxXKmyF64MhJiOutWHmqoGmLJVz1jnDvClsYtgT4zcNtoqKtjpWDYAefncWDPIQ
-DauX1eWVM+KepL7zoSNzVbTipc65WuZFLR8ngOwkpknqvS9n/nKd885m23oIocC+GA4xggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQeU+Y6hbenPzRMJsw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIA7VD/ox93Z30mteGcVNHmZLHCH9BqO8
-Lo+eA8sH3y0dMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMDQw
-MjAwMjEyN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQA+Hv90TLMSoh9zuOVLjDG3aOeCthZqV/ZidYHjlnJCooJSLk9N
-6RG+kNJ+vpXf33CcyvBowGu5TlOflzoaP5+lwAjfRgyC5PYUvtjBFRXQwpajl66AR2mwbbg/q0aU
-Ov7ztZa5o6WgZ7bGOwHjASfer4zJVfJTmzawMzgukvmlmUuCUByAhSfMlZUXMooTiv5jp7BxaPP5
-5PXfVqSKwB5B4+acnuC6VZbh8sgdB3bHcIymxPhjS1bPfA9jMmgg0uCSinTS0/ppXBfM0ZfgmLGN
-3BlohNSAQkhMBn7XCp3vhN2tKa33F06CFzscM23iJ0Pg9cvXdkZv4z3BBw6i59Ho
---0000000000004476e005dba0e0c7--
