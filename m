@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9674EFD66
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8D54EFD64
 	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 02:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237710AbiDBAXS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 20:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
+        id S1353510AbiDBAXR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 20:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237911AbiDBAXQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S241718AbiDBAXQ (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 1 Apr 2022 20:23:16 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1CB1AC42B
-        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 17:21:24 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id p17so3766475plo.9
-        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 17:21:24 -0700 (PDT)
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5D91AC42F
+        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 17:21:25 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id o13so3515928pgc.12
+        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 17:21:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dT7vkQPhNpNUaIdu9HZXKLPaXP2KQtHiymqsgW6VVGc=;
-        b=BZI/LfR+dXbzRvAmhlKktn4fOCNPqJll7RAS4UQ3EacoLT/pA7H/1Aa6XFIa9muj2a
-         m455pWYlBCD7woz9/v1A2vu69snCepxvXJNeoGl04n9alSsPo+M4jmagjUvnrN/aVfCI
-         f0fo1t0p0s4XQrTe9JJpzuPn0VjyNRtI75I8U=
+        bh=y147Biefge75HbPnMuH7B2WzavsschnugnJJX2FzhBk=;
+        b=QPffebnTdz6QEg7ZYiSU/CQqMXSbSuejEQ76X76Z6qjXf/RqEqtIY2zwCca9TCYG+D
+         cAiD8cubxmgYUMFp/k3x9xS1iWkVSBNKMrzwpP2hH5VsJISizpTF3mLZVPUjPN5LGSbj
+         aGnn+gLKLcAophPJQAGWP76RJ4wbV8Mn/9wlg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=dT7vkQPhNpNUaIdu9HZXKLPaXP2KQtHiymqsgW6VVGc=;
-        b=fCran2xDjsjdFL521LS3GVvXiRM0CzdEju45kQsC6yas6O61NpLfi3uM64rLmVaK6M
-         JTYgYULEoSWcF6XGK//BSbSeiZrIqFew42uGWNBGa2AC3B1NoMJeLpDp+Tra7L7cMSGu
-         lqSOxPhsfavHKCwMOzRaF+VvZMPgPdbWKxsX5xqspUlKohphum8O1OptAUzGp9gv2EaO
-         OPoA4SlMC44Fw8CWM177Gq8K9FMUNiAlQPF0tN6I5eaiJID41gqtDkbUnhxe5NtOrCEf
-         9loxsoypyQKjCLZo7zAuaK28nx2D4uLqR0u2vofjhQp61ERQFh+AcQk8JhDgaRcZXU7W
-         7CGw==
-X-Gm-Message-State: AOAM531GYWpMveymhgyKAilB6Gr/zgcdAK08Ymt/qN99dgUXuKRQIh6K
-        Q6ojCK8j8EfBXGrP4hxrQAiaDw==
-X-Google-Smtp-Source: ABdhPJwiQwH4Rdc+RGJGv1UIKT0HCsHEo/0YbS3o5z3n2dh6C2sjhrue5yBz8l2NRgLm9V8eCvfSgA==
-X-Received: by 2002:a17:90b:4c92:b0:1c7:a9a3:6274 with SMTP id my18-20020a17090b4c9200b001c7a9a36274mr14305734pjb.148.1648858883842;
-        Fri, 01 Apr 2022 17:21:23 -0700 (PDT)
+        bh=y147Biefge75HbPnMuH7B2WzavsschnugnJJX2FzhBk=;
+        b=1igxGzBmy+IirUG4pxMs9PJXMcvAk0HI2KFwxbB/4xnrc1yl54PUif+N74tTFSoOco
+         YZ9iyVaEtSJwWK5XFUk/Vzo5rjDT+M2vXs8MDEGxHWDuHGHKuP4ojSGjf5/8LC2y/+LI
+         L/03vOpCkIDHSAnftPLT/AP6UhhPyA5JN5u3hvgB9wHX5+qLsUgjOKQV3X12NjxX+GJ8
+         f+I2rNpXOCorc4YYh837b9qzPq/I5jEif/0ushELYbEBOu9VI2m5/Vn6hKQaoTMZ6l6w
+         gFxObN2xw+JcQ2MfsOszuMsXP25hR2C1R0pTaCfagLpnZ82554xRiGUJxXc4Twr1Uzn1
+         es6g==
+X-Gm-Message-State: AOAM5321pRGNJD3+lQJr2k6IkHIRag9yljKSiS6n/edwu5oag1hm6nli
+        y5XM+VbIptS61/Qbnhk6oKSp2A==
+X-Google-Smtp-Source: ABdhPJzsUqEu+w84DLdBr69wJOlXHGu7hB6DSAgppcb/GktobFXVx2JLqnIajZ8F6jsIntOdJCyFfg==
+X-Received: by 2002:a63:ba07:0:b0:382:4739:8941 with SMTP id k7-20020a63ba07000000b0038247398941mr17181809pgf.293.1648858884927;
+        Fri, 01 Apr 2022 17:21:24 -0700 (PDT)
 Received: from localhost.swdvt.lab.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k10-20020a056a00168a00b004f7e2a550ccsm4295050pfc.78.2022.04.01.17.21.22
+        by smtp.gmail.com with ESMTPSA id k10-20020a056a00168a00b004f7e2a550ccsm4295050pfc.78.2022.04.01.17.21.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 01 Apr 2022 17:21:23 -0700 (PDT)
+        Fri, 01 Apr 2022 17:21:24 -0700 (PDT)
 From:   Michael Chan <michael.chan@broadcom.com>
 To:     davem@davemloft.net
 Cc:     netdev@vger.kernel.org, kuba@kernel.org, gospo@broadcom.com,
-        bpf@vger.kernel.org, Pavan Chebbi <pavan.chebbi@broadcom.com>
-Subject: [PATCH net 1/3] bnxt_en: Synchronize tx when xdp redirects happen on same ring
-Date:   Fri,  1 Apr 2022 20:21:10 -0400
-Message-Id: <1648858872-14682-2-git-send-email-michael.chan@broadcom.com>
+        bpf@vger.kernel.org
+Subject: [PATCH net 2/3] bnxt_en: reserve space inside receive page for skb_shared_info
+Date:   Fri,  1 Apr 2022 20:21:11 -0400
+Message-Id: <1648858872-14682-3-git-send-email-michael.chan@broadcom.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1648858872-14682-1-git-send-email-michael.chan@broadcom.com>
 References: <1648858872-14682-1-git-send-email-michael.chan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000001b1fa205dba0e0e9"
+        boundary="0000000000002ac23205dba0e065"
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
@@ -66,114 +66,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---0000000000001b1fa205dba0e0e9
+--0000000000002ac23205dba0e065
 
-From: Pavan Chebbi <pavan.chebbi@broadcom.com>
+From: Andy Gospodarek <gospo@broadcom.com>
 
-If there are more CPUs than the number of TX XDP rings, multiple XDP
-redirects can select the same TX ring based on the CPU on which
-XDP redirect is called.  Add locking when needed and use static
-key to decide whether to take the lock.
+Insufficient space was being reserved in the page used for packet
+reception, so the interface MTU could be set too large to still have
+room for the contents of the packet when doing XDP redirect.  This
+resulted in the following message when redirecting a packet between
+3520 and 3822 bytes with an MTU of 3822:
+
+[311815.561880] XDP_WARN: xdp_update_frame_from_buff(line:200): Driver BUG: missing reserved tailroom
 
 Fixes: f18c2b77b2e4 ("bnxt_en: optimized XDP_REDIRECT support")
-Signed-off-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
+Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 7 +++++++
- drivers/net/ethernet/broadcom/bnxt/bnxt.h     | 2 ++
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 8 ++++++++
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h | 2 ++
- 4 files changed, 19 insertions(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 1c28495875cf..874fad0a5cf8 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -3253,6 +3253,7 @@ static int bnxt_alloc_tx_rings(struct bnxt *bp)
- 		}
- 		qidx = bp->tc_to_qidx[j];
- 		ring->queue_id = bp->q_info[qidx].queue_id;
-+		spin_lock_init(&txr->xdp_tx_lock);
- 		if (i < bp->tx_nr_rings_xdp)
- 			continue;
- 		if (i % bp->tx_nr_rings_per_tc == (bp->tx_nr_rings_per_tc - 1))
-@@ -10338,6 +10339,12 @@ static int __bnxt_open_nic(struct bnxt *bp, bool irq_re_init, bool link_re_init)
- 	if (irq_re_init)
- 		udp_tunnel_nic_reset_ntf(bp->dev);
- 
-+	if (bp->tx_nr_rings_xdp < num_possible_cpus()) {
-+		if (!static_key_enabled(&bnxt_xdp_locking_key))
-+			static_branch_enable(&bnxt_xdp_locking_key);
-+	} else if (static_key_enabled(&bnxt_xdp_locking_key)) {
-+		static_branch_disable(&bnxt_xdp_locking_key);
-+	}
- 	set_bit(BNXT_STATE_OPEN, &bp->state);
- 	bnxt_enable_int(bp);
- 	/* Enable TX queues */
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index 61aa3e8c5952..b4d3d051463b 100644
+index b4d3d051463b..98453a78cbd0 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -800,6 +800,8 @@ struct bnxt_tx_ring_info {
- 	u32			dev_state;
+@@ -593,7 +593,8 @@ struct nqe_cn {
+ #define BNXT_MAX_MTU		9500
+ #define BNXT_MAX_PAGE_MODE_MTU	\
+ 	((unsigned int)PAGE_SIZE - VLAN_ETH_HLEN - NET_IP_ALIGN -	\
+-	 XDP_PACKET_HEADROOM)
++	 XDP_PACKET_HEADROOM - \
++	 SKB_DATA_ALIGN((unsigned int)sizeof(struct skb_shared_info)))
  
- 	struct bnxt_ring_struct	tx_ring_struct;
-+	/* Synchronize simultaneous xdp_xmit on same ring */
-+	spinlock_t		xdp_tx_lock;
- };
+ #define BNXT_MIN_PKT_SIZE	52
  
- #define BNXT_LEGACY_COAL_CMPL_PARAMS					\
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-index 52fad0fdeacf..c0541ff00ac8 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -20,6 +20,8 @@
- #include "bnxt.h"
- #include "bnxt_xdp.h"
- 
-+DEFINE_STATIC_KEY_FALSE(bnxt_xdp_locking_key);
-+
- struct bnxt_sw_tx_bd *bnxt_xmit_bd(struct bnxt *bp,
- 				   struct bnxt_tx_ring_info *txr,
- 				   dma_addr_t mapping, u32 len)
-@@ -227,6 +229,9 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
- 	ring = smp_processor_id() % bp->tx_nr_rings_xdp;
- 	txr = &bp->tx_ring[ring];
- 
-+	if (static_branch_unlikely(&bnxt_xdp_locking_key))
-+		spin_lock(&txr->xdp_tx_lock);
-+
- 	for (i = 0; i < num_frames; i++) {
- 		struct xdp_frame *xdp = frames[i];
- 
-@@ -250,6 +255,9 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
- 		bnxt_db_write(bp, &txr->tx_db, txr->tx_prod);
- 	}
- 
-+	if (static_branch_unlikely(&bnxt_xdp_locking_key))
-+		spin_unlock(&txr->xdp_tx_lock);
-+
- 	return nxmit;
- }
- 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
-index 0df40c3beb05..067bb5e821f5 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h
-@@ -10,6 +10,8 @@
- #ifndef BNXT_XDP_H
- #define BNXT_XDP_H
- 
-+DECLARE_STATIC_KEY_FALSE(bnxt_xdp_locking_key);
-+
- struct bnxt_sw_tx_bd *bnxt_xmit_bd(struct bnxt *bp,
- 				   struct bnxt_tx_ring_info *txr,
- 				   dma_addr_t mapping, u32 len);
 -- 
 2.18.1
 
 
---0000000000001b1fa205dba0e0e9
+--0000000000002ac23205dba0e065
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -244,13 +176,13 @@ FSWQptLx+kiu63idTII4r3k/7+dJ5AhLRr4WCoXEme2GZkfSbYC3fEL46tb1w7w+25OEFCv1MtDZ
 DauX1eWVM+KepL7zoSNzVbTipc65WuZFLR8ngOwkpknqvS9n/nKd885m23oIocC+GA4xggJtMIIC
 aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
 EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQeU+Y6hbenPzRMJsw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIN6/BgtgY4B1rQg2hKe+dwc9n80RMBCp
-OsVM5ZzOl+WVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMDQw
-MjAwMjEyNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJqHm1bQNw4wvuIuTTGx4alai3dBzr6q
+s8Z3R+yrKPMzMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMDQw
+MjAwMjEyNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
 SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQBVCWdiTqJueb+Ktu+9nO1knuUNkuV9U93mIh2qt1XPr3tlszjG
-4zpHFOfF9GyBo2aFI3cxhJ+0BmE9zbQikmDYz6XslYie1xOn+RJXGWO4JWjTxKK8ZSyw3LLUbKaY
-W9ObW4CF4AM2oxGgFXgv1PflntSNQl83iLvGMsM6XRLbZx5MEkzYQlv+yW8NZJb802pvAy3ZwSzA
-ideJLUt4E9x8wQP81ByZRO4D6ywVKuKaGkvql/e56jCsyVGiBPQMVVtPLi1fmC/L9zZrI8elxVGk
-32cUQPi238Ka8f5PDJp5tw1MkEtqfOyy7jOMcnKPKgsY97FJ8/MPBaZVGUg6e1kT
---0000000000001b1fa205dba0e0e9--
+ATANBgkqhkiG9w0BAQEFAASCAQBewwTRqUSwUGs8v2QtxL1WW9T5z5j2dWVb39rUJsKUdV7hQFk/
+4TlK4qHh4iEapxKhUfU1vSk1IQWQKG44BV5V7pr4B91vgehFDzb6mb3Td9MZrJPbF8LFSYV3xcrb
+gwJCtC8vxkPapMJA87ytTnoILsTmAARS3Jk9tv2lhklTrOQxTy3gO+EHJv8wEB+oeDNv6a/9fpT5
+JhKL+HW7U1nPbECQYieY+brCJ6rml/US3lv9/K7tS1kA2SgSuktxxPkVaJR78fgzPt0GSOYwS85J
+4NPyP079x0TD5swtRPt6A4blZIcmNlCXQ5hJjyNf3rZgg0tols2RAUmdCcFB0Cuc
+--0000000000002ac23205dba0e065--
