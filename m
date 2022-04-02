@@ -2,216 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 307A14EFD49
-	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 01:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98D94EFD62
+	for <lists+bpf@lfdr.de>; Sat,  2 Apr 2022 02:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347841AbiDAX5f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Apr 2022 19:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
+        id S237241AbiDBAXQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Apr 2022 20:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233669AbiDAX5e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Apr 2022 19:57:34 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D03C506F8;
-        Fri,  1 Apr 2022 16:55:43 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id bc27so3514007pgb.4;
-        Fri, 01 Apr 2022 16:55:43 -0700 (PDT)
+        with ESMTP id S234770AbiDBAXO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Apr 2022 20:23:14 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782191AC429
+        for <bpf@vger.kernel.org>; Fri,  1 Apr 2022 17:21:23 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id s11so3991387pfu.13
+        for <bpf@vger.kernel.org>; Fri, 01 Apr 2022 17:21:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ITDDF7wJMqoC4D+CMFddkLEBVT+cz8yxZasDs7bEqHU=;
-        b=lKGmW1uWP9QHlp4AUB8qvKmffBMuUV67+V/VNWVRF6rOOYUbY+74bGyNvz0/RaZGm0
-         /6a1CNZPKF9XX8ufK2skUi/JsjqwRe6QpfBWIMc4Hugbu/pi7xgtDj+QZhrsm47b6P7e
-         MOqTKbiXouVj0rKUrNmMDVRTSskLt1rtHCZgGPxPtO+6WMOtlhB0VeWkxpTII8BpF4Ar
-         ZZYmaNBpe+zxwun2L8jgoYeVVLVEgsbprrzeDw5z0zV8K8N7UqRI1RkpiMq9kECPUC5M
-         X+EyGGzgnmy6ExUyqWapnwBhOaROd4ahOlRCHdELR9gEp0stA9O6L/EGZyJY8XyOLX00
-         1z1A==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=rIn+lAPGNsRpRr2yB4FSft43TejJd5NaUJmZ2ZHaEXc=;
+        b=KdCmzD361L+Frac6oAhghTlbRTOzktKKL85f6Omk9mpoGgXeOcUlVedqphjtYsLLxa
+         hh5/z8QIM1CPrpTdjA8vkDY6yUFiXOQqQmswdlyZgYfkDJumRx4KUVciBPFevQG2ZJRs
+         Sm45nyu+jW2ZJwOUqDyJtLyBRtwP4ol+lxXNs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ITDDF7wJMqoC4D+CMFddkLEBVT+cz8yxZasDs7bEqHU=;
-        b=t6m6Wa6ns29KkvIODqEKUi3IJIvq8yJQJ1SAO2CFxrrY4nh34zbp6GZ4VK4yjgitHq
-         gRAbHWUGQ5Tlg7Ff3YhoNSeozgVLUpNs2UqU/M1eenvR+Vf4lLzF5yuyGSUw/YfyUfDm
-         6UxHo3iOwjb1BeZteRXbgchtmbiJFivGh7vleyZtHLjCllFldnlz5khDkoJRhcpIeJ4A
-         4jSUBJsAu6s4ZEndjLA4gjkcf/5FPn9RK61rK6fDnB0b7Eo7smymT/00hW2PCFIMX2QK
-         HyczYje+Hr05tfZEAjlZR8hcNJzolTyyQcC7NTMR2w9JDykMq26Q3eBcgI1r4/6Y8cvO
-         rAkw==
-X-Gm-Message-State: AOAM530tOaF4jSnxTrm7cwfBoa3r+dgUK9RFrtnBdLvGtr0lIn+WwneT
-        2pbiMjQ0EgtwBIRGVS2lfGE=
-X-Google-Smtp-Source: ABdhPJw5mHEx3OXRCJwg5BH/o7y2KBgiA/EPycjlEwRTxtui+XCnm3ENGoJTUYt+IJX/yfQbKijNJA==
-X-Received: by 2002:a62:84d3:0:b0:4fa:72e2:1c64 with SMTP id k202-20020a6284d3000000b004fa72e21c64mr47407413pfd.29.1648857342449;
-        Fri, 01 Apr 2022 16:55:42 -0700 (PDT)
-Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::5:fb6e])
-        by smtp.gmail.com with ESMTPSA id j7-20020a056a00130700b004b9f7cd94a4sm4230615pfu.56.2022.04.01.16.55.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Apr 2022 16:55:41 -0700 (PDT)
-Date:   Fri, 1 Apr 2022 16:55:37 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "corbet@lwn.net" <corbet@lwn.net>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF
- programs
-Message-ID: <20220401235537.mwziwuo4n53m5cxp@MBP-98dd607d3435.dhcp.thefacebook.com>
-References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
- <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
- <b9f5995f96da447c851f7c9db8232a9b@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b9f5995f96da447c851f7c9db8232a9b@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rIn+lAPGNsRpRr2yB4FSft43TejJd5NaUJmZ2ZHaEXc=;
+        b=ZcB++0S4W2dx+4WivFg+FDcRuGzSPkCX4j8BYuB3i53nb3z7vcNLXQM/PoY8e+xoD5
+         QrTfHCzTqCV1RssaHHyXCw6SwQXYactEyceWTeZn9ZCQG0sBXApwk0Hw3heuip94ZgIs
+         ZVGlsZwItQFlofBM/JMN5ZmHII1aiwB1/m0pwBircl1zDih7lqGaS7il4UrX9VvYr8Qf
+         IzZDqwiebOG3B3gEdUroVsdXjJ87bsWoajmvGa4ORWfLMIh3yPFRd23aVAALn9i0NlXR
+         ZUrMR4toCWVFNyZ8kl0oDsedRQr1MUNU2OZp+pWF7zO9Ngqq06hx7o9K72cgb0yiCI+X
+         lswg==
+X-Gm-Message-State: AOAM532P5s8670aCE3kWOkPG66D/VmAPR9mK46vdZdx/nOFLuAlQkVJV
+        JvlvObcRhIRgyYUzWtdxHRty1A==
+X-Google-Smtp-Source: ABdhPJwgesfyFxiUN5sDS0DRwA62l7ktkhJAymWJE71lyN8k4MzZtqRl1ZGQug6E4mHOSntlPpZWkA==
+X-Received: by 2002:a63:7905:0:b0:386:33e4:f0eb with SMTP id u5-20020a637905000000b0038633e4f0ebmr16835906pgc.439.1648858882546;
+        Fri, 01 Apr 2022 17:21:22 -0700 (PDT)
+Received: from localhost.swdvt.lab.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id k10-20020a056a00168a00b004f7e2a550ccsm4295050pfc.78.2022.04.01.17.21.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 Apr 2022 17:21:22 -0700 (PDT)
+From:   Michael Chan <michael.chan@broadcom.com>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, kuba@kernel.org, gospo@broadcom.com,
+        bpf@vger.kernel.org
+Subject: [PATCH net 0/3] bnxt_en: XDP redirect fixes
+Date:   Fri,  1 Apr 2022 20:21:09 -0400
+Message-Id: <1648858872-14682-1-git-send-email-michael.chan@broadcom.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000004645d05dba0e044"
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 08:25:22AM +0000, Roberto Sassu wrote:
-> > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
-> > Sent: Thursday, March 31, 2022 4:27 AM
-> > On Mon, Mar 28, 2022 at 07:50:15PM +0200, Roberto Sassu wrote:
-> > > eBPF already allows programs to be preloaded and kept running without
-> > > intervention from user space. There is a dedicated kernel module called
-> > > bpf_preload, which contains the light skeleton of the iterators_bpf eBPF
-> > > program. If this module is enabled in the kernel configuration, its loading
-> > > will be triggered when the bpf filesystem is mounted (unless the module is
-> > > built-in), and the links of iterators_bpf are pinned in that filesystem
-> > > (they will appear as the progs.debug and maps.debug files).
-> > >
-> > > However, the current mechanism, if used to preload an LSM, would not
-> > offer
-> > > the same security guarantees of LSMs integrated in the security
-> > subsystem.
-> > > Also, it is not generic enough to be used for preloading arbitrary eBPF
-> > > programs, unless the bpf_preload code is heavily modified.
-> > >
-> > > More specifically, the security problems are:
-> > > - any program can be pinned to the bpf filesystem without limitations
-> > >   (unless a MAC mechanism enforces some restrictions);
-> > > - programs being executed can be terminated at any time by deleting the
-> > >   pinned objects or unmounting the bpf filesystem.
-> > 
-> > So many things to untangle here.
-> 
-> Hi Alexei
-> 
-> thanks for taking the time to provide such detailed
-> explanation.
-> 
-> > The above paragraphs are misleading and incorrect.
-> > The commit log sounds like there are security issues that this
-> > patch set is fixing.
-> > This is not true.
-> 
-> I reiterate the goal: enforce a mandatory policy with
-> an out-of-tree LSM (a kernel module is fine), with the
-> same guarantees of LSMs integrated in the security
-> subsystem.
+--00000000000004645d05dba0e044
 
-To make it 100% clear:
-Any in-kernel feature that benefits out-of-tree module will be rejected.
+This series includes 3 fixes related to the XDP redirect code path in
+the driver.  The first one adds locking when the number of TX XDP rings
+is less than the number of CPUs.  The second one adjusts the maximum MTU
+that can support XDP with enough tail room in the buffer.  The 3rd one
+fixes a race condition between TX ring shutdown and the XDP redirect path.
 
-> The root user is not part of the TCB (i.e. is untrusted),
-> all the changes that user wants to make must be subject
-> of decision by the LSM enforcing the mandatory policy.
-> 
-> I thought about adding support for LSMs from kernel
-> modules via a new built-in LSM (called LoadLSM), but
+Andy Gospodarek (1):
+  bnxt_en: reserve space inside receive page for skb_shared_info
 
-Such approach will be rejected. See above.
+Pavan Chebbi (1):
+  bnxt_en: Synchronize tx when xdp redirects happen on same ring
 
-> > I suspect there is huge confusion on what these two "progs.debug"
-> > and "maps.debug" files are in a bpffs instance.
-> > They are debug files to pretty pring loaded maps and progs for folks who
-> > like to use 'cat' to examine the state of the system instead of 'bpftool'.
-> > The root can remove these files from bpffs.
-> > 
-> > There is no reason for kernel module to pin its bpf progs.
-> > If you want to develop DIGLIM as a kernel module that uses light skeleton
-> > just do:
-> > #include <linux/init.h>
-> > #include <linux/module.h>
-> > #include "diglim.lskel.h"
-> > 
-> > static struct diglim_bpf *skel;
-> > 
-> > static int __init load(void)
-> > {
-> >         skel = diglim_bpf__open_and_load();
-> >         err = diglim_bpf__attach(skel);
-> > }
-> > /* detach skel in __fini */
-> > 
-> > It's really that short.
-> > 
-> > Then you will be able to
-> > - insmod diglim.ko -> will load and attach bpf progs.
-> > - rmmod diglim -> will detach them.
-> 
-> root can stop the LSM without consulting the security
-> policy. The goal of having root untrusted is not achieved.
+Ray Jui (1):
+  bnxt_en: Prevent XDP redirect from running when stopping TX queue
 
-Out-of-tree module can do any hack.
-For example:
-1. don't do detach skel in __fini
-  rmmod will remove the module, but bpf progs will keep running.
-2. do module_get(THIS_MODULE) in __init
-  rmmod will return EBUSY
-  and have some out-of-band way of dropping mod refcnt.
-3. hack into sys_delete_module. if module_name==diglem return EBUSY.
-4. add proper LSM hook to delete_module
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  7 +++++++
+ drivers/net/ethernet/broadcom/bnxt/bnxt.h     |  5 ++++-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 14 ++++++++++++--
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.h |  2 ++
+ 4 files changed, 25 insertions(+), 3 deletions(-)
 
-> My point was that pinning progs seems to be the
-> recommended way of keeping them running. 
+-- 
+2.18.1
 
-Not quite. bpf_link refcnt is what keeps progs attached.
-bpffs is mainly used for:
-- to pass maps/links from one process to another
-when passing fd is not possible.
-- to solve the case of crashing user space.
-The user space agent will restart and will pick up where
-it's left by reading map, link, prog FDs from bpffs.
-- pinning bpf iterators that are later used to 'cat' such files.
-That is what bpf_preload is doing by creating two debug
-files "maps.debug" and "progs.debug".
 
-> Pinning
-> them to unreachable inodes intuitively looked the
-> way to go for achieving the stated goal. 
+--00000000000004645d05dba0e044
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-We can consider inodes in bpffs that are not unlinkable by root
-in the future, but certainly not for this use case.
-
-> Or maybe I
-> should just increment the reference count of links
-> and don't decrement during an rmmod?
-
-I suggest to abandon out-of-tree goal.
-Only then we can help and continue this discussion.
+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
+xV4Em+0wQoEIR2kPG6yiZNtUK0tNCaZejYU/Mf/bzdKSwud3pLgHV8ls83y2OU/ha9xgJMLpRswv
+xucFCxMsPmk0yoVmpbr92kIpLm+TomNZsL++LcDRa2ECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUz2bMvqtXpXM0u3vAvRkalz60
+CjswDQYJKoZIhvcNAQELBQADggEBAGUgeqqI/q2pkETeLr6oS7nnm1bkeNmtnJ2bnybNO/RdrbPj
+DHVSiDCCrWr6xrc+q6OiZDKm0Ieq6BN+Wfr8h5mCkZMUdJikI85WcQTRk6EEF2lzIiaULmFD7U15
+FSWQptLx+kiu63idTII4r3k/7+dJ5AhLRr4WCoXEme2GZkfSbYC3fEL46tb1w7w+25OEFCv1MtDZ
+1CHkODrS2JGwDQxXKmyF64MhJiOutWHmqoGmLJVz1jnDvClsYtgT4zcNtoqKtjpWDYAefncWDPIQ
+DauX1eWVM+KepL7zoSNzVbTipc65WuZFLR8ngOwkpknqvS9n/nKd885m23oIocC+GA4xggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQeU+Y6hbenPzRMJsw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIH5D7xTWUhQHJYL4ub6KwSG/HnGdaNpf
+bvRJSr6WfdE5MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMDQw
+MjAwMjEyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQDV9U3SpNJuC0XRJxWgnBzJS5n8S5QZxMclGO6Z+EwJ5d9xyN8A
+LbTNX32s1Il3y86M2TeX/+1gbpf+9zmpTk/un2uKoW61mq/nET0ZRCDSBwMY+tcKiTNrDFGCT0jr
+Z5ASpgmdViF3tn+Bn+3rKS63BDH7S266QxWXjLaXh6VukIzcj3JF3mjZk7JaqdT31KVTiC8fTWAE
+AYxM7l05SXVMp62teQTT164hYf/APtcacR5BBrly/bUXKTgnn+v651uMWjT2Z7z1KxlBO+Q8Yxyd
+1T7z5SemmGGn48kej+6haY5oXtQGJBT+YhsWArm9Cvq8wCHS6xGF5xOg9qedFZXC
+--00000000000004645d05dba0e044--
