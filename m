@@ -2,183 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AEB4F0B05
-	for <lists+bpf@lfdr.de>; Sun,  3 Apr 2022 18:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAC34F0B13
+	for <lists+bpf@lfdr.de>; Sun,  3 Apr 2022 18:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236415AbiDCQCc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Apr 2022 12:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
+        id S232964AbiDCQKJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Apr 2022 12:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359307AbiDCQCc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Apr 2022 12:02:32 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A4F3980E;
-        Sun,  3 Apr 2022 09:00:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649001638; x=1680537638;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qvHYdvxr81dj6BSTtdc044toQ4oANBTAS7xvEFGuayI=;
-  b=lgX3zuPsEyQ2cveb8kTh0NN+IR9or3qvf8xtw1YERTPWDrY7zaIvVuwp
-   wfZxaDWRVY8AhrST2o2Y/RhXm+0Bi2hIIW3S/F1p9ftMSq2tpC2t878hv
-   JC9/fXFMba13awo+JwrZ6CR1Hxl9O/1cME+kMoKgM3PLWtOZfYshCRSz5
-   MZQ9YfDCg/prYshujp4TjIcSJ6xE9c4yqfBJpVMmxDkWvLILfsAX++P0/
-   00OBhz1gZ2V75QuyI7IwPbC2LZyEzlFQmoHvdO2AZ+J6fWkoQP2Fw6cbM
-   Uwq0xVx3s8kVFYop/dz+H12RXjpz69rzU3UrTed+ZQaJPZUeDdU9VhlHX
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10306"; a="260381423"
-X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
-   d="scan'208";a="260381423"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2022 09:00:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
-   d="scan'208";a="607767948"
-Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Apr 2022 09:00:33 -0700
-Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nb2eW-00014e-Ru;
-        Sun, 03 Apr 2022 16:00:32 +0000
-Date:   Sun, 3 Apr 2022 23:59:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bui Quang Minh <minhquangbui99@gmail.com>, cgroups@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Bui Quang Minh <minhquangbui99@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] cgroup: Kill the parent controller when its last child
- is killed
-Message-ID: <202204032330.l2wsF3mf-lkp@intel.com>
-References: <20220403135717.8294-1-minhquangbui99@gmail.com>
+        with ESMTP id S231406AbiDCQKI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Apr 2022 12:10:08 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC2B3982F
+        for <bpf@vger.kernel.org>; Sun,  3 Apr 2022 09:08:10 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id f18so3283108edc.5
+        for <bpf@vger.kernel.org>; Sun, 03 Apr 2022 09:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hanYBf6ntGMX8alKY8GpfKVwvT1p2AjZMh65KWY/3eM=;
+        b=A3HKQNEL6HQvcnybDBS/8S9A7QB5fA0jDSBFyHyPsmTxz+c9U2JREf8vlx+Pq6/QvJ
+         tt2FHCkfIclqsUg8ekVtapVlTkr5FzSSXeoBz1RCDP8PtsFbQaVlWAAH3bSLunUUe9jZ
+         41u6yCIlpyrH1h2vooKzOy9v20WLJv+86drzT4QN+HUOX8gQ0PR+iCv6JbuJjzVRvSDK
+         Vrfga0UlRPu5dWNUGThE60IgweCs2qSE+maVBFcDsUiC5hFqwfhGGJj2HxgFXTtywFU+
+         v0qzZXrfhg0GIslLkjKdg/s4xRQPy6TUsFesDDAuuYy6BWDqyGlb5bpXAuC2PXlLg+/1
+         zOqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hanYBf6ntGMX8alKY8GpfKVwvT1p2AjZMh65KWY/3eM=;
+        b=rXNW+TW81A02DA41JCRB82tZMd3ifAYpiIST8+S59X8VaoaTbpCYFUlzxZPy3KPCZz
+         K/i91xJjtvzkSfalGTWyWzx7a+taEMLEtZ+OePE6b5wd7YgrRnJSGOjCPtU9gBnPZL8l
+         Gqn5nTJi0Q7CSRC2WWPjAym+eByHna4hjZy0ZnK0vF1ceb5Dq6MziijqqWl/lpEoSbs/
+         YDaaMbxLaOeiAg0WpKEe4LaspOPYDyw8lEsgMgcsQ38gwuLldvxf/4PHn9dj4NYcaTx+
+         Z8p2k58Unf93Oei/7UQis/ovblhC4ZxtZt+lA0MUwweTLw9nP1LXIrr9efYKx7sufhmZ
+         RPhQ==
+X-Gm-Message-State: AOAM532DhACZcSwMr7GOm7ZN1rL9z6J+o/EAwloJbgVml2ptpgNU4rjn
+        oyVAtZgWox7iEUbpGEPYO+oNYkAnjkPMeg==
+X-Google-Smtp-Source: ABdhPJxuDEqT9bqL+5jF6yyusPb1+dKVn4p68yB4Srs57n6iZbvYUgqecRGiMeUkZStui9LstV4k6w==
+X-Received: by 2002:aa7:c789:0:b0:413:605d:8d17 with SMTP id n9-20020aa7c789000000b00413605d8d17mr29306819eds.100.1649002089553;
+        Sun, 03 Apr 2022 09:08:09 -0700 (PDT)
+Received: from erthalion.local (dslb-094-222-030-091.094.222.pools.vodafone-ip.de. [94.222.30.91])
+        by smtp.gmail.com with ESMTPSA id z12-20020a17090674cc00b006df9afdda91sm3332053ejl.185.2022.04.03.09.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Apr 2022 09:08:09 -0700 (PDT)
+From:   Dmitrii Dolgov <9erthalion6@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, yhs@fb.com,
+        songliubraving@fb.com
+Cc:     Dmitrii Dolgov <9erthalion6@gmail.com>
+Subject: [RFC PATCH bpf-next 0/2] Priorities for bpf progs attached to the same tracepoint
+Date:   Sun,  3 Apr 2022 18:07:16 +0200
+Message-Id: <20220403160718.13730-1-9erthalion6@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220403135717.8294-1-minhquangbui99@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Bui,
+With growing number of various products and tools using BPF it could
+easily happen that multiple BPF programs from different processes will
+be attached to the same tracepoint. It seems that in such case there is
+no way to specify a custom order in which those programs may want to be
+executed -- it will depend on the order in which they were attached.
 
-Thank you for the patch! Yet something to improve:
+Consider an example when the BPF program A is attached to tracepoint T,
+the BFP program B needs to be attached to the T as well and start
+before/end after the A (e.g. to monitor the whole process of A +
+tracepoint in some way).  If the program A could not be changed and is
+attached before B, the order specified above will not be possible.
 
-[auto build test ERROR on tj-cgroup/for-next]
-[also build test ERROR on v5.17 next-20220401]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+One way to address this in a limited, but less invasive way is to
+utilize link options structure to pass the desired priority to
+perf_event_set_bpf_prog, and add new bpf_prog into the bpf_prog_array
+based on its value. This will allow to specify the priority value via
+bpf_tracepoint_opts when attaching a new prog.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bui-Quang-Minh/cgroup-Kill-the-parent-controller-when-its-last-child-is-killed/20220403-215911
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-config: i386-randconfig-m021 (https://download.01.org/0day-ci/archive/20220403/202204032330.l2wsF3mf-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.2.0-19) 11.2.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/2bc22feae8a913c7f371bc79ef9967122d8d326c
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Bui-Quang-Minh/cgroup-Kill-the-parent-controller-when-its-last-child-is-killed/20220403-215911
-        git checkout 2bc22feae8a913c7f371bc79ef9967122d8d326c
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash kernel/
+Does this make sense? There maybe a better way to achieve this, I would
+be glad to hear any feedback on it.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Dmitrii Dolgov (2):
+  bpf: tracing: Introduce prio field for bpf_prog
+  libbpf: Allow setting bpf_prog priority
 
-All errors (new ones prefixed by >>):
-
-   kernel/cgroup/cgroup.c: In function 'css_release_work_fn':
->> kernel/cgroup/cgroup.c:5169:52: error: 'struct cgroup_bpf' has no member named 'refcnt'
-    5169 |                 if (!percpu_ref_is_dying(&cgrp->bpf.refcnt))
-         |                                                    ^
-
-
-vim +5169 kernel/cgroup/cgroup.c
-
-  5148	
-  5149	static void css_release_work_fn(struct work_struct *work)
-  5150	{
-  5151		struct cgroup_subsys_state *css =
-  5152			container_of(work, struct cgroup_subsys_state, destroy_work);
-  5153		struct cgroup_subsys *ss = css->ss;
-  5154		struct cgroup *cgrp = css->cgroup;
-  5155		struct cgroup *parent = cgroup_parent(cgrp);
-  5156	
-  5157		mutex_lock(&cgroup_mutex);
-  5158	
-  5159		css->flags |= CSS_RELEASED;
-  5160		list_del_rcu(&css->sibling);
-  5161	
-  5162		/*
-  5163		 * If parent doesn't have any children, start killing it.
-  5164		 * And don't kill the default root.
-  5165		 */
-  5166		if (parent && list_empty(&parent->self.children) &&
-  5167		    parent != &cgrp_dfl_root.cgrp &&
-  5168		    !percpu_ref_is_dying(&parent->self.refcnt)) {
-> 5169			if (!percpu_ref_is_dying(&cgrp->bpf.refcnt))
-  5170				cgroup_bpf_offline(parent);
-  5171			percpu_ref_kill(&parent->self.refcnt);
-  5172		}
-  5173	
-  5174		if (ss) {
-  5175			/* css release path */
-  5176			if (!list_empty(&css->rstat_css_node)) {
-  5177				cgroup_rstat_flush(cgrp);
-  5178				list_del_rcu(&css->rstat_css_node);
-  5179			}
-  5180	
-  5181			cgroup_idr_replace(&ss->css_idr, NULL, css->id);
-  5182			if (ss->css_released)
-  5183				ss->css_released(css);
-  5184		} else {
-  5185			struct cgroup *tcgrp;
-  5186	
-  5187			/* cgroup release path */
-  5188			TRACE_CGROUP_PATH(release, cgrp);
-  5189	
-  5190			cgroup_rstat_flush(cgrp);
-  5191	
-  5192			spin_lock_irq(&css_set_lock);
-  5193			for (tcgrp = cgroup_parent(cgrp); tcgrp;
-  5194			     tcgrp = cgroup_parent(tcgrp))
-  5195				tcgrp->nr_dying_descendants--;
-  5196			spin_unlock_irq(&css_set_lock);
-  5197	
-  5198			/*
-  5199			 * There are two control paths which try to determine
-  5200			 * cgroup from dentry without going through kernfs -
-  5201			 * cgroupstats_build() and css_tryget_online_from_dir().
-  5202			 * Those are supported by RCU protecting clearing of
-  5203			 * cgrp->kn->priv backpointer.
-  5204			 */
-  5205			if (cgrp->kn)
-  5206				RCU_INIT_POINTER(*(void __rcu __force **)&cgrp->kn->priv,
-  5207						 NULL);
-  5208		}
-  5209	
-  5210		mutex_unlock(&cgroup_mutex);
-  5211	
-  5212		INIT_RCU_WORK(&css->destroy_rwork, css_free_rwork_fn);
-  5213		queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
-  5214	}
-  5215	
+ drivers/media/rc/bpf-lirc.c    |  4 ++--
+ include/linux/bpf.h            |  3 ++-
+ include/linux/trace_events.h   |  7 ++++---
+ include/uapi/linux/bpf.h       |  1 +
+ kernel/bpf/core.c              | 19 +++++++++++++++++--
+ kernel/bpf/syscall.c           |  3 ++-
+ kernel/events/core.c           |  8 ++++----
+ kernel/trace/bpf_trace.c       |  8 +++++---
+ tools/include/uapi/linux/bpf.h |  1 +
+ tools/lib/bpf/bpf.c            |  1 +
+ tools/lib/bpf/bpf.h            |  1 +
+ tools/lib/bpf/libbpf.c         |  4 +++-
+ tools/lib/bpf/libbpf.h         |  6 ++++--
+ 13 files changed, 47 insertions(+), 19 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.32.0
+
