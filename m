@@ -2,113 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CBE4F0959
-	for <lists+bpf@lfdr.de>; Sun,  3 Apr 2022 14:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628254F0A07
+	for <lists+bpf@lfdr.de>; Sun,  3 Apr 2022 15:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244238AbiDCMap (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Apr 2022 08:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
+        id S234362AbiDCNyy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Apr 2022 09:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240845AbiDCMao (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Apr 2022 08:30:44 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE85234B85;
-        Sun,  3 Apr 2022 05:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1648988928; x=1680524928;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Ykhv0PHM2+QYmFYUxNK1v3kWBps7WbMwukEDYifJB/Y=;
-  b=RELnGWHM5YwJyn38W3I6Ni7k5PAW9PeWBprQl9/SlGurIj9wUYalCSQR
-   XsUDxTMFLRC+btS6sG0npWZg8kbAuT+JgD9WlW+TeWTflFIXVijN/ZfV+
-   Wjj1o4j4wajO3DgRGJ9QHwEHa6vMQbIichgDDZl/sgtYOu6V5iNWVpvGh
-   C37XyD3sCRHN8C1D9Sb0aEYPzmGaOgT35QVD644l0+9sVY0WylL/PVIsD
-   Qj/HnyJtCKtV4dPQcRxulnYeXR3DrBFvxrbtppoxscqD2OAKBNDWI6wcI
-   aL1dXjop06qFfglZgkZBXzcoE4AhrJIE6Pgp9RVduIH2vSaFn543Z7euB
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10305"; a="285326415"
-X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
-   d="scan'208";a="285326415"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2022 05:28:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
-   d="scan'208";a="568943543"
-Received: from npg-dpdk-haiyue-2.sh.intel.com ([10.67.111.4])
-  by orsmga008.jf.intel.com with ESMTP; 03 Apr 2022 05:28:45 -0700
-From:   Haiyue Wang <haiyue.wang@intel.com>
-To:     bpf@vger.kernel.org
-Cc:     Haiyue Wang <haiyue.wang@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S234624AbiDCNyy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Apr 2022 09:54:54 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCE731DCA;
+        Sun,  3 Apr 2022 06:52:59 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id k14so6271479pga.0;
+        Sun, 03 Apr 2022 06:52:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lb9cPlyZwbStjJwtyos1H7UNpKKI/uQ50C7n0HV1cmg=;
+        b=ol6dX4/RtXYE+ytChjwpGHAuwCbbdB+IDdiEcpvJWXpiVphTPkjv1IExQ1ToaZBRPu
+         OirK0Fh3acKTV0wMXIyYsW0gAGxwd93cHemJXGVi343rUkb3CofTeBtD/IbwmvqRgcp6
+         mm8cjNF6iwZ5xNK0MChgKrW5uZaYk+CFZiDnY6euVi4lsAYZPrDaopFbn8/K7v2Jwcun
+         joCAlYFgRC/pgwILgk78kJAO57R8XW1CroNlNEDl+TvzTcfppFATaSdB75brzaPQARAI
+         /estsAqNQZhFh7XxreulgNXdAD661VIYq7Wr8bkTpPmmLyhb+Ukr9CCo3EFhqIgeKbgG
+         X8qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lb9cPlyZwbStjJwtyos1H7UNpKKI/uQ50C7n0HV1cmg=;
+        b=Du9vzMVJsficRpVysV1Tvciyj0eACq/lTSjP6sHrDb0adw3sKp7VbPYWlR3BktTEvu
+         /zKvMspVxim7msV95cPl9HXlrmerCxHYB9nil6eTw/1QI2k81hIwbzVTsLnbhJofTUW/
+         /+72CzX1LJShvvcxzN/YhVXixfgn/h3dbEC8gDBNg1TLPYTlDc4zuALa6HWkM9wFlWaf
+         i8EmeNX4pedcJAHONknYg0o2jhue4NTHotiBtmExQXbMrpPozB54a5CAoB5B+OI3eQks
+         aVKP4WuCTuCFCIG7ljkIQR5D/9HmbIF0aGuH17SGEOMYw6qLNdrhFfUh46TNHx1SXXgf
+         txwA==
+X-Gm-Message-State: AOAM5327vKHVoStncxX0hbGsA01vcytnS5L5gGs+eSFr7dCFGONmEgOr
+        NkQxTSDZnwYuz+JJ0CAi2Yw=
+X-Google-Smtp-Source: ABdhPJwiZvhSxAJo5R0Aey3Vtd57SMUkDnTvtPt3vFc3D9SvrciCNUo3WSE9GJBrMxz2huPRfTrHUA==
+X-Received: by 2002:a63:2b05:0:b0:398:677b:f460 with SMTP id r5-20020a632b05000000b00398677bf460mr22523433pgr.592.1648993978755;
+        Sun, 03 Apr 2022 06:52:58 -0700 (PDT)
+Received: from localhost.localdomain ([223.74.191.143])
+        by smtp.gmail.com with ESMTPSA id k20-20020aa788d4000000b004fb07f819c1sm8933299pff.50.2022.04.03.06.52.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Apr 2022 06:52:58 -0700 (PDT)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] bpf: correct the comment for BTF kind bitfield
-Date:   Sun,  3 Apr 2022 19:53:26 +0800
-Message-Id: <20220403115327.205964-1-haiyue.wang@intel.com>
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix cd_flavor_subdir() of test_progs
+Date:   Sun,  3 Apr 2022 21:52:45 +0800
+Message-Id: <20220403135245.1713283-1-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220403084433.200701-1-haiyue.wang@intel.com>
-References: <20220403084433.200701-1-haiyue.wang@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit 8fd886911a6a ("bpf: Add BTF_KIND_FLOAT to uapi") has extended
-the BTF kind bitfield from 4 to 5 bits, correct the comment.
+Currently, when we run test_progs with just executable file name, for
+example 'PATH=. test_progs-no_alu32', cd_flavor_subdir() will not check
+if test_progs is running as a flavored test runner and switch into
+corresponding sub-directory.
 
-Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
----
-v2: update the btf.h under tools directory.
----
- include/uapi/linux/btf.h       | 4 ++--
- tools/include/uapi/linux/btf.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+This will cause test_progs-no_alu32 executed by the
+'PATH=. test_progs-no_alu32' command to run in the wrong directory and
+load the wrong BPF objects.
 
-diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
-index b0d8fea1951d..a9162a6c0284 100644
---- a/include/uapi/linux/btf.h
-+++ b/include/uapi/linux/btf.h
-@@ -33,8 +33,8 @@ struct btf_type {
- 	/* "info" bits arrangement
- 	 * bits  0-15: vlen (e.g. # of struct's members)
- 	 * bits 16-23: unused
--	 * bits 24-27: kind (e.g. int, ptr, array...etc)
--	 * bits 28-30: unused
-+	 * bits 24-28: kind (e.g. int, ptr, array...etc)
-+	 * bits 29-30: unused
- 	 * bit     31: kind_flag, currently used by
- 	 *             struct, union and fwd
- 	 */
-diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/btf.h
-index b0d8fea1951d..a9162a6c0284 100644
---- a/tools/include/uapi/linux/btf.h
-+++ b/tools/include/uapi/linux/btf.h
-@@ -33,8 +33,8 @@ struct btf_type {
- 	/* "info" bits arrangement
- 	 * bits  0-15: vlen (e.g. # of struct's members)
- 	 * bits 16-23: unused
--	 * bits 24-27: kind (e.g. int, ptr, array...etc)
--	 * bits 28-30: unused
-+	 * bits 24-28: kind (e.g. int, ptr, array...etc)
-+	 * bits 29-30: unused
- 	 * bit     31: kind_flag, currently used by
- 	 *             struct, union and fwd
- 	 */
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ tools/testing/selftests/bpf/test_progs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 2ecb73a65206..0a4b45d7b515 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -761,8 +761,10 @@ int cd_flavor_subdir(const char *exec_name)
+ 	const char *flavor = strrchr(exec_name, '/');
+ 
+ 	if (!flavor)
+-		return 0;
+-	flavor++;
++		flavor = exec_name;
++	else
++		flavor++;
++
+ 	flavor = strrchr(flavor, '-');
+ 	if (!flavor)
+ 		return 0;
 -- 
 2.35.1
 
