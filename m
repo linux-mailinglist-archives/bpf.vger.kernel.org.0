@@ -2,68 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9795C4F0A44
-	for <lists+bpf@lfdr.de>; Sun,  3 Apr 2022 16:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AEB4F0B05
+	for <lists+bpf@lfdr.de>; Sun,  3 Apr 2022 18:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359075AbiDCOpS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Apr 2022 10:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
+        id S236415AbiDCQCc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Apr 2022 12:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359066AbiDCOpN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Apr 2022 10:45:13 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386063388D;
-        Sun,  3 Apr 2022 07:43:20 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id y10so6682514pfa.7;
-        Sun, 03 Apr 2022 07:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WSiOa7a2+6arsE8Kmiwhve3HvAwmlZuKMpROItnSNl8=;
-        b=W3793xmTSpKlfp98wRoQUpjy+9NUO+i++6tMx2Tx3mtUHEnT/uURSD2tsZy5OTffkB
-         DusF3ye0oSQLRn5y1PMWaKe+p0L+HR061su2LaMWQH3xboblxP49maWjnMGlYg8oagjx
-         s2+h7xrRPKZsQPZEIVfrMTnd++jrl7Zge67KrwqpRyjw5X5YjAFeUs8tUasKQreldEuY
-         SJlxsZSWVHdJeL8jvYv+gCXPf9EsfuiEH7xa5b4izjgWSawhXgUU6HcZ0wrQu4x5y15G
-         +CufNixj2yna+y+ktqQm38plIbEP8UZ1uZwN/nMWOIOz4dNB4KRwJuIszvkGTI9LMoTO
-         wiPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WSiOa7a2+6arsE8Kmiwhve3HvAwmlZuKMpROItnSNl8=;
-        b=p9MbdUPQHikDjeVi68A2RNAiBzT5NMdNxT2ZM2Bk9Y4nwHhCeJHT/WiTpNVckoRLwq
-         ASMSsqiRlhrKEmhmU9BrrFjqhlB0OdkoWcq/aQpN4lSR4oFjIpSkHy3cEJbv4BR7p2+1
-         sL/084Am+8IhTyhH+Fn3U9SShirYccxY/gl2NG5GjoeGP2UGj2J0d1BFha2JtIuaxCIp
-         PEqkX9YY1vksTqbTBfkegiBxTqDQGoO+4V929IL0GiW3FKVyg1vhI5kFwz4lX72f1Po8
-         o4Jy2otv48nkuVytcWkb6xo6XSjETNjp/VNj6hrvNd2sNQSAzxCftLHd8/6zTxe/Ha0u
-         X+aw==
-X-Gm-Message-State: AOAM531VNT767VeCASyfjMARZDLxAVMjxd01fI5cDdG4sVojeNKDUHmt
-        G9OqvGOjVLMz9p7aSSiFl2Y=
-X-Google-Smtp-Source: ABdhPJxPiaWNrR1RLL8662JvlVJe4BoIw34MBChcU/D4sc7OcrQ/NO+LcgJ0S00wmq/q16Sls70Tqg==
-X-Received: by 2002:a63:3489:0:b0:398:7008:bb25 with SMTP id b131-20020a633489000000b003987008bb25mr22272671pga.242.1648996999692;
-        Sun, 03 Apr 2022 07:43:19 -0700 (PDT)
-Received: from vultr.guest ([2001:19f0:6001:51a7:5400:3ff:feee:9f61])
-        by smtp.gmail.com with ESMTPSA id c18-20020a056a000ad200b004cdccd3da08sm9464910pfl.44.2022.04.03.07.43.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Apr 2022 07:43:19 -0700 (PDT)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v2 9/9] bpf: bpftool: Remove useless rlimit setting
-Date:   Sun,  3 Apr 2022 14:43:00 +0000
-Message-Id: <20220403144300.6707-10-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220403144300.6707-1-laoar.shao@gmail.com>
-References: <20220403144300.6707-1-laoar.shao@gmail.com>
+        with ESMTP id S1359307AbiDCQCc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Apr 2022 12:02:32 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A4F3980E;
+        Sun,  3 Apr 2022 09:00:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649001638; x=1680537638;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qvHYdvxr81dj6BSTtdc044toQ4oANBTAS7xvEFGuayI=;
+  b=lgX3zuPsEyQ2cveb8kTh0NN+IR9or3qvf8xtw1YERTPWDrY7zaIvVuwp
+   wfZxaDWRVY8AhrST2o2Y/RhXm+0Bi2hIIW3S/F1p9ftMSq2tpC2t878hv
+   JC9/fXFMba13awo+JwrZ6CR1Hxl9O/1cME+kMoKgM3PLWtOZfYshCRSz5
+   MZQ9YfDCg/prYshujp4TjIcSJ6xE9c4yqfBJpVMmxDkWvLILfsAX++P0/
+   00OBhz1gZ2V75QuyI7IwPbC2LZyEzlFQmoHvdO2AZ+J6fWkoQP2Fw6cbM
+   Uwq0xVx3s8kVFYop/dz+H12RXjpz69rzU3UrTed+ZQaJPZUeDdU9VhlHX
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10306"; a="260381423"
+X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
+   d="scan'208";a="260381423"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2022 09:00:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,231,1643702400"; 
+   d="scan'208";a="607767948"
+Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 03 Apr 2022 09:00:33 -0700
+Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nb2eW-00014e-Ru;
+        Sun, 03 Apr 2022 16:00:32 +0000
+Date:   Sun, 3 Apr 2022 23:59:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bui Quang Minh <minhquangbui99@gmail.com>, cgroups@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Bui Quang Minh <minhquangbui99@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] cgroup: Kill the parent controller when its last child
+ is killed
+Message-ID: <202204032330.l2wsF3mf-lkp@intel.com>
+References: <20220403135717.8294-1-minhquangbui99@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220403135717.8294-1-minhquangbui99@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,123 +74,111 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As we have already set LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK, we don't need to
-bump RLIMIT_MEMLOCK any more.
+Hi Bui,
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- tools/bpf/bpftool/common.c     | 7 -------
- tools/bpf/bpftool/feature.c    | 2 --
- tools/bpf/bpftool/main.h       | 2 --
- tools/bpf/bpftool/map.c        | 2 --
- tools/bpf/bpftool/pids.c       | 1 -
- tools/bpf/bpftool/prog.c       | 3 ---
- tools/bpf/bpftool/struct_ops.c | 2 --
- 7 files changed, 19 deletions(-)
+Thank you for the patch! Yet something to improve:
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 0c1e06cf50b9..6b1e67851690 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -119,13 +119,6 @@ static bool is_bpffs(char *path)
- 	return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
- }
- 
--void set_max_rlimit(void)
--{
--	struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
--
--	setrlimit(RLIMIT_MEMLOCK, &rinf);
--}
--
- static int
- mnt_fs(const char *target, const char *type, char *buff, size_t bufflen)
- {
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 290998c82de1..19c484e63da4 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -1136,8 +1136,6 @@ static int do_probe(int argc, char **argv)
- 	__u32 ifindex = 0;
- 	char *ifname;
- 
--	set_max_rlimit();
--
- 	while (argc) {
- 		if (is_prefix(*argv, "kernel")) {
- 			if (target != COMPONENT_UNSPEC) {
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 6e9277ffc68c..aa99ffab451a 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -102,8 +102,6 @@ int detect_common_prefix(const char *arg, ...);
- void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
- void usage(void) __noreturn;
- 
--void set_max_rlimit(void);
--
- int mount_tracefs(const char *target);
- 
- struct obj_ref {
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index c26378f20831..877387ef79c7 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -1342,8 +1342,6 @@ static int do_create(int argc, char **argv)
- 		goto exit;
- 	}
- 
--	set_max_rlimit();
--
- 	fd = bpf_map_create(map_type, map_name, key_size, value_size, max_entries, &attr);
- 	if (fd < 0) {
- 		p_err("map create failed: %s", strerror(errno));
-diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-index bb6c969a114a..e2d00d3cd868 100644
---- a/tools/bpf/bpftool/pids.c
-+++ b/tools/bpf/bpftool/pids.c
-@@ -108,7 +108,6 @@ int build_obj_refs_table(struct hashmap **map, enum bpf_obj_type type)
- 		p_err("failed to create hashmap for PID references");
- 		return -1;
- 	}
--	set_max_rlimit();
- 
- 	skel = pid_iter_bpf__open();
- 	if (!skel) {
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index bc4e05542c2b..d5ba3b6f30ae 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1603,8 +1603,6 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 		}
- 	}
- 
--	set_max_rlimit();
--
- 	if (verifier_logs)
- 		/* log_level1 + log_level2 + stats, but not stable UAPI */
- 		open_opts.kernel_log_level = 1 + 2 + 4;
-@@ -2302,7 +2300,6 @@ static int do_profile(int argc, char **argv)
- 		}
- 	}
- 
--	set_max_rlimit();
- 	err = profiler_bpf__load(profile_obj);
- 	if (err) {
- 		p_err("failed to load profile_obj");
-diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
-index e08a6ff2866c..2535f079ed67 100644
---- a/tools/bpf/bpftool/struct_ops.c
-+++ b/tools/bpf/bpftool/struct_ops.c
-@@ -501,8 +501,6 @@ static int do_register(int argc, char **argv)
- 	if (libbpf_get_error(obj))
- 		return -1;
- 
--	set_max_rlimit();
--
- 	if (bpf_object__load(obj)) {
- 		bpf_object__close(obj);
- 		return -1;
+[auto build test ERROR on tj-cgroup/for-next]
+[also build test ERROR on v5.17 next-20220401]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Bui-Quang-Minh/cgroup-Kill-the-parent-controller-when-its-last-child-is-killed/20220403-215911
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+config: i386-randconfig-m021 (https://download.01.org/0day-ci/archive/20220403/202204032330.l2wsF3mf-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.2.0-19) 11.2.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/2bc22feae8a913c7f371bc79ef9967122d8d326c
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Bui-Quang-Minh/cgroup-Kill-the-parent-controller-when-its-last-child-is-killed/20220403-215911
+        git checkout 2bc22feae8a913c7f371bc79ef9967122d8d326c
+        # save the config file to linux build tree
+        mkdir build_dir
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash kernel/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   kernel/cgroup/cgroup.c: In function 'css_release_work_fn':
+>> kernel/cgroup/cgroup.c:5169:52: error: 'struct cgroup_bpf' has no member named 'refcnt'
+    5169 |                 if (!percpu_ref_is_dying(&cgrp->bpf.refcnt))
+         |                                                    ^
+
+
+vim +5169 kernel/cgroup/cgroup.c
+
+  5148	
+  5149	static void css_release_work_fn(struct work_struct *work)
+  5150	{
+  5151		struct cgroup_subsys_state *css =
+  5152			container_of(work, struct cgroup_subsys_state, destroy_work);
+  5153		struct cgroup_subsys *ss = css->ss;
+  5154		struct cgroup *cgrp = css->cgroup;
+  5155		struct cgroup *parent = cgroup_parent(cgrp);
+  5156	
+  5157		mutex_lock(&cgroup_mutex);
+  5158	
+  5159		css->flags |= CSS_RELEASED;
+  5160		list_del_rcu(&css->sibling);
+  5161	
+  5162		/*
+  5163		 * If parent doesn't have any children, start killing it.
+  5164		 * And don't kill the default root.
+  5165		 */
+  5166		if (parent && list_empty(&parent->self.children) &&
+  5167		    parent != &cgrp_dfl_root.cgrp &&
+  5168		    !percpu_ref_is_dying(&parent->self.refcnt)) {
+> 5169			if (!percpu_ref_is_dying(&cgrp->bpf.refcnt))
+  5170				cgroup_bpf_offline(parent);
+  5171			percpu_ref_kill(&parent->self.refcnt);
+  5172		}
+  5173	
+  5174		if (ss) {
+  5175			/* css release path */
+  5176			if (!list_empty(&css->rstat_css_node)) {
+  5177				cgroup_rstat_flush(cgrp);
+  5178				list_del_rcu(&css->rstat_css_node);
+  5179			}
+  5180	
+  5181			cgroup_idr_replace(&ss->css_idr, NULL, css->id);
+  5182			if (ss->css_released)
+  5183				ss->css_released(css);
+  5184		} else {
+  5185			struct cgroup *tcgrp;
+  5186	
+  5187			/* cgroup release path */
+  5188			TRACE_CGROUP_PATH(release, cgrp);
+  5189	
+  5190			cgroup_rstat_flush(cgrp);
+  5191	
+  5192			spin_lock_irq(&css_set_lock);
+  5193			for (tcgrp = cgroup_parent(cgrp); tcgrp;
+  5194			     tcgrp = cgroup_parent(tcgrp))
+  5195				tcgrp->nr_dying_descendants--;
+  5196			spin_unlock_irq(&css_set_lock);
+  5197	
+  5198			/*
+  5199			 * There are two control paths which try to determine
+  5200			 * cgroup from dentry without going through kernfs -
+  5201			 * cgroupstats_build() and css_tryget_online_from_dir().
+  5202			 * Those are supported by RCU protecting clearing of
+  5203			 * cgrp->kn->priv backpointer.
+  5204			 */
+  5205			if (cgrp->kn)
+  5206				RCU_INIT_POINTER(*(void __rcu __force **)&cgrp->kn->priv,
+  5207						 NULL);
+  5208		}
+  5209	
+  5210		mutex_unlock(&cgroup_mutex);
+  5211	
+  5212		INIT_RCU_WORK(&css->destroy_rwork, css_free_rwork_fn);
+  5213		queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
+  5214	}
+  5215	
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
