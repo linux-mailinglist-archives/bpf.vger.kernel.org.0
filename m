@@ -2,202 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A35314F0F19
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 07:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F624F0F92
+	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 08:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241656AbiDDFvF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 01:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
+        id S1343763AbiDDGq4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 02:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232158AbiDDFvD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 01:51:03 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB319FE2
-        for <bpf@vger.kernel.org>; Sun,  3 Apr 2022 22:49:07 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 233LTCki014581;
-        Sun, 3 Apr 2022 22:48:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=+MeANeClrTe4rFDG7PN+itWKgIJHQUmZvmLrkl1jxBw=;
- b=QqvFkHadLmWRbJWU7SjMUBGLgHBOPrHGxuFmT2a31IlEC5LxUFNF0UwyyHNo1lqqiY3l
- Bf+p0h4CWO19Q9+fkPUTAi8qd1xQC+go549IPqrMf76IlF9+oymP/J4cOTRWhVY5bW3C
- itFhz5FP2e2TPGTlPhdFiYy6LYWQtoq7L3c= 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f6matykrn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 03 Apr 2022 22:48:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BsodOqJTal62JAAJOZKiqxku4IfwiYAyZQePAZakdBmwqXjRlOHcYC2jlzGuK6rrkPGnsCRn9kEDECHde2r6YV5oaG58S0bDtFQ6qrjVflaRbWTBcF+5VZ2bbNcc9vwjimktYOItCWpKZjTzXn+yQOkhHWekK5gAtvDxCtC56YO1hh/DgHIQNUraD+Q8dvPYzrmvv4/hLrX8Ci5BO5NpU5IqDs3tOonBlZNolQRVvWIWn02q/qJBEWfQCTXZ/E7e+uOSJC61rF3/CYNYWdA+imyK/JDa6pisZ31s6Me7YtxPiwzq1HqqTCBs0RClungIRlNc60P6/NTi0VHKit37UQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+MeANeClrTe4rFDG7PN+itWKgIJHQUmZvmLrkl1jxBw=;
- b=jHtYmvBYE1JWXmwFZ2nxHWgJTtndf6VFYuWOxJTdQNDDgMgUuFgZG5ynwLJdWdX9PiWqFzUmI/38kdyHCEJhWjYDJqZ8tvwlKzh6cg4tXceqEK7hoTw6H2HeCu+U0J5++zt7ATkRnDRjETayv/oxkpsMQqtf7lm9la0Y4ryyqSALRH0eOMnvijQnfbFOpsqmyljXgdPZ1OgDqAY7Crr8pjSCZ91KEx+h413X4E9i7hLqRzeUegSJ3z7BunUYMtRJl99so2XVeCzIg/tQmI/JmWO/T7adxIIB+aCkcnOhZz04bfwDZAdujt+0upc7k9EQZ2EyVMoce5cYboSuH4VNYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by SJ0PR15MB4565.namprd15.prod.outlook.com (2603:10b6:a03:376::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.31; Mon, 4 Apr
- 2022 05:48:49 +0000
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::5ca4:f6e8:5d75:1abc]) by DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::5ca4:f6e8:5d75:1abc%8]) with mapi id 15.20.5123.031; Mon, 4 Apr 2022
- 05:48:48 +0000
-Message-ID: <617fbc23-8770-08d7-a824-67bb5e17fa4e@fb.com>
-Date:   Mon, 4 Apr 2022 01:48:45 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [PATCH v2 bpf-next 6/7] selftests/bpf: add basic USDT selftests
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Cc:     kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-References: <20220402002944.382019-1-andrii@kernel.org>
- <20220402002944.382019-7-andrii@kernel.org>
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-In-Reply-To: <20220402002944.382019-7-andrii@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL0PR0102CA0010.prod.exchangelabs.com
- (2603:10b6:207:18::23) To DM6PR15MB4039.namprd15.prod.outlook.com
- (2603:10b6:5:2b2::20)
+        with ESMTP id S240418AbiDDGqz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 02:46:55 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC46328E33;
+        Sun,  3 Apr 2022 23:44:59 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id 125so10074653iov.10;
+        Sun, 03 Apr 2022 23:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g0ClKFuH7/uxJwEPwcXH6UlRmJbu6n2QH3M9ZvCVFuo=;
+        b=hhpyXIMkpX+mxIp1BkffRqBoVRvu4nsvMnb7sj97D+/PtDsoHMmePXMwGvaYurt1Hz
+         ZZsn5jIWMXfZCJHjmDctyndrwHKpODJHEMF+coKtqgZyLDeeyju9DTa5Xpcn5zyKHAgW
+         XfsKfd5GLEPhpPH3JsNWT79NVMC2DLe6uOX85GSozk82SbmLFADxi6RNfQBrWd1d/Y+H
+         nBBdtQ+2BBOMLefOS20lp/JH7CgpwRZbfL7G4t97lAN61CCN5DX1N9vYpp4TbkHBzu8x
+         PYAeiT+7tSNJsalgl9QCkVRgMSW55v/1iDBTjyunwEsMozn2FktCVuIzNFH6QoZjlAp8
+         DhOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g0ClKFuH7/uxJwEPwcXH6UlRmJbu6n2QH3M9ZvCVFuo=;
+        b=fJwjDEgve/6u0mlXAHsH0z/nn98M75fqCsFjxw0zlYDCUNnbt3M5TmSq5WRjhrsiN/
+         zvky6pwmyN6a+rIuNh+oLrjFMUCu5696Dy+7sr917qz/JuxLUZ8ST4t6hs5MdN8f6KmI
+         2LyKOwatuVAcW+Hc47e8rIQBzvPIreXaVQWG560MpPgCq1qD46uHeoSxrFlr5qqLQi+M
+         Xqcm9M6z9sI7LpHsGuGmMHTMnXocOPMYxOnavsFC+I1Bm3Le0jO02hQsSVrtoVJa+4i2
+         xCnB9Zn0o3HhWg9LlAjar9H3sDEiyB5L0RrKxGyEjYVOusVd83Ew8/n3WGj8Ay1MuZz3
+         AbQw==
+X-Gm-Message-State: AOAM530aU1uQU1qN4nYMkpID/7p992tBWPIPSmWJ3r4TTSGA9nUqCjxK
+        ddQyIDjG+Uj+Ba5A67fZo1q0PdhhVU/YmyZASVk=
+X-Google-Smtp-Source: ABdhPJxUVYXIgYbvbm9i/MchNl6Cbk0gj6At+dsJeWvKa0j7yPwoe/b7DG+wH+5JbBQrvHAsVUTgjknVC+SfEEvLDO0=
+X-Received: by 2002:a05:6638:3729:b0:323:e943:aaf8 with SMTP id
+ k41-20020a056638372900b00323e943aaf8mr1602818jav.293.1649054699116; Sun, 03
+ Apr 2022 23:44:59 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 07da7a24-276c-44d8-6280-08da15feca2c
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4565:EE_
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB456596B96F1695AE85A2233AA0E59@SJ0PR15MB4565.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pC8C76B1gBbZViHA6Bkv8arTsfXpw7oBT5h2mp3DlBw0FxCNWyjQsZr9wzqmwpk7Z9k3glufkFTLZVO67lMsx5jW9Zbp7P7KruhQ9M5CPcAgm/kZcFmxouUH4XvtIKz0SCiMFFusJmvhJkOOmVd46u0lEDaVgCAFLQxjOVCv+6ikwwOPk+4LuHYPmh9mJiszkmpgVMSZG44PUslNr0uyxmg1ZFpB2uK5IS4Z53mrtQ6+Ejvz3Kc8XVZMoL026IhkmNothBjy8a6FBYFWJnu//0wqQMA/ZPy29bzZjN9c+IFRICSMOCmfLpKFSH1oxVnrWyAv3hE+kL37cM+ltRgs5h5EO3wsvEpKHCWTIDApoKDjm+bYNSQyAOelh6M6GAD8GsXHZGILFNQnOArakFORsdPtGAx7l5kFfK7X5fG3sAFTX3Og6yBeB8jIiQozIK4TdzG8agh4feGQr69A3FJxPJtAy8pjyEK0tw+22UvmHNRGuzeKBEI1n6dD7vt3mpf4xIrgF8D75MACm9YCK9npdJ/Y4pXUeMZS5Th29/F5L7mb7O8ji5p7eEQPY+Xaz6Qrqm7d8LpUtIugCNJJVfDfWpJ15iIseZygVriTbXmtnjpuca8+3E17JEHidmI1B1Pseb/q4lv2SDlGnF+z6AXF66H0BhyBdeQ/7+i+AtJlMOrKag4ipwj5K6e5jhMIgvRmZokL8ctRfRR2Wl90t3zJ80jPFnpU7GIGL0OWvSQ2AEhz+x02MNoyDHOHHreWZWK5bXxjjx4z4ZXsSrXkKiN2ww==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(508600001)(31686004)(8676002)(53546011)(36756003)(66946007)(66556008)(66476007)(83380400001)(4326008)(86362001)(6506007)(6512007)(6666004)(8936002)(31696002)(54906003)(186003)(2616005)(38100700002)(5660300002)(2906002)(6486002)(316002)(21314003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SGtlaGU5aENMV1FhbUhqTU43WUk5WVQ3ckp5dnhydnRqT2syMVdEV3lmemJS?=
- =?utf-8?B?cGRXWFIxNDRSbFl6V2lOeGFxZk42QW95cWRVWGhlaEhGSmlNRUtuRExSRnlh?=
- =?utf-8?B?QUJqUmZKb2hSWHVoR0cxVkpwUVhmajJGb3AzblVtV0Y0M3hOOVNiR3duM1RF?=
- =?utf-8?B?YXVVRHZwTHpuQXhwV2xNa1pJZHV3TmF2S283RmFXbXRmR01rTHdwOFNBRnpD?=
- =?utf-8?B?eVdQbUg0YitwS1VNU1gvc2doSXZqYlR6S2FkZFU5SGZLOUU1NnowREJuUnZK?=
- =?utf-8?B?YlZxSGE4bTR6dlM5a3pNK29lUzVONSszbVNPdTg2ZXE4cExkb3l4T0FWeUdR?=
- =?utf-8?B?bWQ3em1HUVlNeTVoWHQ1dTdhQVBDUWtsZ0lySEUzQ2g0N0ttUFlLdHpRTHNp?=
- =?utf-8?B?emN5TDZiQzRDNXF2NGhkelBMWmNjUDZOdnUxT1YwMUFOVmlEOUR1dFVWMmxh?=
- =?utf-8?B?RnBPYklKQTlpWWc3Wktzd25Zcm0yS1RTenJUcE0rMUpYK1I3enROaWZEMjI1?=
- =?utf-8?B?VjBFQU5oOWJMM29NZTN0d2pVK2pUZElQWkYrMTlId0x2SGFvZ3p6SHEza2Qv?=
- =?utf-8?B?Q2l6TFp0bGxzTUg4OGVIY2YyMStJZllTc2JwQTJXQmNSekFmdkpIblByUy9X?=
- =?utf-8?B?T1dHaFU3bTZDdUFKWlM3VzJsMFNUYnh1WDF1L1p2SXhWOW9IV0xhTnVyaGhz?=
- =?utf-8?B?R2ZNTHAvT3djV0pjRUg4YW9mTTZLbkhTRDZOV3RtYU5UV1R6ay92ZytPNi95?=
- =?utf-8?B?VnozWnV2Si9QRXdXaDczV2tsV25vdXk3Tk9PNVRnQWx2SDlvYzQrNDBiVEJG?=
- =?utf-8?B?V2VRd3M0UXNhZzFMTmlMemREUTVZeUVNVk1FdEM4ODJhWXQ0djFkTUpFcGs4?=
- =?utf-8?B?d1JmMVg5dEx6NXJJUkFIMUhyWHdmdi92RlV6cE42aVFVWmtSUFRnS3Q2RUkv?=
- =?utf-8?B?UTRTWTBBQlV2WGdjcjM1YzE2Vy9uUmozOEZXVW41MFhJaXdqS2hBKzhjbnQ4?=
- =?utf-8?B?Tm13eThSYmdzanJ0QndxajlrdGNrM2VhdEJtUXpVemdZRGdNVUhPVUUxVTJk?=
- =?utf-8?B?SGtqcGcrK0RxUW9ib00weEk0aVd0dDlQcEtoWEFOZmh5ZUZROXRJQ3czM2pL?=
- =?utf-8?B?WS9RMWF3SXhDc2lEbElNZkxyM09rLzlXLzg3MFlnT2hIajR3a3Z2TnBMK1ND?=
- =?utf-8?B?MlBWRElnTGRjdmlwL1c5VDZRVUo2dHQxVHV2WWlvRjZLWWZUWmtiK2k5MHZH?=
- =?utf-8?B?NmFQaGRSOTdMSVhvbDlhZkNIaW13OWd0UW92M29zTlA2dkxZYis1U3NhOHZK?=
- =?utf-8?B?Z3NGQUdmWEMrR3BrUWdFaWJhZDVPS1MrSW5JMy96RE5ZeHRzZzdQN3kxWkFj?=
- =?utf-8?B?ZTNWZjBkMTNlQ0o1bFEvL2w3N3hKdkxNTzJpdjZpaEd0d05JTllBZmNraDlJ?=
- =?utf-8?B?UzV0Rlk3akxhNFhIaFcxRzdHWHBaUGRLUDRHY09TOEgxWGdXUjgyMHVPOTlL?=
- =?utf-8?B?eURFWU9zMFc4aGk1aUFjWGZ4N2dlUy9YR1RXcEc3dE5GMnZNWEgreWZWT1c2?=
- =?utf-8?B?RzVSRURtNjFHVDdOWHZlWWRMYnFIZm9OSjdTNGZQV0o3VkZEeXYxUkhpczAw?=
- =?utf-8?B?RXVYWWp5cTg4UGFkNktYbXlqYzdJZUpreFh3SWhVTlZtc1pjUkxlanhtcHdx?=
- =?utf-8?B?bmRFdUpoNGpYcXVxUEpjTGw3cTZwdkVvWVQyeEtKZHlWSUEvZ3NQWGh4V1Vz?=
- =?utf-8?B?dW9PRUlmbmRLeXhVbTVyZFFTSkgvQnVaZGNBQTRLd1haa0RkeFpaNUZHQ1VD?=
- =?utf-8?B?dTRqNVk0bmFLSHpqRFNFUGFnT1NqbDJIallUQzBjQ3l5cDl3VE1xN0ZtWWFS?=
- =?utf-8?B?Z0M1UndWaHFpaHZRTURVNnlqUlFyYzB2WlovdFl5SE9XcFNDU3Z3SlI1K2Nu?=
- =?utf-8?B?YkFrb285Tk0vRXhXbEVsYVdXbE56dG5HVHBST3V3T1Nsb1diOWtxOCtvZUJD?=
- =?utf-8?B?MURBbzM0S0E0cVZESlJock81SmgwQUpHcGltY1RLaGdQQjRzSWFubEhrM3ho?=
- =?utf-8?B?U3NKak1BSnhabFJMSHVLVTJsZWhnSFlwTThidk1QTVJyOE1Zc04yYVd2ckR3?=
- =?utf-8?B?cWsrYXkvZVE2WHUyUEg3WG01MitVcEV1STUremJxTVd5eXpzZFl5OWJ2NEZV?=
- =?utf-8?B?TUlQTmVqTFkwbmUxNVQ3V0RkWkIvL2Eyd3VpL2ErRkwzbUYyT0lMVjRqZ2dC?=
- =?utf-8?B?TXIzQ0hhaXdKN1hDWjhicnRGMjRIWHphVjlEWEE3c2dHanpEU1h1cWFOVkdI?=
- =?utf-8?B?ckJLMXZ4ZU9qa05HQmhQT0JkVDUvL095b0NiN3dmamZLV0NDM0lFbVptbTdC?=
- =?utf-8?Q?P8J+kZB+rRnYAahF2G8TsFNQQs0TxsHB/4Eo9?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07da7a24-276c-44d8-6280-08da15feca2c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2022 05:48:48.5546
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8cPZd880KbRH+5gbRgCtUyq5dN+JhzqlAOMcWUzKDMiSipYmqcU8b0HoMcmFidBkFKneRD+QNQ6T9dG1BK8hIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4565
-X-Proofpoint-GUID: TB8O32NQmB7may1rAnzJLNIepJNImJTp
-X-Proofpoint-ORIG-GUID: TB8O32NQmB7may1rAnzJLNIepJNImJTp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-04_02,2022-03-31_01,2022-02-23_01
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220403144300.6707-1-laoar.shao@gmail.com> <20220403144300.6707-2-laoar.shao@gmail.com>
+ <CAEf4BzZ2U=H-FEft3twSV7RCgTHHVJ8Dt6_RuYMdHdtC17WM1A@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ2U=H-FEft3twSV7RCgTHHVJ8Dt6_RuYMdHdtC17WM1A@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Mon, 4 Apr 2022 14:44:23 +0800
+Message-ID: <CALOAHbCE-k-by5BvJJje_4P+dpJkAtRCeypLkDbNtqcrWsEAHg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/9] bpf: selftests: Use libbpf 1.0 API mode
+ in bpf constructor
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/1/22 8:29 PM, Andrii Nakryiko wrote:   
-> Add semaphore-based USDT to test_progs itself and write basic tests to
-> valicate both auto-attachment and manual attachment logic, as well as
-> BPF-side functionality.
-> 
-> Also add subtests to validate that libbpf properly deduplicates USDT
-> specs and handles spec overflow situations correctly, as well as proper
-> "rollback" of partially-attached multi-spec USDT.
-> 
-> BPF-side of selftest intentionally consists of two files to validate
-> that usdt.bpf.h header can be included from multiple source code files
-> that are subsequently linked into final BPF object file without causing
-> any symbol duplication or other issues. We are validating that __weak
-> maps and bpf_usdt_xxx() API functions defined in usdt.bpf.h do work as
-> intended.
-> 
-> USDT selftests use sys/sdt.h header provided by systemtap-sdt-devel, so
-> document that build-time dependency in Documentation/bpf/bpf_devel_QA.rst.
-> 
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  Documentation/bpf/bpf_devel_QA.rst            |   3 +
->  tools/testing/selftests/bpf/Makefile          |  14 +-
->  tools/testing/selftests/bpf/prog_tests/usdt.c | 313 ++++++++++++++++++
->  tools/testing/selftests/bpf/progs/test_usdt.c |  96 ++++++
->  .../selftests/bpf/progs/test_usdt_multispec.c |  34 ++
->  5 files changed, 454 insertions(+), 6 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/usdt.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_usdt.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_usdt_multispec.c
+On Mon, Apr 4, 2022 at 9:24 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sun, Apr 3, 2022 at 7:43 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> >
+> > In libbpf 1.0 API mode, it will bump rlimit automatically if there's no
+> > memcg-basaed accounting, so we can use libbpf 1.0 API mode instead in case
+> > we want to run it in an old kernel.
+> >
+> > The constructor is renamed to bpf_strict_all_ctor().
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  tools/testing/selftests/bpf/bpf_rlimit.h | 26 +++---------------------
+> >  1 file changed, 3 insertions(+), 23 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/bpf_rlimit.h b/tools/testing/selftests/bpf/bpf_rlimit.h
+> > index 9dac9b30f8ef..d050f7d0bb5c 100644
+> > --- a/tools/testing/selftests/bpf/bpf_rlimit.h
+> > +++ b/tools/testing/selftests/bpf/bpf_rlimit.h
+> > @@ -1,28 +1,8 @@
+> >  #include <sys/resource.h>
+> >  #include <stdio.h>
+> >
+> > -static  __attribute__((constructor)) void bpf_rlimit_ctor(void)
+> > +static  __attribute__((constructor)) void bpf_strict_all_ctor(void)
+>
+> well, no, let's get rid of bpf_rlimit.h altogether. There is no need
+> for constructor magic when you can have an explicit
+> libbpf_set_strict_mode(LIBBPF_STRICT_ALL).
+>
 
-[...]
+Sure, I will do it.
 
-> diff --git a/tools/testing/selftests/bpf/progs/test_usdt_multispec.c b/tools/testing/selftests/bpf/progs/test_usdt_multispec.c
-> new file mode 100644
-> index 000000000000..96fe128790d1
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_usdt_multispec.c
-> @@ -0,0 +1,34 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/usdt.bpf.h>
-> +
-> +/* this file is linked together with test_usdt.c to validate that ust.bpf.h
+> >  {
+> > -       struct rlimit rlim_old, rlim_new = {
+> > -               .rlim_cur       = RLIM_INFINITY,
+> > -               .rlim_max       = RLIM_INFINITY,
+> > -       };
+> > -
+> > -       getrlimit(RLIMIT_MEMLOCK, &rlim_old);
+> > -       /* For the sake of running the test cases, we temporarily
+> > -        * set rlimit to infinity in order for kernel to focus on
+> > -        * errors from actual test cases and not getting noise
+> > -        * from hitting memlock limits. The limit is on per-process
+> > -        * basis and not a global one, hence destructor not really
+> > -        * needed here.
+> > -        */
+> > -       if (setrlimit(RLIMIT_MEMLOCK, &rlim_new) < 0) {
+> > -               perror("Unable to lift memlock rlimit");
+> > -               /* Trying out lower limit, but expect potential test
+> > -                * case failures from this!
+> > -                */
+> > -               rlim_new.rlim_cur = rlim_old.rlim_cur + (1UL << 20);
+> > -               rlim_new.rlim_max = rlim_old.rlim_max + (1UL << 20);
+> > -               setrlimit(RLIMIT_MEMLOCK, &rlim_new);
+> > -       }
+> > +       /* Use libbpf 1.0 API mode */
+> > +       libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> >  }
+> > --
+> > 2.17.1
+> >
 
-nit: usdt.bpf.h in above comment
-
-> + * can be included in multiple .bpf.c files forming single final BPF object
-> + * file
-> + */
-
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+-- 
+Thanks
+Yafang
