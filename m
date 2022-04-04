@@ -2,118 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3E34F103E
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 09:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEA64F106D
+	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 10:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbiDDHrY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 03:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
+        id S233214AbiDDIDI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 04:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353876AbiDDHrX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 03:47:23 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2223B014;
-        Mon,  4 Apr 2022 00:45:27 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id f18so4902612edc.5;
-        Mon, 04 Apr 2022 00:45:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tlai9C8cCZiFfKZnTMXZTtbcv2bOhWWExoRE23jJ3PQ=;
-        b=hnpZqkQvRmhcgBpVq1K7rI1j3GvBGkZU/uMd3O9XQIvlRWmpAJ2xY9AdPT9g4u3G+A
-         P7lEhSmfAdelj8ntCpmVIrCXpgVb/lguNVtMkyfAVq8btERTg+bgi7ZDBwKqJydzyvHE
-         Y2qfyNt09y62V9e5Ouh5e5pKEC/gUUZc5b8W9ti8xscMHRMXyl/olrhO5ZlNyKfQrEZq
-         Y/A0VvvlA0cR1O5pCB1k3dJUbPWEIHrUwNA/TqaAeN03DUwjmKKg+cRDsxls+RSL0bEy
-         7aYIkTUGW7LgBiFNcNAPPU38W7jJq4lJZlBg/O7ztgO0XNlbCYMFvZtEeV74dvMrlXJt
-         ynMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tlai9C8cCZiFfKZnTMXZTtbcv2bOhWWExoRE23jJ3PQ=;
-        b=DsW58/rgbf/tzW7ik879+qiq6eowzupckGfP2t03DVJMQuB8yHWeRMM++I5IG3a2C1
-         Xl98NLGEbGoB1CkM/c72rQkn5jEfGet4F/HeK43T/neOkR3b8kZiMIMeFVja3FZzyAkq
-         L04WSDVMj0CMFGVvuP7ST1OLW0kSFqzMioQ1KD2mGwP5sRai6K0pkV6kanrg6eM+dTez
-         YN4fOCRgXK/Y9Mg8NBvF4u90U1LJmaJwzuJlraPDq4COdmprNuXeWONK5GREeNWT6OSd
-         DdVePLh24k5Rtzu5U5c48NtIu1fsNs48HlrfKc6ybI2dhV4lJRtWjtJkOVMbpbwslYFG
-         VYNQ==
-X-Gm-Message-State: AOAM531Ng2kBrvzReepCWMVC1Y2FjsJUs22z3FhknmueVZ31Xu06jXjA
-        4g7BPurIQfXse1H5iDfrknEAS1n/p1AqDgzLoPc=
-X-Google-Smtp-Source: ABdhPJyWJ0a9eaELFNxUdBnwfDWskCppbdAyhqtxj0984BUGh7eK26sPOBWWPUumUd+bfO25fkAYIOEIoHyeCUw06E8=
-X-Received: by 2002:aa7:c98c:0:b0:41c:bfbd:380 with SMTP id
- c12-20020aa7c98c000000b0041cbfbd0380mr6001495edt.313.1649058325913; Mon, 04
- Apr 2022 00:45:25 -0700 (PDT)
+        with ESMTP id S1377894AbiDDIDB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 04:03:01 -0400
+Received: from mail.onlinesuccesses.pl (mail.onlinesuccesses.pl [198.244.150.235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845D43B2AA
+        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 01:01:02 -0700 (PDT)
+Received: by mail.onlinesuccesses.pl (Postfix, from userid 1002)
+        id 626FAA3BF7; Mon,  4 Apr 2022 08:00:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=onlinesuccesses.pl;
+        s=mail; t=1649059234;
+        bh=nE8HqilgMh4dy7+Z8ksfg7Bc9rmPeQtYFq3/3YR2ODU=;
+        h=Date:From:To:Subject:From;
+        b=QJVvvFhCTiKN3cERyVpkWJG4Z5moECDglAkhza3i4yVCFdjvU0HzGLO7e4t0PMQiM
+         fYpetahkaNY/uf0hTbCZibi+ZO+6IyUncSrNYEq8BkvCcdUInQwaeIr74ZfUigY/lU
+         wzhP5EFrDg+UbTgJyqLSlgUP+QPkZV2PO9ITckp6z4aTLiOOtah66rfye/sNuHOpN+
+         7PXS0UzjESgCVMLSmBLT08Pv16sB+KVM5ld3JhbY8RPqO4R1pKtKpIwSgErb4H8Fmk
+         d/UG9/M10tyLE1l09VguTXgdyLE2gTPibXdEGC1Z9dg1zywrx2I9myJ3vblNy+XdQ4
+         nN/hTeA8s4DGQ==
+Received: by mail.onlinesuccesses.pl for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 08:00:26 GMT
+Message-ID: <20220404064501-0.1.3i.sq9t.0.193zocjko6@onlinesuccesses.pl>
+Date:   Mon,  4 Apr 2022 08:00:26 GMT
+From:   "Wiktor Zielonko" <wiktor.zielonko@onlinesuccesses.pl>
+To:     <bpf@vger.kernel.org>
+Subject: Ruch z pierwszej pozycji w Google
+X-Mailer: mail.onlinesuccesses.pl
 MIME-Version: 1.0
-References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
- <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
- <b9f5995f96da447c851f7c9db8232a9b@huawei.com> <20220401235537.mwziwuo4n53m5cxp@MBP-98dd607d3435.dhcp.thefacebook.com>
- <CACYkzJ5QgkucL3HZ4bY5Rcme4ey6U3FW4w2Gz-9rdWq0_RHvgA@mail.gmail.com>
-In-Reply-To: <CACYkzJ5QgkucL3HZ4bY5Rcme4ey6U3FW4w2Gz-9rdWq0_RHvgA@mail.gmail.com>
-From:   Djalal Harouni <tixxdz@gmail.com>
-Date:   Mon, 4 Apr 2022 09:44:59 +0200
-Message-ID: <CAEiveUcx1KHoJ421Cv+52t=0U+Uy2VF51VC_zfTSftQ4wVYOPw@mail.gmail.com>
-Subject: Re: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF programs
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 3, 2022 at 5:42 PM KP Singh <kpsingh@kernel.org> wrote:
->
-> On Sat, Apr 2, 2022 at 1:55 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-...
-> >
-> > > Pinning
-> > > them to unreachable inodes intuitively looked the
-> > > way to go for achieving the stated goal.
-> >
-> > We can consider inodes in bpffs that are not unlinkable by root
-> > in the future, but certainly not for this use case.
->
-> Can this not be already done by adding a BPF_LSM program to the
-> inode_unlink LSM hook?
->
+Dzie=C5=84 dobry,=20
 
-Also, beside of the inode_unlink... and out of curiosity: making sysfs/bpffs/
-readonly after pinning, then using bpf LSM hooks sb_mount|remount|unmount...
-family combining bpf() LSM hook... isn't this enough to:
-1. Restrict who can pin to bpffs without using a full MAC
-2. Restrict who can delete or unmount bpf filesystem
+jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
+j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
+e Google.=20
 
-?
+Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
+=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
+w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
+owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
+dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
 
--- 
-https://djalal.opendz.org/
+Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
+edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
+edstawi=C4=87 ofert=C4=99?=20
+
+
+Pozdrawiam serdecznie,
+Wiktor Zielonko
