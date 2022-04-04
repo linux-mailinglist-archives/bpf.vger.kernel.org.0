@@ -2,88 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7F84F1433
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 14:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E764F16C7
+	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 16:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbiDDMCP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 08:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
+        id S1376731AbiDDOLy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 10:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233871AbiDDMCN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 08:02:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E1C34B8B;
-        Mon,  4 Apr 2022 05:00:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0410F60FED;
-        Mon,  4 Apr 2022 12:00:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 57D08C34111;
-        Mon,  4 Apr 2022 12:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649073615;
-        bh=78FNZht/g+BY2v+PRzDms1AEl+f2DpPx4NG82SQXWiY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=M1cLVXCAt61ahCX16LKen1KNFOwvZ6Y228DOhfWr4y3FpidJdC4MtxFJyu/m+dcSG
-         /xEvA0Qk2d9FKfeef7zfJNW4EbSQ5Hm52Lhr+3AKO2AdnRg3VO3xn89Jiw/KWovKln
-         WXwFtKIqoqyvSzG9+k2bS6UAGo10jQP9HJMeCKOvDik99Ey67JUjgZgxIiTjJCAATC
-         ZLVhYnjUAhVN06afoR2PwmsRUnZCRFOLBPj/9TWNbCLMYY409buo3EGj5BnWXPf/YN
-         gpYuH8DGO8IGgjeFpiKVUEntXbM6+WMmImwKTVlhc1ndE0lnJsj+jOSwSZ/gD9KHMZ
-         wGIUMYWRgwVSw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3ACF4E8DBD1;
-        Mon,  4 Apr 2022 12:00:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S241862AbiDDOLx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 10:11:53 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA6413D77
+        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 07:09:57 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id w4so14655479wrg.12
+        for <bpf@vger.kernel.org>; Mon, 04 Apr 2022 07:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+L4j2Ipc+V3iILB7WtDi5E2e6P6IDB9Wp6ej4jzxLhk=;
+        b=BFrDmLNNXRqnyP7scR/0/jh2ogo7GyAa08bEUWBwPK+L3RY3Ijh3QzKw76gKv2wMSz
+         xbMy3gSQuB1haJ5xTKGnjyP4ee2x3b4C069/Vht1Uj5qxPTHPtTzPDkzG3011qACwVI8
+         DKzVNUNTXpP9DKsnNismbhy5FqrO//5V2IfalK/k4kPT0XColUGXOeofI6NFGnwoM9g4
+         7WdBA75HtEL1zkuBIs5l/cq4u4IxsznYfdamhXTknz/37F4JuW1eOGNHJd3IYBY3ePvS
+         tpWbm01wn0t29uP5/iVjHt5pb49zTwi9GsjpcyuaSnzG3w2iate5l6jL42mSz+73hFK9
+         lnwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+L4j2Ipc+V3iILB7WtDi5E2e6P6IDB9Wp6ej4jzxLhk=;
+        b=7Ep9SExEY/GX7Z90OWopKdrRDWmQYLUP4cllqz3DTebRObAejrvhhQOq0Pd+mJXI6D
+         SIcXrw3KbdlQdjdkPQqJ8tf//9PQ2WsimksWgjE64ok20p7xErmRCuc2MMSgv4+01U17
+         j/ZoeHLeUYebIeboeEqTaAMEd0dIDeS5tSMlnEiCUDNTD/D/g/6rBPzLoonFDV/YPbpi
+         eiBSZMzlW2bwmprkbYr2pwYPLTmpXs0a7MFJ52gDLBABQUYDI9+KyKpfZK4R2dCAf2B5
+         n2KMO+BezvTf73/X+lP+n60F96ZBqLiOTEximDGeL8R2w+4Oy5FdUtBY15Ry53FTKqXC
+         sTXQ==
+X-Gm-Message-State: AOAM533K1ZMGIxl+2xgAMy1MXuWuRDQgPxIe5JebLZz+D0qVWvMlNLwf
+        EQBH6xtubnYxaTVsbGJn9EM+mg==
+X-Google-Smtp-Source: ABdhPJyxwbpMWcgn1YVUBDQDyap/J52DrWBADjjlkmSQ5pTkFoc1V2UHP7UARJ92VtfcOC+lJ9Dnlw==
+X-Received: by 2002:a5d:44ca:0:b0:206:893:6b5c with SMTP id z10-20020a5d44ca000000b0020608936b5cmr7723859wrr.145.1649081396249;
+        Mon, 04 Apr 2022 07:09:56 -0700 (PDT)
+Received: from harfang.fritz.box ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id n20-20020a05600c4f9400b0038cbd13e06esm17833818wmq.2.2022.04.04.07.09.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Apr 2022 07:09:55 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Quentin Monnet <quentin@isovalent.com>,
+        Milan Landaverde <milan@mdaverde.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix parsing of prog types in UAPI hdr for bpftool sync
+Date:   Mon,  4 Apr 2022 15:09:44 +0100
+Message-Id: <20220404140944.64744-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/3] bnxt_en: XDP redirect fixes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164907361523.19769.5490628771939833913.git-patchwork-notify@kernel.org>
-Date:   Mon, 04 Apr 2022 12:00:15 +0000
-References: <1648858872-14682-1-git-send-email-michael.chan@broadcom.com>
-In-Reply-To: <1648858872-14682-1-git-send-email-michael.chan@broadcom.com>
-To:     Michael Chan <michael.chan@broadcom.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, kuba@kernel.org,
-        gospo@broadcom.com, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+The script for checking that various lists of types in bpftool remain in
+sync with the UAPI BPF header uses a regex to parse enum bpf_prog_type.
+If this enum contains a set of values different from the list of program
+types in bpftool, it complains.
 
-This series was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+This script should have reported the addition, some time ago, of the new
+BPF_PROG_TYPE_SYSCALL, which was not reported to bpftool's program types
+list. It failed to do so, because it failed to parse that new type from
+the enum. This is because the new value, in the BPF header, has an
+explicative comment on the same line, and the regex does not support
+that.
 
-On Fri,  1 Apr 2022 20:21:09 -0400 you wrote:
-> This series includes 3 fixes related to the XDP redirect code path in
-> the driver.  The first one adds locking when the number of TX XDP rings
-> is less than the number of CPUs.  The second one adjusts the maximum MTU
-> that can support XDP with enough tail room in the buffer.  The 3rd one
-> fixes a race condition between TX ring shutdown and the XDP redirect path.
-> 
-> Andy Gospodarek (1):
->   bnxt_en: reserve space inside receive page for skb_shared_info
-> 
-> [...]
+Let's update the script to support parsing enum values when they have
+comments on the same line.
 
-Here is the summary with links:
-  - [net,1/3] bnxt_en: Synchronize tx when xdp redirects happen on same ring
-    https://git.kernel.org/netdev/net/c/4f81def272de
-  - [net,2/3] bnxt_en: reserve space inside receive page for skb_shared_info
-    https://git.kernel.org/netdev/net/c/facc173cf700
-  - [net,3/3] bnxt_en: Prevent XDP redirect from running when stopping TX queue
-    https://git.kernel.org/netdev/net/c/27d4073f8d9a
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Milan Landaverde <milan@mdaverde.com>
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You are awesome, thank you!
+diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+index 6bf21e47882a..c0e7acd698ed 100755
+--- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
++++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+@@ -180,7 +180,7 @@ class FileExtractor(object):
+         @enum_name: name of the enum to parse
+         """
+         start_marker = re.compile(f'enum {enum_name} {{\n')
+-        pattern = re.compile('^\s*(BPF_\w+),?$')
++        pattern = re.compile('^\s*(BPF_\w+),?(\s+/\*.*\*/)?$')
+         end_marker = re.compile('^};')
+         parser = BlockParser(self.reader)
+         parser.search_block(start_marker)
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.32.0
 
