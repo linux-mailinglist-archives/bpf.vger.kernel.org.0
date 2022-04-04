@@ -2,109 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E764F16C7
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 16:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CAA4F16DD
+	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 16:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376731AbiDDOLy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 10:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S1350273AbiDDOXU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 10:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241862AbiDDOLx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 10:11:53 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA6413D77
-        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 07:09:57 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id w4so14655479wrg.12
-        for <bpf@vger.kernel.org>; Mon, 04 Apr 2022 07:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+L4j2Ipc+V3iILB7WtDi5E2e6P6IDB9Wp6ej4jzxLhk=;
-        b=BFrDmLNNXRqnyP7scR/0/jh2ogo7GyAa08bEUWBwPK+L3RY3Ijh3QzKw76gKv2wMSz
-         xbMy3gSQuB1haJ5xTKGnjyP4ee2x3b4C069/Vht1Uj5qxPTHPtTzPDkzG3011qACwVI8
-         DKzVNUNTXpP9DKsnNismbhy5FqrO//5V2IfalK/k4kPT0XColUGXOeofI6NFGnwoM9g4
-         7WdBA75HtEL1zkuBIs5l/cq4u4IxsznYfdamhXTknz/37F4JuW1eOGNHJd3IYBY3ePvS
-         tpWbm01wn0t29uP5/iVjHt5pb49zTwi9GsjpcyuaSnzG3w2iate5l6jL42mSz+73hFK9
-         lnwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+L4j2Ipc+V3iILB7WtDi5E2e6P6IDB9Wp6ej4jzxLhk=;
-        b=7Ep9SExEY/GX7Z90OWopKdrRDWmQYLUP4cllqz3DTebRObAejrvhhQOq0Pd+mJXI6D
-         SIcXrw3KbdlQdjdkPQqJ8tf//9PQ2WsimksWgjE64ok20p7xErmRCuc2MMSgv4+01U17
-         j/ZoeHLeUYebIeboeEqTaAMEd0dIDeS5tSMlnEiCUDNTD/D/g/6rBPzLoonFDV/YPbpi
-         eiBSZMzlW2bwmprkbYr2pwYPLTmpXs0a7MFJ52gDLBABQUYDI9+KyKpfZK4R2dCAf2B5
-         n2KMO+BezvTf73/X+lP+n60F96ZBqLiOTEximDGeL8R2w+4Oy5FdUtBY15Ry53FTKqXC
-         sTXQ==
-X-Gm-Message-State: AOAM533K1ZMGIxl+2xgAMy1MXuWuRDQgPxIe5JebLZz+D0qVWvMlNLwf
-        EQBH6xtubnYxaTVsbGJn9EM+mg==
-X-Google-Smtp-Source: ABdhPJyxwbpMWcgn1YVUBDQDyap/J52DrWBADjjlkmSQ5pTkFoc1V2UHP7UARJ92VtfcOC+lJ9Dnlw==
-X-Received: by 2002:a5d:44ca:0:b0:206:893:6b5c with SMTP id z10-20020a5d44ca000000b0020608936b5cmr7723859wrr.145.1649081396249;
-        Mon, 04 Apr 2022 07:09:56 -0700 (PDT)
-Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id n20-20020a05600c4f9400b0038cbd13e06esm17833818wmq.2.2022.04.04.07.09.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Apr 2022 07:09:55 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
+        with ESMTP id S1345349AbiDDOXU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 10:23:20 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B0135A8D
+        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 07:21:23 -0700 (PDT)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 234CGXDQ001679;
+        Mon, 4 Apr 2022 14:21:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Z1omVnHDp7vSCoi+qSbfgktcsa7kKGx5hf/MVmiiyKI=;
+ b=awAz1oDMDKuoIo+cuRFPuQc5Puj9n3+g+LhORdPCFZxIjaJj4jv3oyqhFxX8dPimZbL/
+ qyP7bMsSq1QHeo/Ton8BaevpwTpIQJKhiVocyV7+onuzwvAm1HSRSjadVf9LXEfL2raG
+ jZQR5usb3aXGZTETTFPfC7327LDlPraw5YlDx/00UNOrbohE9Z2gwNEGd7CdOP3ViaDv
+ 37n++pbNoF+5uJDNiVeHHwXE33u3L3LVJQ/JlS6OG0Zs/ula4oqan5mUF8LKCGmKsJL/
+ SioAKxPpOpagDqluzdBsMlDvIgQFSvcjOy2zK/wCscbZkZluIXZ1N1SJY0zHb37yuYL8 ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3f6yy0p30x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Apr 2022 14:21:09 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 234CwYrU017280;
+        Mon, 4 Apr 2022 14:21:09 GMT
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3f6yy0p302-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Apr 2022 14:21:09 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 234EF5DT010733;
+        Mon, 4 Apr 2022 14:21:07 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 3f6e48k655-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Apr 2022 14:21:06 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 234E8qjT50463020
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Apr 2022 14:08:52 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0BE8311C04A;
+        Mon,  4 Apr 2022 14:21:03 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8389E11C050;
+        Mon,  4 Apr 2022 14:21:02 +0000 (GMT)
+Received: from heavy.ibmuc.com (unknown [9.171.47.144])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Apr 2022 14:21:02 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>,
-        Milan Landaverde <milan@mdaverde.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix parsing of prog types in UAPI hdr for bpftool sync
-Date:   Mon,  4 Apr 2022 15:09:44 +0100
-Message-Id: <20220404140944.64744-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     bpf@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] selftests/bpf: Define SYS_NANOSLEEP_KPROBE_NAME for aarch64
+Date:   Mon,  4 Apr 2022 16:21:01 +0200
+Message-Id: <20220404142101.27900-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Ug0dOtRawi0vti1NsPItMbU9aNIOibjE
+X-Proofpoint-ORIG-GUID: iMx3e5A0kKsk1aPxxUd9HgJxmi6M5F5V
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-04-04_05,2022-03-31_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 impostorscore=0 clxscore=1015 mlxlogscore=819
+ phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2204040081
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The script for checking that various lists of types in bpftool remain in
-sync with the UAPI BPF header uses a regex to parse enum bpf_prog_type.
-If this enum contains a set of values different from the list of program
-types in bpftool, it complains.
+attach_probe selftest fails on aarch64 with `failed to create kprobe
+'sys_nanosleep+0x0' perf event: No such file or directory`. This is
+because, like on several other architectures, nanosleep has a prefix.
 
-This script should have reported the addition, some time ago, of the new
-BPF_PROG_TYPE_SYSCALL, which was not reported to bpftool's program types
-list. It failed to do so, because it failed to parse that new type from
-the enum. This is because the new value, in the BPF header, has an
-explicative comment on the same line, and the regex does not support
-that.
-
-Let's update the script to support parsing enum values when they have
-comments on the same line.
-
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Milan Landaverde <milan@mdaverde.com>
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- tools/testing/selftests/bpf/test_bpftool_synctypes.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/test_progs.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-index 6bf21e47882a..c0e7acd698ed 100755
---- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-+++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-@@ -180,7 +180,7 @@ class FileExtractor(object):
-         @enum_name: name of the enum to parse
-         """
-         start_marker = re.compile(f'enum {enum_name} {{\n')
--        pattern = re.compile('^\s*(BPF_\w+),?$')
-+        pattern = re.compile('^\s*(BPF_\w+),?(\s+/\*.*\*/)?$')
-         end_marker = re.compile('^};')
-         parser = BlockParser(self.reader)
-         parser.search_block(start_marker)
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+index 93c1ff705533..eec4c7385b14 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -332,6 +332,8 @@ int trigger_module_test_write(int write_sz);
+ #define SYS_NANOSLEEP_KPROBE_NAME "__x64_sys_nanosleep"
+ #elif defined(__s390x__)
+ #define SYS_NANOSLEEP_KPROBE_NAME "__s390x_sys_nanosleep"
++#elif defined(__aarch64__)
++#define SYS_NANOSLEEP_KPROBE_NAME "__arm64_sys_nanosleep"
+ #else
+ #define SYS_NANOSLEEP_KPROBE_NAME "sys_nanosleep"
+ #endif
 -- 
-2.32.0
+2.35.1
 
