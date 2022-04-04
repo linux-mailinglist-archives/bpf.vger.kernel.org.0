@@ -2,150 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 160404F1114
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 10:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BADD84F1227
+	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 11:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbiDDIkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 04:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        id S1354406AbiDDJi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 05:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234339AbiDDIkP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 04:40:15 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FEF3615E
-        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 01:38:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D654D1F37F;
-        Mon,  4 Apr 2022 08:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1649061498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5SASgVU2tKlDoPTOgSm8ybQ/b2IEozHXtZMIMiua7V4=;
-        b=VtqZtazbAYAApJUqa1uEZk93a77IYagJ6zDkhUb/2qDueb/AxCuVKbAuWTUKb4WEYapJFf
-        84aRmcOJjQcsNWmrwLJJnGRyFM9nUNeTFzBXV0APrTNUAH6uJz7rZAjGjGxVpWcxoozZGo
-        t1jyLQBWnuwBoSoBLfLLQQNYpEH6FCw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7ADA713216;
-        Mon,  4 Apr 2022 08:38:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gEnuGnquSmKuBQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 04 Apr 2022 08:38:18 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, andrii@kernel.org, ast@kernel.org,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: [RFC PATCH 2/2] libbpf: Add btf__field_exists
-Date:   Mon,  4 Apr 2022 11:38:16 +0300
-Message-Id: <20220404083816.1560501-3-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220404083816.1560501-1-nborisov@suse.com>
-References: <20220404083816.1560501-1-nborisov@suse.com>
+        with ESMTP id S1354457AbiDDJiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 05:38:25 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAE933A23;
+        Mon,  4 Apr 2022 02:36:29 -0700 (PDT)
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2348Vwt4002328;
+        Mon, 4 Apr 2022 09:36:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=drsUIcFULe9n7Sfe1QPWOgdt7gO8SMNSV9muB6XXfRw=;
+ b=URklWIlcbElfBS5G4d/zKt+BcjPBaOvKGnsE4AorIRCoh32HRijGkhFL7k7lVO0H/lyf
+ MrPgbWseUBSG6BSoEWFHQuVlaBa+NC7OTCYiQeHqFV1QgYu+BpLuATPWEELL7SL4OZh0
+ 7Cy5cvWRLOz7RUs111wVQK5MF/brNtzAMDhIyIcCXrqzJ7lxXiELQ648kS/Ic5l9Rjlf
+ PLbwTrVLTCFLWvkuptRlBNDqDzyccVxvz6PaSs1Vx0Wf8REDWguAINS1JRXHtvPvvS+W
+ kpA8S0/XNoRAMbB5ABoqYuIA01v5hYurvBTczQhZ95zqa3Q5GXcz4avwqG9IkLUnJ9ph iQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3f705gnfen-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Apr 2022 09:36:09 +0000
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2349WTnF008508;
+        Mon, 4 Apr 2022 09:36:08 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3f705gnfdt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Apr 2022 09:36:08 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2349X2V4005653;
+        Mon, 4 Apr 2022 09:36:06 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 3f6drhkarc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Apr 2022 09:36:06 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2349a4Qo46465394
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Apr 2022 09:36:04 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5CD41AE053;
+        Mon,  4 Apr 2022 09:36:04 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B41EEAE045;
+        Mon,  4 Apr 2022 09:36:03 +0000 (GMT)
+Received: from [9.171.47.144] (unknown [9.171.47.144])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Apr 2022 09:36:03 +0000 (GMT)
+Message-ID: <55ff4df690d18faa4c88d05009ebe6d0c70ad37d.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 bpf-next 3/5] libbpf: add auto-attach for uprobes
+ based on section name
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Yucong Sun <sunyucong@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Date:   Mon, 04 Apr 2022 11:36:03 +0200
+In-Reply-To: <CAEf4BzZ5iLi=Xuw=+Ez30LWqPQuuVK8hGaVwfyHL5A+XDkFWgw@mail.gmail.com>
+References: <1648654000-21758-1-git-send-email-alan.maguire@oracle.com>
+         <1648654000-21758-4-git-send-email-alan.maguire@oracle.com>
+         <CAEf4BzbB3yeKdxqGewFs=BA+bXBNfhDf2Xh4XzBjrsSp_0khPQ@mail.gmail.com>
+         <CAEf4BzZ5iLi=Xuw=+Ez30LWqPQuuVK8hGaVwfyHL5A+XDkFWgw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: JzNm4q1il3M3oSuHCIfcJxCvuUBMcQib
+X-Proofpoint-ORIG-GUID: 2dupiGv-FnBtIEOeOo7BYSVH4SDHXuuH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-04-04_03,2022-03-31_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ spamscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2204040053
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There isn't currently a convenience function to check if a particular
-kernel version is running similar to bpf_core_field_exists. There can be
-cases where based on the actual kernel being run different kprobes has
-to be used when tracing the kernel. One example is the change introduced
-in 4c5b47997521 ("vfs: add fileattr ops"). Before this commit if one
-wants to trace fileattr changes this has to be done by a distinct kprobe
-on every filesystem as there was no common code where fileattr changes
-when through. Post this commit this can be performed by a single kprobe
-on the common vfs_fileattr_set function.
+On Sun, 2022-04-03 at 21:46 -0700, Andrii Nakryiko wrote:
+> On Sun, Apr 3, 2022 at 6:14 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > 
+> > On Wed, Mar 30, 2022 at 8:27 AM Alan Maguire
+> > <alan.maguire@oracle.com> wrote:
+> > > 
+> > > Now that u[ret]probes can use name-based specification, it makes
+> > > sense to add support for auto-attach based on SEC() definition.
+> > > The format proposed is
+> > > 
+> > >        
+> > > SEC("u[ret]probe/binary:[raw_offset|[function_name[+offset]]")
+> > > 
+> > > For example, to trace malloc() in libc:
+> > > 
+> > >         SEC("uprobe/libc.so.6:malloc")
+> > > 
+> > > ...or to trace function foo2 in /usr/bin/foo:
+> > > 
+> > >         SEC("uprobe//usr/bin/foo:foo2")
+> > > 
+> > > Auto-attach is done for all tasks (pid -1).  prog can be an
+> > > absolute
+> > > path or simply a program/library name; in the latter case, we use
+> > > PATH/LD_LIBRARY_PATH to resolve the full path, falling back to
+> > > standard locations (/usr/bin:/usr/sbin or /usr/lib64:/usr/lib) if
+> > > the file is not found via environment-variable specified
+> > > locations.
+> > > 
+> > > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 74
+> > > ++++++++++++++++++++++++++++++++++++++++++++++++--
+> > >  1 file changed, 72 insertions(+), 2 deletions(-)
+> > > 
+> > 
+> > [...]
+> > 
+> > > +static int attach_uprobe(const struct bpf_program *prog, long
+> > > cookie, struct bpf_link **link)
+> > > +{
+> > > +       DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
+> > > +       char *func, *probe_name, *func_end;
+> > > +       char *func_name, binary_path[512];
+> > > +       unsigned long long raw_offset;
+> > > +       size_t offset = 0;
+> > > +       int n;
+> > > +
+> > > +       *link = NULL;
+> > > +
+> > > +       opts.retprobe = str_has_pfx(prog->sec_name,
+> > > "uretprobe/");
+> > > +       if (opts.retprobe)
+> > > +               probe_name = prog->sec_name +
+> > > sizeof("uretprobe/") - 1;
+> > > +       else
+> > > +               probe_name = prog->sec_name + sizeof("uprobe/") -
+> > > 1;
+> > 
+> > I think this will mishandle SEC("uretprobe"), let's fix this in a
+> > follow up (and see a note about uretprobe selftests)
+> 
+> So I actually fixed it up a little bit to avoid test failure on s390x
+> arch. But now it's a different problem, complaining about not being
+> able to resolve libc.so.6. CC'ing Ilya, but I was wondering if it's
+> better to use more generic "libc.so" instead of "libc.so.6"? Have you
+> tried that?
 
-To accommodate such use cases simply add a libbpf api btf__field_exists
-which can be used to check for the running kernel version and act
-appropriately.
-
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- tools/lib/bpf/btf.c      | 28 ++++++++++++++++++++++++++++
- tools/lib/bpf/btf.h      |  2 ++
- tools/lib/bpf/libbpf.map |  1 +
- 3 files changed, 31 insertions(+)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 9aa19c89f758..890a2071bd00 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -697,6 +697,34 @@ int btf__resolve_type(const struct btf *btf, __u32 type_id)
- 	return type_id;
- }
- 
-+bool btf__field_exists(const struct btf *btf, const char *struct_name,
-+		       const char *field_name)
-+{
-+	const struct btf_type *t;
-+	struct btf_member *m;
-+	int i;
-+	__s32 type_id = btf__find_by_name(btf, struct_name);
-+
-+	if (type_id < 0)
-+		return false;
-+
-+	t = btf__type_by_id(btf, type_id);
-+	if (!t)
-+		return false;
-+
-+	if (!btf_is_composite(t))
-+		return false;
-+
-+	for_each_member(i, t, m) {
-+		const char *n = btf__name_by_offset(btf, m->name_off);
-+
-+		if (strcmp(n, field_name) == 0)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- __s32 btf__find_by_name(const struct btf *btf, const char *type_name)
- {
- 	__u32 i, nr_types = btf__type_cnt(btf);
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 74039f8afc63..1eb8d840b46b 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -144,6 +144,8 @@ LIBBPF_API enum btf_endianness btf__endianness(const struct btf *btf);
- LIBBPF_API int btf__set_endianness(struct btf *btf, enum btf_endianness endian);
- LIBBPF_API __s64 btf__resolve_size(const struct btf *btf, __u32 type_id);
- LIBBPF_API int btf__resolve_type(const struct btf *btf, __u32 type_id);
-+LIBBPF_API bool btf__field_exists(const struct btf *btf, const char *struct_name,
-+				 const char *field_name);
- LIBBPF_API int btf__align_of(const struct btf *btf, __u32 id);
- LIBBPF_API int btf__fd(const struct btf *btf);
- LIBBPF_API void btf__set_fd(struct btf *btf, int fd);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 529783967793..9a0d50604cca 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -427,6 +427,7 @@ LIBBPF_0.7.0 {
- 		bpf_program__log_level;
- 		bpf_program__set_log_buf;
- 		bpf_program__set_log_level;
-+		btf__field_exists;
- 		libbpf_probe_bpf_helper;
- 		libbpf_probe_bpf_map_type;
- 		libbpf_probe_bpf_prog_type;
--- 
-2.25.1
-
+I believe it's a Debian-specific issue (our s390x CI image is Debian).
+libc is still called libc.so.6, but it's located in
+/lib/s390x-linux-gnu.
+This must also be an issue on Intel and other architectures.
+I'll send a patch.
