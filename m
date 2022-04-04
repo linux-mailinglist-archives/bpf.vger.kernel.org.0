@@ -2,377 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9304F0DF9
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 06:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4E74F0E29
+	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 06:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355561AbiDDEUN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 00:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34064 "EHLO
+        id S1377116AbiDDEgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 00:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbiDDEUM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 00:20:12 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C167C24948
-        for <bpf@vger.kernel.org>; Sun,  3 Apr 2022 21:18:12 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id r2so9821017iod.9
-        for <bpf@vger.kernel.org>; Sun, 03 Apr 2022 21:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VklP/sywurcgQG6jMlsArV9OkE6Bg4p7d5DTbowlAYw=;
-        b=NJaJAK8nyHi48EueUru/4vKrd57+8heKf5dB4GVruGELaitd/GLAp4h1oSuhBBfK1c
-         RRYEjI9Qs5+16dWQBBFWXi2jiy2AsaiFoGQoLhGRATlgTutczvUOqgoRMEjscnJgWPii
-         g5T2V/iiU7cXMzZ/1iVNO5GYy7B7AMhG2hchq6bKToqeXv71DVGLCfXPhuKPGSGQEQkq
-         DYIQsoQ0n9/hnmZNFbtGfnJTuJr8DFlVG7WM3FWh61pWO45wzWmAvBfL+gGdVNh5jbQh
-         FzDfNsYeleny2AqkATSmF4xfJYxusgf+yTZvjmd2QHcHE+7oDAZ39kJQllJ+sf+8FAw7
-         Velw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VklP/sywurcgQG6jMlsArV9OkE6Bg4p7d5DTbowlAYw=;
-        b=fcCwQimXVzDYqxeIILAy2SG90X+RKeCpPMLyfd4C0sZvdgaHAZObku2ixGPFI8X4Gt
-         Brf2Ml0XhkwkQSc/CCxtWJqNI9837gd+UrQTebDLbNBMlxNplXdm5etbDbvh2rpiAVFN
-         tpqC385jcvMS6riQqMSN26l5xpC2c+9RIjc8BhMNCrbq5Spg2yfQlZA/7iS3qg+5O7qI
-         KbERouoNnt02wy/4rsHdb99ZNo1NITlYVDqfWh8hN9ssTmiCElfHgXQVlhnYA3bZfDUu
-         uZJp4HbpsPU5xisz7XWVzwLw8h03B7QqDpMcI05ablV2ISOedfkacwHCI3h6yMfIfMUi
-         WSvQ==
-X-Gm-Message-State: AOAM533f7RdySTVLoKd662Ag/6VJqieG2jmjnVYWnq+nEsKAgvoCr0YI
-        wxPgIcZOCupT1oyws+3yEHkb4ahZlfXH0EtZr1fN7srO8sA=
-X-Google-Smtp-Source: ABdhPJxWjNevkXObkN/XY/dN8cKcBOvyt6zTBIk9j9SK6EVPXzrxvFvwwW20YT+MN9AByMsQYu6n77cb5yVm9P+sJn4=
-X-Received: by 2002:a05:6602:735:b0:64c:adf1:ae09 with SMTP id
- g21-20020a056602073500b0064cadf1ae09mr4435770iox.79.1649045891933; Sun, 03
- Apr 2022 21:18:11 -0700 (PDT)
+        with ESMTP id S233038AbiDDEgV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 00:36:21 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB6E3193A;
+        Sun,  3 Apr 2022 21:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649046866; x=1680582866;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=J+9/VACJriMm9l1J/6Hp7wWQOXCr5rIeEVKxroBaykY=;
+  b=ehekU/BUXTOCdZVdC63xzd6NfzGGbpmz9RWtF+5ITlaX5QQZPB9DpRjA
+   HtkkIOc4x282tTihP2eQkQ6gdXCtXW5U6CxLBJk4Zs+OUj+DXSClSe96Z
+   thq7FRCKsUeHvprwzLpKs4IdZjo7VaVYhEsTke74D5DWynE86poKgl7kw
+   r0ZAisF/bxjQnc5T5lt184DnyrYsX3IDO01SKRli1pZkmK3soI9w0j+z4
+   Lvtv3EC9m0pMQzIU22qLslbCNW/m0nCyD2nIffI8IUNtS9pCxNc3PreVO
+   65CeW4HLSSuN4TLqquzFYhD1D2Qn7lFt/DclLrZSWerQzrGMcwgX8aCdL
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10306"; a="241023318"
+X-IronPort-AV: E=Sophos;i="5.90,233,1643702400"; 
+   d="scan'208";a="241023318"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2022 21:34:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,233,1643702400"; 
+   d="scan'208";a="548516264"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP; 03 Apr 2022 21:34:25 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Sun, 3 Apr 2022 21:34:25 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Sun, 3 Apr 2022 21:34:25 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27 via Frontend Transport; Sun, 3 Apr 2022 21:34:25 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.27; Sun, 3 Apr 2022 21:34:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IO6Iq2+vYh12xmviwDj7mATJYMgu+GjQjyZd2HhGjJwR1GkrxRmD2ET5gx+YwfRa9i5iC5FZ4bUn+CXEVkioLVDB5IHLTEOHfvmZprub3eNneCRYZnJf1BEh5WUBq+bpjHVoZdnquNDVtsu11bTNbW51o6h0nLJGImJ9sPtPnIDGisUpEs06IuUbC4nzbQDdnZ4N+TeIabGtPPv058AAjYkIoRrgn08E7OY3dFZr6OQu0P0JhicVQb6326Z0n1iAhKMETHc1GsgzrDafmIdTP4CC9Aw7fAUYuDsr5WpAMGPKDOfFAoWrfWN4X3bbP3EH+WpCHT5lsdguXEtyRNnZ9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bAr9lRYl+t3J7DKFXXXNv6+gV004td+AFv7sp8zWiuc=;
+ b=iLgR7gZ4opqP7H0bLb64eAdj5w5IpzsgoVa4HI+2HqEcVwPQoozrpCJhxdOvpmmABhiVuOyIZ/z2CvKbElkfbIKUJ7CSzFYOFYYqyJFe0mSZN4WorEq2pqDeSn8USSV9hRkXPr1nDA0pFVjelfwrSKGgtIDCnVUQSsqwvn9w+TGXhlVv6tHB0QL3pevcpheChnGlWMdsZkNop7aALG9nvwSjOo3nLRyVuog9r1Z2mE79QdVQq/VKzK9AxX/nJpzw4CO1HCGxtRu0lPiS7IiXhNR2vJGOojZqklYpGQ2uJT0qrDpO2y8efU/3+jcwmQlCgJXnP8G1t8xfkt2kAIusjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MW4PR11MB5822.namprd11.prod.outlook.com (2603:10b6:303:185::9)
+ by BYAPR11MB2902.namprd11.prod.outlook.com (2603:10b6:a03:83::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.31; Mon, 4 Apr
+ 2022 04:34:21 +0000
+Received: from MW4PR11MB5822.namprd11.prod.outlook.com
+ ([fe80::64c7:fef2:3781:92ca]) by MW4PR11MB5822.namprd11.prod.outlook.com
+ ([fe80::64c7:fef2:3781:92ca%7]) with mapi id 15.20.5123.031; Mon, 4 Apr 2022
+ 04:34:21 +0000
+From:   "Nagaraju, Shwetha" <shwetha.nagaraju@intel.com>
+To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: RE: [Intel-wired-lan] [PATCH intel-net 3/3] ice: clear
+ cmd_type_offset_bsz for TX rings
+Thread-Topic: [Intel-wired-lan] [PATCH intel-net 3/3] ice: clear
+ cmd_type_offset_bsz for TX rings
+Thread-Index: AQHYOi4l8egKbiWBiUmSf3JXHzLjoKzfRdVg
+Date:   Mon, 4 Apr 2022 04:34:21 +0000
+Message-ID: <MW4PR11MB582222B135FDD63795ED3C8E90E59@MW4PR11MB5822.namprd11.prod.outlook.com>
+References: <20220317183629.340350-1-maciej.fijalkowski@intel.com>
+ <20220317183629.340350-4-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220317183629.340350-4-maciej.fijalkowski@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.6.401.20
+dlp-reaction: no-action
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 30d3f2bd-d132-4d06-e3d4-08da15f463de
+x-ms-traffictypediagnostic: BYAPR11MB2902:EE_
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-microsoft-antispam-prvs: <BYAPR11MB2902D677972345EB4854DEA790E59@BYAPR11MB2902.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DBFziifzMhA/wkBOT6a04e0XPRdpcE2n12IbxDq0+LDwvP//jwu+ymlBBjapCLYqQhdd/n1FWpiqZ9aNUh4bjhDs5G6aoip8T23Poq991ThVww2ptvgyIseciw1HUatMl2ACMU5kvqQm/B2+GjgE4GU+uyKog2ZozG6SQPeqxpxx0YWLnpxdanUzMClNC2K3t/k4+J1JvS3Ke/nNmAVPmsZZi5kHd1JbqfEi57g4Ss1WpOv/+y2i75kXp7VJg3pepVHCa9FlPY3RgPehn3DoU6cPTivcyp929Fi6XvUeqSUjPBqCNvxkia46SuV+gDuZbjXMrcaE63a2Uj1TbfgTltN0ayJ6n2BP+lbmq4ic1kkd9S75bVBoP6Fb4CY9fg2CM7lBfW6D/tdfYMOBFKVe+EYNSeaniwt6469MRyqL2lYHKlmKVdsrf2PmF8mVPVUf9cOmfDbA7srfY5r9rxav2SruAcVs8z6/gaMoxcisQUDbtpqEcQW2RET7Rs4Dtw7pSGUVMdv68NXgZHRmLoHlxNNGpEF51D6hQGq3nWth5bCGTflcxSWydt34M0eEnhLD2OYHx8Jk6VE9FNQy6cOZa2ko1vG/gl4D4LkV6WB7NQPuhAph9GVia1SwXfn33Nk15aH2IxG4siaoW1Da2vbXN2qzk2q4wlSX7ORv8rKYnp7mYONxmcPxDtAzWTZrjk1DHUlxOGDscPjqBNoMStm7Ew==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5822.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(83380400001)(9686003)(7696005)(55236004)(53546011)(38100700002)(6506007)(122000001)(2906002)(5660300002)(71200400001)(55016003)(186003)(8936002)(508600001)(38070700005)(82960400001)(52536014)(76116006)(33656002)(316002)(66446008)(64756008)(26005)(66946007)(66476007)(66556008)(107886003)(54906003)(8676002)(4326008)(86362001)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5Xu7hxO/pvzALD/9P4XdKy77jTVMI4pz3AL2uyyRSsj7ek4vvhkhf+LnE6kr?=
+ =?us-ascii?Q?l5DkEHhkJvQ4AGYtRPpRbHGhDjQSKFoKsSZK+FCtN5sA2KqDsOG9enlTn3Yr?=
+ =?us-ascii?Q?V8ZrFJR4A3E1+fbqZH7qEenL4zi59NWqNh2raHqBuN+ZEiefalfbk+vvU5jr?=
+ =?us-ascii?Q?zBkBgWPkEdHSJvV6Ve9aCSbiwHjKidoC1hqqjP7EYyoBS+OsXUbXlCJi0gDX?=
+ =?us-ascii?Q?oHwr30kchED4bLQ9B0S2Am93vDqkMi6Bd9BXPNj+0CSJVlFbktyzKLh9t0Mr?=
+ =?us-ascii?Q?4807JqWQ3TZkhOkqrOSjIyO0WfLPAp7i928Ryw+Vq1iYZaXWUEGZumvYnPV7?=
+ =?us-ascii?Q?wlCMNelDP8ndUtzNkkkB0Xt4efntYe+BOPFQTtrBn+AThQCB+4slhGMndgFf?=
+ =?us-ascii?Q?swxHdIcMRzinlW9A3ZqRDqgosjf/wbDpjSzMfKw3A3ImNi0BIw+dXk4tzX/Z?=
+ =?us-ascii?Q?TRErGmisswMjQIg+Gii9eV2Vlq2PMdYqSxjK0HB47oZWQC+o2HTn54mF6OiX?=
+ =?us-ascii?Q?IVatOiZpfctvB/i1kB5fDIzi3BL4z492tujXnhNK5GJuM4cmK/cAhAwkMBlq?=
+ =?us-ascii?Q?7OTjyYWJmPA6hPJ4WqKuM7X65Z/M9hsdrDBZyBEh1DAEw2uDeIs1B6OuNEHc?=
+ =?us-ascii?Q?f9h0/YBhVHvZXIfECBj/gA+z+ZJ2mmBUsy5aoxOAFhOXTv/CK3tYX0mFZ/EL?=
+ =?us-ascii?Q?ro5qI7GNOffK4StJMP/dD6M6lhpIQLfC+0p7UbrPKDuFgXU7bIOPXhAfPLcF?=
+ =?us-ascii?Q?nyShAeTjYGybe2PYKAfURue8l1+pzdmLr5DIT0IPT2dXf0BCC0uagd0AOf8M?=
+ =?us-ascii?Q?NMMu5zjWjZnAYp1ZZx8MMq6Y4fVEYalk9HLK2nY7QoLoInuB7eLIHty+KM3m?=
+ =?us-ascii?Q?gUdCdKg2Gv62/ZVwxhxfY3AhH8I/z3tNEkTBH86FUPnTe6vAKHWTEACXhLTB?=
+ =?us-ascii?Q?0SRykxcVP3rS4YPLxN6S3Ed5zode1Vi8Xg7I3Te7kGI4zt8XpA6gMKOe4YRW?=
+ =?us-ascii?Q?YUbMBZOp0Eik7MW3LC6sQCHq4eO6elBuDjKfiQXZY3ivWjghGWn55ZSsC9q3?=
+ =?us-ascii?Q?ksE0ezMplUtsdsWYi60i+4t2lnaGfAEchZFk/Ik5Da8F6wFvN3y/vMpPGzY7?=
+ =?us-ascii?Q?tsK66RDRZp7YyGUd+B8H8Wi1gqPw4+0v6qHQZxssyqmlM3MuVJ6X6VogcrrU?=
+ =?us-ascii?Q?5BvCXHBcGpQy6uTLtJX+OaX0WEDG8W7QRiXSQcjfaqKMWPWKZNJ2s3Ct/0UM?=
+ =?us-ascii?Q?y3onQ+Vce4dfJMHJgvSOIT5EaS7rdTprOC5UDb+8uIhGloaGQjOEDZJpbkDE?=
+ =?us-ascii?Q?H8E8LgqlJm+yOxcAXXlnqOHDHdMxP/aXwkHE/x0gUpbDVqG3wKgFJqorSOuq?=
+ =?us-ascii?Q?dXWOiMmdSqa6prF2dJ6HHqd/CNR/iUFtNN+2GNmR9kv1dow4zNc8fv4G49IV?=
+ =?us-ascii?Q?qzOawhekKVy+2+emYRvU++aNFimibjlWHydfufBOP+VjSYaOKqh+47nNRAip?=
+ =?us-ascii?Q?4OzCmcnB11pLcnsbv9JLXRk5EmTcsEuepFffXDYh7okM4P1pCeRYCuryT4/1?=
+ =?us-ascii?Q?S5r3zKJZLHcCQGRxzZj8+XJvp9LUNxZjTk/W3768PAp153769EP7whgl6Klr?=
+ =?us-ascii?Q?oXH0O5XS58ZXg8P/6rVV2rUtUQnCbO6B/sWq6jUV9Sv8y6gGl1rLp6QB8ERe?=
+ =?us-ascii?Q?R4d+rLkJIIFwjpy+2o21Qxsrhnk/kU/KEKdZpFKj+C5Wr7i4WIxW2EqGZBIK?=
+ =?us-ascii?Q?/MAaO7lcskA8HT/KafXcguphaH1z70w=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20220402002944.382019-1-andrii@kernel.org> <20220402002944.382019-3-andrii@kernel.org>
- <22359fb1-33a2-ee2c-4300-a07b175825e6@fb.com>
-In-Reply-To: <22359fb1-33a2-ee2c-4300-a07b175825e6@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 3 Apr 2022 21:18:00 -0700
-Message-ID: <CAEf4BzYdhnGE7HZLrjF0E2-XFwVrQf7G=uVaWJd7p2qaQMsvTg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/7] libbpf: wire up USDT API and bpf_link integration
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5822.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30d3f2bd-d132-4d06-e3d4-08da15f463de
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Apr 2022 04:34:21.7321
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kGyK7+2rcvgJSnDBULgNcwsDEBRBZ8gYLqw6W1EQ+OTyJW5VPPT14Do1Ly88/HiXF5Q4Blm5ctGlOh/0RkYbafL15Gzl3BeJglIRh3TL1dU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2902
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 3, 2022 at 8:12 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->
-> On 4/1/22 8:29 PM, Andrii Nakryiko wrote:
-> > Wire up libbpf USDT support APIs without yet implementing all the
-> > nitty-gritty details of USDT discovery, spec parsing, and BPF map
-> > initialization.
-> >
-> > User-visible user-space API is simple and is conceptually very similar
-> > to uprobe API.
-> >
-> > bpf_program__attach_usdt() API allows to programmatically attach given
-> > BPF program to a USDT, specified through binary path (executable or
-> > shared lib), USDT provider and name. Also, just like in uprobe case, PID
-> > filter is specified (0 - self, -1 - any process, or specific PID).
-> > Optionally, USDT cookie value can be specified. Such single API
-> > invocation will try to discover given USDT in specified binary and will
-> > use (potentially many) BPF uprobes to attach this program in correct
-> > locations.
-> >
-> > Just like any bpf_program__attach_xxx() APIs, bpf_link is returned that
-> > represents this attachment. It is a virtual BPF link that doesn't have
-> > direct kernel object, as it can consist of multiple underlying BPF
-> > uprobe links. As such, attachment is not atomic operation and there can
-> > be brief moment when some USDT call sites are attached while others are
-> > still in the process of attaching. This should be taken into
-> > consideration by user. But bpf_program__attach_usdt() guarantees that
-> > in the case of success all USDT call sites are successfully attached, or
-> > all the successfuly attachments will be detached as soon as some USDT
-> > call sites failed to be attached. So, in theory, there could be cases of
-> > failed bpf_program__attach_usdt() call which did trigger few USDT
-> > program invocations. This is unavoidable due to multi-uprobe nature of
-> > USDT and has to be handled by user, if it's important to create an
-> > illusion of atomicity.
->
-> It would be useful to be able to control the behavior in response to attach
-> failure in bpf_program__attach_usdt. Specifically I'd like to be able to
-> choose between existing "all attaches succeed or entire operation fails" and
-> "_any_ attach succeeds or entire operation fails". Few reasons for this:
->
->  * Tools like BOLT were not playing nicely with USDTs for some time ([0],[1])
->  * BCC's logic was changed to support more granular 'attach failure' logic ([2])
->  * At FB I still see some multi-probe USDTs with incorrect-looking locations on
->    some of the probes
->
-> Note that my change for 2nd bullet was to handle ".so in shortlived process"
-> usecase, which this lib handles by properly supporting pid = -1. But it's since
-> come in handy to avoid 3rd bullet's issue from causing trouble.
->
-> Production tracing tools would be less brittle if they could control this attach
-> failure logic.
->
 
-So, we have bpf_usdt_opts for that and can add this in the future. The
-reason I didn't do it from the outset is that no other attach API
-currently has this partial success behavior. For example, multi-attach
-kprobe that we recently added is also an all-or-nothing API. So I
-wanted to start out with this stricter approach and only allow to
-change that if/when we have a clear case where this is objectively not
-enough. The BOLT case you mentioned normally should have been solved
-by fixing BOLT tooling itself, not by sloppier attach behavior in
-kernel or libbpf.
 
-For the [2], if you re-read comments, I've suggested to allow adding
-one USDT at a time instead of the "partial failure is ok" option,
-which you ended up doing. So your initial frustration was from
-suboptimal BCC API. After you added init_usdt() call that allowed to
-generate code for each individual binary+USDT target, you had all the
-control you needed, right? So here, bpf_program__attach_usdt() is a
-logical equivalent of that init_usdt() call from BCC, so should be all
-good. If bpf_program__attach_usdt() fails for some process/binary that
-is now gone, you can just ignore and continue attaching for other
-binaries, right?
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> Maciej Fijalkowski
+> Sent: Friday, March 18, 2022 12:06 AM
+> To: intel-wired-lan@lists.osuosl.org
+> Cc: netdev@vger.kernel.org; kuba@kernel.org; bpf@vger.kernel.org;
+> davem@davemloft.net; Karlsson, Magnus <magnus.karlsson@intel.com>
+> Subject: [Intel-wired-lan] [PATCH intel-net 3/3] ice: clear
+> cmd_type_offset_bsz for TX rings
+>=20
+> Currently when XDP rings are created, each descriptor gets its DD bit set=
+,
+> which turns out to be the wrong approach as it can lead to a situation wh=
+ere
+> more descriptors get cleaned than it was supposed to, e.g. when AF_XDP
+> busy poll is run with a large batch size. In this situation, the driver w=
+ould
+> request for more buffers than it is able to handle.
+>=20
+> Fix this by not setting the DD bits in ice_xdp_alloc_setup_rings(). They =
+should
+> be initialized to zero instead.
+>=20
+> Fixes: 9610bd988df9 ("ice: optimize XDP_TX workloads")
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+Tested-by: Shwetha Nagaraju <Shwetha.nagaraju@intel.com>
 
->   [0]: https://github.com/facebookincubator/BOLT/commit/ea49a61463c65775aa796a9ef7a1199f20d2a698
->   [1]: https://github.com/facebookincubator/BOLT/commit/93860e02a19227be4963a68aa99ea0e09771052b
->   [2]: https://github.com/iovisor/bcc/pull/2476
->
-> > USDT BPF programs themselves are marked in BPF source code as either
-> > SEC("usdt"), in which case they won't be auto-attached through
-> > skeleton's <skel>__attach() method, or it can have a full definition,
-> > which follows the spirit of fully-specified uprobes:
-> > SEC("usdt/<path>:<provider>:<name>"). In the latter case skeleton's
-> > attach method will attempt auto-attachment. Similarly, generic
-> > bpf_program__attach() will have enought information to go off of for
-> > parameterless attachment.
-> >
-> > USDT BPF programs are actually uprobes, and as such for kernel they are
-> > marked as BPF_PROG_TYPE_KPROBE.
-> >
-> > Another part of this patch is USDT-related feature probing:
-> >   - BPF cookie support detection from user-space;
-> >   - detection of kernel support for auto-refcounting of USDT semaphore.
-> >
-> > The latter is optional. If kernel doesn't support such feature and USDT
-> > doesn't rely on USDT semaphores, no error is returned. But if libbpf
-> > detects that USDT requires setting semaphores and kernel doesn't support
-> > this, libbpf errors out with explicit pr_warn() message. Libbpf doesn't
-> > support poking process's memory directly to increment semaphore value,
-> > like BCC does on legacy kernels, due to inherent raciness and danger of
-> > such process memory manipulation. Libbpf let's kernel take care of this
-> > properly or gives up.
-> >
-> > Logistically, all the extra USDT-related infrastructure of libbpf is put
-> > into a separate usdt.c file and abstracted behind struct usdt_manager.
-> > Each bpf_object has lazily-initialized usdt_manager pointer, which is
-> > only instantiated if USDT programs are attempted to be attached. Closing
-> > BPF object frees up usdt_manager resources. usdt_manager keeps track of
-> > USDT spec ID assignment and few other small things.
-> >
-> > Subsequent patches will fill out remaining missing pieces of USDT
-> > initialization and setup logic.
-> >
-> > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/lib/bpf/Build             |   3 +-
-> >  tools/lib/bpf/libbpf.c          | 100 +++++++-
-> >  tools/lib/bpf/libbpf.h          |  31 +++
-> >  tools/lib/bpf/libbpf.map        |   1 +
-> >  tools/lib/bpf/libbpf_internal.h |  19 ++
-> >  tools/lib/bpf/usdt.c            | 426 ++++++++++++++++++++++++++++++++
-> >  6 files changed, 571 insertions(+), 9 deletions(-)
-> >  create mode 100644 tools/lib/bpf/usdt.c
->
-> [...]
->
-> > +static int attach_usdt(const struct bpf_program *prog, long cookie, struct bpf_link **link)
-> > +{
-> > +     char *path = NULL, *provider = NULL, *name = NULL;
-> > +     const char *sec_name;
-> > +     int n, err;
-> > +
-> > +     sec_name = bpf_program__section_name(prog);
-> > +     if (strcmp(sec_name, "usdt") == 0) {
-> > +             /* no auto-attach for just SEC("usdt") */
-> > +             *link = NULL;
-> > +             return 0;
-> > +     }
-> > +
-> > +     n = sscanf(sec_name, "usdt/%m[^:]:%m[^:]:%m[^:]", &path, &provider, &name);
->
-> TIL %m
-
-yep it's pretty nifty in some cases. In general, sscanf() is pretty
-great for a lot of pretty complicated cases without the need to go for
-a full-blown regex engine.
-
->
-> > +     if (n != 3) {
-> > +             pr_warn("invalid section '%s', expected SEC(\"usdt/<path>:<provider>:<name>\")\n",
-> > +                     sec_name);
-> > +             err = -EINVAL;
-> > +     } else {
-> > +             *link = bpf_program__attach_usdt(prog, -1 /* any process */, path,
-> > +                                              provider, name, NULL);
-> > +             err = libbpf_get_error(*link);
-> > +     }
-> > +     free(path);
-> > +     free(provider);
-> > +     free(name);
-> > +     return err;
-> > +}
->
-> [...]
->
-> > diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-> > new file mode 100644
-> > index 000000000000..9476f7a15769
-> > --- /dev/null
-> > +++ b/tools/lib/bpf/usdt.c
-> > @@ -0,0 +1,426 @@
-> > +// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> > +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-> > +#include <ctype.h>
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <string.h>
-> > +#include <libelf.h>
-> > +#include <gelf.h>
-> > +#include <unistd.h>
-> > +#include <linux/ptrace.h>
-> > +#include <linux/kernel.h>
-> > +
-> > +#include "bpf.h"
-> > +#include "libbpf.h"
-> > +#include "libbpf_common.h"
-> > +#include "libbpf_internal.h"
-> > +#include "hashmap.h"
-> > +
-> > +/* libbpf's USDT support consists of BPF-side state/code and user-space
-> > + * state/code working together in concert. BPF-side parts are defined in
-> > + * usdt.bpf.h header library. User-space state is encapsulated by struct
-> > + * usdt_manager and all the supporting code centered around usdt_manager.
-> > + *
-> > + * usdt.bpf.h defines two BPF maps that usdt_manager expects: USDT spec map
-> > + * and IP-to-spec-ID map, which is auxiliary map necessary for kernels that
-> > + * don't support BPF cookie (see below). These two maps are implicitly
-> > + * embedded into user's end BPF object file when user's code included
-> > + * usdt.bpf.h. This means that libbpf doesn't do anything special to create
-> > + * these USDT support maps. They are created by normal libbpf logic of
-> > + * instantiating BPF maps when opening and loading BPF object.
-> > + *
-> > + * As such, libbpf is basically unaware of the need to do anything
-> > + * USDT-related until the very first call to bpf_program__attach_usdt(), which
-> > + * can be called by user explicitly or happen automatically during skeleton
-> > + * attach (or, equivalently, through generic bpf_program__attach() call). At
-> > + * this point, libbpf will instantiate and initialize struct usdt_manager and
-> > + * store it in bpf_object. USDT manager is per-BPF object construct, as each
-> > + * independent BPF object might or might not have USDT programs, and thus all
-> > + * the expected USDT-related state. There is no coordination between two
-> > + * bpf_object in parts of USDT attachment, they are oblivious of each other's
-> > + * existence and libbpf is just oblivious, dealing with bpf_object-specific
-> > + * USDT state.
-> > + *
-> > + * Quick crash course on USDTs.
-> > + *
-> > + * From user-space application's point of view, USDT is essentially just
-> > + * a slightly special function call that normally has zero overhead, unless it
->
-> Maybe better to claim 'low overhead' instead of 'zero' here and elsewhere?
-> Or elaborate about the overhead more explicitly. Agreed that it's so low as to
-> effectively be zero in most cases, but someone somewhere is going to put the nop
-> in a 4096-bytes-of-instr tight loop, see changed iTLB behavior, and get
-> frustrated.
-
-Hm.... but it is literally zero overhead because that nop is pretty
-much free. If you put USDT into a loop, you'll be seeing an overhead
-of a loop itself, not of that nop. What's more, if you have input
-arguments that are already prepared/calculated, there is no movement
-of them, no stack frame creation and jump (as opposed to function
-calls), USDT macro just record their location without changing the
-properties of the code. So I stand by zero-overhead.
-
->
-> A contrived scenario to be sure, but no other USDT documentation I can find
-> claims zero overhead, rather 'low', guessing for a good reason.
-
-The only real overhead of USDT will be if someone calculates some
-expression just to pass its result into USDT. That's when USDT
-semaphores come in, but that's a bit different from USDT invocation
-overhead itself.
-
-Think about ftrace preamble in almost every kernel function (we use
-that for fentry/fexit and kprobe utilizes it for faster jump, if
-kernel supports it). It's 5-byte nop, but I don't think anyone claims
-that there is "low overhead" of ftrace when nothing is attached to the
-kernel function. It is considered to be *zero overhead*, unless
-someone attaches and replaces those 5 bytes with a call, jump, or
-interrupt. USDT is similarly "zero overhead".
-
-I think it's important to emphasize that this is objectively zero
-overhead and encourage applications to utilize this technology,
-instead of inadvertently scaring them away with vague "low overhead".
-
->
->
-> > + * is being traced by some external entity (e.g, BPF-based tool). Here's how
-> > + * a typical application can trigger USDT probe:
-> > + *
-> > + * #include <sys/sdt.h>  // provided by systemtap-sdt-devel package
-> > + * // folly also provide similar functionality in folly/tracing/StaticTracepoint.h
-> > + *
-> > + * STAP_PROBE3(my_usdt_provider, my_usdt_probe_name, 123, x, &y);
-> > + *
-> > + * USDT is identified by it's <provider-name>:<probe-name> pair of names. Each
-> > + * individual USDT has a fixed number of arguments (3 in the above example)
-> > + * and specifies values of each argument as if it was a function call.
-> > + *
-> > + * USDT call is actually not a function call, but is instead replaced by
-> > + * a single NOP instruction (thus zero overhead, effectively). But in addition
->
-> This zero overhead claim bothers me less since NOP is directly mentioned.
-
-Well, I already wrote up my tirade above and I'm living it anyways ;)
-
->
-> > + * to that, those USDT macros generate special SHT_NOTE ELF records in
-> > + * .note.stapsdt ELF section. Here's an example USDT definition as emitted by
-> > + * `readelf -n <binary>`:
->
-> [...]
->
-> > + * Arguments is the most interesting part. This USDT specification string is
-> > + * providing information about all the USDT arguments and their locations. The
-> > + * part before @ sign defined byte size of the argument (1, 2, 4, or 8) and
-> > + * whether the argument is singed or unsigned (negative size means signed).
-> > + * The part after @ sign is assembly-like definition of argument location.
-> > + * Technically, assembler can provide some pretty advanced definitions, but
->
-> Perhaps it would be more precise to state that argument specifiers can be 'any
-> operand accepted by Gnu Asm Syntax' (per [0]).
->
-> [0]: https://sourceware.org/systemtap/wiki/UserSpaceProbeImplementation
-
-Yep, will update and live the reference to that page.
-
->
-> > + * libbpf is currently supporting three most common cases:
-> > + *   1) immediate constant, see 5th and 9th args above (-4@$5 and -4@-9);
-> > + *   2) register value, e.g., 8@%rdx, which means "unsigned 8-byte integer
-> > + *      whose value is in register %rdx";
-> > + *   3) memory dereference addressed by register, e.g., -4@-1204(%rbp), which
-> > + *      specifies signed 32-bit integer stored at offset -1204 bytes from
-> > + *      memory address stored in %rbp.
->
-> [...]
