@@ -2,184 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FD04F131E
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 12:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7EA4F1336
+	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 12:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357864AbiDDKb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 06:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
+        id S1348590AbiDDKi2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 06:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357885AbiDDKb0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 06:31:26 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293CB1EAF3
-        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 03:29:30 -0700 (PDT)
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 234AHFT0022505;
-        Mon, 4 Apr 2022 10:29:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=fGvEa8ak58eS/RdSqg7JZDiecsbpNAeeN4NE6pNV9/s=;
- b=qrXpJ9BM10fu5rc6oJmfUzZRC/iLxlYOMBHLS0WukdeXr+ktdX211/+NERpmMvrE95VB
- TjLHA7UpMrMjtiwZPF5OCDqq19d2JzlhpRImP0qHFC+4+FSK2Ol3im7p4Bpb8NAVMjpe
- 33C5dE8Ti/bRHX8fbYyAfwiQ7ZZY2+4nieXUDXm2yMkve+v5JzniOMd2Rj41eBbFUXKS
- GDom9dxNg3J9szphzUAB5f+QnZ3z2rAHynuCmtx6TVwZFBPTCBi1n6bQIte5EucTkCcD
- x14R580JkfhP+ei+5oZ97o3qUuHQUJoS9Fo9maQ65kAH961kplLlvBRAzCf4CZyyK5Kz sA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3f7xsmr86r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Apr 2022 10:29:16 +0000
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 234AOH7T013316;
-        Mon, 4 Apr 2022 10:29:16 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3f7xsmr864-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Apr 2022 10:29:16 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 234AD9HQ023108;
-        Mon, 4 Apr 2022 10:29:14 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 3f6drhjurd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Apr 2022 10:29:14 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 234AGxLM45089100
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Apr 2022 10:16:59 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AF824C046;
-        Mon,  4 Apr 2022 10:29:10 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1277E4C058;
-        Mon,  4 Apr 2022 10:29:10 +0000 (GMT)
-Received: from heavy.ibmuc.com (unknown [9.171.47.144])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Apr 2022 10:29:09 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     bpf@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] libbpf: Support Debian in resolve_full_path()
-Date:   Mon,  4 Apr 2022 12:29:08 +0200
-Message-Id: <20220404102908.14688-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.35.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ul4laqvva2Iriozl_GgavOzqls0QwAKf
-X-Proofpoint-GUID: bIFhILp_WQUo7jiNLJ1dWKIwSyZGq076
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S245317AbiDDKi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 06:38:28 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186A635255;
+        Mon,  4 Apr 2022 03:36:32 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id w4so13744938wrg.12;
+        Mon, 04 Apr 2022 03:36:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1HBiFYlEiqTXVb+hK23gOZGF2CdBmNE43kJRJeqQsvs=;
+        b=jAZt9Jk1ZO3ahYdITjscHoG6hhL/th7YmNdy+CNKHoVjD6dYfNEO+cJFo5zEHo0BLr
+         llW5AiRh9j+qxtSq/MX9HynDozOCasm+1e/689G0bHkhvPzLN9F6dY59DFxfFSeJG1uz
+         V8je1YvYatt1RgJr1/swRrjzFvCDnb+TLSoDpju71DZWEY+0NSL/Jkd8DCrvoHQ3zoJR
+         jjUdKFM976jVY810HvBXOJQORr/w0ZFH+FgAvNuhG4D9nE5duzY4LiMK3CmbRAmOvBkT
+         BLgvFzhOpSPiG+CFbXHofv4V03mHE7KzEiHBIa1pdBSZA1x56OsLWXCdx8nju/dGcdoO
+         iQ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=1HBiFYlEiqTXVb+hK23gOZGF2CdBmNE43kJRJeqQsvs=;
+        b=Rtuzpw6Svx08uTaXEUBSZ/AP43dJY/9gUi8GNHsRV0HedgnvrPC3aEJWREXQ2fu+Fg
+         XKLm2cuDJYAPh2J2a8Eb6yi0Lhi3pRfA0UzGxcorkp1rKCXHFsdREhX4gUmlKZ2aVSUE
+         hirv/4rsjkuZptV3X/Gxp08Y1TzJgzXmXTyfM/FXVBcmQTDW/nFkn3WRPshAjk89+66u
+         hOaKnBC5P7+9SFU+70AzkzWlq/nXFiA+ax7VZfRb7zD9gFaNoQHD1NMPgItnv9EwYivg
+         Y0wCMIeU2IRW4yswgnnHaPxWKMoDEcxBMKqWdpXNSmMHuZp2koNsr4EycUbUguyaaJOD
+         rvUw==
+X-Gm-Message-State: AOAM533sGX9R/WHsaO6IlsYDyg0PDo9jbHqyL7BogDZBnmem4L84Cput
+        cY7PtGaL5WdwBr8ss7GJzS3UrojUasA=
+X-Google-Smtp-Source: ABdhPJxA/eJaCU+3KGGsg+XYddlzhJ8brdZkkZESve5TLYmP23yuyygYEZ56XlVH1IFDLSMD7C6SQA==
+X-Received: by 2002:adf:fa92:0:b0:206:1720:1e25 with SMTP id h18-20020adffa92000000b0020617201e25mr1305043wrr.390.1649068590489;
+        Mon, 04 Apr 2022 03:36:30 -0700 (PDT)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id 14-20020a056000154e00b00203f8adde0csm10950792wry.32.2022.04.04.03.36.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 04 Apr 2022 03:36:30 -0700 (PDT)
+Date:   Mon, 4 Apr 2022 11:36:27 +0100
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Taehee Yoo <ap420073@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        ecree.xilinx@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com
+Subject: Re: [PATCH net v2] net: sfc: add missing xdp queue reinitialization
+Message-ID: <20220404103627.zczltvxz4pjrpqay@gmail.com>
+Mail-Followup-To: Taehee Yoo <ap420073@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, ecree.xilinx@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com
+References: <20220330163703.25086-1-ap420073@gmail.com>
+ <20220401110606.whyr5hnesb4ya67q@gmail.com>
+ <8f22d067-fb84-cc76-9249-d68af9601d44@gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-04_03,2022-03-31_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- clxscore=1015 suspectscore=0 spamscore=0 impostorscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 adultscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2204040057
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f22d067-fb84-cc76-9249-d68af9601d44@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-attach_probe selftest fails on Debian-based distros with `failed to
-resolve full path for 'libc.so.6'`. The reason is that these distros
-embraced multiarch to the point where even for the "main" architecture
-they store libc in /lib/<triple>.
+Hi Taehee,
 
-This is configured in /etc/ld.so.conf and in theory it's possible to
-replicate the loader's parsing and processing logic in libbpf, however
-a much simpler solution is to just enumerate the known library paths.
+On Sat, Apr 02, 2022 at 03:48:14AM +0900, Taehee Yoo wrote:
+> On 4/1/22 20:06, Martin Habets wrote:
+> 
+> Hi Martin,
+> Thank you so much for your review!
+> 
+> > Hi Taehee,
+> >
+> > Thanks for looking into this. Unfortunately efx_realloc_channels()
+> > has turned out to be quite fragile over the years, so I'm
+> > keen to remove it in stead of patching it up all the time.
+> 
+> I agree with you.
+> efx_realloc_channels() is too complex.
+> 
+> >
+> > Could you try the patch below please?
+> > If it works ok for you as well we'll be able to remove
+> > efx_realloc_channels(). The added advantage of this approach
+> > is that the netdev notifiers get informed of the change.
+> 
+> I tested your patch and I found a page reference count problem.
+> How to test:
+> 1. set up XDP_TX
+> 2. traffic on
+> 3. traffic off
+> 4. ring buffer size change
+> 5. loop from 2 to 4.
+> 
+> [   87.836195][   T72] BUG: Bad page state in process kworker/u16:1
+> pfn:125445
+> [   87.843356][   T72] page:000000003725f642 refcount:-2 mapcount:0
+> mapping:0000000000000000 index:0x0 pfn:0x125445
+> [   87.853783][   T72] flags: 0x200000000000000(node=0|zone=2)
+> 
+> [   87.859391][   T72] raw: 0200000000000000 dead000000000100
+> dead000000000122 0000000000000000
+> [   87.867928][   T72] raw: 0000000000000000 0000000000000000
+> fffffffeffffffff 0000000000000000
+> [   87.876569][   T72] page dumped because: nonzero _refcount
+> 
+> [   87.882125][   T72] Modules linked in: af_packet sfc ixgbe mtd atlantic
+> coretemp mdio hwmon sch_fq_codel msr bpf_prelx
+> [   87.895331][   T72] CPU: 0 PID: 72 Comm: kworker/u16:1 Not tainted
+> 5.17.0+ #62 dbf33652f22e5147659e7e2472bb962779c4833
+> [   87.906350][   T72] Hardware name: ASUS System Product Name/PRIME Z690-P
+> D4, BIOS 0603 11/01/2021
+> [   87.915360][   T72] Workqueue: netns cleanup_net
+> 
+> [   87.920087][   T72] Call Trace:
+> 
+> [   87.923311][   T72]  <TASK>
+> 
+> [   87.926188][   T72]  dump_stack_lvl+0x56/0x7b
+> 
+> [   87.930597][   T72]  bad_page.cold.125+0x63/0x93
+> 
+> [   87.935288][   T72]  free_pcppages_bulk+0x63c/0x6f0
+> 
+> [   87.940232][   T72]  free_unref_page+0x8b/0xf0
+> 
+> [   87.944749][   T72]  efx_fini_rx_queue+0x15f/0x210 [sfc
+> 49c5d4f562a40c6a7ed913c25f5bd4e126bcfa4e]
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/lib/bpf/libbpf.c | 54 ++++++++++++++++++++++++++++++++++++------
- 1 file changed, 47 insertions(+), 7 deletions(-)
+Looks to me like this is in efx_fini_rx_recycle_ring().
+It could be a side effect of the memory leak you report below.
+If this is in efx_fini_rx_recycle_ring() I'll post a patch for
+that soon on a separate thread.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6d2be53e4ba9..4f616b11564f 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10707,21 +10707,61 @@ static long elf_find_func_offset(const char *binary_path, const char *name)
- 	return ret;
- }
- 
-+static void add_debian_library_paths(const char **search_paths, int *n)
-+{
-+	/*
-+	 * Based on https://packages.debian.org/sid/libc6.
-+	 *
-+	 * Assume that the traced program is built for the same architecture
-+	 * as libbpf, which should cover the vast majority of cases.
-+	 */
-+#if defined(__x86_64__)
-+	search_paths[(*n)++] = "/lib/x86_64-linux-gnu";
-+#elif defined(__i386__)
-+	search_paths[(*n)++] = "/lib/i386-linux-gnu";
-+#elif defined(__s390x__)
-+	search_paths[(*n)++] = "/lib/s390x-linux-gnu";
-+#elif defined(__s390__)
-+	search_paths[(*n)++] = "/lib/s390-linux-gnu";
-+#elif defined(__arm__)
-+#if defined(__SOFTFP__)
-+	search_paths[(*n)++] = "/lib/arm-linux-gnueabi";
-+#else
-+	search_paths[(*n)++] = "/lib/arm-linux-gnueabihf";
-+#endif /* defined(__SOFTFP__) */
-+#elif defined(__aarch64__)
-+	search_paths[(*n)++] = "/lib/aarch64-linux-gnu";
-+#elif defined(__mips__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-+#if _MIPS_SZLONG == 64
-+	search_paths[(*n)++] = "/lib/mips64el-linux-gnuabi64";
-+#elif _MIPS_SZLONG == 32
-+	search_paths[(*n)++] = "/lib/mipsel-linux-gnu";
-+#endif
-+#elif defined(__powerpc__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-+	search_paths[(*n)++] = "/lib/powerpc64le-linux-gnu";
-+#elif defined(__sparc__)
-+	search_paths[(*n)++] = "/lib/sparc64-linux-gnu";
-+#elif defined(__riscv) && __riscv_xlen == 64
-+	search_paths[(*n)++] = "/lib/riscv64-linux-gnu";
-+#endif
-+}
-+
- /* Get full path to program/shared library. */
- static int resolve_full_path(const char *file, char *result, size_t result_sz)
- {
--	const char *search_paths[2];
--	int i;
-+	const char *search_paths[3];
-+	int i, n = 0;
- 
- 	if (strstr(file, ".so")) {
--		search_paths[0] = getenv("LD_LIBRARY_PATH");
--		search_paths[1] = "/usr/lib64:/usr/lib";
-+		search_paths[n++] = getenv("LD_LIBRARY_PATH");
-+		search_paths[n++] = "/usr/lib64:/usr/lib";
-+		add_debian_library_paths(search_paths, &n);
- 	} else {
--		search_paths[0] = getenv("PATH");
--		search_paths[1] = "/usr/bin:/usr/sbin";
-+		search_paths[n++] = getenv("PATH");
-+		search_paths[n++] = "/usr/bin:/usr/sbin";
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(search_paths); i++) {
-+	for (i = 0; i < n; i++) {
- 		const char *s;
- 
- 		if (!search_paths[i])
+> [   87.953756][   T72]  efx_stop_channels+0xef/0x1b0 [sfc
+> 49c5d4f562a40c6a7ed913c25f5bd4e126bcfa4e]
+> [   87.962699][   T72]  efx_net_stop+0x4d/0x60 [sfc
+> 49c5d4f562a40c6a7ed913c25f5bd4e126bcfa4e]
+> [   87.971029][   T72]  __dev_close_many+0x8b/0xf0
+> 
+> [   87.975618][   T72]  dev_close_many+0x7d/0x120
+> 
+> [ ... ]
+> 
+> 
+> In addition, I would like to share issues that I'm currently looking into:
+> 1. TX DMA error
+> when interface down/up or ring buffer size changes, TX DMA error would occur
+> because tx_queue can be used before initialization.
+> But It will be fixed by the below patch.
+> 
+>  static void efx_ethtool_get_wol(struct net_device *net_dev,
+> diff --git a/drivers/net/ethernet/sfc/tx.c b/drivers/net/ethernet/sfc/tx.c
+> index d16e031e95f4..6983799e1c05 100644
+> --- a/drivers/net/ethernet/sfc/tx.c
+> +++ b/drivers/net/ethernet/sfc/tx.c
+> @@ -443,6 +443,9 @@ int efx_xdp_tx_buffers(struct efx_nic *efx, int n,
+> struct xdp_frame **xdpfs,
+>         if (unlikely(!tx_queue))
+>                 return -EINVAL;
+> 
+> +       if (!tx_queue->initialised)
+> +               return -EINVAL;
+> +
+>         if (efx->xdp_txq_queues_mode != EFX_XDP_TX_QUEUES_DEDICATED)
+>                 HARD_TX_LOCK(efx->net_dev, tx_queue->core_txq, cpu);
+> 
+> diff --git a/drivers/net/ethernet/sfc/tx_common.c
+> b/drivers/net/ethernet/sfc/tx_common.c
+> index d530cde2b864..9bc8281b7f5b 100644
+> --- a/drivers/net/ethernet/sfc/tx_common.c
+> +++ b/drivers/net/ethernet/sfc/tx_common.c
+> @@ -101,6 +101,8 @@ void efx_fini_tx_queue(struct efx_tx_queue *tx_queue)
+>         netif_dbg(tx_queue->efx, drv, tx_queue->efx->net_dev,
+>                   "shutting down TX queue %d\n", tx_queue->queue);
+> 
+> +       tx_queue->initialised = false;
+> +
+>         if (!tx_queue->buffer)
+>                 return;
+
+Looks ok, but xmit_hard should never be called on an interface that
+is down. Makes me wonder if we have a seqence issue in our ndo_stop API.
+
+> 
+> After your patch, unfortunately, it can't fix ring buffer size change case.
+> It can fix only interface down/up case.
+> I will look into this more.
+> 
+> 2. Memory leak
+> There is a memory leak in ring buffer size change logic.
+> reproducer:
+>    while :
+>    do
+>        ethtool -G <interface name> rx 2048 tx 2048
+>        ethtool -G <interface name> rx 1024 tx 1024
+>    done
+
+Is this with my patch or only with yours?
+Thanks a lot for testing this.
+
+Martin
+
+> Thanks a lot,
+> Taehee Yoo
+> 
+> >
+> > Regards,
+> > Martin Habets <habetsm.xilinx@gmail.com>
+> >
+> > ---
+> >   drivers/net/ethernet/sfc/ethtool.c |   13 ++++++++++++-
+> >   1 file changed, 12 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/ethernet/sfc/ethtool.c
+> b/drivers/net/ethernet/sfc/ethtool.c
+> > index 48506373721a..8cfbe61737bb 100644
+> > --- a/drivers/net/ethernet/sfc/ethtool.c
+> > +++ b/drivers/net/ethernet/sfc/ethtool.c
+> > @@ -179,6 +179,7 @@ efx_ethtool_set_ringparam(struct net_device *net_dev,
+> >   {
+> >   	struct efx_nic *efx = netdev_priv(net_dev);
+> >   	u32 txq_entries;
+> > +	int rc = 0;
+> >
+> >   	if (ring->rx_mini_pending || ring->rx_jumbo_pending ||
+> >   	    ring->rx_pending > EFX_MAX_DMAQ_SIZE ||
+> > @@ -198,7 +199,17 @@ efx_ethtool_set_ringparam(struct net_device *net_dev,
+> >   			   "increasing TX queue size to minimum of %u\n",
+> >   			   txq_entries);
+> >
+> > -	return efx_realloc_channels(efx, ring->rx_pending, txq_entries);
+> > +	/* Apply the new settings */
+> > +	efx->rxq_entries = ring->rx_pending;
+> > +	efx->txq_entries = ring->tx_pending;
+> > +
+> > +	/* Update the datapath with the new settings if the interface is up */
+> > +	if (!efx_check_disabled(efx) && netif_running(efx->net_dev)) {
+> > +		dev_close(net_dev);
+> > +		rc = dev_open(net_dev, NULL);
+> > +	}
+> > +
+> > +	return rc;
+> >   }
+> >
+> >   static void efx_ethtool_get_wol(struct net_device *net_dev,
+
 -- 
-2.35.1
-
+Martin Habets <habetsm.xilinx@gmail.com>
