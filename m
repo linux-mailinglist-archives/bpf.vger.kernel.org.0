@@ -2,100 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BADD84F1227
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 11:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FD04F131E
+	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 12:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354406AbiDDJi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 05:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
+        id S1357864AbiDDKb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 06:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354457AbiDDJiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 05:38:25 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAE933A23;
-        Mon,  4 Apr 2022 02:36:29 -0700 (PDT)
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2348Vwt4002328;
-        Mon, 4 Apr 2022 09:36:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=drsUIcFULe9n7Sfe1QPWOgdt7gO8SMNSV9muB6XXfRw=;
- b=URklWIlcbElfBS5G4d/zKt+BcjPBaOvKGnsE4AorIRCoh32HRijGkhFL7k7lVO0H/lyf
- MrPgbWseUBSG6BSoEWFHQuVlaBa+NC7OTCYiQeHqFV1QgYu+BpLuATPWEELL7SL4OZh0
- 7Cy5cvWRLOz7RUs111wVQK5MF/brNtzAMDhIyIcCXrqzJ7lxXiELQ648kS/Ic5l9Rjlf
- PLbwTrVLTCFLWvkuptRlBNDqDzyccVxvz6PaSs1Vx0Wf8REDWguAINS1JRXHtvPvvS+W
- kpA8S0/XNoRAMbB5ABoqYuIA01v5hYurvBTczQhZ95zqa3Q5GXcz4avwqG9IkLUnJ9ph iQ== 
+        with ESMTP id S1357885AbiDDKb0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 06:31:26 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293CB1EAF3
+        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 03:29:30 -0700 (PDT)
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 234AHFT0022505;
+        Mon, 4 Apr 2022 10:29:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=fGvEa8ak58eS/RdSqg7JZDiecsbpNAeeN4NE6pNV9/s=;
+ b=qrXpJ9BM10fu5rc6oJmfUzZRC/iLxlYOMBHLS0WukdeXr+ktdX211/+NERpmMvrE95VB
+ TjLHA7UpMrMjtiwZPF5OCDqq19d2JzlhpRImP0qHFC+4+FSK2Ol3im7p4Bpb8NAVMjpe
+ 33C5dE8Ti/bRHX8fbYyAfwiQ7ZZY2+4nieXUDXm2yMkve+v5JzniOMd2Rj41eBbFUXKS
+ GDom9dxNg3J9szphzUAB5f+QnZ3z2rAHynuCmtx6TVwZFBPTCBi1n6bQIte5EucTkCcD
+ x14R580JkfhP+ei+5oZ97o3qUuHQUJoS9Fo9maQ65kAH961kplLlvBRAzCf4CZyyK5Kz sA== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3f705gnfen-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3f7xsmr86r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Apr 2022 09:36:09 +0000
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2349WTnF008508;
-        Mon, 4 Apr 2022 09:36:08 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3f705gnfdt-1
+        Mon, 04 Apr 2022 10:29:16 +0000
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 234AOH7T013316;
+        Mon, 4 Apr 2022 10:29:16 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3f7xsmr864-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Apr 2022 09:36:08 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2349X2V4005653;
-        Mon, 4 Apr 2022 09:36:06 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3f6drhkarc-1
+        Mon, 04 Apr 2022 10:29:16 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 234AD9HQ023108;
+        Mon, 4 Apr 2022 10:29:14 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 3f6drhjurd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Apr 2022 09:36:06 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2349a4Qo46465394
+        Mon, 04 Apr 2022 10:29:14 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 234AGxLM45089100
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Apr 2022 09:36:04 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5CD41AE053;
-        Mon,  4 Apr 2022 09:36:04 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B41EEAE045;
-        Mon,  4 Apr 2022 09:36:03 +0000 (GMT)
-Received: from [9.171.47.144] (unknown [9.171.47.144])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Apr 2022 09:36:03 +0000 (GMT)
-Message-ID: <55ff4df690d18faa4c88d05009ebe6d0c70ad37d.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 bpf-next 3/5] libbpf: add auto-attach for uprobes
- based on section name
+        Mon, 4 Apr 2022 10:16:59 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8AF824C046;
+        Mon,  4 Apr 2022 10:29:10 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1277E4C058;
+        Mon,  4 Apr 2022 10:29:10 +0000 (GMT)
+Received: from heavy.ibmuc.com (unknown [9.171.47.144])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Apr 2022 10:29:09 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Yucong Sun <sunyucong@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Date:   Mon, 04 Apr 2022 11:36:03 +0200
-In-Reply-To: <CAEf4BzZ5iLi=Xuw=+Ez30LWqPQuuVK8hGaVwfyHL5A+XDkFWgw@mail.gmail.com>
-References: <1648654000-21758-1-git-send-email-alan.maguire@oracle.com>
-         <1648654000-21758-4-git-send-email-alan.maguire@oracle.com>
-         <CAEf4BzbB3yeKdxqGewFs=BA+bXBNfhDf2Xh4XzBjrsSp_0khPQ@mail.gmail.com>
-         <CAEf4BzZ5iLi=Xuw=+Ez30LWqPQuuVK8hGaVwfyHL5A+XDkFWgw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     bpf@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] libbpf: Support Debian in resolve_full_path()
+Date:   Mon,  4 Apr 2022 12:29:08 +0200
+Message-Id: <20220404102908.14688-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.35.1
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: JzNm4q1il3M3oSuHCIfcJxCvuUBMcQib
-X-Proofpoint-ORIG-GUID: 2dupiGv-FnBtIEOeOo7BYSVH4SDHXuuH
+X-Proofpoint-ORIG-GUID: ul4laqvva2Iriozl_GgavOzqls0QwAKf
+X-Proofpoint-GUID: bIFhILp_WQUo7jiNLJ1dWKIwSyZGq076
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-04-04_03,2022-03-31_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- spamscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2204040053
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ clxscore=1015 suspectscore=0 spamscore=0 impostorscore=0 bulkscore=0
+ phishscore=0 priorityscore=1501 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2204040057
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,77 +93,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 2022-04-03 at 21:46 -0700, Andrii Nakryiko wrote:
-> On Sun, Apr 3, 2022 at 6:14 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > 
-> > On Wed, Mar 30, 2022 at 8:27 AM Alan Maguire
-> > <alan.maguire@oracle.com> wrote:
-> > > 
-> > > Now that u[ret]probes can use name-based specification, it makes
-> > > sense to add support for auto-attach based on SEC() definition.
-> > > The format proposed is
-> > > 
-> > >        
-> > > SEC("u[ret]probe/binary:[raw_offset|[function_name[+offset]]")
-> > > 
-> > > For example, to trace malloc() in libc:
-> > > 
-> > >         SEC("uprobe/libc.so.6:malloc")
-> > > 
-> > > ...or to trace function foo2 in /usr/bin/foo:
-> > > 
-> > >         SEC("uprobe//usr/bin/foo:foo2")
-> > > 
-> > > Auto-attach is done for all tasks (pid -1).  prog can be an
-> > > absolute
-> > > path or simply a program/library name; in the latter case, we use
-> > > PATH/LD_LIBRARY_PATH to resolve the full path, falling back to
-> > > standard locations (/usr/bin:/usr/sbin or /usr/lib64:/usr/lib) if
-> > > the file is not found via environment-variable specified
-> > > locations.
-> > > 
-> > > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c | 74
-> > > ++++++++++++++++++++++++++++++++++++++++++++++++--
-> > >  1 file changed, 72 insertions(+), 2 deletions(-)
-> > > 
-> > 
-> > [...]
-> > 
-> > > +static int attach_uprobe(const struct bpf_program *prog, long
-> > > cookie, struct bpf_link **link)
-> > > +{
-> > > +       DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
-> > > +       char *func, *probe_name, *func_end;
-> > > +       char *func_name, binary_path[512];
-> > > +       unsigned long long raw_offset;
-> > > +       size_t offset = 0;
-> > > +       int n;
-> > > +
-> > > +       *link = NULL;
-> > > +
-> > > +       opts.retprobe = str_has_pfx(prog->sec_name,
-> > > "uretprobe/");
-> > > +       if (opts.retprobe)
-> > > +               probe_name = prog->sec_name +
-> > > sizeof("uretprobe/") - 1;
-> > > +       else
-> > > +               probe_name = prog->sec_name + sizeof("uprobe/") -
-> > > 1;
-> > 
-> > I think this will mishandle SEC("uretprobe"), let's fix this in a
-> > follow up (and see a note about uretprobe selftests)
-> 
-> So I actually fixed it up a little bit to avoid test failure on s390x
-> arch. But now it's a different problem, complaining about not being
-> able to resolve libc.so.6. CC'ing Ilya, but I was wondering if it's
-> better to use more generic "libc.so" instead of "libc.so.6"? Have you
-> tried that?
+attach_probe selftest fails on Debian-based distros with `failed to
+resolve full path for 'libc.so.6'`. The reason is that these distros
+embraced multiarch to the point where even for the "main" architecture
+they store libc in /lib/<triple>.
 
-I believe it's a Debian-specific issue (our s390x CI image is Debian).
-libc is still called libc.so.6, but it's located in
-/lib/s390x-linux-gnu.
-This must also be an issue on Intel and other architectures.
-I'll send a patch.
+This is configured in /etc/ld.so.conf and in theory it's possible to
+replicate the loader's parsing and processing logic in libbpf, however
+a much simpler solution is to just enumerate the known library paths.
+
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/lib/bpf/libbpf.c | 54 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 47 insertions(+), 7 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6d2be53e4ba9..4f616b11564f 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10707,21 +10707,61 @@ static long elf_find_func_offset(const char *binary_path, const char *name)
+ 	return ret;
+ }
+ 
++static void add_debian_library_paths(const char **search_paths, int *n)
++{
++	/*
++	 * Based on https://packages.debian.org/sid/libc6.
++	 *
++	 * Assume that the traced program is built for the same architecture
++	 * as libbpf, which should cover the vast majority of cases.
++	 */
++#if defined(__x86_64__)
++	search_paths[(*n)++] = "/lib/x86_64-linux-gnu";
++#elif defined(__i386__)
++	search_paths[(*n)++] = "/lib/i386-linux-gnu";
++#elif defined(__s390x__)
++	search_paths[(*n)++] = "/lib/s390x-linux-gnu";
++#elif defined(__s390__)
++	search_paths[(*n)++] = "/lib/s390-linux-gnu";
++#elif defined(__arm__)
++#if defined(__SOFTFP__)
++	search_paths[(*n)++] = "/lib/arm-linux-gnueabi";
++#else
++	search_paths[(*n)++] = "/lib/arm-linux-gnueabihf";
++#endif /* defined(__SOFTFP__) */
++#elif defined(__aarch64__)
++	search_paths[(*n)++] = "/lib/aarch64-linux-gnu";
++#elif defined(__mips__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
++#if _MIPS_SZLONG == 64
++	search_paths[(*n)++] = "/lib/mips64el-linux-gnuabi64";
++#elif _MIPS_SZLONG == 32
++	search_paths[(*n)++] = "/lib/mipsel-linux-gnu";
++#endif
++#elif defined(__powerpc__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
++	search_paths[(*n)++] = "/lib/powerpc64le-linux-gnu";
++#elif defined(__sparc__)
++	search_paths[(*n)++] = "/lib/sparc64-linux-gnu";
++#elif defined(__riscv) && __riscv_xlen == 64
++	search_paths[(*n)++] = "/lib/riscv64-linux-gnu";
++#endif
++}
++
+ /* Get full path to program/shared library. */
+ static int resolve_full_path(const char *file, char *result, size_t result_sz)
+ {
+-	const char *search_paths[2];
+-	int i;
++	const char *search_paths[3];
++	int i, n = 0;
+ 
+ 	if (strstr(file, ".so")) {
+-		search_paths[0] = getenv("LD_LIBRARY_PATH");
+-		search_paths[1] = "/usr/lib64:/usr/lib";
++		search_paths[n++] = getenv("LD_LIBRARY_PATH");
++		search_paths[n++] = "/usr/lib64:/usr/lib";
++		add_debian_library_paths(search_paths, &n);
+ 	} else {
+-		search_paths[0] = getenv("PATH");
+-		search_paths[1] = "/usr/bin:/usr/sbin";
++		search_paths[n++] = getenv("PATH");
++		search_paths[n++] = "/usr/bin:/usr/sbin";
+ 	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(search_paths); i++) {
++	for (i = 0; i < n; i++) {
+ 		const char *s;
+ 
+ 		if (!search_paths[i])
+-- 
+2.35.1
+
