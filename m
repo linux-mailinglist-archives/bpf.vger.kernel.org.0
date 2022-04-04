@@ -2,62 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 582174F1C96
-	for <lists+bpf@lfdr.de>; Mon,  4 Apr 2022 23:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F178B4F1EA7
+	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 00:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242609AbiDDV2A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 17:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
+        id S236408AbiDDWES (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 18:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380496AbiDDUU2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 16:20:28 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9489F10C8
-        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 13:18:29 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id b43so14401889ljr.10
-        for <bpf@vger.kernel.org>; Mon, 04 Apr 2022 13:18:29 -0700 (PDT)
+        with ESMTP id S1376676AbiDDV5x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 17:57:53 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB370403F4
+        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 14:40:23 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id h63so12949318iof.12
+        for <bpf@vger.kernel.org>; Mon, 04 Apr 2022 14:40:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TEB+jG57QOiA8nOmC7dH7Q+xKzDdqm5GOBdPSATZZKk=;
-        b=OBPClqzX14BgC/M0WKYWKfBpluxXkzDwdQ1YmuzsWZROB9EExq5e3/AiMadDliYltx
-         SIZKTmnEkYADhsY5+Sgnlk1CUQcn2aUUalEAVwVLa3OJT5cGUIwS4OZLs31kHLcomll5
-         Kt8WO7fvh5lHtS9jkEOHQVsZE061S7pQeBXyYw+lRgF07VaGxh+BUFK94dPwZrZGe4xJ
-         ZGXchfCnthJAQy2dc+enxxa/yqUgmVV8DHhtheNGxElORUTLhegjy7Ht5QtFZspn8/Fo
-         R4cVaO2vx+bhJKP9e53EqlgkS6GL/tjhGj4QQ1XPLCYILFcKnLGHmuhyggCBHxEEQ6t2
-         7uXg==
+         :cc;
+        bh=vUOvq+YuXnN4TZrm+WH+ksWMq/F56sm+hM6YCKtUhcM=;
+        b=fv7GkY6wtsaELRONycyk5FhudxWOKI2DWeBpTai90BaSc11eu4OOc/XAfMyoWYOoDA
+         JWTge+nFSn7nPAlUYob6UOCR9eP2HmHlsqIofoUak3Pv9EQbSCM0qeDOL5M+l7YhivQO
+         qI67mDF38dI/L1ApjUu9mo/Kdtqi4dhh9K6UxYtEmNQUeCd+go6StcZ9kjdeSkCRknqU
+         YUa7bYWmP/oyDtdKbzTZ7WnGgYxaif3xnFqqQ6PhQFynpVgh7yczaiJYExJ2USRVARH8
+         h20xk4ufQ7MSBWcRGi1yp22Jx2bax/brXxdl5diGsLL9jbxK4dwsks4ktPjJeSbbZHNX
+         CW6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TEB+jG57QOiA8nOmC7dH7Q+xKzDdqm5GOBdPSATZZKk=;
-        b=ElCPeGzcjFvpAAe075IXrIiQkkmhxGWxi/lskafx8J8GwUwp2NZRTpcqB+68qJadkc
-         BCsONGIU16a8N30e1vJEs5XWNSmxRp2C0rlZRYqMkIZ3VwG3IJZugVOcZFtwYK2pRJG1
-         I8mzI/vDjsidLFccNVFduGHcQAFX9WYhb/rCphyeQKU724+zALBjVorXTVyYRcjcHKtr
-         1wYnRu/81wuq5BAJvlg5c+H7duNgH+hap8VaFlBiZVZZQ5H6v8glb7qCMQ8Yb/Eab0AC
-         Im+ebCN+kJudA8BMFtE4FjgH8qlmfsWp4Hb7jK/mAbHBnY8trn4/dszFoyCv3swDhZZs
-         NUWw==
-X-Gm-Message-State: AOAM530Ukjc93uOgVBad7pFN396FH+POdpOjJiNNVgJs3J5KjGqehu8n
-        YuQvyImq65Dc4dYJdi/KJ9anRosF7q8/uweGj/0=
-X-Google-Smtp-Source: ABdhPJz7E0Aq8PlvFSf0ZGlJy4QVs3+YMvnjdJ6zYDtWIny+G/pTyeLxai3wbvG6gj8A+byHzhipVN+yup6ZgDtxZFk=
-X-Received: by 2002:a2e:9b05:0:b0:24b:e8:8c7e with SMTP id u5-20020a2e9b05000000b0024b00e88c7emr834442lji.70.1649103507672;
- Mon, 04 Apr 2022 13:18:27 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=vUOvq+YuXnN4TZrm+WH+ksWMq/F56sm+hM6YCKtUhcM=;
+        b=xVmd1gym8GKJsW2+ak35t+vIjYiY10M76uYS3kNhgplQVpjIvdzjSSnS43A8WiWTL/
+         6fXvHg5WjBwsIqmoxSFc3uz8svoEcwZzRbfm2rkbMfJViOAw8rbc+Bj1B6f26nsDd5de
+         ZcwTfNkjpjcST2DHj2+y3c6fHZaPaIX4b9lAomyXpEFtTapfleuOFK8lmd1XJmt+r6iY
+         /z2B/eIHOaja7UvvvHqdETdKwB66A5DldHiCUV+ZM9TH/sKG+WAxxonrJuweux6PGBs3
+         YJbe6z+eTZ1fo4Kr8Z+58DZy+dAIBFmrbVF/KYxgAYrpcJh9+4i8t0aiz+EwKInw7n41
+         HUlA==
+X-Gm-Message-State: AOAM533ousyUZym/xjqwJ5v6m1vaF49PMW1sf7oyDRH1TuIA8TVCvGIO
+        //4OqoNtmPYr5uzGz8XGEFAWTyX3BC1RFz++WD7g8+s6
+X-Google-Smtp-Source: ABdhPJzwUJ3Sr0daYuEZMagm8EMgVAMCw87vi9/q3KW6F8BP+GM3JS8c6rfOibu73oQizj/UcBr00+2fKQXKxldzVSc=
+X-Received: by 2002:a05:6638:1685:b0:323:9fed:890a with SMTP id
+ f5-20020a056638168500b003239fed890amr206408jat.103.1649108422990; Mon, 04 Apr
+ 2022 14:40:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220402015826.3941317-1-joannekoong@fb.com> <20220402015826.3941317-5-joannekoong@fb.com>
- <87ilrrfw0z.fsf@toke.dk>
-In-Reply-To: <87ilrrfw0z.fsf@toke.dk>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 4 Apr 2022 13:18:16 -0700
-Message-ID: <CAJnrk1bjH18mZ4HCC9=NKeQopOgqtzCCO5jBk402aZN=ufG-Vw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/7] bpf: Add bpf_dynptr_read and bpf_dynptr_write
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+References: <20220404102908.14688-1-iii@linux.ibm.com>
+In-Reply-To: <20220404102908.14688-1-iii@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 4 Apr 2022 14:40:12 -0700
+Message-ID: <CAEf4BzZh8_cR+CxgQSAK5XpRd3Qc-M_wU-2V15CNVKJCCDyHTg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Support Debian in resolve_full_path()
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,71 +70,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 2, 2022 at 6:35 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On Mon, Apr 4, 2022 at 3:29 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> Joanne Koong <joannekoong@fb.com> writes:
+> attach_probe selftest fails on Debian-based distros with `failed to
+> resolve full path for 'libc.so.6'`. The reason is that these distros
+> embraced multiarch to the point where even for the "main" architecture
+> they store libc in /lib/<triple>.
 >
-> > From: Joanne Koong <joannelkoong@gmail.com>
-> >
-> > This patch adds two helper functions, bpf_dynptr_read and
-> > bpf_dynptr_write:
-> >
-> > long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 of=
-fset);
-> >
-> > long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, u3=
-2 len);
-> >
-> > The dynptr passed into these functions must be valid dynptrs that have
-> > been initialized.
-> >
-> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > ---
-> >  include/linux/bpf.h            |  6 ++++
-> >  include/uapi/linux/bpf.h       | 18 +++++++++++
-> >  kernel/bpf/helpers.c           | 56 ++++++++++++++++++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h | 18 +++++++++++
-> >  4 files changed, 98 insertions(+)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index e0fcff9f2aee..cded9753fb7f 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -2426,6 +2426,12 @@ enum bpf_dynptr_type {
-> >  #define DYNPTR_MAX_SIZE      ((1UL << 28) - 1)
-> >  #define DYNPTR_SIZE_MASK     0xFFFFFFF
-> >  #define DYNPTR_TYPE_SHIFT    29
-> > +#define DYNPTR_RDONLY_BIT    BIT(28)
-> > +
-> > +static inline bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
-> > +{
-> > +     return ptr->size & DYNPTR_RDONLY_BIT;
-> > +}
-> >
-> >  static inline enum bpf_dynptr_type bpf_dynptr_get_type(struct bpf_dynp=
-tr_kern *ptr)
-> >  {
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 6a57d8a1b882..16a35e46be90 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -5175,6 +5175,22 @@ union bpf_attr {
-> >   *           After this operation, *ptr* will be an invalidated dynptr=
-.
-> >   *   Return
-> >   *           Void.
-> > + *
-> > + * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u3=
-2 offset)
-> > + *   Description
-> > + *           Read *len* bytes from *src* into *dst*, starting from *of=
-fset*
-> > + *           into *dst*.
+> This is configured in /etc/ld.so.conf and in theory it's possible to
+> replicate the loader's parsing and processing logic in libbpf, however
+> a much simpler solution is to just enumerate the known library paths.
 >
-> nit: this should be "starting from *offset* into *src*, no? (same below)
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 54 ++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 47 insertions(+), 7 deletions(-)
 >
-Yes, this should be "starting from *offset* into *src*". I will fix
-this line in both places. Thanks!
-> -Toke
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6d2be53e4ba9..4f616b11564f 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10707,21 +10707,61 @@ static long elf_find_func_offset(const char *binary_path, const char *name)
+>         return ret;
+>  }
+>
+> +static void add_debian_library_paths(const char **search_paths, int *n)
+> +{
+> +       /*
+> +        * Based on https://packages.debian.org/sid/libc6.
+> +        *
+> +        * Assume that the traced program is built for the same architecture
+> +        * as libbpf, which should cover the vast majority of cases.
+> +        */
+> +#if defined(__x86_64__)
+> +       search_paths[(*n)++] = "/lib/x86_64-linux-gnu";
+> +#elif defined(__i386__)
+> +       search_paths[(*n)++] = "/lib/i386-linux-gnu";
+> +#elif defined(__s390x__)
+> +       search_paths[(*n)++] = "/lib/s390x-linux-gnu";
+> +#elif defined(__s390__)
+> +       search_paths[(*n)++] = "/lib/s390-linux-gnu";
+> +#elif defined(__arm__)
+> +#if defined(__SOFTFP__)
+> +       search_paths[(*n)++] = "/lib/arm-linux-gnueabi";
+> +#else
+> +       search_paths[(*n)++] = "/lib/arm-linux-gnueabihf";
+> +#endif /* defined(__SOFTFP__) */
+> +#elif defined(__aarch64__)
+> +       search_paths[(*n)++] = "/lib/aarch64-linux-gnu";
+> +#elif defined(__mips__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+> +#if _MIPS_SZLONG == 64
+> +       search_paths[(*n)++] = "/lib/mips64el-linux-gnuabi64";
+> +#elif _MIPS_SZLONG == 32
+> +       search_paths[(*n)++] = "/lib/mipsel-linux-gnu";
+> +#endif
+> +#elif defined(__powerpc__) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+> +       search_paths[(*n)++] = "/lib/powerpc64le-linux-gnu";
+> +#elif defined(__sparc__)
+> +       search_paths[(*n)++] = "/lib/sparc64-linux-gnu";
+> +#elif defined(__riscv) && __riscv_xlen == 64
+> +       search_paths[(*n)++] = "/lib/riscv64-linux-gnu";
+> +#endif
+> +}
+> +
+
+that's pretty comprehensive :)
+
+But let's make this function return const char * instead, with NULL
+for unknown/unsupported architectures. This will make the below code
+simpler....
+
+>  /* Get full path to program/shared library. */
+>  static int resolve_full_path(const char *file, char *result, size_t result_sz)
+>  {
+> -       const char *search_paths[2];
+> -       int i;
+> +       const char *search_paths[3];
+> +       int i, n = 0;
+>
+
+instead of counting, we can just NULL-initialize search_paths and
+teach the loop below to ignore NULL entries?
+
+
+>         if (strstr(file, ".so")) {
+> -               search_paths[0] = getenv("LD_LIBRARY_PATH");
+> -               search_paths[1] = "/usr/lib64:/usr/lib";
+> +               search_paths[n++] = getenv("LD_LIBRARY_PATH");
+> +               search_paths[n++] = "/usr/lib64:/usr/lib";
+> +               add_debian_library_paths(search_paths, &n);
+
+so you'll just have
+
+search_paths[2] = arch_specific_lib_paths();
+
+>         } else {
+> -               search_paths[0] = getenv("PATH");
+> -               search_paths[1] = "/usr/bin:/usr/sbin";
+> +               search_paths[n++] = getenv("PATH");
+> +               search_paths[n++] = "/usr/bin:/usr/sbin";
+>         }
+>
+> -       for (i = 0; i < ARRAY_SIZE(search_paths); i++) {
+> +       for (i = 0; i < n; i++) {
+>                 const char *s;
+>
+>                 if (!search_paths[i])
+
+oh, actually we already do ignore NULLs, it seems?
+
+> --
+> 2.35.1
 >
