@@ -2,61 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45ED04F4D84
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031294F4D99
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343502AbiDEXpE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 19:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
+        id S1450048AbiDEXqk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 19:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442634AbiDEPiD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 11:38:03 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE52C178680;
-        Tue,  5 Apr 2022 06:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649166759; x=1680702759;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=I2lgRPonevESO58QwyznLbLPnONfG/J3aXgrCvzjQ0k=;
-  b=EzJvSB7X6Wf3YE7cCt42ZbTiVNg7XjeUek3Vmhj71DcqfI1a/bGAsa/9
-   cHwKQdzsCqKpydrnKu+JeR6UrjDTNVtSDq9v8E1mFobNz/6ENOjd0HKwh
-   FgUtqi2l9oozrmNWSP484pWyVwVUQpWFRbmn3XXFwMlk3IaiEb+fmR+JF
-   GeZNdxJoclBU2p40lPysGFk1U2NKgXivb4QojUeZRvEHtv4e38LjMUHt/
-   6jx/dRIlX+hVCkE4LegR+CTJ8rXuMkpbWIWt9ujtdUP4k+gEgyRbshy5q
-   L2A8Xv4giJEGqAf+/NUmCxik4HT4ObWpbZQx2JTPVFLruaPHD4JCPVqNz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10307"; a="259583179"
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
-   d="scan'208";a="259583179"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 06:52:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
-   d="scan'208";a="789862273"
-Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
-  by fmsmga006.fm.intel.com with ESMTP; 05 Apr 2022 06:52:37 -0700
-Date:   Tue, 5 Apr 2022 15:52:36 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        magnus.karlsson@intel.com, bjorn@kernel.org, brouer@redhat.com,
-        netdev@vger.kernel.org, maximmi@nvidia.com,
-        alexandr.lobakin@intel.com
-Subject: Re: [PATCH bpf-next 05/10] ixgbe: xsk: terminate NAPI when XSK Rx
- queue gets full
-Message-ID: <YkxJpLPMkUrl1hoZ@boxer>
-References: <20220405110631.404427-1-maciej.fijalkowski@intel.com>
- <20220405110631.404427-6-maciej.fijalkowski@intel.com>
- <88cf07a2-3bb6-5eda-0d99-d9491fd18669@redhat.com>
+        with ESMTP id S1446430AbiDEPog (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 11:44:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E78488BC
+        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 07:15:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C6DA160A67
+        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 14:15:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F219BC385A4;
+        Tue,  5 Apr 2022 14:15:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649168133;
+        bh=26eUpDS5X0LbP28fq3djkrhwJiEr7QUiBzt7rIliHMY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DJyB2YOrY/3bFQ53umDkEgXHQStxbaewXA724hNrbNA4lHQgx/RArTflre0BR+Os3
+         FbuNXCVwoCIXuNCmO3TuqHynFxbyzmJD3cNkKQg537fxqDKNM60mJCR/5WQZyaAb3x
+         gn12TddaEQoLAxC3nMH+uqN2ONWg/5a2BkQXtY82oGNAKR3OCHj0a4Kb0UHDTCExUo
+         wg1aLAReWqW2EG20zFtiQex+SVkVOgkZLZkwg70dhUOJ3MXIx4pc/HBIKguNwRq043
+         dsGkkSw7Eq9B1n9xMS5YO9C+aMm0tZpjqLvkwf2/JfgaSujD2rr8X4dLJ9iQQEwagK
+         LNuodmTEBfZeA==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
+        andrii@kernel.org
+Subject: [PATCH bpf-next] samples: bpf: xdp_router_ipv4: move routes monitor in a dedicated thread
+Date:   Tue,  5 Apr 2022 16:15:14 +0200
+Message-Id: <e364b817c69ded73be24b677ab47a157f7c21b64.1649167911.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88cf07a2-3bb6-5eda-0d99-d9491fd18669@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,108 +51,205 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 05, 2022 at 02:36:41PM +0200, Jesper Dangaard Brouer wrote:
-> 
-> On 05/04/2022 13.06, Maciej Fijalkowski wrote:
-> > Correlate -ENOBUFS that was returned from xdp_do_redirect() with a XSK
-> > Rx queue being full. In such case, terminate the softirq processing and
-> > let the user space to consume descriptors from XSK Rx queue so that
-> > there is room that driver can use later on.
-> > 
-> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > ---
-> >   .../ethernet/intel/ixgbe/ixgbe_txrx_common.h  |  1 +
-> >   drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 23 ++++++++++++-------
-> >   2 files changed, 16 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> > index bba3feaf3318..f1f69ce67420 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_txrx_common.h
-> > @@ -8,6 +8,7 @@
-> >   #define IXGBE_XDP_CONSUMED	BIT(0)
-> >   #define IXGBE_XDP_TX		BIT(1)
-> >   #define IXGBE_XDP_REDIR		BIT(2)
-> > +#define IXGBE_XDP_EXIT		BIT(3)
-> >   #define IXGBE_TXD_CMD (IXGBE_TXD_CMD_EOP | \
-> >   		       IXGBE_TXD_CMD_RS)
-> > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> > index dd7ff66d422f..475244a2c6e4 100644
-> > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> > @@ -109,9 +109,10 @@ static int ixgbe_run_xdp_zc(struct ixgbe_adapter *adapter,
-> >   	if (likely(act == XDP_REDIRECT)) {
-> >   		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
-> > -		if (err)
-> > -			goto out_failure;
-> > -		return IXGBE_XDP_REDIR;
-> > +		if (!err)
-> > +			return IXGBE_XDP_REDIR;
-> > +		result = (err == -ENOBUFS) ? IXGBE_XDP_EXIT : IXGBE_XDP_CONSUMED;
-> > +		goto out_failure;
-> >   	}
-> >   	switch (act) {
-> > @@ -130,6 +131,9 @@ static int ixgbe_run_xdp_zc(struct ixgbe_adapter *adapter,
-> >   		if (result == IXGBE_XDP_CONSUMED)
-> >   			goto out_failure;
-> >   		break;
-> > +	case XDP_DROP:
-> > +		result = IXGBE_XDP_CONSUMED;
-> > +		break;
-> >   	default:
-> >   		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
-> >   		fallthrough;
-> > @@ -137,9 +141,6 @@ static int ixgbe_run_xdp_zc(struct ixgbe_adapter *adapter,
-> >   out_failure:
-> >   		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
-> >   		fallthrough; /* handle aborts by dropping packet */
-> > -	case XDP_DROP:
-> > -		result = IXGBE_XDP_CONSUMED;
-> > -		break;
-> >   	}
-> >   	return result;
-> >   }
-> > @@ -304,10 +305,16 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
-> >   		xdp_res = ixgbe_run_xdp_zc(adapter, rx_ring, bi->xdp);
-> >   		if (xdp_res) {
-> > -			if (xdp_res & (IXGBE_XDP_TX | IXGBE_XDP_REDIR))
-> > +			if (xdp_res == IXGBE_XDP_EXIT) {
-> 
-> Micro optimization note: Having this as the first if()-statement
-> defaults the compiler to think this is the likely() case. (But compilers
-> can obviously be smarter and can easily choose that the IXGBE_XDP_REDIR
-> branch is so simple that it takes it as the likely case).
-> Just wanted to mention this, given this is fash-path code.
+In order to not miss any netlink message from the kernel, move routes
+monitor to a dedicated thread.
 
-Good point. Since we're 'likely-fying' redirect path in
-ixgbe_run_xdp_zc(), maybe it would make sense to make the branch that does
-xdp_res & IXGBE_XDP_REDIR check as the likely() one.
+Fixes: 85bf1f51691c ("samples: bpf: Convert xdp_router_ipv4 to XDP samples helper")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ samples/bpf/Makefile               |  2 +-
+ samples/bpf/xdp_router_ipv4_user.c | 86 +++++++++++++++++++-----------
+ 2 files changed, 55 insertions(+), 33 deletions(-)
 
-> 
-> > +				failure = true;
-> > +				xsk_buff_free(bi->xdp);
-> > +				ixgbe_inc_ntc(rx_ring);
-> > +				break;
-> 
-> I was wondering if we have a situation where we should set xdp_xmit bit
-> to trigger the call to xdp_do_flush_map later in function, but I assume
-> you have this covered.
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 342a41a10356..8fff5ad3444b 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -219,7 +219,7 @@ TPROGLDLIBS_xdp_redirect	+= -lm
+ TPROGLDLIBS_xdp_redirect_cpu	+= -lm
+ TPROGLDLIBS_xdp_redirect_map	+= -lm
+ TPROGLDLIBS_xdp_redirect_map_multi += -lm
+-TPROGLDLIBS_xdp_router_ipv4	+= -lm
++TPROGLDLIBS_xdp_router_ipv4	+= -lm -pthread
+ TPROGLDLIBS_tracex4		+= -lrt
+ TPROGLDLIBS_trace_output	+= -lrt
+ TPROGLDLIBS_map_perf_test	+= -lrt
+diff --git a/samples/bpf/xdp_router_ipv4_user.c b/samples/bpf/xdp_router_ipv4_user.c
+index 7828784612ec..f32bbd5c32bf 100644
+--- a/samples/bpf/xdp_router_ipv4_user.c
++++ b/samples/bpf/xdp_router_ipv4_user.c
+@@ -25,6 +25,7 @@
+ #include <sys/resource.h>
+ #include <libgen.h>
+ #include <getopt.h>
++#include <pthread.h>
+ #include "xdp_sample_user.h"
+ #include "xdp_router_ipv4.skel.h"
+ 
+@@ -38,6 +39,9 @@ static int arp_table_map_fd;
+ static int exact_match_map_fd;
+ static int tx_port_map_fd;
+ 
++static bool routes_thread_exit;
++static int interval = 5;
++
+ static int mask = SAMPLE_RX_CNT | SAMPLE_REDIRECT_ERR_MAP_CNT |
+ 		  SAMPLE_DEVMAP_XMIT_CNT_MULTI | SAMPLE_EXCEPTION_CNT;
+ 
+@@ -445,7 +449,7 @@ static int get_arp_table(int rtm_family)
+ /* Function to keep track and update changes in route and arp table
+  * Give regular statistics of packets forwarded
+  */
+-static void monitor_route(void *ctx)
++static void *monitor_routes_thread(void *arg)
+ {
+ 	struct pollfd fds_route, fds_arp;
+ 	struct sockaddr_nl la, lr;
+@@ -455,7 +459,7 @@ static void monitor_route(void *ctx)
+ 	sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+ 	if (sock < 0) {
+ 		fprintf(stderr, "open netlink socket: %s\n", strerror(errno));
+-		return;
++		return NULL;
+ 	}
+ 
+ 	fcntl(sock, F_SETFL, O_NONBLOCK);
+@@ -465,7 +469,7 @@ static void monitor_route(void *ctx)
+ 	if (bind(sock, (struct sockaddr *)&lr, sizeof(lr)) < 0) {
+ 		fprintf(stderr, "bind netlink socket: %s\n", strerror(errno));
+ 		close(sock);
+-		return;
++		return NULL;
+ 	}
+ 
+ 	fds_route.fd = sock;
+@@ -475,7 +479,7 @@ static void monitor_route(void *ctx)
+ 	if (sock_arp < 0) {
+ 		fprintf(stderr, "open netlink socket: %s\n", strerror(errno));
+ 		close(sock);
+-		return;
++		return NULL;
+ 	}
+ 
+ 	fcntl(sock_arp, F_SETFL, O_NONBLOCK);
+@@ -490,35 +494,51 @@ static void monitor_route(void *ctx)
+ 	fds_arp.fd = sock_arp;
+ 	fds_arp.events = POLL_IN;
+ 
+-	memset(buf, 0, sizeof(buf));
+-	if (poll(&fds_route, 1, 3) == POLL_IN) {
+-		nll = recv_msg(lr, sock);
+-		if (nll < 0) {
+-			fprintf(stderr, "recv from netlink: %s\n",
+-				strerror(nll));
+-			goto cleanup;
+-		}
++	/* dump route and arp tables */
++	if (get_arp_table(AF_INET) < 0) {
++		fprintf(stderr, "Failed reading arp table\n");
++		goto cleanup;
++	}
+ 
+-		nh = (struct nlmsghdr *)buf;
+-		read_route(nh, nll);
++	if (get_route_table(AF_INET) < 0) {
++		fprintf(stderr, "Failed reading route table\n");
++		goto cleanup;
+ 	}
+ 
+-	memset(buf, 0, sizeof(buf));
+-	if (poll(&fds_arp, 1, 3) == POLL_IN) {
+-		nll = recv_msg(la, sock_arp);
+-		if (nll < 0) {
+-			fprintf(stderr, "recv from netlink: %s\n",
+-				strerror(nll));
+-			goto cleanup;
++	while (!routes_thread_exit) {
++		memset(buf, 0, sizeof(buf));
++		if (poll(&fds_route, 1, 3) == POLL_IN) {
++			nll = recv_msg(lr, sock);
++			if (nll < 0) {
++				fprintf(stderr, "recv from netlink: %s\n",
++					strerror(nll));
++				goto cleanup;
++			}
++
++			nh = (struct nlmsghdr *)buf;
++			read_route(nh, nll);
+ 		}
+ 
+-		nh = (struct nlmsghdr *)buf;
+-		read_arp(nh, nll);
++		memset(buf, 0, sizeof(buf));
++		if (poll(&fds_arp, 1, 3) == POLL_IN) {
++			nll = recv_msg(la, sock_arp);
++			if (nll < 0) {
++				fprintf(stderr, "recv from netlink: %s\n",
++					strerror(nll));
++				goto cleanup;
++			}
++
++			nh = (struct nlmsghdr *)buf;
++			read_arp(nh, nll);
++		}
++
++		sleep(interval);
+ 	}
+ 
+ cleanup:
+ 	close(sock_arp);
+ 	close(sock);
++	return NULL;
+ }
+ 
+ static void usage(char *argv[], const struct option *long_options,
+@@ -531,10 +551,11 @@ static void usage(char *argv[], const struct option *long_options,
+ int main(int argc, char **argv)
+ {
+ 	bool error = true, generic = false, force = false;
+-	int opt, interval = 5, ret = EXIT_FAIL_BPF;
++	int opt, ret = EXIT_FAIL_BPF;
+ 	struct xdp_router_ipv4 *skel;
+ 	int i, total_ifindex = argc - 1;
+ 	char **ifname_list = argv + 1;
++	pthread_t routes_thread;
+ 	int longindex = 0;
+ 
+ 	if (libbpf_set_strict_mode(LIBBPF_STRICT_ALL) < 0) {
+@@ -653,24 +674,25 @@ int main(int argc, char **argv)
+ 			goto end_destroy;
+ 	}
+ 
+-	if (get_route_table(AF_INET) < 0) {
+-		fprintf(stderr, "Failed reading routing table\n");
++	ret = pthread_create(&routes_thread, NULL, monitor_routes_thread, NULL);
++	if (ret) {
++		fprintf(stderr, "Failed creating routes_thread: %s\n", strerror(-ret));
++		ret = EXIT_FAIL;
+ 		goto end_destroy;
+ 	}
+ 
+-	if (get_arp_table(AF_INET) < 0) {
+-		fprintf(stderr, "Failed reading arptable\n");
+-		goto end_destroy;
+-	}
++	ret = sample_run(interval, NULL, NULL);
++	routes_thread_exit = true;
+ 
+-	ret = sample_run(interval, monitor_route, NULL);
+ 	if (ret < 0) {
+ 		fprintf(stderr, "Failed during sample run: %s\n", strerror(-ret));
+ 		ret = EXIT_FAIL;
+-		goto end_destroy;
++		goto end_thread_wait;
+ 	}
+ 	ret = EXIT_OK;
+ 
++end_thread_wait:
++	pthread_join(routes_thread, NULL);
+ end_destroy:
+ 	xdp_router_ipv4__destroy(skel);
+ end:
+-- 
+2.35.1
 
-For every previous successful redirect xdp_xmit will be set with
-corresponding bits that came out of ixgbe_run_xdp_zc(), so if we got to
-the point of full XSK Rx queue, xdp_do_flush_map() will be called
-eventually. Before doing so, idea is to give the current buffer back to
-the XSK buffer pool and increment the "next_to_clean" which acts as the
-head pointer on HW Rx ring. IOW, consume the current buffer/descriptor and
-yield the CPU to the user space.
-
-> 
-> > +			} else if (xdp_res & (IXGBE_XDP_TX | IXGBE_XDP_REDIR)) {
-> >   				xdp_xmit |= xdp_res;
-> > -			else
-> > +			} else {
-> >   				xsk_buff_free(bi->xdp);
-> > +			}
-> >   			bi->xdp = NULL;
-> >   			total_rx_packets++;
-> 
