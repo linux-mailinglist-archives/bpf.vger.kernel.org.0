@@ -2,259 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4EA4F442D
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 00:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D46944F4610
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 01:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239713AbiDEPZy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 11:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
+        id S1389791AbiDEP04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 11:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387056AbiDEO33 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 10:29:29 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599521207D8;
-        Tue,  5 Apr 2022 06:11:32 -0700 (PDT)
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4KXnyW2G6Cz685VR;
-        Tue,  5 Apr 2022 21:08:35 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 5 Apr 2022 15:11:28 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <corbet@lwn.net>, <viro@zeniv.linux.org.uk>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>, <kpsingh@kernel.org>,
-        <tixxdz@gmail.com>, <shuah@kernel.org>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
-        <zohar@linux.ibm.com>
-CC:     <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [POC][USER SPACE][PATCH] Introduce LSM to protect pinned objects
-Date:   Tue, 5 Apr 2022 15:11:16 +0200
-Message-ID: <20220405131116.3810418-1-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <CACYkzJ7ZVbL2MG7ugmDEfogSPAHkYYMCHxRO_eBCJJmBZyn6Rw@mail.gmail.com>
-References: <CACYkzJ7ZVbL2MG7ugmDEfogSPAHkYYMCHxRO_eBCJJmBZyn6Rw@mail.gmail.com>
+        with ESMTP id S237680AbiDEPCo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 11:02:44 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484572C13D
+        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 06:24:02 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id o10so4981780ple.7
+        for <bpf@vger.kernel.org>; Tue, 05 Apr 2022 06:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Cd9/Y2D17XcuWIgRiYXbB/cqX8pjST4tGSGws0ad5LM=;
+        b=LDIMi6Ds2x7txo4u1N8chKfN7utgymzox1FU7PJIKbDHx39WSq8Ky42xfV5utfkCDO
+         nFKuZZPq6cE6OSVCK1go/gQbj9ivhFnPrY42Af5p8nXJzC556Gw3nth6qccJf2BIKNpJ
+         pnk66f9fBHH5Jpi0C2KF/6XMOFgOcHfIVhLJ8TEN0QTLl8nLPo0nbNxkvcPmkrNBajrd
+         GgBeYwfnOsCo6RkTmUIKJk6ZBRaPO0kkkkNNo6iwXbIYLAOjhtjYqPaj2JfAyR9dn5jc
+         O78RE+4GJPTPnbnGuGS8jMHtKpSi1NXLSy2TDHlGwLihch2e57fBvK/N/A/eIwG5Gp7u
+         GAmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Cd9/Y2D17XcuWIgRiYXbB/cqX8pjST4tGSGws0ad5LM=;
+        b=TrJlbpWVTHkmqAjaGEsyxJmd8RhKUx/nQ8ftLWNXWsf9S0vx0soShjpCec2ajZFtTM
+         gvZyUeZGl+x8gIzCCVqiIGwTeSIGsTYpFkMWaNk4Hd4fIZI7z9pEK5U9Rz9VfWFvQaU+
+         zC5x5gZQGy/lewAKNUQ6qFEdvTBIb9oHkq65NZFXPK4zZLlHUXIJ4ukLhZNOLzdyTkfH
+         vreZ+VmFTx6RfVbszc1K/KgVcjYT8CXR2o+1SHNFuEF9cOCCF9wrPJAApJ9G2o5MOXWI
+         BlB+jzcr45fMuFbscZtpxJiQcZBHA9uhesWnDAk0TXfx0xqBbNIpE9xC5CkcIZL1zXfg
+         BufA==
+X-Gm-Message-State: AOAM533/o0oniqwrU8bvI+4Clao7/gaoT+30yKnONp3zLVV1JKK/eLjM
+        ypMZ4+jQH67mePeiccqcYjk=
+X-Google-Smtp-Source: ABdhPJypem/xKXSlZHtHcp/JCJP44vXu2Wec021POnl6mDs3zhehUBZr7hJTlU98aymp8yKT5NI0CQ==
+X-Received: by 2002:a17:90b:1b4f:b0:1c6:d91b:9d0 with SMTP id nv15-20020a17090b1b4f00b001c6d91b09d0mr4174352pjb.72.1649165041492;
+        Tue, 05 Apr 2022 06:24:01 -0700 (PDT)
+Received: from [192.168.255.10] ([163.125.129.230])
+        by smtp.gmail.com with ESMTPSA id bw17-20020a056a00409100b004fadad3b93esm15503057pfb.142.2022.04.05.06.23.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Apr 2022 06:24:01 -0700 (PDT)
+Message-ID: <278c1ba7-13c8-c83f-9b74-489d10f4fb4b@gmail.com>
+Date:   Tue, 5 Apr 2022 21:23:58 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.63.22]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.1
+Subject: Re: [PATCH v3 bpf-next 0/7] Add libbpf support for USDTs
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net
+Cc:     kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+References: <20220404234202.331384-1-andrii@kernel.org>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+In-Reply-To: <20220404234202.331384-1-andrii@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce a new LSM to protect pinned objects in a bpf filesystem
-instance. This is useful for example to ensure that an LSM will always
-enforce its policy, even despite root tries to unload the corresponding
-eBPF program.
 
-Achieve the protection by denying inode unlink and unmount of the
-protected bpf filesystem instance. Since protected inodes hold a
-reference of the link of loaded programs (e.g. LSM hooks), denying
-operations on them will prevent the ref count of the links from reaching
-zero, ensuring that the programs remain always active.
 
-Enable the protection only for the instance created by the user space
-counterpart of the LSM, and don't interfere with other instances, so
-that their behavior remains unchanged.
+On 2022/4/5 7:41 AM, Andrii Nakryiko wrote:
+> Add libbpf support for USDT (User Statically-Defined Tracing) probes.
+> USDTs is important part of tracing, and BPF, ecosystem, widely used in
+> mission-critical production applications for observability, performance
+> analysis, and debugging.
+> 
+> And while USDTs themselves are pretty complicated abstraction built on top of
+> uprobes, for end-users USDT is as natural a primitive as uprobes themselves.
+> And thus it's important for libbpf to provide best possible user experience
+> when it comes to build tracing applications relying on USDTs.
+> 
+> USDTs historically presented a lot of challenges for libbpf's no
+> compilation-on-the-fly general approach to BPF tracing. BCC utilizes power of
+> on-the-fly source code generation and compilation using its embedded Clang
+> toolchain, which was impractical for more lightweight and thus more rigid
+> libbpf-based approach. But still, with enough diligence and BPF cookies it's
+> possible to implement USDT support that feels as natural as tracing any
+> uprobe.
+> 
+> This patch set is the culmination of such effort to add libbpf USDT support
+> following the spirit and philosophy of BPF CO-RE (even though it's not
+> inherently relying on BPF CO-RE much, see patch #1 for some notes regarding
+> this). Each respective patch has enough details and explanations, so I won't
+> go into details here.
+> 
+> In the end, I think the overall usability of libbpf's USDT support *exceeds*
+> the status quo set by BCC due to the elimination of awkward runtime USDT
+> supporting code generation. It also exceeds BCC's capabilities due to the use
+> of BPF cookie. This eliminates the need to determine a USDT call site (and
+> thus specifics about how exactly to fetch arguments) based on its *absolute IP
+> address*, which is impossible with shared libraries if no PID is specified (as
+> we then just *can't* know absolute IP at which shared library is loaded,
+> because it might be different for each process). With BPF cookie this is not
+> a problem as we record "call site ID" directly in a BPF cookie value. This
+> makes it possible to do a system-wide tracing of a USDT defined in a shared
+> library. Think about tracing some USDT in libc across any process in the
+> system, both running at the time of attachment and all the new processes
+> started *afterwards*. This is a very powerful capability that allows more
+> efficient observability and tracing tooling.
+> 
+> Once this functionality lands, the plan is to extend libbpf-bootstrap ([0])
+> with an USDT example. It will also become possible to start converting BCC
+> tools that rely on USDTs to their libbpf-based counterparts ([1]).
+> 
+> It's worth noting that preliminary version of this code was currently used and
+> tested in production code running fleet-wide observability toolkit.
+> 
+> Libbpf functionality is broken down into 5 mostly logically independent parts,
+> for ease of reviewing:
+>   - patch #1 adds BPF-side implementation;
+>   - patch #2 adds user-space APIs and wires bpf_link for USDTs;
+>   - patch #3 adds the most mundate pieces: handling ELF, parsing USDT notes,
+>     dealing with memory segments, relative vs absolute addresses, etc;
+>   - patch #4 adds internal ID allocation and setting up/tearing down of
+>     BPF-side state (spec and IP-to-ID mapping);
+>   - patch #5 implements x86/x86-64-specific logic of parsing USDT argument
+>     specifications;
+>   - patch #6 adds testing of various basic aspects of handling of USDT;
+>   - patch #7 extends the set of tests with more combinations of semaphore,
+>     executable vs shared library, and PID filter options.
+> 
+>   [0] https://github.com/libbpf/libbpf-bootstrap
+>   [1] https://github.com/iovisor/bcc/tree/master/libbpf-tools
+> 
+> v2->v3:
+>   - fix typos, leave link to systemtap doc, acks, etc (Dave);
+>   - include sys/sdt.h to avoid extra system-wide package dependencies;
+> v1->v2:
+>   - huge high-level comment describing how all the moving parts fit together
+>     (Alan, Alexei);
+>   - switched from `__hidden __weak` to `static inline __noinline` for now, as
+>     there is a bug in BPF linker breaking final BPF object file due to invalid
+>     .BTF.ext data; I want to fix it separately at which point I'll switch back
+>     to __hidden __weak again. The fix isn't trivial, so I don't want to block
+>     on that. Same for __weak variable lookup bug that Henqi reported.
+>   - various fixes and improvements, addressing other feedback (Alan, Hengqi);
+> 
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Dave Marchevsky <davemarchevsky@fb.com>
+> Cc: Hengqi Chen <hengqi.chen@gmail.com>
+> 
+> Andrii Nakryiko (7):
+>   libbpf: add BPF-side of USDT support
+>   libbpf: wire up USDT API and bpf_link integration
+>   libbpf: add USDT notes parsing and resolution logic
+>   libbpf: wire up spec management and other arch-independent USDT logic
+>   libbpf: add x86-specific USDT arg spec parsing logic
+>   selftests/bpf: add basic USDT selftests
+>   selftests/bpf: add urandom_read shared lib and USDTs
+> 
+>  tools/lib/bpf/Build                           |    3 +-
+>  tools/lib/bpf/Makefile                        |    2 +-
+>  tools/lib/bpf/libbpf.c                        |  115 +-
+>  tools/lib/bpf/libbpf.h                        |   31 +
+>  tools/lib/bpf/libbpf.map                      |    1 +
+>  tools/lib/bpf/libbpf_internal.h               |   19 +
+>  tools/lib/bpf/usdt.bpf.h                      |  256 ++++
+>  tools/lib/bpf/usdt.c                          | 1280 +++++++++++++++++
+>  tools/testing/selftests/bpf/Makefile          |   25 +-
+>  tools/testing/selftests/bpf/prog_tests/usdt.c |  421 ++++++
+>  .../selftests/bpf/progs/test_urandom_usdt.c   |   70 +
+>  tools/testing/selftests/bpf/progs/test_usdt.c |   96 ++
+>  .../selftests/bpf/progs/test_usdt_multispec.c |   32 +
+>  tools/testing/selftests/bpf/sdt-config.h      |    6 +
+>  tools/testing/selftests/bpf/sdt.h             |  513 +++++++
+>  tools/testing/selftests/bpf/urandom_read.c    |   63 +-
+>  .../testing/selftests/bpf/urandom_read_aux.c  |    9 +
+>  .../testing/selftests/bpf/urandom_read_lib1.c |   13 +
+>  .../testing/selftests/bpf/urandom_read_lib2.c |    8 +
+>  19 files changed, 2938 insertions(+), 25 deletions(-)
+>  create mode 100644 tools/lib/bpf/usdt.bpf.h
+>  create mode 100644 tools/lib/bpf/usdt.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/usdt.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_urandom_usdt.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_usdt.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_usdt_multispec.c
+>  create mode 100644 tools/testing/selftests/bpf/sdt-config.h
+>  create mode 100644 tools/testing/selftests/bpf/sdt.h
+>  create mode 100644 tools/testing/selftests/bpf/urandom_read_aux.c
+>  create mode 100644 tools/testing/selftests/bpf/urandom_read_lib1.c
+>  create mode 100644 tools/testing/selftests/bpf/urandom_read_lib2.c
+> 
 
-Suggested-by: Djalal Harouni <tixxdz@gmail.com>
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- .gitignore       |  4 +++
- Makefile         | 18 ++++++++++++++
- bpffs_lsm_kern.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++
- bpffs_lsm_user.c | 60 +++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 145 insertions(+)
- create mode 100644 .gitignore
- create mode 100644 Makefile
- create mode 100644 bpffs_lsm_kern.c
- create mode 100644 bpffs_lsm_user.c
+For the first 5 patches:
 
-diff --git a/.gitignore b/.gitignore
-new file mode 100644
-index 000000000000..7fa02964f1dc
---- /dev/null
-+++ b/.gitignore
-@@ -0,0 +1,4 @@
-+*.o
-+vmlinux.h
-+bpffs_lsm_kern.skel.h
-+bpffs_lsm_user
-diff --git a/Makefile b/Makefile
-new file mode 100644
-index 000000000000..c3d805759db3
---- /dev/null
-+++ b/Makefile
-@@ -0,0 +1,18 @@
-+# SPDX-License-Identifier: GPL-2.0
-+all: bpffs_lsm_user
-+
-+clean:
-+	rm -rf bpffs_lsm.skel.h vmlinux.h bpffs_lsm_kern.o bpffs_lsm_user
-+
-+vmlinux.h:
-+	/usr/sbin/bpftool btf dump file /sys/kernel/btf/vmlinux format c > \
-+			  vmlinux.h
-+
-+bpffs_lsm_kern.skel.h: bpffs_lsm_kern.o
-+	bpftool gen skeleton $< > $@
-+
-+bpffs_lsm_kern.o: bpffs_lsm_kern.c vmlinux.h
-+	clang -Wall -Werror -g -O2 -target bpf -c $< -o $@
-+
-+bpffs_lsm_user: bpffs_lsm_user.c bpffs_lsm_kern.skel.h bpffs_lsm_kern.o
-+	cc -Wall -Werror -g -o $@ $< -lbpf
-diff --git a/bpffs_lsm_kern.c b/bpffs_lsm_kern.c
-new file mode 100644
-index 000000000000..b3ccb2a75c95
---- /dev/null
-+++ b/bpffs_lsm_kern.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Authors:
-+ * Roberto Sassu <roberto.sassu@huawei.com>
-+ *
-+ * Implement an LSM to protect a bpf filesystem instance.
-+ */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+uint32_t monitored_pid = 0;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, sizeof(uint8_t));
-+} inode_storage_map SEC(".maps");
-+
-+SEC("lsm/sb_set_mnt_opts")
-+int BPF_PROG(sb_set_mnt_opts, struct super_block *sb, void *mnt_opts,
-+	     unsigned long kern_flags, unsigned long *set_kern_flags)
-+{
-+	u32 pid;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	if (!bpf_inode_storage_get(&inode_storage_map, sb->s_root->d_inode, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE))
-+		return -EPERM;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/inode_unlink")
-+int BPF_PROG(inode_unlink, struct inode *dir, struct dentry *dentry)
-+{
-+	if (bpf_inode_storage_get(&inode_storage_map,
-+				  dir->i_sb->s_root->d_inode, 0, 0))
-+		return -EPERM;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/sb_umount")
-+int BPF_PROG(sb_umount, struct vfsmount *mnt, int flags)
-+{
-+	if (bpf_inode_storage_get(&inode_storage_map,
-+				  mnt->mnt_sb->s_root->d_inode, 0, 0))
-+		return -EPERM;
-+
-+	return 0;
-+}
-diff --git a/bpffs_lsm_user.c b/bpffs_lsm_user.c
-new file mode 100644
-index 000000000000..e20180cc5db9
---- /dev/null
-+++ b/bpffs_lsm_user.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Roberto Sassu <roberto.sassu@huawei.com>
-+ *
-+ * Implement the user space side of the LSM for bpffs.
-+ */
-+
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <limits.h>
-+#include <sys/mount.h>
-+#include <sys/stat.h>
-+
-+#include "bpffs_lsm_kern.skel.h"
-+
-+#define MOUNT_FLAGS (MS_NOSUID | MS_NODEV | MS_NOEXEC | MS_RELATIME)
-+
-+int main(int argc, char *argv[])
-+{
-+	char mntpoint[] = "/tmp/bpf_private_mountXXXXXX";
-+	char path[PATH_MAX];
-+	struct bpffs_lsm_kern *skel;
-+	int ret, i;
-+
-+	skel = bpffs_lsm_kern__open_and_load();
-+	if (!skel)
-+		return -EINVAL;
-+
-+	ret = bpffs_lsm_kern__attach(skel);
-+	if (ret < 0)
-+		goto out_destroy;
-+
-+	mkdtemp(mntpoint);
-+
-+	skel->bss->monitored_pid = getpid();
-+	ret = mount(mntpoint, mntpoint, "bpf", MOUNT_FLAGS, NULL);
-+	skel->bss->monitored_pid = 0;
-+
-+	if (ret < 0)
-+		goto out_destroy;
-+
-+	for (i = 0; i < skel->skeleton->prog_cnt; i++) {
-+		snprintf(path, sizeof(path), "%s/%s", mntpoint,
-+			 skel->skeleton->progs[i].name);
-+		ret = bpf_link__pin(*skel->skeleton->progs[i].link, path);
-+		if (ret < 0)
-+			goto out_destroy;
-+	}
-+
-+	ret = 0;
-+out_destroy:
-+	bpffs_lsm_kern__destroy(skel);
-+	return ret;
-+}
--- 
-2.32.0
+Reviewed-by: Hengqi Chen <hengqi.chen@gmail.com>
+Tested-by: Hengqi Chen <hengqi.chen@gmail.com>
 
+Hengqi
