@@ -2,121 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B4F4F4D8D
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A02D4F4D92
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445323AbiDEXpt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 19:45:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
+        id S1446592AbiDEXqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 19:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572942AbiDERWU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 13:22:20 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A38914012
-        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 10:20:21 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id ch16-20020a17090af41000b001ca867ef52bso2550602pjb.0
-        for <bpf@vger.kernel.org>; Tue, 05 Apr 2022 10:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=093XqrLc3aDE9RURN7mfyfamRYRk+ypyCNdIjaQ8Zng=;
-        b=c+bZkybxtTPC0a8NMb2K9SXaYTqs4UQKlFXD29C1WsTGFVfKM7qbZzOrU2IcwkRTd3
-         gxqYgEJwEWILBMgivNKWMArY6qykcEDSitZGBbxsjMUiyXszzJE1nm9+gGLFGUrrWrfc
-         jXiUvZEwTv8qponb3mhIrToSzQhdSn3ONrciT4p5mdVe3kBzv5HcC8BZSB3lSohTyl+T
-         HjauPxmN3O6Qjw4n37bSoPtTELJZ6qfNEVOAGbZl6XYRhlKTieQhtV3Zz4z9UkonLnaT
-         AASGUIWnK+olzU/lHcjheBR3kaXfQJAiYuyOgxZap/h4CdWH840Sf41t6cGf36oEjc5q
-         OXIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=093XqrLc3aDE9RURN7mfyfamRYRk+ypyCNdIjaQ8Zng=;
-        b=5A0RYw27+A9jUsU1UYsEFwhv+KvXY2nlCoPa/jyxaV2nErziKXyA3sLjTrRS1sa3UU
-         QnrOeKMYObTUvR7VcQtPy4ak47DiTOWQheItBl/mKpdTpiK9XbTXNWP2nWDFz89HtCKk
-         9ESZl9MsmjS6Nh40djg/YWiaTfQTe2EnI2ZMxGrXtCqLt2pQcKHmbjMK9T/FtoCT/vX8
-         KljFfaQ4aweFWv+NP2BjnzGfqEnSjfBKQasVfmmViYG/0I7nMZUsvFJrsGpMmwVW57VL
-         vIY7LPFQQgzgh5Pv4d4HwpMRGRWmPfgOMwE6RC8g0ewmqI+YAufqAo+e5cg7nFUZEtGe
-         NWIg==
-X-Gm-Message-State: AOAM531QG0zldR85R3G2DbY9zYAwJ5ZCOlu/6lUugh+leerzRNBn3mxe
-        y5HXYYjWkpOfZku04Jg+eiBqwUTpmVE=
-X-Google-Smtp-Source: ABdhPJy00tr50fQax3vyuLC06ncb1GE7InDltZ3oOHW1creGIAP3s173agP9ABo3ln7kKdR64Wyk7w==
-X-Received: by 2002:a17:902:d481:b0:154:7f0b:62fb with SMTP id c1-20020a170902d48100b001547f0b62fbmr4579887plg.41.1649179221035;
-        Tue, 05 Apr 2022 10:20:21 -0700 (PDT)
-Received: from MacBook-Pro.local ([2620:10d:c090:500::1:67aa])
-        by smtp.gmail.com with ESMTPSA id pg14-20020a17090b1e0e00b001c75634df70sm2966194pjb.31.2022.04.05.10.20.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Apr 2022 10:20:20 -0700 (PDT)
-Date:   Tue, 5 Apr 2022 10:20:17 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Dmitry Dolgov <9erthalion6@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1572996AbiDERna (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 13:43:30 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D588CB91AE;
+        Tue,  5 Apr 2022 10:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649180491; x=1680716491;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=d1uggptIEOdH6XP927KXNMIpnt0NmVSeFNANlHp6nPQ=;
+  b=AAU/kxUvSzhEcigPIu96Y5JOYZY+9iUEM5gmtvyLnr/EgIUHoRqgIMVL
+   BavdfY7ZpHp8edoItMSoePA6XqIbSSedbYkl2DHp6SXFh07fTp+1BeYDl
+   cci9CTb7dnCJ4f3Cy8loJAhXcM3UFYGv01juWngneu93ybSolfD0/ISVH
+   bjs0jCMFNY8C90VmQx6wD4CDeCk+FBgx3VRcQn4X2/c9+l5Ip+LBB8bAu
+   FXwUc33/EIhiko6V2mvYdLP4GFb4v6LHTncVR4y+Fe7El3uHeTz9fJMwS
+   WQDv3JTHyo+MWeNsdoW7Zw6XW08FgyfQh7hMLiSYsIpM0YJbQxX/VapKM
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="259651073"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
+   d="scan'208";a="259651073"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 10:41:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
+   d="scan'208";a="523555238"
+Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 05 Apr 2022 10:41:25 -0700
+Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nbnBE-0003dj-Br;
+        Tue, 05 Apr 2022 17:41:24 +0000
+Date:   Wed, 6 Apr 2022 01:40:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     kbuild-all@lists.01.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>
-Subject: Re: [RFC PATCH bpf-next 0/2] Priorities for bpf progs attached to
- the same tracepoint
-Message-ID: <20220405172017.o3qi7v7edth2s7tr@MacBook-Pro.local>
-References: <20220403160718.13730-1-9erthalion6@gmail.com>
- <CAEf4BzZ7=AfL5fAU8aYT20RWY9tG5qU+Fgv-JC0GTLpGOGgAEg@mail.gmail.com>
- <20220404152953.6uu3sgqepo724yiu@ddolgov.remote.csb>
+        Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org,
+        kernel-team@fb.com, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf 4/4] arm64: rethook: Replace kretprobe trampoline
+ with rethook
+Message-ID: <202204060119.lme7uoGl-lkp@intel.com>
+References: <164915126392.982637.10302202550404803304.stgit@devnote2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220404152953.6uu3sgqepo724yiu@ddolgov.remote.csb>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <164915126392.982637.10302202550404803304.stgit@devnote2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 04, 2022 at 05:29:53PM +0200, Dmitry Dolgov wrote:
-> > On Sun, Apr 03, 2022 at 05:17:46PM -0700, Andrii Nakryiko wrote:
-> > On Sun, Apr 3, 2022 at 9:08 AM Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
-> > >
-> > > With growing number of various products and tools using BPF it could
-> > > easily happen that multiple BPF programs from different processes will
-> > > be attached to the same tracepoint. It seems that in such case there is
-> > > no way to specify a custom order in which those programs may want to be
-> > > executed -- it will depend on the order in which they were attached.
-> > >
-> > > Consider an example when the BPF program A is attached to tracepoint T,
-> > > the BFP program B needs to be attached to the T as well and start
-> > > before/end after the A (e.g. to monitor the whole process of A +
-> > > tracepoint in some way).  If the program A could not be changed and is
-> > > attached before B, the order specified above will not be possible.
-> > >
-> > > One way to address this in a limited, but less invasive way is to
-> > > utilize link options structure to pass the desired priority to
-> > > perf_event_set_bpf_prog, and add new bpf_prog into the bpf_prog_array
-> > > based on its value. This will allow to specify the priority value via
-> > > bpf_tracepoint_opts when attaching a new prog.
-> > >
-> > > Does this make sense? There maybe a better way to achieve this, I would
-> > > be glad to hear any feedback on it.
-> >
-> > Not really. What's the real use case where you need to define relative
-> > order of BPF programs on the same kprobe or tracepoint. Each of them
-> > is supposed to be independent of each other and not depend on any
-> > order of their execution. Further, given such tracing programs are
-> > read-only relative to the kernel (they can't change kernel behavior),
-> > the order is supposed to be irrelevant.
-> 
-> The immediate trigger for this idea was inconvenience we faced, trying
-> to instrument one bpf prog with another. I guess the best practice in
-> such case would be to attach to fentry/fexit of the target bpf prog, 
+Hi Masami,
 
-yes. that's a recommended way.
+I love your patch! Perhaps something to improve:
 
-> but
-> from what I understand in this case there is no way to get information
-> about tracepoint arguments the target prog has received. 
+[auto build test WARNING on bpf/master]
 
-Not quite. fentry/fexit have access to the arguments of instrumented bpf prog.
-See fexit_bpf2bpf.c
-In case of tracepoint the fentry prog will see the same 'ctx' pointer as
-bpf prog attached to a tp.
+url:    https://github.com/intel-lab-lkp/linux/commits/Masami-Hiramatsu/kprobes-rethook-ARM-arm64-Replace-kretprobe-trampoline-with-rethook/20220405-195153
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20220406/202204060119.lme7uoGl-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/74084aa7903f112b1c3df1f864d49b15d8aba270
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Masami-Hiramatsu/kprobes-rethook-ARM-arm64-Replace-kretprobe-trampoline-with-rethook/20220405-195153
+        git checkout 74084aa7903f112b1c3df1f864d49b15d8aba270
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash arch/arm64/kernel/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> arch/arm64/kernel/rethook.c:11:22: warning: no previous prototype for 'arch_rethook_trampoline_callback' [-Wmissing-prototypes]
+      11 | unsigned long __used arch_rethook_trampoline_callback(struct pt_regs *regs)
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/arch_rethook_trampoline_callback +11 arch/arm64/kernel/rethook.c
+
+     9	
+    10	/* This is called from arch_rethook_trampoline() */
+  > 11	unsigned long __used arch_rethook_trampoline_callback(struct pt_regs *regs)
+    12	{
+    13		return rethook_trampoline_handler(regs, regs->regs[29]);
+    14	}
+    15	NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
+    16	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
