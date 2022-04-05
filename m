@@ -2,144 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A01244F2309
-	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 08:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF80F4F23EB
+	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 09:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbiDEG0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 02:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        id S229761AbiDEHJo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 03:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbiDEG0P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 02:26:15 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517474A92A;
-        Mon,  4 Apr 2022 23:24:18 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id s72so10238751pgc.5;
-        Mon, 04 Apr 2022 23:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9GUsruz6B3w0Axl0o2TPf4NxgMV+fUjNMWSxDhpnwE8=;
-        b=kVw8v4DyjMgH+aNdq/nchSpZw6WHAqn438+UkLwGZ1juVV658kSv0NVvXIdehhlVQG
-         TIuLuwWL7NCSZxtTgEhMkbcLQf+Qdaul+Vv7jnHwlDbtgVkfOu6DuWutqKwc9RREKf9F
-         HYmvSKqMt5/ARgJ6DuOtP+iT97mxtyR9ixAbLx46iTGz8algErtdg62diwC0sN3ZWEZu
-         JhPBGzWzkam+AoklAMySwt8yWgfpBrjWAU1JRHgL1sQgjcT4g7DU8lnOqYRpFwRDvitn
-         x+lsfgUMwStNHqroYc+kTDTdbu7rA9e4VbShxBrdniBojgzF4gnu0MtBVkhXWZclU98j
-         fH6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9GUsruz6B3w0Axl0o2TPf4NxgMV+fUjNMWSxDhpnwE8=;
-        b=NVPhI9/YB+NEukBCP2fE0vhxgcnwE15oxJxuDYqdiPPRlEI+fXPwjJrU3+n6DjdV3g
-         KICLbPlnYLQMFDtazHI2uhOcD7m8Ef7xgKOAUdzpvVlMUKuOdFyd+wD3YAMbjew/M/LS
-         bGhcXucPuVQ5IkJMwok3sZZOe5vXS9yBhOnpM49jJWxkh/ZhVRNNtj9b9bNedQ41IxTB
-         enztIttirBZo73Ef+v4+nmt4lZiGiEsdfCeA5zfkOYMM3Ldo+ijzOfymYTmE12Vn8bsG
-         0aj8QquI3rwjMHIWvycNNZhZqPyaAmJY+8vr5LVjRIFG1CfE2JULer9mCFF+uXVMFZJo
-         03qg==
-X-Gm-Message-State: AOAM530nZg849OKhBki/GwRG/sKBFjoifD15owo+6SsTBO7YFOGqd+Jr
-        aHdfwDz2EDHx4HcfHwZ/NSo=
-X-Google-Smtp-Source: ABdhPJyf1l3yMGL89HwXg1EBY31BDpOMFFbLWzIYD4wq4gW9quqbQ68QcgKekzs+tI1kgrp01uCsrQ==
-X-Received: by 2002:a63:b555:0:b0:398:4ca1:4be0 with SMTP id u21-20020a63b555000000b003984ca14be0mr1605561pgo.294.1649139857737;
-        Mon, 04 Apr 2022 23:24:17 -0700 (PDT)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id c11-20020a056a000acb00b004f35ee129bbsm15627030pfl.140.2022.04.04.23.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Apr 2022 23:24:17 -0700 (PDT)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     andrii.nakryiko@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        shuah@kernel.org, songliubraving@fb.com, yhs@fb.com,
-        ytcoode@gmail.com
-Subject: [PATCH bpf-next v2] selftests/bpf: Fix issues in parse_num_list()
-Date:   Tue,  5 Apr 2022 14:24:03 +0800
-Message-Id: <20220405062403.22591-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <CAEf4BzZrc=wr4FLkWkOSEeprzybA8JTipsnr_U1kYA0785WkTw@mail.gmail.com>
-References: <CAEf4BzZrc=wr4FLkWkOSEeprzybA8JTipsnr_U1kYA0785WkTw@mail.gmail.com>
+        with ESMTP id S231375AbiDEHJm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 03:09:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3119313E90;
+        Tue,  5 Apr 2022 00:07:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mb8LxTS7N1wZA6PGLOAHodUliQGXD2Gj4fJDPq7BY7I=; b=3vvYnrIhGjhGuytIlX1R63z5oZ
+        8HJzAlppnlhvbkRKwmatxzikLyz9TZOkhfA28ZKt/Gs2YURxe9o5MXYoIDosXLJAqXJo5/flGm66/
+        Yrpoxjf8eDN6iOgG8ODT+Bb5xtjO+HyjtLbPufSo37UVL6pKRATfVvAbh7mNJqhkcC+u3ZzKbUGI3
+        1FFD4vq1YsRD6Sb5ZAGaUdHXph/RR1nOeS/OsAz4D9q3/O8QHTiE66dIA3GSGLXTafFssuFeuhOWW
+        E+yHFYMYCPzCeEKQVkwEueBksfkUyIUmnW6M9Fu2bW6aSBntwJyDaAF6gaYmwpDLu0SZ9G/rNgtU/
+        YvXyjZhA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nbdHq-00HOmb-7S; Tue, 05 Apr 2022 07:07:34 +0000
+Date:   Tue, 5 Apr 2022 00:07:34 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Song Liu <song@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>
+Subject: Re: [PATCH bpf 0/4] introduce HAVE_ARCH_HUGE_VMALLOC_FLAG for
+ bpf_prog_pack
+Message-ID: <YkvqtvNFtzDNkEhy@infradead.org>
+References: <20220330225642.1163897-1-song@kernel.org>
+ <YkU+ADIeWACbgFNA@infradead.org>
+ <F3447905-8D42-46C0-B324-988A0E4E52E7@fb.com>
+ <6AA91984-7DF3-4820-91DF-DD6CA251B638@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6AA91984-7DF3-4820-91DF-DD6CA251B638@fb.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are some issues in parse_num_list():
+On Fri, Apr 01, 2022 at 10:22:00PM +0000, Song Liu wrote:
+> >> Please fix the underlying issues instead of papering over them and
+> >> creating a huge maintainance burden for others.
+> 
+> After reading the code a little more, I wonder what would be best strategy. 
+> IIUC, most of the kernel is not ready for huge page backed vmalloc memory.
+> For example, all the module_alloc cannot work with huge pages at the moment.
+> And the error Paul Menzel reported in drm_fb_helper.c will probably hit 
+> powerpc with 5.17 kernel as-is? (trace attached below) 
+> 
+> Right now, we have VM_NO_HUGE_VMAP to let a user to opt out of huge pages. 
+> However, given there are so many users of vmalloc, vzalloc, etc., we 
+> probably do need a flag for the user to opt-in? 
+> 
+> Does this make sense? Any recommendations are really appreciated. 
 
-First, the end variable is assigned twice when parsing_end is true, it is
-unnecessary.
+I think there is multiple aspects here:
 
-Second, the function does not check that parsing_end is false after parsing
-argument. Thus, if the final part of the argument is something like '4-',
-parse_num_list() will discard it instead of returning -EINVAL.
-
-Clean up parse_num_list() and fix these issues.
-
-Before:
-
- $ ./test_progs -n 2,4-
- #2 atomic_bounds:OK
- Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-After:
-
- $ ./test_progs -n 2,4-
- Failed to parse test numbers.
-
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
-v1 -> v2: add more details to commit message
-
- tools/testing/selftests/bpf/testing_helpers.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index 795b6798ccee..82f0e2d99c23 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -20,16 +20,16 @@ int parse_num_list(const char *s, bool **num_set, int *num_set_len)
- 		if (errno)
- 			return -errno;
- 
--		if (parsing_end)
--			end = num;
--		else
-+		if (!parsing_end) {
- 			start = num;
-+			if (*next == '-') {
-+				s = next + 1;
-+				parsing_end = true;
-+				continue;
-+			}
-+		}
- 
--		if (!parsing_end && *next == '-') {
--			s = next + 1;
--			parsing_end = true;
--			continue;
--		} else if (*next == ',') {
-+		if (*next == ',') {
- 			parsing_end = false;
- 			s = next + 1;
- 			end = num;
-@@ -60,7 +60,7 @@ int parse_num_list(const char *s, bool **num_set, int *num_set_len)
- 			set[i] = true;
- 	}
- 
--	if (!set)
-+	if (!set || parsing_end)
- 		return -EINVAL;
- 
- 	*num_set = set;
--- 
-2.35.1
-
+ - if we think that the kernel is not ready for hugepage backed vmalloc
+   in general we need to disable it in powerpc for now.
+ - if we think even in the longer run only some users can cope with
+   hugepage backed vmalloc we need to turn it into an opt-in in
+   general and not just for x86
+ - there still to appear various unresolved underlying x86 specific
+   issues that need to be fixed either way
