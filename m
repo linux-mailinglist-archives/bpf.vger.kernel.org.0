@@ -2,99 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9BD4F4D9B
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDB64F4D8A
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1450425AbiDEXqm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 19:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        id S1379839AbiDEXpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 19:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1457747AbiDEQjs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 12:39:48 -0400
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA58CD763E;
-        Tue,  5 Apr 2022 09:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649176669; x=1680712669;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=f/NnDNluwrPPVK9bocWIIxffrtTtf9T2hNVaplJZzMM=;
-  b=ax8a1ymDMo31VgPiTOipaSzCJRu/RhD2r7APZ9ct9Q11olUra0PNrN8j
-   iOVGqCgTHoJrnhN//6A68ylkX7GdOAT0CYzs0GCvqVIOcO4xe4auW7Pc6
-   guwBIgmol8IfDFZPEzOcvkh2XSYhjiIkzO4jZqFEZvCROK41ckMml4BDj
-   ILTf/IyXXb2j3e1uz/77m6wZhZOtRWvq5imNZCjNcIs5lBigBnmZ3RY6s
-   Itn++EpMSsVrrAgnvfAJKOur9GImhWCGI6Ah8NFbJfsSP22J+CGC4mFYu
-   Lt7WFeJzMT71y8QNj0+cxTOdVwmv778mEmSBkjEtfX7rDcTpRIoHT1xwP
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="321492690"
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
-   d="scan'208";a="321492690"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 09:37:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
-   d="scan'208";a="722116675"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by orsmga005.jf.intel.com with ESMTP; 05 Apr 2022 09:37:27 -0700
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Shwetha Nagaraju <shwetha.nagaraju@intel.com>
-Subject: [PATCH net 3/3] ice: clear cmd_type_offset_bsz for TX rings
-Date:   Tue,  5 Apr 2022 09:38:03 -0700
-Message-Id: <20220405163803.63815-4-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220405163803.63815-1-anthony.l.nguyen@intel.com>
-References: <20220405163803.63815-1-anthony.l.nguyen@intel.com>
+        with ESMTP id S1457938AbiDERAj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 13:00:39 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1DEBC0B;
+        Tue,  5 Apr 2022 09:58:40 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id x16so7269171pfa.10;
+        Tue, 05 Apr 2022 09:58:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZAVOxKCn1rSRBeHkGZiJCt2gkjQ/XAx8tCfYXVtiNfE=;
+        b=BCmXM1EPbsht9Le2RBBahOAvfdS8skESRKaGokKX4zH1mid2b3gkPH+7yeaMUotIkX
+         NbGdGgZUpeiJ3gcEyuIX9YmL6aKRHI0Ro2BaiZ6XjqRP2m7CKlHSuUHTMLX2NSIG2dm5
+         HsJwWqgby3b4336TPjsBa5UN9sDUtcgVUND+DX6y7CTnOXnjiuvnfz0xyouIucQQx+EI
+         nXE6toJv/NMiDw3WCfZ71mrl7R7Bvu+SZDhsJUQUr2Zwo+xGSeq99721WuG2hKNGZbNe
+         wmZS8BuxXvE1kG9ToDalW5HUMb0OuCMOkXO0tPwEiirJb0Sipb6N3gnGMjvO1qWAdbK8
+         GaQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZAVOxKCn1rSRBeHkGZiJCt2gkjQ/XAx8tCfYXVtiNfE=;
+        b=TX6DxWo/6bmRXGnKmJ/u8tK9QHEfnhjVJO5PNn5VogMbLjcTyDntaKwu8/caN7Qnw7
+         fUNkb9SWRwiACWr+99Ranss199s8VtRfTYwxJNCuEbb/M/wMd85KL15Tz/x408goKWKM
+         6FRiasGcT+UIVAGsFhFSghTH/i9TEmbcDsfDuBUP2tPRz+Nd1J7oIAs67pIwlvzVKfR/
+         8UaoRe8ahSoKnOFWRe4aXj/7BeSLhra53pnEP82jbJMCHjnOoFuc7uCkmYYU6nQOXBWN
+         QMItESM4oaAfKMsHwoHIyHvDAKJW94zQqTT+R8fzeNxqWF240BG7710y7NF8Y2F2F0YG
+         yUHQ==
+X-Gm-Message-State: AOAM530fJhgg7s6Zl5HjUu7cKXtMISkAMDqJ0FaZZ/AdZ9LaoUfbc79T
+        0p4zBQ+lcxFrk+SMJ77Lb1dopikzFK9HWB4TskK52FJ2
+X-Google-Smtp-Source: ABdhPJyU0FDyxgvY/9mKwmMNiabrAzWrvWBv7HU1olSNnJVsJwHglQaOPHoTBWnW8V0XuaupQcIHHAgWxERG2jXlLBk=
+X-Received: by 2002:a05:6a00:1c9e:b0:4fa:d946:378b with SMTP id
+ y30-20020a056a001c9e00b004fad946378bmr4548697pfw.46.1649177919721; Tue, 05
+ Apr 2022 09:58:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220405075531.GB30877@worktop.programming.kicks-ass.net>
+In-Reply-To: <20220405075531.GB30877@worktop.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 5 Apr 2022 09:58:28 -0700
+Message-ID: <CAADnVQJ1_9sBqRngG_J+84whx9j7d7qOSzMaJvhc0evDBQfE3w@mail.gmail.com>
+Subject: Re: [PATCH] x86,bpf: Avoid IBT objtool warning
+To:     Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Tue, Apr 5, 2022 at 12:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+>
+> Clang can inline emit_indirect_jump() and then folds constants, which
+> results in:
+>
+>   | vmlinux.o: warning: objtool: emit_bpf_dispatcher()+0x6a4: relocation to !ENDBR: .text.__x86.indirect_thunk+0x40
+>   | vmlinux.o: warning: objtool: emit_bpf_dispatcher()+0x67d: relocation to !ENDBR: .text.__x86.indirect_thunk+0x40
+>   | vmlinux.o: warning: objtool: emit_bpf_tail_call_indirect()+0x386: relocation to !ENDBR: .text.__x86.indirect_thunk+0x20
+>   | vmlinux.o: warning: objtool: emit_bpf_tail_call_indirect()+0x35d: relocation to !ENDBR: .text.__x86.indirect_thunk+0x20
+>
+> Suppress the optimization such that it must emit a code reference to
+> the __x86_indirect_thunk_array[] base.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/net/bpf_jit_comp.c |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -412,6 +412,7 @@ static void emit_indirect_jump(u8 **ppro
+>                 EMIT_LFENCE();
+>                 EMIT2(0xFF, 0xE0 + reg);
+>         } else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
+> +               OPTIMIZER_HIDE_VAR(reg);
+>                 emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
+>         } else
+>  #endif
 
-Currently when XDP rings are created, each descriptor gets its DD bit
-set, which turns out to be the wrong approach as it can lead to a
-situation where more descriptors get cleaned than it was supposed to,
-e.g. when AF_XDP busy poll is run with a large batch size. In this
-situation, the driver would request for more buffers than it is able to
-handle.
-
-Fix this by not setting the DD bits in ice_xdp_alloc_setup_rings(). They
-should be initialized to zero instead.
-
-Fixes: 9610bd988df9 ("ice: optimize XDP_TX workloads")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Tested-by: Shwetha Nagaraju <shwetha.nagaraju@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index d2039a9306b8..d768925785ca 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -2562,7 +2562,7 @@ static int ice_xdp_alloc_setup_rings(struct ice_vsi *vsi)
- 		spin_lock_init(&xdp_ring->tx_lock);
- 		for (j = 0; j < xdp_ring->count; j++) {
- 			tx_desc = ICE_TX_DESC(xdp_ring, j);
--			tx_desc->cmd_type_offset_bsz = cpu_to_le64(ICE_TX_DESC_DTYPE_DESC_DONE);
-+			tx_desc->cmd_type_offset_bsz = 0;
- 		}
- 	}
- 
--- 
-2.31.1
-
+Looks good. Please cc bpf@vger and all bpf maintainers in the future.
+We can take it through the bpf tree if you prefer.
