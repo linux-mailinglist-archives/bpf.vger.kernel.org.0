@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28AFB4F4DA8
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DD74F4DA1
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1456893AbiDEXr0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 19:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
+        id S1453043AbiDEXrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 19:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1577654AbiDEXMi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 19:12:38 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9A1F9542
-        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 14:44:17 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2eadd524e72so4774947b3.6
-        for <bpf@vger.kernel.org>; Tue, 05 Apr 2022 14:44:17 -0700 (PDT)
+        with ESMTP id S1577684AbiDEXMk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 19:12:40 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72D8FCBC3
+        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 14:44:21 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2eb5d4fbd54so4829467b3.4
+        for <bpf@vger.kernel.org>; Tue, 05 Apr 2022 14:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Bhxt+cb8+2AIQe/0sz8QNRlr2WEW8h/QbpgIgMwxHs0=;
-        b=CAx1RxRj3zVuuVgU5zOA4NzyuP4FMnYKc4SwtS8lkWBHAm9JamvMY6j1ruYUbtafws
-         IjLxpiZyuI+emJmFa9W0ZsBFuwQDkLO1ZEpoRqkrHAfo+wkB4Y2ekdw9DXyl9GYE4RWX
-         9nJxE7WNp8TqIZWlAsfvz4xbKrpMbtFScQhW+weXV9h33l7OvZlmpnM3KmGaQIOwjwBq
-         4wIiOhdlKNiLzTgzLYiCytxdvqO6JrntlJJw4VbU7LAUXsqbeieVCqZ1N5Fc5tzgvgH2
-         muy1kFbN+F3qP+SUTSmzry1pS5d1XlFdkpm3/fVCKPgnmoE136qsaUdmdU8kYGc5fGOC
-         Xo4w==
+        bh=6NblM4DdSDjYKjDgLxEintAgK2IySwji0MbdGVjQAJ0=;
+        b=aH7t3UmNuSMetoAxnT29hxQBjyn++fuJ7enCmtqyWIsfGhMm81NfSU5Nsxn6Fj9iuA
+         TD7F3D5JrZ9gjaADebR/1Y6cS6NJneMk4y3euudNGGK4sQfKW+8r/CwY7VbgYJDbgqLA
+         Hn+nTh34dLgSC5vLlYbRCxxi0ln6Fw6i/Ba8vnN9S+9E8McgZTlcpLsmMVQz5ER5pNYW
+         rQHwOYEx9T/ZvNJfJHXwlzP0ZGC6PMD8wlYPt11XffIgFhYO89O4en2PzT/qLTkyzX9p
+         6Cfv7Spx/dXn5IbU95dJzaEYQHoj/3xpDXcOJt9GLg93KSMeaMqD5u+FaMYQeRL0Nzej
+         JKUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Bhxt+cb8+2AIQe/0sz8QNRlr2WEW8h/QbpgIgMwxHs0=;
-        b=zEysK374qi6n+7TLuAgXcK1BLPZ6yjCwgJRiqTVKY5sMc2q7KT3h0x2pM3BIo/lGBD
-         tnKSaaY4RLEwMxqGQHHCTRy72ZdZICz9Ze7TH+nk/I+xFDY8gZx6kdXpbvPtVTZJkS39
-         vT5KampARPDFnQMZQtHLqkAcNxtxu2fbSgEcgILizFQKNiKKwOADWSUEHOYZ2tvge7gA
-         sdkLOR02T6A0g6WmHj3pmycNYysyPegLJ7KfTByqKggiqTCILAGdsuG94DUyQcSYCyEe
-         xNOvX1XfkTeEbRi+nf0OGNKJgO1en+UXt2YWk9rGmgzvBtYsJsfdPs9AuhTqjfidmAoZ
-         HRlg==
-X-Gm-Message-State: AOAM53100LekABYO4/ivKGQ6YE18OzbQe4KZ6yAe/w51UCJKlPkolOR2
-        W0TriPB9C4bKF8+vmjQdSLpvbs8=
-X-Google-Smtp-Source: ABdhPJxPVkCwCJ8PRBZzAWK6HIv4euPgTVQAIWR95UbHBLCuxlQ5XKQ9vPeBZWVM3RTNLSZrippkY3I=
+        bh=6NblM4DdSDjYKjDgLxEintAgK2IySwji0MbdGVjQAJ0=;
+        b=tLxMPn7UaPUqYFysYBTf+Ilb0NCih+4+pzkmox0XrJxd7wKzblgcTcm9vgi44XuXe7
+         TjSQvVCf8cSDM7ENojvPdcGWOfnkBklC4GKkaUcwvwPwbnzqc5XsFLZ+UFEFNXL5dWbp
+         DPkzjQHmCNkC9IPlOXUCaLhqhhIHG2bA+MnxbgHzRzPzEIGpLou4Ug13A1bMTsYV0jih
+         usVul8ELLBUzOqfaQ4KxuBHrrMa4yqrn7Pi9JBMf+FdFPnNDl+kYH3CMJdL3Db3/CayV
+         0AogHLLKnilCDCfJLas0jyncfxXyypFrJ5x3W2lGa3CR2WrRsX7z9icAlEJ5MsgWBYy+
+         B/kQ==
+X-Gm-Message-State: AOAM533Z88vL+VMDFd/5XEWC9Y6WMle+ky4I50wLZIxy050wUBHgdph8
+        vzZJ67yg9WKB313hizAsGjuiIT4=
+X-Google-Smtp-Source: ABdhPJz3bIH4Nxzw2caA4SgqgSA/xVwcc5VpbPucgbV0dvxX8YFSZFFqtXVW0z6sHMfbuDac/SI7xW8=
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:73b5:ffab:2024:2901])
- (user=sdf job=sendgmr) by 2002:a25:c08f:0:b0:633:910d:498b with SMTP id
- c137-20020a25c08f000000b00633910d498bmr4065433ybf.531.1649195032550; Tue, 05
- Apr 2022 14:43:52 -0700 (PDT)
-Date:   Tue,  5 Apr 2022 14:43:38 -0700
+ (user=sdf job=sendgmr) by 2002:a81:b288:0:b0:2d6:39d5:31a1 with SMTP id
+ q130-20020a81b288000000b002d639d531a1mr4504807ywh.506.1649195035035; Tue, 05
+ Apr 2022 14:43:55 -0700 (PDT)
+Date:   Tue,  5 Apr 2022 14:43:39 -0700
 In-Reply-To: <20220405214342.1968262-1-sdf@google.com>
-Message-Id: <20220405214342.1968262-4-sdf@google.com>
+Message-Id: <20220405214342.1968262-5-sdf@google.com>
 Mime-Version: 1.0
 References: <20220405214342.1968262-1-sdf@google.com>
 X-Mailer: git-send-email 2.35.1.1094.g7c7d902a7c-goog
-Subject: [PATCH bpf-next v2 3/7] bpf: minimize number of allocated lsm slots
- per program
+Subject: [PATCH bpf-next v2 4/7] bpf: allow writing to a subset of sock fields
+ from lsm progtype
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -61,262 +61,105 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Previous patch adds 1:1 mapping between all 211 LSM hooks
-and bpf_cgroup program array. Instead of reserving a slot per
-possible hook, reserve 10 slots per cgroup for lsm programs.
-Those slots are dynamically allocated on demand and reclaimed.
-This still adds some bloat to the cgroup and brings us back to
-roughly pre-cgroup_bpf_attach_type times.
-
-It should be possible to eventually extend this idea to all hooks if
-the memory consumption is unacceptable and shrink overall effective
-programs array.
+For now, allow only the obvious ones, like sk_priority and sk_mark.
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/linux/bpf-cgroup-defs.h |  4 +-
- include/linux/bpf_lsm.h         |  6 ---
- kernel/bpf/bpf_lsm.c            |  9 ++--
- kernel/bpf/cgroup.c             | 95 ++++++++++++++++++++++++++++-----
- 4 files changed, 89 insertions(+), 25 deletions(-)
+ kernel/bpf/bpf_lsm.c  | 58 +++++++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c |  3 ++-
+ 2 files changed, 60 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
-index 6c661b4df9fa..d42516e86b3a 100644
---- a/include/linux/bpf-cgroup-defs.h
-+++ b/include/linux/bpf-cgroup-defs.h
-@@ -10,7 +10,9 @@
- 
- struct bpf_prog_array;
- 
--#define CGROUP_LSM_NUM 211 /* will be addressed in the next patch */
-+/* Maximum number of concurrently attachable per-cgroup LSM hooks.
-+ */
-+#define CGROUP_LSM_NUM 10
- 
- enum cgroup_bpf_attach_type {
- 	CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
-diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-index 7f0e59f5f9be..613de44aa429 100644
---- a/include/linux/bpf_lsm.h
-+++ b/include/linux/bpf_lsm.h
-@@ -43,7 +43,6 @@ extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
- void bpf_inode_storage_free(struct inode *inode);
- 
- int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
--int bpf_lsm_hook_idx(u32 btf_id);
- 
- #else /* !CONFIG_BPF_LSM */
- 
-@@ -74,11 +73,6 @@ static inline int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
- 	return -ENOENT;
- }
- 
--static inline int bpf_lsm_hook_idx(u32 btf_id)
--{
--	return -EINVAL;
--}
--
- #endif /* CONFIG_BPF_LSM */
- 
- #endif /* _LINUX_BPF_LSM_H */
 diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index eca258ba71d8..8b948ec9ab73 100644
+index 8b948ec9ab73..cc13da18d8b3 100644
 --- a/kernel/bpf/bpf_lsm.c
 +++ b/kernel/bpf/bpf_lsm.c
-@@ -57,10 +57,12 @@ static unsigned int __cgroup_bpf_run_lsm_socket(const void *ctx,
- 	if (unlikely(!sk))
- 		return 0;
+@@ -332,7 +332,65 @@ bool bpf_lsm_is_sleepable_hook(u32 btf_id)
+ const struct bpf_prog_ops lsm_prog_ops = {
+ };
  
-+	rcu_read_lock(); /* See bpf_lsm_attach_type_get(). */
- 	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
- 	if (likely(cgrp))
- 		ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[prog->aux->cgroup_atype],
- 					    ctx, bpf_prog_run, 0);
-+	rcu_read_unlock();
- 	return ret;
- }
- 
-@@ -77,7 +79,7 @@ static unsigned int __cgroup_bpf_run_lsm_current(const void *ctx,
- 	/*prog = container_of(insn, struct bpf_prog, insnsi);*/
- 	prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
- 
--	rcu_read_lock();
-+	rcu_read_lock(); /* See bpf_lsm_attach_type_get(). */
- 	cgrp = task_dfl_cgroup(current);
- 	if (likely(cgrp))
- 		ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[prog->aux->cgroup_atype],
-@@ -122,11 +124,6 @@ int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
- 	return 0;
- }
- 
--int bpf_lsm_hook_idx(u32 btf_id)
--{
--	return btf_id_set_index(&bpf_lsm_hooks, btf_id);
--}
--
- int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
- 			const struct bpf_prog *prog)
- {
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 8c77703954f7..bb76a2a7b587 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -26,15 +26,67 @@ DEFINE_STATIC_KEY_ARRAY_FALSE(cgroup_bpf_enabled_key, MAX_CGROUP_BPF_ATTACH_TYPE
- EXPORT_SYMBOL(cgroup_bpf_enabled_key);
- 
- #ifdef CONFIG_BPF_LSM
-+/* Readers are protected by rcu+synchronize_rcu.
-+ * Writers are protected by cgroup_mutex.
-+ */
-+refcount_t cgroup_lsm_atype_usecnt[CGROUP_LSM_NUM];
-+int cgroup_lsm_atype_btf_id[CGROUP_LSM_NUM];
++static int lsm_btf_struct_access(struct bpf_verifier_log *log,
++					const struct btf *btf,
++					const struct btf_type *t, int off,
++					int size, enum bpf_access_type atype,
++					u32 *next_btf_id,
++					enum bpf_type_flag *flag)
++{
++	const struct btf_type *sock_type;
++	struct btf *btf_vmlinux;
++	s32 type_id;
++	size_t end;
 +
- static enum cgroup_bpf_attach_type bpf_lsm_attach_type_get(u32 attach_btf_id)
- {
--	return CGROUP_LSM_START + bpf_lsm_hook_idx(attach_btf_id);
-+	int i;
++	if (atype == BPF_READ)
++		return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
++					 flag);
 +
-+	WARN_ON_ONCE(!mutex_is_locked(&cgroup_mutex));
-+
-+	for (i = 0; i < ARRAY_SIZE(cgroup_lsm_atype_btf_id); i++) {
-+		if (cgroup_lsm_atype_btf_id[i] != attach_btf_id)
-+			continue;
-+
-+		refcount_inc(&cgroup_lsm_atype_usecnt[i]);
-+		return CGROUP_LSM_START + i;
++	btf_vmlinux = bpf_get_btf_vmlinux();
++	if (!btf_vmlinux) {
++		bpf_log(log, "no vmlinux btf\n");
++		return -EOPNOTSUPP;
 +	}
 +
-+	for (i = 0; i < ARRAY_SIZE(cgroup_lsm_atype_usecnt); i++) {
-+		if (refcount_read(&cgroup_lsm_atype_usecnt[i]) != 0)
-+			continue;
-+
-+		cgroup_lsm_atype_btf_id[i] = attach_btf_id;
-+		refcount_set(&cgroup_lsm_atype_usecnt[i], 1);
-+		return CGROUP_LSM_START + i;
++	type_id = btf_find_by_name_kind(btf_vmlinux, "sock", BTF_KIND_STRUCT);
++	if (type_id < 0) {
++		bpf_log(log, "'struct sock' not found in vmlinux btf\n");
++		return -EINVAL;
 +	}
 +
-+	return -E2BIG;
++	sock_type = btf_type_by_id(btf_vmlinux, type_id);
++
++	if (t != sock_type) {
++		bpf_log(log, "only 'struct sock' writes are supported\n");
++		return -EACCES;
++	}
++
++	switch (off) {
++	case bpf_ctx_range(struct sock, sk_priority):
++		end = offsetofend(struct sock, sk_priority);
++		break;
++	case bpf_ctx_range(struct sock, sk_mark):
++		end = offsetofend(struct sock, sk_mark);
++		break;
++	default:
++		bpf_log(log, "no write support to 'struct sock' at off %d\n", off);
++		return -EACCES;
++	}
++
++	if (off + size > end) {
++		bpf_log(log,
++			"write access at off %d with size %d beyond the member of 'struct sock' ended at %zu\n",
++			off, size, end);
++		return -EACCES;
++	}
++
++	return NOT_INIT;
 +}
 +
-+static void bpf_lsm_attach_type_put(u32 attach_btf_id)
-+{
-+	int i;
-+
-+	WARN_ON_ONCE(!mutex_is_locked(&cgroup_mutex));
-+
-+	for (i = 0; i < ARRAY_SIZE(cgroup_lsm_atype_btf_id); i++) {
-+		if (cgroup_lsm_atype_btf_id[i] != attach_btf_id)
-+			continue;
-+
-+		if (refcount_dec_and_test(&cgroup_lsm_atype_usecnt[i])) {
-+			/* Wait for any existing users to finish.
-+			 */
-+			synchronize_rcu();
-+		}
-+		return;
-+	}
-+
-+	WARN_ON_ONCE(1);
- }
- #else
- static enum cgroup_bpf_attach_type bpf_lsm_attach_type_get(u32 attach_btf_id)
- {
- 	return -EOPNOTSUPP;
- }
-+
-+static void bpf_lsm_attach_type_put(u32 attach_btf_id)
-+{
-+}
- #endif
- 
- void cgroup_bpf_offline(struct cgroup *cgrp)
-@@ -130,6 +182,7 @@ static void bpf_cgroup_lsm_shim_release(struct bpf_prog *prog,
- 		return;
- 
- 	bpf_trampoline_unlink_cgroup_shim(prog);
-+	bpf_lsm_attach_type_put(prog->aux->attach_btf_id);
- }
- 
- /**
-@@ -522,27 +575,37 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
- 
- 	progs = &cgrp->bpf.progs[atype];
- 
--	if (!hierarchy_allows_attach(cgrp, atype))
--		return -EPERM;
-+	if (!hierarchy_allows_attach(cgrp, atype)) {
-+		err = -EPERM;
-+		goto cleanup_attach_type;
-+	}
- 
--	if (!list_empty(progs) && cgrp->bpf.flags[atype] != saved_flags)
-+	if (!list_empty(progs) && cgrp->bpf.flags[atype] != saved_flags) {
- 		/* Disallow attaching non-overridable on top
- 		 * of existing overridable in this cgroup.
- 		 * Disallow attaching multi-prog if overridable or none
- 		 */
--		return -EPERM;
-+		err = -EPERM;
-+		goto cleanup_attach_type;
-+	}
- 
--	if (prog_list_length(progs) >= BPF_CGROUP_MAX_PROGS)
--		return -E2BIG;
-+	if (prog_list_length(progs) >= BPF_CGROUP_MAX_PROGS) {
-+		err = -E2BIG;
-+		goto cleanup_attach_type;
-+	}
- 
- 	pl = find_attach_entry(progs, prog, link, replace_prog,
- 			       flags & BPF_F_ALLOW_MULTI);
--	if (IS_ERR(pl))
--		return PTR_ERR(pl);
-+	if (IS_ERR(pl)) {
-+		err = PTR_ERR(pl);
-+		goto cleanup_attach_type;
-+	}
- 
- 	if (bpf_cgroup_storages_alloc(storage, new_storage, type,
--				      prog ? : link->link.prog, cgrp))
--		return -ENOMEM;
-+				      prog ? : link->link.prog, cgrp)) {
-+		err = -ENOMEM;
-+		goto cleanup_attach_type;
-+	}
- 
- 	if (pl) {
- 		old_prog = pl->prog;
-@@ -550,7 +613,8 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
- 		pl = kmalloc(sizeof(*pl), GFP_KERNEL);
- 		if (!pl) {
- 			bpf_cgroup_storages_free(new_storage);
--			return -ENOMEM;
-+			err = -ENOMEM;
-+			goto cleanup_attach_type;
- 		}
- 		list_add_tail(&pl->node, progs);
- 	}
-@@ -595,6 +659,13 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
- 		list_del(&pl->node);
- 		kfree(pl);
- 	}
-+
-+cleanup_attach_type:
-+	if (type == BPF_LSM_CGROUP) {
-+		struct bpf_prog *p = prog ? : link->link.prog;
-+
-+		bpf_lsm_attach_type_put(p->aux->attach_btf_id);
-+	}
- 	return err;
- }
- 
+ const struct bpf_verifier_ops lsm_verifier_ops = {
+ 	.get_func_proto = bpf_lsm_func_proto,
+ 	.is_valid_access = btf_ctx_access,
++	.btf_struct_access = lsm_btf_struct_access,
+ };
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1d2f2e7babb2..d42ee0033755 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12843,7 +12843,8 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 				insn->code = BPF_LDX | BPF_PROBE_MEM |
+ 					BPF_SIZE((insn)->code);
+ 				env->prog->aux->num_exentries++;
+-			} else if (resolve_prog_type(env->prog) != BPF_PROG_TYPE_STRUCT_OPS) {
++			} else if (resolve_prog_type(env->prog) != BPF_PROG_TYPE_STRUCT_OPS &&
++				   resolve_prog_type(env->prog) != BPF_PROG_TYPE_LSM) {
+ 				verbose(env, "Writes through BTF pointers are not allowed\n");
+ 				return -EINVAL;
+ 			}
 -- 
 2.35.1.1094.g7c7d902a7c-goog
 
