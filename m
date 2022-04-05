@@ -2,48 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 031294F4D99
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55864F4D93
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1450048AbiDEXqk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 19:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
+        id S1447634AbiDEXqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 19:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446430AbiDEPog (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 11:44:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E78488BC
-        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 07:15:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C6DA160A67
-        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 14:15:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F219BC385A4;
-        Tue,  5 Apr 2022 14:15:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649168133;
-        bh=26eUpDS5X0LbP28fq3djkrhwJiEr7QUiBzt7rIliHMY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DJyB2YOrY/3bFQ53umDkEgXHQStxbaewXA724hNrbNA4lHQgx/RArTflre0BR+Os3
-         FbuNXCVwoCIXuNCmO3TuqHynFxbyzmJD3cNkKQg537fxqDKNM60mJCR/5WQZyaAb3x
-         gn12TddaEQoLAxC3nMH+uqN2ONWg/5a2BkQXtY82oGNAKR3OCHj0a4Kb0UHDTCExUo
-         wg1aLAReWqW2EG20zFtiQex+SVkVOgkZLZkwg70dhUOJ3MXIx4pc/HBIKguNwRq043
-         dsGkkSw7Eq9B1n9xMS5YO9C+aMm0tZpjqLvkwf2/JfgaSujD2rr8X4dLJ9iQQEwagK
-         LNuodmTEBfZeA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
-        andrii@kernel.org
-Subject: [PATCH bpf-next] samples: bpf: xdp_router_ipv4: move routes monitor in a dedicated thread
-Date:   Tue,  5 Apr 2022 16:15:14 +0200
-Message-Id: <e364b817c69ded73be24b677ab47a157f7c21b64.1649167911.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S1452048AbiDEPyU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 11:54:20 -0400
+Received: from sonic314-26.consmr.mail.ne1.yahoo.com (sonic314-26.consmr.mail.ne1.yahoo.com [66.163.189.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D02A1D1933
+        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 07:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1649170201; bh=wj9b4EM96Nw9uy/BlR8A+kRsw+NxU/IGvlc7WNtaG6Y=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=szLTqN29hH0Fplkr6uAe+MXF5PEA5fsJqTjRbZbWpnvC0Al5xHpu2TN4ooBY38wWJ8uiTpimodlROdpLS5wh+w/cRUkreeUOk4IRrNYkk0oRW0v4kPNiuhgPw1X5zsHOt/MDQkQXGnSVaNgfhv762MM6O896isbhEQuhBvsq1ESOUk/TvdnN2GUdrLh5aQ5PKEy7nh36gPUebwxqWz//ak3Yuw61QLtypYZo2v+UhhO4ojX1rvbwuZSNQau/+CPl1qE7BLh8g5V3Oflo+FP9jLuvjXqyU3z15HyXJgvy6iIksyrZovyQwmLa6sOUWH8w5VOCGholry/lqUHaRfRKYQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1649170201; bh=3ZN3cB5DrA9X/nY5OB/U+58iiXHAjbJw4aWJEs1+cuQ=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=DR1WkSMA58A7/84XbZe7tMPfrRoaKZfEofoTrXU55nzLbY4vyUCbCqDRR9vTC/Uadze+3Ih+fk9/OmEKXlLppRWnckXs7yEoDdbb1WxeA2BD+pBqa9ECHGxmWnpbUTNDe1t0cqQNPdRzvApbSFo59cOpx7FQiPfJ45QLXI6P3V1tLvseXsla3JhAphQvqPfea+KVBdU4EfvwaWyXsIKvq9+Q1xBRonm8LG2UkuJEo/kC6kyrnbt/cBHxXPlbLCTtK/dxx9qrMMl1Wm4gBUD0Zkw7Xm6NU1wxUyPD3d1PcroVIC0uhVcDjmLLYKx7g8iQESNTKTMCxrHzntqKfbbmRQ==
+X-YMail-OSG: CFOYxhkVM1m8ajYW0_qAcFcSymFYK7L2a6qwzT9OQ2UUlnv.BUpaBF0wlxuQwal
+ Id7mxXvbyHI3SKjYGp5dT0n84hYQnlM1pHkE4PFSYGPgBksboFZsw7oyD2lk5ECMCbr9SWtAVmH0
+ .d_7i9b6VeRrpvgGKNa1LydWgjhZ1aF1j0WCXmVAvxhuASrx4AcSwEbxIrf02ZzIpdkF0tRIDiGA
+ fIiLtCbvL7HMF.6JTu0hqKSkEm800._UKU74Zj1c8CSy3J6teokbUoLkU9l7KOyyfqPed71COGc.
+ Uk6.j4EupI6yx7AEAnyNrmRVsu.lfDRd0uLTdnaAKNWCzNHP0Rk81z_8._7QaZOYHEjwEpEZXCpK
+ zI2AD45g77679.Ja5Ys2GLvFXjX3.xp7aclyNNvofR7Jh067Y2gXqzIBDSu87zaEdP2MK837M.xB
+ 1OfFnJdnAvbWt_H_q3.Q1tMwL3Kixm_AgnvjlHbLwHBbqA5JOFNcArx5haZqok5xRTl2mf0F1D6l
+ .FzSfaWxY3OLo.mtM7g8kOFRLw0CvXlG4TIfXPLXErAlD6mRLM2xXPDwG1nR1vqd_xRYbS9xlKjK
+ TuOonIiTKMvOhrUQC02h69nK_tpOB8yYlI4k7YiEMslyPBbGWOFMwySUOrpRH.vBxhe.l6oheiYx
+ o5NBcl7BgAa1X3ivsn5SA.3767Hce6hgpq.yEFeQs06Ap8HcIVM14Y7deXwZmV1GWFltSdN_pJF2
+ UG58DzAejc8YGRZBu6lz5tuJrea9nd0slrvU3mECSMxrEbsyUTmunNoMIk0rA.aRSWtwaxhHGzuE
+ 5DgTgrWYaNzOwZ4VJJOYi.I9idvbKTmuLsXnnv.GOl.FDes9fM1fDSPMyMqXOnQWmSt2QuGgkxiX
+ O3J3CdGHIe2rsXRPr.0Wfe80l9txzoYyLA8ixpWlcmwY4mQ_Vp1oIgPvoKW8xWZfwbNjYoK.tVc9
+ DtYt_F4pHOqWb50NMKpHgAoi71Doo1u06ukfMzUSZyXaMjeTVIRzpEPEWCbLExiAl0aFBdB5KRBJ
+ te6O8QwP6VrOI6itfgkCtp3fEiaVJVMr47S.xuFOxzyKMGKcbgS.ruL8Rhe5lC5utwjw3f0BH0Nx
+ buLatAE2DDGm7V3HuuKQpFk1bD_ji9UZYRpnYQzSa7D71taZFqyWUmJWrX7vmBcQv_VN7PkLsFN7
+ 5sAQHk0sECA0_fB_g.iQ9WymiEErRe0kN7smNXq4tH.aejcBKLjJ24APkm4dTV1YtYomr_bMNfIv
+ nCFfXnwwZJlekUqNVA2hf35UraNh2atZDH4TiV59UQA.MCuGRsJYJqKAN_.CsrXt4u.vY4xBMxSR
+ 0u8G8TDu93_d3KzrzuvQ8XAvJl5mGkARGoICNoUrt_93L0kweQfUu97iBOpE7GlVkQXISdhck.eb
+ uG3dpWlu2E.v.iFKX4QlMWTlQoWgIfInZY4EB5qlB42SWHhNnJVPQOjEVWIP8ifbVbsZe1l5D04S
+ zkOUkmqknYyJhcamDu4OZHYL2IEPc5uiCroAgyfnYpJyyIeebSuq34rjsMoyh7tRQJpuWzizAbyu
+ bzNKtWQSCidx6SSyCGFQOCkA_8jUU04P_Xc0CmQk2ex_ev.N6JN3Y.4DoJD1jrqVUt5aphZ6taBL
+ hzeQ_wzrLft1yBBY0l2yuxwtSmxLiWmggDDoJA0Ii4HDpiqvKaRUenUxclO3D08BliBCrSyjvWbQ
+ sI.Mt6vM9CMIzGrRat4F_GcnzV65o3Y6a4UQ0BR49h2i8dZ9ibBUDd4ZOnCKmgu5ihRalDhHq.Lh
+ rDkyZs1_j2MiXKArIEu9GpzofL3tW2XdoYrwJ26iDh.EzUD03dUjgh4I0p0qEw4T4ahxw5BqeoOw
+ 4FHGancMHvTfphor.ZGF1SlwVQsXdsYbNebOirRY98B8SaXUn8n0EVeBYFTbp9WnTV_er1Z_HOo6
+ e4OSDMPR5Je3vjvIkLFrvbJzkAY5i2ZgAqaqyTn3Qx3ps2lX.ezpy64VwRHmfHzpt_jI2wElf24c
+ g4qW1E2DfMNs_nVIhc9rNzqBLSBtdAvROBR18UrN.ss97iy5jq0l.tL1OlKryQTzuvn9Z5oeeg6d
+ 5taNSsD3C8P83uZ5Nmlr4jusTx_GmTYgQrZVwfwIPG4piGX3vXgcpSuDdUSLCJqMSr2vUtELUu0N
+ iaXJ.aM7Zy3DgaMbDGql5Lp4CxMtioPoU.ZHG.XyM4z5fpCXl_pwMrMic2cooJQ_ylp09Z6_MEB9
+ j1_dDjzqt2Yo.6W58FqK16PgxUbxQG6_rkZpUVbZBZ0pvRlI58g--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.ne1.yahoo.com with HTTP; Tue, 5 Apr 2022 14:50:01 +0000
+Received: by hermes--canary-production-bf1-665cdb9985-zm65g (VZM Hermes SMTP Server) with ESMTPA ID 7d2721fd225af1eb62abd539103a7a7f;
+          Tue, 05 Apr 2022 14:49:54 +0000 (UTC)
+Message-ID: <385e4cf4-4cd1-8f41-5352-ea87a1f419ad@schaufler-ca.com>
+Date:   Tue, 5 Apr 2022 07:49:49 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF
+ programs
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Djalal Harouni <tixxdz@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
+ <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <b9f5995f96da447c851f7c9db8232a9b@huawei.com>
+ <20220401235537.mwziwuo4n53m5cxp@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <CACYkzJ5QgkucL3HZ4bY5Rcme4ey6U3FW4w2Gz-9rdWq0_RHvgA@mail.gmail.com>
+ <CAEiveUcx1KHoJ421Cv+52t=0U+Uy2VF51VC_zfTSftQ4wVYOPw@mail.gmail.com>
+ <c2e57f10b62940eba3cfcae996e20e3c@huawei.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <c2e57f10b62940eba3cfcae996e20e3c@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.20001 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,205 +108,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In order to not miss any netlink message from the kernel, move routes
-monitor to a dedicated thread.
+On 4/4/2022 10:20 AM, Roberto Sassu wrote:
+>> From: Djalal Harouni [mailto:tixxdz@gmail.com]
+>> Sent: Monday, April 4, 2022 9:45 AM
+>> On Sun, Apr 3, 2022 at 5:42 PM KP Singh <kpsingh@kernel.org> wrote:
+>>> On Sat, Apr 2, 2022 at 1:55 AM Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>> ...
+>>>>> Pinning
+>>>>> them to unreachable inodes intuitively looked the
+>>>>> way to go for achieving the stated goal.
+>>>> We can consider inodes in bpffs that are not unlinkable by root
+>>>> in the future, but certainly not for this use case.
+>>> Can this not be already done by adding a BPF_LSM program to the
+>>> inode_unlink LSM hook?
+>>>
+>> Also, beside of the inode_unlink... and out of curiosity: making sysfs/bpffs/
+>> readonly after pinning, then using bpf LSM hooks
+>> sb_mount|remount|unmount...
+>> family combining bpf() LSM hook... isn't this enough to:
+>> 1. Restrict who can pin to bpffs without using a full MAC
+>> 2. Restrict who can delete or unmount bpf filesystem
+>>
+>> ?
+> I'm thinking to implement something like this.
+>
+> First, I add a new program flag called
+> BPF_F_STOP_ONCONFIRM, which causes the ref count
+> of the link to increase twice at creation time. In this way,
+> user space cannot make the link disappear, unless a
+> confirmation is explicitly sent via the bpf() system call.
+>
+> Another advantage is that other LSMs can decide
+> whether or not they allow a program with this flag
+> (in the bpf security hook).
+>
+> This would work regardless of the method used to
+> load the eBPF program (user space or kernel space).
+>
+> Second, I extend the bpf() system call with a new
+> subcommand, BPF_LINK_CONFIRM_STOP, which
+> decreasres the ref count for the link of the programs
+> with the BPF_F_STOP_ONCONFIRM flag. I will also
+> introduce a new security hook (something like
+> security_link_confirm_stop), so that an LSM has the
+> opportunity to deny the stop (the bpf security hook
+> would not be sufficient to determine exactly for
+> which link the confirmation is given, an LSM should
+> be able to deny the stop for its own programs).
 
-Fixes: 85bf1f51691c ("samples: bpf: Convert xdp_router_ipv4 to XDP samples helper")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- samples/bpf/Makefile               |  2 +-
- samples/bpf/xdp_router_ipv4_user.c | 86 +++++++++++++++++++-----------
- 2 files changed, 55 insertions(+), 33 deletions(-)
+Would you please stop referring to a set of eBPF programs
+loaded into the BPF LSM as an LSM? Call it a BPF security
+module (BSM) if you must use an abbreviation. An LSM is a
+provider of security_ hooks. In your case that is BPF. When
+you call the set of eBPF programs an LSM it is like calling
+an SELinux policy an LSM.
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 342a41a10356..8fff5ad3444b 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -219,7 +219,7 @@ TPROGLDLIBS_xdp_redirect	+= -lm
- TPROGLDLIBS_xdp_redirect_cpu	+= -lm
- TPROGLDLIBS_xdp_redirect_map	+= -lm
- TPROGLDLIBS_xdp_redirect_map_multi += -lm
--TPROGLDLIBS_xdp_router_ipv4	+= -lm
-+TPROGLDLIBS_xdp_router_ipv4	+= -lm -pthread
- TPROGLDLIBS_tracex4		+= -lrt
- TPROGLDLIBS_trace_output	+= -lrt
- TPROGLDLIBS_map_perf_test	+= -lrt
-diff --git a/samples/bpf/xdp_router_ipv4_user.c b/samples/bpf/xdp_router_ipv4_user.c
-index 7828784612ec..f32bbd5c32bf 100644
---- a/samples/bpf/xdp_router_ipv4_user.c
-+++ b/samples/bpf/xdp_router_ipv4_user.c
-@@ -25,6 +25,7 @@
- #include <sys/resource.h>
- #include <libgen.h>
- #include <getopt.h>
-+#include <pthread.h>
- #include "xdp_sample_user.h"
- #include "xdp_router_ipv4.skel.h"
- 
-@@ -38,6 +39,9 @@ static int arp_table_map_fd;
- static int exact_match_map_fd;
- static int tx_port_map_fd;
- 
-+static bool routes_thread_exit;
-+static int interval = 5;
-+
- static int mask = SAMPLE_RX_CNT | SAMPLE_REDIRECT_ERR_MAP_CNT |
- 		  SAMPLE_DEVMAP_XMIT_CNT_MULTI | SAMPLE_EXCEPTION_CNT;
- 
-@@ -445,7 +449,7 @@ static int get_arp_table(int rtm_family)
- /* Function to keep track and update changes in route and arp table
-  * Give regular statistics of packets forwarded
-  */
--static void monitor_route(void *ctx)
-+static void *monitor_routes_thread(void *arg)
- {
- 	struct pollfd fds_route, fds_arp;
- 	struct sockaddr_nl la, lr;
-@@ -455,7 +459,7 @@ static void monitor_route(void *ctx)
- 	sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
- 	if (sock < 0) {
- 		fprintf(stderr, "open netlink socket: %s\n", strerror(errno));
--		return;
-+		return NULL;
- 	}
- 
- 	fcntl(sock, F_SETFL, O_NONBLOCK);
-@@ -465,7 +469,7 @@ static void monitor_route(void *ctx)
- 	if (bind(sock, (struct sockaddr *)&lr, sizeof(lr)) < 0) {
- 		fprintf(stderr, "bind netlink socket: %s\n", strerror(errno));
- 		close(sock);
--		return;
-+		return NULL;
- 	}
- 
- 	fds_route.fd = sock;
-@@ -475,7 +479,7 @@ static void monitor_route(void *ctx)
- 	if (sock_arp < 0) {
- 		fprintf(stderr, "open netlink socket: %s\n", strerror(errno));
- 		close(sock);
--		return;
-+		return NULL;
- 	}
- 
- 	fcntl(sock_arp, F_SETFL, O_NONBLOCK);
-@@ -490,35 +494,51 @@ static void monitor_route(void *ctx)
- 	fds_arp.fd = sock_arp;
- 	fds_arp.events = POLL_IN;
- 
--	memset(buf, 0, sizeof(buf));
--	if (poll(&fds_route, 1, 3) == POLL_IN) {
--		nll = recv_msg(lr, sock);
--		if (nll < 0) {
--			fprintf(stderr, "recv from netlink: %s\n",
--				strerror(nll));
--			goto cleanup;
--		}
-+	/* dump route and arp tables */
-+	if (get_arp_table(AF_INET) < 0) {
-+		fprintf(stderr, "Failed reading arp table\n");
-+		goto cleanup;
-+	}
- 
--		nh = (struct nlmsghdr *)buf;
--		read_route(nh, nll);
-+	if (get_route_table(AF_INET) < 0) {
-+		fprintf(stderr, "Failed reading route table\n");
-+		goto cleanup;
- 	}
- 
--	memset(buf, 0, sizeof(buf));
--	if (poll(&fds_arp, 1, 3) == POLL_IN) {
--		nll = recv_msg(la, sock_arp);
--		if (nll < 0) {
--			fprintf(stderr, "recv from netlink: %s\n",
--				strerror(nll));
--			goto cleanup;
-+	while (!routes_thread_exit) {
-+		memset(buf, 0, sizeof(buf));
-+		if (poll(&fds_route, 1, 3) == POLL_IN) {
-+			nll = recv_msg(lr, sock);
-+			if (nll < 0) {
-+				fprintf(stderr, "recv from netlink: %s\n",
-+					strerror(nll));
-+				goto cleanup;
-+			}
-+
-+			nh = (struct nlmsghdr *)buf;
-+			read_route(nh, nll);
- 		}
- 
--		nh = (struct nlmsghdr *)buf;
--		read_arp(nh, nll);
-+		memset(buf, 0, sizeof(buf));
-+		if (poll(&fds_arp, 1, 3) == POLL_IN) {
-+			nll = recv_msg(la, sock_arp);
-+			if (nll < 0) {
-+				fprintf(stderr, "recv from netlink: %s\n",
-+					strerror(nll));
-+				goto cleanup;
-+			}
-+
-+			nh = (struct nlmsghdr *)buf;
-+			read_arp(nh, nll);
-+		}
-+
-+		sleep(interval);
- 	}
- 
- cleanup:
- 	close(sock_arp);
- 	close(sock);
-+	return NULL;
- }
- 
- static void usage(char *argv[], const struct option *long_options,
-@@ -531,10 +551,11 @@ static void usage(char *argv[], const struct option *long_options,
- int main(int argc, char **argv)
- {
- 	bool error = true, generic = false, force = false;
--	int opt, interval = 5, ret = EXIT_FAIL_BPF;
-+	int opt, ret = EXIT_FAIL_BPF;
- 	struct xdp_router_ipv4 *skel;
- 	int i, total_ifindex = argc - 1;
- 	char **ifname_list = argv + 1;
-+	pthread_t routes_thread;
- 	int longindex = 0;
- 
- 	if (libbpf_set_strict_mode(LIBBPF_STRICT_ALL) < 0) {
-@@ -653,24 +674,25 @@ int main(int argc, char **argv)
- 			goto end_destroy;
- 	}
- 
--	if (get_route_table(AF_INET) < 0) {
--		fprintf(stderr, "Failed reading routing table\n");
-+	ret = pthread_create(&routes_thread, NULL, monitor_routes_thread, NULL);
-+	if (ret) {
-+		fprintf(stderr, "Failed creating routes_thread: %s\n", strerror(-ret));
-+		ret = EXIT_FAIL;
- 		goto end_destroy;
- 	}
- 
--	if (get_arp_table(AF_INET) < 0) {
--		fprintf(stderr, "Failed reading arptable\n");
--		goto end_destroy;
--	}
-+	ret = sample_run(interval, NULL, NULL);
-+	routes_thread_exit = true;
- 
--	ret = sample_run(interval, monitor_route, NULL);
- 	if (ret < 0) {
- 		fprintf(stderr, "Failed during sample run: %s\n", strerror(-ret));
- 		ret = EXIT_FAIL;
--		goto end_destroy;
-+		goto end_thread_wait;
- 	}
- 	ret = EXIT_OK;
- 
-+end_thread_wait:
-+	pthread_join(routes_thread, NULL);
- end_destroy:
- 	xdp_router_ipv4__destroy(skel);
- end:
--- 
-2.35.1
-
+>
+> What do you think?
+>
+> Thanks
+>
+> Roberto
+>
+> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+> Managing Director: Li Peng, Zhong Ronghua
