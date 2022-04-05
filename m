@@ -2,141 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879604F214B
-	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 06:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674154F20F2
+	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 06:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbiDECma (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Apr 2022 22:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
+        id S229968AbiDEDSF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Apr 2022 23:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbiDECmS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Apr 2022 22:42:18 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D227D391D31
-        for <bpf@vger.kernel.org>; Mon,  4 Apr 2022 18:47:27 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 234NPFU7016615;
-        Mon, 4 Apr 2022 18:05:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Ynrqd5/ggxe5QNs/3ijuOsf7X6pio5xFQg8aty4Xkz0=;
- b=UJ+qJkdwAyj5Mr8LHW51Tul+Upq0+/aWvvrRW/ykNBKxJoBv3HtA+SytxKE1W8a4U4uf
- LjDmDTyK13Otp+qvWzfPlrwSf8EBgBrYD4cfgij7CAur2RYpgfYFkOONtIZbi1GvKFTK
- 4o5GL5ZVJf3+8cEzu1rosnEy/TJU8ZsPidE= 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f6kkrxew3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Apr 2022 18:05:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BJsLyqGACVtIquheLS+Rz/TpmlvJdY5/AcuoR95I0RfCpaSMYYh609cRX+tXEbtzekupJ8z4x3aXh420+IXe+bOWdFskfVkAmfFxFW2KwKKOL80UiNwmq8FOzaZCOEbvlJRiLOyhBNxVWJtO6NQXzK1hMUjN9FqZkiemj94E0CxAufQywRxPOEToopGKBgxW8WJm4dePRURv8Cuh5lWTjN2/NvGpT7EgYekwpTBu+QHjoeKExAPFmvxyv5nIvW1O+K94prFjVfyFQlqIK+qOY9Y+ZkG1oCjMi0Ca4sIdXDGslZyAUhoz0pNTj3cHzXdazEfypGeV2pkG4Rl2C+3+nA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ynrqd5/ggxe5QNs/3ijuOsf7X6pio5xFQg8aty4Xkz0=;
- b=B1LeDl3DyQ30m8x+91MFkqyM9eZfD5Svdcx7amCAT8dUwryxHXBDIsonHcrcp9q1xA6URxoT7HyrG6JAaQRSzKNZYA8WyLTrqm5J2qQWkg6PFoK/o0ojHaNMR2DIxvg7e1JmbDrZC3neWMvHAIK6lgsNaY+oYBt7QPNdyprOyypeVVMQ6WCrpofQRr1mRbB92hS+LbSTUWhNg/oJ/uAF5eazAcM+tg9rRXueKIeHlceanwoJgiCaSdFDdNBt/kH55TvvhDpz1yuYdxnuqiu5Dbr2J0khPBiMEyZ7B6swlvCM72iZldhWxq5ajcmVdg9G3si+q0vSpshaOzGvoRdr9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by MN2PR15MB3488.namprd15.prod.outlook.com (2603:10b6:208:a6::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.31; Tue, 5 Apr
- 2022 01:05:30 +0000
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::5ca4:f6e8:5d75:1abc]) by DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::5ca4:f6e8:5d75:1abc%8]) with mapi id 15.20.5123.031; Tue, 5 Apr 2022
- 01:05:30 +0000
-Message-ID: <1497128d-c44c-4ce9-3526-abf8ce61e0ae@fb.com>
-Date:   Mon, 4 Apr 2022 21:05:28 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [PATCH v3 bpf-next 1/7] libbpf: add BPF-side of USDT support
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Cc:     kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-References: <20220404234202.331384-1-andrii@kernel.org>
- <20220404234202.331384-2-andrii@kernel.org>
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-In-Reply-To: <20220404234202.331384-2-andrii@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0085.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::30) To DM6PR15MB4039.namprd15.prod.outlook.com
- (2603:10b6:5:2b2::20)
+        with ESMTP id S230142AbiDEDSE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Apr 2022 23:18:04 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757A31ADAA;
+        Mon,  4 Apr 2022 20:16:07 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id ch16-20020a17090af41000b001ca867ef52bso1253813pjb.0;
+        Mon, 04 Apr 2022 20:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=0hBIkvHvq/7fDWyXw9rjCsWjYoU6DAh0xPQu7saIkJg=;
+        b=T+zh3bD6ItDB//CKGUn6duxN7NiULAw7ioTHjb1Ucy7CdmeaY/lGYtU4cWaa5buQR2
+         z2V+RhYEEMb5sNbcTexpOgNHEskk7lEf38xHkHGTVK1VcYIQlieTzcUDOJokqqFOzHtZ
+         DtrbgycDl8BsXLKNHKahQ4kl5BTxr0Y35pGO0BGWBQ7qdpSR62V19cBf2e4peH5M1kcH
+         JUBBjiaNhcBwN4dZ7Hon6CCYuFuBXtjPDFq6mltmzLYlZnZim5G7Ih7O6exiJddZpFWy
+         7UVKKvMoG8yOJuci9/Bjv7dDJtHPQ0tdOhcQZPVdtmoNj9/O5uRpH/QuKWr06wlq5Xjk
+         kbpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=0hBIkvHvq/7fDWyXw9rjCsWjYoU6DAh0xPQu7saIkJg=;
+        b=XZBKoW3TTdCAujnid3o9bkiPxKhpDVLM81jLvae2b35NEhic11vAAxcgm707p4bcT1
+         zxU96rNS4QGRxyibNW58YxJXw4VhwW976BFddzt9VMMAkQbStEAhC/kbERYTA/HlcNQG
+         ScgWK42Ix5K/+Fmnl9Z4gFzo0Ywjg8n6X5SsAToRSht24LRJGzVavAHCGXK5D9nmN1Ca
+         e4/DKI91xhdrba1srRSAzkKNG/mrJNsKgP/yQ4C0CNGj01IzetKVBxmRbAs1rnracXop
+         tbOSKZYsoJfClGQa25i0wys05rITaJKyY9lNEYCBzlW8VAZQnq8FPx8iFtpCGO2xXD2n
+         M6Gw==
+X-Gm-Message-State: AOAM530GAuNx0JFDgdQLK9gFpNt/b+CyaW28jjAo5sh63qtZqcgHtrjJ
+        zuWBQtWbF+9TlUlO8gmeogk=
+X-Google-Smtp-Source: ABdhPJxxZ4il8XaN+8ORBNZBQo8DXCNdQKAJCrZRqdYaAfztZGsDjH/tnftqlgoB3NpjT58vjRJIpQ==
+X-Received: by 2002:a17:902:c94c:b0:154:58e4:6f5a with SMTP id i12-20020a170902c94c00b0015458e46f5amr1353937pla.142.1649128566757;
+        Mon, 04 Apr 2022 20:16:06 -0700 (PDT)
+Received: from [192.168.0.4] ([182.213.254.91])
+        by smtp.gmail.com with ESMTPSA id t69-20020a637848000000b0039831d6dc23sm11272568pgc.94.2022.04.04.20.16.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Apr 2022 20:16:06 -0700 (PDT)
+Message-ID: <cdd68de3-7803-2921-45ee-6769b4a86265@gmail.com>
+Date:   Tue, 5 Apr 2022 12:16:01 +0900
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6b116104-46c3-493b-e152-08da16a06122
-X-MS-TrafficTypeDiagnostic: MN2PR15MB3488:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR15MB34889F4530CD79C2DFDE6781A0E49@MN2PR15MB3488.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NToT6HaCFtveQvN3u53I1VGQuoK0BWjvXHI2X1ayzCYgV5mlBtlgc3kz5sIWVj2Id1lotM3jnlt7W/gxBNayMO/HM/+VBFj5TzI4PHZTWm/37lIrJEz8HCmf/khuXuQUzmzccHfEbRaIQHcKLi3IfHElkHCPE6c3MyfUl8u7qTSu1Wjv2bqi2rIDcyrk8Aii+zHy/Yr3WRIokBz5ggz28b4N0IKTCavpBEsuCWP950EA+w3PXLiWnQGNiiRjCoAMTg55xeZI9D+dehkcBAH8IbL/JVAEnRtO6s9wW3CGGAPCqBrGzqQlBmxuKxwh3b2AWt/uPkIPQ2wScFDHzNdOjzwXRl2jUpuxfLCEjyq61KxY7AOj4kL3zTiqHcB/Vp/IM1h4et0+iRKg9gDcfL6Vmi2B8EZNz+vArxXWi7P70iYTnDdnaZj5ZRvK3gGvYbk4JY3LzSD9zlo3FPRhNSH5x4ma+5cyhnejJ+nEkGxsetRas+zaKmTHILe5CL9PkaMqNwGC/Y0Yilr8L0mvCQOIDuW2ccE+F72Usvuss19y+K5M2PpYimQYgoT4QTTzjZtmZAx4TrhgkQhkGZfRVqQiBtgscx4SJsr5GRomYDhcRYI9OX4O5MVpOUOAg3r2CjxXilfSyspOdlLU5JgYlH6rfjTtU0ujpWF70Vy/0KANt6UDDv/TMZ8ZAE4D1MyMuhosHqR9l65rs+EQSdGdGYHq5SYhr7aQfBCSO+zTu2g7z+a7byDBC38W8uFk10AxioycuAwU1MfTh0qPme3BGFLWcQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(508600001)(186003)(2616005)(66946007)(66476007)(66556008)(8676002)(83380400001)(36756003)(2906002)(6512007)(6506007)(53546011)(31686004)(6486002)(8936002)(31696002)(5660300002)(316002)(86362001)(54906003)(4326008)(38100700002)(21314003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YkliTW5FdGwrc0VyYlZtdi9USmplN3JrM2RmcWJOTllJN0VhRTBvS0tva2d6?=
- =?utf-8?B?ZVUwZmtmbVJkSitFdW5BK0ZOMXVzcXl1KzV5ZDJJYmNDYXJrd2l6S3gyVit2?=
- =?utf-8?B?aE1oVi9YbGVVVnVCbm5hQnRTb2pFVURrdU5CUlAxMUJncVBJdGRBdkptcXhE?=
- =?utf-8?B?azZTM0lUMFY3eE9yckEvLzZzS1NHclF4cWtWb1F5eHJLQ2JUZys2TmE5clhz?=
- =?utf-8?B?UUtITlJNbEJSRHBwVGF1czhRQ1Z4T0U0djcvd1FnRXhPRDc4YTRjaGc0YUNN?=
- =?utf-8?B?Rnp5TzV1TExtL0xvcWJTcUlpTll2OXRoQlVFVExVUlJSZWg0QitTR3lLN3Nh?=
- =?utf-8?B?VjlvdzhmajR2NEE5clo2NEpGZ0Zmelc0OFRWSUMxTmZ6ekhKcjhZTGV3bjJH?=
- =?utf-8?B?Zzc4c0dpWFJYUUg2aHVobmkyVXlKeExWOTJRd3hjQ29RMjRMY2QySjlTbnNJ?=
- =?utf-8?B?ZFl4aGVpQUU2b1J1TjducE1pZ1VjVFZHanNUMkNZRnJIT0g5dElVaVV1UWVt?=
- =?utf-8?B?TWVySEZudmtzbGJ3NWlnWkpVMEgvWjFHQ2xiN2lHMUt6NlJESjE2cnBXSUZC?=
- =?utf-8?B?TE9IbzBzaTk3amRqVlZsMkJhLzhEd3NiVVFwaHZkQmZxcFBKRkNuSEs1K1Jh?=
- =?utf-8?B?eThFZExLMkJYOTQrNDRjeHc4U240NjJ6MUY2dTZFdmpyRnBBUHoyam55ZjZs?=
- =?utf-8?B?a3pqWGZPL25aTWxFQ0hHVnNndS9jcTRkRUM3ZWpSQ3VibG5DRjM5amt4eWM2?=
- =?utf-8?B?WWEvVEhQUER3TG5RQllNcTBobTNUdzlpR09KQWI2c1lXU3pxWXdSOUkrYUtZ?=
- =?utf-8?B?VE9USzFBeUd4QmxiM1J1ZUl1U09rbUtad0d3R3ZuVzc3NjFhMUV1aGRsaE1q?=
- =?utf-8?B?dnNTSzZWeTdwMTBjdmhYRUJ4cU9McWVRaFFKK3M4cmlveHNHS3BMNTJvNGlm?=
- =?utf-8?B?Nm5JSVFlZVA5SkdaRHpNdmhRZFFaUkJRU09vcmJxbTVONEVlSFErWVdyeXFY?=
- =?utf-8?B?d3NVQlFETVZjNzFYcm5YbGtTOW5KMmZaMlEvRU5EZCtKQnQzbDI2Y0hDMVJy?=
- =?utf-8?B?ejk0THp3cE1IZEJoOHdnOHRua1Q1MlNBMmttanNES3NtMWpKRFBHakt3UExM?=
- =?utf-8?B?VEk1RjFVSk9KWjRjYmhKLytDVVliOFFiRitOaXFlSHN6Qi8rNnFscXYxVmtN?=
- =?utf-8?B?QmJtYW5pQzdUV0tFbHhQeTFLRHIyVXd5UTAvTG5zN1pWaXVyVjNpT0JDeGwx?=
- =?utf-8?B?YndKaTVEcm9UVmZwZkRyR2FJV3NrRm54aEpMU3BYa3pwTm5OZVAwSlF4YXpC?=
- =?utf-8?B?MlJaN1IvN3ZlNGZrSXZFMTA3NGZ5SkhmOVVQbURjQThHTHgvU3dJMUcwRGND?=
- =?utf-8?B?WlJRMmt4cy9kbmJCWkx6MlpuMG9ZUXFrN29obzBrOEwwenBSblJCWUZuQnFk?=
- =?utf-8?B?Yml6MWtMK0ZlZzFGZHF5NVJzemNKd3V3d2VtN0RRN2VIcUZHQzhFc3pIOW1M?=
- =?utf-8?B?amdOclRWUFZZc3IzNG40aldJWmFLUGVmdGp4N2d4V0MwcWFpS3gxcDNxMFFn?=
- =?utf-8?B?TGQ0SlozMVUvbEJmdjVleWsvT0loMTZwTk1nQXNxVWEybEpVUVVBQ3cyY0Vr?=
- =?utf-8?B?OFZFc1I2M1QwUWFCK01mQkZsaU92bmcwaHkxS21rL0YrY1BJTkY5MnNtZVk4?=
- =?utf-8?B?Q1VGQ2t4bk9hWks2ZzYzOEE2ODIxTVpHYXp2OHRQWTA3bEk0a0VnVkZMUEt6?=
- =?utf-8?B?RTZzTmRIOUc1MVVRNGZQN3NldUxrRlkwSUtoc3VkT3VDdXRuc3VvZ24zSkk3?=
- =?utf-8?B?azhvbCtpKy9GYjN2Wll2ZHh2V2pqcmtnOG9HNGxBdXE5Y2J1QU9CaEdVUlg3?=
- =?utf-8?B?MXRibXZsUkh0ekh5V1JMYklKL3F3amg1bHg0a0J5QllJMkY2b3pwNWNIY2Jr?=
- =?utf-8?B?blZwckQwMmxhdmkxRmh0NFBaakR4bDZJelE3NEhlL095clF3VURka2ZFV3Rh?=
- =?utf-8?B?Ym8vZGdwK2NZYm9iMGdVQnVsUmFqN3U1Szd6emd5STlkNktDVE02dlp0VDg1?=
- =?utf-8?B?VjgrWWdmSE1EdmVwMXVXMk1Qd1c0Rlk0V0ZURnRMQXIyLyswREJkMEQ2cllL?=
- =?utf-8?B?cU5wTmNjSnNjVzhZNnNHVllSMDhiMVdXQ3YyMzU1WmhVSWE0WFlzTUdFMXkz?=
- =?utf-8?B?UFFVcjl4akVUZCtDNXJhUnQ0TFZDWkJSMkRFdTFJYXN5OTR2RXNtMEhNeE5M?=
- =?utf-8?B?dktSUzFyaldoZ1cwL1lVZHBOOGZ5b2lFVVV1UEpwUmNyTzV4bmFkVGlJcG1C?=
- =?utf-8?B?Y1hENTd4Z2RwbjVZNnJ6VmZqVW41cE9wcUhGdEFOMkhkdllDamlCRURsdWdX?=
- =?utf-8?Q?6PEzmTcUuKHJePcWMcIamY7/cJbbyXhmCXtxG?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b116104-46c3-493b-e152-08da16a06122
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2022 01:05:30.8329
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aAHPalaqvSBPIpv++pfZtMHDGAwK/4Dldzs30w1MW9wLKGrQcPfQiBmFZas86BbJO3v+kQInZYmZ9ueXNhrlcQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3488
-X-Proofpoint-ORIG-GUID: jQQPgw2HgjQCFjukg3iTM5rV0vYnP2OG
-X-Proofpoint-GUID: jQQPgw2HgjQCFjukg3iTM5rV0vYnP2OG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-04_09,2022-03-31_01,2022-02-23_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH net v2] net: sfc: add missing xdp queue reinitialization
+Content-Language: en-US
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        ecree.xilinx@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com
+References: <20220330163703.25086-1-ap420073@gmail.com>
+ <20220401110606.whyr5hnesb4ya67q@gmail.com>
+ <8f22d067-fb84-cc76-9249-d68af9601d44@gmail.com>
+ <20220404103627.zczltvxz4pjrpqay@gmail.com>
+From:   Taehee Yoo <ap420073@gmail.com>
+In-Reply-To: <20220404103627.zczltvxz4pjrpqay@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -144,70 +77,220 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/4/22 7:41 PM, Andrii Nakryiko wrote:   
-> Add BPF-side implementation of libbpf-provided USDT support. This
-> consists of single header library, usdt.bpf.h, which is meant to be used
-> from user's BPF-side source code. This header is added to the list of
-> installed libbpf header, along bpf_helpers.h and others.
-> 
-> BPF-side implementation consists of two BPF maps:
->   - spec map, which contains "a USDT spec" which encodes information
->     necessary to be able to fetch USDT arguments and other information
->     (argument count, user-provided cookie value, etc) at runtime;
->   - IP-to-spec-ID map, which is only used on kernels that don't support
->     BPF cookie feature. It allows to lookup spec ID based on the place
->     in user application that triggers USDT program.
-> 
-> These maps have default sizes, 256 and 1024, which are chosen
-> conservatively to not waste a lot of space, but handling a lot of common
-> cases. But there could be cases when user application needs to either
-> trace a lot of different USDTs, or USDTs are heavily inlined and their
-> arguments are located in a lot of differing locations. For such cases it
-> might be necessary to size those maps up, which libbpf allows to do by
-> overriding BPF_USDT_MAX_SPEC_CNT and BPF_USDT_MAX_IP_CNT macros.
-> 
-> It is an important aspect to keep in mind. Single USDT (user-space
-> equivalent of kernel tracepoint) can have multiple USDT "call sites".
-> That is, single logical USDT is triggered from multiple places in user
-> application. This can happen due to function inlining. Each such inlined
-> instance of USDT invocation can have its own unique USDT argument
-> specification (instructions about the location of the value of each of
-> USDT arguments). So while USDT looks very similar to usual uprobe or
-> kernel tracepoint, under the hood it's actually a collection of uprobes,
-> each potentially needing different spec to know how to fetch arguments.
-> 
-> User-visible API consists of three helper functions:
->   - bpf_usdt_arg_cnt(), which returns number of arguments of current USDT;
->   - bpf_usdt_arg(), which reads value of specified USDT argument (by
->     it's zero-indexed position) and returns it as 64-bit value;
->   - bpf_usdt_cookie(), which functions like BPF cookie for USDT
->     programs; this is necessary as libbpf doesn't allow specifying actual
->     BPF cookie and utilizes it internally for USDT support implementation.
-> 
-> Each bpf_usdt_xxx() APIs expect struct pt_regs * context, passed into
-> BPF program. On kernels that don't support BPF cookie it is used to
-> fetch absolute IP address of the underlying uprobe.
-> 
-> usdt.bpf.h also provides BPF_USDT() macro, which functions like
-> BPF_PROG() and BPF_KPROBE() and allows much more user-friendly way to
-> get access to USDT arguments, if USDT definition is static and known to
-> the user. It is expected that majority of use cases won't have to use
-> bpf_usdt_arg_cnt() and bpf_usdt_arg() directly and BPF_USDT() will cover
-> all their needs.
-> 
-> Last, usdt.bpf.h is utilizing BPF CO-RE for one single purpose: to
-> detect kernel support for BPF cookie. If BPF CO-RE dependency is
-> undesirable, user application can redefine BPF_USDT_HAS_BPF_COOKIE to
-> either a boolean constant (or equivalently zero and non-zero), or even
-> point it to its own .rodata variable that can be specified from user's
-> application user-space code. It is important that
-> BPF_USDT_HAS_BPF_COOKIE is known to BPF verifier as static value (thus
-> .rodata and not just .data), as otherwise BPF code will still contain
-> bpf_get_attach_cookie() BPF helper call and will fail validation at
-> runtime, if not dead-code eliminated.
-> 
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
+On 4/4/22 19:36, Martin Habets wrote:
 
-Reviewed-by: Dave Marchevsky <davemarchevsky@fb.com>
+Hi Martin,
+
+ > Hi Taehee,
+ >
+ > On Sat, Apr 02, 2022 at 03:48:14AM +0900, Taehee Yoo wrote:
+ >> On 4/1/22 20:06, Martin Habets wrote:
+ >>
+ >> Hi Martin,
+ >> Thank you so much for your review!
+ >>
+ >>> Hi Taehee,
+ >>>
+ >>> Thanks for looking into this. Unfortunately efx_realloc_channels()
+ >>> has turned out to be quite fragile over the years, so I'm
+ >>> keen to remove it in stead of patching it up all the time.
+ >>
+ >> I agree with you.
+ >> efx_realloc_channels() is too complex.
+ >>
+ >>>
+ >>> Could you try the patch below please?
+ >>> If it works ok for you as well we'll be able to remove
+ >>> efx_realloc_channels(). The added advantage of this approach
+ >>> is that the netdev notifiers get informed of the change.
+ >>
+ >> I tested your patch and I found a page reference count problem.
+ >> How to test:
+ >> 1. set up XDP_TX
+ >> 2. traffic on
+ >> 3. traffic off
+ >> 4. ring buffer size change
+ >> 5. loop from 2 to 4.
+ >>
+ >> [   87.836195][   T72] BUG: Bad page state in process kworker/u16:1
+ >> pfn:125445
+ >> [   87.843356][   T72] page:000000003725f642 refcount:-2 mapcount:0
+ >> mapping:0000000000000000 index:0x0 pfn:0x125445
+ >> [   87.853783][   T72] flags: 0x200000000000000(node=0|zone=2)
+ >>
+ >> [   87.859391][   T72] raw: 0200000000000000 dead000000000100
+ >> dead000000000122 0000000000000000
+ >> [   87.867928][   T72] raw: 0000000000000000 0000000000000000
+ >> fffffffeffffffff 0000000000000000
+ >> [   87.876569][   T72] page dumped because: nonzero _refcount
+ >>
+ >> [   87.882125][   T72] Modules linked in: af_packet sfc ixgbe mtd 
+atlantic
+ >> coretemp mdio hwmon sch_fq_codel msr bpf_prelx
+ >> [   87.895331][   T72] CPU: 0 PID: 72 Comm: kworker/u16:1 Not tainted
+ >> 5.17.0+ #62 dbf33652f22e5147659e7e2472bb962779c4833
+ >> [   87.906350][   T72] Hardware name: ASUS System Product Name/PRIME 
+Z690-P
+ >> D4, BIOS 0603 11/01/2021
+ >> [   87.915360][   T72] Workqueue: netns cleanup_net
+ >>
+ >> [   87.920087][   T72] Call Trace:
+ >>
+ >> [   87.923311][   T72]  <TASK>
+ >>
+ >> [   87.926188][   T72]  dump_stack_lvl+0x56/0x7b
+ >>
+ >> [   87.930597][   T72]  bad_page.cold.125+0x63/0x93
+ >>
+ >> [   87.935288][   T72]  free_pcppages_bulk+0x63c/0x6f0
+ >>
+ >> [   87.940232][   T72]  free_unref_page+0x8b/0xf0
+ >>
+ >> [   87.944749][   T72]  efx_fini_rx_queue+0x15f/0x210 [sfc
+ >> 49c5d4f562a40c6a7ed913c25f5bd4e126bcfa4e]
+ >
+ > Looks to me like this is in efx_fini_rx_recycle_ring().
+ > It could be a side effect of the memory leak you report below.
+ > If this is in efx_fini_rx_recycle_ring() I'll post a patch for
+ > that soon on a separate thread.
+
+Thanks for that!
+
+ >
+ >> [   87.953756][   T72]  efx_stop_channels+0xef/0x1b0 [sfc
+ >> 49c5d4f562a40c6a7ed913c25f5bd4e126bcfa4e]
+ >> [   87.962699][   T72]  efx_net_stop+0x4d/0x60 [sfc
+ >> 49c5d4f562a40c6a7ed913c25f5bd4e126bcfa4e]
+ >> [   87.971029][   T72]  __dev_close_many+0x8b/0xf0
+ >>
+ >> [   87.975618][   T72]  dev_close_many+0x7d/0x120
+ >>
+ >> [ ... ]
+ >>
+ >>
+ >> In addition, I would like to share issues that I'm currently looking 
+into:
+ >> 1. TX DMA error
+ >> when interface down/up or ring buffer size changes, TX DMA error 
+would occur
+ >> because tx_queue can be used before initialization.
+ >> But It will be fixed by the below patch.
+ >>
+ >>   static void efx_ethtool_get_wol(struct net_device *net_dev,
+ >> diff --git a/drivers/net/ethernet/sfc/tx.c 
+b/drivers/net/ethernet/sfc/tx.c
+ >> index d16e031e95f4..6983799e1c05 100644
+ >> --- a/drivers/net/ethernet/sfc/tx.c
+ >> +++ b/drivers/net/ethernet/sfc/tx.c
+ >> @@ -443,6 +443,9 @@ int efx_xdp_tx_buffers(struct efx_nic *efx, int n,
+ >> struct xdp_frame **xdpfs,
+ >>          if (unlikely(!tx_queue))
+ >>                  return -EINVAL;
+ >>
+ >> +       if (!tx_queue->initialised)
+ >> +               return -EINVAL;
+ >> +
+ >>          if (efx->xdp_txq_queues_mode != EFX_XDP_TX_QUEUES_DEDICATED)
+ >>                  HARD_TX_LOCK(efx->net_dev, tx_queue->core_txq, cpu);
+ >>
+ >> diff --git a/drivers/net/ethernet/sfc/tx_common.c
+ >> b/drivers/net/ethernet/sfc/tx_common.c
+ >> index d530cde2b864..9bc8281b7f5b 100644
+ >> --- a/drivers/net/ethernet/sfc/tx_common.c
+ >> +++ b/drivers/net/ethernet/sfc/tx_common.c
+ >> @@ -101,6 +101,8 @@ void efx_fini_tx_queue(struct efx_tx_queue 
+*tx_queue)
+ >>          netif_dbg(tx_queue->efx, drv, tx_queue->efx->net_dev,
+ >>                    "shutting down TX queue %d\n", tx_queue->queue);
+ >>
+ >> +       tx_queue->initialised = false;
+ >> +
+ >>          if (!tx_queue->buffer)
+ >>                  return;
+ >
+ > Looks ok, but xmit_hard should never be called on an interface that
+ > is down. Makes me wonder if we have a seqence issue in our ndo_stop API.
+ >
+
+I think it's an XDP tx_queue specific issue.
+Sorry that I didn't provide that information.
+When a packet is received and it acts XDP_TX, it calls 
+efx_xdp_tx_buffers() and it uses xdp tx_queue and sends it to hardware 
+directly.
+So, ->ndo_start_xmit is not called.
+And that bug occurs when the first interface up.
+->ndo_stop has never called, So I think this is not an issue of ->ndo_stop.
+
+ >>
+ >> After your patch, unfortunately, it can't fix ring buffer size 
+change case.
+ >> It can fix only interface down/up case.
+ >> I will look into this more.
+ >>
+ >> 2. Memory leak
+ >> There is a memory leak in ring buffer size change logic.
+ >> reproducer:
+ >>     while :
+ >>     do
+ >>         ethtool -G <interface name> rx 2048 tx 2048
+ >>         ethtool -G <interface name> rx 1024 tx 1024
+ >>     done
+ >
+ > Is this with my patch or only with yours?
+ > Thanks a lot for testing this.
+ >
+
+Memory leak still occurs with your patch(do not use efx_realloc_channels())
+
+Thanks a lot,
+Taehee Yoo
+
+ > Martin
+ >
+ >> Thanks a lot,
+ >> Taehee Yoo
+ >>
+ >>>
+ >>> Regards,
+ >>> Martin Habets <habetsm.xilinx@gmail.com>
+ >>>
+ >>> ---
+ >>>    drivers/net/ethernet/sfc/ethtool.c |   13 ++++++++++++-
+ >>>    1 file changed, 12 insertions(+), 1 deletion(-)
+ >>>
+ >>> diff --git a/drivers/net/ethernet/sfc/ethtool.c
+ >> b/drivers/net/ethernet/sfc/ethtool.c
+ >>> index 48506373721a..8cfbe61737bb 100644
+ >>> --- a/drivers/net/ethernet/sfc/ethtool.c
+ >>> +++ b/drivers/net/ethernet/sfc/ethtool.c
+ >>> @@ -179,6 +179,7 @@ efx_ethtool_set_ringparam(struct net_device 
+*net_dev,
+ >>>    {
+ >>>    	struct efx_nic *efx = netdev_priv(net_dev);
+ >>>    	u32 txq_entries;
+ >>> +	int rc = 0;
+ >>>
+ >>>    	if (ring->rx_mini_pending || ring->rx_jumbo_pending ||
+ >>>    	    ring->rx_pending > EFX_MAX_DMAQ_SIZE ||
+ >>> @@ -198,7 +199,17 @@ efx_ethtool_set_ringparam(struct net_device 
+*net_dev,
+ >>>    			   "increasing TX queue size to minimum of %u\n",
+ >>>    			   txq_entries);
+ >>>
+ >>> -	return efx_realloc_channels(efx, ring->rx_pending, txq_entries);
+ >>> +	/* Apply the new settings */
+ >>> +	efx->rxq_entries = ring->rx_pending;
+ >>> +	efx->txq_entries = ring->tx_pending;
+ >>> +
+ >>> +	/* Update the datapath with the new settings if the interface is 
+up */
+ >>> +	if (!efx_check_disabled(efx) && netif_running(efx->net_dev)) {
+ >>> +		dev_close(net_dev);
+ >>> +		rc = dev_open(net_dev, NULL);
+ >>> +	}
+ >>> +
+ >>> +	return rc;
+ >>>    }
+ >>>
+ >>>    static void efx_ethtool_get_wol(struct net_device *net_dev,
+ >
