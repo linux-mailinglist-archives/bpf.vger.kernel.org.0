@@ -2,71 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB3D4F3B3B
-	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 17:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423994F3B3A
+	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 17:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345527AbiDELv5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 07:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
+        id S1345653AbiDELwE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 07:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355415AbiDELOr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 07:14:47 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126234C792;
-        Tue,  5 Apr 2022 03:34:32 -0700 (PDT)
+        with ESMTP id S1380403AbiDELmd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 07:42:33 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F0C10BBE3;
+        Tue,  5 Apr 2022 04:06:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649154872; x=1680690872;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UTD9oe2pef3Z84hPGqQnOjRJpiHk0wcvpWnMnU5moJo=;
-  b=bu/JViFnT33N1Vvgq9Gdkmhd0X8GObKDaZzQvnhTXRKihTWXkw5099Z4
-   5LFQVGbdZXuRDjUQMiVAr9B09lgVY7KYI1C/M1sggJB7K5NBwoVHes3nf
-   Ik5P0ujproIsBO+NBWYYUBT8zngyBUHjCqe/RMFncfG3Qr2vqYFjCFZ+A
-   1SSJzkKf9Yr3cuvmOQaC161OFwqnONJvABklcXIbIRa8+p1WYofOZkL5+
-   dSc7hJf4sdQGnPVkiASrG8Pppbj7tKAbrLD8OH4or/NbRF5GA8vTb4iEo
-   UPwHNonYAd7milViz5vl2IB3k4c0ktZox1RBZyhHnFKC0dMlYD53k0AxU
+  t=1649156803; x=1680692803;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NNaVagVkmxZRREd0d3044ps0HWL2oB7S1hkDYwyMVAU=;
+  b=BKPdKP7Ifvwupi4vkQfiNv4RpBq3STobS82n3+P1NKNviaZ1uaBmYHL3
+   vtvL2YZ4kAjvL9B0tAho8XXDyQ8xKTOwTxr5Z/eOJO10gHjMMeprusO4A
+   C1Xa01JfRLuWS0Vb5A6pNQdEAp8zCcGwwgQLdU/wNQG1/INzfOhIONrQf
+   92+CBmJYKuzGCaQZaKrbv8w2ksn1tkDwsdb6Stw4ek3BGu+bp+1853fQC
+   rM8NEbDhrJpbZhARs89oIQJpb58GCKTToUtRoEjkH8+834huFyMMlzuB8
+   S/CvFm1loMKzgnMhqZ+MuC6QUYOj00/QfRLoGJobXm4WEBN2uHQ7bCoM7
    Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10307"; a="258301832"
+X-IronPort-AV: E=McAfee;i="6200,9189,10307"; a="241307935"
 X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
-   d="scan'208";a="258301832"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 03:34:31 -0700
+   d="scan'208";a="241307935"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 04:06:42 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
-   d="scan'208";a="549005815"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga007.jf.intel.com with ESMTP; 05 Apr 2022 03:34:27 -0700
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 235AYPjg012310;
-        Tue, 5 Apr 2022 11:34:25 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] samples: bpf: fix linking xdp_router_ipv4 after migration
-Date:   Tue,  5 Apr 2022 12:32:14 +0200
-Message-Id: <20220405103214.3526290-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <CAEf4BzbEQeq-_BhrKLSHW2xObQPtzGA7Hw-hTbfLZZ_S4gfVmg@mail.gmail.com>
-References: <20220404115451.1116478-1-alexandr.lobakin@intel.com> <CAEf4BzbEQeq-_BhrKLSHW2xObQPtzGA7Hw-hTbfLZZ_S4gfVmg@mail.gmail.com>
+   d="scan'208";a="641570791"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Apr 2022 04:06:40 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        magnus.karlsson@intel.com, bjorn@kernel.org
+Cc:     netdev@vger.kernel.org, brouer@redhat.com, maximmi@nvidia.com,
+        alexandr.lobakin@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf-next 00/10] xsk: stop softirq processing on full XSK Rx queue
+Date:   Tue,  5 Apr 2022 13:06:21 +0200
+Message-Id: <20220405110631.404427-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,55 +60,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 4 Apr 2022 14:45:43 -0700
+Hi!
 
-> On Mon, Apr 4, 2022 at 4:57 AM Alexander Lobakin
-> <alexandr.lobakin@intel.com> wrote:
-> >
-> > Users of the xdp_sample_user infra should be explicitly linked
-> > with the standard math library (`-lm`). Otherwise, the following
-> > happens:
-> >
-> > /usr/bin/ld: xdp_sample_user.c:(.text+0x59fc): undefined reference to `ceil'
-> > /usr/bin/ld: xdp_sample_user.c:(.text+0x5a0d): undefined reference to `ceil'
-> > /usr/bin/ld: xdp_sample_user.c:(.text+0x5adc): undefined reference to `floor'
-> > /usr/bin/ld: xdp_sample_user.c:(.text+0x5b01): undefined reference to `ceil'
-> > /usr/bin/ld: xdp_sample_user.c:(.text+0x5c1e): undefined reference to `floor'
-> > /usr/bin/ld: xdp_sample_user.c:(.text+0x5c43): undefined reference to `ceil
-> > [...]
-> 
-> I actually don't get these, but applied to bpf-next anyway.
+This is a revival of Bjorn's idea [0] to break NAPI loop when XSK Rx
+queue gets full which in turn makes it impossible to keep on
+successfully producing descriptors to XSK Rx ring. By breaking out of
+the driver side immediately we will give the user space opportunity for
+consuming descriptors from XSK Rx ring and therefore provide room in the
+ring so that HW Rx -> XSK Rx redirection can be done.
 
-Depends on the compiler/linker I guess. They appear on `make LLVM=1`
-on my setup.
+Maxim asked and Jesper agreed on simplifying Bjorn's original API used
+for detecting the event of interest, so let's just simply check for
+-ENOBUFS within Intel's ZC drivers after an attempt to redirect a buffer
+to XSK Rx. No real need for redirect API extension.
+
+One might ask why it is still relevant even after having proper busy
+poll support in place - here is the justification.
+
+For xdpsock that was:
+- run for l2fwd scenario,
+- app/driver processing took place on the same core in busy poll
+  with 2048 budget,
+- HW ring sizes Tx 256, Rx 2048,
+
+this work improved throughput by 78% and reduced Rx queue full statistic
+bump by 99%.
+
+For testing ice, make sure that you have [1] present on your side.
+
+This set, besides the work described above, also carries also
+improvements around return codes in various XSK paths and lastly a minor
+optimization for xskq_cons_has_entries(), a helper that might be used
+when XSK Rx batching would make it to the kernel.
+
 Thanks!
+MF
 
-> 
-> >
-> > That happened previously, so there's a block of linkage flags in the
-> > Makefile. xdp_router_ipv4 has been transferred to this infra quite
-> > recently, but hasn't been added to it. Fix.
-> >
-> > Fixes: 85bf1f51691c ("samples: bpf: Convert xdp_router_ipv4 to XDP samples helper")
-> > Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > ---
-> >  samples/bpf/Makefile | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> > index b4fa0e69aa14..342a41a10356 100644
-> > --- a/samples/bpf/Makefile
-> > +++ b/samples/bpf/Makefile
-> > @@ -219,6 +219,7 @@ TPROGLDLIBS_xdp_redirect    += -lm
-> >  TPROGLDLIBS_xdp_redirect_cpu   += -lm
-> >  TPROGLDLIBS_xdp_redirect_map   += -lm
-> >  TPROGLDLIBS_xdp_redirect_map_multi += -lm
-> > +TPROGLDLIBS_xdp_router_ipv4    += -lm
-> >  TPROGLDLIBS_tracex4            += -lrt
-> >  TPROGLDLIBS_trace_output       += -lrt
-> >  TPROGLDLIBS_map_perf_test      += -lrt
-> > --
-> > 2.35.1
+[0]: https://lore.kernel.org/bpf/20200904135332.60259-1-bjorn.topel@gmail.com/
+[1]: https://lore.kernel.org/netdev/20220317175727.340251-1-maciej.fijalkowski@intel.com/
 
-Al
+Björn Töpel (1):
+  xsk: improve xdp_do_redirect() error codes
+
+Maciej Fijalkowski (9):
+  xsk: diversify return codes in xsk_rcv_check()
+  ice: xsk: terminate NAPI when XSK Rx queue gets full
+  i40e: xsk: terminate NAPI when XSK Rx queue gets full
+  ixgbe: xsk: terminate NAPI when XSK Rx queue gets full
+  ice: xsk: diversify return values from xsk_wakeup call paths
+  i40e: xsk: diversify return values from xsk_wakeup call paths
+  ixgbe: xsk: diversify return values from xsk_wakeup call paths
+  ice: xsk: avoid refilling single Rx descriptors
+  xsk: drop ternary operator from xskq_cons_has_entries
+
+ .../ethernet/intel/i40e/i40e_txrx_common.h    |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 27 +++++++++------
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
+ drivers/net/ethernet/intel/ice/ice_xsk.c      | 34 ++++++++++++-------
+ .../ethernet/intel/ixgbe/ixgbe_txrx_common.h  |  1 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 29 ++++++++++------
+ net/xdp/xsk.c                                 |  4 +--
+ net/xdp/xsk_queue.h                           |  4 +--
+ 8 files changed, 64 insertions(+), 37 deletions(-)
+
+-- 
+2.33.1
+
