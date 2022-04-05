@@ -2,126 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 138584F4116
-	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 23:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FA64F4144
+	for <lists+bpf@lfdr.de>; Tue,  5 Apr 2022 23:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240073AbiDEPZN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 11:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
+        id S240833AbiDEPZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 11:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345397AbiDEOXh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 10:23:37 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9371B6EB09;
-        Tue,  5 Apr 2022 06:09:52 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id b15so12046178pfm.5;
-        Tue, 05 Apr 2022 06:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=p5W0HLSh4kxqEqKp2k4JC+MHyJDV7uD5B6J5wpWqKsQ=;
-        b=IUrZgFVxLvUPKV9t6MtsKjNwVW68RgltIuuuX/CtEngtGPzi6LibkcCu8EnM4BaOcG
-         Kk4CQqMrNx2hIaj+GQiQyVZPlBpGvBl8wDts2N+EpsWfR//91R1dbFchUFHSnXTNrwBE
-         Pg4XJJUVxyciMRFFDcpfU9uGTg3uAy1VSMXAKYSAUaWZvAc4p8ckVtrQZ8SSDVK8afoX
-         Hs0mN/b2oM/AxPQ/4+bVsdkamX+UNJbECTTFWZctktcFzNGvAtQY81Ifrf7T/wFgRJ5Q
-         cZoYemtVF0R7y9bbxw8ugWN4PwI8HP/wzMmvd0/VywfN8lYw310/9GC323eZFVoBSQ+K
-         /09Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=p5W0HLSh4kxqEqKp2k4JC+MHyJDV7uD5B6J5wpWqKsQ=;
-        b=e5WimeB7xezHKPyS8burIIwG86JqyqyKchneR42UuChsCETWLYUyrtSmxnnGPgMWAx
-         Di4utADKQRm1LMAnfoZnfvt/7pUyI2EMhq9GfxeJtMjxPM39S1rdE1Qdd0MXTR6Ux0R5
-         G4ib4RbHDtmnjexG1oDC8MDQmzyyIRz9IRyKcE4wkLMOPOj6ssesxYeVkMuMCvcDQJjt
-         ye8omh1B8hyQpL42wa44cNMvAyltbF4l3uQHGjBY7MFVZwaBC1r7aa3lfDPIOPON7Por
-         F4ZuO5t8mwnQoLR4eSR3XQR4aKHpt7fi2Svo1KEtGdl6W1d1hDTvVPVadKnXJk5ygdvq
-         jnXA==
-X-Gm-Message-State: AOAM531w6KMFmg+ArBxU5kDQROnUozQYWdR8/q+RcH1DANXMxiPcnUKG
-        kGh/BCw/s8FhmBavVJMvaMQ=
-X-Google-Smtp-Source: ABdhPJzkThtzZC3V01k4BfUs/xUspZwDN3SdLfsy8x3gKseNaIL0SJXHA89TvdcN4iWr31ahrKSRsg==
-X-Received: by 2002:a63:df4a:0:b0:399:460d:2da with SMTP id h10-20020a63df4a000000b00399460d02damr2769002pgj.315.1649164191900;
-        Tue, 05 Apr 2022 06:09:51 -0700 (PDT)
-Received: from vultr.guest ([2001:19f0:6001:5271:5400:3ff:feef:3aee])
-        by smtp.gmail.com with ESMTPSA id s135-20020a63778d000000b0038259e54389sm13147257pgc.19.2022.04.05.06.09.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Apr 2022 06:09:51 -0700 (PDT)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v3 27/27] bpf: runqslower: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK
-Date:   Tue,  5 Apr 2022 13:08:58 +0000
-Message-Id: <20220405130858.12165-28-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220405130858.12165-1-laoar.shao@gmail.com>
-References: <20220405130858.12165-1-laoar.shao@gmail.com>
+        with ESMTP id S1389238AbiDEPVM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 11:21:12 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B9ECD32F;
+        Tue,  5 Apr 2022 06:35:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649165747; x=1680701747;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fVWz4U1ex/01xYxGZqkQetlyIcjnp+/OvGi5CvLhVO0=;
+  b=Jfkjv9YjOLK19xOFnu94DHjUnxoc4bHe9Fpv7G1PKod/gHJMYoifTWJd
+   16AeIRhUG8P+tks8RZcPhmmlfHTdYsEO1SeMgXKgiSzKzgh68+rq4HN5v
+   sfHKM83p6xlghNhQ5Y54ftSLj44dRrf5jklfU/qY/Sfr6YUg7jVoDbIxW
+   Oek53bHYaty11vP1YhQFwuZpuSOQmrjl1DCeHEPqGBPo+4YMV8sZP5vRP
+   DnBzkdOkiyiCFtIdxVr2J/mYv6MweOD9410tRi+0diwl8Y8CaP9r5nk20
+   s9G2cpLJBR2ElsutBPw17c3nP2IQcwA8dfvoxsePtqxWeKbJbLtcYtoWU
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10307"; a="241335999"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
+   d="scan'208";a="241335999"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 06:35:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
+   d="scan'208";a="556522499"
+Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
+  by fmsmga007.fm.intel.com with ESMTP; 05 Apr 2022 06:35:44 -0700
+Date:   Tue, 5 Apr 2022 15:35:44 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        magnus.karlsson@intel.com, bjorn@kernel.org, brouer@redhat.com,
+        netdev@vger.kernel.org, maximmi@nvidia.com,
+        alexandr.lobakin@intel.com
+Subject: Re: [PATCH bpf-next 02/10] xsk: diversify return codes in
+ xsk_rcv_check()
+Message-ID: <YkxFsMvj1PL2V/II@boxer>
+References: <20220405110631.404427-1-maciej.fijalkowski@intel.com>
+ <20220405110631.404427-3-maciej.fijalkowski@intel.com>
+ <fdc503fa-9ecb-113f-4dd6-774765c3b2ba@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fdc503fa-9ecb-113f-4dd6-774765c3b2ba@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Explicitly set libbpf 1.0 API mode, then we can avoid using the deprecated
-RLIMIT_MEMLOCK.
+On Tue, Apr 05, 2022 at 03:00:25PM +0200, Jesper Dangaard Brouer wrote:
+> 
+> 
+> On 05/04/2022 13.06, Maciej Fijalkowski wrote:
+> > Inspired by patch that made xdp_do_redirect() return values for XSKMAP
+> > more meaningful, return -ENXIO instead of -EINVAL for socket being
+> > unbound in xsk_rcv_check() as this is the usual value that is returned
+> > for such event. In turn, it is now possible to easily distinguish what
+> > went wrong, which is a bit harder when for both cases checked, -EINVAL
+> > was returned.
+> 
+> I like this as it makes it easier to troubleshoot.
+> Could you update the description to explain how to debug this easily.
+> E.g. via this bpftrace one liner:
+> 
+> 
+>  bpftrace -e 'tracepoint:xdp:xdp_redirect* {@err[-args->err] = count();}'
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- tools/bpf/runqslower/runqslower.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+Nice one! I'll include this in the commit message of v2.
 
-diff --git a/tools/bpf/runqslower/runqslower.c b/tools/bpf/runqslower/runqslower.c
-index d78f4148597f..83c5993a139a 100644
---- a/tools/bpf/runqslower/runqslower.c
-+++ b/tools/bpf/runqslower/runqslower.c
-@@ -4,7 +4,6 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
--#include <sys/resource.h>
- #include <time.h>
- #include <bpf/libbpf.h>
- #include <bpf/bpf.h>
-@@ -88,16 +87,6 @@ int libbpf_print_fn(enum libbpf_print_level level,
- 	return vfprintf(stderr, format, args);
- }
- 
--static int bump_memlock_rlimit(void)
--{
--	struct rlimit rlim_new = {
--		.rlim_cur	= RLIM_INFINITY,
--		.rlim_max	= RLIM_INFINITY,
--	};
--
--	return setrlimit(RLIMIT_MEMLOCK, &rlim_new);
--}
--
- void handle_event(void *ctx, int cpu, void *data, __u32 data_sz)
- {
- 	const struct runq_event *e = data;
-@@ -133,11 +122,8 @@ int main(int argc, char **argv)
- 
- 	libbpf_set_print(libbpf_print_fn);
- 
--	err = bump_memlock_rlimit();
--	if (err) {
--		fprintf(stderr, "failed to increase rlimit: %d", err);
--		return 1;
--	}
-+	/* Use libbpf 1.0 API mode */
-+	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
- 
- 	obj = runqslower_bpf__open();
- 	if (!obj) {
--- 
-2.17.1
-
+> 
+> 
+> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > ---
+> 
+> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> 
+> >   net/xdp/xsk.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > index f75e121073e7..040c73345b7c 100644
+> > --- a/net/xdp/xsk.c
+> > +++ b/net/xdp/xsk.c
+> > @@ -217,7 +217,7 @@ static bool xsk_is_bound(struct xdp_sock *xs)
+> >   static int xsk_rcv_check(struct xdp_sock *xs, struct xdp_buff *xdp)
+> >   {
+> >   	if (!xsk_is_bound(xs))
+> > -		return -EINVAL;
+> > +		return -ENXIO;
+> >   	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
+> >   		return -EINVAL;
+> > 
+> 
