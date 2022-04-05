@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1164F45AE
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 00:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC354F4566
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 00:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1389762AbiDEP0d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 11:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36704 "EHLO
+        id S231300AbiDEPYl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 11:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386611AbiDEOWO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 10:22:14 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B28266CBA;
-        Tue,  5 Apr 2022 06:09:40 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id bo5so12048496pfb.4;
-        Tue, 05 Apr 2022 06:09:40 -0700 (PDT)
+        with ESMTP id S240833AbiDEOW7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 10:22:59 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EACC6C968;
+        Tue,  5 Apr 2022 06:09:47 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 2so4643206pjw.2;
+        Tue, 05 Apr 2022 06:09:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=37SR7Zn31WWBGX9RkRYaZCh1XxNUj+JjDrpjS5zX3xw=;
-        b=JNksm1P71eENbHVREKVq7V+oFiG698bw+ibxUTkrtCwpk5e589wfIVtk06SzOGK6ea
-         26zybbYD2Fgn7VqAqwdHWyvRNKU35j4ZUD8hoCUbV4XFijZkRNQvE3w/SV+bCfpe6VrB
-         Smlol8WNulgRXh9nAg1lRgjpCb9k4KtTP0xB4PewZ/iMyVqP413FdHcwW+z5AzFmpS1W
-         xgq5jdgzwuEYQFqE3CfTkSGtB5N2rcR1LCsY53jDILv/j1JgFJ9lCArekaUuu6Chyw4d
-         6BKppHQJMJ7wSY1VFCiKxesks6Z72sg9QnfhG71Y8eYOvCDmiaCDt7oiHVMuGzuI5Xiu
-         BkQA==
+        bh=liBF+9ssmXuUiOOEfMjUeOpsbZDiWj/PkiKEXDnRBXc=;
+        b=LpF57/K4yJZWZq0aYf4ch6/3DVAJkh+9P9Cjg5tTs1cW0YXdYTGkd9oNLxXlCIlHFe
+         fdCvBzEa4watZYsmf93x3Wdb65q8tlZNih2M3m2Gnq23ECQ6I+Cg9ZdpZ7vbMkg0Gvzh
+         fuMbgbwDkbCk/lPEvxLjm86dRm3xIwe2ghM3b707GNhseLf0rxtW4xPgb/z/FcWyIrE7
+         +0hda74OlLugZVL9eDY2Hs6nHKHduwopzpy/Td/p3SlnjCVBhitRKJhqSPmrdvzcvmGs
+         B2QFxK6TaQYDiwS+T3+dlV9jVvKE4M4ofpz/dJ2i5/rQvi90OP1rfhLxzpUS69jO7in7
+         BpNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=37SR7Zn31WWBGX9RkRYaZCh1XxNUj+JjDrpjS5zX3xw=;
-        b=vrY5iY2gbMaEGg2ssE+Eg1JE/1xYZymO6iSH+PdqikUC8Ij78M67kxM6o8NTWOGAGQ
-         EmOM2xRA/yeq0MkivmHe0Ubmg//jVPEpTxberqqTtwOxqxXNtiR290wg7AR9aUbmGayh
-         pmd76jeNDZBKgn7f7NYeoei5NIKep5To5uQesJtVZ3ZyPk0VlsC87+Wmgu6n9//ScvIi
-         UjnvEtVTk9c6ZI0PlWuNcCVZTUpAhY9Kv/VU4Kt/hWi1xqWwSwnI4u6AArgUDV4iZlEG
-         DVZtuDmL1cVuPE7guSaSwfuaGiM9zuoi8kCGL2vOW6jp9lsvZCsKtZ3tFW2nQVmboBIh
-         NChg==
-X-Gm-Message-State: AOAM532CHCwHQx6sVangCrl8//m5JT6oVjoL7GxTvcRc/rGGmQAfbbSW
-        2jZQrdh5TGPyRedOlr6Y77c=
-X-Google-Smtp-Source: ABdhPJwWpczVL736y96tsDeroidAaWlHqfGEIpmpIQzcnUDPLxSVjZc0aijMy2B9dtOd04PvJ+/HUQ==
-X-Received: by 2002:a63:7741:0:b0:386:330e:1dcd with SMTP id s62-20020a637741000000b00386330e1dcdmr2744552pgc.71.1649164179481;
-        Tue, 05 Apr 2022 06:09:39 -0700 (PDT)
+        bh=liBF+9ssmXuUiOOEfMjUeOpsbZDiWj/PkiKEXDnRBXc=;
+        b=geDTzeu9wDE1zfoz3oSiLuNG3o2kqFVEfFZJkTOO/WzDmv//VrE87TCKvXs/e5EZWG
+         /NBdx1hv0lQLyFybeTs1PWuLZrYmL8zkwIzuUqa+EdzbfI3drnl6Bx00Khx76u3NWoDG
+         hRp/xUpaankkitFREVt/4lIGbsIhd4fpGD1xHDZtYV0hbEMJ1QiMJeioBlNny3izkOo0
+         TqDKJTmoRSLPr4jloW5O9/9jFfirHp6s6LJqPRt2VUb2uTCxhxIMSETukWLQxYV/AZVe
+         A5/Xo3EJGz95DeHPyv9DnjzkwC99nDpgLUduef6bFQV8J4bRofbRd0PlHHNOWh0ZC3QB
+         iwtw==
+X-Gm-Message-State: AOAM530/fqAo3JDvdbd/nGRC8Osa+XH+6qwobVO2a6SA+59lSLYsumny
+        tTqz/qGz46tab+rAMtVKPD0=
+X-Google-Smtp-Source: ABdhPJy/sc66zO28WcicI4bGrRszONwyny1M6iCuzaYph2v5XnBTcclKK1PaNgm34QTCw0PnSgHBeQ==
+X-Received: by 2002:a17:90a:4bc2:b0:1b8:cdd3:53e2 with SMTP id u2-20020a17090a4bc200b001b8cdd353e2mr4031909pjl.219.1649164187065;
+        Tue, 05 Apr 2022 06:09:47 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:6001:5271:5400:3ff:feef:3aee])
-        by smtp.gmail.com with ESMTPSA id s135-20020a63778d000000b0038259e54389sm13147257pgc.19.2022.04.05.06.09.38
+        by smtp.gmail.com with ESMTPSA id s135-20020a63778d000000b0038259e54389sm13147257pgc.19.2022.04.05.06.09.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Apr 2022 06:09:38 -0700 (PDT)
+        Tue, 05 Apr 2022 06:09:46 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v3 19/27] bpf: selftests: Get rid of bpf_rlimit.h
-Date:   Tue,  5 Apr 2022 13:08:50 +0000
-Message-Id: <20220405130858.12165-20-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v3 23/27] bpf: samples: No need to include sys/resource.h in many files
+Date:   Tue,  5 Apr 2022 13:08:54 +0000
+Message-Id: <20220405130858.12165-24-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20220405130858.12165-1-laoar.shao@gmail.com>
 References: <20220405130858.12165-1-laoar.shao@gmail.com>
@@ -71,49 +71,377 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-All the files which included bpf_rlimit.h have been set strict mode
-explicitly, so we can get rid of it now.
+The included file sys/resource.h is useless in these files, so let's
+remove it.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- tools/testing/selftests/bpf/bpf_rlimit.h | 28 ------------------------
- 1 file changed, 28 deletions(-)
- delete mode 100644 tools/testing/selftests/bpf/bpf_rlimit.h
+ samples/bpf/cpustat_user.c                | 1 -
+ samples/bpf/ibumad_user.c                 | 1 -
+ samples/bpf/map_perf_test_user.c          | 1 -
+ samples/bpf/offwaketime_user.c            | 1 -
+ samples/bpf/sockex2_user.c                | 1 -
+ samples/bpf/sockex3_user.c                | 1 -
+ samples/bpf/spintest_user.c               | 1 -
+ samples/bpf/syscall_tp_user.c             | 1 -
+ samples/bpf/task_fd_query_user.c          | 1 -
+ samples/bpf/test_lru_dist.c               | 1 -
+ samples/bpf/test_map_in_map_user.c        | 1 -
+ samples/bpf/test_overhead_user.c          | 1 -
+ samples/bpf/tracex2_user.c                | 1 -
+ samples/bpf/tracex3_user.c                | 1 -
+ samples/bpf/tracex4_user.c                | 1 -
+ samples/bpf/tracex5_user.c                | 1 -
+ samples/bpf/tracex6_user.c                | 1 -
+ samples/bpf/xdp1_user.c                   | 1 -
+ samples/bpf/xdp_adjust_tail_user.c        | 1 -
+ samples/bpf/xdp_monitor_user.c            | 1 -
+ samples/bpf/xdp_redirect_cpu_user.c       | 1 -
+ samples/bpf/xdp_redirect_map_multi_user.c | 1 -
+ samples/bpf/xdp_redirect_user.c           | 1 -
+ samples/bpf/xdp_router_ipv4_user.c        | 1 -
+ samples/bpf/xdp_rxq_info_user.c           | 1 -
+ samples/bpf/xdp_sample_pkts_user.c        | 1 -
+ samples/bpf/xdp_sample_user.c             | 1 -
+ samples/bpf/xdp_tx_iptunnel_user.c        | 1 -
+ 28 files changed, 28 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_rlimit.h b/tools/testing/selftests/bpf/bpf_rlimit.h
-deleted file mode 100644
-index 9dac9b30f8ef..000000000000
---- a/tools/testing/selftests/bpf/bpf_rlimit.h
-+++ /dev/null
-@@ -1,28 +0,0 @@
+diff --git a/samples/bpf/cpustat_user.c b/samples/bpf/cpustat_user.c
+index 96675985e9e0..ab90bb08a2b4 100644
+--- a/samples/bpf/cpustat_user.c
++++ b/samples/bpf/cpustat_user.c
+@@ -13,7 +13,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/time.h>
 -#include <sys/resource.h>
--#include <stdio.h>
--
--static  __attribute__((constructor)) void bpf_rlimit_ctor(void)
--{
--	struct rlimit rlim_old, rlim_new = {
--		.rlim_cur	= RLIM_INFINITY,
--		.rlim_max	= RLIM_INFINITY,
--	};
--
--	getrlimit(RLIMIT_MEMLOCK, &rlim_old);
--	/* For the sake of running the test cases, we temporarily
--	 * set rlimit to infinity in order for kernel to focus on
--	 * errors from actual test cases and not getting noise
--	 * from hitting memlock limits. The limit is on per-process
--	 * basis and not a global one, hence destructor not really
--	 * needed here.
--	 */
--	if (setrlimit(RLIMIT_MEMLOCK, &rlim_new) < 0) {
--		perror("Unable to lift memlock rlimit");
--		/* Trying out lower limit, but expect potential test
--		 * case failures from this!
--		 */
--		rlim_new.rlim_cur = rlim_old.rlim_cur + (1UL << 20);
--		rlim_new.rlim_max = rlim_old.rlim_max + (1UL << 20);
--		setrlimit(RLIMIT_MEMLOCK, &rlim_new);
--	}
--}
+ #include <sys/wait.h>
+ 
+ #include <bpf/bpf.h>
+diff --git a/samples/bpf/ibumad_user.c b/samples/bpf/ibumad_user.c
+index 0746ca516097..d074c978aac7 100644
+--- a/samples/bpf/ibumad_user.c
++++ b/samples/bpf/ibumad_user.c
+@@ -19,7 +19,6 @@
+ #include <sys/types.h>
+ #include <limits.h>
+ 
+-#include <sys/resource.h>
+ #include <getopt.h>
+ #include <net/if.h>
+ 
+diff --git a/samples/bpf/map_perf_test_user.c b/samples/bpf/map_perf_test_user.c
+index e69651a6902f..b6fc174ab1f2 100644
+--- a/samples/bpf/map_perf_test_user.c
++++ b/samples/bpf/map_perf_test_user.c
+@@ -13,7 +13,6 @@
+ #include <signal.h>
+ #include <string.h>
+ #include <time.h>
+-#include <sys/resource.h>
+ #include <arpa/inet.h>
+ #include <errno.h>
+ 
+diff --git a/samples/bpf/offwaketime_user.c b/samples/bpf/offwaketime_user.c
+index 73a986876c1a..b6eedcb98fb9 100644
+--- a/samples/bpf/offwaketime_user.c
++++ b/samples/bpf/offwaketime_user.c
+@@ -8,7 +8,6 @@
+ #include <linux/perf_event.h>
+ #include <errno.h>
+ #include <stdbool.h>
+-#include <sys/resource.h>
+ #include <bpf/libbpf.h>
+ #include <bpf/bpf.h>
+ #include "trace_helpers.h"
+diff --git a/samples/bpf/sockex2_user.c b/samples/bpf/sockex2_user.c
+index 6a3fd369d3fc..2c18471336f0 100644
+--- a/samples/bpf/sockex2_user.c
++++ b/samples/bpf/sockex2_user.c
+@@ -7,7 +7,6 @@
+ #include "sock_example.h"
+ #include <unistd.h>
+ #include <arpa/inet.h>
+-#include <sys/resource.h>
+ 
+ struct pair {
+ 	__u64 packets;
+diff --git a/samples/bpf/sockex3_user.c b/samples/bpf/sockex3_user.c
+index 6ae99ecc766c..cd6fa79df900 100644
+--- a/samples/bpf/sockex3_user.c
++++ b/samples/bpf/sockex3_user.c
+@@ -6,7 +6,6 @@
+ #include "sock_example.h"
+ #include <unistd.h>
+ #include <arpa/inet.h>
+-#include <sys/resource.h>
+ 
+ struct flow_key_record {
+ 	__be32 src;
+diff --git a/samples/bpf/spintest_user.c b/samples/bpf/spintest_user.c
+index 0d7e1e5a8658..aadac14f748a 100644
+--- a/samples/bpf/spintest_user.c
++++ b/samples/bpf/spintest_user.c
+@@ -3,7 +3,6 @@
+ #include <unistd.h>
+ #include <string.h>
+ #include <assert.h>
+-#include <sys/resource.h>
+ #include <bpf/libbpf.h>
+ #include <bpf/bpf.h>
+ #include "trace_helpers.h"
+diff --git a/samples/bpf/syscall_tp_user.c b/samples/bpf/syscall_tp_user.c
+index c55383068384..7a788bb837fc 100644
+--- a/samples/bpf/syscall_tp_user.c
++++ b/samples/bpf/syscall_tp_user.c
+@@ -8,7 +8,6 @@
+ #include <string.h>
+ #include <linux/perf_event.h>
+ #include <errno.h>
+-#include <sys/resource.h>
+ #include <bpf/libbpf.h>
+ #include <bpf/bpf.h>
+ 
+diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query_user.c
+index c9a0ca8351fd..424718c0872c 100644
+--- a/samples/bpf/task_fd_query_user.c
++++ b/samples/bpf/task_fd_query_user.c
+@@ -10,7 +10,6 @@
+ #include <fcntl.h>
+ #include <linux/bpf.h>
+ #include <sys/ioctl.h>
+-#include <sys/resource.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <linux/perf_event.h>
+diff --git a/samples/bpf/test_lru_dist.c b/samples/bpf/test_lru_dist.c
+index 75e877853596..be98ccb4952f 100644
+--- a/samples/bpf/test_lru_dist.c
++++ b/samples/bpf/test_lru_dist.c
+@@ -13,7 +13,6 @@
+ #include <sched.h>
+ #include <sys/wait.h>
+ #include <sys/stat.h>
+-#include <sys/resource.h>
+ #include <fcntl.h>
+ #include <stdlib.h>
+ #include <time.h>
+diff --git a/samples/bpf/test_map_in_map_user.c b/samples/bpf/test_map_in_map_user.c
+index 472d65c70354..e8b4cc184ac9 100644
+--- a/samples/bpf/test_map_in_map_user.c
++++ b/samples/bpf/test_map_in_map_user.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (c) 2017 Facebook
+  */
+-#include <sys/resource.h>
+ #include <sys/socket.h>
+ #include <arpa/inet.h>
+ #include <stdint.h>
+diff --git a/samples/bpf/test_overhead_user.c b/samples/bpf/test_overhead_user.c
+index 4821f9d99c1f..88717f8ec6ac 100644
+--- a/samples/bpf/test_overhead_user.c
++++ b/samples/bpf/test_overhead_user.c
+@@ -16,7 +16,6 @@
+ #include <linux/bpf.h>
+ #include <string.h>
+ #include <time.h>
+-#include <sys/resource.h>
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+ 
+diff --git a/samples/bpf/tracex2_user.c b/samples/bpf/tracex2_user.c
+index 1626d51dfffd..dd6205c6b6a7 100644
+--- a/samples/bpf/tracex2_user.c
++++ b/samples/bpf/tracex2_user.c
+@@ -4,7 +4,6 @@
+ #include <stdlib.h>
+ #include <signal.h>
+ #include <string.h>
+-#include <sys/resource.h>
+ 
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+diff --git a/samples/bpf/tracex3_user.c b/samples/bpf/tracex3_user.c
+index 33e16ba39f25..d5eebace31e6 100644
+--- a/samples/bpf/tracex3_user.c
++++ b/samples/bpf/tracex3_user.c
+@@ -7,7 +7,6 @@
+ #include <unistd.h>
+ #include <stdbool.h>
+ #include <string.h>
+-#include <sys/resource.h>
+ 
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+diff --git a/samples/bpf/tracex4_user.c b/samples/bpf/tracex4_user.c
+index 566e6440e8c2..227b05a0bc88 100644
+--- a/samples/bpf/tracex4_user.c
++++ b/samples/bpf/tracex4_user.c
+@@ -8,7 +8,6 @@
+ #include <stdbool.h>
+ #include <string.h>
+ #include <time.h>
+-#include <sys/resource.h>
+ 
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+diff --git a/samples/bpf/tracex5_user.c b/samples/bpf/tracex5_user.c
+index 08dfdc77ad2a..e910dc265c31 100644
+--- a/samples/bpf/tracex5_user.c
++++ b/samples/bpf/tracex5_user.c
+@@ -7,7 +7,6 @@
+ #include <sys/prctl.h>
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+-#include <sys/resource.h>
+ #include "trace_helpers.h"
+ 
+ #ifdef __mips__
+diff --git a/samples/bpf/tracex6_user.c b/samples/bpf/tracex6_user.c
+index 28296f40c133..8e83bf2a84a4 100644
+--- a/samples/bpf/tracex6_user.c
++++ b/samples/bpf/tracex6_user.c
+@@ -8,7 +8,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <sys/ioctl.h>
+-#include <sys/resource.h>
+ #include <sys/time.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+diff --git a/samples/bpf/xdp1_user.c b/samples/bpf/xdp1_user.c
+index 631f0cabe139..288db3d3ee5f 100644
+--- a/samples/bpf/xdp1_user.c
++++ b/samples/bpf/xdp1_user.c
+@@ -11,7 +11,6 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <libgen.h>
+-#include <sys/resource.h>
+ #include <net/if.h>
+ 
+ #include "bpf_util.h"
+diff --git a/samples/bpf/xdp_adjust_tail_user.c b/samples/bpf/xdp_adjust_tail_user.c
+index b3f6e49676ed..167646077c8f 100644
+--- a/samples/bpf/xdp_adjust_tail_user.c
++++ b/samples/bpf/xdp_adjust_tail_user.c
+@@ -14,7 +14,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <net/if.h>
+-#include <sys/resource.h>
+ #include <arpa/inet.h>
+ #include <netinet/ether.h>
+ #include <unistd.h>
+diff --git a/samples/bpf/xdp_monitor_user.c b/samples/bpf/xdp_monitor_user.c
+index fb9391a5ec62..58015eb2ffae 100644
+--- a/samples/bpf/xdp_monitor_user.c
++++ b/samples/bpf/xdp_monitor_user.c
+@@ -17,7 +17,6 @@ static const char *__doc_err_only__=
+ #include <ctype.h>
+ #include <unistd.h>
+ #include <locale.h>
+-#include <sys/resource.h>
+ #include <getopt.h>
+ #include <net/if.h>
+ #include <time.h>
+diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
+index 5f74a70a9021..a12381c37d2b 100644
+--- a/samples/bpf/xdp_redirect_cpu_user.c
++++ b/samples/bpf/xdp_redirect_cpu_user.c
+@@ -21,7 +21,6 @@ static const char *__doc__ =
+ #include <string.h>
+ #include <unistd.h>
+ #include <locale.h>
+-#include <sys/resource.h>
+ #include <sys/sysinfo.h>
+ #include <getopt.h>
+ #include <net/if.h>
+diff --git a/samples/bpf/xdp_redirect_map_multi_user.c b/samples/bpf/xdp_redirect_map_multi_user.c
+index 315314716121..9e24f2705b67 100644
+--- a/samples/bpf/xdp_redirect_map_multi_user.c
++++ b/samples/bpf/xdp_redirect_map_multi_user.c
+@@ -15,7 +15,6 @@ static const char *__doc__ =
+ #include <net/if.h>
+ #include <unistd.h>
+ #include <libgen.h>
+-#include <sys/resource.h>
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
+diff --git a/samples/bpf/xdp_redirect_user.c b/samples/bpf/xdp_redirect_user.c
+index 7af5b07a7523..8663dd631b6e 100644
+--- a/samples/bpf/xdp_redirect_user.c
++++ b/samples/bpf/xdp_redirect_user.c
+@@ -18,7 +18,6 @@ static const char *__doc__ =
+ #include <unistd.h>
+ #include <libgen.h>
+ #include <getopt.h>
+-#include <sys/resource.h>
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+ #include "bpf_util.h"
+diff --git a/samples/bpf/xdp_router_ipv4_user.c b/samples/bpf/xdp_router_ipv4_user.c
+index 7828784612ec..878efe50d881 100644
+--- a/samples/bpf/xdp_router_ipv4_user.c
++++ b/samples/bpf/xdp_router_ipv4_user.c
+@@ -22,7 +22,6 @@
+ #include <sys/syscall.h>
+ #include "bpf_util.h"
+ #include <bpf/libbpf.h>
+-#include <sys/resource.h>
+ #include <libgen.h>
+ #include <getopt.h>
+ #include "xdp_sample_user.h"
+diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
+index f2d90cba5164..05a24a712d7d 100644
+--- a/samples/bpf/xdp_rxq_info_user.c
++++ b/samples/bpf/xdp_rxq_info_user.c
+@@ -14,7 +14,6 @@ static const char *__doc__ = " XDP RX-queue info extract example\n\n"
+ #include <string.h>
+ #include <unistd.h>
+ #include <locale.h>
+-#include <sys/resource.h>
+ #include <getopt.h>
+ #include <net/if.h>
+ #include <time.h>
+diff --git a/samples/bpf/xdp_sample_pkts_user.c b/samples/bpf/xdp_sample_pkts_user.c
+index 0a2b3e997aed..7df7163239ac 100644
+--- a/samples/bpf/xdp_sample_pkts_user.c
++++ b/samples/bpf/xdp_sample_pkts_user.c
+@@ -12,7 +12,6 @@
+ #include <signal.h>
+ #include <bpf/libbpf.h>
+ #include <bpf/bpf.h>
+-#include <sys/resource.h>
+ #include <libgen.h>
+ #include <linux/if_link.h>
+ 
+diff --git a/samples/bpf/xdp_sample_user.c b/samples/bpf/xdp_sample_user.c
+index c4332d068b91..158682852162 100644
+--- a/samples/bpf/xdp_sample_user.c
++++ b/samples/bpf/xdp_sample_user.c
+@@ -25,7 +25,6 @@
+ #include <string.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+-#include <sys/resource.h>
+ #include <sys/signalfd.h>
+ #include <sys/sysinfo.h>
+ #include <sys/timerfd.h>
+diff --git a/samples/bpf/xdp_tx_iptunnel_user.c b/samples/bpf/xdp_tx_iptunnel_user.c
+index 2e811e4331cc..307baef6861a 100644
+--- a/samples/bpf/xdp_tx_iptunnel_user.c
++++ b/samples/bpf/xdp_tx_iptunnel_user.c
+@@ -10,7 +10,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <net/if.h>
+-#include <sys/resource.h>
+ #include <arpa/inet.h>
+ #include <netinet/ether.h>
+ #include <unistd.h>
 -- 
 2.17.1
 
