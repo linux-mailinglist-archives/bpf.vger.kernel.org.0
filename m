@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B95B04F4647
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 01:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11E34F45BC
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 00:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236745AbiDEPZD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 11:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
+        id S1347210AbiDEPZ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 11:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344185AbiDEOX2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1344234AbiDEOX2 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 5 Apr 2022 10:23:28 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A3A6C4A1;
-        Tue,  5 Apr 2022 06:09:48 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id s14-20020a17090a880e00b001caaf6d3dd1so2458777pjn.3;
-        Tue, 05 Apr 2022 06:09:48 -0700 (PDT)
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0796D391;
+        Tue,  5 Apr 2022 06:09:49 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id ku13-20020a17090b218d00b001ca8fcd3adeso2477529pjb.2;
+        Tue, 05 Apr 2022 06:09:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=29tSKU5CIi5toN+mzQg/xoJLGhPPII1qeJKEVizdgAc=;
-        b=SRHOtseHc3pgC9262T5fALIRfUCgNFOtq/kJ4SSuFnNHnhNZqZZQlXEkANgg+trIdE
-         +54wu9Q2BZeb4Q1ImhlCL+Y0MSDccyemKVgVR4hvitsZyEUfw6d6Dr3hRd6JaOAvfoui
-         LT57HVqFG0GGB0svFLzQM94lCbkgsA0f+ZLtmEZNLUNUcwOMCKPoPbXPF2fgq0NHhtcm
-         KSWeHn6ljeMP2ezaaZ2oVj9omtIzWS/PGjL4d10F5ebDQ53qcPZ2Sw0kEpOLKZD6fdWl
-         kQCWK6AsPwdYWvj6bT4fDQXn6EZkMsD012l2zTdunmsfURrW77h0er5kZSfQAn19mPAy
-         IHqA==
+        bh=4cKz3KRjDOO2S0baJ4Rm0rVmX1qZ76ju8M71vBlKzDo=;
+        b=SZ9r8aGPwF54xnRjnJKpPEDi+2MQiSd2Ui8dzkZ8chfm8UiXsQpSkE1toj36LqSuD3
+         6J9abQ5RciNLzBg317AUb7Tp/RCt1tVkrEXoeV29QvwNgaIC0j4RyhSuSV0slaZnM3Rq
+         +NIcLNM89n5idM0BsiBjogwIfNse3QgduYrjKD0kSDxuE4Q4zIcqam84KGYAAzyPQFwL
+         Vs/RYF3GYGfeoxIOkz14uobI/fExQ0dAGbAyihqq1835MxYPR3RZwP5CKfUD4+NAQRn1
+         B/r5QjJgX0TG87ouNCRvcDS+4jfdU1oFgqmfV7vZ/LV7MYfhSxVq0JJ2tsFJA3gdB3JU
+         JK5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=29tSKU5CIi5toN+mzQg/xoJLGhPPII1qeJKEVizdgAc=;
-        b=l/dl6DDcL/C3aBUGKfJ+yVmXMQ1fbfan8fFsrw1DV2L0GLlQB0MS5o0AH1A/D9z01K
-         Nh6x8HklUlDaPhgAxfETe4YRYLLJfCvkkpAsXv3O8i1gNTsO7R9r17vmSzzPqbWpd0CH
-         h5osieMpSkuhjpXHjFBCsvaV1XNR5XTrCy/+Q5koCXemmawC1uBAELD0QYdpk80v5abF
-         uc04cMG3FNOoCGfDgtHSki1uxlA/Og09quKwBmtAwdB1dqfQ3yOREr++2wxGItBEIo4G
-         vzjKhffkMY+e9e4nvxR7GoCqZjApB9bC/5+wSEUiOdoIGQHVviTWWOlJn2JrZ8KAYy/s
-         LwCg==
-X-Gm-Message-State: AOAM532oJnFRAW/0Uf866Z0JEFgmRoMTwD/2BAPPktvQi1FZZ6J2X/K8
-        kSyjH7oI/0OVUA4MIXR+J1w=
-X-Google-Smtp-Source: ABdhPJxpSXI5Hwcc+Th8R/v5CnSoyL21gAJjIWwHO38u7LmooE/0eNucZHJWA/m1F2s6Zcc1vfCAYw==
-X-Received: by 2002:a17:90b:2406:b0:1ca:ab60:60ae with SMTP id nr6-20020a17090b240600b001caab6060aemr4085058pjb.226.1649164188292;
-        Tue, 05 Apr 2022 06:09:48 -0700 (PDT)
+        bh=4cKz3KRjDOO2S0baJ4Rm0rVmX1qZ76ju8M71vBlKzDo=;
+        b=ao5o/oxMIR1KK7BEzNZ7F31ymM04Yh+pK1dKUDIeSixltw6b7JY0yPWELCiPOkcibg
+         vdBm5EtXzacL/m7rIM0+w+jaAqqKDYMrgdrX+rTzeFX0eI4EaOHT/+qlWOwQVgsuCzxx
+         QHCz0HVnKh4AzRxdTJ6aAzTSVhhF36MR6Vwnhntp0HQzHfYu4g7mK3SVZj70jVaLBdtV
+         KwpobgK7FmjIyG/EcZ1ZsRjWGSBT+Xx/pdAUwcEH9XJn+k5WrZ/3cKPO853Zjzwt2bgK
+         TbLuDOK6PaJC0S40koZn32FMLnppmf2X0XeeET8qdngmnuxcE3QTcTyDMRGmyGAPvQpe
+         iSeQ==
+X-Gm-Message-State: AOAM53148Cva/mgM6uvQKkUPGQGjiMb0z6Xkj7HzTqKaUFTZA8S1BiDc
+        rglXwP9uxfOLnei3Cap4rc8=
+X-Google-Smtp-Source: ABdhPJysjLwmtyZKeGiRxf/NT/W7hkXMGA+xvAPPrn4tKOug5mZGyzbjlCUdDz+ouiLnbIeUL6rftA==
+X-Received: by 2002:a17:90b:1d82:b0:1c7:1d3:f4 with SMTP id pf2-20020a17090b1d8200b001c701d300f4mr4048551pjb.223.1649164189427;
+        Tue, 05 Apr 2022 06:09:49 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:6001:5271:5400:3ff:feef:3aee])
-        by smtp.gmail.com with ESMTPSA id s135-20020a63778d000000b0038259e54389sm13147257pgc.19.2022.04.05.06.09.47
+        by smtp.gmail.com with ESMTPSA id s135-20020a63778d000000b0038259e54389sm13147257pgc.19.2022.04.05.06.09.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Apr 2022 06:09:47 -0700 (PDT)
+        Tue, 05 Apr 2022 06:09:49 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next v3 24/27] bpf: bpftool: Remove useless return value of libbpf_set_strict_mode
-Date:   Tue,  5 Apr 2022 13:08:55 +0000
-Message-Id: <20220405130858.12165-25-laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v3 25/27] bpf: bpftool: Set LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK for legacy libbpf
+Date:   Tue,  5 Apr 2022 13:08:56 +0000
+Message-Id: <20220405130858.12165-26-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20220405130858.12165-1-laoar.shao@gmail.com>
 References: <20220405130858.12165-1-laoar.shao@gmail.com>
@@ -71,26 +71,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf_set_strict_mode alwasy return 0, so we don't need to check whether
-the return value is 0 or not.
+LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK has already been set for non legacy
+libbpf, let's also set it for legacy libbpf then we can avoid using the
+deprecatred RLIMIT_MEMLOCK.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- tools/bpf/bpftool/main.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ tools/bpf/bpftool/main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index e81227761f5d..451cefc2d0da 100644
+index 451cefc2d0da..9062ef2b8767 100644
 --- a/tools/bpf/bpftool/main.c
 +++ b/tools/bpf/bpftool/main.c
-@@ -507,9 +507,7 @@ int main(int argc, char **argv)
- 		 * It will still be rejected if users use LIBBPF_STRICT_ALL
+@@ -508,6 +508,8 @@ int main(int argc, char **argv)
  		 * mode for loading generated skeleton.
  		 */
--		ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL & ~LIBBPF_STRICT_MAP_DEFINITIONS);
--		if (ret)
--			p_err("failed to enable libbpf strict mode: %d", ret);
-+		libbpf_set_strict_mode(LIBBPF_STRICT_ALL & ~LIBBPF_STRICT_MAP_DEFINITIONS);
+ 		libbpf_set_strict_mode(LIBBPF_STRICT_ALL & ~LIBBPF_STRICT_MAP_DEFINITIONS);
++	} else {
++		libbpf_set_strict_mode(LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK);
  	}
  
  	argc -= optind;
