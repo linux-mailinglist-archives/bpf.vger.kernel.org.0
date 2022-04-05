@@ -2,76 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A02D4F4D92
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B264F4D8B
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446592AbiDEXqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 19:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55600 "EHLO
+        id S1444440AbiDEXpl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 19:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572996AbiDERna (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 13:43:30 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D588CB91AE;
-        Tue,  5 Apr 2022 10:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649180491; x=1680716491;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=d1uggptIEOdH6XP927KXNMIpnt0NmVSeFNANlHp6nPQ=;
-  b=AAU/kxUvSzhEcigPIu96Y5JOYZY+9iUEM5gmtvyLnr/EgIUHoRqgIMVL
-   BavdfY7ZpHp8edoItMSoePA6XqIbSSedbYkl2DHp6SXFh07fTp+1BeYDl
-   cci9CTb7dnCJ4f3Cy8loJAhXcM3UFYGv01juWngneu93ybSolfD0/ISVH
-   bjs0jCMFNY8C90VmQx6wD4CDeCk+FBgx3VRcQn4X2/c9+l5Ip+LBB8bAu
-   FXwUc33/EIhiko6V2mvYdLP4GFb4v6LHTncVR4y+Fe7El3uHeTz9fJMwS
-   WQDv3JTHyo+MWeNsdoW7Zw6XW08FgyfQh7hMLiSYsIpM0YJbQxX/VapKM
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="259651073"
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
-   d="scan'208";a="259651073"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 10:41:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
-   d="scan'208";a="523555238"
-Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 05 Apr 2022 10:41:25 -0700
-Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nbnBE-0003dj-Br;
-        Tue, 05 Apr 2022 17:41:24 +0000
-Date:   Wed, 6 Apr 2022 01:40:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     kbuild-all@lists.01.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org,
-        kernel-team@fb.com, Jiri Olsa <jolsa@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH bpf 4/4] arm64: rethook: Replace kretprobe trampoline
- with rethook
-Message-ID: <202204060119.lme7uoGl-lkp@intel.com>
-References: <164915126392.982637.10302202550404803304.stgit@devnote2>
+        with ESMTP id S1573085AbiDERza (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 13:55:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F828DE098;
+        Tue,  5 Apr 2022 10:53:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A4117618BF;
+        Tue,  5 Apr 2022 17:53:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E37C385A0;
+        Tue,  5 Apr 2022 17:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649181209;
+        bh=UcffL7obZFIqSR0hxtL30TFDuYZ62d5T/DDNxtcNc3k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ive2FIZUz9QDWMoaFIaAABR2YxYJCuBle48O09ukx2iGLSnFuVUp5Qv/nhJKJ/X/x
+         1MTXAoRwFVLOlwGbSlojZcga1owgDgBbfvGjZehKtGL6QTHpY5fjkIE7GKJSOG3cjz
+         rfZeaN9WgBjOJKMvw1eNmmWzm7jqAc3NfFkohQtCaHz2dEixLJPoUXMXp7dPYkrFxc
+         cHVZN0spyf+90yhX4cdm3malL0IgiRcrse+COQqTNckoUQPpqD3wv24eFPBTYbSjqB
+         QvQ6rQn/cN7nl0T0/DvT83+s2F96KzgTRdZ6fZQqCOx72F7NKmeLAEdo6Ck4hTWCkA
+         qLD0bhPNoxhfA==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        lorenzo.bianconi@redhat.com, andrii@kernel.org,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        magnus.karlsson@intel.com, jbrouer@redhat.com, toke@redhat.com
+Subject: [PATCH net-next] ixgbe: add xdp frags support to ndo_xdp_xmit
+Date:   Tue,  5 Apr 2022 19:53:15 +0200
+Message-Id: <6de1d7547b60677ad0b0f7ebcbc7ebc76a31dcf7.1649180962.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <164915126392.982637.10302202550404803304.stgit@devnote2>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,48 +54,146 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Masami,
+Add the capability to map non-linear xdp frames in XDP_TX and ndo_xdp_xmit
+callback.
 
-I love your patch! Perhaps something to improve:
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 99 ++++++++++++-------
+ 1 file changed, 63 insertions(+), 36 deletions(-)
 
-[auto build test WARNING on bpf/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Masami-Hiramatsu/kprobes-rethook-ARM-arm64-Replace-kretprobe-trampoline-with-rethook/20220405-195153
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20220406/202204060119.lme7uoGl-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/74084aa7903f112b1c3df1f864d49b15d8aba270
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Masami-Hiramatsu/kprobes-rethook-ARM-arm64-Replace-kretprobe-trampoline-with-rethook/20220405-195153
-        git checkout 74084aa7903f112b1c3df1f864d49b15d8aba270
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash arch/arm64/kernel/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> arch/arm64/kernel/rethook.c:11:22: warning: no previous prototype for 'arch_rethook_trampoline_callback' [-Wmissing-prototypes]
-      11 | unsigned long __used arch_rethook_trampoline_callback(struct pt_regs *regs)
-         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/arch_rethook_trampoline_callback +11 arch/arm64/kernel/rethook.c
-
-     9	
-    10	/* This is called from arch_rethook_trampoline() */
-  > 11	unsigned long __used arch_rethook_trampoline_callback(struct pt_regs *regs)
-    12	{
-    13		return rethook_trampoline_handler(regs, regs->regs[29]);
-    14	}
-    15	NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
-    16	
-
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index c4a4954aa317..8b84c9b2eecc 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -2344,6 +2344,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+ 			hard_start = page_address(rx_buffer->page) +
+ 				     rx_buffer->page_offset - offset;
+ 			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
++			xdp_buff_clear_frags_flag(&xdp);
+ #if (PAGE_SIZE > 4096)
+ 			/* At larger PAGE_SIZE, frame_sz depend on len size */
+ 			xdp.frame_sz = ixgbe_rx_frame_truesize(rx_ring, size);
+@@ -8571,57 +8572,83 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
+ int ixgbe_xmit_xdp_ring(struct ixgbe_ring *ring,
+ 			struct xdp_frame *xdpf)
+ {
+-	struct ixgbe_tx_buffer *tx_buffer;
+-	union ixgbe_adv_tx_desc *tx_desc;
+-	u32 len, cmd_type;
+-	dma_addr_t dma;
+-	u16 i;
+-
+-	len = xdpf->len;
++	struct skb_shared_info *sinfo = xdp_get_shared_info_from_frame(xdpf);
++	u8 nr_frags = unlikely(xdp_frame_has_frags(xdpf)) ? sinfo->nr_frags : 0;
++	u16 i = 0, index = ring->next_to_use;
++	struct ixgbe_tx_buffer *tx_head = &ring->tx_buffer_info[index];
++	struct ixgbe_tx_buffer *tx_buff = tx_head;
++	union ixgbe_adv_tx_desc *tx_desc = IXGBE_TX_DESC(ring, index);
++	u32 cmd_type, len = xdpf->len;
++	void *data = xdpf->data;
+ 
+-	if (unlikely(!ixgbe_desc_unused(ring)))
++	if (unlikely(ixgbe_desc_unused(ring) < 1 + nr_frags))
+ 		return IXGBE_XDP_CONSUMED;
+ 
+-	dma = dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
+-	if (dma_mapping_error(ring->dev, dma))
+-		return IXGBE_XDP_CONSUMED;
++	tx_head->bytecount = xdp_get_frame_len(xdpf);
++	tx_head->gso_segs = 1;
++	tx_head->xdpf = xdpf;
+ 
+-	/* record the location of the first descriptor for this packet */
+-	tx_buffer = &ring->tx_buffer_info[ring->next_to_use];
+-	tx_buffer->bytecount = len;
+-	tx_buffer->gso_segs = 1;
+-	tx_buffer->protocol = 0;
++	tx_desc->read.olinfo_status =
++		cpu_to_le32(tx_head->bytecount << IXGBE_ADVTXD_PAYLEN_SHIFT);
+ 
+-	i = ring->next_to_use;
+-	tx_desc = IXGBE_TX_DESC(ring, i);
++	for (;;) {
++		dma_addr_t dma;
+ 
+-	dma_unmap_len_set(tx_buffer, len, len);
+-	dma_unmap_addr_set(tx_buffer, dma, dma);
+-	tx_buffer->xdpf = xdpf;
++		dma = dma_map_single(ring->dev, data, len, DMA_TO_DEVICE);
++		if (dma_mapping_error(ring->dev, dma))
++			goto unmap;
+ 
+-	tx_desc->read.buffer_addr = cpu_to_le64(dma);
++		dma_unmap_len_set(tx_buff, len, len);
++		dma_unmap_addr_set(tx_buff, dma, dma);
++
++		cmd_type = IXGBE_ADVTXD_DTYP_DATA | IXGBE_ADVTXD_DCMD_DEXT |
++			   IXGBE_ADVTXD_DCMD_IFCS | len;
++		tx_desc->read.cmd_type_len = cpu_to_le32(cmd_type);
++		tx_desc->read.buffer_addr = cpu_to_le64(dma);
++		tx_buff->protocol = 0;
++
++		if (++index == ring->count)
++			index = 0;
++
++		if (i == nr_frags)
++			break;
++
++		tx_buff = &ring->tx_buffer_info[index];
++		tx_desc = IXGBE_TX_DESC(ring, index);
++		tx_desc->read.olinfo_status = 0;
+ 
++		data = skb_frag_address(&sinfo->frags[i]);
++		len = skb_frag_size(&sinfo->frags[i]);
++		i++;
++	}
+ 	/* put descriptor type bits */
+-	cmd_type = IXGBE_ADVTXD_DTYP_DATA |
+-		   IXGBE_ADVTXD_DCMD_DEXT |
+-		   IXGBE_ADVTXD_DCMD_IFCS;
+-	cmd_type |= len | IXGBE_TXD_CMD;
+-	tx_desc->read.cmd_type_len = cpu_to_le32(cmd_type);
+-	tx_desc->read.olinfo_status =
+-		cpu_to_le32(len << IXGBE_ADVTXD_PAYLEN_SHIFT);
++	tx_desc->read.cmd_type_len |= cpu_to_le32(IXGBE_TXD_CMD);
+ 
+ 	/* Avoid any potential race with xdp_xmit and cleanup */
+ 	smp_wmb();
+ 
+-	/* set next_to_watch value indicating a packet is present */
+-	i++;
+-	if (i == ring->count)
+-		i = 0;
+-
+-	tx_buffer->next_to_watch = tx_desc;
+-	ring->next_to_use = i;
++	tx_head->next_to_watch = tx_desc;
++	ring->next_to_use = index;
+ 
+ 	return IXGBE_XDP_TX;
++
++unmap:
++	for (;;) {
++		tx_buff = &ring->tx_buffer_info[index];
++		if (dma_unmap_len(tx_buff, len))
++			dma_unmap_page(ring->dev, dma_unmap_addr(tx_buff, dma),
++				       dma_unmap_len(tx_buff, len),
++				       DMA_TO_DEVICE);
++		dma_unmap_len_set(tx_buff, len, 0);
++		if (tx_buff == tx_head)
++			break;
++
++		if (!index)
++			index += ring->count;
++		index--;
++	}
++
++	return IXGBE_XDP_CONSUMED;
+ }
+ 
+ netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.35.1
+
