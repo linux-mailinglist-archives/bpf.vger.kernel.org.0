@@ -2,87 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E954F4D97
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7824F4D86
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 03:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449981AbiDEXqg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Apr 2022 19:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
+        id S1358046AbiDEXpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Apr 2022 19:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1457749AbiDEQjy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 12:39:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2F9D8F53
-        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 09:37:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A64E61867
-        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 16:37:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA82AC385A4
-        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 16:37:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649176674;
-        bh=Godeb1QF1XaLrnNDs3lSu+RGeizZyertdC0hYAIHClw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=V6/Ti81/S9L4MlpLAn5DRhR99XayCtbqbXK56WhDTzqS22tC9iUG6ovrODd04zPWy
-         daYxzoRUUdj3YYWH6bx2gqsih+zeARgfngBNlDG4SxHjc/qfL18ZYeFqcfUcCt5JSf
-         gtoDM6crrBsBg4znMCDoqc3g+e6zDiGLcvAb8dKY9SygRQFX+Ljx6qGBCViFwYnd3t
-         eSHJNHxymW7LBYYJji/EPuCrvGf4s7QEEbVk3RVTnr0fd/qR6KJ0HsiNQboLd9lAiB
-         hWclcqtoii7fw1ULYNWr2yT6WnHCgV+eUOSTrwN9kBq3emMoQoaBFfBQtaK1SV8O1c
-         Z0aQsDMVRUDtQ==
-Received: by mail-ej1-f41.google.com with SMTP id r13so27881718ejd.5
-        for <bpf@vger.kernel.org>; Tue, 05 Apr 2022 09:37:54 -0700 (PDT)
-X-Gm-Message-State: AOAM532Na7XLL5harXOv5QZ9lRjhqtUiKEbM1yNuRXkvh4RXScRni2St
-        qqjphM9S0VP4glK+8JiIg3Bv4cCSdcCc+3z8ly8gvg==
-X-Google-Smtp-Source: ABdhPJzKjYrImTJI9WyByUp50Mj9PCG8J06DWt1ucdJTqdDxCPRpsxJHnkt2Vhm9WUOmFxdnESIK5CAyDWTZbEBHta8=
-X-Received: by 2002:a17:907:6089:b0:6db:a3d7:3fa9 with SMTP id
- ht9-20020a170907608900b006dba3d73fa9mr4556278ejc.593.1649176672844; Tue, 05
- Apr 2022 09:37:52 -0700 (PDT)
+        with ESMTP id S1457745AbiDEQjr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 12:39:47 -0400
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EF6D7631;
+        Tue,  5 Apr 2022 09:37:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649176668; x=1680712668;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0XdaCmbgNbaa3xchsuSOZO9UgEXIgUm89IngezaXfP4=;
+  b=Lsd4mn+xBYy6ZS6V0nGwJy0SisMRDMGWI+hm5Gm1+z9fmGBZEHwPZD/b
+   2nWKf1XEMMB5ZOhbCVzb9khD2WkTl9La4fFJL2Lq/MkP4yff7Mc42kFYm
+   Bip9ODnYqC3x09oykCv/ZcAu0NATpzmpcyNr1PpSSN+BOEzvtLUe5vl6g
+   E2ZX+zuhu9MEz1HnDcZeiLbuSs1aMz/bXnYKclZ6ttfJ0hy/5aRNwqO8D
+   2AYtiwJFwlR+OTFGb7bz571IdeVJIa/3znMzrA53ZpGy7jVXvMdGkIVw9
+   4i4uH3zJDOknn01abAAOZBvoszqnZRdXPhuV8leLZONMedmsIlhS0levl
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="321492685"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
+   d="scan'208";a="321492685"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 09:37:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; 
+   d="scan'208";a="722116663"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by orsmga005.jf.intel.com with ESMTP; 05 Apr 2022 09:37:26 -0700
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH net 0/3][pull request] Intel Wired LAN Driver Updates 2022-04-05
+Date:   Tue,  5 Apr 2022 09:38:00 -0700
+Message-Id: <20220405163803.63815-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20220328175033.2437312-1-roberto.sassu@huawei.com>
- <20220331022727.ybj4rui4raxmsdpu@MBP-98dd607d3435.dhcp.thefacebook.com>
- <b9f5995f96da447c851f7c9db8232a9b@huawei.com> <20220401235537.mwziwuo4n53m5cxp@MBP-98dd607d3435.dhcp.thefacebook.com>
- <CACYkzJ5QgkucL3HZ4bY5Rcme4ey6U3FW4w2Gz-9rdWq0_RHvgA@mail.gmail.com>
- <CAEiveUcx1KHoJ421Cv+52t=0U+Uy2VF51VC_zfTSftQ4wVYOPw@mail.gmail.com>
- <c2e57f10b62940eba3cfcae996e20e3c@huawei.com> <385e4cf4-4cd1-8f41-5352-ea87a1f419ad@schaufler-ca.com>
- <0497bb46586c4f37b9bd01950ba9e6a5@huawei.com> <fb804242-da2c-4213-9dc3-f09ea42f0355@schaufler-ca.com>
-In-Reply-To: <fb804242-da2c-4213-9dc3-f09ea42f0355@schaufler-ca.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 5 Apr 2022 18:37:42 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4KwWykYjb0DJ1SHe9syiefqgfjDB8om7RNx10vZ3UiKg@mail.gmail.com>
-Message-ID: <CACYkzJ4KwWykYjb0DJ1SHe9syiefqgfjDB8om7RNx10vZ3UiKg@mail.gmail.com>
-Subject: Re: [PATCH 00/18] bpf: Secure and authenticated preloading of eBPF programs
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Djalal Harouni <tixxdz@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,119 +59,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 5, 2022 at 6:22 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->
-> On 4/5/2022 8:29 AM, Roberto Sassu wrote:
-> >> From: Casey Schaufler [mailto:casey@schaufler-ca.com]
-> >> Sent: Tuesday, April 5, 2022 4:50 PM
-> >> On 4/4/2022 10:20 AM, Roberto Sassu wrote:
-> >>>> From: Djalal Harouni [mailto:tixxdz@gmail.com]
-> >>>> Sent: Monday, April 4, 2022 9:45 AM
-> >>>> On Sun, Apr 3, 2022 at 5:42 PM KP Singh <kpsingh@kernel.org> wrote:
-> >>>>> On Sat, Apr 2, 2022 at 1:55 AM Alexei Starovoitov
-> >>>>> <alexei.starovoitov@gmail.com> wrote:
-> >>>> ...
-> >>>>>>> Pinning
-> >>>>>>> them to unreachable inodes intuitively looked the
-> >>>>>>> way to go for achieving the stated goal.
-> >>>>>> We can consider inodes in bpffs that are not unlinkable by root
-> >>>>>> in the future, but certainly not for this use case.
-> >>>>> Can this not be already done by adding a BPF_LSM program to the
-> >>>>> inode_unlink LSM hook?
-> >>>>>
-> >>>> Also, beside of the inode_unlink... and out of curiosity: making
-> >> sysfs/bpffs/
-> >>>> readonly after pinning, then using bpf LSM hooks
-> >>>> sb_mount|remount|unmount...
-> >>>> family combining bpf() LSM hook... isn't this enough to:
-> >>>> 1. Restrict who can pin to bpffs without using a full MAC
-> >>>> 2. Restrict who can delete or unmount bpf filesystem
-> >>>>
-> >>>> ?
-> >>> I'm thinking to implement something like this.
-> >>>
-> >>> First, I add a new program flag called
-> >>> BPF_F_STOP_ONCONFIRM, which causes the ref count
-> >>> of the link to increase twice at creation time. In this way,
-> >>> user space cannot make the link disappear, unless a
-> >>> confirmation is explicitly sent via the bpf() system call.
-> >>>
-> >>> Another advantage is that other LSMs can decide
-> >>> whether or not they allow a program with this flag
-> >>> (in the bpf security hook).
-> >>>
-> >>> This would work regardless of the method used to
-> >>> load the eBPF program (user space or kernel space).
-> >>>
-> >>> Second, I extend the bpf() system call with a new
-> >>> subcommand, BPF_LINK_CONFIRM_STOP, which
-> >>> decreasres the ref count for the link of the programs
-> >>> with the BPF_F_STOP_ONCONFIRM flag. I will also
-> >>> introduce a new security hook (something like
-> >>> security_link_confirm_stop), so that an LSM has the
-> >>> opportunity to deny the stop (the bpf security hook
-> >>> would not be sufficient to determine exactly for
-> >>> which link the confirmation is given, an LSM should
-> >>> be able to deny the stop for its own programs).
-> >> Would you please stop referring to a set of eBPF programs
-> >> loaded into the BPF LSM as an LSM? Call it a BPF security
-> >> module (BSM) if you must use an abbreviation. An LSM is a
-> >> provider of security_ hooks. In your case that is BPF. When
-> >> you call the set of eBPF programs an LSM it is like calling
-> >> an SELinux policy an LSM.
-> > An eBPF program could be a provider of security_ hooks
-> > too.
->
-> No, it can't. If I look in /sys/kernel/security/lsm what
-> you see is "bpf". The LSM is BPF. What BPF does in its
-> hooks is up to it and its responsibility.
->
-> >   The bpf LSM is an aggregator, similarly to your
-> > infrastructure to manage built-in LSMs. Maybe, calling
-> > it second-level LSM or secondary LSM would better
-> > represent this new class.
->
-> It isn't an LSM, and adding a qualifier doesn't make it
-> one and only adds to the confusion.
->
-> > The only differences are the registration method, (SEC
-> > directive instead of DEFINE_LSM), and what the hook
-> > implementation can access.
->
-> Those two things pretty well define what an LSM is.
->
-> > The implementation of a security_ hook via eBPF can
-> > follow the same structure of built-in LSMs, i.e. it can be
-> > uniquely responsible for enforcing and be policy-agnostic,
-> > and can retrieve the decisions based on a policy from a
-> > component implemented somewhere else.
->
-> The BPF LSM provides mechanism. The eBPF programs provide policy.
+Maciej Fijalkowski says:
 
-Yeah, let's stick what we call an LSM in the kernel, Here,
-"bpf" is the LSM like selinux,apparmor and this is what you set in
-CONFIG_LSM or pass on cmdline as lsm= and can be seen
-in /sys/kernel/security/lsm
+We were solving issues around AF_XDP busy poll's not-so-usual scenarios,
+such as very big busy poll budgets applied to very small HW rings. This
+set carries the things that were found during that work that apply to
+net tree.
 
-Calling your BPF programs an LSM will just confuse people.
+One thing that was fixed for all in-tree ZC drivers was missing on ice
+side all the time - it's about syncing RCU before destroying XDP
+resources. Next one fixes the bit that is checked in ice_xsk_wakeup and
+third one avoids false setting of DD bits on Tx descriptors.
 
->
-> >
-> > Hopefully, I understood the basic principles correctly.
-> > I let the eBPF maintainers comment on this.
-> >
-> > Thanks
-> >
-> > Roberto
-> >
-> > HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-> > Managing Director: Li Peng, Zhong Ronghua
-> >
-> >>> What do you think?
-> >>>
-> >>> Thanks
-> >>>
-> >>> Roberto
-> >>>
-> >>> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-> >>> Managing Director: Li Peng, Zhong Ronghua
+The following are changes since commit 1158f79f82d437093aeed87d57df0548bdd68146:
+  ipv6: Fix stats accounting in ip6_pkt_drop
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue 100GbE
+
+Maciej Fijalkowski (3):
+  ice: synchronize_rcu() when terminating rings
+  ice: xsk: fix VSI state check in ice_xsk_wakeup()
+  ice: clear cmd_type_offset_bsz for TX rings
+
+ drivers/net/ethernet/intel/ice/ice.h      | 2 +-
+ drivers/net/ethernet/intel/ice/ice_main.c | 6 ++++--
+ drivers/net/ethernet/intel/ice/ice_xsk.c  | 6 ++++--
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+-- 
+2.31.1
+
