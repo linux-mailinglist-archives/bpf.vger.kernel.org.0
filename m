@@ -2,300 +2,415 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3314F550B
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 07:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C5B4F54E6
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 07:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348218AbiDFFZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 01:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
+        id S243789AbiDFFVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 01:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835848AbiDFAdn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 20:33:43 -0400
-Received: from sonic312-30.consmr.mail.ne1.yahoo.com (sonic312-30.consmr.mail.ne1.yahoo.com [66.163.191.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FA2104A7E
-        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 15:47:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1649198856; bh=kuHtMKHl/c2qIGNhAGVZoANBI56QWLO5me7QncFB0/4=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=lw/b5SvbMVXuoNhOkN60MTNvRK0sDPou7k8Sm8/fDot5jNIhKwRd3eHlRDH4X++09rQEJw1wr+aKES2kF0F5dOMKeDQUZQ6F4HZOWGED0RDC4zr9xcZY9Qk6H8JLGIQho7PvJeTl8oKy7KnIOIiPnQQ7B7oSZHdV7nV34QwwpPvCV1hoQGTxbT/4rS1hlwLxnfvKtak1zmDmffa+AUzFsTThb4ap/GSRNi9jovUUtR5yK7ddvNvJrvphSyDebb/pwGdWdzuXAqm2VSIbgKe10iBQx3wYqNt0U7V+Z2fvGSGZwR7tJu3GBEoFohyivhXzK9FuIP48+lJCqFVNv9I8hQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1649198856; bh=VbxZHvRlQ3ApM+hvxQitthNUVXoy1RKh/KVchJBGZGS=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=oGp9qOO4oZpK+WQMwTyI6AQctVQpLckSVRDCMM9EY4+URlBQmX+gpK78IfGzEbJ1WQOoAgSAqaV7gbPSvkBrQmDEU+odSwN0Z7UaU315n38j5LFqVI6pfJGjwXZEkE0sJ20imT5mnbnidmwOGI5FZKeajBcL6gMT9w9tZ6VAPJSnOE5tnZANcnkdMh7dqLfFizhLODK+mnLGixLVyp1AgVBsFojT0K3uAfCKlTIeoM31WO7VJJKdaVbU1W5+cjem8eiUyG/ev9ipDWUvQK/goHUd0yZOMuHWRMtTMakOWirSW07wdwQdxNy89lTohXsPGu8sAAXcWlEgAmiEApvXZw==
-X-YMail-OSG: KM__rusVM1mvT51zYphGFvuxV3vMoEUz.64XbPOnJeUfM3Q02p8tjzbCHPbxK90
- xEbDliiZmXka7VwlPeFd9D1DD5e1OCiK71seGddNJdacxGYZBFqNL38S22jUAAh2NKwCZgZ3a1qm
- b68mSbOJTcl892WIwb.mTv9vYc9nK6H9jOBvffECkgbEOIuJ2OTT0OCGlYe38K9gXdoiudYOOpHl
- 2fh_s6WdkypLC5Nfeyk4z1adY.Se94Xlv.8WW64_g.Q6gsD7htFWlmyKKuIjT7IOL6GjWm9Szqd1
- R3UV59okWBjij2lkAmEvm1OGVvxhNPUS.liSAj2FU0qfbfjIyuTRodjmQ44ijXaF_l.ncSA6E7D2
- 52uqJTjoWIGYu33gu7Y9smglgLO03sxROpSKDJjLYSmqq5TZV191mqxNk6qpvwyo1.It_zg1CqAM
- _I4TYKmrHvNzptK8N1w3ksNztLX_e0N5gHbhAJlQPW5Bw6ykmInAWc_WUaCDq_nMTrMNQ0.BQLAW
- WCRbo_nap91myK7S6jaZMMJbCJQlKQ0d19nAP0GXwM.U0k4qdC3wPw9KG8_ejbIeSpZDDcf8IzrJ
- 4bQvcIjmYkKtr30WANdICKGFIG6qoNp9Fg95.2kjpGHvmwHPuO6qR9YqjocDnUP97EQvkTGUoZTC
- fmWLce.3nw8OaynFbR2KRNYiUriJl8uXIATVYpJyjRTwAIa8rjrwbAhxUP5NVN_nxvbt9B0qD1vL
- iF5dcCV7zA.vqsgkTlPIKvL7geTOs3C_5Q.EkNfAn5PlCJi3y1zODah_iTZ4ecECSgQVOQRR_lvQ
- 5sUCI4wSaPH5EOmTNV6q7bTyu3MxHVIaMUAIVoLi_8k4EtldfkqaEeKispwKxjk.YDkONtPJE0Cc
- pE8iFJVkuJaeEnENzECZy3vMXBzWkyWrlOzxhd.x5VcN.LvY_kezvJ9przKkPd24eoo3B9kOZUKP
- NS_jcRoQPrm.gnozfYxNufkt9qbgJaWqXnPjXRpcK_nHwdGqJ9SrZII7p1ZaQmL_NGh5eShl5Ak0
- oCDgnLQHlke0.mPoBs.DXXK7r8bayP2uWHxez.cMKyi2mCozH06SzzozGsmV2DV4wRVeNnQ5NnD7
- duFgvP9y0siotq8UHHEY2GCd5kkjmdaAUd1iyLgVlxPeMAd89ho9zCouqCHg9YuIHw3L_NEVlpyt
- 6bEP0KxoUYtsVKOeWmn1lqMZxOkdMux8JF.jzEan8uwwC2iFVX62Zh.3mtBLMy4wCtI2ydJ7NwVg
- kIvCoToLc5RDNWmOhaNfzcZ9SpG03jdgluv5cLh1oyTvjJti37BVGbQVSuFKambK6zz6fPT3JpqQ
- Td7uMTzGQLDd3aM3r4lpQwkkq6ZgvfZuI74TGG1Qz72OiRGT6ElyxmqgTz9DPI0QPCS8zFtBd5wN
- g7GXxswBII_DtM6v2a2SqBZlQJnDZCEbYwvF6Rsb7KLhj9nTdtNLv40B05j5uX6eOcjh6.gjicjh
- 4n2hzMomOHjxFoL26zmw2HZQXDRB9WrXRegbN6o9ZS7S56GISCNn0e.GVx1_ANGl1Y9ITLgc3mkj
- aeGxLxguvgu5LBpKKyxuQl92.GCrYlYGg9HBZk_gNpX.esY3Yg6VvCP7BctyRlX5CWY0a9REhZJK
- YiZHe20QUET91dvI8o.O7mlwNgp2u8k7LNi3gGdWWoDQLdXbXVKDqqN8p.OkQ_PT6MQFWhvWD6Hq
- lQi_UcfdeW3nTE0YTi7wBXLRaPZq2rA6YO6mbYysziXrkHmx9aCMWS1.7xLOO2J43QzBZ7VjWuOp
- mr2bspwwUWdOji.Vpcv8AgMMWnL2l9RHnGmuIXsm.HAAsC.rmVV9vmPHZtotu0A2DOfy6b8a.kDo
- 88dY442gAarDTf8zkzmeXacI80hqCh0bPv.qB_AqAuDz8UFgHzXk6kRu6lMfytQN56jEeBNu5Xav
- WAcMHhj._SoyiuB1CBQ_SLZ1CY5EpL3Iyd3J9TY3sxDmLjffnDicxHqypaiKCVj_kLP6XvZDVPDC
- iyDxzHS.Msc7c3OGGTk6..15qsMeGybeAzJrJPCL1fE309eHGaV_S4Jk04LwlcKG_q0pxqPS7NCO
- lvKrLp6NdUSkWJWPqisJBlzCNx0nElmqBXE2hAc2_hYCT_zwuwkjKJLWpKiy5Q8p8ZXptLMQaK_n
- h7bPvT_uLr4.6T.jmGFpAcr.PEWhdDEqORzK1ytMR5S1ocjyiSITC5gOz0z6sv3U1VufvspTMC_V
- OyGNoO0g8_WnT_BFdlHO7W5vCSMmUK1kEBFdnH8P0oNSTwlTNikou0acFupkLZ0z2
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Tue, 5 Apr 2022 22:47:36 +0000
-Received: by hermes--canary-production-bf1-665cdb9985-4zttc (VZM Hermes SMTP Server) with ESMTPA ID eaa50fa1da4b68d1bc9a73fb183248ea;
-          Tue, 05 Apr 2022 22:47:33 +0000 (UTC)
-Message-ID: <5ce85845-824c-32fb-3807-6f9ab95ad6fe@schaufler-ca.com>
-Date:   Tue, 5 Apr 2022 15:47:30 -0700
+        with ESMTP id S1842546AbiDFBby (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 21:31:54 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7FF1B785
+        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 16:14:29 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id x9so716181ilc.3
+        for <bpf@vger.kernel.org>; Tue, 05 Apr 2022 16:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jV5AjJ1zPgXJSuZlhvWQ5OTeQeQgB4LqOcBYHXbKvgI=;
+        b=oqUF+eFyJWvNOrUw21bR0GV8yWRU4hbtygAIbm2O+qrngZD3B3Wgvs+9MXhQUrONQp
+         qL/aoafzzet1LYaHVwYawj3P3c4FiWLdsPg9cNsRxbC491+FYdg5F45Y2yuw3X49Sovn
+         9ft9oKXOnB9qck7Eq50W7/fcL103Id8jqBQWiGpUez3D5Gtwq4mCzyiaYCcrnJwChMnR
+         RjEHYDAhD2/qD7CgWZEb7c6qIgcS0jVO+oMZQHb2XjBf7YliRwekWWYBYeH6U9AqU7q3
+         nV1X39CaatOYCxTbTCMZCM2EcSjmcMG7/J9Lro25Z/7AGaVmjmKTp5VdKjOo8oVTwSzI
+         cmXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jV5AjJ1zPgXJSuZlhvWQ5OTeQeQgB4LqOcBYHXbKvgI=;
+        b=xThKmtmsbBLV5KPZ1+MH4SMndgp8YhDzrRCdsj25Li41RDAuO7HpSa2PcdFERc8VIa
+         W6OFp7cZtLosyLi970IMCtXagEBsL6aIqlvv0X7Kk+OoBtQ4pPlfbPUK7Rmp7pRgCuLR
+         vhcqp9MazJrKJnacm+iUf3CPuI+SETAEtoRiCUKh6KoOoJkFseNKcSiu/lpl5Lyl/Ly8
+         No1PzebU9Yj6UI3fVl7sVPbi4m8CYkMdz/FDPnmMH3XA3wUKDteSDs3woskTZCynYbn2
+         PQEun6IxyIrfBfPCmjZvBBz9TQMpZqdyNZoF1xzeLjUx1XpsrCLTxHg8kXAy5NXkTPKP
+         ohDg==
+X-Gm-Message-State: AOAM533bnc5TwcZAllvVhMMyl38PkvWjhdKyK7TsI2SSir5ubi6HaphB
+        8MFbNMlGs/pIYNbeVTLTFt0AOmxMu9ogl1u51oA=
+X-Google-Smtp-Source: ABdhPJwT9TodnnIecDeI2kAprSBLbY4u8ErSZlalBeYSGDZ0mrhPWCD8/hzwveMIgiyc2U6rF9STyTk6lZr5QC/3asE=
+X-Received: by 2002:a92:cd89:0:b0:2c9:bdf3:c5dd with SMTP id
+ r9-20020a92cd89000000b002c9bdf3c5ddmr2604934ilb.252.1649200468315; Tue, 05
+ Apr 2022 16:14:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [POC][USER SPACE][PATCH] Introduce LSM to protect pinned objects
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huawei.com>, corbet@lwn.net,
-        viro@zeniv.linux.org.uk, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, tixxdz@gmail.com,
-        shuah@kernel.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, zohar@linux.ibm.com
-Cc:     linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <CACYkzJ7ZVbL2MG7ugmDEfogSPAHkYYMCHxRO_eBCJJmBZyn6Rw@mail.gmail.com>
- <20220405131116.3810418-1-roberto.sassu@huawei.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20220405131116.3810418-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.20001 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220405204158.2496618-1-mykolal@fb.com>
+In-Reply-To: <20220405204158.2496618-1-mykolal@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Apr 2022 16:14:17 -0700
+Message-ID: <CAEf4BzYhUp3UqfMfENqM_A7Dz=TkaV44eCoNzoD6x2yRs1NNyA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Improve by-name subtest selection
+ logic in prog_tests
+To:     Mykola Lysenko <mykolal@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/5/2022 6:11 AM, Roberto Sassu wrote:
-> Introduce a new LSM to protect pinned objects in a bpf filesystem
-
-This is *not an LSM*. Do not call it an LSM. It is a set of
-eBPF programs. We have all the opportunities for confusion
-that we need. I suggested that you call this a BPF security
-module (BSM) earlier today. You have any number of things
-you can call this that won't be objectionable.
-
-> instance. This is useful for example to ensure that an LSM will always
-> enforce its policy, even despite root tries to unload the corresponding
-> eBPF program.
-
-How is this going to ensure that SELinux enforces its policy?
-AppArmor has no eBPF program that corresponds to its policy,
-neither does any other existing LSM, save BPF. Your claim is
-nonsensical in the face of LSM behavior.
-
-> Achieve the protection by denying inode unlink and unmount of the
-> protected bpf filesystem instance. Since protected inodes hold a
-> reference of the link of loaded programs (e.g. LSM hooks), denying
-> operations on them will prevent the ref count of the links from reaching
-> zero, ensuring that the programs remain always active.
+On Tue, Apr 5, 2022 at 1:45 PM Mykola Lysenko <mykolal@fb.com> wrote:
 >
-> Enable the protection only for the instance created by the user space
-> counterpart of the LSM, and don't interfere with other instances, so
-> that their behavior remains unchanged.
+> Improve subtest selection logic when using -t/-a/-d parameters.
+> In particular, more than one subtest can be specified or a
+> combination of tests / subtests.
 >
-> Suggested-by: Djalal Harouni <tixxdz@gmail.com>
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> -a send_signal -d send_signal/send_signal_nmi* - runs send_signal
+> test without nmi tests
+>
+> -a send_signal/send_signal_nmi*,find_vma - runs two send_signal
+> subtests and find_vma test
+>
+
+Only somewhat related, but while we are at this topic. Can you please
+check whether equivalent approach works:
+
+-a send_signal/send_signal_nmi* -a find_vma
+
+i.e., multi -a/-d/-t/-b are concatenating their selectors.
+
+> This will allow us to have granular control over which subtests
+> to disable in the CI system instead of disabling whole tests.
+>
+> Also, add new selftest to avoid possible regression when
+> changing prog_test test name selection logic.
+>
+> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
 > ---
->   .gitignore       |  4 +++
->   Makefile         | 18 ++++++++++++++
->   bpffs_lsm_kern.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++
->   bpffs_lsm_user.c | 60 +++++++++++++++++++++++++++++++++++++++++++++
->   4 files changed, 145 insertions(+)
->   create mode 100644 .gitignore
->   create mode 100644 Makefile
->   create mode 100644 bpffs_lsm_kern.c
->   create mode 100644 bpffs_lsm_user.c
+>  .../selftests/bpf/prog_tests/arg_parsing.c    |  88 ++++++++++
+>  tools/testing/selftests/bpf/test_progs.c      | 157 +++++++++---------
+>  tools/testing/selftests/bpf/test_progs.h      |  16 +-
+>  tools/testing/selftests/bpf/testing_helpers.c |  87 ++++++++++
+>  tools/testing/selftests/bpf/testing_helpers.h |   6 +
+>  5 files changed, 266 insertions(+), 88 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/arg_parsing.c
 >
-> diff --git a/.gitignore b/.gitignore
-> new file mode 100644
-> index 000000000000..7fa02964f1dc
-> --- /dev/null
-> +++ b/.gitignore
-> @@ -0,0 +1,4 @@
-> +*.o
-> +vmlinux.h
-> +bpffs_lsm_kern.skel.h
-> +bpffs_lsm_user
-> diff --git a/Makefile b/Makefile
-> new file mode 100644
-> index 000000000000..c3d805759db3
-> --- /dev/null
-> +++ b/Makefile
-> @@ -0,0 +1,18 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +all: bpffs_lsm_user
+
+[...]
+
+> +static void test_parse_test_list(void)
+> +{
+> +       struct test_set test_set;
 > +
-> +clean:
-> +	rm -rf bpffs_lsm.skel.h vmlinux.h bpffs_lsm_kern.o bpffs_lsm_user
+> +       init_test_set(&test_set);
 > +
-> +vmlinux.h:
-> +	/usr/sbin/bpftool btf dump file /sys/kernel/btf/vmlinux format c > \
-> +			  vmlinux.h
+> +       parse_test_list("arg_parsing", &test_set, true);
+
+ASSER_OK() return value?
+
+> +       if (CHECK(test_set.cnt != 1, "parse_test_list subtest argument", "Unexpected number of tests in num table %d\n", test_set.cnt))
+
+please don't use CHECK()s in new tests, we only add ASSERT_xxx() now.
+Also line length should be under 100 characters (except for the case
+when we have a long string literal, we don't break string literals, no
+matter how long).
+
+> +               goto error;
+> +       if (!ASSERT_OK_PTR(test_set.tests, "tests__initialized"))
+> +               goto error;
+> +       if (CHECK(!test_set.tests[0].whole_test, "parse_test_list subtest argument", "Expected test 0 to be initialized"))
+> +               goto error;
+> +       if (CHECK(strcmp("arg_parsing", test_set.tests[0].name), "parse_test_list subtest argument", "Expected test 0 to be initialized"))
+> +               goto error;
+> +       free_test_set(&test_set);
 > +
-> +bpffs_lsm_kern.skel.h: bpffs_lsm_kern.o
-> +	bpftool gen skeleton $< > $@
+> +       parse_test_list("arg_parsing,bpf_cookie", &test_set, true);
+> +       if (CHECK(test_set.cnt != 2, "parse_test_list subtest argument", "Unexpected number of tests in num table %d\n", test_set.cnt))
+> +               goto error;
+> +       if (!ASSERT_OK_PTR(test_set.tests, "tests__initialized"))
+> +               goto error;
+> +       if (CHECK(!test_set.tests[0].whole_test, "parse_test_list subtest argument", "Expected test 0 to be fully runnable"))
+> +               goto error;
+> +       if (CHECK(!test_set.tests[1].whole_test, "parse_test_list subtest argument", "Expected test 1 to be fully runnable"))
+> +               goto error;
+
+nit: I think there is no need to goto error after each check. We need
+goto error if subsequent checks can crash due to some invalid state.
+In this case, validating the value of few independent values is ok to
+always check without goto error jumps. Makes tests shorter and
+simpler.
+
+
+> +       if (CHECK(strcmp("arg_parsing", test_set.tests[0].name), "parse_test_list subtest argument", "Expected test 0 to be arg_parsing"))
+> +               goto error;
+> +       if (CHECK(strcmp("bpf_cookie", test_set.tests[1].name), "parse_test_list subtest argument", "Expected test 1 to be bpf_cookie"))
+> +               goto error;
+> +       free_test_set(&test_set);
 > +
-> +bpffs_lsm_kern.o: bpffs_lsm_kern.c vmlinux.h
-> +	clang -Wall -Werror -g -O2 -target bpf -c $< -o $@
+> +       parse_test_list("arg_parsing/test_parse_test_list,bpf_cookie", &test_set, true);
+> +       if (CHECK(test_set.cnt != 2, "parse_test_list subtest argument", "Unexpected number of tests in num table %d\n", test_set.cnt))
+> +               goto error;
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index 0a4b45d7b515..671e37cada4b 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -3,6 +3,7 @@
+>   */
+>  #define _GNU_SOURCE
+>  #include "test_progs.h"
+> +#include "testing_helpers.h"
+>  #include "cgroup_helpers.h"
+>  #include <argp.h>
+>  #include <pthread.h>
+> @@ -82,14 +83,14 @@ int usleep(useconds_t usec)
+>  static bool should_run(struct test_selector *sel, int num, const char *name)
+>  {
+>         int i;
+> -
+
+keep empty line between variable declaration block and first statement
+
+>         for (i = 0; i < sel->blacklist.cnt; i++) {
+> -               if (glob_match(name, sel->blacklist.strs[i]))
+> +               if (glob_match(name, sel->blacklist.tests[i].name) &&
+> +                   sel->blacklist.tests[i].whole_test)
+>                         return false;
+>         }
+>
+>         for (i = 0; i < sel->whitelist.cnt; i++) {
+> -               if (glob_match(name, sel->whitelist.strs[i]))
+> +               if (glob_match(name, sel->whitelist.tests[i].name))
+>                         return true;
+>         }
+>
+
+[...]
+
+> -bool test__start_subtest(const char *name)
+> +bool test__start_subtest(const char *subtest_name)
+>  {
+>         struct prog_test_def *test = env.test;
+>
+> @@ -205,17 +246,21 @@ bool test__start_subtest(const char *name)
+>
+>         test->subtest_num++;
+>
+> -       if (!name || !name[0]) {
+> +       if (!subtest_name || !subtest_name[0]) {
+>                 fprintf(env.stderr,
+>                         "Subtest #%d didn't provide sub-test name!\n",
+>                         test->subtest_num);
+>                 return false;
+>         }
+>
+> -       if (!should_run(&env.subtest_selector, test->subtest_num, name))
+> +       if (!should_run_subtest(&env.test_selector,
+> +                               &env.subtest_selector,
+
+we don't have subtest_selector anymore, do we?
+
+also, do you think that maybe combining should_run and
+should_rub_subtest would be a good idea? You can distinguish by having
+subtest_name NULL when you need to check only test?
+
+> +                               test->subtest_num,
+> +                               test->test_name,
+> +                               subtest_name))
+>                 return false;
+>
+> -       test->subtest_name = strdup(name);
+> +       test->subtest_name = strdup(subtest_name);
+>         if (!test->subtest_name) {
+>                 fprintf(env.stderr,
+>                         "Subtest #%d: failed to copy subtest name!\n",
+> @@ -527,63 +572,29 @@ static int libbpf_print_fn(enum libbpf_print_level level,
+>         return 0;
+>  }
+>
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> index eec4c7385b14..6a465a98341e 100644
+> --- a/tools/testing/selftests/bpf/test_progs.h
+> +++ b/tools/testing/selftests/bpf/test_progs.h
+> @@ -37,7 +37,6 @@ typedef __u16 __sum16;
+>  #include <bpf/bpf_endian.h>
+>  #include "trace_helpers.h"
+>  #include "testing_helpers.h"
+> -#include "flow_dissector_load.h"
+>
+>  enum verbosity {
+>         VERBOSE_NONE,
+> @@ -46,14 +45,21 @@ enum verbosity {
+>         VERBOSE_SUPER,
+>  };
+>
+> -struct str_set {
+> -       const char **strs;
+> +struct prog_test {
+> +       char *name;
+> +       char **subtests;
+> +       int subtest_cnt;
+> +       bool whole_test;
+> +};
 > +
-> +bpffs_lsm_user: bpffs_lsm_user.c bpffs_lsm_kern.skel.h bpffs_lsm_kern.o
-> +	cc -Wall -Werror -g -o $@ $< -lbpf
-> diff --git a/bpffs_lsm_kern.c b/bpffs_lsm_kern.c
-> new file mode 100644
-> index 000000000000..b3ccb2a75c95
-> --- /dev/null
-> +++ b/bpffs_lsm_kern.c
-> @@ -0,0 +1,63 @@
-> +// SPDX-License-Identifier: GPL-2.0
+> +struct test_set {
+> +       struct prog_test *tests;
+
+prog_test is a bad name, IMO. it's a "test filter", right? Let's call it that?
+
+test_set isn't most accurate as well, maybe test_filter_set or test_set_filter?
+
+>         int cnt;
+>  };
+>
+>  struct test_selector {
+> -       struct str_set whitelist;
+> -       struct str_set blacklist;
+> +       struct test_set whitelist;
+> +       struct test_set blacklist;
+>         bool *num_set;
+>         int num_set_len;
+>  };
+> diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
+> index 795b6798ccee..d2160d2a1303 100644
+> --- a/tools/testing/selftests/bpf/testing_helpers.c
+> +++ b/tools/testing/selftests/bpf/testing_helpers.c
+> @@ -6,6 +6,7 @@
+>  #include <errno.h>
+>  #include <bpf/bpf.h>
+>  #include <bpf/libbpf.h>
+> +#include "test_progs.h"
+>  #include "testing_helpers.h"
+>
+>  int parse_num_list(const char *s, bool **num_set, int *num_set_len)
+> @@ -69,6 +70,92 @@ int parse_num_list(const char *s, bool **num_set, int *num_set_len)
+>         return 0;
+>  }
+>
+> +int parse_test_list(const char *s,
+> +                   struct test_set *test_set,
+> +                   bool is_glob_pattern)
+> +{
+> +       char *input, *state = NULL, *next;
+> +       struct prog_test *tmp, *tests = NULL;
+> +       int i, j, cnt = 0;
+> +
+> +       input = strdup(s);
+> +       if (!input)
+> +               return -ENOMEM;
+> +
+> +       while ((next = strtok_r(state ? NULL : input, ",", &state))) {
+> +               char *subtest_str = strchr(next, '/');
+> +               char *pattern = NULL;
+> +
+> +               tmp = realloc(tests, sizeof(*tests) * (cnt + 1));
+> +               if (!tmp)
+> +                       goto err;
+> +               tests = tmp;
+> +
+> +               tests[cnt].subtest_cnt = 0;
+> +               tests[cnt].subtests = NULL;
+> +               tests[cnt].whole_test = false;
+> +
+> +               if (subtest_str) {
+> +                       char **tmp_subtests = NULL;
+
+need an empty line between variable declarations and statements
+
+> +                       *subtest_str = '\0';
+> +                       int subtest_cnt = tests[cnt].subtest_cnt;
+> +
+> +                       tmp_subtests = realloc(tests[cnt].subtests,
+> +                                              sizeof(*tmp_subtests) *
+> +                                              (subtest_cnt + 1));
+> +                       if (!tmp_subtests)
+> +                               goto err;
+> +                       tests[cnt].subtests = tmp_subtests;
+> +
+> +                       tests[cnt].subtests[subtest_cnt] = strdup(subtest_str + 1);
+> +                       if (!tests[cnt].subtests[subtest_cnt])
+> +                               goto err;
+> +
+> +                       tests[cnt].subtest_cnt++;
+> +               } else {
+> +                       tests[cnt].whole_test = true;
+
+isn't whole_test equivalent to subtest_cnt > 0? Why keeping extra bool
+of state then?
+
+> +               }
+> +
+> +               if (is_glob_pattern) {
+> +                       pattern = "%s";
+> +                       tests[cnt].name = malloc(strlen(next) + 1);
+> +               } else {
+> +                       pattern = "*%s*";
+> +                       tests[cnt].name = malloc(strlen(next) + 2 + 1);
+> +               }
+> +
+> +               if (!tests[cnt].name)
+> +                       goto err;
+> +
+> +               sprintf(tests[cnt].name, pattern, next);
+> +
+> +               cnt++;
+> +       }
+> +
+> +       tmp = realloc(test_set->tests, sizeof(*tests) * (cnt + test_set->cnt));
+> +       if (!tmp)
+> +               goto err;
+> +
+> +       memcpy(tmp + test_set->cnt, tests, sizeof(*tests) * cnt);
+> +       test_set->tests = tmp;
+> +       test_set->cnt += cnt;
+> +
+> +       free(tests);
+> +       free(input);
+> +       return 0;
+> +
+> +err:
+> +       for (i = 0; i < cnt; i++) {
+> +               for (j = 0; j < tests[i].subtest_cnt; j++)
+> +                       free(tests[i].subtests[j]);
+> +
+> +               free(tests[i].name);
+> +       }
+> +       free(tests);
+> +       free(input);
+> +       return -ENOMEM;
+> +}
+> +
+>  __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info)
+>  {
+>         __u32 info_len = sizeof(*info);
+> diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
+> index f46ebc476ee8..d2f502184cd1 100644
+> --- a/tools/testing/selftests/bpf/testing_helpers.h
+> +++ b/tools/testing/selftests/bpf/testing_helpers.h
+> @@ -12,3 +12,9 @@ int bpf_test_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
+>                           size_t insns_cnt, const char *license,
+>                           __u32 kern_version, char *log_buf,
+>                           size_t log_buf_sz);
+> +
 > +/*
-> + * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-> + *
-> + * Authors:
-> + * Roberto Sassu <roberto.sassu@huawei.com>
-> + *
-> + * Implement an LSM to protect a bpf filesystem instance.
+> + * below function is exported for testing in prog_test test
 > + */
-> +
-> +#include "vmlinux.h"
-> +#include <errno.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_core_read.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +uint32_t monitored_pid = 0;
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-> +	__uint(map_flags, BPF_F_NO_PREALLOC);
-> +	__type(key, int);
-> +	__type(value, sizeof(uint8_t));
-> +} inode_storage_map SEC(".maps");
-> +
-> +SEC("lsm/sb_set_mnt_opts")
-> +int BPF_PROG(sb_set_mnt_opts, struct super_block *sb, void *mnt_opts,
-> +	     unsigned long kern_flags, unsigned long *set_kern_flags)
-> +{
-> +	u32 pid;
-> +
-> +	pid = bpf_get_current_pid_tgid() >> 32;
-> +	if (pid != monitored_pid)
-> +		return 0;
-> +
-> +	if (!bpf_inode_storage_get(&inode_storage_map, sb->s_root->d_inode, 0,
-> +				   BPF_LOCAL_STORAGE_GET_F_CREATE))
-> +		return -EPERM;
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("lsm/inode_unlink")
-> +int BPF_PROG(inode_unlink, struct inode *dir, struct dentry *dentry)
-> +{
-> +	if (bpf_inode_storage_get(&inode_storage_map,
-> +				  dir->i_sb->s_root->d_inode, 0, 0))
-> +		return -EPERM;
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("lsm/sb_umount")
-> +int BPF_PROG(sb_umount, struct vfsmount *mnt, int flags)
-> +{
-> +	if (bpf_inode_storage_get(&inode_storage_map,
-> +				  mnt->mnt_sb->s_root->d_inode, 0, 0))
-> +		return -EPERM;
-> +
-> +	return 0;
-> +}
-> diff --git a/bpffs_lsm_user.c b/bpffs_lsm_user.c
-> new file mode 100644
-> index 000000000000..e20180cc5db9
-> --- /dev/null
-> +++ b/bpffs_lsm_user.c
-> @@ -0,0 +1,60 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-> + *
-> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> + *
-> + * Implement the user space side of the LSM for bpffs.
-> + */
-> +
-> +#include <fcntl.h>
-> +#include <unistd.h>
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <limits.h>
-> +#include <sys/mount.h>
-> +#include <sys/stat.h>
-> +
-> +#include "bpffs_lsm_kern.skel.h"
-> +
-> +#define MOUNT_FLAGS (MS_NOSUID | MS_NODEV | MS_NOEXEC | MS_RELATIME)
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	char mntpoint[] = "/tmp/bpf_private_mountXXXXXX";
-> +	char path[PATH_MAX];
-> +	struct bpffs_lsm_kern *skel;
-> +	int ret, i;
-> +
-> +	skel = bpffs_lsm_kern__open_and_load();
-> +	if (!skel)
-> +		return -EINVAL;
-> +
-> +	ret = bpffs_lsm_kern__attach(skel);
-> +	if (ret < 0)
-> +		goto out_destroy;
-> +
-> +	mkdtemp(mntpoint);
-> +
-> +	skel->bss->monitored_pid = getpid();
-> +	ret = mount(mntpoint, mntpoint, "bpf", MOUNT_FLAGS, NULL);
-> +	skel->bss->monitored_pid = 0;
-> +
-> +	if (ret < 0)
-> +		goto out_destroy;
-> +
-> +	for (i = 0; i < skel->skeleton->prog_cnt; i++) {
-> +		snprintf(path, sizeof(path), "%s/%s", mntpoint,
-> +			 skel->skeleton->progs[i].name);
-> +		ret = bpf_link__pin(*skel->skeleton->progs[i].link, path);
-> +		if (ret < 0)
-> +			goto out_destroy;
-> +	}
-> +
-> +	ret = 0;
-> +out_destroy:
-> +	bpffs_lsm_kern__destroy(skel);
-> +	return ret;
-> +}
+> +struct test_set;
+> +int parse_test_list(const char *s, struct test_set *test_set, bool is_glob_pattern);
+> --
+> 2.30.2
+>
