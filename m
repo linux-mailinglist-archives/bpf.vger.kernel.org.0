@@ -2,71 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD394F6691
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 19:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB6F4F662D
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 19:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238405AbiDFROa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 13:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
+        id S238493AbiDFRHA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 13:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238908AbiDFRMr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 13:12:47 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4C6334130;
-        Wed,  6 Apr 2022 07:33:53 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id k25so3098774iok.8;
-        Wed, 06 Apr 2022 07:33:53 -0700 (PDT)
+        with ESMTP id S238505AbiDFRGu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 13:06:50 -0400
+X-Greylist: delayed 425 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Apr 2022 07:46:01 PDT
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4063C33B031
+        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 07:46:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SDPT/7XOwVJA5stp6aCZ2hXWWrYq1jMxAHm5GkzEDuc=;
-        b=WX+y8x8ZuriiwRWLrv5L2YmO/NTIzmrzF/kye3v2pg88FUSKz9paK+LJRObBjsUrah
-         W1KgujRrUP01TatSladWtutsjA3C77eBPX3LymphI+mwhSGSn7rZrOnbOya2xGw+yqU+
-         f5T6TuCugRAx/Da0SnJg+vFSH/Fm8NctFNwid6KXkKdK9U+dr2Et0/Vl96o4wlawu1j7
-         vZ13oKeFxct7fswPHPEqDdht2Seuul0ehtIDSyDgpm/Hn5CO4MSaxcxNR6I92sM44bC2
-         lZtzdLOAm6AX9IdIqpjn1FxAOxVN7yInhspb2Tbr97lsbBeMyPYJpyW+9hn+mIrAgwQ0
-         xO6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SDPT/7XOwVJA5stp6aCZ2hXWWrYq1jMxAHm5GkzEDuc=;
-        b=66F5azhdrEDOwWXN1/ev2vNPAiCQBbt5wkgJMDVMoZh09LztA7WUVQJsp6o57xlZWY
-         iyFEKZ2Ar49hJv+4jCzRonblgAUH5vEv7bE7+hPKpGj1232naF/x57bel/FC9eL6jHKm
-         CmKU31LdjHuM9KMt8uf5RlYXYOAMNZ4/04V7ymeMME4jHORxfLJUoSo5ztnHnCrtXF6b
-         S9ULOiJHpKSCqL1bQhcCpm6bZzlI25TjbN73Ivphp6SZ/nWF32Pkr6xXyzbfaXXp2afh
-         uYucrNK/e//lY+kanYtZNHuS3+DgtBjHu3R/qDwSBCV5AS2yK1GbPQBmQOCtaKgq2Q+7
-         2x9w==
-X-Gm-Message-State: AOAM531by7uX+cZTrNm3cAhnJfRx1ATaDvsU8tUMu9TOAb+/Latjiydl
-        z90ildhVk+T4MiEMI5PnZo4U9jtIHpMTZPaiMrc=
-X-Google-Smtp-Source: ABdhPJzI2QYvo+0uHCEiHux5uJO44L2+UJtWDzdNUQzgJLHxUw5SlW8gjEvjeLI6qPYr/wRXun1SmwfO103sTDW/NFY=
-X-Received: by 2002:a02:a48e:0:b0:323:62c6:bae8 with SMTP id
- d14-20020a02a48e000000b0032362c6bae8mr5015902jam.140.1649255632687; Wed, 06
- Apr 2022 07:33:52 -0700 (PDT)
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID;
+        bh=M+gQwr5UHy+fMPv7KTQBkKhZXL0NQ6ynmHWPYMxg8cw=; b=oFTiHw9mZrhit
+        AfQVxd3SkqQ4cYIrrjRBct4YY3LNI//CiqYQH9szdmzzFvQ4Lqwu2Xy2lLnpPo6+
+        k+Cyx6sB+NheQVJG1xr+AW96HzneaKGNLazCcT3bCIWU6mj6n+Ky+APSwBSAH8iT
+        nck+3TcmMRxTH1wOZWW7GRflQcyJ/o=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Wed, 6 Apr
+ 2022 22:38:52 +0800 (GMT+08:00)
+X-Originating-IP: [222.64.172.188]
+Date:   Wed, 6 Apr 2022 22:38:52 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   wuzongyo@mail.ustc.edu.cn
+To:     bpf@vger.kernel.org
+Subject: [Question] Failed to load ebpf program with BTF-defined map
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20210401(c5ff3689) Copyright (c) 2002-2022 www.mailtech.cn ustccn
+X-SendMailWithSms: false
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-References: <20220405130858.12165-1-laoar.shao@gmail.com> <20220405130858.12165-8-laoar.shao@gmail.com>
- <82b87aee-09c2-fbad-7613-4e298bcb3431@quicinc.com>
-In-Reply-To: <82b87aee-09c2-fbad-7613-4e298bcb3431@quicinc.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 6 Apr 2022 22:33:16 +0800
-Message-ID: <CALOAHbD_kftnnN4Qg4rwwL-Sb_idJiBE4D_M4r9n0wtUzRypbA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 07/27] bpf: selftests: Set libbpf 1.0 API mode
- explicitly in get_cgroup_id_user
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, shuah@kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Message-ID: <50b0dbb.2936.17fff506075.Coremail.wuzongyo@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygAHDtb8pU1iaNsDAA--.0W
+X-CM-SenderInfo: pzx200xj1rqzxdloh3xvwfhvlgxou0/1tbiAQwICVQhoFZrBAAAsg
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,25 +53,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 6, 2022 at 4:47 AM Jeff Johnson <quic_jjohnson@quicinc.com> wrote:
->
-> On 4/5/2022 6:08 AM, Yafang Shao wrote:
-> > Let's set libbpf 1.0 API mode explicitly, then we can get rid of the
-> > included bpf_rlimit.h.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >   tools/testing/selftests/bpf/test_dev_cgroup.c | 4 +++-
-> >   1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c b/tools/testing/selftests/bpf/test_dev_cgroup.c
->
-> patch subject should refer to test_dev_cgroup
-> (currently has same subject as 05/27)
->
+Hi,
 
-Thanks for pointing this out. It was caused by the copy-and-paste :(
+I wrote a simple tc-bpf program like that:
 
--- 
+    #include <linux/bpf.h>
+    #include <linux/pkt_cls.h>
+    #include <linx/types.h>
+    #include <bpf/bpf_helpers.h>
+
+    struct {
+        __uint(type, BPF_MAP_TYPE_HASH);
+        __uint(max_entries, 1);
+        __type(key, int);
+        __type(value, int);
+    } hmap SEC(".maps");
+
+    SEC("classifier")
+    int _classifier(struct __sk_buff *skb)
+    {
+        int key = 0;
+        int *val;
+
+        val = bpf_map_lookup_elem(&hmap, &key);
+        if (!val)
+            return TC_ACT_OK;
+        return TC_ACT_OK;
+    }
+
+    char __license[] SEC("license") = "GPL";
+
+Then I tried to use tc to load the program:
+    
+    tc qdisc add dev eth0 clsact
+    tc filter add dev eth0 egress bpf da obj test_bpf.o
+
+But the program loading failed with error messages:
+    Prog section 'classifier' rejected: Permission denied (13)!
+    - Type:          3
+    - Instructions:  9 (0 over limit
+    - License:       GPL
+
+    Verifier analysis:
+
+    Error fetching program/map!
+    Unable to load program
+
+I tried to replace the map definition with the following code and the program is loaded successfully!
+
+    struct bpf_map_def SEC("maps") hmap = {
+        .type = BPF_MAP_TYPE_HASH,
+        .key_size = sizeof(int),
+        .value_size = sizeof(int),
+        .max_entries = 1,
+    };
+
+With bpftrace, I can find that the errno -EACCES is returned by function do_check(). But I am still confused what's wrong with it.
+
+Linux Version: 5.17.0-rc3+ with CONFIG_DEBUG_INFO_BTF=y
+TC Version: 5.14.0
+
+Any suggestion will be appreciated!
+
 Thanks
-Yafang
+
