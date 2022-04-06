@@ -2,67 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAE94F6AF1
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 22:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3287F4F6B51
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 22:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbiDFUMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 16:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
+        id S234207AbiDFUZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 16:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233403AbiDFULm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 16:11:42 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAF4FA20D;
-        Wed,  6 Apr 2022 10:38:29 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id z7so3868751iom.1;
-        Wed, 06 Apr 2022 10:38:29 -0700 (PDT)
+        with ESMTP id S236434AbiDFUYF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 16:24:05 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C111DD3DE
+        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 11:42:12 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id k15so2616417ils.0
+        for <bpf@vger.kernel.org>; Wed, 06 Apr 2022 11:42:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1Cs5Vt6UkYq7u69hUCTmkTbEACL4NrNkmG728WDKAXo=;
-        b=dRM9cimVa9u5yQTeb5E/b3pEEpGMKhqQhh0C0hfaHczGVxKqcJVYXdywmB0Qyt5IQr
-         ZLr0wF3b7TCKNFac0KQMi2rgI1SililYJikap/OA4S2Dvcgb6KrzpgcEGStqFFANof2a
-         t2iZIznAjQAFQ+nhIJ19UJygwo5hAsq1CVxJIsbdjfM7fMWM/sZdJr61SHqlvbrtw1qe
-         VdvX5tHGSemsl1rtCzvd8/AVMG4brIUZnWXc/JvYUJ24fbXJE33HoIDYCotGjngs2+V3
-         7BhrwwL3hjolOg+SiH/KEZAQjAq6ixLxdIMxEByYkz0vkdsGJivdtXGLw6NlFV3felf3
-         Hdug==
+        bh=O5BJuOoWoacodwMxekiD3W9pKg6GJ2JCpgxdRqt12eY=;
+        b=F6vf4A9ApY7MPWK2Fh6L5AW3Ka6YMZWVo884/qL7TdWzMCSRUH+8ZJ2Br+d0++/owY
+         hW+9d7Viz+HO/3o1yFkaYR03SBpveZm4eiWwQSyQ4s2SrByO0u9+fhhr4r3/8PvG8Q1I
+         8NqhT54z08fyybkl+hxG0w56/jYlZcNaHn8eoHo6IO/6JStB6Rtz8Qrgx++15gRWirXT
+         SKa5xQPhL0Sy3rXioef1bn1fhkRbhllZ0FummdkalD8Rta40KQ0AqOwrC+aweYY+tT1N
+         f7z26M401Y+TSFbFTMgkgNEqijKitvo9n3gysCrqFc7G6E9WLWb8aPQHkhBcwuLtVwsu
+         uSCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1Cs5Vt6UkYq7u69hUCTmkTbEACL4NrNkmG728WDKAXo=;
-        b=7dLIXLbiREI0pxgg0zyF+3BFd93Qe72gmHWvoH0TWC/GOA8Xq+7At8o58SkV1m6YVl
-         cQcurQJsoJZOmzqu/Oow0HpQ/ZvSHsiuGwhI2WiiVxJatmMfkKiCfTmba2ZjrOAR8ayM
-         kI77XhPd7UVXNBhYz45klgLqDOv3IC01FW4KegE6IQw8M62y2i8S0m5CvAuybL+QWRGw
-         SkZZHWUo7qO4+P77l6JOeY81SKWIpW7UmMyQoCZlFRGoxTfJOh9awdkW5XbZj9zHVDYL
-         FN7awgNTAeqNd8R8hLryoqNsuhxpkpdNHTfQdv7x4znPWjnacm4vqPWf++GzBefYGb7a
-         Cqzw==
-X-Gm-Message-State: AOAM531jhkBuVaXKN9zyV4oU7FfMMTJhukd+f1PWVfbFFxL9WzNpK4wq
-        W6HZQhgbewyr2Lmv6tlWURKce9pjB5ptlfAP6uM=
-X-Google-Smtp-Source: ABdhPJzux8tLoiukInAccV8nyJJYFr4Dhs3C5r+F4yrLd4iVkCofupMNKWBuPIDrcdxYKm6ukf7P3lVMgituvE9eX1M=
-X-Received: by 2002:a05:6638:1685:b0:323:9fed:890a with SMTP id
- f5-20020a056638168500b003239fed890amr5168085jat.103.1649266708930; Wed, 06
- Apr 2022 10:38:28 -0700 (PDT)
+        bh=O5BJuOoWoacodwMxekiD3W9pKg6GJ2JCpgxdRqt12eY=;
+        b=qhIzwZ4qucGDxzwBqYC0Oge4RVMLaSf8s6S4W4mu63MPuPQa31Mp8LKVgLCRlRZeeT
+         YrpVy7corIvA+HJcFNx7yvFYnJAfqkALa87PRLtA1DnWErNDnHEhTlM1qikllIcS26CH
+         kaUHR6dnblAUXl2ISq6nD+WfswHXT8LnKYk/RHR2q4ZQBqRhSfxjcBMiAR/R33YkhbKx
+         G+Qztx7YVZl4WMiuOhHaCSsd+SdUqS9PAOMXX7sEC0nGqOLqyltz0lBdCVisXfEkxDmf
+         Uvi96xfqaWA5giOtdE2pjxsorhcfkNouGWDBkce4Q9CBtn4QzHLUi3jdTFOo4CvOqSmi
+         c0jQ==
+X-Gm-Message-State: AOAM530dEsyogsEgc6nTFEsTvox/03NVpQi/kRmmfz1tZoL65VXv4opl
+        do+jWOPFtlHpcYYdiNt1tQHLAHrbjvbkXw3vjaQ=
+X-Google-Smtp-Source: ABdhPJz8SsgmWpA3jXJ5VmJPkYRjgoORLBP6DU4xLOGVDBxyiAUJ/HKbmF+tAfqR/5m0I2AgbfJogpbTn0fGGuAx1GQ=
+X-Received: by 2002:a05:6e02:1562:b0:2ca:50f1:72f3 with SMTP id
+ k2-20020a056e02156200b002ca50f172f3mr4696954ilu.71.1649270531654; Wed, 06 Apr
+ 2022 11:42:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220331122822.14283-1-houtao1@huawei.com>
-In-Reply-To: <20220331122822.14283-1-houtao1@huawei.com>
+References: <20220402015826.3941317-1-joannekoong@fb.com> <20220402015826.3941317-3-joannekoong@fb.com>
+In-Reply-To: <20220402015826.3941317-3-joannekoong@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Apr 2022 10:38:18 -0700
-Message-ID: <CAEf4Bzb7keBS8vXgV5JZzwgNGgMV0X3_guQ_m9JW3X6fJBDpPQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Introduce ternary search tree for
- string key
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+Date:   Wed, 6 Apr 2022 11:42:00 -0700
+Message-ID: <CAEf4Bza0WECzFJyK4-mkJhd=fppUjhsbQbnPT16bdt76SJfjwA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/7] bpf: Add MEM_RELEASE as a bpf_type_flag
+To:     Joanne Koong <joannekoong@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Joanne Koong <joannelkoong@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,143 +67,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 31, 2022 at 5:04 AM Hou Tao <houtao1@huawei.com> wrote:
+On Fri, Apr 1, 2022 at 7:00 PM Joanne Koong <joannekoong@fb.com> wrote:
 >
-> Hi,
+> From: Joanne Koong <joannelkoong@gmail.com>
 >
-> The initial motivation for the patchset is due to the suggestion of Alexei.
-> During the discuss of supporting of string key in hash-table, he saw the
-> space efficiency of ternary search tree under our early test and suggest
-> us to post it as a new bpf map [1].
+> Currently, we hardcode in the verifier which functions are release
+> functions. We have no way of differentiating which argument is the one
+> to be released (we assume it will always be the first argument).
 >
-> Ternary search tree is a special trie where nodes are arranged in a
-> manner similar to binary search tree, but with up to three children
-> rather than two. The three children correpond to nodes whose value is
-> less than, equal to, and greater than the value of current node
-> respectively.
+> This patch adds MEM_RELEASE as a bpf_type_flag. This allows us to
+> determine which argument in the function needs to be released, and
+> removes having to hardcode a list of release functions into the
+> verifier.
 >
-> In ternary search tree map, only the valid content of string is saved.
-> The trailing null byte and unused bytes after it are not saved. If there
-> are common prefixes between these strings, the prefix is only saved once.
-> Compared with other space optimized trie (e.g. HAT-trie, succinct trie),
-> the advantage of ternary search tree is simple and being writeable.
+> Please note that currently, we only support one release argument in a
+> helper function. In the future, if/when we need to support several
+> release arguments within the function, MEM_RELEASE is necessary
+> since there needs to be a way of differentiating which arguments are the
+> release ones.
 >
-> Below are diagrams for ternary search map when inserting hello, he,
-> test and tea into it:
+> In the near future, MEM_RELEASE will be used by dynptr helper functions
+> such as bpf_free.
 >
-> 1. insert "hello"
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  include/linux/bpf.h          |  4 +++-
+>  include/linux/bpf_verifier.h |  3 +--
+>  kernel/bpf/btf.c             |  3 ++-
+>  kernel/bpf/ringbuf.c         |  4 ++--
+>  kernel/bpf/verifier.c        | 42 ++++++++++++++++++------------------
+>  net/core/filter.c            |  2 +-
+>  6 files changed, 30 insertions(+), 28 deletions(-)
 >
->         [ hello ]
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 6f2558da9d4a..cb9f42866cde 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -344,7 +344,9 @@ enum bpf_type_flag {
 >
-> 2. insert "he": need split "hello" into "he" and "llo"
+>         MEM_UNINIT              = BIT(5 + BPF_BASE_TYPE_BITS),
 >
->          [ he ]
->             |
->             *
->             |
->          [ llo ]
->
-> 3. insert "test": add it as right child of "he"
->
->          [ he ]
->             |
->             *-------x
->             |       |
->          [ llo ] [ test ]
->
-> 5. insert "tea": split "test" into "te" and "st",
->    and insert "a" as left child of "st"
->
->          [ he ]
->             |
->      x------*-------x
->      |      |       |
->   [ ah ] [ llo ] [ te ]
->                     |
->                     *
->                     |
->                  [ st ]
->                     |
->                x----*
->                |
->              [ a ]
->
-> As showed in above diagrams, the common prefix between "test" and "tea"
-> is "te" and it only is saved once. Also add benchmarks to compare the
-> memory usage and lookup performance between ternary search tree and
-> hash table. When the common prefix is lengthy (~192 bytes) and the
-> length of suffix is about 64 bytes, there are about 2~3 folds memory
-> saving compared with hash table. But the memory saving comes at prices:
-> the lookup performance of tst is about 2~3 slower compared with hash
-> table. See more benchmark details on patch #2.
->
-> Comments and suggestions are always welcome.
+> -       __BPF_TYPE_LAST_FLAG    = MEM_UNINIT,
+> +       MEM_RELEASE             = BIT(6 + BPF_BASE_TYPE_BITS),
+
+"MEM_" part seems a bit too specific, it's not necessarily (just)
+about memory, it's more generally about "releasing resources" in
+general, right? ARG_RELEASE or OBJ_RELEASE maybe?
+
+> +
+> +       __BPF_TYPE_LAST_FLAG    = MEM_RELEASE,
+>  };
 >
 
-Have you heard and tried qp-trie ([0]) by any chance? It is elegant
-and simple data structure. By all the available benchmarks it handily
-beats Red-Black trees in terms of memory usage and performance (though
-it of course depends on the data set, just like "memory compression"
-for ternary tree of yours depends on large set of common prefixes).
-qp-trie based BPF map seems (at least on paper) like a better
-general-purpose BPF map that is dynamically sized (avoiding current
-HASHMAP limitations) and stores keys in sorted order (and thus allows
-meaningful ordered iteration *and*, importantly for longest prefix
-match tree, allows efficient prefix matches). I did a quick experiment
-about a month ago trying to replace libbpf's internal use of hashmap
-with qp-trie for BTF string dedup and it was slightly slower than
-hashmap (not surprisingly, though, because libbpf over-sizes hashmap
-to avoid hash collisions and long chains in buckets), but it was still
-very decent even in that scenario. So I've been mulling the idea of
-implementing BPF map based on qp-trie elegant design and ideas, but
-can't find time to do this.
+[...]
 
-This prefix sharing is nice when you have a lot of long common
-prefixes, but I'm a bit skeptical that as a general-purpose BPF data
-structure it's going to be that beneficial. 192 bytes of common
-prefixes seems like a very unusual dataset :)
+> -/* Determine whether the function releases some resources allocated by another
+> - * function call. The first reference type argument will be assumed to be
+> - * released by release_reference().
+> +/* Determine whether the type releases some resources allocated by a
+> + * previous function call.
+>   */
+> -static bool is_release_function(enum bpf_func_id func_id)
+> +static bool type_is_release_mem(u32 type)
+>  {
+> -       return func_id == BPF_FUNC_sk_release ||
+> -              func_id == BPF_FUNC_ringbuf_submit ||
+> -              func_id == BPF_FUNC_ringbuf_discard;
+> +       return type & MEM_RELEASE;
+>  }
+>
 
-More specifically about TST implementation in your paches. One global
-per-map lock I think is a very big downside. We have LPM trie which is
-very slow in big part due to global lock. It might be possible to
-design more granular schema for TST, but this whole in-place splitting
-logic makes this harder. I think qp-trie can be locked in a granular
-fashion much more easily by having a "hand over hand" locking: lock
-parent, find child, lock child, unlock parent, move into child node.
-Something like that would be more scalable overall, especially if the
-access pattern is not focused on a narrow set of nodes.
+same skepticism regarding the need for this helper function, just
+makes grepping code slightly harder
 
-Anyways, I love data structures and this one is an interesting idea.
-But just my few cents of "production-readiness" for general-purpose
-data structures for BPF.
+>  static bool may_be_acquire_function(enum bpf_func_id func_id)
 
-  [0] https://dotat.at/prog/qp/README.html
-
-> Regards,
-> Tao
->
-> [1]: https://lore.kernel.org/bpf/CAADnVQJUJp3YBcpESwR3Q1U6GS1mBM=Vp-qYuQX7eZOaoLjdUA@mail.gmail.com/
->
-> Hou Tao (2):
->   bpf: Introduce ternary search tree for string key
->   selftests/bpf: add benchmark for ternary search tree map
->
->  include/linux/bpf_types.h                     |   1 +
->  include/uapi/linux/bpf.h                      |   1 +
->  kernel/bpf/Makefile                           |   1 +
->  kernel/bpf/bpf_tst.c                          | 411 +++++++++++++++++
->  tools/include/uapi/linux/bpf.h                |   1 +
->  tools/testing/selftests/bpf/Makefile          |   5 +-
->  tools/testing/selftests/bpf/bench.c           |   6 +
->  .../selftests/bpf/benchs/bench_tst_map.c      | 415 ++++++++++++++++++
->  .../selftests/bpf/benchs/run_bench_tst.sh     |  54 +++
->  tools/testing/selftests/bpf/progs/tst_bench.c |  70 +++
->  10 files changed, 964 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/bpf_tst.c
->  create mode 100644 tools/testing/selftests/bpf/benchs/bench_tst_map.c
->  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_tst.sh
->  create mode 100644 tools/testing/selftests/bpf/progs/tst_bench.c
->
-> --
-> 2.31.1
->
+[...]
