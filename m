@@ -2,72 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 472EE4F5E1C
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 14:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1A44F5EC8
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 15:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbiDFM1E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 08:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
+        id S229452AbiDFMvJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 08:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbiDFM0I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 08:26:08 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AD12EC127
-        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 01:12:17 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id bh17so2585960ejb.8
-        for <bpf@vger.kernel.org>; Wed, 06 Apr 2022 01:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z1zCEuKVxwMDFlzC9xHuWhUKv2m+zAqr+sHqUSpNkFI=;
-        b=C7fY8Y3OaT9YlcX8gcLZX7uGAa5AxVIFGAP3lPfNLDkJ1rbIsxs6h9MbutjIaHV8AY
-         IvsbSa199v7mv0NmmzgOukEIJQmzkCQBE/PE8FGIJERQRefUriYkW2Ice6ZXb7M5Jo10
-         fabkku5EWQ/DY/gHNKdNO1MH/vrm5Fo3Q2TlMgVl9nNNHrEa29xKoAnyAqvW7Bbo0Ri/
-         sda3yRkNQMUJryyAUla+4jTdfjx4GQF1WvLwxyo7mCDvLUwHOAuITS0VUc+XVHsuu1Vl
-         BCjW1EVKtmS6DphkTs4wd41Ui6PErE+7h0Mufn2DOQyRAG2nBkhQJeScjMccpnItXpFJ
-         sXuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z1zCEuKVxwMDFlzC9xHuWhUKv2m+zAqr+sHqUSpNkFI=;
-        b=7Hwc5Vo9Tw7CDvLav+ECVn3yc7yO3uyaKGf0sbBGWELg8d3CYMYZ/0QdI2h4D9TtMO
-         KH8WGm6lTZzqGKg+nM1Us4CwZZCgq72PXCtny95uQ8fN5Bx3uTajQauE3RdBYagEFlhZ
-         dzFc8utbDVVN3E0ufF+BTqWdAIF8Bpi/+gbHlzR1As0ZJnj//JUor2zE5YR8Ue37+9Au
-         CrcMCjdT7caSdVwb/ZJCCqNUTf4GBH+45XRqr4Uv47q4rsZu2EOJE2FhWEPbkaL0Wble
-         nF1Ik+LFzm3/KFdvyYyyJEWSu6P1sD8W8DqSQjfBPpJEIZA+mU30RtcAf1/DMro46pT4
-         6pFw==
-X-Gm-Message-State: AOAM532MZK/j0E1gt+qZM/RFSl31KJuNgI63CILxh0SSw3o4aaFBsRAr
-        DERrKn2zb++/UhaybBo1AT8=
-X-Google-Smtp-Source: ABdhPJwK1/UAHiuuyG7dbqaRTks2Sz3jfV75Fp9fLsfDL4kPVAXdj0vztQTCi04sXfo1WhJDztOanw==
-X-Received: by 2002:a17:907:7d91:b0:6d7:a1e:a47a with SMTP id oz17-20020a1709077d9100b006d70a1ea47amr7462308ejc.116.1649232736120;
-        Wed, 06 Apr 2022 01:12:16 -0700 (PDT)
-Received: from ddolgov.remote.csb (dslb-094-222-030-091.094.222.pools.vodafone-ip.de. [94.222.30.91])
-        by smtp.gmail.com with ESMTPSA id m20-20020a170906235400b006e718d8b849sm4438929eja.45.2022.04.06.01.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Apr 2022 01:12:15 -0700 (PDT)
-Date:   Wed, 6 Apr 2022 10:12:14 +0200
-From:   Dmitry Dolgov <9erthalion6@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>
-Subject: Re: [RFC PATCH bpf-next 0/2] Priorities for bpf progs attached to
- the same tracepoint
-Message-ID: <20220406081214.tifvpmjvq45jyl3l@ddolgov.remote.csb>
-References: <20220403160718.13730-1-9erthalion6@gmail.com>
- <CAEf4BzZ7=AfL5fAU8aYT20RWY9tG5qU+Fgv-JC0GTLpGOGgAEg@mail.gmail.com>
- <20220404152953.6uu3sgqepo724yiu@ddolgov.remote.csb>
- <20220405172017.o3qi7v7edth2s7tr@MacBook-Pro.local>
+        with ESMTP id S231751AbiDFMur (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 08:50:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC23584EE9
+        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 01:54:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1649235256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=C3E55v6H/hYc3LaSvLNAvhU13rJ0i/ZaskPmc70RQYw=;
+        b=iZx2hIlt5mqR/lMZmIydfIJJ5163pmJ1P82qni4Kktp1F/KVnbRXu23Bk1+XLg+eEDI4a5
+        GXJSjq0iLRvNsLbqA8FFlQE6eZwuMNR/kNtytqqJcWDcjgBU/Jc/6R54p2PyqbC4DFqDS5
+        8pXqwsZzO2+tY+monoK+z2U/hHWQVeM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-513-hBdzYFkQP5SA6QJW8XVnrQ-1; Wed, 06 Apr 2022 04:54:12 -0400
+X-MC-Unique: hBdzYFkQP5SA6QJW8XVnrQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E7E35800B28;
+        Wed,  6 Apr 2022 08:54:11 +0000 (UTC)
+Received: from samus.usersys.redhat.com (unknown [10.43.17.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BE7EA2166B2F;
+        Wed,  6 Apr 2022 08:54:10 +0000 (UTC)
+From:   Artem Savkov <asavkov@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Artem Savkov <asavkov@redhat.com>
+Subject: [PATCH bpf-next] bpf/selftests: use bpf_num_possible_cpus() in per-cpu map allocations
+Date:   Wed,  6 Apr 2022 10:54:08 +0200
+Message-Id: <20220406085408.339336-1-asavkov@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220405172017.o3qi7v7edth2s7tr@MacBook-Pro.local>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,20 +58,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Tue, Apr 05, 2022 at 10:20:17AM -0700, Alexei Starovoitov wrote:
-> > The immediate trigger for this idea was inconvenience we faced, trying
-> > to instrument one bpf prog with another. I guess the best practice in
-> > such case would be to attach to fentry/fexit of the target bpf prog,
->
-> yes. that's a recommended way.
->
-> > but
-> > from what I understand in this case there is no way to get information
-> > about tracepoint arguments the target prog has received.
->
-> Not quite. fentry/fexit have access to the arguments of instrumented bpf prog.
-> See fexit_bpf2bpf.c
-> In case of tracepoint the fentry prog will see the same 'ctx' pointer as
-> bpf prog attached to a tp.
+bpf_map_value_size() uses num_possible_cpus() to determine map size, but
+some of the tests only allocate enough memory for online cpus. This
+results in out-of-bound writes in userspace during bpf(BPF_MAP_LOOKUP_ELEM)
+syscalls in cases when number of online cpus is lower than the number of
+possible cpus. Fix by switching from get_nprocs_conf() to
+bpf_num_possible_cpus() when determining the number of processors in
+these tests (test_progs/netcnt and test_cgroup_storage).
 
-Thanks for the clarification, I'll take a look at it.
+Signed-off-by: Artem Savkov <asavkov@redhat.com>
+---
+ tools/testing/selftests/bpf/prog_tests/netcnt.c   | 2 +-
+ tools/testing/selftests/bpf/test_cgroup_storage.c | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/netcnt.c b/tools/testing/selftests/bpf/prog_tests/netcnt.c
+index 954964f0ac3d..d3915c58d0e1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/netcnt.c
++++ b/tools/testing/selftests/bpf/prog_tests/netcnt.c
+@@ -25,7 +25,7 @@ void serial_test_netcnt(void)
+ 	if (!ASSERT_OK_PTR(skel, "netcnt_prog__open_and_load"))
+ 		return;
+ 
+-	nproc = get_nprocs_conf();
++	nproc = bpf_num_possible_cpus();
+ 	percpu_netcnt = malloc(sizeof(*percpu_netcnt) * nproc);
+ 	if (!ASSERT_OK_PTR(percpu_netcnt, "malloc(percpu_netcnt)"))
+ 		goto err;
+diff --git a/tools/testing/selftests/bpf/test_cgroup_storage.c b/tools/testing/selftests/bpf/test_cgroup_storage.c
+index d6a1be4d8020..2ffa08198d1c 100644
+--- a/tools/testing/selftests/bpf/test_cgroup_storage.c
++++ b/tools/testing/selftests/bpf/test_cgroup_storage.c
+@@ -7,6 +7,7 @@
+ #include <sys/sysinfo.h>
+ 
+ #include "bpf_rlimit.h"
++#include "bpf_util.h"
+ #include "cgroup_helpers.h"
+ #include "testing_helpers.h"
+ 
+@@ -44,7 +45,7 @@ int main(int argc, char **argv)
+ 	unsigned long long *percpu_value;
+ 	int cpu, nproc;
+ 
+-	nproc = get_nprocs_conf();
++	nproc = bpf_num_possible_cpus();
+ 	percpu_value = malloc(sizeof(*percpu_value) * nproc);
+ 	if (!percpu_value) {
+ 		printf("Not enough memory for per-cpu area (%d cpus)\n", nproc);
+-- 
+2.34.1
+
