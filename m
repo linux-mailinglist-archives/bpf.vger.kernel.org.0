@@ -2,98 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E1D4F5DFC
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 14:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472EE4F5E1C
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 14:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbiDFMYh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 08:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
+        id S233144AbiDFM1E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 08:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbiDFMXO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 08:23:14 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E69116D;
-        Wed,  6 Apr 2022 01:08:38 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id d29so1930947wra.10;
-        Wed, 06 Apr 2022 01:08:38 -0700 (PDT)
+        with ESMTP id S233016AbiDFM0I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 08:26:08 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AD12EC127
+        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 01:12:17 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id bh17so2585960ejb.8
+        for <bpf@vger.kernel.org>; Wed, 06 Apr 2022 01:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Oy67HKB+CH5MprbImCqTy7TMJ9Sc0ffSgIQtidsk7ic=;
-        b=NbUT5qTkF0/yhbtTMiRU91oFoO0A54Mr1tlwna16DC4OO0Rr/LNqXcYHCszzOaUxjV
-         6/x2ZV853pL7kHV4/RSDr8FsYGEWC0U2h5TULHMl5Tl5AkhueCmCKJp1FXV4PeLwtQJP
-         unoNRURHRC1IpADCz0yElwjJtGKB4cw5VSJ7vK+CAnF8zgtDgj4uWlV7TrvPCYZTBwBr
-         6dIYnop/zOV07tgWx4e7/ff8WqO6BSL+ahSr/4rDLUPJ7yBviKCuYO66ThgWTnazwt3u
-         QR46MaoMWWyaltmwYP4iv66YyBURkogn2t0/JLY3nFhP/Jhs8hT6ydJNUglysMoF3zDy
-         qDUg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z1zCEuKVxwMDFlzC9xHuWhUKv2m+zAqr+sHqUSpNkFI=;
+        b=C7fY8Y3OaT9YlcX8gcLZX7uGAa5AxVIFGAP3lPfNLDkJ1rbIsxs6h9MbutjIaHV8AY
+         IvsbSa199v7mv0NmmzgOukEIJQmzkCQBE/PE8FGIJERQRefUriYkW2Ice6ZXb7M5Jo10
+         fabkku5EWQ/DY/gHNKdNO1MH/vrm5Fo3Q2TlMgVl9nNNHrEa29xKoAnyAqvW7Bbo0Ri/
+         sda3yRkNQMUJryyAUla+4jTdfjx4GQF1WvLwxyo7mCDvLUwHOAuITS0VUc+XVHsuu1Vl
+         BCjW1EVKtmS6DphkTs4wd41Ui6PErE+7h0Mufn2DOQyRAG2nBkhQJeScjMccpnItXpFJ
+         sXuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Oy67HKB+CH5MprbImCqTy7TMJ9Sc0ffSgIQtidsk7ic=;
-        b=f7QK6LOR/Zp4ke41y6ZPkcl63JsVzIQhUvg3UnpKVxFBEbKAUTWdV5bOnhzrQ436K4
-         vy3PxKbuJqr9TRJtBjO+Uf96j/rpPL9MyTAg7YOO8f28ArK3Ty92j3FZ+axmCoPpUHzO
-         gIGhZwPvp2+Yw5ZM275TQtCeWMj8HYTZy+Lq5p4LID1Uh3VSpLUDb0IEofg/dbvgbKMI
-         mkETjljV4jjsSWjo4TQR2ibtAifZADF92GZP3qDMZI2/rYrCo3jqQVAyd/SpmjivNvfg
-         rNfvlPZf4bR36t+rosfwwQcwdZYj38msFUrkOrZm7JVw32nDr+pLAYw9A/LZccEDaSRV
-         LFWw==
-X-Gm-Message-State: AOAM533igNL7u77mDyftQLa+tk2FI4x2YWVGz5Ze5M4gF+gE4uWxDdL5
-        VOz0hz83moKmqh5u5Gv/vbs=
-X-Google-Smtp-Source: ABdhPJyGUySVImbWHPE8ZMHJL80liCjqLWjiWY9DChxMxo3AEPwcFSHgFeTYEXGDgCP96GwANq5Omg==
-X-Received: by 2002:a5d:6d8b:0:b0:203:f9b4:be1d with SMTP id l11-20020a5d6d8b000000b00203f9b4be1dmr5704571wrs.298.1649232517257;
-        Wed, 06 Apr 2022 01:08:37 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id l3-20020a1ced03000000b0038ce57d28a1sm4035390wmh.26.2022.04.06.01.08.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z1zCEuKVxwMDFlzC9xHuWhUKv2m+zAqr+sHqUSpNkFI=;
+        b=7Hwc5Vo9Tw7CDvLav+ECVn3yc7yO3uyaKGf0sbBGWELg8d3CYMYZ/0QdI2h4D9TtMO
+         KH8WGm6lTZzqGKg+nM1Us4CwZZCgq72PXCtny95uQ8fN5Bx3uTajQauE3RdBYagEFlhZ
+         dzFc8utbDVVN3E0ufF+BTqWdAIF8Bpi/+gbHlzR1As0ZJnj//JUor2zE5YR8Ue37+9Au
+         CrcMCjdT7caSdVwb/ZJCCqNUTf4GBH+45XRqr4Uv47q4rsZu2EOJE2FhWEPbkaL0Wble
+         nF1Ik+LFzm3/KFdvyYyyJEWSu6P1sD8W8DqSQjfBPpJEIZA+mU30RtcAf1/DMro46pT4
+         6pFw==
+X-Gm-Message-State: AOAM532MZK/j0E1gt+qZM/RFSl31KJuNgI63CILxh0SSw3o4aaFBsRAr
+        DERrKn2zb++/UhaybBo1AT8=
+X-Google-Smtp-Source: ABdhPJwK1/UAHiuuyG7dbqaRTks2Sz3jfV75Fp9fLsfDL4kPVAXdj0vztQTCi04sXfo1WhJDztOanw==
+X-Received: by 2002:a17:907:7d91:b0:6d7:a1e:a47a with SMTP id oz17-20020a1709077d9100b006d70a1ea47amr7462308ejc.116.1649232736120;
+        Wed, 06 Apr 2022 01:12:16 -0700 (PDT)
+Received: from ddolgov.remote.csb (dslb-094-222-030-091.094.222.pools.vodafone-ip.de. [94.222.30.91])
+        by smtp.gmail.com with ESMTPSA id m20-20020a170906235400b006e718d8b849sm4438929eja.45.2022.04.06.01.12.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Apr 2022 01:08:36 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Wed, 06 Apr 2022 01:12:15 -0700 (PDT)
+Date:   Wed, 6 Apr 2022 10:12:14 +0200
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] libbpf: Fix spelling mistake "libaries" -> "libraries"
-Date:   Wed,  6 Apr 2022 09:08:35 +0100
-Message-Id: <20220406080835.14879-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.35.1
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>
+Subject: Re: [RFC PATCH bpf-next 0/2] Priorities for bpf progs attached to
+ the same tracepoint
+Message-ID: <20220406081214.tifvpmjvq45jyl3l@ddolgov.remote.csb>
+References: <20220403160718.13730-1-9erthalion6@gmail.com>
+ <CAEf4BzZ7=AfL5fAU8aYT20RWY9tG5qU+Fgv-JC0GTLpGOGgAEg@mail.gmail.com>
+ <20220404152953.6uu3sgqepo724yiu@ddolgov.remote.csb>
+ <20220405172017.o3qi7v7edth2s7tr@MacBook-Pro.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220405172017.o3qi7v7edth2s7tr@MacBook-Pro.local>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There is a spelling mistake in a pr_warn message. Fix it.
+> On Tue, Apr 05, 2022 at 10:20:17AM -0700, Alexei Starovoitov wrote:
+> > The immediate trigger for this idea was inconvenience we faced, trying
+> > to instrument one bpf prog with another. I guess the best practice in
+> > such case would be to attach to fentry/fexit of the target bpf prog,
+>
+> yes. that's a recommended way.
+>
+> > but
+> > from what I understand in this case there is no way to get information
+> > about tracepoint arguments the target prog has received.
+>
+> Not quite. fentry/fexit have access to the arguments of instrumented bpf prog.
+> See fexit_bpf2bpf.c
+> In case of tracepoint the fentry prog will see the same 'ctx' pointer as
+> bpf prog attached to a tp.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- tools/lib/bpf/usdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index 1bce2eab5e89..c5acf2824fcc 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -687,7 +687,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 			 * to shared libraries with no PID filter.
- 			 */
- 			if (pid < 0) {
--				pr_warn("usdt: attaching to shared libaries without specific PID is not supported on current kernel\n");
-+				pr_warn("usdt: attaching to shared libraries without specific PID is not supported on current kernel\n");
- 				err = -ENOTSUP;
- 				goto err_out;
- 			}
--- 
-2.35.1
-
+Thanks for the clarification, I'll take a look at it.
