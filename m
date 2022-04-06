@@ -2,295 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E4E4F634D
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 17:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014EE4F6516
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 18:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235821AbiDFPdc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 11:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
+        id S237026AbiDFQVM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 12:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236191AbiDFPdO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 11:33:14 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2089.outbound.protection.outlook.com [40.107.92.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28364BDACB;
-        Wed,  6 Apr 2022 05:42:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q878cRs4//0C9Kud4vo/wW1AFKbYnIGxgHWMtrgt3umA0MKqJsvc5dN/xe2dwPoetUyhLEgP2Nc/yf9nogFM+mCU5aGUbJyjphfdRgAjsD4sp+v8wl/g7ROAgucK2bWdzjB25aQ1LamEgZVrIBkZSo3E1zCR3xLjPd625cgzvMlVwMPAxor4R3A6cz3HRWwcimJchAW61rYpF/1qyV060NJ7LDNnhKA9tIIxkEBe/rxZkSgBT7FxU3Q3Lfeq+DsS7yixVaw0J+tjlm8REi8OEcrk4wezXcHfgNgW01Q+qYronUpErTci9k0qi5tvNTUDn/eMr7LI58bEYGoEXWsnwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TTWuh4pIIul7EGJ/M/YyW67bt48nhB3Usbkemo/n3h8=;
- b=MmZpt5PMVcv5MeBUs1rPmWZVd8GYWRP6MEPYDvhqhbxdiCjggqRkJuwQvUJEgnHlUAdlx+N05OINj95cWhDZhwRKlzOg3uYv0jW/TCq/o3usYqVrrgXTfvSo97j/XV1ozWAcprwPu68hV3USzCD2aQJZ+CAy1r2IuceOYM2wEkv27+N+okfOx+J3Ny/6y9yLmpYFj5p7pQVi/Z2xRWNKYSvIRoOrHhgZ2yz/d/be9sTzKnbc7P39ZANs1o1LC8Bsu/ZYGKL2TNFjTvf3ir+8kZsU6pCg8lx9jK0wFlDAQ2tIO3aQBRFsTzCxHGr8iCDoYWfGP4WlgLX/lKbRgQ4AqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.235) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TTWuh4pIIul7EGJ/M/YyW67bt48nhB3Usbkemo/n3h8=;
- b=OzOJgxE8RFAkeo/kP4gVKYSPYfu5TGZYlXEaHUvRPDy+W2fmO1tIBAmxKdElo0Z4gN1sAgTrx9wdUv5jS/zpzKJReIymEfHFYio54JgInvGdXCIfla1IF5AGZBcgyNRmJhUbIJmNgrt3E02t3bIqoA/iezymSY+8VHJonsEUQP6+RQYXd6MHdDByBmV4ghgv1w1VMd9Ap6YeRrpBRZYzuPzufAXjb2dHJKTCXAbEG02QacCctvjOeE08fDa6rT5M3LHszm/I2M+70sDMJfixQ1EeX4Ko0+uBHG0HRz7D3jQVKPLgXuosPesqJObSpeW4vWLzqC7l6nSuk1tTZpt+ig==
-Received: from BN9P222CA0008.NAMP222.PROD.OUTLOOK.COM (2603:10b6:408:10c::13)
- by BN6PR12MB1810.namprd12.prod.outlook.com (2603:10b6:404:107::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.21; Wed, 6 Apr
- 2022 12:41:49 +0000
-Received: from BN8NAM11FT010.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:10c:cafe::db) by BN9P222CA0008.outlook.office365.com
- (2603:10b6:408:10c::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.13 via Frontend
- Transport; Wed, 6 Apr 2022 12:41:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.235)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.235 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.235; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.235) by
- BN8NAM11FT010.mail.protection.outlook.com (10.13.177.53) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.5144.20 via Frontend Transport; Wed, 6 Apr 2022 12:41:48 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.32; Wed, 6 Apr
- 2022 12:41:48 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Wed, 6 Apr 2022
- 05:41:47 -0700
-Received: from vdi.nvidia.com (10.127.8.12) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server id 15.2.986.22 via Frontend Transport; Wed, 6 Apr
- 2022 05:41:42 -0700
-From:   Maxim Mikityanskiy <maximmi@nvidia.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Arthur Fabre <afabre@cloudflare.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Maxim Mikityanskiy" <maximmi@nvidia.com>
-Subject: [PATCH bpf v5 2/2] bpf: Adjust bpf_tcp_check_syncookie selftest to test dual-stack sockets
-Date:   Wed, 6 Apr 2022 15:41:13 +0300
-Message-ID: <20220406124113.2795730-2-maximmi@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220406124113.2795730-1-maximmi@nvidia.com>
-References: <20220406124113.2795730-1-maximmi@nvidia.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d0c8dbfc-1e34-4a14-f4db-08da17cad167
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1810:EE_
-X-Microsoft-Antispam-PRVS: <BN6PR12MB1810A25603AFDCAE839B48CEDCE79@BN6PR12MB1810.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yYamxIOrRdqnE+ZBmETUqo1nRpWNE8n/Ro83pQuJX9g7vP0D7U7qIW2pZCl7y3I++Yb4CwEIsmx06fkEoApluMy9JExeS5Hj9ZnJFNOPHKiIkZ/OwX0OFrmLlYvksCzBb+QEhRYPHhcK/YSvlpktjBKTHCL6xa0TKq4syxrQAIxuXNI9VLkjeC+Feg9rLzYAQEApddp2iIfHlb4xJAiYzeixXTsW080CJC3WCk1L+srYlygX3J0U+Od91BeIWTD/d24HObPNyYnXe9Y2AZMwN+bNeZrAJ6EdJ1tMlkPy2RgFEh6m5vcFHLGHWEPJZB+Gf6gv4VH+lt9YiQH4+ls6RZgDH2U7McdAjwMJWQ2WEJNWckd64wlgzRbYBk0fAcFMf0VB0kd5DZYsu4syKmu88sbD+R3A0fOz4Vg2mjMMohjDZpUAWLLiFpqipYJULWnOyG6Y9i3kUNCsn15K1dlf8g8hV/aRjGGZxEFGAK/jN4ytAD0FwR7COOJHi4wjG7a6yXKnilw1pmcxlM1Opv0sZnwzO02MLUfN1T8a/gPNnK5IyBY1sh9Hgj+M4asJAIgMAA5TXkO6x7YmRKyTrVqhauEQj0Q+PizuqvHU8g7vcUpvk7gdgBbjIp0fCAASaAGah8d8Ejjinl1B+ndvCou4WefKmMKfBI+amgzBQw6rk8A67ahWoHfgQMBICjfiNodbzHnBxH5MU/8eTD9mlnNmaQ==
-X-Forefront-Antispam-Report: CIP:12.22.5.235;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230001)(4636009)(46966006)(40470700004)(36840700001)(7696005)(6666004)(426003)(36860700001)(2616005)(47076005)(83380400001)(107886003)(26005)(186003)(336012)(1076003)(7416002)(8936002)(4326008)(36756003)(70206006)(81166007)(5660300002)(82310400005)(356005)(8676002)(2906002)(316002)(508600001)(110136005)(40460700003)(54906003)(86362001)(70586007)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2022 12:41:48.8711
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d0c8dbfc-1e34-4a14-f4db-08da17cad167
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.235];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT010.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1810
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S237328AbiDFQUz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 12:20:55 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0BE32E972
+        for <bpf@vger.kernel.org>; Tue,  5 Apr 2022 19:54:19 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id l4-20020a17090a49c400b001c6840df4a3so1437956pjm.0
+        for <bpf@vger.kernel.org>; Tue, 05 Apr 2022 19:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=qyS9kBqZmY/IJUGnqLiXgMXcP9SR7NFrRyXxbrroCwA=;
+        b=Dy6Nyw5mdpbd3Vk+laTCeGsTdhGCVDrCw80n3CCkD7zmfCxMlcZyUHgcRX4tCjlH1J
+         KK6GSCDcBUOFTWVmeccCg3U3pmrYuVpimOvacs21metOL6eMRPsuPeeX/iGQp/+GzjSv
+         75F7Et45zdOrv8WxGcbrHqkUnXjQ5SaoRPEJE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=qyS9kBqZmY/IJUGnqLiXgMXcP9SR7NFrRyXxbrroCwA=;
+        b=wIeq4XzTvU4jXR2lsJ9slpJK1aNGhy70SHh8oGUes8qvc+GkosbEaV149+AuwGfVoM
+         OvUmlNWDg86H65KgoEt7gX64oCLho0/bNrFXF1DKQXPU/KbNtCNGwVNWmQeQVi/UiOsM
+         +11zwrSpolwEtAd2732vyUhjFLBT1T8VmCmHENN/OH/W3smYaMxjIfwhDUh/ZhRl+tAQ
+         E6BCwuwG1d8eWgKBOEAlG+uidDiF3UwXJfqO87XWSHr2/FSjiJRV32bbTT5mLyZ51x+e
+         zRzgJMv6MMs+U/6hu0D1JA8/FpQ531CWS+JFS6AsH1tDphYYT0cVEd+fHUwi38vxZhek
+         kapQ==
+X-Gm-Message-State: AOAM530qIE56zs/O893DBmtOvhsKnq46+KwVda1h+50prkyLKEzLKaAX
+        FB6W6Az9MfMNrGDolasNJuBgDpr5cV96QQ==
+X-Google-Smtp-Source: ABdhPJw0Nlbo1gKZcG9FBNyFMY8fcEgld74DrK981mn6G3YGj81sfrNgp8Nv0oD1+E0opYnyJJqBhQ==
+X-Received: by 2002:a17:902:c948:b0:156:c07d:8222 with SMTP id i8-20020a170902c94800b00156c07d8222mr6612935pla.30.1649213658863;
+        Tue, 05 Apr 2022 19:54:18 -0700 (PDT)
+Received: from localhost.swdvt.lab.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x9-20020a17090a970900b001ca6c59b350sm3395111pjo.2.2022.04.05.19.54.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Apr 2022 19:54:18 -0700 (PDT)
+From:   Michael Chan <michael.chan@broadcom.com>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, kuba@kernel.org, gospo@broadcom.com,
+        bpf@vger.kernel.org, john.fastabend@gmail.com, toke@redhat.com,
+        lorenzo@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        echaudro@redhat.com, pabeni@redhat.com
+Subject: [PATCH net-next v3 02/11] bnxt: add flag to denote that an xdp program is currently attached
+Date:   Tue,  5 Apr 2022 22:53:44 -0400
+Message-Id: <1649213633-7662-3-git-send-email-michael.chan@broadcom.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1649213633-7662-1-git-send-email-michael.chan@broadcom.com>
+References: <1649213633-7662-1-git-send-email-michael.chan@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000557ab705dbf37a60"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The previous commit fixed support for dual-stack sockets in
-bpf_tcp_check_syncookie. This commit adjusts the selftest to verify the
-fixed functionality.
+--000000000000557ab705dbf37a60
 
-Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-Acked-by: Arthur Fabre <afabre@cloudflare.com>
+From: Andy Gospodarek <gospo@broadcom.com>
+
+This will be used to determine if bnxt_rx_xdp should be called
+rather than calling it every time.
+
+Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 ---
- .../bpf/test_tcp_check_syncookie_user.c       | 78 ++++++++++++++-----
- 1 file changed, 59 insertions(+), 19 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c b/tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c
-index b9e991d43155..e7775d3bbe08 100644
---- a/tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c
-+++ b/tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c
-@@ -18,8 +18,9 @@
- #include "bpf_rlimit.h"
- #include "cgroup_helpers.h"
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 826d94c49d26..f6973f57ccd2 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -1729,6 +1729,7 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+ 	struct bnxt_sw_rx_bd *rx_buf;
+ 	unsigned int len;
+ 	u8 *data_ptr, agg_bufs, cmp_type;
++	bool xdp_active = false;
+ 	dma_addr_t dma_addr;
+ 	struct sk_buff *skb;
+ 	struct xdp_buff xdp;
+@@ -1842,11 +1843,17 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
  
--static int start_server(const struct sockaddr *addr, socklen_t len)
-+static int start_server(const struct sockaddr *addr, socklen_t len, bool dual)
- {
-+	int mode = !dual;
- 	int fd;
- 
- 	fd = socket(addr->sa_family, SOCK_STREAM, 0);
-@@ -28,6 +29,14 @@ static int start_server(const struct sockaddr *addr, socklen_t len)
- 		goto out;
- 	}
- 
-+	if (addr->sa_family == AF_INET6) {
-+		if (setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (char *)&mode,
-+			       sizeof(mode)) == -1) {
-+			log_err("Failed to set the dual-stack mode");
-+			goto close_out;
-+		}
+ 	if (bnxt_xdp_attached(bp, rxr)) {
+ 		bnxt_xdp_buff_init(bp, rxr, cons, &data_ptr, &len, &xdp);
++		xdp_active = true;
 +	}
 +
- 	if (bind(fd, addr, len) == -1) {
- 		log_err("Failed to bind server socket");
- 		goto close_out;
-@@ -47,24 +56,17 @@ static int start_server(const struct sockaddr *addr, socklen_t len)
- 	return fd;
- }
- 
--static int connect_to_server(int server_fd)
-+static int connect_to_server(const struct sockaddr *addr, socklen_t len)
- {
--	struct sockaddr_storage addr;
--	socklen_t len = sizeof(addr);
- 	int fd = -1;
- 
--	if (getsockname(server_fd, (struct sockaddr *)&addr, &len)) {
--		log_err("Failed to get server addr");
--		goto out;
--	}
--
--	fd = socket(addr.ss_family, SOCK_STREAM, 0);
-+	fd = socket(addr->sa_family, SOCK_STREAM, 0);
- 	if (fd == -1) {
- 		log_err("Failed to create client socket");
- 		goto out;
++	/* skip running XDP prog if there are aggregation bufs */
++	if (!agg_bufs && xdp_active) {
+ 		if (bnxt_rx_xdp(bp, rxr, cons, xdp, data, &len, event)) {
+ 			rc = 1;
+ 			goto next_rx;
+ 		}
  	}
- 
--	if (connect(fd, (const struct sockaddr *)&addr, len) == -1) {
-+	if (connect(fd, (const struct sockaddr *)addr, len) == -1) {
- 		log_err("Fail to connect to server");
- 		goto close_out;
- 	}
-@@ -116,7 +118,8 @@ static int get_map_fd_by_prog_id(int prog_id, bool *xdp)
- 	return map_fd;
- }
- 
--static int run_test(int server_fd, int results_fd, bool xdp)
-+static int run_test(int server_fd, int results_fd, bool xdp,
-+		    const struct sockaddr *addr, socklen_t len)
- {
- 	int client = -1, srv_client = -1;
- 	int ret = 0;
-@@ -142,7 +145,7 @@ static int run_test(int server_fd, int results_fd, bool xdp)
- 		goto err;
- 	}
- 
--	client = connect_to_server(server_fd);
-+	client = connect_to_server(addr, len);
- 	if (client == -1)
- 		goto err;
- 
-@@ -199,12 +202,30 @@ static int run_test(int server_fd, int results_fd, bool xdp)
- 	return ret;
- }
- 
-+static bool get_port(int server_fd, in_port_t *port)
-+{
-+	struct sockaddr_in addr;
-+	socklen_t len = sizeof(addr);
 +
-+	if (getsockname(server_fd, (struct sockaddr *)&addr, &len)) {
-+		log_err("Failed to get server addr");
-+		return false;
-+	}
-+
-+	/* sin_port and sin6_port are located at the same offset. */
-+	*port = addr.sin_port;
-+	return true;
-+}
-+
- int main(int argc, char **argv)
- {
- 	struct sockaddr_in addr4;
- 	struct sockaddr_in6 addr6;
-+	struct sockaddr_in addr4dual;
-+	struct sockaddr_in6 addr6dual;
- 	int server = -1;
- 	int server_v6 = -1;
-+	int server_dual = -1;
- 	int results = -1;
- 	int err = 0;
- 	bool xdp;
-@@ -224,25 +245,43 @@ int main(int argc, char **argv)
- 	addr4.sin_family = AF_INET;
- 	addr4.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
- 	addr4.sin_port = 0;
-+	memcpy(&addr4dual, &addr4, sizeof(addr4dual));
- 
- 	memset(&addr6, 0, sizeof(addr6));
- 	addr6.sin6_family = AF_INET6;
- 	addr6.sin6_addr = in6addr_loopback;
- 	addr6.sin6_port = 0;
- 
--	server = start_server((const struct sockaddr *)&addr4, sizeof(addr4));
--	if (server == -1)
-+	memset(&addr6dual, 0, sizeof(addr6dual));
-+	addr6dual.sin6_family = AF_INET6;
-+	addr6dual.sin6_addr = in6addr_any;
-+	addr6dual.sin6_port = 0;
-+
-+	server = start_server((const struct sockaddr *)&addr4, sizeof(addr4),
-+			      false);
-+	if (server == -1 || !get_port(server, &addr4.sin_port))
- 		goto err;
- 
- 	server_v6 = start_server((const struct sockaddr *)&addr6,
--				 sizeof(addr6));
--	if (server_v6 == -1)
-+				 sizeof(addr6), false);
-+	if (server_v6 == -1 || !get_port(server_v6, &addr6.sin6_port))
-+		goto err;
-+
-+	server_dual = start_server((const struct sockaddr *)&addr6dual,
-+				   sizeof(addr6dual), true);
-+	if (server_dual == -1 || !get_port(server_dual, &addr4dual.sin_port))
-+		goto err;
-+
-+	if (run_test(server, results, xdp,
-+		     (const struct sockaddr *)&addr4, sizeof(addr4)))
- 		goto err;
- 
--	if (run_test(server, results, xdp))
-+	if (run_test(server_v6, results, xdp,
-+		     (const struct sockaddr *)&addr6, sizeof(addr6)))
- 		goto err;
- 
--	if (run_test(server_v6, results, xdp))
-+	if (run_test(server_dual, results, xdp,
-+		     (const struct sockaddr *)&addr4dual, sizeof(addr4dual)))
- 		goto err;
- 
- 	printf("ok\n");
-@@ -252,6 +291,7 @@ int main(int argc, char **argv)
- out:
- 	close(server);
- 	close(server_v6);
-+	close(server_dual);
- 	close(results);
- 	return err;
- }
+ 	if (len <= bp->rx_copy_thresh) {
+ 		skb = bnxt_copy_skb(bnapi, data_ptr, len, dma_addr);
+ 		bnxt_reuse_rx_data(rxr, cons, data);
 -- 
-2.30.2
+2.18.1
 
+
+--000000000000557ab705dbf37a60
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIQbQYJKoZIhvcNAQcCoIIQXjCCEFoCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3EMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBUwwggQ0oAMCAQICDBB5T5jqFt6c/NEwmzANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxNDE0MTRaFw0yMjA5MjIxNDQzNDhaMIGO
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xFTATBgNVBAMTDE1pY2hhZWwgQ2hhbjEoMCYGCSqGSIb3DQEJ
+ARYZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBANtwBQrLJBrTcbQ1kmjdo+NJT2hFaBFsw1IOi34uVzWz21AZUqQkNVktkT740rYuB1m1No7W
+EBvfLuKxbgQO2pHk9mTUiTHsrX2CHIw835Du8Co2jEuIqAsocz53NwYmk4Sj0/HqAfxgtHEleK2l
+CR56TX8FjvCKYDsIsXIjMzm3M7apx8CQWT6DxwfrDBu607V6LkfuHp2/BZM2GvIiWqy2soKnUqjx
+xV4Em+0wQoEIR2kPG6yiZNtUK0tNCaZejYU/Mf/bzdKSwud3pLgHV8ls83y2OU/ha9xgJMLpRswv
+xucFCxMsPmk0yoVmpbr92kIpLm+TomNZsL++LcDRa2ECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUz2bMvqtXpXM0u3vAvRkalz60
+CjswDQYJKoZIhvcNAQELBQADggEBAGUgeqqI/q2pkETeLr6oS7nnm1bkeNmtnJ2bnybNO/RdrbPj
+DHVSiDCCrWr6xrc+q6OiZDKm0Ieq6BN+Wfr8h5mCkZMUdJikI85WcQTRk6EEF2lzIiaULmFD7U15
+FSWQptLx+kiu63idTII4r3k/7+dJ5AhLRr4WCoXEme2GZkfSbYC3fEL46tb1w7w+25OEFCv1MtDZ
+1CHkODrS2JGwDQxXKmyF64MhJiOutWHmqoGmLJVz1jnDvClsYtgT4zcNtoqKtjpWDYAefncWDPIQ
+DauX1eWVM+KepL7zoSNzVbTipc65WuZFLR8ngOwkpknqvS9n/nKd885m23oIocC+GA4xggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQeU+Y6hbenPzRMJsw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPsFSV1v0fpVPTHZfFumKcVAD8NuIg01
+PTzg8CABiiipMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMDQw
+NjAyNTQxOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQArT23Jr8ll7SDQceOVCPgG4BbjNuh8ARJu35no25dq+eqJ/iht
+twQr55diA92NSt0WW2Iel73pcteJ6955NInIHuohMOqXoYh7FUDVeYZ7RQccrnMI0iT2khj3vyN2
+TBkyLVHMIRR7W5aGApqBb3Fu+HKqyetYTbjjFZS50nH7vmLGLyD2YqzM45SUd40Wi/H1Dqz8q0B6
+HERpIz3c1tis4XoPfXCtOahvf5kGSFhVgTGNRGeg/HuVApmDrG4yQcNsDpK1c7G1b1r39K44rQd8
+eWtm5mx6IvmT6vlYUX/Lh0dcW8P5kS7pH2eNpfye80FfW4UFEB8BscvMC5uop1mG
+--000000000000557ab705dbf37a60--
