@@ -2,65 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BB04F6E6D
-	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 01:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F053D4F6E70
+	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 01:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbiDFXRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 19:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
+        id S229476AbiDFXUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 19:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbiDFXRN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 19:17:13 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F3B1CC436
-        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 16:15:16 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id y16so3049541ilc.7
-        for <bpf@vger.kernel.org>; Wed, 06 Apr 2022 16:15:16 -0700 (PDT)
+        with ESMTP id S229586AbiDFXUK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 19:20:10 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDB5A2065
+        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 16:18:12 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id z6so4973215iot.0
+        for <bpf@vger.kernel.org>; Wed, 06 Apr 2022 16:18:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=neCWB8iWhVhspNQEvo1BKyg4Ujm9iPbysd7e3JIHPuQ=;
-        b=qO7tes30ffvHkxi+wXxAukW1iVRpN40hdF9XUzmIV6/moHjrygnofBHtaolvBgVJ53
-         m0PeGre4K2AJSBp4CxZQyY9u9ZpQhHlDAXrzFjui/AjDqsdrU5eBTLjlRw4rLIZgVtjc
-         MfiuTbOkxjHyAIeXEZswyeXvNfRbWWlAFuNPPUU6nAgNx4gl+1uW7RRrjsqMJPy1jcBh
-         fL6ayYCkWB/KMSexcekcDp2FtS9TUHPQgdQrQlfZ0cJ05gooMWLzDZyoZJEyZWN7pKIP
-         /qsXTxSlXYvhw/eKipvIp2oVLTVm4DC7ojxKJYjxR3JIwk87GH2fEyZj9DWC7t3yVPYZ
-         sIEg==
+        bh=ky/QcBOPGhvSLx30JxqiV46c0zWx/wKU9HEIfbxjYNY=;
+        b=OQqs9NKJxYREpy304qKoknDF4jIehAHbS5/38DlmxRvdoHT6xgeL+J7SIFKvxAbUBp
+         TKaRR9JRNWiyAVgLWHjy/+/wTv8wWLz0t8C9F2YdUDikr+bDgqbOLH+f79Wf0nTbvdBM
+         EX+yuNHKd/QpIsAdz9wXuex01l9Xt8XxdvXgYkSt7fh4qOiKxy1Izo5Y1Y9Y3KlOMzaU
+         tN3e8fOkInA3BzEfPGRlI8bsL951RGLzcR3Wx8aKpIzBhI1CfIwbmTlTP9KZzGmrhwFd
+         NfVnugCOsIYRHuW1qGVZAylwHGhYpZIPV/k6OKq9188pgP+BdO7BOH/uSGO6ZW65pCyx
+         kB9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=neCWB8iWhVhspNQEvo1BKyg4Ujm9iPbysd7e3JIHPuQ=;
-        b=RFVNosBragdyHoV2MkNPi+3lnxG2NxoQ9ouvmkyQJkorQ9lYYeSrXMt+pDVJWdncYg
-         tVKals1V/IH0wfLDMZrKqQhUTsfYEI/OepWcQ91nVnP+k7mxj/4MMEHhvNo96BDOpPVJ
-         RLli5nIdrkgfz1V0AVB3UOk9OxzdCBoooChKHk+LSre5+71EOFQBhQRUlOoJOzxIoiGp
-         Uz4dQPqka9KlDAt1wyd2BXOguxEzlG6tjpGGdec7hIyBC8TM5+R7RVccdMp08BxO7O7K
-         VYDxRTGHE35QYagQJ/fdhp3XuvlQJePNoQ8pUg9NziuhXtfIf5Lzuo2pmqGzafYp81BD
-         CPjQ==
-X-Gm-Message-State: AOAM5323c4iTU+NoeJx3twcG07LRsfLkkIe8uy2gNZuw2btt3Et5YTgU
-        DKF637/vrdRAgIsvQSym1hSqdQ/ySMHQ0YAXk5o=
-X-Google-Smtp-Source: ABdhPJwU4tZAjek7RxnVbvXQp3uwcHRXj3otXR6vOZ/2nDxXAwyqdTgJc5B82KYC78VO8voyfggmSG42vRQqST/1TGs=
-X-Received: by 2002:a05:6e02:1562:b0:2ca:50f1:72f3 with SMTP id
- k2-20020a056e02156200b002ca50f172f3mr5096251ilu.71.1649286915706; Wed, 06 Apr
- 2022 16:15:15 -0700 (PDT)
+        bh=ky/QcBOPGhvSLx30JxqiV46c0zWx/wKU9HEIfbxjYNY=;
+        b=1+Gc0VPOb1OK5ocJr6Ti8rUnDQrAoaMBuILRJXMT2kRGcshtk64cRn5+gHDRbNAUzt
+         fXUL4Z7TGZkIdc0jnITnwv1BDn6FjN8neI1OyBvHRGQKueU0oc6PwfJN7wxW1pgv63Jv
+         v2iOEpr7GVXpMp54dLp8bIDd9JuW4qqhpaoiwR+6HV2aCiv5rgy9dZZgw9Vg5pLPQ/F9
+         +YApy8dBpoN+dAc1QLhYuSAC+R0gDRtBHhNNuqWVKwuMkOLOLEIrDA27bayYCbDxCjf8
+         sVhQVFJ+EStdA2GDnYJniWgcU4W+KL3DXJxTwFSsriogVROZ/OSR+57qcbhTdZ+x/Hpu
+         ew9w==
+X-Gm-Message-State: AOAM530QpHtVNjit96af+Sa8OLTRdC3ogfigfL2G6lx0D1pkOyl56ArP
+        EyeYYnT8ovLeBMo6oLatYHxVpN03qtZa89+/s599itBG
+X-Google-Smtp-Source: ABdhPJyHEgiyVZwQOrfhKiddfvGa5aaJZStKTa4Kr9OkMKJT7xTvmwJWjcavGEVRQPo6xy92Y430cL6ZGQa5eLREenY=
+X-Received: by 2002:a05:6602:735:b0:64c:adf1:ae09 with SMTP id
+ g21-20020a056602073500b0064cadf1ae09mr5020593iox.79.1649287092066; Wed, 06
+ Apr 2022 16:18:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220404234202.331384-1-andrii@kernel.org> <20220404234202.331384-6-andrii@kernel.org>
- <CAEf4BzbETp3S4-HebGBNjFm1fCCAuytSqTp=SNXgXFSqsgCQOQ@mail.gmail.com> <034e57e04eeb7dab4bad4fa674ab337a5534cbdc.camel@linux.ibm.com>
-In-Reply-To: <034e57e04eeb7dab4bad4fa674ab337a5534cbdc.camel@linux.ibm.com>
+References: <CAO658oVD+0Ltuww1F-AZdPtSE4O4M-BH5NP_R-oSBWszZ3oZiQ@mail.gmail.com>
+ <CAEf4BzY8kjQDrkKU2gZox8J9gF7iQ9ht=2GVmXuktCRg0sRqjA@mail.gmail.com> <CAO658oUbXfuYzK1fxTrEdHJffhxpvL9QBZLdOtY6uG98H1e0Lg@mail.gmail.com>
+In-Reply-To: <CAO658oUbXfuYzK1fxTrEdHJffhxpvL9QBZLdOtY6uG98H1e0Lg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Apr 2022 16:15:04 -0700
-Message-ID: <CAEf4BzYJixpYpg4MUxETPVbCrUrZYbn==-UYgVh1z5MWx1TV+w@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 5/7] libbpf: add x86-specific USDT arg spec
- parsing logic
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
+Date:   Wed, 6 Apr 2022 16:18:01 -0700
+Message-ID: <CAEf4BzZan24Fh-+f5OMkZEFtpMsStm+OpCoYuwbxQBwK2q7CJg@mail.gmail.com>
+Subject: Re: Questions on BPF_PROG_TYPE_TRACING & fentry/fexit
+To:     Grant Seltzer Richman <grantseltzer@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -72,40 +65,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 6, 2022 at 3:49 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Wed, Apr 6, 2022 at 1:01 PM Grant Seltzer Richman
+<grantseltzer@gmail.com> wrote:
 >
-> On Wed, 2022-04-06 at 10:23 -0700, Andrii Nakryiko wrote:
-> > On Mon, Apr 4, 2022 at 4:42 PM Andrii Nakryiko <andrii@kernel.org>
-> > wrote:
-> > >
-> > > Add x86/x86_64-specific USDT argument specification parsing. Each
-> > > architecture will require their own logic, as all this is arch-
-> > > specific
-> > > assembly-based notation. Architectures that libbpf doesn't support
-> > > for
-> > > USDTs will pr_warn() with specific error and return -ENOTSUP.
-> > >
-> > > We use sscanf() as a very powerful and easy to use string parser.
-> > > Those
-> > > spaces in sscanf's format string mean "skip any whitespaces", which
-> > > is
-> > > pretty nifty (and somewhat little known) feature.
-> > >
-> > > All this was tested on little-endian architecture, so bit shifts
-> > > are
-> > > probably off on big-endian, which our CI will hopefully prove.
-> > >
-> > > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > > Reviewed-by: Dave Marchevsky <davemarchevsky@fb.com>
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
+> On Sun, Apr 3, 2022 at 7:47 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > Ilya, would you be interested in implementing at least some limited
-> > support of USDT parameters for s390x? It would be good to have
-> > big-endian platform supported and tested. aarch64 would be nice as
-> > well, but I'm not sure who's the expert on that to help with.
+> > On Fri, Apr 1, 2022 at 7:27 AM Grant Seltzer Richman
+> > <grantseltzer@gmail.com> wrote:
+> > >
+> > > Hi there,
+> > >
+> > > I'm looking to implement programs of type BPF_PROG_TYPE_TRACING to
+> > > replace kprobe/tracepoints because from what I can tell there's less
+> > > performance overhead. However, I'm trying to understand restrictions
+> > > and use cases.
+> > >
+> > > I see that there's a generic `bpf_program__attach()` which can be used
+> > > to attach programs and it will attempt to auto-detect type and attach
+> > > them accordingly.
+> > >
+> > > In practice, I'm curious what I can attach programs of this type to,
+> > > and how are they specified? `bpf_program__attach()` doesn't take any
+> > > parameters outside of the program itself. Does it attach based on the
+> > > name of the program's name/section? If so, is there an idiomatic way
+> > > of making sure this is correctly done?
+> >
+> > You can specify destination either in SEC() definition:
+> > SEC("fentry/some_kernel_func") or you can use
+> > bpf_program__set_attach_target(...) before BPF object is loaded.
 >
-> Sure, I'll give it a try. I see there is some support in bcc, which I
-> can probably partially borrow.
+> Can you elaborate more on `bpf_program__set_attach_target()`? I've
+> been working through the selftests and understand that you can use it
+> to attach bpf programs to other bpf programs, and kernel modules. Are
+> there only certain types of bpf programs that can be attached to? Are
+> there restrictions on what kind of programs can attach to others?
 
-Awesome, thanks!
+You can attach to kernel functions as well, if you specify
+attach_prog_fd = 0. See the implementation in tools/lib/bpf/libbpf.c.
+As for types of programs, it's fentry/fexit/fmod_ret and freplace for
+attaching to other programs. All the details about freplace... I'm not
+the best expert on that and you'll have to read kernel
+code/docs/experiment.
+
+>
+> > >
+> > > My follow up question is to ask how fentry/fexit relate. I've seen
+> > > these referred to as program types but in code they appear as attach
+> > > types, not program types. Can someone clarify?
+> >
+> > Formally they are different expected attach types for
+> > BPF_PROG_TYPE_TRACING program type. There is also fmod_ret, which is
+> > yet another expected attach type with still different semantics. But
+> > it's like kprobe and kretprobe, they have very different semantics, so
+> > we talk about them as two different types of BPF program.
+> >
+> > >
+> > > As always I'm partly asking so that I can document this and avoid
+> > > other people having the same confusion :-)
+> > >
+> >
+> > Yep, I appreciate it. Please send follow up questions if you still
+> > have some. Please check relevant selftests to see possible usages.
+> >
+> > > Thank you very much!
+> > > Grant
