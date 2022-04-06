@@ -2,62 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A90A74F6882
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 19:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1473B4F6919
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 20:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239584AbiDFRzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 13:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        id S240612AbiDFSUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 14:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239665AbiDFRza (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 13:55:30 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E72747D902;
-        Wed,  6 Apr 2022 09:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649261101; x=1680797101;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LCEP7z9iVmnS+5YAekuvbdZXgDguf3alCnSjdIOWx8s=;
-  b=WBKxCHmeIAWijuDTdtcq3IqrMUyvYrM2RVVgzPTiIc2WgKfJ6yysGy3Z
-   8rd/efJA7XS0KtRepAtjjKPxdUqbzL0TRjxz/sPqMab+Hlw5wivXtyiAO
-   8UgI+ebsFJLsJ6TOgBhbSSwkvR5VjqwycSNQYr7mvLjZh0eagVVZNp971
-   e8LsxPReHC03nXQfQjrWCrO4NQhsc/Brsm/SGzWasY+ly+QGlzUvTFu1g
-   O6pIKYomFTEL4lz51bx5qe/MmBQI+loX5yw+vzly10CS69F1abI4tY+7h
-   mq1Z+9g+T6SUmB9Wy2GtgqzblWFntZNaLPR796vSFmVNkuGegur8QdwHz
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10309"; a="241676579"
-X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; 
-   d="scan'208";a="241676579"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2022 09:05:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; 
-   d="scan'208";a="608953323"
-Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Apr 2022 09:04:58 -0700
-Date:   Wed, 6 Apr 2022 18:04:58 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        magnus.karlsson@intel.com, bjorn@kernel.org, brouer@redhat.com,
-        netdev@vger.kernel.org, maximmi@nvidia.com,
-        alexandr.lobakin@intel.com,
-        Toke Hoiland Jorgensen <toke@redhat.com>
-Subject: Re: [PATCH bpf-next 04/10] i40e: xsk: terminate NAPI when XSK Rx
- queue gets full
-Message-ID: <Yk26KjeTNI08dLII@boxer>
-References: <20220405110631.404427-1-maciej.fijalkowski@intel.com>
- <20220405110631.404427-5-maciej.fijalkowski@intel.com>
- <8bb40f98-2f1f-c331-23d4-ed94a6a1ce76@redhat.com>
+        with ESMTP id S240430AbiDFSTe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 14:19:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C29FFF4F;
+        Wed,  6 Apr 2022 10:00:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 546B9617DB;
+        Wed,  6 Apr 2022 17:00:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 99845C385A5;
+        Wed,  6 Apr 2022 17:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649264413;
+        bh=Xhk5SOzpGqN61TwyKV3hSuwu45jxXYiMouo5aJDKIAc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=S/o/CNjCvuORSfZUrRC0Nar/WqdJ4ffZKZD/OcNTAosKm7HpRZ0s5QcPByu3LrQP5
+         4LlqujxwzBXT6IxxNwtngEeQwoWvHjBJJDNzMYPRzGslwjvjKa2ctMdWienSpbBEvV
+         U6T+KrL0sBlBLLW3C3w21YrUccyFsKRXoSH7dUbRv2jNnfuTDIf/ep1+Ir6palwizL
+         jGmyjESSLGOeq85VfQySDor4w4y5aHrHV5pfk66vugpV4z0lFC12DMLzgF0z+EKjmS
+         owh9ouX65W2QRX60EK4e2gLPDx6wj/E68MN5HhdeHK4qBSRo46prRerfRJtg0zDYw5
+         7xt7FyO+K82zg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 762ACE85D53;
+        Wed,  6 Apr 2022 17:00:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8bb40f98-2f1f-c331-23d4-ed94a6a1ce76@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v5 1/2] bpf: Support dual-stack sockets in
+ bpf_tcp_check_syncookie
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164926441347.11980.16956318462962965009.git-patchwork-notify@kernel.org>
+Date:   Wed, 06 Apr 2022 17:00:13 +0000
+References: <20220406124113.2795730-1-maximmi@nvidia.com>
+In-Reply-To: <20220406124113.2795730-1-maximmi@nvidia.com>
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        jakub@cloudflare.com, afabre@cloudflare.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, shuah@kernel.org, hawk@kernel.org,
+        tariqt@nvidia.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,87 +62,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 05, 2022 at 03:04:17PM +0200, Jesper Dangaard Brouer wrote:
+Hello:
+
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed, 6 Apr 2022 15:41:12 +0300 you wrote:
+> bpf_tcp_gen_syncookie looks at the IP version in the IP header and
+> validates the address family of the socket. It supports IPv4 packets in
+> AF_INET6 dual-stack sockets.
 > 
+> On the other hand, bpf_tcp_check_syncookie looks only at the address
+> family of the socket, ignoring the real IP version in headers, and
+> validates only the packet size. This implementation has some drawbacks:
 > 
-> On 05/04/2022 13.06, Maciej Fijalkowski wrote:
-> > Correlate -ENOBUFS that was returned from xdp_do_redirect() with a XSK
-> > Rx queue being full. In such case, terminate the softirq processing and
-> > let the user space to consume descriptors from XSK Rx queue so that
-> > there is room that driver can use later on.
-> > 
-> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > ---
-> >   .../ethernet/intel/i40e/i40e_txrx_common.h    |  1 +
-> >   drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 21 ++++++++++++-------
-> >   2 files changed, 15 insertions(+), 7 deletions(-)
-> > 
 > [...]
-> 
-> I noticed you are only doing this for the Zero-Copy variants.
-> Wouldn't this also be a benefit for normal AF_XDP ?
 
-Sorry for the delay, indeed this would improve AF_XDP in copy mode as
-well, but only after a fix I have sent (not on lore yet :<).
+Here is the summary with links:
+  - [bpf,v5,1/2] bpf: Support dual-stack sockets in bpf_tcp_check_syncookie
+    https://git.kernel.org/bpf/bpf/c/2e8702cc0cfa
+  - [bpf,v5,2/2] bpf: Adjust bpf_tcp_check_syncookie selftest to test dual-stack sockets
+    https://git.kernel.org/bpf/bpf/c/53968dafc4a6
 
-I'll adjust patches to check for -ENOBUFS in $DRIVER_txrx.c and send a v2.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> 
-> 
-> > diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > index c1d25b0b0ca2..9f9e4ce9a24d 100644
-> > --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> > @@ -161,9 +161,10 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
-> >   	if (likely(act == XDP_REDIRECT)) {
-> >   		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
-> > -		if (err)
-> > -			goto out_failure;
-> > -		return I40E_XDP_REDIR;
-> > +		if (!err)
-> > +			return I40E_XDP_REDIR;
-> > +		result = (err == -ENOBUFS) ? I40E_XDP_EXIT : I40E_XDP_CONSUMED;
-> > +		goto out_failure;
-> >   	}
-> >   	switch (act) {
-> > @@ -175,6 +176,9 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
-> >   		if (result == I40E_XDP_CONSUMED)
-> >   			goto out_failure;
-> >   		break;
-> > +	case XDP_DROP:
-> > +		result = I40E_XDP_CONSUMED;
-> > +		break;
-> >   	default:
-> >   		bpf_warn_invalid_xdp_action(rx_ring->netdev, xdp_prog, act);
-> >   		fallthrough;
-> > @@ -182,9 +186,6 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
-> >   out_failure:
-> >   		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
-> >   		fallthrough; /* handle aborts by dropping packet */
-> > -	case XDP_DROP:
-> > -		result = I40E_XDP_CONSUMED;
-> > -		break;
-> >   	}
-> >   	return result;
-> >   }
-> > @@ -370,6 +371,12 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
-> >   		xsk_buff_dma_sync_for_cpu(bi, rx_ring->xsk_pool);
-> >   		xdp_res = i40e_run_xdp_zc(rx_ring, bi);
-> > +		if (xdp_res == I40E_XDP_EXIT) {
-> > +			failure = true;
-> > +			xsk_buff_free(bi);
-> > +			next_to_clean = (next_to_clean + 1) & count_mask;
-> > +			break;
-> > +		}
-> >   		i40e_handle_xdp_result_zc(rx_ring, bi, rx_desc, &rx_packets,
-> >   					  &rx_bytes, size, xdp_res);
-> >   		total_rx_packets += rx_packets;
-> > @@ -382,7 +389,7 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
-> >   	cleaned_count = (next_to_clean - rx_ring->next_to_use - 1) & count_mask;
-> >   	if (cleaned_count >= I40E_RX_BUFFER_WRITE)
-> > -		failure = !i40e_alloc_rx_buffers_zc(rx_ring, cleaned_count);
-> > +		failure |= !i40e_alloc_rx_buffers_zc(rx_ring, cleaned_count);
-> >   	i40e_finalize_xdp_rx(rx_ring, xdp_xmit);
-> >   	i40e_update_rx_stats(rx_ring, total_rx_bytes, total_rx_packets);
-> > 
-> 
+
