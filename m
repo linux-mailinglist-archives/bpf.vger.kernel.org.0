@@ -2,57 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0D84F6AE6
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 22:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAE94F6AF1
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 22:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbiDFUK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 16:10:56 -0400
+        id S233351AbiDFUMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 16:12:01 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbiDFUKt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 16:10:49 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFEF1E374C
-        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 10:25:37 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id z7so3824550iom.1
-        for <bpf@vger.kernel.org>; Wed, 06 Apr 2022 10:25:37 -0700 (PDT)
+        with ESMTP id S233403AbiDFULm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 16:11:42 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAF4FA20D;
+        Wed,  6 Apr 2022 10:38:29 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id z7so3868751iom.1;
+        Wed, 06 Apr 2022 10:38:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ggMiBLd7ZOWtjzjD6Un6ZVq1KDYAxjij9mfV1L5UOfc=;
-        b=OYsMQRgQSzJcxcLicpCrOAQ10fMKaO5Jn3mzVl3exVBSq9puagWkscXZy9oW2o3INz
-         PLTeUuvzQ8EKNDrmGCx1uCz9Iv4Ow+Kk6C9YJCYqkb7ip09y00P3FqhqMLVa9Ako6aTy
-         RcSNlEnH6/GpE2frCLl+2SHdIWiG6/NFBtRGxR3JzhnR83NK61AqXDvgFK7PvLHJR9hf
-         uzaljKwJHv4MuUDjVa0R18WzzRwk4flbnzNmmK6IMAjQB02KaJIj2CRn0w8yy6oZtjcb
-         jTOo1BTM0XkqxGILcsuCEhildvZM5LRb17CDMMfccNk8HjZvCT88qKUMz1J2lI8zPTFN
-         l+/g==
+        bh=1Cs5Vt6UkYq7u69hUCTmkTbEACL4NrNkmG728WDKAXo=;
+        b=dRM9cimVa9u5yQTeb5E/b3pEEpGMKhqQhh0C0hfaHczGVxKqcJVYXdywmB0Qyt5IQr
+         ZLr0wF3b7TCKNFac0KQMi2rgI1SililYJikap/OA4S2Dvcgb6KrzpgcEGStqFFANof2a
+         t2iZIznAjQAFQ+nhIJ19UJygwo5hAsq1CVxJIsbdjfM7fMWM/sZdJr61SHqlvbrtw1qe
+         VdvX5tHGSemsl1rtCzvd8/AVMG4brIUZnWXc/JvYUJ24fbXJE33HoIDYCotGjngs2+V3
+         7BhrwwL3hjolOg+SiH/KEZAQjAq6ixLxdIMxEByYkz0vkdsGJivdtXGLw6NlFV3felf3
+         Hdug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ggMiBLd7ZOWtjzjD6Un6ZVq1KDYAxjij9mfV1L5UOfc=;
-        b=JfsZsjnw6YbhdcXKuEO229uXasYhrWWXIe82r0U8HuDmWycilS3aBm2ERQiZ5j0DF/
-         PtNlOrvD5TuEumZdeQv6CXpe17aXkj0TtCIfTMxurkBM5QKvEUwsZODBf2I9PTGBewSU
-         jAqhLuuGyMTcG8nOng1fxTs8RBQbn2YehvphMtpf3mW5mZNqkhhC8Sb0hnqqttb7jdT/
-         lD9iy7IgZpaSmDhcRPc13KDaaFcgw3FSByqJYrtNwvCkIGiBQICKaMQaldQfk/c/hONX
-         mcyX6ayTNR/s/X11FkLDgGcVqmavIeK/32/biMXreo6qKadBs3anzf0kSyzGld9lyCap
-         32Xg==
-X-Gm-Message-State: AOAM532DuQvPcqTkl3l0DhOkrnRZhWMCMf5EORW3zz022OrYkVOQ5iuI
-        WBMb4gR5OUSY90FfPZSv27cPEHEC/EhgJcEwfn86tx5z
-X-Google-Smtp-Source: ABdhPJyPD1NXSLENxiNh4Krx8RV9nWXfbsKJcL3qfORk3WaNJh4xqfJkHKRDPaCQZTQJgUaKDlNUyS70DaSVostvi+8=
+        bh=1Cs5Vt6UkYq7u69hUCTmkTbEACL4NrNkmG728WDKAXo=;
+        b=7dLIXLbiREI0pxgg0zyF+3BFd93Qe72gmHWvoH0TWC/GOA8Xq+7At8o58SkV1m6YVl
+         cQcurQJsoJZOmzqu/Oow0HpQ/ZvSHsiuGwhI2WiiVxJatmMfkKiCfTmba2ZjrOAR8ayM
+         kI77XhPd7UVXNBhYz45klgLqDOv3IC01FW4KegE6IQw8M62y2i8S0m5CvAuybL+QWRGw
+         SkZZHWUo7qO4+P77l6JOeY81SKWIpW7UmMyQoCZlFRGoxTfJOh9awdkW5XbZj9zHVDYL
+         FN7awgNTAeqNd8R8hLryoqNsuhxpkpdNHTfQdv7x4znPWjnacm4vqPWf++GzBefYGb7a
+         Cqzw==
+X-Gm-Message-State: AOAM531jhkBuVaXKN9zyV4oU7FfMMTJhukd+f1PWVfbFFxL9WzNpK4wq
+        W6HZQhgbewyr2Lmv6tlWURKce9pjB5ptlfAP6uM=
+X-Google-Smtp-Source: ABdhPJzux8tLoiukInAccV8nyJJYFr4Dhs3C5r+F4yrLd4iVkCofupMNKWBuPIDrcdxYKm6ukf7P3lVMgituvE9eX1M=
 X-Received: by 2002:a05:6638:1685:b0:323:9fed:890a with SMTP id
- f5-20020a056638168500b003239fed890amr5142215jat.103.1649265936934; Wed, 06
- Apr 2022 10:25:36 -0700 (PDT)
+ f5-20020a056638168500b003239fed890amr5168085jat.103.1649266708930; Wed, 06
+ Apr 2022 10:38:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <50b0dbb.2936.17fff506075.Coremail.wuzongyo@mail.ustc.edu.cn>
-In-Reply-To: <50b0dbb.2936.17fff506075.Coremail.wuzongyo@mail.ustc.edu.cn>
+References: <20220331122822.14283-1-houtao1@huawei.com>
+In-Reply-To: <20220331122822.14283-1-houtao1@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Apr 2022 10:25:26 -0700
-Message-ID: <CAEf4BzYMq92tHd+fqyLZwgykSf7j-Rbw-4H+Y+Xe5C-rnjnAxQ@mail.gmail.com>
-Subject: Re: [Question] Failed to load ebpf program with BTF-defined map
-To:     wuzongyo@mail.ustc.edu.cn
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Wed, 6 Apr 2022 10:38:18 -0700
+Message-ID: <CAEf4Bzb7keBS8vXgV5JZzwgNGgMV0X3_guQ_m9JW3X6fJBDpPQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Introduce ternary search tree for
+ string key
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -64,76 +74,143 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 6, 2022 at 10:09 AM <wuzongyo@mail.ustc.edu.cn> wrote:
+On Thu, Mar 31, 2022 at 5:04 AM Hou Tao <houtao1@huawei.com> wrote:
 >
 > Hi,
 >
-> I wrote a simple tc-bpf program like that:
+> The initial motivation for the patchset is due to the suggestion of Alexei.
+> During the discuss of supporting of string key in hash-table, he saw the
+> space efficiency of ternary search tree under our early test and suggest
+> us to post it as a new bpf map [1].
 >
->     #include <linux/bpf.h>
->     #include <linux/pkt_cls.h>
->     #include <linx/types.h>
->     #include <bpf/bpf_helpers.h>
+> Ternary search tree is a special trie where nodes are arranged in a
+> manner similar to binary search tree, but with up to three children
+> rather than two. The three children correpond to nodes whose value is
+> less than, equal to, and greater than the value of current node
+> respectively.
 >
->     struct {
->         __uint(type, BPF_MAP_TYPE_HASH);
->         __uint(max_entries, 1);
->         __type(key, int);
->         __type(value, int);
->     } hmap SEC(".maps");
+> In ternary search tree map, only the valid content of string is saved.
+> The trailing null byte and unused bytes after it are not saved. If there
+> are common prefixes between these strings, the prefix is only saved once.
+> Compared with other space optimized trie (e.g. HAT-trie, succinct trie),
+> the advantage of ternary search tree is simple and being writeable.
 >
->     SEC("classifier")
->     int _classifier(struct __sk_buff *skb)
->     {
->         int key = 0;
->         int *val;
+> Below are diagrams for ternary search map when inserting hello, he,
+> test and tea into it:
 >
->         val = bpf_map_lookup_elem(&hmap, &key);
->         if (!val)
->             return TC_ACT_OK;
->         return TC_ACT_OK;
->     }
+> 1. insert "hello"
 >
->     char __license[] SEC("license") = "GPL";
+>         [ hello ]
 >
-> Then I tried to use tc to load the program:
+> 2. insert "he": need split "hello" into "he" and "llo"
 >
->     tc qdisc add dev eth0 clsact
->     tc filter add dev eth0 egress bpf da obj test_bpf.o
+>          [ he ]
+>             |
+>             *
+>             |
+>          [ llo ]
 >
-> But the program loading failed with error messages:
->     Prog section 'classifier' rejected: Permission denied (13)!
->     - Type:          3
->     - Instructions:  9 (0 over limit
->     - License:       GPL
+> 3. insert "test": add it as right child of "he"
 >
->     Verifier analysis:
+>          [ he ]
+>             |
+>             *-------x
+>             |       |
+>          [ llo ] [ test ]
 >
->     Error fetching program/map!
->     Unable to load program
+> 5. insert "tea": split "test" into "te" and "st",
+>    and insert "a" as left child of "st"
 >
-> I tried to replace the map definition with the following code and the program is loaded successfully!
+>          [ he ]
+>             |
+>      x------*-------x
+>      |      |       |
+>   [ ah ] [ llo ] [ te ]
+>                     |
+>                     *
+>                     |
+>                  [ st ]
+>                     |
+>                x----*
+>                |
+>              [ a ]
 >
->     struct bpf_map_def SEC("maps") hmap = {
->         .type = BPF_MAP_TYPE_HASH,
->         .key_size = sizeof(int),
->         .value_size = sizeof(int),
->         .max_entries = 1,
->     };
+> As showed in above diagrams, the common prefix between "test" and "tea"
+> is "te" and it only is saved once. Also add benchmarks to compare the
+> memory usage and lookup performance between ternary search tree and
+> hash table. When the common prefix is lengthy (~192 bytes) and the
+> length of suffix is about 64 bytes, there are about 2~3 folds memory
+> saving compared with hash table. But the memory saving comes at prices:
+> the lookup performance of tst is about 2~3 slower compared with hash
+> table. See more benchmark details on patch #2.
 >
-> With bpftrace, I can find that the errno -EACCES is returned by function do_check(). But I am still confused what's wrong with it.
->
-> Linux Version: 5.17.0-rc3+ with CONFIG_DEBUG_INFO_BTF=y
-> TC Version: 5.14.0
->
-> Any suggestion will be appreciated!
+> Comments and suggestions are always welcome.
 >
 
-This is an iproute2 question, please find their mailing list and ask
-there. Or bypass iproute2 and use libbpf-provided TC APIS
-(bpf_tc_xxx()) to do all this directly from your application without
-shelling out or delegating to iproute2
+Have you heard and tried qp-trie ([0]) by any chance? It is elegant
+and simple data structure. By all the available benchmarks it handily
+beats Red-Black trees in terms of memory usage and performance (though
+it of course depends on the data set, just like "memory compression"
+for ternary tree of yours depends on large set of common prefixes).
+qp-trie based BPF map seems (at least on paper) like a better
+general-purpose BPF map that is dynamically sized (avoiding current
+HASHMAP limitations) and stores keys in sorted order (and thus allows
+meaningful ordered iteration *and*, importantly for longest prefix
+match tree, allows efficient prefix matches). I did a quick experiment
+about a month ago trying to replace libbpf's internal use of hashmap
+with qp-trie for BTF string dedup and it was slightly slower than
+hashmap (not surprisingly, though, because libbpf over-sizes hashmap
+to avoid hash collisions and long chains in buckets), but it was still
+very decent even in that scenario. So I've been mulling the idea of
+implementing BPF map based on qp-trie elegant design and ideas, but
+can't find time to do this.
 
+This prefix sharing is nice when you have a lot of long common
+prefixes, but I'm a bit skeptical that as a general-purpose BPF data
+structure it's going to be that beneficial. 192 bytes of common
+prefixes seems like a very unusual dataset :)
 
-> Thanks
+More specifically about TST implementation in your paches. One global
+per-map lock I think is a very big downside. We have LPM trie which is
+very slow in big part due to global lock. It might be possible to
+design more granular schema for TST, but this whole in-place splitting
+logic makes this harder. I think qp-trie can be locked in a granular
+fashion much more easily by having a "hand over hand" locking: lock
+parent, find child, lock child, unlock parent, move into child node.
+Something like that would be more scalable overall, especially if the
+access pattern is not focused on a narrow set of nodes.
+
+Anyways, I love data structures and this one is an interesting idea.
+But just my few cents of "production-readiness" for general-purpose
+data structures for BPF.
+
+  [0] https://dotat.at/prog/qp/README.html
+
+> Regards,
+> Tao
+>
+> [1]: https://lore.kernel.org/bpf/CAADnVQJUJp3YBcpESwR3Q1U6GS1mBM=Vp-qYuQX7eZOaoLjdUA@mail.gmail.com/
+>
+> Hou Tao (2):
+>   bpf: Introduce ternary search tree for string key
+>   selftests/bpf: add benchmark for ternary search tree map
+>
+>  include/linux/bpf_types.h                     |   1 +
+>  include/uapi/linux/bpf.h                      |   1 +
+>  kernel/bpf/Makefile                           |   1 +
+>  kernel/bpf/bpf_tst.c                          | 411 +++++++++++++++++
+>  tools/include/uapi/linux/bpf.h                |   1 +
+>  tools/testing/selftests/bpf/Makefile          |   5 +-
+>  tools/testing/selftests/bpf/bench.c           |   6 +
+>  .../selftests/bpf/benchs/bench_tst_map.c      | 415 ++++++++++++++++++
+>  .../selftests/bpf/benchs/run_bench_tst.sh     |  54 +++
+>  tools/testing/selftests/bpf/progs/tst_bench.c |  70 +++
+>  10 files changed, 964 insertions(+), 1 deletion(-)
+>  create mode 100644 kernel/bpf/bpf_tst.c
+>  create mode 100644 tools/testing/selftests/bpf/benchs/bench_tst_map.c
+>  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_tst.sh
+>  create mode 100644 tools/testing/selftests/bpf/progs/tst_bench.c
+>
+> --
+> 2.31.1
 >
