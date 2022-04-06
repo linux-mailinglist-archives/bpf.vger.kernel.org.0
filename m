@@ -2,47 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E546D4F6D26
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 23:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B114F6D52
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 23:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236501AbiDFVpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 17:45:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
+        id S229766AbiDFVud (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 17:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236611AbiDFVpT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 17:45:19 -0400
+        with ESMTP id S236205AbiDFVtw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 17:49:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1BC12C27A
-        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 14:23:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4C02AE6;
+        Wed,  6 Apr 2022 14:38:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 29FEB61AA3
-        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 21:23:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68057C385A1;
-        Wed,  6 Apr 2022 21:23:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A68B61BA2;
+        Wed,  6 Apr 2022 21:38:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CA37C385A5;
+        Wed,  6 Apr 2022 21:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649280203;
-        bh=7hBGFX9ZUxrdxq4wXzruS9d3afK+6ZitJJSlUy7mghw=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=QFl5XHqXgpH/LLpUJoQy+lwqhHqhUkBZHruXM+1TtalLz3Sdj4jVmwyzSJrkUBsOT
-         HmpUY0K4PJEwZ4/GIALUj5vVxTiGd9Atqy/qpfF6ARonATSXNeNnRps0FXv/cQeGNX
-         DZGBK+PMuuQx7ZLPE1Rnum2D4a4WAGwmASJEAzMVBcATigJXCz+M71P1wI8St5zeME
-         j8u8xmRKCT7fPuhmo+M+WtcIBD6wZOyC8s1wNFWtVEmaYVrbo61qqak4ccGvw1UQ03
-         cN5Gs1RjOkZnTY9jstpM7vYyW1TvUqSrETlZhMvlsose/okCnExqEcv8Y4kid2V6Sb
-         8Hvv7AJM7ri1Q==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 73C8A274FAD; Wed,  6 Apr 2022 23:23:20 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     wuzongyo@mail.ustc.edu.cn, bpf@vger.kernel.org
-Subject: Re: [Question] Failed to load ebpf program with BTF-defined map
-In-Reply-To: <50b0dbb.2936.17fff506075.Coremail.wuzongyo@mail.ustc.edu.cn>
-References: <50b0dbb.2936.17fff506075.Coremail.wuzongyo@mail.ustc.edu.cn>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 06 Apr 2022 23:23:20 +0200
-Message-ID: <87czhtc3ef.fsf@toke.dk>
+        s=k20201202; t=1649281079;
+        bh=A0fW3syI/3Or0fXGJCHpbOxcC3mWosW/4h17ME4o2Wo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=U8zTYeiU+sYoQrmOOlzp8mbxsrFjNGCWUiWe59vTNc/4rCC8bctgHQnXZcdf20iSP
+         Ry8P63L8FZcYs/lUGGRY39S+zNI/DmcCtToumgR/Kq3PTl1X6+s6lsB/G6hXL1rghS
+         9TsAUNRmYWxgb0rY3v6+Od87VEd/ae9W9SCae8F1oFejA6V+FIhs97O6ksqxaP+jIV
+         taFGoVPLWJcCsODHHXSKpVyV6bdYnf3GE/ylYZRSQWkB/hamlt6hwSoiQAhtDHtL1m
+         0iS4eFO8jgpEGGPyF8daaf7PFjI27A7BUvri4GtsLw9nMQxNyglVNh5ZiMGrZicwN+
+         7gwjoloqd8stg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, pabeni@redhat.com, edumazet@google.com,
+        Jakub Kicinski <kuba@kernel.org>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, hawk@kernel.org,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH net-next 1/3] net: hyperv: remove use of bpf_op_t
+Date:   Wed,  6 Apr 2022 14:37:52 -0700
+Message-Id: <20220406213754.731066-2-kuba@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220406213754.731066-1-kuba@kernel.org>
+References: <20220406213754.731066-1-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,77 +58,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-wuzongyo@mail.ustc.edu.cn writes:
+Following patch will hide that typedef. There seems to be
+no strong reason for hyperv to use it, so let's not.
 
-> Hi,
->
-> I wrote a simple tc-bpf program like that:
->
->     #include <linux/bpf.h>
->     #include <linux/pkt_cls.h>
->     #include <linx/types.h>
->     #include <bpf/bpf_helpers.h>
->
->     struct {
->         __uint(type, BPF_MAP_TYPE_HASH);
->         __uint(max_entries, 1);
->         __type(key, int);
->         __type(value, int);
->     } hmap SEC(".maps");
->
->     SEC("classifier")
->     int _classifier(struct __sk_buff *skb)
->     {
->         int key = 0;
->         int *val;
->
->         val = bpf_map_lookup_elem(&hmap, &key);
->         if (!val)
->             return TC_ACT_OK;
->         return TC_ACT_OK;
->     }
->
->     char __license[] SEC("license") = "GPL";
->
-> Then I tried to use tc to load the program:
->     
->     tc qdisc add dev eth0 clsact
->     tc filter add dev eth0 egress bpf da obj test_bpf.o
->
-> But the program loading failed with error messages:
->     Prog section 'classifier' rejected: Permission denied (13)!
->     - Type:          3
->     - Instructions:  9 (0 over limit
->     - License:       GPL
->
->     Verifier analysis:
->
->     Error fetching program/map!
->     Unable to load program
->
-> I tried to replace the map definition with the following code and the program is loaded successfully!
->
->     struct bpf_map_def SEC("maps") hmap = {
->         .type = BPF_MAP_TYPE_HASH,
->         .key_size = sizeof(int),
->         .value_size = sizeof(int),
->         .max_entries = 1,
->     };
->
-> With bpftrace, I can find that the errno -EACCES is returned by function do_check(). But I am still confused what's wrong with it.
->
-> Linux Version: 5.17.0-rc3+ with CONFIG_DEBUG_INFO_BTF=y
-> TC Version: 5.14.0
->
-> Any suggestion will be appreciated!
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: kys@microsoft.com
+CC: haiyangz@microsoft.com
+CC: sthemmin@microsoft.com
+CC: wei.liu@kernel.org
+CC: decui@microsoft.com
+CC: pabeni@redhat.com
+CC: ast@kernel.org
+CC: daniel@iogearbox.net
+CC: andrii@kernel.org
+CC: kafai@fb.com
+CC: songliubraving@fb.com
+CC: yhs@fb.com
+CC: john.fastabend@gmail.com
+CC: kpsingh@kernel.org
+CC: hawk@kernel.org
+CC: linux-hyperv@vger.kernel.org
+CC: bpf@vger.kernel.org
+---
+ drivers/net/hyperv/netvsc_bpf.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-If the latter works but the former doesn't, my guess would be that
-iproute2 is compiled without libbpf support (in which case it would not
-support BTF-defined maps either). If it does have libbpf support, that
-(and the version of libbpf used) will be included in the output of `tc
--v`.
+diff --git a/drivers/net/hyperv/netvsc_bpf.c b/drivers/net/hyperv/netvsc_bpf.c
+index 7856905414eb..232c4a0efd7b 100644
+--- a/drivers/net/hyperv/netvsc_bpf.c
++++ b/drivers/net/hyperv/netvsc_bpf.c
+@@ -137,7 +137,6 @@ int netvsc_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ int netvsc_vf_setxdp(struct net_device *vf_netdev, struct bpf_prog *prog)
+ {
+ 	struct netdev_bpf xdp;
+-	bpf_op_t ndo_bpf;
+ 	int ret;
+ 
+ 	ASSERT_RTNL();
+@@ -145,8 +144,7 @@ int netvsc_vf_setxdp(struct net_device *vf_netdev, struct bpf_prog *prog)
+ 	if (!vf_netdev)
+ 		return 0;
+ 
+-	ndo_bpf = vf_netdev->netdev_ops->ndo_bpf;
+-	if (!ndo_bpf)
++	if (!vf_netdev->netdev_ops->ndo_bpf)
+ 		return 0;
+ 
+ 	memset(&xdp, 0, sizeof(xdp));
+@@ -157,7 +155,7 @@ int netvsc_vf_setxdp(struct net_device *vf_netdev, struct bpf_prog *prog)
+ 	xdp.command = XDP_SETUP_PROG;
+ 	xdp.prog = prog;
+ 
+-	ret = ndo_bpf(vf_netdev, &xdp);
++	ret = vf_netdev->netdev_ops->ndo_bpf(vf_netdev, &xdp);
+ 
+ 	if (ret && prog)
+ 		bpf_prog_put(prog);
+-- 
+2.34.1
 
-You could recompile iproute2 with enable libbpf support enabled, or as
-Andrii suggests you can write your own loader using libbpf...
-
--Toke
