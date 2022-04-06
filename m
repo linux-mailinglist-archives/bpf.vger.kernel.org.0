@@ -2,84 +2,248 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF10D4F54FE
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 07:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6624D4F5505
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 07:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242196AbiDFFYF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 01:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
+        id S233546AbiDFFYl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 01:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390337AbiDFDEn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Apr 2022 23:04:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38BD33E07;
-        Tue,  5 Apr 2022 17:00:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ABCA06153E;
-        Wed,  6 Apr 2022 00:00:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0B6B5C385A1;
-        Wed,  6 Apr 2022 00:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649203214;
-        bh=KMNIOTy7tQqMiQJt2a1NiAN3Cf5KwEY7COeHi3Y3npQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WY3GCFkU9JF3B4v5HSCFdz0Gj1g3tb96D7PZJkiSm3vvC8jb4MWHldVEgv5bCarKh
-         FWQCvugxZ2/CJSFokNg9fa9+Hgivxt8yKUATeDfmS/qrTyAEFf2bzVv73Qyz8tTQmd
-         wV32dqGQxfQP6I+vUAWitf0/Fu8a5GWZ+W+O3SjU03jfpTzmIPE0DzxD+79U/Mamls
-         smqmtdr/Bvo2LEC6L8pXtT6x62lQUBUDe0+CpAL1stRKfhEU1ZMsz+691auXyuZHM3
-         7TNBTaLkX2QOSi+7vwLyYimeZf/XStjOuJcZHj/p6CRltTsVivnrOoHA/zHGyBJIfx
-         Fk1tgNG+yQunw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C5D48E6D402;
-        Wed,  6 Apr 2022 00:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S2360332AbiDFD3a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Apr 2022 23:29:30 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80897A1B5;
+        Tue,  5 Apr 2022 17:06:41 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id x4so1134193iop.7;
+        Tue, 05 Apr 2022 17:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a3uMVUs0pn/UnCcTOPF5ZwVE7HfFfyD9+Ot9Na3BVDg=;
+        b=Sn10JKm5Gx81Pb9OAi6xGf7VB1Ch3jSbp5gOqq1G8UWNcNp2We6C0osV9LAQJZd5co
+         /jJgcaqfdJ1vpR4sj4bAUd8H+k8++2SaS6WAANVD3ZVgRZNWPFdkFGcJ0WSWEIllFMYX
+         uatxTj1zt02nzSpzjozns85ATeJGMkrpvXnwV4u9dvvVUwWlPeyw2uwS3gy51zBrPLIZ
+         GtxzYaQaPNGqvpu1xF1+AW7iMC2r3+v3mI2Cap8cLmopZlgH0lVi9pEp7WHqv9rpFPU1
+         l9pXMvCMivjpKOs/TCSCYb903Y9bvN2P/HmCireQ2XeqLFKc2Wxtgb2MIGvMNsV/XDWD
+         QtXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a3uMVUs0pn/UnCcTOPF5ZwVE7HfFfyD9+Ot9Na3BVDg=;
+        b=2tE+Uivqe388CJFSO4f++T8iXMjpNPMRNjzW79oNIV3gKlUCG0uA5hyvOZMh1mzKzb
+         mIsQ6ifky7E6KWs4h43N6kQqnU5RGuUke4iDJjSaw4LzdpOxO1yjBhGzuNXiyVOIcW96
+         r9vguuHmP+xxSO8vICF9wwhC+L3Id63i1e2WwC583XPceqM4ObSGRkRiPTndcNObzDos
+         F+3doSTtH3fAhNxX8RoumIcozx8tDWqguYoKGFFoEyi7qC29tsBIIo99PJmEV7dmFlcC
+         o+7BZZWZU7jYE2zjEZ61UhCQ0/tSB1WtsjhZzmA7Qv12wn/EifYOT5d47p79KPNCZVW/
+         AmSA==
+X-Gm-Message-State: AOAM5300iZY3Fv7FrUIAZk7iUCqTyUhcT1DV9bJvcJQIi8i16k7j4U8c
+        EArVheRC0pwgzrwTbF5SS27CsHqzIsdgnNgKIJ8=
+X-Google-Smtp-Source: ABdhPJzGj/GFTls1C8LAXPe5rdMV1t91aQf9IZ8VFJuT1Ht+PqB/QUaSF5fRCRGwrSuONWHnvwJWnJxLmtb+0gxqBLs=
+X-Received: by 2002:a05:6638:1685:b0:323:9fed:890a with SMTP id
+ f5-20020a056638168500b003239fed890amr3250312jat.103.1649203600893; Tue, 05
+ Apr 2022 17:06:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix file descriptor leak in
- load_kallsyms()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164920321379.789.15662598832496347807.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Apr 2022 00:00:13 +0000
-References: <20220405145711.49543-1-ytcoode@gmail.com>
-In-Reply-To: <20220405145711.49543-1-ytcoode@gmail.com>
-To:     Yuntao Wang <ytcoode@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1649195156-9465-1-git-send-email-alan.maguire@oracle.com> <1649195156-9465-2-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1649195156-9465-2-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Apr 2022 17:06:30 -0700
+Message-ID: <CAEf4BzZuz5NVzDa=srfvuMtMg6Jmy85bAaBkgSXiz8h2aTQ9Hw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: improve string handling for uprobe
+ name-based attach
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Apr 5, 2022 at 2:46 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> For uprobe attach, libraries are identified by matching a ".so"
+> substring in the binary path.  This matches a lot of patterns that do
+> not conform to library .so[.version] suffixes, so instead match a ".so"
+> _suffix_, and if that fails match a ".so." substring for the versioned
+> library case.
+>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+You are making two separate changes in one patch, let's split them.
 
-On Tue,  5 Apr 2022 22:57:11 +0800 you wrote:
-> Currently, if sym_cnt > 0, it just returns and does not close file, fix it.
-> 
-> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> For uprobe auto-attach, the parsing can be simplified for the SEC()
+> name to a single ssscanf(); the return value of the sscanf can then
+
+too many sss :)
+
+> be used to distinguish between sections that simply specify
+> "u[ret]probe" (and thus cannot auto-attach), those that specify
+> "u[ret]probe/binary_path:function+offset" etc.
+>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
->  tools/testing/selftests/bpf/trace_helpers.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  tools/lib/bpf/libbpf.c          | 77 ++++++++++++++++-------------------------
+>  tools/lib/bpf/libbpf_internal.h |  5 +++
+>  2 files changed, 35 insertions(+), 47 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 91ce94b..3f23e88 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10750,7 +10750,7 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
+>         const char *search_paths[3] = {};
+>         int i;
+>
+> -       if (strstr(file, ".so")) {
+> +       if (str_has_sfx(file, ".so") || strstr(file, ".so.")) {
+>                 search_paths[0] = getenv("LD_LIBRARY_PATH");
+>                 search_paths[1] = "/usr/lib64:/usr/lib";
+>                 search_paths[2] = arch_specific_lib_paths();
+> @@ -10897,60 +10897,43 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
+>  static int attach_uprobe(const struct bpf_program *prog, long cookie, struct bpf_link **link)
+>  {
+>         DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
+> -       char *func, *probe_name, *func_end;
+> -       char *func_name, binary_path[512];
+> -       unsigned long long raw_offset;
+> +       char *probe_type = NULL, *binary_path = NULL, *func_name = NULL;
+> +       int n, ret = -EINVAL;
+>         size_t offset = 0;
+> -       int n;
+>
+>         *link = NULL;
+>
+> -       opts.retprobe = str_has_pfx(prog->sec_name, "uretprobe");
+> -       if (opts.retprobe)
+> -               probe_name = prog->sec_name + sizeof("uretprobe") - 1;
+> -       else
+> -               probe_name = prog->sec_name + sizeof("uprobe") - 1;
+> -       if (probe_name[0] == '/')
+> -               probe_name++;
+> -
+> -       /* handle SEC("u[ret]probe") - format is valid, but auto-attach is impossible. */
+> -       if (strlen(probe_name) == 0)
+> -               return 0;
+> -
+> -       snprintf(binary_path, sizeof(binary_path), "%s", probe_name);
+> -       /* ':' should be prior to function+offset */
+> -       func_name = strrchr(binary_path, ':');
+> -       if (!func_name) {
+> +       n = sscanf(prog->sec_name, "%m[^/]/%m[^:]:%m[a-zA-Z0-9_.]+%zu",
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Fix file descriptor leak in load_kallsyms()
-    https://git.kernel.org/bpf/bpf-next/c/2d0df01974ce
+note that previously you were using %li for offset which allows
+decimal and hexadecimal formats, I think that's convenient, let's
+allow that still
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +                  &probe_type, &binary_path, &func_name, &offset);
+> +       switch (n) {
+> +       case 1:
+> +               /* handle SEC("u[ret]probe") - format is valid, but auto-attach is impossible. */
+> +               ret = 0;
+> +               break;
+> +       case 2:
+>                 pr_warn("section '%s' missing ':function[+offset]' specification\n",
+>                         prog->sec_name);
+
+please use 'prog '%s': ' prefix in these attach_xxx() functions for consistency
+
+> -               return -EINVAL;
+> -       }
+> -       func_name[0] = '\0';
+> -       func_name++;
+> -       n = sscanf(func_name, "%m[a-zA-Z0-9_.]+%li", &func, &offset);
+> -       if (n < 1) {
+> -               pr_warn("uprobe name '%s' is invalid\n", func_name);
+> -               return -EINVAL;
+> -       }
+> -       if (opts.retprobe && offset != 0) {
+> -               free(func);
+> -               pr_warn("uretprobes do not support offset specification\n");
+> -               return -EINVAL;
+> -       }
+> -
+> -       /* Is func a raw address? */
+> -       errno = 0;
+> -       raw_offset = strtoull(func, &func_end, 0);
+> -       if (!errno && !*func_end) {
+> -               free(func);
+> -               func = NULL;
+> -               offset = (size_t)raw_offset;
+> +               break;
+> +       case 3:
+> +       case 4:
+> +               opts.retprobe = str_has_pfx(prog->sec_name, "uretprobe");
+
+you just parsed probe_type, strcmp() against that instead, no need for
+prefix check
+
+> +               if (opts.retprobe && offset != 0) {
+> +                       pr_warn("uretprobes do not support offset specification\n");
+> +                       break;
+> +               }
+> +               opts.func_name = func_name;
+> +               *link = bpf_program__attach_uprobe_opts(prog, -1, binary_path, offset, &opts);
+> +               ret = libbpf_get_error(*link);
+> +               break;
+> +       default:
+> +               pr_warn("uprobe name '%s' is invalid\n", prog->sec_name);
+
+Add "prog '%s': " prefix. Also, the section name is not an uprobe
+name. Maybe "prog '%s': invalid format of section definition '%s'\n"?
+
+> +               break;
+>         }
+> -       opts.func_name = func;
+> +       free(probe_type);
+> +       free(binary_path);
+> +       free(func_name);
+>
+> -       *link = bpf_program__attach_uprobe_opts(prog, -1, binary_path, offset, &opts);
+> -       free(func);
+> -       return libbpf_get_error(*link);
+> +       return ret;
+>  }
+>
+>  struct bpf_link *bpf_program__attach_uprobe(const struct bpf_program *prog,
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index b6247dc..155702a 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -103,6 +103,11 @@
+>  #define str_has_pfx(str, pfx) \
+>         (strncmp(str, pfx, __builtin_constant_p(pfx) ? sizeof(pfx) - 1 : strlen(pfx)) == 0)
+>
+> +/* similar for suffix */
+> +#define str_has_sfx(str, sfx) \
+> +       (strlen(sfx) <= strlen(str) ? \
+> +        strncmp(str + strlen(str) - strlen(sfx), sfx, strlen(sfx)) == 0 : 0)
+> +
+
+so str_has_pfx() is a macro to avoid strlen() for string literals.
+Here you don't do any optimization like that and instead calculating
+and recalculating strlen() multiple times. Just make this a static
+inline helper function?
+
+and you don't need strncmp() anymore, strcmp() is as safe after all
+the strlen() checks and calculations
 
 
+
+>  /* Symbol versioning is different between static and shared library.
+>   * Properly versioned symbols are needed for shared library, but
+>   * only the symbol of the new version is needed for static library.
+> --
+> 1.8.3.1
+>
