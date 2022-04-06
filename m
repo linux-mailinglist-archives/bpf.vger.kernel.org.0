@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8484F642E
-	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 18:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A684F667C
+	for <lists+bpf@lfdr.de>; Wed,  6 Apr 2022 19:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbiDFPvS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 11:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
+        id S238261AbiDFQ5C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 12:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236489AbiDFPvL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 11:51:11 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA21362338;
-        Wed,  6 Apr 2022 06:10:52 -0700 (PDT)
+        with ESMTP id S238273AbiDFQ4p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 12:56:45 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64213468CC;
+        Wed,  6 Apr 2022 07:20:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1B405B8234F;
-        Wed,  6 Apr 2022 13:10:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B5102C385B1;
-        Wed,  6 Apr 2022 13:10:13 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8B825B82252;
+        Wed,  6 Apr 2022 14:20:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1D4F4C385A6;
+        Wed,  6 Apr 2022 14:20:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649250613;
-        bh=+yUJtzjn1ArmUE7XUO1CCn8ocGMtCDkReX34QkTdbEw=;
+        s=k20201202; t=1649254813;
+        bh=31uDdoV1TPC9gI4HFhbd7m4q67CwQW2mh97T95us+IA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kA9gnkZ/Z9z0a+3Eb0YiNlOohIMvagM93xXmoiTo2r0YvvMorFa7BQkLl/8eprgG8
-         h+5bUzHzB9czo6jTkuEo+hdw9XDQtEmkIQSJboR0Mq1KkM8BAXjfwMltTmaYGvFcsC
-         l5+vMtfw+I8FaWdnMRG4alrp4sWD6chSq4EjDuuGoUxLCctQ205vMrqc1OZyDxBUzs
-         GQfIZBXEQo4Kf+CY2izvTJe37tZdwtNuMgGLWA5DpwdQMvJAjaDff/0qW4vGSb3T16
-         43g/J1Cox9+4lAVi2oiDAJVc2CXlCYTpSsA1aH8l/OimSg3tDEBJ8SJb8lr+a2Kk/b
-         PBqDjpnEAN4eQ==
+        b=t6ykpFrY1yAUFKmaBoaORP9J8Nzuo9YrCPy3YRsidcM8gXRW1pGNflAXpfVQgg2eZ
+         BjhdfTyzHzU4kApNqLL+WJkovfln755zfNnNK/UOjp74RYpciwcyWC5GMlTRfs5m2B
+         q9I7oTasDdJ1KPbh8GtTshD2yNlY8iORWEUMBaoAbG+6G1gq2gsk22Mwso1yeJI2CU
+         uVKWQQWxdQKAE+Z1jurK0tTOssRXy6Poo59GqT0rQQVkCIroGVenQmylh4n+9outWc
+         yiOqcJTUS4Lc4WHH2kB0j1LY0hN+cEkarouVpVhQ3NbIvv8L6tV3ejDYvM7STMQo5A
+         5Zj4MZMGCQJlA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 93453E8DBDA;
-        Wed,  6 Apr 2022 13:10:13 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EBAC7E8DBDA;
+        Wed,  6 Apr 2022 14:20:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: sfc: fix using uninitialized xdp tx_queue
+Subject: Re: [PATCH net 0/3][pull request] Intel Wired LAN Driver Updates
+ 2022-04-05
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164925061359.5679.6011244296851234983.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Apr 2022 13:10:13 +0000
-References: <20220405084544.2763-1-ap420073@gmail.com>
-In-Reply-To: <20220405084544.2763-1-ap420073@gmail.com>
-To:     Taehee Yoo <ap420073@gmail.com>
+Message-Id: <164925481296.16469.9237290319102354767.git-patchwork-notify@kernel.org>
+Date:   Wed, 06 Apr 2022 14:20:12 +0000
+References: <20220405163803.63815-1-anthony.l.nguyen@intel.com>
+In-Reply-To: <20220405163803.63815-1-anthony.l.nguyen@intel.com>
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>
 Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, ecree.xilinx@gmail.com,
-        habetsm.xilinx@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        cmclachlan@solarflare.com, bpf@vger.kernel.org
+        netdev@vger.kernel.org, maciej.fijalkowski@intel.com,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -61,22 +61,26 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+This series was applied to netdev/net.git (master)
+by Tony Nguyen <anthony.l.nguyen@intel.com>:
 
-On Tue,  5 Apr 2022 08:45:44 +0000 you wrote:
-> In some cases, xdp tx_queue can get used before initialization.
-> 1. interface up/down
-> 2. ring buffer size change
+On Tue,  5 Apr 2022 09:38:00 -0700 you wrote:
+> Maciej Fijalkowski says:
 > 
-> When CPU cores are lower than maximum number of channels of sfc driver,
-> it creates new channels only for XDP.
+> We were solving issues around AF_XDP busy poll's not-so-usual scenarios,
+> such as very big busy poll budgets applied to very small HW rings. This
+> set carries the things that were found during that work that apply to
+> net tree.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2] net: sfc: fix using uninitialized xdp tx_queue
-    https://git.kernel.org/netdev/net/c/fb5833d81e43
+  - [net,1/3] ice: synchronize_rcu() when terminating rings
+    https://git.kernel.org/netdev/net/c/f9124c68f05f
+  - [net,2/3] ice: xsk: fix VSI state check in ice_xsk_wakeup()
+    https://git.kernel.org/netdev/net/c/72b915a2b444
+  - [net,3/3] ice: clear cmd_type_offset_bsz for TX rings
+    https://git.kernel.org/netdev/net/c/e19778e6c911
 
 You are awesome, thank you!
 -- 
