@@ -2,190 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFBB4F8813
-	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 21:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68624F8878
+	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 22:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbiDGT2t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 15:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
+        id S229696AbiDGUdW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 16:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbiDGT2s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 15:28:48 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE98286A6C
-        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 12:26:38 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 237IBDBk024615
-        for <bpf@vger.kernel.org>; Thu, 7 Apr 2022 12:26:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=2npb6w9pLqHe8jLCqjFBryFIEuhlwR1ZQ+gPXKdT4jE=;
- b=cEwDMAWBCIgReoFLYXNCjctxUlZG3aA1PwTcZCSugjFBxxGnfr2s4gmTGr8tQrwEKfvH
- C2IfH0tcRSlFSjfViFSF48AA0adYovmqyFRosz9NLj1qjFgWms7Jg+ExBCianTYaaPBZ
- 88+SRwTgniLr1YPeGRFuYV/ewl/OmCqAGlw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3f9bb3kvxh-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 12:26:37 -0700
-Received: from twshared39027.37.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 7 Apr 2022 12:26:35 -0700
-Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 9ED38200EE91; Thu,  7 Apr 2022 12:26:27 -0700 (PDT)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kernel-team@fb.com>
-CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH bpf-next v3 5/5] selftest/bpf: The test cses of BPF cookie for fentry/fexit/fmod_ret.
-Date:   Thu, 7 Apr 2022 12:25:52 -0700
-Message-ID: <20220407192552.2343076-6-kuifeng@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220407192552.2343076-1-kuifeng@fb.com>
-References: <20220407192552.2343076-1-kuifeng@fb.com>
+        with ESMTP id S229926AbiDGUdN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 16:33:13 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E1843799C
+        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 13:18:18 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-ddfa38f1c1so7593280fac.11
+        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 13:18:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IE6b2b7PZA/765aj8kgizGiorDmRX0683kgvGjUxMeA=;
+        b=Vo91PVuUiTxrM79of+dR3fG6FNsiGpAp2kiossNKX9RvZqQ0tNcysIyhC5hV26bIXs
+         SX8tOzFdIbx4ZdJWJyCOnVN9LkH5KB+0wNKwBF271KrB43O9T6UmnE0IsgGwpboIV/vG
+         WZxb5V1Lep77xEehScOKPw/yRSMSkeZfUR2RE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IE6b2b7PZA/765aj8kgizGiorDmRX0683kgvGjUxMeA=;
+        b=v6fjne/bcu6FOJmdrQjLZoYaqzWX+/Kfvv5EIshglsnCpALDrT61pyTFmzFPiUYSv1
+         D0IJe7/6EOUTDGegbcvhCREAobeg1dBrx8ZrC047PDzH57e8JCblSUfaGUjmFH2erh9J
+         6IQsjISCsna6Fzj0m1xeGE11yv1S5sKrtrquyXcHBDpSjKURT27xPh11uRaeXteWasAS
+         NqHthmONYrB9VJVRFDp1JbExbNRwd5JfVZ3RkiE+xhNPAR/xOfqgbH4dDD6EM6STHLEu
+         +r9yi4giRELMzeBjhWjSxlT6Ibb6kj0KM5BrqUjuzEBbcPkH/Xfect099PjO3KDMZTD4
+         A1Ow==
+X-Gm-Message-State: AOAM530snFnz+tcB7ZTS3Hwu6lWysEokBKWbcCDXRtJRSY8BW0CYpZ5d
+        P3kXTdMKRVD3NlJ4fNz+HHAJLNzU8tDvow==
+X-Google-Smtp-Source: ABdhPJwhwNK7rm2v7SKB4nv0/5WnpgJaJKVsEyInrw6UTpDl3iJdjYGBJdoJW9J/Uqlp9e3wNODP8g==
+X-Received: by 2002:a05:6870:a411:b0:e1:e2b6:ba1d with SMTP id m17-20020a056870a41100b000e1e2b6ba1dmr7046596oal.217.1649360454832;
+        Thu, 07 Apr 2022 12:40:54 -0700 (PDT)
+Received: from [192.168.1.128] ([71.205.29.0])
+        by smtp.gmail.com with ESMTPSA id z26-20020a9d62da000000b005b23f5488cdsm8162365otk.52.2022.04.07.12.40.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Apr 2022 12:40:54 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] selftests: bpf: use MIN for TCP CC tests
+To:     Geliang Tang <geliang.tang@suse.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <4da5ff038c442d4421b95580558fc981bb674e61.1649304888.git.geliang.tang@suse.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <8b37034a-183e-58d9-1065-6c207d26d68c@linuxfoundation.org>
+Date:   Thu, 7 Apr 2022 13:40:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Gwkqn6qIfbDrf3Fu_iW4xF2IW7uq1VYm
-X-Proofpoint-GUID: Gwkqn6qIfbDrf3Fu_iW4xF2IW7uq1VYm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-07_04,2022-04-07_01,2022-02-23_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <4da5ff038c442d4421b95580558fc981bb674e61.1649304888.git.geliang.tang@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make sure BPF cookies are correct for fentry/fexit/fmod_ret.
+On 4/6/22 10:19 PM, Geliang Tang wrote:
+> Use macro MIN() in sys/param.h for TCP CC tests, instead of defining a
+> new one.
+> 
+> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
+> ---
+>   tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> index 8f7a1cef7d87..ceed369361fc 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> @@ -3,6 +3,7 @@
+>   
+>   #include <linux/err.h>
+>   #include <netinet/tcp.h>
+> +#include <sys/param.h>
+>   #include <test_progs.h>
+>   #include "network_helpers.h"
+>   #include "bpf_dctcp.skel.h"
+> @@ -10,8 +11,6 @@
+>   #include "bpf_tcp_nogpl.skel.h"
+>   #include "bpf_dctcp_release.skel.h"
+>   
+> -#define min(a, b) ((a) < (b) ? (a) : (b))
+> -
 
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 52 +++++++++++++++++++
- .../selftests/bpf/progs/test_bpf_cookie.c     | 24 +++++++++
- 2 files changed, 76 insertions(+)
+Thank you for cleaning this up. Sanity compile test passed.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/=
-testing/selftests/bpf/prog_tests/bpf_cookie.c
-index 0612e79a9281..16385f0c4031 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -237,6 +237,56 @@ static void pe_subtest(struct test_bpf_cookie *skel)
- 	bpf_link__destroy(link);
- }
-=20
-+static void tracing_subtest(struct test_bpf_cookie *skel)
-+{
-+	__u64 cookie;
-+	int prog_fd;
-+	int fentry_fd =3D -1, fexit_fd =3D -1, fmod_ret_fd =3D -1;
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, opts, .repeat =3D 1);
-+	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-+
-+	skel->bss->fentry_res =3D 0;
-+	skel->bss->fexit_res =3D 0;
-+
-+	cookie =3D 0x100000;
-+	prog_fd =3D bpf_program__fd(skel->progs.fentry_test1);
-+	link_opts.tracing.bpf_cookie =3D cookie;
-+	fentry_fd =3D bpf_link_create(prog_fd, 0, BPF_TRACE_FENTRY, &link_opts)=
-;
-+
-+	cookie =3D 0x200000;
-+	prog_fd =3D bpf_program__fd(skel->progs.fexit_test1);
-+	link_opts.tracing.bpf_cookie =3D cookie;
-+	fexit_fd =3D bpf_link_create(prog_fd, 0, BPF_TRACE_FEXIT, &link_opts);
-+	if (!ASSERT_GE(fexit_fd, 0, "fexit.open"))
-+		goto cleanup;
-+
-+	cookie =3D 0x300000;
-+	prog_fd =3D bpf_program__fd(skel->progs.fmod_ret_test);
-+	link_opts.tracing.bpf_cookie =3D cookie;
-+	fmod_ret_fd =3D bpf_link_create(prog_fd, 0, BPF_MODIFY_RETURN, &link_op=
-ts);
-+	if (!ASSERT_GE(fmod_ret_fd, 0, "fmod_ret.opoen"))
-+		goto cleanup;
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.fentry_test1);
-+	bpf_prog_test_run_opts(prog_fd, &opts);
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.fmod_ret_test);
-+	bpf_prog_test_run_opts(prog_fd, &opts);
-+
-+	ASSERT_EQ(skel->bss->fentry_res, 0x100000, "fentry_res");
-+	ASSERT_EQ(skel->bss->fexit_res, 0x200000, "fexit_res");
-+	ASSERT_EQ(skel->bss->fmod_ret_res, 0x300000, "fmod_ret_res");
-+
-+cleanup:
-+	if (fentry_fd >=3D 0)
-+		close(fentry_fd);
-+	if (fexit_fd >=3D 0)
-+		close(fexit_fd);
-+	if (fmod_ret_fd >=3D 0)
-+		close(fmod_ret_fd);
-+}
-+
- void test_bpf_cookie(void)
- {
- 	struct test_bpf_cookie *skel;
-@@ -255,6 +305,8 @@ void test_bpf_cookie(void)
- 		tp_subtest(skel);
- 	if (test__start_subtest("perf_event"))
- 		pe_subtest(skel);
-+	if (test__start_subtest("trampoline"))
-+		tracing_subtest(skel);
-=20
- 	test_bpf_cookie__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c b/tools/=
-testing/selftests/bpf/progs/test_bpf_cookie.c
-index 2d3a7710e2ce..a9f83f46e7b7 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-@@ -14,6 +14,9 @@ int uprobe_res;
- int uretprobe_res;
- int tp_res;
- int pe_res;
-+int fentry_res;
-+int fexit_res;
-+int fmod_ret_res;
-=20
- static void update(void *ctx, int *res)
- {
-@@ -82,4 +85,25 @@ int handle_pe(struct pt_regs *ctx)
- 	return 0;
- }
-=20
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(fentry_test1, int a)
-+{
-+	update(ctx, &fentry_res);
-+	return 0;
-+}
-+
-+SEC("fexit/bpf_fentry_test1")
-+int BPF_PROG(fexit_test1, int a, int ret)
-+{
-+	update(ctx, &fexit_res);
-+	return 0;
-+}
-+
-+SEC("fmod_ret/bpf_modify_return_test")
-+int BPF_PROG(fmod_ret_test, int _a, int *_b, int _ret)
-+{
-+	update(ctx, &fmod_ret_res);
-+	return 1234;
-+}
-+
- char _license[] SEC("license") =3D "GPL";
---=20
-2.30.2
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
 
+thanks,
+-- Shuah
