@@ -2,99 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F394F8003
-	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 15:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B744F8038
+	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 15:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242083AbiDGNHT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 09:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        id S1343584AbiDGNOp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 09:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbiDGNHS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 09:07:18 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BDA48E73;
-        Thu,  7 Apr 2022 06:05:18 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id h5so3954872pgc.7;
-        Thu, 07 Apr 2022 06:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eyzEQI5WafpsISoL+TbuWgHkTeRTUB3yFRqImZRg+t4=;
-        b=bzE4SJTzgtFCRXJ2TFUc7i2rHca5hXZZdPRDM4OBRmn1oFmJOIBXt/EQnH0L7t+GMQ
-         Tec1XYCZXzD2FYZOnoT2R1wd7+FIJqcMlcLu+ABPlZ1hZi0Tgurz9umXAbg9I8V5gM/v
-         lbwldi9lD3QWK/gAlbmzIvqdPlxoFgN2ZKoWovxY410ASjJlzeD8JUBu2RAUO/n3Tuv6
-         Ik7Dy7afhSZSRXFdnYPK4+yGxEVqRZ9qglMEx/0b3tZTCF5CAPq82JEdRSYbgp/UIn5D
-         QGYNcE/TKvJhJRMg0nUoRZWjAwxylrlYiBVR9iDTKm8TNflInc+EeWmEbOk9UjdnkMT7
-         pICg==
+        with ESMTP id S240715AbiDGNOo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 09:14:44 -0400
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E9F4CD4B;
+        Thu,  7 Apr 2022 06:12:45 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id d29so7767265wra.10;
+        Thu, 07 Apr 2022 06:12:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eyzEQI5WafpsISoL+TbuWgHkTeRTUB3yFRqImZRg+t4=;
-        b=EbvXjbiz8LSCOP0kK/67QJTZzlIIOBSSRPJDwJ1vdvpsxnF5r/b+uAXXOQypAbd4Hl
-         U9SLqU2VdDeezkTJjgqEiSGdlS9nJTLp3aF4nqUIDyRAF1SiPSH/k+bExN+IY4j6lqwM
-         zhI+sQp+cW+GsBSpBPLyEo8eu1BQnMEtR9EHSR3+KwcSKCXKF7oMlhMBHZWy6H+jcMJB
-         PytwM97C1E5ZyLWBK2G8/NSXSFXWZG9+znIja4JqBTFuBWvrqsG+TA6cC2HhofimiqR/
-         dUnmItreJotR1uzqgxGdrpXW6G7aYQYYN8kipl5z2c71FU7aI75IUmPTq7KIbvKYKYja
-         QYXA==
-X-Gm-Message-State: AOAM532pNog0d88UVW6ATet64bZu6YEgvKl0KYALp8FFBoUnXykcNMm2
-        uWsxNr2/uhmo+NTbAdsbAac=
-X-Google-Smtp-Source: ABdhPJwEZ3C83TRCBuR0KDCwyNg2QrzTNHuPqYB2IaHRAiNoZoNseNjEIDwb9T3iw4nyEFjoPPvN1A==
-X-Received: by 2002:a05:6a00:1252:b0:4fa:afcc:7d24 with SMTP id u18-20020a056a00125200b004faafcc7d24mr13960745pfi.85.1649336717708;
-        Thu, 07 Apr 2022 06:05:17 -0700 (PDT)
-Received: from localhost.localdomain ([43.132.141.3])
-        by smtp.gmail.com with ESMTPSA id j18-20020a056a00235200b004faabd8d2f2sm22714534pfj.192.2022.04.07.06.05.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HCI13kqR579Q1TCsRbXnz/bmREDBGKbTRNjDM5mKHYc=;
+        b=0t9+qH6Zapk/S/VGvgTkGY9XvGsZ1L0cZP3z7zXRLHv5KAFCFj2dO8jqblU882eCmo
+         5sjMDxiQFIAvdrlA+Bj9My86DbBpNLWbEr1IGQhzjHfw2zRjKrK52rHS0//nfO/SwwPJ
+         5aFluSqy5rwbzVI78B316JGiQmCe9REmf8wudABCAEa+9WYP8LS+cMwAA1vrzO7DxAsG
+         29plg1/CCleu2VGQ3sjyCgjpkJk16XDRuqRlZV7CsGjw0eYxOGbYA1vUbWeOWZ2SzcGc
+         koHBzgO5d+LxT1+X1HZPxqXcQWBWeuJDo4e477F4bSeuwrTn66GZulJJaZTMfP63T7Fe
+         5xLg==
+X-Gm-Message-State: AOAM532CbXS1uJDNwdP32OSs+vJuIbSsFPNjloLNVr7oijUP7SEoCxyg
+        LKgkZkULmUGMUyQK7Tp4XYs=
+X-Google-Smtp-Source: ABdhPJxR6TVIZB16KefROVY559IWuQt8+VPOwN/mBpnp5UOY6KACX5raLvrPpeEItOnJ0uPbmhJgEw==
+X-Received: by 2002:adf:d1cf:0:b0:207:8c13:f268 with SMTP id b15-20020adfd1cf000000b002078c13f268mr1884810wrd.345.1649337163635;
+        Thu, 07 Apr 2022 06:12:43 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id o8-20020a5d6488000000b002051f1028f6sm20274396wri.111.2022.04.07.06.12.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Apr 2022 06:05:16 -0700 (PDT)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH bpf-next] bpf: Fix excessive memory allocation in stack_map_alloc()
-Date:   Thu,  7 Apr 2022 21:04:23 +0800
-Message-Id: <20220407130423.798386-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.0.rc2
+        Thu, 07 Apr 2022 06:12:43 -0700 (PDT)
+Date:   Thu, 7 Apr 2022 13:12:41 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, pabeni@redhat.com,
+        edumazet@google.com, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, hawk@kernel.org,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 1/3] net: hyperv: remove use of bpf_op_t
+Message-ID: <20220407131241.2mu2nqih3i46n4jz@liuwe-devbox-debian-v2>
+References: <20220406213754.731066-1-kuba@kernel.org>
+ <20220406213754.731066-2-kuba@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220406213754.731066-2-kuba@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The 'n_buckets * (value_size + sizeof(struct stack_map_bucket))' part of
-the allocated memory for 'smap' is never used, get rid of it.
+On Wed, Apr 06, 2022 at 02:37:52PM -0700, Jakub Kicinski wrote:
+> Following patch will hide that typedef. There seems to be
+> no strong reason for hyperv to use it, so let's not.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-Fixes: b936ca643ade ("bpf: rework memlock-based memory accounting for maps")
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
- kernel/bpf/stackmap.c | 1 -
- 1 file changed, 1 deletion(-)
+FWIW this is a trivial change. If this is needed:
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 6131b4a19572..1dd5266fbebb 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -100,7 +100,6 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
- 		return ERR_PTR(-E2BIG);
- 
- 	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
--	cost += n_buckets * (value_size + sizeof(struct stack_map_bucket));
- 	smap = bpf_map_area_alloc(cost, bpf_map_attr_numa_node(attr));
- 	if (!smap)
- 		return ERR_PTR(-ENOMEM);
--- 
-2.35.0.rc2
-
+Acked-by: Wei Liu <wei.liu@kernel.org>
