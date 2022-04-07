@@ -2,125 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C9B4F87FD
-	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 21:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E274F880D
+	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 21:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbiDGTZR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 15:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
+        id S231200AbiDGT2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 15:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbiDGTZQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 15:25:16 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8200C270859
-        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 12:23:13 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id 9so8060793iou.5
-        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 12:23:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l8OgFspqIU7b4vxeuPh92V4JMHLE7mkjNVSAXOwkoiI=;
-        b=hqEsqkdUEZnH1z3sA9zbHCvR08eMANE+TcmOmjbDqr6CSsj75T6hADaySzUCuq0SeM
-         w8EgXroBrA+8AiQz6o5psyA0BnEiA5dPpuNR5VWR5JMeOkqZYfSeU9xOJDozQ/6B7iTE
-         EQEw0P1idXPRoOOjCOI0PDLVMOiRJSlqTlSm8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l8OgFspqIU7b4vxeuPh92V4JMHLE7mkjNVSAXOwkoiI=;
-        b=KLtJibUavvm+0+jFtqITQEdAPRRud4RyHoYY/9fNGprT2nHMEhV/0nzP4df0d82+yt
-         5d0YoXL+XVB/ybeEv7eUQQo/PzSRvtpcTlh3sMVk3WX6jECsXeDV8l/C9IY+C/MttR/e
-         BMzS+yDjUR/StIzswVx/fHDvzUQZRAzdzKpfm9f6h1cs2oIbIK05cuixFfMfPMxDbeMM
-         tkdKi9oiRSByw9rrwrfwzUbhtVc4cZg510l8YpbUnUcJpe5GBHkbIl5/B0qGwcaPEb0Z
-         0ro7JqCCH/8UKyWI79WmoH/RUD1MTdEa44Tbq9LG3mPGusPoVEAjtpCrGmkfQ6XMdb27
-         fnAw==
-X-Gm-Message-State: AOAM532KbjmJo6NKsoaK+Y2zjZ7Q8lCjOnIYsgbkOrAr58XhMk9AEgxj
-        jFJeyJfgbVbc4K9zpzftbbFwfsf4LJYx1Q==
-X-Google-Smtp-Source: ABdhPJxo55dq2+4K1HsfVCjcmhVHiDxQKD4sjTU1sAei6R98e/vSm8ep5Z2aHOSWZ1QeDYi08Ztk2w==
-X-Received: by 2002:a05:6602:490:b0:638:c8ed:1e38 with SMTP id y16-20020a056602049000b00638c8ed1e38mr6848815iov.202.1649359392707;
-        Thu, 07 Apr 2022 12:23:12 -0700 (PDT)
-Received: from [192.168.1.128] ([71.205.29.0])
-        by smtp.gmail.com with ESMTPSA id i12-20020a056e020ecc00b002ca53aba365sm5885794ilk.64.2022.04.07.12.23.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Apr 2022 12:23:11 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix return value checks in
- perf_event_stackmap.c
-To:     Yuntao Wang <ytcoode@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Hengqi Chen <hengqi.chen@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20220407153814.104914-1-ytcoode@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <7ac36fbe-aa44-9311-320b-1e953c29a3c4@linuxfoundation.org>
-Date:   Thu, 7 Apr 2022 13:23:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        with ESMTP id S231226AbiDGT23 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 15:28:29 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D5D281833
+        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 12:26:19 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 237IB3ah002156
+        for <bpf@vger.kernel.org>; Thu, 7 Apr 2022 12:26:19 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=t/tGovwgtQ6Qr7tVYNR3SRcPe5u6bWX8xsW5g9mEpTQ=;
+ b=bHH3twr9IW0o6ekQb2uNeeVQeRN8u4gF5JTzAOKQemA6oM4xlb1yHKz41hSSYkyJay14
+ UfP16/imfGczsXpLv6JsMycPHTHKaWr22ZopUmtfQOeqryni87SdRWEfPmCCmR56Wiaz
+ l+JcYV0r7lCZwPArebyf0HYAd9KtvGa6nqs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fa4pggpnr-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 12:26:19 -0700
+Received: from twshared13345.18.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 7 Apr 2022 12:26:17 -0700
+Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
+        id 5D5EF200EE3F; Thu,  7 Apr 2022 12:26:10 -0700 (PDT)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kernel-team@fb.com>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH bpf-next v3 0/5] Attach a cookie to a tracing program.
+Date:   Thu, 7 Apr 2022 12:25:47 -0700
+Message-ID: <20220407192552.2343076-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: hgwxXdgwUNA0s3tXnHidi1bf8L1EF0Fa
+X-Proofpoint-ORIG-GUID: hgwxXdgwUNA0s3tXnHidi1bf8L1EF0Fa
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <20220407153814.104914-1-ytcoode@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-04-07_04,2022-04-07_01,2022-02-23_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/7/22 9:38 AM, Yuntao Wang wrote:
-> The bpf_get_stackid() function may also return 0 on success.
+Allow users to attach a 64-bits cookie to a bpf_link of fentry, fexit,
+or fmod_ret.
 
-Can you add couple of sentences to describe what this patch
-does? bpf_get_stackid() may also return doesn't really say
-anything about why this patch is needed.
+This patchset includes several major changes.
 
-> 
-> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> ---
->   tools/testing/selftests/bpf/progs/perf_event_stackmap.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
-> index b3fcb5274ee0..f793280a3238 100644
-> --- a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
-> +++ b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
-> @@ -35,10 +35,10 @@ int oncpu(void *ctx)
->   	long val;
->   
->   	val = bpf_get_stackid(ctx, &stackmap, 0);
-> -	if (val > 0)
-> +	if (val >= 0)
->   		stackid_kernel = 2;
->   	val = bpf_get_stackid(ctx, &stackmap, BPF_F_USER_STACK);
-> -	if (val > 0)
-> +	if (val >= 0)
->   		stackid_user = 2;
->   
->   	trace = bpf_map_lookup_elem(&stackdata_map, &key);
-> 
-Linux 5.18-rc1 shows a couple of more bpf_get_stackid() in this function.
-Removed in bpf-next - I assume.
+ - Define struct bpf_tramp_links to replace bpf_tramp_prog.
+   struct bpf_tramp_links collects bpf_links of a trampoline
 
-The change is good. I would like to see it explained better in the
-commit log.
+ - Generate a trampoline to call bpf_progs of given bpf_links.
 
-With the commit log fixed to explain why this change is needed and
-what happens if val equals to 0 condition isn't checked:
+ - Trampolines always set/reset bpf_run_ctx before/after
+   calling/leaving a tracing program.
 
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+ - Attach a cookie to a bpf_link of fentry/fexit/fmod_ret.  The value
+   will be available when running the associated bpf_prog.
 
-thanks,
--- Shuah
+The major differences from v2:
+
+ - Move the allocations of run_ctx (struct bpf_tramp_run_ctx) out of
+   invoke_bpf_prog().
+
+ - Move hlist_node out of bpf_link and introduce struct bpf_tramp_link
+   to own hlist_node.
+
+ - Store cookies at struct bpf_tracing_link.
+
+ - Use SIB byte to reduce the number of instructions to set cookie
+   values. (Use RSP directly)
+
+v1: https://lore.kernel.org/all/20220126214809.3868787-1-kuifeng@fb.com/
+v2: https://lore.kernel.org/bpf/20220316004231.1103318-1-kuifeng@fb.com/
+
+Kui-Feng Lee (5):
+  bpf, x86: Generate trampolines from bpf_tramp_links
+  bpf, x86: Create bpf_tramp_run_ctx on the caller thread's stack
+  bpf, x86: Attach a cookie to fentry/fexit/fmod_ret.
+  lib/bpf: Assign cookies to links in libbpf.
+  selftest/bpf: The test cses of BPF cookie for fentry/fexit/fmod_ret.
+
+ arch/x86/net/bpf_jit_comp.c                   | 98 +++++++++++++++----
+ include/linux/bpf.h                           | 56 ++++++++---
+ include/linux/bpf_types.h                     |  1 +
+ include/uapi/linux/bpf.h                      |  9 ++
+ kernel/bpf/bpf_struct_ops.c                   | 69 ++++++++-----
+ kernel/bpf/syscall.c                          | 54 ++++++----
+ kernel/bpf/trampoline.c                       | 96 +++++++++++-------
+ kernel/trace/bpf_trace.c                      | 17 ++++
+ net/bpf/bpf_dummy_struct_ops.c                | 35 ++++++-
+ tools/bpf/bpftool/link.c                      |  1 +
+ tools/include/uapi/linux/bpf.h                |  8 ++
+ tools/lib/bpf/bpf.c                           |  7 ++
+ tools/lib/bpf/bpf.h                           |  3 +
+ tools/lib/bpf/libbpf.c                        | 33 +++++++
+ tools/lib/bpf/libbpf.h                        | 12 +++
+ tools/lib/bpf/libbpf.map                      |  1 +
+ .../selftests/bpf/prog_tests/bpf_cookie.c     | 52 ++++++++++
+ .../selftests/bpf/progs/test_bpf_cookie.c     | 24 +++++
+ 18 files changed, 459 insertions(+), 117 deletions(-)
+
+--=20
+2.30.2
+
