@@ -2,131 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F053D4F6E70
-	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 01:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499244F7227
+	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 04:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbiDFXUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 19:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
+        id S237915AbiDGCkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 22:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiDFXUK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 19:20:10 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDB5A2065
-        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 16:18:12 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id z6so4973215iot.0
-        for <bpf@vger.kernel.org>; Wed, 06 Apr 2022 16:18:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ky/QcBOPGhvSLx30JxqiV46c0zWx/wKU9HEIfbxjYNY=;
-        b=OQqs9NKJxYREpy304qKoknDF4jIehAHbS5/38DlmxRvdoHT6xgeL+J7SIFKvxAbUBp
-         TKaRR9JRNWiyAVgLWHjy/+/wTv8wWLz0t8C9F2YdUDikr+bDgqbOLH+f79Wf0nTbvdBM
-         EX+yuNHKd/QpIsAdz9wXuex01l9Xt8XxdvXgYkSt7fh4qOiKxy1Izo5Y1Y9Y3KlOMzaU
-         tN3e8fOkInA3BzEfPGRlI8bsL951RGLzcR3Wx8aKpIzBhI1CfIwbmTlTP9KZzGmrhwFd
-         NfVnugCOsIYRHuW1qGVZAylwHGhYpZIPV/k6OKq9188pgP+BdO7BOH/uSGO6ZW65pCyx
-         kB9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ky/QcBOPGhvSLx30JxqiV46c0zWx/wKU9HEIfbxjYNY=;
-        b=1+Gc0VPOb1OK5ocJr6Ti8rUnDQrAoaMBuILRJXMT2kRGcshtk64cRn5+gHDRbNAUzt
-         fXUL4Z7TGZkIdc0jnITnwv1BDn6FjN8neI1OyBvHRGQKueU0oc6PwfJN7wxW1pgv63Jv
-         v2iOEpr7GVXpMp54dLp8bIDd9JuW4qqhpaoiwR+6HV2aCiv5rgy9dZZgw9Vg5pLPQ/F9
-         +YApy8dBpoN+dAc1QLhYuSAC+R0gDRtBHhNNuqWVKwuMkOLOLEIrDA27bayYCbDxCjf8
-         sVhQVFJ+EStdA2GDnYJniWgcU4W+KL3DXJxTwFSsriogVROZ/OSR+57qcbhTdZ+x/Hpu
-         ew9w==
-X-Gm-Message-State: AOAM530QpHtVNjit96af+Sa8OLTRdC3ogfigfL2G6lx0D1pkOyl56ArP
-        EyeYYnT8ovLeBMo6oLatYHxVpN03qtZa89+/s599itBG
-X-Google-Smtp-Source: ABdhPJyHEgiyVZwQOrfhKiddfvGa5aaJZStKTa4Kr9OkMKJT7xTvmwJWjcavGEVRQPo6xy92Y430cL6ZGQa5eLREenY=
-X-Received: by 2002:a05:6602:735:b0:64c:adf1:ae09 with SMTP id
- g21-20020a056602073500b0064cadf1ae09mr5020593iox.79.1649287092066; Wed, 06
- Apr 2022 16:18:12 -0700 (PDT)
+        with ESMTP id S233222AbiDGCkV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 22:40:21 -0400
+Received: from mail.meizu.com (edge05.meizu.com [157.122.146.251])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5218ADE903;
+        Wed,  6 Apr 2022 19:38:21 -0700 (PDT)
+Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail12.meizu.com
+ (172.16.1.108) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 7 Apr
+ 2022 10:38:20 +0800
+Received: from meizu.meizu.com (172.16.137.70) by IT-EXMB-1-125.meizu.com
+ (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Thu, 7 Apr
+ 2022 10:38:19 +0800
+From:   Haowen Bai <baihaowen@meizu.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+CC:     Haowen Bai <baihaowen@meizu.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] libbpf: potential NULL dereference in usdt_manager_attach_usdt()
+Date:   Thu, 7 Apr 2022 10:38:17 +0800
+Message-ID: <1649299098-2069-1-git-send-email-baihaowen@meizu.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <CAO658oVD+0Ltuww1F-AZdPtSE4O4M-BH5NP_R-oSBWszZ3oZiQ@mail.gmail.com>
- <CAEf4BzY8kjQDrkKU2gZox8J9gF7iQ9ht=2GVmXuktCRg0sRqjA@mail.gmail.com> <CAO658oUbXfuYzK1fxTrEdHJffhxpvL9QBZLdOtY6uG98H1e0Lg@mail.gmail.com>
-In-Reply-To: <CAO658oUbXfuYzK1fxTrEdHJffhxpvL9QBZLdOtY6uG98H1e0Lg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Apr 2022 16:18:01 -0700
-Message-ID: <CAEf4BzZan24Fh-+f5OMkZEFtpMsStm+OpCoYuwbxQBwK2q7CJg@mail.gmail.com>
-Subject: Re: Questions on BPF_PROG_TYPE_TRACING & fentry/fexit
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [172.16.137.70]
+X-ClientProxiedBy: IT-EXMB-1-126.meizu.com (172.16.1.126) To
+ IT-EXMB-1-125.meizu.com (172.16.1.125)
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 6, 2022 at 1:01 PM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
->
-> On Sun, Apr 3, 2022 at 7:47 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, Apr 1, 2022 at 7:27 AM Grant Seltzer Richman
-> > <grantseltzer@gmail.com> wrote:
-> > >
-> > > Hi there,
-> > >
-> > > I'm looking to implement programs of type BPF_PROG_TYPE_TRACING to
-> > > replace kprobe/tracepoints because from what I can tell there's less
-> > > performance overhead. However, I'm trying to understand restrictions
-> > > and use cases.
-> > >
-> > > I see that there's a generic `bpf_program__attach()` which can be used
-> > > to attach programs and it will attempt to auto-detect type and attach
-> > > them accordingly.
-> > >
-> > > In practice, I'm curious what I can attach programs of this type to,
-> > > and how are they specified? `bpf_program__attach()` doesn't take any
-> > > parameters outside of the program itself. Does it attach based on the
-> > > name of the program's name/section? If so, is there an idiomatic way
-> > > of making sure this is correctly done?
-> >
-> > You can specify destination either in SEC() definition:
-> > SEC("fentry/some_kernel_func") or you can use
-> > bpf_program__set_attach_target(...) before BPF object is loaded.
->
-> Can you elaborate more on `bpf_program__set_attach_target()`? I've
-> been working through the selftests and understand that you can use it
-> to attach bpf programs to other bpf programs, and kernel modules. Are
-> there only certain types of bpf programs that can be attached to? Are
-> there restrictions on what kind of programs can attach to others?
+link could be null but still dereference bpf_link__destroy(&link->link)
+and it will lead to a null pointer access.
 
-You can attach to kernel functions as well, if you specify
-attach_prog_fd = 0. See the implementation in tools/lib/bpf/libbpf.c.
-As for types of programs, it's fentry/fexit/fmod_ret and freplace for
-attaching to other programs. All the details about freplace... I'm not
-the best expert on that and you'll have to read kernel
-code/docs/experiment.
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+---
+ tools/lib/bpf/usdt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->
-> > >
-> > > My follow up question is to ask how fentry/fexit relate. I've seen
-> > > these referred to as program types but in code they appear as attach
-> > > types, not program types. Can someone clarify?
-> >
-> > Formally they are different expected attach types for
-> > BPF_PROG_TYPE_TRACING program type. There is also fmod_ret, which is
-> > yet another expected attach type with still different semantics. But
-> > it's like kprobe and kretprobe, they have very different semantics, so
-> > we talk about them as two different types of BPF program.
-> >
-> > >
-> > > As always I'm partly asking so that I can document this and avoid
-> > > other people having the same confusion :-)
-> > >
-> >
-> > Yep, I appreciate it. Please send follow up questions if you still
-> > have some. Please check relevant selftests to see possible usages.
-> >
-> > > Thank you very much!
-> > > Grant
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+index 1bce2eab5e89..b02ebc4ba57c 100644
+--- a/tools/lib/bpf/usdt.c
++++ b/tools/lib/bpf/usdt.c
+@@ -996,7 +996,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+ 	link = calloc(1, sizeof(*link));
+ 	if (!link) {
+ 		err = -ENOMEM;
+-		goto err_out;
++		goto link_err;
+ 	}
+ 
+ 	link->usdt_man = man;
+@@ -1072,7 +1072,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+ 
+ err_out:
+ 	bpf_link__destroy(&link->link);
+-
++link_err:
+ 	free(targets);
+ 	hashmap__free(specs_hash);
+ 	if (elf)
+-- 
+2.7.4
+
