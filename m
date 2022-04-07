@@ -2,55 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BF94F82B5
-	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 17:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116544F83A6
+	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 17:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239279AbiDGPYi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 11:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
+        id S242019AbiDGPk0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 11:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344591AbiDGPYg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 11:24:36 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB61320D80D;
-        Thu,  7 Apr 2022 08:22:35 -0700 (PDT)
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ncTxj-0003Hy-VO; Thu, 07 Apr 2022 17:22:20 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ncTxj-000Hlq-Ix; Thu, 07 Apr 2022 17:22:19 +0200
-Subject: Re: [PATCH v5 1/3] selftests: bpf: add test for bpf_skb_change_proto
-To:     Lina Wang <lina.wang@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org, Maciej enczykowski <maze@google.com>,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20220407084727.10241-1-lina.wang@mediatek.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9dc51533-92d2-1c82-2a6e-96e1ac747bb7@iogearbox.net>
-Date:   Thu, 7 Apr 2022 17:22:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S232934AbiDGPkY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 11:40:24 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB64140DA;
+        Thu,  7 Apr 2022 08:38:23 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id b2-20020a17090a010200b001cb0c78db57so3415391pjb.2;
+        Thu, 07 Apr 2022 08:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zzTG5MA6feUhS90mwYwqW7MNwzm4RaqJqp0A1NIGFwE=;
+        b=Hei5w4bIjpEhUh/49pqCy9LJB/75Zbi/vj6XqL+jCjj5f2nLrSqLgdtx/m9jtWyhfL
+         irS8XRkaP7aGBNrtBFX+A5P7gSv1p7l8yKxC1CwJjVYXTXktt41WnxVPY8kr41vHYjgv
+         eRuzccgeKClRCUC1aLsAY438bqn2c7RCDuTr64hg8zA04WmLvkjmRnN65yuf+GHA2+fZ
+         js7nMe610p17kDowokKjN25FUjN10ZMQ2+AuqkK6cw4gNx0nW0yfWwbvr4e2ODhJ1RCK
+         6OwPDUIiYqNzemr9KSsHac4FUqNAOHx5gt2Yda+4gJFPYxT46b5slwhL80trQVbQOFs1
+         EaKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zzTG5MA6feUhS90mwYwqW7MNwzm4RaqJqp0A1NIGFwE=;
+        b=iIiWBBaFnEHZNXQzWgMl6uWCnSm7Ydfbxkv26yh7UWzf5mruktnR9hStTR7E9raAWQ
+         OBMpG0cPF/gY+LsVRgjx8/Q6DO9eB46jD2LYxw+PwHy9uHqopraco7EVnn2BV5jhAzaK
+         XalEp8GHLf/EEwMx0GcCtjoLnw5cy/lm7WIFJnxVPEfviJtXrPLcHjxWN+JEpLK1evFT
+         2stsh/0ciUmeC1A4KUqaOhbmxiFEup72jcOyFUvcLUcvcIy4bK/XpMH+Ld77xy758p47
+         xH8RZBW1F4BO64pR/JTdh/koNZvmP4cUIxP2fou3oxEZKe9oUbY/xEKoHVtRmAI1V2hE
+         HIRw==
+X-Gm-Message-State: AOAM532Q5TImbmwuRF+Rf7zw11SgqvQc/Azkf5h0KIDvzeF5cM0dD9h/
+        p2UJ/7+ANuarvUZT/QYGY34=
+X-Google-Smtp-Source: ABdhPJy8fWprY4sfgTns16cefNiyWAHEe0UJ/zhCWUr3vx3ZlT8++ew5nxLZqq1Sl8zH7gQmPWG9LA==
+X-Received: by 2002:a17:902:ec88:b0:156:b24a:40f with SMTP id x8-20020a170902ec8800b00156b24a040fmr14615682plg.67.1649345902594;
+        Thu, 07 Apr 2022 08:38:22 -0700 (PDT)
+Received: from localhost.localdomain ([223.212.58.71])
+        by smtp.gmail.com with ESMTPSA id p64-20020a622943000000b004fdd5c07d0bsm21094797pfp.63.2022.04.07.08.38.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Apr 2022 08:38:21 -0700 (PDT)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Hengqi Chen <hengqi.chen@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix return value checks in perf_event_stackmap.c
+Date:   Thu,  7 Apr 2022 23:38:14 +0800
+Message-Id: <20220407153814.104914-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-In-Reply-To: <20220407084727.10241-1-lina.wang@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26505/Thu Apr  7 10:25:37 2022)
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,104 +74,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Lina,
+The bpf_get_stackid() function may also return 0 on success.
 
-On 4/7/22 10:47 AM, Lina Wang wrote:
-> The code is copied from the Android Open Source Project and the author(
-> Maciej Żenczykowski) has gave permission to relicense it under GPLv2.
-> 
-> The test is to change input IPv6 packets to IPv4 ones and output IPv4 to
-> IPv6 with bpf_skb_change_proto.
-> 
-> Signed-off-by: Maciej Żenczykowski <maze@google.com>
-> Signed-off-by: Lina Wang <lina.wang@mediatek.com>
-> ---
->   tools/testing/selftests/bpf/progs/nat6to4.c | 293 ++++++++++++++++++++
->   1 file changed, 293 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/progs/nat6to4.c
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ tools/testing/selftests/bpf/progs/perf_event_stackmap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for adding a selftest into your series!
+diff --git a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
+index b3fcb5274ee0..f793280a3238 100644
+--- a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
++++ b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
+@@ -35,10 +35,10 @@ int oncpu(void *ctx)
+ 	long val;
+ 
+ 	val = bpf_get_stackid(ctx, &stackmap, 0);
+-	if (val > 0)
++	if (val >= 0)
+ 		stackid_kernel = 2;
+ 	val = bpf_get_stackid(ctx, &stackmap, BPF_F_USER_STACK);
+-	if (val > 0)
++	if (val >= 0)
+ 		stackid_user = 2;
+ 
+ 	trace = bpf_map_lookup_elem(&stackdata_map, &key);
+-- 
+2.35.1
 
-Your patch 2/3 is utilizing this program out of selftests/net/udpgro_frglist.sh,
-however, this is a bit problematic given BPF CI which runs on every BPF submitted
-patch. Meaning, udpgro_frglist.sh won't be covered by CI and only needs to be run
-manually. Could you properly include this into test_progs from BPF suite (that way,
-BPF CI will also pick it up)? See also [2] for more complex netns setups.
-
-Thanks again!
-Daniel
-
-Some small comments below.
-
-   [0] https://patchwork.kernel.org/project/netdevbpf/patch/20220407084727.10241-2-lina.wang@mediatek.com/
-   [1] https://github.com/kernel-patches/bpf/actions
-   [2] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/tools/testing/selftests/bpf/prog_tests/xdp_bonding.c
-
-> diff --git a/tools/testing/selftests/bpf/progs/nat6to4.c b/tools/testing/selftests/bpf/progs/nat6to4.c
-> new file mode 100644
-> index 000000000000..099950f7a6cc
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/nat6to4.c
-> @@ -0,0 +1,293 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * This code is taken from the Android Open Source Project and the author
-> + * (Maciej Żenczykowski) has gave permission to relicense it under the
-> + * GPLv2. Therefore this program is free software;
-> + * You can redistribute it and/or modify it under the terms of the GNU
-> + * General Public License version 2 as published by the Free Software
-> + * Foundation
-> +
-> + * The original headers, including the original license headers, are
-> + * included below for completeness.
-> + *
-> + * Copyright (C) 2019 The Android Open Source Project
-> + *
-> + * Licensed under the Apache License, Version 2.0 (the "License");
-> + * you may not use this file except in compliance with the License.
-> + * You may obtain a copy of the License at
-> + *
-> + *      http://www.apache.org/licenses/LICENSE-2.0
-> + *
-> + * Unless required by applicable law or agreed to in writing, software
-> + * distributed under the License is distributed on an "AS IS" BASIS,
-> + * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-> + * See the License for the specific language governing permissions and
-> + * limitations under the License.
-> + */
-> +#include <linux/bpf.h>
-> +#include <linux/if.h>
-> +#include <linux/if_ether.h>
-> +#include <linux/if_packet.h>
-> +#include <linux/in.h>
-> +#include <linux/in6.h>
-> +#include <linux/ip.h>
-> +#include <linux/ipv6.h>
-> +#include <linux/pkt_cls.h>
-> +#include <linux/swab.h>
-> +#include <stdbool.h>
-> +#include <stdint.h>
-> +
-> +// bionic kernel uapi linux/udp.h header is munged...
-
-nit: Throughout the file, please use C style comments as per kernel coding convention.
-
-> +#define __kernel_udphdr udphdr
-> +#include <linux/udp.h>
-> +
-> +#include <bpf/bpf_helpers.h>
-> +
-> +#define htons(x) (__builtin_constant_p(x) ? ___constant_swab16(x) : __builtin_bswap16(x))
-> +#define htonl(x) (__builtin_constant_p(x) ? ___constant_swab32(x) : __builtin_bswap32(x))
-> +#define ntohs(x) htons(x)
-> +#define ntohl(x) htonl(x)
-
-nit: Please use libbpf's bpf_htons() and friends helpers [3].
-
-   [3] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/tools/lib/bpf/bpf_endian.h
-
-OT: In Cilium we run similar NAT46/64 translation for XDP and tc/BPF for our LB services [4] (that is,
-v4 VIP with v6 backends, and v6 VIP with v4 backends).
-
-   [4] https://github.com/cilium/cilium/blob/master/bpf/lib/nat_46x64.h
-       https://github.com/cilium/cilium/blob/master/test/nat46x64/test.sh
