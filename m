@@ -2,140 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1121C4F72B9
-	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 05:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C804F72CA
+	for <lists+bpf@lfdr.de>; Thu,  7 Apr 2022 05:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239890AbiDGDOq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Apr 2022 23:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
+        id S239874AbiDGDR7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Apr 2022 23:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239821AbiDGDOq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Apr 2022 23:14:46 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0CA2296F4;
-        Wed,  6 Apr 2022 20:12:47 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id c23so3753150plo.0;
-        Wed, 06 Apr 2022 20:12:47 -0700 (PDT)
+        with ESMTP id S239831AbiDGDR5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Apr 2022 23:17:57 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 945BE56209
+        for <bpf@vger.kernel.org>; Wed,  6 Apr 2022 20:15:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bMRlXp+1H6vxnCjSCNskJ7yVWM8QGfvwnrKf2El1BUY=;
-        b=mo3l3D7a7GdIo/GMKuQboNdvSaP8f1xLpd8WbjZ6DrmyQO3YM3Zd/WQac02cWs6OZN
-         6JEeTWGoZ2UzcLT1vUSaL4sAuLoTpzKlDVL7+gNj2VyulpP8QuWbMRVPSxBF2kgEep5M
-         0uJJiZ1/OvaJNIwgMFGl3idnI8kPUW/9D6M2GPtzzdoBfjto0RgdULghfbb3qspNd4dq
-         1q3F3fzsCJKdywCkXL+n0JPiycx8gp1RGWVFC5KTyeVPAsLMr6k51b82/MQi8V0voccD
-         ZDsbMoRHhIzW8/qtonTf9iIc3/dT2lxANLmWA45CCaxH3fmR7RhAR3GhoD+RffHdTnvf
-         n5IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bMRlXp+1H6vxnCjSCNskJ7yVWM8QGfvwnrKf2El1BUY=;
-        b=dldjVK0XL+c9zVaPm0bVFQl52um6uoJQk6kYD/f8MtGMQZOoCRcin/+T5PKGkESthU
-         +lR9Bh9KWqY/wVqHkq36fXceUaUB5oi9ro5JXLZUcwsUFgTx/nDbVmuMI1WFUBhsnzbt
-         ISNAdYwbrNeFKeUV/harNwEYr7+njmDHDAiTbk6NOg7NAu+vUCc6gWMJWT7njGC2jLX1
-         osGGdOI1snEgrg1EkVF6Fkw0/3LQGbDhcu8AbdXJ7HjRTgC805VjoP0hn06iw5H9QTLR
-         fYehrKucFN/ZVzER5HVip1JOXGeCI3bmvlLJmw9Wx1Fka30LU7aU61BcqWZPQSw4A0X8
-         O4xQ==
-X-Gm-Message-State: AOAM530VQxP7T1u4ci6M4DB/TyuSQhamXPidqq8l3IXatGfXIxyAKozd
-        DimP8IPNcLn5T/WKy5EWrxE=
-X-Google-Smtp-Source: ABdhPJx/xM+bv5xIAi68KVSiQROVcbVggo/IZuLxJY3TB/uUTWi3aKpzzU9A77YkkkKJc6tJAfA+PA==
-X-Received: by 2002:a17:90a:7403:b0:1ca:7de0:8cf9 with SMTP id a3-20020a17090a740300b001ca7de08cf9mr13525900pjg.74.1649301167283;
-        Wed, 06 Apr 2022 20:12:47 -0700 (PDT)
-Received: from ast-mbp.lan ([2603:3023:16e:5000:1c05:63fe:2a0d:fa56])
-        by smtp.gmail.com with ESMTPSA id u18-20020a056a00125200b004fb112ee9b7sm18630353pfi.75.2022.04.06.20.12.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Apr 2022 20:12:46 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, kuba@kernel.org, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: pull-request: bpf 2022-04-06
-Date:   Wed,  6 Apr 2022 20:12:45 -0700
-Message-Id: <20220407031245.73026-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=jr2Gc4lQGC3o6bDsODsszGVRcYBK8WjtHXZd
+        shI4myg=; b=PwsumTp4KgyE/CWkCt8rW+dJInNHAILMaacPJw1oHLOkue4XUd5I
+        Prjra0qg6FpIWjAPvLyJYvC1uKDhqhsoy2YsslJKxKK3KYciHpJizoNL+2/HLapf
+        3TnM/8vK+R5dZWrzZtaxDsGCkOkOtW2kbTf1ChBfTPzsD8v0eSLSAN8=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 7 Apr
+ 2022 11:15:52 +0800 (GMT+08:00)
+X-Originating-IP: [47.88.5.130]
+Date:   Thu, 7 Apr 2022 11:15:52 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   wuzongyo@mail.ustc.edu.cn
+To:     =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+Cc:     bpf@vger.kernel.org
+Subject: Re: Re: [Question] Failed to load ebpf program with BTF-defined map
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20210401(c5ff3689) Copyright (c) 2002-2022 www.mailtech.cn ustccn
+In-Reply-To: <87czhtc3ef.fsf@toke.dk>
+References: <50b0dbb.2936.17fff506075.Coremail.wuzongyo@mail.ustc.edu.cn>
+ <87czhtc3ef.fsf@toke.dk>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <6dd42c62.3713.180020571c3.Coremail.wuzongyo@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygD3MnxpV05iKVgHAA--.7W
+X-CM-SenderInfo: pzx200xj1rqzxdloh3xvwfhvlgxou0/1tbiAQwICVQhoFZrBAAHsn
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
-
-The following pull-request contains BPF updates for your *net* tree.
-
-We've added 8 non-merge commits during the last 8 day(s) which contain
-a total of 9 files changed, 139 insertions(+), 36 deletions(-).
-
-The main changes are:
-
-1) rethook related fixed, from Jiri and Masami.
-
-2) Fix the case when tracing bpf prog is attached to struct_ops, from Martin. 
-
-3) Support dual-stack sockets in bpf_tcp_check_syncookie, from Maxim.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Arthur Fabre, Jakub Kicinski, Tariq Toukan, Yonghong 
-Song
-
-----------------------------------------------------------------
-
-The following changes since commit 77c9387c0c5bd496fba3200024e3618356b2fd34:
-
-  Merge https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf (2022-03-29 18:59:15 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 53968dafc4a6061c1e01d884f1f9a4b8c4b0d5bc:
-
-  bpf: Adjust bpf_tcp_check_syncookie selftest to test dual-stack sockets (2022-04-06 09:44:45 -0700)
-
-----------------------------------------------------------------
-Delyan Kratunov (1):
-      bpftool: Explicit errno handling in skeletons
-
-Haowen Bai (1):
-      selftests/bpf: Fix warning comparing pointer to 0
-
-Jiri Olsa (1):
-      bpf: Fix sparse warnings in kprobe_multi_resolve_syms
-
-Martin KaFai Lau (2):
-      bpf: Resolve to prog->aux->dst_prog->type only for BPF_PROG_TYPE_EXT
-      bpf: selftests: Test fentry tracing a struct_ops program
-
-Masami Hiramatsu (1):
-      rethook: Fix to use WRITE_ONCE() for rethook:: Handler
-
-Maxim Mikityanskiy (2):
-      bpf: Support dual-stack sockets in bpf_tcp_check_syncookie
-      bpf: Adjust bpf_tcp_check_syncookie selftest to test dual-stack sockets
-
- include/linux/bpf_verifier.h                       |  4 +-
- kernel/trace/bpf_trace.c                           |  4 +-
- kernel/trace/rethook.c                             |  2 +-
- net/core/filter.c                                  | 17 +++--
- tools/bpf/bpftool/gen.c                            | 22 ++++--
- .../selftests/bpf/prog_tests/dummy_st_ops.c        | 23 +++++++
- tools/testing/selftests/bpf/progs/map_ptr_kern.c   |  4 +-
- .../selftests/bpf/progs/trace_dummy_st_ops.c       | 21 ++++++
- .../selftests/bpf/test_tcp_check_syncookie_user.c  | 78 ++++++++++++++++------
- 9 files changed, 139 insertions(+), 36 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/trace_dummy_st_ops.c
+DQo+IHd1em9uZ3lvQG1haWwudXN0Yy5lZHUuY24gd3JpdGVzOg0KPiANCj4gPiBIaSwNCj4gPg0K
+PiA+IEkgd3JvdGUgYSBzaW1wbGUgdGMtYnBmIHByb2dyYW0gbGlrZSB0aGF0Og0KPiA+DQo+ID4g
+ICAgICNpbmNsdWRlIDxsaW51eC9icGYuaD4NCj4gPiAgICAgI2luY2x1ZGUgPGxpbnV4L3BrdF9j
+bHMuaD4NCj4gPiAgICAgI2luY2x1ZGUgPGxpbngvdHlwZXMuaD4NCj4gPiAgICAgI2luY2x1ZGUg
+PGJwZi9icGZfaGVscGVycy5oPg0KPiA+DQo+ID4gICAgIHN0cnVjdCB7DQo+ID4gICAgICAgICBf
+X3VpbnQodHlwZSwgQlBGX01BUF9UWVBFX0hBU0gpOw0KPiA+ICAgICAgICAgX191aW50KG1heF9l
+bnRyaWVzLCAxKTsNCj4gPiAgICAgICAgIF9fdHlwZShrZXksIGludCk7DQo+ID4gICAgICAgICBf
+X3R5cGUodmFsdWUsIGludCk7DQo+ID4gICAgIH0gaG1hcCBTRUMoIi5tYXBzIik7DQo+ID4NCj4g
+PiAgICAgU0VDKCJjbGFzc2lmaWVyIikNCj4gPiAgICAgaW50IF9jbGFzc2lmaWVyKHN0cnVjdCBf
+X3NrX2J1ZmYgKnNrYikNCj4gPiAgICAgew0KPiA+ICAgICAgICAgaW50IGtleSA9IDA7DQo+ID4g
+ICAgICAgICBpbnQgKnZhbDsNCj4gPg0KPiA+ICAgICAgICAgdmFsID0gYnBmX21hcF9sb29rdXBf
+ZWxlbSgmaG1hcCwgJmtleSk7DQo+ID4gICAgICAgICBpZiAoIXZhbCkNCj4gPiAgICAgICAgICAg
+ICByZXR1cm4gVENfQUNUX09LOw0KPiA+ICAgICAgICAgcmV0dXJuIFRDX0FDVF9PSzsNCj4gPiAg
+ICAgfQ0KPiA+DQo+ID4gICAgIGNoYXIgX19saWNlbnNlW10gU0VDKCJsaWNlbnNlIikgPSAiR1BM
+IjsNCj4gPg0KPiA+IFRoZW4gSSB0cmllZCB0byB1c2UgdGMgdG8gbG9hZCB0aGUgcHJvZ3JhbToN
+Cj4gPiAgICAgDQo+ID4gICAgIHRjIHFkaXNjIGFkZCBkZXYgZXRoMCBjbHNhY3QNCj4gPiAgICAg
+dGMgZmlsdGVyIGFkZCBkZXYgZXRoMCBlZ3Jlc3MgYnBmIGRhIG9iaiB0ZXN0X2JwZi5vDQo+ID4N
+Cj4gPiBCdXQgdGhlIHByb2dyYW0gbG9hZGluZyBmYWlsZWQgd2l0aCBlcnJvciBtZXNzYWdlczoN
+Cj4gPiAgICAgUHJvZyBzZWN0aW9uICdjbGFzc2lmaWVyJyByZWplY3RlZDogUGVybWlzc2lvbiBk
+ZW5pZWQgKDEzKSENCj4gPiAgICAgLSBUeXBlOiAgICAgICAgICAzDQo+ID4gICAgIC0gSW5zdHJ1
+Y3Rpb25zOiAgOSAoMCBvdmVyIGxpbWl0DQo+ID4gICAgIC0gTGljZW5zZTogICAgICAgR1BMDQo+
+ID4NCj4gPiAgICAgVmVyaWZpZXIgYW5hbHlzaXM6DQo+ID4NCj4gPiAgICAgRXJyb3IgZmV0Y2hp
+bmcgcHJvZ3JhbS9tYXAhDQo+ID4gICAgIFVuYWJsZSB0byBsb2FkIHByb2dyYW0NCj4gPg0KPiA+
+IEkgdHJpZWQgdG8gcmVwbGFjZSB0aGUgbWFwIGRlZmluaXRpb24gd2l0aCB0aGUgZm9sbG93aW5n
+IGNvZGUgYW5kIHRoZSBwcm9ncmFtIGlzIGxvYWRlZCBzdWNjZXNzZnVsbHkhDQo+ID4NCj4gPiAg
+ICAgc3RydWN0IGJwZl9tYXBfZGVmIFNFQygibWFwcyIpIGhtYXAgPSB7DQo+ID4gICAgICAgICAu
+dHlwZSA9IEJQRl9NQVBfVFlQRV9IQVNILA0KPiA+ICAgICAgICAgLmtleV9zaXplID0gc2l6ZW9m
+KGludCksDQo+ID4gICAgICAgICAudmFsdWVfc2l6ZSA9IHNpemVvZihpbnQpLA0KPiA+ICAgICAg
+ICAgLm1heF9lbnRyaWVzID0gMSwNCj4gPiAgICAgfTsNCj4gPg0KPiA+IFdpdGggYnBmdHJhY2Us
+IEkgY2FuIGZpbmQgdGhhdCB0aGUgZXJybm8gLUVBQ0NFUyBpcyByZXR1cm5lZCBieSBmdW5jdGlv
+biBkb19jaGVjaygpLiBCdXQgSSBhbSBzdGlsbCBjb25mdXNlZCB3aGF0J3Mgd3Jvbmcgd2l0aCBp
+dC4NCj4gPg0KPiA+IExpbnV4IFZlcnNpb246IDUuMTcuMC1yYzMrIHdpdGggQ09ORklHX0RFQlVH
+X0lORk9fQlRGPXkNCj4gPiBUQyBWZXJzaW9uOiA1LjE0LjANCj4gPg0KPiA+IEFueSBzdWdnZXN0
+aW9uIHdpbGwgYmUgYXBwcmVjaWF0ZWQhDQo+IA0KPiBJZiB0aGUgbGF0dGVyIHdvcmtzIGJ1dCB0
+aGUgZm9ybWVyIGRvZXNuJ3QsIG15IGd1ZXNzIHdvdWxkIGJlIHRoYXQNCj4gaXByb3V0ZTIgaXMg
+Y29tcGlsZWQgd2l0aG91dCBsaWJicGYgc3VwcG9ydCAoaW4gd2hpY2ggY2FzZSBpdCB3b3VsZCBu
+b3QNCj4gc3VwcG9ydCBCVEYtZGVmaW5lZCBtYXBzIGVpdGhlcikuIElmIGl0IGRvZXMgaGF2ZSBs
+aWJicGYgc3VwcG9ydCwgdGhhdA0KPiAoYW5kIHRoZSB2ZXJzaW9uIG9mIGxpYmJwZiB1c2VkKSB3
+aWxsIGJlIGluY2x1ZGVkIGluIHRoZSBvdXRwdXQgb2YgYHRjDQo+IC12YC4NCj4gDQo+IFlvdSBj
+b3VsZCByZWNvbXBpbGUgaXByb3V0ZTIgd2l0aCBlbmFibGUgbGliYnBmIHN1cHBvcnQgZW5hYmxl
+ZCwgb3IgYXMNCj4gQW5kcmlpIHN1Z2dlc3RzIHlvdSBjYW4gd3JpdGUgeW91ciBvd24gbG9hZGVy
+IHVzaW5nIGxpYmJwZi4uLg0KPiANCg0KSXQgd29ya3Mgd2l0aCByZWNvbXBpbGVkLWlwcm91dGUy
+LiBUaGFua3MgdmVyeSBtdWNoIQ0KDQo+IC1Ub2tlDQoNCg0KLS0NClBCMTIwMTEwODMg6YKs5a6X
+5YuHDQo=
