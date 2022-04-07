@@ -2,105 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8264E4F895A
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 00:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC7B4F8941
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 00:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbiDGUpy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 7 Apr 2022 16:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
+        id S230254AbiDGUs3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 16:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbiDGUpZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 16:45:25 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4512261980
-        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 13:38:51 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 237KAoHt024314
-        for <bpf@vger.kernel.org>; Thu, 7 Apr 2022 13:38:50 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3f9nrnf3pf-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 13:38:50 -0700
-Received: from twshared6447.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 7 Apr 2022 13:38:48 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 640E116D3AC26; Thu,  7 Apr 2022 13:38:44 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH bpf-next] libbpf: fix use #ifdef instead of #if to avoid compiler warning
-Date:   Thu, 7 Apr 2022 13:38:42 -0700
-Message-ID: <20220407203842.3019904-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S231740AbiDGUrv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 16:47:51 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961E1362218
+        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 13:40:21 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id h14so6529616lfl.2
+        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 13:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8dXAY3IIlkqrl5k95XVgZ0MzxiI/DT3HPhjs1rEkzEA=;
+        b=KGII1tl9j2zWs4Z81TBrPcMfvV9EWEa8D4uE44xWiAjU1927B56qpJGr6L+SQU4acf
+         BKeS7f5qcyhCHnHvk7fnWqXDI0NsLuLZ0H0dHCgNyS1AGKs2XwcE214Vd8UUO9XgPILH
+         IsaM0RrNkzgnzigv0wqvo+c+zIMW1f4jYu7AFNRIbm3Q9tQOClsfMOEyiIV4saBXCPHm
+         21/prLAS/HiKzGAXxsJoN8ZV2B6ssq3noHPslfbIRDA0xVvoPGKkXdPVl1uOcLu9mqvX
+         beVP/YEEczRoAAM+a83DsjVpNPebBpVGUzzWslfpTrmd03G6m/4pD4CW8WcSTyEf41tC
+         5x0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8dXAY3IIlkqrl5k95XVgZ0MzxiI/DT3HPhjs1rEkzEA=;
+        b=fE7MC6cyogE9CGUY3z7H0F38HhqpyJWuHjsg4bMhfsOVUui7rXABJLywup78MpgvLD
+         IlHWfefv3kvakbtEST3XL8dYpWUttShB5lbbvUZB9QC+UG5WncFHOaCOS1KUOiqT6mY5
+         Kt+OdP3i9m6VlPqRmkTlTFTuvDFXkhv0N2deBP2lJu7+DrEpoCkPzZ6KjoEQo6+FYn9G
+         oJ1MRABkJD5Dekkx9hYWz3VXJq/anqkk5sZFSgy653gRLAx0uhFgkH5+8262GLS14OpO
+         jRRJ7JSt2XRQA/weWNIr09F7SKC5v6FL9/vu5egkr/G45M1riat4dan7tagkdtwvyHNx
+         DtIQ==
+X-Gm-Message-State: AOAM533WSpSSdY/Q9aoKYgNoO12BHC6TnYT9I8pKCKdSVMosZfhkaKJm
+        xalMQCPbKsdpAJjkt4wuVMlTjvjVUuw0drGYMSE=
+X-Google-Smtp-Source: ABdhPJxoauzCLIEzW/9gcK9ImMCuIsOWUtBbC0tUnmqxR8auQ00glB8pushRc6Pm0nAb9Apu4TgUhebOjTPzCFM/b60=
+X-Received: by 2002:a05:6512:a86:b0:44a:7d2d:b763 with SMTP id
+ m6-20020a0565120a8600b0044a7d2db763mr10824811lfu.540.1649364019680; Thu, 07
+ Apr 2022 13:40:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: l4SaAWRhLiXrhvj-xFfcXNETTnVf1jnQ
-X-Proofpoint-ORIG-GUID: l4SaAWRhLiXrhvj-xFfcXNETTnVf1jnQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-07_05,2022-04-07_01,2022-02-23_01
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20220402015826.3941317-1-joannekoong@fb.com> <CAEf4BzbfFtgebrWOyfOP71Cn6ZAYXGfjLDPDNmyhzTJ3uTPFpQ@mail.gmail.com>
+ <CA+i-1C1wjFcH5OMGVWt4+nB4hoSp_aVU=mv3LPtLq-5Ua-dggw@mail.gmail.com>
+In-Reply-To: <CA+i-1C1wjFcH5OMGVWt4+nB4hoSp_aVU=mv3LPtLq-5Ua-dggw@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Thu, 7 Apr 2022 13:40:08 -0700
+Message-ID: <CAJnrk1YKaRDpW-etMzraKLHwLaVMetZGpdjujsNLSbzh4Q1LoQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 0/7] Dynamic pointers
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Joanne Koong <joannekoong@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As reported by Naresh:
+On Thu, Apr 7, 2022 at 5:44 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> On Thu, 7 Apr 2022 at 01:13, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, Apr 1, 2022 at 6:59 PM Joanne Koong <joannekoong@fb.com> wrote:
+> > >
+> > > From: Joanne Koong <joannelkoong@gmail.com>
+> > KP, Florent, Brendan,
+> >
+> > You always wanted a way to work with runtime-sized BPF ringbuf samples
+> > without extra copies. This is the way we can finally do this with good
+> > usability and simplicity. Please take a look and provide feedback.
+> > Thanks!
+>
+> Thanks folks, this looks very cool. Please excuse my ignorance, one
+> thing that isn't clear to me is does this work for user memory? Or
+> would we need bpf_copy_from_user_dynptr to avoid an extra copy?
 
-  perf build errors on i386 [1] on Linux next-20220407 [2]
-
-  usdt.c:1181:5: error: "__x86_64__" is not defined, evaluates to 0
-  [-Werror=undef]
-   1181 | #if __x86_64__
-        |     ^~~~~~~~~~
-  usdt.c:1196:5: error: "__x86_64__" is not defined, evaluates to 0
-  [-Werror=undef]
-   1196 | #if __x86_64__
-        |     ^~~~~~~~~~
-  cc1: all warnings being treated as errors
-
-Use #ifdef instead of #if to avoid this.
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 4c59e584d158 ("libbpf: Add x86-specific USDT arg spec parsing logic")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/usdt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index bb1e88613343..b699e720136a 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -1178,7 +1178,7 @@ static int calc_pt_regs_off(const char *reg_name)
- 		const char *names[4];
- 		size_t pt_regs_off;
- 	} reg_map[] = {
--#if __x86_64__
-+#ifdef __x86_64__
- #define reg_off(reg64, reg32) offsetof(struct pt_regs, reg64)
- #else
- #define reg_off(reg64, reg32) offsetof(struct pt_regs, reg32)
-@@ -1193,7 +1193,7 @@ static int calc_pt_regs_off(const char *reg_name)
- 		{ {"rbp", "ebp", "bp", "bpl"}, reg_off(rbp, ebp) },
- 		{ {"rsp", "esp", "sp", "spl"}, reg_off(rsp, esp) },
- #undef reg_off
--#if __x86_64__
-+#ifdef __x86_64__
- 		{ {"r8", "r8d", "r8w", "r8b"}, offsetof(struct pt_regs, r8) },
- 		{ {"r9", "r9d", "r9w", "r9b"}, offsetof(struct pt_regs, r9) },
- 		{ {"r10", "r10d", "r10w", "r10b"}, offsetof(struct pt_regs, r10) },
--- 
-2.30.2
-
+Userspace programs will not be able to use or interact with dynptrs
+directly. If there is data at a user-space address that needs to be
+copied into the ringbuffer, the address can be passed to the bpf
+program and then the bpf program can use a helper like
+bpf_probe_read_user_dynptr (not added in this patchset but will be
+part of a following one), which will read the contents at that user
+address into the ringbuf dynptr.
