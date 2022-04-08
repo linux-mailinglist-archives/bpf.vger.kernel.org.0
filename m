@@ -2,62 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA8A4F9F8F
-	for <lists+bpf@lfdr.de>; Sat,  9 Apr 2022 00:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E174F9F94
+	for <lists+bpf@lfdr.de>; Sat,  9 Apr 2022 00:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234936AbiDHWYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Apr 2022 18:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
+        id S232145AbiDHW2d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Apr 2022 18:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbiDHWYK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 18:24:10 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E27659E
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 15:22:05 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id 125so12231870iov.10
-        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 15:22:05 -0700 (PDT)
+        with ESMTP id S231455AbiDHW2c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 18:28:32 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2604F13F67
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 15:26:28 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id 8so7422430ilq.4
+        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 15:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AymeT0ITMJjk1rU904QGD0+hucNA5HCoouVG3EhtqXg=;
-        b=hCOEQ1hwbXB4SKRobVtDTZPo2SRqpae8qEFYifKuOPvHVzZcaUMLV00VKBVZ8kAB6F
-         HnDcH8oAfcQz9651j9od0CR/szbO9FVLbYQKN/2iXoo2zGZlLqJgETqPuqFw4xHwP/Y2
-         CwODPwoRly4xfAJIAxj194j+s69NWIytUvFb++qnAoj62yE2yAWLoNShLjw0Y8DzV0zV
-         DdolZWxuHIDe6AhjajeB+yGaS+lROA1EgQWLo2BIUAzUgn2HkdO0hvaLWmmu9gR/uXcT
-         7HsVVNrGNo3nVOTyOTPV9S75OQOSRPOzs5smoQ2ZA3ra5Hc4yL7obacvU8gtuzFZMd+9
-         4PSg==
+        bh=MOAP89yO3KC+nVe2lHBPhLTj/h7YRNcKkGR/vaQBKio=;
+        b=fXX2VwgJCT6zPUrwJQfdl+h8TfC35hCAWjHWy1sgjy7BzD0u5Kaj20bYbk37SJI4S4
+         v+378Nj2E+S7Q3a4G32cWu7eZ8ZbOJCETbCDlQLH/wYhQ5V2hecKeV/U0DWe1X716+Jq
+         GIcBJu68gCqfbJK4NJ4byacqGCFNwHc4QL453EPyq1InLtc6qNXXdqERYnUEGXpw2afk
+         z9guJ+ScjMNEDdQXGlTu2ol7w6qLtlDEYK0ZUyozMOlkQ7P7X1LE6qvkNy9faF4VGnoX
+         cWfz7BZygY/9satTpC6jKTZdrCGZOsWqfrxL5abMlPk0uxfMKE1OiKFntMA9MIm3zm07
+         3xTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AymeT0ITMJjk1rU904QGD0+hucNA5HCoouVG3EhtqXg=;
-        b=GleH8s3tjVWoynxuYX/s1fENpw47DNNzr+YITIpcWKRHTMHECC9AWwHu1fuCR+J4zh
-         i08Y6tcAIgliY+5s8QfEpbLCZmpSkZ7OPtUgrzRIk1JwRSlIzXi3J0Xf1FwKJVkfzUqL
-         s+a6kBTYwtEH8nH2gQNDmN/EI11qdcKFkOOIk9KFn+3uMnxgPEsN+lEDd9u6aaW2jS2W
-         XSVdAlrNqkgGP4TWFgBYSv8bI5xXUDawu59Szp8+SjIe69ojO84MeLWnd6Tm7olvpkgF
-         f7OZs3SJBp20VHSq2nle8Fn5MlIpfMQ/T1/fIL4YlRjHpiWRZqlpS3PkbcdqArFqYU+p
-         37/g==
-X-Gm-Message-State: AOAM531ofZ/HUSkL9XG6OvHG4nvNBgRcqfie6jnBa5fe2pKg26eT3oiB
-        KUzZWExk7761Pzdcl5qaRSPL1xrXDats5Mx9wV4=
-X-Google-Smtp-Source: ABdhPJwZZXBXfIazpD6x9QR4cAvxeKgWG28ErW6sCBnaQStooD78avH+CLXZq+Vj9jdR3AfMhf+5OXesYJzZgOoagzU=
-X-Received: by 2002:a05:6638:772:b0:319:e4eb:adb with SMTP id
- y18-20020a056638077200b00319e4eb0adbmr10737980jad.237.1649456524432; Fri, 08
- Apr 2022 15:22:04 -0700 (PDT)
+        bh=MOAP89yO3KC+nVe2lHBPhLTj/h7YRNcKkGR/vaQBKio=;
+        b=A9Ngoq6PgCQdppl5noepTFyMweg2PwqcZUy/RSgXifz1nkUoZ/Ah8GzB5S+bBAu5X4
+         IsBCefJaxsNZMra2x1L/a2F5G0rwbayqLcXpiDOWuW6uAt/78UvibYXr7O8zi6LVvQV0
+         YWWPase68zZf8iYtxK0sViug1s9vzOXurgclK3zLedQggwhpDOxw13SlNifAQBGuIZuz
+         42FVv3nIWRsY5wnuaojrxy1xZUrkewbasBtGhRVFi+4tab7u9bsm0vKISyJnJLn4NYYN
+         IW0vc55wFZXtc1Cc4zV087l0ALA+VylMfqJuFJCGfBtps8SPP7g+KvztWLs/ygJNYQ0Q
+         N1YA==
+X-Gm-Message-State: AOAM530Rl+C4rAahap0B1EXFhdrRyZA28B16FR2sfWI3zVoYG5kQ6NMu
+        adTUf0PjlckLkB1BV+0EXN3LC2tjYKImcXmdhFA=
+X-Google-Smtp-Source: ABdhPJzM2+kl8rz5i1b37crcEmRp1WVKr+nQg6Tkqv9ckGniubfDNWzhtoT1OcDwTTred4oRNS9XnRAMxQx6r4HydZE=
+X-Received: by 2002:a05:6e02:1562:b0:2ca:50f1:72f3 with SMTP id
+ k2-20020a056e02156200b002ca50f172f3mr9252227ilu.71.1649456787380; Fri, 08 Apr
+ 2022 15:26:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220408203433.2988727-1-andrii@kernel.org> <20220408203433.2988727-2-andrii@kernel.org>
- <CAPhsuW5N9qBX0kkQSLK_Sy36cPa==SVSFi+38ZNqNez05zGD6w@mail.gmail.com>
-In-Reply-To: <CAPhsuW5N9qBX0kkQSLK_Sy36cPa==SVSFi+38ZNqNez05zGD6w@mail.gmail.com>
+References: <20220408153829.582386-1-geomatsi@gmail.com> <CAEf4BzarNmLS+tDCnhnWWNqmr3+3-ZHti2eXhnYvmaepx1e9nw@mail.gmail.com>
+In-Reply-To: <CAEf4BzarNmLS+tDCnhnWWNqmr3+3-ZHti2eXhnYvmaepx1e9nw@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Apr 2022 15:21:53 -0700
-Message-ID: <CAEf4BzaZai7QZnBEcAV72D=0irABs9BjbH++rmRQkqKiKpLYvA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: allow "incomplete" basic tracing
- SEC() definitions
-To:     Song Liu <song@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+Date:   Fri, 8 Apr 2022 15:26:16 -0700
+Message-ID: <CAEf4BzZsvyck14Z_gP_b+++iEDnkjUpiBTEdq4qN4E=eTe-yZg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: add ARC support to bpf_tracing.h
+To:     Sergey Matyukevich <geomatsi@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Vladimir Isaev <isaev@synopsys.com>,
+        Vineet Gupta <vgupta@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,170 +65,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 8, 2022 at 1:46 PM Song Liu <song@kernel.org> wrote:
+On Fri, Apr 8, 2022 at 3:18 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Fri, Apr 8, 2022 at 1:34 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+> On Fri, Apr 8, 2022 at 10:21 AM Sergey Matyukevich <geomatsi@gmail.com> wrote:
 > >
-> > In a lot of cases the target of kprobe/kretprobe, tracepoint, raw
-> > tracepoint, etc BPF program might not be known at the compilation time
-> > and will be discovered at runtime. This was always a supported case by
-> > libbpf, with APIs like bpf_program__attach_{kprobe,tracepoint,etc}()
-> > accepting full target definition, regardless of what was defined in
-> > SEC() definition in BPF source code.
+> > From: Vladimir Isaev <isaev@synopsys.com>
 > >
-> > Unfortunately, up till now libbpf still enforced users to specify at
-> > least something for the fake target, e.g., SEC("kprobe/whatever"), which
-> > is cumbersome and somewhat misleading.
+> > Add PT_REGS macros suitable for ARCompact and ARCv2.
 > >
-> > This patch allows target-less SEC() definitions for basic tracing BPF
-> > program types:
-> >   - kprobe/kretprobe;
-> >   - multi-kprobe/multi-kretprobe;
-> >   - tracepoints;
-> >   - raw tracepoints.
-> >
-> > Such target-less SEC() definitions are meant to specify declaratively
-> > proper BPF program type only. Attachment of them will have to be handled
-> > programmatically using correct APIs. As such, skeleton's auto-attachment
-> > of such BPF programs is skipped and generic bpf_program__attach() will
-> > fail, if attempted, due to the lack of enough target information.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
 > > ---
-> >  tools/lib/bpf/libbpf.c | 69 +++++++++++++++++++++++++++++++-----------
-> >  1 file changed, 51 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 9deb1fc67f19..81911a1e1f3e 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -8668,22 +8668,22 @@ static const struct bpf_sec_def section_defs[] = {
-> >         SEC_DEF("socket",               SOCKET_FILTER, 0, SEC_NONE | SEC_SLOPPY_PFX),
-> >         SEC_DEF("sk_reuseport/migrate", SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_MIGRATE, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
-> >         SEC_DEF("sk_reuseport",         SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
-> > -       SEC_DEF("kprobe/",              KPROBE, 0, SEC_NONE, attach_kprobe),
-> > +       SEC_DEF("kprobe+",              KPROBE, 0, SEC_NONE, attach_kprobe),
-> >         SEC_DEF("uprobe+",              KPROBE, 0, SEC_NONE, attach_uprobe),
-> > -       SEC_DEF("kretprobe/",           KPROBE, 0, SEC_NONE, attach_kprobe),
-> > +       SEC_DEF("kretprobe+",           KPROBE, 0, SEC_NONE, attach_kprobe),
-> >         SEC_DEF("uretprobe+",           KPROBE, 0, SEC_NONE, attach_uprobe),
-> > -       SEC_DEF("kprobe.multi/",        KPROBE, BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
-> > -       SEC_DEF("kretprobe.multi/",     KPROBE, BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
-> > +       SEC_DEF("kprobe.multi+",        KPROBE, BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
-> > +       SEC_DEF("kretprobe.multi+",     KPROBE, BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
-> >         SEC_DEF("usdt+",                KPROBE, 0, SEC_NONE, attach_usdt),
-> >         SEC_DEF("tc",                   SCHED_CLS, 0, SEC_NONE),
-> >         SEC_DEF("classifier",           SCHED_CLS, 0, SEC_NONE | SEC_SLOPPY_PFX | SEC_DEPRECATED),
-> >         SEC_DEF("action",               SCHED_ACT, 0, SEC_NONE | SEC_SLOPPY_PFX),
-> > -       SEC_DEF("tracepoint/",          TRACEPOINT, 0, SEC_NONE, attach_tp),
-> > -       SEC_DEF("tp/",                  TRACEPOINT, 0, SEC_NONE, attach_tp),
-> > -       SEC_DEF("raw_tracepoint/",      RAW_TRACEPOINT, 0, SEC_NONE, attach_raw_tp),
-> > -       SEC_DEF("raw_tp/",              RAW_TRACEPOINT, 0, SEC_NONE, attach_raw_tp),
-> > -       SEC_DEF("raw_tracepoint.w/",    RAW_TRACEPOINT_WRITABLE, 0, SEC_NONE, attach_raw_tp),
-> > -       SEC_DEF("raw_tp.w/",            RAW_TRACEPOINT_WRITABLE, 0, SEC_NONE, attach_raw_tp),
-> > +       SEC_DEF("tracepoint+",          TRACEPOINT, 0, SEC_NONE, attach_tp),
-> > +       SEC_DEF("tp+",                  TRACEPOINT, 0, SEC_NONE, attach_tp),
-> > +       SEC_DEF("raw_tracepoint+",      RAW_TRACEPOINT, 0, SEC_NONE, attach_raw_tp),
-> > +       SEC_DEF("raw_tp+",              RAW_TRACEPOINT, 0, SEC_NONE, attach_raw_tp),
-> > +       SEC_DEF("raw_tracepoint.w+",    RAW_TRACEPOINT_WRITABLE, 0, SEC_NONE, attach_raw_tp),
-> > +       SEC_DEF("raw_tp.w+",            RAW_TRACEPOINT_WRITABLE, 0, SEC_NONE, attach_raw_tp),
-> >         SEC_DEF("tp_btf/",              TRACING, BPF_TRACE_RAW_TP, SEC_ATTACH_BTF, attach_trace),
-> >         SEC_DEF("fentry/",              TRACING, BPF_TRACE_FENTRY, SEC_ATTACH_BTF, attach_trace),
-> >         SEC_DEF("fmod_ret/",            TRACING, BPF_MODIFY_RETURN, SEC_ATTACH_BTF, attach_trace),
-> > @@ -10411,6 +10411,12 @@ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf
-> >         char *func;
-> >         int n;
-> >
-> > +       *link = NULL;
-> > +
-> > +       /* no auto-attach for SEC("kprobe") and SEC("kretprobe") */
-> > +       if (strcmp(prog->sec_name, "kprobe") == 0 || strcmp(prog->sec_name, "kretprobe") == 0)
-> > +               return 0;
-> > +
-> >         opts.retprobe = str_has_pfx(prog->sec_name, "kretprobe/");
-> >         if (opts.retprobe)
-> >                 func_name = prog->sec_name + sizeof("kretprobe/") - 1;
-> > @@ -10441,6 +10447,13 @@ static int attach_kprobe_multi(const struct bpf_program *prog, long cookie, stru
-> >         char *pattern;
-> >         int n;
-> >
-> > +       *link = NULL;
-> > +
-> > +       /* no auto-attach for SEC("kprobe.multi") and SEC("kretprobe.multi") */
-> > +       if (strcmp(prog->sec_name, "kprobe.multi") == 0 ||
-> > +           strcmp(prog->sec_name, "kretprobe.multi") == 0)
-> > +               return 0;
-> > +
-> >         opts.retprobe = str_has_pfx(prog->sec_name, "kretprobe.multi/");
-> >         if (opts.retprobe)
-> >                 spec = prog->sec_name + sizeof("kretprobe.multi/") - 1;
-> > @@ -11145,6 +11158,12 @@ static int attach_tp(const struct bpf_program *prog, long cookie, struct bpf_lin
-> >         if (!sec_name)
-> >                 return -ENOMEM;
-> >
-> > +       *link = NULL;
-> > +
-> > +       /* no auto-attach for SEC("tp") or SEC("tracepoint") */
-> > +       if (strcmp(prog->sec_name, "tp") == 0 || strcmp(prog->sec_name, "tracepoint") == 0)
-> > +               return 0;
-> > +
-> >         /* extract "tp/<category>/<name>" or "tracepoint/<category>/<name>" */
-> >         if (str_has_pfx(prog->sec_name, "tp/"))
-> >                 tp_cat = sec_name + sizeof("tp/") - 1;
-> > @@ -11196,20 +11215,34 @@ struct bpf_link *bpf_program__attach_raw_tracepoint(const struct bpf_program *pr
-> >  static int attach_raw_tp(const struct bpf_program *prog, long cookie, struct bpf_link **link)
-> >  {
-> >         static const char *const prefixes[] = {
-> > -               "raw_tp/",
-> > -               "raw_tracepoint/",
-> > -               "raw_tp.w/",
-> > -               "raw_tracepoint.w/",
-> > +               "raw_tp",
-> > +               "raw_tracepoint",
-> > +               "raw_tp.w",
-> > +               "raw_tracepoint.w",
-> >         };
-> >         size_t i;
-> >         const char *tp_name = NULL;
-> >
-> > +       *link = NULL;
-> > +
-> >         for (i = 0; i < ARRAY_SIZE(prefixes); i++) {
-> > -               if (str_has_pfx(prog->sec_name, prefixes[i])) {
-> > -                       tp_name = prog->sec_name + strlen(prefixes[i]);
-> > -                       break;
-> > -               }
-> > +               size_t pfx_len;
-> > +
-> > +               if (!str_has_pfx(prog->sec_name, prefixes[i]))
-> > +                       continue;
-> > +
-> > +               pfx_len = strlen(prefixes[i]);
-> > +               /* no auto-attach case of, e.g., SEC("raw_tp") */
-> > +               if (prog->sec_name[pfx_len] == '\0')
-> > +                       return 0;
-> > +
-> > +               if (prog->sec_name[pfx_len] != '/')
-> > +                       continue;
 >
-> Maybe introduce a sec_has_pfx() function with tri-state return value:
-> 1 for match with tp_name, 0, for match without tp_name, -1 for no match.
+> I have no way to test this unfortunately. Please be available to help
+> with ARC-specific issues if those come up. Thanks. Applied to
+> bpf-next.
 >
 
-Hm.. tri-state might be quite confusing, but there might be some clean
-ups to be done around this prefix handling for SEC_DEF()s. I'm
-planning to do some more work on SEC() handling, I'll do this clean up
-as a follow up, if you don't mind. Need to see how to best consolidate
-this across all the places where we do this prefix matching.
+Welp, didn't see Song's email before applying and sending. Song is
+right, we'll need your SoB. Backed out patch for now.
 
+> >  tools/include/uapi/asm/bpf_perf_event.h |  2 ++
+> >  tools/lib/bpf/bpf_tracing.h             | 23 +++++++++++++++++++++++
+> >  2 files changed, 25 insertions(+)
+> >
+> > diff --git a/tools/include/uapi/asm/bpf_perf_event.h b/tools/include/uapi/asm/bpf_perf_event.h
+> > index 39acc149d843..d7dfeab0d71a 100644
+> > --- a/tools/include/uapi/asm/bpf_perf_event.h
+> > +++ b/tools/include/uapi/asm/bpf_perf_event.h
+> > @@ -1,5 +1,7 @@
+> >  #if defined(__aarch64__)
+> >  #include "../../arch/arm64/include/uapi/asm/bpf_perf_event.h"
+> > +#elif defined(__arc__)
+> > +#include "../../arch/arc/include/uapi/asm/bpf_perf_event.h"
+> >  #elif defined(__s390__)
+> >  #include "../../arch/s390/include/uapi/asm/bpf_perf_event.h"
+> >  #elif defined(__riscv)
+> > diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> > index e3a8c947e89f..01ce121c302d 100644
+> > --- a/tools/lib/bpf/bpf_tracing.h
+> > +++ b/tools/lib/bpf/bpf_tracing.h
+> > @@ -27,6 +27,9 @@
+> >  #elif defined(__TARGET_ARCH_riscv)
+> >         #define bpf_target_riscv
+> >         #define bpf_target_defined
+> > +#elif defined(__TARGET_ARCH_arc)
+> > +       #define bpf_target_arc
+> > +       #define bpf_target_defined
+> >  #else
+> >
+> >  /* Fall back to what the compiler says */
+> > @@ -54,6 +57,9 @@
+> >  #elif defined(__riscv) && __riscv_xlen == 64
+> >         #define bpf_target_riscv
+> >         #define bpf_target_defined
+> > +#elif defined(__arc__)
+> > +       #define bpf_target_arc
+> > +       #define bpf_target_defined
+> >  #endif /* no compiler target */
+> >
+> >  #endif
+> > @@ -233,6 +239,23 @@ struct pt_regs___arm64 {
+> >  /* riscv does not select ARCH_HAS_SYSCALL_WRAPPER. */
+> >  #define PT_REGS_SYSCALL_REGS(ctx) ctx
+> >
+> > +#elif defined(bpf_target_arc)
 > > +
-> > +               tp_name = prog->sec_name + pfx_len + 1;
-> > +               break;
-> >         }
+> > +/* arc provides struct user_pt_regs instead of struct pt_regs to userspace */
+> > +#define __PT_REGS_CAST(x) ((const struct user_regs_struct *)(x))
+> > +#define __PT_PARM1_REG scratch.r0
+> > +#define __PT_PARM2_REG scratch.r1
+> > +#define __PT_PARM3_REG scratch.r2
+> > +#define __PT_PARM4_REG scratch.r3
+> > +#define __PT_PARM5_REG scratch.r4
+> > +#define __PT_RET_REG scratch.blink
+> > +#define __PT_FP_REG __unsupported__
+> > +#define __PT_RC_REG scratch.r0
+> > +#define __PT_SP_REG scratch.sp
+> > +#define __PT_IP_REG scratch.ret
+> > +/* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
+> > +#define PT_REGS_SYSCALL_REGS(ctx) ctx
 > > +
-> >         if (!tp_name) {
-> >                 pr_warn("prog '%s': invalid section name '%s'\n",
-> >                         prog->name, prog->sec_name);
+> >  #endif
+> >
+> >  #if defined(bpf_target_defined)
 > > --
-> > 2.30.2
+> > 2.35.1
 > >
