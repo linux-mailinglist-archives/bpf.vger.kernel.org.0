@@ -2,200 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1927C4F902F
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 10:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D0C4F916E
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 11:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbiDHIDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Apr 2022 04:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
+        id S232742AbiDHJKw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Apr 2022 05:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbiDHICH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 04:02:07 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B151704C4
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 00:59:54 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 32so5007723pgl.4
-        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 00:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=scqZtGh9qvxO57K1Owzg8E7D6vMdS+SmpweM70D4w58=;
-        b=hTr8lXuW33G6EFDTRp5DKde4WOC6dNcNoB9x4nescrSAbRqaWuWZt7FCIB5L/48i0e
-         N1LW1mu3SZmy0t9wXGJmgbvGtIQHyrueEQx1jQEmxz/OwhLih07YUmoP7NrqFxyRPEvA
-         omMPFjL6uRjHcV7Pi/1JicarflYCgC2VJb/Os=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=scqZtGh9qvxO57K1Owzg8E7D6vMdS+SmpweM70D4w58=;
-        b=SUalMWObHt12B0003sqE4iUCII483zVWjadxsL2Rc+HbwRIAiUOw+8VFTMhdC5RDty
-         4OYL36A1FPG2PGjrHW+Elphyai10+tAXZBx5D2tjv+aAIi4er7gSm8Nel7/JXyH6335y
-         eZRtOi65EJxreDIuW9ep/xEtY9Zpo6Ar3/L4sYKVpU8oR8p6sF/OxYKJnDspitbXhGgs
-         ea4jk1/8LKzyOQ+QKIGpU0C/wDZD2cpzYGiTQLgpvxt3dmaFtI5D++oSzD/2DJAC8rh/
-         cWvII6CnYUjW1H1oZqSYdsIYbm9fXuymGYU0tTGY0eISsnXvt6tbvU2yJLgw8cs0Fnot
-         8ZOQ==
-X-Gm-Message-State: AOAM531bAjesOI0pDbqEUiQPveMn5h0ObkIIUKUheQA2ZpJfOpfI9FSR
-        syKfuore6b+3vW9wZty4Wi3hug==
-X-Google-Smtp-Source: ABdhPJyFMYPo93Vu6Ba/+dv2PVJKdeZVB6PSsC4h0fA75QqQBwQa464V1W8FGFI6FtSDEJadDnSJbQ==
-X-Received: by 2002:a63:680a:0:b0:383:dd15:fe68 with SMTP id d10-20020a63680a000000b00383dd15fe68mr14687416pgc.467.1649404793804;
-        Fri, 08 Apr 2022 00:59:53 -0700 (PDT)
-Received: from localhost.swdvt.lab.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id l2-20020a637c42000000b003644cfa0dd1sm20507448pgn.79.2022.04.08.00.59.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Apr 2022 00:59:53 -0700 (PDT)
-From:   Michael Chan <michael.chan@broadcom.com>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, kuba@kernel.org, gospo@broadcom.com,
-        bpf@vger.kernel.org, john.fastabend@gmail.com, toke@redhat.com,
-        lorenzo@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        echaudro@redhat.com, pabeni@redhat.com
-Subject: [PATCH net-next v4 11/11] bnxt: XDP multibuffer enablement
-Date:   Fri,  8 Apr 2022 03:59:06 -0400
-Message-Id: <1649404746-31033-12-git-send-email-michael.chan@broadcom.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1649404746-31033-1-git-send-email-michael.chan@broadcom.com>
-References: <1649404746-31033-1-git-send-email-michael.chan@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000dedaab05dc1ffa56"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S232718AbiDHJKu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 05:10:50 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3E711D78D;
+        Fri,  8 Apr 2022 02:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649408926; x=1680944926;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ZKdzglGLb5Yacw4vNCuGGPl/MNftiFw9nrbMfFNMqZk=;
+  b=Ukrhf/4QMGb5TeJdQbRaq15+T5xcWLGCUVEXxSmVrI5sj+WM5Y2lrJkC
+   y0qxt5WJOWp1EXCWYT3aU8oN5aHbgoQ2fI2Vys2R+fRkhMiTJ3QSSSmKP
+   bLswVnwwuaL5NQ5Fwyt2+osnT1vYP6BXVdPN6pKPfouqZPS6fjuko4X5d
+   GkxJoheI6D5oNhdVnpY7SqeHmcPfb1yo+U4Vbfo6wVk9c7CXyQ1bA7cE1
+   fICFP41lI4D3cT9a06cYCqzjBIxmpjZnz4yCDegHdOzOLBS/APBjyiqAF
+   EuzNjUM5Q4k/dw2us1oTBZ9VpsMcWgQW3I7izmNP3OJvyloEWbKff/Ay5
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="259148802"
+X-IronPort-AV: E=Sophos;i="5.90,244,1643702400"; 
+   d="scan'208";a="259148802"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2022 02:08:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,244,1643702400"; 
+   d="scan'208";a="589158507"
+Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
+  by orsmga001.jf.intel.com with ESMTP; 08 Apr 2022 02:08:42 -0700
+Date:   Fri, 8 Apr 2022 11:08:42 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        magnus.karlsson@intel.com, bjorn@kernel.org,
+        netdev@vger.kernel.org, brouer@redhat.com,
+        alexandr.lobakin@intel.com, Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH bpf-next 00/10] xsk: stop softirq processing on full XSK
+ Rx queue
+Message-ID: <Yk/7mkNi52hLKyr6@boxer>
+References: <20220405110631.404427-1-maciej.fijalkowski@intel.com>
+ <8a81791e-342e-be8b-fc96-312f30b44be6@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8a81791e-342e-be8b-fc96-312f30b44be6@nvidia.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---000000000000dedaab05dc1ffa56
+On Thu, Apr 07, 2022 at 01:49:02PM +0300, Maxim Mikityanskiy wrote:
+> On 2022-04-05 14:06, Maciej Fijalkowski wrote:
+> > Hi!
+> > 
+> > This is a revival of Bjorn's idea [0] to break NAPI loop when XSK Rx
+> > queue gets full which in turn makes it impossible to keep on
+> > successfully producing descriptors to XSK Rx ring. By breaking out of
+> > the driver side immediately we will give the user space opportunity for
+> > consuming descriptors from XSK Rx ring and therefore provide room in the
+> > ring so that HW Rx -> XSK Rx redirection can be done.
+> > 
+> > Maxim asked and Jesper agreed on simplifying Bjorn's original API used
+> > for detecting the event of interest, so let's just simply check for
+> > -ENOBUFS within Intel's ZC drivers after an attempt to redirect a buffer
+> > to XSK Rx. No real need for redirect API extension.
+> 
 
-From: Andy Gospodarek <gospo@broadcom.com>
+Hey Maxim!
 
-Allow aggregation buffers to be in place in the receive path and
-allow XDP programs to be attached when using a larger than 4k MTU.
+> I believe some of the other comments under the old series [0] might be still
+> relevant:
+> 
+> 1. need_wakeup behavior. If need_wakeup is disabled, the expected behavior
+> is busy-looping in NAPI, you shouldn't break out early, as the application
+> does not restart NAPI, and the driver restarts it itself, leading to a less
+> efficient loop. If need_wakeup is enabled, it should be set on ENOBUFS - I
+> believe this is the case here, right?
 
-v3: Add a check to sure XDP program supports multipage packets.
+Good point. We currently set need_wakeup flag for -ENOBUFS case as it is
+being done for failure == true. You are right that we shouldn't be
+breaking the loop on -ENOBUFS if need_wakeup flag is not set on xsk_pool,
+will fix!
 
-Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 3 +--
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 5 +++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> 2. 50/50 AF_XDP and XDP_TX mix usecase. By breaking out early, you prevent
+> further packets from being XDP_TXed, leading to unnecessary latency
+> increase. The new feature should be opt-in, otherwise such usecases suffer.
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 25d74c9030fd..0489c1c2e7dd 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -1939,8 +1939,7 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
- 		xdp_active = true;
- 	}
- 
--	/* skip running XDP prog if there are aggregation bufs */
--	if (!agg_bufs && xdp_active) {
-+	if (xdp_active) {
- 		if (bnxt_rx_xdp(bp, rxr, cons, xdp, data, &len, event)) {
- 			rc = 1;
- 			goto next_rx;
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-index c2905f0a8c6c..f02fe906dedb 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -387,8 +387,9 @@ static int bnxt_xdp_set(struct bnxt *bp, struct bpf_prog *prog)
- 	int tx_xdp = 0, rc, tc;
- 	struct bpf_prog *old;
- 
--	if (prog && bp->dev->mtu > BNXT_MAX_PAGE_MODE_MTU) {
--		netdev_warn(dev, "MTU %d larger than largest XDP supported MTU %d.\n",
-+	if (prog && !prog->aux->xdp_has_frags &&
-+	    bp->dev->mtu > BNXT_MAX_PAGE_MODE_MTU) {
-+		netdev_warn(dev, "MTU %d larger than %d without XDP frag support.\n",
- 			    bp->dev->mtu, BNXT_MAX_PAGE_MODE_MTU);
- 		return -EOPNOTSUPP;
- 	}
--- 
-2.18.1
+Anyone performing a lot of XDP_TX (or XDP_PASS, etc) should be using the
+regular copy-mode driver, while the zero-copy driver should be used when most
+packets are sent up to user-space. For the zero-copy driver, this opt in is not
+necessary. But it sounds like a valid option for copy mode, though could we
+think about the proper way as a follow up to this work?
 
+> 
+> 3. When the driver receives ENOBUFS, it has to drop the packet before
+> returning to the application. It would be better experience if your feature
+> saved all N packets from being dropped, not just N-1.
 
---000000000000dedaab05dc1ffa56
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Sure, I'll re-run tests and see if we can omit freeing the current
+xdp_buff and ntc bump, so that we would come back later on to the same
+entry.
 
-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
-xV4Em+0wQoEIR2kPG6yiZNtUK0tNCaZejYU/Mf/bzdKSwud3pLgHV8ls83y2OU/ha9xgJMLpRswv
-xucFCxMsPmk0yoVmpbr92kIpLm+TomNZsL++LcDRa2ECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUz2bMvqtXpXM0u3vAvRkalz60
-CjswDQYJKoZIhvcNAQELBQADggEBAGUgeqqI/q2pkETeLr6oS7nnm1bkeNmtnJ2bnybNO/RdrbPj
-DHVSiDCCrWr6xrc+q6OiZDKm0Ieq6BN+Wfr8h5mCkZMUdJikI85WcQTRk6EEF2lzIiaULmFD7U15
-FSWQptLx+kiu63idTII4r3k/7+dJ5AhLRr4WCoXEme2GZkfSbYC3fEL46tb1w7w+25OEFCv1MtDZ
-1CHkODrS2JGwDQxXKmyF64MhJiOutWHmqoGmLJVz1jnDvClsYtgT4zcNtoqKtjpWDYAefncWDPIQ
-DauX1eWVM+KepL7zoSNzVbTipc65WuZFLR8ngOwkpknqvS9n/nKd885m23oIocC+GA4xggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwQeU+Y6hbenPzRMJsw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIH/HKJhfR22+m2pDx7Zct0odfSGSvnnv
-m8e6JCB1lOUaMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIyMDQw
-ODA3NTk1NFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQDRkYn65rr3FgKzK/9Yh7+MNE04Kz1QsXb1pwNHEGPKIBPPJPcI
-x5xU/+24QtfTP/nfVT0vCSx0xkJ1CtOF80LhLdcVt6aQL08iPuI+956Ruy1Wg13vPcnjh0uILsX9
-KuY7BcDcais0QcryFop5Ma9rX6S8aHSmxADyd+tSDM7zv3a1IuxEUytgO/MThTLBHHLhwBLAi72g
-IrhWfYm1mQ4TNo6F5x49rAmETx+EfBaAGRMWMXs4AANFvgdAy9uQXW8V6dJO3NzNCbtGBWymTAfg
-mrPBwgYeeOkbS6THCUcV1A5xFy3zheVWhzDm0lcxtTobOSREohsyqjR1tHpfpRDv
---000000000000dedaab05dc1ffa56--
+> 
+> 4. A slow or malicious AF_XDP application may easily cause an overflow of
+> the hardware receive ring. Your feature introduces a mechanism to pause the
+> driver while the congestion is on the application side, but no symmetric
+> mechanism to pause the application when the driver is close to an overflow.
+> I don't know the behavior of Intel NICs on overflow, but in our NICs it's
+> considered a critical error, that is followed by a recovery procedure, so
+> it's not something that should happen under normal workloads.
+
+I'm not sure I follow on this one. Feature is about overflowing the XSK
+receive ring, not the HW one, right? Driver picks entries from fill ring
+that were produced by app, so if app is slow on producing those I believe
+this would be rather an underflow of ring, we would simply receive less
+frames. For HW Rx ring actually being full, I think that HW would be
+dropping the incoming frames, so I don't see the real reason to treat this
+as critical error that needs to go through recovery.
+
+Am I missing something? Maybe I have just misunderstood you.
+
+> 
+> > One might ask why it is still relevant even after having proper busy
+> > poll support in place - here is the justification.
+> > 
+> > For xdpsock that was:
+> > - run for l2fwd scenario,
+> > - app/driver processing took place on the same core in busy poll
+> >    with 2048 budget,
+> > - HW ring sizes Tx 256, Rx 2048,
+> > 
+> > this work improved throughput by 78% and reduced Rx queue full statistic
+> > bump by 99%.
+> > 
+> > For testing ice, make sure that you have [1] present on your side.
+> > 
+> > This set, besides the work described above, also carries also
+> > improvements around return codes in various XSK paths and lastly a minor
+> > optimization for xskq_cons_has_entries(), a helper that might be used
+> > when XSK Rx batching would make it to the kernel.
+> 
+> Regarding error codes, I would like them to be consistent across all
+> drivers, otherwise all the debuggability improvements are not useful enough.
+> Your series only changed Intel drivers. Here also applies the backward
+> compatibility concern: the same error codes than were in use have been
+> repurposed, which may confuse some of existing applications.
+
+I'll double check if ZC drivers are doing something unusual with return
+values from xdp_do_redirect(). Regarding backward comp, I suppose you
+refer only to changes in ndo_xsk_wakeup() callbacks as others are not
+exposed to user space? They're not crucial to me, but it improved my
+debugging experience.
+
+FYI, your mail landed in my junk folder and the links [0] [1] are messed up in
+the reply you sent. And this is true even on lore.kernel.org. They suddenly
+refer to "nam11.safelinks.protection.outlook.com". Maybe something worth
+looking into if you have this problem in the future.
+
+> 
+> > Thanks!
+> > MF
+> > 
+> > [0]: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fbpf%2F20200904135332.60259-1-bjorn.topel%40gmail.com%2F&amp;data=04%7C01%7Cmaximmi%40nvidia.com%7Cc9cefaa3a1cd465ccdb908da16f45eaf%7C43083d15727340c1b7db39efd9ccc17a%7C0%7C0%7C637847536077594100%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=sLpTcgboo9YU55wtUtaY1%2F%2FbeiYxeWP5ubk%2FQ6X8vB8%3D&amp;reserved=0
+> > [1]: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fnetdev%2F20220317175727.340251-1-maciej.fijalkowski%40intel.com%2F&amp;data=04%7C01%7Cmaximmi%40nvidia.com%7Cc9cefaa3a1cd465ccdb908da16f45eaf%7C43083d15727340c1b7db39efd9ccc17a%7C0%7C0%7C637847536077594100%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=OWXeZhc2Nouz%2FTMWBxvtTYbw%2FS8HWQfbfEqnVc5478k%3D&amp;reserved=0
+> > 
+> > Björn Töpel (1):
+> >    xsk: improve xdp_do_redirect() error codes
+> > 
+> > Maciej Fijalkowski (9):
+> >    xsk: diversify return codes in xsk_rcv_check()
+> >    ice: xsk: terminate NAPI when XSK Rx queue gets full
+> >    i40e: xsk: terminate NAPI when XSK Rx queue gets full
+> >    ixgbe: xsk: terminate NAPI when XSK Rx queue gets full
+> >    ice: xsk: diversify return values from xsk_wakeup call paths
+> >    i40e: xsk: diversify return values from xsk_wakeup call paths
+> >    ixgbe: xsk: diversify return values from xsk_wakeup call paths
+> >    ice: xsk: avoid refilling single Rx descriptors
+> >    xsk: drop ternary operator from xskq_cons_has_entries
+> > 
+> >   .../ethernet/intel/i40e/i40e_txrx_common.h    |  1 +
+> >   drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 27 +++++++++------
+> >   drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
+> >   drivers/net/ethernet/intel/ice/ice_xsk.c      | 34 ++++++++++++-------
+> >   .../ethernet/intel/ixgbe/ixgbe_txrx_common.h  |  1 +
+> >   drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 29 ++++++++++------
+> >   net/xdp/xsk.c                                 |  4 +--
+> >   net/xdp/xsk_queue.h                           |  4 +--
+> >   8 files changed, 64 insertions(+), 37 deletions(-)
+> > 
+> 
