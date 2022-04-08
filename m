@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 926B04F8B73
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 02:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F179F4F8B88
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 02:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233228AbiDHAxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 20:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
+        id S233266AbiDHAx2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 20:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbiDHAxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 20:53:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD61108550;
-        Thu,  7 Apr 2022 17:51:07 -0700 (PDT)
+        with ESMTP id S233247AbiDHAx1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 20:53:27 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D408A182DA6;
+        Thu,  7 Apr 2022 17:51:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 76E06618D9;
-        Fri,  8 Apr 2022 00:51:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92372C385A9;
-        Fri,  8 Apr 2022 00:51:02 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4BCC5B829B1;
+        Fri,  8 Apr 2022 00:51:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3021FC385A0;
+        Fri,  8 Apr 2022 00:51:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649379066;
-        bh=qU7NQO8a/GNTqpF3kK+hxQlG2bDuw47+HzlGrFENsk0=;
+        s=k20201202; t=1649379078;
+        bh=DJ+njldE9mf6+hXxlLJj7g6JAs+wj5yBeocMdaJxtKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GOQSPJ8bHkuyeDVLE6PnkAGeUamFLQFl8cos02fJ8bIyktW4ZeXboUeddgG/NMIa2
-         CaNnuHS++W12Ut17ouCCXqwYJ+xzcmWBztMK5sTWcpSG2jxXAhAPiqn3n3qyVGs5RI
-         DEX5EtMR9GxZz4fdnpitv3nanTaZj3/2+A6vWsYXPUWdbqzEHpBZmqz6Zntz34tHA7
-         C5LMwWG4dgQH311WFakZVAhou+Sh0SvqdPRsCt6Y3c6wmsRt18XcHRxwCox1tw8pDO
-         criUsaXqR8aM7fK2H+qWAIoPJsfFGnFNwrCMX4p5DabHPNtmE4VZMAFZZAQqElfIOi
-         92WbAySEbNahQ==
+        b=g6RV7Da+RlQjRNA3sg6s9M9sOFjDbYtt7VDOJ7IZ15DOEW0BA3Q+YiYWuR+k0IkUB
+         M3qiVaVKfDILr9EeTRqpXPhTBu0+2BRK/79LHR0QJawXwJhq2/zH7vvD1EpHAstG3A
+         mcHFCP+BT70CpjqzhcFKq+4XytTA0tyEoe7jMEJe8WHBSTkPzFvcJHCOSrGPrz1Cua
+         jgTQMrt8O1x3s5W8LW4rp8ztbEv9Ir3+Tq2zJ9jR+i0BTWvN+WWB81lA6D9UYL8VPf
+         QfMmIIUmidBsQp/SICsYeuY1SLTtXkDKMzx2yk+6/4+w0d8Xv8ZzdSHW3hi6QW2iA5
+         dBZ3leDpD5uGA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
@@ -49,9 +49,9 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH bpf v2 2/4] rethook,fprobe,kprobes: Check a failure in the rethook_hook()
-Date:   Fri,  8 Apr 2022 09:51:00 +0900
-Message-Id: <164937905999.1272679.6572597960911139308.stgit@devnote2>
+Subject: [PATCH bpf v2 3/4] ARM: rethook: Replace kretprobe trampoline with rethook
+Date:   Fri,  8 Apr 2022 09:51:12 +0900
+Message-Id: <164937907228.1272679.14692871670063551372.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <164937903547.1272679.7244379141135199176.stgit@devnote2>
 References: <164937903547.1272679.7244379141135199176.stgit@devnote2>
@@ -61,127 +61,332 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since there are possible to fail to hook the function return (depends on
-archtecutre implememtation), rethook_hook() should return the error
-in that case and caller must check it.
+Replace the kretprob's trampoline code with the rethook on arm.
+This also enables rethook support on arm. Most of the code has been
+copied from kretprobe on arm.
+
+The significant difference is that the rethook on mcount (ftrace)
+support is added. If the rethook is called from the kprobes for
+kretprobe, there is no problem to replace the LR register with
+trampoline address because the LR register will be saved after
+kprobe probed. However, the mcount call will be placed right after
+making a stack frame for the function. This means we have to decode
+the stackframe to find where the LR register is saved. With the
+CONFIG_FRAME_POINTER, the frame pointer (FP register) is used.
+Without that, rethook has to unwind one stack frame to find it.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/x86/kernel/rethook.c |    4 +++-
- include/linux/rethook.h   |    4 ++--
- kernel/kprobes.c          |    8 +++++---
- kernel/trace/fprobe.c     |    5 ++++-
- kernel/trace/rethook.c    |   12 ++++++++++--
- 5 files changed, 24 insertions(+), 9 deletions(-)
+ arch/arm/Kconfig                  |    1 
+ arch/arm/include/asm/stacktrace.h |    5 +
+ arch/arm/kernel/stacktrace.c      |   13 ++--
+ arch/arm/probes/Makefile          |    1 
+ arch/arm/probes/kprobes/core.c    |   62 ------------------
+ arch/arm/probes/rethook.c         |  127 +++++++++++++++++++++++++++++++++++++
+ 6 files changed, 139 insertions(+), 70 deletions(-)
+ create mode 100644 arch/arm/probes/rethook.c
 
-diff --git a/arch/x86/kernel/rethook.c b/arch/x86/kernel/rethook.c
-index 8a1c0111ae79..c92b4875e3b9 100644
---- a/arch/x86/kernel/rethook.c
-+++ b/arch/x86/kernel/rethook.c
-@@ -114,7 +114,7 @@ void arch_rethook_fixup_return(struct pt_regs *regs,
- }
- NOKPROBE_SYMBOL(arch_rethook_fixup_return);
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 2e8091e2d8a8..f7054ba596ba 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -110,6 +110,7 @@ config ARM
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_NMI
+ 	select HAVE_OPTPROBES if !THUMB2_KERNEL
++	select HAVE_RETHOOK
+ 	select HAVE_PERF_EVENTS
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+diff --git a/arch/arm/include/asm/stacktrace.h b/arch/arm/include/asm/stacktrace.h
+index 3e78f921b8b2..76a70b25863e 100644
+--- a/arch/arm/include/asm/stacktrace.h
++++ b/arch/arm/include/asm/stacktrace.h
+@@ -17,7 +17,8 @@ struct stackframe {
  
--void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
-+int arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
- {
- 	unsigned long *stack = (unsigned long *)regs->sp;
- 
-@@ -123,5 +123,7 @@ void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mc
- 
- 	/* Replace the return addr with trampoline addr */
- 	stack[0] = (unsigned long) arch_rethook_trampoline;
+ 	/* address of the LR value on the stack */
+ 	unsigned long *lr_addr;
+-#ifdef CONFIG_KRETPROBES
 +
-+	return 0;
- }
- NOKPROBE_SYMBOL(arch_rethook_prepare);
-diff --git a/include/linux/rethook.h b/include/linux/rethook.h
-index c8ac1e5afcd1..07b9c6663b8e 100644
---- a/include/linux/rethook.h
-+++ b/include/linux/rethook.h
-@@ -63,12 +63,12 @@ void rethook_free(struct rethook *rh);
- void rethook_add_node(struct rethook *rh, struct rethook_node *node);
- struct rethook_node *rethook_try_get(struct rethook *rh);
- void rethook_recycle(struct rethook_node *node);
--void rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount);
-+int rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount);
- unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame,
- 				    struct llist_node **cur);
- 
- /* Arch dependent code must implement arch_* and trampoline code */
--void arch_rethook_prepare(struct rethook_node *node, struct pt_regs *regs, bool mcount);
-+int arch_rethook_prepare(struct rethook_node *node, struct pt_regs *regs, bool mcount);
- void arch_rethook_trampoline(void);
- 
- /**
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index dbe57df2e199..7fd7f1195bde 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2109,10 +2109,12 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 
- 	ri = container_of(rhn, struct kretprobe_instance, node);
- 
--	if (rp->entry_handler && rp->entry_handler(ri, regs))
-+	if (rp->entry_handler && rp->entry_handler(ri, regs)) {
- 		rethook_recycle(rhn);
--	else
--		rethook_hook(rhn, regs, kprobe_ftrace(p));
-+	} else if (rethook_hook(rhn, regs, kprobe_ftrace(p)) < 0) {
-+		rethook_recycle(rhn);
-+		rp->nmissed++;
-+	}
++#if defined(CONFIG_RETHOOK)
+ 	struct llist_node *kr_cur;
+ 	struct task_struct *tsk;
+ #endif
+@@ -30,7 +31,7 @@ void arm_get_current_stackframe(struct pt_regs *regs, struct stackframe *frame)
+ 		frame->sp = regs->ARM_sp;
+ 		frame->lr = regs->ARM_lr;
+ 		frame->pc = regs->ARM_pc;
+-#ifdef CONFIG_KRETPROBES
++#if defined(CONFIG_RETHOOK)
+ 		frame->kr_cur = NULL;
+ 		frame->tsk = current;
+ #endif
+diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
+index b5efecb3d730..6df085ecdf41 100644
+--- a/arch/arm/kernel/stacktrace.c
++++ b/arch/arm/kernel/stacktrace.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ #include <linux/export.h>
+ #include <linux/kprobes.h>
++#include <linux/rethook.h>
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
+ #include <linux/stacktrace.h>
+@@ -66,10 +67,10 @@ int notrace unwind_frame(struct stackframe *frame)
+ 	frame->sp = *(unsigned long *)(fp - 8);
+ 	frame->pc = *(unsigned long *)(fp - 4);
+ #endif
+-#ifdef CONFIG_KRETPROBES
+-	if (is_kretprobe_trampoline(frame->pc))
+-		frame->pc = kretprobe_find_ret_addr(frame->tsk,
+-					(void *)frame->fp, &frame->kr_cur);
++#ifdef CONFIG_RETHOOK
++	if (is_rethook_trampoline(frame->pc))
++		frame->pc = rethook_find_ret_addr(frame->tsk, frame->fp,
++						  &frame->kr_cur);
+ #endif
  
  	return 0;
- }
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index 89d9f994ebb0..d3b13294d545 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -48,7 +48,10 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
- 		}
- 		fpr = container_of(rh, struct fprobe_rethook_node, node);
- 		fpr->entry_ip = ip;
--		rethook_hook(rh, ftrace_get_regs(fregs), true);
-+		if (rethook_hook(rh, ftrace_get_regs(fregs), true) < 0) {
-+			rethook_recycle(rh);
-+			fp->nmissed++;
-+		}
+@@ -163,7 +164,7 @@ static noinline void __save_stack_trace(struct task_struct *tsk,
+ here:
+ 		frame.pc = (unsigned long)&&here;
  	}
+-#ifdef CONFIG_KRETPROBES
++#ifdef CONFIG_RETHOOK
+ 	frame.kr_cur = NULL;
+ 	frame.tsk = tsk;
+ #endif
+@@ -184,7 +185,7 @@ void save_stack_trace_regs(struct pt_regs *regs, struct stack_trace *trace)
+ 	frame.sp = regs->ARM_sp;
+ 	frame.lr = regs->ARM_lr;
+ 	frame.pc = regs->ARM_pc;
+-#ifdef CONFIG_KRETPROBES
++#ifdef CONFIG_RETHOOK
+ 	frame.kr_cur = NULL;
+ 	frame.tsk = current;
+ #endif
+diff --git a/arch/arm/probes/Makefile b/arch/arm/probes/Makefile
+index 8b0ea5ace100..10c083a22223 100644
+--- a/arch/arm/probes/Makefile
++++ b/arch/arm/probes/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_KPROBES)		+= decode-thumb.o
+ else
+ obj-$(CONFIG_KPROBES)		+= decode-arm.o
+ endif
++obj-$(CONFIG_RETHOOK)		+= rethook.o
+diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+index 9090c3a74dcc..2f01f8267cc3 100644
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -365,68 +365,6 @@ int __kprobes kprobe_exceptions_notify(struct notifier_block *self,
+ 	return NOTIFY_DONE;
+ }
  
- out:
-diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-index b56833700d23..e7db83438e45 100644
---- a/kernel/trace/rethook.c
-+++ b/kernel/trace/rethook.c
-@@ -174,11 +174,19 @@ NOKPROBE_SYMBOL(rethook_try_get);
-  * from ftrace (mcount) callback, @mcount must be set true. If this is called
-  * from the real function entry (e.g. kprobes) @mcount must be set false.
-  * This is because the way to hook the function return depends on the context.
-+ * This returns 0 if succeeded to hook the function return, or -errno if
-+ * failed.
-  */
--void rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount)
-+int rethook_hook(struct rethook_node *node, struct pt_regs *regs, bool mcount)
+-/*
+- * When a retprobed function returns, trampoline_handler() is called,
+- * calling the kretprobe's handler. We construct a struct pt_regs to
+- * give a view of registers r0-r11, sp, lr, and pc to the user
+- * return-handler. This is not a complete pt_regs structure, but that
+- * should be enough for stacktrace from the return handler with or
+- * without pt_regs.
+- */
+-void __naked __kprobes __kretprobe_trampoline(void)
+-{
+-	__asm__ __volatile__ (
+-#ifdef CONFIG_FRAME_POINTER
+-		"ldr	lr, =__kretprobe_trampoline	\n\t"
+-	/* __kretprobe_trampoline makes a framepointer on pt_regs. */
+-#ifdef CONFIG_CC_IS_CLANG
+-		"stmdb	sp, {sp, lr, pc}	\n\t"
+-		"sub	sp, sp, #12		\n\t"
+-		/* In clang case, pt_regs->ip = lr. */
+-		"stmdb	sp!, {r0 - r11, lr}	\n\t"
+-		/* fp points regs->r11 (fp) */
+-		"add	fp, sp,	#44		\n\t"
+-#else /* !CONFIG_CC_IS_CLANG */
+-		/* In gcc case, pt_regs->ip = fp. */
+-		"stmdb	sp, {fp, sp, lr, pc}	\n\t"
+-		"sub	sp, sp, #16		\n\t"
+-		"stmdb	sp!, {r0 - r11}		\n\t"
+-		/* fp points regs->r15 (pc) */
+-		"add	fp, sp, #60		\n\t"
+-#endif /* CONFIG_CC_IS_CLANG */
+-#else /* !CONFIG_FRAME_POINTER */
+-		"sub	sp, sp, #16		\n\t"
+-		"stmdb	sp!, {r0 - r11}		\n\t"
+-#endif /* CONFIG_FRAME_POINTER */
+-		"mov	r0, sp			\n\t"
+-		"bl	trampoline_handler	\n\t"
+-		"mov	lr, r0			\n\t"
+-		"ldmia	sp!, {r0 - r11}		\n\t"
+-		"add	sp, sp, #16		\n\t"
+-#ifdef CONFIG_THUMB2_KERNEL
+-		"bx	lr			\n\t"
+-#else
+-		"mov	pc, lr			\n\t"
+-#endif
+-		: : : "memory");
+-}
+-
+-/* Called from __kretprobe_trampoline */
+-static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
+-{
+-	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->ARM_fp);
+-}
+-
+-void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+-				      struct pt_regs *regs)
+-{
+-	ri->ret_addr = (kprobe_opcode_t *)regs->ARM_lr;
+-	ri->fp = (void *)regs->ARM_fp;
+-
+-	/* Replace the return addr with trampoline addr. */
+-	regs->ARM_lr = (unsigned long)&__kretprobe_trampoline;
+-}
+-
+ int __kprobes arch_trampoline_kprobe(struct kprobe *p)
  {
--	arch_rethook_prepare(node, regs, mcount);
+ 	return 0;
+diff --git a/arch/arm/probes/rethook.c b/arch/arm/probes/rethook.c
+new file mode 100644
+index 000000000000..598a2b579b91
+--- /dev/null
++++ b/arch/arm/probes/rethook.c
+@@ -0,0 +1,127 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * arm implementation of rethook. Mostly copied from arch/arm/probes/kprobes/core.c
++ */
++
++#include <linux/kprobes.h>
++#include <linux/rethook.h>
++
++#include <asm/stacktrace.h>
++
++/* Called from arch_rethook_trampoline */
++static __used notrace unsigned long arch_rethook_trampoline_callback(struct pt_regs *regs)
++{
++	return rethook_trampoline_handler(regs, regs->ARM_fp);
++}
++NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
++
++/*
++ * When a rethook'ed function returns, it returns to arch_rethook_trampoline
++ * which calls rethook callback. We construct a struct pt_regs to
++ * give a view of registers r0-r11, sp, lr, and pc to the user
++ * return-handler. This is not a complete pt_regs structure, but that
++ * should be enough for stacktrace from the return handler with or
++ * without pt_regs.
++ */
++asm(
++	".text\n"
++	".global arch_rethook_trampoline\n"
++	".type arch_rethook_trampoline, %function\n"
++	"arch_rethook_trampoline:\n"
++#ifdef CONFIG_FRAME_POINTER
++	"adr	lr, .			\n\t"
++	/* this makes a framepointer on pt_regs. */
++#ifdef CONFIG_CC_IS_CLANG
++	"stmdb	sp, {sp, lr, pc}	\n\t"
++	"sub	sp, sp, #12		\n\t"
++	/* In clang case, pt_regs->ip = lr. */
++	"stmdb	sp!, {r0 - r11, lr}	\n\t"
++	/* fp points regs->r11 (fp) */
++	"add	fp, sp,	#44		\n\t"
++#else /* !CONFIG_CC_IS_CLANG */
++	/* In gcc case, pt_regs->ip = fp. */
++	"stmdb	sp, {fp, sp, lr, pc}	\n\t"
++	"sub	sp, sp, #16		\n\t"
++	"stmdb	sp!, {r0 - r11}		\n\t"
++	/* fp points regs->r15 (pc) */
++	"add	fp, sp, #60		\n\t"
++#endif /* CONFIG_CC_IS_CLANG */
++#else /* !CONFIG_FRAME_POINTER */
++	"sub	sp, sp, #16		\n\t"
++	"stmdb	sp!, {r0 - r11}		\n\t"
++#endif /* CONFIG_FRAME_POINTER */
++	"mov	r0, sp			\n\t"
++	"bl	arch_rethook_trampoline_callback	\n\t"
++	"mov	lr, r0			\n\t"
++	"ldmia	sp!, {r0 - r11}		\n\t"
++	"add	sp, sp, #16		\n\t"
++#ifdef CONFIG_THUMB2_KERNEL
++	"bx	lr			\n\t"
++#else
++	"mov	pc, lr			\n\t"
++#endif
++	".size arch_rethook_trampoline, .-arch_rethook_trampoline\n"
++);
++NOKPROBE_SYMBOL(arch_rethook_trampoline);
++
++/*
++ * At the entry of function with mcount, if the FRAME_POINTER is enabled,
++ * the stack and registers are prepared for the mcount function as below.
++ *
++ * mov     ip, sp
++ * push    {fp, ip, lr, pc}
++ * sub     fp, ip, #4	; FP[0] = PC, FP[-4] = LR, and FP[-12] = call-site FP.
++ * push    {lr}
++ * bl      <__gnu_mcount_nc> ; call ftrace
++ *
++ * And when returning from the function, call-site FP, SP and PC are restored
++ * from stack as below;
++ *
++ * ldm     sp, {fp, sp, pc}
++ *
++ * Thus, if the arch_rethook_prepare() is called from real function entry,
++ * it must change the LR and save FP in pt_regs. But if it is called via
++ * mcount context (ftrace), it must change the LR on stack, which is next
++ * to the PC (= FP[-4]), and save the FP value at FP[-12].
++ *
++ * If the FRAME_POINTER is disabled, we have to use arm unwinder to find where
++ * the LR is stored.
++ */
++int notrace arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
++{
++	unsigned long *lr_addr;
 +	int ret;
 +
-+	ret = arch_rethook_prepare(node, regs, mcount);
-+	if (ret < 0)
-+		return ret;
++	if (mcount) {
++		/* Clang + mcount case is not supported yet. */
++		if (IS_ENABLED(CONFIG_CC_IS_CLANG))
++			return -EOPNOTSUPP;
++		if (IS_ENABLED(CONFIG_FRAME_POINTER)) {
++			lr_addr = (unsigned long *)(regs->ARM_fp - 4);
++			rh->frame = *(unsigned long *)(regs->ARM_fp - 12);
++		} else {
++			struct stackframe frame;
 +
- 	__llist_add(&node->llist, &current->rethooks);
++			arm_get_current_stackframe(regs, &frame);
++			ret = unwind_frame(&frame);
++			if (ret < 0)
++				return -EINVAL;
++
++			if (frame.lr_addr)
++				lr_addr = frame.lr_addr;
++			else
++				lr_addr = &regs->ARM_lr;
++			rh->frame = regs->ARM_fp;
++		}
++	} else {
++		lr_addr = &regs->ARM_lr;
++		rh->frame = regs->ARM_fp;
++	}
++
++	/* Replace the return addr with trampoline addr. */
++	rh->ret_addr = *lr_addr;
++	*lr_addr = (unsigned long)arch_rethook_trampoline;
++
 +	return 0;
- }
- NOKPROBE_SYMBOL(rethook_hook);
- 
++}
++NOKPROBE_SYMBOL(arch_rethook_prepare);
 
