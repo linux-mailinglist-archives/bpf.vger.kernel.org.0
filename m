@@ -2,127 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F1B4F9E38
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 22:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE634F9E41
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 22:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbiDHUd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Apr 2022 16:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
+        id S233872AbiDHUgt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 8 Apr 2022 16:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233675AbiDHUdz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 16:33:55 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5771C289B9;
-        Fri,  8 Apr 2022 13:31:50 -0700 (PDT)
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ncvGg-000Ak2-Hi; Fri, 08 Apr 2022 22:31:42 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ncvGg-000PVw-8J; Fri, 08 Apr 2022 22:31:42 +0200
-Subject: Re: [PATCH v2 1/2] selftests: bpf: drop duplicate max/min definitions
-To:     Geliang Tang <geliang.tang@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <cover.1649424565.git.geliang.tang@suse.com>
- <0efb81dab7a8de23044302c5c7fa9af308766236.1649424565.git.geliang.tang@suse.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <812d81d8-a011-11a9-f765-d9972afca230@iogearbox.net>
-Date:   Fri, 8 Apr 2022 22:31:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S232768AbiDHUgs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 16:36:48 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BA0105AAB
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 13:34:44 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 238JaCtF011188
+        for <bpf@vger.kernel.org>; Fri, 8 Apr 2022 13:34:43 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fat3r96xn-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 13:34:43 -0700
+Received: from twshared13315.14.prn3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 8 Apr 2022 13:34:43 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 7193116FC5A10; Fri,  8 Apr 2022 13:34:35 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/3] Add target-less tracing SEC() definitions
+Date:   Fri, 8 Apr 2022 13:34:30 -0700
+Message-ID: <20220408203433.2988727-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <0efb81dab7a8de23044302c5c7fa9af308766236.1649424565.git.geliang.tang@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26506/Fri Apr  8 10:23:48 2022)
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: zcJq9jebmP_g86Mj5sz58Nnd2kgpeAdC
+X-Proofpoint-ORIG-GUID: zcJq9jebmP_g86Mj5sz58Nnd2kgpeAdC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-04-08_08,2022-04-08_01,2022-02-23_01
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/8/22 3:36 PM, Geliang Tang wrote:
-> Drop duplicate macros min() and MAX() definitions in prog_tests, use MIN()
-> or MAX() in sys/param.h instead.
-> 
-> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
-[...]
+Allow specifying "target-less" SEC() definitions for tracing BPF programs,
+both non-BTF-backed (kprobes, tracepoints, raw tracepoints) and BTF-backed
+(fentry/fexit, iter, lsm, etc).
 
-Thanks Geliang! One small final nit and then it's good to go to bpf-next:
+There are various situations where attach target cannot be known at
+compilation time, so libbpf's insistence on specifying something leads to
+users having to add random test like SEC("kprobe/whatever") and then
+specifying correct target at runtime using APIs like
+bpf_program__attach_kprobe().
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 5142a7d130b2..86561c0b0dea 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -1,5 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright (c) 2020 Facebook */
-> +#include <sys/param.h>
->   #include <test_progs.h>
->   #include "bpf_iter_ipv6_route.skel.h"
->   #include "bpf_iter_netlink.skel.h"
-[...]
+So this patch set improves ergonomics by allowing simple SEC() definitions
+that define BPF program type and nothing else. Such programs won't be
+auto-attachable, of course, but they also won't fail skeleton auto-attachment,
+just like we do this for uprobes.
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> index 8f7a1cef7d87..ceed369361fc 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> @@ -3,6 +3,7 @@
->   
->   #include <linux/err.h>
->   #include <netinet/tcp.h>
-> +#include <sys/param.h>
->   #include <test_progs.h>
->   #include "network_helpers.h"
->   #include "bpf_dctcp.skel.h"
-[...]
+Andrii Nakryiko (3):
+  libbpf: allow "incomplete" basic tracing SEC() definitions
+  libbpf: support target-less SEC() definitions for BTF-backed programs
+  selftests/bpf: use target-less SEC() definitions in various tests
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> index 394ebfc3bbf3..5ca70aa15c4a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> @@ -1,6 +1,7 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright (c) 2021 Google LLC. */
->   
-> +#include <sys/param.h>
->   #include <test_progs.h>
->   #include "test_snprintf.skel.h"
->   #include "test_snprintf_single.skel.h"
-> @@ -83,8 +84,6 @@ static void test_snprintf_positive(void)
-[...]
+ tools/lib/bpf/libbpf.c                        | 118 ++++++++++++------
+ .../selftests/bpf/prog_tests/attach_probe.c   |  10 ++
+ .../bpf/prog_tests/kprobe_multi_test.c        |  14 +--
+ .../selftests/bpf/progs/kprobe_multi.c        |  14 +++
+ .../selftests/bpf/progs/test_attach_probe.c   |  23 +++-
+ .../selftests/bpf/progs/test_module_attach.c  |   2 +-
+ 6 files changed, 135 insertions(+), 46 deletions(-)
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-> index 7ad66a247c02..52f1b9139145 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-> @@ -20,6 +20,7 @@
->   #include <stdbool.h>
->   #include <stdio.h>
->   #include <sys/stat.h>
-> +#include <sys/param.h>
->   #include <unistd.h>
->   
->   #include "test_progs.h"
+-- 
+2.30.2
 
-Just add the sys/param.h to the test_progs.h header in BPF selftests where we also pull
-in other sys headers; then all the duplicate includes above are not needed.
-
-Thanks,
-Daniel
