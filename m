@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5B74F8B8C
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 02:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A944F8BC3
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 02:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233221AbiDHAwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 20:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
+        id S233238AbiDHAw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 20:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbiDHAwp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 20:52:45 -0400
+        with ESMTP id S232560AbiDHAw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 20:52:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A4726C;
-        Thu,  7 Apr 2022 17:50:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9809A6E365;
+        Thu,  7 Apr 2022 17:50:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C77C7615C6;
-        Fri,  8 Apr 2022 00:50:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29F77C385A0;
-        Fri,  8 Apr 2022 00:50:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3110E618DB;
+        Fri,  8 Apr 2022 00:50:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41A4BC385A4;
+        Fri,  8 Apr 2022 00:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649379042;
-        bh=G1SKGXNbII2A8RDjVNJ0g6cGZNNhNqVNM++vL5zWAMo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gRg826YAodFudvp72TyLwo0NoB0Mtm4m/4Lg/Jqq8VJfjzMS2vPIZIyWY4e3fQFQK
-         3hVbvpRVPrGx+L1GJe1M5gju/40/jXaChqs4waiom5nuoWQswOyFDpKvpmi00Sy8P8
-         R68JSdHBmIQbwEprBxqIZy7jtTTkj9pUAr61hTTFOaZnPd9Idh5FcYBAl3d2X3EI2K
-         qjxmODOKbIKdKznMMl4OPD+nSXGq6J72ht6o9DFUXBs8KHmivlLVunz3Ri8ggv58eP
-         Dee9iLppxgLLThLVYlXNVdFkmqCoQXAdqTcTQAChRAnt8L6jKRIDMalVtQD+MXNQQ2
-         N6vjnknZhP7oA==
+        s=k20201202; t=1649379054;
+        bh=Fnq1dNA08/LWYoTGEL2vJKKrr5mYlJKc9c+6cJld2N0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cnLqp19VtblguBhMSGIxaseONA8r+Rcy9/cwcGcdd80faI2m/zBLxathG3BLtF31m
+         5jWu7pGSjxdbrBizkNsGJoQjC1d84csnLXM/Z1JiMN2sx2fFUA6jl2i8CKvtAqWo8E
+         c0yL3edWumVdK0k/ExKbh97aW1aLS65EETQgVVIRk81Ig4NXLi9Ce8VxSiIQ4Kf7al
+         ZL/iLEr59ZpuPyO0U4L2/hKptkS3VRPV1I+gA8QtisHxH44S5Fvd8D0Bxw27yAJk48
+         ylMdDcuEO4NEigfp2aStHDz3DrYIxZQ+7E02TUG6S9FTYC/waGjTvAR6z67tczPpjH
+         3YFy0tvYvDjuw==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
@@ -49,10 +49,12 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH bpf v2 0/4] kprobes: rethook,ARM,arm64: Replace kretprobe trampoline with rethook
-Date:   Fri,  8 Apr 2022 09:50:35 +0900
-Message-Id: <164937903547.1272679.7244379141135199176.stgit@devnote2>
+Subject: [PATCH bpf v2 1/4] ARM: unwind: Initialize the lr_addr field of unwind_ctrl_block
+Date:   Fri,  8 Apr 2022 09:50:47 +0900
+Message-Id: <164937904755.1272679.25073555823596728.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <164937903547.1272679.7244379141135199176.stgit@devnote2>
+References: <164937903547.1272679.7244379141135199176.stgit@devnote2>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -67,92 +69,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Since the unwind_ctrl_block::lr_addr is finally passed to
+stackframe::lr_addr, that value will be exposed unconditionally.
+Thus it should be initialized.
 
-Here is the 2nd version of the series for replacing kretprobe trampoline
-with rethook on ARM/arm64. I fixed some compiler warnings in this version.
-The previous version is here[1];
+Without this fix, when unwind_frame() doesn't update the
+unwind_ctrl_block::lr_addr (e.g. 'lr' register is not saved in the
+target function), stackframe::lr_addr will contain a wrong value.
 
-[1] https://lore.kernel.org/all/164915121498.982637.12787715964983738566.stgit@devnote2/T/#u
-
-This series includes a trivial bugfix for the arm unwinder to initialize
-an internal data structure([1/4]). This is not critical for stack trace,
-but required for rethook to find the LR register from the stack.
-This also have an update for the rethook interface, which allows us to
-check the rethook_hook() failure ([2/4]). This is also required for the
-rethook on arm because unwinder is able to fail.
-The rest of patches are replacing kretprobe trampoline with rethook on
-ARM ([3/4]) and arm64 ([4/4]).
-
-Background:
-
-This rethook came from Jiri's request of multiple kprobe for bpf[2].
-He tried to solve an issue that starting bpf with multiple kprobe will
-take a long time because bpf-kprobe will wait for RCU grace period for
-sync rcu events.
-
-Jiri wanted to attach a single bpf handler to multiple kprobes and
-he tried to introduce multiple-probe interface to kprobe. So I asked
-him to use ftrace and kretprobe-like hook if it is only for the
-function entry and exit, instead of adding ad-hoc interface
-to kprobes.
-For this purpose, I introduced the fprobe (kprobe like interface for
-ftrace) with the rethook (this is a generic return hook feature for
-fprobe exit handler)[3].
-
-[2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
-[3] https://lore.kernel.org/all/164191321766.806991.7930388561276940676.stgit@devnote2/T/#u
-
-The rethook is basically same as the kretprobe trampoline. I just made
-it decoupled from kprobes. Eventually, the all arch dependent kretprobe
-trampolines will be replaced with the rethook trampoline instead of
-cloning the code.
-
-When I port the rethook for all arch which supports kretprobe, the
-legacy kretprobe specific code (which is for CONFIG_KRETPROBE_ON_RETHOOK=n)
-will be removed eventually.
-
-BTW, the arm Clang support for rethook is for kretprobes only. fprobe
-and ftrace seems not working with Clang yet.
-
-Thank you,
-
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+  Changes in v2:
+   - Initialize pointer by NULL instead of 0.
+---
+ arch/arm/kernel/unwind.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Masami Hiramatsu (4):
-      ARM: unwind: Initialize the lr_addr field of unwind_ctrl_block
-      rethook,fprobe,kprobes: Check a failure in the rethook_hook()
-      ARM: rethook: Replace kretprobe trampoline with rethook
-      arm64: rethook: Replace kretprobe trampoline with rethook
+diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
+index a37ea6c772cd..c9f719e1b350 100644
+--- a/arch/arm/kernel/unwind.c
++++ b/arch/arm/kernel/unwind.c
+@@ -404,6 +404,7 @@ int unwind_frame(struct stackframe *frame)
+ 	ctrl.vrs[SP] = frame->sp;
+ 	ctrl.vrs[LR] = frame->lr;
+ 	ctrl.vrs[PC] = 0;
++	ctrl.lr_addr = NULL;
+ 
+ 	if (idx->insn == 1)
+ 		/* can't unwind */
 
-
- arch/arm/Kconfig                              |    1 
- arch/arm/include/asm/stacktrace.h             |    5 +
- arch/arm/kernel/stacktrace.c                  |   13 +--
- arch/arm/kernel/unwind.c                      |    1 
- arch/arm/probes/Makefile                      |    1 
- arch/arm/probes/kprobes/core.c                |   62 ------------
- arch/arm/probes/rethook.c                     |  127 +++++++++++++++++++++++++
- arch/arm64/Kconfig                            |    1 
- arch/arm64/include/asm/kprobes.h              |    2 
- arch/arm64/include/asm/stacktrace.h           |    2 
- arch/arm64/kernel/Makefile                    |    1 
- arch/arm64/kernel/probes/Makefile             |    1 
- arch/arm64/kernel/probes/kprobes.c            |   15 ---
- arch/arm64/kernel/probes/kprobes_trampoline.S |   86 -----------------
- arch/arm64/kernel/rethook.c                   |   28 ++++++
- arch/arm64/kernel/rethook_trampoline.S        |   87 +++++++++++++++++
- arch/arm64/kernel/stacktrace.c                |    9 +-
- arch/x86/kernel/rethook.c                     |    4 +
- include/linux/rethook.h                       |    4 -
- kernel/kprobes.c                              |    8 +-
- kernel/trace/fprobe.c                         |    5 +
- kernel/trace/rethook.c                        |   12 ++
- 22 files changed, 287 insertions(+), 188 deletions(-)
- create mode 100644 arch/arm/probes/rethook.c
- delete mode 100644 arch/arm64/kernel/probes/kprobes_trampoline.S
- create mode 100644 arch/arm64/kernel/rethook.c
- create mode 100644 arch/arm64/kernel/rethook_trampoline.S
-
---
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
