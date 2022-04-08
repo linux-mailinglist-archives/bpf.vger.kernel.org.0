@@ -2,184 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFD94F9292
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 12:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7A44F92D0
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 12:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbiDHKL3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Apr 2022 06:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        id S232901AbiDHKXZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Apr 2022 06:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbiDHKL2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 06:11:28 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27F83BA50;
-        Fri,  8 Apr 2022 03:09:23 -0700 (PDT)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2387HFUj021343;
-        Fri, 8 Apr 2022 10:08:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=T5Atx+7kTedvnEDpEIC0njDhjhAzWDlGwxFTzMGcAMI=;
- b=U/iT9jOHI4G6cRsnN27S+BiSdqkdbjXaJAqSTTjgIRxa5BhGH3meuym8no3q6stRkUYD
- W+G8ZtDfj0oqF2ngHJfJmulkS8to52J+sdMKsBjCduVooK8a3lfbjSGq5Lm6c0WV5KCh
- tCcrLCDW35wdEuV2BwAgBf3A0fFq52rp/8wiVPhKLO40mHFwPiY1QDi8vzvj36LzYRC8
- IyerPlR036izohSu0UBJye90UyKzvlLXqa8yCVx43kWLnl4fB9+HIKw3pHyAwLn/bf05
- 8uj066BSdNVWSL/KvjVdaD+TdXoMMV/H/bRp70aPNIdsJ4wjq2pPmMNZnV1ZFfl1Z/o5 lA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3fa4jx0bsc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Apr 2022 10:08:39 +0000
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 238A8cFH011216;
-        Fri, 8 Apr 2022 10:08:38 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3fa4jx0brx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Apr 2022 10:08:38 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 238A7fCT012964;
-        Fri, 8 Apr 2022 10:08:36 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03fra.de.ibm.com with ESMTP id 3f6e491f9j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Apr 2022 10:08:36 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 238A8YlS37552460
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Apr 2022 10:08:34 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 232F0AE055;
-        Fri,  8 Apr 2022 10:08:34 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6FEADAE04D;
-        Fri,  8 Apr 2022 10:08:33 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.1.140])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Apr 2022 10:08:33 +0000 (GMT)
-Date:   Fri, 8 Apr 2022 12:08:31 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
-        Song Liu <song@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>
-Subject: Re: [PATCH bpf 0/4] introduce HAVE_ARCH_HUGE_VMALLOC_FLAG for
- bpf_prog_pack
-Message-ID: <20220408120831.69b80310@p-imbrenda>
-In-Reply-To: <16491AB0-7FFD-40F5-A331-65B68F548A3B@fb.com>
-References: <20220330225642.1163897-1-song@kernel.org>
-        <YkU+ADIeWACbgFNA@infradead.org>
-        <F3447905-8D42-46C0-B324-988A0E4E52E7@fb.com>
-        <6AA91984-7DF3-4820-91DF-DD6CA251B638@fb.com>
-        <YkvqtvNFtzDNkEhy@infradead.org>
-        <482D450C-9006-4979-8736-A9F1B47246E4@fb.com>
-        <16491AB0-7FFD-40F5-A331-65B68F548A3B@fb.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        with ESMTP id S229511AbiDHKXU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 06:23:20 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE0514144F
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 03:21:17 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a6so16486395ejk.0
+        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 03:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JXaUMWQyNVby9gQyNh0yAHaXhYaCw1nxsGNXPnfEvIw=;
+        b=OTSFPGmUiDr1pNEAMdqLD8aGo77yeuobQ7iYxDYfCaYeUOuDO98HhAvuRIiqyVEqOR
+         UvTKlpSSJjQHTwuIS4QtG8xRVtcxUXG5h0dqzxx6AyeJf1p/MTAilrLSOVh4ZNn5JUyw
+         Qun1yPXtk2b45ynipkGJVLgcgL6ZNmXh1fEiezyXIKcY0VlVlfFsW1Pb4jiS1+wFWK/F
+         D+MMijtabzokQ7oHLW5SFMYgWlXZRnCF/HIX6y2m6XkeUvX/rxa5gK11PIDe+SGTxGVo
+         SEtfGjfdlNb/QaEkUVH8dL7AruaQ4WhMt2fmzRpE4tG4IjaE8WQZhyye+L9mhvJQ4SN9
+         +XjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JXaUMWQyNVby9gQyNh0yAHaXhYaCw1nxsGNXPnfEvIw=;
+        b=RKVxa8UXzgQ7xU0NT/+FDoCkH0VdiSHOiD4JHvBzfGOs9zuFIdVWpmTmq1XFAh2JVK
+         faXE6cZX87b19JqBnH636x7UKlIl6tGEf74/V1E+g3LAXFxVcUSYuyvMFJO61ADtJdUt
+         EEPWuDvrdsc5OSK5eBBMAExYTh5RUnTuxM50UcXie9zCb8o+g9KpmmJp752wMgcAe3Of
+         KyfYbCX35fX2oypxmjI0v2EE4LiOc1GlIIogL/FjdL3uJigLcBa+qIdnmaN7JFy0aFgY
+         Q42Lie/A9/cFKQwMjliXPVclFpvBHc1mM1a7olb3Ju4J9KQyyh+7GUJeAZJQxPbAyNa+
+         hCUw==
+X-Gm-Message-State: AOAM530ezVTWttGd1knePXZIrQLxsBl7/xGOgC8+2dzLiRmWMWt6fg+1
+        lApTsz0EqqtXpFoyXZhgtbeNQtOk1MSCtpQoA2ODZQ==
+X-Google-Smtp-Source: ABdhPJxdeuZZFwsx5XHxKgPpxscMLR8+lWP5nzo2+K+m5XVltT8dNU+L1Sgi4lBY/bIfm/nOYfFIPhBDeU8gAkeAJzw=
+X-Received: by 2002:a17:907:9614:b0:6e7:9ff0:38d0 with SMTP id
+ gb20-20020a170907961400b006e79ff038d0mr17216437ejc.313.1649413275674; Fri, 08
+ Apr 2022 03:21:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: t3hK8XhpLSnjlRE4B--CvrO_I9pr8wKT
-X-Proofpoint-ORIG-GUID: FUuQ-w1NOoS59KRH-H9GhuaqTGwB2CY4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-08_03,2022-04-08_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 spamscore=0
- bulkscore=0 mlxscore=0 impostorscore=0 adultscore=0 mlxlogscore=954
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2204080050
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220402015826.3941317-1-joannekoong@fb.com> <CAEf4BzbfFtgebrWOyfOP71Cn6ZAYXGfjLDPDNmyhzTJ3uTPFpQ@mail.gmail.com>
+ <CA+i-1C1wjFcH5OMGVWt4+nB4hoSp_aVU=mv3LPtLq-5Ua-dggw@mail.gmail.com> <CAJnrk1YKaRDpW-etMzraKLHwLaVMetZGpdjujsNLSbzh4Q1LoQ@mail.gmail.com>
+In-Reply-To: <CAJnrk1YKaRDpW-etMzraKLHwLaVMetZGpdjujsNLSbzh4Q1LoQ@mail.gmail.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Fri, 8 Apr 2022 12:21:04 +0200
+Message-ID: <CA+i-1C2oea6YHatfE_4WtLTF+2JC0sxgN2fpSQ7nRci1kWRNdw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 0/7] Dynamic pointers
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Joanne Koong <joannekoong@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 7 Apr 2022 19:57:25 +0000
-Song Liu <songliubraving@fb.com> wrote:
+On Thu, 7 Apr 2022 at 22:40, Joanne Koong <joannelkoong@gmail.com> wrote:
+>
+> On Thu, Apr 7, 2022 at 5:44 AM Brendan Jackman <jackmanb@google.com> wrote:
+> >
+> > On Thu, 7 Apr 2022 at 01:13, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Fri, Apr 1, 2022 at 6:59 PM Joanne Koong <joannekoong@fb.com> wrote:
+> > > >
+> > > > From: Joanne Koong <joannelkoong@gmail.com>
+> > > KP, Florent, Brendan,
+> > >
+> > > You always wanted a way to work with runtime-sized BPF ringbuf samples
+> > > without extra copies. This is the way we can finally do this with good
+> > > usability and simplicity. Please take a look and provide feedback.
+> > > Thanks!
+> >
+> > Thanks folks, this looks very cool. Please excuse my ignorance, one
+> > thing that isn't clear to me is does this work for user memory? Or
+> > would we need bpf_copy_from_user_dynptr to avoid an extra copy?
+>
+> Userspace programs will not be able to use or interact with dynptrs
+> directly. If there is data at a user-space address that needs to be
+> copied into the ringbuffer, the address can be passed to the bpf
+> program and then the bpf program can use a helper like
+> bpf_probe_read_user_dynptr (not added in this patchset but will be
+> part of a following one), which will read the contents at that user
+> address into the ringbuf dynptr.
 
-> Hi Nicholas and Claudio, 
-> 
-> > On Apr 5, 2022, at 4:54 PM, Song Liu <songliubraving@fb.com> wrote:
-> >   
-> >> On Apr 5, 2022, at 12:07 AM, Christoph Hellwig <hch@infradead.org> wrote:
-> >> 
-> >> On Fri, Apr 01, 2022 at 10:22:00PM +0000, Song Liu wrote:  
-> >>>>> Please fix the underlying issues instead of papering over them and
-> >>>>> creating a huge maintainance burden for others.  
-> >>> 
-> >>> After reading the code a little more, I wonder what would be best strategy. 
-> >>> IIUC, most of the kernel is not ready for huge page backed vmalloc memory.
-> >>> For example, all the module_alloc cannot work with huge pages at the moment.
-> >>> And the error Paul Menzel reported in drm_fb_helper.c will probably hit 
-> >>> powerpc with 5.17 kernel as-is? (trace attached below) 
-> >>> 
-> >>> Right now, we have VM_NO_HUGE_VMAP to let a user to opt out of huge pages. 
-> >>> However, given there are so many users of vmalloc, vzalloc, etc., we 
-> >>> probably do need a flag for the user to opt-in? 
-> >>> 
-> >>> Does this make sense? Any recommendations are really appreciated.   
-> >> 
-> >> I think there is multiple aspects here:
-> >> 
-> >> - if we think that the kernel is not ready for hugepage backed vmalloc
-> >>  in general we need to disable it in powerpc for now.  
-> > 
-> > Nicholas and Claudio, 
-> > 
-> > What do you think about the status of hugepage backed vmalloc on powerpc? 
-> > I found module_alloc and kvm_s390_pv_alloc_vm() opt-out of huge pages.
-> > But I am not aware of users that benefit from huge pages (except vfs hash,
-> > which was mentioned in 8abddd968a30). Does an opt-in flag (instead of 
-> > current opt-out flag, VM_NO_HUGE_VMAP) make sense to you?   
-> 
-> Could you please share your comments on this? Specifically, does it make 
-> sense to replace VM_NO_HUGE_VMAP with an opt-in flag? If we think current
-> opt-out flag is better approach, what would be the best practice to find 
-> all the cases to opt-out?
-
-An opt in flag would surely make sense, and it would be more backwards
-compatible with existing code. That way each user can decide whether to
-fix the code to allow for hugepages, if possible at all. For example,
-the case you mentioned for s390 (kvm_s390_pv_alloc_vm) would not be
-fixable, because of a hardware limitation (the whole area _must_ be
-mapped with 4k pages)
-
-If the consensus were to keep the current opt-put, then I guess each
-user would have to check each usage of vmalloc and similar, and see if
-anything breaks. To be honest, I think an opt-out would only be
-possible after having the opt-in for a (long) while, when most users
-would have fixed their code.
-
-In short, I fully support opt-in.
-
-> 
-> Thanks,
-> Song
-> 
-> 
-> > Thanks,
-> > Song
-> >   
-> >> - if we think even in the longer run only some users can cope with
-> >>  hugepage backed vmalloc we need to turn it into an opt-in in
-> >>  general and not just for x86
-> >> - there still to appear various unresolved underlying x86 specific
-> >>  issues that need to be fixed either way  
-> >   
-> 
-
+Ah yeah right, this is not for userspace programs just programs in the
+kernel that need to read user memory; the specific case I'm thinking
+of is reading the argv/env from the exec path.
+bpf_probe_read_user_dynptr sounds for sure like it would solve that
+case.
