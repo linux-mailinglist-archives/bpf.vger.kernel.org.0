@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BF64F9ED4
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 23:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BC44F9EDD
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 23:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbiDHVKd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Apr 2022 17:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
+        id S234369AbiDHVLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Apr 2022 17:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239630AbiDHVKd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 17:10:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEE0160FC6
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 14:08:28 -0700 (PDT)
+        with ESMTP id S234343AbiDHVLL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 17:11:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16DE12AF0
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 14:09:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F53261F4E
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 21:08:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EBD1C385A6
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 21:08:27 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1C311B82C8F
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 21:09:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5257C385A1
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 21:09:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649452107;
-        bh=ESLaPSPNPV9TcCCf8EXdRHXQtxk6eKO7pufLSb/dHnY=;
+        s=k20201202; t=1649452141;
+        bh=FCrG/TbHf1Rx9sHdO4EIxvzfBALSoavhFb04g88YGsk=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bDISaIn1egnrMuflLp1uLv9wm0x16VobYNFrHtYcDVdPC+g1SXXRd5XogheiVNrmU
-         FL8DrUXh2Rnyq46AM0kM+ny53XZ2lwghRKwSK7QKGHrL51oU2GnzqervsIktM7x45x
-         vrr0vIFJKit/fEA1rCTsAcBrV2UzDQV+AbKgf4i31pQqIYCgOj4FN0eyLi/n0CKBKa
-         HCM48XWwCR4/8u6pFCU94rHAWfPKy96ZrcjmpChT7fsjsswTTaKA/lE65HkKVbh7cm
-         NQyvvejx+gCCLto/VksK6ygMhpGmQwkt9wfjRD4sfZwtvk/g2RcgX7KWvdamYS/11q
-         NvTIgMa7mwrHw==
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-2ebef467b1bso21253417b3.13
-        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 14:08:27 -0700 (PDT)
-X-Gm-Message-State: AOAM531YiQoQFXxM5FHBiDAqTt9w2cZzqh6KIbgVyxbKjd5VUHiIWUJG
-        GN2PVGAS/gdQ4rQvbiM9IXSWnVYz0IvjCHbNdl4=
-X-Google-Smtp-Source: ABdhPJxpXG1eLTrO4NYgE4pJQ0nGw/WLVdYDuGWcEqHHq5CF2V134/oRlSB1AoNeiZ4xp1uGhLkLcU3vBfw21YqsUJ0=
-X-Received: by 2002:a81:14c8:0:b0:2eb:eb91:d88f with SMTP id
- 191-20020a8114c8000000b002ebeb91d88fmr3381369ywu.148.1649452106646; Fri, 08
- Apr 2022 14:08:26 -0700 (PDT)
+        b=olNkjqkwqrNOCsg53C3bkTwT9vdUUremrOpCYr3BEmEkIeiPvMknFN15zJRQVOQAM
+         /i++emyk4d5DKMDntgd5DcqoVzhKgI2oFz5gci4J2rZIPIgrKxMexcMaZ2iTYzXx6O
+         kMBdolC4NGTAe6Af/3fQIwwTQTGqQIL332phtocLxw1AxOZSr9EUlAgHWJg6cM67Gd
+         5BnG23TDhQ4NBxNnYq1RojSpdBaEj48NMv/IRoEO5YzvhhWCg9049IcbS5lYkHlgQB
+         6bcg+QVZ7dfIH3Y0mx0+Gpm6ngZH5u0Fp4XD4vReFThhs1kalOPMzeaqUFizldLr0E
+         vRGKGB3MTIU4w==
+Received: by mail-yb1-f171.google.com with SMTP id d138so17155489ybc.13
+        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 14:09:01 -0700 (PDT)
+X-Gm-Message-State: AOAM531nhWm3FvvZKsallDHBs9kVZ3NvF49Qut+c1fUBltzUUQWZ+TAK
+        idi35XN6D0vxhDKkZX2XqAsG0nY+E9J5Xehae+I=
+X-Google-Smtp-Source: ABdhPJxfgEn7G6vAEODlTHpOUaVG/HddChBwmvDzzMO3A/+INXpZz4NcGM9XXv1Da5Yv8I8Lh0yWvL4nt4PTQpQ/jEE=
+X-Received: by 2002:a05:6902:1506:b0:63e:4f1b:40ae with SMTP id
+ q6-20020a056902150600b0063e4f1b40aemr8473256ybu.322.1649452140956; Fri, 08
+ Apr 2022 14:09:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220408203433.2988727-1-andrii@kernel.org> <20220408203433.2988727-4-andrii@kernel.org>
-In-Reply-To: <20220408203433.2988727-4-andrii@kernel.org>
+References: <20220408203433.2988727-1-andrii@kernel.org> <20220408203433.2988727-3-andrii@kernel.org>
+In-Reply-To: <20220408203433.2988727-3-andrii@kernel.org>
 From:   Song Liu <song@kernel.org>
-Date:   Fri, 8 Apr 2022 14:08:15 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4oEtV8i9JEx8fLN-Yp54VWdADc=hUYNfWFbrDHVudNww@mail.gmail.com>
-Message-ID: <CAPhsuW4oEtV8i9JEx8fLN-Yp54VWdADc=hUYNfWFbrDHVudNww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: use target-less SEC()
- definitions in various tests
+Date:   Fri, 8 Apr 2022 14:08:50 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6ZYEzibrw380sWVdHvOtJ7UtC=E_fT2ohYK_QUa-Zjqg@mail.gmail.com>
+Message-ID: <CAPhsuW6ZYEzibrw380sWVdHvOtJ7UtC=E_fT2ohYK_QUa-Zjqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] libbpf: support target-less SEC()
+ definitions for BTF-backed programs
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,13 +65,15 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Apr 8, 2022 at 1:34 PM Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> Add new or modify existing SEC() definitions to be target-less and
-> validate that libbpf handles such program definitions correctly.
+> Similar to previous patch, support target-less definitions like
+> SEC("fentry"), SEC("freplace"), etc. For such BTF-backed program types
+> it is expected that user will specify BTF target programmatically at
+> runtime using bpf_program__set_attach_target() *before* load phase. If
+> not, libbpf will report this as an error.
 >
-> For kprobe/kretprobe we also add explicit test that generic
-> bpf_program__attach() works in cases when kprobe definition contains
-> proper target. It wasn't previously tested as selftests code always
-> explicitly specified the target regardless.
+> Aslo use SEC_ATTACH_BTF flag instead of explicitly listing a set of
+> types that are expected to require attach_btf_id. This was an accidental
+> omission during custom SEC() support refactoring.
 >
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
