@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 607A14F9C4D
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 20:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB1E4F9C4F
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 20:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbiDHSQn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 8 Apr 2022 14:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39254 "EHLO
+        id S236921AbiDHSQt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 8 Apr 2022 14:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229836AbiDHSQl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 14:16:41 -0400
+        with ESMTP id S229836AbiDHSQs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 14:16:48 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B76E33
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 11:14:37 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 238ELPc2009617
-        for <bpf@vger.kernel.org>; Fri, 8 Apr 2022 11:14:37 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47E6E33
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 11:14:44 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 238EKgHZ020689
+        for <bpf@vger.kernel.org>; Fri, 8 Apr 2022 11:14:44 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fa4pgr34b-5
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fa1fvt05t-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 11:14:37 -0700
-Received: from twshared27284.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 11:14:43 -0700
+Received: from twshared19572.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 8 Apr 2022 11:14:33 -0700
+ 15.1.2308.21; Fri, 8 Apr 2022 11:14:43 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 0622A16F87368; Fri,  8 Apr 2022 11:14:30 -0700 (PDT)
+        id 148D016F87398; Fri,  8 Apr 2022 11:14:33 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/3] libbpf: use weak hidden modifier for USDT BPF-side API functions
-Date:   Fri, 8 Apr 2022 11:14:24 -0700
-Message-ID: <20220408181425.2287230-3-andrii@kernel.org>
+Subject: [PATCH bpf-next 3/3] selftests/bpf: add CO-RE relos into linked_funcs selftests
+Date:   Fri, 8 Apr 2022 11:14:25 -0700
+Message-ID: <20220408181425.2287230-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220408181425.2287230-1-andrii@kernel.org>
 References: <20220408181425.2287230-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: R9L4fTrj4OhJ19nJ90QfWUNtszilqVwn
-X-Proofpoint-ORIG-GUID: R9L4fTrj4OhJ19nJ90QfWUNtszilqVwn
+X-Proofpoint-GUID: aZ122DukdG3LiNHoxD0ZL5BnwlvQiTNv
+X-Proofpoint-ORIG-GUID: aZ122DukdG3LiNHoxD0ZL5BnwlvQiTNv
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-04-08_05,2022-04-08_01,2022-02-23_01
@@ -55,49 +55,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use __weak __hidden for bpf_usdt_xxx() APIs instead of much more
-confusing `static inline __noinline`. This was previously impossible due
-to libbpf erroring out on CO-RE relocations pointing to eliminated weak
-subprogs. Now that previous patch fixed this issue, switch back to
-__weak __hidden as it's a more direct way of specifying the desired
-behavior.
+Add CO-RE relocations into __weak subprogs for multi-file linked_funcs
+selftest to make sure libbpf handles such combination well.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/usdt.bpf.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/progs/linked_funcs1.c | 8 ++++++++
+ tools/testing/selftests/bpf/progs/linked_funcs2.c | 8 ++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
-index 881a2422a8ef..4181fddb3687 100644
---- a/tools/lib/bpf/usdt.bpf.h
-+++ b/tools/lib/bpf/usdt.bpf.h
-@@ -103,7 +103,7 @@ int __bpf_usdt_spec_id(struct pt_regs *ctx)
- }
+diff --git a/tools/testing/selftests/bpf/progs/linked_funcs1.c b/tools/testing/selftests/bpf/progs/linked_funcs1.c
+index b964ec1390c2..963b393c37e8 100644
+--- a/tools/testing/selftests/bpf/progs/linked_funcs1.c
++++ b/tools/testing/selftests/bpf/progs/linked_funcs1.c
+@@ -4,6 +4,7 @@
+ #include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
  
- /* Return number of USDT arguments defined for currently traced USDT. */
--static inline __noinline
-+__weak __hidden
- int bpf_usdt_arg_cnt(struct pt_regs *ctx)
+ /* weak and shared between two files */
+ const volatile int my_tid __weak;
+@@ -44,6 +45,13 @@ void set_output_ctx1(__u64 *ctx)
+ /* this weak instance should win because it's the first one */
+ __weak int set_output_weak(int x)
  {
- 	struct __bpf_usdt_spec *spec;
-@@ -124,7 +124,7 @@ int bpf_usdt_arg_cnt(struct pt_regs *ctx)
-  * Returns 0 on success; negative error, otherwise.
-  * On error *res is guaranteed to be set to zero.
-  */
--static inline __noinline
-+__weak __hidden
- int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
++	static volatile int whatever;
++
++	/* make sure we use CO-RE relocations in a weak function, this used to
++	 * cause problems for BPF static linker
++	 */
++	whatever = bpf_core_type_size(struct task_struct);
++
+ 	output_weak1 = x;
+ 	return x;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/linked_funcs2.c b/tools/testing/selftests/bpf/progs/linked_funcs2.c
+index 575e958e60b7..db195872f4eb 100644
+--- a/tools/testing/selftests/bpf/progs/linked_funcs2.c
++++ b/tools/testing/selftests/bpf/progs/linked_funcs2.c
+@@ -4,6 +4,7 @@
+ #include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
+ 
+ /* weak and shared between both files */
+ const volatile int my_tid __weak;
+@@ -44,6 +45,13 @@ void set_output_ctx2(__u64 *ctx)
+ /* this weak instance should lose, because it will be processed second */
+ __weak int set_output_weak(int x)
  {
- 	struct __bpf_usdt_spec *spec;
-@@ -204,7 +204,7 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
-  * utilizing BPF cookies internally, so user can't use BPF cookie directly
-  * for USDT programs and has to use bpf_usdt_cookie() API instead.
-  */
--static inline __noinline
-+__weak __hidden
- long bpf_usdt_cookie(struct pt_regs *ctx)
- {
- 	struct __bpf_usdt_spec *spec;
++	static volatile int whatever;
++
++	/* make sure we use CO-RE relocations in a weak function, this used to
++	 * cause problems for BPF static linker
++	 */
++	whatever = 2 * bpf_core_type_size(struct task_struct);
++
+ 	output_weak2 = x;
+ 	return 2 * x;
+ }
 -- 
 2.30.2
 
