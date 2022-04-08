@@ -2,651 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8694FA029
-	for <lists+bpf@lfdr.de>; Sat,  9 Apr 2022 01:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09474FA052
+	for <lists+bpf@lfdr.de>; Sat,  9 Apr 2022 01:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbiDHXjY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Apr 2022 19:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
+        id S231981AbiDIAAb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Apr 2022 20:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbiDHXjX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 19:39:23 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4379F1255A3
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 16:37:16 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x33so11031647lfu.1
-        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 16:37:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KzvxoYyMwDAxne0ZUgfzSLKGmZzMt8jkDwT4MxM+nDI=;
-        b=NSey0JM1ae6uGsrIqgTJIirJmluDrSYy+ZbuRPcWk5RH52QrdrDAPQ5MUVz9UpmVL2
-         2o8M2GPTC7T8Kcmsu1nyuNSGSRSv8KGHFabq0rsTnNLBPN4vIEx27aB5QwjR29AmmltJ
-         KbgvXn6OpZTreyzWSWeCXZaIq+TSBFIFL6qeGLgUl9b38/gtupbCGdxNXtwsRYQiS3H0
-         hASwQO1gba3KA3MEpVYceauY5f1Kc+V9XGG7p1DjEWG+CNPmFIec1CrBT+rtAgdgIbcM
-         E5Ta4XOEKzRMlzdBD19E0+nkEPc3TwsJ2tCdBQPHWjEbosssAM9Yu41VlqghexaHdeWG
-         dN/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KzvxoYyMwDAxne0ZUgfzSLKGmZzMt8jkDwT4MxM+nDI=;
-        b=xHOklp3rFzNt+2W8vbl4q3TEMO6WGC8kTjl+nmy9lGZowAarsgyW7PIe4Ei/nVZiPf
-         IBDVgkjiXfR2mch40MOjUze6WFduhv5JilkI5EXtxjM2MqWrVf8cszVCisQaYY0j7wgS
-         BmKWA7/em/Q/7Myt5YYH35IqvfZ+0ax1vsbiZIRLBjm3IiZgIVnA2RXcg92BesSpE80j
-         R6V2HeyCCqUUe02CZ5zxBcpxa0XtQiqOQ89yzRGahasrTTTQroFrXHb16Rqdxh4Ng71I
-         3iKeOznxSp5dhyGM42BsdgIL+XUjxVpGpZx8uWLIlPmAiLgjcc5nK3/WrZ8bHqh1x4xh
-         mTKQ==
-X-Gm-Message-State: AOAM531mH9oTM/0tOKS59x5HkdZZsYqoDDEe9m0hHcojQHO4A1blRjA7
-        DPecYswjgjWzmAcTVOeBLlnksTSHyFU1Ej/CLVuD14Zv
-X-Google-Smtp-Source: ABdhPJxm7idnbMY64DYBNhx1AUJaknMz2Kk4r+RgKaq4qGkCKu4iH2Vi19FZupKgpyH7bmMfKHTa7+GRRmBOT/+YVJI=
-X-Received: by 2002:a05:6512:1151:b0:44a:6d05:8d2d with SMTP id
- m17-20020a056512115100b0044a6d058d2dmr14363682lfg.442.1649461034188; Fri, 08
- Apr 2022 16:37:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220402015826.3941317-1-joannekoong@fb.com> <20220402015826.3941317-4-joannekoong@fb.com>
- <CAEf4BzbRsA+JTP+4mqWpjRd_KEtaaM74ihz7RKGgpu_outhxTg@mail.gmail.com>
- <CAJnrk1Y8nE7n6PY9f7KBHH-P_ji3vAnuH5UP0r1fAk4OUTUZtQ@mail.gmail.com> <CAEf4Bzbp=91iYC5Ggm2W6gd3m_=wYXUXrZ7XLnGU5i=STcVAWA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbp=91iYC5Ggm2W6gd3m_=wYXUXrZ7XLnGU5i=STcVAWA@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Fri, 8 Apr 2022 16:37:02 -0700
-Message-ID: <CAJnrk1bxi9Ax0RBCGEz61tH0v2DCZwy=R132R4BS5737-WMN9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/7] bpf: Add bpf_dynptr_from_mem, bpf_malloc, bpf_free
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S229727AbiDIAAa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 20:00:30 -0400
+Received: from de-smtp-delivery-102.mimecast.com (de-smtp-delivery-102.mimecast.com [194.104.109.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FED13CEA
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 16:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1649462303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=45U86sTVkTlgB5NmFrIH7fnizsit/ARdjb2tsTH/Qc0=;
+        b=XnlxW/xiuIVti3QcTU7eIY5zktDA+NFonL5lPBmIzIWjAPbAc5ooYetnkNftn4up8W2WyG
+        /eZxevW7FFiTfQ48B0g3/fGGuy8HSqO6oRTtVSlUYZ2a5VrZiyxiNiBk4vbXNyQTR/N4Pb
+        1tRKnBSPvf7fXi/YEZSAYkqSWY/jZCQ=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2105.outbound.protection.outlook.com [104.47.17.105]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ de-mta-5-fgF5yKM0PAiFI4RVTdUVMg-1; Sat, 09 Apr 2022 01:58:18 +0200
+X-MC-Unique: fgF5yKM0PAiFI4RVTdUVMg-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hvegx0pdfVW9tuq3gCpsZC5RVh9bcsxh5bQD84ZJArkMeAGg/mDvV9OBDuoRbyLYCuyIAcBC3IdWW1gx++ejJw/8JeKUEAGG/fo9+v8m/5pQR1MAo4hFfELzVPa4OLGsRck6f9Pc3GdX4qXma+nIH5SK3W5Ug6fW55QaBRbcBTyZDfDrSW6KiDjidmbpAaElXhlkwBAtnfPd2JTmFX3ZGOENfVz06va4+uPoJ6KcvlYoLvX+TqW80oCfGxWTsQFEfGQl1h+onWX3ywjl8wZG8l1zOHEZ5NYeGhSYTODArtjj/LAqkCL/2vCu1629YKfMk+YqZRlWI95x/Is3DEmaJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Hj2TKwkYO+p7RRCRZg3nmv5GLtR5jIBZT9zdETyTC5c=;
+ b=dMtMkBv11H549q1a4XvATSdzCjoDwIktrtVZg0P1tlA1yOopzLiOI/Q0pHEQdbNUJdOGY9PXzC9IOB69ayujN0gZwcIsj3NvVq6JLUPhGnOQ8bHaqCa92gdetDgtsnlxPaHNBku8+3E6bKxpJ9hmo7Y2UhQJcQ3dTLCc1R+/dVi+Hs81MW/KJWCP/XVf0hFNcWHHeIG6Zxjelly+AE3+gHmW/Ni1tk2IBo9yR7FPdhYeAgFjQvWcvf5OYxUKQCmqGaa1Co3WTBk+A7kOElAlVhkiFcq4Z3P5gYvalAq3xOZ0eZ63i/0UFbGEN0yKCJ7SGSh8Wf8n6CwQYNdQwnlhSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com (2603:10a6:7:83::14)
+ by VI1PR04MB4430.eurprd04.prod.outlook.com (2603:10a6:803:65::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.22; Fri, 8 Apr
+ 2022 23:58:16 +0000
+Received: from HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::9974:fd5e:e3c0:14dc]) by HE1PR0402MB3497.eurprd04.prod.outlook.com
+ ([fe80::9974:fd5e:e3c0:14dc%3]) with mapi id 15.20.5123.031; Fri, 8 Apr 2022
+ 23:58:16 +0000
+From:   Geliang Tang <geliang.tang@suse.com>
+To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+CC:     Geliang Tang <geliang.tang@suse.com>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 0/2] drop duplicate max/min definitions
+Date:   Sat,  9 Apr 2022 07:58:16 +0800
+Message-ID: <cover.1649462033.git.geliang.tang@suse.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: TYWPR01CA0015.jpnprd01.prod.outlook.com
+ (2603:1096:400:a9::20) To HE1PR0402MB3497.eurprd04.prod.outlook.com
+ (2603:10a6:7:83::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 94f51954-7406-449e-23c8-08da19bba596
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4430:EE_
+X-Microsoft-Antispam-PRVS: <VI1PR04MB44303D95EF96D2323B2AB432F8E99@VI1PR04MB4430.eurprd04.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Y8KqxilPy4HnbSfjzXw0aSjIY30LJCB3oZTqOzLZml7b07SRMdiE460PMmcrqsSAs9sUGxmSnfA8kIuckJoULgeDatc8j+n/1siWmKbyRRbGfVpLqKuClS+y7Y85snoWusg8i6Za+SLCKTR4XLbCy17MYYl4LBqpkPRQx54m0WuUvOh0FWrxgFxStn5xMpVE0+uHPyqZasur8tnSRkK5FXeCd+x4B2TJMKkxHiT2QjEXgm+c5BhQQcU+yqWvjhoweqKtrMTSJQ6jwh1cFqAbehz6SHGRTK0Zvef/qZCk78ArWnOHcKETdKiZ/8KXIXutOCU/ITj6b0kqk4MNESHZdXqx0ZezQ47GAX+WqC+lDWB3hvFbzGN1LFSlkfQN2WO00DfvcrnWtboJEFXO122CqUqJN2K4FQo256tWaUs2097GU9haQvN715wuLze4dooV+F0Dj9Z/yxrz5tfNn4hnr1BnMJ11onsUy403VIdWstMw4JHZGhW06AVXMveg6SXRRO4M2VUmqMr1I2WWEDZ1Xe0prjJJKBmZBNRKU4lrMKQgYVIZF91KRYVfy2yYGQyd4kgYwO+zWOeO4WenhJFzURTfUpbTsg5+nKFT5cAAuwzXR0D9v71sgDXkBun5kFLsNQV5dGY+O7J0sqp5zOt4EfDDNt5JnXQbEWNbieyH/2s0jL5iNiyB1fP+m4T4fxf4EY+87icEpuVuZR9uSzv+2g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3497.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(186003)(26005)(83380400001)(36756003)(6512007)(2906002)(2616005)(7416002)(4326008)(6506007)(110136005)(66946007)(316002)(4744005)(44832011)(8676002)(38100700002)(5660300002)(86362001)(66476007)(66556008)(508600001)(6486002)(8936002)(13296009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1mjKwIa6DQUuLPdm41iSxM335Hvl7a5RbKcdWCu4j2v3cr1H72frykyYC1j/?=
+ =?us-ascii?Q?BpymnvRTHjIeSTg8kSIYRB8ta7klB5pgYRrfloI4X4IkaqAD2KH0WhK6qHyG?=
+ =?us-ascii?Q?W53HHNmAOxkg2jdnT3/bcPd7YWWVE9ylXpJxRsWDBKVjF1NoMieoQvQ/sYls?=
+ =?us-ascii?Q?QIBQDn+tb3OBWZ1Ngoq7tjHK/uqWVBsTbIAk8qpcNmA5Gy1urgXYKY3plhcM?=
+ =?us-ascii?Q?DYgYBqSxdKipOinJ7Xa0DIzvvdX672ZEwydpKp1xRMM6tTHeQzahwwnN2BZ5?=
+ =?us-ascii?Q?GJyFO56+jOKPEy2LmBP9hPXEq6m+epZH1Wc6/RdFMvLD4pNMvEXuO8lZastf?=
+ =?us-ascii?Q?QUK8Ikq5cDT+XdXrJ1SxIYdn+0FPnuGpjpAQ1KquIqVnxMi8gmwKw7v+XLvk?=
+ =?us-ascii?Q?w98DxYoqwiYiQYDG0tiMaprAExdDJxS+kvl8YiLdNHEIHayT/Zqvfs8sz8ol?=
+ =?us-ascii?Q?8YpGGveJ/08cjDJDXdAPiovkANS7Q5IRx2oxbk9ncCYX8s4pcHt7ujGRr8Gt?=
+ =?us-ascii?Q?/bE26UKaZ3pD2jydgMKFNFuUzJEPh71qmG//VZT+pktH3kURe/4Foi5mkuop?=
+ =?us-ascii?Q?9baUrIHPLmEWGHScsVlghD2U//55ogH6bdkN+iVhbP2+YiOJWgO+97d/4lCq?=
+ =?us-ascii?Q?m4D6xHeIARsae7GU5nwSz0DEZdmxSOmvksO1g1inmw8M5PAJ503x93KZRUyI?=
+ =?us-ascii?Q?plZc53jD8kgqUmrCIgV4fwyGwMRaVwZDLGL+u72Yv7xQpiKk6IWplyfpSSN6?=
+ =?us-ascii?Q?ouC4P+2nPoR9POMGwweqis6hRcZYMwi+VsKs1cgFw36yAWnFcJyxSui89f52?=
+ =?us-ascii?Q?rWT/BqD9IlvOsjemFscwH9t7bo0/0LayPhmQSs/vCZaeCxuxr71dJUNCHcM6?=
+ =?us-ascii?Q?n32nVZMbxhrPvInu6HePELeOGhLLV9DmULrpuBCuvP5Uo/TzSqJnbCUqaJfV?=
+ =?us-ascii?Q?k9nHQ5GzMqszKROgt0gyTdP7s05fJyt37bVDSs7xInslpEnenfTmvnIjLoeB?=
+ =?us-ascii?Q?B3HKieNErXTUhgtXRtROf0bf3dz5y04N2V04wF0GT+RoB/yW22yZGPrqY7dK?=
+ =?us-ascii?Q?uoGD7BYIg8BukPbbW9Txx9r7PYnO7Ada0xNlHytTkUI3XtLYoLbcWIeoK/KD?=
+ =?us-ascii?Q?HBYjUbID93R+/3wyc1G4E3asMcsle+o217UhlWgNcR//9XE/M0gkeVFePQZs?=
+ =?us-ascii?Q?/JzdV9rM2IGeuoOtRlvZNeWnMdw8/CAzOfV+wqwDbve3RPA920qoaSMhJata?=
+ =?us-ascii?Q?XmNHBPmrK7bRFPYS+teysGbGPuinwvuuAbaQ5hiuC5sUN4i+g3Be+XIMkz2C?=
+ =?us-ascii?Q?Budc+uIQ1KhNNcJh5/tRp1iJpFNYnNt7+M3zlwkr7+5wPGCyiAgXD5s4jeW6?=
+ =?us-ascii?Q?IvbESiywOLDI6PIA3XFWnXTsg93+sWbvZIT4YtJxFJKxFMbAILW72ufyswvN?=
+ =?us-ascii?Q?UH3mAOGQoaw252mcLVDsP2rzFGZlgjkQ0HsisMjo9AgOOGJpYAKqOpzfutNy?=
+ =?us-ascii?Q?HEAcqVmM5rkWx6UWyaQ9JjZAL7wnKash83ZOWtPlwhX6GwrkLpr+IGHiR56a?=
+ =?us-ascii?Q?+2jFKFStJ1JG43Bnsjtdh9hUqj67kWUqYRIgX+jqKOMPDU1F67wawMs9cHLG?=
+ =?us-ascii?Q?3uFYn5hSQApOecbHTYQ/go1/tq/ACf/tHUBGMfN6FMF8KD/ZxpgrU0VW0ABp?=
+ =?us-ascii?Q?KlRQH5OGV2Nxq8mp3+GlG3KTI1ABcQIBwFVRu5mS7TJ/DpVy78AJASutZJSW?=
+ =?us-ascii?Q?WT48w8l558trOb+s1hTqKeDbp4JewLc=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94f51954-7406-449e-23c8-08da19bba596
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3497.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2022 23:58:15.8067
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t+gaTEr6VqepQunji5lkuoOYpuw8mtjnAbw69M3DgyUCpJieGZbWojhupyPNhYWxVv7znCD8z2AHq3vt9UxpzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4430
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 8, 2022 at 3:46 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Apr 8, 2022 at 3:04 PM Joanne Koong <joannelkoong@gmail.com> wrote:
-> >
-> > On Wed, Apr 6, 2022 at 3:23 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Fri, Apr 1, 2022 at 7:00 PM Joanne Koong <joannekoong@fb.com> wrote:
-> > > >
-> > > > From: Joanne Koong <joannelkoong@gmail.com>
-> > > >
-> > > > This patch adds 3 new APIs and the bulk of the verifier work for
-> > > > supporting dynamic pointers in bpf.
-> > > >
-> > > > There are different types of dynptrs. This patch starts with the most
-> > > > basic ones, ones that reference a program's local memory
-> > > > (eg a stack variable) and ones that reference memory that is dynamically
-> > > > allocated on behalf of the program. If the memory is dynamically
-> > > > allocated by the program, the program *must* free it before the program
-> > > > exits. This is enforced by the verifier.
-> > > >
-> > > > The added APIs are:
-> > > >
-> > > > long bpf_dynptr_from_mem(void *data, u32 size, struct bpf_dynptr *ptr);
-> > > > long bpf_malloc(u32 size, struct bpf_dynptr *ptr);
-> > > > void bpf_free(struct bpf_dynptr *ptr);
-> > > >
-> > > > This patch sets up the verifier to support dynptrs. Dynptrs will always
-> > > > reside on the program's stack frame. As such, their state is tracked
-> > > > in their corresponding stack slot, which includes the type of dynptr
-> > > > (DYNPTR_LOCAL vs. DYNPTR_MALLOC).
-> > > >
-> > > > When the program passes in an uninitialized dynptr (ARG_PTR_TO_DYNPTR |
-> > > > MEM_UNINIT), the stack slots corresponding to the frame pointer
-> > > > where the dynptr resides at is marked as STACK_DYNPTR. For helper functions
-> > > > that take in iniitalized dynptrs (such as the next patch in this series
-> > > > which supports dynptr reads/writes), the verifier enforces that the
-> > > > dynptr has been initialized by checking that their corresponding stack
-> > > > slots have been marked as STACK_DYNPTR. Dynptr release functions
-> > > > (eg bpf_free) will clear the stack slots. The verifier enforces at program
-> > > > exit that there are no dynptr stack slots that need to be released.
-> > > >
-> > > > There are other constraints that are enforced by the verifier as
-> > > > well, such as that the dynptr cannot be written to directly by the bpf
-> > > > program or by non-dynptr helper functions. The last patch in this series
-> > > > contains tests that trigger different cases that the verifier needs to
-> > > > successfully reject.
-> > > >
-> > > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > > > ---
-> > > >  include/linux/bpf.h            |  74 ++++++++-
-> > > >  include/linux/bpf_verifier.h   |  18 +++
-> > > >  include/uapi/linux/bpf.h       |  40 +++++
-> > > >  kernel/bpf/helpers.c           |  88 +++++++++++
-> > > >  kernel/bpf/verifier.c          | 266 ++++++++++++++++++++++++++++++++-
-> > > >  scripts/bpf_doc.py             |   2 +
-> > > >  tools/include/uapi/linux/bpf.h |  40 +++++
-> > > >  7 files changed, 521 insertions(+), 7 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index cb9f42866cde..e0fcff9f2aee 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -346,7 +346,13 @@ enum bpf_type_flag {
-> > > >
-> > > >         MEM_RELEASE             = BIT(6 + BPF_BASE_TYPE_BITS),
-> > > >
-> > > > -       __BPF_TYPE_LAST_FLAG    = MEM_RELEASE,
-> > > > +       /* DYNPTR points to a program's local memory (eg stack variable). */
-> > > > +       DYNPTR_TYPE_LOCAL       = BIT(7 + BPF_BASE_TYPE_BITS),
-> > > > +
-> > > > +       /* DYNPTR points to dynamically allocated memory. */
-> > > > +       DYNPTR_TYPE_MALLOC      = BIT(8 + BPF_BASE_TYPE_BITS),
-> > > > +
-> > > > +       __BPF_TYPE_LAST_FLAG    = DYNPTR_TYPE_MALLOC,
-> > > >  };
-> > > >
-> > > >  /* Max number of base types. */
-> > > > @@ -390,6 +396,7 @@ enum bpf_arg_type {
-> > > >         ARG_PTR_TO_STACK,       /* pointer to stack */
-> > > >         ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
-> > > >         ARG_PTR_TO_TIMER,       /* pointer to bpf_timer */
-> > > > +       ARG_PTR_TO_DYNPTR,      /* pointer to bpf_dynptr. See bpf_type_flag for dynptr type */
-> > > >         __BPF_ARG_TYPE_MAX,
-> > > >
-> > > >         /* Extended arg_types. */
-> > > > @@ -2396,4 +2403,69 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
-> > > >                         u32 **bin_buf, u32 num_args);
-> > > >  void bpf_bprintf_cleanup(void);
-> > > >
-> > > > +/* the implementation of the opaque uapi struct bpf_dynptr */
-> > > > +struct bpf_dynptr_kern {
-> > > > +       u8 *data;
-> > >
-> > > nit: u8 * is too specific, it's not always "bytes" of data. Let's use `void *`?
-> > Sounds great! My reason for going with u8 * instead of void * is that
-> > void pointer arithmetic in C is invalid - but it seems like this isn't
-> > something we have to worry about here since gcc is the default
-> > compiler for linux and gcc allows it as an extension
->
-> Right, we do void * arithmetic everywhere. I thought this restriction
-> is C++-specific. But there might be GCC extensions as well.
->
->
-> > >
-> > > > +       /* The upper 4 bits are reserved. Bit 29 denotes whether the
-> > > > +        * dynptr is read-only. Bits 30 - 32 denote the dynptr type.
-> > > > +        */
-> > >
-> > > not essential, but I think using highest bit for read-only and then
-> > > however many next upper bits for dynptr kind is a bit cleaner
-> > > approach.
-> > I'm happy with either - I was thinking if we have the uppermost bits
-> > be dynptr kind, then that makes it easiest to get the dynptr type
-> > (simply size >> DYNPTR_TYPE_SHIFT) whereas if the read-only bit is the
-> > highest bit, then we also need to clear that out. But not a big deal
-> > :)
->
-> I think you'll want to define DYNPTR_TYPE_MASK anyways and then it's
-> just (size >> DYNPTR_TYPE_SHIFT) & DYNPTR_TYPE_MASK.
->
-> > >
-> > > also it seems like normally bits are zero-indexed, so, pedantically,
-> > > there is no bit 32, it's bit #31
-> > >
-> > > > +       u32 size;
-> > > > +       u32 offset;
-> > >
-> > > Let's document the semantics of offset and size. E.g., if I have
-> > > offset 4 and size 20, does it mean there were 24 bytes, but we ignore
-> > > first 4 and can address next 20, or does it mean that there is 20
-> > > bytes, we skip first 4 and have 16 addressable. Basically, usable size
-> > > is just size of size - offset? That will change how/whether the size
-> > > is adjusted when offset is moved.
-> > >
-> > > > +} __aligned(8);
-> > > > +
-> > > > +enum bpf_dynptr_type {
-> > >
-> > > it's a good idea to have default zero value to be BPF_DYNPTR_TYPE_INVALID
-> > >
-> > > > +       /* Local memory used by the bpf program (eg stack variable) */
-> > > > +       BPF_DYNPTR_TYPE_LOCAL,
-> > > > +       /* Memory allocated dynamically by the kernel for the dynptr */
-> > > > +       BPF_DYNPTR_TYPE_MALLOC,
-> > > > +};
-> > > > +
-> > > > +/* The upper 4 bits of dynptr->size are reserved. Consequently, the
-> > > > + * maximum supported size is 2^28 - 1.
-> > > > + */
-> > > > +#define DYNPTR_MAX_SIZE        ((1UL << 28) - 1)
-> > > > +#define DYNPTR_SIZE_MASK       0xFFFFFFF
-> > > > +#define DYNPTR_TYPE_SHIFT      29
-> > >
-> > > I'm thinking that maybe we should start with reserving entire upper
-> > > byte in size and offset to be on the safer side? And if 16MB of
-> > > addressable memory blob isn't enough, we can always relaxed it later.
-> > > WDYT?
-> > >
-> > This sounds great! I will make this change for v2
->
-> sounds good
->
-> > > > +
-> > > > +static inline enum bpf_dynptr_type bpf_dynptr_get_type(struct bpf_dynptr_kern *ptr)
-> > > > +{
-> > > > +       return ptr->size >> DYNPTR_TYPE_SHIFT;
-> > > > +}
-> > > > +
-> > > > +static inline void bpf_dynptr_set_type(struct bpf_dynptr_kern *ptr, enum bpf_dynptr_type type)
-> > > > +{
-> > > > +       ptr->size |= type << DYNPTR_TYPE_SHIFT;
-> > > > +}
-> > > > +
-> > > > +static inline u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
-> > > > +{
-> > > > +       return ptr->size & DYNPTR_SIZE_MASK;
-> > > > +}
-> > > > +
-> > > > +static inline int bpf_dynptr_check_size(u32 size)
-> > > > +{
-> > > > +       if (size == 0)
-> > > > +               return -EINVAL;
-> > >
-> > > What's the downside of allowing size 0? Honest question. I'm wondering
-> > > why prevent having dynptr pointing to an "empty slice"? It might be a
-> > > useful feature in practice.
-> > I don't see the use of dynptrs that point to something of size 0, so I
-> > thought it'd be simplest to just return an -EINVAL if the user tries
-> > to create one. I don't have a particular preference for handling this
-> > though - especially if this will be a useful feature in the future,
-> > then I agree we should just let the user create and use empty slices
-> > if they wish to.
->
-> taking Go slices as an example, empty slice is a useful thing
-> sometimes, makes some algorithms more uniform.
->
-> > >
-> > > > +
-> > > > +       if (size > DYNPTR_MAX_SIZE)
-> > > > +               return -E2BIG;
-> > > > +
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +static inline int bpf_dynptr_check_off_len(struct bpf_dynptr_kern *ptr, u32 offset, u32 len)
-> > > > +{
-> > > > +       u32 capacity = bpf_dynptr_get_size(ptr) - ptr->offset;
-> > > > +
-> > > > +       if (len > capacity || offset > capacity - len)
-> > > > +               return -EINVAL;
-> > > > +
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data, enum bpf_dynptr_type type,
-> > > > +                    u32 offset, u32 size);
-> > > > +
-> > > > +void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
-> > > > +
-> > > >  #endif /* _LINUX_BPF_H */
-> > > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> > > > index 7a01adc9e13f..bc0f105148f9 100644
-> > > > --- a/include/linux/bpf_verifier.h
-> > > > +++ b/include/linux/bpf_verifier.h
-> > > > @@ -72,6 +72,18 @@ struct bpf_reg_state {
-> > > >
-> > > >                 u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
-> > > >
-> > > > +               /* for dynptr stack slots */
-> > > > +               struct {
-> > > > +                       enum bpf_dynptr_type dynptr_type;
-> > > > +                       /* A dynptr is 16 bytes so it takes up 2 stack slots.
-> > > > +                        * We need to track which slot is the first slot
-> > > > +                        * to protect against cases where the user may try to
-> > > > +                        * pass in an address starting at the second slot of the
-> > > > +                        * dynptr.
-> > > > +                        */
-> > > > +                       bool dynptr_first_slot;
-> > > > +               };
-> > >
-> > > why not
-> > >
-> > > struct {
-> > >     enum bpf_dynptr_type type;
-> > >     bool first_lot;
-> > > } dynptr;
-> > >
-> > > ? I think it's cleaner grouping
-> > Agreed! I will make this change for v2
-> > >
-> > [...]
-> > >
-> > > > + *     Description
-> > > > + *             Dynamically allocate memory of *size* bytes.
-> > > > + *
-> > > > + *             Every call to bpf_malloc must have a corresponding
-> > > > + *             bpf_free, regardless of whether the bpf_malloc
-> > > > + *             succeeded.
-> > > > + *
-> > > > + *             The maximum *size* supported is DYNPTR_MAX_SIZE.
-> > > > + *     Return
-> > > > + *             0 on success, -ENOMEM if there is not enough memory for the
-> > > > + *             allocation, -EINVAL if the size is 0 or exceeds DYNPTR_MAX_SIZE.
-> > > > + *
-> > > > + * void bpf_free(struct bpf_dynptr *ptr)
-> > >
-> > > thinking about the next patch set that will add storing this malloc
-> > > dynptr into the map, bpf_free() will be a lie, right? As it will only
-> > > decrement a refcnt, not necessarily free it, right? So maybe just
-> > > generic bpf_dynptr_put() or bpf_malloc_put() or something like that is
-> > > a bit more "truthful"?
-> > I like the simplicity of bpf_free(), but I can see how that might be
-> > confusing. What are your thoughts on "bpf_dynptr_free()"? Since when
-> > we get into dynptrs that are stored in maps vs. dynptrs stored
-> > locally, calling bpf_dynptr_free() frees (invalidates) your local
-> > dynptr even if it doesn't free the underlying memory if it still has
-> > valid refcounts on it? To me, "malloc" and "_free" go more intuitively
-> > together as a pair.
->
-> Sounds good to me (though let's use _dynptr() as a suffix
-> consistently). I also just realized that maybe we should call
-> bpf_malloc() a bpf_malloc_dynptr() instead. I can see how we might
-> want to enable plain bpf_malloc() with statically known size (similar
-> to statically known bpf_ringbuf_reserve()) for temporary local malloc
-> with direct memory access? So bpf_malloc_dynptr() would be a
-> dynptr-enabled counterpart to fixed-sized bpf_malloc()? And then
-> bpf_free() will work with direct pointer returned from bpf_malloc(),
-> while bpf_free_dynptr() will work with dynptr returned from
-> bpf_malloc_dynptr().
-I see! What is the advantage of a plain bpf_malloc()? Is it that it's
-a more ergonomic API (you get back a direct pointer to the data
-instead of getting back a dynptr and then having to call
-bpf_dynptr_data to get direct access) and you don't have to allocate
-extra bytes for refcounting?
+Two small cleanups for selftests, drop duplicate max/min definitions.
 
-I will rename this to bpf_malloc_dynptr() and bpf_free_dynptr().
->
-> > >
-> > > > + *     Description
-> > > > + *             Free memory allocated by bpf_malloc.
-> > > > + *
-> > > > + *             After this operation, *ptr* will be an invalidated dynptr.
-> > > > + *     Return
-> > > > + *             Void.
-> > > >   */
-> > [...]
-> > > > +const struct bpf_func_proto bpf_dynptr_from_mem_proto = {
-> > > > +       .func           = bpf_dynptr_from_mem,
-> > > > +       .gpl_only       = false,
-> > > > +       .ret_type       = RET_INTEGER,
-> > > > +       .arg1_type      = ARG_PTR_TO_MEM,
-> > >
-> > > need to think what to do with uninit stack slots. Do we need
-> > > bpf_dnptr_from_uninit_mem() or we just allow ARG_PTR_TO_MEM |
-> > > MEM_UNINIT here?
-> > I think we can just change this to ARG_PTR_TO_MEM | MEM_UNINIT.
->
-> sgtm
->
-> > >
-> > > > +       .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
-> > > > +       .arg3_type      = ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL | MEM_UNINIT,
-> > > > +};
-> > > > +
-> > > > +BPF_CALL_2(bpf_malloc, u32, size, struct bpf_dynptr_kern *, ptr)
-> > > > +{
-> > > > +       void *data;
-> > > > +       int err;
-> > > > +
-> > > > +       err = bpf_dynptr_check_size(size);
-> > > > +       if (err) {
-> > > > +               bpf_dynptr_set_null(ptr);
-> > > > +               return err;
-> > > > +       }
-> > > > +
-> > > > +       data = kmalloc(size, GFP_ATOMIC);
-> > >
-> > > we have this fancy logic now to allow non-atomic allocation inside
-> > > sleepable programs, can we use that here as well? In sleepable mode it
-> > > would be nice to wait for malloc() to grab necessary memory, if
-> > > possible.
-> > Agreed - I'm planning to do this in a later "dynptr optimizations"
-> > patchset (which will also include inlining BPF instructions for some
-> > of the helper functions)
->
-> great, ok
->
-> > >
-> > > > +       if (!data) {
-> > > > +               bpf_dynptr_set_null(ptr);
-> > > > +               return -ENOMEM;
-> > > > +       }
-> > > > +
-> > >
-> > > so.... kmalloc() doesn't zero initialize the memory. I think it's a
-> > > great property (which we can later modify with flags, if necessary),
-> > > so I'd do zero-initialization by default. we can keep calling it
-> > > bpf_malloc() instead of bpf_zalloc(), of course.
-> > >
-> > [...]
-> > > > +static inline int get_spi(s32 off)
-> > > > +{
-> > > > +       return (-off - 1) / BPF_REG_SIZE;
-> > > > +}
-> > > > +
-> > > > +static bool check_spi_bounds(struct bpf_func_state *state, int spi, u32 nr_slots)
-> > >
-> > > "check_xxx"/"validate_xxx" pattern has ambiguity when it comes to
-> > > interpreting its return value. In some cases it would be 0 for success
-> > > and <0 for error, in this it's true/false where probably true meaning
-> > > all good. It's unfortunate to have to think about this when reading
-> > > code. If you call it something like "is_stack_range_valid" it would be
-> > > much more natural to read and reason about, IMO.
-> > Great point! I'll change this naming for v2
-> > >
-> > > BTW, what does "spi" stand for? "stack pointer index"? slot_idx?
-> > It's not formally documented anywhere but I assume it's short for
-> > "stack pointer index".
-> > >
-> > > > +{
-> > > > +       int allocated_slots = state->allocated_stack / BPF_REG_SIZE;
-> > > > +
-> > > > +       return allocated_slots > spi && nr_slots - 1 <= spi;
-> > >
-> > > ok, this is personal preferences, but it took me considerable time to
-> > > try to understand what's being checked here (this backwards grow of
-> > > slot indices also threw me off). But seems like we have a range of
-> > > slots that are calculated as [spi - nr_slots + 1, spi] and we want to
-> > > check that it's within [0, allocated_stack), so most straightforward
-> > > way would be:
-> > >
-> > > return spi - nr_slots + 1 >= 0 && spi < allocated_slots;
-> > >
-> > > And I'd definitely leave a comment about this whole index grows
-> > > downwards (it's not immediately obvious even if you know that indices
-> > > are derived from negative stack offsets)
-> > Awesome, I will make these edits for v2
-> > >
-> > [...]
-> > > > +       switch (type) {
-> > > > +       case DYNPTR_TYPE_LOCAL:
-> > > > +               *dynptr_type = BPF_DYNPTR_TYPE_LOCAL;
-> > > > +               break;
-> > > > +       case DYNPTR_TYPE_MALLOC:
-> > > > +               *dynptr_type = BPF_DYNPTR_TYPE_MALLOC;
-> > > > +               break;
-> > > > +       default:
-> > > > +               /* Can't have more than one type set and can't have no
-> > > > +                * type set
-> > > > +                */
-> > > > +               return -EINVAL;
-> > >
-> > > see above about BPF_DYNPTR_TYPE_INVALID, with that you don't have to
-> > > use out parameter, just return enum bpf_dynptr_type directly with
-> > > BPF_DYNPTR_TYPE_INVALID marking an error
-> > Nice! I love this suggestion - it makes this a lot smoother.
-> > >
-> > > > +       }
-> > > > +
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > [...]
-> > > > +
-> > > > +/* Check if the dynptr argument is a proper initialized dynptr */
-> > > > +static bool check_dynptr_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-> > > > +                             enum bpf_arg_type arg_type)
-> > >
-> > > is_dynptr_valid()? You are not checking if it's just initialized but
-> > > also that it matches arg_type, right? Also see my rambling about
-> > > check_xxx naming
-> > I will rename this to is_dynptr_init_valid(). is_dynptr_valid() might
-> > be too generic - for example, a valid dynptr should also have its
-> > stack slots marked accordingly, which isn't true here since this
-> > dynptr is uninitialized. I think is_dynptr_init_valid() will be
-> > clearest
->
-> sgtm
->
-> > >
-> > > > +{
-> > > > +       struct bpf_func_state *state = func(env, reg);
-> > > > +       enum bpf_dynptr_type expected_type;
-> > > > +       int spi, err;
-> > > > +
-> > > > +       /* Can't pass in a dynptr at a weird offset */
-> > > > +       if (reg->off % BPF_REG_SIZE)
-> > > > +               return false;
-> > > > +
-> > > > +       spi = get_spi(reg->off);
-> > > > +
-> > > > +       if (!check_spi_bounds(state, spi, BPF_DYNPTR_NR_SLOTS))
-> > > > +               return false;
-> > > > +
-> > > > +       if (!state->stack[spi].spilled_ptr.dynptr_first_slot)
-> > > > +               return false;
-> > > > +
-> > > > +       if (state->stack[spi].slot_type[0] != STACK_DYNPTR)
-> > > > +               return false;
-> > > > +
-> > > > +       /* ARG_PTR_TO_DYNPTR takes any type of dynptr */
-> > > > +       if (arg_type == ARG_PTR_TO_DYNPTR)
-> > > > +               return true;
-> > > > +
-> > > > +       err = arg_to_dynptr_type(arg_type, &expected_type);
-> > > > +       if (unlikely(err))
-> > > > +               return err;
-> > > > +
-> > > > +       return state->stack[spi].spilled_ptr.dynptr_type == expected_type;
-> > > > +}
-> > [...]
-> > > > +/*
-> > > > + * Determines whether the id used for reference tracking is held in a stack slot
-> > > > + * or in a register
-> > > > + */
-> > > > +static bool id_in_stack_slot(enum bpf_arg_type arg_type)
-> > >
-> > > is_ or has_ is a good idea for such bool-returning helpers (similarly
-> > > for stack_access_into_dynptr above), otherwise it reads like a verb
-> > > and command to do something
-> > >
-> > > but looking few lines below, if (arg_type_is_dynptr()) would be
-> > > clearer than extra wrapper function, not sure what's the purpose of
-> > > the helper
-> > My thinking behind this extra wrapper function was that it'd be more
-> > extensible in the future if there are other types that will store
-> > their id in the stack slot. But I think I'm over-optimizing here :)
-> > I'll remove this wrapper function
->
-> yeah, it's internal implementation, so we can always refactor
->
-> > >
-> > [...]
-> > > > @@ -5572,6 +5758,40 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> > > >                 bool zero_size_allowed = (arg_type == ARG_CONST_SIZE_OR_ZERO);
-> > > >
-> > > >                 err = check_mem_size_reg(env, reg, regno, zero_size_allowed, meta);
-> > > > +       } else if (arg_type_is_dynptr(arg_type)) {
-> > > > +               bool initialized = check_dynptr_init(env, reg, arg_type);
-> > > > +
-> > > > +               if (type_is_uninit_mem(arg_type)) {
-> > > > +                       if (initialized) {
-> > > > +                               verbose(env, "Arg #%d dynptr cannot be an initialized dynptr\n",
-> > > > +                                       arg + 1);
-> > > > +                               return -EINVAL;
-> > > > +                       }
-> > > > +                       meta->raw_mode = true;
-> > > > +                       err = check_helper_mem_access(env, regno, BPF_DYNPTR_SIZE, false, meta);
-> > > > +                       /* For now, we do not allow dynptrs to point to existing
-> > > > +                        * refcounted memory
-> > > > +                        */
-> > > > +                       if (reg_type_may_be_refcounted_or_null(regs[BPF_REG_1].type)) {
-> > >
-> > > hard-coded BPF_REG_1?
-> >
-> > I'm viewing this as a temporary line because one of the patches in a
-> > later dynptr patchset will enable support for local dynptrs to point
-> > to existing refcounted memory. The alternative is to add a new
-> > bpf_type_flag like NO_REFCOUNT and then remove that flag later. What
-> > are your thoughts?
->
-> my concern and confusion was that it's a hard-coded BPF_REG_1 instead
-> of using arg to derive register itself. Why making unnecessary
-> assumptions about this always being a first argument?
-I think otherwise we need to add a temporary bpf_type_flag that
-specifies that an arg cannot be refcounted, and then when we allow
-local dynptrs to point to refcounted memory later on, we'll need to
-remove this flag and the verifier checks associated with it. But
-overall, I agree with you that we should just add this bpf_type_flag
-to this patchset rather than using BPF_REG_1 as a temporary solution -
-I will make this change for v2!
->
-> > >
-> > > > +                               verbose(env, "Arg #%d dynptr memory cannot be potentially refcounted\n",
-> > > > +                                       arg + 1);
-> > > > +                               return -EINVAL;
-> > > > +                       }
-> > > > +               } else {
-> > > > +                       if (!initialized) {
-> > > > +                               char *err_extra = "";
-> > >
-> > > const char *
-> > >
-> > > > +
-> > > > +                               if (arg_type & DYNPTR_TYPE_LOCAL)
-> > > > +                                       err_extra = "local ";
-> > > > +                               else if (arg_type & DYNPTR_TYPE_MALLOC)
-> > > > +                                       err_extra = "malloc ";
-> > > > +                               verbose(env, "Expected an initialized %sdynptr as arg #%d\n",
-> > > > +                                       err_extra, arg + 1);
-> > >
-> > > what if helper accepts two or more different types of dynptr?
-> > Currently, bpf_dynptr_read/write accept any type of dynptr so they
-> > don't set any dynptr type flag, which means this error would just
-> > print "Expected an initialized dynptr as arg...". But you're right
-> > that in the future, there can be some API that accepts only a subset
-> > (eg mallocs and ringbuffers and not local dynptrs); in this case,
-> > maybe the simplest is just to return a generic "Expected an
-> > initialized dynptr as arg...". Do you think this suffices or do you
-> > think it'd be worth the effort to print out the different types of
-> > initialized dynptrs it expects?
->
-> Yeah, let's keep it simple with generic error, doing multiple string
-> concatenations for this seems like an overkill.
->
-> > >
-> > > > +                               return -EINVAL;
-> > > > +                       }
-> > > > +                       if (type_is_release_mem(arg_type))
-> > > > +                               err = unmark_stack_slots_dynptr(env, reg);
-> > > > +               }
-> > > >         } else if (arg_type_is_alloc_size(arg_type)) {
-> > > >                 if (!tnum_is_const(reg->var_off)) {
-> > > >                         verbose(env, "R%d is not a known constant'\n",
-> > >
-> > > [...]
-> > Thanks for your feedback, Andrii!!
->
-> sure, np
+v3:
+ - move '#include <sys/param.h>' into test_progs.h.
+
+v2:
+ - do more cleanups as Daniel suggested.
+
+v1:
+ - "selftests: bpf: use MIN for TCP CC tests"
+
+Geliang Tang (2):
+  selftests: bpf: drop duplicate max/min definitions
+  selftests: mqueue: drop duplicate min definition
+
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c    | 4 +---
+ tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c  | 6 ++----
+ tools/testing/selftests/bpf/prog_tests/snprintf.c    | 4 +---
+ tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 1 -
+ tools/testing/selftests/bpf/test_progs.h             | 1 +
+ tools/testing/selftests/mqueue/mq_perf_tests.c       | 4 ++--
+ 6 files changed, 7 insertions(+), 13 deletions(-)
+
+--=20
+2.34.1
+
