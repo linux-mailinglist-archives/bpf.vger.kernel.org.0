@@ -2,265 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3FA4F8ACC
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 02:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5B74F8B8C
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 02:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbiDGX3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 19:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
+        id S233221AbiDHAwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 20:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbiDGX3p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 19:29:45 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EAF2DFD51
-        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 16:27:44 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id r2so8697776iod.9
-        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 16:27:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BOuhaHaz5D45qA8ttEqVH41dqV0RqD6gP3mqCHYZALc=;
-        b=Ir63QRNqDoLaaKSSr4Pmz55pilOUcW8iQTWySV45O4TMCSvgp1BRHEwNz4vTyjInS4
-         0Jt8aXo3FKrg04Rkwrv55xXscUIEc94iMb5fdN+0d32uFBrNo4tOTrT9OHkkw5HxRPa1
-         8w7L2Hw1+fJwO3xu797DfErl5SleZYr8rmpQOCdhS7YLTJB4zSVP7X78qVShtpAdElvD
-         Um3JOuj+EC+qy+n+CYrinAu1eVd4NE6zeU4IghC7n5kCUF1NyfOUJHEsW5WYRvKwx6Mu
-         ua5cusiGoGX5rH8mXHdWHO0iqIXVMP752eGNL1O0J5ohNktYH/EHZQkgRAHGl3kSi7Wt
-         FDnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BOuhaHaz5D45qA8ttEqVH41dqV0RqD6gP3mqCHYZALc=;
-        b=wBg2JBLit7RQANwpBQ9FkzGgSEBEJ5lOEwttRTENkWcWhjxJubmRc67OnZwtnELj5M
-         W/AUSv8lwnqMwiKZ8fu3IJXRjxJo0sceC1RLOc23iR0EiRYppVX6l6mnHckABjCq4Ui7
-         u/nM6tZD/KRNvp7BuOxZKcy7CCrZGqtE8gvSUIUkpYky+q/MDhaAPNdmnQhVUSssm+SB
-         Xm3zgMWsaPv7xJqXObnjz9eD9bF3nI8p07QIEOCJbWl/erL+LKU2+kT1dCOZF4pFArw+
-         vAS91xkP66TDGCRAc/nypMDtcvV7NuqK/bFQ5IDw8Y/khr58ohZMN7F0BotpFwePtjmT
-         Cl9w==
-X-Gm-Message-State: AOAM531ywccFB9/yTMJlOydYOq6v333nSFwknTHL36YW0mfaUR4vTCOC
-        jZtQa1j8jiITTwSKgSRSLlMuYD9NGybxYI+NDJk=
-X-Google-Smtp-Source: ABdhPJyXuFNbXz3cwv570sifv66Oo3GSoghE1cED6WyVC+97pT05QDCkohmiJKIeir580wL2CJEZC+5ihtx6o5qusek=
-X-Received: by 2002:a05:6602:185a:b0:645:d914:35e9 with SMTP id
- d26-20020a056602185a00b00645d91435e9mr7160537ioi.154.1649374063586; Thu, 07
- Apr 2022 16:27:43 -0700 (PDT)
+        with ESMTP id S232560AbiDHAwp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 20:52:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A4726C;
+        Thu,  7 Apr 2022 17:50:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C77C7615C6;
+        Fri,  8 Apr 2022 00:50:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29F77C385A0;
+        Fri,  8 Apr 2022 00:50:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649379042;
+        bh=G1SKGXNbII2A8RDjVNJ0g6cGZNNhNqVNM++vL5zWAMo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gRg826YAodFudvp72TyLwo0NoB0Mtm4m/4Lg/Jqq8VJfjzMS2vPIZIyWY4e3fQFQK
+         3hVbvpRVPrGx+L1GJe1M5gju/40/jXaChqs4waiom5nuoWQswOyFDpKvpmi00Sy8P8
+         R68JSdHBmIQbwEprBxqIZy7jtTTkj9pUAr61hTTFOaZnPd9Idh5FcYBAl3d2X3EI2K
+         qjxmODOKbIKdKznMMl4OPD+nSXGq6J72ht6o9DFUXBs8KHmivlLVunz3Ri8ggv58eP
+         Dee9iLppxgLLThLVYlXNVdFkmqCoQXAdqTcTQAChRAnt8L6jKRIDMalVtQD+MXNQQ2
+         N6vjnknZhP7oA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org,
+        kernel-team@fb.com, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH bpf v2 0/4] kprobes: rethook,ARM,arm64: Replace kretprobe trampoline with rethook
+Date:   Fri,  8 Apr 2022 09:50:35 +0900
+Message-Id: <164937903547.1272679.7244379141135199176.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-References: <20220404234202.331384-1-andrii@kernel.org> <20220404234202.331384-2-andrii@kernel.org>
- <28c378a6eb72b66b44cfac250807a2a01ee478af.camel@linux.ibm.com>
-In-Reply-To: <28c378a6eb72b66b44cfac250807a2a01ee478af.camel@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 7 Apr 2022 16:27:32 -0700
-Message-ID: <CAEf4BzZ=v7A+WEDZqLhV8movffqN1CGUsgcX0ocOfS0FMwq0qg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/7] libbpf: add BPF-side of USDT support
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 7, 2022 at 7:19 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> On Mon, 2022-04-04 at 16:41 -0700, Andrii Nakryiko wrote:
-> > Add BPF-side implementation of libbpf-provided USDT support. This
-> > consists of single header library, usdt.bpf.h, which is meant to be
-> > used
-> > from user's BPF-side source code. This header is added to the list of
-> > installed libbpf header, along bpf_helpers.h and others.
-> >
-> > BPF-side implementation consists of two BPF maps:
-> >   - spec map, which contains "a USDT spec" which encodes information
-> >     necessary to be able to fetch USDT arguments and other
-> > information
-> >     (argument count, user-provided cookie value, etc) at runtime;
-> >   - IP-to-spec-ID map, which is only used on kernels that don't
-> > support
-> >     BPF cookie feature. It allows to lookup spec ID based on the
-> > place
-> >     in user application that triggers USDT program.
-> >
-> > These maps have default sizes, 256 and 1024, which are chosen
-> > conservatively to not waste a lot of space, but handling a lot of
-> > common
-> > cases. But there could be cases when user application needs to either
-> > trace a lot of different USDTs, or USDTs are heavily inlined and
-> > their
-> > arguments are located in a lot of differing locations. For such cases
-> > it
-> > might be necessary to size those maps up, which libbpf allows to do
-> > by
-> > overriding BPF_USDT_MAX_SPEC_CNT and BPF_USDT_MAX_IP_CNT macros.
-> >
-> > It is an important aspect to keep in mind. Single USDT (user-space
-> > equivalent of kernel tracepoint) can have multiple USDT "call sites".
-> > That is, single logical USDT is triggered from multiple places in
-> > user
-> > application. This can happen due to function inlining. Each such
-> > inlined
-> > instance of USDT invocation can have its own unique USDT argument
-> > specification (instructions about the location of the value of each
-> > of
-> > USDT arguments). So while USDT looks very similar to usual uprobe or
-> > kernel tracepoint, under the hood it's actually a collection of
-> > uprobes,
-> > each potentially needing different spec to know how to fetch
-> > arguments.
-> >
-> > User-visible API consists of three helper functions:
-> >   - bpf_usdt_arg_cnt(), which returns number of arguments of current
-> > USDT;
-> >   - bpf_usdt_arg(), which reads value of specified USDT argument (by
-> >     it's zero-indexed position) and returns it as 64-bit value;
-> >   - bpf_usdt_cookie(), which functions like BPF cookie for USDT
-> >     programs; this is necessary as libbpf doesn't allow specifying
-> > actual
-> >     BPF cookie and utilizes it internally for USDT support
-> > implementation.
-> >
-> > Each bpf_usdt_xxx() APIs expect struct pt_regs * context, passed into
-> > BPF program. On kernels that don't support BPF cookie it is used to
-> > fetch absolute IP address of the underlying uprobe.
-> >
-> > usdt.bpf.h also provides BPF_USDT() macro, which functions like
-> > BPF_PROG() and BPF_KPROBE() and allows much more user-friendly way to
-> > get access to USDT arguments, if USDT definition is static and known
-> > to
-> > the user. It is expected that majority of use cases won't have to use
-> > bpf_usdt_arg_cnt() and bpf_usdt_arg() directly and BPF_USDT() will
-> > cover
-> > all their needs.
-> >
-> > Last, usdt.bpf.h is utilizing BPF CO-RE for one single purpose: to
-> > detect kernel support for BPF cookie. If BPF CO-RE dependency is
-> > undesirable, user application can redefine BPF_USDT_HAS_BPF_COOKIE to
-> > either a boolean constant (or equivalently zero and non-zero), or
-> > even
-> > point it to its own .rodata variable that can be specified from
-> > user's
-> > application user-space code. It is important that
-> > BPF_USDT_HAS_BPF_COOKIE is known to BPF verifier as static value
-> > (thus
-> > .rodata and not just .data), as otherwise BPF code will still contain
-> > bpf_get_attach_cookie() BPF helper call and will fail validation at
-> > runtime, if not dead-code eliminated.
-> >
-> > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/lib/bpf/Makefile   |   2 +-
-> >  tools/lib/bpf/usdt.bpf.h | 256
-> > +++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 257 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/lib/bpf/usdt.bpf.h
->
-> [...]
->
-> > diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
-> > new file mode 100644
-> > index 000000000000..60237acf6b02
-> > --- /dev/null
-> > +++ b/tools/lib/bpf/usdt.bpf.h
-> > @@ -0,0 +1,256 @@
->
-> [...]
->
-> > +/* Fetch USDT argument #*arg_num* (zero-indexed) and put its value
-> > into *res.
-> > + * Returns 0 on success; negative error, otherwise.
-> > + * On error *res is guaranteed to be set to zero.
-> > + */
-> > +static inline __noinline
-> > +int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
-> > +{
-> > +       struct __bpf_usdt_spec *spec;
-> > +       struct __bpf_usdt_arg_spec *arg_spec;
-> > +       unsigned long val;
-> > +       int err, spec_id;
-> > +
-> > +       *res = 0;
-> > +
-> > +       spec_id = __bpf_usdt_spec_id(ctx);
-> > +       if (spec_id < 0)
-> > +               return -ESRCH;
-> > +
-> > +       spec = bpf_map_lookup_elem(&__bpf_usdt_specs, &spec_id);
-> > +       if (!spec)
-> > +               return -ESRCH;
-> > +
-> > +       if (arg_num >= BPF_USDT_MAX_ARG_CNT || arg_num >= spec-
-> > >arg_cnt)
-> > +               return -ENOENT;
-> > +
-> > +       arg_spec = &spec->args[arg_num];
-> > +       switch (arg_spec->arg_type) {
-> > +       case BPF_USDT_ARG_CONST:
-> > +               /* Arg is just a constant ("-4@$-9" in USDT arg
-> > spec).
-> > +                * value is recorded in arg_spec->val_off directly.
-> > +                */
-> > +               val = arg_spec->val_off;
-> > +               break;
-> > +       case BPF_USDT_ARG_REG:
-> > +               /* Arg is in a register (e.g, "8@%rax" in USDT arg
-> > spec),
-> > +                * so we read the contents of that register directly
-> > from
-> > +                * struct pt_regs. To keep things simple user-space
-> > parts
-> > +                * record offsetof(struct pt_regs, <regname>) in
-> > arg_spec->reg_off.
-> > +                */
-> > +               err = bpf_probe_read_kernel(&val, sizeof(val), (void
-> > *)ctx + arg_spec->reg_off);
-> > +               if (err)
-> > +                       return err;
-> > +               break;
-> > +       case BPF_USDT_ARG_REG_DEREF:
-> > +               /* Arg is in memory addressed by register, plus some
-> > offset
-> > +                * (e.g., "-4@-1204(%rbp)" in USDT arg spec).
-> > Register is
-> > +                * identified lik with BPF_USDT_ARG_REG case, and the
-> > offset
-> > +                * is in arg_spec->val_off. We first fetch register
-> > contents
-> > +                * from pt_regs, then do another user-space probe
-> > read to
-> > +                * fetch argument value itself.
-> > +                */
-> > +               err = bpf_probe_read_kernel(&val, sizeof(val), (void
-> > *)ctx + arg_spec->reg_off);
-> > +               if (err)
-> > +                       return err;
-> > +               err = bpf_probe_read_user(&val, sizeof(val), (void
-> > *)val + arg_spec->val_off);
->
-> Is there a reason we always read 8 bytes here?
-> What if the user is interested in the last byte of a page?
+Hi,
 
-Well, for one it was simplicity and keeping arg_spec compact (there
-could be a lot of them, so keeping it at 16 bytes is useful). But it
-also seems like a very unlikely event. And either way even completely
-valid page might not be paged in anyways, so some read might fail
-anyways.
+Here is the 2nd version of the series for replacing kretprobe trampoline
+with rethook on ARM/arm64. I fixed some compiler warnings in this version.
+The previous version is here[1];
 
-But I think really it was due to technical limitation.
-bpf_probe_read_{kernel,user}() expects statically known size of the
-read, so we'd have to have an ugly switch here with branches for 1, 2,
-4, and 8, which is ugly. So given highly unlikely situation you
-described, I figured it should be fine.
+[1] https://lore.kernel.org/all/164915121498.982637.12787715964983738566.stgit@devnote2/T/#u
 
->
-> [...]
+This series includes a trivial bugfix for the arm unwinder to initialize
+an internal data structure([1/4]). This is not critical for stack trace,
+but required for rethook to find the LR register from the stack.
+This also have an update for the rethook interface, which allows us to
+check the rethook_hook() failure ([2/4]). This is also required for the
+rethook on arm because unwinder is able to fail.
+The rest of patches are replacing kretprobe trampoline with rethook on
+ARM ([3/4]) and arm64 ([4/4]).
+
+Background:
+
+This rethook came from Jiri's request of multiple kprobe for bpf[2].
+He tried to solve an issue that starting bpf with multiple kprobe will
+take a long time because bpf-kprobe will wait for RCU grace period for
+sync rcu events.
+
+Jiri wanted to attach a single bpf handler to multiple kprobes and
+he tried to introduce multiple-probe interface to kprobe. So I asked
+him to use ftrace and kretprobe-like hook if it is only for the
+function entry and exit, instead of adding ad-hoc interface
+to kprobes.
+For this purpose, I introduced the fprobe (kprobe like interface for
+ftrace) with the rethook (this is a generic return hook feature for
+fprobe exit handler)[3].
+
+[2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+[3] https://lore.kernel.org/all/164191321766.806991.7930388561276940676.stgit@devnote2/T/#u
+
+The rethook is basically same as the kretprobe trampoline. I just made
+it decoupled from kprobes. Eventually, the all arch dependent kretprobe
+trampolines will be replaced with the rethook trampoline instead of
+cloning the code.
+
+When I port the rethook for all arch which supports kretprobe, the
+legacy kretprobe specific code (which is for CONFIG_KRETPROBE_ON_RETHOOK=n)
+will be removed eventually.
+
+BTW, the arm Clang support for rethook is for kretprobes only. fprobe
+and ftrace seems not working with Clang yet.
+
+Thank you,
+
+---
+
+Masami Hiramatsu (4):
+      ARM: unwind: Initialize the lr_addr field of unwind_ctrl_block
+      rethook,fprobe,kprobes: Check a failure in the rethook_hook()
+      ARM: rethook: Replace kretprobe trampoline with rethook
+      arm64: rethook: Replace kretprobe trampoline with rethook
+
+
+ arch/arm/Kconfig                              |    1 
+ arch/arm/include/asm/stacktrace.h             |    5 +
+ arch/arm/kernel/stacktrace.c                  |   13 +--
+ arch/arm/kernel/unwind.c                      |    1 
+ arch/arm/probes/Makefile                      |    1 
+ arch/arm/probes/kprobes/core.c                |   62 ------------
+ arch/arm/probes/rethook.c                     |  127 +++++++++++++++++++++++++
+ arch/arm64/Kconfig                            |    1 
+ arch/arm64/include/asm/kprobes.h              |    2 
+ arch/arm64/include/asm/stacktrace.h           |    2 
+ arch/arm64/kernel/Makefile                    |    1 
+ arch/arm64/kernel/probes/Makefile             |    1 
+ arch/arm64/kernel/probes/kprobes.c            |   15 ---
+ arch/arm64/kernel/probes/kprobes_trampoline.S |   86 -----------------
+ arch/arm64/kernel/rethook.c                   |   28 ++++++
+ arch/arm64/kernel/rethook_trampoline.S        |   87 +++++++++++++++++
+ arch/arm64/kernel/stacktrace.c                |    9 +-
+ arch/x86/kernel/rethook.c                     |    4 +
+ include/linux/rethook.h                       |    4 -
+ kernel/kprobes.c                              |    8 +-
+ kernel/trace/fprobe.c                         |    5 +
+ kernel/trace/rethook.c                        |   12 ++
+ 22 files changed, 287 insertions(+), 188 deletions(-)
+ create mode 100644 arch/arm/probes/rethook.c
+ delete mode 100644 arch/arm64/kernel/probes/kprobes_trampoline.S
+ create mode 100644 arch/arm64/kernel/rethook.c
+ create mode 100644 arch/arm64/kernel/rethook_trampoline.S
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
