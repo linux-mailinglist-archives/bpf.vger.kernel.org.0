@@ -2,178 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FC64F8DA8
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 08:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33844F8D71
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 08:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbiDHD7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 23:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        id S234221AbiDHER2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Apr 2022 00:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbiDHD6l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 23:58:41 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D7FE6C7E
-        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 20:56:34 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2ebd3bff278so21100607b3.8
-        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 20:56:34 -0700 (PDT)
+        with ESMTP id S232658AbiDHER2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 00:17:28 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68EAC2E0F20;
+        Thu,  7 Apr 2022 21:15:25 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id a16-20020a17090a6d9000b001c7d6c1bb13so8481238pjk.4;
+        Thu, 07 Apr 2022 21:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=xZ10IcINVF8NaTdbFdZL+w7KjQhTRKJQcz6epMPOOOM=;
-        b=J4qvkXu5Auw7V3C2S/vvXFegiHFo9mQHd6ao3pTChQVYX52sQr8dniWFYnHQm0j3st
-         bEHb9vfsR+oLWFuAcQDlvK2q3VkZl8tQz1YYKUO4LP7/LugavDcnOzpgkv3zYe6dVZWU
-         2gila+WXN4yuqAs0Y/8n5CcZVof5ozNa+BQYvOMd9I5gede5kj5HR53kdkNQRgAduvi9
-         GK/7tWnOc6YXNAc8OtiGBNX4Dx9baemHfXsWm3UpV3cEKIbPRr1uTbrXOndoU8gLi5HL
-         +EQ8BatF2gFnpVHfijt7yca9E1HUzPitJL5yYGKSHLpDVuWJuUNgZs4nUsNKC2CAMt0X
-         qV2Q==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4+rOEzFAMJJgXNy15jCz7SsQISiJWacBJllHkfSFDfk=;
+        b=KTJGOHY1jWaNKMCowdV/0KshrzntST/NJ2chxhHVG54H7LfhRJb3PdOmoV4vHk+dKM
+         RUFI7CS0leoZ+SvwHFyaN0W9MuV+RqDQ0RQvW8CDZl8rWUtEC3fn+9n9RRJaV6StWf7K
+         rEMdl/86TDCo2CaDLveZaSAECeIy2KSZOJOs+acpnWyXp1UXGkhylydCDBPvi4d4721j
+         GsIPPpMlcazsxT/Nd7gulCvAiaDdKMNhAmuIVisB3FcPHEEsp3pCIVCjRF58drpMXMSw
+         1ZaeoiuxjGZC4xakz68ISoyZgv2lCPNYkijTEkS6dWaj9aXqMZZC+fm1J5szybcNCDdZ
+         VUSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=xZ10IcINVF8NaTdbFdZL+w7KjQhTRKJQcz6epMPOOOM=;
-        b=5oNhZAYsoFJFnbt1HLDzehZQJVTC605b2NIruFwMScXAH0MKY+K5NwFrgGMWOLUpa0
-         1R63j0OhHT9aTB7jre0kyRUsrtUkB0Emr5At3rDZIWwmI5ynB8FvByk0FKouum3iowFc
-         Img3mKUMe5IQlkSYQwgBoqWvsmpnynpQvOwkCjgOjZd+bnxE2RYi3A+HMbWXaPLREnI7
-         UwU6XegAXtsSWJ2vydSCQ7Vbwg4dMudp4ELAzRFJx7bUmJYwTJl4yTSv1dZ0Hd8m2Bj2
-         cHPkSA0pQRohLFPZtybfQJv21IbhwTt+3kwCHfekn09ba+ylA3kiwmO8aUQCtLRf/oOp
-         9blg==
-X-Gm-Message-State: AOAM530TpiHYamDt7x9k+Nr20rm7dp9uXvxix+zf/9wbi61MlJcXfvdO
-        ZuoSrqnxj0bFX64pDMmJXfiHkV2GVmjh
-X-Google-Smtp-Source: ABdhPJy+FeSzHm3EOgknn5QLY35sfKLCgJaxnhbi0GFsA4RgFhAgYugNlhNtSIbfmK85JSq7ivRl2ioHGYzK
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:560:aa27:649e:a07d])
- (user=irogers job=sendgmr) by 2002:a25:8546:0:b0:61e:1d34:ec71 with SMTP id
- f6-20020a258546000000b0061e1d34ec71mr11434496ybn.259.1649390193853; Thu, 07
- Apr 2022 20:56:33 -0700 (PDT)
-Date:   Thu,  7 Apr 2022 20:56:16 -0700
-In-Reply-To: <20220408035616.1356953-1-irogers@google.com>
-Message-Id: <20220408035616.1356953-6-irogers@google.com>
-Mime-Version: 1.0
-References: <20220408035616.1356953-1-irogers@google.com>
-X-Mailer: git-send-email 2.35.1.1178.g4f1659d476-goog
-Subject: [PATCH v3 5/5] perf test: Combine cpu map tests into 1 suite
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        James Clark <james.clark@arm.com>,
-        German Gomez <german.gomez@arm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4+rOEzFAMJJgXNy15jCz7SsQISiJWacBJllHkfSFDfk=;
+        b=cY68dX53NWczIZHElkIC2XYCqlZrbGDqpfHgi/53HNGxCoK6dZ+xEQJGt7xe4GlnZu
+         1V0KThCOa+jWFeGlPTAaJ1TVliTjVZgXIM+GMMlr3EDzNHzpMpSdXbzlLSD7XorR1P7X
+         EmWjq7MwLDueO1In5eHREMv1OMv7eB8/eQDUPNN4a51cxpGsBdDDbDtFl7PeePDUtF2Q
+         3o2MpqUa9aAMagxV5m3ulR8tlzUUgxoyks5sCtbF2axoOyVRv9KVk64KeZHMTMGc5FeQ
+         w6vQ0qVvTS9bwbRG4fff8p809R0cPP1BpVI0xUxPrPsGpBE+wArUIA//0j/IURl0I5M9
+         snxg==
+X-Gm-Message-State: AOAM530g7yz6R9NT5hriCdSwU054V5LV8el/cjHdj03ekyi9+HJSC8YT
+        nq+LCQjjkmBEMjLTuu7xdVc=
+X-Google-Smtp-Source: ABdhPJzBrWIOQA+LTz4iR7Gep1go2uzqC8EpRYuxlUgPRF1HnaokeSNqgrWe/R9KPRFBDelGdd1EGA==
+X-Received: by 2002:a17:903:1104:b0:154:c628:e7c2 with SMTP id n4-20020a170903110400b00154c628e7c2mr17648425plh.54.1649391324970;
+        Thu, 07 Apr 2022 21:15:24 -0700 (PDT)
+Received: from localhost.localdomain ([43.132.141.8])
+        by smtp.gmail.com with ESMTPSA id f14-20020a056a0022ce00b004fabe9fac23sm25789042pfj.151.2022.04.07.21.15.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Apr 2022 21:15:24 -0700 (PDT)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     skhan@linuxfoundation.org
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, hengqi.chen@gmail.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
+        yhs@fb.com, ytcoode@gmail.com
+Subject: [PATCH bpf-next v2] selftests/bpf: Fix return value checks in perf_event_stackmap.c
+Date:   Fri,  8 Apr 2022 12:14:52 +0800
+Message-Id: <20220408041452.933944-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.35.0.rc2
+In-Reply-To: <7ac36fbe-aa44-9311-320b-1e953c29a3c4@linuxfoundation.org>
+References: <7ac36fbe-aa44-9311-320b-1e953c29a3c4@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Combine related CPU map tests into 1 suite reducing global state.
+The bpf_get_stackid() function may also return 0 on success.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+Correct checks from 'val > 0' to 'val >= 0' to ensure that they cover all
+possible success return values.
+
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
- tools/perf/tests/builtin-test.c |  5 +----
- tools/perf/tests/cpumap.c       | 16 ++++++++++++----
- tools/perf/tests/tests.h        |  5 +----
- 3 files changed, 14 insertions(+), 12 deletions(-)
+v1 -> v2: update commit message
 
-diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index dffa41e7ee20..1941ae52e8b6 100644
---- a/tools/perf/tests/builtin-test.c
-+++ b/tools/perf/tests/builtin-test.c
-@@ -79,16 +79,13 @@ static struct test_suite *generic_tests[] = {
- 	&suite__bpf,
- 	&suite__thread_map_synthesize,
- 	&suite__thread_map_remove,
--	&suite__cpu_map_synthesize,
-+	&suite__cpu_map,
- 	&suite__synthesize_stat_config,
- 	&suite__synthesize_stat,
- 	&suite__synthesize_stat_round,
- 	&suite__event_update,
- 	&suite__event_times,
- 	&suite__backward_ring_buffer,
--	&suite__cpu_map_print,
--	&suite__cpu_map_merge,
--	&suite__cpu_map_intersect,
- 	&suite__sdt_event,
- 	&suite__is_printable_array,
- 	&suite__bitmap_print,
-diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
-index 112331829414..fc124757a082 100644
---- a/tools/perf/tests/cpumap.c
-+++ b/tools/perf/tests/cpumap.c
-@@ -187,7 +187,15 @@ static int test__cpu_map_intersect(struct test_suite *test __maybe_unused, int s
- 	return ret;
- }
+ tools/testing/selftests/bpf/progs/perf_event_stackmap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
+index b3fcb5274ee0..f793280a3238 100644
+--- a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
++++ b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
+@@ -35,10 +35,10 @@ int oncpu(void *ctx)
+ 	long val;
  
--DEFINE_SUITE("Synthesize cpu map", cpu_map_synthesize);
--DEFINE_SUITE("Print cpu map", cpu_map_print);
--DEFINE_SUITE("Merge cpu map", cpu_map_merge);
--DEFINE_SUITE("Intersect cpu map", cpu_map_intersect);
-+static struct test_case cpu_map_tests[] = {
-+	TEST_CASE("Synthesize cpu map", cpu_map_synthesize),
-+	TEST_CASE("Print cpu map", cpu_map_print),
-+	TEST_CASE("Merge cpu map", cpu_map_merge),
-+	TEST_CASE("Intersect cpu map", cpu_map_intersect),
-+	{ .name = NULL, }
-+};
-+
-+struct test_suite suite__cpu_map = {
-+	.desc = "CPU map",
-+	.test_cases = cpu_map_tests,
-+};
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index f2823c4859b8..895803fdedc4 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -118,16 +118,13 @@ DECLARE_SUITE(bpf);
- DECLARE_SUITE(session_topology);
- DECLARE_SUITE(thread_map_synthesize);
- DECLARE_SUITE(thread_map_remove);
--DECLARE_SUITE(cpu_map_synthesize);
-+DECLARE_SUITE(cpu_map);
- DECLARE_SUITE(synthesize_stat_config);
- DECLARE_SUITE(synthesize_stat);
- DECLARE_SUITE(synthesize_stat_round);
- DECLARE_SUITE(event_update);
- DECLARE_SUITE(event_times);
- DECLARE_SUITE(backward_ring_buffer);
--DECLARE_SUITE(cpu_map_print);
--DECLARE_SUITE(cpu_map_merge);
--DECLARE_SUITE(cpu_map_intersect);
- DECLARE_SUITE(sdt_event);
- DECLARE_SUITE(is_printable_array);
- DECLARE_SUITE(bitmap_print);
+ 	val = bpf_get_stackid(ctx, &stackmap, 0);
+-	if (val > 0)
++	if (val >= 0)
+ 		stackid_kernel = 2;
+ 	val = bpf_get_stackid(ctx, &stackmap, BPF_F_USER_STACK);
+-	if (val > 0)
++	if (val >= 0)
+ 		stackid_user = 2;
+ 
+ 	trace = bpf_map_lookup_elem(&stackdata_map, &key);
 -- 
-2.35.1.1178.g4f1659d476-goog
+2.35.0.rc2
 
