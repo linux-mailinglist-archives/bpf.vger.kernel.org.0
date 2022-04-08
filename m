@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E33684F8D9C
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 08:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6ED04F8DD8
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 08:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234096AbiDHD6m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 23:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
+        id S234058AbiDHD6o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 23:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234058AbiDHD6b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 23:58:31 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A69DEBA4
-        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 20:56:27 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2eb5980c4f8so65424677b3.23
-        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 20:56:27 -0700 (PDT)
+        with ESMTP id S234071AbiDHD6l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 23:58:41 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7EFE09B4
+        for <bpf@vger.kernel.org>; Thu,  7 Apr 2022 20:56:29 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2d11b6259adso65717237b3.19
+        for <bpf@vger.kernel.org>; Thu, 07 Apr 2022 20:56:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=l17qIMDJgHlHJkmXqdwNhErpsnzRSh+81icGNnMQVKs=;
-        b=CDF0VWxYUKfVOpEvH57Wcg+2Ht824//X9lGhIknOL9VIIF+EdYpmgeX3CHwN9sHeAT
-         u9PeKn+tbOApjUseyK1kOHNHVP2i7a3oY6N/aX/r+Oqy5v3/FNPZf7VsQl77EpKtFjXz
-         x0JMAMOcie6hoUXElxRbsp2ogGcKFaa+jDBwAQLG/kcORFBLquHUEfyiXtVheFEeeW8I
-         inJLEZUd53sSTeyezcwzA/kev6gYerwGABOZqnuIZb8SbdZ2hfZ0ujxMuq3R1R3/r14V
-         FxilRM0ZPu80qsZ1UH7WmH9ceYh4ckUANkk5Vjg8tXV2FCorud/XocnxT0G86KTWcY/I
-         mlRQ==
+        bh=WQySeKYeF44ltZobAOk7xNxuZcXMSl5HKLY3fUam6qQ=;
+        b=hDSKG5yrND2PToJM4rKnqeJ62RcJGj0+ro5piw+CTfoTTw5cN0QF1P7O2M+7Pw/a2k
+         L6jGvSd8QXVOEbBvp6N5WG9Qr2H3iF39h92XQRS14ohnfaZbdVAJkkC75h2N+su/IKoM
+         fAs5tI8ZTlGVVORECCu57iLTSg7bB7hVyc0eos9SWzxzbfIa9pxVIPJMNcFMi1Kq4NlX
+         1xl/v4pATsxUxOkH77mZmhsu7yQpboO/1uk2drOLg2nCdjjUlESDDxlYYYgn0+7Z0Bqf
+         34wk3XU7U7sGptA96+apazLcWfA1zaTpmsPavxFg0RjKW6xb36/MyhRG0CGN6ETslOXO
+         qIzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=l17qIMDJgHlHJkmXqdwNhErpsnzRSh+81icGNnMQVKs=;
-        b=UU604oIKi/at/19PsqR49mBYKeO2JyxQfC1URPG4EiJLVyrXVtk6lzIsJat1PLQV2U
-         Fcdtz68IOJ1TH7LY/TNz8w73aQP5yhVitFyDM7G3MJOCNBUWBv6rv5w3SLF7/65a58Gd
-         yeTPuqOzsSsV2q+cQBNc+9c2NELVP+wfUeAHY3EqcQZLCqBFiHHsSqyvWmx+XDqdOKQO
-         RBWbl8An5OZh9BHL9oYFeveT0AWtj8cA5ejSmK1pvBjHUSTwi3ABzr4F3fQBk0LW3m7Z
-         51F95qhVadHBc8fULHigQ53pY/IT/D6B1sNxtSjWDo2VUQNAHnsnT1L6C+7r06HXVYYM
-         p2dQ==
-X-Gm-Message-State: AOAM532aGvGaLshM39VXz+9usjpB7GZT6bo4Q6NbV53DAwTMAJUMzk5z
-        oU0qbZ6/7mP3Yw1onGLwzOwQJDl4Eb4U
-X-Google-Smtp-Source: ABdhPJx0t6TUTcHjyQ+6Q0vxZrojw0BDHuxcmQSgV2WmscSbmIhwWv3XjfnNAnYb/FSu9l7V1FRxddn/jSqN
+        bh=WQySeKYeF44ltZobAOk7xNxuZcXMSl5HKLY3fUam6qQ=;
+        b=jkWcx18yZqh32h9ar5DLZ9CzZcq6EosjFoZqe14U2ufdbfxTeXQKkO4c4pOrhpKqs4
+         ljF+rMHY71NSSAX6YesAcynBfHRw0plXj4WoPgsWCdTAyyAfv3tasgDjZho0ROI3dryb
+         1cD1ZkYSXii9S/o0T2btVHw++lz1MvKXACqMdEx50aOKrO5GNmQmsEpWYP5/5EEgHKLx
+         zjD8hipf8btiPFt9C3MaFn+UPulzhF+f5gCE3bfbrFXr6s9khtYncqP/ZCcYyx8LcdhK
+         o6v8VEvDtkp+YiAheg6EsUf6y+V58PYZZPd+lIcZyKgmZuRn16yrSq0yjwP91I+WwYOB
+         q/Kg==
+X-Gm-Message-State: AOAM533I5MIB0g3Ukc3w/nu1vmvPcCvmMUZ+mpdgQrunkamvr4V1oCOQ
+        Rp2ZPZtjzlGQDSFaUvPe77CMaJ8dX2sm
+X-Google-Smtp-Source: ABdhPJxUah9zZN5gVulVQKHMKAB9PrsIvEpYDGhc34fesgAhXN4h148IRiOkJNKasQpmJrMLd6NQV31cTvDt
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:560:aa27:649e:a07d])
- (user=irogers job=sendgmr) by 2002:a25:e30a:0:b0:625:3d53:91b7 with SMTP id
- z10-20020a25e30a000000b006253d5391b7mr12600758ybd.499.1649390186782; Thu, 07
- Apr 2022 20:56:26 -0700 (PDT)
-Date:   Thu,  7 Apr 2022 20:56:13 -0700
+ (user=irogers job=sendgmr) by 2002:a25:e811:0:b0:63d:b0e1:c78 with SMTP id
+ k17-20020a25e811000000b0063db0e10c78mr12871250ybd.195.1649390189216; Thu, 07
+ Apr 2022 20:56:29 -0700 (PDT)
+Date:   Thu,  7 Apr 2022 20:56:14 -0700
 In-Reply-To: <20220408035616.1356953-1-irogers@google.com>
-Message-Id: <20220408035616.1356953-3-irogers@google.com>
+Message-Id: <20220408035616.1356953-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20220408035616.1356953-1-irogers@google.com>
 X-Mailer: git-send-email 2.35.1.1178.g4f1659d476-goog
-Subject: [PATCH v3 2/5] perf tests: Additional cpumap merge tests
+Subject: [PATCH v3 3/5] perf cpumap: Add intersect function.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -90,66 +90,151 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cover cases where one cpu map is a subset of the other.
+The merge function gives the union of two cpu maps. Add an intersect
+function which will be used in the next change.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/cpumap.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+ tools/lib/perf/cpumap.c              | 35 ++++++++++++++++++++++++++++
+ tools/lib/perf/include/perf/cpumap.h |  2 ++
+ tools/perf/tests/builtin-test.c      |  1 +
+ tools/perf/tests/cpumap.c            | 35 ++++++++++++++++++++++++++++
+ tools/perf/tests/tests.h             |  1 +
+ 5 files changed, 74 insertions(+)
 
+diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+index 95c56e17241b..66371135e742 100644
+--- a/tools/lib/perf/cpumap.c
++++ b/tools/lib/perf/cpumap.c
+@@ -385,3 +385,38 @@ struct perf_cpu_map *perf_cpu_map__merge(struct perf_cpu_map *orig,
+ 	free(tmp_cpus);
+ 	return merged;
+ }
++
++struct perf_cpu_map *perf_cpu_map__intersect(struct perf_cpu_map *orig,
++					     struct perf_cpu_map *other)
++{
++	struct perf_cpu *tmp_cpus;
++	int tmp_len;
++	int i, j, k;
++	struct perf_cpu_map *merged = NULL;
++
++	if (perf_cpu_map__is_subset(other, orig))
++		return perf_cpu_map__get(orig);
++	if (perf_cpu_map__is_subset(orig, other))
++		return perf_cpu_map__get(other);
++
++	tmp_len = max(orig->nr, other->nr);
++	tmp_cpus = malloc(tmp_len * sizeof(struct perf_cpu));
++	if (!tmp_cpus)
++		return NULL;
++
++	i = j = k = 0;
++	while (i < orig->nr && j < other->nr) {
++		if (orig->map[i].cpu < other->map[j].cpu)
++			i++;
++		else if (orig->map[i].cpu > other->map[j].cpu)
++			j++;
++		else {
++			j++;
++			tmp_cpus[k++] = orig->map[i++];
++		}
++	}
++	if (k)
++		merged = cpu_map__trim_new(k, tmp_cpus);
++	free(tmp_cpus);
++	return merged;
++}
+diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+index 4a2edbdb5e2b..a2a7216c0b78 100644
+--- a/tools/lib/perf/include/perf/cpumap.h
++++ b/tools/lib/perf/include/perf/cpumap.h
+@@ -19,6 +19,8 @@ LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__merge(struct perf_cpu_map *orig,
+ 						     struct perf_cpu_map *other);
++LIBPERF_API struct perf_cpu_map *perf_cpu_map__intersect(struct perf_cpu_map *orig,
++							 struct perf_cpu_map *other);
+ LIBPERF_API void perf_cpu_map__put(struct perf_cpu_map *map);
+ LIBPERF_API struct perf_cpu perf_cpu_map__cpu(const struct perf_cpu_map *cpus, int idx);
+ LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index fac3717d9ba1..dffa41e7ee20 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -88,6 +88,7 @@ static struct test_suite *generic_tests[] = {
+ 	&suite__backward_ring_buffer,
+ 	&suite__cpu_map_print,
+ 	&suite__cpu_map_merge,
++	&suite__cpu_map_intersect,
+ 	&suite__sdt_event,
+ 	&suite__is_printable_array,
+ 	&suite__bitmap_print,
 diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
-index cf205ed6b158..3b9fc549d30b 100644
+index 3b9fc549d30b..112331829414 100644
 --- a/tools/perf/tests/cpumap.c
 +++ b/tools/perf/tests/cpumap.c
-@@ -123,22 +123,36 @@ static int test__cpu_map_print(struct test_suite *test __maybe_unused, int subte
- 	return 0;
+@@ -153,6 +153,41 @@ static int test__cpu_map_merge(struct test_suite *test __maybe_unused, int subte
+ 	return ret;
  }
  
--static int test__cpu_map_merge(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
-+static int __test__cpu_map_merge(const char *lhs, const char *rhs, int nr, const char *expected)
- {
--	struct perf_cpu_map *a = perf_cpu_map__new("4,2,1");
--	struct perf_cpu_map *b = perf_cpu_map__new("4,5,7");
++static int __test__cpu_map_intersect(const char *lhs, const char *rhs, int nr, const char *expected)
++{
 +	struct perf_cpu_map *a = perf_cpu_map__new(lhs);
 +	struct perf_cpu_map *b = perf_cpu_map__new(rhs);
- 	struct perf_cpu_map *c = perf_cpu_map__merge(a, b);
- 	char buf[100];
- 
--	TEST_ASSERT_VAL("failed to merge map: bad nr", perf_cpu_map__nr(c) == 5);
-+	TEST_ASSERT_EQUAL("failed to merge map: bad nr", perf_cpu_map__nr(c), nr);
- 	cpu_map__snprint(c, buf, sizeof(buf));
--	TEST_ASSERT_VAL("failed to merge map: bad result", !strcmp(buf, "1-2,4-5,7"));
-+	TEST_ASSERT_VAL("failed to merge map: bad result", !strcmp(buf, expected));
- 	perf_cpu_map__put(a);
- 	perf_cpu_map__put(b);
- 	perf_cpu_map__put(c);
- 	return 0;
- }
- 
-+static int test__cpu_map_merge(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
++	struct perf_cpu_map *c = perf_cpu_map__intersect(a, b);
++	char buf[100];
++
++	TEST_ASSERT_EQUAL("failed to intersect map: bad nr", perf_cpu_map__nr(c), nr);
++	cpu_map__snprint(c, buf, sizeof(buf));
++	TEST_ASSERT_VAL("failed to intersect map: bad result", !strcmp(buf, expected));
++	perf_cpu_map__put(a);
++	perf_cpu_map__put(b);
++	perf_cpu_map__put(c);
++	return 0;
++}
++
++static int test__cpu_map_intersect(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
 +{
 +	int ret;
 +
-+	ret = __test__cpu_map_merge("4,2,1", "4,5,7", 5, "1-2,4-5,7");
++	ret = __test__cpu_map_intersect("4,2,1", "4,5,7", 1, "4");
 +	if (ret) return ret;
-+	ret = __test__cpu_map_merge("4,2,1", "1", 3, "1-2,4");
++	ret = __test__cpu_map_intersect("1-8", "6-9", 3, "6-8");
 +	if (ret) return ret;
-+	ret = __test__cpu_map_merge("1", "4,2,1", 3, "1-2,4");
++	ret = __test__cpu_map_intersect("1-8,12-20", "6-9,15", 4, "6-8,15");
 +	if (ret) return ret;
-+	ret = __test__cpu_map_merge("1", "1", 1, "1");
++	ret = __test__cpu_map_intersect("4,2,1", "1", 1, "1");
++	if (ret) return ret;
++	ret = __test__cpu_map_intersect("1", "4,2,1", 1, "1");
++	if (ret) return ret;
++	ret = __test__cpu_map_intersect("1", "1", 1, "1");
 +	return ret;
 +}
 +
  DEFINE_SUITE("Synthesize cpu map", cpu_map_synthesize);
  DEFINE_SUITE("Print cpu map", cpu_map_print);
  DEFINE_SUITE("Merge cpu map", cpu_map_merge);
++DEFINE_SUITE("Intersect cpu map", cpu_map_intersect);
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index 5bbb8f6a48fc..f2823c4859b8 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -127,6 +127,7 @@ DECLARE_SUITE(event_times);
+ DECLARE_SUITE(backward_ring_buffer);
+ DECLARE_SUITE(cpu_map_print);
+ DECLARE_SUITE(cpu_map_merge);
++DECLARE_SUITE(cpu_map_intersect);
+ DECLARE_SUITE(sdt_event);
+ DECLARE_SUITE(is_printable_array);
+ DECLARE_SUITE(bitmap_print);
 -- 
 2.35.1.1178.g4f1659d476-goog
 
