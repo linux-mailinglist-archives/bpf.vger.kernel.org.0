@@ -2,59 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5A34F8C14
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 05:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE524F8CDB
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 05:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbiDHBA2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Apr 2022 21:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47876 "EHLO
+        id S233384AbiDHBcP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Apr 2022 21:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233205AbiDHBA0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Apr 2022 21:00:26 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8901030C206;
-        Thu,  7 Apr 2022 17:58:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 70F8FCE29EC;
-        Fri,  8 Apr 2022 00:58:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA37AC385A0;
-        Fri,  8 Apr 2022 00:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649379500;
-        bh=RnBqrO05wig0Mia6VfsR65TYl3CuXN2/hell+ZhumPM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pgxzGhdEl3K3/DLBH0PVog7yDE1sPRdYQTj22pnBvD8EeEEiWJ17jps9bM3WxhN3x
-         xf9jYu/QZ+pjhhik8wL252/US+TpoVA/i0gKwxF4KyYz7sJPRAB2umgbuCz4rfKg0g
-         HWGhOFDBtCRRP3noX+JXI86TVEcSwOiea3fcfiXXnPfdojcvbCRvHr+/7Tys/nYbaJ
-         D3aaL48ElX0s97jqMNewjsnQQbr8mXd8s3GqO237aV/bP/XyP/BgiMaWzMs70qExx3
-         lDnpuAR1OUBg8QZdA5RK5OD7hp+ZTM8gFYqdEidDFgTXoBbq0ao+dckHoqbx65B2ed
-         DbezCPa2sabTA==
-Date:   Fri, 8 Apr 2022 09:58:15 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232119AbiDHBcO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Apr 2022 21:32:14 -0400
+Received: from mail.meizu.com (edge05.meizu.com [157.122.146.251])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2452706C6;
+        Thu,  7 Apr 2022 18:30:11 -0700 (PDT)
+Received: from IT-EXMB-1-125.meizu.com (172.16.1.125) by mz-mail12.meizu.com
+ (172.16.1.108) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 8 Apr
+ 2022 09:30:09 +0800
+Received: from [172.16.137.70] (172.16.137.70) by IT-EXMB-1-125.meizu.com
+ (172.16.1.125) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Fri, 8 Apr
+ 2022 09:30:08 +0800
+Message-ID: <2c29b3cd-ec23-f9c8-ae9f-d713ce3dd4f0@meizu.com>
+Date:   Fri, 8 Apr 2022 09:30:07 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] libbpf: potential NULL dereference in
+ usdt_manager_attach_usdt()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC bpf-next 2/4] fprobe: Resolve symbols with
- kallsyms_lookup_names
-Message-Id: <20220408095815.9827bcf7aa98127046f69481@kernel.org>
-In-Reply-To: <20220407125224.310255-3-jolsa@kernel.org>
-References: <20220407125224.310255-1-jolsa@kernel.org>
-        <20220407125224.310255-3-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1649299098-2069-1-git-send-email-baihaowen@meizu.com>
+ <CAEf4BzbByQ8OUuACyLEHewPsFjfUpH8Yr1x2+Db5xtGgnPXhrQ@mail.gmail.com>
+From:   baihaowen <baihaowen@meizu.com>
+In-Reply-To: <CAEf4BzbByQ8OUuACyLEHewPsFjfUpH8Yr1x2+Db5xtGgnPXhrQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [172.16.137.70]
+X-ClientProxiedBy: IT-EXMB-1-126.meizu.com (172.16.1.126) To
+ IT-EXMB-1-125.meizu.com (172.16.1.125)
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,85 +56,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu,  7 Apr 2022 14:52:22 +0200
-Jiri Olsa <jolsa@kernel.org> wrote:
-
-> Using kallsyms_lookup_names to speed up symbols lookup
-> in register_fprobe_syms API.
-
-OK, this looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  kernel/kallsyms.c     |  2 +-
->  kernel/trace/fprobe.c | 23 ++---------------------
->  2 files changed, 3 insertions(+), 22 deletions(-)
-> 
-> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> index a3738ddf9e87..7d89da375c23 100644
-> --- a/kernel/kallsyms.c
-> +++ b/kernel/kallsyms.c
-> @@ -230,7 +230,7 @@ unsigned long kallsyms_lookup_name(const char *name)
->  	return module_kallsyms_lookup_name(name);
->  }
->  
-> -#ifdef CONFIG_LIVEPATCH
-> +#if defined(CONFIG_LIVEPATCH) || defined(CONFIG_FPROBE)
->  /*
->   * Iterate over all symbols in vmlinux.  For symbols from modules use
->   * module_kallsyms_on_each_symbol instead.
-> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-> index 89d9f994ebb0..d466803dc2b2 100644
-> --- a/kernel/trace/fprobe.c
-> +++ b/kernel/trace/fprobe.c
-> @@ -88,36 +88,17 @@ NOKPROBE_SYMBOL(fprobe_exit_handler);
->  /* Convert ftrace location address from symbols */
->  static unsigned long *get_ftrace_locations(const char **syms, int num)
->  {
-> -	unsigned long addr, size;
->  	unsigned long *addrs;
-> -	int i;
->  
->  	/* Convert symbols to symbol address */
->  	addrs = kcalloc(num, sizeof(*addrs), GFP_KERNEL);
->  	if (!addrs)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	for (i = 0; i < num; i++) {
-> -		addr = kallsyms_lookup_name(syms[i]);
-> -		if (!addr)	/* Maybe wrong symbol */
-> -			goto error;
-> +	if (!kallsyms_lookup_names(syms, num, addrs))
-> +		return addrs;
->  
-> -		/* Convert symbol address to ftrace location. */
-> -		if (!kallsyms_lookup_size_offset(addr, &size, NULL) || !size)
-> -			goto error;
-> -
-> -		addr = ftrace_location_range(addr, addr + size - 1);
-> -		if (!addr) /* No dynamic ftrace there. */
-> -			goto error;
-> -
-> -		addrs[i] = addr;
-> -	}
-> -
-> -	return addrs;
-> -
-> -error:
->  	kfree(addrs);
-> -
->  	return ERR_PTR(-ENOENT);
->  }
->  
-> -- 
-> 2.35.1
-> 
-
+在 4/8/22 3:04 AM, Andrii Nakryiko 写道:
+> On Wed, Apr 6, 2022 at 7:38 PM Haowen Bai <baihaowen@meizu.com> wrote:
+>> link could be null but still dereference bpf_link__destroy(&link->link)
+>> and it will lead to a null pointer access.
+>>
+>> Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+>> ---
+>>  tools/lib/bpf/usdt.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+>> index 1bce2eab5e89..b02ebc4ba57c 100644
+>> --- a/tools/lib/bpf/usdt.c
+>> +++ b/tools/lib/bpf/usdt.c
+>> @@ -996,7 +996,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+>>         link = calloc(1, sizeof(*link));
+>>         if (!link) {
+>>                 err = -ENOMEM;
+>> -               goto err_out;
+>> +               goto link_err;
+> this is not a complete fix because there are two more similar goto
+> err_out; above which you didn't fix. I think better fix is to just add
+> if (link) check before bpf_link__destroy(), which is what I did
+> locally when applying.
+>
+>
+>>         }
+>>
+>>         link->usdt_man = man;
+>> @@ -1072,7 +1072,7 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
+>>
+>>  err_out:
+>>         bpf_link__destroy(&link->link);
+>> -
+>> +link_err:
+>>         free(targets);
+>>         hashmap__free(specs_hash);
+>>         if (elf)
+>> --
+>> 2.7.4
+>>
+Thank you for your kindness help. :)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Haowen Bai
+
