@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D57634F9FFE
-	for <lists+bpf@lfdr.de>; Sat,  9 Apr 2022 01:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA014FA007
+	for <lists+bpf@lfdr.de>; Sat,  9 Apr 2022 01:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239046AbiDHXJh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Apr 2022 19:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
+        id S229473AbiDHXSu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Apr 2022 19:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240058AbiDHXJc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 19:09:32 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E5121A88D
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 16:07:26 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id bq30so4645034lfb.3
-        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 16:07:26 -0700 (PDT)
+        with ESMTP id S235230AbiDHXSs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 19:18:48 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED46136332
+        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 16:16:43 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 17so13303407lji.1
+        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 16:16:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+BuQ54kmoLDllpUTeJESfWy7GBELmXiY3qcpMNcS5v0=;
-        b=Pat1U3iG4x7/yzX9mk0mLAyKjvvftuS5CYVjWQwKIneaFSDFXdiwFKsXcveh1PZ8Bg
-         4xNxQruxkdCI20mQr/yQYox5b7SnB1A4B9F6+f7vx4iIxbbOrGT9J2nMXrv4zskc67KU
-         oqfOYfmnJk2nSitVx1mSMaU2+FJG5AcdhLqnG5f4vrbs0l8EiKueNEe25T/fScJJ6pHW
-         cFBaCDMU0KRQsVGPkB3L0Ws1JsEQpc1s3gNWMGVVjum90EBLIxjsCz2GfJpgTIma+86j
-         0wfvU8zLARcix6KtpYFkrFVXO6SEv7C8fB0pLRa3rcI1Xpa7j8nGKLCP9KBNeF4w/gSP
-         wakA==
+        bh=Hr9+Obr43Ugb+tftzzH4at8I9cFTTs8UC/mYzT3zrkY=;
+        b=XC7T2dlkLlRK9BSFnzXcvtFe81TjfRbI6Rd7fXF7B/+rAqYfFMCL6S6HjCmtYgiPH4
+         sd75N6aDGvLNXu9RPSl5JwDgdGIiexTq+r2laatIeGQy0Fslp9v5r2QWYQILhnWdxJdf
+         JEAKTCur4rytPz6QqczTYpe3+x1KoWs1IkGOwpssk0yh6aw1tFvV2COD8HFiGiho83F4
+         MqTqcU/rLedsKu64GWxhSI/IDFhkWWH3frkoMPN2zpQGq/QWAjl2bQ5JJgBPX52435fS
+         s7eigv1yVp1j49EuDJ6ch8Eqnt0DJzG0XJoLtCXl4Fpimb8Tfrb0Rs0VKdpVMV7NOtGi
+         RkSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+BuQ54kmoLDllpUTeJESfWy7GBELmXiY3qcpMNcS5v0=;
-        b=PiBP4cZdlalDFMDh3PUdl7HLz5iGix/qtLaC8jgoGrk0keyR9z0+ncqSKxMBt1Eo7p
-         zYCBMxoY0Y3B+pz9bNFm/fcDExPU0f8uY9uE1oMp/FPFNyW7DFMnWsA46nGiDCmF/dKu
-         hXACWi+WafSmqlsUPD3GZh5LzQmouOWCrUbG9Ho42jIKmnnElBzLAtsflYmmlzHl8HzM
-         ooGpkV9jGrujYcEzT67FRkKIjqYXwPwyAQeBI8pBVchM0MEyN6L/HdQ1SHsBqo22U4Ag
-         1FxZnlWSusW8PDXLFMyo9UOnurhDvdOLCP3kxZx0jWruIZgdG0aSGX7YciAJEwvg7c//
-         dEIw==
-X-Gm-Message-State: AOAM532Xv7oSRxj5p61gcOd0BxumnZt4arWZb4KCTa9UkqOH2I29ixjI
-        t5dORPTwJVNimCiMoxE5vZ9yuZMP8WkOBwpCqkM=
-X-Google-Smtp-Source: ABdhPJxS7uJvMRIfKN9EPX3cmZhZuNX02boUFH4IhmZZjc5hlzxMISq6eivnnVrqBK+8flLYaZfkRXyTm7nzRJntrn0=
-X-Received: by 2002:a05:6512:c18:b0:44a:9992:28bc with SMTP id
- z24-20020a0565120c1800b0044a999228bcmr14049664lfu.641.1649459245060; Fri, 08
- Apr 2022 16:07:25 -0700 (PDT)
+        bh=Hr9+Obr43Ugb+tftzzH4at8I9cFTTs8UC/mYzT3zrkY=;
+        b=WxoJol8kld0D+6q+cQL+t3m9UYDx8xZtNdCaYumfwPq5HYyHin7PyWtqCe3M+qkeu/
+         rMMucuvmGYzPZaGamC/JaPiR0Cmse77vunaUJIJXtdkGJPoI9QxwDbqKSh4+KfmX17lS
+         UNKg+TDOM0naUUxFYgbCeby9yD0eCqvnSJaCrDyDBkERvQbijscwcl+2wF+tFTHYoS1K
+         Kt2XS8giGLFqTiyujDGHgIcmGB1zld96C5B+VvgWxGhJnwrjKD9Qj44V7tH76wskuZIc
+         FsUKOhwyLYtJhR3hj2tTkleRLLnfICsryP+/K62rtAekhCUv6WRbSN/xXnaoA4l2kzAd
+         x4OQ==
+X-Gm-Message-State: AOAM530mfBckpj38Y+L+33EF2+Isw0Hoa8yLOXwY/38iMxvoHijhCxK5
+        AuqVoGMV3FqHUByV3GDgIb58Ox7D8fwEe5nJe1E=
+X-Google-Smtp-Source: ABdhPJxUuUVg8ufY74gENl/KfZDS8z2dCe+gi6hs57/epMj8V/oR+id6tEVrfN1fNe3g8GSCiJ5o51/U+oWSYRTuO1A=
+X-Received: by 2002:a2e:b008:0:b0:24b:4ff2:5e09 with SMTP id
+ y8-20020a2eb008000000b0024b4ff25e09mr3181680ljk.28.1649459802203; Fri, 08 Apr
+ 2022 16:16:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220402015826.3941317-1-joannekoong@fb.com> <20220402015826.3941317-5-joannekoong@fb.com>
- <CAEf4BzYKpxNBsHUt7rEdXnnFgR2xKNLNcx_RZbQxUsheC32vMQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYKpxNBsHUt7rEdXnnFgR2xKNLNcx_RZbQxUsheC32vMQ@mail.gmail.com>
+References: <20220402015826.3941317-1-joannekoong@fb.com> <20220402015826.3941317-8-joannekoong@fb.com>
+ <CAEf4BzZATaiQpRcW=z1yW02L-D8Oo5QdkQ15S-gZ4d8EFL9McQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZATaiQpRcW=z1yW02L-D8Oo5QdkQ15S-gZ4d8EFL9McQ@mail.gmail.com>
 From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Fri, 8 Apr 2022 16:07:14 -0700
-Message-ID: <CAJnrk1bSXgpPLK-e-fu6UyFypAY=EGmeDh-7ftj3ekMwf4DNuw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/7] bpf: Add bpf_dynptr_read and bpf_dynptr_write
+Date:   Fri, 8 Apr 2022 16:16:31 -0700
+Message-ID: <CAJnrk1Z1z7-zX_2q3TJ_-0Wk_u2GtdTALt7LPJqKgCjR2K8A+w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 7/7] bpf: Dynptr tests
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -68,127 +68,153 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 6, 2022 at 3:32 PM Andrii Nakryiko
+On Wed, Apr 6, 2022 at 4:11 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
 > On Fri, Apr 1, 2022 at 7:00 PM Joanne Koong <joannekoong@fb.com> wrote:
 > >
 > > From: Joanne Koong <joannelkoong@gmail.com>
 > >
-> > This patch adds two helper functions, bpf_dynptr_read and
-> > bpf_dynptr_write:
+> > This patch adds tests for dynptrs. These include scenarios that the
+> > verifier needs to reject, as well as some successful use cases of
+> > dynptrs that should pass.
 > >
-> > long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offset);
-> >
-> > long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, u32 len);
-> >
-> > The dynptr passed into these functions must be valid dynptrs that have
-> > been initialized.
+> > Some of the failure scenarios include checking against invalid bpf_frees,
+> > invalid writes, invalid reads, and invalid ringbuf API usages.
 > >
 > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 > > ---
-> >  include/linux/bpf.h            |  6 ++++
-> >  include/uapi/linux/bpf.h       | 18 +++++++++++
-> >  kernel/bpf/helpers.c           | 56 ++++++++++++++++++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h | 18 +++++++++++
-> >  4 files changed, 98 insertions(+)
+>
+> Great set of tests! Hard to keep reading 500+ lines of failing use
+> cases, but seems like a lot of interesting corner cases are handled!
+> Great job!
+>
+> >  .../testing/selftests/bpf/prog_tests/dynptr.c | 303 ++++++++++
+> >  .../testing/selftests/bpf/progs/dynptr_fail.c | 527 ++++++++++++++++++
+> >  .../selftests/bpf/progs/dynptr_success.c      | 147 +++++
+> >  3 files changed, 977 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/dynptr.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/dynptr_fail.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/dynptr_success.c
 > >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index e0fcff9f2aee..cded9753fb7f 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -2426,6 +2426,12 @@ enum bpf_dynptr_type {
-> >  #define DYNPTR_MAX_SIZE        ((1UL << 28) - 1)
-> >  #define DYNPTR_SIZE_MASK       0xFFFFFFF
-> >  #define DYNPTR_TYPE_SHIFT      29
-> > +#define DYNPTR_RDONLY_BIT      BIT(28)
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> > new file mode 100644
+> > index 000000000000..7107ebee3427
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> > @@ -0,0 +1,303 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2022 Facebook */
 > > +
-> > +static inline bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
-> > +{
-> > +       return ptr->size & DYNPTR_RDONLY_BIT;
+> > +#include <test_progs.h>
+> > +#include "dynptr_fail.skel.h"
+> > +#include "dynptr_success.skel.h"
+> > +
+> > +size_t log_buf_sz = 1024 * 1024;
+> > +
+> > +enum fail_case {
+> > +       MISSING_FREE,
+> > +       MISSING_FREE_CALLBACK,
+> > +       INVALID_FREE1,
+> > +       INVALID_FREE2,
+> > +       USE_AFTER_FREE,
+> > +       MALLOC_TWICE,
+> > +       INVALID_MAP_CALL1,
+> > +       INVALID_MAP_CALL2,
+> > +       RINGBUF_INVALID_ACCESS,
+> > +       RINGBUF_INVALID_API,
+> > +       RINGBUF_OUT_OF_BOUNDS,
+> > +       DATA_SLICE_OUT_OF_BOUNDS,
+> > +       DATA_SLICE_USE_AFTER_FREE,
+> > +       INVALID_HELPER1,
+> > +       INVALID_HELPER2,
+> > +       INVALID_WRITE1,
+> > +       INVALID_WRITE2,
+> > +       INVALID_WRITE3,
+> > +       INVALID_WRITE4,
+> > +       INVALID_READ1,
+> > +       INVALID_READ2,
+> > +       INVALID_READ3,
+> > +       INVALID_OFFSET,
+> > +       GLOBAL,
+> > +       FREE_TWICE,
+> > +       FREE_TWICE_CALLBACK,
+> > +};
+>
+> it might make sense to just pass the program name as a string instead,
+> just like expected error message. This will allow more table-like
+> subtest specification (I'll expand below)
+>
+[...]
+> > +
+> > +       if (test__start_subtest("missing_free"))
+> > +               verify_fail(MISSING_FREE, obj_log_buf,
+> > +                           "spi=0 is an unreleased dynptr");
+> > +
+>
+> [...]
+>
+> > +       if (test__start_subtest("free_twice_callback"))
+> > +               verify_fail(FREE_TWICE_CALLBACK, obj_log_buf,
+> > +                           "arg #1 is an unacquired reference and hence cannot be released");
+> > +
+> > +       if (test__start_subtest("success"))
+> > +               verify_success();
+>
+> so instead of manually coded set of tests, it's more "scalable" to go
+> with table-driven approach. Something like
+>
+> struct {
+>     const char *prog_name;
+>     const char *exp_msg;
+> } tests = {
+>   {"invalid_read2", "Expected an initialized dynptr as arg #3"},
+>   {"prog_success_ringbuf", NULL /* success case */},
+>   ...
+> };
+>
+> then you can just succinctly:
+>
+> for (i = 0; i < ARRAY_SIZE(tests); i++) {
+>   if (!test__start_subtest(tests[i].prog_name))
+>     continue;
+>
+>   if (tests[i].exp_msg)
+>     verify_fail(tests[i].prog_name, tests[i].exp_msg);
+>   else
+>     verify_success(tests[i].prog_name);
+> }
+>
+> Then adding new cases would be only adding BPF code and adding a
+> single line in the tests table.
+>
+Awesome!! I love this. This will make it a lot easier to read!
+> > +
+> > +       free(obj_log_buf);
 > > +}
-> >
-> >  static inline enum bpf_dynptr_type bpf_dynptr_get_type(struct bpf_dynptr_kern *ptr)
-> >  {
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 6a57d8a1b882..16a35e46be90 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -5175,6 +5175,22 @@ union bpf_attr {
-> >   *             After this operation, *ptr* will be an invalidated dynptr.
-> >   *     Return
-> >   *             Void.
-> > + *
-> > + * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offset)
-> > + *     Description
-> > + *             Read *len* bytes from *src* into *dst*, starting from *offset*
-> > + *             into *dst*.
-> > + *     Return
-> > + *             0 on success, -EINVAL if *offset* + *len* exceeds the length
-> > + *             of *src*'s data or if *src* is an invalid dynptr.
-> > + *
-> > + * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, u32 len)
-> > + *     Description
-> > + *             Write *len* bytes from *src* into *dst*, starting from *offset*
-> > + *             into *dst*.
-> > + *     Return
-> > + *             0 on success, -EINVAL if *offset* + *len* exceeds the length
-> > + *             of *dst*'s data or if *dst* is not writeable.
+[...]
 >
-> Did you plan to also add a helper to copy from one dynptr to another?
-> Something like
->
-> long bpf_dynptr_copy(struct bpf_dynptr *dst, struct bpf_dyn_ptr *src, u32 len) ?
->
-> Otherwise there won't be any way to copy memory from malloc'ed range
-> to ringbuf, for example, without doing intermediate copy. Not sure
-> what to do about extra offsets...
-Yes! I plan for the 3rd patchset in this dynptr series to be around
-convenience helpers, which will include bpf_dynptr_copy.
-For the offsets, I was thinking just copy from src data + src internal
-offset to dst data + dst internal offset, where there will also be
-dynptr helper functions that can be called to adjust offsets
->
-> >   */
-> >  #define __BPF_FUNC_MAPPER(FN)          \
-> >         FN(unspec),                     \
-> > @@ -5374,6 +5390,8 @@ union bpf_attr {
-> >         FN(dynptr_from_mem),            \
-> >         FN(malloc),                     \
-> >         FN(free),                       \
-> > +       FN(dynptr_read),                \
-> > +       FN(dynptr_write),               \
-> >         /* */
-> >
-> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index ed5a7d9d0a18..7ec20e79928e 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -1412,6 +1412,58 @@ const struct bpf_func_proto bpf_dynptr_from_mem_proto = {
-> >         .arg3_type      = ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL | MEM_UNINIT,
-> >  };
-> >
-> > +BPF_CALL_4(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_kern *, src, u32, offset)
+> > +/* A dynptr can't be passed into a helper function at a non-zero offset */
+> > +SEC("raw_tp/sys_nanosleep")
+> > +int invalid_helper2(void *ctx)
 > > +{
-> > +       int err;
+> > +       struct bpf_dynptr ptr = {};
+> > +       char read_data[64] = {};
+> > +       __u64 x = 0;
 > > +
-> > +       if (!src->data)
-> > +               return -EINVAL;
+> > +       bpf_dynptr_from_mem(&x, sizeof(x), &ptr);
 > > +
-> > +       err = bpf_dynptr_check_off_len(src, offset, len);
->
-> you defined this function in patch #3, but didn't use it there. Let's
-> move the definition into this patch?
-Sounds great!
->
-> > +       if (err)
-> > +               return err;
-> > +
-> > +       memcpy(dst, src->data + src->offset + offset, len);
+> > +       /* this should fail */
+> > +       bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 8, 0);
 > > +
 > > +       return 0;
 > > +}
 > > +
+> > +/* A data slice can't be accessed out of bounds */
+> > +SEC("fentry/" SYS_PREFIX "sys_nanosleep")
 >
-> [...]
+> why switching to fentry here with this ugly SYS_PREFIX thingy?
+Ooh thanks for spotting this, I forgot to switch this over. Will
+definitely change this for v2!
+>
+[...]
