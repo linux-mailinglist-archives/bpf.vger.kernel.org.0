@@ -2,64 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4D64F99A6
-	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 17:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639A14F99F5
+	for <lists+bpf@lfdr.de>; Fri,  8 Apr 2022 17:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbiDHPlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Apr 2022 11:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47034 "EHLO
+        id S237017AbiDHP5A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Apr 2022 11:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237688AbiDHPkj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Apr 2022 11:40:39 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3129EF0BA
-        for <bpf@vger.kernel.org>; Fri,  8 Apr 2022 08:38:34 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id p15so15728809lfk.8
-        for <bpf@vger.kernel.org>; Fri, 08 Apr 2022 08:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tFdD+A2EohTP65KQkKV3Pqn5e8TfPQKEbucjauIlrko=;
-        b=AFWbu8oi0d8yjs8OiP3NZbNFgzEP9XI5whzn32iJA/DL0lBrC+ONZNHicz2Sbf+vq+
-         YZ4Kx4xsh11bZJU9vEVrXRoj0nkXTfyEXwfFOqic5WK1XRLHdZXV7gchXVDwg1dpX5i0
-         FnCJsWyGZx0fErj5A4+hv2+QgyP+eIkC2b/AOtXCiJm/bqpncBf2RWbu4nvj407A+G0F
-         SPvGSIJAktsgtC7Tf7NvzkI53Topq54iD6x4g8nmMWuYVKv/lnapwlxGGjJzJAKmj+FQ
-         ysPk2bO0EpA34sxigPMCPxqdjqetVnPesm+L8iOCwaM2nQiuzfehAMz5VBh6XigCS6Aj
-         mVRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tFdD+A2EohTP65KQkKV3Pqn5e8TfPQKEbucjauIlrko=;
-        b=eMFyiACBdJRmy5/l+pSssDVzjpyQNmdSeD4mb+l9rqHrzg2ELdD3JSTR44IQAMju+0
-         T0VFIIl2OrPrNSS7qDzo10RgN7LxWB5ygHXSZadCc+65A2YANv2PuCnFUB3eo98sHMQN
-         d8KMoDoZKL5J2Tls4lbAm2qKwkURM/wK4OAnzg5vVDfS22mWrcQctHpLjcv7oI9m/DnZ
-         KchBBqKwkZEKqfN4PKtuWW0F/llRsLwLU9gvuJ4iQtYsZP7GdI/9eYbnmuLwYlcPmrhs
-         ad3ZC3i3RaoPw/LfE3O6MpLm2ezy1W3fRVrWH1iLZzDvF2AOLNY87TMXZrIxmqMGJhas
-         Me1g==
-X-Gm-Message-State: AOAM533J+cVGdGf/UhbacaCqRWaTzBCq7pDCo6Q4WNtPZnz5POTIdX2l
-        7DwpoDY/oEm4oTp1f1j6pqVXVNUWThdQZg==
-X-Google-Smtp-Source: ABdhPJyNoKC0n05Nryhm2tdj/2erMeJ7dQrWClZ5JI4dSJdbTPyw62ihPnetdbwyrFABIb5Vczk62g==
-X-Received: by 2002:a05:6512:2353:b0:44a:26d4:607c with SMTP id p19-20020a056512235300b0044a26d4607cmr12847638lfu.638.1649432312368;
-        Fri, 08 Apr 2022 08:38:32 -0700 (PDT)
-Received: from localhost.localdomain ([5.188.167.245])
-        by smtp.googlemail.com with ESMTPSA id o19-20020ac24c53000000b0044a0574bbc5sm2489830lfk.0.2022.04.08.08.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Apr 2022 08:38:31 -0700 (PDT)
-From:   Sergey Matyukevich <geomatsi@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Vladimir Isaev <isaev@synopsys.com>,
-        Vineet Gupta <vgupta@kernel.org>
-Subject: [PATCH] libbpf: add ARC support to bpf_tracing.h
-Date:   Fri,  8 Apr 2022 18:38:29 +0300
-Message-Id: <20220408153829.582386-1-geomatsi@gmail.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S232438AbiDHP47 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Apr 2022 11:56:59 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF8F21B2;
+        Fri,  8 Apr 2022 08:54:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649433296; x=1680969296;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8Ef7bdwQ2vU8g4RXlOQh1N7SEV6OmzR0EZJITs0lq1o=;
+  b=isZHfSAybSAoTiv9tZ8yWLHbv7QtyilT5nDNLqMWcYUBMcgIQvDCeipl
+   6jZ/JxfBushqWHbXyHDHJP7MjD5+yWHvPnzfSEbiDL2iVZy9fLBBiMP41
+   Ba13AVBjoh38Iyz5OY8JGz91w4Qn7k9oFPnOAtebMdNuwiUMidRWgjsCN
+   ZwBGn3fmm3+FTWgDhT2/3eRmBn3KGBOcswviktPDlPiLrjlj7HpatIGdw
+   tPUkr8VCSwGrEUZ3v4DKW6fnoJmfrXZKOAIIuKedwXyN0p+E5uqlR57vn
+   jsr7zC/uQSIBmOiSPASyQYHgtIooQBNd3wAs5fkeKqiK5yF+B8DkJCTuW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="242218311"
+X-IronPort-AV: E=Sophos;i="5.90,245,1643702400"; 
+   d="scan'208";a="242218311"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2022 08:54:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,245,1643702400"; 
+   d="scan'208";a="852115822"
+Received: from lkp-server02.sh.intel.com (HELO 7e80bc2a00a0) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 08 Apr 2022 08:54:34 -0700
+Received: from kbuild by 7e80bc2a00a0 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1ncqwU-0000Q4-8H;
+        Fri, 08 Apr 2022 15:54:34 +0000
+Date:   Fri, 8 Apr 2022 23:53:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATCH bpf-next v3 2/7] bpf: per-cgroup lsm flavor
+Message-ID: <202204082305.Qs2g5Dzf-lkp@intel.com>
+References: <20220407223112.1204582-3-sdf@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220407223112.1204582-3-sdf@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,76 +66,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Vladimir Isaev <isaev@synopsys.com>
+Hi Stanislav,
 
-Add PT_REGS macros suitable for ARCompact and ARCv2.
+Thank you for the patch! Yet something to improve:
 
-Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
----
- tools/include/uapi/asm/bpf_perf_event.h |  2 ++
- tools/lib/bpf/bpf_tracing.h             | 23 +++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+[auto build test ERROR on bpf-next/master]
 
-diff --git a/tools/include/uapi/asm/bpf_perf_event.h b/tools/include/uapi/asm/bpf_perf_event.h
-index 39acc149d843..d7dfeab0d71a 100644
---- a/tools/include/uapi/asm/bpf_perf_event.h
-+++ b/tools/include/uapi/asm/bpf_perf_event.h
-@@ -1,5 +1,7 @@
- #if defined(__aarch64__)
- #include "../../arch/arm64/include/uapi/asm/bpf_perf_event.h"
-+#elif defined(__arc__)
-+#include "../../arch/arc/include/uapi/asm/bpf_perf_event.h"
- #elif defined(__s390__)
- #include "../../arch/s390/include/uapi/asm/bpf_perf_event.h"
- #elif defined(__riscv)
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index e3a8c947e89f..01ce121c302d 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -27,6 +27,9 @@
- #elif defined(__TARGET_ARCH_riscv)
- 	#define bpf_target_riscv
- 	#define bpf_target_defined
-+#elif defined(__TARGET_ARCH_arc)
-+	#define bpf_target_arc
-+	#define bpf_target_defined
- #else
- 
- /* Fall back to what the compiler says */
-@@ -54,6 +57,9 @@
- #elif defined(__riscv) && __riscv_xlen == 64
- 	#define bpf_target_riscv
- 	#define bpf_target_defined
-+#elif defined(__arc__)
-+	#define bpf_target_arc
-+	#define bpf_target_defined
- #endif /* no compiler target */
- 
- #endif
-@@ -233,6 +239,23 @@ struct pt_regs___arm64 {
- /* riscv does not select ARCH_HAS_SYSCALL_WRAPPER. */
- #define PT_REGS_SYSCALL_REGS(ctx) ctx
- 
-+#elif defined(bpf_target_arc)
-+
-+/* arc provides struct user_pt_regs instead of struct pt_regs to userspace */
-+#define __PT_REGS_CAST(x) ((const struct user_regs_struct *)(x))
-+#define __PT_PARM1_REG scratch.r0
-+#define __PT_PARM2_REG scratch.r1
-+#define __PT_PARM3_REG scratch.r2
-+#define __PT_PARM4_REG scratch.r3
-+#define __PT_PARM5_REG scratch.r4
-+#define __PT_RET_REG scratch.blink
-+#define __PT_FP_REG __unsupported__
-+#define __PT_RC_REG scratch.r0
-+#define __PT_SP_REG scratch.sp
-+#define __PT_IP_REG scratch.ret
-+/* arc does not select ARCH_HAS_SYSCALL_WRAPPER. */
-+#define PT_REGS_SYSCALL_REGS(ctx) ctx
-+
- #endif
- 
- #if defined(bpf_target_defined)
+url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Fomichev/bpf-cgroup_sock-lsm-flavor/20220408-063705
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: x86_64-randconfig-a005 (https://download.01.org/0day-ci/archive/20220408/202204082305.Qs2g5Dzf-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project c29a51b3a257908aebc01cd7c4655665db317d66)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/3c3f15b5422ca616e2585d699c47aa4e7b7dcf1d
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Stanislav-Fomichev/bpf-cgroup_sock-lsm-flavor/20220408-063705
+        git checkout 3c3f15b5422ca616e2585d699c47aa4e7b7dcf1d
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: undefined symbol: btf_obj_id
+   >>> referenced by trampoline.c
+   >>>               bpf/trampoline.o:(bpf_trampoline_link_cgroup_shim) in archive kernel/built-in.a
+   >>> referenced by trampoline.c
+   >>>               bpf/trampoline.o:(bpf_trampoline_unlink_cgroup_shim) in archive kernel/built-in.a
+
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
