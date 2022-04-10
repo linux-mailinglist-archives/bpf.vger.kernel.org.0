@@ -2,211 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3544FAB6A
-	for <lists+bpf@lfdr.de>; Sun, 10 Apr 2022 03:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293BC4FAC2A
+	for <lists+bpf@lfdr.de>; Sun, 10 Apr 2022 07:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbiDJBi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Apr 2022 21:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
+        id S229811AbiDJFly (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Apr 2022 01:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234971AbiDJBiX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Apr 2022 21:38:23 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DECF43AFC;
-        Sat,  9 Apr 2022 18:36:13 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23A1Seph019902;
-        Sat, 9 Apr 2022 18:36:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=1oqTcWSkXMMY+QESE68FXIguYTamoprMXK/LRbyxvHg=;
- b=Qtws657F/0+AlYZWUFmG9Z7v3TOH8HKa+m6LOVPfdqcdhICoBepfPKaV85lbsNJj8cXt
- cmL43cxfDThTK4DiNuGByi0BQvu5/IlTe4bXz9YdQIID6XhYh78y2/ZBo9sm+3JId8e9
- kEe9XhBycGN1Jo9I2tDPReD6Jysro+ericA= 
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2048.outbound.protection.outlook.com [104.47.73.48])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fb78q2hjp-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 09 Apr 2022 18:36:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O7fOhsFwPHn6H1kKbzLKJ5p6leFXfU2MB1/IUOcNPdYSVq91N4qUNjAQdZih9riECtgMlLblqdz/uv5pk8D7zPqasvfapyis2v+s/FCb3TqrNfx7NCFGvWHwPpmazeoIs/IXsd10SstCN4+kJYKvQKXp9dKcxckm+5GamFFlxf2yMOA9E1E52ksEvwKmrnd32cuudwf54kxNogCCDHgCT6lv1xK/LP8KdaTzft/2Eaq8dGwaagtX/UsNRgi85GovxA6fp+zLCRsEm2YGxGcQVsUuXy5xpLvbjAbOpdHMkiPdtOpAb3WnhQg54yHx3DHB34tX1tHS6ijffeyxGFv8Ow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1oqTcWSkXMMY+QESE68FXIguYTamoprMXK/LRbyxvHg=;
- b=dcSSkAtu5mEsrgj1iao+UhTYjF/gv7gVu18uaKCSr7A4mfhb95Dd3tA76olGSRTYYWjtvNC23P1nA/NGXMvyH1UWHDQ2PHajeDEh1yoE64mpYADtF09U9r4z1w8aojRcIcS03vRYbMC6tjG6Oyrv0fNjO0WbpDGEE27t+mbIPM3gaM5QUJ2hqAhPcR7AR+9dFptzEqQfrH5PDRxwr+LsIw0ZztUIYTl8bZubWmAVJtgIE+iWkATsB8fpCeUWc3+Jvsy07qtep6niBMr1BIHO/OWsGbChbaPQHifQm4rid6LD+npdSaNAuMEuvi3zkTc5O4ejhnANVe6SKMY+hYDB/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA0PR15MB3869.namprd15.prod.outlook.com (2603:10b6:806:8c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.28; Sun, 10 Apr
- 2022 01:36:10 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::e150:276a:b882:dda7]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::e150:276a:b882:dda7%8]) with mapi id 15.20.5144.028; Sun, 10 Apr 2022
- 01:36:09 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-CC:     Song Liu <song@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>
-Subject: Re: [PATCH bpf 0/2] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
-Thread-Topic: [PATCH bpf 0/2] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
-Thread-Index: AQHYS5mrbt0Ek+HXYEWMr5jprPTLPKzndvSAgADojYA=
-Date:   Sun, 10 Apr 2022 01:36:09 +0000
-Message-ID: <FAECBBAA-CF1B-42EB-9077-C655E8FD65E8@fb.com>
-References: <20220408223443.3303509-1-song@kernel.org>
- <8665439b-e82e-65b8-ddb6-da6a41d6f6da@leemhuis.info>
-In-Reply-To: <8665439b-e82e-65b8-ddb6-da6a41d6f6da@leemhuis.info>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.80.82.1.1)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d9c29f4c-fb60-493f-5321-08da1a927d88
-x-ms-traffictypediagnostic: SA0PR15MB3869:EE_
-x-microsoft-antispam-prvs: <SA0PR15MB3869E60E0144348BF3F11968B3EB9@SA0PR15MB3869.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OQAH7VAU+tdH66SwiSNz741Nyy6rs1gewS9AOIrLKc1ZNYYEK9vMpNCXbv8Tu70WQS8PXxn10GHqWFKYVBswURypsIi/JYX2OB2vPdBd7+RKqAs3peEofenelRcIgf5amUMY+tEykDlwivqwjmh259pf2Lm8OMUgg0/NR87opGobRrggNHKMzWQbssFpz1YBUn166VQ69Y2vJGSlwQ4R+s5I0g6D+wpC3gM8cyt9SHHhOQU6sr6FEHLPT1QfbSLiJDYPJx5i+zSzctEK9Mx/9HngYhjUUVATpGTs1bRg+MIGHQLppqaNFo2JQwWRwP9sLZPhNIise746b/PJMahqzzZ7BDBjcg/poUHmg7ZB12koFHma2O61q0W2ETICjJzHzKlrG/7lPBHikUU0MByZk5eKhUUNiVyi1Mk15OpqcjZdQnEpdIhszAGpFwucjSIrpUHSc+t8ZhB96zJRp86+TeoLnUMlEWMlUUXVwKI0KbBzTsotCnqJzWfRFfxtY3F/obel2UHw170eWG39o/8vh7N7GFJ9jI0h9d9h0yvqEUv6bZk8YZZGCg/3J1hlzZ0zLMxp/41O19i6arNAn7mNLNAg5nQLtyfukAxsqvcigFBw80VgZr/QWKl51xJ+ieH4Rdqct7WR8VxK0kn9bNtIeOl7Pt2RiQB79i4Q3AfQ9oIu3il0qbomU0m1p1vg59rbbw709gvOrlGg28apNbqTVSGtNF93yF+amgv23PBCRWj/Bcep/CaKyPqB3tlmhj2wfZeXik6grdPbWtoxtyhe3TZvvQhNrJFctVdoBhponpeXdzu3lBDflED3cBWekqsLX3I/IJhpc2sN9jtyLsL1DPCmcdk6Ix4/Fo2OwPBSJptZ9iOVhEtjEnFO/5gDH95c
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(38070700005)(38100700002)(86362001)(2906002)(122000001)(5660300002)(7416002)(8936002)(53546011)(6506007)(6916009)(2616005)(6512007)(54906003)(71200400001)(36756003)(966005)(6486002)(316002)(64756008)(66946007)(76116006)(66556008)(33656002)(8676002)(4326008)(66446008)(66476007)(186003)(83380400001)(91956017)(508600001)(14583001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?D5k07HHyeHfeb4Cmj8ZP3j5UH9roGR9a1Mob/LEgBumkCXsJcKbwM5CT8GJk?=
- =?us-ascii?Q?x2+Ui5XBcucDQMM7YlKg/kNwjPeaKWYCqIKUfvKoUS6AH+Fa8/XjG0L+1w68?=
- =?us-ascii?Q?20c/kv2eBiCGMw3CrRQCnky6zudL6V3wgqyw34ssnCUhm0cGG4awI/q4E9so?=
- =?us-ascii?Q?Cgy087C7zdw8LJPCUwe42AveoFFzwUIpDBmC+upPxswd3WgyaJH6vIDjTfm9?=
- =?us-ascii?Q?JYjaeu4u4OCb0wF7Bcx9vuQiG3RLipqBvPZl/IiROgjOvinYq8hP2ied8LmS?=
- =?us-ascii?Q?oDZs+qDjLRN7IfTo9vrFCrF48EqkczSd6gD6slbBJzEBVxSmSDuSIkbJHc9I?=
- =?us-ascii?Q?p3YuKXqDJyNlJ6QXgL7fghob6IXp5oHBXUJmcB0yfUcoe3+nwhp8HIdlGSZ0?=
- =?us-ascii?Q?EHCidlNr9i5+Rf8ObAsvT0ncZ8jAKQ8qRZc/i0IqngW6VymgIEdJ4FW9zr90?=
- =?us-ascii?Q?bF+oqGGQilHAfNjh8e14yg7PzII6CU9Je5O5kZHgjD/mXdGFCD5gah1CKsVY?=
- =?us-ascii?Q?9i1bBK4o3cU+igA7ogekCMzusfcon0oKYLan84sY7DCOvQfbOAuF/X8sX7Kh?=
- =?us-ascii?Q?mXl7BJXqy4LEQtUEmvf3WPEDRwnrnuQ8TLRa+kbtPhadCQS9OA2ZcjVxwQd0?=
- =?us-ascii?Q?nZf+TlAJuaS0xhOan7aH6xboNja621K10bB5so/Z7Ir2At7PEkpFBgRLPJvN?=
- =?us-ascii?Q?u1BM3oAGD/7JnJLhSjIyivEZbHt+s5F6TZPdK0mld7MDyG8+9J5mNWfi/kdq?=
- =?us-ascii?Q?5sL49mxAcyZyEk2GqUmTJSYm4oF749svRAJPIAx2oTzIOc1VVGY3om+kfiOA?=
- =?us-ascii?Q?uIMfE7sX8MivpSc2sPrrWPTMWLUtNJkLPqsDoIlsWxpdXEhD3aDH6q8exBFv?=
- =?us-ascii?Q?XLQHL6jlUKWKIwAsk5mJGbZLGK3Y99mTZFsiVGeoMO3V2ka3WVANSux63XcT?=
- =?us-ascii?Q?uHC66BrkaEwhiCEJFQ8nkadRsC717qSrR0vOqQQWt45RiExpygNrLAq5Dela?=
- =?us-ascii?Q?Ga81UJ7tQ3dtjMkkVyrdjEdXK/BR5ywoDF7OYQwr6iyaYlLMBW9nQCHbmDVx?=
- =?us-ascii?Q?hbosgTQnDGoOPaMtoaZOOYZoOBecsHlxyIBNOdQXjcxu/NShWzR8pswmomcb?=
- =?us-ascii?Q?/8btKfEyR33PY2CnGSSOLqsAp8ILsdhrjwqcTwDJfnAhIdDmI5d8iYjn400I?=
- =?us-ascii?Q?TyPLdsm971Au+GdQoBStvgtuIO8OMN4xDjC9N4PqcOi3nHDz0+z6O5Vn9sXM?=
- =?us-ascii?Q?ZZiopPddPwt8T0kTjV0kZopMrOO+hzAP3+sKc9+ge06kvVKIbFsKVtn6XuwZ?=
- =?us-ascii?Q?68NsiBaKz/W9C1PLATXrl5NX0bIoy3zIZr+9ZSFJ34krdL+oRTQ1SpJCIEBk?=
- =?us-ascii?Q?ip2cxq7UnaagzEmJWV9OdYIVK5m9VCDzKE7JsfiAg2QqbtyEQyWj63qwD7Cf?=
- =?us-ascii?Q?62Nkh2qHm/B7pdsmwKS+e3OD7MhK030iuZxcQ9hs+igVqiJQl4ALkEJjCny+?=
- =?us-ascii?Q?RMQRahVljPAFnWxt/d59BS3zgdeXhjtN5tnMwwpOnOxqbVgLS50bcPbDDd8l?=
- =?us-ascii?Q?1TfzW/QEIFizuHzXnVZIdKccF8F7ifLPuRgm9WbybI4IZoN8Uds9sZ6liQQT?=
- =?us-ascii?Q?jUYvS0IveOuBXVr2xBkaCLmt3jjS+ssAqMpEzkuYEpw6xWMRHVCoRzSX8ZGk?=
- =?us-ascii?Q?r1ig3YX2Zccw4Z7LpVPM6JJWWPNJ8gn8rz2UOGSxIzk2KWGlFRrOyxbLaI+0?=
- =?us-ascii?Q?S9LnGLqYMzTRnwejgClgqCdcGDI/DwB22iG+O1BsQPGsDTBN6z7a?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <086798E2C64B524A818F4890E7E6E91E@namprd15.prod.outlook.com>
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9c29f4c-fb60-493f-5321-08da1a927d88
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Apr 2022 01:36:09.9199
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EVyJyMStFRe+zKtwlc634qiaVxcs9lijWcPsg20T+7oEcdDGcMv5Y7Xkb19FdwCkR6E5sp4uxT65UWRK4s6V/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3869
-X-Proofpoint-ORIG-GUID: GHQe0gcyI5eUmclndop92zPHvfWPbx84
-X-Proofpoint-GUID: GHQe0gcyI5eUmclndop92zPHvfWPbx84
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229980AbiDJFlr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 Apr 2022 01:41:47 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A0CBD7
+        for <bpf@vger.kernel.org>; Sat,  9 Apr 2022 22:39:35 -0700 (PDT)
+Received: from fsav415.sakura.ne.jp (fsav415.sakura.ne.jp [133.242.250.114])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 23A5dW5a062781;
+        Sun, 10 Apr 2022 14:39:32 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav415.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp);
+ Sun, 10 Apr 2022 14:39:32 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 23A5dWJY062776
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 10 Apr 2022 14:39:32 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <fa445f0e-32b7-5e0d-9326-94bc5adba4c1@I-love.SAKURA.ne.jp>
+Date:   Sun, 10 Apr 2022 14:39:29 +0900
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-04-09_25,2022-04-08_01,2022-02-23_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [syzbot] KASAN: use-after-free Read in tcp_retransmit_timer (5)
+Content-Language: en-US
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        tpa@hlghospital.com, Yonghong Song <yhs@fb.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Trond Myklebust <trondmy@hammerspace.com>
+References: <00000000000045dc96059f4d7b02@google.com>
+ <000000000000f75af905d3ba0716@google.com>
+ <c389e47f-8f82-fd62-8c1d-d9481d2f71ff@I-love.SAKURA.ne.jp>
+ <CANn89i+wAtSy0aajXqbZBgAh+M4_-t7mDb9TfqQTRG3aHQkmrQ@mail.gmail.com>
+ <CANn89i+484ffqb93aQm1N-tjxxvb3WDKX0EbD7318RwRgsatjw@mail.gmail.com>
+ <CANn89i+rkip6uQ2SySspG+3WX6mR-CTHbQFLw1qUo4G4W5cn8g@mail.gmail.com>
+ <af8a3cc6-ee2f-f1ab-ee78-8e5988a9a2f8@I-love.SAKURA.ne.jp>
+In-Reply-To: <af8a3cc6-ee2f-f1ab-ee78-8e5988a9a2f8@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2022/04/10 9:38, Tetsuo Handa wrote:
+> I haven't identified where the socket
+> 
+> [  260.295512][    C0] BUG: Trying to access destroyed net=ffff888036278000 sk=ffff88800e2d8000
+> [  260.301941][    C0] sk->sk_family=10 sk->sk_prot_creator->name=TCPv6 sk->sk_state=11 sk->sk_flags=0x30b net->ns.count=0
+> 
+> came from. Can you identify the location?
+> 
 
+It seems that a socket with sk->sk_net_refcnt=0 is created by unshare(CLONE_NEWNET)
 
-> On Apr 9, 2022, at 4:43 AM, Thorsten Leemhuis <regressions@leemhuis.info> wrote:
-> 
-> Hi, this is your Linux kernel regression tracker.
-> 
-> On 09.04.22 00:34, Song Liu wrote:
->> Enabling HAVE_ARCH_HUGE_VMALLOC on x86_64 and use it for bpf_prog_pack has
->> caused some issues [1], as many users of vmalloc are not yet ready to
->> handle huge pages. To enable a more smooth transition to use huge page
->> backed vmalloc memory, this set replaces VM_NO_HUGE_VMAP flag with an new
->> opt-in flag, VM_ALLOW_HUGE_VMAP. More discussions about this topic can be
->> found at [2].
->> 
->> Patch 1 removes VM_NO_HUGE_VMAP and adds VM_ALLOW_HUGE_VMAP.
->> Patch 2 uses VM_ALLOW_HUGE_VMAP in bpf_prog_pack.
->> 
->> [1] https://lore.kernel.org/lkml/20220204185742.271030-1-song@kernel.org/
->> [2] https://lore.kernel.org/linux-mm/20220330225642.1163897-1-song@kernel.org/
-> 
-> These patches apparently fix a regression (one that's mentioned in your
-> [2]) that I tracked. Hence in the next iteration of your patches could
-> you please instead add a 'Link:' tag pointing to the report for anyone
-> wanting to look into the backstory in the future, as explained in
-> 'Documentation/process/submitting-patches.rst' and
-> 'Documentation/process/5.Posting.rst'? E.g. like this:
-> 
-> "Link:
-> https://lore.kernel.org/netdev/14444103-d51b-0fb3-ee63-c3f182f0b546@molgen.mpg.de/"
-> 
-> Not totally sure, but I guess it needs a Fixes tag as well specifying
-> the change that cause this regression (that's "fac54e2bfb5b"). The
-> documents mentioned above explain this, too. A "Reported-by" might be
-> appropriate as well.
-> 
-> In anyone wonders why I care: there are internal and publicly used tools
-> and scripts out there that reply on proper "Link" tags. I don't known
-> how many, but there is at least one public tool I'm running that cares:
-> regzbot, my regression tracking bot, which I use to track Linux kernel
-> regressions and generate the regression reports sent to Linus. Proper
-> "Link:" tags allow the bot to automatically connect regression reports
-> with fixes being posted or applied to resolve the particular regression
-> -- which makes regression tracking a whole lot easier and feasible for
-> the Linux kernel. That's why it's a great help for me if people set
-> proper "Link" tags.
-> 
-> While at it, let me tell regzbot about this thread:
-> #regzbot ^backmonitor:
-> https://lore.kernel.org/netdev/14444103-d51b-0fb3-ee63-c3f182f0b546@molgen.mpg.de/
-> 
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> 
-> P.S.: As the Linux kernel's regression tracker I'm getting a lot of
-> reports on my table. I can only look briefly into most of them and lack
-> knowledge about most of the areas they concern. I thus unfortunately
-> will sometimes get things wrong or miss something important. I hope
-> that's not the case here; if you think it is, don't hesitate to tell me
-> in a public reply, it's in everyone's interest to set the public record
-> straight.
+------------------------------------------------------------
+[   84.507864][ T2877] sock: sk_alloc(): family=10 net=ffff88800ec88000 sk=ffff888104138c40 sk->sk_net_refcnt=0
+[   84.512117][ T2877] CPU: 0 PID: 2877 Comm: a.out Not tainted 5.17.0-dirty #756
+[   84.515103][ T2877] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[   84.518916][ T2877] Call Trace:
+[   84.520346][ T2877]  <TASK>
+[   84.521671][ T2877]  dump_stack_lvl+0xcd/0x134
+[   84.523633][ T2877]  sk_alloc.cold+0x26/0x2b
+[   84.525523][ T2877]  inet6_create+0x215/0x840
+[   84.527600][ T2877]  __sock_create+0x20e/0x4f0
+[   84.529576][ T2877]  rds_tcp_listen_init+0x69/0x1f0
+[   84.531689][ T2877]  ? do_raw_spin_unlock+0x50/0xd0
+[   84.533826][ T2877]  ? _raw_spin_unlock+0x24/0x40
+[   84.535866][ T2877]  ? __sanitizer_cov_trace_pc+0x1a/0x40
+[   84.538109][ T2877]  ? __register_sysctl_table+0x384/0x6d0
+[   84.540459][ T2877]  rds_tcp_init_net+0x154/0x300
+[   84.542512][ T2877]  ? rds_tcp_exit+0x1f0/0x1f0
+[   84.544488][ T2877]  ops_init+0x4e/0x210
+[   84.546237][ T2877]  setup_net+0x22b/0x4a0
+[   84.548075][ T2877]  copy_net_ns+0x1a3/0x380
+[   84.550132][ T2877]  create_new_namespaces.isra.0+0x187/0x460
+[   84.552740][ T2877]  unshare_nsproxy_namespaces+0xa2/0x120
+[   84.555040][ T2877]  ksys_unshare+0x2fe/0x640
+[   84.556861][ T2877]  __x64_sys_unshare+0x12/0x20
+[   84.558756][ T2877]  do_syscall_64+0x35/0xb0
+[   84.561296][ T2877]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   84.563605][ T2877] RIP: 0033:0x7f9030c55e2b
+[   84.565323][ T2877] Code: 73 01 c3 48 8b 0d 65 c0 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 10 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 35 c0 0c 00 f7 d8 64 89 01 48
+[   84.572520][ T2877] RSP: 002b:00007fffddd1ef88 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+[   84.576338][ T2877] RAX: ffffffffffffffda RBX: 000055c460627880 RCX: 00007f9030c55e2b
+[   84.579952][ T2877] RDX: 00007fffddd1f198 RSI: 00007fffddd1f188 RDI: 0000000040000000
+[   84.583656][ T2877] RBP: 0000000000000000 R08: 0000000000000000 R09: 00007f9030d67d50
+[   84.586688][ T2877] R10: 0000000000000000 R11: 0000000000000246 R12: 000055c460627410
+[   84.589682][ T2877] R13: 00007fffddd1f180 R14: 0000000000000000 R15: 0000000000000000
+[   84.593111][ T2877]  </TASK>
+------------------------------------------------------------
 
-Thanks for the reminder. I will add the Fixes tag, and try to work with 
-regzbot. 
+and something creates a new socket by invoking sk_clone_lock().
+But since sk->sk_net_refcnt=0, net->ns.count is not incremented when the new socket is created.
 
-Song
+------------------------------------------------------------
+[   85.280860][    C0] sock: sk_clone_lock(): sk=ffff888104138c40 net=ffff88800ec88000 sk->sk_family=10 sk->sk_net_refcnt=0 refcount_read(&net->ns.count)=2
+[   85.286319][    C0] sock: sk_clone_lock(): newsk=ffff888104139880 net=ffff88800ec88000 newsk->sk_family=10 newsk->sk_net_refcnt=0 refcount_read(&net->ns.count)=2
+[   85.292668][    C0] CPU: 0 PID: 2877 Comm: a.out Not tainted 5.17.0-dirty #756
+[   85.295870][    C0] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[   85.299371][    C0] Call Trace:
+[   85.300734][    C0]  <IRQ>
+[   85.302049][    C0]  dump_stack_lvl+0xcd/0x134
+[   85.303996][    C0]  sk_clone_lock.cold+0x37/0x70
+[   85.305959][    C0]  inet_csk_clone_lock+0x1f/0x110
+[   85.308022][    C0]  tcp_create_openreq_child+0x2c/0x560
+[   85.310198][    C0]  tcp_v4_syn_recv_sock+0x73/0x810
+[   85.312460][    C0]  tcp_v6_syn_recv_sock+0x9cf/0x1020
+[   85.314549][    C0]  ? find_held_lock+0x2b/0x80
+[   85.316714][    C0]  ? write_comp_data+0x1c/0x70
+[   85.318581][    C0]  ? write_comp_data+0x1c/0x70
+[   85.320685][    C0]  ? tcp_parse_options+0xb4/0x660
+[   85.322841][    C0]  tcp_check_req+0x31a/0xa60
+[   85.324750][    C0]  tcp_v4_rcv+0x150f/0x1de0
+[   85.326518][    C0]  ip_protocol_deliver_rcu+0x52/0x630
+[   85.328923][    C0]  ip_local_deliver_finish+0xb4/0x1d0
+[   85.331626][    C0]  ip_local_deliver+0xa7/0x320
+[   85.333702][    C0]  ? ip_protocol_deliver_rcu+0x630/0x630
+[   85.335873][    C0]  ip_rcv_finish+0x108/0x170
+[   85.337775][    C0]  ip_rcv+0x69/0x2f0
+[   85.339461][    C0]  ? ip_rcv_finish_core.isra.0+0xbb0/0xbb0
+[   85.341973][    C0]  __netif_receive_skb_one_core+0x6a/0xa0
+[   85.344625][    C0]  __netif_receive_skb+0x24/0xa0
+[   85.346637][    C0]  process_backlog+0x11d/0x320
+[   85.348778][    C0]  __napi_poll+0x3d/0x3e0
+[   85.350974][    C0]  net_rx_action+0x34e/0x480
+[   85.353042][    C0]  __do_softirq+0xde/0x539
+[   85.354871][    C0]  ? sock_setsockopt+0x103/0x19f0
+[   85.356926][    C0]  do_softirq+0xb1/0xf0
+[   85.358650][    C0]  </IRQ>
+[   85.359962][    C0]  <TASK>
+[   85.361518][    C0]  __local_bh_enable_ip+0xbf/0xd0
+[   85.364170][    C0]  sock_setsockopt+0x103/0x19f0
+[   85.366200][    C0]  ? __sanitizer_cov_trace_pc+0x1a/0x40
+[   85.368309][    C0]  __sys_setsockopt+0x2d1/0x330
+[   85.370298][    C0]  __x64_sys_setsockopt+0x22/0x30
+[   85.372428][    C0]  do_syscall_64+0x35/0xb0
+[   85.374243][    C0]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   85.376538][    C0] RIP: 0033:0x7f9030c5677e
+[   85.378474][    C0] Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb bb 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 f3 0f 1e fa 49 89 ca b8 36 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e2 b6 0c 00 f7 d8 64 89 01 48
+[   85.386716][    C0] RSP: 002b:00007fffddd1ef88 EFLAGS: 00000217 ORIG_RAX: 0000000000000036
+[   85.389991][    C0] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f9030c5677e
+[   85.393300][    C0] RDX: 0000000000000032 RSI: 0000000000000001 RDI: 0000000000000004
+[   85.396636][    C0] RBP: 00007fffddd1ef9c R08: 0000000000000004 R09: 0000000000000000
+[   85.399672][    C0] R10: 00007fffddd1ef9c R11: 0000000000000217 R12: 00007fffddd1efa0
+[   85.403298][    C0] R13: 0000000000000003 R14: 00007fffddd1eff0 R15: 0000000000000000
+[   85.406311][    C0]  </TASK>
+------------------------------------------------------------
 
+Then, when the original socket is close()d and destructed, net->ns.count is decremented.
+
+------------------------------------------------------------
+[  204.164238][    C1] sock: __sk_destruct(): sk=ffff888104138c40 family=10 net=ffff88800ec88000 sk->sk_net_refcnt=0
+------------------------------------------------------------
+
+But the cloned socket is still there and TCP retransmit timer fires.
+
+------------------------------------------------------------
+[  224.550620][    C0] BUG: Trying to access destroyed net=ffff88800ec88000 sk=ffff888104139880
+[  224.555669][    C0] sk->sk_family=10 sk->sk_prot_creator->name=TCPv6 sk->sk_state=11 sk->sk_flags=0x30b net->ns.count=0
+[  224.562340][    C0] ------------[ cut here ]------------
+[  224.564697][    C0] WARNING: CPU: 0 PID: 0 at net/ipv4/tcp_timer.c:461 tcp_retransmit_timer.cold+0xdf/0xe6
+[  224.569214][    C0] Modules linked in:
+[  224.571197][    C0] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.17.0-dirty #756
+[  224.574659][    C0] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[  224.578719][    C0] RIP: 0010:tcp_retransmit_timer.cold+0xdf/0xe6
+[  224.581467][    C0] Code: 10 48 c7 c7 08 9f ff 83 48 8b 85 a0 03 00 00 44 8b 8b 4c 01 00 00 4c 8b 45 60 0f b6 4d 12 48 8d 90 88 01 00 00 e8 fe 24 f2 ff <0f> 0b e9 9c 40 5f ff e8 49 59 ee fd 41 0f b6 d5 4c 89 e6 48 c7 c7
+[  224.589620][    C0] RSP: 0018:ffffc90000003d90 EFLAGS: 00010286
+[  224.592253][    C0] RAX: 0000000000000063 RBX: ffff88800ec88000 RCX: ffffffff842622c0
+[  224.595621][    C0] RDX: 0000000000000000 RSI: ffffffff842622c0 RDI: 0000000000000002
+[  224.599035][    C0] RBP: ffff888104139880 R08: ffffffff81170398 R09: 0000000000000000
+[  224.602406][    C0] R10: 0000000000000005 R11: 0000000000080000 R12: 0000000000000001
+[  224.605791][    C0] R13: ffff888104139880 R14: ffff888104139918 R15: ffff888104139900
+[  224.609110][    C0] FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+[  224.612767][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  224.615409][    C0] CR2: 00007f11279aa340 CR3: 000000000d735000 CR4: 00000000000506f0
+[  224.618937][    C0] Call Trace:
+[  224.620480][    C0]  <IRQ>
+[  224.621889][    C0]  ? lockdep_hardirqs_on+0x79/0x100
+[  224.624114][    C0]  ? __sanitizer_cov_trace_pc+0x1a/0x40
+[  224.626512][    C0]  ? ktime_get+0x2d3/0x400
+[  224.628463][    C0]  tcp_write_timer_handler+0x257/0x3f0
+[  224.630776][    C0]  tcp_write_timer+0x19c/0x240
+[  224.632860][    C0]  ? tcp_write_timer_handler+0x3f0/0x3f0
+[  224.635251][    C0]  call_timer_fn+0xe3/0x4f0
+[  224.637699][    C0]  ? tcp_write_timer_handler+0x3f0/0x3f0
+[  224.640055][    C0]  run_timer_softirq+0x812/0xac0
+[  224.642270][    C0]  __do_softirq+0xde/0x539
+[  224.644238][    C0]  irq_exit_rcu+0xb6/0xf0
+[  224.646170][    C0]  sysvec_apic_timer_interrupt+0x8e/0xc0
+[  224.648543][    C0]  </IRQ>
+[  224.650083][    C0]  <TASK>
+[  224.651715][    C0]  asm_sysvec_apic_timer_interrupt+0x12/0x20
+[  224.654189][    C0] RIP: 0010:default_idle+0xb/0x10
+[  224.656669][    C0] Code: 00 00 00 75 09 48 83 c4 18 5b 5d 41 5c c3 e8 5c 96 fe ff cc cc cc cc cc cc cc cc cc cc cc cc eb 07 0f 00 2d e3 08 48 00 fb f4 <c3> 0f 1f 40 00 65 48 8b 04 25 40 af 01 00 f0 80 48 02 20 48 8b 10
+[  224.663980][    C0] RSP: 0018:ffffffff84203e90 EFLAGS: 00000202
+[  224.666737][    C0] RAX: 0000000000030067 RBX: 0000000000000000 RCX: ffffffff842622c0
+[  224.670022][    C0] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+[  224.673311][    C0] RBP: ffffffff842622c0 R08: 0000000000000001 R09: 0000000000000001
+[  224.676957][    C0] R10: 0000000000000001 R11: 0000000000080000 R12: 0000000000000000
+[  224.680232][    C0] R13: ffffffff842622c0 R14: 0000000000000000 R15: 0000000000000000
+[  224.683617][    C0]  default_idle_call+0x6a/0x260
+[  224.685750][    C0]  do_idle+0x20c/0x260
+[  224.687593][    C0]  ? trace_init_perf_perm_irq_work_exit+0xe/0xe
+[  224.690199][    C0]  cpu_startup_entry+0x14/0x20
+[  224.692248][    C0]  start_kernel+0x8f7/0x91e
+[  224.694223][    C0]  secondary_startup_64_no_verify+0xc3/0xcb
+[  224.697014][    C0]  </TASK>
+------------------------------------------------------------
+
+mptcp_subflow_create_socket() increments net->ns.count and sets
+sk->sk_net_refcnt = 1, but e.g. rds_tcp_listen_init() does not?
+
+------------------------------------------------------------
+int mptcp_subflow_create_socket(struct sock *sk, struct socket **new_sock)
+{
+        struct mptcp_subflow_context *subflow;
+        struct net *net = sock_net(sk);
+        struct socket *sf;
+        int err;
+
+        /* un-accepted server sockets can reach here - on bad configuration
+         * bail early to avoid greater trouble later
+         */
+        if (unlikely(!sk->sk_socket))
+                return -EINVAL;
+
+        err = sock_create_kern(net, sk->sk_family, SOCK_STREAM, IPPROTO_TCP,
+                               &sf);
+        if (err)
+                return err;
+
+        lock_sock(sf->sk);
+
+        /* the newly created socket has to be in the same cgroup as its parent */
+        mptcp_attach_cgroup(sk, sf->sk);
+
+        /* kernel sockets do not by default acquire net ref, but TCP timer
+         * needs it.
+         */
+        sf->sk->sk_net_refcnt = 1;
+        get_net_track(net, &sf->sk->ns_tracker, GFP_KERNEL);
+        sock_inuse_add(net, 1);
+------------------------------------------------------------
