@@ -2,144 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD0D4FAAF4
-	for <lists+bpf@lfdr.de>; Sat,  9 Apr 2022 23:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED51E4FAB35
+	for <lists+bpf@lfdr.de>; Sun, 10 Apr 2022 02:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbiDIVds (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Apr 2022 17:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
+        id S233233AbiDJAk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Apr 2022 20:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbiDIVdr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Apr 2022 17:33:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A233E1263E
-        for <bpf@vger.kernel.org>; Sat,  9 Apr 2022 14:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1649539897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=EO9xgnmNg3rKJKYPjZ5Nd4zEAwaYdY2kixTl9SNKnr0=;
-        b=ba6yoieIL/ac4LhVlQ1lC9if4r/u7hArVxF/Zy96KJ0Rpi1VIj4PqWNYtw4IVsKQbeyW+h
-        nDrFCVLqoM/kRiGzwA5NCXVEFx5KgpNkHJRd/HNNY4LhrUf/BVyMnDTLuHN8rwQVaFofA8
-        TJmIWVnBN8XsB+nc90gX18dCtsW4w5A=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-232-b6OozXB4MWqhwxhcAy51Sw-1; Sat, 09 Apr 2022 17:31:35 -0400
-X-MC-Unique: b6OozXB4MWqhwxhcAy51Sw-1
-Received: by mail-ed1-f69.google.com with SMTP id k19-20020a05640212d300b0041cc3029356so6419463edx.11
-        for <bpf@vger.kernel.org>; Sat, 09 Apr 2022 14:31:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EO9xgnmNg3rKJKYPjZ5Nd4zEAwaYdY2kixTl9SNKnr0=;
-        b=yEn6mkxkkwtEfj/XtURcyRLCKKUu2Y9gbIE9VP6uPpVTf6J3Gn0FsiyCirgr360gBB
-         tJiYcQjy9r5mdw15g5+grX/nEZxeYjsAAefxdocEdyS2az0aDCmfqQFvO2OL7WQz23Yi
-         6bWHMf1WWb96voTFmaAHQYDB1FUZMRE1Emv4gGbhLV194sFpoFlAx2xwFkdsI4ijh50e
-         0f99+6gqY+eBZgSzryQAb2UZg2B7utMkPZm1nnC0jgRjBh5hn8kRqLsR41hcOom8voxa
-         C8BYLfq4oxOrns0DCMGTTVuPDldwhhzsGO7U2/h0+YBwJ6pn8kv2oSkNK265LG/Nymp7
-         sJYw==
-X-Gm-Message-State: AOAM532UPtVDcnLQvX+uAHjibvZ+efPweidEhVqZjzo1Gg27SaSu3eRT
-        kQBHbeaxstVvHLjdWN2RySqLvykkZWzvQ8MLF4jpKttl4aREwAQ90W4JIGRZspyNcTRJ4yUDtMi
-        L/xzTS0O9PTBq
-X-Received: by 2002:a17:907:9805:b0:6db:4c33:7883 with SMTP id ji5-20020a170907980500b006db4c337883mr24693770ejc.555.1649539893734;
-        Sat, 09 Apr 2022 14:31:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyL5/gfEH4aSRPO1SsFiQRpKTISSLeu2BXnoBHkkORBctuhW5C8weQ8srGqhX5Y7ZGCNpea4Q==
-X-Received: by 2002:a17:907:9805:b0:6db:4c33:7883 with SMTP id ji5-20020a170907980500b006db4c337883mr24693751ejc.555.1649539893374;
-        Sat, 09 Apr 2022 14:31:33 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id u7-20020a170906654700b006e886beb300sm72987ejn.164.2022.04.09.14.31.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Apr 2022 14:31:32 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 111BB2755AD; Sat,  9 Apr 2022 23:31:31 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf] bpf: Fix release of page_pool in BPF_PROG_RUN
-Date:   Sat,  9 Apr 2022 23:30:53 +0200
-Message-Id: <20220409213053.3117305-1-toke@redhat.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S233254AbiDJAk1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Apr 2022 20:40:27 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA60F0A
+        for <bpf@vger.kernel.org>; Sat,  9 Apr 2022 17:38:17 -0700 (PDT)
+Received: from fsav118.sakura.ne.jp (fsav118.sakura.ne.jp [27.133.134.245])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 23A0cF5K072417;
+        Sun, 10 Apr 2022 09:38:15 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav118.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav118.sakura.ne.jp);
+ Sun, 10 Apr 2022 09:38:15 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav118.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 23A0cF8h072414
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 10 Apr 2022 09:38:15 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <af8a3cc6-ee2f-f1ab-ee78-8e5988a9a2f8@I-love.SAKURA.ne.jp>
+Date:   Sun, 10 Apr 2022 09:38:12 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [syzbot] KASAN: use-after-free Read in tcp_retransmit_timer (5)
+Content-Language: en-US
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        tpa@hlghospital.com, Yonghong Song <yhs@fb.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Trond Myklebust <trondmy@hammerspace.com>
+References: <00000000000045dc96059f4d7b02@google.com>
+ <000000000000f75af905d3ba0716@google.com>
+ <c389e47f-8f82-fd62-8c1d-d9481d2f71ff@I-love.SAKURA.ne.jp>
+ <CANn89i+wAtSy0aajXqbZBgAh+M4_-t7mDb9TfqQTRG3aHQkmrQ@mail.gmail.com>
+ <CANn89i+484ffqb93aQm1N-tjxxvb3WDKX0EbD7318RwRgsatjw@mail.gmail.com>
+ <CANn89i+rkip6uQ2SySspG+3WX6mR-CTHbQFLw1qUo4G4W5cn8g@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CANn89i+rkip6uQ2SySspG+3WX6mR-CTHbQFLw1qUo4G4W5cn8g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The live packet mode in BPF_PROG_RUN allocates a page_pool instance for
-each test run instance and uses it for the packet data. On setup it creates
-the page_pool, and calls xdp_reg_mem_model() to allow pages to be returned
-properly from the XDP data path. However, xdp_reg_mem_model() also raises
-the reference count of the page_pool itself, so the single
-page_pool_destroy() count on teardown was not enough to actually release
-the pool. To fix this, add an additional xdp_unreg_mem_model() call on
-teardown.
+On 2022/04/10 1:46, Eric Dumazet wrote:
+> Try removing NFS from your kernel .config ? If your repro still works,
+> then another user of kernel TCP socket needs some care.
 
-Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in BPF_PROG_RUN")
-Reported-by: Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- net/bpf/test_run.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Since my .config is CONFIG_NETWORK_FILESYSTEMS=n, NFS is irrelevant.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index e7b9c2636d10..af709c182674 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -108,6 +108,7 @@ struct xdp_test_data {
- 	struct page_pool *pp;
- 	struct xdp_frame **frames;
- 	struct sk_buff **skbs;
-+	struct xdp_mem_info mem;
- 	u32 batch_size;
- 	u32 frame_cnt;
- };
-@@ -147,7 +148,6 @@ static void xdp_test_run_init_page(struct page *page, void *arg)
- 
- static int xdp_test_run_setup(struct xdp_test_data *xdp, struct xdp_buff *orig_ctx)
- {
--	struct xdp_mem_info mem = {};
- 	struct page_pool *pp;
- 	int err = -ENOMEM;
- 	struct page_pool_params pp_params = {
-@@ -174,7 +174,7 @@ static int xdp_test_run_setup(struct xdp_test_data *xdp, struct xdp_buff *orig_c
- 	}
- 
- 	/* will copy 'mem.id' into pp->xdp_mem_id */
--	err = xdp_reg_mem_model(&mem, MEM_TYPE_PAGE_POOL, pp);
-+	err = xdp_reg_mem_model(&xdp->mem, MEM_TYPE_PAGE_POOL, pp);
- 	if (err)
- 		goto err_mmodel;
- 
-@@ -202,6 +202,7 @@ static int xdp_test_run_setup(struct xdp_test_data *xdp, struct xdp_buff *orig_c
- 
- static void xdp_test_run_teardown(struct xdp_test_data *xdp)
- {
-+	xdp_unreg_mem_model(&xdp->mem);
- 	page_pool_destroy(xdp->pp);
- 	kfree(xdp->frames);
- 	kfree(xdp->skbs);
--- 
-2.35.1
+On 2022/04/10 2:47, Eric Dumazet wrote:
+> So please add to your tree the NFS fix:
+> 
+> commit f00432063db1a0db484e85193eccc6845435b80e
+> Author: Trond Myklebust <trond.myklebust@hammerspace.com>
+> Date:   Sun Apr 3 15:58:11 2022 -0400
+> 
+>     SUNRPC: Ensure we flush any closed sockets before xs_xprt_free()
+
+Since CONFIG_SUNRPC depends on CONFIG_NETWORK_FILESYSTEMS=y,
+this NFS fix will be also irrelevant.
+
+On 2022/04/10 2:55, Eric Dumazet wrote:
+> Side note: We will probably be able to revert this patch, that perhaps
+> was working around the real issue.
+> 
+> commit 4ee806d51176ba7b8ff1efd81f271d7252e03a1d
+> Author: Dan Streetman <ddstreet@ieee.org>
+> Date:   Thu Jan 18 16:14:26 2018 -0500
+> 
+>     net: tcp: close sock if net namespace is exiting
+
+I uploaded my .config at https://I-love.SAKURA.ne.jp/tmp/config-5.17
+so that you can try this reproducer using my .config file.
+
+I haven't identified where the socket
+
+[  260.295512][    C0] BUG: Trying to access destroyed net=ffff888036278000 sk=ffff88800e2d8000
+[  260.301941][    C0] sk->sk_family=10 sk->sk_prot_creator->name=TCPv6 sk->sk_state=11 sk->sk_flags=0x30b net->ns.count=0
+
+came from. Can you identify the location?
 
