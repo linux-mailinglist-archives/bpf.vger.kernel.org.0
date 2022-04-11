@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5B04FC5AE
-	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 22:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3ED4FC5C6
+	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 22:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbiDKUW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Apr 2022 16:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        id S234657AbiDKUbG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Apr 2022 16:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349833AbiDKUW5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Apr 2022 16:22:57 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40ED034658
-        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 13:20:41 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id j9so20572112lfe.9
-        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 13:20:41 -0700 (PDT)
+        with ESMTP id S231363AbiDKUbE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Apr 2022 16:31:04 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AA835857
+        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 13:28:49 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id u7so11592631lfs.8
+        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 13:28:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WfxuQU6ZOSp9R4rmA4wOjsZy3hwyplVEIRku6u+qoXY=;
-        b=Qn9RJLp3MZGvA4aW4SZ6BH+6G05ef8xTfH2ssBPI+qm1EtW9tulszcLuAXK22qT5vK
-         +LWbSm+9KOInCxGMyLiGOozxpYj1M1YQWL8lEXdyGA3PR8hwAJdujVz0vJCTmKBBTSlV
-         n8tzujwpx3/OjZFEndUirdojj1ddtW9aDHldwieQLEWynqp6aL45Nn1x6cm45sd6uZko
-         QmZRojmzEJyVguH7zObSlpeOeIYRFMR7KS3RPK+OM5pBUfYwm4TboiR5jWiGf14oAiHI
-         iEi1Dvd37eWar4hy/3Hqsns3jxMmpOjW2HB4911fP2E3q24IkZAE0BszPXcaZiZyaFtZ
-         CFYA==
+        bh=7to7rdg8hgLB3yIWeW4mYll+ym182Rl0IniHRC9Bo9Q=;
+        b=XAC5sMTQ1DHTEl2R1A6cmk9EwEgUTEHjmEzTXfpaG6DHdGh1hRqFSouHvaCRkPsoB8
+         69nq7bPkhwPAPdWVt9YQReuHyL+hnv81cYQnqPGYI2UmwKvXbh7XLyskrQdJqaAw5z6J
+         7o1czTMJHLG3QPDMVrndt+ld2geBtkqalS2zl+GRzRFMsKXdazQHo1OATxzKxIFC5fD/
+         kzvjQJdxBb7V4wrYrwvpEylkp2mInTIb++lKHGfFit7KjJXHqygncmy+6WXWGmQJbBmH
+         1uk0St1XvHra87VyN24aIX1vgXnPqQVlo0KdUlN+KKjsRpMPlwA89JbUPHTQ4hwB4Haz
+         c7xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WfxuQU6ZOSp9R4rmA4wOjsZy3hwyplVEIRku6u+qoXY=;
-        b=bdMxxfc2Xi3/8yLQ64arV44eoFjB8NsJ9atlAVySCDaRpfHLzOuUHhOBTCN63ree/Q
-         f7tKC4jw68pjK99OBIdAXyw4OKKWfhHRS+L9eA47A8SpHF8IFA9vxCv29+ZGgoz/E2iQ
-         KwuIZrZKibL/nde5cAPxhBLtJSEh0pP5ilap9VxYgvkTMEfHsiixSJDWjyXbKVH1nWdo
-         XU6fKXgqXWKrl6blp8GGvkLoOyQwSUirvNR0hirJHgSOtjgRwhl7FBsXfjWKr8JewZE5
-         kCsnXhr2bzyzyOSRVlZhD/TmQQQbFsHjE0YQ9xUr0bvrHWJmb3KY7Bq/5Vxgl9Nfeg59
-         Ikog==
-X-Gm-Message-State: AOAM5315rIoU1svlD7iCjzXc3fuJhLbc971IB3R6d5mw7wudc+vGaG0U
-        bw9Z3bCxo3AmZ2hNazcbg7uLV6Lju06HJm6PIgJZk4F8t1k=
-X-Google-Smtp-Source: ABdhPJzeCsu1Bj21uNBU0j5F3BiNa3BaJfjjgs01cMYEj/3LrPgc6Uggs8bb6z/o6YzYcxv1abSGIGAdlj9NvRVt0iA=
-X-Received: by 2002:a05:6512:c18:b0:44a:9992:28bc with SMTP id
- z24-20020a0565120c1800b0044a999228bcmr23065565lfu.641.1649708439323; Mon, 11
- Apr 2022 13:20:39 -0700 (PDT)
+        bh=7to7rdg8hgLB3yIWeW4mYll+ym182Rl0IniHRC9Bo9Q=;
+        b=C5bcjlO6xiCus+np/uECDi14glxSrfPuBZa18lx/6nsyYckGWMIOrZRfS2ynsB1m+C
+         X92ldTZIdBYFOwnI5tiAWM5Rba6eVt+Byjo83XG4s5nZp1JJwcIHTAyG3WvoptFXrnBe
+         swMaMBkaYwvdx8YGDyInqhu2Q3Xw3LZRnipOqSscm0Z+H/7A+oPiVKmZ5FIyeFVU3q3V
+         WIBhV+9Yj2iC/q7BH7pfTXWXWn9vDPEVCwCZLhwjGc2hiRywRKkEnrQLK7yOL2rzUU5C
+         DsX/tZf7rj7JGbGDIglFFSzynCiS/C7nZt0Rq6Bbv9taQwc/nTR+Xo9sTn9njrIq/V20
+         jdlA==
+X-Gm-Message-State: AOAM532xNcPjjGFIKE34wUiRmGL04XPscpwxPbLKAnmLOLnAi/0Fb3NO
+        Cw3FnInkXkmkuZA8FzzLi39odx7KRIf2hdOkBAs=
+X-Google-Smtp-Source: ABdhPJyGCEBDeyTi3VhHvQ7MqYP7eZ6IJ++5myWlF5qAfOZleUiV8vlKfI5NiX/jhLfaRxdyUuYWNEQE+/hwFer69pM=
+X-Received: by 2002:a05:6512:2311:b0:44b:4bb:3425 with SMTP id
+ o17-20020a056512231100b0044b04bb3425mr23715044lfu.288.1649708927696; Mon, 11
+ Apr 2022 13:28:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220409093303.499196-1-memxor@gmail.com> <20220409093303.499196-2-memxor@gmail.com>
-In-Reply-To: <20220409093303.499196-2-memxor@gmail.com>
+References: <20220409093303.499196-1-memxor@gmail.com> <20220409093303.499196-3-memxor@gmail.com>
+In-Reply-To: <20220409093303.499196-3-memxor@gmail.com>
 From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 11 Apr 2022 13:20:28 -0700
-Message-ID: <CAJnrk1Z2tKHXxj1do31DfhZqBck21dSCEZhBCXOP9hkyOv1EpA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 01/13] bpf: Make btf_find_field more generic
+Date:   Mon, 11 Apr 2022 13:28:36 -0700
+Message-ID: <CAJnrk1YTocMacnX2ATEznbuWL7dXTB2yX-cFj8wtLuGkN-sDPQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 02/13] bpf: Move check_ptr_off_reg before check_map_access
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -68,271 +68,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 9, 2022 at 2:32 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+On Sat, Apr 9, 2022 at 1:40 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> Next commit introduces field type 'kptr' whose kind will not be struct,
-> but pointer, and it will not be limited to one offset, but multiple
-> ones. Make existing btf_find_struct_field and btf_find_datasec_var
-> functions amenable to use for finding kptrs in map value, by moving
-> spin_lock and timer specific checks into their own function.
->
-> The alignment, and name are checked before the function is called, so it
-> is the last point where we can skip field or return an error before the
-> next loop iteration happens. The name parameter is now optional, and
-> only checked if it is not NULL. Size of the field and type is meant to
-> be checked inside the function, and base type will need to be obtained
-> by skipping modifiers.
+> Some functions in next patch want to use this function, and those
+> functions will be called by check_map_access, hence move it before
+> check_map_access.
 >
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+
+LGTM.
+
+Acked-by: Joanne Koong <joannelkoong@gmail.com>
+
 > ---
->  kernel/bpf/btf.c | 129 +++++++++++++++++++++++++++++++++++------------
->  1 file changed, 96 insertions(+), 33 deletions(-)
+>  kernel/bpf/verifier.c | 76 +++++++++++++++++++++----------------------
+>  1 file changed, 38 insertions(+), 38 deletions(-)
 >
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 0918a39279f6..db7bf05adfc5 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3163,71 +3163,126 @@ static void btf_struct_log(struct btf_verifier_env *env,
->         btf_verifier_log(env, "size=%u vlen=%u", t->size, btf_type_vlen(t));
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 9c1a02b82ecd..71827d14724a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3469,6 +3469,44 @@ static int check_mem_region_access(struct bpf_verifier_env *env, u32 regno,
+>         return 0;
 >  }
 >
-> +enum {
-> +       BTF_FIELD_SPIN_LOCK,
-> +       BTF_FIELD_TIMER,
-> +};
-> +
-> +struct btf_field_info {
-> +       u32 off;
-> +};
-> +
-> +static int btf_find_field_struct(const struct btf *btf, const struct btf_type *t,
-> +                                u32 off, int sz, struct btf_field_info *info)
+> +static int __check_ptr_off_reg(struct bpf_verifier_env *env,
+> +                              const struct bpf_reg_state *reg, int regno,
+> +                              bool fixed_off_ok)
 > +{
-> +       if (!__btf_type_is_struct(t))
-> +               return 0;
-> +       if (t->size != sz)
-> +               return 0;
-Do we need these two checks? I think in the original version we did
-because we were checking this before doing the name comparison, but
-now that the name comparison check is first, if the struct name is a
-match, then won't these two things always be true (or if not, then it
-seems like we should return -EINVAL)? But maybe I'm missing something
-here - I'm still getting more familiar with BTF :)
-
-Also, as a side-note: I personally find this function name
-"btf_find_field_struct" confusing since there's also the
-"btf_find_struct_field" function that exists. I wonder whether we
-should just keep the logic inside btf_find_struct_field instead of
-putting it in this separate function?
-
-> +       if (info->off != -ENOENT)
-> +               /* only one such field is allowed */
-> +               return -E2BIG;
-In the future, do you plan to add support for multiple fields? I think
-this would be useful for dynptrs as well, so just curious what your
-plans for this are.
-> +       info->off = off;
+> +       /* Access to this pointer-typed register or passing it to a helper
+> +        * is only allowed in its original, unmodified form.
+> +        */
+> +
+> +       if (reg->off < 0) {
+> +               verbose(env, "negative offset %s ptr R%d off=%d disallowed\n",
+> +                       reg_type_str(env, reg->type), regno, reg->off);
+> +               return -EACCES;
+> +       }
+> +
+> +       if (!fixed_off_ok && reg->off) {
+> +               verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
+> +                       reg_type_str(env, reg->type), regno, reg->off);
+> +               return -EACCES;
+> +       }
+> +
+> +       if (!tnum_is_const(reg->var_off) || reg->var_off.value) {
+> +               char tn_buf[48];
+> +
+> +               tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+> +               verbose(env, "variable %s access var_off=%s disallowed\n",
+> +                       reg_type_str(env, reg->type), tn_buf);
+> +               return -EACCES;
+> +       }
+> +
 > +       return 0;
 > +}
 > +
->  static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t,
-> -                                const char *name, int sz, int align)
-> +                                const char *name, int sz, int align, int field_type,
-
-What are your thoughts on just passing in field_type in place of name,
-sz, and align? As in a function signature like:
-
-static int btf_find_struct_field(const struct btf *btf, const struct
-btf_type *t, int field_type, struct btf_field_info *info);
-
-where inside btf_find_struct_field when we do the switch statement on
-field_type, we can have the name, sz, and align for each of the
-different field types there? That to me seems a bit cleaner where the
-descriptors for the field types are all in one place (instead of also
-in btf_find_spin_lock() and btf_find_timer() functions) and the
-function definition for btf_find_struct_field is more straightforward.
-At that point, I don't think we'd even need btf_find_spin_lock() and
-btf_find_timer() as functions since it'd be just a straightforward
-"btf_find_field(btf, t, BTF_FIELD_SPIN_LOCK/BTF_FIELD_TIMER)" call
-instead. Curious to hear your thoughts.
-
-nit: should field_type be a u32 since it's an enum? Or should we be
-explicit and give the enum a name and define this as something like
-"enum btf_field_type type"?
-
-> +                                struct btf_field_info *info)
->  {
->         const struct btf_member *member;
-> -       u32 i, off = -ENOENT;
-> +       u32 i, off;
-> +       int ret;
->
->         for_each_member(i, t, member) {
->                 const struct btf_type *member_type = btf_type_by_id(btf,
->                                                                     member->type);
-> -               if (!__btf_type_is_struct(member_type))
-> -                       continue;
-> -               if (member_type->size != sz)
-> -                       continue;
-> -               if (strcmp(__btf_name_by_offset(btf, member_type->name_off), name))
-> -                       continue;
-> -               if (off != -ENOENT)
-> -                       /* only one such field is allowed */
-> -                       return -E2BIG;
+> +int check_ptr_off_reg(struct bpf_verifier_env *env,
+> +                     const struct bpf_reg_state *reg, int regno)
+> +{
+> +       return __check_ptr_off_reg(env, reg, regno, false);
+> +}
 > +
->                 off = __btf_member_bit_offset(t, member);
-nit: should this be moved to after the strcmp on the name? Since if
-the name doesn't match, there's no point in doing this
-__btf_member_bit_offset call
-> +
-> +               if (name && strcmp(__btf_name_by_offset(btf, member_type->name_off), name))
-I'm confused by the if (name) part of the check. If name is NULL, then
-won't this "btf_find_struct_field" function always return the offset
-to the first struct? I don't think name will ever be NULL so maybe we
-should just remove this? Or do something like if (name) return
--EINVAL; before doing the strcmp?
-
-> +                       continue;
->                 if (off % 8)
->                         /* valid C code cannot generate such BTF */
->                         return -EINVAL;
->                 off /= 8;
->                 if (off % align)
->                         return -EINVAL;
-> +
-> +               switch (field_type) {
-> +               case BTF_FIELD_SPIN_LOCK:
-> +               case BTF_FIELD_TIMER:
-> +                       ret = btf_find_field_struct(btf, member_type, off, sz, info);
-nit: I think we can just do "return btf_find_field_struct(btf,
-member_type, off, sz, info);" here and remove the "int ret;"
-declaration a few lines above.
-
-> +                       if (ret < 0)
-> +                               return ret;
-> +                       break;
-> +               default:
-> +                       return -EFAULT;
-> +               }
->         }
-> -       return off;
-> +       return 0;
+>  /* check read/write into a map element with possible variable offset */
+>  static int check_map_access(struct bpf_verifier_env *env, u32 regno,
+>                             int off, int size, bool zero_size_allowed)
+> @@ -3980,44 +4018,6 @@ static int get_callee_stack_depth(struct bpf_verifier_env *env,
 >  }
+>  #endif
 >
->  static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
-> -                               const char *name, int sz, int align)
-> +                               const char *name, int sz, int align, int field_type,
-> +                               struct btf_field_info *info)
-The same comments for the btf_find_struct_field function also apply to
-this function
->  {
->         const struct btf_var_secinfo *vsi;
-> -       u32 i, off = -ENOENT;
-> +       u32 i, off;
-> +       int ret;
->
->         for_each_vsi(i, t, vsi) {
->                 const struct btf_type *var = btf_type_by_id(btf, vsi->type);
->                 const struct btf_type *var_type = btf_type_by_id(btf, var->type);
->
-> -               if (!__btf_type_is_struct(var_type))
-> -                       continue;
-> -               if (var_type->size != sz)
-> +               off = vsi->offset;
-> +
-> +               if (name && strcmp(__btf_name_by_offset(btf, var_type->name_off), name))
->                         continue;
->                 if (vsi->size != sz)
->                         continue;
-> -               if (strcmp(__btf_name_by_offset(btf, var_type->name_off), name))
-> -                       continue;
-> -               if (off != -ENOENT)
-> -                       /* only one such field is allowed */
-> -                       return -E2BIG;
-> -               off = vsi->offset;
->                 if (off % align)
->                         return -EINVAL;
-> +
-> +               switch (field_type) {
-> +               case BTF_FIELD_SPIN_LOCK:
-> +               case BTF_FIELD_TIMER:
-> +                       ret = btf_find_field_struct(btf, var_type, off, sz, info);
-> +                       if (ret < 0)
-> +                               return ret;
-> +                       break;
-> +               default:
-> +                       return -EFAULT;
-> +               }
->         }
-> -       return off;
-> +       return 0;
->  }
->
->  static int btf_find_field(const struct btf *btf, const struct btf_type *t,
-> -                         const char *name, int sz, int align)
-> +                         int field_type, struct btf_field_info *info)
->  {
-> +       const char *name;
-> +       int sz, align;
-> +
-> +       switch (field_type) {
-> +       case BTF_FIELD_SPIN_LOCK:
-> +               name = "bpf_spin_lock";
-> +               sz = sizeof(struct bpf_spin_lock);
-> +               align = __alignof__(struct bpf_spin_lock);
-> +               break;
-> +       case BTF_FIELD_TIMER:
-> +               name = "bpf_timer";
-> +               sz = sizeof(struct bpf_timer);
-> +               align = __alignof__(struct bpf_timer);
-> +               break;
-> +       default:
-> +               return -EFAULT;
-> +       }
->
->         if (__btf_type_is_struct(t))
-> -               return btf_find_struct_field(btf, t, name, sz, align);
-> +               return btf_find_struct_field(btf, t, name, sz, align, field_type, info);
->         else if (btf_type_is_datasec(t))
-> -               return btf_find_datasec_var(btf, t, name, sz, align);
-> +               return btf_find_datasec_var(btf, t, name, sz, align, field_type, info);
->         return -EINVAL;
->  }
->
-> @@ -3237,16 +3292,24 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
->   */
->  int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t)
->  {
-> -       return btf_find_field(btf, t, "bpf_spin_lock",
-> -                             sizeof(struct bpf_spin_lock),
-> -                             __alignof__(struct bpf_spin_lock));
-> +       struct btf_field_info info = { .off = -ENOENT };
-> +       int ret;
-> +
-> +       ret = btf_find_field(btf, t, BTF_FIELD_SPIN_LOCK, &info);
-I'm confused about why we pass in "struct btf_field_info" as the out
-parameter. Maybe I'm missing something here, but why can't
-"btf_find_field" just return back the offset?
-> +       if (ret < 0)
-> +               return ret;
-> +       return info.off;
->  }
->
->  int btf_find_timer(const struct btf *btf, const struct btf_type *t)
->  {
-> -       return btf_find_field(btf, t, "bpf_timer",
-> -                             sizeof(struct bpf_timer),
-> -                             __alignof__(struct bpf_timer));
-> +       struct btf_field_info info = { .off = -ENOENT };
-> +       int ret;
-> +
-> +       ret = btf_find_field(btf, t, BTF_FIELD_TIMER, &info);
-> +       if (ret < 0)
-> +               return ret;
-> +       return info.off;
->  }
->
->  static void __btf_struct_show(const struct btf *btf, const struct btf_type *t,
+> -static int __check_ptr_off_reg(struct bpf_verifier_env *env,
+> -                              const struct bpf_reg_state *reg, int regno,
+> -                              bool fixed_off_ok)
+> -{
+> -       /* Access to this pointer-typed register or passing it to a helper
+> -        * is only allowed in its original, unmodified form.
+> -        */
+> -
+> -       if (reg->off < 0) {
+> -               verbose(env, "negative offset %s ptr R%d off=%d disallowed\n",
+> -                       reg_type_str(env, reg->type), regno, reg->off);
+> -               return -EACCES;
+> -       }
+> -
+> -       if (!fixed_off_ok && reg->off) {
+> -               verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
+> -                       reg_type_str(env, reg->type), regno, reg->off);
+> -               return -EACCES;
+> -       }
+> -
+> -       if (!tnum_is_const(reg->var_off) || reg->var_off.value) {
+> -               char tn_buf[48];
+> -
+> -               tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+> -               verbose(env, "variable %s access var_off=%s disallowed\n",
+> -                       reg_type_str(env, reg->type), tn_buf);
+> -               return -EACCES;
+> -       }
+> -
+> -       return 0;
+> -}
+> -
+> -int check_ptr_off_reg(struct bpf_verifier_env *env,
+> -                     const struct bpf_reg_state *reg, int regno)
+> -{
+> -       return __check_ptr_off_reg(env, reg, regno, false);
+> -}
+> -
+>  static int __check_buffer_access(struct bpf_verifier_env *env,
+>                                  const char *buf_info,
+>                                  const struct bpf_reg_state *reg,
 > --
 > 2.35.1
 >
