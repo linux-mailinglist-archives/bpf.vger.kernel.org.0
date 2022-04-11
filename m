@@ -2,86 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B844FB241
-	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 05:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDDF4FB253
+	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 05:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbiDKDWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Apr 2022 23:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
+        id S244547AbiDKD3E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Apr 2022 23:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244504AbiDKDW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 10 Apr 2022 23:22:27 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C2A1A053
-        for <bpf@vger.kernel.org>; Sun, 10 Apr 2022 20:20:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EE0DBB80E9D
-        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 03:20:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A7654C385A8;
-        Mon, 11 Apr 2022 03:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649647212;
-        bh=aNzJk0hqdUah/8QBKj6FvwHM4+RYptjd/4yaSZ9mfkA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=SZM993/bEJKtuHIZgC2qc+0d4icaTzM9AkmjcBh9KYXyxQuTDubVoQmQ34QQWWs23
-         lYSxNl66G0T5PCslYODN7jhFjnCIFmyDlW6QPaeZnWqCQqTO/PItd7XF79c64rY6VB
-         Pz+wvJacOaA3KSoI6vq9Hg3hKo1+YgESWisB3TAZMdzZ2hMFJrLIoHpKzb+5Zs3z1k
-         CsF/bf22lo6zfpz/cIJcoFzUU1HYP+/jzVognjbZPSqBGBwbPMQ39AlmMcByBifK30
-         Kb9GWw5F1uMaLK9LRH+iroigHGCGoHvsak540boI8qn4SXKBhNO3XgtCGA2Zae5DgC
-         w5ceikLfMGgRw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 835B4E7399B;
-        Mon, 11 Apr 2022 03:20:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S244544AbiDKD3A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 Apr 2022 23:29:00 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F30D2D1FC;
+        Sun, 10 Apr 2022 20:26:47 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id b17so3511528ilq.5;
+        Sun, 10 Apr 2022 20:26:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BahJNSgLJq4kBzMY612L60h5U5MFfugKor4rsSKasAw=;
+        b=EIMJkhLVokFQbg6IzhxACU9edRQhLI4daftgPVPkJLSu/xi+sCqkPYB6qGrjJYPHmr
+         ykx7lwsvkHpEHrpzwY6UsS3LjzrtrNw3e62IXARbo+2wRKl6azPjaYq+Oth25qNZRiFr
+         lkVcELKavGUcRMJvakNgO7/TxZtgHv4Dds0HrQeqpdgOX5zI5g8L4Z/NXcpBqrv5B11+
+         z3aRVKjDRVh9nUms09U1AoW5C7C3OniImX3mBoqrIPEP7ZKO/DgOoONgPuH0oX6fbJ4F
+         AS1+aixwSCV5RyCeyw6WlBL4YBdgN18KwVQbvoTZ1/ylCeW8XqvRMp7YPVGk/fNZkHgi
+         KIow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BahJNSgLJq4kBzMY612L60h5U5MFfugKor4rsSKasAw=;
+        b=lck9kFaEnNMcfdffqJzG9R48N98/nw2aO3d/ksF578PCqGxIckNrOOsvB0NQugwpOo
+         gWS3ydCcUVv/AVNBBOR15O/b1p612m3RVV1mpO9LxaOPH10d/61T/ixnpZaBoSzApNK8
+         XpehniHWfsfSFwF7x86LjI/wxaYiocCFkpc+e0kHNrrRxZFG7QohJydvt5c9bQsTucGM
+         hdRKi07xG4OZva8OE+pbeBGUGCSwGrXFjxlbityCIBTY/2AhFCNvZv2ooIclZFKQeaiA
+         d989rFemyV5k/hYE6w22RN/u15afsnQvpPsf6rnzdTV+vX1Y7HMigCMLiCyXd89KxO3t
+         CSOQ==
+X-Gm-Message-State: AOAM531zj4yvUvR+lDf0eOI/bgHUKhdtnb6OTdu4jAfSCJBaiEP8mj9O
+        H59LlYmAPCw5uGGK84tjFzpyj86RjkWCw/3AgXE=
+X-Google-Smtp-Source: ABdhPJx9K11eWCNLWXW4MYteIQ9E2MfVkekq2TWExNGjhWfhgDyyFxAXTAPMK1Es9tAyGN3WkqXIH7Kcmf/4E5a0f64=
+X-Received: by 2002:a92:cd8a:0:b0:2ca:9337:2f47 with SMTP id
+ r10-20020a92cd8a000000b002ca93372f47mr4487574ilb.252.1649647607050; Sun, 10
+ Apr 2022 20:26:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [bpf-next] libbpf: Fix a bug that checking bpf_probe_read_kernel API
- fails in old kernels
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164964721253.11578.7623906648168365938.git-patchwork-notify@kernel.org>
-Date:   Mon, 11 Apr 2022 03:20:12 +0000
-References: <20220409144928.27499-1-rainkin1993@gmail.com>
-In-Reply-To: <20220409144928.27499-1-rainkin1993@gmail.com>
-To:     Runqing Yang <rainkin1993@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1649458366-25288-1-git-send-email-alan.maguire@oracle.com> <1649458366-25288-2-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1649458366-25288-2-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 10 Apr 2022 20:26:36 -0700
+Message-ID: <CAEf4BzaDXhwApr=DrGj3a9mG-efTn_kuROWGNRSCWa3SFA8+mg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: usdt: factor out common USDT arg handling
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Apr 8, 2022 at 3:53 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> Common code to initialize a struct usdt_arg_spec can be factored out
+> from arch-specific flavours of parse_usdt_arg(); signed size,
+> bitshift handling etc.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I understand that there is a bit of repetition between multiple
+architectures, but I think this init_usdt_arg_spec() helper is
+actually hindering understand. Can you please drop this refactoring
+for now? It's just a few lines of code that you'll need to copy/paste
+for argument bit shift handling, not a big deal, right?
 
-On Sat,  9 Apr 2022 22:49:28 +0800 you wrote:
-> Background:
-> Libbpf automatically replaces calls to BPF bpf_probe_read_{kernel,user}
-> [_str]() helpers with bpf_probe_read[_str](), if libbpf detects that
-> kernel doesn't support new APIs. Specifically, libbpf invokes the
-> probe_kern_probe_read_kernel function to load a small eBPF program into
-> the kernel in which bpf_probe_read_kernel API is invoked and lets the
-> kernel checks whether the new API is valid. If the loading fails, libbpf
-> considers the new API invalid and replaces it with the old API.
-> 
-> [...]
+>  tools/lib/bpf/usdt.c | 90 ++++++++++++++++++++++++----------------------------
+>  1 file changed, 41 insertions(+), 49 deletions(-)
+>
 
-Here is the summary with links:
-  - [bpf-next] libbpf: Fix a bug that checking bpf_probe_read_kernel API fails in old kernels
-    https://git.kernel.org/bpf/bpf-next/c/d252a4a499a0
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+[...]
