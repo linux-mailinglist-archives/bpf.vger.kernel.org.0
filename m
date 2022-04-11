@@ -2,56 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 014C04FC113
-	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 17:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223434FC15D
+	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 17:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240237AbiDKPnD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Apr 2022 11:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
+        id S241631AbiDKPsa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Apr 2022 11:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348087AbiDKPm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Apr 2022 11:42:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF2C3A727;
-        Mon, 11 Apr 2022 08:40:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EF721B816CA;
-        Mon, 11 Apr 2022 15:40:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A3B0EC385A9;
-        Mon, 11 Apr 2022 15:40:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649691611;
-        bh=Mkh/B/5SXLGGgAFR0YNa7a5GGLbPnoBLOjMVGrCsnoc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Vdl+qTVGxtIlcpNRWrWvPxu5LomBpUiPA9fR/5oyBHyOqddcBNwnPtI63welELIXG
-         HizMMIdD0S49wmRDntg7hhhils3/rRiJHtoICjSJHEjB+S+DDNm0YWr40auBgH2Wlv
-         c71lYGuoIvyJS1EnlOPEvB/Co2kSzbTPzDZtcUKXvc7AUwzf1eq3I9K/a0bReNyXcw
-         5VsfCSjCaUdDWYXDMGN7Ph9IXcPgiGf1Gl1vQkaxge7XmQXqaoo87vGLzWVSMVQDmY
-         VQbOYEhoVhvpwLsNaF5bs5lv70jcydfjHjkBChX/5/lUwJSB/BXWjfETiO7ZoKnvRq
-         0xa9HLTRe128w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 79BFAE8DBD1;
-        Mon, 11 Apr 2022 15:40:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S1348655AbiDKPsY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Apr 2022 11:48:24 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824AA2B2;
+        Mon, 11 Apr 2022 08:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649691970; x=1681227970;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9AYLuO9hFLI9yuodQaoQWp698tiNMu9aQk41vZwCDjQ=;
+  b=npRUBF6t/9PGczwCCgKr1tG1SYVS8K31+tXiXSVNCGpo9QkGgmQD6gVI
+   R2pdCMGcrFWSQG+P5g6MF0pUfnYbt7C49lJTOrJg7dJTke950YY7890ld
+   rhx21C4mK8zIwwaihYr5phPIg2HMrtWn93TnD4C9xh9dNaROMnCNN56mJ
+   WMRMKTWg2FUO7kaMZn+XsnmnWOM9jQ+HUPZSoUiNOw+J8DSixjHzcsQce
+   i/i+BALeaAzfFFMpOEwmuc+8T6TWdotbQ2ofxw1RLCz/9MEpqf4vVfwEF
+   Vy1a6oTYkLvL2TecZD1fMXDNX/ScKWIfBobWf5acu0e6xIUPAES3NjcH1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10314"; a="242085941"
+X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; 
+   d="scan'208";a="242085941"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2022 08:46:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; 
+   d="scan'208";a="526027673"
+Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
+  by orsmga006.jf.intel.com with ESMTP; 11 Apr 2022 08:46:07 -0700
+Date:   Mon, 11 Apr 2022 17:46:06 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Maxim Mikityanskiy <maximmi@nvidia.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, magnus.karlsson@intel.com,
+        bjorn@kernel.org, netdev@vger.kernel.org, brouer@redhat.com,
+        alexandr.lobakin@intel.com, Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH bpf-next 00/10] xsk: stop softirq processing on full XSK
+ Rx queue
+Message-ID: <YlRNPuHdN5RTZjDn@boxer>
+References: <20220405110631.404427-1-maciej.fijalkowski@intel.com>
+ <8a81791e-342e-be8b-fc96-312f30b44be6@nvidia.com>
+ <Yk/7mkNi52hLKyr6@boxer>
+ <82a1e9c1-6039-7ead-e663-2b0298f31ada@nvidia.com>
+ <20220408111756.1339cb68@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf: Fix release of page_pool in BPF_PROG_RUN
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164969161149.11703.4623538236808431401.git-patchwork-notify@kernel.org>
-Date:   Mon, 11 Apr 2022 15:40:11 +0000
-References: <20220409213053.3117305-1-toke@redhat.com>
-In-Reply-To: <20220409213053.3117305-1-toke@redhat.com>
-To:     =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@ci.codeaurora.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, freysteinn.alfredsson@kau.se,
-        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220408111756.1339cb68@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,30 +67,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Sat,  9 Apr 2022 23:30:53 +0200 you wrote:
-> The live packet mode in BPF_PROG_RUN allocates a page_pool instance for
-> each test run instance and uses it for the packet data. On setup it creates
-> the page_pool, and calls xdp_reg_mem_model() to allow pages to be returned
-> properly from the XDP data path. However, xdp_reg_mem_model() also raises
-> the reference count of the page_pool itself, so the single
-> page_pool_destroy() count on teardown was not enough to actually release
-> the pool. To fix this, add an additional xdp_unreg_mem_model() call on
-> teardown.
+On Fri, Apr 08, 2022 at 11:17:56AM -0700, Jakub Kicinski wrote:
+> On Fri, 8 Apr 2022 15:48:44 +0300 Maxim Mikityanskiy wrote:
+> > >> 4. A slow or malicious AF_XDP application may easily cause an overflow of
+> > >> the hardware receive ring. Your feature introduces a mechanism to pause the
+> > >> driver while the congestion is on the application side, but no symmetric
+> > >> mechanism to pause the application when the driver is close to an overflow.
+> > >> I don't know the behavior of Intel NICs on overflow, but in our NICs it's
+> > >> considered a critical error, that is followed by a recovery procedure, so
+> > >> it's not something that should happen under normal workloads.  
+> > > 
+> > > I'm not sure I follow on this one. Feature is about overflowing the XSK
+> > > receive ring, not the HW one, right?  
+> > 
+> > Right. So we have this pipeline of buffers:
+> > 
+> > NIC--> [HW RX ring] --NAPI--> [XSK RX ring] --app--> consumes packets
+> > 
+> > Currently, when the NIC puts stuff in HW RX ring, NAPI always runs and 
+> > drains it either to XSK RX ring or to /dev/null if XSK RX ring is full. 
+> > The driver fulfills its responsibility to prevent overflows of HW RX 
+> > ring. If the application doesn't consume quick enough, the frames will 
+> > be leaked, but it's only the application's issue, the driver stays 
+> > consistent.
+> > 
+> > After the feature, it's possible to pause NAPI from the userspace 
+> > application, effectively disrupting the driver's consistency. I don't 
+> > think an XSK application should have this power.
 > 
-> [...]
+> +1
+> cover letter refers to busy poll, but did that test enable prefer busy
+> poll w/ the timeout configured right? It seems like similar goal can 
+> be achieved with just that.
 
-Here is the summary with links:
-  - [bpf] bpf: Fix release of page_pool in BPF_PROG_RUN
-    https://git.kernel.org/bpf/bpf/c/425d239379db
+AF_XDP busy poll where app and driver runs on same core, without
+configuring gro_flush_timeout and napi_defer_hard_irqs does not bring much
+value, so all of the busy poll tests were done with:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+echo 2 | sudo tee /sys/class/net/ens4f1/napi_defer_hard_irqs
+echo 200000 | sudo tee /sys/class/net/ens4f1/gro_flush_timeout
 
-
+That said, performance can still suffer and packets would not make it up
+to user space even with timeout being configured in the case I'm trying to
+improve.
