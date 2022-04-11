@@ -2,177 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C294D4FB291
-	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 06:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFC14FB32C
+	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 07:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240601AbiDKEOW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Apr 2022 00:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
+        id S244522AbiDKFWY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Apr 2022 01:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbiDKEOV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Apr 2022 00:14:21 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BED25F3;
-        Sun, 10 Apr 2022 21:12:08 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id e22so17274048ioe.11;
-        Sun, 10 Apr 2022 21:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=28KDkHQg1bfu2ZxEsxkdsWjXzFVXknzOfbF/hqHTX2w=;
-        b=MQJAvVg/2kkiy9VqbFyprvL49C2jBI5NaO9uGEd9e3rhZ4E35OIecK1sGK7Lavzsr1
-         rVWMhTmXgEKb91xsKKXKWmoypfAGTTQrX+zTKK6CXvzb6A/4luxDKv5ezeHFtRRbrV4G
-         2bLuX+D3HSpw+SLidB+yfy18LBn5hSbHgNLzQmY8ilTNyYFBKswZ5TtEFX3llpkDJrVN
-         vi/35PI3ikz3T1KPQCQiQWS6jhSiszQ3RqS2m6yAyl3Z7D3Ugeog1KIU0gkEUwpeR7n5
-         Ser4amr/fgWyIcg+4G3dT7bHvl04xihamLpPkg5PbfsNA0q+GVhDrh23Cc/+Ou24a29b
-         kFyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=28KDkHQg1bfu2ZxEsxkdsWjXzFVXknzOfbF/hqHTX2w=;
-        b=CetbRZqRGk2Mwe8ABvJhoNp//ozl+HbEClPYW8q1XN3itTVSxvRoFTmaO+PwlgQQwV
-         dCnSPDyZ6OCyZP40d2cuh1nbS/s6phH7p/HF7MDcBvCGO8Odw/jvX9cg58CsXyHahpRJ
-         g3RnpnbJ3w1b/+/9w7geBiKaYasgNJ895R9lZbjhv/u90DI6zXrjXHWX5X3XEboKfRmB
-         2ULcbu+MrTMQzyDykzvHq83brDEgUg0r7yMmRm8Cj7Nm/sd1q3nBiJYDKocX9fZjBNDY
-         O/63hjilO3wuVitI+PyWZ13Y39Vr58WEn0GHyM9zX+eM+cNDWiQM+UwMCPzjT9UiC2oN
-         MfvQ==
-X-Gm-Message-State: AOAM531OU3UXUIYwQ+OfJY3c7JMXry5DzfWW+GLa4QBMiQ8SCl4yxF43
-        KCQQFKrMtYEhhf0xpwC+2PJrL3vzxn37pNbmExM2lSSD
-X-Google-Smtp-Source: ABdhPJw8XS5jgq/4xkBkH9QjSRJA01n680HyviK/aMzVcJiaQk/kCT2IhGLM1dSHWErr0rmVx6X+DVNvWUwG0f+yS4Q=
-X-Received: by 2002:a05:6638:772:b0:319:e4eb:adb with SMTP id
- y18-20020a056638077200b00319e4eb0adbmr14819500jad.237.1649650326068; Sun, 10
- Apr 2022 21:12:06 -0700 (PDT)
+        with ESMTP id S244412AbiDKFWW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Apr 2022 01:22:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E6ADF3;
+        Sun, 10 Apr 2022 22:20:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2CF94B80E7A;
+        Mon, 11 Apr 2022 05:20:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF5BCC385A3;
+        Mon, 11 Apr 2022 05:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649654405;
+        bh=IdJ+r6qpszbDCHPdlyVv4t4TpGEHFhC8/8LTRC2f6CU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eBc+YraGmAzilJlGKb9dK1lG2ZxEiWPiRJIHV1CHw3z4HTBBDFjz1JtbJXM5PYJvJ
+         0vv4MlwlqUWY68S3VlmHa7+rb69kQuoVeXb5TAOH6v1nYiKsGdBwvQjNNPwN/IXXuZ
+         yOOg5k1TIbURBMN7ItYoq/6G0KC53vtu3oLE0ry/kEXWIG4eEufukINI3IdvjHP6IY
+         3rjxhFgk0HA/ARkO5D3D+4umCrVBfoKCtmYiEUBb6MBwMkg3sYIYQRDOmV/bD+s9SC
+         9i6B2zAPpWogRQRlLUhw2r7toH+eFiOfUcRM9MpOZtj+VrYEfmNYdgIGGAY6HuqSOY
+         L3/eoPxr9SL+A==
+Received: by mail-yb1-f170.google.com with SMTP id t67so8663140ybi.2;
+        Sun, 10 Apr 2022 22:20:05 -0700 (PDT)
+X-Gm-Message-State: AOAM531g68F7HAOE/7EzFzRRVZZSUG/hMS3MEwjha+NI6Aaeosz+0WtL
+        NfoWRfwvCRrrN2IDr3YO83xaqqOdrFiv1ExLKec=
+X-Google-Smtp-Source: ABdhPJwIfYde/CjvRfxvCcqBgIOi5l2Ewe3FQxgyU41O9+nVqj0O2WUzv82XBleIysOnMFgXIcgZ6v4Omr4knVoTDlk=
+X-Received: by 2002:a25:6909:0:b0:63d:afc8:8b01 with SMTP id
+ e9-20020a256909000000b0063dafc88b01mr21154400ybc.561.1649654404745; Sun, 10
+ Apr 2022 22:20:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <1649458366-25288-1-git-send-email-alan.maguire@oracle.com> <1649458366-25288-3-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1649458366-25288-3-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 10 Apr 2022 21:11:55 -0700
-Message-ID: <CAEf4BzYVGOnLksE+UXoqUr5tgvd9gXthSzkWX7jqEgJ+oib1GA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] libbpf: usdt aarch64 arg parsing support
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20220409213053.3117305-1-toke@redhat.com>
+In-Reply-To: <20220409213053.3117305-1-toke@redhat.com>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 10 Apr 2022 22:19:52 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5cWzSzFXDgP-hQr7vRfLE7LN2NsE0n7Q659dosfgbhOw@mail.gmail.com>
+Message-ID: <CAPhsuW5cWzSzFXDgP-hQr7vRfLE7LN2NsE0n7Q659dosfgbhOw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Fix release of page_pool in BPF_PROG_RUN
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
+        Paolo Abeni <pabeni@redhat.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 8, 2022 at 3:53 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Sat, Apr 9, 2022 at 2:31 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> Parsing of USDT arguments is architecture-specific; on aarch64 it is
-> relatively easy since registers used are x[0-31], sp.  Format is
-> slightly different compared to x86_64; forms are
+> The live packet mode in BPF_PROG_RUN allocates a page_pool instance for
+> each test run instance and uses it for the packet data. On setup it creat=
+es
+> the page_pool, and calls xdp_reg_mem_model() to allow pages to be returne=
+d
+> properly from the XDP data path. However, xdp_reg_mem_model() also raises
+> the reference count of the page_pool itself, so the single
+> page_pool_destroy() count on teardown was not enough to actually release
+> the pool. To fix this, add an additional xdp_unreg_mem_model() call on
+> teardown.
 >
-> - "size @ [ reg[,offset] ]" for dereferences, for example
->   "-8 @ [ sp, 76 ]" ; " -4 @ [ sp ]"
-> - "size @ reg" for register values; for example
->   "-4@x0"
-> - "size @ value" for raw values; for example
->   "-8@1"
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in BPF_PROG_RUN=
+")
+> Reported-by: Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
 > ---
->  tools/lib/bpf/usdt.c | 50 +++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 49 insertions(+), 1 deletion(-)
+>  net/bpf/test_run.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-> index 0677bbd..6165d40 100644
-> --- a/tools/lib/bpf/usdt.c
-> +++ b/tools/lib/bpf/usdt.c
-> @@ -1170,7 +1170,7 @@ static int parse_usdt_spec(struct usdt_spec *spec, const struct usdt_note *note,
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index e7b9c2636d10..af709c182674 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -108,6 +108,7 @@ struct xdp_test_data {
+>         struct page_pool *pp;
+>         struct xdp_frame **frames;
+>         struct sk_buff **skbs;
+> +       struct xdp_mem_info mem;
+>         u32 batch_size;
+>         u32 frame_cnt;
+>  };
+> @@ -147,7 +148,6 @@ static void xdp_test_run_init_page(struct page *page,=
+ void *arg)
 >
->  /* Architecture-specific logic for parsing USDT argument location specs */
+>  static int xdp_test_run_setup(struct xdp_test_data *xdp, struct xdp_buff=
+ *orig_ctx)
+>  {
+> -       struct xdp_mem_info mem =3D {};
+>         struct page_pool *pp;
+>         int err =3D -ENOMEM;
+>         struct page_pool_params pp_params =3D {
+> @@ -174,7 +174,7 @@ static int xdp_test_run_setup(struct xdp_test_data *x=
+dp, struct xdp_buff *orig_c
+>         }
 >
-> -#if defined(__x86_64__) || defined(__i386__) || defined(__s390x__)
-> +#if defined(__x86_64__) || defined(__i386__) || defined(__s390x__) || defined(__aarch64__)
+>         /* will copy 'mem.id' into pp->xdp_mem_id */
+> -       err =3D xdp_reg_mem_model(&mem, MEM_TYPE_PAGE_POOL, pp);
+> +       err =3D xdp_reg_mem_model(&xdp->mem, MEM_TYPE_PAGE_POOL, pp);
+>         if (err)
+>                 goto err_mmodel;
 >
->  static int init_usdt_arg_spec(struct usdt_arg_spec *arg, enum usdt_arg_type arg_type, int arg_sz,
->                               __u64 val_off, int reg_off)
-> @@ -1316,6 +1316,54 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
->         return len;
->  }
+> @@ -202,6 +202,7 @@ static int xdp_test_run_setup(struct xdp_test_data *x=
+dp, struct xdp_buff *orig_c
 >
-> +#elif defined(__aarch64__)
-> +
-> +static int calc_pt_regs_off(const char *reg_name)
-> +{
-> +       int reg_num;
-> +
-> +       if (sscanf(reg_name, "x%d", &reg_num) == 1) {
-> +               if (reg_num >= 0 && reg_num < 31)
-> +                       return offsetof(struct user_pt_regs, regs[reg_num]);
-> +       } else if (strcmp(reg_name, "sp") == 0) {
-> +               return offsetof(struct user_pt_regs, sp);
-> +       }
-> +       pr_warn("usdt: unrecognized register '%s'\n", reg_name);
-> +       return -ENOENT;
-> +}
-> +
-> +static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
-> +{
-> +       char *reg_name = NULL;
-> +       int arg_sz, len, ret;
-> +       long off = 0;
-> +
-> +       if (sscanf(arg_str, " %d @ \[ %m[^,], %ld ] %n", &arg_sz, &reg_name, &off, &len) == 3 ||
-> +           sscanf(arg_str, " %d @ \[ %m[a-z0-9] ] %n", &arg_sz, &reg_name, &len) == 2) {
-
-I'm not sure about the behavior here w.r.t. reg_name and memory
-allocation. What if first sscanf() matches reg_name but fails at %ld,
-will reg_name be allocated and then second sscanf() will reallocate
-(and thus we'll have a memory leak).
-
-We might have similar problems in other implementations, actually...
-
-Either way, came here to ask to split two sscanfs into two separate
-branches, so that we have a clear linear pattern. One sscanf, handle
-it if successful, otherwise move on to next case.
-
-Also a question about [a-z0-9] for register in one case and [^,] in
-another. Should the first one be [a-z0-9] as well?
-
-> +               /* Memory dereference case, e.g., -4@[sp, 96], -4@[sp] */
-> +               ret = init_usdt_arg_spec(arg, USDT_ARG_REG_DEREF, arg_sz, off,
-> +                                        calc_pt_regs_off(reg_name));
-> +               free(reg_name);
-> +       } else if (sscanf(arg_str, " %d @ %ld %n", &arg_sz, &off, &len) == 2) {
-> +               /* Constant value case, e.g., 4@5 */
-> +               ret = init_usdt_arg_spec(arg, USDT_ARG_CONST, arg_sz, off, 0);
-> +       } else if (sscanf(arg_str, " %d @ %ms %n", &arg_sz, &reg_name, &len) == 2) {
-> +               /* Register read case, e.g., -8@x4 */
-> +               ret = init_usdt_arg_spec(arg, USDT_ARG_REG, arg_sz, 0, calc_pt_regs_off(reg_name));
-> +               free(reg_name);
-> +       } else {
-> +               pr_warn("usdt: unrecognized arg #%d spec '%s'\n", arg_num, arg_str);
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (ret < 0) {
-> +               pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
-> +                       arg_num, arg_str, arg_sz);
-> +               return ret;
-> +       }
-> +       return len;
-> +}
-> +
->  #else
->
->  static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
+>  static void xdp_test_run_teardown(struct xdp_test_data *xdp)
+>  {
+> +       xdp_unreg_mem_model(&xdp->mem);
+>         page_pool_destroy(xdp->pp);
+>         kfree(xdp->frames);
+>         kfree(xdp->skbs);
 > --
-> 1.8.3.1
+> 2.35.1
 >
