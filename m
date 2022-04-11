@@ -2,173 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 178C14FC44D
-	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 20:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDB34FC455
+	for <lists+bpf@lfdr.de>; Mon, 11 Apr 2022 20:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349226AbiDKSrX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Apr 2022 14:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
+        id S1349236AbiDKSss (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Apr 2022 14:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347867AbiDKSrW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Apr 2022 14:47:22 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF50D1C10F
-        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 11:45:07 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id ay4so1248078qtb.11
-        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 11:45:07 -0700 (PDT)
+        with ESMTP id S231283AbiDKSsr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Apr 2022 14:48:47 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583A21FCDB
+        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 11:46:32 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id c1so221604qkf.13
+        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 11:46:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4Atzl5Qlnk4ng0dcb/L65lU+gmvOLyVa46Qnmvo9iXY=;
-        b=riXB7FpX2QojH2be1u/W+nd4wjq1tPtaTIlkVyctTP3lFrGPKR5G4+2/mx3IJx1pWd
-         FLap29Tf0/j8+pcCRsMfYnWsY5H9kazVpo8PR9B/0JdCX2NXRYlweIaKrFGLwzsrfZI2
-         iuYG3OC8a6MyOxQLyIinWTmds/rzke1+21ojqRM3H8+JuhS7e/Dh2lvv+j3XcwyubH+k
-         BR0uVJq0Hn64wTZ/6NPZHaQPI6MF8lfae9dC4tJaPcE697V0JDvquG96LulGSyH9dC67
-         BlwOLfLukYWkDJ2ExLVUA0r74Zq0t2t016LPlcIDTUu0np2+Ha2bpL0nU2y8Ryc7HU/S
-         qd1g==
+        bh=91Li9XU9gpsJ9k8wCFOCx1n06URSq0VVBp27IbgO0dU=;
+        b=ZE3jzHxvrXCeyfU3Ym1d86TePHiIgNaCYyP4+rQ9CLUlbAHm4ms3tb2AIilc/amm1J
+         NdcDHNQQzHMmT/jA0Kk7+g0EJnptw9ayPbM6qU6e6z98YNRwKWtQ9WxtvQ+1BQGEKaqW
+         0lZhkMlBE6OaMK/0TiP5qzJkkzYgIrSKB5Yx5epoa8GDHW16j1uXNYfZNckrWC3dyuxV
+         8g6y2hquS/Zfm0hL2SOT6/6ntDG8YIJt+rSmkwhd+9pKeJh1jPTBPCD8Hfb40JwlabOS
+         ZV+/aEpKWS5IWSvzn4T9/2mHSk/dRmNC7SrlmJaDuhBFXdHOiJuTguDUeIClkewxwr10
+         YOEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4Atzl5Qlnk4ng0dcb/L65lU+gmvOLyVa46Qnmvo9iXY=;
-        b=id/LBRHWaCPlWFXSubxDNyiRtKEqNfw19Zvj3KUvuhY6BhI0YAvO9iICedG+1wTrMk
-         qyAAIzssr0CpRJ3fFY4hpvIdRVaUvN81OoNaEHXnU96GvyjEIsOWRVzdiEmMbYoXyb3z
-         pMGp2RmcJaxI4bwpRqU9603X+p2wIC9LWkABC9h43Lf3h6gq8+EaGrJobcQ6kp6Ue+sb
-         DTr/bbAhPYV2zlrvbPBHe9RjhXhI1xIZeanxeY8i+AJgvUqeBWiU5DPJLBQxoQ/x+JBC
-         XoletfgLTwDickdd0p4xGFk2fKBQQFQ5E5ptZa6MoigQBLevyEGuWh5010L5PfVSmUn7
-         OvHw==
-X-Gm-Message-State: AOAM533Pcs5syYyeVeIcjqYJ1155eBhI3FN3DKRwgUf8ZlajsB6RBPLZ
-        ryvXgQb7FYYBVVzbJjO4ux5wCP0NOoor9P34g06htw==
-X-Google-Smtp-Source: ABdhPJyu22o9/7Vp+IROuDW9V7v9slxbj/KCVaJDHFmQGAVj4CQvQXhiCsg/Pi6Vzl7EECgYHVbAH+WghR43qoWNuqc=
-X-Received: by 2002:ac8:51d8:0:b0:2eb:dc92:63d1 with SMTP id
- d24-20020ac851d8000000b002ebdc9263d1mr602651qtn.526.1649702706754; Mon, 11
- Apr 2022 11:45:06 -0700 (PDT)
+        bh=91Li9XU9gpsJ9k8wCFOCx1n06URSq0VVBp27IbgO0dU=;
+        b=2K9DOubFaEbhwVsAhKa2irVPYvZgyrfj/TYhN6XgHnlyFhJHPVUM7oxJ+3ZKdmDKjM
+         OpK4ZXi9JBTZtqs2y4Ooh2VDErkparqkqXOQy2z6VmmNQSrZtN/wWM2NPoTza8lCxfKQ
+         P93TvBMWdYx0BqOc1o63j69Pd62TXYMdnn2C2JfajdWTEhAjwpSHyk+aGyCrLKUgmnUz
+         yilw6CtsXg8Hb/6+QKZAkSydBfGdNluZxVSryzZkF/fJLjHwvZguEfi89rErYRxO5pqE
+         Huss74WU4tVbA1hAT5sXQfSGIe5dGBWw3ROaCVdmlDPPW1rI0c0qmGnTHXg7LPp+9zBq
+         kNzw==
+X-Gm-Message-State: AOAM530pevI5xO4Kc8QRPCKPG37IqOkUzEwiEjMWs8UtZuf3XjatAg0l
+        lZHt4O3HMIgNeSYW2kp8On2gnxUa0IqIt8IuQje4Lw==
+X-Google-Smtp-Source: ABdhPJxPt6k2TunyH0GsmTgJkWGdFloK65fX+MIrLpDEF9/p39z+AURPMKD9fLQujeyYFeRlXPPe6i8pbLZMBWvs+U8=
+X-Received: by 2002:ae9:eb01:0:b0:69c:10ca:ed6 with SMTP id
+ b1-20020ae9eb01000000b0069c10ca0ed6mr574203qkg.496.1649702791220; Mon, 11 Apr
+ 2022 11:46:31 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220407223112.1204582-1-sdf@google.com> <20220407223112.1204582-4-sdf@google.com>
- <20220408225628.oog4a3qteauhqkdn@kafai-mbp.dhcp.thefacebook.com> <87fsmmp1pi.fsf@cloudflare.com>
-In-Reply-To: <87fsmmp1pi.fsf@cloudflare.com>
+ <20220408225628.oog4a3qteauhqkdn@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220408225628.oog4a3qteauhqkdn@kafai-mbp.dhcp.thefacebook.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 11 Apr 2022 11:44:54 -0700
-Message-ID: <CAKH8qBuqPQjZ==CjD=rO8dui9LNcUNRFOg7ROETRxbuMYnzBEg@mail.gmail.com>
+Date:   Mon, 11 Apr 2022 11:46:20 -0700
+Message-ID: <CAKH8qBuMMuuUJiZJY8Gb+tMQLKoRGpvv58sSM4sZXjyEc0i7dA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v3 3/7] bpf: minimize number of allocated lsm
  slots per program
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 9, 2022 at 11:10 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Fri, Apr 8, 2022 at 3:57 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Fri, Apr 08, 2022 at 03:56 PM -07, Martin KaFai Lau wrote:
-> > On Thu, Apr 07, 2022 at 03:31:08PM -0700, Stanislav Fomichev wrote:
-> >> Previous patch adds 1:1 mapping between all 211 LSM hooks
-> >> and bpf_cgroup program array. Instead of reserving a slot per
-> >> possible hook, reserve 10 slots per cgroup for lsm programs.
-> >> Those slots are dynamically allocated on demand and reclaimed.
-> >> This still adds some bloat to the cgroup and brings us back to
-> >> roughly pre-cgroup_bpf_attach_type times.
-> >>
-> >> It should be possible to eventually extend this idea to all hooks if
-> >> the memory consumption is unacceptable and shrink overall effective
-> >> programs array.
-> >>
-> >> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> >> ---
-> >>  include/linux/bpf-cgroup-defs.h |  4 +-
-> >>  include/linux/bpf_lsm.h         |  6 ---
-> >>  kernel/bpf/bpf_lsm.c            |  9 ++--
-> >>  kernel/bpf/cgroup.c             | 96 ++++++++++++++++++++++++++++-----
-> >>  4 files changed, 90 insertions(+), 25 deletions(-)
-> >>
-> >> diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
-> >> index 6c661b4df9fa..d42516e86b3a 100644
-> >> --- a/include/linux/bpf-cgroup-defs.h
-> >> +++ b/include/linux/bpf-cgroup-defs.h
-> >> @@ -10,7 +10,9 @@
-> >>
-> >>  struct bpf_prog_array;
-> >>
-> >> -#define CGROUP_LSM_NUM 211 /* will be addressed in the next patch */
-> >> +/* Maximum number of concurrently attachable per-cgroup LSM hooks.
-> >> + */
-> >> +#define CGROUP_LSM_NUM 10
-> > hmm...only 10 different lsm hooks (or 10 different attach_btf_ids) can
-> > have BPF_LSM_CGROUP programs attached.  This feels quite limited but having
-> > a static 211 (and potentially growing in the future) is not good either.
-> > I currently do not have a better idea also. :/
+> On Thu, Apr 07, 2022 at 03:31:08PM -0700, Stanislav Fomichev wrote:
+> > Previous patch adds 1:1 mapping between all 211 LSM hooks
+> > and bpf_cgroup program array. Instead of reserving a slot per
+> > possible hook, reserve 10 slots per cgroup for lsm programs.
+> > Those slots are dynamically allocated on demand and reclaimed.
+> > This still adds some bloat to the cgroup and brings us back to
+> > roughly pre-cgroup_bpf_attach_type times.
 > >
-> > Have you thought about other dynamic schemes or they would be too slow ?
+> > It should be possible to eventually extend this idea to all hooks if
+> > the memory consumption is unacceptable and shrink overall effective
+> > programs array.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  include/linux/bpf-cgroup-defs.h |  4 +-
+> >  include/linux/bpf_lsm.h         |  6 ---
+> >  kernel/bpf/bpf_lsm.c            |  9 ++--
+> >  kernel/bpf/cgroup.c             | 96 ++++++++++++++++++++++++++++-----
+> >  4 files changed, 90 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+> > index 6c661b4df9fa..d42516e86b3a 100644
+> > --- a/include/linux/bpf-cgroup-defs.h
+> > +++ b/include/linux/bpf-cgroup-defs.h
+> > @@ -10,7 +10,9 @@
+> >
+> >  struct bpf_prog_array;
+> >
+> > -#define CGROUP_LSM_NUM 211 /* will be addressed in the next patch */
+> > +/* Maximum number of concurrently attachable per-cgroup LSM hooks.
+> > + */
+> > +#define CGROUP_LSM_NUM 10
+> hmm...only 10 different lsm hooks (or 10 different attach_btf_ids) can
+> have BPF_LSM_CGROUP programs attached.  This feels quite limited but having
+> a static 211 (and potentially growing in the future) is not good either.
+> I currently do not have a better idea also. :/
 >
-> As long as we're talking ideas - how about a 2-level lookup?
+> Have you thought about other dynamic schemes or they would be too slow ?
 >
-> L1: 0..255 -> { 0..31, -1 }, where -1 is inactive cgroup_bp_attach_type
-> L2: 0..31 -> struct bpf_prog_array * for cgroup->bpf.effective[],
->              struct hlist_head [^1]  for cgroup->bpf.progs[],
->              u32                     for cgroup->bpf.flags[],
+> >  enum cgroup_bpf_attach_type {
+> >       CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
+> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > index 7f0e59f5f9be..613de44aa429 100644
+> > --- a/include/linux/bpf_lsm.h
+> > +++ b/include/linux/bpf_lsm.h
+> > @@ -43,7 +43,6 @@ extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
+> >  void bpf_inode_storage_free(struct inode *inode);
+> >
+> >  int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
+> > -int bpf_lsm_hook_idx(u32 btf_id);
+> >
+> >  #else /* !CONFIG_BPF_LSM */
+> >
+> > @@ -74,11 +73,6 @@ static inline int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+> >       return -ENOENT;
+> >  }
+> >
+> > -static inline int bpf_lsm_hook_idx(u32 btf_id)
+> > -{
+> > -     return -EINVAL;
+> > -}
+> > -
+> >  #endif /* CONFIG_BPF_LSM */
+> >
+> >  #endif /* _LINUX_BPF_LSM_H */
+> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > index eca258ba71d8..8b948ec9ab73 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -57,10 +57,12 @@ static unsigned int __cgroup_bpf_run_lsm_socket(const void *ctx,
+> >       if (unlikely(!sk))
+> >               return 0;
+> >
+> > +     rcu_read_lock(); /* See bpf_lsm_attach_type_get(). */
+> >       cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> >       if (likely(cgrp))
+> >               ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[prog->aux->cgroup_atype],
+> >                                           ctx, bpf_prog_run, 0);
+> > +     rcu_read_unlock();
+> >       return ret;
+> >  }
+> >
+> > @@ -77,7 +79,7 @@ static unsigned int __cgroup_bpf_run_lsm_current(const void *ctx,
+> >       /*prog = container_of(insn, struct bpf_prog, insnsi);*/
+> >       prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
+> >
+> > -     rcu_read_lock();
+> > +     rcu_read_lock(); /* See bpf_lsm_attach_type_get(). */
+> I think this is also needed for task_dfl_cgroup().  If yes,
+> will be a good idea to adjust the comment if it ends up
+> using the 'CGROUP_LSM_NUM 10' scheme.
 >
-> This way we could have 32 distinct _active_ attachment types for each
-> cgroup instance, to be shared among regular cgroup attach types and BPF
-> LSM attach types.
+> While at rcu_read_lock(), have you thought about what major things are
+> needed to make BPF_LSM_CGROUP sleepable ?
 >
-> It is 9 extra slots in comparison to today, so if anyone has cgroups
-> that make use of all available attach types at the same time, we don't
-> break their setup.
->
-> The L1 lookup table would still a few slots for new cgroup [^2] or LSM
-> hooks:
->
->   256 - 23 (cgroup attach types) - 211 (LSM hooks) = 22
->
-> Memory bloat:
->
->  +256 B - L1 lookup table
->  + 72 B - extra effective[] slots
->  + 72 B - extra progs[] slots
->  + 36 B - extra flags[] slots
->  -184 B - savings from switching to hlist_head
->  ------
->  +252 B per cgroup instance
->
-> Total cgroup_bpf{} size change - 720 B -> 968 B.
->
-> WDYT?
+> The cgroup local storage could be one that require changes but it seems
+> the cgroup local storage is not available to BPF_LSM_GROUP in this change set.
+> The current use case doesn't need it?
 
-Sounds workable, thanks! Let me try and see how it goes. I guess we
-don't even have to increase the size of the effective array with this
-mode,;having 23 unique slots per cgroup seems like a good start? So
-the cgroup_bpf{} growth would be +256B L1 (technically, we only need 5
-bits per entry, so can shrink to 160B) -185B for hlist_head
-
-> [^1] It looks like we can easily switch from cgroup->bpf.progs[] from
->      list_head to hlist_head and save some bytes!
->
->      We only access the list tail in __cgroup_bpf_attach(). We can
->      either iterate over the list and eat the cost there or push the new
->      prog onto the front.
->
->      I think we treat cgroup->bpf.progs[] everywhere like an unordered
->      set. Except for __cgroup_bpf_query, where the user might notice the
->      order change in the BPF_PROG_QUERY dump.
-
-
-[...]
-
-> [^2] Unrelated, but we would like to propose a
->      CGROUP_INET[46]_POST_CONNECT hook in the near future to make it
->      easier to bind UDP sockets to 4-tuple without creating conflicts:
->
->      https://github.com/cloudflare/cloudflare-blog/tree/master/2022-02-connectx/ebpf_connect4
-
-Do you think those new lsm hooks can be used instead? If not, what's missing?
+No, I haven't thought about sleepable at all yet :-( But seems like
+having that rcu lock here might be problematic if we want to sleep? In
+this case, Jakub's suggestion seems better.
