@@ -2,121 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBAC4FCBA0
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 03:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0F24FCBD5
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 03:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237210AbiDLBKz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Apr 2022 21:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        id S243898AbiDLBWR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Apr 2022 21:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350875AbiDLBK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Apr 2022 21:10:26 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3E536B4F;
-        Mon, 11 Apr 2022 18:05:10 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23BMJl5I027745;
-        Mon, 11 Apr 2022 18:04:55 -0700
+        with ESMTP id S231907AbiDLBWQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Apr 2022 21:22:16 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CDF1707C;
+        Mon, 11 Apr 2022 18:19:59 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23BMJgvB007850;
+        Mon, 11 Apr 2022 18:19:44 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=ur3NH+cHP9wXm7M3GqZQQL3zLj0e/sJrgcRnTyFe7nY=;
- b=ZWtr5Nssf/R/Ji1obTdzereVpX7jgtaIBi49o0YAp/KaEYjBkkVyIOKsp8+ZJ3+MN7r7
- bDXdBSkUKIyO4tXayo2+18xVKMT6W1AXwmJu8kuTrozTGdZeVaIrFLGdCVkF02dd8DRk
- lfX7H5WJx1ENB5o6+n3tOgSlJZA4K9mj2ak= 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fb7nwn9x6-1
+ mime-version; s=facebook; bh=OZPW8YB7GAt+9YF+1R6+I2yv1RP0wMOCLdFImTfr3gk=;
+ b=nfVUakZcP3HgRXSRIltR3CCBLLIGODrQf9XpubHBXq6RkIL8tH2CfQuXgHBqNLUXoEyl
+ SNMDqEUpKQaSSIPw39qzPeYpMvIpaIC+yJMC0a0aOP+qHMH14oStPfGb/hD/hzhzYzTz
+ 2wR8s3tqVQh02rkafNb4l25zj/wSnJe6+gM= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2176.outbound.protection.outlook.com [104.47.58.176])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fcm464n2p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Apr 2022 18:04:55 -0700
+        Mon, 11 Apr 2022 18:19:43 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aVBFDaQSqv4W617Q3UjDs+Sf5LOSJDFMUQx6Y8W9RGXGGDUH5A6bMWftnOHS0W0tktbxyco+9VQP+ds//3r/e4kD6dPcPDUhZgTbmX6ZjZAh1l6zPAR6I9ZaYhpxR9NgRXPocSxgKoilzMX9XPOLS7UVNvLM6nz7eRQpi5X+KF8pAq1JlCVzUPu1XGa58AGjCXsebwxdb076lXRC9Psfgi0WZuanLczSM+s1Z38X3LXbur0XmqVW05r6xeyDPWihY2qssS0P/QAs/fBT4Lhk6A0j+CgC+ANabyoHZz2FgGmEgK3g4CWSZINz8fdDGbDVkaFVxBM9zU6Dq96gHuFDkA==
+ b=jc6Wr2l8OkWx1ByQr/TiAJ9FVrTrJBI8NmPkNWIOnPfhe9qgFjUEU2bR3XAUZPwUxEuqyhVvqGiE4nDxU0gSG6OFL1Z1o8kzDoezemc36nqPitLwg6+/ZbB2lKLJ0rmHLLtG1vlYHXi3j900mJwFaOCLS/1hRNOW5NijYmB8KsukJNCsIxrRk1Fieg1nyr8RSfkNStplCq8NmQGKo9Elxj46TLJTL0wQgGYoEyPc0EixFXvma/I8171pfHDWvkONeNspbxeHZHdNqy+YY5lM852lMIVKJuBLL59Qohi0m/WsNd/jPD89iFnkDwzH8DXx8U4EIfHBcTifjyHevlV0iQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ur3NH+cHP9wXm7M3GqZQQL3zLj0e/sJrgcRnTyFe7nY=;
- b=NPkgBYrRK3m4Q/VpfKXdaABiuQa3vHBUaNIW9vq2GECQxhNu2kgIALKmwzw+l4JLTYZYwfiYAYoNyo+rqWzy/q3xXDPqBUnBpBLMHPsck0kOENqVYfGPiK0m7hEfyXqG6HkNh5MmyT2NAd8SlkuJ6yHqm3pMw3P3EjsO8v0Bsy17BjFKiGEYMrKSUSFkNHXCGb7RR7+Mwdrd9lwQPsiWo0v7vxTp8Z1Zk5wXEv6MBEssj6cz2pnSzfNIi1mR8B2742DwY9Njt92S5A+vrjUPW+K2tD3jCAuMpVtaeowOpbl6HLVqgsK6f7WksmZN+ee+5UKL5o5kmBQVtnbGkZPXdg==
+ bh=OZPW8YB7GAt+9YF+1R6+I2yv1RP0wMOCLdFImTfr3gk=;
+ b=cJvaTVBMXh3mAQ6uh+ZT59hukqVxSQsU+/pS6ENdEj6ZZqQ5GF0IQokjN9r/KJ4MX0C8Fq3BfbwGKIhsnkZT+KTjLZ6ffWhPUmWhFkm0O8W/hXTHwBxHbDGGsEIqMwk0HB07vPKJNrginBf01Z2yp1DWot6vefReRtbcRI0WBoW25NlxYMN05fBwC8+2GGSTN8nh88xhs7CIoFOiAMM6uBArPS+o4JffCafnVZkGxgQrix2276srVa4EEJgNAXFeOxss1lx3Nlr0R+SqkrbPetn4EMlw7w5bAEKlAI4CQZBSptGk0GJj+gjXacaSPbbMzpQUIyr4qzaZ+v4y3gZTxQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by BLAPR15MB3972.namprd15.prod.outlook.com (2603:10b6:208:27c::22) with
+ by DM5PR15MB1257.namprd15.prod.outlook.com (2603:10b6:3:b8::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.30; Tue, 12 Apr
- 2022 01:04:52 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.29; Tue, 12 Apr
+ 2022 01:19:41 +0000
 Received: from SA1PR15MB5016.namprd15.prod.outlook.com
  ([fe80::100b:5604:7f1e:e983]) by SA1PR15MB5016.namprd15.prod.outlook.com
  ([fe80::100b:5604:7f1e:e983%5]) with mapi id 15.20.5144.029; Tue, 12 Apr 2022
- 01:04:52 +0000
-Date:   Mon, 11 Apr 2022 18:04:49 -0700
+ 01:19:41 +0000
+Date:   Mon, 11 Apr 2022 18:19:38 -0700
 From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Stanislav Fomichev <sdf@google.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH bpf-next v3 2/7] bpf: per-cgroup lsm flavor
-Message-ID: <20220412010449.vmg6r72wf7pilfkw@kafai-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v3 3/7] bpf: minimize number of allocated lsm
+ slots per program
+Message-ID: <20220412011938.usu6wzwc2ayydiq2@kafai-mbp.dhcp.thefacebook.com>
 References: <20220407223112.1204582-1-sdf@google.com>
- <20220407223112.1204582-3-sdf@google.com>
- <20220408221252.b5hgz53z43p6apkt@kafai-mbp.dhcp.thefacebook.com>
- <CAKH8qBujC+ds9UOqLjcSoM5SggN4zuyEzKDi=zq4z5sNcTFY+w@mail.gmail.com>
+ <20220407223112.1204582-4-sdf@google.com>
+ <20220408225628.oog4a3qteauhqkdn@kafai-mbp.dhcp.thefacebook.com>
+ <87fsmmp1pi.fsf@cloudflare.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKH8qBujC+ds9UOqLjcSoM5SggN4zuyEzKDi=zq4z5sNcTFY+w@mail.gmail.com>
-X-ClientProxiedBy: SJ0PR13CA0167.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::22) To SA1PR15MB5016.namprd15.prod.outlook.com
+In-Reply-To: <87fsmmp1pi.fsf@cloudflare.com>
+X-ClientProxiedBy: SJ0PR03CA0194.namprd03.prod.outlook.com
+ (2603:10b6:a03:2ef::19) To SA1PR15MB5016.namprd15.prod.outlook.com
  (2603:10b6:806:1db::19)
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2d1e7663-fbde-4481-7253-08da1c207349
-X-MS-TrafficTypeDiagnostic: BLAPR15MB3972:EE_
-X-Microsoft-Antispam-PRVS: <BLAPR15MB3972B11883BD97B647D5833BD5ED9@BLAPR15MB3972.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 3c29ac6e-ccf3-4a8c-5862-08da1c22852c
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1257:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR15MB1257F091E41AEA4003D0FC80D5ED9@DM5PR15MB1257.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jtOZshn02ewtkk+ifB6nUQUiyGJcXBK5ZklcBlCluJ4KBuzt0yi88QP07bj0tjRyfhkdhYHDbeH0jYClWn9XHKjD2h0UwhWp1jT3DOad00paesvTFVbbdC5app5liOyTy/koHQi66bQ0RvHF/goRmFntWrz8sXY0WV2/j2O+9XlDMmRQJyq/yuDSClBgtWiQPGMQjrhIFw2JfdQKzh3P5ywjhLxhZ4fTN8s3hknMIbo+v92pwre3V6z12tB3T7pqjQj80q1nz3wEX9evx7+z3wMt5VytK6F01aMrPdyyqZ0KVn1TmsX+/edwk+fdec39d60Mo5CeqQRIcX78jGRtHXgXQ2OF+Zh1+CNmPmTJdSR+OF9qc5tvh7ZDUWP3Yt/WxsR1KjppMhtGVwpXfHPfkf2lPf3b1k4C/xFp6W1db31xHsXR6TguZK2N2fiufynuJWiLnpBMVrtGCDNtTQm7K98dhdX1fh/NL4JT463SYNhsjgx2fe0uGLkkzb72jEqwmYkcTCT/Na9DPICVoDQpXufikYHNi5eBXIsjpuVo8CvbAZO8IxV0MRthDI6D1dSQlktmLOBktk2+6uO5K2FAeckk6datoxXuIb8U6PxV3L8NfaE6XN6fyyAzts+RS1LA5Cr7oPtdDzGDfJx6QmWO5S5GzQsUlSiy1nfgpiRaHLh58szVN2410vsDW8ec2evhu+OYPDf1Vq6OHFCqJLxLo3fS2r6ENOGnpYEKyxd8ye4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8936002)(5660300002)(6916009)(86362001)(38100700002)(4326008)(6666004)(316002)(966005)(6486002)(508600001)(66946007)(8676002)(66556008)(66476007)(9686003)(6506007)(52116002)(53546011)(6512007)(2906002)(1076003)(186003)(83380400001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 0fooBEuaG4QQzyXjmP8nZCNVak4kc+Mm7/x6Hl0v1fjdA33XMOElTmOE0E0R6FsSxeEHEp2a08Q7F2H9mAyI5YEHQnRw8T3KBogncVRpShfXqyRfuKBs9SBgFcWFvTIIHv14N51apDJWqTUlefiAZ9t5AYTbUpxcWUS8HB7QdK/Q/SXqNxseWvtD9whdYTRMBp47tuiguSzxEPUwPUFJoeXZx1Ih3gT3tpZDbe6+Ui1IgRS7INhZb+bybt/sttAhpSEHx3zf1lk66CwdXguBWcKhMNajSLy4SCfwBlIQJ+kxdfd4VuamrXEZSzD62pmbS28CIHHeNU2KkdELZI72d9iEL0TemV/8Px6s8J1vkIym4Ufp5wtYe1JQ76AYzNHbBaYED6MX4Lf0y0o7gUVjmg+z9twrJZCsuUDSUb1yPrFQ5UBTAKjB6rlQRb3udqdDgO+o5YbaDLu2ZL849FnTQHb2P0L5K1vj/bucDtryMOhGe6AUKFa/4tLJrBH/PZRy345y73mJyTmbeYUyMLLTmuhGyCjtcdYlYioSvufmzs/W+RH7eKVBzsBBec5i16HiBNM2S6FE2VCxF/R93xNFMTprTzPb60S/8CzNj+Aru6q1T8HzdSwmWdTSccPEoPgXIon/B1LYdOVZG1Ya7RqHozM+4yt/nFW6DsiWKG44ccwbAy1qCYFEi9YB5vhlSfk4IhGhudkgD6eh6g+nklkrS5j4zRiwl3HucCp96JxbrgA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(86362001)(6512007)(6486002)(6506007)(316002)(110136005)(1076003)(52116002)(6666004)(186003)(38100700002)(83380400001)(4326008)(9686003)(8676002)(66946007)(66556008)(66476007)(2906002)(966005)(8936002)(508600001)(5660300002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?U0wZ9/QVQamz9J8wpXzyLdwzh3VOmAubeHpL9OEvtt3sTBZwJhJXpAq1a8AP?=
- =?us-ascii?Q?VqNJwJ1v7VressaeC+Ka6e9+IS6WqCWEedyk2zohtTTzMEXqQS6bwqm8z1hh?=
- =?us-ascii?Q?2PCw8QeozPXQCa5gEHFH/2OBexmxUGgzE5h7U/wm5Qt0/kOYo9YhEjCvLRJt?=
- =?us-ascii?Q?+ikfZzHi7JSObG+YrPO0yF2u7vyhDXRaE4y8TdmRyCnoO9+iWPqp8Ouxkjfl?=
- =?us-ascii?Q?5GeDufRkFACkJZVbQuShCglZxf0AdH9m2yB4wMv7yVawSPVZbb/Wth1lfISo?=
- =?us-ascii?Q?T0OrPloQOlzVOQW3XipW+4XSYZCHzlowikh8/7PgJAIu62JC3X4Ww2DbruWS?=
- =?us-ascii?Q?wL6eSsp0mPW2hZoEa7khUSHQqDmP/aVoh897yCN44Kv4tBPYH1gUpsycUo6o?=
- =?us-ascii?Q?99IWgZuK8mqhy2P1p0DmBTx82t15SD/8lhSWCrrE0vVi6BJHDYhMQ+pWJaqJ?=
- =?us-ascii?Q?zwFMuGru9qJtipobzPFd8i0OettShb+ln9o91HTl3aQpd03xJDxF4ZjIHph6?=
- =?us-ascii?Q?5YcsOkAcudimpcN0VA/1UwWZg6xgK2KhM0Podudhc8lt4/Ik4/NuwD5wwM9w?=
- =?us-ascii?Q?olu1klEv4X4oaBiV1iQ0g+zdP/OvpuQUSBKOr5qhoOdUSVPuPb9KJjrNtY4v?=
- =?us-ascii?Q?oUDHrU7gRFC/8zAl9mqZqaDLnXf5hQNNIC0EivAnJicpckOyjfyDXJvghNJJ?=
- =?us-ascii?Q?nehgKJSCIynxylYBDkVqobkd5JnMxLP6pL1bYZFFJNGa+4s7LAgU62OtYx0l?=
- =?us-ascii?Q?DEdu0a38KMRDnIB0AUhfHV1JtFusoktEwPOrP+yQ+jam9BcrdlhTFs6dSqVv?=
- =?us-ascii?Q?bKWlnR2rqaOwGdLHfEi0O7U3GzGd1+aWkG4Jmc85FUzhnyrYjRkD9ztZZH40?=
- =?us-ascii?Q?PXTATpWSjxlpd9IhfeHaLoouog3VqwmY/hj5/whAxq6jxKfTXUdJeUJjJUUc?=
- =?us-ascii?Q?lwJ7A/ZEX1nbF9gSskugLD1NqLpKYgzjjDCOQp4EliRLNBLL6akN1cM9eSOA?=
- =?us-ascii?Q?KqijsJpLY/bhrjyRbqszrYYnJKqsK9ID5gyMYTzgz06DTkKWj6dLTFc0fPWA?=
- =?us-ascii?Q?+RrI5IdyrZ+lEWjWdyJExoWBz2bcBvHtvByte1wixTnvA1M3QQYs2HyAaYJ1?=
- =?us-ascii?Q?wNKqYc5bAsQFBflS/eUkdrkS8dhtKKXpJpi+hcsG5SseP0NADtL3eQUIthat?=
- =?us-ascii?Q?J+rMVvjTujd/bt53LvCOExLKPg2wZHmnIwdqLE9Z1gJpBawXlmttWJBqSa52?=
- =?us-ascii?Q?M7wwfWNzZqUgTyh+LQ7iHQIMlcj/lU8/x4zcBl9Ws+thZaVHx3+c7OH9DdIw?=
- =?us-ascii?Q?i3bzc9nK54xSjllod7mr/CbX9xOvOGfrM+MUdspNUinjQGKpamKzIf9ehTqb?=
- =?us-ascii?Q?71eKrmhZLMlbACcxFQhLG/V0pRmdN+8pLbyTwRp71RRhSO+i0aHX1myRQmNk?=
- =?us-ascii?Q?WkSYLThquYBcfo0RfT+mbRUQ7i4856xTYBaZtUsN+tyJktD2tc0BJT8aep0A?=
- =?us-ascii?Q?ssd60hdzuSlDzMDuiECrZzR2Tm4DKA5OoNmBgpfK0lVzzh5g3z7cTJa7W5Ea?=
- =?us-ascii?Q?2FnrbYKq38Mh1DTq88l2pC/UeyrEjjY2bl/1rllJAmvHKGGBdYyz4qVDbpZd?=
- =?us-ascii?Q?07kTrcPF03XH7/w17k/6hUdYDTvZeLopgMrBMpQNTb6A8GEfhGLbedbrKfO+?=
- =?us-ascii?Q?lt1XScUpFxnJDlTfHLsNbiMs2U9qEOUoTBVeLOXm2GES0WFfJ33O3eOpojhO?=
- =?us-ascii?Q?J/ZZRvRS76nw3tLTKlst7wz+aX7ntzI=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FeHUVuw3WbFIOcHlJb7pgFQEtUFRiO+/n3d6ogC6Ly+pjFIc6JAuyEDwVVzL?=
+ =?us-ascii?Q?qbVYYQL/omAijSYoJcy18C9A2ubGsxf+PpXXtGiIZk9O1hXDYQFyRgXuQkBL?=
+ =?us-ascii?Q?Hl9V+TAg7XUOg326n9jGwaA0fmhoEKNm3MJO5luYt6ZdcNMK9FW861vng4Su?=
+ =?us-ascii?Q?NMoAHKiHI8H+Gce+4+4XpDoEEYgzdVGZiKM9ApHB1j1TOXB25gjKbS/y8P44?=
+ =?us-ascii?Q?NOYgL0yaQdRUCIBBug/pN7C5ZWrKoxM8PlhHxT3xNFknQf0Xow7yQkCNuhwY?=
+ =?us-ascii?Q?eP3sPckYMYEw8I3WuxYP+XpQ9uxwJSB8VxkjcUAw5URsxkGb4shI3Q3Bzch6?=
+ =?us-ascii?Q?b7yVMlUWwJZorUfnKrVtgEPXGSRMKKGejbTbhbUeIcdlhrVrHICAeWsvI57f?=
+ =?us-ascii?Q?ntY2xyVER4nAwrJ69ur56yk4nYI2/QOXRMsQ8gyy2uFBKYz9XFkgiyYAkfz5?=
+ =?us-ascii?Q?sZ6uAGSmwU1JeAhrw+EjCmJeZIJRmjwF4UZ37WY19mAf0qLQleRe8MgZ2HyA?=
+ =?us-ascii?Q?9iTXmE8cOWzYbhD4vlS/ap1H+t4M0S+vG3uCTbVdIR7U6iPfNTHDoI+oa1Ci?=
+ =?us-ascii?Q?OHDTpQS6Ja5Xg3aXqL2ibLxsIkhOeThAyb3u6JFdWRdnCl2GolKpZHQxISst?=
+ =?us-ascii?Q?5y7hdKTZs34N17vTYjC255l26VTjaCAOmgkhmWCXlchjP15wncIDhaOgsz18?=
+ =?us-ascii?Q?fkrIyYjn+MNCxKQQoAkSAwT7tuG/orGAd92dFtcFQnJwG8BoRkZ7cMDIJ91S?=
+ =?us-ascii?Q?64jBEG/0oeHm0pBM99uEdSmi9J8HZernOUnAJASRZ5JA2e8qvdAwDzMymPgr?=
+ =?us-ascii?Q?PqxzuFyeHsDBqDzbo8B4/W2KFWO/bhB+6LQ1JAMLPl0ULt7LLHactHD2F2RR?=
+ =?us-ascii?Q?/fwRlyMFJl3glc9UQAGGo6Z8dB+lMT7kqSEVdEeWuyViRXEPamYKMiX5DKTg?=
+ =?us-ascii?Q?9voHyIYuPU9En50jHSeuEKZ69JdfkM885pscI2IYYdlxGRFTGA3RL6M7lDa9?=
+ =?us-ascii?Q?tovrGnauzQfd/fas3MVOUZVPmxkt0bXSZueQrxOYdn67p6saLiQfTLQNP06S?=
+ =?us-ascii?Q?3pRngLoVAQdF4O0pTVYvJxgfivfmmoYdD6cU99Gq7UMNkEV5BlO8RJR8BRP3?=
+ =?us-ascii?Q?7Zcg+Img7BuSREqn9KY0TZhARcBStMldshiceo7Lsm5sUl86uK4WrypiSTWi?=
+ =?us-ascii?Q?4LMMD7k2TZqd1LKvj1XLosTK+bdB3fbguMoTwFA35YmnDAl/7lf83PpclwST?=
+ =?us-ascii?Q?NwrRV5LimMtLHPDj3WJ+cjEgmtnWgvFOvULM9jZjZxthaiNq8hdE/M1seROg?=
+ =?us-ascii?Q?lq6v37gUdgmb+VnpCWqHEg5AeS7w4BMuikRt279NvHZqpkScvS34B40pM6Cy?=
+ =?us-ascii?Q?M9KC5jWCHdma7yERtuCS+y4bxbTXyp5SywDJ050D2TOfAze7aEDPecoBL9Vr?=
+ =?us-ascii?Q?kcFGoa7tgySKI/oiCFdxE9G/xJTRcBrZRBuTmtAGrnf4KdbNCuGMnh8IIjis?=
+ =?us-ascii?Q?nggPfJMnRYleQTixe/eh1pU5i+WxPDEAy5foY5jFmxuP3m0AIvl6In4Qdua5?=
+ =?us-ascii?Q?SEgRd+nHcbvRX8JNfC79XZ9NNlvoLupDkEKnual7Ph3Wm4hsIZ+Ic7sU8pCl?=
+ =?us-ascii?Q?nGlM7i7zhbBudQ3jbDmsibodFgyodubj0juD2QFZNS+ocEh/wLjkECBjG4Er?=
+ =?us-ascii?Q?k0rCRoJM5a5XY5/E9IO6nNLwGNBiPP2iqP4iImOm9PPbPvuPmnSnN88V7WER?=
+ =?us-ascii?Q?qjGJM54uDQ6IhkouAzsd9nu9rXCo2uo=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d1e7663-fbde-4481-7253-08da1c207349
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c29ac6e-ccf3-4a8c-5862-08da1c22852c
 X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2022 01:04:52.8039
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2022 01:19:41.6962
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NGJ2Kd/L7HBsAKtZq9qFdoPURdSFxXpm/K/jaU/Aaj1FXQnJkB/axycVVHQKjswI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR15MB3972
-X-Proofpoint-GUID: TTWCwC6Gd7iznheNMoF5iYcOFA2l-lkX
-X-Proofpoint-ORIG-GUID: TTWCwC6Gd7iznheNMoF5iYcOFA2l-lkX
+X-MS-Exchange-CrossTenant-UserPrincipalName: NY056lI4ja/5ZPddunPYL5Ox48HOd5U0UsnL9ACvQdfka1E0Mu9i62HAASJkatqF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1257
+X-Proofpoint-ORIG-GUID: EAmcVI4A0dVDSDzTaUVd95yP6a1IvrsH
+X-Proofpoint-GUID: EAmcVI4A0dVDSDzTaUVd95yP6a1IvrsH
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
@@ -132,220 +134,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 12:07:20PM -0700, Stanislav Fomichev wrote:
-> ":  , wi
+On Sat, Apr 09, 2022 at 07:04:05PM +0200, Jakub Sitnicki wrote:
+> >> diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+> >> index 6c661b4df9fa..d42516e86b3a 100644
+> >> --- a/include/linux/bpf-cgroup-defs.h
+> >> +++ b/include/linux/bpf-cgroup-defs.h
+> >> @@ -10,7 +10,9 @@
+> >>  
+> >>  struct bpf_prog_array;
+> >>  
+> >> -#define CGROUP_LSM_NUM 211 /* will be addressed in the next patch */
+> >> +/* Maximum number of concurrently attachable per-cgroup LSM hooks.
+> >> + */
+> >> +#define CGROUP_LSM_NUM 10
+> > hmm...only 10 different lsm hooks (or 10 different attach_btf_ids) can
+> > have BPF_LSM_CGROUP programs attached.  This feels quite limited but having
+> > a static 211 (and potentially growing in the future) is not good either.
+> > I currently do not have a better idea also. :/
+> >
+> > Have you thought about other dynamic schemes or they would be too slow ?
 > 
+> As long as we're talking ideas - how about a 2-level lookup?
 > 
+> L1: 0..255 -> { 0..31, -1 }, where -1 is inactive cgroup_bp_attach_type
+> L2: 0..31 -> struct bpf_prog_array * for cgroup->bpf.effective[],
+>              struct hlist_head [^1]  for cgroup->bpf.progs[],
+>              u32                     for cgroup->bpf.flags[],
 > 
-> On Fri, Apr 8, 2022 at 3:13 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Thu, Apr 07, 2022 at 03:31:07PM -0700, Stanislav Fomichev wrote:
-> > > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> > > index 064eccba641d..eca258ba71d8 100644
-> > > --- a/kernel/bpf/bpf_lsm.c
-> > > +++ b/kernel/bpf/bpf_lsm.c
-> > > @@ -35,6 +35,98 @@ BTF_SET_START(bpf_lsm_hooks)
-> > >  #undef LSM_HOOK
-> > >  BTF_SET_END(bpf_lsm_hooks)
-> > >
-> > > +static unsigned int __cgroup_bpf_run_lsm_socket(const void *ctx,
-> > > +                                             const struct bpf_insn *insn)
-> > > +{
-> > > +     const struct bpf_prog *prog;
-> > > +     struct socket *sock;
-> > > +     struct cgroup *cgrp;
-> > > +     struct sock *sk;
-> > > +     int ret = 0;
-> > > +     u64 *regs;
-> > > +
-> > > +     regs = (u64 *)ctx;
-> > > +     sock = (void *)(unsigned long)regs[BPF_REG_0];
-> > > +     /*prog = container_of(insn, struct bpf_prog, insnsi);*/
-> > > +     prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
-> > nit. Rename prog to shim_prog.
-> >
-> > > +
-> > > +     if (unlikely(!sock))
-> > Is it possible in the lsm hooks?  Can these hooks
-> > be rejected at the load time instead?
+> This way we could have 32 distinct _active_ attachment types for each
+> cgroup instance, to be shared among regular cgroup attach types and BPF
+> LSM attach types.
 > 
-> Doesn't seem like it can be null, at least from the quick review that
-> I had; I'll take a deeper look.
-> I guess in general I wanted to be more defensive here because there
-> are 200+ hooks, the new ones might arrive, and it's better to have the
-> check?
-not too worried about an extra runtime check for now.
-Instead, have a concern that it will be a usage surprise when a successfully
-attached bpf program is then always silently ignored.
-
-Another question, for example, the inet_conn_request lsm_hook:
-LSM_HOOK(int, 0, inet_conn_request, const struct sock *sk, struct sk_buff *skb,
-         struct request_sock *req)
-
-'struct sock *sk' is the first argument, so it will use the current's cgroup.
-inet_conn_request() is likely run in a softirq though and then it will be
-incorrect.  This runs in softirq case may not be limited to hooks that
-take sk/sock argument also, not sure.
-
-> > > +             return 0;
-> > > +
-> > > +     sk = sock->sk;
-> > > +     if (unlikely(!sk))
-> > Same here.
-> >
-> > > +             return 0;
-> > > +
-> > > +     cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> > > +     if (likely(cgrp))
-unrelated, but while talking extra check,
-
-I think the shim_prog has already acted as a higher level (per attach-btf_id)
-knob but do you think it may still worth to do a bpf_empty_prog_array
-check here in case a cgroup may not have prog to run ?
-
-> > > +             ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[prog->aux->cgroup_atype],
-> > > +                                         ctx, bpf_prog_run, 0);
-
-[ ... ]
-
-> > > @@ -100,6 +123,15 @@ static void bpf_cgroup_link_auto_detach(struct bpf_cgroup_link *link)
-> > >       link->cgroup = NULL;
-> > >  }
-> > >
-> > > +static void bpf_cgroup_lsm_shim_release(struct bpf_prog *prog,
-> > > +                                     enum cgroup_bpf_attach_type atype)
-> > > +{
-> > > +     if (!prog || atype != prog->aux->cgroup_atype)
-> > prog cannot be NULL here, no?
-> >
-> > The 'atype != prog->aux->cgroup_atype' looks suspicious also considering
-> > prog->aux->cgroup_atype is only initialized (and meaningful) for BPF_LSM_CGROUP.
-> > I suspect incorrectly passing this test will crash in the below
-> > bpf_trampoline_unlink_cgroup_shim(). More on this later.
-> >
-> > > +             return;
-> > > +
-> > > +     bpf_trampoline_unlink_cgroup_shim(prog);
-> > > +}
-> > > +
-> > >  /**
-> > >   * cgroup_bpf_release() - put references of all bpf programs and
-> > >   *                        release all cgroup bpf data
-> > > @@ -123,10 +155,16 @@ static void cgroup_bpf_release(struct work_struct *work)
-> > Copying some missing loop context here:
-> >
-> >         for (atype = 0; atype < ARRAY_SIZE(cgrp->bpf.progs); atype++) {
-> >                 struct list_head *progs = &cgrp->bpf.progs[atype];
-> >                 struct bpf_prog_list *pl, *pltmp;
-> >
-> > >
-> > >               list_for_each_entry_safe(pl, pltmp, progs, node) {
-> > >                       list_del(&pl->node);
-> > > -                     if (pl->prog)
-> > > +                     if (pl->prog) {
-> > > +                             bpf_cgroup_lsm_shim_release(pl->prog,
-> > > +                                                         atype);
-> > atype could be 0 (CGROUP_INET_INGRESS) here.  bpf_cgroup_lsm_shim_release()
-> > above will go ahead with bpf_trampoline_unlink_cgroup_shim().
-> > It will break some of the assumptions.  e.g. prog->aux->attach_btf is NULL
-> > for CGROUP_INET_INGRESS.
-> >
-> > Instead, only call bpf_cgroup_lsm_shim_release() for BPF_LSM_CGROUP ?
-> >
-> > If the above observation is sane, I wonder if the existing test_progs
-> > have uncovered it or may be the existing tests just always detach
-> > cleanly itself before cleaning the cgroup which then avoided this case.
+> It is 9 extra slots in comparison to today, so if anyone has cgroups
+> that make use of all available attach types at the same time, we don't
+> break their setup.
 > 
-> Might be what's happening here:
+> The L1 lookup table would still a few slots for new cgroup [^2] or LSM
+> hooks:
 > 
-> https://github.com/kernel-patches/bpf/runs/5876983908?check_suite_focus=true
-hmm.... this one looks different.  I am thinking the oops should happen
-in bpf_obj_id() which is not inlined.  didn't ring any bell for now
-after a quick look, so yeah let's fix the known first.
-
+>   256 - 23 (cgroup attach types) - 211 (LSM hooks) = 22
 > 
-> Although, I'm not sure why it's z15 only. Good point on filtering by
-> BPF_LSM_CGROUP, will do.
+> Memory bloat:
 > 
-> > >                               bpf_prog_put(pl->prog);
-> > > -                     if (pl->link)
-> > > +                     }
-> > > +                     if (pl->link) {
-> > > +                             bpf_cgroup_lsm_shim_release(pl->link->link.prog,
-> > > +                                                         atype);
-> > >                               bpf_cgroup_link_auto_detach(pl->link);
-> > > +                     }
-> > >                       kfree(pl);
-> > >                       static_branch_dec(&cgroup_bpf_enabled_key[atype]);
-> > >               }
+>  +256 B - L1 lookup table
+Does L1 need to be per cgroup ?
 
-[ ... ]
+or different cgroups usually have a very different active(/effective) set ?
 
-> > > +int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
-> > > +                                 struct bpf_attach_target_info *tgt_info)
-> > > +{
-> > > +     struct bpf_prog *shim_prog = NULL;
-> > > +     struct bpf_trampoline *tr;
-> > > +     bpf_func_t bpf_func;
-> > > +     u64 key;
-> > > +     int err;
-> > > +
-> > > +     key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
-> > > +                                      prog->aux->attach_btf_id);
-> > > +
-> > > +     err = bpf_lsm_find_cgroup_shim(prog, &bpf_func);
-> > > +     if (err)
-> > > +             return err;
-> > > +
-> > > +     tr = bpf_trampoline_get(key, tgt_info);
-> > > +     if (!tr)
-> > > +             return  -ENOMEM;
-> > > +
-> > > +     mutex_lock(&tr->mutex);
-> > > +
-> > > +     shim_prog = cgroup_shim_find(tr, bpf_func);
-> > > +     if (shim_prog) {
-> > > +             /* Reusing existing shim attached by the other program.
-> > > +              */
-> > The shim_prog is reused by >1 BPF_LSM_CGROUP progs and
-> > shim_prog is hidden from the userspace also (no id), so it may worth
-> > to bring this up:
-> >
-> > In __bpf_prog_enter(), other than some bpf stats of the shim_prog
-> > will become useless which is a very minor thing, it is also checking
-> > shim_prog->active and bump the misses counter.  Now, the misses counter
-> > is no longer visible to users.  Since it is actually running the cgroup prog,
-> > may be there is no need for the active check ?
+>  + 72 B - extra effective[] slots
+>  + 72 B - extra progs[] slots
+>  + 36 B - extra flags[] slots
+>  -184 B - savings from switching to hlist_head
+>  ------
+>  +252 B per cgroup instance
 > 
-> Agree that the active counter will probably be taken care of when the
-> actual program runs;
-iirc, the BPF_PROG_RUN_ARRAY_CG does not need the active counter.
-
-> but now sure it worth the effort in trying to
-> remove it here?
-I was thinking if the active counter got triggered and missed calling the
-BPF_LSM_CGROUP, then there is no way to tell this case got hit without
-exposing the stats of the shim_prog and it could be a pretty hard
-problem to chase.  It probably won't be an issue for non-sleepable now
-if the rcu_read_lock() maps to preempt_disable().  Not sure about the
-future sleepable case.
-
-I am thinking to avoid doing all the active count and stats count
-in __bpf_prog_enter() and __bpf_prog_exit() for BPF_LSM_CGROUP.  afaik,
-only the rcu_read_lock and rcu_read_unlock are useful to protect
-the shim_prog itself.  May be a __bpf_nostats_enter() and
-__bpf_nostats_exit().
-
-> Regarding "no longer visible to users": that's a good point. Should I
-> actually add those shim progs to the prog_idr? Or just hide it as
-> "internal implementation detail"?
-Then no need to expose the shim_progs to the idr.
-
-~~~~
-[ btw, while thinking the shim_prog, I also think there is no need for one
-  shim_prog for each attach_btf_id which is essentially
-  prog->aux->cgroup_atype.  The static prog->aux->cgroup_atype can be
-  passed in the stack when preparing the trampoline.
-  just an idea and not suggesting must be done now.  This can be
-  optimized later since it does not affect the API. ]
-  
+> Total cgroup_bpf{} size change - 720 B -> 968 B.
+> 
+> WDYT?
+> 
+> [^1] It looks like we can easily switch from cgroup->bpf.progs[] from
+>      list_head to hlist_head and save some bytes!
+> 
+>      We only access the list tail in __cgroup_bpf_attach(). We can
+>      either iterate over the list and eat the cost there or push the new
+>      prog onto the front.
+> 
+>      I think we treat cgroup->bpf.progs[] everywhere like an unordered
+>      set. Except for __cgroup_bpf_query, where the user might notice the
+>      order change in the BPF_PROG_QUERY dump.
+> 
+> [^2] Unrelated, but we would like to propose a
+>      CGROUP_INET[46]_POST_CONNECT hook in the near future to make it
+>      easier to bind UDP sockets to 4-tuple without creating conflicts:
+> 
+>      https://github.com/cloudflare/cloudflare-blog/tree/master/2022-02-connectx/ebpf_connect4
+>  
+> [...]
