@@ -2,100 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 943634FCA1D
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 02:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543F64FCAE7
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 03:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244147AbiDLAuo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Apr 2022 20:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43998 "EHLO
+        id S229826AbiDLBCO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Apr 2022 21:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243665AbiDLAuC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Apr 2022 20:50:02 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEA02FFDB;
-        Mon, 11 Apr 2022 17:46:45 -0700 (PDT)
+        with ESMTP id S245667AbiDLA4n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Apr 2022 20:56:43 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FF41FCC0;
+        Mon, 11 Apr 2022 17:49:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9E1F2B819BF;
-        Tue, 12 Apr 2022 00:46:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 271FCC385AC;
-        Tue, 12 Apr 2022 00:46:41 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A0B09B8198C;
+        Tue, 12 Apr 2022 00:49:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6DC5C385AB;
+        Tue, 12 Apr 2022 00:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649724403;
-        bh=oknzdsPyyYxHHeLKbM5fyYkIpdaUMdm8VabbP461qHc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rf6wU5Ksxc5pK7fq5DgOX2u6Q8iiIc9AxQCT2oBS6+rPZrw7RfEDpDUvFDjW2aCxs
-         U1WNBIFtdTaTqi3B/hFb5WO/yJprltXCcIYn8S4QnVKNY84OfYWoc984Fph+dB/NmP
-         4u5hS5siElnoKB3BqapMtWAGXFmaULganifVsk5LLl8tFXtRn5508/xYoyW8pW7qqQ
-         wzaUJiXM+6dMq0t/saQEnBuQU26IsYcwPdNNzHFRPI1+FeQEIHbkf4KCDA7Tzwlr5/
-         Nv3s3r5trx9CGnfd3Ynk8+F996FxkYDB4cJopiolKHKZOeEqR3gevhdEyLeaRVTf6A
-         xo51tTS299/sQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, daniel@iogearbox.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, andrii@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.17 45/49] x86,bpf: Avoid IBT objtool warning
-Date:   Mon, 11 Apr 2022 20:44:03 -0400
-Message-Id: <20220412004411.349427-45-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220412004411.349427-1-sashal@kernel.org>
-References: <20220412004411.349427-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        s=k20201202; t=1649724569;
+        bh=bUn5MsT2K3tXiL4OUAHoHpu6WGSu0PQnC8Qt/TN43SE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ViCn0Y6LM+yv0btIMrHmlN+58EMx9MaXxxgCwKhNVwVOxuIGaKehJl/ZLscRhnQJ4
+         mJ7lLRBHAgazX8B77zxLgrABdwYaIefAtrLOI4/52lNZv6Zx7nVnc4Pj3Huyu3F35f
+         kHg7hiF5+AdmI3BRZTSyJWhLXYe6Jvk2Qw49+XyCjhOnI1yx1y2U4F/JrX9rH4s1as
+         JjqNeKBJRlY7dTDblK05yNU7Bp5KPimltOU5ziXBZKlFCnPwICA7lEag1Pl9TdGHbv
+         p6RKbqYj3pLBihxkZscNumNxW4BMAGw2c028jnQipUQUJjAibgIzUsKd1kzgSMe50o
+         dPSG4eTamKURw==
+Date:   Tue, 12 Apr 2022 09:49:23 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [RFC bpf-next 4/4] selftests/bpf: Add attach bench test
+Message-Id: <20220412094923.0abe90955e5db486b7bca279@kernel.org>
+In-Reply-To: <CAEf4BzbE1n3Lie+tWTzN69RQUWgjxePorxRr9J8CuiQVUfy-kA@mail.gmail.com>
+References: <20220407125224.310255-1-jolsa@kernel.org>
+        <20220407125224.310255-5-jolsa@kernel.org>
+        <CAEf4BzbE1n3Lie+tWTzN69RQUWgjxePorxRr9J8CuiQVUfy-kA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+On Mon, 11 Apr 2022 15:15:40 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-[ Upstream commit be8a096521ca1a252bf078b347f96ce94582612e ]
+> > +#define DEBUGFS "/sys/kernel/debug/tracing/"
+> > +
+> > +static int get_syms(char ***symsp, size_t *cntp)
+> > +{
+> > +       size_t cap = 0, cnt = 0, i;
+> > +       char *name, **syms = NULL;
+> > +       struct hashmap *map;
+> > +       char buf[256];
+> > +       FILE *f;
+> > +       int err;
+> > +
+> > +       /*
+> > +        * The available_filter_functions contains many duplicates,
+> > +        * but other than that all symbols are usable in kprobe multi
+> > +        * interface.
+> > +        * Filtering out duplicates by using hashmap__add, which won't
+> > +        * add existing entry.
+> > +        */
+> > +       f = fopen(DEBUGFS "available_filter_functions", "r");
+> 
+> I'm really curious how did you manage to attach to everything in
+> available_filter_functions because when I'm trying to do that I fail.
+> available_filter_functions has a bunch of functions that should not be
+> attachable (e.g., notrace functions). Look just at __bpf_tramp_exit:
+> 
+>   void notrace __bpf_tramp_exit(struct bpf_tramp_image *tr);
 
-Clang can inline emit_indirect_jump() and then folds constants, which
-results in:
+Hmm, this sounds like a bug in ftrace side. IIUC, the
+"available_filter_functions" only shows the functions which is NOT
+instrumented by mcount, we should not see any notrace functions on it.
 
-  | vmlinux.o: warning: objtool: emit_bpf_dispatcher()+0x6a4: relocation to !ENDBR: .text.__x86.indirect_thunk+0x40
-  | vmlinux.o: warning: objtool: emit_bpf_dispatcher()+0x67d: relocation to !ENDBR: .text.__x86.indirect_thunk+0x40
-  | vmlinux.o: warning: objtool: emit_bpf_tail_call_indirect()+0x386: relocation to !ENDBR: .text.__x86.indirect_thunk+0x20
-  | vmlinux.o: warning: objtool: emit_bpf_tail_call_indirect()+0x35d: relocation to !ENDBR: .text.__x86.indirect_thunk+0x20
+Technically, this is done by __no_instrument_function__ attribute.
 
-Suppress the optimization such that it must emit a code reference to
-the __x86_indirect_thunk_array[] base.
+#if defined(CC_USING_HOTPATCH)
+#define notrace                 __attribute__((hotpatch(0, 0)))
+#elif defined(CC_USING_PATCHABLE_FUNCTION_ENTRY)
+#define notrace                 __attribute__((patchable_function_entry(0, 0)))
+#else
+#define notrace                 __attribute__((__no_instrument_function__))
+#endif
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lkml.kernel.org/r/20220405075531.GB30877@worktop.programming.kicks-ass.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/x86/net/bpf_jit_comp.c | 1 +
- 1 file changed, 1 insertion(+)
+> 
+> So first, curious what I am doing wrong or rather why it succeeds in
+> your case ;)
+> 
+> But second, just wanted to plea to "fix" available_filter_functions to
+> not list stuff that should not be attachable. Can you please take a
+> look and checks what's going on there and why do we have notrace
+> functions (and what else should *NOT* be there)?
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 0ecb140864b2..b272e963388c 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -398,6 +398,7 @@ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
- 		EMIT_LFENCE();
- 		EMIT2(0xFF, 0xE0 + reg);
- 	} else if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
-+		OPTIMIZER_HIDE_VAR(reg);
- 		emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
- 	} else
- #endif
+Can you share how did you reproduce the issue? I'll check it.
+
+Thank you,
+
+
 -- 
-2.35.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
