@@ -2,78 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B3C4FE416
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 16:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16AE4FE46A
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 17:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356739AbiDLOrP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 10:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
+        id S1356875AbiDLPQz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 11:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356730AbiDLOrO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 10:47:14 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453161CFEE
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 07:44:56 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id b15so17702597pfm.5
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 07:44:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=btzB568iXxZj9oc1tZbDY7UAY4m0s81uXgV8WCBbWRs=;
-        b=dXdSmaigsQfS8iGJpoICwbRXz1FWNpMiL0cOtSsxpoStwnZDu8idR451LAKSFR0LbD
-         WBvG1gRSfyZYV+fpXfeukko3SJfNYwqBBWJGmH368YCyXpc3GjQLRHJq6vIV620Zi+C+
-         GFPN/IEJRPMpd56zrExzJS0jJiBWd21Z60iyUL/GM29N6qb53l1kbEHeybz26ZVz+ITV
-         URfnlKx+gP6pFW2MXUOvUqUzOrFbZF/+TM8xcIn+SIlL38WlpsDKUhhYuj6r1XUunWxP
-         nKp8mhXWh6RIxt006y1145LhvFYYhb+W9I8OAXs/+QfyIKGlec+ytOV/2nbRrfaHcQkU
-         OEQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=btzB568iXxZj9oc1tZbDY7UAY4m0s81uXgV8WCBbWRs=;
-        b=Ya4u4z/KBb8+DnYtBlgQyhom7VQO6w9iE6i1d7UT86xkpZq8S4981lXF3LCCzamdvv
-         6nBbda0T3tLvk434abluQJuilPTACaWYCNN3+PGJ+8jJ5fw5xBvqYFD5Xl5toWUEbYEA
-         etAelP8dEU/OTDSBOxYDECdIV5MSkeHi7pGs4m7zhFEGm9uO4+Us24mPb2D/lvADPazL
-         lhswtPEs5uaW6wxg5WQVNUrj2EUUmpfe+CTNqq29CgEddP0HK4StOkfkcCV0h9XFJ+wk
-         CYD13is2bAHKjTeez7C7QwY3HzWRQfmiiaMJRVMLFHx6tgLHBl2C5v2H0PPozzJkF/4o
-         GWNw==
-X-Gm-Message-State: AOAM532B8HoCb8xZXwPpSPOLJbPBpXtH5RumIdRabkkfC8kuW3+JUUCv
-        JQfQNR1j9MLTdQdy2bpZFnQMXXI5A9qnvtkP
-X-Google-Smtp-Source: ABdhPJyuBZy2IK9V/ErFnZBxqvPrcAs/xWo9/wak/gn6mPURlCcLf7O6F2HqUPE4EGla+ANGH2SvSg==
-X-Received: by 2002:a63:2f46:0:b0:382:230f:b155 with SMTP id v67-20020a632f46000000b00382230fb155mr31794155pgv.64.1649774695275;
-        Tue, 12 Apr 2022 07:44:55 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id w14-20020a63474e000000b0039cce486b9bsm3111136pgk.13.2022.04.12.07.44.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Apr 2022 07:44:54 -0700 (PDT)
-Message-ID: <b20d6ee6-d1ba-5c15-a50a-2a49874d96b6@linaro.org>
-Date:   Tue, 12 Apr 2022 07:44:53 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] bpf: Fix KASAN use-after-free Read in
- compute_effective_progs
-Content-Language: en-US
-To:     bpf@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com,
-        Alexei Starovoitov <ast@kernel.org>
-References: <20220405170356.43128-1-tadeusz.struk@linaro.org>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <20220405170356.43128-1-tadeusz.struk@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        with ESMTP id S1356869AbiDLPQy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 11:16:54 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFCF387B9;
+        Tue, 12 Apr 2022 08:14:35 -0700 (PDT)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 23CEndSf013362;
+        Tue, 12 Apr 2022 15:14:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=z9Mc5Z7O6/eJFTtDaBXWB7HJdfgDz8mO40uWSlWFwuM=;
+ b=UulRKzuIDkGh3PuHaW7kBrObwfogo6WSMRVrgQIYPwN6FqWUvZ8tc39XUrcUEs6abGdV
+ YVj5XUtDu0dAaG1cOJQa7kWJL22FrT9/va1NqYd/CCJUbhoYB/4+f3DgMZ627ULyKvW1
+ nkrf10qEs06vPe1Co7l7PsB98xjVxyYSSkLAvj7BTfbbNI2wJZPh/ZZCm86rWaT9T2I0
+ JJL96mh5Uy4jGvSLzOxPqqSr3Fr+f7dVbzwbnZQudhHt6nLusijH81IIxuYNs4ysmPHK
+ CySGzryX3edjmlN7scc3/lWxjuO7OKWD5hnSG58vcFtGc8N/cuyMGYb4gVxmr6LTlhqP /Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3fd8b65sh0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Apr 2022 15:14:15 +0000
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 23CFBVeh028406;
+        Tue, 12 Apr 2022 15:14:14 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3fd8b65sg2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Apr 2022 15:14:14 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 23CEvv5d031030;
+        Tue, 12 Apr 2022 15:14:11 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3fbsj03275-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Apr 2022 15:14:11 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 23CFE98V53281108
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Apr 2022 15:14:09 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 54CFF42042;
+        Tue, 12 Apr 2022 15:14:09 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B1B54203F;
+        Tue, 12 Apr 2022 15:14:06 +0000 (GMT)
+Received: from sig-9-65-64-123.ibm.com (unknown [9.65.64.123])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Apr 2022 15:14:06 +0000 (GMT)
+Message-ID: <2913e2998892833d4bc7d866b99dcd9bd234e82e.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 RESEND] efi: Do not import certificates from UEFI
+ Secure Boot for T2 Macs
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Aditya Garg <gargaditya08@live.com>
+Cc:     "jarkko@kernel.org" <jarkko@kernel.org>,
+        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Orlando Chamberlain <redecorating@protonmail.com>,
+        "admin@kodeit.net" <admin@kodeit.net>
+Date:   Tue, 12 Apr 2022 11:13:52 -0400
+In-Reply-To: <B857EF0F-23D7-4B82-8A1E-7480C19C9AC5@live.com>
+References: <652C3E9E-CB97-4C70-A961-74AF8AEF9E39@live.com>
+         <f55551188f2a17a7a5da54ea4a38bfbae938a62f.camel@linux.ibm.com>
+         <B857EF0F-23D7-4B82-8A1E-7480C19C9AC5@live.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: VL29UvswhcIeofTBN-DnUeLg90zeqr8c
+X-Proofpoint-ORIG-GUID: -AP3CmwIOBSGN_aB583esCRjb3Y92MuS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-04-12_05,2022-04-12_02,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 spamscore=0 phishscore=0
+ clxscore=1015 malwarescore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2204120073
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,105 +113,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/5/22 10:03, Tadeusz Struk wrote:
-> Syzbot found a Use After Free bug in compute_effective_progs().
-> The reproducer creates a number of BPF links, and causes a fault
-> injected alloc to fail, while calling bpf_link_detach on them.
-> Link detach triggers the link to be freed by bpf_link_free(),
-> which calls __cgroup_bpf_detach() and update_effective_progs().
-> If the memory allocation in this function fails, the function restores
-> the pointer to the bpf_cgroup_link on the cgroup list, but the memory
-> gets freed just after it returns. After this, every subsequent call to
-> update_effective_progs() causes this already deallocated pointer to be
-> dereferenced in prog_list_length(), and triggers KASAN UAF error.
-> To fix this don't preserve the pointer to the link on the cgroup list
-> in __cgroup_bpf_detach(), but proceed with the cleanup and retry calling
-> update_effective_progs() again afterwards.
-> 
-> 
-> Cc: "Alexei Starovoitov" <ast@kernel.org>
-> Cc: "Daniel Borkmann" <daniel@iogearbox.net>
-> Cc: "Andrii Nakryiko" <andrii@kernel.org>
-> Cc: "Martin KaFai Lau" <kafai@fb.com>
-> Cc: "Song Liu" <songliubraving@fb.com>
-> Cc: "Yonghong Song" <yhs@fb.com>
-> Cc: "John Fastabend" <john.fastabend@gmail.com>
-> Cc: "KP Singh" <kpsingh@kernel.org>
-> Cc: <netdev@vger.kernel.org>
-> Cc: <bpf@vger.kernel.org>
-> Cc: <stable@vger.kernel.org>
-> Cc: <linux-kernel@vger.kernel.org>
-> 
-> Link: https://syzkaller.appspot.com/bug?id=8ebf179a95c2a2670f7cf1ba62429ec044369db4
-> Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
-> Reported-by: <syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com>
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-> ---
->   kernel/bpf/cgroup.c | 25 ++++++++++++++-----------
->   1 file changed, 14 insertions(+), 11 deletions(-)
-> 
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 128028efda64..b6307337a3c7 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -723,10 +723,11 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
->   	pl->link = NULL;
->   
->   	err = update_effective_progs(cgrp, atype);
-> -	if (err)
-> -		goto cleanup;
-> -
-> -	/* now can actually delete it from this cgroup list */
-> +	/*
-> +	 * Proceed regardless of error. The link and/or prog will be freed
-> +	 * just after this function returns so just delete it from this
-> +	 * cgroup list and retry calling update_effective_progs again later.
-> +	 */
->   	list_del(&pl->node);
->   	kfree(pl);
->   	if (list_empty(progs))
-> @@ -735,12 +736,11 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
->   	if (old_prog)
->   		bpf_prog_put(old_prog);
->   	static_branch_dec(&cgroup_bpf_enabled_key[atype]);
-> -	return 0;
->   
-> -cleanup:
-> -	/* restore back prog or link */
-> -	pl->prog = old_prog;
-> -	pl->link = link;
-> +	/* In case of error call update_effective_progs again */
-> +	if (err)
-> +		err = update_effective_progs(cgrp, atype);
-> +
->   	return err;
->   }
->   
-> @@ -881,6 +881,7 @@ static void bpf_cgroup_link_release(struct bpf_link *link)
->   	struct bpf_cgroup_link *cg_link =
->   		container_of(link, struct bpf_cgroup_link, link);
->   	struct cgroup *cg;
-> +	int err;
->   
->   	/* link might have been auto-detached by dying cgroup already,
->   	 * in that case our work is done here
-> @@ -896,8 +897,10 @@ static void bpf_cgroup_link_release(struct bpf_link *link)
->   		return;
->   	}
->   
-> -	WARN_ON(__cgroup_bpf_detach(cg_link->cgroup, NULL, cg_link,
-> -				    cg_link->type));
-> +	err = __cgroup_bpf_detach(cg_link->cgroup, NULL, cg_link,
-> +				  cg_link->type);
-> +	if (err)
-> +		pr_warn("cgroup_bpf_detach() failed, err %d\n", err);
->   
->   	cg = cg_link->cgroup;
->   	cg_link->cgroup = NULL;
+On Tue, 2022-04-12 at 14:13 +0000, Aditya Garg wrote:
+> >> @@ -138,6 +181,11 @@ static int __init load_uefi_certs(void)
+> >>      unsigned long dbsize = 0, dbxsize = 0, mokxsize = 0;
+> >>      efi_status_t status;
+> >>      int rc = 0;
+> >> +    const struct dmi_system_id *dmi_id;
+> >> +
+> >> +    dmi_id = dmi_first_match(uefi_skip_cert);
+> >> +    if (dmi_id)
+> >> +            return 0;
+> > 
+> > uefi_check_ignore_db(), get_cert_list(), uefi_check_ignore_db(), and
+> > /load_moklist_certs() are all defined all static and are gated here by
+> > this dmi_first_match(). There's probably no need for any of the other
+> > calls to dmi_first_match().
+> I couldn’t get you here. Could you elaborate?
 
-Hi,
-Any feedback/comments on this one?
+dmi_first_match() is called here at the beginning of load_uefi_certs().
+Only if it succeeds would uefi_check_ignore_db(), get_cert_list(),
+uefi_check_ignore_db(), or
+load_moklist_certs() be called.  Is there a need for adding a call to
+dmi_first_match() in any of these other functions?
 
--- 
-Thanks,
-Tadeusz
+thanks,
+
+Mimi
+
+> > 
+> > Like in all the other cases, there should be some sort of message. At
+> > minimum, there should be a pr_info().
+> > 
+> >> 
+> >>      if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE))
+> >>              return false;
+> > 
+
+
