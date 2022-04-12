@@ -2,105 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB3F4FCD43
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 05:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2AD4FCD83
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 06:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344723AbiDLDpE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Apr 2022 23:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37900 "EHLO
+        id S1345331AbiDLEUl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 00:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344892AbiDLDpD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Apr 2022 23:45:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74F232DD76
-        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 20:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1649734964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e/OsiNJ9A/eOeLohaa+XnOAzDTM4dK3oraaYOkfTH1I=;
-        b=Dew50VFpMTJZvW4Y/77ndZDBMolOMm3zuArHEzmtLF214aWQ8vG9W+TvEs7SqXyh+BFniL
-        pYZkmBhtOo7Z4/H6JM1GX/Wgk6k53XHDVjo8QUsNI9MzKK4vB/nj9AIIgNUs1dME8+eFc7
-        W4MVmWBjDOqiIPWNSsNxJITbsmCvC9Q=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-647-LO71P5s-OlCQRJPhiJg34A-1; Mon, 11 Apr 2022 23:42:43 -0400
-X-MC-Unique: LO71P5s-OlCQRJPhiJg34A-1
-Received: by mail-pj1-f69.google.com with SMTP id q1-20020a17090a2dc100b001cba43e127dso767367pjm.9
-        for <bpf@vger.kernel.org>; Mon, 11 Apr 2022 20:42:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=e/OsiNJ9A/eOeLohaa+XnOAzDTM4dK3oraaYOkfTH1I=;
-        b=y4vCRWD+b3VMPBqezzMx/lSQKvbmYT9qEAjc0hm0J5aE71E/GvjEDgVjbau8s5PLwu
-         jTrBBuL9p1MCdrKLp/9i3mbU0Il+PFJiKpppfnQ45j0JnLyk6xIXHb46D19dv36Zelga
-         qQxTRVAXNB3aJGCaA/CqFEYQqQx87LOu30CNFJb4pxRfKifkOfvg9F44AGFlfjVzAEWf
-         sSpeT4SZD3bcZTjuKQ5TCuADu0Nt+duAWVd7uokY+8Zb2kk1AnnN0AE28Bl7L9ybRAAl
-         7EXJGbEtZ9gbZVCUn1gi+fB3WiwVdSoK7ShRyyqsZhN6pN2rnAenxypSB2VAQhB/10hY
-         hU1Q==
-X-Gm-Message-State: AOAM530Or5mNZAqo81dNsEWOTH76/D6ywhZ8VIEVLQ16O7bVaXvjraJC
-        ioRfrF34XBdYzDppcANoCPL7ooJics1FSbN4lsFR4lNB9FnI8+U3NqXlOppK9f/qMdNpEDcwXXL
-        KekpwEwLmLG5c
-X-Received: by 2002:a17:902:d641:b0:158:7b09:a597 with SMTP id y1-20020a170902d64100b001587b09a597mr1464272plh.38.1649734962134;
-        Mon, 11 Apr 2022 20:42:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxMq3ocoOmI2KUnRkjYaMPOtPHjUJwi0YEpLw+I2/CAUycWFX4s/+dC2J75Q6+K+XriTggTwA==
-X-Received: by 2002:a17:902:d641:b0:158:7b09:a597 with SMTP id y1-20020a170902d64100b001587b09a597mr1464238plh.38.1649734961868;
-        Mon, 11 Apr 2022 20:42:41 -0700 (PDT)
-Received: from [10.72.14.5] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id a11-20020a63cd4b000000b00378b9167493sm1090853pgj.52.2022.04.11.20.42.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Apr 2022 20:42:41 -0700 (PDT)
-Message-ID: <f91435e4-6559-c0c9-2b37-92084c88dee2@redhat.com>
-Date:   Tue, 12 Apr 2022 11:42:25 +0800
+        with ESMTP id S1345266AbiDLEUl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 00:20:41 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8046022B35;
+        Mon, 11 Apr 2022 21:18:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MAGlAnBxD7wyQSz4EwEMb3ZK13YdG90sRwMHnO/9tbg=; b=ATlnpj6dvccFOr4ecTroAQ+0q0
+        pqHl6P4OqoGeC+NYqByLkeR1EFVqodIbnCWC1DCWAPhsZKvmubgixvx5GhBFjPB/2pYIdncZBFgQ7
+        bz64hBsoNwQEEGdPy25CDvNBIp//U4t2Ex+mlSxSS4VQQPsRrhkvowVIdJRsDbWL1fAmxYbncgAFD
+        WXn3jxBWSJSKEMdF7RVJMYJFc9lXYiLVFU01UzQNohPsUyypn2XpNt9tkTJK4vJN9JBX6hEmqTSbD
+        6Jb9FTrhIzk15DXbp8uxbDfg4i9wIoNie1tvHkw9bBgDxSp1GcNI+WePACCHlmQrX/VLAwY2Qc+tp
+        AR7JTC5A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ne7yt-00BVqf-8R; Tue, 12 Apr 2022 04:18:19 +0000
+Date:   Mon, 11 Apr 2022 21:18:19 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Song Liu <song@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, akpm@linux-foundation.org,
+        rick.p.edgecombe@intel.com, hch@infradead.org,
+        imbrenda@linux.ibm.com, mcgrof@kernel.org,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 bpf 1/3] vmalloc: replace VM_NO_HUGE_VMAP with
+ VM_ALLOW_HUGE_VMAP
+Message-ID: <YlT9i9DFvwDx9+AD@infradead.org>
+References: <20220411233549.740157-1-song@kernel.org>
+ <20220411233549.740157-2-song@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [PATCH v9 09/32] virtio_ring: split: extract the logic of vq init
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-10-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220406034346.74409-10-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220411233549.740157-2-song@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,131 +55,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Apr 11, 2022 at 04:35:46PM -0700, Song Liu wrote:
+> Huge page backed vmalloc memory could benefit performance in many cases.
+> Since some users of vmalloc may not be ready to handle huge pages,
+> VM_NO_HUGE_VMAP was introduced to allow vmalloc users to opt-out huge
+> pages. However, it is not easy to add VM_NO_HUGE_VMAP to all the users
+> that may try to allocate >= PMD_SIZE pages, but are not ready to handle
+> huge pages properly.
 
-在 2022/4/6 上午11:43, Xuan Zhuo 写道:
-> Separate the logic of initializing vq, and subsequent patches will call
-> it separately.
->
-> The feature of this part is that it does not depend on the information
-> passed by the upper layer and can be called repeatedly.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->   drivers/virtio/virtio_ring.c | 68 ++++++++++++++++++++----------------
->   1 file changed, 38 insertions(+), 30 deletions(-)
->
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 083f2992ba0d..874f878087a3 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -916,6 +916,43 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
->   	return NULL;
->   }
->   
-> +static void vring_virtqueue_init_split(struct vring_virtqueue *vq,
-> +				       struct virtio_device *vdev,
-> +				       bool own_ring)
-> +{
-> +	vq->packed_ring = false;
-> +	vq->vq.num_free = vq->split.vring.num;
-> +	vq->we_own_ring = own_ring;
-> +	vq->broken = false;
-> +	vq->last_used_idx = 0;
-> +	vq->event_triggered = false;
-> +	vq->num_added = 0;
-> +	vq->use_dma_api = vring_use_dma_api(vdev);
-> +#ifdef DEBUG
-> +	vq->in_use = false;
-> +	vq->last_add_time_valid = false;
-> +#endif
-> +
-> +	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
-> +
-> +	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
-> +		vq->weak_barriers = false;
-> +
-> +	vq->split.avail_flags_shadow = 0;
-> +	vq->split.avail_idx_shadow = 0;
-> +
-> +	/* No callback?  Tell other side not to bother us. */
-> +	if (!vq->vq.callback) {
-> +		vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
-> +		if (!vq->event)
-> +			vq->split.vring.avail->flags = cpu_to_virtio16(vdev,
-> +					vq->split.avail_flags_shadow);
-> +	}
-> +
-> +	/* Put everything in free lists. */
-> +	vq->free_head = 0;
+This is a good place to document what the problems are, and how they are
+hard to track down (e.g. because the allocations are passed down I/O
+stacks)
 
+> 
+> Replace VM_NO_HUGE_VMAP with an opt-in flag, VM_ALLOW_HUGE_VMAP, so that
+> users that benefit from huge pages could ask specificially.
+> 
+> Also, replace vmalloc_no_huge() with opt-in helper vmalloc_huge().
 
-It's not clear what kind of initialization that we want to do here. E.g 
-it mixes split specific setups with some general setups which is kind of 
-duplication of vring_virtqueue_init_packed().
+We still need to find out what the primary users of the large vmalloc
+hashes was and convert them.
 
-I wonder if it's better to only do split specific setups here and have a 
-common helper to do the setup that is irrelevant to ring layout.
+> +extern void *vmalloc_huge(unsigned long size) __alloc_size(1);
 
-Thanks
+No need for the extern.
 
+> +EXPORT_SYMBOL(vmalloc_huge);
 
-> +}
-> +
->   static void vring_virtqueue_attach_split(struct vring_virtqueue *vq,
->   					 struct vring vring,
->   					 struct vring_desc_state_split *desc_state,
-> @@ -2249,42 +2286,15 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
->   	if (!vq)
->   		return NULL;
->   
-> -	vq->packed_ring = false;
->   	vq->vq.callback = callback;
->   	vq->vq.vdev = vdev;
->   	vq->vq.name = name;
-> -	vq->vq.num_free = vring.num;
->   	vq->vq.index = index;
-> -	vq->we_own_ring = false;
->   	vq->notify = notify;
->   	vq->weak_barriers = weak_barriers;
-> -	vq->broken = false;
-> -	vq->last_used_idx = 0;
-> -	vq->event_triggered = false;
-> -	vq->num_added = 0;
-> -	vq->use_dma_api = vring_use_dma_api(vdev);
-> -#ifdef DEBUG
-> -	vq->in_use = false;
-> -	vq->last_add_time_valid = false;
-> -#endif
->   
->   	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
->   		!context;
-> -	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
-> -
-> -	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
-> -		vq->weak_barriers = false;
-> -
-> -	vq->split.avail_flags_shadow = 0;
-> -	vq->split.avail_idx_shadow = 0;
-> -
-> -	/* No callback?  Tell other side not to bother us. */
-> -	if (!callback) {
-> -		vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
-> -		if (!vq->event)
-> -			vq->split.vring.avail->flags = cpu_to_virtio16(vdev,
-> -					vq->split.avail_flags_shadow);
-> -	}
->   
->   	err = vring_alloc_state_extra_split(vring.num, &state, &extra);
->   	if (err) {
-> @@ -2293,9 +2303,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
->   	}
->   
->   	vring_virtqueue_attach_split(vq, vring, state, extra);
-> -
-> -	/* Put everything in free lists. */
-> -	vq->free_head = 0;
-> +	vring_virtqueue_init_split(vq, vdev, false);
->   
->   	spin_lock(&vdev->vqs_list_lock);
->   	list_add_tail(&vq->vq.list, &vdev->vqs);
-
+EXPORT_SYMBOL_GPL for all advanced vmalloc functionality, please.
