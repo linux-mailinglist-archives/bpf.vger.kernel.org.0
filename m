@@ -2,198 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 606694FE6A0
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 19:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6133C4FE6AB
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 19:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358010AbiDLRPs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 13:15:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
+        id S241845AbiDLRTV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 13:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358012AbiDLRPo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 13:15:44 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0F960CC1;
-        Tue, 12 Apr 2022 10:13:26 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 23CFFEOP006081;
-        Tue, 12 Apr 2022 10:13:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=wlVn6fY+kYU0+d2DIEXTBmOvS1VyeF2b/+ulkmqFdcA=;
- b=ZN3YOxWDtUcv0OELbjzvuhTUeyxshptSR7wgfCjDBvn8CnwyA3r4gDkDnhF7aiOAUisQ
- JefWbb8iA85rh/m11DlzPsUYh8EMmUXGx/E4FPfXASIxZ4g18mNWa08B5BukRntkA4YY
- 28ooL/lrWqE1rvBahr8oq18eXHyWskT1UFM= 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3fckykh1mm-1
+        with ESMTP id S232588AbiDLRTU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 13:19:20 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540DD517EE;
+        Tue, 12 Apr 2022 10:17:00 -0700 (PDT)
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 23CEn26n024425;
+        Tue, 12 Apr 2022 17:16:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=VpPiPdJueworOs7vPPFQzle2AMcIoQ96/wEqZJ/Dp6Y=;
+ b=gjfgzbUIe0psKkRn2yzGaMfUNKG1BGq/8a6kwi+yO0Zcng8mN4c6IkLjcSGNTdMA9vz5
+ CPRiird4eKc4H2l6shgbtpthwDZRBAIUH1Tq3mIfobY5ODRiEpfw9VtGfYF1jb1mkcaV
+ pXkh/1RbNR4Wpg4kK8812b3yFs0jp3pb93qcqjD+C4ajTEekGcLXjKtoHNKAIi1JHe+T
+ c1rwnNPZzk7Z9eLYOWO0VXov2R0hJ95+Wrz452nAPMMu05phjpcwAf7zOQ6xjO7Bno1c
+ N4bMENj7UOezQeW0pYyV4EDNb4ESRiTyKJmitV72G7opp5SQ/k95tYP06uDFNl2JGzrg +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3fdaqkvngv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Apr 2022 10:13:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=COpTlTfXAvbYQgGdKtJbu2YqoZavXOjVwHEHnfGyPxI68/uKvgoqnvFs4E1zFiSF1G9lsYjB5Z+DVbeM/lXGYsQLZBLnmu2Q29zFCMjr/0d+AyAPb/HsUITuTFJTps14K18gpWRWh1vD5y4ugXyRow+/0aGbG8gcLTmJAuOdhYZ4xY9B2NpR/2MZhQ53kLsS7/yhV2DE4+SoQwMjfixl3H1UfQ03K18Tmv1LqEsCFAMAc/z4OklMhV4aO4vKF70O0TkgnxCmxF/XbzWYjvQ3Ux46Su809pvjdmLS2dLUhXi32R/Quhtzu3iXN/PMnLcOgF5OGYsSq2zzR1w6ZjQAcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wlVn6fY+kYU0+d2DIEXTBmOvS1VyeF2b/+ulkmqFdcA=;
- b=RzbgnkJy+9LsfKCBinUJ75HYOAyLPVKWSuQ8bioUevjyGWRt2bjLS2zJjWjnrSeEu8olfCG5OiFNCC/ntEi4J0QJUItQkkMA0mBLF/0CLNo0pqx2craunUuBSulsDIO9U3WuIpz8FId3LT9ALu2AMc4pVcQtv2kU6uqyiCRmnSP1xWBta2rd0Gcgyz+TR5Dg54r4OM2BDup+FUJn0rTqjnr4WxuAoQ4oEXm+9ykAUn4KRLDmKtak8GUZDM/TN27rgZW699rsf1PgQQKzwDWz7D188wkm93lqfrkmKM9VCutr3Gh/GOyCUVcer3dC32l7qE+eDvnGoGAEKvkxfmv/hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by CH2PR15MB4792.namprd15.prod.outlook.com (2603:10b6:610:12::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.30; Tue, 12 Apr
- 2022 17:13:17 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::100b:5604:7f1e:e983]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::100b:5604:7f1e:e983%5]) with mapi id 15.20.5144.030; Tue, 12 Apr 2022
- 17:13:17 +0000
-Date:   Tue, 12 Apr 2022 10:13:15 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Neeraj Upadhyay <quic_neeraju@quicinc.com>, paulmck@kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, andrii@kernel.org,
-        ast@kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [BUG] rcu-tasks : should take care of sparse cpu masks
-Message-ID: <20220412171315.i6e6n3b6v7xclje6@kafai-mbp.dhcp.thefacebook.com>
-References: <20220401130114.GC4285@paulmck-ThinkPad-P17-Gen-1>
- <CANn89iLicuKS2wDjY1D5qNT4c-ob=D2n1NnRnm5fGg4LFuW1Kg@mail.gmail.com>
- <20220401152037.GD4285@paulmck-ThinkPad-P17-Gen-1>
- <20220401152814.GA2841044@paulmck-ThinkPad-P17-Gen-1>
- <20220401154837.GA2842076@paulmck-ThinkPad-P17-Gen-1>
- <7a90a9b5-df13-6824-32d1-931f19c96cba@quicinc.com>
- <CACYkzJ4FzbFu5NfdRMParp3Ome=ygVAqQPs2v6UGzRDt2LC6iw@mail.gmail.com>
- <20220405203818.qsi7j74jpsex7oky@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ5PkwidPAomc-+js=OTFdzwf38hMO01Q_rbsPM-HZTTkg@mail.gmail.com>
- <CACYkzJ77k7=UwAve-DBkhO7cmBh7W9e6JgFrc3HoHQ3AU1Xfsg@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACYkzJ77k7=UwAve-DBkhO7cmBh7W9e6JgFrc3HoHQ3AU1Xfsg@mail.gmail.com>
-X-ClientProxiedBy: BY3PR05CA0033.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::8) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 770f5a91-0e27-49fb-04a9-08da1ca7bc5e
-X-MS-TrafficTypeDiagnostic: CH2PR15MB4792:EE_
-X-Microsoft-Antispam-PRVS: <CH2PR15MB47925A4C38A3B29157384052D5ED9@CH2PR15MB4792.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iRMA7mCHvGk0+6GKPKHcoBxdZIaqd0xLHmjEQBPDXwGWBQMftM8Cv3lGlFdD0TrDukwteHY+QKYEZE+qXmeOFvEfXUJLDPNlJc4peinBKjsrIe6HGIwlsWg+TpVS4oib0HKoKxjwntDChyyVF4XcyWowRkOeUc7X6pD0+XptJP0aBHtu0+j+DAZ37hCD5vG9S/kdXRxlS0kc+vQ2st9+USHmWtwNMcVsmWUNRvaUrLGFAvZI+yCzXR6XRXBHaA/ZuVlOs6LvoORhzfz5f+AU8GvWwhWm9l3ex0BACny56Q9ZwEF+NpBwlP1XXqGFqTnojBB81rIIxjh5VRqP0daC9wEWQhcCr74YucHNSsIMLE3XVvsG7JclIvQSIhYHpJ4l7WlazsJBokJaCLnDfhCJklL395oauzG+ubNn+nJEwgzZfuQ3KQ7PfoRQeMHtIGLq0CO40p36q8yE5VaUYmpVhvNRpebeNG2WYafqKfp2hzyL8/qG4fwhDKIeMNfEwloSpI7gVhZ0txBGq84HTdE4rtGMX8I8t+O7tWWYRijmbOuHg+TcaAOFpEjPZkz+00e4ZECY+HtA3rX/tCOylCUTqBkbAX1qDMacz2tfiQEpQyDtZsnJKFr4NuoB4v60fx9JDkM1gDym6aaSEmVGVeCh3Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(1076003)(2906002)(316002)(83380400001)(186003)(54906003)(6916009)(8936002)(86362001)(38100700002)(5660300002)(4326008)(8676002)(66476007)(66556008)(66946007)(52116002)(53546011)(6512007)(9686003)(6506007)(508600001)(6486002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rXQee8Mx993YAp2Amdd9FWM6JzSY1XV0uoVtr0fW/6Rr4SvMKF1cZnLjRdoV?=
- =?us-ascii?Q?sw6enhG819u0RQNOgO4f7DU5F80CcZxMZHF3lCuL1sLaW1GRaRDp6+ALSyXu?=
- =?us-ascii?Q?op2D4WEDSgrjpCW53etU8Wq0Lf27Vs860l9nsSzEHqj5nr49vP3RF+ae6Iuw?=
- =?us-ascii?Q?0Kj57NghlWiuCMYa/bRachNjf014f19K3h69vUePlHT0iSFYkYB2Le5dYHXu?=
- =?us-ascii?Q?0TxjJya4JUwa9ErpLBjxO7fH+mVPfLoORC/e0l6JiUbarGyAbo5MJD1jbRTs?=
- =?us-ascii?Q?37rO+FalzcMwLA1334OdSCIOVV/BWlKb56bi7DIVgb8hUGS5uJ82A2sN0YZS?=
- =?us-ascii?Q?GK64ATGerUt9HRMclIXfHaiYNuTnEJvMymYDKD5c87A/xdoOiSnOVFiHJw32?=
- =?us-ascii?Q?qD66g6KDNIDR6yRC0rA3ZczMaQU5EzNPpVPxjSvJNNYBk5Nf1HGUlfgApI+Y?=
- =?us-ascii?Q?PilS0QeQGKuyKmlo4mA+fUpx2WIARp7UVcTvJY4aGgG/6PobDtfYNhGhs/iq?=
- =?us-ascii?Q?PsD/IgNVQ3cc8x7fd+8ntbAmxZgAxWM+2dymuk6+cc4PyWHgaLBUGchM4Z5G?=
- =?us-ascii?Q?ZZh4u1UB8UxpHswbvt2xjekrlVvUPaiziRMvSsA8OSF8lBFbLS+4tFevpUrd?=
- =?us-ascii?Q?iKXWUr8YxnTW0XU6t1O0bAGx9WXNiPj6QEx27GdJShYp+tkI0w7Z0BdJA5Sl?=
- =?us-ascii?Q?e3JRuK1WVo4pskOMLCXlv5KL+xvhyQ1gEXZOD2oZf1ErcTedJWCMAAt6kbPC?=
- =?us-ascii?Q?ZSp2aYo8gXctfVhiTHnSMjBDeR6QIQLgGsEbiNH5oBuR4sx7u33mi3zPDCl6?=
- =?us-ascii?Q?J9/3bltQ2fUkydTBsmoDIx6/+gGxEx+k+Up6O9QwX0c1prFxDORtek8fBDEC?=
- =?us-ascii?Q?XyNDzmi3QYqCtWjnIwYi1pUShe7d6BlgLNWCM1KloQZPGYtX+qgwdTA/gLXK?=
- =?us-ascii?Q?5ezM2jHO/2OnJGiXU7wOp7fWam2xRxblwDlK397eOOQSxtIVyIOmADplXXmX?=
- =?us-ascii?Q?nFol7O6ZBfNqShxzFt5GpxBBErx6yk3uay2rH5DOp3g67SULEetd5BJQxdqb?=
- =?us-ascii?Q?sPpStQqYIypK06AWtrtyKx5e/ej9gIFVQSKVfrVWfylF4CEgKYP2lnVu/7YC?=
- =?us-ascii?Q?TQXjoDfb8c3cnhfWGFjJuwCMI2kWYv+Qczmv9NPZSD+QupF9oD6tWwKy+18x?=
- =?us-ascii?Q?tyMa0Gsswucdcx3d1R9ivZhfnHsp2kA81giOuU12XtcaBiXngCoyjmwlG7S2?=
- =?us-ascii?Q?pB9Vtffni2vQxsjBeN/qY6CLTicAaBnVZulGprfXcX4jOY+pwtT8ZRbByvxg?=
- =?us-ascii?Q?6s03bwaZpa6XT+Vsjv4LMQIGssDKJNANkuLw4bVaiLikxLtOeryIyJckDrWL?=
- =?us-ascii?Q?ttJOE/uHfGGc/w0jRJmGLxLFb9vCIDSXN/GAP23Xf6JYEUnG8iMIIBhNnORp?=
- =?us-ascii?Q?D7tHv13IIcUMdWuSymmN7nMDEnnnqH/BrIi4tUQOzDVgK12GnbvCP2WPf0a6?=
- =?us-ascii?Q?rTLci+tXt2u1KlBh6vW3tsj5txkRUi4U9s2OJbsInExjulLcUmrQsE/L3UgI?=
- =?us-ascii?Q?kJdAwtR1HcQXx+AIvtXhvVMIab9DCXJKmJMxwS+C5nNhtDu9lPHRj0y8sqsT?=
- =?us-ascii?Q?QY7Rn7u3Oq5qv5HU7t5ezZ2O3ICuy8qJsu5yyZLC/XeYHdCIGS21R9LMofNo?=
- =?us-ascii?Q?UMTbOMllqBVgBshsbdhum7OAFKE+ORaVrclxW+VBzODVcpXwSiAUi8Bo5aRa?=
- =?us-ascii?Q?/xSwkMtjxSlKCIKiVnUf6EwU+ymypOs=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 770f5a91-0e27-49fb-04a9-08da1ca7bc5e
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2022 17:13:17.4240
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JMeRxsk7hrCno3viHlwSEAkppzRalH8NJBc3jNPvxsk9OPAJfw0U6v0FfZGDw5nC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB4792
-X-Proofpoint-ORIG-GUID: Jhy6_aaxOZ6MfTaFgRzo92aHYK9YMs7i
-X-Proofpoint-GUID: Jhy6_aaxOZ6MfTaFgRzo92aHYK9YMs7i
+        Tue, 12 Apr 2022 17:16:40 +0000
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 23CGtBZ4032351;
+        Tue, 12 Apr 2022 17:16:39 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3fdaqkvnga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Apr 2022 17:16:39 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 23CHGM9W015738;
+        Tue, 12 Apr 2022 17:16:36 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 3fb1s8m8tk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Apr 2022 17:16:36 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 23CHGY4426411336
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Apr 2022 17:16:34 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22863A4054;
+        Tue, 12 Apr 2022 17:16:34 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F34A1A4062;
+        Tue, 12 Apr 2022 17:16:30 +0000 (GMT)
+Received: from sig-9-65-64-123.ibm.com (unknown [9.65.64.123])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Apr 2022 17:16:30 +0000 (GMT)
+Message-ID: <6545f8241f3d41dd0f55997bfb85ad0de9f1c3e3.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 RESEND] efi: Do not import certificates from UEFI
+ Secure Boot for T2 Macs
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Aditya Garg <gargaditya08@live.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Orlando Chamberlain <redecorating@protonmail.com>,
+        "admin@kodeit.net" <admin@kodeit.net>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Date:   Tue, 12 Apr 2022 13:16:30 -0400
+In-Reply-To: <590ED76A-EE91-4ED1-B524-BC23419C051E@live.com>
+References: <652C3E9E-CB97-4C70-A961-74AF8AEF9E39@live.com>
+         <94DD0D83-8FDE-4A61-AAF0-09A0175A0D0D@live.com>
+         <590ED76A-EE91-4ED1-B524-BC23419C051E@live.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: YAIrI7YKZQk-OE0GoS9uQU3Mjgf1WVgT
+X-Proofpoint-ORIG-GUID: azcNPx-bwu6g0GOenyLWoALybZvGeW3a
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-04-12_06,2022-04-12_02,2022-02-23_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 spamscore=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2204120081
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 08:28:07AM +0200, KP Singh wrote:
-> On Wed, Apr 6, 2022 at 5:44 PM KP Singh <kpsingh@kernel.org> wrote:
-> >
-> > On Tue, Apr 5, 2022 at 10:38 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Tue, Apr 05, 2022 at 02:04:34AM +0200, KP Singh wrote:
-> > > > > >>> Either way, how frequently is call_rcu_tasks_trace() being invoked in
-> > > > > >>> your setup?  If it is being invoked frequently, increasing delays would
-> > > > > >>> allow multiple call_rcu_tasks_trace() instances to be served by a single
-> > > > > >>> tasklist scan.
-> > > > > >>>
-> > > > > >>>> Given that, I do not think bpf_sk_storage_free() can/should use
-> > > > > >>>> call_rcu_tasks_trace(),
-> > > > > >>>> we probably will have to fix this soon (or revert from our kernels)
-> > > > > >>>
-> > > > > >>> Well, you are in luck!!!  This commit added call_rcu_tasks_trace() to
-> > > > > >>> bpf_selem_unlink_storage_nolock(), which is invoked in a loop by
-> > > > > >>> bpf_sk_storage_free():
-> > > > > >>>
-> > > > > >>> 0fe4b381a59e ("bpf: Allow bpf_local_storage to be used by sleepable programs")
-> > > > > >>>
-> > > > > >>> This commit was authored by KP Singh, who I am adding on CC.  Or I would
-> > > > > >>> have, except that you beat me to it.  Good show!!!  ;-)
-> > > >
-> > > > Hello :)
-> > > >
-> > > > Martin, if this ends up being an issue we might have to go with the
-> > > > initial proposed approach
-> > > > of marking local storage maps explicitly as sleepable so that not all
-> > > > maps are forced to be
-> > > > synchronized via trace RCU.
-> > > >
-> > > > We can make the verifier reject loading programs that try to use
-> > > > non-sleepable local storage
-> > > > maps in sleepable programs.
-> > > >
-> > > > Do you think this is a feasible approach we can take or do you have
-> > > > other suggestions?
-> > > bpf_sk_storage_free() does not need to use call_rcu_tasks_trace().
-> > > The same should go for the bpf_{task,inode}_storage_free().
-> > > The sk at this point is being destroyed.  No bpf prog (sleepable or not)
-> > > can have a hold on this sk.  The only storage reader left is from
-> > > bpf_local_storage_map_free() which is under rcu_read_lock(),
-> > > so a 'kfree_rcu(selem, rcu)' is enough.
-> > > A few lines below in bpf_sk_storage_free(), 'kfree_rcu(sk_storage, rcu)'
-> > > is currently used instead of call_rcu_tasks_trace() for the same reason.
-> > >
-> > > KP, if the above makes sense, can you make a patch for it?
-> > > The bpf_local_storage_map_free() code path also does not need
-> > > call_rcu_tasks_trace(), so may as well change it together.
-> > > The bpf_*_storage_delete() helper and the map_{delete,update}_elem()
-> > > syscall still require the call_rcu_tasks_trace().
-> >
-> > Thanks, I will send a patch.
+On Tue, 2022-04-12 at 16:44 +0000, Aditya Garg wrote:
+> From: Aditya Garg <gargaditya08@live.com>
 > 
-> Martin, does this work? (I can send it as a patch later today)
-LGTM. Thanks.
+> On T2 Macs, the secure boot is handled by the T2 Chip. If enabled, only
+> macOS and Windows are allowed to boot on these machines. Moreover, loading
+> UEFI Secure Boot certificates is not supported on these machines on Linux.
+> An attempt to do so causes a crash with the following logs :-
+> 
+> Call Trace:
+>  <TASK>
+>  page_fault_oops+0x4f/0x2c0
+>  ? search_bpf_extables+0x6b/0x80
+>  ? search_module_extables+0x50/0x80
+>  ? search_exception_tables+0x5b/0x60
+>  kernelmode_fixup_or_oops+0x9e/0x110
+>  __bad_area_nosemaphore+0x155/0x190
+>  bad_area_nosemaphore+0x16/0x20
+>  do_kern_addr_fault+0x8c/0xa0
+>  exc_page_fault+0xd8/0x180
+>  asm_exc_page_fault+0x1e/0x30
+> (Removed some logs from here)
+>  ? __efi_call+0x28/0x30
+>  ? switch_mm+0x20/0x30
+>  ? efi_call_rts+0x19a/0x8e0
+>  ? process_one_work+0x222/0x3f0
+>  ? worker_thread+0x4a/0x3d0
+>  ? kthread+0x17a/0x1a0
+>  ? process_one_work+0x3f0/0x3f0
+>  ? set_kthread_struct+0x40/0x40
+>  ? ret_from_fork+0x22/0x30
+>  </TASK>
+> ---[ end trace 1f82023595a5927f ]---
+> efi: Froze efi_rts_wq and disabled EFI Runtime Services
+> integrity: Couldn't get size: 0x8000000000000015
+> integrity: MODSIGN: Couldn't get UEFI db list
+> efi: EFI Runtime Services are disabled!
+> integrity: Couldn't get size: 0x8000000000000015
+> integrity: Couldn't get UEFI dbx list
+> integrity: Couldn't get size: 0x8000000000000015
+> integrity: Couldn't get mokx list
+> integrity: Couldn't get size: 0x80000000
+> 
+> As a result of not being able to read or load certificates, secure boot
+> cannot be enabled. This patch prevents querying of these UEFI variables,
+> since these Macs seem to use a non-standard EFI hardware.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Aditya Garg <gargaditya08@live.com>
+> ---
+> v2 :- Reduce code size of the table.
+> v3 :- Close the brackets which were left open by mistake.
+> v4 :- Fix comment style issues, remove blank spaces and limit use of dmi_first_match()
+> v4 RESEND :- Add stable to cc
+>  .../platform_certs/keyring_handler.h          |  8 +++++
+>  security/integrity/platform_certs/load_uefi.c | 35 +++++++++++++++++++
+>  2 files changed, 43 insertions(+)
+> 
+> diff --git a/security/integrity/platform_certs/keyring_handler.h b/security/integrity/platform_certs/keyring_handler.h
+> index 284558f30..212d894a8 100644
+> --- a/security/integrity/platform_certs/keyring_handler.h
+> +++ b/security/integrity/platform_certs/keyring_handler.h
+> @@ -35,3 +35,11 @@ efi_element_handler_t get_handler_for_mok(const efi_guid_t *sig_type);
+>  efi_element_handler_t get_handler_for_dbx(const efi_guid_t *sig_type);
+>  
+>  #endif
+> +
+> +#ifndef UEFI_QUIRK_SKIP_CERT
+> +#define UEFI_QUIRK_SKIP_CERT(vendor, product) \
+> +		 .matches = { \
+> +			DMI_MATCH(DMI_BOARD_VENDOR, vendor), \
+> +			DMI_MATCH(DMI_PRODUCT_NAME, product), \
+> +		},
+> +#endif
+> diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
+> index 5f45c3c07..c3393b2b1 100644
+> --- a/security/integrity/platform_certs/load_uefi.c
+> +++ b/security/integrity/platform_certs/load_uefi.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/sched.h>
+>  #include <linux/cred.h>
+> +#include <linux/dmi.h>
+>  #include <linux/err.h>
+>  #include <linux/efi.h>
+>  #include <linux/slab.h>
+> @@ -12,6 +13,33 @@
+>  #include "../integrity.h"
+>  #include "keyring_handler.h"
+>  
+> +/*
+> + * Apple Macs with T2 Security chip seem to be using a non standard
+> + * implementation of Secure Boot. For Linux to run on these machines
+> + * Secure Boot needs to be turned off, since the T2 Chip manages
+> + * Secure Boot and doesn't allow OS other than macOS or Windows to
+> + * boot. If turned off, an attempt to get certificates causes a crash,
+> + * so we simply prevent doing the same.
+> + */
+
+Both the comment here and the patch description above still needs to be
+improved.  Perhaps something along these lines.
+
+Secure boot on Apple Macs with a T2 Security chip cannot read either
+the EFI variables or the certificates stored in different db's (e.g.
+db, dbx, MokListXRT).  Attempting to read them causes ...   
+
+Avoid reading the EFI variables or the certificates stored in different
+dbs.  As a result, without certificates secure boot signature
+verification fails.
+
+thanks,
+
+Mimi
+
+
+> +static const struct dmi_system_id uefi_skip_cert[] = {
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro15,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro15,2") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro15,3") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro15,4") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro16,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro16,2") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro16,3") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro16,4") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookAir8,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookAir8,2") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookAir9,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacMini8,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacPro7,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "iMac20,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "iMac20,2") },
+> +	{ }
+> +};
+> +
+>  /*
+>   * Look to see if a UEFI variable called MokIgnoreDB exists and return true if
+>   * it does.
+> @@ -138,6 +166,13 @@ static int __init load_uefi_certs(void)
+>  	unsigned long dbsize = 0, dbxsize = 0, mokxsize = 0;
+>  	efi_status_t status;
+>  	int rc = 0;
+> +	const struct dmi_system_id *dmi_id;
+> +
+> +	dmi_id = dmi_first_match(uefi_skip_cert);
+> +	if (dmi_id) {
+> +		pr_err("Getting UEFI Secure Boot Certs is not supported on T2 Macs.\n");
+> +		return false;
+> +	}
+>  
+>  	if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE))
+>  		return false;
+
+
