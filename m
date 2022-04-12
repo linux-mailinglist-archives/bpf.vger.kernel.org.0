@@ -2,79 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1895A4FE510
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 17:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07614FE57A
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 17:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357247AbiDLPtN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 11:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
+        id S1357456AbiDLQAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 12:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235507AbiDLPtM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 11:49:12 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142C95FF23;
-        Tue, 12 Apr 2022 08:46:54 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id bh17so38149044ejb.8;
-        Tue, 12 Apr 2022 08:46:54 -0700 (PDT)
+        with ESMTP id S1354266AbiDLQAl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 12:00:41 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C427F5C642;
+        Tue, 12 Apr 2022 08:58:20 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id h4so5557657ilq.8;
+        Tue, 12 Apr 2022 08:58:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gwZ9CHvYhZZ9147CrVLA+yjNadbJUhOCmSfrIzjUHWg=;
-        b=P+vpgkwx8MjQx+ycKCwc6BgaPi7uKHrw/x7OkuGiydyZW8GRegFWgWZSktFmeoBJHl
-         y+XpOHd0TvosGRU4ZnFkTGFcBmh+NoISJ6JkQxso/rBSxn+3A/uBJ6rwxHCD/sS/jcCU
-         V/MOKfTg6mg4jZKkI3fObyPuXVaFZyRRRBEormnhQIJyM6SpwLoktBhfVkPFcwl2kdSQ
-         lVZ16fap4LpHCqNGCzRpLJJ71IBEQWfqdN5T0C+bu1q97QhmnkekHEQzPXcVXzZwoe8s
-         Q6Xm9UGV6eWFo5EXc5fHt7AyvMQ8VpGosW/MIjaFK7Gb5nSyp6Qrx1wzhMsgf8wn3XJk
-         Q/qQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RNQurpwxbSDB/GNvCzbmKeS9pihN4PulfOu76DM56U0=;
+        b=hfUuDSUM1HmeElzHTjmqNg8yECgIBWMKYO2tgw6orqHdm2pjE6bnmFmvnBiBBLnUIY
+         63APZnd2B6nRDr9EqfH7Wi0qWtkOnC4KqXUeu7HBCCg7owdrnAIoZbYmwCxzuxodR/XG
+         wMu34I9Tkvlo//uZzZVjhEHgAQxLYm4sR6kid0QwYWh1oS/LWts2e3RL53RTYhHBnrlY
+         ppiG19Va/ZEd1G9y8+7q9ThgA1bFVcE78ChrRokDnar6yHnrDiobPdnz+q+2vOCNJi/j
+         TxUT/MOh6IC/z1GYhyPfNtoHbNQCsyukqgO5+x9cP4UCpL+YVWWHGAyfn36/IS5qucie
+         WOMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gwZ9CHvYhZZ9147CrVLA+yjNadbJUhOCmSfrIzjUHWg=;
-        b=WkYucC9JGgbHucWxvG93IsLEOMIz3vTrSINBkKis3O+6KmtCNy1hh0lUytuVNzmrtE
-         14dN/JLcJvJd5pQ/bLvf9GAr2K5eOJF7e/hvYuCvfZopQoabuea0k0Z0vI9Wj+rfzEJv
-         hIKUffmQumMu47R3YyJ0P6ppLH6DyJAnV+DU16vLdJwbI2sphP41kMaTYFxVtlLNb/Jq
-         AQazSEP7oyl9FOshdjRoIDxVuMExALMFwcCiryXd4sUhajIF6nQX3FlbxedXuXwNdJGr
-         Ugir7gKl7ZCYMfwdyAI29Mf87g/GxeoQKW773G+6aW6jFZoGXIlSxo4tTwjSHOxea46X
-         GVfQ==
-X-Gm-Message-State: AOAM532Bf/3Va7SkP7V2tfTiecyVuBY7Z7QxK7aejftrc0p6nLzIXUdU
-        cwvsvcXU2/TB0yCct1LypEw=
-X-Google-Smtp-Source: ABdhPJz0ggnoLW3vkCVf9b6N6Oatr4EM1jR37FXRi8Iw3QENChkAGly44hf54w3k/WSzhNIqvsrpaw==
-X-Received: by 2002:a17:907:160b:b0:6e8:58c1:8850 with SMTP id hb11-20020a170907160b00b006e858c18850mr15415064ejc.284.1649778412502;
-        Tue, 12 Apr 2022 08:46:52 -0700 (PDT)
-Received: from krava ([83.240.62.142])
-        by smtp.gmail.com with ESMTPSA id s11-20020a170906284b00b006e108693850sm13214817ejc.28.2022.04.12.08.46.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Apr 2022 08:46:52 -0700 (PDT)
-Date:   Tue, 12 Apr 2022 17:46:49 +0200
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC bpf-next 0/4] bpf: Speed up symbol resolving in kprobe
- multi link
-Message-ID: <YlWe6U7qSsFA7DYK@krava>
-References: <20220407125224.310255-1-jolsa@kernel.org>
- <20220408232922.mz2vi2oaxf2fvnvt@MBP-98dd607d3435.dhcp.thefacebook.com>
- <YlHrdhkfz+IuGbZM@krava>
- <CAEf4BzYXHeM+m64cV6_5TU0_BjotDVo+iw_wpJEWLkU9gsvfXg@mail.gmail.com>
- <CAADnVQLQj-ixQo5xEJEZaJavoNpVdhizDmkqFm+pDJq97_Ecpw@mail.gmail.com>
- <CAEf4BzbV2PObd26scnTfQ8C1508k=z4cc7mvPS5BAc+9sXhVVg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RNQurpwxbSDB/GNvCzbmKeS9pihN4PulfOu76DM56U0=;
+        b=vKT9duTIhSIN2s4t699hGTrfFN31zxsABYNuuJTh+OKuT/tRWm+BoC7m60KsWdj1M8
+         aBX01JsQyaiEzaoHrmv36WytKy/Jl1wsqQmK2wJv4maMqIvnSyiPiR4jd+FrNhju2kUx
+         diCKdR15D4C1mW4rXOaYDNxKRVaF5tNs66SOEZZE6ToHHxPUKHOM8tlV0mAFSUW1BPJh
+         hpYyhpPCvwfZvvxlijZwFhM/AuX6vVuJ2xil0ETovJ8CCl7eV6JcgRvFfvHBl8Thn5v5
+         Z0AgdpvNPCqAufZZtnfVUABQ4a9DEdJSlbEwdmCWUq9Lwl58uO/dqUM2I/bfn9D0RSZB
+         HVwQ==
+X-Gm-Message-State: AOAM531dnuzxBfyfRZUAWVhqXn5fZ/kxX2Qbo7u++dF5id5qV9dvL9en
+        cMGsPCfLu5Pmowm+mHTa4UirwMad4a3JLAJgQ4Q=
+X-Google-Smtp-Source: ABdhPJxbAXF/WsPH07smVA7+Wx9lrm5oWtBWjRMHZN8Cb8yL0AoL6xNsLkjrlwKfwh+UcvWUU226qk3bdpDJXqf/2RY=
+X-Received: by 2002:a92:cdad:0:b0:2c6:7b76:a086 with SMTP id
+ g13-20020a92cdad000000b002c67b76a086mr16973527ild.5.1649779099710; Tue, 12
+ Apr 2022 08:58:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbV2PObd26scnTfQ8C1508k=z4cc7mvPS5BAc+9sXhVVg@mail.gmail.com>
+References: <20220412153906.428179-1-mic@digikod.net>
+In-Reply-To: <20220412153906.428179-1-mic@digikod.net>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 12 Apr 2022 17:58:08 +0200
+Message-ID: <CANiq72=ogSxwz8iJLZaYD4nSkE71sBhT4dZyDv1HYyo5R43=pw@mail.gmail.com>
+Subject: Re: [PATCH v1] clang-format: Update and extend the for_each list with tools/
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, bpf <bpf@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -85,81 +69,17 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 03:21:49PM -0700, Andrii Nakryiko wrote:
-> On Mon, Apr 11, 2022 at 3:18 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Apr 11, 2022 at 10:15 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sat, Apr 9, 2022 at 1:24 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > >
-> > > > On Fri, Apr 08, 2022 at 04:29:22PM -0700, Alexei Starovoitov wrote:
-> > > > > On Thu, Apr 07, 2022 at 02:52:20PM +0200, Jiri Olsa wrote:
-> > > > > > hi,
-> > > > > > sending additional fix for symbol resolving in kprobe multi link
-> > > > > > requested by Alexei and Andrii [1].
-> > > > > >
-> > > > > > This speeds up bpftrace kprobe attachment, when using pure symbols
-> > > > > > (3344 symbols) to attach:
-> > > > > >
-> > > > > > Before:
-> > > > > >
-> > > > > >   # perf stat -r 5 -e cycles ./src/bpftrace -e 'kprobe:x* {  } i:ms:1 { exit(); }'
-> > > > > >   ...
-> > > > > >   6.5681 +- 0.0225 seconds time elapsed  ( +-  0.34% )
-> > > > > >
-> > > > > > After:
-> > > > > >
-> > > > > >   # perf stat -r 5 -e cycles ./src/bpftrace -e 'kprobe:x* {  } i:ms:1 { exit(); }'
-> > > > > >   ...
-> > > > > >   0.5661 +- 0.0275 seconds time elapsed  ( +-  4.85% )
-> > > > > >
-> > > > > >
-> > > > > > There are 2 reasons I'm sending this as RFC though..
-> > > > > >
-> > > > > >   - I added test that meassures attachment speed on all possible functions
-> > > > > >     from available_filter_functions, which is 48712 functions on my setup.
-> > > > > >     The attach/detach speed for that is under 2 seconds and the test will
-> > > > > >     fail if it's bigger than that.. which might fail on different setups
-> > > > > >     or loaded machine.. I'm not sure what's the best solution yet, separate
-> > > > > >     bench application perhaps?
-> > > > >
-> > > > > are you saying there is a bug in the code that you're still debugging?
-> > > > > or just worried about time?
-> > > >
-> > > > just the time, I can make the test fail (cross the 2 seconds limit)
-> > > > when the machine is loaded, like with running kernel build
-> > > >
-> > > > but I couldn't reproduce this with just paralel test_progs run
-> > > >
-> > > > >
-> > > > > I think it's better for it to be a part of selftest.
-> > > > > CI will take extra 2 seconds to run.
-> > > > > That's fine. It's a good stress test.
-> > >
-> > > I agree it's a good stress test, but I disagree on adding it as a
-> > > selftests. The speed will depend on actual host machine. In VMs it
-> > > will be slower, on busier machines it will be slower, etc. Generally,
-> > > depending on some specific timing just causes unnecessary maintenance
-> > > headaches. We can have this as a benchmark, if someone things it's
-> > > very important. I'm impartial to having this regularly executed as
-> > > it's extremely unlikely that we'll accidentally regress from NlogN
-> > > back to N^2. And if there is some X% slowdown such selftest is
-> > > unlikely to alarm us anyways. Sporadic failures will annoy us way
-> > > before that to the point of blacklisting this selftests in CI at the
-> > > very least.
-> >
-> > Such selftest shouldn't be measuring the speed, of course.
-> > The selftest will be about:
-> > 1. not crashing
-> > 2. succeeding to attach and getting some meaningful data back.
-> 
-> Yeah, that's totally fine with me. My biggest beef is using time as a
-> measure of test success, which will be flaky. Just a slow-ish test
-> doing a lot of work sounds totally fine.
+Hi Micka=C3=ABl,
 
-ok, I'll remove the 2 seconds check
+On Tue, Apr 12, 2022 at 5:39 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
+wrote:
+>
+> Add tools/ to the shell fragment generating the for_each list and update
+> it.  This is useful to format files in the tools directory (e.g.
+> selftests) with the same coding style as the kernel.
 
-thanks,
-jirka
+Sounds good to me. There have been discussions about doing it for the
+entire tree too, so we can start with this.
+
+Cheers,
+Miguel
