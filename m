@@ -2,148 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EF44FD54F
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 12:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3CF4FDA0F
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 12:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358878AbiDLIcV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 04:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
+        id S1358903AbiDLIcX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 04:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357567AbiDLHka (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 03:40:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70E0A3055A
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 00:16:04 -0700 (PDT)
+        with ESMTP id S1358333AbiDLHlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 03:41:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0FDF34738E
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 00:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1649747763;
+        s=mimecast20190719; t=1649747867;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WVzkj+bZmYlT5FAR8tqeVhbuQLiJC56RxAwusezhQ84=;
-        b=Ipj5ds9Utagz21lJ3xj664pkZLGXcShNWfs2unJjKlJJ2/t39e50wjxGiKT5aNxSmCugFN
-        8K91I42SlcGvPJbB6iyJDuPrxMYP1FYi+kSkBJ1/K/MNRiit0xNapO3BcgRq0fEQGqLyWL
-        ftME8HOM1EjNAtD1pGpcIdHAFEeHEk0=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=v5sAnr3icD6MJyBK8faFE8hOzFd8d3uIsnWyEnC7YcA=;
+        b=aBkiayHzeOH+SGeMnkGXB3FeterqOOsN6M4+HWsZclFHGDtX1Y1k/Z1YeckG5G6+CpWfA2
+        n51dQZrOoehZddX15bberASfYZOqA4BRfBYzqxyZHnkWR72GJuiSpAVVTHYQRK1HZvOlth
+        kwWa2F2lShV8w0kudeM4X2pdFPgMBMs=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-324-vs4S_ziFPr6JWHVyKV73bg-1; Tue, 12 Apr 2022 03:16:00 -0400
-X-MC-Unique: vs4S_ziFPr6JWHVyKV73bg-1
-Received: by mail-pj1-f70.google.com with SMTP id u4-20020a17090a5e4400b001cba059a4fbso1080825pji.7
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 00:16:00 -0700 (PDT)
+ us-mta-321-a6eOISFDPoqX2HMsNDgobQ-1; Tue, 12 Apr 2022 03:17:45 -0400
+X-MC-Unique: a6eOISFDPoqX2HMsNDgobQ-1
+Received: by mail-qk1-f197.google.com with SMTP id de26-20020a05620a371a00b00699f7065b5cso9072172qkb.5
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 00:17:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=WVzkj+bZmYlT5FAR8tqeVhbuQLiJC56RxAwusezhQ84=;
-        b=IPA/CfqJg1lGGJlUe4exHoqLBnLHmJhlmkukh1Rg9aizn3lEJs7XVax5CNRfU7LByM
-         J4LgnDGT8q+EiAJGcwF3vAdYqF8lpfVsoAFiEKQBw7C5r8I5Bp1TKCn8rm3YL5pax3a4
-         PeblJYCez4N6aga8Wv5ilMMdOI5oiBhFdIVGRJwWPTvwoLgC1M3KhO99Mmh91Up7cPjI
-         /b5H2kYfwjF1H9xHa6sp+8yEu3EY/8MWuRZUJqy11mBWEyX6DKIP0IbKI/9Usm97F++T
-         /I5Uk1Z0mSkFaPS9r2lEL9x6Mg+kxGkEjG74cwyeE/hdxU8uq2Z6ZwQHdtD51UOn+TYK
-         p+rg==
-X-Gm-Message-State: AOAM533hqDBrEhAF/WVrxsPUKPMM12aibT8v2pX5QKOp8Cee+BS+VLJV
-        SrZPJVnS2Vh0NhEVCjvUL+PtMLbg/g1xpFHQgKHTPCIJu7x7wHEbVap8r4ptvxap194CUGuCgFS
-        kiAK4TdmPFMt5
-X-Received: by 2002:a17:902:6b89:b0:154:623c:9517 with SMTP id p9-20020a1709026b8900b00154623c9517mr35687015plk.45.1649747759848;
-        Tue, 12 Apr 2022 00:15:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7Spm6ydmB4c+gNo+WzpTpSsuGx/B9P8qij+KvJBZZhrNiJwtOL5scK9AARgGePEjvxDGr1g==
-X-Received: by 2002:a17:902:6b89:b0:154:623c:9517 with SMTP id p9-20020a1709026b8900b00154623c9517mr35687003plk.45.1649747759617;
-        Tue, 12 Apr 2022 00:15:59 -0700 (PDT)
-Received: from [10.72.14.5] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y15-20020a17090a1f4f00b001c7ecaf9e13sm1705890pjy.35.2022.04.12.00.15.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Apr 2022 00:15:59 -0700 (PDT)
-Message-ID: <ccd0fd5d-389a-70e9-ae48-406514e383d6@redhat.com>
-Date:   Tue, 12 Apr 2022 15:15:44 +0800
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=v5sAnr3icD6MJyBK8faFE8hOzFd8d3uIsnWyEnC7YcA=;
+        b=P6Xj3o9Y8sOA5j30AtrYk+FWBOcGP/R3Dn6g1Fm87L1b52oa0N96nFIkBoq7DSECt2
+         WZ630lIZp2QvFV1/ykLBFM+32xcrpHTvCJoj+yw1VMESkYfKmBsggaY8exdkccz0tBRE
+         cze9M3mgWhV5XrkR1f7ftpqlYmEAG+eUJxBx7ZDmVH2g5NAgOK2RgvNhmY52Y4ha6wB7
+         hOsy4ntcH71HZemNXnkT1/kWIwGSpSjJAqlmfITK3YUHKbyWjkrhSbs79Hc30ZAWL7P0
+         LTfbEt5BbJtt91m03bqTkJKEbVgwTCbPh8PMmynieoy4Zn+MtETYUeEnDjbpYvfWWuYd
+         4oqQ==
+X-Gm-Message-State: AOAM531ZUlwq1fQua1IXdAbqpizVnZRbrxps667hLLTC1FtzvMTrMviK
+        2/7fNQEun5dzOnAnUSkBdg5D1K35N1zDC8alDWaU8WEBDzphaoXZdD3D7T/yRxKdz+sYojLPZSq
+        f5bVEt5KhP3dW
+X-Received: by 2002:ad4:434e:0:b0:444:4d8b:dfab with SMTP id q14-20020ad4434e000000b004444d8bdfabmr4736925qvs.60.1649747864852;
+        Tue, 12 Apr 2022 00:17:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRNUgruDRs0RboO+P4hZM/BoQapjUxvCLKJWQyJAME6/ZGboeEgkF7KJcowth+MZlHXRghJQ==
+X-Received: by 2002:ad4:434e:0:b0:444:4d8b:dfab with SMTP id q14-20020ad4434e000000b004444d8bdfabmr4736901qvs.60.1649747864561;
+        Tue, 12 Apr 2022 00:17:44 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-96-237.dyn.eolo.it. [146.241.96.237])
+        by smtp.gmail.com with ESMTPSA id bi29-20020a05620a319d00b0069c3f6adc18sm472304qkb.22.2022.04.12.00.17.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Apr 2022 00:17:44 -0700 (PDT)
+Message-ID: <61717f91f715c757789de0122367a1f494f07407.camel@redhat.com>
+Subject: Re: [PATCH net-next v4 0/3] net: atlantic: Add XDP support
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Taehee Yoo <ap420073@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org, irusskikh@marvell.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        bpf@vger.kernel.org
+Date:   Tue, 12 Apr 2022 09:17:37 +0200
+In-Reply-To: <20220408181714.15354-1-ap420073@gmail.com>
+References: <20220408181714.15354-1-ap420073@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: [PATCH v9 27/32] virtio: add helper virtio_find_vqs_ctx_size()
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-28-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220406034346.74409-28-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, 2022-04-08 at 18:17 +0000, Taehee Yoo wrote:
+> This patchset is to make atlantic to support multi-buffer XDP.
+> 
+> The first patch implement control plane of xdp.
+> The aq_xdp(), callback of .xdp_bpf is added.
+> 
+> The second patch implements data plane of xdp.
+> XDP_TX, XDP_DROP, and XDP_PASS is supported.
+> __aq_ring_xdp_clean() is added to receive and execute xdp program.
+> aq_nic_xmit_xdpf() is added to send packet by XDP.
+> 
+> The third patch implements callback of .ndo_xdp_xmit.
+> aq_xdp_xmit() is added to send redirected packets and it internally
+> calls aq_nic_xmit_xdpf().
+> 
+> Memory model is MEM_TYPE_PAGE_ORDER0 so it doesn't reuse rx page when
+> XDP_TX, XDP_PASS, XDP_REDIRECT.
+> 
+> Default the maximum rx frame size is 2K.
+> If xdp is attached, size is changed to about 3K.
+> It can be reused when XDP_DROP, and XDP_ABORTED.
+> 
+> Atlantic driver has AQ_CFG_RX_PAGEORDER option and it will be always 0
+> if xdp is attached.
+> 
+> LRO will be disabled if XDP program supports only single buffer.
+> 
+> AQC chip supports 32 multi-queues and 8 vectors(irq).
+> There are two options.
+> 1. under 8 cores and maximum 4 tx queues per core.
+> 2. under 4 cores and maximum 8 tx queues per core.
+> 
+> Like other drivers, these tx queues can be used only for XDP_TX,
+> XDP_REDIRECT queue. If so, no tx_lock is needed.
+> But this patchset doesn't use this strategy because getting hardware tx
+> queue index cost is too high.
+> So, tx_lock is used in the aq_nic_xmit_xdpf().
+> 
+> single-core, single queue, 80% cpu utilization.
+> 
+>   30.75%  bpf_prog_xxx_xdp_prog_tx  [k] bpf_prog_xxx_xdp_prog_tx
+>   10.35%  [kernel]                  [k] aq_hw_read_reg <---------- here
+>    4.38%  [kernel]                  [k] get_page_from_freelist
+> 
+> single-core, 8 queues, 100% cpu utilization, half PPS.
+> 
+>   45.56%  [kernel]                  [k] aq_hw_read_reg <---------- here
+>   17.58%  bpf_prog_xxx_xdp_prog_tx  [k] bpf_prog_xxx_xdp_prog_tx
+>    4.72%  [kernel]                  [k] hw_atl_b0_hw_ring_rx_receive
+> 
+> Performance result(64 Byte)
+> 1. XDP_TX
+>   a. xdp_geieric, single core
+>     - 2.5Mpps, 100% cpu
+>   b. xdp_driver, single core
+>     - 4.5Mpps, 80% cpu
+>   c. xdp_generic, 8 core(hyper thread)
+>     - 6.3Mpps, 5~10% cpu
+>   d. xdp_driver, 8 core(hyper thread)
+>     - 6.3Mpps, 5% cpu
+> 
+> 2. XDP_REDIRECT
+>   a. xdp_generic, single core
+>     - 2.3Mpps
+>   b. xdp_driver, single core
+>     - 4.5Mpps
+> 
+> v4:
+>  - Fix compile warning
+> 
+> v3:
+>  - Change wrong PPS performance result 40% -> 80% in single
+>    core(Intel i3-12100)
+>  - Separate aq_nic_map_xdp() from aq_nic_map_skb()
+>  - Drop multi buffer packets if single buffer XDP is attached
+>  - Disable LRO when single buffer XDP is attached
+>  - Use xdp_get_{frame/buff}_len()
+> 
+> v2:
+>  - Do not use inline in C file
+> 
+> Taehee Yoo (3):
+>   net: atlantic: Implement xdp control plane
+>   net: atlantic: Implement xdp data plane
+>   net: atlantic: Implement .ndo_xdp_xmit handler
+> 
+>  .../net/ethernet/aquantia/atlantic/aq_cfg.h   |   1 +
+>  .../ethernet/aquantia/atlantic/aq_ethtool.c   |   8 +
+>  .../net/ethernet/aquantia/atlantic/aq_main.c  |  87 ++++
+>  .../net/ethernet/aquantia/atlantic/aq_main.h  |   2 +
+>  .../net/ethernet/aquantia/atlantic/aq_nic.c   | 137 ++++++
+>  .../net/ethernet/aquantia/atlantic/aq_nic.h   |   5 +
+>  .../net/ethernet/aquantia/atlantic/aq_ring.c  | 415 ++++++++++++++++--
+>  .../net/ethernet/aquantia/atlantic/aq_ring.h  |  17 +
+>  .../net/ethernet/aquantia/atlantic/aq_vec.c   |  23 +-
+>  .../net/ethernet/aquantia/atlantic/aq_vec.h   |   6 +
+>  .../aquantia/atlantic/hw_atl/hw_atl_a0.c      |   6 +-
+>  .../aquantia/atlantic/hw_atl/hw_atl_b0.c      |  10 +-
+>  12 files changed, 675 insertions(+), 42 deletions(-)
+> 
+@Igor: this should address you concerns on v2, could you please have a
+look?
 
-在 2022/4/6 上午11:43, Xuan Zhuo 写道:
-> Introduce helper virtio_find_vqs_ctx_size() to call find_vqs and specify
-> the maximum size of each vq ring.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Thanks!
 
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   include/linux/virtio_config.h | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
->
-> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> index 0f7def7ddfd2..22e29c926946 100644
-> --- a/include/linux/virtio_config.h
-> +++ b/include/linux/virtio_config.h
-> @@ -235,6 +235,18 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
->   				      ctx, desc);
->   }
->   
-> +static inline
-> +int virtio_find_vqs_ctx_size(struct virtio_device *vdev, u32 nvqs,
-> +				 struct virtqueue *vqs[],
-> +				 vq_callback_t *callbacks[],
-> +				 const char * const names[],
-> +				 u32 sizes[],
-> +				 const bool *ctx, struct irq_affinity *desc)
-> +{
-> +	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, sizes,
-> +				      ctx, desc);
-> +}
-> +
->   /**
->    * virtio_device_ready - enable vq use in probe function
->    * @vdev: the device
+Paolo
 
