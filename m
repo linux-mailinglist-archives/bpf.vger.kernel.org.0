@@ -2,536 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70D74FE50F
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 17:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3014FE4FD
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 17:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbiDLPtF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 11:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        id S1357219AbiDLPnl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 11:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235507AbiDLPtD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 11:49:03 -0400
-X-Greylist: delayed 456 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Apr 2022 08:46:44 PDT
-Received: from smtp-bc0a.mail.infomaniak.ch (smtp-bc0a.mail.infomaniak.ch [IPv6:2001:1600:4:17::bc0a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435845FF23
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 08:46:43 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Kd8yw116XzMq0T9;
-        Tue, 12 Apr 2022 17:39:04 +0200 (CEST)
-Received: from localhost (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Kd8yv4Pg7zljsTG;
-        Tue, 12 Apr 2022 17:39:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1649777944;
-        bh=T9EzhZj8L15jGeYq4Rr+8Dm4KXUloknCIwGkR8G455o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GlmfGV2gZX9pWV3fBlcDFCl7WvY5TAg/mvlek/yeHbpbnI+uNnlCvVx5fs30MiE0Y
-         gVS2t3pbBfIP8K8/mrpdp314OVMWsn0dpmHmR2x3tOf4t9eAf9jous+aBpptdkJTz9
-         SJ9beTxFzvwt+JCpuMVCb6h5sw3ndNSPSslVnzKM=
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH v1] clang-format: Update and extend the for_each list with tools/
-Date:   Tue, 12 Apr 2022 17:39:06 +0200
-Message-Id: <20220412153906.428179-1-mic@digikod.net>
+        with ESMTP id S1357237AbiDLPnh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 11:43:37 -0400
+Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2021.outbound.protection.outlook.com [40.92.103.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF0B5FF13;
+        Tue, 12 Apr 2022 08:41:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JtZKCqqvUuLvv65WqWtgzMJvMGk3n0isZwtmnhgAqTXSa81PzgD2m4v75B9jo/GCfvcIjy8lP/ufL871d5i5ouXC/+EOqf0uzTNyvXnk9xTU8Qgew/pi0C1pTs27j3r9AipYHxuHV+Plxy8yBApmrBU+p7oSA1lFWX9tpA5PBgEQLYgDhBw7//KHyQFejOMXLYNoJsLejDyNP42L0OOUrv9Y5l461am4zz4xFrehA37HyuW14ZQJj67t+pXj+P/kWQ7m6R9KooW0vaWTTJj3GCtj55pdOOBp3k1kX/ysKvz4a8G0ZNOR0ZSE2cjX2JEO3GNpB/hszvplppB+/nmESw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KuQRX/VWoXqUGB7VSQQfjP33Oxon6iygtfAa2a4moQQ=;
+ b=FQvj5MkypB29nw8ZfsZSEloIxHYzISzKl4fkYLRaBdCX8pqcaFCoWk4UVw2F2rHKDL610jdnuy3Y8NNa/cwYO2LCWWrPXK/tM3Fb63gLjuIZTC6JbDZ/l8e4/i3GyXOhEko8Pqll3RbL1hTe3sckZmJj6LYfYgM7AezZ4jVtSFxRips3ndUHThT7ydmty4oIAuQYe6fuV285sEh4Llio91UAoO1/Bbq/BG4yv35x59mNNRiDaRj21UL5nDMJ0Fh9pwHVDX4FmCofl7tcZbaC18I3SDc0uiz9oRYjPM+1Kp3PS4cqQDrkKv9CxwsrwuRgk7R4ur5AZI72Bd1ThRftyA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=live.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KuQRX/VWoXqUGB7VSQQfjP33Oxon6iygtfAa2a4moQQ=;
+ b=or1h7M6utVZVsJLxrZNFzGAgMyFeTKJkYy+xWsHUJOWQHGobWewl7l+ga0qyQRdLmjR50BvRAi62SzkaqKLFFseaKc41I7aPf/B1CS+S5MYtTNeiRQExyzPESitDpr9/BrtE7CdKOGrU7y9eVNiNa7BBTeuR1blclTu0IkDhe+NcgXsHwHWfpKmKoc7QKiqpn/tg2UvbtxOPTz7JAW6g1m8DOSevQxV/4fLzfwnDp3x2ofCOGpH5l87ZWHAkK9zHq3x0ywubOmjRG0lGdFXa1xOLhEKEYyTOAJBpkV7gXyaYs4YopjhduxTAch5m90YtvXT5GalQSsOuFHa+lSpm8A==
+Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:1b::13)
+ by BM1PR01MB1028.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:6::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.27; Tue, 12 Apr
+ 2022 15:40:58 +0000
+Received: from PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::dc4b:b757:214c:22cd]) by PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::dc4b:b757:214c:22cd%7]) with mapi id 15.20.5144.030; Tue, 12 Apr 2022
+ 15:40:57 +0000
+From:   Aditya Garg <gargaditya08@live.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+CC:     "jarkko@kernel.org" <jarkko@kernel.org>,
+        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Orlando Chamberlain <redecorating@protonmail.com>,
+        "admin@kodeit.net" <admin@kodeit.net>
+Subject: Re: [PATCH v3 RESEND] efi: Do not import certificates from UEFI
+ Secure Boot for T2 Macs
+Thread-Topic: [PATCH v3 RESEND] efi: Do not import certificates from UEFI
+ Secure Boot for T2 Macs
+Thread-Index: AQHYTMiulSPMjZZGmkKiAUWUNy3DFqzsOTYAgAAcO4CAABDTAIAAB42A
+Date:   Tue, 12 Apr 2022 15:40:57 +0000
+Message-ID: <E12D97B8-C609-4AA7-92E7-CE2A952089CD@live.com>
+References: <652C3E9E-CB97-4C70-A961-74AF8AEF9E39@live.com>
+ <f55551188f2a17a7a5da54ea4a38bfbae938a62f.camel@linux.ibm.com>
+ <B857EF0F-23D7-4B82-8A1E-7480C19C9AC5@live.com>
+ <2913e2998892833d4bc7d866b99dcd9bd234e82e.camel@linux.ibm.com>
+In-Reply-To: <2913e2998892833d4bc7d866b99dcd9bd234e82e.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:  [0f5Equ0CFiBDOzFHh8VSgw3dnYGmFBs+]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e6a597f3-bf94-4af8-c847-08da1c9ad675
+x-ms-traffictypediagnostic: BM1PR01MB1028:EE_
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OsjYO3ezWzGbb3Q5n/yKXNmXuaYHAlsemuekZvGaMRsnkeshL8i8T+AlI1w9Qm08UvbG68/yU3oDuYXkQ6gK8oFVbw2HCntCSb112MjUHCGulWhjjrGG6B/yTsKE3nSOhtIysWsBovsKOfHSyrGbYkvbOjo3SrBHn2jHPohdASlWsPvUW5QipzCPOUjjmrXqb99dmmidHtTNvigVz1ZPelHWHNpmDcjrHU6QieqCw5RkdjXocbY4iyvFJ1KjES3sTTsROPUGVlWTCITKhaqpYgZx3Hy5U0JJLqnHP5ZKv/lLdORRLfNyg3l1F7plLnaCed7bUwqWG+d3SAqL0sPJDOJU5V5UuHaAr/0ZQaKy6oR4yLucl3wpjzs7G4QbUz4N5SIX8S4KLCyQlQt39z3Xqj5dqjbyXHMlM6s+e/Uc0DFkRJAZHcIzK/7LvTrlEikSUQPrstDXfmeXI3nIj1s8nN4DAwi0283WYHzwDAct6Icq7WwgCJ8ayoqZlokpZFVXhBPlAFN6sQYymd5kPaYZR+IjHUrlxYYOXHmeXRbYj236gcSJ6j0GcpOl4EY9ewkmUujiJSmeg7tJ2EAWBcGiLQ==
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YVpKSm1kZkRJc2dWVTJDd0JkNWdDcy9STkkwOHl2dmdqVTBZcjhjYlhpV1lj?=
+ =?utf-8?B?eUtkdDBMVXlRUFFHT0tLdU5VT0NHdXRscUJ6Q1R5bmJ5SCtzQnRKS0tKTFQ4?=
+ =?utf-8?B?YUlIejA0VERHWm1qdTZrUnh0N2lYVUQ2N2tsN1ZNNzh1UHRzQUYzZ3FubkpE?=
+ =?utf-8?B?MEVRVldCRHdmaXZXSWRtK0Z1ZUJRbzVqWlV1djVXd0Z3a0tZZWU5aThMVGM4?=
+ =?utf-8?B?WFc2MlRmY0ZmRDFwMXp0OWhjVlJjK2FJNVp4TnFxVkNqUENNMTZaVGxVM1ov?=
+ =?utf-8?B?RXA1dGMvaHRxUUhBejRRVjFiR0tod2lNQXR4dFF5SG4yNEFDMW1DNjF5NWM3?=
+ =?utf-8?B?N2RCY1hVeDAyT1NXc1BBc1l1NFNHTFZWNjBmMUUxKzcxRVMrU3BWend6N2NM?=
+ =?utf-8?B?aG1ZNG9ZQ25saXVEdTIvdldxQ2NlbmZXQ3Erc01uZEsyUmNSVXR4ZE1TbGg4?=
+ =?utf-8?B?QzlqWnkrMnBjNXA1andLbUVzZzF1T2xwaHU2VnU5N1YvK1ZVV3ZiNk1ONlpI?=
+ =?utf-8?B?TFRlS3FxRGRuL3l6K3BqL1BxR1NyZ1JWd1lHa01Kam1uWjV2NDFtTHNuZ0ls?=
+ =?utf-8?B?U0l5N05BUmZXckdTaWc3d21sYUVBZCtRd1RUUWZyc09FenF0WVdRbVZVQ2Rn?=
+ =?utf-8?B?SEkzTkpSK1ZpbFNyOTZpa3VzQ3FKNTQxeFgrVk55TnBNR05HUjdqaXFaRW5u?=
+ =?utf-8?B?Q1lwTTNDb2dzemdRTTUwZGoxUHZjSDFmdGZ1c1ArRTBiL0NDelBhTEdKRVNh?=
+ =?utf-8?B?cklGT3F6Ri85b0NrZGQxSEU5QlBmVUVrM3VZRUpJYU9yYm9BZHZCMzU3Q2lD?=
+ =?utf-8?B?M085ekNmbU1BU0gzclhOVlVjQ3JjeHIxc0lYQ0hjWW01UjFHbDVzTnZkWHBS?=
+ =?utf-8?B?Mm5oWUk1Q3pQa0lMNlBmUGdmUTROUUFNYmpsU2VxdFA1dU9qQzErNzJYMGo0?=
+ =?utf-8?B?QXBxaDJXK05tNEo0ODJISFR3Skw4eHl4TktmajA5TFpNUXBSVFFjTmNIb09v?=
+ =?utf-8?B?c3h3R1lyQm5TTEpBTGlKZTZqakRQUHFaMU8zb3lUSFhiVVFqTU1LNmF5Q0ox?=
+ =?utf-8?B?NXh3Qms0enhBSnN2WkxMdXJWdXZaV0JqKzE1bm1tY2xjcHZ0cmZDNW1uQk95?=
+ =?utf-8?B?cWczenZsTXBITVpyQzhna3RGVmV4K0ZXeUsrZ0VKZnhXUTNmU2JQUTl1eDcz?=
+ =?utf-8?B?TXhJYXJCdHF0QWdjMzc0OGc1bTZkdWhpdUhKSnpDdkxnQXRnck9xZzVYcVox?=
+ =?utf-8?B?emRxWmxEQkxSM3dLbU1UcWxkalpyYWdMRnRXU3JGRXEvYXB1QmVyQ0JSaDZP?=
+ =?utf-8?B?bUMxOTFKRGxGWElkWUhlWUg5a1g1SDdIam5Bd3krTjMyTjV6YTdOMHRhdDRa?=
+ =?utf-8?B?VGtkeHNqRlN5QWtYbWJnWG5IYkZ5eUNjbnRnUFczQjljSWdRNFlCTThlZWV0?=
+ =?utf-8?B?VjFtOW5YaENQVHNMNEJReGo5VHNHT2IrcXZ5YlVDWDhBNGhOaWkyWUNMVlNG?=
+ =?utf-8?B?R2c0WC9WN1Joc05YWDl3TVFWN281Qzh4WnhPQXo5Qi82ZWREUlRKUmdmN3Zp?=
+ =?utf-8?B?cnprYVRLanVxSTM2OHd5eDBHTXBXUEgrWTFaUEEvcmFDSWQ5RFhpdnlURUJO?=
+ =?utf-8?B?MnMwUkY5cTVDT2RPREhHb0dXanhUbmt5eTA4WjBsRzFobjB3ZkJrbG1qZ1RW?=
+ =?utf-8?B?Vkc4R0Z5MWhUVll2aFpQNTRYbUlTZ1FRNFBhRi9NWXl4enlTMWtDcGszSVAr?=
+ =?utf-8?B?YjAraGRCekN3QjdpS1A4SG56THRmTC9SeTdtc2JTc2xuaG5XOG5uc2lVUmVL?=
+ =?utf-8?B?a2RSZWo4czV3WGh6WDZ0emdyWHFESmlMNFRjTjZQb0RGdHd3bXBOejZ4ejhn?=
+ =?utf-8?B?SEZwVyswT0xGNHhyVSswZlgzVzE3Y1V3Y1Yyd20vQVB4a1BZLzBNRXRQbk1C?=
+ =?utf-8?Q?4bsSAhPdzd4=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <80A3C0C4ACA4114CBD28D0A884F22953@INDPRD01.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-42ed3.templateTenant
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PNZPR01MB4415.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6a597f3-bf94-4af8-c847-08da1c9ad675
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2022 15:40:57.4618
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BM1PR01MB1028
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tools/ to the shell fragment generating the for_each list and update
-it.  This is useful to format files in the tools directory (e.g.
-selftests) with the same coding style as the kernel.
-
-Cc: Miguel Ojeda <ojeda@kernel.org>
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20220412153906.428179-1-mic@digikod.net
----
- .clang-format | 177 ++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 149 insertions(+), 28 deletions(-)
-
-diff --git a/.clang-format b/.clang-format
-index fa959436bcfd..70d4e7ec4cf9 100644
---- a/.clang-format
-+++ b/.clang-format
-@@ -65,36 +65,53 @@ ExperimentalAutoDetectBinPacking: false
- #FixNamespaceComments: false # Unknown to clang-format-4.0
- 
- # Taken from:
--#   git grep -h '^#define [^[:space:]]*for_each[^[:space:]]*(' include/ \
-+#   git grep -h '^#define [^[:space:]]*for_each[^[:space:]]*(' include/ tools/ \
- #   | sed "s,^#define \([^[:space:]]*for_each[^[:space:]]*\)(.*$,  - '\1'," \
- #   | sort | uniq
- ForEachMacros:
-+  - '__ata_qc_for_each'
-+  - '__bio_for_each_bvec'
-+  - '__bio_for_each_segment'
-+  - '__evlist__for_each_entry'
-+  - '__evlist__for_each_entry_continue'
-+  - '__evlist__for_each_entry_from'
-+  - '__evlist__for_each_entry_reverse'
-+  - '__evlist__for_each_entry_safe'
-+  - '__for_each_mem_range'
-+  - '__for_each_mem_range_rev'
-+  - '__for_each_thread'
-+  - '__hlist_for_each_rcu'
-+  - '__map__for_each_symbol_by_name'
-+  - '__perf_evlist__for_each_entry'
-+  - '__perf_evlist__for_each_entry_reverse'
-+  - '__perf_evlist__for_each_entry_safe'
-+  - '__rq_for_each_bio'
-+  - '__shost_for_each_device'
-   - 'apei_estatus_for_each_section'
-   - 'ata_for_each_dev'
-   - 'ata_for_each_link'
--  - '__ata_qc_for_each'
-   - 'ata_qc_for_each'
-   - 'ata_qc_for_each_raw'
-   - 'ata_qc_for_each_with_internal'
-   - 'ax25_for_each'
-   - 'ax25_uid_for_each'
--  - '__bio_for_each_bvec'
-   - 'bio_for_each_bvec'
-   - 'bio_for_each_bvec_all'
-+  - 'bio_for_each_folio_all'
-   - 'bio_for_each_integrity_vec'
--  - '__bio_for_each_segment'
-   - 'bio_for_each_segment'
-   - 'bio_for_each_segment_all'
-   - 'bio_list_for_each'
-   - 'bip_for_each_vec'
--  - 'bitmap_for_each_clear_region'
--  - 'bitmap_for_each_set_region'
--  - 'blkg_for_each_descendant_post'
--  - 'blkg_for_each_descendant_pre'
--  - 'blk_queue_for_each_rl'
-   - 'bond_for_each_slave'
-   - 'bond_for_each_slave_rcu'
-+  - 'bpf__perf_for_each_map'
-+  - 'bpf__perf_for_each_map_named'
-   - 'bpf_for_each_spilled_reg'
-+  - 'bpf_object__for_each_map'
-+  - 'bpf_object__for_each_program'
-+  - 'bpf_object__for_each_safe'
-+  - 'bpf_perf_object__for_each'
-   - 'btree_for_each_safe128'
-   - 'btree_for_each_safe32'
-   - 'btree_for_each_safe64'
-@@ -102,6 +119,7 @@ ForEachMacros:
-   - 'card_for_each_dev'
-   - 'cgroup_taskset_for_each'
-   - 'cgroup_taskset_for_each_leader'
-+  - 'cpufreq_for_each_efficient_entry_idx'
-   - 'cpufreq_for_each_entry'
-   - 'cpufreq_for_each_entry_idx'
-   - 'cpufreq_for_each_valid_entry'
-@@ -109,9 +127,22 @@ ForEachMacros:
-   - 'css_for_each_child'
-   - 'css_for_each_descendant_post'
-   - 'css_for_each_descendant_pre'
-+  - 'damon_for_each_region'
-+  - 'damon_for_each_region_safe'
-+  - 'damon_for_each_scheme'
-+  - 'damon_for_each_scheme_safe'
-+  - 'damon_for_each_target'
-+  - 'damon_for_each_target_safe'
-+  - 'data__for_each_file'
-+  - 'data__for_each_file_new'
-+  - 'data__for_each_file_start'
-   - 'device_for_each_child_node'
-   - 'displayid_iter_for_each'
-+  - 'dma_fence_array_for_each'
-   - 'dma_fence_chain_for_each'
-+  - 'dma_fence_unwrap_for_each'
-+  - 'dma_resv_for_each_fence'
-+  - 'dma_resv_for_each_fence_unlocked'
-   - 'do_for_each_ftrace_op'
-   - 'drm_atomic_crtc_for_each_plane'
-   - 'drm_atomic_crtc_state_for_each_plane'
-@@ -135,6 +166,25 @@ ForEachMacros:
-   - 'drm_mm_for_each_node'
-   - 'drm_mm_for_each_node_in_range'
-   - 'drm_mm_for_each_node_safe'
-+  - 'dsa_switch_for_each_available_port'
-+  - 'dsa_switch_for_each_cpu_port'
-+  - 'dsa_switch_for_each_port'
-+  - 'dsa_switch_for_each_port_continue_reverse'
-+  - 'dsa_switch_for_each_port_safe'
-+  - 'dsa_switch_for_each_user_port'
-+  - 'dsa_tree_for_each_user_port'
-+  - 'dso__for_each_symbol'
-+  - 'dsos__for_each_with_build_id'
-+  - 'elf_hash_for_each_possible'
-+  - 'elf_section__for_each_rel'
-+  - 'elf_section__for_each_rela'
-+  - 'elf_symtab__for_each_symbol'
-+  - 'evlist__for_each_cpu'
-+  - 'evlist__for_each_entry'
-+  - 'evlist__for_each_entry_continue'
-+  - 'evlist__for_each_entry_from'
-+  - 'evlist__for_each_entry_reverse'
-+  - 'evlist__for_each_entry_safe'
-   - 'flow_action_for_each'
-   - 'for_each_acpi_dev_match'
-   - 'for_each_active_dev_scope'
-@@ -142,8 +192,11 @@ ForEachMacros:
-   - 'for_each_active_iommu'
-   - 'for_each_aggr_pgid'
-   - 'for_each_available_child_of_node'
-+  - 'for_each_bench'
-   - 'for_each_bio'
-   - 'for_each_board_func_rsrc'
-+  - 'for_each_btf_ext_rec'
-+  - 'for_each_btf_ext_sec'
-   - 'for_each_bvec'
-   - 'for_each_card_auxs'
-   - 'for_each_card_auxs_safe'
-@@ -159,17 +212,22 @@ ForEachMacros:
-   - 'for_each_child_of_node'
-   - 'for_each_clear_bit'
-   - 'for_each_clear_bit_from'
-+  - 'for_each_clear_bitrange'
-+  - 'for_each_clear_bitrange_from'
-+  - 'for_each_cmd'
-   - 'for_each_cmsghdr'
-+  - 'for_each_collection'
-+  - 'for_each_comp_order'
-   - 'for_each_compatible_node'
-   - 'for_each_component_dais'
-   - 'for_each_component_dais_safe'
--  - 'for_each_comp_order'
-   - 'for_each_console'
-   - 'for_each_cpu'
-   - 'for_each_cpu_and'
-   - 'for_each_cpu_not'
-   - 'for_each_cpu_wrap'
-   - 'for_each_dapm_widgets'
-+  - 'for_each_dedup_cand'
-   - 'for_each_dev_addr'
-   - 'for_each_dev_scope'
-   - 'for_each_dma_cap_mask'
-@@ -179,13 +237,14 @@ ForEachMacros:
-   - 'for_each_dpcm_fe'
-   - 'for_each_drhd_unit'
-   - 'for_each_dss_dev'
--  - 'for_each_dtpm_table'
-   - 'for_each_efi_memory_desc'
-   - 'for_each_efi_memory_desc_in_map'
-   - 'for_each_element'
-   - 'for_each_element_extid'
-   - 'for_each_element_id'
-   - 'for_each_endpoint_of_node'
-+  - 'for_each_event'
-+  - 'for_each_event_tps'
-   - 'for_each_evictable_lru'
-   - 'for_each_fib6_node_rt_rcu'
-   - 'for_each_fib6_walker_rt'
-@@ -194,30 +253,35 @@ ForEachMacros:
-   - 'for_each_free_mem_range'
-   - 'for_each_free_mem_range_reverse'
-   - 'for_each_func_rsrc'
-+  - 'for_each_group_evsel'
-+  - 'for_each_group_member'
-   - 'for_each_hstate'
-   - 'for_each_if'
-+  - 'for_each_inject_fn'
-+  - 'for_each_insn'
-+  - 'for_each_insn_prefix'
-+  - 'for_each_intid'
-   - 'for_each_iommu'
-   - 'for_each_ip_tunnel_rcu'
-   - 'for_each_irq_nr'
-+  - 'for_each_lang'
-   - 'for_each_link_codecs'
-   - 'for_each_link_cpus'
-   - 'for_each_link_platforms'
-   - 'for_each_lru'
-   - 'for_each_matching_node'
-   - 'for_each_matching_node_and_match'
--  - 'for_each_member'
--  - 'for_each_memcg_cache_index'
-   - 'for_each_mem_pfn_range'
--  - '__for_each_mem_range'
-   - 'for_each_mem_range'
--  - '__for_each_mem_range_rev'
-   - 'for_each_mem_range_rev'
-   - 'for_each_mem_region'
-+  - 'for_each_member'
-+  - 'for_each_memory'
-   - 'for_each_migratetype_order'
--  - 'for_each_msi_entry'
--  - 'for_each_msi_entry_safe'
-+  - 'for_each_missing_reg'
-   - 'for_each_net'
-   - 'for_each_net_continue_reverse'
-+  - 'for_each_net_rcu'
-   - 'for_each_netdev'
-   - 'for_each_netdev_continue'
-   - 'for_each_netdev_continue_rcu'
-@@ -227,12 +291,13 @@ ForEachMacros:
-   - 'for_each_netdev_rcu'
-   - 'for_each_netdev_reverse'
-   - 'for_each_netdev_safe'
--  - 'for_each_net_rcu'
-   - 'for_each_new_connector_in_state'
-   - 'for_each_new_crtc_in_state'
-   - 'for_each_new_mst_mgr_in_state'
-   - 'for_each_new_plane_in_state'
-+  - 'for_each_new_plane_in_state_reverse'
-   - 'for_each_new_private_obj_in_state'
-+  - 'for_each_new_reg'
-   - 'for_each_node'
-   - 'for_each_node_by_name'
-   - 'for_each_node_by_type'
-@@ -248,20 +313,20 @@ ForEachMacros:
-   - 'for_each_old_connector_in_state'
-   - 'for_each_old_crtc_in_state'
-   - 'for_each_old_mst_mgr_in_state'
-+  - 'for_each_old_plane_in_state'
-+  - 'for_each_old_private_obj_in_state'
-   - 'for_each_oldnew_connector_in_state'
-   - 'for_each_oldnew_crtc_in_state'
-   - 'for_each_oldnew_mst_mgr_in_state'
-   - 'for_each_oldnew_plane_in_state'
-   - 'for_each_oldnew_plane_in_state_reverse'
-   - 'for_each_oldnew_private_obj_in_state'
--  - 'for_each_old_plane_in_state'
--  - 'for_each_old_private_obj_in_state'
-   - 'for_each_online_cpu'
-   - 'for_each_online_node'
-   - 'for_each_online_pgdat'
-+  - 'for_each_path'
-   - 'for_each_pci_bridge'
-   - 'for_each_pci_dev'
--  - 'for_each_pci_msi_entry'
-   - 'for_each_pcm_streams'
-   - 'for_each_physmem_range'
-   - 'for_each_populated_zone'
-@@ -269,6 +334,7 @@ ForEachMacros:
-   - 'for_each_present_cpu'
-   - 'for_each_prime_number'
-   - 'for_each_prime_number_from'
-+  - 'for_each_probe_cache_entry'
-   - 'for_each_process'
-   - 'for_each_process_thread'
-   - 'for_each_prop_codec_conf'
-@@ -278,6 +344,8 @@ ForEachMacros:
-   - 'for_each_prop_dlc_cpus'
-   - 'for_each_prop_dlc_platforms'
-   - 'for_each_property_of_node'
-+  - 'for_each_reg'
-+  - 'for_each_reg_filtered'
-   - 'for_each_registered_fb'
-   - 'for_each_requested_gpio'
-   - 'for_each_requested_gpio_in_range'
-@@ -287,8 +355,12 @@ ForEachMacros:
-   - 'for_each_rtd_components'
-   - 'for_each_rtd_cpu_dais'
-   - 'for_each_rtd_dais'
-+  - 'for_each_script'
-+  - 'for_each_sec'
-   - 'for_each_set_bit'
-   - 'for_each_set_bit_from'
-+  - 'for_each_set_bitrange'
-+  - 'for_each_set_bitrange_from'
-   - 'for_each_set_clump8'
-   - 'for_each_sg'
-   - 'for_each_sg_dma_page'
-@@ -297,18 +369,25 @@ ForEachMacros:
-   - 'for_each_sgtable_dma_sg'
-   - 'for_each_sgtable_page'
-   - 'for_each_sgtable_sg'
-+  - 'for_each_shell_test'
-   - 'for_each_sibling_event'
-   - 'for_each_subelement'
-   - 'for_each_subelement_extid'
-   - 'for_each_subelement_id'
--  - '__for_each_thread'
-+  - 'for_each_sublist'
-+  - 'for_each_subsystem'
-+  - 'for_each_supported_activate_fn'
-+  - 'for_each_supported_inject_fn'
-+  - 'for_each_test'
-   - 'for_each_thread'
-+  - 'for_each_token'
-   - 'for_each_unicast_dest_pgid'
-   - 'for_each_vsi'
-   - 'for_each_wakeup_source'
-   - 'for_each_zone'
-   - 'for_each_zone_zonelist'
-   - 'for_each_zone_zonelist_nodemask'
-+  - 'func_for_each_insn'
-   - 'fwnode_for_each_available_child_node'
-   - 'fwnode_for_each_child_node'
-   - 'fwnode_graph_for_each_endpoint'
-@@ -322,7 +401,13 @@ ForEachMacros:
-   - 'hash_for_each_possible_safe'
-   - 'hash_for_each_rcu'
-   - 'hash_for_each_safe'
-+  - 'hashmap__for_each_entry'
-+  - 'hashmap__for_each_entry_safe'
-+  - 'hashmap__for_each_key_entry'
-+  - 'hashmap__for_each_key_entry_safe'
-   - 'hctx_for_each_ctx'
-+  - 'hists__for_each_format'
-+  - 'hists__for_each_sort_list'
-   - 'hlist_bl_for_each_entry'
-   - 'hlist_bl_for_each_entry_rcu'
-   - 'hlist_bl_for_each_entry_safe'
-@@ -338,7 +423,6 @@ ForEachMacros:
-   - 'hlist_for_each_entry_rcu_notrace'
-   - 'hlist_for_each_entry_safe'
-   - 'hlist_for_each_entry_srcu'
--  - '__hlist_for_each_rcu'
-   - 'hlist_for_each_safe'
-   - 'hlist_nulls_for_each_entry'
-   - 'hlist_nulls_for_each_entry_from'
-@@ -346,9 +430,6 @@ ForEachMacros:
-   - 'hlist_nulls_for_each_entry_safe'
-   - 'i3c_bus_for_each_i2cdev'
-   - 'i3c_bus_for_each_i3cdev'
--  - 'ide_host_for_each_port'
--  - 'ide_port_for_each_dev'
--  - 'ide_port_for_each_present_dev'
-   - 'idr_for_each_entry'
-   - 'idr_for_each_entry_continue'
-   - 'idr_for_each_entry_continue_ul'
-@@ -356,7 +437,12 @@ ForEachMacros:
-   - 'in_dev_for_each_ifa_rcu'
-   - 'in_dev_for_each_ifa_rtnl'
-   - 'inet_bind_bucket_for_each'
-+  - 'inet_lhash2_for_each_icsk'
-+  - 'inet_lhash2_for_each_icsk_continue'
-   - 'inet_lhash2_for_each_icsk_rcu'
-+  - 'intlist__for_each_entry'
-+  - 'intlist__for_each_entry_safe'
-+  - 'kcore_copy__for_each_phdr'
-   - 'key_for_each'
-   - 'key_for_each_safe'
-   - 'klp_for_each_func'
-@@ -367,7 +453,9 @@ ForEachMacros:
-   - 'klp_for_each_object_static'
-   - 'kunit_suite_for_each_test_case'
-   - 'kvm_for_each_memslot'
-+  - 'kvm_for_each_memslot_in_gfn_range'
-   - 'kvm_for_each_vcpu'
-+  - 'libbpf_nla_for_each_attr'
-   - 'list_for_each'
-   - 'list_for_each_codec'
-   - 'list_for_each_codec_safe'
-@@ -387,6 +475,7 @@ ForEachMacros:
-   - 'list_for_each_entry_safe_from'
-   - 'list_for_each_entry_safe_reverse'
-   - 'list_for_each_entry_srcu'
-+  - 'list_for_each_from'
-   - 'list_for_each_prev'
-   - 'list_for_each_prev_safe'
-   - 'list_for_each_safe'
-@@ -394,11 +483,18 @@ ForEachMacros:
-   - 'llist_for_each_entry'
-   - 'llist_for_each_entry_safe'
-   - 'llist_for_each_safe'
-+  - 'map__for_each_symbol'
-+  - 'map__for_each_symbol_by_name'
-+  - 'map_for_each_event'
-+  - 'map_for_each_metric'
-+  - 'maps__for_each_entry'
-+  - 'maps__for_each_entry_safe'
-   - 'mci_for_each_dimm'
-   - 'media_device_for_each_entity'
-   - 'media_device_for_each_intf'
-   - 'media_device_for_each_link'
-   - 'media_device_for_each_pad'
-+  - 'msi_for_each_desc'
-   - 'nanddev_io_for_each_page'
-   - 'netdev_for_each_lower_dev'
-   - 'netdev_for_each_lower_private'
-@@ -423,6 +519,20 @@ ForEachMacros:
-   - 'pcl_for_each_chunk'
-   - 'pcl_for_each_segment'
-   - 'pcm_for_each_format'
-+  - 'perf_config_items__for_each_entry'
-+  - 'perf_config_sections__for_each_entry'
-+  - 'perf_config_set__for_each_entry'
-+  - 'perf_cpu_map__for_each_cpu'
-+  - 'perf_evlist__for_each_entry'
-+  - 'perf_evlist__for_each_entry_reverse'
-+  - 'perf_evlist__for_each_entry_safe'
-+  - 'perf_evlist__for_each_evsel'
-+  - 'perf_evlist__for_each_mmap'
-+  - 'perf_hpp_list__for_each_format'
-+  - 'perf_hpp_list__for_each_format_safe'
-+  - 'perf_hpp_list__for_each_sort_list'
-+  - 'perf_hpp_list__for_each_sort_list_safe'
-+  - 'perf_pmu__for_each_hybrid_pmu'
-   - 'ping_portaddr_for_each_entry'
-   - 'plist_for_each'
-   - 'plist_for_each_continue'
-@@ -442,6 +552,7 @@ ForEachMacros:
-   - 'rdma_for_each_block'
-   - 'rdma_for_each_port'
-   - 'rdma_umem_for_each_dma_block'
-+  - 'resort_rb__for_each_entry'
-   - 'resource_list_for_each_entry'
-   - 'resource_list_for_each_entry_safe'
-   - 'rhl_for_each_entry_rcu'
-@@ -455,15 +566,18 @@ ForEachMacros:
-   - 'rht_for_each_from'
-   - 'rht_for_each_rcu'
-   - 'rht_for_each_rcu_from'
--  - '__rq_for_each_bio'
-   - 'rq_for_each_bvec'
-   - 'rq_for_each_segment'
-+  - 'rq_list_for_each'
-+  - 'rq_list_for_each_safe'
-   - 'scsi_for_each_prot_sg'
-   - 'scsi_for_each_sg'
-   - 'sctp_for_each_hentry'
-   - 'sctp_skb_for_each'
-+  - 'sec_for_each_insn'
-+  - 'sec_for_each_insn_continue'
-+  - 'sec_for_each_insn_from'
-   - 'shdma_for_each_chan'
--  - '__shost_for_each_device'
-   - 'shost_for_each_device'
-   - 'sk_for_each'
-   - 'sk_for_each_bound'
-@@ -480,7 +594,13 @@ ForEachMacros:
-   - 'snd_soc_dapm_widget_for_each_path_safe'
-   - 'snd_soc_dapm_widget_for_each_sink_path'
-   - 'snd_soc_dapm_widget_for_each_source_path'
-+  - 'strlist__for_each_entry'
-+  - 'strlist__for_each_entry_safe'
-+  - 'sym_for_each_insn'
-+  - 'sym_for_each_insn_continue_reverse'
-+  - 'symbols__for_each_entry'
-   - 'tb_property_for_each'
-+  - 'tcf_act_for_each_action'
-   - 'tcf_exts_for_each_action'
-   - 'udp_portaddr_for_each_entry'
-   - 'udp_portaddr_for_each_entry_rcu'
-@@ -504,6 +624,7 @@ ForEachMacros:
-   - 'xbc_node_for_each_array_value'
-   - 'xbc_node_for_each_child'
-   - 'xbc_node_for_each_key_value'
-+  - 'xbc_node_for_each_subkey'
-   - 'zorro_for_each_dev'
- 
- #IncludeBlocks: Preserve # Unknown to clang-format-5.0
-
-base-commit: ce522ba9ef7e2d9fb22a39eb3371c0c64e2a433e
--- 
-2.35.1
-
+DQo+IGRtaV9maXJzdF9tYXRjaCgpIGlzIGNhbGxlZCBoZXJlIGF0IHRoZSBiZWdpbm5pbmcgb2Yg
+bG9hZF91ZWZpX2NlcnRzKCkuDQo+IE9ubHkgaWYgaXQgc3VjY2VlZHMgd291bGQgdWVmaV9jaGVj
+a19pZ25vcmVfZGIoKSwgZ2V0X2NlcnRfbGlzdCgpLA0KPiB1ZWZpX2NoZWNrX2lnbm9yZV9kYigp
+LCBvcg0KPiBsb2FkX21va2xpc3RfY2VydHMoKSBiZSBjYWxsZWQuICBJcyB0aGVyZSBhIG5lZWQg
+Zm9yIGFkZGluZyBhIGNhbGwgdG8NCj4gZG1pX2ZpcnN0X21hdGNoKCkgaW4gYW55IG9mIHRoZXNl
+IG90aGVyIGZ1bmN0aW9ucz8NCknigJlsbCB0ZXN0IHRoaXMgb3V0Lg0KPiANCj4gdGhhbmtzLA0K
+PiANCj4gTWltaQ0KPiANCj4+PiANCj4+PiBMaWtlIGluIGFsbCB0aGUgb3RoZXIgY2FzZXMsIHRo
+ZXJlIHNob3VsZCBiZSBzb21lIHNvcnQgb2YgbWVzc2FnZS4gQXQNCj4+PiBtaW5pbXVtLCB0aGVy
+ZSBzaG91bGQgYmUgYSBwcl9pbmZvKCkuDQo+Pj4gDQo+Pj4+IA0KPj4+PiAgICAgaWYgKCFlZmlf
+cnRfc2VydmljZXNfc3VwcG9ydGVkKEVGSV9SVF9TVVBQT1JURURfR0VUX1ZBUklBQkxFKSkNCj4+
+Pj4gICAgICAgICAgICAgcmV0dXJuIGZhbHNlOw0KPj4+IA0KPiANCj4gDQoNCg==
