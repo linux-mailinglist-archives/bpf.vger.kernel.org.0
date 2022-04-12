@@ -2,62 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFB24FE7BA
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 20:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B6A4FE828
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 20:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbiDLSSr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 14:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
+        id S1346889AbiDLSoe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 14:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbiDLSSq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 14:18:46 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16AE5F4FD
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 11:16:27 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id t25so33598904lfg.7
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 11:16:27 -0700 (PDT)
+        with ESMTP id S244339AbiDLSod (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 14:44:33 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C23552E75;
+        Tue, 12 Apr 2022 11:42:15 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id bh17so39072590ejb.8;
+        Tue, 12 Apr 2022 11:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j1w264tp/U/lhn6nP4PFV7X3MJpNAda8S3WCY3BI6tE=;
-        b=YJVncCgzdjel36rQqR/Aeebf8QkyoOWdPgR07Q0GC2Y3RIqgpWYqLigLsbVLLdgRXK
-         zr43P4xyxRfyhWYjgYYYqKQY/6V4wpnG0d12ZS2GY6/d1s4rU3Lq0anlWZnT3mJ9ZH1d
-         ZrqVHGDgZF0ncoAUsrrcQQQnftilRhu47F4v9ytYUwfPM/kQW+MuV7cRF0j0YFVQ804b
-         HfcN7iWx9GmsPEugy0jD3QnOG9HJiPqwSpud1KirVL5DyhDbUsxgK7G/NKEmnm/raV2P
-         0QHSvD59QndapOvNMsoVEoLFF15f6Xtg6D2QT7KmiLM+/ppueK2q1uJA0ZEvh58sjdeP
-         TP9g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0vLtlk/2vLSpLboaNitHRcOySnoML+sxdweNgqoysJE=;
+        b=auj/Zv0UekaDc7AG5Z3zGZrfV4g+HiVFTTHyx9/D41zo6CLt4nMx987PJ7l369tS9L
+         8yg9Cro2uKoGpjCyOReEECe1hcBtNXkrQ2DGq8R+WAFddfh3lArZMKhgvTyLPjvFd2Uo
+         T1z54Hhrn6YPl/4sV+uG5p6l+K6HQb3flTlJuTpAEzPgweFt6vZfSGCSGdCUGAlKZaiB
+         S2CJh1R7ygk0Frpg1bYnvkUMCnMSVcXLHrX6YQGMp0xgNtIMwnhzh90GOhn6At+O4mig
+         z7EDVyAS5NAFi4tqGJbE2JvPLUY1q30KHnIhVNCUL1A8UloXO6/8+zKnCBkSKjp/cy2r
+         AX0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j1w264tp/U/lhn6nP4PFV7X3MJpNAda8S3WCY3BI6tE=;
-        b=27zxLKPw91R284Alh1A7Y8KfJxNJPO6EBxbnMRH9SXVT5XVg+Bli+39rUt4++JfQZv
-         GAfjkD6sgnRsXxo2Pr3ZsKLk3U/xgAzP49WZhIaF3ngx3RsNNbroRfsU+HMXYyVZNXAX
-         KyenH9uWKpHgp5D8bmnkLBtF1tbQSudk49bhAGodLsbjyWxg8PhEyyGPQDZga6tsWjr5
-         iDCF3kDfcg5KjBLoEqyL3ymVNrG1L2gK/DvwwahGk4oz7XcfRz+skIy7JQZuiPoo1oJw
-         bKWJgo+0efDX4Dg+gGFkNIqtMMC/QxA/+THKnY2ZhaEurmsepVsyGBj2kV4TzjI2NBkc
-         5oew==
-X-Gm-Message-State: AOAM531R8FiK7x3d78wBzDSz32vf4Kl/2Mpapn8xdc0fMbjw5EGzv1yK
-        mN+Z9vdK8Q9nB2knIx7zSlDzAonrua5ua3sZwA05Fr2hbOw=
-X-Google-Smtp-Source: ABdhPJyFi8H/QTf13hW57iCeZRPJG9aPVNI2NAerPnLrmdUrU/N7/YGyXpNGBu/hj8jzQng3lIUS5TyS/+J9xlB5X74=
-X-Received: by 2002:a05:6512:2311:b0:44b:4bb:3425 with SMTP id
- o17-20020a056512231100b0044b04bb3425mr27046588lfu.288.1649787385886; Tue, 12
- Apr 2022 11:16:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220409093303.499196-1-memxor@gmail.com> <20220409093303.499196-5-memxor@gmail.com>
-In-Reply-To: <20220409093303.499196-5-memxor@gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Tue, 12 Apr 2022 11:16:14 -0700
-Message-ID: <CAJnrk1ZJpbsO54J9jGKFdW9Li5WHTbK=rCrL0FYUb-0X1yq_AA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 04/13] bpf: Tag argument to be released in bpf_func_proto
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0vLtlk/2vLSpLboaNitHRcOySnoML+sxdweNgqoysJE=;
+        b=Po/wAw1acgu7EH5iz0Y0hiQo0/nzU6YQqBDY2aHyqs8M55cnb4Rb2yvn12BdzZacvk
+         F5XOHzkLnhya9EyRlo34+2ES5VxP2FT3CmzvJHh0L+eli+si9KMfV3EvGpkkfqBG9Yg6
+         7HMwPJUqr2hhSiteEUwcDJzE1zmpUZdJayRHiluSULncpCTJKtUJv3lUp3nSEFfE3ZfX
+         A/teqwFAarxNV4Xsz61xlz1xEL2sLzR5pB5Gr65X12ILG1XfQ999mcAsx5R0EJVCp0Pt
+         8MynUM6UjKGYMeDlPbt5YgldwZjngqUHqpa/oRhGY1G65H3G7rYq2sevyhj3ljQs6IE6
+         1zVA==
+X-Gm-Message-State: AOAM5336P/Hr89MQQGrddaf5R4xeqcjwOOlrhRgSLtATVwsHnZX+im6V
+        +bGSHTc7dD68smIdOqry9uM=
+X-Google-Smtp-Source: ABdhPJzgexsqD1nWONwCvU85BNOtwwnyOA88W4A/iZRHD5+kzIJOuKZhpb5QHPd8iqaWsr+65Uxf1Q==
+X-Received: by 2002:a17:906:cec3:b0:6e8:a49f:2189 with SMTP id si3-20020a170906cec300b006e8a49f2189mr6931952ejb.119.1649788933759;
+        Tue, 12 Apr 2022 11:42:13 -0700 (PDT)
+Received: from krava ([83.240.62.142])
+        by smtp.gmail.com with ESMTPSA id o22-20020a170906289600b006e44a0c1105sm13486453ejd.46.2022.04.12.11.42.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Apr 2022 11:42:13 -0700 (PDT)
+Date:   Tue, 12 Apr 2022 20:42:11 +0200
+From:   Jiri Olsa <olsajiri@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [RFC bpf-next 3/4] bpf: Resolve symbols with
+ kallsyms_lookup_names for kprobe multi link
+Message-ID: <YlXIA12sLNUOc+nm@krava>
+References: <20220407125224.310255-1-jolsa@kernel.org>
+ <20220407125224.310255-4-jolsa@kernel.org>
+ <CAEf4BzYrRSB2wSYVmMCGA80RY6Hy2Chtt3MnXFy7+-Feh+2FBw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYrRSB2wSYVmMCGA80RY6Hy2Chtt3MnXFy7+-Feh+2FBw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,207 +80,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 10, 2022 at 11:58 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> Add a new type flag for bpf_arg_type that when set tells verifier that
-> for a release function, that argument's register will be the one for
-> which meta.ref_obj_id will be set, and which will then be released
-> using release_reference. To capture the regno, introduce a new field
-> release_regno in bpf_call_arg_meta.
->
-> This would be required in the next patch, where we may either pass NULL
-> or a refcounted pointer as an argument to the release function
-> bpf_kptr_xchg. Just releasing only when meta.ref_obj_id is set is not
-> enough, as there is a case where the type of argument needed matches,
-> but the ref_obj_id is set to 0. Hence, we must enforce that whenever
-> meta.ref_obj_id is zero, the register that is to be released can only
-> be NULL for a release function.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  include/linux/bpf.h   |  5 ++++-
->  kernel/bpf/ringbuf.c  |  4 ++--
->  kernel/bpf/verifier.c | 46 ++++++++++++++++++++++++++++++++++++-------
->  net/core/filter.c     |  2 +-
->  4 files changed, 46 insertions(+), 11 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index e267db260cb7..a6d1982e8118 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -364,7 +364,10 @@ enum bpf_type_flag {
->          */
->         MEM_PERCPU              = BIT(4 + BPF_BASE_TYPE_BITS),
->
-> -       __BPF_TYPE_LAST_FLAG    = MEM_PERCPU,
-> +       /* Indicates that the pointer argument will be released. */
-> +       PTR_RELEASE             = BIT(5 + BPF_BASE_TYPE_BITS),
-> +
-> +       __BPF_TYPE_LAST_FLAG    = PTR_RELEASE,
->  };
->
->  /* Max number of base types. */
-> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> index 710ba9de12ce..a22c21c0a7ef 100644
-> --- a/kernel/bpf/ringbuf.c
-> +++ b/kernel/bpf/ringbuf.c
-> @@ -404,7 +404,7 @@ BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
->  const struct bpf_func_proto bpf_ringbuf_submit_proto = {
->         .func           = bpf_ringbuf_submit,
->         .ret_type       = RET_VOID,
-> -       .arg1_type      = ARG_PTR_TO_ALLOC_MEM,
-> +       .arg1_type      = ARG_PTR_TO_ALLOC_MEM | PTR_RELEASE,
->         .arg2_type      = ARG_ANYTHING,
->  };
->
-> @@ -417,7 +417,7 @@ BPF_CALL_2(bpf_ringbuf_discard, void *, sample, u64, flags)
->  const struct bpf_func_proto bpf_ringbuf_discard_proto = {
->         .func           = bpf_ringbuf_discard,
->         .ret_type       = RET_VOID,
-> -       .arg1_type      = ARG_PTR_TO_ALLOC_MEM,
-> +       .arg1_type      = ARG_PTR_TO_ALLOC_MEM | PTR_RELEASE,
->         .arg2_type      = ARG_ANYTHING,
->  };
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 01d45c5010f9..6cc08526e049 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -245,6 +245,7 @@ struct bpf_call_arg_meta {
->         struct bpf_map *map_ptr;
->         bool raw_mode;
->         bool pkt_access;
-> +       u8 release_regno;
->         int regno;
->         int access_size;
->         int mem_size;
-> @@ -5300,6 +5301,11 @@ static bool arg_type_is_int_ptr(enum bpf_arg_type type)
->                type == ARG_PTR_TO_LONG;
->  }
->
-> +static bool arg_type_is_release_ptr(enum bpf_arg_type type)
-> +{
-> +       return type & PTR_RELEASE;
-> +}
-> +
-Now that we have PTR_RELEASE as a bpf arg type descriptor, why do we
-still need is_release_function() in the verifier? I think we should
-just remove is_release_function() altogether - is_release_function()
-isn't functionally necessary now that we have PTR_RELEASE, and I don't
-think it's great that is_release_function() hardcodes specific
-functions into the verifier. What are your thoughts?
+On Mon, Apr 11, 2022 at 03:15:32PM -0700, Andrii Nakryiko wrote:
+> On Thu, Apr 7, 2022 at 5:53 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Using kallsyms_lookup_names function to speed up symbols lookup in
+> > kprobe multi link attachment and replacing with it the current
+> > kprobe_multi_resolve_syms function.
+> >
+> > This speeds up bpftrace kprobe attachment:
+> >
+> >   # perf stat -r 5 -e cycles ./src/bpftrace -e 'kprobe:x* {  } i:ms:1 { exit(); }'
+> >   ...
+> >   6.5681 +- 0.0225 seconds time elapsed  ( +-  0.34% )
+> >
+> > After:
+> >
+> >   # perf stat -r 5 -e cycles ./src/bpftrace -e 'kprobe:x* {  } i:ms:1 { exit(); }'
+> >   ...
+> >   0.5661 +- 0.0275 seconds time elapsed  ( +-  4.85% )
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/trace/bpf_trace.c | 123 +++++++++++++++++++++++----------------
+> >  1 file changed, 73 insertions(+), 50 deletions(-)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index b26f3da943de..2602957225ba 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2226,6 +2226,72 @@ struct bpf_kprobe_multi_run_ctx {
+> >         unsigned long entry_ip;
+> >  };
+> >
+> > +struct user_syms {
+> > +       const char **syms;
+> > +       char *buf;
+> > +};
+> > +
+> > +static int copy_user_syms(struct user_syms *us, void __user *usyms, u32 cnt)
+> > +{
+> > +       const char __user **usyms_copy = NULL;
+> > +       const char **syms = NULL;
+> > +       char *buf = NULL, *p;
+> > +       int err = -EFAULT;
+> > +       unsigned int i;
+> > +       size_t size;
+> > +
+> > +       size = cnt * sizeof(*usyms_copy);
+> > +
+> > +       usyms_copy = kvmalloc(size, GFP_KERNEL);
+> > +       if (!usyms_copy)
+> > +               return -ENOMEM;
+> 
+> do you really need usyms_copy? why not just read one pointer at a time?
+> 
+> > +
+> > +       if (copy_from_user(usyms_copy, usyms, size))
+> > +               goto error;
+> > +
+> > +       err = -ENOMEM;
+> > +       syms = kvmalloc(size, GFP_KERNEL);
+> > +       if (!syms)
+> > +               goto error;
+> > +
+> > +       /* TODO this potentially allocates lot of memory (~6MB in my tests
+> > +        * with attaching ~40k functions). I haven't seen this to fail yet,
+> > +        * but it could be changed to allocate memory gradually if needed.
+> > +        */
+> > +       size = cnt * KSYM_NAME_LEN;
+> 
+> this reassignment of size is making it hard to follow the code, you
+> can just do cnt * KSYM_NAME_LEN inside kvmalloc, you don't ever use it
+> anywhere else
 
->  static int int_ptr_type_to_size(enum bpf_arg_type type)
->  {
->         if (type == ARG_PTR_TO_INT)
-> @@ -5532,7 +5538,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
->                 /* Some of the argument types nevertheless require a
->                  * zero register offset.
->                  */
-> -               if (arg_type != ARG_PTR_TO_ALLOC_MEM)
-> +               if (base_type(arg_type) != ARG_PTR_TO_ALLOC_MEM)
->                         return 0;
->                 break;
->         /* All the rest must be rejected, except PTR_TO_BTF_ID which allows
+ok
 
-Later on in this check_func_arg_reg_off() function, I think we can get
-rid of the hacky workaround for the PTR_TO_BTF_ID case where it relies
-on whether the function is a release function and reg->ref_obj_id is
-set, to determine whether the argument is a release arg or not. The
-arg type is passed directly to check_func_arg_reg_off(), so I think we
-could just use arg_type_is_release_ptr(arg_type) instead, which will
-also be more robust when/if we support having multiple release args in
-the future.
+> 
+> > +       buf = kvmalloc(size, GFP_KERNEL);
+> > +       if (!buf)
+> > +               goto error;
+> > +
+> > +       for (p = buf, i = 0; i < cnt; i++) {
+> 
+> like here, before doing strncpy_from_user() you can read usyms[i] from
+> user-space into temporary variable, no need for extra kvmalloc?
 
-> @@ -6124,12 +6130,31 @@ static bool check_btf_id_ok(const struct bpf_func_proto *fn)
->         return true;
->  }
->
-> -static int check_func_proto(const struct bpf_func_proto *fn, int func_id)
-> +static bool check_release_regno(const struct bpf_func_proto *fn, int func_id,
-> +                               struct bpf_call_arg_meta *meta)
-> +{
-> +       int i;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(fn->arg_type); i++) {
-> +               if (arg_type_is_release_ptr(fn->arg_type[i])) {
-> +                       if (!is_release_function(func_id))
-> +                               return false;
-> +                       if (meta->release_regno)
-> +                               return false;
-> +                       meta->release_regno = i + 1;
-> +               }
-> +       }
-> +       return !is_release_function(func_id) || meta->release_regno;
-> +}
-Is this check needed? There's already a check in check_func_arg that
-there can't be two arg registers with ref_obj_ids set. I think this
-already checks against the case where the user tries to pass in two
-release registers as arguments.
-> +
-> +static int check_func_proto(const struct bpf_func_proto *fn, int func_id,
-> +                           struct bpf_call_arg_meta *meta)
->  {
->         return check_raw_mode_ok(fn) &&
->                check_arg_pair_ok(fn) &&
->                check_btf_id_ok(fn) &&
-> -              check_refcount_ok(fn, func_id) ? 0 : -EINVAL;
-> +              check_refcount_ok(fn, func_id) &&
-> +              check_release_regno(fn, func_id, meta) ? 0 : -EINVAL;
->  }
->
->  /* Packet data might have moved, any old PTR_TO_PACKET[_META,_END]
-> @@ -6808,7 +6833,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->         memset(&meta, 0, sizeof(meta));
->         meta.pkt_access = fn->pkt_access;
->
-> -       err = check_func_proto(fn, func_id);
-> +       err = check_func_proto(fn, func_id, &meta);
->         if (err) {
->                 verbose(env, "kernel subsystem misconfigured func %s#%d\n",
->                         func_id_name(func_id), func_id);
-> @@ -6841,8 +6866,17 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->                         return err;
->         }
->
-> +       regs = cur_regs(env);
-> +
->         if (is_release_function(func_id)) {
-> -               err = release_reference(env, meta.ref_obj_id);
-> +               err = -EINVAL;
-> +               if (meta.ref_obj_id)
-> +                       err = release_reference(env, meta.ref_obj_id);
-> +               /* meta.ref_obj_id can only be 0 if register that is meant to be
-> +                * released is NULL, which must be > R0.
-> +                */
-> +               else if (meta.release_regno && register_is_null(&regs[meta.release_regno]))
-> +                       err = 0;
->                 if (err) {
->                         verbose(env, "func %s#%d reference has not been acquired before\n",
->                                 func_id_name(func_id), func_id);
-> @@ -6850,8 +6884,6 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->                 }
->         }
->
-> -       regs = cur_regs(env);
-> -
->         switch (func_id) {
->         case BPF_FUNC_tail_call:
->                 err = check_reference_leak(env);
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 143f442a9505..8eb01a997476 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -6621,7 +6621,7 @@ static const struct bpf_func_proto bpf_sk_release_proto = {
->         .func           = bpf_sk_release,
->         .gpl_only       = false,
->         .ret_type       = RET_INTEGER,
-> -       .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
-> +       .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON | PTR_RELEASE,
->  };
->
->  BPF_CALL_5(bpf_xdp_sk_lookup_udp, struct xdp_buff *, ctx,
-> --
-> 2.35.1
->
+yes, that could work.. one copy_from_user seemed faster than separate
+get_user calls, but then it's without memory allocation.. so perhaps
+that's better
+
+jirka
+
+> 
+> > +               err = strncpy_from_user(p, usyms_copy[i], KSYM_NAME_LEN);
+> > +               if (err == KSYM_NAME_LEN)
+> > +                       err = -E2BIG;
+> > +               if (err < 0)
+> > +                       goto error;
+> > +               syms[i] = p;
+> > +               p += err + 1;
+> > +       }
+> > +
+> > +       err = 0;
+> > +       us->syms = syms;
+> > +       us->buf = buf;
+> > +
+> 
+> [...]
