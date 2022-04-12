@@ -2,259 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4954FE7B6
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 20:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFB24FE7BA
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 20:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346792AbiDLSQh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 14:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
+        id S233779AbiDLSSr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 14:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358672AbiDLSQe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 14:16:34 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AFAE13DE8;
-        Tue, 12 Apr 2022 11:14:13 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23CHqPMh030787;
-        Tue, 12 Apr 2022 11:13:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=GfD1eX+u667TggRhzxUucn9C4n3QZ2txuPw2LGUvzIg=;
- b=fpuoCTt3WsZZ2Z37BGqXWQOt2srR9ftmQdmvpugjBLk+nEMHnCgSa7xdqEO8+LiZ1KjL
- KmRX8gUOx+P0eWJCqDp29Vb/2jcGrOtI3xPVH/ClnUJlTUmellPszVaQuQCrQ9VmpXvP
- 6lpjFD5vYQfRN4TRL040LX5k+TAHSPRm4eI= 
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2042.outbound.protection.outlook.com [104.47.74.42])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fdd410qe8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Apr 2022 11:13:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nFSc0H04uqr6fmsyMOC8M5uJAmXaR+4ruiADgSlN7Mcjdy/WzDCmCP8plnToQgS/Se1ZkNyttbKTxI25zhrHjRYivnyDPQjrzPG29YqL/ZpqzIfkTjyELi4tbO1/g5KrXIL4TLVoAkV520/T4RRgGoeg8zRvctSYJ8E5XYYLUsnRSTtrjdGBu7DqjQLIaQAPqzC7VqC41+TF+HcfU8rChxJIxQml9kGi+9Ltm/j+aNC3IrxlhqwOqfkUo619tEdlT71kuB63zxNLO+d08c4S1+N+K05x4wIRdX49LCfH2d/T8dWFWw/yB/szrwwZteAJEeqbhFjymtqyTK5HnB3hkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GfD1eX+u667TggRhzxUucn9C4n3QZ2txuPw2LGUvzIg=;
- b=WLLVWAOScNDq4s4QorvEU//wW525nZ+aZU42nRYnSlHFsnQeAAT6+bs9aWMe4bwQS1goZWHo5FBMMWg5H0X3mnJI3PF3k8OVM/9ao8pEwjhqj3UvXqdLDrYtn1P12LUFL3aAmJpZ22sXRJreDgCaOYsoKeHCvEWXYyp6J62hj0Tdfvymoh2+BR+kk6o3AqmYtkNlVU1aOiwTxRAxrWE2CcXLX3AIy5gKDSUHHguT6UYgiyFcj4CesjtdeMOL5++rQ63z4CgAkGV9ZwmFQqOuy2cP3zJo2oP0Sej9LoMQzCKHmiaXExkvJVW+8AFG9hXMZQTunmU3680g9TQJauzWJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by MW3PR15MB4058.namprd15.prod.outlook.com (2603:10b6:303:4c::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.29; Tue, 12 Apr
- 2022 18:13:55 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::100b:5604:7f1e:e983]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::100b:5604:7f1e:e983%5]) with mapi id 15.20.5144.030; Tue, 12 Apr 2022
- 18:13:55 +0000
-Date:   Tue, 12 Apr 2022 11:13:53 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH bpf-next v3 3/7] bpf: minimize number of allocated lsm
- slots per program
-Message-ID: <20220412181353.zgyl2oy4vl3uyigl@kafai-mbp.dhcp.thefacebook.com>
-References: <20220407223112.1204582-1-sdf@google.com>
- <20220407223112.1204582-4-sdf@google.com>
- <20220408225628.oog4a3qteauhqkdn@kafai-mbp.dhcp.thefacebook.com>
- <CAKH8qBuMMuuUJiZJY8Gb+tMQLKoRGpvv58sSM4sZXjyEc0i7dA@mail.gmail.com>
- <20220412013631.tntvx7lw3c7sw6ur@kafai-mbp.dhcp.thefacebook.com>
- <CAKH8qBvCNVwEmoDyWvA5kEuNkCuVZYtf7RVL4AMXAsMr7aQDZA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKH8qBvCNVwEmoDyWvA5kEuNkCuVZYtf7RVL4AMXAsMr7aQDZA@mail.gmail.com>
-X-ClientProxiedBy: BYAPR07CA0022.namprd07.prod.outlook.com
- (2603:10b6:a02:bc::35) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        with ESMTP id S231250AbiDLSSq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 14:18:46 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16AE5F4FD
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 11:16:27 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id t25so33598904lfg.7
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 11:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j1w264tp/U/lhn6nP4PFV7X3MJpNAda8S3WCY3BI6tE=;
+        b=YJVncCgzdjel36rQqR/Aeebf8QkyoOWdPgR07Q0GC2Y3RIqgpWYqLigLsbVLLdgRXK
+         zr43P4xyxRfyhWYjgYYYqKQY/6V4wpnG0d12ZS2GY6/d1s4rU3Lq0anlWZnT3mJ9ZH1d
+         ZrqVHGDgZF0ncoAUsrrcQQQnftilRhu47F4v9ytYUwfPM/kQW+MuV7cRF0j0YFVQ804b
+         HfcN7iWx9GmsPEugy0jD3QnOG9HJiPqwSpud1KirVL5DyhDbUsxgK7G/NKEmnm/raV2P
+         0QHSvD59QndapOvNMsoVEoLFF15f6Xtg6D2QT7KmiLM+/ppueK2q1uJA0ZEvh58sjdeP
+         TP9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j1w264tp/U/lhn6nP4PFV7X3MJpNAda8S3WCY3BI6tE=;
+        b=27zxLKPw91R284Alh1A7Y8KfJxNJPO6EBxbnMRH9SXVT5XVg+Bli+39rUt4++JfQZv
+         GAfjkD6sgnRsXxo2Pr3ZsKLk3U/xgAzP49WZhIaF3ngx3RsNNbroRfsU+HMXYyVZNXAX
+         KyenH9uWKpHgp5D8bmnkLBtF1tbQSudk49bhAGodLsbjyWxg8PhEyyGPQDZga6tsWjr5
+         iDCF3kDfcg5KjBLoEqyL3ymVNrG1L2gK/DvwwahGk4oz7XcfRz+skIy7JQZuiPoo1oJw
+         bKWJgo+0efDX4Dg+gGFkNIqtMMC/QxA/+THKnY2ZhaEurmsepVsyGBj2kV4TzjI2NBkc
+         5oew==
+X-Gm-Message-State: AOAM531R8FiK7x3d78wBzDSz32vf4Kl/2Mpapn8xdc0fMbjw5EGzv1yK
+        mN+Z9vdK8Q9nB2knIx7zSlDzAonrua5ua3sZwA05Fr2hbOw=
+X-Google-Smtp-Source: ABdhPJyFi8H/QTf13hW57iCeZRPJG9aPVNI2NAerPnLrmdUrU/N7/YGyXpNGBu/hj8jzQng3lIUS5TyS/+J9xlB5X74=
+X-Received: by 2002:a05:6512:2311:b0:44b:4bb:3425 with SMTP id
+ o17-20020a056512231100b0044b04bb3425mr27046588lfu.288.1649787385886; Tue, 12
+ Apr 2022 11:16:25 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d8804922-4c86-462c-8efa-08da1cb034cc
-X-MS-TrafficTypeDiagnostic: MW3PR15MB4058:EE_
-X-Microsoft-Antispam-PRVS: <MW3PR15MB40588D715A77234264CC0631D5ED9@MW3PR15MB4058.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: b6jcnQSprGU2+X0h1GNb6NAvYkcLs0lnf2yzRUUl9rpLIGrw+gtgHXk3vWJZw8krqSK5MVJ0fsyPBF2AQWX8APtm+4HCrw3eTfYe60xi0K4Hzzu60joB1PGJ94MRmsNB96ezNIM5roHSuOQluntFvkUmxuvr9Gvnx0I8lrLCFv8o6BvU7nPiCpsJmDXU/s8eYfsKBXQpvPYhzSeEqf0nJmEStMBqwcBbLR0mWHlqJHhl9JEGf7/K1kXtqv2Tubo9jOPeubpUbMukdrJnqYUYss/68o4N9NUwfaQE1YzNDusuG6MJXhfzuvyZXOYPEMJaO6WXxmVA0f+lXIpgMq3IfciAydNxstZNskCHohmu1cvfmrDlu73u1Np3GRRTb1xs0uO0OM+ymCa++LU6QphKkjv5JN/amWPsJ0HoUHL+x8pAuqlH2n839QPMLHaJExtl7DSxufTO/oqVn8w57j0FRmXkvOFj2cg1flwZYUIH6DkC3M87Y/Lac53UubBBm22cw/w2UzKicRFD1eBQsQ/zYJvQMAJIDLw3igqSerAl1MRqpFuMfVx0rq8N5xVmMuaAtA2TjRECJSMFl4D61g6x8znoIQtSuee3jT2SaOaya6Zc9Nc1/buJZlz6+ik8YSIy2ogkSs2m1duJnfLOVy4ddA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(316002)(86362001)(66946007)(66476007)(66556008)(6916009)(83380400001)(508600001)(52116002)(38100700002)(53546011)(9686003)(6512007)(6506007)(1076003)(4326008)(8676002)(6486002)(8936002)(2906002)(5660300002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oOdRDoEkQ8I1PZf0KRbnzQSUTHsixbi/jyBSyQjtxEIHd4f6m2qE6lFZhzRL?=
- =?us-ascii?Q?TT7XwXVol2+LZjjLv6wX8SUSfxWyOxauAoFt+PQqhkY+kGrbUVjieOAZFZho?=
- =?us-ascii?Q?NRt/jw4gZqDUOr8h/3d4fiI1oka5NCLF2yP7JQ+mF8ehC3DqC0p9nkfHZDeb?=
- =?us-ascii?Q?Gkru70M/DlPUN//p8SxFA2Ctv0IBsu67tvXA+l7U1SFKqlA2WJ6Jbo5dT7RN?=
- =?us-ascii?Q?pUY0oinmKaasMbrdeoml8iyrIFNdqSRmwk56N9z44TxRqzcu6gh92hF69iKh?=
- =?us-ascii?Q?x4O/Gc1a0EXuIr+9LQhvrwF0BKmj1704b5fNtRt2CJZIM63cri14giPeZ+dM?=
- =?us-ascii?Q?I7egPHP1BPDaATTlUuDr9/IXqrayaPUxXW0HiSsoNco7Betz0wziCgKXnQrB?=
- =?us-ascii?Q?vhks56hlrtbXGRocqLMoaXCEy1flyspi6p/Nib+xYcowOCRmg3LIF6TTPboV?=
- =?us-ascii?Q?wamoEILoXbRmjs2vNvgSMC56V8hKLB8NgSVGGqpbl5CZRKV3CDbZ6xz5Hu1S?=
- =?us-ascii?Q?tlM556Z4axxgjBF8cd0enpLd+CeTe2IOB8et/MIEU8x5Ji5nR7iJBN+oBXIf?=
- =?us-ascii?Q?gup/K+iNZSFcHCT5WNcLsHRw2BQoMZb9HTvX9qibIlcXOWfsGPvqJNg9g765?=
- =?us-ascii?Q?Wl5Vv13Nw400JiUOjqgTV/1aC+SiZdWPB4MO+18oVfH+K7NRDkhcpnupemvt?=
- =?us-ascii?Q?HWJH/FNr+JEAqew5EKCepkKFE6i4zDmuwQzugmWNCTIRr6YgyQEs8wu5JL/S?=
- =?us-ascii?Q?tNcJf6/7K2n4le8u2XQvfyrwCkdXM+ljENR5izZyxNvEjoJ8t1H8WykWweoY?=
- =?us-ascii?Q?iw60E/D2vwpHAn81M9UNtjJnZQYa6UP6KS+RgdOOiiNabrm0saoTeh5IDb1f?=
- =?us-ascii?Q?d4kQwj9NaDEDsIiwjafnlPFDkX9N4dcyLl247bpWxHGEszpcD3Y1soxes9Cr?=
- =?us-ascii?Q?dzIyju9PRLrP6+MZlZUPNGY1fz0fe8EEgYVY69r7iyMagdaHJwV8jLoNH47C?=
- =?us-ascii?Q?QuXcEUOxzirXgrGMNTtBs9KJX9NvXQUjUljf59sGv7nof7FmeCQvQ7vcR3vk?=
- =?us-ascii?Q?RRb5haQKpPtCxH4cQ5yYddYECWV6hQogxDmi5+xSEku+wD8Hd4/rOZqIFHz7?=
- =?us-ascii?Q?WfBibmJEprC2QxaK3lYbuj9ljy4L1Q00tT/amR0rsyPY9pxq7NdlCFFELr1M?=
- =?us-ascii?Q?+lkHNQKa6d2BajV7XgXgWY2OqR2sz7ypMriWbm0vkVOHy5ArYpwXweTcacXN?=
- =?us-ascii?Q?7djwx8P8AN0dY+32/5Q5osoTxX5q7fPcAe2J6VvwA9E7vWW9Xgp0FztPOQlN?=
- =?us-ascii?Q?/ZLpFpWIMbeMbhUbOlb5mKo8EX3oo2Mn1UQoYwH5dnmGACP0Oq2lWSsJWZjt?=
- =?us-ascii?Q?8GqvZNTdsuNKIwcr7Ijxs0AIga5JP+/VTfJU6rXTBNgGHcwheZtP4Ibfr29A?=
- =?us-ascii?Q?aLxLJTU70SUl+90qUXQkjhrwzK1pyusnD1UcX3crnpZ7oLJopxyQ5vkVq6+C?=
- =?us-ascii?Q?f45++cxKlqhTFsFn1VYsXmj61lNIy2p9YnYzju0GmNoVwcBouku8vBkHJtS8?=
- =?us-ascii?Q?+A66EJqV57JlqZNIOUcmif8zVV6D1s10sR7QkoftuoHD56k0tlb2hzMNwt5q?=
- =?us-ascii?Q?pHfPcJXwWFYfkPQ6csrTI55t8zd01UlXfUPtiU3cc9sxyczCuyuN8CwyoJgR?=
- =?us-ascii?Q?5sJDgyTIj107iXZ0BXwPTt13igPRnBH2mxBxb8jHfUKopowKAsIKtWBgqA4K?=
- =?us-ascii?Q?TlXOBYFDzI20Q8oRznGWOPXFmgBQWZk=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8804922-4c86-462c-8efa-08da1cb034cc
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2022 18:13:55.3239
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: njyWcUlSPfigdEwK4LIpAcwxKpP96uryqMJTUU/nMOCICsdlMMpMdobPPIZB271a
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB4058
-X-Proofpoint-ORIG-GUID: gcN1SGCwnItzbvk4NjJkGVYTpcB4Z_OQ
-X-Proofpoint-GUID: gcN1SGCwnItzbvk4NjJkGVYTpcB4Z_OQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-12_06,2022-04-12_02,2022-02-23_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220409093303.499196-1-memxor@gmail.com> <20220409093303.499196-5-memxor@gmail.com>
+In-Reply-To: <20220409093303.499196-5-memxor@gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 12 Apr 2022 11:16:14 -0700
+Message-ID: <CAJnrk1ZJpbsO54J9jGKFdW9Li5WHTbK=rCrL0FYUb-0X1yq_AA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 04/13] bpf: Tag argument to be released in bpf_func_proto
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 09:42:40AM -0700, Stanislav Fomichev wrote:
-> On Mon, Apr 11, 2022 at 6:36 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Mon, Apr 11, 2022 at 11:46:20AM -0700, Stanislav Fomichev wrote:
-> > > On Fri, Apr 8, 2022 at 3:57 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > >
-> > > > On Thu, Apr 07, 2022 at 03:31:08PM -0700, Stanislav Fomichev wrote:
-> > > > > Previous patch adds 1:1 mapping between all 211 LSM hooks
-> > > > > and bpf_cgroup program array. Instead of reserving a slot per
-> > > > > possible hook, reserve 10 slots per cgroup for lsm programs.
-> > > > > Those slots are dynamically allocated on demand and reclaimed.
-> > > > > This still adds some bloat to the cgroup and brings us back to
-> > > > > roughly pre-cgroup_bpf_attach_type times.
-> > > > >
-> > > > > It should be possible to eventually extend this idea to all hooks if
-> > > > > the memory consumption is unacceptable and shrink overall effective
-> > > > > programs array.
-> > > > >
-> > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > > ---
-> > > > >  include/linux/bpf-cgroup-defs.h |  4 +-
-> > > > >  include/linux/bpf_lsm.h         |  6 ---
-> > > > >  kernel/bpf/bpf_lsm.c            |  9 ++--
-> > > > >  kernel/bpf/cgroup.c             | 96 ++++++++++++++++++++++++++++-----
-> > > > >  4 files changed, 90 insertions(+), 25 deletions(-)
-> > > > >
-> > > > > diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
-> > > > > index 6c661b4df9fa..d42516e86b3a 100644
-> > > > > --- a/include/linux/bpf-cgroup-defs.h
-> > > > > +++ b/include/linux/bpf-cgroup-defs.h
-> > > > > @@ -10,7 +10,9 @@
-> > > > >
-> > > > >  struct bpf_prog_array;
-> > > > >
-> > > > > -#define CGROUP_LSM_NUM 211 /* will be addressed in the next patch */
-> > > > > +/* Maximum number of concurrently attachable per-cgroup LSM hooks.
-> > > > > + */
-> > > > > +#define CGROUP_LSM_NUM 10
-> > > > hmm...only 10 different lsm hooks (or 10 different attach_btf_ids) can
-> > > > have BPF_LSM_CGROUP programs attached.  This feels quite limited but having
-> > > > a static 211 (and potentially growing in the future) is not good either.
-> > > > I currently do not have a better idea also. :/
-> > > >
-> > > > Have you thought about other dynamic schemes or they would be too slow ?
-> > > >
-> > > > >  enum cgroup_bpf_attach_type {
-> > > > >       CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
-> > > > > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> > > > > index 7f0e59f5f9be..613de44aa429 100644
-> > > > > --- a/include/linux/bpf_lsm.h
-> > > > > +++ b/include/linux/bpf_lsm.h
-> > > > > @@ -43,7 +43,6 @@ extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
-> > > > >  void bpf_inode_storage_free(struct inode *inode);
-> > > > >
-> > > > >  int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
-> > > > > -int bpf_lsm_hook_idx(u32 btf_id);
-> > > > >
-> > > > >  #else /* !CONFIG_BPF_LSM */
-> > > > >
-> > > > > @@ -74,11 +73,6 @@ static inline int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
-> > > > >       return -ENOENT;
-> > > > >  }
-> > > > >
-> > > > > -static inline int bpf_lsm_hook_idx(u32 btf_id)
-> > > > > -{
-> > > > > -     return -EINVAL;
-> > > > > -}
-> > > > > -
-> > > > >  #endif /* CONFIG_BPF_LSM */
-> > > > >
-> > > > >  #endif /* _LINUX_BPF_LSM_H */
-> > > > > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> > > > > index eca258ba71d8..8b948ec9ab73 100644
-> > > > > --- a/kernel/bpf/bpf_lsm.c
-> > > > > +++ b/kernel/bpf/bpf_lsm.c
-> > > > > @@ -57,10 +57,12 @@ static unsigned int __cgroup_bpf_run_lsm_socket(const void *ctx,
-> > > > >       if (unlikely(!sk))
-> > > > >               return 0;
-> > > > >
-> > > > > +     rcu_read_lock(); /* See bpf_lsm_attach_type_get(). */
-> > > > >       cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> > > > >       if (likely(cgrp))
-> > > > >               ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[prog->aux->cgroup_atype],
-> > > > >                                           ctx, bpf_prog_run, 0);
-> > > > > +     rcu_read_unlock();
-> > > > >       return ret;
-> > > > >  }
-> > > > >
-> > > > > @@ -77,7 +79,7 @@ static unsigned int __cgroup_bpf_run_lsm_current(const void *ctx,
-> > > > >       /*prog = container_of(insn, struct bpf_prog, insnsi);*/
-> > > > >       prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
-> > > > >
-> > > > > -     rcu_read_lock();
-> > > > > +     rcu_read_lock(); /* See bpf_lsm_attach_type_get(). */
-> > > > I think this is also needed for task_dfl_cgroup().  If yes,
-> > > > will be a good idea to adjust the comment if it ends up
-> > > > using the 'CGROUP_LSM_NUM 10' scheme.
-> > > >
-> > > > While at rcu_read_lock(), have you thought about what major things are
-> > > > needed to make BPF_LSM_CGROUP sleepable ?
-> > > >
-> > > > The cgroup local storage could be one that require changes but it seems
-> > > > the cgroup local storage is not available to BPF_LSM_GROUP in this change set.
-> > > > The current use case doesn't need it?
-> > >
-> > > No, I haven't thought about sleepable at all yet :-( But seems like
-> > > having that rcu lock here might be problematic if we want to sleep? In
-> > > this case, Jakub's suggestion seems better.
-> > The new rcu_read_lock() here seems fine after some thoughts.
-> >
-> > I was looking at the helpers in cgroup_base_func_proto() to get a sense
-> > on sleepable support.  Only the bpf_get_local_storage caught my eyes for
-> > now because it uses a call_rcu to free the storage.  That will be the
-> > major one to change for sleepable that I can think of for now.
-> 
-> That rcu_read_lock should be switched over to rcu_read_lock_trace in
-> the sleepable case I'm assuming? Are we allowed to sleep while holding
-> rcu_read_lock_trace?
-Ah. right, suddenly forgot the obvious in between emails :(
+On Sun, Apr 10, 2022 at 11:58 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> Add a new type flag for bpf_arg_type that when set tells verifier that
+> for a release function, that argument's register will be the one for
+> which meta.ref_obj_id will be set, and which will then be released
+> using release_reference. To capture the regno, introduce a new field
+> release_regno in bpf_call_arg_meta.
+>
+> This would be required in the next patch, where we may either pass NULL
+> or a refcounted pointer as an argument to the release function
+> bpf_kptr_xchg. Just releasing only when meta.ref_obj_id is set is not
+> enough, as there is a case where the type of argument needed matches,
+> but the ref_obj_id is set to 0. Hence, we must enforce that whenever
+> meta.ref_obj_id is zero, the register that is to be released can only
+> be NULL for a release function.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h   |  5 ++++-
+>  kernel/bpf/ringbuf.c  |  4 ++--
+>  kernel/bpf/verifier.c | 46 ++++++++++++++++++++++++++++++++++++-------
+>  net/core/filter.c     |  2 +-
+>  4 files changed, 46 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index e267db260cb7..a6d1982e8118 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -364,7 +364,10 @@ enum bpf_type_flag {
+>          */
+>         MEM_PERCPU              = BIT(4 + BPF_BASE_TYPE_BITS),
+>
+> -       __BPF_TYPE_LAST_FLAG    = MEM_PERCPU,
+> +       /* Indicates that the pointer argument will be released. */
+> +       PTR_RELEASE             = BIT(5 + BPF_BASE_TYPE_BITS),
+> +
+> +       __BPF_TYPE_LAST_FLAG    = PTR_RELEASE,
+>  };
+>
+>  /* Max number of base types. */
+> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> index 710ba9de12ce..a22c21c0a7ef 100644
+> --- a/kernel/bpf/ringbuf.c
+> +++ b/kernel/bpf/ringbuf.c
+> @@ -404,7 +404,7 @@ BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
+>  const struct bpf_func_proto bpf_ringbuf_submit_proto = {
+>         .func           = bpf_ringbuf_submit,
+>         .ret_type       = RET_VOID,
+> -       .arg1_type      = ARG_PTR_TO_ALLOC_MEM,
+> +       .arg1_type      = ARG_PTR_TO_ALLOC_MEM | PTR_RELEASE,
+>         .arg2_type      = ARG_ANYTHING,
+>  };
+>
+> @@ -417,7 +417,7 @@ BPF_CALL_2(bpf_ringbuf_discard, void *, sample, u64, flags)
+>  const struct bpf_func_proto bpf_ringbuf_discard_proto = {
+>         .func           = bpf_ringbuf_discard,
+>         .ret_type       = RET_VOID,
+> -       .arg1_type      = ARG_PTR_TO_ALLOC_MEM,
+> +       .arg1_type      = ARG_PTR_TO_ALLOC_MEM | PTR_RELEASE,
+>         .arg2_type      = ARG_ANYTHING,
+>  };
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 01d45c5010f9..6cc08526e049 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -245,6 +245,7 @@ struct bpf_call_arg_meta {
+>         struct bpf_map *map_ptr;
+>         bool raw_mode;
+>         bool pkt_access;
+> +       u8 release_regno;
+>         int regno;
+>         int access_size;
+>         int mem_size;
+> @@ -5300,6 +5301,11 @@ static bool arg_type_is_int_ptr(enum bpf_arg_type type)
+>                type == ARG_PTR_TO_LONG;
+>  }
+>
+> +static bool arg_type_is_release_ptr(enum bpf_arg_type type)
+> +{
+> +       return type & PTR_RELEASE;
+> +}
+> +
+Now that we have PTR_RELEASE as a bpf arg type descriptor, why do we
+still need is_release_function() in the verifier? I think we should
+just remove is_release_function() altogether - is_release_function()
+isn't functionally necessary now that we have PTR_RELEASE, and I don't
+think it's great that is_release_function() hardcodes specific
+functions into the verifier. What are your thoughts?
 
-In that sense, may as well remove the rcu_read_lock() here and let
-the trampoline to decide which one (rcu_read_lock or rcu_read_lock_trace)
-to call before calling the shim_prog.  The __bpf_prog_enter(_sleepable) will
-call the right rcu_read_lock(_trace) based on the prog is sleepable or not.
+>  static int int_ptr_type_to_size(enum bpf_arg_type type)
+>  {
+>         if (type == ARG_PTR_TO_INT)
+> @@ -5532,7 +5538,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>                 /* Some of the argument types nevertheless require a
+>                  * zero register offset.
+>                  */
+> -               if (arg_type != ARG_PTR_TO_ALLOC_MEM)
+> +               if (base_type(arg_type) != ARG_PTR_TO_ALLOC_MEM)
+>                         return 0;
+>                 break;
+>         /* All the rest must be rejected, except PTR_TO_BTF_ID which allows
+
+Later on in this check_func_arg_reg_off() function, I think we can get
+rid of the hacky workaround for the PTR_TO_BTF_ID case where it relies
+on whether the function is a release function and reg->ref_obj_id is
+set, to determine whether the argument is a release arg or not. The
+arg type is passed directly to check_func_arg_reg_off(), so I think we
+could just use arg_type_is_release_ptr(arg_type) instead, which will
+also be more robust when/if we support having multiple release args in
+the future.
+
+> @@ -6124,12 +6130,31 @@ static bool check_btf_id_ok(const struct bpf_func_proto *fn)
+>         return true;
+>  }
+>
+> -static int check_func_proto(const struct bpf_func_proto *fn, int func_id)
+> +static bool check_release_regno(const struct bpf_func_proto *fn, int func_id,
+> +                               struct bpf_call_arg_meta *meta)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(fn->arg_type); i++) {
+> +               if (arg_type_is_release_ptr(fn->arg_type[i])) {
+> +                       if (!is_release_function(func_id))
+> +                               return false;
+> +                       if (meta->release_regno)
+> +                               return false;
+> +                       meta->release_regno = i + 1;
+> +               }
+> +       }
+> +       return !is_release_function(func_id) || meta->release_regno;
+> +}
+Is this check needed? There's already a check in check_func_arg that
+there can't be two arg registers with ref_obj_ids set. I think this
+already checks against the case where the user tries to pass in two
+release registers as arguments.
+> +
+> +static int check_func_proto(const struct bpf_func_proto *fn, int func_id,
+> +                           struct bpf_call_arg_meta *meta)
+>  {
+>         return check_raw_mode_ok(fn) &&
+>                check_arg_pair_ok(fn) &&
+>                check_btf_id_ok(fn) &&
+> -              check_refcount_ok(fn, func_id) ? 0 : -EINVAL;
+> +              check_refcount_ok(fn, func_id) &&
+> +              check_release_regno(fn, func_id, meta) ? 0 : -EINVAL;
+>  }
+>
+>  /* Packet data might have moved, any old PTR_TO_PACKET[_META,_END]
+> @@ -6808,7 +6833,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>         memset(&meta, 0, sizeof(meta));
+>         meta.pkt_access = fn->pkt_access;
+>
+> -       err = check_func_proto(fn, func_id);
+> +       err = check_func_proto(fn, func_id, &meta);
+>         if (err) {
+>                 verbose(env, "kernel subsystem misconfigured func %s#%d\n",
+>                         func_id_name(func_id), func_id);
+> @@ -6841,8 +6866,17 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                         return err;
+>         }
+>
+> +       regs = cur_regs(env);
+> +
+>         if (is_release_function(func_id)) {
+> -               err = release_reference(env, meta.ref_obj_id);
+> +               err = -EINVAL;
+> +               if (meta.ref_obj_id)
+> +                       err = release_reference(env, meta.ref_obj_id);
+> +               /* meta.ref_obj_id can only be 0 if register that is meant to be
+> +                * released is NULL, which must be > R0.
+> +                */
+> +               else if (meta.release_regno && register_is_null(&regs[meta.release_regno]))
+> +                       err = 0;
+>                 if (err) {
+>                         verbose(env, "func %s#%d reference has not been acquired before\n",
+>                                 func_id_name(func_id), func_id);
+> @@ -6850,8 +6884,6 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                 }
+>         }
+>
+> -       regs = cur_regs(env);
+> -
+>         switch (func_id) {
+>         case BPF_FUNC_tail_call:
+>                 err = check_reference_leak(env);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 143f442a9505..8eb01a997476 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6621,7 +6621,7 @@ static const struct bpf_func_proto bpf_sk_release_proto = {
+>         .func           = bpf_sk_release,
+>         .gpl_only       = false,
+>         .ret_type       = RET_INTEGER,
+> -       .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> +       .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON | PTR_RELEASE,
+>  };
+>
+>  BPF_CALL_5(bpf_xdp_sk_lookup_udp, struct xdp_buff *, ctx,
+> --
+> 2.35.1
+>
