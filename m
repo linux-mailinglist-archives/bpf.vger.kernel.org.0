@@ -2,182 +2,244 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBD94FE979
-	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 22:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCA54FE98D
+	for <lists+bpf@lfdr.de>; Tue, 12 Apr 2022 22:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbiDLUiB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 16:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
+        id S229582AbiDLUnq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 16:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231608AbiDLUhu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 16:37:50 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A4EFABE6;
-        Tue, 12 Apr 2022 13:32:29 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id k23so39570133ejd.3;
-        Tue, 12 Apr 2022 13:32:28 -0700 (PDT)
+        with ESMTP id S231136AbiDLUnT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 16:43:19 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEAE4F69
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 13:38:02 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id c199so13042502qkg.4
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 13:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=m1dR6jtUuMTJiOEauYrZ+LgWz+ZA4crd9zsyU4t9Jps=;
-        b=C8jkE0dJScs5ZfDVUMAGI83DPAYueYpncxIN1ENu5DuHkYvQ9fAArTRGRj0b8ZWZ87
-         2SC+M2RWQN4eJa+rXcdScpp/hjgrX/t4r5l8fasRpp/XAGas5mJuLTP7JRJphIXcpOna
-         ws9E1finUVliP65HHEAJi1tBBcdKru0m6IGFFVCOBZHY8gPiFC8H8U28PvHKYC0zEaQy
-         YPg7gMES0WtfPA6Ig/jfJTIizEetGJZ+9x6z11VArTgg1OXOYDUR4Zo9vdZd9GM32GQD
-         G20PPB06YLStneJ3/l3SVv6GkJ6rnyEiNWI/sCZTljqRukcSAfODyR04vGB2FFazZ/IS
-         xAFA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cx0C4tMaCISN1ACreZbY76eW6BYh3wj8ZMbXv3CWkb8=;
+        b=fTkuR1ucc0yo85cXtbakg9i2wjQWkrtAJkry/L7aVMeTLHa206NyWtdFBSn572hTlH
+         sarQm2a7qI2jc91ckhjcG4OTz3U2/SdL3lITBkh9K6fTORNM3otC8PuwnAfI/oqQkWtS
+         QrwNOb3BfNsVjsiOr8W20drUFIXyPMnwdMxFHMwpIqCRr4xwMcrPsLI07ZxyoAiJT0R9
+         904DJcQR9zEAMi5xo5Et4b7voFcRwvBtHf96mB2lNZuIc9zDFf/gKchQEAfvkLlPWfRG
+         DAzHpuXwKp+yv6JlY1njXXrKekGGDMPYv2LDyhEajnxvXhKhIgeFCCXjePGKK/7TIFPT
+         kaBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=m1dR6jtUuMTJiOEauYrZ+LgWz+ZA4crd9zsyU4t9Jps=;
-        b=0hnMATVzMetvCuGHvTGPunNU+cMXCDkRPQDR4ppNzlvWuFrb82JY7uB2sjibmpG79s
-         0Zusxz1lKzLskJ7Ap/tI+GCrrhd+kxeCN/3POcmT9DDzAwU4DCXS2tWlz334dPlKPpVM
-         O/Vzaydp8GI24uiDguf5w2SpfyZGtYVhFAB3zQeYyOwhM8U8DwBWF2UoX3UowQEtg2g6
-         56SLDJErxvFkNmzE1Bsy4QeM/p9Gi/8vOiIYAlqhgYR+y3/0qr+Gv1DRUOoKBuKzCWik
-         b3ORdS86dO2Nu7tBKKqt3GTgYk88Z17ea44LoatYCmyqZ6XDoAGgkBgDGoT23x85qFfd
-         XiHw==
-X-Gm-Message-State: AOAM533ttoMGPCYSYE6qMAKBwaJMt8Lcr++w8lVg1aZCYYsgBTnBcAZL
-        PZ5EmydDgT9UIljUifZ8LQg=
-X-Google-Smtp-Source: ABdhPJzoqgZY1Fzi3tDWeNv95O5vo5WqtkWp4njg1R9WLNFOF0sChdYh4Zv3X10dQEpDaUUp9YkxUQ==
-X-Received: by 2002:a17:907:7815:b0:6ce:5242:1280 with SMTP id la21-20020a170907781500b006ce52421280mr36153644ejc.217.1649795293117;
-        Tue, 12 Apr 2022 13:28:13 -0700 (PDT)
-Received: from krava ([83.240.62.142])
-        by smtp.gmail.com with ESMTPSA id r3-20020aa7cb83000000b0041b573e2654sm210558edt.94.2022.04.12.13.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Apr 2022 13:28:12 -0700 (PDT)
-Date:   Tue, 12 Apr 2022 22:28:09 +0200
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC bpf-next 1/4] kallsyms: Add kallsyms_lookup_names function
-Message-ID: <YlXg2SD4871l/uiW@krava>
-References: <20220407125224.310255-1-jolsa@kernel.org>
- <20220407125224.310255-2-jolsa@kernel.org>
- <CAEf4BzYffXGFigxywjP391s4G=6VpykxaqD5OYuOR5mBRa1Tmw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cx0C4tMaCISN1ACreZbY76eW6BYh3wj8ZMbXv3CWkb8=;
+        b=gVKAC4+a71KiPLXumSMK1DQAXF4OBZtSXpsPPvX6jHzRYCInHzXSRWtw1lpEn9jmA9
+         M11Z+yUq3RqEyZxWi0PZTIhzjZGPinsFaoBNq73SXlnaxsH4DdPhQH6BOJNcIU81et2s
+         N7ggyCjNa9RVr/lGKP5AVHYDEClqCtH07DpsqoDzFFBa+18xtiK3/iyzQdg9ox/cU5KF
+         FKX/B5Zdl0P9KtL3v77K+16DKgMdCUrLRmEyT6nr50y/Z5KYa7hKWz0rbrDBwSMGJkZS
+         Exct+A4SbhVg2tl44jcXpwZFmvCXKYoUGtzbI2aw4Q3IIllKJvjy/5Ng/jmkZitJWKHx
+         W6Aw==
+X-Gm-Message-State: AOAM531uRzFQybXtDiOR8QJNL+tpPn8PzjhvIOO5GVKAFIgHaBvd0gt2
+        /jXOIhIuIFBWVvVp8Gps3eEYeKjFOBJ+N7x3ZeyNoQ==
+X-Google-Smtp-Source: ABdhPJwtR+laHbAIlHMQv3p1JYo/4gQ1LQvFlU+04mlMGyvvq3lCrzPtKV0YcX06Y+HYVHCRuq3hVJIsIQwltEg/mXI=
+X-Received: by 2002:ae9:eb01:0:b0:69c:10ca:ed6 with SMTP id
+ b1-20020ae9eb01000000b0069c10ca0ed6mr4457091qkg.496.1649795817485; Tue, 12
+ Apr 2022 13:36:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYffXGFigxywjP391s4G=6VpykxaqD5OYuOR5mBRa1Tmw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220407223112.1204582-1-sdf@google.com> <20220407223112.1204582-4-sdf@google.com>
+ <20220408225628.oog4a3qteauhqkdn@kafai-mbp.dhcp.thefacebook.com>
+ <CAKH8qBuMMuuUJiZJY8Gb+tMQLKoRGpvv58sSM4sZXjyEc0i7dA@mail.gmail.com>
+ <20220412013631.tntvx7lw3c7sw6ur@kafai-mbp.dhcp.thefacebook.com>
+ <CAKH8qBvCNVwEmoDyWvA5kEuNkCuVZYtf7RVL4AMXAsMr7aQDZA@mail.gmail.com>
+ <20220412181353.zgyl2oy4vl3uyigl@kafai-mbp.dhcp.thefacebook.com>
+ <CAKH8qBuc8gVcS6GbSx4P6w2j6jTVXX8QROBjFW953mp0ejQqRA@mail.gmail.com> <20220412201948.b2jnefks5ptrt3yd@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220412201948.b2jnefks5ptrt3yd@kafai-mbp.dhcp.thefacebook.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 12 Apr 2022 13:36:45 -0700
+Message-ID: <CAKH8qBtBOcDyMUc63VGnAEU1vhcH0hmWOi3csRhwwVG7PvH-qA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/7] bpf: minimize number of allocated lsm
+ slots per program
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 03:15:23PM -0700, Andrii Nakryiko wrote:
-
-SNIP
-
-> >  static inline int kallsyms_lookup_size_offset(unsigned long addr,
-> >                                               unsigned long *symbolsize,
-> >                                               unsigned long *offset)
-> > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> > index 79f2eb617a62..a3738ddf9e87 100644
-> > --- a/kernel/kallsyms.c
-> > +++ b/kernel/kallsyms.c
-> > @@ -29,6 +29,8 @@
-> >  #include <linux/compiler.h>
-> >  #include <linux/module.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/bsearch.h>
-> > +#include <linux/sort.h>
+On Tue, Apr 12, 2022 at 1:19 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Apr 12, 2022 at 12:01:41PM -0700, Stanislav Fomichev wrote:
+> > On Tue, Apr 12, 2022 at 11:13 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Tue, Apr 12, 2022 at 09:42:40AM -0700, Stanislav Fomichev wrote:
+> > > > On Mon, Apr 11, 2022 at 6:36 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > > >
+> > > > > On Mon, Apr 11, 2022 at 11:46:20AM -0700, Stanislav Fomichev wrote:
+> > > > > > On Fri, Apr 8, 2022 at 3:57 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > > > > >
+> > > > > > > On Thu, Apr 07, 2022 at 03:31:08PM -0700, Stanislav Fomichev wrote:
+> > > > > > > > Previous patch adds 1:1 mapping between all 211 LSM hooks
+> > > > > > > > and bpf_cgroup program array. Instead of reserving a slot per
+> > > > > > > > possible hook, reserve 10 slots per cgroup for lsm programs.
+> > > > > > > > Those slots are dynamically allocated on demand and reclaimed.
+> > > > > > > > This still adds some bloat to the cgroup and brings us back to
+> > > > > > > > roughly pre-cgroup_bpf_attach_type times.
+> > > > > > > >
+> > > > > > > > It should be possible to eventually extend this idea to all hooks if
+> > > > > > > > the memory consumption is unacceptable and shrink overall effective
+> > > > > > > > programs array.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > > > > > ---
+> > > > > > > >  include/linux/bpf-cgroup-defs.h |  4 +-
+> > > > > > > >  include/linux/bpf_lsm.h         |  6 ---
+> > > > > > > >  kernel/bpf/bpf_lsm.c            |  9 ++--
+> > > > > > > >  kernel/bpf/cgroup.c             | 96 ++++++++++++++++++++++++++++-----
+> > > > > > > >  4 files changed, 90 insertions(+), 25 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+> > > > > > > > index 6c661b4df9fa..d42516e86b3a 100644
+> > > > > > > > --- a/include/linux/bpf-cgroup-defs.h
+> > > > > > > > +++ b/include/linux/bpf-cgroup-defs.h
+> > > > > > > > @@ -10,7 +10,9 @@
+> > > > > > > >
+> > > > > > > >  struct bpf_prog_array;
+> > > > > > > >
+> > > > > > > > -#define CGROUP_LSM_NUM 211 /* will be addressed in the next patch */
+> > > > > > > > +/* Maximum number of concurrently attachable per-cgroup LSM hooks.
+> > > > > > > > + */
+> > > > > > > > +#define CGROUP_LSM_NUM 10
+> > > > > > > hmm...only 10 different lsm hooks (or 10 different attach_btf_ids) can
+> > > > > > > have BPF_LSM_CGROUP programs attached.  This feels quite limited but having
+> > > > > > > a static 211 (and potentially growing in the future) is not good either.
+> > > > > > > I currently do not have a better idea also. :/
+> > > > > > >
+> > > > > > > Have you thought about other dynamic schemes or they would be too slow ?
+> > > > > > >
+> > > > > > > >  enum cgroup_bpf_attach_type {
+> > > > > > > >       CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
+> > > > > > > > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > > > > > > > index 7f0e59f5f9be..613de44aa429 100644
+> > > > > > > > --- a/include/linux/bpf_lsm.h
+> > > > > > > > +++ b/include/linux/bpf_lsm.h
+> > > > > > > > @@ -43,7 +43,6 @@ extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
+> > > > > > > >  void bpf_inode_storage_free(struct inode *inode);
+> > > > > > > >
+> > > > > > > >  int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
+> > > > > > > > -int bpf_lsm_hook_idx(u32 btf_id);
+> > > > > > > >
+> > > > > > > >  #else /* !CONFIG_BPF_LSM */
+> > > > > > > >
+> > > > > > > > @@ -74,11 +73,6 @@ static inline int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+> > > > > > > >       return -ENOENT;
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > -static inline int bpf_lsm_hook_idx(u32 btf_id)
+> > > > > > > > -{
+> > > > > > > > -     return -EINVAL;
+> > > > > > > > -}
+> > > > > > > > -
+> > > > > > > >  #endif /* CONFIG_BPF_LSM */
+> > > > > > > >
+> > > > > > > >  #endif /* _LINUX_BPF_LSM_H */
+> > > > > > > > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > > > > > > > index eca258ba71d8..8b948ec9ab73 100644
+> > > > > > > > --- a/kernel/bpf/bpf_lsm.c
+> > > > > > > > +++ b/kernel/bpf/bpf_lsm.c
+> > > > > > > > @@ -57,10 +57,12 @@ static unsigned int __cgroup_bpf_run_lsm_socket(const void *ctx,
+> > > > > > > >       if (unlikely(!sk))
+> > > > > > > >               return 0;
+> > > > > > > >
+> > > > > > > > +     rcu_read_lock(); /* See bpf_lsm_attach_type_get(). */
+> > > > > > > >       cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> > > > > > > >       if (likely(cgrp))
+> > > > > > > >               ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[prog->aux->cgroup_atype],
+> > > > > > > >                                           ctx, bpf_prog_run, 0);
+> > > > > > > > +     rcu_read_unlock();
+> > > > > > > >       return ret;
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > @@ -77,7 +79,7 @@ static unsigned int __cgroup_bpf_run_lsm_current(const void *ctx,
+> > > > > > > >       /*prog = container_of(insn, struct bpf_prog, insnsi);*/
+> > > > > > > >       prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
+> > > > > > > >
+> > > > > > > > -     rcu_read_lock();
+> > > > > > > > +     rcu_read_lock(); /* See bpf_lsm_attach_type_get(). */
+> > > > > > > I think this is also needed for task_dfl_cgroup().  If yes,
+> > > > > > > will be a good idea to adjust the comment if it ends up
+> > > > > > > using the 'CGROUP_LSM_NUM 10' scheme.
+> > > > > > >
+> > > > > > > While at rcu_read_lock(), have you thought about what major things are
+> > > > > > > needed to make BPF_LSM_CGROUP sleepable ?
+> > > > > > >
+> > > > > > > The cgroup local storage could be one that require changes but it seems
+> > > > > > > the cgroup local storage is not available to BPF_LSM_GROUP in this change set.
+> > > > > > > The current use case doesn't need it?
+> > > > > >
+> > > > > > No, I haven't thought about sleepable at all yet :-( But seems like
+> > > > > > having that rcu lock here might be problematic if we want to sleep? In
+> > > > > > this case, Jakub's suggestion seems better.
+> > > > > The new rcu_read_lock() here seems fine after some thoughts.
+> > > > >
+> > > > > I was looking at the helpers in cgroup_base_func_proto() to get a sense
+> > > > > on sleepable support.  Only the bpf_get_local_storage caught my eyes for
+> > > > > now because it uses a call_rcu to free the storage.  That will be the
+> > > > > major one to change for sleepable that I can think of for now.
+> > > >
+> > > > That rcu_read_lock should be switched over to rcu_read_lock_trace in
+> > > > the sleepable case I'm assuming? Are we allowed to sleep while holding
+> > > > rcu_read_lock_trace?
+> > > Ah. right, suddenly forgot the obvious in between emails :(
+> > >
+> > > In that sense, may as well remove the rcu_read_lock() here and let
+> > > the trampoline to decide which one (rcu_read_lock or rcu_read_lock_trace)
+> > > to call before calling the shim_prog.  The __bpf_prog_enter(_sleepable) will
+> > > call the right rcu_read_lock(_trace) based on the prog is sleepable or not.
 > >
-> >  /*
-> >   * These will be re-linked against their real values
-> > @@ -572,6 +574,52 @@ int sprint_backtrace_build_id(char *buffer, unsigned long address)
-> >         return __sprint_symbol(buffer, address, -1, 1, 1);
-> >  }
+> > Removing rcu_read_lock in __cgroup_bpf_run_lsm_current might be
+> > problematic because we also want to guarantee current's cgroup doesn't
+> > go away. I'm assuming things like task migrating to a new cgroup and
+> > the old one being freed can happen while we are trying to get cgroup's
+> > effective array.
+> Right, sleepable one may need a short rcu_read_lock only upto
+> a point that the cgrp->bpf.effective[...] is obtained.
+> call_rcu_tasks_trace() is then needed to free the bpf_prog_array.
+>
+> The future sleepable one may be better off to have a different shim func,
+> not sure.  rcu_read_lock() can be added back later if it ends up reusing
+> the same shim func is cleaner.
+
+In this case I'll probably have rcu_read_lock for
+cgroup+bpf_lsm_attach_type_get for the current shim.
+
+> > I guess BPF_PROG_RUN_ARRAY_CG will also need some work before
+> > sleepable can happen (it calls rcu_read_lock unconditionally).
+> Yep.  I think so.
+>
 > >
-> > +static int symbols_cmp(const void *a, const void *b)
-> 
-> isn't this literally strcmp? Or compiler will actually complain about
-> const void * vs const char *?
+> > Also, it doesn't seem like BPF_PROG_RUN_ARRAY_CG rcu usage is correct.
+> > It receives __rcu array_rcu, takes rcu read lock and does deref. I'm
+> > assuming that array_rcu can be free'd before we even get to
+> > BPF_PROG_RUN_ARRAY_CG's rcu_read_lock? (so having rcu_read_lock around
+> > BPF_PROG_RUN_ARRAY_CG makes sense)
+> BPF_PROG_RUN_ARRAY_CG is __always_inline though.
 
-yes..
+Does it help? This should still expand to the following, right?
 
-kernel/kallsyms.c: In function ‘kallsyms_callback’:
-kernel/kallsyms.c:597:73: error: passing argument 5 of ‘bsearch’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-  597 |         if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), strcmp))
-      |                                                                         ^~~~~~
-      |                                                                         |
-      |                                                                         int (*)(const char *, const char *)
+array_rcu = cgrp->bpf.effective[atype];
 
+/* theoretically, array_rcu can be freed here? */
 
-> 
-> > +{
-> > +       const char **str_a = (const char **) a;
-> > +       const char **str_b = (const char **) b;
-> > +
-> > +       return strcmp(*str_a, *str_b);
-> > +}
-> > +
-> > +struct kallsyms_data {
-> > +       unsigned long *addrs;
-> > +       const char **syms;
-> > +       u32 cnt;
-> > +       u32 found;
-> > +};
-> > +
-> > +static int kallsyms_callback(void *data, const char *name,
-> > +                            struct module *mod, unsigned long addr)
-> > +{
-> > +       struct kallsyms_data *args = data;
-> > +
-> > +       if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
-> > +               return 0;
-> > +
-> > +       addr = ftrace_location(addr);
-> > +       if (!addr)
-> > +               return 0;
-> > +
-> > +       args->addrs[args->found++] = addr;
-> > +       return args->found == args->cnt ? 1 : 0;
-> > +}
-> > +
-> > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs)
-> > +{
-> > +       struct kallsyms_data args;
-> > +
-> > +       sort(syms, cnt, sizeof(*syms), symbols_cmp, NULL);
-> > +
-> > +       args.addrs = addrs;
-> > +       args.syms = syms;
-> > +       args.cnt = cnt;
-> > +       args.found = 0;
-> > +       kallsyms_on_each_symbol(kallsyms_callback, &args);
-> > +
-> > +       return args.found == args.cnt ? 0 : -EINVAL;
-> 
-> ESRCH or ENOENT makes a bit more sense as an error?
+rcu_read_lock();
+array = rcu_dereference(array_rcu);
+...
 
-ok
-
-jirka
-
-> 
-> 
-> > +}
-> > +
-> >  /* To avoid using get_symbol_offset for every symbol, we carry prefix along. */
-> >  struct kallsym_iter {
-> >         loff_t pos;
-> > --
-> > 2.35.1
-> >
+Feels like the callers of BPF_PROG_RUN_ARRAY_CG really have to care
+about rcu locking, not the BPF_PROG_RUN_ARRAY_CG itself.
