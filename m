@@ -2,127 +2,301 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0A44FED6E
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 05:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567E74FED74
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 05:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbiDMDUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 23:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        id S229890AbiDMDZX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 23:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbiDMDUE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 23:20:04 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762D9247
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 20:17:44 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id x4so507827iop.7
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 20:17:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4UQjjYWqmxOfJJBzJdrxYWYEuLv+9WugfhSWsQ4beqk=;
-        b=n9eXAHqXtklUy78v22oNbHiP9V0pNd6w60VPojwRcXChwAB1m3sBqwaG28pxBDI5nK
-         DRDMJP8LDTL7zCmo3WCGl8kd1vTgxANx5SxMq31XjqprPCKgLKJDqx3015A3WSk78L4x
-         ODvs9Kra0Wy4rGTuNmZyccBxsOipMlwqnudmhTNpovSWHUeEQjgFV7WPsJbZEkqcs1ZW
-         7eGtlPKSKvV8zT3YGG4uJSAWFCyzfsISr9pwfkD+m5Mhv7mHAyNVyWCvKK1TWZtbikbp
-         KDYTfP05CEIGf4AnImzn2HjAcXeI36AKv8XGH6CpnU6LsDd5DeybI/hhxnfwQzVg5TS+
-         wxRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4UQjjYWqmxOfJJBzJdrxYWYEuLv+9WugfhSWsQ4beqk=;
-        b=SDRveIRcJLNTrcmrX2uEYso/CE9Pitdx+ivGpDL8drYncK5/tXtxEMCo1b3h/v7cV8
-         2rUbLt7/SDfk8UVG+pXtgeztmW0XAf8kBLDoxC62lOzcoCtbV3HnAGrnJRS4lL3vtiz2
-         RGagLYjspxiancndbCshGAWL5ZeqqINvLm8aEon0XV1MVvUr8VZx6rApCpDz8MafLoRK
-         g+xnSTp5m06tcuo9nTcJsThySsZzMgpRYwW9YTrrpA0kU10PrUVER8Oo2tKz4/xbYZQ8
-         042aN3ojnZ6K478NJLJ3C2+y0y/57zs7IsLE+/lELD18RIMnIMsG9tByxVS1CfBZfdFj
-         Ibng==
-X-Gm-Message-State: AOAM530GcDJfduYiRko203UwEb/THNc3CpoIngXYxwOfpKHYvYTLy8wW
-        zZ4JgvWGu+xyXvhigBDIMI8u2I7+xR2mFZIjdIs=
-X-Google-Smtp-Source: ABdhPJySsMYlN2zX2f4yt9YDxXXmbVA+qbXWd112JUK1vdgxlgspdEZEwTaNM4vZPSppgcSszRXhdrolVcZ/oy5a0iE=
-X-Received: by 2002:a05:6638:1696:b0:326:2d59:7b40 with SMTP id
- f22-20020a056638169600b003262d597b40mr7177773jat.103.1649819863907; Tue, 12
- Apr 2022 20:17:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220412165555.4146407-1-kuifeng@fb.com> <20220412165555.4146407-6-kuifeng@fb.com>
-In-Reply-To: <20220412165555.4146407-6-kuifeng@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Apr 2022 20:17:32 -0700
-Message-ID: <CAEf4Bzbq+rcUJuXtBDb__M97xNAWH_5CbJAYrxCrDKytX_dJvw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 5/5] selftest/bpf: The test cses of BPF cookie
- for fentry/fexit/fmod_ret.
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229873AbiDMDZW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 23:25:22 -0400
+Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89312E097;
+        Tue, 12 Apr 2022 20:23:00 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V9xgCAI_1649820174;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V9xgCAI_1649820174)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Apr 2022 11:22:55 +0800
+Message-ID: <1649820105.687942-3-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v9 23/32] virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
+Date:   Wed, 13 Apr 2022 11:21:45 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-24-xuanzhuo@linux.alibaba.com>
+ <d040a3fe-765e-93d6-cef9-603f23a0fd1e@redhat.com>
+In-Reply-To: <d040a3fe-765e-93d6-cef9-603f23a0fd1e@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 9:56 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
+On Tue, 12 Apr 2022 15:07:58 +0800, Jason Wang <jasowang@redhat.com> wrote:
 >
-> Make sure BPF cookies are correct for fentry/fexit/fmod_ret.
+> =E5=9C=A8 2022/4/6 =E4=B8=8A=E5=8D=8811:43, Xuan Zhuo =E5=86=99=E9=81=93:
+> > This patch implements virtio pci support for QUEUE RESET.
+> >
+> > Performing reset on a queue is divided into these steps:
+> >
+> >   1. notify the device to reset the queue
+> >   2. recycle the buffer submitted
+> >   3. reset the vring (may re-alloc)
+> >   4. mmap vring to device, and enable the queue
+> >
+> > This patch implements virtio_reset_vq(), virtio_enable_resetq() in the
+> > pci scenario.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >   drivers/virtio/virtio_pci_common.c |  8 +--
+> >   drivers/virtio/virtio_pci_modern.c | 84 ++++++++++++++++++++++++++++++
+> >   drivers/virtio/virtio_ring.c       |  2 +
+> >   include/linux/virtio.h             |  1 +
+> >   4 files changed, 92 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio=
+_pci_common.c
+> > index fdbde1db5ec5..863d3a8a0956 100644
+> > --- a/drivers/virtio/virtio_pci_common.c
+> > +++ b/drivers/virtio/virtio_pci_common.c
+> > @@ -248,9 +248,11 @@ static void vp_del_vq(struct virtqueue *vq)
+> >   	struct virtio_pci_vq_info *info =3D vp_dev->vqs[vq->index];
+> >   	unsigned long flags;
+> >
+> > -	spin_lock_irqsave(&vp_dev->lock, flags);
+> > -	list_del(&info->node);
+> > -	spin_unlock_irqrestore(&vp_dev->lock, flags);
+> > +	if (!vq->reset) {
 >
-> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/bpf_cookie.c     | 52 +++++++++++++++++++
->  .../selftests/bpf/progs/test_bpf_cookie.c     | 24 +++++++++
->  2 files changed, 76 insertions(+)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> index 923a6139b2d8..7f05056c66d4 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> @@ -410,6 +410,56 @@ static void pe_subtest(struct test_bpf_cookie *skel)
->         bpf_link__destroy(link);
->  }
+> On which condition that we may hit this path?
 >
-> +static void tracing_subtest(struct test_bpf_cookie *skel)
-> +{
-> +       __u64 cookie;
-> +       int prog_fd;
-> +       int fentry_fd = -1, fexit_fd = -1, fmod_ret_fd = -1;
-> +
+>
+> > +		spin_lock_irqsave(&vp_dev->lock, flags);
+> > +		list_del(&info->node);
+> > +		spin_unlock_irqrestore(&vp_dev->lock, flags);
+> > +	}
+> >
+> >   	vp_dev->del_vq(info);
+> >   	kfree(info);
+> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio=
+_pci_modern.c
+> > index 49a4493732cf..cb5d38f1c9c8 100644
+> > --- a/drivers/virtio/virtio_pci_modern.c
+> > +++ b/drivers/virtio/virtio_pci_modern.c
+> > @@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_devic=
+e *vdev, u64 features)
+> >   	if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
+> >   			pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
+> >   		__virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
+> > +
+> > +	if (features & BIT_ULL(VIRTIO_F_RING_RESET))
+> > +		__virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
+> >   }
+> >
+> >   /* virtio config->finalize_features() implementation */
+> > @@ -199,6 +202,83 @@ static int vp_active_vq(struct virtqueue *vq, u16 =
+msix_vec)
+> >   	return 0;
+> >   }
+> >
+> > +static int vp_modern_reset_vq(struct virtqueue *vq)
+> > +{
+> > +	struct virtio_pci_device *vp_dev =3D to_vp_device(vq->vdev);
+> > +	struct virtio_pci_modern_device *mdev =3D &vp_dev->mdev;
+> > +	struct virtio_pci_vq_info *info;
+> > +	unsigned long flags;
+> > +
+> > +	if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
+> > +		return -ENOENT;
+> > +
+> > +	vp_modern_set_queue_reset(mdev, vq->index);
+> > +
+> > +	info =3D vp_dev->vqs[vq->index];
+> > +
+> > +	/* delete vq from irq handler */
+> > +	spin_lock_irqsave(&vp_dev->lock, flags);
+> > +	list_del(&info->node);
+> > +	spin_unlock_irqrestore(&vp_dev->lock, flags);
+> > +
+> > +	INIT_LIST_HEAD(&info->node);
+> > +
+> > +	/* For the case where vq has an exclusive irq, to prevent the irq from
+> > +	 * being received again and the pending irq, call disable_irq().
+> > +	 *
+> > +	 * In the scenario based on shared interrupts, vq will be searched fr=
+om
+> > +	 * the queue virtqueues. Since the previous list_del() has been delet=
+ed
+> > +	 * from the queue, it is impossible for vq to be called in this case.
+> > +	 * There is no need to close the corresponding interrupt.
+> > +	 */
+> > +	if (vp_dev->per_vq_vectors && info->msix_vector !=3D VIRTIO_MSI_NO_VE=
+CTOR)
+> > +		disable_irq(pci_irq_vector(vp_dev->pci_dev, info->msix_vector));
+>
+>
+> See the previous discussion and the revert of the first try to harden
+> the interrupt. We probably can't use disable_irq() since it conflicts
+> with the affinity managed IRQ that is used by some drivers.
+>
+> We need to use synchonize_irq() and per virtqueue flag instead. As
+> mentioned in previous patches, this could be done on top of my rework on
+> the IRQ hardening .
 
-unnecessary empty line
+OK, the next version will contain hardened features by per virtqueue flag.
 
-> +       LIBBPF_OPTS(bpf_test_run_opts, opts, .repeat = 1);
+Thanks.
 
-.repeat = 1 is not necessary, I think, .repeat = 0 is equivalent to that
-
-> +       LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-> +
-> +       skel->bss->fentry_res = 0;
-> +       skel->bss->fexit_res = 0;
-> +
-> +       cookie = 0x100000;
-
-nit: make this value bigger to make sure higher 32 bits of u64 are
-preserved properly. Maybe 0x1000000010000000 (and similarly with 2 and
-3)
-
-> +       prog_fd = bpf_program__fd(skel->progs.fentry_test1);
-> +       link_opts.tracing.bpf_cookie = cookie;
-> +       fentry_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_FENTRY, &link_opts);
-> +
-
-ASSERT_GE?
-
-> +       cookie = 0x200000;
-> +       prog_fd = bpf_program__fd(skel->progs.fexit_test1);
-> +       link_opts.tracing.bpf_cookie = cookie;
-> +       fexit_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_FEXIT, &link_opts);
-> +       if (!ASSERT_GE(fexit_fd, 0, "fexit.open"))
-> +               goto cleanup;
-> +
-
-[...]
+>
+>
+> > +
+> > +	vq->reset =3D true;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int vp_modern_enable_reset_vq(struct virtqueue *vq)
+> > +{
+> > +	struct virtio_pci_device *vp_dev =3D to_vp_device(vq->vdev);
+> > +	struct virtio_pci_modern_device *mdev =3D &vp_dev->mdev;
+> > +	struct virtio_pci_vq_info *info;
+> > +	unsigned long flags, index;
+> > +	int err;
+> > +
+> > +	if (!vq->reset)
+> > +		return -EBUSY;
+> > +
+> > +	index =3D vq->index;
+> > +	info =3D vp_dev->vqs[index];
+> > +
+> > +	/* check queue reset status */
+> > +	if (vp_modern_get_queue_reset(mdev, index) !=3D 1)
+> > +		return -EBUSY;
+> > +
+> > +	err =3D vp_active_vq(vq, info->msix_vector);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	if (vq->callback) {
+> > +		spin_lock_irqsave(&vp_dev->lock, flags);
+> > +		list_add(&info->node, &vp_dev->virtqueues);
+> > +		spin_unlock_irqrestore(&vp_dev->lock, flags);
+> > +	} else {
+> > +		INIT_LIST_HEAD(&info->node);
+> > +	}
+> > +
+> > +	vp_modern_set_queue_enable(&vp_dev->mdev, index, true);
+> > +
+> > +	if (vp_dev->per_vq_vectors && info->msix_vector !=3D VIRTIO_MSI_NO_VE=
+CTOR)
+> > +		enable_irq(pci_irq_vector(vp_dev->pci_dev, info->msix_vector));
+>
+>
+> We had the same issue as disable_irq().
+>
+> Thanks
+>
+>
+> > +
+> > +	vq->reset =3D false;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >   static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vec=
+tor)
+> >   {
+> >   	return vp_modern_config_vector(&vp_dev->mdev, vector);
+> > @@ -407,6 +487,8 @@ static const struct virtio_config_ops virtio_pci_co=
+nfig_nodev_ops =3D {
+> >   	.set_vq_affinity =3D vp_set_vq_affinity,
+> >   	.get_vq_affinity =3D vp_get_vq_affinity,
+> >   	.get_shm_region  =3D vp_get_shm_region,
+> > +	.reset_vq	 =3D vp_modern_reset_vq,
+> > +	.enable_reset_vq =3D vp_modern_enable_reset_vq,
+> >   };
+> >
+> >   static const struct virtio_config_ops virtio_pci_config_ops =3D {
+> > @@ -425,6 +507,8 @@ static const struct virtio_config_ops virtio_pci_co=
+nfig_ops =3D {
+> >   	.set_vq_affinity =3D vp_set_vq_affinity,
+> >   	.get_vq_affinity =3D vp_get_vq_affinity,
+> >   	.get_shm_region  =3D vp_get_shm_region,
+> > +	.reset_vq	 =3D vp_modern_reset_vq,
+> > +	.enable_reset_vq =3D vp_modern_enable_reset_vq,
+> >   };
+> >
+> >   /* the PCI probing function */
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index 6250e19fc5bf..91937e21edca 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -2028,6 +2028,7 @@ static struct virtqueue *vring_create_virtqueue_p=
+acked(
+> >   	vq->vq.vdev =3D vdev;
+> >   	vq->vq.name =3D name;
+> >   	vq->vq.index =3D index;
+> > +	vq->vq.reset =3D false;
+> >   	vq->notify =3D notify;
+> >   	vq->weak_barriers =3D weak_barriers;
+> >
+> > @@ -2508,6 +2509,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned =
+int index,
+> >   	vq->vq.vdev =3D vdev;
+> >   	vq->vq.name =3D name;
+> >   	vq->vq.index =3D index;
+> > +	vq->vq.reset =3D false;
+> >   	vq->notify =3D notify;
+> >   	vq->weak_barriers =3D weak_barriers;
+> >
+> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > index c86ff02e0ca0..33ab003c5100 100644
+> > --- a/include/linux/virtio.h
+> > +++ b/include/linux/virtio.h
+> > @@ -33,6 +33,7 @@ struct virtqueue {
+> >   	unsigned int num_free;
+> >   	unsigned int num_max;
+> >   	void *priv;
+> > +	bool reset;
+> >   };
+> >
+> >   int virtqueue_add_outbuf(struct virtqueue *vq,
+>
