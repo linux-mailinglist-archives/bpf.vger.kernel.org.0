@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1B14FED1D
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 04:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35354FED39
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 04:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbiDMCpw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 22:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
+        id S230346AbiDMC6T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 22:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbiDMCpv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 22:45:51 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5932440919
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 19:43:31 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id y5so295836ilg.4
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 19:43:31 -0700 (PDT)
+        with ESMTP id S229990AbiDMC6T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 22:58:19 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C32E3587D
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 19:56:00 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id y16so302130ilc.7
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 19:56:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=W8nWYvkNmbu1s5VnI1Lyf9nO8TuxaN7MVTah2IggA5Q=;
-        b=Px5BwbKmSxDBDELiwmVrw27zLZsnWPYI6FOvgPEDJ71CTvfwIpUAr567cXs/kI6ZYP
-         9Nmph6zU2bCGI7hkUoNHEX1uOQfILWMStBl/Ugl3rR0fHSVShOcGh5PgHM7IdLaK1ElG
-         buYxkrSb5mEsB5CE0rW31TGKaTaWDhiBCqjXeAXKHz0wmV+EKGufr3G2w+hSba2Tq3YR
-         /KPbPa/FtNcTDOqHhQoUUUvA0rihAqNpZWdNIUex4ibGwseOy9PSEw2xJHvmKYyd/p5n
-         7fx2LhhuFr+rW2zbSi8emhNoZWierNj2n+seg+bvjCmqcGdXwQBdhK+B7ZKlMFK/FhH8
-         7yBg==
+        bh=3OUkfw6LAUoVS0CZZGPJCHj+FgHB6BupOycPtwteKo4=;
+        b=J78ACzEfuAc2OjC+ItqN98BV1BvoXCnLVORkTvqJb5Z8uPSsyCqzc/5oTI6mMSkNJe
+         RM8wLlwZHV4sOPWKmbblfINuqdJqv8PubWXx8o/2uBuuWhkXI7hrf9SW+F5lBv2m+/iw
+         ag01Q2rfG71qYYk6HJJfaY5zz/CMP6WkUlXRD55xO5OO/SQHnKKnTT1wz5FOGD4oQQ15
+         3RxWYhue/Qj0foaCJ4kBC2vNXP5GL+0wcVOxjS0sU12YOLhpMicqwMceUd1CEGiSb+nv
+         hmSEDqRnTk9hCIvJazauapd4ZXOdMy6Bey/89Q64sQHIfByL8B/wPT+Ie7CiWpJK/bwn
+         5keA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=W8nWYvkNmbu1s5VnI1Lyf9nO8TuxaN7MVTah2IggA5Q=;
-        b=Kxd5KJKjeC1FEqnI1M7Rq2CGWvvpDcl5A7VG2f8DEk0uq28UyQc2Uu3dZHcpouU9ph
-         lmbXwG8pUiPGHMgaJ13ZDpWHPguHXZ1+HYi4V5ri4IcilVnjuXjf1VW3kpEZWy7I1mKY
-         aTMGXiqRBLVOonKCjNJp5GDtYlAMrl5BLzbAfa3XQACzuU5WAc03DZLOujCz+LWbdRag
-         vlDhtS2sDf5IoekmUIw9/sBoujWigSF/5s9IJoy97e0HloO9Tf85FnEVG06P8RFhazWj
-         dWr8Cev4ZgytgVrkDmKSlfMwc6tADN0o0UralMZlBvdKBcFtXTHutY7Gru25qqV9lwpq
-         RjYg==
-X-Gm-Message-State: AOAM530Gjd6LiyTv5TlKr2Vyu+7p7oPktkuJrj3EfpOCeS0KlGsXsMYx
-        uL4GNamb9KCJsFupWjfR0ixjrV3KSQCrvK5UrI8=
-X-Google-Smtp-Source: ABdhPJybrr2w0u/TdZsLlkBX1xd80vBeeEz0EoiaafCNY79G2XauMGyKcYDHz7zLP5KDcZQ3Sntkzr/kmYAD7/qsiww=
-X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
- y6-20020a926406000000b002bbf1dee13emr16761559ilb.305.1649817810740; Tue, 12
- Apr 2022 19:43:30 -0700 (PDT)
+        bh=3OUkfw6LAUoVS0CZZGPJCHj+FgHB6BupOycPtwteKo4=;
+        b=JDCmH7X9nW9RHcY/DzNKkWwLXBYZeGMQWR/TOv6nAbXGRu2j8WyAvtczhIH475rkCt
+         XVXHkqIwKYCp+xRkfUTKBD19QECN0AhGOEBjz4LA8wZVp4t3w+yq9CqqSMn4hJXcbm0z
+         +5FjjyK1XR4BBpL7dENKf5psZ+jsQmWRhzU7JBDSYG+tmiqWLRnN8GrU+7TpsiGjy4rf
+         4sNCfklWGtv2PQKSMOmoRoE3gkGFS9mz188N+FHKF4XwrAr215+Gm1KxrPBv5YcQIzPC
+         ss9VZ3qPjPhv10yjWrH+GLeb9yrviQduFONWOTw8qu6ATB5GMEQooTxZj9khegJSKAJ2
+         PPJA==
+X-Gm-Message-State: AOAM531VctVdbJSUlafZqb7K5nlu+pEBwWCsTxZrHKpodq2b9T+pCMRQ
+        JZoGFdah/db4/ZMlN1EKmfQqZfDF4fVG2ISLpSY4P7DcG/I=
+X-Google-Smtp-Source: ABdhPJxTXDftBgaDGeAiEYJ1dUFRNFiTeT5oFMblpoTL1/gBaKb31tB1yDhbTto9HWGvb7LEhZPJ0Zykz+GLf5z7Xwg=
+X-Received: by 2002:a92:cd8a:0:b0:2ca:9337:2f47 with SMTP id
+ r10-20020a92cd8a000000b002ca93372f47mr8472395ilb.252.1649818559425; Tue, 12
+ Apr 2022 19:55:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220412165555.4146407-1-kuifeng@fb.com> <20220412165555.4146407-2-kuifeng@fb.com>
-In-Reply-To: <20220412165555.4146407-2-kuifeng@fb.com>
+References: <20220412165555.4146407-1-kuifeng@fb.com> <20220412165555.4146407-3-kuifeng@fb.com>
+In-Reply-To: <20220412165555.4146407-3-kuifeng@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Apr 2022 19:43:19 -0700
-Message-ID: <CAEf4BzapYFLns4iDiiRx9PpXftNDOc9jVswwcU_e3ncOeJSvMg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/5] bpf, x86: Generate trampolines from bpf_tramp_links
+Date:   Tue, 12 Apr 2022 19:55:48 -0700
+Message-ID: <CAEf4BzZiEAysLb41XNzvZXdHqr4ikgw8ggTbvd8KpsWvqtS5zg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/5] bpf, x86: Create bpf_tramp_run_ctx on the
+ caller thread's stack
 To:     Kui-Feng Lee <kuifeng@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -69,123 +70,113 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Apr 12, 2022 at 9:56 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> Replace struct bpf_tramp_progs with struct bpf_tramp_links to collect
-> struct bpf_tramp_link(s) for a trampoline.  struct bpf_tramp_link
-> extends bpf_link to act as a linked list node.
->
-> arch_prepare_bpf_trampoline() accepts a struct bpf_tramp_links to
-> collects all bpf_tramp_link(s) that a trampoline should call.
->
-> Change BPF trampoline and bpf_struct_ops to pass bpf_tramp_links
-> instead of bpf_tramp_progs.
+> BPF trampolines will create a bpf_tramp_run_ctx, a bpf_run_ctx, on
+> stacks and set/reset the current bpf_run_ctx before/after calling a
+> bpf_prog.
 >
 > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 > ---
-
-Looks good, see two comments below.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  arch/x86/net/bpf_jit_comp.c    | 36 +++++++++--------
->  include/linux/bpf.h            | 38 ++++++++++++------
->  include/linux/bpf_types.h      |  1 +
->  include/uapi/linux/bpf.h       |  1 +
->  kernel/bpf/bpf_struct_ops.c    | 69 ++++++++++++++++++++++----------
->  kernel/bpf/syscall.c           | 23 ++++-------
->  kernel/bpf/trampoline.c        | 73 +++++++++++++++++++---------------
->  net/bpf/bpf_dummy_struct_ops.c | 35 +++++++++++++---
->  tools/bpf/bpftool/link.c       |  1 +
->  tools/include/uapi/linux/bpf.h |  1 +
->  10 files changed, 175 insertions(+), 103 deletions(-)
+>  arch/x86/net/bpf_jit_comp.c | 55 +++++++++++++++++++++++++++++++++++++
+>  include/linux/bpf.h         | 17 +++++++++---
+>  kernel/bpf/syscall.c        |  7 +++--
+>  kernel/bpf/trampoline.c     | 20 +++++++++++---
+>  4 files changed, 89 insertions(+), 10 deletions(-)
 >
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 4dcc0b1ac770..0f521be68f7b 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1766,10 +1766,26 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>  {
+>         u8 *prog = *pprog;
+>         u8 *jmp_insn;
+> +       int ctx_cookie_off = offsetof(struct bpf_tramp_run_ctx, bpf_cookie);
+>         struct bpf_prog *p = l->link.prog;
+>
+> +       /* mov rdi, 0 */
+> +       emit_mov_imm64(&prog, BPF_REG_1, 0, 0);
+> +
+> +       /* Prepare struct bpf_tramp_run_ctx.
+> +        *
+> +        * bpf_tramp_run_ctx is already preserved by
+> +        * arch_prepare_bpf_trampoline().
+> +        *
+> +        * mov QWORD PTR [rsp + ctx_cookie_off], rdi
+> +        */
+> +       EMIT4(0x48, 0x89, 0x7C, 0x24); EMIT1(ctx_cookie_off);
+> +
+>         /* arg1: mov rdi, progs[i] */
+>         emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
+> +       /* arg2: mov rsi, rsp (struct bpf_run_ctx *) */
+> +       EMIT3(0x48, 0x89, 0xE6);
+> +
+>         if (emit_call(&prog,
+>                       p->aux->sleepable ? __bpf_prog_enter_sleepable :
+>                       __bpf_prog_enter, prog))
+> @@ -1815,6 +1831,8 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>         emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
+>         /* arg2: mov rsi, rbx <- start time in nsec */
+>         emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
+> +       /* arg3: mov rdx, rsp (struct bpf_run_ctx *) */
+> +       EMIT3(0x48, 0x89, 0xE2);
+>         if (emit_call(&prog,
+>                       p->aux->sleepable ? __bpf_prog_exit_sleepable :
+>                       __bpf_prog_exit, prog))
+> @@ -2079,6 +2097,16 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>                 }
+>         }
+>
+> +       if (nr_args < 3 && (fentry->nr_links || fexit->nr_links || fmod_ret->nr_links))
+> +               EMIT1(0x52);    /* push rdx */
+
+this nr_args < 3 condition is new, maybe leave a comment on why we
+need this? Also instead of repeating this whole (fentry->nr_links ||
+... || ...) check, why not move if (nr_args < 3) inside the if right
+below?
+
+> +
+> +       if (fentry->nr_links || fexit->nr_links || fmod_ret->nr_links) {
+
+if (nr_args > 3) here?
+
+> +               /* Prepare struct bpf_tramp_run_ctx.
+> +                * sub rsp, sizeof(struct bpf_tramp_run_ctx)
+> +                */
+> +               EMIT4(0x48, 0x83, 0xEC, sizeof(struct bpf_tramp_run_ctx));
+> +       }
+> +
+>         if (fentry->nr_links)
+>                 if (invoke_bpf(m, &prog, fentry, regs_off,
+>                                flags & BPF_TRAMP_F_RET_FENTRY_RET))
 
 [...]
 
->  /* Different use cases for BPF trampoline:
-> @@ -704,7 +704,7 @@ struct bpf_tramp_progs {
->  struct bpf_tramp_image;
->  int arch_prepare_bpf_trampoline(struct bpf_tramp_image *tr, void *image, void *image_end,
->                                 const struct btf_func_model *m, u32 flags,
-> -                               struct bpf_tramp_progs *tprogs,
-> +                               struct bpf_tramp_links *tlinks,
->                                 void *orig_call);
->  /* these two functions are called from generated trampoline */
->  u64 notrace __bpf_prog_enter(struct bpf_prog *prog);
-> @@ -803,9 +803,12 @@ static __always_inline __nocfi unsigned int bpf_dispatcher_nop_func(
->  {
->         return bpf_func(ctx, insnsi);
->  }
-> +
-> +struct bpf_link;
-> +
-
-is this forward declaration still needed? was it supposed to be a
-struct bpf_tramp_link instead? and also probably higher above, before
-bpf_tramp_links?
-
->  #ifdef CONFIG_BPF_JIT
-> -int bpf_trampoline_link_prog(struct bpf_prog *prog, struct bpf_trampoline *tr);
-> -int bpf_trampoline_unlink_prog(struct bpf_prog *prog, struct bpf_trampoline *tr);
-> +int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
-> +int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
->  struct bpf_trampoline *bpf_trampoline_get(u64 key,
->                                           struct bpf_attach_target_info *tgt_info);
->  void bpf_trampoline_put(struct bpf_trampoline *tr);
-> @@ -856,12 +859,12 @@ int bpf_jit_charge_modmem(u32 size);
->  void bpf_jit_uncharge_modmem(u32 size);
->  bool bpf_prog_has_trampoline(const struct bpf_prog *prog);
->  #else
-> -static inline int bpf_trampoline_link_prog(struct bpf_prog *prog,
-> +static inline int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
->                                            struct bpf_trampoline *tr)
->  {
->         return -ENOTSUPP;
->  }
-> -static inline int bpf_trampoline_unlink_prog(struct bpf_prog *prog,
-> +static inline int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
->                                              struct bpf_trampoline *tr)
->  {
->         return -ENOTSUPP;
-> @@ -960,7 +963,6 @@ struct bpf_prog_aux {
->         bool tail_call_reachable;
->         bool xdp_has_frags;
->         bool use_bpf_prog_pack;
-> -       struct hlist_node tramp_hlist;
->         /* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
->         const struct btf_type *attach_func_proto;
->         /* function name for valid attach_btf_id */
-> @@ -1047,6 +1049,18 @@ struct bpf_link_ops {
->                               struct bpf_link_info *info);
->  };
+>         if (fmod_ret->nr_links) {
+> @@ -2133,6 +2179,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>                         goto cleanup;
+>                 }
 >
-> +struct bpf_tramp_link {
-> +       struct bpf_link link;
-> +       struct hlist_node tramp_hlist;
-> +};
-> +
-> +struct bpf_tracing_link {
-> +       struct bpf_tramp_link link;
-> +       enum bpf_attach_type attach_type;
-> +       struct bpf_trampoline *trampoline;
-> +       struct bpf_prog *tgt_prog;
-> +};
+> +       /* pop struct bpf_tramp_run_ctx
+> +        * add rsp, sizeof(struct bpf_tramp_run_ctx)
+> +        */
+> +       if (fentry->nr_links || fexit->nr_links || fmod_ret->nr_links)
 
-struct bpf_tracing_link can stay in syscall.c, no? don't see anyone
-needing it outside of syscall.c
+well, actually, can it ever be that this condition doesn't hold? That
+would mean we are generating empty trampoline for some reason, no? Do
+we do that? Checking bpf_trampoline_update() and
+bpf_struct_ops_prepare_trampoline() doesn't seem like we ever do this.
+So seems like all these checks can be dropped?
+
+> +               EMIT4(0x48, 0x83, 0xC4, sizeof(struct bpf_tramp_run_ctx));
+> +
+> +       if (nr_args < 3 && (fentry->nr_links || fexit->nr_links || fmod_ret->nr_links))
+> +               EMIT1(0x5A); /* pop rdx */
+
+same, move it inside if above?
 
 > +
->  struct bpf_link_primer {
->         struct bpf_link *link;
->         struct file *file;
-> @@ -1084,8 +1098,8 @@ bool bpf_struct_ops_get(const void *kdata);
->  void bpf_struct_ops_put(const void *kdata);
->  int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map, void *key,
->                                        void *value);
-> -int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_progs *tprogs,
-> -                                     struct bpf_prog *prog,
-> +int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
-> +                                     struct bpf_tramp_link *link,
->                                       const struct btf_func_model *model,
->                                       void *image, void *image_end);
+>         if (flags & BPF_TRAMP_F_RESTORE_REGS)
+>                 restore_regs(m, &prog, nr_args, regs_off);
+>
 
 [...]
