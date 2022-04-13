@@ -2,360 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FEA4FECE8
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 04:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1B14FED1D
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 04:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbiDMCcX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 22:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
+        id S230072AbiDMCpw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 22:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbiDMCcX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 22:32:23 -0400
-Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CA027CD5;
-        Tue, 12 Apr 2022 19:30:01 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V9xY7Pv_1649816994;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V9xY7Pv_1649816994)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Apr 2022 10:29:56 +0800
-Message-ID: <1649816652.9004085-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v9 01/32] virtio: add helper virtqueue_get_vring_max_size()
-Date:   Wed, 13 Apr 2022 10:24:12 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229847AbiDMCpv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 22:45:51 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5932440919
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 19:43:31 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id y5so295836ilg.4
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 19:43:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W8nWYvkNmbu1s5VnI1Lyf9nO8TuxaN7MVTah2IggA5Q=;
+        b=Px5BwbKmSxDBDELiwmVrw27zLZsnWPYI6FOvgPEDJ71CTvfwIpUAr567cXs/kI6ZYP
+         9Nmph6zU2bCGI7hkUoNHEX1uOQfILWMStBl/Ugl3rR0fHSVShOcGh5PgHM7IdLaK1ElG
+         buYxkrSb5mEsB5CE0rW31TGKaTaWDhiBCqjXeAXKHz0wmV+EKGufr3G2w+hSba2Tq3YR
+         /KPbPa/FtNcTDOqHhQoUUUvA0rihAqNpZWdNIUex4ibGwseOy9PSEw2xJHvmKYyd/p5n
+         7fx2LhhuFr+rW2zbSi8emhNoZWierNj2n+seg+bvjCmqcGdXwQBdhK+B7ZKlMFK/FhH8
+         7yBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W8nWYvkNmbu1s5VnI1Lyf9nO8TuxaN7MVTah2IggA5Q=;
+        b=Kxd5KJKjeC1FEqnI1M7Rq2CGWvvpDcl5A7VG2f8DEk0uq28UyQc2Uu3dZHcpouU9ph
+         lmbXwG8pUiPGHMgaJ13ZDpWHPguHXZ1+HYi4V5ri4IcilVnjuXjf1VW3kpEZWy7I1mKY
+         aTMGXiqRBLVOonKCjNJp5GDtYlAMrl5BLzbAfa3XQACzuU5WAc03DZLOujCz+LWbdRag
+         vlDhtS2sDf5IoekmUIw9/sBoujWigSF/5s9IJoy97e0HloO9Tf85FnEVG06P8RFhazWj
+         dWr8Cev4ZgytgVrkDmKSlfMwc6tADN0o0UralMZlBvdKBcFtXTHutY7Gru25qqV9lwpq
+         RjYg==
+X-Gm-Message-State: AOAM530Gjd6LiyTv5TlKr2Vyu+7p7oPktkuJrj3EfpOCeS0KlGsXsMYx
+        uL4GNamb9KCJsFupWjfR0ixjrV3KSQCrvK5UrI8=
+X-Google-Smtp-Source: ABdhPJybrr2w0u/TdZsLlkBX1xd80vBeeEz0EoiaafCNY79G2XauMGyKcYDHz7zLP5KDcZQ3Sntkzr/kmYAD7/qsiww=
+X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
+ y6-20020a926406000000b002bbf1dee13emr16761559ilb.305.1649817810740; Tue, 12
+ Apr 2022 19:43:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220412165555.4146407-1-kuifeng@fb.com> <20220412165555.4146407-2-kuifeng@fb.com>
+In-Reply-To: <20220412165555.4146407-2-kuifeng@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 Apr 2022 19:43:19 -0700
+Message-ID: <CAEf4BzapYFLns4iDiiRx9PpXftNDOc9jVswwcU_e3ncOeJSvMg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/5] bpf, x86: Generate trampolines from bpf_tramp_links
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-2-xuanzhuo@linux.alibaba.com>
- <71fbd7fc-20db-024b-ec66-b875216be4bd@redhat.com>
-In-Reply-To: <71fbd7fc-20db-024b-ec66-b875216be4bd@redhat.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 12 Apr 2022 10:41:03 +0800, Jason Wang <jasowang@redhat.com> wrote:
+On Tue, Apr 12, 2022 at 9:56 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> =E5=9C=A8 2022/4/6 =E4=B8=8A=E5=8D=8811:43, Xuan Zhuo =E5=86=99=E9=81=93:
-> > Record the maximum queue num supported by the device.
-> >
-> > virtio-net can display the maximum (supported by hardware) ring size in
-> > ethtool -g eth0.
-> >
-> > When the subsequent patch implements vring reset, it can judge whether
-> > the ring size passed by the driver is legal based on this.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >   arch/um/drivers/virtio_uml.c             |  1 +
-> >   drivers/platform/mellanox/mlxbf-tmfifo.c |  2 ++
-> >   drivers/remoteproc/remoteproc_virtio.c   |  2 ++
-> >   drivers/s390/virtio/virtio_ccw.c         |  3 +++
-> >   drivers/virtio/virtio_mmio.c             |  2 ++
-> >   drivers/virtio/virtio_pci_legacy.c       |  2 ++
-> >   drivers/virtio/virtio_pci_modern.c       |  2 ++
-> >   drivers/virtio/virtio_ring.c             | 14 ++++++++++++++
-> >   drivers/virtio/virtio_vdpa.c             |  2 ++
-> >   include/linux/virtio.h                   |  2 ++
-> >   10 files changed, 32 insertions(+)
-> >
-> > diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-> > index ba562d68dc04..904993d15a85 100644
-> > --- a/arch/um/drivers/virtio_uml.c
-> > +++ b/arch/um/drivers/virtio_uml.c
-> > @@ -945,6 +945,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_=
-device *vdev,
-> >   		goto error_create;
-> >   	}
-> >   	vq->priv =3D info;
-> > +	vq->num_max =3D num;
-> >   	num =3D virtqueue_get_vring_size(vq);
-> >
-> >   	if (vu_dev->protocol_features &
-> > diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platfor=
-m/mellanox/mlxbf-tmfifo.c
-> > index 38800e86ed8a..1ae3c56b66b0 100644
-> > --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > @@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virt=
-io_device *vdev,
-> >   			goto error;
-> >   		}
-> >
-> > +		vq->num_max =3D vring->num;
-> > +
-> >   		vqs[i] =3D vq;
-> >   		vring->vq =3D vq;
-> >   		vq->priv =3D vring;
-> > diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remotepro=
-c/remoteproc_virtio.c
-> > index 70ab496d0431..7611755d0ae2 100644
-> > --- a/drivers/remoteproc/remoteproc_virtio.c
-> > +++ b/drivers/remoteproc/remoteproc_virtio.c
-> > @@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio_d=
-evice *vdev,
-> >   		return ERR_PTR(-ENOMEM);
-> >   	}
-> >
-> > +	vq->num_max =3D len;
+> Replace struct bpf_tramp_progs with struct bpf_tramp_links to collect
+> struct bpf_tramp_link(s) for a trampoline.  struct bpf_tramp_link
+> extends bpf_link to act as a linked list node.
 >
+> arch_prepare_bpf_trampoline() accepts a struct bpf_tramp_links to
+> collects all bpf_tramp_link(s) that a trampoline should call.
 >
-> I wonder if this is correct.
+> Change BPF trampoline and bpf_struct_ops to pass bpf_tramp_links
+> instead of bpf_tramp_progs.
 >
-> It looks to me len is counted in bytes:
->
-> /**
->  =C2=A0* struct rproc_vring - remoteproc vring state
->  =C2=A0* @va: virtual address
->  =C2=A0* @len: length, in bytes
->  =C2=A0* @da: device address
->  =C2=A0* @align: vring alignment
->  =C2=A0* @notifyid: rproc-specific unique vring index
->  =C2=A0* @rvdev: remote vdev
->  =C2=A0* @vq: the virtqueue of this vring
->  =C2=A0*/
-> struct rproc_vring {
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 void *va;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int len;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 da;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 align;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int notifyid;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct rproc_vdev *rvdev;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct virtqueue *vq;
-> };
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> ---
+
+Looks good, see two comments below.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  arch/x86/net/bpf_jit_comp.c    | 36 +++++++++--------
+>  include/linux/bpf.h            | 38 ++++++++++++------
+>  include/linux/bpf_types.h      |  1 +
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/bpf/bpf_struct_ops.c    | 69 ++++++++++++++++++++++----------
+>  kernel/bpf/syscall.c           | 23 ++++-------
+>  kernel/bpf/trampoline.c        | 73 +++++++++++++++++++---------------
+>  net/bpf/bpf_dummy_struct_ops.c | 35 +++++++++++++---
+>  tools/bpf/bpftool/link.c       |  1 +
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  10 files changed, 175 insertions(+), 103 deletions(-)
 >
 
-I think this comment is incorrect because here len is passed as num to
-vring_new_virtqueue().
+[...]
 
-There is also this usage:
+>  /* Different use cases for BPF trampoline:
+> @@ -704,7 +704,7 @@ struct bpf_tramp_progs {
+>  struct bpf_tramp_image;
+>  int arch_prepare_bpf_trampoline(struct bpf_tramp_image *tr, void *image, void *image_end,
+>                                 const struct btf_func_model *m, u32 flags,
+> -                               struct bpf_tramp_progs *tprogs,
+> +                               struct bpf_tramp_links *tlinks,
+>                                 void *orig_call);
+>  /* these two functions are called from generated trampoline */
+>  u64 notrace __bpf_prog_enter(struct bpf_prog *prog);
+> @@ -803,9 +803,12 @@ static __always_inline __nocfi unsigned int bpf_dispatcher_nop_func(
+>  {
+>         return bpf_func(ctx, insnsi);
+>  }
+> +
+> +struct bpf_link;
+> +
 
-	/* actual size of vring (in bytes) */
-	size =3D PAGE_ALIGN(vring_size(rvring->len, rvring->align));
+is this forward declaration still needed? was it supposed to be a
+struct bpf_tramp_link instead? and also probably higher above, before
+bpf_tramp_links?
 
-
-And this value comes from here:
-
-	static int
-	rproc_parse_vring(struct rproc_vdev *rvdev, struct fw_rsc_vdev *rsc, int i)
-	{
-		struct rproc *rproc =3D rvdev->rproc;
-		struct device *dev =3D &rproc->dev;
-		struct fw_rsc_vdev_vring *vring =3D &rsc->vring[i];
-		struct rproc_vring *rvring =3D &rvdev->vring[i];
-
-		dev_dbg(dev, "vdev rsc: vring%d: da 0x%x, qsz %d, align %d\n",
-			i, vring->da, vring->num, vring->align);
-
-		/* verify queue size and vring alignment are sane */
-		if (!vring->num || !vring->align) {
-			dev_err(dev, "invalid qsz (%d) or alignment (%d)\n",
-				vring->num, vring->align);
-			return -EINVAL;
-		}
-
-       >	rvring->len =3D vring->num;
-		rvring->align =3D vring->align;
-		rvring->rvdev =3D rvdev;
-
-		return 0;
-	}
-
-/**
- * struct fw_rsc_vdev_vring - vring descriptor entry
- * @da: device address
- * @align: the alignment between the consumer and producer parts of the vri=
-ng
- * @num: num of buffers supported by this vring (must be power of two)
- * @notifyid: a unique rproc-wide notify index for this vring. This notify
- * index is used when kicking a remote processor, to let it know that this
- * vring is triggered.
- * @pa: physical address
- *
- * This descriptor is not a resource entry by itself; it is part of the
- * vdev resource type (see below).
- *
- * Note that @da should either contain the device address where
- * the remote processor is expecting the vring, or indicate that
- * dynamically allocation of the vring's device address is supported.
- */
-struct fw_rsc_vdev_vring {
-	u32 da;
-	u32 align;
-	u32 num;
-	u32 notifyid;
-	u32 pa;
-} __packed;
-
-So I think the 'len' here may have changed its meaning in a version update.
-
-Thanks.
-
+>  #ifdef CONFIG_BPF_JIT
+> -int bpf_trampoline_link_prog(struct bpf_prog *prog, struct bpf_trampoline *tr);
+> -int bpf_trampoline_unlink_prog(struct bpf_prog *prog, struct bpf_trampoline *tr);
+> +int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
+> +int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
+>  struct bpf_trampoline *bpf_trampoline_get(u64 key,
+>                                           struct bpf_attach_target_info *tgt_info);
+>  void bpf_trampoline_put(struct bpf_trampoline *tr);
+> @@ -856,12 +859,12 @@ int bpf_jit_charge_modmem(u32 size);
+>  void bpf_jit_uncharge_modmem(u32 size);
+>  bool bpf_prog_has_trampoline(const struct bpf_prog *prog);
+>  #else
+> -static inline int bpf_trampoline_link_prog(struct bpf_prog *prog,
+> +static inline int bpf_trampoline_link_prog(struct bpf_tramp_link *link,
+>                                            struct bpf_trampoline *tr)
+>  {
+>         return -ENOTSUPP;
+>  }
+> -static inline int bpf_trampoline_unlink_prog(struct bpf_prog *prog,
+> +static inline int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link,
+>                                              struct bpf_trampoline *tr)
+>  {
+>         return -ENOTSUPP;
+> @@ -960,7 +963,6 @@ struct bpf_prog_aux {
+>         bool tail_call_reachable;
+>         bool xdp_has_frags;
+>         bool use_bpf_prog_pack;
+> -       struct hlist_node tramp_hlist;
+>         /* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
+>         const struct btf_type *attach_func_proto;
+>         /* function name for valid attach_btf_id */
+> @@ -1047,6 +1049,18 @@ struct bpf_link_ops {
+>                               struct bpf_link_info *info);
+>  };
 >
-> Other looks good.
->
-> Thanks
->
->
-> > +
-> >   	rvring->vq =3D vq;
-> >   	vq->priv =3D rvring;
-> >
-> > diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/vir=
-tio_ccw.c
-> > index d35e7a3f7067..468da60b56c5 100644
-> > --- a/drivers/s390/virtio/virtio_ccw.c
-> > +++ b/drivers/s390/virtio/virtio_ccw.c
-> > @@ -529,6 +529,9 @@ static struct virtqueue *virtio_ccw_setup_vq(struct=
- virtio_device *vdev,
-> >   		err =3D -ENOMEM;
-> >   		goto out_err;
-> >   	}
-> > +
-> > +	vq->num_max =3D info->num;
-> > +
-> >   	/* it may have been reduced */
-> >   	info->num =3D virtqueue_get_vring_size(vq);
-> >
-> > diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-> > index 56128b9c46eb..a41abc8051b9 100644
-> > --- a/drivers/virtio/virtio_mmio.c
-> > +++ b/drivers/virtio/virtio_mmio.c
-> > @@ -390,6 +390,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_=
-device *vdev, unsigned index,
-> >   		goto error_new_virtqueue;
-> >   	}
-> >
-> > +	vq->num_max =3D num;
-> > +
-> >   	/* Activate the queue */
-> >   	writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEU=
-E_NUM);
-> >   	if (vm_dev->version =3D=3D 1) {
-> > diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio=
-_pci_legacy.c
-> > index 34141b9abe27..b68934fe6b5d 100644
-> > --- a/drivers/virtio/virtio_pci_legacy.c
-> > +++ b/drivers/virtio/virtio_pci_legacy.c
-> > @@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci=
-_device *vp_dev,
-> >   	if (!vq)
-> >   		return ERR_PTR(-ENOMEM);
-> >
-> > +	vq->num_max =3D num;
-> > +
-> >   	q_pfn =3D virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
-> >   	if (q_pfn >> 32) {
-> >   		dev_err(&vp_dev->pci_dev->dev,
-> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio=
-_pci_modern.c
-> > index 5455bc041fb6..86d301f272b8 100644
-> > --- a/drivers/virtio/virtio_pci_modern.c
-> > +++ b/drivers/virtio/virtio_pci_modern.c
-> > @@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci=
-_device *vp_dev,
-> >   	if (!vq)
-> >   		return ERR_PTR(-ENOMEM);
-> >
-> > +	vq->num_max =3D num;
-> > +
-> >   	/* activate the queue */
-> >   	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
-> >   	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index 962f1477b1fa..b87130c8f312 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -2371,6 +2371,20 @@ void vring_transport_features(struct virtio_devi=
-ce *vdev)
-> >   }
-> >   EXPORT_SYMBOL_GPL(vring_transport_features);
-> >
-> > +/**
-> > + * virtqueue_get_vring_max_size - return the max size of the virtqueue=
-'s vring
-> > + * @_vq: the struct virtqueue containing the vring of interest.
-> > + *
-> > + * Returns the max size of the vring.
-> > + *
-> > + * Unlike other operations, this need not be serialized.
-> > + */
-> > +unsigned int virtqueue_get_vring_max_size(struct virtqueue *_vq)
-> > +{
-> > +	return _vq->num_max;
-> > +}
-> > +EXPORT_SYMBOL_GPL(virtqueue_get_vring_max_size);
-> > +
-> >   /**
-> >    * virtqueue_get_vring_size - return the size of the virtqueue's vring
-> >    * @_vq: the struct virtqueue containing the vring of interest.
-> > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > index 7767a7f0119b..39e4c08eb0f2 100644
-> > --- a/drivers/virtio/virtio_vdpa.c
-> > +++ b/drivers/virtio/virtio_vdpa.c
-> > @@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, un=
-signed int index,
-> >   		goto error_new_virtqueue;
-> >   	}
-> >
-> > +	vq->num_max =3D max_num;
-> > +
-> >   	/* Setup virtqueue callback */
-> >   	cb.callback =3D virtio_vdpa_virtqueue_cb;
-> >   	cb.private =3D info;
-> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> > index 72292a62cd90..d59adc4be068 100644
-> > --- a/include/linux/virtio.h
-> > +++ b/include/linux/virtio.h
-> > @@ -31,6 +31,7 @@ struct virtqueue {
-> >   	struct virtio_device *vdev;
-> >   	unsigned int index;
-> >   	unsigned int num_free;
-> > +	unsigned int num_max;
-> >   	void *priv;
-> >   };
-> >
-> > @@ -80,6 +81,7 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *vq=
-);
-> >
-> >   void *virtqueue_detach_unused_buf(struct virtqueue *vq);
-> >
-> > +unsigned int virtqueue_get_vring_max_size(struct virtqueue *vq);
-> >   unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
-> >
-> >   bool virtqueue_is_broken(struct virtqueue *vq);
->
+> +struct bpf_tramp_link {
+> +       struct bpf_link link;
+> +       struct hlist_node tramp_hlist;
+> +};
+> +
+> +struct bpf_tracing_link {
+> +       struct bpf_tramp_link link;
+> +       enum bpf_attach_type attach_type;
+> +       struct bpf_trampoline *trampoline;
+> +       struct bpf_prog *tgt_prog;
+> +};
+
+struct bpf_tracing_link can stay in syscall.c, no? don't see anyone
+needing it outside of syscall.c
+
+> +
+>  struct bpf_link_primer {
+>         struct bpf_link *link;
+>         struct file *file;
+> @@ -1084,8 +1098,8 @@ bool bpf_struct_ops_get(const void *kdata);
+>  void bpf_struct_ops_put(const void *kdata);
+>  int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map, void *key,
+>                                        void *value);
+> -int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_progs *tprogs,
+> -                                     struct bpf_prog *prog,
+> +int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
+> +                                     struct bpf_tramp_link *link,
+>                                       const struct btf_func_model *model,
+>                                       void *image, void *image_end);
+
+[...]
