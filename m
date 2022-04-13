@@ -2,188 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF20500213
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 00:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382B650027B
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 01:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236826AbiDMWyp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Apr 2022 18:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        id S238974AbiDMXWo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Apr 2022 19:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233911AbiDMWyo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Apr 2022 18:54:44 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0671342A26
-        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 15:52:22 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id b12-20020a056902030c00b0061d720e274aso2859291ybs.20
-        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 15:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=RX7bek4DlBUU9/z5kShIr/wrkr/b2Sl9JJHd+lNi1Ew=;
-        b=FiHkOWqZ086ZkQSokMmRl1+HxvYZ25Cqv/++Tl3DfAV2Pra0vZx5c5B2K80ZG4+M0c
-         unmXZRdAuKafHGZ/JwMOflOpygwfLSaleMGqlMf7Iv6Yn5+oHYCcRY1k9IuhgubHLPbf
-         jU4c+4UjHdM1PgfkCakWn7FXSK4nvZNudOTR3sxjvviw0T5P/itDIvr3kGhvR8AucnHs
-         gGHWhy65fI2pISqCkySEYao6xETUQP/Ti8YzGsc0zJGSS++nicBM8axmdZnPN9E14DCF
-         FkSZtAAWCIIKPD5x8d+SFaU30qjyuc8pLqlYmVttCGD98ZIWrdhVuBv32G/0tmZfBNoS
-         P33w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=RX7bek4DlBUU9/z5kShIr/wrkr/b2Sl9JJHd+lNi1Ew=;
-        b=TR5cxR6pTJoLLOcbvqbnRMOxRrSpcOgjfpw7sP7gVn8vFQGZDS5XPzq+Y4+5Rq0mA9
-         62tEG+KSqFXcQzAZJ+lMzoUBa2veaYjvQlSOTDZ9V+4uVSUWQur/2Ocxv6MClCy7zVi/
-         6TGNa+kZHF/vLeHtUpFavOvBx48InT/DhGynLrFzw+FPGEkpjRu4kHG5k4EwCuPXBG48
-         syaOzHLaaGHBgnifJbK/h/FsG8DC+34ePYJjI4VcRulwzxDRsHAyjqXplXLNd++bKS+E
-         wQqhpn+2u4Chpeg1zQYAvuYotAPj2Kd4hFkZS0lhHLnw9N95lY+Pl4geEYthqSJElN4+
-         whGQ==
-X-Gm-Message-State: AOAM532ISDVmZy4nhOKB7j9ilzjgpU6588+wyIIVpXTldU6tUa3Fw4uy
-        0aZD5uKnYAQWykVCCise87RXeAk=
-X-Google-Smtp-Source: ABdhPJzr9d1pi4G0Mdm0E7FUfpnNKgN3s+93J/X/NgAK2FHmnkoA4045DFwPEm31GaZPQPy4UkPT3eI=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:45c6:42d5:e443:72cc])
- (user=sdf job=sendgmr) by 2002:a25:9984:0:b0:624:5b01:5075 with SMTP id
- p4-20020a259984000000b006245b015075mr920365ybo.463.1649890341265; Wed, 13 Apr
- 2022 15:52:21 -0700 (PDT)
-Date:   Wed, 13 Apr 2022 15:52:18 -0700
-In-Reply-To: <20220413223216.7lrdbizxg4g2bv5i@kafai-mbp.dhcp.thefacebook.com>
-Message-Id: <YldUIipJvL/7tK4P@google.com>
-Mime-Version: 1.0
-References: <20220413183256.1819164-1-sdf@google.com> <CAEf4Bzb_-KMy7GBN_NsJCKXHfDnGTtVEZb7i4dmcN-8=cLhO+A@mail.gmail.com>
- <Ylcm/dfeU3AEYqlV@google.com> <CAEf4BzYuTd9m4_J9nh5pZ9baoMMQK+m6Cum8UMCq-k6jFTJwEA@mail.gmail.com>
- <20220413223216.7lrdbizxg4g2bv5i@kafai-mbp.dhcp.thefacebook.com>
-Subject: Re: [PATCH bpf-next] bpf: move rcu lock management out of
- BPF_PROG_RUN routines
-From:   sdf@google.com
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S239255AbiDMXWh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Apr 2022 19:22:37 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919CB23BC5;
+        Wed, 13 Apr 2022 16:20:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4426EB827B6;
+        Wed, 13 Apr 2022 23:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ED42CC385A8;
+        Wed, 13 Apr 2022 23:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649892012;
+        bh=5R/Ql6nUWlubaSJoDrexvl54CKfH/1QZCH5YDJ2gAGM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=L0ZqrdTuTDyTVuvZPWS41CI7OLHbUO5yRXEjpErM6XDh3F6b5TcvIzcatHhJG7Pgc
+         pxefgYVJFJK81C+5Qz6sDENGvKNIc8+rcF6b7Xt5to2UIXEqDp/iHlf73jYfHmWVJ4
+         gLAtm8XFujVAaUPbagxasRYJLi+Str1MpZewZf1ns56+dK0io3+Qafpw+D+Isq+snP
+         6cMMYXEfgD9DK7QItH21YMP4btSH0zyQ3GP8BHs6F8had8kTXP91sIutan70oNRftw
+         nkBcMY0rapHOV5NTyJ0Mo4MJMq7M7RzNIAxYDnGwdmDm4cruvcyR7QeE/3TGVXkClW
+         88ndNGXVK44eQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D0B5DE8DD5E;
+        Wed, 13 Apr 2022 23:20:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf: remove unnecessary type castings
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164989201185.8845.18106759702805707773.git-patchwork-notify@kernel.org>
+Date:   Wed, 13 Apr 2022 23:20:11 +0000
+References: <20220413015048.12319-1-yuzhe@nfschina.com>
+In-Reply-To: <20220413015048.12319-1-yuzhe@nfschina.com>
+To:     Yu Zhe <yuzhe@nfschina.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liqiong@nfschina.com,
+        kernel-janitors@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 04/13, Martin KaFai Lau wrote:
-> On Wed, Apr 13, 2022 at 12:52:53PM -0700, Andrii Nakryiko wrote:
-> > On Wed, Apr 13, 2022 at 12:39 PM <sdf@google.com> wrote:
-> > >
-> > > On 04/13, Andrii Nakryiko wrote:
-> > > > On Wed, Apr 13, 2022 at 11:33 AM Stanislav Fomichev <sdf@google.com>
-> > > > wrote:
-> > > > >
-> > > > > Commit 7d08c2c91171 ("bpf: Refactor BPF_PROG_RUN_ARRAY family of  
-> macros
-> > > > > into functions") switched a bunch of BPF_PROG_RUN macros to inline
-> > > > > routines. This changed the semantic a bit. Due to arguments  
-> expansion
-> > > > > of macros, it used to be:
-> > > > >
-> > > > >         rcu_read_lock();
-> > > > >         array = rcu_dereference(cgrp->bpf.effective[atype]);
-> > > > >         ...
-> > > > >
-> > > > > Now, with with inline routines, we have:
-> > > > >         array_rcu = rcu_dereference(cgrp->bpf.effective[atype]);
-> > > > >         /* array_rcu can be kfree'd here */
-> > > > >         rcu_read_lock();
-> > > > >         array = rcu_dereference(array_rcu);
-> > > > >
-> > >
-> > > > So subtle difference, wow...
-> > >
-> > > > But this open-coding of rcu_read_lock() seems very unfortunate as
-> > > > well. Would making BPF_PROG_RUN_ARRAY back to a macro which only  
-> does
-> > > > rcu lock/unlock and grabs effective array and then calls static  
-> inline
-> > > > function be a viable solution?
-> > >
-> > > > #define BPF_PROG_RUN_ARRAY_CG_FLAGS(array_rcu, ctx, run_prog,  
-> ret_flags) \
-> > > >    ({
-> > > >        int ret;
-> > >
-> > > >        rcu_read_lock();
-> > > >        ret =
-> > > > __BPF_PROG_RUN_ARRAY_CG_FLAGS(rcu_dereference(array_rcu), ....);
-> > > >        rcu_read_unlock();
-> > > >        ret;
-> > > >    })
-> > >
-> > >
-> > > > where __BPF_PROG_RUN_ARRAY_CG_FLAGS is what
-> > > > BPF_PROG_RUN_ARRAY_CG_FLAGS is today but with __rcu annotation  
-> dropped
-> > > > (and no internal rcu stuff)?
-> > >
-> > > Yeah, that should work. But why do you think it's better to hide them?
-> > > I find those automatic rcu locks deep in the call stack a bit obscure
-> > > (when reasoning about sleepable vs non-sleepable contexts/bpf).
-> > >
-> > > I, as the caller, know that the effective array is rcu-managed (it
-> > > has __rcu annotation) and it seems natural for me to grab rcu lock
-> > > while work with it; I might grab it for some other things like cgroup
-> > > anyway.
-> >
-> > If you think that having this more explicitly is better, I'm fine with
-> > that as well. I thought a simpler invocation pattern would be good,
-> > given we call bpf_prog_run_array variants in quite a lot of places. So
-> > count me indifferent. I'm curious what others think.
+Hello:
 
-> Would it work if the bpf_prog_run_array_cg() directly takes the
-> 'struct cgroup *cgrp' argument instead of the array ?
-> bpf_prog_run_array_cg() should know what protection is needed
-> to get member from the cgrp ptr.  The sk call path should be able
-> to provide a cgrp ptr.  For current cgrp, pass NULL as the cgrp
-> pointer and then current will be used in bpf_prog_run_array_cg().
-> A rcu_read_lock() is needed anyway to get the current's cgrp
-> and can be done together in bpf_prog_run_array_cg().
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-> That there are only two remaining bpf_prog_run_array() usages
-> from lirc and bpf_trace which are not too bad to have them
-> directly do rcu_read_lock on their own struct ?
+On Tue, 12 Apr 2022 18:50:48 -0700 you wrote:
+> remove unnecessary void* type castings.
+> 
+> Signed-off-by: Yu Zhe <yuzhe@nfschina.com>
+> ---
+>  kernel/bpf/bpf_struct_ops.c | 4 ++--
+>  kernel/bpf/hashtab.c        | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
 
- From Andrii's original commit message:
+Here is the summary with links:
+  - bpf: remove unnecessary type castings
+    https://git.kernel.org/bpf/bpf-next/c/241d50ec5d79
 
-     I think BPF_PROG_RUN_ARRAY_CG would benefit from further refactoring to  
-accept
-     struct cgroup and enum bpf_attach_type instead of bpf_prog_array,  
-fetching
-     cgrp->bpf.effective[type] and RCU-dereferencing it internally. But that
-     required including include/linux/cgroup-defs.h, which I wasn't sure is  
-ok with
-     everyone.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I guess including cgroup-defs.h/bpf-cgroup-defs.h into bpf.h might still
-be somewhat problematic?
 
-But even if we pass the cgroup pointer, I'm assuming that this cgroup  
-pointer
-is still rcu-managed, right? So the callers still have to rcu-lock.
-However, in most places we don't care and do "cgrp =  
-sock_cgroup_ptr(&sk->sk_cgrp_data);"
-but seems like it depends on the fact that sockets can't (yet?)
-change their cgroup association and it's fine to not rcu-lock that
-cgroup. Seems fragile, but ok. It always stumbles me when I see:
-
-cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-bpf_prog_run_array_cg_flags(cgrp.bpf->effective[atype], ...)
-
-But then, with current, it becomes:
-
-rcu_read_lock();
-cgrp = task_dfl_cgroup(current);
-bpf_prog_run_array_cg_flags(cgrp.bpf->effective[atype], ...)
-rcu_read_unlock();
-
-Idk, I might be overthinking it. I'll try to see if including
-bpf-cgroup-defs.h and passing cgroup_bpf is workable.
