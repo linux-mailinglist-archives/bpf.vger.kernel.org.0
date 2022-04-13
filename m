@@ -2,92 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEEC4FEEA0
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 07:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A8F4FEE9D
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 07:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbiDMFoU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Apr 2022 01:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
+        id S232465AbiDMFkD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Apr 2022 01:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbiDMFoP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Apr 2022 01:44:15 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D9920BD0
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 22:41:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649828515; x=1681364515;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3+7xb50yyAkZcjyiKM5epqXVFZW9Cu31ER3KCuvz5gw=;
-  b=jor9EdHf7yOiub5GMTyLfAtzMZ/56lDgqqmlmQ+bb3t/CMaE1A0n5ZSU
-   wA/JIOoeTHe1SPtk6oa1cRSDwhXOyNAcXC1QP5xHy+8GeK8soXk2/AW+A
-   mtgwfcKHeEu2KvSIKDXM2YK8K0IvDHNOTH84stpb6PjZCZY9I9xPriHqi
-   p8kVTavV/jwqZKNcjkEC8J+o0Pk/U+9vvHJL/iBpd24AFxjpl+wJbjjSs
-   qoWWm896L+yxFExBjyrA2JVo60prT1zLlglU4GZi9cW9qDaxqqkmc8hWq
-   Yum9oQ/OW5My1+zZzNMnWZFa9zyoGpqNHJVnn4LQVTZCNObSh+8FaH9KL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10315"; a="261427632"
-X-IronPort-AV: E=Sophos;i="5.90,255,1643702400"; 
-   d="scan'208";a="261427632"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2022 22:41:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,255,1643702400"; 
-   d="scan'208";a="660794906"
-Received: from lkp-server01.sh.intel.com (HELO 3abc53900bec) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 12 Apr 2022 22:41:52 -0700
-Received: from kbuild by 3abc53900bec with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1neVlI-00003w-3a;
-        Wed, 13 Apr 2022 05:41:52 +0000
-Date:   Wed, 13 Apr 2022 13:41:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S231567AbiDMFkB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Apr 2022 01:40:01 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2310731226;
+        Tue, 12 Apr 2022 22:37:39 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KdWYX5q7pz1HBpK;
+        Wed, 13 Apr 2022 13:36:48 +0800 (CST)
+Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
+ (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 13 Apr
+ 2022 13:37:23 +0800
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+CC:     Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v4 03/13] bpf: Allow storing unreferenced kptr
- in map
-Message-ID: <202204131252.o56DuHxd-lkp@intel.com>
-References: <20220409093303.499196-4-memxor@gmail.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, <x86@kernel.org>,
+        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>
+Subject: [PATCH bpf-next 0/5] bpf trampoline for arm64
+Date:   Wed, 13 Apr 2022 01:49:54 -0400
+Message-ID: <20220413054959.1053668-1-xukuohai@huawei.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220409093303.499196-4-memxor@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.197]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kumar,
+Add bpf trampoline support for arm64. Most of the logic is the same as
+x86.
 
-Thank you for the patch! Perhaps something to improve:
+Tested on qemu, result:
+ #55 fentry_fexit:OK
+ #56 fentry_test:OK
+ #58 fexit_sleep:OK
+ #59 fexit_stress:OK
+ #60 fexit_test:OK
+ #67 get_func_args_test:OK
+ #68 get_func_ip_test:OK
+ #101 modify_return:OK
 
-[auto build test WARNING on bpf-next/master]
+Xu Kuohai (5):
+  arm64: ftrace: Add ftrace direct call support
+  bpf: Move is_valid_bpf_tramp_flags() to the public trampoline code
+  bpf, arm64: Impelment bpf_arch_text_poke() for arm64
+  bpf, arm64: bpf trampoline for arm64
+  selftests/bpf: Fix trivial typo in fentry_fexit.c
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220409-173513
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: microblaze-randconfig-c024-20220408 (https://download.01.org/0day-ci/archive/20220413/202204131252.o56DuHxd-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 11.2.0
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-cocci warnings: (new ones prefixed by >>)
->> kernel/bpf/syscall.c:530:11-18: WARNING opportunity for kmemdup
-
-Please review and possibly fold the followup patch.
+ arch/arm64/Kconfig                            |   2 +
+ arch/arm64/include/asm/ftrace.h               |  10 +
+ arch/arm64/kernel/asm-offsets.c               |   1 +
+ arch/arm64/kernel/entry-ftrace.S              |  18 +-
+ arch/arm64/net/bpf_jit.h                      |  14 +-
+ arch/arm64/net/bpf_jit_comp.c                 | 390 +++++++++++++++++-
+ arch/x86/net/bpf_jit_comp.c                   |  20 -
+ include/linux/bpf.h                           |   5 +
+ kernel/bpf/bpf_struct_ops.c                   |   4 +-
+ kernel/bpf/trampoline.c                       |  36 +-
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |   4 +-
+ 11 files changed, 470 insertions(+), 34 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.30.2
+
