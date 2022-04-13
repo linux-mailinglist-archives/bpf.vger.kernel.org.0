@@ -2,194 +2,461 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6EC4FFDD9
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 20:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA0C4FFDE3
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 20:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbiDMSc5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Apr 2022 14:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
+        id S237743AbiDMSfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Apr 2022 14:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237747AbiDMScc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Apr 2022 14:32:32 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1E353A5A
-        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 11:30:10 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23DHTTVe012743
-        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 11:30:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=37V2eo98me2IRTQ4kuFs3oYnEpcFVCwKEZuZSGPjTjc=;
- b=P13PRDIVJEx815q5ZAvxbhFZaZ+9jBo2JMgTtYu7cyK9Z+2EvWiuFbptIEJJzr39JfUO
- ePb7ww60la0FTBbEDyNbEOq95uD9YK64fthH8IpFVbMuRzeJMOnpehN0SXzHxQmPeq8b
- DTBBoibRel/Uv4MFEP2Bn8iimjWkE8cOdNM= 
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2043.outbound.protection.outlook.com [104.47.74.43])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fdd5uggbb-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 11:30:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gonDqvsLPngbf1ferea5CRatpLfh3l5P+y+jLS/tZ1h6UQxc76Y5YzE/32DBYmQWCIvhLBNJQfojshZASaKXKT19s/rvVoNqhDC3FCW7ZcN/pXduWlwoJarKowYdTiOw6tgLp+mnUSU0ldQlAVVuDODjAURHrPOHX7IZVD12VxDcH8d3e3gZSN+689B8v221m5REwWuUUYADFI/b1Kl2xBRE0PFFBbcG1Wh1e0aCKSjfKT/ZXIL1uIdXBdqB3mKGjVeLynaCehGWrWfW0nxBrThnduoGu/MjE6y3ZyzoMr6jbNndCg/e0iHXzqyjswsXcrWOFhyDsBl1R61yrA2NLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=37V2eo98me2IRTQ4kuFs3oYnEpcFVCwKEZuZSGPjTjc=;
- b=TXsdk8eeDA+KrU+7iZ2q6N/S0lCn1FxKel3jw/lIvmT7Tsagk/v5u1HtK37x1153FJ70eYYy53jLny1BGiDrP1gp7/m3enrVFQcd80NapRnu1sfnoKiLLNg4QaCDs+usvBaDAbk23QCbyD9Mjm/h5EjpJhFHBUSCSORb4DnYaB7+zTQGnfbQ8G2Z5MVgon0+S17FEqKIuUUnjWl5zpmz4UyvN4Pqgr62Bk+Lvs1ZRr05F1ZZqhUku3ckaJJkmDnCJtVDqoKJ8J/09a30uZDpPn3u8tVcHcymGYTrvR0BrSlRu6xA+PlUhsQseQ2SRhDJaiN/HGvWhl6mLXcHdiVScA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
- by MN2PR15MB3455.namprd15.prod.outlook.com (2603:10b6:208:3c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.29; Wed, 13 Apr
- 2022 18:30:06 +0000
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::20d5:ab50:fdf7:2a9a]) by BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::20d5:ab50:fdf7:2a9a%6]) with mapi id 15.20.5144.030; Wed, 13 Apr 2022
- 18:30:06 +0000
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5 5/5] selftest/bpf: The test cses of BPF cookie
- for fentry/fexit/fmod_ret.
-Thread-Topic: [PATCH bpf-next v5 5/5] selftest/bpf: The test cses of BPF
- cookie for fentry/fexit/fmod_ret.
-Thread-Index: AQHYTo5QoM2oBjX/UEGhCSU/o0xut6ztLOoAgAD+9oA=
-Date:   Wed, 13 Apr 2022 18:30:06 +0000
-Message-ID: <50350c2071e3cb8e72a49a8ab46e37a250c573d1.camel@fb.com>
-References: <20220412165555.4146407-1-kuifeng@fb.com>
-         <20220412165555.4146407-6-kuifeng@fb.com>
-         <CAEf4Bzbq+rcUJuXtBDb__M97xNAWH_5CbJAYrxCrDKytX_dJvw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbq+rcUJuXtBDb__M97xNAWH_5CbJAYrxCrDKytX_dJvw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7e67e230-bb32-423f-c65b-08da1d7ba1ff
-x-ms-traffictypediagnostic: MN2PR15MB3455:EE_
-x-microsoft-antispam-prvs: <MN2PR15MB34557DADF36A620C2742D116CCEC9@MN2PR15MB3455.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ye6/WSa9Qq/F7hT/B1kfVdsQ3WgI29lY1I3drHF3td8pEiEB39KFeRf7XTk3fGHFrz6gxgMsMQKQHeTUqebo9lRp0DQHOpXqXsSpat8iyZP9upG4ZSsGebHHVp+MJQcQlA9aIlfSTu4yXs27BUqG0idYZnKBubrnqWR3GFrHkqI3+p+rndAOZ0DKOUNSS6MEnh66JRvqjiQZ23sGXrKvMem6nmTtezFyLFcAE9GubQpoA5iQRJO/2TUC3oy/dXnoBPl0382faOjf0GyBWbN4oCAf6y8u1vT/1GlUq4Ak6M7VYiOnTRNO8qE7smULSAIa6X9bbsb3Gpk9XA92qzn9GiM6+FZo+eAa3pnGtrLf1DmxuWiurokuupD84dGw5T4m99HLDdZoBfK2w+E5wTvFxL2Jw2mjAJ4rUEqvX5NhQJEquh6ornorC3mi+2HIdOUjJvNWAdjcmwSA10sU0koIH/dAWOXIdoZn4QsyJOyOb9sQFPgssF5apn/NGmREZOQSNCTjhinR5pG9hQIi2WOOc1iVy7DUFhAgt2qI5SDrRWOjiW8iEAP+S/+cBvfB6ylqI7utjxkt7IC0g0nNTUvSLaf49CX4umw1as1JAdTeyjbjMDImJlqB3Il1PmkwMN4Y7+/kN9FC9197kGFaX06D469uL/wH4ujE0f851QH9hEevOb6H+JGU0oKdTwl10qI+ldd18iaSVdH4afNPfhKD/g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(86362001)(2906002)(6486002)(38070700005)(5660300002)(71200400001)(8936002)(36756003)(6512007)(6506007)(53546011)(316002)(186003)(2616005)(66446008)(76116006)(4326008)(66946007)(38100700002)(122000001)(66476007)(64756008)(66556008)(54906003)(6916009)(8676002)(508600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UytqZkgwMTlLM1pmbVZsd1dBbXVNdnlQM25HZXhUMFlXdVZVQVFkSUVubG9W?=
- =?utf-8?B?Z21IRlI1ZEpRWGRablpSQmowT2JQYjFWWVJuNXU2dUZscXNhV1lvdnpiYmt5?=
- =?utf-8?B?MzhYeUJyN01iNW9ham1iajV5TS81cy8wSWNFdFRKeTY1c3l3OVY4cC9CWVA3?=
- =?utf-8?B?eU1RUzB2MXVPWDJFNHVKWWM1Zit0OW5tekl5WFd0R0dXcU9lWkpMQXgrRFZV?=
- =?utf-8?B?UC9CUVJ3WUFRRDNvb0lLcys3T0MyQTUxR3QrRkJuQVNZREFLNXcxSmlwaTFU?=
- =?utf-8?B?djBvRGNvaVgyT2NxNkFNbmpmMmRQcDlvL0RjS2hDY0lTdnhhMm5iczl1ZUFs?=
- =?utf-8?B?ZGYzVW5vaktWZ2dvZVlkRzBsQWg2cTB0UnV3bG13cDN3WkU4UlNwVkJEbExU?=
- =?utf-8?B?U2V2SnNYL3N1OTR4VTlNUTFVTmtSd1pxMGlZTktoOFJKYzJjVUZYNjlBSWk0?=
- =?utf-8?B?YkFOc0lrVWYzWGtEZlFUT1U1SVFHZmt2Y2Y5ZEFpRU5EOC9jUkltRHBSbGNs?=
- =?utf-8?B?dUpUVW90djhVbVJKVW92bnBvaG9hVVh3SmZUY0NINkp2R1RDamtmUWRpWmFM?=
- =?utf-8?B?T0dpWVlWVnJ1MVZmY1U4NnBpK3dBM2JVRUo3eEVuNHcvVnByRmRzZXQ1UHZU?=
- =?utf-8?B?NGF6TTRwWDVtRzJQQkN0UTV6RGVLdVVhTisyZE4yMXcrSUwwRmc0Nmk0UlB6?=
- =?utf-8?B?WXFCV0ZRWXExL3h1RmxsY1JHVDlhOTNsQWhNcjYxOWZ0bVdYK3c2UWlyaUNy?=
- =?utf-8?B?YmVDdXdaNWlSWVY4ZGRGQWoyQ3FDMUFWZjhJNEdteGVsRXQ4djBWUWtUVDNy?=
- =?utf-8?B?R2JJYktHdmFJQmU3dHRhMFFJSEV6bU9qMDg0ZmtDd1VvcmNEK2FqWmVPdEtj?=
- =?utf-8?B?OE1pcFpvWmdwSXNYbm1hM1VCdnZVb2U1RHdQcy9mMkNXV3dWVHNHNGptSlZs?=
- =?utf-8?B?TUdVKzgrNzh0ZDlaeEUvYlJhR2ZkbmFoZG5OY3RNMmt6M1lpWmcyK1JOQjVJ?=
- =?utf-8?B?ZkxzbkM3c1VtazdQaEpxUFhRdWxKa2h1SmRSdUdaL0YrK3BSNTN5QXlCTlVL?=
- =?utf-8?B?K1dqSkhaQmV5bC80YVZJV2xIZlZKOFN5R1NhVHQ2TUNNNkh0YmM5N2Jkb3NF?=
- =?utf-8?B?SEd1QWNtL1lFakc2SnhYdmttTFhDanBnLzBMVHZhbHpvQy9LcEJTbUdadHA2?=
- =?utf-8?B?d3FGb2JZLzlMQ0ZwWFVucVFkbW1tTkh3Y0ZyVFJPSDNCQ3FMTzBKbktJdXlQ?=
- =?utf-8?B?bGdhQkFxeWxkb1FsenQwbCtROXdUUkRYWnpRcUFBZ1pVVVQxK1BnTSt0RG9S?=
- =?utf-8?B?bHI0ZGd5QVFCL2R3YVFoN3Y4YXdVbzVNOHZKMlpmWjRDNEpCelgxR0Rwc09B?=
- =?utf-8?B?cFVHWkxmWVArVWFBeXY2WVg5ajRZOVBSYXBCMGVBdHVHMXpxTERDQ1Q5QXNs?=
- =?utf-8?B?YlpxM3Y1UmJZV1YyWnBVc1F4dUErSGlPT3Mvc0NxbkFvSC9YR2tINlVNZUNj?=
- =?utf-8?B?Si9QRENyYkNKa1FCUXJ1aVRlZk5ETVVkZXFEZ2kvMGpueVRtN0Yvb0l1a2VP?=
- =?utf-8?B?dGkvbWxvOFo3a2dLYUo3dnpFYzB1dXFiWnRMOWRaaHErdnQvTW1Oc3dMQUU4?=
- =?utf-8?B?SmVDdmhJV21OdWlqb2lxS3hRd0pUV0dCTHNudzlybHVJUU5KdjE5YUNyQVpD?=
- =?utf-8?B?SndLb2M5UGtycDZzQzNMRm0xcGVOMWluSllqU1RJNnhkUGhtd0dIVmpWNk1Z?=
- =?utf-8?B?N0hVcFhlVDAvb2JwSmQrdU5hVGhvc1RmWGhWeGhMRVNFN2Z4WCtmeENGNGk0?=
- =?utf-8?B?Rk5MVGptZ3k3WEtXN1FBUk9TN3BLdm9wUnBCb3piVG44R3VPajNwQjByMVZP?=
- =?utf-8?B?NWtnSVU3OUFhU05uWWsvL0JPZ1RqMGRLVnZGb3ROREJ4Sk03VStrdnFmUU5E?=
- =?utf-8?B?d3ZxYXlaSW4zRlZycjVYcVFTVExUREk4a3Z6N1ZLNkVzMXllVWJIOVA4bTcr?=
- =?utf-8?B?QzQxamdnOEt3bXJTZjRKMXF0WVZubUxzSER0MVh2OXZWTGFNNjM2L1BUaGtu?=
- =?utf-8?B?NS9KQW5na1B2Nmk0MlU0VER2R1dDRUtYdG1QcUgzakhxMGNTYWQwSlh6NU9V?=
- =?utf-8?B?S21UcXcybUJwdjJpcUxsaHVDNzJDTlpwbnhVUFpINllzZVVla2tuVkp0Y281?=
- =?utf-8?B?TXhQNXBJbXlZbjVMMTVWRzBQZWdQRE9aSEp5VG1mR2hmdVUvdWkyOVFld3pn?=
- =?utf-8?B?bDhSajVteUYwK0oxcktxNlFmQkVPa1VzTjllbStsR0FsRWFxNTAwMHZsRjhT?=
- =?utf-8?B?U21CbHNMNzdLODRrUVR2dnZVbk9HZnNpdkJ6QitmQ0Zsb2tVMmxKN0VYd0h3?=
- =?utf-8?Q?O59e5a4dgVqPFS+W87UU953Jpejku/9T0gm1b?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <633FAF0533598C45901B83EB0517CBC5@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e67e230-bb32-423f-c65b-08da1d7ba1ff
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2022 18:30:06.1329
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 24Jxj7ktNwMS00eV4gGHATpsKwoevRLCd0mtM811z67+yUP3zRJjb8gPVZwcKlTB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3455
-X-Proofpoint-ORIG-GUID: kukOYxt9WUPKYDyLEtCuZ_z24ityEYd8
-X-Proofpoint-GUID: kukOYxt9WUPKYDyLEtCuZ_z24ityEYd8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-13_03,2022-04-13_01,2022-02-23_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        with ESMTP id S236334AbiDMSfV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Apr 2022 14:35:21 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB195A17F
+        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 11:32:59 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2ebf1d99068so23559217b3.9
+        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 11:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Br919Apk+2uBQJBESyyoPhVSQl8Eq/kv2f0ZpWyFRj8=;
+        b=XVGoqFlqHrb/Bt1iMOqI79bfHy0KbeuXuc2t/l1WX7NFSuXRk7/Gc68mPxpsSk+Wd5
+         ho/KDwkRtMYMu4ri5PrESmLxIMwlIZ//2mfxVSSXEX9S6Rp3Hdy34aImo+ppsuRX9jET
+         t36I179KyknsvF/fS8XrCIIbnqYBxbH26R+WpJuHGWD0MJfCjvfEcdJr/M+jxxlaBOOC
+         v0Hh4rKK6/dm7fF/GfEZirNbJLkARsEHyg0jsIBmVZ/kcKuhkPmYuJrIzSptbFGwBZ3W
+         RONHg0yeYRNNWB01O3x+yZsWyuBn+xpsTwtODnQPGysz7Q4Fhd/XLT3dBRbBOQbdZObE
+         B1gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Br919Apk+2uBQJBESyyoPhVSQl8Eq/kv2f0ZpWyFRj8=;
+        b=7wujJTvve3mtq1YFc3dUBRyIKD+iJRiYGwkZGad+XCu8waqGVP+e09FehOGhL7ALpf
+         kd/2hxBUuH9bQ/OQomVFI00TyPrlxGh678FRxN+bktuLgwnsFM8JLBFVOUUs6BzhdeSV
+         WYmTRYkl3mvSbnKOkb5fLRYCRtlVtV2vy7pGbhGMO/qqwpQfBiNWxZMRXSJgRdx2T/tb
+         D63Qeqi07M5GJR0/YtAK5Ps9XwDSchMd1zaZ7JQmkg+616UIlqdwc72KJnYJ25QCc8Bq
+         /4bKyIiZhgoFT9YxWS8YBk/XfDQBzlf09TIcScuo6foVRetBfkMZ5F8nPMmNUHy3ZzKZ
+         TB0Q==
+X-Gm-Message-State: AOAM532sLLqTyUDfKkVH45mLL6GMFF3W4BqNN4VCSvW9gkD3W5LjiH+p
+        SLxrNxoL3kMCng1gH6fJ8wEoivE=
+X-Google-Smtp-Source: ABdhPJyzoMVPi1MBAHOnwHm5Uhe+ex7shUu8ixbvU4OTlKfo6UfF29k9K3xff91TI9blFWRn894atvw=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:45c6:42d5:e443:72cc])
+ (user=sdf job=sendgmr) by 2002:a25:dc4:0:b0:641:438e:dd2a with SMTP id
+ 187-20020a250dc4000000b00641438edd2amr194966ybn.456.1649874778696; Wed, 13
+ Apr 2022 11:32:58 -0700 (PDT)
+Date:   Wed, 13 Apr 2022 11:32:56 -0700
+Message-Id: <20220413183256.1819164-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.rc0.470.gd361397f0d-goog
+Subject: [PATCH bpf-next] bpf: move rcu lock management out of BPF_PROG_RUN routines
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gVHVlLCAyMDIyLTA0LTEyIGF0IDIwOjE3IC0wNzAwLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6
-DQo+IE9uIFR1ZSwgQXByIDEyLCAyMDIyIGF0IDk6NTYgQU0gS3VpLUZlbmcgTGVlIDxrdWlmZW5n
-QGZiLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gTWFrZSBzdXJlIEJQRiBjb29raWVzIGFyZSBjb3Jy
-ZWN0IGZvciBmZW50cnkvZmV4aXQvZm1vZF9yZXQuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTog
-S3VpLUZlbmcgTGVlIDxrdWlmZW5nQGZiLmNvbT4NCj4gPiAtLS0NCj4gPiDCoC4uLi9zZWxmdGVz
-dHMvYnBmL3Byb2dfdGVzdHMvYnBmX2Nvb2tpZS5jwqDCoMKgwqAgfCA1Mg0KPiA+ICsrKysrKysr
-KysrKysrKysrKysNCj4gPiDCoC4uLi9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3RfYnBmX2Nvb2tp
-ZS5jwqDCoMKgwqAgfCAyNCArKysrKysrKysNCj4gPiDCoDIgZmlsZXMgY2hhbmdlZCwgNzYgaW5z
-ZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0
-cy9icGYvcHJvZ190ZXN0cy9icGZfY29va2llLmMNCj4gPiBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRl
-c3RzL2JwZi9wcm9nX3Rlc3RzL2JwZl9jb29raWUuYw0KPiA+IGluZGV4IDkyM2E2MTM5YjJkOC4u
-N2YwNTA1NmM2NmQ0IDEwMDY0NA0KPiA+IC0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2Jw
-Zi9wcm9nX3Rlc3RzL2JwZl9jb29raWUuYw0KPiA+ICsrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRl
-c3RzL2JwZi9wcm9nX3Rlc3RzL2JwZl9jb29raWUuYw0KPiA+IEBAIC00MTAsNiArNDEwLDU2IEBA
-IHN0YXRpYyB2b2lkIHBlX3N1YnRlc3Qoc3RydWN0IHRlc3RfYnBmX2Nvb2tpZQ0KPiA+ICpza2Vs
-KQ0KPiA+IMKgwqDCoMKgwqDCoMKgIGJwZl9saW5rX19kZXN0cm95KGxpbmspOw0KPiA+IMKgfQ0K
-PiA+IA0KPiA+ICtzdGF0aWMgdm9pZCB0cmFjaW5nX3N1YnRlc3Qoc3RydWN0IHRlc3RfYnBmX2Nv
-b2tpZSAqc2tlbCkNCj4gPiArew0KPiA+ICvCoMKgwqDCoMKgwqAgX191NjQgY29va2llOw0KPiA+
-ICvCoMKgwqDCoMKgwqAgaW50IHByb2dfZmQ7DQo+ID4gK8KgwqDCoMKgwqDCoCBpbnQgZmVudHJ5
-X2ZkID0gLTEsIGZleGl0X2ZkID0gLTEsIGZtb2RfcmV0X2ZkID0gLTE7DQo+ID4gKw0KPiANCj4g
-dW5uZWNlc3NhcnkgZW1wdHkgbGluZQ0KDQpHb3QgaXQhDQoNCj4gDQo+ID4gK8KgwqDCoMKgwqDC
-oCBMSUJCUEZfT1BUUyhicGZfdGVzdF9ydW5fb3B0cywgb3B0cywgLnJlcGVhdCA9IDEpOw0KPiAN
-Cj4gLnJlcGVhdCA9IDEgaXMgbm90IG5lY2Vzc2FyeSwgSSB0aGluaywgLnJlcGVhdCA9IDAgaXMg
-ZXF1aXZhbGVudCB0bw0KPiB0aGF0DQoNCkkgd2lsbCB0ZXN0IGl0Lg0KDQo+IA0KPiA+ICvCoMKg
-wqDCoMKgwqAgTElCQlBGX09QVFMoYnBmX2xpbmtfY3JlYXRlX29wdHMsIGxpbmtfb3B0cyk7DQo+
-ID4gKw0KPiA+ICvCoMKgwqDCoMKgwqAgc2tlbC0+YnNzLT5mZW50cnlfcmVzID0gMDsNCj4gPiAr
-wqDCoMKgwqDCoMKgIHNrZWwtPmJzcy0+ZmV4aXRfcmVzID0gMDsNCj4gPiArDQo+ID4gK8KgwqDC
-oMKgwqDCoCBjb29raWUgPSAweDEwMDAwMDsNCj4gDQo+IG5pdDogbWFrZSB0aGlzIHZhbHVlIGJp
-Z2dlciB0byBtYWtlIHN1cmUgaGlnaGVyIDMyIGJpdHMgb2YgdTY0IGFyZQ0KPiBwcmVzZXJ2ZWQg
-cHJvcGVybHkuIE1heWJlIDB4MTAwMDAwMDAxMDAwMDAwMCAoYW5kIHNpbWlsYXJseSB3aXRoIDIN
-Cj4gYW5kDQo+IDMpDQoNCk9rIQ0KDQo+IA0KPiA+ICvCoMKgwqDCoMKgwqAgcHJvZ19mZCA9IGJw
-Zl9wcm9ncmFtX19mZChza2VsLT5wcm9ncy5mZW50cnlfdGVzdDEpOw0KPiA+ICvCoMKgwqDCoMKg
-wqAgbGlua19vcHRzLnRyYWNpbmcuYnBmX2Nvb2tpZSA9IGNvb2tpZTsNCj4gPiArwqDCoMKgwqDC
-oMKgIGZlbnRyeV9mZCA9IGJwZl9saW5rX2NyZWF0ZShwcm9nX2ZkLCAwLCBCUEZfVFJBQ0VfRkVO
-VFJZLA0KPiA+ICZsaW5rX29wdHMpOw0KPiA+ICsNCj4gDQo+IEFTU0VSVF9HRT8NCg0Kc3VyZSEN
-Cg0KPiANCj4gPiArwqDCoMKgwqDCoMKgIGNvb2tpZSA9IDB4MjAwMDAwOw0KPiA+ICvCoMKgwqDC
-oMKgwqAgcHJvZ19mZCA9IGJwZl9wcm9ncmFtX19mZChza2VsLT5wcm9ncy5mZXhpdF90ZXN0MSk7
-DQo+ID4gK8KgwqDCoMKgwqDCoCBsaW5rX29wdHMudHJhY2luZy5icGZfY29va2llID0gY29va2ll
-Ow0KPiA+ICvCoMKgwqDCoMKgwqAgZmV4aXRfZmQgPSBicGZfbGlua19jcmVhdGUocHJvZ19mZCwg
-MCwgQlBGX1RSQUNFX0ZFWElULA0KPiA+ICZsaW5rX29wdHMpOw0KPiA+ICvCoMKgwqDCoMKgwqAg
-aWYgKCFBU1NFUlRfR0UoZmV4aXRfZmQsIDAsICJmZXhpdC5vcGVuIikpDQo+ID4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBjbGVhbnVwOw0KPiA+ICsNCj4gDQo+IFsuLi5dDQoN
-Cg==
+Commit 7d08c2c91171 ("bpf: Refactor BPF_PROG_RUN_ARRAY family of macros
+into functions") switched a bunch of BPF_PROG_RUN macros to inline
+routines. This changed the semantic a bit. Due to arguments expansion
+of macros, it used to be:
+
+	rcu_read_lock();
+	array = rcu_dereference(cgrp->bpf.effective[atype]);
+	...
+
+Now, with with inline routines, we have:
+	array_rcu = rcu_dereference(cgrp->bpf.effective[atype]);
+	/* array_rcu can be kfree'd here */
+	rcu_read_lock();
+	array = rcu_dereference(array_rcu);
+
+I'm assuming in practice rcu subsystem isn't fast enough to trigger
+this but let's use rcu API properly: ask callers of BPF_PROG_RUN
+to manage rcu themselves.
+
+Also, rename to lower caps to not confuse with macros. Additionally,
+drop and expand BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY.
+
+See [1] for more context.
+
+  [1] https://lore.kernel.org/bpf/CAKH8qBs60fOinFdxiiQikK_q0EcVxGvNTQoWvHLEUGbgcj1UYg@mail.gmail.com/T/#u
+
+Cc: Martin KaFai Lau <kafai@fb.com>
+Fixes: 7d08c2c91171 ("bpf: Refactor BPF_PROG_RUN_ARRAY family of macros into functions")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ drivers/media/rc/bpf-lirc.c |  8 +++-
+ include/linux/bpf.h         | 70 ++++++-------------------------
+ kernel/bpf/cgroup.c         | 84 +++++++++++++++++++++++++++++--------
+ kernel/trace/bpf_trace.c    |  5 ++-
+ 4 files changed, 90 insertions(+), 77 deletions(-)
+
+diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+index 3eff08d7b8e5..fe17c7f98e81 100644
+--- a/drivers/media/rc/bpf-lirc.c
++++ b/drivers/media/rc/bpf-lirc.c
+@@ -216,8 +216,12 @@ void lirc_bpf_run(struct rc_dev *rcdev, u32 sample)
+ 
+ 	raw->bpf_sample = sample;
+ 
+-	if (raw->progs)
+-		BPF_PROG_RUN_ARRAY(raw->progs, &raw->bpf_sample, bpf_prog_run);
++	if (raw->progs) {
++		rcu_read_lock();
++		bpf_prog_run_array(rcu_dereference(raw->progs),
++				   &raw->bpf_sample, bpf_prog_run);
++		rcu_read_unlock();
++	}
+ }
+ 
+ /*
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index bdb5298735ce..16111924fa3e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1221,7 +1221,7 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+ /* an array of programs to be executed under rcu_lock.
+  *
+  * Typical usage:
+- * ret = BPF_PROG_RUN_ARRAY(&bpf_prog_array, ctx, bpf_prog_run);
++ * ret = bpf_prog_run_array(rcu_dereference(&bpf_prog_array), ctx, bpf_prog_run);
+  *
+  * the structure returned by bpf_prog_array_alloc() should be populated
+  * with program pointers and the last pointer must be NULL.
+@@ -1316,21 +1316,20 @@ static inline void bpf_reset_run_ctx(struct bpf_run_ctx *old_ctx)
+ typedef u32 (*bpf_prog_run_fn)(const struct bpf_prog *prog, const void *ctx);
+ 
+ static __always_inline int
+-BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
++bpf_prog_run_array_cg_flags(const struct bpf_prog_array *array,
+ 			    const void *ctx, bpf_prog_run_fn run_prog,
+ 			    int retval, u32 *ret_flags)
+ {
+ 	const struct bpf_prog_array_item *item;
+ 	const struct bpf_prog *prog;
+-	const struct bpf_prog_array *array;
+ 	struct bpf_run_ctx *old_run_ctx;
+ 	struct bpf_cg_run_ctx run_ctx;
+ 	u32 func_ret;
+ 
++	RCU_LOCKDEP_WARN(!rcu_read_lock_held(), "no rcu lock held");
++
+ 	run_ctx.retval = retval;
+ 	migrate_disable();
+-	rcu_read_lock();
+-	array = rcu_dereference(array_rcu);
+ 	item = &array->items[0];
+ 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+ 	while ((prog = READ_ONCE(item->prog))) {
+@@ -1342,26 +1341,24 @@ BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
+ 		item++;
+ 	}
+ 	bpf_reset_run_ctx(old_run_ctx);
+-	rcu_read_unlock();
+ 	migrate_enable();
+ 	return run_ctx.retval;
+ }
+ 
+ static __always_inline int
+-BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
++bpf_prog_run_array_cg(const struct bpf_prog_array *array,
+ 		      const void *ctx, bpf_prog_run_fn run_prog,
+ 		      int retval)
+ {
+ 	const struct bpf_prog_array_item *item;
+ 	const struct bpf_prog *prog;
+-	const struct bpf_prog_array *array;
+ 	struct bpf_run_ctx *old_run_ctx;
+ 	struct bpf_cg_run_ctx run_ctx;
+ 
++	RCU_LOCKDEP_WARN(!rcu_read_lock_held(), "no rcu lock held");
++
+ 	run_ctx.retval = retval;
+ 	migrate_disable();
+-	rcu_read_lock();
+-	array = rcu_dereference(array_rcu);
+ 	item = &array->items[0];
+ 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+ 	while ((prog = READ_ONCE(item->prog))) {
+@@ -1371,27 +1368,26 @@ BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
+ 		item++;
+ 	}
+ 	bpf_reset_run_ctx(old_run_ctx);
+-	rcu_read_unlock();
+ 	migrate_enable();
+ 	return run_ctx.retval;
+ }
+ 
+ static __always_inline u32
+-BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
++bpf_prog_run_array(const struct bpf_prog_array *array,
+ 		   const void *ctx, bpf_prog_run_fn run_prog)
+ {
+ 	const struct bpf_prog_array_item *item;
+ 	const struct bpf_prog *prog;
+-	const struct bpf_prog_array *array;
+ 	struct bpf_run_ctx *old_run_ctx;
+ 	struct bpf_trace_run_ctx run_ctx;
+ 	u32 ret = 1;
+ 
+-	migrate_disable();
+-	rcu_read_lock();
+-	array = rcu_dereference(array_rcu);
++	RCU_LOCKDEP_WARN(!rcu_read_lock_held(), "no rcu lock held");
++
+ 	if (unlikely(!array))
+-		goto out;
++		return ret;
++
++	migrate_disable();
+ 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+ 	item = &array->items[0];
+ 	while ((prog = READ_ONCE(item->prog))) {
+@@ -1400,50 +1396,10 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
+ 		item++;
+ 	}
+ 	bpf_reset_run_ctx(old_run_ctx);
+-out:
+-	rcu_read_unlock();
+ 	migrate_enable();
+ 	return ret;
+ }
+ 
+-/* To be used by __cgroup_bpf_run_filter_skb for EGRESS BPF progs
+- * so BPF programs can request cwr for TCP packets.
+- *
+- * Current cgroup skb programs can only return 0 or 1 (0 to drop the
+- * packet. This macro changes the behavior so the low order bit
+- * indicates whether the packet should be dropped (0) or not (1)
+- * and the next bit is a congestion notification bit. This could be
+- * used by TCP to call tcp_enter_cwr()
+- *
+- * Hence, new allowed return values of CGROUP EGRESS BPF programs are:
+- *   0: drop packet
+- *   1: keep packet
+- *   2: drop packet and cn
+- *   3: keep packet and cn
+- *
+- * This macro then converts it to one of the NET_XMIT or an error
+- * code that is then interpreted as drop packet (and no cn):
+- *   0: NET_XMIT_SUCCESS  skb should be transmitted
+- *   1: NET_XMIT_DROP     skb should be dropped and cn
+- *   2: NET_XMIT_CN       skb should be transmitted and cn
+- *   3: -err              skb should be dropped
+- */
+-#define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)		\
+-	({						\
+-		u32 _flags = 0;				\
+-		bool _cn;				\
+-		u32 _ret;				\
+-		_ret = BPF_PROG_RUN_ARRAY_CG_FLAGS(array, ctx, func, 0, &_flags); \
+-		_cn = _flags & BPF_RET_SET_CN;		\
+-		if (_ret && !IS_ERR_VALUE((long)_ret))	\
+-			_ret = -EFAULT;			\
+-		if (!_ret)				\
+-			_ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);	\
+-		else					\
+-			_ret = (_cn ? NET_XMIT_DROP : _ret);		\
+-		_ret;					\
+-	})
+-
+ #ifdef CONFIG_BPF_SYSCALL
+ DECLARE_PER_CPU(int, bpf_prog_active);
+ extern struct mutex bpf_stats_enabled_mutex;
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 128028efda64..f5babdac245c 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1074,15 +1074,45 @@ int __cgroup_bpf_run_filter_skb(struct sock *sk,
+ 	/* compute pointers for the bpf prog */
+ 	bpf_compute_and_save_data_end(skb, &saved_data_end);
+ 
++	rcu_read_lock();
+ 	if (atype == CGROUP_INET_EGRESS) {
+-		ret = BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(
+-			cgrp->bpf.effective[atype], skb, __bpf_prog_run_save_cb);
++		u32 flags = 0;
++		bool cn;
++
++		ret = bpf_prog_run_array_cg_flags(
++			rcu_dereference(cgrp->bpf.effective[atype]),
++			skb, __bpf_prog_run_save_cb, 0, &flags);
++
++		/* Return values of CGROUP EGRESS BPF programs are:
++		 *   0: drop packet
++		 *   1: keep packet
++		 *   2: drop packet and cn
++		 *   3: keep packet and cn
++		 *
++		 * The returned value is then converted to one of the NET_XMIT
++		 * or an error code that is then interpreted as drop packet
++		 * (and no cn):
++		 *   0: NET_XMIT_SUCCESS  skb should be transmitted
++		 *   1: NET_XMIT_DROP     skb should be dropped and cn
++		 *   2: NET_XMIT_CN       skb should be transmitted and cn
++		 *   3: -err              skb should be dropped
++		 */
++
++		cn = flags & BPF_RET_SET_CN;
++		if (ret && !IS_ERR_VALUE((long)ret))
++			ret = -EFAULT;
++		if (!ret)
++			ret = (cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);
++		else
++			ret = (cn ? NET_XMIT_DROP : ret);
+ 	} else {
+-		ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], skb,
+-					    __bpf_prog_run_save_cb, 0);
++		ret = bpf_prog_run_array_cg(rcu_dereference(cgrp->bpf.effective[atype]),
++					    skb, __bpf_prog_run_save_cb, 0);
+ 		if (ret && !IS_ERR_VALUE((long)ret))
+ 			ret = -EFAULT;
+ 	}
++	rcu_read_unlock();
++
+ 	bpf_restore_data_end(skb, saved_data_end);
+ 	__skb_pull(skb, offset);
+ 	skb->sk = save_sk;
+@@ -1108,9 +1138,14 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
+ 			       enum cgroup_bpf_attach_type atype)
+ {
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
++	int ret;
++
++	rcu_read_lock();
++	ret = bpf_prog_run_array_cg(rcu_dereference(cgrp->bpf.effective[atype]),
++				    sk, bpf_prog_run, 0);
++	rcu_read_unlock();
+ 
+-	return BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], sk,
+-				     bpf_prog_run, 0);
++	return ret;
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+ 
+@@ -1142,6 +1177,7 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 	};
+ 	struct sockaddr_storage unspec;
+ 	struct cgroup *cgrp;
++	int ret;
+ 
+ 	/* Check socket family since not all sockets represent network
+ 	 * endpoint (e.g. AF_UNIX).
+@@ -1154,9 +1190,12 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 		ctx.uaddr = (struct sockaddr *)&unspec;
+ 	}
+ 
++	rcu_read_lock();
+ 	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+-	return BPF_PROG_RUN_ARRAY_CG_FLAGS(cgrp->bpf.effective[atype], &ctx,
+-					   bpf_prog_run, 0, flags);
++	ret = bpf_prog_run_array_cg_flags(rcu_dereference(cgrp->bpf.effective[atype]),
++					  &ctx, bpf_prog_run, 0, flags);
++	rcu_read_unlock();
++	return ret;
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_addr);
+ 
+@@ -1181,9 +1220,14 @@ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
+ 				     enum cgroup_bpf_attach_type atype)
+ {
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
++	int ret;
++
++	rcu_read_lock();
++	ret = bpf_prog_run_array_cg(rcu_dereference(cgrp->bpf.effective[atype]),
++				    sock_ops, bpf_prog_run, 0);
++	rcu_read_unlock();
+ 
+-	return BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], sock_ops,
+-				     bpf_prog_run, 0);
++	return ret;
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_ops);
+ 
+@@ -1200,8 +1244,8 @@ int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
+ 
+ 	rcu_read_lock();
+ 	cgrp = task_dfl_cgroup(current);
+-	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], &ctx,
+-				    bpf_prog_run, 0);
++	ret = bpf_prog_run_array_cg(rcu_dereference(cgrp->bpf.effective[atype]),
++				    &ctx, bpf_prog_run, 0);
+ 	rcu_read_unlock();
+ 
+ 	return ret;
+@@ -1366,8 +1410,8 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+ 
+ 	rcu_read_lock();
+ 	cgrp = task_dfl_cgroup(current);
+-	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], &ctx,
+-				    bpf_prog_run, 0);
++	ret = bpf_prog_run_array_cg(rcu_dereference(cgrp->bpf.effective[atype]),
++				    &ctx, bpf_prog_run, 0);
+ 	rcu_read_unlock();
+ 
+ 	kfree(ctx.cur_val);
+@@ -1459,8 +1503,10 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 	}
+ 
+ 	lock_sock(sk);
+-	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[CGROUP_SETSOCKOPT],
++	rcu_read_lock();
++	ret = bpf_prog_run_array_cg(rcu_dereference(cgrp->bpf.effective[CGROUP_SETSOCKOPT]),
+ 				    &ctx, bpf_prog_run, 0);
++	rcu_read_unlock();
+ 	release_sock(sk);
+ 
+ 	if (ret)
+@@ -1559,8 +1605,10 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 	}
+ 
+ 	lock_sock(sk);
+-	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[CGROUP_GETSOCKOPT],
++	rcu_read_lock();
++	ret = bpf_prog_run_array_cg(rcu_dereference(cgrp->bpf.effective[CGROUP_GETSOCKOPT]),
+ 				    &ctx, bpf_prog_run, retval);
++	rcu_read_unlock();
+ 	release_sock(sk);
+ 
+ 	if (ret < 0)
+@@ -1608,8 +1656,10 @@ int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
+ 	 * be called if that data shouldn't be "exported".
+ 	 */
+ 
+-	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[CGROUP_GETSOCKOPT],
++	rcu_read_lock();
++	ret = bpf_prog_run_array_cg(rcu_dereference(cgrp->bpf.effective[CGROUP_GETSOCKOPT]),
+ 				    &ctx, bpf_prog_run, retval);
++	rcu_read_unlock();
+ 	if (ret < 0)
+ 		return ret;
+ 
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index b26f3da943de..f15b826f9899 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -129,7 +129,10 @@ unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+ 	 * out of events when it was updated in between this and the
+ 	 * rcu_dereference() which is accepted risk.
+ 	 */
+-	ret = BPF_PROG_RUN_ARRAY(call->prog_array, ctx, bpf_prog_run);
++	rcu_read_lock();
++	ret = bpf_prog_run_array(rcu_dereference(call->prog_array),
++				 ctx, bpf_prog_run);
++	rcu_read_unlock();
+ 
+  out:
+ 	__this_cpu_dec(bpf_prog_active);
+-- 
+2.36.0.rc0.470.gd361397f0d-goog
+
