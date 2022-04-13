@@ -2,225 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E744FF389
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 11:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04BA4FF453
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 12:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbiDMJd5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Apr 2022 05:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43330 "EHLO
+        id S231256AbiDMKCU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Apr 2022 06:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbiDMJd4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Apr 2022 05:33:56 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECCD52E5B;
-        Wed, 13 Apr 2022 02:31:36 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id o5-20020a17090ad20500b001ca8a1dc47aso5721347pju.1;
-        Wed, 13 Apr 2022 02:31:36 -0700 (PDT)
+        with ESMTP id S231271AbiDMKCT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Apr 2022 06:02:19 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EAE222AE;
+        Wed, 13 Apr 2022 02:59:56 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id p8so1533289pfh.8;
+        Wed, 13 Apr 2022 02:59:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GlQcG7f/Vl8ZIHjycVnnZm2xMXgzFIcpVLLW16d1xbM=;
-        b=ccL1haMV8PNuUuRABj6cJSN32U45FB1xJNAJiigg74Xrbnaki/OTxQmNQJVL4oraY+
-         Gjk3Ut3Q6UeGZQ+ctMSBMp9DlJpmk3Td0EyOx7Q7YcRUrxkUnIvfujBZHSz9D2RDSwBP
-         4v4l+4diRBuQlBdSsd9zp+Ky8Jw6CWFB/Vm7+0WkuMBenm0nJ6aVzhM3LRczTENkXQJs
-         awqdmNRqSe7wUKdQMe8bWk4i8VEAhOn5apCE0ULyaVOs4Uej0snr5+ez/k4BGAl7Xh1r
-         IjmC1jNtLhFkLxI43ibEg0qpcOKXf+2Yufz/dYPQqsYKTpvuQS5P1MVpdHozzP5RIhDs
-         DPmA==
+        h=message-id:date:mime-version:user-agent:subject:to:references:from
+         :in-reply-to:content-transfer-encoding;
+        bh=YBthZ0eze8nVpk54x8pCct5mZl/8y/i9wt+wRTM/fgQ=;
+        b=oN5SqkhBwdo06EArq/0Dqkx/iqN5CvwVwoaX2Rm+nVhtvubf0pOmOz2K7rU2qxmii5
+         kjAnBTBMdy0PQrfToaKNQ80sE9d1ItLu3/eq1825AyUAm1fNjDmMXCcsiGD3p7jKcTEx
+         M4uBmR6FSOJImLjl33S8iAT7fMOXhLAo7kh1CpB+0xpoj99yojrCmeo4VU3OYoWLh+ul
+         34kPxh+gdaoi5oncVAajWbiCHuYYIEOYE/Ti5kELguDwKY5lmN6MJ9S5hCCrChWOMC59
+         p2up5CzznttKka5LBZZrHUqddiKJUAZmTbXS+UH52usM/N0ySEhRyUJHdyTwWSXcgNZe
+         Lb1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GlQcG7f/Vl8ZIHjycVnnZm2xMXgzFIcpVLLW16d1xbM=;
-        b=Lq6NJl5rtBlDwHTZ/8Ow4mQ1MDgliYIYQZls6IOr4eHZ1SbPeXESVotcFw2a8dUPzR
-         hn+5G2UqjrIak5F7B6jCl//FvkhdSntUceoIMo3Tymu+EYCO1/fSJX6RljTyYMy8GEWi
-         oHTmYIhcIj1ZohhhPGhtVFftP/qiNl9Veh0lqvLSmRY0knubeWzd1T9fnxzjObhFZS6f
-         1OXHcW6Pm6iLbd0hea1ISUWltwq/PjHQrc2kAv/ixCnvUzRhAwehawk5ex1H5PqDDae+
-         JMpUIUYmZSZ4BLFI+SLxdpMKugM1uy4wRMCp1ApaxtUJDZBdV9HcOq/S6nIPCbQlndZ7
-         MVew==
-X-Gm-Message-State: AOAM532Pj/f+cDMvw+Ev+u3zEpfM1u8mhelxMiFMYh1Af7mRY92jlZXN
-        ZnKY3kxboAilU6CoZntCk0o=
-X-Google-Smtp-Source: ABdhPJyMRx3ulLDXmiaULULRDKi4lNbdHeq1Ekq4sRZ+YN30OOK3gC6hDz38EYLjkOZxd9kMpIeaWw==
-X-Received: by 2002:a17:902:dac5:b0:158:5db6:3503 with SMTP id q5-20020a170902dac500b001585db63503mr15351287plx.76.1649842295604;
-        Wed, 13 Apr 2022 02:31:35 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id s20-20020aa78d54000000b004fac74c83b3sm40300363pfe.186.2022.04.13.02.31.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Apr 2022 02:31:34 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: lv.ruyi@zte.com.cn
-To:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, joannekoong@fb.com,
-        lv.ruyi@zte.com.cn, toke@redhat.com, houtao1@huawei.com,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] bpf/benchs: fix error check return value of bpf_program__attach()
-Date:   Wed, 13 Apr 2022 09:31:23 +0000
-Message-Id: <20220413093123.2538001-1-lv.ruyi@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:references:from:in-reply-to:content-transfer-encoding;
+        bh=YBthZ0eze8nVpk54x8pCct5mZl/8y/i9wt+wRTM/fgQ=;
+        b=0AYYD1F0Szm3j6lmy2rOOfGA+fEBniy1wUp4p3eHCy7KCAhSaUUq6KCjcDJCiAN7Ew
+         qJ3J3/6Dyk8Em6Ih35YokKNO6D+Y4jM/MY9yMWh2dkERnjjOK7RZ0rnIB1xM7ilJ4dWx
+         xFd+o+fBXCEjMxiCZ8pNk3D3WSr4UphcAzA1iwYbpNTtuvHjNzHUQf62L2w0/7r15/Lc
+         4wWtKNoHcfC2iUg139jlPog2IH6ioBGlivVrVXZTDAHLdlQif6i/fWDPJrESbk6aRzZR
+         PmW+c5TiEuiORCSLGVayxtEftYJjn57U0mm+p3DQNEATD84djSc8rgelzCOgm4bpreJA
+         DB+w==
+X-Gm-Message-State: AOAM531gnTRq7GkFQNiEvcj/QBk7GSBtnpat8FWy5FDtbj4FY4DqI9Cb
+        LhAt8dkY97ILnONyeVtgzVw=
+X-Google-Smtp-Source: ABdhPJxvyqF7/nKsbzyRtw8lGkoIYK+P06NBwmfWkj/8gF3B/olHVZWDOLAWyIO/2CAqZUFHTqYuuw==
+X-Received: by 2002:a63:f201:0:b0:399:2b10:3433 with SMTP id v1-20020a63f201000000b003992b103433mr33414733pgh.285.1649843995476;
+        Wed, 13 Apr 2022 02:59:55 -0700 (PDT)
+Received: from [172.25.58.87] ([203.246.171.161])
+        by smtp.gmail.com with ESMTPSA id v16-20020aa78090000000b0050583cb0adbsm17651597pff.196.2022.04.13.02.59.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Apr 2022 02:59:54 -0700 (PDT)
+Message-ID: <805b4f95-5351-b342-7177-6a3df979be17@gmail.com>
+Date:   Wed, 13 Apr 2022 18:59:49 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.7.0
+Subject: Re: [EXT] [PATCH net-next v4 0/3] net: atlantic: Add XDP support
+To:     Igor Russkikh <irusskikh@marvell.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        bpf@vger.kernel.org
+References: <20220408181714.15354-1-ap420073@gmail.com>
+ <dac72406-2743-ce1a-a0d7-4078e5d222be@marvell.com>
+From:   Taehee Yoo <ap420073@gmail.com>
+In-Reply-To: <dac72406-2743-ce1a-a0d7-4078e5d222be@marvell.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Lv Ruyi <lv.ruyi@zte.com.cn>
+2022. 4. 13. 오후 4:52에 Igor Russkikh 이(가) 쓴 글:
 
-bpf_program__attach() returns error ptr when it fails, so we should use
-IS_ERR() to check it in error handling path. The patch fix all the same
-problems in the bpf/benchs/*.
+Hi Igor,
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
----
- .../selftests/bpf/benchs/bench_bloom_filter_map.c      | 10 +++++-----
- tools/testing/selftests/bpf/benchs/bench_bpf_loop.c    |  2 +-
- tools/testing/selftests/bpf/benchs/bench_rename.c      |  2 +-
- tools/testing/selftests/bpf/benchs/bench_ringbufs.c    |  6 +++---
- tools/testing/selftests/bpf/benchs/bench_strncmp.c     |  2 +-
- tools/testing/selftests/bpf/benchs/bench_trigger.c     |  2 +-
- 6 files changed, 12 insertions(+), 12 deletions(-)
+Thank you so much for your review!
 
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-index 5bcb8a8cdeb2..fd1be1042516 100644
---- a/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_bloom_filter_map.c
-@@ -309,7 +309,7 @@ static void bloom_lookup_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_lookup);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -326,7 +326,7 @@ static void bloom_update_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_update);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -345,7 +345,7 @@ static void false_positive_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -363,7 +363,7 @@ static void hashmap_with_bloom_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -380,7 +380,7 @@ static void hashmap_no_bloom_setup(void)
- 	populate_maps();
- 
- 	link = bpf_program__attach(ctx.skel->progs.bloom_hashmap_lookup);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bpf_loop.c b/tools/testing/selftests/bpf/benchs/bench_bpf_loop.c
-index d0a6572bfab6..8dbdc28d26c8 100644
---- a/tools/testing/selftests/bpf/benchs/bench_bpf_loop.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_bpf_loop.c
-@@ -85,7 +85,7 @@ static void setup(void)
- 	}
- 
- 	link = bpf_program__attach(ctx.skel->progs.benchmark);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-diff --git a/tools/testing/selftests/bpf/benchs/bench_rename.c b/tools/testing/selftests/bpf/benchs/bench_rename.c
-index 3c203b6d6a6e..66d63b92a28a 100644
---- a/tools/testing/selftests/bpf/benchs/bench_rename.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_rename.c
-@@ -65,7 +65,7 @@ static void attach_bpf(struct bpf_program *prog)
- 	struct bpf_link *link;
- 
- 	link = bpf_program__attach(prog);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-diff --git a/tools/testing/selftests/bpf/benchs/bench_ringbufs.c b/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
-index c2554f9695ff..fff24ca82dc0 100644
---- a/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_ringbufs.c
-@@ -181,7 +181,7 @@ static void ringbuf_libbpf_setup(void)
- 	}
- 
- 	link = bpf_program__attach(ctx->skel->progs.bench_ringbuf);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-@@ -271,7 +271,7 @@ static void ringbuf_custom_setup(void)
- 	}
- 
- 	link = bpf_program__attach(ctx->skel->progs.bench_ringbuf);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program\n");
- 		exit(1);
- 	}
-@@ -426,7 +426,7 @@ static void perfbuf_libbpf_setup(void)
- 	}
- 
- 	link = bpf_program__attach(ctx->skel->progs.bench_perfbuf);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program\n");
- 		exit(1);
- 	}
-diff --git a/tools/testing/selftests/bpf/benchs/bench_strncmp.c b/tools/testing/selftests/bpf/benchs/bench_strncmp.c
-index 494b591c0289..dcb9ce5ffcb0 100644
---- a/tools/testing/selftests/bpf/benchs/bench_strncmp.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_strncmp.c
-@@ -103,7 +103,7 @@ static void strncmp_attach_prog(struct bpf_program *prog)
- 	struct bpf_link *link;
- 
- 	link = bpf_program__attach(prog);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-index 0c481de2833d..bda930a8153c 100644
---- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -61,7 +61,7 @@ static void attach_bpf(struct bpf_program *prog)
- 	struct bpf_link *link;
- 
- 	link = bpf_program__attach(prog);
--	if (!link) {
-+	if (IS_ERR(link)) {
- 		fprintf(stderr, "failed to attach program!\n");
- 		exit(1);
- 	}
--- 
-2.25.1
+ >
+ >
+ >> v4:
+ >>   - Fix compile warning
+ >>
+ >> v3:
+ >>   - Change wrong PPS performance result 40% -> 80% in single
+ >>     core(Intel i3-12100)
+ >>   - Separate aq_nic_map_xdp() from aq_nic_map_skb()
+ >>   - Drop multi buffer packets if single buffer XDP is attached
+ >>   - Disable LRO when single buffer XDP is attached
+ >>   - Use xdp_get_{frame/buff}_len()
+ >
+ > Hi Taehee, thanks for taking care of that!
+ >
+ > Reviewed-by: Igor Russkikh <irusskikh@marvell.com>
+ >
+ > A small notice about the selection of 3K packet size for XDP.
+ > Its a kind of compromise I think, because with common 1.4K MTU we'll 
+get wasted
+ > 2K bytes minimum per packet.
+ >
+ > I was thinking it would be possible to reuse the existing page 
+flipping technique
+ > together with higher page_order, to keep default 2K fragment size.
+ > E.g.
+ > ( 256(xdp_head)+2K(pkt frag) ) x 3 (flips) = ~7K
+ >
+ > Meaning we can allocate 8K (page_order=1) pages, and fit three xdp 
+packets into each, wasting only 1K per three packets.
+ >
+ > But its just kind of an idea for future optimization.
+ >
 
+Yes, I fully agree with your idea.
+When I developed an initial version of this patchset, I simply tried 
+that idea.
+I expected to reduce CPU utilization(not for memory optimization), but 
+there is no difference because page_ref_{inc/dec}() cost is too high.
+So, if we tried to switch from MEM_TYPE_PAGE_ORDER0 to 
+MEM_TYPE_PAGE_SHARED, I think we should use a littie bit different 
+flipping strategy like ixgbe.
+If so, we would achieve memory optimization and CPU optimization.
+
+Thanks a lot,
+Taehee Yoo
+
+ > Regards,
+ >    Igor
