@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC594FEFFA
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 08:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC574FF01A
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 08:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbiDMGnV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Apr 2022 02:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
+        id S232351AbiDMGuA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Apr 2022 02:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233041AbiDMGnU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Apr 2022 02:43:20 -0400
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5ED286C0;
-        Tue, 12 Apr 2022 23:40:58 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V9yQeE6_1649832051;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V9yQeE6_1649832051)
+        with ESMTP id S231419AbiDMGt7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Apr 2022 02:49:59 -0400
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139782C676;
+        Tue, 12 Apr 2022 23:47:37 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V9yF0Rm_1649832451;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V9yF0Rm_1649832451)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Apr 2022 14:40:53 +0800
-Message-ID: <1649831529.7724812-5-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v9 11/32] virtio_ring: split: introduce virtqueue_resize_split()
-Date:   Wed, 13 Apr 2022 14:32:09 +0800
+          Wed, 13 Apr 2022 14:47:32 +0800
+Message-ID: <1649832244.772237-6-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v9 08/32] virtio_ring: split: extract the logic of attach vring
+Date:   Wed, 13 Apr 2022 14:44:04 +0800
 From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To:     Jason Wang <jasowang@redhat.com>
 Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
@@ -52,9 +52,9 @@ Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
         kvm@vger.kernel.org, bpf@vger.kernel.org,
         virtualization@lists.linux-foundation.org
 References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-12-xuanzhuo@linux.alibaba.com>
- <f79fc367-7ac5-961b-83c5-90f3d097c672@redhat.com>
-In-Reply-To: <f79fc367-7ac5-961b-83c5-90f3d097c672@redhat.com>
+ <20220406034346.74409-9-xuanzhuo@linux.alibaba.com>
+ <28237db0-cf04-aa36-b7b8-de55b11d18db@redhat.com>
+In-Reply-To: <28237db0-cf04-aa36-b7b8-de55b11d18db@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
@@ -68,141 +68,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 12 Apr 2022 13:53:44 +0800, Jason Wang <jasowang@redhat.com> wrote:
+On Tue, 12 Apr 2022 11:31:08 +0800, Jason Wang <jasowang@redhat.com> wrote:
 >
 > =E5=9C=A8 2022/4/6 =E4=B8=8A=E5=8D=8811:43, Xuan Zhuo =E5=86=99=E9=81=93:
-> > virtio ring split supports resize.
-> >
-> > Only after the new vring is successfully allocated based on the new num,
-> > we will release the old vring. In any case, an error is returned,
-> > indicating that the vring still points to the old vring.
-> >
-> > In the case of an error, the caller must
-> > re-initialize(virtqueue_reinit_split()) the virtqueue to ensure that the
-> > vring can be used.
-> >
-> > In addition, vring_align, may_reduce_num are necessary for reallocating
-> > vring, so they are retained for creating vq.
+> > Separate the logic of attach vring, subsequent patches will call it
+> > separately.
 > >
 > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 > > ---
-> >   drivers/virtio/virtio_ring.c | 47 ++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 47 insertions(+)
+> >   drivers/virtio/virtio_ring.c | 20 ++++++++++++++------
+> >   1 file changed, 14 insertions(+), 6 deletions(-)
 > >
 > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index 3dc6ace2ba7a..33864134a744 100644
+> > index 6de67439cb57..083f2992ba0d 100644
 > > --- a/drivers/virtio/virtio_ring.c
 > > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -139,6 +139,12 @@ struct vring_virtqueue {
-> >   			/* DMA address and size information */
-> >   			dma_addr_t queue_dma_addr;
-> >   			size_t queue_size_in_bytes;
-> > +
-> > +			/* The parameters for creating vrings are reserved for
-> > +			 * creating new vring.
-> > +			 */
-> > +			u32 vring_align;
-> > +			bool may_reduce_num;
-> >   		} split;
-> >
-> >   		/* Available for packed ring */
-> > @@ -199,6 +205,7 @@ struct vring_virtqueue {
-> >   };
-> >
-> >   static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int n=
-um);
-> > +static void vring_free(struct virtqueue *_vq);
-> >
-> >   /*
-> >    * Helpers.
-> > @@ -1088,6 +1095,8 @@ static struct virtqueue *vring_create_virtqueue_s=
-plit(
-> >   		return NULL;
-> >   	}
-> >
-> > +	to_vvq(vq)->split.vring_align =3D vring_align;
-> > +	to_vvq(vq)->split.may_reduce_num =3D may_reduce_num;
->
->
-> It looks to me the above should belong to patch 6.
-
-patch 6 just extracts a function, no logical modification.
-
-to_vvq(vq)->split.may_reduce_num is newly added, so I don't think it should=
- be
-merged into patch 6.
-
->
->
-> >   	to_vvq(vq)->split.queue_dma_addr =3D dma_addr;
-> >   	to_vvq(vq)->split.queue_size_in_bytes =3D queue_size_in_bytes;
-> >   	to_vvq(vq)->we_own_ring =3D true;
-> > @@ -1095,6 +1104,44 @@ static struct virtqueue *vring_create_virtqueue_=
-split(
-> >   	return vq;
+> > @@ -916,6 +916,19 @@ static void *virtqueue_detach_unused_buf_split(str=
+uct virtqueue *_vq)
+> >   	return NULL;
 > >   }
 > >
-> > +static int virtqueue_resize_split(struct virtqueue *_vq, u32 num)
+> > +static void vring_virtqueue_attach_split(struct vring_virtqueue *vq,
+> > +					 struct vring vring,
+> > +					 struct vring_desc_state_split *desc_state,
+> > +					 struct vring_desc_extra *desc_extra)
 > > +{
-> > +	struct vring_virtqueue *vq =3D to_vvq(_vq);
-> > +	struct virtio_device *vdev =3D _vq->vdev;
-> > +	struct vring_desc_state_split *state;
-> > +	struct vring_desc_extra *extra;
-> > +	size_t queue_size_in_bytes;
-> > +	dma_addr_t dma_addr;
-> > +	struct vring vring;
-> > +	int err =3D -ENOMEM;
-> > +	void *queue;
-> > +
-> > +	queue =3D vring_alloc_queue_split(vdev, &dma_addr, &num,
-> > +					vq->split.vring_align,
-> > +					vq->weak_barriers,
-> > +					vq->split.may_reduce_num);
-> > +	if (!queue)
-> > +		return -ENOMEM;
-> > +
-> > +	queue_size_in_bytes =3D vring_size(num, vq->split.vring_align);
-> > +
-> > +	err =3D vring_alloc_state_extra_split(num, &state, &extra);
-> > +	if (err) {
-> > +		vring_free_queue(vdev, queue_size_in_bytes, queue, dma_addr);
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	vring_free(&vq->vq);
-> > +
-> > +	vring_init(&vring, num, queue, vq->split.vring_align);
-> > +	vring_virtqueue_attach_split(vq, vring, state, extra);
-> > +	vq->split.queue_dma_addr =3D dma_addr;
-> > +	vq->split.queue_size_in_bytes =3D queue_size_in_bytes;
+> > +	vq->split.vring =3D vring;
+> > +	vq->split.queue_dma_addr =3D 0;
+> > +	vq->split.queue_size_in_bytes =3D 0;
 >
 >
-> I wonder if it's better to move the above assignments to
-> vring_virtqueue_attach_split().
+> Any reason to add the above two assignment in attach? It seems belong to
+> free or reset.
 
-I also think so, the reason for not doing this is that there is no dma_addr=
- and
-queue_size_in_bytes when vring_virtqueue_attach_split is called in
-__vring_new_virtqueue.
+As discussed in patch 11, since there is no dma_addr in __vring_new_virtque=
+ue(),
+the corresponding vq->split.queue_dma_addr cannot be set, so the purpose he=
+re
+is just to initialize it.
 
-As discussed in patch 12, we can pass the struct struct vring_virtqueue_spl=
-it to
-vring_virtqueue_attach_split(). This is much more convenient.
+In the next version, struct vring_virtqueue_split will be passed to
+vring_virtqueue_attach_split() to make the logic here look more reasonable.
 
 Thanks.
 
->
-> Other looks good.
+
 >
 > Thanks
 >
 >
 > > +
-> > +	vring_virtqueue_init_split(vq, vdev, true);
-> > +	return 0;
+> > +	vq->split.desc_state =3D desc_state;
+> > +	vq->split.desc_extra =3D desc_extra;
 > > +}
 > > +
+> >   static int vring_alloc_state_extra_split(u32 num,
+> >   					 struct vring_desc_state_split **desc_state,
+> >   					 struct vring_desc_extra **desc_extra)
+> > @@ -2262,10 +2275,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned=
+ int index,
+> >   	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
+> >   		vq->weak_barriers =3D false;
 > >
-> >   /*
-> >    * Packed ring specific functions - *_packed().
+> > -	vq->split.queue_dma_addr =3D 0;
+> > -	vq->split.queue_size_in_bytes =3D 0;
+> > -
+> > -	vq->split.vring =3D vring;
+> >   	vq->split.avail_flags_shadow =3D 0;
+> >   	vq->split.avail_idx_shadow =3D 0;
+> >
+> > @@ -2283,8 +2292,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned =
+int index,
+> >   		return NULL;
+> >   	}
+> >
+> > -	vq->split.desc_state =3D state;
+> > -	vq->split.desc_extra =3D extra;
+> > +	vring_virtqueue_attach_split(vq, vring, state, extra);
+> >
+> >   	/* Put everything in free lists. */
+> >   	vq->free_head =3D 0;
 >
