@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B35354FED39
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 04:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4B44FED52
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 05:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbiDMC6T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Apr 2022 22:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
+        id S231912AbiDMDGd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Apr 2022 23:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbiDMC6T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Apr 2022 22:58:19 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C32E3587D
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 19:56:00 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id y16so302130ilc.7
-        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 19:56:00 -0700 (PDT)
+        with ESMTP id S231935AbiDMDGV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Apr 2022 23:06:21 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C7A554A1
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 20:04:01 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id k25so478835iok.8
+        for <bpf@vger.kernel.org>; Tue, 12 Apr 2022 20:04:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3OUkfw6LAUoVS0CZZGPJCHj+FgHB6BupOycPtwteKo4=;
-        b=J78ACzEfuAc2OjC+ItqN98BV1BvoXCnLVORkTvqJb5Z8uPSsyCqzc/5oTI6mMSkNJe
-         RM8wLlwZHV4sOPWKmbblfINuqdJqv8PubWXx8o/2uBuuWhkXI7hrf9SW+F5lBv2m+/iw
-         ag01Q2rfG71qYYk6HJJfaY5zz/CMP6WkUlXRD55xO5OO/SQHnKKnTT1wz5FOGD4oQQ15
-         3RxWYhue/Qj0foaCJ4kBC2vNXP5GL+0wcVOxjS0sU12YOLhpMicqwMceUd1CEGiSb+nv
-         hmSEDqRnTk9hCIvJazauapd4ZXOdMy6Bey/89Q64sQHIfByL8B/wPT+Ie7CiWpJK/bwn
-         5keA==
+        bh=A8j3sXthfM0/RiYwHcKe/U+wfS9Ps2a8MYpTXnbrLSc=;
+        b=KYGREQJtTlBJsAhPblHMfGKt7c8rmLGpVphsDAyezTHRHUJROxqayj6dxkGhsfizz0
+         fDefAOLE4jikVWFYFhQToD8L/NCjazgP+kI+1rouE0zvm0psajZezaBx2cZDBbiXLUVb
+         n4UrXHfqoaAEuNRkSPl2rJru8bFPvOFR2QMWxb2fFGJrQdf4WdwVqKe6iCe7BCmZKGwN
+         nRoB4XjCBEPp8XVrNhD72v8Z1MesSZv+gXpfk9mf2BeOw3CPnXVlvbH/1mTfhvw3B/wi
+         dZIsQa4NbOJCmLmZHz88JlKqxoVq94Kvz7KlwbhiHmaXQKmym2eroGTX0ZnMRyMbEDGO
+         d8Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3OUkfw6LAUoVS0CZZGPJCHj+FgHB6BupOycPtwteKo4=;
-        b=JDCmH7X9nW9RHcY/DzNKkWwLXBYZeGMQWR/TOv6nAbXGRu2j8WyAvtczhIH475rkCt
-         XVXHkqIwKYCp+xRkfUTKBD19QECN0AhGOEBjz4LA8wZVp4t3w+yq9CqqSMn4hJXcbm0z
-         +5FjjyK1XR4BBpL7dENKf5psZ+jsQmWRhzU7JBDSYG+tmiqWLRnN8GrU+7TpsiGjy4rf
-         4sNCfklWGtv2PQKSMOmoRoE3gkGFS9mz188N+FHKF4XwrAr215+Gm1KxrPBv5YcQIzPC
-         ss9VZ3qPjPhv10yjWrH+GLeb9yrviQduFONWOTw8qu6ATB5GMEQooTxZj9khegJSKAJ2
-         PPJA==
-X-Gm-Message-State: AOAM531VctVdbJSUlafZqb7K5nlu+pEBwWCsTxZrHKpodq2b9T+pCMRQ
-        JZoGFdah/db4/ZMlN1EKmfQqZfDF4fVG2ISLpSY4P7DcG/I=
-X-Google-Smtp-Source: ABdhPJxTXDftBgaDGeAiEYJ1dUFRNFiTeT5oFMblpoTL1/gBaKb31tB1yDhbTto9HWGvb7LEhZPJ0Zykz+GLf5z7Xwg=
-X-Received: by 2002:a92:cd8a:0:b0:2ca:9337:2f47 with SMTP id
- r10-20020a92cd8a000000b002ca93372f47mr8472395ilb.252.1649818559425; Tue, 12
- Apr 2022 19:55:59 -0700 (PDT)
+        bh=A8j3sXthfM0/RiYwHcKe/U+wfS9Ps2a8MYpTXnbrLSc=;
+        b=7uo8syWD0tR/dHk3kMAyNCdc7VqRXplC5t436WaboWIDZV1tD31874/tmctU1Y1zBJ
+         1lLDq7gACBmG9Wvlpqy1iuPObGOyDagO+dsLHSk6oGOw9uISq7ZgCUluCvEJsR2osFf0
+         QEFIAUMH+9sG2gkMguDSTvpngirUdgN9vtVP/rtUbKcWJvx+8/Tzw15qJ1kDpE6KqK7O
+         +IZCVKiLFpc7KpQO2Iq55nWOftOpM+A9fJpnPihTOBAXNXmyO3IeHJIa6jZcCO3H7bV+
+         EwwZCjSm6GBs/mHC3zeV8c94LItsRQURuP9BbqZs0/JHndhyDINm1u16jZsM5YTRC4F1
+         MVNg==
+X-Gm-Message-State: AOAM533l6xE/fwGtmHpnsLHpfRJsvE2pIv82FUXNSADJeKmBkf/Hpa3k
+        3Px8S2WrxdX9EuQ6YP+fm6b6LuMs2gL+j9LfWt4=
+X-Google-Smtp-Source: ABdhPJyJACI1UVT+NF5XxuZd2p9CokGFFOWEE8HS/Oby3nEnTxawftSZFTY0RQwE9JukEuMdA+0n7XasI1o2+SaLJ+E=
+X-Received: by 2002:a05:6638:1696:b0:326:2d59:7b40 with SMTP id
+ f22-20020a056638169600b003262d597b40mr7144514jat.103.1649819041036; Tue, 12
+ Apr 2022 20:04:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220412165555.4146407-1-kuifeng@fb.com> <20220412165555.4146407-3-kuifeng@fb.com>
-In-Reply-To: <20220412165555.4146407-3-kuifeng@fb.com>
+References: <20220412165555.4146407-1-kuifeng@fb.com> <20220412165555.4146407-4-kuifeng@fb.com>
+In-Reply-To: <20220412165555.4146407-4-kuifeng@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Apr 2022 19:55:48 -0700
-Message-ID: <CAEf4BzZiEAysLb41XNzvZXdHqr4ikgw8ggTbvd8KpsWvqtS5zg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/5] bpf, x86: Create bpf_tramp_run_ctx on the
- caller thread's stack
+Date:   Tue, 12 Apr 2022 20:03:49 -0700
+Message-ID: <CAEf4BzYUJk=6h6HxoK99XNmygdX+6AeT27dWaozJMshdAahRSg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/5] bpf, x86: Attach a cookie to fentry/fexit/fmod_ret.
 To:     Kui-Feng Lee <kuifeng@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -70,113 +69,194 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Apr 12, 2022 at 9:56 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> BPF trampolines will create a bpf_tramp_run_ctx, a bpf_run_ctx, on
-> stacks and set/reset the current bpf_run_ctx before/after calling a
-> bpf_prog.
+> Add a bpf_cookie field to struct bpf_tracing_link to attach a cookie
+> to a link of a trace hook.  A cookie of a bpf_tracing_link is
+> available by calling bpf_get_attach_cookie when running the BPF
+> program of the attached link.
+>
+> The value of a cookie will be set at bpf_tramp_run_ctx by the
+> trampoline of the link.
 >
 > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 > ---
->  arch/x86/net/bpf_jit_comp.c | 55 +++++++++++++++++++++++++++++++++++++
->  include/linux/bpf.h         | 17 +++++++++---
->  kernel/bpf/syscall.c        |  7 +++--
->  kernel/bpf/trampoline.c     | 20 +++++++++++---
->  4 files changed, 89 insertions(+), 10 deletions(-)
+>  arch/x86/net/bpf_jit_comp.c    | 11 +++++++++--
+>  include/linux/bpf.h            |  1 +
+>  include/uapi/linux/bpf.h       |  8 ++++++++
+>  kernel/bpf/syscall.c           | 27 +++++++++++++++++++++++----
+>  kernel/trace/bpf_trace.c       | 17 +++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  7 +++++++
+>  6 files changed, 65 insertions(+), 6 deletions(-)
 >
 > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 4dcc0b1ac770..0f521be68f7b 100644
+> index 0f521be68f7b..18d02dcd810a 100644
 > --- a/arch/x86/net/bpf_jit_comp.c
 > +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1766,10 +1766,26 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+> @@ -1764,13 +1764,20 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>                            struct bpf_tramp_link *l, int stack_size,
+>                            bool save_ret)
 >  {
+> +       u64 cookie = 0;
 >         u8 *prog = *pprog;
 >         u8 *jmp_insn;
-> +       int ctx_cookie_off = offsetof(struct bpf_tramp_run_ctx, bpf_cookie);
+>         int ctx_cookie_off = offsetof(struct bpf_tramp_run_ctx, bpf_cookie);
 >         struct bpf_prog *p = l->link.prog;
 >
-> +       /* mov rdi, 0 */
-> +       emit_mov_imm64(&prog, BPF_REG_1, 0, 0);
-> +
-> +       /* Prepare struct bpf_tramp_run_ctx.
-> +        *
-> +        * bpf_tramp_run_ctx is already preserved by
-> +        * arch_prepare_bpf_trampoline().
-> +        *
-> +        * mov QWORD PTR [rsp + ctx_cookie_off], rdi
-> +        */
-> +       EMIT4(0x48, 0x89, 0x7C, 0x24); EMIT1(ctx_cookie_off);
-> +
->         /* arg1: mov rdi, progs[i] */
->         emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
-> +       /* arg2: mov rsi, rsp (struct bpf_run_ctx *) */
-> +       EMIT3(0x48, 0x89, 0xE6);
-> +
->         if (emit_call(&prog,
->                       p->aux->sleepable ? __bpf_prog_enter_sleepable :
->                       __bpf_prog_enter, prog))
-> @@ -1815,6 +1831,8 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
->         emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
->         /* arg2: mov rsi, rbx <- start time in nsec */
->         emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
-> +       /* arg3: mov rdx, rsp (struct bpf_run_ctx *) */
-> +       EMIT3(0x48, 0x89, 0xE2);
->         if (emit_call(&prog,
->                       p->aux->sleepable ? __bpf_prog_exit_sleepable :
->                       __bpf_prog_exit, prog))
-> @@ -2079,6 +2097,16 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->                 }
->         }
->
-> +       if (nr_args < 3 && (fentry->nr_links || fexit->nr_links || fmod_ret->nr_links))
-> +               EMIT1(0x52);    /* push rdx */
+> -       /* mov rdi, 0 */
+> -       emit_mov_imm64(&prog, BPF_REG_1, 0, 0);
+> +       if (l->link.type == BPF_LINK_TYPE_TRACING) {
+> +               struct bpf_tracing_link *tr_link =
+> +                       container_of(l, struct bpf_tracing_link, link);
 
-this nr_args < 3 condition is new, maybe leave a comment on why we
-need this? Also instead of repeating this whole (fentry->nr_links ||
-... || ...) check, why not move if (nr_args < 3) inside the if right
-below?
+empty line between variable declaration block and statement
 
-> +
-> +       if (fentry->nr_links || fexit->nr_links || fmod_ret->nr_links) {
-
-if (nr_args > 3) here?
-
-> +               /* Prepare struct bpf_tramp_run_ctx.
-> +                * sub rsp, sizeof(struct bpf_tramp_run_ctx)
-> +                */
-> +               EMIT4(0x48, 0x83, 0xEC, sizeof(struct bpf_tramp_run_ctx));
+> +               cookie = tr_link->cookie;
 > +       }
 > +
->         if (fentry->nr_links)
->                 if (invoke_bpf(m, &prog, fentry, regs_off,
->                                flags & BPF_TRAMP_F_RET_FENTRY_RET))
+> +       /* mov rdi, cookie */
+> +       emit_mov_imm64(&prog, BPF_REG_1, (long) cookie >> 32, (u32) (long) cookie);
+>
+>         /* Prepare struct bpf_tramp_run_ctx.
+>          *
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index d87df049e6b1..49db9c065701 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1062,6 +1062,7 @@ struct bpf_tracing_link {
+>         enum bpf_attach_type attach_type;
+>         struct bpf_trampoline *trampoline;
+>         struct bpf_prog *tgt_prog;
+> +       u64 cookie;
+>  };
+>
+>  struct bpf_link_primer {
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index a4f557338af7..5e901e6d17ea 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1436,6 +1436,7 @@ union bpf_attr {
+>         struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+>                 __u64 name;
+>                 __u32 prog_fd;
+> +               __u64 bpf_cookie;
+
+I thought we are not adding bpf_cookie through RAW_TRACEPOINT_OPEN?
+
+>         } raw_tracepoint;
+>
+>         struct { /* anonymous struct for BPF_BTF_LOAD */
+> @@ -1490,6 +1491,13 @@ union bpf_attr {
+>                                 __aligned_u64   addrs;
+>                                 __aligned_u64   cookies;
+>                         } kprobe_multi;
+> +                       struct {
+> +                               /* black box user-provided value passed through
+> +                                * to BPF program at the execution time and
+> +                                * accessible through bpf_get_attach_cookie() BPF helper
+> +                                */
+> +                               __u64           bpf_cookie;
+> +                       } tracing;
+>                 };
+>         } link_create;
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 56e69a582b21..53d4da5c76b5 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2695,9 +2695,10 @@ static const struct bpf_link_ops bpf_tracing_link_lops = {
+>         .fill_link_info = bpf_tracing_link_fill_link_info,
+>  };
+>
+> -static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+> -                                  int tgt_prog_fd,
+> -                                  u32 btf_id)
+> +static int bpf_tracing_prog_attach_cookie(struct bpf_prog *prog,
+> +                                         int tgt_prog_fd,
+> +                                         u32 btf_id,
+> +                                         u64 bpf_cookie)
+
+let's keep it as bpf_tracing_prog_attach and just update all the call sites
+
+>  {
+>         struct bpf_link_primer link_primer;
+>         struct bpf_prog *tgt_prog = NULL;
+> @@ -2762,6 +2763,7 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>         bpf_link_init(&link->link.link, BPF_LINK_TYPE_TRACING,
+>                       &bpf_tracing_link_lops, prog);
+>         link->attach_type = prog->expected_attach_type;
+> +       link->cookie = bpf_cookie;
+>
+>         mutex_lock(&prog->aux->dst_mutex);
+>
+> @@ -2871,6 +2873,13 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>         return err;
+>  }
+>
+> +static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+> +                                  int tgt_prog_fd,
+> +                                  u32 btf_id)
+> +{
+> +       return bpf_tracing_prog_attach_cookie(prog, tgt_prog_fd, btf_id, 0);
+> +}
+> +
+
+why this wrapper, just add that 0 for all existing
+bpf_tracing_prog_attach() invocations
+
+
+>  struct bpf_raw_tp_link {
+>         struct bpf_link link;
+>         struct bpf_raw_event_map *btp;
+> @@ -3023,7 +3032,7 @@ static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *pro
+>  }
+>  #endif /* CONFIG_PERF_EVENTS */
+>
+> -#define BPF_RAW_TRACEPOINT_OPEN_LAST_FIELD raw_tracepoint.prog_fd
+> +#define BPF_RAW_TRACEPOINT_OPEN_LAST_FIELD raw_tracepoint.bpf_cookie
+>
+>  static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
+>  {
+> @@ -3187,6 +3196,10 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+>                 return BPF_PROG_TYPE_SK_LOOKUP;
+>         case BPF_XDP:
+>                 return BPF_PROG_TYPE_XDP;
+> +       case BPF_TRACE_FENTRY:
+> +       case BPF_TRACE_FEXIT:
+> +       case BPF_MODIFY_RETURN:
+> +               return BPF_PROG_TYPE_TRACING;
+
+can you please split the part that adds ability to create
+fentry/fexit/etc links through LINK_CREATE into a separate commit,
+separate from wiring the bpf_cookie? It's two logically distinct
+changes.
+
+>         default:
+>                 return BPF_PROG_TYPE_UNSPEC;
+>         }
 
 [...]
 
->         if (fmod_ret->nr_links) {
-> @@ -2133,6 +2179,15 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->                         goto cleanup;
->                 }
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index a4f557338af7..a5ee57f09e04 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1490,6 +1490,13 @@ union bpf_attr {
+>                                 __aligned_u64   addrs;
+>                                 __aligned_u64   cookies;
+>                         } kprobe_multi;
+> +                       struct {
+> +                               /* black box user-provided value passed through
+> +                                * to BPF program at the execution time and
+> +                                * accessible through bpf_get_attach_cookie() BPF helper
+> +                                */
+> +                               __u64           bpf_cookie;
+
+for kprobe_multi we used "cookies", so let's do "cookie" here? We'll
+have to keep perf_event.bpf_cookie, of course.
+
+> +                       } tracing;
+>                 };
+>         } link_create;
 >
-> +       /* pop struct bpf_tramp_run_ctx
-> +        * add rsp, sizeof(struct bpf_tramp_run_ctx)
-> +        */
-> +       if (fentry->nr_links || fexit->nr_links || fmod_ret->nr_links)
-
-well, actually, can it ever be that this condition doesn't hold? That
-would mean we are generating empty trampoline for some reason, no? Do
-we do that? Checking bpf_trampoline_update() and
-bpf_struct_ops_prepare_trampoline() doesn't seem like we ever do this.
-So seems like all these checks can be dropped?
-
-> +               EMIT4(0x48, 0x83, 0xC4, sizeof(struct bpf_tramp_run_ctx));
-> +
-> +       if (nr_args < 3 && (fentry->nr_links || fexit->nr_links || fmod_ret->nr_links))
-> +               EMIT1(0x5A); /* pop rdx */
-
-same, move it inside if above?
-
-> +
->         if (flags & BPF_TRAMP_F_RESTORE_REGS)
->                 restore_regs(m, &prog, nr_args, regs_off);
+> --
+> 2.30.2
 >
-
-[...]
