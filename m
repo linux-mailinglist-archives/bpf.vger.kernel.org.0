@@ -2,207 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A204FF04F
-	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 09:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1708D4FF05E
+	for <lists+bpf@lfdr.de>; Wed, 13 Apr 2022 09:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbiDMHHS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Apr 2022 03:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
+        id S231782AbiDMHKd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Apr 2022 03:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232134AbiDMHHR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Apr 2022 03:07:17 -0400
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EB21C901;
-        Wed, 13 Apr 2022 00:04:56 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V9yF4q8_1649833489;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V9yF4q8_1649833489)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Apr 2022 15:04:50 +0800
-Message-ID: <1649833450.9482608-9-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v9 09/32] virtio_ring: split: extract the logic of vq init
-Date:   Wed, 13 Apr 2022 15:04:10 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-10-xuanzhuo@linux.alibaba.com>
- <f91435e4-6559-c0c9-2b37-92084c88dee2@redhat.com>
-In-Reply-To: <f91435e4-6559-c0c9-2b37-92084c88dee2@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S231781AbiDMHKc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Apr 2022 03:10:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018E32612D
+        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 00:08:08 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B8DBB1F37C;
+        Wed, 13 Apr 2022 07:08:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1649833686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z+S6Ci8gmygYXmIiHHcH56nlPSzJHiQrnlB+7fit9XA=;
+        b=cB4UqkAV6K6qDc6Q1LcrbiAXl6q2GmTZa776ERj3D5zKb152HG6ohwxzrzFrXM//uzDRvp
+        a6cTGgbN0GfyFn5A+1+u60qBfX2avRX1vNt07iV9xda/I8jAlkE2vxRVIICN4yQ8FBRb4B
+        vfAidDYkpq4J/+2ArI+X1jk6hZO6TwQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FAFF13A91;
+        Wed, 13 Apr 2022 07:08:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5WxDHNZ2VmILXQAAMHmgww
+        (envelope-from <nborisov@suse.com>); Wed, 13 Apr 2022 07:08:06 +0000
+Message-ID: <28743474-02be-950f-a0ed-cd8fec42ca85@suse.com>
+Date:   Wed, 13 Apr 2022 10:08:05 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: Error validating array access
+Content-Language: en-US
+To:     Zvi Effron <zeffron@riotgames.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+References: <ceeb6831-7b2e-440b-69d9-3b46c7320b3c@suse.com>
+ <CAEf4BzY6NXqsOVLLiaoGS2vv7S2eNeP1BQFh9cbPffJbf-2X5Q@mail.gmail.com>
+ <7e7b5534-934c-f0fc-11c0-1d00560a4100@suse.com>
+ <CAC1LvL2VZoik563Z8N_o49hyTA37iLsHi+O-gM7x8_rfrWth=w@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+In-Reply-To: <CAC1LvL2VZoik563Z8N_o49hyTA37iLsHi+O-gM7x8_rfrWth=w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 12 Apr 2022 11:42:25 +0800, Jason Wang <jasowang@redhat.com> wrote:
->
-> =E5=9C=A8 2022/4/6 =E4=B8=8A=E5=8D=8811:43, Xuan Zhuo =E5=86=99=E9=81=93:
-> > Separate the logic of initializing vq, and subsequent patches will call
-> > it separately.
-> >
-> > The feature of this part is that it does not depend on the information
-> > passed by the upper layer and can be called repeatedly.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >   drivers/virtio/virtio_ring.c | 68 ++++++++++++++++++++----------------
-> >   1 file changed, 38 insertions(+), 30 deletions(-)
-> >
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index 083f2992ba0d..874f878087a3 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -916,6 +916,43 @@ static void *virtqueue_detach_unused_buf_split(str=
-uct virtqueue *_vq)
-> >   	return NULL;
-> >   }
-> >
-> > +static void vring_virtqueue_init_split(struct vring_virtqueue *vq,
-> > +				       struct virtio_device *vdev,
-> > +				       bool own_ring)
-> > +{
-> > +	vq->packed_ring =3D false;
-> > +	vq->vq.num_free =3D vq->split.vring.num;
-> > +	vq->we_own_ring =3D own_ring;
-> > +	vq->broken =3D false;
-> > +	vq->last_used_idx =3D 0;
-> > +	vq->event_triggered =3D false;
-> > +	vq->num_added =3D 0;
-> > +	vq->use_dma_api =3D vring_use_dma_api(vdev);
-> > +#ifdef DEBUG
-> > +	vq->in_use =3D false;
-> > +	vq->last_add_time_valid =3D false;
-> > +#endif
-> > +
-> > +	vq->event =3D virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
-> > +
-> > +	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
-> > +		vq->weak_barriers =3D false;
-> > +
-> > +	vq->split.avail_flags_shadow =3D 0;
-> > +	vq->split.avail_idx_shadow =3D 0;
-> > +
-> > +	/* No callback?  Tell other side not to bother us. */
-> > +	if (!vq->vq.callback) {
-> > +		vq->split.avail_flags_shadow |=3D VRING_AVAIL_F_NO_INTERRUPT;
-> > +		if (!vq->event)
-> > +			vq->split.vring.avail->flags =3D cpu_to_virtio16(vdev,
-> > +					vq->split.avail_flags_shadow);
-> > +	}
-> > +
-> > +	/* Put everything in free lists. */
-> > +	vq->free_head =3D 0;
->
->
-> It's not clear what kind of initialization that we want to do here. E.g
-> it mixes split specific setups with some general setups which is kind of
-> duplication of vring_virtqueue_init_packed().
->
-> I wonder if it's better to only do split specific setups here and have a
-> common helper to do the setup that is irrelevant to ring layout.
+<snip>
+>>>>            // Add this dentry name to path
+>>>>            struct qstr d_name = BPF_CORE_READ(dentry, d_name);
+>>>>            // Ensure path is no longer than PATH_MAX-1 and copy the terminating NULL
+>>>>            unsigned int len = (d_name.len+1) & (PATH_MAX-1);
+>>>>            // Start writing from the end of the buffer
+>>>>            unsigned int off = buf_off - len;
+>>>>            // Is string buffer big enough for dentry name?
+>>>>            int sz = 0;
+>>>>            // verify no wrap occurred
+>>>>            if (off <= buf_off)
+>>>>                sz = bpf_probe_read_kernel_str(&string_p->buf[IDX(off)], len, (void *)d_name.name);
+>>>>            else
+>>>>                break;
+>>>>
+>>>>            if (sz > 1) {
+>>>>                buf_off -= 1; // replace null byte termination with slash sign
+>>>>                bpf_probe_read(&(string_p->buf[IDX(buf_off)]), 1, &slash);
+>>>>                buf_off -= sz - 1;
+> 
+> Isn't it (theoretically) possible for this to underflow? What happens if
+> sz > 1 and sz >= buf_off?
 
-Yes, you are right, I didn't notice this situation before.
+No, because sz is bounded by len since bpf_probe_read_kernel_str would 
+copy at most len -1 bytes as per description of the function. Since 
+we've ensured len is smaller than buff_off (due to off <= buf_off check) 
+then sz is also guaranteed to be less than buf_off.
 
-Thanks.
+<snip>
 
->
-> Thanks
->
->
-> > +}
-> > +
-> >   static void vring_virtqueue_attach_split(struct vring_virtqueue *vq,
-> >   					 struct vring vring,
-> >   					 struct vring_desc_state_split *desc_state,
-> > @@ -2249,42 +2286,15 @@ struct virtqueue *__vring_new_virtqueue(unsigne=
-d int index,
-> >   	if (!vq)
-> >   		return NULL;
-> >
-> > -	vq->packed_ring =3D false;
-> >   	vq->vq.callback =3D callback;
-> >   	vq->vq.vdev =3D vdev;
-> >   	vq->vq.name =3D name;
-> > -	vq->vq.num_free =3D vring.num;
-> >   	vq->vq.index =3D index;
-> > -	vq->we_own_ring =3D false;
-> >   	vq->notify =3D notify;
-> >   	vq->weak_barriers =3D weak_barriers;
-> > -	vq->broken =3D false;
-> > -	vq->last_used_idx =3D 0;
-> > -	vq->event_triggered =3D false;
-> > -	vq->num_added =3D 0;
-> > -	vq->use_dma_api =3D vring_use_dma_api(vdev);
-> > -#ifdef DEBUG
-> > -	vq->in_use =3D false;
-> > -	vq->last_add_time_valid =3D false;
-> > -#endif
-> >
-> >   	vq->indirect =3D virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DES=
-C) &&
-> >   		!context;
-> > -	vq->event =3D virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
-> > -
-> > -	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
-> > -		vq->weak_barriers =3D false;
-> > -
-> > -	vq->split.avail_flags_shadow =3D 0;
-> > -	vq->split.avail_idx_shadow =3D 0;
-> > -
-> > -	/* No callback?  Tell other side not to bother us. */
-> > -	if (!callback) {
-> > -		vq->split.avail_flags_shadow |=3D VRING_AVAIL_F_NO_INTERRUPT;
-> > -		if (!vq->event)
-> > -			vq->split.vring.avail->flags =3D cpu_to_virtio16(vdev,
-> > -					vq->split.avail_flags_shadow);
-> > -	}
-> >
-> >   	err =3D vring_alloc_state_extra_split(vring.num, &state, &extra);
-> >   	if (err) {
-> > @@ -2293,9 +2303,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned =
-int index,
-> >   	}
-> >
-> >   	vring_virtqueue_attach_split(vq, vring, state, extra);
-> > -
-> > -	/* Put everything in free lists. */
-> > -	vq->free_head =3D 0;
-> > +	vring_virtqueue_init_split(vq, vdev, false);
-> >
-> >   	spin_lock(&vdev->vqs_list_lock);
-> >   	list_add_tail(&vq->vq.list, &vdev->vqs);
->
+>>> IDX(off) is bounded, but verifier needs to be sure that `off + len`
+>>> never goes beyond map value. so you should make sure and prove off <=
+>>> MAX_PERCPU_BUFSIZE - PATH_MAX. Verifier actually caught a real bug for
+>>
+>> But that is guaranteed since off = buff_off - len, and buf_off is
+>> guaranteed to be at most MAX_PERCPU_BUFSIZE -1, meaning off is in the
+>> worst case MAX_PERCPU_BUFSIZE - len  so the map value access can't go
+>> beyond the end ?
+>>
+> 
+> If there's underflow in the calculation of buff_off (see above) then
+> buff_off > MAX_PERCPU_BUFSIZE - 1. Which makes off no longer bounded by
+> MAX_PERCPU_BUFSIZE - len, and it could exceed MAX_PERCPU_BUFSIZE.
+
+As per my rationale above I don't think buf_off can underflow.
+
+> 
+
+<snip>
