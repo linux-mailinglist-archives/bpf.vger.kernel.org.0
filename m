@@ -2,53 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFE7500431
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 04:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E719500400
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 04:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbiDNCcC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Apr 2022 22:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        id S236086AbiDNCJi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Apr 2022 22:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbiDNCcC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Apr 2022 22:32:02 -0400
-X-Greylist: delayed 1828 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Apr 2022 19:29:37 PDT
-Received: from m15114.mail.126.com (m15114.mail.126.com [220.181.15.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 08E3A7646
-        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 19:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=0HLUY
-        /xCiurn6rc3fSoQtal9tLcyYz3af3bsJdpjOxg=; b=msXBodO8I4J4vb1EkRIv0
-        lO8QOohoWdKUsUMXbm3uNUyb3tBQyXrJjoGhq8bTCPFpgM0qkjQq1VjgrmcqY5Zw
-        i+ksZov7UOUIoyfunGlIRlN0XY7u6zjlMxdTWfKH7vDtXBfQ+uIKouiVkhyJwLJM
-        GF0D0G7fGXcX+Mu9JyUOCM=
-Received: from localhost.localdomain (unknown [39.99.236.58])
-        by smtp7 (Coremail) with SMTP id DsmowADHlfG2f1di0jytAQ--.55055S2;
-        Thu, 14 Apr 2022 09:58:14 +0800 (CST)
-From:   Hongbin Wang <wh_bin@126.com>
-To:     edumazet@google.com, davem@davemloft.net, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH] tcp: fix error return code in tcp_xmit_probe_skb
-Date:   Wed, 13 Apr 2022 21:58:02 -0400
-Message-Id: <20220414015802.101877-1-wh_bin@126.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229821AbiDNCJi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Apr 2022 22:09:38 -0400
+Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BC840A2E
+        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 19:07:14 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0VA05mnn_1649902032;
+Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0VA05mnn_1649902032)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Apr 2022 10:07:12 +0800
+Date:   Thu, 14 Apr 2022 10:07:09 +0800
+From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: [Question] bpf map value increase unexpectedly with tracepoint
+ qdisc/qdisc_dequeue
+Message-ID: <20220414020709.GA27635@L-PF27918B-1352.localdomain>
+Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
+References: <20220413140629.GA22650@L-PF27918B-1352.localdomain>
+ <CAEf4BzYvBHwsFrp52ZqhP=H1WDdpEeovJcgctv2nioAvBg6FBw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsmowADHlfG2f1di0jytAQ--.55055S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr4xKr1xur1DAF4xXrWkZwb_yoWxCFb_Cw
-        nrXayjq3y5tFn2vwsrZw45JryrKanFvFyFgr13Ca43ta4UGFn8Jrs7Cr93CFn3ursakryD
-        Kr4Dtry8urW3XjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0C4iUUUUUU==
-X-Originating-IP: [39.99.236.58]
-X-CM-SenderInfo: xzkbuxbq6rjloofrz/1tbiOhfioluvn+sadwAAsA
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYvBHwsFrp52ZqhP=H1WDdpEeovJcgctv2nioAvBg6FBw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,26 +44,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When alloc_skb failed, should return ENOMEM
+On Wed, Apr 13, 2022 at 12:30:51PM -0700, Andrii Nakryiko wrote:
+> On Wed, Apr 13, 2022 at 12:08 PM Wu Zongyong
+> <wuzongyong@linux.alibaba.com> wrote:
+> >
+> > Hi,
+> >
+> > I tried to count when tracepoint qdisc/qdisc_dequeue hit each time, then read
+> > the count value from userspace by bpf_map_lookup_elem().
+> > With bpftrace, I can see this tracepoint is hit about 700 times, but the count
+> > I get from the bpf map is below 20. It's weird. Then I tried to add a bpf_printk()
+> > to the program, and the count I get is normal which is about 700.
+> >
+> > The bpf program codes like that:
+> >
+> >         struct qdisc_dequeue_ctx {
+> >                 __u64           __pad;
+> >                 __u64           qdisc;
+> >                 __u64           txq;
+> >                 int             packets;
+> >                 __u64           skbaddr;
+> >                 int             ifindex;
+> >                 __u32           handle;
+> >                 __u32           parent;
+> >                 unsigned long   txq_state;
+> >         };
+> >
+> >         struct {
+> >                 __uint(type, BPF_MAP_TYPE_HASH);
+> >                 __type(key, int);
+> >                 __type(value, __u32);
+> >                 __uint(max_entries, 1);
+> >                 __uint(pinning, LIBBPF_PIN_BY_NAME);
+> >         } count_map SEC(".maps");
+> >
+> >         SEC("tracepoint/qdisc/qdisc_dequeue")
+> >         int trace_dequeue(struct qdisc_dequeue_ctx *ctx)
+> >         {
+> >                 int key = 0;
+> >                 __u32 *value;
+> >                 __u32 init = 0;
+> >
+> >                 value = bpf_map_lookup_elem(&count_map, &key);
+> >                 if (value) {
+> >                         *value += 1;
+> >                 } else {
+> >                         bpf_printk("value reset");
+> >                         bpf_map_update_elem(&count_map, &key, &init, 0);
+> >                 }
+> >                 return 0;
+> >         }
+> >
+> > Any suggestion is appreciated!
+> >
+> 
+> First, why do you use HASH map for single-key map? ARRAY would make
+> more sense for keys that are small integers. But I assume your real
+> world use case needs bigger and more random keys, right?
+>
+Yes, this just is a simple test.
 
-Signed-off-by: Hongbin Wang <wh_bin@126.com>
----
- net/ipv4/tcp_output.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Second, you have two race conditions. One, you overwrite the value in
+> the map with this bpf_map_update_elem(..., 0). Use BPF_NOEXISTS for
+> initialization to avoid overwriting something that another CPU already
+> set. Another one is your *value += 1 is non-atomic, so you are loosing
+> updates as well. Use __sync_fetch_and_add(value, 1) for atomic
+> increment.
 
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index c221f3bce975..b97c85814d9c 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3996,7 +3996,7 @@ static int tcp_xmit_probe_skb(struct sock *sk, int urgent, int mib)
- 	skb = alloc_skb(MAX_TCP_HEADER,
- 			sk_gfp_mask(sk, GFP_ATOMIC | __GFP_NOWARN));
- 	if (!skb)
--		return -1;
-+		return -ENOMEM;
- 
- 	/* Reserve space for headers and set control bits. */
- 	skb_reserve(skb, MAX_TCP_HEADER);
--- 
-2.25.1
+__sync_fetch_and_add do solve my problem. Thanks!
 
+I have tried to use spinlock to prevent race conditions, but it seems
+that spinlock cannot be used in tracepoint.
+
+> 
+> Something like this:
+> 
+> value = bpf_map_lookup_elem(&count_map, &key);
+> if (!value) {
+>     /* BPF_NOEXIST won't allow to override the value that's already set */
+>     bpf_map_update_elem(&count_map, &key, &init, BPF_NOEXISTS);
+>     value = bpf_map_lookup_elem(&count_map, &key);
+> }
+> if (!value)
+>     return 0;
+> 
+> __sync_fetch_and_add(value, 1);
+> 
+> 
+> > Thanks,
+> > Wu Zongyong
