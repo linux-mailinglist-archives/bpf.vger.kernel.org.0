@@ -2,65 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB60D50060F
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 08:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEC750062C
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 08:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237602AbiDNG1Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 02:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
+        id S239639AbiDNGiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 02:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbiDNG1Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 02:27:24 -0400
-Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97631FA6F;
-        Wed, 13 Apr 2022 23:24:56 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0VA0zc-G_1649917489;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VA0zc-G_1649917489)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 14 Apr 2022 14:24:51 +0800
-Message-ID: <1649917349.6242197-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v9 22/32] virtio_pci: queue_reset: extract the logic of active vq for modern pci
-Date:   Thu, 14 Apr 2022 14:22:29 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232107AbiDNGiE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 02:38:04 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F3C3137D;
+        Wed, 13 Apr 2022 23:35:40 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Kf8pD4gxMz1HBvq;
+        Thu, 14 Apr 2022 14:35:00 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2375.24; Thu, 14 Apr 2022 14:35:36 +0800
+Message-ID: <d405cd60-c071-0daf-3174-670d1c8a2009@huawei.com>
+Date:   Thu, 14 Apr 2022 14:35:26 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH bpf-next 1/5] arm64: ftrace: Add ftrace direct call
+ support
+Content-Language: en-US
+To:     Song Liu <songliubraving@fb.com>
+CC:     bpf <bpf@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-23-xuanzhuo@linux.alibaba.com>
- <d228a41f-a3a1-029d-f259-d4fbab822e78@redhat.com>
-In-Reply-To: <d228a41f-a3a1-029d-f259-d4fbab822e78@redhat.com>
+        KP Singh <kpsingh@kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>
+References: <20220413054959.1053668-1-xukuohai@huawei.com>
+ <20220413054959.1053668-2-xukuohai@huawei.com>
+ <D829ABEB-5504-4682-9A20-AAD21AFE3CB3@fb.com>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <D829ABEB-5504-4682-9A20-AAD21AFE3CB3@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,109 +77,9 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 12 Apr 2022 14:58:19 +0800, Jason Wang <jasowang@redhat.com> wrote:
->
-> =E5=9C=A8 2022/4/6 =E4=B8=8A=E5=8D=8811:43, Xuan Zhuo =E5=86=99=E9=81=93:
-> > Introduce vp_active_vq() to configure vring to backend after vq attach
-> > vring. And configure vq vector if necessary.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >   drivers/virtio/virtio_pci_modern.c | 46 ++++++++++++++++++------------
-> >   1 file changed, 28 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio=
-_pci_modern.c
-> > index 86d301f272b8..49a4493732cf 100644
-> > --- a/drivers/virtio/virtio_pci_modern.c
-> > +++ b/drivers/virtio/virtio_pci_modern.c
-> > @@ -176,6 +176,29 @@ static void vp_reset(struct virtio_device *vdev)
-> >   	vp_disable_cbs(vdev);
-> >   }
-> >
-> > +static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
-> > +{
-> > +	struct virtio_pci_device *vp_dev =3D to_vp_device(vq->vdev);
-> > +	struct virtio_pci_modern_device *mdev =3D &vp_dev->mdev;
-> > +	unsigned long index;
-> > +
-> > +	index =3D vq->index;
-> > +
-> > +	/* activate the queue */
-> > +	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
-> > +	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
-> > +				virtqueue_get_avail_addr(vq),
-> > +				virtqueue_get_used_addr(vq));
-> > +
-> > +	if (msix_vec !=3D VIRTIO_MSI_NO_VECTOR) {
-> > +		msix_vec =3D vp_modern_queue_vector(mdev, index, msix_vec);
-> > +		if (msix_vec =3D=3D VIRTIO_MSI_NO_VECTOR)
-> > +			return -EBUSY;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >   static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vec=
-tor)
-> >   {
-> >   	return vp_modern_config_vector(&vp_dev->mdev, vector);
-> > @@ -220,32 +243,19 @@ static struct virtqueue *setup_vq(struct virtio_p=
-ci_device *vp_dev,
-> >
-> >   	vq->num_max =3D num;
-> >
-> > -	/* activate the queue */
-> > -	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
-> > -	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
-> > -				virtqueue_get_avail_addr(vq),
-> > -				virtqueue_get_used_addr(vq));
-> > +	err =3D vp_active_vq(vq, msix_vec);
-> > +	if (err)
-> > +		goto err;
-> >
-> >   	vq->priv =3D (void __force *)vp_modern_map_vq_notify(mdev, index, NU=
-LL);
-> >   	if (!vq->priv) {
-> >   		err =3D -ENOMEM;
-> > -		goto err_map_notify;
-> > -	}
-> > -
-> > -	if (msix_vec !=3D VIRTIO_MSI_NO_VECTOR) {
-> > -		msix_vec =3D vp_modern_queue_vector(mdev, index, msix_vec);
-> > -		if (msix_vec =3D=3D VIRTIO_MSI_NO_VECTOR) {
-> > -			err =3D -EBUSY;
-> > -			goto err_assign_vector;
-> > -		}
-> > +		goto err;
-> >   	}
-> >
-> >   	return vq;
-> >
-> > -err_assign_vector:
-> > -	if (!mdev->notify_base)
-> > -		pci_iounmap(mdev->pci_dev, (void __iomem __force *)vq->priv);
->
->
-> We need keep this or anything I missed?
+On 4/14/2022 1:58 PM, Song Liu wrote:
+> Just one nitpick for 2/5: as we move is_valid_bpf_tramp_flags to
+> trampoline.c, we should change the multi-line comment into net
+> style:
 
-I think so, after modification, vp_modern_map_vq_notify is the last step be=
-fore
-returning vq. If it fails, then vq->priv is equal to NULL, so there is no n=
-eed
-to execute pci_iounmap.
-
-Did I miss something?
-
-Thanks.
-
->
-> Thanks
->
->
-> > -err_map_notify:
-> > +err:
-> >   	vring_del_virtqueue(vq);
-> >   	return ERR_PTR(err);
-> >   }
->
+Thanks for your suggestion, will fix in v2.
