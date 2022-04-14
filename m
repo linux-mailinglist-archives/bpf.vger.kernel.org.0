@@ -2,491 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 907D25018F1
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 18:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0149A501908
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 18:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbiDNQoh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 12:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        id S229630AbiDNQu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 12:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242032AbiDNQms (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 12:42:48 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DF5111DF9
-        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 09:12:36 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id h16-20020a056902009000b00628a70584b2so4685423ybs.6
-        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 09:12:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=pPBA9ngXkQ7pfQr/obANkqANrFFR6bnlc1gj50FTqLw=;
-        b=cVEh5XP0m5Hme4LgtEZDvyhD4cYhHetpC2S69ENBS0NzxE5Il3yZdmjhW49uvyQKQk
-         GiHZ+sO/uAomqUQ1cbW6Ml0aNS0fZ59py3m6Z4ud7hrkx7lAAib95RI+2S4YP6Msgri6
-         MrbIdzTu83pNNI8HEj6UsB1jTEXHi2bPAyStsEHrHzAHW1Z9/ubsuDBr4xbBDceOXYPl
-         QxhYdLg1Dqg4v8N2BWm3RuZMzbeV3MTN7J77GOibc2XBG1qtYWOxk7cG4YWViSjfRA2/
-         JSO2OmZVbLPs7hvnRGJU+qdb3O09qF9YSi4oT/zYN33y0lDQyItPO+EyQaLqCYqBIAOu
-         m7cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=pPBA9ngXkQ7pfQr/obANkqANrFFR6bnlc1gj50FTqLw=;
-        b=RrGw4fnhKjUHN0ZQkXFY2382DXWg7szGPlTw2rpqgqnil6fZ0RS99K94sXrSsXUqlR
-         zRt3rjLQSEohvA0VcFqonRGIZ8RIWuQLunRhnbBeH7rcFTMvNX8iHDRCBge6zskaRCD5
-         wJ2fQSceRGozb++i2piQepG+9EKDXQYaliDAUyUwDnXN+x5zaipXRM00WIPqqnaAJ3hn
-         zBpWYNh3+6pJKIp2IM3J3cuqq18Ir8SKxEZjsfR+T9WzOyYMcGoIuo9+9JuPGpsbQkfX
-         HIf9wS9mZHOzKJyv6giUry8f2IYO1QUboVn57A3lqgPo/l/fk58bvhRnB98RnuXhQ90H
-         mBiA==
-X-Gm-Message-State: AOAM532eciDV+djrdeiHq6kvTqkqNZMjZ4Paebed/xgcItbo0mt8lD1i
-        3i4+PcfThEnat5oTo3ZEWib1biI=
-X-Google-Smtp-Source: ABdhPJzdXfTIvTcdZDzYDBuEXcRfrOCIWv7x8zdiIUn3fKJaH1nh4yDCUcaXPM53TttqHBbRnYzEHi0=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:45c6:42d5:e443:72cc])
- (user=sdf job=sendgmr) by 2002:a05:6902:187:b0:63d:9c95:edca with SMTP id
- t7-20020a056902018700b0063d9c95edcamr2200850ybh.81.1649952755335; Thu, 14 Apr
- 2022 09:12:35 -0700 (PDT)
-Date:   Thu, 14 Apr 2022 09:12:33 -0700
-Message-Id: <20220414161233.170780-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.36.0.rc0.470.gd361397f0d-goog
-Subject: [PATCH bpf-next v2] bpf: move rcu lock management out of BPF_PROG_RUN routines
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S240735AbiDNQuF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 12:50:05 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F667CD641;
+        Thu, 14 Apr 2022 09:18:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649953093; x=1681489093;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=McvR1HU1Ve6awU9fFJkU+6/6nGmnxCIiq/4cHuAQ9eo=;
+  b=mzJ0UQOrXUTXEfZ1Odvgihegm6cil69lexHKRVF/T5J0HK5m1Igto1a1
+   96PJTWqOlw5ZTwbucUBtLZFQ9CiBqjbTP9ZAvggWaJynUENHJpB47VVCV
+   g5u7IaanmPLAo5oO677kdxflkOQRAzmBumVIgGwPzTwc3zT8LVGhiSMGN
+   8mi2ynzHXHKNY/l62G2DB5AYcWPLlFEsixZ55s23rE0D4q91ZH8L6BJzo
+   nHlxnT+tG9Lgeu27UzmHy6w1OXC7gxKlDSy2XFcnqd8UtpPC7OwMCH4p5
+   tbQ4eq6Hg0lFywTsFRK99zuDOvRutE4QcnhgCWKs9Caz1l037yAGITuYA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="242901614"
+X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; 
+   d="scan'208";a="242901614"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2022 09:18:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; 
+   d="scan'208";a="526970478"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by orsmga002.jf.intel.com with ESMTP; 14 Apr 2022 09:18:11 -0700
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
+        Shwetha Nagaraju <Shwetha.nagaraju@intel.com>
+Subject: [PATCH net 1/4] ice: xsk: check if Rx ring was filled up to the end
+Date:   Thu, 14 Apr 2022 09:15:19 -0700
+Message-Id: <20220414161522.2320694-2-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220414161522.2320694-1-anthony.l.nguyen@intel.com>
+References: <20220414161522.2320694-1-anthony.l.nguyen@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 7d08c2c91171 ("bpf: Refactor BPF_PROG_RUN_ARRAY family of macros
-into functions") switched a bunch of BPF_PROG_RUN macros to inline
-routines. This changed the semantic a bit. Due to arguments expansion
-of macros, it used to be:
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-	rcu_read_lock();
-	array = rcu_dereference(cgrp->bpf.effective[atype]);
-	...
+__ice_alloc_rx_bufs_zc() checks if a number of the descriptors to be
+allocated would cause the ring wrap. In that case, driver will issue two
+calls to xsk_buff_alloc_batch() - one that will fill the ring up to the
+end and the second one that will start with filling descriptors from the
+beginning of the ring.
 
-Now, with with inline routines, we have:
-	array_rcu = rcu_dereference(cgrp->bpf.effective[atype]);
-	/* array_rcu can be kfree'd here */
-	rcu_read_lock();
-	array = rcu_dereference(array_rcu);
+ice_fill_rx_descs() is a wrapper for taking care of what
+xsk_buff_alloc_batch() gave back to the driver. It works in a best
+effort approach, so for example when driver asks for 64 buffers,
+ice_fill_rx_descs() could assign only 32. Such case needs to be checked
+when ring is being filled up to the end, because in that situation ntu
+might not reached the end of the ring.
 
-I'm assuming in practice rcu subsystem isn't fast enough to trigger
-this but let's use rcu API properly.
+Fix the ring wrap by checking if nb_buffs_extra has the expected value.
+If not, bump ntu and go directly to tail update.
 
-Also, rename to lower caps to not confuse with macros. Additionally,
-drop and expand BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY.
-
-See [1] for more context.
-
-  [1] https://lore.kernel.org/bpf/CAKH8qBs60fOinFdxiiQikK_q0EcVxGvNTQoWvHLEUGbgcj1UYg@mail.gmail.com/T/#u
-
-v2
-- keep rcu locks inside by passing cgroup_bpf
-
-Cc: Martin KaFai Lau <kafai@fb.com>
-Fixes: 7d08c2c91171 ("bpf: Refactor BPF_PROG_RUN_ARRAY family of macros into functions")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Fixes: 3876ff525de7 ("ice: xsk: Handle SW XDP ring wrap and bump tail more often")
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Tested-by: Shwetha Nagaraju <Shwetha.nagaraju@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 ---
- drivers/media/rc/bpf-lirc.c |   8 ++-
- include/linux/bpf.h         | 115 +++-------------------------------
- kernel/bpf/cgroup.c         | 121 +++++++++++++++++++++++++++++++-----
- kernel/trace/bpf_trace.c    |   5 +-
- 4 files changed, 121 insertions(+), 128 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_xsk.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
-index 3eff08d7b8e5..fe17c7f98e81 100644
---- a/drivers/media/rc/bpf-lirc.c
-+++ b/drivers/media/rc/bpf-lirc.c
-@@ -216,8 +216,12 @@ void lirc_bpf_run(struct rc_dev *rcdev, u32 sample)
- 
- 	raw->bpf_sample = sample;
- 
--	if (raw->progs)
--		BPF_PROG_RUN_ARRAY(raw->progs, &raw->bpf_sample, bpf_prog_run);
-+	if (raw->progs) {
-+		rcu_read_lock();
-+		bpf_prog_run_array(rcu_dereference(raw->progs),
-+				   &raw->bpf_sample, bpf_prog_run);
-+		rcu_read_unlock();
-+	}
- }
- 
- /*
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index bdb5298735ce..7bf441563ffc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1221,7 +1221,7 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
- /* an array of programs to be executed under rcu_lock.
-  *
-  * Typical usage:
-- * ret = BPF_PROG_RUN_ARRAY(&bpf_prog_array, ctx, bpf_prog_run);
-+ * ret = bpf_prog_run_array(rcu_dereference(&bpf_prog_array), ctx, bpf_prog_run);
-  *
-  * the structure returned by bpf_prog_array_alloc() should be populated
-  * with program pointers and the last pointer must be NULL.
-@@ -1315,83 +1315,22 @@ static inline void bpf_reset_run_ctx(struct bpf_run_ctx *old_ctx)
- 
- typedef u32 (*bpf_prog_run_fn)(const struct bpf_prog *prog, const void *ctx);
- 
--static __always_inline int
--BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
--			    const void *ctx, bpf_prog_run_fn run_prog,
--			    int retval, u32 *ret_flags)
--{
--	const struct bpf_prog_array_item *item;
--	const struct bpf_prog *prog;
--	const struct bpf_prog_array *array;
--	struct bpf_run_ctx *old_run_ctx;
--	struct bpf_cg_run_ctx run_ctx;
--	u32 func_ret;
--
--	run_ctx.retval = retval;
--	migrate_disable();
--	rcu_read_lock();
--	array = rcu_dereference(array_rcu);
--	item = &array->items[0];
--	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
--	while ((prog = READ_ONCE(item->prog))) {
--		run_ctx.prog_item = item;
--		func_ret = run_prog(prog, ctx);
--		if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
--			run_ctx.retval = -EPERM;
--		*(ret_flags) |= (func_ret >> 1);
--		item++;
--	}
--	bpf_reset_run_ctx(old_run_ctx);
--	rcu_read_unlock();
--	migrate_enable();
--	return run_ctx.retval;
--}
--
--static __always_inline int
--BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
--		      const void *ctx, bpf_prog_run_fn run_prog,
--		      int retval)
--{
--	const struct bpf_prog_array_item *item;
--	const struct bpf_prog *prog;
--	const struct bpf_prog_array *array;
--	struct bpf_run_ctx *old_run_ctx;
--	struct bpf_cg_run_ctx run_ctx;
--
--	run_ctx.retval = retval;
--	migrate_disable();
--	rcu_read_lock();
--	array = rcu_dereference(array_rcu);
--	item = &array->items[0];
--	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
--	while ((prog = READ_ONCE(item->prog))) {
--		run_ctx.prog_item = item;
--		if (!run_prog(prog, ctx) && !IS_ERR_VALUE((long)run_ctx.retval))
--			run_ctx.retval = -EPERM;
--		item++;
--	}
--	bpf_reset_run_ctx(old_run_ctx);
--	rcu_read_unlock();
--	migrate_enable();
--	return run_ctx.retval;
--}
--
- static __always_inline u32
--BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
-+bpf_prog_run_array(const struct bpf_prog_array *array,
- 		   const void *ctx, bpf_prog_run_fn run_prog)
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 866ee4df9671..9dd38f667059 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -415,8 +415,8 @@ static u16 ice_fill_rx_descs(struct xsk_buff_pool *pool, struct xdp_buff **xdp,
+  */
+ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
  {
- 	const struct bpf_prog_array_item *item;
- 	const struct bpf_prog *prog;
--	const struct bpf_prog_array *array;
- 	struct bpf_run_ctx *old_run_ctx;
- 	struct bpf_trace_run_ctx run_ctx;
- 	u32 ret = 1;
++	u32 nb_buffs_extra = 0, nb_buffs = 0;
+ 	union ice_32b_rx_flex_desc *rx_desc;
+-	u32 nb_buffs_extra = 0, nb_buffs;
+ 	u16 ntu = rx_ring->next_to_use;
+ 	u16 total_count = count;
+ 	struct xdp_buff **xdp;
+@@ -428,6 +428,10 @@ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
+ 		nb_buffs_extra = ice_fill_rx_descs(rx_ring->xsk_pool, xdp,
+ 						   rx_desc,
+ 						   rx_ring->count - ntu);
++		if (nb_buffs_extra != rx_ring->count - ntu) {
++			ntu += nb_buffs_extra;
++			goto exit;
++		}
+ 		rx_desc = ICE_RX_DESC(rx_ring, 0);
+ 		xdp = ice_xdp_buf(rx_ring, 0);
+ 		ntu = 0;
+@@ -441,6 +445,7 @@ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
+ 	if (ntu == rx_ring->count)
+ 		ntu = 0;
  
--	migrate_disable();
--	rcu_read_lock();
--	array = rcu_dereference(array_rcu);
-+	RCU_LOCKDEP_WARN(!rcu_read_lock_held(), "no rcu lock held");
-+
- 	if (unlikely(!array))
--		goto out;
-+		return ret;
-+
-+	migrate_disable();
- 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
- 	item = &array->items[0];
- 	while ((prog = READ_ONCE(item->prog))) {
-@@ -1400,50 +1339,10 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
- 		item++;
- 	}
- 	bpf_reset_run_ctx(old_run_ctx);
--out:
--	rcu_read_unlock();
- 	migrate_enable();
- 	return ret;
- }
++exit:
+ 	if (rx_ring->next_to_use != ntu)
+ 		ice_release_rx_desc(rx_ring, ntu);
  
--/* To be used by __cgroup_bpf_run_filter_skb for EGRESS BPF progs
-- * so BPF programs can request cwr for TCP packets.
-- *
-- * Current cgroup skb programs can only return 0 or 1 (0 to drop the
-- * packet. This macro changes the behavior so the low order bit
-- * indicates whether the packet should be dropped (0) or not (1)
-- * and the next bit is a congestion notification bit. This could be
-- * used by TCP to call tcp_enter_cwr()
-- *
-- * Hence, new allowed return values of CGROUP EGRESS BPF programs are:
-- *   0: drop packet
-- *   1: keep packet
-- *   2: drop packet and cn
-- *   3: keep packet and cn
-- *
-- * This macro then converts it to one of the NET_XMIT or an error
-- * code that is then interpreted as drop packet (and no cn):
-- *   0: NET_XMIT_SUCCESS  skb should be transmitted
-- *   1: NET_XMIT_DROP     skb should be dropped and cn
-- *   2: NET_XMIT_CN       skb should be transmitted and cn
-- *   3: -err              skb should be dropped
-- */
--#define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)		\
--	({						\
--		u32 _flags = 0;				\
--		bool _cn;				\
--		u32 _ret;				\
--		_ret = BPF_PROG_RUN_ARRAY_CG_FLAGS(array, ctx, func, 0, &_flags); \
--		_cn = _flags & BPF_RET_SET_CN;		\
--		if (_ret && !IS_ERR_VALUE((long)_ret))	\
--			_ret = -EFAULT;			\
--		if (!_ret)				\
--			_ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);	\
--		else					\
--			_ret = (_cn ? NET_XMIT_DROP : _ret);		\
--		_ret;					\
--	})
--
- #ifdef CONFIG_BPF_SYSCALL
- DECLARE_PER_CPU(int, bpf_prog_active);
- extern struct mutex bpf_stats_enabled_mutex;
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 128028efda64..9e95c03f8f7f 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -22,6 +22,69 @@
- DEFINE_STATIC_KEY_ARRAY_FALSE(cgroup_bpf_enabled_key, MAX_CGROUP_BPF_ATTACH_TYPE);
- EXPORT_SYMBOL(cgroup_bpf_enabled_key);
- 
-+static int
-+bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
-+			    enum cgroup_bpf_attach_type atype,
-+			    const void *ctx, bpf_prog_run_fn run_prog,
-+			    int retval, u32 *ret_flags)
-+{
-+	const struct bpf_prog_array_item *item;
-+	const struct bpf_prog *prog;
-+	const struct bpf_prog_array *array;
-+	struct bpf_run_ctx *old_run_ctx;
-+	struct bpf_cg_run_ctx run_ctx;
-+	u32 func_ret;
-+
-+	run_ctx.retval = retval;
-+	migrate_disable();
-+	rcu_read_lock();
-+	array = rcu_dereference(cgrp->effective[atype]);
-+	item = &array->items[0];
-+	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-+	while ((prog = READ_ONCE(item->prog))) {
-+		run_ctx.prog_item = item;
-+		func_ret = run_prog(prog, ctx);
-+		if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
-+			run_ctx.retval = -EPERM;
-+		*(ret_flags) |= (func_ret >> 1);
-+		item++;
-+	}
-+	bpf_reset_run_ctx(old_run_ctx);
-+	rcu_read_unlock();
-+	migrate_enable();
-+	return run_ctx.retval;
-+}
-+
-+static int
-+bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
-+		      enum cgroup_bpf_attach_type atype,
-+		      const void *ctx, bpf_prog_run_fn run_prog,
-+		      int retval)
-+{
-+	const struct bpf_prog_array_item *item;
-+	const struct bpf_prog *prog;
-+	const struct bpf_prog_array *array;
-+	struct bpf_run_ctx *old_run_ctx;
-+	struct bpf_cg_run_ctx run_ctx;
-+
-+	run_ctx.retval = retval;
-+	migrate_disable();
-+	rcu_read_lock();
-+	array = rcu_dereference(cgrp->effective[atype]);
-+	item = &array->items[0];
-+	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-+	while ((prog = READ_ONCE(item->prog))) {
-+		run_ctx.prog_item = item;
-+		if (!run_prog(prog, ctx) && !IS_ERR_VALUE((long)run_ctx.retval))
-+			run_ctx.retval = -EPERM;
-+		item++;
-+	}
-+	bpf_reset_run_ctx(old_run_ctx);
-+	rcu_read_unlock();
-+	migrate_enable();
-+	return run_ctx.retval;
-+}
-+
- void cgroup_bpf_offline(struct cgroup *cgrp)
- {
- 	cgroup_get(cgrp);
-@@ -1075,11 +1138,38 @@ int __cgroup_bpf_run_filter_skb(struct sock *sk,
- 	bpf_compute_and_save_data_end(skb, &saved_data_end);
- 
- 	if (atype == CGROUP_INET_EGRESS) {
--		ret = BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(
--			cgrp->bpf.effective[atype], skb, __bpf_prog_run_save_cb);
-+		u32 flags = 0;
-+		bool cn;
-+
-+		ret = bpf_prog_run_array_cg_flags(
-+			&cgrp->bpf, atype,
-+			skb, __bpf_prog_run_save_cb, 0, &flags);
-+
-+		/* Return values of CGROUP EGRESS BPF programs are:
-+		 *   0: drop packet
-+		 *   1: keep packet
-+		 *   2: drop packet and cn
-+		 *   3: keep packet and cn
-+		 *
-+		 * The returned value is then converted to one of the NET_XMIT
-+		 * or an error code that is then interpreted as drop packet
-+		 * (and no cn):
-+		 *   0: NET_XMIT_SUCCESS  skb should be transmitted
-+		 *   1: NET_XMIT_DROP     skb should be dropped and cn
-+		 *   2: NET_XMIT_CN       skb should be transmitted and cn
-+		 *   3: -err              skb should be dropped
-+		 */
-+
-+		cn = flags & BPF_RET_SET_CN;
-+		if (ret && !IS_ERR_VALUE((long)ret))
-+			ret = -EFAULT;
-+		if (!ret)
-+			ret = (cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);
-+		else
-+			ret = (cn ? NET_XMIT_DROP : ret);
- 	} else {
--		ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], skb,
--					    __bpf_prog_run_save_cb, 0);
-+		ret = bpf_prog_run_array_cg(&cgrp->bpf, atype,
-+					    skb, __bpf_prog_run_save_cb, 0);
- 		if (ret && !IS_ERR_VALUE((long)ret))
- 			ret = -EFAULT;
- 	}
-@@ -1109,8 +1199,7 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
- {
- 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
- 
--	return BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], sk,
--				     bpf_prog_run, 0);
-+	return bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
- }
- EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
- 
-@@ -1155,8 +1244,8 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
- 	}
- 
- 	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
--	return BPF_PROG_RUN_ARRAY_CG_FLAGS(cgrp->bpf.effective[atype], &ctx,
--					   bpf_prog_run, 0, flags);
-+	return bpf_prog_run_array_cg_flags(&cgrp->bpf, atype,
-+					   &ctx, bpf_prog_run, 0, flags);
- }
- EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_addr);
- 
-@@ -1182,8 +1271,8 @@ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
- {
- 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
- 
--	return BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], sock_ops,
--				     bpf_prog_run, 0);
-+	return bpf_prog_run_array_cg(&cgrp->bpf, atype, sock_ops, bpf_prog_run,
-+				     0);
- }
- EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_ops);
- 
-@@ -1200,8 +1289,7 @@ int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
- 
- 	rcu_read_lock();
- 	cgrp = task_dfl_cgroup(current);
--	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], &ctx,
--				    bpf_prog_run, 0);
-+	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0);
- 	rcu_read_unlock();
- 
- 	return ret;
-@@ -1366,8 +1454,7 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
- 
- 	rcu_read_lock();
- 	cgrp = task_dfl_cgroup(current);
--	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[atype], &ctx,
--				    bpf_prog_run, 0);
-+	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0);
- 	rcu_read_unlock();
- 
- 	kfree(ctx.cur_val);
-@@ -1459,7 +1546,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 	}
- 
- 	lock_sock(sk);
--	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[CGROUP_SETSOCKOPT],
-+	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_SETSOCKOPT,
- 				    &ctx, bpf_prog_run, 0);
- 	release_sock(sk);
- 
-@@ -1559,7 +1646,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	}
- 
- 	lock_sock(sk);
--	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[CGROUP_GETSOCKOPT],
-+	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
- 				    &ctx, bpf_prog_run, retval);
- 	release_sock(sk);
- 
-@@ -1608,7 +1695,7 @@ int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
- 	 * be called if that data shouldn't be "exported".
- 	 */
- 
--	ret = BPF_PROG_RUN_ARRAY_CG(cgrp->bpf.effective[CGROUP_GETSOCKOPT],
-+	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
- 				    &ctx, bpf_prog_run, retval);
- 	if (ret < 0)
- 		return ret;
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index b26f3da943de..f15b826f9899 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -129,7 +129,10 @@ unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
- 	 * out of events when it was updated in between this and the
- 	 * rcu_dereference() which is accepted risk.
- 	 */
--	ret = BPF_PROG_RUN_ARRAY(call->prog_array, ctx, bpf_prog_run);
-+	rcu_read_lock();
-+	ret = bpf_prog_run_array(rcu_dereference(call->prog_array),
-+				 ctx, bpf_prog_run);
-+	rcu_read_unlock();
- 
-  out:
- 	__this_cpu_dec(bpf_prog_active);
 -- 
-2.36.0.rc0.470.gd361397f0d-goog
+2.31.1
 
