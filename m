@@ -2,31 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C99A501E8E
-	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 00:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2EE501E92
+	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 00:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347147AbiDNWrk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 18:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40892 "EHLO
+        id S1347188AbiDNWrw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 18:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347180AbiDNWrj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 18:47:39 -0400
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3658B1A93
-        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 15:45:13 -0700 (PDT)
-Date:   Thu, 14 Apr 2022 22:45:03 +0000
+        with ESMTP id S1347193AbiDNWrv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 18:47:51 -0400
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76435C6B77
+        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 15:45:25 -0700 (PDT)
+Date:   Thu, 14 Apr 2022 22:45:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-        s=protonmail2; t=1649976310;
-        bh=uv61apQIeQt8drF2A52PZrs8AoOA0Lvm41y6dOx4zW4=;
+        s=protonmail2; t=1649976323;
+        bh=Jjx4TEjThTwWL8bj+lhR5ya+aOGQp9+e5cNVbMKzJbU=;
         h=Date:To:From:Cc:Reply-To:Subject:Message-ID:In-Reply-To:
          References:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
          Message-ID;
-        b=dWY+JprLs4JIrIWoJF/Ubs58DGuvqgzq0bbgkJbERbj+vlcFLFU4rLtZoy/LqcBem
-         j5UIXLMFErTLjO5XpUmTD1bJor/Sv45lvgS54UbUxhe4TFAvY2KbYulb1Bc6QfZ7YY
-         GEluu1k5+/WyknMrfSSIHY3WTmzhoGSpwCUZ/dwyv/lZGHRo3ell+m8rxkxWI34P0t
-         zg2nC6c1GBM5nxedFuxOziSD0uwPAUxoWlzIYpkXqeG1VlJpQ+eowVW9yrtjgdiWVJ
-         +zQtLu/qJJaA85eYPNHDmu6+wcUeI06oX1xMr9mrHwF3zuEkxafI4uQ2aEkxqHe7xu
-         InZyBMxrBp/Gg==
+        b=n1JYQEqnS0UycH2UG6rdRF0NDW9N472WSec3ZYaZEP3WdQJe6sEY8fOYa6pQDOBdN
+         n8KwoW1Q61coy1P8wCY8gGLszNUHTwKDvm15696xiuA8j78ApsqvDyfkMtgZ16Emsr
+         qFgZpsBF6piz0VCrrmuPaYznPT8dig9fPkTg9vphSHENpc3o3X51MeHt3Z8UuaPibu
+         dBKc0hQoG/Q2AVm6EWq3QzG2b5A3fa3WbRKOTPt1VVTl/7k+9vfWIBxus5+8owcR+B
+         xU2HYkr/S5czp89OwOV035PGE7HAeeZcuNkP9UoLJWEaE3NimsNNbjEJlF0n7asDZa
+         5+VuryUcvrAiQ==
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
@@ -63,80 +63,62 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH bpf-next 02/11] bpf: always emit struct bpf_perf_link BTF
-Message-ID: <20220414223704.341028-3-alobakin@pm.me>
+Subject: [PATCH bpf-next 03/11] tools, bpf: fix bpftool build with !CONFIG_BPF_EVENTS
+Message-ID: <20220414223704.341028-4-alobakin@pm.me>
 In-Reply-To: <20220414223704.341028-1-alobakin@pm.me>
 References: <20220414223704.341028-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When building bpftool with !CONFIG_PERF_EVENTS:
+Fix the following error when building bpftool:
 
-skeleton/pid_iter.bpf.c:47:14: error: incomplete definition of type 'struct=
- bpf_perf_link'
-        perf_link =3D container_of(link, struct bpf_perf_link, link);
-                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:74:22: note: e=
-xpanded from macro 'container_of'
-                ((type *)(__mptr - offsetof(type, member)));    \
-                                   ^~~~~~~~~~~~~~~~~~~~~~
-tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:68:60: note: e=
-xpanded from macro 'offsetof'
- #define offsetof(TYPE, MEMBER)  ((unsigned long)&((TYPE *)0)->MEMBER)
-                                                  ~~~~~~~~~~~^
-skeleton/pid_iter.bpf.c:44:9: note: forward declaration of 'struct bpf_perf=
-_link'
-        struct bpf_perf_link *perf_link;
-               ^
+  CLANG   profiler.bpf.o
+  CLANG   pid_iter.bpf.o
+skeleton/profiler.bpf.c:18:21: error: invalid application of 'sizeof' to an=
+ incomplete type 'struct bpf_perf_event_value'
+        __uint(value_size, sizeof(struct bpf_perf_event_value));
+                           ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helpers.h:13:39: note: e=
+xpanded from macro '__uint'
+                                      ^~~
+tools/bpf/bpftool/bootstrap/libbpf/include/bpf/bpf_helper_defs.h:7:8: note:=
+ forward declaration of 'struct bpf_perf_event_value'
+struct bpf_perf_event_value;
+       ^
 
-&bpf_perf_link is being defined and used only under the ifdef.
-Move it out of the block and explicitly emit a BTF to fix
-compilation.
+struct bpf_perf_event_value is being used in the kernel only when
+CONFIG_BPF_EVENTS is enabled, so it misses a BTF entry then.
+Emit the type unconditionally to fix the problem.
 
-Fixes: cbdaf71f7e65 ("bpftool: Add bpf_cookie to link output")
+Fixes: 47c09d6a9f67 ("bpftool: Introduce "prog profile" command")
 Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- kernel/bpf/syscall.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/bpf/syscall.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index e9621cfa09f2..34fdf27d14cf 100644
+index 34fdf27d14cf..dd8284a60a8e 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -2952,12 +2952,12 @@ static const struct bpf_link_ops bpf_raw_tp_link_lo=
-ps =3D {
- =09.fill_link_info =3D bpf_raw_tp_link_fill_link_info,
- };
-
--#ifdef CONFIG_PERF_EVENTS
- struct bpf_perf_link {
- =09struct bpf_link link;
- =09struct file *perf_file;
- };
-
-+#ifdef CONFIG_PERF_EVENTS
- static void bpf_perf_link_release(struct bpf_link *link)
- {
- =09struct bpf_perf_link *perf_link =3D container_of(link, struct bpf_perf_=
-link, link);
-@@ -4333,6 +4333,7 @@ static int link_create(union bpf_attr *attr, bpfptr_t=
+@@ -4286,6 +4286,7 @@ static int link_create(union bpf_attr *attr, bpfptr_t=
  uattr)
- #endif
+ =09=09goto out;
  =09case BPF_PROG_TYPE_PERF_EVENT:
  =09case BPF_PROG_TYPE_TRACEPOINT:
-+=09=09BTF_TYPE_EMIT(struct bpf_perf_link);
- =09=09ret =3D bpf_perf_link_attach(attr, prog);
- =09=09break;
- =09case BPF_PROG_TYPE_KPROBE:
++=09=09BTF_TYPE_EMIT(struct bpf_perf_event_value);
+ =09=09if (attr->link_create.attach_type !=3D BPF_PERF_EVENT) {
+ =09=09=09ret =3D -EINVAL;
+ =09=09=09goto out;
 --
 2.35.2
 
