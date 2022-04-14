@@ -2,142 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D69CE5015AB
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 17:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28531501860
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 18:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244966AbiDNOoX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 10:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        id S237911AbiDNQKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 12:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244431AbiDNN7f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 09:59:35 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ED31D7;
-        Thu, 14 Apr 2022 06:57:02 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KfLbW0nGQz1HBlw;
-        Thu, 14 Apr 2022 21:56:23 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 14 Apr
- 2022 21:56:59 +0800
-From:   Liu Jian <liujian56@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <sdf@google.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <pabeni@redhat.com>
-CC:     <liujian56@huawei.com>
-Subject: [PATCH bpf-next v3 3/3] selftests: bpf: add test for skb_load_bytes
-Date:   Thu, 14 Apr 2022 21:59:02 +0800
-Message-ID: <20220414135902.100914-4-liujian56@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220414135902.100914-1-liujian56@huawei.com>
-References: <20220414135902.100914-1-liujian56@huawei.com>
+        with ESMTP id S1359844AbiDNPrZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 11:47:25 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B611F70FB;
+        Thu, 14 Apr 2022 08:32:54 -0700 (PDT)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nf1Se-0006Mb-Q0; Thu, 14 Apr 2022 17:32:44 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nf1Se-000PQJ-F2; Thu, 14 Apr 2022 17:32:44 +0200
+Subject: Re: [RFC PATCH 0/1] sample: bpf: introduce irqlat
+To:     Song Chen <chensong_2000@189.cn>
+References: <1649927240-18991-1-git-send-email-chensong_2000@189.cn>
+ <2e6ee265-903c-2b5c-aefd-ec24f930c999@iogearbox.net>
+ <ac371d36-2624-cdd8-0c15-62ccf53bed81@189.cn>
+Cc:     ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brendan.d.gregg@gmail.com
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f4267d24-28ca-bd99-100e-6fa4ee84cc50@iogearbox.net>
+Date:   Thu, 14 Apr 2022 17:32:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ac371d36-2624-cdd8-0c15-62ccf53bed81@189.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26512/Thu Apr 14 10:28:56 2022)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use bpf_prog_test_run_opts to test the skb_load_bytes function.
-Tests the behavior when offset is greater than INT_MAX or a normal value.
+Hi Song,
 
-Signed-off-by: Liu Jian <liujian56@huawei.com>
----
-v2->v3: Change patch prefix to bpf-next. Use ASSERT_* calls
- .../selftests/bpf/prog_tests/skb_load_bytes.c | 45 +++++++++++++++++++
- .../selftests/bpf/progs/skb_load_bytes.c      | 19 ++++++++
- 2 files changed, 64 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/skb_load_bytes.c
- create mode 100644 tools/testing/selftests/bpf/progs/skb_load_bytes.c
+On 4/14/22 1:25 PM, Song Chen wrote:
+> hi Daniel,
+> 
+> Thanks for liking the idea.
+> 
+> My target is embedded devices, that's why i get started from ebpf C.bcc and bpftrace is a good idea, but i prefer taking one thing at a time, what's more, i'm not familiar with python, it might take longer.
+> 
+> Once C code is accepted, i will move myself to bcc and bpftrace. Is it ok for you?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_load_bytes.c b/tools/testing/selftests/bpf/prog_tests/skb_load_bytes.c
-new file mode 100644
-index 000000000000..d7f83c0a40a5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_load_bytes.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include "skb_load_bytes.skel.h"
-+
-+void test_skb_load_bytes(void)
-+{
-+	struct skb_load_bytes *skel;
-+	int err, prog_fd, test_result;
-+	struct __sk_buff skb = { 0 };
-+
-+	LIBBPF_OPTS(bpf_test_run_opts, tattr,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.ctx_in = &skb,
-+		.ctx_size_in = sizeof(skb),
-+	);
-+
-+	skel = skb_load_bytes__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	prog_fd = bpf_program__fd(skel->progs.skb_process);
-+	if (!ASSERT_GE(prog_fd, 0, "prog_fd"))
-+		goto out;
-+
-+	skel->bss->load_offset = (uint32_t)(-1);
-+	err = bpf_prog_test_run_opts(prog_fd, &tattr);
-+	if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
-+		goto out;
-+	test_result = skel->bss->test_result;
-+	if (!ASSERT_EQ(test_result, -EFAULT, "offset -1"))
-+		goto out;
-+
-+	skel->bss->load_offset = (uint32_t)10;
-+	err = bpf_prog_test_run_opts(prog_fd, &tattr);
-+	if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
-+		goto out;
-+	test_result = skel->bss->test_result;
-+	if (!ASSERT_EQ(test_result, 0, "offset 10"))
-+		goto out;
-+
-+out:
-+	skb_load_bytes__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/skb_load_bytes.c b/tools/testing/selftests/bpf/progs/skb_load_bytes.c
-new file mode 100644
-index 000000000000..e4252fd973be
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/skb_load_bytes.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u32 load_offset = 0;
-+int test_result = 0;
-+
-+SEC("tc")
-+int skb_process(struct __sk_buff *skb)
-+{
-+	char buf[16];
-+
-+	test_result = bpf_skb_load_bytes(skb, load_offset, buf, 10);
-+
-+	return 0;
-+}
--- 
-2.17.1
+The libbpf-based tools from the mentioned link in BCC are all C, not Python. Also bpftrace
+has guidelines for building it more portably that would be suitable for embedded devices [2].
+I'd presume these should still match your requirements?
+
+Right now samples/bpf/ is a bit of a dumping ground of random things, some BPF samples better
+maintained than others, but generally samples/bpf/ is a bit of a mess. BPF has a huge ecosystem
+outside of kernel in its various areas it covers, so it has outgrown the few samples in there
+long ago, and you'll find many resources on how to get started in the wild.
+
+Adding this as a samples/bpf/ will have little value to others, since people may not be aware
+of them, and if they are they need to manually build/ship it, etc. If you upstream and can improve
+the tools in bpftrace/bcc as pointed out, then a lot more people will be able to consume them
+and benefit from it, and you get the shipping via distros for free.
+
+   [2] https://github.com/iovisor/bpftrace/blob/master/docs/embedded_builds.md
+
+Thanks again,
+Daniel
+
+> BR
+> 
+> Song
+> 
+> 
+> 在 2022/4/14 17:47, Daniel Borkmann 写道:
+>> On 4/14/22 11:07 AM, Song Chen wrote:
+>>> I'm planning to implement a couple of ebpf tools for preempt rt,
+>>> including irq latency, preempt latency and so on, how does it sound
+>>> to you?
+>>
+>> Sounds great, thanks! Please add these tools for upstream inclusion either to bpftrace [0] or
+>> bcc [1], then a wider range of users would be able to benefit from them as well as they are
+>> also shipped as distro packages and generally more widely used compared to kernel samples.
+>>
+>> Thanks Song!
+>>
+>>    [0] https://github.com/iovisor/bpftrace/tree/master/tools
+>>    [1] https://github.com/iovisor/bcc/tree/master/libbpf-tools
+>>
+>>> Song Chen (1):
+>>>    sample: bpf: introduce irqlat
+>>>
+>>>   samples/bpf/.gitignore    |   1 +
+>>>   samples/bpf/Makefile      |   5 ++
+>>>   samples/bpf/irqlat_kern.c |  81 ++++++++++++++++++++++++++++++
+>>>   samples/bpf/irqlat_user.c | 100 ++++++++++++++++++++++++++++++++++++++
+>>>   4 files changed, 187 insertions(+)
+>>>   create mode 100644 samples/bpf/irqlat_kern.c
+>>>   create mode 100644 samples/bpf/irqlat_user.c
+>>>
+>>
+>>
 
