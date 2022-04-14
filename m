@@ -2,135 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E719500400
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 04:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2481B50040B
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 04:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236086AbiDNCJi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Apr 2022 22:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
+        id S239601AbiDNCSA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Apr 2022 22:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbiDNCJi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Apr 2022 22:09:38 -0400
-Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BC840A2E
-        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 19:07:14 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=wuzongyong@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0VA05mnn_1649902032;
-Received: from localhost(mailfrom:wuzongyong@linux.alibaba.com fp:SMTPD_---0VA05mnn_1649902032)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 14 Apr 2022 10:07:12 +0800
-Date:   Thu, 14 Apr 2022 10:07:09 +0800
-From:   Wu Zongyong <wuzongyong@linux.alibaba.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: [Question] bpf map value increase unexpectedly with tracepoint
- qdisc/qdisc_dequeue
-Message-ID: <20220414020709.GA27635@L-PF27918B-1352.localdomain>
-Reply-To: Wu Zongyong <wuzongyong@linux.alibaba.com>
-References: <20220413140629.GA22650@L-PF27918B-1352.localdomain>
- <CAEf4BzYvBHwsFrp52ZqhP=H1WDdpEeovJcgctv2nioAvBg6FBw@mail.gmail.com>
+        with ESMTP id S229821AbiDNCR7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Apr 2022 22:17:59 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0054EDD5
+        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 19:15:36 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-2ef5380669cso24737617b3.9
+        for <bpf@vger.kernel.org>; Wed, 13 Apr 2022 19:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EyNYRIHMuAe14NfG42UC6bW7EHisTJTsbzpFwHXAxYE=;
+        b=mhN2PI/XczGH1LPOLgFumsgCAC53Xh7XIpRdSmGoOAazEowtirMA87iL1iYkiU3aLP
+         cDQlWfWJY9yvdJ8uyUwpVeV2MftCXqON0hS8jDMdx/wDYzm4SoWh/H+5kmi36m+C0Goq
+         3F/1eB8fUA5+McWgFcEC4cDafxfLQb8LOUcoMn79zYGvNKputLXdq0pOK9kSOS6p3bY8
+         +hB515ep96878W7/ac+tdn7cIHl0pcjNxHXP/u0JMfRBSxNXpCVOXB/2j6trYedRa0Xs
+         xaXvGTnmNQ/vQvo4o8rUsqJt6KSxYXnfoKCtoq0zmM9j3LfP6tY0kzfF7lSTX3+MEvWb
+         ejjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EyNYRIHMuAe14NfG42UC6bW7EHisTJTsbzpFwHXAxYE=;
+        b=yoUF0llKIw69bIjNr/eaNgiYKU5DrMBaf6ZFjrmjOIYik/tHMQ6cFbqrAo5muCPLAh
+         eeSCY3iNFtl1wm2DHVqOlWitni49RUt7Xay6N77RXUvU2fRVm3eo5hiKRal6BCIheYZe
+         3SfbQwnOlkoKDDwiaQJiDBqCCrDQ7knavr347cl/lvblbt8Rw4ARUTAL6Mj4+uKdWACK
+         MS5mMGqR7dYaD5IRJOmgguuj+7cEY680kMWWNcFHF0S+RcD7poisPFcVyIsmqPOVkHq9
+         1befrmUP7tNc12wjFtVGFKtOzW7w5l4WrBYdOlneB1s8wVafgDTBwpPQr5mnVfqvjEMW
+         hJgg==
+X-Gm-Message-State: AOAM532Knsg6m5dlInOQ9l9UvQ0ZPQCNOrU9wv16WtaQWMxep8/hSmoc
+        8WDGpjkNoKOnFHvDc2d90hVYiAVZmEeZHAkZNxGoyA==
+X-Google-Smtp-Source: ABdhPJytuMs6w7MXLCClCeKL1doxBRc/t2dwAzon5XDa8KzHqgx/XOUwsie7YJQEkwJ0S1TNQJLJ6EKZap3pqxTCCjM=
+X-Received: by 2002:a81:753:0:b0:2eb:ebe9:ff4f with SMTP id
+ 80-20020a810753000000b002ebebe9ff4fmr325385ywh.255.1649902535724; Wed, 13 Apr
+ 2022 19:15:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYvBHwsFrp52ZqhP=H1WDdpEeovJcgctv2nioAvBg6FBw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220414015802.101877-1-wh_bin@126.com>
+In-Reply-To: <20220414015802.101877-1-wh_bin@126.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 13 Apr 2022 19:15:24 -0700
+Message-ID: <CANn89i+_GjNjjwAZU1VXG5OWFna3Vd1a6F-L7oYvNUObowzvuQ@mail.gmail.com>
+Subject: Re: [PATCH] tcp: fix error return code in tcp_xmit_probe_skb
+To:     Hongbin Wang <wh_bin@126.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 13, 2022 at 12:30:51PM -0700, Andrii Nakryiko wrote:
-> On Wed, Apr 13, 2022 at 12:08 PM Wu Zongyong
-> <wuzongyong@linux.alibaba.com> wrote:
-> >
-> > Hi,
-> >
-> > I tried to count when tracepoint qdisc/qdisc_dequeue hit each time, then read
-> > the count value from userspace by bpf_map_lookup_elem().
-> > With bpftrace, I can see this tracepoint is hit about 700 times, but the count
-> > I get from the bpf map is below 20. It's weird. Then I tried to add a bpf_printk()
-> > to the program, and the count I get is normal which is about 700.
-> >
-> > The bpf program codes like that:
-> >
-> >         struct qdisc_dequeue_ctx {
-> >                 __u64           __pad;
-> >                 __u64           qdisc;
-> >                 __u64           txq;
-> >                 int             packets;
-> >                 __u64           skbaddr;
-> >                 int             ifindex;
-> >                 __u32           handle;
-> >                 __u32           parent;
-> >                 unsigned long   txq_state;
-> >         };
-> >
-> >         struct {
-> >                 __uint(type, BPF_MAP_TYPE_HASH);
-> >                 __type(key, int);
-> >                 __type(value, __u32);
-> >                 __uint(max_entries, 1);
-> >                 __uint(pinning, LIBBPF_PIN_BY_NAME);
-> >         } count_map SEC(".maps");
-> >
-> >         SEC("tracepoint/qdisc/qdisc_dequeue")
-> >         int trace_dequeue(struct qdisc_dequeue_ctx *ctx)
-> >         {
-> >                 int key = 0;
-> >                 __u32 *value;
-> >                 __u32 init = 0;
-> >
-> >                 value = bpf_map_lookup_elem(&count_map, &key);
-> >                 if (value) {
-> >                         *value += 1;
-> >                 } else {
-> >                         bpf_printk("value reset");
-> >                         bpf_map_update_elem(&count_map, &key, &init, 0);
-> >                 }
-> >                 return 0;
-> >         }
-> >
-> > Any suggestion is appreciated!
-> >
-> 
-> First, why do you use HASH map for single-key map? ARRAY would make
-> more sense for keys that are small integers. But I assume your real
-> world use case needs bigger and more random keys, right?
+On Wed, Apr 13, 2022 at 6:58 PM Hongbin Wang <wh_bin@126.com> wrote:
 >
-Yes, this just is a simple test.
+> When alloc_skb failed, should return ENOMEM
 
-> 
-> Second, you have two race conditions. One, you overwrite the value in
-> the map with this bpf_map_update_elem(..., 0). Use BPF_NOEXISTS for
-> initialization to avoid overwriting something that another CPU already
-> set. Another one is your *value += 1 is non-atomic, so you are loosing
-> updates as well. Use __sync_fetch_and_add(value, 1) for atomic
-> increment.
 
-__sync_fetch_and_add do solve my problem. Thanks!
+Can you explain which rule mandates this statement ?
 
-I have tried to use spinlock to prevent race conditions, but it seems
-that spinlock cannot be used in tracepoint.
+The only caller that propagates this error has other "return -1;"
 
-> 
-> Something like this:
-> 
-> value = bpf_map_lookup_elem(&count_map, &key);
-> if (!value) {
->     /* BPF_NOEXIST won't allow to override the value that's already set */
->     bpf_map_update_elem(&count_map, &key, &init, BPF_NOEXISTS);
->     value = bpf_map_lookup_elem(&count_map, &key);
-> }
-> if (!value)
->     return 0;
-> 
-> __sync_fetch_and_add(value, 1);
-> 
-> 
-> > Thanks,
-> > Wu Zongyong
+The precise value of the error, we do not care, as long it is negative.
+
+To be clear, this error code is not propagated to user space, so this
+patch only adds code churn.
+
+
+>
+>
+> Signed-off-by: Hongbin Wang <wh_bin@126.com>
+> ---
+>  net/ipv4/tcp_output.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> index c221f3bce975..b97c85814d9c 100644
+> --- a/net/ipv4/tcp_output.c
+> +++ b/net/ipv4/tcp_output.c
+> @@ -3996,7 +3996,7 @@ static int tcp_xmit_probe_skb(struct sock *sk, int urgent, int mib)
+>         skb = alloc_skb(MAX_TCP_HEADER,
+>                         sk_gfp_mask(sk, GFP_ATOMIC | __GFP_NOWARN));
+>         if (!skb)
+> -               return -1;
+> +               return -ENOMEM;
+>
+>         /* Reserve space for headers and set control bits. */
+>         skb_reserve(skb, MAX_TCP_HEADER);
+> --
+> 2.25.1
+>
