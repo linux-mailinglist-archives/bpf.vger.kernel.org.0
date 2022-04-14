@@ -2,126 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0149A501908
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 18:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB125018D7
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 18:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbiDNQu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 12:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
+        id S238775AbiDNQlf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 12:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240735AbiDNQuF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 12:50:05 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F667CD641;
-        Thu, 14 Apr 2022 09:18:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1649953093; x=1681489093;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=McvR1HU1Ve6awU9fFJkU+6/6nGmnxCIiq/4cHuAQ9eo=;
-  b=mzJ0UQOrXUTXEfZ1Odvgihegm6cil69lexHKRVF/T5J0HK5m1Igto1a1
-   96PJTWqOlw5ZTwbucUBtLZFQ9CiBqjbTP9ZAvggWaJynUENHJpB47VVCV
-   g5u7IaanmPLAo5oO677kdxflkOQRAzmBumVIgGwPzTwc3zT8LVGhiSMGN
-   8mi2ynzHXHKNY/l62G2DB5AYcWPLlFEsixZ55s23rE0D4q91ZH8L6BJzo
-   nHlxnT+tG9Lgeu27UzmHy6w1OXC7gxKlDSy2XFcnqd8UtpPC7OwMCH4p5
-   tbQ4eq6Hg0lFywTsFRK99zuDOvRutE4QcnhgCWKs9Caz1l037yAGITuYA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="242901614"
-X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; 
-   d="scan'208";a="242901614"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2022 09:18:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; 
-   d="scan'208";a="526970478"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by orsmga002.jf.intel.com with ESMTP; 14 Apr 2022 09:18:11 -0700
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Shwetha Nagaraju <Shwetha.nagaraju@intel.com>
-Subject: [PATCH net 1/4] ice: xsk: check if Rx ring was filled up to the end
-Date:   Thu, 14 Apr 2022 09:15:19 -0700
-Message-Id: <20220414161522.2320694-2-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220414161522.2320694-1-anthony.l.nguyen@intel.com>
-References: <20220414161522.2320694-1-anthony.l.nguyen@intel.com>
+        with ESMTP id S239622AbiDNQlV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 12:41:21 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF10EAACB3;
+        Thu, 14 Apr 2022 09:10:08 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KfPY44gfNz1HBMx;
+        Fri, 15 Apr 2022 00:09:28 +0800 (CST)
+Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
+ (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 15 Apr
+ 2022 00:10:04 +0800
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>
+Subject: [PATCH bpf-next v2 0/6] bpf trampoline for arm64
+Date:   Thu, 14 Apr 2022 12:22:14 -0400
+Message-ID: <20220414162220.1985095-1-xukuohai@huawei.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.197]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Add bpf trampoline support for arm64. Most of the logic is the same as
+x86.
 
-__ice_alloc_rx_bufs_zc() checks if a number of the descriptors to be
-allocated would cause the ring wrap. In that case, driver will issue two
-calls to xsk_buff_alloc_batch() - one that will fill the ring up to the
-end and the second one that will start with filling descriptors from the
-beginning of the ring.
+Tested on qemu, result:
+ #55 fentry_fexit:OK
+ #56 fentry_test:OK
+ #58 fexit_sleep:OK
+ #59 fexit_stress:OK
+ #60 fexit_test:OK
+ #67 get_func_args_test:OK
+ #68 get_func_ip_test:OK
+ #101 modify_return:OK
 
-ice_fill_rx_descs() is a wrapper for taking care of what
-xsk_buff_alloc_batch() gave back to the driver. It works in a best
-effort approach, so for example when driver asks for 64 buffers,
-ice_fill_rx_descs() could assign only 32. Such case needs to be checked
-when ring is being filled up to the end, because in that situation ntu
-might not reached the end of the ring.
+v2:
+- Add Song's ACK
+- Change the multi-line comment in is_valid_bpf_tramp_flags() into net
+  style (patch 3)
+- Fix a deadloop issue in ftrace selftest (patch 2)
+- Replace pt_regs->x0 with pt_regs->orig_x0 in patch 1 commit message 
+- Replace "bpf trampoline" with "custom trampoline" in patch 1, as
+  ftrace direct call is not only used by bpf trampoline.
 
-Fix the ring wrap by checking if nb_buffs_extra has the expected value.
-If not, bump ntu and go directly to tail update.
+v1: https://lore.kernel.org/bpf/20220413054959.1053668-1-xukuohai@huawei.com/
 
-Fixes: 3876ff525de7 ("ice: xsk: Handle SW XDP ring wrap and bump tail more often")
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Tested-by: Shwetha Nagaraju <Shwetha.nagaraju@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_xsk.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Xu Kuohai (6):
+  arm64: ftrace: Add ftrace direct call support
+  ftrace: Fix deadloop caused by direct call in ftrace selftest
+  bpf: Move is_valid_bpf_tramp_flags() to the public trampoline code
+  bpf, arm64: Impelment bpf_arch_text_poke() for arm64
+  bpf, arm64: bpf trampoline for arm64
+  selftests/bpf: Fix trivial typo in fentry_fexit.c
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 866ee4df9671..9dd38f667059 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -415,8 +415,8 @@ static u16 ice_fill_rx_descs(struct xsk_buff_pool *pool, struct xdp_buff **xdp,
-  */
- static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
- {
-+	u32 nb_buffs_extra = 0, nb_buffs = 0;
- 	union ice_32b_rx_flex_desc *rx_desc;
--	u32 nb_buffs_extra = 0, nb_buffs;
- 	u16 ntu = rx_ring->next_to_use;
- 	u16 total_count = count;
- 	struct xdp_buff **xdp;
-@@ -428,6 +428,10 @@ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
- 		nb_buffs_extra = ice_fill_rx_descs(rx_ring->xsk_pool, xdp,
- 						   rx_desc,
- 						   rx_ring->count - ntu);
-+		if (nb_buffs_extra != rx_ring->count - ntu) {
-+			ntu += nb_buffs_extra;
-+			goto exit;
-+		}
- 		rx_desc = ICE_RX_DESC(rx_ring, 0);
- 		xdp = ice_xdp_buf(rx_ring, 0);
- 		ntu = 0;
-@@ -441,6 +445,7 @@ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
- 	if (ntu == rx_ring->count)
- 		ntu = 0;
- 
-+exit:
- 	if (rx_ring->next_to_use != ntu)
- 		ice_release_rx_desc(rx_ring, ntu);
- 
+ arch/arm64/Kconfig                            |   2 +
+ arch/arm64/include/asm/ftrace.h               |  10 +
+ arch/arm64/kernel/asm-offsets.c               |   1 +
+ arch/arm64/kernel/entry-ftrace.S              |  28 +-
+ arch/arm64/net/bpf_jit.h                      |  14 +-
+ arch/arm64/net/bpf_jit_comp.c                 | 390 +++++++++++++++++-
+ arch/x86/net/bpf_jit_comp.c                   |  20 -
+ include/linux/bpf.h                           |   5 +
+ kernel/bpf/bpf_struct_ops.c                   |   4 +-
+ kernel/bpf/trampoline.c                       |  35 +-
+ kernel/trace/trace_selftest.c                 |   4 +-
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |   4 +-
+ 12 files changed, 482 insertions(+), 35 deletions(-)
+
 -- 
-2.31.1
+2.30.2
 
