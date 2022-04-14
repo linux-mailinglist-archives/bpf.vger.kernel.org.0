@@ -2,59 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C776501D8B
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 23:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F415501D90
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 23:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbiDNVgp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 17:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
+        id S238971AbiDNVlL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 17:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbiDNVgn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 17:36:43 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393E345041
-        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 14:34:17 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id q22so369259iod.2
-        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 14:34:17 -0700 (PDT)
+        with ESMTP id S237289AbiDNVlK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 17:41:10 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88286A406
+        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 14:38:44 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id r7so3912193iln.9
+        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 14:38:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ajfbei70n1eakG/CMRgKfGveodlgBmo54/WZM9kSu6M=;
-        b=IUDc85PyKG5ch4+7GAZfMXwEREfIYp7ctJh+LfE4ELvfePe7zoxkXe5TomTeuCPVrY
-         PSjyb50ykA0CEIky1XukHC+G9CW6Z1Mog0FzKF1XKCuF90WGT/GDxxTKj5IiBwPDveSE
-         VoXYgFfspmGH26NyI5TPBwQI9dAss6oRECXivQsRJ5Qo6a83ESSUXEpf9yJ6v/8UQeGh
-         hL3R1Zlf8+9UfxdsSHTQMkK3kTcEKAZNM43F59lKcliMduzUtT2aJ1Ds5Mu3Ho13QF7S
-         T1gPZGL1+n5Gf55/IACgffg7Y/mCzdqN64th2WP6qL0DfR90Km9/qM7jlHiVunvNB3+5
-         /TNw==
+        bh=pSN/tI6inAWyjYd/BH4s05LKeKdnDUgDSyt1Ttlut4A=;
+        b=SS+o6h1sI/O2s//6uR2PnPhJ42Dh4pbONQLDdk+bVj8XcPgVBpKKv85Rh09KFyGVPA
+         6jreBecWxRTIXfq+/If7kWYuyXh4FuBLaYTpMeFVVmbqY8aMUKIeSnQxA7RhgaxmEsoU
+         R5e3qZGxIs0K3NrrRN+NwZUHFUcuYZbL4GC9tvtHVllu7SraGP4miaIyus+WT1eo8RkX
+         PYhSAtQUNBo8hzUTYRD6hsZLK9PgRfC/6AqMLMAFEkV5gnYyhzXH0wOv2N6C6md9fL18
+         G9S+Lc745dh5QqQ0s2WQLqrqoREKiUMTkNqDNCYQgOsSJlwes6vZ3EHaDFq1lAf6O2QZ
+         5RRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ajfbei70n1eakG/CMRgKfGveodlgBmo54/WZM9kSu6M=;
-        b=w32LaXrgndPBo9G8L4e0hSohKFeuInyLT4D9CeRN8RHezyUpSMm4+Hkblzq/WoTICv
-         ijiM7y40075MqVum3EHxegNt83lqI+YRXaDJ+AbKPtSrl5SnsX1iZqzXH+15EiZ2rkbM
-         re2QDaMmDSHxMR/1zFRgamwCHyKEGoO9v56KFBv6I6lHLgkdfuw7NYQbbXRRJMyltUoQ
-         MncedKSgxKBkER4wqhTuc99Lm+ywNN/2AFTMDJxOCAgGGzP16YvgYmnu8h4AQ7YYTaO6
-         rIRRXqRgLeQ+ErebXB1f8niZC3cr1J1+elx8afS6gIf3RytFd1CqbCQPHojwy9bgfkA+
-         fFmA==
-X-Gm-Message-State: AOAM532Rhnwnw5CehJjDr5i5AmwNAfDTA0vaJ7bPOsgltBXqFigTnVZt
-        St/e5MWSq0BuCAwWGFg3Z+N6hqvCJLgNilgbBUKijaVU
-X-Google-Smtp-Source: ABdhPJwHekfnZWdkiGCG4uIoBHkd2pz96sqEwFihey4mGoIXxw/Rc6ZaaFifY8wi7o6G1gIQKS7Zp6J64X2J2PkGB6o=
-X-Received: by 2002:a05:6638:1696:b0:326:2d59:7b40 with SMTP id
- f22-20020a056638169600b003262d597b40mr2113805jat.103.1649972056612; Thu, 14
- Apr 2022 14:34:16 -0700 (PDT)
+        bh=pSN/tI6inAWyjYd/BH4s05LKeKdnDUgDSyt1Ttlut4A=;
+        b=LLduR4QPk/1gG8SawvBMKp/GSV7m6yFdOnUg+WlWeVJoML4edSn5s062j3RJIoaI4K
+         HSsR3z8RUXYLJOV6P3bZpZSDEXLDoT631TTyCmKBRwatQwf/yNV4rC6v75V7bpAuqYhN
+         aZUKm3AN94+K1nGfQ7aX3xXSWL51KIc4u2KUGeOGly3Kh51qx8huJznFFr1KfLrcjaOp
+         aurS+CtAUZ35xJR5ImaPL8CP5TFdPXE1DxnHsixUVFFm15jVDNYYSSwtZhBPNXeP0iBo
+         2vW2GVrIvSMzKLAGuDtePop67d7dhidou95rvZZzB3xN9wHSMi99IFB+YbYVE1tY+GKV
+         PjQw==
+X-Gm-Message-State: AOAM533/Sws1F41NUySWdFLWK6z1PWVtawkHSd3n4gO3y+8Q6vivFfJk
+        4bkVRL9BSVRY2TnzBu+kOd40z03jwmuBshUlq/U=
+X-Google-Smtp-Source: ABdhPJwo9SkWEMuSKtMTWZNzSVsHFC2CUDfwnoWVCUmAN/yQ2rfQnQ2Gc4lVORgzdD1mSSAgKeXHdc/jmGCfbJ/pRmM=
+X-Received: by 2002:a92:cd8a:0:b0:2ca:9337:2f47 with SMTP id
+ r10-20020a92cd8a000000b002ca93372f47mr1661098ilb.252.1649972324312; Thu, 14
+ Apr 2022 14:38:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220413140629.GA22650@L-PF27918B-1352.localdomain>
- <CAEf4BzYvBHwsFrp52ZqhP=H1WDdpEeovJcgctv2nioAvBg6FBw@mail.gmail.com>
- <20220414020709.GA27635@L-PF27918B-1352.localdomain> <20220414034548.GA27766@L-PF27918B-1352.localdomain>
-In-Reply-To: <20220414034548.GA27766@L-PF27918B-1352.localdomain>
+References: <20220414130832.101112-1-grantseltzer@gmail.com>
+In-Reply-To: <20220414130832.101112-1-grantseltzer@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 14 Apr 2022 14:34:05 -0700
-Message-ID: <CAEf4BzZVeT=4nU+hCCZKjHiuxpNDxKmPr6g=Cfk+R4jqKdbBFA@mail.gmail.com>
-Subject: Re: [Question] bpf map value increase unexpectedly with tracepoint qdisc/qdisc_dequeue
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Thu, 14 Apr 2022 14:38:33 -0700
+Message-ID: <CAEf4BzYFP_Cz8A-zPe9+NpT-SSWvyptRZLxMvnXjY-SXXPh0mg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] Add documentation to API functions
+To:     grantseltzer <grantseltzer@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,130 +64,164 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 13, 2022 at 8:45 PM Wu Zongyong
+On Thu, Apr 14, 2022 at 6:08 AM grantseltzer <grantseltzer@gmail.com> wrote:
+>
+> From: Grant Seltzer <grantseltzer@gmail.com>
+>
+> This adds documentation for the following API functions:
+> - bpf_program__set_expected_attach_type()
+> - bpf_program__set_type()
+> - bpf_program__set_attach_target()
+> - bpf_program__attach()
+> - bpf_program__pin()
+> - bpf_program__unpin()
+>
+> Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.h | 84 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 63d66f1adf1a..09a8bf2fd7d9 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -378,7 +378,31 @@ struct bpf_link;
+>  LIBBPF_API struct bpf_link *bpf_link__open(const char *path);
+>  LIBBPF_API int bpf_link__fd(const struct bpf_link *link);
+>  LIBBPF_API const char *bpf_link__pin_path(const struct bpf_link *link);
+> +/**
+> + * @brief **bpf_link__pin()** pins the BPF link to a file
+> + * in the BPF FS specified by a path. This increments the links
+> + * reference count, allowing it to stay loaded after the process
+> + * which loaded it has exited.
+> + *
+> + * @param link BPF link to pin, must already be loaded
+> + * @param path file path in a BPF file system
+> + * @return 0, on success; negative error code, otherwise
+> + */
+>  LIBBPF_API int bpf_link__pin(struct bpf_link *link, const char *path);
+> +
+> +/**
+> + * @brief **bpf_link__unpin()** unpins the BPF link from a file
+> + * in the BPFFS specified by a path. This decrements the links
+> + * reference count.
+> + *
+> + * The file pinning the BPF link can also be unlinked by a different
+> + * process in which case this function will return an error.
+> + *
+> + * @param link BPF link to unpin
+> + * @param path file path to the pin in a BPF file system
+> + * @return 0, on success; negative error code, otherwise
+> + */
+>  LIBBPF_API int bpf_link__unpin(struct bpf_link *link);
+>  LIBBPF_API int bpf_link__update_program(struct bpf_link *link,
+>                                         struct bpf_program *prog);
+> @@ -386,6 +410,21 @@ LIBBPF_API void bpf_link__disconnect(struct bpf_link *link);
+>  LIBBPF_API int bpf_link__detach(struct bpf_link *link);
+>  LIBBPF_API int bpf_link__destroy(struct bpf_link *link);
+>
+> +/**
+> + * @brief **bpf_program__attach()** is a generic function for attaching
+> + * a BPF program based on auto-detection of program type, attach type,
+> + * and extra parameters, where applicable.
+> + *
+> + * @param prog BPF program to attach
+> + * @return Reference to the newly created BPF link; or NULL is returned on error,
+> + * error code is stored in errno
+> + *
+> + * This is supported for:
+> + *   - kprobe/kretprobe
 
-<wuzongyong@linux.alibaba.com> wrote:
->
-> On Thu, Apr 14, 2022 at 10:07:09AM +0800, Wu Zongyong wrote:
-> > On Wed, Apr 13, 2022 at 12:30:51PM -0700, Andrii Nakryiko wrote:
-> > > On Wed, Apr 13, 2022 at 12:08 PM Wu Zongyong
-> > > <wuzongyong@linux.alibaba.com> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > I tried to count when tracepoint qdisc/qdisc_dequeue hit each time, then read
-> > > > the count value from userspace by bpf_map_lookup_elem().
-> > > > With bpftrace, I can see this tracepoint is hit about 700 times, but the count
-> > > > I get from the bpf map is below 20. It's weird. Then I tried to add a bpf_printk()
-> > > > to the program, and the count I get is normal which is about 700.
-> > > >
-> > > > The bpf program codes like that:
-> > > >
-> > > >         struct qdisc_dequeue_ctx {
-> > > >                 __u64           __pad;
-> > > >                 __u64           qdisc;
-> > > >                 __u64           txq;
-> > > >                 int             packets;
-> > > >                 __u64           skbaddr;
-> > > >                 int             ifindex;
-> > > >                 __u32           handle;
-> > > >                 __u32           parent;
-> > > >                 unsigned long   txq_state;
-> > > >         };
-> > > >
-> > > >         struct {
-> > > >                 __uint(type, BPF_MAP_TYPE_HASH);
-> > > >                 __type(key, int);
-> > > >                 __type(value, __u32);
-> > > >                 __uint(max_entries, 1);
-> > > >                 __uint(pinning, LIBBPF_PIN_BY_NAME);
-> > > >         } count_map SEC(".maps");
-> > > >
-> > > >         SEC("tracepoint/qdisc/qdisc_dequeue")
-> > > >         int trace_dequeue(struct qdisc_dequeue_ctx *ctx)
-> > > >         {
-> > > >                 int key = 0;
-> > > >                 __u32 *value;
-> > > >                 __u32 init = 0;
-> > > >
-> > > >                 value = bpf_map_lookup_elem(&count_map, &key);
-> > > >                 if (value) {
-> > > >                         *value += 1;
-> > > >                 } else {
-> > > >                         bpf_printk("value reset");
-> > > >                         bpf_map_update_elem(&count_map, &key, &init, 0);
-> > > >                 }
-> > > >                 return 0;
-> > > >         }
-> > > >
-> > > > Any suggestion is appreciated!
-> > > >
-> > >
-> > > First, why do you use HASH map for single-key map? ARRAY would make
-> > > more sense for keys that are small integers. But I assume your real
-> > > world use case needs bigger and more random keys, right?
-> > >
-> > Yes, this just is a simple test.
-> >
-> > >
-> > > Second, you have two race conditions. One, you overwrite the value in
-> > > the map with this bpf_map_update_elem(..., 0). Use BPF_NOEXISTS for
-> > > initialization to avoid overwriting something that another CPU already
-> > > set. Another one is your *value += 1 is non-atomic, so you are loosing
-> > > updates as well. Use __sync_fetch_and_add(value, 1) for atomic
-> > > increment.
-> >
-> > __sync_fetch_and_add do solve my problem. Thanks!
->
-> Oh, sorry!
-> The count value is about 700 when I do a bpf_printk() in my bpf program
-> and with a background command "cat /sys/kernel/debug/tracing/trace_pipe".
->
-> If I remove the bpf_printk() or don't read the trace_pipe, the count
-> value shows abnormal, for example, about 10.
+uprobe/uretprobe as well, though depending on specific SEC()
+definition (just like for kprobe/kretprobe now).
 
-Not clear, is it 10 even with __sync_fetch_and_add()?
+> + *   - tracepoint
+> + *   - raw tracepoint
+> + *   - tracing programs (typed raw TP/fentry/fexit/fmod_ret)
+> + */
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach(const struct bpf_program *prog);
+>
+> @@ -686,11 +725,36 @@ LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_program__set_type() instead")
+>  LIBBPF_API int bpf_program__set_sk_lookup(struct bpf_program *prog);
+>
+>  LIBBPF_API enum bpf_prog_type bpf_program__type(const struct bpf_program *prog);
+> +/**
+> + * @brief **bpf_program__set_type()** sets the program
+> + * type of the passed BPF program.
+> + * @param prog BPF program to set the program type for
+> + * @param type program type to set the BPF map to have
+> + */
 
-As for why bpf_printk() makes a difference. One reason might be
-because bpf_trace_printk() (called from bpf_printk() macro) takes
-trace_printk_lock, which introduces a bit of synchronization point,
-which reduces this race window. But it might be something else, don't
-know.
+Can you please mention that the type has to be set before BPF object
+is loaded, otherwise it has no effect (though it would be good to
+change it to return an error, actually, not sure about ABI
+implications, though, but I think we did such changes before, so
+probably it's fine).
 
+>  LIBBPF_API void bpf_program__set_type(struct bpf_program *prog,
+>                                       enum bpf_prog_type type);
 >
-> As your suggestion, the code now is:
+>  LIBBPF_API enum bpf_attach_type
+>  bpf_program__expected_attach_type(const struct bpf_program *prog);
+> +/**
+> + * @brief **bpf_program__set_expected_attach_type()** sets the
+> + * attach type of the passed BPF program. This is used for
+> + * auto-detection of attachment when programs are loaded.
+> + * @param prog BPF program to set the attach type for
+> + * @param type attach type to set the BPF map to have
+> + *
+> + * An example workflow:
+> + *
+> + * ...
+> + *   xdp_fd = bpf_prog_get_fd_by_id(id);
+> + *   trace_obj = bpf_object__open_file("func.o", NULL);
+> + *   prog = bpf_object__find_program_by_title(trace_obj, "fentry/myfunc");
+> + *   bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
+> + *   bpf_program__set_attach_target(prog, xdp_fd, "xdpfilt_blk_all");
+> + *   bpf_object__load(trace_obj);
+> + * ...
+> + *
+
+same about the note to do it before load phase, and maybe changing
+this to return int error
+
+> + */
+>  LIBBPF_API void
+>  bpf_program__set_expected_attach_type(struct bpf_program *prog,
+>                                       enum bpf_attach_type type);
+> @@ -707,6 +771,26 @@ LIBBPF_API int bpf_program__set_log_level(struct bpf_program *prog, __u32 log_le
+>  LIBBPF_API const char *bpf_program__log_buf(const struct bpf_program *prog, size_t *log_size);
+>  LIBBPF_API int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log_size);
 >
->         value = bpf_map_lookup_elem(&count_map, &key);
->         if (!value) {
->                 bpf_map_update_elem(&count_map, &key, &init, BPF_NOEXIST);
->                 value = bpf_map_lookup_elem(&count_map, &key);
->         }
->         if (!value)
->                 return 0;
+> +/**
+> + * @brief **bpf_program__set_attach_target()** sets the
+> + * specified BPF program to attach to a specific tracepoint
+> + * or kernel function. This can be used to supplement
+> + * the BPF program name/section not matching the tracepoint
+> + * or function semantics.
+> + * @param prog BPF program to set the attach type for
+> + * @param type attach type to set the BPF map to have
+> + *
+> + * An example workflow:
+> + *
+> + * ...
+> + *   xdp_fd = bpf_prog_get_fd_by_id(id);
+> + *   trace_obj = bpf_object__open_file("func.o", NULL);
+> + *   prog = bpf_object__find_program_by_title(trace_obj, "fentry/myfunc");
+> + *   bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
+> + *   bpf_program__set_attach_target(prog, xdp_fd, "xdpfilt_blk_all");
+> + *   bpf_object__load(trace_obj);
+> + * ...
+> + */
+
+same about the load note, but now we actually have int error being
+returned (which probably would be good to mention in @return section)?
+
+
+>  LIBBPF_API int
+>  bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog_fd,
+>                                const char *attach_func_name);
+> --
+> 2.34.1
 >
->         bpf_printk("hello");    // I don't know why this affect the count value read from userspace
->
->         __sync_fetch_and_add(value, 1);
->
->
-> >
-> > I have tried to use spinlock to prevent race conditions, but it seems
-> > that spinlock cannot be used in tracepoint.
-> >
-> > >
-> > > Something like this:
-> > >
-> > > value = bpf_map_lookup_elem(&count_map, &key);
-> > > if (!value) {
-> > >     /* BPF_NOEXIST won't allow to override the value that's already set */
-> > >     bpf_map_update_elem(&count_map, &key, &init, BPF_NOEXISTS);
-> > >     value = bpf_map_lookup_elem(&count_map, &key);
-> > > }
-> > > if (!value)
-> > >     return 0;
-> > >
-> > > __sync_fetch_and_add(value, 1);
-> > >
-> > >
-> > > > Thanks,
-> > > > Wu Zongyong
