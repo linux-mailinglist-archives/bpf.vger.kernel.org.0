@@ -2,301 +2,423 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2D5500932
-	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 11:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B988A50097A
+	for <lists+bpf@lfdr.de>; Thu, 14 Apr 2022 11:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238107AbiDNJEW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 05:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        id S241373AbiDNJTF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 05:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241625AbiDNJCy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 05:02:54 -0400
-Received: from 189.cn (ptr.189.cn [183.61.185.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8F0633B;
-        Thu, 14 Apr 2022 02:00:28 -0700 (PDT)
-HMM_SOURCE_IP: 10.64.8.43:52594.698421431
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-123.150.8.43 (unknown [10.64.8.43])
-        by 189.cn (HERMES) with SMTP id 7262B100180;
-        Thu, 14 Apr 2022 17:00:26 +0800 (CST)
-Received: from  ([123.150.8.43])
-        by gateway-153622-dep-749df8664c-nmrf6 with ESMTP id 89fc0cdd849b4fa5b64c6882a9cc62ac for ast@kernel.org;
-        Thu, 14 Apr 2022 17:00:27 CST
-X-Transaction-ID: 89fc0cdd849b4fa5b64c6882a9cc62ac
-X-Real-From: chensong_2000@189.cn
-X-Receive-IP: 123.150.8.43
-X-MEDUSA-Status: 0
-Sender: chensong_2000@189.cn
-From:   Song Chen <chensong_2000@189.cn>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Song Chen <chensong_2000@189.cn>
-Subject: [RFC PATCH 1/1] sample: bpf: introduce irqlat
-Date:   Thu, 14 Apr 2022 17:07:35 +0800
-Message-Id: <1649927255-19036-1-git-send-email-chensong_2000@189.cn>
-X-Mailer: git-send-email 2.7.4
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        with ESMTP id S234205AbiDNJTD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 05:19:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7FA1F50E23
+        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 02:16:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1649927798;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oDyHVey8Or3yypg5xnBGmBMb7pZ6GTNQ18Cis2FA/oo=;
+        b=iFDSRdStJ7uMQKjrnmHPxLG4gvDyjipkpEFTTB8WMm7cz7dW90rCvVJfDSUDkMIpi7FYIr
+        R8mbiecO784GWVure8oxIkteeJ1qY/qsuAQdEaCZp9DW9kQ6Vy8toe2VMkpFhpMsLyK4Ua
+        htmSM7hhs7SKXOiiNIx9wYAeExtq33M=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-590-vdG_6hLDP0O8h9VIuqZNSw-1; Thu, 14 Apr 2022 05:16:35 -0400
+X-MC-Unique: vdG_6hLDP0O8h9VIuqZNSw-1
+Received: by mail-lj1-f198.google.com with SMTP id 20-20020a05651c009400b002462f08f8d2so952064ljq.2
+        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 02:16:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oDyHVey8Or3yypg5xnBGmBMb7pZ6GTNQ18Cis2FA/oo=;
+        b=b5oEdk3U2MLH1QZNfo8enZhZBXjB9tHRT7kIG6jtcW5CY5m1O82YNQLHmabjQijSgX
+         UxEjc7nGmVwqRYOErnHwiYwpaEjgd8Tk2fq6W5i5mfpX7mrPYtwvM25XZA+SDWsJnnxc
+         ZfoeEIY4zO/wIXykALio/Z8T6MiLpC78HE//DDBsRUyi1wACwuZPvqtDOXZmkG7czCGD
+         auus2vRQoUrk39g1b9o2B+aeQDkfzyr+q5gaJcq6AyEMly+jiL8iPH93VCCfX1+vsZBV
+         iG2rf7DkrWQ0yEGxEymXQToPnBZljSu2jkQ+UMj7AOfX5nlGn3LiBceYy35gzWIuw1xk
+         ATDA==
+X-Gm-Message-State: AOAM5327JJGHFLjscBzvbryJ7LEEbRHZRME+LXwJluA+ZY2mp7aXlSAF
+        54PRDfIg+Sy7PbfR3ICQnTvTb/Ig4adnUj97hPL9cqmajPyRG3gEcUWmQF2eO5tYmVtfbSyJCP/
+        HghBzg/kpVdlwCShziehAoPBDTo2E
+X-Received: by 2002:a05:6512:3093:b0:46b:814c:3a69 with SMTP id z19-20020a056512309300b0046b814c3a69mr1318036lfd.376.1649927791335;
+        Thu, 14 Apr 2022 02:16:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0kFBUTO7Dlm65tLj1wmU6knA+DzshVe6hYxPEBB/AR6yhSIFpfw3Y9RgnR4ACapxp3cguHQaa7kh1RItoYPY=
+X-Received: by 2002:a05:6512:3093:b0:46b:814c:3a69 with SMTP id
+ z19-20020a056512309300b0046b814c3a69mr1318022lfd.376.1649927791051; Thu, 14
+ Apr 2022 02:16:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+ <20220406034346.74409-2-xuanzhuo@linux.alibaba.com> <71fbd7fc-20db-024b-ec66-b875216be4bd@redhat.com>
+ <1649816652.9004085-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1649816652.9004085-1-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 14 Apr 2022 17:16:19 +0800
+Message-ID: <CACGkMEvCrgRf=6TXQ_pQU0hm-ZDLEBu5VZcL71+c+jVWq=KLDg@mail.gmail.com>
+Subject: Re: [PATCH v9 01/32] virtio: add helper virtqueue_get_vring_max_size()
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm <kvm@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-irqlat presents max, min and avg value of time consumed in
-irq handling for each cpu, from irq_handler_entry to
-irq_handler_exit.
+On Wed, Apr 13, 2022 at 10:30 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wro=
+te:
+>
+> On Tue, 12 Apr 2022 10:41:03 +0800, Jason Wang <jasowang@redhat.com> wrot=
+e:
+> >
+> > =E5=9C=A8 2022/4/6 =E4=B8=8A=E5=8D=8811:43, Xuan Zhuo =E5=86=99=E9=81=
+=93:
+> > > Record the maximum queue num supported by the device.
+> > >
+> > > virtio-net can display the maximum (supported by hardware) ring size =
+in
+> > > ethtool -g eth0.
+> > >
+> > > When the subsequent patch implements vring reset, it can judge whethe=
+r
+> > > the ring size passed by the driver is legal based on this.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > ---
+> > >   arch/um/drivers/virtio_uml.c             |  1 +
+> > >   drivers/platform/mellanox/mlxbf-tmfifo.c |  2 ++
+> > >   drivers/remoteproc/remoteproc_virtio.c   |  2 ++
+> > >   drivers/s390/virtio/virtio_ccw.c         |  3 +++
+> > >   drivers/virtio/virtio_mmio.c             |  2 ++
+> > >   drivers/virtio/virtio_pci_legacy.c       |  2 ++
+> > >   drivers/virtio/virtio_pci_modern.c       |  2 ++
+> > >   drivers/virtio/virtio_ring.c             | 14 ++++++++++++++
+> > >   drivers/virtio/virtio_vdpa.c             |  2 ++
+> > >   include/linux/virtio.h                   |  2 ++
+> > >   10 files changed, 32 insertions(+)
+> > >
+> > > diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_um=
+l.c
+> > > index ba562d68dc04..904993d15a85 100644
+> > > --- a/arch/um/drivers/virtio_uml.c
+> > > +++ b/arch/um/drivers/virtio_uml.c
+> > > @@ -945,6 +945,7 @@ static struct virtqueue *vu_setup_vq(struct virti=
+o_device *vdev,
+> > >             goto error_create;
+> > >     }
+> > >     vq->priv =3D info;
+> > > +   vq->num_max =3D num;
+> > >     num =3D virtqueue_get_vring_size(vq);
+> > >
+> > >     if (vu_dev->protocol_features &
+> > > diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platf=
+orm/mellanox/mlxbf-tmfifo.c
+> > > index 38800e86ed8a..1ae3c56b66b0 100644
+> > > --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> > > +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> > > @@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct vi=
+rtio_device *vdev,
+> > >                     goto error;
+> > >             }
+> > >
+> > > +           vq->num_max =3D vring->num;
+> > > +
+> > >             vqs[i] =3D vq;
+> > >             vring->vq =3D vq;
+> > >             vq->priv =3D vring;
+> > > diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remotep=
+roc/remoteproc_virtio.c
+> > > index 70ab496d0431..7611755d0ae2 100644
+> > > --- a/drivers/remoteproc/remoteproc_virtio.c
+> > > +++ b/drivers/remoteproc/remoteproc_virtio.c
+> > > @@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio=
+_device *vdev,
+> > >             return ERR_PTR(-ENOMEM);
+> > >     }
+> > >
+> > > +   vq->num_max =3D len;
+> >
+> >
+> > I wonder if this is correct.
+> >
+> > It looks to me len is counted in bytes:
+> >
+> > /**
+> >   * struct rproc_vring - remoteproc vring state
+> >   * @va: virtual address
+> >   * @len: length, in bytes
+> >   * @da: device address
+> >   * @align: vring alignment
+> >   * @notifyid: rproc-specific unique vring index
+> >   * @rvdev: remote vdev
+> >   * @vq: the virtqueue of this vring
+> >   */
+> > struct rproc_vring {
+> >          void *va;
+> >          int len;
+> >          u32 da;
+> >          u32 align;
+> >          int notifyid;
+> >          struct rproc_vdev *rvdev;
+> >          struct virtqueue *vq;
+> > };
+> >
+>
+> I think this comment is incorrect because here len is passed as num to
+> vring_new_virtqueue().
+>
+> There is also this usage:
+>
+>         /* actual size of vring (in bytes) */
+>         size =3D PAGE_ALIGN(vring_size(rvring->len, rvring->align));
+>
+>
+> And this value comes from here:
+>
+>         static int
+>         rproc_parse_vring(struct rproc_vdev *rvdev, struct fw_rsc_vdev *r=
+sc, int i)
+>         {
+>                 struct rproc *rproc =3D rvdev->rproc;
+>                 struct device *dev =3D &rproc->dev;
+>                 struct fw_rsc_vdev_vring *vring =3D &rsc->vring[i];
+>                 struct rproc_vring *rvring =3D &rvdev->vring[i];
+>
+>                 dev_dbg(dev, "vdev rsc: vring%d: da 0x%x, qsz %d, align %=
+d\n",
+>                         i, vring->da, vring->num, vring->align);
+>
+>                 /* verify queue size and vring alignment are sane */
+>                 if (!vring->num || !vring->align) {
+>                         dev_err(dev, "invalid qsz (%d) or alignment (%d)\=
+n",
+>                                 vring->num, vring->align);
+>                         return -EINVAL;
+>                 }
+>
+>        >        rvring->len =3D vring->num;
+>                 rvring->align =3D vring->align;
+>                 rvring->rvdev =3D rvdev;
+>
+>                 return 0;
+>         }
+>
+> /**
+>  * struct fw_rsc_vdev_vring - vring descriptor entry
+>  * @da: device address
+>  * @align: the alignment between the consumer and producer parts of the v=
+ring
+>  * @num: num of buffers supported by this vring (must be power of two)
+>  * @notifyid: a unique rproc-wide notify index for this vring. This notif=
+y
+>  * index is used when kicking a remote processor, to let it know that thi=
+s
+>  * vring is triggered.
+>  * @pa: physical address
+>  *
+>  * This descriptor is not a resource entry by itself; it is part of the
+>  * vdev resource type (see below).
+>  *
+>  * Note that @da should either contain the device address where
+>  * the remote processor is expecting the vring, or indicate that
+>  * dynamically allocation of the vring's device address is supported.
+>  */
+> struct fw_rsc_vdev_vring {
+>         u32 da;
+>         u32 align;
+>         u32 num;
+>         u32 notifyid;
+>         u32 pa;
+> } __packed;
+>
+> So I think the 'len' here may have changed its meaning in a version updat=
+e.
 
-engineers can run it to evaluate the performance of irq handling,
-especially for RT system.
+I think you're right, let's have a patch to fix the comment (probably
+with the name since len is confusing here).
 
-Signed-off-by: Song Chen <chensong_2000@189.cn>
----
- samples/bpf/.gitignore    |   1 +
- samples/bpf/Makefile      |   5 ++
- samples/bpf/irqlat_kern.c |  81 ++++++++++++++++++++++++++++++
- samples/bpf/irqlat_user.c | 100 ++++++++++++++++++++++++++++++++++++++
- 4 files changed, 187 insertions(+)
- create mode 100644 samples/bpf/irqlat_kern.c
- create mode 100644 samples/bpf/irqlat_user.c
+Thanks
 
-diff --git a/samples/bpf/.gitignore b/samples/bpf/.gitignore
-index 0e7bfdbff80a..2d727f041f51 100644
---- a/samples/bpf/.gitignore
-+++ b/samples/bpf/.gitignore
-@@ -61,3 +61,4 @@ iperf.*
- /vmlinux.h
- /bpftool/
- /libbpf/
-+irqlat
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 38638845db9d..df2daab128f0 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -60,6 +60,8 @@ tprogs-y += xdp_redirect_map
- tprogs-y += xdp_redirect
- tprogs-y += xdp_monitor
- 
-+tprogs-y += irqlat
-+
- # Libbpf dependencies
- LIBBPF_SRC = $(TOOLS_PATH)/lib/bpf
- LIBBPF_OUTPUT = $(abspath $(BPF_SAMPLES_PATH))/libbpf
-@@ -125,6 +127,8 @@ xdp_redirect_map-objs := xdp_redirect_map_user.o $(XDP_SAMPLE)
- xdp_redirect-objs := xdp_redirect_user.o $(XDP_SAMPLE)
- xdp_monitor-objs := xdp_monitor_user.o $(XDP_SAMPLE)
- 
-+irqlat-objs := irqlat_user.o
-+
- # Tell kbuild to always build the programs
- always-y := $(tprogs-y)
- always-y += sockex1_kern.o
-@@ -181,6 +185,7 @@ always-y += ibumad_kern.o
- always-y += hbm_out_kern.o
- always-y += hbm_edt_kern.o
- always-y += xdpsock_kern.o
-+always-y += irqlat_kern.o
- 
- ifeq ($(ARCH), arm)
- # Strip all except -D__LINUX_ARM_ARCH__ option needed to handle linux
-diff --git a/samples/bpf/irqlat_kern.c b/samples/bpf/irqlat_kern.c
-new file mode 100644
-index 000000000000..0037dcda67cf
---- /dev/null
-+++ b/samples/bpf/irqlat_kern.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2022 Kylin
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+#include <linux/version.h>
-+#include <linux/ptrace.h>
-+#include <uapi/linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define MAX_CPUS		128
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, u64);
-+	__uint(max_entries, MAX_CPUS);
-+} irq_ts SEC(".maps");
-+
-+SEC("tracepoint/irq/irq_handler_entry")
-+int on_irq_entry(struct pt_regs *ctx)
-+{
-+	int cpu = bpf_get_smp_processor_id();
-+	u64 *ts = bpf_map_lookup_elem(&irq_ts, &cpu);
-+
-+	if (ts)
-+		*ts = bpf_ktime_get_ns();
-+
-+	return 0;
-+}
-+
-+struct datares {
-+	u64 entries;
-+	u64 total;
-+	u64 max;
-+	u64 min;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct datares);
-+	__uint(max_entries, MAX_CPUS);
-+} irq_lat SEC(".maps");
-+
-+SEC("tracepoint/irq/irq_handler_exit")
-+int on_irq_exit(struct pt_regs *ctx)
-+{
-+	u64 *ts, cur_ts, delta, *val;
-+	int cpu;
-+	struct datares *res;
-+
-+	cpu = bpf_get_smp_processor_id();
-+	ts = bpf_map_lookup_elem(&irq_ts, &cpu);
-+	if (!ts)
-+		return 0;
-+
-+	cur_ts = bpf_ktime_get_ns();
-+	delta = cur_ts - *ts;
-+
-+	res = bpf_map_lookup_elem(&irq_lat, &cpu);
-+	if (!res)
-+		return 0;
-+
-+	res->entries++;
-+	res->total += delta;
-+	if (res->max < delta)
-+		res->max = delta;
-+	if (res->min == 0 || res->min > delta)
-+		res->min = delta;
-+
-+	if (res->total >= U64_MAX)
-+		__builtin_memset(res, 0, sizeof(struct datares));
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/samples/bpf/irqlat_user.c b/samples/bpf/irqlat_user.c
-new file mode 100644
-index 000000000000..3a5a43b9fce9
---- /dev/null
-+++ b/samples/bpf/irqlat_user.c
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2022 Kylin
-+ */
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <signal.h>
-+#include <linux/perf_event.h>
-+#include <linux/bpf.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-+#include "trace_helpers.h"
-+
-+#define MAX_CPUS 128
-+static int map_fd[2];
-+
-+struct datares {
-+	__u64 entries;
-+	__u64 total;
-+	__u64 max;
-+	__u64 min;
-+};
-+
-+static void get_data(int fd)
-+{
-+	int i;
-+	struct datares res;
-+	__u64 avg;
-+
-+	/* Clear screen */
-+	printf("\033[2J");
-+
-+	/* Header */
-+	printf("\nirq Latency statistics: (ns)\n");
-+	for (i = 0; i < MAX_CPUS; i++) {
-+		bpf_map_lookup_elem(fd, &i, &res);
-+
-+		if (res.entries == 0)
-+			continue;
-+
-+		avg = res.total / res.entries;
-+		printf("cpu:%d, max:%llu, min:%llu, avg:%llu\n",
-+					i, res.max, res.min, avg);
-+	}
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	char filename[256];
-+	struct bpf_object *obj = NULL;
-+	struct bpf_link *links[2];
-+	struct bpf_program *prog;
-+	int delay = 1, i = 0;
-+
-+	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-+
-+	obj = bpf_object__open_file(filename, NULL);
-+	if (libbpf_get_error(obj)) {
-+		fprintf(stderr, "ERROR: opening BPF object file failed\n");
-+		obj = NULL;
-+		goto cleanup;
-+	}
-+
-+	/* load BPF program */
-+	if (bpf_object__load(obj)) {
-+		fprintf(stderr, "ERROR: loading BPF object file failed\n");
-+		goto cleanup;
-+	}
-+
-+	map_fd[0] = bpf_object__find_map_fd_by_name(obj, "irq_ts");
-+	map_fd[1] = bpf_object__find_map_fd_by_name(obj, "irq_lat");
-+	if (map_fd[0] < 0 || map_fd[1] < 0) {
-+		fprintf(stderr, "ERROR: finding a map in obj file failed\n");
-+		goto cleanup;
-+	}
-+
-+	bpf_object__for_each_program(prog, obj) {
-+		links[i] = bpf_program__attach(prog);
-+		if (libbpf_get_error(links[i])) {
-+			fprintf(stderr, "ERROR: bpf_program__attach failed\n");
-+			links[i] = NULL;
-+			goto cleanup;
-+		}
-+		i++;
-+	}
-+
-+	while (1) {
-+		sleep(delay);
-+		get_data(map_fd[1]);
-+	}
-+
-+cleanup:
-+	for (i--; i >= 0; i--)
-+		bpf_link__destroy(links[i]);
-+
-+	bpf_object__close(obj);
-+	return 0;
-+}
--- 
-2.25.1
+>
+> Thanks.
+>
+> >
+> > Other looks good.
+> >
+> > Thanks
+> >
+> >
+> > > +
+> > >     rvring->vq =3D vq;
+> > >     vq->priv =3D rvring;
+> > >
+> > > diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/v=
+irtio_ccw.c
+> > > index d35e7a3f7067..468da60b56c5 100644
+> > > --- a/drivers/s390/virtio/virtio_ccw.c
+> > > +++ b/drivers/s390/virtio/virtio_ccw.c
+> > > @@ -529,6 +529,9 @@ static struct virtqueue *virtio_ccw_setup_vq(stru=
+ct virtio_device *vdev,
+> > >             err =3D -ENOMEM;
+> > >             goto out_err;
+> > >     }
+> > > +
+> > > +   vq->num_max =3D info->num;
+> > > +
+> > >     /* it may have been reduced */
+> > >     info->num =3D virtqueue_get_vring_size(vq);
+> > >
+> > > diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmi=
+o.c
+> > > index 56128b9c46eb..a41abc8051b9 100644
+> > > --- a/drivers/virtio/virtio_mmio.c
+> > > +++ b/drivers/virtio/virtio_mmio.c
+> > > @@ -390,6 +390,8 @@ static struct virtqueue *vm_setup_vq(struct virti=
+o_device *vdev, unsigned index,
+> > >             goto error_new_virtqueue;
+> > >     }
+> > >
+> > > +   vq->num_max =3D num;
+> > > +
+> > >     /* Activate the queue */
+> > >     writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_Q=
+UEUE_NUM);
+> > >     if (vm_dev->version =3D=3D 1) {
+> > > diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virt=
+io_pci_legacy.c
+> > > index 34141b9abe27..b68934fe6b5d 100644
+> > > --- a/drivers/virtio/virtio_pci_legacy.c
+> > > +++ b/drivers/virtio/virtio_pci_legacy.c
+> > > @@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_p=
+ci_device *vp_dev,
+> > >     if (!vq)
+> > >             return ERR_PTR(-ENOMEM);
+> > >
+> > > +   vq->num_max =3D num;
+> > > +
+> > >     q_pfn =3D virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SH=
+IFT;
+> > >     if (q_pfn >> 32) {
+> > >             dev_err(&vp_dev->pci_dev->dev,
+> > > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virt=
+io_pci_modern.c
+> > > index 5455bc041fb6..86d301f272b8 100644
+> > > --- a/drivers/virtio/virtio_pci_modern.c
+> > > +++ b/drivers/virtio/virtio_pci_modern.c
+> > > @@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_p=
+ci_device *vp_dev,
+> > >     if (!vq)
+> > >             return ERR_PTR(-ENOMEM);
+> > >
+> > > +   vq->num_max =3D num;
+> > > +
+> > >     /* activate the queue */
+> > >     vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq=
+));
+> > >     vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
+> > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_rin=
+g.c
+> > > index 962f1477b1fa..b87130c8f312 100644
+> > > --- a/drivers/virtio/virtio_ring.c
+> > > +++ b/drivers/virtio/virtio_ring.c
+> > > @@ -2371,6 +2371,20 @@ void vring_transport_features(struct virtio_de=
+vice *vdev)
+> > >   }
+> > >   EXPORT_SYMBOL_GPL(vring_transport_features);
+> > >
+> > > +/**
+> > > + * virtqueue_get_vring_max_size - return the max size of the virtque=
+ue's vring
+> > > + * @_vq: the struct virtqueue containing the vring of interest.
+> > > + *
+> > > + * Returns the max size of the vring.
+> > > + *
+> > > + * Unlike other operations, this need not be serialized.
+> > > + */
+> > > +unsigned int virtqueue_get_vring_max_size(struct virtqueue *_vq)
+> > > +{
+> > > +   return _vq->num_max;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(virtqueue_get_vring_max_size);
+> > > +
+> > >   /**
+> > >    * virtqueue_get_vring_size - return the size of the virtqueue's vr=
+ing
+> > >    * @_vq: the struct virtqueue containing the vring of interest.
+> > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdp=
+a.c
+> > > index 7767a7f0119b..39e4c08eb0f2 100644
+> > > --- a/drivers/virtio/virtio_vdpa.c
+> > > +++ b/drivers/virtio/virtio_vdpa.c
+> > > @@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, =
+unsigned int index,
+> > >             goto error_new_virtqueue;
+> > >     }
+> > >
+> > > +   vq->num_max =3D max_num;
+> > > +
+> > >     /* Setup virtqueue callback */
+> > >     cb.callback =3D virtio_vdpa_virtqueue_cb;
+> > >     cb.private =3D info;
+> > > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > > index 72292a62cd90..d59adc4be068 100644
+> > > --- a/include/linux/virtio.h
+> > > +++ b/include/linux/virtio.h
+> > > @@ -31,6 +31,7 @@ struct virtqueue {
+> > >     struct virtio_device *vdev;
+> > >     unsigned int index;
+> > >     unsigned int num_free;
+> > > +   unsigned int num_max;
+> > >     void *priv;
+> > >   };
+> > >
+> > > @@ -80,6 +81,7 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *=
+vq);
+> > >
+> > >   void *virtqueue_detach_unused_buf(struct virtqueue *vq);
+> > >
+> > > +unsigned int virtqueue_get_vring_max_size(struct virtqueue *vq);
+> > >   unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
+> > >
+> > >   bool virtqueue_is_broken(struct virtqueue *vq);
+> >
+>
 
