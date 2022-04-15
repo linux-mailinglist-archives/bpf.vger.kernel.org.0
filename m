@@ -2,132 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EAF5030CC
-	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 01:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5462503167
+	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 01:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356212AbiDOV5y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 17:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        id S233249AbiDOWln (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 18:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356199AbiDOV5x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 17:57:53 -0400
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E91634B97
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 14:55:23 -0700 (PDT)
-Received: by mail-io1-f72.google.com with SMTP id g16-20020a05660226d000b00638d8e1828bso5429937ioo.13
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 14:55:23 -0700 (PDT)
+        with ESMTP id S231616AbiDOWlm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 18:41:42 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9158BBF950;
+        Fri, 15 Apr 2022 15:39:12 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 21so11306277edv.1;
+        Fri, 15 Apr 2022 15:39:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xd/TY0lCcvOfD4XwdghjY2Bw0dW7OQwwq4wE6xzj5Lg=;
+        b=DR/30Z2Bvad/UzIT+ijDNS7EQ34yE1Pw3naYQ3q+XlCXXEyDjF3+PrMlBAubnmlni7
+         +trIkPmZC5h+TH+9vSvNCUmlqE3fF9RF8qkGvBAgXeoiPc7RX44K9GfEwud4URY1tvOd
+         6par0+Pbu16FR7dY8se477ubWO0UHSHTy1n4n/7cmI6R8HkE5puayoB5XsTYapzQCJI8
+         XAJrolV9Cx3hX7Ojfq2OZr9SLssGk3pZ/olC4RB3XwOVRhHCDJhCrDqiwDa+Ri1mf97s
+         HOl645v6UCQIMWr+LSS5z/8CzEXgPyU/PjT2bQUF6qz60ePlSrctbrC6neF3YnT1hEbU
+         q6bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=O/xeVfd2f1I1IgGwEz7f3eVMwFcu7BEtTzoITl6hbMY=;
-        b=xBfrRJ8rxPdJq8GUaB1Wa8EBQzbx6OcJMkmexERvIOJu0GPE/EwGBtnT4lVCwuxfNC
-         5LuABR9uQkY/tOI/2UPeMyC5kICnrBf2qnQhlTMpgHO9pL9Rz1134cLUmpUzzOwyKCLC
-         /STlWkEfS9EhIETzPmpkDLYOc72/PO2MOHJsxf66rkXiH87K+XZbasOid+ZfznEPTOSS
-         pRWW9wrBJBFQNH3OCDDTHVNQuoHX+pDoxGFsTrgQ98r8dvNVm/klXQIIn46mnqrzq/dh
-         p/Ia4rfQZGZBCJCi+l8A46bLNksPiHGzcQiDUTB1qmLr5ld/sVasuTPi9Ime1eANMKzd
-         kuKw==
-X-Gm-Message-State: AOAM531ByXM5fKve2YFM6OURZlqx5GM/DmbsaChlIehTHkxihBMol4Ze
-        SakmG6Sv3lvRdn7So1JcUV/nJUQdWhF/vPILLEBIQhBYYieB
-X-Google-Smtp-Source: ABdhPJw4Gl0ghdwhE3obk3Z+DVgDyRqoCs+sALjlpXy1jA5TwjhXCn4TNMa9OgAxEmPkW926JVtTZQ9OsFTdfWjCCPcsVRbQI1H+
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xd/TY0lCcvOfD4XwdghjY2Bw0dW7OQwwq4wE6xzj5Lg=;
+        b=67GqoAay7+vsThi2gZ0A/P6Xp+4k4207FY8JAE417j8BQAdCeD3pOP3olYUPsI6UOx
+         ZyGtlaBGZwdqb9qAtGLWjqO39tYlL4l/z81qgysuHzkNohTmyc76hEovAvPbz+LkKs1T
+         xxjBa8HBM7wByApphdsFEHnMBmlWZRuhpPL6mj5pcpopIybSluSP1Hd2/gwlNkt29DYZ
+         D9gVfh+pZagN62bOZkYaE49a6+hfTKWagkbY3V3/a1rTRGSOVnInlPM+v3Cml0JdYxco
+         xJ0H6OaFZKwoYusnLnd0jHktEdLNqT8VAcwrlH9HN3W0uN1Wm1CAcxRWl/m/ruJ3YoBX
+         zehw==
+X-Gm-Message-State: AOAM532h44BpDiUWJDtRAjj+pIwaN+Fc8lqZkPQENz+Aw4gArsD2Zxyw
+        zDrHNmS7TpzIVd6EV9qSufQ=
+X-Google-Smtp-Source: ABdhPJwj12+saMkHxF3CiI2y5YsDBikvUq2Ikj7bmWZvCIhpz/z403Arc3JrJj4hZw7osqi8n9jZBg==
+X-Received: by 2002:a05:6402:448a:b0:41d:793d:8252 with SMTP id er10-20020a056402448a00b0041d793d8252mr1256813edb.6.1650062350990;
+        Fri, 15 Apr 2022 15:39:10 -0700 (PDT)
+Received: from krava ([95.82.134.228])
+        by smtp.gmail.com with ESMTPSA id b23-20020a05640202d700b00422da9b980esm1015481edx.22.2022.04.15.15.39.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Apr 2022 15:39:10 -0700 (PDT)
+Date:   Sat, 16 Apr 2022 00:39:08 +0200
+From:   Jiri Olsa <olsajiri@gmail.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [RFC bpf-next 1/4] kallsyms: Add kallsyms_lookup_names function
+Message-ID: <Yln0DCVKAf9yZicG@krava>
+References: <20220407125224.310255-1-jolsa@kernel.org>
+ <20220407125224.310255-2-jolsa@kernel.org>
+ <20220408231925.uc2cfeev7p6nzfww@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <YlXlF5ivTR1QLMfk@krava>
+ <20220415094727.2880a321bb6674d94e104110@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cb4f:0:b0:2cb:fde0:b5c2 with SMTP id
- f15-20020a92cb4f000000b002cbfde0b5c2mr291007ilq.274.1650059722464; Fri, 15
- Apr 2022 14:55:22 -0700 (PDT)
-Date:   Fri, 15 Apr 2022 14:55:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009da4c705dcb87735@google.com>
-Subject: [syzbot] WARNING in check_map_prog_compatibility
-From:   syzbot <syzbot+e3f8d4df1e1981a97abb@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220415094727.2880a321bb6674d94e104110@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, Apr 15, 2022 at 09:47:27AM +0900, Masami Hiramatsu wrote:
+> Hi Jiri,
+> 
+> Sorry for replying later.
+> 
+> On Tue, 12 Apr 2022 22:46:15 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > On Fri, Apr 08, 2022 at 04:19:25PM -0700, Alexei Starovoitov wrote:
+> > > On Thu, Apr 07, 2022 at 02:52:21PM +0200, Jiri Olsa wrote:
+> > > > Adding kallsyms_lookup_names function that resolves array of symbols
+> > > > with single pass over kallsyms.
+> > > > 
+> > > > The user provides array of string pointers with count and pointer to
+> > > > allocated array for resolved values.
+> > > > 
+> > > >   int kallsyms_lookup_names(const char **syms, u32 cnt,
+> > > >                             unsigned long *addrs)
+> > > > 
+> > > > Before we iterate kallsyms we sort user provided symbols by name and
+> > > > then use that in kalsyms iteration to find each kallsyms symbol in
+> > > > user provided symbols.
+> > > > 
+> > > > We also check each symbol to pass ftrace_location, because this API
+> > > > will be used for fprobe symbols resolving. This can be optional in
+> > > > future if there's a need.
+> > > > 
+> > > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > ---
+> > > >  include/linux/kallsyms.h |  6 +++++
+> > > >  kernel/kallsyms.c        | 48 ++++++++++++++++++++++++++++++++++++++++
+> > > >  2 files changed, 54 insertions(+)
+> > > > 
+> > > > diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+> > > > index ce1bd2fbf23e..5320a5e77f61 100644
+> > > > --- a/include/linux/kallsyms.h
+> > > > +++ b/include/linux/kallsyms.h
+> > > > @@ -72,6 +72,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
+> > > >  #ifdef CONFIG_KALLSYMS
+> > > >  /* Lookup the address for a symbol. Returns 0 if not found. */
+> > > >  unsigned long kallsyms_lookup_name(const char *name);
+> > > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs);
+> > > >  
+> > > >  extern int kallsyms_lookup_size_offset(unsigned long addr,
+> > > >  				  unsigned long *symbolsize,
+> > > > @@ -103,6 +104,11 @@ static inline unsigned long kallsyms_lookup_name(const char *name)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs)
+> > > > +{
+> > > > +	return -ERANGE;
+> > > > +}
+> > > > +
+> > > >  static inline int kallsyms_lookup_size_offset(unsigned long addr,
+> > > >  					      unsigned long *symbolsize,
+> > > >  					      unsigned long *offset)
+> > > > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> > > > index 79f2eb617a62..a3738ddf9e87 100644
+> > > > --- a/kernel/kallsyms.c
+> > > > +++ b/kernel/kallsyms.c
+> > > > @@ -29,6 +29,8 @@
+> > > >  #include <linux/compiler.h>
+> > > >  #include <linux/module.h>
+> > > >  #include <linux/kernel.h>
+> > > > +#include <linux/bsearch.h>
+> > > > +#include <linux/sort.h>
+> > > >  
+> > > >  /*
+> > > >   * These will be re-linked against their real values
+> > > > @@ -572,6 +574,52 @@ int sprint_backtrace_build_id(char *buffer, unsigned long address)
+> > > >  	return __sprint_symbol(buffer, address, -1, 1, 1);
+> > > >  }
+> > > >  
+> > > > +static int symbols_cmp(const void *a, const void *b)
+> > > > +{
+> > > > +	const char **str_a = (const char **) a;
+> > > > +	const char **str_b = (const char **) b;
+> > > > +
+> > > > +	return strcmp(*str_a, *str_b);
+> > > > +}
+> > > > +
+> > > > +struct kallsyms_data {
+> > > > +	unsigned long *addrs;
+> > > > +	const char **syms;
+> > > > +	u32 cnt;
+> > > > +	u32 found;
+> > > > +};
+> > > > +
+> > > > +static int kallsyms_callback(void *data, const char *name,
+> > > > +			     struct module *mod, unsigned long addr)
+> > > > +{
+> > > > +	struct kallsyms_data *args = data;
+> > > > +
+> > > > +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
+> > > > +		return 0;
+> > > > +
+> > > > +	addr = ftrace_location(addr);
+> > > > +	if (!addr)
+> > > > +		return 0;
+> > > > +
+> > > > +	args->addrs[args->found++] = addr;
+> > > > +	return args->found == args->cnt ? 1 : 0;
+> > > > +}
+> > > > +
+> > > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs)
+> > > > +{
+> > > > +	struct kallsyms_data args;
+> > > > +
+> > > > +	sort(syms, cnt, sizeof(*syms), symbols_cmp, NULL);
+> > > 
+> > > It's nice to share symbols_cmp for sort and bsearch,
+> > > but messing technically input argument 'syms' like this will cause
+> > > issues sooner or later.
+> > > Lets make caller do the sort.
+> > > Unordered input will cause issue with bsearch, of course,
+> > > but it's a lesser evil. imo.
+> > > 
+> > 
+> > Masami,
+> > this logic bubbles up to the register_fprobe_syms, because user
+> > provides symbols as its argument. Can we still force this assumption
+> > to the 'syms' array, like with the comment change below?
+> > 
+> > FYI the bpf side does not use register_fprobe_syms, it uses
+> > register_fprobe_ips, because it always needs ips as search
+> > base for cookie values
+> 
+> Hmm, in that case fprobe can call sort() in the register function.
+> That will be much easier and safer. The bpf case, the input array will
+> be generated by the bpftool (not by manual), so it can ensure the 
+> syms is sorted. But we don't know how fprobe user passes syms array.
+> Then register_fprobe_syms() will always requires sort(). I don't like
+> such redundant requirements.
 
-syzbot found the following issue on:
+ok, I'll add it to register_fprobe_syms
 
-HEAD commit:    ce522ba9ef7e Linux 5.18-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c55ab7700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9ac56d6828346c4e
-dashboard link: https://syzkaller.appspot.com/bug?extid=e3f8d4df1e1981a97abb
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14960370f00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1412ff0f700000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12ef7940f00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11ef7940f00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ef7940f00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e3f8d4df1e1981a97abb@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-trace type BPF program uses run-time allocation
-WARNING: CPU: 0 PID: 3596 at kernel/bpf/verifier.c:11998 check_map_prog_compatibility+0x76b/0x920 kernel/bpf/verifier.c:11998
-Modules linked in:
-CPU: 0 PID: 3596 Comm: syz-executor252 Not tainted 5.18.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:check_map_prog_compatibility+0x76b/0x920 kernel/bpf/verifier.c:11998
-Code: c7 fc ff ff e8 86 4f ee ff 31 db e9 bb fc ff ff e8 7a 4f ee ff c6 05 b2 40 35 0c 01 48 c7 c7 a0 3b 74 8a 31 c0 e8 85 e4 b7 ff <0f> 0b e9 23 fb ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c c0 f8 ff
-RSP: 0018:ffffc90003aaf1e8 EFLAGS: 00010246
-RAX: c7d869b5def1f000 RBX: 0000000000000001 RCX: ffff88801d293a00
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: ffff88801f6ea030 R08: ffffffff816acc92 R09: ffffed1017384f24
-R10: ffffed1017384f24 R11: 1ffff11017384f23 R12: ffff88801f6ea000
-R13: dffffc0000000000 R14: ffff88807c438000 R15: 0000000000000011
-FS:  00005555566d0300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056023649dd90 CR3: 0000000024387000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- resolve_pseudo_ldimm64+0x67f/0x1270 kernel/bpf/verifier.c:12171
- bpf_check+0x2606/0x13ab0 kernel/bpf/verifier.c:14462
- bpf_prog_load+0x1288/0x1b80 kernel/bpf/syscall.c:2351
- __sys_bpf+0x373/0x660 kernel/bpf/syscall.c:4663
- __do_sys_bpf kernel/bpf/syscall.c:4767 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4765 [inline]
- __x64_sys_bpf+0x78/0x90 kernel/bpf/syscall.c:4765
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f86914c6239
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcd0a865f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f86914c6239
-RDX: 0000000000000080 RSI: 00000000200004c0 RDI: 0000000000000005
-RBP: 00007f869148a220 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000072 R11: 0000000000000246 R12: 00007f869148a2b0
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+thanks,
+jirka
