@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB07502D77
-	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 18:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B217A502D75
+	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 18:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354995AbiDOQHJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 12:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
+        id S1355701AbiDOQHM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 12:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355698AbiDOQHI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 12:07:08 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA622BB01
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:04:38 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z16so7613069pfh.3
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:04:38 -0700 (PDT)
+        with ESMTP id S1355698AbiDOQHM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 12:07:12 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771F117A9B
+        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:04:43 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w7so7576238pfu.11
+        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=py9Cw53wafh3pVMsd1t4jwNAnlPVMs/u3MLJ6xDEZ6g=;
-        b=KL2gVglsdgV+LQXuOAMJhFVuaCGAUyX1bG3Tczzg3VgTyLPh6nFlkkpoMX3bFCEU0d
-         0lZIrA9wd15giKZg3NiEFXV9gcDSkOGT8iqdYyO0mgqhdFcI2g2LyFXHsUpR9rBk2cim
-         s/MkdfZFJCLDyt//ndvmuTnfOyeTyHAZukEMTYVhHoyuw22Hq+CiB3IKVo2iVcqQHGba
-         Z8vusleU6Z+1MEUYF5uNQpC4pcgFGW8yosBLFQBL6K8oLvnarvwCwdG7RFUxbiJS71rv
-         y/Q2hQsKJlH74m8Hk+d1P/zYt/kNwsDSyFq2jqInjAHlYcctn4cAtFEvgUGUFkZZQd5Z
-         ubeg==
+        bh=a7pHtsy/Dx/Bbdmy1yiGkZi7S1svy4/VhI7xUrS2Az8=;
+        b=Nt+2gLTsvyzISJAW5h0YPVlMCng/mzle2vnO/mMlQJ3hqmyRSvsxHD7/ijjnxVU2J0
+         odJkPs29aoDTdkT9Ige4J0X+sQDvhhfYKdjo4GFC1yHE3n/wSkdzNaZGwSUylxO1mswd
+         yJrfKVbQbdxeyrxfVZ6tVMG9rHLZEnSQF1NeFcrz2Jme1MNCy65Vx9kiUiic9Z2YTfhY
+         hUB+sLIUoRDlymlcFXSVLzPeuVjqPtj7F2pygEFGvmkS6LzPBA67TAveR1vpJp7kXZ2H
+         0ZbEJDHkJCbvNqSCoVHNNZeGGCZwOh0p3YtlDmec+g5X4Ft6BMxMopyXp+3wI9yw1Iuy
+         es9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=py9Cw53wafh3pVMsd1t4jwNAnlPVMs/u3MLJ6xDEZ6g=;
-        b=zxLNtBpzLEdA3Wz6EerBLY6i3hSg5lhpnGG0fFttvv/IETyYmNMUVa3s9/pannsr+c
-         ltITQt9MUtXTA1rG7D67U+fyOp2LJ3Ag1Y9FAFNdPJeJp5kHVn26iaYGblEFCkcvzARA
-         3GRsaAZQH1rQgI/RNDYWjzQcq4gOQ9RtBn4Z3H1KMYnkSaHyP8lla2KzmsWYySKkc7y2
-         tTmm+kpvmaxa2lIrmhvYfs0ERM3/zmQMZDCbRGvOxq2KfNMpC7Y2Oefo/jGIigHSgW/X
-         hetRGcjJrKihRCBIWWr6aLdUjoRwMl/sD+m02xY/7td8E1fPl9/78twcXmFKCOX+NAvX
-         MlCw==
-X-Gm-Message-State: AOAM533/0KVXbmryPtbHjDDq+kkp6WtQi6bHzbVnDqm/nCjhOthBcgQB
-        IPn583QTs87p2a9vVMqnmHwX+1+6qoU=
-X-Google-Smtp-Source: ABdhPJy8k7lZtIKxB/nFpnTHODCyH+t/3utyu1e0Soz5yIcegeB7D08qU5yL1MP8YsDPKjyTTaMcug==
-X-Received: by 2002:a05:6a00:1701:b0:505:aece:5361 with SMTP id h1-20020a056a00170100b00505aece5361mr9659829pfc.16.1650038678153;
-        Fri, 15 Apr 2022 09:04:38 -0700 (PDT)
+        bh=a7pHtsy/Dx/Bbdmy1yiGkZi7S1svy4/VhI7xUrS2Az8=;
+        b=JIx31QOytDB+zi9Y/gSsixD56WmUyAuTEL6scp4fgqyh214sFKYOIa8ACnN6LGck1A
+         liXDpIlXhdCdlLiYpM3gXwx9qBzg1KX2jn4IJ0xPcE5RGZ1En90P7HaerCX5PrQnxxKj
+         epQBpT+NLIKgvyupaORopYzuT52we+T75pwnrnS71dxoNl4QCtyOCIJcRAXUmxOI+4NJ
+         m6uRrY71jHnsN0pUUc3rv/Hg5h4Nj+WA/Rel7xyf08VFjTj/kVZD9MW1l+xHIailD0Vm
+         Rb7joy7om5CSA2zAMkVYRmeZuRg75D30qwc8o5TbmQTmYK15HJjuCQNGWPsn8laoJI5h
+         cgVQ==
+X-Gm-Message-State: AOAM5303ptCAg+26eiKSCH5ea4pxp75/t1VYiVCjP6+Qo3QgBU45V4bi
+        sohUrFV3ls1wCXfu6JXnh7fBfulke3k=
+X-Google-Smtp-Source: ABdhPJxK2ijXoYflomrU34yB1kE6PlQbPo4Y3cPmymSEfeg7yXDgzmOVeCoAfJzF+w6tt+RLXZwBJg==
+X-Received: by 2002:a63:1e23:0:b0:39f:ea07:305b with SMTP id e35-20020a631e23000000b0039fea07305bmr6729392pge.246.1650038682850;
+        Fri, 15 Apr 2022 09:04:42 -0700 (PDT)
 Received: from localhost ([112.79.166.196])
-        by smtp.gmail.com with ESMTPSA id 16-20020a17090a005000b001c7511dc31esm4926386pjb.41.2022.04.15.09.04.36
+        by smtp.gmail.com with ESMTPSA id 137-20020a63078f000000b0039d9c13cd39sm4806881pgh.67.2022.04.15.09.04.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Apr 2022 09:04:37 -0700 (PDT)
+        Fri, 15 Apr 2022 09:04:42 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -55,14 +55,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH bpf-next v5 09/13] bpf: Wire up freeing of referenced kptr
-Date:   Fri, 15 Apr 2022 21:33:50 +0530
-Message-Id: <20220415160354.1050687-10-memxor@gmail.com>
+Subject: [PATCH bpf-next v5 10/13] bpf: Teach verifier about kptr_get kfunc helpers
+Date:   Fri, 15 Apr 2022 21:33:51 +0530
+Message-Id: <20220415160354.1050687-11-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220415160354.1050687-1-memxor@gmail.com>
 References: <20220415160354.1050687-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=16934; h=from:subject; bh=13WzrEiSJ3wqS4xaiEkjfnFPgwqG4tco3yAtJy8tGpI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiWZdCPvmHocyEe6XMYgfAfDY7tdjpi0E4IOex0iyW Ze1+/4OJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYlmXQgAKCRBM4MiGSL8RykIbEA ClCZ9Uz3vp8bMqsQ4gTPy8cgHZWDVpfUhq37idCcJ0aHtx47wdZFxkcxkiUqHtjxw/bCsXJusXxkzt qUZZimSJGnxk6zeLnivXuBdMz74RLbCZUsvg5qtOTtc/rhWdNGXY32Yu+5GKwPtutP3KyVJ4Y/CGRY vwWtgCz1Dso0l7RxS33bf1V4HXO78P2dDZ8GHE5oi6Hrump3zLW7oqgAaPUy/ij/RDltipkyCvDdJL r8N1lGCoJNmubDyyCD7HWDHMAtiTFx99lDeYY0fCVXWvECwcx/8c5MwrVXEpmN3NfRT8QWji4XXZKk hljObjXE6wZRntUWFAJoRX2/ygaPIUukc/Mbw0UYllPcqdbzCvAEzYPj9Rpfz7heFXozPWXYR7Bs/E jlBpQvqlZxYhBiPwgQq6sbvnTtlxGt56pNMgLdHtZDnq5PQDdhlo2zTBdxHSlY4gQsHSkfzApdmSjF 2/w9M5nCrJ0e31366L/Iktr3uM3t2/Hw+4iJ3i4ZESVB1UI1W4EIZpXl9QU+YEoVsyUJveW+91C97G 7txPa94qjkKQFqqEybMg2C36tU1DGQqQ/svgYum0irh28uBBr4XMZTmG3nt7Rv9a50tI7N9oeGsVek ImmlMmCCYhMbV8FbnvVwaS+tEiHxXWcWm66VqYiBqpieu5ClbSy8br3uoCBA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5664; h=from:subject; bh=0IonrH91nqSMAX9vCU8yazLXQ1XlFXSPOlW5WuZfVvI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiWZdCXCjzZmfQa3XRvsi5vQ73Qf+WRReGRdKoa3AV 8ru78hyJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYlmXQgAKCRBM4MiGSL8RyrppD/ 9Un9j//GX7ZoRsrhc9bqwmSJI72OGaYHIQcZng+AFRNfQZKavigE2GIXaU9uxMBGQwIJ0/ZG9g0+OF WPSbQ85v8+J0ZPHg+s0jiXddpnpey+Z2iqkbt6nhlPjcw8zZDJUCUiLrgyrUHIzgoh6NSoFffW5Wng ji8ALG6IPpTiFhP4bzAC+8mYb7ELb6LS2RjCXw+0aqZ3Ad0LFhfWc6xtFpBdPsrkzNlWnjh0GqNsA0 DKIdvzoA2dR/IjWTCiX+Y9vRy937SfuprCeMgQr0IUcCqdp9YRTSslBz4Y4zUYZjiaKfh4lxl6gBuo mqq4ANZiM6QtMroiVifbrATKD2hyJnAEVd/mNLSNNbP3txDXZm2fCdPo+/cRMxRNZbe8sXUF/aGSkt QZDuTb69LVwpWSAnntIbDizyWNbsxELx14Y8eJ8C3EBQvwkWPbY1Uw3MvhPkTOF6WkgMvKF3mHaD6m MSZEXq3fPhTAPhqxPBhKspBSO0FkM+PtzrwkZkCxHlAki8o/3XaBUE352C0wY+EKvMuSGToDvM3mgn tDOdOQcMMho11pMwnqppkVMrMBYFwBZsY9GINUmpR1b4i7ceIAQvOD7e1T8ioTIxdFN51fxULGtiZ1 Zr6aUto+Mprs90J5wTbSbYgwOYF3KE/3xn403rqrpjoGnH+7D0FdYjoW/yiQ==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,518 +75,151 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A destructor kfunc can be defined as void func(type *), where type may
-be void or any other pointer type as per convenience.
+We introduce a new style of kfunc helpers, namely *_kptr_get, where they
+take pointer to the map value which points to a referenced kernel
+pointer contained in the map. Since this is referenced, only
+bpf_kptr_xchg from BPF side and xchg from kernel side is allowed to
+change the current value, and each pointer that resides in that location
+would be referenced, and RCU protected (this must be kept in mind while
+adding kernel types embeddable as reference kptr in BPF maps).
 
-In this patch, we ensure that the type is sane and capture the function
-pointer into off_desc of ptr_off_tab for the specific pointer offset,
-with the invariant that the dtor pointer is always set when 'kptr_ref'
-tag is applied to the pointer's pointee type, which is indicated by the
-flag BPF_MAP_VALUE_OFF_F_REF.
+This means that if do the load of the pointer value in an RCU read
+section, and find a live pointer, then as long as we hold RCU read lock,
+it won't be freed by a parallel xchg + release operation. This allows us
+to implement a safe refcount increment scheme. Hence, enforce that first
+argument of all such kfunc is a proper PTR_TO_MAP_VALUE pointing at the
+right offset to referenced pointer.
 
-Note that only BTF IDs whose destructor kfunc is registered, thus become
-the allowed BTF IDs for embedding as referenced kptr. Hence it serves
-the purpose of finding dtor kfunc BTF ID, as well acting as a check
-against the whitelist of allowed BTF IDs for this purpose.
+For the rest of the arguments, they are subjected to typical kfunc
+argument checks, hence allowing some flexibility in passing more intent
+into how the reference should be taken.
 
-Finally, wire up the actual freeing of the referenced pointer if any at
-all available offsets, so that no references are leaked after the BPF
-map goes away and the BPF program previously moved the ownership a
-referenced pointer into it.
+For instance, in case of struct nf_conn, it is not freed until RCU grace
+period ends, but can still be reused for another tuple once refcount has
+dropped to zero. Hence, a bpf_ct_kptr_get helper not only needs to call
+refcount_inc_not_zero, but also do a tuple match after incrementing the
+reference, and when it fails to match it, put the reference again and
+return NULL.
 
-The behavior is similar to BPF timers, where bpf_map_{update,delete}_elem
-will free any existing referenced kptr. The same case is with LRU map's
-bpf_lru_push_free/htab_lru_push_free functions, which are extended to
-reset unreferenced and free referenced kptr.
-
-Note that unlike BPF timers, kptr is not reset or freed when map uref
-drops to zero.
+This can be implemented easily if we allow passing additional parameters
+to the bpf_ct_kptr_get kfunc, like a struct bpf_sock_tuple * and a
+tuple__sz pair.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h   |   4 ++
- include/linux/btf.h   |   2 +
- kernel/bpf/arraymap.c |  14 +++++-
- kernel/bpf/btf.c      | 100 +++++++++++++++++++++++++++++++++++++++++-
- kernel/bpf/hashtab.c  |  58 ++++++++++++++++++------
- kernel/bpf/syscall.c  |  57 +++++++++++++++++++++---
- 6 files changed, 212 insertions(+), 23 deletions(-)
+ include/linux/btf.h |  2 ++
+ kernel/bpf/btf.c    | 58 +++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 55 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 165d2a38eb97..0d416a1e0a6c 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -23,6 +23,7 @@
- #include <linux/slab.h>
- #include <linux/percpu-refcount.h>
- #include <linux/bpfptr.h>
-+#include <linux/btf.h>
- 
- struct bpf_verifier_env;
- struct bpf_verifier_log;
-@@ -173,6 +174,8 @@ struct bpf_map_value_off_desc {
- 	enum bpf_map_off_desc_type type;
- 	struct {
- 		struct btf *btf;
-+		struct module *module;
-+		btf_dtor_kfunc_t dtor;
- 		u32 btf_id;
- 	} kptr;
- };
-@@ -1548,6 +1551,7 @@ struct bpf_map_value_off_desc *bpf_map_kptr_off_contains(struct bpf_map *map, u3
- void bpf_map_free_kptr_off_tab(struct bpf_map *map);
- struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map);
- bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b);
-+void bpf_map_free_kptrs(struct bpf_map *map, void *map_value);
- 
- struct bpf_map *bpf_map_get(u32 ufd);
- struct bpf_map *bpf_map_get_with_uref(u32 ufd);
 diff --git a/include/linux/btf.h b/include/linux/btf.h
-index fea424681d66..f70625dd5bb4 100644
+index f70625dd5bb4..2611cea2c2b6 100644
 --- a/include/linux/btf.h
 +++ b/include/linux/btf.h
-@@ -45,6 +45,8 @@ struct btf_id_dtor_kfunc {
- 	u32 kfunc_btf_id;
+@@ -17,6 +17,7 @@ enum btf_kfunc_type {
+ 	BTF_KFUNC_TYPE_ACQUIRE,
+ 	BTF_KFUNC_TYPE_RELEASE,
+ 	BTF_KFUNC_TYPE_RET_NULL,
++	BTF_KFUNC_TYPE_KPTR_ACQUIRE,
+ 	BTF_KFUNC_TYPE_MAX,
  };
  
-+typedef void (*btf_dtor_kfunc_t)(void *);
-+
- extern const struct file_operations btf_fops;
- 
- void btf_get(struct btf *btf);
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 7f145aefbff8..a84bbca55336 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -287,10 +287,12 @@ static int array_map_get_next_key(struct bpf_map *map, void *key, void *next_key
- 	return 0;
- }
- 
--static void check_and_free_timer_in_array(struct bpf_array *arr, void *val)
-+static void check_and_free_fields(struct bpf_array *arr, void *val)
- {
- 	if (unlikely(map_value_has_timer(&arr->map)))
- 		bpf_timer_cancel_and_free(val + arr->map.timer_off);
-+	if (unlikely(map_value_has_kptrs(&arr->map)))
-+		bpf_map_free_kptrs(&arr->map, val);
- }
- 
- /* Called from syscall or from eBPF program */
-@@ -327,7 +329,7 @@ static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
- 			copy_map_value_locked(map, val, value, false);
- 		else
- 			copy_map_value(map, val, value);
--		check_and_free_timer_in_array(array, val);
-+		check_and_free_fields(array, val);
- 	}
- 	return 0;
- }
-@@ -386,6 +388,7 @@ static void array_map_free_timers(struct bpf_map *map)
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	int i;
- 
-+	/* We don't reset or free kptr on uref dropping to zero. */
- 	if (likely(!map_value_has_timer(map)))
- 		return;
- 
-@@ -398,6 +401,13 @@ static void array_map_free_timers(struct bpf_map *map)
- static void array_map_free(struct bpf_map *map)
- {
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
-+	int i;
-+
-+	if (unlikely(map_value_has_kptrs(map))) {
-+		for (i = 0; i < array->map.max_entries; i++)
-+			bpf_map_free_kptrs(map, array->value + array->elem_size * i);
-+		bpf_map_free_kptr_off_tab(map);
-+	}
- 
- 	if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
- 		bpf_array_free_percpu(array);
+@@ -35,6 +36,7 @@ struct btf_kfunc_id_set {
+ 			struct btf_id_set *acquire_set;
+ 			struct btf_id_set *release_set;
+ 			struct btf_id_set *ret_null_set;
++			struct btf_id_set *kptr_acquire_set;
+ 		};
+ 		struct btf_id_set *sets[BTF_KFUNC_TYPE_MAX];
+ 	};
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index fdb4d4971a2a..062a751c1595 100644
+index 062a751c1595..7155874f1902 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -3415,6 +3415,8 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
- {
- 	struct btf_field_info info_arr[BPF_MAP_VALUE_OFF_MAX];
- 	struct bpf_map_value_off *tab;
-+	struct btf *off_btf = NULL;
-+	struct module *mod = NULL;
- 	int ret, i, nr_off;
+@@ -6035,11 +6035,11 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 	struct bpf_verifier_log *log = &env->log;
+ 	u32 i, nargs, ref_id, ref_obj_id = 0;
+ 	bool is_kfunc = btf_is_kernel(btf);
++	bool rel = false, kptr_get = false;
+ 	const char *func_name, *ref_tname;
+ 	const struct btf_type *t, *ref_t;
+ 	const struct btf_param *args;
+ 	int ref_regno = 0, ret;
+-	bool rel = false;
  
- 	/* Revisit stack usage when bumping BPF_MAP_VALUE_OFF_MAX */
-@@ -3433,7 +3435,6 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
- 
- 	for (i = 0; i < nr_off; i++) {
- 		const struct btf_type *t;
--		struct btf *off_btf;
- 		s32 id;
- 
- 		t = btf_type_by_id(btf, info_arr[i].type_id);
-@@ -3444,16 +3445,69 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
- 			goto end;
- 		}
- 
-+		/* Find and stash the function pointer for the destruction function that
-+		 * needs to be eventually invoked from the map free path.
-+		 */
-+		if (info_arr[i].type == BPF_MAP_OFF_DESC_TYPE_REF_KPTR) {
-+			const struct btf_type *dtor_func;
-+			const char *dtor_func_name;
-+			unsigned long addr;
-+			s32 dtor_btf_id;
-+
-+			/* This call also serves as a whitelist of allowed objects that
-+			 * can be used as a referenced pointer and be stored in a map at
-+			 * the same time.
-+			 */
-+			dtor_btf_id = btf_find_dtor_kfunc(off_btf, id);
-+			if (dtor_btf_id < 0) {
-+				ret = dtor_btf_id;
-+				goto end_btf;
-+			}
-+
-+			dtor_func = btf_type_by_id(off_btf, dtor_btf_id);
-+			if (!dtor_func) {
-+				ret = -ENOENT;
-+				goto end_btf;
-+			}
-+
-+			if (btf_is_module(btf)) {
-+				mod = btf_try_get_module(off_btf);
-+				if (!mod) {
-+					ret = -ENXIO;
-+					goto end_btf;
-+				}
-+			}
-+
-+			/* We already verified dtor_func to be btf_type_is_func
-+			 * in register_btf_id_dtor_kfuncs.
-+			 */
-+			dtor_func_name = __btf_name_by_offset(off_btf, dtor_func->name_off);
-+			addr = kallsyms_lookup_name(dtor_func_name);
-+			if (!addr) {
-+				ret = -EINVAL;
-+				goto end_mod;
-+			}
-+			tab->off[i].kptr.dtor = (void *)addr;
-+		}
-+
- 		tab->off[i].offset = info_arr[i].off;
- 		tab->off[i].type = info_arr[i].type;
- 		tab->off[i].kptr.btf_id = id;
- 		tab->off[i].kptr.btf = off_btf;
-+		tab->off[i].kptr.module = mod;
+ 	t = btf_type_by_id(btf, func_id);
+ 	if (!t || !btf_type_is_func(t)) {
+@@ -6065,10 +6065,14 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 		return -EINVAL;
  	}
- 	tab->nr_off = nr_off;
- 	return tab;
-+end_mod:
-+	module_put(mod);
-+end_btf:
-+	btf_put(off_btf);
- end:
--	while (i--)
-+	while (i--) {
- 		btf_put(tab->off[i].kptr.btf);
-+		if (tab->off[i].kptr.module)
-+			module_put(tab->off[i].kptr.module);
+ 
+-	/* Only kfunc can be release func */
+-	if (is_kfunc)
++	if (is_kfunc) {
++		/* Only kfunc can be release func */
+ 		rel = btf_kfunc_id_set_contains(btf, resolve_prog_type(env->prog),
+ 						BTF_KFUNC_TYPE_RELEASE, func_id);
++		kptr_get = btf_kfunc_id_set_contains(btf, resolve_prog_type(env->prog),
++						     BTF_KFUNC_TYPE_KPTR_ACQUIRE, func_id);
 +	}
- 	kfree(tab);
- 	return ERR_PTR(ret);
- }
-@@ -7059,6 +7113,43 @@ s32 btf_find_dtor_kfunc(struct btf *btf, u32 btf_id)
- 	return dtor->kfunc_btf_id;
- }
- 
-+static int btf_check_dtor_kfuncs(struct btf *btf, const struct btf_id_dtor_kfunc *dtors, u32 cnt)
-+{
-+	const struct btf_type *dtor_func, *dtor_func_proto, *t;
-+	const struct btf_param *args;
-+	s32 dtor_btf_id;
-+	u32 nr_args, i;
 +
-+	for (i = 0; i < cnt; i++) {
-+		dtor_btf_id = dtors[i].kfunc_btf_id;
-+
-+		dtor_func = btf_type_by_id(btf, dtor_btf_id);
-+		if (!dtor_func || !btf_type_is_func(dtor_func))
-+			return -EINVAL;
-+
-+		dtor_func_proto = btf_type_by_id(btf, dtor_func->type);
-+		if (!dtor_func_proto || !btf_type_is_func_proto(dtor_func_proto))
-+			return -EINVAL;
-+
-+		/* Make sure the prototype of the destructor kfunc is 'void func(type *)' */
-+		t = btf_type_by_id(btf, dtor_func_proto->type);
-+		if (!t || !btf_type_is_void(t))
-+			return -EINVAL;
-+
-+		nr_args = btf_type_vlen(dtor_func_proto);
-+		if (nr_args != 1)
-+			return -EINVAL;
-+		args = btf_params(dtor_func_proto);
-+		t = btf_type_by_id(btf, args[0].type);
-+		/* Allow any pointer type, as width on targets Linux supports
-+		 * will be same for all pointer types (i.e. sizeof(void *))
-+		 */
-+		if (!t || !btf_type_is_ptr(t))
-+			return -EINVAL;
-+	}
-+	return 0;
-+}
-+
- /* This function must be invoked only from initcalls/module init functions */
- int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_cnt,
- 				struct module *owner)
-@@ -7089,6 +7180,11 @@ int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dtors, u32 add_c
- 		goto end;
- 	}
- 
-+	/* Ensure that the prototype of dtor kfuncs being registered is sane */
-+	ret = btf_check_dtor_kfuncs(btf, dtors, add_cnt);
-+	if (ret < 0)
-+		goto end;
-+
- 	tab = btf->dtor_kfunc_tab;
- 	/* Only one call allowed for modules */
- 	if (WARN_ON_ONCE(tab && btf_is_module(btf))) {
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index c68fbebc8c00..2bc9416096ca 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -254,6 +254,25 @@ static void htab_free_prealloced_timers(struct bpf_htab *htab)
- 	}
- }
- 
-+static void htab_free_prealloced_kptrs(struct bpf_htab *htab)
-+{
-+	u32 num_entries = htab->map.max_entries;
-+	int i;
-+
-+	if (likely(!map_value_has_kptrs(&htab->map)))
-+		return;
-+	if (htab_has_extra_elems(htab))
-+		num_entries += num_possible_cpus();
-+
-+	for (i = 0; i < num_entries; i++) {
-+		struct htab_elem *elem;
-+
-+		elem = get_htab_elem(htab, i);
-+		bpf_map_free_kptrs(&htab->map, elem->key + round_up(htab->map.key_size, 8));
-+		cond_resched();
-+	}
-+}
-+
- static void htab_free_elems(struct bpf_htab *htab)
- {
- 	int i;
-@@ -725,12 +744,15 @@ static int htab_lru_map_gen_lookup(struct bpf_map *map,
- 	return insn - insn_buf;
- }
- 
--static void check_and_free_timer(struct bpf_htab *htab, struct htab_elem *elem)
-+static void check_and_free_fields(struct bpf_htab *htab,
-+				  struct htab_elem *elem)
- {
-+	void *map_value = elem->key + round_up(htab->map.key_size, 8);
-+
- 	if (unlikely(map_value_has_timer(&htab->map)))
--		bpf_timer_cancel_and_free(elem->key +
--					  round_up(htab->map.key_size, 8) +
--					  htab->map.timer_off);
-+		bpf_timer_cancel_and_free(map_value + htab->map.timer_off);
-+	if (unlikely(map_value_has_kptrs(&htab->map)))
-+		bpf_map_free_kptrs(&htab->map, map_value);
- }
- 
- /* It is called from the bpf_lru_list when the LRU needs to delete
-@@ -757,7 +779,7 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
- 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
- 		if (l == tgt_l) {
- 			hlist_nulls_del_rcu(&l->hash_node);
--			check_and_free_timer(htab, l);
-+			check_and_free_fields(htab, l);
- 			break;
- 		}
- 
-@@ -829,7 +851,7 @@ static void htab_elem_free(struct bpf_htab *htab, struct htab_elem *l)
- {
- 	if (htab->map.map_type == BPF_MAP_TYPE_PERCPU_HASH)
- 		free_percpu(htab_elem_get_ptr(l, htab->map.key_size));
--	check_and_free_timer(htab, l);
-+	check_and_free_fields(htab, l);
- 	kfree(l);
- }
- 
-@@ -857,7 +879,7 @@ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
- 	htab_put_fd_value(htab, l);
- 
- 	if (htab_is_prealloc(htab)) {
--		check_and_free_timer(htab, l);
-+		check_and_free_fields(htab, l);
- 		__pcpu_freelist_push(&htab->freelist, &l->fnode);
- 	} else {
- 		atomic_dec(&htab->count);
-@@ -1104,7 +1126,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 		if (!htab_is_prealloc(htab))
- 			free_htab_elem(htab, l_old);
- 		else
--			check_and_free_timer(htab, l_old);
-+			check_and_free_fields(htab, l_old);
- 	}
- 	ret = 0;
- err:
-@@ -1114,7 +1136,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
- 
- static void htab_lru_push_free(struct bpf_htab *htab, struct htab_elem *elem)
- {
--	check_and_free_timer(htab, elem);
-+	check_and_free_fields(htab, elem);
- 	bpf_lru_push_free(&htab->lru, &elem->lru_node);
- }
- 
-@@ -1419,8 +1441,14 @@ static void htab_free_malloced_timers(struct bpf_htab *htab)
- 		struct hlist_nulls_node *n;
- 		struct htab_elem *l;
- 
--		hlist_nulls_for_each_entry(l, n, head, hash_node)
--			check_and_free_timer(htab, l);
-+		hlist_nulls_for_each_entry(l, n, head, hash_node) {
-+			/* We don't reset or free kptr on uref dropping to zero,
-+			 * hence just free timer.
-+			 */
-+			bpf_timer_cancel_and_free(l->key +
-+						  round_up(htab->map.key_size, 8) +
-+						  htab->map.timer_off);
-+		}
- 		cond_resched_rcu();
- 	}
- 	rcu_read_unlock();
-@@ -1430,6 +1458,7 @@ static void htab_map_free_timers(struct bpf_map *map)
- {
- 	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
- 
-+	/* We don't reset or free kptr on uref dropping to zero. */
- 	if (likely(!map_value_has_timer(&htab->map)))
- 		return;
- 	if (!htab_is_prealloc(htab))
-@@ -1453,11 +1482,14 @@ static void htab_map_free(struct bpf_map *map)
- 	 * not have executed. Wait for them.
+ 	/* check that BTF function arguments match actual types that the
+ 	 * verifier sees.
  	 */
- 	rcu_barrier();
--	if (!htab_is_prealloc(htab))
-+	if (!htab_is_prealloc(htab)) {
- 		delete_all_elements(htab);
--	else
-+	} else {
-+		htab_free_prealloced_kptrs(htab);
- 		prealloc_destroy(htab);
-+	}
+@@ -6100,8 +6104,52 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 		if (ret < 0)
+ 			return ret;
  
-+	bpf_map_free_kptr_off_tab(map);
- 	free_percpu(htab->extra_elems);
- 	bpf_map_area_free(htab->buckets);
- 	for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 1b1497b94303..518acf39b40c 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -508,8 +508,11 @@ void bpf_map_free_kptr_off_tab(struct bpf_map *map)
- 	if (!map_value_has_kptrs(map))
- 		return;
- 	for (i = 0; i < tab->nr_off; i++) {
-+		struct module *mod = tab->off[i].kptr.module;
- 		struct btf *btf = tab->off[i].kptr.btf;
- 
-+		if (mod)
-+			module_put(mod);
- 		btf_put(btf);
- 	}
- 	kfree(tab);
-@@ -524,8 +527,16 @@ struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map)
- 	if (!map_value_has_kptrs(map))
- 		return ERR_PTR(-ENOENT);
- 	/* Do a deep copy of the kptr_off_tab */
--	for (i = 0; i < tab->nr_off; i++)
--		btf_get(tab->off[i].kptr.btf);
-+	for (i = 0; i < tab->nr_off; i++) {
-+		struct module *mod = tab->off[i].kptr.module;
-+		struct btf *btf = tab->off[i].kptr.btf;
+-		if (btf_get_prog_ctx_type(log, btf, t,
+-					  env->prog->type, i)) {
++		/* kptr_get is only true for kfunc */
++		if (i == 0 && kptr_get) {
++			struct bpf_map_value_off_desc *off_desc;
 +
-+		if (mod && !try_module_get(mod)) {
-+			ret = -ENXIO;
-+			goto end;
-+		}
-+		btf_get(btf);
-+	}
- 
- 	size = offsetof(struct bpf_map_value_off, off[tab->nr_off]);
- 	new_tab = kmemdup(tab, size, GFP_KERNEL | __GFP_NOWARN);
-@@ -535,8 +546,14 @@ struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map)
- 	}
- 	return new_tab;
- end:
--	while (i--)
--		btf_put(tab->off[i].kptr.btf);
-+	while (i--) {
-+		struct module *mod = tab->off[i].kptr.module;
-+		struct btf *btf = tab->off[i].kptr.btf;
++			if (reg->type != PTR_TO_MAP_VALUE) {
++				bpf_log(log, "arg#0 expected pointer to map value\n");
++				return -EINVAL;
++			}
 +
-+		if (mod)
-+			module_put(mod);
-+		btf_put(btf);
-+	}
- 	return ERR_PTR(ret);
- }
- 
-@@ -556,6 +573,33 @@ bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_ma
- 	return !memcmp(tab_a, tab_b, size);
- }
- 
-+/* Caller must ensure map_value_has_kptrs is true. Note that this function can
-+ * be called on a map value while the map_value is visible to BPF programs, as
-+ * it ensures the correct synchronization, and we already enforce the same using
-+ * the bpf_kptr_xchg helper on the BPF program side for referenced kptrs.
-+ */
-+void bpf_map_free_kptrs(struct bpf_map *map, void *map_value)
-+{
-+	struct bpf_map_value_off *tab = map->kptr_off_tab;
-+	unsigned long *btf_id_ptr;
-+	int i;
++			/* check_func_arg_reg_off allows var_off for
++			 * PTR_TO_MAP_VALUE, but we need fixed offset to find
++			 * off_desc.
++			 */
++			if (!tnum_is_const(reg->var_off)) {
++				bpf_log(log, "arg#0 must have constant offset\n");
++				return -EINVAL;
++			}
 +
-+	for (i = 0; i < tab->nr_off; i++) {
-+		struct bpf_map_value_off_desc *off_desc = &tab->off[i];
-+		unsigned long old_ptr;
++			off_desc = bpf_map_kptr_off_contains(reg->map_ptr, reg->off + reg->var_off.value);
++			if (!off_desc || off_desc->type != BPF_MAP_OFF_DESC_TYPE_REF_KPTR) {
++				bpf_log(log, "arg#0 no referenced kptr at map value offset=%llu\n",
++					reg->off + reg->var_off.value);
++				return -EINVAL;
++			}
 +
-+		btf_id_ptr = map_value + off_desc->offset;
-+		if (off_desc->type == BPF_MAP_OFF_DESC_TYPE_UNREF_KPTR) {
-+			u64 *p = (u64 *)btf_id_ptr;
++			if (!btf_type_is_ptr(ref_t)) {
++				bpf_log(log, "arg#0 BTF type must be a double pointer\n");
++				return -EINVAL;
++			}
 +
-+			WRITE_ONCE(p, 0);
-+			continue;
-+		}
-+		old_ptr = xchg(btf_id_ptr, 0);
-+		off_desc->kptr.dtor((void *)old_ptr);
-+	}
-+}
++			ref_t = btf_type_skip_modifiers(btf, ref_t->type, &ref_id);
++			ref_tname = btf_name_by_offset(btf, ref_t->name_off);
 +
- /* called from workqueue */
- static void bpf_map_free_deferred(struct work_struct *work)
- {
-@@ -563,9 +607,10 @@ static void bpf_map_free_deferred(struct work_struct *work)
- 
- 	security_bpf_map_free(map);
- 	kfree(map->off_arr);
--	bpf_map_free_kptr_off_tab(map);
- 	bpf_map_release_memcg(map);
--	/* implementation dependent freeing */
-+	/* implementation dependent freeing, map_free callback also does
-+	 * bpf_map_free_kptr_off_tab, if needed.
-+	 */
- 	map->ops->map_free(map);
- }
- 
++			if (!btf_type_is_struct(ref_t)) {
++				bpf_log(log, "kernel function %s args#%d pointer type %s %s is not supported\n",
++					func_name, i, btf_type_str(ref_t), ref_tname);
++				return -EINVAL;
++			}
++			if (!btf_struct_ids_match(log, btf, ref_id, 0, off_desc->kptr.btf,
++						  off_desc->kptr.btf_id)) {
++				bpf_log(log, "kernel function %s args#%d expected pointer to %s %s\n",
++					func_name, i, btf_type_str(ref_t), ref_tname);
++				return -EINVAL;
++			}
++			/* rest of the arguments can be anything, like normal kfunc */
++		} else if (btf_get_prog_ctx_type(log, btf, t, env->prog->type, i)) {
+ 			/* If function expects ctx type in BTF check that caller
+ 			 * is passing PTR_TO_CTX.
+ 			 */
 -- 
 2.35.1
 
