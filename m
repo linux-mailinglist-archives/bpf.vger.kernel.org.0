@@ -2,222 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5462503167
-	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 01:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC5E5030B4
+	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 01:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbiDOWln (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 18:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
+        id S229819AbiDOXKo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 19:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbiDOWlm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 18:41:42 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9158BBF950;
-        Fri, 15 Apr 2022 15:39:12 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 21so11306277edv.1;
-        Fri, 15 Apr 2022 15:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xd/TY0lCcvOfD4XwdghjY2Bw0dW7OQwwq4wE6xzj5Lg=;
-        b=DR/30Z2Bvad/UzIT+ijDNS7EQ34yE1Pw3naYQ3q+XlCXXEyDjF3+PrMlBAubnmlni7
-         +trIkPmZC5h+TH+9vSvNCUmlqE3fF9RF8qkGvBAgXeoiPc7RX44K9GfEwud4URY1tvOd
-         6par0+Pbu16FR7dY8se477ubWO0UHSHTy1n4n/7cmI6R8HkE5puayoB5XsTYapzQCJI8
-         XAJrolV9Cx3hX7Ojfq2OZr9SLssGk3pZ/olC4RB3XwOVRhHCDJhCrDqiwDa+Ri1mf97s
-         HOl645v6UCQIMWr+LSS5z/8CzEXgPyU/PjT2bQUF6qz60ePlSrctbrC6neF3YnT1hEbU
-         q6bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xd/TY0lCcvOfD4XwdghjY2Bw0dW7OQwwq4wE6xzj5Lg=;
-        b=67GqoAay7+vsThi2gZ0A/P6Xp+4k4207FY8JAE417j8BQAdCeD3pOP3olYUPsI6UOx
-         ZyGtlaBGZwdqb9qAtGLWjqO39tYlL4l/z81qgysuHzkNohTmyc76hEovAvPbz+LkKs1T
-         xxjBa8HBM7wByApphdsFEHnMBmlWZRuhpPL6mj5pcpopIybSluSP1Hd2/gwlNkt29DYZ
-         D9gVfh+pZagN62bOZkYaE49a6+hfTKWagkbY3V3/a1rTRGSOVnInlPM+v3Cml0JdYxco
-         xJ0H6OaFZKwoYusnLnd0jHktEdLNqT8VAcwrlH9HN3W0uN1Wm1CAcxRWl/m/ruJ3YoBX
-         zehw==
-X-Gm-Message-State: AOAM532h44BpDiUWJDtRAjj+pIwaN+Fc8lqZkPQENz+Aw4gArsD2Zxyw
-        zDrHNmS7TpzIVd6EV9qSufQ=
-X-Google-Smtp-Source: ABdhPJwj12+saMkHxF3CiI2y5YsDBikvUq2Ikj7bmWZvCIhpz/z403Arc3JrJj4hZw7osqi8n9jZBg==
-X-Received: by 2002:a05:6402:448a:b0:41d:793d:8252 with SMTP id er10-20020a056402448a00b0041d793d8252mr1256813edb.6.1650062350990;
-        Fri, 15 Apr 2022 15:39:10 -0700 (PDT)
-Received: from krava ([95.82.134.228])
-        by smtp.gmail.com with ESMTPSA id b23-20020a05640202d700b00422da9b980esm1015481edx.22.2022.04.15.15.39.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Apr 2022 15:39:10 -0700 (PDT)
-Date:   Sat, 16 Apr 2022 00:39:08 +0200
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229560AbiDOXKn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 19:10:43 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60006183BE;
+        Fri, 15 Apr 2022 16:08:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0B0D3B831BB;
+        Fri, 15 Apr 2022 23:08:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D519C385AF;
+        Fri, 15 Apr 2022 23:08:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650064090;
+        bh=bun1UW6dQN+eeylN7K4W70rNw5ZTuBxbCaji7Cqa870=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Kx2EbsKWUajlN+9EYTClzJvSsIYSC0HMbpGZJ+ViEb6kodJh4fqPQAafSm+RNgDyY
+         UD5s7AzJmqA4r/G5RGaG6yMqa+SBGNxlSotO8THxVSeIeEXnnf0ZuynU28sa3oicyC
+         IGc/GOGHFZe05gBPClMuGve0nkZ00NXKVv1beymT0WVvzlnXjIkCObGjHkboA+UfRL
+         j5UZsaRvZM1eY02Vv7aE+eaLwlkg30VQ2hybLCDwIDQTPH58qWHccOtOXCFTXbAyG9
+         JPBwM0TPIzODSx3pqPfRF7LEm6xYOSCceYrjHY/ZpDYJoOogFqwOTd4GCDI5eNOLfS
+         bEo9m5ZHCFNWw==
+Received: by mail-yb1-f173.google.com with SMTP id t67so16608290ybi.2;
+        Fri, 15 Apr 2022 16:08:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530y8pse7f21Iqhf5l9O4k5JLtanBK0CPOKKp15Y1z9uw6DCGsvA
+        HUN+5VnOloum4YqU/Xq4BZmfDZLht1GBIV/dPqU=
+X-Google-Smtp-Source: ABdhPJzfao0cbhuAT+evsmpeKuZ23Th3dopsUfXigTn3uQNgTDcD+/N0ixKG3h8vTUKKSo+9oYfu8IiLwQdS0yiXQk8=
+X-Received: by 2002:a05:6902:1506:b0:63e:4f1b:40ae with SMTP id
+ q6-20020a056902150600b0063e4f1b40aemr1355690ybu.322.1650064089602; Fri, 15
+ Apr 2022 16:08:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220414223704.341028-1-alobakin@pm.me> <20220414223704.341028-2-alobakin@pm.me>
+In-Reply-To: <20220414223704.341028-2-alobakin@pm.me>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 15 Apr 2022 16:07:58 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7qrH6Fc-MSJSJzS0r_vDzTfHyaaRDGhrTjo9vijQwpWg@mail.gmail.com>
+Message-ID: <CAPhsuW7qrH6Fc-MSJSJzS0r_vDzTfHyaaRDGhrTjo9vijQwpWg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/11] bpf, perf: fix bpftool compilation with !CONFIG_PERF_EVENTS
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC bpf-next 1/4] kallsyms: Add kallsyms_lookup_names function
-Message-ID: <Yln0DCVKAf9yZicG@krava>
-References: <20220407125224.310255-1-jolsa@kernel.org>
- <20220407125224.310255-2-jolsa@kernel.org>
- <20220408231925.uc2cfeev7p6nzfww@MBP-98dd607d3435.dhcp.thefacebook.com>
- <YlXlF5ivTR1QLMfk@krava>
- <20220415094727.2880a321bb6674d94e104110@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220415094727.2880a321bb6674d94e104110@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Chenbo Feng <fengc@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Daniel Wagner <daniel.wagner@bmw-carit.de>,
+        Thomas Graf <tgraf@suug.ch>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        linux-perf-users@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 15, 2022 at 09:47:27AM +0900, Masami Hiramatsu wrote:
-> Hi Jiri,
-> 
-> Sorry for replying later.
-> 
-> On Tue, 12 Apr 2022 22:46:15 +0200
-> Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> > On Fri, Apr 08, 2022 at 04:19:25PM -0700, Alexei Starovoitov wrote:
-> > > On Thu, Apr 07, 2022 at 02:52:21PM +0200, Jiri Olsa wrote:
-> > > > Adding kallsyms_lookup_names function that resolves array of symbols
-> > > > with single pass over kallsyms.
-> > > > 
-> > > > The user provides array of string pointers with count and pointer to
-> > > > allocated array for resolved values.
-> > > > 
-> > > >   int kallsyms_lookup_names(const char **syms, u32 cnt,
-> > > >                             unsigned long *addrs)
-> > > > 
-> > > > Before we iterate kallsyms we sort user provided symbols by name and
-> > > > then use that in kalsyms iteration to find each kallsyms symbol in
-> > > > user provided symbols.
-> > > > 
-> > > > We also check each symbol to pass ftrace_location, because this API
-> > > > will be used for fprobe symbols resolving. This can be optional in
-> > > > future if there's a need.
-> > > > 
-> > > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >  include/linux/kallsyms.h |  6 +++++
-> > > >  kernel/kallsyms.c        | 48 ++++++++++++++++++++++++++++++++++++++++
-> > > >  2 files changed, 54 insertions(+)
-> > > > 
-> > > > diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-> > > > index ce1bd2fbf23e..5320a5e77f61 100644
-> > > > --- a/include/linux/kallsyms.h
-> > > > +++ b/include/linux/kallsyms.h
-> > > > @@ -72,6 +72,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
-> > > >  #ifdef CONFIG_KALLSYMS
-> > > >  /* Lookup the address for a symbol. Returns 0 if not found. */
-> > > >  unsigned long kallsyms_lookup_name(const char *name);
-> > > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs);
-> > > >  
-> > > >  extern int kallsyms_lookup_size_offset(unsigned long addr,
-> > > >  				  unsigned long *symbolsize,
-> > > > @@ -103,6 +104,11 @@ static inline unsigned long kallsyms_lookup_name(const char *name)
-> > > >  	return 0;
-> > > >  }
-> > > >  
-> > > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs)
-> > > > +{
-> > > > +	return -ERANGE;
-> > > > +}
-> > > > +
-> > > >  static inline int kallsyms_lookup_size_offset(unsigned long addr,
-> > > >  					      unsigned long *symbolsize,
-> > > >  					      unsigned long *offset)
-> > > > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> > > > index 79f2eb617a62..a3738ddf9e87 100644
-> > > > --- a/kernel/kallsyms.c
-> > > > +++ b/kernel/kallsyms.c
-> > > > @@ -29,6 +29,8 @@
-> > > >  #include <linux/compiler.h>
-> > > >  #include <linux/module.h>
-> > > >  #include <linux/kernel.h>
-> > > > +#include <linux/bsearch.h>
-> > > > +#include <linux/sort.h>
-> > > >  
-> > > >  /*
-> > > >   * These will be re-linked against their real values
-> > > > @@ -572,6 +574,52 @@ int sprint_backtrace_build_id(char *buffer, unsigned long address)
-> > > >  	return __sprint_symbol(buffer, address, -1, 1, 1);
-> > > >  }
-> > > >  
-> > > > +static int symbols_cmp(const void *a, const void *b)
-> > > > +{
-> > > > +	const char **str_a = (const char **) a;
-> > > > +	const char **str_b = (const char **) b;
-> > > > +
-> > > > +	return strcmp(*str_a, *str_b);
-> > > > +}
-> > > > +
-> > > > +struct kallsyms_data {
-> > > > +	unsigned long *addrs;
-> > > > +	const char **syms;
-> > > > +	u32 cnt;
-> > > > +	u32 found;
-> > > > +};
-> > > > +
-> > > > +static int kallsyms_callback(void *data, const char *name,
-> > > > +			     struct module *mod, unsigned long addr)
-> > > > +{
-> > > > +	struct kallsyms_data *args = data;
-> > > > +
-> > > > +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
-> > > > +		return 0;
-> > > > +
-> > > > +	addr = ftrace_location(addr);
-> > > > +	if (!addr)
-> > > > +		return 0;
-> > > > +
-> > > > +	args->addrs[args->found++] = addr;
-> > > > +	return args->found == args->cnt ? 1 : 0;
-> > > > +}
-> > > > +
-> > > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs)
-> > > > +{
-> > > > +	struct kallsyms_data args;
-> > > > +
-> > > > +	sort(syms, cnt, sizeof(*syms), symbols_cmp, NULL);
-> > > 
-> > > It's nice to share symbols_cmp for sort and bsearch,
-> > > but messing technically input argument 'syms' like this will cause
-> > > issues sooner or later.
-> > > Lets make caller do the sort.
-> > > Unordered input will cause issue with bsearch, of course,
-> > > but it's a lesser evil. imo.
-> > > 
-> > 
-> > Masami,
-> > this logic bubbles up to the register_fprobe_syms, because user
-> > provides symbols as its argument. Can we still force this assumption
-> > to the 'syms' array, like with the comment change below?
-> > 
-> > FYI the bpf side does not use register_fprobe_syms, it uses
-> > register_fprobe_ips, because it always needs ips as search
-> > base for cookie values
-> 
-> Hmm, in that case fprobe can call sort() in the register function.
-> That will be much easier and safer. The bpf case, the input array will
-> be generated by the bpftool (not by manual), so it can ensure the 
-> syms is sorted. But we don't know how fprobe user passes syms array.
-> Then register_fprobe_syms() will always requires sort(). I don't like
-> such redundant requirements.
+On Thu, Apr 14, 2022 at 3:45 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> When CONFIG_PERF_EVENTS is not set, struct perf_event remains empty.
+> However, the structure is being used by bpftool indirectly via BTF.
+> This leads to:
+>
+> skeleton/pid_iter.bpf.c:49:30: error: no member named 'bpf_cookie' in 'struct perf_event'
+>         return BPF_CORE_READ(event, bpf_cookie);
+>                ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+>
+> ...
+>
+> skeleton/pid_iter.bpf.c:49:9: error: returning 'void' from a function with incompatible result type '__u64' (aka 'unsigned long long')
+>         return BPF_CORE_READ(event, bpf_cookie);
+>                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Tools and samples can't use any CONFIG_ definitions, so the fields
+> used there should always be present.
+> Move CONFIG_BPF_SYSCALL block out of the CONFIG_PERF_EVENTS block
+> to make it available unconditionally.
+>
+> Fixes: cbdaf71f7e65 ("bpftool: Add bpf_cookie to link output")
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-ok, I'll add it to register_fprobe_syms
+While I can't think of a real failure with this approach, it does feel
+weird to me. Can we fix this with bpf_core_field_exists()?
 
-thanks,
-jirka
+Thanks,
+Song
+
+
+> ---
+>  include/linux/perf_event.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index af97dd427501..b1d5715b8b34 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -762,12 +762,14 @@ struct perf_event {
+>         u64                             (*clock)(void);
+>         perf_overflow_handler_t         overflow_handler;
+>         void                            *overflow_handler_context;
+> +#endif /* CONFIG_PERF_EVENTS */
+>  #ifdef CONFIG_BPF_SYSCALL
+>         perf_overflow_handler_t         orig_overflow_handler;
+>         struct bpf_prog                 *prog;
+>         u64                             bpf_cookie;
+>  #endif
+>
+> +#ifdef CONFIG_PERF_EVENTS
+>  #ifdef CONFIG_EVENT_TRACING
+>         struct trace_event_call         *tp_event;
+>         struct event_filter             *filter;
+> --
+> 2.35.2
+>
+>
