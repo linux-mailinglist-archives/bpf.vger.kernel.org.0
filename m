@@ -2,62 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 780C3501FC7
-	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 02:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57E450202E
+	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 03:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243226AbiDOAuD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 20:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
+        id S242349AbiDOBqC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 21:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234201AbiDOAuD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 20:50:03 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71485B822C;
-        Thu, 14 Apr 2022 17:47:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 230BAB82BF3;
-        Fri, 15 Apr 2022 00:47:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC692C385A5;
-        Fri, 15 Apr 2022 00:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649983652;
-        bh=5hEZI1ItFtx5BzKjBL/+be3fKdvz/RR0aOlO6S3STIw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ghfquUVYzlp3tI5eaJrYnY83EbNVIzh6Slk4tawd9fdbhgffxm7wM/iPgj/iBGLvF
-         5FAbHbGpeXLuOF+hc0m+zONvkP2QpIB+QogO3+DJr5vJSHl40UrqWQKEcrvC5ScT+K
-         OdSj8sSF3C2R60qN7rFGEnmiz1Ji+9IGBe2cQzCcnrpp/VwcNCUVS0jpLgY2PRt6ax
-         yNsqa8T3XumrOrM+fTdlpEmGhwwHRvN6Lvscrcz1OayM5MFC6mRKQSWi5ZLf1/Xocs
-         5n2PvEckLA9GNjRRgmy4Kn14X+b4ZZBZgC4sCl28EuE1Slnxtgg4RN/KYVPqNuvkEV
-         t07bzDCQiPyHA==
-Date:   Fri, 15 Apr 2022 09:47:27 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
+        with ESMTP id S234458AbiDOBqB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 21:46:01 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A48AC05B
+        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 18:43:34 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 17so8096664lji.1
+        for <bpf@vger.kernel.org>; Thu, 14 Apr 2022 18:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DkGqoOsEwYiMNXbeYbldQZIUjou4J4kmUUyuMgo7rbg=;
+        b=Wv6RNnSwlKANCH7ZuJjNpTQsW0Lbun/jkS19MfLwckN9QDZ+SFUnl0inLtIVBH1jY6
+         Cd2sXxm0mZSh/v38R7s49wIn1XHHOQ48V0amsw3PDLB+fJ/gkNi4oL5ETodBpM6gq3jo
+         XVXOaFmvQvoZUpmwXxLA19sXaodZ3pXGsX90Xtq238M2tho0ssxZnwUzQgRW5/4XOsf2
+         x/vgW2Vl1JBODSYqpZdl7rPzUI51lSNjHRmrmM9BCZTJjI6bhoOGMOmtDpp8R4DREeEz
+         mTDRVHxvH4/ALacXGjCBmIKvfC+zvM7OvUJ/bUNUOLf19dHzIG8DpDvuZapRSRGiB/7W
+         C0bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DkGqoOsEwYiMNXbeYbldQZIUjou4J4kmUUyuMgo7rbg=;
+        b=r2WVi70q9aMs7scKpBI2IZo7u1FxGSQ/2Mk88uq8MsH8uoy3/onohPOX2zltXif1ho
+         EreNvSsQ9aCahIe+rLJu1g3NWs60T4Rhs/OBcBk1ikaynd7BDAV2YxubVTmtT4KtEb1D
+         Me+eTesfnGjTzG2Ypxawij6cgQHl/KAblMSUmqtGfUy46vBsOJdTSXxjHIVCGJ0jhAzb
+         PChcNXfjIPMwWzrfBphtEzDa0g5FKcwNm0Cgwx2/XSrHdB37hba4uBoIFvTCOgiq5hBd
+         mwPdIl8yVIU3YDdhyLaPJXLUs4NJHeELDPPzTtVNeABvVQ6MRP+U+NqaychlDM4u1Y0i
+         P6yA==
+X-Gm-Message-State: AOAM5301OSpqFAxCLaGeMgTN/iah7CIBz6sKGzpSehA+A/cSCSOq+2G7
+        OuhpRBPOsH1i3F96wzEc2zUuxzSFGfs/k6+XLdQ=
+X-Google-Smtp-Source: ABdhPJzbgZ33EpcvYdk16J6mvQAg+GP35WocyB00Vsr6TeO3Peisgxe4sJIE7kc8QCzOqUfiGJ7FLPFYM/39GlKtcLc=
+X-Received: by 2002:a2e:9b05:0:b0:24b:e8:8c7e with SMTP id u5-20020a2e9b05000000b0024b00e88c7emr3075457lji.70.1649987012936;
+ Thu, 14 Apr 2022 18:43:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220402015826.3941317-1-joannekoong@fb.com> <20220402015826.3941317-4-joannekoong@fb.com>
+ <CAEf4BzbRsA+JTP+4mqWpjRd_KEtaaM74ihz7RKGgpu_outhxTg@mail.gmail.com>
+ <CAJnrk1Y8nE7n6PY9f7KBHH-P_ji3vAnuH5UP0r1fAk4OUTUZtQ@mail.gmail.com>
+ <CAEf4Bzbp=91iYC5Ggm2W6gd3m_=wYXUXrZ7XLnGU5i=STcVAWA@mail.gmail.com>
+ <CAJnrk1bxi9Ax0RBCGEz61tH0v2DCZwy=R132R4BS5737-WMN9Q@mail.gmail.com>
+ <20220409011158.dwkolvp4nyjl5kvr@MBP-98dd607d3435.dhcp.thefacebook.com> <CAEf4BzaFiCgy9wuQE-KpEX8oQrYJWWowNoq02rUe4uooUgSTLQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzaFiCgy9wuQE-KpEX8oQrYJWWowNoq02rUe4uooUgSTLQ@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Thu, 14 Apr 2022 18:43:21 -0700
+Message-ID: <CAJnrk1YVP5Kp6uoOz+tgMpAb87eR1toMMShdC-o-V383sYjp2Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/7] bpf: Add bpf_dynptr_from_mem, bpf_malloc, bpf_free
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        Joanne Koong <joannekoong@fb.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC bpf-next 1/4] kallsyms: Add kallsyms_lookup_names function
-Message-Id: <20220415094727.2880a321bb6674d94e104110@kernel.org>
-In-Reply-To: <YlXlF5ivTR1QLMfk@krava>
-References: <20220407125224.310255-1-jolsa@kernel.org>
-        <20220407125224.310255-2-jolsa@kernel.org>
-        <20220408231925.uc2cfeev7p6nzfww@MBP-98dd607d3435.dhcp.thefacebook.com>
-        <YlXlF5ivTR1QLMfk@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,142 +72,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jiri,
-
-Sorry for replying later.
-
-On Tue, 12 Apr 2022 22:46:15 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
-
-> On Fri, Apr 08, 2022 at 04:19:25PM -0700, Alexei Starovoitov wrote:
-> > On Thu, Apr 07, 2022 at 02:52:21PM +0200, Jiri Olsa wrote:
-> > > Adding kallsyms_lookup_names function that resolves array of symbols
-> > > with single pass over kallsyms.
-> > > 
-> > > The user provides array of string pointers with count and pointer to
-> > > allocated array for resolved values.
-> > > 
-> > >   int kallsyms_lookup_names(const char **syms, u32 cnt,
-> > >                             unsigned long *addrs)
-> > > 
-> > > Before we iterate kallsyms we sort user provided symbols by name and
-> > > then use that in kalsyms iteration to find each kallsyms symbol in
-> > > user provided symbols.
-> > > 
-> > > We also check each symbol to pass ftrace_location, because this API
-> > > will be used for fprobe symbols resolving. This can be optional in
-> > > future if there's a need.
-> > > 
-> > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  include/linux/kallsyms.h |  6 +++++
-> > >  kernel/kallsyms.c        | 48 ++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 54 insertions(+)
-> > > 
-> > > diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-> > > index ce1bd2fbf23e..5320a5e77f61 100644
-> > > --- a/include/linux/kallsyms.h
-> > > +++ b/include/linux/kallsyms.h
-> > > @@ -72,6 +72,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
-> > >  #ifdef CONFIG_KALLSYMS
-> > >  /* Lookup the address for a symbol. Returns 0 if not found. */
-> > >  unsigned long kallsyms_lookup_name(const char *name);
-> > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs);
-> > >  
-> > >  extern int kallsyms_lookup_size_offset(unsigned long addr,
-> > >  				  unsigned long *symbolsize,
-> > > @@ -103,6 +104,11 @@ static inline unsigned long kallsyms_lookup_name(const char *name)
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs)
-> > > +{
-> > > +	return -ERANGE;
-> > > +}
-> > > +
-> > >  static inline int kallsyms_lookup_size_offset(unsigned long addr,
-> > >  					      unsigned long *symbolsize,
-> > >  					      unsigned long *offset)
-> > > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> > > index 79f2eb617a62..a3738ddf9e87 100644
-> > > --- a/kernel/kallsyms.c
-> > > +++ b/kernel/kallsyms.c
-> > > @@ -29,6 +29,8 @@
-> > >  #include <linux/compiler.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/kernel.h>
-> > > +#include <linux/bsearch.h>
-> > > +#include <linux/sort.h>
-> > >  
-> > >  /*
-> > >   * These will be re-linked against their real values
-> > > @@ -572,6 +574,52 @@ int sprint_backtrace_build_id(char *buffer, unsigned long address)
-> > >  	return __sprint_symbol(buffer, address, -1, 1, 1);
-> > >  }
-> > >  
-> > > +static int symbols_cmp(const void *a, const void *b)
-> > > +{
-> > > +	const char **str_a = (const char **) a;
-> > > +	const char **str_b = (const char **) b;
-> > > +
-> > > +	return strcmp(*str_a, *str_b);
-> > > +}
-> > > +
-> > > +struct kallsyms_data {
-> > > +	unsigned long *addrs;
-> > > +	const char **syms;
-> > > +	u32 cnt;
-> > > +	u32 found;
-> > > +};
-> > > +
-> > > +static int kallsyms_callback(void *data, const char *name,
-> > > +			     struct module *mod, unsigned long addr)
-> > > +{
-> > > +	struct kallsyms_data *args = data;
-> > > +
-> > > +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
-> > > +		return 0;
-> > > +
-> > > +	addr = ftrace_location(addr);
-> > > +	if (!addr)
-> > > +		return 0;
-> > > +
-> > > +	args->addrs[args->found++] = addr;
-> > > +	return args->found == args->cnt ? 1 : 0;
-> > > +}
-> > > +
-> > > +int kallsyms_lookup_names(const char **syms, u32 cnt, unsigned long *addrs)
-> > > +{
-> > > +	struct kallsyms_data args;
-> > > +
-> > > +	sort(syms, cnt, sizeof(*syms), symbols_cmp, NULL);
-> > 
-> > It's nice to share symbols_cmp for sort and bsearch,
-> > but messing technically input argument 'syms' like this will cause
-> > issues sooner or later.
-> > Lets make caller do the sort.
-> > Unordered input will cause issue with bsearch, of course,
-> > but it's a lesser evil. imo.
-> > 
-> 
-> Masami,
-> this logic bubbles up to the register_fprobe_syms, because user
-> provides symbols as its argument. Can we still force this assumption
-> to the 'syms' array, like with the comment change below?
-> 
-> FYI the bpf side does not use register_fprobe_syms, it uses
-> register_fprobe_ips, because it always needs ips as search
-> base for cookie values
-
-Hmm, in that case fprobe can call sort() in the register function.
-That will be much easier and safer. The bpf case, the input array will
-be generated by the bpftool (not by manual), so it can ensure the 
-syms is sorted. But we don't know how fprobe user passes syms array.
-Then register_fprobe_syms() will always requires sort(). I don't like
-such redundant requirements.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+On Mon, Apr 11, 2022 at 7:12 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Apr 8, 2022 at 6:12 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Apr 08, 2022 at 04:37:02PM -0700, Joanne Koong wrote:
+> > > > > > > + *
+> > > > > > > + * void bpf_free(struct bpf_dynptr *ptr)
+> > > > > >
+> > > > > > thinking about the next patch set that will add storing this malloc
+> > > > > > dynptr into the map, bpf_free() will be a lie, right? As it will only
+> > > > > > decrement a refcnt, not necessarily free it, right? So maybe just
+> > > > > > generic bpf_dynptr_put() or bpf_malloc_put() or something like that is
+> > > > > > a bit more "truthful"?
+> > > > > I like the simplicity of bpf_free(), but I can see how that might be
+> > > > > confusing. What are your thoughts on "bpf_dynptr_free()"? Since when
+> > > > > we get into dynptrs that are stored in maps vs. dynptrs stored
+> > > > > locally, calling bpf_dynptr_free() frees (invalidates) your local
+> > > > > dynptr even if it doesn't free the underlying memory if it still has
+> > > > > valid refcounts on it? To me, "malloc" and "_free" go more intuitively
+> > > > > together as a pair.
+> > > >
+> > > > Sounds good to me (though let's use _dynptr() as a suffix
+> > > > consistently). I also just realized that maybe we should call
+> > > > bpf_malloc() a bpf_malloc_dynptr() instead. I can see how we might
+> > > > want to enable plain bpf_malloc() with statically known size (similar
+> > > > to statically known bpf_ringbuf_reserve()) for temporary local malloc
+> > > > with direct memory access? So bpf_malloc_dynptr() would be a
+> > > > dynptr-enabled counterpart to fixed-sized bpf_malloc()? And then
+> > > > bpf_free() will work with direct pointer returned from bpf_malloc(),
+> > > > while bpf_free_dynptr() will work with dynptr returned from
+> > > > bpf_malloc_dynptr().
+> > > I see! What is the advantage of a plain bpf_malloc()? Is it that it's
+> > > a more ergonomic API (you get back a direct pointer to the data
+> > > instead of getting back a dynptr and then having to call
+> > > bpf_dynptr_data to get direct access) and you don't have to allocate
+> > > extra bytes for refcounting?
+> > >
+> > > I will rename this to bpf_malloc_dynptr() and bpf_free_dynptr().
+> >
+> > Let's make it consistent with kptr. Those helpers will be:
+> > bpf_kptr_alloc(btf_id, flags, &ptr)
+> > bpf_kptr_get
+> > bpf_kptr_put
+> >
+> > bpf_dynptr_alloc(byte_size, flags, &dynptr);
+>
+> I don't have strong feelings about this naming, but
+> bpf_ringbuf_reserve_dynptr() is a bit of counter-example with a
+> convention of using "_dynptr" suffix for variations of API that
+> *produce* dynptrs as an output. bpf_dynptr_alloc() sounds like we are
+> allocating struct bpf_dynptr itself, not a memory to which bpf_dynptr
+> points. But I'm don't have perfect naming scheme.
+I agree. bpf_dynptr_alloc() sounds like it allocates the struct dynptr
+- I like bpf_dynptr_malloc() more. But I'm fine going with
+bpf_dynptr_alloc() if there's a strong preference for that.
+>
+> > bpf_dynptr_put(dynptr);
+> > would fit the best.
+> >
+> > Output arg being first doesn't match anything we had.
+> > let's keep it last.
+>
+> yep, agree
+>
+> >
+> > zero-alloc or plain kmalloc can be indicated by the flag.
+> > kzalloc() in the kernel is just static inline that adds __GFP_ZERO to flags.
+> > We don't need bpf_dynptr_alloc and bpf_dynptr_zalloc as two helpers.
+> > The latter can be a static inline helper in a bpf program.
+>
+> yeah, sure, my point was that zero-initialization is a better default
+>
+> >
+> > Similar to Andrii's concern I feel that bpf_dynptr_free() would be misleading.
