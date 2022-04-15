@@ -2,54 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67773502EEF
+	by mail.lfdr.de (Postfix) with ESMTP id AFFC0502EF0
 	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 21:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347795AbiDOTGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 15:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
+        id S1347897AbiDOTIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 15:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347623AbiDOTGP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 15:06:15 -0400
+        with ESMTP id S1347893AbiDOTIL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 15:08:11 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA21FDA09A;
-        Fri, 15 Apr 2022 12:03:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263C93A5F5;
+        Fri, 15 Apr 2022 12:05:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
         MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6HzF+upEgux6jeyTUvqIhEFVqtPf6F78zI7LldDeVqo=; b=yOR8vjzmH9dv3TXNkWPHUr4Jo4
-        8p/N8wsEcAProi2PY1nAuUzmrT/uoMrQ5rnVUWfl9CPvrPXITuuwgasoCCJN8tG/FYy4CqonpUxWz
-        44PR5mqMuxhl1ohEfbDu3JBAErZ52ABZXbJMnpLwmaAFBEcHMffC2J2nEB8h8oCC1QTD5IbcAbM+7
-        itqZRblvkWnI3Au9UcLAkRneGaZRwTAJU2Fx7X2h1tlZoa+v8qFW6mEVrMJDajAlVu6ZgGwzyYyAm
-        U3D6e3oI2F+2TkHsn4B+EQZ8+57fsTCUXgZFwtbnL98YVSzWr40b5HG0m6jazStHtme6QwZvPV6k3
-        /MW7zPpw==;
+        bh=i8u5wA5pkuMd57YgDKyeRMaeVXySpdGvOCw8eFs9SSc=; b=OBYuj+louCSRCKwtc30JWm58TX
+        pboqz1LXgwQTy6xrbf50VjTba3IocmZv3tNmG4HJYvOu5A0KHOBDQiUiRUYcn/l9yodDX6DycXbdC
+        lBGu2YoYjclbhy5rDDdTXJdq1MLrSGtYrnm/D0hYtkWYxCiogicB96P7HA0AR8ozszUhdtcoIS7rh
+        FbzLjBQ09yGZkdk6Xh3pvDIWmX/mopTEAD+pptDXcG9HYeQgy3SuWELim3D0jiU8abMuHo6QHfT58
+        z6Gi2tT79cxIqilUN80sNleD3ekeqjCrY3JjbnAo+Lmjvwq6lS/NLzRxsQUWtbBLBaR58iywF3Bs1
+        +XkwRtJQ==;
 Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nfREM-00B9WG-Bs; Fri, 15 Apr 2022 19:03:42 +0000
-Date:   Fri, 15 Apr 2022 12:03:42 -0700
+        id 1nfRGI-00B9lw-E2; Fri, 15 Apr 2022 19:05:42 +0000
+Date:   Fri, 15 Apr 2022 12:05:42 -0700
 From:   Luis Chamberlain <mcgrof@kernel.org>
 To:     Song Liu <song@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        bpf <bpf@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Christoph Hellwig <hch@infradead.org>, imbrenda@linux.ibm.com
-Subject: Re: [PATCH v3 bpf RESEND 3/4] module: introduce module_alloc_huge
-Message-ID: <YlnBjizystrWB47D@bombadil.infradead.org>
-References: <20220414195914.1648345-1-song@kernel.org>
- <20220414195914.1648345-4-song@kernel.org>
- <YliFO2sDv31j5vLb@bombadil.infradead.org>
- <CAPhsuW42Dn2y9skhdJAK1fp9CFA06tpzG=6gMxeTobBj6xifPg@mail.gmail.com>
- <YliOC455r6XmE24Q@bombadil.infradead.org>
- <CAPhsuW5=BfCoWqFgnsLu-X+8FriJCxQ80+aS_9t6fFB1eGCvRQ@mail.gmail.com>
+Cc:     bpf@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, akpm@linux-foundation.org,
+        rick.p.edgecombe@intel.com, hch@infradead.org,
+        imbrenda@linux.ibm.com
+Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+Message-ID: <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
+References: <20220415164413.2727220-1-song@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPhsuW5=BfCoWqFgnsLu-X+8FriJCxQ80+aS_9t6fFB1eGCvRQ@mail.gmail.com>
+In-Reply-To: <20220415164413.2727220-1-song@kernel.org>
 Sender: Luis Chamberlain <mcgrof@infradead.org>
 X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -61,52 +52,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 02:31:18PM -0700, Song Liu wrote:
-> On Thu, Apr 14, 2022 at 2:11 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> >
-> > On Thu, Apr 14, 2022 at 02:03:17PM -0700, Song Liu wrote:
-> > > Hi Luis,
-> > >
-> > > On Thu, Apr 14, 2022 at 1:34 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
-> > > >
-> > > > On Thu, Apr 14, 2022 at 12:59:13PM -0700, Song Liu wrote:
-> > > > > Introduce module_alloc_huge, which allocates huge page backed memory in
-> > > > > module memory space. The primary user of this memory is bpf_prog_pack
-> > > > > (multiple BPF programs sharing a huge page).
-> > > > >
-> > > > > Signed-off-by: Song Liu <song@kernel.org>
-> > > >
-> > > > See modules-next [0], as modules.c has been chopped up as of late.
-> > > > So if you want this to go throug modules this will need to rebased
-> > > > on that tree. fortunately the amount of code in question does not
-> > > > seem like much.
-> > > >
-> > > > [0] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=modules-next
-> > >
-> > > We are hoping to ship this with to 5.18, as the set addresses some issue with
-> > > huge page backed vmalloc. I guess we cannot ship it via modules-next branch.
-> > >
-> >
-> > Huh, you intend this to go in as a fix for v5.18 (already released) once
-> > properly reviewed?  This seems quite large... for a fix.
-> >
-> > > How about we ship module_alloc_huge() to 5.18 in module.c for now, and once
-> > > we update modules-next branch, I will send another patch to clean it up?
-> >
-> > I rather set the expectations right about getting such a large fix in
-> > for v5.18. I haven't even sat down to review all the changes in light of
-> > this, but a cursorary glance seems to me it's rather "large" for a fix.
+On Fri, Apr 15, 2022 at 09:44:09AM -0700, Song Liu wrote:
+> Changes v3 => v4:
+> 1. Fix __weak module_alloc_huge; remove unused vmalloc_huge; rename
+>    __vmalloc_huge => vmalloc_huge. (Christoph Hellwig)
+> 2. Use vzalloc (as it was before vmalloc_no_huge) and clean up comments in
+>    kvm_s390_pv_alloc_vm.
 > 
-> Yes, I agree this is a little too big for a fix. I guess we can discuss whether
-> some of the set need to wait until 5.19.
+> Changes v2 => v3:
+> 1. Use __vmalloc_huge in alloc_large_system_hash.
+> 2. Use EXPORT_SYMBOL_GPL for new functions. (Christoph Hellwig)
+> 3. Add more description about the issues and changes.(Christoph Hellwig,
+>    Rick Edgecombe).
+> 
+> Changes v1 => v2:
+> 1. Add vmalloc_huge(). (Christoph Hellwig)
+> 2. Add module_alloc_huge(). (Christoph Hellwig)
+> 3. Add Fixes tag and Link tag. (Thorsten Leemhuis)
+> 
+> Enabling HAVE_ARCH_HUGE_VMALLOC on x86_64 and use it for bpf_prog_pack has
+> caused some issues [1], as many users of vmalloc are not yet ready to
+> handle huge pages. To enable a more smooth transition to use huge page
+> backed vmalloc memory, this set replaces VM_NO_HUGE_VMAP flag with an new
+> opt-in flag, VM_ALLOW_HUGE_VMAP. More discussions about this topic can be
+> found at [2].
+> 
+> Patch 1 removes VM_NO_HUGE_VMAP and adds VM_ALLOW_HUGE_VMAP.
+> Patch 2 uses VM_ALLOW_HUGE_VMAP in bpf_prog_pack.
+> 
+> [1] https://lore.kernel.org/lkml/20220204185742.271030-1-song@kernel.org/
+> [2] https://lore.kernel.org/linux-mm/20220330225642.1163897-1-song@kernel.org/
 
-Doing a more thorough review of this now, and when the other changes
-landed, it seems this is *large follow up fix* for an optimization for when tons
-of JIT eBPF programs are used. It's so large I can't be confident this also
-doesn't go in with other holes or issues, or that the other stuff merged
-already also has some other issues. So I can't see anything screaming
-for why this needs to go in for v5.18 other than it'd be nice.
+Looks good except for that I think this should just wait for v5.19. The
+fixes are so large I can't see why this needs to be rushed in other than
+the first assumptions of the optimizations had some flaws addressed here.
 
-So my preference is for this to go through v5.19 as I see no rush.
+If this goes through v5.19 expect conflicts on modules unless you use
+modules-testing.
 
   Luis
