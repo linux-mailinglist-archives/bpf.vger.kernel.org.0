@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E03A502D76
-	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 18:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613D0502D78
+	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 18:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355703AbiDOQHQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 12:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
+        id S1355702AbiDOQHW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 12:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355698AbiDOQHQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 12:07:16 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7B81EADF
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:04:47 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id q3so7450337plg.3
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:04:47 -0700 (PDT)
+        with ESMTP id S1355698AbiDOQHV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 12:07:21 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C82738D83
+        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:04:52 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id n18so7440545plg.5
+        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZcncKOI1d9UTl2lH3kdY8XOvGPP+O4rntBx2UkzXmgo=;
-        b=JMPGHcmBVzAMfCDUhvOJaufmU8vsbzjnyA6pNWBo6VDgFbF7VY6VJr9Lme5ZbaYqIM
-         1J5N5m1F7V2kQ1pIZ1u6SG4Nv+whowteqol2p1/c1631RwQsOK6g1iN+3kLo5KpmjfRY
-         yK9axefKbmKaYTBJ0qet4y4dPZwNqXm/JDaSW2cEEeJoZtx3dCvLf53++yel6kC2B5is
-         UQ1i/gKzupKPt7J4vPrnRD9lq7HezM9a2vFaLXWmFoHE0nkHSrX1Eiu7olW0Ugsa3ISB
-         fXRaAwu950y9xW+VLpUwITnAF9yEcvRB6BkclTWqd09OPcBVnhF2YCaRkcSZxP/az28y
-         ZyRQ==
+        bh=rjmvhYxS8afFZx5j9YBQMFNiV9OCM7KknZKWcG19uRc=;
+        b=kKMAhZHyKVcOBHHNQxFIeXjX4/42cEcek9gm0KOi8K32DHyFjCPoHw+sfQn+nRS6zA
+         jKhBza0KgLkmfsa1+boWXu2h8yEsrCuTLF0dqGIT6aCp6UoDg4tIa57zx1C03AxEpOoa
+         V5f3cuoUkfnleu3lppAIVa+STKoz9uue1pAuYh7XzNDHNPeoY3FyxP64Ywq65C1HUD1m
+         +ODPY02edRxSjaxRaVvmxkXWZuJjrnAxX3ydIs/3/zeg7JkaOBeR0gh4gVvkNf0oKQp5
+         BQTMIcO//rzy6Yj8oUwvm1/gGCC+P3gIqMlu0kLTuCilzy1RERo0IDiSg8jyHq14RpNu
+         8ZZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZcncKOI1d9UTl2lH3kdY8XOvGPP+O4rntBx2UkzXmgo=;
-        b=kKNuU8Yt+AJVFZiCDFCv2ASocrO9vI5gAjm+a6dsZDJyD2sXP8zcgmpM2HNB+3/u2+
-         L9bRSrRp9boIfyfh+hcUJ1x+w4fzLeyd1OUNUJRy0uMqlKfeKbIqhWsECye9f4VmOcTM
-         Bn5eZViPlRWQDdrBbYgcxohXYg0BqeSwlpCf4eYdi60+phcsH+7ND1u/yqaXPCK5nEXR
-         kLMPgjL6y0XmyPi7tamSPSkD9m/KJc3qWiZdMxHOkzz8vmUAWu+CxxiK/eBXSYGqE/oo
-         54LLy8RJQ4kYf7Fk8Ky3QyC0SGaKqS/sLgGcN5thlcBT0gFJVIzXiYeLYBP+79yjyTE6
-         hvYw==
-X-Gm-Message-State: AOAM532MY6smrEs6A81gt98pWqp3wKUSw2GtQR9cHuktybA0i+CxMZ1H
-        OONazP1L9dOSLjZJ0ldxvRGUMgCuG3U=
-X-Google-Smtp-Source: ABdhPJxzbd5BjBd1VazBMaDgot0aBoMYUbLA4TRQv2w5AGi5bFEFvae1ZpJ1uAEjRIGIqGdQ4SR6ew==
-X-Received: by 2002:a17:902:8217:b0:156:9c4f:90eb with SMTP id x23-20020a170902821700b001569c4f90ebmr51489716pln.121.1650038687251;
-        Fri, 15 Apr 2022 09:04:47 -0700 (PDT)
+        bh=rjmvhYxS8afFZx5j9YBQMFNiV9OCM7KknZKWcG19uRc=;
+        b=BY9A/PNsfhPWrSKLmjONKFTiNh4rLhbgFvzcf2QbmkD9NKmLcAUNe4PXx3/xZR1dE/
+         oUFHpq7m6m3DC7Lr56/gEFlseHCtKWVCIDzBFVuWX668zeG5GsedIcz5bA6Ysc3ZkCmH
+         2qrVZwu7EpAfg5nLbATf6q+tdPi+uUaTr0+WDhiQn5FJxREj3g+TPC0wGEktK6MR8FOE
+         caB8404RXiW5mG9KOUn7Z+mcFYAUwp3LmN6YO/abiA2PYnZqAsQ6Xf5rWJdG1asFbHbT
+         cJQvo+MCh7UjY6Ba7tMoHaNt/GlZKHUiKfSHePgNb+6rt/lXRh0rDfh8Ynv7KeD+vFg/
+         +MBA==
+X-Gm-Message-State: AOAM532uVbAetsPWaanLT54jPPHsnVTMHV3+PELqnDaobF9TkgLfT1bt
+        XaW6w3SlOV0OGgVITocHNvX9+reG3I4=
+X-Google-Smtp-Source: ABdhPJzjBdd+hlncfoRmE3aUYkgUnntL11dZijfxTYBOLflrlAb1JCx0ltSTnW798hSW2W3W1TtJ8A==
+X-Received: by 2002:a17:903:2113:b0:158:be3b:f3da with SMTP id o19-20020a170903211300b00158be3bf3damr7269993ple.56.1650038691751;
+        Fri, 15 Apr 2022 09:04:51 -0700 (PDT)
 Received: from localhost ([112.79.166.196])
-        by smtp.gmail.com with ESMTPSA id n12-20020a17090a670c00b001cbb7fdb9e4sm9056817pjj.53.2022.04.15.09.04.46
+        by smtp.gmail.com with ESMTPSA id s7-20020aa78bc7000000b005082ddeb6f8sm3282524pfd.199.2022.04.15.09.04.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Apr 2022 09:04:47 -0700 (PDT)
+        Fri, 15 Apr 2022 09:04:51 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -55,14 +55,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH bpf-next v5 11/13] libbpf: Add kptr type tag macros to bpf_helpers.h
-Date:   Fri, 15 Apr 2022 21:33:52 +0530
-Message-Id: <20220415160354.1050687-12-memxor@gmail.com>
+Subject: [PATCH bpf-next v5 12/13] selftests/bpf: Add C tests for kptr
+Date:   Fri, 15 Apr 2022 21:33:53 +0530
+Message-Id: <20220415160354.1050687-13-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220415160354.1050687-1-memxor@gmail.com>
 References: <20220415160354.1050687-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=886; h=from:subject; bh=oANeT/bZI3pMPuEceQ4Mk4ZXAAhu31wl0nGUhMKHh1U=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiWZdC3enbNiqWMaC7rBe+x2ZIIIXon5H7PAl4DNlA +TUfrPWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYlmXQgAKCRBM4MiGSL8RysR3D/ 48H/6g/oJkdCZRjb4Mdv85S0Gu23dXZaJ9/WFkh8E1JpfodZDHHlwjk6SSbuUOI4xQxeuhveM5FV9W mV69lPdhl08+ROB1Uz3e1DLyVYzwSWF3KKAJgbMhLPXSwnyA61Uc7ZDXXvic9+aIDdFPpf499TDioU xYwTnXqDNGYEzftHWP0utfMM6dm5GMCgKOD/LTayOt5Nwo4laZoShZJEqNvWYdgzBO2OzdK7HTxlAa lU+V+Pb1g6+NaRincYO8CKcU1jH/NZ1t8VF24K52OVX7pS8328XxoBzqGjqjjt8t3w2PQ+NqBWrrLg xMwN358ev4YHgtkFk9j2QCxCyR1HO98g9RNvBzR3uD8LW6R89U7Vhr3VzzCcuN9P+zNJoDLbQcPoYW FxEHzwMBeLVVnV2WYfCRG4JnJPoS2Fxq4YPLoF5NZw9OvPXVwrg8mfbhmqjpE/5O1gpE6ooTWHgCla uDE648/G3FJCzoeHK2hfpuJw9o3UIb3inogy+Z1LL3WpgelB4FUa/6Jxw90LDjkJfDkh7FPbOhLQOt qggrr/0u8R2bkLItuaGWtEpczwhU9P7C/ryC43SY74yGXLNf7UNTHLl/y/A3xv0bKib9BqNr3oQvVc i+dX4B4TCShhJ9x7pQB1i/HpExVLhFEIbfy9cecgBXFVpuTEKqjoPInazuZg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7611; h=from:subject; bh=7e/aTyfCpmunXQGI2UYImXVw/gfBPVbL4M94CXJvIAE=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiWZdCkg60q/7p1Lm/ZPlGCGfBldsdB9amOmr5Bz/v 3v2i5NaJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYlmXQgAKCRBM4MiGSL8RyqeTD/ 9iP0+HXAzortGbpN9R2SDIuIN0/UTvOX/PFfkdP+9rklWTp8cpFa/OfY50k9JjvhusEi0xXgkRJImw FvCvgRobmxP+i3gvi/DNNsZdBd7IO3XrF/LxEBFxQSbZEfLiHcBnCeEZkEutQ1ZCIv5jnhehQe3zAd G4aZc4zmwBG0cikx2Ubq6AF7MQiZnq4r362sOdh9gLPcFElUqMXQa6Igr2mbPfeRFbYPW0MjM0GcJk Fl4hq8ZVaLmZr2j+9ZFWrMJWXNNLiW2AtIvQjK7zCH9Wy2N7lx/zY+i5cqc/yZQP828YzJTE2YGTRC WtGsnmFHrOOMvG4QTqi0I9mB/fPtd5IVtFTkBc0vgk74iiPvRJ6HnSvRwMN+jiqQwnbkdGhgARmsyn 2RKXcrGMVM3J9662DglPfYiCvjor7bLjgs+zKeI3aTkb2BA/Votu8Cr5+ZCMfQFndF+oJFNnrbrfdZ W5NzeyX3MbCDffLQVmEDp2TpE2pCqG9OXNp39i00RipYvddA8gQYtfydMEsvXWn7Pl4UXoalJ6Oeaq VzPcJEe8lkvBszMoEkz3Jx1pGLi8MuokB2WaOHuMWuak8HibPp7bYh2zxIbrUJL6oDKgo5KQ+zEpLQ RbftYZwhOpQi/trM0b7S1TEwEzTBrVuTiztgXdF6C9n5j77/aOWjmpyU+/ZA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,31 +75,259 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Include convenience definitions:
-__kptr:	Unreferenced kptr
-__kptr_ref: Referenced kptr
-
-Users can use them to tag the pointer type meant to be used with the new
-support directly in the map value definition.
+This uses the __kptr and __kptr_ref macros as well, and tries to test
+the stuff that is supposed to work, since we have negative tests in
+test_verifier suite. Also include some code to test map-in-map support,
+such that the inner_map_meta matches the kptr_off_tab of map added as
+element.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- tools/lib/bpf/bpf_helpers.h | 2 ++
- 1 file changed, 2 insertions(+)
+ .../selftests/bpf/prog_tests/map_kptr.c       |  37 ++++
+ tools/testing/selftests/bpf/progs/map_kptr.c  | 190 ++++++++++++++++++
+ 2 files changed, 227 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_kptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/map_kptr.c
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 44df982d2a5c..bbae9a057bc8 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -149,6 +149,8 @@ enum libbpf_tristate {
- 
- #define __kconfig __attribute__((section(".kconfig")))
- #define __ksym __attribute__((section(".ksyms")))
-+#define __kptr __attribute__((btf_type_tag("kptr")))
-+#define __kptr_ref __attribute__((btf_type_tag("kptr_ref")))
- 
- #ifndef ___bpf_concat
- #define ___bpf_concat(a, b) a ## b
+diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+new file mode 100644
+index 000000000000..9e2fbda64a65
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++
++#include "map_kptr.skel.h"
++
++void test_map_kptr(void)
++{
++	struct map_kptr *skel;
++	int key = 0, ret;
++	char buf[24];
++
++	skel = map_kptr__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "map_kptr__open_and_load"))
++		return;
++
++	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
++	ASSERT_OK(ret, "array_map update");
++	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
++	ASSERT_OK(ret, "array_map update2");
++
++	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.hash_map), &key, buf, 0);
++	ASSERT_OK(ret, "hash_map update");
++	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.hash_map), &key);
++	ASSERT_OK(ret, "hash_map delete");
++
++	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.hash_malloc_map), &key, buf, 0);
++	ASSERT_OK(ret, "hash_malloc_map update");
++	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.hash_malloc_map), &key);
++	ASSERT_OK(ret, "hash_malloc_map delete");
++
++	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.lru_hash_map), &key, buf, 0);
++	ASSERT_OK(ret, "lru_hash_map update");
++	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.lru_hash_map), &key);
++	ASSERT_OK(ret, "lru_hash_map delete");
++
++	map_kptr__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/map_kptr.c b/tools/testing/selftests/bpf/progs/map_kptr.c
+new file mode 100644
+index 000000000000..1b0e0409eaa5
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/map_kptr.c
+@@ -0,0 +1,190 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++struct map_value {
++	struct prog_test_ref_kfunc __kptr *unref_ptr;
++	struct prog_test_ref_kfunc __kptr_ref *ref_ptr;
++};
++
++struct array_map {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 1);
++} array_map SEC(".maps");
++
++struct hash_map {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 1);
++} hash_map SEC(".maps");
++
++struct hash_malloc_map {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 1);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++} hash_malloc_map SEC(".maps");
++
++struct lru_hash_map {
++	__uint(type, BPF_MAP_TYPE_LRU_HASH);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 1);
++} lru_hash_map SEC(".maps");
++
++#define DEFINE_MAP_OF_MAP(map_type, inner_map_type, name)       \
++	struct {                                                \
++		__uint(type, map_type);                         \
++		__uint(max_entries, 1);                         \
++		__uint(key_size, sizeof(int));                  \
++		__uint(value_size, sizeof(int));                \
++		__array(values, struct inner_map_type);         \
++	} name SEC(".maps") = {                                 \
++		.values = { [0] = &inner_map_type },            \
++	}
++
++DEFINE_MAP_OF_MAP(BPF_MAP_TYPE_ARRAY_OF_MAPS, array_map, array_of_array_maps);
++DEFINE_MAP_OF_MAP(BPF_MAP_TYPE_ARRAY_OF_MAPS, hash_map, array_of_hash_maps);
++DEFINE_MAP_OF_MAP(BPF_MAP_TYPE_ARRAY_OF_MAPS, hash_malloc_map, array_of_hash_malloc_maps);
++DEFINE_MAP_OF_MAP(BPF_MAP_TYPE_ARRAY_OF_MAPS, lru_hash_map, array_of_lru_hash_maps);
++DEFINE_MAP_OF_MAP(BPF_MAP_TYPE_HASH_OF_MAPS, array_map, hash_of_array_maps);
++DEFINE_MAP_OF_MAP(BPF_MAP_TYPE_HASH_OF_MAPS, hash_map, hash_of_hash_maps);
++DEFINE_MAP_OF_MAP(BPF_MAP_TYPE_HASH_OF_MAPS, hash_malloc_map, hash_of_hash_malloc_maps);
++DEFINE_MAP_OF_MAP(BPF_MAP_TYPE_HASH_OF_MAPS, lru_hash_map, hash_of_lru_hash_maps);
++
++extern struct prog_test_ref_kfunc *bpf_kfunc_call_test_acquire(unsigned long *sp) __ksym;
++extern struct prog_test_ref_kfunc *
++bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b) __ksym;
++extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
++
++static void test_kptr_unref(struct map_value *v)
++{
++	struct prog_test_ref_kfunc *p;
++
++	p = v->unref_ptr;
++	/* store untrusted_ptr_or_null_ */
++	v->unref_ptr = p;
++	if (!p)
++		return;
++	if (p->a + p->b > 100)
++		return;
++	/* store untrusted_ptr_ */
++	v->unref_ptr = p;
++	/* store NULL */
++	v->unref_ptr = NULL;
++}
++
++static void test_kptr_ref(struct map_value *v)
++{
++	struct prog_test_ref_kfunc *p;
++
++	p = v->ref_ptr;
++	/* store ptr_or_null_ */
++	v->unref_ptr = p;
++	if (!p)
++		return;
++	if (p->a + p->b > 100)
++		return;
++	/* store NULL */
++	p = bpf_kptr_xchg(&v->ref_ptr, NULL);
++	if (!p)
++		return;
++	if (p->a + p->b > 100) {
++		bpf_kfunc_call_test_release(p);
++		return;
++	}
++	/* store ptr_ */
++	v->unref_ptr = p;
++	bpf_kfunc_call_test_release(p);
++
++	p = bpf_kfunc_call_test_acquire(&(unsigned long){0});
++	if (!p)
++		return;
++	/* store ptr_ */
++	p = bpf_kptr_xchg(&v->ref_ptr, p);
++	if (!p)
++		return;
++	if (p->a + p->b > 100) {
++		bpf_kfunc_call_test_release(p);
++		return;
++	}
++	bpf_kfunc_call_test_release(p);
++}
++
++static void test_kptr_get(struct map_value *v)
++{
++	struct prog_test_ref_kfunc *p;
++
++	p = bpf_kfunc_call_test_kptr_get(&v->ref_ptr, 0, 0);
++	if (!p)
++		return;
++	if (p->a + p->b > 100) {
++		bpf_kfunc_call_test_release(p);
++		return;
++	}
++	bpf_kfunc_call_test_release(p);
++}
++
++static void test_kptr(struct map_value *v)
++{
++	test_kptr_unref(v);
++	test_kptr_ref(v);
++	test_kptr_get(v);
++}
++
++SEC("tc")
++int test_map_kptr(struct __sk_buff *ctx)
++{
++	struct map_value *v;
++	int i, key = 0;
++
++#define TEST(map)					\
++	v = bpf_map_lookup_elem(&map, &key);		\
++	if (!v)						\
++		return 0;				\
++	test_kptr(v)
++
++	TEST(array_map);
++	TEST(hash_map);
++	TEST(hash_malloc_map);
++	TEST(lru_hash_map);
++
++#undef TEST
++	return 0;
++}
++
++SEC("tc")
++int test_map_in_map_kptr(struct __sk_buff *ctx)
++{
++	struct map_value *v;
++	int i, key = 0;
++	void *map;
++
++#define TEST(map_in_map)                                \
++	map = bpf_map_lookup_elem(&map_in_map, &key);   \
++	if (!map)                                       \
++		return 0;                               \
++	v = bpf_map_lookup_elem(map, &key);		\
++	if (!v)						\
++		return 0;				\
++	test_kptr(v)
++
++	TEST(array_of_array_maps);
++	TEST(array_of_hash_maps);
++	TEST(array_of_hash_malloc_maps);
++	TEST(array_of_lru_hash_maps);
++	TEST(hash_of_array_maps);
++	TEST(hash_of_hash_maps);
++	TEST(hash_of_hash_malloc_maps);
++	TEST(hash_of_lru_hash_maps);
++
++#undef TEST
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.35.1
 
