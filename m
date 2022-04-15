@@ -2,229 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B05AC502D5E
-	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 17:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA35B502D6F
+	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 18:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346627AbiDOQBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 12:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
+        id S1347909AbiDOQGY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 12:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345060AbiDOQBn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 12:01:43 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CC399ED7;
-        Fri, 15 Apr 2022 08:59:15 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23ENteX5001344;
-        Fri, 15 Apr 2022 08:59:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=Q4f6+CYDMILdmpPw/S4FhFMHsxqU+erd4alHDF7mtvE=;
- b=RXshzK68Gci+UsOPe6hDjwNHRHyWxxpbPjm/7fJalOhPHQEmIxKnDUlWw4rq8nByJy3t
- 1Y0EbYe3tzKtvXNhhtUr1udEp0T7WKj06Jzw6D2rE1yZj1+iUCbizePzBqRcF1Zu4C14
- 3GItEeTLZi4PBVMdEEn1/zhgBVc6HoSQ19I= 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fewgpkkwf-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Apr 2022 08:59:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EJzPIrLgDowNjmmuLnJwf8VM46AvmXeytOAIC5GOirHKFOSSqLQ+bD7fZSmWxsZypsQC1lh3w4Xb5fsquutWwcYicZIw1zdc105qji+UuUzq3Yks0YPMioXkLpUCnIF+P3fn36H/Z3JUtzOV3FoutrDExoImvYxSmMDX8n/XVIYu4LxssYqwXK+IibYhmX1e6Mq5tWC2vJX0+u2wWRI0ifjTcvSBp9KSLIjDid+f7H1uYOMpPl2WcYggllij7wrdNtPbvTjGi7AYWSkHrI5K79zxeP/hVzTiaQ+nJkDEMIFwDLr22Dd4GEiocP8tG5c7L9Q+IrjIPcovYsJR2Iw4tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q4f6+CYDMILdmpPw/S4FhFMHsxqU+erd4alHDF7mtvE=;
- b=efBbJyTRS4XhsfqaIBgDYfBwZDOMRhK/XUMPeXHZJk956ptHFVT+yTAh0DOszcRlwTRKoYlr6maNjIe7HfFxwuEqZVrOte2Jiigql20qlJiqOFdZT0J2wtdiHTGQ/f04G9b6XqnCtSzYDLYPj+YRGCAF1I0G0k6fuhcAmydBt4U2nX0e/OwMOcCPl8idzbaztgMeaxggPcMM6mqxYyBy9RWMa0OBnQeeOx7NUHpKbxnJm4ichx/baZFOS4PVc6+D933a/Vggj22255ZceaVNcTC/EBOWC7i7ufy1bovPxQEjCNq9K8lKj48JCPerC3UNoL9+RdC6VAnOw5xX4mAwTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by BN8PR15MB2628.namprd15.prod.outlook.com (2603:10b6:408:c7::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.20; Fri, 15 Apr
- 2022 15:59:03 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::20d2:26a2:6cb1:3c4b]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::20d2:26a2:6cb1:3c4b%6]) with mapi id 15.20.5164.020; Fri, 15 Apr 2022
- 15:59:03 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Song Liu <song@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
-        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>
-Subject: Re: [PATCH v3 bpf RESEND 3/4] module: introduce module_alloc_huge
-Thread-Topic: [PATCH v3 bpf RESEND 3/4] module: introduce module_alloc_huge
-Thread-Index: AQHYUDvAnvLWkEyvukCyKG12yDXWaKzwhM4AgACeKwA=
-Date:   Fri, 15 Apr 2022 15:59:02 +0000
-Message-ID: <E12590A1-ED97-43BF-9977-B69FE44CE423@fb.com>
-References: <20220414195914.1648345-1-song@kernel.org>
- <20220414195914.1648345-4-song@kernel.org> <YlkRlm6rrxcMAupN@infradead.org>
-In-Reply-To: <YlkRlm6rrxcMAupN@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.80.82.1.1)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1c28496f-fae2-4ede-942c-08da1ef8dcc1
-x-ms-traffictypediagnostic: BN8PR15MB2628:EE_
-x-microsoft-antispam-prvs: <BN8PR15MB2628E9587EAB4A37D18906D9B3EE9@BN8PR15MB2628.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zQKWQCHAlYsGkPDu59ROsoKL2s9e+RRfbYpu2t9EAwkqD/W1ILc58mGp8QfFEIMtJpCCqfc0L2ZFiT4gBSrzNAco+lGDYZqhkM3qey1SuLwWesbVBVR3yY0YM/txKQdMxO58zv0Lqk3KJG2oXVvaGBGq7ganQw89bPGMHKJZksdGAw0chjyoQZTTCcdwMDiftRBz3sV/KU/Gg0gJb1u47aysJLLzRGcd7zPSOLPIJdLBfFyIctFbkYWOTsD2ZtJjELELjvGElKuGvUqWPFtG9SCCh8Yqd9GB9uYcOvESwz45rfpTLj5i4/IB+jlGtxEGFfFZQ5Ve6jJm4gOddckVL4uXFjBHJUORAedPnBSUtYa8Ck5UgPTx/tZKVYP2eOwZluz8yuLesPnEvGq8fHRSIFQ8oICjY7K6qqfACyhl5YZEgquywjslJXRYcxfpGO95qN1g7i3E3g5lAjWGcyCrUXY+hBsS8RJrfRDsxlksypuKe09WNkPshr4fG1rIFgHbybmwYOJvsb6sJpc7o8POEgGWRhd7o6eK7PH0yYeadfj7mFKhN4i4WenCq7qD2VUAcBKDEGKDWBzL2M41l9zjkS02i+BkRm/vNF3rL+EM2WAvAk15IOOz7X3FzG6cI4E361AeFDsyfS3GPVFg/qz0CwRSvwRi6au57L0xXVsRQ/3YupG+ZrHp2yi/KB3n6xvLj3j724iL5pjabl3u7T9S+i3LUTQiGX2W3DIQ6EFzXDTVi8SVi6a11hMAJ7ThyqregkX1xIBve0W6LzuhvxkSRg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6486002)(91956017)(2906002)(5660300002)(7416002)(8936002)(71200400001)(508600001)(66476007)(6916009)(8676002)(66556008)(64756008)(36756003)(86362001)(316002)(4326008)(38070700005)(66946007)(76116006)(38100700002)(54906003)(53546011)(66446008)(83380400001)(122000001)(186003)(33656002)(6506007)(2616005)(6512007)(14583001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?c2h1+LlNKj9ZzYYLd4fiBX8aaZTApwYPxtYi0b4sAbmVO+pna5LUq83k6o02?=
- =?us-ascii?Q?WpA+zCCZjyC7Udiou6E31ItscXeeh/QoS7ronL3GgrjvB20dxKPO3VoHyTy0?=
- =?us-ascii?Q?PU4e/2jMJRXEhnQ6LbN+ryUIy2ttDP7ovgNXhcDb9/aioYlEMYzdnxIGR+lB?=
- =?us-ascii?Q?2fdv0TMlM6RdKmp8/ftFy7B2juHTZ+7LvgfZZar1aW0Q5jE1AZ0WriIqLnpP?=
- =?us-ascii?Q?cLO51Uqwz1a21ji+DQ4d7ZGoJetw4v6xjfEWlf0DXVYZeRLid/F+Up2w5+Rw?=
- =?us-ascii?Q?2BKs2NpfbF85A4VXZC2xo6vnqUekDnMDXdGx+8hNYO8IwJLzWQDt8gb2xdiH?=
- =?us-ascii?Q?D9vyV2LKLNoRB31e0aJFS3sBt7/mk4ySQH2Z2LZUkT32KS7r+QCg5DoVkt1j?=
- =?us-ascii?Q?unzzRBf2dKsSL5Xyu46VxmYaFC/QCfkaeQv1hzmx1f9NX2OxOji9V+8ZOG+r?=
- =?us-ascii?Q?RWH03qLT4dMZWZoQRBZEIYD+XmU6BzimN6W0svbWoCFnp6x0zbX3852a82Ug?=
- =?us-ascii?Q?sLN7gyjPzx7fmkxgbZ5x42NmWYcVuCRdjNyjFIR37bqMEqbkiOIoarYkFOMx?=
- =?us-ascii?Q?QQ6mnXEko/YewWxbVivCXRqGVzMo0c/BAtoSG2kGMeIDWU41YQryeo+MD/Au?=
- =?us-ascii?Q?LNBbT70DcM/5YGP9IDmASLW5mnIrdPriTQHZRBws5tAa1oQqCXyw7hS4lQX3?=
- =?us-ascii?Q?XO/EO8J6fhAuO2iRbNb044oTJwOP8sJREAM/I7mpn5jea2yjotvbdZkpr5My?=
- =?us-ascii?Q?tQ1leDIRWmQEYD1S3i1mMxYsgym1akg+b+f4m5BGFq6ZxtNSy8pjsHD1JSgk?=
- =?us-ascii?Q?xCkjpfk4iWG0Imd9fuDTjC+Z8b45wejflyD5eQYa7FD6BIgJnlc9/bcEQPK2?=
- =?us-ascii?Q?wl+F5RVqzfBTZt8wV1qi96wxUoR310z4SfXzGxsJGQuZ0NFSEOcd+ssh7QCp?=
- =?us-ascii?Q?eFGq9TOfohylnD9Z5GLpW0QgCftoxGXf4+pL7dExjgJzSwueOry4F8wet46Y?=
- =?us-ascii?Q?DAVZY3wDI3RQIA5HchbIR57pKETC/7TyfObUY7UZZqJAnDRrQMRu7jFyZiLS?=
- =?us-ascii?Q?XNKjVzjY954Ua51Axdv3hT87ZesLmxZ5/HCOBMNzz87btX3MMBNQIW1dQR2o?=
- =?us-ascii?Q?SDytq30HLsEiqJoZCEadkT++XpcEi9+PYTeGHDy2Wfc7Qg+w3NGo5wkoX0xO?=
- =?us-ascii?Q?+4zbqM70F5ZUSKBGCoML7bj3yIYNNswo00S2rXenItwjiud6/mLea9Uby5DG?=
- =?us-ascii?Q?fbyjr1zY4UhwGsUWYqmwyHVLBRLIuHlj2uaNhOYO5AlI3WSpdDf4YH8FmuU7?=
- =?us-ascii?Q?jBN+NEXAk0kKRaRhDT5NX7q0NOK3+G4PlpKMMB702RoHu7SxGEWnHX3OCR7C?=
- =?us-ascii?Q?c1w5rd6wROTGuaq14o5SbTOX1OIojAXUfPhJDUzbKqpSM/1yaC8hdIIqWjjP?=
- =?us-ascii?Q?s5DFmrBA9XbtjUXU/Zu0ydcdtFQvIJ7766cap0O3u8sjRdYBfwaraWsoUYWX?=
- =?us-ascii?Q?udUWFlinj6bYynxTrdXkMS8RmWm8gVkpJMLBMWAAbqEtxUIgq7CuNVpacmEB?=
- =?us-ascii?Q?1BX0r1A5P8aVn2rjBDElJyePQM2AjMo2qFcJeaXyL8goNIpdBrtYD1g3Zvpm?=
- =?us-ascii?Q?vciQszsITEXbTaHmEHgBD9dX6yoaEoJCg3C4r0t3gBtd2LDTk38updpIgxHz?=
- =?us-ascii?Q?aduIub/OnJfkBv2Pf9PbyZLbH+C3Xxo6OBZ1dZUoRiGVzCEZbhXYGd33Abes?=
- =?us-ascii?Q?9dCgBFQGbRAeXA08kbGSHz2bV2euiHdjXTtoZ7gD8EM8HqCsI3Vq?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <ACFB51FC4C6CC7458EC46E310D7E9055@namprd15.prod.outlook.com>
+        with ESMTP id S1344062AbiDOQGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 12:06:22 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82CB9D0F1
+        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:03:53 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id r10so3740106pfh.13
+        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 09:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DextvyFH+mA/MhwVPW/rEUDpHOjdq+Cdf/Cgk+NtJ9o=;
+        b=EjVEZNFGYvzgX2DYXarCjujY0AXgKSXWO0/raUP8lDMFN1uDeISFpem5VmjjjDgrFH
+         s5C5Rezx9lfcmsyZKk23roqKY4HlXOD/QxiG8veDVeFYKCckcnh/hq262IbrO0MunEgz
+         RyP1OyWq/ubU/TdqEUWFuFFfY1CCYL21OsJJWXbKhO4ie/SSndWGTZsbgSfh66LZzANt
+         Nz68MKvON6Yfi3ho5ir4RFCkXmESPMNHhbEmxi5viSXV8PIwd3N2d0diJjTbOT6N7B3N
+         wj02LxtXp6LeCl20BjYTb6FJ69WH4hNGEwTHNYG/DVl5am9v3e5cx9qbyPW+VNlQctgP
+         2gRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DextvyFH+mA/MhwVPW/rEUDpHOjdq+Cdf/Cgk+NtJ9o=;
+        b=C0oGnPjutMhAuAGU7Dafg10HveGdtvz8ts+qEeD8JF/hPKsusnhSZv4tSt9EOGPd5S
+         Xmy1hISW7QPeOqtyjpiC7cjfQ9qXp2XombGLjiFh7i525P8UA3+JCmKHICqg89HDWmkN
+         IcHJ7VKhAHmRItHlgmJ1V5eJ6NR9C7aq5v/E67nfYI+q23lNYM6eD5+KkP+1rXklvKPR
+         mFo6KbuyzWaQn25BYk2UF1W3qoweMrv0CYo0s6Kkm8csp9n7OUQR1t5fpWR9zs3oH7i7
+         5yo2ZV1afAKAe+5J9k8ec3YmzcJru8XZR+wjuX/cke0aml/WHpYCmBRr4Se/UuhV6buU
+         N7pw==
+X-Gm-Message-State: AOAM530pi5gxoiOiJ+gN6q1Ea3l+XfdU7zcsvtPi8RcBGnUhAV9mh6ll
+        XOxnVcvmgmCUY6JiRG/Q5pC5TbBKwvw=
+X-Google-Smtp-Source: ABdhPJzhDATjlndNYIKfKD0qSPzdTL7n1qy+KD9qOhpL2fEHGiaQVHqF74ESyzHK2XGzNGCyS4e42w==
+X-Received: by 2002:a63:5441:0:b0:39d:4310:3f0e with SMTP id e1-20020a635441000000b0039d43103f0emr6914304pgm.586.1650038632969;
+        Fri, 15 Apr 2022 09:03:52 -0700 (PDT)
+Received: from localhost ([112.79.166.196])
+        by smtp.gmail.com with ESMTPSA id j7-20020a056a00130700b004b9f7cd94a4sm3397972pfu.56.2022.04.15.09.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Apr 2022 09:03:52 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: [PATCH bpf-next v5 00/13] Introduce typed pointer support in BPF maps
+Date:   Fri, 15 Apr 2022 21:33:41 +0530
+Message-Id: <20220415160354.1050687-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c28496f-fae2-4ede-942c-08da1ef8dcc1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2022 15:59:02.9961
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kG1PHisiLyI6bmwngTHzJBe3cwuyV8wgyYa+EYcNsS4wDDsJ3Rdi21rxtAhVsxdMXrAayybR42H2QvCpbOv/+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2628
-X-Proofpoint-ORIG-GUID: 3iAno2ZIb91sr-cSVqHCfEgxwTxyIxh6
-X-Proofpoint-GUID: 3iAno2ZIb91sr-cSVqHCfEgxwTxyIxh6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-15_06,2022-04-15_01,2022-02-23_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10218; h=from:subject; bh=EIDQndulK8P9555bbQAe4ooEP0AaSDpH/ir7kmqTGS8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiWZdBhHpgWjAuhKbGCJ9aN6A17/1S9rG7V9wigf2H jbsQI4CJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYlmXQQAKCRBM4MiGSL8RyvYwEA COHe56X6EF/lFuKZie4PmkU14sEnEsRzqih+Vw9cLkqyxqAAIlJW8q81+dL67HsuhDXvQ8z/Gq4zuE tU/vbn/Bkg9A90cSfh1H73vIUE5iajFqjHuZuysvU/Z5SwdOeazEsIqpgjXmVFWIthARYu9dRo1NRt 5jC2s86B1bbdSxd1DS5meoCHHfH2i/Kqkz5d5j/Au/noDAxUP9qY7V6xgREbOGwMqzAxTfXoR+XhTN A52J7K/TpByA6OmaMTtx2hh6eowStP1ujwbDE0LibfyIoagYodnXTtzLL4jpKr9T1s5NnooC1OmslD 6uKIEFP+PriNbbrt0rLibBzKWUSfskGsubEAj20eQRefidEPnySsqdNKtvw8xuHKAg7kaoYezhatV7 /sU5TlPBPP5f92GXdGklbQv5AvKHr5ZSyAMHWkSgFsbjVMIZ+uXa2tbX8FzBh9kM0xo2P3sddxb0YV iaga9+Z2kQWPY23/JJilAMj75a7D7RsA6pCIFIEsAohgV2LpImvD+K91B8E9sMiemMrbY81JFAavOM 0ijJEM1rzSQDISwEmuxRNmy3O1EBg/+gIoaLX9Wv7R6btGzyJ3N7CUfEfu2NiC6/C26eFdt4BHYqje tWq269p4Gp4vVl/yGSW+uhVjP3ZBnh8nSLaoxlZ8vjnkUYBe/DbHl2tnGNAQ==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This set enables storing pointers of a certain type in BPF map, and extends the
+verifier to enforce type safety and lifetime correctness properties.
 
+The infrastructure being added is generic enough for allowing storing any kind
+of pointers whose type is available using BTF (user or kernel) in the future
+(e.g. strongly typed memory allocation in BPF program), which are internally
+tracked in the verifier as PTR_TO_BTF_ID, but for now the series limits them to
+two kinds of pointers obtained from the kernel.
 
-> On Apr 14, 2022, at 11:32 PM, Christoph Hellwig <hch@infradead.org> wrote:
-> 
-> On Thu, Apr 14, 2022 at 12:59:13PM -0700, Song Liu wrote:
->> Introduce module_alloc_huge, which allocates huge page backed memory in
->> module memory space. The primary user of this memory is bpf_prog_pack
->> (multiple BPF programs sharing a huge page).
->> 
->> Signed-off-by: Song Liu <song@kernel.org>
->> ---
->> arch/x86/kernel/module.c | 21 +++++++++++++++++++++
->> include/linux/moduleloader.h | 5 +++++
->> kernel/module.c | 5 +++++
->> 3 files changed, 31 insertions(+)
->> 
->> diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
->> index b98ffcf4d250..63f6a16c70dc 100644
->> --- a/arch/x86/kernel/module.c
->> +++ b/arch/x86/kernel/module.c
->> @@ -86,6 +86,27 @@ void *module_alloc(unsigned long size)
->> 	return p;
->> }
->> 
->> +void *module_alloc_huge(unsigned long size)
->> +{
->> +	gfp_t gfp_mask = GFP_KERNEL;
->> +	void *p;
->> +
->> +	if (PAGE_ALIGN(size) > MODULES_LEN)
->> +		return NULL;
->> +
->> +	p = __vmalloc_node_range(size, MODULE_ALIGN,
->> +				 MODULES_VADDR + get_module_load_offset(),
->> +				 MODULES_END, gfp_mask, PAGE_KERNEL,
->> +				 VM_DEFER_KMEMLEAK | VM_ALLOW_HUGE_VMAP,
->> +				 NUMA_NO_NODE, __builtin_return_address(0));
->> +	if (p && (kasan_alloc_module_shadow(p, size, gfp_mask) < 0)) {
->> +		vfree(p);
->> +		return NULL;
->> +	}
->> +
->> +	return p;
->> +}
->> +
->> #ifdef CONFIG_X86_32
->> int apply_relocate(Elf32_Shdr *sechdrs,
->> 		 const char *strtab,
->> diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
->> index 9e09d11ffe5b..d34743a88938 100644
->> --- a/include/linux/moduleloader.h
->> +++ b/include/linux/moduleloader.h
->> @@ -26,6 +26,11 @@ unsigned int arch_mod_section_prepend(struct module *mod, unsigned int section);
->> sections. Returns NULL on failure. */
->> void *module_alloc(unsigned long size);
->> 
->> +/* Allocator used for allocating memory in module memory space. If size is
->> + * greater than PMD_SIZE, allow using huge pages. Returns NULL on failure.
->> + */
->> +void *module_alloc_huge(unsigned long size);
->> +
->> /* Free memory returned from module_alloc. */
->> void module_memfree(void *module_region);
->> 
->> diff --git a/kernel/module.c b/kernel/module.c
->> index 6cea788fd965..b2c6cb682a7d 100644
->> --- a/kernel/module.c
->> +++ b/kernel/module.c
->> @@ -2839,6 +2839,11 @@ void * __weak module_alloc(unsigned long size)
->> 			NUMA_NO_NODE, __builtin_return_address(0));
->> }
->> 
->> +void * __weak module_alloc_huge(unsigned long size)
->> +{
->> +	return vmalloc_huge(size);
->> +}
-> 
-> Umm. This should use the same parameters as module_alloc except for
-> also passing the new huge page flag.
+Obviously, use of this feature depends on map BTF.
 
-Will fix the set and send v4. 
+1. Unreferenced kernel pointer
 
-Thanks,
-Song
+In this case, there are very few restrictions. The pointer type being stored
+must match the type declared in the map value. However, such a pointer when
+loaded from the map can only be dereferenced, but not passed to any in-kernel
+helpers or kernel functions available to the program. This is because while the
+verifier's exception handling mechanism coverts BPF_LDX to PROBE_MEM loads,
+which are then handled specially by the JIT implementation, the same liberty is
+not available to accesses inside the kernel. The pointer by the time it is
+passed into a helper has no lifetime related guarantees about the object it is
+pointing to, and may well be referencing invalid memory.
+
+2. Referenced kernel pointer
+
+This case imposes a lot of restrictions on the programmer, to ensure safety. To
+transfer the ownership of a reference in the BPF program to the map, the user
+must use the bpf_kptr_xchg helper, which returns the old pointer contained in
+the map, as an acquired reference, and releases verifier state for the
+referenced pointer being exchanged, as it moves into the map.
+
+This a normal PTR_TO_BTF_ID that can be used with in-kernel helpers and kernel
+functions callable by the program.
+
+However, if BPF_LDX is used to load a referenced pointer from the map, it is
+still not permitted to pass it to in-kernel helpers or kernel functions. To
+obtain a reference usable with helpers, the user must invoke a kfunc helper
+which returns a usable reference (which also must be eventually released before
+BPF_EXIT, or moved into a map).
+
+Since the load of the pointer (preserving data dependency ordering) must happen
+inside the RCU read section, the kfunc helper will take a pointer to the map
+value, which must point to the actual pointer of the object whose reference is
+to be raised. The type will be verified from the BTF information of the kfunc,
+as the prototype must be:
+
+	T *func(T **, ... /* other arguments */);
+
+Then, the verifier checks whether pointer at offset of the map value points to
+the type T, and permits the call.
+
+This convention is followed so that such helpers may also be called from
+sleepable BPF programs, where RCU read lock is not necessarily held in the BPF
+program context, hence necessiating the need to pass in a pointer to the actual
+pointer to perform the load inside the RCU read section.
+
+Notes
+-----
+
+ * C selftests require https://reviews.llvm.org/D119799 to pass.
+ * Unlike BPF timers, kptr is not reset or freed on map_release_uref.
+ * Referenced kptr storage is always treated as unsigned long * on kernel side,
+   as BPF side cannot mutate it. The storage (8 bytes) is sufficient for both
+   32-bit and 64-bit platforms.
+ * Use of WRITE_ONCE to reset unreferenced kptr on 32-bit systems is fine, as
+   the actual pointer is always word sized, so the store tearing into two 32-bit
+   stores won't be a problem as the other half is always zeroed out.
+
+Changelog:
+----------
+v4 -> v5
+v4: https://lore.kernel.org/bpf/20220409093303.499196-1-memxor@gmail.com
+
+ * Address comments from Joanne
+   * Move __btf_member_bit_offset before strcmp
+   * Move strcmp conditional on name to unref kptr patch
+   * Directly return from btf_find_struct in patch 1
+   * Use enum btf_field_type vs int field_type
+   * Put btf and btf_id in off_desc in named struct 'kptr'
+   * Switch order for BTF_FIELD_IGNORE check
+   * Drop dead tab->nr_off = 0 store
+   * Use i instead of tab->nr_off to btf_put on failure
+   * Replace kzalloc + memcpy with kmemdup (kernel test robot)
+   * Reject both BPF_F_RDONLY_PROG and BPF_F_WRONLY_PROG
+   * Add logging statement for reject BPF_MODE(insn->code) != BPF_MEM
+   * Rename off_desc -> kptr_off_desc in check_mem_access
+   * Drop check for err, fallthrough to end of function
+   * Remove is_release_function, use meta.release_regno to detect release
+     function, release reference state, and remove check_release_regno
+   * Drop off_desc->flags, use off_desc->type
+   * Update comment for ARG_PTR_TO_KPTR
+ * Distinguish between direct/indirect access to kptr
+ * Drop check_helper_mem_access from process_kptr_func, check_mem_reg in kptr_get
+ * Add verifier test for helper accessing kptr indirectly
+ * Fix other misc nits, add Acked-by for patch 2
+
+v3 -> v4
+v3: https://lore.kernel.org/bpf/20220320155510.671497-1-memxor@gmail.com
+
+ * Use btf_parse_kptrs, plural kptrs naming (Joanne, Andrii)
+ * Remove unused parameters in check_map_kptr_access (Joanne)
+ * Handle idx < info_cnt kludge using tmp variable (Andrii)
+ * Validate tags always precede modifiers in BTF (Andrii)
+   * Split out into https://lore.kernel.org/bpf/20220406004121.282699-1-memxor@gmail.com
+ * Store u32 type_id in btf_field_info (Andrii)
+ * Use base_type in map_kptr_match_type (Andrii)
+ * Free	kptr_off_tab when not bpf_capable (Martin)
+ * Use PTR_RELEASE flag instead of bools in bpf_func_proto (Joanne)
+ * Drop extra reg->off and reg->ref_obj_id checks in map_kptr_match_type (Martin)
+ * Use separate u32 and u8 arrays for offs and sizes in off_arr (Andrii)
+ * Simplify and remove map->value_size sentinel in copy_map_value (Andrii)
+ * Use sort_r to keep both arrays in sync while sorting (Andrii)
+ * Rename check_and_free_timers_and_kptr to check_and_free_fields (Andrii)
+ * Move dtor prototype checks to registration phase (Alexei)
+ * Use ret variable for checking ASSERT_XXX, use shorter strings (Andrii)
+ * Fix missing checks for other maps (Jiri)
+ * Fix various other nits, and bugs noticed during self review
+
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20220317115957.3193097-1-memxor@gmail.com
+
+ * Address comments from Alexei
+   * Set name, sz, align in btf_find_field
+   * Do idx >= info_cnt check in caller of btf_find_field_*
+     * Use extra element in the info_arr to make this safe
+   * Remove while loop, reject extra tags
+   * Remove cases of defensive programming
+   * Move bpf_capable() check to map_check_btf
+   * Put check_ptr_off_reg reordering hunk into separate patch
+   * Warn for ref_ptr once
+   * Make the meta.ref_obj_id == 0 case simpler to read
+   * Remove kptr_percpu and kptr_user support, remove their tests
+   * Store size of field at offset in off_arr
+ * Fix BPF_F_NO_PREALLOC set wrongly for hash map in C selftest
+ * Add missing check_mem_reg call for kptr_get kfunc arg#0 check
+
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20220220134813.3411982-1-memxor@gmail.com
+
+ * Address comments from Alexei
+   * Rename bpf_btf_find_by_name_kind_all to bpf_find_btf_id
+   * Reduce indentation level in that function
+   * Always take reference regardless of module or vmlinux BTF
+   * Also made it the same for btf_get_module_btf
+   * Use kptr, kptr_ref, kptr_percpu, kptr_user type tags
+   * Don't reserve tag namespace
+   * Refactor btf_find_field to be side effect free, allocate and populate
+     kptr_off_tab in caller
+   * Move module reference to dtor patch
+   * Remove support for BPF_XCHG, BPF_CMPXCHG insn
+   * Introduce bpf_kptr_xchg helper
+   * Embed offset array in struct bpf_map, populate and sort it once
+   * Adjust copy_map_value to memcpy directly using this offset array
+   * Removed size member from offset array to save space
+ * Fix some problems pointed out by kernel test robot
+ * Tidy selftests
+ * Lots of other minor fixes
+
+Kumar Kartikeya Dwivedi (13):
+  bpf: Make btf_find_field more generic
+  bpf: Move check_ptr_off_reg before check_map_access
+  bpf: Allow storing unreferenced kptr in map
+  bpf: Tag argument to be released in bpf_func_proto
+  bpf: Allow storing referenced kptr in map
+  bpf: Prevent escaping of kptr loaded from maps
+  bpf: Adapt copy_map_value for multiple offset case
+  bpf: Populate pairs of btf_id and destructor kfunc in btf
+  bpf: Wire up freeing of referenced kptr
+  bpf: Teach verifier about kptr_get kfunc helpers
+  libbpf: Add kptr type tag macros to bpf_helpers.h
+  selftests/bpf: Add C tests for kptr
+  selftests/bpf: Add verifier tests for kptr
+
+ include/linux/bpf.h                           | 110 +++-
+ include/linux/bpf_verifier.h                  |   3 +-
+ include/linux/btf.h                           |  23 +
+ include/uapi/linux/bpf.h                      |  12 +
+ kernel/bpf/arraymap.c                         |  14 +-
+ kernel/bpf/btf.c                              | 526 ++++++++++++++++--
+ kernel/bpf/hashtab.c                          |  58 +-
+ kernel/bpf/helpers.c                          |  21 +
+ kernel/bpf/map_in_map.c                       |   5 +-
+ kernel/bpf/ringbuf.c                          |   4 +-
+ kernel/bpf/syscall.c                          | 248 ++++++++-
+ kernel/bpf/verifier.c                         | 412 ++++++++++----
+ net/bpf/test_run.c                            |  45 +-
+ net/core/filter.c                             |   2 +-
+ tools/include/uapi/linux/bpf.h                |  12 +
+ tools/lib/bpf/bpf_helpers.h                   |   2 +
+ .../selftests/bpf/prog_tests/map_kptr.c       |  37 ++
+ tools/testing/selftests/bpf/progs/map_kptr.c  | 190 +++++++
+ tools/testing/selftests/bpf/test_verifier.c   |  55 +-
+ .../testing/selftests/bpf/verifier/map_kptr.c | 469 ++++++++++++++++
+ .../selftests/bpf/verifier/ref_tracking.c     |   2 +-
+ tools/testing/selftests/bpf/verifier/sock.c   |   6 +-
+ 22 files changed, 2057 insertions(+), 199 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_kptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/map_kptr.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/map_kptr.c
+
+-- 
+2.35.1
 
