@@ -2,74 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7AC5020FF
-	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 05:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AED502116
+	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 05:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349172AbiDODu3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Apr 2022 23:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
+        id S244727AbiDOD4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Apr 2022 23:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349171AbiDODu1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Apr 2022 23:50:27 -0400
+        with ESMTP id S242764AbiDOD4R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Apr 2022 23:56:17 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3795AA64;
-        Thu, 14 Apr 2022 20:48:00 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Kfj0v07tnzgYpt;
-        Fri, 15 Apr 2022 11:46:06 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656439F6D0;
+        Thu, 14 Apr 2022 20:53:50 -0700 (PDT)
+Received: from kwepemi500015.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Kfj9154GvzfYsy;
+        Fri, 15 Apr 2022 11:53:09 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ kwepemi500015.china.huawei.com (7.221.188.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 15 Apr 2022 11:47:56 +0800
-Message-ID: <b9667d4b-5246-ee49-22af-c05ffeeaa679@huawei.com>
-Date:   Fri, 15 Apr 2022 11:47:56 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH bpf-next v2 0/6] bpf trampoline for arm64
-Content-Language: en-US
-To:     Hou Tao <houtao1@huawei.com>, <bpf@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
+ 15.1.2375.24; Fri, 15 Apr 2022 11:53:47 +0800
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 15 Apr 2022 11:53:47 +0800
+Subject: Re: [PATCH] perf llvm: Fix compile bpf failed to cope with latest
+ llvm
+To:     Nick Desaulniers <ndesaulniers@google.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, <nathan@kernel.org>, <trix@redhat.com>,
+        <ak@linux.intel.com>, <adrian.hunter@intel.com>,
+        <james.clark@arm.com>, <linux-perf-users@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>
-References: <20220414162220.1985095-1-xukuohai@huawei.com>
- <b9d38c43-a2a7-ae6d-79e1-51507103ef88@huawei.com>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <b9d38c43-a2a7-ae6d-79e1-51507103ef88@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+        <bpf@vger.kernel.org>, <llvm@lists.linux.dev>
+References: <20220414134134.247912-1-yangjihong1@huawei.com>
+ <CAKwvOdmZCS784R5myuA=MgSnxQfS6sPUsBKbbax_QN1fSMNzbQ@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <6d7635be-e694-0132-e2b2-e6816c34aa72@huawei.com>
+Date:   Fri, 15 Apr 2022 11:53:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAKwvOdmZCS784R5myuA=MgSnxQfS6sPUsBKbbax_QN1fSMNzbQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500013.china.huawei.com (7.221.188.120)
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
@@ -81,62 +64,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/15/2022 10:37 AM, Hou Tao wrote:
-> Hi,
+On 2022/4/14 23:57, Nick Desaulniers wrote:
+> On Thu, Apr 14, 2022 at 6:42 AM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> Inline assembly used by asm/sysreg.h is incompatible with latest llvm,
 > 
-> On 4/15/2022 12:22 AM, Xu Kuohai wrote:
->> Add bpf trampoline support for arm64. Most of the logic is the same as
->> x86.
->>
->> Tested on qemu, result:
->>  #55 fentry_fexit:OK
->>  #56 fentry_test:OK
->>  #58 fexit_sleep:OK
->>  #59 fexit_stress:OK
->>  #60 fexit_test:OK
->>  #67 get_func_args_test:OK
->>  #68 get_func_ip_test:OK
->>  #101 modify_return:OK
-> bpf_struct_ops also depends on bpf trampoline, could you please also add the
-> test results for bpf_struct_ops related tests case ?
-
-Yes, more tests is needed. I'm curently testing with bpftrace's kfunc
-and bpf selftest, more testing results will be posted.
-
->>
->> v2:
->> - Add Song's ACK
->> - Change the multi-line comment in is_valid_bpf_tramp_flags() into net
->>   style (patch 3)
->> - Fix a deadloop issue in ftrace selftest (patch 2)
->> - Replace pt_regs->x0 with pt_regs->orig_x0 in patch 1 commit message 
->> - Replace "bpf trampoline" with "custom trampoline" in patch 1, as
->>   ftrace direct call is not only used by bpf trampoline.
->>
->> v1: https://lore.kernel.org/bpf/20220413054959.1053668-1-xukuohai@huawei.com/
->>
->> Xu Kuohai (6):
->>   arm64: ftrace: Add ftrace direct call support
->>   ftrace: Fix deadloop caused by direct call in ftrace selftest
->>   bpf: Move is_valid_bpf_tramp_flags() to the public trampoline code
->>   bpf, arm64: Impelment bpf_arch_text_poke() for arm64
->>   bpf, arm64: bpf trampoline for arm64
->>   selftests/bpf: Fix trivial typo in fentry_fexit.c
->>
->>  arch/arm64/Kconfig                            |   2 +
->>  arch/arm64/include/asm/ftrace.h               |  10 +
->>  arch/arm64/kernel/asm-offsets.c               |   1 +
->>  arch/arm64/kernel/entry-ftrace.S              |  28 +-
->>  arch/arm64/net/bpf_jit.h                      |  14 +-
->>  arch/arm64/net/bpf_jit_comp.c                 | 390 +++++++++++++++++-
->>  arch/x86/net/bpf_jit_comp.c                   |  20 -
->>  include/linux/bpf.h                           |   5 +
->>  kernel/bpf/bpf_struct_ops.c                   |   4 +-
->>  kernel/bpf/trampoline.c                       |  35 +-
->>  kernel/trace/trace_selftest.c                 |   4 +-
->>  .../selftests/bpf/prog_tests/fentry_fexit.c   |   4 +-
->>  12 files changed, 482 insertions(+), 35 deletions(-)
->>
+> With "latest" llvm makes it sound like LLVM has regressed. Has it? Or
+> have the headers changed in a way where now inline asm from a
+> different target (x86) than what's being targeted (BPF)? Perhaps
+> fixing that is simpler?
 > 
-> .
+> Clang will validate inline asm before LLVM drops unreferenced static
+> inline functions; this was a headache getting i386 building with
+> clang, but not insurmountable.
+> 
+According to the notes of samples/bpf/Makefile:
+"The reason is due to llvm change https://reviews.llvm.org/D87153
+where the CORE relocation global generation is moved from the beginning
+of target dependent optimization (llc) to the beginning
+of target independent optimization (opt).
+
+Since samples/bpf programs did not use vmlinux.h and its clang compilation
+uses native architecture, we need to adjust arch triple at opt level
+to do CORE relocation global generation properly. Otherwise, the above
+error will appear."
+I think opt and llvm-dis are introduced to solve another problem, that 
+is, the incompatibility of native architecture.
+
+>> If bpf C program include "linux/ptrace.h" (which is common), compile will fail:
+>>
+>>   # perf --debug verbose record -e bpf-output/no-inherit,name=evt/ \
+>>                                -e ./perf_bpf_test.c/map:channel.event=evt/ ls
+>>   [SNIP]
+>>   /lib/modules/5.17/build/./arch/x86/include/asm/arch_hweight.h:20:7: error: invalid output constraint '=a' in asm
+>>                            : "="REG_OUT (res)
+>>                             ^
+>>   /lib/modules/5.17/build/./arch/x86/include/asm/arch_hweight.h:48:7: error: invalid output constraint '=a' in asm
+>>                            : "="REG_OUT (res)
+>>                             ^
+>>   In file included from /root/projects/perf-bpf/perf_bpf_test.c:2:
+>>   In file included from /lib/modules/5.17/build/./include/linux/ptrace.h:6:
+>>   In file included from /lib/modules/5.17/build/./include/linux/sched.h:12:
+>>   In file included from /lib/modules/5.17/build/./arch/x86/include/asm/current.h:6:
+>>   In file included from /lib/modules/5.17/build/./arch/x86/include/asm/percpu.h:27:
+>>   In file included from /lib/modules/5.17/build/./include/linux/kernel.h:25:
+>>   In file included from /lib/modules/5.17/build/./include/linux/math.h:6:
+>>   /lib/modules/5.17.0/build/./arch/x86/include/asm/div64.h:85:28: error: invalid output constraint '=a' in asm
+>>           asm ("mulq %2; divq %3" : "=a" (q)
+>>   [SNIP]
+>>   # cat /root/projects/perf-bpf/perf_bpf_test.c
+>>   /************************ BEGIN **************************/
+>>   #include <uapi/linux/bpf.h>
+>>   #include <linux/ptrace.h>
+>>   #include <linux/types.h>
+>>   #define SEC(NAME) __attribute__((section(NAME), used))
+>>
+>>   struct bpf_map_def {
+>>           unsigned int type;
+>>           unsigned int key_size;
+>>           unsigned int value_size;
+>>           unsigned int max_entries;
+>>   };
+>>
+>>   static int (*perf_event_output)(void *, struct bpf_map_def *, int, void *,
+>>       unsigned long) = (void *)BPF_FUNC_perf_event_output;
+>>
+>>   struct bpf_map_def SEC("maps") channel = {
+>>           .type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
+>>           .key_size = sizeof(int),
+>>           .value_size = sizeof(__u32),
+>>           .max_entries = __NR_CPUS__,
+>>   };
+>>
+>>   #define MIN_BYTES 1024
+>>
+>>   SEC("func=vfs_read")
+>>   int bpf_myprog(struct pt_regs *ctx)
+>>   {
+>>           long bytes = ctx->dx;
+>>           if (bytes >= MIN_BYTES) {
+>>                   perf_event_output(ctx, &channel, BPF_F_CURRENT_CPU,
+>>                                     &bytes, sizeof(bytes));
+>>           }
+>>
+>>           return 0;
+>>   }
+>>
+>> char _license[] SEC("license") = "GPL";
+>> int _version SEC("version") = LINUX_VERSION_CODE;
+>> /************************* END ***************************/
+>>
+>> Compilation command is modified to be the same as that in samples/bpf/Makefile,
+>> use clang | opt | llvm-dis | llc chain of commands to solve the problem.
+>> see the comment in samples/bpf/Makefile.
+>>
+>> Modifications:
+>> 1. Change "clang --target bpf" to chain of commands "clang | opt | llvm-dis | llc"
+> 
+> This will drop the --target flag. That will mess up the default target
+> triple, and can affect command line option feature detection.
+> 
+opt add -mtriple=bpf-pc-linux flag,
+The complete command is as follows:
+clang -O2 -emit-llvm -Xclang -disable-llvm-passes -c $< -o - |
+opt -O2 -mtriple=bpf-pc-linux | $(LLVM_DIS) | \
+llc -march=bpf $(LLC_FLAGS) -filetype=obj -o $@
+
+This may be a problem. Currently, no simple method is found. Therefore, 
+refer to the processing method of samles/bpf/Makefile.
+
+-- 
+Thanks,
+Jihong
 
