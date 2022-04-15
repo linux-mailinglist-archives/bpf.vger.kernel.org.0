@@ -2,50 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F0A502F51
-	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 21:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931365031BE
+	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 01:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243530AbiDOTel (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 15:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46982 "EHLO
+        id S1354114AbiDOVIw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 17:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242881AbiDOTek (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 15:34:40 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170B88B6D6;
-        Fri, 15 Apr 2022 12:32:11 -0700 (PDT)
-Received: from [78.46.152.42] (helo=sslproxy04.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nfRfb-000D2p-TO; Fri, 15 Apr 2022 21:31:51 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nfRfb-000IWi-IE; Fri, 15 Apr 2022 21:31:51 +0200
-Subject: Re: [PATCH bpf-next v3 1/3] net: Enlarge offset check value from
- 0xffff to INT_MAX in bpf_skb_load_bytes
-To:     Liu Jian <liujian56@huawei.com>, ast@kernel.org, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, sdf@google.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, pabeni@redhat.com
-References: <20220414135902.100914-1-liujian56@huawei.com>
- <20220414135902.100914-2-liujian56@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7229410f-590f-79f6-94e4-38904d9bead1@iogearbox.net>
-Date:   Fri, 15 Apr 2022 21:31:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20220414135902.100914-2-liujian56@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26513/Fri Apr 15 10:22:35 2022)
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        with ESMTP id S1346874AbiDOVHi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 17:07:38 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564FB3C4A4;
+        Fri, 15 Apr 2022 14:05:08 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-d6e29fb3d7so8988765fac.7;
+        Fri, 15 Apr 2022 14:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=DFeHwl4kR/w9Nf006Bo+dIcrWUYjy2D9GswKriWjVME=;
+        b=fPUNx3G1SpJx2MuqX7wgPfHiF6WcVq4YqREAqp5SfMCGctGw6vDNrk4nlSpL15iAGV
+         qt9YGsjDDtSN/meYbCC/ysmw9SiEcnDckONqX/cGnoj3Plor14s6Egn+A3oOhHuf9b7X
+         K0Gwpyv3McH3VHXVzx/x1u9SbtJvTgfH9JHml/7rYxXlfuho+Z3bHHXGEf+nlMhFjExa
+         V5iCa8SlqCBYT3WKx2v7+gyFfakvkPzIfxmbdfze0VzezFIAuJBMoC87fNZ3pZVMDg7d
+         zJL4y/hUkL8rGi7ABrLQk3VU6nKAFiwoh0GHuCxGn5eCQGehfA90akiumfUu6+7uhZeN
+         AD8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=DFeHwl4kR/w9Nf006Bo+dIcrWUYjy2D9GswKriWjVME=;
+        b=EdCoYy3Vz2g0RH2lZx9r5oShkCB7qGGVvVOCTg8h2jQqBI70GQqPhPBCzLxx2oQ+Np
+         +ivQGJOvVWei9wKjs1rUoItMJ/IcXmJlfDx0LWpfFlvleYAW/gbkeH9rRFwK73zUHsmJ
+         AIqrSB0SR0Pj7+3XUH9GwnR1FaLIdIMsnWmbLZYg1+7XCve5Cbth94/XFa/St4TwicBM
+         wz3v6ZxRwrY4t6ws+ytvdVeU8OHiZZwdn3HnsyYwYFi0EvacVwFM8PkYlTVveSXkAyEj
+         JA+E4Twzmz+2Fl5nWUPL8VdF3MCOrDVFPHvqtFGoHpYbWtfdtH9A7W7oXNTppnX1itde
+         ZhUw==
+X-Gm-Message-State: AOAM532qCZj/TAfCGNn7q1D1m/Z8Djc9R+s6nlgk96vS7ZeWi+phxdhj
+        MlVUD1n31kgPYXCBM9pDoA4KFqd/byAAJN02
+X-Google-Smtp-Source: ABdhPJwNGJEANI5cts9GYobmfi1XbWQKpS2jCDrzjflgzR1DOCL7uvUQ2Voorfi5bEeANWqkCWk7Zw==
+X-Received: by 2002:a05:6870:4341:b0:d3:1412:8ecb with SMTP id x1-20020a056870434100b000d314128ecbmr315330oah.36.1650056706728;
+        Fri, 15 Apr 2022 14:05:06 -0700 (PDT)
+Received: from toe.qscaudio.com ([65.113.122.35])
+        by smtp.gmail.com with ESMTPSA id bg37-20020a05680817a500b002fa739a0621sm1476525oib.16.2022.04.15.14.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Apr 2022 14:05:06 -0700 (PDT)
+From:   Jeff Evanson <jeff.evanson@gmail.com>
+X-Google-Original-From: Jeff Evanson <jeff.evanson@qsc.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     jeff.evanson@qsc.com, jeff.evanson@gmail.com
+Subject: [PATCH 1/2] Fix race in igc_xdp_xmit_zc
+Date:   Fri, 15 Apr 2022 15:04:21 -0600
+Message-Id: <20220415210421.11217-1-jeff.evanson@qsc.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,46 +72,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/14/22 3:59 PM, Liu Jian wrote:
-> The data length of skb frags + frag_list may be greater than 0xffff,
-> and skb_header_pointer can not handle negative offset and negative len.
-> So here INT_MAX is used to check the validity of offset and len.
-> Add the same change to the related function skb_store_bytes.
-> 
-> Fixes: 05c74e5e53f6 ("bpf: add bpf_skb_load_bytes helper")
-> Signed-off-by: Liu Jian <liujian56@huawei.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
-> ---
-> v2->v3: change nothing
->   net/core/filter.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 64470a727ef7..1571b6bc51ea 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -1687,7 +1687,7 @@ BPF_CALL_5(bpf_skb_store_bytes, struct sk_buff *, skb, u32, offset,
->   
->   	if (unlikely(flags & ~(BPF_F_RECOMPUTE_CSUM | BPF_F_INVALIDATE_HASH)))
->   		return -EINVAL;
-> -	if (unlikely(offset > 0xffff))
-> +	if (unlikely(offset > INT_MAX || len > INT_MAX))
+in igc_xdp_xmit_zc, initialize next_to_use while holding the netif_tx_lock
+to prevent racing with other users of the tx ring
 
-One more follow-up question, len param is checked by the verifier for the provided buffer.
-Why is it needed here? Were you able to create e.g. map values of size larger than INT_MAX?
-Please provide details. (Other than that, rest looks good.)
+Signed-off-by: Jeff Evanson <jeff.evanson@qsc.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
->   		return -EFAULT;
->   	if (unlikely(bpf_try_make_writable(skb, offset + len)))
->   		return -EFAULT;
-> @@ -1722,7 +1722,7 @@ BPF_CALL_4(bpf_skb_load_bytes, const struct sk_buff *, skb, u32, offset,
->   {
->   	void *ptr;
->   
-> -	if (unlikely(offset > 0xffff))
-> +	if (unlikely(offset > INT_MAX || len > INT_MAX))
->   		goto err_clear;
->   
->   	ptr = skb_header_pointer(skb, offset, len, to);
-> 
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 1c00ee310c19..a36a18c84aeb 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -2598,7 +2598,7 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
+ 	struct netdev_queue *nq = txring_txq(ring);
+ 	union igc_adv_tx_desc *tx_desc = NULL;
+ 	int cpu = smp_processor_id();
+-	u16 ntu = ring->next_to_use;
++	u16 ntu;
+ 	struct xdp_desc xdp_desc;
+ 	u16 budget;
+ 
+@@ -2607,6 +2607,8 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
+ 
+ 	__netif_tx_lock(nq, cpu);
+ 
++	ntu = ring->next_to_use;
++
+ 	budget = igc_desc_unused(ring);
+ 
+ 	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget--) {
+-- 
+2.17.1
 
