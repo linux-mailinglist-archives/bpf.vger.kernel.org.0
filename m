@@ -2,164 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2444C502D7B
-	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 18:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D853502DB9
+	for <lists+bpf@lfdr.de>; Fri, 15 Apr 2022 18:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355711AbiDOQH3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 12:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+        id S239706AbiDOQ3e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 12:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355698AbiDOQH1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 12:07:27 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6C4522FC;
-        Fri, 15 Apr 2022 09:04:57 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id bh17so16049764ejb.8;
-        Fri, 15 Apr 2022 09:04:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=112dwm8QpeyoKYHzXDlM/vsE5hIZxIAtes3nuwV/SSo=;
-        b=q1bzqzL3lBdyltYHc9DTIT5JLPdLODWLZph8x8M5S6Lrx38YGPco66753ypyqSZHdS
-         TsBVCJ5EpLAbAmZd7rn35rz5+5MFo5cmcPhwTg2EsuyzzljP5OF0i5quSN5Bq79dJupT
-         XxChUcD2MsVarL7yLizfAjcN3B0NTqgueTBK61H9jo+fIJq2L7zfnVfyEtuLdKfBrIhL
-         iDzvx73Aqc0XvRiY1AXXQbSKFoZMT0Gp0iczLfr/jN0opuxhWCDc6rZaQadXhtc1zVzT
-         V6fOjszCUEV1CJPEyDoo3WVMYNJOQYRIdd2ngW2MNMxLobrauU5wyg1fn/2XkaL6GqdW
-         ZQzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=112dwm8QpeyoKYHzXDlM/vsE5hIZxIAtes3nuwV/SSo=;
-        b=bpzv/9rAOTway6XtxAJ9OiD2W1UsZv4UGvvj4vYu0UNxwdJuytBYcHGI4KIBuPjDIJ
-         ZULMXiur7n7ce0JTi2N5lwi0BTFT6YVt505LBxJ2/Oqi1DSCrF24fwodcjFiTr8Li9Ap
-         x5II0WE5hSak2iMnnxF4GgaH3pkvvo/I4TnfKqWzB93oLKJvB/dEuCMO6NJI1f8xn03l
-         uYJ8a/qPQgWXdJG178s6SomwXT0Xfvu7wqIzsxEgWhJ5lBMlBEzbTnzihE2/0xotCvFg
-         /MeJY4NEQEaZ7r8wG5aY/bH8V7A0l8oJRSrO+gFe0tyfjE1nvCSOzc8juCwnblXSPUNO
-         rESA==
-X-Gm-Message-State: AOAM532xIJ76AaRlsWEtlBKlsbj4HGA8wXFvk5c7OF1aLnuylpsz5RUn
-        X8zyIfeNaeRg5pYIJwRxCGI=
-X-Google-Smtp-Source: ABdhPJw48aM/ILhX7ieEo4E/2JT/l4q8QZCfn54tMQSw+A5qviAhPCWJlSaz9aHJH2xpZA3vw595cw==
-X-Received: by 2002:a17:907:6e88:b0:6da:8f01:7a8f with SMTP id sh8-20020a1709076e8800b006da8f017a8fmr6648623ejc.619.1650038696267;
-        Fri, 15 Apr 2022 09:04:56 -0700 (PDT)
-Received: from skbuf ([188.26.57.45])
-        by smtp.gmail.com with ESMTPSA id r18-20020a05640251d200b0041d1600ab09sm3036190edd.54.2022.04.15.09.04.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Apr 2022 09:04:55 -0700 (PDT)
-Date:   Fri, 15 Apr 2022 19:04:52 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jakob Koschel <jakobkoschel@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        UNGLinuxDriver@microchip.com, Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Casper Andersson <casper.casan@gmail.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Colin Ian King <colin.king@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Xu Wang <vulab@iscas.ac.cn>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, bpf@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>,
-        Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
-        Cristiano Giuffrida <c.giuffrida@vu.nl>,
-        "Bos, H.J." <h.j.bos@vu.nl>
-Subject: Re: [PATCH net-next v4 07/18] net: dsa: Replace usage of found with
- dedicated list iterator variable
-Message-ID: <20220415160452.z4m4j3sulcteqggs@skbuf>
-References: <20220415122947.2754662-1-jakobkoschel@gmail.com>
- <20220415122947.2754662-8-jakobkoschel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220415122947.2754662-8-jakobkoschel@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S238942AbiDOQ3d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 12:29:33 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F13B7C7A0;
+        Fri, 15 Apr 2022 09:27:04 -0700 (PDT)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 23FFOHaJ020889;
+        Fri, 15 Apr 2022 16:26:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=HeJ2w+n1oEAcUUXnghppzmXxVQYyq3hGhL8kqyl4vbU=;
+ b=dR++cuynruEufF0J6OXdSEErjMVQrEFIMH6FwfGvLHzzg7crX2Uc2UUPnfpVbVcgyK9W
+ FXWGy8cUXSPJFxe+LDPBgBNk+1aUwwJR8b3YRiu3KTjMwi6HLz35itGyMJGtxosl7nVB
+ 3Sve+jYV4AgYZLpYmC4dNEI6bjhsJxlXyOgxZJC43rpZfzoGnjALHIC70/J5F3o50ZJi
+ 1joxmpUwp7e4FZMrmR5h/6O/BJ2oKvJecQxK0P1nTmLXRBYXs4WVc87mAV2qOFyKhehK
+ TOezYvqIVL+Qeg8EGOT9J5TsPrtC+QMs3/3DTBeFooDUyQLZU8WACrU7tujwchaflRQU nQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3fefh5y2nw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Apr 2022 16:26:38 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 23FGFGNN012502;
+        Fri, 15 Apr 2022 16:26:37 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3fefh5y2na-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Apr 2022 16:26:37 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 23FGI8Fg017541;
+        Fri, 15 Apr 2022 16:26:35 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma01fra.de.ibm.com with ESMTP id 3fb1s90nvf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Apr 2022 16:26:34 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 23FGQg2m33358180
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Apr 2022 16:26:42 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9FE9311C04A;
+        Fri, 15 Apr 2022 16:26:32 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B424311C058;
+        Fri, 15 Apr 2022 16:26:29 +0000 (GMT)
+Received: from sig-9-65-86-1.ibm.com (unknown [9.65.86.1])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 15 Apr 2022 16:26:29 +0000 (GMT)
+Message-ID: <faa20ad9a934269e6292ffdb385ebec2a2475454.camel@linux.ibm.com>
+Subject: Re: [PATCH v6] efi: Do not import certificates from UEFI Secure
+ Boot for T2 Macs
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Aditya Garg <gargaditya08@live.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Orlando Chamberlain <redecorating@protonmail.com>,
+        "admin@kodeit.net" <admin@kodeit.net>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Date:   Fri, 15 Apr 2022 12:26:29 -0400
+In-Reply-To: <02125722-91FC-43D3-B63C-1B789C2DA8C3@live.com>
+References: <652C3E9E-CB97-4C70-A961-74AF8AEF9E39@live.com>
+         <94DD0D83-8FDE-4A61-AAF0-09A0175A0D0D@live.com>
+         <590ED76A-EE91-4ED1-B524-BC23419C051E@live.com>
+         <E9C28706-2546-40BF-B32C-66A047BE9EFB@live.com>
+         <02125722-91FC-43D3-B63C-1B789C2DA8C3@live.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: nN3HLeHLlVR0Eb_A9acKJ5vhGvZhnFHj
+X-Proofpoint-ORIG-GUID: P_6vwYLd9u46h_C-sIf9g8RDJ6so5R3H
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-04-15_06,2022-04-15_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2204150092
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 15, 2022 at 02:29:36PM +0200, Jakob Koschel wrote:
-> To move the list iterator variable into the list_for_each_entry_*()
-> macro in the future it should be avoided to use the list iterator
-> variable after the loop body.
+On Fri, 2022-04-15 at 06:19 +0000, Aditya Garg wrote:
+> From: Aditya Garg <gargaditya08@live.com>
 > 
-> To *never* use the list iterator variable after the loop it was
-> concluded to use a separate iterator variable instead of a
-> found boolean [1].
+> On Apple T2 Macs, when Linux attempts to read the db and dbx efi variables
+> at early boot to load UEFI Secure Boot certificates, a page fault occurs
+> in Apple firmware code and EFI runtime services are disabled with the
+> following logs:
 > 
-> This removes the need to use a found variable and simply checking if
-> the variable was set, can determine if the break/goto was hit.
+> [Firmware Bug]: Page fault caused by firmware at PA: 0xffffb1edc0068000
+> WARNING: CPU: 3 PID: 104 at arch/x86/platform/efi/quirks.c:735 efi_crash_gracefully_on_page_fault+0x50/0xf0
+> (Removed some logs from here)
+> Call Trace:
+>  <TASK>
+>  page_fault_oops+0x4f/0x2c0
+>  ? search_bpf_extables+0x6b/0x80
+>  ? search_module_extables+0x50/0x80
+>  ? search_exception_tables+0x5b/0x60
+>  kernelmode_fixup_or_oops+0x9e/0x110
+>  __bad_area_nosemaphore+0x155/0x190
+>  bad_area_nosemaphore+0x16/0x20
+>  do_kern_addr_fault+0x8c/0xa0
+>  exc_page_fault+0xd8/0x180
+>  asm_exc_page_fault+0x1e/0x30
+> (Removed some logs from here)
+>  ? __efi_call+0x28/0x30
+>  ? switch_mm+0x20/0x30
+>  ? efi_call_rts+0x19a/0x8e0
+>  ? process_one_work+0x222/0x3f0
+>  ? worker_thread+0x4a/0x3d0
+>  ? kthread+0x17a/0x1a0
+>  ? process_one_work+0x3f0/0x3f0
+>  ? set_kthread_struct+0x40/0x40
+>  ? ret_from_fork+0x22/0x30
+>  </TASK>
+> ---[ end trace 1f82023595a5927f ]---
+> efi: Froze efi_rts_wq and disabled EFI Runtime Services
+> integrity: Couldn't get size: 0x8000000000000015
+> integrity: MODSIGN: Couldn't get UEFI db list
+> efi: EFI Runtime Services are disabled!
+> integrity: Couldn't get size: 0x8000000000000015
+> integrity: Couldn't get UEFI dbx list
+> integrity: Couldn't get size: 0x8000000000000015
+> integrity: Couldn't get mokx list
+> integrity: Couldn't get size: 0x80000000
 > 
-> Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/ [1]
-> Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+> This patch skips reading these UEFI variables and thus prevents the crash.
+
+Instead of "This patch skips reading" say "Avoid reading".
+
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Aditya Garg <gargaditya08@live.com>
+
+After making these minor changes, both above and below, 
+	Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+
 > ---
-
-I absolutely hate the robotic commit message, but the change looks like
-it works, so:
-
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
->  net/dsa/dsa.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
+> v2 :- Reduce code size of the table.
+> v3 :- Close the brackets which were left open by mistake.
+> v4 :- Fix comment style issues, remove blank spaces and limit use of dmi_first_match()
+> v4 RESEND :- Add stable to cc
+> v5 :- Rewrite the description
+> v6 :- Make description more clear
+>  .../platform_certs/keyring_handler.h          |  8 +++++
+>  security/integrity/platform_certs/load_uefi.c | 33 +++++++++++++++++++
+>  2 files changed, 41 insertions(+)
 > 
-> diff --git a/net/dsa/dsa.c b/net/dsa/dsa.c
-> index 89c6c86e746f..645522c4dd4a 100644
-> --- a/net/dsa/dsa.c
-> +++ b/net/dsa/dsa.c
-> @@ -112,22 +112,21 @@ const struct dsa_device_ops *dsa_find_tagger_by_name(const char *buf)
+> diff --git a/security/integrity/platform_certs/keyring_handler.h b/security/integrity/platform_certs/keyring_handler.h
+> index 284558f30..212d894a8 100644
+> --- a/security/integrity/platform_certs/keyring_handler.h
+> +++ b/security/integrity/platform_certs/keyring_handler.h
+> @@ -35,3 +35,11 @@ efi_element_handler_t get_handler_for_mok(const efi_guid_t *sig_type);
+>  efi_element_handler_t get_handler_for_dbx(const efi_guid_t *sig_type);
 >  
->  const struct dsa_device_ops *dsa_tag_driver_get(int tag_protocol)
->  {
-> -	struct dsa_tag_driver *dsa_tag_driver;
-> +	struct dsa_tag_driver *dsa_tag_driver = NULL, *iter;
->  	const struct dsa_device_ops *ops;
-> -	bool found = false;
+>  #endif
+> +
+> +#ifndef UEFI_QUIRK_SKIP_CERT
+> +#define UEFI_QUIRK_SKIP_CERT(vendor, product) \
+> +		 .matches = { \
+> +			DMI_MATCH(DMI_BOARD_VENDOR, vendor), \
+> +			DMI_MATCH(DMI_PRODUCT_NAME, product), \
+> +		},
+> +#endif
+> diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
+> index 5f45c3c07..1a7e7d597 100644
+> --- a/security/integrity/platform_certs/load_uefi.c
+> +++ b/security/integrity/platform_certs/load_uefi.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/sched.h>
+>  #include <linux/cred.h>
+> +#include <linux/dmi.h>
+>  #include <linux/err.h>
+>  #include <linux/efi.h>
+>  #include <linux/slab.h>
+> @@ -12,6 +13,31 @@
+>  #include "../integrity.h"
+>  #include "keyring_handler.h"
 >  
->  	request_module("%s%d", DSA_TAG_DRIVER_ALIAS, tag_protocol);
+> +/*
+> + * On T2 Macs reading the reading the db and dbx efi variables to load UEFI
+> + * Secure Boot certificates causes occurrence of a page fault in Apple's
+> + * firmware and a crash disabling EFI runtime services. The following quirk
+> + * skips reading these variables.
+> + */
+> +static const struct dmi_system_id uefi_skip_cert[] = {
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro15,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro15,2") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro15,3") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro15,4") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro16,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro16,2") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro16,3") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookPro16,4") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookAir8,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookAir8,2") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacBookAir9,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacMini8,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "MacPro7,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "iMac20,1") },
+> +	{ UEFI_QUIRK_SKIP_CERT("Apple Inc.", "iMac20,2") },
+> +	{ }
+> +};
+> +
+>  /*
+>   * Look to see if a UEFI variable called MokIgnoreDB exists and return true if
+>   * it does.
+> @@ -138,6 +164,13 @@ static int __init load_uefi_certs(void)
+>  	unsigned long dbsize = 0, dbxsize = 0, mokxsize = 0;
+>  	efi_status_t status;
+>  	int rc = 0;
+> +	const struct dmi_system_id *dmi_id;
+> +
+> +	dmi_id = dmi_first_match(uefi_skip_cert);
+> +	if (dmi_id) {
+> +		pr_err("Getting UEFI Secure Boot Certs is not supported on T2 Macs.\n");
+
+Replace "Getting" with "Reading".
+
+thanks,
+
+Mimi
+
+> +		return false;
+> +	}
 >  
->  	mutex_lock(&dsa_tag_drivers_lock);
-> -	list_for_each_entry(dsa_tag_driver, &dsa_tag_drivers_list, list) {
-> -		ops = dsa_tag_driver->ops;
-> +	list_for_each_entry(iter, &dsa_tag_drivers_list, list) {
-> +		ops = iter->ops;
->  		if (ops->proto == tag_protocol) {
-> -			found = true;
-> +			dsa_tag_driver = iter;
->  			break;
->  		}
->  	}
->  
-> -	if (found) {
-> +	if (dsa_tag_driver) {
->  		if (!try_module_get(dsa_tag_driver->owner))
->  			ops = ERR_PTR(-ENOPROTOOPT);
->  	} else {
-> -- 
-> 2.25.1
-> 
+>  	if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE))
+>  		return false;
+
+
