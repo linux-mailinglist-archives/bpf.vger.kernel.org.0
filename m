@@ -2,63 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8515503713
-	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 16:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215785037BC
+	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 19:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbiDPOXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 16 Apr 2022 10:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
+        id S230296AbiDPRon (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 16 Apr 2022 13:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232263AbiDPOXl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 16 Apr 2022 10:23:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCDB2CC81;
-        Sat, 16 Apr 2022 07:21:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B1FD60F52;
-        Sat, 16 Apr 2022 14:21:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4151AC385A1;
-        Sat, 16 Apr 2022 14:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650118869;
-        bh=tdkaG+9kosN+V7ncXVMKU8UTBd3pKo/eqmLPeP1OWgU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iY1CcdV3umoK6WRz4nCbnu4PbsFiJaPTe2v+PTBDghUaVha55vpk3s2P4WGk19Sb2
-         ceV1fjCeouPPxlhZOYqm7Qq7e8qxU2pjDw3ufy0bJQYZ9AbOlwVil0Yw1OqCBKUBkZ
-         Zn3s5TRssBnufgR06lZw9RoyhTv6NrWFeZWRnk6zEqYmkJuQHuEbnzHZk3FP1DoRvD
-         wsM5qYrIV5XOZuQrbeFSE+dCKi6f1RahN2E3VsnYtgJgh15YI9QW6kjnaZVUJEUmzS
-         aH5fokOb74x74GXuGweUOiYz8dllkuCkKNkqDfDeQ7iRKfi703GD4iSxEaHwQ9SJ9f
-         j3zmHIHgRKz0A==
-Date:   Sat, 16 Apr 2022 23:21:03 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC bpf-next 4/4] selftests/bpf: Add attach bench test
-Message-Id: <20220416232103.c0b241c2ec7f2b3b985a2f99@kernel.org>
-In-Reply-To: <CAEf4BzaQRcZGMqq5wqHo3wSHZAAVvY6AhizDk_dV_GtnwHuxLQ@mail.gmail.com>
-References: <20220407125224.310255-1-jolsa@kernel.org>
-        <20220407125224.310255-5-jolsa@kernel.org>
-        <CAEf4BzbE1n3Lie+tWTzN69RQUWgjxePorxRr9J8CuiQVUfy-kA@mail.gmail.com>
-        <20220412094923.0abe90955e5db486b7bca279@kernel.org>
-        <CAEf4BzaQRcZGMqq5wqHo3wSHZAAVvY6AhizDk_dV_GtnwHuxLQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S232696AbiDPRoi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 16 Apr 2022 13:44:38 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D87393D2
+        for <bpf@vger.kernel.org>; Sat, 16 Apr 2022 10:42:04 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id bg9so11630233pgb.9
+        for <bpf@vger.kernel.org>; Sat, 16 Apr 2022 10:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2ou+A3hIHFPmTEjmHXCOBGSGMaqzl4s7rcop7FMBpZQ=;
+        b=ckrUQx2Omx1ffkZjJkU/jhAgRpWit1lS/3YB35bZ+9q46lF1FwoQPGCEc8j2gT8HST
+         MI+UjaZP/bbltppdGddIqTsJqlJMvp3RDIGJY3AsxaTmH7rRHjQyA2I3XcwCByolhD+Q
+         o7aDfGDblXAJQglyogfm+pW3FIBqQ+cCMNeXUHyhuPDwKXHXt1on9wKkOHfjkm+Zp+DP
+         nq9k8fU1uPKmBxLk28w0gTguduFm9BdQ2mZJt5N4dopiRANmwFN6Or+1cPpPgoI1pNud
+         bG9XFtt9JvcPqsCH6otztq5hbIVI+zj3SykNb/aeHZbsAwp/DeHEaNqOULkzZAZ58I0V
+         ZUNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2ou+A3hIHFPmTEjmHXCOBGSGMaqzl4s7rcop7FMBpZQ=;
+        b=aUdTHT3t3587Ow4MONPMUl96w7OGhdcn52HTU+1x8EMSfeANJea1iJkMuGR/hyk7FG
+         JQRtdj0Z7HBBKf7gXFa30oCDY/rF9lJJ/C5+SkDH8vt7yVmMcNPfzTRGlXFoei+r8jHs
+         si+Ztn65B/nXqh0YIoJaRCe+r/m13G98BYk88/M1OcraA6QXK/h16wTa7nioA4tumZNL
+         SfZQtXj/y9UGFEYvmb7vm9058hKneNz5YvnR4dnul2YUBNhLkfWJvhXXCGR24o4MqDxQ
+         iZrjgpypxLL9HX6Uwhb9NxQQkfdKWDzK6orjLXv2QYXfG3QhPjIQSJJhjWFCMqOnJ7V5
+         YHjw==
+X-Gm-Message-State: AOAM530bfAeUedpW+cEsZsIrvptSwzCyjQkk7Tls7/Vnc5v+WXklKCPd
+        pQbFdNLj3wlfdT1XhWr7HNTsn8q6obU=
+X-Google-Smtp-Source: ABdhPJzBx92TCnwXfBvOm5akyKod7wAoeJleZykTQ/REG6DoQCHl4xOGh8ff2Z5GbGEzRE3rmyYx9Q==
+X-Received: by 2002:a63:b246:0:b0:398:666d:d10 with SMTP id t6-20020a63b246000000b00398666d0d10mr3673948pgo.274.1650130923659;
+        Sat, 16 Apr 2022 10:42:03 -0700 (PDT)
+Received: from localhost ([112.79.166.241])
+        by smtp.gmail.com with ESMTPSA id c10-20020a17090a1d0a00b001cba0e5e369sm8302456pjd.13.2022.04.16.10.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Apr 2022 10:42:03 -0700 (PDT)
+Date:   Sat, 16 Apr 2022 23:12:05 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, toke@redhat.com
+Subject: Re: [PATCH bpf-next v2 3/7] bpf: Add bpf_dynptr_from_mem,
+ bpf_dynptr_alloc, bpf_dynptr_put
+Message-ID: <20220416174205.hezp2jnow3hqk6s6@apollo.legion>
+References: <20220416063429.3314021-1-joannelkoong@gmail.com>
+ <20220416063429.3314021-4-joannelkoong@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220416063429.3314021-4-joannelkoong@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,119 +71,998 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Sat, Apr 16, 2022 at 12:04:25PM IST, Joanne Koong wrote:
+> This patch adds 3 new APIs and the bulk of the verifier work for
+> supporting dynamic pointers in bpf.
+>
+> There are different types of dynptrs. This patch starts with the most
+> basic ones, ones that reference a program's local memory
+> (eg a stack variable) and ones that reference memory that is dynamically
+> allocated on behalf of the program. If the memory is dynamically
+> allocated by the program, the program *must* free it before the program
+> exits. This is enforced by the verifier.
+>
+> The added APIs are:
+>
+> long bpf_dynptr_from_mem(void *data, u32 size, u64 flags, struct bpf_dynptr *ptr);
+> long bpf_dynptr_alloc(u32 size, u64 flags, struct bpf_dynptr *ptr);
+> void bpf_dynptr_put(struct bpf_dynptr *ptr);
+>
+> This patch sets up the verifier to support dynptrs. Dynptrs will always
+> reside on the program's stack frame. As such, their state is tracked
+> in their corresponding stack slot, which includes the type of dynptr
+> (DYNPTR_LOCAL vs. DYNPTR_MALLOC).
+>
+> When the program passes in an uninitialized dynptr (ARG_PTR_TO_DYNPTR |
+> MEM_UNINIT), the stack slots corresponding to the frame pointer
+> where the dynptr resides at are marked as STACK_DYNPTR. For helper functions
+> that take in initialized dynptrs (such as the next patch in this series
+> which supports dynptr reads/writes), the verifier enforces that the
+> dynptr has been initialized by checking that their corresponding stack
+> slots have been marked as STACK_DYNPTR. Dynptr release functions
+> (eg bpf_dynptr_put) will clear the stack slots. The verifier enforces at
+> program exit that there are no acquired dynptr stack slots that need
+> to be released.
+>
+> There are other constraints that are enforced by the verifier as
+> well, such as that the dynptr cannot be written to directly by the bpf
+> program or by non-dynptr helper functions. The last patch in this series
+> contains tests that trigger different cases that the verifier needs to
+> successfully reject.
+>
+> For now, local dynptrs cannot point to referenced memory since the
+> memory can be freed anytime. Support for this will be added as part
+> of a separate patchset.
+>
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  include/linux/bpf.h            |  68 +++++-
+>  include/linux/bpf_verifier.h   |  28 +++
+>  include/uapi/linux/bpf.h       |  44 ++++
+>  kernel/bpf/helpers.c           | 110 ++++++++++
+>  kernel/bpf/verifier.c          | 372 +++++++++++++++++++++++++++++++--
+>  scripts/bpf_doc.py             |   2 +
+>  tools/include/uapi/linux/bpf.h |  44 ++++
+>  7 files changed, 654 insertions(+), 14 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 29964cdb1dd6..fee91b07ee74 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -346,7 +346,16 @@ enum bpf_type_flag {
+>
+>  	OBJ_RELEASE		= BIT(6 + BPF_BASE_TYPE_BITS),
+>
+> -	__BPF_TYPE_LAST_FLAG	= OBJ_RELEASE,
+> +	/* DYNPTR points to a program's local memory (eg stack variable). */
+> +	DYNPTR_TYPE_LOCAL	= BIT(7 + BPF_BASE_TYPE_BITS),
+> +
+> +	/* DYNPTR points to dynamically allocated memory. */
+> +	DYNPTR_TYPE_MALLOC	= BIT(8 + BPF_BASE_TYPE_BITS),
+> +
+> +	/* May not be a referenced object */
+> +	NO_OBJ_REF		= BIT(9 + BPF_BASE_TYPE_BITS),
+> +
+> +	__BPF_TYPE_LAST_FLAG	= NO_OBJ_REF,
+>  };
+>
+>  /* Max number of base types. */
+> @@ -390,6 +399,7 @@ enum bpf_arg_type {
+>  	ARG_PTR_TO_STACK,	/* pointer to stack */
+>  	ARG_PTR_TO_CONST_STR,	/* pointer to a null terminated read-only string */
+>  	ARG_PTR_TO_TIMER,	/* pointer to bpf_timer */
+> +	ARG_PTR_TO_DYNPTR,      /* pointer to bpf_dynptr. See bpf_type_flag for dynptr type */
+>  	__BPF_ARG_TYPE_MAX,
+>
+>  	/* Extended arg_types. */
+> @@ -2394,4 +2404,60 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+>  			u32 **bin_buf, u32 num_args);
+>  void bpf_bprintf_cleanup(void);
+>
+> +/* the implementation of the opaque uapi struct bpf_dynptr */
+> +struct bpf_dynptr_kern {
+> +	void *data;
+> +	/* Size represents the number of usable bytes in the dynptr.
+> +	 * If for example the offset is at 200 for a malloc dynptr with
+> +	 * allocation size 256, the number of usable bytes is 56.
+> +	 *
+> +	 * The upper 8 bits are reserved.
+> +	 * Bit 31 denotes whether the dynptr is read-only.
+> +	 * Bits 28-30 denote the dynptr type.
+> +	 */
+> +	u32 size;
+> +	u32 offset;
+> +} __aligned(8);
+> +
+> +enum bpf_dynptr_type {
+> +	BPF_DYNPTR_TYPE_INVALID,
+> +	/* Local memory used by the bpf program (eg stack variable) */
+> +	BPF_DYNPTR_TYPE_LOCAL,
+> +	/* Memory allocated dynamically by the kernel for the dynptr */
+> +	BPF_DYNPTR_TYPE_MALLOC,
+> +};
+> +
+> +/* Since the upper 8 bits of dynptr->size is reserved, the
+> + * maximum supported size is 2^24 - 1.
+> + */
+> +#define DYNPTR_MAX_SIZE	((1UL << 24) - 1)
+> +#define DYNPTR_SIZE_MASK	0xFFFFFF
+> +#define DYNPTR_TYPE_SHIFT	28
+> +#define DYNPTR_TYPE_MASK	0x7
+> +
+> +static inline enum bpf_dynptr_type bpf_dynptr_get_type(struct bpf_dynptr_kern *ptr)
+> +{
+> +	return (ptr->size >> DYNPTR_TYPE_SHIFT) & DYNPTR_TYPE_MASK;
+> +}
+> +
+> +static inline void bpf_dynptr_set_type(struct bpf_dynptr_kern *ptr, enum bpf_dynptr_type type)
+> +{
+> +	ptr->size |= type << DYNPTR_TYPE_SHIFT;
+> +}
+> +
+> +static inline u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
+> +{
+> +	return ptr->size & DYNPTR_SIZE_MASK;
+> +}
+> +
+> +static inline int bpf_dynptr_check_size(u32 size)
+> +{
+> +	return size > DYNPTR_MAX_SIZE ? -E2BIG : 0;
+> +}
+> +
+> +void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data, enum bpf_dynptr_type type,
+> +		     u32 offset, u32 size);
+> +
+> +void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
+> +
+>  #endif /* _LINUX_BPF_H */
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 7a01adc9e13f..e11440a44e92 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -72,6 +72,27 @@ struct bpf_reg_state {
+>
+>  		u32 mem_size; /* for PTR_TO_MEM | PTR_TO_MEM_OR_NULL */
+>
+> +		/* For dynptr stack slots */
+> +		struct {
+> +			enum bpf_dynptr_type type;
+> +			/* A dynptr is 16 bytes so it takes up 2 stack slots.
+> +			 * We need to track which slot is the first slot
+> +			 * to protect against cases where the user may try to
+> +			 * pass in an address starting at the second slot of the
+> +			 * dynptr.
+> +			 */
+> +			bool first_slot;
+> +		} dynptr;
+> +		/* For stack slots that a local dynptr points to. We need to track
+> +		 * this to prohibit programs from using stack variables that are
+> +		 * pointed to by dynptrs as a dynptr, eg something like
+> +		 *
+> +		 * bpf_dyntpr_from_mem(&ptr, sizeof(ptr), 0, &local);
+> +		 * bpf_dynptr_alloc(16, 0, &ptr);
+> +		 * bpf_dynptr_write(&local, 0, corrupt_data, sizeof(ptr));
+> +		 */
+> +		bool is_dynptr_data;
+> +
+>  		/* Max size from any of the above. */
+>  		struct {
+>  			unsigned long raw1;
+> @@ -174,9 +195,16 @@ enum bpf_stack_slot_type {
+>  	STACK_SPILL,      /* register spilled into stack */
+>  	STACK_MISC,	  /* BPF program wrote some data into this slot */
+>  	STACK_ZERO,	  /* BPF program wrote constant zero */
+> +	/* A dynptr is stored in this stack slot. The type of dynptr
+> +	 * is stored in bpf_stack_state->spilled_ptr.dynptr.type
+> +	 */
+> +	STACK_DYNPTR,
+>  };
+>
+>  #define BPF_REG_SIZE 8	/* size of eBPF register in bytes */
+> +/* size of a struct bpf_dynptr in bytes */
+> +#define BPF_DYNPTR_SIZE sizeof(struct bpf_dynptr_kern)
+> +#define BPF_DYNPTR_NR_SLOTS (BPF_DYNPTR_SIZE / BPF_REG_SIZE)
+>
+>  struct bpf_stack_state {
+>  	struct bpf_reg_state spilled_ptr;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index d14b10b85e51..e339b2697d9a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5143,6 +5143,42 @@ union bpf_attr {
+>   *		The **hash_algo** is returned on success,
+>   *		**-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
+>   *		invalid arguments are passed.
+> + *
+> + * long bpf_dynptr_from_mem(void *data, u32 size, u64 flags, struct bpf_dynptr *ptr)
+> + *	Description
+> + *		Get a dynptr to local memory *data*.
+> + *
+> + *		For a dynptr to a dynamic memory allocation, please use
+> + *		bpf_dynptr_alloc instead.
+> + *
+> + *		The maximum *size* supported is DYNPTR_MAX_SIZE.
+> + *		*flags* is currently unused.
+> + *	Return
+> + *		0 on success, -E2BIG if the size exceeds DYNPTR_MAX_SIZE,
+> + *		-EINVAL if flags is not 0.
+> + *
+> + * long bpf_dynptr_alloc(u32 size, u64 flags, struct bpf_dynptr *ptr)
+> + *	Description
+> + *		Allocate memory of *size* bytes.
+> + *
+> + *		Every call to bpf_dynptr_alloc must have a corresponding
+> + *		bpf_dynptr_put, regardless of whether the bpf_dynptr_alloc
+> + *		succeeded.
+> + *
+> + *		The maximum *size* supported is DYNPTR_MAX_SIZE.
+> + *		Supported *flags* are __GFP_ZERO.
+> + *	Return
+> + *		0 on success, -ENOMEM if there is not enough memory for the
+> + *		allocation, -E2BIG if the size exceeds DYNPTR_MAX_SIZE, -EINVAL
+> + *		if the flags is not supported.
+> + *
+> + * void bpf_dynptr_put(struct bpf_dynptr *ptr)
+> + *	Description
+> + *		Free memory allocated by bpf_dynptr_alloc.
+> + *
+> + *		After this operation, *ptr* will be an invalidated dynptr.
+> + *	Return
+> + *		Void.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5339,6 +5375,9 @@ union bpf_attr {
+>  	FN(copy_from_user_task),	\
+>  	FN(skb_set_tstamp),		\
+>  	FN(ima_file_hash),		\
+> +	FN(dynptr_from_mem),		\
+> +	FN(dynptr_alloc),		\
+> +	FN(dynptr_put),			\
+>  	/* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> @@ -6486,6 +6525,11 @@ struct bpf_timer {
+>  	__u64 :64;
+>  } __attribute__((aligned(8)));
+>
+> +struct bpf_dynptr {
+> +	__u64 :64;
+> +	__u64 :64;
+> +} __attribute__((aligned(8)));
+> +
+>  struct bpf_sysctl {
+>  	__u32	write;		/* Sysctl is being read (= 0) or written (= 1).
+>  				 * Allows 1,2,4-byte read, but no write.
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index a47aae5c7335..87c14edda315 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1374,6 +1374,110 @@ void bpf_timer_cancel_and_free(void *val)
+>  	kfree(t);
+>  }
+>
+> +void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data, enum bpf_dynptr_type type,
+> +		     u32 offset, u32 size)
+> +{
+> +	ptr->data = data;
+> +	ptr->offset = offset;
+> +	ptr->size = size;
+> +	bpf_dynptr_set_type(ptr, type);
+> +}
+> +
+> +void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr)
+> +{
+> +	memset(ptr, 0, sizeof(*ptr));
+> +}
+> +
+> +BPF_CALL_4(bpf_dynptr_from_mem, void *, data, u32, size, u64, flags, struct bpf_dynptr_kern *, ptr)
+> +{
+> +	int err;
+> +
+> +	err = bpf_dynptr_check_size(size);
+> +	if (err)
+> +		goto error;
+> +
+> +	/* flags is currently unsupported */
+> +	if (flags) {
+> +		err = -EINVAL;
+> +		goto error;
+> +	}
+> +
+> +	bpf_dynptr_init(ptr, data, BPF_DYNPTR_TYPE_LOCAL, 0, size);
+> +
+> +	return 0;
+> +
+> +error:
+> +	bpf_dynptr_set_null(ptr);
+> +	return err;
+> +}
+> +
+> +const struct bpf_func_proto bpf_dynptr_from_mem_proto = {
+> +	.func		= bpf_dynptr_from_mem,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_MEM_UNINIT | NO_OBJ_REF,
+> +	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
+> +	.arg3_type	= ARG_ANYTHING,
+> +	.arg4_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL | MEM_UNINIT,
+> +};
+> +
+> +BPF_CALL_3(bpf_dynptr_alloc, u32, size, u64, flags, struct bpf_dynptr_kern *, ptr)
+> +{
+> +	gfp_t gfp_flags = GFP_ATOMIC;
+> +	void *data;
+> +	int err;
+> +
+> +	err = bpf_dynptr_check_size(size);
+> +	if (err)
+> +		goto error;
+> +
+> +	if (flags) {
+> +		if (flags == __GFP_ZERO) {
+> +			gfp_flags |= flags;
+> +		} else {
+> +			err = -EINVAL;
+> +			goto error;
+> +		}
+> +	}
+> +
+> +	data = kmalloc(size, gfp_flags);
+> +	if (!data) {
+> +		err = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	bpf_dynptr_init(ptr, data, BPF_DYNPTR_TYPE_MALLOC, 0, size);
+> +
+> +	return 0;
+> +
+> +error:
+> +	bpf_dynptr_set_null(ptr);
+> +	return err;
+> +}
+> +
+> +const struct bpf_func_proto bpf_dynptr_alloc_proto = {
+> +	.func		= bpf_dynptr_alloc,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_ANYTHING,
+> +	.arg2_type	= ARG_ANYTHING,
+> +	.arg3_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_MALLOC | MEM_UNINIT,
+> +};
+> +
+> +BPF_CALL_1(bpf_dynptr_put, struct bpf_dynptr_kern *, dynptr)
+> +{
+> +	kfree(dynptr->data);
+> +	bpf_dynptr_set_null(dynptr);
+> +	return 0;
+> +}
+> +
+> +const struct bpf_func_proto bpf_dynptr_put_proto = {
+> +	.func		= bpf_dynptr_put,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_VOID,
+> +	.arg1_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_MALLOC | OBJ_RELEASE,
+> +};
+> +
+>  const struct bpf_func_proto bpf_get_current_task_proto __weak;
+>  const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
+>  const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+> @@ -1426,6 +1530,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>  		return &bpf_loop_proto;
+>  	case BPF_FUNC_strncmp:
+>  		return &bpf_strncmp_proto;
+> +	case BPF_FUNC_dynptr_from_mem:
+> +		return &bpf_dynptr_from_mem_proto;
+> +	case BPF_FUNC_dynptr_alloc:
+> +		return &bpf_dynptr_alloc_proto;
+> +	case BPF_FUNC_dynptr_put:
+> +		return &bpf_dynptr_put_proto;
+>  	default:
+>  		break;
+>  	}
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 8deb588a19ce..bf132c6822e4 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -187,6 +187,9 @@ struct bpf_verifier_stack_elem {
+>  					  POISON_POINTER_DELTA))
+>  #define BPF_MAP_PTR(X)		((struct bpf_map *)((X) & ~BPF_MAP_PTR_UNPRIV))
+>
+> +/* forward declarations */
+> +static bool arg_type_is_mem_size(enum bpf_arg_type type);
+> +
+>  static bool bpf_map_ptr_poisoned(const struct bpf_insn_aux_data *aux)
+>  {
+>  	return BPF_MAP_PTR(aux->map_ptr_state) == BPF_MAP_PTR_POISON;
+> @@ -257,7 +260,9 @@ struct bpf_call_arg_meta {
+>  	struct btf *ret_btf;
+>  	u32 ret_btf_id;
+>  	u32 subprogno;
+> -	bool release_ref;
+> +	u8 release_regno;
+> +	bool release_dynptr;
+> +	u8 uninit_dynptr_regno;
+>  };
+>
+>  struct btf *btf_vmlinux;
+> @@ -576,6 +581,7 @@ static char slot_type_char[] = {
+>  	[STACK_SPILL]	= 'r',
+>  	[STACK_MISC]	= 'm',
+>  	[STACK_ZERO]	= '0',
+> +	[STACK_DYNPTR]	= 'd',
+>  };
+>
+>  static void print_liveness(struct bpf_verifier_env *env,
+> @@ -591,6 +597,25 @@ static void print_liveness(struct bpf_verifier_env *env,
+>  		verbose(env, "D");
+>  }
+>
+> +static inline int get_spi(s32 off)
+> +{
+> +	return (-off - 1) / BPF_REG_SIZE;
+> +}
+> +
+> +static bool is_spi_bounds_valid(struct bpf_func_state *state, int spi, u32 nr_slots)
+> +{
+> +	int allocated_slots = state->allocated_stack / BPF_REG_SIZE;
+> +
+> +	/* We need to check that slots between [spi - nr_slots + 1, spi] are
+> +	 * within [0, allocated_stack).
+> +	 *
+> +	 * Please note that the spi grows downwards. For example, a dynptr
+> +	 * takes the size of two stack slots; the first slot will be at
+> +	 * spi and the second slot will be at spi - 1.
+> +	 */
+> +	return spi - nr_slots + 1 >= 0 && spi < allocated_slots;
+> +}
+> +
+>  static struct bpf_func_state *func(struct bpf_verifier_env *env,
+>  				   const struct bpf_reg_state *reg)
+>  {
+> @@ -642,6 +667,191 @@ static void mark_verifier_state_scratched(struct bpf_verifier_env *env)
+>  	env->scratched_stack_slots = ~0ULL;
+>  }
+>
+> +#define DYNPTR_TYPE_FLAG_MASK (DYNPTR_TYPE_LOCAL | DYNPTR_TYPE_MALLOC)
+> +
+> +static int arg_to_dynptr_type(enum bpf_arg_type arg_type)
+> +{
+> +	switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
+> +	case DYNPTR_TYPE_LOCAL:
+> +		return BPF_DYNPTR_TYPE_LOCAL;
+> +	case DYNPTR_TYPE_MALLOC:
+> +		return BPF_DYNPTR_TYPE_MALLOC;
+> +	default:
+> +		return BPF_DYNPTR_TYPE_INVALID;
+> +	}
+> +}
+> +
+> +static inline bool dynptr_type_refcounted(enum bpf_dynptr_type type)
+> +{
+> +	return type == BPF_DYNPTR_TYPE_MALLOC;
+> +}
+> +
+> +static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> +				   enum bpf_arg_type arg_type)
+> +{
+> +	struct bpf_func_state *state = cur_func(env);
+> +	enum bpf_dynptr_type type;
+> +	int spi, i;
+> +
+> +	spi = get_spi(reg->off);
+> +
+> +	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+> +		return -EINVAL;
+> +
+> +	type = arg_to_dynptr_type(arg_type);
+> +	if (type == BPF_DYNPTR_TYPE_INVALID)
+> +		return -EINVAL;
+> +
+> +	for (i = 0; i < BPF_REG_SIZE; i++) {
+> +		state->stack[spi].slot_type[i] = STACK_DYNPTR;
+> +		state->stack[spi - 1].slot_type[i] = STACK_DYNPTR;
+> +	}
+> +
+> +	state->stack[spi].spilled_ptr.dynptr.type = type;
+> +	state->stack[spi - 1].spilled_ptr.dynptr.type = type;
+> +
+> +	state->stack[spi].spilled_ptr.dynptr.first_slot = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> +{
+> +	struct bpf_func_state *state = func(env, reg);
+> +	int spi, i;
+> +
+> +	spi = get_spi(reg->off);
+> +
+> +	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+> +		return -EINVAL;
+> +
+> +	for (i = 0; i < BPF_REG_SIZE; i++) {
+> +		state->stack[spi].slot_type[i] = STACK_INVALID;
+> +		state->stack[spi - 1].slot_type[i] = STACK_INVALID;
+> +	}
+> +
+> +	state->stack[spi].spilled_ptr.dynptr.type = 0;
+> +	state->stack[spi - 1].spilled_ptr.dynptr.type = 0;
+> +
+> +	state->stack[spi].spilled_ptr.dynptr.first_slot = 0;
+> +
+> +	return 0;
+> +}
+> +
+> +static int mark_as_dynptr_data(struct bpf_verifier_env *env, const struct bpf_func_proto *fn,
+> +			       struct bpf_reg_state *regs)
+> +{
+> +	struct bpf_func_state *state = cur_func(env);
+> +	struct bpf_reg_state *reg, *mem_reg = NULL;
+> +	enum bpf_arg_type arg_type;
+> +	u64 mem_size;
+> +	u32 nr_slots;
+> +	int i, spi;
+> +
+> +	/* We must protect against the case where a program tries to do something
+> +	 * like this:
+> +	 *
+> +	 * bpf_dynptr_from_mem(&ptr, sizeof(ptr), 0, &local);
+> +	 * bpf_dynptr_alloc(16, 0, &ptr);
+> +	 * bpf_dynptr_write(&local, 0, corrupt_data, sizeof(ptr));
+> +	 *
+> +	 * If ptr is a variable on the stack, we must mark the stack slot as
+> +	 * dynptr data when a local dynptr to it is created.
+> +	 */
+> +	for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> +		arg_type = fn->arg_type[i];
+> +		reg = &regs[BPF_REG_1 + i];
+> +
+> +		if (base_type(arg_type) == ARG_PTR_TO_MEM) {
+> +			if (base_type(reg->type) == PTR_TO_STACK) {
+> +				mem_reg = reg;
+> +				continue;
+> +			}
+> +			/* if it's not a PTR_TO_STACK, then we don't need to
+> +			 * mark anything since it can never be used as a dynptr.
+> +			 * We can just return here since there will always be
+> +			 * only one ARG_PTR_TO_MEM in fn.
+> +			 */
+> +			return 0;
+> +		} else if (arg_type_is_mem_size(arg_type)) {
+> +			mem_size = roundup(reg->var_off.value, BPF_REG_SIZE);
+> +		}
+> +	}
+> +
+> +	if (!mem_reg || !mem_size) {
+> +		verbose(env, "verifier internal error: invalid ARG_PTR_TO_MEM args for %s\n", __func__);
+> +		return -EFAULT;
+> +	}
+> +
+> +	spi = get_spi(mem_reg->off);
+> +	if (!is_spi_bounds_valid(state, spi, mem_size)) {
+> +		verbose(env, "verifier internal error: variable not initialized on stack in %s\n", __func__);
+> +		return -EFAULT;
+> +	}
+> +
+> +	nr_slots = mem_size / BPF_REG_SIZE;
+> +	for (i = 0; i < nr_slots; i++)
+> +		state->stack[spi - i].spilled_ptr.is_dynptr_data = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> +				       bool *is_dynptr_data)
+> +{
+> +	struct bpf_func_state *state = func(env, reg);
+> +	int spi;
+> +
+> +	spi = get_spi(reg->off);
+> +
+> +	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+> +		return true;
+> +
+> +	if (state->stack[spi].slot_type[0] == STACK_DYNPTR ||
+> +	    state->stack[spi - 1].slot_type[0] == STACK_DYNPTR)
+> +		return false;
+> +
+> +	if (state->stack[spi].spilled_ptr.is_dynptr_data ||
+> +	    state->stack[spi - 1].spilled_ptr.is_dynptr_data) {
+> +		*is_dynptr_data = true;
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> +				     enum bpf_arg_type arg_type)
+> +{
+> +	struct bpf_func_state *state = func(env, reg);
+> +	int spi = get_spi(reg->off);
+> +
+> +	if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
+> +	    state->stack[spi].slot_type[0] != STACK_DYNPTR ||
+> +	    state->stack[spi - 1].slot_type[0] != STACK_DYNPTR ||
+> +	    !state->stack[spi].spilled_ptr.dynptr.first_slot)
+> +		return false;
+> +
+> +	/* ARG_PTR_TO_DYNPTR takes any type of dynptr */
+> +	if (arg_type == ARG_PTR_TO_DYNPTR)
+> +		return true;
+> +
+> +	return state->stack[spi].spilled_ptr.dynptr.type == arg_to_dynptr_type(arg_type);
+> +}
+> +
+> +static bool stack_access_into_dynptr(struct bpf_func_state *state, int spi, int size)
+> +{
+> +	int nr_slots = roundup(size, BPF_REG_SIZE) / BPF_REG_SIZE;
+> +	int i;
+> +
+> +	for (i = 0; i < nr_slots; i++) {
+> +		if (state->stack[spi - i].slot_type[0] == STACK_DYNPTR)
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  /* The reg state of a pointer or a bounded scalar was saved when
+>   * it was spilled to the stack.
+>   */
+> @@ -2878,6 +3088,12 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+>  	}
+>
+>  	mark_stack_slot_scratched(env, spi);
+> +
+> +	if (stack_access_into_dynptr(state, spi, size)) {
+> +		verbose(env, "direct write into dynptr is not permitted\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (reg && !(off % BPF_REG_SIZE) && register_is_bounded(reg) &&
+>  	    !register_is_null(reg) && env->bpf_capable) {
+>  		if (dst_reg != BPF_REG_FP) {
+> @@ -2999,6 +3215,12 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
+>  		slot = -i - 1;
+>  		spi = slot / BPF_REG_SIZE;
+>  		stype = &state->stack[spi].slot_type[slot % BPF_REG_SIZE];
+> +
+> +		if (*stype == STACK_DYNPTR) {
+> +			verbose(env, "direct write into dynptr is not permitted\n");
+> +			return -EINVAL;
+> +		}
+> +
+>  		mark_stack_slot_scratched(env, spi);
+>
+>  		if (!env->allow_ptr_leaks
+> @@ -5141,6 +5363,16 @@ static bool arg_type_is_int_ptr(enum bpf_arg_type type)
+>  	       type == ARG_PTR_TO_LONG;
+>  }
+>
+> +static inline bool arg_type_is_dynptr(enum bpf_arg_type type)
+> +{
+> +	return base_type(type) == ARG_PTR_TO_DYNPTR;
+> +}
+> +
+> +static inline bool arg_type_is_dynptr_uninit(enum bpf_arg_type type)
+> +{
+> +	return arg_type_is_dynptr(type) && (type & MEM_UNINIT);
+> +}
+> +
+>  static int int_ptr_type_to_size(enum bpf_arg_type type)
+>  {
+>  	if (type == ARG_PTR_TO_INT)
+> @@ -5278,6 +5510,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+>  	[ARG_PTR_TO_STACK]		= &stack_ptr_types,
+>  	[ARG_PTR_TO_CONST_STR]		= &const_str_ptr_types,
+>  	[ARG_PTR_TO_TIMER]		= &timer_types,
+> +	[ARG_PTR_TO_DYNPTR]		= &stack_ptr_types,
+>  };
+>
+>  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> @@ -5450,10 +5683,16 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  		return err;
+>
+>  skip_type_check:
+> -	/* check_func_arg_reg_off relies on only one referenced register being
+> -	 * allowed for BPF helpers.
+> -	 */
+>  	if (reg->ref_obj_id) {
+> +		if (arg_type & NO_OBJ_REF) {
+> +			verbose(env, "Arg #%d cannot be a referenced object\n",
+> +				arg + 1);
+> +			return -EINVAL;
+> +		}
+> +
+> +		/* check_func_arg_reg_off relies on only one referenced register being
+> +		 * allowed for BPF helpers.
+> +		 */
+>  		if (meta->ref_obj_id) {
+>  			verbose(env, "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
+>  				regno, reg->ref_obj_id,
+> @@ -5463,16 +5702,26 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  		meta->ref_obj_id = reg->ref_obj_id;
+>  	}
+>  	if (arg_type & OBJ_RELEASE) {
+> -		if (!reg->ref_obj_id) {
+> +		if (arg_type_is_dynptr(arg_type)) {
+> +			struct bpf_func_state *state = func(env, reg);
+> +			int spi = get_spi(reg->off);
+> +
+> +			if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
+> +			    !state->stack[spi].spilled_ptr.id) {
+> +				verbose(env, "arg %d is an unacquired reference\n", regno);
+> +				return -EINVAL;
+> +			}
+> +			meta->release_dynptr = true;
+> +		} else if (!reg->ref_obj_id) {
+>  			verbose(env, "arg %d is an unacquired reference\n", regno);
+>  			return -EINVAL;
+>  		}
+> -		if (meta->release_ref) {
+> -			verbose(env, "verifier internal error: more than one release_ref arg R%d\n",
+> -				regno);
+> +		if (meta->release_regno) {
+> +			verbose(env, "verifier internal error: more than one release_regno %u %u\n",
+> +				meta->release_regno, regno);
+>  			return -EFAULT;
+>  		}
+> -		meta->release_ref = true;
+> +		meta->release_regno = regno;
+>  	}
+>
+>  	if (arg_type == ARG_CONST_MAP_PTR) {
+> @@ -5565,6 +5814,44 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  		bool zero_size_allowed = (arg_type == ARG_CONST_SIZE_OR_ZERO);
+>
+>  		err = check_mem_size_reg(env, reg, regno, zero_size_allowed, meta);
+> +	} else if (arg_type_is_dynptr(arg_type)) {
+> +		/* Can't pass in a dynptr at a weird offset */
+> +		if (reg->off % BPF_REG_SIZE) {
 
-On Tue, 12 Apr 2022 15:51:43 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+In invalid_helper2 test, you are passing &dynptr + 8, which means reg will be
+fp-8 (assuming dynptr is at top of stack), get_spi will compute spi as 0, so
+spi-1 will lead to OOB access for the second dynptr stack slot. If you run the
+dynptr test under KASAN, you should see a warning for this.
 
-> On Mon, Apr 11, 2022 at 5:49 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Mon, 11 Apr 2022 15:15:40 -0700
-> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > > > +#define DEBUGFS "/sys/kernel/debug/tracing/"
-> > > > +
-> > > > +static int get_syms(char ***symsp, size_t *cntp)
-> > > > +{
-> > > > +       size_t cap = 0, cnt = 0, i;
-> > > > +       char *name, **syms = NULL;
-> > > > +       struct hashmap *map;
-> > > > +       char buf[256];
-> > > > +       FILE *f;
-> > > > +       int err;
-> > > > +
-> > > > +       /*
-> > > > +        * The available_filter_functions contains many duplicates,
-> > > > +        * but other than that all symbols are usable in kprobe multi
-> > > > +        * interface.
-> > > > +        * Filtering out duplicates by using hashmap__add, which won't
-> > > > +        * add existing entry.
-> > > > +        */
-> > > > +       f = fopen(DEBUGFS "available_filter_functions", "r");
-> > >
-> > > I'm really curious how did you manage to attach to everything in
-> > > available_filter_functions because when I'm trying to do that I fail.
-> > > available_filter_functions has a bunch of functions that should not be
-> > > attachable (e.g., notrace functions). Look just at __bpf_tramp_exit:
-> > >
-> > >   void notrace __bpf_tramp_exit(struct bpf_tramp_image *tr);
-> >
-> > Hmm, this sounds like a bug in ftrace side. IIUC, the
-> > "available_filter_functions" only shows the functions which is NOT
-> > instrumented by mcount, we should not see any notrace functions on it.
-> >
-> > Technically, this is done by __no_instrument_function__ attribute.
-> >
-> > #if defined(CC_USING_HOTPATCH)
-> > #define notrace                 __attribute__((hotpatch(0, 0)))
-> > #elif defined(CC_USING_PATCHABLE_FUNCTION_ENTRY)
-> > #define notrace                 __attribute__((patchable_function_entry(0, 0)))
-> > #else
-> > #define notrace                 __attribute__((__no_instrument_function__))
-> > #endif
-> >
-> > >
-> > > So first, curious what I am doing wrong or rather why it succeeds in
-> > > your case ;)
-> > >
-> > > But second, just wanted to plea to "fix" available_filter_functions to
-> > > not list stuff that should not be attachable. Can you please take a
-> > > look and checks what's going on there and why do we have notrace
-> > > functions (and what else should *NOT* be there)?
-> >
-> > Can you share how did you reproduce the issue? I'll check it.
-> >
-> 
-> $ sudo cat /sys/kernel/debug/tracing/available_filter_functions | grep
-> __bpf_tramp
-> __bpf_tramp_image_release
-> __bpf_tramp_image_put_rcu_tasks
-> __bpf_tramp_image_put_rcu
-> __bpf_tramp_image_put_deferred
-> __bpf_tramp_exit
-> 
-> 
-> __bpf_tramp_exit is notrace function, so shouldn't be here. Notice
-> that __bpf_tramp_enter (which is also notrace) are not in
-> available_filter_functions.
+So we should ensure here that reg->off is atleast -16.
 
-OK, I also confirmed that __bpf_tramp_exit is listed. (others seems no notrace)
+> +			verbose(env, "cannot pass in non-zero dynptr offset\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (arg_type & MEM_UNINIT)  {
+> +			bool is_dynptr_data = false;
+> +
+> +			if (!is_dynptr_reg_valid_uninit(env, reg, &is_dynptr_data)) {
+> +				if (is_dynptr_data)
+> +					verbose(env, "Arg #%d cannot be a memory reference for another dynptr\n",
+> +						arg + 1);
+> +				else
+> +					verbose(env, "Arg #%d dynptr has to be an uninitialized dynptr\n",
+> +						arg + 1);
+> +				return -EINVAL;
+> +			}
+> +
+> +			meta->uninit_dynptr_regno = arg + BPF_REG_1;
+> +		} else if (!is_dynptr_reg_valid_init(env, reg, arg_type)) {
+> +			const char *err_extra = "";
+> +
+> +			switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
+> +			case DYNPTR_TYPE_LOCAL:
+> +				err_extra = "local ";
+> +				break;
+> +			case DYNPTR_TYPE_MALLOC:
+> +				err_extra = "malloc ";
+> +				break;
+> +			default:
+> +				break;
+> +			}
+> +			verbose(env, "Expected an initialized %sdynptr as arg #%d\n",
+> +				err_extra, arg + 1);
+> +			return -EINVAL;
+> +		}
+>  	} else if (arg_type_is_alloc_size(arg_type)) {
+>  		if (!tnum_is_const(reg->var_off)) {
+>  			verbose(env, "R%d is not a known constant'\n",
+> @@ -6545,6 +6832,28 @@ static int check_reference_leak(struct bpf_verifier_env *env)
+>  	return state->acquired_refs ? -EINVAL : 0;
+>  }
+>
+> +/* Called at BPF_EXIT to detect if there are any reference-tracked dynptrs that have
+> + * not been released. Dynptrs to local memory do not need to be released.
+> + */
+> +static int check_dynptr_unreleased(struct bpf_verifier_env *env)
+> +{
+> +	struct bpf_func_state *state = cur_func(env);
+> +	int allocated_slots, i;
+> +
+> +	allocated_slots = state->allocated_stack / BPF_REG_SIZE;
+> +
+> +	for (i = 0; i < allocated_slots; i++) {
+> +		if (state->stack[i].slot_type[0] == STACK_DYNPTR) {
+> +			if (dynptr_type_refcounted(state->stack[i].spilled_ptr.dynptr.type)) {
+> +				verbose(env, "spi=%d is an unreleased dynptr\n", i);
+> +				return -EINVAL;
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+>  				   struct bpf_reg_state *regs)
+>  {
+> @@ -6686,8 +6995,38 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  			return err;
+>  	}
+>
+> -	if (meta.release_ref) {
+> -		err = release_reference(env, meta.ref_obj_id);
+> +	regs = cur_regs(env);
+> +
+> +	if (meta.uninit_dynptr_regno) {
+> +		enum bpf_arg_type type;
+> +
+> +		/* we write BPF_W bits (4 bytes) at a time */
+> +		for (i = 0; i < BPF_DYNPTR_SIZE; i += 4) {
+> +			err = check_mem_access(env, insn_idx, meta.uninit_dynptr_regno,
+> +					       i, BPF_W, BPF_WRITE, -1, false);
+> +			if (err)
+> +				return err;
+> +		}
+> +
+> +		type = fn->arg_type[meta.uninit_dynptr_regno - BPF_REG_1];
+> +
+> +		err = mark_stack_slots_dynptr(env, &regs[meta.uninit_dynptr_regno], type);
+> +		if (err)
+> +			return err;
+> +
+> +		if (type & DYNPTR_TYPE_LOCAL) {
+> +			err = mark_as_dynptr_data(env, fn, regs);
+> +			if (err)
+> +				return err;
+> +		}
+> +	}
+> +
+> +	if (meta.release_regno) {
+> +		if (meta.release_dynptr) {
+> +			err = unmark_stack_slots_dynptr(env, &regs[meta.release_regno]);
+> +		} else {
+> +			err = release_reference(env, meta.ref_obj_id);
+> +		}
+>  		if (err) {
+>  			verbose(env, "func %s#%d reference has not been acquired before\n",
+>  				func_id_name(func_id), func_id);
+> @@ -6695,8 +7034,6 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  		}
+>  	}
+>
+> -	regs = cur_regs(env);
+> -
+>  	switch (func_id) {
+>  	case BPF_FUNC_tail_call:
+>  		err = check_reference_leak(env);
+> @@ -6704,6 +7041,11 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  			verbose(env, "tail_call would lead to reference leak\n");
+>  			return err;
+>  		}
+> +		err = check_dynptr_unreleased(env);
+> +		if (err) {
+> +			verbose(env, "tail_call would lead to dynptr memory leak\n");
+> +			return err;
+> +		}
+>  		break;
+>  	case BPF_FUNC_get_local_storage:
+>  		/* check that flags argument in get_local_storage(map, flags) is 0,
+> @@ -11696,6 +12038,10 @@ static int do_check(struct bpf_verifier_env *env)
+>  					return -EINVAL;
+>  				}
+>
+> +				err = check_dynptr_unreleased(env);
+> +				if (err)
+> +					return err;
+> +
+>  				if (state->curframe) {
+>  					/* exit from nested function */
+>  					err = prepare_func_exit(env, &env->insn_idx);
+> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> index 096625242475..766dcbc73897 100755
+> --- a/scripts/bpf_doc.py
+> +++ b/scripts/bpf_doc.py
+> @@ -633,6 +633,7 @@ class PrinterHelpers(Printer):
+>              'struct socket',
+>              'struct file',
+>              'struct bpf_timer',
+> +            'struct bpf_dynptr',
+>      ]
+>      known_types = {
+>              '...',
+> @@ -682,6 +683,7 @@ class PrinterHelpers(Printer):
+>              'struct socket',
+>              'struct file',
+>              'struct bpf_timer',
+> +            'struct bpf_dynptr',
+>      }
+>      mapped_types = {
+>              'u8': '__u8',
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index d14b10b85e51..e339b2697d9a 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -5143,6 +5143,42 @@ union bpf_attr {
+>   *		The **hash_algo** is returned on success,
+>   *		**-EOPNOTSUP** if the hash calculation failed or **-EINVAL** if
+>   *		invalid arguments are passed.
+> + *
+> + * long bpf_dynptr_from_mem(void *data, u32 size, u64 flags, struct bpf_dynptr *ptr)
+> + *	Description
+> + *		Get a dynptr to local memory *data*.
+> + *
+> + *		For a dynptr to a dynamic memory allocation, please use
+> + *		bpf_dynptr_alloc instead.
+> + *
+> + *		The maximum *size* supported is DYNPTR_MAX_SIZE.
+> + *		*flags* is currently unused.
+> + *	Return
+> + *		0 on success, -E2BIG if the size exceeds DYNPTR_MAX_SIZE,
+> + *		-EINVAL if flags is not 0.
+> + *
+> + * long bpf_dynptr_alloc(u32 size, u64 flags, struct bpf_dynptr *ptr)
+> + *	Description
+> + *		Allocate memory of *size* bytes.
+> + *
+> + *		Every call to bpf_dynptr_alloc must have a corresponding
+> + *		bpf_dynptr_put, regardless of whether the bpf_dynptr_alloc
+> + *		succeeded.
+> + *
+> + *		The maximum *size* supported is DYNPTR_MAX_SIZE.
+> + *		Supported *flags* are __GFP_ZERO.
+> + *	Return
+> + *		0 on success, -ENOMEM if there is not enough memory for the
+> + *		allocation, -E2BIG if the size exceeds DYNPTR_MAX_SIZE, -EINVAL
+> + *		if the flags is not supported.
+> + *
+> + * void bpf_dynptr_put(struct bpf_dynptr *ptr)
+> + *	Description
+> + *		Free memory allocated by bpf_dynptr_alloc.
+> + *
+> + *		After this operation, *ptr* will be an invalidated dynptr.
+> + *	Return
+> + *		Void.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5339,6 +5375,9 @@ union bpf_attr {
+>  	FN(copy_from_user_task),	\
+>  	FN(skb_set_tstamp),		\
+>  	FN(ima_file_hash),		\
+> +	FN(dynptr_from_mem),		\
+> +	FN(dynptr_alloc),		\
+> +	FN(dynptr_put),			\
+>  	/* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> @@ -6486,6 +6525,11 @@ struct bpf_timer {
+>  	__u64 :64;
+>  } __attribute__((aligned(8)));
+>
+> +struct bpf_dynptr {
+> +	__u64 :64;
+> +	__u64 :64;
+> +} __attribute__((aligned(8)));
+> +
+>  struct bpf_sysctl {
+>  	__u32	write;		/* Sysctl is being read (= 0) or written (= 1).
+>  				 * Allows 1,2,4-byte read, but no write.
+> --
+> 2.30.2
+>
 
-/sys/kernel/tracing # cat available_filter_functions | grep __bpf_tramp
-__bpf_tramp_image_release
-__bpf_tramp_image_put_rcu
-__bpf_tramp_image_put_rcu_tasks
-__bpf_tramp_image_put_deferred
-__bpf_tramp_exit
-
-My gcc is older one.
-gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1) 
-
-But it seems that __bpf_tramp_exit() doesn't call __fentry__. (I objdump'ed) 
-
-ffffffff81208270 <__bpf_tramp_exit>:
-ffffffff81208270:       55                      push   %rbp
-ffffffff81208271:       48 89 e5                mov    %rsp,%rbp
-ffffffff81208274:       53                      push   %rbx
-ffffffff81208275:       48 89 fb                mov    %rdi,%rbx
-ffffffff81208278:       e8 83 70 ef ff          callq  ffffffff810ff300 <__rcu_read_lock>
-ffffffff8120827d:       31 d2                   xor    %edx,%edx
-
-
-> 
-> So it's quite bizarre and inconsistent.
-
-Indeed. I guess there is a bug in scripts/recordmcount.pl.
-
-Thank you,
-
-> 
-> > Thank you,
-> >
-> >
-> > --
-> > Masami Hiramatsu <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+--
+Kartikeya
