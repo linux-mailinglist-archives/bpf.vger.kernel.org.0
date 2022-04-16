@@ -2,207 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CDA50344A
-	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 07:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27145033B4
+	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 07:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbiDPEdO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 16 Apr 2022 00:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S230161AbiDPFLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 16 Apr 2022 01:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbiDPEdO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 16 Apr 2022 00:33:14 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9141111DDA
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 21:30:43 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 23G3ubTe005979
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 21:30:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=v3w3fcnNTj52ksabUCaui52WDjm0f+F0kxPpGSwcUQI=;
- b=nWHGzyX3N3Pwu2ZJrbdK2Va9EH/c0kJSwkDR5TzK/60YyMDztQ7vT8PAbZpiA8P8g1LF
- kqZwj9ET7H8/y0aM3D01uEEuKwWPuaqrj5Y8W6RlCTgTR5zIVM4Amk6Voycrw5V30/72
- U2fJg6OgiBVvxi2a9OzMt97kJQkyV4M0Z34= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3fewgpew12-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 21:30:42 -0700
-Received: from twshared19572.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 15 Apr 2022 21:30:42 -0700
-Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 7B597252D7DE; Fri, 15 Apr 2022 21:30:27 -0700 (PDT)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kernel-team@fb.com>
-CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH dwarves v6 6/6] selftest/bpf: The test cses of BPF cookie for fentry/fexit/fmod_ret.
-Date:   Fri, 15 Apr 2022 21:29:40 -0700
-Message-ID: <20220416042940.656344-7-kuifeng@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220416042940.656344-1-kuifeng@fb.com>
-References: <20220416042940.656344-1-kuifeng@fb.com>
+        with ESMTP id S230160AbiDPFLQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 16 Apr 2022 01:11:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85DDAF1E9;
+        Fri, 15 Apr 2022 22:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/iIo0JVr8TqpS6OeM1MMTlnanQ4ma+icA95lQhkDqAg=; b=vuqPnYaKN147QAafHsn7Xwyejz
+        g4I0w7NWO+dMJj/kMLvTwsKf9t9ddprTrTDkT60CoTB6MnShtPbUOh72WnAhkchMIzm+PpQvU2KXT
+        Fv/ZFNPcrUfHOEXcmrPnRnldZuosGM0QKngCmihpLBdAKnClCEJwlA2R1wJKf8lGgrjVZ5kJ1Fwx4
+        5c+3v3X64MnP812jEAKb+M6fqJKQctmEYDErmyXeNy0diIoo6HE6hXjpbEwuJ0a6T4AXILMYZoEfB
+        TDz+JlzEaASoOfixBBwZ+7NHwAqvYs2s24Fb72MBgoOA/Msq916qL7MVLsTw63VQeJz2REYpiHAiB
+        5U89pCfg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nfafr-00CGE1-O2; Sat, 16 Apr 2022 05:08:43 +0000
+Date:   Fri, 15 Apr 2022 22:08:43 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com,
+        akpm@linux-foundation.org, rick.p.edgecombe@intel.com,
+        hch@infradead.org, imbrenda@linux.ibm.com
+Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+Message-ID: <YlpPW9SdCbZnLVog@infradead.org>
+References: <20220415164413.2727220-1-song@kernel.org>
+ <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: mgW8Lqn5RbH0Xn7L3iU5yqCqSD1XTnE1
-X-Proofpoint-GUID: mgW8Lqn5RbH0Xn7L3iU5yqCqSD1XTnE1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-16_01,2022-04-15_01,2022-02-23_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make sure BPF cookies are correct for fentry/fexit/fmod_ret.
+On Fri, Apr 15, 2022 at 12:05:42PM -0700, Luis Chamberlain wrote:
+> Looks good except for that I think this should just wait for v5.19. The
+> fixes are so large I can't see why this needs to be rushed in other than
+> the first assumptions of the optimizations had some flaws addressed here.
 
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 53 +++++++++++++++++++
- .../selftests/bpf/progs/test_bpf_cookie.c     | 40 +++++++++++---
- 2 files changed, 85 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/=
-testing/selftests/bpf/prog_tests/bpf_cookie.c
-index 923a6139b2d8..69a574a69376 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -410,6 +410,57 @@ static void pe_subtest(struct test_bpf_cookie *skel)
- 	bpf_link__destroy(link);
- }
-=20
-+static void tracing_subtest(struct test_bpf_cookie *skel)
-+{
-+	__u64 cookie;
-+	int prog_fd;
-+	int fentry_fd =3D -1, fexit_fd =3D -1, fmod_ret_fd =3D -1;
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-+
-+	skel->bss->fentry_res =3D 0;
-+	skel->bss->fexit_res =3D 0;
-+
-+	cookie =3D 0x10000000000000L;
-+	prog_fd =3D bpf_program__fd(skel->progs.fentry_test1);
-+	link_opts.tracing.cookie =3D cookie;
-+	fentry_fd =3D bpf_link_create(prog_fd, 0, BPF_TRACE_FENTRY, &link_opts)=
-;
-+	if (!ASSERT_GE(fentry_fd, 0, "fentry.link_create"))
-+		goto cleanup;
-+
-+	cookie =3D 0x20000000000000L;
-+	prog_fd =3D bpf_program__fd(skel->progs.fexit_test1);
-+	link_opts.tracing.cookie =3D cookie;
-+	fexit_fd =3D bpf_link_create(prog_fd, 0, BPF_TRACE_FEXIT, &link_opts);
-+	if (!ASSERT_GE(fexit_fd, 0, "fexit.link_create"))
-+		goto cleanup;
-+
-+	cookie =3D 0x30000000000000L;
-+	prog_fd =3D bpf_program__fd(skel->progs.fmod_ret_test);
-+	link_opts.tracing.cookie =3D cookie;
-+	fmod_ret_fd =3D bpf_link_create(prog_fd, 0, BPF_MODIFY_RETURN, &link_op=
-ts);
-+	if (!ASSERT_GE(fmod_ret_fd, 0, "fmod_ret.link_create"))
-+		goto cleanup;
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.fentry_test1);
-+	bpf_prog_test_run_opts(prog_fd, &opts);
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.fmod_ret_test);
-+	bpf_prog_test_run_opts(prog_fd, &opts);
-+
-+	ASSERT_EQ(skel->bss->fentry_res, 0x10000000000000L, "fentry_res");
-+	ASSERT_EQ(skel->bss->fexit_res, 0x20000000000000L, "fexit_res");
-+	ASSERT_EQ(skel->bss->fmod_ret_res, 0x30000000000000L, "fmod_ret_res");
-+
-+cleanup:
-+	if (fentry_fd >=3D 0)
-+		close(fentry_fd);
-+	if (fexit_fd >=3D 0)
-+		close(fexit_fd);
-+	if (fmod_ret_fd >=3D 0)
-+		close(fmod_ret_fd);
-+}
-+
- void test_bpf_cookie(void)
- {
- 	struct test_bpf_cookie *skel;
-@@ -432,6 +483,8 @@ void test_bpf_cookie(void)
- 		tp_subtest(skel);
- 	if (test__start_subtest("perf_event"))
- 		pe_subtest(skel);
-+	if (test__start_subtest("trampoline"))
-+		tracing_subtest(skel);
-=20
- 	test_bpf_cookie__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c b/tools/=
-testing/selftests/bpf/progs/test_bpf_cookie.c
-index 0e2222968918..5cf1a1a2efee 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-@@ -7,15 +7,18 @@
-=20
- int my_tid;
-=20
--int kprobe_res;
--int kprobe_multi_res;
--int kretprobe_res;
--int uprobe_res;
--int uretprobe_res;
--int tp_res;
--int pe_res;
-+__u64 kprobe_res;
-+__u64 kprobe_multi_res;
-+__u64 kretprobe_res;
-+__u64 uprobe_res;
-+__u64 uretprobe_res;
-+__u64 tp_res;
-+__u64 pe_res;
-+__u64 fentry_res;
-+__u64 fexit_res;
-+__u64 fmod_ret_res;
-=20
--static void update(void *ctx, int *res)
-+static void update(void *ctx, __u64 *res)
- {
- 	if (my_tid !=3D (u32)bpf_get_current_pid_tgid())
- 		return;
-@@ -82,4 +85,25 @@ int handle_pe(struct pt_regs *ctx)
- 	return 0;
- }
-=20
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(fentry_test1, int a)
-+{
-+	update(ctx, &fentry_res);
-+	return 0;
-+}
-+
-+SEC("fexit/bpf_fentry_test1")
-+int BPF_PROG(fexit_test1, int a, int ret)
-+{
-+	update(ctx, &fexit_res);
-+	return 0;
-+}
-+
-+SEC("fmod_ret/bpf_modify_return_test")
-+int BPF_PROG(fmod_ret_test, int _a, int *_b, int _ret)
-+{
-+	update(ctx, &fmod_ret_res);
-+	return 1234;
-+}
-+
- char _license[] SEC("license") =3D "GPL";
---=20
-2.30.2
-
+Patches 1 and 2 are bug fixes for regressions caused by using huge page
+backed vmalloc by default.  So I think we do need it for 5.18.  The
+other two do look like candidates for 5.19, though.
