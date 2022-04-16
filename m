@@ -2,105 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F4650380A
-	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 21:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF4D503814
+	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 21:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbiDPTmr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 16 Apr 2022 15:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        id S232907AbiDPTzS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 16 Apr 2022 15:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbiDPTmh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 16 Apr 2022 15:42:37 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF53033342;
-        Sat, 16 Apr 2022 12:40:04 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t12so9538305pll.7;
-        Sat, 16 Apr 2022 12:40:04 -0700 (PDT)
+        with ESMTP id S232904AbiDPTzR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 16 Apr 2022 15:55:17 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1077C183B1
+        for <bpf@vger.kernel.org>; Sat, 16 Apr 2022 12:52:44 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q19so12057442pgm.6
+        for <bpf@vger.kernel.org>; Sat, 16 Apr 2022 12:52:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=5Xp410sF+GGnn+k64Aem0Bq20nF9FpJBZpOgxpPYfOM=;
-        b=M84mj+tp2XRkS5+g1JBD/J8nfprjEP9Xx2ytgoZNWcMBTTP42X6ZRSpXcO7hFe9/Oo
-         02aTUR9pmaftVGumtn+BD0zsgzRHDeeUYHwEZC46IvXiynXEGk8BVJKSu95AVDXsZt/p
-         t4JHw/IOVAdlggDWBqPfnE7MIrjLrPcArBrvKK0bI1L4x2vd1vZfodtEunrv9+5jLivM
-         RzhLPK+IwE7X9yHdqZHpyQL945co1l+I2H3dg4bprjOYNxzRhsDn2KREvTF9IHC/cj2R
-         tr0HjN9UjNAV+ZBbsyTRaWC4SvKM2xUt/7A9G6LwnqiPikL7XXqAcKH2zVuvh1Mt9ONg
-         hC9g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bgAC77nR92R0Atdt/fs5cwWnopSQU2D1kSGGyPYLyDQ=;
+        b=TVeQWAEYl9fYnjxCeAMwSSviv5YRc4g13KArx1gspSAInJbWYgmMd6M1eVuvihCIZL
+         u+oLsN9LU3xWSLzM3Dekpfa8+shuPiRZC3FHglN1+AAes+5AhSRzPNZjvFxRDBRgjsaM
+         /npxtIKoF8hoehyQlof2pmTrPY7IDkiK5UxeUUJ4MMkhNhHuQRBGYnZpZhSu5A4d88/j
+         xGGJ4LiIbJk/77Moh7Rg+wcV1ZUxrHqFi1VxoDaF+UgtH7kFhFls3Leaw3Ur43FYpO2R
+         rBKFa3PiFC0h9bSlpXAlPd5vqGPjK8z+I8BGJScRQ8CbeqvwwDCkQCYWlwaepFO8zJDW
+         3cag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=5Xp410sF+GGnn+k64Aem0Bq20nF9FpJBZpOgxpPYfOM=;
-        b=k7ctjhvL4hv/DpSOY9p9YX6kXZ7v993j3568MvNOrjhCY+DZf4ufiCZh73U6CpXZ55
-         DmX+PLO1Ij0U9x2ZDV0e7PKQxV1kmNelvsIODGw6A+J6YVySxlKEJsZOK1axW8NqaJjT
-         wWLfdvy0tbKvMFkDi9uFu1xOo87oN5g5YlTP/B8DLJJCqty8zu9Oh2azfyV4yLR3NQQn
-         /6DerDpVrZbcJbqulCfoTPu5zbcB8IBHp8aZgYpDrmSAI7ka7dC5ri92UeQAfVA9DKF+
-         fFZ85dbyuxnnwEDUYYmddmAaSau60CrtjOajXDe4sFHKxBkKcy9bYnDCDnzbZJGLJkgm
-         1a3w==
-X-Gm-Message-State: AOAM533uDczH6vdbQrk84eT3ThaCY0Yj1yxruf4iDFHVglrDMJB5iv9v
-        tjVOu8YnYlpATJpe0SzJivI=
-X-Google-Smtp-Source: ABdhPJwnTW8KqhnPwjGmeCpgHceRrEhsRLl5L0AQzXm3+Da3tFcNkHwGjE0Bz7pgd1D+I0xXP4IsAg==
-X-Received: by 2002:a17:902:ea0d:b0:158:5910:d683 with SMTP id s13-20020a170902ea0d00b001585910d683mr4720898plg.95.1650138004440;
-        Sat, 16 Apr 2022 12:40:04 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id a19-20020a17090aa51300b001cde7228b61sm8322237pjq.47.2022.04.16.12.40.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Apr 2022 12:40:03 -0700 (PDT)
-Message-ID: <725e814d-da65-b77d-1a6e-a029d594944f@gmail.com>
-Date:   Sat, 16 Apr 2022 12:40:00 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bgAC77nR92R0Atdt/fs5cwWnopSQU2D1kSGGyPYLyDQ=;
+        b=OSHNSzs6Ac1ARRsd2b0/xjgq4H4NyBLxwMCeg7cLqUCYZ0RKbt+stszhyJMHo+uuNj
+         o8cc3hNvkB5heOgCis6OEZYnFrdrZpFSr3/ZtKNG8Y2UUbly0xoQHBsmGDQrC4zu3HOk
+         LZyrWUD9MZeKRh/Xe0zPqaqt3trDzgnkWGwhtKuzOJTZZ1yDzS5oPQMNgBVK7X7X2DK5
+         Ul9JxviwtAHCW0Hox+XF5QcDOb+/z2HY4qUME372mmmY8YS4irDIdq1u1qZuOvAz+kCS
+         2dS8zkWkapAALKmMCrxhCi9JtmhwedQmGKiaLLkbugC4NHXcvdRVUUB6sWZdMNyz7wSf
+         Eu9A==
+X-Gm-Message-State: AOAM532MDp3KpC70s/boXb6diWasHS2wwNCTj+3l+YGXFWIh72ZiZ7zU
+        W7Lmp3BCKFBUBNDesRt3bwGIMXL3MANTD6aDmLcCbhrx
+X-Google-Smtp-Source: ABdhPJzkJ/C2Ay0FjgjPq4evKE9flkKb2fOSIgn+aS3GYFJ+tHWdc3bzH8aVSaDmtwEE/V70mk3cihpfoHWou/t5cfo=
+X-Received: by 2002:a05:6a00:24cf:b0:508:3278:8c21 with SMTP id
+ d15-20020a056a0024cf00b0050832788c21mr4878423pfv.57.1650138763542; Sat, 16
+ Apr 2022 12:52:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH net-next v4 02/18] net: dsa: sja1105: remove use of
- iterator after list_for_each_entry() loop
-Content-Language: en-US
-To:     Jakob Koschel <jakobkoschel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        UNGLinuxDriver@microchip.com, Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Casper Andersson <casper.casan@gmail.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Colin Ian King <colin.king@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Xu Wang <vulab@iscas.ac.cn>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, bpf@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>,
-        Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
-        Cristiano Giuffrida <c.giuffrida@vu.nl>,
-        "Bos, H.J." <h.j.bos@vu.nl>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-References: <20220415122947.2754662-1-jakobkoschel@gmail.com>
- <20220415122947.2754662-3-jakobkoschel@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20220415122947.2754662-3-jakobkoschel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+References: <20220414223704.341028-1-alobakin@pm.me> <CAADnVQ+rGR9vaDD1GM3mPgTkece711KZ+ME1MPWN8KYohydZyQ@mail.gmail.com>
+ <20220416175452.202686-1-alobakin@pm.me>
+In-Reply-To: <20220416175452.202686-1-alobakin@pm.me>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 16 Apr 2022 19:52:32 +0000
+Message-ID: <CAADnVQJtEcTCaGSPuQVPaGP1sk+N0AMV861h73qN-k_CrWG9gA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/11] bpf: random unpopular userspace fixes (32
+ bit et al.)
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -109,35 +67,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, Apr 16, 2022 at 11:01 AM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Date: Sat, 16 Apr 2022 00:50:49 +0000
+>
+> > On Thu, Apr 14, 2022 at 3:44 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > Please do not send encrypted patches.
+> > Use plain text.
+>
+> Oof, weird. I use ProtonMail Bridge and they claim it doesn't
+> encrypt mails to non-Proton users. That's the first time I hear
+> such, I was sending several fixes to LKML a couple weeks ago
+> from this mail address with no issues (and got them accepted).
 
+They come encrypted to gmail inbox. Shrug.
 
-On 4/15/2022 5:29 AM, Jakob Koschel wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> The link below explains that there is a desire to syntactically change
-> list_for_each_entry() and list_for_each() such that it becomes
-> impossible to use the iterator variable outside the scope of the loop.
-> 
-> Although sja1105_insert_gate_entry() makes legitimate use of the
-> iterator pointer when it breaks out, the pattern it uses may become
-> illegal, so it needs to change.
-> 
-> It is deemed acceptable to use a copy of the loop iterator, and
-> sja1105_insert_gate_entry() only needs to know the list_head element
-> before which the list insertion should be made. So let's profit from the
-> occasion and refactor the list iteration to a dedicated function.
-> 
-> An additional benefit is given by the fact that with the helper function
-> in place, we no longer need to special-case the empty list, since it is
-> equivalent to not having found any gating entry larger than the
-> specified interval in the list. We just need to insert at the tail of
-> that list (list_add vs list_add_tail on an empty list does the same
-> thing).
-> 
-> Link: https://patchwork.kernel.org/project/netdevbpf/patch/20220407102900.3086255-3-jakobkoschel@gmail.com/#24810127
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+> >
+> > Also for bpf fixes please use [PATCH bpf] subject.
+>
+> I decided to go with bpf-next since it changes the layout of
+> &perf_event a bit when !CONFIG_PERF_EVENTS. But if you're okay
+> with taking this through the bpf tree, it's even better.
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I didn't see the patches. Only went with 'unpopular fixes' subject.
+If they're not then bpf-next is certainly better.
