@@ -2,59 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5525032DB
-	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 07:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076055033D9
+	for <lists+bpf@lfdr.de>; Sat, 16 Apr 2022 07:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbiDPCKP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Apr 2022 22:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
+        id S229752AbiDPCHK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Apr 2022 22:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbiDPCJL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Apr 2022 22:09:11 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D850C606F6
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 19:06:39 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id a10so7475795qvm.8
-        for <bpf@vger.kernel.org>; Fri, 15 Apr 2022 19:06:39 -0700 (PDT)
+        with ESMTP id S229639AbiDPCGG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Apr 2022 22:06:06 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CB82DE4;
+        Fri, 15 Apr 2022 18:55:43 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id r1so8270691vsi.12;
+        Fri, 15 Apr 2022 18:55:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2aZT5zhZbSY/+EJMti4wIaGahOw4Saj1zZaSQ83TiLY=;
-        b=TLzukGIBKc4DPM3h0EHYMlG3b6TJyF72PvxuYy8MlfKCGm/ZA8wse2o5AcsvGTaIhq
-         Ocie9QpiLm8AlDvFmGpslI2c7CEyRtoh6P5570UVYOTTbTIkXQubMNMhq30pQhQTJLbK
-         etBk42/Y/t52ZX/6S+i2ulNsGR4zzwXB7EwMifvTRt/hwHK13cI+QD64K3OxBTrkMu3e
-         G9jD+LT9rixt/6lXG1eq/lFtZtEiZmCLVLYXRok/zEfTnXCOd9+gUevPRof4Sesz+HiF
-         vYDSB1zfsK+VHh3mGF3u3ASWTYPPRVdBWQnq+GYuM8DsaEUPy3TcDIAFIUS2nSj9yux6
-         ORNQ==
+        bh=bxHqb8WimKEbeuMOXj7uS2B/33CXla8+s/0GV1tVsaY=;
+        b=gIlvwt3xYpUb4e74b3w/piI2491YaM5CwPoLTITXU6+31o6AUkyajC8HIxUzbxri19
+         NoeOC7/PcBXg0OEzqxc8gBA38orkG87RodLT/c5emfbt4/XbqEhfVZC/HjGYuRgKATwp
+         d4NErbEscLWXZ8TzkgjKLtpT7jPimlsUIrcr8x/Fs97NwnSH4iEHVBCZ4kZX1e56hA2b
+         EsgUUzyfUzTo9vQaXP8IZBHElsiihB8IO/RUZxWPon72kwGRLgJcXX35CWNFv/nSpLmG
+         hWKWIa2EaWTkXFXEw8x3mIpVjqeYLlQQ5u2FOI4a+pZI0n12/1nIgjt3afYrC5FALlqZ
+         v/dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2aZT5zhZbSY/+EJMti4wIaGahOw4Saj1zZaSQ83TiLY=;
-        b=dp5TwMnxVEAP/oX1/95EBM0OpjOKgqOcTkhUaCWDTmMFB7a4gFhi2cfvzrHPOFfIpx
-         sp/AkFTaA+m1wNdnx9Ty7QWBqeTKKRNTHbB61AbqWugPyDuIIx3znqau2/yvHT2nzhuT
-         yhflpTN245+0cT97Q5nJLeGEeX5t0tCNmdx4Xz87ZyIbAIru/qZALeg2ZEdpzds+ZcHk
-         UNhgYJ0ryZSBOLU0eWAj3agoSax9Elnay7GU3M/0iexcL0oKIPgqvwneYUABwiTDvo2y
-         enO+RZQvF6cydyXdxhzRr2HHtm4tcLQO0k5KcqTOA2zkwi9aDSE+NzySQkC6sXBlrImu
-         bsrQ==
-X-Gm-Message-State: AOAM531x4tzrDN3cu5QMw56Bupmg2jPg9j+omx1K5RnukjYzpBSrr1yx
-        5bUokjHevznZ6rbryRAN86ouOArVjgvuzbq9sTiy54N+
-X-Google-Smtp-Source: ABdhPJyV8EKL9lc4gruqNBHsoU34wRrMfjSsfcL0D/wJKhq/Y7h90lAXZ+5ltwUcDasy3qlK3Peqavny0/JmX7yG4R8=
+        bh=bxHqb8WimKEbeuMOXj7uS2B/33CXla8+s/0GV1tVsaY=;
+        b=R/Syw+O8/5Jwk26LXadwSGslycu4X+RP2IPt/bsnA9f5LzOTW/h5Da2T+BEbrzZ3bA
+         PMoJ8mcPX9zCtfC66GqICK/fHkDaT+XYiQuQNScZlsVh242acLM85aOf5zSO4uURPLl8
+         yT3DFE9/RqZMbN6Qj26kQWZE3ZYY4jG3w3fbeHUW8GUD4Tadqc5w8WNxuq66mTPL9TDu
+         tr3Bf+JvyexjQ7p+tKNX67Ss8bFLIkBfmrXIABmQFOJpq9ONAj+Lp2BS0LE68OO2xYei
+         vk9Jm2ahLMLP/Qf43IFFFFGUtag68oLMkY9b1fqCjW1Zg2Me3shJ7AnrbYUpEtJ6rNd6
+         1YrA==
+X-Gm-Message-State: AOAM5328Nq5HgrzFtPNSnYyNiwhmRb0KQzo2715hKFVkCIA01guWTds9
+        9XFmgM+dRFFEAA00nLBMd6hU+W5Ye17MdlY+JNTufR4B
+X-Google-Smtp-Source: ABdhPJw2rmlQZyvzdy/y2IWrJrzPSIFk0PKy/oNH5Hczd2zycxoi75ShkPXrHahpWHW21aNzXPvBKk7/NfKK8dR1JSQ=
 X-Received: by 2002:a17:902:7209:b0:158:c67b:3915 with SMTP id
- ba9-20020a170902720900b00158c67b3915mr1516832plb.67.1650070260378; Fri, 15
- Apr 2022 17:51:00 -0700 (PDT)
+ ba9-20020a170902720900b00158c67b3915mr1621820plb.67.1650072496848; Fri, 15
+ Apr 2022 18:28:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220414223704.341028-1-alobakin@pm.me>
-In-Reply-To: <20220414223704.341028-1-alobakin@pm.me>
+References: <20220414161233.170780-1-sdf@google.com>
+In-Reply-To: <20220414161233.170780-1-sdf@google.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 16 Apr 2022 00:50:49 +0000
-Message-ID: <CAADnVQ+rGR9vaDD1GM3mPgTkece711KZ+ME1MPWN8KYohydZyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/11] bpf: random unpopular userspace fixes (32
- bit et al.)
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Date:   Sat, 16 Apr 2022 01:28:05 +0000
+Message-ID: <CAADnVQJ-kiWJopu+VjLDXYb9ifjKyA2h8MO=CaQppNxbHqH=-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: move rcu lock management out of
+ BPF_PROG_RUN routines
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,11 +69,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 3:44 PM Alexander Lobakin <alobakin@pm.me> wrote:
+On Thu, Apr 14, 2022 at 9:12 AM Stanislav Fomichev <sdf@google.com> wrote:
+> +static int
+> +bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
+> +                           enum cgroup_bpf_attach_type atype,
+> +                           const void *ctx, bpf_prog_run_fn run_prog,
+> +                           int retval, u32 *ret_flags)
+> +{
+> +       const struct bpf_prog_array_item *item;
+> +       const struct bpf_prog *prog;
+> +       const struct bpf_prog_array *array;
+> +       struct bpf_run_ctx *old_run_ctx;
+> +       struct bpf_cg_run_ctx run_ctx;
+> +       u32 func_ret;
+> +
+> +       run_ctx.retval = retval;
+> +       migrate_disable();
+> +       rcu_read_lock();
+> +       array = rcu_dereference(cgrp->effective[atype]);
+> +       item = &array->items[0];
+> +       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+> +       while ((prog = READ_ONCE(item->prog))) {
+> +               run_ctx.prog_item = item;
+> +               func_ret = run_prog(prog, ctx);
+...
+> +       ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
+>                                     &ctx, bpf_prog_run, retval);
 
-Please do not send encrypted patches.
-Use plain text.
-
-Also for bpf fixes please use [PATCH bpf] subject.
-cc maintainers and bpf@vger only.
-There is no need to spam such a huge list of people.
+Did you check the asm that bpf_prog_run gets inlined
+after being passed as a pointer to a function?
+Crossing fingers... I suspect not every compiler can do that :(
+De-virtualization optimization used to be tricky.
