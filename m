@@ -2,60 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD2D5047E0
-	for <lists+bpf@lfdr.de>; Sun, 17 Apr 2022 15:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2265047E1
+	for <lists+bpf@lfdr.de>; Sun, 17 Apr 2022 15:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234151AbiDQNXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Apr 2022 09:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
+        id S234154AbiDQNXb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 17 Apr 2022 09:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbiDQNXX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 17 Apr 2022 09:23:23 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA922140C1
-        for <bpf@vger.kernel.org>; Sun, 17 Apr 2022 06:20:47 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id t12so10480552pll.7
-        for <bpf@vger.kernel.org>; Sun, 17 Apr 2022 06:20:47 -0700 (PDT)
+        with ESMTP id S229496AbiDQNXa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 17 Apr 2022 09:23:30 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9FB140CD
+        for <bpf@vger.kernel.org>; Sun, 17 Apr 2022 06:20:55 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id t13so14388921pgn.8
+        for <bpf@vger.kernel.org>; Sun, 17 Apr 2022 06:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WBsrGZzWwWSc+8hrajitHXNgUcr7VP+/HKwWffoUSlw=;
-        b=0/kLCuVID1BxP/kScDBRD0qhbyoDVte0OzF+3JZp2wVBeaZONG4Ati0zJhWRfM9hb7
-         czhAguHwNQV1ARZVmMjJSQcyHMSDUt+BeKW9VktO0IxXJTOc3TN4GzSRWzmGt1HJ7kfe
-         rCjXWgDNAtneuzqGv8+k9fOoCuwuhVoGa/58yoemqX3gruQ+8o09FHnYD1UHUBfmvs2k
-         Wnoy1vTSWQ1aad2Z5J+3Q0hMQjNxjruLXw8NgwPwp5wz9mHmqweBiEPgER7eDjCgwVNC
-         V2TqWamCXxG8zCp3Aa5v7dNV87aLQOJucI1MyO3BvsfVzNd9uNLy58Dep3bV4PzEluo3
-         pAFQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=etSSmSqBvg/i+KSC+3duS4cIpCAG7NHljkjr/mgyTwE=;
+        b=pq027EyvgTw3xCC4emBr+yAF83WEH5uJu0oEMKGecFNPQuAgobdPJ4S/w2Cnc6xrer
+         MsS5rgCZ2aZyxnkVk48vFMdyV3jNtKWja3dqGwNqjPJthnd/5YR9jVZDyPvCtjIEOCyr
+         9t6Ni3f04rwu3GfjsbUVl1up8+/oqE2VinnSt++Kflgbdsu56Udh0dNJmX7epM0YSks0
+         5xs8hg5wc/mGkEWsmkDCXZHlBfGz7WwR4vsCsvtzOMOVTobY0FKy1+ndzj4PqpyhCafp
+         PYLf9JpFL0AF5Nxwl10g0OQh7ubhC7avtotlPUOXVfn+KypBQ85cplPioB0RifJJkL8K
+         XFTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WBsrGZzWwWSc+8hrajitHXNgUcr7VP+/HKwWffoUSlw=;
-        b=t3rMFYcZJ9rf/vlgDZd3MtXBG9//d/xFa21b7iBAeSkRd5BeKr1DfhSx0e0/4ExAaM
-         4dTMKX0VSQoRp7bCn80OPDhRyt5IqoHxnRNiB5bX19O+9uHzpWbghBTHSZUtZFnjirD9
-         EYx9UBrwvXw+kEjb6t724HH0PQ5Yu9VgBkL6oHL8qcuL5w1SKJ2D0sfnVgC3IQ5bETIo
-         4nOahlUmot0+2UkqkOuE2X+7tN4taS1uppLk8Dfbqqn5wMksm9OCjS23ZHM2EKrE4Pzi
-         1q7nJWlOfBLCg9f9T6HLOYrDK2/7G1AF1V+miLbllckP3gv7IGIxuZK71DmRCyYe6xSV
-         Aq0Q==
-X-Gm-Message-State: AOAM530nFY/XU1Ny+opqLZNMKyTdI78ASzZAPMEqu7wSHVMbRUo/A6jv
-        J31GE/f5BzcAarZUgIfIxgtrAA==
-X-Google-Smtp-Source: ABdhPJx4Zct6eqX/tYzsbyWpfWQPzKj2nI8XQNwsn6Vlnv/fldxuWcA2lCo3a+iCRT1USbMKXGfyhw==
-X-Received: by 2002:a17:902:8f94:b0:14f:d9b3:52c2 with SMTP id z20-20020a1709028f9400b0014fd9b352c2mr6784941plo.103.1650201647241;
-        Sun, 17 Apr 2022 06:20:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=etSSmSqBvg/i+KSC+3duS4cIpCAG7NHljkjr/mgyTwE=;
+        b=XtJ5Jv0LlPFDvXWUUk2d6vtkbOvn14jeaa8DIO/7cLYxQ6atS5gIlxTH8jqil3Sk96
+         6vXOB8Bs6Pq2oq3U1jhJSego7fTW8KWXlfI0slWNSztBpV5tk5LR9cL8vE6jSrX/8zD6
+         VxvRXkpGs2w6yv7JV/8Pdvtr+oQLtan48hia10/4BVBiwUMrCOFsAA7lH/ejLNzN6Pfo
+         kxohlUvmwQJAHqPs3/0jJO+hzawbCM72y4n8Fp0QYj8mBWetSaE+qzmQVDQ7UgQmdqCu
+         YNt2qpHExbb8PiW1EZN8hHLXBKZ+/wzsg1sMHGmwmTDi54kP6KOpd5c0ZMPOVC53lqoN
+         t2tQ==
+X-Gm-Message-State: AOAM532lkvzG6adhQykmGC0Jyzb/OT6PZirPBNSLnCgUjgvrbywrZGap
+        g3e4cuhrWxf10LsD3mCEuDa6Xg==
+X-Google-Smtp-Source: ABdhPJz4dS8vB7mShKQSL1VrBeFqXeLCiVBO7/gPLLkwGlBnfdWaX5W8wn6tGWh8nicgl7CK30+BYw==
+X-Received: by 2002:a63:fc05:0:b0:3a9:f17d:3f4f with SMTP id j5-20020a63fc05000000b003a9f17d3f4fmr1045754pgi.590.1650201654866;
+        Sun, 17 Apr 2022 06:20:54 -0700 (PDT)
 Received: from localhost.localdomain ([2409:8a20:4832:de00:bc27:698e:1fca:c5bb])
-        by smtp.gmail.com with ESMTPSA id l10-20020a17090aec0a00b001d27f7fb42csm1936907pjy.13.2022.04.17.06.20.40
+        by smtp.gmail.com with ESMTPSA id l10-20020a17090aec0a00b001d27f7fb42csm1936907pjy.13.2022.04.17.06.20.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Apr 2022 06:20:46 -0700 (PDT)
+        Sun, 17 Apr 2022 06:20:54 -0700 (PDT)
 From:   fankaixi.li@bytedance.com
 To:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
         Kaixi Fan <fankaixi.li@bytedance.com>
-Subject: [External] [PATCH bpf-next v3 0/4] Add source ip in bpf tunnel key
-Date:   Sun, 17 Apr 2022 21:20:27 +0800
-Message-Id: <20220417132030.17067-1-fankaixi.li@bytedance.com>
+Subject: [External] [PATCH bpf-next v3 1/3] bpf: Add source ip in "struct bpf_tunnel_key"
+Date:   Sun, 17 Apr 2022 21:20:28 +0800
+Message-Id: <20220417132030.17067-2-fankaixi.li@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <20220417132030.17067-1-fankaixi.li@bytedance.com>
+References: <20220417132030.17067-1-fankaixi.li@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,42 +71,95 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Kaixi Fan <fankaixi.li@bytedance.com>
 
-Now bpf code could not set tunnel source ip address of ip tunnel. So it
-could not support flow based tunnel mode completely. Because flow based
-tunnel mode could set tunnel source, destination ip address and tunnel
-key simultaneously.
+Add tunnel source ip field in "struct bpf_tunnel_key". Add related code
+to set and get tunnel source field.
 
-Flow based tunnel is useful for overlay networks. And by configuring tunnel
-source ip address, user could make their networks more elastic.
-For example, tunnel source ip could be used to select different egress
-nic interface for different flows with same tunnel destination ip. Another
-example, user could choose one of multiple ip address of the egress nic
-interface as the packet's tunnel source ip.
+Signed-off-by: Kaixi Fan <fankaixi.li@bytedance.com>
+---
+ include/uapi/linux/bpf.h       | 4 ++++
+ net/core/filter.c              | 9 +++++++++
+ tools/include/uapi/linux/bpf.h | 4 ++++
+ 3 files changed, 17 insertions(+)
 
-Add tunnel and tunnel source testcases in test_progs.
-
-v3:
-- move vxlan tunnel testcases to test_progs
-- replace bpf_trace_printk with bpf_printk
-- rename bpf kernel prog section name to tic
-
-v2:
-- merge vxlan tunnel and tunnel source ip testcases in test_tunnel.sh
-
-Kaixi Fan (3):
-  bpf: Add source ip in "struct bpf_tunnel_key"
-  selftests/bpf: move vxlan tunnel testcases to test_progs
-  selftests/bpf: replace bpf_trace_printk in tunnel kernel code
-
- include/uapi/linux/bpf.h                      |   4 +
- net/core/filter.c                             |   9 +
- tools/include/uapi/linux/bpf.h                |   4 +
- .../selftests/bpf/prog_tests/test_tunnel.c    | 461 ++++++++++++++++++
- .../selftests/bpf/progs/test_tunnel_kern.c    | 282 ++++++-----
- tools/testing/selftests/bpf/test_tunnel.sh    | 124 +----
- 6 files changed, 646 insertions(+), 238 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index d14b10b85e51..dca2c29746ab 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5592,6 +5592,10 @@ struct bpf_tunnel_key {
+ 	__u8 tunnel_ttl;
+ 	__u16 tunnel_ext;	/* Padding, future use. */
+ 	__u32 tunnel_label;
++	union {
++		__u32 local_ipv4;
++		__u32 local_ipv6[4];
++	};
+ };
+ 
+ /* user accessible mirror of in-kernel xfrm_state.
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 143f442a9505..2c89d8dea826 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4498,6 +4498,7 @@ BPF_CALL_4(bpf_skb_get_tunnel_key, struct sk_buff *, skb, struct bpf_tunnel_key
+ 	if (unlikely(size != sizeof(struct bpf_tunnel_key))) {
+ 		err = -EINVAL;
+ 		switch (size) {
++		case offsetof(struct bpf_tunnel_key, local_ipv6[0]):
+ 		case offsetof(struct bpf_tunnel_key, tunnel_label):
+ 		case offsetof(struct bpf_tunnel_key, tunnel_ext):
+ 			goto set_compat;
+@@ -4523,10 +4524,14 @@ BPF_CALL_4(bpf_skb_get_tunnel_key, struct sk_buff *, skb, struct bpf_tunnel_key
+ 	if (flags & BPF_F_TUNINFO_IPV6) {
+ 		memcpy(to->remote_ipv6, &info->key.u.ipv6.src,
+ 		       sizeof(to->remote_ipv6));
++		memcpy(to->local_ipv6, &info->key.u.ipv6.dst,
++		       sizeof(to->local_ipv6));
+ 		to->tunnel_label = be32_to_cpu(info->key.label);
+ 	} else {
+ 		to->remote_ipv4 = be32_to_cpu(info->key.u.ipv4.src);
+ 		memset(&to->remote_ipv6[1], 0, sizeof(__u32) * 3);
++		to->local_ipv4 = be32_to_cpu(info->key.u.ipv4.dst);
++		memset(&to->local_ipv6[1], 0, sizeof(__u32) * 3);
+ 		to->tunnel_label = 0;
+ 	}
+ 
+@@ -4597,6 +4602,7 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
+ 		return -EINVAL;
+ 	if (unlikely(size != sizeof(struct bpf_tunnel_key))) {
+ 		switch (size) {
++		case offsetof(struct bpf_tunnel_key, local_ipv6[0]):
+ 		case offsetof(struct bpf_tunnel_key, tunnel_label):
+ 		case offsetof(struct bpf_tunnel_key, tunnel_ext):
+ 		case offsetof(struct bpf_tunnel_key, remote_ipv6[1]):
+@@ -4639,10 +4645,13 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
+ 		info->mode |= IP_TUNNEL_INFO_IPV6;
+ 		memcpy(&info->key.u.ipv6.dst, from->remote_ipv6,
+ 		       sizeof(from->remote_ipv6));
++		memcpy(&info->key.u.ipv6.src, from->local_ipv6,
++		       sizeof(from->local_ipv6));
+ 		info->key.label = cpu_to_be32(from->tunnel_label) &
+ 				  IPV6_FLOWLABEL_MASK;
+ 	} else {
+ 		info->key.u.ipv4.dst = cpu_to_be32(from->remote_ipv4);
++		info->key.u.ipv4.src = cpu_to_be32(from->local_ipv4);
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index d14b10b85e51..dca2c29746ab 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5592,6 +5592,10 @@ struct bpf_tunnel_key {
+ 	__u8 tunnel_ttl;
+ 	__u16 tunnel_ext;	/* Padding, future use. */
+ 	__u32 tunnel_label;
++	union {
++		__u32 local_ipv4;
++		__u32 local_ipv6[4];
++	};
+ };
+ 
+ /* user accessible mirror of in-kernel xfrm_state.
 -- 
 2.20.1
 
