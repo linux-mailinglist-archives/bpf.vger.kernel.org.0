@@ -2,66 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCE9504782
-	for <lists+bpf@lfdr.de>; Sun, 17 Apr 2022 12:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD2D5047E0
+	for <lists+bpf@lfdr.de>; Sun, 17 Apr 2022 15:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233893AbiDQKPu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Apr 2022 06:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        id S234151AbiDQNXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 17 Apr 2022 09:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233898AbiDQKPt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 17 Apr 2022 06:15:49 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4913813F67;
-        Sun, 17 Apr 2022 03:13:14 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id p10so10315741plf.9;
-        Sun, 17 Apr 2022 03:13:14 -0700 (PDT)
+        with ESMTP id S229496AbiDQNXX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 17 Apr 2022 09:23:23 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA922140C1
+        for <bpf@vger.kernel.org>; Sun, 17 Apr 2022 06:20:47 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id t12so10480552pll.7
+        for <bpf@vger.kernel.org>; Sun, 17 Apr 2022 06:20:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=S7vOL6CcNagKgspC/055jOR/S+tuyBj7Z2ZOj0K9B1M=;
-        b=QOqjegbGZjtPz298Nk8sb/vdQI9aRi/hJTWFm8t2+m/Vvpu5W8rGuyKumQueii5Xoi
-         rnTKcjRs6D9Xh+As+tsjmxADUlAVLfLS8NMO3Rx3zszOBgK39Kn08zrOHoWthd5gJXG6
-         w88jfppG0jZ6+AcV1/fIqaO7ABKCBr7nGVsc+ewuDxL2afGCuSyG1HNGTg+BfqgvALNk
-         WAbKaFxmavHxfKx3ewVYtWdesRisYJZDKbmBqSiGmGbEG1K0GLVsdQMNKcgIKFJTmOVC
-         YJ96GozZrvKLiO08bG+JTgGNB7guCebnGzEIxkS0AEDG2ttHa25O/teQ1Ty24fT/qf4W
-         C1XA==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WBsrGZzWwWSc+8hrajitHXNgUcr7VP+/HKwWffoUSlw=;
+        b=0/kLCuVID1BxP/kScDBRD0qhbyoDVte0OzF+3JZp2wVBeaZONG4Ati0zJhWRfM9hb7
+         czhAguHwNQV1ARZVmMjJSQcyHMSDUt+BeKW9VktO0IxXJTOc3TN4GzSRWzmGt1HJ7kfe
+         rCjXWgDNAtneuzqGv8+k9fOoCuwuhVoGa/58yoemqX3gruQ+8o09FHnYD1UHUBfmvs2k
+         Wnoy1vTSWQ1aad2Z5J+3Q0hMQjNxjruLXw8NgwPwp5wz9mHmqweBiEPgER7eDjCgwVNC
+         V2TqWamCXxG8zCp3Aa5v7dNV87aLQOJucI1MyO3BvsfVzNd9uNLy58Dep3bV4PzEluo3
+         pAFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=S7vOL6CcNagKgspC/055jOR/S+tuyBj7Z2ZOj0K9B1M=;
-        b=7dA/LfjRd8Jk9KDFNJzKPB8c3nvbbZS+u2VO4oY/vBdgaa2KYg3XFb1XrNa7WOzJwO
-         Sa/q+LYvO7CMiDxsyfye6nJvrSDDMQxKOakfZKTOGuw53UMwjH55pGPH+G9NM7ylWweo
-         5BhIKXOCpYWGSfttc8jJEzvDvn+le38OvlN3QmWN/u50mSOl8gvKSrwIRpmemCKjab+o
-         WYreGfOxwcpSWClgi4gXutT1k3+/maYhHhkqrMNfKEKW7v/fx+AiSKZbZYEcJ9LS1u5x
-         MozhPn2JkUu0dlwwqEVkZSh0i40eqsOq+q3BSKQxC9dKYk8c/252iCU6YH66oQvCtRez
-         prMw==
-X-Gm-Message-State: AOAM5333X3BbjZ9oT41VnZyAhg5yrbnYfLoVGm6PTaTcLdMpiJgAENVJ
-        sCfyYyJNreGGU6FJIpYYdeU=
-X-Google-Smtp-Source: ABdhPJzjzwA43vE76Y1KAah31MvdrJn2DALyaVfy0NAXDA7yE5Am4wahws7wEsK4Ss/ghGXNIjnRbw==
-X-Received: by 2002:a17:902:8d83:b0:157:c14:12b5 with SMTP id v3-20020a1709028d8300b001570c1412b5mr6203427plo.91.1650190393640;
-        Sun, 17 Apr 2022 03:13:13 -0700 (PDT)
-Received: from localhost.localdomain ([182.213.254.91])
-        by smtp.gmail.com with ESMTPSA id x36-20020a056a000be400b0050a40b8290dsm7473760pfu.54.2022.04.17.03.13.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WBsrGZzWwWSc+8hrajitHXNgUcr7VP+/HKwWffoUSlw=;
+        b=t3rMFYcZJ9rf/vlgDZd3MtXBG9//d/xFa21b7iBAeSkRd5BeKr1DfhSx0e0/4ExAaM
+         4dTMKX0VSQoRp7bCn80OPDhRyt5IqoHxnRNiB5bX19O+9uHzpWbghBTHSZUtZFnjirD9
+         EYx9UBrwvXw+kEjb6t724HH0PQ5Yu9VgBkL6oHL8qcuL5w1SKJ2D0sfnVgC3IQ5bETIo
+         4nOahlUmot0+2UkqkOuE2X+7tN4taS1uppLk8Dfbqqn5wMksm9OCjS23ZHM2EKrE4Pzi
+         1q7nJWlOfBLCg9f9T6HLOYrDK2/7G1AF1V+miLbllckP3gv7IGIxuZK71DmRCyYe6xSV
+         Aq0Q==
+X-Gm-Message-State: AOAM530nFY/XU1Ny+opqLZNMKyTdI78ASzZAPMEqu7wSHVMbRUo/A6jv
+        J31GE/f5BzcAarZUgIfIxgtrAA==
+X-Google-Smtp-Source: ABdhPJx4Zct6eqX/tYzsbyWpfWQPzKj2nI8XQNwsn6Vlnv/fldxuWcA2lCo3a+iCRT1USbMKXGfyhw==
+X-Received: by 2002:a17:902:8f94:b0:14f:d9b3:52c2 with SMTP id z20-20020a1709028f9400b0014fd9b352c2mr6784941plo.103.1650201647241;
+        Sun, 17 Apr 2022 06:20:47 -0700 (PDT)
+Received: from localhost.localdomain ([2409:8a20:4832:de00:bc27:698e:1fca:c5bb])
+        by smtp.gmail.com with ESMTPSA id l10-20020a17090aec0a00b001d27f7fb42csm1936907pjy.13.2022.04.17.06.20.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Apr 2022 03:13:13 -0700 (PDT)
-From:   Taehee Yoo <ap420073@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, irusskikh@marvell.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, bpf@vger.kernel.org
-Cc:     ap420073@gmail.com
-Subject: [PATCH net-next v5 3/3] net: atlantic: Implement .ndo_xdp_xmit handler
-Date:   Sun, 17 Apr 2022 10:12:47 +0000
-Message-Id: <20220417101247.13544-4-ap420073@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220417101247.13544-1-ap420073@gmail.com>
-References: <20220417101247.13544-1-ap420073@gmail.com>
+        Sun, 17 Apr 2022 06:20:46 -0700 (PDT)
+From:   fankaixi.li@bytedance.com
+To:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        Kaixi Fan <fankaixi.li@bytedance.com>
+Subject: [External] [PATCH bpf-next v3 0/4] Add source ip in bpf tunnel key
+Date:   Sun, 17 Apr 2022 21:20:27 +0800
+Message-Id: <20220417132030.17067-1-fankaixi.li@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,88 +67,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-aq_xdp_xmit() is the callback function of .ndo_xdp_xmit.
-It internally calls aq_nic_xmit_xdpf() to send packet.
+From: Kaixi Fan <fankaixi.li@bytedance.com>
 
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
----
+Now bpf code could not set tunnel source ip address of ip tunnel. So it
+could not support flow based tunnel mode completely. Because flow based
+tunnel mode could set tunnel source, destination ip address and tunnel
+key simultaneously.
 
-v5:
- - No changed
+Flow based tunnel is useful for overlay networks. And by configuring tunnel
+source ip address, user could make their networks more elastic.
+For example, tunnel source ip could be used to select different egress
+nic interface for different flows with same tunnel destination ip. Another
+example, user could choose one of multiple ip address of the egress nic
+interface as the packet's tunnel source ip.
 
-v4:
- - No changed
+Add tunnel and tunnel source testcases in test_progs.
 
 v3:
- - No changed
+- move vxlan tunnel testcases to test_progs
+- replace bpf_trace_printk with bpf_printk
+- rename bpf kernel prog section name to tic
 
 v2:
- - No changed
+- merge vxlan tunnel and tunnel source ip testcases in test_tunnel.sh
 
- .../net/ethernet/aquantia/atlantic/aq_main.c  |  1 +
- .../net/ethernet/aquantia/atlantic/aq_ring.c  | 23 +++++++++++++++++++
- .../net/ethernet/aquantia/atlantic/aq_ring.h  |  2 ++
- 3 files changed, 26 insertions(+)
+Kaixi Fan (3):
+  bpf: Add source ip in "struct bpf_tunnel_key"
+  selftests/bpf: move vxlan tunnel testcases to test_progs
+  selftests/bpf: replace bpf_trace_printk in tunnel kernel code
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_main.c b/drivers/net/ethernet/aquantia/atlantic/aq_main.c
-index e794ee25b12b..88595863d8bc 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_main.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_main.c
-@@ -508,6 +508,7 @@ static const struct net_device_ops aq_ndev_ops = {
- 	.ndo_vlan_rx_kill_vid = aq_ndo_vlan_rx_kill_vid,
- 	.ndo_setup_tc = aq_ndo_setup_tc,
- 	.ndo_bpf = aq_xdp,
-+	.ndo_xdp_xmit = aq_xdp_xmit,
- };
- 
- static int __init aq_ndev_init_module(void)
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-index 9bb9b764d31c..ea740210803f 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-@@ -389,6 +389,29 @@ static void aq_rx_checksum(struct aq_ring_s *self,
- 		__skb_incr_checksum_unnecessary(skb);
- }
- 
-+int aq_xdp_xmit(struct net_device *dev, int num_frames,
-+		struct xdp_frame **frames, u32 flags)
-+{
-+	struct aq_nic_s *aq_nic = netdev_priv(dev);
-+	unsigned int vec, i, drop = 0;
-+	int cpu = smp_processor_id();
-+	struct aq_nic_cfg_s *aq_cfg;
-+	struct aq_ring_s *ring;
-+
-+	aq_cfg = aq_nic_get_cfg(aq_nic);
-+	vec = cpu % aq_cfg->vecs;
-+	ring = aq_nic->aq_ring_tx[AQ_NIC_CFG_TCVEC2RING(aq_cfg, 0, vec)];
-+
-+	for (i = 0; i < num_frames; i++) {
-+		struct xdp_frame *xdpf = frames[i];
-+
-+		if (aq_nic_xmit_xdpf(aq_nic, ring, xdpf) == NETDEV_TX_BUSY)
-+			drop++;
-+	}
-+
-+	return num_frames - drop;
-+}
-+
- static struct sk_buff *aq_xdp_run_prog(struct aq_nic_s *aq_nic,
- 				       struct xdp_buff *xdp,
- 				       struct aq_ring_s *rx_ring,
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.h b/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
-index 52f40ea3f1df..0a6c34438c1d 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.h
-@@ -199,6 +199,8 @@ void aq_ring_update_queue_state(struct aq_ring_s *ring);
- void aq_ring_queue_wake(struct aq_ring_s *ring);
- void aq_ring_queue_stop(struct aq_ring_s *ring);
- bool aq_ring_tx_clean(struct aq_ring_s *self);
-+int aq_xdp_xmit(struct net_device *dev, int num_frames,
-+		struct xdp_frame **frames, u32 flags);
- int aq_ring_rx_clean(struct aq_ring_s *self,
- 		     struct napi_struct *napi,
- 		     int *work_done,
+ include/uapi/linux/bpf.h                      |   4 +
+ net/core/filter.c                             |   9 +
+ tools/include/uapi/linux/bpf.h                |   4 +
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 461 ++++++++++++++++++
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 282 ++++++-----
+ tools/testing/selftests/bpf/test_tunnel.sh    | 124 +----
+ 6 files changed, 646 insertions(+), 238 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+
 -- 
-2.17.1
+2.20.1
 
