@@ -2,265 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5DE504E08
-	for <lists+bpf@lfdr.de>; Mon, 18 Apr 2022 10:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D95D504EA4
+	for <lists+bpf@lfdr.de>; Mon, 18 Apr 2022 12:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbiDRI5h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Apr 2022 04:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
+        id S234215AbiDRKJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Apr 2022 06:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbiDRI5g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Apr 2022 04:57:36 -0400
-Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24EC257;
-        Mon, 18 Apr 2022 01:54:53 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0VALaedj_1650272086;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VALaedj_1650272086)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 18 Apr 2022 16:54:48 +0800
-Message-ID: <1650271705.1503067-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v9 31/32] virtio_net: support rx/tx queue resize
-Date:   Mon, 18 Apr 2022 16:48:25 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
+        with ESMTP id S233592AbiDRKJZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Apr 2022 06:09:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A015612612;
+        Mon, 18 Apr 2022 03:06:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BA45611AF;
+        Mon, 18 Apr 2022 10:06:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65657C385A7;
+        Mon, 18 Apr 2022 10:06:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650276405;
+        bh=uoe2eTNjXAnSgEGbVFQxizx4XBjSzBp1lG6cswI6xbc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z4OT4i/LC2k/i92kWLfFKtTVBpAdJZEhrTM79Ipn6nV/ODqs9njDujOE7UGufhLQE
+         Do/HYbG4P6USOC8UsXPXuco19gPIs7rtCCd0Q3D6LSgvEU++x3yzPanyMqL06a1Fm9
+         aIIGSGvhWMb31LZbEuWeAEMUSjSc8Mly75z+om044xpunk0PUPohekuF8NmKJW9Rl1
+         4DywuvNrUFLI25dNnj/mashbTnlGTNXaZkLZHCAnCDWRjavDNqH5NBuxw3m6IIaFWI
+         vgV74FuUatDEOEi5SzMXSz4+aXblqTJNQjcDWglnKZ7EDbpbYmQ0eSH5YgD0p4uul1
+         B5eHWHALx3iWA==
+Date:   Mon, 18 Apr 2022 13:06:36 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm <kvm@vger.kernel.org>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>
-References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
- <20220406034346.74409-32-xuanzhuo@linux.alibaba.com>
- <122008a6-1e79-14d3-1478-59f96464afc9@redhat.com>
- <1650252077.7934203-1-xuanzhuo@linux.alibaba.com>
- <CACGkMEtZOJ2PCsJidDcFKL57Q6oLHk4TH7xtewrLCTFhrbXSAA@mail.gmail.com>
-In-Reply-To: <CACGkMEtZOJ2PCsJidDcFKL57Q6oLHk4TH7xtewrLCTFhrbXSAA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Kernel Team <Kernel-team@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+Message-ID: <Yl04LO/PfB3GocvU@kernel.org>
+References: <20220415164413.2727220-1-song@kernel.org>
+ <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
+ <YlpPW9SdCbZnLVog@infradead.org>
+ <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
+ <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
+ <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 18 Apr 2022 15:49:29 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Mon, Apr 18, 2022 at 11:24 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> w=
-rote:
-> >
-> > On Wed, 13 Apr 2022 16:00:18 +0800, Jason Wang <jasowang@redhat.com> wr=
-ote:
-> > >
-> > > =E5=9C=A8 2022/4/6 =E4=B8=8A=E5=8D=8811:43, Xuan Zhuo =E5=86=99=E9=81=
-=93:
-> > > > This patch implements the resize function of the rx, tx queues.
-> > > > Based on this function, it is possible to modify the ring num of the
-> > > > queue.
-> > > >
-> > > > There may be an exception during the resize process, the resize may
-> > > > fail, or the vq can no longer be used. Either way, we must execute
-> > > > napi_enable(). Because napi_disable is similar to a lock, napi_enab=
-le
-> > > > must be called after calling napi_disable.
-> > > >
-> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > ---
-> > > >   drivers/net/virtio_net.c | 81 +++++++++++++++++++++++++++++++++++=
-+++++
-> > > >   1 file changed, 81 insertions(+)
-> > > >
-> > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > index b8bf00525177..ba6859f305f7 100644
-> > > > --- a/drivers/net/virtio_net.c
-> > > > +++ b/drivers/net/virtio_net.c
-> > > > @@ -251,6 +251,9 @@ struct padded_vnet_hdr {
-> > > >     char padding[4];
-> > > >   };
-> > > >
-> > > > +static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void =
-*buf);
-> > > > +static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void =
-*buf);
-> > > > +
-> > > >   static bool is_xdp_frame(void *ptr)
-> > > >   {
-> > > >     return (unsigned long)ptr & VIRTIO_XDP_FLAG;
-> > > > @@ -1369,6 +1372,15 @@ static void virtnet_napi_enable(struct virtq=
-ueue *vq, struct napi_struct *napi)
-> > > >   {
-> > > >     napi_enable(napi);
-> > > >
-> > > > +   /* Check if vq is in reset state. The normal reset/resize proce=
-ss will
-> > > > +    * be protected by napi. However, the protection of napi is onl=
-y enabled
-> > > > +    * during the operation, and the protection of napi will end af=
-ter the
-> > > > +    * operation is completed. If re-enable fails during the proces=
-s, vq
-> > > > +    * will remain unavailable with reset state.
-> > > > +    */
-> > > > +   if (vq->reset)
-> > > > +           return;
-> > >
-> > >
-> > > I don't get when could we hit this condition.
-> > >
-> > >
-> > > > +
-> > > >     /* If all buffers were filled by other side before we napi_enab=
-led, we
-> > > >      * won't get another interrupt, so process any outstanding pack=
-ets now.
-> > > >      * Call local_bh_enable after to trigger softIRQ processing.
-> > > > @@ -1413,6 +1425,15 @@ static void refill_work(struct work_struct *=
-work)
-> > > >             struct receive_queue *rq =3D &vi->rq[i];
-> > > >
-> > > >             napi_disable(&rq->napi);
-> > > > +
-> > > > +           /* Check if vq is in reset state. See more in
-> > > > +            * virtnet_napi_enable()
-> > > > +            */
-> > > > +           if (rq->vq->reset) {
-> > > > +                   virtnet_napi_enable(rq->vq, &rq->napi);
-> > > > +                   continue;
-> > > > +           }
-> > >
-> > >
-> > > Can we do something similar in virtnet_close() by canceling the work?
-> > >
-> > >
-> > > > +
-> > > >             still_empty =3D !try_fill_recv(vi, rq, GFP_KERNEL);
-> > > >             virtnet_napi_enable(rq->vq, &rq->napi);
-> > > >
-> > > > @@ -1523,6 +1544,10 @@ static void virtnet_poll_cleantx(struct rece=
-ive_queue *rq)
-> > > >     if (!sq->napi.weight || is_xdp_raw_buffer_queue(vi, index))
-> > > >             return;
-> > > >
-> > > > +   /* Check if vq is in reset state. See more in virtnet_napi_enab=
-le() */
-> > > > +   if (sq->vq->reset)
-> > > > +           return;
-> > >
-> > >
-> > > We've disabled TX napi, any chance we can still hit this?
-> >
-> >
-> > static int virtnet_poll(struct napi_struct *napi, int budget)
-> > {
-> >         struct receive_queue *rq =3D
-> >                 container_of(napi, struct receive_queue, napi);
-> >         struct virtnet_info *vi =3D rq->vq->vdev->priv;
-> >         struct send_queue *sq;
-> >         unsigned int received;
-> >         unsigned int xdp_xmit =3D 0;
-> >
-> >         virtnet_poll_cleantx(rq);
-> > ...
-> > }
-> >
-> > This is called by rx poll. Although it is the logic of tx, it is not dr=
-iven by
-> > tx napi, but is called in rx poll.
->
-> Ok, but we need guarantee the memory ordering in this case. Disable RX
-> napi could be a solution for this.
+Hi,
 
-Yes, I have realized this too. I have two solutions, disable rx napi or the
-following.
+On Sat, Apr 16, 2022 at 10:26:08PM +0000, Song Liu wrote:
+> > On Apr 16, 2022, at 1:30 PM, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> > 
+> > Maybe I am missing something, but I really don't think this is ready
+> > for prime-time. We should effectively disable it all, and have people
+> > think through it a lot more.
+> 
+> This has been discussed on lwn.net: https://lwn.net/Articles/883454/. 
+> AFAICT, the biggest concern is whether reserving minimal 2MB for BPF
+> programs is a good trade-off for memory usage. This is again my fault
+> not to state the motivation clearly: the primary gain comes from less 
+> page table fragmentation and thus better iTLB efficiency. 
 
-Thanks.
+Reserving 2MB pages for BPF programs will indeed reduce the fragmentation,
+but OTOH it will reduce memory utilization. If for large systems this may
+not be an issue, on smaller machines trading off memory for iTLB
+performance may be not that obvious.
+ 
+> Other folks (in recent thread on this topic and offline in other 
+> discussions) also showed strong interests in using similar technical 
+> for text of kernel modules. So I would really like to learn your 
+> opinion on this. There are many details we can optimize, but I guess 
+> the general mechanism has to be something like:
+>  - allocate a huge page, make it safe, and set it as executable;
+>  - as users (BPF, kernel module, etc.) request memory for text, give
+>    a chunk of the huge page to the user. 
+>  - use some mechanism to update the chunk of memory safely. 
 
+There are use-cases that require 4K pages with non-default permissions in
+the direct map and the pages not necessarily should be executable. There
+were several suggestions to implement caches of 4K pages backed by 2M
+pages.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 9bf1b6530b38..7764d1dcb831 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -135,6 +135,7 @@ struct send_queue {
- 	struct virtnet_sq_stats stats;
+I believe that "allocate huge page and split it to basic pages to hand out
+to users" concept should be implemented at page allocator level and I
+posted and RFC for this a while ago:
 
- 	struct napi_struct napi;
-+	bool reset;
- };
+https://lore.kernel.org/all/20220127085608.306306-1-rppt@kernel.org/
 
- /* Internal representation of a receive virtqueue */
-@@ -1583,6 +1587,11 @@ static void virtnet_poll_cleantx(struct receive_queu=
-e *rq)
- 		return;
-
- 	if (__netif_tx_trylock(txq)) {
-+		if (sq->reset) {
-+			__netif_tx_unlock(txq);
-+			return;
-+		}
-+
- 		do {
- 			virtqueue_disable_cb(sq->vq);
- 			free_old_xmit_skbs(sq, true);
-@@ -1828,6 +1837,56 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, s=
-truct net_device *dev)
- 	return NETDEV_TX_OK;
- }
-
-+static int virtnet_tx_resize(struct virtnet_info *vi,
-+			     struct send_queue *sq, u32 ring_num)
-+{
-+	struct netdev_queue *txq;
-+	int err, qindex;
-+
-+	qindex =3D sq - vi->sq;
-+
-+	virtnet_napi_tx_disable(&sq->napi);
-+
-+	txq =3D netdev_get_tx_queue(vi->dev, qindex);
-+
-+	__netif_tx_lock_bh(txq);
-+	netif_stop_subqueue(vi->dev, qindex);
-+	sq->reset =3D true;
-+	__netif_tx_unlock_bh(txq);
-+
-+	err =3D virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-+	if (err)
-+		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qind=
-ex, err);
-+
-+	__netif_tx_lock_bh(txq);
-+	sq->reset =3D false;
-+	netif_start_subqueue(vi->dev, qindex);
-+	__netif_tx_unlock_bh(txq);
-+
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	return err;
-+}
-+
-
+-- 
+Sincerely yours,
+Mike.
