@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 572E8505FE5
+	by mail.lfdr.de (Postfix) with ESMTP id 3F717505FE4
 	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 00:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbiDRWuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Apr 2022 18:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        id S232545AbiDRWuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Apr 2022 18:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbiDRWuE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S232832AbiDRWuE (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 18 Apr 2022 18:50:04 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7D52C12A
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:47:19 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id c12so13510632plr.6
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:47:19 -0700 (PDT)
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D5F2BB20
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:47:23 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id o5-20020a17090ad20500b001ca8a1dc47aso589906pju.1
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vA+LCraShVqkqdDzqLLHKbJ+4bpGJT1ey+8zHk4MZ0g=;
-        b=XWNOggQ8STmJu2zVZGJhAh0SjFDPDvzWJrErlpChdV0g8t4dTB/JNZkagr0wG6ApMn
-         B3NPYV8d/zPGY13zT19gKFCACd/zUFowgXiULOS8mlhzQWM+NAiI5KBzVBUjOA4rfSV6
-         hqgQaJ+gptcHVqbQv9qb32UGVNpMbM03CBZ6qqNHd4OHB4Q+/VnpQJShSDAgBbbuk8hA
-         O8gLRJrJ5+d/Lagn6uTMR4PauYHwWtN6/X4GIUw5F5+oTaiIYlJ0u6ZrP0yNPNiqEpGr
-         E5rCtc2OoN1USC8AZGaqaW2EkamJMhVjwpxowipm6m/Qo3E1Hs1mHc7uIgqScHrwJjf7
-         kD+A==
+        bh=xbXBJzKGwtXEljHi6De2HSN7DKaU9eGbmH4L4iYQ4CU=;
+        b=jXTzkqBxXluO5xDeGaZE3VESTGg6BovcSjIegmusw+TD1VGAtk5pOEXAxNQQWuMvxr
+         wGzey+IQ3j0GHaqH+ucogNc0emhTW0ZEDRTfJru/C/sgT28xIiJh4rXIs/0VCEdI4V5V
+         f1MJ7Hj2jxvgT4h6eF8CIi6zMhOGT+4LLtX79o0iXf2M4PwyrA5iZ2vCXJrX5OtEoM7R
+         yP6NWt/U6RFUJYeuilbutI80iaT9UGjc90Xed669UR0CYBYNQomd+tAvCQ1UwXP/Gyhd
+         BwYZ4NhgW9Ny50TzrzVr6JHtkknellXrxZtzQpu2IqJpeMucxodL5ov7UKrIm9qExz6F
+         RdLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vA+LCraShVqkqdDzqLLHKbJ+4bpGJT1ey+8zHk4MZ0g=;
-        b=o7iY6+FHKHbtqEYz0IvzZAnJlUZhgrBWlfCuPFoLgGPh7kz/1SGibniFKiKTveQf82
-         suCPC1aJf+ibI7N7j7iXl4tczLUR47ynUBphjPMKCSydNoEDT9xuXYJJ6hqP6NcF9TFq
-         Rzbq2FvceUDmC8+MddMdYDj98gJtR+SyU34RFGFVJ+1NyK7e9SLnnW+FSTuAY18BbcgA
-         fVvBLchCg+HV7URMNpzQg/qwufUmOl5TrkyGtTHvJCEESR+OBEBpim1qQgx49lQh7/zn
-         Ub7mzUhNWORi7hupjlGEOWDC3IfkczPJDZglXNfhAyy9ykqYezPyfJ5zZyahD4YpNO08
-         fdJw==
-X-Gm-Message-State: AOAM532FevOhvXY7k8TTcFw6D8WWYjazZICGiTdD+Vda/RKyXP10/2pX
-        xzYgomtAQcBSNI3vh90PngHpXGo/xzeeJw==
-X-Google-Smtp-Source: ABdhPJygrzhewGGIDW5r5742Ohci9BwxA12lHJtcMBega1mdXwGobQrbwKEvbtFWkGmI1+UpPAxl/Q==
-X-Received: by 2002:a17:902:eb82:b0:158:8feb:86d6 with SMTP id q2-20020a170902eb8200b001588feb86d6mr13065401plg.26.1650322038470;
-        Mon, 18 Apr 2022 15:47:18 -0700 (PDT)
+        bh=xbXBJzKGwtXEljHi6De2HSN7DKaU9eGbmH4L4iYQ4CU=;
+        b=OvEP07Z4rqMyCEzj4uMGDxlsPebGfU1vEjw67gFZvN9J27BDgcBf5P/c+q3Rz1l03m
+         IfMeOFB9BjgfIVN5Y1riLcbt1KJueHw1/gIOVI/GK8GJrRqknKMVUrV/Oqy7xSMM8Wdr
+         xLbYD7yg9p2C37cnbroJQ0IqvxSvZHRPfj4hgMr84n0BAhsvL8LoM94yiLvMGSCUqvlo
+         fpY0riB/oBYocn/eX0I3D+XW+qKFPcoudQQlYOTuqWjm9XIzpenf9Rdf0lXz8CtJrH42
+         HYzfDNb2ztsImRkh1qxZokJn4Z4pyjhNOLaS/ypQwaFUayM/OiZcmoDDdMKE+deghJMI
+         1wuA==
+X-Gm-Message-State: AOAM533Mo2bB7Fjj/hn3SruxPLivenI/2shSm3lAXp9aW+dXZydgcAmK
+        wJrLIgnOUfKSiWWTZaV3YyuBCVFyZCdyDg==
+X-Google-Smtp-Source: ABdhPJzo+xFZyNqltQkfejPl7Qd9DHEr4NxlPaYlZKAEIDLgXhzF2unUYgxvMKiv8AtzXkOSoKjjWg==
+X-Received: by 2002:a17:90a:e7ca:b0:1d1:22ce:86c3 with SMTP id kb10-20020a17090ae7ca00b001d122ce86c3mr18358461pjb.10.1650322042665;
+        Mon, 18 Apr 2022 15:47:22 -0700 (PDT)
 Received: from localhost ([112.79.142.143])
-        by smtp.gmail.com with ESMTPSA id l2-20020a637c42000000b003644cfa0dd1sm13725470pgn.79.2022.04.18.15.47.16
+        by smtp.gmail.com with ESMTPSA id o2-20020a17090a55c200b001ce0843e0d9sm13808039pjm.38.2022.04.18.15.47.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Apr 2022 15:47:17 -0700 (PDT)
+        Mon, 18 Apr 2022 15:47:22 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf-next v2 1/2] bpf: Ensure type tags precede modifiers in BTF
-Date:   Tue, 19 Apr 2022 04:17:18 +0530
-Message-Id: <20220418224719.1604889-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add tests for type tag order validation
+Date:   Tue, 19 Apr 2022 04:17:19 +0530
+Message-Id: <20220418224719.1604889-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220418224719.1604889-1-memxor@gmail.com>
 References: <20220418224719.1604889-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3352; h=from:subject; bh=4AmYCEdL8QGFqiCjkF119FStgMjZsezb2p5nSOJUT5g=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiXenSyBUqj+TEVEvEObFNf1bg65/6YA/wAuSLv0Fz v/WKvbGJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYl3p0gAKCRBM4MiGSL8RykHsD/ 9ojZXRUxUMZmKv2nop7aEpn8GPiCDdkXSBQYuVRX5J49uv24ghyOmkqX81R+DBL0PX3mDKto5z04nx fnP4vkMhQnjX10p7K2DXGnAzQWi/chGvlSE2LC0H/M3rpir1PWrhCgSwdlcCT5emMr1uASRU2aJq+p 73w3o7Oy7ShxJiBFgm+mcl85fLUuSwXDIak6lmFtuIWTds8J9RT0nRnBRzbMM5QNrLaxe8KUIDZ8i9 8s6CQHc51oiMrU5x78WSAb6elE8Nc0mmkQdPrY+nzr5WIs/yzakeBH5qq+WcfoJOjN+TFlbksiD0hJ jnohu068uzEjEmaeAHv3EO+PTHwos+BeumpYAEl4kKy7hEMU6q6QeV8ze0OplEKV/Nc8Clg8iR+I63 itobnmoanVtTcQIO2IqFx7pQfhBVzZn4dqujgAmPo3d8dNleuw7WnYPlbbZ+fFgZ1bT3PCkZpH6Mcd ngZYFbw6KvcjFQCn9fcol+yd7Dlb5z5nqLR3f9DRhvAWe/9WJCnkNkMB4V46Je+oDoX+2CEHpBcFu6 PBoKaDZ5Ae1HLQlMLA8kMscCPSoElFZ/VN+RxIr40x2nI5v3Ngn/y9LcsJaRIiWj8igWvtOGwmB/Rs Z+hK6nGwYifIwWlf7wnHEOh2R3b+C0DigrR+D7d3+EqJYOIhw02/YBzB7kFQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3521; h=from:subject; bh=205W/sh8MXIGSTzmVy97vNb6BqtXW/sT31fW0n1/73I=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiXenT0egvInWI52WssI3nb9bYLZUe3ehYHY1n8J7O C+By3KiJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYl3p0wAKCRBM4MiGSL8Ryhg1D/ 405eGzXZBIeQcp37k6MUZF/ox7Sy56VGbW3NKYyW35OOpleT6oYUTUv21wHss8QlxPVB8tI78HtKKN WDTLrCeiWPjLwrJEFyhQk4H9V4QxkQ7wZXQZDMneTwFNTdP2PIn7ejzVNR3iJoOI1BiJ1NzvSd2ByI PW6nG68PDkv3Du0lzIgqZFGLubW9+w4wWwkBJQ+STbmIRyRnotiRhwZ8PJHbrSZhH0hmdxLy7z5cLb 9/hPnUSQ1NJLncNn0JcbtrFyPXntI7mQz7V9xZGnVaRx5It4CeZT8fbAuws7KfgOqmGtU1Mw9LPdJW ZwBLK9Er/lyRtmFVRoCA1pqDH0gF0FFYXew1QdE08aqWUx8JGZ6Rgi8Yg+c/RLrgUN4E9mvb5SWWpN jF35CVQlIMmzW/+X+3RQxjLcThFC07/Qaj0dZtcxD9Bq8PoKHs6w9q1ymcpPTCN6KDvl9T7zkQqioQ gdMC6u3T1myPQicqskv3GcAgmreYr3BL774kr/h/A+4Eu8kbd5q1QZfJWJg6omuTIEykmJHbjaD2HD aSiuEYt0JmJyTJ0tg1hdJnO0nY+/GfjC357KPYAI31o/O6ffho6hDAFTTGzY3WJbRBv5BtA0ycygY5 pgEPiOl5H0CW6OdrHyOf3VL4e+ZdUwpwdg1frWe9L2U7S3atBypI1uUJsi8A==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,117 +73,124 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It is guaranteed that for modifiers, clang always places type tags
-before other modifiers, and then the base type. We would like to rely on
-this guarantee inside the kernel to make it simple to parse type tags
-from BTF.
-
-However, a user would be allowed to construct a BTF without such
-guarantees. Hence, add a pass to check that in modifier chains, type
-tags only occur at the head of the chain, and then don't occur later in
-the chain.
-
-If we see a type tag, we can have one or more type tags preceding other
-modifiers that then never have another type tag. If we see other
-modifiers, all modifiers following them should never be a type tag.
-
-Instead of having to walk chains we verified previously, we can remember
-the last good modifier type ID which headed a good chain. At that point,
-we must have verified all other chains headed by type IDs less than it.
-This makes the verification process less costly, and it becomes a simple
-O(n) pass.
+Add a few test cases that ensure we catch cases of badly ordered type
+tags in modifier chains.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/btf.c | 54 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/btf.c | 99 ++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 0918a39279f6..c015ccd1c741 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4541,6 +4541,48 @@ static int btf_parse_hdr(struct btf_verifier_env *env)
- 	return 0;
- }
- 
-+static int btf_check_type_tags(struct btf_verifier_env *env,
-+			       struct btf *btf, int start_id)
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+index 84aae639ddb5..ba5bde53d418 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+@@ -3973,6 +3973,105 @@ static struct btf_raw_test raw_tests[] = {
+ 	.value_type_id = 1,
+ 	.max_entries = 1,
+ },
 +{
-+	int i, n, good_id = start_id - 1;
-+	bool in_tags;
-+
-+	n = btf_nr_types(btf);
-+	for (i = start_id; i < n; i++) {
-+		const struct btf_type *t;
-+		u32 cur_id = i;
-+
-+		t = btf_type_by_id(btf, i);
-+		if (!t)
-+			return -EINVAL;
-+		if (!btf_type_is_modifier(t))
-+			continue;
-+
-+		cond_resched();
-+
-+		in_tags = btf_type_is_type_tag(t);
-+		while (btf_type_is_modifier(t)) {
-+			if (btf_type_is_type_tag(t)) {
-+				if (!in_tags) {
-+					btf_verifier_log(env, "Type tags don't precede modifiers");
-+					return -EINVAL;
-+				}
-+			} else if (in_tags) {
-+				in_tags = false;
-+			}
-+			if (cur_id <= good_id)
-+				break;
-+			/* Move to next type */
-+			cur_id = t->type;
-+			t = btf_type_by_id(btf, t->type);
-+			if (!t)
-+				return -EINVAL;
-+		}
-+		good_id = i;
-+	}
-+	return 0;
-+}
-+
- static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
- 			     u32 log_level, char __user *log_ubuf, u32 log_size)
- {
-@@ -4608,6 +4650,10 @@ static struct btf *btf_parse(bpfptr_t btf_data, u32 btf_data_size,
- 	if (err)
- 		goto errout;
++	.descr = "type_tag test #2, type tag order",
++	.raw_types = {
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
++		BTF_CONST_ENC(3),				/* [2] */
++		BTF_TYPE_TAG_ENC(NAME_TBD, 1),			/* [3] */
++		BTF_END_RAW,
++	},
++	BTF_STR_SEC("\0tag"),
++	.map_type = BPF_MAP_TYPE_ARRAY,
++	.map_name = "tag_type_check_btf",
++	.key_size = sizeof(int),
++	.value_size = 4,
++	.key_type_id = 1,
++	.value_type_id = 1,
++	.max_entries = 1,
++	.btf_load_err = true,
++	.err_str = "Type tags don't precede modifiers",
++},
++{
++	.descr = "type_tag test #3, type tag order",
++	.raw_types = {
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
++		BTF_TYPE_TAG_ENC(NAME_TBD, 3),			/* [2] */
++		BTF_CONST_ENC(4),				/* [3] */
++		BTF_TYPE_TAG_ENC(NAME_TBD, 1),			/* [4] */
++		BTF_END_RAW,
++	},
++	BTF_STR_SEC("\0tag\0tag"),
++	.map_type = BPF_MAP_TYPE_ARRAY,
++	.map_name = "tag_type_check_btf",
++	.key_size = sizeof(int),
++	.value_size = 4,
++	.key_type_id = 1,
++	.value_type_id = 1,
++	.max_entries = 1,
++	.btf_load_err = true,
++	.err_str = "Type tags don't precede modifiers",
++},
++{
++	.descr = "type_tag test #4, type tag order",
++	.raw_types = {
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
++		BTF_TYPEDEF_ENC(NAME_TBD, 3),			/* [2] */
++		BTF_CONST_ENC(4),				/* [3] */
++		BTF_TYPE_TAG_ENC(NAME_TBD, 1),			/* [4] */
++		BTF_END_RAW,
++	},
++	BTF_STR_SEC("\0tag\0tag"),
++	.map_type = BPF_MAP_TYPE_ARRAY,
++	.map_name = "tag_type_check_btf",
++	.key_size = sizeof(int),
++	.value_size = 4,
++	.key_type_id = 1,
++	.value_type_id = 1,
++	.max_entries = 1,
++	.btf_load_err = true,
++	.err_str = "Type tags don't precede modifiers",
++},
++{
++	.descr = "type_tag test #5, type tag order",
++	.raw_types = {
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
++		BTF_TYPE_TAG_ENC(NAME_TBD, 3),			/* [2] */
++		BTF_CONST_ENC(1),				/* [3] */
++		BTF_TYPE_TAG_ENC(NAME_TBD, 2),			/* [4] */
++		BTF_END_RAW,
++	},
++	BTF_STR_SEC("\0tag\0tag"),
++	.map_type = BPF_MAP_TYPE_ARRAY,
++	.map_name = "tag_type_check_btf",
++	.key_size = sizeof(int),
++	.value_size = 4,
++	.key_type_id = 1,
++	.value_type_id = 1,
++	.max_entries = 1,
++},
++{
++	.descr = "type_tag test #6, type tag order",
++	.raw_types = {
++		BTF_PTR_ENC(2),					/* [1] */
++		BTF_TYPE_TAG_ENC(NAME_TBD, 3),			/* [2] */
++		BTF_CONST_ENC(4),				/* [3] */
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),  /* [4] */
++		BTF_PTR_ENC(6),					/* [5] */
++		BTF_CONST_ENC(2),				/* [6] */
++		BTF_END_RAW,
++	},
++	BTF_STR_SEC("\0tag"),
++	.map_type = BPF_MAP_TYPE_ARRAY,
++	.map_name = "tag_type_check_btf",
++	.key_size = sizeof(int),
++	.value_size = 4,
++	.key_type_id = 1,
++	.value_type_id = 1,
++	.max_entries = 1,
++	.btf_load_err = true,
++	.err_str = "Type tags don't precede modifiers",
++},
  
-+	err = btf_check_type_tags(env, btf, 1);
-+	if (err)
-+		goto errout;
-+
- 	if (log->level && bpf_verifier_log_full(log)) {
- 		err = -ENOSPC;
- 		goto errout;
-@@ -4809,6 +4855,10 @@ struct btf *btf_parse_vmlinux(void)
- 	if (err)
- 		goto errout;
+ }; /* struct btf_raw_test raw_tests[] */
  
-+	err = btf_check_type_tags(env, btf, 1);
-+	if (err)
-+		goto errout;
-+
- 	/* btf_parse_vmlinux() runs under bpf_verifier_lock */
- 	bpf_ctx_convert.t = btf_type_by_id(btf, bpf_ctx_convert_btf_id[0]);
- 
-@@ -4894,6 +4944,10 @@ static struct btf *btf_parse_module(const char *module_name, const void *data, u
- 	if (err)
- 		goto errout;
- 
-+	err = btf_check_type_tags(env, btf, btf_nr_types(base_btf));
-+	if (err)
-+		goto errout;
-+
- 	btf_verifier_env_free(env);
- 	refcount_set(&btf->refcnt, 1);
- 	return btf;
 -- 
 2.35.1
 
