@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57C7505C07
-	for <lists+bpf@lfdr.de>; Mon, 18 Apr 2022 17:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E99A505C08
+	for <lists+bpf@lfdr.de>; Mon, 18 Apr 2022 17:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345844AbiDRP4V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Apr 2022 11:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S1346064AbiDRP4b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Apr 2022 11:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346056AbiDRP4C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Apr 2022 11:56:02 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E71C3526F
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 08:44:34 -0700 (PDT)
+        with ESMTP id S1345939AbiDRP4T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Apr 2022 11:56:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D041331225
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 08:45:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E6D36B80FD4
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:44:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90D39C385B6
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:44:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 920BAB80F63
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:45:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59578C385AB
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:45:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650296671;
-        bh=wJamUmVa37bYFg4DctFtvAWAV3VAkkML+CF8Uhud5M8=;
+        s=k20201202; t=1650296729;
+        bh=AsXYlrlnwIa3KQs0f83qAnUtd0S5pHiR2sK0VD0MjKk=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ko6YB4VPSwz5fkcK45DLToaxkm57sFNwg/TkLYj16Un4smA1BcffC2hXmnImBWicP
-         iz9HYaelJ+G/xU8+TaJ0Mzb/nYxTRmh4iqtDEfuTaJFAWuCZzEG8SZJU+CH0QRbJ2q
-         c92uPPf00JRUd/ccf8txd71Lh0R0DC35JfPKzn2i79+z9crbmimetMgSBZ9ufJc8zc
-         4NAmQYckOQ3cVSau0SmMv1pJjR5OgeHsmxlG2ql87UOcryNNLaDIn5MYRfVG3X1Fxt
-         WOg0J8acXokVPY4zHVHWi6FcTRMY+eiYjmiaufBPCZltCQW4GfHMRW+4G2VyJc6Vef
-         tXSay74i/lErw==
-Received: by mail-ej1-f52.google.com with SMTP id g18so27506079ejc.10
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 08:44:31 -0700 (PDT)
-X-Gm-Message-State: AOAM5320riVmtiPWEZjaVM2WaQ/jLgZqPHPZ3hrisj1fY4UFhwSxxnh2
-        pb38blPk2Y6QC4PntN4Mdjsn6uFk1LOtf45dkb+PkQ==
-X-Google-Smtp-Source: ABdhPJx10y8GIGMfEW+aLwvtOAKspndwnzW7uReLK9kHn3xa+OehvLaj82IhSq6TxfI6E/DMrPT1mg6khcBYLMTO7N4=
-X-Received: by 2002:a17:907:3f8a:b0:6ef:8f87:67e with SMTP id
- hr10-20020a1709073f8a00b006ef8f87067emr7029979ejc.383.1650296669718; Mon, 18
- Apr 2022 08:44:29 -0700 (PDT)
+        b=W5Ek0Owoe5Vl2g1Rpk9INnupECkp0IOI6yjK60yUIuJ4zP4FyIF1rKjtydL9cTq11
+         XElDVX73UrVgxPJoFJHvcWcXQitTTkpeLA845S6U0OjYbYABxUWRke1ddDOBzt6jVX
+         ErVLWxqhRpMtzqpacFUEQA8nQXD2PsCwp8ZAITzhwM3GfiRVDp6IY17VZXzdjvN/hG
+         HjAXmaRX0LVIuDi1hqhPtKptgcooNMk0WvrI7WdHhvXumHpRFp3nbuby1JqaISrgin
+         RmHdL0vTKFBQ/pIZbMK+BQhhGWAi6lLjJcyCUWhOyDDH8eXfIGv8+BXrnD1XJc40Rb
+         4tiWXfu/rLDHg==
+Received: by mail-ej1-f41.google.com with SMTP id ks6so27580412ejb.1
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 08:45:29 -0700 (PDT)
+X-Gm-Message-State: AOAM533XLiOdF5xwGnA7xkJpImM7wCjFPmUobk6/jEywfTA4eJLrH9au
+        7+sFs+CWuw12Xy8oNUUFfGHyMA/F9/enx6fgWEu9PA==
+X-Google-Smtp-Source: ABdhPJx/6GN04UanhiDpyS/l6I9LVPtM4PGeDHf9bb0VSmtGLjaas4aMjgMYQgZT2BTPM8A+hDYU9+zrWJW//0Aohgk=
+X-Received: by 2002:a17:907:7f1c:b0:6eb:c702:7f4e with SMTP id
+ qf28-20020a1709077f1c00b006ebc7027f4emr9536443ejc.496.1650296727631; Mon, 18
+ Apr 2022 08:45:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220418145202.2855726-1-kpsingh@kernel.org>
-In-Reply-To: <20220418145202.2855726-1-kpsingh@kernel.org>
+References: <20220418142929.2600589-1-kpsingh@kernel.org>
+In-Reply-To: <20220418142929.2600589-1-kpsingh@kernel.org>
 From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 18 Apr 2022 17:44:19 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ5p=sMnz-+7PZbOy4tEKwCrQj7aEGj=8zFq9wXiWdCt5A@mail.gmail.com>
-Message-ID: <CACYkzJ5p=sMnz-+7PZbOy4tEKwCrQj7aEGj=8zFq9wXiWdCt5A@mail.gmail.com>
+Date:   Mon, 18 Apr 2022 17:45:17 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ55WjmPtUsozYQQwU5ZwYe2GnY8OyUHseRfcnW_1EVnRA@mail.gmail.com>
+Message-ID: <CACYkzJ55WjmPtUsozYQQwU5ZwYe2GnY8OyUHseRfcnW_1EVnRA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next] bpf: Fix usage of trace RCU in local storage.
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -65,7 +65,9 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 18, 2022 at 5:33 PM KP Singh <kpsingh@kernel.org> wrote:
+On Mon, Apr 18, 2022 at 5:25 PM KP Singh <kpsingh@kernel.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
 >
 > bpf_{sk,task,inode}_storage_free() do not need to use
 > call_rcu_tasks_trace as no BPF program should be accessing the owner
@@ -78,9 +80,7 @@ On Mon, Apr 18, 2022 at 5:33 PM KP Singh <kpsingh@kernel.org> wrote:
 > * map_{delete,update}_elem() syscalls
 >
 > Fixes: 8553c67b1b54 ("bpf: Reduce usage of trace RCU in local storage.")
+> Signed-off-by: KP Singh <kpsingh@google.com>
 
-This is the wrong commit. Please ignore.
-
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-
-[...]
+Please ignore. I messed up gitconfig today. Apologies for the noise.
+Sending a v2 today with the right Fixes commit.
