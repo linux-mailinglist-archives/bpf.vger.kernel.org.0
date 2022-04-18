@@ -2,285 +2,851 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 848F2505FB7
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 00:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C067B505FC1
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 00:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbiDRWZR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Apr 2022 18:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
+        id S231714AbiDRW3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Apr 2022 18:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbiDRWZQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Apr 2022 18:25:16 -0400
+        with ESMTP id S231560AbiDRW3v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Apr 2022 18:29:51 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F7929CB4
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:22:34 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23IKenmb005017;
-        Mon, 18 Apr 2022 15:22:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=O86dorsk5dPkCxU7NF/+arnmwyCTJZPIi87kMHnhyz4=;
- b=p/QRrAoGKmKkIBTyxNu8tY+dRd2buBgwW7awPZ8fxEQOG5RnZ1XJjZh8pURYK6Qr8DOx
- U5N4TKt+veO/9Z1p7PSS5rZZGmFCNGGP++nkg8EcDaddUYCYTsQX34x+UAnXVAXn4KoY
- nbKDL7yldynsIprWf7GlEancK/8rqBKAOCY= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ffugnugkw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 18 Apr 2022 15:22:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CH4UObRYr4rjY+ctEHHnfaQ5CBPc1CbMJ5k8WjPs25t0v9uv2uGAuYm1OD5UdVsvV/u/ympDMGdZ+qzBUROVXLFFcFd3HbN2LicgF1tZDGrpLsg9jFUlKCkppO4V5MyP56hNOY8IiLiByOIcvtbSuRzNkzVVg4vJPowzwSVR3pNKAMSvair4aPFjxjjlI6RlI0xywrEtoua4hnc4LEvcj9IuTsiu52U+1eTvELBKdcOTgoMg4AcvG7L4LJTmIBcqnXO7yRSzUfB8mUgin3VgJTFSu4n7dhZuOhKDTCu26ikrB9Bx2Ke8h5B+pZqXqAHoi7PBeDtZLVYO6/pi328oxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O86dorsk5dPkCxU7NF/+arnmwyCTJZPIi87kMHnhyz4=;
- b=W0Q7+3pscsXrtjzmFpRe9GikqDZ2UYxDtPPHiavdvdkp89OyV3uYSgNV799Y4EIpuvh+8A76keJOjMW9ZUPsdIx66VdAqPAFcfvKW76u4HwT153lJzok5oC7KRnnsCaZSDVyz33pGBUYfiOn6voBwi86MPigvfCzT9D73Qkm8hfZhOavK1h2PIn9faibfZL7rkeQ3Et2lv3d9325n6PAQt4jSN8qKd6uhj49/zezmQwvw+r3LoXiNLLRPfap+uo6TrP2l7+hZZxvjTUdgaIhBCHrQ539XOXgzdseTXeDtXc1cKu/pX6DjtrVT3LbJuh8sAUxzq3hkU+d+g+IjBHgcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BN8PR15MB3363.namprd15.prod.outlook.com (2603:10b6:408:73::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.18; Mon, 18 Apr
- 2022 22:22:17 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::24de:30b1:5d2:b901]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::24de:30b1:5d2:b901%7]) with mapi id 15.20.5164.025; Mon, 18 Apr 2022
- 22:22:17 +0000
-Message-ID: <19b5e6fa-b041-a824-362e-a1cc7615d253@fb.com>
-Date:   Mon, 18 Apr 2022 15:22:14 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.8.0
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Ensure type tags precede modifiers
- in BTF
-Content-Language: en-US
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-References: <20220406004121.282699-1-memxor@gmail.com>
- <20220406004121.282699-2-memxor@gmail.com>
- <47fe6f32-fe4d-2e1d-6297-36c30d8c6586@fb.com>
- <20220418203108.zsyox6jr4k5al5yo@apollo.legion>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220418203108.zsyox6jr4k5al5yo@apollo.legion>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0042.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8440E2AC41
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:27:10 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23IHLeFE025562
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:27:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=vZkA2cgwAr5pKClXtvfVBDGFX4+BIyhhAr6rBixF5CI=;
+ b=GN1bpXVi7HL91AOJUxNADZxYv8u7key5U3Q167er3r/hLT/E5pRNY4E8kSbVI4l5HLjK
+ Y4e30FDfp4lw3/C6JIBVGmheVBGAHMBa+V2QUvXM+F/xKBXxAXYUXSA0WqAFLFcbZ77v
+ 8yZr4VshqOI2U148jEZVTWiO75PPTCrXm1Y= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fftwskkhw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 15:27:09 -0700
+Received: from twshared29473.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 18 Apr 2022 15:27:08 -0700
+Received: by devvm4897.frc0.facebook.com (Postfix, from userid 537053)
+        id 39C625E333E7; Mon, 18 Apr 2022 15:27:06 -0700 (PDT)
+From:   Mykola Lysenko <mykolal@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>, Mykola Lysenko <mykolal@fb.com>
+Subject: [PATCH v2 bpf-next] selftests/bpf: refactor prog_tests logging and test execution
+Date:   Mon, 18 Apr 2022 15:25:07 -0700
+Message-ID: <20220418222507.1726259-1-mykolal@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d5479940-546a-4d19-025d-08da2189e569
-X-MS-TrafficTypeDiagnostic: BN8PR15MB3363:EE_
-X-Microsoft-Antispam-PRVS: <BN8PR15MB33633CC0C7F6580D663759E7D3F39@BN8PR15MB3363.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aiI1nHQ60ADT555giaRn/4fXLF+RPBx/YmszqxJiksqy+TCHFj7Hs6syVx3GF2v/+uyi0ymTQQmfqEtmS09wMqljswZrYfW3jAypOHyCiLHAEPy6HdwO2dqXBTYlGnVRcN/YXG2FORiZg6MVtb73OA6qkYdgNkm4TProxUj6g/uZgglf9dWU6lYrrbD1/q253epxDCGnAzW3qDmjHm3ojav3f4f7rmAtCvQYJ+mJeOUUUYlOj3DLIEwwzzr4yBBvFsCUjxLIXv3Nz5yxyexaPnzJxGJp/HREshFNoGYZ5j6WDpwkpm2W6ljWYEoWE6xR3CA98LZuoYV0KpP965+SHPf7UHuoQ8b+SGUVk1lzL5QqapKqUowOo4jsigSGV96FmRfuAYk74sd6O22WnauO53+zFx7qznpIjQ2wZ+PVc4bvRyuN1fN4xItRJnF47hvnonbuMkN8QeZiwoV+dDScfHIcV1DMlMM5H1J6dbN1T0PqcP1ne2hcST+pLIMlcJjr6/KnV0Y50I3z76VJjnkOIPhdp9jSKSv9/soATki9qcEr6hwss2dtW5uPaRBJHJqs8jMvp0kv557rx8W2xedZjhghx3OQb+H9el5JS6oeZYYhVfkB5Os+wdLv9rVJRiqinwd1Po7dCdflFVhspoyW4H6ps15km/Enk2tZQWk2xHaMl5TRARv1n5oLg/t5Ugd95+4LYoVc+sMWMDu8pG5d1uIZRKgydp2ielCSeQ70Px6R631gfyI5wQK9wEkZvRcX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(83380400001)(31686004)(86362001)(6486002)(31696002)(5660300002)(2616005)(186003)(36756003)(66476007)(66946007)(66556008)(8676002)(4326008)(52116002)(316002)(38100700002)(6512007)(53546011)(6506007)(508600001)(8936002)(6666004)(54906003)(2906002)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Nnh5RTFleDhMRmFOZ2N3c2FXaTNUdk5Xd1krNkpFcWZFaGZZNS83aUVSaTJJ?=
- =?utf-8?B?bGJlWDdESnZmZ3o0dUpla0RYMUFnNllHY21vRTJrTG55bTF5NGs1WHFVTzd1?=
- =?utf-8?B?MDQ1dldSd09XMUl3SGlUSXprVmpjNFBrdzlaMlFvUE9zSWJFeDBIOUV1bTBK?=
- =?utf-8?B?b052THBVa1ZCS3VyZjRvcVl0QnBxb29TL0s0cmdUM0lzTE85MG94WVd2bWR2?=
- =?utf-8?B?ZXVqeVZLZ2lBUjhBNmo1ZHN6Y0pqdXNNc2RTWVc1WHJhQy9SNVNTU3hmUDVF?=
- =?utf-8?B?SERsUkUyRVk4S21pbjNDbXplR3NpY3NEenlkakJaTDJYZ2RIcVVxOUNicVls?=
- =?utf-8?B?NHhWYjRNeDVzeWJkUW9IS0JLOWRhaW1UTERScjhsTGpVdFN6RlVtdFNnc1lN?=
- =?utf-8?B?Rm11VWxydDNVdkE0WEd3YVNLZ2V6eFZ5ZHJZZSs0M3ZFMXd0MlRPYWsxSzU3?=
- =?utf-8?B?MHJKVGJPK1lKNEVTc2w3bkV5S2VITjhaM0pvMm9RY3BxZyt6bHIvclYycGRr?=
- =?utf-8?B?VXFsSkVncURlaGpoL3lyVVhzNlRHQy9jeHBpMmo1ODNCUzZwYkZBRkdkV1Bu?=
- =?utf-8?B?TkRCVnNLYytRbnpGR20wYVp3N2t3T0g4QTZ3em1zZ3hZUVl2OG5kaXFKOTAx?=
- =?utf-8?B?VFQ4VWdLQTR1VnNZR1R6S2NhaDhwM1M3WFo2RXl2ZFF5cSthVGhjOGxxdkhp?=
- =?utf-8?B?RFcyYUIyK25ldVE0WTNiQjBMaWVnRS85dVkzS0g5WFBjTEtDUW5UOVdoWVVP?=
- =?utf-8?B?aHdVNUJYQ2p0QlNJS1ZiUmZiM2phLzA3MGZTRFloVTR4cDdnUkh2SVI2eVVz?=
- =?utf-8?B?bnp4ME9LdmN0ZERva3pTaS9SRnhaVzVzTmJpSWpBZ3k5VTF2aExxZUlPWVBW?=
- =?utf-8?B?WVdSYlc4ZEI5NUZmak5ibzkrbmI2dlUrNEhmYWRIWXhuQmhYUlc3NnJ0Z2hU?=
- =?utf-8?B?L3lVb0tZMExNWTN2cU5yelpUK3hzVzFJTjA2Y2xSZEN0T2lqRHVoRFhZQ3Z0?=
- =?utf-8?B?MG9Ec1ZLVHFzWnhVTkN3YTJOMWtseEZaMm1oMy9tYXNselg3NzlzbmUyK2R3?=
- =?utf-8?B?cmdNL1Z4KzBGZXl0dThwVVJxaGFhVit1WnpMeDdmTzBTdUs3WXYyZFgxMW8x?=
- =?utf-8?B?ZENXMUdxeGNOeWRqd2VwZVNkeU9INlUwZks2WTIyUzc2OWlTelRMeW1xeE9j?=
- =?utf-8?B?SGlzQjFXQVcxMVZTWHFXU3pUb0hHL1RocTNLRkNxdHF4RXY2N3RpYk85N0NI?=
- =?utf-8?B?TlI4S01SUmJJRk1Odi9PWjU4dHhWWGYwV25JQmNGeCtXaC9VdDFSczY1M3ZT?=
- =?utf-8?B?ZndoUHBHRGhxZmRPSTRheEcvYmFLWVRMZU1tY0tZVUcrMUtEMVlNbUVTQ2ps?=
- =?utf-8?B?RStQKzdzR1pUcUVnUzY5ZnFBajlaVGxTQlppRURsMlpXanRBU1BUcElLOXNs?=
- =?utf-8?B?SnF4WEppeVRjTUkva0xRN0kzUUxUR2VuOUg3S1VwZ3ZYQkc5UVVGWnRWYVEz?=
- =?utf-8?B?UjFiZExjODUrQ0crUFFOMWIrY1M5K2JiZFlVK2tUU1M2TFFubWEvMnc2bEgy?=
- =?utf-8?B?YVNqTUZVVUtKNzJFUEpNYWFNMjUxQ25IT0UwZEJZODk4UTJFcnVIenBQdmxE?=
- =?utf-8?B?ZGR5RXhyR21yODBIMFJNekhITGdCd1JxejlGS0MzeVJqZTJxY3ZpM012OTVD?=
- =?utf-8?B?dWhXM1YyeEdLVXk3eGl3WG1BVU9RNTRHMXhkb1ZqdWtDNXpyOVFqbzFvMFkx?=
- =?utf-8?B?cWN4emJSNndFbElyTXpPRU5MWUlibkIvM29FQ25QSjJ0SjM4RFFpcE5pQ3Zn?=
- =?utf-8?B?a2hjdmhKOXAyS1R1eUhoVjRiZjZuL0pGU1hQcFZoWFh6d0Zia2NSRkNzZWZw?=
- =?utf-8?B?QThlSmczdjhKRVZyRGdZTHVzVEJ2R094NEJnNVdCTUdFWjEwTTFrQ3ZNbUov?=
- =?utf-8?B?Vko3dUxmSWdNVXo2Q1NKZXpTN3BsY2lycnJwVjU2Wno5ZmFpaEdSb0VWK3dl?=
- =?utf-8?B?dE5sSWZlZW1PSGdQempBSHlnN2hnWngwazdLRjVNUktXb3p5RDNjMER5anZQ?=
- =?utf-8?B?L3NORTVRc2JZTGtCSDB2eStaNWd2N2hEOTV1NW0yTzBrY2FhYlB0SVdERjJG?=
- =?utf-8?B?a3FaMHplTEFaSGVEc1AxTk1Ccm5abFFjb2VrdGhuRVJyYk9HTnduZHpYV0lV?=
- =?utf-8?B?eHZIVFlQaklCNGpEV3ArNkZ1UnNYQmExekxJS08xbWpMMVpLRVF5Z0VXNHJn?=
- =?utf-8?B?K0xBeDk5TFJza2Z5ei9ITWlWSmcyN2Jsc3BaYmhDdGU1My95dE8reHZKYTJV?=
- =?utf-8?B?TUxEd0xMc1Z4NStwN3grMkxzMElnZW5NK0FVZm1DWkd4ZWs1U3NIWVZMSVdn?=
- =?utf-8?Q?ozeP/8XKD/gtlhAU=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5479940-546a-4d19-025d-08da2189e569
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2022 22:22:17.1009
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YdMw8vn9v2z6PvouvCnVbj1ee14RzWUrPHmBGKowgNy7OtCn1dZXPy14JrUww/g+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB3363
-X-Proofpoint-GUID: uS2uCaRHMSfm3h2MeK4-qC3L_Vcg_vdg
-X-Proofpoint-ORIG-GUID: uS2uCaRHMSfm3h2MeK4-qC3L_Vcg_vdg
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: SSfzL8FOL8c8zRnakPYL8qZlmIDa-9oH
+X-Proofpoint-ORIG-GUID: SSfzL8FOL8c8zRnakPYL8qZlmIDa-9oH
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-04-18_02,2022-04-15_01,2022-02-23_01
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This is a pre-req to add separate logging for each subtest in
+test_progs.
 
+Move all the mutable test data to the test_result struct.
+Move per-test init/de-init into the run_one_test function.
+Consolidate data aggregation and final log output in
+calculate_and_print_summary function.
+As a side effect, this patch fixes double counting of errors
+for subtests and possible duplicate output of subtest log
+on failures.
 
-On 4/18/22 1:31 PM, Kumar Kartikeya Dwivedi wrote:
-> On Tue, Apr 19, 2022 at 01:23:32AM IST, Yonghong Song wrote:
->>
->>
->> On 4/5/22 5:41 PM, Kumar Kartikeya Dwivedi wrote:
->>> It is guaranteed that for modifiers, clang always places type tags
->>> before other modifiers, and then the base type. We would like to rely on
->>> this guarantee inside the kernel to make it simple to parse type tags
->>> from BTF.
->>>
->>> However, a user would be allowed to construct a BTF without such
->>> guarantees. Hence, add a pass to check that in modifier chains, type
->>> tags only occur at the head of the chain, and then don't occur later in
->>> the chain.
->>>
->>> If we see a type tag, we can have one or more type tags preceding other
->>> modifiers that then never have another type tag. If we see other
->>> modifiers, all modifiers following them should never be a type tag.
->>>
->>> Instead of having to walk chains we verified previously, we can remember
->>> the last good modifier type ID which headed a good chain. At that point,
->>> we must have verified all other chains headed by type IDs less than it.
->>> This makes the verification process less costly, and it becomes a simple
->>> O(n) pass.
->>>
->>> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
->>> ---
->>>    kernel/bpf/btf.c | 51 ++++++++++++++++++++++++++++++++++++++++++++++++
->>>    1 file changed, 51 insertions(+)
->>>
->>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->>> index 0918a39279f6..4a73f5b8127e 100644
->>> --- a/kernel/bpf/btf.c
->>> +++ b/kernel/bpf/btf.c
->>> @@ -4541,6 +4541,45 @@ static int btf_parse_hdr(struct btf_verifier_env *env)
->>>    	return 0;
->>>    }
->>> +static int btf_check_type_tags(struct btf_verifier_env *env,
->>> +			       struct btf *btf, int start_id)
->>> +{
->>> +	int i, n, good_id = start_id - 1;
->>> +	bool in_tags;
->>> +
->>> +	n = btf_nr_types(btf);
->>> +	for (i = start_id; i < n; i++) {
->>> +		const struct btf_type *t;
->>> +
->>> +		t = btf_type_by_id(btf, i);
->>> +		if (!t)
->>> +			return -EINVAL;
->>> +		if (!btf_type_is_modifier(t))
->>> +			continue;
->>> +
->>> +		cond_resched();
->>> +
->>> +		in_tags = btf_type_is_type_tag(t);
->>> +		while (btf_type_is_modifier(t)) {
->>> +			if (btf_type_is_type_tag(t)) {
->>> +				if (!in_tags) {
->>> +					btf_verifier_log(env, "Type tags don't precede modifiers");
->>> +					return -EINVAL;
->>> +				}
->>> +			} else if (in_tags) {
->>> +				in_tags = false;
->>> +			}
->>> +			if (t->type <= good_id)
->>> +				break;
->>
->> General approach looks good. Currently verifier does assume type_tag
->> immediately following ptr type and before all other modifiers we do
->> need to ensure
->>
->> I think we may have an issue here though. Suppose we have the
->> following types
->>     1 ptr -> 2
->>     2 tag -> 3
->>     3 const -> 4
->>     4 int
->>     5 ptr -> 6
->>     6 const -> 2
->>
->> In this particular case, when processing modifier 6, we
->> have in_tags is false, but t->type (2) <= good_id (5).
->> But this is illegal as we have ptr-> const -> tag -> const -> int.
->>
-> 
-> Thanks a lot for catching the bug.
-> 
-> So when we have set a non-zero good_id, we know two things:
-> If good_id is a type tag, it will be followed by one or more type tag modifiers
-> and then only non type tag modifiers, else it will only be a series of non type
-> tag modifiers.
-> 
-> When comparing next type ID (t->type) with good_id, we need to see if it is a
-> type_tag and compare against in_tags to ensure it can be part of current chain.
-> So this t->type check needs to be changed to be against current type ID, and
-> should happen in next loop iteration after in_tags has been checked against 't'.
-> 
-> The following change should fix this:
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 4a73f5b8127e..c015ccd1c741 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -4550,6 +4550,7 @@ static int btf_check_type_tags(struct btf_verifier_env *env,
->          n = btf_nr_types(btf);
->          for (i = start_id; i < n; i++) {
->                  const struct btf_type *t;
-> +               u32 cur_id = i;
-> 
->                  t = btf_type_by_id(btf, i);
->                  if (!t)
-> @@ -4569,8 +4570,10 @@ static int btf_check_type_tags(struct btf_verifier_env *env,
->                          } else if (in_tags) {
->                                  in_tags = false;
->                          }
-> -                       if (t->type <= good_id)
-> +                       if (cur_id <= good_id)
->                                  break;
-> +                       /* Move to next type */
-> +                       cur_id = t->type;
->                          t = btf_type_by_id(btf, t->type);
->                          if (!t)
->                                  return -EINVAL;
-> 
-> --
-> 
-> If it looks good, I can respin with your example added as another test in
-> selftests.
+Also, add prog_tests_framework.c test to verify some of the
+counting logic.
 
-I checked and it looks good to me. Right, it would be great if an 
-selftest is added for this pattern.
+As part of verification, confirmed that number of reported
+tests is the same before and after the change for both parallel
+and sequential test execution.
 
-[...]
+Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+---
+ .../selftests/bpf/prog_tests/bpf_mod_race.c   |   4 +-
+ .../bpf/prog_tests/prog_tests_framework.c     |  56 +++
+ tools/testing/selftests/bpf/test_progs.c      | 327 +++++++-----------
+ tools/testing/selftests/bpf/test_progs.h      |  35 +-
+ 4 files changed, 202 insertions(+), 220 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/prog_tests_fra=
+mework.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c b/tool=
+s/testing/selftests/bpf/prog_tests/bpf_mod_race.c
+index d43f548c572c..a4d0cc9d3367 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
+@@ -36,13 +36,13 @@ struct test_config {
+ 	void (*bpf_destroy)(void *);
+ };
+=20
+-enum test_state {
++enum bpf_test_state {
+ 	_TS_INVALID,
+ 	TS_MODULE_LOAD,
+ 	TS_MODULE_LOAD_FAIL,
+ };
+=20
+-static _Atomic enum test_state state =3D _TS_INVALID;
++static _Atomic enum bpf_test_state state =3D _TS_INVALID;
+=20
+ static int sys_finit_module(int fd, const char *param_values, int flags)
+ {
+diff --git a/tools/testing/selftests/bpf/prog_tests/prog_tests_framework.=
+c b/tools/testing/selftests/bpf/prog_tests/prog_tests_framework.c
+new file mode 100644
+index 000000000000..14f2796076e0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/prog_tests_framework.c
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
++
++#include "test_progs.h"
++#include "testing_helpers.h"
++
++static void clear_test_state(struct test_state *state)
++{
++	state->error_cnt =3D 0;
++	state->sub_succ_cnt =3D 0;
++	state->skip_cnt =3D 0;
++}
++
++void test_prog_tests_framework(void)
++{
++	struct test_state *state =3D env.test_state;
++
++	/* in all the ASSERT calls below we need to return on the first
++	 * error due to the fact that we are cleaning the test state after
++	 * each dummy subtest
++	 */
++
++	/* test we properly count skipped tests with subtests */
++	if (test__start_subtest("test_good_subtest"))
++		test__end_subtest();
++	if (!ASSERT_EQ(state->skip_cnt, 0, "skip_cnt_check"))
++		return;
++	if (!ASSERT_EQ(state->error_cnt, 0, "error_cnt_check"))
++		return;
++	if (!ASSERT_EQ(state->subtest_num, 1, "subtest_num_check"))
++		return;
++	clear_test_state(state);
++
++	if (test__start_subtest("test_skip_subtest")) {
++		test__skip();
++		test__end_subtest();
++	}
++	if (test__start_subtest("test_skip_subtest")) {
++		test__skip();
++		test__end_subtest();
++	}
++	if (!ASSERT_EQ(state->skip_cnt, 2, "skip_cnt_check"))
++		return;
++	if (!ASSERT_EQ(state->subtest_num, 3, "subtest_num_check"))
++		return;
++	clear_test_state(state);
++
++	if (test__start_subtest("test_fail_subtest")) {
++		test__fail();
++		test__end_subtest();
++	}
++	if (!ASSERT_EQ(state->error_cnt, 1, "error_cnt_check"))
++		return;
++	if (!ASSERT_EQ(state->subtest_num, 4, "subtest_num_check"))
++		return;
++	clear_test_state(state);
++}
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/sel=
+ftests/bpf/test_progs.c
+index dcad9871f556..016794845ca2 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -51,19 +51,8 @@ struct prog_test_def {
+ 	int test_num;
+ 	void (*run_test)(void);
+ 	void (*run_serial_test)(void);
+-	bool force_log;
+-	int error_cnt;
+-	int skip_cnt;
+-	int sub_succ_cnt;
+ 	bool should_run;
+-	bool tested;
+ 	bool need_cgroup_cleanup;
+-
+-	char *subtest_name;
+-	int subtest_num;
+-
+-	/* store counts before subtest started */
+-	int old_error_cnt;
+ };
+=20
+ /* Override C runtime library's usleep() implementation to ensure nanosl=
+eep()
+@@ -141,35 +130,32 @@ static bool should_run_subtest(struct test_selector=
+ *sel,
+ 	return subtest_num < subtest_sel->num_set_len && subtest_sel->num_set[s=
+ubtest_num];
+ }
+=20
+-static void dump_test_log(const struct prog_test_def *test, bool failed)
++static void dump_test_log(const struct prog_test_def *test,
++			  const struct test_state *test_state,
++			  bool force_failed)
+ {
+-	if (stdout =3D=3D env.stdout)
+-		return;
++	bool failed =3D test_state->error_cnt > 0 || force_failed;
+=20
+ 	/* worker always holds log */
+ 	if (env.worker_id !=3D -1)
+ 		return;
+=20
+-	fflush(stdout); /* exports env.log_buf & env.log_cnt */
++	fflush(stdout); /* exports test_state->log_buf & test_state->log_cnt */
++
++	fprintf(env.stdout, "#%d %s:%s\n",
++		test->test_num, test->test_name,
++		failed ? "FAIL" : (test_state->skip_cnt ? "SKIP" : "OK"));
+=20
+-	if (env.verbosity > VERBOSE_NONE || test->force_log || failed) {
+-		if (env.log_cnt) {
+-			env.log_buf[env.log_cnt] =3D '\0';
+-			fprintf(env.stdout, "%s", env.log_buf);
+-			if (env.log_buf[env.log_cnt - 1] !=3D '\n')
++	if (env.verbosity > VERBOSE_NONE || test_state->force_log || failed) {
++		if (test_state->log_cnt) {
++			test_state->log_buf[test_state->log_cnt] =3D '\0';
++			fprintf(env.stdout, "%s", test_state->log_buf);
++			if (test_state->log_buf[test_state->log_cnt - 1] !=3D '\n')
+ 				fprintf(env.stdout, "\n");
+ 		}
+ 	}
+ }
+=20
+-static void skip_account(void)
+-{
+-	if (env.test->skip_cnt) {
+-		env.skip_cnt++;
+-		env.test->skip_cnt =3D 0;
+-	}
+-}
+-
+ static void stdio_restore(void);
+=20
+ /* A bunch of tests set custom affinity per-thread and/or per-process. R=
+eset
+@@ -219,72 +205,79 @@ static void restore_netns(void)
+ void test__end_subtest(void)
+ {
+ 	struct prog_test_def *test =3D env.test;
+-	int sub_error_cnt =3D test->error_cnt - test->old_error_cnt;
++	struct test_state *state =3D env.test_state;
+=20
+-	dump_test_log(test, sub_error_cnt);
++	int sub_error_cnt =3D state->error_cnt - state->old_error_cnt;
+=20
+ 	fprintf(stdout, "#%d/%d %s/%s:%s\n",
+-	       test->test_num, test->subtest_num, test->test_name, test->subtes=
+t_name,
+-	       sub_error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
++	       test->test_num, state->subtest_num, test->test_name, state->subt=
+est_name,
++	       sub_error_cnt ? "FAIL" : (state->subtest_skip_cnt ? "SKIP" : "OK=
+"));
+=20
+-	if (sub_error_cnt)
+-		test->error_cnt++;
+-	else if (test->skip_cnt =3D=3D 0)
+-		test->sub_succ_cnt++;
+-	skip_account();
++	if (!sub_error_cnt) {
++		if (state->subtest_skip_cnt =3D=3D 0) {
++			state->sub_succ_cnt++;
++		} else {
++			state->subtest_skip_cnt =3D 0;
++			state->skip_cnt++;
++		}
++	}
+=20
+-	free(test->subtest_name);
+-	test->subtest_name =3D NULL;
++	free(state->subtest_name);
++	state->subtest_name =3D NULL;
+ }
+=20
+ bool test__start_subtest(const char *subtest_name)
+ {
+ 	struct prog_test_def *test =3D env.test;
++	struct test_state *state =3D env.test_state;
+=20
+-	if (test->subtest_name)
++	if (state->subtest_name)
+ 		test__end_subtest();
+=20
+-	test->subtest_num++;
++	state->subtest_num++;
+=20
+ 	if (!subtest_name || !subtest_name[0]) {
+ 		fprintf(env.stderr,
+ 			"Subtest #%d didn't provide sub-test name!\n",
+-			test->subtest_num);
++			state->subtest_num);
+ 		return false;
+ 	}
+=20
+ 	if (!should_run_subtest(&env.test_selector,
+ 				&env.subtest_selector,
+-				test->subtest_num,
++				state->subtest_num,
+ 				test->test_name,
+ 				subtest_name))
+ 		return false;
+=20
+-	test->subtest_name =3D strdup(subtest_name);
+-	if (!test->subtest_name) {
++	state->subtest_name =3D strdup(subtest_name);
++	if (!state->subtest_name) {
+ 		fprintf(env.stderr,
+ 			"Subtest #%d: failed to copy subtest name!\n",
+-			test->subtest_num);
++			state->subtest_num);
+ 		return false;
+ 	}
+-	env.test->old_error_cnt =3D env.test->error_cnt;
++	state->old_error_cnt =3D state->error_cnt;
+=20
+ 	return true;
+ }
+=20
+ void test__force_log(void)
+ {
+-	env.test->force_log =3D true;
++	env.test_state->force_log =3D true;
+ }
+=20
+ void test__skip(void)
+ {
+-	env.test->skip_cnt++;
++	if (env.test_state->subtest_name)
++		env.test_state->subtest_skip_cnt++;
++	else
++		env.test_state->skip_cnt++;
+ }
+=20
+ void test__fail(void)
+ {
+-	env.test->error_cnt++;
++	env.test_state->error_cnt++;
+ }
+=20
+ int test__join_cgroup(const char *path)
+@@ -517,8 +510,11 @@ static struct prog_test_def prog_test_defs[] =3D {
+ #include <prog_tests/tests.h>
+ #undef DEFINE_TEST
+ };
++
+ static const int prog_test_cnt =3D ARRAY_SIZE(prog_test_defs);
+=20
++static struct test_state test_states[ARRAY_SIZE(prog_test_defs)];
++
+ const char *argp_program_version =3D "test_progs 0.1";
+ const char *argp_program_bug_address =3D "<bpf@vger.kernel.org>";
+ static const char argp_program_doc[] =3D "BPF selftests test runner";
+@@ -701,7 +697,7 @@ static error_t parse_arg(int key, char *arg, struct a=
+rgp_state *state)
+ 	return 0;
+ }
+=20
+-static void stdio_hijack(void)
++static void stdio_hijack(char **log_buf, size_t *log_cnt)
+ {
+ #ifdef __GLIBC__
+ 	env.stdout =3D stdout;
+@@ -715,7 +711,7 @@ static void stdio_hijack(void)
+ 	/* stdout and stderr -> buffer */
+ 	fflush(stdout);
+=20
+-	stdout =3D open_memstream(&env.log_buf, &env.log_cnt);
++	stdout =3D open_memstream(log_buf, log_cnt);
+ 	if (!stdout) {
+ 		stdout =3D env.stdout;
+ 		perror("open_memstream");
+@@ -818,7 +814,7 @@ void crash_handler(int signum)
+ 	sz =3D backtrace(bt, ARRAY_SIZE(bt));
+=20
+ 	if (env.test)
+-		dump_test_log(env.test, true);
++		dump_test_log(env.test, env.test_state, true);
+ 	if (env.stdout)
+ 		stdio_restore();
+ 	if (env.worker_id !=3D -1)
+@@ -840,17 +836,6 @@ static int current_test_idx;
+ static pthread_mutex_t current_test_lock;
+ static pthread_mutex_t stdout_output_lock;
+=20
+-struct test_result {
+-	int error_cnt;
+-	int skip_cnt;
+-	int sub_succ_cnt;
+-
+-	size_t log_cnt;
+-	char *log_buf;
+-};
+-
+-static struct test_result test_results[ARRAY_SIZE(prog_test_defs)];
+-
+ static inline const char *str_msg(const struct msg *msg, char *buf)
+ {
+ 	switch (msg->type) {
+@@ -904,8 +889,12 @@ static int recv_message(int sock, struct msg *msg)
+ static void run_one_test(int test_num)
+ {
+ 	struct prog_test_def *test =3D &prog_test_defs[test_num];
++	struct test_state *state =3D &test_states[test_num];
+=20
+ 	env.test =3D test;
++	env.test_state =3D state;
++
++	stdio_hijack(&state->log_buf, &state->log_cnt);
+=20
+ 	if (test->run_test)
+ 		test->run_test();
+@@ -913,17 +902,19 @@ static void run_one_test(int test_num)
+ 		test->run_serial_test();
+=20
+ 	/* ensure last sub-test is finalized properly */
+-	if (test->subtest_name)
++	if (state->subtest_name)
+ 		test__end_subtest();
+=20
+-	test->tested =3D true;
++	state->tested =3D true;
+=20
+-	dump_test_log(test, test->error_cnt);
++	dump_test_log(test, state, false);
+=20
+ 	reset_affinity();
+ 	restore_netns();
+ 	if (test->need_cgroup_cleanup)
+ 		cleanup_cgroup_environment();
++
++	stdio_restore();
+ }
+=20
+ struct dispatch_data {
+@@ -942,7 +933,7 @@ static void *dispatch_thread(void *ctx)
+ 	while (true) {
+ 		int test_to_run =3D -1;
+ 		struct prog_test_def *test;
+-		struct test_result *result;
++		struct test_state *state;
+=20
+ 		/* grab a test */
+ 		{
+@@ -989,16 +980,15 @@ static void *dispatch_thread(void *ctx)
+ 			if (test_to_run !=3D msg_test_done.test_done.test_num)
+ 				goto error;
+=20
+-			test->tested =3D true;
+-			result =3D &test_results[test_to_run];
+-
+-			result->error_cnt =3D msg_test_done.test_done.error_cnt;
+-			result->skip_cnt =3D msg_test_done.test_done.skip_cnt;
+-			result->sub_succ_cnt =3D msg_test_done.test_done.sub_succ_cnt;
++			state =3D &test_states[test_to_run];
++			state->tested =3D true;
++			state->error_cnt =3D msg_test_done.test_done.error_cnt;
++			state->skip_cnt =3D msg_test_done.test_done.skip_cnt;
++			state->sub_succ_cnt =3D msg_test_done.test_done.sub_succ_cnt;
+=20
+ 			/* collect all logs */
+ 			if (msg_test_done.test_done.have_log) {
+-				log_fp =3D open_memstream(&result->log_buf, &result->log_cnt);
++				log_fp =3D open_memstream(&state->log_buf, &state->log_cnt);
+ 				if (!log_fp)
+ 					goto error;
+=20
+@@ -1017,25 +1007,11 @@ static void *dispatch_thread(void *ctx)
+ 				fclose(log_fp);
+ 				log_fp =3D NULL;
+ 			}
+-			/* output log */
+-			{
+-				pthread_mutex_lock(&stdout_output_lock);
+-
+-				if (result->log_cnt) {
+-					result->log_buf[result->log_cnt] =3D '\0';
+-					fprintf(stdout, "%s", result->log_buf);
+-					if (result->log_buf[result->log_cnt - 1] !=3D '\n')
+-						fprintf(stdout, "\n");
+-				}
+-
+-				fprintf(stdout, "#%d %s:%s\n",
+-					test->test_num, test->test_name,
+-					result->error_cnt ? "FAIL" : (result->skip_cnt ? "SKIP" : "OK"));
+-
+-				pthread_mutex_unlock(&stdout_output_lock);
+-			}
+-
+ 		} /* wait for test done */
++
++		pthread_mutex_lock(&stdout_output_lock);
++		dump_test_log(test, state, false);
++		pthread_mutex_unlock(&stdout_output_lock);
+ 	} /* while (true) */
+ error:
+ 	if (env.debug)
+@@ -1057,38 +1033,50 @@ static void *dispatch_thread(void *ctx)
+ 	return NULL;
+ }
+=20
+-static void print_all_error_logs(void)
++static void calculate_summary_and_print_errors(struct test_env *env)
+ {
+ 	int i;
++	int succ_cnt =3D 0, fail_cnt =3D 0, sub_succ_cnt =3D 0, skip_cnt =3D 0;
+=20
+-	if (env.fail_cnt)
+-		fprintf(stdout, "\nAll error logs:\n");
++	for (i =3D 0; i < prog_test_cnt; i++) {
++		struct test_state *state =3D &test_states[i];
++
++		if (!state->tested)
++			continue;
++
++		sub_succ_cnt +=3D state->sub_succ_cnt;
++		skip_cnt +=3D state->skip_cnt;
++
++		if (state->error_cnt)
++			fail_cnt++;
++		else
++			succ_cnt++;
++	}
++
++	if (fail_cnt)
++		printf("\nAll error logs:\n");
+=20
+ 	/* print error logs again */
+ 	for (i =3D 0; i < prog_test_cnt; i++) {
+-		struct prog_test_def *test;
+-		struct test_result *result;
+-
+-		test =3D &prog_test_defs[i];
+-		result =3D &test_results[i];
++		struct prog_test_def *test =3D &prog_test_defs[i];
++		struct test_state *state =3D &test_states[i];
+=20
+-		if (!test->tested || !result->error_cnt)
++		if (!state->tested || !state->error_cnt)
+ 			continue;
+=20
+-		fprintf(stdout, "\n#%d %s:%s\n",
+-			test->test_num, test->test_name,
+-			result->error_cnt ? "FAIL" : (result->skip_cnt ? "SKIP" : "OK"));
+-
+-		if (result->log_cnt) {
+-			result->log_buf[result->log_cnt] =3D '\0';
+-			fprintf(stdout, "%s", result->log_buf);
+-			if (result->log_buf[result->log_cnt - 1] !=3D '\n')
+-				fprintf(stdout, "\n");
+-		}
++		dump_test_log(test, state, true);
+ 	}
++
++	printf("Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
++	       succ_cnt, sub_succ_cnt, skip_cnt, fail_cnt);
++
++	env->succ_cnt =3D succ_cnt;
++	env->sub_succ_cnt =3D sub_succ_cnt;
++	env->fail_cnt =3D fail_cnt;
++	env->skip_cnt =3D skip_cnt;
+ }
+=20
+-static int server_main(void)
++static void server_main(void)
+ {
+ 	pthread_t *dispatcher_threads;
+ 	struct dispatch_data *data;
+@@ -1144,60 +1132,18 @@ static int server_main(void)
+=20
+ 	for (int i =3D 0; i < prog_test_cnt; i++) {
+ 		struct prog_test_def *test =3D &prog_test_defs[i];
+-		struct test_result *result =3D &test_results[i];
+=20
+ 		if (!test->should_run || !test->run_serial_test)
+ 			continue;
+=20
+-		stdio_hijack();
+-
+ 		run_one_test(i);
+-
+-		stdio_restore();
+-		if (env.log_buf) {
+-			result->log_cnt =3D env.log_cnt;
+-			result->log_buf =3D strdup(env.log_buf);
+-
+-			free(env.log_buf);
+-			env.log_buf =3D NULL;
+-			env.log_cnt =3D 0;
+-		}
+-		restore_netns();
+-
+-		fprintf(stdout, "#%d %s:%s\n",
+-			test->test_num, test->test_name,
+-			test->error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
+-
+-		result->error_cnt =3D test->error_cnt;
+-		result->skip_cnt =3D test->skip_cnt;
+-		result->sub_succ_cnt =3D test->sub_succ_cnt;
+ 	}
+=20
+ 	/* generate summary */
+ 	fflush(stderr);
+ 	fflush(stdout);
+=20
+-	for (i =3D 0; i < prog_test_cnt; i++) {
+-		struct prog_test_def *current_test;
+-		struct test_result *result;
+-
+-		current_test =3D &prog_test_defs[i];
+-		result =3D &test_results[i];
+-
+-		if (!current_test->tested)
+-			continue;
+-
+-		env.succ_cnt +=3D result->error_cnt ? 0 : 1;
+-		env.skip_cnt +=3D result->skip_cnt;
+-		if (result->error_cnt)
+-			env.fail_cnt++;
+-		env.sub_succ_cnt +=3D result->sub_succ_cnt;
+-	}
+-
+-	print_all_error_logs();
+-
+-	fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
+-		env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
++	calculate_summary_and_print_errors(&env);
+=20
+ 	/* reap all workers */
+ 	for (i =3D 0; i < env.workers; i++) {
+@@ -1207,8 +1153,6 @@ static int server_main(void)
+ 		if (pid !=3D env.worker_pids[i])
+ 			perror("Unable to reap worker");
+ 	}
+-
+-	return 0;
+ }
+=20
+ static int worker_main(int sock)
+@@ -1229,35 +1173,29 @@ static int worker_main(int sock)
+ 					env.worker_id);
+ 			goto out;
+ 		case MSG_DO_TEST: {
+-			int test_to_run;
+-			struct prog_test_def *test;
++			int test_to_run =3D msg.do_test.test_num;
++			struct prog_test_def *test =3D &prog_test_defs[test_to_run];
++			struct test_state *state =3D &test_states[test_to_run];
+ 			struct msg msg_done;
+=20
+-			test_to_run =3D msg.do_test.test_num;
+-			test =3D &prog_test_defs[test_to_run];
+-
+ 			if (env.debug)
+ 				fprintf(stderr, "[%d]: #%d:%s running.\n",
+ 					env.worker_id,
+ 					test_to_run + 1,
+ 					test->test_name);
+=20
+-			stdio_hijack();
+-
+ 			run_one_test(test_to_run);
+=20
+-			stdio_restore();
+-
+ 			memset(&msg_done, 0, sizeof(msg_done));
+ 			msg_done.type =3D MSG_TEST_DONE;
+ 			msg_done.test_done.test_num =3D test_to_run;
+-			msg_done.test_done.error_cnt =3D test->error_cnt;
+-			msg_done.test_done.skip_cnt =3D test->skip_cnt;
+-			msg_done.test_done.sub_succ_cnt =3D test->sub_succ_cnt;
++			msg_done.test_done.error_cnt =3D state->error_cnt;
++			msg_done.test_done.skip_cnt =3D state->skip_cnt;
++			msg_done.test_done.sub_succ_cnt =3D state->sub_succ_cnt;
+ 			msg_done.test_done.have_log =3D false;
+=20
+-			if (env.verbosity > VERBOSE_NONE || test->force_log || test->error_cn=
+t) {
+-				if (env.log_cnt)
++			if (env.verbosity > VERBOSE_NONE || state->force_log || state->error_=
+cnt) {
++				if (state->log_cnt)
+ 					msg_done.test_done.have_log =3D true;
+ 			}
+ 			if (send_message(sock, &msg_done) < 0) {
+@@ -1270,8 +1208,8 @@ static int worker_main(int sock)
+ 				char *src;
+ 				size_t slen;
+=20
+-				src =3D env.log_buf;
+-				slen =3D env.log_cnt;
++				src =3D state->log_buf;
++				slen =3D state->log_cnt;
+ 				while (slen) {
+ 					struct msg msg_log;
+ 					char *dest;
+@@ -1291,10 +1229,10 @@ static int worker_main(int sock)
+ 					assert(send_message(sock, &msg_log) >=3D 0);
+ 				}
+ 			}
+-			if (env.log_buf) {
+-				free(env.log_buf);
+-				env.log_buf =3D NULL;
+-				env.log_cnt =3D 0;
++			if (state->log_buf) {
++				free(state->log_buf);
++				state->log_buf =3D NULL;
++				state->log_cnt =3D 0;
+ 			}
+ 			if (env.debug)
+ 				fprintf(stderr, "[%d]: #%d:%s done.\n",
+@@ -1425,7 +1363,6 @@ int main(int argc, char **argv)
+=20
+ 	for (i =3D 0; i < prog_test_cnt; i++) {
+ 		struct prog_test_def *test =3D &prog_test_defs[i];
+-		struct test_result *result;
+=20
+ 		if (!test->should_run)
+ 			continue;
+@@ -1441,34 +1378,7 @@ int main(int argc, char **argv)
+ 			continue;
+ 		}
+=20
+-		stdio_hijack();
+-
+ 		run_one_test(i);
+-
+-		stdio_restore();
+-
+-		fprintf(env.stdout, "#%d %s:%s\n",
+-			test->test_num, test->test_name,
+-			test->error_cnt ? "FAIL" : (test->skip_cnt ? "SKIP" : "OK"));
+-
+-		result =3D &test_results[i];
+-		result->error_cnt =3D test->error_cnt;
+-		if (env.log_buf) {
+-			result->log_buf =3D strdup(env.log_buf);
+-			result->log_cnt =3D env.log_cnt;
+-
+-			free(env.log_buf);
+-			env.log_buf =3D NULL;
+-			env.log_cnt =3D 0;
+-		}
+-
+-		if (test->error_cnt)
+-			env.fail_cnt++;
+-		else
+-			env.succ_cnt++;
+-
+-		skip_account();
+-		env.sub_succ_cnt +=3D test->sub_succ_cnt;
+ 	}
+=20
+ 	if (env.get_test_cnt) {
+@@ -1479,10 +1389,7 @@ int main(int argc, char **argv)
+ 	if (env.list_test_names)
+ 		goto out;
+=20
+-	print_all_error_logs();
+-
+-	fprintf(stdout, "Summary: %d/%d PASSED, %d SKIPPED, %d FAILED\n",
+-		env.succ_cnt, env.sub_succ_cnt, env.skip_cnt, env.fail_cnt);
++	calculate_summary_and_print_errors(&env);
+=20
+ 	close(env.saved_netns_fd);
+ out:
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/sel=
+ftests/bpf/test_progs.h
+index 6a8d68bb459e..0a102ce460d6 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -64,6 +64,25 @@ struct test_selector {
+ 	int num_set_len;
+ };
+=20
++struct test_state {
++	bool tested;
++	bool force_log;
++
++	int error_cnt;
++	int skip_cnt;
++	int subtest_skip_cnt;
++	int sub_succ_cnt;
++
++	char *subtest_name;
++	int subtest_num;
++
++	/* store counts before subtest started */
++	int old_error_cnt;
++
++	size_t log_cnt;
++	char *log_buf;
++};
++
+ struct test_env {
+ 	struct test_selector test_selector;
+ 	struct test_selector subtest_selector;
+@@ -76,12 +95,11 @@ struct test_env {
+ 	bool get_test_cnt;
+ 	bool list_test_names;
+=20
+-	struct prog_test_def *test; /* current running tests */
++	struct prog_test_def *test; /* current running test */
++	struct test_state *test_state; /* current running test result */
+=20
+ 	FILE *stdout;
+ 	FILE *stderr;
+-	char *log_buf;
+-	size_t log_cnt;
+ 	int nr_cpus;
+=20
+ 	int succ_cnt; /* successful tests */
+@@ -126,11 +144,12 @@ struct msg {
+=20
+ extern struct test_env env;
+=20
+-extern void test__force_log();
+-extern bool test__start_subtest(const char *name);
+-extern void test__skip(void);
+-extern void test__fail(void);
+-extern int test__join_cgroup(const char *path);
++void test__force_log(void);
++bool test__start_subtest(const char *name);
++void test__end_subtest(void);
++void test__skip(void);
++void test__fail(void);
++int test__join_cgroup(const char *path);
+=20
+ #define PRINT_FAIL(format...)                                           =
+       \
+ 	({                                                                     =
+\
+--=20
+2.30.2
+
