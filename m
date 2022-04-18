@@ -2,150 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9B3505CC1
-	for <lists+bpf@lfdr.de>; Mon, 18 Apr 2022 18:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA40C505D8B
+	for <lists+bpf@lfdr.de>; Mon, 18 Apr 2022 19:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346447AbiDRQx3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Apr 2022 12:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
+        id S1347139AbiDRRgS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Apr 2022 13:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbiDRQx2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Apr 2022 12:53:28 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5042C644
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 09:50:48 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2ec06f77db8so123760757b3.8
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 09:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Oyh1WpmZyRhAh6LbbmL6kVxO7rVD6ZzMLRjNqyG46HQ=;
-        b=H5/ql9180csX6oJqirVWeYuzXUO+VYAqhiOVAKr130ZSZbia9k7REtHroXdJ//eT5f
-         2UTCgG7RsO29dh78OkUee9EDBGnTiBnbb7yAK6GiKTYJbcMaPe6Ewb27ap0Ha4HKAp80
-         lt99p5UqHzCzGZZAkf5x2Hdb84ul1212ICPYEUtzqyQ0F0haiUZkm+opjIv+EGTNtsXj
-         JRPhAc0FrFsLnLCWUQAa8I204yCIbxan6oVeNthlKi0ABuSDkYUpiEtUAfk193OV0xBj
-         3nw2h9D9pVr4EU+uDcEUkR5JeP3E6XbRDuYOrboFsDDzziQ3QoEhaJLbYZ6/3MPE4C/5
-         Gvhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Oyh1WpmZyRhAh6LbbmL6kVxO7rVD6ZzMLRjNqyG46HQ=;
-        b=m7W0ch8N4iRMPhHUIjl96QAm2iLHXkRJqnPLzRV735ZOF45VGKAoYr3S4+ykpt1zov
-         NHADPkNQUGPUn0zYwOIqAR+FIiI9hbrwfLaW0POHFC3nT2i/wxVRkEA5uVIPQsurHuhm
-         60YMxb/rP0+h0ulsiIDJbZi3zlRuUhMeAqoax4AkEQuRoI7g6p648SKYuS79F02Ozj6i
-         +HWDAhL3DpaHNFzChPuaoTtuQ9/2A77qjfXCQrlCgcv6RrWc2g8La4msRD7WNnQLkE5K
-         5XYGBeaBUjYiQ0nCnqCshsQl+9IEe9dtZeQgsCJoMW7cHeDU5WVdlH9eKhxsMgYDCKPn
-         BFSg==
-X-Gm-Message-State: AOAM531yd9y/dnRjeNe31RtdmFVo2XUKukwmr+u23fKgPxQpy4g042om
-        EsgcEZCm59vSClXkbSaLm+hfrGI=
-X-Google-Smtp-Source: ABdhPJwkQcf0RK+vCjPRf2wpPS6un2FvXIgGKczdot3qamiaDzc0uiQcQIs7vcL5gcodd2kIESKvN4w=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:e6a5:7fa4:f053:e29d])
- (user=sdf job=sendgmr) by 2002:a25:dc4:0:b0:641:438e:dd2a with SMTP id
- 187-20020a250dc4000000b00641438edd2amr10989302ybn.456.1650300648029; Mon, 18
- Apr 2022 09:50:48 -0700 (PDT)
-Date:   Mon, 18 Apr 2022 09:50:45 -0700
-In-Reply-To: <CAADnVQJ-kiWJopu+VjLDXYb9ifjKyA2h8MO=CaQppNxbHqH=-Q@mail.gmail.com>
-Message-Id: <Yl2W5ThWCFPIeLW8@google.com>
-Mime-Version: 1.0
-References: <20220414161233.170780-1-sdf@google.com> <CAADnVQJ-kiWJopu+VjLDXYb9ifjKyA2h8MO=CaQppNxbHqH=-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: move rcu lock management out of
- BPF_PROG_RUN routines
-From:   sdf@google.com
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S241994AbiDRRgP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Apr 2022 13:36:15 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2027B2E9FD;
+        Mon, 18 Apr 2022 10:33:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C95DEB81057;
+        Mon, 18 Apr 2022 17:33:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A083C385A7;
+        Mon, 18 Apr 2022 17:33:31 +0000 (UTC)
+Date:   Mon, 18 Apr 2022 13:33:30 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [RFC bpf-next 4/4] selftests/bpf: Add attach bench test
+Message-ID: <20220418133330.6241014c@gandalf.local.home>
+In-Reply-To: <20220416232103.c0b241c2ec7f2b3b985a2f99@kernel.org>
+References: <20220407125224.310255-1-jolsa@kernel.org>
+        <20220407125224.310255-5-jolsa@kernel.org>
+        <CAEf4BzbE1n3Lie+tWTzN69RQUWgjxePorxRr9J8CuiQVUfy-kA@mail.gmail.com>
+        <20220412094923.0abe90955e5db486b7bca279@kernel.org>
+        <CAEf4BzaQRcZGMqq5wqHo3wSHZAAVvY6AhizDk_dV_GtnwHuxLQ@mail.gmail.com>
+        <20220416232103.c0b241c2ec7f2b3b985a2f99@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 04/16, Alexei Starovoitov wrote:
-> On Thu, Apr 14, 2022 at 9:12 AM Stanislav Fomichev <sdf@google.com> wrote:
-> > +static int
-> > +bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
-> > +                           enum cgroup_bpf_attach_type atype,
-> > +                           const void *ctx, bpf_prog_run_fn run_prog,
-> > +                           int retval, u32 *ret_flags)
-> > +{
-> > +       const struct bpf_prog_array_item *item;
-> > +       const struct bpf_prog *prog;
-> > +       const struct bpf_prog_array *array;
-> > +       struct bpf_run_ctx *old_run_ctx;
-> > +       struct bpf_cg_run_ctx run_ctx;
-> > +       u32 func_ret;
-> > +
-> > +       run_ctx.retval = retval;
-> > +       migrate_disable();
-> > +       rcu_read_lock();
-> > +       array = rcu_dereference(cgrp->effective[atype]);
-> > +       item = &array->items[0];
-> > +       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> > +       while ((prog = READ_ONCE(item->prog))) {
-> > +               run_ctx.prog_item = item;
-> > +               func_ret = run_prog(prog, ctx);
-> ...
-> > +       ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
-> >                                     &ctx, bpf_prog_run, retval);
+On Sat, 16 Apr 2022 23:21:03 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> Did you check the asm that bpf_prog_run gets inlined
-> after being passed as a pointer to a function?
-> Crossing fingers... I suspect not every compiler can do that :(
-> De-virtualization optimization used to be tricky.
+> But it seems that __bpf_tramp_exit() doesn't call __fentry__. (I objdump'ed) 
+> 
+> ffffffff81208270 <__bpf_tramp_exit>:
+> ffffffff81208270:       55                      push   %rbp
+> ffffffff81208271:       48 89 e5                mov    %rsp,%rbp
+> ffffffff81208274:       53                      push   %rbx
+> ffffffff81208275:       48 89 fb                mov    %rdi,%rbx
+> ffffffff81208278:       e8 83 70 ef ff          callq  ffffffff810ff300 <__rcu_read_lock>
+> ffffffff8120827d:       31 d2                   xor    %edx,%edx
+> 
+> 
+> > 
+> > So it's quite bizarre and inconsistent.  
+> 
+> Indeed. I guess there is a bug in scripts/recordmcount.pl.
 
-No, I didn't, but looking at it right now, both gcc and clang
-seem to be doing inlining all way up to bpf_dispatcher_nop_func.
+Actually, x86 doesn't use that script. It either uses the C version, or
+with latest gcc, it is created by the compiler itself.
 
-clang:
+I'll look deeper into it.
 
-   0000000000001750 <__cgroup_bpf_run_filter_sock_addr>:
-   __cgroup_bpf_run_filter_sock_addr():
-   ./kernel/bpf/cgroup.c:1226
-   int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
-   				      struct sockaddr *uaddr,
-   				      enum cgroup_bpf_attach_type atype,
-   				      void *t_ctx,
-   				      u32 *flags)
-   {
-
-   ...
-
-   ./include/linux/filter.h:628
-   		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-       1980:	49 8d 75 48          	lea    0x48(%r13),%rsi
-   bpf_dispatcher_nop_func():
-   ./include/linux/bpf.h:804
-   	return bpf_func(ctx, insnsi);
-       1984:	4c 89 f7             	mov    %r14,%rdi
-       1987:	41 ff 55 30          	call   *0x30(%r13)
-       198b:	89 c3                	mov    %eax,%ebx
-
-gcc (w/retpoline):
-
-   0000000000001110 <__cgroup_bpf_run_filter_sock_addr>:
-   __cgroup_bpf_run_filter_sock_addr():
-   kernel/bpf/cgroup.c:1226
-   {
-
-   ...
-
-   ./include/linux/filter.h:628
-   		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-       11c5:	49 8d 75 48          	lea    0x48(%r13),%rsi
-   bpf_dispatcher_nop_func():
-   ./include/linux/bpf.h:804
-       11c9:	48 8d 7c 24 10       	lea    0x10(%rsp),%rdi
-       11ce:	e8 00 00 00 00       	call   11d3  
-<__cgroup_bpf_run_filter_sock_addr+0xc3>
-   			11cf: R_X86_64_PLT32	__x86_indirect_thunk_rax-0x4
-       11d3:	89 c3                	mov    %eax,%ebx
+-- Steve
