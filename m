@@ -2,252 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A88C8505AF3
-	for <lists+bpf@lfdr.de>; Mon, 18 Apr 2022 17:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA99505AFB
+	for <lists+bpf@lfdr.de>; Mon, 18 Apr 2022 17:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236192AbiDRP16 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Apr 2022 11:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36938 "EHLO
+        id S244225AbiDRP34 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Apr 2022 11:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345654AbiDRP1n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Apr 2022 11:27:43 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACADD7A
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 07:29:47 -0700 (PDT)
+        with ESMTP id S244857AbiDRP3v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Apr 2022 11:29:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD40B15700;
+        Mon, 18 Apr 2022 07:35:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4F826B80EC4
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 14:29:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5487C385A7;
-        Mon, 18 Apr 2022 14:29:37 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0AEBD60F6D;
+        Mon, 18 Apr 2022 14:35:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC6F7C385A7;
+        Mon, 18 Apr 2022 14:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650292179;
-        bh=VbzhZbNQGpHh9shI2btdiYXco5sVdg7hFuVvR9XXS/I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CDrWGjG9zl7CJ70hFH2FXPrCZVYWRATWL3mRmm5LdTIcsLzK2UdniotbajhHBnr/i
-         kHO5hqnWSbvBcUGBRLAhc4ObxBK9QeCYqKefs6hjPgLQ8JwMXv3zd4twqSNArqE0xR
-         HeMeAcqQtWKWA/D4o6oRq7QfCdocRiJ56hLZIrDc+u5hdmC5haYNTxXu39nt2oMzw6
-         eZ4UOYr3UQ5ganFHdB4gJqKTqIgGrCsUChDEHOBNe0zCv7t4MrnUvD1HO3ZG9KmLAt
-         j5W27PpkhvMFZc7ZUrb7oWzSelu0r8guhnslTdMyLdXbLcY9JYzcwdY7um2LSDTHGP
-         vbIIHfpLYCXAQ==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
+        s=k20201202; t=1650292551;
+        bh=NKJ+rCdjzHbnl4GaA6WNaR5Oyc4YNQAYxRTJ36eCcgk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tPOiFQ3No+d4vWvcsUiTG5n/hwVAe+ataxShxwyPnaBZ/dTjB57LvJ0E0j8PkgNN/
+         6imRr/7F6E5UJr7Dkzp5HE4zO3k58iZpD/1KP7eHOppy1YfJ38JTQkSWS0+QnNphO2
+         SwsPrIkahvoxkr7Ft4M+TsEuQDmR1j2a1PGf3zZXKCmKjsWOfQ06VpCPP2B0IHjK/e
+         aNG58xCNQhsvkUAq8ePWIv2pVp15K3n8uCkNFDhvm1AWaNiUUvZ+D3X91CNzRuaVUu
+         U105TYNwT14CEs1i4pD6AhdnDoEq3gTCiOZYpgriGdhJat2EEg1ewhKWzmYMBZDbKh
+         TSss0bX34D+vw==
+Date:   Mon, 18 Apr 2022 23:35:46 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH bpf-next] bpf: Fix usage of trace RCU in local storage.
-Date:   Mon, 18 Apr 2022 14:29:29 +0000
-Message-Id: <20220418142929.2600589-1-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.36.0.rc0.470.gd361397f0d-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCHv2 bpf-next 1/4] kallsyms: Add kallsyms_lookup_names
+ function
+Message-Id: <20220418233546.dfe0a1be12193c26b05cdd93@kernel.org>
+In-Reply-To: <20220418124834.829064-2-jolsa@kernel.org>
+References: <20220418124834.829064-1-jolsa@kernel.org>
+        <20220418124834.829064-2-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Mon, 18 Apr 2022 14:48:31 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-bpf_{sk,task,inode}_storage_free() do not need to use
-call_rcu_tasks_trace as no BPF program should be accessing the owner
-as it's being destroyed. The only other reader at this point is
-bpf_local_storage_map_free() which uses normal RCU.
+> Adding kallsyms_lookup_names function that resolves array of symbols
+> with single pass over kallsyms.
+> 
+> The user provides array of string pointers with count and pointer to
+> allocated array for resolved values.
+> 
+>   int kallsyms_lookup_names(const char **syms, size_t cnt,
+>                             unsigned long *addrs)
 
-The only path that needs trace RCU are:
+What about renaming the 'syms' argument to 'sorted_syms' so that user
+is easily notice what is required?
+Or renaming the function as kallsyms_lookup_sorted_names()?
 
-* bpf_local_storage_{delete,update} helpers
-* map_{delete,update}_elem() syscalls
 
-Fixes: 8553c67b1b54 ("bpf: Reduce usage of trace RCU in local storage.")
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- include/linux/bpf_local_storage.h |  4 ++--
- kernel/bpf/bpf_inode_storage.c    |  4 ++--
- kernel/bpf/bpf_local_storage.c    | 29 +++++++++++++++++++----------
- kernel/bpf/bpf_task_storage.c     |  4 ++--
- net/core/bpf_sk_storage.c         |  6 +++---
- 5 files changed, 28 insertions(+), 19 deletions(-)
+> 
+> It iterates all kalsyms symbols and tries to loop up each in provided
+> symbols array with bsearch. The symbols array needs to be sorted by
+> name for this reason.
+> 
+> We also check each symbol to pass ftrace_location, because this API
+> will be used for fprobe symbols resolving. This can be optional in
+> future if there's a need.
+> 
+> We need kallsyms_on_each_symbol function, so enabling it and also
+> the new function for CONFIG_FPROBE option.
+> 
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/kallsyms.h |  6 ++++
+>  kernel/kallsyms.c        | 70 +++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 75 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+> index ce1bd2fbf23e..7c82fa7445d4 100644
+> --- a/include/linux/kallsyms.h
+> +++ b/include/linux/kallsyms.h
+> @@ -72,6 +72,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
+>  #ifdef CONFIG_KALLSYMS
+>  /* Lookup the address for a symbol. Returns 0 if not found. */
+>  unsigned long kallsyms_lookup_name(const char *name);
+> +int kallsyms_lookup_names(const char **syms, size_t cnt, unsigned long *addrs);
+>  
+>  extern int kallsyms_lookup_size_offset(unsigned long addr,
+>  				  unsigned long *symbolsize,
+> @@ -103,6 +104,11 @@ static inline unsigned long kallsyms_lookup_name(const char *name)
+>  	return 0;
+>  }
+>  
+> +static inline int kallsyms_lookup_names(const char **syms, size_t cnt, unsigned long *addrs)
+> +{
+> +	return -ERANGE;
+> +}
+> +
+>  static inline int kallsyms_lookup_size_offset(unsigned long addr,
+>  					      unsigned long *symbolsize,
+>  					      unsigned long *offset)
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 79f2eb617a62..ef940b25f3fc 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/compiler.h>
+>  #include <linux/module.h>
+>  #include <linux/kernel.h>
+> +#include <linux/bsearch.h>
+>  
+>  /*
+>   * These will be re-linked against their real values
+> @@ -228,7 +229,7 @@ unsigned long kallsyms_lookup_name(const char *name)
+>  	return module_kallsyms_lookup_name(name);
+>  }
+>  
+> -#ifdef CONFIG_LIVEPATCH
+> +#if defined(CONFIG_LIVEPATCH) || defined(CONFIG_FPROBE)
+>  /*
+>   * Iterate over all symbols in vmlinux.  For symbols from modules use
+>   * module_kallsyms_on_each_symbol instead.
+> @@ -572,6 +573,73 @@ int sprint_backtrace_build_id(char *buffer, unsigned long address)
+>  	return __sprint_symbol(buffer, address, -1, 1, 1);
+>  }
+>  
+> +#ifdef CONFIG_FPROBE
+> +static int symbols_cmp(const void *a, const void *b)
+> +{
+> +	const char **str_a = (const char **) a;
+> +	const char **str_b = (const char **) b;
+> +
+> +	return strcmp(*str_a, *str_b);
+> +}
+> +
+> +struct kallsyms_data {
+> +	unsigned long *addrs;
+> +	const char **syms;
+> +	size_t cnt;
+> +	size_t found;
+> +};
+> +
+> +static int kallsyms_callback(void *data, const char *name,
+> +			     struct module *mod, unsigned long addr)
+> +{
+> +	struct kallsyms_data *args = data;
+> +
+> +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
+> +		return 0;
+> +
+> +	addr = ftrace_location(addr);
+> +	if (!addr)
+> +		return 0;
 
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-index 493e63258497..7ea18d4da84b 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -143,9 +143,9 @@ void bpf_selem_link_storage_nolock(struct bpf_local_storage *local_storage,
- 
- bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
- 				     struct bpf_local_storage_elem *selem,
--				     bool uncharge_omem);
-+				     bool uncharge_omem, bool use_trace_rcu);
- 
--void bpf_selem_unlink(struct bpf_local_storage_elem *selem);
-+void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool use_trace_rcu);
- 
- void bpf_selem_link_map(struct bpf_local_storage_map *smap,
- 			struct bpf_local_storage_elem *selem);
-diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
-index 96be8d518885..10424a1cda51 100644
---- a/kernel/bpf/bpf_inode_storage.c
-+++ b/kernel/bpf/bpf_inode_storage.c
-@@ -90,7 +90,7 @@ void bpf_inode_storage_free(struct inode *inode)
- 		 */
- 		bpf_selem_unlink_map(selem);
- 		free_inode_storage = bpf_selem_unlink_storage_nolock(
--			local_storage, selem, false);
-+			local_storage, selem, false, false);
- 	}
- 	raw_spin_unlock_bh(&local_storage->lock);
- 	rcu_read_unlock();
-@@ -149,7 +149,7 @@ static int inode_storage_delete(struct inode *inode, struct bpf_map *map)
- 	if (!sdata)
- 		return -ENOENT;
- 
--	bpf_selem_unlink(SELEM(sdata));
-+	bpf_selem_unlink(SELEM(sdata), true);
- 
- 	return 0;
- }
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 01aa2b51ec4d..8ce40fd869f6 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -106,7 +106,7 @@ static void bpf_selem_free_rcu(struct rcu_head *rcu)
-  */
- bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
- 				     struct bpf_local_storage_elem *selem,
--				     bool uncharge_mem)
-+				     bool uncharge_mem, bool use_trace_rcu)
- {
- 	struct bpf_local_storage_map *smap;
- 	bool free_local_storage;
-@@ -150,11 +150,16 @@ bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
- 	    SDATA(selem))
- 		RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
- 
--	call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-+	if (use_trace_rcu)
-+		call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-+	else
-+		kfree_rcu(selem, rcu);
-+
- 	return free_local_storage;
- }
- 
--static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem)
-+static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem,
-+				       bool use_trace_rcu)
- {
- 	struct bpf_local_storage *local_storage;
- 	bool free_local_storage = false;
-@@ -169,12 +174,16 @@ static void __bpf_selem_unlink_storage(struct bpf_local_storage_elem *selem)
- 	raw_spin_lock_irqsave(&local_storage->lock, flags);
- 	if (likely(selem_linked_to_storage(selem)))
- 		free_local_storage = bpf_selem_unlink_storage_nolock(
--			local_storage, selem, true);
-+			local_storage, selem, true, use_trace_rcu);
- 	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
- 
--	if (free_local_storage)
--		call_rcu_tasks_trace(&local_storage->rcu,
-+	if (free_local_storage) {
-+		if (use_trace_rcu)
-+			call_rcu_tasks_trace(&local_storage->rcu,
- 				     bpf_local_storage_free_rcu);
-+		else
-+			kfree_rcu(local_storage, rcu);
-+	}
- }
- 
- void bpf_selem_link_storage_nolock(struct bpf_local_storage *local_storage,
-@@ -214,14 +223,14 @@ void bpf_selem_link_map(struct bpf_local_storage_map *smap,
- 	raw_spin_unlock_irqrestore(&b->lock, flags);
- }
- 
--void bpf_selem_unlink(struct bpf_local_storage_elem *selem)
-+void bpf_selem_unlink(struct bpf_local_storage_elem *selem, bool use_trace_rcu)
- {
- 	/* Always unlink from map before unlinking from local_storage
- 	 * because selem will be freed after successfully unlinked from
- 	 * the local_storage.
- 	 */
- 	bpf_selem_unlink_map(selem);
--	__bpf_selem_unlink_storage(selem);
-+	__bpf_selem_unlink_storage(selem, use_trace_rcu);
- }
- 
- struct bpf_local_storage_data *
-@@ -466,7 +475,7 @@ bpf_local_storage_update(void *owner, struct bpf_local_storage_map *smap,
- 	if (old_sdata) {
- 		bpf_selem_unlink_map(SELEM(old_sdata));
- 		bpf_selem_unlink_storage_nolock(local_storage, SELEM(old_sdata),
--						false);
-+						false, true);
- 	}
- 
- unlock:
-@@ -548,7 +557,7 @@ void bpf_local_storage_map_free(struct bpf_local_storage_map *smap,
- 				migrate_disable();
- 				__this_cpu_inc(*busy_counter);
- 			}
--			bpf_selem_unlink(selem);
-+			bpf_selem_unlink(selem, false);
- 			if (busy_counter) {
- 				__this_cpu_dec(*busy_counter);
- 				migrate_enable();
-diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
-index 6638a0ecc3d2..57904263a710 100644
---- a/kernel/bpf/bpf_task_storage.c
-+++ b/kernel/bpf/bpf_task_storage.c
-@@ -102,7 +102,7 @@ void bpf_task_storage_free(struct task_struct *task)
- 		 */
- 		bpf_selem_unlink_map(selem);
- 		free_task_storage = bpf_selem_unlink_storage_nolock(
--			local_storage, selem, false);
-+			local_storage, selem, false, false);
- 	}
- 	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
- 	bpf_task_storage_unlock();
-@@ -192,7 +192,7 @@ static int task_storage_delete(struct task_struct *task, struct bpf_map *map)
- 	if (!sdata)
- 		return -ENOENT;
- 
--	bpf_selem_unlink(SELEM(sdata));
-+	bpf_selem_unlink(SELEM(sdata), true);
- 
- 	return 0;
- }
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index e3ac36380520..83d7641ef67b 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -40,7 +40,7 @@ static int bpf_sk_storage_del(struct sock *sk, struct bpf_map *map)
- 	if (!sdata)
- 		return -ENOENT;
- 
--	bpf_selem_unlink(SELEM(sdata));
-+	bpf_selem_unlink(SELEM(sdata), true);
- 
- 	return 0;
- }
-@@ -75,8 +75,8 @@ void bpf_sk_storage_free(struct sock *sk)
- 		 * sk_storage.
- 		 */
- 		bpf_selem_unlink_map(selem);
--		free_sk_storage = bpf_selem_unlink_storage_nolock(sk_storage,
--								  selem, true);
-+		free_sk_storage = bpf_selem_unlink_storage_nolock(
-+			sk_storage, selem, true, false);
- 	}
- 	raw_spin_unlock_bh(&sk_storage->lock);
- 	rcu_read_unlock();
+Ooops, wait. Did you do this last version? I missed this point.
+This changes the meanings of the kernel function.
+
+> +
+> +	args->addrs[args->found++] = addr;
+> +	return args->found == args->cnt ? 1 : 0;
+> +}
+> +
+> +/**
+> + * kallsyms_lookup_names - Lookup addresses for array of symbols
+
+More correctly "Lookup 'ftraced' addresses for array of sorted symbols", right?
+
+I'm not sure, we can call it as a 'kallsyms' API, since this is using
+kallsyms but doesn't return symbol address, but ftrace address.
+I think this name misleads user to expect returning symbol address.
+
+> + *
+> + * @syms: array of symbols pointers symbols to resolve, must be
+> + * alphabetically sorted
+> + * @cnt: number of symbols/addresses in @syms/@addrs arrays
+> + * @addrs: array for storing resulting addresses
+> + *
+> + * This function looks up addresses for array of symbols provided in
+> + * @syms array (must be alphabetically sorted) and stores them in
+> + * @addrs array, which needs to be big enough to store at least @cnt
+> + * addresses.
+
+Hmm, sorry I changed my mind. I rather like to expose kallsyms_on_each_symbol()
+and provide this API from fprobe or ftrace, because this returns ftrace address
+and thus this is only used from fprobe.
+
+Thank you,
+
+> + *
+> + * This function returns 0 if all provided symbols are found,
+> + * -ESRCH otherwise.
+> + */
+> +int kallsyms_lookup_names(const char **syms, size_t cnt, unsigned long *addrs)
+> +{
+> +	struct kallsyms_data args;
+> +
+> +	args.addrs = addrs;
+> +	args.syms = syms;
+> +	args.cnt = cnt;
+> +	args.found = 0;
+> +	kallsyms_on_each_symbol(kallsyms_callback, &args);
+> +
+> +	return args.found == args.cnt ? 0 : -ESRCH;
+> +}
+> +#else
+> +int kallsyms_lookup_names(const char **syms, size_t cnt, unsigned long *addrs)
+> +{
+> +	return -ERANGE;
+> +}
+> +#endif /* CONFIG_FPROBE */
+> +
+>  /* To avoid using get_symbol_offset for every symbol, we carry prefix along. */
+>  struct kallsym_iter {
+>  	loff_t pos;
+> -- 
+> 2.35.1
+> 
+
+
 -- 
-2.36.0.rc0.470.gd361397f0d-goog
-
+Masami Hiramatsu <mhiramat@kernel.org>
