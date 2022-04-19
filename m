@@ -2,73 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3625507BE1
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 23:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00E1507C7C
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 00:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354820AbiDSV1x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 17:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S1357795AbiDSWZr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 18:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357996AbiDSV1b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 17:27:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F36A41FBE;
-        Tue, 19 Apr 2022 14:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ihkj2wHPBAUKthVXXuVPWB+NA4n/479tgHeM8Fev0u4=; b=v5/F7RKSCKliEACj3sJEJ9nr5Z
-        nc9tZ3tZpxzsMQfiYsmcmpaQffVXbUBNXjJWApjuvCztMvW568/Qcw0zYd6DQwhJvIE6y2G6cjx2B
-        oFbrCFYx4KesVc0Tq3583T3X6CWgjNAi0Ao/VrxTm9PWbFfogoPDoN0/OdIjRv/yXTH2xnry9Pbs4
-        WCR25Ht6GlIpRtUthFNz20MCkhkO5o1ksPTao1iLv9Cq7tOFp+tcVRin88AFLzKVy06eMQCyFWJBr
-        ejxkweNXvvpim20sO+jj9vEBWbL14E+VGNhyOMA284xwzMq4ehGXVzFrULCsHkkeOhIAjCw5BlY3o
-        uc1mIS6Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ngvKw-006QgY-N5; Tue, 19 Apr 2022 21:24:38 +0000
-Date:   Tue, 19 Apr 2022 14:24:38 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "rppt@kernel.org" <rppt@kernel.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "Torvalds, Linus" <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "song@kernel.org" <song@kernel.org>,
-        "Kernel-team@fb.com" <Kernel-team@fb.com>,
-        "pmladek@suse.com" <pmladek@suse.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dborkman@redhat.com" <dborkman@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "bp@alien8.de" <bp@alien8.de>, "mbenes@suse.cz" <mbenes@suse.cz>,
-        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Adam Manzanares <a.manzanares@samsung.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
-Message-ID: <Yl8olpqvZxY8KoNf@bombadil.infradead.org>
-References: <20220415164413.2727220-1-song@kernel.org>
- <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
- <YlpPW9SdCbZnLVog@infradead.org>
- <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
- <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
- <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com>
- <Yl04LO/PfB3GocvU@kernel.org>
- <Yl4F4w5NY3v0icfx@bombadil.infradead.org>
- <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S1357825AbiDSWZq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 18:25:46 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72BD24953
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 15:23:02 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a16-20020a056902057000b00641c83f82f5so15933460ybt.22
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 15:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=C30lNOZbSpWyRYSDaW0/q/ggXZb6zLLiZejTeiEF1mE=;
+        b=M6r75s8cg16c4DBNGIpFM8pS74CWBJXNGU/3nqCzDPIu4Y9zoY9Hns/Xy3HXKroTZz
+         xNUtN2C90s3linphBUj3X2Rolmx60j2Ma/qpBJyvULo4iMXn03oKpmeIg79bhbqhvuGr
+         edfZ10JbYOt8rg/OeEhtrypl8zjyIKBUG+nFgs9kdvb8wCPdlqwq7YIGaqOg6LDsIXm7
+         IDLPhIwM7IpfB1sGgLfjXsA1m/rWyPRZooYt9HX7TmGjDjZQL6uCV1fjVKvNiXjlKxkS
+         zqeZ26TuoxgD7v3jGU1NhsYVtzzPfbyRHaENtfcFET24sKPuuG4W+58sVMr+8uo0V9xk
+         ltMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=C30lNOZbSpWyRYSDaW0/q/ggXZb6zLLiZejTeiEF1mE=;
+        b=2JTra6FnZoREZuVrK5M1s+xXSGNXCEa/H1yALrBI05zr0rji0ojpLpYr4rqn3Gw/QG
+         SI8+3cNLyTvHtbqqCUN/UEtvNZblFYPqytHDooc7gmOm1dFHQCTzKJLvGEawGE68HEdg
+         62HPkUTvAlYpmtaV9vu/JhNb0wWrQPyC1/5sWNZJsublsiBXgpPHM5EbB2Wl0vWMkKyG
+         vwHCJbRJ3gGbhl1KicfF+OFioMlfwILLfz0wuCm3dyVeg5HbZ2cUNpNmU8Zh0BAYkv1C
+         lp1vuO2sGlF8NHiu3iJRvyumdEqaa6YpuVpnY/9SbH7EgOZmjqxLZHU8WXkmBaX9v/26
+         bgXw==
+X-Gm-Message-State: AOAM532unGdYDuw5RrlCsCcSARepp/qtvdJWrhWNT66Z3Lam7PyThe4o
+        bKrelMjgweZ0TaZOEtlMO8jPLfE=
+X-Google-Smtp-Source: ABdhPJzEBJXwjGx2erc1pBkCUwdSCfRu7k8+yzUDNr4GjX5dYBt3C7iL1Vm3XFS18Fq27pnlsyR6+Es=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:37f:6746:8e66:a291])
+ (user=sdf job=sendgmr) by 2002:a81:11c7:0:b0:2ec:4a58:4bf1 with SMTP id
+ 190-20020a8111c7000000b002ec4a584bf1mr12206857ywr.262.1650406981821; Tue, 19
+ Apr 2022 15:23:01 -0700 (PDT)
+Date:   Tue, 19 Apr 2022 15:22:59 -0700
+Message-Id: <20220419222259.287515-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.rc0.470.gd361397f0d-goog
+Subject: [PATCH bpf-next] bpf: use bpf_prog_run_array_cg_flags everywhere
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,96 +63,220 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 01:56:03AM +0000, Edgecombe, Rick P wrote:
-> Yea, that was my understanding. X86 modules have to be linked within
-> 2GB of the kernel text, also eBPF x86 JIT generates code that expects
-> to be within 2GB of the kernel text.
+Rename bpf_prog_run_array_cg_flags to bpf_prog_run_array_cg and
+use it everywhere. check_return_code already enforces sane
+return ranges for all cgroup types. (only egress and bind hooks have
+uncanonical return ranges, the rest is using [0, 1])
 
-And kprobes / live patching / ftrace.
+No functional changes.
 
-Another architectural fun fact, powerpc book3s/32 requires executability
-to be set per 256 Mbytes segments. Some architectures like this one
-will want to also optimize how they use the module alloc area.
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/bpf-cgroup.h |  8 ++---
+ kernel/bpf/cgroup.c        | 70 ++++++++++++--------------------------
+ 2 files changed, 24 insertions(+), 54 deletions(-)
 
-Even though today the use cases might be limited, we don't exactly know
-how much memory a target device has a well, and so treating memory
-failures for "special memory" request as regular memory failures seems
-a bit odd, and users could get confused. For instance slapping on
-extra memory on a system won't resolve any issues if the limit for a
-special type of memory is already hit. Very likely not a problem at all today,
-given how small modules / eBPF jit programs are / etc, but conceptually it
-would seem wrong to just say -ENOMEM when in fact it's a special type of
-required memory which cannot be allocated and the issue cannot possibly be
-fixed. I don't think we have an option but to use -ENOMEM but at least
-hinting of the special failure would have seem desirable.
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 88a51b242adc..669d96d074ad 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -225,24 +225,20 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+ 
+ #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, atype)				       \
+ ({									       \
+-	u32 __unused_flags;						       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(atype))					       \
+ 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
+-							  NULL,		       \
+-							  &__unused_flags);    \
++							  NULL, NULL);	       \
+ 	__ret;								       \
+ })
+ 
+ #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, atype, t_ctx)		       \
+ ({									       \
+-	u32 __unused_flags;						       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(atype))	{				       \
+ 		lock_sock(sk);						       \
+ 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
+-							  t_ctx,	       \
+-							  &__unused_flags);    \
++							  t_ctx, NULL);	       \
+ 		release_sock(sk);					       \
+ 	}								       \
+ 	__ret;								       \
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 0cb6211fcb58..f61eca32c747 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -25,50 +25,18 @@ EXPORT_SYMBOL(cgroup_bpf_enabled_key);
+ /* __always_inline is necessary to prevent indirect call through run_prog
+  * function pointer.
+  */
+-static __always_inline int
+-bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
+-			    enum cgroup_bpf_attach_type atype,
+-			    const void *ctx, bpf_prog_run_fn run_prog,
+-			    int retval, u32 *ret_flags)
+-{
+-	const struct bpf_prog_array_item *item;
+-	const struct bpf_prog *prog;
+-	const struct bpf_prog_array *array;
+-	struct bpf_run_ctx *old_run_ctx;
+-	struct bpf_cg_run_ctx run_ctx;
+-	u32 func_ret;
+-
+-	run_ctx.retval = retval;
+-	migrate_disable();
+-	rcu_read_lock();
+-	array = rcu_dereference(cgrp->effective[atype]);
+-	item = &array->items[0];
+-	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+-	while ((prog = READ_ONCE(item->prog))) {
+-		run_ctx.prog_item = item;
+-		func_ret = run_prog(prog, ctx);
+-		if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
+-			run_ctx.retval = -EPERM;
+-		*(ret_flags) |= (func_ret >> 1);
+-		item++;
+-	}
+-	bpf_reset_run_ctx(old_run_ctx);
+-	rcu_read_unlock();
+-	migrate_enable();
+-	return run_ctx.retval;
+-}
+-
+ static __always_inline int
+ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
+ 		      enum cgroup_bpf_attach_type atype,
+ 		      const void *ctx, bpf_prog_run_fn run_prog,
+-		      int retval)
++		      int retval, u32 *ret_flags)
+ {
+ 	const struct bpf_prog_array_item *item;
+ 	const struct bpf_prog *prog;
+ 	const struct bpf_prog_array *array;
+ 	struct bpf_run_ctx *old_run_ctx;
+ 	struct bpf_cg_run_ctx run_ctx;
++	u32 func_ret;
+ 
+ 	run_ctx.retval = retval;
+ 	migrate_disable();
+@@ -78,8 +46,11 @@ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
+ 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+ 	while ((prog = READ_ONCE(item->prog))) {
+ 		run_ctx.prog_item = item;
+-		if (!run_prog(prog, ctx) && !IS_ERR_VALUE((long)run_ctx.retval))
++		func_ret = run_prog(prog, ctx);
++		if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
+ 			run_ctx.retval = -EPERM;
++		if (ret_flags)
++			*(ret_flags) |= (func_ret >> 1);
+ 		item++;
+ 	}
+ 	bpf_reset_run_ctx(old_run_ctx);
+@@ -1144,9 +1115,8 @@ int __cgroup_bpf_run_filter_skb(struct sock *sk,
+ 		u32 flags = 0;
+ 		bool cn;
+ 
+-		ret = bpf_prog_run_array_cg_flags(
+-			&cgrp->bpf, atype,
+-			skb, __bpf_prog_run_save_cb, 0, &flags);
++		ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, skb,
++					    __bpf_prog_run_save_cb, 0, &flags);
+ 
+ 		/* Return values of CGROUP EGRESS BPF programs are:
+ 		 *   0: drop packet
+@@ -1172,7 +1142,8 @@ int __cgroup_bpf_run_filter_skb(struct sock *sk,
+ 			ret = (cn ? NET_XMIT_DROP : ret);
+ 	} else {
+ 		ret = bpf_prog_run_array_cg(&cgrp->bpf, atype,
+-					    skb, __bpf_prog_run_save_cb, 0);
++					    skb, __bpf_prog_run_save_cb, 0,
++					    NULL);
+ 		if (ret && !IS_ERR_VALUE((long)ret))
+ 			ret = -EFAULT;
+ 	}
+@@ -1202,7 +1173,8 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
+ {
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+ 
+-	return bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
++	return bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0,
++				     NULL);
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+ 
+@@ -1247,8 +1219,8 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 	}
+ 
+ 	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+-	return bpf_prog_run_array_cg_flags(&cgrp->bpf, atype,
+-					   &ctx, bpf_prog_run, 0, flags);
++	return bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
++				     0, flags);
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_addr);
+ 
+@@ -1275,7 +1247,7 @@ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+ 
+ 	return bpf_prog_run_array_cg(&cgrp->bpf, atype, sock_ops, bpf_prog_run,
+-				     0);
++				     0, NULL);
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_ops);
+ 
+@@ -1292,7 +1264,8 @@ int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
+ 
+ 	rcu_read_lock();
+ 	cgrp = task_dfl_cgroup(current);
+-	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0);
++	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0,
++				    NULL);
+ 	rcu_read_unlock();
+ 
+ 	return ret;
+@@ -1457,7 +1430,8 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+ 
+ 	rcu_read_lock();
+ 	cgrp = task_dfl_cgroup(current);
+-	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0);
++	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0,
++				    NULL);
+ 	rcu_read_unlock();
+ 
+ 	kfree(ctx.cur_val);
+@@ -1550,7 +1524,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 
+ 	lock_sock(sk);
+ 	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_SETSOCKOPT,
+-				    &ctx, bpf_prog_run, 0);
++				    &ctx, bpf_prog_run, 0, NULL);
+ 	release_sock(sk);
+ 
+ 	if (ret)
+@@ -1650,7 +1624,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 
+ 	lock_sock(sk);
+ 	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
+-				    &ctx, bpf_prog_run, retval);
++				    &ctx, bpf_prog_run, retval, NULL);
+ 	release_sock(sk);
+ 
+ 	if (ret < 0)
+@@ -1699,7 +1673,7 @@ int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
+ 	 */
+ 
+ 	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
+-				    &ctx, bpf_prog_run, retval);
++				    &ctx, bpf_prog_run, retval, NULL);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-- 
+2.36.0.rc0.470.gd361397f0d-goog
 
-Do we have other type of architectural limitations for "special memory"
-other than executable? Do we have *new* types of special memory we
-should consider which might be similar / limited in nature? And can / could /
-should these architectural limitations hopefully be disappear in newer CPUs?
-I see vmalloc_pks() as you pointed out [0] . Anything else?
-
-> I think of two types of caches we could have: caches of unmapped pages
-> on the direct map and caches of virtual memory mappings. Caches of
-> pages on the direct map reduce breakage of the large pages (and is
-> somewhat x86 specific problem). Caches of virtual memory mappings
-> reduce shootdowns, and are also required to share huge pages. I'll plug
-> my old RFC, where I tried to work towards enabling both:
-> 
-> https://lore.kernel.org/lkml/20201120202426.18009-1-rick.p.edgecombe@intel.com/
-> 
-> Since then Mike has taken a lot further the direct map cache piece.
-> 
-> Yea, probably a lot of JIT's are way smaller than a page, but there is
-> also hopefully some performance benefit of reduced ITLB pressure and
-> TLB shootdowns. I think kprobes/ftrace (or at least one of them) keeps
-> its own cache of a page for putting very small trampolines.
-
-The reason I looked into *why* module_alloc() was used was particularly
-because it seemed a bit odd to have such ITLB enhancements for such
-a niche use case and we couldn't have desired this elsewhere before.
-
-> > Then, since it seems since the vmalloc area was not initialized,
-> > wouldn't that break the old JIT spray fixes, refer to commit
-> > 314beb9bcabfd ("x86: bpf_jit_comp: secure bpf jit against spraying
-> > attacks")?
-> 
-> Hmm, yea it might be a way to get around the ebpf jit rlimit. The
-> allocator could just text_poke() invalid instructions on "free" of the
-> jit.
-> 
-> > 
-> > Is that sort of work not needed anymore? If in doubt I at least made
-> > the
-> > old proof of concept JIT spray stuff compile on recent kernels [0],
-> > but
-> > I haven't tried out your patches yet. If this is not needed anymore,
-> > why not?
-> 
-> IIRC this got addressed in two ways, randomizing of the jit offset
-> inside the vmalloc allocation, and "constant blinding", such that the
-> specific attack of inserting unaligned instructions as immediate
-> instruction data did not work. Neither of those mitigations seem
-> unworkable with a large page caching allocator.
-
-Got it, but was it *also* considerd in the fixes posted recently?
-
-> > The collection of tribal knowedge around these sorts of things would
-> > be
-> > good to not loose and if we can share, even better.
-> 
-> Totally agree here. I think the abstraction I was exploring in that RFC
-> could remove some of the special permission memory tribal knowledge
-> that is lurking in in the cross-arch module.c. I wonder if you have any
-> thoughts on something like that? The normal modules proved the hardest.
-
-Yeah modules will be harder now with the new ARCH_WANTS_MODULES_DATA_IN_VMALLOC
-which Christophe Leroy added (queued in my modules-next). At a quick
-glance it seems like an API in the right direction, but you just need
-more architecture folks other than the usual x86 suspects to review.
-
-Perhaps time for a new spin?
-
-[0] https://lore.kernel.org/lkml/20201009201410.3209180-2-ira.weiny@intel.com/
-
-  Luis
