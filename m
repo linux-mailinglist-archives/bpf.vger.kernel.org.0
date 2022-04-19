@@ -2,70 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E13450730F
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 18:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666FE50758D
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 18:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354675AbiDSQih (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 12:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49794 "EHLO
+        id S1350376AbiDSQuZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 12:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354669AbiDSQif (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 12:38:35 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547E413E31
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 09:35:51 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id r19so5153577wmq.0
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 09:35:51 -0700 (PDT)
+        with ESMTP id S1351107AbiDSQsp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 12:48:45 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA04AB7D4
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 09:46:00 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l127so7120928pfl.6
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 09:46:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N1iz2LuZBbh6iNPZGLMmhJtFze0j8ZOzB6NCaN/Mr1g=;
-        b=XFRu6nLSpPZeUzxnmh/4jtM/SKAzcOQWJ42hog9VWVNmWcDaAZcvqcYoaSzbl7sRVy
-         bpubwoHDV90MqnDV3u4TXEObfEAFabRDcBLkYr9/URXu4wEKho0V4CqzD40yM1/xTmgL
-         VQkdJjjDhP+/cBL62noKAnDE7FJZFTTHA/igrfmXssEatnfL0NcdRhQI2BfPLyi8mQHw
-         zZUKHCsZa35BI/wHkwADRDOva1uDLqNLseuumWM+BkCv1i3/pn5DKO9NA5t+GRBDa91Z
-         iwZGqn3rb1nDGNmZGXObfn3dRcCKNMTPMomyoB34zKssvgjv8WxfuCwn+kZvKqAGpYkj
-         9TOA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/yzCLf1o8B2GddY/RYQRuwVjWPPM27OfwrXrFmy8RJg=;
+        b=n10OUCd5lwLOoJGCzudzpwjAkRB0hAflZBvs1W5zjz0GojZ4EE9CPZpngvXvYGKCmJ
+         LPrqfbwh2A06SUNzlp4B9owLDfKs5Ud8Ga9zbQjrRwo1rMPb1bmeGwfF3lKzdw6Cp/FL
+         U4kN7PFArqvWw1CWJBOYQs1rMEUmyklSRCPqWJgdLyYmMLe9F2fY8wNwqvYUcOYnw7lD
+         VgkzGykMe3/+rpAUr/y4yY4gyrqv2tgFGEiwW4IwWDBwc8YDOD6wBWCf1pwmZ4W1iFvF
+         ZX0E2GScEJjoCX/zU8wp6C0SAKpztXtSq0huvNTkza9Zh70QluhdkepaXByOjqgRP7E/
+         11Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N1iz2LuZBbh6iNPZGLMmhJtFze0j8ZOzB6NCaN/Mr1g=;
-        b=a/ZYCE9jxoSAwdZK0861A+IZ3EnSUpsVc6ml0d0LbISIWS7iKbB8FejV916NojMv3o
-         2nSxYC+92by56doOaoxPXpk2kmyhrgb+wy5Y4lBaXCJGjsNxFpMnwQi3jMNfrSkaRSK6
-         8K8uqC9DB7BCTuYKYrL1WY9muCppkh4OmSBKAyK6N4STx7dAX8ZfXMEhCgmj7wVRTv0f
-         y2aq23eqTJ7rOba61TjMIdltF1XNc86EBe7FMd3SC9F5Zs/Y/l7gkHD+ri5n1eepcJBe
-         AtrOPq17wK1+iutFdpgD+ABETO97E99teaQNkv1UY9/25oTOqe1xAkEREw/acAe3ux5+
-         G2gg==
-X-Gm-Message-State: AOAM533ynndPnMrZXLyT3rqFqYF1zjLhYvCjhrkUGIU2UE6tYJdUrss4
-        CpIpw8yZOpT1tySDiaCay4sEUEYqPJjxPZyT0w3jnw==
-X-Google-Smtp-Source: ABdhPJzx3Oyxfc7vyLwHOmxVNMpO/fjNMD4juCfvvA+TEjsnN8OmRXZVbgdiMjrtWnmzI9OvsclbwWyFM7iAQ137eFw=
-X-Received: by 2002:a7b:cd04:0:b0:38e:d7a4:1548 with SMTP id
- f4-20020a7bcd04000000b0038ed7a41548mr16520844wmj.73.1650386149475; Tue, 19
- Apr 2022 09:35:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220414161233.170780-1-sdf@google.com> <CAADnVQJ-kiWJopu+VjLDXYb9ifjKyA2h8MO=CaQppNxbHqH=-Q@mail.gmail.com>
- <Yl2W5ThWCFPIeLW8@google.com> <CAADnVQ+X5HPDsqXX6mHWV4sT9=2gQSag5cc9w6iJG_YE577ZEw@mail.gmail.com>
- <Yl7YXXIG/EECZxd9@google.com> <CAADnVQK8ARjeY2Vro0B0-6vxhgrWg-jhJqkbHh0s1xinSq2-+Q@mail.gmail.com>
- <CAADnVQLvULRaAyO2E89c_FMNW9HGXr=nkFc9B5V-5WmXKbaRuw@mail.gmail.com>
-In-Reply-To: <CAADnVQLvULRaAyO2E89c_FMNW9HGXr=nkFc9B5V-5WmXKbaRuw@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 19 Apr 2022 09:35:37 -0700
-Message-ID: <CAKH8qBvApjJ5G4bNMtHxT+Fcw6uKOTZh1opkaC96OT6Gq55aJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: move rcu lock management out of
- BPF_PROG_RUN routines
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/yzCLf1o8B2GddY/RYQRuwVjWPPM27OfwrXrFmy8RJg=;
+        b=5vFw0Zv6jb4zCVACK4+wsM0oK/4NILCyEDXDVysF5BLUo9F7C8PLEbklNk101u7G7v
+         dRij0vOO2alxOSk1LjUTNi4F8/9ROoYOOyPcL0C8c9mGik3Vdaj4qcxLyZJAwvuImV/I
+         B6StHWmKKtsMTo89VhGPHjYlkJrksj4U3wsNdqVtDl/cC5GW2HPn2ga4+WHZaiPaw8+x
+         MCGcsAnXc5+3hHe0Ga9wPpCtSjYeLJB9Y97i5LYOobzTw/dphel//rM6EpBGSaW44UUH
+         QZxKSMzJtd8O9TS0Hlof4Tq4rVPyE/ZcGgY3Br8zS6Lpw+wf3TnCbLiaBuXu32cxxrgg
+         xjoQ==
+X-Gm-Message-State: AOAM533c/QYx8Kx8I9LKxeIlQ6ZDKBFvKN0JrQU3Qkl0Fn9P2dtdRsCz
+        xp66Qdj4S/MkhZTbMcZ3z5zyK6fV7cZNKQ==
+X-Google-Smtp-Source: ABdhPJxZD/oeqq66MW2Zh1rW8kc7L6Rdojj26VOWYKML1Rm6Ts+m++175DzoT3+MO9hp5xRd0PAddA==
+X-Received: by 2002:a63:ec05:0:b0:3aa:2210:a5f with SMTP id j5-20020a63ec05000000b003aa22100a5fmr6112212pgh.128.1650386760273;
+        Tue, 19 Apr 2022 09:46:00 -0700 (PDT)
+Received: from localhost ([112.79.142.99])
+        by smtp.gmail.com with ESMTPSA id d141-20020a621d93000000b00505aa1026f1sm17100938pfd.51.2022.04.19.09.45.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Apr 2022 09:45:59 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH bpf-next v3 0/2] Ensure type tags are always ordered first in BTF
+Date:   Tue, 19 Apr 2022 22:16:06 +0530
+Message-Id: <20220419164608.1990559-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1023; h=from:subject; bh=RI7b3Y0EILFDlRhK1ya4EkJ4L7QwOl43XhiS2VxiKio=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiXucwY4g4jQ4XYjkYI9xzuGK59B3AI0Dxk6YcjX4i 5sQxSsSJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYl7nMAAKCRBM4MiGSL8Ryho+EA CywsAqUckeSftp1p8zq+OXWwaTO20FrkOwWvEQ7x8uGjaOehqc/3myDksmcH5Tdg1wpooAObO49OR4 0VrTEAQJdNgh5zUOKqENlEBImJBTTAZ5fkvoR9HEGblw+a6R5EYQUwLqhRb4Q3Rl465TP7cH5mjmI9 4BoR9q81i8vpJBvHCiPNzrzs7AEtphPLzRug8in+9z0iWCDTszviuM3kdthp8qv2fc7xe8Ww+I6hag y9LpUYU6n4Tmo5egwxRxzU7tlVKf/Sud+rJ1sCp3j/EV3dEPNNJYfNfjW957azE71pMteiTMIkpwVb XaFfltvFA/ZsxfNvN1jJ24wgBn73DIr2fCRhfsFEWa8jAPcKsNKrAqp48kkyhdZnPsZsfYdAXTf/ot ZiS//XUaguxyFQJ4REGy6NzjoTpG91DoB8jzTUunfJqgpa9y7o0SLTFPyBhSDfGgGsR2GPAEoyaFdn B3ZaOZAhqFcBG9obFUqgkydVwYAbvGfvZMvHctKqELznKq3VONzBUR/mbsvNV23yPu70tIGY5bllRd Uy3jS9aCFVYy5RYCv79AcDUbAvPJurxdXcK2Ru/GayOzBW1OPgG10uaWDOcmqZQkDiYpTgvRZ+rfYy 2C+rhQZS2w0R+y6rY3yakjQUooslKgFZhazqj/kCEba3xEgn44OQlW17yQ7w==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,163 +71,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 9:32 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Apr 19, 2022 at 9:20 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Apr 19, 2022 at 8:42 AM <sdf@google.com> wrote:
-> > >
-> > > On 04/18, Alexei Starovoitov wrote:
-> > > > On Mon, Apr 18, 2022 at 9:50 AM <sdf@google.com> wrote:
-> > > > >
-> > > > > On 04/16, Alexei Starovoitov wrote:
-> > > > > > On Thu, Apr 14, 2022 at 9:12 AM Stanislav Fomichev <sdf@google.com>
-> > > > wrote:
-> > > > > > > +static int
-> > > > > > > +bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
-> > > > > > > +                           enum cgroup_bpf_attach_type atype,
-> > > > > > > +                           const void *ctx, bpf_prog_run_fn
-> > > > run_prog,
-> > > > > > > +                           int retval, u32 *ret_flags)
-> > > > > > > +{
-> > > > > > > +       const struct bpf_prog_array_item *item;
-> > > > > > > +       const struct bpf_prog *prog;
-> > > > > > > +       const struct bpf_prog_array *array;
-> > > > > > > +       struct bpf_run_ctx *old_run_ctx;
-> > > > > > > +       struct bpf_cg_run_ctx run_ctx;
-> > > > > > > +       u32 func_ret;
-> > > > > > > +
-> > > > > > > +       run_ctx.retval = retval;
-> > > > > > > +       migrate_disable();
-> > > > > > > +       rcu_read_lock();
-> > > > > > > +       array = rcu_dereference(cgrp->effective[atype]);
-> > > > > > > +       item = &array->items[0];
-> > > > > > > +       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> > > > > > > +       while ((prog = READ_ONCE(item->prog))) {
-> > > > > > > +               run_ctx.prog_item = item;
-> > > > > > > +               func_ret = run_prog(prog, ctx);
-> > > > > > ...
-> > > > > > > +       ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
-> > > > > > >                                     &ctx, bpf_prog_run, retval);
-> > > > >
-> > > > > > Did you check the asm that bpf_prog_run gets inlined
-> > > > > > after being passed as a pointer to a function?
-> > > > > > Crossing fingers... I suspect not every compiler can do that :(
-> > > > > > De-virtualization optimization used to be tricky.
-> > > > >
-> > > > > No, I didn't, but looking at it right now, both gcc and clang
-> > > > > seem to be doing inlining all way up to bpf_dispatcher_nop_func.
-> > > > >
-> > > > > clang:
-> > > > >
-> > > > >    0000000000001750 <__cgroup_bpf_run_filter_sock_addr>:
-> > > > >    __cgroup_bpf_run_filter_sock_addr():
-> > > > >    ./kernel/bpf/cgroup.c:1226
-> > > > >    int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
-> > > > >                                       struct sockaddr *uaddr,
-> > > > >                                       enum cgroup_bpf_attach_type atype,
-> > > > >                                       void *t_ctx,
-> > > > >                                       u32 *flags)
-> > > > >    {
-> > > > >
-> > > > >    ...
-> > > > >
-> > > > >    ./include/linux/filter.h:628
-> > > > >                 ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-> > > > >        1980:    49 8d 75 48             lea    0x48(%r13),%rsi
-> > > > >    bpf_dispatcher_nop_func():
-> > > > >    ./include/linux/bpf.h:804
-> > > > >         return bpf_func(ctx, insnsi);
-> > > > >        1984:    4c 89 f7                mov    %r14,%rdi
-> > > > >        1987:    41 ff 55 30             call   *0x30(%r13)
-> > > > >        198b:    89 c3                   mov    %eax,%ebx
-> > > > >
-> > > > > gcc (w/retpoline):
-> > > > >
-> > > > >    0000000000001110 <__cgroup_bpf_run_filter_sock_addr>:
-> > > > >    __cgroup_bpf_run_filter_sock_addr():
-> > > > >    kernel/bpf/cgroup.c:1226
-> > > > >    {
-> > > > >
-> > > > >    ...
-> > > > >
-> > > > >    ./include/linux/filter.h:628
-> > > > >                 ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-> > > > >        11c5:    49 8d 75 48             lea    0x48(%r13),%rsi
-> > > > >    bpf_dispatcher_nop_func():
-> > > > >    ./include/linux/bpf.h:804
-> > > > >        11c9:    48 8d 7c 24 10          lea    0x10(%rsp),%rdi
-> > > > >        11ce:    e8 00 00 00 00          call   11d3
-> > > > > <__cgroup_bpf_run_filter_sock_addr+0xc3>
-> > > > >                         11cf: R_X86_64_PLT32
-> > > > __x86_indirect_thunk_rax-0x4
-> > > > >        11d3:    89 c3                   mov    %eax,%ebx
-> > >
-> > > > Hmm. I'm not sure how you've got this asm.
-> > > > Here is what I see with gcc 8 and gcc 10:
-> > > > bpf_prog_run_array_cg:
-> > > > ...
-> > > >          movq    %rcx, %r12      # run_prog, run_prog
-> > > > ...
-> > > > # ../kernel/bpf/cgroup.c:77:            run_ctx.prog_item = item;
-> > > >          movq    %rbx, (%rsp)    # item, run_ctx.prog_item
-> > > > # ../kernel/bpf/cgroup.c:78:            if (!run_prog(prog, ctx) &&
-> > > > !IS_ERR_VALUE((long)run_ctx.retval))
-> > > >          movq    %rbp, %rsi      # ctx,
-> > > >          call    *%r12   # run_prog
-> > >
-> > > > __cgroup_bpf_run_filter_sk:
-> > > >          movq    $bpf_prog_run, %rcx     #,
-> > > > # ../kernel/bpf/cgroup.c:1202:  return
-> > > > bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
-> > > >          leaq    1520(%rax), %rdi        #, tmp92
-> > > > # ../kernel/bpf/cgroup.c:1202:  return
-> > > > bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
-> > > >          jmp     bpf_prog_run_array_cg   #
-> > >
-> > > > This is without kasan, lockdep and all debug configs are off.
-> > >
-> > > > So the generated code is pretty bad as I predicted :(
-> > >
-> > > > So I'm afraid this approach is no go.
-> > >
-> > > I've retested again and it still unrolls it for me on gcc 11 :-/
-> > > Anyway, I guess we have two options:
-> > >
-> > > 1. Go back to defines.
-> > > 2. Don't pass a ptr to func, but pass an enum which indicates whether
-> > >     to use bpf_prog_run or __bpf_prog_run_save_cb. Seems like in this
-> > >     case the compiler shouldn't have any trouble unwrapping it?
-> > >
-> > > I'll prototype and send (2). If it won't work out we can always get back
-> > > to (1).
-> >
-> > Going back to defines is probably not necessary.
-> > Could you try moving bpf_prog_run_array_cg*() back to .h
-> > and use static __always_inline ?
->
-> Actually below was enough for gcc 8 and 10:
-> -static int
-> +static __always_inline int
->  bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
->                             enum cgroup_bpf_attach_type atype,
->                             const void *ctx, bpf_prog_run_fn run_prog,
-> @@ -55,7 +55,7 @@ bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
->         return run_ctx.retval;
->  }
->
-> -static int
-> +static __always_inline int
->  bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
->
-> we can keep them in .c and generated code looks good.
->
-> I can apply it with the above change.
-> wdyt?
+When iterating over modifiers, ensure that type tags can only occur at head of
+the chain, and don't occur later, such that checking for them once in the start
+tells us there are no more type tags in later modifiers. Clang already ensures
+to emit such BTF, but user can craft their own BTF which violates such
+assumptions if relied upon in the kernel.
 
-Sure, let's go with that if it works! On my side, I managed to get the
-same bad results on gcc-8; moving them to bpf-cgroup.h with
-__always_inline seems to fix it. But if we can keep them in .c, that
-looks even better.
+Changelog:
+----------
+v2 -> v3
+v2: https://lore.kernel.org/bpf/20220418224719.1604889-1-memxor@gmail.com
+
+ * Address nit from Yonghong, add Acked-by
+
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20220406004121.282699-1-memxor@gmail.com
+
+ * Fix for bug pointed out by Yonghong
+ * Update selftests to include Yonghong's example
+
+Kumar Kartikeya Dwivedi (2):
+  bpf: Ensure type tags precede modifiers in BTF
+  selftests/bpf: Add tests for type tag order validation
+
+ kernel/bpf/btf.c                             | 54 +++++++++++
+ tools/testing/selftests/bpf/prog_tests/btf.c | 99 ++++++++++++++++++++
+ 2 files changed, 153 insertions(+)
+
+-- 
+2.35.1
+
