@@ -2,204 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 086C350706A
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 16:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F5F50718E
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 17:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347565AbiDSO0e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 10:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        id S1353757AbiDSPXg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 11:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbiDSO0c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 10:26:32 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EE625E8E;
-        Tue, 19 Apr 2022 07:23:47 -0700 (PDT)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KjQxx17wLzfYqr;
-        Tue, 19 Apr 2022 22:23:01 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 19 Apr 2022 22:23:45 +0800
-Received: from k04.huawei.com (10.67.174.115) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 19 Apr 2022 22:23:44 +0800
-From:   Pu Lehui <pulehui@huawei.com>
-To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <pulehui@huawei.com>
-Subject: [PATCH v2 bpf-next 2/2] libbpf: Support riscv USDT argument parsing logic
-Date:   Tue, 19 Apr 2022 22:52:38 +0800
-Message-ID: <20220419145238.482134-3-pulehui@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220419145238.482134-1-pulehui@huawei.com>
-References: <20220419145238.482134-1-pulehui@huawei.com>
+        with ESMTP id S1349921AbiDSPXf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 11:23:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8202252C;
+        Tue, 19 Apr 2022 08:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=3uTLPiJrypIFbJrBbJWzyUq8lrOCNCTROK2VPYKwjoA=; b=CqToA9mnHuh9R675pN4UgpoBZg
+        gfu2d3mM2Owwa+3GmAofOGXIkBfmV/sB9AXgipt84d4jtCDfNjNc/8T8xR3fiWIShDCd7CK0Ivf6B
+        SevxsUBQjZV0HfnnYjW8xaNKIu6jMGOMDdZD0K2ZiGMUDUvbYmNkYn6Zd7S/5ZLs/MH6CpU3qE/31
+        Jag8nwx17tjwDTXsxb5aBbZIfhJzWnYXKEItolLqGqNB/m6cKSLsCjjUzmF1oz+/Hpo28sifNg4wa
+        xgDt0VPEu/+w+PC5KVfDcP3sCIjVymIn8khwth399ruFBjMc86W3INsvi8dunb11Q+a9560yXNE/G
+        cUsLfxfA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ngpeq-003DM3-Ew; Tue, 19 Apr 2022 15:20:48 +0000
+Date:   Tue, 19 Apr 2022 16:20:48 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     lsf-pc@lists.linuxfoundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: LSF/MM/BPF 2022: Running BOF
+Message-ID: <Yl7TUDtLcrhXcp1g@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.115]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add riscv-specific USDT argument specification parsing logic.
-riscv USDT argument format is shown below:
-- Memory dereference case:
-  "size@off(reg)", e.g. "-8@-88(s0)"
-- Constant value case:
-  "size@val", e.g. "4@5"
-- Register read case:
-  "size@reg", e.g. "-8@a1"
+As in the past few years, let's hold a running BOF.
 
-s8 will be marked as poison while it's a reg of riscv, we need
-to alias it in advance. Both RV32 and RV64 have been tested.
+I propose meeting in the lobby of the Margaritaville hotel at 6:15 for
+a 6:30 departure for an hour-long run on Monday, Tuesday and Wednesday
+mornings.  I'm assuming breakfast will be 8-9am and sessions start at 9am.
+Pace will be determined by whoever shows up.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
-v1-v2:
- - Add brief test results.
- - Make reg_map more intuitive.
- tools/lib/bpf/usdt.c | 107 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
+We're only a mile from the North Lykken north Trailhead.
+Other trails are a little more distant.  I've been reading
+http://www.hiking-in-ps.com/the-north-lykken-trail/ (note this map is
+for the south trailhead of the North Lykken trail).  I haven't been
+to this area in 30 years and I have no idea what the trails are like,
+so if somebody has local information, that would be great.
 
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index 8e77a7260..f1c9339cf 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -10,6 +10,11 @@
- #include <linux/ptrace.h>
- #include <linux/kernel.h>
- 
-+/* s8 will be marked as poison while it's a reg of riscv */
-+#if defined(__riscv)
-+#define rv_s8 s8
-+#endif
-+
- #include "bpf.h"
- #include "libbpf.h"
- #include "libbpf_common.h"
-@@ -1400,6 +1405,108 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
- 	return len;
- }
- 
-+#elif defined(__riscv)
-+
-+static int calc_pt_regs_off(const char *reg_name)
-+{
-+	static struct {
-+		const char *name;
-+		size_t pt_regs_off;
-+	} reg_map[] = {
-+		{ "ra", offsetof(struct user_regs_struct, ra) },
-+		{ "sp", offsetof(struct user_regs_struct, sp) },
-+		{ "gp", offsetof(struct user_regs_struct, gp) },
-+		{ "tp", offsetof(struct user_regs_struct, tp) },
-+		{ "a0", offsetof(struct user_regs_struct, a0) },
-+		{ "a1", offsetof(struct user_regs_struct, a1) },
-+		{ "a2", offsetof(struct user_regs_struct, a2) },
-+		{ "a3", offsetof(struct user_regs_struct, a3) },
-+		{ "a4", offsetof(struct user_regs_struct, a4) },
-+		{ "a5", offsetof(struct user_regs_struct, a5) },
-+		{ "a6", offsetof(struct user_regs_struct, a6) },
-+		{ "a7", offsetof(struct user_regs_struct, a7) },
-+		{ "s0", offsetof(struct user_regs_struct, s0) },
-+		{ "s1", offsetof(struct user_regs_struct, s1) },
-+		{ "s2", offsetof(struct user_regs_struct, s2) },
-+		{ "s3", offsetof(struct user_regs_struct, s3) },
-+		{ "s4", offsetof(struct user_regs_struct, s4) },
-+		{ "s5", offsetof(struct user_regs_struct, s5) },
-+		{ "s6", offsetof(struct user_regs_struct, s6) },
-+		{ "s7", offsetof(struct user_regs_struct, s7) },
-+		{ "s8", offsetof(struct user_regs_struct, rv_s8) },
-+		{ "s9", offsetof(struct user_regs_struct, s9) },
-+		{ "s10", offsetof(struct user_regs_struct, s10) },
-+		{ "s11", offsetof(struct user_regs_struct, s11) },
-+		{ "t0", offsetof(struct user_regs_struct, t0) },
-+		{ "t1", offsetof(struct user_regs_struct, t1) },
-+		{ "t2", offsetof(struct user_regs_struct, t2) },
-+		{ "t3", offsetof(struct user_regs_struct, t3) },
-+		{ "t4", offsetof(struct user_regs_struct, t4) },
-+		{ "t5", offsetof(struct user_regs_struct, t5) },
-+		{ "t6", offsetof(struct user_regs_struct, t6) },
-+	};
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(reg_map); i++) {
-+		if (strcmp(reg_name, reg_map[i].name) == 0)
-+			return reg_map[i].pt_regs_off;
-+	}
-+
-+	pr_warn("usdt: unrecognized register '%s'\n", reg_name);
-+	return -ENOENT;
-+}
-+
-+static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
-+{
-+	char *reg_name = NULL;
-+	int arg_sz, len, reg_off;
-+	long off;
-+
-+	if (sscanf(arg_str, " %d @ %ld ( %m[a-z0-9] ) %n", &arg_sz, &off, &reg_name, &len) == 3) {
-+		/* Memory dereference case, e.g., -8@-88(s0) */
-+		arg->arg_type = USDT_ARG_REG_DEREF;
-+		arg->val_off = off;
-+		reg_off = calc_pt_regs_off(reg_name);
-+		free(reg_name);
-+		if (reg_off < 0)
-+			return reg_off;
-+		arg->reg_off = reg_off;
-+	} else if (sscanf(arg_str, " %d @ %ld %n", &arg_sz, &off, &len) == 2) {
-+		/* Constant value case, e.g., 4@5 */
-+		arg->arg_type = USDT_ARG_CONST;
-+		arg->val_off = off;
-+		arg->reg_off = 0;
-+	} else if (sscanf(arg_str, " %d @ %m[a-z0-9] %n", &arg_sz, &reg_name, &len) == 2) {
-+		/* Register read case, e.g., -8@a1 */
-+		arg->arg_type = USDT_ARG_REG;
-+		arg->val_off = 0;
-+		reg_off = calc_pt_regs_off(reg_name);
-+		free(reg_name);
-+		if (reg_off < 0)
-+			return reg_off;
-+		arg->reg_off = reg_off;
-+	} else {
-+		pr_warn("usdt: unrecognized arg #%d spec '%s'\n", arg_num, arg_str);
-+		return -EINVAL;
-+	}
-+
-+	arg->arg_signed = arg_sz < 0;
-+	if (arg_sz < 0)
-+		arg_sz = -arg_sz;
-+
-+	switch (arg_sz) {
-+	case 1: case 2: case 4: case 8:
-+		arg->arg_bitshift = 64 - arg_sz * 8;
-+		break;
-+	default:
-+		pr_warn("usdt: unsupported arg #%d (spec '%s') size: %d\n",
-+			arg_num, arg_str, arg_sz);
-+		return -EINVAL;
-+	}
-+
-+	return len;
-+}
-+
- #else
- 
- static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
--- 
-2.25.1
+I note that the room rate includes complimentary bicycle rentals.  If
+we want to, we could cycle to various other local trails.
 
