@@ -2,144 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C53506BD1
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 14:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FDC506CFE
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 15:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242844AbiDSMLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 08:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
+        id S236243AbiDSNDB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 09:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352037AbiDSMJN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 08:09:13 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4691D0FB
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 05:04:44 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id y11so2666762ljh.5
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 05:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=0BD1YJUW4GE6y35SJ7GlRNiQgZaoN0rr8UQl3j8HsrE=;
-        b=B+A+VCBQ6+hwiWgOiu+/tontW2tmxWIJxsDLt1eb8HvJbtLMpYZmYhn0W3Mjz3wUJD
-         ML0E/S4iFJU5GMeJNmqYVBXb0Exm4LLl2p05Q2dI0N4RguAssamFwj3Tp+TATFygp6Sk
-         ktmsOk1g/CXoHJnxD/m04Qy02quedt95Se6Ca4h7ua9LxkUJZ0aqcYDAWsYI8K+A9+2O
-         AYKWHioe8S3mfy78ZO7hjXeGy5VHh3LhbIvYhB3NharD2Ndi1mLL21yYT9ro9z7VB8Ik
-         lRMpt1xPhHeLFfrt0Oqw517sn3IVzoHbC12rsz38mv82Tn2vgPf8dB1pS4gmJ8JQNgN2
-         4Kuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=0BD1YJUW4GE6y35SJ7GlRNiQgZaoN0rr8UQl3j8HsrE=;
-        b=xDkfj89JcUzbXi8rNhcdRE70rojunNlZlYSMbnNk53H26M4aInZuZ/tRQSI58mbXK6
-         vLgHNO/l8md9AQPhOmxlgBDr0KPn5NgNr4WWZ0HC66/l9+Lg2CAxQM3UwQUWxIv2QiZ0
-         r8PhtkZxs4MbAvOqGlbNNY1oyGcSaaiHwp5cD8BYBuGgBvS+5EbGAGssVf50syMBLUsr
-         f6Oz5qqJSrJJDzFnLMwMijnk8FgQPOwqbqk4nWMW5E5tteUy9JfseKd8/ZKYljZqBdwp
-         3wqbEHtENvFKbZD35G5gNDkvQ2wROC4FwDSnpXFcTXKEhMMmrHJqMrN6flQloXcZIkvi
-         +Huw==
-X-Gm-Message-State: AOAM532yVFhYSgS0jHRarB92nIVO28/5Pw5KY3YQI5khsvPRTG/XFtCn
-        RR68X3G/B250EKlEOLZqf2E8NcyNwdIyfVmgTag=
-X-Google-Smtp-Source: ABdhPJxx1/q6MEGagZcWDJsimnTfGxCBm7khFyX373wXsF5tHpr1ys05M4GylT8TLLopitnQ4ifbxT+tJsdz2Yif7qM=
-X-Received: by 2002:a2e:1542:0:b0:249:a4dd:8ca5 with SMTP id
- 2-20020a2e1542000000b00249a4dd8ca5mr10046419ljv.303.1650369882274; Tue, 19
- Apr 2022 05:04:42 -0700 (PDT)
+        with ESMTP id S235870AbiDSNDA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 09:03:00 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84141EEEA;
+        Tue, 19 Apr 2022 06:00:17 -0700 (PDT)
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KjP3Y51FgzFq1G;
+        Tue, 19 Apr 2022 20:57:45 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 19 Apr 2022 21:00:15 +0800
+Received: from [10.67.109.184] (10.67.109.184) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 19 Apr 2022 21:00:15 +0800
+Subject: Re: [PATCH bpf-next] libbpf: Support riscv USDT argument parsing
+ logic
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <20220418042222.2464199-1-pulehui@huawei.com>
+ <CAEf4BzbavSC=JN=sowFY3t4yOUfe8QtVXhdG+y7a-T1YtfRqXQ@mail.gmail.com>
+From:   Pu Lehui <pulehui@huawei.com>
+Message-ID: <ef4ffe1f-1f3b-e98e-fc5f-26150e22871f@huawei.com>
+Date:   Tue, 19 Apr 2022 21:00:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Received: by 2002:a05:6512:b27:0:0:0:0 with HTTP; Tue, 19 Apr 2022 05:04:41
- -0700 (PDT)
-Reply-To: sandrina.omaru2022@gmail.com
-From:   Sandrina Omaru <sandrinaomaru27@gmail.com>
-Date:   Tue, 19 Apr 2022 14:04:41 +0200
-Message-ID: <CADJWPHFO+UXDEYeXt5LmkV=r0i5vr5ic95yGZ1_HwK+sUgEJgA@mail.gmail.com>
-Subject: Dagens komplimang
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:22c listed in]
-        [list.dnswl.org]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [sandrina.omaru2022[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [sandrinaomaru27[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [sandrinaomaru27[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  0.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *****
+In-Reply-To: <CAEf4BzbavSC=JN=sowFY3t4yOUfe8QtVXhdG+y7a-T1YtfRqXQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dagens komplimang
 
-Det =C3=A4r en respekt och en =C3=B6dmjuk inlaga, jag ber att ange f=C3=B6l=
-jande
-rader f=C3=B6r din v=C3=A4nliga =C3=B6verv=C3=A4gande, jag hoppas att du ko=
-mmer att spara
-n=C3=A5gra av dina v=C3=A4rdefulla minuter f=C3=B6r att l=C3=A4sa f=C3=B6lj=
-ande v=C3=A4djan med
-sympatiskt sinne. Jag m=C3=A5ste erk=C3=A4nna att det =C3=A4r med stora
-f=C3=B6rhoppningar, gl=C3=A4dje och entusiasm som jag skriver detta
-e-postmeddelande till dig som jag vet och tror av tro att det s=C3=A4kert
-m=C3=A5ste hitta dig i gott tillst=C3=A5nd.
 
-Jag =C3=A4r fr=C3=B6ken Sandrina Omaru, dotter till framlidne herr Williams
-Omaru. Innan min far dog ringde han mig och informerade mig om att han
-har summan av tre miljoner, sexhundratusen euro. (3 600 000 euro) han
-satte in i privat bank h=C3=A4r i Abidjan Elfenbenskusten.
+On 2022/4/19 12:33, Andrii Nakryiko wrote:
+> On Sun, Apr 17, 2022 at 8:53 PM Pu Lehui <pulehui@huawei.com> wrote:
+>>
+>> Add riscv-specific USDT argument specification parsing logic.
+>> riscv USDT argument format is shown below:
+>> - Memory dereference case:
+>>    "size@off(reg)", e.g. "-8@-88(s0)"
+>> - Constant value case:
+>>    "size@val", e.g. "4@5"
+>> - Register read case:
+>>    "size@reg", e.g. "-8@a1"
+>>
+>> s8 will be marked as poison while it's a reg of riscv, we need
+>> to alias it in advance.
+>>
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>> ---
+> 
+> Can you please mention briefly the testing you performed as I'm not
+> able to test this locally.
+> 
+Both RV32 and RV64 have been tested. I will attach the test result in 
+v2. Meanwhile, I found a small problem with libbpf USDT, and will be 
+post in v2.
+>>   tools/lib/bpf/usdt.c | 107 +++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 107 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+>> index 934c25301ac1..b8af409cc763 100644
+>> --- a/tools/lib/bpf/usdt.c
+>> +++ b/tools/lib/bpf/usdt.c
+>> @@ -10,6 +10,11 @@
+>>   #include <linux/ptrace.h>
+>>   #include <linux/kernel.h>
+>>
+>> +/* s8 will be marked as poison while it's a reg of riscv */
+>> +#if defined(__riscv)
+>> +#define rv_s8 s8
+>> +#endif
+>> +
+>>   #include "bpf.h"
+>>   #include "libbpf.h"
+>>   #include "libbpf_common.h"
+>> @@ -1400,6 +1405,108 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
+>>          return len;
+>>   }
+>>
+>> +#elif defined(__riscv)
+>> +
+>> +static int calc_pt_regs_off(const char *reg_name)
+>> +{
+>> +       static struct {
+>> +               const char *name;
+>> +               size_t pt_regs_off;
+>> +       } reg_map[] = {
+>> +               { "ra", offsetof(struct user_regs_struct, ra) },
+>> +               { "sp", offsetof(struct user_regs_struct, sp) },
+>> +               { "gp", offsetof(struct user_regs_struct, gp) },
+>> +               { "tp", offsetof(struct user_regs_struct, tp) },
+>> +               { "t0", offsetof(struct user_regs_struct, t0) },
+>> +               { "t1", offsetof(struct user_regs_struct, t1) },
+>> +               { "t2", offsetof(struct user_regs_struct, t2) },
+>> +               { "s0", offsetof(struct user_regs_struct, s0) },
+>> +               { "s1", offsetof(struct user_regs_struct, s1) },
+>> +               { "a0", offsetof(struct user_regs_struct, a0) },
+>> +               { "a1", offsetof(struct user_regs_struct, a1) },
+>> +               { "a2", offsetof(struct user_regs_struct, a2) },
+>> +               { "a3", offsetof(struct user_regs_struct, a3) },
+>> +               { "a4", offsetof(struct user_regs_struct, a4) },
+>> +               { "a5", offsetof(struct user_regs_struct, a5) },
+>> +               { "a6", offsetof(struct user_regs_struct, a6) },
+>> +               { "a7", offsetof(struct user_regs_struct, a7) },
+>> +               { "s2", offsetof(struct user_regs_struct, s2) },
+>> +               { "s3", offsetof(struct user_regs_struct, s3) },
+>> +               { "s4", offsetof(struct user_regs_struct, s4) },
+>> +               { "s5", offsetof(struct user_regs_struct, s5) },
+>> +               { "s6", offsetof(struct user_regs_struct, s6) },
+>> +               { "s7", offsetof(struct user_regs_struct, s7) },
+>> +               { "s8", offsetof(struct user_regs_struct, rv_s8) },
+>> +               { "s9", offsetof(struct user_regs_struct, s9) },
+>> +               { "s10", offsetof(struct user_regs_struct, s10) },
+>> +               { "s11", offsetof(struct user_regs_struct, s11) },
+>> +               { "t3", offsetof(struct user_regs_struct, t3) },
+>> +               { "t4", offsetof(struct user_regs_struct, t4) },
+>> +               { "t5", offsetof(struct user_regs_struct, t5) },
+>> +               { "t6", offsetof(struct user_regs_struct, t6) },
+> 
+> would it make sense to order registers a bit more "logically"? Like
+> s0-s11, t0-t6, etc. Right now it looks very random and it's hard to
+> see if all the registers from some range of registers are defined.
+> 
+I code it according to the RISCV specification, and for sure, we can 
+make it more intuitive.
 
-Han ber=C3=A4ttade f=C3=B6r mig att han satte in pengarna i mitt namn, och =
-gav
-mig ocks=C3=A5 alla n=C3=B6dv=C3=A4ndiga juridiska dokument ang=C3=A5ende d=
-enna ins=C3=A4ttning
-hos banken, jag =C3=A4r undergraduate och vet verkligen inte vad jag ska
-g=C3=B6ra. Nu vill jag ha en =C3=A4rlig och gudfruktig partner utomlands so=
-m jag
-kan =C3=B6verf=C3=B6ra dessa pengar med hans hj=C3=A4lp och efter transakti=
-onen
-kommer jag att bo permanent i ditt land till en s=C3=A5dan tidpunkt att det
-kommer att vara bekv=C3=A4mt f=C3=B6r mig att =C3=A5terv=C3=A4nda hem om ja=
-g s=C3=A5 =C3=B6nskan.
-Detta beror p=C3=A5 att jag har drabbats av m=C3=A5nga bakslag till f=C3=B6=
-ljd av
-oupph=C3=B6rlig politisk kris h=C3=A4r i Elfenbenskusten.
-
-Sn=C3=A4lla, =C3=B6verv=C3=A4g detta och =C3=A5terkomma till mig s=C3=A5 sn=
-art som m=C3=B6jligt. Jag
-bekr=C3=A4ftar omedelbart din vilja, jag kommer att skicka min bild till
-dig och =C3=A4ven informera dig om mer detaljer som =C3=A4r involverade i d=
-enna
-fr=C3=A5ga.
-
-V=C3=A4nliga H=C3=A4lsningar,
-Fr=C3=B6ken Sandrina Omaru
+Thanks,
+Lehui
+>> +       };
+>> +       int i;
+>> +
+> 
+> [...]
+> .
+> 
