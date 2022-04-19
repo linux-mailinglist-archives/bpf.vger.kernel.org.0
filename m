@@ -2,149 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1E1506347
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 06:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2FA50634F
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 06:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347667AbiDSEf2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 00:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S1348306AbiDSEgX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 00:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240853AbiDSEf2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 00:35:28 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9BC22B31
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 21:32:46 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23J0OiDT004646
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 21:32:46 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=cCN71/11g084UR3Ve9hTUKRijsJqBmMl0YlvKjj4m2c=;
- b=SaY/GfzkmeYbmY01spmEAbDhzTRkWe0fleZnAgmAt4k/KuIdPwFK+c0z2Iqf6b1NxuzX
- nqgMcO+o5QE1UpDXKhU0bWp5/BNwCVI1YKvbWHSbEtgs43nbuGfOpnYwarZDlDiyG0oP
- lipPqzgvQWrAIY8THbr4m6efNpYKymh32Mo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fhjh1gupr-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 21:32:46 -0700
-Received: from twshared13345.18.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 18 Apr 2022 21:32:43 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id D1AF29303187; Mon, 18 Apr 2022 21:32:30 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: limit unroll_count for pyperf600 test
-Date:   Mon, 18 Apr 2022 21:32:30 -0700
-Message-ID: <20220419043230.2928530-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: o6P9VG4rRjGKgYtCxClOUDb5F4YzqsXS
-X-Proofpoint-ORIG-GUID: o6P9VG4rRjGKgYtCxClOUDb5F4YzqsXS
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S1348298AbiDSEgT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 00:36:19 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C73725E80;
+        Mon, 18 Apr 2022 21:33:38 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id e194so11925683iof.11;
+        Mon, 18 Apr 2022 21:33:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FRol2Ixdapg4j6Uubg8h/Lz+s9FI9j4eiU5OeuRx7x0=;
+        b=LY5NLAdXfjvJQN/FK13ITsFNln7oksLs2VxwloLzdDODmDRlP8fTtetuJDBdGN2Z8+
+         CXgjP7UARDBVnBEcsXut3Ghhco5bQkMNyDPSVpGDJwFt1wbqZvlDPL7BjrhUzbFL4eFd
+         q0DfaFL9w7IrL2S3KV706XOrc14/JRVnFnWwLJASIB2N/45Hg+6uGrLFT+bOD23lzA2e
+         vqj+7PcGJ5yougE3T2dyVzS55k3mXqW6rCHfWzUN8+iJmNR/vNC31CGSDvf4cWeoHcaR
+         jEYk4BXCs/EVAc6x2Po5iKbucwjZJ7dIsmuVcPopQpr0T2xJ2LZmS/KULXLBWSkn7ogp
+         igsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FRol2Ixdapg4j6Uubg8h/Lz+s9FI9j4eiU5OeuRx7x0=;
+        b=YzrZlycOM7fxIJvh30MsJIu+7tXNq4xj3fbnSfD49/1gEnRTWOn3xTselKAkigfO+u
+         EvLFMKURWYTApxUUkjV8arcmrG6IzlRTb0LUGUmQlBUwQ0wzlU05xJF04m/qRa2awQsC
+         YNmoFT1zJHp6p8249TDs9pOoS+OqepkcjVokBp1yG2ImIv2TUrK+yLko0E8os3dRfuFk
+         pr+JJK9VhJA6fJNCUyIUoGgxVbLbTaiTigrIx3KMATGpJkEv/ktDit0sSjJcuqPDC04/
+         fuksohxlgq7HQBmfWa7AliWBx8+nZrmWyYh+3lrOziNOFa0Uxg0xy8LaMLwd3s7xbusG
+         6Esg==
+X-Gm-Message-State: AOAM532/jEVOCXBnwL+ZOSBcO0EYtVJ+ViIBPnh6hvDBP+4A5sNvix84
+        8h+eCr58tDmolI9jVhQZWMHZOakRf0w+Oq4+P/s=
+X-Google-Smtp-Source: ABdhPJw/8+UIm4hFbM+iPSMSY1l5WCy3bScYyt9/mmw1xH4rZvSRp4COfQKVYT2qMXltFgOWDhdYu06slG9UMKl+wXs=
+X-Received: by 2002:a05:6638:338e:b0:328:807a:e187 with SMTP id
+ h14-20020a056638338e00b00328807ae187mr4322086jav.93.1650342817565; Mon, 18
+ Apr 2022 21:33:37 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-19_01,2022-04-15_01,2022-02-23_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220418042222.2464199-1-pulehui@huawei.com>
+In-Reply-To: <20220418042222.2464199-1-pulehui@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 Apr 2022 21:33:26 -0700
+Message-ID: <CAEf4BzbavSC=JN=sowFY3t4yOUfe8QtVXhdG+y7a-T1YtfRqXQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Support riscv USDT argument parsing logic
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-riscv@lists.infradead.org,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-LLVM commit [1] changed loop pragma behavior such that
-full loop unroll is always honored with user pragma.
-Previously, unroll count also depends on the unrolled
-code size. For pyperf600, without [1], the loop unroll
-count is 150. With [1], the loop unroll count is 600.
+On Sun, Apr 17, 2022 at 8:53 PM Pu Lehui <pulehui@huawei.com> wrote:
+>
+> Add riscv-specific USDT argument specification parsing logic.
+> riscv USDT argument format is shown below:
+> - Memory dereference case:
+>   "size@off(reg)", e.g. "-8@-88(s0)"
+> - Constant value case:
+>   "size@val", e.g. "4@5"
+> - Register read case:
+>   "size@reg", e.g. "-8@a1"
+>
+> s8 will be marked as poison while it's a reg of riscv, we need
+> to alias it in advance.
+>
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
 
-The unroll count of 600 caused the program size close to
-298k and this caused the following code is generated:
-         0:       7b 1a 00 ff 00 00 00 00 *(u64 *)(r10 - 256) =3D r1
-  ;       uint64_t pid_tgid =3D bpf_get_current_pid_tgid();
-         1:       85 00 00 00 0e 00 00 00 call 14
-         2:       bf 06 00 00 00 00 00 00 r6 =3D r0
-  ;       pid_t pid =3D (pid_t)(pid_tgid >> 32);
-         3:       bf 61 00 00 00 00 00 00 r1 =3D r6
-         4:       77 01 00 00 20 00 00 00 r1 >>=3D 32
-         5:       63 1a fc ff 00 00 00 00 *(u32 *)(r10 - 4) =3D r1
-         6:       bf a2 00 00 00 00 00 00 r2 =3D r10
-         7:       07 02 00 00 fc ff ff ff r2 +=3D -4
-  ;       PidData* pidData =3D bpf_map_lookup_elem(&pidmap, &pid);
-         8:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 0 =
-ll
-        10:       85 00 00 00 01 00 00 00 call 1
-        11:       bf 08 00 00 00 00 00 00 r8 =3D r0
-  ;       if (!pidData)
-        12:       15 08 15 e8 00 00 00 00 if r8 =3D=3D 0 goto -6123 <LBB0_2=
-7588+0xffffffffffdae100>
+Can you please mention briefly the testing you performed as I'm not
+able to test this locally.
 
-Note that insn 12 has a branch offset -6123 which is clearly illegal
-and will be rejected by the verifier. The negative offset is due to
-the branch range is greater than INT16_MAX.
+>  tools/lib/bpf/usdt.c | 107 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 107 insertions(+)
+>
+> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+> index 934c25301ac1..b8af409cc763 100644
+> --- a/tools/lib/bpf/usdt.c
+> +++ b/tools/lib/bpf/usdt.c
+> @@ -10,6 +10,11 @@
+>  #include <linux/ptrace.h>
+>  #include <linux/kernel.h>
+>
+> +/* s8 will be marked as poison while it's a reg of riscv */
+> +#if defined(__riscv)
+> +#define rv_s8 s8
+> +#endif
+> +
+>  #include "bpf.h"
+>  #include "libbpf.h"
+>  #include "libbpf_common.h"
+> @@ -1400,6 +1405,108 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
+>         return len;
+>  }
+>
+> +#elif defined(__riscv)
+> +
+> +static int calc_pt_regs_off(const char *reg_name)
+> +{
+> +       static struct {
+> +               const char *name;
+> +               size_t pt_regs_off;
+> +       } reg_map[] = {
+> +               { "ra", offsetof(struct user_regs_struct, ra) },
+> +               { "sp", offsetof(struct user_regs_struct, sp) },
+> +               { "gp", offsetof(struct user_regs_struct, gp) },
+> +               { "tp", offsetof(struct user_regs_struct, tp) },
+> +               { "t0", offsetof(struct user_regs_struct, t0) },
+> +               { "t1", offsetof(struct user_regs_struct, t1) },
+> +               { "t2", offsetof(struct user_regs_struct, t2) },
+> +               { "s0", offsetof(struct user_regs_struct, s0) },
+> +               { "s1", offsetof(struct user_regs_struct, s1) },
+> +               { "a0", offsetof(struct user_regs_struct, a0) },
+> +               { "a1", offsetof(struct user_regs_struct, a1) },
+> +               { "a2", offsetof(struct user_regs_struct, a2) },
+> +               { "a3", offsetof(struct user_regs_struct, a3) },
+> +               { "a4", offsetof(struct user_regs_struct, a4) },
+> +               { "a5", offsetof(struct user_regs_struct, a5) },
+> +               { "a6", offsetof(struct user_regs_struct, a6) },
+> +               { "a7", offsetof(struct user_regs_struct, a7) },
+> +               { "s2", offsetof(struct user_regs_struct, s2) },
+> +               { "s3", offsetof(struct user_regs_struct, s3) },
+> +               { "s4", offsetof(struct user_regs_struct, s4) },
+> +               { "s5", offsetof(struct user_regs_struct, s5) },
+> +               { "s6", offsetof(struct user_regs_struct, s6) },
+> +               { "s7", offsetof(struct user_regs_struct, s7) },
+> +               { "s8", offsetof(struct user_regs_struct, rv_s8) },
+> +               { "s9", offsetof(struct user_regs_struct, s9) },
+> +               { "s10", offsetof(struct user_regs_struct, s10) },
+> +               { "s11", offsetof(struct user_regs_struct, s11) },
+> +               { "t3", offsetof(struct user_regs_struct, t3) },
+> +               { "t4", offsetof(struct user_regs_struct, t4) },
+> +               { "t5", offsetof(struct user_regs_struct, t5) },
+> +               { "t6", offsetof(struct user_regs_struct, t6) },
 
-This patch changed the unroll count to be 150 to avoid above
-branch target insn out-of-range issue. Also the llvm is enhanced ([2])
-to assert if the branch target insn is out of INT16 range.
+would it make sense to order registers a bit more "logically"? Like
+s0-s11, t0-t6, etc. Right now it looks very random and it's hard to
+see if all the registers from some range of registers are defined.
 
-  [1] https://reviews.llvm.org/D119148
-  [2] https://reviews.llvm.org/D123877
+> +       };
+> +       int i;
+> +
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/progs/pyperf.h    |  4 ++++
- tools/testing/selftests/bpf/progs/pyperf600.c | 11 +++++++----
- 2 files changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/pyperf.h b/tools/testing/sel=
-ftests/bpf/progs/pyperf.h
-index 1ed28882daf3..5d3dc4d66d47 100644
---- a/tools/testing/selftests/bpf/progs/pyperf.h
-+++ b/tools/testing/selftests/bpf/progs/pyperf.h
-@@ -299,7 +299,11 @@ int __on_event(struct bpf_raw_tracepoint_args *ctx)
- #ifdef NO_UNROLL
- #pragma clang loop unroll(disable)
- #else
-+#ifdef UNROLL_COUNT
-+#pragma clang loop unroll_count(UNROLL_COUNT)
-+#else
- #pragma clang loop unroll(full)
-+#endif
- #endif /* NO_UNROLL */
- 		/* Unwind python stack */
- 		for (int i =3D 0; i < STACK_MAX_LEN; ++i) {
-diff --git a/tools/testing/selftests/bpf/progs/pyperf600.c b/tools/testing/=
-selftests/bpf/progs/pyperf600.c
-index cb49b89e37cd..ce1aa5189cc4 100644
---- a/tools/testing/selftests/bpf/progs/pyperf600.c
-+++ b/tools/testing/selftests/bpf/progs/pyperf600.c
-@@ -1,9 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2019 Facebook
- #define STACK_MAX_LEN 600
--/* clang will not unroll the loop 600 times.
-- * Instead it will unroll it to the amount it deemed
-- * appropriate, but the loop will still execute 600 times.
-- * Total program size is around 90k insns
-+/* Full unroll of 600 iterations will have total
-+ * program size close to 298k insns and this may
-+ * cause BPF_JMP insn out of 16-bit integer range.
-+ * So limit the unroll size to 150 so the
-+ * total program size is around 80k insns but
-+ * the loop will still execute 600 times.
-  */
-+#define UNROLL_COUNT 150
- #include "pyperf.h"
---=20
-2.30.2
-
+[...]
