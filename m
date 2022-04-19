@@ -2,112 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3FB506681
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 10:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5B15066E3
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 10:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349714AbiDSIKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 04:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        id S244295AbiDSI2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 04:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235921AbiDSIKi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 04:10:38 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB14C275D5
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 01:07:54 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-127-e4KWbpF-O9CJiTd9liyVDw-1; Tue, 19 Apr 2022 09:07:51 +0100
-X-MC-Unique: e4KWbpF-O9CJiTd9liyVDw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.32; Tue, 19 Apr 2022 09:07:50 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.033; Tue, 19 Apr 2022 09:07:50 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alexander Lobakin' <alobakin@pm.me>, Song Liu <song@kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S240524AbiDSI2v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 04:28:51 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA5D12A98;
+        Tue, 19 Apr 2022 01:26:09 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 11so15244320edw.0;
+        Tue, 19 Apr 2022 01:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qlMzRLQ0OCx1uqmYZwFcY29mjrRCXsvr66MMojKWmP8=;
+        b=P5jpGuP2FbZnOB6I5gV27dKuLe04Ag6rTBVEN0lNs7LVSpGmKj1kU4mx33sk0AH9gN
+         1zVp8lvXlykYT+6T4n2aZ+4umqBgSaKOKRd8lNpw+IHNS6dJFAafq4vN0qHJEVj7l3t6
+         KxkZgTYDRdAR0iiuWMsD2qDyDiiQ8ICXPWM4CvChERhmU9a2eFijYtFJC/gXaNeGsO3F
+         Q1aLG0aSH7alPyV4SPNzDNfubtTeXtRi3DuiKkCfqSGT71XInVA7BEGUCyhoLqHOfOXT
+         xqEz+nm4NGyko/+dLM+Y0iQNJCXjzrZ7Afvr703NjRcNl/fzY4ejdIKRSBCJVRbUJ4Ju
+         3c+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qlMzRLQ0OCx1uqmYZwFcY29mjrRCXsvr66MMojKWmP8=;
+        b=QkOL32XRP9qJ/5V1seDdFjGym3eZwSyVJh3MCzbepNRcDjmamuIvbtBbttDcUJQ9HI
+         rsI/dTi+ohBMEdmCcyK1bys0dq+tgw4emjc/yvjOoZjqz4n3bPFPrgq9/0P3K0OKKyZ1
+         5BXsXIzy7zSyJeIf5vf1sgDyyd8WOUXeVSttUbwH1YKIDTg4lf+C7ymv6Y1PIAp1Mc/P
+         2ycU18LKB8Tnm2eVKS9CfW8cAYVzECzjejt0BVySLtyz+lJqIAGUeEvDr3xB6Rn7q3Hj
+         y/boQL76HFAGz7X6zhJCFN+qpyo9JbxEWg2pB88k2w+W8zZ2WL9nLCdhf9yjA0Xrt4nm
+         7XJg==
+X-Gm-Message-State: AOAM532pGPsttqIR21m+p8qQgwlZM9jST34FBbRAZDfh+8iQsaFHRbRt
+        RXbK9OKPxyTiwxUPyqMzpiQ=
+X-Google-Smtp-Source: ABdhPJyZMRKj7e26bl9doDNtauY6dNFnzM2v+6rPOjf0RHdggWnoiZoafV0LNr2m61q47LfNDBCA/A==
+X-Received: by 2002:a05:6402:c84:b0:41d:72b5:fb05 with SMTP id cm4-20020a0564020c8400b0041d72b5fb05mr15649278edb.361.1650356768157;
+        Tue, 19 Apr 2022 01:26:08 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id x1-20020a1709060ee100b006e8a49f215dsm5375726eji.73.2022.04.19.01.26.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Apr 2022 01:26:07 -0700 (PDT)
+Date:   Tue, 19 Apr 2022 10:26:05 +0200
+From:   Jiri Olsa <olsajiri@gmail.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Jesper Dangaard Brouer" <hawk@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "Jonathan Lemon" <jonathan.lemon@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        "Chenbo Feng" <fengc@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: RE: [PATCH bpf-next 07/11] samples: bpf: fix uin64_t format literals
-Thread-Topic: [PATCH bpf-next 07/11] samples: bpf: fix uin64_t format literals
-Thread-Index: AQHYUbspso42ifnDw02kovtD5V7S26z25T3g
-Date:   Tue, 19 Apr 2022 08:07:50 +0000
-Message-ID: <9465da05497746b3b70d7c841a585d5b@AcuMS.aculab.com>
-References: <20220414223704.341028-1-alobakin@pm.me>
- <20220414223704.341028-8-alobakin@pm.me>
- <CAPhsuW7FuAKX0fJ1XPfFWWwRS+wTW0qA49V-iQVzxv4jOb47MA@mail.gmail.com>
- <20220416174816.198651-1-alobakin@pm.me>
-In-Reply-To: <20220416174816.198651-1-alobakin@pm.me>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCHv2 bpf-next 1/4] kallsyms: Add kallsyms_lookup_names
+ function
+Message-ID: <Yl5yHVOJpCYr+T3r@krava>
+References: <20220418124834.829064-1-jolsa@kernel.org>
+ <20220418124834.829064-2-jolsa@kernel.org>
+ <20220418233546.dfe0a1be12193c26b05cdd93@kernel.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220418233546.dfe0a1be12193c26b05cdd93@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogQWxleGFuZGVyIExvYmFraW4NCj4gU2VudDogMTYgQXByaWwgMjAyMiAxODo1NQ0KPiBU
-bzogU29uZyBMaXUgPHNvbmdAa2VybmVsLm9yZz4NCj4gDQo+IEZyb206IFNvbmcgTGl1IDxzb25n
-QGtlcm5lbC5vcmc+DQo+IERhdGU6IEZyaSwgMTUgQXByIDIwMjIgMTY6NTI6MTMgLTA3MDANCj4g
-DQo+ID4gT24gVGh1LCBBcHIgMTQsIDIwMjIgYXQgMzo0NiBQTSBBbGV4YW5kZXIgTG9iYWtpbiA8
-YWxvYmFraW5AcG0ubWU+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IFRoZXJlJ3MgYSBjb3VwbGUgcGxh
-Y2VzIHdoZXJlIHVpbjY0X3QgaXMgYmVpbmcgcGFzc2VkIGFzIGFuICVsZA0KPiA+ID4gZm9ybWF0
-IGFyZ3VtZW50LCB3aGljaCBpcyBpbmNvcnJlY3QgKHNob3VsZCBiZSAlbGxkKS4gRml4IHRoZW0u
-DQo+ID4NCj4gPiBUaGlzIHdpbGwgY2F1c2Ugc29tZSB3YXJuaW5nIG9uIHNvbWUgNjQtYml0IGNv
-bXBpbGVyLCBubz8NCj4gDQo+IE9oIHdhaXQsIEkgYWNjaWRlbnRpYWxseSBtZW50aW9uZWQgJWxk
-IGFuZCAlbGxkIGFsdGhvdWdoIGluIGZhY3QgSQ0KPiBjaGFuZ2VkICVsdSB0byAlbGx1LiBTbyB0
-aGVyZSB3b24ndCBiZSBhbnkgY29tcGlsZXIgd2FybmluZ3MuIEknbGwNCj4gZml4IHRoZSBjb21t
-aXQgbWVzc2FnZSBpbiB2Mi4NCg0KVGhhdCB3b24ndCBtYWtlIGFueSBkaWZmZXJlbmNlLg0KVGhl
-IGNvcnJlY3Qgd2F5IHRvIHByaW50IHVpbnQ2NF90IGlzIHVzaW5nIFBSSXU2NC4NCg0KCURhdmlk
-DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
-YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
-IChXYWxlcykNCg==
+On Mon, Apr 18, 2022 at 11:35:46PM +0900, Masami Hiramatsu wrote:
+> On Mon, 18 Apr 2022 14:48:31 +0200
+> Jiri Olsa <jolsa@kernel.org> wrote:
+> 
+> > Adding kallsyms_lookup_names function that resolves array of symbols
+> > with single pass over kallsyms.
+> > 
+> > The user provides array of string pointers with count and pointer to
+> > allocated array for resolved values.
+> > 
+> >   int kallsyms_lookup_names(const char **syms, size_t cnt,
+> >                             unsigned long *addrs)
+> 
+> What about renaming the 'syms' argument to 'sorted_syms' so that user
+> is easily notice what is required?
+> Or renaming the function as kallsyms_lookup_sorted_names()?
+> 
+> 
+> > 
+> > It iterates all kalsyms symbols and tries to loop up each in provided
+> > symbols array with bsearch. The symbols array needs to be sorted by
+> > name for this reason.
+> > 
+> > We also check each symbol to pass ftrace_location, because this API
+> > will be used for fprobe symbols resolving. This can be optional in
+> > future if there's a need.
+> > 
+> > We need kallsyms_on_each_symbol function, so enabling it and also
+> > the new function for CONFIG_FPROBE option.
+> > 
+> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/kallsyms.h |  6 ++++
+> >  kernel/kallsyms.c        | 70 +++++++++++++++++++++++++++++++++++++++-
+> >  2 files changed, 75 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+> > index ce1bd2fbf23e..7c82fa7445d4 100644
+> > --- a/include/linux/kallsyms.h
+> > +++ b/include/linux/kallsyms.h
+> > @@ -72,6 +72,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
+> >  #ifdef CONFIG_KALLSYMS
+> >  /* Lookup the address for a symbol. Returns 0 if not found. */
+> >  unsigned long kallsyms_lookup_name(const char *name);
+> > +int kallsyms_lookup_names(const char **syms, size_t cnt, unsigned long *addrs);
+> >  
+> >  extern int kallsyms_lookup_size_offset(unsigned long addr,
+> >  				  unsigned long *symbolsize,
+> > @@ -103,6 +104,11 @@ static inline unsigned long kallsyms_lookup_name(const char *name)
+> >  	return 0;
+> >  }
+> >  
+> > +static inline int kallsyms_lookup_names(const char **syms, size_t cnt, unsigned long *addrs)
+> > +{
+> > +	return -ERANGE;
+> > +}
+> > +
+> >  static inline int kallsyms_lookup_size_offset(unsigned long addr,
+> >  					      unsigned long *symbolsize,
+> >  					      unsigned long *offset)
+> > diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> > index 79f2eb617a62..ef940b25f3fc 100644
+> > --- a/kernel/kallsyms.c
+> > +++ b/kernel/kallsyms.c
+> > @@ -29,6 +29,7 @@
+> >  #include <linux/compiler.h>
+> >  #include <linux/module.h>
+> >  #include <linux/kernel.h>
+> > +#include <linux/bsearch.h>
+> >  
+> >  /*
+> >   * These will be re-linked against their real values
+> > @@ -228,7 +229,7 @@ unsigned long kallsyms_lookup_name(const char *name)
+> >  	return module_kallsyms_lookup_name(name);
+> >  }
+> >  
+> > -#ifdef CONFIG_LIVEPATCH
+> > +#if defined(CONFIG_LIVEPATCH) || defined(CONFIG_FPROBE)
+> >  /*
+> >   * Iterate over all symbols in vmlinux.  For symbols from modules use
+> >   * module_kallsyms_on_each_symbol instead.
+> > @@ -572,6 +573,73 @@ int sprint_backtrace_build_id(char *buffer, unsigned long address)
+> >  	return __sprint_symbol(buffer, address, -1, 1, 1);
+> >  }
+> >  
+> > +#ifdef CONFIG_FPROBE
+> > +static int symbols_cmp(const void *a, const void *b)
+> > +{
+> > +	const char **str_a = (const char **) a;
+> > +	const char **str_b = (const char **) b;
+> > +
+> > +	return strcmp(*str_a, *str_b);
+> > +}
+> > +
+> > +struct kallsyms_data {
+> > +	unsigned long *addrs;
+> > +	const char **syms;
+> > +	size_t cnt;
+> > +	size_t found;
+> > +};
+> > +
+> > +static int kallsyms_callback(void *data, const char *name,
+> > +			     struct module *mod, unsigned long addr)
+> > +{
+> > +	struct kallsyms_data *args = data;
+> > +
+> > +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
+> > +		return 0;
+> > +
+> > +	addr = ftrace_location(addr);
+> > +	if (!addr)
+> > +		return 0;
+> 
+> Ooops, wait. Did you do this last version? I missed this point.
+> This changes the meanings of the kernel function.
 
+yes, it was there before ;-) and you're right.. so some archs can
+return different address, I did not realize that
+
+> 
+> > +
+> > +	args->addrs[args->found++] = addr;
+> > +	return args->found == args->cnt ? 1 : 0;
+> > +}
+> > +
+> > +/**
+> > + * kallsyms_lookup_names - Lookup addresses for array of symbols
+> 
+> More correctly "Lookup 'ftraced' addresses for array of sorted symbols", right?
+> 
+> I'm not sure, we can call it as a 'kallsyms' API, since this is using
+> kallsyms but doesn't return symbol address, but ftrace address.
+> I think this name misleads user to expect returning symbol address.
+> 
+> > + *
+> > + * @syms: array of symbols pointers symbols to resolve, must be
+> > + * alphabetically sorted
+> > + * @cnt: number of symbols/addresses in @syms/@addrs arrays
+> > + * @addrs: array for storing resulting addresses
+> > + *
+> > + * This function looks up addresses for array of symbols provided in
+> > + * @syms array (must be alphabetically sorted) and stores them in
+> > + * @addrs array, which needs to be big enough to store at least @cnt
+> > + * addresses.
+> 
+> Hmm, sorry I changed my mind. I rather like to expose kallsyms_on_each_symbol()
+> and provide this API from fprobe or ftrace, because this returns ftrace address
+> and thus this is only used from fprobe.
+
+ok, so how about:
+
+  int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs);
+
+
+thanks,
+jirka
