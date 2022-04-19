@@ -2,219 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F3B5079BF
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 21:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67453507A3B
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 21:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357492AbiDSTEt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 15:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
+        id S1345095AbiDSTan (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 15:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357537AbiDSTEF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 15:04:05 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691643F8B4
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 12:01:17 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2ebfdbe01f6so153380277b3.10
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 12:01:17 -0700 (PDT)
+        with ESMTP id S1344857AbiDSTal (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 15:30:41 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F2F40A1E
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 12:27:57 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id w5so8575956lji.4
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 12:27:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+hP7tIoCUuYkQ+zjPRTuNKjqZ9jjmEEj0aj+0w5l79w=;
-        b=g3b2g7jHMxTvUo6hv/ph8Rgcf3nplkB5t0OWATOkufPHnwymvu3C553RRafkAXfhQA
-         yUH/pxnV1ha26rwAoqqHTyolav3gWSJ4kFKin+2vusoFcE7oX9oIh8FdqiDRwNXcCRv2
-         CfvSZ6ClGtt/SpvFsEI5FeMCgmMIW45rV9hiYSxJJUasrfLgLjSCm+nCZ8i701qH4f2r
-         TiTa28iFa98tdLR7dXDwlOJvN109jX9DfAIDVlLLuw4LKUBqBwwgITpDiTRf2Din4M9K
-         DXLLe6liMGRKGRMlT3XE5uM8qQUNsIZ+962koOsiNCTpiRj7Q8Lup26yu/BGgxWQN/i9
-         A5XQ==
+        bh=/3mAvdy0ga85ggIH3HoGB0ePtskeVfNvDlSSUq9jS0A=;
+        b=QvNx6FxecAp/z7mkZwwjndqXRE72gf91AcAXVa+k62ZgBfXGYm/WwmIqt/J18sYwhc
+         i2StNOuJVaOsCjV7cve0T1U3qOs/WN1wFMwJTv6daJNph0klA03P+VQS+HViCxN/bhCX
+         eLHeAXjYrEG6AHsQ2gChTGLFMTqfXijO7Vj+0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=+hP7tIoCUuYkQ+zjPRTuNKjqZ9jjmEEj0aj+0w5l79w=;
-        b=sEMXNWJ9QrFSP/omcwBcclWm0/T+tUn1KKsKszJ3cNj+ReKIVl3otTwuZeWzgaFRoL
-         ZJCYtT/rifuy079edXCDups3UWf12KlpYO3W/g53J3vwOWNFI3Uy/r+3KSD1qYhnraWL
-         MJmxxK6L4MWa/ACYwghYhwehmT+JIKlEHan0W7iR0/Lv6OsGXdaLqbFs/Agma/12CVzT
-         7SQnTrV0k0gYFUY2DNRSxBvPLqPFNtqmQXoemIKzxsFFCygEobF8OWcrZCTvXsL6QsXF
-         9rws/tNkdVZQ64dD2G1GoGw0khUFCXcUF6rZbeDhsz/8grJriCsRYYRBhVAarecEiDsH
-         eyDw==
-X-Gm-Message-State: AOAM530PxGV1cOa48H4a6+3EteXgx5jR5BL/A2EvqpkrpjAIpJR4RET8
-        9dnmJSv9JeuamgYEj11lv9xswVI=
-X-Google-Smtp-Source: ABdhPJw0Aul9eK3DLWjQE1fqUb+rsC6AWoqIXQy8zlVqWFWgcegHpJuYpt4GHaPvn4FN85zVENCFOh8=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:37f:6746:8e66:a291])
- (user=sdf job=sendgmr) by 2002:a81:7e0a:0:b0:2ec:e0ab:d19c with SMTP id
- o10-20020a817e0a000000b002ece0abd19cmr17479203ywn.465.1650394876692; Tue, 19
- Apr 2022 12:01:16 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 12:00:53 -0700
-In-Reply-To: <20220419190053.3395240-1-sdf@google.com>
-Message-Id: <20220419190053.3395240-9-sdf@google.com>
-Mime-Version: 1.0
-References: <20220419190053.3395240-1-sdf@google.com>
-X-Mailer: git-send-email 2.36.0.rc0.470.gd361397f0d-goog
-Subject: [PATCH bpf-next v5 8/8] selftests/bpf: verify lsm_cgroup struct sock access
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/3mAvdy0ga85ggIH3HoGB0ePtskeVfNvDlSSUq9jS0A=;
+        b=WLX2e5nUWvZTVVJjJcImvclPm6ICxgC0+c5rMVLIcryWyhMp7NITXUuFxZyoaPq3Y1
+         Wq9ElnKLiRJR0r5aAiX4Io+SPr7IcH+mN3YZaFBIAl7YFFZ3mI2gze30I0C98gBmEUYj
+         /WnvQYZ6zE3y9j2muavZIzZQ6n2tE6TKlHNDSnH79AFrUYsWmsE1wMYx0pEzt4QSYVba
+         JxQkxM90LmEIhzg7PfsVB31zO18V7p73kFsHJdy03b9pe3Cx3JhVQ2rBqOD2VJPy+zY7
+         yJB/VtP0QymMDq02+yXaKy6B8y69q5wxKZ8O4Mp1plnRUqU+4C6uHNVfwWqWQ7j0Tw0M
+         aBLQ==
+X-Gm-Message-State: AOAM531iDRpLq3SpJmjknCbcHVnIuWetr2pSJS7OAe9d4HB5PFLXjU3S
+        Pjq/1Ns2gBwQ5/fvSEqAv2ygitxQD4pv8N4n4TQ=
+X-Google-Smtp-Source: ABdhPJwA+qbOTXXklE1HyioQcqaEwwWggZg6FssJYQ1Q5FPckNR+ocmdbKcTsO9373Kc0DRRnBd1fQ==
+X-Received: by 2002:a2e:b8d5:0:b0:24c:814a:6190 with SMTP id s21-20020a2eb8d5000000b0024c814a6190mr10873356ljp.531.1650396475657;
+        Tue, 19 Apr 2022 12:27:55 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id p11-20020a056512312b00b0046d48dbe2efsm1595007lfd.103.2022.04.19.12.27.55
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Apr 2022 12:27:55 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id h11so21786818ljb.2
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 12:27:55 -0700 (PDT)
+X-Received: by 2002:a05:6512:3c93:b0:44b:4ba:c334 with SMTP id
+ h19-20020a0565123c9300b0044b04bac334mr12102115lfv.27.1650396055810; Tue, 19
+ Apr 2022 12:20:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220415164413.2727220-1-song@kernel.org> <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
+ <YlpPW9SdCbZnLVog@infradead.org> <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
+ <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
+ <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
+ <Yl4F4w5NY3v0icfx@bombadil.infradead.org> <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
+ <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
+In-Reply-To: <Yl8CicJGHpTrOK8m@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 Apr 2022 12:20:39 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
+Message-ID: <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Song Liu <songliubraving@fb.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "song@kernel.org" <song@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "pmladek@suse.com" <pmladek@suse.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dborkman@redhat.com" <dborkman@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "bp@alien8.de" <bp@alien8.de>, "mbenes@suse.cz" <mbenes@suse.cz>,
+        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-sk_priority & sk_mark are writable, the rest is readonly.
+On Tue, Apr 19, 2022 at 11:42 AM Mike Rapoport <rppt@kernel.org> wrote:
+>
+> I'd say that bpf_prog_pack was a cure for symptoms and this project tries
+> to address more general problem.
+> But you are right, it'll take some time and won't land in 5.19.
 
-Add new ldx_offset fixups to lookup the offset of struct field.
-Allow using test.kfunc regardless of prog_type.
+Just to update people: I've just applied Song's [1/4] patch, which
+means that the whole current hugepage vmalloc thing is effectively
+disabled (because nothing opts in).
 
-One interesting thing here is that the verifier doesn't
-really force me to add NULL checks anywhere :-/
+And I suspect that will be the status for 5.18, unless somebody comes
+up with some very strong arguments for (re-)starting using huge pages.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/test_verifier.c   | 54 ++++++++++++++++++-
- .../selftests/bpf/verifier/lsm_cgroup.c       | 34 ++++++++++++
- 2 files changed, 87 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/lsm_cgroup.c
-
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index a2cd236c32eb..d6bc55c54aaa 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -75,6 +75,12 @@ struct kfunc_btf_id_pair {
- 	int insn_idx;
- };
- 
-+struct ldx_offset {
-+	const char *strct;
-+	const char *field;
-+	int insn_idx;
-+};
-+
- struct bpf_test {
- 	const char *descr;
- 	struct bpf_insn	insns[MAX_INSNS];
-@@ -102,6 +108,7 @@ struct bpf_test {
- 	int fixup_map_ringbuf[MAX_FIXUPS];
- 	int fixup_map_timer[MAX_FIXUPS];
- 	struct kfunc_btf_id_pair fixup_kfunc_btf_id[MAX_FIXUPS];
-+	struct ldx_offset fixup_ldx[MAX_FIXUPS];
- 	/* Expected verifier log output for result REJECT or VERBOSE_ACCEPT.
- 	 * Can be a tab-separated sequence of expected strings. An empty string
- 	 * means no log verification.
-@@ -755,6 +762,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 	int *fixup_map_ringbuf = test->fixup_map_ringbuf;
- 	int *fixup_map_timer = test->fixup_map_timer;
- 	struct kfunc_btf_id_pair *fixup_kfunc_btf_id = test->fixup_kfunc_btf_id;
-+	struct ldx_offset *fixup_ldx = test->fixup_ldx;
- 
- 	if (test->fill_helper) {
- 		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-@@ -967,6 +975,50 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 			fixup_kfunc_btf_id++;
- 		} while (fixup_kfunc_btf_id->kfunc);
- 	}
-+
-+	if (fixup_ldx->strct) {
-+		const struct btf_member *memb;
-+		const struct btf_type *tp;
-+		const char *name;
-+		struct btf *btf;
-+		int btf_id;
-+		int off;
-+		int i;
-+
-+		btf = btf__load_vmlinux_btf();
-+
-+		do {
-+			off = -1;
-+			if (!btf)
-+				goto next_ldx;
-+
-+			btf_id = btf__find_by_name_kind(btf,
-+							fixup_ldx->strct,
-+							BTF_KIND_STRUCT);
-+			if (btf_id < 0)
-+				goto next_ldx;
-+
-+			tp = btf__type_by_id(btf, btf_id);
-+			memb = btf_members(tp);
-+
-+			for (i = 0; i < btf_vlen(tp); i++) {
-+				name = btf__name_by_offset(btf,
-+							   memb->name_off);
-+				if (strcmp(fixup_ldx->field, name) == 0) {
-+					off = memb->offset / 8;
-+					break;
-+				}
-+				memb++;
-+			}
-+
-+next_ldx:
-+			prog[fixup_ldx->insn_idx].off = off;
-+			fixup_ldx++;
-+
-+		} while (fixup_ldx->strct);
-+
-+		btf__free(btf);
-+	}
- }
- 
- struct libcap {
-@@ -1131,7 +1183,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 		opts.log_level = 4;
- 	opts.prog_flags = pflags;
- 
--	if (prog_type == BPF_PROG_TYPE_TRACING && test->kfunc) {
-+	if (test->kfunc) {
- 		int attach_btf_id;
- 
- 		attach_btf_id = libbpf_find_vmlinux_btf_id(test->kfunc,
-diff --git a/tools/testing/selftests/bpf/verifier/lsm_cgroup.c b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
-new file mode 100644
-index 000000000000..af0efe783511
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
-@@ -0,0 +1,34 @@
-+#define SK_WRITABLE_FIELD(tp, field, size, res) \
-+{ \
-+	.descr = field, \
-+	.insns = { \
-+		/* r1 = *(u64 *)(r1 + 0) */ \
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
-+		/* r1 = *(u64 *)(r1 + offsetof(struct socket, sk)) */ \
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
-+		/* r2 = *(u64 *)(r1 + offsetof(struct sock, <field>)) */ \
-+		BPF_LDX_MEM(size, BPF_REG_2, BPF_REG_1, 0), \
-+		/* *(u64 *)(r1 + offsetof(struct sock, <field>)) = r2 */ \
-+		BPF_STX_MEM(size, BPF_REG_1, BPF_REG_2, 0), \
-+		BPF_MOV64_IMM(BPF_REG_0, 1), \
-+		BPF_EXIT_INSN(), \
-+	}, \
-+	.result = res, \
-+	.errstr = res ? "no write support to 'struct sock' at off" : "", \
-+	.prog_type = BPF_PROG_TYPE_LSM, \
-+	.expected_attach_type = BPF_LSM_CGROUP, \
-+	.kfunc = "socket_post_create", \
-+	.fixup_ldx = { \
-+		{ "socket", "sk", 1 }, \
-+		{ tp, field, 2 }, \
-+		{ tp, field, 3 }, \
-+	}, \
-+}
-+
-+SK_WRITABLE_FIELD("sock_common", "skc_family", BPF_H, REJECT),
-+SK_WRITABLE_FIELD("sock", "sk_sndtimeo", BPF_DW, REJECT),
-+SK_WRITABLE_FIELD("sock", "sk_priority", BPF_W, ACCEPT),
-+SK_WRITABLE_FIELD("sock", "sk_mark", BPF_W, ACCEPT),
-+SK_WRITABLE_FIELD("sock", "sk_pacing_rate", BPF_DW, REJECT),
-+
-+#undef SK_WRITABLE_FIELD
--- 
-2.36.0.rc0.470.gd361397f0d-goog
-
+                      Linus
