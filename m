@@ -2,196 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BAA50720A
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 17:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491D650728F
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 18:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353979AbiDSPpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 11:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47152 "EHLO
+        id S235938AbiDSQHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 12:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240723AbiDSPpI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 11:45:08 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3167A17E36
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 08:42:25 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a16-20020a056902057000b00641c83f82f5so15015005ybt.22
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 08:42:25 -0700 (PDT)
+        with ESMTP id S242189AbiDSQHB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 12:07:01 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0542FE57
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 09:04:18 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id e128so11732229qkd.7
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 09:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=MWhERi4DU4hY8hbRinL5pU8MGWdCiSqvzarGWodqTns=;
-        b=Xa96Vb4Y1Q8TZ6IS/+WURX2vOyOEXq0qysiGlErbZR+wWj9FIRQO0lf2cLaN+Jhh3O
-         cHOIQrQZY4+rFkcEQ6GEUebsnHFTTCRLHMyUkmiHn95Fg0ERfSXGcQBSRA00v03pnxzs
-         Ytw+gZ+zCPr3WTRky8ytoGgq4mvX0aAi45cqa1JCIpKCPoysDDFT7NaS52UWU3f9eYuZ
-         X7emeJZmm3zc2Bp4PkF1/9tay7ZqWO0SQDl/iJ0vassyFCFDjCLdVk/8zeFxjwyG0I+v
-         8yC5dSNIK3hrRl8y/oAU4bbhr3U86KI7l1JVQ8bfcrDkhuNgEwzxBKnqxRBjql/Q4F4s
-         /AEw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F7ZgVuHYc8Ff4WF/8/g6oS91YrTeGjweqOqxbQpTaXc=;
+        b=Ee6i2pfdTs0WPmijL0vPfbzFJzEfTDMkvaYLflUWXyXzvevENbN5gmp9oAi5tg8JKZ
+         vNCHz5FKMfV6h0+sUigTWVt2p8i1wTF+Zs2F6Hb1sxjgB3IRCQZmJBZlD+4ctzQhKvIs
+         HM3hER6ermpHWncxo+QHlcJv8G5h/oL5sih9wm4opL2MTfiv6UFaRkClFnKGnsgGIIo1
+         Kum4gCvXJJLBRWt6gla9NmpV/CCqQrT9xHfvF0YIRbEzMagREREITzi6NtHjpWkg4DbQ
+         +4kXmy0cYE8nfs/C+beAwqW+qP4dAuHFXwICD2SCuxv+12uV2jP/YKQ6kZwQfEbxMqWb
+         T6uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=MWhERi4DU4hY8hbRinL5pU8MGWdCiSqvzarGWodqTns=;
-        b=WJNMmZCyJpWn0EoxVMJzIjm8qSPoTzgLp0CEuaT1jkH6glMB9UKrPhdLF0rVIlrU6C
-         mUL4HMCoVPsVB5so5/A0uS8hehllHSjPrn/oKh4atRbkoxINAmy7wW9w9vR08CxRnFDt
-         ufyVYCKKU6ZKVD7ASEz1r/1r8guIzAfdRc2y2t4Uqi49iwK5eQ96K9rBsUPbQPs3P41e
-         vjEh8z8HM3NVmYbiu5p7wFIv6Xw2Ku25/8IGOXSdtnLAcKsHP3M2/Ad7ARVGviaR0Cfe
-         avfNSXOCLxWeQQ2OvCETN1Jf2HjF/Fo4Xah2LQzOUrc0uroCiSZfBi9d514c5fH9Cl4a
-         PtNw==
-X-Gm-Message-State: AOAM530dnllPJE7p05AT3rdwH8A7zVxlGBfX5gxxDNjQV9YpxTJhwwKM
-        cj1AJ9IWFcg69gc+pDndVnh0rcU=
-X-Google-Smtp-Source: ABdhPJzQzBklYFPdivJ3Z8Gc+UNAXKFCXm1LGcfqQQMV0CEwQhuGOrZGcqeelvEOosukbybSFgjATOs=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:37f:6746:8e66:a291])
- (user=sdf job=sendgmr) by 2002:a81:ad47:0:b0:2ee:927d:ff39 with SMTP id
- l7-20020a81ad47000000b002ee927dff39mr16281999ywk.249.1650382944389; Tue, 19
- Apr 2022 08:42:24 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 08:42:21 -0700
-In-Reply-To: <CAADnVQ+X5HPDsqXX6mHWV4sT9=2gQSag5cc9w6iJG_YE577ZEw@mail.gmail.com>
-Message-Id: <Yl7YXXIG/EECZxd9@google.com>
-Mime-Version: 1.0
-References: <20220414161233.170780-1-sdf@google.com> <CAADnVQJ-kiWJopu+VjLDXYb9ifjKyA2h8MO=CaQppNxbHqH=-Q@mail.gmail.com>
- <Yl2W5ThWCFPIeLW8@google.com> <CAADnVQ+X5HPDsqXX6mHWV4sT9=2gQSag5cc9w6iJG_YE577ZEw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: move rcu lock management out of
- BPF_PROG_RUN routines
-From:   sdf@google.com
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F7ZgVuHYc8Ff4WF/8/g6oS91YrTeGjweqOqxbQpTaXc=;
+        b=WwCH4dkiN3KMyUQOti8Y1m0qnmE6B7SpDSFnTHWVAYy+dHKOBAuwA/2hxzKLMC9bbt
+         AGNMKwS/6mgv0m31bv8CTHECrpnjAruHApNwa9CpuLfIm8PCZR816FvvESZ115WyDSyP
+         /M63qAWh+IPgqGk71UoIHY9a70CpN8Ft6bmcWmyI1bIaQQjh6ZUvoziTduPl0jhoFTIu
+         N+fyKRbP2KXUdAsvhape3Wx3h1lI0MTacEUFQ8LYBHgEU7arHwrBxQ/XiJtg4SFi1xx/
+         vJ2z1uTXk4tOCbS6JOKd0dIHI7LWF3BrCsM9pr3aNi/9xEWoBKsrta+q8qrBQULkIgCi
+         Ciow==
+X-Gm-Message-State: AOAM530yfmbw2etL1opDuoKZFZdpqix1yD1TBtpAuyk7vHqo5grc9alO
+        G/JvevmlRFO2xpaqdIW9Z+SXUhJn9hz8gg==
+X-Google-Smtp-Source: ABdhPJwNYLdaBdvbkM/QOSAl7pkv2Hnm/DMJeHtGwRxIpnOsAOv6lOsMqKQiZQFoTLwSETiZAGVsPQ==
+X-Received: by 2002:a05:620a:2221:b0:69c:8cb9:937e with SMTP id n1-20020a05620a222100b0069c8cb9937emr9891181qkh.547.1650384256730;
+        Tue, 19 Apr 2022 09:04:16 -0700 (PDT)
+Received: from localhost.localdomain (pool-96-250-109-131.nycmny.fios.verizon.net. [96.250.109.131])
+        by smtp.gmail.com with ESMTPSA id c3-20020ac87d83000000b002e1d1b3df15sm232204qtd.44.2022.04.19.09.04.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Apr 2022 09:04:16 -0700 (PDT)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, grantseltzer@gmail.com, song@kernel.org
+Subject: [PATCH bpf-next v3 1/3] Add error returns to two API functions
+Date:   Tue, 19 Apr 2022 12:03:44 -0400
+Message-Id: <20220419160346.35633-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 04/18, Alexei Starovoitov wrote:
-> On Mon, Apr 18, 2022 at 9:50 AM <sdf@google.com> wrote:
-> >
-> > On 04/16, Alexei Starovoitov wrote:
-> > > On Thu, Apr 14, 2022 at 9:12 AM Stanislav Fomichev <sdf@google.com>  
-> wrote:
-> > > > +static int
-> > > > +bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
-> > > > +                           enum cgroup_bpf_attach_type atype,
-> > > > +                           const void *ctx, bpf_prog_run_fn  
-> run_prog,
-> > > > +                           int retval, u32 *ret_flags)
-> > > > +{
-> > > > +       const struct bpf_prog_array_item *item;
-> > > > +       const struct bpf_prog *prog;
-> > > > +       const struct bpf_prog_array *array;
-> > > > +       struct bpf_run_ctx *old_run_ctx;
-> > > > +       struct bpf_cg_run_ctx run_ctx;
-> > > > +       u32 func_ret;
-> > > > +
-> > > > +       run_ctx.retval = retval;
-> > > > +       migrate_disable();
-> > > > +       rcu_read_lock();
-> > > > +       array = rcu_dereference(cgrp->effective[atype]);
-> > > > +       item = &array->items[0];
-> > > > +       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> > > > +       while ((prog = READ_ONCE(item->prog))) {
-> > > > +               run_ctx.prog_item = item;
-> > > > +               func_ret = run_prog(prog, ctx);
-> > > ...
-> > > > +       ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
-> > > >                                     &ctx, bpf_prog_run, retval);
-> >
-> > > Did you check the asm that bpf_prog_run gets inlined
-> > > after being passed as a pointer to a function?
-> > > Crossing fingers... I suspect not every compiler can do that :(
-> > > De-virtualization optimization used to be tricky.
-> >
-> > No, I didn't, but looking at it right now, both gcc and clang
-> > seem to be doing inlining all way up to bpf_dispatcher_nop_func.
-> >
-> > clang:
-> >
-> >    0000000000001750 <__cgroup_bpf_run_filter_sock_addr>:
-> >    __cgroup_bpf_run_filter_sock_addr():
-> >    ./kernel/bpf/cgroup.c:1226
-> >    int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
-> >                                       struct sockaddr *uaddr,
-> >                                       enum cgroup_bpf_attach_type atype,
-> >                                       void *t_ctx,
-> >                                       u32 *flags)
-> >    {
-> >
-> >    ...
-> >
-> >    ./include/linux/filter.h:628
-> >                 ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-> >        1980:    49 8d 75 48             lea    0x48(%r13),%rsi
-> >    bpf_dispatcher_nop_func():
-> >    ./include/linux/bpf.h:804
-> >         return bpf_func(ctx, insnsi);
-> >        1984:    4c 89 f7                mov    %r14,%rdi
-> >        1987:    41 ff 55 30             call   *0x30(%r13)
-> >        198b:    89 c3                   mov    %eax,%ebx
-> >
-> > gcc (w/retpoline):
-> >
-> >    0000000000001110 <__cgroup_bpf_run_filter_sock_addr>:
-> >    __cgroup_bpf_run_filter_sock_addr():
-> >    kernel/bpf/cgroup.c:1226
-> >    {
-> >
-> >    ...
-> >
-> >    ./include/linux/filter.h:628
-> >                 ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-> >        11c5:    49 8d 75 48             lea    0x48(%r13),%rsi
-> >    bpf_dispatcher_nop_func():
-> >    ./include/linux/bpf.h:804
-> >        11c9:    48 8d 7c 24 10          lea    0x10(%rsp),%rdi
-> >        11ce:    e8 00 00 00 00          call   11d3
-> > <__cgroup_bpf_run_filter_sock_addr+0xc3>
-> >                         11cf: R_X86_64_PLT32     
-> __x86_indirect_thunk_rax-0x4
-> >        11d3:    89 c3                   mov    %eax,%ebx
+From: Grant Seltzer <grantseltzer@gmail.com>
 
-> Hmm. I'm not sure how you've got this asm.
-> Here is what I see with gcc 8 and gcc 10:
-> bpf_prog_run_array_cg:
-> ...
->          movq    %rcx, %r12      # run_prog, run_prog
-> ...
-> # ../kernel/bpf/cgroup.c:77:            run_ctx.prog_item = item;
->          movq    %rbx, (%rsp)    # item, run_ctx.prog_item
-> # ../kernel/bpf/cgroup.c:78:            if (!run_prog(prog, ctx) &&
-> !IS_ERR_VALUE((long)run_ctx.retval))
->          movq    %rbp, %rsi      # ctx,
->          call    *%r12   # run_prog
+This adds an error return to the following API functions:
 
-> __cgroup_bpf_run_filter_sk:
->          movq    $bpf_prog_run, %rcx     #,
-> # ../kernel/bpf/cgroup.c:1202:  return
-> bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
->          leaq    1520(%rax), %rdi        #, tmp92
-> # ../kernel/bpf/cgroup.c:1202:  return
-> bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
->          jmp     bpf_prog_run_array_cg   #
+- bpf_program__set_expected_attach_type()
+- bpf_program__set_type()
 
-> This is without kasan, lockdep and all debug configs are off.
+In both cases, the error occurs when the BPF object has
+already been loaded when the function is called. In this
+case -EBUSY is returned.
 
-> So the generated code is pretty bad as I predicted :(
+Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-> So I'm afraid this approach is no go.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index bf4f7ac54ebf..0ed1a8c9c398 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8551,8 +8551,11 @@ enum bpf_prog_type bpf_program__type(const struct bpf_program *prog)
+ 	return prog->type;
+ }
+ 
+-void bpf_program__set_type(struct bpf_program *prog, enum bpf_prog_type type)
++int bpf_program__set_type(struct bpf_program *prog, enum bpf_prog_type type)
+ {
++	if (prog->obj->loaded)
++		return libbpf_err(-EBUSY);
++
+ 	prog->type = type;
+ }
+ 
+@@ -8598,10 +8601,14 @@ enum bpf_attach_type bpf_program__expected_attach_type(const struct bpf_program
+ 	return prog->expected_attach_type;
+ }
+ 
+-void bpf_program__set_expected_attach_type(struct bpf_program *prog,
++int bpf_program__set_expected_attach_type(struct bpf_program *prog,
+ 					   enum bpf_attach_type type)
+ {
++	if (prog->obj->loaded)
++		return libbpf_err(-EBUSY);
++
+ 	prog->expected_attach_type = type;
++	return 0;
+ }
+ 
+ __u32 bpf_program__flags(const struct bpf_program *prog)
+-- 
+2.34.1
 
-I've retested again and it still unrolls it for me on gcc 11 :-/
-Anyway, I guess we have two options:
-
-1. Go back to defines.
-2. Don't pass a ptr to func, but pass an enum which indicates whether
-    to use bpf_prog_run or __bpf_prog_run_save_cb. Seems like in this
-    case the compiler shouldn't have any trouble unwrapping it?
-
-I'll prototype and send (2). If it won't work out we can always get back
-to (1).
