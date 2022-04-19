@@ -2,141 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8299C5063C1
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 07:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C302F5063D6
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 07:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233360AbiDSFLu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 01:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
+        id S229981AbiDSFVL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 01:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbiDSFLt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 01:11:49 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D229201A1
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 22:09:08 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23J3NwBw006363
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 22:09:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=r/MZoFwC8905GLcFK6aRpw/ikrhIH5ZtrEdBPgBOysU=;
- b=fCUIS/pcKa5nFv6Ny98B37KoTzffmH+USOs15QM4awbwgklO2Kaox3weemtD6ePE066k
- 85bzNLSFlGm6RAbBjTzYE7nmEJQ0Je0rpGArSG9fnGhvSNfvdbP08eyqZqNPxeMwDlUo
- bfo0GOQ/VdHGYV8Ys7Jst7fyoD5qw4X2Z9w= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fhn50ra7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 22:09:07 -0700
-Received: from twshared16483.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 18 Apr 2022 22:09:06 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 6E3639308723; Mon, 18 Apr 2022 22:09:00 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: Workaround a verifier issue for test exhandler
-Date:   Mon, 18 Apr 2022 22:09:00 -0700
-Message-ID: <20220419050900.3136024-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: KfNUcV_WRVYbSCSAOsVhb3zo1cLR17aA
-X-Proofpoint-ORIG-GUID: KfNUcV_WRVYbSCSAOsVhb3zo1cLR17aA
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229774AbiDSFVL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 01:21:11 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFCD2494F;
+        Mon, 18 Apr 2022 22:18:28 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id k29so22839131pgm.12;
+        Mon, 18 Apr 2022 22:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SKXKDpig7n84fkdU5EKrzxCImKQmohN4igE9S+2Lkao=;
+        b=KP4s69fPav61CUreMrEmh70bJbOp42IDKWWxzxeBrYNMRzKxOedHSm3wOQbUtNjBMg
+         Yrj0ZjPHM8wvrYAfp4BhDks/TgUrUWs0bDX2VEVp1oTqpOzczDvInh3oknLeIoNqS3sA
+         /5AXCXH7nqQvM0yCac9ONTFiS8PiGWoxaww9Gat+5n5/y5pe5ffK5YQKCB2HOtj2ycFE
+         zrt0SkXxury/EXltXoZBxuzhySpgu/rIhg7tb0LWFGdQaB7DDX5tstWioz3HMai6mNJD
+         jDjhmM60okBXmpXhNKPlDedkV5XF+d7R/Plo8Lkv570gNiLHMZV0AybsnEslT4XnQkuH
+         y82w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SKXKDpig7n84fkdU5EKrzxCImKQmohN4igE9S+2Lkao=;
+        b=suQICV/6rKhFMyymGNTfsT60abhmbcTbQ4rMlBuPEBhzy86lO3dgJqf2/R1RxLGax+
+         aMCoXB9p4x73ARqaDZtte41hAXF0WlY3g13MLcun5QrlwVMtME/Qfsazrlhs3E920/W1
+         mHVuHsMi/E0WVygxBnckXMg6Ao7jkpJMQ6n3AJqCBgE1PcwIYLMjNqVu0k5dguCUG0Ud
+         l7Gd2JkDEI02VB49zkrt3C+0u9vG1829FRhkdJFwdcjJvkneL212ZfpxpvTv5lVhKw07
+         Be5AV00xgmqWHPre3lRORr83xrIoBunAkzUFtdW4j0oPZMqDve07b730jpNGPOkCjb1R
+         rR5Q==
+X-Gm-Message-State: AOAM530QKnK40pHH95ePfB7QtQiJtRrcUmINTeSOotNacfeUV3t6mVYT
+        SdlHmc6T4jHusgZ/g8b5fqN43TZSHBmwNCBWo/o=
+X-Google-Smtp-Source: ABdhPJw8AoAI/Pm62m0da7GsFs2Fcp4wJPrK5l6sLJntkg2Ket8/oxcyoXmTSUtKL4kP0l6u3uQ5UyouJflfq6/7bvk=
+X-Received: by 2002:a05:6a00:24cb:b0:50a:8151:9abc with SMTP id
+ d11-20020a056a0024cb00b0050a81519abcmr6086275pfv.57.1650345507268; Mon, 18
+ Apr 2022 22:18:27 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-19_01,2022-04-15_01,2022-02-23_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220414161233.170780-1-sdf@google.com> <CAADnVQJ-kiWJopu+VjLDXYb9ifjKyA2h8MO=CaQppNxbHqH=-Q@mail.gmail.com>
+ <Yl2W5ThWCFPIeLW8@google.com>
+In-Reply-To: <Yl2W5ThWCFPIeLW8@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 18 Apr 2022 22:18:16 -0700
+Message-ID: <CAADnVQ+X5HPDsqXX6mHWV4sT9=2gQSag5cc9w6iJG_YE577ZEw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: move rcu lock management out of
+ BPF_PROG_RUN routines
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The llvm patch [1] enabled opaque pointer which caused selftest
-'exhandler' failure.
-  ...
-  ; work =3D task->task_works;
-  7: (79) r1 =3D *(u64 *)(r6 +2120)       ; R1_w=3Dptr_callback_head(off=3D=
-0,imm=3D0) R6_w=3Dptr_task_struct(off=3D0,imm=3D0)
-  ; func =3D work->func;
-  8: (79) r2 =3D *(u64 *)(r1 +8)          ; R1_w=3Dptr_callback_head(off=3D=
-0,imm=3D0) R2_w=3Dscalar()
-  ; if (!work && !func)
-  9: (4f) r1 |=3D r2
-  math between ptr_ pointer and register with unbounded min value is not al=
-lowed
+On Mon, Apr 18, 2022 at 9:50 AM <sdf@google.com> wrote:
+>
+> On 04/16, Alexei Starovoitov wrote:
+> > On Thu, Apr 14, 2022 at 9:12 AM Stanislav Fomichev <sdf@google.com> wrote:
+> > > +static int
+> > > +bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
+> > > +                           enum cgroup_bpf_attach_type atype,
+> > > +                           const void *ctx, bpf_prog_run_fn run_prog,
+> > > +                           int retval, u32 *ret_flags)
+> > > +{
+> > > +       const struct bpf_prog_array_item *item;
+> > > +       const struct bpf_prog *prog;
+> > > +       const struct bpf_prog_array *array;
+> > > +       struct bpf_run_ctx *old_run_ctx;
+> > > +       struct bpf_cg_run_ctx run_ctx;
+> > > +       u32 func_ret;
+> > > +
+> > > +       run_ctx.retval = retval;
+> > > +       migrate_disable();
+> > > +       rcu_read_lock();
+> > > +       array = rcu_dereference(cgrp->effective[atype]);
+> > > +       item = &array->items[0];
+> > > +       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+> > > +       while ((prog = READ_ONCE(item->prog))) {
+> > > +               run_ctx.prog_item = item;
+> > > +               func_ret = run_prog(prog, ctx);
+> > ...
+> > > +       ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
+> > >                                     &ctx, bpf_prog_run, retval);
+>
+> > Did you check the asm that bpf_prog_run gets inlined
+> > after being passed as a pointer to a function?
+> > Crossing fingers... I suspect not every compiler can do that :(
+> > De-virtualization optimization used to be tricky.
+>
+> No, I didn't, but looking at it right now, both gcc and clang
+> seem to be doing inlining all way up to bpf_dispatcher_nop_func.
+>
+> clang:
+>
+>    0000000000001750 <__cgroup_bpf_run_filter_sock_addr>:
+>    __cgroup_bpf_run_filter_sock_addr():
+>    ./kernel/bpf/cgroup.c:1226
+>    int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+>                                       struct sockaddr *uaddr,
+>                                       enum cgroup_bpf_attach_type atype,
+>                                       void *t_ctx,
+>                                       u32 *flags)
+>    {
+>
+>    ...
+>
+>    ./include/linux/filter.h:628
+>                 ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+>        1980:    49 8d 75 48             lea    0x48(%r13),%rsi
+>    bpf_dispatcher_nop_func():
+>    ./include/linux/bpf.h:804
+>         return bpf_func(ctx, insnsi);
+>        1984:    4c 89 f7                mov    %r14,%rdi
+>        1987:    41 ff 55 30             call   *0x30(%r13)
+>        198b:    89 c3                   mov    %eax,%ebx
+>
+> gcc (w/retpoline):
+>
+>    0000000000001110 <__cgroup_bpf_run_filter_sock_addr>:
+>    __cgroup_bpf_run_filter_sock_addr():
+>    kernel/bpf/cgroup.c:1226
+>    {
+>
+>    ...
+>
+>    ./include/linux/filter.h:628
+>                 ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+>        11c5:    49 8d 75 48             lea    0x48(%r13),%rsi
+>    bpf_dispatcher_nop_func():
+>    ./include/linux/bpf.h:804
+>        11c9:    48 8d 7c 24 10          lea    0x10(%rsp),%rdi
+>        11ce:    e8 00 00 00 00          call   11d3
+> <__cgroup_bpf_run_filter_sock_addr+0xc3>
+>                         11cf: R_X86_64_PLT32    __x86_indirect_thunk_rax-0x4
+>        11d3:    89 c3                   mov    %eax,%ebx
 
-  below is insn 10 and 11
-  10: (55) if r1 !=3D 0 goto +5
-  11: (18) r1 =3D 0 ll
-  ...
+Hmm. I'm not sure how you've got this asm.
+Here is what I see with gcc 8 and gcc 10:
+bpf_prog_run_array_cg:
+...
+        movq    %rcx, %r12      # run_prog, run_prog
+...
+# ../kernel/bpf/cgroup.c:77:            run_ctx.prog_item = item;
+        movq    %rbx, (%rsp)    # item, run_ctx.prog_item
+# ../kernel/bpf/cgroup.c:78:            if (!run_prog(prog, ctx) &&
+!IS_ERR_VALUE((long)run_ctx.retval))
+        movq    %rbp, %rsi      # ctx,
+        call    *%r12   # run_prog
 
-In llvm, the code generation of 'r1 |=3D r2' happened in codegen
-selectiondag phase due to difference of opaque pointer vs. non-opaque point=
-er.
-Without [1], the related code looks like:
-  r2 =3D *(u64 *)(r6 + 2120)
-  r1 =3D *(u64 *)(r2 + 8)
-  if r2 !=3D 0 goto +6 <LBB0_4>
-  if r1 !=3D 0 goto +5 <LBB0_4>
-  r1 =3D 0 ll
-  ...
+__cgroup_bpf_run_filter_sk:
+        movq    $bpf_prog_run, %rcx     #,
+# ../kernel/bpf/cgroup.c:1202:  return
+bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
+        leaq    1520(%rax), %rdi        #, tmp92
+# ../kernel/bpf/cgroup.c:1202:  return
+bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
+        jmp     bpf_prog_run_array_cg   #
 
-I haven't found a good way in llvm to fix this issue. So let us workaround =
-the
-problem first so bpf CI won't be blocked.
+This is without kasan, lockdep and all debug configs are off.
 
-  [1] https://reviews.llvm.org/D123300
+So the generated code is pretty bad as I predicted :(
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../testing/selftests/bpf/progs/exhandler_kern.c  | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/exhandler_kern.c b/tools/tes=
-ting/selftests/bpf/progs/exhandler_kern.c
-index f5ca142abf8f..dd9b30a0f0fc 100644
---- a/tools/testing/selftests/bpf/progs/exhandler_kern.c
-+++ b/tools/testing/selftests/bpf/progs/exhandler_kern.c
-@@ -7,6 +7,8 @@
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
-=20
-+#define barrier_var(var) asm volatile("" : "=3Dr"(var) : "0"(var))
-+
- char _license[] SEC("license") =3D "GPL";
-=20
- unsigned int exception_triggered;
-@@ -37,7 +39,16 @@ int BPF_PROG(trace_task_newtask, struct task_struct *tas=
-k, u64 clone_flags)
- 	 */
- 	work =3D task->task_works;
- 	func =3D work->func;
--	if (!work && !func)
--		exception_triggered++;
-+	/* Currently verifier will fail for `btf_ptr |=3D btf_ptr` * instruction.
-+	 * To workaround the issue, use barrier_var() and rewrite as below to
-+	 * prevent compiler from generating verifier-unfriendly code.
-+	 */
-+	barrier_var(work);
-+	if (work)
-+		return 0;
-+	barrier_var(func);
-+	if (func)
-+		return 0;
-+	exception_triggered++;
- 	return 0;
- }
---=20
-2.30.2
-
+So I'm afraid this approach is no go.
