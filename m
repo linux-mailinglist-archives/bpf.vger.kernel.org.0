@@ -2,182 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6CA507954
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 20:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C627A5079AF
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 21:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344635AbiDSSpR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 14:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
+        id S1345139AbiDSTDu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 15:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbiDSSpP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 14:45:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E1E37A03;
-        Tue, 19 Apr 2022 11:42:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 88A66B81A0A;
-        Tue, 19 Apr 2022 18:42:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40B93C385A5;
-        Tue, 19 Apr 2022 18:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650393749;
-        bh=aNoitcKVY+3runARZOKXlbXNRTPUSLUckf8FikGfbmg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i7mqUboZvJQO3DEpHzHUrQS1XU/Xq0/4kVpXYnuX/EY5TEq79O7i3JpbTNV1ank/D
-         3rovYl/JOrQRyL69n00/5WqcUh3N139NbOjfw9Vws7EtwFZbDgwrTGvU7g12xQdW9p
-         LxvxYyiDo1i7sTAkI1G+Hi3Og+ZHF3qXCBODPFufpxUraX0F2M3ibEylB05sF3c3pT
-         IXLgMLDp22fz/AeZ6W3BVY3YB4X5riLJN3ir8YrgRXD6yRtDtFvwS+QvfTKkG+K6K/
-         PF0XoUq4nMBSZz9alDletCJq+qESl0CTcWNQEq9IWjq1c57cap7A7bR/lvO+m4qv/s
-         ASgkvryZLfG/w==
-Date:   Tue, 19 Apr 2022 21:42:17 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "Torvalds, Linus" <torvalds@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "song@kernel.org" <song@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "pmladek@suse.com" <pmladek@suse.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dborkman@redhat.com" <dborkman@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "bp@alien8.de" <bp@alien8.de>, "mbenes@suse.cz" <mbenes@suse.cz>,
-        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>
-Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
-Message-ID: <Yl8CicJGHpTrOK8m@kernel.org>
-References: <20220415164413.2727220-1-song@kernel.org>
- <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
- <YlpPW9SdCbZnLVog@infradead.org>
- <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
- <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
- <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com>
- <Yl04LO/PfB3GocvU@kernel.org>
- <Yl4F4w5NY3v0icfx@bombadil.infradead.org>
- <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
- <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S1357496AbiDSTDp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 15:03:45 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AE33F8A9
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 12:00:56 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2ec0490dc1bso154979357b3.5
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 12:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ki5x64jpxillM4rjLMMwOyNeXUrOHy0mmqLpSxVVA7k=;
+        b=GqtT1JDoHhnKMFQRCf0XJfUJyfAwom7JLQgK98B21O40PNLC4QqJtRE+ubHs4aKMgC
+         MyxnIk+9Ap+MSCfo3mNF/JvDlHYeOTREydFKYacMw6BdtQOYRQbt/mBA9DDhclsztT9m
+         2NthfSuNNV7Asq8xAFCiHQ8G8Ev/pRUingE3FyU0ODKilnIjDJMn8qnJB4nXy3ASoquA
+         3gF5QQwVV/lkmYOOoq/TjvTkuFW5+9GAyDECQ42fwJl1Aa6aczrVJsaVjek4jRKvpZuF
+         Z5uDv2UrodDVd1oIVQr10uN9cMx0OuxyXvTQUOQwcwsSbYyJ6THag7qI4M3g1F3FDCgC
+         xN5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ki5x64jpxillM4rjLMMwOyNeXUrOHy0mmqLpSxVVA7k=;
+        b=hd9yaCT37rYyGGHWJiIPXHjHlo1GZcRlm3r1U8QCJXKpCNXCM7AQIzeVT1lmy8ObLs
+         /8QARWHmspkx5JANlKZxUszmPq/h/oC35k9AqZkSlndkm4Dkhvx6FuM1BMZ+Xl4a10Ba
+         p3ZuHzNJSBjHyQmBFlqUljqjlIlUKgk67ulenyMiDJ2RSta6pzxFT5IcpmplMxxll/xu
+         64z0+lAO8nHo3fPQi3xtAsO4FgQQlgNw2bGYgRzo8iZUKwoR7mjlwuq03peViBCfGKTl
+         xMjEU7dwei2U2ht1+KTvr9Bf2Dt2NrDME0lIc/gSRsflzdW3Ul+m03/Ni+SgEsP+9Qtt
+         D/RA==
+X-Gm-Message-State: AOAM531ZouYCUsVLcZ4obWKdmmtVbPGS/if8erV+diY1n+X2SqU3E018
+        SR3WKk7fDBZLY2KBC5aYcqb4R50=
+X-Google-Smtp-Source: ABdhPJz2F4cplxzM4FtGL7Yml3tWUtWopJhoV6OAbCweuRz0FTCl6R+gG1IyMDeaJIE8q3sm/Q3IRAc=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:37f:6746:8e66:a291])
+ (user=sdf job=sendgmr) by 2002:a0d:dc01:0:b0:2ec:2aed:5aa5 with SMTP id
+ f1-20020a0ddc01000000b002ec2aed5aa5mr17104194ywe.235.1650394855513; Tue, 19
+ Apr 2022 12:00:55 -0700 (PDT)
+Date:   Tue, 19 Apr 2022 12:00:45 -0700
+Message-Id: <20220419190053.3395240-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.rc0.470.gd361397f0d-goog
+Subject: [PATCH bpf-next v5 0/8] bpf: cgroup_sock lsm flavor
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>, kafai@fb.com,
+        kpsingh@kernel.org, jakub@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+This series implements new lsm flavor for attaching per-cgroup programs to
+existing lsm hooks. The cgroup is taken out of 'current', unless
+the first argument of the hook is 'struct socket'. In this case,
+the cgroup association is taken out of socket. The attachment
+looks like a regular per-cgroup attachment: we add new BPF_LSM_CGROUP
+attach type which, together with attach_btf_id, signals per-cgroup lsm.
+Behind the scenes, we allocate trampoline shim program and
+attach to lsm. This program looks up cgroup from current/socket
+and runs cgroup's effective prog array. The rest of the per-cgroup BPF
+stays the same: hierarchy, local storage, retval conventions
+(return 1 == success).
 
-On Tue, Apr 19, 2022 at 05:36:45AM +0000, Song Liu wrote:
-> Hi Mike, Luis, and Rick,
-> 
-> Thanks for sharing your work and findings in the space. I didn't 
-> realize we were looking at the same set of problems. 
-> 
-> > On Apr 18, 2022, at 6:56 PM, Edgecombe, Rick P <rick.p.edgecombe@intel.com> wrote:
-> > 
-> > On Mon, 2022-04-18 at 17:44 -0700, Luis Chamberlain wrote:
-> >>> There are use-cases that require 4K pages with non-default
-> >>> permissions in
-> >>> the direct map and the pages not necessarily should be executable.
-> >>> There
-> >>> were several suggestions to implement caches of 4K pages backed by
-> >>> 2M
-> >>> pages.
-> >> 
-> >> Even if we just focus on the executable side of the story... there
-> >> may
-> >> be users who can share this too.
-> >> 
-> >> I've gone down memory lane now at least down to year 2005 in kprobes
-> >> to see why the heck module_alloc() was used. At first glance there
-> >> are
-> >> some old comments about being within the 2 GiB text kernel range...
-> >> But
-> >> some old tribal knowledge is still lost. The real hints come from
-> >> kprobe work
-> >> since commit 9ec4b1f356b3 ("[PATCH] kprobes: fix single-step out of
-> >> line
-> >> - take2"), so that the "For the %rip-relative displacement fixups to
-> >> be
-> >> doable"... but this got me wondering, would other users who *do* want
-> >> similar funcionality benefit from a cache. If the space is limited
-> >> then
-> >> using a cache makes sense. Specially if architectures tend to require
-> >> hacks for some of this to all work.
-> > 
-> > Yea, that was my understanding. X86 modules have to be linked within
-> > 2GB of the kernel text, also eBPF x86 JIT generates code that expects
-> > to be within 2GB of the kernel text.
-> > 
-> > 
-> > I think of two types of caches we could have: caches of unmapped pages
-> > on the direct map and caches of virtual memory mappings. Caches of
-> > pages on the direct map reduce breakage of the large pages (and is
-> > somewhat x86 specific problem). Caches of virtual memory mappings
-> > reduce shootdowns, and are also required to share huge pages. I'll plug
-> > my old RFC, where I tried to work towards enabling both:
-> > 
-> > https://lore.kernel.org/lkml/20201120202426.18009-1-rick.p.edgecombe@intel.com/
-> > 
-> > Since then Mike has taken a lot further the direct map cache piece.
-> 
-> These are really interesting work. With this landed, we won't need 
-> the bpf_prog_pack work at all (I think). OTOH, this looks like a 
-> long term project, as some of the work in bpf_prog_pack took quite 
-> some time to discuss/debate, and that was just a subset of the 
-> whole thing. 
+Current limitations:
+* haven't considered sleepable bpf; can be extended later on
+* not sure the verifier does the right thing with null checks;
+  see latest selftest for details
+* total of 10 (global) per-cgroup LSM attach points; this bloats
+  bpf_cgroup a bit
 
-I'd say that bpf_prog_pack was a cure for symptoms and this project tries
-to address more general problem.
-But you are right, it'll take some time and won't land in 5.19.
- 
-> I really like the two types of cache concept. But there are some 
-> details I cannot figure out about them:
+Cc: ast@kernel.org
+Cc: daniel@iogearbox.net
+Cc: kafai@fb.com
+Cc: kpsingh@kernel.org
+Cc: jakub@cloudflare.com
 
-After some discussions we decided to try moving the caching of large pages
-to the page allocator and see if the second cache will be needed at all.
-But I've got distracted after posting the RFC and that work didn't have
-real progress since then.
- 
-> 1. Is "caches of unmapped pages on direct map" (cache #1) 
->    sufficient to fix all direct map fragmentation? IIUC, pages in
->    the cache may still be used by other allocation (with some 
->    memory pressure). If the system runs for long enough, there 
->    may be a lot of direct map fragmentation. Is this right?
+v5:
+- __cgroup_bpf_run_lsm_socket remove NULL sock/sk checks (Martin KaFai Lau)
+- __cgroup_bpf_run_lsm_{socket,current} s/prog/shim_prog/ (Martin)
+- make sure bpf_lsm_find_cgroup_shim works for hooks without args (Martin)
+- __cgroup_bpf_attach make sure attach_btf_id is the same when replacing (Martin)
+- call bpf_cgroup_lsm_shim_release only for LSM_CGROUP (Martin)
+- drop BPF_LSM_CGROUP from bpf_attach_type_to_tramp (Martin)
+- drop jited check from cgroup_shim_find (Martin)
+- new patch to convert cgroup_bpf to hlist_node (Jakub Sitnicki)
+- new shim flavor for 'struct sock' + list of exceptions (Martin)
 
-If the system runs long enough, it may run out of high-order free pages
-regardless of the way the caches are implemented. Then we either fail the
-allocation because it is impossible to refill the cache with large pages or
-fall back to 4k pages and fragment direct map.
+v4:
+- fix build when jit is on but syscall is off
 
-I don't see how can we avoid direct map fragmentation entirely and still be
-able to allocate memory for users of set_memory APIs.
+v3:
+- add BPF_LSM_CGROUP to bpftool
+- use simple int instead of refcnt_t (to avoid use-after-free
+  false positive)
 
-> 2. If we have "cache of virtual memory mappings" (cache #2), do we
->    still need cache #1? I know cache #2 alone may waste some 
->    memory, but I still think 2MB within noise for modern systems. 
+v2:
+- addressed build bot failures
 
-I presume that by cache #1 you mean the cache in the page allocator. In
-that case cache #2 is probably not needed at all, because the cache at page
-allocator level will be used by vmalloc() and friends to provide what Rick
-called "permissioned allocations".
+Stanislav Fomichev (8):
+  bpf: add bpf_func_t and trampoline helpers
+  bpf: convert cgroup_bpf.progs to hlist
+  bpf: per-cgroup lsm flavor
+  bpf: minimize number of allocated lsm slots per program
+  bpf: allow writing to a subset of sock fields from lsm progtype
+  libbpf: add lsm_cgoup_sock type
+  selftests/bpf: lsm_cgroup functional test
+  selftests/bpf: verify lsm_cgroup struct sock access
 
-> Thanks,
-> Song
+ include/linux/bpf-cgroup-defs.h               |  12 +-
+ include/linux/bpf-cgroup.h                    |   9 +-
+ include/linux/bpf.h                           |  24 +-
+ include/linux/bpf_lsm.h                       |   8 +
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/bpf_lsm.c                          | 116 ++++++
+ kernel/bpf/btf.c                              |  11 +
+ kernel/bpf/cgroup.c                           | 361 +++++++++++++++---
+ kernel/bpf/syscall.c                          |  10 +
+ kernel/bpf/trampoline.c                       | 206 ++++++++--
+ kernel/bpf/verifier.c                         |   4 +-
+ tools/bpf/bpftool/common.c                    |   1 +
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/libbpf.c                        |   2 +
+ .../selftests/bpf/prog_tests/lsm_cgroup.c     | 213 +++++++++++
+ .../testing/selftests/bpf/progs/lsm_cgroup.c  | 126 ++++++
+ tools/testing/selftests/bpf/test_verifier.c   |  54 ++-
+ .../selftests/bpf/verifier/lsm_cgroup.c       |  34 ++
+ 18 files changed, 1102 insertions(+), 91 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/lsm_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/lsm_cgroup.c
 
 -- 
-Sincerely yours,
-Mike.
+2.36.0.rc0.470.gd361397f0d-goog
+
