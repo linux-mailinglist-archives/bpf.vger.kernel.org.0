@@ -2,69 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6195F506249
-	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 04:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D8A506336
+	for <lists+bpf@lfdr.de>; Tue, 19 Apr 2022 06:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237378AbiDSCtj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Apr 2022 22:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S1348230AbiDSEaK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 00:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbiDSCti (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Apr 2022 22:49:38 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B5422294
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 19:46:56 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d15so13875630pll.10
-        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 19:46:56 -0700 (PDT)
+        with ESMTP id S229483AbiDSEaJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 00:30:09 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6A024F23
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 21:27:28 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id r12so10549359iod.6
+        for <bpf@vger.kernel.org>; Mon, 18 Apr 2022 21:27:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fkVswsg4IkXVN2FUbN37HAr6OADOTOpuZKsAUQJFnQ8=;
-        b=jS97GTmhniE1qWSn67V1UQBbxcISegNO2Qj0YMw6bdW/wKWdZccuDG4CMFVMu9gU5/
-         rVRUr4cvzC8g2xzwHGwfiiD4Q6xqMSDJ11kAbK277eoZ4Jbm+nSur/i3zvMXJ481WDDP
-         ZGUgbb5MKV+vHM2HC9ZJR5vd3FCezJLtHkv+8Uf/PXIPhi01DrjJEf9bTacUwjB7iQ1w
-         R4XlqmmNQhrwV1Jw47OHsYHgWU866T7rmmSIcbcmqUQDwRMtxnpHNDU03Y/8sGU63wED
-         RsNO8il/2V3pQYJObzIJJZ2J9mRffLIQ8eUCtRrzYvHZWYuz/0BLAAxwqhcSFvqpB5xk
-         cpAw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nTCbD1H6pyQz+z2/jmIUgDmiiJRL0CX0GaOM3nNcIJM=;
+        b=SxuPG8tOa4ZLzafzxsPSfhdA0ZGzkaaVE4jh9NDZk+J7XKpIllc7lZF0j6t0XzREwq
+         lSIpVwu/IrLXW/vKB/4AmN76nf21ORgCV0HEWlSCNf4bH2LCzggl1WoPNnQeBQoQan16
+         fzNpb/gOAxKZpcINOFxWJalSiHhPncPIpuFaaVOvT59BZw7kvFWoqNrTULtJG1f1HzC6
+         N8UhAPow/P/DdhK7DHbid+G32YImA8B6RNzez1AsoNvJR6D/Xze0ei5XWx2viSH8s+JN
+         LCeliREwPt6c9fk4OrM+vGBpxpkq7EFFrE+ckTaYVwL3sfDIxK/rew9INC629/eyjVHu
+         rNHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fkVswsg4IkXVN2FUbN37HAr6OADOTOpuZKsAUQJFnQ8=;
-        b=6CniO/CNtBeI+XblsmGJC79I3AM7LS48+vxE7tj6mQUzcioaKSmATOC35Eu2Ul1l1M
-         NqfsXxggCwm+dVD6tyjibWWjDYrN8dWi9RKxLlg08nYbd+fqfbtA5Sdn0upZxCXkbAwW
-         sCX0bdxpR8xdxqlbVM6w8kIHMhhu59nSC+8dBapGOScZ4IWzXDKoYrDbIexZCuQPZwbT
-         GOFNWTUzgue6VvegMYLlGjozyADoGNNPqMu+P3kNvLeuTTGro0njHHVtszNGWwIODmDi
-         jo50IrQdmPS2LhgYNekJMzkalEBJzCpYhvM5fhIqWM7rGFl0pL/GnYEk6tEM7qI2sba0
-         1Fww==
-X-Gm-Message-State: AOAM533mvc3uw8/dsPwKjBQa3cnAeXpZRNt/aZlOKAwwEkRHAaQV657P
-        WaJ/zt+oJv/db7oBUO58u/I=
-X-Google-Smtp-Source: ABdhPJyTOr/2mJeD/5lsqPWtJNylb3ulupPAkJD7dN/B02JbgvW7xfy0mkM/8+srdkpJSJnkwMCWbA==
-X-Received: by 2002:a17:902:e544:b0:159:572:af5e with SMTP id n4-20020a170902e54400b001590572af5emr5799272plf.107.1650336416294;
-        Mon, 18 Apr 2022 19:46:56 -0700 (PDT)
-Received: from localhost ([112.79.166.45])
-        by smtp.gmail.com with ESMTPSA id nh11-20020a17090b364b00b001cb65949c66sm14411118pjb.37.2022.04.18.19.46.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Apr 2022 19:46:55 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 08:17:03 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nTCbD1H6pyQz+z2/jmIUgDmiiJRL0CX0GaOM3nNcIJM=;
+        b=WE4CmoqCEsJ9pkh3XdNe8lQgy1bRRcLtl6o2RW4b6xCjPMgAWYOL9fdamj9ZkJlOvP
+         RoqUBLxO/gM8gOpL2ChQTI1nKMBctwBBkh5T0fPlYoqgJFpx8Srv1W3y8vzKN5Zvx88R
+         HLkOYiR1+2hnYe+S9rY/RQ7gZliKvkYgD52AJa+C8IUeC526pJrASf3KVfyczhIBAdvM
+         Cr+2yMqT0ToyNMp7z7D7xDkjNc/+7UrDQXwYuTWFkv6RL+7mJU+Y/vox5rYo5bRp8rBJ
+         mK91aQY1h+WXkGt5Q7lNS9kzZTaQCisVcFkaVJRvWxUlg0kBeBe5h8aq9CBR8Z7oberH
+         ZK2Q==
+X-Gm-Message-State: AOAM5313ZnV0RduBKEElSKDxFubPrSmqRxxT9qXhEe8HcEWKqb+CZbjq
+        aTtdg2EEZnfOofzgB68nKHRCwncIt5XF95xLnf/o6FSZCec=
+X-Google-Smtp-Source: ABdhPJzfOXpkRTSkq3FOEJJtZyHSRxw9ohX9EwI+/tlhLQ1UIkkcw5lSCZ7PEEYFZGfWU/K6hPm8ccGKb1HZMzHMQ2E=
+X-Received: by 2002:a05:6602:3787:b0:654:9cab:b681 with SMTP id
+ be7-20020a056602378700b006549cabb681mr3161982iob.154.1650342447498; Mon, 18
+ Apr 2022 21:27:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220418222507.1726259-1-mykolal@fb.com>
+In-Reply-To: <20220418222507.1726259-1-mykolal@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 Apr 2022 21:27:16 -0700
+Message-ID: <CAEf4BzbKxAxmwN7u6+-WHoR_2KDm=ane7eaezfcN8KQPZ8d4Lw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: refactor prog_tests logging
+ and test execution
+To:     Mykola Lysenko <mykolal@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v5 06/13] bpf: Prevent escaping of kptr loaded
- from maps
-Message-ID: <20220419024703.qyv6n4dfpdf4p3ot@apollo.legion>
-References: <20220415160354.1050687-1-memxor@gmail.com>
- <20220415160354.1050687-7-memxor@gmail.com>
- <CAJnrk1YBi+DMZVu3Bpq+74OnFCjkc_fAgv_P-ANgpDrrfGOukQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJnrk1YBi+DMZVu3Bpq+74OnFCjkc_fAgv_P-ANgpDrrfGOukQ@mail.gmail.com>
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,208 +68,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 05:18:38AM IST, Joanne Koong wrote:
-> On Fri, Apr 15, 2022 at 9:04 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > While we can guarantee that even for unreferenced kptr, the object
-> > pointer points to being freed etc. can be handled by the verifier's
-> > exception handling (normal load patching to PROBE_MEM loads), we still
-> > cannot allow the user to pass these pointers to BPF helpers and kfunc,
-> > because the same exception handling won't be done for accesses inside
-> > the kernel. The same is true if a referenced pointer is loaded using
-> > normal load instruction. Since the reference is not guaranteed to be
-> > held while the pointer is used, it must be marked as untrusted.
-> >
-> > Hence introduce a new type flag, PTR_UNTRUSTED, which is used to mark
-> > all registers loading unreferenced and referenced kptr from BPF maps,
-> > and ensure they can never escape the BPF program and into the kernel by
-> > way of calling stable/unstable helpers.
-> To me, it seems more clear / straightforward if loads are prohibited
-> altogether and the only way to get a referenced kptr from a BPF map is
-> through the *_kptr_get function, instead of allowing loads but
-> prohibiting the loaded value from going to bpf helpers + kfuncs. To me
-> it seems like 1) using the kptr in kfuncs / helper funcs will be a
-> significant portion of use cases, 2) as a user, I think it's
-> non-intuitive that I'm able to retrieve it and get a direct reference
-> to it but not be able to use it in a kfunc/helper func, and 3) this
-> would simplify this logic in the verifier where we don't need to add
-> PTR_UNTRUSTED.
-> What are your thoughts?
+On Mon, Apr 18, 2022 at 3:27 PM Mykola Lysenko <mykolal@fb.com> wrote:
+>
+> This is a pre-req to add separate logging for each subtest in
+> test_progs.
+>
+> Move all the mutable test data to the test_result struct.
+> Move per-test init/de-init into the run_one_test function.
+> Consolidate data aggregation and final log output in
+> calculate_and_print_summary function.
+> As a side effect, this patch fixes double counting of errors
+> for subtests and possible duplicate output of subtest log
+> on failures.
+>
+> Also, add prog_tests_framework.c test to verify some of the
+> counting logic.
+>
+> As part of verification, confirmed that number of reported
+> tests is the same before and after the change for both parallel
+> and sequential test execution.
+>
+> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+> ---
+
+I've added %-3d to test number output so that it's a bit more aligned:
+
+#178 test_global_funcs:OK
+#173 tcp_hdr_options:OK
+#50  d_path:OK
+#132 send_signal:OK
+#23  btf_map_in_map:OK
+#10  bpf_iter:OK
+#184 test_skb_pkt_end:OK
+#185 test_strncmp:OK
+#46  core_reloc_btfgen:SKIP
+
+And applied to bpf-next, thanks. Looking forward to subtest logging
+improvements!
+
+>  .../selftests/bpf/prog_tests/bpf_mod_race.c   |   4 +-
+>  .../bpf/prog_tests/prog_tests_framework.c     |  56 +++
+>  tools/testing/selftests/bpf/test_progs.c      | 327 +++++++-----------
+>  tools/testing/selftests/bpf/test_progs.h      |  35 +-
+>  4 files changed, 202 insertions(+), 220 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/prog_tests_framework.c
 >
 
-Given this is atleast needed for the unreferenced case, so the flag needs to
-stay, but considering just referenced kptr:
+[...]
 
-1) is true, but in many use cases just reading from the object is also enough,
-in those cases imposing the cost of kptr_get is too much, I think. If there are
-reasonable gurantees that the object won't go away, or some way to detect that
-the pointer changed (e.g. by detecting writer presence [0]), it should be safe
-to permit reads from such untrusted pointer without ensuring user holds a
-refcount. You can imagine case where you have programs attached to a callchain,
-and you stash a ref in a map in an invocation earlier in the chain, then inspect
-the data somewhere in the middle, and eventually drop the ref, etc. The fact
-that this can be made safe using the exception handling is a great feature IMO.
+>
+>  /* A bunch of tests set custom affinity per-thread and/or per-process. Reset
+> @@ -219,72 +205,79 @@ static void restore_netns(void)
+>  void test__end_subtest(void)
+>  {
+>         struct prog_test_def *test = env.test;
+> -       int sub_error_cnt = test->error_cnt - test->old_error_cnt;
+> +       struct test_state *state = env.test_state;
+>
 
-2) It can certainly be a bit surprising, but I think kptr_ref is already special
-enough that the user needs to carefully understand the semantics when making use
-of them. Even now, you will have to use kptr_get to be able to get a normal
-PTR_TO_BTF_ID they can pass to helpers, the untrusted pointer is for cases where
-you know what you are doing (and know that what you'll read is still valid at a
-later point, depending on how that data will be used).
+this empty lines was breaking variable declaration block into two
+separate blocks, I've removed an empty line here
 
-3) We already need this flag, for this case and eventually also making this the
-default for majority of cases where we cannot prove PTR_TO_BTF_ID is safe (e.g.
-in tracing or LSM ctx). See [1] for some background. There are going to be a lot
-more cases going forward where dereference is safe (hence allowed) but passing
-to helpers or kfunc is not.
+> -       dump_test_log(test, sub_error_cnt);
+> +       int sub_error_cnt = state->error_cnt - state->old_error_cnt;
+>
+>         fprintf(stdout, "#%d/%d %s/%s:%s\n",
 
- [0]: https://lore.kernel.org/bpf/20220222082129.yivvpm6yo3474dp3@apollo.legion
- [1]: https://lore.kernel.org/bpf/CAADnVQJF8yQgKRQH2CqXuB9JR-p3fQeiGRxB0+N_V7uTH2iOeA@mail.gmail.com
 
-> >
-> > In check_ptr_to_btf_access, the !type_may_be_null check to reject type
-> > flags is still correct, as apart from PTR_MAYBE_NULL, only MEM_USER,
-> > MEM_PERCPU, and PTR_UNTRUSTED may be set for PTR_TO_BTF_ID. The first
-> > two are checked inside the function and rejected using a proper error
-> > message, but we still want to allow dereference of untrusted case.
-> >
-> > Also, we make sure to inherit PTR_UNTRUSTED when chain of pointers are
-> > walked, so that this flag is never dropped once it has been set on a
-> > PTR_TO_BTF_ID (i.e. trusted to untrusted transition can only be in one
-> > direction).
-> >
-> > In convert_ctx_accesses, extend the switch case to consider untrusted
-> > PTR_TO_BTF_ID in addition to normal PTR_TO_BTF_ID for PROBE_MEM
-> > conversion for BPF_LDX.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  include/linux/bpf.h   | 10 +++++++++-
-> >  kernel/bpf/verifier.c | 35 ++++++++++++++++++++++++++++-------
-> >  2 files changed, 37 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 61f83a23980f..7e2ac2a26bdb 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -375,7 +375,15 @@ enum bpf_type_flag {
-> >         /* Indicates that the pointer argument will be released. */
-> >         PTR_RELEASE             = BIT(5 + BPF_BASE_TYPE_BITS),
-> >
-> > -       __BPF_TYPE_LAST_FLAG    = PTR_RELEASE,
-> > +       /* PTR is not trusted. This is only used with PTR_TO_BTF_ID, to mark
-> > +        * unreferenced and referenced kptr loaded from map value using a load
-> > +        * instruction, so that they can only be dereferenced but not escape the
-> > +        * BPF program into the kernel (i.e. cannot be passed as arguments to
-> > +        * kfunc or bpf helpers).
-> > +        */
-> > +       PTR_UNTRUSTED           = BIT(6 + BPF_BASE_TYPE_BITS),
-> > +
-> > +       __BPF_TYPE_LAST_FLAG    = PTR_UNTRUSTED,
-> >  };
-> >
-> >  /* Max number of base types. */
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index aa5c0d1c8495..3b89dc8d41ce 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -567,6 +567,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
-> >                 strncpy(prefix, "user_", 32);
-> >         if (type & MEM_PERCPU)
-> >                 strncpy(prefix, "percpu_", 32);
-> > +       if (type & PTR_UNTRUSTED)
-> > +               strncpy(prefix, "untrusted_", 32);
-> >
-> >         snprintf(env->type_str_buf, TYPE_STR_BUF_LEN, "%s%s%s",
-> >                  prefix, str[base_type(type)], postfix);
-> > @@ -3504,9 +3506,14 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
-> >                                struct bpf_reg_state *reg, u32 regno)
-> >  {
-> >         const char *targ_name = kernel_type_name(off_desc->kptr.btf, off_desc->kptr.btf_id);
-> > +       int perm_flags = PTR_MAYBE_NULL;
-> >         const char *reg_name = "";
-> >
-> > -       if (base_type(reg->type) != PTR_TO_BTF_ID || type_flag(reg->type) != PTR_MAYBE_NULL)
-> > +       /* Only unreferenced case accepts untrusted pointers */
-> > +       if (off_desc->type == BPF_MAP_OFF_DESC_TYPE_UNREF_KPTR)
-> > +               perm_flags |= PTR_UNTRUSTED;
-> > +
-> > +       if (base_type(reg->type) != PTR_TO_BTF_ID || (type_flag(reg->type) & ~perm_flags))
-> >                 goto bad_type;
-> >
-> >         if (!btf_is_kernel(reg->btf)) {
-> > @@ -3532,7 +3539,12 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
-> >  bad_type:
-> >         verbose(env, "invalid kptr access, R%d type=%s%s ", regno,
-> >                 reg_type_str(env, reg->type), reg_name);
-> > -       verbose(env, "expected=%s%s\n", reg_type_str(env, PTR_TO_BTF_ID), targ_name);
-> > +       verbose(env, "expected=%s%s", reg_type_str(env, PTR_TO_BTF_ID), targ_name);
-> > +       if (off_desc->type == BPF_MAP_OFF_DESC_TYPE_UNREF_KPTR)
-> > +               verbose(env, " or %s%s\n", reg_type_str(env, PTR_TO_BTF_ID | PTR_UNTRUSTED),
-> > +                       targ_name);
-> > +       else
-> > +               verbose(env, "\n");
-> >         return -EINVAL;
-> >  }
-> >
-> > @@ -3556,9 +3568,11 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
-> >                 return -EACCES;
-> >         }
-> >
-> > -       /* We cannot directly access kptr_ref */
-> > -       if (off_desc->type == BPF_MAP_OFF_DESC_TYPE_REF_KPTR) {
-> > -               verbose(env, "accessing referenced kptr disallowed\n");
-> > +       /* We only allow loading referenced kptr, since it will be marked as
-> > +        * untrusted, similar to unreferenced kptr.
-> > +        */
-> > +       if (class != BPF_LDX && off_desc->type == BPF_MAP_OFF_DESC_TYPE_REF_KPTR) {
-> > +               verbose(env, "store to referenced kptr disallowed\n");
-> >                 return -EACCES;
-> >         }
-> >
-> > @@ -3568,7 +3582,7 @@ static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
-> >                  * value from map as PTR_TO_BTF_ID, with the correct type.
-> >                  */
-> >                 mark_btf_ld_reg(env, cur_regs(env), value_regno, PTR_TO_BTF_ID, off_desc->kptr.btf,
-> > -                               off_desc->kptr.btf_id, PTR_MAYBE_NULL);
-> > +                               off_desc->kptr.btf_id, PTR_MAYBE_NULL | PTR_UNTRUSTED);
-> >                 val_reg->id = ++env->id_gen;
-> >         } else if (class == BPF_STX) {
-> >                 val_reg = reg_state(env, value_regno);
-> > @@ -4336,6 +4350,12 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
-> >         if (ret < 0)
-> >                 return ret;
-> >
-> > +       /* If this is an untrusted pointer, all pointers formed by walking it
-> > +        * also inherit the untrusted flag.
-> > +        */
-> > +       if (type_flag(reg->type) & PTR_UNTRUSTED)
-> > +               flag |= PTR_UNTRUSTED;
-> > +
-> >         if (atype == BPF_READ && value_regno >= 0)
-> >                 mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
-> >
-> > @@ -13054,7 +13074,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
-> >                 if (!ctx_access)
-> >                         continue;
-> >
-> > -               switch (env->insn_aux_data[i + delta].ptr_type) {
-> > +               switch ((int)env->insn_aux_data[i + delta].ptr_type) {
-> >                 case PTR_TO_CTX:
-> >                         if (!ops->convert_ctx_access)
-> >                                 continue;
-> > @@ -13071,6 +13091,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
-> >                         convert_ctx_access = bpf_xdp_sock_convert_ctx_access;
-> >                         break;
-> >                 case PTR_TO_BTF_ID:
-> > +               case PTR_TO_BTF_ID | PTR_UNTRUSTED:
-> >                         if (type == BPF_READ) {
-> >                                 insn->code = BPF_LDX | BPF_PROBE_MEM |
-> >                                         BPF_SIZE((insn)->code);
-> > --
-> > 2.35.1
-> >
-
---
-Kartikeya
+[...]
