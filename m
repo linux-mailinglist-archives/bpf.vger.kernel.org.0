@@ -2,65 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC09508183
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 08:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0895508283
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 09:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350711AbiDTG6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 02:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
+        id S1376287AbiDTHq6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 03:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244258AbiDTG6b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 02:58:31 -0400
-Received: from mail.onlinesuccesses.pl (mail.onlinesuccesses.pl [198.244.150.235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110FF140D2
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 23:55:46 -0700 (PDT)
-Received: by mail.onlinesuccesses.pl (Postfix, from userid 1002)
-        id D58A6A68C1; Wed, 20 Apr 2022 06:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=onlinesuccesses.pl;
-        s=mail; t=1650437743;
-        bh=nE8HqilgMh4dy7+Z8ksfg7Bc9rmPeQtYFq3/3YR2ODU=;
-        h=Date:From:To:Subject:From;
-        b=DzIG+/KfU67lKjQeAlUfvdjBaXJa9pMkhD4H6BLqFFiRCjq5M03f2RlXaDvgJpkp6
-         F4Dw6h5pJaHIeQba8DYF+gRGQtOVIkKNI6bo0xGgn5rFUNM241Lv17Cw+QBtT9FYvU
-         o24+V/qpb1jehn8WnZMYanI3MrppW6UpoZuvoOrzm7laB/gzUNC/suEWb+MrZODOgz
-         xJamzN2e8r4Bu3eo8N0JkYC7aJHfUscfb7JIXnfPGXc9eJS70u+E5rYrkYSnnPup6/
-         UxaZ7XvBhWpGFBLNL+Zrvn23dGiRnCckTtqxxY2vASJ6H9jpern/sp38DMi8FU21lf
-         gxq/bHX3wbh9g==
-Received: by mail.onlinesuccesses.pl for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 06:55:08 GMT
-Message-ID: <20220420053000-0.1.3t.ycdx.0.j75tckrpif@onlinesuccesses.pl>
-Date:   Wed, 20 Apr 2022 06:55:08 GMT
-From:   "Wiktor Zielonko" <wiktor.zielonko@onlinesuccesses.pl>
-To:     <bpf@vger.kernel.org>
-Subject: Ruch z pierwszej pozycji w Google
-X-Mailer: mail.onlinesuccesses.pl
+        with ESMTP id S1376348AbiDTHqz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 03:46:55 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE483BFA3;
+        Wed, 20 Apr 2022 00:44:03 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Kjt2x1R9KzhXY4;
+        Wed, 20 Apr 2022 15:43:53 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 20 Apr 2022 15:43:59 +0800
+Message-ID: <82e7faec-7f0c-573f-4945-de7072744dcb@huawei.com>
+Date:   Wed, 20 Apr 2022 15:43:59 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH bpf-next v2 5/6] bpf, arm64: bpf trampoline for arm64
+Content-Language: en-US
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, <hpa@zytor.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>
+References: <20220414162220.1985095-1-xukuohai@huawei.com>
+ <20220414162220.1985095-6-xukuohai@huawei.com>
+ <CAEf4Bzb_R56wAuD-Wgg7B5brT-dcsa+5sYynY+_CFzRwg+N5AA@mail.gmail.com>
+ <6c18a27f-c983-58f3-1dc0-5192f7df232a@huawei.com>
+In-Reply-To: <6c18a27f-c983-58f3-1dc0-5192f7df232a@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+On 4/16/2022 9:57 AM, Xu Kuohai wrote:
+> On 4/16/2022 1:12 AM, Andrii Nakryiko wrote:
+>> On Thu, Apr 14, 2022 at 9:10 AM Xu Kuohai <xukuohai@huawei.com> wrote:
+>>>
+>>> Add bpf trampoline support for arm64. Most of the logic is the same as
+>>> x86.
+>>>
+>>> fentry before bpf trampoline hooked:
+>>>  mov x9, x30
+>>>  nop
+>>>
+>>> fentry after bpf trampoline hooked:
+>>>  mov x9, x30
+>>>  bl  <bpf_trampoline>
+>>>
+>>> Tested on qemu, result:
+>>>  #55 fentry_fexit:OK
+>>>  #56 fentry_test:OK
+>>>  #58 fexit_sleep:OK
+>>>  #59 fexit_stress:OK
+>>>  #60 fexit_test:OK
+>>>  #67 get_func_args_test:OK
+>>>  #68 get_func_ip_test:OK
+>>>  #101 modify_return:OK
+>>>
+>>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>>> Acked-by: Song Liu <songliubraving@fb.com>
+>>> ---
+>>
+>> Can you please also take a look at [0], which is an ongoing work to
+>> add support for BPF cookie to BPF trampoline-based BPF programs. It's
+>> very close to being done, so it would be good if you can implement
+>> that at the same time.
+> 
+> OK, I'll take a look and try to implemnt it.
 
-jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
-j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
-e Google.=20
-
-Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
-=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
-w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
-owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
-dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
-
-Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
-edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
-edstawi=C4=87 ofert=C4=99?=20
-
-
-Pozdrawiam serdecznie,
-Wiktor Zielonko
+already implemented, but there are some conflicts between these two
+series, will send v3 after trampoline cookie are merged.
