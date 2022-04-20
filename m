@@ -2,67 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D535091EF
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 23:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DE950923B
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 23:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243435AbiDTVSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 17:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
+        id S1382618AbiDTVoI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 17:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbiDTVSV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 17:18:21 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16B843ACD
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 14:15:33 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id bu29so5274609lfb.0
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 14:15:33 -0700 (PDT)
+        with ESMTP id S1382628AbiDTVoH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 17:44:07 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DF44614C
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 14:41:17 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id d9so2807059vsh.10
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 14:41:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=B0znDhtCpOmNc7+EngWV3e/FTLWUmBoX6wEDkc700NA=;
-        b=XowPm+7UUFNv+ZIa9VjBp9OnwfPDv55rj7jZU6aMFkEFmRjalcf9Ip8uhICfUZb7Y7
-         C54J3GDaSF1iEXHYBbQfsH/P6RSHAak+/nDIRZKTgH6ZTYH7yMa4ZbYUYgxWUuDx6IPN
-         aQymHmnOsJSdUgGx5GPiJTdvLZ3uiGoeQ7N91nJ86XTbgJrlmRvsSQ9qOgHUm+7VCVz0
-         VqDUlxXKLBQgkaem00z1JRd0kI3RgIr77jXUZB9UM6GyWntQaQLHG/e2ZIlbQz0trp0e
-         LsBHVZhVF1xe67yVd6KjiXoZokeGFMhQJQM1E3av2o8B1vTfBGi+/VfAJR675cBx7lZR
-         a3NA==
+         :cc;
+        bh=2oBII489pAxubFq4JfKvzwwABjg5iG2biDKZ3L00PcE=;
+        b=mrTAYigfPyD9zpRyZ2Nz6Bn1+5Qr33LnkPjdPQSBy2goxS/7c36HDoKfyXy4XlRhe6
+         DAG08rOIs6xOciteyun5OxbW93iuRJ7X+SnZMkHeTzsU2+SVeOrSEQcDG3Ub8Ex0jDLa
+         inXThQFQomk5QNpfQuv5hQqc3wLMrNro91jBzx60nnbzyQpXM6fmrusw/eJ3LCTqiEtc
+         rsRXqMKSqj0L+elAQ5Br/eZO/hg0Dig3swnNH9NwVyN02m4qNeVEOWJGCZ8YkStOOspY
+         6LJ2dRe2NHsr4BvD4S/lwh00HIr2TKSJMd0IDuYX7YGmypqgqXOnFlwFZ0LnpUAeBda1
+         e0ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=B0znDhtCpOmNc7+EngWV3e/FTLWUmBoX6wEDkc700NA=;
-        b=JUs14oKiG1bBmSjz7HM/4ImjdqQ/mAYONZzxvCpnl6dMIlukugcmgDYUabvqSjsFei
-         XuCpL72a5hQ/+I1Pv4E7ubOjpwiaPNFYHgXx3Ujj4S25m0pw1TJcI2RQBlBSTbhoYIgy
-         9U3yhNDRI2f41tvBnoMGi3+8JM23ZdAujnfX0+lIHm8QAch/6wlxcy+pnDWutZIYq0wl
-         YM5ZXzizPpzMM/o+Uif7Pt9+KAs1G6oNeqzesDaeyYsJhs6gDqHWVGxgoc8NAcW4hoTD
-         vUUIJHsJ0aSXZcfY/9hewfz9CT/K2EJvl1FINdtd5AlQEAIo4ig6YfAa8wfbnzw3jmDA
-         n3aA==
-X-Gm-Message-State: AOAM533KXTBu14w9TG/0ooq26n5+M3IKUXHJmgVFN067ay3cK9lULSNG
-        KhNvaLA8D2wh9w4LV7GawwwVt9EF4iuwlzs+m+s=
-X-Google-Smtp-Source: ABdhPJx76g3LJqz/KwisJdzZjREn4g5ISvKV04advjy4ttn/YY5Jzk6ZYs+fTrc8Tb6OY5gT+s73YCVCm2yc3TOUNa8=
-X-Received: by 2002:a05:6512:10c5:b0:471:924f:1eed with SMTP id
- k5-20020a05651210c500b00471924f1eedmr11583824lfg.641.1650489332023; Wed, 20
- Apr 2022 14:15:32 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=2oBII489pAxubFq4JfKvzwwABjg5iG2biDKZ3L00PcE=;
+        b=JR0AOfS9q8C5zN75upv8y5iKAeoGG2pXn2hQFJaem0oST6PARFqbV5x8T5p4bdAdDh
+         tUstkay9ieSPzBYJ2/FMSVRs6oyXP++ROq7/F0wsAyTK4kxb60E1pDpfvLY+ATPcTQ51
+         qUQQz1ACGBmTSZRmXLmdp76G6MZYIEjRD6Af6vsDM5rHgChmgIMIjq4hAyKyteNUd+Zp
+         C0TE5SZSvQyc8OauOy64ZsHU/+JvAUXXtychUh/UMdEzceKO+E4Q2p5Wo/fi5KkMGCD0
+         7cJcQ1I54xC4O9lq8+0/D6PpUNNp9AuzUumkQmV95AJs09yTX9h2NzNfncJQh7VL8210
+         E89Q==
+X-Gm-Message-State: AOAM533nM3xxURSg8oQ0icnBV4/h+mUD8oCylBQ2R8SJB9S8MICyNtKg
+        m+qb/dj/dz3O9BGld17RK5vzlT1rtlKoFkZnek3hi9LO
+X-Google-Smtp-Source: ABdhPJzUuYuQMyB8rmV6Xh1wsll+nCIgsrMF0GNCdQqbkMEOFLho6RlTGHvsarhYSryhSwve+73OFwNz7jshcupIg6w=
+X-Received: by 2002:a67:fb8b:0:b0:32a:667e:4d1d with SMTP id
+ n11-20020a67fb8b000000b0032a667e4d1dmr4333343vsr.39.1650490876573; Wed, 20
+ Apr 2022 14:41:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220416063429.3314021-1-joannelkoong@gmail.com>
- <20220416063429.3314021-4-joannelkoong@gmail.com> <20220416174205.hezp2jnow3hqk6s6@apollo.legion>
- <CAJnrk1adv16+wgEN+euJgfhXFQ+TUDjL36Bo=w_TtzqgomX00Q@mail.gmail.com>
- <20220418235718.izeq7kkwinedpkuj@apollo.legion> <CAJnrk1ag9PT1iXMzB5cxJEnwESYndYE_LozvBuL_Db2degJ-CQ@mail.gmail.com>
- <20220419201851.qtekbc5twmyuyktn@apollo.legion>
-In-Reply-To: <20220419201851.qtekbc5twmyuyktn@apollo.legion>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Wed, 20 Apr 2022 14:15:20 -0700
-Message-ID: <CAJnrk1YSk_19JYiJ_tDex=_CqK6ppANaM6BM5kKW_Kt41rsDzw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/7] bpf: Add bpf_dynptr_from_mem,
- bpf_dynptr_alloc, bpf_dynptr_put
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+References: <20220416042940.656344-1-kuifeng@fb.com> <20220416042940.656344-2-kuifeng@fb.com>
+ <CAEf4BzY3eOOv-4V8npHwJz2NK7HEso7vdS8zQGMfuvw0D8euxQ@mail.gmail.com> <d2ed2fb9c2264cf904505923094d1f9374ac4daa.camel@fb.com>
+In-Reply-To: <d2ed2fb9c2264cf904505923094d1f9374ac4daa.camel@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Apr 2022 14:41:05 -0700
+Message-ID: <CAEf4BzaaK0mJ7b_SkjoMb6JRfEm-Ho5gkw4i3i+1SDcb9K_hJA@mail.gmail.com>
+Subject: Re: [PATCH dwarves v6 1/6] bpf, x86: Generate trampolines from bpf_tramp_links
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,74 +69,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 1:18 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Wed, Apr 20, 2022 at 1:17 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> On Wed, Apr 20, 2022 at 12:53:55AM IST, Joanne Koong wrote:
-> > > [...]
-> > > There is another issue I noticed while basing other work on this. You=
- have
-> > > declared bpf_dynptr in UAPI header as:
+> On Wed, 2022-04-20 at 10:37 -0700, Andrii Nakryiko wrote:
+> > On Fri, Apr 15, 2022 at 9:30 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
 > > >
-> > >         struct bpf_dynptr {
-> > >                 __u64 :64;
-> > >                 __u64 :64;
-> > >         } __attribute__((aligned(8)));
+> > > Replace struct bpf_tramp_progs with struct bpf_tramp_links to
+> > > collect
+> > > struct bpf_tramp_link(s) for a trampoline.  struct bpf_tramp_link
+> > > extends bpf_link to act as a linked list node.
 > > >
-> > > Sadly, in C standard, the compiler is under no obligation to initiali=
-ze padding
-> > > bits when the object is zero initialized (using =3D {}). It is worse,=
- when
-> > > unrelated struct fields are assigned the padding bits are assumed to =
-attain
-> > > unspecified values, but compilers are usually conservative in that ca=
-se (C11
-> > > 6.2.6.1 p6).
-> > Thanks for noting this. By "padding bits", you are referring to the
-> > unnamed fields, correct?
+> > > arch_prepare_bpf_trampoline() accepts a struct bpf_tramp_links to
+> > > collects all bpf_tramp_link(s) that a trampoline should call.
+> > >
+> > > Change BPF trampoline and bpf_struct_ops to pass bpf_tramp_links
+> > > instead of bpf_tramp_progs.
+> > >
+> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> > > ---
+> > >  arch/x86/net/bpf_jit_comp.c    | 36 +++++++++--------
+> > >  include/linux/bpf.h            | 36 +++++++++++------
+> > >  include/linux/bpf_types.h      |  1 +
+> > >  include/uapi/linux/bpf.h       |  1 +
+> > >  kernel/bpf/bpf_struct_ops.c    | 69 ++++++++++++++++++++++--------
+> > > --
+> > >  kernel/bpf/syscall.c           | 23 ++++-------
+> > >  kernel/bpf/trampoline.c        | 73 +++++++++++++++++++-----------
+> > > ----
+> > >  net/bpf/bpf_dummy_struct_ops.c | 37 ++++++++++++++---
+> > >  tools/bpf/bpftool/link.c       |  1 +
+> > >  tools/include/uapi/linux/bpf.h |  1 +
+> > >  10 files changed, 175 insertions(+), 103 deletions(-)
+> > >
 > >
-> > From the commit message in 5eaed6eedbe9, I see:
+> > [...]
 > >
-> > INTERNATIONAL STANDARD =C2=A9ISO/IEC ISO/IEC 9899:201x
-> >   Programming languages =E2=80=94 C
-> >   http://www.open-std.org/Jtc1/sc22/wg14/www/docs/n1547.pdf
-> >   page 157:
-> >   Except where explicitly stated otherwise, for the purposes of
-> >   this subclause unnamed members of objects of structure and union
-> >   type do not participate in initialization. Unnamed members of
-> >   structure objects have indeterminate value even after initialization.
+> > > @@ -385,6 +399,7 @@ static int
+> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+> > >         for_each_member(i, t, member) {
+> > >                 const struct btf_type *mtype, *ptype;
+> > >                 struct bpf_prog *prog;
+> > > +               struct bpf_tramp_link *link;
+> > >                 u32 moff;
+> > >
+> > >                 moff = __btf_member_bit_offset(t, member) / 8;
+> > > @@ -438,16 +453,26 @@ static int
+> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+> > >                         err = PTR_ERR(prog);
+> > >                         goto reset_unlock;
+> > >                 }
+> > > -               st_map->progs[i] = prog;
+> > >
+> > >                 if (prog->type != BPF_PROG_TYPE_STRUCT_OPS ||
+> > >                     prog->aux->attach_btf_id != st_ops->type_id ||
+> > >                     prog->expected_attach_type != i) {
+> > > +                       bpf_prog_put(prog);
+> > >                         err = -EINVAL;
+> > >                         goto reset_unlock;
+> > >                 }
+> > >
+> > > -               err = bpf_struct_ops_prepare_trampoline(tprogs,
+> > > prog,
+> > > +               link = kzalloc(sizeof(*link), GFP_USER);
 > >
-> > so it seems like the best way to address that here is to just have the
-> > fields be explicitly named, like something like
-> >
-> > struct bpf_dynptr {
-> >     __u64 anon1;
-> >     __u64 anon2;
-> > } __attribute__((aligned(8)))
-> >
-> > Do you agree with this assessment?
-> >
+> > seems like you are leaking this link and all the links allocated in
+> > previous successful iterations of this loop?
 >
-> Yes, this should work. Also, maybe 'variable not initialized error' shoul=
-dn't be
-> 'verifier internal error', since it would quite common for user to hit it=
-.
+> In the block of reset_unlok, it calls bpf_struct_ops_map_put_progs() to
+> release all links in st_map including all links of previous iterations.
 >
-I looked into this some more and I don't think it's an issue that the
-compiler doesn't initialize anonymous fields and/or initializes it
-with indeterminate values. We set up the dynptr in
-bpf_dynptr_from_mem() and bpf_dynptr_alloc() where we initialize its
-contents with real values. It doesn't matter if prior to
-bpf_dynptr_from_mem()/bpf_dynptr_alloc() it's filled with garbage
-values because they'll be overridden.
+> >
+> > > +               if (!link) {
+> > > +                       bpf_prog_put(prog);
+> > > +                       err = -ENOMEM;
+> > > +                       goto reset_unlock;
+> > > +               }
+> > > +               bpf_link_init(&link->link,
+> > > BPF_LINK_TYPE_STRUCT_OPS,
+> > > +                             &bpf_struct_ops_link_lops, prog);
+> > > +               st_map->links[i] = &link->link;
+> > > +
+> > > +               err = bpf_struct_ops_prepare_trampoline(tlinks,
+> > > link,
+> > >                                                         &st_ops-
+> > > >func_models[i],
+> > >                                                         image,
+> > > image_end);
+> > >                 if (err < 0)
+> > > @@ -490,7 +515,7 @@ static int
+> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+> > >         memset(uvalue, 0, map->value_size);
+> > >         memset(kvalue, 0, map->value_size);
+> > >  unlock:
+> > > -       kfree(tprogs);
+> > > +       kfree(tlinks);
+> >
+> > so you'll need to free those links inside tlinks (or wherever else
+> > they are stored)
+>
+> All links are in st_maps.
+> They will be free by bpf_struct_ops_map_put_progs().
+> Does that make sense?
 
-The "verifier internal error: variable not initialized on stack in
-mark_as_dynptr_data" error you were seeing is unrelated to this. It's
-because of a mistake in mark_as_dynptr_data() where when we check that
-the memory size of the data should be within the spi bounds, the 3rd
-argument we pass to is_spi_bounds_valid() should be the number of
-slots, not the memory size (the value should be mem_size /
-BPF_REG_SIZE, not mem_size). Changing this fixes the error.
+ah, yeah, makes sense. I was wondering how did we miss this in
+previous revisions. Great, never mind this issue then.
 
-> --
-> Kartikeya
+>
+> >
+> > >         mutex_unlock(&st_map->lock);
+> > >         return err;
+> > >  }
+
+[...]
