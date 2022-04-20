@@ -2,64 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F941508733
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 13:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53D950872F
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 13:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378220AbiDTLnM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 07:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S1378145AbiDTLls (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 07:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378219AbiDTLnM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 07:43:12 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0BA419B6
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 04:40:25 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id u7so2463092lfs.8
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 04:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=VKyqkiHMAMbxDabOm41Pe1xqBptH6ILp/RHTVhXWA1M=;
-        b=kisidZ359JBb2iHL/bs4DBq6P+KC4o80zwOVfnjZQHPodqgRP5BAp2fyZ6cZgEt8zE
-         PdNRwdX0xLOeLSG2KLzLVAb5bMVCZ3+gpIhypWAiKJo6XQ5wpokPAE8AtKWXqavhHruc
-         KrCoetQGLT8a6gVZHLHXC+6IPSmqj4aMQYItg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=VKyqkiHMAMbxDabOm41Pe1xqBptH6ILp/RHTVhXWA1M=;
-        b=Dk82MFlJPkc65F06JTWdnbHHa7rq7zzjhq6hmunolBZRFoX6iOhd9ZuyR6p4YfX1kw
-         yHF4ez3LDIRV+fxNK45Ga1s/DZaOCRlsCxpRaycNt5FWiBX/VsUr54QEoykCY10O+ZuX
-         +eO4vqwUxpPDUyJ5Hbnis9GFxDkIUIepMcXo0e1INq+dxDcOFRq7ffv9wKemQ0LsPcMa
-         j4akvry6VuVZBAVXsAwd5FEtNK+Av74ZU0BB215LL7DLvgunO1MaVOQmG7XhXPhg53Ie
-         YTNuH1Q+NRyOdgAz4hM2fDH6sTOqCmyRXY3rfTCoBrjtJCXdxHT8yco13oxiCNjLLsP0
-         thAQ==
-X-Gm-Message-State: AOAM530A0s3pqVZzxa8ETQsDTwr4obgWbeYVPWlzAtnbOJBcdY2vXMgE
-        CZ7x28dGvrscxjrMYeBjmINGhQ==
-X-Google-Smtp-Source: ABdhPJzkCWJhhf8Yp+Zwsj308WiZ2xxy/9KDJBid23/aNj/yJesRU+Lww+2dSgxuR3dGzJ9bPFcfTw==
-X-Received: by 2002:a05:6512:b1a:b0:471:add8:99e9 with SMTP id w26-20020a0565120b1a00b00471add899e9mr4788534lfu.300.1650454824118;
-        Wed, 20 Apr 2022 04:40:24 -0700 (PDT)
-Received: from cloudflare.com (79.184.126.143.ipv4.supernova.orange.pl. [79.184.126.143])
-        by smtp.gmail.com with ESMTPSA id j7-20020a056512028700b00471bab03deesm195633lfp.38.2022.04.20.04.40.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 04:40:23 -0700 (PDT)
-References: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
- <20211201181040.23337-6-alexei.starovoitov@gmail.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com, kernel-team@cloudflare.com
-Subject: Re: [PATCH v5 bpf-next 05/17] bpf: Pass a set of bpf_core_relo-s to
- prog_load command.
-Date:   Wed, 20 Apr 2022 13:32:36 +0200
-In-reply-to: <20211201181040.23337-6-alexei.starovoitov@gmail.com>
-Message-ID: <87sfq8f0ex.fsf@cloudflare.com>
+        with ESMTP id S1378203AbiDTLlq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 07:41:46 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E742741FA2
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 04:38:59 -0700 (PDT)
+Received: from fsav412.sakura.ne.jp (fsav412.sakura.ne.jp [133.242.250.111])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 23KBccxD031880;
+        Wed, 20 Apr 2022 20:38:39 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav412.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp);
+ Wed, 20 Apr 2022 20:38:38 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 23KBccoa031877
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 20 Apr 2022 20:38:38 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <909c72b6-83f9-69a0-af80-d9cb3bc2bd0e@I-love.SAKURA.ne.jp>
+Date:   Wed, 20 Apr 2022 20:38:36 +0900
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: How to disassemble a BPF program?
+Content-Language: en-US
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     bpf <bpf@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <4ed4a01e-3d1e-bf1e-803a-608df187bde5@I-love.SAKURA.ne.jp>
+In-Reply-To: <4ed4a01e-3d1e-bf1e-803a-608df187bde5@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,77 +52,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Alexei,
+Ping?
 
-On Wed, Dec 01, 2021 at 10:10 AM -08, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> struct bpf_core_relo is generated by llvm and processed by libbpf.
-> It's a de-facto uapi.
-> With CO-RE in the kernel the struct bpf_core_relo becomes uapi de-jure.
-> Add an ability to pass a set of 'struct bpf_core_relo' to prog_load command
-> and let the kernel perform CO-RE relocations.
->
-> Note the struct bpf_line_info and struct bpf_func_info have the same
-> layout when passed from LLVM to libbpf and from libbpf to the kernel
-> except "insn_off" fields means "byte offset" when LLVM generates it.
-> Then libbpf converts it to "insn index" to pass to the kernel.
-> The struct bpf_core_relo's "insn_off" field is always "byte offset".
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  include/linux/bpf.h            |  8 ++++
->  include/uapi/linux/bpf.h       | 59 +++++++++++++++++++++++++-
->  kernel/bpf/btf.c               |  6 +++
->  kernel/bpf/syscall.c           |  2 +-
->  kernel/bpf/verifier.c          | 76 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 59 +++++++++++++++++++++++++-
->  tools/lib/bpf/relo_core.h      | 53 ------------------------
->  7 files changed, 207 insertions(+), 56 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index cad0829710be..8bbf08fbab66 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1732,6 +1732,14 @@ bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
->  const struct btf_func_model *
->  bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
->  			 const struct bpf_insn *insn);
-> +struct bpf_core_ctx {
-> +	struct bpf_verifier_log *log;
-> +	const struct btf *btf;
-> +};
-> +
-> +int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
-> +		   int relo_idx, void *insn);
-> +
->  #else /* !CONFIG_BPF_SYSCALL */
->  static inline struct bpf_prog *bpf_prog_get(u32 ufd)
->  {
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 9e66b1880020..c26871263f1f 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1342,8 +1342,10 @@ union bpf_attr {
->  			/* or valid module BTF object fd or 0 to attach to vmlinux */
->  			__u32		attach_btf_obj_fd;
->  		};
-> -		__u32		:32;		/* pad */
-> +		__u32		core_relo_cnt;	/* number of bpf_core_relo */
->  		__aligned_u64	fd_array;	/* array of FDs */
-> +		__aligned_u64	core_relos;
-> +		__u32		core_relo_rec_size; /* sizeof(struct bpf_core_relo) */
->  	};
->  
->  	struct { /* anonymous struct used by BPF_OBJ_* commands */
+Since how to fix this "current top five crasher" bug depends on how a kernel
+socket is created via BPF program, this bug wants help from BPF developers.
 
-I think I've spotted a breakage.
-
-Plugging the 4 byte hole with core_relo_cnt means that programs built
-against < v5.17 headers pass garbage as core_relo_cnt value.
-
-That in turn makes check_core_relo() fail with -EINVAL, which fails
-PROG_LOAD.
-
-[...]
+On 2022/04/12 20:04, Tetsuo Handa wrote:
+> Hello.
+> 
+> I'm not a BPF user, but I want to know what a BPF program stored in
+> "static const char program[2053] =" at
+> https://lkml.kernel.org/r/c389e47f-8f82-fd62-8c1d-d9481d2f71ff@I-love.SAKURA.ne.jp
+> is doing so that I can parse syzkaller-generated BPF programs like C programs.
+> 
+> Do you have a utility for this purpose?
+> 
+> Regards.
