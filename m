@@ -2,56 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E73BE508D0D
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 18:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B06508D3B
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 18:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380470AbiDTQUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 12:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
+        id S1346579AbiDTQ3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 12:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380464AbiDTQUq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 12:20:46 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2112F3AE;
-        Wed, 20 Apr 2022 09:18:00 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id b5so1313846ile.0;
-        Wed, 20 Apr 2022 09:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XbhXfA4i8EWyzfGIfVps9mO1QV1q4FKoW3ua2nrNi4U=;
-        b=XLg/7DADRcCpwg8VP68vQDBAh7NGr50XxillDADzF6rWFaNUCfB97v7o+PY9wG4ssO
-         3jZ15HFGeKpYzlmIw8nqxu70NeImXaWd6ixiKQOA3Ccxb/8bCT6j1SYqQjIrogbW/ASN
-         bbrtIq+fGxuFqWE8jSsIJ7gSHKVt2LlR1Ejo2KJYERwvdjgKPtw57x9rz9kfo73/MPVZ
-         gX7ob3cH9hKzrVAnckdvJuXU5G/FfU1E+3lWR7aHr1g2GssSqU65PaM9UWe7/EuJE5tA
-         V7ZO3wg+Is0IG5GsJO2QJTU1wiKbsFbFoY3Ml5TPLM7cl8R3GlGxAbmx8it6sTFdbIXe
-         6Z6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XbhXfA4i8EWyzfGIfVps9mO1QV1q4FKoW3ua2nrNi4U=;
-        b=6Pr3CuybFL2CcYWfQ+1qMICDmiDOoHULQFxbBRC9m8MT0ims3GoBVX/cOtXl9Dx01J
-         D//74JzQCEAQmzG1NC6vaGfTTez3qwekpegUzFtJLmA99AqJkPzbGtiQXazmhbjK2vt+
-         Syw2jMd+K6XqgDR7fs+Iq8AWwACJK5Fwd3YhY2ZgaOZlicLIq+UFNxegcClER/zy8BvC
-         yqHBZxfKCXYCADo5x7iv2AZcv16QAQ0pj3wxgAjNpr2OPWq6QaiF++f8XNur3eUBPjL9
-         JmmNUvFGUYsik5H4JfrGMSrYyPMCHrkSCHb8kWwZt/HxM6dS6z22t+navGqtk8dMz/7r
-         9oAA==
-X-Gm-Message-State: AOAM533S5CvCaSOaExjwY+f1CN243vHRmrCcRwVio1vtAMYttOT77yYS
-        Fbvb38LAnYwqAdcwZVWH+poYuerh8VI2LSIaSMY=
-X-Google-Smtp-Source: ABdhPJxezi1FVoE6RbVvyQLeVbrRqsbrVP3qd8jdamfsRgiRwH2kLnxLNHD/y26thb9QSFWo6/YswMONn/fJu9WWd/s=
-X-Received: by 2002:a92:c247:0:b0:2cc:1798:74fe with SMTP id
- k7-20020a92c247000000b002cc179874femr8160249ilo.239.1650471479496; Wed, 20
- Apr 2022 09:17:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220420122307.5290-1-xiangxia.m.yue@gmail.com> <878rrzj4r6.fsf@toke.dk>
-In-Reply-To: <878rrzj4r6.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Apr 2022 09:17:48 -0700
-Message-ID: <CAEf4Bzafe3Am5uep7erd7r+-pgdGRc9hsJASYfFH47ty8x9mTA@mail.gmail.com>
-Subject: Re: [net-next v1] bpf: add bpf_ktime_get_real_ns helper
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
+        with ESMTP id S1380479AbiDTQ3t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 12:29:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27A421E00;
+        Wed, 20 Apr 2022 09:27:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F116619FF;
+        Wed, 20 Apr 2022 16:27:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C9F5C385A0;
+        Wed, 20 Apr 2022 16:27:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650472021;
+        bh=fb9ado0/3F7FYlTFjG0Q6SH3RLQ9ehGzpmSE/fDCKoY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=pBMye+1yrl7l8crweJudwjifXcMbVlXiemfA+9K6AHu6l/QjSVIuyitLLm4Jdux/9
+         hAOMKzQHDj547K//MuJD7PJcLnGxOk5+NbRJAj+gTuojYIAWY717h4Csr/zEqeGbxY
+         r0hY9A/thV4EHui+/4lKaXIRADaortYLKkBFQwM77tkx2PuUZmDJWvPhb3xNWOXTSj
+         FXE0VaD3eZ91/DWtSrc3j/PgGV0iykbam1OJ2qZJ9cbIapUPg8aaX4ZZg7F+G496ER
+         EpYTKSRPXL4hczS3eTUcvALShCDyxe1sarg94f1aHLWGq362hktT8HN522EtkiWoCp
+         3b5j96cNLYYYw==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D7C462D1C96; Wed, 20 Apr 2022 18:26:57 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Tonghao Zhang <xiangxia.m.yue@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -68,48 +51,60 @@ Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [net-next v1] bpf: add bpf_ktime_get_real_ns helper
+In-Reply-To: <CAEf4Bzafe3Am5uep7erd7r+-pgdGRc9hsJASYfFH47ty8x9mTA@mail.gmail.com>
+References: <20220420122307.5290-1-xiangxia.m.yue@gmail.com>
+ <878rrzj4r6.fsf@toke.dk>
+ <CAEf4Bzafe3Am5uep7erd7r+-pgdGRc9hsJASYfFH47ty8x9mTA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 20 Apr 2022 18:26:57 +0200
+Message-ID: <87wnfjhga6.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 5:53 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@kern=
-el.org> wrote:
->
-> xiangxia.m.yue@gmail.com writes:
->
-> > From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-> >
-> > This patch introduce a new bpf_ktime_get_real_ns helper, which may
-> > help us to measure the skb latency in the ingress/forwarding path:
-> >
-> > HW/SW[1] -> ip_rcv/tcp_rcv_established -> tcp_recvmsg_locked/tcp_update=
-_recv_tstamps
-> >
-> > * Insert BPF kprobe into ip_rcv/tcp_rcv_established invoking this helpe=
-r.
-> >   Then we can inspect how long time elapsed since HW/SW.
-> > * If inserting BPF kprobe tcp_update_recv_tstamps invoked by tcp_recvms=
-g,
-> >   we can measure how much latency skb in tcp receive queue. The reason =
-for
-> >   this can be application fetch the TCP messages too late.
->
-> Why not just use one of the existing ktime helpers and also add a BPF
-> probe to set the initial timestamp instead of relying on skb->tstamp?
->
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-You don't even need a BPF probe for this. See [0] for how retsnoop is
-converting bpf_ktime_get_ns() into real time.
+> On Wed, Apr 20, 2022 at 5:53 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@ke=
+rnel.org> wrote:
+>>
+>> xiangxia.m.yue@gmail.com writes:
+>>
+>> > From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+>> >
+>> > This patch introduce a new bpf_ktime_get_real_ns helper, which may
+>> > help us to measure the skb latency in the ingress/forwarding path:
+>> >
+>> > HW/SW[1] -> ip_rcv/tcp_rcv_established -> tcp_recvmsg_locked/tcp_updat=
+e_recv_tstamps
+>> >
+>> > * Insert BPF kprobe into ip_rcv/tcp_rcv_established invoking this help=
+er.
+>> >   Then we can inspect how long time elapsed since HW/SW.
+>> > * If inserting BPF kprobe tcp_update_recv_tstamps invoked by tcp_recvm=
+sg,
+>> >   we can measure how much latency skb in tcp receive queue. The reason=
+ for
+>> >   this can be application fetch the TCP messages too late.
+>>
+>> Why not just use one of the existing ktime helpers and also add a BPF
+>> probe to set the initial timestamp instead of relying on skb->tstamp?
+>>
+>
+> You don't even need a BPF probe for this. See [0] for how retsnoop is
+> converting bpf_ktime_get_ns() into real time.
+>
+>   [0] https://github.com/anakryiko/retsnoop/blob/master/src/retsnoop.c#L6=
+49-L668
 
-  [0] https://github.com/anakryiko/retsnoop/blob/master/src/retsnoop.c#L649=
--L668
+Uh, neat! Thanks for the link :)
 
-> -Toke
+-Toke
