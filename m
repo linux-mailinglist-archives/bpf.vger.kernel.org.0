@@ -2,92 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C34B508E56
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 19:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0EB508EA1
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 19:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380952AbiDTRXb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 13:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
+        id S231533AbiDTRk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 13:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344045AbiDTRXa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 13:23:30 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C611533E3E;
-        Wed, 20 Apr 2022 10:20:42 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id m14so2173051vsp.11;
-        Wed, 20 Apr 2022 10:20:42 -0700 (PDT)
+        with ESMTP id S229785AbiDTRk2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 13:40:28 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EFA46B37
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 10:37:41 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id h4so1446059ilq.8
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 10:37:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vceL50BIp2v6AiSQ6YiQr6PR8WOQ5ol+sLtkOLau4XA=;
-        b=dPSQHu6nx3iobsZSUWBFmXF4+kbgM/szfCsN6teKAmJ9FpHP0/BQhQ7vkzc+xC4nqd
-         MlYf4fGWTY35ANgfJwFGNPL2LOBp1umldmad29D2CJ0hU0Mxls3ffBj/tXq7HqkEq6/B
-         JKnor+MXg9+H+0s9wpmSgYrMl2w3+eijPyNKoEydWt9ON88mle7z56kT7U/ydH0cRWZq
-         NWOYdeVdI8wJRc2PzplJ31uJGHcyViapKYwj22j/YU5QeaZC9gLRDGu4gDXoELQm8aPJ
-         79wH0nGGRPIWA560g2smnsMVD4weZ/45UYENV/J0QkSL2DtXM7tjN0jxyEtXlz8eUnS1
-         /f+A==
+        bh=Vdvp64F2iwSRIttzBPFoc5b8g1fN+safhnILDg9IuGI=;
+        b=JltZRM+rUKG6oh0Bz6Zg2le2z7NfjIS4cdFJ0UslHobDvDH6xBJJkl6L7ztfyvCyqs
+         vWgNcxmi7Lo8bZghYVnfhvLJ6GOEi5a1zjJOD2+3PSzueSQFzVJ52pIIJyraZuv6MEJG
+         0DVzs1lQyz/eSyV7/OJIKZYc7jN022QqqAlQSzRJFXXZqyOYLJnrKddZM+iyc/q0aPRw
+         Hj5wWsG04nsVw3oKpzMA6MuguWRMz0TDJ31fCRiuYaK6ghqGf01tmQXlu+2h8aUzsJ+s
+         kHzIb5r3gZLgeg1SYziQFeRJs8Y5FlEHj5CA9y7cn3/VmcVkSTn1abh0ze9nCBQmZ6is
+         zT2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vceL50BIp2v6AiSQ6YiQr6PR8WOQ5ol+sLtkOLau4XA=;
-        b=z+4bFm0zMTWbqHjqtPnJqzpwnd9ZNLLLD/SsghQyu9zNyvDRMb6SkSXUf933bUd37y
-         haAi/mPn8uM2v1eKQswWSSywSutLU01lrAv1NVtMDaWXABTzlHuVXDh9iQ9dfHoM0Zet
-         FH2mYY6SOkQRCqUIHiuigjv9xi8dZs4Epl7bJBFvVNtFbp8oyMeCDNM63MkFoDIR5XCY
-         adzGawu1lTprfvMS51cCFzxY/dNf0BkqiFkP3IEzeygEa3tCrMrWmM+4bve7Gn9xTtFv
-         +8FuqzUjPF898FhdXP4Q7n3b7rluoGBvJPITszW+MT2TsWDIfDAr3Dl2xoHBuyXQsXE8
-         57gA==
-X-Gm-Message-State: AOAM533OfAnNCcrEY1QeuTr67T+tYhM0rRVwV4kRbqrIYyEckUq3jg6x
-        vtVBHhx6Dj+SkYyet7j8ivELF1ozqAbUXv82dmY=
-X-Google-Smtp-Source: ABdhPJwa5MK25KXgiSTD0eO/ewqGUYce48kyJBJEdJott0E9+lLwDRk0RiatpUDoEtgOvwNXhLZUz4i9JP7/swbztEA=
-X-Received: by 2002:a67:f693:0:b0:328:295b:3077 with SMTP id
- n19-20020a67f693000000b00328295b3077mr6552415vso.80.1650475241848; Wed, 20
- Apr 2022 10:20:41 -0700 (PDT)
+        bh=Vdvp64F2iwSRIttzBPFoc5b8g1fN+safhnILDg9IuGI=;
+        b=8OUgR41HMPGfGNMCCKMKrfEICc/zbGlIgwh9Jo57WDE8mGdpVVYOjW1PT8LQDsIcrh
+         m0HVuGF6WJQFlPAbAWK7YNKxsbRzndiSooIZQIYrTUBSYQekoZwVYxJJSxXOY0Seitnw
+         PIw/bTgbO/iyYL49ssw5RtxvQH1SmDcZ6fvCJvSwZN/pd5PDqruu3ROs2VOcMPyxP8a9
+         47WJ09ezGDjl/j425/hdOyjf92Zxg2qEwV4YJoRP5dFZgAN2lyUIYEkKdO7HN51dRD3J
+         RiMO5xKz3mNkVuyYCXO4nijRmSNOhu+N/juAg9sTpmRHTS6YcaVfNPVB0OGJrshdnpOa
+         DFzw==
+X-Gm-Message-State: AOAM531+BREw/pwddPviJTR/YCKlNQtcqyZTWW6hZnLvKv13JwSvDqaD
+        xxnhnFaKtq142ur/1gmLRirmHc2MT+JgNXe4a2DncAL/PTQ=
+X-Google-Smtp-Source: ABdhPJx4f0QITCbwq+lkWeUd3yMhnPXBmdhS4HnATqX+y/qfb4F/2n9XkDZxEesXk67dk/D3mTfgY7zJYiv8VB571bo=
+X-Received: by 2002:a92:cd83:0:b0:2cc:1a66:6435 with SMTP id
+ r3-20020a92cd83000000b002cc1a666435mr7475794ilb.252.1650476260994; Wed, 20
+ Apr 2022 10:37:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220414223704.341028-1-alobakin@pm.me>
-In-Reply-To: <20220414223704.341028-1-alobakin@pm.me>
+References: <20220416042940.656344-1-kuifeng@fb.com> <20220416042940.656344-2-kuifeng@fb.com>
+In-Reply-To: <20220416042940.656344-2-kuifeng@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Apr 2022 10:20:31 -0700
-Message-ID: <CAEf4Bza2H=vd+2nWV26UXBJCbMJkAVt2kggEj7Jxe8UVcs-qkw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/11] bpf: random unpopular userspace fixes (32
- bit et al.)
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 20 Apr 2022 10:37:30 -0700
+Message-ID: <CAEf4BzY3eOOv-4V8npHwJz2NK7HEso7vdS8zQGMfuvw0D8euxQ@mail.gmail.com>
+Subject: Re: [PATCH dwarves v6 1/6] bpf, x86: Generate trampolines from bpf_tramp_links
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Chenbo Feng <fengc@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Daniel Wagner <daniel.wagner@bmw-carit.de>,
-        Thomas Graf <tgraf@suug.ch>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        llvm@lists.linux.dev
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -99,47 +67,169 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 14, 2022 at 3:44 PM Alexander Lobakin <alobakin@pm.me> wrote:
+On Fri, Apr 15, 2022 at 9:30 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> This mostly issues the cross build (1) errors for 32 bit (2)
-> MIPS (3) with minimal configuration (4) on Musl (5). The majority
-> of them aren't yesterday's, so it is a "who does need it outside
-> of x86_64 or ARM64?" moment again.
-> Trivial stuff in general, not counting the bpf_cookie build fix.
+> Replace struct bpf_tramp_progs with struct bpf_tramp_links to collect
+> struct bpf_tramp_link(s) for a trampoline.  struct bpf_tramp_link
+> extends bpf_link to act as a linked list node.
 >
-> Alexander Lobakin (11):
->   bpf, perf: fix bpftool compilation with !CONFIG_PERF_EVENTS
->   bpf: always emit struct bpf_perf_link BTF
->   tools, bpf: fix bpftool build with !CONFIG_BPF_EVENTS
->   samples: bpf: add 'asm/mach-generic' include path for every MIPS
->   samples: bpf: use host bpftool to generate vmlinux.h, not target
->   tools, bpf: fix fcntl.h include in bpftool
->   samples: bpf: fix uin64_t format literals
->   samples: bpf: fix shifting unsigned long by 32 positions
->   samples: bpf: fix include order for non-Glibc environments
->   samples: bpf: fix -Wsequence-point
->   samples: bpf: xdpsock: fix -Wmaybe-uninitialized
+> arch_prepare_bpf_trampoline() accepts a struct bpf_tramp_links to
+> collects all bpf_tramp_link(s) that a trampoline should call.
+>
+> Change BPF trampoline and bpf_struct_ops to pass bpf_tramp_links
+> instead of bpf_tramp_progs.
+>
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c    | 36 +++++++++--------
+>  include/linux/bpf.h            | 36 +++++++++++------
+>  include/linux/bpf_types.h      |  1 +
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/bpf/bpf_struct_ops.c    | 69 ++++++++++++++++++++++----------
+>  kernel/bpf/syscall.c           | 23 ++++-------
+>  kernel/bpf/trampoline.c        | 73 +++++++++++++++++++---------------
+>  net/bpf/bpf_dummy_struct_ops.c | 37 ++++++++++++++---
+>  tools/bpf/bpftool/link.c       |  1 +
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  10 files changed, 175 insertions(+), 103 deletions(-)
 >
 
-For consistency with majority of other commits, can you please use
-"samples/bpf: " prefix for samples/bpf changes and "bpftool: " for
-bpftool's ones? Thanks!
+[...]
 
->  include/linux/perf_event.h              |  2 ++
->  kernel/bpf/syscall.c                    |  4 +++-
->  samples/bpf/Makefile                    |  7 ++++---
->  samples/bpf/cookie_uid_helper_example.c | 12 ++++++------
->  samples/bpf/lathist_kern.c              |  2 +-
->  samples/bpf/lwt_len_hist_kern.c         |  2 +-
->  samples/bpf/lwt_len_hist_user.c         |  4 ++--
->  samples/bpf/task_fd_query_user.c        |  2 +-
->  samples/bpf/test_lru_dist.c             |  3 ++-
->  samples/bpf/tracex2_kern.c              |  2 +-
->  samples/bpf/xdpsock_user.c              |  5 +++--
->  tools/bpf/bpftool/tracelog.c            |  2 +-
->  12 files changed, 27 insertions(+), 20 deletions(-)
+> @@ -385,6 +399,7 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>         for_each_member(i, t, member) {
+>                 const struct btf_type *mtype, *ptype;
+>                 struct bpf_prog *prog;
+> +               struct bpf_tramp_link *link;
+>                 u32 moff;
 >
+>                 moff = __btf_member_bit_offset(t, member) / 8;
+> @@ -438,16 +453,26 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>                         err = PTR_ERR(prog);
+>                         goto reset_unlock;
+>                 }
+> -               st_map->progs[i] = prog;
+>
+>                 if (prog->type != BPF_PROG_TYPE_STRUCT_OPS ||
+>                     prog->aux->attach_btf_id != st_ops->type_id ||
+>                     prog->expected_attach_type != i) {
+> +                       bpf_prog_put(prog);
+>                         err = -EINVAL;
+>                         goto reset_unlock;
+>                 }
+>
+> -               err = bpf_struct_ops_prepare_trampoline(tprogs, prog,
+> +               link = kzalloc(sizeof(*link), GFP_USER);
+
+seems like you are leaking this link and all the links allocated in
+previous successful iterations of this loop?
+
+> +               if (!link) {
+> +                       bpf_prog_put(prog);
+> +                       err = -ENOMEM;
+> +                       goto reset_unlock;
+> +               }
+> +               bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS,
+> +                             &bpf_struct_ops_link_lops, prog);
+> +               st_map->links[i] = &link->link;
+> +
+> +               err = bpf_struct_ops_prepare_trampoline(tlinks, link,
+>                                                         &st_ops->func_models[i],
+>                                                         image, image_end);
+>                 if (err < 0)
+> @@ -490,7 +515,7 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+>         memset(uvalue, 0, map->value_size);
+>         memset(kvalue, 0, map->value_size);
+>  unlock:
+> -       kfree(tprogs);
+> +       kfree(tlinks);
+
+so you'll need to free those links inside tlinks (or wherever else
+they are stored)
+
+>         mutex_unlock(&st_map->lock);
+>         return err;
+>  }
+> @@ -545,9 +570,9 @@ static void bpf_struct_ops_map_free(struct bpf_map *map)
+>  {
+>         struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
+>
+> -       if (st_map->progs)
+> +       if (st_map->links)
+>                 bpf_struct_ops_map_put_progs(st_map);
+> -       bpf_map_area_free(st_map->progs);
+> +       bpf_map_area_free(st_map->links);
+>         bpf_jit_free_exec(st_map->image);
+>         bpf_map_area_free(st_map->uvalue);
+>         bpf_map_area_free(st_map);
+
+[...]
+
+> @@ -105,10 +120,20 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
+>         }
+>         set_vm_flush_reset_perms(image);
+>
+> +       link = kzalloc(sizeof(*link), GFP_USER);
+> +       if (!link) {
+> +               err = -ENOMEM;
+> +               goto out;
+> +       }
+> +       /* prog doesn't take the ownership of the reference from caller */
+> +       bpf_prog_inc(prog);
+> +       bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_link_lops, prog);
+> +
+>         op_idx = prog->expected_attach_type;
+> -       err = bpf_struct_ops_prepare_trampoline(tprogs, prog,
+> +       err = bpf_struct_ops_prepare_trampoline(tlinks, link,
+>                                                 &st_ops->func_models[op_idx],
+>                                                 image, image + PAGE_SIZE);
+> +
+
+nit: no need for extra empty line here
+
+>         if (err < 0)
+>                 goto out;
+>
+> @@ -124,7 +149,9 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
+>  out:
+>         kfree(args);
+>         bpf_jit_free_exec(image);
+> -       kfree(tprogs);
+> +       if (link)
+> +               bpf_link_put(&link->link);
+
+you never to bpf_link_prime() and bpf_link_settle() for these "pseudo
+links" for struct_ops, so there is no need for bpf_link_put(), it can
+be just bpf_link_free(), right?
+
+> +       kfree(tlinks);
+>         return err;
+>  }
+>
+> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+> index 8fb0116f9136..6353a789322b 100644
+> --- a/tools/bpf/bpftool/link.c
+> +++ b/tools/bpf/bpftool/link.c
+> @@ -23,6 +23,7 @@ static const char * const link_type_name[] = {
+>         [BPF_LINK_TYPE_XDP]                     = "xdp",
+>         [BPF_LINK_TYPE_PERF_EVENT]              = "perf_event",
+>         [BPF_LINK_TYPE_KPROBE_MULTI]            = "kprobe_multi",
+> +       [BPF_LINK_TYPE_STRUCT_OPS]               = "struct_ops",
+>  };
+>
+>  static struct hashmap *link_table;
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index d14b10b85e51..a4f557338af7 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1013,6 +1013,7 @@ enum bpf_link_type {
+>         BPF_LINK_TYPE_XDP = 6,
+>         BPF_LINK_TYPE_PERF_EVENT = 7,
+>         BPF_LINK_TYPE_KPROBE_MULTI = 8,
+> +       BPF_LINK_TYPE_STRUCT_OPS = 9,
+>
+>         MAX_BPF_LINK_TYPE,
+>  };
 > --
-> 2.35.2
->
+> 2.30.2
 >
