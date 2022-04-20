@@ -2,199 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 500865092D8
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 00:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F63509394
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 01:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355209AbiDTWdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 18:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38490 "EHLO
+        id S1348970AbiDTX1C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 19:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244917AbiDTWdo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 18:33:44 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2018136336
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 15:30:56 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id u3so4161533wrg.3
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 15:30:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JNdJoRr5tGng4b0lE14ckizzv6cvGcq4TrCt6gSM2M8=;
-        b=jI9YpA622nmVtBPlLCZoi6OSOaN9erRKXqwRsU1FpST1tlaT5vrIhPmihdK8uSWhXw
-         s9GsSqewlsDC9hDCAPj3ChLm1LZapE4ANp1eueaJ8bFWtP4tzWA7W27HgWwnMrKIunY8
-         5Ob/FNWCCUHkY1JsvuFpEVhfZh1SQu4T+agf5C0ipR1yHEDV7T4SWPP2xHTqesMYhPrL
-         jqL1YXkpbjnT1sq3LyI9XAQKow5Qxow84K6tngZ+vY+NVg3o1wuzLLHE/k1pvpDWR0Rv
-         pkyy/CNxDNoFRRds8f9qKGbr3fh1g6Kl41TW6h7qJZnAHWSL5V9XZGGhRLVx8g6h4khX
-         3Xhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JNdJoRr5tGng4b0lE14ckizzv6cvGcq4TrCt6gSM2M8=;
-        b=7JtK6m4S+DBcaAykWbG7Fnmj2fcPrhGEQqeISLq3ai6jh9WddDw7EBzRZFQiwYE4Xw
-         xRgFoLOMJHCBjDV9iTayujIEPbLgdtCgqwGnMpxfq3a2yAQLcoIojRqYTaXLzGCH/K89
-         SYf+9tUyikQmxGoywB1qgLQV5XfDXIoyYCyCwh+fdUhtbUspCWQjzloLrcQ0Ck5FP0AW
-         riPTuAu4vNphRedfCeZoX8TnhSVES5EdA+UWy9S3OjaOp2+87WyCMfG+2SJizX2X708v
-         RT17jPTdQu7OUAibgdwqrwcC7GL6dfhDoDMgKheGYSlzcSWy/oMKmHArCM/yrtf3oGnM
-         roTA==
-X-Gm-Message-State: AOAM531V+Drsu4Sc9cuB06/lVG0l8QfDJZ4lCMKn27IzJ+oiX3IlkX8E
-        cFzMENUM2wnB5I77kXq9oqngbl1/GStCUTKDJJomKw==
-X-Google-Smtp-Source: ABdhPJzd/mXFOlyeeIoEiC8aXTwfqYUR7SVagQGpPiHwr3WJpd+ItNkBduHlPnpXbo5R28XY7a7iqwvsJ/kunrPGinw=
-X-Received: by 2002:a5d:610d:0:b0:207:b141:a5fe with SMTP id
- v13-20020a5d610d000000b00207b141a5femr17387532wrt.463.1650493854529; Wed, 20
- Apr 2022 15:30:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220419222259.287515-1-sdf@google.com> <CAEf4BzYoA4xvqv7SaM2TvcbKef=m4n6TSGVNA34T2we05fRwpw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYoA4xvqv7SaM2TvcbKef=m4n6TSGVNA34T2we05fRwpw@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 20 Apr 2022 15:30:43 -0700
-Message-ID: <CAKH8qBsTiQA5knxoBSqxCYav89QdSN0j6t1EWX1MEVbAqLj6kg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: use bpf_prog_run_array_cg_flags everywhere
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1344735AbiDTX07 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 19:26:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A142C1D315;
+        Wed, 20 Apr 2022 16:24:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38DA861B07;
+        Wed, 20 Apr 2022 23:24:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE565C385A1;
+        Wed, 20 Apr 2022 23:24:06 +0000 (UTC)
+Date:   Wed, 20 Apr 2022 19:24:05 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Xu Kuohai <xukuohai@huawei.com>
+Cc:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>
+Subject: Re: [PATCH bpf-next v2 2/6] ftrace: Fix deadloop caused by direct
+ call in ftrace selftest
+Message-ID: <20220420192405.4e43a966@gandalf.local.home>
+In-Reply-To: <20220414162220.1985095-3-xukuohai@huawei.com>
+References: <20220414162220.1985095-1-xukuohai@huawei.com>
+        <20220414162220.1985095-3-xukuohai@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 3:04 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Apr 19, 2022 at 3:23 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > Rename bpf_prog_run_array_cg_flags to bpf_prog_run_array_cg and
-> > use it everywhere. check_return_code already enforces sane
-> > return ranges for all cgroup types. (only egress and bind hooks have
-> > uncanonical return ranges, the rest is using [0, 1])
-> >
-> > No functional changes.
-> >
-> > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  include/linux/bpf-cgroup.h |  8 ++---
-> >  kernel/bpf/cgroup.c        | 70 ++++++++++++--------------------------
-> >  2 files changed, 24 insertions(+), 54 deletions(-)
-> >
-> > diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> > index 88a51b242adc..669d96d074ad 100644
-> > --- a/include/linux/bpf-cgroup.h
-> > +++ b/include/linux/bpf-cgroup.h
-> > @@ -225,24 +225,20 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
-> >
-> >  #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, atype)                                      \
-> >  ({                                                                            \
-> > -       u32 __unused_flags;                                                    \
-> >         int __ret = 0;                                                         \
-> >         if (cgroup_bpf_enabled(atype))                                         \
-> >                 __ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
-> > -                                                         NULL,                \
-> > -                                                         &__unused_flags);    \
-> > +                                                         NULL, NULL);         \
-> >         __ret;                                                                 \
-> >  })
-> >
-> >  #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, atype, t_ctx)                  \
-> >  ({                                                                            \
-> > -       u32 __unused_flags;                                                    \
-> >         int __ret = 0;                                                         \
-> >         if (cgroup_bpf_enabled(atype))  {                                      \
-> >                 lock_sock(sk);                                                 \
-> >                 __ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
-> > -                                                         t_ctx,               \
-> > -                                                         &__unused_flags);    \
-> > +                                                         t_ctx, NULL);        \
-> >                 release_sock(sk);                                              \
-> >         }                                                                      \
-> >         __ret;                                                                 \
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > index 0cb6211fcb58..f61eca32c747 100644
-> > --- a/kernel/bpf/cgroup.c
-> > +++ b/kernel/bpf/cgroup.c
-> > @@ -25,50 +25,18 @@ EXPORT_SYMBOL(cgroup_bpf_enabled_key);
-> >  /* __always_inline is necessary to prevent indirect call through run_prog
-> >   * function pointer.
-> >   */
-> > -static __always_inline int
-> > -bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
-> > -                           enum cgroup_bpf_attach_type atype,
-> > -                           const void *ctx, bpf_prog_run_fn run_prog,
-> > -                           int retval, u32 *ret_flags)
-> > -{
-> > -       const struct bpf_prog_array_item *item;
-> > -       const struct bpf_prog *prog;
-> > -       const struct bpf_prog_array *array;
-> > -       struct bpf_run_ctx *old_run_ctx;
-> > -       struct bpf_cg_run_ctx run_ctx;
-> > -       u32 func_ret;
-> > -
-> > -       run_ctx.retval = retval;
-> > -       migrate_disable();
-> > -       rcu_read_lock();
-> > -       array = rcu_dereference(cgrp->effective[atype]);
-> > -       item = &array->items[0];
-> > -       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> > -       while ((prog = READ_ONCE(item->prog))) {
-> > -               run_ctx.prog_item = item;
-> > -               func_ret = run_prog(prog, ctx);
-> > -               if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
-> > -                       run_ctx.retval = -EPERM;
-> > -               *(ret_flags) |= (func_ret >> 1);
-> > -               item++;
-> > -       }
-> > -       bpf_reset_run_ctx(old_run_ctx);
-> > -       rcu_read_unlock();
-> > -       migrate_enable();
-> > -       return run_ctx.retval;
-> > -}
-> > -
-> >  static __always_inline int
-> >  bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
-> >                       enum cgroup_bpf_attach_type atype,
-> >                       const void *ctx, bpf_prog_run_fn run_prog,
-> > -                     int retval)
-> > +                     int retval, u32 *ret_flags)
-> >  {
-> >         const struct bpf_prog_array_item *item;
-> >         const struct bpf_prog *prog;
-> >         const struct bpf_prog_array *array;
-> >         struct bpf_run_ctx *old_run_ctx;
-> >         struct bpf_cg_run_ctx run_ctx;
-> > +       u32 func_ret;
-> >
-> >         run_ctx.retval = retval;
-> >         migrate_disable();
-> > @@ -78,8 +46,11 @@ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
-> >         old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> >         while ((prog = READ_ONCE(item->prog))) {
-> >                 run_ctx.prog_item = item;
-> > -               if (!run_prog(prog, ctx) && !IS_ERR_VALUE((long)run_ctx.retval))
-> > +               func_ret = run_prog(prog, ctx);
-> > +               if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
->
-> to be completely true to previous behavior, shouldn't there be
->
-> if (ret_flags)
->     func_ret &= 1;
-> if (!func_ret && !IS_ERR_VALUE(...))
->
-> here?
->
-> This might have been discussed previously and I missed it. If that's
-> so, please ignore.
+On Thu, 14 Apr 2022 12:22:16 -0400
+Xu Kuohai <xukuohai@huawei.com> wrote:
 
-We are converting the cases where run_prog(prog, ctx) returns 0 or 1,
-so it seems like we don't have to reproduce the existing behavior
-1-to-1?
-So I'm not sure it matters, or am I missing something?
+> After direct call is enabled for arm64, ftrace selftest enters a
+> dead loop:
+> 
+> <trace_selftest_dynamic_test_func>:
+> 00  bti     c
+> 01  mov     x9, x30                            <trace_direct_tramp>:
+> 02  bl      <trace_direct_tramp>    ---------->     ret
+>                                                      |
+>                                          lr/x30 is 03, return to 03
+>                                                      |
+> 03  mov     w0, #0x0   <-----------------------------|
+>      |                                               |
+>      |                   dead loop!                  |
+>      |                                               |
+> 04  ret   ---- lr/x30 is still 03, go back to 03 ----|
+> 
+> The reason is that when the direct caller trace_direct_tramp() returns
+> to the patched function trace_selftest_dynamic_test_func(), lr is still
+> the address after the instrumented instruction in the patched function,
+> so when the patched function exits, it returns to itself!
+> 
+> To fix this issue, we need to restore lr before trace_direct_tramp()
+> exits, so make trace_direct_tramp() a weak symbol and rewrite it for
+> arm64.
+> 
+> To detect this issue directly, call DYN_FTRACE_TEST_NAME() before
+> register_ftrace_graph().
+> 
+> Reported-by: Li Huafei <lihuafei1@huawei.com>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> ---
+>  arch/arm64/kernel/entry-ftrace.S | 10 ++++++++++
+>  kernel/trace/trace_selftest.c    |  4 +++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
+> index dfe62c55e3a2..e58eb06ec9b2 100644
+> --- a/arch/arm64/kernel/entry-ftrace.S
+> +++ b/arch/arm64/kernel/entry-ftrace.S
+> @@ -357,3 +357,13 @@ SYM_CODE_START(return_to_handler)
+>  	ret
+>  SYM_CODE_END(return_to_handler)
+>  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+> +
+> +#ifdef CONFIG_FTRACE_SELFTEST
+> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> +SYM_FUNC_START(trace_direct_tramp)
+> +	mov	x10, x30
+> +	mov	x30, x9
+> +	ret	x10
+> +SYM_FUNC_END(trace_direct_tramp)
+> +#endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
+> +#endif /* CONFIG_FTRACE_SELFTEST */
+> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+> index abcadbe933bb..38b0d5c9a1e0 100644
+> --- a/kernel/trace/trace_selftest.c
+> +++ b/kernel/trace/trace_selftest.c
+> @@ -785,7 +785,7 @@ static struct fgraph_ops fgraph_ops __initdata  = {
+>  };
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> -noinline __noclone static void trace_direct_tramp(void) { }
+> +void __weak trace_direct_tramp(void) { }
+>  #endif
+>  
+>  /*
+
+
+> @@ -868,6 +868,8 @@ trace_selftest_startup_function_graph(struct tracer *trace,
+>  	if (ret)
+>  		goto out;
+>  
+> +	DYN_FTRACE_TEST_NAME();
+
+This doesn't look like it belongs in this patch.
+
+-- Steve
+
+> +
+>  	ret = register_ftrace_graph(&fgraph_ops);
+>  	if (ret) {
+>  		warn_failed_init_tracer(trace, ret);
+
