@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B094A5080AA
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 07:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F005A5080B1
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 07:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237844AbiDTFiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 01:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S244915AbiDTFpx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 01:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245452AbiDTFh4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 01:37:56 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95348616B
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 22:35:11 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id n134so747861iod.5
-        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 22:35:11 -0700 (PDT)
+        with ESMTP id S231758AbiDTFpw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 01:45:52 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A458F1DA5E
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 22:43:07 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id y85so770543iof.3
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 22:43:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FyRCA6HIqHvZovrjJ71IxbcEzHY6DeD/LF+l2+VQe1s=;
-        b=CatV7hXwdhJKJYkdCyBhzHRcAfCeAZQ1CtDNpHdQXIQRIBOsgygh62ogHRFRAHuftO
-         CPG4HkPhOTNfoYpGWSvXtRq/AJGVIYmrOouDEBTTeqQqc1qWVT3uzQ1qp03PgoYeXK+H
-         wJjnPAdB9DcODWwBFZMHBoohoG4lpXVVN7heBsHDyGcHD2qKA5v2vF24b4Wwg/mJzS9L
-         5PHAWld7HUjrn4tGSIQh2KsiT8cbeo5O5dwv2NEsajtrXWkRDyl34AkL0ypgYJUJyqsu
-         qQdIFKPrKDfXDywrYimS9t1/ie6ANerhen1rok+aSSSWPNh8ZGZ/jK2pgw1mAcWPxoHf
-         YW6Q==
+        bh=4y2HkU8+633gGcp6OXqlun2ZpDlWLuWm5gSlkljdK+A=;
+        b=H7sSxgfW3mkXz/bzQ9rCx37kq1ILf1isHtDEStZflwtw1TDAiSWgt/RTIuB1AJe7sf
+         LfQ+exb8W1eOX6+6ejgPc2gaNP7oabKZbIYGDxN5J3zcM3z0iKzyVjCX8E2l7qjnBhjp
+         3xHutZTZULFJtK8ZSofDRp8Rx62/oWl9lPmsQFwB4K64OwBLSJg759cYL2OvW9+5L8cL
+         jcut/jZ0wVOtC62IMvkT9gwRtDu2L9ZY0UM56s0QxbkfZEKPloaLwTidJPVcYjVPsUeL
+         rDE+/Sbv16QOAfu0lBEwIeH7VtA9yVQKc17sEoQRZ5H16gblGXQNUSE3ZgbkCB+n3XVz
+         6Xvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FyRCA6HIqHvZovrjJ71IxbcEzHY6DeD/LF+l2+VQe1s=;
-        b=me/fXaJ+YoBwNpeo18DIEI2+APTd6o1EySaaIKlN/ihNu2X6Enf+t8Jh31pVkfaRRT
-         3gTx4ws3B98Uf53frtS5L5nmr0PLY35tTY615WJO5GQzzTbO8HqAdLxI8U9uH35k61bV
-         1WaxRhqy0nVhj/6+rvfZ5DxnhB1k35rO+LSVT74K7YJR4HjT+uT2a7cVuT8rOOgcofYf
-         RAWcfpWRh7EtKHSbBl9U+Vpv7bqlb/4mrPHlSyQBxkPjw4TrTOPSw6RYuiik4VAxPDBK
-         rLL7ekwBZKfKaHD2EzUTfd9HP+Avf7u3+4kKFF1DVIyWYkJEbFvNvMEudHa6Lj5J4Ztp
-         axLw==
-X-Gm-Message-State: AOAM5325pBQS+5LqZv2fIAi71558XdO/nXmzWi6/rwACGjljdmhDHR4S
-        HN96fNQkNjugnEE1eXjIKVSh5hi84oETEGXxV/w=
-X-Google-Smtp-Source: ABdhPJyxCz1Sl8zSpfpXISg7bWBJkIr9DcnKj02n4wYhmAoTCryjKC9vsIcqDFaSKHak7ogRbcMOoHaQHVoEkJn8J3U=
-X-Received: by 2002:a05:6638:338e:b0:328:807a:e187 with SMTP id
- h14-20020a056638338e00b00328807ae187mr6885340jav.93.1650432910939; Tue, 19
- Apr 2022 22:35:10 -0700 (PDT)
+        bh=4y2HkU8+633gGcp6OXqlun2ZpDlWLuWm5gSlkljdK+A=;
+        b=Nf4IZSZpax6dWYQkF+ZvzVU1upfDalaqYkbmGhsezShXh+iTLwmaVh8Xgdj/qphozd
+         bn1SpZrkNX7jwNc5vX0aIg+Ixk8OMTwOZvGE7hi+mVWaRqSnPE6PSwoQv9YLusBT/OXR
+         4diRDYkrQ5l8InqejU7UmOZL2lzKNO7ju67lJ3txod3l7hderRaAbsiMjWZ0Y7EtwHam
+         jG+7Q4ZshmP2K5SvdA9vYh0k1SAkoGCTKh89dwlFxNETp9bdWCgIU3DIeJbGZRzFU4IB
+         mpWBfSRwKOhMGrh0z890uNSKQhqOHIyaA29oBMTjeu/AktEbRCr3UR6sYBU8FPpSCTOo
+         +v2Q==
+X-Gm-Message-State: AOAM533b/X9uY3lrE9tWOt9EPYoGReMQl8q40u6Nn+upKRYFeWD1ePEt
+        GKHI1js1phBwnaZtWuYABi1ftt1MpfL8GkEvWwg=
+X-Google-Smtp-Source: ABdhPJwzlDpTWIpXHgUw2m+lOIkptAun3O7cJ7oblYqEC7rbXjkC5BuCc4Tk4p4rVfX+vsAfqdIS71ldFXGtyWvgX3U=
+X-Received: by 2002:a05:6602:3787:b0:654:9cab:b681 with SMTP id
+ be7-20020a056602378700b006549cabb681mr5408237iob.154.1650433386997; Tue, 19
+ Apr 2022 22:43:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220419160346.35633-1-grantseltzer@gmail.com> <20220419160346.35633-2-grantseltzer@gmail.com>
-In-Reply-To: <20220419160346.35633-2-grantseltzer@gmail.com>
+References: <20220419160346.35633-1-grantseltzer@gmail.com> <20220419160346.35633-3-grantseltzer@gmail.com>
+In-Reply-To: <20220419160346.35633-3-grantseltzer@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 19 Apr 2022 22:35:00 -0700
-Message-ID: <CAEf4BzYLOq4FAGycAERgORJ6-DatLb0cfnLxS-dxqxCm773eMQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] Update API functions usage to check error
+Date:   Tue, 19 Apr 2022 22:42:56 -0700
+Message-ID: <CAEf4BzbS-3d=FWvuG_VnPvokXBBcpV_KJ0XgBt+kCXPzz=tiMg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] Add documentation to API functions
 To:     grantseltzer <grantseltzer@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Song Liu <song@kernel.org>
@@ -69,85 +69,110 @@ On Tue, Apr 19, 2022 at 9:04 AM grantseltzer <grantseltzer@gmail.com> wrote:
 >
 > From: Grant Seltzer <grantseltzer@gmail.com>
 >
-> This updates usage of the following API functions within
-> libbpf so their newly added error return is checked:
->
+> This adds documentation for the following API functions:
 > - bpf_program__set_expected_attach_type()
 > - bpf_program__set_type()
+> - bpf_program__set_attach_target()
+> - bpf_program__attach()
+> - bpf_program__pin()
+> - bpf_program__unpin()
 >
 > Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
 > ---
->  tools/lib/bpf/libbpf.c | 29 +++++++++++++++++++++++------
->  1 file changed, 23 insertions(+), 6 deletions(-)
+>  tools/lib/bpf/libbpf.h | 100 ++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 98 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 0ed1a8c9c398..7635c50a05c6 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -7005,9 +7005,19 @@ static int bpf_object_init_progs(struct bpf_object *obj, const struct bpf_object
->                         continue;
->                 }
+
+[...]
+
+>  LIBBPF_API enum bpf_attach_type
+>  bpf_program__expected_attach_type(const struct bpf_program *prog);
+> -LIBBPF_API void
+> +/**
+> + * @brief **bpf_program__set_expected_attach_type()** sets the
+> + * attach type of the passed BPF program. This is used for
+> + * auto-detection of attachment when programs are loaded.
+> + * @param prog BPF program to set the attach type for
+> + * @param type attach type to set the BPF map to have
+> + * @return error code; or 0 if no error. An error occurs
+> + * if the object is already loaded.
+> + *
+> + * An example workflow:
+> + *
+> + * ...
+> + *   xdp_fd = bpf_prog_get_fd_by_id(id);
+> + *   trace_obj = bpf_object__open_file("func.o", NULL);
+> + *   prog = bpf_object__find_program_by_title(trace_obj, "fentry/myfunc");
+
+
+bpf_object__find_program_by_title() is deprecated, we shouldn't use it
+in documentation. There is a lot going on in this example workflow
+(and workflow itself is using generic API instead of recommended
+skeleton). Let's drop it, it might just be adding to confusion.
+
+Just mention that expected attach type has to be set before BPF object
+is loaded (same for program type). And that should be enough. In most
+cases user won't ever have to use this anyways, IMO.
+
+> + *   int err = bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
+> + *   if (err != 0) {
+> + *     // Object already loaded
+> + *   }
+> + *   bpf_program__set_attach_target(prog, xdp_fd, "xdpfilt_blk_all");
+> + *   bpf_object__load(trace_obj);
+> + * ...
+> + */
+> +LIBBPF_API int
+>  bpf_program__set_expected_attach_type(struct bpf_program *prog,
+>                                       enum bpf_attach_type type);
 >
-> -               bpf_program__set_type(prog, prog->sec_def->prog_type);
-> -               bpf_program__set_expected_attach_type(prog, prog->sec_def->expected_attach_type);
-> +               err = bpf_program__set_type(prog, prog->sec_def->prog_type);
-> +               if (err) {
-> +                       pr_warn("prog '%s': failed to initialize: %d, could not set program type\n",
-> +                               prog->name, err);
-> +                       return err;
-> +               }
+> @@ -707,6 +780,29 @@ LIBBPF_API int bpf_program__set_log_level(struct bpf_program *prog, __u32 log_le
+>  LIBBPF_API const char *bpf_program__log_buf(const struct bpf_program *prog, size_t *log_size);
+>  LIBBPF_API int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log_size);
 >
-> +               err = bpf_program__set_expected_attach_type(prog, prog->sec_def->expected_attach_type);
-> +               if (err) {
-> +                       pr_warn("prog '%s': failed to initialize: %d, could not set expected attach type\n",
-> +                               prog->name, err);
-> +                       return err;
-> +               }
+> +/**
+> + * @brief **bpf_program__set_attach_target()** sets the
+> + * specified BPF program to attach to a specific tracepoint
+> + * or kernel function. This can be used to supplement
+> + * the BPF program name/section not matching the tracepoint
+> + * or function semanics.
 
-this is too paranoid, we know that this will succeed. We can just do:
+Not sure what you wanted to say with the last sentence?
 
-prog->type = prog->sec_def->prog_type;
-prog->expected_attach_type = prog->sec_def->expected_attach_type;
+How about something along the lines:
 
-to make this very clear
-
->  #pragma GCC diagnostic push
->  #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
->                 if (prog->sec_def->prog_type == BPF_PROG_TYPE_TRACING ||
-> @@ -8570,8 +8580,7 @@ int bpf_program__set_##NAME(struct bpf_program *prog)             \
->  {                                                              \
->         if (!prog)                                              \
->                 return libbpf_err(-EINVAL);                     \
-> -       bpf_program__set_type(prog, TYPE);                      \
-> -       return 0;                                               \
-> +       return bpf_program__set_type(prog, TYPE);                       \
->  }                                                              \
->                                                                 \
->  bool bpf_program__is_##NAME(const struct bpf_program *prog)    \
-> @@ -9678,9 +9687,17 @@ static int bpf_prog_load_xattr2(const struct bpf_prog_load_attr *attr,
->                  * bpf_object__open guessed
->                  */
->                 if (attr->prog_type != BPF_PROG_TYPE_UNSPEC) {
-> -                       bpf_program__set_type(prog, attr->prog_type);
-> -                       bpf_program__set_expected_attach_type(prog,
-> +                       err = bpf_program__set_type(prog, attr->prog_type);
-> +                       if (err) {
-> +                               pr_warn("could not set program type\n");
-> +                               return libbpf_err(err);
-> +                       }
-> +                       err = bpf_program__set_expected_attach_type(prog,
->                                                               attach_type);
-> +                       if (err) {
-> +                               pr_warn("could not set expected attach type\n");
-> +                               return libbpf_err(err);
-> +                       }
-
-same as above, no need to add unnecessary checks and pr_warns
+"... sets BTF-based attach target for supported BPF program types:
+BTF-aware raw tracepoints, fentry/fexit/fmod_ret, lsm, freplace" ?
 
 
->                 }
->                 if (bpf_program__type(prog) == BPF_PROG_TYPE_UNSPEC) {
->                         /*
+> + * @param prog BPF program to set the attach type for
+> + * @param type attach type to set the BPF map to have
+> + * @return error code; or 0 if no error occurred.
+> + * An example workflow:
+> + *
+> + * ...
+> + *   xdp_fd = bpf_prog_get_fd_by_id(id);
+> + *   trace_obj = bpf_object__open_file("func.o", NULL);
+> + *   prog = bpf_object__find_program_by_title(trace_obj, "fentry/myfunc");
+
+same about find_program_by_title, please don't use it; and same about
+the overall example, it's not succinct enough to fit in a doc comment,
+let's just drop it?
+
+> + *   bpf_program__set_expected_attach_type(prog, BPF_TRACE_FENTRY);
+> + *   int err = bpf_program__set_attach_target(prog, xdp_fd, "xdpfilt_blk_all");
+> + *   if (err != 0) {
+> + *     // Object already loaded
+> + *   }
+> + *   bpf_object__load(trace_obj);
+
+like here, we don't check error, setting a bad example :(
+
+> + * ...
+> + */
+>  LIBBPF_API int
+>  bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog_fd,
+>                                const char *attach_func_name);
 > --
 > 2.34.1
 >
