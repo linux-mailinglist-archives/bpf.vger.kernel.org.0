@@ -2,54 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BFB507E85
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 04:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8598A507EBD
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 04:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347593AbiDTCGC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Apr 2022 22:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
+        id S1358914AbiDTCV5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Apr 2022 22:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236995AbiDTCGB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Apr 2022 22:06:01 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557CF1ADBD;
-        Tue, 19 Apr 2022 19:03:17 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t12so439293pll.7;
-        Tue, 19 Apr 2022 19:03:17 -0700 (PDT)
+        with ESMTP id S1358910AbiDTCVz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Apr 2022 22:21:55 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A660A30F54
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 19:19:10 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id x33so407649lfu.1
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 19:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ibEgNl4ah592y04CKeGYQNxrDcqpD8/OSVG1ddkFp1M=;
-        b=LaBe316aDoumG2Dpik722GfIyJarGZhlJL2hYxjNg90jQuXSKB2aY/5AtIGdFNsEl8
-         g0MYl+bVmlGWdszBg9naIYf3ZXPmL+FU50nM/eK4NT8Uul9aXtuzJiOfG4FOXRb8zwZ7
-         ckf1iEyIpdwhInWPExohuDvx+Htkjttzw7wt2DNATnytGPO+5ANQcV47HCVSrI8xNcg8
-         PRegW4jPnuBZwZkerivwO83XXrlHd9GiWoA8IDBnXrX5M8KnqQQky9a19dpW+sauhtA/
-         FFBkjy0dbFpsxMHogsGZCykw0UZUo/4eU/FW8twhn8STJJfbe6gfmy5MGl6peGEniQs5
-         oXvw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vzcM0Fy8zoXIYtzw0zgKr6w3uu0pvrZ7K2myKeDxUvc=;
+        b=XlMHlA1yW/3psqu/gqNph/O3AA7PrGeW5068j/3DUXbJp9LCr/qQwXvvlCgRY66YZs
+         bfbo2buBJiwcJj5XorkSa+q8/5Dd97EEFrzXKMkVvKZ2Q6hHadvYR+AeJLYW8cad9NkT
+         BkTcdQwom8v7pt4NN84cQ97G02o6Ks7iPjqGw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ibEgNl4ah592y04CKeGYQNxrDcqpD8/OSVG1ddkFp1M=;
-        b=VeTiCQXnYOJZLrq+pqW3Iw0VJ9/1fCYwraIKAxIh6DHg7UQflTpqNmZeEDH2ObpeoQ
-         dNQmVk7j13BLsn2KXcvNc4mNfl3S1W5X/wr6TrjOjlb4/1lzEVjUVTcGllgiYDaRupL/
-         KFb9CB+aZpWNHfk3usV+60BpXoL8+6H8doNOjeaYoaVBbfxXrqRYIFnKM7ezqN+WbNq6
-         68pzSkH05Dz53DGIHrDNYg08FGX7Dog8mn2UgW3akHswNpttOZbEN6PWP210URloLhAk
-         59+93ien9a+EqBgNdxHkCxD1fypGPOuil+OYGQGISwaDKbgvSPw+Ux3gab0Je368uKIp
-         FDdA==
-X-Gm-Message-State: AOAM530vXGFEFNTsgNrXY7aHpcou0jE/BJsxZJm+0wCu9SDs2Yrjpx2B
-        zQIKsnXcT6sayePEra8f3vM=
-X-Google-Smtp-Source: ABdhPJyzXhyfBVQOSAYv7JeeXa5TGCf2yZ58e5LFSZGZY91wL0Wt7M4faqxQtlZ0MlwWbI81/zqbjw==
-X-Received: by 2002:a17:902:e1c5:b0:158:e060:4f6c with SMTP id t5-20020a170902e1c500b00158e0604f6cmr18229407pla.163.1650420196781;
-        Tue, 19 Apr 2022 19:03:16 -0700 (PDT)
-Received: from MacBook-Pro.local.dhcp.thefacebook.com ([2620:10d:c090:400::5:ce98])
-        by smtp.gmail.com with ESMTPSA id cw2-20020a056a00450200b0050ab7f48a9csm1415954pfb.170.2022.04.19.19.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Apr 2022 19:03:16 -0700 (PDT)
-Date:   Tue, 19 Apr 2022 19:03:11 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vzcM0Fy8zoXIYtzw0zgKr6w3uu0pvrZ7K2myKeDxUvc=;
+        b=PYjT7+pHlMP0j3QxKW0jxRguc3PAqyZYdZUYgwPONTzVnuSa+/J3LXbqm8rhd8vJYp
+         IEcRHT3cN0yNWdf2MF/ilNcV3wH0HH3D3hLQbeesm/EO17Dna+WtvWQihFSP3edN/mWz
+         BHGrtdW4xXGsNB54A9h47zJw5zaveDjZsmVk+JqCJXPpGFRbr0HfupbdYuD2K/vA6SO5
+         ndZbufFZeRgAlsGshcGKP/+sZ2U/ns5T4CA8y/UKnCi/gWC57tSFayROMK2SkDd417Nw
+         GrebULqDh5A9Utqn+VW/Ex2h/HhCbJXCq4f/bX6JSrokjmG1qkmBobSWA+0g0ZwgcLcm
+         R1Cg==
+X-Gm-Message-State: AOAM531WaIsf1gZ142iweGg1vXiFfjSogsoD3rwBPy27ZlXysO8gjsQx
+        XgJ3upD+4riwTupR2fOWI+t1yEz4XQVTbq4rR20=
+X-Google-Smtp-Source: ABdhPJwX9o8gcLCO7/NKX32rLGDb6UbNgdwKhuqVZW8/IvMz019RPrhPg40XLb7fglbkCqprF/jZTA==
+X-Received: by 2002:a05:6512:2308:b0:471:b4e8:6a4c with SMTP id o8-20020a056512230800b00471b4e86a4cmr1846151lfu.517.1650421148776;
+        Tue, 19 Apr 2022 19:19:08 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id a4-20020a19ca04000000b0044a97178a1esm1668599lfg.201.2022.04.19.19.19.06
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Apr 2022 19:19:07 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id c15so248352ljr.9
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 19:19:06 -0700 (PDT)
+X-Received: by 2002:a2e:9041:0:b0:24a:ce83:dcb4 with SMTP id
+ n1-20020a2e9041000000b0024ace83dcb4mr12387816ljg.291.1650421146776; Tue, 19
+ Apr 2022 19:19:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <YlpPW9SdCbZnLVog@infradead.org> <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
+ <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
+ <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
+ <Yl4F4w5NY3v0icfx@bombadil.infradead.org> <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
+ <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
+ <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com> <20220420020311.6ojfhcooumflnbbk@MacBook-Pro.local.dhcp.thefacebook.com>
+In-Reply-To: <20220420020311.6ojfhcooumflnbbk@MacBook-Pro.local.dhcp.thefacebook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 Apr 2022 19:18:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiF1KnM1_paB3jCONR9Mh1D_RCsnXKBau1K7XLG-mwwTQ@mail.gmail.com>
+Message-ID: <CAHk-=wiF1KnM1_paB3jCONR9Mh1D_RCsnXKBau1K7XLG-mwwTQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Mike Rapoport <rppt@kernel.org>, Song Liu <songliubraving@fb.com>,
         "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
         "mcgrof@kernel.org" <mcgrof@kernel.org>,
@@ -68,78 +82,37 @@ Cc:     Mike Rapoport <rppt@kernel.org>, Song Liu <songliubraving@fb.com>,
         "edumazet@google.com" <edumazet@google.com>,
         "bp@alien8.de" <bp@alien8.de>, "mbenes@suse.cz" <mbenes@suse.cz>,
         "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>
-Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
-Message-ID: <20220420020311.6ojfhcooumflnbbk@MacBook-Pro.local.dhcp.thefacebook.com>
-References: <YlpPW9SdCbZnLVog@infradead.org>
- <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
- <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
- <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com>
- <Yl04LO/PfB3GocvU@kernel.org>
- <Yl4F4w5NY3v0icfx@bombadil.infradead.org>
- <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
- <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com>
- <Yl8CicJGHpTrOK8m@kernel.org>
- <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 12:20:39PM -0700, Linus Torvalds wrote:
-> On Tue, Apr 19, 2022 at 11:42 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > I'd say that bpf_prog_pack was a cure for symptoms and this project tries
-> > to address more general problem.
-> > But you are right, it'll take some time and won't land in 5.19.
-> 
-> Just to update people: I've just applied Song's [1/4] patch, which
-> means that the whole current hugepage vmalloc thing is effectively
-> disabled (because nothing opts in).
-> 
-> And I suspect that will be the status for 5.18, unless somebody comes
-> up with some very strong arguments for (re-)starting using huge pages.
+On Tue, Apr 19, 2022 at 7:03 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> Here is the quote from Song's cover letter for bpf_prog_pack series:
 
-Here is the quote from Song's cover letter for bpf_prog_pack series:
+I care about performance as much as the next person, but I care about
+correctness too.
 
-  Most BPF programs are small, but they consume a page each. For systems
-  with busy traffic and many BPF programs, this could also add significant
-  pressure to instruction TLB. High iTLB pressure usually causes slow down
-  for the whole system, which includes visible performance degradation for
-  production workloads.
+That large-page code was a disaster, and was buggy and broken.
 
-The last sentence is the key. We've added this feature not because of bpf
-programs themselves. So calling this feature an optimization is not quite
-correct. The number of bpf programs on the production server doesn't matter.
-The programs come and go all the time. That is the key here.  The 4k
-module_alloc() plus set_memory_ro/x done by the JIT break down huge pages and
-increase TLB pressure on the kernel code. That creates visible performance
-degradation for normal user space workloads that are not doing anything bpf
-related. mm folks can fill in the details here. My understanding it's
-something to do with identity mapping.
-So we're not trying to improve bpf performance. We're trying to make
-sure that bpf program load/unload doesn't affect the speed of the kernel.
-Generalizing bpf_prog_alloc to modules would be nice, but it's not clear
-what benefits such optimization might have. It's orthogonal here.
+And even with those four patches, it's still broken.
 
-So I argue that all 4 Song's fixes are necessary in 5.18.
-We need an additional zeroing patch too, of course, to make sure huge page
-doesn't have garbage at alloc time and it's cleaned after prog is unloaded.
+End result: there's no way that thigh gets re-enabled without the
+correctness being in place.
 
-Regarding JIT spraying and other concerns. Short answer: nothing changed.
-JIT spraying was mitigated with start address randomization and invalid
-instruction padding. Both features are still present.
-Constant blinding is also fully functional.
+At a minimum, to re-enable it, it needs (a) that zeroing and (b)
+actual numbers on real loads. (not some artificial benchmark).
 
-Any kind of generalization of bpf_prog_pack into general mm feature would be
-nice, but it cannot be done as opportunistic cache. We need a guarantee that
-bpf prog/unload won't recreate the issue with kernel performance degradation. I
-suspect we would need bpf_prog_pack in the current form for foreseeable future.
+Because without (a) there's no way in hell I'll enable it.
+
+And without (b), "performance" isn't actually an argument.
+
+                  Linus
