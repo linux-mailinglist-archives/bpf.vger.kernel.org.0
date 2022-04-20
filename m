@@ -2,67 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C554550862B
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 12:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F941508733
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 13:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352334AbiDTKnq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 06:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
+        id S1378220AbiDTLnM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 07:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352448AbiDTKnq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 06:43:46 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0875F101F0;
-        Wed, 20 Apr 2022 03:40:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650451259; x=1681987259;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=potqXVYX3OmiIRlmNKrPcjYJve3h2E3TfCZOfajoLII=;
-  b=jRQLXEFE7O+xbTplljjZhrYH6m+bRiOATr4uKMlPQKjbLHdw+F38WDcC
-   fuv7VNv1BFe3uedHKJ/+mOtkC/5htYOwRbUmUuluGlIpgUkdpztZOtIp9
-   wMM+k+Wn1vPYL/CLRq/++62LGlcuaEp4JCV7T6pVTXdhlG/GNVuw26oO6
-   Z8Me8DOlZuea+oW8XrGhR0m+DbPZ4G4ciE38aMvwS6eKsPQ3wtJqiNvTU
-   Hv//Qh87AvlyE5c3+CvYaOI05K1HRAkfJwCqEBYFkSrC3aAKmQOW+tHtn
-   TXiUvgJO1qxCDSehwR3SZ1rt8/PosqQpBCKilHvRtWdi/hI9vZn1CuvZ5
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10322"; a="350445387"
-X-IronPort-AV: E=Sophos;i="5.90,275,1643702400"; 
-   d="scan'208";a="350445387"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2022 03:40:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,275,1643702400"; 
-   d="scan'208";a="555142556"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga007.jf.intel.com with ESMTP; 20 Apr 2022 03:40:55 -0700
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 23KAer2s026937;
-        Wed, 20 Apr 2022 11:40:53 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Jeff Evanson <jeff.evanson@gmail.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [Intel-wired-lan] [PATCH 1/2] Fix race in igc_xdp_xmit_zc
-Date:   Wed, 20 Apr 2022 12:37:08 +0200
-Message-Id: <20220420103708.1841070-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220415210421.11217-1-jeff.evanson@qsc.com>
-References: <20220415210421.11217-1-jeff.evanson@qsc.com>
+        with ESMTP id S1378219AbiDTLnM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 07:43:12 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0BA419B6
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 04:40:25 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id u7so2463092lfs.8
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 04:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=VKyqkiHMAMbxDabOm41Pe1xqBptH6ILp/RHTVhXWA1M=;
+        b=kisidZ359JBb2iHL/bs4DBq6P+KC4o80zwOVfnjZQHPodqgRP5BAp2fyZ6cZgEt8zE
+         PdNRwdX0xLOeLSG2KLzLVAb5bMVCZ3+gpIhypWAiKJo6XQ5wpokPAE8AtKWXqavhHruc
+         KrCoetQGLT8a6gVZHLHXC+6IPSmqj4aMQYItg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=VKyqkiHMAMbxDabOm41Pe1xqBptH6ILp/RHTVhXWA1M=;
+        b=Dk82MFlJPkc65F06JTWdnbHHa7rq7zzjhq6hmunolBZRFoX6iOhd9ZuyR6p4YfX1kw
+         yHF4ez3LDIRV+fxNK45Ga1s/DZaOCRlsCxpRaycNt5FWiBX/VsUr54QEoykCY10O+ZuX
+         +eO4vqwUxpPDUyJ5Hbnis9GFxDkIUIepMcXo0e1INq+dxDcOFRq7ffv9wKemQ0LsPcMa
+         j4akvry6VuVZBAVXsAwd5FEtNK+Av74ZU0BB215LL7DLvgunO1MaVOQmG7XhXPhg53Ie
+         YTNuH1Q+NRyOdgAz4hM2fDH6sTOqCmyRXY3rfTCoBrjtJCXdxHT8yco13oxiCNjLLsP0
+         thAQ==
+X-Gm-Message-State: AOAM530A0s3pqVZzxa8ETQsDTwr4obgWbeYVPWlzAtnbOJBcdY2vXMgE
+        CZ7x28dGvrscxjrMYeBjmINGhQ==
+X-Google-Smtp-Source: ABdhPJzkCWJhhf8Yp+Zwsj308WiZ2xxy/9KDJBid23/aNj/yJesRU+Lww+2dSgxuR3dGzJ9bPFcfTw==
+X-Received: by 2002:a05:6512:b1a:b0:471:add8:99e9 with SMTP id w26-20020a0565120b1a00b00471add899e9mr4788534lfu.300.1650454824118;
+        Wed, 20 Apr 2022 04:40:24 -0700 (PDT)
+Received: from cloudflare.com (79.184.126.143.ipv4.supernova.orange.pl. [79.184.126.143])
+        by smtp.gmail.com with ESMTPSA id j7-20020a056512028700b00471bab03deesm195633lfp.38.2022.04.20.04.40.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Apr 2022 04:40:23 -0700 (PDT)
+References: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
+ <20211201181040.23337-6-alexei.starovoitov@gmail.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com, kernel-team@cloudflare.com
+Subject: Re: [PATCH v5 bpf-next 05/17] bpf: Pass a set of bpf_core_relo-s to
+ prog_load command.
+Date:   Wed, 20 Apr 2022 13:32:36 +0200
+In-reply-to: <20211201181040.23337-6-alexei.starovoitov@gmail.com>
+Message-ID: <87sfq8f0ex.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,49 +67,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jeff Evanson <jeff.evanson@gmail.com>
-Date: Fri, 15 Apr 2022 15:04:21 -0600
+Hi Alexei,
 
-> in igc_xdp_xmit_zc, initialize next_to_use while holding the netif_tx_lock
-> to prevent racing with other users of the tx ring
-> 
-> Signed-off-by: Jeff Evanson <jeff.evanson@qsc.com>
+On Wed, Dec 01, 2021 at 10:10 AM -08, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> struct bpf_core_relo is generated by llvm and processed by libbpf.
+> It's a de-facto uapi.
+> With CO-RE in the kernel the struct bpf_core_relo becomes uapi de-jure.
+> Add an ability to pass a set of 'struct bpf_core_relo' to prog_load command
+> and let the kernel perform CO-RE relocations.
+>
+> Note the struct bpf_line_info and struct bpf_func_info have the same
+> layout when passed from LLVM to libbpf and from libbpf to the kernel
+> except "insn_off" fields means "byte offset" when LLVM generates it.
+> Then libbpf converts it to "insn index" to pass to the kernel.
+> The struct bpf_core_relo's "insn_off" field is always "byte offset".
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->  drivers/net/ethernet/intel/igc/igc_main.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-> index 1c00ee310c19..a36a18c84aeb 100644
-> --- a/drivers/net/ethernet/intel/igc/igc_main.c
-> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
-> @@ -2598,7 +2598,7 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
->  	struct netdev_queue *nq = txring_txq(ring);
->  	union igc_adv_tx_desc *tx_desc = NULL;
->  	int cpu = smp_processor_id();
-> -	u16 ntu = ring->next_to_use;
-> +	u16 ntu;
-
-Please don't break the RCT (reverse christmas tree) style here. You
-should move it to the bottom of the declaration block, ideally
-combine it with the declaration of @budget as they're both u16s.
-
->  	struct xdp_desc xdp_desc;
->  	u16 budget;
->  
-> @@ -2607,6 +2607,8 @@ static void igc_xdp_xmit_zc(struct igc_ring *ring)
->  
->  	__netif_tx_lock(nq, cpu);
->  
-> +	ntu = ring->next_to_use;
+>  include/linux/bpf.h            |  8 ++++
+>  include/uapi/linux/bpf.h       | 59 +++++++++++++++++++++++++-
+>  kernel/bpf/btf.c               |  6 +++
+>  kernel/bpf/syscall.c           |  2 +-
+>  kernel/bpf/verifier.c          | 76 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 59 +++++++++++++++++++++++++-
+>  tools/lib/bpf/relo_core.h      | 53 ------------------------
+>  7 files changed, 207 insertions(+), 56 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index cad0829710be..8bbf08fbab66 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1732,6 +1732,14 @@ bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
+>  const struct btf_func_model *
+>  bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+>  			 const struct bpf_insn *insn);
+> +struct bpf_core_ctx {
+> +	struct bpf_verifier_log *log;
+> +	const struct btf *btf;
+> +};
 > +
-
-There's no need for this empty newline I believe.
-
->  	budget = igc_desc_unused(ring);
+> +int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
+> +		   int relo_idx, void *insn);
+> +
+>  #else /* !CONFIG_BPF_SYSCALL */
+>  static inline struct bpf_prog *bpf_prog_get(u32 ufd)
+>  {
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 9e66b1880020..c26871263f1f 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1342,8 +1342,10 @@ union bpf_attr {
+>  			/* or valid module BTF object fd or 0 to attach to vmlinux */
+>  			__u32		attach_btf_obj_fd;
+>  		};
+> -		__u32		:32;		/* pad */
+> +		__u32		core_relo_cnt;	/* number of bpf_core_relo */
+>  		__aligned_u64	fd_array;	/* array of FDs */
+> +		__aligned_u64	core_relos;
+> +		__u32		core_relo_rec_size; /* sizeof(struct bpf_core_relo) */
+>  	};
 >  
->  	while (xsk_tx_peek_desc(pool, &xdp_desc) && budget--) {
-> -- 
-> 2.17.1
+>  	struct { /* anonymous struct used by BPF_OBJ_* commands */
 
-Thanks,
-Al
+I think I've spotted a breakage.
+
+Plugging the 4 byte hole with core_relo_cnt means that programs built
+against < v5.17 headers pass garbage as core_relo_cnt value.
+
+That in turn makes check_core_relo() fail with -EINVAL, which fails
+PROG_LOAD.
+
+[...]
