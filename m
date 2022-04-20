@@ -2,62 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DE950923B
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 23:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB30A509259
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 23:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382618AbiDTVoI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 17:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
+        id S1351299AbiDTVw7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 17:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382628AbiDTVoH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 17:44:07 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DF44614C
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 14:41:17 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id d9so2807059vsh.10
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 14:41:17 -0700 (PDT)
+        with ESMTP id S234964AbiDTVw7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 17:52:59 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FEE1EC59;
+        Wed, 20 Apr 2022 14:50:11 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id d9so2824610vsh.10;
+        Wed, 20 Apr 2022 14:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2oBII489pAxubFq4JfKvzwwABjg5iG2biDKZ3L00PcE=;
-        b=mrTAYigfPyD9zpRyZ2Nz6Bn1+5Qr33LnkPjdPQSBy2goxS/7c36HDoKfyXy4XlRhe6
-         DAG08rOIs6xOciteyun5OxbW93iuRJ7X+SnZMkHeTzsU2+SVeOrSEQcDG3Ub8Ex0jDLa
-         inXThQFQomk5QNpfQuv5hQqc3wLMrNro91jBzx60nnbzyQpXM6fmrusw/eJ3LCTqiEtc
-         rsRXqMKSqj0L+elAQ5Br/eZO/hg0Dig3swnNH9NwVyN02m4qNeVEOWJGCZ8YkStOOspY
-         6LJ2dRe2NHsr4BvD4S/lwh00HIr2TKSJMd0IDuYX7YGmypqgqXOnFlwFZ0LnpUAeBda1
-         e0ow==
+        bh=E9YOcBF8Qte2T6InlNUSlZ6JWX6+9WNopvT5STl0eyU=;
+        b=NSGQSQmkoJdKMFKZ0NiBhW4monmH7KmNSyzOnkiPsP1rWKrLz3Gm55Z+Dok7mxTQBH
+         XOYyBBTjV+EWLt6uumuINFy7+Wk7ga0WQJRGTaO7ezPPEwVYebCpdO0rqn8LKXdCYsXx
+         pDSfo5R0RLUditd6EUQ+VB5t7Wu1H4qpvUG0uN8WK86sV/pqhHmj/WVHHhNRjuckZukY
+         yQavyfACmzadaKPtpJupvXC62gtHbp+2LhPUUFyKUv5wCY7uEDrytH2WHPFDJ0FVA6zQ
+         2QgO5HRfxK6tPZO6oi1ggx1WwnkZHIIOarfmjPYSBo+c9Gd6UPbYGeTsXP2G3atGeoo/
+         ipJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2oBII489pAxubFq4JfKvzwwABjg5iG2biDKZ3L00PcE=;
-        b=JR0AOfS9q8C5zN75upv8y5iKAeoGG2pXn2hQFJaem0oST6PARFqbV5x8T5p4bdAdDh
-         tUstkay9ieSPzBYJ2/FMSVRs6oyXP++ROq7/F0wsAyTK4kxb60E1pDpfvLY+ATPcTQ51
-         qUQQz1ACGBmTSZRmXLmdp76G6MZYIEjRD6Af6vsDM5rHgChmgIMIjq4hAyKyteNUd+Zp
-         C0TE5SZSvQyc8OauOy64ZsHU/+JvAUXXtychUh/UMdEzceKO+E4Q2p5Wo/fi5KkMGCD0
-         7cJcQ1I54xC4O9lq8+0/D6PpUNNp9AuzUumkQmV95AJs09yTX9h2NzNfncJQh7VL8210
-         E89Q==
-X-Gm-Message-State: AOAM533nM3xxURSg8oQ0icnBV4/h+mUD8oCylBQ2R8SJB9S8MICyNtKg
-        m+qb/dj/dz3O9BGld17RK5vzlT1rtlKoFkZnek3hi9LO
-X-Google-Smtp-Source: ABdhPJzUuYuQMyB8rmV6Xh1wsll+nCIgsrMF0GNCdQqbkMEOFLho6RlTGHvsarhYSryhSwve+73OFwNz7jshcupIg6w=
-X-Received: by 2002:a67:fb8b:0:b0:32a:667e:4d1d with SMTP id
- n11-20020a67fb8b000000b0032a667e4d1dmr4333343vsr.39.1650490876573; Wed, 20
- Apr 2022 14:41:16 -0700 (PDT)
+        bh=E9YOcBF8Qte2T6InlNUSlZ6JWX6+9WNopvT5STl0eyU=;
+        b=4MeVQeDspzDQJgfe9ItNt8LnXLAKyec9X6Fpgi545lR68yVVyShvGUd1AklWPE+BRe
+         +SRroMwLDqX4wqt4akn3UlSP90YP8Lg/9paEhT6YWKWvDPQCk9zt9VKn3Lfp8Lc/SJtU
+         tl5RiVbZXul9lKcWNe94DWVjD0SHH8EsTFT6HCjpypgCog1aMZ1vFy9Wob3/SqrW9SLl
+         +QT2rCiLoQ7F0KdMjKfMdwGlQBKMsl2c4BExlfYzDkcUf/ukzyhxeVd5D2Ymcc5266nk
+         oUum/RpdQltb6BCkvccNsSjloHCQeUkCVXu75qMz4oontvz9VxxmfdTyw5Hk2c/TdZFk
+         bfKA==
+X-Gm-Message-State: AOAM533t+w+gijPKJDXhGS6V0xAO+9QnAqD4GgXE3Qxibu5a1lI+4soj
+        3A5LY7+o8dihcrt58LIuwXoob8r8rKDrWyes020=
+X-Google-Smtp-Source: ABdhPJybKH2CVcTLmO2oJE6QULxf9CuV0sewavhpEiXQCwEQNAHFCNL3vq7l5xZBK6V+FSQKaNjXpmMy9c7Z+YCDLwc=
+X-Received: by 2002:a05:6102:22c3:b0:32a:4dd4:974 with SMTP id
+ a3-20020a05610222c300b0032a4dd40974mr6925902vsh.18.1650491410399; Wed, 20 Apr
+ 2022 14:50:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220416042940.656344-1-kuifeng@fb.com> <20220416042940.656344-2-kuifeng@fb.com>
- <CAEf4BzY3eOOv-4V8npHwJz2NK7HEso7vdS8zQGMfuvw0D8euxQ@mail.gmail.com> <d2ed2fb9c2264cf904505923094d1f9374ac4daa.camel@fb.com>
-In-Reply-To: <d2ed2fb9c2264cf904505923094d1f9374ac4daa.camel@fb.com>
+References: <20220418124834.829064-1-jolsa@kernel.org> <20220418124834.829064-4-jolsa@kernel.org>
+In-Reply-To: <20220418124834.829064-4-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Apr 2022 14:41:05 -0700
-Message-ID: <CAEf4BzaaK0mJ7b_SkjoMb6JRfEm-Ho5gkw4i3i+1SDcb9K_hJA@mail.gmail.com>
-Subject: Re: [PATCH dwarves v6 1/6] bpf, x86: Generate trampolines from bpf_tramp_links
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Date:   Wed, 20 Apr 2022 14:49:59 -0700
+Message-ID: <CAEf4Bzau_RmREQwVQ6wPRbCHVXRuAr1k08btaft2jUwBYTeM-Q@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 3/4] bpf: Resolve symbols with
+ kallsyms_lookup_names for kprobe multi link
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,115 +74,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 1:17 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
+On Mon, Apr 18, 2022 at 5:49 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Wed, 2022-04-20 at 10:37 -0700, Andrii Nakryiko wrote:
-> > On Fri, Apr 15, 2022 at 9:30 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
-> > >
-> > > Replace struct bpf_tramp_progs with struct bpf_tramp_links to
-> > > collect
-> > > struct bpf_tramp_link(s) for a trampoline.  struct bpf_tramp_link
-> > > extends bpf_link to act as a linked list node.
-> > >
-> > > arch_prepare_bpf_trampoline() accepts a struct bpf_tramp_links to
-> > > collects all bpf_tramp_link(s) that a trampoline should call.
-> > >
-> > > Change BPF trampoline and bpf_struct_ops to pass bpf_tramp_links
-> > > instead of bpf_tramp_progs.
-> > >
-> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> > > ---
-> > >  arch/x86/net/bpf_jit_comp.c    | 36 +++++++++--------
-> > >  include/linux/bpf.h            | 36 +++++++++++------
-> > >  include/linux/bpf_types.h      |  1 +
-> > >  include/uapi/linux/bpf.h       |  1 +
-> > >  kernel/bpf/bpf_struct_ops.c    | 69 ++++++++++++++++++++++--------
-> > > --
-> > >  kernel/bpf/syscall.c           | 23 ++++-------
-> > >  kernel/bpf/trampoline.c        | 73 +++++++++++++++++++-----------
-> > > ----
-> > >  net/bpf/bpf_dummy_struct_ops.c | 37 ++++++++++++++---
-> > >  tools/bpf/bpftool/link.c       |  1 +
-> > >  tools/include/uapi/linux/bpf.h |  1 +
-> > >  10 files changed, 175 insertions(+), 103 deletions(-)
-> > >
-> >
-> > [...]
-> >
-> > > @@ -385,6 +399,7 @@ static int
-> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> > >         for_each_member(i, t, member) {
-> > >                 const struct btf_type *mtype, *ptype;
-> > >                 struct bpf_prog *prog;
-> > > +               struct bpf_tramp_link *link;
-> > >                 u32 moff;
-> > >
-> > >                 moff = __btf_member_bit_offset(t, member) / 8;
-> > > @@ -438,16 +453,26 @@ static int
-> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> > >                         err = PTR_ERR(prog);
-> > >                         goto reset_unlock;
-> > >                 }
-> > > -               st_map->progs[i] = prog;
-> > >
-> > >                 if (prog->type != BPF_PROG_TYPE_STRUCT_OPS ||
-> > >                     prog->aux->attach_btf_id != st_ops->type_id ||
-> > >                     prog->expected_attach_type != i) {
-> > > +                       bpf_prog_put(prog);
-> > >                         err = -EINVAL;
-> > >                         goto reset_unlock;
-> > >                 }
-> > >
-> > > -               err = bpf_struct_ops_prepare_trampoline(tprogs,
-> > > prog,
-> > > +               link = kzalloc(sizeof(*link), GFP_USER);
-> >
-> > seems like you are leaking this link and all the links allocated in
-> > previous successful iterations of this loop?
+> Using kallsyms_lookup_names function to speed up symbols lookup in
+> kprobe multi link attachment and replacing with it the current
+> kprobe_multi_resolve_syms function.
 >
-> In the block of reset_unlok, it calls bpf_struct_ops_map_put_progs() to
-> release all links in st_map including all links of previous iterations.
+> This speeds up bpftrace kprobe attachment:
 >
-> >
-> > > +               if (!link) {
-> > > +                       bpf_prog_put(prog);
-> > > +                       err = -ENOMEM;
-> > > +                       goto reset_unlock;
-> > > +               }
-> > > +               bpf_link_init(&link->link,
-> > > BPF_LINK_TYPE_STRUCT_OPS,
-> > > +                             &bpf_struct_ops_link_lops, prog);
-> > > +               st_map->links[i] = &link->link;
-> > > +
-> > > +               err = bpf_struct_ops_prepare_trampoline(tlinks,
-> > > link,
-> > >                                                         &st_ops-
-> > > >func_models[i],
-> > >                                                         image,
-> > > image_end);
-> > >                 if (err < 0)
-> > > @@ -490,7 +515,7 @@ static int
-> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> > >         memset(uvalue, 0, map->value_size);
-> > >         memset(kvalue, 0, map->value_size);
-> > >  unlock:
-> > > -       kfree(tprogs);
-> > > +       kfree(tlinks);
-> >
-> > so you'll need to free those links inside tlinks (or wherever else
-> > they are stored)
+>   # perf stat -r 5 -e cycles ./src/bpftrace -e 'kprobe:x* {  } i:ms:1 { exit(); }'
+>   ...
+>   6.5681 +- 0.0225 seconds time elapsed  ( +-  0.34% )
 >
-> All links are in st_maps.
-> They will be free by bpf_struct_ops_map_put_progs().
-> Does that make sense?
+> After:
+>
+>   # perf stat -r 5 -e cycles ./src/bpftrace -e 'kprobe:x* {  } i:ms:1 { exit(); }'
+>   ...
+>   0.5661 +- 0.0275 seconds time elapsed  ( +-  4.85% )
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
 
-ah, yeah, makes sense. I was wondering how did we miss this in
-previous revisions. Great, never mind this issue then.
+LGTM.
 
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  kernel/trace/bpf_trace.c | 113 +++++++++++++++++++++++----------------
+>  1 file changed, 67 insertions(+), 46 deletions(-)
 >
-> >
-> > >         mutex_unlock(&st_map->lock);
-> > >         return err;
-> > >  }
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index b26f3da943de..f49cdc46a21f 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2226,6 +2226,60 @@ struct bpf_kprobe_multi_run_ctx {
+>         unsigned long entry_ip;
+>  };
+>
+> +struct user_syms {
+> +       const char **syms;
+> +       char *buf;
+> +};
+> +
+> +static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32 cnt)
+> +{
+> +       unsigned long __user usymbol;
+> +       const char **syms = NULL;
+> +       char *buf = NULL, *p;
+> +       int err = -EFAULT;
+> +       unsigned int i;
+> +
+> +       err = -ENOMEM;
+> +       syms = kvmalloc(cnt * sizeof(*syms), GFP_KERNEL);
+> +       if (!syms)
+> +               goto error;
+> +
+> +       buf = kvmalloc(cnt * KSYM_NAME_LEN, GFP_KERNEL);
+> +       if (!buf)
+> +               goto error;
+> +
+> +       for (p = buf, i = 0; i < cnt; i++) {
+> +               if (__get_user(usymbol, usyms + i)) {
+> +                       err = -EFAULT;
+> +                       goto error;
+> +               }
+> +               err = strncpy_from_user(p, (const char __user *) usymbol, KSYM_NAME_LEN);
+> +               if (err == KSYM_NAME_LEN)
+> +                       err = -E2BIG;
+> +               if (err < 0)
+> +                       goto error;
+> +               syms[i] = p;
+> +               p += err + 1;
+> +       }
+> +
+> +       err = 0;
+> +       us->syms = syms;
+> +       us->buf = buf;
+
+return 0 here instead of falling through into error: block?
+
+> +
+> +error:
+> +       if (err) {
+> +               kvfree(syms);
+> +               kvfree(buf);
+> +       }
+> +       return err;
+> +}
+> +
+> +static void free_user_syms(struct user_syms *us)
+> +{
+> +       kvfree(us->syms);
+> +       kvfree(us->buf);
+> +}
+> +
+>  static void bpf_kprobe_multi_link_release(struct bpf_link *link)
+>  {
+>         struct bpf_kprobe_multi_link *kmulti_link;
 
 [...]
