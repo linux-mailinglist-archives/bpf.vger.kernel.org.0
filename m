@@ -2,92 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18024508097
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 07:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAAB50809C
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 07:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356359AbiDTFds (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 01:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
+        id S1348011AbiDTFfG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 01:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbiDTFdq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 01:33:46 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFF611C02;
-        Tue, 19 Apr 2022 22:31:01 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e1so339542ile.2;
-        Tue, 19 Apr 2022 22:31:01 -0700 (PDT)
+        with ESMTP id S231815AbiDTFfF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 01:35:05 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8C636B63
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 22:32:20 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id y11so334160ilp.4
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 22:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nuxxapEs+M5yK26jsf4JOVoP3RaTp9CaYMXH3Qi7BnM=;
-        b=m6n3UDbwyYseWE0m3xwpSMxKMAQg7O+DYd9PY3jsVi5Vt8MdUMbWJ5BbMgjz0BLkQ1
-         6Osczxl3Rx/2WnIhaqf6d9NB5vc/zN8cbIgGWqTn3AEhUMtf7gayYr6k7Kz1HHAu+IDx
-         RryeOpN5H73JSax+jCknmY3/7vRPK+Dz/WFiARIiO5lNp9WGmRga4xIyGu5FbV0AYlrs
-         y+184FwL3curFzsFKWcKpxIWZG91jaRxAIL4HoWCbe0taLf3STJYeregu81oeOsa53GW
-         8YNXEdmBN9ENyp48LIRZ430fKDfP1u20700D9cvnx2hUbmxqf/2yb0g31yHtrM4o5TDI
-         QZBQ==
+        bh=6XE3rxgiSAO2VfvXKl3TwC0m83eWFy270pwPAUGprTE=;
+        b=mBvN6CGc4g4IXG7EW0OhO1GVHjkB8eK5KRWKWPKcfPAuQ8nKOvj6aqGXypYe9cgk+F
+         DUBU3clqSE+pMkU2F/BhhuBoMt3wJsJSaKsp3X+MwCILRNQx3JTdzmuEidQuGUwex6WN
+         pUW3QiCSSjuiZoXj0aleX7cN0J7SCPZWncMpeI8A2C3vUur1VuPB6zqqHVvKTHMAJxa7
+         Tr5BGfQQuIThBt/RZv3DGnqlVjb5zDM0xIkBKE/r3ym/n1SKkolA+SbUmN7bGmON7btg
+         EhTsByqnI4DfwC/LrJvrT2R/K0m52omBYoIT5i4a19oTLN4S8GQZIWWv7NUXKlq5iC5U
+         5tdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nuxxapEs+M5yK26jsf4JOVoP3RaTp9CaYMXH3Qi7BnM=;
-        b=qP4w+zmwBtAzbpSnIjH8ahh3WsQRqj1vGEFjTYzff7TYEH6jeKXq7YKtXfhF7IrWmm
-         7SEESOPw90/MsHsPML0CgXuY+VeoCDHUE7CZNEg2ZjtPYljc9+GZ1AGmjtR4TYCzT0US
-         ZLenKkFvbtztsuOBopiRqEWX6h67IIFOWXsDpZXIChMtS2lK+ieFB9uRTsQmwEDn2xMW
-         2z6BUGHxZsgNlYm44CVHPwjta2GkmrWuSxpnPG623Jb2kwzp2JD1GHTSW0rI+yviq8Yl
-         fhjbbFRKXhDFWhwnnH+tgYxTBGvnU8DYh7pLI2G97ilzdSDM5coLeQ/lK0vzSi4KDekR
-         BDkA==
-X-Gm-Message-State: AOAM53106cEJs8qoVPhRDn2hmGr1skCd1yAGt5x4tjEryj4QhLyg5lVg
-        OmYdp98ZCQPczRmL10/Z8/yydvovYa1x5a9lX0k=
-X-Google-Smtp-Source: ABdhPJzzqRVICUIJZyiBou/6sakX22tJlgAFvBTlOQOgOFFGsk6sXr6KK0CLtFM+CVx9UoVb7o+5cVtuaFR3tpGT4Mg=
-X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
- y6-20020a926406000000b002bbf1dee13emr8064445ilb.305.1650432661257; Tue, 19
- Apr 2022 22:31:01 -0700 (PDT)
+        bh=6XE3rxgiSAO2VfvXKl3TwC0m83eWFy270pwPAUGprTE=;
+        b=62+n9HiE3Fv0DIKpDo93RrVrVFE4+1VbTe6F1latefh5szmgwf9NjqdrktOtMhrAil
+         I3XZ5ft3MIlTXbRxr4Y5tvWq1EkixfyCA1slICSak0bisKfoumtebAwaxkieN3c7bMci
+         EED5oF0/w8r+9ezCjGoqcolZb7CLgyUkyOOvtFx9F4HE1jbukKPMQLdn9MQasdXnxuKZ
+         3kzVMvKFAYhnsKv2OvC/olgwyjwKgKxjgrZWEG9tyIGexPLS+voed2PBeJIiguWk+vdd
+         vbd6sLHcCS2CbIpTg3h8i9+5JOrlJkqz/BATWiu8tdMeMFtlO2T4ZFPrMxkaFxts/xiA
+         HSIw==
+X-Gm-Message-State: AOAM532qSQtZK80356jT2HYKa9/QtWBJhVXipYFEwllVDyHK/nxCYpcF
+        pZs1PjMCFcyvnQVEdpP088FoiZuoA1Au5aGvNNY=
+X-Google-Smtp-Source: ABdhPJwj/QtbFiHopmkrmFOXjjtWr9fLAnYNcZWLpGHFd2DaQ1W08PHo4JbmKkcXfk2ZMrFkBAwtyV0W6KC+RDiWsz8=
+X-Received: by 2002:a92:cd83:0:b0:2cc:1a66:6435 with SMTP id
+ r3-20020a92cd83000000b002cc1a666435mr6301526ilb.252.1650432740302; Tue, 19
+ Apr 2022 22:32:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220414223704.341028-1-alobakin@pm.me> <20220414223704.341028-2-alobakin@pm.me>
- <20220419090355.GP2731@worktop.programming.kicks-ass.net>
-In-Reply-To: <20220419090355.GP2731@worktop.programming.kicks-ass.net>
+References: <20220419160346.35633-1-grantseltzer@gmail.com>
+In-Reply-To: <20220419160346.35633-1-grantseltzer@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 19 Apr 2022 22:30:50 -0700
-Message-ID: <CAEf4Bza=Ver5J-PYCceEohjgLSFVTCoYKXUEnc=uNkUC3rrZ5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/11] bpf, perf: fix bpftool compilation with !CONFIG_PERF_EVENTS
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Chenbo Feng <fengc@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Daniel Wagner <daniel.wagner@bmw-carit.de>,
-        Thomas Graf <tgraf@suug.ch>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        llvm@lists.linux.dev
+Date:   Tue, 19 Apr 2022 22:32:09 -0700
+Message-ID: <CAEf4Bzb0JsoSkbCBtDqyMxjQOjs2LZ5gMWiAeKk242pHV7ym8Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] Add error returns to two API functions
+To:     grantseltzer <grantseltzer@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -99,76 +65,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 2:04 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Apr 19, 2022 at 9:04 AM grantseltzer <grantseltzer@gmail.com> wrote:
 >
-> On Thu, Apr 14, 2022 at 10:44:48PM +0000, Alexander Lobakin wrote:
-> > When CONFIG_PERF_EVENTS is not set, struct perf_event remains empty.
-> > However, the structure is being used by bpftool indirectly via BTF.
-> > This leads to:
-> >
-> > skeleton/pid_iter.bpf.c:49:30: error: no member named 'bpf_cookie' in 'struct perf_event'
-> >         return BPF_CORE_READ(event, bpf_cookie);
-> >                ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
-> >
-> > ...
-> >
-> > skeleton/pid_iter.bpf.c:49:9: error: returning 'void' from a function with incompatible result type '__u64' (aka 'unsigned long long')
-> >         return BPF_CORE_READ(event, bpf_cookie);
-> >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > Tools and samples can't use any CONFIG_ definitions, so the fields
-> > used there should always be present.
-> > Move CONFIG_BPF_SYSCALL block out of the CONFIG_PERF_EVENTS block
-> > to make it available unconditionally.
+> From: Grant Seltzer <grantseltzer@gmail.com>
 >
-> Urgh, this is nasty.. did you verify nothing relies on that structure
-> actually being empty?
+> This adds an error return to the following API functions:
 >
-> Also, why are we changing kernel headers to fix some daft userspace
-> issue?
+> - bpf_program__set_expected_attach_type()
+> - bpf_program__set_type()
 >
+> In both cases, the error occurs when the BPF object has
+> already been loaded when the function is called. In this
+> case -EBUSY is returned.
+>
+> Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index bf4f7ac54ebf..0ed1a8c9c398 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8551,8 +8551,11 @@ enum bpf_prog_type bpf_program__type(const struct bpf_program *prog)
+>         return prog->type;
+>  }
+>
+> -void bpf_program__set_type(struct bpf_program *prog, enum bpf_prog_type type)
+> +int bpf_program__set_type(struct bpf_program *prog, enum bpf_prog_type type)
+>  {
+> +       if (prog->obj->loaded)
+> +               return libbpf_err(-EBUSY);
+> +
+>         prog->type = type;
 
-I agree, this is quite ugly. And I think it's not necessary at all.
+return 0;
 
-BPF CO-RE, which bpftool relies on here, allows to have bpftool's own
-minimal definition of struct perf_event with bpf_cookie field and not
-rely on UAPI headers having full definition. Something like this:
-
-struct perf_event___local {
-    u64 bpf_cookie;
-} __attribute__((preserve_access_index));
-
-Then use `struct perf_event___local` (note the three underscores, they
-are important) instead of struct perf_event in BPF code.
-
-And we'll have to do the same for struct bpf_perf_link, I presume?
-
-> > Fixes: cbdaf71f7e65 ("bpftool: Add bpf_cookie to link output")
-> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> > ---
-> >  include/linux/perf_event.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> > index af97dd427501..b1d5715b8b34 100644
-> > --- a/include/linux/perf_event.h
-> > +++ b/include/linux/perf_event.h
-> > @@ -762,12 +762,14 @@ struct perf_event {
-> >       u64                             (*clock)(void);
-> >       perf_overflow_handler_t         overflow_handler;
-> >       void                            *overflow_handler_context;
-> > +#endif /* CONFIG_PERF_EVENTS */
-> >  #ifdef CONFIG_BPF_SYSCALL
-> >       perf_overflow_handler_t         orig_overflow_handler;
-> >       struct bpf_prog                 *prog;
-> >       u64                             bpf_cookie;
-> >  #endif
-> >
-> > +#ifdef CONFIG_PERF_EVENTS
-> >  #ifdef CONFIG_EVENT_TRACING
-> >       struct trace_event_call         *tp_event;
-> >       struct event_filter             *filter;
-> > --
-> > 2.35.2
-> >
-> >
+>  }
+>
+> @@ -8598,10 +8601,14 @@ enum bpf_attach_type bpf_program__expected_attach_type(const struct bpf_program
+>         return prog->expected_attach_type;
+>  }
+>
+> -void bpf_program__set_expected_attach_type(struct bpf_program *prog,
+> +int bpf_program__set_expected_attach_type(struct bpf_program *prog,
+>                                            enum bpf_attach_type type)
+>  {
+> +       if (prog->obj->loaded)
+> +               return libbpf_err(-EBUSY);
+> +
+>         prog->expected_attach_type = type;
+> +       return 0;
+>  }
+>
+>  __u32 bpf_program__flags(const struct bpf_program *prog)
+> --
+> 2.34.1
+>
