@@ -2,59 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C71B508DAC
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 18:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8401A508DBE
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 18:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380773AbiDTQwe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 12:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
+        id S1380775AbiDTQxu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 12:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380776AbiDTQvR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 12:51:17 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE864553C
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 09:48:30 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id f5so1339713ilj.13
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 09:48:30 -0700 (PDT)
+        with ESMTP id S1380776AbiDTQxs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 12:53:48 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C0D2E082
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 09:50:59 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id r12so2475496iod.6
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 09:50:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YP8pKzZaMyor7RijCaD0FwE70N1V1zzFv3K68LOOOv8=;
-        b=MeA/oWaSCL5YyOZHyiNJGEeZNYby5Tzxtp9YN9dv9wZkYkhfMkcPSCXndsyIXiRCVW
-         l6xhAeUPt97i24p8bw0RYWFdAG2H7mmD3A6tKW8lkwrya3xHhCQtb+tAjFFypqTuzDid
-         D2sTzipR1SBx7q9KpbweYHYz0RLZSpLIzTpK3MjJtBcCDh194eZY+nNHuncsGWpXZlag
-         Tc+sG1nZX1Qd8z67wZGbW/h7saomKLj2u0EN3xV5lHkivlKGTalqcPVWI1twqyUIZU2G
-         c9PLmVVVGH7/bIRoY+ClUGyaeyoU1ihZh3ICxvMu3s5CRWfSmpM5E51mM1KMBZBcfvwg
-         kzUw==
+        bh=LVZNMyt0IlCw7hfulmbIm9gvJZ17hVxpzmgaBNVyB7k=;
+        b=EM/dmSfpf3thdtuYDpYbwvQGQ80uwsRC8z8k2M68PHJzE61/kr4j5IBHMh296vyJ2f
+         iZ9KVEulwyplDcpqbT50VZmK8ZGjNmki01nMFNBop7fzc/PWn6REzPrarhgwILZwg/lM
+         DE/JCdBs9ai6jahyIwyhwWUrM9OAGg7q9Dx0szMHKCrrFaUC7bWJQ8I7dy/Sk7g//CZV
+         gvZpHLXoSq39MxDA+hcdjKyi1fv4dxT4+mS00eVQLN1Xk67FT8dxSthRbLnWKlVmlza/
+         67YCeEEw3IgYiyTQ0Y5J+UH+n0nMrsWzjUVUgRYY3JKELKBHP8ELsVSGUu9ot6i/2kcw
+         vryw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YP8pKzZaMyor7RijCaD0FwE70N1V1zzFv3K68LOOOv8=;
-        b=0fkYw8/hIpBdDpQ32gAA5RE7hgtBw6WgfgFqAvNbEHrSTe5FRCfIa+hfrndK7B5W7P
-         3MqKXRHndSFtJ/6d7DDnrVHZhZAauMheV1P+uyScupJgftUjTHO8upZsRYZxFbJchjiX
-         yACu+lBRHGY42GA/MksmsyPhzWRIKZ6++jxtTm345HKAY4AI4GNf75MkcaKAHkQ+KIcZ
-         s9ibwnRuwH5d8VhlILhYx6YvYTwo9JFWx4X9/rt/IsGhOu9r21MezG1uwE4iEhSKJjG0
-         oGC9i8ER5zFXpIQDwl7N7y/0AkTXYTyr/MBA7Acz5d71A4m5lP6sPG91MQv11qYsvtEA
-         nIEA==
-X-Gm-Message-State: AOAM532DTxGh3WIRydX5GwSTqIWDCm2Lxq1NWmcUJlLNclwPXRBw1ncD
-        jRjfg8ytZsvwUEBZurampxDC/lRxQmJxtRlD9OA=
-X-Google-Smtp-Source: ABdhPJylhb0GmVxHqO5Bgs7XSkIeypc5kJ6ACpSUIv/EqwZKrVWc4cKuXRMZPesRenRSXACqlT0P3TYRkprVFiJWYC0=
-X-Received: by 2002:a92:c247:0:b0:2cc:1798:74fe with SMTP id
- k7-20020a92c247000000b002cc179874femr8219700ilo.239.1650473310202; Wed, 20
- Apr 2022 09:48:30 -0700 (PDT)
+        bh=LVZNMyt0IlCw7hfulmbIm9gvJZ17hVxpzmgaBNVyB7k=;
+        b=foM9TAy7WQBQECXUwP9BaMN8WgSCvNkfe97J3vUFC1REp3EDjGotBGasQtsGsZnrYR
+         RBq6mvOM+K8VpQI8hDcVCPNRHxqvBniVGjraeHgYKI4uXrE6kIgg85FqOfgRaxC92M/5
+         bMdqDsokGRsMWYAa+3ndncWrsnWpHw84GIyHxLxu2tUnaxm3SU0DKHVodNIyNwgHT3Fz
+         LIYhMzj0mqUizNkNlZaTUo3/GE1EtD5obYjvePhQwsiMFgJL8we5EhLVsgA+UWL7SwSw
+         lEcQ+I0recd3oEZbuB0dZ9K/NztBmk+8nkc+Ppd/AAYc57F8rZEK5z6rmkdQBwNfnk+3
+         tDrw==
+X-Gm-Message-State: AOAM530m6tuE/g6mGDF0O6xUWveqEJbvDsvx3iJ7DNoMSaIz1MSJf6+5
+        KmzdvXLPZnvh4z/Tc8hVTbFfIwiZTr9qz1e4sSg=
+X-Google-Smtp-Source: ABdhPJynRWS4pYQ/0NsWsqIJHzGEycSgczwoMtBJ5aj83RBx411mNQFzmWrqFBDutxxUQIwQaU2vXLpzIb2qvp16wM8=
+X-Received: by 2002:a05:6602:1683:b0:64f:ba36:d3cf with SMTP id
+ s3-20020a056602168300b0064fba36d3cfmr9250373iow.144.1650473458957; Wed, 20
+ Apr 2022 09:50:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <4ed4a01e-3d1e-bf1e-803a-608df187bde5@I-love.SAKURA.ne.jp> <909c72b6-83f9-69a0-af80-d9cb3bc2bd0e@I-love.SAKURA.ne.jp>
-In-Reply-To: <909c72b6-83f9-69a0-af80-d9cb3bc2bd0e@I-love.SAKURA.ne.jp>
+References: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
+ <20211201181040.23337-6-alexei.starovoitov@gmail.com> <87sfq8f0ex.fsf@cloudflare.com>
+In-Reply-To: <87sfq8f0ex.fsf@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Apr 2022 09:48:19 -0700
-Message-ID: <CAEf4Bzbugg4dy_2J=cFKYYQEJx-irF-cRZvkkwCx4QQwXm5OpA@mail.gmail.com>
-Subject: Re: How to disassemble a BPF program?
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 20 Apr 2022 09:50:48 -0700
+Message-ID: <CAEf4BzbT4vQBnZzdD00SuPCDkeb4Cm=F6PLUoO_3X93UQD5hbQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 05/17] bpf: Pass a set of bpf_core_relo-s to
+ prog_load command.
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,51 +71,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 4:38 AM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
+On Wed, Apr 20, 2022 at 4:40 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> Ping?
+> Hi Alexei,
 >
-> Since how to fix this "current top five crasher" bug depends on how a kernel
-> socket is created via BPF program, this bug wants help from BPF developers.
+> On Wed, Dec 01, 2021 at 10:10 AM -08, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > struct bpf_core_relo is generated by llvm and processed by libbpf.
+> > It's a de-facto uapi.
+> > With CO-RE in the kernel the struct bpf_core_relo becomes uapi de-jure.
+> > Add an ability to pass a set of 'struct bpf_core_relo' to prog_load command
+> > and let the kernel perform CO-RE relocations.
+> >
+> > Note the struct bpf_line_info and struct bpf_func_info have the same
+> > layout when passed from LLVM to libbpf and from libbpf to the kernel
+> > except "insn_off" fields means "byte offset" when LLVM generates it.
+> > Then libbpf converts it to "insn index" to pass to the kernel.
+> > The struct bpf_core_relo's "insn_off" field is always "byte offset".
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  include/linux/bpf.h            |  8 ++++
+> >  include/uapi/linux/bpf.h       | 59 +++++++++++++++++++++++++-
+> >  kernel/bpf/btf.c               |  6 +++
+> >  kernel/bpf/syscall.c           |  2 +-
+> >  kernel/bpf/verifier.c          | 76 ++++++++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h | 59 +++++++++++++++++++++++++-
+> >  tools/lib/bpf/relo_core.h      | 53 ------------------------
+> >  7 files changed, 207 insertions(+), 56 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index cad0829710be..8bbf08fbab66 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1732,6 +1732,14 @@ bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
+> >  const struct btf_func_model *
+> >  bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+> >                        const struct bpf_insn *insn);
+> > +struct bpf_core_ctx {
+> > +     struct bpf_verifier_log *log;
+> > +     const struct btf *btf;
+> > +};
+> > +
+> > +int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
+> > +                int relo_idx, void *insn);
+> > +
+> >  #else /* !CONFIG_BPF_SYSCALL */
+> >  static inline struct bpf_prog *bpf_prog_get(u32 ufd)
+> >  {
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 9e66b1880020..c26871263f1f 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1342,8 +1342,10 @@ union bpf_attr {
+> >                       /* or valid module BTF object fd or 0 to attach to vmlinux */
+> >                       __u32           attach_btf_obj_fd;
+> >               };
+> > -             __u32           :32;            /* pad */
+> > +             __u32           core_relo_cnt;  /* number of bpf_core_relo */
+> >               __aligned_u64   fd_array;       /* array of FDs */
+> > +             __aligned_u64   core_relos;
+> > +             __u32           core_relo_rec_size; /* sizeof(struct bpf_core_relo) */
+> >       };
+> >
+> >       struct { /* anonymous struct used by BPF_OBJ_* commands */
+>
+> I think I've spotted a breakage.
+>
+> Plugging the 4 byte hole with core_relo_cnt means that programs built
+> against < v5.17 headers pass garbage as core_relo_cnt value.
+>
+> That in turn makes check_core_relo() fail with -EINVAL, which fails
+> PROG_LOAD.
 
-If the BPF program is loaded/verified successfully, the easiest way to
-go about this would be to prevent repro from proceeding right after
-successful validation (e.g, do scanf()) and then use bpftool to find
-that program's ID and dump disassembly while that program is in the
-kernel.
-
-$ sudo bpftool prog show
-...
-654439: cgroup_skb  tag 6deef7357e7b4530  gpl
-        loaded_at 2022-04-20T06:14:08-0700  uid 0
-        xlated 64B  jited 54B  memlock 4096B
-        pids systemd(1)
-
-$ sudo bpftool prog dump xlat id 654439
-   0: (bf) r6 = r1
-   1: (69) r7 = *(u16 *)(r6 +176)
-   2: (b4) w8 = 0
-   3: (44) w8 |= 2
-   4: (b7) r0 = 1
-   5: (55) if r8 != 0x2 goto pc+1
-   6: (b7) r0 = 0
-   7: (95) exit
-
-Hope that helps. I don't know any tool that allows to disassemble raw
-bytes into BPF assembly. Normally I use llvm-objdump to disassemble
-well-formed BPF ELF files. Not sure if you can wrange llvm-objdump to
-disassemble raw bytes without ELF file itself.
+bpf_attr is supposed to be zeroed out with memset(), so that hole
+should have zero even before core_relo_cnt was added
 
 >
-> On 2022/04/12 20:04, Tetsuo Handa wrote:
-> > Hello.
-> >
-> > I'm not a BPF user, but I want to know what a BPF program stored in
-> > "static const char program[2053] =" at
-> > https://lkml.kernel.org/r/c389e47f-8f82-fd62-8c1d-d9481d2f71ff@I-love.SAKURA.ne.jp
-> > is doing so that I can parse syzkaller-generated BPF programs like C programs.
-> >
-> > Do you have a utility for this purpose?
-> >
-> > Regards.
+> [...]
