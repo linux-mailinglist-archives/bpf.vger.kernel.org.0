@@ -2,256 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AA55088ED
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 15:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C65B508AF2
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 16:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352997AbiDTNML (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 09:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
+        id S1352161AbiDTOp2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 10:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237472AbiDTNMK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 09:12:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7576427CE
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 06:09:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1650460163;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H5WElo14BBY5Cz/PaPpg1Na6JGReOhJoOldP3NeoOX8=;
-        b=g9Qt93Zx2jpCwOlnA06IQspETHghRy/OBpfOR40cnq0XEzRjPwpvqfLsNP1H+YNVVMZb/w
-        BqVUa5z/deBUXt4C0SeoQvqweVqMCGs+x9X9eHU8GWUZt+6H9Nv/8GAlyDAzgY1TnC51w7
-        mRBdp+a6wHO4nR7SHvNJtAIiRpuEYtE=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-343-1IEAThlnPHmQ6QH7b3DbpA-1; Wed, 20 Apr 2022 09:09:21 -0400
-X-MC-Unique: 1IEAThlnPHmQ6QH7b3DbpA-1
-Received: by mail-qt1-f198.google.com with SMTP id s9-20020ac87589000000b002e1cfb25db9so883697qtq.1
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 06:09:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H5WElo14BBY5Cz/PaPpg1Na6JGReOhJoOldP3NeoOX8=;
-        b=sQjBwO1/Gx4XRxv/6FTJy2ckApXb6T/tXGTM9w8jaNag1K6e0QowjQUTBMIFVCLM6a
-         Oq9Wva+11i4J/U14vioDeVjPEncqoqRHC+uy1ZHyghCRgFyrx8TdeKHB3hC65Oc92WwI
-         Jn9txLkE10cgWukkKGBQXXd5fE9L3+gtyVAxJyu7FrQXGJiCz2k3TDkS0s04KOjISO5X
-         L/7ao+eL2tqNTz/GZDGkl5Jbz1fOgvnuaHrbSyT0BSl8h16r6O1KvZBo+L4Iyr3Qy8D2
-         lkKtdkhOxDV7txabe9Bv/voUiikhL9oxgpIiRsLiJRk/LACB/6RZuTDxEOriUG5IPAJk
-         A4ew==
-X-Gm-Message-State: AOAM530L85yqwGpEI8XMwjHxs376FrU50KDc6bA+onnhyl9K/+D/VULn
-        39NEj4tnjwZeyg033tRLQqQgVOByymBDpw9Lma7+4yIlLASwdwoPO/9Fyr11StKFAgurPZHzXBO
-        WqhW2Y5h45vNK
-X-Received: by 2002:a05:6214:2462:b0:449:998a:8c09 with SMTP id im2-20020a056214246200b00449998a8c09mr2207948qvb.34.1650460159552;
-        Wed, 20 Apr 2022 06:09:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynjmYOO8LNpuPc3DFNKKwI7gtP6MXM6nmFVA7TGJhkHdGOcq/xSHXBOnMPtHjXtdebu4//zA==
-X-Received: by 2002:a05:6214:2462:b0:449:998a:8c09 with SMTP id im2-20020a056214246200b00449998a8c09mr2207908qvb.34.1650460159254;
-        Wed, 20 Apr 2022 06:09:19 -0700 (PDT)
-Received: from localhost (net-93-71-56-156.cust.vodafonedsl.it. [93.71.56.156])
-        by smtp.gmail.com with ESMTPSA id b2-20020a37b202000000b0069c7ad47221sm1462092qkf.38.2022.04.20.06.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 06:09:18 -0700 (PDT)
-Date:   Wed, 20 Apr 2022 15:09:15 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     anthony.l.nguyen@intel.com
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        magnus.karlsson@intel.com, jbrouer@redhat.com, toke@redhat.com,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH net-next] ixgbe: add xdp frags support to ndo_xdp_xmit
-Message-ID: <YmAF+wBcluzOGXgJ@lore-desk>
-References: <6de1d7547b60677ad0b0f7ebcbc7ebc76a31dcf7.1649180962.git.lorenzo@kernel.org>
+        with ESMTP id S235868AbiDTOp1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 10:45:27 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831D228E3D;
+        Wed, 20 Apr 2022 07:42:41 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23KBfgPw024070;
+        Wed, 20 Apr 2022 07:42:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=w01TNDoAw/F2P5Z2ICY1odiri405XzNHvrL9ousHJkY=;
+ b=UpxVsuCszv0Tj/MOYmhBpV9K4DcDoTdtKgR3egofLeK/pX/+C67JYZlVyYANmbkTMy3/
+ SvJ5ebg5OKDCL5L88Wd7d0Oi4WYuA+4LKRRzGXvmW67XegilzEeh5eKs7ML/JZ1IZfpR
+ 8BoJt7wro18bOez6JWxt810O2ar5mDe+FVM= 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2109.outbound.protection.outlook.com [104.47.70.109])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fjhgxry76-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Apr 2022 07:42:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U9Ci3ciSAFXO130WUdvpLzwaWRwlv6kchqQrQknIal++ySiViyZUZ2caMRfSJc3ybvPt2Dxwqsx3LiB3EyIkdHkFauEVb562Tx3HXaNliolcY+U48NQsq36MqBe7ZGF1J3GxFLWqODMREktTB4u/3jzf+GOfKSiH/jjJzxnm2Cd7ZiFYFj4eN3OgfViN7io+atpzO4k1k2Xb/qqL4j9btRvhjjLrMfsEtaNN6b8ISzKJrBIZfcSYRzwuBYS3QkG9fybJeHmn9Le6UEZikLI8IV2mnA7oE/Q0cKWMOHodHqgZ9IbKAi2uZg7IkgqXOpWusW0WVHT3EfookhwkyrvDTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=w01TNDoAw/F2P5Z2ICY1odiri405XzNHvrL9ousHJkY=;
+ b=RcUwaathUrM9vfTA1NPd/vL8+1ewOT7LNCthS9UwevSji7FRi+Sectkbj4v0S+p5pEazUoVx2zShouvVcxXJllmwQ9MgSKDsUqgkQw9j3pQIp1alzPwztnTd5h0hLWEcMZGbbV4YSZsIULy4T4ULV1jj8Zw2M2d7Zuh90Qqba2Pq8lMW0Kve8ijX8GwFYEw+o5liwtpB8e7lcko7V8JAZslyy+EuC4tArCiLme9pURNzmTRLbI3OrJJoWq/y4NyQTSo/+RcwNtitN5ZcJM23VCB8wdEnxkh2Wmpii5y3DHtJ9Gzk58sKKpy/E/+A6F0bApT2B8iIBfI8DwZVRlh/VA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by DM6PR15MB2905.namprd15.prod.outlook.com (2603:10b6:5:139::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.20; Wed, 20 Apr
+ 2022 14:42:37 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::20d2:26a2:6cb1:3c4b]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::20d2:26a2:6cb1:3c4b%6]) with mapi id 15.20.5164.025; Wed, 20 Apr 2022
+ 14:42:37 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "song@kernel.org" <song@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "pmladek@suse.com" <pmladek@suse.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dborkman@redhat.com" <dborkman@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "bp@alien8.de" <bp@alien8.de>, "mbenes@suse.cz" <mbenes@suse.cz>,
+        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>
+Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+Thread-Topic: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+Thread-Index: AQHYUOjRr/eYt5HVI0ucQZg4JV/u/6zxVckAgACoe4CAAPedAIAACgKAgAAgN4CAAlYOAIAA9TuAgAAUC4CAAD2oAIAA23uAgAAKuICAAHT81IAAz6kA
+Date:   Wed, 20 Apr 2022 14:42:37 +0000
+Message-ID: <3F75142B-3E87-4195-A026-3A7F1E595960@fb.com>
+References: <YlpPW9SdCbZnLVog@infradead.org>
+ <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
+ <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
+ <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
+ <Yl4F4w5NY3v0icfx@bombadil.infradead.org>
+ <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
+ <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
+ <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
+ <20220420020311.6ojfhcooumflnbbk@MacBook-Pro.local.dhcp.thefacebook.com>
+ <CAHk-=wiF1KnM1_paB3jCONR9Mh1D_RCsnXKBau1K7XLG-mwwTQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wiF1KnM1_paB3jCONR9Mh1D_RCsnXKBau1K7XLG-mwwTQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.80.82.1.1)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 873d8637-3be4-4f84-a6df-08da22dc03c9
+x-ms-traffictypediagnostic: DM6PR15MB2905:EE_
+x-microsoft-antispam-prvs: <DM6PR15MB2905D1DF1BA4FFF7E4110978B3F59@DM6PR15MB2905.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tfKrpjnSatjCP6MRzIpHDFT5SF9F3OaH3DnJbaMRqxpfNTgK5KB5WOLKCiKeSOZTT3a9mn2AZTZ+KO6HE8weA9zoqkc7Rxuj9+Q3L1Hq564rk7BOnFd75fvymolqnzs/zDyCne0H6KFlLacK9Gwwcws4onpyEIi5DEpW2b/0a2RaE+tYTYn4/4XjhA6m8deYYj6pKxDshrxfOM8BQwwm6dFpeeyS2TQ/401/exPdM1FatOuiBxZlzyM1Tzttsd3oQ9djuzzSAY/ac0hUTUGjdXiQgTxh85PgRSm8sakuABHnq/Ww/f7hzR1656AVyOsjzteVM/oT+eKeoG5s+aeUPp2kvpQNfPmUhJioJVbwWm6AQtsCyrMDOJ/ccq2dq/hcwQrakkEa50tR8wS6WBEIENlJY9GR1X/CcN0Eq93N9RKMrCTm3Pe2FFzr5uUIoYjB0W+zwsRbK6hEdRFyhmM3fmmgzvRo8eACVde99lkYKJl7LfkP8UWb/8bmu7cMbXxBNJrj4apYmU/pGp9hZVaguCAOrsUCYjKHSkTPs20Inf9NDtsOLWccxWe89jil/A6AXm31lYPEtdaDPcWzXh/cXyk74GvN/2/xFXdqSH7QkXRMELZbpPCrLXqRitcewtKMeGpJceW2t0MsqMeQYUDWB1a6cUI53dyFKz2rT5YO5dc6p/WBd6Gcl6+UcGYwQvcBag4fYxdXXQURbtpPrsF8kNvGw2SDqQ5NDYzCgby90iVkNhLg0041pk2qrwXaD4QSREWqOl29iq9aX5gULpsCPw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6512007)(7416002)(91956017)(66476007)(71200400001)(5660300002)(64756008)(54906003)(36756003)(38070700005)(8676002)(316002)(86362001)(6916009)(122000001)(38100700002)(76116006)(2616005)(66946007)(508600001)(66446008)(8936002)(26005)(2906002)(6506007)(53546011)(33656002)(4326008)(6486002)(66556008)(186003)(14583001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wTh5VkcLZysLZxxnUi5+f43O+QkWg8rObtHhHR1T5GSEPpBNgaYmVse3dXCj?=
+ =?us-ascii?Q?LlV9Nh7wacUNP5ebcV+m2DcWmA0Ln5Hlp4884duKz0AZZ2dbQwp8kUd8j9mb?=
+ =?us-ascii?Q?n1aNk76TBbnLo0InTW9LavK3OWbvJKiV+C4RKqsz2dWMsDIQgE2O52oaFL+L?=
+ =?us-ascii?Q?D8u97qDK9RYNaoG6if0eHeTbM8FhMdnf1lz5mEKZZoj5EwEW76bZVI4e50RN?=
+ =?us-ascii?Q?ouzRdqJS4bTL/HTAQp6LKvqZWC6JnP/3o4pZK+tQlF7M7HR20wNx4TxCyisy?=
+ =?us-ascii?Q?dhVYc+Js7gmgZctsHiSNaUsxFZirrAJ2mxuD61oTN9SUoG4mSqgswgh5lu0o?=
+ =?us-ascii?Q?sdanO3wuaiYET22KgJrv/eorkQVgMoo3XryaxmpbYQc07epM1+c1uJKL8atP?=
+ =?us-ascii?Q?/5QAVFOfbWxLa65G3K2+x3iW96tnOqtvCx+FsRp1b2IIaU98PRDEK62b7e1F?=
+ =?us-ascii?Q?xn7jLxpdOMD393Wv3MXL5N5F+HwNT3p18zdGYYmPftXlymsVwJHnBBff/hjm?=
+ =?us-ascii?Q?bALv6Z3BNPdrBniAa5/ExwqZ1/V7Fp+iv8w2F0L1J0o+JL4Gc7XyRWg8Npii?=
+ =?us-ascii?Q?GqjIiNVLTGwVvKa2QQdG/IpisOinAc7ErS6zDdsgkid5IccyAF13ZQ09eteT?=
+ =?us-ascii?Q?0LXm/5Thi2ihRcQHa+eaWsShK87BshdEFuOdsHMwQGFNDYlhtdZDQbZo/Sdq?=
+ =?us-ascii?Q?TyWs3Gwfp1PkgO4Fjf8DRxEMy+WvC4/vXT3Y5XRGX/d9D5DPSf6Jr8Qqf46P?=
+ =?us-ascii?Q?MZjFYKkKZzhE+wwvAMDCRLdiIH51zkxx1h7gFChJuJK6Ih0rhLwO7QGAEizl?=
+ =?us-ascii?Q?vP/jk6XdVfO2Q17yZUIJjGZ/XlaFYTSvl3407OFzHSedhybwDBuHA0M8p6Ik?=
+ =?us-ascii?Q?MSkiZQg1MbSblWjBJJJz/HHVwMQpkp9Ww3Q/baLJA0+ks2c8HJV78gL4cFtu?=
+ =?us-ascii?Q?yDbG+/uHKOr33wT6/BdoSJygz9nj9LgfcQhHHUrGmnaAw3NOi2u5OrQRzPDM?=
+ =?us-ascii?Q?aDHBHzzuRHedXML2ScyJRBhr9m7201dBie8OEe9p0zhyHDA6ruVgnBbmDPKO?=
+ =?us-ascii?Q?+XfjbhF+wb1A7UR0/actohZv5dzqKLe2FLdSvh2XaQwmLK43h53/MlaT2alX?=
+ =?us-ascii?Q?uCOpYJz0WBlceYdpPEmJJxoUlygVs1Uzp5MwMJCbkRcecegokuqN68GAQWCd?=
+ =?us-ascii?Q?PEJptVow4qIcB9OWA4EXJYwIpuoOaRj+fxXnMA1b+aQjUNkdZSqcVyHvPVsx?=
+ =?us-ascii?Q?6eAiWTi/SB2vg55Lg1pyvlStrev9wb7+NWHKKfwAx+1a6r+3klZaBjdutvQX?=
+ =?us-ascii?Q?95g19Qt0m/TORRvc96OgbNlyRVQuPA9I7yYNDvQ4EBlU/qETTTQQW+yT2gvr?=
+ =?us-ascii?Q?NoQ3J054fKOz8cjg4uwvUlVpVWx+ECaRT5MkiQ8NMPFwU5JncU6CupcmiNRV?=
+ =?us-ascii?Q?qibUfQHJoh/oGuM1cur/osQ4cIsZEd5I6KL03l+4DF/MFyfJtcIt0xKONuXv?=
+ =?us-ascii?Q?vNt1DcX0Sfo+jVkHF4FBauVyWQFiA8edJZdPdPtvx+zuqFv5rPvAgk83NAL2?=
+ =?us-ascii?Q?5FpstDCHPFG9UMnERcyJiYmwbA4b5JeZU5pi8xmFaG06Cwme48vD8Ko+wbpm?=
+ =?us-ascii?Q?h8wKUXGl2zI3re8TwLPkhmmz+T/Bi9UnM54Rypmu6V/tWlODczGslI2t61c3?=
+ =?us-ascii?Q?XOqIdFQaWuHLrTodSNYGzWu6CMHKQmN+iKF0yceGr/aZ09Qk6+UcmvufKcZ7?=
+ =?us-ascii?Q?uKUxzTTfO6jeGwILM9DrhTqlsk8qdbE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <BFBE8765647F8E40A45856226D6FADD8@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Q0eCcL3TwOvk179G"
-Content-Disposition: inline
-In-Reply-To: <6de1d7547b60677ad0b0f7ebcbc7ebc76a31dcf7.1649180962.git.lorenzo@kernel.org>
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 873d8637-3be4-4f84-a6df-08da22dc03c9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2022 14:42:37.7261
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ks+T/flHOxZYHPl8D5iJdAjw65uwzCWGIVgNIOAgmlKUHk88ABeo3i2bLYJcowLuDX6w8BhJ0YlYnvOi+Pw1QA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2905
+X-Proofpoint-ORIG-GUID: uwA9Sc6SdeAW-kR36YZTo6ic6bgDB2HS
+X-Proofpoint-GUID: uwA9Sc6SdeAW-kR36YZTo6ic6bgDB2HS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-04-20_04,2022-04-20_01,2022-02-23_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Linus,
 
---Q0eCcL3TwOvk179G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Apr 19, 2022, at 7:18 PM, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> 
+> On Tue, Apr 19, 2022 at 7:03 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> 
+>> Here is the quote from Song's cover letter for bpf_prog_pack series:
+> 
+> I care about performance as much as the next person, but I care about
+> correctness too.
+> 
+> That large-page code was a disaster, and was buggy and broken.
+> 
+> And even with those four patches, it's still broken.
+> 
+> End result: there's no way that thigh gets re-enabled without the
+> correctness being in place.
+> 
+> At a minimum, to re-enable it, it needs (a) that zeroing and (b)
+> actual numbers on real loads. (not some artificial benchmark).
+> 
+> Because without (a) there's no way in hell I'll enable it.
+> 
+> And without (b), "performance" isn't actually an argument.
 
-> Add the capability to map non-linear xdp frames in XDP_TX and ndo_xdp_xmit
-> callback.
+I will send patch to do (a) later this week. 
 
-Hi Tony,
+For (b), we have seen direct map fragmentation causing visible
+performance drop for our major services. This is the shadow 
+production benchmark, so it is not possible to run it out of 
+our data centers. Tracing showed that BPF program was the top 
+trigger of these direct map splits. 
 
-do you have any feedbacks about this patch?
-
-Regards,
-Lorenzo
-
->=20
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 99 ++++++++++++-------
->  1 file changed, 63 insertions(+), 36 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/=
-ethernet/intel/ixgbe/ixgbe_main.c
-> index c4a4954aa317..8b84c9b2eecc 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> @@ -2344,6 +2344,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector=
- *q_vector,
->  			hard_start =3D page_address(rx_buffer->page) +
->  				     rx_buffer->page_offset - offset;
->  			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
-> +			xdp_buff_clear_frags_flag(&xdp);
->  #if (PAGE_SIZE > 4096)
->  			/* At larger PAGE_SIZE, frame_sz depend on len size */
->  			xdp.frame_sz =3D ixgbe_rx_frame_truesize(rx_ring, size);
-> @@ -8571,57 +8572,83 @@ static u16 ixgbe_select_queue(struct net_device *=
-dev, struct sk_buff *skb,
->  int ixgbe_xmit_xdp_ring(struct ixgbe_ring *ring,
->  			struct xdp_frame *xdpf)
->  {
-> -	struct ixgbe_tx_buffer *tx_buffer;
-> -	union ixgbe_adv_tx_desc *tx_desc;
-> -	u32 len, cmd_type;
-> -	dma_addr_t dma;
-> -	u16 i;
-> -
-> -	len =3D xdpf->len;
-> +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_frame(xdpf);
-> +	u8 nr_frags =3D unlikely(xdp_frame_has_frags(xdpf)) ? sinfo->nr_frags :=
- 0;
-> +	u16 i =3D 0, index =3D ring->next_to_use;
-> +	struct ixgbe_tx_buffer *tx_head =3D &ring->tx_buffer_info[index];
-> +	struct ixgbe_tx_buffer *tx_buff =3D tx_head;
-> +	union ixgbe_adv_tx_desc *tx_desc =3D IXGBE_TX_DESC(ring, index);
-> +	u32 cmd_type, len =3D xdpf->len;
-> +	void *data =3D xdpf->data;
-> =20
-> -	if (unlikely(!ixgbe_desc_unused(ring)))
-> +	if (unlikely(ixgbe_desc_unused(ring) < 1 + nr_frags))
->  		return IXGBE_XDP_CONSUMED;
-> =20
-> -	dma =3D dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
-> -	if (dma_mapping_error(ring->dev, dma))
-> -		return IXGBE_XDP_CONSUMED;
-> +	tx_head->bytecount =3D xdp_get_frame_len(xdpf);
-> +	tx_head->gso_segs =3D 1;
-> +	tx_head->xdpf =3D xdpf;
-> =20
-> -	/* record the location of the first descriptor for this packet */
-> -	tx_buffer =3D &ring->tx_buffer_info[ring->next_to_use];
-> -	tx_buffer->bytecount =3D len;
-> -	tx_buffer->gso_segs =3D 1;
-> -	tx_buffer->protocol =3D 0;
-> +	tx_desc->read.olinfo_status =3D
-> +		cpu_to_le32(tx_head->bytecount << IXGBE_ADVTXD_PAYLEN_SHIFT);
-> =20
-> -	i =3D ring->next_to_use;
-> -	tx_desc =3D IXGBE_TX_DESC(ring, i);
-> +	for (;;) {
-> +		dma_addr_t dma;
-> =20
-> -	dma_unmap_len_set(tx_buffer, len, len);
-> -	dma_unmap_addr_set(tx_buffer, dma, dma);
-> -	tx_buffer->xdpf =3D xdpf;
-> +		dma =3D dma_map_single(ring->dev, data, len, DMA_TO_DEVICE);
-> +		if (dma_mapping_error(ring->dev, dma))
-> +			goto unmap;
-> =20
-> -	tx_desc->read.buffer_addr =3D cpu_to_le64(dma);
-> +		dma_unmap_len_set(tx_buff, len, len);
-> +		dma_unmap_addr_set(tx_buff, dma, dma);
-> +
-> +		cmd_type =3D IXGBE_ADVTXD_DTYP_DATA | IXGBE_ADVTXD_DCMD_DEXT |
-> +			   IXGBE_ADVTXD_DCMD_IFCS | len;
-> +		tx_desc->read.cmd_type_len =3D cpu_to_le32(cmd_type);
-> +		tx_desc->read.buffer_addr =3D cpu_to_le64(dma);
-> +		tx_buff->protocol =3D 0;
-> +
-> +		if (++index =3D=3D ring->count)
-> +			index =3D 0;
-> +
-> +		if (i =3D=3D nr_frags)
-> +			break;
-> +
-> +		tx_buff =3D &ring->tx_buffer_info[index];
-> +		tx_desc =3D IXGBE_TX_DESC(ring, index);
-> +		tx_desc->read.olinfo_status =3D 0;
-> =20
-> +		data =3D skb_frag_address(&sinfo->frags[i]);
-> +		len =3D skb_frag_size(&sinfo->frags[i]);
-> +		i++;
-> +	}
->  	/* put descriptor type bits */
-> -	cmd_type =3D IXGBE_ADVTXD_DTYP_DATA |
-> -		   IXGBE_ADVTXD_DCMD_DEXT |
-> -		   IXGBE_ADVTXD_DCMD_IFCS;
-> -	cmd_type |=3D len | IXGBE_TXD_CMD;
-> -	tx_desc->read.cmd_type_len =3D cpu_to_le32(cmd_type);
-> -	tx_desc->read.olinfo_status =3D
-> -		cpu_to_le32(len << IXGBE_ADVTXD_PAYLEN_SHIFT);
-> +	tx_desc->read.cmd_type_len |=3D cpu_to_le32(IXGBE_TXD_CMD);
-> =20
->  	/* Avoid any potential race with xdp_xmit and cleanup */
->  	smp_wmb();
-> =20
-> -	/* set next_to_watch value indicating a packet is present */
-> -	i++;
-> -	if (i =3D=3D ring->count)
-> -		i =3D 0;
-> -
-> -	tx_buffer->next_to_watch =3D tx_desc;
-> -	ring->next_to_use =3D i;
-> +	tx_head->next_to_watch =3D tx_desc;
-> +	ring->next_to_use =3D index;
-> =20
->  	return IXGBE_XDP_TX;
-> +
-> +unmap:
-> +	for (;;) {
-> +		tx_buff =3D &ring->tx_buffer_info[index];
-> +		if (dma_unmap_len(tx_buff, len))
-> +			dma_unmap_page(ring->dev, dma_unmap_addr(tx_buff, dma),
-> +				       dma_unmap_len(tx_buff, len),
-> +				       DMA_TO_DEVICE);
-> +		dma_unmap_len_set(tx_buff, len, 0);
-> +		if (tx_buff =3D=3D tx_head)
-> +			break;
-> +
-> +		if (!index)
-> +			index +=3D ring->count;
-> +		index--;
-> +	}
-> +
-> +	return IXGBE_XDP_CONSUMED;
->  }
-> =20
->  netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
-> --=20
-> 2.35.1
->=20
-
---Q0eCcL3TwOvk179G
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYmAF+wAKCRA6cBh0uS2t
-rAfGAP9cIfjFAM7/1E2LcJTfpS5ojEfBGTkaEhugBmbje2aS9gEAukiztxX5QZF7
-miBBhHtTQOmeXY1giKmesLsJBhlxuAk=
-=HySC
------END PGP SIGNATURE-----
-
---Q0eCcL3TwOvk179G--
-
+Thanks,
+Song
