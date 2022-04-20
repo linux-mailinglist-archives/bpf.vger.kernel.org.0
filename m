@@ -2,88 +2,256 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7B6508883
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 14:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15AA55088ED
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 15:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376871AbiDTMzx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 08:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
+        id S1352997AbiDTNML (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 09:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233931AbiDTMzx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 08:55:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F20833E1A;
-        Wed, 20 Apr 2022 05:53:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 224DBB81EEB;
-        Wed, 20 Apr 2022 12:53:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90E3CC385A1;
-        Wed, 20 Apr 2022 12:53:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650459184;
-        bh=QIM/aydJjFoGCSHbzCqxueIZW063tAPoMj10MjY/4a8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=apVzFx6m4Zqgr4EyJ/a/snLw9kTCfUU1QJr7O0rTXk8GxR/FErdnnmx+LIfAkJKJO
-         6N0gxtE0xKMXQYLiCeJLwu9b2GXJ6HWFSjjin7YPwscYxdU7Trp+NiZgx+IODFmrIh
-         ZT1LbMCMohtADTBOgxSc7RyDZL6bBWa4JyR2O3Kfw0FB5BZF9q96ycrDW12cK8WUAZ
-         fd9nkW0NiBFpyk665Hc1e1uMKbYdWH0c0bUkFMvIl1x/se6IGtr+LsSPjH/9jnt4f9
-         ZeeWeluuqyRZ0weAqiRgyqKlR3PAsXBDrWUVkyIN5JhKwP6EKFB4URHClHMehRbkiq
-         5u8HIV8cr/uNg==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6EEF72D1C15; Wed, 20 Apr 2022 14:53:01 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     xiangxia.m.yue@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Joanne Koong <joannekoong@fb.com>,
-        Geliang Tang <geliang.tang@suse.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [net-next v1] bpf: add bpf_ktime_get_real_ns helper
-In-Reply-To: <20220420122307.5290-1-xiangxia.m.yue@gmail.com>
-References: <20220420122307.5290-1-xiangxia.m.yue@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 20 Apr 2022 14:53:01 +0200
-Message-ID: <878rrzj4r6.fsf@toke.dk>
+        with ESMTP id S237472AbiDTNMK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 09:12:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7576427CE
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 06:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1650460163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H5WElo14BBY5Cz/PaPpg1Na6JGReOhJoOldP3NeoOX8=;
+        b=g9Qt93Zx2jpCwOlnA06IQspETHghRy/OBpfOR40cnq0XEzRjPwpvqfLsNP1H+YNVVMZb/w
+        BqVUa5z/deBUXt4C0SeoQvqweVqMCGs+x9X9eHU8GWUZt+6H9Nv/8GAlyDAzgY1TnC51w7
+        mRBdp+a6wHO4nR7SHvNJtAIiRpuEYtE=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-343-1IEAThlnPHmQ6QH7b3DbpA-1; Wed, 20 Apr 2022 09:09:21 -0400
+X-MC-Unique: 1IEAThlnPHmQ6QH7b3DbpA-1
+Received: by mail-qt1-f198.google.com with SMTP id s9-20020ac87589000000b002e1cfb25db9so883697qtq.1
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 06:09:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H5WElo14BBY5Cz/PaPpg1Na6JGReOhJoOldP3NeoOX8=;
+        b=sQjBwO1/Gx4XRxv/6FTJy2ckApXb6T/tXGTM9w8jaNag1K6e0QowjQUTBMIFVCLM6a
+         Oq9Wva+11i4J/U14vioDeVjPEncqoqRHC+uy1ZHyghCRgFyrx8TdeKHB3hC65Oc92WwI
+         Jn9txLkE10cgWukkKGBQXXd5fE9L3+gtyVAxJyu7FrQXGJiCz2k3TDkS0s04KOjISO5X
+         L/7ao+eL2tqNTz/GZDGkl5Jbz1fOgvnuaHrbSyT0BSl8h16r6O1KvZBo+L4Iyr3Qy8D2
+         lkKtdkhOxDV7txabe9Bv/voUiikhL9oxgpIiRsLiJRk/LACB/6RZuTDxEOriUG5IPAJk
+         A4ew==
+X-Gm-Message-State: AOAM530L85yqwGpEI8XMwjHxs376FrU50KDc6bA+onnhyl9K/+D/VULn
+        39NEj4tnjwZeyg033tRLQqQgVOByymBDpw9Lma7+4yIlLASwdwoPO/9Fyr11StKFAgurPZHzXBO
+        WqhW2Y5h45vNK
+X-Received: by 2002:a05:6214:2462:b0:449:998a:8c09 with SMTP id im2-20020a056214246200b00449998a8c09mr2207948qvb.34.1650460159552;
+        Wed, 20 Apr 2022 06:09:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJynjmYOO8LNpuPc3DFNKKwI7gtP6MXM6nmFVA7TGJhkHdGOcq/xSHXBOnMPtHjXtdebu4//zA==
+X-Received: by 2002:a05:6214:2462:b0:449:998a:8c09 with SMTP id im2-20020a056214246200b00449998a8c09mr2207908qvb.34.1650460159254;
+        Wed, 20 Apr 2022 06:09:19 -0700 (PDT)
+Received: from localhost (net-93-71-56-156.cust.vodafonedsl.it. [93.71.56.156])
+        by smtp.gmail.com with ESMTPSA id b2-20020a37b202000000b0069c7ad47221sm1462092qkf.38.2022.04.20.06.09.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Apr 2022 06:09:18 -0700 (PDT)
+Date:   Wed, 20 Apr 2022 15:09:15 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     anthony.l.nguyen@intel.com
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        magnus.karlsson@intel.com, jbrouer@redhat.com, toke@redhat.com,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net-next] ixgbe: add xdp frags support to ndo_xdp_xmit
+Message-ID: <YmAF+wBcluzOGXgJ@lore-desk>
+References: <6de1d7547b60677ad0b0f7ebcbc7ebc76a31dcf7.1649180962.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Q0eCcL3TwOvk179G"
+Content-Disposition: inline
+In-Reply-To: <6de1d7547b60677ad0b0f7ebcbc7ebc76a31dcf7.1649180962.git.lorenzo@kernel.org>
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-xiangxia.m.yue@gmail.com writes:
 
-> From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
->
-> This patch introduce a new bpf_ktime_get_real_ns helper, which may
-> help us to measure the skb latency in the ingress/forwarding path:
->
-> HW/SW[1] -> ip_rcv/tcp_rcv_established -> tcp_recvmsg_locked/tcp_update_recv_tstamps
->
-> * Insert BPF kprobe into ip_rcv/tcp_rcv_established invoking this helper.
->   Then we can inspect how long time elapsed since HW/SW.
-> * If inserting BPF kprobe tcp_update_recv_tstamps invoked by tcp_recvmsg,
->   we can measure how much latency skb in tcp receive queue. The reason for
->   this can be application fetch the TCP messages too late.
+--Q0eCcL3TwOvk179G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Why not just use one of the existing ktime helpers and also add a BPF
-probe to set the initial timestamp instead of relying on skb->tstamp?
+> Add the capability to map non-linear xdp frames in XDP_TX and ndo_xdp_xmit
+> callback.
 
--Toke
+Hi Tony,
+
+do you have any feedbacks about this patch?
+
+Regards,
+Lorenzo
+
+>=20
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 99 ++++++++++++-------
+>  1 file changed, 63 insertions(+), 36 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/=
+ethernet/intel/ixgbe/ixgbe_main.c
+> index c4a4954aa317..8b84c9b2eecc 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -2344,6 +2344,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector=
+ *q_vector,
+>  			hard_start =3D page_address(rx_buffer->page) +
+>  				     rx_buffer->page_offset - offset;
+>  			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
+> +			xdp_buff_clear_frags_flag(&xdp);
+>  #if (PAGE_SIZE > 4096)
+>  			/* At larger PAGE_SIZE, frame_sz depend on len size */
+>  			xdp.frame_sz =3D ixgbe_rx_frame_truesize(rx_ring, size);
+> @@ -8571,57 +8572,83 @@ static u16 ixgbe_select_queue(struct net_device *=
+dev, struct sk_buff *skb,
+>  int ixgbe_xmit_xdp_ring(struct ixgbe_ring *ring,
+>  			struct xdp_frame *xdpf)
+>  {
+> -	struct ixgbe_tx_buffer *tx_buffer;
+> -	union ixgbe_adv_tx_desc *tx_desc;
+> -	u32 len, cmd_type;
+> -	dma_addr_t dma;
+> -	u16 i;
+> -
+> -	len =3D xdpf->len;
+> +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_frame(xdpf);
+> +	u8 nr_frags =3D unlikely(xdp_frame_has_frags(xdpf)) ? sinfo->nr_frags :=
+ 0;
+> +	u16 i =3D 0, index =3D ring->next_to_use;
+> +	struct ixgbe_tx_buffer *tx_head =3D &ring->tx_buffer_info[index];
+> +	struct ixgbe_tx_buffer *tx_buff =3D tx_head;
+> +	union ixgbe_adv_tx_desc *tx_desc =3D IXGBE_TX_DESC(ring, index);
+> +	u32 cmd_type, len =3D xdpf->len;
+> +	void *data =3D xdpf->data;
+> =20
+> -	if (unlikely(!ixgbe_desc_unused(ring)))
+> +	if (unlikely(ixgbe_desc_unused(ring) < 1 + nr_frags))
+>  		return IXGBE_XDP_CONSUMED;
+> =20
+> -	dma =3D dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
+> -	if (dma_mapping_error(ring->dev, dma))
+> -		return IXGBE_XDP_CONSUMED;
+> +	tx_head->bytecount =3D xdp_get_frame_len(xdpf);
+> +	tx_head->gso_segs =3D 1;
+> +	tx_head->xdpf =3D xdpf;
+> =20
+> -	/* record the location of the first descriptor for this packet */
+> -	tx_buffer =3D &ring->tx_buffer_info[ring->next_to_use];
+> -	tx_buffer->bytecount =3D len;
+> -	tx_buffer->gso_segs =3D 1;
+> -	tx_buffer->protocol =3D 0;
+> +	tx_desc->read.olinfo_status =3D
+> +		cpu_to_le32(tx_head->bytecount << IXGBE_ADVTXD_PAYLEN_SHIFT);
+> =20
+> -	i =3D ring->next_to_use;
+> -	tx_desc =3D IXGBE_TX_DESC(ring, i);
+> +	for (;;) {
+> +		dma_addr_t dma;
+> =20
+> -	dma_unmap_len_set(tx_buffer, len, len);
+> -	dma_unmap_addr_set(tx_buffer, dma, dma);
+> -	tx_buffer->xdpf =3D xdpf;
+> +		dma =3D dma_map_single(ring->dev, data, len, DMA_TO_DEVICE);
+> +		if (dma_mapping_error(ring->dev, dma))
+> +			goto unmap;
+> =20
+> -	tx_desc->read.buffer_addr =3D cpu_to_le64(dma);
+> +		dma_unmap_len_set(tx_buff, len, len);
+> +		dma_unmap_addr_set(tx_buff, dma, dma);
+> +
+> +		cmd_type =3D IXGBE_ADVTXD_DTYP_DATA | IXGBE_ADVTXD_DCMD_DEXT |
+> +			   IXGBE_ADVTXD_DCMD_IFCS | len;
+> +		tx_desc->read.cmd_type_len =3D cpu_to_le32(cmd_type);
+> +		tx_desc->read.buffer_addr =3D cpu_to_le64(dma);
+> +		tx_buff->protocol =3D 0;
+> +
+> +		if (++index =3D=3D ring->count)
+> +			index =3D 0;
+> +
+> +		if (i =3D=3D nr_frags)
+> +			break;
+> +
+> +		tx_buff =3D &ring->tx_buffer_info[index];
+> +		tx_desc =3D IXGBE_TX_DESC(ring, index);
+> +		tx_desc->read.olinfo_status =3D 0;
+> =20
+> +		data =3D skb_frag_address(&sinfo->frags[i]);
+> +		len =3D skb_frag_size(&sinfo->frags[i]);
+> +		i++;
+> +	}
+>  	/* put descriptor type bits */
+> -	cmd_type =3D IXGBE_ADVTXD_DTYP_DATA |
+> -		   IXGBE_ADVTXD_DCMD_DEXT |
+> -		   IXGBE_ADVTXD_DCMD_IFCS;
+> -	cmd_type |=3D len | IXGBE_TXD_CMD;
+> -	tx_desc->read.cmd_type_len =3D cpu_to_le32(cmd_type);
+> -	tx_desc->read.olinfo_status =3D
+> -		cpu_to_le32(len << IXGBE_ADVTXD_PAYLEN_SHIFT);
+> +	tx_desc->read.cmd_type_len |=3D cpu_to_le32(IXGBE_TXD_CMD);
+> =20
+>  	/* Avoid any potential race with xdp_xmit and cleanup */
+>  	smp_wmb();
+> =20
+> -	/* set next_to_watch value indicating a packet is present */
+> -	i++;
+> -	if (i =3D=3D ring->count)
+> -		i =3D 0;
+> -
+> -	tx_buffer->next_to_watch =3D tx_desc;
+> -	ring->next_to_use =3D i;
+> +	tx_head->next_to_watch =3D tx_desc;
+> +	ring->next_to_use =3D index;
+> =20
+>  	return IXGBE_XDP_TX;
+> +
+> +unmap:
+> +	for (;;) {
+> +		tx_buff =3D &ring->tx_buffer_info[index];
+> +		if (dma_unmap_len(tx_buff, len))
+> +			dma_unmap_page(ring->dev, dma_unmap_addr(tx_buff, dma),
+> +				       dma_unmap_len(tx_buff, len),
+> +				       DMA_TO_DEVICE);
+> +		dma_unmap_len_set(tx_buff, len, 0);
+> +		if (tx_buff =3D=3D tx_head)
+> +			break;
+> +
+> +		if (!index)
+> +			index +=3D ring->count;
+> +		index--;
+> +	}
+> +
+> +	return IXGBE_XDP_CONSUMED;
+>  }
+> =20
+>  netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
+> --=20
+> 2.35.1
+>=20
+
+--Q0eCcL3TwOvk179G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYmAF+wAKCRA6cBh0uS2t
+rAfGAP9cIfjFAM7/1E2LcJTfpS5ojEfBGTkaEhugBmbje2aS9gEAukiztxX5QZF7
+miBBhHtTQOmeXY1giKmesLsJBhlxuAk=
+=HySC
+-----END PGP SIGNATURE-----
+
+--Q0eCcL3TwOvk179G--
+
