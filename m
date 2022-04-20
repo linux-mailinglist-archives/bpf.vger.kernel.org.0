@@ -2,77 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96024508EE2
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 19:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DEF508EEC
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 19:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381342AbiDTR47 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 13:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
+        id S242506AbiDTR66 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 13:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381354AbiDTR46 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 13:56:58 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A964E43AD1
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 10:54:11 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id n33-20020a17090a5aa400b001d28f5ee3f9so2727726pji.4
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 10:54:11 -0700 (PDT)
+        with ESMTP id S239880AbiDTR65 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 13:58:57 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6B043AD1
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 10:56:10 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id n134so2684363iod.5
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 10:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uD8z1p/Q/8ux3CU+H6eKpTTlkpCCd0OQILK90LgOw3A=;
-        b=aWjbWiEer+zv2JjtW00nVimMXoyoZaOL2eZ7PAiJCiJffP/VVq8ZKdERW2SOvrMPU3
-         mAXoxMKTq4UeOF6oIjTmSVtOr0mFBbyVQI/mQjrz/aLZ2SDHa3V7cIB74Y1G6NA+ot/b
-         +zNKStpHvae54VoE4Rrx/knL80RUwocafw1/65hVKSrha4k+C8D6vgESSDWEEY0clEnU
-         lscK5KOhpGT/sNHFUhjJrsnuiS21yM4aYsB3Y9hlC9YH794H15RF4Pry6uu/8mE/pMF2
-         PA8Fffevu52aMudyKT6JdlU9W2U8JoaiVDyGKM7cjP9iGzUXhEsY8awFodMxvBHZtxiS
-         qZAg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1P8pCcGZkjv8z33dNwx/IRkriefq+CN2IVgWn8/warw=;
+        b=CNa5wFV8DVA29f2gtEOqGnHhPijfYsfvp9pd2MOLL+Si08OzKPqCXvHaUb8T9Elc4x
+         fGRAkYjjIU5Ebv44VeLd7cdlkaUawZ3WwXvRWJt/U0cQsxdDDgD5kuKqVbe7iRBQrUlr
+         XL84gBRPitnquuaMDwsBuLE0JRcH8/OfOM4VYIiKviuK3YMXTGe4C9B1RFqmA4OL+HV4
+         bJr8L/MXOwHDRI0QDxRE7uEGd93T359GCJ7PHjT8nUACoGumTyWQDO23KV/fXlCcuLIn
+         y7w3N1XlbHgnup45X6Kyo5OYEmeKpCHZeD7Jys0BbM1eckgPssOmsGgc4jFrfBgubZ55
+         66GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uD8z1p/Q/8ux3CU+H6eKpTTlkpCCd0OQILK90LgOw3A=;
-        b=BqJ9P9Os2F45uE1f+uFR1qbSQR8xHLE5U/zCnidoVX+8T7jbwoFQal+schJQUT9JQb
-         NS2DUCibDIlAzbkhYxGVD4qF6qJjE3GHgVZYPa98BclVUe1GlA43H9orRkFY3WLZZZ7J
-         hkmDKI5E0KjydWD6Ta51Z81Mo2eY7OQXnZt0QGjACiQfgtcXTwW6If9teIBKnFAoRHqF
-         ps16/vpUBvpgHOIJ5qF4ZB++0bRNEptXtQUWUPpWxX+tfQVT9c4e5pnFZ71R/4u5Udk/
-         AmMHt93llORvZTzyMsrXkt8VnkhhnrgE3fB5lC+rDMVL/eDsd0arBtBc9SAhJy2Zmva6
-         7uag==
-X-Gm-Message-State: AOAM533jNI+d8Hy342Hf2U2I3eal/k/78hwQKLEfu41SaPsmecomTSec
-        Zc67/3mOsXUbccdnw5nyig==
-X-Google-Smtp-Source: ABdhPJywIB8LYi/pm42sf149ssk2+fT0PLdxF+bK+7F6TomzVCPDRAcQJKmSqa9gTAf47e97+mbsrA==
-X-Received: by 2002:a17:902:8214:b0:158:b5c2:1d02 with SMTP id x20-20020a170902821400b00158b5c21d02mr22340136pln.27.1650477251114;
-        Wed, 20 Apr 2022 10:54:11 -0700 (PDT)
-Received: from bytedance ([4.7.18.210])
-        by smtp.gmail.com with ESMTPSA id 7-20020a17090a174700b001d55fe3d4cesm325427pjm.1.2022.04.20.10.54.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 10:54:10 -0700 (PDT)
-Date:   Wed, 20 Apr 2022 10:54:07 -0700
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        =?utf-8?B?6IyD5byA5Zac?= <fankaixi.li@bytedance.com>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [External] [PATCH bpf-next v2 3/3] selftests/bpf: add ipv6 vxlan
- tunnel source testcase
-Message-ID: <20220420175407.GA22312@bytedance>
-References: <20220322154231.55044-1-fankaixi.li@bytedance.com>
- <20220322154231.55044-4-fankaixi.li@bytedance.com>
- <20220324193755.vbtg2dvi4x3rysx2@kafai-mbp>
- <CAEEdnKFbq=TpmrXtFi8A-pPcLS-pRS2TT_726v7S52XMX6crQA@mail.gmail.com>
- <CAEEdnKH2g0gZ5y2x_1BCK1MHt6_r=_RLw18=apbwpn9+Thi7nA@mail.gmail.com>
- <20220407175333.tnmk4am3hzpfhept@kafai-mbp.dhcp.thefacebook.com>
- <20220415231155.GA9900@bytedance>
- <CAEf4BzbFT1Sdb4fijyU4WELP64rX1K8dWwMu6CDcDkMXTwqHfQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1P8pCcGZkjv8z33dNwx/IRkriefq+CN2IVgWn8/warw=;
+        b=YHUaik4Ruk0Udf2a/N80FnMaWEOiZ+8l6pBvN+Ymbv8oVWCA6HXJjLAQbkfuTYGIaN
+         jqt62w0Inyxi4X6LLVMd+nTUWTSNwu5XbHc45hbEI/7IjbSNBnWeLInPijeJGNSd4Csz
+         MsUhVZt9ejye6NwJvq89Bkjg8aj7K6fs//iHvR1moTewPM40tvQ7YhscduJ0WHFk8ZSd
+         PsgNptVGx26+bN2ptA+vLv0aZDKK2Yw3GRKZuza/ldXjgSBCWJsgqU4wI1iHO/uns9RI
+         /AdtIqxI+44J87gCAvUhmjSvqYSl+qt+PozwUlzQgADBIlItpdfRSFaw6Y/T0guUqWu3
+         VeMA==
+X-Gm-Message-State: AOAM532Gu/o9madux/mKy3hkyd+8Ox70fJ5IHHJehhzhPDbHB1WpnmUU
+        Vj7Czaz3dIYcxx7Skj22SNZFlz69UB7J9L64g5pL8WrJBT0=
+X-Google-Smtp-Source: ABdhPJxTa4nqQnwaOKyR9N+L0WJJm40avISpEgME94rZpL8hp/ulGLhOuWzRbHd1VSffXAVeC5Hjh5rzjf0Sw4LDBC4=
+X-Received: by 2002:a5d:9f4e:0:b0:652:2323:2eb8 with SMTP id
+ u14-20020a5d9f4e000000b0065223232eb8mr9437571iot.79.1650477369675; Wed, 20
+ Apr 2022 10:56:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbFT1Sdb4fijyU4WELP64rX1K8dWwMu6CDcDkMXTwqHfQ@mail.gmail.com>
+References: <20220416042940.656344-1-kuifeng@fb.com> <20220416042940.656344-6-kuifeng@fb.com>
+In-Reply-To: <20220416042940.656344-6-kuifeng@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Apr 2022 10:55:58 -0700
+Message-ID: <CAEf4BzbCZSVjTC2_VRj6WO4FZ0Gu8HAs6Ume2ZW+7piU9XCy1A@mail.gmail.com>
+Subject: Re: [PATCH dwarves v6 5/6] libbpf: Assign cookies to links in libbpf.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -83,23 +67,153 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
+On Fri, Apr 15, 2022 at 9:30 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
+>
+> Add a cookie field to the attributes of bpf_link_create().
+> Add bpf_program__attach_trace_opts() to attach a cookie to a link.
+>
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> ---
+>  tools/lib/bpf/bpf.c      |  7 +++++++
+>  tools/lib/bpf/bpf.h      |  3 +++
+>  tools/lib/bpf/libbpf.c   | 38 ++++++++++++++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   | 12 ++++++++++++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  5 files changed, 61 insertions(+)
+>
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index cf27251adb92..1a96fd9b1da9 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -863,6 +863,13 @@ int bpf_link_create(int prog_fd, int target_fd,
+>                 if (!OPTS_ZEROED(opts, kprobe_multi))
+>                         return libbpf_err(-EINVAL);
+>                 break;
+> +       case BPF_TRACE_FENTRY:
+> +       case BPF_TRACE_FEXIT:
+> +       case BPF_MODIFY_RETURN:
 
-On Wed, Apr 20, 2022 at 10:09:59AM -0700, Andrii Nakryiko wrote:
-> On Fri, Apr 15, 2022 at 4:12 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> > On Thu, Apr 07, 2022 at 10:53:33AM -0700, Martin KaFai Lau wrote:
-> > > The .sh is not run by CI also.
-> >
-> > Just curious: by "CI", did you mean libbpf-ci [1] ?
-> >
-> > If so, why doesn't libbpf-ci run these .sh tests?  Recently we triggered
-> > a bug (see [2]) in ip6_gre by running test_tunnel.sh.  I think it
-> > could've been spotted much sooner if test_tunnel.sh was being run.
-> 
-> If you convert test_tunnel.sh into a test inside test_progs, we'll be
-> running it regularly.
+also EXT and LSM programs should go through this
 
-Thanks!  I think Kaixi is working on this.
+> +               attr.link_create.tracing.cookie = OPTS_GET(opts, tracing.cookie, 0);
+> +               if (!OPTS_ZEROED(opts, tracing))
+> +                       return libbpf_err(-EINVAL);
+> +               break;
+>         default:
+>                 if (!OPTS_ZEROED(opts, flags))
+>                         return libbpf_err(-EINVAL);
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index f4b4afb6d4ba..2f9099c945bc 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -410,6 +410,9 @@ struct bpf_link_create_opts {
+>         __u32 iter_info_len;
+>         __u32 target_btf_id;
+>         union {
+> +               struct {
+> +                       __u64 cookie;
+> +               } tracing;
 
-Peilin Ye
+nit: append at the end of the union?
 
+>                 struct {
+>                         __u64 bpf_cookie;
+>                 } perf_event;
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index bf4f7ac54ebf..7e18fe94bfe5 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -11262,6 +11262,44 @@ struct bpf_link *bpf_program__attach_trace(const struct bpf_program *prog)
+>         return bpf_program__attach_btf_id(prog);
+>  }
+>
+> +struct bpf_link *bpf_program__attach_trace_opts(const struct bpf_program *prog,
+> +                                               const struct bpf_trace_opts *opts)
+> +{
+> +       char errmsg[STRERR_BUFSIZE];
+> +       struct bpf_link *link;
+> +       int prog_fd, pfd;
+> +       LIBBPF_OPTS(bpf_link_create_opts, link_opts);
+> +
+> +       /* Fallback for cookie is 0.  Old kernels don't create
+> +        * fentry/fexit links through LINK_CREATE.
+> +        */
+> +       if (OPTS_GET(opts, cookie, 0))
+> +               return bpf_program__attach_trace(prog);
+
+With my (planned) changes this special casing won't be necessary
+anymore as using bpf_link_create() will call into
+bpf_raw_tracepoint_open() on older kernels if cookie is zero
+(transparently).
+
+> +
+> +       prog_fd = bpf_program__fd(prog);
+> +       if (prog_fd < 0) {
+> +               pr_warn("prog '%s': can't attach before loaded\n", prog->name);
+> +               return libbpf_err_ptr(-EINVAL);
+> +       }
+> +
+> +       link = calloc(1, sizeof(*link));
+> +       if (!link)
+> +               return libbpf_err_ptr(-ENOMEM);
+> +       link->detach = &bpf_link__detach_fd;
+> +
+> +       link_opts.tracing.cookie = OPTS_GET(opts, cookie, 0);
+> +       pfd = bpf_link_create(prog_fd, 0, prog->expected_attach_type, &link_opts);
+> +       if (pfd < 0) {
+> +               pfd = -errno;
+> +               free(link);
+> +               pr_warn("prog '%s': failed to attach: %s\n",
+> +                       prog->name, libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
+> +               return libbpf_err_ptr(pfd);
+> +       }
+> +       link->fd = pfd;
+> +       return (struct bpf_link *)link;
+
+just return link? why casting?
+
+> +}
+> +
+>  struct bpf_link *bpf_program__attach_lsm(const struct bpf_program *prog)
+>  {
+>         return bpf_program__attach_btf_id(prog);
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 63d66f1adf1a..213de69bc173 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -563,8 +563,20 @@ bpf_program__attach_tracepoint_opts(const struct bpf_program *prog,
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach_raw_tracepoint(const struct bpf_program *prog,
+>                                    const char *tp_name);
+> +
+> +struct bpf_trace_opts {
+> +       /* size of this struct, for forward/backward compatibility */
+> +       size_t sz;
+> +       /* custom user-provided value fetchable through bpf_get_attach_cookie() */
+> +       __u64 cookie;
+> +};
+> +#define bpf_trace_opts__last_field cookie
+> +
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach_trace(const struct bpf_program *prog);
+> +LIBBPF_API struct bpf_link *
+> +bpf_program__attach_trace_opts(const struct bpf_program *prog, const struct bpf_trace_opts *opts);
+> +
+>  LIBBPF_API struct bpf_link *
+>  bpf_program__attach_lsm(const struct bpf_program *prog);
+>  LIBBPF_API struct bpf_link *
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 82f6d62176dd..245a0e8677c9 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -444,6 +444,7 @@ LIBBPF_0.8.0 {
+>         global:
+>                 bpf_object__destroy_subskeleton;
+>                 bpf_object__open_subskeleton;
+> +               bpf_program__attach_trace_opts;
+>                 bpf_program__attach_usdt;
+>                 libbpf_register_prog_handler;
+>                 libbpf_unregister_prog_handler;
+> --
+> 2.30.2
+>
