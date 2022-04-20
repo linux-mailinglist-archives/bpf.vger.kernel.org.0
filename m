@@ -2,109 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B06508D3B
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 18:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C71B508DAC
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 18:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346579AbiDTQ3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 12:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
+        id S1380773AbiDTQwe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 12:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380479AbiDTQ3t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 12:29:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C27A421E00;
-        Wed, 20 Apr 2022 09:27:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F116619FF;
-        Wed, 20 Apr 2022 16:27:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C9F5C385A0;
-        Wed, 20 Apr 2022 16:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650472021;
-        bh=fb9ado0/3F7FYlTFjG0Q6SH3RLQ9ehGzpmSE/fDCKoY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pBMye+1yrl7l8crweJudwjifXcMbVlXiemfA+9K6AHu6l/QjSVIuyitLLm4Jdux/9
-         hAOMKzQHDj547K//MuJD7PJcLnGxOk5+NbRJAj+gTuojYIAWY717h4Csr/zEqeGbxY
-         r0hY9A/thV4EHui+/4lKaXIRADaortYLKkBFQwM77tkx2PuUZmDJWvPhb3xNWOXTSj
-         FXE0VaD3eZ91/DWtSrc3j/PgGV0iykbam1OJ2qZJ9cbIapUPg8aaX4ZZg7F+G496ER
-         EpYTKSRPXL4hczS3eTUcvALShCDyxe1sarg94f1aHLWGq362hktT8HN522EtkiWoCp
-         3b5j96cNLYYYw==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D7C462D1C96; Wed, 20 Apr 2022 18:26:57 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Joanne Koong <joannekoong@fb.com>,
-        Geliang Tang <geliang.tang@suse.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [net-next v1] bpf: add bpf_ktime_get_real_ns helper
-In-Reply-To: <CAEf4Bzafe3Am5uep7erd7r+-pgdGRc9hsJASYfFH47ty8x9mTA@mail.gmail.com>
-References: <20220420122307.5290-1-xiangxia.m.yue@gmail.com>
- <878rrzj4r6.fsf@toke.dk>
- <CAEf4Bzafe3Am5uep7erd7r+-pgdGRc9hsJASYfFH47ty8x9mTA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 20 Apr 2022 18:26:57 +0200
-Message-ID: <87wnfjhga6.fsf@toke.dk>
+        with ESMTP id S1380776AbiDTQvR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 12:51:17 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE864553C
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 09:48:30 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id f5so1339713ilj.13
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 09:48:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YP8pKzZaMyor7RijCaD0FwE70N1V1zzFv3K68LOOOv8=;
+        b=MeA/oWaSCL5YyOZHyiNJGEeZNYby5Tzxtp9YN9dv9wZkYkhfMkcPSCXndsyIXiRCVW
+         l6xhAeUPt97i24p8bw0RYWFdAG2H7mmD3A6tKW8lkwrya3xHhCQtb+tAjFFypqTuzDid
+         D2sTzipR1SBx7q9KpbweYHYz0RLZSpLIzTpK3MjJtBcCDh194eZY+nNHuncsGWpXZlag
+         Tc+sG1nZX1Qd8z67wZGbW/h7saomKLj2u0EN3xV5lHkivlKGTalqcPVWI1twqyUIZU2G
+         c9PLmVVVGH7/bIRoY+ClUGyaeyoU1ihZh3ICxvMu3s5CRWfSmpM5E51mM1KMBZBcfvwg
+         kzUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YP8pKzZaMyor7RijCaD0FwE70N1V1zzFv3K68LOOOv8=;
+        b=0fkYw8/hIpBdDpQ32gAA5RE7hgtBw6WgfgFqAvNbEHrSTe5FRCfIa+hfrndK7B5W7P
+         3MqKXRHndSFtJ/6d7DDnrVHZhZAauMheV1P+uyScupJgftUjTHO8upZsRYZxFbJchjiX
+         yACu+lBRHGY42GA/MksmsyPhzWRIKZ6++jxtTm345HKAY4AI4GNf75MkcaKAHkQ+KIcZ
+         s9ibwnRuwH5d8VhlILhYx6YvYTwo9JFWx4X9/rt/IsGhOu9r21MezG1uwE4iEhSKJjG0
+         oGC9i8ER5zFXpIQDwl7N7y/0AkTXYTyr/MBA7Acz5d71A4m5lP6sPG91MQv11qYsvtEA
+         nIEA==
+X-Gm-Message-State: AOAM532DTxGh3WIRydX5GwSTqIWDCm2Lxq1NWmcUJlLNclwPXRBw1ncD
+        jRjfg8ytZsvwUEBZurampxDC/lRxQmJxtRlD9OA=
+X-Google-Smtp-Source: ABdhPJylhb0GmVxHqO5Bgs7XSkIeypc5kJ6ACpSUIv/EqwZKrVWc4cKuXRMZPesRenRSXACqlT0P3TYRkprVFiJWYC0=
+X-Received: by 2002:a92:c247:0:b0:2cc:1798:74fe with SMTP id
+ k7-20020a92c247000000b002cc179874femr8219700ilo.239.1650473310202; Wed, 20
+ Apr 2022 09:48:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <4ed4a01e-3d1e-bf1e-803a-608df187bde5@I-love.SAKURA.ne.jp> <909c72b6-83f9-69a0-af80-d9cb3bc2bd0e@I-love.SAKURA.ne.jp>
+In-Reply-To: <909c72b6-83f9-69a0-af80-d9cb3bc2bd0e@I-love.SAKURA.ne.jp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Apr 2022 09:48:19 -0700
+Message-ID: <CAEf4Bzbugg4dy_2J=cFKYYQEJx-irF-cRZvkkwCx4QQwXm5OpA@mail.gmail.com>
+Subject: Re: How to disassemble a BPF program?
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Wed, Apr 20, 2022 at 5:53 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@ke=
-rnel.org> wrote:
->>
->> xiangxia.m.yue@gmail.com writes:
->>
->> > From: Tonghao Zhang <xiangxia.m.yue@gmail.com>
->> >
->> > This patch introduce a new bpf_ktime_get_real_ns helper, which may
->> > help us to measure the skb latency in the ingress/forwarding path:
->> >
->> > HW/SW[1] -> ip_rcv/tcp_rcv_established -> tcp_recvmsg_locked/tcp_updat=
-e_recv_tstamps
->> >
->> > * Insert BPF kprobe into ip_rcv/tcp_rcv_established invoking this help=
-er.
->> >   Then we can inspect how long time elapsed since HW/SW.
->> > * If inserting BPF kprobe tcp_update_recv_tstamps invoked by tcp_recvm=
-sg,
->> >   we can measure how much latency skb in tcp receive queue. The reason=
- for
->> >   this can be application fetch the TCP messages too late.
->>
->> Why not just use one of the existing ktime helpers and also add a BPF
->> probe to set the initial timestamp instead of relying on skb->tstamp?
->>
+On Wed, Apr 20, 2022 at 4:38 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
 >
-> You don't even need a BPF probe for this. See [0] for how retsnoop is
-> converting bpf_ktime_get_ns() into real time.
+> Ping?
 >
->   [0] https://github.com/anakryiko/retsnoop/blob/master/src/retsnoop.c#L6=
-49-L668
+> Since how to fix this "current top five crasher" bug depends on how a kernel
+> socket is created via BPF program, this bug wants help from BPF developers.
 
-Uh, neat! Thanks for the link :)
+If the BPF program is loaded/verified successfully, the easiest way to
+go about this would be to prevent repro from proceeding right after
+successful validation (e.g, do scanf()) and then use bpftool to find
+that program's ID and dump disassembly while that program is in the
+kernel.
 
--Toke
+$ sudo bpftool prog show
+...
+654439: cgroup_skb  tag 6deef7357e7b4530  gpl
+        loaded_at 2022-04-20T06:14:08-0700  uid 0
+        xlated 64B  jited 54B  memlock 4096B
+        pids systemd(1)
+
+$ sudo bpftool prog dump xlat id 654439
+   0: (bf) r6 = r1
+   1: (69) r7 = *(u16 *)(r6 +176)
+   2: (b4) w8 = 0
+   3: (44) w8 |= 2
+   4: (b7) r0 = 1
+   5: (55) if r8 != 0x2 goto pc+1
+   6: (b7) r0 = 0
+   7: (95) exit
+
+Hope that helps. I don't know any tool that allows to disassemble raw
+bytes into BPF assembly. Normally I use llvm-objdump to disassemble
+well-formed BPF ELF files. Not sure if you can wrange llvm-objdump to
+disassemble raw bytes without ELF file itself.
+
+>
+> On 2022/04/12 20:04, Tetsuo Handa wrote:
+> > Hello.
+> >
+> > I'm not a BPF user, but I want to know what a BPF program stored in
+> > "static const char program[2053] =" at
+> > https://lkml.kernel.org/r/c389e47f-8f82-fd62-8c1d-d9481d2f71ff@I-love.SAKURA.ne.jp
+> > is doing so that I can parse syzkaller-generated BPF programs like C programs.
+> >
+> > Do you have a utility for this purpose?
+> >
+> > Regards.
