@@ -2,89 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 622095080B5
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 07:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC09508183
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 08:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240010AbiDTFxF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 01:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        id S1350711AbiDTG6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 02:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359429AbiDTFw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 01:52:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C70DB864;
-        Tue, 19 Apr 2022 22:50:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A237161776;
-        Wed, 20 Apr 2022 05:50:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BE1CEC385A1;
-        Wed, 20 Apr 2022 05:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650433811;
-        bh=/+U+gKD1f49TgqriF1wxYhDRqEV/GkSfbSwhfHIPWUM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CbcKD81xuskVM6n7374T5uTjSsnAUgTGBo/oKpeOxbrLlKstCh75aPK9hLROkYrhF
-         9ohJlet33NsMQ+JCHLHRQ48emiDKbT/Wo3IFOs+2s/bfU8vjkdUPmpqSJm3dqaYxy8
-         MJBS4mnMxITU2LTyxFWxBP3mwQ3fIkIJcp9T6FFx0p/NU3IbfTGvDL6TVM8wMDFUGd
-         rbLER66azoTi4CnUccQ8gBgiKsN0pS7w3BbTKwKqMThQmSZmVoOdJe/2R5zkMzoTQ1
-         5rnode6Vm60n/XPhS4vd50Gu9mXBHbckv6AkU8pUN1h+FmOWvYdJXgMhAMxg2Tl1Tj
-         +RpZe9b6NwFCg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9DC4AE8DBD4;
-        Wed, 20 Apr 2022 05:50:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S244258AbiDTG6b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 02:58:31 -0400
+Received: from mail.onlinesuccesses.pl (mail.onlinesuccesses.pl [198.244.150.235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110FF140D2
+        for <bpf@vger.kernel.org>; Tue, 19 Apr 2022 23:55:46 -0700 (PDT)
+Received: by mail.onlinesuccesses.pl (Postfix, from userid 1002)
+        id D58A6A68C1; Wed, 20 Apr 2022 06:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=onlinesuccesses.pl;
+        s=mail; t=1650437743;
+        bh=nE8HqilgMh4dy7+Z8ksfg7Bc9rmPeQtYFq3/3YR2ODU=;
+        h=Date:From:To:Subject:From;
+        b=DzIG+/KfU67lKjQeAlUfvdjBaXJa9pMkhD4H6BLqFFiRCjq5M03f2RlXaDvgJpkp6
+         F4Dw6h5pJaHIeQba8DYF+gRGQtOVIkKNI6bo0xGgn5rFUNM241Lv17Cw+QBtT9FYvU
+         o24+V/qpb1jehn8WnZMYanI3MrppW6UpoZuvoOrzm7laB/gzUNC/suEWb+MrZODOgz
+         xJamzN2e8r4Bu3eo8N0JkYC7aJHfUscfb7JIXnfPGXc9eJS70u+E5rYrkYSnnPup6/
+         UxaZ7XvBhWpGFBLNL+Zrvn23dGiRnCckTtqxxY2vASJ6H9jpern/sp38DMi8FU21lf
+         gxq/bHX3wbh9g==
+Received: by mail.onlinesuccesses.pl for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 06:55:08 GMT
+Message-ID: <20220420053000-0.1.3t.ycdx.0.j75tckrpif@onlinesuccesses.pl>
+Date:   Wed, 20 Apr 2022 06:55:08 GMT
+From:   "Wiktor Zielonko" <wiktor.zielonko@onlinesuccesses.pl>
+To:     <bpf@vger.kernel.org>
+Subject: Ruch z pierwszej pozycji w Google
+X-Mailer: mail.onlinesuccesses.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/2] Support riscv libbpf USDT arg parsing logic
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165043381164.28808.5094554750645072306.git-patchwork-notify@kernel.org>
-Date:   Wed, 20 Apr 2022 05:50:11 +0000
-References: <20220419145238.482134-1-pulehui@huawei.com>
-In-Reply-To: <20220419145238.482134-1-pulehui@huawei.com>
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
-        andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Dzie=C5=84 dobry,=20
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
+j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
+e Google.=20
 
-On Tue, 19 Apr 2022 22:52:36 +0800 you wrote:
-> patch 1 fix a minor issue where usdt_cookie is cast to 32 bits.
-> patch 2 add support riscv libbpf USDT argument parsing logic,
-> both RV32 and RV64 tests have been passed as like follow:
-> 
-> # ./test_progs -t usdt
-> #169 usdt:OK
-> Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> [...]
+Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
+=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
+w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
+owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
+dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
 
-Here is the summary with links:
-  - [v2,bpf-next,1/2] libbpf: Fix usdt_cookie being cast to 32 bits
-    https://git.kernel.org/bpf/bpf-next/c/5af25a410acb
-  - [v2,bpf-next,2/2] libbpf: Support riscv USDT argument parsing logic
-    https://git.kernel.org/bpf/bpf-next/c/58ca8b0572cd
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
+edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
+edstawi=C4=87 ofert=C4=99?=20
 
 
+Pozdrawiam serdecznie,
+Wiktor Zielonko
