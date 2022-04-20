@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8401A508DBE
-	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 18:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58FA508DCA
+	for <lists+bpf@lfdr.de>; Wed, 20 Apr 2022 18:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380775AbiDTQxu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 12:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
+        id S1380786AbiDTQzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 12:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380776AbiDTQxs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 12:53:48 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C0D2E082
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 09:50:59 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id r12so2475496iod.6
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 09:50:59 -0700 (PDT)
+        with ESMTP id S234342AbiDTQze (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 12:55:34 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55473E5C4;
+        Wed, 20 Apr 2022 09:52:47 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id g18so4742078ejc.10;
+        Wed, 20 Apr 2022 09:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LVZNMyt0IlCw7hfulmbIm9gvJZ17hVxpzmgaBNVyB7k=;
-        b=EM/dmSfpf3thdtuYDpYbwvQGQ80uwsRC8z8k2M68PHJzE61/kr4j5IBHMh296vyJ2f
-         iZ9KVEulwyplDcpqbT50VZmK8ZGjNmki01nMFNBop7fzc/PWn6REzPrarhgwILZwg/lM
-         DE/JCdBs9ai6jahyIwyhwWUrM9OAGg7q9Dx0szMHKCrrFaUC7bWJQ8I7dy/Sk7g//CZV
-         gvZpHLXoSq39MxDA+hcdjKyi1fv4dxT4+mS00eVQLN1Xk67FT8dxSthRbLnWKlVmlza/
-         67YCeEEw3IgYiyTQ0Y5J+UH+n0nMrsWzjUVUgRYY3JKELKBHP8ELsVSGUu9ot6i/2kcw
-         vryw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5BhEb2573/hfw8t8bp1ven7rd3mYWJSdIGH3HAvPqlI=;
+        b=CdeRXIHm0B7wGIRmZBokbw1pSkh4JYi50ZL0X/S7rRu7uBKOWQyIsBWPVnaroDI2td
+         JUNY0Wd9Oi7CDseFgKy/4cv95RHwNQBuaspUranyw43UV/Hl9yMixgbJSD+L3XIDL9qf
+         WJCyF9dwCqvFqzyzRq06CN3uyw0lIDdM0sGl1JCai9EGcQ+EgUiFcQg2W/ro5mSE5y0p
+         K9566CuiHN9pI1zAiUye4QZ2MowprLqQ6mGMkFpQZq1M9mwdI86mXjAjQyUr3j9hVTF9
+         OtB6Qpfe1f4eLRVrbV8G162LrEGRMG48Piw8c8E2r7YLeoXB8ye64Mxpc5vCIUCz36oX
+         2UMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LVZNMyt0IlCw7hfulmbIm9gvJZ17hVxpzmgaBNVyB7k=;
-        b=foM9TAy7WQBQECXUwP9BaMN8WgSCvNkfe97J3vUFC1REp3EDjGotBGasQtsGsZnrYR
-         RBq6mvOM+K8VpQI8hDcVCPNRHxqvBniVGjraeHgYKI4uXrE6kIgg85FqOfgRaxC92M/5
-         bMdqDsokGRsMWYAa+3ndncWrsnWpHw84GIyHxLxu2tUnaxm3SU0DKHVodNIyNwgHT3Fz
-         LIYhMzj0mqUizNkNlZaTUo3/GE1EtD5obYjvePhQwsiMFgJL8we5EhLVsgA+UWL7SwSw
-         lEcQ+I0recd3oEZbuB0dZ9K/NztBmk+8nkc+Ppd/AAYc57F8rZEK5z6rmkdQBwNfnk+3
-         tDrw==
-X-Gm-Message-State: AOAM530m6tuE/g6mGDF0O6xUWveqEJbvDsvx3iJ7DNoMSaIz1MSJf6+5
-        KmzdvXLPZnvh4z/Tc8hVTbFfIwiZTr9qz1e4sSg=
-X-Google-Smtp-Source: ABdhPJynRWS4pYQ/0NsWsqIJHzGEycSgczwoMtBJ5aj83RBx411mNQFzmWrqFBDutxxUQIwQaU2vXLpzIb2qvp16wM8=
-X-Received: by 2002:a05:6602:1683:b0:64f:ba36:d3cf with SMTP id
- s3-20020a056602168300b0064fba36d3cfmr9250373iow.144.1650473458957; Wed, 20
- Apr 2022 09:50:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5BhEb2573/hfw8t8bp1ven7rd3mYWJSdIGH3HAvPqlI=;
+        b=swGgBNCYVuQV8FBZ9RvpFZklii/zuyibSRvpQal/2H3mAWz3saf4khokhm7iQ90YOd
+         +LjtvO9NpZWxUQ2cT3utaS8g+NsvTi5bo4w5qnzBU/gl6AEXbry2rozWqKdfP+aFCv6h
+         QyEUr2mjB1HQ1oQo2EgzlqFDVVnxFvwEi2EV0KuGcDcnjBLeP1g16EUxkkHkpCcTzqsK
+         W/JCAkO1JqLaB5yooaweKjA29Ur82e1TUkI4BfHS53o0Et0PqqtssCMXCDwNmzkqQGlD
+         jY4Euf07A2dIdZGbM8bt6035V/eoxsdNPsDixNm1+BqIwAzbxg4prP2mPBOyqXF9lCkp
+         /g6g==
+X-Gm-Message-State: AOAM5324tOH6VhoW5eUqcHttK5Q4XOKhO9sSC458f0nTmjZXMky0uQEg
+        kYDEZChyRmE+yACOUcKUuNE=
+X-Google-Smtp-Source: ABdhPJzWaOd2sknJ9j5JUkm5lcBO4eMDAc7cowTsH3kT1PCL9n5ltjT8yIryRAP8o9YCu2e4dm9AkA==
+X-Received: by 2002:a17:907:4d0:b0:6e8:6ff4:c78a with SMTP id vz16-20020a17090704d000b006e86ff4c78amr19306707ejb.28.1650473566282;
+        Wed, 20 Apr 2022 09:52:46 -0700 (PDT)
+Received: from jimi.localdomain ([213.57.189.88])
+        by smtp.gmail.com with ESMTPSA id eg12-20020a056402288c00b0041fb0f2e155sm10224232edb.20.2022.04.20.09.52.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Apr 2022 09:52:45 -0700 (PDT)
+From:   Eyal Birger <eyal.birger@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, mkl@pengutronix.de,
+        tgraf@suug.ch, shmulik.ladkani@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH bpf] lwt_bpf: fix crash when using bpf_skb_set_tunnel_key() from bpf_xmit lwt hook
+Date:   Wed, 20 Apr 2022 19:52:19 +0300
+Message-Id: <20220420165219.1755407-1-eyal.birger@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211201181040.23337-1-alexei.starovoitov@gmail.com>
- <20211201181040.23337-6-alexei.starovoitov@gmail.com> <87sfq8f0ex.fsf@cloudflare.com>
-In-Reply-To: <87sfq8f0ex.fsf@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Apr 2022 09:50:48 -0700
-Message-ID: <CAEf4BzbT4vQBnZzdD00SuPCDkeb4Cm=F6PLUoO_3X93UQD5hbQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 05/17] bpf: Pass a set of bpf_core_relo-s to
- prog_load command.
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,83 +71,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 4:40 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> Hi Alexei,
->
-> On Wed, Dec 01, 2021 at 10:10 AM -08, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > struct bpf_core_relo is generated by llvm and processed by libbpf.
-> > It's a de-facto uapi.
-> > With CO-RE in the kernel the struct bpf_core_relo becomes uapi de-jure.
-> > Add an ability to pass a set of 'struct bpf_core_relo' to prog_load command
-> > and let the kernel perform CO-RE relocations.
-> >
-> > Note the struct bpf_line_info and struct bpf_func_info have the same
-> > layout when passed from LLVM to libbpf and from libbpf to the kernel
-> > except "insn_off" fields means "byte offset" when LLVM generates it.
-> > Then libbpf converts it to "insn index" to pass to the kernel.
-> > The struct bpf_core_relo's "insn_off" field is always "byte offset".
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >  include/linux/bpf.h            |  8 ++++
-> >  include/uapi/linux/bpf.h       | 59 +++++++++++++++++++++++++-
-> >  kernel/bpf/btf.c               |  6 +++
-> >  kernel/bpf/syscall.c           |  2 +-
-> >  kernel/bpf/verifier.c          | 76 ++++++++++++++++++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h | 59 +++++++++++++++++++++++++-
-> >  tools/lib/bpf/relo_core.h      | 53 ------------------------
-> >  7 files changed, 207 insertions(+), 56 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index cad0829710be..8bbf08fbab66 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -1732,6 +1732,14 @@ bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
-> >  const struct btf_func_model *
-> >  bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
-> >                        const struct bpf_insn *insn);
-> > +struct bpf_core_ctx {
-> > +     struct bpf_verifier_log *log;
-> > +     const struct btf *btf;
-> > +};
-> > +
-> > +int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
-> > +                int relo_idx, void *insn);
-> > +
-> >  #else /* !CONFIG_BPF_SYSCALL */
-> >  static inline struct bpf_prog *bpf_prog_get(u32 ufd)
-> >  {
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 9e66b1880020..c26871263f1f 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -1342,8 +1342,10 @@ union bpf_attr {
-> >                       /* or valid module BTF object fd or 0 to attach to vmlinux */
-> >                       __u32           attach_btf_obj_fd;
-> >               };
-> > -             __u32           :32;            /* pad */
-> > +             __u32           core_relo_cnt;  /* number of bpf_core_relo */
-> >               __aligned_u64   fd_array;       /* array of FDs */
-> > +             __aligned_u64   core_relos;
-> > +             __u32           core_relo_rec_size; /* sizeof(struct bpf_core_relo) */
-> >       };
-> >
-> >       struct { /* anonymous struct used by BPF_OBJ_* commands */
->
-> I think I've spotted a breakage.
->
-> Plugging the 4 byte hole with core_relo_cnt means that programs built
-> against < v5.17 headers pass garbage as core_relo_cnt value.
->
-> That in turn makes check_core_relo() fail with -EINVAL, which fails
-> PROG_LOAD.
+xmit_check_hhlen() observes the dst for getting the device hard header
+length to make sure a modified packet can fit. When a helper which changes
+the dst - such as bpf_skb_set_tunnel_key() - is called as part of the xmit
+program the accessed dst is no longer valid.
 
-bpf_attr is supposed to be zeroed out with memset(), so that hole
-should have zero even before core_relo_cnt was added
+This leads to the following splat:
 
->
-> [...]
+ BUG: kernel NULL pointer dereference, address: 00000000000000de
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] PREEMPT SMP PTI
+ CPU: 0 PID: 798 Comm: ping Not tainted 5.18.0-rc2+ #103
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+ RIP: 0010:bpf_xmit+0xfb/0x17f
+ Code: c6 c0 4d cd 8e 48 c7 c7 7d 33 f0 8e e8 42 09 fb ff 48 8b 45 58 48 8b 95 c8 00 00 00 48 2b 95 c0 00 00 00 48 83 e0 fe 48 8b 00 <0f> b7 80 de 00 00 00 39 c2 73 22 29 d0 b9 20 0a 00 00 31 d2 48 89
+ RSP: 0018:ffffb148c0bc7b98 EFLAGS: 00010282
+ RAX: 0000000000000000 RBX: 0000000000240008 RCX: 0000000000000000
+ RDX: 0000000000000010 RSI: 00000000ffffffea RDI: 00000000ffffffff
+ RBP: ffff922a828a4e00 R08: ffffffff8f1350e8 R09: 00000000ffffdfff
+ R10: ffffffff8f055100 R11: ffffffff8f105100 R12: 0000000000000000
+ R13: ffff922a828a4e00 R14: 0000000000000040 R15: 0000000000000000
+ FS:  00007f414e8f0080(0000) GS:ffff922afdc00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00000000000000de CR3: 0000000002d80006 CR4: 0000000000370ef0
+ Call Trace:
+  <TASK>
+  lwtunnel_xmit.cold+0x71/0xc8
+  ip_finish_output2+0x279/0x520
+  ? __ip_finish_output.part.0+0x21/0x130
+
+Fix by fetching the device hard header length before running the bpf code.
+
+Cc: stable@vger.kernel.org
+Fixes: commit 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
+Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+---
+ net/core/lwt_bpf.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
+index 349480ef68a5..8b6b5e72b217 100644
+--- a/net/core/lwt_bpf.c
++++ b/net/core/lwt_bpf.c
+@@ -159,10 +159,8 @@ static int bpf_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+ 	return dst->lwtstate->orig_output(net, sk, skb);
+ }
+ 
+-static int xmit_check_hhlen(struct sk_buff *skb)
++static int xmit_check_hhlen(struct sk_buff *skb, int hh_len)
+ {
+-	int hh_len = skb_dst(skb)->dev->hard_header_len;
+-
+ 	if (skb_headroom(skb) < hh_len) {
+ 		int nhead = HH_DATA_ALIGN(hh_len - skb_headroom(skb));
+ 
+@@ -274,6 +272,7 @@ static int bpf_xmit(struct sk_buff *skb)
+ 
+ 	bpf = bpf_lwt_lwtunnel(dst->lwtstate);
+ 	if (bpf->xmit.prog) {
++		int hh_len = dst->dev->hard_header_len;
+ 		__be16 proto = skb->protocol;
+ 		int ret;
+ 
+@@ -291,7 +290,7 @@ static int bpf_xmit(struct sk_buff *skb)
+ 			/* If the header was expanded, headroom might be too
+ 			 * small for L2 header to come, expand as needed.
+ 			 */
+-			ret = xmit_check_hhlen(skb);
++			ret = xmit_check_hhlen(skb, hh_len);
+ 			if (unlikely(ret))
+ 				return ret;
+ 
+-- 
+2.32.0
+
