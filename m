@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766FD509B57
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 10:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF80509BBE
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 11:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387030AbiDUJAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 05:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
+        id S1387278AbiDUJKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 05:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbiDUJAR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 05:00:17 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FE320BE4;
-        Thu, 21 Apr 2022 01:57:29 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id c23so4282423plo.0;
-        Thu, 21 Apr 2022 01:57:28 -0700 (PDT)
+        with ESMTP id S1387266AbiDUJKT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 05:10:19 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F4513F82;
+        Thu, 21 Apr 2022 02:07:30 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id q3so4279284plg.3;
+        Thu, 21 Apr 2022 02:07:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:subject:to:cc:references:in-reply-to:mime-version
          :message-id:content-transfer-encoding;
-        bh=ylxB+Hx++LEIgDce19t2otGtYWyC/YHt80P7LQP09MU=;
-        b=TI7S5wZtKMPdTN+iqX/9T9mPd79QQeOPulqS2EsJogc0+YqvElchYQCQuy0DXbdlNU
-         /EY4iGvqIXVy8t0kZ4PUPcM97/9A31L83tLD+lHukf4bc/VGRsyf9LU8Ka7okYs2c9j2
-         hCbBiCXH9YU6dk0x93oNopfWVenuaNqvyxbG4chsYNGeqLFBfnskg01U/UPrBnDgGAdi
-         SgS8swNpDMKTCk0L9wZmvp39E7j7I6+lAFVD0XQE6ehvWMh4y/hS/1u/dGqvaoFIdjIJ
-         PaJF8VAZHJH4jrqkrkRX4LM7MmIpCYok2MUJV5AEzpqr8JIQgbMg6YTiB3/3zYoZ9Rkf
-         ToEA==
+        bh=Pel2dsTDIe3t8VmyT+t+d8FvIgfC1mdCX7nKYG6+pAU=;
+        b=KE+1uE8GspZJXXd4phb9kpKGBFpu+wjtmQuW/trkeZUN7ovwbbuSZOWD1TViv4mTmA
+         fYUHJU53DQ9FrM9JacJLmdewAPaLgaXJEMY7fECM4Snj/d2SIe2lP9IyeGH3uscJp6VN
+         Jn+7Y4QHlP4czVFWdRMjMGIFJjqX93NAXVZVF6QIfQnRMXiJjDTr6BWu9dhXt1i0ztRG
+         XtcrkCd61b/jbbbFzmLB75Ln+jT4PxtRceQhIflESDHg7dzmHadrcNQ5fkJCY9PvqFgj
+         g0bHiIwIN76nDb7ziCfKGdb1naBLE29U4i0Sc6+5wS88eFQlEQqkr3SWBAFc5jlWWNkP
+         DZew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
          :mime-version:message-id:content-transfer-encoding;
-        bh=ylxB+Hx++LEIgDce19t2otGtYWyC/YHt80P7LQP09MU=;
-        b=kwbTNyRB7Mso3gn8jzEla51n/HNO/Ss+QMQ9DmB6tpuwexqS1oFD0mHgUUkIihkcwn
-         onVKfDgdADn2nqa32oSuJvVK/44qT75wOIkI2h6fs7nmOc+vz4REEpJMWr5qwMb7B6rV
-         dQrGIEn9qD3gsoFYaVPhVG28EsGO2vPB9ONq+Qi/wrHsDf51GqqB2HCkBDd4fonIjFGq
-         3/XyBqG23MRhWwO4o0yga0CdRA4sjpqjnIl9XoNPaHbBVnFP86nVFnlWKWZaZP9j+ALX
-         wym1885/7NMYZzodtFO6bnYh85qRuI38nMC1QXdfWCWD3KlF9meKCDcb6bWADV6gmr0a
-         ArXg==
-X-Gm-Message-State: AOAM530pyaa23Y1mUh7o+s8RMz+5NgRZR86NkV0RwkHl8ldIxe6/1oy6
-        FsKfA2E9eOX9KpKKvBLZmuU=
-X-Google-Smtp-Source: ABdhPJxs1z1Cj8A1dElHpP1eXJVgfrm1cl4dkEe0g7tWz1hxqfq4b2gQ/DG8+jgzKwQTof8D/nex1w==
-X-Received: by 2002:a17:902:9b95:b0:151:533b:9197 with SMTP id y21-20020a1709029b9500b00151533b9197mr24919678plp.66.1650531448442;
-        Thu, 21 Apr 2022 01:57:28 -0700 (PDT)
+        bh=Pel2dsTDIe3t8VmyT+t+d8FvIgfC1mdCX7nKYG6+pAU=;
+        b=1Ic/HtLhi9212xACKiCZpdFnoL4Hy3B5Df7fF5NqyMpCcOIZvOejehB5AkBzXex9Wg
+         trCkF+3ku/OdmhSM7jtsBhZNUuCSPmVEl7A6VAnWK3z9DNr7OWn0oCyc5IxiBPLrtf1H
+         T+L3juja1Anf9l1SyDtX9z/SImZ1lWWNPVU+1yyTx/5xqaVt9WsgVPKGieJVXYUFZuED
+         ePqkrOwDboMEw9hcoImg85eqksbqbx87rgnulLEUjsU7W2veHPwI9Cbgnwy5A3asaADh
+         r95lNC9C2wKHgv1DejWqUAIbslEcbuk8WAQzq4UNlcyW6266tzNPQprYIHQ79VazIe2E
+         qVJA==
+X-Gm-Message-State: AOAM530ya3WmRmSrvdrwQHw1yoLTBaBbwJOodELq3FejMwFOyPjGAPZU
+        8/k2p1nQbAp/jsd+1zsZbRA=
+X-Google-Smtp-Source: ABdhPJxTzOmlLL91c7uscSbJN9RG0yZZMfQvkW/9n5UZt8nUTJpo7WduP18v/O+I0ZB9VNRBIfLAlw==
+X-Received: by 2002:a17:902:bf04:b0:149:c5a5:5323 with SMTP id bi4-20020a170902bf0400b00149c5a55323mr24813906plb.97.1650532049802;
+        Thu, 21 Apr 2022 02:07:29 -0700 (PDT)
 Received: from localhost (193-116-116-20.tpgi.com.au. [193.116.116.20])
-        by smtp.gmail.com with ESMTPSA id u20-20020a056a00159400b0050a946e0548sm9544041pfk.165.2022.04.21.01.57.27
+        by smtp.gmail.com with ESMTPSA id b5-20020a056a0002c500b0050600032179sm22557180pft.130.2022.04.21.02.07.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Apr 2022 01:57:27 -0700 (PDT)
-Date:   Thu, 21 Apr 2022 18:57:22 +1000
+        Thu, 21 Apr 2022 02:07:29 -0700 (PDT)
+Date:   Thu, 21 Apr 2022 19:07:24 +1000
 From:   Nicholas Piggin <npiggin@gmail.com>
 Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
 To:     Linus Torvalds <torvalds@linux-foundation.org>
@@ -81,9 +81,10 @@ References: <20220415164413.2727220-1-song@kernel.org>
         <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
         <1650511496.iys9nxdueb.astroid@bobo.none>
         <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
+        <CAHk-=wjYabTPnKiHgVzeKCaRkQaGVunwPbS+QeVb09Bm=YUEow@mail.gmail.com>
+In-Reply-To: <CAHk-=wjYabTPnKiHgVzeKCaRkQaGVunwPbS+QeVb09Bm=YUEow@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <1650530694.evuxjgtju7.astroid@bobo.none>
+Message-Id: <1650531495.h5u7ntu1jb.astroid@bobo.none>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -96,81 +97,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Excerpts from Linus Torvalds's message of April 21, 2022 3:48 pm:
-> On Wed, Apr 20, 2022 at 8:25 PM Nicholas Piggin <npiggin@gmail.com> wrote=
-:
+Excerpts from Linus Torvalds's message of April 21, 2022 4:02 pm:
+> On Wed, Apr 20, 2022 at 10:48 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 >>
->> Why not just revert fac54e2bfb5b ?
+>> The lagepage thing needs to be opt-in, and needs a lot more care.
 >=20
-> That would be stupid, with no sane way forward.
+> Side note: part of the opt-in really should be about the performance impa=
+ct.
 >=20
-> The fact is, HUGE_VMALLOC was badly misdesigned, and enabling it on
-> x86 only ended up showing the problems.
+> It clearly can be quite noticeable, as outlined by that powerpc case
+> in commit 8abddd968a30 ("powerpc/64s/radix: Enable huge vmalloc
+> mappings"), but it presumably is some _particular_ case that actually
+> matters.
 >=20
-> It wasn't fac54e2bfb5b that was the fundamental issue. It was the
-> whole "oh, we should never have done it that way to begin with".
+> But it's equalyl clearly not the module code/data case, since
+> __module_alloc() explicitly disables largepages on powerpc.
 >=20
-> The whole initial notion that HAVE_ARCH_HUGE_VMALLOC means that there
-> must be no PAGE_SIZE pte assumptions was simply broken.
+> At a guess, it's one or more of the large hash-table allocations.
 
-It didn't have that requirement so much as required it to be
-accounted for if the arch enabled it.
+The changelog is explicit it is the vfs hashes.
 
-> There were
-> actual real cases that had those assumptions, and the whole "let's
-> just change vmalloc behavior by default and then people who don't like
-> it can opt out" was just fundamentally a really bad idea.
->=20
-> Power had that random "oh, we don't want to do this for module_alloc",
-> which you had a comment about "more testing" for.
->=20
-> And s390 had a case of hardware limitations where it didn't work for some=
- cases.
->=20
-> And then enabling it on x86 turned up more issues.
+> And it would actually be interesting to hear *which*one*. From the
+> 'git diff' workload, I'd expect it to be the dentry lookup hash table
+> - I can't think of anything else that would be vmalloc'ed that would
+> be remotely interesting - but who knows.
 
-Those were (AFAIKS) all in arch code though. The patch was the
-fundamental issue for x86 because it had bugs. I don't quite see
-what your objection is to power and s390's working implementations.
-Some parts of the arch code could not cope with hue PTEs so they
-used small.
+I didn't measure dentry/inode separately but it should mostly
+(~entirely?) be the dentry hash, yes.
 
-Switching the API around to expect non-arch code to know whether or
-not it can use huge mappings is much worse. How is=20
-alloc_large_system_hash expected to know whether it may use huge
-pages on any given half-broken arch like x86?
+> So I think the whole "opt in" isn't _purely_ about the "oh, random
+> cases are broken for odd reasons, so let's not enable it by default".
 
-It's the same like we have huge iomap for a long time. No driver
-should be expect to have to understand that.
+The whole concept is totally broken upstream now though. Core code
+absolutely can not mark any allocation as able to use huge pages
+because x86 is in some crazy half-working state. Can we use hugepage
+dentry cache with x86 with hibernation? With BPF? Who knows.
 
-> So yes, commit fac54e2bfb5b _exposed_ things to a much larger
-> audience. But all it just made clear was that your original notion of
-> "let's change behavior and randomly disable it as things turn up" was
-> just broken.
->=20
-> Including "small" details like the fact that apparently
-> VM_FLUSH_RESET_PERMS didn't work correctly any more for this, which
-> caused issues for bpf, and that [PATCH 4/4].
+> I think it would actually be good to literally mark the cases that
+> matter (and have the performance numbers for those cases).
 
-Which is another arch detail.
-
-> And yes, there was a
-> half-arsed comment ("may require extra work") to that effect in the
-> powerpc __module_alloc() function, but it had been left to others to
-> notice separately.
-
-It had a comment in arch/Kconfig about it. Combing through the
-details of every arch is left to others who choose to opt-in though.
-
-> So no. We're not going back to that completely broken model. The
-> lagepage thing needs to be opt-in, and needs a lot more care.
-
-I don't think it should be opt-in at the caller level (at least not
-outside arch/). As I said earlier maybe we end up finding fragmentation
-to be a problem that can't be solved with simple heuristics tweaking
-so we could think about adding something to give size/speed hint
-tradeoff, but as for "can this caller use huge vmap backed memory",
-it should not be something drivers or core code has to think about.
+As per previous comment, not for correctness but possibly to help
+guide some heuristic. I don't see it being too big a deal though,
+a multi-MB vmalloc that can use hugepages probably wants to, quite
+small downside (fragmentation being about the only one, but there
+aren't a vast number of such allocations in the kernel to have
+been noticed as yet).
 
 Thanks,
 Nick
