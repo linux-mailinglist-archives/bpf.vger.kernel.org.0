@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35D85095BC
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 06:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504E35095C1
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 06:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384063AbiDUESY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 00:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
+        id S1346151AbiDUEWt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 00:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350136AbiDUESX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 00:18:23 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876BDFD31
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 21:15:34 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id j17so3841996pfi.9
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 21:15:34 -0700 (PDT)
+        with ESMTP id S1384082AbiDUEWr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 00:22:47 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A10F42
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 21:19:58 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id z5-20020a17090a468500b001d2bc2743c4so4052104pjf.0
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 21:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=1msSjO46qPVerpVzvZPXru6IxOHsnxRpLKDhd5LnKLU=;
-        b=TfimOyaVFuh8jqYdyGeb4jCb3l8/G1ZMsxR4IhsDC11bZQvPo55Fc1AX6xAM0IjSFN
-         C/VF/gL0CisuUUbmHdcmw+RDVzAtTAHYnS/RycslX1wim7SXlTqsigImsnxm6FDxPkzk
-         PV1j7jM5Pc2evkhOAbBEf530XjdainXBn8uwuKp1g6PZ1c/L/ZXl1vXKjGeQbviEsf5p
-         ezoVAOYB6sZrXZb24ObIWgeFv2/TQjsXS0bwJwbdg5oiDAL6H7PyPXCJsXH+Lm2lho7V
-         d9qge/tzQ+XrVZ9CJ3O367389AHucWMvECO42aXjDYUGHUQVDNBdg+ggz/67ZsVk5w3m
-         ZBHQ==
+        bh=ERLjsjn0xG/4FeFs5RZcEmB/w6M/ON/DUIgXrXiLd2Q=;
+        b=KGyDjfI5x5hocUXyMwmsV2prk2DRi4UNgiIj/2pw9MK6o5ZoyWxVtOW7d8mBoyPGGB
+         Z0yW/YIhPwBJlpMz/ozylTk1hAnFDqbV/oXvSRR0HrD2ybOfk6WcCW3gKK9/3BH7/qYb
+         apMbEcXTFzG9yruwXnVyENYAtAFgMf5od2rtt1uK460GTxxw+melVivDVttrdhmvP+jW
+         LyNMiC9IKRr2wOlodoEOa5qe1xZJ0FSfF1X4AMQKkgQjqKqApzKBtL6R4kMV96sxr2xn
+         NxJR7MVLVun1pp3C+ZEjv4GqmjIq7UHKU/q7zLN6RtkTxC/BLVemeOavBiAzRgWDrQpa
+         Bmfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1msSjO46qPVerpVzvZPXru6IxOHsnxRpLKDhd5LnKLU=;
-        b=cSlZKd1NgaauDCMl5ZLWHznkWLpehwDe2lmM5gUYyi0+EQ7ehatLUnTMQA80znK8Ro
-         Oy26RiH2gSSlEqNAVOoYrFXbH+lt3VdLPaHGDL5swBgor/S8ZwyRaRp9MjfdQAIqGx8V
-         ZhGhWfBRmCUSpQjwbqUebHXalEEkpnOWtq3neKqMpVGyDg9LWyI1SsI5f4/jnrdrkXZv
-         2TGFh9/yPfBPmfjqaZ+oDa/KxoB1YeB9Uap393b4xel9LbrBOVk7CHwtiU99njjnLczi
-         vrBmrNLDXXTTmMi6qVoOky1tFyiLtyC2Yffg53DFtjSPmetAq6mf4RtpKZ/gmO3gpYZo
-         6yCQ==
-X-Gm-Message-State: AOAM5316v9H04hQhRS9J4QuILpZ3GM6fj7yplzRCJAx3JrfZ3l2k6HhV
-        VyXPQpfPpI7xUE4hSL6XGPQ=
-X-Google-Smtp-Source: ABdhPJz/+3fQlXi/DN5NBrJ6/N6GdXmBsUCihhqn2SpvQ5RHSFTwl9kuc9GF6BBVXMyWLFbWzzUxNg==
-X-Received: by 2002:a63:2a45:0:b0:3a9:f71e:a63d with SMTP id q66-20020a632a45000000b003a9f71ea63dmr16590833pgq.69.1650514532194;
-        Wed, 20 Apr 2022 21:15:32 -0700 (PDT)
+        bh=ERLjsjn0xG/4FeFs5RZcEmB/w6M/ON/DUIgXrXiLd2Q=;
+        b=Ic9s9F6ANZ9ET+Aqtr3+v/adEht1PDQKe1AcEPObm5SD4cKZRrLjXY/kqNzSQrsotW
+         3gEuHBuMd0u2KBPeOlfU8MBFgzjy9mtTHLACyPYGYOcBLsPBr2hhhDVhklz6KNJgA92+
+         NnPqS6Un+H4cebTuE2I6HYhSmtzcenh8VKJZlXqzj0ybOn5nKYMz5EDcxABLE6rmH25k
+         UUb1q6Jp74DqLX4mbuWmYe/vv2kyaY5G8h71zEkIMFlQ1iW+xYvGj0JmXT0fKr6PhaZh
+         gymUu5XMhDdOA4S4iIND5XjvgsCbqtMDsy1igHuWTgSPVPZhrQmmnAL4kShEysG1VtxQ
+         Smhg==
+X-Gm-Message-State: AOAM532tjimlaE9ecmN6uDaVOSY2nt7U0IDCJ0D/euQDLN0+T2odVX25
+        3vXZ3wiRy+dlRocXNbrErSAM4Uj22lI=
+X-Google-Smtp-Source: ABdhPJyNXUwa7onBL5FVbn6QmNJJ0sPMV22myQFPQzFFkjqdgpZlYsLr+k2Im+LdU7N7efwStAJflg==
+X-Received: by 2002:a17:902:8f94:b0:14f:d9b3:52c2 with SMTP id z20-20020a1709028f9400b0014fd9b352c2mr23178673plo.103.1650514797404;
+        Wed, 20 Apr 2022 21:19:57 -0700 (PDT)
 Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::5:4399])
-        by smtp.gmail.com with ESMTPSA id w22-20020a056a0014d600b0050a97172c4fsm8854487pfu.67.2022.04.20.21.15.30
+        by smtp.gmail.com with ESMTPSA id t6-20020a056a00138600b0050a822d0e5bsm12196598pfg.37.2022.04.20.21.19.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 21:15:31 -0700 (PDT)
-Date:   Wed, 20 Apr 2022 21:15:28 -0700
+        Wed, 20 Apr 2022 21:19:56 -0700 (PDT)
+Date:   Wed, 20 Apr 2022 21:19:54 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -56,15 +56,15 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v5 03/13] bpf: Allow storing unreferenced kptr
- in map
-Message-ID: <20220421041528.eez5euhgsm5dvjwz@MBP-98dd607d3435.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v5 04/13] bpf: Tag argument to be released in
+ bpf_func_proto
+Message-ID: <20220421041954.3hdxqu7zcxfhiecs@MBP-98dd607d3435.dhcp.thefacebook.com>
 References: <20220415160354.1050687-1-memxor@gmail.com>
- <20220415160354.1050687-4-memxor@gmail.com>
+ <20220415160354.1050687-5-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220415160354.1050687-4-memxor@gmail.com>
+In-Reply-To: <20220415160354.1050687-5-memxor@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,361 +75,370 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 15, 2022 at 09:33:44PM +0530, Kumar Kartikeya Dwivedi wrote:
-> +struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
-> +					  const struct btf_type *t)
-> +{
-> +	struct btf_field_info info_arr[BPF_MAP_VALUE_OFF_MAX];
-> +	struct bpf_map_value_off *tab;
-> +	int ret, i, nr_off;
-> +
-> +	/* Revisit stack usage when bumping BPF_MAP_VALUE_OFF_MAX */
-> +	BUILD_BUG_ON(BPF_MAP_VALUE_OFF_MAX != 8);
-
-Pls drop this line and comment. It's establishing a false sense of safety
-that this is the place to worry about when enum is changing.
-Any time an enum or #define is changed all code that uses it has to be audited.
-This stack increase is a minor concern comparing to all other side effects
-the increase of BPF_MAP_VALUE_OFF_MAX would do.
-
-> +
-> +	ret = btf_find_field(btf, t, BTF_FIELD_KPTR, info_arr, ARRAY_SIZE(info_arr));
-> +	if (ret < 0)
-> +		return ERR_PTR(ret);
-> +	if (!ret)
-> +		return NULL;
-> +
-> +	nr_off = ret;
-> +	tab = kzalloc(offsetof(struct bpf_map_value_off, off[nr_off]), GFP_KERNEL | __GFP_NOWARN);
-> +	if (!tab)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	for (i = 0; i < nr_off; i++) {
-> +		const struct btf_type *t;
-> +		struct btf *off_btf;
-
-off_btf is an odd name here. Call it kernel_btf ?
-
-> +		s32 id;
-> +
-> +		t = btf_type_by_id(btf, info_arr[i].type_id);
-
-pls add a comment here to make it clear that above 'btf' is a prog's btf
-and below search is trying to find it in kernel or module btf-s.
-
-> +		id = bpf_find_btf_id(__btf_name_by_offset(btf, t->name_off), BTF_INFO_KIND(t->info),
-> +				     &off_btf);
-> +		if (id < 0) {
-> +			ret = id;
-> +			goto end;
-> +		}
-> +
-> +		tab->off[i].offset = info_arr[i].off;
-> +		tab->off[i].kptr.btf_id = id;
-> +		tab->off[i].kptr.btf = off_btf;
-> +	}
-> +	tab->nr_off = nr_off;
-> +	return tab;
-> +end:
-> +	while (i--)
-> +		btf_put(tab->off[i].kptr.btf);
-> +	kfree(tab);
-> +	return ERR_PTR(ret);
-> +}
-> +
->  static void __btf_struct_show(const struct btf *btf, const struct btf_type *t,
->  			      u32 type_id, void *data, u8 bits_offset,
->  			      struct btf_show *show)
-> diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-> index 5cd8f5277279..135205d0d560 100644
-> --- a/kernel/bpf/map_in_map.c
-> +++ b/kernel/bpf/map_in_map.c
-> @@ -52,6 +52,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
->  	inner_map_meta->max_entries = inner_map->max_entries;
->  	inner_map_meta->spin_lock_off = inner_map->spin_lock_off;
->  	inner_map_meta->timer_off = inner_map->timer_off;
-> +	inner_map_meta->kptr_off_tab = bpf_map_copy_kptr_off_tab(inner_map);
->  	if (inner_map->btf) {
->  		btf_get(inner_map->btf);
->  		inner_map_meta->btf = inner_map->btf;
-> @@ -71,6 +72,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+On Fri, Apr 15, 2022 at 09:33:45PM +0530, Kumar Kartikeya Dwivedi wrote:
+> Add a new type flag for bpf_arg_type that when set tells verifier that
+> for a release function, that argument's register will be the one for
+> which meta.ref_obj_id will be set, and which will then be released
+> using release_reference. To capture the regno, introduce a new field
+> release_regno in bpf_call_arg_meta.
+> 
+> This would be required in the next patch, where we may either pass NULL
+> or a refcounted pointer as an argument to the release function
+> bpf_kptr_xchg. Just releasing only when meta.ref_obj_id is set is not
+> enough, as there is a case where the type of argument needed matches,
+> but the ref_obj_id is set to 0. Hence, we must enforce that whenever
+> meta.ref_obj_id is zero, the register that is to be released can only
+> be NULL for a release function.
+> 
+> Since we now indicate whether an argument is to be released in
+> bpf_func_proto itself, is_release_function helper has lost its utitlity,
+> hence refactor code to work without it, and just rely on
+> meta.release_regno to know when to release state for a ref_obj_id.
+> Still, the restriction of one release argument and only one ref_obj_id
+> passed to BPF helper or kfunc remains. This may be lifted in the future.
+> 
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h                           |  5 +-
+>  include/linux/bpf_verifier.h                  |  3 +-
+>  kernel/bpf/btf.c                              |  9 ++-
+>  kernel/bpf/ringbuf.c                          |  4 +-
+>  kernel/bpf/verifier.c                         | 76 +++++++++++--------
+>  net/core/filter.c                             |  2 +-
+>  .../selftests/bpf/verifier/ref_tracking.c     |  2 +-
+>  tools/testing/selftests/bpf/verifier/sock.c   |  6 +-
+>  8 files changed, 60 insertions(+), 47 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index ab86f4675db2..f73a3f10e654 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -366,7 +366,10 @@ enum bpf_type_flag {
+>  	 */
+>  	MEM_PERCPU		= BIT(4 + BPF_BASE_TYPE_BITS),
 >  
->  void bpf_map_meta_free(struct bpf_map *map_meta)
->  {
-> +	bpf_map_free_kptr_off_tab(map_meta);
->  	btf_put(map_meta->btf);
->  	kfree(map_meta);
->  }
-> @@ -83,7 +85,8 @@ bool bpf_map_meta_equal(const struct bpf_map *meta0,
->  		meta0->key_size == meta1->key_size &&
->  		meta0->value_size == meta1->value_size &&
->  		meta0->timer_off == meta1->timer_off &&
-> -		meta0->map_flags == meta1->map_flags;
-> +		meta0->map_flags == meta1->map_flags &&
-> +		bpf_map_equal_kptr_off_tab(meta0, meta1);
->  }
->  
->  void *bpf_map_fd_get_ptr(struct bpf_map *map,
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index e9621cfa09f2..fba49f390ed5 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -6,6 +6,7 @@
->  #include <linux/bpf_trace.h>
->  #include <linux/bpf_lirc.h>
->  #include <linux/bpf_verifier.h>
-> +#include <linux/bsearch.h>
->  #include <linux/btf.h>
->  #include <linux/syscalls.h>
->  #include <linux/slab.h>
-> @@ -473,12 +474,94 @@ static void bpf_map_release_memcg(struct bpf_map *map)
->  }
->  #endif
->  
-> +static int bpf_map_kptr_off_cmp(const void *a, const void *b)
-> +{
-> +	const struct bpf_map_value_off_desc *off_desc1 = a, *off_desc2 = b;
-> +
-> +	if (off_desc1->offset < off_desc2->offset)
-> +		return -1;
-> +	else if (off_desc1->offset > off_desc2->offset)
-> +		return 1;
-> +	return 0;
-> +}
-> +
-> +struct bpf_map_value_off_desc *bpf_map_kptr_off_contains(struct bpf_map *map, u32 offset)
-> +{
-> +	/* Since members are iterated in btf_find_field in increasing order,
-> +	 * offsets appended to kptr_off_tab are in increasing order, so we can
-> +	 * do bsearch to find exact match.
-> +	 */
-> +	struct bpf_map_value_off *tab;
-> +
-> +	if (!map_value_has_kptrs(map))
-> +		return NULL;
-> +	tab = map->kptr_off_tab;
-> +	return bsearch(&offset, tab->off, tab->nr_off, sizeof(tab->off[0]), bpf_map_kptr_off_cmp);
-> +}
-> +
-> +void bpf_map_free_kptr_off_tab(struct bpf_map *map)
-> +{
-> +	struct bpf_map_value_off *tab = map->kptr_off_tab;
-> +	int i;
-> +
-> +	if (!map_value_has_kptrs(map))
-> +		return;
-> +	for (i = 0; i < tab->nr_off; i++) {
-> +		struct btf *btf = tab->off[i].kptr.btf;
-> +
-> +		btf_put(btf);
+> -	__BPF_TYPE_LAST_FLAG	= MEM_PERCPU,
+> +	/* Indicates that the pointer argument will be released. */
+> +	PTR_RELEASE		= BIT(5 + BPF_BASE_TYPE_BITS),
 
-why not to do: btf_put(tab->off[i].kptr.btf);
+I think OBJ_RELEASE as Joanne did it in her patch is a better name.
 
-> +	}
-> +	kfree(tab);
-> +	map->kptr_off_tab = NULL;
-> +}
-> +
-> +struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map)
-> +{
-> +	struct bpf_map_value_off *tab = map->kptr_off_tab, *new_tab;
-> +	int size, i, ret;
-> +
-> +	if (!map_value_has_kptrs(map))
-> +		return ERR_PTR(-ENOENT);
-> +	/* Do a deep copy of the kptr_off_tab */
-> +	for (i = 0; i < tab->nr_off; i++)
-> +		btf_get(tab->off[i].kptr.btf);
-> +
-> +	size = offsetof(struct bpf_map_value_off, off[tab->nr_off]);
-> +	new_tab = kmemdup(tab, size, GFP_KERNEL | __GFP_NOWARN);
-> +	if (!new_tab) {
-> +		ret = -ENOMEM;
-> +		goto end;
-> +	}
-> +	return new_tab;
-> +end:
-> +	while (i--)
-> +		btf_put(tab->off[i].kptr.btf);
+"pointer release" is not quite correct.
+It's an object that pointer is pointing to will be released.
 
-Why do this get/put dance?
-Isn't it equivalent to do kmemdup first and then for() btf_get?
-kptr_off_tab is not going away and btfs are not going away either.
-There is no race.
+> +
+> +	__BPF_TYPE_LAST_FLAG	= PTR_RELEASE,
+>  };
+>  
+>  /* Max number of base types. */
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 3a9d2d7cc6b7..1f1e7f2ea967 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -523,8 +523,7 @@ int check_ptr_off_reg(struct bpf_verifier_env *env,
+>  		      const struct bpf_reg_state *reg, int regno);
+>  int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>  			   const struct bpf_reg_state *reg, int regno,
+> -			   enum bpf_arg_type arg_type,
+> -			   bool is_release_func);
+> +			   enum bpf_arg_type arg_type);
+>  int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+>  			     u32 regno);
+>  int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index be191df76ea4..7227a77a02f7 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -5993,6 +5993,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>  	 * verifier sees.
+>  	 */
+>  	for (i = 0; i < nargs; i++) {
+> +		enum bpf_arg_type arg_type = ARG_DONTCARE;
+>  		u32 regno = i + 1;
+>  		struct bpf_reg_state *reg = &regs[regno];
+>  
+> @@ -6013,7 +6014,9 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>  		ref_t = btf_type_skip_modifiers(btf, t->type, &ref_id);
+>  		ref_tname = btf_name_by_offset(btf, ref_t->name_off);
+>  
+> -		ret = check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE, rel);
+> +		if (rel && reg->ref_obj_id)
+> +			arg_type |= PTR_RELEASE;
 
-> +	return ERR_PTR(ret);
-> +}
-> +
-> +bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b)
-> +{
-> +	struct bpf_map_value_off *tab_a = map_a->kptr_off_tab, *tab_b = map_b->kptr_off_tab;
-> +	bool a_has_kptr = map_value_has_kptrs(map_a), b_has_kptr = map_value_has_kptrs(map_b);
-> +	int size;
-> +
-> +	if (!a_has_kptr && !b_has_kptr)
-> +		return true;
-> +	if (a_has_kptr != b_has_kptr)
-> +		return false;
-> +	if (tab_a->nr_off != tab_b->nr_off)
-> +		return false;
-> +	size = offsetof(struct bpf_map_value_off, off[tab_a->nr_off]);
-> +	return !memcmp(tab_a, tab_b, size);
-> +}
-> +
->  /* called from workqueue */
->  static void bpf_map_free_deferred(struct work_struct *work)
->  {
->  	struct bpf_map *map = container_of(work, struct bpf_map, work);
+Don't get it. Why ?
+
+> +		ret = check_func_arg_reg_off(env, reg, regno, arg_type);
+>  		if (ret < 0)
+>  			return ret;
 >  
->  	security_bpf_map_free(map);
-> +	bpf_map_free_kptr_off_tab(map);
->  	bpf_map_release_memcg(map);
->  	/* implementation dependent freeing */
->  	map->ops->map_free(map);
-> @@ -640,7 +723,7 @@ static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
->  	int err;
+> @@ -6046,9 +6049,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>  				reg_btf = reg->btf;
+>  				reg_ref_id = reg->btf_id;
+>  				/* Ensure only one argument is referenced
+> -				 * PTR_TO_BTF_ID, check_func_arg_reg_off relies
+> -				 * on only one referenced register being allowed
+> -				 * for kfuncs.
+> +				 * PTR_TO_BTF_ID.
+
+/* Ensure only one argument is referenced PTR_TO_BTF_ID.
+
+>  				 */
+>  				if (reg->ref_obj_id) {
+>  					if (ref_obj_id) {
+> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> index 710ba9de12ce..a22c21c0a7ef 100644
+> --- a/kernel/bpf/ringbuf.c
+> +++ b/kernel/bpf/ringbuf.c
+> @@ -404,7 +404,7 @@ BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
+>  const struct bpf_func_proto bpf_ringbuf_submit_proto = {
+>  	.func		= bpf_ringbuf_submit,
+>  	.ret_type	= RET_VOID,
+> -	.arg1_type	= ARG_PTR_TO_ALLOC_MEM,
+> +	.arg1_type	= ARG_PTR_TO_ALLOC_MEM | PTR_RELEASE,
+>  	.arg2_type	= ARG_ANYTHING,
+>  };
 >  
->  	if (!map->ops->map_mmap || map_value_has_spin_lock(map) ||
-> -	    map_value_has_timer(map))
-> +	    map_value_has_timer(map) || map_value_has_kptrs(map))
->  		return -ENOTSUPP;
+> @@ -417,7 +417,7 @@ BPF_CALL_2(bpf_ringbuf_discard, void *, sample, u64, flags)
+>  const struct bpf_func_proto bpf_ringbuf_discard_proto = {
+>  	.func		= bpf_ringbuf_discard,
+>  	.ret_type	= RET_VOID,
+> -	.arg1_type	= ARG_PTR_TO_ALLOC_MEM,
+> +	.arg1_type	= ARG_PTR_TO_ALLOC_MEM | PTR_RELEASE,
+>  	.arg2_type	= ARG_ANYTHING,
+>  };
 >  
->  	if (!(vma->vm_flags & VM_SHARED))
-> @@ -820,9 +903,33 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
->  			return -EOPNOTSUPP;
->  	}
->  
-> -	if (map->ops->map_check_btf)
-> +	map->kptr_off_tab = btf_parse_kptrs(btf, value_type);
-> +	if (map_value_has_kptrs(map)) {
-> +		if (!bpf_capable()) {
-> +			ret = -EPERM;
-> +			goto free_map_tab;
-> +		}
-> +		if (map->map_flags & (BPF_F_RDONLY_PROG | BPF_F_WRONLY_PROG)) {
-> +			ret = -EACCES;
-> +			goto free_map_tab;
-> +		}
-> +		if (map->map_type != BPF_MAP_TYPE_HASH &&
-> +		    map->map_type != BPF_MAP_TYPE_LRU_HASH &&
-> +		    map->map_type != BPF_MAP_TYPE_ARRAY) {
-> +			ret = -EOPNOTSUPP;
-> +			goto free_map_tab;
-> +		}
-> +	}
-> +
-> +	if (map->ops->map_check_btf) {
->  		ret = map->ops->map_check_btf(map, btf, key_type, value_type);
-> +		if (ret < 0)
-> +			goto free_map_tab;
-> +	}
->  
-> +	return ret;
-> +free_map_tab:
-> +	bpf_map_free_kptr_off_tab(map);
->  	return ret;
->  }
->  
-> @@ -1639,7 +1746,7 @@ static int map_freeze(const union bpf_attr *attr)
->  		return PTR_ERR(map);
->  
->  	if (map->map_type == BPF_MAP_TYPE_STRUCT_OPS ||
-> -	    map_value_has_timer(map)) {
-> +	    map_value_has_timer(map) || map_value_has_kptrs(map)) {
->  		fdput(f);
->  		return -ENOTSUPP;
->  	}
 > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 71827d14724a..c802e51c4e18 100644
+> index c802e51c4e18..97f88d06f848 100644
 > --- a/kernel/bpf/verifier.c
 > +++ b/kernel/bpf/verifier.c
-> @@ -3211,7 +3211,7 @@ static int check_stack_read_fixed_off(struct bpf_verifier_env *env,
->  	return 0;
+> @@ -245,6 +245,7 @@ struct bpf_call_arg_meta {
+>  	struct bpf_map *map_ptr;
+>  	bool raw_mode;
+>  	bool pkt_access;
+> +	u8 release_regno;
+>  	int regno;
+
+release_regno and regno are always equal.
+Why go with u8 instead of bool flag?
+
+>  	int access_size;
+>  	int mem_size;
+> @@ -471,17 +472,6 @@ static bool type_may_be_null(u32 type)
+>  	return type & PTR_MAYBE_NULL;
 >  }
 >  
-> -enum stack_access_src {
-> +enum bpf_access_src {
->  	ACCESS_DIRECT = 1,  /* the access is performed by an instruction */
->  	ACCESS_HELPER = 2,  /* the access is performed by a helper */
->  };
-> @@ -3219,7 +3219,7 @@ enum stack_access_src {
->  static int check_stack_range_initialized(struct bpf_verifier_env *env,
->  					 int regno, int off, int access_size,
->  					 bool zero_size_allowed,
-> -					 enum stack_access_src type,
-> +					 enum bpf_access_src type,
->  					 struct bpf_call_arg_meta *meta);
->  
->  static struct bpf_reg_state *reg_state(struct bpf_verifier_env *env, int regno)
-> @@ -3507,9 +3507,87 @@ int check_ptr_off_reg(struct bpf_verifier_env *env,
->  	return __check_ptr_off_reg(env, reg, regno, false);
+> -/* Determine whether the function releases some resources allocated by another
+> - * function call. The first reference type argument will be assumed to be
+> - * released by release_reference().
+> - */
+> -static bool is_release_function(enum bpf_func_id func_id)
+> -{
+> -	return func_id == BPF_FUNC_sk_release ||
+> -	       func_id == BPF_FUNC_ringbuf_submit ||
+> -	       func_id == BPF_FUNC_ringbuf_discard;
+> -}
+> -
+>  static bool may_be_acquire_function(enum bpf_func_id func_id)
+>  {
+>  	return func_id == BPF_FUNC_sk_lookup_tcp ||
+> @@ -5304,6 +5294,11 @@ static bool arg_type_is_int_ptr(enum bpf_arg_type type)
+>  	       type == ARG_PTR_TO_LONG;
 >  }
 >  
-> +static int map_kptr_match_type(struct bpf_verifier_env *env,
-> +			       struct bpf_map_value_off_desc *off_desc,
-> +			       struct bpf_reg_state *reg, u32 regno)
+> +static bool arg_type_is_release_ptr(enum bpf_arg_type type)
+
+arg_type_is_relase() ?
+
 > +{
-> +	const char *targ_name = kernel_type_name(off_desc->kptr.btf, off_desc->kptr.btf_id);
-> +	const char *reg_name = "";
-> +
-> +	if (base_type(reg->type) != PTR_TO_BTF_ID || type_flag(reg->type) != PTR_MAYBE_NULL)
-> +		goto bad_type;
-> +
-> +	if (!btf_is_kernel(reg->btf)) {
-> +		verbose(env, "R%d must point to kernel BTF\n", regno);
-> +		return -EINVAL;
-> +	}
-> +	/* We need to verify reg->type and reg->btf, before accessing reg->btf */
-> +	reg_name = kernel_type_name(reg->btf, reg->btf_id);
-> +
-> +	if (__check_ptr_off_reg(env, reg, regno, true))
-> +		return -EACCES;
-> +
-> +	if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
-> +				  off_desc->kptr.btf, off_desc->kptr.btf_id))
-> +		goto bad_type;
-
-Is full type comparison really needed?
-reg->btf should be the same pointer as off_desc->kptr.btf
-and btf_id should match exactly.
-Is this a feature proofing for some day when registers with PTR_TO_BTF_ID type
-will start pointing to prog's btf?
-
-> +	return 0;
-> +bad_type:
-> +	verbose(env, "invalid kptr access, R%d type=%s%s ", regno,
-> +		reg_type_str(env, reg->type), reg_name);
-> +	verbose(env, "expected=%s%s\n", reg_type_str(env, PTR_TO_BTF_ID), targ_name);
-> +	return -EINVAL;
+> +	return type & PTR_RELEASE;
 > +}
 > +
-> +static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno,
-> +				 int value_regno, int insn_idx,
-> +				 struct bpf_map_value_off_desc *off_desc)
-> +{
-> +	struct bpf_insn *insn = &env->prog->insnsi[insn_idx];
-> +	int class = BPF_CLASS(insn->code);
-> +	struct bpf_reg_state *val_reg;
-> +
-> +	/* Things we already checked for in check_map_access and caller:
-> +	 *  - Reject cases where variable offset may touch kptr
-> +	 *  - size of access (must be BPF_DW)
-> +	 *  - tnum_is_const(reg->var_off)
-> +	 *  - off_desc->offset == off + reg->var_off.value
-> +	 */
-> +	/* Only BPF_[LDX,STX,ST] | BPF_MEM | BPF_DW is supported */
-> +	if (BPF_MODE(insn->code) != BPF_MEM) {
-> +		verbose(env, "kptr in map can only be accessed using BPF_MEM instruction mode\n");
-> +		return -EACCES;
+>  static int int_ptr_type_to_size(enum bpf_arg_type type)
+>  {
+>  	if (type == ARG_PTR_TO_INT)
+> @@ -5514,11 +5509,10 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+>  
+>  int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>  			   const struct bpf_reg_state *reg, int regno,
+> -			   enum bpf_arg_type arg_type,
+> -			   bool is_release_func)
+> +			   enum bpf_arg_type arg_type)
+>  {
+> -	bool fixed_off_ok = false, release_reg;
+>  	enum bpf_reg_type type = reg->type;
+> +	bool fixed_off_ok = false;
+>  
+>  	switch ((u32)type) {
+>  	case SCALAR_VALUE:
+> @@ -5536,7 +5530,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>  		/* Some of the argument types nevertheless require a
+>  		 * zero register offset.
+>  		 */
+> -		if (arg_type != ARG_PTR_TO_ALLOC_MEM)
+> +		if (base_type(arg_type) != ARG_PTR_TO_ALLOC_MEM)
+>  			return 0;
+>  		break;
+>  	/* All the rest must be rejected, except PTR_TO_BTF_ID which allows
+> @@ -5544,19 +5538,17 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+>  	 */
+>  	case PTR_TO_BTF_ID:
+>  		/* When referenced PTR_TO_BTF_ID is passed to release function,
+> -		 * it's fixed offset must be 0. We rely on the property that
+> -		 * only one referenced register can be passed to BPF helpers and
+> -		 * kfuncs. In the other cases, fixed offset can be non-zero.
+> +		 * it's fixed offset must be 0.	In the other cases, fixed offset
+> +		 * can be non-zero.
+>  		 */
+> -		release_reg = is_release_func && reg->ref_obj_id;
+> -		if (release_reg && reg->off) {
+> +		if (arg_type_is_release_ptr(arg_type) && reg->off) {
+>  			verbose(env, "R%d must have zero offset when passed to release func\n",
+>  				regno);
+>  			return -EINVAL;
+>  		}
+> -		/* For release_reg == true, fixed_off_ok must be false, but we
+> -		 * already checked and rejected reg->off != 0 above, so set to
+> -		 * true to allow fixed offset for all other cases.
+> +		/* For arg is release pointer, fixed_off_ok must be false, but
+> +		 * we already checked and rejected reg->off != 0 above, so set
+> +		 * to true to allow fixed offset for all other cases.
+>  		 */
+>  		fixed_off_ok = true;
+>  		break;
+> @@ -5615,14 +5607,24 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  	if (err)
+>  		return err;
+>  
+> -	err = check_func_arg_reg_off(env, reg, regno, arg_type, is_release_function(meta->func_id));
+> +	err = check_func_arg_reg_off(env, reg, regno, arg_type);
+>  	if (err)
+>  		return err;
+>  
+>  skip_type_check:
+> -	/* check_func_arg_reg_off relies on only one referenced register being
+> -	 * allowed for BPF helpers.
+> -	 */
+> +	if (arg_type_is_release_ptr(arg_type)) {
+> +		if (!reg->ref_obj_id && !register_is_null(reg)) {
+> +			verbose(env, "R%d must be referenced when passed to release function\n",
+> +				regno);
+> +			return -EINVAL;
+> +		}
+> +		if (meta->release_regno) {
+> +			verbose(env, "verifier internal error: more than one release argument\n");
+> +			return -EFAULT;
+> +		}
+> +		meta->release_regno = regno;
 > +	}
 > +
-> +	if (class == BPF_LDX) {
-> +		val_reg = reg_state(env, value_regno);
-> +		/* We can simply mark the value_regno receiving the pointer
-> +		 * value from map as PTR_TO_BTF_ID, with the correct type.
+>  	if (reg->ref_obj_id) {
+>  		if (meta->ref_obj_id) {
+>  			verbose(env, "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
+> @@ -6129,7 +6131,8 @@ static bool check_btf_id_ok(const struct bpf_func_proto *fn)
+>  	return true;
+>  }
+>  
+> -static int check_func_proto(const struct bpf_func_proto *fn, int func_id)
+> +static int check_func_proto(const struct bpf_func_proto *fn, int func_id,
+> +			    struct bpf_call_arg_meta *meta)
+>  {
+>  	return check_raw_mode_ok(fn) &&
+>  	       check_arg_pair_ok(fn) &&
+> @@ -6813,7 +6816,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  	memset(&meta, 0, sizeof(meta));
+>  	meta.pkt_access = fn->pkt_access;
+>  
+> -	err = check_func_proto(fn, func_id);
+> +	err = check_func_proto(fn, func_id, &meta);
+>  	if (err) {
+>  		verbose(env, "kernel subsystem misconfigured func %s#%d\n",
+>  			func_id_name(func_id), func_id);
+> @@ -6846,8 +6849,17 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  			return err;
+>  	}
+>  
+> -	if (is_release_function(func_id)) {
+> -		err = release_reference(env, meta.ref_obj_id);
+> +	regs = cur_regs(env);
+> +
+> +	if (meta.release_regno) {
+> +		err = -EINVAL;
+> +		if (meta.ref_obj_id)
+> +			err = release_reference(env, meta.ref_obj_id);
+> +		/* meta.ref_obj_id can only be 0 if register that is meant to be
+> +		 * released is NULL, which must be > R0.
 > +		 */
-> +		mark_btf_ld_reg(env, cur_regs(env), value_regno, PTR_TO_BTF_ID, off_desc->kptr.btf,
-> +				off_desc->kptr.btf_id, PTR_MAYBE_NULL);
-> +		val_reg->id = ++env->id_gen;
-
-why non zero id this needed?
+> +		else if (register_is_null(&regs[meta.release_regno]))
+> +			err = 0;
+>  		if (err) {
+>  			verbose(env, "func %s#%d reference has not been acquired before\n",
+>  				func_id_name(func_id), func_id);
+> @@ -6855,8 +6867,6 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  		}
+>  	}
+>  
+> -	regs = cur_regs(env);
+> -
+>  	switch (func_id) {
+>  	case BPF_FUNC_tail_call:
+>  		err = check_reference_leak(env);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 143f442a9505..8eb01a997476 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6621,7 +6621,7 @@ static const struct bpf_func_proto bpf_sk_release_proto = {
+>  	.func		= bpf_sk_release,
+>  	.gpl_only	= false,
+>  	.ret_type	= RET_INTEGER,
+> -	.arg1_type	= ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> +	.arg1_type	= ARG_PTR_TO_BTF_ID_SOCK_COMMON | PTR_RELEASE,
+>  };
+>  
+>  BPF_CALL_5(bpf_xdp_sk_lookup_udp, struct xdp_buff *, ctx,
+> diff --git a/tools/testing/selftests/bpf/verifier/ref_tracking.c b/tools/testing/selftests/bpf/verifier/ref_tracking.c
+> index fbd682520e47..57a83d763ec1 100644
+> --- a/tools/testing/selftests/bpf/verifier/ref_tracking.c
+> +++ b/tools/testing/selftests/bpf/verifier/ref_tracking.c
+> @@ -796,7 +796,7 @@
+>  	},
+>  	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>  	.result = REJECT,
+> -	.errstr = "reference has not been acquired before",
+> +	.errstr = "R1 must be referenced when passed to release function",
+>  },
+>  {
+>  	/* !bpf_sk_fullsock(sk) is checked but !bpf_tcp_sock(sk) is not checked */
+> diff --git a/tools/testing/selftests/bpf/verifier/sock.c b/tools/testing/selftests/bpf/verifier/sock.c
+> index 86b24cad27a7..d11d0b28be41 100644
+> --- a/tools/testing/selftests/bpf/verifier/sock.c
+> +++ b/tools/testing/selftests/bpf/verifier/sock.c
+> @@ -417,7 +417,7 @@
+>  	},
+>  	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>  	.result = REJECT,
+> -	.errstr = "reference has not been acquired before",
+> +	.errstr = "R1 must be referenced when passed to release function",
+>  },
+>  {
+>  	"bpf_sk_release(bpf_sk_fullsock(skb->sk))",
+> @@ -436,7 +436,7 @@
+>  	},
+>  	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>  	.result = REJECT,
+> -	.errstr = "reference has not been acquired before",
+> +	.errstr = "R1 must be referenced when passed to release function",
+>  },
+>  {
+>  	"bpf_sk_release(bpf_tcp_sock(skb->sk))",
+> @@ -455,7 +455,7 @@
+>  	},
+>  	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>  	.result = REJECT,
+> -	.errstr = "reference has not been acquired before",
+> +	.errstr = "R1 must be referenced when passed to release function",
+>  },
+>  {
+>  	"sk_storage_get(map, skb->sk, NULL, 0): value == NULL",
+> -- 
+> 2.35.1
+> 
