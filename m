@@ -2,84 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E08509E0F
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 12:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890D5509E64
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 13:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1388577AbiDUKz4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 06:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39274 "EHLO
+        id S1358982AbiDULSf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 07:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388575AbiDUKzx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 06:55:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6099C1572F;
-        Thu, 21 Apr 2022 03:53:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F054161AC7;
-        Thu, 21 Apr 2022 10:53:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C95FC385A7;
-        Thu, 21 Apr 2022 10:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650538383;
-        bh=2qzjAXyKutw+YwkZ6g2dgQ11DWIpE1kmGQoC2zQjJg0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=FlydmZ/lOQzSK/eALsRjEEOKGQXz3T+0ifk4fajVNX3DD4I+/PSFU/ZV7xPhkf84z
-         dWeF19SRGNudGlFdQ/97bIrCYKSJcHhbB+IUWUDhirkJA49V0l2QFOXQ0hhYONT0/x
-         zovyNSJlwJcQEL+OJBcXmvap180ereAJCukV0qzRs6mqRXwd2H4b+AcdHEF5JGrP+W
-         DcLRLzj/jSDX2hKrNXECudeFNxncG58ynpCTTgTx8XKw3k/BEj2c9DOywtl0b3Bgwy
-         8e46ldOBqdwMNKuGofDK9PgVEw1sE9zZhWLJmp0YGE35S5T1amcXNFbwW8cgsnQsfW
-         zfPw2G0SqQ1SA==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id CA5662D1D2D; Thu, 21 Apr 2022 12:52:59 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf 00/11] bpf: random unpopular userspace fixes (32
- bit et al)
-In-Reply-To: <CAADnVQJJiBO5T3dvYaifhu3crmce7CH9b5ioc1u4=Y25SUxVRA@mail.gmail.com>
-References: <20220421003152.339542-1-alobakin@pm.me>
- <CAADnVQJJiBO5T3dvYaifhu3crmce7CH9b5ioc1u4=Y25SUxVRA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 21 Apr 2022 12:52:59 +0200
-Message-ID: <87r15qhfn8.fsf@toke.dk>
+        with ESMTP id S231683AbiDULSd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 07:18:33 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D186C15A20
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 04:15:43 -0700 (PDT)
+Received: from fsav312.sakura.ne.jp (fsav312.sakura.ne.jp [153.120.85.143])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 23LBFIZx057604;
+        Thu, 21 Apr 2022 20:15:19 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav312.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp);
+ Thu, 21 Apr 2022 20:15:18 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 23LBFC7R057556
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 21 Apr 2022 20:15:18 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <27376147-9939-e1d6-650d-3c2d9599ec0c@I-love.SAKURA.ne.jp>
+Date:   Thu, 21 Apr 2022 20:15:11 +0900
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: How to disassemble a BPF program?
+Content-Language: en-US
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <4ed4a01e-3d1e-bf1e-803a-608df187bde5@I-love.SAKURA.ne.jp>
+ <909c72b6-83f9-69a0-af80-d9cb3bc2bd0e@I-love.SAKURA.ne.jp>
+ <CAEf4Bzbugg4dy_2J=cFKYYQEJx-irF-cRZvkkwCx4QQwXm5OpA@mail.gmail.com>
+ <e6f25385-c5d0-f56e-27e8-1e2fd2378755@I-love.SAKURA.ne.jp>
+In-Reply-To: <e6f25385-c5d0-f56e-27e8-1e2fd2378755@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On 2022/04/21 16:17, Tetsuo Handa wrote:
+> Also, I tried to find what bpf_skb_load_helper_8_no_cache() is doing
+> but I couldn't find the implementation of ____bpf_skb_load_helper_8().
+> Where is ____bpf_skb_load_helper_8() defined?
+> 
+> ----------------------------------------
+> BPF_CALL_2(bpf_skb_load_helper_8_no_cache, const struct sk_buff *, skb,
+>            int, offset)
+> {
+>         return ____bpf_skb_load_helper_8(skb, skb->data, skb->len - skb->data_len,
+>                                          offset);
+> }
+> ----------------------------------------
+> 
 
-> On Wed, Apr 20, 2022 at 5:38 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> Again?
->
-> -----BEGIN PGP MESSAGE-----
-> Version: ProtonMail
->
-> wcFMA165ASBBe6s8AQ/8C9y4TqXgASA5xBT7UIf2GyTQRjKWcy/6kT1dkjkF
-> FldAOhehhgLYjLJzNAIkecOQfz/XNapW3GdrQDq11pq9Bzs1SJJekGXlHVIW
->
-> Sorry I'm tossing the series out of patchwork.
+Ah, OK. Since BPF_CALL_x macro defines
 
-FWIW I'm not seeing this in the version I pulled from Lore. So maybe
-it's something ProtonMail does on a per-recipient basis? Still really
-weird to do behind the scenes, though... :/
+        static __always_inline                                                 \
+        u64 ____##name(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
 
--Toke
+, BPF_CALL_4(bpf_skb_load_helper_8) will define
+
+	static __always_inline u64 ____bpf_skb_load_helper_8()
+
+for to be called from BPF_CALL_2(bpf_skb_load_helper_8_no_cache).
+
+> I feel that amount of output above is too short for "char program[2053]".
+> How can TCP/IPv6 socket be created from this quite limited operations?
+
+Since bpf_skb_load_helper_8() nothing but reads a byte, I don't think that
+bpf(BPF_PROG_LOAD) / setsockopt(SOL_SOCKET, SO_ATTACH_BPF) can affect this
+use-after-free bug, unless "char program[2053]" is doing something other
+than reading a byte.
