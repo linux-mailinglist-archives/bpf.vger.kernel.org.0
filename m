@@ -2,129 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D6C50A535
+	by mail.lfdr.de (Postfix) with ESMTP id B878350A537
 	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 18:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbiDUQ1W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 12:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
+        id S230447AbiDUQ1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 12:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390508AbiDUQKo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 12:10:44 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18CE4739D;
-        Thu, 21 Apr 2022 09:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650557274; x=1682093274;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KQxlSh7y7Ioxngv76mOQ0Wat/WwN5UNp4E4vSzos96M=;
-  b=QNcFA8UcTE/3DXsK0ex4HS/LseHG4yotonKqpa5KElZclX7Ep9Jpgjw/
-   fKoEnHJUdIcRwlwSB5Ocri7Ao6N8nAkOOGFD6S4FHR3tspR70GleoFjsm
-   1zyWVOcziRLog4PR7brXPxF2+pE9Qryyv4siOoYA6mzxu85tKVDVaYNDu
-   MT6Nkh8swHSc7P2ZyPLg6HO3xcTpXQt0Tb0d/DGiOV08VZfwLL79IFsY0
-   0e+cM6/rgSbe7yWzbAxrmTktoTOpuOTXivbf5lOrlHNQqmyqtk06YaA7z
-   eu7j7+KNsgF/qYkTUCtMQdn+3SQ3jGcIQULOR0MzhVjMo9j/XsP11K5+8
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="327306972"
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; 
-   d="scan'208";a="327306972"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2022 09:05:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; 
-   d="scan'208";a="658590992"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Apr 2022 09:04:58 -0700
-Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 23LG4uCp031724;
-        Thu, 21 Apr 2022 17:04:57 +0100
-From:   Larysa Zaremba <larysa.zaremba@intel.com>
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Larysa Zaremba <larysa.zaremba@intel.com>,
-        netdev <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke Hoiland-Jorgensen <toke@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-Subject: Accessing XDP packet memory from the end
-Date:   Thu, 21 Apr 2022 17:56:20 +0200
-Message-Id: <20220421155620.81048-1-larysa.zaremba@intel.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S231390AbiDUQSR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 12:18:17 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7521167C7
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 09:15:26 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id y11so6389159ljh.5
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 09:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dMnN6nbCX/7cL3f0ah02MbVShtU02AkQFDakttaTzAw=;
+        b=DIriM5i3ajD3RLNWfQ6pW8viAFRJceIIIA5KVQd8g23jiOVythALplSHMoIrFsHDuM
+         eS15lrlvqfF3NczkCG/4JPv1xYx+gECADQ1CHdeGSpEBbYpzJLvvDAtKjv6rDHEtN6nt
+         bS44RN8RZ8+XDJpvrXldBHWh3kUpSV156bSe4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dMnN6nbCX/7cL3f0ah02MbVShtU02AkQFDakttaTzAw=;
+        b=vqVWXX4ojDpycOff2goI4UfHKxtrV7hug/qFi1Pl/Dlsxm46YNtjVA5g/K6ehd8ylX
+         kQjRkj+9yVfxwk5pk8WmFuS1I4c/7+O4SaowmuOk/Ih8xH16CgF9Bel5vRb76BBUumF8
+         7bZoXU/WWF83QUVy40meocIcEndjsMkBsklXlvyWQ1c84yG+Gzf2VFW2sPgMHNyk8OLb
+         SaAMuppRrsNBCfpm+pF3594KNMRCd2bZj8hMMH1s8/I6vhEkEnWeHSJZ2v/l/1RlpLEX
+         tDoC9SjNYbKsSKfmQ+5ur9M0F43DuyqvHiyH85ocsNNeWW5Ww9YF7b5OgvpxBmjuFF9y
+         Gkpg==
+X-Gm-Message-State: AOAM531HqpqTrnQXWX0F5oHyuaW6SqhhF/cxgRHRH+8nSDdPGe+g+yyg
+        /ixNC/5L0UvhHD5pFRE04hBhD90SYKhFBREg0uk=
+X-Google-Smtp-Source: ABdhPJzDDpckRZ8VpxcPasJZrH5ke05930NeblvF1AZfOn+NbzR6O0+mZbbj5IZ284PwgwpA6GtjZA==
+X-Received: by 2002:a05:651c:549:b0:24d:bd43:222 with SMTP id q9-20020a05651c054900b0024dbd430222mr267802ljp.99.1650557724666;
+        Thu, 21 Apr 2022 09:15:24 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id p41-20020a05651213a900b00443e2c39fc4sm2229890lfa.111.2022.04.21.09.15.22
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Apr 2022 09:15:22 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id x17so9572264lfa.10
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 09:15:22 -0700 (PDT)
+X-Received: by 2002:a05:6512:6d4:b0:470:f48d:44e2 with SMTP id
+ u20-20020a05651206d400b00470f48d44e2mr173410lff.542.1650557721884; Thu, 21
+ Apr 2022 09:15:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220415164413.2727220-1-song@kernel.org> <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
+ <YlpPW9SdCbZnLVog@infradead.org> <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
+ <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
+ <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
+ <Yl4F4w5NY3v0icfx@bombadil.infradead.org> <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
+ <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
+ <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
+ <1650511496.iys9nxdueb.astroid@bobo.none> <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
+ <1650530694.evuxjgtju7.astroid@bobo.none> <25437eade8b2ecf52ff9666a7de9e36928b7d28f.camel@intel.com>
+In-Reply-To: <25437eade8b2ecf52ff9666a7de9e36928b7d28f.camel@intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Apr 2022 09:15:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiQcg=7++Odg08=eZZgdX4NKcPqiqGKXHNXqesTtfkmmA@mail.gmail.com>
+Message-ID: <CAHk-=wiQcg=7++Odg08=eZZgdX4NKcPqiqGKXHNXqesTtfkmmA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "npiggin@gmail.com" <npiggin@gmail.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "Kernel-team@fb.com" <Kernel-team@fb.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "song@kernel.org" <song@kernel.org>,
+        "pmladek@suse.com" <pmladek@suse.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dborkman@redhat.com" <dborkman@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "mbenes@suse.cz" <mbenes@suse.cz>,
+        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear all,
-Our team has encountered a need of accessing data_meta in a following way:
+On Thu, Apr 21, 2022 at 8:47 AM Edgecombe, Rick P
+<rick.p.edgecombe@intel.com> wrote:
+>
+>                 I wonder if it
+> might have to do with the vmalloc huge pages using compound pages, then
+> some caller doing vmalloc_to_page() and getting surprised with what
+> they could get away with in the struct page.
 
-int xdp_meta_prog(struct xdp_md *ctx)
-{
-	void *data_meta_ptr = (void *)(long)ctx->data_meta;
-	void *data_end = (void *)(long)ctx->data_end;
-	void *data = (void *)(long)ctx->data;
-	u64 data_size = sizeof(u32);
-	u32 magic_meta;
-	u8 offset;
+Very likely. We have 100+ users of vmalloc_to_page() in random
+drivers, and the gpu code does show up on that list.
 
-	offset = (u8)((s64)data - (s64)data_meta_ptr);
-	if (offset < data_size) {
-		bpf_printk("invalid offset: %ld\n", offset);
-		return XDP_DROP;
-	}
+And is very much another case of "it's always been broken, but
+enabling it on x86 made the breakage actually show up in real life".
 
-	data_meta_ptr += offset;
-	data_meta_ptr -= data_size;
-
-	if (data_meta_ptr + data_size > data) {
-		return XDP_DROP;
-	}
-		
-	magic_meta = *((u32 *)data);
-	bpf_printk("Magic: %d\n", magic_meta);
-	return XDP_PASS;
-}
-
-Unfortunately, verifier claims this code attempts to access packet with
-an offset of -2 (a constant part) and negative offset is generally forbidden.
-
-For now we have 2 solutions, one is using bpf_xdp_adjust_meta(),
-which is pretty good, but not ideal for the hot path.
-The second one is the patch at the end.
-
-Do you see any other way of accessing memory from the end of data_meta/data?
-What do you think about both suggested solutions?
-
-Best regards,
-Larysa Zaremba
-
----
-
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3576,8 +3576,11 @@ static int check_packet_access(struct bpf_verifier_env *env, u32 regno, int off,
- 	}
- 
- 	err = reg->range < 0 ? -EINVAL :
--	      __check_mem_access(env, regno, off, size, reg->range,
--				 zero_size_allowed);
-+	      __check_mem_access(env, regno, off + reg->smin_value, size,
-+				 reg->range + reg->smin_value, zero_size_allowed);
-+	err = err ? :
-+	      __check_mem_access(env, regno, off + reg->umax_value, size,
-+				 reg->range + reg->umax_value, zero_size_allowed);
- 	if (err) {
- 		verbose(env, "R%d offset is outside of the packet\n", regno);
- 		return err;
+                   Linus
