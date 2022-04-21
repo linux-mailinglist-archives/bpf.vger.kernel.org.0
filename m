@@ -2,127 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAF85099FF
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 09:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766FD509B57
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 10:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386189AbiDUHta (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 03:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        id S1387030AbiDUJAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 05:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386143AbiDUHt1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 03:49:27 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF5D613DD3
-        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 00:46:09 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-143-EY_ZALJrNMSPB3XotYphJA-1; Thu, 21 Apr 2022 08:46:06 +0100
-X-MC-Unique: EY_ZALJrNMSPB3XotYphJA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.32; Thu, 21 Apr 2022 08:46:06 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.033; Thu, 21 Apr 2022 08:46:05 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alexander Lobakin' <alobakin@pm.me>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-CC:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        with ESMTP id S230437AbiDUJAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 05:00:17 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FE320BE4;
+        Thu, 21 Apr 2022 01:57:29 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id c23so4282423plo.0;
+        Thu, 21 Apr 2022 01:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=ylxB+Hx++LEIgDce19t2otGtYWyC/YHt80P7LQP09MU=;
+        b=TI7S5wZtKMPdTN+iqX/9T9mPd79QQeOPulqS2EsJogc0+YqvElchYQCQuy0DXbdlNU
+         /EY4iGvqIXVy8t0kZ4PUPcM97/9A31L83tLD+lHukf4bc/VGRsyf9LU8Ka7okYs2c9j2
+         hCbBiCXH9YU6dk0x93oNopfWVenuaNqvyxbG4chsYNGeqLFBfnskg01U/UPrBnDgGAdi
+         SgS8swNpDMKTCk0L9wZmvp39E7j7I6+lAFVD0XQE6ehvWMh4y/hS/1u/dGqvaoFIdjIJ
+         PaJF8VAZHJH4jrqkrkRX4LM7MmIpCYok2MUJV5AEzpqr8JIQgbMg6YTiB3/3zYoZ9Rkf
+         ToEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=ylxB+Hx++LEIgDce19t2otGtYWyC/YHt80P7LQP09MU=;
+        b=kwbTNyRB7Mso3gn8jzEla51n/HNO/Ss+QMQ9DmB6tpuwexqS1oFD0mHgUUkIihkcwn
+         onVKfDgdADn2nqa32oSuJvVK/44qT75wOIkI2h6fs7nmOc+vz4REEpJMWr5qwMb7B6rV
+         dQrGIEn9qD3gsoFYaVPhVG28EsGO2vPB9ONq+Qi/wrHsDf51GqqB2HCkBDd4fonIjFGq
+         3/XyBqG23MRhWwO4o0yga0CdRA4sjpqjnIl9XoNPaHbBVnFP86nVFnlWKWZaZP9j+ALX
+         wym1885/7NMYZzodtFO6bnYh85qRuI38nMC1QXdfWCWD3KlF9meKCDcb6bWADV6gmr0a
+         ArXg==
+X-Gm-Message-State: AOAM530pyaa23Y1mUh7o+s8RMz+5NgRZR86NkV0RwkHl8ldIxe6/1oy6
+        FsKfA2E9eOX9KpKKvBLZmuU=
+X-Google-Smtp-Source: ABdhPJxs1z1Cj8A1dElHpP1eXJVgfrm1cl4dkEe0g7tWz1hxqfq4b2gQ/DG8+jgzKwQTof8D/nex1w==
+X-Received: by 2002:a17:902:9b95:b0:151:533b:9197 with SMTP id y21-20020a1709029b9500b00151533b9197mr24919678plp.66.1650531448442;
+        Thu, 21 Apr 2022 01:57:28 -0700 (PDT)
+Received: from localhost (193-116-116-20.tpgi.com.au. [193.116.116.20])
+        by smtp.gmail.com with ESMTPSA id u20-20020a056a00159400b0050a946e0548sm9544041pfk.165.2022.04.21.01.57.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Apr 2022 01:57:27 -0700 (PDT)
+Date:   Thu, 21 Apr 2022 18:57:22 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "ast@kernel.org" <ast@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 bpf 07/11] samples/bpf: fix uin64_t format literals
-Thread-Topic: [PATCH v2 bpf 07/11] samples/bpf: fix uin64_t format literals
-Thread-Index: AQHYVRiVJrq2qiQDe0mMJ5hGbTMRxaz5/N3g
-Date:   Thu, 21 Apr 2022 07:46:05 +0000
-Message-ID: <ca0733f123bf498a831324c4692a0df8@AcuMS.aculab.com>
-References: <20220421003152.339542-1-alobakin@pm.me>
- <20220421003152.339542-8-alobakin@pm.me>
-In-Reply-To: <20220421003152.339542-8-alobakin@pm.me>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "dborkman@redhat.com" <dborkman@redhat.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "mbenes@suse.cz" <mbenes@suse.cz>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "pmladek@suse.com" <pmladek@suse.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "song@kernel.org" <song@kernel.org>,
+        Song Liu <songliubraving@fb.com>
+References: <20220415164413.2727220-1-song@kernel.org>
+        <YlnCBqNWxSm3M3xB@bombadil.infradead.org> <YlpPW9SdCbZnLVog@infradead.org>
+        <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
+        <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
+        <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
+        <Yl4F4w5NY3v0icfx@bombadil.infradead.org>
+        <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
+        <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
+        <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
+        <1650511496.iys9nxdueb.astroid@bobo.none>
+        <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
+Message-Id: <1650530694.evuxjgtju7.astroid@bobo.none>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogQWxleGFuZGVyIExvYmFraW4NCj4gU2VudDogMjEgQXByaWwgMjAyMiAwMTo0MA0KPiAN
-Cj4gVGhlcmUncyBhIGNvdXBsZSBwbGFjZXMgd2hlcmUgdWluNjRfdCBpcyBiZWluZyBwYXNzZWQg
-YXMgYW4gJWx1DQo+IGZvcm1hdCBhcmd1bWVudC4gVGhhdCB0eXBlIGlzIGRlZmluZWQgYXMgdW5z
-aWduZWQgbG9uZyBvbiA2NC1iaXQNCj4gc3lzdGVtcyBhbmQgYXMgdW5zaWduZWQgbG9uZyBsb25n
-IG9uIDMyLWJpdCwgc28gbmVpdGhlciAlbHUgbm9yDQo+ICVsbHUgYXJlIG5vdCB1bml2ZXJzYWwu
-DQo+IE9uZSBvZiB0aGUgb3B0aW9ucyBpcyAlUFJJdTY0LCBidXQgc2luY2UgaXQncyBhbHdheXMg
-OC1ieXRlIGxvbmcsDQo+IGp1c3QgY2FzdCBpdCB0byB0aGUgX3Byb3Blcl8gX191NjQgYW5kIHBy
-aW50IGFzICVsbHUuDQoNCklzIF9fdTY0IGd1YXJhbnRlZWQgdG8gYmUgJ3Vuc2lnbmVkIGxvbmcg
-bG9uZycgPyBObyByZWFzb24gd2h5IGl0IHNob3VsZCBiZS4NCkkgdGhpbmsgeW91IG5lZWQgdG8g
-Y2FzdCB0byAodW5zaWduZWQgbG9uZyBsb25nKS4NCg0KCURhdmlkDQoNCj4gRml4ZXM6IDUxNTcw
-YTVhYjJiNyAoIkEgU2FtcGxlIG9mIHVzaW5nIHNvY2tldCBjb29raWUgYW5kIHVpZCBmb3IgdHJh
-ZmZpYyBtb25pdG9yaW5nIikNCj4gRml4ZXM6IDAwZjY2MGVhZjM3OCAoIlNhbXBsZSBwcm9ncmFt
-IHVzaW5nIFNPX0NPT0tJRSIpDQo+IFNpZ25lZC1vZmYtYnk6IEFsZXhhbmRlciBMb2Jha2luIDxh
-bG9iYWtpbkBwbS5tZT4NCj4gLS0tDQo+ICBzYW1wbGVzL2JwZi9jb29raWVfdWlkX2hlbHBlcl9l
-eGFtcGxlLmMgfCAxMiArKysrKystLS0tLS0NCj4gIHNhbXBsZXMvYnBmL2x3dF9sZW5faGlzdF91
-c2VyLmMgICAgICAgICB8ICA3ICsrKystLS0NCj4gIDIgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0
-aW9ucygrKSwgOSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9zYW1wbGVzL2JwZi9j
-b29raWVfdWlkX2hlbHBlcl9leGFtcGxlLmMgYi9zYW1wbGVzL2JwZi9jb29raWVfdWlkX2hlbHBl
-cl9leGFtcGxlLmMNCj4gaW5kZXggZjBkZjNkZGE0YjFmLi4yNjlmYWM1OGZkNWMgMTAwNjQ0DQo+
-IC0tLSBhL3NhbXBsZXMvYnBmL2Nvb2tpZV91aWRfaGVscGVyX2V4YW1wbGUuYw0KPiArKysgYi9z
-YW1wbGVzL2JwZi9jb29raWVfdWlkX2hlbHBlcl9leGFtcGxlLmMNCj4gQEAgLTIwNyw5ICsyMDcs
-OSBAQCBzdGF0aWMgdm9pZCBwcmludF90YWJsZSh2b2lkKQ0KPiAgCQkJZXJyb3IoMSwgZXJybm8s
-ICJmYWlsIHRvIGdldCBlbnRyeSB2YWx1ZSBvZiBLZXk6ICV1XG4iLA0KPiAgCQkJCWN1ck4pOw0K
-PiAgCQl9IGVsc2Ugew0KPiAtCQkJcHJpbnRmKCJjb29raWU6ICV1LCB1aWQ6IDB4JXgsIFBhY2tl
-dCBDb3VudDogJWx1LCINCj4gLQkJCQkiIEJ5dGVzIENvdW50OiAlbHVcbiIsIGN1ck4sIGN1ckVu
-dHJ5LnVpZCwNCj4gLQkJCQljdXJFbnRyeS5wYWNrZXRzLCBjdXJFbnRyeS5ieXRlcyk7DQo+ICsJ
-CQlwcmludGYoImNvb2tpZTogJXUsIHVpZDogMHgleCwgUGFja2V0IENvdW50OiAlbGx1LCBCeXRl
-cyBDb3VudDogJWxsdVxuIiwNCj4gKwkJCSAgICAgICBjdXJOLCBjdXJFbnRyeS51aWQsIChfX3U2
-NCljdXJFbnRyeS5wYWNrZXRzLA0KPiArCQkJICAgICAgIChfX3U2NCljdXJFbnRyeS5ieXRlcyk7
-DQo+ICAJCX0NCj4gIAl9DQo+ICB9DQo+IEBAIC0yNjUsOSArMjY1LDkgQEAgc3RhdGljIHZvaWQg
-dWRwX2NsaWVudCh2b2lkKQ0KPiAgCQlpZiAocmVzIDwgMCkNCj4gIAkJCWVycm9yKDEsIGVycm5v
-LCAibG9va3VwIHNrIHN0YXQgZmFpbGVkLCBjb29raWU6ICVsdVxuIiwNCj4gIAkJCSAgICAgIGNv
-b2tpZSk7DQo+IC0JCXByaW50ZigiY29va2llOiAlbHUsIHVpZDogMHgleCwgUGFja2V0IENvdW50
-OiAlbHUsIg0KPiAtCQkJIiBCeXRlcyBDb3VudDogJWx1XG5cbiIsIGNvb2tpZSwgZGF0YUVudHJ5
-LnVpZCwNCj4gLQkJCWRhdGFFbnRyeS5wYWNrZXRzLCBkYXRhRW50cnkuYnl0ZXMpOw0KPiArCQlw
-cmludGYoImNvb2tpZTogJWxsdSwgdWlkOiAweCV4LCBQYWNrZXQgQ291bnQ6ICVsbHUsIEJ5dGVz
-IENvdW50OiAlbGx1XG5cbiIsDQo+ICsJCSAgICAgICAoX191NjQpY29va2llLCBkYXRhRW50cnku
-dWlkLCAoX191NjQpZGF0YUVudHJ5LnBhY2tldHMsDQo+ICsJCSAgICAgICAoX191NjQpZGF0YUVu
-dHJ5LmJ5dGVzKTsNCj4gIAl9DQo+ICAJY2xvc2Uoc19zZW5kKTsNCj4gIAljbG9zZShzX3Jjdik7
-DQo+IGRpZmYgLS1naXQgYS9zYW1wbGVzL2JwZi9sd3RfbGVuX2hpc3RfdXNlci5jIGIvc2FtcGxl
-cy9icGYvbHd0X2xlbl9oaXN0X3VzZXIuYw0KPiBpbmRleCA0MzBhNGI3ZTM1M2UuLmM2ODJmYWE3
-NWEyYiAxMDA2NDQNCj4gLS0tIGEvc2FtcGxlcy9icGYvbHd0X2xlbl9oaXN0X3VzZXIuYw0KPiAr
-KysgYi9zYW1wbGVzL2JwZi9sd3RfbGVuX2hpc3RfdXNlci5jDQo+IEBAIC00NCw3ICs0NCw4IEBA
-IGludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikNCj4gDQo+ICAJd2hpbGUgKGJwZl9tYXBf
-Z2V0X25leHRfa2V5KG1hcF9mZCwgJmtleSwgJm5leHRfa2V5KSA9PSAwKSB7DQo+ICAJCWlmIChu
-ZXh0X2tleSA+PSBNQVhfSU5ERVgpIHsNCj4gLQkJCWZwcmludGYoc3RkZXJyLCAiS2V5ICVsdSBv
-dXQgb2YgYm91bmRzXG4iLCBuZXh0X2tleSk7DQo+ICsJCQlmcHJpbnRmKHN0ZGVyciwgIktleSAl
-bGx1IG91dCBvZiBib3VuZHNcbiIsDQo+ICsJCQkJKF9fdTY0KW5leHRfa2V5KTsNCj4gIAkJCWNv
-bnRpbnVlOw0KPiAgCQl9DQo+IA0KPiBAQCAtNjYsOCArNjcsOCBAQCBpbnQgbWFpbihpbnQgYXJn
-YywgY2hhciAqKmFyZ3YpDQo+IA0KPiAgCWZvciAoaSA9IDE7IGkgPD0gbWF4X2tleSArIDE7IGkr
-Kykgew0KPiAgCQlzdGFycyhzdGFyc3RyLCBkYXRhW2kgLSAxXSwgbWF4X3ZhbHVlLCBNQVhfU1RB
-UlMpOw0KPiAtCQlwcmludGYoIiU4bGQgLT4gJS04bGQgOiAlLThsZCB8JS0qc3xcbiIsDQo+IC0J
-CSAgICAgICAoMWwgPDwgaSkgPj4gMSwgKDFsIDw8IGkpIC0gMSwgZGF0YVtpIC0gMV0sDQo+ICsJ
-CXByaW50ZigiJThsZCAtPiAlLThsZCA6ICUtOGxsZCB8JS0qc3xcbiIsDQo+ICsJCSAgICAgICAo
-MWwgPDwgaSkgPj4gMSwgKDFsIDw8IGkpIC0gMSwgKF9fdTY0KWRhdGFbaSAtIDFdLA0KPiAgCQkg
-ICAgICAgTUFYX1NUQVJTLCBzdGFyc3RyKTsNCj4gIAl9DQo+IA0KPiAtLQ0KPiAyLjM2LjANCj4g
-DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
-YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
-IChXYWxlcykNCg==
+Excerpts from Linus Torvalds's message of April 21, 2022 3:48 pm:
+> On Wed, Apr 20, 2022 at 8:25 PM Nicholas Piggin <npiggin@gmail.com> wrote=
+:
+>>
+>> Why not just revert fac54e2bfb5b ?
+>=20
+> That would be stupid, with no sane way forward.
+>=20
+> The fact is, HUGE_VMALLOC was badly misdesigned, and enabling it on
+> x86 only ended up showing the problems.
+>=20
+> It wasn't fac54e2bfb5b that was the fundamental issue. It was the
+> whole "oh, we should never have done it that way to begin with".
+>=20
+> The whole initial notion that HAVE_ARCH_HUGE_VMALLOC means that there
+> must be no PAGE_SIZE pte assumptions was simply broken.
 
+It didn't have that requirement so much as required it to be
+accounted for if the arch enabled it.
+
+> There were
+> actual real cases that had those assumptions, and the whole "let's
+> just change vmalloc behavior by default and then people who don't like
+> it can opt out" was just fundamentally a really bad idea.
+>=20
+> Power had that random "oh, we don't want to do this for module_alloc",
+> which you had a comment about "more testing" for.
+>=20
+> And s390 had a case of hardware limitations where it didn't work for some=
+ cases.
+>=20
+> And then enabling it on x86 turned up more issues.
+
+Those were (AFAIKS) all in arch code though. The patch was the
+fundamental issue for x86 because it had bugs. I don't quite see
+what your objection is to power and s390's working implementations.
+Some parts of the arch code could not cope with hue PTEs so they
+used small.
+
+Switching the API around to expect non-arch code to know whether or
+not it can use huge mappings is much worse. How is=20
+alloc_large_system_hash expected to know whether it may use huge
+pages on any given half-broken arch like x86?
+
+It's the same like we have huge iomap for a long time. No driver
+should be expect to have to understand that.
+
+> So yes, commit fac54e2bfb5b _exposed_ things to a much larger
+> audience. But all it just made clear was that your original notion of
+> "let's change behavior and randomly disable it as things turn up" was
+> just broken.
+>=20
+> Including "small" details like the fact that apparently
+> VM_FLUSH_RESET_PERMS didn't work correctly any more for this, which
+> caused issues for bpf, and that [PATCH 4/4].
+
+Which is another arch detail.
+
+> And yes, there was a
+> half-arsed comment ("may require extra work") to that effect in the
+> powerpc __module_alloc() function, but it had been left to others to
+> notice separately.
+
+It had a comment in arch/Kconfig about it. Combing through the
+details of every arch is left to others who choose to opt-in though.
+
+> So no. We're not going back to that completely broken model. The
+> lagepage thing needs to be opt-in, and needs a lot more care.
+
+I don't think it should be opt-in at the caller level (at least not
+outside arch/). As I said earlier maybe we end up finding fragmentation
+to be a problem that can't be solved with simple heuristics tweaking
+so we could think about adding something to give size/speed hint
+tradeoff, but as for "can this caller use huge vmap backed memory",
+it should not be something drivers or core code has to think about.
+
+Thanks,
+Nick
