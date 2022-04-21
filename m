@@ -2,56 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728D050A80E
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 20:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0845350A89F
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 21:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382245AbiDUS15 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 14:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47466 "EHLO
+        id S1391667AbiDUTCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 15:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391517AbiDUS1q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 14:27:46 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EAF4C431;
-        Thu, 21 Apr 2022 11:24:42 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id n11-20020a17090a73cb00b001d1d3a7116bso6223860pjk.0;
-        Thu, 21 Apr 2022 11:24:42 -0700 (PDT)
+        with ESMTP id S233912AbiDUTCV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 15:02:21 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7729F2194
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 11:59:30 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id c15so6878476ljr.9
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 11:59:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iCbcFDFbn2mhKynuYB02KhdbVXr72r1cIVRt2FI2Ets=;
-        b=HqvvWWyYs5DFKktWicH2EF49fqzUee2aliWRQKcrrunRjNuGvLFTBvT7Y1V4ZxXT+G
-         xV4tsLbFEw/uFKZ3cb2jWPYkl6CVhSz+bRhr5h2vVASWouwqqirPrCSpq706jU4Q+RUa
-         3obsQQ9UXtPRvl+MZnj0mdegShcWv4zU7R9QaIUxdCXDEj7ZE1JTjO2vT8yqh3UcZHNJ
-         Nfd0hgTnaCz7eUTysQaP4C3enbN0omZ6IOugtbZmPxNlNJLbMvYu5faNCdTeN8KNhO03
-         72ry4qCftQTgxBWSJ2zeu8Y9gu51D5dUM431GOLzbmwnLA6Li8+IjxXwHOCptdLYg2yD
-         jovg==
+        bh=ak9lVWwM+coDmUHY61U+ZihyKQCtIFN8nTMg/HLgunQ=;
+        b=dUTQSAcJXhEgH56325FZO9cBwpb+y6gnzAUNugFkBCF6CGx9PFgIG3mnV3YjioVs3b
+         TH2pvqbF8RHSX8PsvM64v1T/aseBE32JhDyWgSL5UjmKA/JIDWQwH9YFuRBx6QqXcBTo
+         oZJFMw/LprgNr7LDtNxdhVWuHnyeBLs3xkMBI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iCbcFDFbn2mhKynuYB02KhdbVXr72r1cIVRt2FI2Ets=;
-        b=4rbpWMePW+glMUM5e1qBznkI3ms24/04y3mEW+pjaL6nG0i+Mw8JEprthC4ue20f80
-         7iP7/i+wdSBj798NVi15R28aBTKoNkpv9TCIMHpwY97KWp2KcdJADfyC7d4LAbDM14Ko
-         fH7nPc+0AQaaIfaMLk6m7FsQpqGHrJcc4iYaD3qY75+DJmWjggQHcFPYGxJuv1CbM1te
-         Enn2Xi0U4eE1cSzPlQePAzOZBWXsyP2gwhstRU58Iuczi2M3Vk6sjcUIZBC4bKzXkSJ8
-         Hcgwswrz/E2mNFRo0y0zVwYyTQNw09UUvvXddPG08sSmOFjk4kmvBLDXm++9NmLBWr8z
-         qW8A==
-X-Gm-Message-State: AOAM531ecxlu0me/QkeD/UOfzgVbqkGSueHxKzD2Cwd6eP8ygsCISAvr
-        ZOWAp+HnsQsoIuF5SzMf0ezopRSWs3FN879RVfI=
-X-Google-Smtp-Source: ABdhPJwYBNWuVtwoUeeocV7PLCWhSWkNZkv2HQVwVmYSf5Sz3RNhIY+aKyczpvducm6w2n3P2pO4FfHViXzUIYvxX40=
-X-Received: by 2002:a17:90a:8591:b0:1b9:da10:2127 with SMTP id
- m17-20020a17090a859100b001b9da102127mr11902949pjn.13.1650565482039; Thu, 21
- Apr 2022 11:24:42 -0700 (PDT)
+        bh=ak9lVWwM+coDmUHY61U+ZihyKQCtIFN8nTMg/HLgunQ=;
+        b=yOHTmApCWTsbr9J5m4rUK5YASlfMPpJL8SC9/ayFcAKNtCLeoXXNjcl62cLVcwNppf
+         XKd311QbLJ70B4hS8NW4hDGqiVUXdoLIujNFI9p+xJ6fygOUqRxBjqRWfrsBTEGCs5xy
+         G45XlvTSBu3RJyY1e37Qp/EssLlcqOL2PXwdcj6qls/fzk01yRRhl+jQgdbal/wkyMey
+         o0R+K5lP+kWK7VeWC80vOXXAFkmj8fzAg4jIzewwP9soQOUfcqP1xwJLuTePA632cJ6X
+         Cv4N/txlstcMegNk0TYc35ALR6/XbNI5PdQU+vJHbtOxWnrJlP9pPOlO8SyMt3W7tyJa
+         jFzA==
+X-Gm-Message-State: AOAM5332IwlYbKnpZxcXjgesymWr0JeE9QpnRkQR3+WU2WgxHSV8FVAz
+        RSuHD1WzfVEeStPhN6/x7BCFFPsOXPSer0TXgQ0=
+X-Google-Smtp-Source: ABdhPJz47XyKTRq1X2XAPBosH/aIgTY36+Id5ak6M7nzSkFg8tjmpP5juDijduC/9UPnFE2gdv0RIw==
+X-Received: by 2002:a05:651c:a0e:b0:24e:f06d:dae6 with SMTP id k14-20020a05651c0a0e00b0024ef06ddae6mr399076ljq.31.1650567568465;
+        Thu, 21 Apr 2022 11:59:28 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id p15-20020a19604f000000b00471bc59aebasm642599lfk.219.2022.04.21.11.59.23
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Apr 2022 11:59:23 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id h27so10066993lfj.13
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 11:59:23 -0700 (PDT)
+X-Received: by 2002:a05:6512:3c93:b0:44b:4ba:c334 with SMTP id
+ h19-20020a0565123c9300b0044b04bac334mr582580lfv.27.1650567562684; Thu, 21 Apr
+ 2022 11:59:22 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220421072212.608884-1-song@kernel.org> <CAHk-=wi3eu8mdKmXOCSPeTxABVbstbDg1q5Fkak+A9kVwF+fVw@mail.gmail.com>
-In-Reply-To: <CAHk-=wi3eu8mdKmXOCSPeTxABVbstbDg1q5Fkak+A9kVwF+fVw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Apr 2022 11:24:31 -0700
-Message-ID: <CAADnVQKyDwXUMCfmdabbVE0vSGxdpqmWAwHRBqbPLW=LdCnHBQ@mail.gmail.com>
+ <CAADnVQKyDwXUMCfmdabbVE0vSGxdpqmWAwHRBqbPLW=LdCnHBQ@mail.gmail.com>
+In-Reply-To: <CAADnVQKyDwXUMCfmdabbVE0vSGxdpqmWAwHRBqbPLW=LdCnHBQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Apr 2022 11:59:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whFeBezdSrPy31iYv-UZNnNavymrhqrwCptE4uW8aeaHw@mail.gmail.com>
+Message-ID: <CAHk-=whFeBezdSrPy31iYv-UZNnNavymrhqrwCptE4uW8aeaHw@mail.gmail.com>
 Subject: Re: [PATCH bpf] bpf: invalidate unused part of bpf_prog_pack
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
         Linux-MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -62,10 +70,10 @@ Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
         "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
         Christoph Hellwig <hch@infradead.org>,
         Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/mixed; boundary="0000000000004099a605dd2eb54d"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,89 +81,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 21, 2022 at 10:09 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, Apr 21, 2022 at 12:27 AM Song Liu <song@kernel.org> wrote:
-> >
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -228,6 +228,28 @@ static void jit_fill_hole(void *area, unsigned int size)
-> >         memset(area, 0xcc, size);
-> >  }
-> >
-> > +#define INVALID_BUF_SIZE PAGE_SIZE
-> > +static char invalid_insn_buf[INVALID_BUF_SIZE];
-> > +
-> > +static int __init bpf_init_invalid_insn_buf(void)
-> > +{
-> > +       jit_fill_hole(invalid_insn_buf, INVALID_BUF_SIZE);
-> > +       return 0;
-> > +}
-> > +pure_initcall(bpf_init_invalid_insn_buf);
-> > +
-> > +void bpf_arch_invalidate_text(void *dst, size_t len)
-> > +{
-> > +       size_t i = 0;
-> > +
-> > +       while (i < len) {
-> > +               size_t s = min_t(size_t, len - i, INVALID_BUF_SIZE);
-> > +
-> > +               bpf_arch_text_copy(dst + i, invalid_insn_buf, s);
-> > +               i += s;
-> > +       }
-> > +}
->
-> Why do we need this new infrastructure?
->
-> Why bpf_arch_invalidate_text()?
->
-> Why not jit_fill_hole() unconditionally?
->
-> It seems a bit pointless to have page buffer for containing this data,
-> when we already have a (trivial) function to fill an area with invalid
-> instructions.
->
-> On x86, it's literally just "memset(0xcc)" (ie all 'int3' instructions).
->
-> And on most RISC architectures, it would be some variation of
-> "memset32(TRAP_INSN)".
->
-> And all bpf targets should already have that nicely as that
-> jit_fill_hole() function, no?
->
-> The pack-allocator bpf code already *does* that, and is already passed
-> that function.
->
-> But it's just that it does it too late. Instead of doing it when
-> allocating a new pack, it does it in the sub-allocator.
->
-> Afaik the code in bpf/core.c already has all the information it needs,
-> and already has that jit_fill_hole() function pointer, but is applying
-> it at the wrong point.
->
-> So I think the fix should be to just pass in that 'bpf_fill_ill_insns'
-> function pointer all the way to alloc_new_pack(), instead of using it
-> in bpf_jit_binary_alloc().
+--0000000000004099a605dd2eb54d
+Content-Type: text/plain; charset="UTF-8"
 
-jit_fill_hole is an overkill here.
+On Thu, Apr 21, 2022 at 11:24 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> Let's not complicate the logic by dragging jit_fill_hole
+> further into generic allocation.
 
-Long ago when jit spraying attack was fixed there was
-a concern that memset(0) essentially populates the code page
-with valid 'add BYTE PTR [rax],al' instructions.
-Jumping anywhere in the zero page with a valid address in rax will
-eventually lead to execution of the first insn in jit-ed bpf prog.
-So memset(0xcc) was added to make it a bit harder to guess
-the start address.
-jit spraying is only a concern for archs that can
-jump in the middle of the instruction and cpus will interpret
-the byte stream differently.
-The existing bpf_prog_pack code still does memset(0xcc)
-a random range of bytes before and after jit-ed bpf code.
-So doing memset(0xcc) for the whole huge page is not necessary at all.
-Just memset(0) of a huge page at init time and memset(0)
-when prog is freed is enough.
-Jumping into zero page of 'valid' insns the cpu
-will eventually stumble on 0xcc before reaching the first insn.
-Let's not complicate the logic by dragging jit_fill_hole
-further into generic allocation.
+I agree that just zeroing the page is probably perfectly fine in
+practice on x86, but I'm also not really seeing the "complication" of
+just doing things right.
+
+> The existing bpf_prog_pack code still does memset(0xcc)
+> a random range of bytes before and after jit-ed bpf code.
+
+That is actually wishful thinking, and not based on reality.
+
+From what I can tell, the end of the jit'ed bpf code is actually the
+exception table entries, so we have that data being marked executable.
+
+Honestly, what is wrong with this trivial patch?
+
+I've not *tested* it, but it looks really really simple to me. Take it
+as a "something like this" rather than anything else.
+
+And yes, it would be better if bpf_jit_binary_pack_free did it too, so
+that you don't have random old JIT'ed code lying around (and possibly
+still in CPU branch history caches or whatever).
+
+And it would be lovely if the exception table entries would be part of
+another allocation and not marked executable.
+
+But I certainly don't see the _downside_ (or complexity) of just doing
+this, instead of zeroing things.
+
+So this is by no means perfect, but it seems at least incrementally
+_better_ than just zeroing. No?
+
+                    Linus
+
+--0000000000004099a605dd2eb54d
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_l29ck8xn0>
+X-Attachment-Id: f_l29ck8xn0
+
+IGtlcm5lbC9icGYvY29yZS5jIHwgMTAgKysrKysrLS0tLQogMSBmaWxlIGNoYW5nZWQsIDYgaW5z
+ZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9rZXJuZWwvYnBmL2NvcmUu
+YyBiL2tlcm5lbC9icGYvY29yZS5jCmluZGV4IDEzZTlkYmVlZWRmMy4uYTRjZmMzNTNhNTJkIDEw
+MDY0NAotLS0gYS9rZXJuZWwvYnBmL2NvcmUuYworKysgYi9rZXJuZWwvYnBmL2NvcmUuYwpAQCAt
+ODczLDcgKzg3Myw3IEBAIHN0YXRpYyBzaXplX3Qgc2VsZWN0X2JwZl9wcm9nX3BhY2tfc2l6ZSh2
+b2lkKQogCXJldHVybiBzaXplOwogfQogCi1zdGF0aWMgc3RydWN0IGJwZl9wcm9nX3BhY2sgKmFs
+bG9jX25ld19wYWNrKHZvaWQpCitzdGF0aWMgc3RydWN0IGJwZl9wcm9nX3BhY2sgKmFsbG9jX25l
+d19wYWNrKGJwZl9qaXRfZmlsbF9ob2xlX3QgYnBmX2ZpbGxfaWxsX2luc25zKQogewogCXN0cnVj
+dCBicGZfcHJvZ19wYWNrICpwYWNrOwogCkBAIC04ODksMTMgKzg4OSwxNCBAQCBzdGF0aWMgc3Ry
+dWN0IGJwZl9wcm9nX3BhY2sgKmFsbG9jX25ld19wYWNrKHZvaWQpCiAJYml0bWFwX3plcm8ocGFj
+ay0+Yml0bWFwLCBicGZfcHJvZ19wYWNrX3NpemUgLyBCUEZfUFJPR19DSFVOS19TSVpFKTsKIAls
+aXN0X2FkZF90YWlsKCZwYWNrLT5saXN0LCAmcGFja19saXN0KTsKIAorCWJwZl9maWxsX2lsbF9p
+bnNucyhwYWNrLT5wdHIsIGJwZl9wcm9nX3BhY2tfc2l6ZSk7CiAJc2V0X3ZtX2ZsdXNoX3Jlc2V0
+X3Blcm1zKHBhY2stPnB0cik7CiAJc2V0X21lbW9yeV9ybygodW5zaWduZWQgbG9uZylwYWNrLT5w
+dHIsIGJwZl9wcm9nX3BhY2tfc2l6ZSAvIFBBR0VfU0laRSk7CiAJc2V0X21lbW9yeV94KCh1bnNp
+Z25lZCBsb25nKXBhY2stPnB0ciwgYnBmX3Byb2dfcGFja19zaXplIC8gUEFHRV9TSVpFKTsKIAly
+ZXR1cm4gcGFjazsKIH0KIAotc3RhdGljIHZvaWQgKmJwZl9wcm9nX3BhY2tfYWxsb2ModTMyIHNp
+emUpCitzdGF0aWMgdm9pZCAqYnBmX3Byb2dfcGFja19hbGxvYyh1MzIgc2l6ZSwgYnBmX2ppdF9m
+aWxsX2hvbGVfdCBicGZfZmlsbF9pbGxfaW5zbnMpCiB7CiAJdW5zaWduZWQgaW50IG5iaXRzID0g
+QlBGX1BST0dfU0laRV9UT19OQklUUyhzaXplKTsKIAlzdHJ1Y3QgYnBmX3Byb2dfcGFjayAqcGFj
+azsKQEAgLTkxMCw2ICs5MTEsNyBAQCBzdGF0aWMgdm9pZCAqYnBmX3Byb2dfcGFja19hbGxvYyh1
+MzIgc2l6ZSkKIAkJc2l6ZSA9IHJvdW5kX3VwKHNpemUsIFBBR0VfU0laRSk7CiAJCXB0ciA9IG1v
+ZHVsZV9hbGxvYyhzaXplKTsKIAkJaWYgKHB0cikgeworCQkJYnBmX2ZpbGxfaWxsX2luc25zKHB0
+ciwgc2l6ZSk7CiAJCQlzZXRfdm1fZmx1c2hfcmVzZXRfcGVybXMocHRyKTsKIAkJCXNldF9tZW1v
+cnlfcm8oKHVuc2lnbmVkIGxvbmcpcHRyLCBzaXplIC8gUEFHRV9TSVpFKTsKIAkJCXNldF9tZW1v
+cnlfeCgodW5zaWduZWQgbG9uZylwdHIsIHNpemUgLyBQQUdFX1NJWkUpOwpAQCAtOTIzLDcgKzky
+NSw3IEBAIHN0YXRpYyB2b2lkICpicGZfcHJvZ19wYWNrX2FsbG9jKHUzMiBzaXplKQogCQkJZ290
+byBmb3VuZF9mcmVlX2FyZWE7CiAJfQogCi0JcGFjayA9IGFsbG9jX25ld19wYWNrKCk7CisJcGFj
+ayA9IGFsbG9jX25ld19wYWNrKGJwZl9maWxsX2lsbF9pbnNucyk7CiAJaWYgKCFwYWNrKQogCQln
+b3RvIG91dDsKIApAQCAtMTEwMiw3ICsxMTA0LDcgQEAgYnBmX2ppdF9iaW5hcnlfcGFja19hbGxv
+Yyh1bnNpZ25lZCBpbnQgcHJvZ2xlbiwgdTggKippbWFnZV9wdHIsCiAKIAlpZiAoYnBmX2ppdF9j
+aGFyZ2VfbW9kbWVtKHNpemUpKQogCQlyZXR1cm4gTlVMTDsKLQlyb19oZWFkZXIgPSBicGZfcHJv
+Z19wYWNrX2FsbG9jKHNpemUpOworCXJvX2hlYWRlciA9IGJwZl9wcm9nX3BhY2tfYWxsb2Moc2l6
+ZSwgYnBmX2ZpbGxfaWxsX2luc25zKTsKIAlpZiAoIXJvX2hlYWRlcikgewogCQlicGZfaml0X3Vu
+Y2hhcmdlX21vZG1lbShzaXplKTsKIAkJcmV0dXJuIE5VTEw7Cg==
+--0000000000004099a605dd2eb54d--
