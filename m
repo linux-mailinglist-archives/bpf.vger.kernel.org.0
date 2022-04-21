@@ -2,86 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BEF50955B
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 05:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FE4509576
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 05:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244213AbiDUD2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Apr 2022 23:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
+        id S1383961AbiDUDjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Apr 2022 23:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbiDUD2L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Apr 2022 23:28:11 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB850E2E;
-        Wed, 20 Apr 2022 20:25:22 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id q12so3506449pgj.13;
-        Wed, 20 Apr 2022 20:25:22 -0700 (PDT)
+        with ESMTP id S1383951AbiDUDjE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Apr 2022 23:39:04 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C84B1CD;
+        Wed, 20 Apr 2022 20:36:16 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id q19so3546317pgm.6;
+        Wed, 20 Apr 2022 20:36:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:subject:to:cc:references:in-reply-to:mime-version
          :message-id:content-transfer-encoding;
-        bh=/zHCtxMoczMZEIXtnhbHvwUDzUqhEUQwNxssLVReHRY=;
-        b=DZZpQpUjF7g81qX3uZg72RUAtHA/JtIx+K/0sPrG0xVt5qvYyqS0v9pm9Ej/CACSet
-         VjqSXgpSQdBTsQLFhmrTc+XjIKwyXe2X3608ku/tM7V+5Bq18C9z/4N8u7A1W/Z9pgiq
-         FR45KVNFR3vH39TaRwD6O1H0epFDN+N5o3W0w9XA+89Nq0TaQ8xxZZY61qiI6/bFX+X8
-         jBcDUh071IHiaY9jnyCG1EwXgqVUH8oJUoTTjxSRPJ8cfrvSWcP2RBFQ04dEdtPUcCKv
-         qOF1w0aaF4vRXn4dEkbjZUFRORoMhUM6PB4Lts14HLPSxlUQe0D4ruhIeVYrnH/CT+iu
-         w27A==
+        bh=KZBHfUAnf51a3ognrNtvN+eHbKSNCphMcLIe5ZMRThc=;
+        b=PCe7bAX3iBfbqv9eSgOGEg9WCaXfFJFt7TVzTbPMK1ZiGF3DJ/i7ikNIzthtoLSoIm
+         9Jb4x3JftBxcolj7nk8HkUV51ivT9/2Dfz88vO69fCPSvSpgV3oqxaNazPDry8yY9BW/
+         V9gz+YBHh+TtRQKfdNGU+1hfdJzKaaNbA2Z77aWYHH/Wg1j7lMpD1yzXs5SsdDm+3Vpo
+         zDIq4egIgAJWxkJKnAD6dQncYLtimp3cYFesXxI1rrX28Nnr2y4INRP8uo+ZtbFx/9l+
+         OemD6U2GUfzmg8dJTnVr0am2i3X0DjLbmO+T7aO6QL+U0I/vjvpiMlLSUHSbj3UZbQQs
+         dSTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
          :mime-version:message-id:content-transfer-encoding;
-        bh=/zHCtxMoczMZEIXtnhbHvwUDzUqhEUQwNxssLVReHRY=;
-        b=qwXWwQm0VBQwQBSFBJhz3iWltp3F6VPbGYx0xGPnnnaOnv5+lzT1AZNsgSO+f77YoE
-         lidIWs2zOrg+s14j7u5+zspEtkTGFLK3/QSaeqcqKA0gr66x/vMSlybLlv0nL/jIDAEp
-         VUDwQ7WjyFQ2lY3eb/iG6DI5FxVlZoKLsNubbVe3Mm16AvXSy3dmiCYtTQuTtnwYA7UX
-         EzPDSYChgOyX20/Xa/QGcSg+/fXk1cXamBF8n4yBPi/5T43F9Qw1fzFA8TWgZ2U1XKyB
-         7ERC0TYylbGNzBvbgKYxS2uuvhL4v2SwW2PvJbZl4/pdKpuMlujI6318ecnWagboVaDU
-         jEHw==
-X-Gm-Message-State: AOAM533S1YmC7u0zxZDr3JLK2UPaJZK/FxJbBvehWS4o+kKeWEvtQape
-        MNa5z3OQdjVzDt/YLA7V8+4=
-X-Google-Smtp-Source: ABdhPJwRJWtMqp6HCw0RDv8Ns5buSwZol3RRdVsNZrkSj2HC0TRRxTq66Rf82aICgLt0IH9Is87WNQ==
-X-Received: by 2002:a63:8942:0:b0:3aa:8454:414a with SMTP id v63-20020a638942000000b003aa8454414amr2412844pgd.245.1650511522238;
-        Wed, 20 Apr 2022 20:25:22 -0700 (PDT)
-Received: from localhost ([203.221.203.144])
-        by smtp.gmail.com with ESMTPSA id k22-20020aa790d6000000b0050a765d5d48sm12836468pfk.160.2022.04.20.20.25.20
+        bh=KZBHfUAnf51a3ognrNtvN+eHbKSNCphMcLIe5ZMRThc=;
+        b=CNGJXR5X3btLd6CJGUaJkJ9LH/OlybIWStC/txiXxhyn9i03efGnzf4GKNArxlMxJz
+         7Wh3xDnf4qubdoQc6a5odnw1uXjgdJiMZSuXm/cVAbSEwinXogGafsGFZnVV2gKUexzs
+         /AfNGgK5bTFSCdsK5QPzbgeiwiRbn/YRA97pIgULqrdQ82G1pbnze593/UK+ZqpWgqS0
+         Uerkty4a5vCF5i5C3wCbOhmUJ161EKRc6ud8hT+I734McQIwjKyql9gyCdCobkqLta5y
+         ET6daoB6Syq8XwTrpjaDFXcAsGV7GYaR3/eCRgNCYGe7jq8jksrRRGfniXSdIvp2vJhF
+         PA8w==
+X-Gm-Message-State: AOAM5305Wwrii4pQh2FNB0xF0WetMiJTJEoCPOP1C8KTHdYug1f8KNTZ
+        8d/cMiIjhUDE6NUFY3jFxd0=
+X-Google-Smtp-Source: ABdhPJxQr9J+ROdkc9BycRypV+qU0m5iXTY6LBPfnBUZC934BBe41CdVYGTJUGyVbs+jMCvc5Fxcxg==
+X-Received: by 2002:a63:de01:0:b0:3aa:2cf6:faf7 with SMTP id f1-20020a63de01000000b003aa2cf6faf7mr11477691pgg.224.1650512175591;
+        Wed, 20 Apr 2022 20:36:15 -0700 (PDT)
+Received: from localhost (58-6-252-72.tpgi.com.au. [58.6.252.72])
+        by smtp.gmail.com with ESMTPSA id k22-20020aa790d6000000b0050a765d5d48sm12861566pfk.160.2022.04.20.20.36.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 20:25:21 -0700 (PDT)
-Date:   Thu, 21 Apr 2022 13:25:11 +1000
+        Wed, 20 Apr 2022 20:36:14 -0700 (PDT)
+Date:   Thu, 21 Apr 2022 13:35:55 +1000
 From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
-To:     Mike Rapoport <rppt@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "ast@kernel.org" <ast@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "dborkman@redhat.com" <dborkman@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "mbenes@suse.cz" <mbenes@suse.cz>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "pmladek@suse.com" <pmladek@suse.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "song@kernel.org" <song@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-References: <20220415164413.2727220-1-song@kernel.org>
-        <YlnCBqNWxSm3M3xB@bombadil.infradead.org> <YlpPW9SdCbZnLVog@infradead.org>
-        <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
-        <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
-        <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
-        <Yl4F4w5NY3v0icfx@bombadil.infradead.org>
-        <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
-        <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
-        <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
-In-Reply-To: <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf 1/3] vmalloc: replace VM_NO_HUGE_VMAP with
+ VM_ALLOW_HUGE_VMAP
+To:     Christoph Hellwig <hch@infradead.org>, Song Liu <song@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, imbrenda@linux.ibm.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        rick.p.edgecombe@intel.com
+References: <20220411233549.740157-1-song@kernel.org>
+        <20220411233549.740157-2-song@kernel.org> <YlT9i9DFvwDx9+AD@infradead.org>
+        <CAPhsuW7XJHa3OaTT-4=33c70gUjCaWFrVe8h8J-hZetjxXeeog@mail.gmail.com>
+        <1650507506.z839xl6pvt.astroid@bobo.none>
+In-Reply-To: <1650507506.z839xl6pvt.astroid@bobo.none>
 MIME-Version: 1.0
-Message-Id: <1650511496.iys9nxdueb.astroid@bobo.none>
+Message-Id: <1650512125.tnay4e9v4h.astroid@bobo.none>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -94,22 +79,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Excerpts from Linus Torvalds's message of April 20, 2022 5:20 am:
-> On Tue, Apr 19, 2022 at 11:42 AM Mike Rapoport <rppt@kernel.org> wrote:
->>
->> I'd say that bpf_prog_pack was a cure for symptoms and this project trie=
+Excerpts from Nicholas Piggin's message of April 21, 2022 12:24 pm:
+> Excerpts from Song Liu's message of April 12, 2022 4:00 pm:
+>> On Mon, Apr 11, 2022 at 9:18 PM Christoph Hellwig <hch@infradead.org> wr=
+ote:
+>>>
+>>> On Mon, Apr 11, 2022 at 04:35:46PM -0700, Song Liu wrote:
+>>> > Huge page backed vmalloc memory could benefit performance in many cas=
+es.
+>>> > Since some users of vmalloc may not be ready to handle huge pages,
+>>> > VM_NO_HUGE_VMAP was introduced to allow vmalloc users to opt-out huge
+>>> > pages. However, it is not easy to add VM_NO_HUGE_VMAP to all the user=
 s
->> to address more general problem.
->> But you are right, it'll take some time and won't land in 5.19.
+>>> > that may try to allocate >=3D PMD_SIZE pages, but are not ready to ha=
+ndle
+>>> > huge pages properly.
+>>>
+>>> This is a good place to document what the problems are, and how they ar=
+e
+>>> hard to track down (e.g. because the allocations are passed down I/O
+>>> stacks)
+>>=20
+>> Will add it in v3.
+>>=20
+>>>
+>>> >
+>>> > Replace VM_NO_HUGE_VMAP with an opt-in flag, VM_ALLOW_HUGE_VMAP, so t=
+hat
+>>> > users that benefit from huge pages could ask specificially.
+>>> >
+>>> > Also, replace vmalloc_no_huge() with opt-in helper vmalloc_huge().
+>>>
+>>> We still need to find out what the primary users of the large vmalloc
+>>> hashes was and convert them.
+>>=20
+>> @ Claudio and Nicholas,
+>>=20
+>> Could you please help identify users of large vmalloc? So far, I found
+>> alloc_large_system_hash(), and something like the following seems to
+>> work:
 >=20
-> Just to update people: I've just applied Song's [1/4] patch, which
-> means that the whole current hugepage vmalloc thing is effectively
-> disabled (because nothing opts in).
->=20
-> And I suspect that will be the status for 5.18, unless somebody comes
-> up with some very strong arguments for (re-)starting using huge pages.
+> The large system hashes were the main ones I was interested in. IIRC=20
+> there was a few more in some drivers or tracing things depending on
+> config but those are less important (to me at least).
 
-Why not just revert fac54e2bfb5b ?
+Oh there is also a reverse map array in KVM now I think of it.
 
 Thanks,
 Nick
