@@ -2,97 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 585F550A961
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 21:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF97450A965
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 21:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382742AbiDUTmu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 15:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
+        id S231425AbiDUToF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 15:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1392059AbiDUTmb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 15:42:31 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CB34D61B
-        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 12:39:41 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id h12so2328098plf.12
-        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 12:39:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fdSJ80YjzFAv/0ifJ9BVe71E0hiRhLU7CMYyEbl2LDE=;
-        b=Wf0XH/65xo8aobvK7vVWWKFBLHP24DtzWSHV4sbERSJ4uPxVj+uJ0Y6hZyICBn502E
-         HEmE5WPySDtHq51CSQ67aSRpPLAcE27A1VvfW3ffAuA+eakjABTbCR+R5WGHE4Cut7Wt
-         FIaaSiRI0CdXeQH2hyU7Eimv0N+zbZefHsJpFWG2OMaAHbKBuHTMVgeaGCKyBLgv7Lsu
-         AENA+reaKx6Hn/EMHAwct7Qy6uJIrupgCj1lxFq67P9rMy3Vfwpg1gdBVFiX0AoH7qnL
-         LkEM/5Dcf1yRqoR7tY1EnqRgFYCHdx3R9KTlY+pvil4xsfSZnzhBtnv/1fxaK2ASPbvX
-         Cwvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fdSJ80YjzFAv/0ifJ9BVe71E0hiRhLU7CMYyEbl2LDE=;
-        b=NdGANpBdAPPgCh1ozubK2TcAsfhKE0ag1zdblCeWUxKry6DtYHj/qjRixniKe0KwfG
-         boVhKNazdAUhB0uyJrhxFMgjcXa60krqKqJj3gT+jKpf+TbNJwyYjN07h7LhrEfGNcwo
-         QRn4dY2K7s7ozQ6R2ia6EeeQVtTFrWKM9U+Ro1W/b4e4IRCKB3DwH1yFxaM1iN7YV2Pp
-         hE8Ib6HlVp0fTu3VY3kBmoCxO0dNEaVTYhktv75xFrOy1g4ZjwlhVyalj0QuQF81Wpm7
-         HWFPgOR4tUEzpWm0mPxWnnBmzq/0eNF4JTg1QI0N0gjWWRdzR5XlN2X4VHvpZj7dWld+
-         0HIA==
-X-Gm-Message-State: AOAM5306A5Sq0ubNClTj3DPDoJAV7+wSDxI0gKBzeCZ0Fn0r7SUmt3Ua
-        kcvbd5nKH29ZU7nqd2PBPrA=
-X-Google-Smtp-Source: ABdhPJw87n98lrE9Xa2vRnZ3OOtoJqkw+HjkXeuSpmZsy3q133h3zkJtsMFUhPZ/+TMJ9KxMGP6R9g==
-X-Received: by 2002:a17:90a:3e48:b0:1cd:34ec:c72f with SMTP id t8-20020a17090a3e4800b001cd34ecc72fmr12210838pjm.65.1650569980674;
-        Thu, 21 Apr 2022 12:39:40 -0700 (PDT)
-Received: from localhost ([157.49.241.21])
-        by smtp.gmail.com with ESMTPSA id b3-20020a17090a800300b001cd4989feb7sm3567062pjn.3.2022.04.21.12.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Apr 2022 12:39:40 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 01:09:53 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v5 09/13] bpf: Wire up freeing of referenced kptr
-Message-ID: <20220421193953.zlh3z532ocxpwnuu@apollo.legion>
-References: <20220415160354.1050687-1-memxor@gmail.com>
- <20220415160354.1050687-10-memxor@gmail.com>
- <20220421042651.sp45dcdzhyrbxbbg@MBP-98dd607d3435.dhcp.thefacebook.com>
+        with ESMTP id S232840AbiDUToB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 15:44:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE984B87F;
+        Thu, 21 Apr 2022 12:41:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 66FA6B823F3;
+        Thu, 21 Apr 2022 19:41:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A644C385A5;
+        Thu, 21 Apr 2022 19:41:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650570068;
+        bh=ntFE53p9Qvm/OfNU4+7MbHF6ffpndaoZRWXP15X8/44=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=U6A8w2kIaR4rJ1fCtXKRialGvxNMKx7SOP2BThd7NjCisYDwRYtM/EmpLmDc5I1kE
+         y83SO568wSzu51M5vYPxitcCX5rxQiT5ZkS+M8Ux0Dtb6gzy8ZMiOci0uD588JdopU
+         VtcdMmpp9ML+B6fo268mIPOxuUBkiaLqr1u82TdS7ne/pP3grdIvSe+3lbefGZyV02
+         AhhLePzwv0c+8gL6jFyC2/4XZHdpnN43ZlYjkXv0YFUo4kvpamX4/Ty0WYmHh0MyuW
+         L/rXhPxovhlws+6aax+2fO7BG+r2iuY1NcLNHkiD9GpbdeP0RNR2EYBWnP+Y71js9F
+         6CsOGmjxTVgDQ==
+Received: by mail-yb1-f178.google.com with SMTP id b26so4950255ybj.13;
+        Thu, 21 Apr 2022 12:41:08 -0700 (PDT)
+X-Gm-Message-State: AOAM5334hw/e1llg32ZFu50OCuUXiYwc+QWDGJ08LReu21ySGXukIrpN
+        uzYVvjkC4HLaxx9R1SF9kAPQ6n4i8xeamGADgdw=
+X-Google-Smtp-Source: ABdhPJwiyImZimNqRZqXCUsmgQavJEPUZ7SAYyM2AhZ42Hk0FpySohvV8lD5LNrh+33hAbGhLLJsR3LnGiQAF6o0Ric=
+X-Received: by 2002:a05:6902:114c:b0:641:87a7:da90 with SMTP id
+ p12-20020a056902114c00b0064187a7da90mr1356895ybu.561.1650570067256; Thu, 21
+ Apr 2022 12:41:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220421042651.sp45dcdzhyrbxbbg@MBP-98dd607d3435.dhcp.thefacebook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220421072212.608884-1-song@kernel.org> <CAHk-=wi3eu8mdKmXOCSPeTxABVbstbDg1q5Fkak+A9kVwF+fVw@mail.gmail.com>
+ <CAADnVQKyDwXUMCfmdabbVE0vSGxdpqmWAwHRBqbPLW=LdCnHBQ@mail.gmail.com> <CAHk-=whFeBezdSrPy31iYv-UZNnNavymrhqrwCptE4uW8aeaHw@mail.gmail.com>
+In-Reply-To: <CAHk-=whFeBezdSrPy31iYv-UZNnNavymrhqrwCptE4uW8aeaHw@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 21 Apr 2022 12:40:56 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7M6exGD3C1cPBGjhU0Y5efxtJ3=0BWNnbuH87TgQMzdg@mail.gmail.com>
+Message-ID: <CAPhsuW7M6exGD3C1cPBGjhU0Y5efxtJ3=0BWNnbuH87TgQMzdg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: invalidate unused part of bpf_prog_pack
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 21, 2022 at 09:56:51AM IST, Alexei Starovoitov wrote:
-> On Fri, Apr 15, 2022 at 09:33:50PM +0530, Kumar Kartikeya Dwivedi wrote:
-> >  	return 0;
-> >  }
-> > @@ -386,6 +388,7 @@ static void array_map_free_timers(struct bpf_map *map)
-> >  	struct bpf_array *array = container_of(map, struct bpf_array, map);
-> >  	int i;
+Hi Linus,
+
+On Thu, Apr 21, 2022 at 11:59 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, Apr 21, 2022 at 11:24 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > +	/* We don't reset or free kptr on uref dropping to zero. */
-> >  	if (likely(!map_value_has_timer(map)))
+> > Let's not complicate the logic by dragging jit_fill_hole
+> > further into generic allocation.
 >
-> It was a copy paste mistake of mine to use likely() here in a cold
-> function. Let's not repeat it.
+> I agree that just zeroing the page is probably perfectly fine in
+> practice on x86, but I'm also not really seeing the "complication" of
+> just doing things right.
 >
+> > The existing bpf_prog_pack code still does memset(0xcc)
+> > a random range of bytes before and after jit-ed bpf code.
+>
+> That is actually wishful thinking, and not based on reality.
+>
+> From what I can tell, the end of the jit'ed bpf code is actually the
+> exception table entries, so we have that data being marked executable.
+>
+> Honestly, what is wrong with this trivial patch?
 
-Ok, will remove this and all the following ones that you pointed out.
+This version would fill the memory with illegal instruction when we
+allocate the bpf_prog_pack.
 
-> > [...]
+The extra logic I had in the original patch was to erase the memory
+when a BPF program is freed. In this case, the memory will be
+returned to the bpf_prog_pack, and stays as RO+X. Actually, I
+am not quite sure whether we need this logic. If not, we only need
+the much simpler version.
 
---
-Kartikeya
+Thanks,
+Song
