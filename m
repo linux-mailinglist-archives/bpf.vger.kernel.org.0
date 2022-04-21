@@ -2,50 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D887850A646
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 18:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414B150A659
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 18:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbiDUQ4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 12:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
+        id S1384192AbiDUQ6K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 12:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbiDUQ4S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 12:56:18 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850E949907;
-        Thu, 21 Apr 2022 09:53:28 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nha3X-0008eV-6I; Thu, 21 Apr 2022 18:53:23 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nha3W-000O6u-TK; Thu, 21 Apr 2022 18:53:22 +0200
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix prog_tests/uprobe_autoattach
- compilation error
-To:     Artem Savkov <asavkov@redhat.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20220421132317.1583867-1-asavkov@redhat.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e5919342-0697-65f0-063f-4941e74fe1ca@iogearbox.net>
-Date:   Thu, 21 Apr 2022 18:53:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S1385664AbiDUQ6J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 12:58:09 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A61DF06;
+        Thu, 21 Apr 2022 09:55:19 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id g21so5927812iom.13;
+        Thu, 21 Apr 2022 09:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LaCuNqz23w9a5w7Pz3RIjEiDWBgRwylEstU9JveB5lk=;
+        b=YyiGvUT/avLzwSpdf6qDyTEgpemoWsOeN6neVUe5AYsTTUMzchfT6vUlpkSu2h0JkF
+         0wiuNKeGvoE8NWiaO+bDIw1cXDaZRNlM5MNhMpFWMEg6IVd0dgL/HTjTrEvJQi6cNi4p
+         lOXvvI/Cdxzaa7LT3CG7LiQxYBVhuQH4W3g4uEK5lBLjl51Z0Q/dHhYPday992oPMg1R
+         4YUue0oCAvN8M/8/8E9NZm0YHI4s0HQkEk3BHP+/UYFCy3IyzQOvdQW2r0Ne/em2exRR
+         rpa/8auoJL8aFJidQHjp7/BxKsU2stm6qWFQ5G4O85REvAVNoSsYMi6TS3yw30STxf4X
+         XZQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LaCuNqz23w9a5w7Pz3RIjEiDWBgRwylEstU9JveB5lk=;
+        b=CYWeyjSR98lkVDETFCmtioo1Ieu3yGeqmSvIDhl7+Xq9lb4QWJJrjwF3PaF0xyv2MZ
+         w3G8lRVNy9YzWdMGhXoI8olHuQPhFhr07+sq6YOKIqnxr/JG2OVnSPhxNJdLr7jadzLD
+         woVIt5kNUUvxXKOZgzXnAZeB+sO7Q0SmafBTLT+6TLVAcNooyWn4IP8rW78q9hUX8CHG
+         WbBRQNZZ0G3b4CCM0CTQ2V89NUXywEopYNFNbO6FoQAjBmdzzosWfbHjvYds+1RKFUa3
+         wZyZ0iI0drxevhdzGcM4KQBVoIgzUt4HFwvl/MdxI+y1gkzDDvAbx6vIgVTO4m1Y05oX
+         WZWQ==
+X-Gm-Message-State: AOAM533SqQ7RiZnnero7lXywkAc7KpOesDbEPivofU7cR4h6ZY90RL0O
+        5apksa/4iSxHacHiLA5B8/ZRV5eXr88ekMUTyDI=
+X-Google-Smtp-Source: ABdhPJynbin9/LS+2C2qfpD575v+NmYefKbZcieEnacGzcACE8ZeWO0BN3dqJIhMcKBsw7w2uOlxWbYv629Bdvf99yw=
+X-Received: by 2002:a05:6638:3393:b0:32a:93cd:7e48 with SMTP id
+ h19-20020a056638339300b0032a93cd7e48mr277380jav.93.1650560119063; Thu, 21 Apr
+ 2022 09:55:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20220421132317.1583867-1-asavkov@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26519/Thu Apr 21 10:23:36 2022)
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20220421130056.2510372-1-cuigaosheng1@huawei.com>
+In-Reply-To: <20220421130056.2510372-1-cuigaosheng1@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 21 Apr 2022 09:55:08 -0700
+Message-ID: <CAEf4Bza3inoAHsS0w=nKXNgxyFqzPXJVyDHq03Foody6Vgp7=Q@mail.gmail.com>
+Subject: Re: [PATCH -next] libbpf: Add additional null-pointer checking in make_parent_dir
+To:     Gaosheng Cui <cuigaosheng1@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        gongruiqi1@huawei.com, wangweiyang2@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,50 +72,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/21/22 3:23 PM, Artem Savkov wrote:
-> I am getting the following compilation error for prog_tests/uprobe_autoattach.c
-> 
-> tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c: In function ‘test_uprobe_autoattach’:
-> ./test_progs.h:209:26: error: pointer ‘mem’ may be used after ‘free’ [-Werror=use-after-free]
-> 
-> mem variable is now used in one of the asserts so it shouldn't be freed right
-> away. Move free(mem) after the assert block.
-
-Looks good, but I rephrased this a bit to avoid confusion. It's false positive given we
-only compare the addresses but don't deref mem, which the compiler might not be able to
-follow in this case.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=6a12b8e20d7e72386594a9dbe7bf2d7fae3b3aa6
-
-Thanks,
-Daniel
-
-> Fixes: 1717e248014c ("selftests/bpf: Uprobe tests should verify param/return values")
-> Signed-off-by: Artem Savkov <asavkov@redhat.com>
+On Thu, Apr 21, 2022 at 6:01 AM Gaosheng Cui <cuigaosheng1@huawei.com> wrote:
+>
+> The make_parent_dir is called without null-pointer checking for path,
+> such as bpf_link__pin. To ensure there is no null-pointer dereference
+> in make_parent_dir, so make_parent_dir requires additional null-pointer
+> checking for path.
+>
+> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
 > ---
->   tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c b/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
-> index d6003dc8cc99..35b87c7ba5be 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
-> @@ -34,7 +34,6 @@ void test_uprobe_autoattach(void)
->   
->   	/* trigger & validate shared library u[ret]probes attached by name */
->   	mem = malloc(malloc_sz);
-> -	free(mem);
->   
->   	ASSERT_EQ(skel->bss->uprobe_byname_parm1, trigger_val, "check_uprobe_byname_parm1");
->   	ASSERT_EQ(skel->bss->uprobe_byname_ran, 1, "check_uprobe_byname_ran");
-> @@ -44,6 +43,8 @@ void test_uprobe_autoattach(void)
->   	ASSERT_EQ(skel->bss->uprobe_byname2_ran, 3, "check_uprobe_byname2_ran");
->   	ASSERT_EQ(skel->bss->uretprobe_byname2_rc, mem, "check_uretprobe_byname2_rc");
->   	ASSERT_EQ(skel->bss->uretprobe_byname2_ran, 4, "check_uretprobe_byname2_ran");
+>  tools/lib/bpf/libbpf.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index b53e51884f9e..5786e6184bf5 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -7634,6 +7634,9 @@ static int make_parent_dir(const char *path)
+>         char *dname, *dir;
+>         int err = 0;
+>
+> +       if (path == NULL)
+> +               return -EINVAL;
 > +
-> +	free(mem);
->   cleanup:
->   	test_uprobe_autoattach__destroy(skel);
->   }
-> 
 
+API contract is that path shouldn't be NULL. Just like we don't check
+link, obj, prog for NULL in every single API, I don't think we need to
+do it here, unless I'm missing something?
+
+>         dname = strdup(path);
+>         if (dname == NULL)
+>                 return -ENOMEM;
+> --
+> 2.25.1
+>
