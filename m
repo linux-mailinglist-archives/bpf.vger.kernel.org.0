@@ -2,104 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 571EC50ABD9
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 01:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E7C50ABE1
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 01:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441864AbiDUXNU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 19:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S1442091AbiDUXUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 19:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379294AbiDUXNT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 19:13:19 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A691C49CA1
-        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 16:10:28 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id bu29so11332497lfb.0
-        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 16:10:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k9JybJT2MUROhf8pXoPS8XkN0ZGy3V7ewjH68Jql+aU=;
-        b=VhYyTtKdaoYxY+fMOA+egYbT4WrtkmFjY76dbsxzRSWoHTG/cSVc24ZCYgchDZSOz1
-         MsijtCP0I6WMYg7UTTPiFMnRrpN5SQ+bpWkwoVvUM6FEDJ0ZxJlNVJS9Vyyk5H+kkyqH
-         buc9rlIV/CBil6cdYtZs910FWMSW20lCdOP2A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k9JybJT2MUROhf8pXoPS8XkN0ZGy3V7ewjH68Jql+aU=;
-        b=HGbT8UlZXkEDgL/gS+n/8sjgKPcvOfzGAYAEX9rKoy8RhxhG/7goqjfDnAjICZMjZh
-         JXs/OLuJkPNPTCO2cmA7RyCjBfvATns1XueizMndRa9Y4gRZdnwxMhE/e7370e9fbcnn
-         yeJ9YhZCqn5bCftf3SDcUKVPjJEMRCAy6lKbOsBGjJLDyc/7CLXnnwlITTt3N+FFWL3Y
-         UcRJIt9DzDJG9aOTTM/+z9uBkEJPREjNGrYc2oofurU+S5iu7P0YFIdr7szOCyQ7+XK6
-         BThUjkHc6LESTaPKcE7Z/QFAKPpp+BtDqRR4ZoUwt7wVS4YjpHC3bRjjIUt6n6la12Xc
-         4PuQ==
-X-Gm-Message-State: AOAM532Eulh8/JUCdJg0u/MyjF9yRiiNGOKzoLqjS47oO8sj877pxt7j
-        YD2NnNThdf0lsWYWOv5dEzzSX868KcDhrn0la2o=
-X-Google-Smtp-Source: ABdhPJzBE51J0FGzRHtcaEE1Ap608VJz+n7s0wbotTdHnkTAg0yzD8SAFmgNMKA8Q3mHn8ygSkTZxA==
-X-Received: by 2002:a05:6512:22c8:b0:471:a3dd:9e3b with SMTP id g8-20020a05651222c800b00471a3dd9e3bmr1174797lfu.308.1650582626749;
-        Thu, 21 Apr 2022 16:10:26 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id e1-20020a196741000000b0046bc4be1d60sm39037lfj.123.2022.04.21.16.10.23
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Apr 2022 16:10:24 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id x17so11257299lfa.10
-        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 16:10:23 -0700 (PDT)
-X-Received: by 2002:a05:6512:108b:b0:470:90b9:fb51 with SMTP id
- j11-20020a056512108b00b0047090b9fb51mr1151040lfg.52.1650582623375; Thu, 21
- Apr 2022 16:10:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220421072212.608884-1-song@kernel.org> <CAHk-=wi3eu8mdKmXOCSPeTxABVbstbDg1q5Fkak+A9kVwF+fVw@mail.gmail.com>
- <CAADnVQKyDwXUMCfmdabbVE0vSGxdpqmWAwHRBqbPLW=LdCnHBQ@mail.gmail.com>
- <CAHk-=whFeBezdSrPy31iYv-UZNnNavymrhqrwCptE4uW8aeaHw@mail.gmail.com>
- <CAPhsuW7M6exGD3C1cPBGjhU0Y5efxtJ3=0BWNnbuH87TgQMzdg@mail.gmail.com>
- <CAHk-=wh1mO5HdrOMTq68WHM51-=jdmQS=KipVYxS+5u3uRc5rg@mail.gmail.com>
- <1A4FF473-0988-48BE-9993-0F5E9F0AAC95@fb.com> <CAHk-=wi62LDc5B3DOr5pyVtOUOuLkLzHvmZQApH9q=raqaGkUg@mail.gmail.com>
- <8F788446-899C-4BA3-8236-612A94D98582@fb.com>
-In-Reply-To: <8F788446-899C-4BA3-8236-612A94D98582@fb.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 21 Apr 2022 16:10:07 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgW2vxREeH0Bgr8hGxVavfRsNAX3cyaS9eCcg9A77zhLw@mail.gmail.com>
-Message-ID: <CAHk-=wgW2vxREeH0Bgr8hGxVavfRsNAX3cyaS9eCcg9A77zhLw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: invalidate unused part of bpf_prog_pack
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Song Liu <song@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1392628AbiDUXUO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 19:20:14 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ADA30F7C;
+        Thu, 21 Apr 2022 16:17:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C05A6B82978;
+        Thu, 21 Apr 2022 23:17:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D4DC385A7;
+        Thu, 21 Apr 2022 23:17:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650583041;
+        bh=7ZTWzXdUo5/Xd7sMk8LeC/OokYQbt6jUM/9BzNl6nzE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=RztVbP8GpwM+JTXX3VkA9TnF2nqs3mHWbjmq1xYgvV7mVOOuSqtIru9fsvUp3Q7TA
+         joWQqv0XEJi5aD8/R091tZWrZCz/aUdIJN3aw/Vl64QSBk6LwtN3wgTeWbH6U1sX6T
+         TMz6B95UNhhO9CxtqCx8eylAtXztmpTzfctD3bedwoeNj4mdH2LY5gj2DwOV9eDleX
+         KEQlJQ3VWYZamtEZ0PCDH5SL12AfyvZGREelL5+6aMhbeuJ+Ph/F3aw7Qsk8pJx7IE
+         rbg8ke58jGo7Zh6EzLU1YystwtWkkuuk8cLnqoWi3pUqi0tTSraFw5La+7x1g48PAJ
+         UhO+B6nhYKBAQ==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 45F562D1E68; Fri, 22 Apr 2022 01:17:18 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf 00/11] bpf: random unpopular userspace fixes (32
+ bit et al)
+In-Reply-To: <20220421223201.322686-1-alobakin@pm.me>
+References: <20220421003152.339542-1-alobakin@pm.me>
+ <CAADnVQJJiBO5T3dvYaifhu3crmce7CH9b5ioc1u4=Y25SUxVRA@mail.gmail.com>
+ <20220421223201.322686-1-alobakin@pm.me>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 22 Apr 2022 01:17:18 +0200
+Message-ID: <871qxqgh6p.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 21, 2022 at 3:52 PM Song Liu <songliubraving@fb.com> wrote:
+Alexander Lobakin <alobakin@pm.me> writes:
+
+> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Date: Wed, 20 Apr 2022 17:40:34 -0700
 >
-> I think this won=E2=80=99t work, as set_memory_ro makes all the aliases o=
-f
-> these pages read only.
+>> On Wed, Apr 20, 2022 at 5:38 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>>
+>> Again?
+>>
+>> -----BEGIN PGP MESSAGE-----
+>> Version: ProtonMail
+>>
+>> wcFMA165ASBBe6s8AQ/8C9y4TqXgASA5xBT7UIf2GyTQRjKWcy/6kT1dkjkF
+>> FldAOhehhgLYjLJzNAIkecOQfz/XNapW3GdrQDq11pq9Bzs1SJJekGXlHVIW
+>>
+>> Sorry I'm tossing the series out of patchwork.
+>
+> Oh sorry, I was hoping upgrading Bridge would help >_<
+>
+> Let me know if you're reading this particular message in your inbox
+> finely. Toke guessed it precisely regarding the per-recipient lists
+> -- Proton by default saves every address I've ever sent mails to to
+> Contacts and then tries to fetch PGP public keys for each contact.
+> Again, for some reason, for a couple addresses, including
+> ast@kernel.org, it managed to fetch something, but that something
+> was sorta broken. So at the end I've been having broken PGP for
+> the address I've never manually set or ev
+> en wanted PGP.
+> If it's still messed, I'll contact support then. Sorry again for
+> this.
 
-Argh. I thought we only did that for the whole memory type thing
-(history: nasty machine checks possible on some hardware if you mix
-memory types for the same physical page with virtual mappings), but if
-we do it for RO too, then yeah.
+Heh, yeah, now that I was in the direct Cc list, I got your message in
+encrypted form as well. So, erm, I'm reading it "fine" now that I
+figured out how to get my MUA to decrypt it. Probably not what you want
+for patch submissions, though... :P
 
-It's sad to use that horrid machinery for basically non-live code, but
-whatever.
-
-                  Linus
+-Toke
