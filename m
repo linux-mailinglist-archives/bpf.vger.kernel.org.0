@@ -2,93 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7D350972F
-	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 08:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625AE50973F
+	for <lists+bpf@lfdr.de>; Thu, 21 Apr 2022 08:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353216AbiDUGMe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 02:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        id S1384653AbiDUGQW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 02:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384690AbiDUGMd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 02:12:33 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03BB13CDB
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 23:09:44 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id g18so7801537ejc.10
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 23:09:44 -0700 (PDT)
+        with ESMTP id S232573AbiDUGQV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 02:16:21 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C33A13CE7
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 23:13:32 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id y85so4274218iof.3
+        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 23:13:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NVUWs35f4WE+aWC7FcpSq4pfrFchzLzCfgbNdTOWfy8=;
-        b=VBqyRxaQG527a7fx7AgAznM8UUHxBASgzvSF4gmMRD4VYJdHUiSNVoPhgu42LoOYtS
-         y6gPAHVOwwUd483vHIRxh7hbgdA8HsUg/bgP6y7Dqxs90ng2yo25hED4GNEKdgjsdXXY
-         mUFQ/gnQ78Lay0jv9vKeHJr4kI/tgiaSFRcic=
+         :cc:content-transfer-encoding;
+        bh=KONlZNdf5QFIemCpjdqqAhLkSWWbJEOods7Lxw/EgCQ=;
+        b=hDN/xXH59NY5RoXTW3xhto+Rw43wOrxW0cfYfE+en2v0LrPsFbnLV2vrOhVATSvjlI
+         Wq+0icCEEnTQIFhs/iaQBi5YHL8Wkeg84UAbQpwH5wpNQmnuXfrzD91apUfi339mOevJ
+         XCYCs6E5BSvDJN9CNvn2oGkXQchoc4u/X/Q6stizrofaGHqCG11Clt7R8f2LEq1e3uX2
+         2B+IqbMRFDNYvnyHZv01yEHkNCDdEtjhzjvDBLAs7IHNzm68s5MFm6m3fc1iXdBuNEs6
+         Ud9U8nbMEeItThpmsYovz6gR6pUb2S3mScz9/HRvrDUxBvOEf5yT27Dq7aUtGZ/dCyFF
+         3eUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NVUWs35f4WE+aWC7FcpSq4pfrFchzLzCfgbNdTOWfy8=;
-        b=Qg0PtfF5aL/ZuaMdBQu7873mE1G171zMKvZxC05g5sZC3bpVzTu7T1+HSN7jVKGEXZ
-         Yr9hANDB5DRW9urJpQx5gdbr1RHK4/XccL93mu55I3gMgg8GkWzIfO9YUI9e+3qa/fLq
-         KYFj1KbOUkLaFQKkUAX6Ppa1E1z/8SRo7CgvbQyah2RvnDYH89R32lGlYJJIFZXHELt3
-         8MuwvaowMuLTfujKEfEPgfMaD9YIXpIxcdJSdX1KkTgDihtqhlJM2uz5QVugJy0QNaIR
-         uApX789auu6+GULby97wT+/SfnUQoI5W4XhtyCEyia0md/XRmhHOL0aR5MsNV1soNUFR
-         GAbA==
-X-Gm-Message-State: AOAM532Y3RkJH6KvUMiMj+j+25GzGVjiFdxdlxsknXeVdAVuEiWC0tMQ
-        QWZa6ppYwvHluB7t6pnc7yM7Roa/tkvwCLomS7A=
-X-Google-Smtp-Source: ABdhPJwGhPKlH3PeL8MJAvJtLbMBYJFyUuKDBQwjNayFgvh810Rl0M2KV6GVDuDkgcE25L4h+m34kA==
-X-Received: by 2002:a17:907:8a14:b0:6e8:9691:62f7 with SMTP id sc20-20020a1709078a1400b006e8969162f7mr21921710ejc.497.1650521382972;
-        Wed, 20 Apr 2022 23:09:42 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id l17-20020a056402231100b0041d98ed7ad8sm11074669eda.46.2022.04.20.23.09.42
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Apr 2022 23:09:42 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id y20so7821214eju.7
-        for <bpf@vger.kernel.org>; Wed, 20 Apr 2022 23:09:42 -0700 (PDT)
-X-Received: by 2002:a2e:91d9:0:b0:24d:c221:4941 with SMTP id
- u25-20020a2e91d9000000b0024dc2214941mr9547564ljg.164.1650520984267; Wed, 20
- Apr 2022 23:03:04 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KONlZNdf5QFIemCpjdqqAhLkSWWbJEOods7Lxw/EgCQ=;
+        b=5nqfaj6PjsdCqXQhYGRDXOgXhrYQ/Dm+r5kkjflv2CL5ul+iQ/R8FCs0stUxEEqtHX
+         zmD/cnnwrrz02pNLszUS4F62vhHEOzx+4HzBZKd7zyMzsiefjHWkyHerxKk9Nx6toOW/
+         9Af6uTu2xC5e9q/GkK4Zo258gcdh70zMGUHirM3HUvNld9W5yLtg+fFKW+uPlVy1z2PR
+         iC3P28vs/hnpoAxJ2lEKoKA0w3DQNfy5aSdQGTCrY5j+0y3aI8uPgRGSAO2cX5v/kEhH
+         3OAtzoE28Fy9JvgPCOmCvFHOeO0lHEzWzo1I6Jzb1Embpz5uMPROjWVNXNb5zFtsm7lu
+         L1wg==
+X-Gm-Message-State: AOAM531mcof6zUtyudcb6i3Csd5w+KZdD5WLniV/BxtLDxwd/1EyD863
+        IQisnL6P19jfOfd7OrPUQuSiYQDA3JJ2W7NjhD+4JcQffHoEHQ==
+X-Google-Smtp-Source: ABdhPJzGSZwY8TxZVoZ1Qt2+pGxk0nt01IArndFdBu5fabwBdtVe/nvOoTvj/SInPrTyAqOdZMv2KLv4UM09RqD9sWI=
+X-Received: by 2002:a05:6638:d01:b0:323:cefe:f1b8 with SMTP id
+ q1-20020a0566380d0100b00323cefef1b8mr11706198jaj.292.1650521610265; Wed, 20
+ Apr 2022 23:13:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220415164413.2727220-1-song@kernel.org> <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
- <YlpPW9SdCbZnLVog@infradead.org> <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
- <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
- <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
- <Yl4F4w5NY3v0icfx@bombadil.infradead.org> <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
- <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
- <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
- <1650511496.iys9nxdueb.astroid@bobo.none> <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 20 Apr 2022 23:02:48 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjYabTPnKiHgVzeKCaRkQaGVunwPbS+QeVb09Bm=YUEow@mail.gmail.com>
-Message-ID: <CAHk-=wjYabTPnKiHgVzeKCaRkQaGVunwPbS+QeVb09Bm=YUEow@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "ast@kernel.org" <ast@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "dborkman@redhat.com" <dborkman@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "mbenes@suse.cz" <mbenes@suse.cz>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "pmladek@suse.com" <pmladek@suse.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "song@kernel.org" <song@kernel.org>,
-        Song Liu <songliubraving@fb.com>
+References: <20220418013136.26098-1-fankaixi.li@bytedance.com>
+ <20220418013136.26098-3-fankaixi.li@bytedance.com> <CAADnVQLb6OgsUU-2=uksX8kTTxsmqwHd3C3wCfftLszffX5ELQ@mail.gmail.com>
+ <CAEEdnKFMH_6V2rVm8JxX=JUR+XQb1CowrZdfiT41sDVAj86qVg@mail.gmail.com> <CAEf4BzZhEV6FQRyXhCwNgJO5fpFnkxpYFjxa5u9O1B2g1NycsQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZhEV6FQRyXhCwNgJO5fpFnkxpYFjxa5u9O1B2g1NycsQ@mail.gmail.com>
+From:   =?UTF-8?B?6IyD5byA5Zac?= <fankaixi.li@bytedance.com>
+Date:   Thu, 21 Apr 2022 14:13:19 +0800
+Message-ID: <CAEEdnKHMBraHHOcqHei3cBXL4qoTj5YOhGYyQeZtZW-8mVbD6w@mail.gmail.com>
+Subject: Re: [External] [PATCH bpf-next v4 2/3] selftests/bpf: move vxlan
+ tunnel testcases to test_progs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,32 +74,240 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 10:48 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> =E4=BA=8E2022=E5=B9=B44=E6=9C=
+=8821=E6=97=A5=E5=91=A8=E5=9B=9B 06:07=E5=86=99=E9=81=93=EF=BC=9A
 >
-> The lagepage thing needs to be opt-in, and needs a lot more care.
+> On Wed, Apr 20, 2022 at 1:23 AM =E8=8C=83=E5=BC=80=E5=96=9C <fankaixi.li@=
+bytedance.com> wrote:
+> >
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> =E4=BA=8E2022=E5=B9=
+=B44=E6=9C=8820=E6=97=A5=E5=91=A8=E4=B8=89 00:58=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Sun, Apr 17, 2022 at 6:32 PM <fankaixi.li@bytedance.com> wrote:
+> > > >
+> > > > From: Kaixi Fan <fankaixi.li@bytedance.com>
+> > > >
+> > > > Move vxlan tunnel testcases from test_tunnel.sh to test_progs.
+> > > > And add vxlan tunnel source testcases also. Other tunnel testcases
+> > > > will be moved to test_progs step by step in the future.
+> > > > Rename bpf program section name as SEC("tc") because test_progs
+> > > > bpf loader could not load sections with name SEC("gre_set_tunnel").
+> > > > Because of this, add bpftool to load bpf programs in test_tunnel.sh=
+.
+> > > >
+> > > > Signed-off-by: Kaixi Fan <fankaixi.li@bytedance.com>
+> > > > ---
+> > > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 461 ++++++++++++++=
+++++
+> > > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 155 ++++--
+> > > >  tools/testing/selftests/bpf/test_tunnel.sh    | 124 +----
+> > > >  3 files changed, 577 insertions(+), 163 deletions(-)
+> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tun=
+nel.c
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b=
+/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> > > > new file mode 100644
+> > > > index 000000000000..8d3efe163f68
+> > > > --- /dev/null
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> > > > @@ -0,0 +1,461 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+> > > > +
+> > > > +/*
+> > > > + * End-to-end eBPF tunnel test suite
+> > > > + *   The file tests BPF network tunnel implementation.
+> > > > + *
+> > > > + * Topology:
+> > > > + * ---------
+> > > > + *     root namespace   |     at_ns0 namespace
+> > > > + *                       |
+> > > > + *       -----------     |     -----------
+> > > > + *       | tnl dev |     |     | tnl dev |  (overlay network)
+> > > > + *       -----------     |     -----------
+> > > > + *       metadata-mode   |     native-mode
+> > > > + *        with bpf       |
+> > > > + *                       |
+> > > > + *       ----------      |     ----------
+> > > > + *       |  veth1  | --------- |  veth0  |  (underlay network)
+> > > > + *       ----------    peer    ----------
+> > > > + *
+> > > > + *
+> > > > + *  Device Configuration
+> > > > + *  --------------------
+> > > > + *  root namespace with metadata-mode tunnel + BPF
+> > > > + *  Device names and addresses:
+> > > > + *     veth1 IP 1: 172.16.1.200, IPv6: 00::22 (underlay)
+> > > > + *             IP 2: 172.16.1.20, IPv6: 00::bb (underlay)
+> > > > + *     tunnel dev <type>11, ex: gre11, IPv4: 10.1.1.200, IPv6: 1::=
+22 (overlay)
+> > > > + *
+> > > > + *  Namespace at_ns0 with native tunnel
+> > > > + *  Device names and addresses:
+> > > > + *     veth0 IPv4: 172.16.1.100, IPv6: 00::11 (underlay)
+> > > > + *     tunnel dev <type>00, ex: gre00, IPv4: 10.1.1.100, IPv6: 1::=
+11 (overlay)
+> > > > + *
+> > > > + *
+> > > > + * End-to-end ping packet flow
+> > > > + *  ---------------------------
+> > > > + *  Most of the tests start by namespace creation, device configur=
+ation,
+> > > > + *  then ping the underlay and overlay network.  When doing 'ping =
+10.1.1.100'
+> > > > + *  from root namespace, the following operations happen:
+> > > > + *  1) Route lookup shows 10.1.1.100/24 belongs to tnl dev, fwd to=
+ tnl dev.
+> > > > + *  2) Tnl device's egress BPF program is triggered and set the tu=
+nnel metadata,
+> > > > + *     with local_ip=3D172.16.1.200, remote_ip=3D172.16.1.100. BPF=
+ program choose
+> > > > + *     the primary or secondary ip of veth1 as the local ip of tun=
+nel. The
+> > > > + *     choice is made based on the value of bpf map local_ip_map.
+> > > > + *  3) Outer tunnel header is prepended and route the packet to ve=
+th1's egress.
+> > > > + *  4) veth0's ingress queue receive the tunneled packet at namesp=
+ace at_ns0.
+> > > > + *  5) Tunnel protocol handler, ex: vxlan_rcv, decap the packet.
+> > > > + *  6) Forward the packet to the overlay tnl dev.
+> > > > + */
+> > > > +
+> > > > +#include <arpa/inet.h>
+> > > > +#include <linux/if.h>
+> > > > +#include <linux/if_tun.h>
+> > > > +#include <linux/limits.h>
+> > > > +#include <linux/sysctl.h>
+> > > > +#include <linux/time_types.h>
+> > > > +#include <linux/net_tstamp.h>
+> > > > +#include <stdbool.h>
+> > > > +#include <stdio.h>
+> > > > +#include <sys/stat.h>
+> > > > +#include <unistd.h>
+> > > > +
+> > > > +#include "test_progs.h"
+> > > > +#include "network_helpers.h"
+> > > > +#include "test_tunnel_kern.skel.h"
+> > > > +
+> > > > +#define IP4_ADDR_VETH0 "172.16.1.100"
+> > > > +#define IP4_ADDR1_VETH1 "172.16.1.200"
+> > > > +#define IP4_ADDR2_VETH1 "172.16.1.20"
+> > > > +#define IP4_ADDR_TUNL_DEV0 "10.1.1.100"
+> > > > +#define IP4_ADDR_TUNL_DEV1 "10.1.1.200"
+> > > > +
+> > > > +#define IP6_ADDR_VETH0 "::11"
+> > > > +#define IP6_ADDR1_VETH1 "::22"
+> > > > +#define IP6_ADDR2_VETH1 "::bb"
+> > > > +
+> > > > +#define IP4_ADDR1_HEX_VETH1 0xac1001c8
+> > > > +#define IP4_ADDR2_HEX_VETH1 0xac100114
+> > > > +#define IP6_ADDR1_HEX_VETH1 0x22
+> > > > +#define IP6_ADDR2_HEX_VETH1 0xbb
+> > > > +
+> > > > +#define MAC_TUNL_DEV0 "52:54:00:d9:01:00"
+> > > > +#define MAC_TUNL_DEV1 "52:54:00:d9:02:00"
+> > > > +
+> > > > +#define VXLAN_TUNL_DEV0 "vxlan00"
+> > > > +#define VXLAN_TUNL_DEV1 "vxlan11"
+> > > > +#define IP6VXLAN_TUNL_DEV0 "ip6vxlan00"
+> > > > +#define IP6VXLAN_TUNL_DEV1 "ip6vxlan11"
+> > > > +
+> > > > +#define INGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/tunnel/test_tunnel_i=
+ngress"
+> > > > +#define EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/tunnel/test_tunnel_eg=
+ress"
+> > > > +
+> > > > +#define PING_ARGS "-c 3 -w 10 -q"
+> > > > +
+> > > > +#define SYS(fmt, ...)                                          \
+> > > > +       ({                                                      \
+> > > > +               char cmd[1024];                                 \
+> > > > +               snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__); \
+> > > > +               if (!ASSERT_OK(system(cmd), cmd))               \
+> > > > +                       goto fail;                              \
+> > > > +       })
+> > > > +
+> > > > +#define SYS_NOFAIL(fmt, ...)                                   \
+> > > > +       ({                                                      \
+> > > > +               char cmd[1024];                                 \
+> > > > +               snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__); \
+> > > > +               system(cmd);                                    \
+> > > > +       })
+> > > > +
+> > > > +static int config_device(void)
+> > > > +{
+> > > > +       SYS("ip netns add at_ns0");
+> > > > +       SYS("ip link add veth0 type veth peer name veth1");
+> > > > +       SYS("ip link set veth0 netns at_ns0");
+> > > > +       SYS("ip addr add " IP4_ADDR1_VETH1 "/24 dev veth1");
+> > > > +       SYS("ip link set dev veth1 up mtu 1500");
+> > > > +       SYS("ip netns exec at_ns0 ip addr add " IP4_ADDR_VETH0 "/24=
+ dev veth0");
+> > > > +       SYS("ip netns exec at_ns0 ip link set dev veth0 up mtu 1500=
+");
+> > > > +
+> > > > +       return 0;
+> > > > +fail:
+> > > > +       return -1;
+> > > > +}
+> > > > +
+> > > > +static void cleanup(void)
+> > > > +{
+> > > > +       SYS_NOFAIL("rm -rf " INGRESS_PROG_PIN_FILE);
+> > > > +       SYS_NOFAIL("rm -rf " EGRESS_PROG_PIN_FILE);
+> > > > +       SYS_NOFAIL("rm -rf /sys/fs/bpf/tc/tunnel");
+> > > > +
+> > > > +       SYS_NOFAIL("ip netns delete at_ns0");
+> > > > +       SYS_NOFAIL("ip link del veth1 2> /dev/null");
+> > > > +       SYS_NOFAIL("ip link del vxlan11 2> /dev/null");
+> > > > +       SYS_NOFAIL("ip link del ip6vxlan11 2> /dev/null");
+> > > > +}
+> > > > +
+> > > > +static int add_vxlan_tunnel(char *veth1_ip)
+> > > > +{
+> > > > +       /*
+> > > > +        * Set static ARP entry here because iptables set-mark work=
+s
+> > > > +        * on L3 packet, as a result not applying to ARP packets,
+> > > > +        * causing errors at get_tunnel_{key/opt}.
+> > > > +        */
+> > > > +
+> > > > +       /* at_ns0 namespace */
+> > > > +       SYS("ip netns exec at_ns0 ip link add dev %s type vxlan id =
+2 dstport 4789 gbp local %s remote %s",
+> > > > +           VXLAN_TUNL_DEV0, IP4_ADDR_VETH0, veth1_ip);
+> > > > +       SYS("ip netns exec at_ns0 ip link set dev %s address %s up"=
+,
+> > > > +           VXLAN_TUNL_DEV0, MAC_TUNL_DEV0);
+> > > > +       SYS("ip netns exec at_ns0 ip addr add dev %s %s/24",
+> > > > +           VXLAN_TUNL_DEV0, IP4_ADDR_TUNL_DEV0);
+> > > > +       SYS("ip netns exec at_ns0 ip neigh add %s lladdr %s dev %s"=
+,
+> > > > +           IP4_ADDR_TUNL_DEV1, MAC_TUNL_DEV1, VXLAN_TUNL_DEV0);
+> > > > +       SYS("ip netns exec at_ns0 iptables -A OUTPUT -j MARK --set-=
+mark 0x800FF");
+> > >
+> > > BPF CI is failing here:
+> > >
+> > > add_vxlan_tunnel:FAIL:ip netns exec at_ns0 iptables -A OUTPUT -j MARK
+> > > --set-mark 0x800FF unexpected error: 512 (errno 0)
+> > > test_vxlan_tunnel:FAIL:add vxlan tunnel unexpected error: -1 (errno 0=
+)
+> > > See
+> > > https://patchwork.kernel.org/project/netdevbpf/patch/20220418013136.2=
+6098-3-fankaixi.li@bytedance.com/
+> > > bpf/vmtest-bpf-next-VM_Test-1 link.
+> >
+> > The reason is that iptables v1.8.5 (legacy): unknown option "--set-mark=
+".
+> > How to build and load xt_mark kernel module in the BPF CI environment ?
+> > Thanks.
+>
+> I think our current setup doesn't support extra kernel modules. But if
+> this can be built-in, we can just update kernel config (is it
+> CONFIG_NETFILTER_XT_MARK?)
 
-Side note: part of the opt-in really should be about the performance impact.
-
-It clearly can be quite noticeable, as outlined by that powerpc case
-in commit 8abddd968a30 ("powerpc/64s/radix: Enable huge vmalloc
-mappings"), but it presumably is some _particular_ case that actually
-matters.
-
-But it's equalyl clearly not the module code/data case, since
-__module_alloc() explicitly disables largepages on powerpc.
-
-At a guess, it's one or more of the large hash-table allocations.
-
-And it would actually be interesting to hear *which*one*. From the
-'git diff' workload, I'd expect it to be the dentry lookup hash table
-- I can't think of anything else that would be vmalloc'ed that would
-be remotely interesting - but who knows.
-
-So I think the whole "opt in" isn't _purely_ about the "oh, random
-cases are broken for odd reasons, so let's not enable it by default".
-
-I think it would actually be good to literally mark the cases that
-matter (and have the performance numbers for those cases).
-
-               Linus
+Thanks. I fount that it's better to use another bpf kernel prog to set
+mark in namespace at_ns0 instead of iptables command.
+Because only vxlan tunnel metadata sets mark. Iptables command is only
+useful for vxlan tunnel.
