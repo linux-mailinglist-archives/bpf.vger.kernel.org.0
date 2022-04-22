@@ -2,53 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C791E50BD2A
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 18:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3998950BD37
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 18:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449727AbiDVQff (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 12:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S1449753AbiDVQil (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 12:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1389617AbiDVQfe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 12:35:34 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DE95F24A;
-        Fri, 22 Apr 2022 09:32:41 -0700 (PDT)
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nhwCv-0001kP-Ev; Fri, 22 Apr 2022 18:32:33 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nhwCv-000C8l-5l; Fri, 22 Apr 2022 18:32:33 +0200
-Subject: Re: [PATCH bpf-next] libbpf: also check /sys/kernel/tracing for
- tracefs files
-To:     Connor O'Brien <connoro@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220421201125.13907-1-connoro@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <407ab3dd-cee1-a043-585b-1b2886c6f7fd@iogearbox.net>
-Date:   Fri, 22 Apr 2022 18:32:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S1392046AbiDVQik (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 12:38:40 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB535EBC9;
+        Fri, 22 Apr 2022 09:35:46 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id c15so10284306ljr.9;
+        Fri, 22 Apr 2022 09:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M6cSf3rWybJaak8I5ckt3kVwPSyC+Ht3yWyW9Q792IM=;
+        b=Sm8c4eAfIv0o+xf2IQZ0xOiTa9eR8RMQ6Y0jLcIPkfwWor0+zgK1lo6zGL5+1zmOjN
+         u2WZSv0zsvOBABGm+SUxMcV7GiPA9e3WokAhnPL5oT97HV1sQwZWd/WLMu+cVYMTyO2r
+         8E6SPzLiXvxZQ4N18DxT6ZKVrnvowato2uy+3oXOMPXdgmIXkfQF61ji72EJLRb+5oX0
+         FTBwJBsbksmwTfF6Uk1sM98K6ehfdc3yC0672vZgSbHhRrl5+LopOZgZSEq2R+uv4BQp
+         67ntIlf0zy8UJYpjIbJqXEp6VyxkMN/H6j8Ig1KpBHevTNCX8gNpZF5LAo7WV3hUhTNv
+         yz8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M6cSf3rWybJaak8I5ckt3kVwPSyC+Ht3yWyW9Q792IM=;
+        b=bWa2f6YL7BNMd+NntnTJzAuaJP9+fUUfvaAhI8VT9CbjJ369/fC/RhIbwRz5Dgossc
+         Kl2L0InAxS+b7l55d8N1d7BvTwzM/VrOA17yjcqP9lp/F0TxYuXfnsFxc0GBc8NDJwnn
+         GHX0QWkt5mZZRXnt0Dl7Au6KA5H8zJhwq0SwyLhoNAmf9AX1JUcIlzaF6n1SPVVmiTrn
+         tHHhvoZ1H7ZWReZGVljeDlE/S6rOyY3tkvSFqcoDsJ/LaCL/2rvJCC74KvWmr3HYfhib
+         SjjAc11I1LzehpUsy4K7W3QAykVRWK+H3jLgN68PsoQsiauQCRxUloUZpqvht78rZC9p
+         I58g==
+X-Gm-Message-State: AOAM531tV3rysBlbj72iov6IImB6YoomHVEWxlpOdQ5VgnD6+XILT6pw
+        sGaQXPfIBraqX8GDJK3swaoxCLCcNPaqHTE1nPXVae7sKr8=
+X-Google-Smtp-Source: ABdhPJzOYUBER/oqKzKvMuhm2RDD85bXcqgWlxmwa2hIva0T/DTuVh6cPegKLtrLDK3gLipky2xaaVWXc7bDf1krAe0=
+X-Received: by 2002:a2e:894e:0:b0:24d:bc0f:2238 with SMTP id
+ b14-20020a2e894e000000b0024dbc0f2238mr3247631ljk.509.1650645344918; Fri, 22
+ Apr 2022 09:35:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20220421201125.13907-1-connoro@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26520/Fri Apr 22 10:30:17 2022)
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <cover.1650575919.git.peilin.ye@bytedance.com> <b606e0355949a3ca8081ee29d9d22f2f30e898bd.1650575919.git.peilin.ye@bytedance.com>
+In-Reply-To: <b606e0355949a3ca8081ee29d9d22f2f30e898bd.1650575919.git.peilin.ye@bytedance.com>
+From:   William Tu <u9012063@gmail.com>
+Date:   Fri, 22 Apr 2022 09:35:08 -0700
+Message-ID: <CALDO+SYfemnqVkQY6kbQ23hgtdcUSimExJQob90rZLd8xvzsXw@mail.gmail.com>
+Subject: Re: [PATCH net 3/3] ip_gre, ip6_gre: Fix race condition on o_seqno in
+ collect_md mode
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peilin Ye <peilin.ye@bytedance.com>,
+        "xeb@mail.ru" <xeb@mail.ru>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,101 +82,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/21/22 10:11 PM, Connor O'Brien wrote:
-> libbpf looks for tracefs files only under debugfs, but tracefs may be
-> mounted even if debugfs is not. When /sys/kernel/debug/tracing is
-> absent, try looking under /sys/kernel/tracing instead.
-> 
-> Signed-off-by: Connor O'Brien <connoro@google.com>
+On Thu, Apr 21, 2022 at 3:09 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+>
+> From: Peilin Ye <peilin.ye@bytedance.com>
+>
+> As pointed out by Jakub Kicinski, currently using TUNNEL_SEQ in
+> collect_md mode is racy for [IP6]GRE[TAP] devices.  Consider the
+> following sequence of events:
+>
+> 1. An [IP6]GRE[TAP] device is created in collect_md mode using "ip link
+>    add ... external".  "ip" ignores "[o]seq" if "external" is specified,
+>    so TUNNEL_SEQ is off, and the device is marked as NETIF_F_LLTX (i.e.
+>    it uses lockless TX);
+> 2. Someone sets TUNNEL_SEQ on outgoing skb's, using e.g.
+>    bpf_skb_set_tunnel_key() in an eBPF program attached to this device;
+> 3. gre_fb_xmit() or __gre6_xmit() processes these skb's:
+>
+>         gre_build_header(skb, tun_hlen,
+>                          flags, protocol,
+>                          tunnel_id_to_key32(tun_info->key.tun_id),
+>                          (flags & TUNNEL_SEQ) ? htonl(tunnel->o_seqno++)
+>                                               : 0);   ^^^^^^^^^^^^^^^^^
+>
+> Since we are not using the TX lock (&txq->_xmit_lock), multiple CPUs may
+> try to do this tunnel->o_seqno++ in parallel, which is racy.  Fix it by
+> making o_seqno atomic_t.
+>
+> As mentioned by Eric Dumazet in commit b790e01aee74 ("ip_gre: lockless
+> xmit"), making o_seqno atomic_t increases "chance for packets being out
+> of order at receiver" when NETIF_F_LLTX is on.
+>
+> Maybe a better fix would be:
+>
+> 1. Do not ignore "oseq" in external mode.  Users MUST specify "oseq" if
+>    they want the kernel to allow sequencing of outgoing packets;
+> 2. Reject all outgoing TUNNEL_SEQ packets if the device was not created
+>    with "oseq".
+>
+> Unfortunately, that would break userspace.
+>
+> We could now make [IP6]GRE[TAP] devices always NETIF_F_LLTX, but let us
+> do it in separate patches to keep this fix minimal.
+>
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Fixes: 77a5196a804e ("gre: add sequence number for collect md mode.")
+> Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
 > ---
->   tools/lib/bpf/libbpf.c | 26 +++++++++++++++++++-------
->   1 file changed, 19 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 68cc134d070d..6ef587329eb2 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10140,10 +10140,16 @@ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
->   		 __sync_fetch_and_add(&index, 1));
->   }
->   
-> +static bool debugfs_available(void)
-> +{
-> +	return !access("/sys/kernel/debug/tracing", F_OK);
 
-Should this be a one-time probe, so on subsequent debugfs_available() calls
-we return the initially cached result?
-
-> +}
-> +
->   static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
->   				   const char *kfunc_name, size_t offset)
->   {
-> -	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
-> +	const char *file = debugfs_available() ? "/sys/kernel/debug/tracing/kprobe_events" :
-> +		"/sys/kernel/tracing/kprobe_events";
->   
->   	return append_to_file(file, "%c:%s/%s %s+0x%zx",
->   			      retprobe ? 'r' : 'p',
-> @@ -10153,7 +10159,8 @@ static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
->   
->   static int remove_kprobe_event_legacy(const char *probe_name, bool retprobe)
->   {
-> -	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
-> +	const char *file = debugfs_available() ? "/sys/kernel/debug/tracing/kprobe_events" :
-> +		"/sys/kernel/tracing/kprobe_events";
->   
->   	return append_to_file(file, "-:%s/%s", retprobe ? "kretprobes" : "kprobes", probe_name);
->   }
-> @@ -10163,7 +10170,8 @@ static int determine_kprobe_perf_type_legacy(const char *probe_name, bool retpro
->   	char file[256];
->   
->   	snprintf(file, sizeof(file),
-> -		 "/sys/kernel/debug/tracing/events/%s/%s/id",
-> +		 debugfs_available() ? "/sys/kernel/debug/tracing/events/%s/%s/id" :
-> +		 "/sys/kernel/tracing/events/%s/%s/id",
->   		 retprobe ? "kretprobes" : "kprobes", probe_name);
->   
->   	return parse_uint_from_file(file, "%d\n");
-> @@ -10493,7 +10501,8 @@ static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
->   static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
->   					  const char *binary_path, size_t offset)
->   {
-> -	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
-> +	const char *file = debugfs_available() ? "/sys/kernel/debug/tracing/uprobe_events" :
-> +		"/sys/kernel/tracing/uprobe_events";
->   
->   	return append_to_file(file, "%c:%s/%s %s:0x%zx",
->   			      retprobe ? 'r' : 'p',
-> @@ -10503,7 +10512,8 @@ static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
->   
->   static inline int remove_uprobe_event_legacy(const char *probe_name, bool retprobe)
->   {
-> -	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
-> +	const char *file = debugfs_available() ? "/sys/kernel/debug/tracing/uprobe_events" :
-> +		"/sys/kernel/tracing/uprobe_events";
->   
->   	return append_to_file(file, "-:%s/%s", retprobe ? "uretprobes" : "uprobes", probe_name);
->   }
-> @@ -10513,7 +10523,8 @@ static int determine_uprobe_perf_type_legacy(const char *probe_name, bool retpro
->   	char file[512];
->   
->   	snprintf(file, sizeof(file),
-> -		 "/sys/kernel/debug/tracing/events/%s/%s/id",
-> +		 debugfs_available() ? "/sys/kernel/debug/tracing/events/%s/%s/id" :
-> +		 "/sys/kernel/tracing/events/%s/%s/id",
->   		 retprobe ? "uretprobes" : "uprobes", probe_name);
->   
->   	return parse_uint_from_file(file, "%d\n");
-> @@ -11071,7 +11082,8 @@ static int determine_tracepoint_id(const char *tp_category,
->   	int ret;
->   
->   	ret = snprintf(file, sizeof(file),
-> -		       "/sys/kernel/debug/tracing/events/%s/%s/id",
-> +		       debugfs_available() ? "/sys/kernel/debug/tracing/events/%s/%s/id" :
-> +		       "/sys/kernel/tracing/events/%s/%s/id",
->   		       tp_category, tp_name);
->   	if (ret < 0)
->   		return -errno;
-> 
-
+LGTM
+Acked-by: William Tu <u9012063@gmail.com>
