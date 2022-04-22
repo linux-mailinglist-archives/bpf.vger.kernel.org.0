@@ -2,90 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0C150B650
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 13:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7572C50B6CE
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 14:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447095AbiDVLqN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 07:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49276 "EHLO
+        id S1447273AbiDVMIa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 08:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1447125AbiDVLqK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 07:46:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 266AD52B24
-        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 04:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1650627796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0Ka4pkaIl0n0C8wRiVJB+Tf0N4jkuRhOTDXzmulvrko=;
-        b=iWGPSCkfsgtubYN6t/LmoV4lnzhCVD0K+55oP9Xha3l3a5kcQ/xZ8x2MH31OkbY02TIbnw
-        u6qOV70BI4BsTmcs6V430EjyftHqJYX7zoyoSmqT9JdnbM/ukXphEIjMT0CXKQ8OM2i3+r
-        HfmJGSO8EqbhWRkj7Tjl/KCPx/0rG+8=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-43-2aQCrlSrPfuy5v4vWNiTYg-1; Fri, 22 Apr 2022 07:43:10 -0400
-X-MC-Unique: 2aQCrlSrPfuy5v4vWNiTYg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AFC621C05AB6;
-        Fri, 22 Apr 2022 11:43:09 +0000 (UTC)
-Received: from [172.16.176.1] (ovpn-64-2.rdu2.redhat.com [10.10.64.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 567B3C33AE8;
-        Fri, 22 Apr 2022 11:43:09 +0000 (UTC)
-From:   "Benjamin Coddington" <bcodding@redhat.com>
-To:     "Matthew Wilcox" <willy@infradead.org>
-Cc:     lsf-pc@lists.linuxfoundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-block@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: LSF/MM/BPF 2022: Running BOF
-Date:   Fri, 22 Apr 2022 07:43:08 -0400
-Message-ID: <15847F8A-5246-4634-ABBE-9C05AA3CBF34@redhat.com>
-In-Reply-To: <Yl7TUDtLcrhXcp1g@casper.infradead.org>
-References: <Yl7TUDtLcrhXcp1g@casper.infradead.org>
+        with ESMTP id S1447270AbiDVMHZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 08:07:25 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1D656743
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 05:03:13 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id u15so6992916ple.4
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 05:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RGyYpTTr+6KIJE1eoOxIScVTt/Yg1gFBt+3DlTxvD6k=;
+        b=WezksrIO9cBOZm+7M9hWc9TYrxPJ6T18bNocf5S0bzYc83UQOuhNL76ufPjqEplQ7+
+         zcTJ1o2NddD9tRnR60CSBSMD3TMUzQ2+06l1VlOba1dBq7Fru4t0O809CKrb6cnYKRYE
+         8hcZKFmF/qIbwpqhoJvS3zxdkjY5mQU1iXsHe5zVu069g2/BxVcs5lAMHLtzmq8BNLXk
+         DS7U4/oN94/nBIkF5vnlhCFPiuak7tOTRq1wcXFp4Afo1hO5h7tWYU1B8kw6m6PPy2aN
+         5bXhuZ5LODq2wMRTeu+5swP+Ui3Dv3zks27HmYqboAWlCVnD0aWBr3yGRj98islJhuG0
+         ffdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RGyYpTTr+6KIJE1eoOxIScVTt/Yg1gFBt+3DlTxvD6k=;
+        b=n8ysqhyCSI4oOMNzkFRK1OjK90H5uC2qy8U4KPuE/mX7jeKIEYTKsxfEmbD8x1TyrV
+         z10/6j5/zKd1upnerCQJxn4qF3SG0L3uATrGMLo4mm9128Hok1Tj+7uGlJo7U1CKDv8S
+         F8cJXkccvvrcIIicCkTE6b1MQD1aLhy5FPwjdhniIcRmpSvXgxtI5eb8WKt3s1FiEXkK
+         T6yrodr2AxYExMYr54wnR3tPMfcmxyrCpSD+lmg9mIyF7ze6DaDodujv4LR4j+Qoeh0C
+         WhDMcNZLRhWerfj6euTpoMIDm4SmO56Aw3NxMIoNsVv+26AStbsrGxz6VlxC+EOh7Dt9
+         mwUQ==
+X-Gm-Message-State: AOAM531JOb8Eb4nl2q2HlO6b26l6TdUKJ9B/4H56nxoJNDqxk5kvKEI3
+        CLryzt6y9yq12XojweVs3ZErAA==
+X-Google-Smtp-Source: ABdhPJxeCZJjv2rjgLe84yf4gMYdw+HoLPtMJQ9KCWvTQDy9ShI4Cf2JFulymU2FXyiNbD3K08Wa2w==
+X-Received: by 2002:a17:90b:4d8c:b0:1d2:a600:301f with SMTP id oj12-20020a17090b4d8c00b001d2a600301fmr15554844pjb.29.1650628992267;
+        Fri, 22 Apr 2022 05:03:12 -0700 (PDT)
+Received: from localhost.localdomain ([2409:8a20:4832:de00:7c31:9ae8:33d2:1fe7])
+        by smtp.gmail.com with ESMTPSA id o12-20020a17090aac0c00b001cd4989ff41sm5588555pjq.8.2022.04.22.05.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Apr 2022 05:03:11 -0700 (PDT)
+From:   fankaixi.li@bytedance.com
+To:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        Kaixi Fan <fankaixi.li@bytedance.com>
+Subject: [External] [PATCH bpf-next v5 0/3] Add source ip in bpf tunnel key
+Date:   Fri, 22 Apr 2022 20:02:56 +0800
+Message-Id: <20220422120259.10185-1-fankaixi.li@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 19 Apr 2022, at 11:20, Matthew Wilcox wrote:
+From: Kaixi Fan <fankaixi.li@bytedance.com>
 
-> As in the past few years, let's hold a running BOF.
->
-> I propose meeting in the lobby of the Margaritaville hotel at 6:15 for
-> a 6:30 departure for an hour-long run on Monday, Tuesday and Wednesday
-> mornings.  I'm assuming breakfast will be 8-9am and sessions start at 9am.
-> Pace will be determined by whoever shows up.
->
-> We're only a mile from the North Lykken north Trailhead.
-> Other trails are a little more distant.  I've been reading
-> http://www.hiking-in-ps.com/the-north-lykken-trail/ (note this map is
-> for the south trailhead of the North Lykken trail).  I haven't been
-> to this area in 30 years and I have no idea what the trails are like,
-> so if somebody has local information, that would be great.
->
-> I note that the room rate includes complimentary bicycle rentals.  If
-> we want to, we could cycle to various other local trails.
+Now bpf code could not set tunnel source ip address of ip tunnel. So it
+could not support flow based tunnel mode completely. Because flow based
+tunnel mode could set tunnel source, destination ip address and tunnel
+key simultaneously.
 
-I'm in unless I'm trying to run in the PM.  I've got a tentative run/explore
-of one of the slot canyons about an hour away if I can swing it (painted
-canyon, ladder canyon, I may have to borrow a car from someone), and would
-be nice to try to get up into Mt San Jacinto park as well.
+Flow based tunnel is useful for overlay networks. And by configuring tunnel
+source ip address, user could make their networks more elastic.
+For example, tunnel source ip could be used to select different egress
+nic interface for different flows with same tunnel destination ip. Another
+example, user could choose one of multiple ip address of the egress nic
+interface as the packet's tunnel source ip.
 
-I'm interested in getting some trail and elevation, but I've not run out
-there yet and will need to scope out what's possible when I get there.
+Add tunnel and tunnel source testcases in test_progs. Other types of
+tunnel testcases would be moved to test_progs step by step in the
+future.
 
-Ben
+v5:
+- fix some code format errors
+- use bpf kernel code at namespace at_ns0 to set tunnel metadata
+
+v4:
+- fix subject error of first patch
+
+v3:
+- move vxlan tunnel testcases to test_progs
+- replace bpf_trace_printk with bpf_printk
+- rename bpf kernel prog section name to tic
+
+v2:
+- merge vxlan tunnel and tunnel source ip testcases in test_tunnel.sh
+
+Kaixi Fan (3):
+  bpf: Add source ip in "struct bpf_tunnel_key"
+  selftests/bpf: Move vxlan tunnel testcases to test_progs
+  selftests/bpf: Replace bpf_trace_printk in tunnel kernel code
+
+ include/uapi/linux/bpf.h                      |   4 +
+ net/core/filter.c                             |   9 +
+ tools/include/uapi/linux/bpf.h                |   4 +
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 395 ++++++++++++++++++
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 371 ++++++++++------
+ tools/testing/selftests/bpf/test_tunnel.sh    | 124 +-----
+ 6 files changed, 659 insertions(+), 248 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+
+-- 
+2.20.1
 
