@@ -2,53 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E19D350BC34
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 17:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEBD50BCEA
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 18:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386292AbiDVP6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 11:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
+        id S1385716AbiDVQ3R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 12:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234345AbiDVP6P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 11:58:15 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B9A4EA0F;
-        Fri, 22 Apr 2022 08:55:21 -0700 (PDT)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nhvcm-000EZ0-7W; Fri, 22 Apr 2022 17:55:12 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nhvcl-000LyW-QM; Fri, 22 Apr 2022 17:55:11 +0200
-Subject: Re: [PATCH bpf] lwt_bpf: fix crash when using
- bpf_skb_set_tunnel_key() from bpf_xmit lwt hook
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Eyal Birger <eyal.birger@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-        andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, mkl@pengutronix.de,
-        tgraf@suug.ch, shmulik.ladkani@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, stable@vger.kernel.org
-References: <20220420165219.1755407-1-eyal.birger@gmail.com>
- <c053fdf3-84bb-faee-387d-6edb2df9ffee@iogearbox.net>
-Message-ID: <d1fd11a9-6947-2783-2f77-66831f1cde20@iogearbox.net>
-Date:   Fri, 22 Apr 2022 17:55:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S1388271AbiDVQ3G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 12:29:06 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF865EBD5;
+        Fri, 22 Apr 2022 09:26:12 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id v1so6874968ljv.3;
+        Fri, 22 Apr 2022 09:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OUrh1efILjSaXAe3E+x72wbjb4Twp+oR0/Kr58Ftb1I=;
+        b=neTqDyK4aAIR67hd1swkp8mYa9tzbLhOQWDj+BlQv9zVZKesSfhf4hbdYhES2RrGi+
+         wdkyLVrY/H9uld+HjfN2z8GZYN5vPnAvVA2EaGPbADSjaNLzia315Hae9wpp2cbxKtzu
+         XIGbsxc69sSCh42qP+S9Tmg00rn4QInpT2BjwfHsh/PmVMqOqad1h1aPch5BerJMNXgY
+         q4VHWzYOLK8XvTio3vDY1U5p4e/+pKOAW5K4H6VsJDzX2wc+RMTw/41H5R2Ei2Thnasa
+         ibLk3Z7ky0yLPVY0xhTdpZYzBaTsh1UqF5AftDVPBSXbAcxKESQ1fL25UBvdhEWZ9IwT
+         Z+og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OUrh1efILjSaXAe3E+x72wbjb4Twp+oR0/Kr58Ftb1I=;
+        b=o4S7fPNuFAk1R9vRMSWiVHK5IEeoPddm5HTx8Pjr83jk/u3f1yPVE/3NnPkc74Z9I4
+         YfdRmsjO5hIS96ts3vG/GlrmZTI0m9QCSVst81Xr5m3TDQP8tffoSWcwtkShqi4cpVUw
+         /SKi4mtDbZDPqoz058pjl+EIhyoVAvRTmhJjBv25FL4MVz4ltuGBosnS6eILPonZSnby
+         J64tuhgOQ8hqWJxO7nWhirpiZA8bI2ZFw1+J3nU9QOLyMhKICAqeEbWv3I80hQkIELI4
+         578IZ/wZyc7jPf9W4HWPzKFMNVq6t/fE0RDBKdM3jtSMgHL48p/pKuIzIq7e2fWfoQNN
+         RSxQ==
+X-Gm-Message-State: AOAM531F6qwA/9avifp++rCL9QfA4XzoAo3+ixDpShaoIGSz0Oj/RXE9
+        Nsv5xJXo33BTS8ocvO48DArDwRbo4ZIRc1zHCqo=
+X-Google-Smtp-Source: ABdhPJxl93mRTqmHk5RcUeYPYvix1Cpy+0bZNXL/KAiekKHLEbjGStmDNS+MrDAw/M/kWuqw6DqHw126o2x4x2WvQIs=
+X-Received: by 2002:a05:651c:1991:b0:24a:c757:e5c9 with SMTP id
+ bx17-20020a05651c199100b0024ac757e5c9mr3209733ljb.222.1650644770240; Fri, 22
+ Apr 2022 09:26:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c053fdf3-84bb-faee-387d-6edb2df9ffee@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26520/Fri Apr 22 10:30:17 2022)
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <cover.1650575919.git.peilin.ye@bytedance.com> <dd63f881729052aa4e08a5c7cb9732724c557dfd.1650575919.git.peilin.ye@bytedance.com>
+In-Reply-To: <dd63f881729052aa4e08a5c7cb9732724c557dfd.1650575919.git.peilin.ye@bytedance.com>
+From:   William Tu <u9012063@gmail.com>
+Date:   Fri, 22 Apr 2022 09:25:33 -0700
+Message-ID: <CALDO+SZqYGWnFLDBqQ+qUE7Tjg4M06aAQWsC6tomx406sN=93A@mail.gmail.com>
+Subject: Re: [PATCH net 1/3] ip_gre: Make o_seqno start from 0 in native mode
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peilin Ye <peilin.ye@bytedance.com>,
+        "xeb@mail.ru" <xeb@mail.ru>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,14 +81,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/22/22 5:48 PM, Daniel Borkmann wrote:
-> On 4/20/22 6:52 PM, Eyal Birger wrote:
-[...]
-> 
-> Ok, makes sense given for BPF_OK the dst->dev shouldn't change here (e.g. as opposed
-> to BPF_REDIRECT). Applied, please also follow-up with a BPF selftest for test_progs
-> so that this won't break in future when it's running as part of BPF CI.
+On Thu, Apr 21, 2022 at 3:08 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+>
+> From: Peilin Ye <peilin.ye@bytedance.com>
+>
+> For GRE and GRETAP devices, currently o_seqno starts from 1 in native
+> mode.  According to RFC 2890 2.2., "The first datagram is sent with a
+> sequence number of 0."  Fix it.
+>
+> It is worth mentioning that o_seqno already starts from 0 in collect_md
+> mode, see gre_fb_xmit(), where tunnel->o_seqno is passed to
+> gre_build_header() before getting incremented.
+>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
 
-(Coverage for lwt BPF flavor from test_progs is afaik non-existent aside from some section
-name tests. Would be great in general to have runtime tests asserting lwt behavior there if
-you have a chance.)
+LGTM
+Acked-by: William Tu <u9012063@gmail.com>
