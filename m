@@ -2,154 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8421950C37A
-	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 01:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149CD50C35A
+	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 01:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbiDVWtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 18:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
+        id S233885AbiDVXIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 19:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234753AbiDVWs3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 18:48:29 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E874A39A056
-        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 15:08:26 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id c12so13710732plr.6
-        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 15:08:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yz6zxeAM2W6JwA3xHwtSo4rCqra9jDuQkZoypKeIeaA=;
-        b=nv5R7pRe5HHdf0+LvvcL+seUaDLn3bMFDNAgmdDvYFzBuuCIYeYNLV3P4bmD5j3EB2
-         xCkdaCr4+gMzguTkVeneSDjigI4M4DzYEWQ3Vk4U3M9zSzINft0uyCK4qEZ3pcKkFviw
-         fzKHOhelvjXFBrQzzSVYQjO4XEaLt1SISuz+xQJF0vMQkcizy4BgWKtnvZdaL1FNuuMl
-         7Afaj2kQxS/9cMR2yjvkkoqRPQrBx73PM2sl70LIOBthkX79kQeSfd77FYBnhN/yIfwp
-         OGj0dIDcSTMryvJeu/70s3lJuR8yPRG2IZ/Pma6gpQCRpo70diMfQlKZwydCrlvIfdCg
-         5BRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yz6zxeAM2W6JwA3xHwtSo4rCqra9jDuQkZoypKeIeaA=;
-        b=CEzXOrsoqWGRi9H2RgQi1goX9WxRhzSGsHHTWkI1tsgl91TplwzneKotzIovN3jpbx
-         heC8rjYl2HAYeNmVjeQ7NfWfevtCZYiYkODZNz7knyAgEUmOLaXgPgy89Shww4QYt1Lv
-         TZItu1J84fr2uasrnyouB+jCqo03TCjcOVlivRSnWq91kDQzPczUahP9PSNBP3mnV3p8
-         T0bYjNy9p31Bv96KWzvgpHNsykRuVbs/KUacrxEkiTWsegQtogZYyEz/UZ2TOf6xEcxC
-         oqIF7DjuZrKBv5Kv/R2KbU0sTEUaLFvtYvTrcYfcl0AQGMDzAUEKkhLE/NJb5w6OJk3b
-         z/aQ==
-X-Gm-Message-State: AOAM533kkDSvMe06XXCgPt2cPS3as0D8W4mK+5XXJ/y3TrsKesn3Zh+z
-        +QLkm85La4Vb2hC6QDx90DY=
-X-Google-Smtp-Source: ABdhPJwzjHKsv3VRG7x5/pSYttJQA9a8o7zjSR3lFzQWTts9m7htd/i/6KMRvdiXJVGsbtQZFgC+eQ==
-X-Received: by 2002:a17:902:ecd0:b0:159:572:af3a with SMTP id a16-20020a170902ecd000b001590572af3amr6725180plh.77.1650665273779;
-        Fri, 22 Apr 2022 15:07:53 -0700 (PDT)
-Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:500::46a8])
-        by smtp.gmail.com with ESMTPSA id m4-20020a17090ab78400b001cd4989fed0sm6986838pjr.28.2022.04.22.15.07.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Apr 2022 15:07:53 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 15:07:50 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Tejun Heo <tj@kernel.org>,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 0/3] Introduce local_storage exclusive caching
-Message-ID: <20220422220750.kdyqkhkxyv4yv66f@MBP-98dd607d3435.dhcp.thefacebook.com>
-References: <20220420002143.1096548-1-davemarchevsky@fb.com>
- <20220422014030.opvbgrfvdnxzwfxl@MBP-98dd607d3435.dhcp.thefacebook.com>
- <5d14e267-298b-d4b5-07bf-704a36aa8aa5@fb.com>
+        with ESMTP id S234770AbiDVXH6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 19:07:58 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C6B177CB1
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 15:40:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A9841B8327C
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 22:40:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 56E7FC385A4;
+        Fri, 22 Apr 2022 22:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650667212;
+        bh=l+4wsZH8ePfSWlqM4DZU6/j9QS76B4oIDC3dFRFITz4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uS9PGyGD1ydPxDK0lCa9cpufk/HIg8Nr7wYd4XG/dO8gX2k8rXzK+6qSSQEqwbsoi
+         UiVNIHtiyEhM70d+YFjty0O9+GlBQvzwfY/8z1LXJ51ydPIQwsT8XoIqfldrcNntL0
+         /ncudkiwnRwQ7ZIxJM+4R6Y8H1r03xT33RqYqcRGoDzuOxhKYVMU71sMrizl99qKb8
+         HJ2Gj2+rzTGY4ZvwttDv64Hci3ZxWu2iRi+mW+UPap7VDcxFZncA/JhagDXjP85Jh9
+         eCYH+2gf4kBCfjqRAD0yY7MWbthLnDvC1+AYlAqPDkoE9wsrTM8qSl+TXosAgaGvEA
+         xxpPgayBN1/3w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 31B0CE8DD61;
+        Fri, 22 Apr 2022 22:40:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d14e267-298b-d4b5-07bf-704a36aa8aa5@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/3] LINK_CREATE support for fentry/tp_btf/lsm
+ attachments
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165066721219.28625.1373870919607607891.git-patchwork-notify@kernel.org>
+Date:   Fri, 22 Apr 2022 22:40:12 +0000
+References: <20220421033945.3602803-1-andrii@kernel.org>
+In-Reply-To: <20220421033945.3602803-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, kuifeng@fb.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 22, 2022 at 12:05:23AM -0400, Dave Marchevsky wrote:
-> On 4/21/22 9:40 PM, Alexei Starovoitov wrote:   
-> > On Tue, Apr 19, 2022 at 05:21:40PM -0700, Dave Marchevsky wrote:
-> >> Currently, each local_storage type (sk, inode, task) has a 16-entry
-> >> cache for local_storage data associated with a particular map. A
-> >> local_storage map is assigned a fixed cache_idx when it is allocated.
-> >> When looking in a local_storage for data associated with a map the cache
-> >> entry at cache_idx is the only place the map can appear in cache. If the
-> >> map's data is not in cache it is placed there after a search through the
-> >> cache hlist. When there are >16 local_storage maps allocated for a
-> >> local_storage type multiple maps have same cache_idx and thus may knock
-> >> each other out of cache.
-> >>
-> >> BPF programs that use local_storage may require fast and consistent
-> >> local storage access. For example, a BPF program using task local
-> >> storage to make scheduling decisions would not be able to tolerate a
-> >> long hlist search for its local_storage as this would negatively affect
-> >> cycles available to applications. Providing a mechanism for such a
-> >> program to ensure that its local_storage_data will always be in cache
-> >> would ensure fast access.
-> >>
-> >> This series introduces a BPF_LOCAL_STORAGE_FORCE_CACHE flag that can be
-> >> set on sk, inode, and task local_storage maps via map_extras. When a map
-> >> with the FORCE_CACHE flag set is allocated it is assigned an 'exclusive'
-> >> cache slot that it can't be evicted from until the map is free'd. 
-> >>
-> >> If there are no slots available to exclusively claim, the allocation
-> >> fails. BPF programs are expected to use BPF_LOCAL_STORAGE_FORCE_CACHE
-> >> only if their data _must_ be in cache.
-> > 
-> > I'm afraid new uapi flag doesn't solve this problem.
-> > Sooner or later every bpf program would deem itself "important" and
-> > performance critical. All of them will be using FORCE_CACHE flag
-> > and we will back to the same situation.
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Wed, 20 Apr 2022 20:39:42 -0700 you wrote:
+> Wire up ability to attach bpf_link-based fentry/fexit/fmod_ret, tp_btf
+> (BTF-aware raw tracepoints), and LSM programs through universal LINK_CREATE
+> command, in addition to current BPF_RAW_TRACEPOINT_OPEN.
 > 
-> In this scenario, if 16 maps had been loaded w/ FORCE_CACHE flag and 17th tried
-> to load, it would fail, so programs depending on the map would fail to load.
-
-Ahh. I missed that the cache_idx is assigned at map creation time.
-
-> Patch 2 adds a selftest 'local_storage_excl_cache_fail' demonstrating this.
+> Teach libbpf to handle this LINK_CREATE/BPF_RAW_TRACEPOINT_OPEN split on older
+> kernels transparently in universal low-level bpf_link_create() API for users
+> convenience.
 > 
-> > Also please share the performance data that shows more than 16 programs
-> > that use local storage at the same time and existing simple cache
-> > replacing logic is not enough.
-> > For any kind link list walking to become an issue there gotta be at
-> > least 17 progs. Two progs should pick up the same cache_idx and
-> > run interleaved to evict each other. 
-> > It feels like unlikely scenario, so real data would be good to see.
-> > If it really an issue we might need a different caching logic.
-> > Like instead of single link list per local storage we might
-> > have 16 link lists. cache_idx can point to a slot.
-> > If it's not 1st it will be a 2nd in much shorter link list.
-> > With 16 slots the link lists will have 2 elements until 32 bpf progs
-> > are using local storage.
-> > We can get rid of cache too and replace with mini hash table of N
-> > elements where map_id would be an index into a hash table.
-> > All sorts of other algorithms are possible.
-> > In any case the bpf user shouldn't be telling the kernel about
-> > "importance" of its program. If program is indeed executing a lot
-> > the kernel should be caching/accelerating it where it can.
-> 
-> It's worth noting that this is a map-level setting, not prog-level. Telling the
-> kernel about importance of data feels more palatable to me. Sort of like mmap's
-> MAP_LOCKED, but for local_storage cache.
+> [...]
 
-For mmap it's an operational difference. Not just performance.
+Here is the summary with links:
+  - [bpf-next,1/3] bpf: allow attach TRACING programs through LINK_CREATE command
+    https://git.kernel.org/bpf/bpf-next/c/df86ca0d2f0f
+  - [bpf-next,2/3] libbpf: teach bpf_link_create() to fallback to bpf_raw_tracepoint_open()
+    https://git.kernel.org/bpf/bpf-next/c/8462e0b46fe2
+  - [bpf-next,3/3] selftests/bpf: switch fexit_stress to bpf_link_create() API
+    https://git.kernel.org/bpf/bpf-next/c/fd0493a1e49e
 
-> Going back to the motivating example - using data in task local_storage to make
-> scheduling decisions - the desire is to have the task local_storage access be
-> like "accessing a task_struct member" vs "doing a search for right data to 
-> access (w/ some caching to try to avoid search)".
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Exactly. The motivation is performance. Let's try to make good performance
-without uapi flags.
-Think from user's pov. They have to pick between FORCE_CACHE == good performance
-and no flag == bad? performance.
-Why would anyone pick something that has worse performance?
+
