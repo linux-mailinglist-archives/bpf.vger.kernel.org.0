@@ -2,68 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C26F50C46F
-	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 01:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8421950C37A
+	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 01:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbiDVWip (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 18:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37384 "EHLO
+        id S233020AbiDVWtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 18:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbiDVWi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 18:38:28 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E132E7090;
-        Fri, 22 Apr 2022 14:46:12 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id y11so5852699ilp.4;
-        Fri, 22 Apr 2022 14:46:12 -0700 (PDT)
+        with ESMTP id S234753AbiDVWs3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 18:48:29 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E874A39A056
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 15:08:26 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id c12so13710732plr.6
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 15:08:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nkDUZxbdA+hWXU65q6VAaFr0TzgsldQALWu4ZWoYD0M=;
-        b=bJee/rEr6BUaMfw59k5TozahkYw7co4nWcHIgP7F/BLY3AQxJmRDWGyNmCqMgHqNnd
-         Flea4d5Up76qniaRAJ4C2k/8sMCcT3ykbdFE9NS1awQ+KBF4SAfKVcz6OM7j9P52Ay9K
-         LRuKC2wwfBFW+3nlRGuKNTjUY7noZf0V4lL3zErNRVJ6tCkYZ1xSvDr4POoVqIbAfrv2
-         v4YeKLBVoeDDntDlhumrNv5qsXIS8IXCIElGtvrMcmWpLMMymhHA63TPkjazsM4RiYd3
-         zvaBuErlj2qcOgVugdIdb5az3E5zUktuiO3B3D7lXFqXw14jX2AbQaJQ3I7NBMnnb0xq
-         57zQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yz6zxeAM2W6JwA3xHwtSo4rCqra9jDuQkZoypKeIeaA=;
+        b=nv5R7pRe5HHdf0+LvvcL+seUaDLn3bMFDNAgmdDvYFzBuuCIYeYNLV3P4bmD5j3EB2
+         xCkdaCr4+gMzguTkVeneSDjigI4M4DzYEWQ3Vk4U3M9zSzINft0uyCK4qEZ3pcKkFviw
+         fzKHOhelvjXFBrQzzSVYQjO4XEaLt1SISuz+xQJF0vMQkcizy4BgWKtnvZdaL1FNuuMl
+         7Afaj2kQxS/9cMR2yjvkkoqRPQrBx73PM2sl70LIOBthkX79kQeSfd77FYBnhN/yIfwp
+         OGj0dIDcSTMryvJeu/70s3lJuR8yPRG2IZ/Pma6gpQCRpo70diMfQlKZwydCrlvIfdCg
+         5BRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nkDUZxbdA+hWXU65q6VAaFr0TzgsldQALWu4ZWoYD0M=;
-        b=YDPmwEnGEB6xZgIbUgHMmVBBk7BBR+YXdOlpF3B8LUn6zwrn2j0RVvf2YkMyxISGSS
-         kZrlwXBPb1z1lMbrraHsKg9RoPucS8qJIiE/Pe7pTuTh6cooNUeh3a4vLD2zJYa33z5J
-         KWT+QFkZJ/Y/b2yLp0ox0N71Vs04gBBlbeUYrR8MhnTXfBAFzCc/eN1NVbo59htmhFHX
-         Bgvz3LORsRm6atlVu0VMIMXL+DyqDS+QcX41BnsDymcf4jxDYljUsIMKu2vQ1QcVuPKl
-         j/HwBhz+MMCryin1HraSgRwvmgXe/krXsLY7hLjKbMKDEzJhxanjFbQJLTMMUKPDF/rC
-         qMrg==
-X-Gm-Message-State: AOAM5337vw9s6gfvkAG37ElAkWYHdQMP+ExE2ig5MllWVUBYCWgMwkSD
-        yzC9v2o9ryDHPEybDX/qOxC4uAL1z6HVyq25Uhg=
-X-Google-Smtp-Source: ABdhPJzNGJm4jcKbD/R3aBuDb2M63BaNg5fLvioWsh96gpit7/9Ok02JoYIVS32OS5cVounn+0kxBToAAOEfAI254hY=
-X-Received: by 2002:a92:cd8d:0:b0:2cd:81ce:79bd with SMTP id
- r13-20020a92cd8d000000b002cd81ce79bdmr221037ilb.252.1650663972085; Fri, 22
- Apr 2022 14:46:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220421130056.2510372-1-cuigaosheng1@huawei.com>
- <CAEf4Bza3inoAHsS0w=nKXNgxyFqzPXJVyDHq03Foody6Vgp7=Q@mail.gmail.com> <60b4e208-efed-c2fb-d1e0-125e5409c861@huawei.com>
-In-Reply-To: <60b4e208-efed-c2fb-d1e0-125e5409c861@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 22 Apr 2022 14:46:01 -0700
-Message-ID: <CAEf4BzY3j8=uNvvwZXsFEANR84bXMWY2OH+eZi_sSsiLutYhVQ@mail.gmail.com>
-Subject: Re: [PATCH -next] libbpf: Add additional null-pointer checking in make_parent_dir
-To:     cuigaosheng <cuigaosheng1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yz6zxeAM2W6JwA3xHwtSo4rCqra9jDuQkZoypKeIeaA=;
+        b=CEzXOrsoqWGRi9H2RgQi1goX9WxRhzSGsHHTWkI1tsgl91TplwzneKotzIovN3jpbx
+         heC8rjYl2HAYeNmVjeQ7NfWfevtCZYiYkODZNz7knyAgEUmOLaXgPgy89Shww4QYt1Lv
+         TZItu1J84fr2uasrnyouB+jCqo03TCjcOVlivRSnWq91kDQzPczUahP9PSNBP3mnV3p8
+         T0bYjNy9p31Bv96KWzvgpHNsykRuVbs/KUacrxEkiTWsegQtogZYyEz/UZ2TOf6xEcxC
+         oqIF7DjuZrKBv5Kv/R2KbU0sTEUaLFvtYvTrcYfcl0AQGMDzAUEKkhLE/NJb5w6OJk3b
+         z/aQ==
+X-Gm-Message-State: AOAM533kkDSvMe06XXCgPt2cPS3as0D8W4mK+5XXJ/y3TrsKesn3Zh+z
+        +QLkm85La4Vb2hC6QDx90DY=
+X-Google-Smtp-Source: ABdhPJwzjHKsv3VRG7x5/pSYttJQA9a8o7zjSR3lFzQWTts9m7htd/i/6KMRvdiXJVGsbtQZFgC+eQ==
+X-Received: by 2002:a17:902:ecd0:b0:159:572:af3a with SMTP id a16-20020a170902ecd000b001590572af3amr6725180plh.77.1650665273779;
+        Fri, 22 Apr 2022 15:07:53 -0700 (PDT)
+Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:500::46a8])
+        by smtp.gmail.com with ESMTPSA id m4-20020a17090ab78400b001cd4989fed0sm6986838pjr.28.2022.04.22.15.07.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Apr 2022 15:07:53 -0700 (PDT)
+Date:   Fri, 22 Apr 2022 15:07:50 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        gongruiqi1@huawei.com, wangweiyang2@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Tejun Heo <tj@kernel.org>,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 0/3] Introduce local_storage exclusive caching
+Message-ID: <20220422220750.kdyqkhkxyv4yv66f@MBP-98dd607d3435.dhcp.thefacebook.com>
+References: <20220420002143.1096548-1-davemarchevsky@fb.com>
+ <20220422014030.opvbgrfvdnxzwfxl@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <5d14e267-298b-d4b5-07bf-704a36aa8aa5@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d14e267-298b-d4b5-07bf-704a36aa8aa5@fb.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,115 +75,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 21, 2022 at 7:55 PM cuigaosheng <cuigaosheng1@huawei.com> wrote=
-:
->
-> This email adjusts the code format.
->
-> I don't understand why we don't check path for NULL, bpf_link__pin is an
-> external
-> interface, It will be called by external functions and provide input
-> parameters,
-
-that external interface expects non-NULL string as input argument,
-which is a default throughout libbpf's API. You will get SIGSEGV in
-lots of cases if you pass NULL where you are not supposed to, e.g.,
-bpf_object__open_file() and many others. It doesn't mean that libbpf
-should check any pointer argument for NULL.
-
-You can argue that strdup(NULL) shouldn't crash but it doesn't. It's
-because strdup() has a contract that it shouldn't be passed NULL. So
-is the case here.
-
-
-> for example in samples/bpf/hbm.c:
->
-> > 201         link =3D bpf_program__attach_cgroup(bpf_prog, cg1);
-> > 202         if (libbpf_get_error(link)) {
-> > 203                 fprintf(stderr, "ERROR: bpf_program__attach_cgroup
-> > failed\n");
-> > 204                 goto err;
-> > 205         }
-> > 206
-> > 207         sprintf(cg_pin_path, "/sys/fs/bpf/hbm%d", cg_id);
-> > 208         rc =3D bpf_link__pin(link, cg_pin_path);
-> > 209         if (rc < 0) {
-> > 210                 printf("ERROR: bpf_link__pin failed: %d\n", rc);
-> > 211                 goto err;
-> > 212         }
->
-> if cg_pin_path is NULL, strdup(NULL) will trigger a segmentation fault in
-> make_parent_dir, I think we should avoid this and add null-pointer checki=
-ng
-> for path, just like check_path:
-> >  7673 static int check_path(const char *path)
-> >  7674 {
-> >  7675         char *cp, errmsg[STRERR_BUFSIZE];
-> >  7676         struct statfs st_fs;
-> >  7677         char *dname, *dir;
-> >  7678         int err =3D 0;
-> >  7679
-> >  7680         if (path =3D=3D NULL)
-> >  7681                 return -EINVAL;
-> >  7682
-> >  7683         dname =3D strdup(path);
-> >  7684         if (dname =3D=3D NULL)
-> >  7685                 return -ENOMEM;
-> >  7686
-> >  7687         dir =3D dirname(dname);
-> >  7688         if (statfs(dir, &st_fs)) {
-> >  7689                 cp =3D libbpf_strerror_r(errno, errmsg,
-> > sizeof(errmsg));
-> >  7690                 pr_warn("failed to statfs %s: %s\n", dir, cp);
-> >  7691                 err =3D -errno;
-> >  7692         }
-> >  7693         free(dname);
-> >  7694
-> >  7695         if (!err && st_fs.f_type !=3D BPF_FS_MAGIC) {
-> >  7696                 pr_warn("specified path %s is not on BPF FS\n",
-> > path);
-> >  7697                 err =3D -EINVAL;
-> >  7698         }
-> >  7699
-> >  7700         return err;
-> >  7701 }
->
-> Thanks.
->
->
-> =E5=9C=A8 2022/4/22 0:55, Andrii Nakryiko =E5=86=99=E9=81=93:
-> > On Thu, Apr 21, 2022 at 6:01 AM Gaosheng Cui <cuigaosheng1@huawei.com> =
-wrote:
-> >> The make_parent_dir is called without null-pointer checking for path,
-> >> such as bpf_link__pin. To ensure there is no null-pointer dereference
-> >> in make_parent_dir, so make_parent_dir requires additional null-pointe=
-r
-> >> checking for path.
+On Fri, Apr 22, 2022 at 12:05:23AM -0400, Dave Marchevsky wrote:
+> On 4/21/22 9:40 PM, Alexei Starovoitov wrote:   
+> > On Tue, Apr 19, 2022 at 05:21:40PM -0700, Dave Marchevsky wrote:
+> >> Currently, each local_storage type (sk, inode, task) has a 16-entry
+> >> cache for local_storage data associated with a particular map. A
+> >> local_storage map is assigned a fixed cache_idx when it is allocated.
+> >> When looking in a local_storage for data associated with a map the cache
+> >> entry at cache_idx is the only place the map can appear in cache. If the
+> >> map's data is not in cache it is placed there after a search through the
+> >> cache hlist. When there are >16 local_storage maps allocated for a
+> >> local_storage type multiple maps have same cache_idx and thus may knock
+> >> each other out of cache.
 > >>
-> >> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
-> >> ---
-> >>   tools/lib/bpf/libbpf.c | 3 +++
-> >>   1 file changed, 3 insertions(+)
+> >> BPF programs that use local_storage may require fast and consistent
+> >> local storage access. For example, a BPF program using task local
+> >> storage to make scheduling decisions would not be able to tolerate a
+> >> long hlist search for its local_storage as this would negatively affect
+> >> cycles available to applications. Providing a mechanism for such a
+> >> program to ensure that its local_storage_data will always be in cache
+> >> would ensure fast access.
 > >>
-> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >> index b53e51884f9e..5786e6184bf5 100644
-> >> --- a/tools/lib/bpf/libbpf.c
-> >> +++ b/tools/lib/bpf/libbpf.c
-> >> @@ -7634,6 +7634,9 @@ static int make_parent_dir(const char *path)
-> >>          char *dname, *dir;
-> >>          int err =3D 0;
+> >> This series introduces a BPF_LOCAL_STORAGE_FORCE_CACHE flag that can be
+> >> set on sk, inode, and task local_storage maps via map_extras. When a map
+> >> with the FORCE_CACHE flag set is allocated it is assigned an 'exclusive'
+> >> cache slot that it can't be evicted from until the map is free'd. 
 > >>
-> >> +       if (path =3D=3D NULL)
-> >> +               return -EINVAL;
-> >> +
-> > API contract is that path shouldn't be NULL. Just like we don't check
-> > link, obj, prog for NULL in every single API, I don't think we need to
-> > do it here, unless I'm missing something?
-> >
-> >>          dname =3D strdup(path);
-> >>          if (dname =3D=3D NULL)
-> >>                  return -ENOMEM;
-> >> --
-> >> 2.25.1
-> >>
-> > .
+> >> If there are no slots available to exclusively claim, the allocation
+> >> fails. BPF programs are expected to use BPF_LOCAL_STORAGE_FORCE_CACHE
+> >> only if their data _must_ be in cache.
+> > 
+> > I'm afraid new uapi flag doesn't solve this problem.
+> > Sooner or later every bpf program would deem itself "important" and
+> > performance critical. All of them will be using FORCE_CACHE flag
+> > and we will back to the same situation.
+> 
+> In this scenario, if 16 maps had been loaded w/ FORCE_CACHE flag and 17th tried
+> to load, it would fail, so programs depending on the map would fail to load.
+
+Ahh. I missed that the cache_idx is assigned at map creation time.
+
+> Patch 2 adds a selftest 'local_storage_excl_cache_fail' demonstrating this.
+> 
+> > Also please share the performance data that shows more than 16 programs
+> > that use local storage at the same time and existing simple cache
+> > replacing logic is not enough.
+> > For any kind link list walking to become an issue there gotta be at
+> > least 17 progs. Two progs should pick up the same cache_idx and
+> > run interleaved to evict each other. 
+> > It feels like unlikely scenario, so real data would be good to see.
+> > If it really an issue we might need a different caching logic.
+> > Like instead of single link list per local storage we might
+> > have 16 link lists. cache_idx can point to a slot.
+> > If it's not 1st it will be a 2nd in much shorter link list.
+> > With 16 slots the link lists will have 2 elements until 32 bpf progs
+> > are using local storage.
+> > We can get rid of cache too and replace with mini hash table of N
+> > elements where map_id would be an index into a hash table.
+> > All sorts of other algorithms are possible.
+> > In any case the bpf user shouldn't be telling the kernel about
+> > "importance" of its program. If program is indeed executing a lot
+> > the kernel should be caching/accelerating it where it can.
+> 
+> It's worth noting that this is a map-level setting, not prog-level. Telling the
+> kernel about importance of data feels more palatable to me. Sort of like mmap's
+> MAP_LOCKED, but for local_storage cache.
+
+For mmap it's an operational difference. Not just performance.
+
+> Going back to the motivating example - using data in task local_storage to make
+> scheduling decisions - the desire is to have the task local_storage access be
+> like "accessing a task_struct member" vs "doing a search for right data to 
+> access (w/ some caching to try to avoid search)".
+
+Exactly. The motivation is performance. Let's try to make good performance
+without uapi flags.
+Think from user's pov. They have to pick between FORCE_CACHE == good performance
+and no flag == bad? performance.
+Why would anyone pick something that has worse performance?
