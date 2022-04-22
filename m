@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C1B50BAC2
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 16:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682BA50BB14
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 17:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242692AbiDVO43 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 10:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        id S1449195AbiDVPFc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 11:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbiDVO42 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 10:56:28 -0400
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2B45C36E;
-        Fri, 22 Apr 2022 07:53:34 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id y32so14721905lfa.6;
-        Fri, 22 Apr 2022 07:53:34 -0700 (PDT)
+        with ESMTP id S1449198AbiDVPE2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 11:04:28 -0400
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE3C5D647;
+        Fri, 22 Apr 2022 08:01:28 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id w5so9968134lji.4;
+        Fri, 22 Apr 2022 08:01:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=I0VILpALjxgooNpCUUQ9H0t12+7Y/aJA4JC/W0MMu4Y=;
-        b=hfaIPphNi/HEJkZOFfyCKQ7juFzFwFKQQbNua2SvvUlAc6i3nGmptc7H4gB2trx0UY
-         Gr0jyYnLFBT6/whfk/MtJj5CYM1TWB+7i6L4lkIJwsp4AZ8nMrXW8ohJdYxvhBaZW0Hf
-         rceEKHqmOZkkNonEKZERdfo/h9yXMXpx0cXzOcJqHlX7jYotvyjocrrybTWRUIDWUYkc
-         Gx5s5xxjdSCfa5/GJ41GxBPZS63/Xo4W+jkOhJCn8V/ewFAd17JfnW9CiNIBZwPlhLY+
-         NjooU9LCIxSDybBZkv/ZISfEsdtkf2J27MGrN6AiyBbgudgsxEZ9+Bb+W6kFSr+SbVfx
-         GH5A==
-X-Gm-Message-State: AOAM532N+/oK5Ekvt2FzpZD0XS+aVtZb1koMXIcy/qir2Eu5vU0VbZey
-        icCzVT29QSP691WzoEQIGcVPLMfET7M+c1dcMVVQz9rs
-X-Google-Smtp-Source: ABdhPJwlc7cKv6KK0YFa2nUiR3fW//AKtK/4s6TjqOxcRhCaI2hrDN2p5K4jErdUwTi53d8YZ5x1f3P+jc4Rd35rk10=
-X-Received: by 2002:ac2:4c4f:0:b0:44a:4357:c285 with SMTP id
- o15-20020ac24c4f000000b0044a4357c285mr3260154lfk.99.1650639212740; Fri, 22
- Apr 2022 07:53:32 -0700 (PDT)
+        bh=fiWLR17VDpLKbRo+43T1nudbmv7jbS4IG24R19EwcNM=;
+        b=yMo/T1/vhPe4MnWmd37bbXE6AbI/jeWcL7bTy+LHTuq5eNUjFiQrvkgL+W6vbNsHdF
+         vQ93e9ME/4pman1yQ/HS/ySp9FcLlwsXwvr/AaP5Wf9LUb0nA+vBVxhsBzmwB1W3HeAA
+         CpH2pcjKl2+C6x4KTB4dZ+neEUS3eP61Ek3TOwby73/qqlYk5JZRRWl6QMZes64T3gxr
+         tT2T2o2Athoriy2eWWt8wKfO8J3PEO+93ZSlRP1sDGFFGAjeOGY3eWypIm4enbExtIPb
+         /D1l1eHgssnfswiY0JktHn04SB7i014x/iF5Ewupu7NGNGhUTXoNCEzqgNc5FKIQjWPt
+         DuVQ==
+X-Gm-Message-State: AOAM533LSXNAYLEqTp8jDh5zKJhcN70H/9NP+YYYwsfi8lzSwuYszx1G
+        D3Pq19CMqDnRFSG+Kw9hJ8JxpdwKcX1qY4xSfuQ=
+X-Google-Smtp-Source: ABdhPJz0aFWprrOW9PDtR3C4kUFYsFk3pNN4qhgIVvgnXXxHQJJWo1vSVKJNqXx7Qu5hvrI65GmkiPmE444yntBOynA=
+X-Received: by 2002:a2e:a793:0:b0:24e:e3bd:b3a8 with SMTP id
+ c19-20020a2ea793000000b0024ee3bdb3a8mr2949005ljf.457.1650639686346; Fri, 22
+ Apr 2022 08:01:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220422053401.208207-1-namhyung@kernel.org> <YmJ/VAt2yblZC9HN@krava>
-In-Reply-To: <YmJ/VAt2yblZC9HN@krava>
+References: <20220422053401.208207-1-namhyung@kernel.org> <35121321.B44TWeBT9p@milian-workstation>
+In-Reply-To: <35121321.B44TWeBT9p@milian-workstation>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 22 Apr 2022 07:53:22 -0700
-Message-ID: <CAM9d7cjGuTyOmKQsoA9kJPg-_VAuP+jWzwd=g8Z_WpMUZkypUQ@mail.gmail.com>
+Date:   Fri, 22 Apr 2022 08:01:15 -0700
+Message-ID: <CAM9d7cjU6RGMStG4YOW5D50Sx4PRia2dfzcPKxb4JLh5Q668mw@mail.gmail.com>
 Subject: Re: [RFC 0/4] perf record: Implement off-cpu profiling with BPF (v1)
-To:     Jiri Olsa <olsajiri@gmail.com>
+To:     Milian Wolff <milian.wolff@kdab.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -62,32 +62,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jiri,
+Hi Milian,
 
-On Fri, Apr 22, 2022 at 3:11 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Fri, Apr 22, 2022 at 3:21 AM Milian Wolff <milian.wolff@kdab.com> wrote:
 >
-> On Thu, Apr 21, 2022 at 10:33:57PM -0700, Namhyung Kim wrote:
->
-> SNIP
->
-> > The perf bench sched messaging created 400 processes to send/receive
-> > messages through unix sockets.  It spent a large portion of cpu cycles
-> > for audit filter and read/copy the messages while most of the
-> > offcpu-time was in read and write calls.
+> On Freitag, 22. April 2022 07:33:57 CEST Namhyung Kim wrote:
+> > Hello,
 > >
-> > You can get the code from 'perf/offcpu-v1' branch in my tree at
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-> >
-> > Enjoy! :)
+> > This is the first version of off-cpu profiling support.  Together with
+> > (PMU-based) cpu profiling, it can show holistic view of the performance
+> > characteristics of your application or system.
 >
->   CC      builtin-record.o
-> builtin-record.c:52:10: fatal error: util/off_cpu.h: No such file or directory
->    52 | #include "util/off_cpu.h"
+> Hey Namhyung,
 >
-> forgot to add util/off_cpu.h ?
+> this is awesome news! In hotspot, I've long done off-cpu profiling manually by
+> looking at the time between --switch-events. The downside is that we also need
+> to track the sched:sched_switch event to get a call stack. But this approach
+> also works with dwarf based unwinding, and also includes kernel stacks.
 
-Oops, you're right.  Will resend soon.
+Thanks, I've also briefly thought about the switch event based off-cpu
+profiling as it doesn't require root.  But collecting call stacks is hard and
+I'd like to do it in kernel/bpf to reduce the overhead.
+
+>
+> > With BPF, it can aggregate scheduling stats for interested tasks
+> > and/or states and convert the data into a form of perf sample records.
+> > I chose the bpf-output event which is a software event supposed to be
+> > consumed by BPF programs and renamed it as "offcpu-time".  So it
+> > requires no change on the perf report side except for setting sample
+> > types of bpf-output event.
+> >
+> > Basically it collects userspace callstack for tasks as it's what users
+> > want mostly.  Maybe we can add support for the kernel stacks but I'm
+> > afraid that it'd cause more overhead.  So the offcpu-time event will
+> > always have callchains regardless of the command line option, and it
+> > enables the children mode in perf report by default.
+>
+> Has anything changed wrt perf/bpf and user applications not compiled with `-
+> fno-omit-frame-pointer`? I.e. does this new utility only work for specially
+> compiled applications, or do we also get backtraces for "normal" binaries that
+> we can install through package managers?
+
+I am not aware of such changes, it still needs a frame pointer to get
+backtraces.
 
 Thanks,
 Namhyung
