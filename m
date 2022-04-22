@@ -2,264 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA81850B0CE
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 08:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E1A50B1AB
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 09:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243302AbiDVGuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 02:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
+        id S1391008AbiDVHei (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 03:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443537AbiDVGuL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 02:50:11 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B00E50B0A;
-        Thu, 21 Apr 2022 23:47:18 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id l7so14506082ejn.2;
-        Thu, 21 Apr 2022 23:47:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Del5eeZrAfBdXZm8xl3NxZ/3UlBvdFq7az+6z0GKnVU=;
-        b=jM+d8KowqciDEeu33ElBGSBJNSnizyE8hJWhbBmSi/BqCMwnX3JgG+CI1vFJFQTaeC
-         t6we977iSDFEsJjJMI5XHEB5ZEpX5SSampoAlsSbxtpJFsAa+EhrQFFlAtSfq8ragbl4
-         KJ+RMVbPHe77YUXU7Pdm3KJ9ksy+S8WtTCJyIsYShfwkndZCNZFT/wxTQy9J4cMVdnkE
-         tXiewFh7L4P47/5EXORthwCi4T9VwvUBhedNrugtAYMRFre14EVIWaWgeo/mPIWNO6GU
-         gvPNLiHkWm/eCz+2pXt1Xlaj9sjX3MYO+7MaHzx8sp+TtjKWOg/NC9yBV/IVvd43VZRH
-         QSow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Del5eeZrAfBdXZm8xl3NxZ/3UlBvdFq7az+6z0GKnVU=;
-        b=FdkPK3SYPOgEMEb2yH8N/bBl/TJwHNgh1By6c1Hj6UETq1HOmUnlxk3E4TLS06nLjT
-         sdiX9JKkE+e4sO34Li6bdzN1Efd1cIlXAB8B4C0i5eBUBkYkaw0ITpYknlO1ifAEue98
-         j0wFTlckDA6fZgiWe/Jca46Kv06SjJ0vW0bGSQWCaw8LiavBuSHEiAcOI2vXq7sarQ89
-         YwF4gLGxjuluivZYwAYT43a7mSQXcaQLewfx/LnUcfCatPVTtVBSHynM5QgATCG+/umi
-         x9JG+j3ONMQkaRq93eEcWrMOevHrAAdCeojww4SP9wcBUQ7Vtuc26wTsLAJV8JDaH4ho
-         Ii6Q==
-X-Gm-Message-State: AOAM532gOmZxvzBqqc7MEVu/1uwINv6Fqj4/JCH0seLnNcgjl/KN4OnV
-        gSXuQL7LOI4Z04217+7vLhw=
-X-Google-Smtp-Source: ABdhPJzA96YE+3ajfqFS9wHG63l8IqNyEfGeZ90wN/ktWjwt4XFML5UfYqq7Ef7M1DDPXxF35DlD9w==
-X-Received: by 2002:a17:907:6d0d:b0:6f3:61e1:e33b with SMTP id sa13-20020a1709076d0d00b006f361e1e33bmr286510ejc.320.1650610036578;
-        Thu, 21 Apr 2022 23:47:16 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id x8-20020a170906134800b006e86ff7db33sm435829ejb.68.2022.04.21.23.47.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Apr 2022 23:47:16 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 08:47:13 +0200
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1386165AbiDVHeh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 03:34:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C739B515B4;
+        Fri, 22 Apr 2022 00:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BiFwTkcFOMTtKqRq3uhC/TlKTqlAY7nnCuq174HKk0M=; b=AyKZDrqtPLqsXggbYiNB4s0jKC
+        YuBihnegzx6MUh0QMeUCIUyxS0f8f2fHUB0dpThVn0kxXgH0ji+gVYvcBDXPVbqWZBj1H0bHQy6HK
+        rNHe9jnf9i/eJ6t+KzyR7oxKiLEvuZVv4p7TySSggte7OR1iygeQw2aUvicwuJ+FbLEXH5T9RW31q
+        IoRQPXYf6lKNUEFw8989N3pP2QZ3Om5Fj0KPUjQngthaabNwb3SsL9Te6XdrDGTAaKoV+cLlcsXhd
+        elh8AV6Q6wtQkZ48zABYj5dlG8a7qkVNvEDyGFpyaK6gdfaEXz6tVXyNi6cht7qnie+3kKrkNBvcB
+        7NUjcvXg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nhnlA-007dGP-HF; Fri, 22 Apr 2022 07:31:20 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3733D9861C1; Fri, 22 Apr 2022 09:31:18 +0200 (CEST)
+Date:   Fri, 22 Apr 2022 09:31:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Song Liu <song@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCHv2 bpf-next 1/4] kallsyms: Add kallsyms_lookup_names
- function
-Message-ID: <YmJPcU9dahEatb0f@krava>
-References: <20220418124834.829064-1-jolsa@kernel.org>
- <20220418124834.829064-2-jolsa@kernel.org>
- <20220418233546.dfe0a1be12193c26b05cdd93@kernel.org>
- <Yl5yHVOJpCYr+T3r@krava>
+        Kernel Team <Kernel-team@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf] bpf: invalidate unused part of bpf_prog_pack
+Message-ID: <20220422073118.GR2731@worktop.programming.kicks-ass.net>
+References: <20220421072212.608884-1-song@kernel.org>
+ <CAHk-=wi3eu8mdKmXOCSPeTxABVbstbDg1q5Fkak+A9kVwF+fVw@mail.gmail.com>
+ <CAADnVQKyDwXUMCfmdabbVE0vSGxdpqmWAwHRBqbPLW=LdCnHBQ@mail.gmail.com>
+ <CAHk-=whFeBezdSrPy31iYv-UZNnNavymrhqrwCptE4uW8aeaHw@mail.gmail.com>
+ <CAPhsuW7M6exGD3C1cPBGjhU0Y5efxtJ3=0BWNnbuH87TgQMzdg@mail.gmail.com>
+ <CAHk-=wh1mO5HdrOMTq68WHM51-=jdmQS=KipVYxS+5u3uRc5rg@mail.gmail.com>
+ <1A4FF473-0988-48BE-9993-0F5E9F0AAC95@fb.com>
+ <CAHk-=wi62LDc5B3DOr5pyVtOUOuLkLzHvmZQApH9q=raqaGkUg@mail.gmail.com>
+ <8F788446-899C-4BA3-8236-612A94D98582@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yl5yHVOJpCYr+T3r@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <8F788446-899C-4BA3-8236-612A94D98582@fb.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 10:26:05AM +0200, Jiri Olsa wrote:
+> > On Apr 21, 2022, at 3:30 PM, Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-SNIP
-
-> > > +static int kallsyms_callback(void *data, const char *name,
-> > > +			     struct module *mod, unsigned long addr)
-> > > +{
-> > > +	struct kallsyms_data *args = data;
-> > > +
-> > > +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
-> > > +		return 0;
-> > > +
-> > > +	addr = ftrace_location(addr);
-> > > +	if (!addr)
-> > > +		return 0;
+> > I actually think bpf_arch_text_copy() is another horribly badly done thing.
 > > 
-> > Ooops, wait. Did you do this last version? I missed this point.
-> > This changes the meanings of the kernel function.
-> 
-> yes, it was there before ;-) and you're right.. so some archs can
-> return different address, I did not realize that
-> 
+> > It seems only implemented on x86 (I'm not sure how anything else is
+> > supposed to work, I didn't go look), and there it is horribly badly
+> > done, using __text_poke() that does all these magical things just to
+> > make it atomic wrt concurrent code execution.
 > > 
-> > > +
-> > > +	args->addrs[args->found++] = addr;
-> > > +	return args->found == args->cnt ? 1 : 0;
-> > > +}
-> > > +
-> > > +/**
-> > > + * kallsyms_lookup_names - Lookup addresses for array of symbols
+> > None of which is *AT*ALL* relevant for this case, since concurrent
+> > code execution simply isn't a thing (and if it were, you would already
+> > have lost).
 > > 
-> > More correctly "Lookup 'ftraced' addresses for array of sorted symbols", right?
+> > And if that wasn't pointless enough, it does all that magic "map the
+> > page writably at a different virtual address using poking_addr in
+> > poking_mm" and a different address space entirely.
 > > 
-> > I'm not sure, we can call it as a 'kallsyms' API, since this is using
-> > kallsyms but doesn't return symbol address, but ftrace address.
-> > I think this name misleads user to expect returning symbol address.
+> > All of that is required for REAL KERNEL CODE.
 > > 
-> > > + *
-> > > + * @syms: array of symbols pointers symbols to resolve, must be
-> > > + * alphabetically sorted
-> > > + * @cnt: number of symbols/addresses in @syms/@addrs arrays
-> > > + * @addrs: array for storing resulting addresses
-> > > + *
-> > > + * This function looks up addresses for array of symbols provided in
-> > > + * @syms array (must be alphabetically sorted) and stores them in
-> > > + * @addrs array, which needs to be big enough to store at least @cnt
-> > > + * addresses.
-> > 
-> > Hmm, sorry I changed my mind. I rather like to expose kallsyms_on_each_symbol()
-> > and provide this API from fprobe or ftrace, because this returns ftrace address
-> > and thus this is only used from fprobe.
-> 
-> ok, so how about:
-> 
->   int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs);
+> > But the thing is, for bpf_prog_pack, all of that is just completely
+> > pointless and stupid complexity.
 
-quick question.. is it ok if it stays in kalsyms.c object?
+I think the point is that this hole will likely share a page with active
+code, and as such there should not be a writable mapping mapping to it,
+necessitating the whole __text_poke() mess.
 
-so we don't need to expose kallsyms_on_each_symbol,
-and it stays in 'kalsyms' place
+That said; it does seem somewhat silly have a whole page worth of int3
+around just for this.
 
-jirka
+Perhaps we can do something like the completely untested below?
 
+---
+ arch/x86/kernel/alternative.c | 48 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 42 insertions(+), 6 deletions(-)
 
-
-diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
-index ce1bd2fbf23e..177e0b13c8c5 100644
---- a/include/linux/kallsyms.h
-+++ b/include/linux/kallsyms.h
-@@ -72,6 +72,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
- #ifdef CONFIG_KALLSYMS
- /* Lookup the address for a symbol. Returns 0 if not found. */
- unsigned long kallsyms_lookup_name(const char *name);
-+int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs);
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index d374cb3cf024..60afa9105307 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -994,7 +994,20 @@ static inline void unuse_temporary_mm(temp_mm_state_t prev_state)
+ __ro_after_init struct mm_struct *poking_mm;
+ __ro_after_init unsigned long poking_addr;
  
- extern int kallsyms_lookup_size_offset(unsigned long addr,
- 				  unsigned long *symbolsize,
-@@ -103,6 +104,11 @@ static inline unsigned long kallsyms_lookup_name(const char *name)
- 	return 0;
+-static void *__text_poke(void *addr, const void *opcode, size_t len)
++static void text_poke_memcpy(void *dst, const void *src, size_t len)
++{
++	memcpy(dst, src, len);
++}
++
++static void text_poke_memset(void *dst, const void *src, size_t len)
++{
++	int c = *(int *)src;
++	memset(dst, c, len);
++}
++
++typedef void text_poke_f(void *dst, const void *src, size_t len);
++
++static void *__text_poke(text_poke_f func, void *addr, const void *src, size_t len)
+ {
+ 	bool cross_page_boundary = offset_in_page(addr) + len > PAGE_SIZE;
+ 	struct page *pages[2] = {NULL};
+@@ -1059,7 +1072,7 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
+ 	prev = use_temporary_mm(poking_mm);
+ 
+ 	kasan_disable_current();
+-	memcpy((u8 *)poking_addr + offset_in_page(addr), opcode, len);
++	func((void *)poking_addr + offset_in_page(addr), src, len);
+ 	kasan_enable_current();
+ 
+ 	/*
+@@ -1091,7 +1104,8 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
+ 	 * If the text does not match what we just wrote then something is
+ 	 * fundamentally screwy; there's nothing we can really do about that.
+ 	 */
+-	BUG_ON(memcmp(addr, opcode, len));
++	if (func == text_poke_memcpy)
++		BUG_ON(memcmp(addr, src, len));
+ 
+ 	local_irq_restore(flags);
+ 	pte_unmap_unlock(ptep, ptl);
+@@ -1118,7 +1132,7 @@ void *text_poke(void *addr, const void *opcode, size_t len)
+ {
+ 	lockdep_assert_held(&text_mutex);
+ 
+-	return __text_poke(addr, opcode, len);
++	return __text_poke(text_poke_memcpy, addr, opcode, len);
  }
  
-+static inline int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs);
-+{
-+	return -ERANGE;
-+}
-+
- static inline int kallsyms_lookup_size_offset(unsigned long addr,
- 					      unsigned long *symbolsize,
- 					      unsigned long *offset)
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 79f2eb617a62..1e7136a765a9 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -29,6 +29,7 @@
- #include <linux/compiler.h>
- #include <linux/module.h>
- #include <linux/kernel.h>
-+#include <linux/bsearch.h>
- 
- /*
-  * These will be re-linked against their real values
-@@ -228,7 +229,7 @@ unsigned long kallsyms_lookup_name(const char *name)
- 	return module_kallsyms_lookup_name(name);
+ /**
+@@ -1137,7 +1151,7 @@ void *text_poke(void *addr, const void *opcode, size_t len)
+  */
+ void *text_poke_kgdb(void *addr, const void *opcode, size_t len)
+ {
+-	return __text_poke(addr, opcode, len);
++	return __text_poke(text_poke_memcpy, addr, opcode, len);
  }
  
--#ifdef CONFIG_LIVEPATCH
-+#if defined(CONFIG_LIVEPATCH) || defined(CONFIG_FPROBE)
- /*
-  * Iterate over all symbols in vmlinux.  For symbols from modules use
-  * module_kallsyms_on_each_symbol instead.
-@@ -572,6 +573,73 @@ int sprint_backtrace_build_id(char *buffer, unsigned long address)
- 	return __sprint_symbol(buffer, address, -1, 1, 1);
- }
+ /**
+@@ -1167,7 +1181,29 @@ void *text_poke_copy(void *addr, const void *opcode, size_t len)
  
-+#ifdef CONFIG_FPROBE
-+static int symbols_cmp(const void *a, const void *b)
-+{
-+	const char **str_a = (const char **) a;
-+	const char **str_b = (const char **) b;
-+
-+	return strcmp(*str_a, *str_b);
+ 		s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len - patched);
+ 
+-		__text_poke((void *)ptr, opcode + patched, s);
++		__text_poke(text_poke_memcpy, (void *)ptr, opcode + patched, s);
++		patched += s;
++	}
++	mutex_unlock(&text_mutex);
++	return addr;
 +}
 +
-+struct kallsyms_data {
-+	unsigned long *addrs;
-+	const char **syms;
-+	size_t cnt;
-+	size_t found;
-+};
-+
-+static int kallsyms_callback(void *data, const char *name,
-+			     struct module *mod, unsigned long addr)
++void *text_poke_set(void *addr, int c, size_t len)
 +{
-+	struct kallsyms_data *args = data;
++	unsigned long start = (unsigned long)addr;
++	size_t patched = 0;
 +
-+	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
-+		return 0;
++	if (WARN_ON_ONCE(core_kernel_text(start)))
++		return NULL;
 +
-+	addr = ftrace_location(addr);
-+	if (!addr)
-+		return 0;
++	mutex_lock(&text_mutex);
++	while (patched < len) {
++		unsigned long ptr = start + patched;
++		size_t s;
 +
-+	args->addrs[args->found++] = addr;
-+	return args->found == args->cnt ? 1 : 0;
-+}
++		s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len - patched);
 +
-+/**
-+ * ftrace_lookup_symbols - Lookup addresses for array of symbols
-+ *
-+ * @sorted_syms: array of symbols pointers symbols to resolve,
-+ * must be alphabetically sorted
-+ * @cnt: number of symbols/addresses in @syms/@addrs arrays
-+ * @addrs: array for storing resulting addresses
-+ *
-+ * This function looks up addresses for array of symbols provided in
-+ * @syms array (must be alphabetically sorted) and stores them in
-+ * @addrs array, which needs to be big enough to store at least @cnt
-+ * addresses.
-+ *
-+ * This function returns 0 if all provided symbols are found,
-+ * -ESRCH otherwise.
-+ */
-+int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
-+{
-+	struct kallsyms_data args;
-+
-+	args.addrs = addrs;
-+	args.syms = sorted_syms;
-+	args.cnt = cnt;
-+	args.found = 0;
-+	kallsyms_on_each_symbol(kallsyms_callback, &args);
-+
-+	return args.found == args.cnt ? 0 : -ESRCH;
-+}
-+#else
-+int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
-+{
-+	return -ERANGE;
-+}
-+#endif /* CONFIG_FPROBE */
-+
- /* To avoid using get_symbol_offset for every symbol, we carry prefix along. */
- struct kallsym_iter {
- 	loff_t pos;
++		__text_poke(text_poke_memset, (void *)ptr, (void *)&c, s);
+ 		patched += s;
+ 	}
+ 	mutex_unlock(&text_mutex);
