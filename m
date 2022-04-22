@@ -2,56 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A19AE50ACAC
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 02:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F84950ACF0
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 02:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbiDVAPP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Apr 2022 20:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        id S1442983AbiDVAwq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Apr 2022 20:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbiDVAPO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Apr 2022 20:15:14 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A27DDF14;
-        Thu, 21 Apr 2022 17:12:23 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id j8so7208565pll.11;
-        Thu, 21 Apr 2022 17:12:23 -0700 (PDT)
+        with ESMTP id S1442974AbiDVAwq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Apr 2022 20:52:46 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEFB266
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 17:49:53 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id bj36so7699784ljb.13
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 17:49:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=n9spvq7TwjTCmocegzLrVuaG32FfqVRthc5ZB6dLUV8=;
-        b=O61KrbrRUGJSIracs+yjM6jCeGXb+3yuTWicVrZNxIwk2aUu+uAviMrDAxeVFNL+nd
-         W4MOZAQ0kYvM5t/CPFrFbovMgmZ6zU2JdAYWfii9iazZUu/v1tn0Bqnw0S+eRfqKn6k2
-         lY32Tm8JWxxPGkPm96oRns97TlOEfoeWs43XUsdvcGEecSOGZKoUqKsleO0MGzGz1BJ5
-         pS/Jg0UZ07raSmm4sD1BCirn0dE5vhad4SqO6EcTgFarMZqKX0GgSO9UChHq0CIPyaI8
-         m21oie+OTllp/NvlppdyXPA/AAtVTxhRSrk7pSHJtxmW8HV0XhT9dzJckFCibpwN+7Rp
-         1mPg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cyff/BYI4BHHE42Yn0eFG23oOJzOlK0YmbtegqLYiEA=;
+        b=e8s2jMFqv2bC+sQVxlpzwEDZh7oycaV9S+2wmssqFmvul0CDY0M5+RlJpkTTP7Z9QR
+         qi9yPXjrrlRQyUgqlQaVvL3akjasMHpEFWtfDD/ePQ8hkfHJdbNSK+y2EjwrrzH/Sitb
+         /ZrMeAG6mxUhL9QmT6M7P1gmlMuuvtG6NFBDY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=n9spvq7TwjTCmocegzLrVuaG32FfqVRthc5ZB6dLUV8=;
-        b=v2lF8OWW2iw7YDbSd2RxPAZRA5baUiC/zcryBCdZduz7S09eZekngS2TuD47HCGT8/
-         Ut4+mvXwy19CNydDb45RdEKIWBvOIq3EqgEjO+O1ADK6j3x+viEiovjbyG7orkMy/Zo4
-         ho5hUxfNdEDC1R2Lh/JKz/XquM9cpkgQB3Op59KHiBmvPQkgCaD0Za1N5ekLgIlRARsD
-         s+VO6SPNjDtwWHpQdGwE10A2ZOR/H7U108Q+HvaDg8UaW/9DlO58R3+6pqsRcE/gYGVI
-         hoXbfaZpWvMjp7rDweqTU30wbzPKhTCnzM/6BYEJOqv/Ae7zQTc12rmbYqT/OKu4LLQ4
-         XeVA==
-X-Gm-Message-State: AOAM5313Nuy4RRH/STaiCoIp+J1ndqCnkzbVn+Z4KUs6OXmVyP11Z9uQ
-        bTDO3VpLdqmxhhktDCJyrrU=
-X-Google-Smtp-Source: ABdhPJzpFuAKgrhnbLMYWC1VN4rdDikErr7Bg4HeNegjbto++F7vTsXUinBbonzlZi6dhq3c+teS6g==
-X-Received: by 2002:a17:902:c1ca:b0:159:208:7579 with SMTP id c10-20020a170902c1ca00b0015902087579mr2017422plc.30.1650586343131;
-        Thu, 21 Apr 2022 17:12:23 -0700 (PDT)
-Received: from localhost (193-116-116-20.tpgi.com.au. [193.116.116.20])
-        by smtp.gmail.com with ESMTPSA id m1-20020a17090ade0100b001cb3feaddfcsm3554546pjv.2.2022.04.21.17.12.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Apr 2022 17:12:22 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 10:12:16 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cyff/BYI4BHHE42Yn0eFG23oOJzOlK0YmbtegqLYiEA=;
+        b=ffd36qc5HcNR1HmsuHLQplHtgninsLJl95+yztFStDKG5dZdsf99rXkuOx6kX9rdr1
+         4KXWT/6PatDz5dtbrHtORbtkVqkCVEsyV6tbo0wqOF0r8pSpmt/VT1uZ7XYfzOCuDA2D
+         v5OYBHVU9C31tou0bQmQ9nyq6U0PwL6lvePRimTYJYRDlxaOQVVb+45xGcLRvFZbSGv2
+         RQ7ILNakkRIFywqB89GXTdKOVVxoUTGqxhe8wIYRWmdLXRmPe7c+x6rGOsWXgI/KuXvr
+         uSke/26lsEGnTQ60hseR56yfw+Abzf3ZyPweeccagY5BsxfLqt1st+SKtene5Y22KqRI
+         uNLA==
+X-Gm-Message-State: AOAM530C6j0zPtHbVthXcHqS2XLNYDbQFUw8Oabuap3w7uCKAA2SQnNr
+        SRICBwwb7U3l45o81a1hq2I5fL9jJK81eBE63AM=
+X-Google-Smtp-Source: ABdhPJwDoTs4WBf6LXRP9+A/M9aZctnz13/tTsgs76D22etjOtjcBAAYTHP4WvCNlncesSbgW6AoRw==
+X-Received: by 2002:a2e:7e04:0:b0:24d:abc8:5b16 with SMTP id z4-20020a2e7e04000000b0024dabc85b16mr1294117ljc.390.1650588591309;
+        Thu, 21 Apr 2022 17:49:51 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id h29-20020a19ca5d000000b0047052f6ed1esm58664lfj.91.2022.04.21.17.49.49
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Apr 2022 17:49:50 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id h11so7739072ljb.2
+        for <bpf@vger.kernel.org>; Thu, 21 Apr 2022 17:49:49 -0700 (PDT)
+X-Received: by 2002:a2e:9d46:0:b0:24c:7f1d:73cc with SMTP id
+ y6-20020a2e9d46000000b0024c7f1d73ccmr1288388ljj.358.1650588589383; Thu, 21
+ Apr 2022 17:49:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220415164413.2727220-1-song@kernel.org> <YlnCBqNWxSm3M3xB@bombadil.infradead.org>
+ <YlpPW9SdCbZnLVog@infradead.org> <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
+ <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
+ <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
+ <Yl4F4w5NY3v0icfx@bombadil.infradead.org> <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
+ <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
+ <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
+ <1650511496.iys9nxdueb.astroid@bobo.none> <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
+ <1650530694.evuxjgtju7.astroid@bobo.none> <CAHk-=wi_D0o7YLYDpW-m3HgD7HeHR45L7UYxWi2iYdc5n99P3A@mail.gmail.com>
+ <1650582120.hf4z0mkw8v.astroid@bobo.none>
+In-Reply-To: <1650582120.hf4z0mkw8v.astroid@bobo.none>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 21 Apr 2022 17:49:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh_7npMESkkeJ0dZC=EDPhn8+iyg528rE_GjnKpsUkT=A@mail.gmail.com>
+Message-ID: <CAHk-=wh_7npMESkkeJ0dZC=EDPhn8+iyg528rE_GjnKpsUkT=A@mail.gmail.com>
 Subject: Re: [PATCH v4 bpf 0/4] vmalloc: bpf: introduce VM_ALLOW_HUGE_VMAP
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
 Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "ast@kernel.org" <ast@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
@@ -61,37 +77,20 @@ Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "hch@infradead.org" <hch@infradead.org>,
         "hpa@zytor.com" <hpa@zytor.com>,
         "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>,
-        "Kernel-team@fb.com" <Kernel-team@fb.com>,
+        Kernel Team <Kernel-team@fb.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "mbenes@suse.cz" <mbenes@suse.cz>,
         "mcgrof@kernel.org" <mcgrof@kernel.org>,
         "pmladek@suse.com" <pmladek@suse.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
         "song@kernel.org" <song@kernel.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>
-References: <20220415164413.2727220-1-song@kernel.org>
-        <YlnCBqNWxSm3M3xB@bombadil.infradead.org> <YlpPW9SdCbZnLVog@infradead.org>
-        <4AD023F9-FBCE-4C7C-A049-9292491408AA@fb.com>
-        <CAHk-=wiMCndbBvGSmRVvsuHFWC6BArv-OEG2Lcasih=B=7bFNQ@mail.gmail.com>
-        <B995F7EB-2019-4290-9C09-AE19C5BA3A70@fb.com> <Yl04LO/PfB3GocvU@kernel.org>
-        <Yl4F4w5NY3v0icfx@bombadil.infradead.org>
-        <88eafc9220d134d72db9eb381114432e71903022.camel@intel.com>
-        <B20F8051-301C-4DE4-A646-8A714AF8450C@fb.com> <Yl8CicJGHpTrOK8m@kernel.org>
-        <CAHk-=wh6um5AFR6TObsYY0v+jUSZxReiZM_5Kh4gAMU8Z8-jVw@mail.gmail.com>
-        <1650511496.iys9nxdueb.astroid@bobo.none>
-        <CAHk-=wiQ5=S3m2+xRbm-1H8fuQwWfQxnO7tHhKg8FjegxzdVaQ@mail.gmail.com>
-        <1650530694.evuxjgtju7.astroid@bobo.none>
-        <25437eade8b2ecf52ff9666a7de9e36928b7d28f.camel@intel.com>
-        <CAHk-=wiQcg=7++Odg08=eZZgdX4NKcPqiqGKXHNXqesTtfkmmA@mail.gmail.com>
-In-Reply-To: <CAHk-=wiQcg=7++Odg08=eZZgdX4NKcPqiqGKXHNXqesTtfkmmA@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <1650584815.0dtcbd4qky.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,63 +98,165 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Excerpts from Linus Torvalds's message of April 22, 2022 2:15 am:
-> On Thu, Apr 21, 2022 at 8:47 AM Edgecombe, Rick P
-> <rick.p.edgecombe@intel.com> wrote:
->>
->>                 I wonder if it
->> might have to do with the vmalloc huge pages using compound pages, then
->> some caller doing vmalloc_to_page() and getting surprised with what
->> they could get away with in the struct page.
->=20
-> Very likely. We have 100+ users of vmalloc_to_page() in random
-> drivers, and the gpu code does show up on that list.
->=20
-> And is very much another case of "it's always been broken, but
-> enabling it on x86 made the breakage actually show up in real life".
+On Thu, Apr 21, 2022 at 4:30 PM Nicholas Piggin <npiggin@gmail.com> wrote:
+>
+> VM_FLUSH_RESET_PERMS was because bpf uses the arch module allocation
+> code which was not capable of dealing with huge pages in the arch
+> specific direct map manipulation stuff was unable to deal with it.
+> An x86 bug.
 
-Okay that looks like a valid breakage. *Possibly* fb_deferred_io_fault()
-using pages vmalloced to screen_buffer? Or a couple of the gpu drivers
-are playing with page->mapping as well, not sure if they're vmalloced.
+.. and a power one? The only thing really special in  __module_alloc()
+on power is that same VM_FLUSH_RESET_PERMS.
 
-But the fix is this (untested at the moment). It's not some fundamental=20
-reason why any driver should care about allocation size, it's a simple=20
-bug in my code that missed that case. The whole point of the design is=20
-that it's transparent to callers!
+Why had you otherwise disabled it there on powerpc too?
 
-Thanks,
-Nick
+> > And that bug was an issue on power too.
+>
+> I missed it, which bug was that?
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index e163372d3967..70933f4ed069 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2925,12 +2925,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-                        if (nr !=3D nr_pages_request)
-                                break;
-                }
--       } else
--               /*
--                * Compound pages required for remap_vmalloc_page if
--                * high-order pages.
--                */
--               gfp |=3D __GFP_COMP;
-+       }
-=20
-        /* High-order pages or fallback path if "bulk" fails. */
-=20
-@@ -2944,6 +2939,13 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-                        page =3D alloc_pages_node(nid, gfp, order);
-                if (unlikely(!page))
-                        break;
-+               /*
-+                * Higher order allocations must be able to be treated as
-+                * indepdenent small pages by callers (as they can with
-+                * small page allocs).
-+                */
-+               if (order)
-+                       split_page(page, order);
-=20
-                /*
-                 * Careful, we allocate and map page-order pages, but
+See above. At least it's very strongly implied by how the powerpc
+__module_alloc() function also used
 
+                    VM_FLUSH_RESET_PERMS | VM_NO_HUGE_VMAP,
+
+because there isn't much else going on.
+
+> No I don't notice. More work to support huge allocations for
+> executable mappings, sure. But the arch's implementation explicitly
+> does not support that yet. That doesn't make huge vmalloc broken!
+> Ridiculous. It works fine.
+
+There are several other reports of problems that weren't related to
+permissions (at least not obviously so).
+
+You were pointed at one of them in this thread:
+
+    https://lore.kernel.org/all/14444103-d51b-0fb3-ee63-c3f182f0b546@molgen.mpg.de/
+
+and yes, it also happened on x86-64, but my point this whole time has
+been that x86-64 gets A *LOT* MORE TEST COVERAGE.
+
+See the difference? The fact that it has workedc for you on powerpc
+doesn't mean that it's fine on powerpc.  It only means that powerpc
+gets about one thousandth of the test coverage that x86-64 gets.
+
+> You did just effectively disable it on x86 though.
+
+I disabled it *EVERYWHERE*.
+
+What is so hard to understand about that?
+
+Why are you so convinced this is about x86?
+
+It's not.
+
+> There really aren't all these "issues" you're imagining. They
+> aren't noticable now, on power or s390, because they have
+> non-buggy HAVE_ARCH_HUGE_VMALLOC implementations.
+
+So I really think you've not tested it.
+
+How many of those powerpc or s390 machines do you think test drivers
+that do vmalloc_to_page() and then do something with that 'struct page
+*'?
+
+Seriously. Why are you so convinced that "oh, any vmalloc() can be
+converted to large pages"?
+
+I really think the only reason you think that is because it ran on
+machines that basically have almost no drivers in use, and are all
+very homogenous, and just didn't happen to hit the bugs.
+
+IOW, I think you are probably entirely right that x86 has its own set
+of excitement (the bpf thread has this thing about how x86 does RO
+differently from other architectures), and there are likely x86
+specific bugs *TOO*.
+
+But let's just pick a random driver that uses vmalloc (literally
+random - I just grepped for it and started looking at it):
+
+   drivers/infiniband/hw/qib/qib_file_ops.c
+
+and it unquestionably does absolutely disgusting things, and if
+looking at the code makes you go "nobody should do that", then I won't
+disagree all that much.
+
+But as an example of what it does, it basically does things like this:
+
+        rcd->subctxt_uregbase = vmalloc_user(...);
+
+and then you can mmap it in user space in mmap_kvaddr():
+
+                addr = rcd->subctxt_uregbase;
+                size = PAGE_SIZE * subctxt_cnt;
+        ...
+        vma->vm_pgoff = (unsigned long) addr >> PAGE_SHIFT;
+        vma->vm_ops = &qib_file_vm_ops;
+
+and then the page fault routine is:
+
+    static const struct vm_operations_struct qib_file_vm_ops = {
+            .fault = qib_file_vma_fault,
+    };
+
+and that function qib_file_vma_fault() does things like this:
+
+        page = vmalloc_to_page((void *)(vmf->pgoff << PAGE_SHIFT));
+        if (!page)
+                return VM_FAULT_SIGBUS;
+
+        get_page(page);
+        vmf->page = page;
+
+        return 0;
+
+and let me just claim
+
+ (a) I bet you have never EVER tested this kind of insane code on powerpc
+
+ (b) do you think this will work great if vmalloc() allocates large pages?
+
+Can you now see what I'm saying?
+
+Can you now admit that the whole "nmake vmalloc() do large pages
+without explicit opt-in" was a HORRIBLE MISTAKE.
+
+> If you're really going to insist on this will you apply this to fix
+> (some of) the performance regressions it introduced?
+
+No.
+
+That patch is disgusting and there is no excuse for applying something
+crap like that.
+
+What I applied was the first in a series of patches that do it sanely.
+That whole "a sane way forward" thing.
+
+See
+
+    https://lore.kernel.org/all/20220415164413.2727220-3-song@kernel.org/
+
+for [PATCH 2/4] in the series for this particular issue.
+
+But I'm not applying anything else than the "disable this mess" before
+we have more discussion and consensus.
+
+And dammit, you had better just admit that this wasn't some x86-only thing.
+
+Powerpc and s390 were BROKEN GARBAGE AND JUST DIDN'T HAVE THE TEST COVERAGE.
+
+Seriously.
+
+And the thing is, your opt-out approach was just POINTLESS. The actual
+cases that are performance-critical are likely in the single digits.
+
+It's probably just that big-hash case and maybe a *couple* of other
+cases (ie the bpf jit really wants to use it).
+
+So opt-in is clearly the correct thing to do.
+
+Do you now understand why I applied that "users must opt-in" patch?
+
+Do you now understand that this is not some "x86" thing?
+
+                Linus
