@@ -2,200 +2,271 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA6650B4FD
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 12:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8321D50B637
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 13:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446422AbiDVK3d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 06:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
+        id S1349397AbiDVLgw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 07:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1446444AbiDVK3c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 06:29:32 -0400
-X-Greylist: delayed 344 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 22 Apr 2022 03:26:36 PDT
-Received: from mail.kdab.com (mail.kdab.com [176.9.126.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7588F54BC2;
-        Fri, 22 Apr 2022 03:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kdab.com; h=
- content-type:content-type:mime-version:references:in-reply-to
- :organization:message-id:date:date:subject:subject:from:from; s=
- dkim; t=1650622848; x=1651486849; bh=OkZkpmR5Gol2FkN3+/A784ArWqx
- jGL/19jO1i3HaxW8=; b=sRvgkC15wV9E1UMnsQnxc6gv/ckvBRlGnwRkSo8f4GP
- 0iWdpd68o5gH3lM8btJC0zj+NH0ODQ8+beYmmhTzSALE4Un1wesJcuSd1coOs3rG
- 1WnmnGfXvWWm42dtzftb5AFooKPkCKZXZs94gRj3HfkFP9o8cyM+xsFFwNYm/5ms
- =
-X-Virus-Scanned: amavisd-new at kdab.com
-From:   Milian Wolff <milian.wolff@kdab.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Blake Jones <blakejones@google.com>
-Subject: Re: [RFC 0/4] perf record: Implement off-cpu profiling with BPF (v1)
-Date:   Fri, 22 Apr 2022 12:20:45 +0200
-Message-ID: <35121321.B44TWeBT9p@milian-workstation>
-Organization: KDAB
-In-Reply-To: <20220422053401.208207-1-namhyung@kernel.org>
-References: <20220422053401.208207-1-namhyung@kernel.org>
+        with ESMTP id S1346437AbiDVLgv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 07:36:51 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEF956403
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 04:33:56 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id w4so10595503wrg.12
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 04:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=uz+KcNIj+v9WSFSUjytskdEFRoZIQjG/EVCHIE7PoXA=;
+        b=gzbQuJCj0I2T04uY0UYnVWLijPTDjp9cU8gjljlQbHYCpA8RUc0SI+1iOS8JCVDX30
+         wHYpTjb2TVGttz0rLW8wUREcv0cSVao2eWrMuveVbBcuvb69FNpN1EiELHQyz7N6bS5c
+         3TUxO7P8UkMUTNvh+TLzQ0YBXD9IfwQPSNMvk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=uz+KcNIj+v9WSFSUjytskdEFRoZIQjG/EVCHIE7PoXA=;
+        b=OsatqzWu/BldXSeBfnxhbUphgfX7aXVe5galop8ImWvIJY5olwCn6y6sw4VRPeO7JG
+         4SyvCYe4GrE9b3kjShn8anayQMxp4WJw7b2Apkj/ZUfv4+ngZNgTX0qSc/AQyQK63+T2
+         eEpHNxmXWKoioNi7DVS7T1XbXW6VXt8vS8UU63HUUKBEyFpP8FCvIhkyr0/T8zD+Swa4
+         tLHsnKL9WXnPoxBzPvYWXNxJtyKri1r36WxB9Aypj84FLW89HFkgLwNjnttrVoB/bi5y
+         OUna0AEGimA+Ve30FyoK84exqpM7NC3Bjx3A8VkN3pg+uqKKGGWPOG2kH8Gp8zqmh+dV
+         ihoA==
+X-Gm-Message-State: AOAM531yCJvoCtm0WX/UrM/vi7CG8LG9NetCMcesxtsVtZcQ857I4vL3
+        i8kzYhFD4FefrTt+UWL22QN5VA==
+X-Google-Smtp-Source: ABdhPJytQeZpvy34ZOAAMQB7w6jF7X6Nf/OgCkIilBTulJnvg3gtBspcR68ouVwuJUzFMunZvSQqjw==
+X-Received: by 2002:a5d:4e08:0:b0:20a:8f9e:beef with SMTP id p8-20020a5d4e08000000b0020a8f9ebeefmr3571401wrt.8.1650627235044;
+        Fri, 22 Apr 2022 04:33:55 -0700 (PDT)
+Received: from cloudflare.com (79.184.126.143.ipv4.supernova.orange.pl. [79.184.126.143])
+        by smtp.gmail.com with ESMTPSA id r25-20020adfa159000000b0020ac9758f17sm1338619wrr.23.2022.04.22.04.33.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Apr 2022 04:33:54 -0700 (PDT)
+References: <20220414162220.1985095-1-xukuohai@huawei.com>
+ <20220414162220.1985095-5-xukuohai@huawei.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Xu Kuohai <xukuohai@huawei.com>
+Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next v2 4/6] bpf, arm64: Impelment
+ bpf_arch_text_poke() for arm64
+Date:   Fri, 22 Apr 2022 12:54:02 +0200
+In-reply-to: <20220414162220.1985095-5-xukuohai@huawei.com>
+Message-ID: <87levxfj32.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2284705.bJBrSbZOHa";
- micalg="sha256"; protocol="application/pkcs7-signature"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---nextPart2284705.bJBrSbZOHa
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Hi Xu,
 
-On Freitag, 22. April 2022 07:33:57 CEST Namhyung Kim wrote:
-> Hello,
-> 
-> This is the first version of off-cpu profiling support.  Together with
-> (PMU-based) cpu profiling, it can show holistic view of the performance
-> characteristics of your application or system.
+Thanks for working on this.
 
-Hey Namhyung,
+We are also looking forward to using fentry hooks on arm64.
+In particular, attaching to entry/exit into/from XDP progs.
 
-this is awesome news! In hotspot, I've long done off-cpu profiling manually by 
-looking at the time between --switch-events. The downside is that we also need 
-to track the sched:sched_switch event to get a call stack. But this approach 
-also works with dwarf based unwinding, and also includes kernel stacks.
+On Thu, Apr 14, 2022 at 12:22 PM -04, Xu Kuohai wrote:
+> Impelment bpf_arch_text_poke() for arm64, so bpf trampoline code can use
+> it to replace nop with jump, or replace jump with nop.
+>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> Acked-by: Song Liu <songliubraving@fb.com>
+> ---
+>  arch/arm64/net/bpf_jit_comp.c | 52 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 8ab4035dea27..1a1c3ea75ee2 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -9,6 +9,7 @@
+>  
+>  #include <linux/bitfield.h>
+>  #include <linux/bpf.h>
+> +#include <linux/memory.h>
+>  #include <linux/filter.h>
+>  #include <linux/printk.h>
+>  #include <linux/slab.h>
+> @@ -18,6 +19,7 @@
+>  #include <asm/cacheflush.h>
+>  #include <asm/debug-monitors.h>
+>  #include <asm/insn.h>
+> +#include <asm/patching.h>
+>  #include <asm/set_memory.h>
+>  
+>  #include "bpf_jit.h"
+> @@ -1529,3 +1531,53 @@ void bpf_jit_free_exec(void *addr)
+>  {
+>  	return vfree(addr);
+>  }
+> +
+> +static int gen_branch_or_nop(enum aarch64_insn_branch_type type, void *ip,
+> +			     void *addr, u32 *insn)
+> +{
+> +	if (!addr)
+> +		*insn = aarch64_insn_gen_nop();
+> +	else
+> +		*insn = aarch64_insn_gen_branch_imm((unsigned long)ip,
+> +						    (unsigned long)addr,
+> +						    type);
+> +
+> +	return *insn != AARCH64_BREAK_FAULT ? 0 : -EFAULT;
+> +}
+> +
+> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+> +		       void *old_addr, void *new_addr)
+> +{
+> +	int ret;
+> +	u32 old_insn;
+> +	u32 new_insn;
+> +	u32 replaced;
+> +	enum aarch64_insn_branch_type branch_type;
+> +
+> +	if (poke_type == BPF_MOD_CALL)
+> +		branch_type = AARCH64_INSN_BRANCH_LINK;
 
-> With BPF, it can aggregate scheduling stats for interested tasks
-> and/or states and convert the data into a form of perf sample records.
-> I chose the bpf-output event which is a software event supposed to be
-> consumed by BPF programs and renamed it as "offcpu-time".  So it
-> requires no change on the perf report side except for setting sample
-> types of bpf-output event.
-> 
-> Basically it collects userspace callstack for tasks as it's what users
-> want mostly.  Maybe we can add support for the kernel stacks but I'm
-> afraid that it'd cause more overhead.  So the offcpu-time event will
-> always have callchains regardless of the command line option, and it
-> enables the children mode in perf report by default.
+This path, bpf_arch_text_poke(<ip>, BPF_MOD_CALL, ...), is what we hit
+when attaching a BPF program entry. It is exercised by selftest #232
+xdp_bpf2bpf.
 
-Has anything changed wrt perf/bpf and user applications not compiled with `-
-fno-omit-frame-pointer`? I.e. does this new utility only work for specially 
-compiled applications, or do we also get backtraces for "normal" binaries that 
-we can install through package managers?
+However, with this patchset alone it will not work because we don't
+emit, yet, the ftrace patch (MOV X9, LR; NOP) as a part of BPF prog
+prologue, like ftrace_init_nop() does. So patching attempt will fail.
 
-Thanks
--- 
-Milian Wolff | milian.wolff@kdab.com | Senior Software Engineer
-KDAB (Deutschland) GmbH, a KDAB Group company
-Tel: +49-30-521325470
-KDAB - The Qt, C++ and OpenGL Experts
---nextPart2284705.bJBrSbZOHa
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+I think that is what you mentioned to in your reply to Hou [1]
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEekw
-ggWBMIIEaaADAgECAhA5ckQ6+SK3UdfTbBDdMTWVMA0GCSqGSIb3DQEBDAUAMHsxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIDBJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcMB1NhbGZvcmQxGjAYBgNV
-BAoMEUNvbW9kbyBDQSBMaW1pdGVkMSEwHwYDVQQDDBhBQUEgQ2VydGlmaWNhdGUgU2VydmljZXMw
-HhcNMTkwMzEyMDAwMDAwWhcNMjgxMjMxMjM1OTU5WjCBiDELMAkGA1UEBhMCVVMxEzARBgNVBAgT
-Ck5ldyBKZXJzZXkxFDASBgNVBAcTC0plcnNleSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-IE5ldHdvcmsxLjAsBgNVBAMTJVVTRVJUcnVzdCBSU0EgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkw
-ggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCAEmUXNg7D2wiz0KxXDXbtzSfTTK1Qg2Hi
-qiBNCS1kCdzOiZ/MPans9s/B3PHTsdZ7NygRK0faOca8Ohm0X6a9fZ2jY0K2dvKpOyuR+OJv0OwW
-IJAJPuLodMkYtJHUYmTbf6MG8YgYapAiPLz+E/CHFHv25B+O1ORRxhFnRghRy4YUVD+8M/5+bJz/
-Fp0YvVGONaanZshyZ9shZrHUm3gDwFA66Mzw3LyeTP6vBZY1H1dat//O+T23LLb2VN3I5xI6Ta5M
-irdcmrS3ID3KfyI0rn47aGYBROcBTkZTmzNg95S+UzeQc0PzMsNT79uq/nROacdrjGCT3sTHDN/h
-Mq7MkztReJVni+49Vv4M0GkPGw/zJSZrM233bkf6c0Plfg6lZrEpfDKEY1WJxA3Bk1QwGROs0303
-p+tdOmw1XNtB1xLaqUkL39iAigmTYo61Zs8liM2EuLE/pDkP2QKe6xJMlXzzawWpXhaDzLhn4ugT
-ncxbgtNMs+1b/97lc6wjOy0AvzVVdAlJ2ElYGn+SNuZRkg7zJn0cTRe8yexDJtC/QV9AqURE9Jnn
-V4eeUB9XVKg+/XRjL7FQZQnmWEIuQxpMtPAlR1n6BB6T1CZGSlCBst6+eLf8ZxXhyVeEHg9j1uli
-utZfVS7qXMYoCAQlObgOK6nyTJccBz8NUvXt7y+CDwIDAQABo4HyMIHvMB8GA1UdIwQYMBaAFKAR
-CiM+lvEH7OKvKe+CpX/QMKS0MB0GA1UdDgQWBBRTeb9aqitKz1SA4dibwJ3ysgNmyzAOBgNVHQ8B
-Af8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zARBgNVHSAECjAIMAYGBFUdIAAwQwYDVR0fBDwwOjA4
-oDagNIYyaHR0cDovL2NybC5jb21vZG9jYS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmww
-NAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wDQYJ
-KoZIhvcNAQEMBQADggEBABiHUdx0IT2ciuAntzPQLszs8ObLXhHeIm+bdY6ecv7k1v6qH5yWLe8D
-Sn6u9I1vcjxDO8A/67jfXKqpxq7y/Njuo3tD9oY2fBTgzfT3P/7euLSK8JGW/v1DZH79zNIBoX19
-+BkZyUIrE79Yi7qkomYEdoiRTgyJFM6iTckys7roFBq8cfFb8EELmAAKIgMQ5Qyx+c2SNxntO/Hk
-Orb5RRMmda+7qu8/e3c70sQCkT0ZANMXXDnbP3sYDUXNk4WWL13fWRZPP1G91UUYP+1KjugGYXQj
-FrUNUHMnREd/EF2JKmuFMRTE6KlqTIC8anjPuH+OdnKZDJ3+15EIFqGjX5UwggYQMIID+KADAgEC
-AhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQGEwJVUzETMBEGA1UE
-CBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJV
-U1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0
-eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UE
-CBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdv
-IExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQg
-U2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyjztlApB/975
-Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUfItMltrMaXqcESJuK
-8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeWQcpGEGFUUd0kN+oH
-ox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YBrf24k5Ee1sLTHsLt
-piK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewDch/8kHPo5fZl5u1B
-0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAUU3m/WqorSs9UgOHY
-m8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1UdDwEB/wQEAwIBhjAS
-BgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDARBgNVHSAE
-CjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2VydHJ1c3QuY29tL1VT
-RVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUFBwEBBGowaDA/Bggr
-BgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJTQUFkZFRydXN0Q0Eu
-Y3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0GCSqGSIb3DQEBDAUA
-A4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+xswhh2GqkW5JQrM8
-zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9IHk96VwsacIvBF8J
-fqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7kkmka2RQb9d90nmN
-HdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1eoYV7lNwNBKpeHdN
-uO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4KxaYIhvqPqUMWqRd
-Wyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL1Ygz3SBsyECa0waq
-4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQOZ1YL5ezMTX0ZSLw
-rymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qodx/PL+5jR87myx5uY
-dBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i5ZgtwCLXgAIe5W8m
-ybM2JzCCBkwwggU0oAMCAQICEHR8gsPqhWo7MMOepQh9ypIwDQYJKoZIhvcNAQELBQAwgZYxCzAJ
-BgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQx
-GDAWBgNVBAoTD1NlY3RpZ28gTGltaXRlZDE+MDwGA1UEAxM1U2VjdGlnbyBSU0EgQ2xpZW50IEF1
-dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMjAwNTEyMDAwMDAwWhcNMjMwNTEy
-MjM1OTU5WjCCAVkxCzAJBgNVBAYTAlNFMQ8wDQYDVQQREwY2ODMgMzExEjAQBgNVBAgTCVZhZXJt
-bGFuZDEQMA4GA1UEBxMHSGFnZm9yczEYMBYGA1UECRMPTm9ycmluZ3MgdmFlZyAyMQ8wDQYDVQQS
-EwZCb3ggMzAxJjAkBgNVBAoMHUtsYXLDpGx2ZGFsZW5zIERhdGFrb25zdWx0IEFCMR0wGwYDVQQL
-ExRBIEtEQUIgR3JvdXAgQ29tcGFueTFDMEEGA1UECww6SXNzdWVkIHRocm91Z2ggS2xhcsOkbHZk
-YWxlbnMgRGF0YWtvbnN1bHQgQUIgRS1QS0kgTWFuYWdlcjEfMB0GA1UECxMWQ29ycG9yYXRlIFNl
-Y3VyZSBFbWFpbDEVMBMGA1UEAxMMTWlsaWFuIFdvbGZmMSQwIgYJKoZIhvcNAQkBFhVtaWxpYW4u
-d29sZmZAa2RhYi5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC8vdk66W4eo0O1
-1Dh3zPXW/zrkwzzxRR0Air/VRxAIG5q/klE9mF2gsGBPXQpCtDMvkuvSLQ+5mR50Cb+V+4Y9n0W6
-98JoyQHYAo6uswLyTchcF6IVckkkZrm1RD1DXnlIHpCsacO7PDDxMslzFs5XZfRkH4F1SKkiVwup
-/Nsn0z12SGRzxSUUxr4VHZgIqgRGqVSbVJfjtTRigAu+fmXUXHs0bMRv8TonzrDRlN61m1UakrFu
-qvKAgXYfZULZ52IKNK/jq8nPHJDD9oOr5pVi4Yx9GyVeMM0qNPC74fJnGh7lOpJiAcqYBEis73lm
-U+RtH3Bj85Qdqvwxo3bf7s1zAgMBAAGjggHOMIIByjAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+o
-mULPyeCtADAdBgNVHQ4EFgQUMc6p+s2l6xbyh8jLYeP7fQrRiW4wDgYDVR0PAQH/BAQDAgWgMAwG
-A1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYM
-KwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1Ud
-HwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhl
-bnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcw
-AoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25h
-bmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20w
-IAYDVR0RBBkwF4EVbWlsaWFuLndvbGZmQGtkYWIuY29tMA0GCSqGSIb3DQEBCwUAA4IBAQBW3rFX
-47Cnu8JMNm8row/96V8xGwPzir9lEpnasNxi+GhvQjGzvoP5oxMoBJ+hgD8fMk5X15IDuKa9KVHb
-BzBG9kOPGB4h/89voWpzWIVy7Q3k+dPByfghbufR+83TvN20lV9VqXYjPeYypHlD/vJ4Z8iWn3s3
-0iUfYr1CCr8zoje1hijPM9A0wN7K8iCtIc4OAfJpwKsXMCNAv1SdxD196vCKrTnWiEmAw0g8FpDM
-GWIww0+2Qq+Peeoe53+34GetRPIbS5jPlCEy7xgC8c7qoJTNzhCyVENRByoA5dsLzK+Nv0IT1h2C
-gu2w5VxHo0DjlCmYddu46uwpWjKpNuhaMYICbTCCAmkCAQEwgaswgZYxCzAJBgNVBAYTAkdCMRsw
-GQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGDAWBgNVBAoTD1Nl
-Y3RpZ28gTGltaXRlZDE+MDwGA1UEAxM1U2VjdGlnbyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9u
-IGFuZCBTZWN1cmUgRW1haWwgQ0ECEHR8gsPqhWo7MMOepQh9ypIwDQYJYIZIAWUDBAIBBQCggZMw
-GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjIwNDIyMTAyMDQ1WjAo
-BgkqhkiG9w0BCQ8xGzAZMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAvBgkqhkiG9w0BCQQxIgQg
-HNOzPw+MpVCXcJkYgctvDk4sGDN52ojqLVk3JZIFZLYwDQYJKoZIhvcNAQEBBQAEggEAGlx0ugoH
-PTkQvvOMjsDH9zndgF+rpCmNtdfyyFAj33gjPJguXRdo+uOYxqSJh/so+iet8wo0MjIv4aWm/uLQ
-QzyTodG57rOTpLKDmFDFV1VRt5OM3mbExRxsxtm+fmPPRxdDqE0QdRyO7hzUFjU5701c44GUXtfZ
-yIeU4rkTnoZJGdg08gexeGZfIpC3iu1tXWenpBFlDCVM3h1pLMtq56i14oOTLCoW4iqBiNKWvJ3L
-voRNS5X6vsMM5watPa8ImrE13yIxI3UMQ5WFfMY/cuurbr+iIafdhDh1maYseDXmbk51DEJ2IqnT
-J4rcY3rly3mi5jo74gIlwIlIUzcC6wAAAAAAAA==
+So my question is - is support for attaching to BPF progs in scope for
+this patchset?
 
+If no, then perhaps it would be better for now to fail early with
+something like -EOPNOTSUPP when poke_type is BPF_MOD_CALL, rather then
+attempt to patch the code.
 
---nextPart2284705.bJBrSbZOHa--
+If you plan to enable it as a part of this patchset, then I've given it
+a quick try, and it seems that not a lot is needed get fentry to BPF
+attachment to work.
 
+I'm including the diff for my quick and dirty attempt below. With that
+patch on top, the xdp_bpf2bpf tests pass:
 
+#232 xdp_bpf2bpf:OK
+
+[1] https://lore.kernel.org/bpf/d8c4f1fb-a020-9457-44e2-dc63982a9213@huawei.com/
+
+> +	else
+> +		branch_type = AARCH64_INSN_BRANCH_NOLINK;
+> +
+> +	if (gen_branch_or_nop(branch_type, ip, old_addr, &old_insn) < 0)
+> +		return -EFAULT;
+> +
+> +	if (gen_branch_or_nop(branch_type, ip, new_addr, &new_insn) < 0)
+> +		return -EFAULT;
+> +
+> +	mutex_lock(&text_mutex);
+> +	if (aarch64_insn_read(ip, &replaced)) {
+> +		ret = -EFAULT;
+> +		goto out;
+> +	}
+> +
+> +	if (replaced != old_insn) {
+> +		ret = -EFAULT;
+> +		goto out;
+> +	}
+> +
+> +	ret =  aarch64_insn_patch_text_nosync((void *)ip, new_insn);
+> +out:
+> +	mutex_unlock(&text_mutex);
+
+The body of this critical section is identical as ftrace_modify_code().
+Perhaps we could export it and reuse?
+
+> +	return ret;
+> +}
+
+---
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 5f6bd755050f..94d8251500ab 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -240,9 +240,9 @@ static bool is_lsi_offset(int offset, int scale)
+ /* Tail call offset to jump into */
+ #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) || \
+ 	IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL)
+-#define PROLOGUE_OFFSET 9
++#define PROLOGUE_OFFSET 11
+ #else
+-#define PROLOGUE_OFFSET 8
++#define PROLOGUE_OFFSET 10
+ #endif
+ 
+ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+@@ -281,6 +281,10 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+ 	 *
+ 	 */
+ 
++	/* Set up ftrace patch (initially in disabled state) */
++	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
++	emit(A64_NOP, ctx);
++
+ 	/* Sign lr */
+ 	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
+ 		emit(A64_PACIASP, ctx);
+@@ -1888,10 +1892,16 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+ 	u32 replaced;
+ 	enum aarch64_insn_branch_type branch_type;
+ 
+-	if (poke_type == BPF_MOD_CALL)
++	if (poke_type == BPF_MOD_CALL) {
+ 		branch_type = AARCH64_INSN_BRANCH_LINK;
+-	else
++		/*
++		 * Adjust addr to point at the BL in the callsite.
++		 * See ftrace_init_nop() for the callsite sequence.
++		 */
++		ip = (void *)((unsigned long)ip + AARCH64_INSN_SIZE);
++	} else {
+ 		branch_type = AARCH64_INSN_BRANCH_NOLINK;
++	}
+ 
+ 	if (gen_branch_or_nop(branch_type, ip, old_addr, &old_insn) < 0)
+ 		return -EFAULT;
