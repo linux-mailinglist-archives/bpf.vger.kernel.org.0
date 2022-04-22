@@ -2,198 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E1A50B1AB
-	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 09:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C3250B3BB
+	for <lists+bpf@lfdr.de>; Fri, 22 Apr 2022 11:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1391008AbiDVHei (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 03:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
+        id S232170AbiDVJQu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 05:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386165AbiDVHeh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 03:34:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C739B515B4;
-        Fri, 22 Apr 2022 00:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BiFwTkcFOMTtKqRq3uhC/TlKTqlAY7nnCuq174HKk0M=; b=AyKZDrqtPLqsXggbYiNB4s0jKC
-        YuBihnegzx6MUh0QMeUCIUyxS0f8f2fHUB0dpThVn0kxXgH0ji+gVYvcBDXPVbqWZBj1H0bHQy6HK
-        rNHe9jnf9i/eJ6t+KzyR7oxKiLEvuZVv4p7TySSggte7OR1iygeQw2aUvicwuJ+FbLEXH5T9RW31q
-        IoRQPXYf6lKNUEFw8989N3pP2QZ3Om5Fj0KPUjQngthaabNwb3SsL9Te6XdrDGTAaKoV+cLlcsXhd
-        elh8AV6Q6wtQkZ48zABYj5dlG8a7qkVNvEDyGFpyaK6gdfaEXz6tVXyNi6cht7qnie+3kKrkNBvcB
-        7NUjcvXg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nhnlA-007dGP-HF; Fri, 22 Apr 2022 07:31:20 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3733D9861C1; Fri, 22 Apr 2022 09:31:18 +0200 (CEST)
-Date:   Fri, 22 Apr 2022 09:31:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Song Liu <song@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf] bpf: invalidate unused part of bpf_prog_pack
-Message-ID: <20220422073118.GR2731@worktop.programming.kicks-ass.net>
-References: <20220421072212.608884-1-song@kernel.org>
- <CAHk-=wi3eu8mdKmXOCSPeTxABVbstbDg1q5Fkak+A9kVwF+fVw@mail.gmail.com>
- <CAADnVQKyDwXUMCfmdabbVE0vSGxdpqmWAwHRBqbPLW=LdCnHBQ@mail.gmail.com>
- <CAHk-=whFeBezdSrPy31iYv-UZNnNavymrhqrwCptE4uW8aeaHw@mail.gmail.com>
- <CAPhsuW7M6exGD3C1cPBGjhU0Y5efxtJ3=0BWNnbuH87TgQMzdg@mail.gmail.com>
- <CAHk-=wh1mO5HdrOMTq68WHM51-=jdmQS=KipVYxS+5u3uRc5rg@mail.gmail.com>
- <1A4FF473-0988-48BE-9993-0F5E9F0AAC95@fb.com>
- <CAHk-=wi62LDc5B3DOr5pyVtOUOuLkLzHvmZQApH9q=raqaGkUg@mail.gmail.com>
- <8F788446-899C-4BA3-8236-612A94D98582@fb.com>
+        with ESMTP id S1445853AbiDVJKg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 05:10:36 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B4051E6E;
+        Fri, 22 Apr 2022 02:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1650618464; x=1682154464;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jaQBEI9gtWcbNllBCZ+EzKEbzFVZLPK+E0m9hNofpRY=;
+  b=YR2X6rt1AQnleu6VY5mvgmY1lLrj7CKiDbwEguf4eqPq3zQjVXlGh/u4
+   6UUXAZoyTnLCtaD+fp8jEkc9P96jlM+uPTSa3lxbbV6RLmurP5tmHrYfG
+   PrWM/JupFv3dJRU6R7dM4WHK7rtIbCDi4ejcC8IeLu7cqXyuliD2H3Fr1
+   XeMV0CmeZRim28OEjk1A5bYOLi8981gm80uRVqy3/0ulB7EoIvRESd6hy
+   eYbBbsgE23SVox3E8tY/n2RtwIM8+Kn1cxnwI9VxYbWhgr1UbH1BIOv3g
+   UlBWnTXrWYIsDJlVAKzup8IBAt97md8IbB/BgoawJppqNE8Y+rx2mXTx/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="251953460"
+X-IronPort-AV: E=Sophos;i="5.90,281,1643702400"; 
+   d="scan'208";a="251953460"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2022 02:07:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,281,1643702400"; 
+   d="scan'208";a="867315839"
+Received: from lkp-server01.sh.intel.com (HELO 3abc53900bec) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 22 Apr 2022 02:07:38 -0700
+Received: from kbuild by 3abc53900bec with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nhpGL-0009xW-LC;
+        Fri, 22 Apr 2022 09:07:37 +0000
+Date:   Fri, 22 Apr 2022 17:06:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, akpm@linux-foundation.org,
+        rick.p.edgecombe@intel.com, hch@infradead.org,
+        imbrenda@linux.ibm.com, mcgrof@kernel.org,
+        Song Liu <song@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH bpf 2/4] page_alloc: use vmalloc_huge for large system
+ hash
+Message-ID: <202204221628.82Qczjsq-lkp@intel.com>
+References: <20220422051813.1989257-3-song@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8F788446-899C-4BA3-8236-612A94D98582@fb.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220422051813.1989257-3-song@kernel.org>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > On Apr 21, 2022, at 3:30 PM, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Hi Song,
 
-> > I actually think bpf_arch_text_copy() is another horribly badly done thing.
-> > 
-> > It seems only implemented on x86 (I'm not sure how anything else is
-> > supposed to work, I didn't go look), and there it is horribly badly
-> > done, using __text_poke() that does all these magical things just to
-> > make it atomic wrt concurrent code execution.
-> > 
-> > None of which is *AT*ALL* relevant for this case, since concurrent
-> > code execution simply isn't a thing (and if it were, you would already
-> > have lost).
-> > 
-> > And if that wasn't pointless enough, it does all that magic "map the
-> > page writably at a different virtual address using poking_addr in
-> > poking_mm" and a different address space entirely.
-> > 
-> > All of that is required for REAL KERNEL CODE.
-> > 
-> > But the thing is, for bpf_prog_pack, all of that is just completely
-> > pointless and stupid complexity.
+I love your patch! Yet something to improve:
 
-I think the point is that this hole will likely share a page with active
-code, and as such there should not be a writable mapping mapping to it,
-necessitating the whole __text_poke() mess.
+[auto build test ERROR on bpf/master]
 
-That said; it does seem somewhat silly have a whole page worth of int3
-around just for this.
+url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/bpf_prog_pack-and-vmalloc-on-huge-page-fixes/20220422-133605
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+config: i386-randconfig-a001 (https://download.01.org/0day-ci/archive/20220422/202204221628.82Qczjsq-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/239fb9ca743cf33db8d56df7957726e19aea87d5
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Song-Liu/bpf_prog_pack-and-vmalloc-on-huge-page-fixes/20220422-133605
+        git checkout 239fb9ca743cf33db8d56df7957726e19aea87d5
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
 
-Perhaps we can do something like the completely untested below?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
----
- arch/x86/kernel/alternative.c | 48 +++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
+All error/warnings (new ones prefixed by >>):
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index d374cb3cf024..60afa9105307 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -994,7 +994,20 @@ static inline void unuse_temporary_mm(temp_mm_state_t prev_state)
- __ro_after_init struct mm_struct *poking_mm;
- __ro_after_init unsigned long poking_addr;
- 
--static void *__text_poke(void *addr, const void *opcode, size_t len)
-+static void text_poke_memcpy(void *dst, const void *src, size_t len)
-+{
-+	memcpy(dst, src, len);
-+}
-+
-+static void text_poke_memset(void *dst, const void *src, size_t len)
-+{
-+	int c = *(int *)src;
-+	memset(dst, c, len);
-+}
-+
-+typedef void text_poke_f(void *dst, const void *src, size_t len);
-+
-+static void *__text_poke(text_poke_f func, void *addr, const void *src, size_t len)
- {
- 	bool cross_page_boundary = offset_in_page(addr) + len > PAGE_SIZE;
- 	struct page *pages[2] = {NULL};
-@@ -1059,7 +1072,7 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
- 	prev = use_temporary_mm(poking_mm);
- 
- 	kasan_disable_current();
--	memcpy((u8 *)poking_addr + offset_in_page(addr), opcode, len);
-+	func((void *)poking_addr + offset_in_page(addr), src, len);
- 	kasan_enable_current();
- 
- 	/*
-@@ -1091,7 +1104,8 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
- 	 * If the text does not match what we just wrote then something is
- 	 * fundamentally screwy; there's nothing we can really do about that.
- 	 */
--	BUG_ON(memcmp(addr, opcode, len));
-+	if (func == text_poke_memcpy)
-+		BUG_ON(memcmp(addr, src, len));
- 
- 	local_irq_restore(flags);
- 	pte_unmap_unlock(ptep, ptl);
-@@ -1118,7 +1132,7 @@ void *text_poke(void *addr, const void *opcode, size_t len)
- {
- 	lockdep_assert_held(&text_mutex);
- 
--	return __text_poke(addr, opcode, len);
-+	return __text_poke(text_poke_memcpy, addr, opcode, len);
- }
- 
- /**
-@@ -1137,7 +1151,7 @@ void *text_poke(void *addr, const void *opcode, size_t len)
-  */
- void *text_poke_kgdb(void *addr, const void *opcode, size_t len)
- {
--	return __text_poke(addr, opcode, len);
-+	return __text_poke(text_poke_memcpy, addr, opcode, len);
- }
- 
- /**
-@@ -1167,7 +1181,29 @@ void *text_poke_copy(void *addr, const void *opcode, size_t len)
- 
- 		s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len - patched);
- 
--		__text_poke((void *)ptr, opcode + patched, s);
-+		__text_poke(text_poke_memcpy, (void *)ptr, opcode + patched, s);
-+		patched += s;
-+	}
-+	mutex_unlock(&text_mutex);
-+	return addr;
-+}
-+
-+void *text_poke_set(void *addr, int c, size_t len)
-+{
-+	unsigned long start = (unsigned long)addr;
-+	size_t patched = 0;
-+
-+	if (WARN_ON_ONCE(core_kernel_text(start)))
-+		return NULL;
-+
-+	mutex_lock(&text_mutex);
-+	while (patched < len) {
-+		unsigned long ptr = start + patched;
-+		size_t s;
-+
-+		s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len - patched);
-+
-+		__text_poke(text_poke_memset, (void *)ptr, (void *)&c, s);
- 		patched += s;
- 	}
- 	mutex_unlock(&text_mutex);
+   mm/page_alloc.c: In function 'alloc_large_system_hash':
+>> mm/page_alloc.c:8921:33: error: implicit declaration of function 'vmalloc_huge'; did you mean 'vmalloc_no_huge'? [-Werror=implicit-function-declaration]
+    8921 |                         table = vmalloc_huge(size, gfp_flags);
+         |                                 ^~~~~~~~~~~~
+         |                                 vmalloc_no_huge
+>> mm/page_alloc.c:8921:31: warning: assignment to 'void *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+    8921 |                         table = vmalloc_huge(size, gfp_flags);
+         |                               ^
+   cc1: some warnings being treated as errors
+
+
+vim +8921 mm/page_alloc.c
+
+  8876	
+  8877			/* limit to 1 bucket per 2^scale bytes of low memory */
+  8878			if (scale > PAGE_SHIFT)
+  8879				numentries >>= (scale - PAGE_SHIFT);
+  8880			else
+  8881				numentries <<= (PAGE_SHIFT - scale);
+  8882	
+  8883			/* Make sure we've got at least a 0-order allocation.. */
+  8884			if (unlikely(flags & HASH_SMALL)) {
+  8885				/* Makes no sense without HASH_EARLY */
+  8886				WARN_ON(!(flags & HASH_EARLY));
+  8887				if (!(numentries >> *_hash_shift)) {
+  8888					numentries = 1UL << *_hash_shift;
+  8889					BUG_ON(!numentries);
+  8890				}
+  8891			} else if (unlikely((numentries * bucketsize) < PAGE_SIZE))
+  8892				numentries = PAGE_SIZE / bucketsize;
+  8893		}
+  8894		numentries = roundup_pow_of_two(numentries);
+  8895	
+  8896		/* limit allocation size to 1/16 total memory by default */
+  8897		if (max == 0) {
+  8898			max = ((unsigned long long)nr_all_pages << PAGE_SHIFT) >> 4;
+  8899			do_div(max, bucketsize);
+  8900		}
+  8901		max = min(max, 0x80000000ULL);
+  8902	
+  8903		if (numentries < low_limit)
+  8904			numentries = low_limit;
+  8905		if (numentries > max)
+  8906			numentries = max;
+  8907	
+  8908		log2qty = ilog2(numentries);
+  8909	
+  8910		gfp_flags = (flags & HASH_ZERO) ? GFP_ATOMIC | __GFP_ZERO : GFP_ATOMIC;
+  8911		do {
+  8912			virt = false;
+  8913			size = bucketsize << log2qty;
+  8914			if (flags & HASH_EARLY) {
+  8915				if (flags & HASH_ZERO)
+  8916					table = memblock_alloc(size, SMP_CACHE_BYTES);
+  8917				else
+  8918					table = memblock_alloc_raw(size,
+  8919								   SMP_CACHE_BYTES);
+  8920			} else if (get_order(size) >= MAX_ORDER || hashdist) {
+> 8921				table = vmalloc_huge(size, gfp_flags);
+  8922				virt = true;
+  8923				if (table)
+  8924					huge = is_vm_area_hugepages(table);
+  8925			} else {
+  8926				/*
+  8927				 * If bucketsize is not a power-of-two, we may free
+  8928				 * some pages at the end of hash table which
+  8929				 * alloc_pages_exact() automatically does
+  8930				 */
+  8931				table = alloc_pages_exact(size, gfp_flags);
+  8932				kmemleak_alloc(table, size, 1, gfp_flags);
+  8933			}
+  8934		} while (!table && size > PAGE_SIZE && --log2qty);
+  8935	
+  8936		if (!table)
+  8937			panic("Failed to allocate %s hash table\n", tablename);
+  8938	
+  8939		pr_info("%s hash table entries: %ld (order: %d, %lu bytes, %s)\n",
+  8940			tablename, 1UL << log2qty, ilog2(size) - PAGE_SHIFT, size,
+  8941			virt ? (huge ? "vmalloc hugepage" : "vmalloc") : "linear");
+  8942	
+  8943		if (_hash_shift)
+  8944			*_hash_shift = log2qty;
+  8945		if (_hash_mask)
+  8946			*_hash_mask = (1 << log2qty) - 1;
+  8947	
+  8948		return table;
+  8949	}
+  8950	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
