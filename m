@@ -2,244 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8B050CB37
-	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 16:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF5450CD58
+	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 22:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234489AbiDWOdt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 23 Apr 2022 10:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
+        id S236640AbiDWUIq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Apr 2022 16:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234415AbiDWOds (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 23 Apr 2022 10:33:48 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBE9289B4;
-        Sat, 23 Apr 2022 07:30:50 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 15so1307100pgf.4;
-        Sat, 23 Apr 2022 07:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IbYzjBMPd51boeHwhH3wuc9Vn0/S8H3iRbP4T06Ug/A=;
-        b=e9kxM39mRig/k57Ub+oGcFMcpzV47OT4eNveol/LKX9UORSpHXh/KjtegfnWHITvlm
-         jJp1c7Aa+U91Dy7KWeYRbNW5QH9l21dc9SkmTW2kR9kBVpP02GiiShVXYuvFGzpYALZj
-         vBFGEmX7C80dxIYPi8X39MEmSiD95SJApig2bubiz3EiInmdAc6wJsm3Wk2eIhkH1K0D
-         pLo1KbIf7XARqxRc/DLTwJuZb2jb6tR07DAiD5AKQbeodRyfTSD8e2ZG66HmJxG5Khy6
-         5d5dEASAAbsHJKu4SCE6hf8c9dcBEF3g6n34w0o7xZIZXAbsxWPHssUjUQHb2Q8+qUnk
-         /oHg==
+        with ESMTP id S233954AbiDWUIo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 Apr 2022 16:08:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5C7A039BAE
+        for <bpf@vger.kernel.org>; Sat, 23 Apr 2022 13:05:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1650744345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=omqCTV7z0t9cAhQIWiyGEWe7yOix1dL5G0MldE6hRWE=;
+        b=O0NH1oeFosajw3OoE/hGHtvrQMzYJzp8WNBwKfhSpl5wev78J0Nzuma7EaJrZHKKVUD8ae
+        jpACEerXZKwurUEtpM7d6TesGa3AAgyLmh1m3Uk1RHwfHv/dS3kJNwVQdSaAmssikYNgNh
+        mlSolmMWAvrGm7xxj7u3Ge/oW1FzTfM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-54-dYe4JbWYPIGQV-xAZdCFMw-1; Sat, 23 Apr 2022 16:05:44 -0400
+X-MC-Unique: dYe4JbWYPIGQV-xAZdCFMw-1
+Received: by mail-ej1-f69.google.com with SMTP id go12-20020a1709070d8c00b006f009400732so5121154ejc.1
+        for <bpf@vger.kernel.org>; Sat, 23 Apr 2022 13:05:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IbYzjBMPd51boeHwhH3wuc9Vn0/S8H3iRbP4T06Ug/A=;
-        b=lYEOY3KFolTAVX7rJhkt2hzbEaidFW02DJpjnqTDgp5lBNlh+C4yu1IcV1Necq68zr
-         t0p+Frk4XNArr2EOuH1/+EQXUCZUz5AFaZPsLpn8PorkiG4YGnR0rtDvcJtk0QZMS68w
-         mEe79qT7ackOjEQGr06p5W+vgoIdGy0PlKIuvi4kouIEwTrS5vRjS9fwHtMOO/++dTxZ
-         6ih2inF3lj6DcG3tQX6nKOUVojZjwslCYHXO4Sc6tH1Hjxb/nYNwOXAvA58dUGYQljsO
-         tJ7Sh2bwPaYaxC2HdgA3AzB3KZCcGiCjSh/hMK3OAkTlq2PP/ijdMoeN4/4bfg9jqAhy
-         zuuQ==
-X-Gm-Message-State: AOAM533HLmsKTismb9ljfSh0fbg9Ptp1DfF+G2Ym7oPJPV0zOzrh14jV
-        EXumTgVIXbdUOsK8efbovAk=
-X-Google-Smtp-Source: ABdhPJxhAIxDc9NmJoC5o4P8rTL4BbAzX+TMNG/y7XV9K86jlKj5vfeK3KWWsG1w0N86098N8ariGQ==
-X-Received: by 2002:a63:fd04:0:b0:3aa:6473:1859 with SMTP id d4-20020a63fd04000000b003aa64731859mr8226012pgh.151.1650724249799;
-        Sat, 23 Apr 2022 07:30:49 -0700 (PDT)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id d8-20020aa78688000000b00505793566f7sm5778399pfo.211.2022.04.23.07.30.45
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=omqCTV7z0t9cAhQIWiyGEWe7yOix1dL5G0MldE6hRWE=;
+        b=B2Hle08Fruz+UDS9QqClGs+i+dmmJWbJzYNL9CgFkMjvfV+uiAPmk+oSDsMbtHwBXQ
+         MLrWztSvVAbAlRjTX/qlkVX8AIZSBL7mKd0IYjFAydFB7a8ORd+4ffQQsxRCiEWKlglc
+         8RpGyL9GMIwI/NvmLose18TphDcQ04R7PCHJdUXwZlzYmLdONiT/EEa17Fg6ov+KqLNY
+         F0kJ11m+07Kcbn+gOstEwvqHKfQHzeSCidXzwj+aHvbFFXmbjWuG2C9WKrPP8HfWCY5/
+         b0Ews0RRegpRc7a9rJZ6aD3cbjrknkcPPn2NTQRf02aHVg+fd9dHgZ55RcX/WLnwovuS
+         DeWA==
+X-Gm-Message-State: AOAM531WfqPb52OW/yRwaX7yDWHfsBbgCN+Th5aZBt3CeF4G9BFL/ITM
+        iuBuEseHkFVRLOHqIqvbEGLRYYymMiK6vy2INFkP2kq6Tj8OiYr3/wFtB2vXNxghcsSZIxywfft
+        mAV6PZIuJhCzc
+X-Received: by 2002:aa7:c793:0:b0:408:4a69:90b4 with SMTP id n19-20020aa7c793000000b004084a6990b4mr11441731eds.58.1650744342331;
+        Sat, 23 Apr 2022 13:05:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNATyw5D0bERdGDSDbR5cr0iO3FsZbehP/gW+psGoNThVAdHDplZOXPi3qHJP4nJhcVj+Z6w==
+X-Received: by 2002:aa7:c793:0:b0:408:4a69:90b4 with SMTP id n19-20020aa7c793000000b004084a6990b4mr11441658eds.58.1650744341414;
+        Sat, 23 Apr 2022 13:05:41 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id e19-20020a056402105300b004162d0b4cbbsm2502266edu.93.2022.04.23.13.05.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Apr 2022 07:30:49 -0700 (PDT)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        Sat, 23 Apr 2022 13:05:40 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id DE7992D1FA3; Sat, 23 Apr 2022 22:05:39 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Larysa Zaremba <larysa.zaremba@intel.com>,
+        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix incorrect TRUNNER_BINARY name output
-Date:   Sat, 23 Apr 2022 22:30:07 +0800
-Message-Id: <20220423143007.423526-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.3
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>
+Subject: Re: Accessing XDP packet memory from the end
+In-Reply-To: <20220422164137.875143-1-alexandr.lobakin@intel.com>
+References: <20220421155620.81048-1-larysa.zaremba@intel.com>
+ <87czhagxuw.fsf@toke.dk>
+ <20220422164137.875143-1-alexandr.lobakin@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 23 Apr 2022 22:05:39 +0200
+Message-ID: <87a6cbd0q4.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, when we run 'make test_progs', the output is:
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-  CLNG-BPF [test_maps] atomic_bounds.o
-  ...
-  GEN-SKEL [test_progs] atomic_bounds.skel.h
-  ...
-  TEST-OBJ [test_progs] align.test.o
-  ...
-  TEST-HDR [test_progs] tests.h
-  EXT-OBJ  [test_progs] test_progs.o
-  ...
-  BINARY   test_progs
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Date: Thu, 21 Apr 2022 19:17:11 +0200
+>
+>> Larysa Zaremba <larysa.zaremba@intel.com> writes:
+>>=20
+>> > Dear all,
+>> > Our team has encountered a need of accessing data_meta in a following =
+way:
+>> >
+>> > int xdp_meta_prog(struct xdp_md *ctx)
+>> > {
+>> > 	void *data_meta_ptr =3D (void *)(long)ctx->data_meta;
+>> > 	void *data_end =3D (void *)(long)ctx->data_end;
+>> > 	void *data =3D (void *)(long)ctx->data;
+>> > 	u64 data_size =3D sizeof(u32);
+>> > 	u32 magic_meta;
+>> > 	u8 offset;
+>> >
+>> > 	offset =3D (u8)((s64)data - (s64)data_meta_ptr);
+>> > 	if (offset < data_size) {
+>> > 		bpf_printk("invalid offset: %ld\n", offset);
+>> > 		return XDP_DROP;
+>> > 	}
+>> >
+>> > 	data_meta_ptr +=3D offset;
+>> > 	data_meta_ptr -=3D data_size;
+>> >
+>> > 	if (data_meta_ptr + data_size > data) {
+>> > 		return XDP_DROP;
+>> > 	}
+>> >=20=09=09
+>> > 	magic_meta =3D *((u32 *)data);
+>> > 	bpf_printk("Magic: %d\n", magic_meta);
+>> > 	return XDP_PASS;
+>> > }
+>> >
+>> > Unfortunately, verifier claims this code attempts to access packet with
+>> > an offset of -2 (a constant part) and negative offset is generally for=
+bidden.
+>> >
+>> > For now we have 2 solutions, one is using bpf_xdp_adjust_meta(),
+>> > which is pretty good, but not ideal for the hot path.
+>> > The second one is the patch at the end.
+>> >
+>> > Do you see any other way of accessing memory from the end of data_meta=
+/data?
+>> > What do you think about both suggested solutions?
+>>=20
+>> The problem is that the compiler is generating code that the verifier
+>> doesn't understand. It's notoriously hard to get LLVM to produce code
+>> that preserves the right bounds checks which is why projects like Cilium
+>> use helpers with inline ASM to produce the right loads, like in [0].
+>>=20
+>> Adapting that cilium helper to load from the metadata area, your example
+>> can be rewritten as follows (which works just fine with no verifier
+>> changes):
+>>=20
+>> static __always_inline int
+>> xdp_load_meta_bytes(const struct xdp_md *ctx, __u64 off, void *to, const=
+ __u64 len)
+>> {
+>> 	void *from;
+>> 	int ret;
+>> 	/* LLVM tends to generate code that verifier doesn't understand,
+>> 	 * so force it the way we want it in order to open up a range
+>> 	 * on the reg.
+>> 	 */
+>> 	asm volatile("r1 =3D *(u32 *)(%[ctx] +8)\n\t"
+>> 		     "r2 =3D *(u32 *)(%[ctx] +0)\n\t"
+>> 		     "%[off] &=3D %[offmax]\n\t"
+>> 		     "r1 +=3D %[off]\n\t"
+>> 		     "%[from] =3D r1\n\t"
+>> 		     "r1 +=3D %[len]\n\t"
+>> 		     "if r1 > r2 goto +2\n\t"
+>> 		     "%[ret] =3D 0\n\t"
+>> 		     "goto +1\n\t"
+>> 		     "%[ret] =3D %[errno]\n\t"
+>> 		     : [ret]"=3Dr"(ret), [from]"=3Dr"(from)
+>> 		     : [ctx]"r"(ctx), [off]"r"(off), [len]"ri"(len),
+>> 		       [offmax]"i"(__CTX_OFF_MAX), [errno]"i"(-EINVAL)
+>> 		     : "r1", "r2");
+>> 	if (!ret)
+>> 		__builtin_memcpy(to, from, len);
+>> 	return ret;
+>> }
+>>=20
+>>=20
+>> SEC("xdp")
+>> int xdp_meta_prog(struct xdp_md *ctx)
+>> {
+>>         void *data_meta_ptr =3D (void *)(long)ctx->data_meta;
+>>         void *data =3D (void *)(long)ctx->data;
+>>         __u32 magic_meta;
+>>         __u8 offset;
+>> 	int ret;
+>>=20
+>>         offset =3D (__u8)((__s64)data - (__s64)data_meta_ptr);
+>> 	ret =3D xdp_load_meta_bytes(ctx, offset - 4, &magic_meta, sizeof(magic_=
+meta));
+>> 	if (ret) {
+>> 		bpf_printk("load bytes failed: %d\n", ret);
+>>                 return XDP_DROP;
+>> 	}
+>>=20
+>>         bpf_printk("Magic: %d\n", magic_meta);
+>>         return XDP_PASS;
+>> }
+>
+> At the moment, we use this (based on Cilium's and your), it works
+> just like we want C code to work previously:
+>
+> #define __CTX_OFF_MAX 0xff
+>
+> static __always_inline void *
+> can_i_access_meta_please(const struct xdp_md *ctx, __u64 off, const __u64=
+ len)
+> {
+> 	void *ret;
+>
+> 	/* LLVM tends to generate code that verifier doesn't understand,
+> 	 * so force it the way we want it in order to open up a range
+> 	 * on the reg.
+> 	 */
+> 	asm volatile("r1 =3D *(u32 *)(%[ctx] +8)\n\t"
+> 		     "r2 =3D *(u32 *)(%[ctx] +0)\n\t"
+> 		     "%[off] &=3D %[offmax]\n\t"
+> 		     "r1 +=3D %[off]\n\t"
+> 		     "%[ret] =3D r1\n\t"
+> 		     "r1 +=3D %[len]\n\t"
+> 		     "if r1 > r2 goto +1\n\t"
+> 		     "goto +1\n\t"
+> 		     "%[ret] =3D %[null]\n\t"
+> 		     : [ret]"=3Dr"(ret)
+> 		     : [ctx]"r"(ctx), [off]"r"(off), [len]"ri"(len),
+> 		       [offmax]"i"(__CTX_OFF_MAX), [null]"i"(NULL)
+> 		     : "r1", "r2");
+>
+> 	return ret;
+> }
+>
+> SEC("xdp")
+> int xdp_prognum_n0_meta(struct xdp_md *ctx)
+> {
+> 	void *data_meta =3D (void *)(__s64)ctx->data_meta;
+> 	void *data =3D (void *)(__s64)ctx->data;
+> 	struct xdp_meta_generic *md;
+> 	__u64 offset;
+>
+> 	offset =3D (__u64)((__s64)data - (__s64)data_meta);
+>
+> 	md =3D can_i_access_meta_please(ctx, offset, sizeof(*md));
+> 	if (__builtin_expect(!md, 0)) {
+> 		bpf_printk("No you can't\n");
+> 		return XDP_DROP;
+> 	}
+>
+> 	bpf_printk("Magic: 0x%04x\n", md->magic_id);
+> 	return XDP_PASS;
+> }
+>
+> Thanks for the help!
 
-As you can see, the TRUNNER_BINARY name in the CLNG-BPF part is test_maps,
-which is incorrect.
+Great! You're welcome! :)
 
-Similarly, when we run 'make test_maps', the output is:
+> It's a shame LLVM still suck on generating correct object code from C.
+> I guess we'll define a helper above in one of the headers to not
+> copy-paste it back and forth between each program wanting to access
+> only the generic part of the metadata (which is always being placed at
+> the end).
 
-  CLNG-BPF [test_maps] atomic_bounds.o
-  ...
-  GEN-SKEL [test_progs] atomic_bounds.skel.h
-  ...
-  TEST-OBJ [test_maps] array_map_batch_ops.test.o
-  ...
-  TEST-HDR [test_maps] tests.h
-  EXT-OBJ  [test_maps] test_maps.o
-  ...
-  BINARY   test_maps
+Yeah, it would be nice if LLVM could just generate code that works, but
+in the meantime we'll just have to define a helper. I suspect we'll need
+to define some helper functions to work with xdp-hints style metadata
+field anyway, so wrapping the reader into that somewhere would probably
+make sense, no?
 
-At this time, the TRUNNER_BINARY name in the GEN-SKEL part is wrong.
-
-Again, if we run 'make /full/path/to/selftests/bpf/test_vmlinux.skel.h',
-the output is:
-
-  CLNG-BPF [test_maps] test_vmlinux.o
-  GEN-SKEL [test_progs] test_vmlinux.skel.h
-
-Here, the TRUNNER_BINARY names are inappropriate and meaningless, they
-should be removed.
-
-This patch fixes these and all other similar issues.
-
-With the patch applied, the output becomes:
-
-  $ make test_progs
-
-  CLNG-BPF [test_progs] atomic_bounds.o
-  ...
-  GEN-SKEL [test_progs] atomic_bounds.skel.h
-  ...
-  TEST-OBJ [test_progs] align.test.o
-  ...
-  TEST-HDR [test_progs] tests.h
-  EXT-OBJ  [test_progs] test_progs.o
-  ...
-  BINARY   test_progs
-
-  $ make test_maps
-
-  CLNG-BPF [test_maps] atomic_bounds.o
-  ...
-  GEN-SKEL [test_maps] atomic_bounds.skel.h
-  ...
-  TEST-OBJ [test_maps] array_map_batch_ops.test.o
-  ...
-  TEST-HDR [test_maps] tests.h
-  EXT-OBJ  [test_maps] test_maps.o
-  ...
-  BINARY   test_maps
-
-  $ make /full/path/to/selftests/bpf/test_vmlinux.skel.h
-
-  CLNG-BPF test_vmlinux.o
-  GEN-SKEL test_vmlinux.skel.h
-
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
- tools/testing/selftests/bpf/Makefile | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index bafdc5373a13..3cf444cb20af 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -413,7 +413,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- 					  $(TRUNNER_BPF_CFLAGS))
- 
- $(TRUNNER_BPF_SKELS): %.skel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
--	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
-+	$$(call msg,GEN-SKEL,$$(TRUNNER_BINARY),$$@)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked1.o) $$<
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked2.o) $$(<:.o=.linked1.o)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked3.o) $$(<:.o=.linked2.o)
-@@ -422,7 +422,7 @@ $(TRUNNER_BPF_SKELS): %.skel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
- 	$(Q)$$(BPFTOOL) gen subskeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$(@:.skel.h=.subskel.h)
- 
- $(TRUNNER_BPF_LSKELS): %.lskel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
--	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
-+	$$(call msg,GEN-SKEL,$$(TRUNNER_BINARY),$$@)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked1.o) $$<
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked2.o) $$(<:.o=.linked1.o)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked3.o) $$(<:.o=.linked2.o)
-@@ -430,12 +430,12 @@ $(TRUNNER_BPF_LSKELS): %.lskel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
- 	$(Q)$$(BPFTOOL) gen skeleton -L $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=_lskel)) > $$@
- 
- $(TRUNNER_BPF_SKELS_LINKED): $(TRUNNER_BPF_OBJS) $(BPFTOOL) | $(TRUNNER_OUTPUT)
--	$$(call msg,LINK-BPF,$(TRUNNER_BINARY),$$(@:.skel.h=.o))
-+	$$(call msg,LINK-BPF,$$(TRUNNER_BINARY),$$(@:.skel.h=.o))
- 	$(Q)$$(BPFTOOL) gen object $$(@:.skel.h=.linked1.o) $$(addprefix $(TRUNNER_OUTPUT)/,$$($$(@F)-deps))
- 	$(Q)$$(BPFTOOL) gen object $$(@:.skel.h=.linked2.o) $$(@:.skel.h=.linked1.o)
- 	$(Q)$$(BPFTOOL) gen object $$(@:.skel.h=.linked3.o) $$(@:.skel.h=.linked2.o)
- 	$(Q)diff $$(@:.skel.h=.linked2.o) $$(@:.skel.h=.linked3.o)
--	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
-+	$$(call msg,GEN-SKEL,$$(TRUNNER_BINARY),$$@)
- 	$(Q)$$(BPFTOOL) gen skeleton $$(@:.skel.h=.linked3.o) name $$(notdir $$(@:.skel.h=)) > $$@
- 	$(Q)$$(BPFTOOL) gen subskeleton $$(@:.skel.h=.linked3.o) name $$(notdir $$(@:.skel.h=)) > $$(@:.skel.h=.subskel.h)
- endif
-@@ -444,7 +444,7 @@ endif
- ifeq ($($(TRUNNER_TESTS_DIR)-tests-hdr),)
- $(TRUNNER_TESTS_DIR)-tests-hdr := y
- $(TRUNNER_TESTS_HDR): $(TRUNNER_TESTS_DIR)/*.c
--	$$(call msg,TEST-HDR,$(TRUNNER_BINARY),$$@)
-+	$$(call msg,TEST-HDR,$$(TRUNNER_BINARY),$$@)
- 	$$(shell (echo '/* Generated header, do not edit */';					\
- 		  sed -n -E 's/^void (serial_)?test_([a-zA-Z0-9_]+)\((void)?\).*/DEFINE_TEST(\2)/p'	\
- 			$(TRUNNER_TESTS_DIR)/*.c | sort ;	\
-@@ -461,7 +461,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
- 		      $(TRUNNER_BPF_LSKELS)				\
- 		      $(TRUNNER_BPF_SKELS_LINKED)			\
- 		      $$(BPFOBJ) | $(TRUNNER_OUTPUT)
--	$$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
-+	$$(call msg,TEST-OBJ,$$(TRUNNER_BINARY),$$@)
- 	$(Q)cd $$(@D) && $$(CC) -I. $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
- 
- $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
-@@ -469,17 +469,19 @@ $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- 		       $(TRUNNER_EXTRA_HDRS)				\
- 		       $(TRUNNER_TESTS_HDR)				\
- 		       $$(BPFOBJ) | $(TRUNNER_OUTPUT)
--	$$(call msg,EXT-OBJ,$(TRUNNER_BINARY),$$@)
-+	$$(call msg,EXT-OBJ,$$(TRUNNER_BINARY),$$@)
- 	$(Q)$$(CC) $$(CFLAGS) -c $$< $$(LDLIBS) -o $$@
- 
- # non-flavored in-srctree builds receive special treatment, in particular, we
- # do not need to copy extra resources (see e.g. test_btf_dump_case())
- $(TRUNNER_BINARY)-extras: $(TRUNNER_EXTRA_FILES) | $(TRUNNER_OUTPUT)
- ifneq ($2:$(OUTPUT),:$(shell pwd))
--	$$(call msg,EXT-COPY,$(TRUNNER_BINARY),$(TRUNNER_EXTRA_FILES))
-+	$$(call msg,EXT-COPY,$$(TRUNNER_BINARY),$(TRUNNER_EXTRA_FILES))
- 	$(Q)rsync -aq $$^ $(TRUNNER_OUTPUT)/
- endif
- 
-+$(OUTPUT)/$(TRUNNER_BINARY): TRUNNER_BINARY = $(TRUNNER_BINARY)
-+
- $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     $(TRUNNER_EXTRA_OBJS) $$(BPFOBJ)		\
- 			     $(RESOLVE_BTFIDS)				\
-@@ -489,6 +491,8 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.o $$@
- 	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool $(if $2,$2/)bpftool
- 
-+TRUNNER_BINARY =
-+
- endef
- 
- # Define test_progs test runner.
--- 
-2.35.3
+-Toke
 
