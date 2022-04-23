@@ -2,49 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 856A050C457
-	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 01:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D8C50C5C4
+	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 02:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbiDVXJj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Apr 2022 19:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
+        id S229785AbiDWAkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Apr 2022 20:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbiDVXJa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Apr 2022 19:09:30 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCB64EA01;
-        Fri, 22 Apr 2022 15:43:18 -0700 (PDT)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ni1zg-0008tO-Ai; Sat, 23 Apr 2022 00:43:16 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ni1zg-000DEn-1z; Sat, 23 Apr 2022 00:43:16 +0200
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: handle batch operations
- for map-in-map bpf-maps
-To:     Takshak Chahande <ctakshak@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     andrii@kernel.org, ast@kernel.org, kernel-team@fb.com,
-        ndixit@fb.com, kafai@fb.com, andriin@fb.com
-References: <20220422005044.4099919-1-ctakshak@fb.com>
- <20220422005044.4099919-2-ctakshak@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <015a8abe-9f6e-d3e8-e1c6-e618f8535109@iogearbox.net>
-Date:   Sat, 23 Apr 2022 00:43:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229622AbiDWAj7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Apr 2022 20:39:59 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643F014DEA3
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 17:37:04 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id j6so7130211pfe.13
+        for <bpf@vger.kernel.org>; Fri, 22 Apr 2022 17:37:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s4mK3vXP3EKAqlSTeJgr4nvBqyO4wXvkikeFPh0hMro=;
+        b=TmVNzZak4TcpEZzLpczbgg983THGQafCixSLGxkDGvYezrXZsL+hXdLrPWie5pJltp
+         gumnSmkoFQ8+W9gYkU6JXGjc3tcX1fs3eEvVchSa7H6gIC0NMlFa/DF2ZPRWRtNgheWD
+         usiB30qlXIsSmPOCRk5qFUWq6c4+MRcUvuNOJZBn8qFljQYree8g1I4G3v++J0pOaq+o
+         ghfeTHQMqf8tH0TYozvgkETHiOeMFS2uTI/t8T+53H1/Vt9CM+tfWlb2UvD0ODhfZ26N
+         sI3FC2K4hrpwOGOTgRaqWWRic4LYiIeW/Vl4MVYD1rZ4QcmfRLPkF33qy36l2TL4kzXW
+         XsnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s4mK3vXP3EKAqlSTeJgr4nvBqyO4wXvkikeFPh0hMro=;
+        b=UFq2qifHZB85lNHd9+0ThKTrlOyck1CqBVh6wVq0E5/uhrEHPkiN7qahZZ4WTSKetu
+         ROJKa3qC1LaFH7lF8Os/+S6LK1E/NasuD15wS34re6gTCEYi7enPzIMTSRm1amc6tDb3
+         mYGXX6hJpmbPLJebHqON+oz274NmOGK3kYSVlPV2VXprkiMn1hCEsFweAdyfUoyZB9B6
+         QvvWZKpqOGPUybKQfMM+qcEHeokWwIainkvXdK80mhBqeedBaDdw4Dr1qEpG97jI0NqA
+         KjcnpwA0R4zMECWZHEV7LW+CeoewH43iSEO1mITFQpRWtfJI9vdfqzIZJl8AYyl5fo5K
+         Unrg==
+X-Gm-Message-State: AOAM530Q19b2NQD9F40C9kjUeXLK1JmjAuxJj9i/BcsTmPu9Ht5wmUa3
+        VJamdrDQmk2YGWeG2JsO9ubZY9wxDZaLukZEhfY=
+X-Google-Smtp-Source: ABdhPJwzpx5twE8jtAYvccGvS8uufHX5aSPBQEVHUwMNy5KuktTv+38LXC5gSkpTad2sSjl8DskiXjhbLJyulp60LFU=
+X-Received: by 2002:a62:b515:0:b0:50a:3d51:671e with SMTP id
+ y21-20020a62b515000000b0050a3d51671emr7645179pfe.48.1650674223886; Fri, 22
+ Apr 2022 17:37:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20220422005044.4099919-2-ctakshak@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26520/Fri Apr 22 10:30:17 2022)
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20220422120259.10185-1-fankaixi.li@bytedance.com> <20220422120259.10185-3-fankaixi.li@bytedance.com>
+In-Reply-To: <20220422120259.10185-3-fankaixi.li@bytedance.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 22 Apr 2022 17:36:53 -0700
+Message-ID: <CAADnVQL9=XivjNeg3CyE67N3cp6xB+cetUhWG6b+DtXo-6x0VA@mail.gmail.com>
+Subject: Re: [External] [PATCH bpf-next v5 2/3] selftests/bpf: Move vxlan
+ tunnel testcases to test_progs
+To:     fankaixi.li@bytedance.com
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,72 +71,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/22/22 2:50 AM, Takshak Chahande wrote:
-[...]
-> +static void fetch_and_validate(int outer_map_fd,
-> +			       __u32 *inner_map_fds,
-> +			       struct bpf_map_batch_opts *opts,
-> +			       __u32 batch_size, bool delete_entries)
-> +{
-> +	__u32 *fetched_keys, *fetched_values, fetched_entries = 0;
-> +	__u32 next_batch_key = 0, step_size = 5;
-> +	int err, retries = 0, max_retries = 3;
-> +	__u32 value_size = sizeof(__u32);
+On Fri, Apr 22, 2022 at 5:04 AM <fankaixi.li@bytedance.com> wrote:
+> +#define VXLAN_TUNL_DEV0 "vxlan00"
+> +#define VXLAN_TUNL_DEV1 "vxlan11"
+> +#define IP6VXLAN_TUNL_DEV0 "ip6vxlan00"
+> +#define IP6VXLAN_TUNL_DEV1 "ip6vxlan11"
 > +
-> +	fetched_keys = calloc(batch_size, value_size);
-> +	fetched_values = calloc(batch_size, value_size);
+> +#define SRC_INGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_ingress_src"
+> +#define SRC_EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_egress_src"
+> +#define DST_EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_egress_dst"
 > +
-> +	while (fetched_entries < batch_size) {
-> +		err = delete_entries
-> +		      ? bpf_map_lookup_and_delete_batch(outer_map_fd,
-> +				      fetched_entries ? &next_batch_key : NULL,
-> +				      &next_batch_key,
-> +				      fetched_keys + fetched_entries,
-> +				      fetched_values + fetched_entries,
-> +				      &step_size, opts)
-> +		      : bpf_map_lookup_batch(outer_map_fd,
-> +				      fetched_entries ? &next_batch_key : NULL,
-> +				      &next_batch_key,
-> +				      fetched_keys + fetched_entries,
-> +				      fetched_values + fetched_entries,
-> +				      &step_size, opts);
-> +		CHECK((err < 0 && (errno != ENOENT && errno != ENOSPC)),
-> +		      "lookup with steps failed",
-> +		      "error: %s\n", strerror(errno));
-> +
-> +		fetched_entries += step_size;
-> +		/* retry for max_retries if ENOSPC */
-> +		if (errno == ENOSPC)
-> +			++retries;
-> +
-> +		if (retries >= max_retries)
-> +			break;
-> +	}
-> +
-> +	CHECK((fetched_entries != batch_size && err != ENOSPC),
-> +	      "Unable to fetch expected entries !",
-> +	      "fetched_entries(%d) and batch_size(%d) error: (%d):%s\n",
-> +	      fetched_entries, batch_size, errno, strerror(errno));
-> +
-Looks like BPF CI in test_maps trips right here:
+> +#define PING_ARGS "-c 3 -w 10 -q"
 
-   [...]
-   test_lpm_trie_map_batch_ops:PASS
-   batch_op is successful for batch_size(5)
-   batch_op is successful for batch_size(10)
-   test_map_in_map_batch_ops_array:PASS with inner ARRAY map
-   batch_op is successful for batch_size(5)
-   batch_op is successful for batch_size(10)
-   test_map_in_map_batch_ops_array:PASS with inner HASH map
-   fetch_and_validate(158):FAIL:Unable to fetch expected entries ! fetched_entries(8) and batch_size(5) error: (2):No such file or directory
-test_verifier - Testing test_verifier
-collect_status - Collect status
-shutdown - Shutdown
-Test Results:
-              bpftool: PASS
-           test_progs: PASS
-  test_progs-no_alu32: PASS
-            test_maps: FAIL (returned 255)
-        test_verifier: PASS
-             shutdown: CLEAN
-Error: Process completed with exit code 1.
+Thanks for moving the test to test_progs,
+but its runtime is excessive.
+
+time ./test_progs -t tunnel
+#195 tunnel:OK
+Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+
+real    0m26.530s
+user    0m0.075s
+sys    0m1.317s
+
+Please find a way to test the functionality in a second or so.
