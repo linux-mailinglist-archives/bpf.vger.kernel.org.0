@@ -2,69 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B073C50D566
-	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 23:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B1F50D567
+	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 23:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239680AbiDXVwj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Apr 2022 17:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        id S238869AbiDXVwx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Apr 2022 17:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239695AbiDXVwe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Apr 2022 17:52:34 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C546C644DF
-        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:32 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id p12so1444575pfn.0
-        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:32 -0700 (PDT)
+        with ESMTP id S229661AbiDXVww (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Apr 2022 17:52:52 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71987644DF
+        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:50 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id s17so22943097plg.9
+        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Rz5bIurls0xtUhIV87L2VXgJWuOFR5uNB2RSliytrA8=;
-        b=p/dS7xSyOh2jzEpKE2JQCQyKpioYugp47DPb/0ovmburzcD7qzW1Pk2EDhSDzPFZVa
-         cXHwTRWUx0XOroLpJvdYctZgYWUN+2QaQsawfJv1LBRyjDGVViIpIr6Vx9OEEkKpGksY
-         JfA8ube1BpmroQEYUYFJkeeKHBQrMHx5RSHFxEtmvfW42QKYGEOuqxEXNFLXBfdQ2RFV
-         r5fX0ygZFxRjW6Oo1agn2chimH2FM7LxGyQxoI3HzsfSRbd09HWPpa8cd4Kbkrh1kDQQ
-         1z2+su5KZ9qLlcCL0scpufYh8nU2QkMnnmCTBp0V+4aS+dj1mrbLONUUDbzoGjyHNd2b
-         beZQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hm4ZDwxII8XenGzqSNjVlPsDilbbhT/DEDE2GeOBYYg=;
+        b=mSrm2IEIuHQSGaz1zeRBzLGkwCcdV+7yuLZcN6iFQh1BSX0tfp8jXt13+sDNNsL3YZ
+         k2CF3/jobcfX4s5xDXp3kF/jaVgLMmzJppttJCBETDuGr2hFe5C5UxRwTCp3Y16vw7UM
+         riCT/C+Hs9xom8F5PD7Rbr3Y1xBO2IqxQbdBGJaVLee30VSqaSof/eu9HcATyyBVdgVB
+         GyRbHnwEUpOBZ09ioBz5ZcHUoAsggSXC2ShPjPr+ionKL8CdrrQlP9s24x7qcSCt8kKh
+         q8psPP896odn66p1Q0UrZqbUWml0WiqUBIA7fDaEpTqWRx8FJhcmTFdpzOMO+rrhzD3X
+         Xt3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Rz5bIurls0xtUhIV87L2VXgJWuOFR5uNB2RSliytrA8=;
-        b=FHozBq2QYS+ekzuXsceF7F4VGrYiGgDa3sPxgpvB4Q+FvmqjI0hsa8RCOjJcl8/o+/
-         mtJoZ1MGR3HxK0LZ9mxW5XiXSID84tzRK2kM/j+HchXuHkol5M+532vDzrO69Vgr72SL
-         sbhfLepWjGNQuw20KDTFRvEyqvWPzYMdvh+BV9JG2Z5Y2TZGU4hiAUbQb8HNk4XOjQ+N
-         l+QFvPdlIfSdA3wD21YwtEwQuNBQDDz2FE51A0LmM0DN2YH03hT6Bkxo1g8dYcxcLL1a
-         u7AoSkxmo3DYhJX7gHXjTBLfr6y+CYmPUQep/PXUgyzn7oSq/pY6uUxDk9WhxFqyQUtV
-         vrdw==
-X-Gm-Message-State: AOAM533DWunli/+U8JQabtokXfDhoIatlIyZ20Cq4isHcrRZn8bAWW5Q
-        nsCJgsQ4hqRB909bDGTZi7epyVjobQ8=
-X-Google-Smtp-Source: ABdhPJwSSdFmqXbWO7ix/f9SD7G6NXSf0BtNqYAbGOKsEpIYnEQ3fBDyX8DpprU3WJLHzSUzVjpMIw==
-X-Received: by 2002:a05:6a00:198c:b0:505:c18b:3184 with SMTP id d12-20020a056a00198c00b00505c18b3184mr15493719pfl.82.1650836972216;
-        Sun, 24 Apr 2022 14:49:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hm4ZDwxII8XenGzqSNjVlPsDilbbhT/DEDE2GeOBYYg=;
+        b=DO54xKHDNFY8Z+DLiVSxsryb9u/UnyMk/cdZZ9lM9VLOKxwufVXydALCAoETdayVGf
+         bt9dA1fwUujQxxqjiyUghJkiMJ15SqtDkrN+AMb3N34Kuj3t720STek6OpQJAJMEaRpZ
+         /BehwboJFkp/m1YX47eP33lPU3crMTTRcMEmLikxvXtWy5fKxfPWQyIQwxi9WBXoMmEw
+         +H4tdvwuTD9W1F/UlKvAL1MemxasGpJl21XywR962fpDZKkGZz6aSdJG5aPnxNiA4Zme
+         Vn60wskMizbfvoBrACZp5m/4eZbs0ZTxvhOEVjSNs+ehjwpjb70PYLAvYLbknil+lV36
+         hXkA==
+X-Gm-Message-State: AOAM533bv2NhRl3dVi7RjQaXwgQbUQvZq1djZEp0fvFX4Z/C6TJW23yx
+        mGlTHQG0ZAU1Ql7fD8Nrjmw=
+X-Google-Smtp-Source: ABdhPJxcDgruCSHSuPVZr11qO73++kzo3iWfmDAV8Z67P/621i5IQJ3KKEEwf6L2yykDlAtPzj4fZw==
+X-Received: by 2002:a17:90a:730b:b0:1d9:7fc0:47c5 with SMTP id m11-20020a17090a730b00b001d97fc047c5mr753502pjk.60.1650836989947;
+        Sun, 24 Apr 2022 14:49:49 -0700 (PDT)
 Received: from localhost ([157.49.66.127])
-        by smtp.gmail.com with ESMTPSA id b20-20020a17090a8c9400b001cd4989fec4sm12548220pjo.16.2022.04.24.14.49.31
+        by smtp.gmail.com with ESMTPSA id u25-20020a62d459000000b0050d299e3b7dsm4389572pfl.186.2022.04.24.14.49.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Apr 2022 14:49:32 -0700 (PDT)
+        Sun, 24 Apr 2022 14:49:49 -0700 (PDT)
+Date:   Mon, 25 Apr 2022 03:20:06 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Joanne Koong <joannelkoong@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH bpf-next v6 13/13] selftests/bpf: Add test for strict BTF type check
-Date:   Mon, 25 Apr 2022 03:19:01 +0530
-Message-Id: <20220424214901.2743946-14-memxor@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220424214901.2743946-1-memxor@gmail.com>
-References: <20220424214901.2743946-1-memxor@gmail.com>
+Subject: Re: [PATCH bpf-next v5 03/13] bpf: Allow storing unreferenced kptr
+ in map
+Message-ID: <20220424215006.53rrzec4pkucjpf7@apollo.legion>
+References: <20220415160354.1050687-1-memxor@gmail.com>
+ <20220415160354.1050687-4-memxor@gmail.com>
+ <20220421041528.eez5euhgsm5dvjwz@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <20220421193621.3rk7rys7gjtjdhw7@apollo.legion>
+ <CAADnVQLntQ7zVXXHZBpL_1H+ph8Evtcng-yG5QP5tfq5sYdHnw@mail.gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3809; h=from:subject; bh=KOuszMLHUcYTOqQidYO3FSNdHcvqpfFX3CSjPBqDbTA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiZcTLekpYRdK/TVhCMvQnPg6k2ST+Hg19+8WIwiNw 073Re+mJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYmXEywAKCRBM4MiGSL8RyraMD/ sFzQLiO5H0vV2vlzGd3M+/5Pr4CqSD6u0M5Qjht2tbDClO/XpMivuZA6BkAtk8p0SIw+JWpXM3UnKr WAADZgAD0M0qQGH3mijJkHKQCUZa6ArvH7YMO3h+maU4GXkegLC6+eOs1Kz97yFEfp5gQm/AnLR+2D uvIn1ieMDDn/9StnmmEEibpBfmRJeJ6kxny8Auu0ZEhJfpQVWuz/E+DOE9JApMjN08CrTxPSk+N0T3 2QTQP6NRmuAmiz/lUPMFsxw/o3T6jVdmISxG2T7gZPW37h7l+YQVGdDBxb1u6DVXqIyXRf9icqD2rK iT/vcjf7FmEeKFLi8UgrPuZGVJTaOQVXFJwJ8bTyf43emqHUczszuYz2vDbveDbcqBZxs3XLdzgwCd yWc8J51TUqglJUlLqTRsQJGtqiFg3raAyPT68rzx+OBmuVFBR0EdqMr5JqQwLFoTf4S228RD+L8yAN VmYAte5d9W/fi1zshUdE2N17/mdnRsrh8rSHAtvS/wcqsBZuOt4uLFVH5agnTveLyQAIyAJAAC6Gew YOfzXBj74rm7zIyi/j4LcGplFqJrJjLZgVkU4kclOh0D8h/YczG+HNPuc7INGkYAsTWTA6i1DVfHR6 H0M5YJ+P/4OjQw1Uv7CLqG1kmP0fx1TvKVUrplF/FzljQ+Il/jzpxHs8veMg==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLntQ7zVXXHZBpL_1H+ph8Evtcng-yG5QP5tfq5sYdHnw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,121 +78,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ensure that the edge case where first member type was matched
-successfully even if it didn't match BTF type of register is caught and
-rejected by the verifier.
+On Fri, Apr 22, 2022 at 03:56:44AM IST, Alexei Starovoitov wrote:
+> On Thu, Apr 21, 2022 at 12:36 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> > > > +
+> > > > +   if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
+> > > > +                             off_desc->kptr.btf, off_desc->kptr.btf_id))
+> > > > +           goto bad_type;
+> > >
+> > > Is full type comparison really needed?
+> >
+> > Yes.
+> >
+> > > reg->btf should be the same pointer as off_desc->kptr.btf
+> > > and btf_id should match exactly.
+> >
+> > This is not true, it can be vmlinux or module BTF. But if you mean just
+> > comparing the pointer and btf_id, we still need to handle reg->off.
+> >
+> > We want to support cases like:
+> >
+> > struct foo {
+> >         struct bar br;
+> >         struct baz bz;
+> > };
+> >
+> > struct foo *v = func(); // PTR_TO_BTF_ID
+> > map->foo = v;      // reg->off is zero, btf and btf_id matches type.
+> > map->bar = &v->br; // reg->off is still zero, but we need to walk and retry with
+> >                    // first member type of struct after comparison fails.
+> > map->baz = &v->bz; // reg->off is non-zero, so struct needs to be walked to
+> >                    // match type.
+> >
+> > In the ref case, the argument's offset will always be 0, so third case is not
+> > going to work, but in the unref case, we want to allow storing pointers to
+> > structs embedded inside parent struct.
+> >
+> > Please let me know if I misunderstood what you meant.
+>
+> Makes sense.
+> Please add this comment to the code.
+>
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- net/bpf/test_run.c                           | 22 +++++++++++++++++++-
- tools/testing/selftests/bpf/verifier/calls.c | 20 ++++++++++++++++++
- 2 files changed, 41 insertions(+), 1 deletion(-)
+I took a closer look at this, and I think we're missing one extra corner case
+from the ones covered in 24d5bb806c7e, i.e. when reg->off is zero and struct is
+walked to match type. This would be incorrect for release/kptr_ref case, even if
+it is unlikely to occur in practice, it should be rejected by default. I
+included a patch + selftest for this in v6, ptal.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 29fe32821e7e..7a1579c91432 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -550,8 +550,13 @@ struct sock * noinline bpf_kfunc_call_test3(struct sock *sk)
- 	return sk;
- }
- 
-+struct prog_test_member1 {
-+	int a;
-+};
-+
- struct prog_test_member {
--	u64 c;
-+	struct prog_test_member1 m;
-+	int c;
- };
- 
- struct prog_test_ref_kfunc {
-@@ -576,6 +581,12 @@ bpf_kfunc_call_test_acquire(unsigned long *scalar_ptr)
- 	return &prog_test_struct;
- }
- 
-+noinline struct prog_test_member *
-+bpf_kfunc_call_memb_acquire(void)
-+{
-+	return &prog_test_struct.memb;
-+}
-+
- noinline void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
- {
- }
-@@ -584,6 +595,10 @@ noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
- {
- }
- 
-+noinline void bpf_kfunc_call_memb1_release(struct prog_test_member1 *p)
-+{
-+}
-+
- noinline struct prog_test_ref_kfunc *
- bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b)
- {
-@@ -673,8 +688,10 @@ BTF_ID(func, bpf_kfunc_call_test1)
- BTF_ID(func, bpf_kfunc_call_test2)
- BTF_ID(func, bpf_kfunc_call_test3)
- BTF_ID(func, bpf_kfunc_call_test_acquire)
-+BTF_ID(func, bpf_kfunc_call_memb_acquire)
- BTF_ID(func, bpf_kfunc_call_test_release)
- BTF_ID(func, bpf_kfunc_call_memb_release)
-+BTF_ID(func, bpf_kfunc_call_memb1_release)
- BTF_ID(func, bpf_kfunc_call_test_kptr_get)
- BTF_ID(func, bpf_kfunc_call_test_pass_ctx)
- BTF_ID(func, bpf_kfunc_call_test_pass1)
-@@ -689,16 +706,19 @@ BTF_SET_END(test_sk_check_kfunc_ids)
- 
- BTF_SET_START(test_sk_acquire_kfunc_ids)
- BTF_ID(func, bpf_kfunc_call_test_acquire)
-+BTF_ID(func, bpf_kfunc_call_memb_acquire)
- BTF_ID(func, bpf_kfunc_call_test_kptr_get)
- BTF_SET_END(test_sk_acquire_kfunc_ids)
- 
- BTF_SET_START(test_sk_release_kfunc_ids)
- BTF_ID(func, bpf_kfunc_call_test_release)
- BTF_ID(func, bpf_kfunc_call_memb_release)
-+BTF_ID(func, bpf_kfunc_call_memb1_release)
- BTF_SET_END(test_sk_release_kfunc_ids)
- 
- BTF_SET_START(test_sk_ret_null_kfunc_ids)
- BTF_ID(func, bpf_kfunc_call_test_acquire)
-+BTF_ID(func, bpf_kfunc_call_memb_acquire)
- BTF_ID(func, bpf_kfunc_call_test_kptr_get)
- BTF_SET_END(test_sk_ret_null_kfunc_ids)
- 
-diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
-index 2e03decb11b6..743ed34c1238 100644
---- a/tools/testing/selftests/bpf/verifier/calls.c
-+++ b/tools/testing/selftests/bpf/verifier/calls.c
-@@ -138,6 +138,26 @@
- 		{ "bpf_kfunc_call_memb_release", 8 },
- 	},
- },
-+{
-+	"calls: invalid kfunc call: don't match first member type when passed to release kfunc",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.result = REJECT,
-+	.errstr = "kernel function bpf_kfunc_call_memb1_release args#0 expected pointer",
-+	.fixup_kfunc_btf_id = {
-+		{ "bpf_kfunc_call_memb_acquire", 1 },
-+		{ "bpf_kfunc_call_memb1_release", 5 },
-+	},
-+},
- {
- 	"calls: invalid kfunc call: PTR_TO_BTF_ID with negative offset",
- 	.insns = {
--- 
-2.35.1
-
+--
+Kartikeya
