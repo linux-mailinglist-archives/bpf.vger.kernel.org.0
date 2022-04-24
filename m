@@ -2,72 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B1F50D567
-	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 23:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AE550D574
+	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 23:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238869AbiDXVwx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Apr 2022 17:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
+        id S239695AbiDXV7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Apr 2022 17:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbiDXVww (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Apr 2022 17:52:52 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71987644DF
-        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:50 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id s17so22943097plg.9
-        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:50 -0700 (PDT)
+        with ESMTP id S239689AbiDXV7u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Apr 2022 17:59:50 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C148393E1
+        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:56:48 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d15so8500138plh.2
+        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=hm4ZDwxII8XenGzqSNjVlPsDilbbhT/DEDE2GeOBYYg=;
-        b=mSrm2IEIuHQSGaz1zeRBzLGkwCcdV+7yuLZcN6iFQh1BSX0tfp8jXt13+sDNNsL3YZ
-         k2CF3/jobcfX4s5xDXp3kF/jaVgLMmzJppttJCBETDuGr2hFe5C5UxRwTCp3Y16vw7UM
-         riCT/C+Hs9xom8F5PD7Rbr3Y1xBO2IqxQbdBGJaVLee30VSqaSof/eu9HcATyyBVdgVB
-         GyRbHnwEUpOBZ09ioBz5ZcHUoAsggSXC2ShPjPr+ionKL8CdrrQlP9s24x7qcSCt8kKh
-         q8psPP896odn66p1Q0UrZqbUWml0WiqUBIA7fDaEpTqWRx8FJhcmTFdpzOMO+rrhzD3X
-         Xt3w==
+        bh=JVID5G8iJ2HDVlxeOqepbMha9VF/3Aa0TyqeaiqkCv8=;
+        b=aF1OYFpfvKfRgbOLFTQwzmO42RQDaUhlUHGF002LIAsFcLWYGiMB7ToDyG92qeVKWN
+         vO9jRXovC3jmiHyGPgzHmv7/ieQhwPKSQ3DGDbIiyyeS8WbCdmgKZOqHuqDHS6/SHxSu
+         F2/KB39LCuLNgcAwBSJqolFh7NwDJV3DzHc4hbDy0XYybCft5pmXz9DEJAa5NGvrwtx5
+         2Rc1i5bA2uakdKa9On6ueIWipwPLE0uDbbw1tDxkiznMD6lg8O+q3jKT8Ocu3gxE3N3S
+         UWNSGhbpi3mT2wofUvdJ3dYDfde9tnrn52UA4H9sulwKfzhcQWgfCpHQFiZbnWwpggun
+         4RBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=hm4ZDwxII8XenGzqSNjVlPsDilbbhT/DEDE2GeOBYYg=;
-        b=DO54xKHDNFY8Z+DLiVSxsryb9u/UnyMk/cdZZ9lM9VLOKxwufVXydALCAoETdayVGf
-         bt9dA1fwUujQxxqjiyUghJkiMJ15SqtDkrN+AMb3N34Kuj3t720STek6OpQJAJMEaRpZ
-         /BehwboJFkp/m1YX47eP33lPU3crMTTRcMEmLikxvXtWy5fKxfPWQyIQwxi9WBXoMmEw
-         +H4tdvwuTD9W1F/UlKvAL1MemxasGpJl21XywR962fpDZKkGZz6aSdJG5aPnxNiA4Zme
-         Vn60wskMizbfvoBrACZp5m/4eZbs0ZTxvhOEVjSNs+ehjwpjb70PYLAvYLbknil+lV36
-         hXkA==
-X-Gm-Message-State: AOAM533bv2NhRl3dVi7RjQaXwgQbUQvZq1djZEp0fvFX4Z/C6TJW23yx
-        mGlTHQG0ZAU1Ql7fD8Nrjmw=
-X-Google-Smtp-Source: ABdhPJxcDgruCSHSuPVZr11qO73++kzo3iWfmDAV8Z67P/621i5IQJ3KKEEwf6L2yykDlAtPzj4fZw==
-X-Received: by 2002:a17:90a:730b:b0:1d9:7fc0:47c5 with SMTP id m11-20020a17090a730b00b001d97fc047c5mr753502pjk.60.1650836989947;
-        Sun, 24 Apr 2022 14:49:49 -0700 (PDT)
+        bh=JVID5G8iJ2HDVlxeOqepbMha9VF/3Aa0TyqeaiqkCv8=;
+        b=lOCFBWqCNY/yJ9MZV7zHWmZpV9P0ageKiG5zqw2+Ccj9nRSrpJeg8GUzZYCVbVjKzH
+         EPejuqjANk8vyc3fRk+BIgvG6AZqrQg/xP9JyfwftQ3e76GCug+2NuttitBZyaHMVCuh
+         xBOCzgmcA3uJMxgPoI/BTC74lbMceH3GZ8fz38E+tPN1LwtaOLYzhpAVxs0XJVDYm+vO
+         yaMNlyxPg3e3eLsRD8Z5gvSg4Xyz1YOKGu0HF3o1zjgr3IAtwyDl3DVdYxuIUv+WykI9
+         A6EwFiiAL2diEqzB3yGoOeYgdNVu088I1VJvNj2yVEL2ngx9WK0SKxRz9zinS3Vun7XU
+         TH+g==
+X-Gm-Message-State: AOAM533fnFTKCSL6GyWflcQtbGg23tX7mTWhv9BGgsF4h9mMWu6x3JHs
+        c/ToZMLJYx/yfxwVkcjA9FQ=
+X-Google-Smtp-Source: ABdhPJyhuiSmu9K2VZu0fhxOgHEhxcxvR7s4ZGWMkSdNAakvr/vdP2jzwjrbvhG1WSwJLcTTsR6reA==
+X-Received: by 2002:a17:903:94:b0:15c:f928:a373 with SMTP id o20-20020a170903009400b0015cf928a373mr6116498pld.26.1650837408060;
+        Sun, 24 Apr 2022 14:56:48 -0700 (PDT)
 Received: from localhost ([157.49.66.127])
-        by smtp.gmail.com with ESMTPSA id u25-20020a62d459000000b0050d299e3b7dsm4389572pfl.186.2022.04.24.14.49.48
+        by smtp.gmail.com with ESMTPSA id e6-20020a17090a77c600b001cd4989fedcsm12667862pjs.40.2022.04.24.14.56.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Apr 2022 14:49:49 -0700 (PDT)
-Date:   Mon, 25 Apr 2022 03:20:06 +0530
+        Sun, 24 Apr 2022 14:56:47 -0700 (PDT)
+Date:   Mon, 25 Apr 2022 03:27:05 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Joanne Koong <joannelkoong@gmail.com>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v5 03/13] bpf: Allow storing unreferenced kptr
- in map
-Message-ID: <20220424215006.53rrzec4pkucjpf7@apollo.legion>
+Subject: Re: [PATCH bpf-next v5 04/13] bpf: Tag argument to be released in
+ bpf_func_proto
+Message-ID: <20220424215705.y62y5277nuk6kiex@apollo.legion>
 References: <20220415160354.1050687-1-memxor@gmail.com>
- <20220415160354.1050687-4-memxor@gmail.com>
- <20220421041528.eez5euhgsm5dvjwz@MBP-98dd607d3435.dhcp.thefacebook.com>
- <20220421193621.3rk7rys7gjtjdhw7@apollo.legion>
- <CAADnVQLntQ7zVXXHZBpL_1H+ph8Evtcng-yG5QP5tfq5sYdHnw@mail.gmail.com>
+ <20220415160354.1050687-5-memxor@gmail.com>
+ <20220421041954.3hdxqu7zcxfhiecs@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <20220421193808.iojehohmhvrcssjb@apollo.legion>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQLntQ7zVXXHZBpL_1H+ph8Evtcng-yG5QP5tfq5sYdHnw@mail.gmail.com>
+In-Reply-To: <20220421193808.iojehohmhvrcssjb@apollo.legion>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,53 +77,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 22, 2022 at 03:56:44AM IST, Alexei Starovoitov wrote:
-> On Thu, Apr 21, 2022 at 12:36 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> > > > +
-> > > > +   if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
-> > > > +                             off_desc->kptr.btf, off_desc->kptr.btf_id))
-> > > > +           goto bad_type;
-> > >
-> > > Is full type comparison really needed?
+On Fri, Apr 22, 2022 at 01:08:08AM IST, Kumar Kartikeya Dwivedi wrote:
+> On Thu, Apr 21, 2022 at 09:49:54AM IST, Alexei Starovoitov wrote:
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index c802e51c4e18..97f88d06f848 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -245,6 +245,7 @@ struct bpf_call_arg_meta {
+> > >  	struct bpf_map *map_ptr;
+> > >  	bool raw_mode;
+> > >  	bool pkt_access;
+> > > +	u8 release_regno;
+> > >  	int regno;
 > >
-> > Yes.
+> > release_regno and regno are always equal.
+> > Why go with u8 instead of bool flag?
 > >
-> > > reg->btf should be the same pointer as off_desc->kptr.btf
-> > > and btf_id should match exactly.
-> >
-> > This is not true, it can be vmlinux or module BTF. But if you mean just
-> > comparing the pointer and btf_id, we still need to handle reg->off.
-> >
-> > We want to support cases like:
-> >
-> > struct foo {
-> >         struct bar br;
-> >         struct baz bz;
-> > };
-> >
-> > struct foo *v = func(); // PTR_TO_BTF_ID
-> > map->foo = v;      // reg->off is zero, btf and btf_id matches type.
-> > map->bar = &v->br; // reg->off is still zero, but we need to walk and retry with
-> >                    // first member type of struct after comparison fails.
-> > map->baz = &v->bz; // reg->off is non-zero, so struct needs to be walked to
-> >                    // match type.
-> >
-> > In the ref case, the argument's offset will always be 0, so third case is not
-> > going to work, but in the unref case, we want to allow storing pointers to
-> > structs embedded inside parent struct.
-> >
-> > Please let me know if I misunderstood what you meant.
 >
-> Makes sense.
-> Please add this comment to the code.
+> Didn't realise that. I will change it.
 >
 
-I took a closer look at this, and I think we're missing one extra corner case
-from the ones covered in 24d5bb806c7e, i.e. when reg->off is zero and struct is
-walked to match type. This would be incorrect for release/kptr_ref case, even if
-it is unlikely to occur in practice, it should be rejected by default. I
-included a patch + selftest for this in v6, ptal.
+Actually, I think regno may not equal release_regno. It is set by by
+check_stack_range_initialized only when meta->raw_mode is true, along with
+meta.access_size. So I skipped this change in v6.
 
 --
 Kartikeya
