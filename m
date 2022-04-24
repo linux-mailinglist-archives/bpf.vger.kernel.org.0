@@ -2,166 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B2650D1C1
-	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 15:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1032E50D24A
+	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 16:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbiDXNDE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Apr 2022 09:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
+        id S239421AbiDXOhv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Apr 2022 10:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbiDXNDC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Apr 2022 09:03:02 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F181644D5
-        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 06:00:00 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id d6so10428760ede.8
-        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 06:00:00 -0700 (PDT)
+        with ESMTP id S239412AbiDXOho (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Apr 2022 10:37:44 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB54B338A9;
+        Sun, 24 Apr 2022 07:34:43 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id n8so21552375plh.1;
+        Sun, 24 Apr 2022 07:34:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xiS7jXTGQnjBRoWj5ugUGTqfRqlbiuFUwXWLNi1EeJU=;
-        b=SoA9P8/6lxB7hLukKtbzsp9CZjR0hxa/1dGYCHYuHry7e1fzAxQ6TYBM8js3bDZUdT
-         iOm61Ysfp+VWCcf+9mqf0kUzLrJUYw7YuJ15uXa1Qg/j5yGudMfYL9/jYojurUwjC/PT
-         EF4eq9ZGJxtYkojhD+sVMg2nwuFOqrgxJSR6D5TaQWwjSD288Y4Ge6oKuMs4n8E7w6aM
-         xlBuR90SsvtbwqDUVbaqEvYNuhXy9uc6zPZnL2UfwXO7tlG42uwMzk9iwiMgihzm2CQo
-         Q3x7R66oab/+2CtRiaVN33ycNZmpYEmz8Y7GZZ01aEkb9YareOofyAESNR8hK7Nytuwx
-         horA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TraAa9qxjleDjcKSV6cdBET+ximOcYjIqFdHiJLXCNQ=;
+        b=d42AiVW50s9TABrjm13XKqTRuodcUHYC6ylnEacp7SaTKcZQ5YklbmqLVJEgRUkeZ+
+         OBeikygE/Ma1lpsB3lIymZrourtRKOLjmMvUstuwB7qev2+BQQryYsRE/f8imrv5NmBA
+         2+nJ/ZO2yvMVfPq8k650+ce/lwDGp6XuZYdwOYBKBbtRl80uniIZ5baC4/9LLdOEGTMu
+         VDwkgZ7d1k7mqBSccztD29kt9v9YAWd2mPl4o4wdrRAh1FjvhT+vf3ACl8OC0PXag828
+         ftIC/UFPZ6ZFGXAr5CLVaufPBfiJzZOq9MQCPogN/a4ISyhPHnuEec+iVXfos9X2JMh4
+         G5+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xiS7jXTGQnjBRoWj5ugUGTqfRqlbiuFUwXWLNi1EeJU=;
-        b=MevhQwfhlVzpbmCl+haj46gvJZ6hoH1Z+qG78AzcMu1jCeTkTHooGmz6oTf57mDYet
-         VP90mCJdyMu+tHbs+aKOURQ8jgGR5o2x0N2mLcdB0k9ypnZi5P5TNy+w5zPO1oxyKZx3
-         SRKtgT4g7/zOOxzPjSMKOcSvJX88BpcuEnztdq5620x0Y6b3ZxD0qIyhQK5Fx/Pcr/eB
-         hQ4TqVOr10gPuxLPprjx1XKslO09vVI/DbL9DkYY6LIF7WEKpNPEogiWGWfQuZpuSWW3
-         G6JFSqwUikVfre/IjVuqd2J678Sb/ASgJvvQR/E1kXwm37QuBtPcqr0oFvM0vVrrpH6/
-         xuDQ==
-X-Gm-Message-State: AOAM532q0Yi4ZGzHDY3UYYueq2igAW353iIoeP7QncoRn7unU6VGOoUR
-        H1T+LECIxxdSWWNl/oP0Ur3ddg==
-X-Google-Smtp-Source: ABdhPJzWd6TnX8cfWuoEpPnonVAdlLmH1faYJGpdsybfh5SgAIg5RUp8Wh3mjpXz0jixZJTcziCJFw==
-X-Received: by 2002:a05:6402:2985:b0:425:d51f:ae4 with SMTP id eq5-20020a056402298500b00425d51f0ae4mr6102711edb.379.1650805198838;
-        Sun, 24 Apr 2022 05:59:58 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([104.245.96.34])
-        by smtp.gmail.com with ESMTPSA id y14-20020a056402440e00b00416046b623csm3408984eda.2.2022.04.24.05.59.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TraAa9qxjleDjcKSV6cdBET+ximOcYjIqFdHiJLXCNQ=;
+        b=UIrNp61sCj2+PoJBLQLGXeZpfc8oT7g/08uWPxQBZIxnec+o/kII0ivJWi5LM78Blq
+         3IpgLT9//s5MZ2BYZ2fpfFGULszlavKPj3l+NHADGQ6j3h9tBQrwVWV0TCpF7kYTjkJa
+         rmU6w14bs3mgoHV44pROcU+i8V9RA0ISvuiUC1BEM0TBaVh9Tdl7ZwqzTFzaAc54yj+l
+         CjwZhobNu5CFt7cn3rxKPypnjX5DHErQV9p2JouX5/Sd0YhruISdxiChuwe4XwnPWrSW
+         6qqIQLhVR7m3mCgnacCKmwXLdBsF6FPE52iQNfXnsUfTRa0owM74gNqlzjAD5LvWBKLX
+         oaug==
+X-Gm-Message-State: AOAM531DCK+yDu80tfuDgfeCU4esjBHkwKMbbD7fmToVc6if/Ff0TSqI
+        X9/aHTpA75neYz/z3xQbot7baFvzgoG52w==
+X-Google-Smtp-Source: ABdhPJwTZ6KgukTB9CJWdmkYdUg6KWAiPkj0nDfLsny3nxvpcrrj6CMe+ZGCdXYmnQBissnFmI0UaA==
+X-Received: by 2002:a17:902:f605:b0:154:aa89:bd13 with SMTP id n5-20020a170902f60500b00154aa89bd13mr13819802plg.112.1650810883135;
+        Sun, 24 Apr 2022 07:34:43 -0700 (PDT)
+Received: from localhost.localdomain ([223.212.58.71])
+        by smtp.gmail.com with ESMTPSA id n16-20020a17090a091000b001d2bff34228sm5659369pjn.9.2022.04.24.07.34.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Apr 2022 05:59:58 -0700 (PDT)
-Date:   Sun, 24 Apr 2022 20:59:51 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Timothy Hayes <timothy.hayes@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Sun, 24 Apr 2022 07:34:42 -0700 (PDT)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/3] perf: arm-spe: Fix SPE events with phys addresses
-Message-ID: <20220424125951.GD978927@leoy-ThinkPad-X240s>
-References: <20220421165205.117662-1-timothy.hayes@arm.com>
- <20220421165205.117662-3-timothy.hayes@arm.com>
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH bpf-next] libbpf: Remove unnecessary type cast
+Date:   Sun, 24 Apr 2022 22:34:20 +0800
+Message-Id: <20220424143420.457082-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220421165205.117662-3-timothy.hayes@arm.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Timothy,
+The link variable is already of type 'struct bpf_link *', casting it to
+'struct bpf_link *' is redundant, drop it.
 
-On Thu, Apr 21, 2022 at 05:52:04PM +0100, Timothy Hayes wrote:
-> This patch corrects a bug whereby SPE collection is invoked with
-> pa_enable=1 but synthesized events fail to show physical addresses.
-> 
-> Signed-off-by: Timothy Hayes <timothy.hayes@arm.com>
-> ---
->  tools/perf/arch/arm64/util/arm-spe.c | 10 ++++++++++
->  tools/perf/util/arm-spe.c            |  3 ++-
->  2 files changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-> index af4d63af8072..e8b577d33e53 100644
-> --- a/tools/perf/arch/arm64/util/arm-spe.c
-> +++ b/tools/perf/arch/arm64/util/arm-spe.c
-> @@ -148,6 +148,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->  	bool privileged = perf_event_paranoid_check(-1);
->  	struct evsel *tracking_evsel;
->  	int err;
-> +	u64 bit;
->  
->  	sper->evlist = evlist;
->  
-> @@ -245,6 +246,15 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->  	 */
->  	evsel__set_sample_bit(arm_spe_evsel, DATA_SRC);
->  
-> +	/*
-> +	 * The PHYS_ADDR flag does not affect the driver behaviour, it is used to
-> +	 * inform that the resulting output's SPE samples contain physical addresses
-> +	 * where applicable.
-> +	 */
-> +	bit = perf_pmu__format_bits(&arm_spe_pmu->format, "pa_enable");
-> +	if (arm_spe_evsel->core.attr.config & bit)
-> +		evsel__set_sample_bit(arm_spe_evsel, PHYS_ADDR);
-> +
->  	/* Add dummy event to keep tracking */
->  	err = parse_events(evlist, "dummy:u", NULL);
->  	if (err)
-> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-> index 151cc38a171c..1a80151baed9 100644
-> --- a/tools/perf/util/arm-spe.c
-> +++ b/tools/perf/util/arm-spe.c
-> @@ -1033,7 +1033,8 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
->  	memset(&attr, 0, sizeof(struct perf_event_attr));
->  	attr.size = sizeof(struct perf_event_attr);
->  	attr.type = PERF_TYPE_HARDWARE;
-> -	attr.sample_type = evsel->core.attr.sample_type & PERF_SAMPLE_MASK;
-> +	attr.sample_type = evsel->core.attr.sample_type &
-> +				(PERF_SAMPLE_MASK | PERF_SAMPLE_PHYS_ADDR);
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I verified this patch and I can confirm the physical address can be
-dumped successfully.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 9a213aaaac8a..cc1a8fc47f72 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -11270,7 +11270,7 @@ static struct bpf_link *bpf_program__attach_btf_id(const struct bpf_program *pro
+ 		return libbpf_err_ptr(pfd);
+ 	}
+ 	link->fd = pfd;
+-	return (struct bpf_link *)link;
++	return link;
+ }
+ 
+ struct bpf_link *bpf_program__attach_trace(const struct bpf_program *prog)
+-- 
+2.35.3
 
-I have a more general question, seems to me, we need to change the
-macro PERF_SAMPLE_MASK in the file util/event.h as below, so
-here doesn't need to 'or' the flag PERF_SAMPLE_PHYS_ADDR anymore.
-
-@Arnaldo, @Jiri, could you confirm if this is the right way to move
-forward?  I am not sure why PERF_SAMPLE_MASK doesn't contain the bit
-PERF_SAMPLE_PHYS_ADDR in current code.
-
-diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-index cdd72e05fd28..c905ac32ebad 100644
---- a/tools/perf/util/event.h
-+++ b/tools/perf/util/event.h
-@@ -39,7 +39,7 @@ struct perf_event_attr;
-         PERF_SAMPLE_TIME | PERF_SAMPLE_ADDR |          \
-        PERF_SAMPLE_ID | PERF_SAMPLE_STREAM_ID |        \
-         PERF_SAMPLE_CPU | PERF_SAMPLE_PERIOD |         \
--        PERF_SAMPLE_IDENTIFIER)
-+        PERF_SAMPLE_IDENTIFIER | PERF_SAMPLE_PHYS_ADDR)
-
-Thanks,
-Leo
-
->  	attr.sample_type |= PERF_SAMPLE_IP | PERF_SAMPLE_TID |
->  			    PERF_SAMPLE_PERIOD | PERF_SAMPLE_DATA_SRC |
->  			    PERF_SAMPLE_WEIGHT | PERF_SAMPLE_ADDR;
-> -- 
-> 2.25.1
-> 
