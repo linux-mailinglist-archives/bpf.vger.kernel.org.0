@@ -2,153 +2,275 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC2B50CF0F
-	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 05:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6340C50CFB6
+	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 07:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbiDXEAx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Apr 2022 00:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
+        id S238211AbiDXFIv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Apr 2022 01:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbiDXEAx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Apr 2022 00:00:53 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DB124F2D
-        for <bpf@vger.kernel.org>; Sat, 23 Apr 2022 20:57:52 -0700 (PDT)
-Received: from fsav415.sakura.ne.jp (fsav415.sakura.ne.jp [133.242.250.114])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 23O3vohV084250;
-        Sun, 24 Apr 2022 12:57:50 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav415.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp);
- Sun, 24 Apr 2022 12:57:50 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 23O3vob9084247
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 24 Apr 2022 12:57:50 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <5f90c2b8-283e-6ca5-65f9-3ea96df00984@I-love.SAKURA.ne.jp>
-Date:   Sun, 24 Apr 2022 12:57:46 +0900
+        with ESMTP id S231741AbiDXFIt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Apr 2022 01:08:49 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33555F8B;
+        Sat, 23 Apr 2022 22:05:48 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KmGHf6WYSzFr2x;
+        Sun, 24 Apr 2022 13:03:10 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sun, 24 Apr 2022 13:05:43 +0800
+Message-ID: <13cd161b-43a2-ce66-6a27-6662fc36e063@huawei.com>
+Date:   Sun, 24 Apr 2022 13:05:43 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [syzbot] KASAN: use-after-free Read in tcp_retransmit_timer (5)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH bpf-next v2 4/6] bpf, arm64: Impelment
+ bpf_arch_text_poke() for arm64
 Content-Language: en-US
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Cc:     syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>,
-        andrii@kernel.org, andriin@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tpa@hlghospital.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org, bpf@vger.kernel.org
-References: <00000000000045dc96059f4d7b02@google.com>
- <000000000000f75af905d3ba0716@google.com>
- <c389e47f-8f82-fd62-8c1d-d9481d2f71ff@I-love.SAKURA.ne.jp>
- <b0f99499-fb6a-b9ec-7bd3-f535f11a885d@I-love.SAKURA.ne.jp>
-In-Reply-To: <b0f99499-fb6a-b9ec-7bd3-f535f11a885d@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, <kernel-team@cloudflare.com>
+References: <20220414162220.1985095-1-xukuohai@huawei.com>
+ <20220414162220.1985095-5-xukuohai@huawei.com>
+ <87levxfj32.fsf@cloudflare.com>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <87levxfj32.fsf@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-OK. I succeeded to reproduce this problem without BPF program.
-Just dropping TCP packets is sufficient. That is, this bug should be fixed in RDS code.
+On 4/22/2022 6:54 PM, Jakub Sitnicki wrote:
+> Hi Xu,
+> 
+> Thanks for working on this.
+> 
+> We are also looking forward to using fentry hooks on arm64.
+> In particular, attaching to entry/exit into/from XDP progs.
+> 
+> On Thu, Apr 14, 2022 at 12:22 PM -04, Xu Kuohai wrote:
+>> Impelment bpf_arch_text_poke() for arm64, so bpf trampoline code can use
+>> it to replace nop with jump, or replace jump with nop.
+>>
+>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>> Acked-by: Song Liu <songliubraving@fb.com>
+>> ---
+>>  arch/arm64/net/bpf_jit_comp.c | 52 +++++++++++++++++++++++++++++++++++
+>>  1 file changed, 52 insertions(+)
+>>
+>> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+>> index 8ab4035dea27..1a1c3ea75ee2 100644
+>> --- a/arch/arm64/net/bpf_jit_comp.c
+>> +++ b/arch/arm64/net/bpf_jit_comp.c
+>> @@ -9,6 +9,7 @@
+>>  
+>>  #include <linux/bitfield.h>
+>>  #include <linux/bpf.h>
+>> +#include <linux/memory.h>
+>>  #include <linux/filter.h>
+>>  #include <linux/printk.h>
+>>  #include <linux/slab.h>
+>> @@ -18,6 +19,7 @@
+>>  #include <asm/cacheflush.h>
+>>  #include <asm/debug-monitors.h>
+>>  #include <asm/insn.h>
+>> +#include <asm/patching.h>
+>>  #include <asm/set_memory.h>
+>>  
+>>  #include "bpf_jit.h"
+>> @@ -1529,3 +1531,53 @@ void bpf_jit_free_exec(void *addr)
+>>  {
+>>  	return vfree(addr);
+>>  }
+>> +
+>> +static int gen_branch_or_nop(enum aarch64_insn_branch_type type, void *ip,
+>> +			     void *addr, u32 *insn)
+>> +{
+>> +	if (!addr)
+>> +		*insn = aarch64_insn_gen_nop();
+>> +	else
+>> +		*insn = aarch64_insn_gen_branch_imm((unsigned long)ip,
+>> +						    (unsigned long)addr,
+>> +						    type);
+>> +
+>> +	return *insn != AARCH64_BREAK_FAULT ? 0 : -EFAULT;
+>> +}
+>> +
+>> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+>> +		       void *old_addr, void *new_addr)
+>> +{
+>> +	int ret;
+>> +	u32 old_insn;
+>> +	u32 new_insn;
+>> +	u32 replaced;
+>> +	enum aarch64_insn_branch_type branch_type;
+>> +
+>> +	if (poke_type == BPF_MOD_CALL)
+>> +		branch_type = AARCH64_INSN_BRANCH_LINK;
+> 
+> This path, bpf_arch_text_poke(<ip>, BPF_MOD_CALL, ...), is what we hit
+> when attaching a BPF program entry. It is exercised by selftest #232
+> xdp_bpf2bpf.
+> 
+> However, with this patchset alone it will not work because we don't
+> emit, yet, the ftrace patch (MOV X9, LR; NOP) as a part of BPF prog
+> prologue, like ftrace_init_nop() does. So patching attempt will fail.
+> 
+> I think that is what you mentioned to in your reply to Hou [1]
+> 
+> So my question is - is support for attaching to BPF progs in scope for
+> this patchset?
+> 
+> If no, then perhaps it would be better for now to fail early with
+> something like -EOPNOTSUPP when poke_type is BPF_MOD_CALL, rather then
+> attempt to patch the code.
+> 
+> If you plan to enable it as a part of this patchset, then I've given it
+> a quick try, and it seems that not a lot is needed get fentry to BPF
+> attachment to work.
+> 
+> I'm including the diff for my quick and dirty attempt below. With that
+> patch on top, the xdp_bpf2bpf tests pass:
+> 
+> #232 xdp_bpf2bpf:OK
+> 
+> [1] https://lore.kernel.org/bpf/d8c4f1fb-a020-9457-44e2-dc63982a9213@huawei.com/
+> 
 
-------------------------------------------------------------
-root@fuzz:~# unshare -n sh -c '
-ip link set lo up
-iptables -A OUTPUT -p tcp --sport 16385 --tcp-flags SYN NONE -m state --state ESTABLISHED,RELATED -j DROP
-ip6tables -A OUTPUT -p tcp --sport 16385 --tcp-flags SYN NONE -m state --state ESTABLISHED,RELATED -j DROP
-telnet 127.0.0.1 16385
-dmesg -c
-netstat -tanpe' < /dev/null
-Trying 127.0.0.1...
-Connected to 127.0.0.1.
-Escape character is '^]'.
-Connection closed by foreign host.
-[   54.922280] accepted family 10 tcp ::ffff:127.0.0.1:16385 -> ::ffff:127.0.0.1:58780 refcnt=0 sock_net=ffff888035c98000 init_net=ffffffff860d89c0
-Active Internet connections (servers and established)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State       User       Inode      PID/Program name
-tcp        0      1 127.0.0.1:58780         127.0.0.1:16385         FIN_WAIT1   0          0          -
-tcp6       0      0 :::16385                :::*                    LISTEN      0          18301      -
-tcp6       1      1 127.0.0.1:16385         127.0.0.1:58780         LAST_ACK    0          0          -
-------------------------------------------------------------
 
-------------------------------------------------------------
-fuzz login: [   54.849128][ T2718] ip (2718) used greatest stack depth: 11192 bytes left
-[   54.922280][  T764] accepted family 10 tcp ::ffff:127.0.0.1:16385 -> ::ffff:127.0.0.1:58780 refcnt=0 sock_net=ffff888035c98000 init_net=ffffffff860d89c0
-[  224.330990][    C0] general protection fault, probably for non-canonical address 0x6b6af3ebe92b6bc3: 0000 [#1] PREEMPT SMP
-[  224.344491][    C0] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.18.0-rc3-00016-gb253435746d9-dirty #767
-[  224.355974][    C0] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
-[  224.361184][    C0] RIP: 0010:__tcp_transmit_skb+0x5e5/0xbf0
-[  224.364559][    C0] Code: 0f 84 33 05 00 00 4c 89 2c 24 49 89 c5 48 c7 40 10 00 00 00 00 e9 c0 fa ff ff 49 8b 46 30 41 0f b7 55 30 48 8b 80 b8 02 00 00 <65> 48 01 50 58 e9 8e fe ff ff 41 8b 86 fc 08 00 00 48 69 c0 e8 03
-[  224.375318][    C0] RSP: 0018:ffffc90000003d38 EFLAGS: 00010297
-[  224.378682][    C0] RAX: 6b6b6b6b6b6b6b6b RBX: 000000009e2a2659 RCX: ffff888104a39000
-[  224.383253][    C0] RDX: 0000000000000001 RSI: ffff8881008054e0 RDI: ffff888035340000
-[  224.387171][    C0] RBP: ffff888100805508 R08: 0000000000000000 R09: 0000000000000000
-[  224.389612][    C0] R10: ffff888104a39140 R11: 0000000000000000 R12: 0000000000000001
-[  224.392646][    C0] R13: ffff8881008054e0 R14: ffff888035340000 R15: 0000000000000020
-[  224.395626][    C0] FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-[  224.398662][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  224.400880][    C0] CR2: 000056264812f99c CR3: 000000000a58e000 CR4: 00000000000506f0
-[  224.403964][    C0] Call Trace:
-[  224.405212][    C0]  <IRQ>
-[  224.406355][    C0]  ? tcp_write_timer_handler+0x280/0x280
-[  224.408259][    C0]  tcp_write_wakeup+0x112/0x160
-[  224.409932][    C0]  ? ktime_get+0x1cb/0x260
-[  224.411636][    C0]  tcp_send_probe0+0x13/0x150
-[  224.413393][    C0]  tcp_write_timer_handler+0x248/0x280
-[  224.415433][    C0]  tcp_write_timer+0xa5/0x110
-[  224.417040][    C0]  ? tcp_write_timer_handler+0x280/0x280
-[  224.419142][    C0]  call_timer_fn+0xa6/0x300
-[  224.420949][    C0]  __run_timers.part.0+0x209/0x320
-[  224.422915][    C0]  run_timer_softirq+0x2c/0x60
-[  224.424791][    C0]  __do_softirq+0x174/0x53f
-[  224.426462][    C0]  __irq_exit_rcu+0xcb/0x120
-[  224.428188][    C0]  irq_exit_rcu+0x5/0x20
-[  224.430176][    C0]  sysvec_apic_timer_interrupt+0x8e/0xc0
-[  224.432301][    C0]  </IRQ>
-[  224.433394][    C0]  <TASK>
-[  224.434514][    C0]  asm_sysvec_apic_timer_interrupt+0x12/0x20
-[  224.436500][    C0] RIP: 0010:default_idle+0xb/0x10
-[  224.438220][    C0] Code: 8b 04 25 40 af 01 00 f0 80 60 02 df c3 0f ae f0 0f ae 38 0f ae f0 eb b9 0f 1f 80 00 00 00 00 eb 07 0f 00 2d e3 b6 56 00 fb f4 <c3> cc cc cc cc 53 48 89 fb e8 67 fb fe ff 48 8b 15 a0 91 4e 02 89
-[  224.444865][    C0] RSP: 0018:ffffffff83e03ea8 EFLAGS: 00000202
-[  224.447077][    C0] RAX: 00000000000223b5 RBX: ffffffff83e61a00 RCX: 0000000000000001
-[  224.449957][    C0] RDX: 0000000000000000 RSI: ffffffff832e9bf1 RDI: ffffffff83246666
-[  224.452916][    C0] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-[  224.455677][    C0] R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-[  224.458458][    C0] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[  224.461642][    C0]  default_idle_call+0x54/0x90
-[  224.463888][    C0]  do_idle+0x1f3/0x240
-[  224.465531][    C0]  cpu_startup_entry+0x14/0x20
-[  224.467193][    C0]  start_kernel+0x69c/0x6c1
-[  224.469040][    C0]  secondary_startup_64_no_verify+0xc3/0xcb
-[  224.471179][    C0]  </TASK>
-[  224.472438][    C0] Modules linked in:
-[  224.474387][    C0] ---[ end trace 0000000000000000 ]---
-[  224.476521][    C0] RIP: 0010:__tcp_transmit_skb+0x5e5/0xbf0
-[  224.478893][    C0] Code: 0f 84 33 05 00 00 4c 89 2c 24 49 89 c5 48 c7 40 10 00 00 00 00 e9 c0 fa ff ff 49 8b 46 30 41 0f b7 55 30 48 8b 80 b8 02 00 00 <65> 48 01 50 58 e9 8e fe ff ff 41 8b 86 fc 08 00 00 48 69 c0 e8 03
-[  224.485948][    C0] RSP: 0018:ffffc90000003d38 EFLAGS: 00010297
-[  224.488110][    C0] RAX: 6b6b6b6b6b6b6b6b RBX: 000000009e2a2659 RCX: ffff888104a39000
-[  224.491186][    C0] RDX: 0000000000000001 RSI: ffff8881008054e0 RDI: ffff888035340000
-[  224.494378][    C0] RBP: ffff888100805508 R08: 0000000000000000 R09: 0000000000000000
-[  224.497576][    C0] R10: ffff888104a39140 R11: 0000000000000000 R12: 0000000000000001
-[  224.500600][    C0] R13: ffff8881008054e0 R14: ffff888035340000 R15: 0000000000000020
-[  224.503814][    C0] FS:  0000000000000000(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-[  224.507136][    C0] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  224.509421][    C0] CR2: 000056264812f99c CR3: 000000000a58e000 CR4: 00000000000506f0
-[  224.512699][    C0] Kernel panic - not syncing: Fatal exception in interrupt
-[  224.515847][    C0] Kernel Offset: disabled
-[  224.517636][    C0] Rebooting in 10 seconds..
-------------------------------------------------------------
+Hi Jakub,
+
+Thanks for your testing and suggestion! I added bpf2bpf poking to this
+series and rebased it to [2] a few days ago, so there are some conflicts
+with the bpf-next branch. I'll rebase it to bpf-next and send v3.
+
+[2] https://lore.kernel.org/bpf/20220416042940.656344-1-kuifeng@fb.com/
+
+>> +	else
+>> +		branch_type = AARCH64_INSN_BRANCH_NOLINK;
+>> +
+>> +	if (gen_branch_or_nop(branch_type, ip, old_addr, &old_insn) < 0)
+>> +		return -EFAULT;
+>> +
+>> +	if (gen_branch_or_nop(branch_type, ip, new_addr, &new_insn) < 0)
+>> +		return -EFAULT;
+>> +
+>> +	mutex_lock(&text_mutex);
+>> +	if (aarch64_insn_read(ip, &replaced)) {
+>> +		ret = -EFAULT;
+>> +		goto out;
+>> +	}
+>> +
+>> +	if (replaced != old_insn) {
+>> +		ret = -EFAULT;
+>> +		goto out;
+>> +	}
+>> +
+>> +	ret =  aarch64_insn_patch_text_nosync((void *)ip, new_insn);
+>> +out:
+>> +	mutex_unlock(&text_mutex);
+> 
+> The body of this critical section is identical as ftrace_modify_code().
+> Perhaps we could export it and reuse?
+>
+
+ftrace_modify_code() is defined in the arch code, and the prototypes are
+not consistent across archs, so it doesn't seem appropriate to export
+ftrace_modify_code() as a public interface.
+
+>> +	return ret;
+>> +}
+> 
+
+
+
+> ---
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 5f6bd755050f..94d8251500ab 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -240,9 +240,9 @@ static bool is_lsi_offset(int offset, int scale)
+>  /* Tail call offset to jump into */
+>  #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) || \
+>  	IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL)
+> -#define PROLOGUE_OFFSET 9
+> +#define PROLOGUE_OFFSET 11
+>  #else
+> -#define PROLOGUE_OFFSET 8
+> +#define PROLOGUE_OFFSET 10
+>  #endif
+>  
+>  static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+> @@ -281,6 +281,10 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>  	 *
+>  	 */
+>  
+> +	/* Set up ftrace patch (initially in disabled state) */
+> +	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
+> +	emit(A64_NOP, ctx);
+> >  	/* Sign lr */
+>  	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
+>  		emit(A64_PACIASP, ctx);
+> @@ -1888,10 +1892,16 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+>  	u32 replaced;
+>  	enum aarch64_insn_branch_type branch_type;
+>  
+> -	if (poke_type == BPF_MOD_CALL)
+> +	if (poke_type == BPF_MOD_CALL) {
+>  		branch_type = AARCH64_INSN_BRANCH_LINK;
+> -	else
+> +		/*
+> +		 * Adjust addr to point at the BL in the callsite.
+> +		 * See ftrace_init_nop() for the callsite sequence.
+> +		 */
+> +		ip = (void *)((unsigned long)ip + AARCH64_INSN_SIZE);
+> +	} else {
+>  		branch_type = AARCH64_INSN_BRANCH_NOLINK;
+> +	}
+>  
+>  	if (gen_branch_or_nop(branch_type, ip, old_addr, &old_insn) < 0)
+>  		return -EFAULT;
+> .
 
