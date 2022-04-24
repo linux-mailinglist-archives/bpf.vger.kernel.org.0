@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B80BB50D561
-	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 23:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1951450D562
+	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 23:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239679AbiDXVwQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Apr 2022 17:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        id S235710AbiDXVwW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Apr 2022 17:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235710AbiDXVwP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Apr 2022 17:52:15 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC2A644DF
-        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:14 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id y14so12378313pfe.10
-        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:14 -0700 (PDT)
+        with ESMTP id S231228AbiDXVwV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Apr 2022 17:52:21 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004BC644DF
+        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:18 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id n18so22967002plg.5
+        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 14:49:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aWhbvS1I5zzDB8aLSneoAZKAWVguxvEB816Egpxi/M4=;
-        b=h2kqFVBXox8FG5Fsb07QS4Juad4izamRCB+LqBqllUTGDj924cZfgqPhRuCbMMzNFT
-         +J6SeaG3Zw7Tt5pQDiSz5LSLK++DtJsixnXwolWmwWu4DOFTjfKrkxPfRcxuiWe+OHaJ
-         YM9xtf7UZiuDNqA7nz7usv3mqqLinvBGKimVM9vKUV3FrjewyEztoES+AgTN1d5qTYvt
-         iMplRBOiu3n5pUTxukUqyomls6BU4k1jS1xata0gQdbAiHbH35FruQSrJMMHQyqUxzTr
-         5KC3ZUUUGl1k1H+DxpG0HQWm+he3AUM4FBIUhmancJIjJl0me538LjoE3g61RXPDBiFF
-         fhWg==
+        bh=li6sV+b3ISD42QEKSfUpcU30qpK5Ao91X2dl3dd05IA=;
+        b=k8dTaW+gQE31EvfhcPCtjI/Bo2SLKCA/xT6KkXet6XfZgbnxxVslSogVVyflmTC5er
+         vqYyAAwF+k0/jHr7KVgWPPbmeQnHrc3I5fmkc0WGxvCEWZH62nIdjNGdkUDEgoWxz0OE
+         IGXp+B2GzDgNtP8t30KUfJLAWJryaeBFMVAUQRwDwQNsVWYNvwB7z7kBiyQOpM5PsXv8
+         EA6rr+86tqL1j4A4a3JCpKuCBfxzP7OHtJniylDugoxBWHsQIRWMUybhvSLmyS+ECsgv
+         Tefu8hg7/h8V+0k7THpUW+dqKz1EXUDgADsUqtFilUa2MJWY1Zuo6DW/Nrs/z9IX3IQ8
+         ceYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aWhbvS1I5zzDB8aLSneoAZKAWVguxvEB816Egpxi/M4=;
-        b=YumyZv2MqMG1zb8f0hj0AmiZFtcBGzbyY0FxMJAQB/MjUQwQNnYmlmrt6yfhgjyZEG
-         9T+0o3/HUb0Oa4My96YliURjkR7Zq94sFo7KTV8ToYrRZjGTgSfghmhrl/CyhBSiaU5D
-         BgoWsYY+eSwk0N0YX2anrpXdndyvgdyf3prKGy60Eg2Vd9GI/Cutqv+EKNdAF3OYTWRN
-         7Ir801t5HBeQLY4eMW5PdWHQ5ON1vp5PJIXP30KNvmR3UQUbW1AFCMuVvKMNM1lfAiDO
-         veGfVpm/l3slcclg18C2kU7NN0nJn2zxoR1a83j9AsSKQypptBFeAjvb9ikC9zf0WRGF
-         8b/Q==
-X-Gm-Message-State: AOAM532HPyMWc+c/wXBsgRmpuTRpPfnqT94vJYf23u1YKJh5IxnCYx9f
-        MJO8h7O8LmYPU8Cv9VN878nCKvucEvU=
-X-Google-Smtp-Source: ABdhPJxqbvqNevLPxUo7coAOGaUp53wDk1rrVmD9O6MD/3VGUOgAl+V28WoBWvURVcCwdD8YgIdOvw==
-X-Received: by 2002:a05:6a00:24c7:b0:50a:6720:2998 with SMTP id d7-20020a056a0024c700b0050a67202998mr15812930pfv.36.1650836953651;
-        Sun, 24 Apr 2022 14:49:13 -0700 (PDT)
+        bh=li6sV+b3ISD42QEKSfUpcU30qpK5Ao91X2dl3dd05IA=;
+        b=8KiAWmLgeQtwPEB4AVlXq5qgFmYUoYFqVxs1srPDrWQA6JipKuexIy5hFnFduHHYMi
+         rYRSJVogrTmeaZVmADFQzYrzUxlfvgfSn6c++Wx+6RzwRuX+fBgAkeC6e4DRcyrllTHv
+         er8rguGd+roYrqcVIMqfw5HpAwrRHY6skxgGOxhAbn/xItxpQbRy0oza0lRMDfUKmX4p
+         LR/LbZYkau2ClM40flUULr+tQ9Oo1JhEc3ThXNdq+4v5gnlKZBzw59jdrvGJ2LmIU52N
+         hcOMWw1dcaV6P2lyxBRZPOIxinauyADNvWnnLSj8qGLk6Suoo0yB48a1Vg+0tu3Ytabu
+         ZAzA==
+X-Gm-Message-State: AOAM532mrN/5/W0KPETtvq74p8w8UAmkj/rs4DERTVxL4LSQH3qohVIL
+        asnNkq4AQUESgwF8TelSm6s+VCTW920=
+X-Google-Smtp-Source: ABdhPJwW3dnAOxED5cBDe7hy4NPMf7Wg5b9G4TCmw2OkpzoCKW6SLRnYSRcSaQ3tp23DDfhBsxZTHw==
+X-Received: by 2002:a17:902:7e06:b0:159:6c1:ea2b with SMTP id b6-20020a1709027e0600b0015906c1ea2bmr14767116plm.105.1650836958353;
+        Sun, 24 Apr 2022 14:49:18 -0700 (PDT)
 Received: from localhost ([157.49.66.127])
-        by smtp.gmail.com with ESMTPSA id u25-20020a62ed19000000b004f140515d56sm9091766pfh.46.2022.04.24.14.49.12
+        by smtp.gmail.com with ESMTPSA id x23-20020a17090a0bd700b001cd498dc152sm12821809pjd.2.2022.04.24.14.49.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Apr 2022 14:49:13 -0700 (PDT)
+        Sun, 24 Apr 2022 14:49:18 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -55,14 +55,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH bpf-next v6 08/13] bpf: Teach verifier about kptr_get kfunc helpers
-Date:   Mon, 25 Apr 2022 03:18:56 +0530
-Message-Id: <20220424214901.2743946-9-memxor@gmail.com>
+Subject: [PATCH bpf-next v6 09/13] bpf: Make BTF type match stricter for release arguments
+Date:   Mon, 25 Apr 2022 03:18:57 +0530
+Message-Id: <20220424214901.2743946-10-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220424214901.2743946-1-memxor@gmail.com>
 References: <20220424214901.2743946-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5646; h=from:subject; bh=xxUzeIuRz9b4vLJkv7Y2Do1T/RPtVDt8wOuyLjWs6jg=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiZcTL/VgC4uCq2tX54i74/rIClKox1jtSCMi02yCe /l5EGUOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYmXEywAKCRBM4MiGSL8RyivND/ 97jHonpgDHj0k/PakmhCm0TIfySs1UzkE0p24/7QefcXgQuFUekOIR9xwuL687Y3sw6uQSmMsO2J+D 1pGuKDsGuuq9ivhaWLJhnRNjEMgGvkMvpoVQ4DfGccfHKCSpMFsSay4MyXXI1l1OSoS5T2YvmmZRd5 2kttMv/v+tinSechpMQwOosQA1N6mE6Dr+Q0C2kNBs0CJdUnv9l+3oP5lrj2kdlyAnzbrIzkEigjlW AXgOWNhdMTQ5EwouU3dw5SeHodhybV8rlB2rlQm/XLBNS3U+fk+4RAQp/iTyyefZomNA2F+3lN7qau wSIJ01nCJztLJiVV4metLapuEbs7AraW7MThmsy9cE51BK17l5eB+5Pon9xvnmwuWWmhWiJzyU/FQH krurjIDaUXCJMbQbiFbsipmx1IH6UkYi8C0+o1F7YflhRxvVl5lB+kqt4in5edayjV/Hvv8vxLD0jO wT/9LQoI5SGvXJapZl+UZCH0RkgVTE7h5Gx7LNhcb6rcfPXvl8wozSXH8ZYSh9bCjLGOUcN6MynZH4 sl4Qqp1+Gi8Z+8gSVhUEwMbu+zKgslNKDZdT8Q2cHwOiASEtVn+8UH4ZTweeVXXNG5UW8RSwvzPTEj WlMfPbFWp/7fZl30LmkqAU9OkFjp3wIBQnQP3ELqGkiay6zBvWFfwGr4cgVw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5699; h=from:subject; bh=x5jfSNE5PFDUS9/vvfek+BFySIOHwyaRJHQlMjRpgUo=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiZcTLoB9c3+t57iFqIC2wRxXXkZycnLqQWHXH60+e 7INUZgiJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYmXEywAKCRBM4MiGSL8Ryvx9EA CqZpVetcX2eNqD2DJUKPkm35jOiNdhldDz+s7GgLgjfSYlL6wkan4ilDtHGusqD6wLVcmmfz6cnu2A /zDK4AaPnUcoqEsmGN1+XGfS7gXzQEK8SZkj+xKxW0dGY2AkQ/LUr3nUNr1wKEu6w9U3wW3eELCT8e U69jU/d2hv9+dWCYypTsMUKBz2c52msFXkhJFF3tdqJZ/JO5ISk+IQ4HhgA5aZ1bpercERbOfPEfIt 75XF9OfkM3O/OAogRL2wP3LojEXFeU5wIPE5bP1tiPxP+4sCTZsE7o57vfBbpe4JwZtp7ucMyuTHXF u3oYGKRFpvO6ndTbY7ghZgiMrlmmQ218F9lRy8M4wcwHLR70jmauznsHqWQIpdte3XPjRA2+1Roud4 MA6C8s8FMIjGGkMWZPu9weG6+nuDTaOS/d+O2Y16Sy1D8p5t/TRgXXnWNtxwIcsgGCbUkCwzPyXUDm cd653aAXUftOZGLlcWGk27zJCbY4udPEqkj84AMFIcFCX7BH4DwPWWzaT7MWBYRA7+XZRDTaFyT5lA 6I/P2SXOT2yIYQE2BlJPkvcAiambOErzl5aPsycm6R8uGYshdQg4u5bHjEYryle9e++Rcp+kfVkO+0 Gb9BG3C6Bs/Y1aGt646AIPcmDbkIHtSZteh0Jpt4ZKMERZp2SQz1z6CkNLYg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,151 +75,140 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We introduce a new style of kfunc helpers, namely *_kptr_get, where they
-take pointer to the map value which points to a referenced kernel
-pointer contained in the map. Since this is referenced, only
-bpf_kptr_xchg from BPF side and xchg from kernel side is allowed to
-change the current value, and each pointer that resides in that location
-would be referenced, and RCU protected (this must be kept in mind while
-adding kernel types embeddable as reference kptr in BPF maps).
+The current of behavior of btf_struct_ids_match for release arguments is
+that when type match fails, it retries with first member type again
+(recursively). Since the offset is already 0, this is akin to just
+casting the pointer in normal C, since if type matches it was just
+embedded inside parent sturct as an object. However, we want to reject
+cases for release function type matching, be it kfunc or BPF helpers.
 
-This means that if do the load of the pointer value in an RCU read
-section, and find a live pointer, then as long as we hold RCU read lock,
-it won't be freed by a parallel xchg + release operation. This allows us
-to implement a safe refcount increment scheme. Hence, enforce that first
-argument of all such kfunc is a proper PTR_TO_MAP_VALUE pointing at the
-right offset to referenced pointer.
+An example is the following:
 
-For the rest of the arguments, they are subjected to typical kfunc
-argument checks, hence allowing some flexibility in passing more intent
-into how the reference should be taken.
+struct foo {
+	struct bar b;
+};
 
-For instance, in case of struct nf_conn, it is not freed until RCU grace
-period ends, but can still be reused for another tuple once refcount has
-dropped to zero. Hence, a bpf_ct_kptr_get helper not only needs to call
-refcount_inc_not_zero, but also do a tuple match after incrementing the
-reference, and when it fails to match it, put the reference again and
-return NULL.
+struct foo *v = acq_foo();
+rel_bar(&v->b); // btf_struct_ids_match fails btf_types_are_same, then
+		// retries with first member type and succeeds, while
+		// it should fail.
 
-This can be implemented easily if we allow passing additional parameters
-to the bpf_ct_kptr_get kfunc, like a struct bpf_sock_tuple * and a
-tuple__sz pair.
+Hence, don't walk the struct and only rely on btf_types_are_same for
+strict mode. All users of strict mode must be dealing with zero offset
+anyway, since otherwise they would want the struct to be walked.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/btf.h |  2 ++
- kernel/bpf/btf.c    | 58 +++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 55 insertions(+), 5 deletions(-)
+ include/linux/bpf.h   |  3 ++-
+ kernel/bpf/btf.c      | 14 ++++++++++----
+ kernel/bpf/verifier.c | 18 +++++++++++++++---
+ 3 files changed, 27 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index f70625dd5bb4..2611cea2c2b6 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -17,6 +17,7 @@ enum btf_kfunc_type {
- 	BTF_KFUNC_TYPE_ACQUIRE,
- 	BTF_KFUNC_TYPE_RELEASE,
- 	BTF_KFUNC_TYPE_RET_NULL,
-+	BTF_KFUNC_TYPE_KPTR_ACQUIRE,
- 	BTF_KFUNC_TYPE_MAX,
- };
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 6141564c76c8..0af5793ba417 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1748,7 +1748,8 @@ int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+ 		      u32 *next_btf_id, enum bpf_type_flag *flag);
+ bool btf_struct_ids_match(struct bpf_verifier_log *log,
+ 			  const struct btf *btf, u32 id, int off,
+-			  const struct btf *need_btf, u32 need_type_id);
++			  const struct btf *need_btf, u32 need_type_id,
++			  bool strict);
  
-@@ -35,6 +36,7 @@ struct btf_kfunc_id_set {
- 			struct btf_id_set *acquire_set;
- 			struct btf_id_set *release_set;
- 			struct btf_id_set *ret_null_set;
-+			struct btf_id_set *kptr_acquire_set;
- 		};
- 		struct btf_id_set *sets[BTF_KFUNC_TYPE_MAX];
- 	};
+ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 			   struct btf *btf,
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 1f2012fd89fb..494437fb40b7 100644
+index 494437fb40b7..4cfaf5eebecd 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -6089,11 +6089,11 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 	struct bpf_verifier_log *log = &env->log;
- 	u32 i, nargs, ref_id, ref_obj_id = 0;
- 	bool is_kfunc = btf_is_kernel(btf);
-+	bool rel = false, kptr_get = false;
- 	const char *func_name, *ref_tname;
- 	const struct btf_type *t, *ref_t;
- 	const struct btf_param *args;
- 	int ref_regno = 0, ret;
--	bool rel = false;
+@@ -5746,7 +5746,8 @@ static bool btf_types_are_same(const struct btf *btf1, u32 id1,
  
- 	t = btf_type_by_id(btf, func_id);
- 	if (!t || !btf_type_is_func(t)) {
-@@ -6119,10 +6119,14 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 		return -EINVAL;
- 	}
- 
--	/* Only kfunc can be release func */
--	if (is_kfunc)
-+	if (is_kfunc) {
-+		/* Only kfunc can be release func */
- 		rel = btf_kfunc_id_set_contains(btf, resolve_prog_type(env->prog),
- 						BTF_KFUNC_TYPE_RELEASE, func_id);
-+		kptr_get = btf_kfunc_id_set_contains(btf, resolve_prog_type(env->prog),
-+						     BTF_KFUNC_TYPE_KPTR_ACQUIRE, func_id);
-+	}
-+
- 	/* check that BTF function arguments match actual types that the
- 	 * verifier sees.
+ bool btf_struct_ids_match(struct bpf_verifier_log *log,
+ 			  const struct btf *btf, u32 id, int off,
+-			  const struct btf *need_btf, u32 need_type_id)
++			  const struct btf *need_btf, u32 need_type_id,
++			  bool strict)
+ {
+ 	const struct btf_type *type;
+ 	enum bpf_type_flag flag;
+@@ -5755,7 +5756,12 @@ bool btf_struct_ids_match(struct bpf_verifier_log *log,
+ 	/* Are we already done? */
+ 	if (off == 0 && btf_types_are_same(btf, id, need_btf, need_type_id))
+ 		return true;
+-
++	/* In case of strict type match, we do not walk struct, the top level
++	 * type match must succeed. When strict is true, off should have already
++	 * been 0.
++	 */
++	if (strict)
++		return false;
+ again:
+ 	type = btf_type_by_id(btf, id);
+ 	if (!type)
+@@ -6197,7 +6203,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 				return -EINVAL;
+ 			}
+ 			if (!btf_struct_ids_match(log, btf, ref_id, 0, off_desc->kptr.btf,
+-						  off_desc->kptr.btf_id)) {
++						  off_desc->kptr.btf_id, true)) {
+ 				bpf_log(log, "kernel function %s args#%d expected pointer to %s %s\n",
+ 					func_name, i, btf_type_str(ref_t), ref_tname);
+ 				return -EINVAL;
+@@ -6250,7 +6256,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 			reg_ref_tname = btf_name_by_offset(reg_btf,
+ 							   reg_ref_t->name_off);
+ 			if (!btf_struct_ids_match(log, reg_btf, reg_ref_id,
+-						  reg->off, btf, ref_id)) {
++						  reg->off, btf, ref_id, rel && reg->ref_obj_id)) {
+ 				bpf_log(log, "kernel function %s args#%d expected pointer to %s %s but R%d has a pointer to %s %s\n",
+ 					func_name, i,
+ 					btf_type_str(ref_t), ref_tname,
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 955c3125576a..813f6ee80419 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3551,10 +3551,14 @@ static int map_kptr_match_type(struct bpf_verifier_env *env,
+ 	 *                    // to match type
+ 	 *
+ 	 * In the kptr_ref case, check_func_arg_reg_off already ensures reg->off
+-	 * is zero.
++	 * is zero. We must also ensure that btf_struct_ids_match does not walk
++	 * the struct to match type against first member of struct, i.e. reject
++	 * second case from above. Hence, when type is BPF_KPTR_REF, we set
++	 * strict mode to true for type match.
  	 */
-@@ -6154,8 +6158,52 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 		if (ret < 0)
- 			return ret;
+ 	if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
+-				  off_desc->kptr.btf, off_desc->kptr.btf_id))
++				  off_desc->kptr.btf, off_desc->kptr.btf_id,
++				  off_desc->type == BPF_KPTR_REF))
+ 		goto bad_type;
+ 	return 0;
+ bad_type:
+@@ -5593,6 +5597,13 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
  
--		if (btf_get_prog_ctx_type(log, btf, t,
--					  env->prog->type, i)) {
-+		/* kptr_get is only true for kfunc */
-+		if (i == 0 && kptr_get) {
-+			struct bpf_map_value_off_desc *off_desc;
+ found:
+ 	if (reg->type == PTR_TO_BTF_ID) {
++		/* For bpf_sk_release, it needs to match against first member
++		 * 'struct sock_common', hence make an exception for it. This
++		 * allows bpf_sk_release to work for multiple socket types.
++		 */
++		bool strict_type_match = arg_type_is_release(arg_type) &&
++					 meta->func_id != BPF_FUNC_sk_release;
 +
-+			if (reg->type != PTR_TO_MAP_VALUE) {
-+				bpf_log(log, "arg#0 expected pointer to map value\n");
-+				return -EINVAL;
-+			}
-+
-+			/* check_func_arg_reg_off allows var_off for
-+			 * PTR_TO_MAP_VALUE, but we need fixed offset to find
-+			 * off_desc.
-+			 */
-+			if (!tnum_is_const(reg->var_off)) {
-+				bpf_log(log, "arg#0 must have constant offset\n");
-+				return -EINVAL;
-+			}
-+
-+			off_desc = bpf_map_kptr_off_contains(reg->map_ptr, reg->off + reg->var_off.value);
-+			if (!off_desc || off_desc->type != BPF_KPTR_REF) {
-+				bpf_log(log, "arg#0 no referenced kptr at map value offset=%llu\n",
-+					reg->off + reg->var_off.value);
-+				return -EINVAL;
-+			}
-+
-+			if (!btf_type_is_ptr(ref_t)) {
-+				bpf_log(log, "arg#0 BTF type must be a double pointer\n");
-+				return -EINVAL;
-+			}
-+
-+			ref_t = btf_type_skip_modifiers(btf, ref_t->type, &ref_id);
-+			ref_tname = btf_name_by_offset(btf, ref_t->name_off);
-+
-+			if (!btf_type_is_struct(ref_t)) {
-+				bpf_log(log, "kernel function %s args#%d pointer type %s %s is not supported\n",
-+					func_name, i, btf_type_str(ref_t), ref_tname);
-+				return -EINVAL;
-+			}
-+			if (!btf_struct_ids_match(log, btf, ref_id, 0, off_desc->kptr.btf,
-+						  off_desc->kptr.btf_id)) {
-+				bpf_log(log, "kernel function %s args#%d expected pointer to %s %s\n",
-+					func_name, i, btf_type_str(ref_t), ref_tname);
-+				return -EINVAL;
-+			}
-+			/* rest of the arguments can be anything, like normal kfunc */
-+		} else if (btf_get_prog_ctx_type(log, btf, t, env->prog->type, i)) {
- 			/* If function expects ctx type in BTF check that caller
- 			 * is passing PTR_TO_CTX.
- 			 */
+ 		if (!arg_btf_id) {
+ 			if (!compatible->btf_id) {
+ 				verbose(env, "verifier internal error: missing arg compatible BTF ID\n");
+@@ -5605,7 +5616,8 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+ 			if (map_kptr_match_type(env, meta->kptr_off_desc, reg, regno))
+ 				return -EACCES;
+ 		} else if (!btf_struct_ids_match(&env->log, reg->btf, reg->btf_id, reg->off,
+-						 btf_vmlinux, *arg_btf_id)) {
++						 btf_vmlinux, *arg_btf_id,
++						 strict_type_match)) {
+ 			verbose(env, "R%d is of type %s but %s is expected\n",
+ 				regno, kernel_type_name(reg->btf, reg->btf_id),
+ 				kernel_type_name(btf_vmlinux, *arg_btf_id));
 -- 
 2.35.1
 
