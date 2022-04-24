@@ -2,98 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1032E50D24A
-	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 16:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E432C50D277
+	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 16:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239421AbiDXOhv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Apr 2022 10:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        id S238742AbiDXO4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Apr 2022 10:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239412AbiDXOho (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Apr 2022 10:37:44 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB54B338A9;
-        Sun, 24 Apr 2022 07:34:43 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n8so21552375plh.1;
-        Sun, 24 Apr 2022 07:34:43 -0700 (PDT)
+        with ESMTP id S231394AbiDXO4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Apr 2022 10:56:18 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCCEDA6E4
+        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 07:53:17 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id g6so2249505ejw.1
+        for <bpf@vger.kernel.org>; Sun, 24 Apr 2022 07:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TraAa9qxjleDjcKSV6cdBET+ximOcYjIqFdHiJLXCNQ=;
-        b=d42AiVW50s9TABrjm13XKqTRuodcUHYC6ylnEacp7SaTKcZQ5YklbmqLVJEgRUkeZ+
-         OBeikygE/Ma1lpsB3lIymZrourtRKOLjmMvUstuwB7qev2+BQQryYsRE/f8imrv5NmBA
-         2+nJ/ZO2yvMVfPq8k650+ce/lwDGp6XuZYdwOYBKBbtRl80uniIZ5baC4/9LLdOEGTMu
-         VDwkgZ7d1k7mqBSccztD29kt9v9YAWd2mPl4o4wdrRAh1FjvhT+vf3ACl8OC0PXag828
-         ftIC/UFPZ6ZFGXAr5CLVaufPBfiJzZOq9MQCPogN/a4ISyhPHnuEec+iVXfos9X2JMh4
-         G5+A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PljnxRUh81pT/VZFsSxpCxfxThaMnEo3K5gwtxML1T4=;
+        b=HPK1Fjl//ahLaP1lNA4NCbDVTK5dLYlXgM5pM42npxjQZKjO5L9/PdF8l7lGR+id0d
+         ZnvgI0tC1zbFtZrmiJK2y52v84g9Y+w0AF5Zt9IAPvXJ1gHzny119IxGNvrK+e3TYJ4u
+         Y8rptqx/qBwsXxnS7f3mTiPtWUBlHBlQ8JkfVLwxpVb/UrRFErhEaZRwiX5S5Rv6vPXW
+         VQNWs1UCCJCC+rblI5xV7mDQLGIlW1+IdMc9fRmwH3q4frHl5f/WsbO1PmH/Hc+HBLm+
+         UOmY6g+Q/jK77zTLxpstRUKCEecv/HgTLR/EgcdKccd6Gp1y71jMUnHcF/iHoANcNRBN
+         BFcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TraAa9qxjleDjcKSV6cdBET+ximOcYjIqFdHiJLXCNQ=;
-        b=UIrNp61sCj2+PoJBLQLGXeZpfc8oT7g/08uWPxQBZIxnec+o/kII0ivJWi5LM78Blq
-         3IpgLT9//s5MZ2BYZ2fpfFGULszlavKPj3l+NHADGQ6j3h9tBQrwVWV0TCpF7kYTjkJa
-         rmU6w14bs3mgoHV44pROcU+i8V9RA0ISvuiUC1BEM0TBaVh9Tdl7ZwqzTFzaAc54yj+l
-         CjwZhobNu5CFt7cn3rxKPypnjX5DHErQV9p2JouX5/Sd0YhruISdxiChuwe4XwnPWrSW
-         6qqIQLhVR7m3mCgnacCKmwXLdBsF6FPE52iQNfXnsUfTRa0owM74gNqlzjAD5LvWBKLX
-         oaug==
-X-Gm-Message-State: AOAM531DCK+yDu80tfuDgfeCU4esjBHkwKMbbD7fmToVc6if/Ff0TSqI
-        X9/aHTpA75neYz/z3xQbot7baFvzgoG52w==
-X-Google-Smtp-Source: ABdhPJwTZ6KgukTB9CJWdmkYdUg6KWAiPkj0nDfLsny3nxvpcrrj6CMe+ZGCdXYmnQBissnFmI0UaA==
-X-Received: by 2002:a17:902:f605:b0:154:aa89:bd13 with SMTP id n5-20020a170902f60500b00154aa89bd13mr13819802plg.112.1650810883135;
-        Sun, 24 Apr 2022 07:34:43 -0700 (PDT)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id n16-20020a17090a091000b001d2bff34228sm5659369pjn.9.2022.04.24.07.34.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PljnxRUh81pT/VZFsSxpCxfxThaMnEo3K5gwtxML1T4=;
+        b=xnB7Kh/wVoncfzppuSBi73eI2y25SKCSsaL8p5HkQSjZ4pB7a6noC4Unj9rWVtqK3w
+         UxLoksu2XpTAvugkZkes0yP+JFGA7/rI50502xGxOO4cbXkj5IhMAGwPIhSyr/vQ6DmQ
+         Jh0kHMmN6WPEXWWJ3yQXO+htExn28cuYciKqGhxPImyV63T3u18wwJhLQxPKeX6+Y7MA
+         MlUYbdVJWIcgl5OQEum7pXIcnvu9+VpnHhxtCA3NI74CzY0+PLeJYoP7mWG2tyhM7FqZ
+         4CJFdWMhTV2pY7GP7Geoeol8s+seF4kPnWzu0eDa+i/Vk+CaWQGfSHBVs295NJswFbn7
+         oM4A==
+X-Gm-Message-State: AOAM5335jt7letfCL+8FgiYamrX4SvRFK+6xBSNqcmIMz07bJCBr19BX
+        /BqVilDbEqe39LmLGgWLbGCQtg==
+X-Google-Smtp-Source: ABdhPJxP6gdki3QWyI62X0hWhCeuw+jp1SO/FmJ3sHN5jeLes6QLGVCoRpETcIf1m/9BtNHG/zYBEg==
+X-Received: by 2002:a17:907:6e25:b0:6f0:99d4:9711 with SMTP id sd37-20020a1709076e2500b006f099d49711mr12019128ejc.511.1650811995192;
+        Sun, 24 Apr 2022 07:53:15 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([104.245.96.34])
+        by smtp.gmail.com with ESMTPSA id gz15-20020a170906f2cf00b006f3802a963fsm1161681ejb.21.2022.04.24.07.53.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Apr 2022 07:34:42 -0700 (PDT)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        Sun, 24 Apr 2022 07:53:14 -0700 (PDT)
+Date:   Sun, 24 Apr 2022 22:53:07 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Timothy Hayes <timothy.hayes@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH bpf-next] libbpf: Remove unnecessary type cast
-Date:   Sun, 24 Apr 2022 22:34:20 +0800
-Message-Id: <20220424143420.457082-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.3
+        KP Singh <kpsingh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 3/3] perf test: Add perf_event_attr test for Arm SPE
+Message-ID: <20220424145307.GE978927@leoy-ThinkPad-X240s>
+References: <20220421165205.117662-1-timothy.hayes@arm.com>
+ <20220421165205.117662-4-timothy.hayes@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220421165205.117662-4-timothy.hayes@arm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The link variable is already of type 'struct bpf_link *', casting it to
-'struct bpf_link *' is redundant, drop it.
+On Thu, Apr 21, 2022 at 05:52:05PM +0100, Timothy Hayes wrote:
+> Adds a perf_event_attr test for Arm SPE in which the presence of
+> physical addresses are checked when SPE unit is run with pa_enable=1.
+> 
+> Signed-off-by: Timothy Hayes <timothy.hayes@arm.com>
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Tested-by: Leo Yan <leo.yan@linaro.org>
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 9a213aaaac8a..cc1a8fc47f72 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -11270,7 +11270,7 @@ static struct bpf_link *bpf_program__attach_btf_id(const struct bpf_program *pro
- 		return libbpf_err_ptr(pfd);
- 	}
- 	link->fd = pfd;
--	return (struct bpf_link *)link;
-+	return link;
- }
- 
- struct bpf_link *bpf_program__attach_trace(const struct bpf_program *prog)
--- 
-2.35.3
-
+> ---
+>  tools/perf/tests/attr/README                         |  1 +
+>  .../perf/tests/attr/test-record-spe-physical-address | 12 ++++++++++++
+>  2 files changed, 13 insertions(+)
+>  create mode 100644 tools/perf/tests/attr/test-record-spe-physical-address
+> 
+> diff --git a/tools/perf/tests/attr/README b/tools/perf/tests/attr/README
+> index 454505d343fa..eb3f7d4bb324 100644
+> --- a/tools/perf/tests/attr/README
+> +++ b/tools/perf/tests/attr/README
+> @@ -60,6 +60,7 @@ Following tests are defined (with perf commands):
+>    perf record -R kill                           (test-record-raw)
+>    perf record -c 2 -e arm_spe_0// -- kill       (test-record-spe-period)
+>    perf record -e arm_spe_0/period=3/ -- kill    (test-record-spe-period-term)
+> +  perf record -e arm_spe_0/pa_enable=1/ -- kill (test-record-spe-physical-address)
+>    perf stat -e cycles kill                      (test-stat-basic)
+>    perf stat kill                                (test-stat-default)
+>    perf stat -d kill                             (test-stat-detailed-1)
+> diff --git a/tools/perf/tests/attr/test-record-spe-physical-address b/tools/perf/tests/attr/test-record-spe-physical-address
+> new file mode 100644
+> index 000000000000..7ebcf5012ce3
+> --- /dev/null
+> +++ b/tools/perf/tests/attr/test-record-spe-physical-address
+> @@ -0,0 +1,12 @@
+> +[config]
+> +command = record
+> +args    = --no-bpf-event -e arm_spe_0/pa_enable=1/ -- kill >/dev/null 2>&1
+> +ret     = 1
+> +arch    = aarch64
+> +
+> +[event-10:base-record-spe]
+> +# 622727 is the decimal of IP|TID|TIME|CPU|IDENTIFIER|DATA_SRC|PHYS_ADDR
+> +sample_type=622727
+> +
+> +# dummy event
+> +[event-1:base-record-spe]
+> \ No newline at end of file
+> -- 
+> 2.25.1
+> 
