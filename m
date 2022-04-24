@@ -2,268 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF5450CD58
-	for <lists+bpf@lfdr.de>; Sat, 23 Apr 2022 22:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA9E50CEBB
+	for <lists+bpf@lfdr.de>; Sun, 24 Apr 2022 04:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236640AbiDWUIq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 23 Apr 2022 16:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        id S229885AbiDXDAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Apr 2022 23:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233954AbiDWUIo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 23 Apr 2022 16:08:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5C7A039BAE
-        for <bpf@vger.kernel.org>; Sat, 23 Apr 2022 13:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1650744345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=omqCTV7z0t9cAhQIWiyGEWe7yOix1dL5G0MldE6hRWE=;
-        b=O0NH1oeFosajw3OoE/hGHtvrQMzYJzp8WNBwKfhSpl5wev78J0Nzuma7EaJrZHKKVUD8ae
-        jpACEerXZKwurUEtpM7d6TesGa3AAgyLmh1m3Uk1RHwfHv/dS3kJNwVQdSaAmssikYNgNh
-        mlSolmMWAvrGm7xxj7u3Ge/oW1FzTfM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-54-dYe4JbWYPIGQV-xAZdCFMw-1; Sat, 23 Apr 2022 16:05:44 -0400
-X-MC-Unique: dYe4JbWYPIGQV-xAZdCFMw-1
-Received: by mail-ej1-f69.google.com with SMTP id go12-20020a1709070d8c00b006f009400732so5121154ejc.1
-        for <bpf@vger.kernel.org>; Sat, 23 Apr 2022 13:05:44 -0700 (PDT)
+        with ESMTP id S237859AbiDXDAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 Apr 2022 23:00:17 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE3013FB67
+        for <bpf@vger.kernel.org>; Sat, 23 Apr 2022 19:57:16 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id h1so11692532pfv.12
+        for <bpf@vger.kernel.org>; Sat, 23 Apr 2022 19:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+Xyuj6OWpgjVllOe8yTX9VVPlaIRmbHUGU8i6+X1P0s=;
+        b=SbD415j2d4YhazQ2W3SFT6ven/L24vKS0BumSXOb5nDLafnl1uy6/1pikT+iC8PgoW
+         HMiWDKcx8ekh8VIxa7frqoiHR8TqOFwjWOOgHwn20KtPLTGsg7Powi4+LpzmySV2mbUF
+         KLfjpIP8xCXr+tooRlTXrg7pKldO3NYtRejxhxkh7Z6Nt1keX/6J4DSgBUW05MC6bmxS
+         seN5QDPaQs0Pv8uMOUr0OUegV/ur/AmyA2W++jeR3Ypf+LGGT6qWToA5P8BlP6OPVP4Y
+         dtC6zg1clCc2yWtFRcUy4AYlz77J9Lb8gSdqMOLq0+lN4SWs2iu3eDPPVst6FEzt3AoZ
+         JTRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=omqCTV7z0t9cAhQIWiyGEWe7yOix1dL5G0MldE6hRWE=;
-        b=B2Hle08Fruz+UDS9QqClGs+i+dmmJWbJzYNL9CgFkMjvfV+uiAPmk+oSDsMbtHwBXQ
-         MLrWztSvVAbAlRjTX/qlkVX8AIZSBL7mKd0IYjFAydFB7a8ORd+4ffQQsxRCiEWKlglc
-         8RpGyL9GMIwI/NvmLose18TphDcQ04R7PCHJdUXwZlzYmLdONiT/EEa17Fg6ov+KqLNY
-         F0kJ11m+07Kcbn+gOstEwvqHKfQHzeSCidXzwj+aHvbFFXmbjWuG2C9WKrPP8HfWCY5/
-         b0Ews0RRegpRc7a9rJZ6aD3cbjrknkcPPn2NTQRf02aHVg+fd9dHgZ55RcX/WLnwovuS
-         DeWA==
-X-Gm-Message-State: AOAM531WfqPb52OW/yRwaX7yDWHfsBbgCN+Th5aZBt3CeF4G9BFL/ITM
-        iuBuEseHkFVRLOHqIqvbEGLRYYymMiK6vy2INFkP2kq6Tj8OiYr3/wFtB2vXNxghcsSZIxywfft
-        mAV6PZIuJhCzc
-X-Received: by 2002:aa7:c793:0:b0:408:4a69:90b4 with SMTP id n19-20020aa7c793000000b004084a6990b4mr11441731eds.58.1650744342331;
-        Sat, 23 Apr 2022 13:05:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNATyw5D0bERdGDSDbR5cr0iO3FsZbehP/gW+psGoNThVAdHDplZOXPi3qHJP4nJhcVj+Z6w==
-X-Received: by 2002:aa7:c793:0:b0:408:4a69:90b4 with SMTP id n19-20020aa7c793000000b004084a6990b4mr11441658eds.58.1650744341414;
-        Sat, 23 Apr 2022 13:05:41 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id e19-20020a056402105300b004162d0b4cbbsm2502266edu.93.2022.04.23.13.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Apr 2022 13:05:40 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id DE7992D1FA3; Sat, 23 Apr 2022 22:05:39 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     Larysa Zaremba <larysa.zaremba@intel.com>,
-        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-Subject: Re: Accessing XDP packet memory from the end
-In-Reply-To: <20220422164137.875143-1-alexandr.lobakin@intel.com>
-References: <20220421155620.81048-1-larysa.zaremba@intel.com>
- <87czhagxuw.fsf@toke.dk>
- <20220422164137.875143-1-alexandr.lobakin@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 23 Apr 2022 22:05:39 +0200
-Message-ID: <87a6cbd0q4.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+Xyuj6OWpgjVllOe8yTX9VVPlaIRmbHUGU8i6+X1P0s=;
+        b=M7vkxP3uXEZAAucHB9hBMEBIxW33oW7C/toxe0Yz7a0KSXRBKbZEgtTmstYseO3lv3
+         uGW5UjMNDtZU1KxHUMjkWsKhPiiXK+P3PelrFBuQMABwgVqyNRuRhuAZuSyfbbmQvZGN
+         81/5gs37MlGhrRRODLAnP+kecfk9NAijFoP2XYES5LuC5sz4nT5SoVm8G7HBUtVEhGCM
+         uy9SQsLBzQSvRhMYi3QPfUl//HUTSS783WQD/Yt2LG67q9BW5JMUE8J3JFDkVjnG6bTk
+         IS+2f6x1+vbyyAvS7+nfkZ6scLRvzdaaPzjQDgJyjD11QxbffEtSaMimp0oI42Np/Yfa
+         2SKw==
+X-Gm-Message-State: AOAM533omD1TjfvRx0YSVNhxud9iIKeGRmaST3oP0M+ibrxNkeSInLQx
+        K1qh883f7P1OxhUmr7JQ4T5/ZPaNnyr3H+2DXHbaijKf
+X-Google-Smtp-Source: ABdhPJwc16zGux0Bmit78wFFiQhQrqZ5tlyKmnD67KMnxzEdA6Dsw50KUWPpSMbIQyxfoHjB5ytl2dRGuLdt/yZusy4=
+X-Received: by 2002:a63:5163:0:b0:3a9:4e90:6d3d with SMTP id
+ r35-20020a635163000000b003a94e906d3dmr9970639pgl.48.1650769035401; Sat, 23
+ Apr 2022 19:57:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20220422120259.10185-1-fankaixi.li@bytedance.com>
+ <20220422120259.10185-3-fankaixi.li@bytedance.com> <CAADnVQL9=XivjNeg3CyE67N3cp6xB+cetUhWG6b+DtXo-6x0VA@mail.gmail.com>
+ <CAEEdnKFjUQeZGYFF+gAtqEeyCzdz=5A91w-PFgAjsS-nkZ6BXw@mail.gmail.com>
+In-Reply-To: <CAEEdnKFjUQeZGYFF+gAtqEeyCzdz=5A91w-PFgAjsS-nkZ6BXw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 23 Apr 2022 19:57:04 -0700
+Message-ID: <CAADnVQL2j-sLdDr+ZRHakKo8SVrKofCq3ffQJ8Fpqvr0gEXHPg@mail.gmail.com>
+Subject: Re: [External] [PATCH bpf-next v5 2/3] selftests/bpf: Move vxlan
+ tunnel testcases to test_progs
+To:     Kaixi Fan <fankaixi.li@bytedance.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+On Fri, Apr 22, 2022 at 7:51 PM Kaixi Fan <fankaixi.li@bytedance.com> wrote=
+:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> =E4=BA=8E2022=E5=B9=B44=
+=E6=9C=8823=E6=97=A5=E5=91=A8=E5=85=AD 08:37=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Fri, Apr 22, 2022 at 5:04 AM <fankaixi.li@bytedance.com> wrote:
+> > > +#define VXLAN_TUNL_DEV0 "vxlan00"
+> > > +#define VXLAN_TUNL_DEV1 "vxlan11"
+> > > +#define IP6VXLAN_TUNL_DEV0 "ip6vxlan00"
+> > > +#define IP6VXLAN_TUNL_DEV1 "ip6vxlan11"
+> > > +
+> > > +#define SRC_INGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_ingres=
+s_src"
+> > > +#define SRC_EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_egress_=
+src"
+> > > +#define DST_EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_egress_=
+dst"
+> > > +
+> > > +#define PING_ARGS "-c 3 -w 10 -q"
+>
+> Thanks for the suggestion.
+>
+> >
+> > Thanks for moving the test to test_progs,
+> > but its runtime is excessive.
+> >
+> > time ./test_progs -t tunnel
+> > #195 tunnel:OK
+> > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> >
+> > real    0m26.530s
+> > user    0m0.075s
+> > sys    0m1.317s
+> >
+> > Please find a way to test the functionality in a second or so.
+>
+> Hi Alexei,
+> Do you mean the sys time should be in a second ?
 
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Date: Thu, 21 Apr 2022 19:17:11 +0200
->
->> Larysa Zaremba <larysa.zaremba@intel.com> writes:
->>=20
->> > Dear all,
->> > Our team has encountered a need of accessing data_meta in a following =
-way:
->> >
->> > int xdp_meta_prog(struct xdp_md *ctx)
->> > {
->> > 	void *data_meta_ptr =3D (void *)(long)ctx->data_meta;
->> > 	void *data_end =3D (void *)(long)ctx->data_end;
->> > 	void *data =3D (void *)(long)ctx->data;
->> > 	u64 data_size =3D sizeof(u32);
->> > 	u32 magic_meta;
->> > 	u8 offset;
->> >
->> > 	offset =3D (u8)((s64)data - (s64)data_meta_ptr);
->> > 	if (offset < data_size) {
->> > 		bpf_printk("invalid offset: %ld\n", offset);
->> > 		return XDP_DROP;
->> > 	}
->> >
->> > 	data_meta_ptr +=3D offset;
->> > 	data_meta_ptr -=3D data_size;
->> >
->> > 	if (data_meta_ptr + data_size > data) {
->> > 		return XDP_DROP;
->> > 	}
->> >=20=09=09
->> > 	magic_meta =3D *((u32 *)data);
->> > 	bpf_printk("Magic: %d\n", magic_meta);
->> > 	return XDP_PASS;
->> > }
->> >
->> > Unfortunately, verifier claims this code attempts to access packet with
->> > an offset of -2 (a constant part) and negative offset is generally for=
-bidden.
->> >
->> > For now we have 2 solutions, one is using bpf_xdp_adjust_meta(),
->> > which is pretty good, but not ideal for the hot path.
->> > The second one is the patch at the end.
->> >
->> > Do you see any other way of accessing memory from the end of data_meta=
-/data?
->> > What do you think about both suggested solutions?
->>=20
->> The problem is that the compiler is generating code that the verifier
->> doesn't understand. It's notoriously hard to get LLVM to produce code
->> that preserves the right bounds checks which is why projects like Cilium
->> use helpers with inline ASM to produce the right loads, like in [0].
->>=20
->> Adapting that cilium helper to load from the metadata area, your example
->> can be rewritten as follows (which works just fine with no verifier
->> changes):
->>=20
->> static __always_inline int
->> xdp_load_meta_bytes(const struct xdp_md *ctx, __u64 off, void *to, const=
- __u64 len)
->> {
->> 	void *from;
->> 	int ret;
->> 	/* LLVM tends to generate code that verifier doesn't understand,
->> 	 * so force it the way we want it in order to open up a range
->> 	 * on the reg.
->> 	 */
->> 	asm volatile("r1 =3D *(u32 *)(%[ctx] +8)\n\t"
->> 		     "r2 =3D *(u32 *)(%[ctx] +0)\n\t"
->> 		     "%[off] &=3D %[offmax]\n\t"
->> 		     "r1 +=3D %[off]\n\t"
->> 		     "%[from] =3D r1\n\t"
->> 		     "r1 +=3D %[len]\n\t"
->> 		     "if r1 > r2 goto +2\n\t"
->> 		     "%[ret] =3D 0\n\t"
->> 		     "goto +1\n\t"
->> 		     "%[ret] =3D %[errno]\n\t"
->> 		     : [ret]"=3Dr"(ret), [from]"=3Dr"(from)
->> 		     : [ctx]"r"(ctx), [off]"r"(off), [len]"ri"(len),
->> 		       [offmax]"i"(__CTX_OFF_MAX), [errno]"i"(-EINVAL)
->> 		     : "r1", "r2");
->> 	if (!ret)
->> 		__builtin_memcpy(to, from, len);
->> 	return ret;
->> }
->>=20
->>=20
->> SEC("xdp")
->> int xdp_meta_prog(struct xdp_md *ctx)
->> {
->>         void *data_meta_ptr =3D (void *)(long)ctx->data_meta;
->>         void *data =3D (void *)(long)ctx->data;
->>         __u32 magic_meta;
->>         __u8 offset;
->> 	int ret;
->>=20
->>         offset =3D (__u8)((__s64)data - (__s64)data_meta_ptr);
->> 	ret =3D xdp_load_meta_bytes(ctx, offset - 4, &magic_meta, sizeof(magic_=
-meta));
->> 	if (ret) {
->> 		bpf_printk("load bytes failed: %d\n", ret);
->>                 return XDP_DROP;
->> 	}
->>=20
->>         bpf_printk("Magic: %d\n", magic_meta);
->>         return XDP_PASS;
->> }
->
-> At the moment, we use this (based on Cilium's and your), it works
-> just like we want C code to work previously:
->
-> #define __CTX_OFF_MAX 0xff
->
-> static __always_inline void *
-> can_i_access_meta_please(const struct xdp_md *ctx, __u64 off, const __u64=
- len)
-> {
-> 	void *ret;
->
-> 	/* LLVM tends to generate code that verifier doesn't understand,
-> 	 * so force it the way we want it in order to open up a range
-> 	 * on the reg.
-> 	 */
-> 	asm volatile("r1 =3D *(u32 *)(%[ctx] +8)\n\t"
-> 		     "r2 =3D *(u32 *)(%[ctx] +0)\n\t"
-> 		     "%[off] &=3D %[offmax]\n\t"
-> 		     "r1 +=3D %[off]\n\t"
-> 		     "%[ret] =3D r1\n\t"
-> 		     "r1 +=3D %[len]\n\t"
-> 		     "if r1 > r2 goto +1\n\t"
-> 		     "goto +1\n\t"
-> 		     "%[ret] =3D %[null]\n\t"
-> 		     : [ret]"=3Dr"(ret)
-> 		     : [ctx]"r"(ctx), [off]"r"(off), [len]"ri"(len),
-> 		       [offmax]"i"(__CTX_OFF_MAX), [null]"i"(NULL)
-> 		     : "r1", "r2");
->
-> 	return ret;
-> }
->
-> SEC("xdp")
-> int xdp_prognum_n0_meta(struct xdp_md *ctx)
-> {
-> 	void *data_meta =3D (void *)(__s64)ctx->data_meta;
-> 	void *data =3D (void *)(__s64)ctx->data;
-> 	struct xdp_meta_generic *md;
-> 	__u64 offset;
->
-> 	offset =3D (__u64)((__s64)data - (__s64)data_meta);
->
-> 	md =3D can_i_access_meta_please(ctx, offset, sizeof(*md));
-> 	if (__builtin_expect(!md, 0)) {
-> 		bpf_printk("No you can't\n");
-> 		return XDP_DROP;
-> 	}
->
-> 	bpf_printk("Magic: 0x%04x\n", md->magic_id);
-> 	return XDP_PASS;
-> }
->
-> Thanks for the help!
-
-Great! You're welcome! :)
-
-> It's a shame LLVM still suck on generating correct object code from C.
-> I guess we'll define a helper above in one of the headers to not
-> copy-paste it back and forth between each program wanting to access
-> only the generic part of the metadata (which is always being placed at
-> the end).
-
-Yeah, it would be nice if LLVM could just generate code that works, but
-in the meantime we'll just have to define a helper. I suspect we'll need
-to define some helper functions to work with xdp-hints style metadata
-field anyway, so wrapping the reader into that somewhere would probably
-make sense, no?
-
--Toke
-
+real time.
+sys time is already there.
+The big delta between real and sys time highlights
+inefficiency of the test. The test sleeps most of the time.
