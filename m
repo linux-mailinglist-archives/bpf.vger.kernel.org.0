@@ -2,73 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB6B50E3F9
-	for <lists+bpf@lfdr.de>; Mon, 25 Apr 2022 17:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F7350E48C
+	for <lists+bpf@lfdr.de>; Mon, 25 Apr 2022 17:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242720AbiDYPI3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Apr 2022 11:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
+        id S242910AbiDYPlD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Apr 2022 11:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242719AbiDYPIZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Apr 2022 11:08:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E955F1FCF3;
-        Mon, 25 Apr 2022 08:05:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A19C6B8160D;
-        Mon, 25 Apr 2022 15:05:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65958C385A4;
-        Mon, 25 Apr 2022 15:05:14 +0000 (UTC)
-Date:   Mon, 25 Apr 2022 11:05:12 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/7] ftrace: Fix deadloop caused by direct
- call in ftrace selftest
-Message-ID: <20220425110512.538ce0bf@gandalf.local.home>
-In-Reply-To: <20220424154028.1698685-3-xukuohai@huawei.com>
-References: <20220424154028.1698685-1-xukuohai@huawei.com>
-        <20220424154028.1698685-3-xukuohai@huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S242631AbiDYPlC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Apr 2022 11:41:02 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F1923168;
+        Mon, 25 Apr 2022 08:37:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1650901078; x=1682437078;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IcJbN6NxiwXMP2nWjVSsUpiTnQLizWST4HfC5OQoUMM=;
+  b=S0ul/p0BCPfftCJFOTdgsjYECTXYL3wr8Qw//YEa84Gz0aJRNtkPxGpo
+   Hiq9cx564ctxzogLWeGbMEqW8O5SmIMSW5JiNYC+jyvtz5Pkw4BcEwRTq
+   xZif0ubunEnUcaje61/XXs7UQoUoERwQM24pzKuCcSgJuQbKkQfDTajTO
+   IB8orAgaAwdAMFPvhgkBzNHiw+fRfVgHKWHuXYgehhnRaLvdyGHhKV/Wo
+   z9iwjGT1U9FiHuzRjCM9rhBTivslZGY2f7E+hAIgXLXbNJZcsWyb60uXd
+   KD7vzB62Woc5xKfjtZ55ZUc6ttMvDIszWL6sEaSGd9iKDUEwEaNMh5sc9
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10328"; a="264800397"
+X-IronPort-AV: E=Sophos;i="5.90,288,1643702400"; 
+   d="scan'208";a="264800397"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2022 08:37:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,288,1643702400"; 
+   d="scan'208";a="537643447"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by orsmga002.jf.intel.com with ESMTP; 25 Apr 2022 08:37:56 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andriin@kernel.org
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf] xsk: fix possible crash when multiple sockets are created
+Date:   Mon, 25 Apr 2022 17:37:45 +0200
+Message-Id: <20220425153745.481322-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,57 +58,149 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 24 Apr 2022 11:40:23 -0400
-Xu Kuohai <xukuohai@huawei.com> wrote:
+Fix a crash that happens if an Rx only socket is created first, then a
+second socket is created that is Tx only and bound to the same umem as
+the first socket and also the same netdev and queue_id together with the
+XDP_SHARED_UMEM flag. In this specific case, the tx_descs array page
+pool was not created by the first socket as it was an Rx only socket.
+When the second socket is bound it needs this tx_descs array of this
+shared page pool as it has a Tx component, but unfortunately it was
+never allocated, leading to a crash. Note that this array is only used
+for zero-copy drivers using the batched Tx APIs, currently only ice and
+i40e.
 
-> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-> index abcadbe933bb..d2eff2b1d743 100644
-> --- a/kernel/trace/trace_selftest.c
-> +++ b/kernel/trace/trace_selftest.c
-> @@ -785,8 +785,24 @@ static struct fgraph_ops fgraph_ops __initdata  = {
->  };
->  
->  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> +#ifdef CONFIG_ARM64
+[ 5511.150360] BUG: kernel NULL pointer dereference, address: 0000000000000008
+[ 5511.158419] #PF: supervisor write access in kernel mode
+[ 5511.164472] #PF: error_code(0x0002) - not-present page
+[ 5511.170416] PGD 0 P4D 0
+[ 5511.173347] Oops: 0002 [#1] PREEMPT SMP PTI
+[ 5511.178186] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G            E     5.18.0-rc1+ #97
+[ 5511.187245] Hardware name: Intel Corp. GRANTLEY/GRANTLEY, BIOS GRRFCRB1.86B.0276.D07.1605190235 05/19/2016
+[ 5511.198418] RIP: 0010:xsk_tx_peek_release_desc_batch+0x198/0x310
+[ 5511.205375] Code: c0 83 c6 01 84 c2 74 6d 8d 46 ff 23 07 44 89 e1 48 83 c0 14 48 c1 e1 04 48 c1 e0 04 48 03 47 10 4c 01 c1 48 8b 50 08 48 8b 00 <48> 89 51 08 48 89 01 41 80 bd d7 00 00 00 00 75 82 48 8b 19 49 8b
+[ 5511.227091] RSP: 0018:ffffc90000003dd0 EFLAGS: 00010246
+[ 5511.233135] RAX: 0000000000000000 RBX: ffff88810c8da600 RCX: 0000000000000000
+[ 5511.241384] RDX: 000000000000003c RSI: 0000000000000001 RDI: ffff888115f555c0
+[ 5511.249634] RBP: ffffc90000003e08 R08: 0000000000000000 R09: ffff889092296b48
+[ 5511.257886] R10: 0000ffffffffffff R11: ffff889092296800 R12: 0000000000000000
+[ 5511.266138] R13: ffff88810c8db500 R14: 0000000000000040 R15: 0000000000000100
+[ 5511.274387] FS:  0000000000000000(0000) GS:ffff88903f800000(0000) knlGS:0000000000000000
+[ 5511.283746] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 5511.290389] CR2: 0000000000000008 CR3: 00000001046e2001 CR4: 00000000003706f0
+[ 5511.298640] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 5511.306892] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 5511.315142] Call Trace:
+[ 5511.317972]  <IRQ>
+[ 5511.320301]  ice_xmit_zc+0x68/0x2f0 [ice]
+[ 5511.324977]  ? ktime_get+0x38/0xa0
+[ 5511.328913]  ice_napi_poll+0x7a/0x6a0 [ice]
+[ 5511.333784]  __napi_poll+0x2c/0x160
+[ 5511.337821]  net_rx_action+0xdd/0x200
+[ 5511.342058]  __do_softirq+0xe6/0x2dd
+[ 5511.346198]  irq_exit_rcu+0xb5/0x100
+[ 5511.350339]  common_interrupt+0xa4/0xc0
+[ 5511.354777]  </IRQ>
+[ 5511.357201]  <TASK>
+[ 5511.359625]  asm_common_interrupt+0x1e/0x40
+[ 5511.364466] RIP: 0010:cpuidle_enter_state+0xd2/0x360
+[ 5511.370211] Code: 49 89 c5 0f 1f 44 00 00 31 ff e8 e9 00 7b ff 45 84 ff 74 12 9c 58 f6 c4 02 0f 85 72 02 00 00 31 ff e8 02 0c 80 ff fb 45 85 f6 <0f> 88 11 01 00 00 49 63 c6 4c 2b 2c 24 48 8d 14 40 48 8d 14 90 49
+[ 5511.391921] RSP: 0018:ffffffff82a03e60 EFLAGS: 00000202
+[ 5511.397962] RAX: ffff88903f800000 RBX: 0000000000000001 RCX: 000000000000001f
+[ 5511.406214] RDX: 0000000000000000 RSI: ffffffff823400b9 RDI: ffffffff8234c046
+[ 5511.424646] RBP: ffff88810a384800 R08: 000005032a28c046 R09: 0000000000000008
+[ 5511.443233] R10: 000000000000000b R11: 0000000000000006 R12: ffffffff82bcf700
+[ 5511.461922] R13: 000005032a28c046 R14: 0000000000000001 R15: 0000000000000000
+[ 5511.480300]  cpuidle_enter+0x29/0x40
+[ 5511.494329]  do_idle+0x1c7/0x250
+[ 5511.507610]  cpu_startup_entry+0x19/0x20
+[ 5511.521394]  start_kernel+0x649/0x66e
+[ 5511.534626]  secondary_startup_64_no_verify+0xc3/0xcb
+[ 5511.549230]  </TASK>
 
-Please find a way to add this in arm specific code. Do not add architecture
-defines in generic code.
+Detect such case during bind() and allocate this memory region via newly
+introduced xp_alloc_tx_descs(). Also, use kvcalloc instead of kcalloc as
+for other buffer pool allocations, so that it matches the kvfree() from
+xp_destroy().
 
-You could add:
+Fixes: d1bc532e99be ("i40e: xsk: Move tmp desc array from driver to pool")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ include/net/xsk_buff_pool.h |  1 +
+ net/xdp/xsk.c               | 13 +++++++++++++
+ net/xdp/xsk_buff_pool.c     | 16 ++++++++++++----
+ 3 files changed, 26 insertions(+), 4 deletions(-)
 
-#ifndef ARCH_HAVE_FTRACE_DIRECT_TEST_FUNC
-noinline __noclone static void trace_direct_tramp(void) { }
-#endif
-
-here, and in arch/arm64/include/ftrace.h
-
-#define ARCH_HAVE_FTRACE_DIRECT_TEST_FUNC
-
-and define your test function in the arm64 specific code.
-
--- Steve
-
-
-
-
-> +extern void trace_direct_tramp(void);
-> +
-> +asm (
-> +"	.pushsection	.text, \"ax\", @progbits\n"
-> +"	.type		trace_direct_tramp, %function\n"
-> +"	.global		trace_direct_tramp\n"
-> +"trace_direct_tramp:"
-> +"	mov	x10, x30\n"
-> +"	mov	x30, x9\n"
-> +"	ret	x10\n"
-> +"	.size		trace_direct_tramp, .-trace_direct_tramp\n"
-> +"	.popsection\n"
-> +);
-> +#else
->  noinline __noclone static void trace_direct_tramp(void) { }
->  #endif
-> +#endif
->  
->  /*
->   * Pretty much the same than for the function tracer from which the selftest
+diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+index 5554ee75e7da..647722e847b4 100644
+--- a/include/net/xsk_buff_pool.h
++++ b/include/net/xsk_buff_pool.h
+@@ -97,6 +97,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool, struct net_device *dev,
+ 		  u16 queue_id, u16 flags);
+ int xp_assign_dev_shared(struct xsk_buff_pool *pool, struct xdp_umem *umem,
+ 			 struct net_device *dev, u16 queue_id);
++int xp_alloc_tx_descs(struct xsk_buff_pool *pool, struct xdp_sock *xs);
+ void xp_destroy(struct xsk_buff_pool *pool);
+ void xp_get_pool(struct xsk_buff_pool *pool);
+ bool xp_put_pool(struct xsk_buff_pool *pool);
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 040c73345b7c..57afb96c41e8 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -967,6 +967,19 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+ 
+ 			xp_get_pool(umem_xs->pool);
+ 			xs->pool = umem_xs->pool;
++
++			/* If underlying shared umem was created without Tx
++			 * ring, allocate Tx descs array that Tx batching API
++			 * utilizes
++			 */
++			if (xs->tx && !xs->pool->tx_descs) {
++				err = xp_alloc_tx_descs(xs->pool, xs);
++				if (err) {
++					xp_put_pool(xs->pool);
++					sockfd_put(sock);
++					goto out_unlock;
++				}
++			}
+ 		}
+ 
+ 		xdp_get_umem(umem_xs->umem);
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index af040ffa14ff..87bdd71c7bb6 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -42,6 +42,16 @@ void xp_destroy(struct xsk_buff_pool *pool)
+ 	kvfree(pool);
+ }
+ 
++int xp_alloc_tx_descs(struct xsk_buff_pool *pool, struct xdp_sock *xs)
++{
++	pool->tx_descs = kvcalloc(xs->tx->nentries, sizeof(*pool->tx_descs),
++				  GFP_KERNEL);
++	if (!pool->tx_descs)
++		return -ENOMEM;
++
++	return 0;
++}
++
+ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+ 						struct xdp_umem *umem)
+ {
+@@ -59,11 +69,9 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+ 	if (!pool->heads)
+ 		goto out;
+ 
+-	if (xs->tx) {
+-		pool->tx_descs = kcalloc(xs->tx->nentries, sizeof(*pool->tx_descs), GFP_KERNEL);
+-		if (!pool->tx_descs)
++	if (xs->tx)
++		if (xp_alloc_tx_descs(pool, xs))
+ 			goto out;
+-	}
+ 
+ 	pool->chunk_mask = ~((u64)umem->chunk_size - 1);
+ 	pool->addrs_cnt = umem->size;
+-- 
+2.27.0
 
