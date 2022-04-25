@@ -2,67 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AFE50EB89
+	by mail.lfdr.de (Postfix) with ESMTP id 789B350EB8A
 	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 00:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbiDYWYe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Apr 2022 18:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
+        id S229815AbiDYWYd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Apr 2022 18:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343630AbiDYVwC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Apr 2022 17:52:02 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4FF3AA52
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 14:48:54 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id c190-20020a1c35c7000000b0038e37907b5bso394247wma.0
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 14:48:54 -0700 (PDT)
+        with ESMTP id S1343670AbiDYWH5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Apr 2022 18:07:57 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14322AED
+        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 15:04:51 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2f7ee6bc6ddso31388287b3.1
+        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 15:04:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i3g7+LN6g47+LAildy/dOa6umRojr4CwCIm2qQex3m4=;
-        b=QkgFm5ud5f8TG4VRDKm54eW869BVn0aXDMQNiIZrXcX8hxpC/GbSSF1+mo1AJfQeBB
-         ruq79rNUJoiHZ++7Z/KhayHCk8Lf6J2naHQVvLEwoZUixMcOE8jaxTm+SBXT3qtwOZ5A
-         fDj5GWQQE/ukjvo7DTiYbZnB8dc6URBT4D4wCqjEVJ1B2PJWMmhk3st7OHXxPlbHHVG3
-         2Gj+FqsG40nOINNN8G3s5xKKjlhuRTReqMlqslcGA0NOKCz134/DLcfaLtEZrmxPfuAL
-         AIC53P9oFEopCr9kPhGotPK1U7rDWhCUcuwsbQchPY0+RMa1Ha/MbtANDIbCD/GyjTVi
-         UDNw==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=jswLwyCW7JO4G1NhhirfPLGOt4sA4tQpeVLq7C4Wm5Q=;
+        b=EjzLsa/ZyjcSCYU3TU9optqHNGRprIvSsgcDUHbbfziiAvvt57s44ENEHWJs65tIPQ
+         hpqesMg5PxyvmSCWHEDghCbFQ3EjXJ5sweU/qASvn1CfQ+pV9T/6VIp9PNdMeknf7yDL
+         pcHRcZI5g3AymIV6b5K0ZfpR/x2NqMZkCb3YCKtJPgeOxmVxWTq0B5knCISAVesTjvIi
+         /1J9kJSMJHbS3kBEkTdutRucZ8iM1O7GdVyn/iO5FM4wcVwQjyfLE9Y3aR2R8jpUX9Og
+         mjMUtK/9deUxmMST91zr67av5o15hS9ScYpcuseXfZywxX+DzfURq/XgCH9Rf73BUW47
+         8Cpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i3g7+LN6g47+LAildy/dOa6umRojr4CwCIm2qQex3m4=;
-        b=1PGr4T+dAYLgvAe/5eGr/3vSDd8lfcNROgAwNiaAB2KB/yQ/sifnEWp/sIVewsshvA
-         TKCwaXzVJXgcSOEQWM/OEet9/N5toLBCwSn3y+Q5TM411l/y18W2rajIQ2nXXrff8LkR
-         QPJvWaI5LgsFOZ6hoaHtoceUfJcqqRyiyQRW8TNbolxjhcAuDNsLyy1Y6gyHVNfMKtco
-         kAs8RI90adgL5Pc1nvjG2+h9FIxVts41S0m9xzmvzaAl65Tso2/89kuz73aTLUfOS95i
-         niXO1F2dns//gw3AfG6PFnxPsdSptvXcyMYOAClqeWrpQeWa5rhkDZURMcEcWPqKHL77
-         G7nA==
-X-Gm-Message-State: AOAM533U1hE1dvMSmBxd9a7gtDth7gFq2kL3DIbiuSaHghZ/QH9n3/1I
-        xN6TBCjwCNduXuS7CSfgjDSG4Ce8i5ubIPXHw1O4mQ==
-X-Google-Smtp-Source: ABdhPJwZ/Me+/UZWIQaqf3MI5v8Kn/V3HnlN/Fp53TROB4hb7rFdoVgPg33rwI6iJ8Qgs4OxNU5pQsdQ/dCG6NPofho=
-X-Received: by 2002:a1c:2904:0:b0:37b:ea53:4cbf with SMTP id
- p4-20020a1c2904000000b0037bea534cbfmr18326125wmp.46.1650923333338; Mon, 25
- Apr 2022 14:48:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220419222259.287515-1-sdf@google.com> <CAEf4BzYoA4xvqv7SaM2TvcbKef=m4n6TSGVNA34T2we05fRwpw@mail.gmail.com>
- <CAKH8qBsTiQA5knxoBSqxCYav89QdSN0j6t1EWX1MEVbAqLj6kg@mail.gmail.com> <20220425203759.yxyyvdarx4woegfg@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220425203759.yxyyvdarx4woegfg@kafai-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=jswLwyCW7JO4G1NhhirfPLGOt4sA4tQpeVLq7C4Wm5Q=;
+        b=TdNexlhKNvGrVdDQumNl7HOLSejVzgcPdYNU8TVDF3Z/e3EgAkKCOBz+L5ZmQQ8iNH
+         Z4puwFLrCfjAHSL+VnLOA2LkfdyKoDCqQXP1acyzzAL0Pg3u61DMiOVVYaRVzpiDNfGe
+         BX4Q9QDRxntAr+tKMY7rgvOWZAj7cmZcfqNbjsY78qatz48jVOYsbskaoLnh6LJBrslW
+         ic8wmOUuyESuIrZju6q2bR4xtuyoTJR6JE3bx3FnexheSuy2S8JOdrMLGV/WOQlRYAwz
+         TcpixFnvdyOOTceVoW0FjnpCgXzi0cySlKQXPFm2KhOy1iohhW0aOocZExXg9p+zEt6a
+         Jfdg==
+X-Gm-Message-State: AOAM531BoP3efdl+Kgb5q/b2T4D8AYTRhONmH1iIfgSUjnnBdIJnxMDt
+        PbAwsCukpEYKzwpfgOwFaTxxTX0=
+X-Google-Smtp-Source: ABdhPJxdeANHu0LPftt5eo5a50s7bGkdSNzw0DDclWy1+ZYH99xT26unyKj3ymfg6dD1Hwk4u2hxD5s=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:3c54:4c01:c96b:a0be])
+ (user=sdf job=sendgmr) by 2002:a25:20b:0:b0:648:6d57:a774 with SMTP id
+ 11-20020a25020b000000b006486d57a774mr6107285ybc.78.1650924290999; Mon, 25 Apr
+ 2022 15:04:50 -0700 (PDT)
+Date:   Mon, 25 Apr 2022 15:04:48 -0700
+Message-Id: <20220425220448.3669032-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.rc2.479.g8af0fa9b8e-goog
+Subject: [PATCH bpf-next v2] bpf: use bpf_prog_run_array_cg_flags everywhere
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 25 Apr 2022 14:48:41 -0700
-Message-ID: <CAKH8qBvq54azM0TTpPNWdQJxEVLwQ0PPY1860njYbUqJpH319Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: use bpf_prog_run_array_cg_flags everywhere
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,152 +64,225 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 1:38 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Wed, Apr 20, 2022 at 03:30:43PM -0700, Stanislav Fomichev wrote:
-> > On Wed, Apr 20, 2022 at 3:04 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Apr 19, 2022 at 3:23 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > >
-> > > > Rename bpf_prog_run_array_cg_flags to bpf_prog_run_array_cg and
-> > > > use it everywhere. check_return_code already enforces sane
-> > > > return ranges for all cgroup types. (only egress and bind hooks have
-> > > > uncanonical return ranges, the rest is using [0, 1])
-> > > >
-> > > > No functional changes.
-> > > >
-> > > > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > ---
-> > > >  include/linux/bpf-cgroup.h |  8 ++---
-> > > >  kernel/bpf/cgroup.c        | 70 ++++++++++++--------------------------
-> > > >  2 files changed, 24 insertions(+), 54 deletions(-)
-> > > >
-> > > > diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> > > > index 88a51b242adc..669d96d074ad 100644
-> > > > --- a/include/linux/bpf-cgroup.h
-> > > > +++ b/include/linux/bpf-cgroup.h
-> > > > @@ -225,24 +225,20 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
-> > > >
-> > > >  #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, atype)                                      \
-> > > >  ({                                                                            \
-> > > > -       u32 __unused_flags;                                                    \
-> > > >         int __ret = 0;                                                         \
-> > > >         if (cgroup_bpf_enabled(atype))                                         \
-> > > >                 __ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
-> > > > -                                                         NULL,                \
-> > > > -                                                         &__unused_flags);    \
-> > > > +                                                         NULL, NULL);         \
-> > > >         __ret;                                                                 \
-> > > >  })
-> > > >
-> > > >  #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, atype, t_ctx)                  \
-> > > >  ({                                                                            \
-> > > > -       u32 __unused_flags;                                                    \
-> > > >         int __ret = 0;                                                         \
-> > > >         if (cgroup_bpf_enabled(atype))  {                                      \
-> > > >                 lock_sock(sk);                                                 \
-> > > >                 __ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
-> > > > -                                                         t_ctx,               \
-> > > > -                                                         &__unused_flags);    \
-> > > > +                                                         t_ctx, NULL);        \
-> > > >                 release_sock(sk);                                              \
-> > > >         }                                                                      \
-> > > >         __ret;                                                                 \
-> > > > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > > > index 0cb6211fcb58..f61eca32c747 100644
-> > > > --- a/kernel/bpf/cgroup.c
-> > > > +++ b/kernel/bpf/cgroup.c
-> > > > @@ -25,50 +25,18 @@ EXPORT_SYMBOL(cgroup_bpf_enabled_key);
-> > > >  /* __always_inline is necessary to prevent indirect call through run_prog
-> > > >   * function pointer.
-> > > >   */
-> > > > -static __always_inline int
-> > > > -bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
-> > > > -                           enum cgroup_bpf_attach_type atype,
-> > > > -                           const void *ctx, bpf_prog_run_fn run_prog,
-> > > > -                           int retval, u32 *ret_flags)
-> > > > -{
-> > > > -       const struct bpf_prog_array_item *item;
-> > > > -       const struct bpf_prog *prog;
-> > > > -       const struct bpf_prog_array *array;
-> > > > -       struct bpf_run_ctx *old_run_ctx;
-> > > > -       struct bpf_cg_run_ctx run_ctx;
-> > > > -       u32 func_ret;
-> > > > -
-> > > > -       run_ctx.retval = retval;
-> > > > -       migrate_disable();
-> > > > -       rcu_read_lock();
-> > > > -       array = rcu_dereference(cgrp->effective[atype]);
-> > > > -       item = &array->items[0];
-> > > > -       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> > > > -       while ((prog = READ_ONCE(item->prog))) {
-> > > > -               run_ctx.prog_item = item;
-> > > > -               func_ret = run_prog(prog, ctx);
-> > > > -               if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
-> > > > -                       run_ctx.retval = -EPERM;
-> > > > -               *(ret_flags) |= (func_ret >> 1);
-> > > > -               item++;
-> > > > -       }
-> > > > -       bpf_reset_run_ctx(old_run_ctx);
-> > > > -       rcu_read_unlock();
-> > > > -       migrate_enable();
-> > > > -       return run_ctx.retval;
-> > > > -}
-> > > > -
-> > > >  static __always_inline int
-> > > >  bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
-> > > >                       enum cgroup_bpf_attach_type atype,
-> > > >                       const void *ctx, bpf_prog_run_fn run_prog,
-> > > > -                     int retval)
-> > > > +                     int retval, u32 *ret_flags)
-> > > >  {
-> > > >         const struct bpf_prog_array_item *item;
-> > > >         const struct bpf_prog *prog;
-> > > >         const struct bpf_prog_array *array;
-> > > >         struct bpf_run_ctx *old_run_ctx;
-> > > >         struct bpf_cg_run_ctx run_ctx;
-> > > > +       u32 func_ret;
-> > > >
-> > > >         run_ctx.retval = retval;
-> > > >         migrate_disable();
-> > > > @@ -78,8 +46,11 @@ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
-> > > >         old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> > > >         while ((prog = READ_ONCE(item->prog))) {
-> > > >                 run_ctx.prog_item = item;
-> > > > -               if (!run_prog(prog, ctx) && !IS_ERR_VALUE((long)run_ctx.retval))
-> > > > +               func_ret = run_prog(prog, ctx);
-> > > > +               if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
-> > >
-> > > to be completely true to previous behavior, shouldn't there be
-> > >
-> > > if (ret_flags)
-> > >     func_ret &= 1;
-> > > if (!func_ret && !IS_ERR_VALUE(...))
-> > >
-> > > here?
-> > >
-> > > This might have been discussed previously and I missed it. If that's
-> > > so, please ignore.
-> >
-> > We are converting the cases where run_prog(prog, ctx) returns 0 or 1,
-> > so it seems like we don't have to reproduce the existing behavior
-> > 1-to-1?
-> > So I'm not sure it matters, or am I missing something?
-> A nit, how about testing 'if (ret_flags)' first such that
-> it is obvious which case will use higher bits in the return value.
-> The compiler may be able to optimize the ret_flags == NULL case also ?
->
-> Something like:
->
->         func_ret = run_prog(prog, ctx);
->         /* The cg bpf prog uses the higher bits of the return value */
->         if (ret_flags) {
->                 *(ret_flags) |= (func_ret >> 1);
->                 func_ret &= 1;
->         }
->         if (!func_ret && !IS_ERR_VALUE((long)run_ctx.retval))
->                 run_ctx.retval = -EPERM;
+Rename bpf_prog_run_array_cg_flags to bpf_prog_run_array_cg and
+use it everywhere. check_return_code already enforces sane
+return ranges for all cgroup types. (only egress and bind hooks have
+uncanonical return ranges, the rest is using [0, 1])
 
-Sure, this should also address Andrii's point I think. Will resend a v2.
+No functional changes.
+
+v2:
+- 'func_ret & 1' under explicit test (Andrii & Martin)
+
+Cc: Martin KaFai Lau <kafai@fb.com>
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/bpf-cgroup.h |  8 ++---
+ kernel/bpf/cgroup.c        | 72 +++++++++++++-------------------------
+ 2 files changed, 26 insertions(+), 54 deletions(-)
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 88a51b242adc..669d96d074ad 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -225,24 +225,20 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+ 
+ #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, atype)				       \
+ ({									       \
+-	u32 __unused_flags;						       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(atype))					       \
+ 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
+-							  NULL,		       \
+-							  &__unused_flags);    \
++							  NULL, NULL);	       \
+ 	__ret;								       \
+ })
+ 
+ #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, atype, t_ctx)		       \
+ ({									       \
+-	u32 __unused_flags;						       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(atype))	{				       \
+ 		lock_sock(sk);						       \
+ 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, atype,     \
+-							  t_ctx,	       \
+-							  &__unused_flags);    \
++							  t_ctx, NULL);	       \
+ 		release_sock(sk);					       \
+ 	}								       \
+ 	__ret;								       \
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 0cb6211fcb58..afb414b26d01 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -25,50 +25,18 @@ EXPORT_SYMBOL(cgroup_bpf_enabled_key);
+ /* __always_inline is necessary to prevent indirect call through run_prog
+  * function pointer.
+  */
+-static __always_inline int
+-bpf_prog_run_array_cg_flags(const struct cgroup_bpf *cgrp,
+-			    enum cgroup_bpf_attach_type atype,
+-			    const void *ctx, bpf_prog_run_fn run_prog,
+-			    int retval, u32 *ret_flags)
+-{
+-	const struct bpf_prog_array_item *item;
+-	const struct bpf_prog *prog;
+-	const struct bpf_prog_array *array;
+-	struct bpf_run_ctx *old_run_ctx;
+-	struct bpf_cg_run_ctx run_ctx;
+-	u32 func_ret;
+-
+-	run_ctx.retval = retval;
+-	migrate_disable();
+-	rcu_read_lock();
+-	array = rcu_dereference(cgrp->effective[atype]);
+-	item = &array->items[0];
+-	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+-	while ((prog = READ_ONCE(item->prog))) {
+-		run_ctx.prog_item = item;
+-		func_ret = run_prog(prog, ctx);
+-		if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
+-			run_ctx.retval = -EPERM;
+-		*(ret_flags) |= (func_ret >> 1);
+-		item++;
+-	}
+-	bpf_reset_run_ctx(old_run_ctx);
+-	rcu_read_unlock();
+-	migrate_enable();
+-	return run_ctx.retval;
+-}
+-
+ static __always_inline int
+ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
+ 		      enum cgroup_bpf_attach_type atype,
+ 		      const void *ctx, bpf_prog_run_fn run_prog,
+-		      int retval)
++		      int retval, u32 *ret_flags)
+ {
+ 	const struct bpf_prog_array_item *item;
+ 	const struct bpf_prog *prog;
+ 	const struct bpf_prog_array *array;
+ 	struct bpf_run_ctx *old_run_ctx;
+ 	struct bpf_cg_run_ctx run_ctx;
++	u32 func_ret;
+ 
+ 	run_ctx.retval = retval;
+ 	migrate_disable();
+@@ -78,7 +46,12 @@ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
+ 	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+ 	while ((prog = READ_ONCE(item->prog))) {
+ 		run_ctx.prog_item = item;
+-		if (!run_prog(prog, ctx) && !IS_ERR_VALUE((long)run_ctx.retval))
++		func_ret = run_prog(prog, ctx);
++		if (ret_flags) {
++			*(ret_flags) |= (func_ret >> 1);
++			func_ret &= 1;
++		}
++		if (!func_ret && !IS_ERR_VALUE((long)run_ctx.retval))
+ 			run_ctx.retval = -EPERM;
+ 		item++;
+ 	}
+@@ -1144,9 +1117,8 @@ int __cgroup_bpf_run_filter_skb(struct sock *sk,
+ 		u32 flags = 0;
+ 		bool cn;
+ 
+-		ret = bpf_prog_run_array_cg_flags(
+-			&cgrp->bpf, atype,
+-			skb, __bpf_prog_run_save_cb, 0, &flags);
++		ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, skb,
++					    __bpf_prog_run_save_cb, 0, &flags);
+ 
+ 		/* Return values of CGROUP EGRESS BPF programs are:
+ 		 *   0: drop packet
+@@ -1172,7 +1144,8 @@ int __cgroup_bpf_run_filter_skb(struct sock *sk,
+ 			ret = (cn ? NET_XMIT_DROP : ret);
+ 	} else {
+ 		ret = bpf_prog_run_array_cg(&cgrp->bpf, atype,
+-					    skb, __bpf_prog_run_save_cb, 0);
++					    skb, __bpf_prog_run_save_cb, 0,
++					    NULL);
+ 		if (ret && !IS_ERR_VALUE((long)ret))
+ 			ret = -EFAULT;
+ 	}
+@@ -1202,7 +1175,8 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
+ {
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+ 
+-	return bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0);
++	return bpf_prog_run_array_cg(&cgrp->bpf, atype, sk, bpf_prog_run, 0,
++				     NULL);
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+ 
+@@ -1247,8 +1221,8 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 	}
+ 
+ 	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+-	return bpf_prog_run_array_cg_flags(&cgrp->bpf, atype,
+-					   &ctx, bpf_prog_run, 0, flags);
++	return bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run,
++				     0, flags);
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_addr);
+ 
+@@ -1275,7 +1249,7 @@ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+ 
+ 	return bpf_prog_run_array_cg(&cgrp->bpf, atype, sock_ops, bpf_prog_run,
+-				     0);
++				     0, NULL);
+ }
+ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_ops);
+ 
+@@ -1292,7 +1266,8 @@ int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
+ 
+ 	rcu_read_lock();
+ 	cgrp = task_dfl_cgroup(current);
+-	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0);
++	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0,
++				    NULL);
+ 	rcu_read_unlock();
+ 
+ 	return ret;
+@@ -1457,7 +1432,8 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+ 
+ 	rcu_read_lock();
+ 	cgrp = task_dfl_cgroup(current);
+-	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0);
++	ret = bpf_prog_run_array_cg(&cgrp->bpf, atype, &ctx, bpf_prog_run, 0,
++				    NULL);
+ 	rcu_read_unlock();
+ 
+ 	kfree(ctx.cur_val);
+@@ -1550,7 +1526,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 
+ 	lock_sock(sk);
+ 	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_SETSOCKOPT,
+-				    &ctx, bpf_prog_run, 0);
++				    &ctx, bpf_prog_run, 0, NULL);
+ 	release_sock(sk);
+ 
+ 	if (ret)
+@@ -1650,7 +1626,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 
+ 	lock_sock(sk);
+ 	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
+-				    &ctx, bpf_prog_run, retval);
++				    &ctx, bpf_prog_run, retval, NULL);
+ 	release_sock(sk);
+ 
+ 	if (ret < 0)
+@@ -1699,7 +1675,7 @@ int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
+ 	 */
+ 
+ 	ret = bpf_prog_run_array_cg(&cgrp->bpf, CGROUP_GETSOCKOPT,
+-				    &ctx, bpf_prog_run, retval);
++				    &ctx, bpf_prog_run, retval, NULL);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-- 
+2.36.0.rc2.479.g8af0fa9b8e-goog
+
