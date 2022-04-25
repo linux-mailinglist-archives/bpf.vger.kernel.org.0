@@ -2,90 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D507250EB8E
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 00:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AFF50EB88
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 00:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbiDYWYb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Apr 2022 18:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
+        id S229720AbiDYWYc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Apr 2022 18:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343547AbiDYVdR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Apr 2022 17:33:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D272252B0;
-        Mon, 25 Apr 2022 14:30:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B7086147E;
-        Mon, 25 Apr 2022 21:30:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5B94CC385A9;
-        Mon, 25 Apr 2022 21:30:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650922211;
-        bh=xjGNuD4uYKuUJzeSWkeUROx9AjVzUsYZauu252ps7hA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=o5/CTEh74uaRaH5Ud3HV7kLOj26y3kIMWCY264ki2VM42SPKZ4nWKneMlP7pmHKIh
-         AOaCqYnCMFO+7YoTQwCKX1jbmKAgNqaPk5ab19LVT4ooDQFtpuUfe5n0l5DRWzck0K
-         lici1u7haemSOUF+aK1By7NSC05214+Fi+PR8P8uPziE8m4/wMpw4g2Vr+Lkw69RDv
-         5BaGiEeU4m9uz9JY0O7UVayL5cRQxT/8kA32YIS/b+FpkPAybjL7pWYiGlSM2Bh1gb
-         mHAsANM8WmK+srNoQPvtVYJfFif66M6ymN4qKLDvaOYRulbCzc1ST5dYQATPh0g/fx
-         wYUVMoUYDb2Hg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41137E6D402;
-        Mon, 25 Apr 2022 21:30:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/4] tools/bpf: allow building with musl
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165092221126.11408.5748679293507022115.git-patchwork-notify@kernel.org>
-Date:   Mon, 25 Apr 2022 21:30:11 +0000
+        with ESMTP id S1343578AbiDYVix (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Apr 2022 17:38:53 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058643878A;
+        Mon, 25 Apr 2022 14:35:47 -0700 (PDT)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nj6Mz-0008B2-Gx; Mon, 25 Apr 2022 23:35:45 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nj6Mz-000Nev-21; Mon, 25 Apr 2022 23:35:45 +0200
+Subject: Re: [PATCH 1/4] tools/bpf/runqslower: musl compat: explicitly link
+ with libargp if found
+To:     Dominique Martinet <asmadeus@codewreck.org>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        KP Singh <kpsingh@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
 References: <20220424051022.2619648-1-asmadeus@codewreck.org>
-In-Reply-To: <20220424051022.2619648-1-asmadeus@codewreck.org>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kpsingh@kernel.org,
-        john.fastabend@gmail.com, yhs@fb.com, songliubraving@fb.com,
-        kafai@fb.com, andrii@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+ <20220424051022.2619648-2-asmadeus@codewreck.org>
+ <YmT1GxK1HimY2Os9@codewreck.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <80728495-e1fe-21bb-9814-6251648f8359@iogearbox.net>
+Date:   Mon, 25 Apr 2022 23:35:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <YmT1GxK1HimY2Os9@codewreck.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26523/Mon Apr 25 10:20:35 2022)
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Sun, 24 Apr 2022 14:10:18 +0900 you wrote:
-> Hi,
+On 4/24/22 8:58 AM, Dominique Martinet wrote:
+> Dominique Martinet wrote on Sun, Apr 24, 2022 at 02:10:19PM +0900:
+>> After having done this work I noticed runqslower is not actually
+>> installed, so ideally instead of all of this it'd make more sense to
+>> just not build it: would it make sense to take it out of the defaults
+>> build targets?
+>> I could just directly build the appropriate targets from tools/bpf
+>> directory with 'make bpftool bpf_dbg bpf_asm bpf_jit_disasm', but
+>> ideally I'd like to keep alpine's build script way of calling make from
+>> the tools parent directory, and 'make bpf' there is all or nothing.
 > 
-> I'd like to build bpftool on alpine linux, which is musl based.
+> Well, it turns out runqslower doesn't build if the current kernel or
+> vmlinux in tree don't have BTF enabled, so the current alpine builder
+> can't build it.
 > 
-> There are a few incompatibilities with it, I've commented on each patch
-> when I could think of alternative solutions.
-> 
-> [...]
+> I've dropped this patch from my alpine MR[1] and built things directly
+> with make bpftool etc as suggested above, so my suggestion to make it
+> more easily buildable that way is probably the way to go?
+> [1] https://gitlab.alpinelinux.org/alpine/aports/-/merge_requests/33554
 
-Here is the summary with links:
-  - [1/4] tools/bpf/runqslower: musl compat: explicitly link with libargp if found
-    (no matching commit)
-  - [2/4] tools/bpf: musl compat: do not use DEFFILEMODE
-    (no matching commit)
-  - [3/4] tools/bpf: musl compat: replace nftw with FTW_ACTIONRETVAL
-    https://git.kernel.org/bpf/bpf-next/c/93bc2e9e943d
-  - [4/4] tools/bpf: replace sys/fcntl.h by fcntl.h
-    https://git.kernel.org/bpf/bpf-next/c/246bdfa52f33
+Thanks for looking into this, Dominique! I slightly massaged patch 3 & 4
+and applied it to bpf-next tree.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I don't really mind about patch 1 & 2, though out of tools/bpf/ the only
+one you /really/ might want to package is bpftool. The other tools are on
+the legacy side of things and JIT disasm you can also get via bpftool anyway.
 
+Given this is not covered by BPF CI, are you planning to regularly check
+for musl compatibility before a new kernel is cut?
 
+Thanks,
+Daniel
