@@ -2,137 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E126D50E265
-	for <lists+bpf@lfdr.de>; Mon, 25 Apr 2022 15:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E6A50E280
+	for <lists+bpf@lfdr.de>; Mon, 25 Apr 2022 15:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238228AbiDYNzs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Apr 2022 09:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
+        id S242169AbiDYOAh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Apr 2022 10:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237131AbiDYNzs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Apr 2022 09:55:48 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267DB63510
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 06:52:43 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id bu29so26370974lfb.0
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 06:52:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=JYHu98gIK66RWLsyi/UBGJk+PCtKY9xPR1oZtGPvB3I=;
-        b=la6KljV5Xz628ud2SyGpNqA/tclref6pzZVJuG3oCzMHQv0TIhdBN87IBqwmH0G+Es
-         rq1pH250/bRk3/+628l7WXl8atwDIk0uMU0N3dLFvnN0Lwry4DnchI2StKNta8MGkIIY
-         8ZsE8lr2N1WAEkaT/BD+HH3ySW5GDnUBHL8Uk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=JYHu98gIK66RWLsyi/UBGJk+PCtKY9xPR1oZtGPvB3I=;
-        b=hQUzSMcsAspNtxWd33lKhjl3XknhHwTgIw8ImRs/4Cqfg1AJoS9sCCRYBuGEFFuZ33
-         t/YdQi9xCIdgpPMgYKqYWhibWNh9gMtRdihfo/rNdDiP3pkr9q0UOmhBjTy+erx6KgOT
-         N8RXg59RgRPRJa9IOgq95cYGuPvuW42ZZ5bT6CdOjklfEiZ3OBnykWcq0EBoCmIKGW70
-         L3hoQRorlBxzVi12+QLiNo/5kFX0UIpZ5knNsbCjNpjkwY5arIwxMwEXwfIMfGFbZPTx
-         OgHI/1tvghLqWu1TLf3oRNG2/jZSlSys0eCGHQvoVrsvU4GEaz+aME0tjqalQicxJSat
-         oYjA==
-X-Gm-Message-State: AOAM532wpquDhdz7rg1FWX9jEv+ApjU/y5GwrbiuCnIbATUdwuaAVG4W
-        86ALj8KvL9H4m3f5Atc4KAnULgHlT2nkVg==
-X-Google-Smtp-Source: ABdhPJzC86FrJ28jxENyEvz/4wap/hIglCpcOU4IUHrp+HYgN3Ek+hoE021rEKqD1DhT+9S7ymvCZQ==
-X-Received: by 2002:a05:6512:114f:b0:471:b097:4a29 with SMTP id m15-20020a056512114f00b00471b0974a29mr13306761lfg.93.1650894761306;
-        Mon, 25 Apr 2022 06:52:41 -0700 (PDT)
-Received: from cloudflare.com (79.184.126.143.ipv4.supernova.orange.pl. [79.184.126.143])
-        by smtp.gmail.com with ESMTPSA id a2-20020a19e302000000b00471988e79cdsm1419395lfh.180.2022.04.25.06.52.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Apr 2022 06:52:40 -0700 (PDT)
-References: <4ed4a01e-3d1e-bf1e-803a-608df187bde5@I-love.SAKURA.ne.jp>
- <909c72b6-83f9-69a0-af80-d9cb3bc2bd0e@I-love.SAKURA.ne.jp>
- <CAEf4Bzbugg4dy_2J=cFKYYQEJx-irF-cRZvkkwCx4QQwXm5OpA@mail.gmail.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: How to disassemble a BPF program?
-Date:   Mon, 25 Apr 2022 15:48:26 +0200
-In-reply-to: <CAEf4Bzbugg4dy_2J=cFKYYQEJx-irF-cRZvkkwCx4QQwXm5OpA@mail.gmail.com>
-Message-ID: <87tuah6ziv.fsf@cloudflare.com>
+        with ESMTP id S242309AbiDYOAd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Apr 2022 10:00:33 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BBD7B124;
+        Mon, 25 Apr 2022 06:57:21 -0700 (PDT)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nizDH-0006ck-SA; Mon, 25 Apr 2022 15:57:15 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nizDH-0009jR-CR; Mon, 25 Apr 2022 15:57:15 +0200
+Subject: Re: [PATCH bpf-next 2/4] libbpf: Add helpers for pinning bpf prog
+ through bpf object skeleton
+To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20220423140058.54414-1-laoar.shao@gmail.com>
+ <20220423140058.54414-3-laoar.shao@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <29b077a7-1e99-9436-bd5a-4277651e09db@iogearbox.net>
+Date:   Mon, 25 Apr 2022 15:57:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220423140058.54414-3-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26523/Mon Apr 25 10:20:35 2022)
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 20, 2022 at 09:48 AM -07, Andrii Nakryiko wrote:
-> On Wed, Apr 20, 2022 at 4:38 AM Tetsuo Handa
-> <penguin-kernel@i-love.sakura.ne.jp> wrote:
->>
->> Ping?
->>
->> Since how to fix this "current top five crasher" bug depends on how a kernel
->> socket is created via BPF program, this bug wants help from BPF developers.
->
-> If the BPF program is loaded/verified successfully, the easiest way to
-> go about this would be to prevent repro from proceeding right after
-> successful validation (e.g, do scanf()) and then use bpftool to find
-> that program's ID and dump disassembly while that program is in the
-> kernel.
->
-> $ sudo bpftool prog show
-> ...
-> 654439: cgroup_skb  tag 6deef7357e7b4530  gpl
->         loaded_at 2022-04-20T06:14:08-0700  uid 0
->         xlated 64B  jited 54B  memlock 4096B
->         pids systemd(1)
->
-> $ sudo bpftool prog dump xlat id 654439
->    0: (bf) r6 = r1
->    1: (69) r7 = *(u16 *)(r6 +176)
->    2: (b4) w8 = 0
->    3: (44) w8 |= 2
->    4: (b7) r0 = 1
->    5: (55) if r8 != 0x2 goto pc+1
->    6: (b7) r0 = 0
->    7: (95) exit
->
-> Hope that helps. I don't know any tool that allows to disassemble raw
-> bytes into BPF assembly. Normally I use llvm-objdump to disassemble
-> well-formed BPF ELF files. Not sure if you can wrange llvm-objdump to
-> disassemble raw bytes without ELF file itself.
+On 4/23/22 4:00 PM, Yafang Shao wrote:
+> Currently there're helpers for allowing to open/load/attach BPF object
+> through BPF object skeleton. Let's also add helpers for pinning through
+> BPF object skeleton. It could simplify BPF userspace code which wants to
+> pin the progs into bpffs.
 
-You can disassemble raw BPF binaries with GNU objdump, but the assembly
-mnemonics are different:
+Please elaborate some more on your use case/rationale for the commit message,
+do you have orchestration code that will rely on these specifically?
 
-$ sudo bpftool prog dump xlated id 77
-   0: (bf) r6 = r1
-   1: (69) r7 = *(u16 *)(r6 +176)
-   2: (b4) w8 = 0
-   3: (44) w8 |= 2
-   4: (b7) r0 = 1
-   5: (55) if r8 != 0x2 goto pc+1
-   6: (b7) r0 = 0
-   7: (95) exit
-$ sudo bpftool prog dump xlated id 77 file prog.bin
-$ sudo objdump -D -b binary -m bpf prog.bin
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>   tools/lib/bpf/libbpf.c   | 59 ++++++++++++++++++++++++++++++++++++++++
+>   tools/lib/bpf/libbpf.h   |  4 +++
+>   tools/lib/bpf/libbpf.map |  2 ++
+>   3 files changed, 65 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 13fcf91e9e0e..e7ed6c53c525 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -12726,6 +12726,65 @@ void bpf_object__detach_skeleton(struct bpf_object_skeleton *s)
+>   	}
+>   }
+>   
+> +int bpf_object__pin_skeleton_prog(struct bpf_object_skeleton *s,
+> +				  const char *path)
 
-prog.bin:     file format binary
+These pin the link, not the prog itself, so the func name is a bit misleading? Also,
+what if is this needs to be more customized in future? It doesn't seem very generic.
 
+> +{
+> +	struct bpf_link *link;
+> +	int err;
+> +	int i;
+> +
+> +	if (!s->prog_cnt)
+> +		return libbpf_err(-EINVAL);
+> +
+> +	if (!path)
+> +		path = DEFAULT_BPFFS;
+> +
+> +	for (i = 0; i < s->prog_cnt; i++) {
+> +		char buf[PATH_MAX];
+> +		int len;
+> +
+> +		len = snprintf(buf, PATH_MAX, "%s/%s", path, s->progs[i].name);
+> +		if (len < 0) {
+> +			err = -EINVAL;
+> +			goto err_unpin_prog;
+> +		} else if (len >= PATH_MAX) {
+> +			err = -ENAMETOOLONG;
+> +			goto err_unpin_prog;
+> +		}
+> +
+> +		link = *s->progs[i].link;
+> +		if (!link) {
+> +			err = -EINVAL;
+> +			goto err_unpin_prog;
+> +		}
+> +
+> +		err = bpf_link__pin(link, buf);
+> +		if (err)
+> +			goto err_unpin_prog;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_unpin_prog:
+> +	bpf_object__unpin_skeleton_prog(s);
+> +
+> +	return libbpf_err(err);
+> +}
+> +
+> +void bpf_object__unpin_skeleton_prog(struct bpf_object_skeleton *s)
+> +{
+> +	struct bpf_link *link;
+> +	int i;
+> +
+> +	for (i = 0; i < s->prog_cnt; i++) {
+> +		link = *s->progs[i].link;
+> +		if (!link || !link->pin_path)
+> +			continue;
+> +
+> +		bpf_link__unpin(link);
+> +	}
+> +}
+> +
+>   void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
+>   {
+>   	if (!s)
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 3784867811a4..af44b0968cca 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -1427,6 +1427,10 @@ bpf_object__open_skeleton(struct bpf_object_skeleton *s,
+>   LIBBPF_API int bpf_object__load_skeleton(struct bpf_object_skeleton *s);
+>   LIBBPF_API int bpf_object__attach_skeleton(struct bpf_object_skeleton *s);
+>   LIBBPF_API void bpf_object__detach_skeleton(struct bpf_object_skeleton *s);
+> +LIBBPF_API int
+> +bpf_object__pin_skeleton_prog(struct bpf_object_skeleton *s, const char *path);
+> +LIBBPF_API void
+> +bpf_object__unpin_skeleton_prog(struct bpf_object_skeleton *s);
+>   LIBBPF_API void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s);
 
-Disassembly of section .data:
+Please also add API documentation.
 
-0000000000000000 <.data>:
-   0:   bf 16 00 00 00 00 00 00         mov %r6,%r1
-   8:   69 67 b0 00 00 00 00 00         ldxh %r7,[%r6+0xb0]
-  10:   b4 08 00 00 00 00 00 00         mov32 %r8,0
-  18:   44 08 00 00 02 00 00 00         or32 %r8,2
-  20:   b7 00 00 00 01 00 00 00         mov %r0,1
-  28:   55 08 01 00 02 00 00 00         jne %r8,2,1
-  30:   b7 00 00 00 00 00 00 00         mov %r0,0
-  38:   95 00 00 00 00 00 00 00         exit
-$
+>   struct bpf_var_skeleton {
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 82f6d62176dd..4e3e37b84b3a 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -55,6 +55,8 @@ LIBBPF_0.0.1 {
+>   		bpf_object__unload;
+>   		bpf_object__unpin_maps;
+>   		bpf_object__unpin_programs;
+> +		bpf_object__pin_skeleton_prog;
+> +		bpf_object__unpin_skeleton_prog;
+
+This would have to go under LIBBPF_0.8.0 if so.
+
+>   		bpf_perf_event_read_simple;
+>   		bpf_prog_attach;
+>   		bpf_prog_detach;
+> 
+
