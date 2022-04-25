@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF7C50EB8D
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 00:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F9650EB92
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 00:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbiDYWYe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Apr 2022 18:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        id S229502AbiDYWY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Apr 2022 18:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343490AbiDYV1y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Apr 2022 17:27:54 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046C1106DFE
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 14:24:48 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id h12so24665343plf.12
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 14:24:48 -0700 (PDT)
+        with ESMTP id S1343498AbiDYV2W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Apr 2022 17:28:22 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1B1CE4
+        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 14:25:14 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id z16so16037319pfh.3
+        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 14:25:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9RYuhCQRZSGGvQlvR3KQE72md5GMXY8uozyrhKpZbH4=;
-        b=76+cFpJlB2znElEluziuC+lYgS8j/y2ZEoL/3Ey3E/ltwLqQH/caL2CbKx/CjviqTf
-         VAaanrajTbqytcF+DAjxDxfemaieNsNjWEIwzrpenjDnuT3/Vvt91nO3RSOu+HURxpbK
-         xZGwSNJa/1fZh35VZAg66cOoBhCb5R93A36Y8b6aFV3V8SsN5YV4OJIqwVDg2rVMlhKQ
-         P3HvUczasvOvTuh312jNOy/Hb8K7vagFPrwqtDxTo+p3o4Vg6PlUrTa0KLpPggpj9dsW
-         X1tD8lce6FcfSlraB0XhUaoAIl5/WlVdnVLVivKxVON4WbD/O6yXfbjLvVxaLd5+EfZA
-         BhjQ==
+        bh=u7hl5IFxDI2eHkQRlXGbeDMciir9ECH93wIEe4AG2EI=;
+        b=OJOPp5x6ocU08AevEsYvyRugrSR63fLG3uhAcQNzXko/tlxNS4dLzOSy6TOP4qTHY7
+         3EylhuL4O3ShsCABXnEpCklGW1WYN4raTNoymTAYIRqGXUEl6Pd7wkV6q4QoxJB36ehW
+         Z10y5YmwWpTLQKr+I6SmSdiEvgO7Z5w7qAOqxdJX1O/OgGy2hd1r4OgWbtXlqRkG3vBy
+         dqnqJJ0XY4tRDVxOtEGc7LoAMyO+f6qCYGMSM+56h9NWqZZyV8J59JVP39MUs4eZ7Ui1
+         TDm+0paEaftGWOhnk73QHvi7K0Bun+9M0L1zTcqLMstbZCosXO6LusdaQsTPlrg1qShU
+         bd6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9RYuhCQRZSGGvQlvR3KQE72md5GMXY8uozyrhKpZbH4=;
-        b=QhrdVm1BfB+BvNeoZ9mvX0be2LT8LjO5pcTkNE88ABUx2BOFbtl97b5PfxLfDSaBQL
-         +9iQ+Nrv4TPn0o1K1N/xemFOc4Jo2RV5NffO9GEQ5VSc8f9jaDzyzpmUSlFygOSF8HwZ
-         J3kxCce9yjF7pJUpPiN6wpPeSTLLiOOftAn8NtDRyg7iIAlHIyEqwoshejf6GCwt2unW
-         29bzxR10inJRt3M2itJ12a9QQ6zHIfrf2sQr/jwplih73VHDdCybs85ErCCyiKuQp3xM
-         Np9PMEP8RTAsfzzMvkBVGYcMoPbc933t1EHFzrTcXNiyJAQNQy9FysxHdPhoZRaPDXaF
-         w/5w==
-X-Gm-Message-State: AOAM530kqUd/iW0/agoDY76USMOoALRqO8ubvNbDE2BiV5uwnU8uDoTg
-        AxMY7YPKA6NtwvPF1fGvE+snac80XPzgmf0xrkSzNw==
-X-Google-Smtp-Source: ABdhPJysD+6GxIKJGVU76kXWf16Gd4VaOx1Mwbkre+dhBbQ/oZx7AXi6WajOGSoOZadUd7bvIs6Q73h8n6Qn3HjHypQ=
-X-Received: by 2002:a17:90b:1d12:b0:1d9:8499:545d with SMTP id
- on18-20020a17090b1d1200b001d98499545dmr5770592pjb.96.1650921888547; Mon, 25
- Apr 2022 14:24:48 -0700 (PDT)
+        bh=u7hl5IFxDI2eHkQRlXGbeDMciir9ECH93wIEe4AG2EI=;
+        b=Hr2yDAGHuqc5AX9XA/wi8RzIFXmq0bFI7PRyl6kJjD7HxQ+mEv0Nrhzumx/n72LLUp
+         ThMuYNUP4bvZ3ZDxZmZHY0G+ln87l2BeEuz/WutYtbUzumjgAFnbx5Y2HJb5wx2cspx+
+         n2u7HnxnzMMC4pBS0iJGQ4yUEM2Cudnc1yBPzysPicXGI+M1SzR2rCkuxTmVUKwBCO98
+         3EPiE9ZjpXFlz4C1GVPycu+BYEqPe3q3F1Kh+HhSjYtycvM+AuDhISCd5G0HMOqIOJfH
+         PUJb0kRD3/hURDU0+ZwxT6y4V3iqYNusYwqNwMkbSicFd+yb0Goi7oZc93HSIpDWDhwI
+         LpQw==
+X-Gm-Message-State: AOAM532BI2DzY9KX2hbSZT75hFJNe0/cBUZPTePlOuy6vFlRmRsSGUZg
+        U/UCBekSB4qt/D35oRHgamPx1BDP2igNnh/swbDBEg==
+X-Google-Smtp-Source: ABdhPJyjvuSyMhaDXA5uS4wqJXkzuCx/QHOdMUNQ0WA32JkkTRIkvO9Y+T/QmJNrakGd6o2JPiD3KA9ScfGvzuSGj78=
+X-Received: by 2002:a63:42:0:b0:3a8:47f7:bf0d with SMTP id 63-20020a630042000000b003a847f7bf0dmr16823748pga.276.1650921914481;
+ Mon, 25 Apr 2022 14:25:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220424051022.2619648-1-asmadeus@codewreck.org> <20220424051022.2619648-4-asmadeus@codewreck.org>
-In-Reply-To: <20220424051022.2619648-4-asmadeus@codewreck.org>
+References: <20220424051022.2619648-1-asmadeus@codewreck.org> <20220424051022.2619648-5-asmadeus@codewreck.org>
+In-Reply-To: <20220424051022.2619648-5-asmadeus@codewreck.org>
 From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Mon, 25 Apr 2022 22:24:37 +0100
-Message-ID: <CACdoK4LH3b-n3j_9r4hbgAus1UiJkfMBOMxboTzSVWbqi+j4wg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] tools/bpf: musl compat: replace nftw with FTW_ACTIONRETVAL
+Date:   Mon, 25 Apr 2022 22:25:03 +0100
+Message-ID: <CACdoK4+WVdXz0jqKijF+wg=1M9V-=JpBHeJD5RJfNzq67TD+5A@mail.gmail.com>
+Subject: Re: [PATCH 4/4] tools/bpf: replace sys/fcntl.h by fcntl.h
 To:     Dominique Martinet <asmadeus@codewreck.org>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
@@ -73,17 +72,8 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sun, 24 Apr 2022 at 06:11, Dominique Martinet <asmadeus@codewreck.org> wrote:
 >
-> musl nftw implementation does not support FTW_ACTIONRETVAL.
->
-> There have been multiple attempts at pushing the feature in musl
-> upstream but it has been refused or ignored all the times:
-> https://www.openwall.com/lists/musl/2021/03/26/1
-> https://www.openwall.com/lists/musl/2022/01/22/1
->
-> In this case we only care about /proc/<pid>/fd/<fd>, so it's not
-> too difficult to reimplement directly instead, and the new
-> implementation makes 'bpftool perf' slightly faster because it doesn't
-> needlessly stat/readdir unneeded directories (54ms -> 13ms on my machine)
+> musl does not like including sys/fcntl.h directly:
+>     1 | #warning redirecting incorrect #include <sys/fcntl.h> to <fcntl.h>
 >
 > Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
 
