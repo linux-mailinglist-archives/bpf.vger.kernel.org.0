@@ -2,169 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A880E50FEB8
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 15:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8E250FF5C
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 15:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350848AbiDZNXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 09:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S1351030AbiDZNoH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 09:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349997AbiDZNXK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 09:23:10 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA98DE8A
-        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 06:20:00 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id i62so3888645pgd.6
-        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 06:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HLmgdCeRQnlZPI0jqFO8y9T2xXc5m6qGLiOpaSM2FSM=;
-        b=jPCQfFTpQpV7n7pB7rQDJt9sEnkgB4WREXGbL8Dv7b1F2XbxwlGG9CjunEgd52tZNh
-         f7b7jRWcHwxnBXWkjhTIo5RsaLGht6e7tCbque3ut0TGd+K/JWFdBL3RoZ66gTg6AWOr
-         tt/4wyon5tX9Fj2AvW12rYJSMG5VjtoOlW++QPT8nwJk7gFXCOX3SrHat2epwpEjI8ww
-         AFCQ8Rn77o0zNND5MQZv31aCz2DUeV3FK9hPagKRgqmRKXpwU/XnLSgFUbHZhkfSHEkJ
-         o1Ok5lmOEVM5/v+cSqBQdoCuC+HiqBJ64GblVLjeciEYYmiEZfTWUZcMQfwIiTVE6i/p
-         J72w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HLmgdCeRQnlZPI0jqFO8y9T2xXc5m6qGLiOpaSM2FSM=;
-        b=jG4LYgGBLluY9wKGL4hy73GjAEP6J70rvQWjFeBq/PhBI8hRxGGSKJucFPOY6jVdrK
-         Fxft+IWRWSUKySzMp4M8Dz1ANO4A8WWPFg4e3tRTyJswmzQBfSxhQ1bZHUbhnUygxQiT
-         SmgZE5xoA+nYXibB07LMdxscDtxXGQMqOtHKfKGErdog9rUQK6JQk5fmYMMSbqs4RjGk
-         h+7Ru2MuUe+0Go1NWW04AWDXmFqyiedrRJEUJK/yeVepil0V8bhwBZcdj+aEVSWrEqOh
-         0GuBHpzlW9UsFAzrT7nSQvCLqJFfmAy+OjWnl7kaC5TlFfTUSnEO9jsbGAAItVJGhXSN
-         QVZw==
-X-Gm-Message-State: AOAM530zuNFT+vMEPaUKxShgUqhVJZ3eJlfiiJ/5j3vX4m+TR4gZP2fY
-        DFLdoNnAKI0gAqLuBL3pqzL0Pw==
-X-Google-Smtp-Source: ABdhPJywU6zSNw8eC6iZB0lW4cMNYVRUgoT39LY8hW7zbfiZnYq6dVsSlFGb05d66NZD5nCNmqfhWQ==
-X-Received: by 2002:a63:86c8:0:b0:3aa:fa50:b002 with SMTP id x191-20020a6386c8000000b003aafa50b002mr13427236pgd.570.1650979199932;
-        Tue, 26 Apr 2022 06:19:59 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s (216.24.179.102.16clouds.com. [216.24.179.102])
-        by smtp.gmail.com with ESMTPSA id x22-20020a17090aa39600b001d95c09f877sm3120923pjp.35.2022.04.26.06.19.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Apr 2022 06:19:59 -0700 (PDT)
-Date:   Tue, 26 Apr 2022 21:19:52 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Timothy Hayes <timothy.hayes@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/3] perf: arm-spe: Fix SPE events with phys addresses
-Message-ID: <20220426131952.GA1923836@leoy-ThinkPad-X240s>
-References: <20220421165205.117662-1-timothy.hayes@arm.com>
- <20220421165205.117662-3-timothy.hayes@arm.com>
- <20220424125951.GD978927@leoy-ThinkPad-X240s>
- <322009d2-330c-22d4-4075-eca2042f64e1@arm.com>
+        with ESMTP id S1351088AbiDZNn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 09:43:58 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1AC3D4A2;
+        Tue, 26 Apr 2022 06:40:46 -0700 (PDT)
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Knjfv4Dylz1JBl0;
+        Tue, 26 Apr 2022 21:39:51 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 26 Apr 2022 21:40:44 +0800
+Received: from k04.huawei.com (10.67.174.115) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 26 Apr 2022 21:40:44 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <bjorn@kernel.org>, <luke.r.nels@gmail.com>, <xi.wang@gmail.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <pulehui@huawei.com>
+Subject: [PATCH -next 0/2] Support riscv jit to provide bpf_line_info
+Date:   Tue, 26 Apr 2022 22:09:22 +0800
+Message-ID: <20220426140924.3308472-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <322009d2-330c-22d4-4075-eca2042f64e1@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.115]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 10:12:36AM +0100, James Clark wrote:
+patch 1 fix an issue that could not print bpf line info due
+to data inconsistency in 32-bit environment.
 
-[...]
+patch 2 add support for riscv jit to provide bpf_line_info.
+Both RV32 and RV64 tests have been passed as like follow:
 
-> >> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-> >> index 151cc38a171c..1a80151baed9 100644
-> >> --- a/tools/perf/util/arm-spe.c
-> >> +++ b/tools/perf/util/arm-spe.c
-> >> @@ -1033,7 +1033,8 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
-> >>  	memset(&attr, 0, sizeof(struct perf_event_attr));
-> >>  	attr.size = sizeof(struct perf_event_attr);
-> >>  	attr.type = PERF_TYPE_HARDWARE;
-> >> -	attr.sample_type = evsel->core.attr.sample_type & PERF_SAMPLE_MASK;
-> >> +	attr.sample_type = evsel->core.attr.sample_type &
-> >> +				(PERF_SAMPLE_MASK | PERF_SAMPLE_PHYS_ADDR);
-> > 
-> > I verified this patch and I can confirm the physical address can be
-> > dumped successfully.
-> > 
-> > I have a more general question, seems to me, we need to change the
-> > macro PERF_SAMPLE_MASK in the file util/event.h as below, so
-> > here doesn't need to 'or' the flag PERF_SAMPLE_PHYS_ADDR anymore.
-> > 
-> > @Arnaldo, @Jiri, could you confirm if this is the right way to move
-> > forward?  I am not sure why PERF_SAMPLE_MASK doesn't contain the bit
-> > PERF_SAMPLE_PHYS_ADDR in current code.
-> 
-> I think there is a reason that PERF_SAMPLE_MASK is a subset of all the
-> bits. This comment below suggests it. Is it so the mask only includes fields
-> that are 64bits? That makes the __evsel__sample_size() function a simple
-> multiplication of a count of all the fields that are 64bits.
+./test_progs -a btf
+#19 btf:OK
+Summary: 1/215 PASSED, 0 SKIPPED, 0 FAILED
 
-After reading code, seems the conclusion "a count of all the fields
-that are 64bits" is not valid.  PERF_SAMPLE_MASK contains bits
-PERF_SAMPLE_IP and PERF_SAMPLE_TID, the corresponding fields 'pid'
-and 'tid' in the structure perf_sample are u32 type.
+Pu Lehui (2):
+  bpf: Unify data extension operation of jited_ksyms and jited_linfo
+  riscv, bpf: Support riscv jit to provide bpf_line_info
 
->   static int
->   perf_event__check_size(union perf_event *event, unsigned int sample_size)
->   {
-> 	/*
-> 	 * The evsel's sample_size is based on PERF_SAMPLE_MASK which includes
-> 	 * up to PERF_SAMPLE_PERIOD.  After that overflow() must be used to
-> 	 * check the format does not go past the end of the event.
-> 	 */
-> 	if (sample_size + sizeof(event->header) > event->header.size)
-> 		return -EFAULT;
+ arch/riscv/net/bpf_jit.h                     |  1 +
+ arch/riscv/net/bpf_jit_core.c                |  7 ++++++-
+ kernel/bpf/syscall.c                         |  5 ++++-
+ tools/lib/bpf/bpf_prog_linfo.c               |  8 ++++----
+ tools/testing/selftests/bpf/prog_tests/btf.c | 18 +++++++++---------
+ 5 files changed, 24 insertions(+), 15 deletions(-)
 
-Okay, thanks for sharing the info, it does show that it's deliberately to
-not contain all fields in PERF_SAMPLE_MASK.  If so, this patch is fine
-for me:
+-- 
+2.25.1
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-
-
-> 	return 0;
->   }
-> 
-> Having said that, the mask was updated once to add PERF_SAMPLE_IDENTIFIER to
-> it, so that comment is slightly out of date now.
-> 
-> 
-> > 
-> > diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-> > index cdd72e05fd28..c905ac32ebad 100644
-> > --- a/tools/perf/util/event.h
-> > +++ b/tools/perf/util/event.h
-> > @@ -39,7 +39,7 @@ struct perf_event_attr;
-> >          PERF_SAMPLE_TIME | PERF_SAMPLE_ADDR |          \
-> >         PERF_SAMPLE_ID | PERF_SAMPLE_STREAM_ID |        \
-> >          PERF_SAMPLE_CPU | PERF_SAMPLE_PERIOD |         \
-> > -        PERF_SAMPLE_IDENTIFIER)
-> > +        PERF_SAMPLE_IDENTIFIER | PERF_SAMPLE_PHYS_ADDR)
-> > 
-> > Thanks,
-> > Leo
-> > 
-> >>  	attr.sample_type |= PERF_SAMPLE_IP | PERF_SAMPLE_TID |
-> >>  			    PERF_SAMPLE_PERIOD | PERF_SAMPLE_DATA_SRC |
-> >>  			    PERF_SAMPLE_WEIGHT | PERF_SAMPLE_ADDR;
-> >> -- 
-> >> 2.25.1
-> >>
