@@ -2,110 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FAA5102FE
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 18:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC134510337
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 18:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352866AbiDZQRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 12:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
+        id S241199AbiDZQYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 12:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbiDZQRw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 12:17:52 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9CC9E9CA;
-        Tue, 26 Apr 2022 09:14:44 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id r28so1917446iot.1;
-        Tue, 26 Apr 2022 09:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xQ7JAlrZNbN+4UBwUPLrm9e0Bc1f0Mue3TCyhSjw9fg=;
-        b=PsVMgd1FSGWf0143r+osiQHexPkmN4qYX84UIUdvP77H+bOL/n1Csk4f3feLmicwvY
-         ynYfrVCub9IAoFSxVMC+DO1k+lPMppP8KZtxdIr5Y9Tc87kzwFNf5LufTAwSTY0DFhZq
-         Ol8Snp6N4dxtAMQziNX0KTnJclrJMka5G3OZT2fo60XcWvgwcm5QzncrNDFqCK6QtQdZ
-         4aNcc1xMZR9vze55pliLo2gv7zkfKLiy3JOdRF5Q476eP4j42Ktl6CyMCvghV0NIz1PH
-         f6BTrZTabsYCDoZZIc+6wI3hSd4fOTelba3xSV+FRJL/SCVxfbPVHaoXQnut4bGXF+Em
-         3/RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xQ7JAlrZNbN+4UBwUPLrm9e0Bc1f0Mue3TCyhSjw9fg=;
-        b=xzSdyuTpa1gAJLdX6iroPhOEtYNM4622V/yiTkaSG0sjFVAPtY+jyfggWxkyciaStz
-         /DnW+kONrWRNmWpGOaIwy23lemeSnPMIog1M77i1Fzdv6c40EZOPVib4StRxhLhalkXP
-         OuI+SywmfsLKJUPTtdkL4JoXW6oeFsHdj/+nhWGtrstnX8osfuDbjTcsD7lMhpCgT1So
-         MVm5Gbh5XzAPu3ZVtZDuG1cvI2QwNx5vxBITuccEZOc+6SeOshMRKERHsus2DvcaU6Bk
-         qIrV9bdxValO6k8/X9zF1yCHFVjUFTBoMiBJ04+kKqZFbUwmmyyavUhQQfJiMyYEyx7N
-         4vMQ==
-X-Gm-Message-State: AOAM533hpqUsVufWsmK9Jy0f0WDZMl09mihldfpIN3BVFyrug43K38IV
-        gKYfVg8XjfQxEUhOmLGc/8fqjfSV9e5EBjrMFJ4=
-X-Google-Smtp-Source: ABdhPJzhqrR9Z509Ybk1zXarEfqo7oMWYwEwzmJk6yr2Ce+F4Fl9Vv6Knh2saA4O4OhmeM5y7MRL1sU7iskXWMQLEQY=
-X-Received: by 2002:a02:c519:0:b0:32a:e80c:a618 with SMTP id
- s25-20020a02c519000000b0032ae80ca618mr5775965jam.140.1650989683956; Tue, 26
- Apr 2022 09:14:43 -0700 (PDT)
+        with ESMTP id S1352941AbiDZQX4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 12:23:56 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6481D3DA6;
+        Tue, 26 Apr 2022 09:20:46 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23QDDBSN029493;
+        Tue, 26 Apr 2022 09:20:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pfpt0220;
+ bh=ubNDydfKF8ox4o7eLY4+glSSy0wWOtCY2o+4EHI1MYE=;
+ b=ZEdn9nWk99jYF2jrEeDKvbX8VXT28JVb1QcIRVW8fEy42gmTzvYrFffrcPtxEX2jRE0x
+ r2lOsEiLZY158Tua7XpdOimKZJDXq7LRmXE675I3Xz+DuwRmPqOIWJ4FiuFZaLgh2vqX
+ iSsi+nycPFHT3E3+nG2ABGtt9pkfIcYRnwAWi9gcglTH0PjT8K5q053snlfGbMFytxtt
+ 7t4eK1vKUZCrWcA0+PaV/+N0FLLVd0DofEV8Ga1vfOasu2l+v6J1VqjHXvb0i82KWoZ7
+ YbTVJW4tzyTZYwXkrY6l7aPkWDqGYf4xajttfSowLnTCr7Gi7uqINmb6JUXDpEB1XPwP 3g== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3fp868av2y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 26 Apr 2022 09:20:21 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 26 Apr
+ 2022 09:20:18 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Tue, 26 Apr 2022 09:20:18 -0700
+Received: from [10.193.34.141] (unknown [10.193.34.141])
+        by maili.marvell.com (Postfix) with ESMTP id 66A473F708A;
+        Tue, 26 Apr 2022 09:19:50 -0700 (PDT)
+Message-ID: <69541987-fe2e-c7ab-814e-06e5575cf4c0@marvell.com>
+Date:   Tue, 26 Apr 2022 18:19:46 +0200
 MIME-Version: 1.0
-References: <20220423140058.54414-1-laoar.shao@gmail.com> <20220423140058.54414-4-laoar.shao@gmail.com>
- <CAEf4BzapX1CKCX5VWwMkbm5yHukq36UxwcXDduQCMW=-VEEv4Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzapX1CKCX5VWwMkbm5yHukq36UxwcXDduQCMW=-VEEv4Q@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 27 Apr 2022 00:14:07 +0800
-Message-ID: <CALOAHbDWvRAe=O-cG1nOMgant38g68u0t9HsDy4RDO7bh=hnUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] bpftool: Fix incorrect return in generated
- detach helper
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101
+ Thunderbird/100.0
+Subject: Re: [EXT] [PATCH net-next v5 0/3] net: atlantic: Add XDP support
+Content-Language: en-US
+To:     Taehee Yoo <ap420073@gmail.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <andrii@kernel.org>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>
+References: <20220417101247.13544-1-ap420073@gmail.com>
+From:   Igor Russkikh <irusskikh@marvell.com>
+In-Reply-To: <20220417101247.13544-1-ap420073@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: om_pomMjob5vOlAqzgoQO0ND_8GTfTj5
+X-Proofpoint-GUID: om_pomMjob5vOlAqzgoQO0ND_8GTfTj5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-04-26_05,2022-04-26_02,2022-02-23_01
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 2:47 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, Apr 23, 2022 at 7:02 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > There is no return value of bpf_object__detach_skeleton(), so we'd
-> > better not return it, that is formal.
-> >
-> > Fixes: 5dc7a8b21144 ("bpftool, selftests/bpf: Embed object file inside skeleton")
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  tools/bpf/bpftool/gen.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > index 7678af364793..8f76d8d9996c 100644
-> > --- a/tools/bpf/bpftool/gen.c
-> > +++ b/tools/bpf/bpftool/gen.c
-> > @@ -1171,7 +1171,7 @@ static int do_skeleton(int argc, char **argv)
-> >                 static inline void                                          \n\
-> >                 %1$s__detach(struct %1$s *obj)                              \n\
-> >                 {                                                           \n\
-> > -                       return bpf_object__detach_skeleton(obj->skeleton);  \n\
-> > +                       bpf_object__detach_skeleton(obj->skeleton);         \n\
->
-> It's not incorrect to return the result of void-returning function in
-> another void-returning function. C compiler allows this and we rely on
-> this property very explicitly in macros like BPF_PROG and BPF_KPROBE.
-> So if anything, it's not a fix, at best improvement, but even then
-> quite optional.
+Thanks Taehee,
 
-Right, the C compiler allows it.
-I won't change it.
+v5 looks great with these pageorder changes.
 
--- 
-Regards
-Yafang
+> v5:
+>  - Use MEM_TYPE_PAGE_SHARED instead of MEM_TYPE_PAGE_ORDER0
+>  - Use 2K frame size instead of 3K
+>  - Use order-2 page allocation instead of order-0
+>  - Rename aq_get_rxpage() to aq_alloc_rxpages()
+>  - Add missing PageFree stats for ethtool
+>  - Remove aq_unset_rxpage_xdp(), introduced by v2 patch due to
+>    change of memory model
+>  - Fix wrong last parameter value of xdp_prepare_buff()
+>  - Add aq_get_rxpages_xdp() to increase page reference count
+
+
+  Igor
