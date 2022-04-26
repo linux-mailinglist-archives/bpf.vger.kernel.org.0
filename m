@@ -2,99 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754B751064C
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 20:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F435106CE
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 20:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241942AbiDZSKI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 14:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
+        id S243844AbiDZS2F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 14:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344816AbiDZSKH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 14:10:07 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6400F62121
-        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 11:06:57 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id j4so8832875lfh.8
-        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 11:06:57 -0700 (PDT)
+        with ESMTP id S1351241AbiDZS2E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 14:28:04 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883DC197FBA
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 11:24:56 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id c12so30992107plr.6
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 11:24:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=q9PgJYIkekpT1PeN0Ula26SP1wr4OzzucTU5M9tDI58=;
-        b=SiupGIsP3jfzaC5yIpI4Nug3pVEDfUf4e8v6qVX36LldNn2Eagnug/8etwBwtz0CuZ
-         v1e3e2UiM6LmeprOK2udgxfIj0cwqdF77wJKPWwVBA/8cgf2Wj3h/AuYO4HURfu0dden
-         7VkEQ/jfg5qOCa6GZPm2e2sEggo/UVAjcw3SbKpNcCVIe/3IXkQcj254+QhXNvIS2afD
-         U99DoIOV40+Bd94ONHyk4lklJ1N4nvjIPtda0yvtAOji5rgXEUZh3Rn8DuOARTx1O4RD
-         D8Fg6cvT3Nb2rbw9TI6l9iG5cbYgpp8I+TS0aQgbx1qNh5h+F+kcM/rd/SBzgD+aNeKT
-         lFyg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XtzYzShMVyd+kyzwCJxTHJDRp0RuH/SYetmF/PF7R9M=;
+        b=jNr5yb/P/y1J3TS8LV+BN4FcQEgoS9CftoHtqJV1h9zTBJKh8QoriNgM8BaQF/blKg
+         3Cyd0OBaTieIbYYgcBtRUU0qN3IiHbPmhM4wZd29bqWNOYgeGj/tP/L1Wdsfac/F729w
+         sxGoBuWv+h5lHXuaa4Vm4YR6ag0YCEeBw8azTwYtgC7RoAo/bOrJqtPsP4LRNTX4m8uC
+         +vikv2W6OKm49RoApnu1+tM2ycOHWob9nWtbfkXNlecJ4uFv2lM0usbOl3mG22pSlyOC
+         7JQO4CKk+tK8jkqplPC4PVW6GbIermVxJZLCPNzO8Y4eQyhLeHlIF0Q7pCgDDh6XX5hd
+         532Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=q9PgJYIkekpT1PeN0Ula26SP1wr4OzzucTU5M9tDI58=;
-        b=khDJqboTf/3DV0GfPkuOvxnrpmKsVeFA/xXq5pqVnRSuWs22o1jolQMxS0fnU3G5dF
-         yv/jc6BBTObbyqFJ3xwcYnUwX/obypueDkEwKR2jsp9/9378fpbLllATUTSjVVTMzVtq
-         DLLphHhDkJQ6GlyqNYRbTZIGm5mBtGeHxSd29pA2jqJDKr06vlE0f0ALCKwqDE769nHh
-         erQRfrlbO/0In1DE8Qpc00rqqIA+Szr+Nim/xQBV1BVDyVi4bn4ljIbPFercbukg/ooB
-         rnV0OQ3aaLegzqLo4TWRoSOQ3BURYaJRgIPxdXJLd80CBmIuTHRznCf1hUXh8PKoMZaN
-         YuEw==
-X-Gm-Message-State: AOAM533mxIjckAhOU1JjsD6iclpP99pdAmli7t69eomNiOXZfhQP7im2
-        79HJ/T1KufWrDKQ04jyOdtlYGALM/KEPtzhyGvg=
-X-Google-Smtp-Source: ABdhPJzOQZTVGCprR9BjqYcqI23A7O5vl9s1Q7d43zXgy1xiBhB33NG2xUTyUHceB3/+amHoFw1D5gq1XowdJrgLqPQ=
-X-Received: by 2002:ac2:5989:0:b0:472:d3d:ba07 with SMTP id
- w9-20020ac25989000000b004720d3dba07mr6013613lfn.158.1650996415436; Tue, 26
- Apr 2022 11:06:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XtzYzShMVyd+kyzwCJxTHJDRp0RuH/SYetmF/PF7R9M=;
+        b=YgvuqMV5KQSsK5D0ziNzU6Qrg3qMfJRapeN+/4RwnAXVuSSAZ+Y6deDsFyIGknInR+
+         B3bvPwdyQrd2fV5FAKCk97TCblybSVhTcF6e47ukhaGNXSr9e++VPi4MDz/XyYJ36Ywv
+         gc65xOPFfbhCHd5Hgaz/VLn/KznU2xVqMVF6mB6sWQ9TaZyP0I+fkdt9MxVHZoR+EfzV
+         n9dWIsm3KUVpBHeEDLVbYOQn2DWAIgL4SfiJZVSKCAPo3WYxFKZzUpauk0QRmhuczfw6
+         AkS8hLnBmocozRpyo1YinxKgvmp1T7eSPgg1QOCty6GAVKXPOsftXZYaYgTwJiYju6rJ
+         mkow==
+X-Gm-Message-State: AOAM5303UVkWPlFYl9OHfk4U/qDTeze0JjSh7Nesv1e/2tDRlRc/R8I1
+        IK0AWM7iadS1RxNouN3CcK4=
+X-Google-Smtp-Source: ABdhPJxYRWuqvcN4i4YI5bA+jjoigEu8vxba9viHECOUCU2WmNd/+2cISNZQmfqh/KuXnm3plIF+Yg==
+X-Received: by 2002:a17:90a:df0f:b0:1d9:2372:b55e with SMTP id gp15-20020a17090adf0f00b001d92372b55emr22592933pjb.104.1650997495340;
+        Tue, 26 Apr 2022 11:24:55 -0700 (PDT)
+Received: from MacBook-Pro.local ([2620:10d:c090:500::2:3e5a])
+        by smtp.gmail.com with ESMTPSA id b4-20020a62a104000000b0050cf012cba1sm15970136pff.91.2022.04.26.11.24.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Apr 2022 11:24:54 -0700 (PDT)
+Date:   Tue, 26 Apr 2022 11:24:51 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kaixi Fan <fankaixi.li@bytedance.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [External] [PATCH bpf-next v5 2/3] selftests/bpf: Move vxlan
+ tunnel testcases to test_progs
+Message-ID: <20220426182451.jjqo6eifnhz6ptfn@MacBook-Pro.local>
+References: <20220422120259.10185-1-fankaixi.li@bytedance.com>
+ <20220422120259.10185-3-fankaixi.li@bytedance.com>
+ <CAADnVQL9=XivjNeg3CyE67N3cp6xB+cetUhWG6b+DtXo-6x0VA@mail.gmail.com>
+ <CAEEdnKFjUQeZGYFF+gAtqEeyCzdz=5A91w-PFgAjsS-nkZ6BXw@mail.gmail.com>
+ <CAADnVQL2j-sLdDr+ZRHakKo8SVrKofCq3ffQJ8Fpqvr0gEXHPg@mail.gmail.com>
+ <CAEEdnKG-HeAhWrATMTOYKa7_OdKXs4NjrVrQpcxFXSicgNY1mw@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6520:40e8:b0:1aa:f98c:d5d1 with HTTP; Tue, 26 Apr 2022
- 11:06:54 -0700 (PDT)
-Reply-To: mrbeliyogo1997@gmail.com
-From:   MR YOGO BALI <mrhuasink@gmail.com>
-Date:   Tue, 26 Apr 2022 11:06:54 -0700
-Message-ID: <CA+WieDntH3XLG8LLR83mjfok09_C+vCmU2Qr275iOnA=o+m7kg@mail.gmail.com>
-Subject: Greetings,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_HK_NAME_FM_MR_MRS,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:135 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [mrhuasink[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mrbeliyogo1997[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  3.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEEdnKG-HeAhWrATMTOYKa7_OdKXs4NjrVrQpcxFXSicgNY1mw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Good Day,
-I am Mr. Yogo  Bali,the manager with SBG Bank i contact you for a deal
-relating to the funds which are in my position I shall furnish you
-with more detail once your response.
+On Sun, Apr 24, 2022 at 11:32:07AM +0800, Kaixi Fan wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> 于2022年4月24日周日 10:57写道：
+> >
+> > On Fri, Apr 22, 2022 at 7:51 PM Kaixi Fan <fankaixi.li@bytedance.com> wrote:
+> > >
+> > > Alexei Starovoitov <alexei.starovoitov@gmail.com> 于2022年4月23日周六 08:37写道：
+> > > >
+> > > > On Fri, Apr 22, 2022 at 5:04 AM <fankaixi.li@bytedance.com> wrote:
+> > > > > +#define VXLAN_TUNL_DEV0 "vxlan00"
+> > > > > +#define VXLAN_TUNL_DEV1 "vxlan11"
+> > > > > +#define IP6VXLAN_TUNL_DEV0 "ip6vxlan00"
+> > > > > +#define IP6VXLAN_TUNL_DEV1 "ip6vxlan11"
+> > > > > +
+> > > > > +#define SRC_INGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_ingress_src"
+> > > > > +#define SRC_EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_egress_src"
+> > > > > +#define DST_EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_egress_dst"
+> > > > > +
+> > > > > +#define PING_ARGS "-c 3 -w 10 -q"
+> > >
+> > > Thanks for the suggestion.
+> > >
+> > > >
+> > > > Thanks for moving the test to test_progs,
+> > > > but its runtime is excessive.
+> > > >
+> > > > time ./test_progs -t tunnel
+> > > > #195 tunnel:OK
+> > > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> > > >
+> > > > real    0m26.530s
+> > > > user    0m0.075s
+> > > > sys    0m1.317s
+> > > >
+> > > > Please find a way to test the functionality in a second or so.
+> > >
+> > > Hi Alexei,
+> > > Do you mean the sys time should be in a second ?
+> >
+> > real time.
+> > sys time is already there.
+> > The big delta between real and sys time highlights
+> > inefficiency of the test. The test sleeps most of the time.
+> 
+> The tunnel test includes many types of tunnel testcases.  Add a new
+> tunnel testcase would increase test time.
+> So the real time could not be reduced into a second.
+> The test code calls many shell commands to setup test environments. It
+> may be the reason why there is a big
+> delta bettween real and sys time.
 
-Regards,
-Mr. Yogo bali.
+Try reducing the number of shell commands.
+For example, instead create+teardwon of netns keep it the same across
+different tunnel tests and clean up once.
+
+> Reduce the ping packet interval would reduce the real and sys time
+> significantly.
+> real 0m7.088s
+> user 0m0.062s
+> sys 0m0.119s
+
+Please try to reduce it further. Clearly all 7 seconds CPU mainly sleeps.
