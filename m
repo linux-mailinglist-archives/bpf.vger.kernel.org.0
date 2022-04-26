@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073DC50EDC2
+	by mail.lfdr.de (Postfix) with ESMTP id 5278F50EDC3
 	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 02:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240452AbiDZAso convert rfc822-to-8bit (ORCPT
+        id S240447AbiDZAso convert rfc822-to-8bit (ORCPT
         <rfc822;lists+bpf@lfdr.de>); Mon, 25 Apr 2022 20:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240444AbiDZAsn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Apr 2022 20:48:43 -0400
+        with ESMTP id S240441AbiDZAsm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Apr 2022 20:48:42 -0400
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA65422BED
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240331BE97
         for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 17:45:37 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23PHP8il005375
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 17:45:37 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fmf9pxhbx-2
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23PNidiC003561
+        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 17:45:36 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fmeytxkey-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 17:45:37 -0700
-Received: from twshared31479.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 17:45:36 -0700
+Received: from twshared39027.37.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 25 Apr 2022 17:45:35 -0700
+ 15.1.2375.24; Mon, 25 Apr 2022 17:45:34 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 3568418FD8F54; Mon, 25 Apr 2022 17:45:30 -0700 (PDT)
+        id 3FBBE18FD8F5A; Mon, 25 Apr 2022 17:45:32 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 07/10] libbpf: refactor CO-RE relo human description formatting routine
-Date:   Mon, 25 Apr 2022 17:45:08 -0700
-Message-ID: <20220426004511.2691730-8-andrii@kernel.org>
+Subject: [PATCH bpf-next 08/10] libbpf: simplify bpf_core_parse_spec() signature
+Date:   Mon, 25 Apr 2022 17:45:09 -0700
+Message-ID: <20220426004511.2691730-9-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220426004511.2691730-1-andrii@kernel.org>
 References: <20220426004511.2691730-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: UNJ5vG0zZ0RGf3JNEYBTVuuuqbqTE1I5
-X-Proofpoint-GUID: UNJ5vG0zZ0RGf3JNEYBTVuuuqbqTE1I5
+X-Proofpoint-GUID: u1Z7xFjeSlWBoY5FpYSSoN_rkW0wrkFH
+X-Proofpoint-ORIG-GUID: u1Z7xFjeSlWBoY5FpYSSoN_rkW0wrkFH
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-04-25_10,2022-04-25_03,2022-02-23_01
@@ -55,152 +55,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Refactor how CO-RE relocation is formatted. Now it dumps human-readable
-representation, currently used by libbpf in either debug or error
-message output during CO-RE relocation resolution process, into provided
-buffer. This approach allows for better reuse of this functionality
-outside of CO-RE relocation resolution, which we'll use in next patch
-for providing better error message for BPF verifier rejecting BPF
-program due to unguarded failed CO-RE relocation.
-
-It also gets rid of annoying "stitching" of libbpf_print() calls, which
-was the only place where we did this.
+Simplify bpf_core_parse_spec() signature to take struct bpf_core_relo as
+an input instead of requiring callers to decompose them into type_id,
+relo, spec_str, etc. This makes using and reusing this helper easier.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/relo_core.c | 64 +++++++++++++++++++++++----------------
- 1 file changed, 38 insertions(+), 26 deletions(-)
+ tools/lib/bpf/relo_core.c | 34 +++++++++++++++-------------------
+ 1 file changed, 15 insertions(+), 19 deletions(-)
 
 diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index adaa22160692..13d36a705464 100644
+index 13d36a705464..4a9ad0cfb474 100644
 --- a/tools/lib/bpf/relo_core.c
 +++ b/tools/lib/bpf/relo_core.c
-@@ -1055,51 +1055,66 @@ int bpf_core_patch_insn(const char *prog_name, struct bpf_insn *insn,
-  * [<type-id>] (<type-name>) + <raw-spec> => <offset>@<spec>,
-  * where <spec> is a C-syntax view of recorded field access, e.g.: x.a[3].b
+@@ -179,28 +179,27 @@ static bool core_relo_is_enumval_based(enum bpf_core_relo_kind kind)
+  * string to specify enumerator's value index that need to be relocated.
   */
--static void bpf_core_dump_spec(const char *prog_name, int level, const struct bpf_core_spec *spec)
-+static int bpf_core_format_spec(char *buf, size_t buf_sz, const struct bpf_core_spec *spec)
+ static int bpf_core_parse_spec(const char *prog_name, const struct btf *btf,
+-			       __u32 type_id,
+-			       const char *spec_str,
+-			       enum bpf_core_relo_kind relo_kind,
++			       const struct bpf_core_relo *relo,
+ 			       struct bpf_core_spec *spec)
  {
+ 	int access_idx, parsed_len, i;
+ 	struct bpf_core_accessor *acc;
  	const struct btf_type *t;
- 	const struct btf_enum *e;
- 	const char *s;
- 	__u32 type_id;
--	int i;
-+	int i, len = 0;
-+
-+#define append_buf(fmt, args...)				\
-+	({							\
-+		int r;						\
-+		r = snprintf(buf, buf_sz, fmt, ##args);		\
-+		len += r;					\
-+		if (r >= buf_sz)				\
-+			r = buf_sz;				\
-+		buf += r;					\
-+		buf_sz -= r;					\
-+	})
+-	const char *name;
++	const char *name, *spec_str;
+ 	__u32 id;
+ 	__s64 sz;
  
- 	type_id = spec->root_type_id;
- 	t = btf_type_by_id(spec->btf, type_id);
- 	s = btf__name_by_offset(spec->btf, t->name_off);
++	spec_str = btf__name_by_offset(btf, relo->access_str_off);
+ 	if (str_is_empty(spec_str) || *spec_str == ':')
+ 		return -EINVAL;
  
--	libbpf_print(level, "[%u] %s %s", type_id, btf_kind_str(t), str_is_empty(s) ? "<anon>" : s);
-+	append_buf("<%s> [%u] %s %s",
-+		   core_relo_kind_str(spec->relo_kind),
-+		   type_id, btf_kind_str(t), str_is_empty(s) ? "<anon>" : s);
+ 	memset(spec, 0, sizeof(*spec));
+ 	spec->btf = btf;
+-	spec->root_type_id = type_id;
+-	spec->relo_kind = relo_kind;
++	spec->root_type_id = relo->type_id;
++	spec->relo_kind = relo->kind;
  
- 	if (core_relo_is_type_based(spec->relo_kind))
--		return;
-+		return len;
+ 	/* type-based relocations don't have a field access string */
+-	if (core_relo_is_type_based(relo_kind)) {
++	if (core_relo_is_type_based(relo->kind)) {
+ 		if (strcmp(spec_str, "0"))
+ 			return -EINVAL;
+ 		return 0;
+@@ -221,7 +220,7 @@ static int bpf_core_parse_spec(const char *prog_name, const struct btf *btf,
+ 	if (spec->raw_len == 0)
+ 		return -EINVAL;
  
- 	if (core_relo_is_enumval_based(spec->relo_kind)) {
- 		t = skip_mods_and_typedefs(spec->btf, type_id, NULL);
- 		e = btf_enum(t) + spec->raw_spec[0];
- 		s = btf__name_by_offset(spec->btf, e->name_off);
+-	t = skip_mods_and_typedefs(btf, type_id, &id);
++	t = skip_mods_and_typedefs(btf, relo->type_id, &id);
+ 	if (!t)
+ 		return -EINVAL;
  
--		libbpf_print(level, "::%s = %u", s, e->val);
--		return;
-+		append_buf("::%s = %u", s, e->val);
-+		return len;
+@@ -231,7 +230,7 @@ static int bpf_core_parse_spec(const char *prog_name, const struct btf *btf,
+ 	acc->idx = access_idx;
+ 	spec->len++;
+ 
+-	if (core_relo_is_enumval_based(relo_kind)) {
++	if (core_relo_is_enumval_based(relo->kind)) {
+ 		if (!btf_is_enum(t) || spec->raw_len > 1 || access_idx >= btf_vlen(t))
+ 			return -EINVAL;
+ 
+@@ -240,7 +239,7 @@ static int bpf_core_parse_spec(const char *prog_name, const struct btf *btf,
+ 		return 0;
  	}
  
- 	if (core_relo_is_field_based(spec->relo_kind)) {
- 		for (i = 0; i < spec->len; i++) {
- 			if (spec->spec[i].name)
--				libbpf_print(level, ".%s", spec->spec[i].name);
-+				append_buf(".%s", spec->spec[i].name);
- 			else if (i > 0 || spec->spec[i].idx > 0)
--				libbpf_print(level, "[%u]", spec->spec[i].idx);
-+				append_buf("[%u]", spec->spec[i].idx);
+-	if (!core_relo_is_field_based(relo_kind))
++	if (!core_relo_is_field_based(relo->kind))
+ 		return -EINVAL;
+ 
+ 	sz = btf__resolve_size(btf, id);
+@@ -301,7 +300,7 @@ static int bpf_core_parse_spec(const char *prog_name, const struct btf *btf,
+ 			spec->bit_offset += access_idx * sz * 8;
+ 		} else {
+ 			pr_warn("prog '%s': relo for [%u] %s (at idx %d) captures type [%d] of unexpected kind %s\n",
+-				prog_name, type_id, spec_str, i, id, btf_kind_str(t));
++				prog_name, relo->type_id, spec_str, i, id, btf_kind_str(t));
+ 			return -EINVAL;
  		}
- 
--		libbpf_print(level, " (");
-+		append_buf(" (");
- 		for (i = 0; i < spec->raw_len; i++)
--			libbpf_print(level, "%s%d", i == 0 ? "" : ":", spec->raw_spec[i]);
-+			append_buf("%s%d", i == 0 ? "" : ":", spec->raw_spec[i]);
- 
- 		if (spec->bit_offset % 8)
--			libbpf_print(level, " @ offset %u.%u)",
--				     spec->bit_offset / 8, spec->bit_offset % 8);
-+			append_buf(" @ offset %u.%u)", spec->bit_offset / 8, spec->bit_offset % 8);
- 		else
--			libbpf_print(level, " @ offset %u)", spec->bit_offset / 8);
--		return;
-+			append_buf(" @ offset %u)", spec->bit_offset / 8);
-+		return len;
  	}
-+
-+	return len;
-+#undef append_buf
- }
- 
- /*
-@@ -1168,6 +1183,7 @@ int bpf_core_calc_relo_insn(const char *prog_name,
+@@ -1182,7 +1181,6 @@ int bpf_core_calc_relo_insn(const char *prog_name,
+ 	const struct btf_type *local_type;
  	const char *local_name;
  	__u32 local_id;
- 	const char *spec_str;
-+	char spec_buf[256];
+-	const char *spec_str;
+ 	char spec_buf[256];
  	int i, j, err;
  
- 	local_id = relo->type_id;
-@@ -1190,10 +1206,8 @@ int bpf_core_calc_relo_insn(const char *prog_name,
+@@ -1192,17 +1190,15 @@ int bpf_core_calc_relo_insn(const char *prog_name,
+ 	if (!local_name)
+ 		return -EINVAL;
+ 
+-	spec_str = btf__name_by_offset(local_btf, relo->access_str_off);
+-	if (str_is_empty(spec_str))
+-		return -EINVAL;
+-
+-	err = bpf_core_parse_spec(prog_name, local_btf, local_id, spec_str,
+-				  relo->kind, local_spec);
++	err = bpf_core_parse_spec(prog_name, local_btf, relo, local_spec);
+ 	if (err) {
++		const char *spec_str;
++
++		spec_str = btf__name_by_offset(local_btf, relo->access_str_off);
+ 		pr_warn("prog '%s': relo #%d: parsing [%d] %s %s + %s failed: %d\n",
+ 			prog_name, relo_idx, local_id, btf_kind_str(local_type),
+ 			str_is_empty(local_name) ? "<anon>" : local_name,
+-			spec_str, err);
++			spec_str ?: "<?>", err);
  		return -EINVAL;
  	}
  
--	pr_debug("prog '%s': relo #%d: kind <%s> (%d), spec is ", prog_name,
--		 relo_idx, core_relo_kind_str(relo->kind), relo->kind);
--	bpf_core_dump_spec(prog_name, LIBBPF_DEBUG, local_spec);
--	libbpf_print(LIBBPF_DEBUG, "\n");
-+	bpf_core_format_spec(spec_buf, sizeof(spec_buf), local_spec);
-+	pr_debug("prog '%s': relo #%d: %s\n", prog_name, relo_idx, spec_buf);
- 
- 	/* TYPE_ID_LOCAL relo is special and doesn't need candidate search */
- 	if (relo->kind == BPF_CORE_TYPE_ID_LOCAL) {
-@@ -1217,17 +1231,15 @@ int bpf_core_calc_relo_insn(const char *prog_name,
- 		err = bpf_core_spec_match(local_spec, cands->cands[i].btf,
- 					  cands->cands[i].id, cand_spec);
- 		if (err < 0) {
--			pr_warn("prog '%s': relo #%d: error matching candidate #%d ",
--				prog_name, relo_idx, i);
--			bpf_core_dump_spec(prog_name, LIBBPF_WARN, cand_spec);
--			libbpf_print(LIBBPF_WARN, ": %d\n", err);
-+			bpf_core_format_spec(spec_buf, sizeof(spec_buf), cand_spec);
-+			pr_warn("prog '%s': relo #%d: error matching candidate #%d %s: %d\n ",
-+				prog_name, relo_idx, i, spec_buf, err);
- 			return err;
- 		}
- 
--		pr_debug("prog '%s': relo #%d: %s candidate #%d ", prog_name,
--			 relo_idx, err == 0 ? "non-matching" : "matching", i);
--		bpf_core_dump_spec(prog_name, LIBBPF_DEBUG, cand_spec);
--		libbpf_print(LIBBPF_DEBUG, "\n");
-+		bpf_core_format_spec(spec_buf, sizeof(spec_buf), cand_spec);
-+		pr_debug("prog '%s': relo #%d: %s candidate #%d %s\n", prog_name,
-+			 relo_idx, err == 0 ? "non-matching" : "matching", i, spec_buf);
- 
- 		if (err == 0)
- 			continue;
 -- 
 2.30.2
 
