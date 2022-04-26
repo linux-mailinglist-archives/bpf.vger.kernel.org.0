@@ -2,68 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF5A510274
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 18:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C78510281
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 18:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241749AbiDZQEO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 12:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
+        id S229591AbiDZQHQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 12:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352787AbiDZQEG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 12:04:06 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AB9B852;
-        Tue, 26 Apr 2022 09:00:58 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id z26so2295936iot.8;
-        Tue, 26 Apr 2022 09:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rSkUkaURL4HEXp6eDUwobhgJ9shXFSHoWRujy366OcY=;
-        b=JVbCO8w9HFioTVzLCPlSZy/gqbi9L3wP3tTDXOrg7838Zdep5mtX0C/jgK1hqHZmFo
-         A0STunzyXvB3TrHSSdlntTc/J22RyC3/724LE9+PD8F/aUG2IR32rrzLr9N6MXwaLTyc
-         v8XUuss7zqypyM5gTYy4zNpKva27TLyIfgL/16EJMWkG52zU4QN6oM3fj1J0UcmoddDo
-         kdCBtWF2uTzWZNfsimNlZcsAQ5BLWEdU8Gtl2/NcWRT/M3FmRP6rQQeacOR2wIXhufG9
-         D4trmMdV5Ehq+yyPn5aAltPN0w+CCC3MkaZ5utA5uWB0szT3hFTIsClEckcLuQpUaNMg
-         wD0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rSkUkaURL4HEXp6eDUwobhgJ9shXFSHoWRujy366OcY=;
-        b=5rDQtYsgT20z0Yk4ZwfLHzTtvKIXb3rJLDxpc0tkE5SkMznsHA0xBAC9jAUEUYDwmr
-         8xvVnrCcdSq+hd7jdqm+GWAO2UcVLD2q+R3EeFCfarXonSAMZGLwHGlL4Fd0mo+Sst1r
-         J3DMFV6IMm03R1yec4bepobOQFEV6ULCpggVzYwI93vup6tODPmMbxsIPEnj00qeUFlE
-         1hmEK2+wYWjy+veO4GWuKhPpKJh/ZGvekzGHik1NCrhpFdf6mLLKuXzA6bLvhOjV29Lf
-         h2wQNnzNProqvyxIIVvYHO0K/+Wv6YRH5lePTgiyMylSu9gQYjqGd1Jl7Vp8EY/ST+/s
-         YvCA==
-X-Gm-Message-State: AOAM532Q7Rcsliu0L/yzqRhmD73eA8GlUMfs2igBxJ77yhfo4tTgMMjZ
-        CctHOM6EG37z817YMNFBNyWbkuJJI6thS4Ehb40=
-X-Google-Smtp-Source: ABdhPJxXbFqylLkPxB2ftBSse2QxiXC1QnILgPxBoznPtS2cd3fqktegN13uzbjMy49GM5DrZHjeL5mKZ/11JKVbAIo=
-X-Received: by 2002:a05:6638:2104:b0:326:1e94:efa6 with SMTP id
- n4-20020a056638210400b003261e94efa6mr10674733jaj.234.1650988858067; Tue, 26
- Apr 2022 09:00:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220423140058.54414-1-laoar.shao@gmail.com> <20220423140058.54414-5-laoar.shao@gmail.com>
- <33e5314f-8546-3945-c73b-25ee13d1b368@iogearbox.net>
-In-Reply-To: <33e5314f-8546-3945-c73b-25ee13d1b368@iogearbox.net>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 27 Apr 2022 00:00:21 +0800
-Message-ID: <CALOAHbCikXvNEz3f8dqe8_FcNSkvhUGpJtzyvKCgnRBdXPb7Ag@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] bpftool: Generate helpers for pinning prog
- through bpf object skeleton
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        with ESMTP id S237871AbiDZQHO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 12:07:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA91434AA;
+        Tue, 26 Apr 2022 09:04:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F3EFA61A59;
+        Tue, 26 Apr 2022 16:04:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94823C385AA;
+        Tue, 26 Apr 2022 16:04:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650989045;
+        bh=69jqnS80ls4U/ADxnP7PEc7prC9IyzE3eMxJZnp7tAU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OF7ff69aH9WhWwYQqzv8Ol92hHSgQ1EBu3+vmSaVHUEhT5CXy6BJoKpnIuYAhOrt8
+         W1+kix+7UbGMbEfZgWHap4qIKIRg2Ye6XkwFsUB7ytq8MkxS6U4QjlimKB3EUaL4Tl
+         lG+o75zjCy5+kHsfpGM/hBJukTZGFs1jaomfDgYBY1Kv33I3gF4Y/h2hmu16YG4tOI
+         kHd3BWsSDlq/XDUcjLKqULgQd/YhY8S2ZqFQGnW6NepUoyoYTx17eDXhJL7t6mPl//
+         V69PmgBM9PsxdttsmpNYPouZkSizbbwh7Uo5h5cBqpGePVXkk9IKXAYus5nAM8w29n
+         A7gpRf/DVOB8Q==
+Date:   Wed, 27 Apr 2022 01:03:59 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCHv2 bpf-next 1/4] kallsyms: Add kallsyms_lookup_names
+ function
+Message-Id: <20220427010359.8400f28813c1ffc62af2ae2b@kernel.org>
+In-Reply-To: <YmflGEbjkp8mynxK@krava>
+References: <20220418124834.829064-1-jolsa@kernel.org>
+        <20220418124834.829064-2-jolsa@kernel.org>
+        <20220418233546.dfe0a1be12193c26b05cdd93@kernel.org>
+        <Yl5yHVOJpCYr+T3r@krava>
+        <YmJPcU9dahEatb0f@krava>
+        <20220426190108.d9c76f5ccff52e27dbef21af@kernel.org>
+        <YmflGEbjkp8mynxK@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,60 +67,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 10:03 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 4/23/22 4:00 PM, Yafang Shao wrote:
-> > After this change, with command 'bpftool gen skeleton XXX.bpf.o', the
-> > helpers for pinning BPF prog will be generated in BPF object skeleton. It
-> > could simplify userspace code which wants to pin bpf progs in bpffs.
-> >
-> > The new helpers are named with __{pin, unpin}_prog, because it only pins
-> > bpf progs. If the user also wants to pin bpf maps in bpffs, he can use
-> > LIBBPF_PIN_BY_NAME.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >   tools/bpf/bpftool/gen.c | 16 ++++++++++++++++
-> >   1 file changed, 16 insertions(+)
-> >
-> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > index 8f76d8d9996c..1d06ebde723b 100644
-> > --- a/tools/bpf/bpftool/gen.c
-> > +++ b/tools/bpf/bpftool/gen.c
-> > @@ -1087,6 +1087,8 @@ static int do_skeleton(int argc, char **argv)
-> >                       static inline int load(struct %1$s *skel);          \n\
-> >                       static inline int attach(struct %1$s *skel);        \n\
-> >                       static inline void detach(struct %1$s *skel);       \n\
-> > +                     static inline int pin_prog(struct %1$s *skel, const char *path);\n\
-> > +                     static inline void unpin_prog(struct %1$s *skel);   \n\
-> >                       static inline void destroy(struct %1$s *skel);      \n\
-> >                       static inline const void *elf_bytes(size_t *sz);    \n\
-> >               #endif /* __cplusplus */                                    \n\
-> > @@ -1172,6 +1174,18 @@ static int do_skeleton(int argc, char **argv)
-> >               %1$s__detach(struct %1$s *obj)                              \n\
-> >               {                                                           \n\
-> >                       bpf_object__detach_skeleton(obj->skeleton);         \n\
-> > +             }                                                           \n\
-> > +                                                                         \n\
-> > +             static inline int                                           \n\
-> > +             %1$s__pin_prog(struct %1$s *obj, const char *path)          \n\
-> > +             {                                                           \n\
-> > +                     return bpf_object__pin_skeleton_prog(obj->skeleton, path);\n\
-> > +             }                                                           \n\
-> > +                                                                         \n\
-> > +             static inline void                                          \n\
-> > +             %1$s__unpin_prog(struct %1$s *obj)                          \n\
-> > +             {                                                           \n\
-> > +                     bpf_object__unpin_skeleton_prog(obj->skeleton);     \n\
-> >               }                                                           \n\
->
-> (This should also have BPF selftest code as in-tree user.)
->
+On Tue, 26 Apr 2022 14:27:04 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-Will do it, thanks.
+> On Tue, Apr 26, 2022 at 07:01:08PM +0900, Masami Hiramatsu wrote:
+> > Hi Jiri,
+> > 
+> > Sorry for replying late.
+> > 
+> > On Fri, 22 Apr 2022 08:47:13 +0200
+> > Jiri Olsa <olsajiri@gmail.com> wrote:
+> > 
+> > > On Tue, Apr 19, 2022 at 10:26:05AM +0200, Jiri Olsa wrote:
+> > > 
+> > > SNIP
+> > > 
+> > > > > > +static int kallsyms_callback(void *data, const char *name,
+> > > > > > +			     struct module *mod, unsigned long addr)
+> > > > > > +{
+> > > > > > +	struct kallsyms_data *args = data;
+> > > > > > +
+> > > > > > +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
+> > > > > > +		return 0;
+> > > > > > +
+> > > > > > +	addr = ftrace_location(addr);
+> > > > > > +	if (!addr)
+> > > > > > +		return 0;
+> > > > > 
+> > > > > Ooops, wait. Did you do this last version? I missed this point.
+> > > > > This changes the meanings of the kernel function.
+> > > > 
+> > > > yes, it was there before ;-) and you're right.. so some archs can
+> > > > return different address, I did not realize that
+> > > > 
+> > > > > 
+> > > > > > +
+> > > > > > +	args->addrs[args->found++] = addr;
+> > > > > > +	return args->found == args->cnt ? 1 : 0;
+> > > > > > +}
+> > > > > > +
+> > > > > > +/**
+> > > > > > + * kallsyms_lookup_names - Lookup addresses for array of symbols
+> > > > > 
+> > > > > More correctly "Lookup 'ftraced' addresses for array of sorted symbols", right?
+> > > > > 
+> > > > > I'm not sure, we can call it as a 'kallsyms' API, since this is using
+> > > > > kallsyms but doesn't return symbol address, but ftrace address.
+> > > > > I think this name misleads user to expect returning symbol address.
+> > > > > 
+> > > > > > + *
+> > > > > > + * @syms: array of symbols pointers symbols to resolve, must be
+> > > > > > + * alphabetically sorted
+> > > > > > + * @cnt: number of symbols/addresses in @syms/@addrs arrays
+> > > > > > + * @addrs: array for storing resulting addresses
+> > > > > > + *
+> > > > > > + * This function looks up addresses for array of symbols provided in
+> > > > > > + * @syms array (must be alphabetically sorted) and stores them in
+> > > > > > + * @addrs array, which needs to be big enough to store at least @cnt
+> > > > > > + * addresses.
+> > > > > 
+> > > > > Hmm, sorry I changed my mind. I rather like to expose kallsyms_on_each_symbol()
+> > > > > and provide this API from fprobe or ftrace, because this returns ftrace address
+> > > > > and thus this is only used from fprobe.
+> > > > 
+> > > > ok, so how about:
+> > > > 
+> > > >   int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs);
+> > > 
+> > > quick question.. is it ok if it stays in kalsyms.c object?
+> > 
+> > I think if this is for the ftrace API, I think it should be in the ftrace.c, and
+> > it can remove unneeded #ifdefs in C code.
+> > 
+> > > 
+> > > so we don't need to expose kallsyms_on_each_symbol,
+> > > and it stays in 'kalsyms' place
+> > 
+> > We don't need to expose it to modules, but just make it into a global scope.
+> > I don't think that doesn't cause a problem.
 
-[snip]
+Oops, I meant "I don't think that cause any problem."
+
+> 
+> np, will move it to ftrace
+
+Thank you!
+
+> 
+> thanks,
+> jirka
+
 
 -- 
-Regards
-Yafang
+Masami Hiramatsu <mhiramat@kernel.org>
