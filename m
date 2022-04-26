@@ -2,89 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC134510337
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 18:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754B751064C
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 20:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241199AbiDZQYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 12:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
+        id S241942AbiDZSKI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 14:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352941AbiDZQX4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 12:23:56 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6481D3DA6;
-        Tue, 26 Apr 2022 09:20:46 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 23QDDBSN029493;
-        Tue, 26 Apr 2022 09:20:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0220;
- bh=ubNDydfKF8ox4o7eLY4+glSSy0wWOtCY2o+4EHI1MYE=;
- b=ZEdn9nWk99jYF2jrEeDKvbX8VXT28JVb1QcIRVW8fEy42gmTzvYrFffrcPtxEX2jRE0x
- r2lOsEiLZY158Tua7XpdOimKZJDXq7LRmXE675I3Xz+DuwRmPqOIWJ4FiuFZaLgh2vqX
- iSsi+nycPFHT3E3+nG2ABGtt9pkfIcYRnwAWi9gcglTH0PjT8K5q053snlfGbMFytxtt
- 7t4eK1vKUZCrWcA0+PaV/+N0FLLVd0DofEV8Ga1vfOasu2l+v6J1VqjHXvb0i82KWoZ7
- YbTVJW4tzyTZYwXkrY6l7aPkWDqGYf4xajttfSowLnTCr7Gi7uqINmb6JUXDpEB1XPwP 3g== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3fp868av2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 26 Apr 2022 09:20:21 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 26 Apr
- 2022 09:20:18 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Tue, 26 Apr 2022 09:20:18 -0700
-Received: from [10.193.34.141] (unknown [10.193.34.141])
-        by maili.marvell.com (Postfix) with ESMTP id 66A473F708A;
-        Tue, 26 Apr 2022 09:19:50 -0700 (PDT)
-Message-ID: <69541987-fe2e-c7ab-814e-06e5575cf4c0@marvell.com>
-Date:   Tue, 26 Apr 2022 18:19:46 +0200
+        with ESMTP id S1344816AbiDZSKH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 14:10:07 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6400F62121
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 11:06:57 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id j4so8832875lfh.8
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 11:06:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=q9PgJYIkekpT1PeN0Ula26SP1wr4OzzucTU5M9tDI58=;
+        b=SiupGIsP3jfzaC5yIpI4Nug3pVEDfUf4e8v6qVX36LldNn2Eagnug/8etwBwtz0CuZ
+         v1e3e2UiM6LmeprOK2udgxfIj0cwqdF77wJKPWwVBA/8cgf2Wj3h/AuYO4HURfu0dden
+         7VkEQ/jfg5qOCa6GZPm2e2sEggo/UVAjcw3SbKpNcCVIe/3IXkQcj254+QhXNvIS2afD
+         U99DoIOV40+Bd94ONHyk4lklJ1N4nvjIPtda0yvtAOji5rgXEUZh3Rn8DuOARTx1O4RD
+         D8Fg6cvT3Nb2rbw9TI6l9iG5cbYgpp8I+TS0aQgbx1qNh5h+F+kcM/rd/SBzgD+aNeKT
+         lFyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=q9PgJYIkekpT1PeN0Ula26SP1wr4OzzucTU5M9tDI58=;
+        b=khDJqboTf/3DV0GfPkuOvxnrpmKsVeFA/xXq5pqVnRSuWs22o1jolQMxS0fnU3G5dF
+         yv/jc6BBTObbyqFJ3xwcYnUwX/obypueDkEwKR2jsp9/9378fpbLllATUTSjVVTMzVtq
+         DLLphHhDkJQ6GlyqNYRbTZIGm5mBtGeHxSd29pA2jqJDKr06vlE0f0ALCKwqDE769nHh
+         erQRfrlbO/0In1DE8Qpc00rqqIA+Szr+Nim/xQBV1BVDyVi4bn4ljIbPFercbukg/ooB
+         rnV0OQ3aaLegzqLo4TWRoSOQ3BURYaJRgIPxdXJLd80CBmIuTHRznCf1hUXh8PKoMZaN
+         YuEw==
+X-Gm-Message-State: AOAM533mxIjckAhOU1JjsD6iclpP99pdAmli7t69eomNiOXZfhQP7im2
+        79HJ/T1KufWrDKQ04jyOdtlYGALM/KEPtzhyGvg=
+X-Google-Smtp-Source: ABdhPJzOQZTVGCprR9BjqYcqI23A7O5vl9s1Q7d43zXgy1xiBhB33NG2xUTyUHceB3/+amHoFw1D5gq1XowdJrgLqPQ=
+X-Received: by 2002:ac2:5989:0:b0:472:d3d:ba07 with SMTP id
+ w9-20020ac25989000000b004720d3dba07mr6013613lfn.158.1650996415436; Tue, 26
+ Apr 2022 11:06:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101
- Thunderbird/100.0
-Subject: Re: [EXT] [PATCH net-next v5 0/3] net: atlantic: Add XDP support
-Content-Language: en-US
-To:     Taehee Yoo <ap420073@gmail.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <andrii@kernel.org>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>
-References: <20220417101247.13544-1-ap420073@gmail.com>
-From:   Igor Russkikh <irusskikh@marvell.com>
-In-Reply-To: <20220417101247.13544-1-ap420073@gmail.com>
+Received: by 2002:a05:6520:40e8:b0:1aa:f98c:d5d1 with HTTP; Tue, 26 Apr 2022
+ 11:06:54 -0700 (PDT)
+Reply-To: mrbeliyogo1997@gmail.com
+From:   MR YOGO BALI <mrhuasink@gmail.com>
+Date:   Tue, 26 Apr 2022 11:06:54 -0700
+Message-ID: <CA+WieDntH3XLG8LLR83mjfok09_C+vCmU2Qr275iOnA=o+m7kg@mail.gmail.com>
+Subject: Greetings,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: om_pomMjob5vOlAqzgoQO0ND_8GTfTj5
-X-Proofpoint-GUID: om_pomMjob5vOlAqzgoQO0ND_8GTfTj5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-26_05,2022-04-26_02,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:135 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [mrhuasink[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [mrbeliyogo1997[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  3.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks Taehee,
+-- 
+Good Day,
+I am Mr. Yogo  Bali,the manager with SBG Bank i contact you for a deal
+relating to the funds which are in my position I shall furnish you
+with more detail once your response.
 
-v5 looks great with these pageorder changes.
-
-> v5:
->  - Use MEM_TYPE_PAGE_SHARED instead of MEM_TYPE_PAGE_ORDER0
->  - Use 2K frame size instead of 3K
->  - Use order-2 page allocation instead of order-0
->  - Rename aq_get_rxpage() to aq_alloc_rxpages()
->  - Add missing PageFree stats for ethtool
->  - Remove aq_unset_rxpage_xdp(), introduced by v2 patch due to
->    change of memory model
->  - Fix wrong last parameter value of xdp_prepare_buff()
->  - Add aq_get_rxpages_xdp() to increase page reference count
-
-
-  Igor
+Regards,
+Mr. Yogo bali.
