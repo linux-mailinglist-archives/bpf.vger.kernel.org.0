@@ -2,67 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3CB50F93C
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 11:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D0250FA4F
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 12:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237257AbiDZJu4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 05:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        id S1348658AbiDZKZy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 06:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346496AbiDZJuZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 05:50:25 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746B12729
-        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 02:06:57 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id kq17so11555004ejb.4
-        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 02:06:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=y8cxzUPeA/1NTAqf+0bELgQgo6NleXzy7R+kj9eBCJI=;
-        b=ielBkO36gl89DCP+MYZspSFloUWilnrjBruJ3vz61LAw8kNiQSjQo/4QD5fVEi1Zk6
-         Ug1EE5IJsBFEexhG2DL+lpE/+iyQQBQs/pUw0U6Afff27cBGavIHAcN676uUpR/Ib/If
-         VlKzsD2etkR0XS9gXCLc0GSi+qg1BSh5T3+xM=
+        with ESMTP id S1349114AbiDZKYX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 06:24:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7EDB7DE1F
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 02:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1650966961;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bKv/ULkJ/wp3hIqk7Hk8ciyskY/Ggu219LeUKhk8ymM=;
+        b=gMZ/qAfe23PBBDS/SD9QN9//hCLloij1nC+LWB0DznNn5U5SwWjrTvbOCYUBUN0aZszSo+
+        /kE4/h48pbbbRRJ203VpNKUSppeHBdZKOCUE/SKsv1c1rSvsKJ/w8RnWD1V7KT9C6rZSrN
+        bcbYKfwOb9CQUohiuaE3D4Z94GXXPSg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-466-IZNVdFHyOPyhOFZLwnSgCQ-1; Tue, 26 Apr 2022 05:55:51 -0400
+X-MC-Unique: IZNVdFHyOPyhOFZLwnSgCQ-1
+Received: by mail-wr1-f70.google.com with SMTP id s14-20020adfa28e000000b0020ac7532f08so2959753wra.15
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 02:55:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=y8cxzUPeA/1NTAqf+0bELgQgo6NleXzy7R+kj9eBCJI=;
-        b=gqGxqk/S8G5mSfD08OcVl0ladIBTj9CtnV/iv3FKzInm1LkePpv+1mUODrjocoCB0w
-         0Zo4mJgEPi5yQhoSGQtzuMNsl8N3a6ZUjnGLsCgv7j8kcqzKWpu9qRBbzgyxAsLie2Mz
-         SJzfP0s7pHmLAFTDLZYuIU7XGFa5whHk95GS2+Sz5OHdmGZfL8FlpOZis71gClJ3mNPA
-         acSiOxtVOQDeRrrlSBih1pq+l+TFr80Dkge/frSkQyc9ZlFWmOWyrkb/2B1iwklZps6O
-         2lx/pzNI5P2GEi0jn2puo15EwABvocEr6kajEP1gma1WdOxnzy7+1p8XZSzrj4iAAjbG
-         fTZw==
-X-Gm-Message-State: AOAM533X5Dt6HpvobzSmgPceYHkUN0OGLka+cL9CzYToqs9DsIl6I7up
-        NtLQ43VI5MS9J6JPWv63yvzHCA==
-X-Google-Smtp-Source: ABdhPJy+jKKaj7TJ4z9PfEJpfFFYHuylNp+uJPNooZZcAUZOdhg6ZYZAdPRrunqaGRIme0cEdQGu5g==
-X-Received: by 2002:a17:907:3e11:b0:6ef:78e3:8d9b with SMTP id hp17-20020a1709073e1100b006ef78e38d9bmr20390515ejc.373.1650964016074;
-        Tue, 26 Apr 2022 02:06:56 -0700 (PDT)
-Received: from cloudflare.com (79.184.126.143.ipv4.supernova.orange.pl. [79.184.126.143])
-        by smtp.gmail.com with ESMTPSA id b89-20020a509f62000000b00425e21479fdsm3110541edf.19.2022.04.26.02.06.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bKv/ULkJ/wp3hIqk7Hk8ciyskY/Ggu219LeUKhk8ymM=;
+        b=44SfvkEFP3vMbARzmL8GVw0xq5/OvRLPAzHmuSwVj3Tx1MgVSpbQ7KHD4HkyTxdkKe
+         hL9BAe76+6t5Cs34DdTpwTJwDXCKkGhC2cvtZ5pLBtJcx39AZY//6e/6AiPPrc8BaaxO
+         imsWsL4XXJ0PdiJ3EpOp+tIW0TJydHMTfjUrYZJYqRpPD0NL7nd4jpEqTZjiElhwKsey
+         lzShgBbccsclelAYrkf+eEaDzyaeNxHLhWB0gCOqZ3XatqPT+GEdp4Fl6jNqnAW0/Dxh
+         ib6ji6zcp329hw2ueHXyNmE2CatFo+PnJhXAPc8RIPUkR/g/8UkYxHIMY2+qkI/StOCR
+         x9qA==
+X-Gm-Message-State: AOAM5308xC/2TfJLHhzCkJwjS0qp1/VqkN+b2Eoy6ohheOvd8UfuxEiU
+        SiX2Ld3Dp9+Qv5zJ4npJY7QL3Q9TBJyhs9ioGntZnPuTLo+EIJFwKUMm4Bjz74X3OUNQT3QYpqD
+        dpRHI7hLCNTKI
+X-Received: by 2002:a05:600c:3587:b0:393:ec32:d84e with SMTP id p7-20020a05600c358700b00393ec32d84emr7912272wmq.92.1650966950528;
+        Tue, 26 Apr 2022 02:55:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz8XKSGFc+0NUl8DKUeaivozN8xsVuR8eLs8RZ1+VRkX8o21nZkof7/x4aaezYJYxtUVEyOAg==
+X-Received: by 2002:a05:600c:3587:b0:393:ec32:d84e with SMTP id p7-20020a05600c358700b00393ec32d84emr7912255wmq.92.1650966950289;
+        Tue, 26 Apr 2022 02:55:50 -0700 (PDT)
+Received: from redhat.com ([2.53.22.137])
+        by smtp.gmail.com with ESMTPSA id 204-20020a1c02d5000000b003928c42d02asm13036414wmc.23.2022.04.26.02.55.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Apr 2022 02:06:55 -0700 (PDT)
-References: <20220425160803.114851-1-jakub@cloudflare.com>
- <31702ffb-380f-69f9-ab87-3aec5b22537c@gmail.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, bpf@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Tue, 26 Apr 2022 02:55:49 -0700 (PDT)
+Date:   Tue, 26 Apr 2022 05:55:41 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH] bpf.2: Note that unused fields and padding in bpf_attr
- must be zero
-Date:   Tue, 26 Apr 2022 11:05:53 +0200
-In-reply-to: <31702ffb-380f-69f9-ab87-3aec5b22537c@gmail.com>
-Message-ID: <87h76g6wnl.fsf@cloudflare.com>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v9 00/32] virtio pci support VIRTIO_F_RING_RESET
+ (refactor vring)
+Message-ID: <20220426055423-mutt-send-email-mst@kernel.org>
+References: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220406034346.74409-1-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,23 +103,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 11:01 PM +02, Alejandro Colomar wrote:
+On Wed, Apr 06, 2022 at 11:43:14AM +0800, Xuan Zhuo wrote:
+> The virtio spec already supports the virtio queue reset function. This patch set
+> is to add this function to the kernel. The relevant virtio spec information is
+> here:
+> 
+>     https://github.com/oasis-tcs/virtio-spec/issues/124
+> 
+> Also regarding MMIO support for queue reset, I plan to support it after this
+> patch is passed.
 
-[...]
+Regarding the spec, there's now an issue proposing
+some changes to the interface. What do you think about that
+proposal? Could you respond on that thread on the virtio TC mailing list?
 
->> diff --git a/man2/bpf.2 b/man2/bpf.2
->> index 2d257eaa6..ee57226ee 100644
->> --- a/man2/bpf.2
->> +++ b/man2/bpf.2
->> @@ -142,7 +142,7 @@ provided via
->>   .IR attr ,
->>   which is a pointer to a union of type
->>   .I bpf_attr
->> -(see below).
->> +(see below). The unused fields and padding must be zeroed out before the call.
->
-> But I changed it to add a separate line, instead of continuation in the same
-> one.
->
 
-Thanks for the fixup, Alex. I will keep it in mind for the next time.
+> This patch set implements the refactoring of vring. Finally, the
+> virtuque_resize() interface is provided based on the reset function of the
+> transport layer.
+> 
+> Test environment:
+>     Host: 4.19.91
+>     Qemu: QEMU emulator version 6.2.50 (with vq reset support)
+>     Test Cmd:  ethtool -G eth1 rx $1 tx $2; ethtool -g eth1
+> 
+>     The default is split mode, modify Qemu virtio-net to add PACKED feature to test
+>     packed mode.
+> 
+> Qemu code:
+>     https://github.com/fengidri/qemu/compare/89f3bfa3265554d1d591ee4d7f1197b6e3397e84...master
+> 
+> In order to simplify the review of this patch set, the function of reusing
+> the old buffers after resize will be introduced in subsequent patch sets.
+> 
+> Please review. Thanks.
+> 
+> v9:
+>   1. Provide a virtqueue_resize() interface directly
+>   2. A patch set including vring resize, virtio pci reset, virtio-net resize
+>   3. No more separate structs
+> 
+> v8:
+>   1. Provide a virtqueue_reset() interface directly
+>   2. Split the two patch sets, this is the first part
+>   3. Add independent allocation helper for allocating state, extra
+> 
+> v7:
+>   1. fix #6 subject typo
+>   2. fix #6 ring_size_in_bytes is uninitialized
+>   3. check by: make W=12
+> 
+> v6:
+>   1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
+>   2. Introduce virtqueue_reset_vring() to implement the reset of vring during
+>      the reset process. May use the old vring if num of the vq not change.
+>   3. find_vqs() support sizes to special the max size of each vq
+> 
+> v5:
+>   1. add virtio-net support set_ringparam
+> 
+> v4:
+>   1. just the code of virtio, without virtio-net
+>   2. Performing reset on a queue is divided into these steps:
+>     1. reset_vq: reset one vq
+>     2. recycle the buffer from vq by virtqueue_detach_unused_buf()
+>     3. release the ring of the vq by vring_release_virtqueue()
+>     4. enable_reset_vq: re-enable the reset queue
+>   3. Simplify the parameters of enable_reset_vq()
+>   4. add container structures for virtio_pci_common_cfg
+> 
+> v3:
+>   1. keep vq, irq unreleased
+> 
+> Xuan Zhuo (32):
+>   virtio: add helper virtqueue_get_vring_max_size()
+>   virtio: struct virtio_config_ops add callbacks for queue_reset
+>   virtio_ring: update the document of the virtqueue_detach_unused_buf
+>     for queue reset
+>   virtio_ring: remove the arg vq of vring_alloc_desc_extra()
+>   virtio_ring: extract the logic of freeing vring
+>   virtio_ring: split: extract the logic of alloc queue
+>   virtio_ring: split: extract the logic of alloc state and extra
+>   virtio_ring: split: extract the logic of attach vring
+>   virtio_ring: split: extract the logic of vq init
+>   virtio_ring: split: introduce virtqueue_reinit_split()
+>   virtio_ring: split: introduce virtqueue_resize_split()
+>   virtio_ring: packed: extract the logic of alloc queue
+>   virtio_ring: packed: extract the logic of alloc state and extra
+>   virtio_ring: packed: extract the logic of attach vring
+>   virtio_ring: packed: extract the logic of vq init
+>   virtio_ring: packed: introduce virtqueue_reinit_packed()
+>   virtio_ring: packed: introduce virtqueue_resize_packed()
+>   virtio_ring: introduce virtqueue_resize()
+>   virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+>   virtio: queue_reset: add VIRTIO_F_RING_RESET
+>   virtio_pci: queue_reset: update struct virtio_pci_common_cfg and
+>     option functions
+>   virtio_pci: queue_reset: extract the logic of active vq for modern pci
+>   virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
+>   virtio: find_vqs() add arg sizes
+>   virtio_pci: support the arg sizes of find_vqs()
+>   virtio_mmio: support the arg sizes of find_vqs()
+>   virtio: add helper virtio_find_vqs_ctx_size()
+>   virtio_net: set the default max ring size by find_vqs()
+>   virtio_net: get ringparam by virtqueue_get_vring_max_size()
+>   virtio_net: split free_unused_bufs()
+>   virtio_net: support rx/tx queue resize
+>   virtio_net: support set_ringparam
+> 
+>  arch/um/drivers/virtio_uml.c             |   3 +-
+>  drivers/net/virtio_net.c                 | 219 +++++++-
+>  drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +
+>  drivers/remoteproc/remoteproc_virtio.c   |   3 +
+>  drivers/s390/virtio/virtio_ccw.c         |   4 +
+>  drivers/virtio/virtio_mmio.c             |  11 +-
+>  drivers/virtio/virtio_pci_common.c       |  28 +-
+>  drivers/virtio/virtio_pci_common.h       |   3 +-
+>  drivers/virtio/virtio_pci_legacy.c       |   8 +-
+>  drivers/virtio/virtio_pci_modern.c       | 149 +++++-
+>  drivers/virtio/virtio_pci_modern_dev.c   |  36 ++
+>  drivers/virtio/virtio_ring.c             | 626 ++++++++++++++++++-----
+>  drivers/virtio/virtio_vdpa.c             |   3 +
+>  include/linux/virtio.h                   |   6 +
+>  include/linux/virtio_config.h            |  38 +-
+>  include/linux/virtio_pci_modern.h        |   2 +
+>  include/uapi/linux/virtio_config.h       |   7 +-
+>  include/uapi/linux/virtio_pci.h          |  14 +
+>  18 files changed, 964 insertions(+), 199 deletions(-)
+> 
+> --
+> 2.31.0
+
