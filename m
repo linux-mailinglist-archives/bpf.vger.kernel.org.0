@@ -2,72 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 339AB50EF56
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 05:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAF050EF7D
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 06:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbiDZDmr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Apr 2022 23:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
+        id S235432AbiDZEFD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 00:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243042AbiDZDmq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Apr 2022 23:42:46 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFC0F32B9
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 20:39:40 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id t13so15003515pgn.8
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 20:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3rKP+RLeOc5jJqeu5rFp26JtWTspauLmlH0CDP1PP2w=;
-        b=BQZI+jLYa6gFFTZ36nSh5zXccyl8hwcrEFV4tzaLDbAMgf0ZV9+GuptLWqeXyRBi9m
-         hwl8EFiSxnqp1AM1JmXhysXQZKX1+WQK9hVBOyVbeJYJw+TNp5nnIArIdzoC9Pv8GNu3
-         vE0NhD2oigjkbryWVEXONNXKqMErlIRQGAQVLPWt/X9AnMbBTmXRm1/D3IKriUWB+w+i
-         ay6NFVK8LrrtSLM3a0nn5o9gfUjLhV7ON7ndDekJN+7z+KKABP3+YjrR5HWFOum64S2o
-         gDt6SGCXxQF7TZGvrmHdXXd8/yFE2mB6f/ciNuPiBzuxp8eOro1kZLy4vC7qi0AyyATD
-         FVyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3rKP+RLeOc5jJqeu5rFp26JtWTspauLmlH0CDP1PP2w=;
-        b=wpVQ9FYMH81e5yu2VPcc84lSrtF1S8D9EWhg9MzVHbHmcvjyEhBod33JqcF+x8gfVt
-         VnMCdq14nODJkurhrF8bV5QO7UP9W3aF4MijCL7QW7k78W9KZM6Q9T4AUmZYYZNiamyk
-         yGRzqzI4Zv4WBF1W3U3h0sVfDiXt3nb5AbF2fFRZmjuj+1QkjGsS83gLUqStzH5DrpQi
-         mnahCTW7as3lis5hPXaaOASWlK5J3d7+vUZxkYBJ3n4yl6i85IVM85wEf7GGyM+blRFw
-         WMHu9sKBz+rQM761YU9ejMpOIHUwxizKmlQFDHGWdBIRyn5GCRfLvwEhiqVTB9t9rYVB
-         o7ZQ==
-X-Gm-Message-State: AOAM531MheQosNifeUE2ZryT+YfsoIRcr7gtFZGXLn946G52BWdox2yU
-        cgBELnL++W1ZOFcxWUTuErbHg5DEXf4=
-X-Google-Smtp-Source: ABdhPJyEB7XyrxfyKDquvcQAkB7n5TDf2zs4BGWTliG3052kT+s9sOxwkgIj/cdXT+GnPuBZKGpSvA==
-X-Received: by 2002:a05:6a00:140b:b0:4e1:2cbd:30ba with SMTP id l11-20020a056a00140b00b004e12cbd30bamr22394885pfu.46.1650944380029;
-        Mon, 25 Apr 2022 20:39:40 -0700 (PDT)
-Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::5:438a])
-        by smtp.gmail.com with ESMTPSA id 12-20020a17090a030c00b001cd4989ff50sm841356pje.23.2022.04.25.20.39.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Apr 2022 20:39:39 -0700 (PDT)
-Date:   Mon, 25 Apr 2022 20:39:37 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v6 13/13] selftests/bpf: Add test for strict BTF
- type check
-Message-ID: <20220426033937.jjcua6zchnka5dco@MBP-98dd607d3435.dhcp.thefacebook.com>
-References: <20220424214901.2743946-1-memxor@gmail.com>
- <20220424214901.2743946-14-memxor@gmail.com>
+        with ESMTP id S238826AbiDZEFC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 00:05:02 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C9912A8B;
+        Mon, 25 Apr 2022 21:01:54 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KnSn01gVSzGpJf;
+        Tue, 26 Apr 2022 11:59:16 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 26 Apr 2022 12:01:50 +0800
+Message-ID: <b8c5ba79-c6e5-10bd-1963-5a0a94b9fbbc@huawei.com>
+Date:   Tue, 26 Apr 2022 12:01:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220424214901.2743946-14-memxor@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH bpf-next v2 4/6] bpf, arm64: Impelment
+ bpf_arch_text_poke() for arm64
+Content-Language: en-US
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, <kernel-team@cloudflare.com>
+References: <20220414162220.1985095-1-xukuohai@huawei.com>
+ <20220414162220.1985095-5-xukuohai@huawei.com>
+ <87levxfj32.fsf@cloudflare.com>
+ <13cd161b-43a2-ce66-6a27-6662fc36e063@huawei.com>
+ <87pml56xsr.fsf@cloudflare.com>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <87pml56xsr.fsf@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,37 +84,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 03:19:01AM +0530, Kumar Kartikeya Dwivedi wrote:
->  
-> diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
-> index 2e03decb11b6..743ed34c1238 100644
-> --- a/tools/testing/selftests/bpf/verifier/calls.c
-> +++ b/tools/testing/selftests/bpf/verifier/calls.c
-> @@ -138,6 +138,26 @@
->  		{ "bpf_kfunc_call_memb_release", 8 },
->  	},
->  },
-> +{
-> +	"calls: invalid kfunc call: don't match first member type when passed to release kfunc",
-> +	.insns = {
-> +	BPF_MOV64_IMM(BPF_REG_0, 0),
-> +	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-> +	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-> +	BPF_EXIT_INSN(),
-> +	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-> +	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-> +	BPF_MOV64_IMM(BPF_REG_0, 0),
-> +	BPF_EXIT_INSN(),
-> +	},
-> +	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-> +	.result = REJECT,
-> +	.errstr = "kernel function bpf_kfunc_call_memb1_release args#0 expected pointer",
-> +	.fixup_kfunc_btf_id = {
-> +		{ "bpf_kfunc_call_memb_acquire", 1 },
-> +		{ "bpf_kfunc_call_memb1_release", 5 },
-> +	},
-> +},
+On 4/25/2022 10:26 PM, Jakub Sitnicki wrote:
+> On Sun, Apr 24, 2022 at 01:05 PM +08, Xu Kuohai wrote:
+>> Thanks for your testing and suggestion! I added bpf2bpf poking to this
+>> series and rebased it to [2] a few days ago, so there are some conflicts
+>> with the bpf-next branch. I'll rebase it to bpf-next and send v3.
+>>
+>> [2] https://lore.kernel.org/bpf/20220416042940.656344-1-kuifeng@fb.com/
+> 
+> Looking forward to it.
+> 
+> I think it would be okay to post v3 saying that it depends on the
+> "Attach a cookie to a tracing program" series and won't apply cleanly to
+> bpf-next with out.
+> 
+> It would give us more time to review.
+> .
 
-Please add negative C tests as well.
-Consider using SEC("?tc") logic added by commit 0d7fefebea552
-and put a bunch of bpf progs that should fail to load in one .c
+Ah, already sent v3 based on bpf-next :(, will send an update after [2]
+is merged.
