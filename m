@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B085102F3
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 18:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FAA5102FE
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 18:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347803AbiDZQQ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 12:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
+        id S1352866AbiDZQRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 12:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352848AbiDZQQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 12:16:29 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB889A9B4;
-        Tue, 26 Apr 2022 09:13:21 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id 125so20589920iov.10;
-        Tue, 26 Apr 2022 09:13:21 -0700 (PDT)
+        with ESMTP id S232878AbiDZQRw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 12:17:52 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9CC9E9CA;
+        Tue, 26 Apr 2022 09:14:44 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id r28so1917446iot.1;
+        Tue, 26 Apr 2022 09:14:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BJMkcDCTGhP0ayLvd0I+jpervcoFaZO0k/SeCGEUu1Q=;
-        b=XU1+nhwpmvJ3MqLwmBtfHMGKM229bJRwaYofoSwWpdy4yH9uxRaeueEEENLI4HlY1o
-         3F8legZsN6VbCvwyUS0mQHlWV3OPuoEorU7g+9SOsmlTwIqY7eZYTJQOYXXrJK5UQWdC
-         B35NtUasCtsyIbbFIbm7MGNrBfEqQKu3cmiAktqgQVh0EkSrpv0Zxw4jY6M1Fdv9X8Wi
-         G7GpVPAgih6vW/6KjgRa+P0ZRFX52EKQRi24yUj7eIMv51fIFE7eYsXhf82zclwFss+u
-         IEVFZvdL7Wb5RH1e7fEavvQws3aEJNpDstJNLlS96diKmVpU3DzpsWz+P3MBNTdVg1gw
-         ZlEg==
+        bh=xQ7JAlrZNbN+4UBwUPLrm9e0Bc1f0Mue3TCyhSjw9fg=;
+        b=PsVMgd1FSGWf0143r+osiQHexPkmN4qYX84UIUdvP77H+bOL/n1Csk4f3feLmicwvY
+         ynYfrVCub9IAoFSxVMC+DO1k+lPMppP8KZtxdIr5Y9Tc87kzwFNf5LufTAwSTY0DFhZq
+         Ol8Snp6N4dxtAMQziNX0KTnJclrJMka5G3OZT2fo60XcWvgwcm5QzncrNDFqCK6QtQdZ
+         4aNcc1xMZR9vze55pliLo2gv7zkfKLiy3JOdRF5Q476eP4j42Ktl6CyMCvghV0NIz1PH
+         f6BTrZTabsYCDoZZIc+6wI3hSd4fOTelba3xSV+FRJL/SCVxfbPVHaoXQnut4bGXF+Em
+         3/RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BJMkcDCTGhP0ayLvd0I+jpervcoFaZO0k/SeCGEUu1Q=;
-        b=P2P0gPrPxP2VS5ldyvDO9AERbnupWxr7hWosGnWnQWXK6Ytv6jHCdhvD+qFZgxeAmJ
-         yP0WT7RFRuT1WuvCdkb2ICRoUIWJDoM5XrWYPLtnzciAIyzdlwfILSGCbIAsQ75pv6mh
-         JwtJAhBgpYdvgubkGQ62zjUawCLbiHJ+qYfgMyhsqBUB27FNbVAblHxIvfM8xUP/ZFaT
-         oioMbqjKtj6EU7xjSyUDb/JDGo6Sy3JbobslxR1KZU7Ci8dChJPOE4xFh6Rp+OBZG4+0
-         k7HcJSe53V0aXSMBbemLwyMw90/Qf6BFKhEEmWHSIWDDAfvZEKl1OjQ3iRlKRLfr8hro
-         9VIQ==
-X-Gm-Message-State: AOAM530PGj2/4P/YxSDNs2jKO2Tkccb0vjXE3qLR8pfOiiiYO4U0U2cr
-        iL3i6VAxp7QlIIN2xKMjYnkNjDhTJF16/Q6KUDM=
-X-Google-Smtp-Source: ABdhPJw8r05wZcaVMjTSP8BXPs9EmptOK3ZOn2VSK5Mlwly8qpWo7cIa2/v3dQx+F8pSPSC/tb6TF4727jy6q92o4QE=
-X-Received: by 2002:a05:6e02:1846:b0:2cc:58e5:cd38 with SMTP id
- b6-20020a056e02184600b002cc58e5cd38mr10008604ilv.87.1650989600731; Tue, 26
- Apr 2022 09:13:20 -0700 (PDT)
+        bh=xQ7JAlrZNbN+4UBwUPLrm9e0Bc1f0Mue3TCyhSjw9fg=;
+        b=xzSdyuTpa1gAJLdX6iroPhOEtYNM4622V/yiTkaSG0sjFVAPtY+jyfggWxkyciaStz
+         /DnW+kONrWRNmWpGOaIwy23lemeSnPMIog1M77i1Fzdv6c40EZOPVib4StRxhLhalkXP
+         OuI+SywmfsLKJUPTtdkL4JoXW6oeFsHdj/+nhWGtrstnX8osfuDbjTcsD7lMhpCgT1So
+         MVm5Gbh5XzAPu3ZVtZDuG1cvI2QwNx5vxBITuccEZOc+6SeOshMRKERHsus2DvcaU6Bk
+         qIrV9bdxValO6k8/X9zF1yCHFVjUFTBoMiBJ04+kKqZFbUwmmyyavUhQQfJiMyYEyx7N
+         4vMQ==
+X-Gm-Message-State: AOAM533hpqUsVufWsmK9Jy0f0WDZMl09mihldfpIN3BVFyrug43K38IV
+        gKYfVg8XjfQxEUhOmLGc/8fqjfSV9e5EBjrMFJ4=
+X-Google-Smtp-Source: ABdhPJzhqrR9Z509Ybk1zXarEfqo7oMWYwEwzmJk6yr2Ce+F4Fl9Vv6Knh2saA4O4OhmeM5y7MRL1sU7iskXWMQLEQY=
+X-Received: by 2002:a02:c519:0:b0:32a:e80c:a618 with SMTP id
+ s25-20020a02c519000000b0032ae80ca618mr5775965jam.140.1650989683956; Tue, 26
+ Apr 2022 09:14:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220423140058.54414-1-laoar.shao@gmail.com> <20220423140058.54414-2-laoar.shao@gmail.com>
- <CAEf4Bza_8d_K22DFRzGHYAQdz_y1+9b_bfSc0t0EkdM4nyy7Hw@mail.gmail.com>
-In-Reply-To: <CAEf4Bza_8d_K22DFRzGHYAQdz_y1+9b_bfSc0t0EkdM4nyy7Hw@mail.gmail.com>
+References: <20220423140058.54414-1-laoar.shao@gmail.com> <20220423140058.54414-4-laoar.shao@gmail.com>
+ <CAEf4BzapX1CKCX5VWwMkbm5yHukq36UxwcXDduQCMW=-VEEv4Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzapX1CKCX5VWwMkbm5yHukq36UxwcXDduQCMW=-VEEv4Q@mail.gmail.com>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 27 Apr 2022 00:12:44 +0800
-Message-ID: <CALOAHbDPE6iSGVR1pyNkY-N3RtoGYaptqcn+Nse-T88sWcD5Xw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] libbpf: Define DEFAULT_BPFFS
+Date:   Wed, 27 Apr 2022 00:14:07 +0800
+Message-ID: <CALOAHbDWvRAe=O-cG1nOMgant38g68u0t9HsDy4RDO7bh=hnUA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] bpftool: Fix incorrect return in generated
+ detach helper
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -71,40 +72,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 2:45 PM Andrii Nakryiko
+On Tue, Apr 26, 2022 at 2:47 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
-> On Sat, Apr 23, 2022 at 7:01 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> On Sat, Apr 23, 2022 at 7:02 AM Yafang Shao <laoar.shao@gmail.com> wrote:
 > >
-> > Let's use a macro DEFAULT_BPFFS instead of the hard-coded "/sys/fs/bpf".
+> > There is no return value of bpf_object__detach_skeleton(), so we'd
+> > better not return it, that is formal.
 > >
+> > Fixes: 5dc7a8b21144 ("bpftool, selftests/bpf: Embed object file inside skeleton")
 > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > > ---
-> >  tools/lib/bpf/bpf_helpers.h | 2 +-
-> >  tools/lib/bpf/libbpf.c      | 2 +-
-> >  tools/lib/bpf/libbpf.h      | 6 ++++--
-> >  3 files changed, 6 insertions(+), 4 deletions(-)
+> >  tools/bpf/bpftool/gen.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> > index 44df982d2a5c..9161ebcd3466 100644
-> > --- a/tools/lib/bpf/bpf_helpers.h
-> > +++ b/tools/lib/bpf/bpf_helpers.h
-> > @@ -137,7 +137,7 @@ struct bpf_map_def {
-> >
-> >  enum libbpf_pin_type {
-> >         LIBBPF_PIN_NONE,
-> > -       /* PIN_BY_NAME: pin maps by name (in /sys/fs/bpf by default) */
-> > +       /* PIN_BY_NAME: pin maps by name (in DEFAULT_BPFFS by default) */
+> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> > index 7678af364793..8f76d8d9996c 100644
+> > --- a/tools/bpf/bpftool/gen.c
+> > +++ b/tools/bpf/bpftool/gen.c
+> > @@ -1171,7 +1171,7 @@ static int do_skeleton(int argc, char **argv)
+> >                 static inline void                                          \n\
+> >                 %1$s__detach(struct %1$s *obj)                              \n\
+> >                 {                                                           \n\
+> > -                       return bpf_object__detach_skeleton(obj->skeleton);  \n\
+> > +                       bpf_object__detach_skeleton(obj->skeleton);         \n\
 >
-> how is this improving things? now I need to grep some more to find out
-> what's the value of DEFAULT_BPFFS is
->
+> It's not incorrect to return the result of void-returning function in
+> another void-returning function. C compiler allows this and we rely on
+> this property very explicitly in macros like BPF_PROG and BPF_KPROBE.
+> So if anything, it's not a fix, at best improvement, but even then
+> quite optional.
 
-The new added one also uses the "/sys/fs/bpf", so I defined a macro
-for them, then they can be kept the same.
-I won't change it if you object to it.
-
-[snip]
+Right, the C compiler allows it.
+I won't change it.
 
 -- 
 Regards
