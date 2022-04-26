@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4824850EF3A
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 05:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2FD50EF45
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 05:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243227AbiDZDeA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Apr 2022 23:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
+        id S243190AbiDZDjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Apr 2022 23:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbiDZDdx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Apr 2022 23:33:53 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC96613E14
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 20:30:47 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id v10so3911107pgl.11
-        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 20:30:47 -0700 (PDT)
+        with ESMTP id S243189AbiDZDi4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Apr 2022 23:38:56 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800413A1A0
+        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 20:35:48 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id n18so29054930plg.5
+        for <bpf@vger.kernel.org>; Mon, 25 Apr 2022 20:35:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=7Hna/J4oeram2tnv7654xHwO1ayMgrZ1avqTnbhveOg=;
-        b=Vgk69vh385OvqdDv/4Af3cDeqle4VZdHNYUAlq6TRf952UrFadM90f6PqOg3S7Gogz
-         2xOSfXKEMvUr6bmibMPwuddSviCdFPclf5PkyDKcL2l+AO3HE1sWPBl4037uZWu9b+04
-         YVlL5Vc+F5uZSD3PPQBNCBVee326Spcqofdh2Or774NJ1iG9fsvD7MSTWTbKdflbGBqX
-         jxQS82gNeP7dFDO81y9ubSwbTM9aaRIiMajmwbU60jvNYUItyD3Zb60RGa3FbCrS9W5e
-         hUGojV1Yw8kj0t6IzQBJp5MWi7S9cQO+RUnGd/9AOX7rPt16rvnl0Fd5pi8DVn/xO8n4
-         +PdA==
+        bh=7uaqHc0sM1fpYyxy77gzMWBvx8ETrxIvjDrs9e7DNRk=;
+        b=fcdft7jqjLVesIW4EdGNV1ny9q427I8xtq9OodCwTz4oyYP8C+Tzx44TLmCc2rjbZa
+         9tZhFlQJCe2/Q/t92vEyHHOg3p2Z48BiixUNgG7ZYFLMj/ERjXg+lyy9rgtTDzTiPFcu
+         V2zhbTA68c9FlRPWW3psiMKKqLBKA05YOeMkjuondGCgomwdf+QVhzXcZoci6BzBTAcB
+         AWNuklY5nbn/IoiSrT/xiURzZdmXVtAX5qPe29Nr9D4ZsU9Pboiszj4TAYsLKmLt4dUw
+         4bNl1iGDUQZLmbxMi/ZJkJdoyL69P6LhHVpGdSivlO4n0XalWh3dNTALJ8AXj9eseXS4
+         pL3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=7Hna/J4oeram2tnv7654xHwO1ayMgrZ1avqTnbhveOg=;
-        b=AVeYSh76juh0RCk5ZziFPiLDxYoLDfvHZmEK046SqBrJLWLCB4PF6SuNmnL0htbAde
-         eZYwArQ4S3qVCSLEaHWni4LKHUgkaCIqnuA7rkwpVANMpf8VIgTNAzEDEyKtanptHwe4
-         XXUmXJOvYAdmJTKIaFTHEC0Syi30ki/LFzgmjkeudhkRwLiqewuZGldrlqUpiuvqyQLC
-         gInyfw/kKbIPZhyNGI5ISXi+RJCETUhRyeeSrJb5KONEB9FaeImbMLTGLoK2qAh/VdQx
-         8sYTtH36gBTgrAE5WLf67gaJHN4y6Z00+Vc/jEBBrPQyxn0LVhTVg6jl439sqaOEuikB
-         f7tQ==
-X-Gm-Message-State: AOAM532e04nsjqllkYs+bC3G6laDmuAfEaJMx3uHL8M2hPkubf/Ybh+f
-        HsuzSpSz49eyCSe+hju1z6Y=
-X-Google-Smtp-Source: ABdhPJzW2ykL2nqvQValHk9x1NJXYPhESA1/mvJ7CX5jJWX+X5ubx9ThY35cmuh0YeYNXxQ/myWvNQ==
-X-Received: by 2002:a63:cf0c:0:b0:380:fb66:fa2a with SMTP id j12-20020a63cf0c000000b00380fb66fa2amr17993551pgg.273.1650943847173;
-        Mon, 25 Apr 2022 20:30:47 -0700 (PDT)
+        bh=7uaqHc0sM1fpYyxy77gzMWBvx8ETrxIvjDrs9e7DNRk=;
+        b=MJGmF0S7M8hwZkIdBGbaJ6EHDOODZNvZg5dGgFVbG9M9+hO+M8lUzSIRk0boWjTa3A
+         y9Vvja9V3n4pFjWjAfcMzjiVsuueIvr5iHqrmxN7/PhCp1MGlxGeCqPivQgA+VfnNsHS
+         CGCvX2i524QKdbH6j9CE4Il6FJ87ZFzCWUKzGpzYODiys8/qBIZZZSjZYNAsgRdIxV9/
+         uny9HIBQsXufRjowqQJR+Qw+xnfRDr8X12N8jDhTVWkb5EEmPWFhxj65yUOXsq6P+3mV
+         6HyRtvJ6Xu/Wodz+apO3jrLdMbczcOxdX04SiThIhVZ7yEhK0ULHVcRmhhysOCA80ph5
+         5BPw==
+X-Gm-Message-State: AOAM5310tTGYqzUvD3I9T8TZ17sjprr7L9L0eiWp4LmJvHN3daV7MePI
+        knuD51CdTOF32yolhDttCcM=
+X-Google-Smtp-Source: ABdhPJy2ME955ICc5yUXcjpwYzLFknvBK8vl0hIfPhVxu0HSAYaeGUhdWcyfJhQ1eKqZPvIMitnfkA==
+X-Received: by 2002:a17:902:da85:b0:15d:3a9a:aad1 with SMTP id j5-20020a170902da8500b0015d3a9aaad1mr260742plx.113.1650944147304;
+        Mon, 25 Apr 2022 20:35:47 -0700 (PDT)
 Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::5:438a])
-        by smtp.gmail.com with ESMTPSA id h2-20020a17090ac38200b001cd4989feecsm769890pjt.56.2022.04.25.20.30.45
+        by smtp.gmail.com with ESMTPSA id t9-20020a63b249000000b003aae4f10d86sm8602104pgo.94.2022.04.25.20.35.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Apr 2022 20:30:46 -0700 (PDT)
-Date:   Mon, 25 Apr 2022 20:30:44 -0700
+        Mon, 25 Apr 2022 20:35:47 -0700 (PDT)
+Date:   Mon, 25 Apr 2022 20:35:44 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -56,15 +56,15 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v6 03/13] bpf: Allow storing referenced kptr in
- map
-Message-ID: <20220426033044.ifygawcnigdmg25y@MBP-98dd607d3435.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v6 12/13] selftests/bpf: Add verifier tests for
+ kptr
+Message-ID: <20220426033544.lxxnz6epet6qrzq6@MBP-98dd607d3435.dhcp.thefacebook.com>
 References: <20220424214901.2743946-1-memxor@gmail.com>
- <20220424214901.2743946-4-memxor@gmail.com>
+ <20220424214901.2743946-13-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220424214901.2743946-4-memxor@gmail.com>
+In-Reply-To: <20220424214901.2743946-13-memxor@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,31 +75,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 25, 2022 at 03:18:51AM +0530, Kumar Kartikeya Dwivedi wrote:
+On Mon, Apr 25, 2022 at 03:19:00AM +0530, Kumar Kartikeya Dwivedi wrote:
+> Reuse bpf_prog_test functions to test the support for PTR_TO_BTF_ID in
+> BPF map case, including some tests that verify implementation sanity and
+> corner cases.
+> 
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  net/bpf/test_run.c                            |  45 +-
+>  tools/testing/selftests/bpf/test_verifier.c   |  55 +-
+>  .../testing/selftests/bpf/verifier/map_kptr.c | 469 ++++++++++++++++++
+>  3 files changed, 562 insertions(+), 7 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/verifier/map_kptr.c
+> 
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index e7b9c2636d10..29fe32821e7e 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -584,6 +584,12 @@ noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
+>  {
+>  }
+>  
+> +noinline struct prog_test_ref_kfunc *
+> +bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b)
+> +{
+> +	return &prog_test_struct;
+> +}
 > +
-> +static u32 bpf_kptr_xchg_btf_id;
+>  struct prog_test_pass1 {
+>  	int x0;
+>  	struct {
+> @@ -669,6 +675,7 @@ BTF_ID(func, bpf_kfunc_call_test3)
+>  BTF_ID(func, bpf_kfunc_call_test_acquire)
+>  BTF_ID(func, bpf_kfunc_call_test_release)
+>  BTF_ID(func, bpf_kfunc_call_memb_release)
+> +BTF_ID(func, bpf_kfunc_call_test_kptr_get)
+>  BTF_ID(func, bpf_kfunc_call_test_pass_ctx)
+>  BTF_ID(func, bpf_kfunc_call_test_pass1)
+>  BTF_ID(func, bpf_kfunc_call_test_pass2)
+> @@ -682,6 +689,7 @@ BTF_SET_END(test_sk_check_kfunc_ids)
+>  
+>  BTF_SET_START(test_sk_acquire_kfunc_ids)
+>  BTF_ID(func, bpf_kfunc_call_test_acquire)
+> +BTF_ID(func, bpf_kfunc_call_test_kptr_get)
+>  BTF_SET_END(test_sk_acquire_kfunc_ids)
+>  
+>  BTF_SET_START(test_sk_release_kfunc_ids)
+> @@ -691,8 +699,13 @@ BTF_SET_END(test_sk_release_kfunc_ids)
+>  
+>  BTF_SET_START(test_sk_ret_null_kfunc_ids)
+>  BTF_ID(func, bpf_kfunc_call_test_acquire)
+> +BTF_ID(func, bpf_kfunc_call_test_kptr_get)
+>  BTF_SET_END(test_sk_ret_null_kfunc_ids)
+>  
+> +BTF_SET_START(test_sk_kptr_acquire_kfunc_ids)
+> +BTF_ID(func, bpf_kfunc_call_test_kptr_get)
+> +BTF_SET_END(test_sk_kptr_acquire_kfunc_ids)
 > +
-> +const struct bpf_func_proto bpf_kptr_xchg_proto = {
-> +	.func         = bpf_kptr_xchg,
-> +	.gpl_only     = false,
-> +	.ret_type     = RET_PTR_TO_BTF_ID_OR_NULL,
-> +	.ret_btf_id   = &bpf_kptr_xchg_btf_id,
-> +	.arg1_type    = ARG_PTR_TO_KPTR,
-> +	.arg2_type    = ARG_PTR_TO_BTF_ID_OR_NULL | OBJ_RELEASE,
-> +	.arg2_btf_id  = &bpf_kptr_xchg_btf_id,
-> +};
+>  static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
+>  			   u32 size, u32 headroom, u32 tailroom)
+>  {
+> @@ -1579,14 +1592,36 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+>  
+>  static const struct btf_kfunc_id_set bpf_prog_test_kfunc_set = {
+>  	.owner        = THIS_MODULE,
+> -	.check_set    = &test_sk_check_kfunc_ids,
+> -	.acquire_set  = &test_sk_acquire_kfunc_ids,
+> -	.release_set  = &test_sk_release_kfunc_ids,
+> -	.ret_null_set = &test_sk_ret_null_kfunc_ids,
+> +	.check_set        = &test_sk_check_kfunc_ids,
+> +	.acquire_set      = &test_sk_acquire_kfunc_ids,
+> +	.release_set      = &test_sk_release_kfunc_ids,
+> +	.ret_null_set     = &test_sk_ret_null_kfunc_ids,
+> +	.kptr_acquire_set = &test_sk_kptr_acquire_kfunc_ids
+>  };
 
-I've tweaked above with:
-+/* Unlike other PTR_TO_BTF_ID helpers the btf_id in bpf_kptr_xchg()
-+ * helper is determined dynamically by the verifier.
-+ */
-+#define BPF_PTR_POISON ((void *)((0xeB9FUL << 2) + POISON_POINTER_DELTA))
-+
-+const struct bpf_func_proto bpf_kptr_xchg_proto = {
-+       .func         = bpf_kptr_xchg,
-+       .gpl_only     = false,
-+       .ret_type     = RET_PTR_TO_BTF_ID_OR_NULL,
-+       .ret_btf_id   = BPF_PTR_POISON,
-+       .arg1_type    = ARG_PTR_TO_KPTR,
-+       .arg2_type    = ARG_PTR_TO_BTF_ID_OR_NULL | OBJ_RELEASE,
-+       .arg2_btf_id  = BPF_PTR_POISON,
+This hunk probably should have been in the previous patch,
+but since it's not affecting bisect I left it as-is.
+
+> +BTF_ID_LIST(bpf_prog_test_dtor_kfunc_ids)
+> +BTF_ID(struct, prog_test_ref_kfunc)
+> +BTF_ID(func, bpf_kfunc_call_test_release)
+> +BTF_ID(struct, prog_test_member)
+> +BTF_ID(func, bpf_kfunc_call_memb_release)
+
+dtor of prog_test_member doesn't seem to be used ?
+
+Please improve dtor and kptr_get test methods for
+struct prog_test_ref_kfunc and prog_test_member to do the real refcnting.
+Empty methods are not testing things fully.
