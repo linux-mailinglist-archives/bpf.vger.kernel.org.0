@@ -2,162 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BBA50FCE2
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 14:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB0550FEAA
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 15:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344252AbiDZMaQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 08:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        id S1346781AbiDZNTR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 09:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346338AbiDZMaP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 08:30:15 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1602D69295;
-        Tue, 26 Apr 2022 05:27:08 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id a1so16475255edt.3;
-        Tue, 26 Apr 2022 05:27:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tUQrxavB/ZORPEFYd+g4E581It2+tjHhQ0R1hZx9kac=;
-        b=ZnPrsRi62/v9HJsUi4Io169wkYw6Jp8qgNE3yXWsPNEEN5M9eq6mDaWoAwCjEk57an
-         i782RzuCMHROIBq0PmkvwV+YGs2buzhiKFjw23X2LvnUUwrdCBf/cBLFaUV3hOiGlZC6
-         VqjVpFP+Ee1Du4rVfPV0vkjq2JxdQf3Ah8AariZPWrmpyZFUsaHJro3PjKJea6Jd4SU+
-         o2+BvS/117XPWgc6zkOm04bYuYobvkK81T4sIIigD86ILimXZK4f1QsdIkT45rXC+3oP
-         6kl3XV79k/YRrh4i4KDhD9eKv8OzdfSMrxQE8N5k8LNUls55O/3JVBsTI9AnyM/hO4ZA
-         RuZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tUQrxavB/ZORPEFYd+g4E581It2+tjHhQ0R1hZx9kac=;
-        b=LWt2JuprMXW9+YYtu7spVX6S3MLgqX58souXzUrl4ShOzEmZnaNzwId8fiXJYbxV0I
-         P5I2oRh2cUkqhEa2CPMUj1/BXDmDDSoZhtg9DxyqvcWNNJ1rpM+tPA0LA9qNjbdwEhLS
-         1rCv0fw1GAg9nrTvAmhXFMiUGFA9C6rnnpwGBQQX0a6W/ruqqZScPl8x2brNIz4etLa6
-         xV34dxgcStbqCGkKZwlvJmiiPZARZEj88/42kV3xt9TDxNHMW91XCCq94qUDDTkCaw07
-         BcLBTGmOmFWZhtunfZOSoNyLTtC0GmdJWCWlQmSJ4H7h5P3P8lriauGLYGLKcok7izo4
-         0z5A==
-X-Gm-Message-State: AOAM531L79vRkBXeBVu+4mdtsRnlp0FUOKTdfGWshpdhPqQdnVWksg26
-        HMk4WA13OpfYnztLpZHfhuE=
-X-Google-Smtp-Source: ABdhPJya0Jw62MjF+PG5dCtkf26KarZPuivNh7Vg8KYNoMVUS9wIwNXKm932IfOH8VJ4hUeS4w7CQQ==
-X-Received: by 2002:a05:6402:1d90:b0:425:dd36:447c with SMTP id dk16-20020a0564021d9000b00425dd36447cmr13616178edb.347.1650976026463;
-        Tue, 26 Apr 2022 05:27:06 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id e26-20020a50a69a000000b00425c11446fasm5894150edc.3.2022.04.26.05.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Apr 2022 05:27:05 -0700 (PDT)
-Date:   Tue, 26 Apr 2022 14:27:04 +0200
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCHv2 bpf-next 1/4] kallsyms: Add kallsyms_lookup_names
- function
-Message-ID: <YmflGEbjkp8mynxK@krava>
-References: <20220418124834.829064-1-jolsa@kernel.org>
- <20220418124834.829064-2-jolsa@kernel.org>
- <20220418233546.dfe0a1be12193c26b05cdd93@kernel.org>
- <Yl5yHVOJpCYr+T3r@krava>
- <YmJPcU9dahEatb0f@krava>
- <20220426190108.d9c76f5ccff52e27dbef21af@kernel.org>
+        with ESMTP id S1350799AbiDZNS4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 09:18:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDD89230D;
+        Tue, 26 Apr 2022 06:15:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7CC99614A3;
+        Tue, 26 Apr 2022 13:15:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96AD3C385AA;
+        Tue, 26 Apr 2022 13:15:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650978947;
+        bh=/pYk0IF39cuVqn1gDqReGRf89BRsIwZNP7PwDX11BAo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FMKz1SkGb2c+HLwfyFqr+EkJj1ifKHmoWALFZfuVRNAf3ciUn+R4ZW0Nm9fQsNuVm
+         iu62Zpf5XAdLlLSH56deLB/1qFyVAQgZm/GsBH+JxaHQRckbbGI4N1TJv8aKwtO1PT
+         0m8rbyD0xV+uZb31pzDxdXpG6wZ4qoS11a4mZG3G/CWhUCGQO/uy9V4TA7KmOnMOf7
+         oYVlN+b6g8YyMK6GJN1907JRZMUudJUJaYJJ4xHcq/G4CC5oEvGSZmtuhQ2+Vq6FmQ
+         gMnsO8GYt6Y3tyshG9pYNRTD3/6vjxXg7dO/3BpkX6oHhf44wYak2oPUrPbrURRvl7
+         jPpiYjTRJF74A==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, alice.michael@intel.com,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        lorenzo.bianconi@redhat.com, andrii@kernel.org,
+        magnus.karlsson@intel.com, jbrouer@redhat.com, toke@redhat.com
+Subject: [PATCH v2 net-next] ixgbe: add xdp frags support to ndo_xdp_xmit
+Date:   Tue, 26 Apr 2022 15:14:55 +0200
+Message-Id: <e36724d3cdfbedf9af1a2a7f47ebd60aa7932f83.1650978540.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220426190108.d9c76f5ccff52e27dbef21af@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 07:01:08PM +0900, Masami Hiramatsu wrote:
-> Hi Jiri,
-> 
-> Sorry for replying late.
-> 
-> On Fri, 22 Apr 2022 08:47:13 +0200
-> Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> > On Tue, Apr 19, 2022 at 10:26:05AM +0200, Jiri Olsa wrote:
-> > 
-> > SNIP
-> > 
-> > > > > +static int kallsyms_callback(void *data, const char *name,
-> > > > > +			     struct module *mod, unsigned long addr)
-> > > > > +{
-> > > > > +	struct kallsyms_data *args = data;
-> > > > > +
-> > > > > +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
-> > > > > +		return 0;
-> > > > > +
-> > > > > +	addr = ftrace_location(addr);
-> > > > > +	if (!addr)
-> > > > > +		return 0;
-> > > > 
-> > > > Ooops, wait. Did you do this last version? I missed this point.
-> > > > This changes the meanings of the kernel function.
-> > > 
-> > > yes, it was there before ;-) and you're right.. so some archs can
-> > > return different address, I did not realize that
-> > > 
-> > > > 
-> > > > > +
-> > > > > +	args->addrs[args->found++] = addr;
-> > > > > +	return args->found == args->cnt ? 1 : 0;
-> > > > > +}
-> > > > > +
-> > > > > +/**
-> > > > > + * kallsyms_lookup_names - Lookup addresses for array of symbols
-> > > > 
-> > > > More correctly "Lookup 'ftraced' addresses for array of sorted symbols", right?
-> > > > 
-> > > > I'm not sure, we can call it as a 'kallsyms' API, since this is using
-> > > > kallsyms but doesn't return symbol address, but ftrace address.
-> > > > I think this name misleads user to expect returning symbol address.
-> > > > 
-> > > > > + *
-> > > > > + * @syms: array of symbols pointers symbols to resolve, must be
-> > > > > + * alphabetically sorted
-> > > > > + * @cnt: number of symbols/addresses in @syms/@addrs arrays
-> > > > > + * @addrs: array for storing resulting addresses
-> > > > > + *
-> > > > > + * This function looks up addresses for array of symbols provided in
-> > > > > + * @syms array (must be alphabetically sorted) and stores them in
-> > > > > + * @addrs array, which needs to be big enough to store at least @cnt
-> > > > > + * addresses.
-> > > > 
-> > > > Hmm, sorry I changed my mind. I rather like to expose kallsyms_on_each_symbol()
-> > > > and provide this API from fprobe or ftrace, because this returns ftrace address
-> > > > and thus this is only used from fprobe.
-> > > 
-> > > ok, so how about:
-> > > 
-> > >   int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs);
-> > 
-> > quick question.. is it ok if it stays in kalsyms.c object?
-> 
-> I think if this is for the ftrace API, I think it should be in the ftrace.c, and
-> it can remove unneeded #ifdefs in C code.
-> 
-> > 
-> > so we don't need to expose kallsyms_on_each_symbol,
-> > and it stays in 'kalsyms' place
-> 
-> We don't need to expose it to modules, but just make it into a global scope.
-> I don't think that doesn't cause a problem.
+Add the capability to map non-linear xdp frames in XDP_TX and ndo_xdp_xmit
+callback.
 
-np, will move it to ftrace
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+Changes since v1:
+- rebase on top of net-next
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 99 ++++++++++++-------
+ 1 file changed, 63 insertions(+), 36 deletions(-)
 
-thanks,
-jirka
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index c4a4954aa317..8b84c9b2eecc 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -2344,6 +2344,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+ 			hard_start = page_address(rx_buffer->page) +
+ 				     rx_buffer->page_offset - offset;
+ 			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
++			xdp_buff_clear_frags_flag(&xdp);
+ #if (PAGE_SIZE > 4096)
+ 			/* At larger PAGE_SIZE, frame_sz depend on len size */
+ 			xdp.frame_sz = ixgbe_rx_frame_truesize(rx_ring, size);
+@@ -8571,57 +8572,83 @@ static u16 ixgbe_select_queue(struct net_device *dev, struct sk_buff *skb,
+ int ixgbe_xmit_xdp_ring(struct ixgbe_ring *ring,
+ 			struct xdp_frame *xdpf)
+ {
+-	struct ixgbe_tx_buffer *tx_buffer;
+-	union ixgbe_adv_tx_desc *tx_desc;
+-	u32 len, cmd_type;
+-	dma_addr_t dma;
+-	u16 i;
+-
+-	len = xdpf->len;
++	struct skb_shared_info *sinfo = xdp_get_shared_info_from_frame(xdpf);
++	u8 nr_frags = unlikely(xdp_frame_has_frags(xdpf)) ? sinfo->nr_frags : 0;
++	u16 i = 0, index = ring->next_to_use;
++	struct ixgbe_tx_buffer *tx_head = &ring->tx_buffer_info[index];
++	struct ixgbe_tx_buffer *tx_buff = tx_head;
++	union ixgbe_adv_tx_desc *tx_desc = IXGBE_TX_DESC(ring, index);
++	u32 cmd_type, len = xdpf->len;
++	void *data = xdpf->data;
+ 
+-	if (unlikely(!ixgbe_desc_unused(ring)))
++	if (unlikely(ixgbe_desc_unused(ring) < 1 + nr_frags))
+ 		return IXGBE_XDP_CONSUMED;
+ 
+-	dma = dma_map_single(ring->dev, xdpf->data, len, DMA_TO_DEVICE);
+-	if (dma_mapping_error(ring->dev, dma))
+-		return IXGBE_XDP_CONSUMED;
++	tx_head->bytecount = xdp_get_frame_len(xdpf);
++	tx_head->gso_segs = 1;
++	tx_head->xdpf = xdpf;
+ 
+-	/* record the location of the first descriptor for this packet */
+-	tx_buffer = &ring->tx_buffer_info[ring->next_to_use];
+-	tx_buffer->bytecount = len;
+-	tx_buffer->gso_segs = 1;
+-	tx_buffer->protocol = 0;
++	tx_desc->read.olinfo_status =
++		cpu_to_le32(tx_head->bytecount << IXGBE_ADVTXD_PAYLEN_SHIFT);
+ 
+-	i = ring->next_to_use;
+-	tx_desc = IXGBE_TX_DESC(ring, i);
++	for (;;) {
++		dma_addr_t dma;
+ 
+-	dma_unmap_len_set(tx_buffer, len, len);
+-	dma_unmap_addr_set(tx_buffer, dma, dma);
+-	tx_buffer->xdpf = xdpf;
++		dma = dma_map_single(ring->dev, data, len, DMA_TO_DEVICE);
++		if (dma_mapping_error(ring->dev, dma))
++			goto unmap;
+ 
+-	tx_desc->read.buffer_addr = cpu_to_le64(dma);
++		dma_unmap_len_set(tx_buff, len, len);
++		dma_unmap_addr_set(tx_buff, dma, dma);
++
++		cmd_type = IXGBE_ADVTXD_DTYP_DATA | IXGBE_ADVTXD_DCMD_DEXT |
++			   IXGBE_ADVTXD_DCMD_IFCS | len;
++		tx_desc->read.cmd_type_len = cpu_to_le32(cmd_type);
++		tx_desc->read.buffer_addr = cpu_to_le64(dma);
++		tx_buff->protocol = 0;
++
++		if (++index == ring->count)
++			index = 0;
++
++		if (i == nr_frags)
++			break;
++
++		tx_buff = &ring->tx_buffer_info[index];
++		tx_desc = IXGBE_TX_DESC(ring, index);
++		tx_desc->read.olinfo_status = 0;
+ 
++		data = skb_frag_address(&sinfo->frags[i]);
++		len = skb_frag_size(&sinfo->frags[i]);
++		i++;
++	}
+ 	/* put descriptor type bits */
+-	cmd_type = IXGBE_ADVTXD_DTYP_DATA |
+-		   IXGBE_ADVTXD_DCMD_DEXT |
+-		   IXGBE_ADVTXD_DCMD_IFCS;
+-	cmd_type |= len | IXGBE_TXD_CMD;
+-	tx_desc->read.cmd_type_len = cpu_to_le32(cmd_type);
+-	tx_desc->read.olinfo_status =
+-		cpu_to_le32(len << IXGBE_ADVTXD_PAYLEN_SHIFT);
++	tx_desc->read.cmd_type_len |= cpu_to_le32(IXGBE_TXD_CMD);
+ 
+ 	/* Avoid any potential race with xdp_xmit and cleanup */
+ 	smp_wmb();
+ 
+-	/* set next_to_watch value indicating a packet is present */
+-	i++;
+-	if (i == ring->count)
+-		i = 0;
+-
+-	tx_buffer->next_to_watch = tx_desc;
+-	ring->next_to_use = i;
++	tx_head->next_to_watch = tx_desc;
++	ring->next_to_use = index;
+ 
+ 	return IXGBE_XDP_TX;
++
++unmap:
++	for (;;) {
++		tx_buff = &ring->tx_buffer_info[index];
++		if (dma_unmap_len(tx_buff, len))
++			dma_unmap_page(ring->dev, dma_unmap_addr(tx_buff, dma),
++				       dma_unmap_len(tx_buff, len),
++				       DMA_TO_DEVICE);
++		dma_unmap_len_set(tx_buff, len, 0);
++		if (tx_buff == tx_head)
++			break;
++
++		if (!index)
++			index += ring->count;
++		index--;
++	}
++
++	return IXGBE_XDP_CONSUMED;
+ }
+ 
+ netdev_tx_t ixgbe_xmit_frame_ring(struct sk_buff *skb,
+-- 
+2.35.1
+
