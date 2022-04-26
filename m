@@ -2,144 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE5850F2AB
-	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 09:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B04A50F322
+	for <lists+bpf@lfdr.de>; Tue, 26 Apr 2022 09:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237232AbiDZHjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 03:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
+        id S241494AbiDZHzy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 03:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344221AbiDZHjO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 03:39:14 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C1CB1D1;
-        Tue, 26 Apr 2022 00:36:06 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4KnYTw3jHmzCsQV;
-        Tue, 26 Apr 2022 15:31:32 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 26 Apr 2022 15:36:02 +0800
-Message-ID: <79fe5bb5-c55c-7ddc-640f-50bf8bea7f0b@huawei.com>
-Date:   Tue, 26 Apr 2022 15:36:02 +0800
+        with ESMTP id S1344488AbiDZHzo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 03:55:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E07E06479
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 00:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1650959556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CsyLdgIfz/J4d2JXrqNRHu2e24b1rKeyXKBpw9KICek=;
+        b=hpI9D3hdKUBcErjnzmy2fFbCKRpPR0Ir10rCunLhBZzLCQMEgdTX1ejfn3gYW3/7d/G1j/
+        Y30WvYjmeEVp0d2D8Bg6lS7tQmBVBgZ5Pmh7p/x2AzdrMdU7dBjv3nkJeb0WHGVMg2AlvC
+        oeBxwRIHEzSJEmQ5kS9PROUlAhnAbL8=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-7-BtN1jQWpMyKqkjqbCpORgQ-1; Tue, 26 Apr 2022 03:52:34 -0400
+X-MC-Unique: BtN1jQWpMyKqkjqbCpORgQ-1
+Received: by mail-pl1-f198.google.com with SMTP id j10-20020a170903024a00b0015d18032e32so3346711plh.8
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 00:52:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CsyLdgIfz/J4d2JXrqNRHu2e24b1rKeyXKBpw9KICek=;
+        b=orTXvDCH9PpypKivCcCwMX/58s3QLEMbk0+iJf6lcHLdnXtsC5y7+fRUNXVQKSvD9I
+         DnsG/DDeYEg9GYDCJ4+Qt4Tlquz9RWWCt0824W2YTOoOFepkgD1qSXPO1cDFr6FeAck2
+         FdpyQXMsZijgok0mkf7fmn9aBPpcHE29eBhG7pr01Gs3gXk0xrUtr+eqawTV3HQgzhrP
+         bySRtKBF/a0YxiyCQIMrwmEYd2f3Cla+5qzqowo55ewCDux2dp8t8a57Xy6yqHyPVvk0
+         hyzwTUd223tfzCRJvhBKyW4q+C+yRruWcx0bhAralC6yIpCNCWu5vXJHoQ1KHA64tIjP
+         xAxA==
+X-Gm-Message-State: AOAM531STk7aqRQArsyEa87IbtjgLB47IO2iinbkn7DNHn2ir17vW7S6
+        LvoqiktO0KUI7T3GOQUsTxiBOQ9ywg2Zu0MCnVwdqPTffXb95Z4xy0Ar7pCce9FNjCSe1lkdfnb
+        HIwmhziTRBOtkJiu3d4G0PloykV2B
+X-Received: by 2002:a63:5606:0:b0:3ab:84d3:cfbe with SMTP id k6-20020a635606000000b003ab84d3cfbemr2870542pgb.191.1650959553260;
+        Tue, 26 Apr 2022 00:52:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrJqOAdclf97Ql1V/uWaKgsj2lBg1ANvXOzN4QoIaBsxQuxtoa4/Mg1H2hEbADxlqqfMdefO+faiELkv9d+X0=
+X-Received: by 2002:a63:5606:0:b0:3ab:84d3:cfbe with SMTP id
+ k6-20020a635606000000b003ab84d3cfbemr2870516pgb.191.1650959552946; Tue, 26
+ Apr 2022 00:52:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH bpf-next v3 2/7] ftrace: Fix deadloop caused by direct
- call in ftrace selftest
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20220421140740.459558-1-benjamin.tissoires@redhat.com>
+ <20220421140740.459558-4-benjamin.tissoires@redhat.com> <20220426041147.gwnxhcjftl2kaz6g@MBP-98dd607d3435.dhcp.thefacebook.com>
+In-Reply-To: <20220426041147.gwnxhcjftl2kaz6g@MBP-98dd607d3435.dhcp.thefacebook.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 26 Apr 2022 09:52:21 +0200
+Message-ID: <CAO-hwJLWxtZcs-ynzAaF4hGf6zPF5wAni3Etzb1_XrvQpx2Jxw@mail.gmail.com>
+Subject: Re: [RFC bpf-next v4 3/7] error-inject: add new type that carries if
+ the function is non sleepable
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <20220424154028.1698685-1-xukuohai@huawei.com>
- <20220424154028.1698685-3-xukuohai@huawei.com>
- <20220425110512.538ce0bf@gandalf.local.home>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <20220425110512.538ce0bf@gandalf.local.home>
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/25/2022 11:05 PM, Steven Rostedt wrote:
-> On Sun, 24 Apr 2022 11:40:23 -0400
-> Xu Kuohai <xukuohai@huawei.com> wrote:
-> 
->> diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
->> index abcadbe933bb..d2eff2b1d743 100644
->> --- a/kernel/trace/trace_selftest.c
->> +++ b/kernel/trace/trace_selftest.c
->> @@ -785,8 +785,24 @@ static struct fgraph_ops fgraph_ops __initdata  = {
->>  };
->>  
->>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->> +#ifdef CONFIG_ARM64
-> 
-> Please find a way to add this in arm specific code. Do not add architecture
-> defines in generic code.
-> 
-> You could add:
-> 
-> #ifndef ARCH_HAVE_FTRACE_DIRECT_TEST_FUNC
-> noinline __noclone static void trace_direct_tramp(void) { }
-> #endif
-> 
-> here, and in arch/arm64/include/ftrace.h
-> 
-> #define ARCH_HAVE_FTRACE_DIRECT_TEST_FUNC
-> 
-> and define your test function in the arm64 specific code.
-> 
-> -- Steve
-> 
-> 
+On Tue, Apr 26, 2022 at 6:11 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Apr 21, 2022 at 04:07:36PM +0200, Benjamin Tissoires wrote:
+> > When using error-injection function through bpf to change the return
+> > code, we need to know if the function is sleepable or not.
+> >
+> > Currently the code assumes that all error-inject functions are sleepable,
+> > except for a few selected of them, hardcoded in kernel/bpf/verifier.c
+> >
+> > Add a new flag to error-inject so we can code that information where the
+> > function is declared.
+> >
+> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> >
+> > ---
+> >
+> > new in v4:
+> > - another approach would be to define a new kfunc_set, and register
+> >   it with btf. But in that case, what program type would we use?
+> >   BPF_PROG_TYPE_UNSPEC?
+> > - also note that maybe we should consider all of the functions
+> >   non-sleepable and only mark some as sleepable. IMO it makes more
+> >   sense to be more restrictive by default.
+>
+> I think the approach in this patch is fine.
+> We didn't have issues with check_non_sleepable_error_inject() so far,
+> so I wouldn't start refactoring it.
 
-will move this to arch/arm64/ in v4, thanks.
+OK... though I can't help but thinking that adding a new
+error-inject.h enum value is going to be bad, because it's an API
+change, and users might not expect NS_ERRNO.
 
-> 
-> 
->> +extern void trace_direct_tramp(void);
->> +
->> +asm (
->> +"	.pushsection	.text, \"ax\", @progbits\n"
->> +"	.type		trace_direct_tramp, %function\n"
->> +"	.global		trace_direct_tramp\n"
->> +"trace_direct_tramp:"
->> +"	mov	x10, x30\n"
->> +"	mov	x30, x9\n"
->> +"	ret	x10\n"
->> +"	.size		trace_direct_tramp, .-trace_direct_tramp\n"
->> +"	.popsection\n"
->> +);
->> +#else
->>  noinline __noclone static void trace_direct_tramp(void) { }
->>  #endif
->> +#endif
->>  
->>  /*
->>   * Pretty much the same than for the function tracer from which the selftest
-> 
-> .
+OTOH, if we had a new kfunc_set, we keep the existing error-inject API
+in place with all the variants and we just teach the verifier that the
+function is non sleepable.
+
+>
+> > ---
+> >  include/asm-generic/error-injection.h |  1 +
+> >  kernel/bpf/verifier.c                 | 10 ++++++++--
+> >  lib/error-inject.c                    |  2 ++
+> >  3 files changed, 11 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/asm-generic/error-injection.h b/include/asm-generic/error-injection.h
+> > index fbca56bd9cbc..5974942353a6 100644
+> > --- a/include/asm-generic/error-injection.h
+> > +++ b/include/asm-generic/error-injection.h
+> > @@ -9,6 +9,7 @@ enum {
+> >       EI_ETYPE_ERRNO,         /* Return -ERRNO if failure */
+> >       EI_ETYPE_ERRNO_NULL,    /* Return -ERRNO or NULL if failure */
+> >       EI_ETYPE_TRUE,          /* Return true if failure */
+> > +     EI_ETYPE_NS_ERRNO,      /* Return -ERRNO if failure and tag the function as non-sleepable */
+>
+> >  };
+> >
+> >  struct error_injection_entry {
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 0f339f9058f3..45c8feea6478 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -14085,6 +14085,11 @@ static int check_non_sleepable_error_inject(u32 btf_id)
+> >       return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
+> >  }
+> >
+> > +static int is_non_sleepable_error_inject(unsigned long addr)
+> > +{
+> > +     return get_injectable_error_type(addr) == EI_ETYPE_NS_ERRNO;
+>
+> It's a linear search. Probably ok. But would be good to double check
+> that we're not calling it a lot.
+
+IIUC, the kfunc_set approach would solve that, no?
+
+Cheers,
+Benjamin
+
+>
+> > +}
+> > +
+> >  int bpf_check_attach_target(struct bpf_verifier_log *log,
+> >                           const struct bpf_prog *prog,
+> >                           const struct bpf_prog *tgt_prog,
+> > @@ -14281,8 +14286,9 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+> >                               /* fentry/fexit/fmod_ret progs can be sleepable only if they are
+> >                                * attached to ALLOW_ERROR_INJECTION and are not in denylist.
+> >                                */
+> > -                             if (!check_non_sleepable_error_inject(btf_id) &&
+> > -                                 within_error_injection_list(addr))
+> > +                             if (within_error_injection_list(addr) &&
+> > +                                 !check_non_sleepable_error_inject(btf_id) &&
+> > +                                 !is_non_sleepable_error_inject(addr))
+> >                                       ret = 0;
+> >                               break;
+> >                       case BPF_PROG_TYPE_LSM:
+> > diff --git a/lib/error-inject.c b/lib/error-inject.c
+> > index 2ff5ef689d72..560c3b18f439 100644
+> > --- a/lib/error-inject.c
+> > +++ b/lib/error-inject.c
+> > @@ -183,6 +183,8 @@ static const char *error_type_string(int etype)
+> >               return "ERRNO_NULL";
+> >       case EI_ETYPE_TRUE:
+> >               return "TRUE";
+> > +     case EI_ETYPE_NS_ERRNO:
+> > +             return "NS_ERRNO";
+> >       default:
+> >               return "(unknown)";
+> >       }
+> > --
+> > 2.35.1
+> >
+>
 
