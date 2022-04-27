@@ -2,57 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A044512529
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 00:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74314512536
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 00:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236555AbiD0WUR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Apr 2022 18:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
+        id S229806AbiD0W0T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Apr 2022 18:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbiD0WUM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Apr 2022 18:20:12 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1130385960
-        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 15:16:59 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id y16so855095ilc.7
-        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 15:16:59 -0700 (PDT)
+        with ESMTP id S231815AbiD0W0S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Apr 2022 18:26:18 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891A22C656;
+        Wed, 27 Apr 2022 15:23:06 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id f5so863276ilj.13;
+        Wed, 27 Apr 2022 15:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7n73zzRDYYjJkLIG0X7GSKHL2BlEq1dy+iJeBCkW9KA=;
-        b=kmuP/qOyMeyv3ixLqYPU3rBxqXRWiWyUSPvCD+2J/n4I6lOLNyXklk4W2q/CwuQ9/F
-         nW0LYDSgx14fcVn+VNdZlW7rEc7eHR9YknLKjJ9zItBWb+JJ1hb2BGkG3QGf+b/hBsEm
-         qDPl2dX/AfSw5Dz/wCNvpB3/ubZ1nRZY0WaDXP8I+DSUTrK28crcV+KcFWJLgbCnixG9
-         m8gtnmw6rjHW895KKkAO42poAlL748bxAiIg2WmDZN14qTxOk0giznuskc3hjJvllBTW
-         mMqWeWlDzUe4KR90hC1rVkadag4KZHTrY/QBonGIhxsIq/svutPArq8a7BOn11p+X94T
-         TWEg==
+        bh=m2zpAHo4N4DxJCqrpyoM9xFz6wA0o7g6EHge6QxNFRw=;
+        b=M4f0SnMcYdS2+nYxMbjJ3i/Kje+3f0uHeSHyDJjdIt4L25doLpC23IpA0KMbRGvpe/
+         Y5hBa6YaJ7PNTH/sPHBEXY8ZT47X52pvfq/fUHqisUvSmyhJ8M6UEb+7Ky0gogeXlW3D
+         fjHqIhPueXD8lotAnrhhSuCYAvCTC/W+0Kv3UiQCG5Uu0gWV1c5dQnJ6tpT+zxEnbT9h
+         t7fgoJVDENYDX1k7RdGFyv+NeG+Ip7f5AB5R/4Nxc+80Yok1zqSbeXbzvZDqZf1u2U3I
+         8ep1xVDhOA+Clhi/Y68lIl4KfEGQnR3Xh5EJvlfW3QqTXJE0AeQXstMDf60Hb5s8JpHq
+         4EmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7n73zzRDYYjJkLIG0X7GSKHL2BlEq1dy+iJeBCkW9KA=;
-        b=JxLrw2KBEAj6R9f0KrILDvdNpb/5zWbm/wY+gepr6azFGqMFbzLTpT2PJ192tBFNHJ
-         77tOAozuZHFxkT3KuzpZD2pbkM2pHXJ3Bojej+Ey/gxxexvIHv1Y5AkMRSsdazaKABGz
-         LqEsO12eoTRMenSwQKZlX1fvvnwXpJBVXDoyh3uYfpYclAfitTlxQaQzmzriVsvC3am0
-         puQo01JQNxDXCGbJAWU8V/peaY+vfBCBFY4NI4UYrN7o04jyiSDWd1qVJjglvCz2E74q
-         JyKibyTbyy2CjjNj6DIeOwxpihac/JX6MiF6ytITm0OordCOwT4S3ywViSbELSDfnOba
-         f5sw==
-X-Gm-Message-State: AOAM532qI8xUZIkzGmWomcD2JtcNzTj/KckVT0wgTu1+wFYCa74oKcJg
-        mA2QPL8jzPo4cZNyvSQ5qAH/hOld4KWSMAllj38SPoKK7hA=
-X-Google-Smtp-Source: ABdhPJx+bnt3Q4AkJACOvZNwVH78WgusE9FRrpo9V8KJP3l0/F3+TJLSyonY4TIKA9NIBpwCZCGIKDah9c+Q/2b1TJ8=
-X-Received: by 2002:a92:c247:0:b0:2cc:1798:74fe with SMTP id
- k7-20020a92c247000000b002cc179874femr11932297ilo.239.1651097818123; Wed, 27
- Apr 2022 15:16:58 -0700 (PDT)
+        bh=m2zpAHo4N4DxJCqrpyoM9xFz6wA0o7g6EHge6QxNFRw=;
+        b=fEwdhgkzOdux3crKVYuCsAWVmr0DM6Xxh0jSKXHM6V9KT+bTM09KZkESwRAx78qvV/
+         F4eHHCNl9C82Ci9g+ZrA43RZfj+l7kLlAl7J2yDN7Oo5hkd4vDHia2o8MU/YWoOyJ5qd
+         qjpKmO5Lm3KEiVIGx4FzEnhC+0zOeWwGU/zwkciQDqI0GBgFQOiWJb+42qieh1IlkNVJ
+         kODcaaPFrp9y9i2Jm7ZuDv9vxLgho/S1Wo1V8tifyuHzmCh/K+Poamt7BrIIZyzc8Sqf
+         xHKAoF8nCR3z03lW4es4zzzK+v0JS7ZjXupfH3Ih6cH/B+xyGrpi8nipO/juC44cShM0
+         nDRA==
+X-Gm-Message-State: AOAM532uTtOqMrXQwBO1eM88pGtyIVmJDpEADmOYZuSYpjhfpcAfppEg
+        R7cTul5tnFOAbWtDba8omrugPcb8gDNRUevorCA=
+X-Google-Smtp-Source: ABdhPJxqiR8j8bvemVOUtV1TwL7VR3W7PitBTYk8DangGIPNZSyDjL+UurL8eaT8ITiQYErdSEGqNLyFEWXCZnOoOq4=
+X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
+ y6-20020a926406000000b002bbf1dee13emr11721808ilb.305.1651098185982; Wed, 27
+ Apr 2022 15:23:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220427214337.716372-1-grantseltzer@gmail.com>
-In-Reply-To: <20220427214337.716372-1-grantseltzer@gmail.com>
+References: <20220422172422.4037988-1-maximmi@nvidia.com> <20220422172422.4037988-6-maximmi@nvidia.com>
+ <20220426001223.wlnfd2kmmogip5d5@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <CAEf4BzaGjxsf46YPs1FRSp4kj+nkKhw7vLKAGwgrdnAuTW5+9Q@mail.gmail.com>
+ <92e9eaf6-4d72-3173-3271-88e3b8637c7a@nvidia.com> <CAEf4BzZhjY+F9JYmT7k+m87UZ1qKuO8_Mjjq4CGgkr=z9BGDCg@mail.gmail.com>
+ <946b8928-56b6-b6ca-ec33-6ffe7af6a90c@nvidia.com>
+In-Reply-To: <946b8928-56b6-b6ca-ec33-6ffe7af6a90c@nvidia.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Apr 2022 15:16:47 -0700
-Message-ID: <CAEf4Bza4fW0v7gGO+57hwoHhhaPTeQjHPYKU5P_NzYTYdoxMdA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] API function for retrieving data from percpu map
-To:     grantseltzer <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Date:   Wed, 27 Apr 2022 15:22:55 -0700
+Message-ID: <CAEf4BzZqZkDB8EJh3K3TpT7N556hxCRqMF7x_Y8D05wmBGDdvA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 5/6] bpf: Add selftests for raw syncookie helpers
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Petar Penkov <ppenkov@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Joe Stringer <joe@cilium.io>,
+        Florent Revest <revest@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Florian Westphal <fw@strlen.de>, pabeni@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -64,120 +95,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 2:43 PM grantseltzer <grantseltzer@gmail.com> wrote:
+On Wed, Apr 27, 2022 at 10:19 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
 >
-> From: Grant Seltzer <grantseltzer@gmail.com>
+> On 2022-04-27 01:11, Andrii Nakryiko wrote:
+> > On Tue, Apr 26, 2022 at 11:29 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
+> >>
+> >> On 2022-04-26 09:26, Andrii Nakryiko wrote:
+> >>> On Mon, Apr 25, 2022 at 5:12 PM Alexei Starovoitov
+> >>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>
+> >>>> On Fri, Apr 22, 2022 at 08:24:21PM +0300, Maxim Mikityanskiy wrote:
+> >>>>> +void test_xdp_synproxy(void)
+> >>>>> +{
+> >>>>> +     int server_fd = -1, client_fd = -1, accept_fd = -1;
+> >>>>> +     struct nstoken *ns = NULL;
+> >>>>> +     FILE *ctrl_file = NULL;
+> >>>>> +     char buf[1024];
+> >>>>> +     size_t size;
+> >>>>> +
+> >>>>> +     SYS("ip netns add synproxy");
+> >>>>> +
+> >>>>> +     SYS("ip link add tmp0 type veth peer name tmp1");
+> >>>>> +     SYS("ip link set tmp1 netns synproxy");
+> >>>>> +     SYS("ip link set tmp0 up");
+> >>>>> +     SYS("ip addr replace 198.18.0.1/24 dev tmp0");
+> >>>>> +
+> >>>>> +     // When checksum offload is enabled, the XDP program sees wrong
+> >>>>> +     // checksums and drops packets.
+> >>>>> +     SYS("ethtool -K tmp0 tx off");
+> >>>>
+> >>>> BPF CI image doesn't have ethtool installed.
+> >>>> It will take some time to get it updated. Until then we cannot land the patch set.
+> >>>> Can you think of a way to run this test without shelling to ethtool?
+> >>>
+> >>> Good news: we got updated CI image with ethtool, so that shouldn't be
+> >>> a problem anymore.
+> >>>
+> >>> Bad news: this selftest still fails, but in different place:
+> >>>
+> >>> test_synproxy:FAIL:iptables -t raw -I PREROUTING -i tmp1 -p tcp -m tcp
+> >>> --syn --dport 8080 -j CT --notrack unexpected error: 512 (errno 2)
+> >>
+> >> That's simply a matter of missing kernel config options:
+> >>
+> >> CONFIG_NETFILTER_SYNPROXY=y
+> >> CONFIG_NETFILTER_XT_TARGET_CT=y
+> >> CONFIG_NETFILTER_XT_MATCH_STATE=y
+> >> CONFIG_IP_NF_FILTER=y
+> >> CONFIG_IP_NF_TARGET_SYNPROXY=y
+> >> CONFIG_IP_NF_RAW=y
+> >>
+> >> Shall I create a pull request on github to add these options to
+> >> https://github.com/libbpf/libbpf/tree/master/travis-ci/vmtest/configs?
+> >>
+> >
+> > Yes, please. But also for [0], that's the one that tests all the
+> > not-yet-applied patches
+> >
+> >    [0] https://github.com/kernel-patches/vmtest/
 >
-> This adds a new API function used to retrieve all data from a
-> percpu array or percpu hashmap.
+> Created pull requests:
 >
-> This is useful because the current interface for doing so
-> requires knowledge of the layout of these BPF map internal
-> structures.
+> https://github.com/kernel-patches/vmtest/pull/79
+> https://github.com/libbpf/libbpf/pull/490
 >
-> Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 28 ++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.h | 25 +++++++++++++++++++++++++
->  2 files changed, 53 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 873a29ce7781..8d72cff22688 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -36,6 +36,7 @@
->  #include <linux/perf_event.h>
->  #include <linux/ring_buffer.h>
->  #include <linux/version.h>
-> +#include <linux/math.h>
->  #include <sys/epoll.h>
->  #include <sys/ioctl.h>
->  #include <sys/mman.h>
-> @@ -4370,6 +4371,33 @@ int bpf_map__resize(struct bpf_map *map, __u32 max_entries)
->         return bpf_map__set_max_entries(map, max_entries);
->  }
->
-> +void *bpf_map__get_percpu_value(const struct bpf_map *map, const void *key)
 
-I'd rather avoid API that allocates memory on behalf of user (and
-requires user to later free it) if possible. In this case there is no
-need for libbpf itself to allocate memory, user can allocate enough
-memory and pass it to libbpf.
+Merged both, thanks.
 
-I'm actually working on few related APIs to avoid using low-level
-bpf_map_update_elem() from user-space. I want to add
-bpf_map__update_elem(), bpf_map__lookup_elem(),
-bpf_map__delete_elem(). It's TBD how it will look like for per-cpu
-maps, but I didn't plan to have a separate API for that. It would just
-change expectations of value size to be a value_size * num_cpus.
 
-So stay tuned, hopefully very soon
-
-> +{
-> +
-> +       if (!(bpf_map__type(map) == BPF_MAP_TYPE_PERCPU_ARRAY ||
-> +               bpf_map__type(map) == BPF_MAP_TYPE_PERCPU_HASH)) {
-> +               return libbpf_err_ptr(-EINVAL);
-> +       }
-> +
-> +       int num_cpus;
-> +       __u32 value_size;
-> +       num_cpus = libbpf_num_possible_cpus();
-> +
-> +       if (num_cpus < 0)
-> +               return libbpf_err_ptr(-EBUSY);
-> +
-> +       value_size = bpf_map__value_size(map);
-> +
-> +       void *data = malloc(roundup(value_size, 8) * num_cpus);
-> +       int err = bpf_map_lookup_elem(map->fd, key, data);
-> +       if (err) {
-> +               free(data);
-> +               return libbpf_err_ptr(err);
-> +       }
-> +
-> +       return data;
-> +}
-> +
->  static int
->  bpf_object__probe_loading(struct bpf_object *obj)
->  {
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index cdbfee60ea3e..99b218702dfb 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -921,6 +921,31 @@ LIBBPF_API const void *bpf_map__initial_value(struct bpf_map *map, size_t *psize
->  LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_map__type() instead")
->  LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
->
-> +/**
-> + * @brief **bpf_map__get_percpu_value()** returns a pointer to an array
-> + * of data stored in a per-cpu array or per-cpu hashmap at a specified
-> + * key. Each element is padded to 8 bytes regardless of the value data
-> + * type stored in the per-cpu map. The index of each element in the array
-> + * corresponds with the cpu that the data was set from.
-> + * @param map per-cpu array or per-cpu hashmap
-> + * @param key the key or index in the map
-> + * @return pointer to the array of data
-> + *
-> + * example usage:
-> + *
-> + *  values = bpf_map__get_percpu_value(bpfmap, (void*)&zero);
-> + *  if (values == NULL) {
-> + *     // error handling
-> + *  }
-> + *
-> + *     void* ptr = values;
-> + *  for (int i = 0; i < num_cpus; i++) {
-> + *    printf("CPU %d: %ld\n", i, *(ulong*)ptr);
-> + *    ptr += 8;
-> + *  }
-> + */
-> +LIBBPF_API void *bpf_map__get_percpu_value(const struct bpf_map *map, const void *key);
-> +
->  /**
->   * @brief **bpf_map__is_internal()** tells the caller whether or not the
->   * passed map is a special map created by libbpf automatically for things like
-> --
-> 2.34.1
+> >>> See [0].
+> >>>
+> >>>     [0] https://github.com/kernel-patches/bpf/runs/6169439612?check_suite_focus=true
+> >>
 >
