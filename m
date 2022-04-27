@@ -2,67 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D2A5122FA
-	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 21:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7619512303
+	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 21:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbiD0Tof (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Apr 2022 15:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
+        id S234830AbiD0TrI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Apr 2022 15:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234780AbiD0ToW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Apr 2022 15:44:22 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAA453A67;
-        Wed, 27 Apr 2022 12:38:44 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id z26so4338714iot.8;
-        Wed, 27 Apr 2022 12:38:44 -0700 (PDT)
+        with ESMTP id S234875AbiD0Tqz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Apr 2022 15:46:55 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1452E0AF;
+        Wed, 27 Apr 2022 12:41:45 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e1so639858ile.2;
+        Wed, 27 Apr 2022 12:41:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YxXEye4IU8j4v6PZooMH7wOdPbz6pXHC5cWSh3NnJeo=;
-        b=UhC7ht2k+INKbYGtB6qvA1F6cFRj1MAuYVGrDcOhAEoMAqR8vgQ5i8ptewg8a4JHll
-         28BzBf4y64AGv4QIcm3LvrQR9FE/TPsTTgy12oudzyMI8FCK32iHfBUvETR9nwDDoMVo
-         ZcFwPnQT7jf4bDUgHdWEugYskGuPs62wxU0sV/laNADiFmaDDNDSHHffeRF7n/RwO9jq
-         pFqwRw46jC5xN0azBs+vh6Aoyb85yrYD+U9felM2MSB9cqtnnvTycMLbeROTMCzgs2sf
-         Bzac9O8mkDbVmT8UATUpz1e2ZgfHjX3zWJqws9JiugnxZSP9Tfe7h91arPqJNJtTissr
-         fxKw==
+        bh=kYyd8f+4MS3/jYQdz3LNAtCwqcYH62ijIlbkCSXhveE=;
+        b=lU2OBhENOUesSEP9Nu53tal7OK8ZyFxE7L/PYW7GcnNHoHTsjUTIZ1YY8ceLs93VjN
+         rZgsZwM9DlXR6O/rpqbL+nYp0dwmQpeYurc8+riZ1B7SK7EUwW4jmQUJOqaIZbfq4YIq
+         5DHMi2FDQzi4lwsHZMxMI9EpNbBRkT77ulEQ9IUmTQcEV3RAV0uc3XKmb75GZ51LO26H
+         DhFl/xlWIxLmkAkBkq5W98dif/RKSH0OjZbIEaoxGyzu/f6xhKmHtY367Uhj7Hm9Htkm
+         bkyv4NLksyelkcYyfFondB3fLniOgWoz7F6IsCyO3iJsU68X5fGim1fzJ4znOkqmMIOG
+         Fx6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YxXEye4IU8j4v6PZooMH7wOdPbz6pXHC5cWSh3NnJeo=;
-        b=pVOgyBnW0cGWm487ZS++KhTDoY4m015hO0URlC7WO3E/TsT1EJItrxB0TKfrbE1l70
-         E+uICU0LnLJCffBiqaD8DAnK/ViwsVBSb68gOAVl7raFAeTtrDwO4kyDhE5KpnNUvU6R
-         PmOAtPXRF1dUghXLjxEhj8p0DLnI5X+QaMySkTbP33P/Onj+1Yyiy9OLmih4h+GPZMSk
-         CdCkUBUhRKU1bR1bg0YMNjMbjP1sF6INCOr3QfVvr8ECVijebLuL634Z4qcPSNu8sAXG
-         7rRF0/lXot4UdGKgzg0I9gPzAwVPSNUXeZXNzmjrEJT2CJxfhNOHLev24dlQ340DaP+u
-         FlEA==
-X-Gm-Message-State: AOAM531e0oliW4aY9I5S8XwNF85I8abOlms1WEeAxZRkjw/uN7JdtvKZ
-        mjd8CF+BahrYMTqfduebbmPrRjIFIYnUj2FsJhQ=
-X-Google-Smtp-Source: ABdhPJwrYhtqMNA/mmlGXK/zuN4kQSyJFEJLf6lcxTWQAIfBy3ibwsNLukys8hwQSHGYsx681njGmB3OrhD8BmzIY6A=
-X-Received: by 2002:a05:6638:19c8:b0:328:6a22:8258 with SMTP id
- bi8-20020a05663819c800b003286a228258mr13060709jab.103.1651088323492; Wed, 27
- Apr 2022 12:38:43 -0700 (PDT)
+        bh=kYyd8f+4MS3/jYQdz3LNAtCwqcYH62ijIlbkCSXhveE=;
+        b=P23gwsGFjfPMgJATNXHEi5WtsTqL2C8evM+V2goH2uQxai/WhLwpCfrksRIuIOjPhW
+         unIjx2AAZLanvq8XCpH4oT7+xPhSLHKeerLYw52mpZgBp9e07o7pBxZgwwCWJmr5IWTW
+         NdALhbA9MQrorHwmIB960GqxVO9lzabdNhoig3wkTH25iGZA0dS5YWDZsaVFEaS+jTsE
+         7XNRV6clFGH5okvh+Q1gMxNO76PgJ6MVvr4BmeyXr+5EFGNMa68aZc0nQuZBs1tkXdaX
+         3vrDoPD+7Ry6zQZas7eqZyubLp9ZsQlSo7wW9L+/wzTX5gpN4+SizfunIFsTtCfasXpt
+         XJEA==
+X-Gm-Message-State: AOAM5306ENK2v2cKD4PwO4i7QRgRAjyMAZ2GV0roxGwyfvbK2JUD/5F+
+        1eueUUCDrWU2IKyLEZi2TbQPEwvnN49RWpGbLk8=
+X-Google-Smtp-Source: ABdhPJw4ckNz7Kmxd5ZZeN5OjxU4vq38Zzc16PBABufm+ECrpbmaM0ol3Id8rhaD/Bjzcyxb6vG+geljyW3PUeVQvzI=
+X-Received: by 2002:a92:cd8d:0:b0:2cd:81ce:79bd with SMTP id
+ r13-20020a92cd8d000000b002cd81ce79bdmr8526344ilb.252.1651088505314; Wed, 27
+ Apr 2022 12:41:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220423143007.423526-1-ytcoode@gmail.com>
-In-Reply-To: <20220423143007.423526-1-ytcoode@gmail.com>
+References: <20220424165309.241796-1-eyal.birger@gmail.com> <CAHsH6Gtpu-+79r2wrs1U=X=wMjVh2MfNxdgDtsL7yOfsKzKXDA@mail.gmail.com>
+In-Reply-To: <CAHsH6Gtpu-+79r2wrs1U=X=wMjVh2MfNxdgDtsL7yOfsKzKXDA@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Apr 2022 12:38:32 -0700
-Message-ID: <CAEf4BzbgaqWhFDQTZHDa6w7y02_f8JeoQoj30Zk2rzDe2UfZDg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix incorrect TRUNNER_BINARY name output
-To:     Yuntao Wang <ytcoode@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 27 Apr 2022 12:41:34 -0700
+Message-ID: <CAEf4BzZ3vDvLDQ+Wsj1z2=-exZO-t510JdWXA-1bao-shO4PJg@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: test setting tunnel key from lwt xmit
+To:     Eyal Birger <eyal.birger@gmail.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, posk@google.com,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,97 +70,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 23, 2022 at 7:30 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+On Sun, Apr 24, 2022 at 10:23 AM Eyal Birger <eyal.birger@gmail.com> wrote:
 >
-> Currently, when we run 'make test_progs', the output is:
+> On Sun, Apr 24, 2022 at 7:53 PM Eyal Birger <eyal.birger@gmail.com> wrote:
+> >
+> > This commit adds test_egress_md() tests which perform a similar flow as
+> > test_egress() only that they use gre devices in collect_md mode and set
+> > the tunnel key from lwt bpf xmit.
+> >
+> > VRF scenarios are not checked since it is currently not possible to set
+> > the underlying device or vrf from bpf_set_tunnel_key().
+> >
+> > This introduces minor changes to the existing setup for consistency with
+> > the new tests:
+> >
+> > - GRE key must exist as bpf_set_tunnel_key() explicitly sets the
+> >   TUNNEL_KEY flag
+> >
+> > - Source address for GRE traffic is set to IPv*_5 instead of IPv*_1 since
+> >   GRE traffic is sent via veth5 so its address is selected when using
+> >   bpf_set_tunnel_key()
+> >
+> > Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> > ---
+> >  .../selftests/bpf/progs/test_lwt_ip_encap.c   | 51 ++++++++++-
+> >  .../selftests/bpf/test_lwt_ip_encap.sh        | 85 ++++++++++++++++++-
+> >  2 files changed, 128 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/test_lwt_ip_encap.c b/tools/testing/selftests/bpf/progs/test_lwt_ip_encap.c
+> > index d6cb986e7533..39c6bd5402ae 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_lwt_ip_encap.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_lwt_ip_encap.c
 >
->   CLNG-BPF [test_maps] atomic_bounds.o
->   ...
->   GEN-SKEL [test_progs] atomic_bounds.skel.h
->   ...
->   TEST-OBJ [test_progs] align.test.o
->   ...
->   TEST-HDR [test_progs] tests.h
->   EXT-OBJ  [test_progs] test_progs.o
->   ...
->   BINARY   test_progs
+> Thinking about this some more, I'm not sure if these tests fit better here
+> or in test_tunnel.sh.
 >
-> As you can see, the TRUNNER_BINARY name in the CLNG-BPF part is test_maps,
-> which is incorrect.
+> If the latter is preferred, please drop this patch and I'll submit one for
+> test_tunnel.sh.
 
-It's not incorrect. test_maps and test_progs share the same set of BPF
-object files under progs/ so whichever rule is picked first by make
-gets to output it's [test_maps] or [test_progs] "badge". Is that a big
-deal? Adding this $$(TRUNNER_BINARY) indirection and per-target
-private TRUNNER_BINARY envvar is an unnecessary complication of
-already complicated Makefile, IMO.
-
-Did you run into any problems with the way Makefile is right now?
+general preference is to put test into test_progs as those are
+regularly and extensively exercised, while test_tunnel.sh is not
 
 >
-> Similarly, when we run 'make test_maps', the output is:
->
->   CLNG-BPF [test_maps] atomic_bounds.o
->   ...
->   GEN-SKEL [test_progs] atomic_bounds.skel.h
->   ...
->   TEST-OBJ [test_maps] array_map_batch_ops.test.o
->   ...
->   TEST-HDR [test_maps] tests.h
->   EXT-OBJ  [test_maps] test_maps.o
->   ...
->   BINARY   test_maps
->
-> At this time, the TRUNNER_BINARY name in the GEN-SKEL part is wrong.
->
-> Again, if we run 'make /full/path/to/selftests/bpf/test_vmlinux.skel.h',
-> the output is:
->
->   CLNG-BPF [test_maps] test_vmlinux.o
->   GEN-SKEL [test_progs] test_vmlinux.skel.h
->
-> Here, the TRUNNER_BINARY names are inappropriate and meaningless, they
-> should be removed.
->
-> This patch fixes these and all other similar issues.
->
-> With the patch applied, the output becomes:
->
->   $ make test_progs
->
->   CLNG-BPF [test_progs] atomic_bounds.o
->   ...
->   GEN-SKEL [test_progs] atomic_bounds.skel.h
->   ...
->   TEST-OBJ [test_progs] align.test.o
->   ...
->   TEST-HDR [test_progs] tests.h
->   EXT-OBJ  [test_progs] test_progs.o
->   ...
->   BINARY   test_progs
->
->   $ make test_maps
->
->   CLNG-BPF [test_maps] atomic_bounds.o
->   ...
->   GEN-SKEL [test_maps] atomic_bounds.skel.h
->   ...
->   TEST-OBJ [test_maps] array_map_batch_ops.test.o
->   ...
->   TEST-HDR [test_maps] tests.h
->   EXT-OBJ  [test_maps] test_maps.o
->   ...
->   BINARY   test_maps
->
->   $ make /full/path/to/selftests/bpf/test_vmlinux.skel.h
->
->   CLNG-BPF test_vmlinux.o
->   GEN-SKEL test_vmlinux.skel.h
->
-> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> ---
->  tools/testing/selftests/bpf/Makefile | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
->
-
-[...]
+> Eyal.
