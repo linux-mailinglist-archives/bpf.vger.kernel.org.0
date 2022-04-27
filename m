@@ -2,112 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A92510D64
-	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 02:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83518510DE0
+	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 03:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356470AbiD0Asw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Apr 2022 20:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
+        id S1356669AbiD0BaB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Apr 2022 21:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356465AbiD0Asw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Apr 2022 20:48:52 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA1921254;
-        Tue, 26 Apr 2022 17:45:41 -0700 (PDT)
-Received: from canpemm500008.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Kp0Q626LMz1JBhs;
-        Wed, 27 Apr 2022 08:44:46 +0800 (CST)
-Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
- canpemm500008.china.huawei.com (7.192.105.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 27 Apr 2022 08:45:39 +0800
-Received: from dggpeml500026.china.huawei.com ([7.185.36.106]) by
- dggpeml500026.china.huawei.com ([7.185.36.106]) with mapi id 15.01.2375.024;
- Wed, 27 Apr 2022 08:45:39 +0800
-From:   shaozhengchao <shaozhengchao@huawei.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "weiyongjun (A)" <weiyongjun1@huawei.com>,
-        yuehaibing <yuehaibing@huawei.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggYnBmLW5leHRdIHNhbXBsZXMvYnBmOiBkZXRhY2gg?=
- =?utf-8?B?eGRwIHByb2cgd2hlbiBwcm9ncmFtIGV4aXRzIHVuZXhwZWN0ZWRseSBpbiB4?=
- =?utf-8?B?ZHBfcnhxX2luZm9fdXNlcg==?=
-Thread-Topic: [PATCH bpf-next] samples/bpf: detach xdp prog when program exits
- unexpectedly in xdp_rxq_info_user
-Thread-Index: AQHYVXhnj2mrrLYF+0mSlUsKYgSQOq0BHPyAgAHXDHA=
-Date:   Wed, 27 Apr 2022 00:45:39 +0000
-Message-ID: <2ba194b97a514384aeca0323c3bd7461@huawei.com>
-References: <20220421120925.330160-1-shaozhengchao@huawei.com>
- <CAEf4BzY=VajaEH_09FX0-wuPFCJ6te=shZa0jj2Jc7ukL-WzMQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzY=VajaEH_09FX0-wuPFCJ6te=shZa0jj2Jc7ukL-WzMQ@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.66]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S1356654AbiD0BaB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Apr 2022 21:30:01 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CB9403C6
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 18:26:51 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id bx5so162363pjb.3
+        for <bpf@vger.kernel.org>; Tue, 26 Apr 2022 18:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9pRgoTFbCsSdcLHOIELuaJbLrkAjKXlE6iTDuTy9dLA=;
+        b=KD6tpeeWVnFK1XYgqn2ZcW39FE8pEM9LB6foCLrIgWyw21u8VmHIHzcw8S3ZJAHz6A
+         xNxQWF/+t4sKDF4dJ1RBbW6hmbofNS4w/ldGaSmmAuEVo3VkRVYX4Fwgsj1w1A5yxotg
+         x1IbbZzUL0PvWwxqfTs+kUbOwB6OXoVMxrIdzrHEa6oPoT37bN+got5e5xisXv0ClAOu
+         ljtRlLI+wgucnlmZEkhtoaIzzSYLFGKv5h7KDCFASEfgRX1iCRB9k4IxLEjMiEBM0AKd
+         9Yw+vah0bggLzjAWcUVMz2ph89lPrUuao4BSLlNalYjxDvNOIdVSnny1RF4jhiU65z17
+         vmMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9pRgoTFbCsSdcLHOIELuaJbLrkAjKXlE6iTDuTy9dLA=;
+        b=zrHvLw2RjjTtTLyMebyz3Knpw1v7BzdYJF1JndwakxcjIDpIzmCN+JKqRtK9sfALzm
+         1L8UNHNDc6BDofKDg/o3/IJYUXCzCT3V4UHLsIjxA+vkYM3SYGfD+0wVf2NkLroZbM04
+         KogvqVjFMMh7cAkn6YKDGHNKw17cPypEmnk3onRdmHNvqJorQ+V4zvKgn/azEWKkVyp8
+         8byr6LC1nSvLpUwM4ugJlkyU0xGpNj2pfkqPO4Wzf3egpbevlqWCaJsPXc0Xj/kjySia
+         UxLBPsC1Kurb8KGgnAPI4ndAN5BLy+soOdS55zCwcDqedK4cKEu0QHYr9xoHz2N7+aaV
+         cEag==
+X-Gm-Message-State: AOAM532GWgKgaCkQkOlD/uFV8AVYphw2EHR8z9yFs8h5BeV1+vVxYwkN
+        h7PXOL6IcmRPiMweFDswprqwyT7JcayxJW9K7is=
+X-Google-Smtp-Source: ABdhPJyjhwcqk96Fx3NTt6zOlxAVrikgEQADSgVG2ZA+MJLY6OpTuH3zD1AoPg1Le0tvyP0iAebngISSkqy+I/CJIYg=
+X-Received: by 2002:a17:90a:8591:b0:1b9:da10:2127 with SMTP id
+ m17-20020a17090a859100b001b9da102127mr41027800pjn.13.1651022810975; Tue, 26
+ Apr 2022 18:26:50 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20220416063429.3314021-1-joannelkoong@gmail.com>
+ <20220416063429.3314021-4-joannelkoong@gmail.com> <20220422025212.n4c25z23rj2pp3yu@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <CAJnrk1ZczWZi4SAGTqoY1764oei8gCzcEA9a7608R4H2XkisrA@mail.gmail.com>
+In-Reply-To: <CAJnrk1ZczWZi4SAGTqoY1764oei8gCzcEA9a7608R4H2XkisrA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 26 Apr 2022 18:26:40 -0700
+Message-ID: <CAADnVQK9dKfnz=MwWvb67diEMf5XrppGZr5GiOWgvBkaNaX1RA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/7] bpf: Add bpf_dynptr_from_mem,
+ bpf_dynptr_alloc, bpf_dynptr_put
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-VGhhbmsgeW91IGZvciB5b3VyIHJlcGx5Lg0KDQpJIHdpbGwgZml4IHRoZSBjb21waWxhdGlvbiB3
-YXJuaW5nIGZpcnN0bHksIGFuZCB0aGVuIGNvbnZlcnQgdGhpcyBzYW1wbGUgdG8gc2tlbGV0b24u
-IFRoYW5rIHlvdSB2ZXJ5IG11Y2guDQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCuWPkeS7tuS6
-ujogQW5kcmlpIE5ha3J5aWtvIFttYWlsdG86YW5kcmlpLm5ha3J5aWtvQGdtYWlsLmNvbV0gDQrl
-j5HpgIHml7bpl7Q6IDIwMjLlubQ05pyIMjbml6UgMTI6MzUNCuaUtuS7tuS6ujogc2hhb3poZW5n
-Y2hhbyA8c2hhb3poZW5nY2hhb0BodWF3ZWkuY29tPg0K5oqE6YCBOiBicGYgPGJwZkB2Z2VyLmtl
-cm5lbC5vcmc+OyBOZXR3b3JraW5nIDxuZXRkZXZAdmdlci5rZXJuZWwub3JnPjsgb3BlbiBsaXN0
-IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgQWxleGVpIFN0YXJvdm9pdG92IDxhc3RA
-a2VybmVsLm9yZz47IERhbmllbCBCb3JrbWFubiA8ZGFuaWVsQGlvZ2VhcmJveC5uZXQ+OyBEYXZp
-ZCBTLiBNaWxsZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBKYWt1YiBLaWNpbnNraSA8a3ViYUBr
-ZXJuZWwub3JnPjsgSmVzcGVyIERhbmdhYXJkIEJyb3VlciA8aGF3a0BrZXJuZWwub3JnPjsgam9o
-biBmYXN0YWJlbmQgPGpvaG4uZmFzdGFiZW5kQGdtYWlsLmNvbT47IEFuZHJpaSBOYWtyeWlrbyA8
-YW5kcmlpQGtlcm5lbC5vcmc+OyBNYXJ0aW4gTGF1IDxrYWZhaUBmYi5jb20+OyBTb25nIExpdSA8
-c29uZ2xpdWJyYXZpbmdAZmIuY29tPjsgWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT47IEtQIFNp
-bmdoIDxrcHNpbmdoQGtlcm5lbC5vcmc+OyB3ZWl5b25nanVuIChBKSA8d2VpeW9uZ2p1bjFAaHVh
-d2VpLmNvbT47IHl1ZWhhaWJpbmcgPHl1ZWhhaWJpbmdAaHVhd2VpLmNvbT4NCuS4u+mimDogUmU6
-IFtQQVRDSCBicGYtbmV4dF0gc2FtcGxlcy9icGY6IGRldGFjaCB4ZHAgcHJvZyB3aGVuIHByb2dy
-YW0gZXhpdHMgdW5leHBlY3RlZGx5IGluIHhkcF9yeHFfaW5mb191c2VyDQoNCk9uIFRodSwgQXBy
-IDIxLCAyMDIyIGF0IDU6MDcgQU0gWmhlbmdjaGFvIFNoYW8gPHNoYW96aGVuZ2NoYW9AaHVhd2Vp
-LmNvbT4gd3JvdGU6DQo+DQo+IFdoZW4geGRwX3J4cV9pbmZvX3VzZXIgcHJvZ3JhbSBleGl0cyB1
-bmV4cGVjdGVkbHksIGl0IGRvZXNuJ3QgZGV0YWNoIA0KPiB4ZHAgcHJvZyBvZiBkZXZpY2UsIGFu
-ZCBvdGhlciB4ZHAgcHJvZyBjYW4ndCBiZSBhdHRhY2hlZCB0byB0aGUgDQo+IGRldmljZS4gU28g
-Y2FsbCBpbml0X2V4aXQoKSB0byBkZXRhY2ggeGRwIHByb2cgd2hlbiBwcm9ncmFtIGV4aXRzIHVu
-ZXhwZWN0ZWRseS4NCj4NCj4gU2lnbmVkLW9mZi1ieTogWmhlbmdjaGFvIFNoYW8gPHNoYW96aGVu
-Z2NoYW9AaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICBzYW1wbGVzL2JwZi94ZHBfcnhxX2luZm9fdXNl
-ci5jIHwgMjEgKysrKysrKysrKysrKysrLS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTUgaW5z
-ZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkNCj4NCg0KeW91IGFyZSBpbnRyb2R1Y2luZyBhIG5l
-dyBjb21waWxhdGlvbiB3YXJuaW5nLCBwbGVhc2UgZml4IGl0DQoNCg0KL2RhdGEvdXNlcnMvYW5k
-cmlpbi9saW51eC9zYW1wbGVzL2JwZi94ZHBfcnhxX2luZm9fdXNlci5jOiBJbiBmdW5jdGlvbg0K
-4oCYb3B0aW9uczJzdHLigJk6DQovZGF0YS91c2Vycy9hbmRyaWluL2xpbnV4L3NhbXBsZXMvYnBm
-L3hkcF9yeHFfaW5mb191c2VyLmM6MTUzOjE6DQp3YXJuaW5nOiBjb250cm9sIHJlYWNoZXMgZW5k
-IG9mIG5vbi12b2lkIGZ1bmN0aW9uIFstV3JldHVybi10eXBlXQ0KICAxNTMgfCB9DQogICAgICB8
-IF4NCg0KSXQgYWxzbyB3b3VsZCBiZSBnb29kIHRvIGluc3RlYWQgdXNlIGJwZl9saW5rLWJhc2Vk
-IFhEUCBhdHRhY2htZW50IHRoYXQgd291bGQgYmUgYXV0by1kZXRhY2hlZCBhdXRvbWF0aWNhbGx5
-IG9uIHByb2Nlc3MgY3Jhc2gNCihicGZfbGlua19jcmVhdGUoKSBGVFcpLiBQbGVhc2UgY29uc2lk
-ZXIgYWxzbyBjb252ZXJ0aW5nIHRoaXMgc2FtcGxlIHRvIHNrZWxldG9uIChhbmQgdGhlbiBicGZf
-cHJvZ3JhbV9fYXR0YWNoX3hkcCgpIGFzIGhpZ2gtbGV2ZWwgYWx0ZXJuYXRpdmUgdG8gYnBmX2xp
-bmtfY3JlYXRlKCkpLg0KDQo+IGRpZmYgLS1naXQgYS9zYW1wbGVzL2JwZi94ZHBfcnhxX2luZm9f
-dXNlci5jIA0KPiBiL3NhbXBsZXMvYnBmL3hkcF9yeHFfaW5mb191c2VyLmMgaW5kZXggZjJkOTBj
-YmE1MTY0Li42Mzc4MDA3ZTA4NWEgDQo+IDEwMDY0NA0KPiAtLS0gYS9zYW1wbGVzL2JwZi94ZHBf
-cnhxX2luZm9fdXNlci5jDQo+ICsrKyBiL3NhbXBsZXMvYnBmL3hkcF9yeHFfaW5mb191c2VyLmMN
-Cj4gQEAgLTE4LDcgKzE4LDcgQEAgc3RhdGljIGNvbnN0IGNoYXIgKl9fZG9jX18gPSAiIFhEUCBS
-WC1xdWV1ZSBpbmZvIGV4dHJhY3QgZXhhbXBsZVxuXG4iDQo+ICAjaW5jbHVkZSA8Z2V0b3B0Lmg+
-DQo+ICAjaW5jbHVkZSA8bmV0L2lmLmg+DQo+ICAjaW5jbHVkZSA8dGltZS5oPg0KDQpbLi4uXQ0K
+On Tue, Apr 26, 2022 at 4:45 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > I guess it's ok to treat refcnted dynptr special like above.
+> > I wonder whether we can reuse check_reference_leak logic?
+> I like this idea! My reason for not storing dynptr reference ids in
+> state->refs was because it's costly (eg we realloc_array every time we
+> acquire a reference). But thinking about this some more, I like the
+> idea of keeping everything unified by having all reference ids reside
+> within state->refs and checking for leaks the same way. Perhaps we can
+> optimize acquire_reference_state() as well where we upfront allocate
+> more space for state->refs instead of having to do a realloc_array
+> every time.
+
+realloc is decently efficient underneath.
+Probably not worth micro optimizing for it.
+As far as ref state... Looks like dynptr patch is trying
+hard to prevent writes into the stack area where dynptr
+was allocated. Then cleans it up after dynptr_put.
+For other pointers on stack we just mark the area as stack_misc
+only when the stack slot was overwritten.
+We don't mark the slot as 'misc' after the pointer was read from stack.
+We can use the same approach with dynptr as long as dynptr
+leaking is tracking through ref state
+(instead of for(each stack slot) at the time of bpf_exit)
+
+iirc we've debugged the case where clang reused stack area
+with a scalar that was previously used for stack spill.
+The dynptr on stack won't be seen as stack spill from compiler pov
+but I worry about the case:
+struct bpf_dynptr t;
+bpf_dynptr_alloc(&t,..);
+bpf_dynptr_put(&t);
+// compiler thinks the stack area of 't' is dead and reuses
+// it for something like scalar.
+Even without dynptr_put above the compiler might
+see that dynptr_alloc or another function stored
+something into dynptr, but if nothing is using that
+dynptr later it might consider the stack area as dead.
+We cannot mark every dynptr variable as volatile.
+
+Another point to consider...
+This patch unconditionally tells the verifier to
+unmark_stack_slots_dynptr() after bpf_dynptr_put().
+But that's valid only for refcnt=1 -> 0 transition.
+I'm not sure that will be forever the case even
+for dynptr-s on stack.
+If we allows refcnt=2,3,... on stack then
+the verifier won't be able to clear stack slots
+after bpf_dynptr_put and we will face the stack reuse issue.
+I guess the idea is that refcnt-ed dynptr will be only in a map?
+That might be inconvenient.
+We allow refcnt-ed kptrs to be in a map, in a register,
+and spilled to the stack.
+Surely, dynptr are more complex in that sense.
