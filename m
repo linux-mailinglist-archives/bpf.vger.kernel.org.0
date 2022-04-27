@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D66E3512232
-	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 21:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40224512235
+	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 21:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbiD0TNb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Apr 2022 15:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        id S229983AbiD0TOp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Apr 2022 15:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbiD0TNU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Apr 2022 15:13:20 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852C96E8E8
-        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 12:03:58 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id m6so97182iob.4
-        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 12:03:58 -0700 (PDT)
+        with ESMTP id S234045AbiD0TOK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Apr 2022 15:14:10 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3651E8F1A3
+        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 12:04:53 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id t4so583134ilo.12
+        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 12:04:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=o97tzyhTUNPeOOwGgjpbesMcUj4p8qgLitBHW8NCRa0=;
-        b=DyXNm6fxwo+jqSpJ9QDRrhnsS0jUCgSd2u5kZdLnMQDuK9jTwNu/VOBMD2ssh6vjR7
-         /rdAvRBv5HPMUVTAZKzDsdRmfrrLRDB+6HBykbqx5kh/U/V3oUhJ8ujLkYUoMBux8cxT
-         97Hue3tk+BG5cTAxC3cfvxlcwxVaV15QXYZxRfpGfAQCTrIeEtZYaJOC3Fe+2mW5wEgD
-         PmHq30nJZJnqxPoreNTy7vst68GgzorE6ScRXoc0lobOOXuOCa02KeS+7v/XmKGbatuZ
-         U6U1jAnja7PuLACi/s7Iaiggm0c6ncc5HvTwDVzfrxfJfwivhU+auOriGYdzvtt04Qw2
-         ic/w==
+        bh=8IEiyj6iYS64RcqScEGEmFRIBA6kU45FZwvezAc1nDI=;
+        b=EpEyQZjYA37TOudM035S9jYRjQRGdi9jmQ2sLFO7W0TbYcpfajMlFocsm/MKoYhxsh
+         XwfHxx2+0kdWFAlo+ZVftTAbpXkbS0ts2oRWguJVfWLNvhwa+ZJuMMNxIzEwri+i1HLZ
+         uqUuKUhknzIQ8xJ+uCQJx1bqTgJNr3QcCWmPvDRMVBIBJLn7sKDrmtZ3rBVjBvyh25P1
+         sF/TzhZ1eAiTbx1V2zf1UjYkGptuaaUmrZsdtPUSGJofsfWUzE0ORXytHc+pgnCQ2bHt
+         aSsARrc8q03VGq/yj0m3qjW8A+l7jDpKok0TmeKx+S49hSzcwq5N3syPl3f8cDEoBT5x
+         +IwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o97tzyhTUNPeOOwGgjpbesMcUj4p8qgLitBHW8NCRa0=;
-        b=RlybL+2WdRILFH/YGlQT7oFpwG79n5hcpeB/MgrsxXAAMMzP4wguWhd7Og6H+ZsHHb
-         FJ2Ju1z0j5pH4ukiKNkm4q1fBjefbJReWwvy7EEXijuT+hzvCc2eR2MnMcCPvFJUdLI4
-         bJhQ1Lk2j41UkWrHwj7/1GLoCIrkzk4bQpBdZGNYYkTpYsi22T5a2uqnOuHOlSKlqcav
-         4/dXP3RHeNlT0KS6Qn+I2r4A57COa97IqfxfMtLw77LOnoaHQ9GrC3UgEkpL+k75NnO8
-         N71o3E1VjD2BJVMBFLn9IxE+81hdaYq7DiToxzTGpHFWbvINz74NQU/Lycy+PyDD2FWv
-         Ds4Q==
-X-Gm-Message-State: AOAM530YM5nS5JRC+6sq69sues9+3kBqqLIJXfdea9dYONu+9vi3lODG
-        zo8Rh1bsdJ9DZ+op9PrYEym2Vers2n6cQpKdseQ=
-X-Google-Smtp-Source: ABdhPJx6sBpRssMeB54kLQ+WqRNTYTWTWqfiY/uNkXXaoyDNdNvXaN7hYrV30ILwBdRzLGZZeMU81bzPKeMBFdG0KZE=
-X-Received: by 2002:a05:6638:3393:b0:32a:93cd:7e48 with SMTP id
- h19-20020a056638339300b0032a93cd7e48mr12796662jav.93.1651086237838; Wed, 27
- Apr 2022 12:03:57 -0700 (PDT)
+        bh=8IEiyj6iYS64RcqScEGEmFRIBA6kU45FZwvezAc1nDI=;
+        b=1pV6qDpC6uPXpGoRdg+dJISBklqE2ih8AMvyGbBfLq9i09kGVk1EfhSxGkWkHEPG8q
+         VDYV4KcROSy9/27WvHPCBe7a+vRqpn2X1+TkOFsFu2n4jtSiY7nTtixSyOTL2kodVGNu
+         Jv79N1YgbwLd/KNWXoY8uLAkXqWp6P9dDRoqWutJrFyeqloVsI/HamN5K7VjtB2uPGpo
+         FmHCJcI4X3K2TlITD0+PdTMO4wjaPXplkV9bZl1v0tj0CT1M8IoHxD2lCC+tS2OENl1R
+         zv1sGkT+0/jFvAjxnR/8WmasUTlvKRaJj3RTFAsa+cHJFY6VDneGGuVWwjVf2TixQVja
+         vRKA==
+X-Gm-Message-State: AOAM531m5e0cTj77CR9wNZNGIQg3sC5o41Bz703Js7KbCRnkYfzVzNkJ
+        YsiuQmLV96bC9z7lF0AAq+EW4PoRsK3sL++Xh25a46nu
+X-Google-Smtp-Source: ABdhPJzbxMhiGPgDrz71b7j5nd6DTiBwynNlJG8BVb3njfaQh7uefOC94+krW2wqRAxx/O2tIwPs4VA5H8NVVKhooEc=
+X-Received: by 2002:a92:cd8d:0:b0:2cd:81ce:79bd with SMTP id
+ r13-20020a92cd8d000000b002cd81ce79bdmr8474845ilb.252.1651086292643; Wed, 27
+ Apr 2022 12:04:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220422182254.13693-1-9erthalion6@gmail.com> <20220422182254.13693-2-9erthalion6@gmail.com>
-In-Reply-To: <20220422182254.13693-2-9erthalion6@gmail.com>
+References: <20220422182254.13693-1-9erthalion6@gmail.com>
+In-Reply-To: <20220422182254.13693-1-9erthalion6@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Apr 2022 12:03:47 -0700
-Message-ID: <CAEf4BzZxq3koNMRAXw-o=vdkqqiwfyPhbjgZZ9H+0Dx8UnGo5A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf: Add bpf_link iterator
-To:     Dmitrii Dolgov <9erthalion6@gmail.com>
+Date:   Wed, 27 Apr 2022 12:04:41 -0700
+Message-ID: <CAEf4Bza4-50p8-TsjsvjnVzEYYHZMBk_yq5Kb2AvJ3gnBp4Xeg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/2] bpf: bpf link iterator
+To:     Dmitrii Dolgov <9erthalion6@gmail.com>, Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>
+        Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,64 +69,42 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Apr 22, 2022 at 11:23 AM Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
 >
-> Implement bpf_link iterator to traverse links via bpf_seq_file
-> operations. The changeset is mostly shamelessly copied from
-> commit a228a64fc1e4 ("bpf: Add bpf_prog iterator")
+> Bpf links seem to be one of the important structures for which no
+> iterator is provided. Such iterator could be useful in those cases when
+> generic 'task/file' is not suitable or better performance is needed.
 >
-> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
-> ---
->  include/linux/bpf.h    |   1 +
->  kernel/bpf/Makefile    |   2 +-
->  kernel/bpf/link_iter.c | 107 +++++++++++++++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c   |  19 ++++++++
->  4 files changed, 128 insertions(+), 1 deletion(-)
+
+Overall looks good, I'll defer to Yonghong to validate kernel-side
+iterator logic. Yonghong, can you please take a look? Thanks!
+
+> The implementation is mostly copied from prog iterator, and I would like
+> to get any high-level feedback about what needs to be different or have
+> to be taken into account. As a side note, I would also appreciate if
+> someone could point me out to some guide about writing selftests for bpf
+> subsystem -- for some unclear reason I couldn't compile the test from
+> this changeset, and was testing it only manually with a custom test
+> program.
+>
+
+What was the error? Generally, you need very recent Clang (probably
+built from sources), latest pahole built from sources, and you should
+compile kernel before building selftests/bpf.
+
+
+> Dmitrii Dolgov (2):
+>   bpf: Add bpf_link iterator
+>   selftests/bpf: Add bpf_link test
+>
+>  include/linux/bpf.h                           |   1 +
+>  kernel/bpf/Makefile                           |   2 +-
+>  kernel/bpf/link_iter.c                        | 107 ++++++++++++++++++
+>  kernel/bpf/syscall.c                          |  19 ++++
+>  .../selftests/bpf/prog_tests/bpf_iter.c       |  15 +++
+>  .../selftests/bpf/progs/bpf_iter_bpf_link.c   |  18 +++
+>  6 files changed, 161 insertions(+), 1 deletion(-)
 >  create mode 100644 kernel/bpf/link_iter.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_link.c
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 7bf441563ffc..330e88fcc50e 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1489,6 +1489,7 @@ void bpf_link_put(struct bpf_link *link);
->  int bpf_link_new_fd(struct bpf_link *link);
->  struct file *bpf_link_new_file(struct bpf_link *link, int *reserved_fd);
->  struct bpf_link *bpf_link_get_from_fd(u32 ufd);
-> +struct bpf_link *bpf_link_get_curr_or_next(u32 *id);
+> --
+> 2.32.0
 >
->  int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
->  int bpf_obj_get_user(const char __user *pathname, int flags);
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index c1a9be6a4b9f..057ba8e01e70 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
->  endif
->  CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
->
-> -obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-> +obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o link_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
->  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
->  obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
-> diff --git a/kernel/bpf/link_iter.c b/kernel/bpf/link_iter.c
-> new file mode 100644
-> index 000000000000..fde41d09f26b
-> --- /dev/null
-> +++ b/kernel/bpf/link_iter.c
-> @@ -0,0 +1,107 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2020 Facebook */
-
-this probably needs a bit of update?
-
-> +#include <linux/bpf.h>
-> +#include <linux/fs.h>
-> +#include <linux/filter.h>
-> +#include <linux/kernel.h>
-> +#include <linux/btf_ids.h>
-> +
-> +struct bpf_iter_seq_link_info {
-> +       u32 link_id;
-> +};
-> +
-
-[...]
