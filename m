@@ -2,63 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D75BC512305
-	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 21:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338CF5123B4
+	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 22:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbiD0TsG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Apr 2022 15:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
+        id S236214AbiD0UPA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Apr 2022 16:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235044AbiD0Trz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Apr 2022 15:47:55 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729AD41333;
-        Wed, 27 Apr 2022 12:42:49 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id i20so2708497ion.0;
-        Wed, 27 Apr 2022 12:42:49 -0700 (PDT)
+        with ESMTP id S236243AbiD0UOl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Apr 2022 16:14:41 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E93939CF;
+        Wed, 27 Apr 2022 13:08:45 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id g10so686196ilf.6;
+        Wed, 27 Apr 2022 13:08:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vfg73oyluXpxOQB2fOlxh19EAShpjxZ8ZY0CGGydxjM=;
-        b=g+Bvv3lNI8BD8ycaCTImlls3hRGqGNLIK7B1EGmMgUTAWc/CEex9IvEuEOrQKPwEYz
-         NtD2y2wZ77QpvcnE7fQp7XOmLlkfa7psPAo3vXs0QH0AOQ6FHiKqVUzJXlOLsKugZ6iN
-         bEMrsEmD5giEPY6q+2G0iIz6fZMdjLOTigk8zWmSiSRrFNh0sdDKHWAFbo7R8FouD1Ir
-         9ojtCpsduQMkGGjqV9dyBmTXe7AI7wLroEckZdCrlCSrGVTf3SjyE1OpdV2ieuUatw47
-         IHsQxfhvSqv9y1wv1V2aVv+YzyTqaTjS/6uEhSzBgHW0AKrZjsh75n4wmTy7eGJdXqkB
-         emkA==
+        bh=Cla1mRlZmz4uhMbCRbo+KpuTRkPBnIsQ9k/Thhz0OGo=;
+        b=LkzYLHe6dAjRlXJcMe8Sfr4UR2W8rf+VrAkIXc7U9nyNahwgSriKY5afY1aq/huC0A
+         X8TQ6p9+XYkycvafu84oWv2rO0GvgzZ1zVdnTbHUjc2aU3ohCrWpGUxuHTDyDqFsdlbH
+         ycYnj9MyRzBEu8+rzisn8gfy70xlV0KyRfBC/nR8JM9o02IS8dcluzb/GClHGN8+UGs7
+         DUkSa23YiAGWCsE1Dm26QVLh9A/KL+ZS/UC1jzsosTDymVi2D4Gs1AeD9W/QdD5RnUii
+         +1s8058IIsLHatFe8RTS8ylWhOUm5Zxp1aydpufrG6iLMW9582/jjblwlbWkS1CNbizq
+         m2hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vfg73oyluXpxOQB2fOlxh19EAShpjxZ8ZY0CGGydxjM=;
-        b=iHjoydcTd5azjQfjQJe3MZ4Ss82PNxZUSiB3f3qL4kRY6c97yfNV8K/fDo2aFeTRKn
-         uNzTlGq2WJGyE1+eSZIOBfqp0oAzEbf2LnOsXmneWGsKExxGGZJUa1vMCzvE7asaeSO7
-         XlayeBcvhS7RZvCbYKKyQEzFfN+hIxogopFoIKGvAIoAac3b7hlZtaJgBFU/R/SH6adt
-         sp49iZ2XyZ1Yc5Jfl65LkJ16zJg4wTWDuDpZJz7KvaEhO8frv5d55d5MhuRYSH/kAXvs
-         u2U39/V/1AMhAxXA4F2DKL0mHtjt+ZzvYVaJh3Sf8uddKdck4UiW+9sIJfuGj2PStA3f
-         7sHQ==
-X-Gm-Message-State: AOAM532Fb1tfVdrAVI4opl85/e8qOpcIf/xUmCBUxv4bd54475DW4iNw
-        HKQhln0NJQfjK89xOaEdxKCD/q5twPMjBzip1M0=
-X-Google-Smtp-Source: ABdhPJxxt+kNVZnM+u1yaMCqk9iI8N4YGCihHBSm3t6sN8UE64Xw+ROXO8f+Bb3mxZ2G2FBfTGIR3kXA6zJVC42cWeQ=
-X-Received: by 2002:a05:6602:1683:b0:64f:ba36:d3cf with SMTP id
- s3-20020a056602168300b0064fba36d3cfmr12191382iow.144.1651088568808; Wed, 27
- Apr 2022 12:42:48 -0700 (PDT)
+        bh=Cla1mRlZmz4uhMbCRbo+KpuTRkPBnIsQ9k/Thhz0OGo=;
+        b=PKio8gt8chbzRvFB5a04vDS3vFgoUhhGO3mX7b9vU83K5Ex8fU6p6Ops1NJkyrWb+4
+         kDNxzlmjK4jjRoA/9F+eSRSRy0quRsZVyJn7zBxQp+Z6chN0DxvQ8t7NZK/KaYLSamkg
+         N3FkJUjFqpU3IZja/oUV6OMrsB/aSYmYcBKyEDMDGXX98+xjy5KKP4Ph9WFWL1hYNONs
+         oukQc6DV2tThsfNHy8/hrpUnMRAfu5i3JyW4rSrxTmi+Jt98UeVZnbcEp2haMtrbX3OI
+         Sjj1ATPfs+GQwGrZ4EP/XGV9kly3gtIWYDXSk2mtUKV1sD/Y3JJlTg5hwHM8BO2WM0Rn
+         1Pkw==
+X-Gm-Message-State: AOAM5309u4yqURRKSmD14pIgzWry92JqC03mN0XXxwSL/cR8EpAsUNuQ
+        hpFBmBvkrOwSfRLkPUxH8rnlV4BlvVrhlli9oJN+g0kaRC4=
+X-Google-Smtp-Source: ABdhPJxVrHLWzMl2diBWW1SLZpza2DmwTehokXQ9z+ushyK6LQMn3k1/nLZJ4EoX0HKsBovaiBYn/tvZtloLZ+XJTgM=
+X-Received: by 2002:a05:6e02:1ba3:b0:2cc:4158:d3ff with SMTP id
+ n3-20020a056e021ba300b002cc4158d3ffmr11673755ili.98.1651090124991; Wed, 27
+ Apr 2022 13:08:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220424165309.241796-1-eyal.birger@gmail.com>
-In-Reply-To: <20220424165309.241796-1-eyal.birger@gmail.com>
+References: <20220427070644.319661-1-imagedong@tencent.com>
+In-Reply-To: <20220427070644.319661-1-imagedong@tencent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Apr 2022 12:42:38 -0700
-Message-ID: <CAEf4BzakwPD-63UGUekpSSxy+KordBf2Hs5+bqcFkyzv8y7YOQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: test setting tunnel key from lwt xmit
-To:     Eyal Birger <eyal.birger@gmail.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 27 Apr 2022 13:08:34 -0700
+Message-ID: <CAEf4BzaED-93fAR9YYA2RcCYNgzqAQki6exMyoabiZfJMVd-aQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] net: bpf: support direct packet access in
+ tracing program
+To:     menglong8.dong@gmail.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, posk@google.com,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        KP Singh <kpsingh@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Menglong Dong <imagedong@tencent.com>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Hao Peng <flyingpeng@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,67 +77,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 24, 2022 at 9:53 AM Eyal Birger <eyal.birger@gmail.com> wrote:
+On Wed, Apr 27, 2022 at 12:08 AM <menglong8.dong@gmail.com> wrote:
 >
-> This commit adds test_egress_md() tests which perform a similar flow as
-> test_egress() only that they use gre devices in collect_md mode and set
-> the tunnel key from lwt bpf xmit.
+> From: Menglong Dong <imagedong@tencent.com>
 >
-> VRF scenarios are not checked since it is currently not possible to set
-> the underlying device or vrf from bpf_set_tunnel_key().
+> For now, eBPF program of type TRACING is able to access the arguments
+> of the function or raw_tracepoint directly, which makes data access
+> easier and efficient. And we can also output the raw data in skb to
+> user space in tracing program by bpf_skb_output() helper.
 >
-> This introduces minor changes to the existing setup for consistency with
-> the new tests:
+> However, we still can't access the packet data in 'struct sk_buff'
+> directly and have to use the helper bpf_probe_read_kernel() to analyse
+> packet data.
 >
-> - GRE key must exist as bpf_set_tunnel_key() explicitly sets the
->   TUNNEL_KEY flag
+> Network tools, which based on eBPF TRACING, often do packet analyse
+> works in tracing program for filtering, statistics, etc. For example,
+> we want to trace abnormal skb free through 'kfree_skb' tracepoint with
+> special ip address or tcp port.
 >
-> - Source address for GRE traffic is set to IPv*_5 instead of IPv*_1 since
->   GRE traffic is sent via veth5 so its address is selected when using
->   bpf_set_tunnel_key()
+> In this patch, 2 helpers are introduced: bpf_skb_get_header() and
+> bpf_skb_get_end(). The pointer returned by bpf_skb_get_header() has
+> the same effect with the 'data' in 'struct __sk_buff', and
+> bpf_skb_get_end() has the same effect with the 'data_end'.
 >
-> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> Therefore, we can now access packet data in tracing program in this
+> way:
+>
+>   SEC("fentry/icmp_rcv")
+>   int BPF_PROG(tracing_open, struct sk_buff* skb)
+>   {
+>         void *data, *data_end;
+>         struct ethhdr *eth;
+>
+>         data = bpf_skb_get_header(skb, BPF_SKB_HEADER_MAC);
+>         data_end = bpf_skb_get_end(skb);
+>
+>         if (!data || !data_end)
+>                 return 0;
+>
+>         if (data + sizeof(*eth) > data_end)
+>                 return 0;
+>
+>         eth = data;
+>         bpf_printk("proto:%d\n", bpf_ntohs(eth->h_proto));
+>
+>         return 0;
+>   }
+>
+> With any positive reply, I'll complete the selftests programs.
+
+See bpf_dynptr patches that Joanne is working on. That's an
+alternative mechanism for data/data_end and is going to be easier and
+more flexible to work with. It is the plan that once basic bpf_dynptr
+functionality lands, we'll have dynptr "constructors" for xdp_buff and
+sk_buff. I think it's a better path forward.
+
+>
+> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+> Reviewed-by: Hao Peng <flyingpeng@tencent.com>
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
 > ---
->  .../selftests/bpf/progs/test_lwt_ip_encap.c   | 51 ++++++++++-
->  .../selftests/bpf/test_lwt_ip_encap.sh        | 85 ++++++++++++++++++-
->  2 files changed, 128 insertions(+), 8 deletions(-)
+>  include/linux/bpf.h      |  4 +++
+>  include/uapi/linux/bpf.h | 29 ++++++++++++++++++++
+>  kernel/bpf/verifier.c    |  6 +++++
+>  kernel/trace/bpf_trace.c | 58 ++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 97 insertions(+)
 >
-
-[...]
-
-> @@ -73,6 +77,7 @@ int bpf_lwt_encap_gre6(struct __sk_buff *skb)
->         hdr.ip6hdr.daddr.s6_addr[15] = 1;
->
->         hdr.greh.protocol = skb->protocol;
-> +       hdr.greh.flags = bpf_htons(GRE_KEY);
->
->         err = bpf_lwt_push_encap(skb, BPF_LWT_ENCAP_IP, &hdr,
->                                  sizeof(struct encap_hdr));
-> @@ -82,4 +87,42 @@ int bpf_lwt_encap_gre6(struct __sk_buff *skb)
->         return BPF_LWT_REROUTE;
->  }
->
-> +SEC("encap_gre_md")
-
-This is not a section name that's supported by libbpf in it's strict
-1.0 mode. Please update all SEC() definition to be compliant. Is this
-SEC("tc") case?
-
-> +int bpf_lwt_encap_gre_md(struct __sk_buff *skb)
-> +{
-> +       struct bpf_tunnel_key key;
-> +       int err;
-> +
-> +       __builtin_memset(&key, 0x0, sizeof(key));
-> +       key.remote_ipv4 = 0xac101064; /* 172.16.16.100 - always in host order */
-> +       key.tunnel_ttl = 0x40;
-> +       err = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
-> +                                    BPF_F_ZERO_CSUM_TX | BPF_F_SEQ_NUMBER);
-> +       if (err)
-> +               return BPF_DROP;
-> +
-> +       return BPF_OK;
-> +}
-> +
 
 [...]
