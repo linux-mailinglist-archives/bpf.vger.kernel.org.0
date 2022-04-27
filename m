@@ -2,231 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C785120F2
-	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 20:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B81511E63
+	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 20:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244415AbiD0RvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Apr 2022 13:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        id S231285AbiD0SSQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Apr 2022 14:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234137AbiD0RvP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Apr 2022 13:51:15 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544D444A27
-        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 10:48:02 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id bg25so1572831wmb.4
-        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 10:48:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yf4IEzeB1zfPWi9UBktEXEAnASflYtbvL38NGmaj4YU=;
-        b=FkJdUGkFRF3BLaVpa7JJ+cXoJXoTM65mGetsWofpea6+0/2muV6vMmx+4bkF0MMf5w
-         FzDb/QnPShwp1CP3bIi3w84CNxt4iBhizwlPL/6H+Ot0JdPk/MnWTiOUqjgKp7AsA0gY
-         a6aaB4FWNYeQVkoHC37TaueDx7CiIgSmUs7Y8vFNADj+G/a1MVc66ldNWXZsmWdCdZRQ
-         O1zlJRWH++VQwjfCf1F91H2D4zCeZqbMCYbfZc0psLPdyeqWg7A8o1FX/FV6DmRHkpEJ
-         nr31zRuJXJihlb9vo+UWFI+bkVRwJQE/4VfK2DMtJDJfp1tbcq/HpdZYvdwCOuP/zUc4
-         PKkQ==
+        with ESMTP id S230084AbiD0SSP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Apr 2022 14:18:15 -0400
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1706119C02;
+        Wed, 27 Apr 2022 11:15:02 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id w1so4589888lfa.4;
+        Wed, 27 Apr 2022 11:15:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yf4IEzeB1zfPWi9UBktEXEAnASflYtbvL38NGmaj4YU=;
-        b=Sav6VrhQyBf5ANos7457PV6b5npl4B68ZBReL0wuqG+8gFIwwKLpZwUUqb4xvPeCrN
-         F+uZFXsCQ73uE/QvKJQm5E+e0Nef0BLWWy+awnd/iCxnh0maCH9OFpVi9EGPCMHU3jGK
-         YYMtjpCCwP/5bHviWhN3ADs4J7oywzsS5jN/ijnexiNUi3PPfzP/OUZuxqF+WUby4+FY
-         woFmDOonlKRW0/opGqTpdKMlAfvm0HUQA+kqghEAJ3bYUhLuBR55QKpJcZvGgycfM5vT
-         7pfL8oOFqPHLid8y2j+r4IzlkikHOyZ60GyMRRq2U/Lo6M2FwYd8tZ5xPXK+GKRgaW3d
-         P8zQ==
-X-Gm-Message-State: AOAM5332jbVw2pMorh4pjZLDFHGmLNU2xVzpMEkHD3YH4Hvg5CVHrusG
-        dN2j2J7uiWLgvV6LXlcoU7NitCKT8CmokENb7f/uRnWK381Tzg==
-X-Google-Smtp-Source: ABdhPJzcD4Oq9IyT2Xht8M49zRixoI16G1glMWw8pSVDvLGvRZruzLq80ukIcaWGqi/acI9Nl1ZWsz+PXY0RAE0yPnw=
-X-Received: by 2002:a05:600c:a42:b0:393:d831:bf05 with SMTP id
- c2-20020a05600c0a4200b00393d831bf05mr25071293wmq.187.1651081679889; Wed, 27
- Apr 2022 10:47:59 -0700 (PDT)
+        bh=Okm5dD/Oc33gIv0yVRc1fgY/+IJnnsOYTp9Pczt09uQ=;
+        b=m7OMcPDJcmgUIU3bf+FXbNeg7c+ela3KHvKmg9fBQ1qWlg317zDddDI81aj44pz+AA
+         Vo46wfrGZmi02QXSKnYBrRcSlpNYFNXtM/aJjSjqnZSbkY98ccCW3DM2NgusQzzHZEa6
+         pClvWGz1NoW0weSFrTpp9FkqrhK6K1RTQDjIye5CgemlFu5kT2O5mRMMfzPhj0BQzCxx
+         //i7QOQzCIG6JsUgMIwpfNftUsNdgMu8h08Lv/h1YfhnAjOLj/PXYiJQHBVFxbDXR0PB
+         igCudI5x//A+QB7l0Y/frG/0reTaHy1cYa4kBboob14QtywZkgQCmEJ8bAZBDKXFl5My
+         7K9g==
+X-Gm-Message-State: AOAM530r1axzXZ3julBaRIZza1OHFfDpZrf4A/sQgoeTZxrvmZwAJaun
+        GmtXpSonOGkNW9qPB7fIL46IHgfn4WNCw9lZ0zE=
+X-Google-Smtp-Source: ABdhPJzaf+QMWy4arMCMk4NdpXvr5yt3ItrfK0d+nJtIt/Jb8/lofL0/THaA2G1M2/vvUksET/j07HAXd5AjWTAETZY=
+X-Received: by 2002:a05:6512:321c:b0:46b:b7fd:1eca with SMTP id
+ d28-20020a056512321c00b0046bb7fd1ecamr8012902lfe.481.1651083300256; Wed, 27
+ Apr 2022 11:15:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220419190053.3395240-1-sdf@google.com> <20220419190053.3395240-4-sdf@google.com>
- <20220427001006.dr5dl5mocufskmvv@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220427001006.dr5dl5mocufskmvv@kafai-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 27 Apr 2022 10:47:48 -0700
-Message-ID: <CAKH8qBsB2Y5+5AhA0Unew77uxCGdNfF3f9DWdEoyp0HwCrWQZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/8] bpf: per-cgroup lsm flavor
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
+References: <20220422150507.222488-1-namhyung@kernel.org> <20220422150507.222488-5-namhyung@kernel.org>
+ <CAEf4Bzbdh-wbQQLzoXGGKkqqE=+qz19C4tCq4Ynb-_PXzRYM1w@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbdh-wbQQLzoXGGKkqqE=+qz19C4tCq4Ynb-_PXzRYM1w@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 27 Apr 2022 11:14:49 -0700
+Message-ID: <CAM9d7chos3xgxPMOMwgSh6nCNfqk8k2tXO=0JsdL4KgN_yngCA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] perf record: Handle argument change in sched_switch
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Blake Jones <blakejones@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 5:10 PM Martin KaFai Lau <kafai@fb.com> wrote:
+Hello,
+
+On Tue, Apr 26, 2022 at 4:55 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Tue, Apr 19, 2022 at 12:00:48PM -0700, Stanislav Fomichev wrote:
-> > +static void bpf_cgroup_storages_unlink(struct bpf_cgroup_storage *storages[])
+> On Fri, Apr 22, 2022 at 3:49 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Recently sched_switch tracepoint added a new argument for prev_state,
+> > but it's hard to handle the change in a BPF program.  Instead, we can
+> > check the function prototype in BTF before loading the program.
+> >
+> > Thus I make two copies of the tracepoint handler and select one based
+> > on the BTF info.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/bpf_off_cpu.c          | 32 +++++++++++++++
+> >  tools/perf/util/bpf_skel/off_cpu.bpf.c | 55 ++++++++++++++++++++------
+> >  2 files changed, 76 insertions(+), 11 deletions(-)
+> >
+>
+> [...]
+>
+> >
+> > +SEC("tp_btf/sched_switch")
+> > +int on_switch3(u64 *ctx)
 > > +{
-> > +     enum bpf_cgroup_storage_type stype;
+> > +       struct task_struct *prev, *next;
+> > +       int state;
 > > +
-> > +     for_each_cgroup_storage_type(stype)
-> > +             bpf_cgroup_storage_unlink(storages[stype]);
-> > +}
+> > +       if (!enabled)
+> > +               return 0;
 > > +
-> >  /* Called when bpf_cgroup_link is auto-detached from dying cgroup.
-> >   * It drops cgroup and bpf_prog refcounts, and marks bpf_link as defunct. It
-> >   * doesn't free link memory, which will eventually be done by bpf_link's
-> > @@ -166,6 +256,16 @@ static void bpf_cgroup_link_auto_detach(struct bpf_cgroup_link *link)
-> >       link->cgroup = NULL;
-> >  }
-> >
-> > +static void bpf_cgroup_lsm_shim_release(struct bpf_prog *prog,
-> > +                                     enum cgroup_bpf_attach_type atype)
-> > +{
-> > +     if (prog->aux->cgroup_atype < CGROUP_LSM_START ||
-> > +         prog->aux->cgroup_atype > CGROUP_LSM_END)
-> > +             return;
-> > +
-> > +     bpf_trampoline_unlink_cgroup_shim(prog);
-> > +}
-> > +
-> >  /**
-> >   * cgroup_bpf_release() - put references of all bpf programs and
-> >   *                        release all cgroup bpf data
-> > @@ -190,10 +290,18 @@ static void cgroup_bpf_release(struct work_struct *work)
-> >
-> >               hlist_for_each_entry_safe(pl, pltmp, progs, node) {
-> >                       hlist_del(&pl->node);
-> > -                     if (pl->prog)
-> > +                     if (pl->prog) {
-> > +                             if (atype == BPF_LSM_CGROUP)
-> > +                                     bpf_cgroup_lsm_shim_release(pl->prog,
-> > +                                                                 atype);
-> >                               bpf_prog_put(pl->prog);
-> > -                     if (pl->link)
-> > +                     }
-> > +                     if (pl->link) {
-> > +                             if (atype == BPF_LSM_CGROUP)
-> > +                                     bpf_cgroup_lsm_shim_release(pl->link->link.prog,
-> > +                                                                 atype);
-> >                               bpf_cgroup_link_auto_detach(pl->link);
-> > +                     }
-> >                       kfree(pl);
-> >                       static_branch_dec(&cgroup_bpf_enabled_key[atype]);
-> >               }
-> > @@ -506,6 +614,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >       struct bpf_prog *old_prog = NULL;
-> >       struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> >       struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> > +     struct bpf_attach_target_info tgt_info = {};
-> >       enum cgroup_bpf_attach_type atype;
-> >       struct bpf_prog_list *pl;
-> >       struct hlist_head *progs;
-> > @@ -522,9 +631,35 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >               /* replace_prog implies BPF_F_REPLACE, and vice versa */
-> >               return -EINVAL;
-> >
-> > -     atype = to_cgroup_bpf_attach_type(type);
-> > -     if (atype < 0)
-> > -             return -EINVAL;
-> > +     if (type == BPF_LSM_CGROUP) {
-> > +             struct bpf_prog *p = prog ? : link->link.prog;
-> > +
-> > +             if (replace_prog) {
-> > +                     /* Reusing shim from the original program.
-> > +                      */
-> > +                     if (replace_prog->aux->attach_btf_id !=
-> > +                         p->aux->attach_btf_id)
-> > +                             return -EINVAL;
-> > +
-> > +                     atype = replace_prog->aux->cgroup_atype;
-> > +             } else {
-> > +                     err = bpf_check_attach_target(NULL, p, NULL,
-> > +                                                   p->aux->attach_btf_id,
-> > +                                                   &tgt_info);
-> > +                     if (err)
-> > +                             return -EINVAL;
-> > +
-> > +                     atype = bpf_lsm_attach_type_get(p->aux->attach_btf_id);
-> > +                     if (atype < 0)
-> > +                             return atype;
-> > +             }
-> > +
-> > +             p->aux->cgroup_atype = atype;
-> > +     } else {
-> > +             atype = to_cgroup_bpf_attach_type(type);
-> > +             if (atype < 0)
-> > +                     return -EINVAL;
-> > +     }
-> >
-> >       progs = &cgrp->bpf.progs[atype];
-> >
-> > @@ -580,13 +715,26 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >       if (err)
-> >               goto cleanup;
-> >
-> > +     bpf_cgroup_storages_link(new_storage, cgrp, type);
-> After looking between this patch 3 and the next patch 4, I can't
-> quite think this through quickly, so it may be faster to ask :)
+> > +       /*
+> > +        * TP_PROTO(bool preempt, struct task_struct *prev,
+> > +        *          struct task_struct *next)
+> > +        */
+> > +       prev = (struct task_struct *)ctx[1];
+> > +       next = (struct task_struct *)ctx[2];
 >
-> I have questions on the ordering between update_effective_progs(),
-> bpf_cgroup_storages_link(), and bpf_trampoline_link_cgroup_shim().
 >
-> Why bpf_cgroup_storages_link() has to be moved up and done before
-> bpf_trampoline_link_cgroup_shim() ?
-
-Looking at it again: I think I'm confusing bpf_cgroup_storages_assign
-with bpf_cgroup_storages_link and we don't need to move the latter.
-For context: my reasoning here was to make sure the prog has cgroup
-storage before bpf_trampoline_link_cgroup_shim installs the actual
-trampoline which might trigger the programs.
-
-> > +
-> > +     if (type == BPF_LSM_CGROUP && !old_prog) {
-> > +             struct bpf_prog *p = prog ? : link->link.prog;
-> > +
-> > +             err = bpf_trampoline_link_cgroup_shim(p, &tgt_info);
-> update_effective_progs() was done a few lines above, so the effective[atype]
-> array has the new_prog now.
+> you don't have to have two BPF programs for this, you can use
+> read-only variable to make this choice.
 >
-> If bpf_trampoline_link_cgroup_shim() did fail to add the
-> shim_prog to the trampoline, the new_prog will still be left in
-> effective[atype].  There is no shim_prog to execute effective[].
-> However, there may be places that access effective[]. e.g.
-> __cgroup_bpf_query() although I think to_cgroup_bpf_attach_type()
-> is not handling BPF_LSM_CGROUP now.  More on __cgroup_bpf_query()
-> later.
+> On BPF side
 >
-> Doing bpf_trampoline_link_cgroup_shim() just before activate_effective_progs() ?
+> const volatile bool has_prev_state = false;
+>
+> ...
+>
+> if (has_prev_state) {
+>     prev = (struct task_struct *)ctx[2];
+>     next = (struct task_struct *)ctx[3];
+> } else {
+>     prev = (struct task_struct *)ctx[1];
+>     next = (struct task_struct *)ctx[2];
+> }
+>
+>
+> And from user-space side you do your detection and before skeleton is loaded:
+>
+> skel->rodata->has_prev_state = <whatever you detected>
 
-Yeah, you're right, I thought that there was a cleanup path that
-undoes update_effective_progs action :-( Moving link_cgroup_shim
-before update_effective_progs/activate_effective_progs makes sense,
-thank you!
+Nice, thanks for the tip!
 
-> Have you thought about what is needed to support __cgroup_bpf_query() ?
-> bpf_attach_type and cgroup_bpf_attach_type is no longer a 1:1 relationship.
-> Looping through cgroup_lsm_atype_usecnt[] and output them under BPF_LSM_CGROUP ?
-> Same goes for local_storage.  All lsm-cgrp attaching to different
-> attach_btf_id sharing one local_storage because the key is only
-> cgroup-id and attach_type.  Is it enough to start with that
-> first and the key could be extended later with a new map_flag?
-> This is related to the API.
+Actually I tried something similar but it was with a variable (in bss)
+so the verifier in an old kernel rejected it due to invalid arg access.
 
-Ugh, I think I was still under the impression that it would just work
-out. But I haven't thought about __cgroup_bpf_query in the context of
-the next change which breaks that 1:1 relationship. Good catch, I have
-to look into that and will add a test to verify.
+I guess now the const makes the verifier ignore the branch as if
+it's dead but the compiler still generates the code, right?
 
-Regarding cgroup_id+attach_type key of local storage: maybe prohibit
-that mode for BPF_LSM_CGROUP ? We have two modes: (1) keyed by
-cgroup_id+attach_type and (2) keyed by cgroup_id only (and might be
-shared across attach_types). The first one never made much sense to
-me; the second one behaves exactly like the rest of local storages
-(file/sk/etc). WDYT? (we can enable (1) if we ever decide that it's
-needed)
+>
+> But I'm still hoping that this prev_state argument can be moved to the
+> end ([0]) to make all this unnecessary.
+>
+>   [0] https://lore.kernel.org/lkml/93a20759600c05b6d9e4359a1517c88e06b44834.camel@fb.com/
+
+Yeah, that would make life easier. :)
+
+Thanks,
+Namhyung
