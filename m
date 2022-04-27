@@ -2,136 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F765511337
-	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 10:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7145113AD
+	for <lists+bpf@lfdr.de>; Wed, 27 Apr 2022 10:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359328AbiD0IIK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Apr 2022 04:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
+        id S1356531AbiD0Ipj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Apr 2022 04:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359282AbiD0IH5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Apr 2022 04:07:57 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA98B15C3AE;
-        Wed, 27 Apr 2022 01:04:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651046677; x=1682582677;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=23kSWxJrZI80+FxhewCBs4Zt/CG0UV6J7Lqk+S2dTCo=;
-  b=FQUpsRpWZrqkR8YQwusf527oQaJraTOGDNswl+9R2qesjguVymGCdb81
-   MK3l5J416F20t+vyn3y5b3R3UN2VanaGPqItL+PBuVYrChs0koZiOsFrw
-   rmVoxojKyGMNZ1TbQo3L5Frdzv5CcEmgJGN//RHJCd919XfsYj+sCj4dT
-   jMiZwrVBcHl+/+43AgFGS8NoO/UeM/4EQ5igGXAiPD9XUHulq87VlwUKQ
-   ILx0id7A18zBDxkVzgWoSQQu6eb0uJAVDkG2xDSS+rUKyr9EIb+8d/YXP
-   v2dXQzMLUYibTOwS2yDZMQIp6Z1QMYc+XOx25he9aYR39g5neRKjBsVxV
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="247784561"
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; 
-   d="scan'208";a="247784561"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2022 01:04:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; 
-   d="scan'208";a="617405147"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Apr 2022 01:04:32 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1njcf2-0004Uk-76;
-        Wed, 27 Apr 2022 08:04:32 +0000
-Date:   Wed, 27 Apr 2022 16:04:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
+        with ESMTP id S233775AbiD0Ipd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Apr 2022 04:45:33 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4F68233B;
+        Wed, 27 Apr 2022 01:42:22 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id e23so1077556eda.11;
+        Wed, 27 Apr 2022 01:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VqYAKvduflFt7r2OK51ZmulDMRePsr391vKLFS7HJW4=;
+        b=h0RxgxXlI5ILM/FpadKTnw+IsnxUHFnT7XGkT6eLr9fwVyMwMInILr/Nb0XDCzQ64g
+         pV1SGUNHIaGEGfvFiWKEDKmlbnLC0Lf2z16vN5IB4Q8fyI0ls3octBTcc7mc8qUi2W9W
+         K9Mh2iQkyXlc4/W8juIJkuMFL+j4uCNaYTo03lUi9DZrDvNfgLzxD4lQbN6e4dbondiC
+         VFbNvmb7NXkThhWDs0X7DSjYHO5u4iEbFOfK1KwmCGLS0mD817Ys5PdU8fAQQliFn0T/
+         42jlWcR/ZCfY+RnJ8WV89T0Wjqyasg785jHc9gw0h7PmPTe1yrT2I8+wdn3aE87zAx23
+         aj7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VqYAKvduflFt7r2OK51ZmulDMRePsr391vKLFS7HJW4=;
+        b=UVFT1gf717yIN8NVdNcFLCdJs4mYC4GSU0A/9M+E9I/QjwMRKmNN/BE08gwpKLIOMc
+         wUtAsq6HLOBUOJSD6KJHztJ4hzFxNYLPDN+j4OcNb0JXdTfP/AaHpHKAoUoUvcrfGyXl
+         jl1G0ATfpEtm+SAnIxJHswMHlTp+8J0lrP9Ny1nwMuFCwwaBXR2ObHsmE4WZHo3p3xeG
+         RUzHDl/pa+Bzfx+tKbD2ZHlN1q3kmEnxb3CNIcMulYvJtEcYY8JxoY+GxCgTPOt8OlTQ
+         dBXW9ad/RrM1fqN1w2cOs1XMthM3j4TnIbikEKYHKx/yU4SAHVT8Z2dDzRVb0gIvTX02
+         OTZw==
+X-Gm-Message-State: AOAM531cck7eDz+AXSRUplB4v2kprj0NRa8BVpxctNEFpQv8C/GEcv6R
+        OfRT1lSe8XzVU1LJi21ZMvufuyjPpIPvs2q9
+X-Google-Smtp-Source: ABdhPJyiWuJxBHlI/Y3nGxfxtmrQ9ysxEbkczQaP3k3kzJtC5oBGPnv5HaQ8qcmI+WiA5ByUy/P/nQ==
+X-Received: by 2002:a05:6402:4388:b0:423:f7c9:7e04 with SMTP id o8-20020a056402438800b00423f7c97e04mr29285708edc.298.1651048940937;
+        Wed, 27 Apr 2022 01:42:20 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id lz12-20020a170906fb0c00b006f3a36a9807sm3179566ejb.19.2022.04.27.01.42.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Apr 2022 01:42:20 -0700 (PDT)
+Date:   Wed, 27 Apr 2022 10:42:17 +0200
+From:   Jiri Olsa <olsajiri@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] libbpf: fix returnvar.cocci warnings
-Message-ID: <Ymj5AJtiBx0UjEdT@8276d8ba1d54>
-References: <202204271656.OTIj2QNJ-lkp@intel.com>
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH perf/core 1/5] libbpf: Add bpf_program__set_insns function
+Message-ID: <YmkB6XxM6avEZdSf@krava>
+References: <20220422100025.1469207-1-jolsa@kernel.org>
+ <20220422100025.1469207-2-jolsa@kernel.org>
+ <52f36e85-fea6-e307-344e-5bbb5b8431f7@iogearbox.net>
+ <CAEf4BzZOKosYRHwK2CfZzpTUcDdrLXPXbYax++Q_PHCMcNdqCw@mail.gmail.com>
+ <YmeXx0mfy4Nr5jEB@krava>
+ <CAEf4Bza42-aN7dZAWsH1H5KNMhSZh6nUj0WQ5MkOkNjBq2At_A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202204271656.OTIj2QNJ-lkp@intel.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4Bza42-aN7dZAWsH1H5KNMhSZh6nUj0WQ5MkOkNjBq2At_A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Tue, Apr 26, 2022 at 08:58:12AM -0700, Andrii Nakryiko wrote:
+> On Mon, Apr 25, 2022 at 11:57 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Mon, Apr 25, 2022 at 11:19:09PM -0700, Andrii Nakryiko wrote:
+> > > On Mon, Apr 25, 2022 at 9:22 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > >
+> > > > On 4/22/22 12:00 PM, Jiri Olsa wrote:
+> > > > > Adding bpf_program__set_insns that allows to set new
+> > > > > instructions for program.
+> > > > >
+> > > > > Also moving bpf_program__attach_kprobe_multi_opts on
+> > > > > the proper name sorted place in map file.
+> > >
+> > > would make sense to fix it as a separate patch, it has nothing to do
+> > > with bpf_program__set_insns() API itself
+> >
+> > np
+> >
+> > >
+> > > > >
+> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > > ---
+> > > > >   tools/lib/bpf/libbpf.c   |  8 ++++++++
+> > > > >   tools/lib/bpf/libbpf.h   | 12 ++++++++++++
+> > > > >   tools/lib/bpf/libbpf.map |  3 ++-
+> > > > >   3 files changed, 22 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > > index 809fe209cdcc..284790d81c1b 100644
+> > > > > --- a/tools/lib/bpf/libbpf.c
+> > > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > > @@ -8457,6 +8457,14 @@ size_t bpf_program__insn_cnt(const struct bpf_program *prog)
+> > > > >       return prog->insns_cnt;
+> > > > >   }
+> > > > >
+> > > > > +void bpf_program__set_insns(struct bpf_program *prog,
+> > > > > +                         struct bpf_insn *insns, size_t insns_cnt)
+> > > > > +{
+> > > > > +     free(prog->insns);
+> > > > > +     prog->insns = insns;
+> > > > > +     prog->insns_cnt = insns_cnt;
+> > >
+> > > let's not store user-provided pointer here. Please realloc prog->insns
+> > > as necessary and copy over insns into it.
+> > >
+> > > Also let's at least add the check for prog->loaded and return -EBUSY
+> > > in such a case. And of course this API should return int, not void.
+> >
+> > ok, will change
+> >
+> > >
+> > > > > +}
+> > > > > +
+> > > > >   int bpf_program__set_prep(struct bpf_program *prog, int nr_instances,
+> > > > >                         bpf_program_prep_t prep)
+> > > > >   {
+> > > > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > > > > index 05dde85e19a6..b31ad58d335f 100644
+> > > > > --- a/tools/lib/bpf/libbpf.h
+> > > > > +++ b/tools/lib/bpf/libbpf.h
+> > > > > @@ -323,6 +323,18 @@ struct bpf_insn;
+> > > > >    * different.
+> > > > >    */
+> > > > >   LIBBPF_API const struct bpf_insn *bpf_program__insns(const struct bpf_program *prog);
+> > > > > +
+> > > > > +/**
+> > > > > + * @brief **bpf_program__set_insns()** can set BPF program's underlying
+> > > > > + * BPF instructions.
+> > > > > + * @param prog BPF program for which to return instructions
+> > > > > + * @param insn a pointer to an array of BPF instructions
+> > > > > + * @param insns_cnt number of `struct bpf_insn`'s that form
+> > > > > + * specified BPF program
+> > > > > + */
+> > >
+> > > This API makes me want to cry... but I can't come up with anything
+> > > better for perf's use case.
+> > >
+> 
+> So thinking about this some more. If we make libbpf not to close maps
+> and prog FDs on BPF program load failure automatically and instead
+> doing it in bpf_object__close(), which would seem to be a totally fine
+> semantics and won't break any reasonable application as they always
+> have to call bpf_object__close() anyways to clean up all the
+> resources; we wouldn't need this horror of bpf_program__set_insns().
+> Your BPF program would fail to load, but you'll get its fully prepared
+> instructions with bpf_program__insns(), then you can just append
+> correct preamble. Meanwhile, all the maps will be created (they are
+> always created before the first program load), so all the FDs will be
+> correct.
+> 
+> This is certainly advanced knowledge of libbpf behavior, but the use
+> case you are trying to solve is also very unique and advanced (and I
+> wouldn't recommend anyone trying to do this anyways). WDYT? Would that
+> work?
 
-tools/lib/bpf/relo_core.c:1064:8-11: Unneeded variable: "len". Return "0" on line 1086
+hm, so verifier will fail after all maps are set up during the walk
+of the program instructions.. I guess that could work, I'll give it
+a try, should be easy change in libbpf (like below) and also in perf
+
+but still the bpf_program__set_insns seems less horror to me
+
+jirka
 
 
- Remove unneeded variable used to store return value.
-
-Generated by: scripts/coccinelle/misc/returnvar.cocci
-
-Fixes: b58af63aab11 ("libbpf: Refactor CO-RE relo human description formatting routine")
-CC: Andrii Nakryiko <andrii@kernel.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
 ---
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-head:   f02ac5c95dfd45d2f50ecc68d79177de326c668c
-commit: b58af63aab11e4ae00fe96de9505759cfdde8ee9 [6746/7265] libbpf: Refactor CO-RE relo human description formatting routine
-:::::: branch date: 2 hours ago
-:::::: commit date: 9 hours ago
-
- tools/lib/bpf/relo_core.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -1061,7 +1061,7 @@ static int bpf_core_format_spec(char *bu
- 	const struct btf_enum *e;
- 	const char *s;
- 	__u32 type_id;
--	int i, len = 0;
-+	int i;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index c8df74e5f658..1eb75d4231ff 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -7577,19 +7577,6 @@ static int bpf_object_load(struct bpf_object *obj, int extra_log_level, const ch
+ 	obj->btf_vmlinux = NULL;
  
- #define append_buf(fmt, args...)				\
- 	({							\
-@@ -1083,7 +1083,7 @@ static int bpf_core_format_spec(char *bu
- 		   type_id, btf_kind_str(t), str_is_empty(s) ? "<anon>" : s);
- 
- 	if (core_relo_is_type_based(spec->relo_kind))
--		return len;
-+		return 0;
- 
- 	if (core_relo_is_enumval_based(spec->relo_kind)) {
- 		t = skip_mods_and_typedefs(spec->btf, type_id, NULL);
-@@ -1091,7 +1091,7 @@ static int bpf_core_format_spec(char *bu
- 		s = btf__name_by_offset(spec->btf, e->name_off);
- 
- 		append_buf("::%s = %u", s, e->val);
--		return len;
-+		return 0;
- 	}
- 
- 	if (core_relo_is_field_based(spec->relo_kind)) {
-@@ -1110,10 +1110,10 @@ static int bpf_core_format_spec(char *bu
- 			append_buf(" @ offset %u.%u)", spec->bit_offset / 8, spec->bit_offset % 8);
- 		else
- 			append_buf(" @ offset %u)", spec->bit_offset / 8);
--		return len;
-+		return 0;
- 	}
- 
--	return len;
-+	return 0;
- #undef append_buf
+ 	obj->loaded = true; /* doesn't matter if successfully or not */
+-
+-	if (err)
+-		goto out;
+-
+-	return 0;
+-out:
+-	/* unpin any maps that were auto-pinned during load */
+-	for (i = 0; i < obj->nr_maps; i++)
+-		if (obj->maps[i].pinned && !obj->maps[i].reused)
+-			bpf_map__unpin(&obj->maps[i], NULL);
+-
+-	bpf_object_unload(obj);
+-	pr_warn("failed to load object '%s'\n", obj->path);
+ 	return libbpf_err(err);
  }
  
