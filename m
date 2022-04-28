@@ -2,21 +2,21 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96A8512CAC
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 09:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2FF512D12
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 09:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245042AbiD1H2t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 03:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
+        id S245475AbiD1HjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 03:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245108AbiD1H2s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 03:28:48 -0400
+        with ESMTP id S245605AbiD1HjE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 03:39:04 -0400
 Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 81BBE2F392;
-        Thu, 28 Apr 2022 00:25:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7908C109F;
+        Thu, 28 Apr 2022 00:35:49 -0700 (PDT)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxMNpjQWpidk8BAA--.6695S4;
-        Thu, 28 Apr 2022 15:25:25 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxUNrQQ2piqFEBAA--.6543S2;
+        Thu, 28 Apr 2022 15:35:45 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -24,29 +24,25 @@ To:     Alexei Starovoitov <ast@kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] bpf, docs: BPF_FROM_BE exists as alias for BPF_TO_BE
-Date:   Thu, 28 Apr 2022 15:25:23 +0800
-Message-Id: <1651130723-23635-3-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH bpf-next RESEND 0/2] bpf, docs: Fix typos in instruction-set.rst
+Date:   Thu, 28 Apr 2022 15:35:42 +0800
+Message-Id: <1651131344-24528-1-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1651130723-23635-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1651130723-23635-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9BxMNpjQWpidk8BAA--.6695S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GrWrJryUJrWruF47WF17KFg_yoW3Zrg_CF
-        1kJ3Z5Wa1rCryruw1UWF1xCF97AFWrur4UA3WIyF4DAayqqws8Cr98W34DArWUGrW7u398
-        CrZ3Wry3ZrnrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfkYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE
-        c7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
-        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCF
-        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GF4l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUs8sqDUUUU
+X-CM-TRANSID: AQAAf9BxUNrQQ2piqFEBAA--.6543S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYe7k0a2IF6F4UM7kC6x804xWl14x267AK
+        xVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
+        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj
+        6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxV
+        WxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvE
+        ncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I
+        8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xS
+        Y4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU8BnmtUUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,31 +52,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-According include/uapi/linux/bpf.h:
+Forget to add [PATCH bpf-next] subject prefix,
+sorry for that, just resend.
 
-  #define BPF_FROM_LE	BPF_TO_LE
-  #define BPF_FROM_BE	BPF_TO_BE
+Tiezhu Yang (2):
+  bpf, docs: Remove duplicated word "instructions"
+  bpf, docs: BPF_FROM_BE exists as alias for BPF_TO_BE
 
-BPF_FROM_BE exists as alias for BPF_TO_BE instead of BPF_TO_LE.
+ Documentation/bpf/instruction-set.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- Documentation/bpf/instruction-set.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 30b019c..00b0800 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -157,7 +157,7 @@ Examples:
-   dst_reg = htobe64(dst_reg)
- 
- ``BPF_FROM_LE`` and ``BPF_FROM_BE`` exist as aliases for ``BPF_TO_LE`` and
--``BPF_TO_LE`` respetively.
-+``BPF_TO_BE`` respetively.
- 
- 
- Jump instructions
 -- 
 2.1.0
 
