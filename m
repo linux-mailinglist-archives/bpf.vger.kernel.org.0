@@ -2,248 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742F0513A10
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 18:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A152F513A6F
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 18:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349054AbiD1Qpr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 12:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        id S234725AbiD1Q5R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 12:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349900AbiD1Qpq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 12:45:46 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867416E8DF
-        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 09:42:30 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23SG7lTH011738;
-        Thu, 28 Apr 2022 09:42:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
+        with ESMTP id S232001AbiD1Q5Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 12:57:16 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591FBAAB6D
+        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 09:54:01 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23SG7bkZ026710
+        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 09:54:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=q2dCX8/5ZSV11a85FUaTvyQ+/zEkWWZ5G1niHWETCwg=;
- b=JBdMSOXb94Iu4vCNfxBhDgFF01znaN0Ry2Zegu2oysH6vaM/opfX2CC+8otdyDFdVonf
- ewFFhdaoF6bsvdrMXT+xPUB6NZuqd2NBr4B7F4JXV+8Oxg9F8nTSAHy8nVIfw3VD4zJQ
- YttYGMG0QHm1R2kr2DoTVJzpSWHb1jyKf8Q= 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fqkncv4fn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Apr 2022 09:42:13 -0700
+ bh=U4NO8m8IDGi7so3m0I9LGYCHZWY79T35kWhM4cnGlpQ=;
+ b=NPi79+D9OW/32bu6AksGmaK3LQW3FPnru6dBxXYiTDgPjRUCaiiLtqiH59Z5XONXmjvg
+ nK516PjOIcsSMTWhh9QRzrUbXP0smqZlHSDFVB9SPyfTkEAWndvFfwgv8aqhdumn/ZJN
+ unymSKvvCyEHbaqGwIgfZF+7998M7pU00Rs= 
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2173.outbound.protection.outlook.com [104.47.73.173])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fqm5r40r4-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 09:54:00 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jdEzK8oW3niVtonuI7xUJfRxVdcJDqrahnqlnlt+Rmz/S41S2IeftqcjrQg85Kuxe38vdd2lECUlUnkXpVDudOwKA3T5U+vUjTT7A+Uit5Do99Smo7iS00FVWg3sfRPCzYAuagiv+lh3eEZdqwKFjWX8e/X2YMUt3KhD0oD71rCN0QVKpYgO3YTsaOjeRkbz+FJzPwcCKRDLj1ud7iYMedelgcCs/JiJJdtwrYUPm2nPbuwBmNZ5189F1PLXS1wyZ6DhKTF1Q6Lq7er9tvH4FpKKmwz/iBZ6CxNIdhIow9yLsw68IKoLZXOVVYcW9HKUU9ThB3B4IRKZg8CxPoI8+g==
+ b=lYRk2sXdrwy/Lmt+4q8qxLtaM+3WHY1gVMnVPuVHBMBLxhu7jmdQLSB1X1ZJNWSxMUopt5pSseL4RGKizBqrA+sNu9BEHUlsZwp7VJG8p9dDVe0ktV9tYsWqaybntR/u362iCD9uz8xfNktfvolvGfJhGUjLPBYb6wo83qYN+dAHvoXNlEFiO7WNkhzUvO78GiBXwJ++stElYpnEoSsk3ijhD7ChtB1gOMocBei0fh3z4T0msIxRqU9zDuFy+/ZNk3oLIX6UrBR3P3Jx2dSBxN4zbCcG3IZDE00knJEqj09EGytbsBLp6IVpqTd2SH3vzreew835Qx7TkrDgD2LVLg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q2dCX8/5ZSV11a85FUaTvyQ+/zEkWWZ5G1niHWETCwg=;
- b=ODTOorN3pmAyWfIfbGpDqlvZDWdN9IZBhox1jzUDky7SFfVTGQ98EllV9/towdeNRI/nmqzLAiZNw1NH4YG/4qpxPHh7pYNUaKdjvjCBt8r3nG6pL/OOTgLboFmui6bVG5Ig9X2Fp3Xd289vOQm0d5y50zHOI/7Ch1sH9jfafgblJM60jmMlEUcT7TGxa+eplNJGAWtjoglAP1U+ioC4svWWDfF3cBqL9YNhza0bM94TlrjAUzY9nftzlGNaGcYLPdi+uLs/S4k6Q24k5m5AU2JQ19WNCWFKmRaGAfN5wTnmaPw/RLZwT48sSiLeB/YfbcUIxHBAuY1v9IldfJTDMw==
+ bh=U4NO8m8IDGi7so3m0I9LGYCHZWY79T35kWhM4cnGlpQ=;
+ b=NZ3HKE6v/wjE0WGiLzXiWuo3jn+odzyojHzL+e2Rxvj5AVG4i7Tj1PtyUfSB8iwg9JbrvJB15Wedd8zJFrNkoGhTW8kg0Sx8CYbMxdrE70sMeTq3dX1bbMVlRHTk9RV+b/6d5VENpAqFwZH7EN3vAK+2FtW0NwgSuq668271paU50jS1InlppSYMeQfbQZNL+avgN8v16dQuuCLTTvEtFkkMtqjk2p2dZGFnx1YGjnXRyhQy/J/jojSHysj+z6dD7d4EbrGkruwrvam3M/vHO2kFABnwBXScBYNuqyeQ0zMqgaEi3lno+mDekenTB1o8viSnG8HVrl6c68tf/NCI2A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BYAPR15MB2600.namprd15.prod.outlook.com (2603:10b6:a03:150::33) with
+Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
+ by SJ0PR15MB4615.namprd15.prod.outlook.com (2603:10b6:a03:37c::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.21; Thu, 28 Apr
- 2022 16:42:09 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::5811:4996:bbfd:3c53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::5811:4996:bbfd:3c53%7]) with mapi id 15.20.5206.013; Thu, 28 Apr 2022
- 16:42:09 +0000
-Message-ID: <088195e3-c94f-4f92-f627-f901c9a40eb0@fb.com>
-Date:   Thu, 28 Apr 2022 09:42:07 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.8.0
-Subject: Re: [RFC PATCH bpf-next 2/2] selftests/bpf: Add bpf link iter test
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.13; Thu, 28 Apr
+ 2022 16:53:55 +0000
+Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
+ ([fe80::b5e0:1df4:e09d:6b5b]) by SJ0PR15MB5154.namprd15.prod.outlook.com
+ ([fe80::b5e0:1df4:e09d:6b5b%4]) with mapi id 15.20.5186.020; Thu, 28 Apr 2022
+ 16:53:55 +0000
+From:   Delyan Kratunov <delyank@fb.com>
+To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: [PATCH bpf-next 4/5] libbpf: add support for sleepable kprobe and
+ uprobe programs
+Thread-Topic: [PATCH bpf-next 4/5] libbpf: add support for sleepable kprobe
+ and uprobe programs
+Thread-Index: AQHYWyCLmUWuy8bCeUK1TVSeHWTI+g==
+Date:   Thu, 28 Apr 2022 16:53:54 +0000
+Message-ID: <aac0c6adae881f57c247d7bf35e3047f7bf6cfe0.1651103126.git.delyank@fb.com>
+References: <cover.1651103126.git.delyank@fb.com>
+In-Reply-To: <cover.1651103126.git.delyank@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Dmitrii Dolgov <9erthalion6@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        songliubraving@fb.com
-References: <20220422182254.13693-1-9erthalion6@gmail.com>
- <20220422182254.13693-3-9erthalion6@gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220422182254.13693-3-9erthalion6@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR02CA0058.namprd02.prod.outlook.com
- (2603:10b6:a03:54::35) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8c8a0781-aad4-42ff-a8ae-08da2937ae59
+x-ms-traffictypediagnostic: SJ0PR15MB4615:EE_
+x-microsoft-antispam-prvs: <SJ0PR15MB461544A925534E3AD69D7A49C1FD9@SJ0PR15MB4615.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mWwHhUYIwnoPfy9V57Vd2RDdaoFlYy8l9q3nU/NmfPgVa/MqwQYwUZq7kzQkUCbKYiflwnFyyh96LLMVacNCvzMX+dxT7F3x1oYrDhmM4DcUqyiVs18vdcb5wZc9Kj1Lt7bZJJy2erZNb2vl9HPLQa/fWgDHzMlxHx7eliZM5/GwvJq+KMs4r1OFJKE3mO/oMWO60Qf8ExfNd5dWL6Ormx9wZxXD1BstPHeXyLE3wJ5zXYG3BYlj/cUeay4iliLROmZ516w39mUzcdjnWxgK/kBced5BJLiLKzNxPnrqGAaTDGke1HQkw1BAnAtQKSahAmJab19Ro1tw5cKoHjTZ1kl5tdCRBFCiJk6cdh+fH/ISynRIh67MiaL6FT1R0kyQjZdKCrrgwgBZ8ltDP5S/T0DVjg6s9Ibzc6js+6su7i84p33TNxNrIcQ+OZHrEAsjeYCz7cxhyd4S4Z+rXtTtNcmjgVwyS951HCZbG63MfT0396Y9Dgo4STyQXRLMxleJGvHRvyVshFPrHHgn6pumm6XjGDJLr7G3FKnUsQE2DCqJU+De/f6yAZISghAZEM/6IEWcJ1wlPEShU1vxMNx9vzlAFe2+zj5ZryYG3aJD62Er9SPe8yLGO+O/TawNTWbRRlFJMhu6TnNchou1C58mlwK0SVJpzMyJNiD4kR0oXO+nuXGa7T6uGuUHMaMsVi6JL/6Y3TLmDCTPUcELpBOLSw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(38100700002)(2906002)(36756003)(38070700005)(86362001)(316002)(122000001)(5660300002)(66946007)(8936002)(6506007)(66556008)(76116006)(8676002)(64756008)(66446008)(83380400001)(66476007)(6486002)(71200400001)(186003)(26005)(6512007)(110136005)(2616005)(508600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?/XHmBy8ghjlJEqnPAzMh++48afUnWDmey6gMy/u59XjofwwiQkOdtO4q04?=
+ =?iso-8859-1?Q?mSayM0tiE+6vy+pir/bIrroBvQKMnHPyY/EFTlPm1abj/b3n7mUkpPEdEf?=
+ =?iso-8859-1?Q?lAJ5iGYj+PXw5AS5gnUZp8UfRAKFM4xmil8GzRUZQ0YRbSk5rz+ZMsYzQe?=
+ =?iso-8859-1?Q?DrxybwV5qahfaRtvbVCGEfc63rdh/LYpSJKSszu7q0msOUI+DnoOzceYaH?=
+ =?iso-8859-1?Q?KTIypkuDhh5mDM81I1tPufKQDojXcVoQ9vHNyGWVg0fGUWZc2IW+QfXwM3?=
+ =?iso-8859-1?Q?ahxYADyrk8tDMZvLu3xLf7yBa1W4xCRo8m0w6NJ7Gtwabtdy/vavVDUnEu?=
+ =?iso-8859-1?Q?b3FegealzXjHEkblgn/szyDtZxRMtwQrGcY4Uq2ysT1ex9RBpsU6bO3xgb?=
+ =?iso-8859-1?Q?kpxFFGquNucXn6NTvCpuE2BsYIGF6TL4IYELD5xY947wyYAVGfjvz8vLFH?=
+ =?iso-8859-1?Q?6eCwW6j7gdiRixXqdFDGU1K3em3OgvYMEKWe0iZJBrAQNeG0tP+FV671oh?=
+ =?iso-8859-1?Q?3EU8ADHF/RXOaAtXKnAPGRxSvjlYi5sMTR9WTEnVWCJrw/SwYBThdvJwfG?=
+ =?iso-8859-1?Q?jO6hXg0TO3mMHzNXhOOGwVCX0gTWN256PkP0tFgo3BlKGL0VFbWB2KYLud?=
+ =?iso-8859-1?Q?YVRUT7o7czF8kf21ChhxvrxqA2Mm6XgtTQjudJvC6NR9PZxIqjNrVUTrID?=
+ =?iso-8859-1?Q?kKEv4NieuiuJZqNJMMY8/CI0/+2DckQ/Jc0G6TRaqBogg3XrsC3xwSZDE5?=
+ =?iso-8859-1?Q?RSh26nHLnpaKPvNkKiWN3BrCXi3bP7qqABO3WDUl0AzIpGCxuD6FalFbsu?=
+ =?iso-8859-1?Q?q5vOjH7sp+hUW7Jw/DtsbzGishh7HOopJZIeeGlSD4VOaI7J88QNSZjvpi?=
+ =?iso-8859-1?Q?uigRRiT4Qz/AvqD4pFASyLc+Z57XWLMAcIVf4RK5KzzbGFkyEMQaXZ1nUl?=
+ =?iso-8859-1?Q?Mjhw02Ss6/TqvsbyDcutuq7w1vtPL1oY0aDLh3onLw8UeTY1tDpZKUlIMC?=
+ =?iso-8859-1?Q?fZkcRet1yWmbK1vr/aW451qNTbq7kkNFk3oSN7g+6TL1zEg5P+dGpq1cRB?=
+ =?iso-8859-1?Q?F7yo4NdtQa+BL8sro/FwfgVCpo/7NADSGPKyjBjX4fRAsLTyXFTfVYOy5k?=
+ =?iso-8859-1?Q?p28ijlqeDrjKl/5FzGrO4Pk2YTvLoe1b9jjdXzPST2UXyubyBhD1PpSrA6?=
+ =?iso-8859-1?Q?3jkpPlvapE1BxBxgPTvVod00lpFf8Us73TUOIH2GJU7pSmcYGqdPpkGUfU?=
+ =?iso-8859-1?Q?QPcVsR/C4f1h5jl3TdVsvWFcw92CxFBl6eEyJ78DsUgCRKfp0+L8pxf77Y?=
+ =?iso-8859-1?Q?zWgfTEVSKBWJBuiEjXlA+CFSMD9+ltD4NQ5ixoBCyyDg6LTNKxVcc3UL1P?=
+ =?iso-8859-1?Q?PTV5FjkHDOVY9t5lE6VBqjbV9Sjf4HbBhqGrIa/AOTrIFG00qyoGR9+6cr?=
+ =?iso-8859-1?Q?XcW1i5fKlaRe1tLAzzvIOykjequbZ8a+WWnbtde9Gwrgfz4UAb+Z1zmhu+?=
+ =?iso-8859-1?Q?r/1tZj6uc7gisIBV/9jReXuSskB8W2MehwGEkAdLekmud6/Eysk5xKsl+K?=
+ =?iso-8859-1?Q?EYODY1dqlgU62YestfVtCnkdfWPyFmwXlRqRnyfv+tgvO1YiPkZS6INgf3?=
+ =?iso-8859-1?Q?y3WPEEOIQr5lkx14hkL/9G6efSDoe1inaqakHUMnk5iXQgKw1aEju4LuDZ?=
+ =?iso-8859-1?Q?p0DatNq48IrzYJnr3GrmYTBWwT6FsTdjZ+BSfq05iYU1VNmceRBtUL3FWF?=
+ =?iso-8859-1?Q?oE8c4C2qJLNFr2PIZExA/dvYPAc/mCyNhvS9/ALKN8PI2rmpYUgQM2a0nR?=
+ =?iso-8859-1?Q?fNljeKPalw=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1956f228-8fb2-4837-81aa-08da293609d9
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2600:EE_
-X-Microsoft-Antispam-PRVS: <BYAPR15MB26000A3F5F4E1AAF1F32590AD3FD9@BYAPR15MB2600.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OaasyCq9GdoMlthF65qCqiH2BCPhq8PJyhDrnkjaym4red3a0cMH7FGIVuIXX2D2ENGECcZWXZkzx2ZacRc0f5V7VfuAlrEmTV2hZIcnINOniUHhWsFabHZr1a7wATh7Y589MRdKo37s4E/dnbu52qlR5+9x/tzgCRINF0pZ+T7vz7Hirii0OeTf1gnQPFFV4o7kBuV1a48TZHqyXRQCfYcnqd4/CaSZZlCjMOKpcOf4/XeqsfHFUGb0cAva+0iyK+LGq/2e0MOivmdR6c0t8BCz0V1HRlOnTGy/dgRsoCrh5ggbNLi06BZXrVmixRcqSXfVw5f4wTG5Y88dTDwm13vif2bH/AhP55xsO+Q8Wn5CBYiJxjiNrFxxUHlOtv/iLC/QItwflgNiBFuv/aMQGhZTnGpWAGuM03hbEaeR9XtMaFfE0D+RwoN/bspjywlRaAzeMiFSJESgu7px5G+agR1IB5MReKhAI6Ch8+fWquX2jriClljuoRpXIrSRNvqrrYdl+vJd2DCr5j+iVD18DG5TaLOVLiTXeBPc2xRJbKcsHs09ujF/SCCJRwOIPx2hEc773JOeSIE2bLmXPSzPplqdEdl+XAgtS2Ide7jJa3aaWrMaZg46silvVpng2089FRBzwmFWbvk/PuOi3EHRaG/UtVGvJmZ9oW3yiYNicLpVPQD1MKTJLKfCdik36eeO55J6W6VL+ilXu2fX/LZJ6uREwV/FPXAe6lJpJrjCOKz6nqc1vbAEKsZmm9dNRUPE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6486002)(186003)(508600001)(31686004)(66946007)(66476007)(8676002)(31696002)(36756003)(66556008)(86362001)(2906002)(8936002)(5660300002)(2616005)(83380400001)(6636002)(316002)(52116002)(6512007)(6506007)(53546011)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y3RxV3lERHB4V2NzK0h1RWJEaUhvMDQ2NkxFcDFqanhUNXhmMnRhb3RKeDB0?=
- =?utf-8?B?cjRKV3lXSDhLNTducisrbXdyZGtSV3lIbkJ5dndUOFhGNW5KNHFzS0ttY0cv?=
- =?utf-8?B?dVNRWWFjMUZ6TWtidVZDSzNjQlltT25YdmxRUktGRlRPOXlodEFHaEZTR0dK?=
- =?utf-8?B?aG8wYjFEcHI5NGFhWFZRSW1hMDU2blZEclkxMDloZjIwM2d1VitkbW9TM0VQ?=
- =?utf-8?B?QTEwdGIrdE5JWnl1Y0M5dGNWZmp6eXdySEVCWG8wZ1pzTzJuZ0g1dmhwWWpK?=
- =?utf-8?B?WkhDNFBzcDRXUlRBM3QxVXhZWlM0ODZ0UjAweXRldkp1WEx3ZDhDMDVRUjZT?=
- =?utf-8?B?V2NNaCtpUGc2eEJBNlh2SXRINWNUbW12NnZ1NkhKN21WMzIvazJHVHVMYXZa?=
- =?utf-8?B?MWUySHE4aytKeVFUcXM3S2dxbVVYNzJ0QzBBZ2NpUFEwK3p2UDVkVWZmRkZI?=
- =?utf-8?B?Q2NJd2U5MGZSd2FNeEIzSUlaVkFwMlh1clRBaUhPQndnc1N5cklQUStGOStl?=
- =?utf-8?B?YzdISTRRUDEwQzFDUi9Ecm9ZbytJdnFBVnFGUzRna2FxVHVZL2tQMWwrYkJI?=
- =?utf-8?B?VnQvL014TDRiaFR0UXF3K0RMS3h3Q0djby9jNklGZGkxVytCTnhxWXJhdy81?=
- =?utf-8?B?eG1WajAvcU50ZlR2VTNjNDQ4c00yRUhZWWxXZytzcHBsTzlra1A3RktPOVhI?=
- =?utf-8?B?dk5vMHVndXpZUWZLOElyWlJMRG9UMTRlYXJETnFNYytGYlpHZ05tcXBYaEJU?=
- =?utf-8?B?d3NNeGhPcmQ1akJSbUtSakYrNmpMUTc5Y0Q1TmR4dnd0RGdnakJCUXR2M3Q5?=
- =?utf-8?B?OW5yUU5EaFVmOVZxTEtwLytFT1ZhWlJPL3RGZStQeTFMUk83U3VVOHRNTnlx?=
- =?utf-8?B?bmVhQW11OFdSZHVtTGREOWtMZUlvSkFvS0pmbVF5cjFiT3E0S1I0VDFRdFow?=
- =?utf-8?B?ZElhVG1QVzV5ZWFNRTdSeCtqNUdyK3pSUXZhMGJFVkhQTFl6Tk9za1g4YnRj?=
- =?utf-8?B?MGpPdW5haU9OSHAxVDdrUTQrYlU0ZkNvcGQzcVk3dXdmM3djTVM1NlN3TWdx?=
- =?utf-8?B?M0ZUam1SZDJEajVPTk5RaUdpNGFpaVkrT0xlV0o5KzIyRE91OXVEUW0wcnBh?=
- =?utf-8?B?WkZUcjJQZ3BuWmpDYmFQaE9KdlpRa3BpVmNKN21tUXhmdW8rSzNta1pubFJ4?=
- =?utf-8?B?Um9EcCtzdXcwWGdKOEQ1RGU5VkMzU3M1Wk1Lc09ZT2RiSHFsc3dkWjVFZk9X?=
- =?utf-8?B?SUp0SE5kc0ZwZFdWaU5OMHVLeXErdzh1dWJHeGNkTGR2UVRLbTU0ZkFnN1lF?=
- =?utf-8?B?M1ZaNzhkM09nRUtTaVBXZTIxb2tJenlYeVkxMEh3cFN1bTN0VDN3Y0ZLems4?=
- =?utf-8?B?TEhaYlF0V05rREtFeHJpZjZmdGY4NVpOT1pWR0lkMExtMXN2aFVJMVFrSHhQ?=
- =?utf-8?B?cnBPOGVGNlJpTmF4andWMVk1V0hpM0Z2US9sdml1VFpxaHN0eGtPUUtjYUxt?=
- =?utf-8?B?SlVtbnErS3lFSHErc2U1VE0rY2ZPM3ZacTkrRUJza0tydmFOampSNDZ2MTVE?=
- =?utf-8?B?cUhoY09rOWVtMXZQNHFyc1FBcVNaSkJKRFNNZWdoMWRldjNnRlhOWEZUcndB?=
- =?utf-8?B?a2tud0wwVjJqd2tIbGxmNVZQaG51K2s4enpLMXFxeWlpQS9jMDNpZys1elZ6?=
- =?utf-8?B?RzBlN0pjNHAvdFExRldkaEhpenpaQTBTMkUwMEdCcWpDbGovclJTR1ZSbG9Z?=
- =?utf-8?B?WHJIcDJhczlPWmJVbTF4Vkh2UzZmclZTUldHRHltL25ER2M2MCs2SHkrK0M5?=
- =?utf-8?B?Um5DV29jeTNmUk5YZWtZTUV6eU5YcGZLR0ZuT2lEV3VGMFc4RzB2NzBoODVX?=
- =?utf-8?B?YXlaN3ZiM3VJU25Dc1NIQkY3T0tmZ2VsSWF6a3RJZTRnb1d6SDd2emkwU0sx?=
- =?utf-8?B?NXpuT2w5bkI5SGxKclRySjFXeUN5ZlVhRnZBZFVhYno3RGVWSlpzbkorckV4?=
- =?utf-8?B?aDVORENmb2NBOEVyVHhwUDgrV1BIWlE5aXM4YjRPdmloOW5EcXpIeE8xdkdO?=
- =?utf-8?B?N0p0MzcxdWlEWTZzK3hBR2k2K1B1SDdGZWlJcG9Td0orMzg0WmRzZXlid1Nl?=
- =?utf-8?B?Lzh4VDNLMk9wNHB4a0hsMXBoMVB4ek1yVndHc093OFk0NzZqOTF4SGRNcUFN?=
- =?utf-8?B?cXdieGpPbmZwNkxGN1d6QmViVklHZHlzTlhFVmNPY211dExEaUdmNFlDUHVO?=
- =?utf-8?B?QW9DK0pTcWFqVWQwb2gvcHBvSjJ4NFpXM2VaV3daZEdSVmQyOTJhajF3Titx?=
- =?utf-8?B?WDdBQkxpbzg3OXRYc2JwZXpDano4Vkt1aHpjRTZnYmlnQ0lPUWdFamNjOVVp?=
- =?utf-8?Q?DVMYyxhRVmmkWhjQ=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1956f228-8fb2-4837-81aa-08da293609d9
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2022 16:42:09.7818
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c8a0781-aad4-42ff-a8ae-08da2937ae59
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2022 16:53:55.1085
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WXrIz2vsMwx1EUKNc613HNokwMQQFoGVcGTSfVVgMy8qVs6ui1+2uyFu66erKWlc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2600
-X-Proofpoint-ORIG-GUID: utHwZ627iDSsKfSVCDOYtoJKdWWsgmYr
-X-Proofpoint-GUID: utHwZ627iDSsKfSVCDOYtoJKdWWsgmYr
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Sr7UQMZRdq7D2ynlD96UjSWcjyGhQPH5ZyQJxXigl0/deJpfryQ3txQmcxPeif9m
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4615
+X-Proofpoint-GUID: L4cXZK5rmAoaocwxY_tgn1XKEnmhgiQi
+X-Proofpoint-ORIG-GUID: L4cXZK5rmAoaocwxY_tgn1XKEnmhgiQi
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-04-28_02,2022-04-28_01,2022-02-23_01
 X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add section mappings for uprobe.s and kprobe.s programs. The latter
+cannot currently attach but they're still useful to open and load in
+order to validate that prohibition.
 
+Signed-off-by: Delyan Kratunov <delyank@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-On 4/22/22 11:22 AM, Dmitrii Dolgov wrote:
-> Add a simple test for bpf link iterator
-> 
-> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
-> ---
->   .../selftests/bpf/prog_tests/bpf_iter.c        | 15 +++++++++++++++
->   .../selftests/bpf/progs/bpf_iter_bpf_link.c    | 18 ++++++++++++++++++
->   2 files changed, 33 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_link.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> index 2c403ddc8076..e14a7a6d925c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> @@ -26,6 +26,7 @@
->   #include "bpf_iter_bpf_sk_storage_map.skel.h"
->   #include "bpf_iter_test_kern5.skel.h"
->   #include "bpf_iter_test_kern6.skel.h"
-> +#include "bpf_iter_bpf_link.skel.h"
->   
->   static int duration;
->   
-> @@ -1172,6 +1173,20 @@ static void test_buf_neg_offset(void)
->   		bpf_iter_test_kern6__destroy(skel);
->   }
->   
-> +static void test_link_iter(void)
-
-This function is used. Please add a proper subtest for this
-in function test_bpf_iter().
-
-> +{
-> +	struct bpf_iter_bpf_link *skel;
-> +
-> +	skel = bpf_iter_bpf_link__open_and_load();
-> +	if (CHECK(skel, "bpf_iter_bpf_link__open_and_load",
-> +		  "skeleton open_and_load unexpected success\n"))
-> +		return;
-
-This is not correct. You should have CHECK(!skel, ...) to return
-only if skel is NULL. The error message "skeleton open_and_load 
-unexpected success\n" is not correct either. Probably a copy-paste
-error.
-
-Also, since you are working on this file, probably convert all
-CHECK's in this file to ASSERT_*() macros as patch #2. Then
-this patch itself can be patch #3 using ASSERT_*() as well.
-
-> +
-> +	do_dummy_read(skel->progs.dump_bpf_link);
-> +
-> +	bpf_iter_bpf_link__destroy(skel);
-> +}
-> +
->   #define CMP_BUFFER_SIZE 1024
->   static char task_vma_output[CMP_BUFFER_SIZE];
->   static char proc_maps_output[CMP_BUFFER_SIZE];
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_link.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_link.c
-> new file mode 100644
-> index 000000000000..a5041fa1cda9
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_link.c
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Facebook */
-
-copyright issue.
-
-> +#include "bpf_iter.h"
-> +#include <bpf/bpf_helpers.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +SEC("iter/bpf_link")
-> +int dump_bpf_link(struct bpf_iter__bpf_link *ctx)
-
-Please put bpf_iter__bpf_link definition in bpf_iter.h so
-the test can work with an old version of vmlinux.h.
-
-> +{
-> +	struct seq_file *seq = ctx->meta->seq;
-> +	struct bpf_link *link = ctx->link;
-> +	int link_id;
-
-The 'link' pointer could be NULL as in previous patch
-we have:
-
-+	.ctx_arg_info		= {
-+		{ offsetof(struct bpf_iter__bpf_link, link),
-+		  PTR_TO_BTF_ID_OR_NULL },
-+	},
-
-So you need to add a check below.
-
-	if (!link)
-		return 0;
-
-> +
-> +	link_id = link->id;
-> +	bpf_seq_write(seq, &link_id, sizeof(link_id));
-> +	return 0;
-> +}
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 9a213aaaac8a..9e89a478d40e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -8692,9 +8692,12 @@ static const struct bpf_sec_def section_defs[] =3D {
+ 	SEC_DEF("sk_reuseport/migrate",	SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_=
+MIGRATE, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+ 	SEC_DEF("sk_reuseport",		SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT, SEC_ATTAC=
+HABLE | SEC_SLOPPY_PFX),
+ 	SEC_DEF("kprobe/",		KPROBE,	0, SEC_NONE, attach_kprobe),
++	SEC_DEF("kprobe.s/",		KPROBE,	0, SEC_SLEEPABLE, attach_kprobe),
+ 	SEC_DEF("uprobe+",		KPROBE,	0, SEC_NONE, attach_uprobe),
++	SEC_DEF("uprobe.s+",		KPROBE,	0, SEC_SLEEPABLE, attach_uprobe),
+ 	SEC_DEF("kretprobe/",		KPROBE, 0, SEC_NONE, attach_kprobe),
+ 	SEC_DEF("uretprobe+",		KPROBE, 0, SEC_NONE, attach_uprobe),
++	SEC_DEF("uretprobe.s+",		KPROBE, 0, SEC_SLEEPABLE, attach_uprobe),
+ 	SEC_DEF("kprobe.multi/",	KPROBE,	BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach=
+_kprobe_multi),
+ 	SEC_DEF("kretprobe.multi/",	KPROBE,	BPF_TRACE_KPROBE_MULTI, SEC_NONE, att=
+ach_kprobe_multi),
+ 	SEC_DEF("usdt+",		KPROBE,	0, SEC_NONE, attach_usdt),
+@@ -10432,13 +10435,18 @@ static int attach_kprobe(const struct bpf_program=
+ *prog, long cookie, struct bpf
+ 	const char *func_name;
+ 	char *func;
+ 	int n;
++	bool sleepable =3D false;
+=20
+ 	opts.retprobe =3D str_has_pfx(prog->sec_name, "kretprobe/");
++	sleepable =3D str_has_pfx(prog->sec_name, "kprobe.s/");
+ 	if (opts.retprobe)
+ 		func_name =3D prog->sec_name + sizeof("kretprobe/") - 1;
++	else if (sleepable)
++		func_name =3D prog->sec_name + sizeof("kprobe.s/") - 1;
+ 	else
+ 		func_name =3D prog->sec_name + sizeof("kprobe/") - 1;
+=20
++
+ 	n =3D sscanf(func_name, "%m[a-zA-Z0-9_.]+%li", &func, &offset);
+ 	if (n < 1) {
+ 		pr_warn("kprobe name is invalid: %s\n", func_name);
+@@ -10957,7 +10965,7 @@ static int attach_uprobe(const struct bpf_program *=
+prog, long cookie, struct bpf
+ 		break;
+ 	case 3:
+ 	case 4:
+-		opts.retprobe =3D strcmp(probe_type, "uretprobe") =3D=3D 0;
++		opts.retprobe =3D str_has_pfx(probe_type, "uretprobe");
+ 		if (opts.retprobe && offset !=3D 0) {
+ 			pr_warn("prog '%s': uretprobes do not support offset specification\n",
+ 				prog->name);
+--=20
+2.35.1
