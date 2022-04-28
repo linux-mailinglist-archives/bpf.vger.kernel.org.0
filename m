@@ -2,54 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBA8513BE1
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 20:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9147513BE8
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 21:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351124AbiD1S5W convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 28 Apr 2022 14:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
+        id S1349828AbiD1TDZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 15:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236775AbiD1S5V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 14:57:21 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1041B9F27
-        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 11:54:06 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23SIPNFH031994
-        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 11:54:06 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fqkdjd6mb-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 11:54:06 -0700
-Received: from twshared6447.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 28 Apr 2022 11:54:04 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 86A891936049B; Thu, 28 Apr 2022 11:53:56 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Delyan Kratunov <delyank@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: use target-less SEC() definitions in various tests
-Date:   Thu, 28 Apr 2022 11:53:49 -0700
-Message-ID: <20220428185349.3799599-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220428185349.3799599-1-andrii@kernel.org>
-References: <20220428185349.3799599-1-andrii@kernel.org>
+        with ESMTP id S1346460AbiD1TDY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 15:03:24 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16254D81;
+        Thu, 28 Apr 2022 12:00:07 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id a11so5025481pff.1;
+        Thu, 28 Apr 2022 12:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/2iD6fMIO5OpI4NhHgYR4lTbUFy+soiY1th9nkQv8Ck=;
+        b=e21i1X+KfnnWVIfnVWgYIrPG5kjTlM4ZyVjV+kcVGW/4qFvnMdPfe6k0eqKXgmZswW
+         O5ngKCfcoMMX4IxUw3tCi6gicyKDAQzx7bWIuQkJDV35a4kRLg6II4P8CQpLrV6+QyVg
+         q3BT4acFx0LCUY3GH78wP8KUnmE5YLm6JbZ8TRCwGv1jB2AvogIsJnZVokKPcky0aIcV
+         9P7EiNS45vw2tSW1CAyV3YikpX/QwsTX6H4WJe/kxyiDD7VTVftU24TNETSpSySIxA6A
+         C8z5MqLgsLaK/aQX0yWu/9t8wix7OM/+TKqgTLWuTrQTyKJVqPa9DlWJ6wN4XKbeXjyC
+         p1wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/2iD6fMIO5OpI4NhHgYR4lTbUFy+soiY1th9nkQv8Ck=;
+        b=eDN69GhtprWnoXVKt/a34OVfZabgjYNRzmoWjw46bRlAVnKDneuvyfD+j1j9QNY4vS
+         jlzUWhHp+LNsUUgF4E2oeTSl9uJvRCnLmonuJTmEib1M1CTiij5yV2O+0XyvDiYlqIpV
+         zAAvocToSW1a6Ug0EsCH0UdWlZ9KUOaQ7noWBkb5k/nkR/r8HXKwudpfH4hjT8qIKTzd
+         g6/lcE16z3DSWjLUHSCOY+gP8CygWYWqEAhSk4d18PzuayMIgwj1Uv+3agLtCqzmZ+oo
+         zVdqv090KpYBx8PIiTSyxCAs0nnu1kh9MNDbLrk83DgPl6ivX3ixrE/oRjYYRESJKjai
+         F2og==
+X-Gm-Message-State: AOAM532fjcSj/taXGI3P/fCwyKxGPR51I0YuOI40+snjbTPUW8fcA2Xq
+        6Ce5NAd0xpO8VHE2irDypoWb4prpeRvtLb8lGm0=
+X-Google-Smtp-Source: ABdhPJwT1yvmBUd/guUeVCReEkSXCfoociHMPRqgqSUYda9q8qG6XLY/rFPwIXZe80LCvGxHdIslhCEQT+vFjRnbff4=
+X-Received: by 2002:a05:6a00:8c8:b0:4fe:ecb:9b8f with SMTP id
+ s8-20020a056a0008c800b004fe0ecb9b8fmr36252185pfu.55.1651172406399; Thu, 28
+ Apr 2022 12:00:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: zIIzZMwdMkb8Q6-d_eSCo7XXmDLGmjWE
-X-Proofpoint-GUID: zIIzZMwdMkb8Q6-d_eSCo7XXmDLGmjWE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-28_03,2022-04-28_01,2022-02-23_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20220407125224.310255-1-jolsa@kernel.org> <20220407125224.310255-5-jolsa@kernel.org>
+ <CAEf4BzbE1n3Lie+tWTzN69RQUWgjxePorxRr9J8CuiQVUfy-kA@mail.gmail.com>
+ <20220412094923.0abe90955e5db486b7bca279@kernel.org> <CAEf4BzaQRcZGMqq5wqHo3wSHZAAVvY6AhizDk_dV_GtnwHuxLQ@mail.gmail.com>
+ <20220416232103.c0b241c2ec7f2b3b985a2f99@kernel.org> <20220428095803.66c17c32@gandalf.local.home>
+In-Reply-To: <20220428095803.66c17c32@gandalf.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 28 Apr 2022 11:59:55 -0700
+Message-ID: <CAADnVQKi+4oBt2C__qz7QoHqTtXYLUjaqwTNFoSE=up9c9k4cA@mail.gmail.com>
+Subject: Re: [RFC bpf-next 4/4] selftests/bpf: Add attach bench test
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,216 +78,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add new or modify existing SEC() definitions to be target-less and
-validate that libbpf handles such program definitions correctly.
+On Thu, Apr 28, 2022 at 6:58 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Sat, 16 Apr 2022 23:21:03 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> > OK, I also confirmed that __bpf_tramp_exit is listed. (others seems no notrace)
+> >
+> > /sys/kernel/tracing # cat available_filter_functions | grep __bpf_tramp
+> > __bpf_tramp_image_release
+> > __bpf_tramp_image_put_rcu
+> > __bpf_tramp_image_put_rcu_tasks
+> > __bpf_tramp_image_put_deferred
+> > __bpf_tramp_exit
+> >
+> > My gcc is older one.
+> > gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1)
+> >
+> > But it seems that __bpf_tramp_exit() doesn't call __fentry__. (I objdump'ed)
+> >
+> > ffffffff81208270 <__bpf_tramp_exit>:
+> > ffffffff81208270:       55                      push   %rbp
+> > ffffffff81208271:       48 89 e5                mov    %rsp,%rbp
+> > ffffffff81208274:       53                      push   %rbx
+> > ffffffff81208275:       48 89 fb                mov    %rdi,%rbx
+> > ffffffff81208278:       e8 83 70 ef ff          callq  ffffffff810ff300 <__rcu_read_lock>
+> > ffffffff8120827d:       31 d2                   xor    %edx,%edx
+>
+> You need to look deeper ;-)
+> >
+> >
+> > >
+> > > So it's quite bizarre and inconsistent.
+> >
+> > Indeed. I guess there is a bug in scripts/recordmcount.pl.
+>
+> No there isn't.
+>
+> I added the addresses it was mapping and found this:
+>
+> ffffffffa828f680 T __bpf_tramp_exit
+>
+> (which is relocated, but it's trivial to map it with the actual function).
+>
+> At the end of that function we have:
+>
+> ffffffff8128f767:       48 8d bb e0 00 00 00    lea    0xe0(%rbx),%rdi
+> ffffffff8128f76e:       48 8b 40 08             mov    0x8(%rax),%rax
+> ffffffff8128f772:       e8 89 28 d7 00          call   ffffffff82002000 <__x86_indirect_thunk_array>
+>                         ffffffff8128f773: R_X86_64_PLT32        __x86_indirect_thunk_rax-0x4
+> ffffffff8128f777:       e9 4a ff ff ff          jmp    ffffffff8128f6c6 <__bpf_tramp_exit+0x46>
+> ffffffff8128f77c:       0f 1f 40 00             nopl   0x0(%rax)
+> ffffffff8128f780:       e8 8b df dc ff          call   ffffffff8105d710 <__fentry__>
+>                         ffffffff8128f781: R_X86_64_PLT32        __fentry__-0x4
+> ffffffff8128f785:       b8 f4 fd ff ff          mov    $0xfffffdf4,%eax
+> ffffffff8128f78a:       c3                      ret
+> ffffffff8128f78b:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>
+>
+> Notice the call to fentry!
+>
+> It's due to this:
+>
+> void notrace __bpf_tramp_exit(struct bpf_tramp_image *tr)
+> {
+>         percpu_ref_put(&tr->pcref);
+> }
+>
+> int __weak
+> arch_prepare_bpf_trampoline(struct bpf_tramp_image *tr, void *image, void *image_end,
+>                             const struct btf_func_model *m, u32 flags,
+>                             struct bpf_tramp_progs *tprogs,
+>                             void *orig_call)
+> {
+>         return -ENOTSUPP;
+> }
+>
+> The weak function gets a call to ftrace, but it still gets compiled into
+> vmlinux but its symbol is dropped due to it being overridden. Thus, the
+> mcount_loc finds this call to fentry, and maps it to the symbol that is
+> before it, which just happened to be __bpf_tramp_exit.
 
-For kprobe/kretprobe we also add explicit test that generic
-bpf_program__attach() works in cases when kprobe definition contains
-proper target. It wasn't previously tested as selftests code always
-explicitly specified the target regardless.
+Ouch. That _is_ a bug in recordmocount.
 
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/attach_probe.c   | 10 ++++++++
- .../bpf/prog_tests/kprobe_multi_test.c        | 14 +++++------
- .../selftests/bpf/progs/kprobe_multi.c        | 14 +++++++++++
- .../selftests/bpf/progs/test_attach_probe.c   | 23 ++++++++++++++++---
- .../selftests/bpf/progs/test_module_attach.c  |  2 +-
- 5 files changed, 52 insertions(+), 11 deletions(-)
+> I made that weak function "notrace" and the __bpf_tramp_exit disappeared
+> from the available_filter_functions list.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-index c0c6d410751d..08c0601b3e84 100644
---- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -55,6 +55,7 @@ void test_attach_probe(void)
- 	if (!ASSERT_OK_PTR(skel->bss, "check_bss"))
- 		goto cleanup;
- 
-+	/* manual-attach kprobe/kretprobe */
- 	kprobe_link = bpf_program__attach_kprobe(skel->progs.handle_kprobe,
- 						 false /* retprobe */,
- 						 SYS_NANOSLEEP_KPROBE_NAME);
-@@ -69,6 +70,13 @@ void test_attach_probe(void)
- 		goto cleanup;
- 	skel->links.handle_kretprobe = kretprobe_link;
- 
-+	/* auto-attachable kprobe and kretprobe */
-+	skel->links.handle_kprobe_auto = bpf_program__attach(skel->progs.handle_kprobe_auto);
-+	ASSERT_OK_PTR(skel->links.handle_kprobe_auto, "attach_kprobe_auto");
-+
-+	skel->links.handle_kretprobe_auto = bpf_program__attach(skel->progs.handle_kretprobe_auto);
-+	ASSERT_OK_PTR(skel->links.handle_kretprobe_auto, "attach_kretprobe_auto");
-+
- 	if (!legacy)
- 		ASSERT_EQ(uprobe_ref_ctr, 0, "uprobe_ref_ctr_before");
- 
-@@ -157,7 +165,9 @@ void test_attach_probe(void)
- 	trigger_func2();
- 
- 	ASSERT_EQ(skel->bss->kprobe_res, 1, "check_kprobe_res");
-+	ASSERT_EQ(skel->bss->kprobe2_res, 11, "check_kprobe_auto_res");
- 	ASSERT_EQ(skel->bss->kretprobe_res, 2, "check_kretprobe_res");
-+	ASSERT_EQ(skel->bss->kretprobe2_res, 22, "check_kretprobe_auto_res");
- 	ASSERT_EQ(skel->bss->uprobe_res, 3, "check_uprobe_res");
- 	ASSERT_EQ(skel->bss->uretprobe_res, 4, "check_uretprobe_res");
- 	ASSERT_EQ(skel->bss->uprobe_byname_res, 5, "check_uprobe_byname_res");
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index b9876b55fc0c..c56db65d4c15 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -140,14 +140,14 @@ test_attach_api(const char *pattern, struct bpf_kprobe_multi_opts *opts)
- 		goto cleanup;
- 
- 	skel->bss->pid = getpid();
--	link1 = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe,
-+	link1 = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_manual,
- 						      pattern, opts);
- 	if (!ASSERT_OK_PTR(link1, "bpf_program__attach_kprobe_multi_opts"))
- 		goto cleanup;
- 
- 	if (opts) {
- 		opts->retprobe = true;
--		link2 = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kretprobe,
-+		link2 = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kretprobe_manual,
- 							      pattern, opts);
- 		if (!ASSERT_OK_PTR(link2, "bpf_program__attach_kprobe_multi_opts"))
- 			goto cleanup;
-@@ -232,7 +232,7 @@ static void test_attach_api_fails(void)
- 	skel->bss->pid = getpid();
- 
- 	/* fail_1 - pattern and opts NULL */
--	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe,
-+	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_manual,
- 						     NULL, NULL);
- 	if (!ASSERT_ERR_PTR(link, "fail_1"))
- 		goto cleanup;
-@@ -246,7 +246,7 @@ static void test_attach_api_fails(void)
- 	opts.cnt = ARRAY_SIZE(syms);
- 	opts.cookies = NULL;
- 
--	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe,
-+	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_manual,
- 						     NULL, &opts);
- 	if (!ASSERT_ERR_PTR(link, "fail_2"))
- 		goto cleanup;
-@@ -260,7 +260,7 @@ static void test_attach_api_fails(void)
- 	opts.cnt = ARRAY_SIZE(syms);
- 	opts.cookies = NULL;
- 
--	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe,
-+	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_manual,
- 						     "ksys_*", &opts);
- 	if (!ASSERT_ERR_PTR(link, "fail_3"))
- 		goto cleanup;
-@@ -274,7 +274,7 @@ static void test_attach_api_fails(void)
- 	opts.cnt = ARRAY_SIZE(syms);
- 	opts.cookies = NULL;
- 
--	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe,
-+	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_manual,
- 						     "ksys_*", &opts);
- 	if (!ASSERT_ERR_PTR(link, "fail_4"))
- 		goto cleanup;
-@@ -288,7 +288,7 @@ static void test_attach_api_fails(void)
- 	opts.cnt = 0;
- 	opts.cookies = cookies;
- 
--	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe,
-+	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_manual,
- 						     "ksys_*", &opts);
- 	if (!ASSERT_ERR_PTR(link, "fail_5"))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
-index 600be50800f8..93510f4f0f3a 100644
---- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
-+++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
-@@ -98,3 +98,17 @@ int test_kretprobe(struct pt_regs *ctx)
- 	kprobe_multi_check(ctx, true);
- 	return 0;
- }
-+
-+SEC("kprobe.multi")
-+int test_kprobe_manual(struct pt_regs *ctx)
-+{
-+	kprobe_multi_check(ctx, false);
-+	return 0;
-+}
-+
-+SEC("kretprobe.multi")
-+int test_kretprobe_manual(struct pt_regs *ctx)
-+{
-+	kprobe_multi_check(ctx, true);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-index af994d16bb10..ce9acf4db8d2 100644
---- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
-+++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-@@ -5,9 +5,12 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
- 
- int kprobe_res = 0;
-+int kprobe2_res = 0;
- int kretprobe_res = 0;
-+int kretprobe2_res = 0;
- int uprobe_res = 0;
- int uretprobe_res = 0;
- int uprobe_byname_res = 0;
-@@ -15,20 +18,34 @@ int uretprobe_byname_res = 0;
- int uprobe_byname2_res = 0;
- int uretprobe_byname2_res = 0;
- 
--SEC("kprobe/sys_nanosleep")
-+SEC("kprobe")
- int handle_kprobe(struct pt_regs *ctx)
- {
- 	kprobe_res = 1;
- 	return 0;
- }
- 
--SEC("kretprobe/sys_nanosleep")
--int BPF_KRETPROBE(handle_kretprobe)
-+SEC("kprobe/" SYS_PREFIX "sys_nanosleep")
-+int BPF_KPROBE(handle_kprobe_auto)
-+{
-+	kprobe2_res = 11;
-+	return 0;
-+}
-+
-+SEC("kretprobe")
-+int handle_kretprobe(struct pt_regs *ctx)
- {
- 	kretprobe_res = 2;
- 	return 0;
- }
- 
-+SEC("kretprobe/" SYS_PREFIX "sys_nanosleep")
-+int BPF_KRETPROBE(handle_kretprobe_auto)
-+{
-+	kretprobe2_res = 22;
-+	return 0;
-+}
-+
- SEC("uprobe")
- int handle_uprobe(struct pt_regs *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/tools/testing/selftests/bpf/progs/test_module_attach.c
-index 50ce16d02da7..08628afedb77 100644
---- a/tools/testing/selftests/bpf/progs/test_module_attach.c
-+++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
-@@ -64,7 +64,7 @@ int BPF_PROG(handle_fentry,
- 
- __u32 fentry_manual_read_sz = 0;
- 
--SEC("fentry/placeholder")
-+SEC("fentry")
- int BPF_PROG(handle_fentry_manual,
- 	     struct file *file, struct kobject *kobj,
- 	     struct bin_attribute *bin_attr, char *buf, loff_t off, size_t len)
--- 
-2.30.2
-
+That's a hack. We cannot rely on such hacks for all weak functions.
