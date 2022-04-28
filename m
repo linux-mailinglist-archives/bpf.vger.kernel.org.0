@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A46AA513B72
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 20:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFD3513B9E
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 20:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350692AbiD1SZq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 14:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
+        id S1351025AbiD1Sg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 14:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350661AbiD1SZq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 14:25:46 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC7D58E49
-        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 11:22:31 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id f5so2527532ilj.13
-        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 11:22:31 -0700 (PDT)
+        with ESMTP id S1350876AbiD1Sg6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 14:36:58 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F015BC84A
+        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 11:33:43 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id r11so2555834ila.1
+        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 11:33:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qrbI+ikSOG8RuqX7EPHqMC7F7u0xBiQGJBScjGgiZXs=;
-        b=cdWWEPc+I3gyLYq1rSnfetT+wytzzcYndfxeBVWh49e/zoYty+IXW2g1No5+3XVApp
-         +wCLWoIdBMumBLHhITsbJLoCIS0Bg1w/PN5bltq/z4DTcUKORuSVEhMz6x441LnTSHSc
-         BjGvl0xK/AH3DZSDOi1nfFIpTwj742JvpGzHOd/QW8en64EuKxYQ+0djckbYss7CNQZr
-         0miif3KkFZOKiYv0zTu3Q7bdZ0OFRdCKoEJTgNy9CCz4PbI01lOZI4Jg1qDL/uKbFc+R
-         rSCdxf1uc/l+fGE45OMYlfra6G9Y9fneTElCxz2X5fSfhMBggMRdx6O1Ax1ZGJdofDCY
-         y4XQ==
+        bh=TPTE2zqiqfl8MjFVO4S/QyFCcKqjkZwNGfa0sQJzAF8=;
+        b=FvQ2+Q4RQu01qtY8U7C2bhckoiZMfB1tB/JQ6IDvB6d/jk/5ODfYhIcuT4mbgJNOzP
+         GYto9Vdu58Q5XOdd/c6DsqgxqqEGrrg2oBVjVCJSIFJxDmCZYgSyiLC0DxItbrcoKDZR
+         CB4z/uSb6UO+hyKFqYllH7jMlmCrdqLHkIz2AdVDji3dcoyiF8hC8QkGixoXmEaRvfle
+         Ow4Hg6JrP40XJl/oaAi8ChbJKZtRTRlNPdF9Yndkm8Wfn82PUCZdat4g0Ikmi6N6VY5y
+         u5VDVYOcNFIyzAjRZmbYhfEkAMhF5qjD+hHAuHKjrvEIg/OVnywdquAoP45unTBEDtjA
+         XXjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qrbI+ikSOG8RuqX7EPHqMC7F7u0xBiQGJBScjGgiZXs=;
-        b=T15dygOeMrIEsw2IsM9f5uvbi0g/0uqrBOtHiL9z956Jg5BKhjZnq8JpQD4Dha5Bde
-         m5KMzhVjc0uiOh8jdlvUh+XnD8uB9hXFB5AO3WbNZ7Ii9cS3wPr46T3RgYvWwPO6PBso
-         gIpoh80EVALVbOEyACM2RAWomY8MAMaxu7F69xKm35Sg4z3YGNve4NQc1kJppZ3UE//1
-         ahPq/tuKNs//Em2bsgzoNSNBgaP6jdT8sccJSAE55isGhIis1mms1JjLP29zsOKJbQhW
-         niO4FJ2T/9E2PDh0pEVgKJcIRiC4i7zaHruwGFxtkfXSGuzdfq+hmI3/GS0p0V1Sk9FL
-         Uu/A==
-X-Gm-Message-State: AOAM531kFX4K77frNspcHzMbSR0nlxy6z2MsRJfBBBXESSpdCPs6hcFY
-        Jf56tsmcCme+rD/P5g7dICclrqdqlXZ9wsE/5a+1JHiKPrFfEg==
-X-Google-Smtp-Source: ABdhPJzArb8Ee48r9DdqORLdnhd34db3RucexFPlsu/Ka5tvVPDJD18/62Hrv8nMxUluUOrh8CqG7YTzmEJkm9EuMlo=
-X-Received: by 2002:a05:6e02:1b89:b0:2cd:942d:86e3 with SMTP id
- h9-20020a056e021b8900b002cd942d86e3mr9213893ili.71.1651170150330; Thu, 28 Apr
- 2022 11:22:30 -0700 (PDT)
+        bh=TPTE2zqiqfl8MjFVO4S/QyFCcKqjkZwNGfa0sQJzAF8=;
+        b=eQu7wlm4IglaTPm3DEDPRJBIf5mLrMmsSZt1IpiarUyKYptKZUt8NpdRRB8ptqU8wB
+         YBoHGjM8irWQSHwNSQ7I/plpSgmSF1BgHhHu1g+Qz1nQP5DkFED2ziWC0hQYHYctaxG/
+         YSxBkJVh9XlkjgU3XoREaNGOoChMgHZQFK0sk/FFxiXbzxqFpbLOWPEB4tc9fSC1gUDa
+         R4olbD07xECVXfFEusSisFBAhw5nFn6R3V4GBCw0prEI322pMKHAgT7WW7KhcIl7m43q
+         c2T4Y9kC5eZvIz+WmlJd/qB7+GFHe27Jz795D8oldmquVbyo03LmI3pvaUDFb7Px0kjl
+         SRRw==
+X-Gm-Message-State: AOAM530e+QUKw/9bohf4GRSuJZhRmBQ80AgBYd82HMEEHH2CPNt8WS4g
+        H9lSoRbZQs7HZ+DxBHCeuXTsyetzLwv/RBl9MngWeWHO1LSS2w==
+X-Google-Smtp-Source: ABdhPJxHoIPt8VowSMjsNN/k5+nGk+ad+KGXoW2e8RjXHCs9QHNcYouOjBHFN8hVo48YF+9frw2dkc90VnAtDEVUsVQ=
+X-Received: by 2002:a92:c247:0:b0:2cc:1798:74fe with SMTP id
+ k7-20020a92c247000000b002cc179874femr13714760ilo.239.1651170822482; Thu, 28
+ Apr 2022 11:33:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1651103126.git.delyank@fb.com> <9bae67335d76cfffadf9777be79c32c0f1deb897.1651103126.git.delyank@fb.com>
-In-Reply-To: <9bae67335d76cfffadf9777be79c32c0f1deb897.1651103126.git.delyank@fb.com>
+References: <cover.1651103126.git.delyank@fb.com> <aac0c6adae881f57c247d7bf35e3047f7bf6cfe0.1651103126.git.delyank@fb.com>
+In-Reply-To: <aac0c6adae881f57c247d7bf35e3047f7bf6cfe0.1651103126.git.delyank@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 28 Apr 2022 11:22:19 -0700
-Message-ID: <CAEf4BzZb5t5L4MuTxfm0QK0z9c_PmeBrYsj4qByZCWq0v8378A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] bpf: allow sleepable uprobe programs to attach
+Date:   Thu, 28 Apr 2022 11:33:31 -0700
+Message-ID: <CAEf4BzaSXuKj9VyaKtRpQfztq40L9H1OEDYtDC2zBfgPMU7HhA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/5] libbpf: add support for sleepable kprobe and
+ uprobe programs
 To:     Delyan Kratunov <delyank@fb.com>
 Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
@@ -69,61 +70,76 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Apr 28, 2022 at 9:54 AM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> uprobe and kprobe programs have the same program type, KPROBE, which is
-> currently not allowed to load sleepable programs.
+> Add section mappings for uprobe.s and kprobe.s programs. The latter
+> cannot currently attach but they're still useful to open and load in
+> order to validate that prohibition.
 >
-> To avoid adding a new UPROBE type, we instead allow sleepable KPROBE
-> programs to load and defer the is-it-actually-a-uprobe-program check
-> to attachment time, where we're already validating the corresponding
-> perf_event.
->
-> A corollary of this patch is that you can now load a sleepable kprobe
-> program but cannot attach it.
->
+
+This patch made me realize that some changes I did few weeks ago
+hasn't landed ([0]). I'm going to rebase and resubmit and I'll ask you
+to rebase on top of those changes.
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=630550&state=*
+
 > Signed-off-by: Delyan Kratunov <delyank@fb.com>
 > ---
->  kernel/bpf/syscall.c  | 8 ++++++++
->  kernel/bpf/verifier.c | 4 ++--
->  2 files changed, 10 insertions(+), 2 deletions(-)
+>  tools/lib/bpf/libbpf.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 >
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index e9e3e49c0eb7..3ce923f489d7 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3009,6 +3009,14 @@ static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *pro
->         }
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 9a213aaaac8a..9e89a478d40e 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -8692,9 +8692,12 @@ static const struct bpf_sec_def section_defs[] = {
+>         SEC_DEF("sk_reuseport/migrate", SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT_OR_MIGRATE, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+>         SEC_DEF("sk_reuseport",         SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
+>         SEC_DEF("kprobe/",              KPROBE, 0, SEC_NONE, attach_kprobe),
+> +       SEC_DEF("kprobe.s/",            KPROBE, 0, SEC_SLEEPABLE, attach_kprobe),
+
+but do we really have sleepable kprobes supported in the kernel? I
+don't think yet, let's not advertise as if SEC("kprobe.s") is a thing
+until we do
+
+>         SEC_DEF("uprobe+",              KPROBE, 0, SEC_NONE, attach_uprobe),
+> +       SEC_DEF("uprobe.s+",            KPROBE, 0, SEC_SLEEPABLE, attach_uprobe),
+>         SEC_DEF("kretprobe/",           KPROBE, 0, SEC_NONE, attach_kprobe),
+>         SEC_DEF("uretprobe+",           KPROBE, 0, SEC_NONE, attach_uprobe),
+> +       SEC_DEF("uretprobe.s+",         KPROBE, 0, SEC_SLEEPABLE, attach_uprobe),
+>         SEC_DEF("kprobe.multi/",        KPROBE, BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
+>         SEC_DEF("kretprobe.multi/",     KPROBE, BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
+>         SEC_DEF("usdt+",                KPROBE, 0, SEC_NONE, attach_usdt),
+> @@ -10432,13 +10435,18 @@ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf
+>         const char *func_name;
+>         char *func;
+>         int n;
+> +       bool sleepable = false;
 >
->         event = perf_file->private_data;
-> +       if (prog->aux->sleepable) {
-> +               if (!event->tp_event || (event->tp_event->flags & TRACE_EVENT_FL_UPROBE) == 0) {
-
-so far TRACE_EVENT_FL_UPROBE was contained to within kernel/trace so
-far, maybe it's better to instead expose a helper function to check if
-perf_event represents uprobe?
-
-> +                       err = -EINVAL;
-> +                       bpf_link_cleanup(&link_primer);
-> +                       goto out_put_file;
-> +               }
-> +       }
+>         opts.retprobe = str_has_pfx(prog->sec_name, "kretprobe/");
+> +       sleepable = str_has_pfx(prog->sec_name, "kprobe.s/");
+>         if (opts.retprobe)
+>                 func_name = prog->sec_name + sizeof("kretprobe/") - 1;
+> +       else if (sleepable)
+> +               func_name = prog->sec_name + sizeof("kprobe.s/") - 1;
+>         else
+>                 func_name = prog->sec_name + sizeof("kprobe/") - 1;
+>
 > +
->         err = perf_event_set_bpf_prog(event, prog, attr->link_create.perf_event.bpf_cookie);
->         if (err) {
->                 bpf_link_cleanup(&link_primer);
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 71827d14724a..c6258118dd75 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -14313,8 +14313,8 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
->         }
->
->         if (prog->aux->sleepable && prog->type != BPF_PROG_TYPE_TRACING &&
-> -           prog->type != BPF_PROG_TYPE_LSM) {
-> -               verbose(env, "Only fentry/fexit/fmod_ret and lsm programs can be sleepable\n");
-> +           prog->type != BPF_PROG_TYPE_LSM && prog->type != BPF_PROG_TYPE_KPROBE) {
-> +               verbose(env, "Only fentry/fexit/fmod_ret, lsm, and kprobe/uprobe programs can be sleepable\n");
->                 return -EINVAL;
->         }
->
+>         n = sscanf(func_name, "%m[a-zA-Z0-9_.]+%li", &func, &offset);
+>         if (n < 1) {
+>                 pr_warn("kprobe name is invalid: %s\n", func_name);
+> @@ -10957,7 +10965,7 @@ static int attach_uprobe(const struct bpf_program *prog, long cookie, struct bpf
+>                 break;
+>         case 3:
+>         case 4:
+> -               opts.retprobe = strcmp(probe_type, "uretprobe") == 0;
+> +               opts.retprobe = str_has_pfx(probe_type, "uretprobe");
+
+it's a total nit but I'd feel a bit more comfortable with explicit
+check for "uretprobe" and "uretprobe.s" instead of a prefix match, if
+you don't mind.
+
+>                 if (opts.retprobe && offset != 0) {
+>                         pr_warn("prog '%s': uretprobes do not support offset specification\n",
+>                                 prog->name);
 > --
 > 2.35.1
