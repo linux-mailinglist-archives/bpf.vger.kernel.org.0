@@ -2,146 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AAE513268
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 13:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA4751356E
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 15:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbiD1L04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 07:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
+        id S1346767AbiD1NpB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 09:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235063AbiD1L0y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 07:26:54 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A505E16C;
-        Thu, 28 Apr 2022 04:23:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651145020; x=1682681020;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=YSpDATXy/AEnQCqNpDDdMNwfxMpapZmzIYX8S6XiNuc=;
-  b=Meg06O/KeVEOvbcvwHOkss7GumVYJbLxc7P6jPEMBnqpwHb/QLaA6cgV
-   O5K1DarW7M96UkAn6pPR19Ajk+0uAjvYBE+PVtdj9vSTKsHgovLKg6yAM
-   7oVH33UaGpGYGUxDOtTES+uhH/5+t4OHzEGCkl+JSYYrbcmUujm3JMrs2
-   eqy6VWYmVRbak3YIZlcumeibMrbOyQk9bnwXIxIwjkvNwAss4JfeO9/JM
-   S40mPfl6MM5wYCcZYRhGFaARym7sxnII1RC10yfGnNXDt+N6/XUCuR1/u
-   A2/7x2saHMNYbo2IMD7qj7uTXSzzWxb0LZhiNnLIic3qhMOIUk8feNvzq
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10330"; a="352692120"
-X-IronPort-AV: E=Sophos;i="5.90,295,1643702400"; 
-   d="scan'208";a="352692120"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2022 04:23:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,295,1643702400"; 
-   d="scan'208";a="541152152"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga002.jf.intel.com with ESMTP; 28 Apr 2022 04:23:37 -0700
-Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 23SBNZi8003960;
-        Thu, 28 Apr 2022 12:23:35 +0100
-From:   Larysa Zaremba <larysa.zaremba@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        with ESMTP id S241572AbiD1NpA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 09:45:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313F45BE7C;
+        Thu, 28 Apr 2022 06:41:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C037861743;
+        Thu, 28 Apr 2022 13:41:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1704C385A0;
+        Thu, 28 Apr 2022 13:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651153305;
+        bh=P6NwmKSl37HKqsBkfsnaVlnnymPDnCBmzwPmXUQ33Ak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CRQtEPEgZg+qRGcXuTGCR3GNA6UcwMOAVM5UjNZO6BYVYP4pCCWk8i7fjs3sy2MEm
+         9TUgHoQvu1wpc0V/GlaXgT+e7VAOUAvVKrSPSh2DnJZ+vM9lqDNj0NqR+2zX0aomZC
+         LrxHktS11GBOa7o2PELLVIv2SCmVDmqiH53FrCdfw7haN6ceTrVIbPm6pszAq2B+8W
+         zUSS4VeV8oc6ZCZfl6jKqnDlHAcU7UAyuSyJQ+8Otb3scEn1AAkn2S3IjJzaSWcLNm
+         hGkcf2+6/BqhC5ST7vWg2bS2C1/Q0rphijrZ4y0hPfmi50jMKQhYVPtODDKEbYcRJC
+         G1cD58+d4XOKg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1AC44400B1; Thu, 28 Apr 2022 10:41:42 -0300 (-03)
+Date:   Thu, 28 Apr 2022 10:41:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Timothy Hayes <timothy.hayes@arm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-Subject: [PATCH RESEND bpf-next] bpftool: Use sysfs vmlinux when dumping BTF by ID
-Date:   Thu, 28 Apr 2022 13:14:42 +0200
-Message-Id: <20220428111442.111805-1-larysa.zaremba@intel.com>
-X-Mailer: git-send-email 2.35.1
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 3/3] perf test: Add perf_event_attr test for Arm SPE
+Message-ID: <YmqZluTEKAgg4AU0@kernel.org>
+References: <20220421165205.117662-1-timothy.hayes@arm.com>
+ <20220421165205.117662-4-timothy.hayes@arm.com>
+ <20220424145307.GE978927@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220424145307.GE978927@leoy-ThinkPad-X240s>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, dumping almost all BTFs specified by id requires
-using the -B option to pass the base BTF. For most cases
-the vmlinux BTF sysfs path should work.
+Em Sun, Apr 24, 2022 at 10:53:07PM +0800, Leo Yan escreveu:
+> On Thu, Apr 21, 2022 at 05:52:05PM +0100, Timothy Hayes wrote:
+> > Adds a perf_event_attr test for Arm SPE in which the presence of
+> > physical addresses are checked when SPE unit is run with pa_enable=1.
+> > 
+> > Signed-off-by: Timothy Hayes <timothy.hayes@arm.com>
+> 
+> Reviewed-by: Leo Yan <leo.yan@linaro.org>
+> Tested-by: Leo Yan <leo.yan@linaro.org>
 
-This patch simplifies dumping by ID usage by attempting to
-use vmlinux BTF from sysfs, if the first try of loading BTF by ID
-fails with certain conditions.
+Thanks, applied the set to perf/urgent.
 
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
----
- tools/bpf/bpftool/btf.c | 35 ++++++++++++++++++++++++++---------
- 1 file changed, 26 insertions(+), 9 deletions(-)
+- Arnaldo
+ 
+> > ---
+> >  tools/perf/tests/attr/README                         |  1 +
+> >  .../perf/tests/attr/test-record-spe-physical-address | 12 ++++++++++++
+> >  2 files changed, 13 insertions(+)
+> >  create mode 100644 tools/perf/tests/attr/test-record-spe-physical-address
+> > 
+> > diff --git a/tools/perf/tests/attr/README b/tools/perf/tests/attr/README
+> > index 454505d343fa..eb3f7d4bb324 100644
+> > --- a/tools/perf/tests/attr/README
+> > +++ b/tools/perf/tests/attr/README
+> > @@ -60,6 +60,7 @@ Following tests are defined (with perf commands):
+> >    perf record -R kill                           (test-record-raw)
+> >    perf record -c 2 -e arm_spe_0// -- kill       (test-record-spe-period)
+> >    perf record -e arm_spe_0/period=3/ -- kill    (test-record-spe-period-term)
+> > +  perf record -e arm_spe_0/pa_enable=1/ -- kill (test-record-spe-physical-address)
+> >    perf stat -e cycles kill                      (test-stat-basic)
+> >    perf stat kill                                (test-stat-default)
+> >    perf stat -d kill                             (test-stat-detailed-1)
+> > diff --git a/tools/perf/tests/attr/test-record-spe-physical-address b/tools/perf/tests/attr/test-record-spe-physical-address
+> > new file mode 100644
+> > index 000000000000..7ebcf5012ce3
+> > --- /dev/null
+> > +++ b/tools/perf/tests/attr/test-record-spe-physical-address
+> > @@ -0,0 +1,12 @@
+> > +[config]
+> > +command = record
+> > +args    = --no-bpf-event -e arm_spe_0/pa_enable=1/ -- kill >/dev/null 2>&1
+> > +ret     = 1
+> > +arch    = aarch64
+> > +
+> > +[event-10:base-record-spe]
+> > +# 622727 is the decimal of IP|TID|TIME|CPU|IDENTIFIER|DATA_SRC|PHYS_ADDR
+> > +sample_type=622727
+> > +
+> > +# dummy event
+> > +[event-1:base-record-spe]
+> > \ No newline at end of file
+> > -- 
+> > 2.25.1
+> > 
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index a2c665beda87..557f65e2de5c 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -459,6 +459,22 @@ static int dump_btf_c(const struct btf *btf,
- 	return err;
- }
- 
-+static const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
-+
-+static struct btf *get_vmlinux_btf_from_sysfs(void)
-+{
-+	struct btf *base;
-+
-+	base = btf__parse(sysfs_vmlinux, NULL);
-+	if (libbpf_get_error(base)) {
-+		p_err("failed to parse vmlinux BTF at '%s': %ld\n",
-+		      sysfs_vmlinux, libbpf_get_error(base));
-+		base = NULL;
-+	}
-+
-+	return base;
-+}
-+
- static int do_dump(int argc, char **argv)
- {
- 	struct btf *btf = NULL, *base = NULL;
-@@ -536,18 +552,11 @@ static int do_dump(int argc, char **argv)
- 		NEXT_ARG();
- 	} else if (is_prefix(src, "file")) {
- 		const char sysfs_prefix[] = "/sys/kernel/btf/";
--		const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
- 
- 		if (!base_btf &&
- 		    strncmp(*argv, sysfs_prefix, sizeof(sysfs_prefix) - 1) == 0 &&
--		    strcmp(*argv, sysfs_vmlinux) != 0) {
--			base = btf__parse(sysfs_vmlinux, NULL);
--			if (libbpf_get_error(base)) {
--				p_err("failed to parse vmlinux BTF at '%s': %ld\n",
--				      sysfs_vmlinux, libbpf_get_error(base));
--				base = NULL;
--			}
--		}
-+		    strcmp(*argv, sysfs_vmlinux))
-+			base = get_vmlinux_btf_from_sysfs();
- 
- 		btf = btf__parse_split(*argv, base ?: base_btf);
- 		err = libbpf_get_error(btf);
-@@ -593,6 +602,14 @@ static int do_dump(int argc, char **argv)
- 	if (!btf) {
- 		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
- 		err = libbpf_get_error(btf);
-+		if (err == -EINVAL && !base_btf) {
-+			btf__free(base);
-+			base = get_vmlinux_btf_from_sysfs();
-+			p_info("Warning: valid base BTF was not specified with -B option, falling back on standard base BTF (sysfs vmlinux)");
-+			btf = btf__load_from_kernel_by_id_split(btf_id, base);
-+			err = libbpf_get_error(btf);
-+		}
-+
- 		if (err) {
- 			p_err("get btf by id (%u): %s", btf_id, strerror(err));
- 			goto done;
 -- 
-2.35.1
 
+- Arnaldo
