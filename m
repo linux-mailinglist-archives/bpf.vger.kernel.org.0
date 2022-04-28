@@ -2,70 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BA95135FE
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 16:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA22251365C
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 16:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbiD1OEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 10:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
+        id S1344093AbiD1OKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 10:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbiD1OEv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 10:04:51 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B304F66AD1;
-        Thu, 28 Apr 2022 07:01:35 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id c23so4475954plo.0;
-        Thu, 28 Apr 2022 07:01:35 -0700 (PDT)
+        with ESMTP id S240550AbiD1OJ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 10:09:56 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A8E27CDD;
+        Thu, 28 Apr 2022 07:06:41 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id z19so5640490edx.9;
+        Thu, 28 Apr 2022 07:06:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=94ZjX36tG1SuS/7mL6pYCyU2xfYHDd7mghQrQx2P8TM=;
-        b=JWrJFl1KbTEXFWJqqzwW0z6YyNG2JrRQsG65RGIVrWqgxLDnLZEgdl+rnZ/QlLOipM
-         CCNSmVor/pF/A1+va6XPTzh/vksruYweyxaI2Lwb5sdiCfxrhf6TrwqB3TwMHneS43uo
-         jO42q8bjQrcmBPVFX7GRqmeABKuaY3Eb0QoBCwy++JFxaxePKuhunoL/nLOSONTpuMg8
-         UaoO0RdnhJ359lB5BKaqVbzIgB1c9Pif7LBLubKGwRsiawU0iv0a57/j1xiukNsqVTAm
-         LGvcZJf2Iwv+YJnpUapozApWSX0l8hHeJETy6ayJiFMYfVPtM/WKuRBMoYJXF2/jfYgJ
-         T02g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QJZCrq2E0rQnS/46bb0lykjV+BZFhQWSf3jC5XNL6+g=;
+        b=VG+XGeXwtrnao2belQIyDCpE53M+TwDLG20Z28noaE9BVO82F0ddshJZXxkTLWVum8
+         UYkJLSUkmoK4IrzEOw+SOSZ4otS6LysxF3nZlcwmAldFEA3e3GvZtwE3Gt2cRMM0bpjb
+         oBxXg38LRbYVwbCPAAXGtnh8uz9y2NJ/c471sBW6UBCQ0fmqVC/UYqiQclAFoSWe3Nin
+         8mOZNTKMqB4r3rRd3+QM5+GHIIEjJUlefvO8CA/DNF+CaKHnjjNNjE8fYLj4N+Ul1gwL
+         +qF5EOnp6Gx6L07d87O6MSNBxEmv7pl6ei+OsMOCo47eoL+0ryvZd5eXqCFWWTTs9LF4
+         incg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=94ZjX36tG1SuS/7mL6pYCyU2xfYHDd7mghQrQx2P8TM=;
-        b=lcosArEQgJDhNtG44MpVVNIZoPSWVC9TBHd0MQ/HVcgxLNm2xy5qq0JTSrFsF3msal
-         9D7O27b3fg3NmjvI/er7RddC8x274C4YyvWXY9Ycq7UAQjXxGxdPIgS1xXGM2GBoV0mm
-         T2+ZnojNGDkSFPP20mUPEib6wfeLgjHbTmqSo+k+dBvy4ypQy/qSdOAuZWMesKiZGNHs
-         ufz6AS2F+I9kzTCzaTT5WWrN+wS+3u1cK9+D2b7G4OVQ5fywgO0dBiGvYFTKXEYWZcjO
-         MdDsxXCvMgwubvcaDnuvoQjv+s9J8XQbqR28fzbCT76Jo0kpxzsBpsEMZp4xuz8r5VyM
-         NWrw==
-X-Gm-Message-State: AOAM533yITvGgHekJbntLX0EhDD4efZhfUS04ZYIuOomoDSfL3do+u+2
-        0aeQ2AUETChtt4E0V15xdL0=
-X-Google-Smtp-Source: ABdhPJzXWur53vyoRbfgprR2XDX1+/HqINIQ+nHz6DIyj488TL0/9YtaMdaDfTlhFks/SWD0lOsIvg==
-X-Received: by 2002:a17:902:a98b:b0:156:40cc:ddf6 with SMTP id bh11-20020a170902a98b00b0015640ccddf6mr33871636plb.111.1651154495191;
-        Thu, 28 Apr 2022 07:01:35 -0700 (PDT)
-Received: from localhost.localdomain ([43.132.141.8])
-        by smtp.gmail.com with ESMTPSA id m11-20020a17090a71cb00b001cd4989feebsm10940042pjs.55.2022.04.28.07.01.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QJZCrq2E0rQnS/46bb0lykjV+BZFhQWSf3jC5XNL6+g=;
+        b=jNKAqjlcB3NsFyjUq50ElN4BkPODUl3wTVMMqiOMb0GLY8bBaXzDNnQhRn9uoIgGYl
+         iI9AxZEnoQGfYtFj9lXgGvrG7w5cswY1dJS9wN1DUu6EmWf2dczpwYiXggFufPftWRTA
+         Q4xPeHpQhUH0kyifPjTq0MGQw28TOwOTLlAbS0JmzE/3DAd50Cs7p4oxSuJ55sEq1Yh+
+         xxOt6ekAzO/shh52RPNzKhREMXhdV8wvNQP/Kp5X/krle1VLKmnkdXfVlmsoLs4Z5aI5
+         R+1YxFDHOfwCVE8D6CYfUz0GKL58NGu0ayK8ECVNYBBUSAhu4gc9b7w/Xkf2OnDp9vpI
+         nH1A==
+X-Gm-Message-State: AOAM5326WsQIfEbTX6McCD247E09PInlroHfzqZpwCgs3qL6Sjz6xEFH
+        /B/hWpPtTnD4qHN88xGejAk=
+X-Google-Smtp-Source: ABdhPJxTCl1+kKIl67NUFmKgRu5wamXoHx5lN8bjrDkSjVSzRa95wx4v0+F1jUFAHdsDFJfH4vzhjQ==
+X-Received: by 2002:a05:6402:35d6:b0:425:f2c5:ba0d with SMTP id z22-20020a05640235d600b00425f2c5ba0dmr19355166edc.369.1651154799729;
+        Thu, 28 Apr 2022 07:06:39 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id h7-20020a1709060f4700b006e8d0746969sm2158ejj.222.2022.04.28.07.06.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Apr 2022 07:01:34 -0700 (PDT)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     andrii.nakryiko@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        shuah@kernel.org, songliubraving@fb.com, yhs@fb.com,
-        ytcoode@gmail.com
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix incorrect TRUNNER_BINARY name output
-Date:   Thu, 28 Apr 2022 22:01:30 +0800
-Message-Id: <20220428140130.2011452-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.36.0
-In-Reply-To: <CAEf4BzbgaqWhFDQTZHDa6w7y02_f8JeoQoj30Zk2rzDe2UfZDg@mail.gmail.com>
-References: <CAEf4BzbgaqWhFDQTZHDa6w7y02_f8JeoQoj30Zk2rzDe2UfZDg@mail.gmail.com>
+        Thu, 28 Apr 2022 07:06:38 -0700 (PDT)
+Date:   Thu, 28 Apr 2022 16:06:35 +0200
+From:   Jiri Olsa <olsajiri@gmail.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCHv3 bpf-next 1/5] kallsyms: Fully export
+ kallsyms_on_each_symbol function
+Message-ID: <Ymqfa6rooEIm4c/f@krava>
+References: <20220427210345.455611-1-jolsa@kernel.org>
+ <20220427210345.455611-2-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220427210345.455611-2-jolsa@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,15 +80,113 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
+On Wed, Apr 27, 2022 at 11:03:41PM +0200, Jiri Olsa wrote:
+> Fully exporting kallsyms_on_each_symbol function, so it can be used
+> in following changes.
+> 
+> Rather than adding another ifdef option let's export the function
+> completely (when CONFIG_KALLSYMS option is defined).
+> 
+> Cc: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/kallsyms.h | 5 +++++
+>  kernel/kallsyms.c        | 2 --
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+> index ce1bd2fbf23e..d423f3cffa6d 100644
+> --- a/include/linux/kallsyms.h
+> +++ b/include/linux/kallsyms.h
+> @@ -163,6 +163,11 @@ static inline bool kallsyms_show_value(const struct cred *cred)
+>  	return false;
+>  }
+>  
+> +static inline int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *, unsigned long),
+> +					  void *data)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+>  #endif /*CONFIG_KALLSYMS*/
+>  
+>  static inline void print_ip_sym(const char *loglvl, unsigned long ip)
+> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+> index 79f2eb617a62..fdfd308bebc4 100644
+> --- a/kernel/kallsyms.c
+> +++ b/kernel/kallsyms.c
+> @@ -228,7 +228,6 @@ unsigned long kallsyms_lookup_name(const char *name)
+>  	return module_kallsyms_lookup_name(name);
+>  }
+>  
+> -#ifdef CONFIG_LIVEPATCH
+>  /*
+>   * Iterate over all symbols in vmlinux.  For symbols from modules use
+>   * module_kallsyms_on_each_symbol instead.
+> @@ -251,7 +250,6 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
+>  	}
+>  	return 0;
+>  }
+> -#endif /* CONFIG_LIVEPATCH */
+>  
+>  static unsigned long get_symbol_pos(unsigned long addr,
+>  				    unsigned long *symbolsize,
+> -- 
+> 2.35.1
+> 
 
-I didn't run into any real problems, the purpose of this patch was to make
-the output more consistent with expectations.
+got this one wrong, it needs one more change
+I'll send new version
 
-It confused me when I ran 'make test_progs' but saw [test_maps] output, I
-even doubted whether I ran the correct command at first.
+jirka
 
-But as you said, it's not a big deal, I'm okay with keeping it as it is.
 
-Thanks,
-Yuntao
+---
+diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+index ce1bd2fbf23e..89f063651192 100644
+--- a/include/linux/kallsyms.h
++++ b/include/linux/kallsyms.h
+@@ -65,11 +65,11 @@ static inline void *dereference_symbol_descriptor(void *ptr)
+ 	return ptr;
+ }
+ 
++#ifdef CONFIG_KALLSYMS
+ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
+ 				      unsigned long),
+ 			    void *data);
+ 
+-#ifdef CONFIG_KALLSYMS
+ /* Lookup the address for a symbol. Returns 0 if not found. */
+ unsigned long kallsyms_lookup_name(const char *name);
+ 
+@@ -163,6 +163,11 @@ static inline bool kallsyms_show_value(const struct cred *cred)
+ 	return false;
+ }
+ 
++static inline int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *, unsigned long),
++					  void *data)
++{
++	return -EOPNOTSUPP;
++}
+ #endif /*CONFIG_KALLSYMS*/
+ 
+ static inline void print_ip_sym(const char *loglvl, unsigned long ip)
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 79f2eb617a62..fdfd308bebc4 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -228,7 +228,6 @@ unsigned long kallsyms_lookup_name(const char *name)
+ 	return module_kallsyms_lookup_name(name);
+ }
+ 
+-#ifdef CONFIG_LIVEPATCH
+ /*
+  * Iterate over all symbols in vmlinux.  For symbols from modules use
+  * module_kallsyms_on_each_symbol instead.
+@@ -251,7 +250,6 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
+ 	}
+ 	return 0;
+ }
+-#endif /* CONFIG_LIVEPATCH */
+ 
+ static unsigned long get_symbol_pos(unsigned long addr,
+ 				    unsigned long *symbolsize,
