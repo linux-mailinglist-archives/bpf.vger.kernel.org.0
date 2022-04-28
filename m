@@ -2,80 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E03D5130BE
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 12:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98E3513246
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 13:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbiD1KHw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 06:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
+        id S1345244AbiD1LVB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 07:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbiD1KHG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 06:07:06 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B7F94433AE;
-        Thu, 28 Apr 2022 02:55:59 -0700 (PDT)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxkNqqZGpiWHIBAA--.7516S5;
-        Thu, 28 Apr 2022 17:55:56 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+        with ESMTP id S230231AbiD1LVA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 07:21:00 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8016C5B3F8;
+        Thu, 28 Apr 2022 04:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1651144666; x=1682680666;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YSpDATXy/AEnQCqNpDDdMNwfxMpapZmzIYX8S6XiNuc=;
+  b=UNCEw+9uLr5Fn5MbiSDzlVu+rRI5AlBUArUaSc3XLcD79z9Vu0VA6EdT
+   XKy6vO8vqDM5NavO1+sawdmeTAZ4Ltc5POW1WXvyUH4Z8Zq7+yW9nQBq0
+   hOVsLuvqoAxrfzKdS8cPmbWY+Pm0WoGNSag89B0zSre+ykrBj+VQm77Uy
+   KXNI1KNZamSMaLbJgwkafRugh4O17n0hSQZU1MHDcQb7+xR1J3MXGG2PR
+   AHAiucQ5hWqwooEThuqV8ygn7skZqk9cvy1I5kkpew8zdhz0ee4VuXy6m
+   NusN34vx6l785y2/OyNiLhGcCK0Cun6mFX8jEDnRzIpZeaMx2XPAixr2k
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10330"; a="266069735"
+X-IronPort-AV: E=Sophos;i="5.90,295,1643702400"; 
+   d="scan'208";a="266069735"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2022 04:17:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,295,1643702400"; 
+   d="scan'208";a="682532655"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga004.jf.intel.com with ESMTP; 28 Apr 2022 04:17:43 -0700
+Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 23SBHfQK002736;
+        Thu, 28 Apr 2022 12:17:42 +0100
+From:   Larysa Zaremba <larysa.zaremba@intel.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
+        Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 3/3] bpf, docs: Fix typo "respetively" to "respectively"
-Date:   Thu, 28 Apr 2022 17:55:54 +0800
-Message-Id: <1651139754-4838-4-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1651139754-4838-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1651139754-4838-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9BxkNqqZGpiWHIBAA--.7516S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF4UCryftFy3Gw13tF48tFb_yoWxCFg_CF
-        17ta1rJayDCryrWw1UCF1fCFyxArWrur4UArnFyrWDAw1qqw4DAr98KryDArW5GrWxuwsx
-        CrZ7Xry3ArnrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfkYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIE
-        c7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
-        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCF
-        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFWl42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxiF4DUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>
+Subject: [PATCH] bpftool: Use sysfs vmlinux when dumping BTF by ID
+Date:   Thu, 28 Apr 2022 13:08:40 +0200
+Message-Id: <20220428110839.111042-1-larysa.zaremba@intel.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"respetively" should be "respectively".
+Currently, dumping almost all BTFs specified by id requires
+using the -B option to pass the base BTF. For most cases
+the vmlinux BTF sysfs path should work.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+This patch simplifies dumping by ID usage by attempting to
+use vmlinux BTF from sysfs, if the first try of loading BTF by ID
+fails with certain conditions.
+
+Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 ---
- Documentation/bpf/instruction-set.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/bpftool/btf.c | 35 ++++++++++++++++++++++++++---------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 00b0800..1de6a57 100644
---- a/Documentation/bpf/instruction-set.rst
-+++ b/Documentation/bpf/instruction-set.rst
-@@ -157,7 +157,7 @@ Examples:
-   dst_reg = htobe64(dst_reg)
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index a2c665beda87..557f65e2de5c 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -459,6 +459,22 @@ static int dump_btf_c(const struct btf *btf,
+ 	return err;
+ }
  
- ``BPF_FROM_LE`` and ``BPF_FROM_BE`` exist as aliases for ``BPF_TO_LE`` and
--``BPF_TO_BE`` respetively.
-+``BPF_TO_BE`` respectively.
++static const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
++
++static struct btf *get_vmlinux_btf_from_sysfs(void)
++{
++	struct btf *base;
++
++	base = btf__parse(sysfs_vmlinux, NULL);
++	if (libbpf_get_error(base)) {
++		p_err("failed to parse vmlinux BTF at '%s': %ld\n",
++		      sysfs_vmlinux, libbpf_get_error(base));
++		base = NULL;
++	}
++
++	return base;
++}
++
+ static int do_dump(int argc, char **argv)
+ {
+ 	struct btf *btf = NULL, *base = NULL;
+@@ -536,18 +552,11 @@ static int do_dump(int argc, char **argv)
+ 		NEXT_ARG();
+ 	} else if (is_prefix(src, "file")) {
+ 		const char sysfs_prefix[] = "/sys/kernel/btf/";
+-		const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
  
+ 		if (!base_btf &&
+ 		    strncmp(*argv, sysfs_prefix, sizeof(sysfs_prefix) - 1) == 0 &&
+-		    strcmp(*argv, sysfs_vmlinux) != 0) {
+-			base = btf__parse(sysfs_vmlinux, NULL);
+-			if (libbpf_get_error(base)) {
+-				p_err("failed to parse vmlinux BTF at '%s': %ld\n",
+-				      sysfs_vmlinux, libbpf_get_error(base));
+-				base = NULL;
+-			}
+-		}
++		    strcmp(*argv, sysfs_vmlinux))
++			base = get_vmlinux_btf_from_sysfs();
  
- Jump instructions
+ 		btf = btf__parse_split(*argv, base ?: base_btf);
+ 		err = libbpf_get_error(btf);
+@@ -593,6 +602,14 @@ static int do_dump(int argc, char **argv)
+ 	if (!btf) {
+ 		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
+ 		err = libbpf_get_error(btf);
++		if (err == -EINVAL && !base_btf) {
++			btf__free(base);
++			base = get_vmlinux_btf_from_sysfs();
++			p_info("Warning: valid base BTF was not specified with -B option, falling back on standard base BTF (sysfs vmlinux)");
++			btf = btf__load_from_kernel_by_id_split(btf_id, base);
++			err = libbpf_get_error(btf);
++		}
++
+ 		if (err) {
+ 			p_err("get btf by id (%u): %s", btf_id, strerror(err));
+ 			goto done;
 -- 
-2.1.0
+2.35.1
 
