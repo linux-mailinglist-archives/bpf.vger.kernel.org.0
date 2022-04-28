@@ -2,71 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6E05128ED
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 03:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE6D51290C
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 03:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239283AbiD1Bko (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Apr 2022 21:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
+        id S240890AbiD1BtA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Apr 2022 21:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240730AbiD1Bkm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Apr 2022 21:40:42 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208396B086
-        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 18:37:30 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o69so1583405pjo.3
-        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 18:37:30 -0700 (PDT)
+        with ESMTP id S229494AbiD1Bs7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Apr 2022 21:48:59 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3D1427CB
+        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 18:45:46 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 4so4820986ljw.11
+        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 18:45:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6T59ytWJ8UNOXplrmRGA1DGd2Dy4dShocYWhnOSb6fs=;
-        b=jdDFZOI5qvNFNwY2UUGib32de/NfjXEarnnJUjimWXATtYVg66P7WSzrtBjkjNa49n
-         gNHpbk1pRJwMgoUgNqL0jbw5tafKUBaO8c1sDgWnQknPA9ANsVdpSdRbUSQ3BvY7I93o
-         UJoHTGVR0t/FpIGKJpNmTKopeS1MFa0+X/pZz8LaemksstjKO3WfwR+0qyrZI+HDl1np
-         yr4LkOdrAm/+nocyBQg+Io7/yRQnZdRuXnh1ecgme8IfPeY+EfbZm2oQG1XUf9dJUVpS
-         C5p/deJPE4ZaSWKvbxGRbjRPCedc7Ymdf2CpVZkVC2ymOdFBFskn2ELkxVvYckGjXrCe
-         oVIw==
+        bh=HPwQIDuV4kr+Z3JfS80ukdJYoRtJwGRQLFz/8EXdtY8=;
+        b=SCPzYsQnPWyQEhotMv9WnMsrFYGqhLzQhyJCSZmC2yd1aMhIzowrM7DocZOsyuBCND
+         +LwiCROHEcaNzZDsvG4C5wkVi5MiKyGzYBTqe13MPpbmjjOEPGQ3P01/J/g7d0R8+Q03
+         n3A3yDLjgffMlcrTHNN1O7ZvDG8Uk5nnzfpAc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6T59ytWJ8UNOXplrmRGA1DGd2Dy4dShocYWhnOSb6fs=;
-        b=A4OZoTIDFAYa+QSkTLNW1Pzs2Ax4gbx3RlTj0WSh9M/RhZJJe4Zkon9ZLMrNc2WnKD
-         U61jYwpxPjKtqZhlz+ROXQITJTscvSeKkgnqvZaWwzTeupplw2AZRkNBVfIRCqc6JjoK
-         jsAf1quSLxXhhdFbfaVZ6G7TO3Lm8lni1UR5MSZfar/EkEDKcbQdQNf1DZY31V9VO4kO
-         N/SutyxPdzLtAde5SiRQ47/7wjUxf3WypTCk6NBH7fMg21H8NgE3Xhd9+HxDaqwiT55Y
-         D/3UW2fkHWyn73I1LKeMy9r+byTIZJ3doHk+tejVgJmvx9ASfLYaaoZTXxXcfm7LRwym
-         SBZw==
-X-Gm-Message-State: AOAM531By1jOAkaHnUjSDKRCnM48dITZlVLXvhSNhbFwL1U/pgWB4h3D
-        FmolpC8RTGwPAjjvMqFXwrVNBktGnf6vMZL+C2c=
-X-Google-Smtp-Source: ABdhPJwUzGnwQMrgWK5SVx+R3n5y5hZZErozUezfT2hu2XVidzX4GX+jGt3dx6CYad1oYJK4acvmS2rH07QnAp54BSE=
-X-Received: by 2002:a17:90a:8591:b0:1b9:da10:2127 with SMTP id
- m17-20020a17090a859100b001b9da102127mr46949620pjn.13.1651109849517; Wed, 27
- Apr 2022 18:37:29 -0700 (PDT)
+        bh=HPwQIDuV4kr+Z3JfS80ukdJYoRtJwGRQLFz/8EXdtY8=;
+        b=wJMD7EDhB+X+e/44P8Md3Rnm01OZKzjW29aQT+oa9debKKFXz7BOJZJ7EjYYC2HTaG
+         BMQf1Zi7b1zi6Qyic808DUSrFqQrnqM5bpf3v2D7/cUoIAXW8sDvWrb57ya+yo+Xv0c7
+         /r/3/Vgx3w6TaH2Vupij6Z2S50R9EcR1jaAjPe45kKB9My+mhhyLOSk683W+XwDaPO9v
+         aBtyXNjhrlWHWXzRFDlYjFWN0+l931MwOU1mNCuJpjRuKlU11OBW5qnXYrptOr/QMZHp
+         pXu1hB93UD5U+w8umxZPne+8oWbCzQtutVq4+np1+tWWFnQ4Fkx+UHDi6MEEIvSABFDg
+         MquA==
+X-Gm-Message-State: AOAM533xOaYfGPq1MvME25J6NAEBwagqtfymjsaTOu2TaqMwmfXQ9CZo
+        dPzFaLL5QnMZw5sqy1m8LTpWq6BDugOTuE2Txe8=
+X-Google-Smtp-Source: ABdhPJwkKQ3KEOMX2JnDcWPuj9KRLGJkVirv87b1s7saALKWkjG35hYjzhJ4RixLDOFROGjB6gDylQ==
+X-Received: by 2002:a2e:bd09:0:b0:247:e127:5e05 with SMTP id n9-20020a2ebd09000000b00247e1275e05mr20224951ljq.212.1651110344213;
+        Wed, 27 Apr 2022 18:45:44 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id c6-20020a19e346000000b0046b8aac6e16sm2218372lfk.26.2022.04.27.18.45.42
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Apr 2022 18:45:42 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id l19so4859178ljb.7
+        for <bpf@vger.kernel.org>; Wed, 27 Apr 2022 18:45:42 -0700 (PDT)
+X-Received: by 2002:a2e:9d46:0:b0:24c:7f1d:73cc with SMTP id
+ y6-20020a2e9d46000000b0024c7f1d73ccmr20046313ljj.358.1651110342350; Wed, 27
+ Apr 2022 18:45:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220416063429.3314021-1-joannelkoong@gmail.com>
- <20220416063429.3314021-4-joannelkoong@gmail.com> <20220422025212.n4c25z23rj2pp3yu@MBP-98dd607d3435.dhcp.thefacebook.com>
- <CAJnrk1ZczWZi4SAGTqoY1764oei8gCzcEA9a7608R4H2XkisrA@mail.gmail.com>
- <CAADnVQK9dKfnz=MwWvb67diEMf5XrppGZr5GiOWgvBkaNaX1RA@mail.gmail.com>
- <CAEf4BzZdRM1icwQu0pBUCOw_zsoHft9RF_O3VNqcDxdRjDd57w@mail.gmail.com> <CAJnrk1aj50==BxOJrkCc=MttL8Wter6G6_4QGwsEcXRLmH2XKg@mail.gmail.com>
-In-Reply-To: <CAJnrk1aj50==BxOJrkCc=MttL8Wter6G6_4QGwsEcXRLmH2XKg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 27 Apr 2022 18:37:18 -0700
-Message-ID: <CAADnVQ+ZXZ0Qq8PhQK-OE7+YAYkc+iA_S0Ah6dbv6d0x1DeaoQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/7] bpf: Add bpf_dynptr_from_mem,
- bpf_dynptr_alloc, bpf_dynptr_put
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+References: <20220425203947.3311308-1-song@kernel.org> <FF2E0EC1-F9D6-4196-8887-919207BDC599@fb.com>
+In-Reply-To: <FF2E0EC1-F9D6-4196-8887-919207BDC599@fb.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 27 Apr 2022 18:45:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgA1Uku=ejwknv11ssNhz2pswhD=mJFBPEMQtCspz0YEQ@mail.gmail.com>
+Message-ID: <CAHk-=wgA1Uku=ejwknv11ssNhz2pswhD=mJFBPEMQtCspz0YEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 0/3] bpf: invalidate unused part of bpf_prog_pack
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        Kernel Team <Kernel-team@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,48 +79,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 4:28 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+On Wed, Apr 27, 2022 at 3:24 PM Song Liu <songliubraving@fb.com> wrote:
 >
-> On Tue, Apr 26, 2022 at 8:53 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Apr 26, 2022 at 6:26 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Apr 26, 2022 at 4:45 PM Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > > >
-> > > > > I guess it's ok to treat refcnted dynptr special like above.
-> > > > > I wonder whether we can reuse check_reference_leak logic?
-> > > > I like this idea! My reason for not storing dynptr reference ids in
-> > > > state->refs was because it's costly (eg we realloc_array every time we
-> > > > acquire a reference). But thinking about this some more, I like the
-> > > > idea of keeping everything unified by having all reference ids reside
-> > > > within state->refs and checking for leaks the same way. Perhaps we can
-> > > > optimize acquire_reference_state() as well where we upfront allocate
-> > > > more space for state->refs instead of having to do a realloc_array
-> > > > every time.
-> > >
-> > > realloc is decently efficient underneath.
-> > > Probably not worth micro optimizing for it.
-> > > As far as ref state... Looks like dynptr patch is trying
-> > > hard to prevent writes into the stack area where dynptr
-> > > was allocated. Then cleans it up after dynptr_put.
-> > > For other pointers on stack we just mark the area as stack_misc
-> > > only when the stack slot was overwritten.
-> > > We don't mark the slot as 'misc' after the pointer was read from stack.
-> > > We can use the same approach with dynptr as long as dynptr
-> > > leaking is tracking through ref state
-> > > (instead of for(each stack slot) at the time of bpf_exit)
-> I think the trade-off with this is that the verifier error message
-> will be more ambiguous (eg if you try to call bpf_dynptr_put, the
-> message would be something like "arg 1 is an unacquired reference" vs.
-> a more clear-cut message like "direct write into dynptr is not
-> permitted" at the erring instruction). But I think that's fine. I will
-> change it to mark the slot as misc for v3.
+> Could you please share your suggestions on this set? Shall we ship it
+> with 5.18?
 
-I'm trying to say that
-"direct write into dynptr is not permitted"
-could be just as confusing to users,
-because the store instruction into that stack slot
-was generated by the compiler because of some optimization
-and the user has no idea why that code was generated.
+I'd personally prefer to just not do the prog_pack thing at all, since
+I don't think it was actually in a "ready to ship" state for this
+merge window, and the hugepage mapping protection games I'm still
+leery of.
+
+Yes, the hugepage protection things probably do work from what I saw
+when I looked through them, but that x86 vmalloc hugepage code was
+really designed for another use (non-refcounted device pages), so the
+fact that it all actually seems surprisingly ok certainly wasn't
+because the code was designed to do that new case.
+
+Does the prog_pack thing work with small pages?
+
+Yes. But that wasn't what it was designed for or its selling point, so
+it all is a bit suspect to me.
+
+And I'm looking at those set_memory_xyz() calls, and I'm going "yeah,
+I think it works on x86, but on ppc I look at it and I see
+
+  static inline int set_memory_ro(unsigned long addr, int numpages)
+  {
+        return change_memory_attr(addr, numpages, SET_MEMORY_RO);
+  }
+
+and then in change_memory_attr() it does
+
+        if (WARN_ON_ONCE(is_vmalloc_or_module_addr((void *)addr) &&
+                         is_vm_area_hugepages((void *)addr)))
+                return -EINVAL;
+
+and I'm "this is all supposedly generic code, but I'm not seeing how
+it works cross-architecture".
+
+I *think* it's actually because this is all basically x86-specific due
+to x86 being the only architecture that implements
+bpf_arch_text_copy(), and everybody else then ends up erroring out and
+not using the prog_pack thing after all.
+
+And then one of the two places that use bpf_arch_text_copy() doesn't
+even check the returned error code.
+
+So this all ends up just depending on "only x86 will actually succeed
+in bpf_jit_binary_pack_finalize(), everybody else will fail after
+having done all the common setup".
+
+End result: it all seems a bit broken right now. The "generic" code
+only works on x86, and on other architectures it goes through the
+motions and then fails at the end. And even on x86 I worry about
+actually enabling it fully.
+
+I'm not having the warm and fuzzies about this all, in other words.
+
+Maybe people can convince me otherwise, but I think you need to work at it.
+
+And even for 5.19+ kind of timeframes, I'd actually like the x86
+people who maintain arch/x86/mm/pat/set_memory.c also sign off on
+using that code for hugepage vmalloc mappings too.
+
+I *think* it does. But that code has various subtle things going on.
+
+I see PeterZ is cc'd (presumably because of the text_poke() stuff, not
+because of the whole "call set_memory_ro() on virtually mapped kernel
+largepage memory".
+
+Did people even talk to x86 people about this, or did the whole "it
+works, except it turns out set_vm_flush_reset_perms() doesn't work"
+mean that the authors of that code never got involved?
+
+               Linus
