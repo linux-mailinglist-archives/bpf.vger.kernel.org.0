@@ -2,140 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF1951380D
-	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 17:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A90B51385F
+	for <lists+bpf@lfdr.de>; Thu, 28 Apr 2022 17:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349041AbiD1PVZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 11:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        id S1349193AbiD1Pdd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 11:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349146AbiD1PVN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 11:21:13 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC7BB36AA;
-        Thu, 28 Apr 2022 08:17:51 -0700 (PDT)
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nk5tl-0007Y6-IA; Thu, 28 Apr 2022 17:17:41 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nk5tl-000VU1-8h; Thu, 28 Apr 2022 17:17:41 +0200
-Subject: Re: [PATCH RESEND bpf-next] bpftool: Use sysfs vmlinux when dumping
- BTF by ID
-To:     Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-References: <20220428111442.111805-1-larysa.zaremba@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b464eae7-2f4d-bb5e-f229-6c95dab774fb@iogearbox.net>
-Date:   Thu, 28 Apr 2022 17:17:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S234220AbiD1Pda (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 11:33:30 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D26E0A8;
+        Thu, 28 Apr 2022 08:30:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 95474B82E4F;
+        Thu, 28 Apr 2022 15:30:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 31AEFC385AA;
+        Thu, 28 Apr 2022 15:30:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651159812;
+        bh=T+WZ741ROL6RC6V663uGNmJr88+g1OnBpfCrdEBCD0Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fOt2pYzdJAA91dl2eWxmBnMYmvoCyC52GrMib/VTgrtNBgD0Eu7cprNCpM7MxhEwY
+         5piIM0rnXDc2agyzdojvnuSQZD9G9LmFVs4Er6pXtw4XefaSqCvCzWaa9TsVm1Ixcs
+         vUYfxqXALDc8TiMpgfir75UP7P9aoesJIB66x6+OG8+HSECpPrHhattciLpB4YmYMx
+         nLh6KGtyixWffn8EHk+ljTZ3ZSM4XH/acGTen0KV1NarT9/7Cr2g9VIjcAUTiUsAe8
+         +eRod0Or2k9kDklwHtHPfYLoY0NHO/34jPUwaOPD/+Rmgqf7f0v1OjsPCOZpJAw9PT
+         YfHtzK5w1putw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 135FDE8DD85;
+        Thu, 28 Apr 2022 15:30:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20220428111442.111805-1-larysa.zaremba@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26526/Thu Apr 28 10:21:25 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/3] bpf, docs: Fix typos in instruction-set.rst
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165115981207.8186.1086744167638703650.git-patchwork-notify@kernel.org>
+Date:   Thu, 28 Apr 2022 15:30:12 +0000
+References: <1651139754-4838-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1651139754-4838-1-git-send-email-yangtiezhu@loongson.cn>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        corbet@lwn.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/28/22 1:14 PM, Larysa Zaremba wrote:
-> Currently, dumping almost all BTFs specified by id requires
-> using the -B option to pass the base BTF. For most cases
-> the vmlinux BTF sysfs path should work.
-> 
-> This patch simplifies dumping by ID usage by attempting to
-> use vmlinux BTF from sysfs, if the first try of loading BTF by ID
-> fails with certain conditions.
-> 
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> ---
->   tools/bpf/bpftool/btf.c | 35 ++++++++++++++++++++++++++---------
->   1 file changed, 26 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> index a2c665beda87..557f65e2de5c 100644
-> --- a/tools/bpf/bpftool/btf.c
-> +++ b/tools/bpf/bpftool/btf.c
-> @@ -459,6 +459,22 @@ static int dump_btf_c(const struct btf *btf,
->   	return err;
->   }
->   
-> +static const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
-> +
-> +static struct btf *get_vmlinux_btf_from_sysfs(void)
-> +{
-> +	struct btf *base;
-> +
-> +	base = btf__parse(sysfs_vmlinux, NULL);
-> +	if (libbpf_get_error(base)) {
-> +		p_err("failed to parse vmlinux BTF at '%s': %ld\n",
-> +		      sysfs_vmlinux, libbpf_get_error(base));
-> +		base = NULL;
-> +	}
+Hello:
 
-Could we reuse libbpf's btf__load_vmlinux_btf() which probes well-known
-locations?
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-> +	return base;
-> +}
-> +
->   static int do_dump(int argc, char **argv)
->   {
->   	struct btf *btf = NULL, *base = NULL;
-> @@ -536,18 +552,11 @@ static int do_dump(int argc, char **argv)
->   		NEXT_ARG();
->   	} else if (is_prefix(src, "file")) {
->   		const char sysfs_prefix[] = "/sys/kernel/btf/";
-> -		const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
->   
->   		if (!base_btf &&
->   		    strncmp(*argv, sysfs_prefix, sizeof(sysfs_prefix) - 1) == 0 &&
-> -		    strcmp(*argv, sysfs_vmlinux) != 0) {
-> -			base = btf__parse(sysfs_vmlinux, NULL);
-> -			if (libbpf_get_error(base)) {
-> -				p_err("failed to parse vmlinux BTF at '%s': %ld\n",
-> -				      sysfs_vmlinux, libbpf_get_error(base));
-> -				base = NULL;
-> -			}
-> -		}
-> +		    strcmp(*argv, sysfs_vmlinux))
-> +			base = get_vmlinux_btf_from_sysfs();
->   
->   		btf = btf__parse_split(*argv, base ?: base_btf);
->   		err = libbpf_get_error(btf);
-> @@ -593,6 +602,14 @@ static int do_dump(int argc, char **argv)
->   	if (!btf) {
->   		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
->   		err = libbpf_get_error(btf);
-> +		if (err == -EINVAL && !base_btf) {
-> +			btf__free(base);
-> +			base = get_vmlinux_btf_from_sysfs();
-> +			p_info("Warning: valid base BTF was not specified with -B option, falling back on standard base BTF (sysfs vmlinux)");
-> +			btf = btf__load_from_kernel_by_id_split(btf_id, base);
-> +			err = libbpf_get_error(btf);
-> +		}
-> +
->   		if (err) {
->   			p_err("get btf by id (%u): %s", btf_id, strerror(err));
->   			goto done;
+On Thu, 28 Apr 2022 17:55:51 +0800 you wrote:
+> v2:
+>   -- update the commit message of patch #2
+>   -- add new patch #3
 > 
+> Tiezhu Yang (3):
+>   bpf, docs: Remove duplicated word "instructions"
+>   bpf, docs: BPF_FROM_BE exists as alias for BPF_TO_BE
+>   bpf, docs: Fix typo "respetively" to "respectively"
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/3] bpf, docs: Remove duplicated word "instructions"
+    https://git.kernel.org/bpf/bpf-next/c/67b97e584232
+  - [bpf-next,v2,2/3] bpf, docs: BPF_FROM_BE exists as alias for BPF_TO_BE
+    https://git.kernel.org/bpf/bpf-next/c/c821d80bb890
+  - [bpf-next,v2,3/3] bpf, docs: Fix typo "respetively" to "respectively"
+    https://git.kernel.org/bpf/bpf-next/c/9a9a90ca1327
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
