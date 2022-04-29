@@ -2,98 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F05545141A4
-	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 06:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D3D5141A7
+	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 07:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238019AbiD2FC1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Apr 2022 01:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
+        id S238094AbiD2FDf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Apr 2022 01:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237887AbiD2FC0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Apr 2022 01:02:26 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D042A71C;
-        Thu, 28 Apr 2022 21:59:09 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id r11so3317095ila.1;
-        Thu, 28 Apr 2022 21:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZozNJbImTlZi92lh7h5eZ93VBLVeVKEC1D84yravxlU=;
-        b=e17B5lrT112l/EHfhHCyIOwYW5UNDhwLriJM+d19yK8igKlmjd1lUSKaQ+jjpHzgXX
-         D8QrkIL5LV5J82IqSrSRkwZA8kraBRluG04/EfpaUrr174T6SzcamOOHeTzm7SbfFGh5
-         LetaX7LXwdhyzfLwqRjnRsE+HoVweBCXE1kxTDZy1IfT7lo7OO8n9MRafkUZ1hQOp1AJ
-         uKj15OfYiajn+LowUTE4zL75Mn5eR1tE/YH4CADX2RItRiBdKMsGoIntImwvkdGo/7MT
-         Rb3oVxI3quHE35GYeWPuhZpYP2LeHZ4SiHXrTrGDPnCTpLw6Ch4dmkNtzZk0OfvvIdrL
-         1Jvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZozNJbImTlZi92lh7h5eZ93VBLVeVKEC1D84yravxlU=;
-        b=0lOiELk70o8dC0Msh2NqbZwueyo/9qd2w9pkKCJ3Z3njlFG7fa+xczaW1PgqyO8CjP
-         PAr5E8uFU0quGEuvCVje9j2E1LptCKBqPMEDqnVuwUtmcB1A8/7vBYikI8keQjKHUW96
-         9aNiuCDZ9eeQBl/0ufWK9VKNUJ83hnIHo5Yc9uFzWFqde+eyVw+w7fBDVlxOlU45cnpC
-         WTpsPbznxebkSMVg5LucJA+sxPq3jV0DmM8flJyzJFXcyVYOslh5OtSY7W+FI2aihxvz
-         mH5tS9PeTagA74UujWMekohuCbk0nijxqmCH1dM63/aiy92V8pncTOeRZ44oJC39rh3o
-         iTIw==
-X-Gm-Message-State: AOAM531KbElBWTg/TM4HzzfkSLmNooKVeBP4VDESdfLlw+LI0ei4BNrm
-        tyjr4VZoRpOxgzGhjsOIohrx77iymQQ+Wm9H2cg=
-X-Google-Smtp-Source: ABdhPJySn0RQKExCJEIS4LiuTMTvP6NmZv+BdotdQSZkoesLiKssvOcwkyIHnfT1jh0u/smVMfu37PuNhBCauQ+1mXU=
-X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
- y6-20020a926406000000b002bbf1dee13emr14232288ilb.305.1651208349194; Thu, 28
- Apr 2022 21:59:09 -0700 (PDT)
+        with ESMTP id S238134AbiD2FDc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Apr 2022 01:03:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4126265
+        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 22:00:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 87587622A2
+        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 05:00:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E0A74C385AC;
+        Fri, 29 Apr 2022 05:00:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651208412;
+        bh=NdEQAxDRvPBPikL90BuDBrVowL1w4jOpE1xyhM1mLHk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KgJ9rgXlX0jIQRArSaqv3cY9LSKdr2MCOmfY7chJgRziKKuVBkJkgk+BuNNrrN9+x
+         oG4wRsAwcYgiNfliQnn11cdPfdNs8AZWrH+VnR347Xhli123QvPOuouZoc5dOyBp8Y
+         /BqOHEjuiZveCcLNnq+5RdyLyMR898Xt5TtdIpB83iBX1Pzy+qHyfbiSX+ReMio34R
+         W+kX9JoGsEz5gFFpHS2y5VpqFqC6RUFPoIze1WkTBRlXjXOUnq5O+Aj3hy4hb2jFFZ
+         8Awkxlj2g4dHO6JJUeMK9Ldv39imTaqoe8FBPJX3UvzgORyu1SAO3g93Ziw7VRipeq
+         +uUYxlfHbH4Hg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C6778E5D087;
+        Fri, 29 Apr 2022 05:00:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220428110839.111042-1-larysa.zaremba@intel.com>
-In-Reply-To: <20220428110839.111042-1-larysa.zaremba@intel.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 28 Apr 2022 21:58:58 -0700
-Message-ID: <CAEf4BzZRioYpgsUFP1TLsqtjtvA3WLyuWjSyq12ctUoMqkUorg@mail.gmail.com>
-Subject: Re: [PATCH] bpftool: Use sysfs vmlinux when dumping BTF by ID
-To:     Larysa Zaremba <larysa.zaremba@intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix two memory leaks in prog_tests
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165120841280.3034.6705127789894853504.git-patchwork-notify@kernel.org>
+Date:   Fri, 29 Apr 2022 05:00:12 +0000
+References: <20220428225744.1961643-1-mykolal@fb.com>
+In-Reply-To: <20220428225744.1961643-1-mykolal@fb.com>
+To:     Mykola Lysenko <mykolal@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 4:17 AM Larysa Zaremba <larysa.zaremba@intel.com> wrote:
->
-> Currently, dumping almost all BTFs specified by id requires
+Hello:
 
-It should and will work only for kernel modules. It won't and
-shouldn't work for BTFs coming from BPF programs. We shouldn't blindly
-guess and substitute vmlinux BTF as base BTF, let's fetch
-bpf_btf_info, check that BTF is from kernel and is not vmlinux, and
-only in such case substitute vmlinux BTF as base BTF.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-> using the -B option to pass the base BTF. For most cases
-> the vmlinux BTF sysfs path should work.
->
-> This patch simplifies dumping by ID usage by attempting to
-> use vmlinux BTF from sysfs, if the first try of loading BTF by ID
-> fails with certain conditions.
->
-> Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> ---
->  tools/bpf/bpftool/btf.c | 35 ++++++++++++++++++++++++++---------
->  1 file changed, 26 insertions(+), 9 deletions(-)
->
+On Thu, 28 Apr 2022 15:57:44 -0700 you wrote:
+> Fix log_fp memory leak in dispatch_thread_read_log.
+> Remove obsolete log_fp clean-up code in dispatch_thread.
+> 
+> Also, release memory of subtest_selector. This can be
+> reproduced with -n 2/1 parameters.
+> 
+> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+> 
+> [...]
 
-[...]
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: fix two memory leaks in prog_tests
+    https://git.kernel.org/bpf/bpf-next/c/20b87e7c29df
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
