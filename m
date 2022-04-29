@@ -2,162 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1D3515162
-	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 19:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1148651521D
+	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 19:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234632AbiD2RNc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Apr 2022 13:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
+        id S1379665AbiD2RcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Apr 2022 13:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379037AbiD2RNb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Apr 2022 13:13:31 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8866060C0
-        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 10:10:12 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id h12so7649751plf.12
-        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 10:10:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fYukit63wa1ZSojvQNZCWwWM8lgsGYY8hht/JeNW2KI=;
-        b=iJvJNdRJR6d2+h0lJX+jNfNTX2j7Fot1BMWn+PbkpN/5PJIRce9xq+bWRT7JY7gTyL
-         lck3KKiRu6k/7gbq02MEwRANyyT/MJj6tatbwJ4iBkRpI2od+plJtg28Rr6a/4hKuG+Z
-         g2RVsF+x9qI4V0aXezpxU2LeR1UXBbRucOg0AsYzm02mAEKQjiSgrbcWHexFxkJVUHWg
-         Rg9YqH2XtxY6Ksoo3P7cERl3rNh856Y2cCWCETepANPhQBlGV/bOAk5UlBVI+bem2RXp
-         o/Hlt46Dl10kYWDXNCPoolxWxK3B5YOapzZeuGiPgV/jhoyCPdN/rGPgC71yx/j/KdPb
-         CTqw==
+        with ESMTP id S1379613AbiD2Ray (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Apr 2022 13:30:54 -0400
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB65D347D;
+        Fri, 29 Apr 2022 10:27:35 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id c15so11309278ljr.9;
+        Fri, 29 Apr 2022 10:27:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fYukit63wa1ZSojvQNZCWwWM8lgsGYY8hht/JeNW2KI=;
-        b=HtFsLe0U5zI+YvGTXrG6Z7TPvIpD5jUWMt9Ki1J06xeCREEy7ZOLcBKFVbEGX+44Zv
-         4dfxr/p5cm7XAexfSn73sX9D8+wVJsUBlpcaD5zSb1LwgXVELa38m2AF8yiBTp9Hj40v
-         3jWAk0oCwCp634sDeHY8RsPYkBzCWjNhhFDzpZEdaYJFRxSbqp0I8iAY2vFnhmxgFoJ5
-         LBbd98DvLeNkoUEd1RduHzdwFe9vDqunz7XwkPfZ+iVIgYw9F/OtY/Rq98TggF4nVUXi
-         llAXAl04PrkptUV54z6Wc9meJnZslWrtbSornmr0+dfKF5rohVrfe5KCEHnrfpWJbLni
-         SVRA==
-X-Gm-Message-State: AOAM531G9oNnSpFOmx3CLxC9xBmgsZ+xUMTbSy1oaFhIkHQ73SkaeGSN
-        4knkxHf++lJI0r0spaFERiTziD8YQLoB4GmBBvE=
-X-Google-Smtp-Source: ABdhPJwG0wPDTVtrfqHy9bvRmliHjRDVbEm0VYtRo9uCIHsB53zMbZtcd/2NvCWQKGlMUSi18A+TQVU7iiyjknrLW8s=
-X-Received: by 2002:a17:902:b189:b0:14d:6f87:7c25 with SMTP id
- s9-20020a170902b18900b0014d6f877c25mr385802plr.31.1651252211972; Fri, 29 Apr
- 2022 10:10:11 -0700 (PDT)
+        bh=7D+3I+t+Bjx7AMKWUHFNEPdjcA8rwqba3c0NxnUB1Ig=;
+        b=kBtsUOObhlN8E18kG1QnGHGpezp6+3VVhlE++hcP0TcLxqTmSnNnO824fRj73SRiVo
+         ugJ317qV+fzm7qOXFDCc5bzxaqypEhAE2xy4LbOqxnOyqvll19nYYIT+XVQLbt/yM5jn
+         4OZZH+jy9OUbv4TVOOYjuNulSXoBzcKlIL5UyUMrYaFMIMkeU68/c+sZdj7QinEl0dra
+         lHm7rhNNa8thbHoCcUYKvSp6v3wGj+TDtRw9OBUVZs2iAowGmpGiB6X8vhjNtQ9eZ1UL
+         gL+WQBz9GEBBxCUW3vA6V/p03Aag/YsQ4+zhINc8ybxKi04OaUP8vmHptYlhlJrX13Jj
+         K8Gw==
+X-Gm-Message-State: AOAM533Ck5DlIyycpJn4EEmYu+PTncOhM0ps4zurQiLVYs4QqkmkuQI8
+        6yEP3FOYZrqN3hzFsTJjQ0f7p5jBq0O0QmiMr25ymok9
+X-Google-Smtp-Source: ABdhPJwGsWqOXKrdEp28MJBR1YmmNLpGT2LFnM8lpsYHWSfz03w7N1XefoFp1yb+g2fwHgrueil2ICAo0Rrh7Kd9KWA=
+X-Received: by 2002:a2e:1613:0:b0:24f:2ee0:351a with SMTP id
+ w19-20020a2e1613000000b0024f2ee0351amr189180ljd.180.1651253254034; Fri, 29
+ Apr 2022 10:27:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <586a6288-704a-f7a7-b256-e18a675927df@oracle.com>
- <Yi7qQW+GIz+iOdYZ@syu-laptop> <f6f4a548-8e50-f676-8482-0ca541652cc6@fb.com>
- <8735jjw4rp.fsf@brennan.io> <YjDT498PfzFT+kT4@kernel.org> <878rt9hogh.fsf@brennan.io>
- <CAEf4BzbiFNnsu9pji5ifzj4nVEyAYYdqP=QVZ3XFwzL48prP3A@mail.gmail.com> <87r15iv0yd.fsf@stepbren-lnx.us.oracle.com>
-In-Reply-To: <87r15iv0yd.fsf@stepbren-lnx.us.oracle.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 29 Apr 2022 10:10:01 -0700
-Message-ID: <CAADnVQ+YuxB8gZGjx+RP=04z4SgYEmPjEjDa_=Q6HmUecxK8QQ@mail.gmail.com>
-Subject: Re: Question: missing vmlinux BTF variable declarations
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        bpf <bpf@vger.kernel.org>, Omar Sandoval <osandov@osandov.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+References: <20220422150507.222488-1-namhyung@kernel.org> <20220422150507.222488-3-namhyung@kernel.org>
+ <CA+khW7gvDaDiA458StkOEvUfvr1Rx4d65+530z2tq52VkJqaoA@mail.gmail.com>
+In-Reply-To: <CA+khW7gvDaDiA458StkOEvUfvr1Rx4d65+530z2tq52VkJqaoA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 29 Apr 2022 10:27:23 -0700
+Message-ID: <CAM9d7cjytSO9chTZBnKLnNsOz4LtwZo4G1LbEBJbLGGpPieaxA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] perf record: Enable off-cpu analysis with BPF
+To:     Hao Luo <haoluo@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Blake Jones <blakejones@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 27, 2022 at 11:43 AM Stephen Brennan
-<stephen.s.brennan@oracle.com> wrote:
+Hi Hao,
+
+On Wed, Apr 27, 2022 at 4:07 PM Hao Luo <haoluo@google.com> wrote:
+>
+> Hi Namhyung,
+>
+> On Fri, Apr 22, 2022 at 8:05 AM Namhyung Kim <namhyung@kernel.org> wrote:
 > >
-> > I think this quirk of using kallsyms strings is a no-go. But we should
-> > experiment and see how much bigger BTF becomes when including all the
-> > variables. Can you try to prototype pahole's support for this?
 >
-> Hi Andrii,
->
-> Sorry for such a delay here. I tried to prototype this last month but
-> encountered some issues I couldn't resolve. But recently I picked it up
-> and I've created a prototype [1] which outputs all variables. (It's a
-> quite bad prototype, it strips out some useful logic regarding the
-> BTF_VAR_DATASEC for percpu variables. But I think it's good enough).
->
-> On my 5.4-based kernel I saw an increase in BTF section size from 3.8
-> MiB all the way to 6.1 MiB, or more precisely:
->
-> BTF section before: 3905938 bytes
-> BTF section after:  6391989 bytes (+2486051, +63.6%)
->
-> So almost a 2.5 MiB increase. My prototype doesn't output the
-> btf_var_secinfo structs for percpu variables anymore, which probably
-> breaks some BPF and reduces BTF slightly. But it also is outputting
-> a few thousand "dwarf variables" which were correctly filtered before,
-> so I think it's a wash and it's a pretty good comparison.
->
-> Clearly it can't be added without a configuration option, as 2.5 MiB is
-> pretty huge for a kernel memory addition. But I don't think it's so huge
-> that nobody would enable it. I know I would :)
->
-> [1]: https://github.com/brenns10/dwarves/tree/remove_percpu_restriction_1
->
-> > As you
-> > said, we can guard this extra information with KConfig and pahole
-> > flags, so distros can always opt-out of bigger BTF if that's too
-> > prohibitive. As it is right now, without firm understanding how big
-> > the final BTF is it's hard to make a good decision about go or no-go
-> > for this.
->
-> Hopefully this comparison sheds some light on that now!
+> [...]
 >
 > >
-> > As for including source code itself, it going to be prohibitively
-> > huge, so it's probably out of the question for now as well.
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/Makefile.perf               |   1 +
+> >  tools/perf/builtin-record.c            |  21 +++
+> >  tools/perf/util/Build                  |   1 +
+> >  tools/perf/util/bpf_off_cpu.c          | 208 +++++++++++++++++++++++++
+> >  tools/perf/util/bpf_skel/off_cpu.bpf.c | 137 ++++++++++++++++
+> >  tools/perf/util/off_cpu.h              |  22 +++
+> >  6 files changed, 390 insertions(+)
+> >  create mode 100644 tools/perf/util/bpf_off_cpu.c
+> >  create mode 100644 tools/perf/util/bpf_skel/off_cpu.bpf.c
+> >  create mode 100644 tools/perf/util/off_cpu.h
+> >
 >
-> Yeah, I wouldn't advocate for that.
+> [...]
 >
-> Now, to share some of the cool possibilities that this enables. I have:
-> - prototype pahole [1] used for the kernel build,
-> - a prototype drgn with BTF+kallsyms support [2],
-> - some small kernel patches which add symbols to vmcoreinfo, so that
->   drgn can find the kallsyms section. I'm happy to share these, I just
->   haven't sent them anywhere yet.
+> > diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+> > new file mode 100644
+> > index 000000000000..2bc6f7cc59ea
+> > --- /dev/null
+> > +++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+> >
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_HASH);
+> > +       __uint(key_size, sizeof(__u32));
+> > +       __uint(value_size, sizeof(struct tstamp_data));
+> > +       __uint(max_entries, MAX_ENTRIES);
+> > +} tstamp SEC(".maps");
 >
-> [2]: https://github.com/brenns10/drgn/tree/kallsyms_plus_btf
->
-> Combining these three things, I've got a debugger which can open up a
-> vmcore _without DWARF debuginfo_ and allow you to print out typed
-> variable values. It just relies on BTF + kallsyms.
->
-> So the proof of concept is proven, and I'm quite excited about it!
+> I think using task local storage for this tstamp would be more
+> efficient. There is an example in
+> tools/bpf/runqslower/runqslower.bpf.c
 
-Exciting indeed. This is pretty cool.
+Right, will change in v2.
 
-I'm afraid we cannot justify 2.5 Mb kernel memory increase
-for pure debugging. The existing vmlinux BTF is used
-by the kernel itself to validate bpf prog access.
-bpf progs cannot access normal global vars.
-If/when they are we can reconsider.
-
-As an alternative path I think we could introduce hierarchical
-split BTF.
-Currently vmlinux BTF and BTF of kernel modules is a tree
-of depth 2.
-We can keep such representation of BTFs and
-introduce a fake kernel module that contains kernel global vars.
-drgn can parse vmlinux BTF plus BTFs of all ko-s including fake one
-and obtain the same amount of debug info as if global vars
-were part of vmlinux BTF.
-Consuming 2.5Mb on demand via ko would be acceptable
-in some scenarios whereas unconditionally burning
-that much memory in vmlinux BTF (even optional via kconfig)
-is probably not.
-
-Ideally we structure BTFs as a multi level tree.
-Where BTF with global vars and other non essential BTF info
-can be added to vmlinux BTF at run-time. BTF of kernel mods
-can add on top and mods can have split BTF too.
+Thanks,
+Namhyung
