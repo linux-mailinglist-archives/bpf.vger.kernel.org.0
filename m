@@ -2,112 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1148651521D
-	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 19:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA66951568E
+	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 23:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379665AbiD2RcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Apr 2022 13:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        id S236091AbiD2VTF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Apr 2022 17:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379613AbiD2Ray (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Apr 2022 13:30:54 -0400
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB65D347D;
-        Fri, 29 Apr 2022 10:27:35 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id c15so11309278ljr.9;
-        Fri, 29 Apr 2022 10:27:35 -0700 (PDT)
+        with ESMTP id S235991AbiD2VTD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Apr 2022 17:19:03 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EC221253
+        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 14:15:43 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2f7dbceab08so84802217b3.10
+        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 14:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4rrbqWIkzBFxWlYrTNfphM935o/i3z7llOTk0Sx5dmQ=;
+        b=jQRYNBfiBPED907CoH0P6EsLo6/AcYtMk1dg2tlniADS8ZVZ4AGIvI37XQJyfORz4h
+         TSRfFKOGWi+kJcexJYoqokUqwb7PoOeHdmBLZaS4TjbZ4ReNlMcNmeXOB5RK7ivZs+Wo
+         xEjwNH42RY16+D5qWgRC7WFJyJjHORaFcCk+Jp8h+l1ZrXI/+Q6Twwi4NkOzQCkslWOn
+         YO+nmHPxl+pBAy47Z4Z+tQ0WQtNrBxea65wtoPnTFDjYB54kqFzgApCo+QUTAHmd8IiM
+         FClqKgIRLp7e6fM19IVq5t0ky0NxuJR910mtdnE77bGJl+F5ODcus6gTW7x9N40w3gMy
+         DNGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7D+3I+t+Bjx7AMKWUHFNEPdjcA8rwqba3c0NxnUB1Ig=;
-        b=kBtsUOObhlN8E18kG1QnGHGpezp6+3VVhlE++hcP0TcLxqTmSnNnO824fRj73SRiVo
-         ugJ317qV+fzm7qOXFDCc5bzxaqypEhAE2xy4LbOqxnOyqvll19nYYIT+XVQLbt/yM5jn
-         4OZZH+jy9OUbv4TVOOYjuNulSXoBzcKlIL5UyUMrYaFMIMkeU68/c+sZdj7QinEl0dra
-         lHm7rhNNa8thbHoCcUYKvSp6v3wGj+TDtRw9OBUVZs2iAowGmpGiB6X8vhjNtQ9eZ1UL
-         gL+WQBz9GEBBxCUW3vA6V/p03Aag/YsQ4+zhINc8ybxKi04OaUP8vmHptYlhlJrX13Jj
-         K8Gw==
-X-Gm-Message-State: AOAM533Ck5DlIyycpJn4EEmYu+PTncOhM0ps4zurQiLVYs4QqkmkuQI8
-        6yEP3FOYZrqN3hzFsTJjQ0f7p5jBq0O0QmiMr25ymok9
-X-Google-Smtp-Source: ABdhPJwGsWqOXKrdEp28MJBR1YmmNLpGT2LFnM8lpsYHWSfz03w7N1XefoFp1yb+g2fwHgrueil2ICAo0Rrh7Kd9KWA=
-X-Received: by 2002:a2e:1613:0:b0:24f:2ee0:351a with SMTP id
- w19-20020a2e1613000000b0024f2ee0351amr189180ljd.180.1651253254034; Fri, 29
- Apr 2022 10:27:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220422150507.222488-1-namhyung@kernel.org> <20220422150507.222488-3-namhyung@kernel.org>
- <CA+khW7gvDaDiA458StkOEvUfvr1Rx4d65+530z2tq52VkJqaoA@mail.gmail.com>
-In-Reply-To: <CA+khW7gvDaDiA458StkOEvUfvr1Rx4d65+530z2tq52VkJqaoA@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 29 Apr 2022 10:27:23 -0700
-Message-ID: <CAM9d7cjytSO9chTZBnKLnNsOz4LtwZo4G1LbEBJbLGGpPieaxA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] perf record: Enable off-cpu analysis with BPF
-To:     Hao Luo <haoluo@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Blake Jones <blakejones@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4rrbqWIkzBFxWlYrTNfphM935o/i3z7llOTk0Sx5dmQ=;
+        b=6ZPQX9mi/072hmt4eFlRYctJM953ku8UvzuTNLa83Hrsuwy8BOF6gz7LV1j68onxKD
+         lxXD/4o3QXyIMhvBEBGHcADrv1srCkAv8NIV5Jgn+Yf5dm5F+yl9hs+hQUO8ys+tTp0o
+         cioyKsRsBiHS/2NukWwzWcB0N7kBiGn+xp8/riXajxDyw3Y4hgA2Re4orgrBa1CggeFq
+         VeOxvDaDxkkivBH+XzVOb4acrXnOrGLAl0ggUxS+ZZLMXc6zZJ8BHFj8z2v9QxNMKghF
+         C7+SHs4I/aK0buVsnHvtmbl/ONqB67+nM6PKKDiHS0WMJHTBRjGG3M66japHKRzmpste
+         0p+Q==
+X-Gm-Message-State: AOAM533XzImoOWpDH3BfAp4glpUMhbzqF7C5XNHmxVWGTKUa0Hku/cvx
+        bhOJeQ2pwuzkTpPJZn1sRC5eaMw=
+X-Google-Smtp-Source: ABdhPJycglN1nrJ0Xx4drW6j4Tv/9u3FfA0VgHMgTNetJIOh7ciL+E/YDAOJRohyXGr2eey1OrTHP4Y=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:b0cc:7605:1029:2d96])
+ (user=sdf job=sendgmr) by 2002:a25:cfd7:0:b0:648:4e70:a98 with SMTP id
+ f206-20020a25cfd7000000b006484e700a98mr1476285ybg.368.1651266942572; Fri, 29
+ Apr 2022 14:15:42 -0700 (PDT)
+Date:   Fri, 29 Apr 2022 14:15:30 -0700
+Message-Id: <20220429211540.715151-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.464.gb9c8b46e94-goog
+Subject: [PATCH bpf-next v6 00/10] bpf: cgroup_sock lsm flavor
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>, kafai@fb.com,
+        kpsingh@kernel.org, jakub@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hao,
+This series implements new lsm flavor for attaching per-cgroup programs to
+existing lsm hooks. The cgroup is taken out of 'current', unless
+the first argument of the hook is 'struct socket'. In this case,
+the cgroup association is taken out of socket. The attachment
+looks like a regular per-cgroup attachment: we add new BPF_LSM_CGROUP
+attach type which, together with attach_btf_id, signals per-cgroup lsm.
+Behind the scenes, we allocate trampoline shim program and
+attach to lsm. This program looks up cgroup from current/socket
+and runs cgroup's effective prog array. The rest of the per-cgroup BPF
+stays the same: hierarchy, local storage, retval conventions
+(return 1 == success).
 
-On Wed, Apr 27, 2022 at 4:07 PM Hao Luo <haoluo@google.com> wrote:
->
-> Hi Namhyung,
->
-> On Fri, Apr 22, 2022 at 8:05 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
->
-> [...]
->
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/Makefile.perf               |   1 +
-> >  tools/perf/builtin-record.c            |  21 +++
-> >  tools/perf/util/Build                  |   1 +
-> >  tools/perf/util/bpf_off_cpu.c          | 208 +++++++++++++++++++++++++
-> >  tools/perf/util/bpf_skel/off_cpu.bpf.c | 137 ++++++++++++++++
-> >  tools/perf/util/off_cpu.h              |  22 +++
-> >  6 files changed, 390 insertions(+)
-> >  create mode 100644 tools/perf/util/bpf_off_cpu.c
-> >  create mode 100644 tools/perf/util/bpf_skel/off_cpu.bpf.c
-> >  create mode 100644 tools/perf/util/off_cpu.h
-> >
->
-> [...]
->
-> > diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-> > new file mode 100644
-> > index 000000000000..2bc6f7cc59ea
-> > --- /dev/null
-> > +++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-> >
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_HASH);
-> > +       __uint(key_size, sizeof(__u32));
-> > +       __uint(value_size, sizeof(struct tstamp_data));
-> > +       __uint(max_entries, MAX_ENTRIES);
-> > +} tstamp SEC(".maps");
->
-> I think using task local storage for this tstamp would be more
-> efficient. There is an example in
-> tools/bpf/runqslower/runqslower.bpf.c
+Current limitations:
+* haven't considered sleepable bpf; can be extended later on
+* not sure the verifier does the right thing with null checks;
+  see latest selftest for details
+* total of 10 (global) per-cgroup LSM attach points; this bloats
+  bpf_cgroup a bit
 
-Right, will change in v2.
+Cc: ast@kernel.org
+Cc: daniel@iogearbox.net
+Cc: kafai@fb.com
+Cc: kpsingh@kernel.org
+Cc: jakub@cloudflare.com
 
-Thanks,
-Namhyung
+v6:
+- remove active count & stats for shim program (Martin KaFai Lau)
+- remove NULL/error check for btf_vmlinux (Martin)
+- don't check cgroup_atype in bpf_cgroup_lsm_shim_release (Martin)
+- use old_prog (instead of passed one) in __cgroup_bpf_detach (Martin)
+- make sure attach_btf_id is the same in __cgroup_bpf_replace (Martin)
+- enable cgroup local storage and test it (Martin)
+- properly implement prog query and add bpftool & tests (Martin)
+- prohibit non-shared cgroup storage mode for BPF_LSM_CGROUP (Martin)
+
+v5:
+- __cgroup_bpf_run_lsm_socket remove NULL sock/sk checks (Martin KaFai Lau)
+- __cgroup_bpf_run_lsm_{socket,current} s/prog/shim_prog/ (Martin)
+- make sure bpf_lsm_find_cgroup_shim works for hooks without args (Martin)
+- __cgroup_bpf_attach make sure attach_btf_id is the same when replacing (Martin)
+- call bpf_cgroup_lsm_shim_release only for LSM_CGROUP (Martin)
+- drop BPF_LSM_CGROUP from bpf_attach_type_to_tramp (Martin)
+- drop jited check from cgroup_shim_find (Martin)
+- new patch to convert cgroup_bpf to hlist_node (Jakub Sitnicki)
+- new shim flavor for 'struct sock' + list of exceptions (Martin)
+
+v4:
+- fix build when jit is on but syscall is off
+
+v3:
+- add BPF_LSM_CGROUP to bpftool
+- use simple int instead of refcnt_t (to avoid use-after-free
+  false positive)
+
+v2:
+- addressed build bot failures
+
+Stanislav Fomichev (10):
+  bpf: add bpf_func_t and trampoline helpers
+  bpf: convert cgroup_bpf.progs to hlist
+  bpf: per-cgroup lsm flavor
+  bpf: minimize number of allocated lsm slots per program
+  bpf: implement BPF_PROG_QUERY for BPF_LSM_CGROUP
+  bpf: allow writing to a subset of sock fields from lsm progtype
+  libbpf: add lsm_cgoup_sock type
+  bpftool: implement cgroup tree for BPF_LSM_CGROUP
+  selftests/bpf: lsm_cgroup functional test
+  selftests/bpf: verify lsm_cgroup struct sock access
+
+ arch/x86/net/bpf_jit_comp.c                   |  22 +-
+ include/linux/bpf-cgroup-defs.h               |  11 +-
+ include/linux/bpf-cgroup.h                    |   9 +-
+ include/linux/bpf.h                           |  26 +-
+ include/linux/bpf_lsm.h                       |   8 +
+ include/uapi/linux/bpf.h                      |   2 +
+ kernel/bpf/bpf_lsm.c                          | 117 ++++++
+ kernel/bpf/btf.c                              |  11 +
+ kernel/bpf/cgroup.c                           | 391 +++++++++++++++---
+ kernel/bpf/syscall.c                          |  13 +-
+ kernel/bpf/trampoline.c                       | 222 ++++++++--
+ kernel/bpf/verifier.c                         |  35 +-
+ tools/bpf/bpftool/cgroup.c                    | 138 +++++--
+ tools/bpf/bpftool/common.c                    |   1 +
+ tools/include/uapi/linux/bpf.h                |   2 +
+ tools/lib/bpf/bpf.c                           |  42 +-
+ tools/lib/bpf/bpf.h                           |  15 +
+ tools/lib/bpf/libbpf.c                        |   2 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/lsm_cgroup.c     | 236 +++++++++++
+ .../testing/selftests/bpf/progs/lsm_cgroup.c  | 160 +++++++
+ tools/testing/selftests/bpf/test_verifier.c   |  54 ++-
+ .../selftests/bpf/verifier/lsm_cgroup.c       |  34 ++
+ 23 files changed, 1406 insertions(+), 146 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/lsm_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/lsm_cgroup.c
+
+-- 
+2.36.0.464.gb9c8b46e94-goog
+
