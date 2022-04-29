@@ -2,269 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1673A5141AC
-	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 07:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC4A51455C
+	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 11:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238134AbiD2FFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Apr 2022 01:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34446 "EHLO
+        id S1356546AbiD2J0w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Apr 2022 05:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238106AbiD2FFX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Apr 2022 01:05:23 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1CE53A73
-        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 22:02:06 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id y11so3310156ilp.4
-        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 22:02:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u+Bmxk2IAMXeVTesPFjOtn8QXeMSZNtPo2ofMvnKPE8=;
-        b=g357iiSHm4JaBehSwCEDK+vrckhCEFev3KZdXOIaRL8Jo3JEIqeqK4y77giKksf3Bx
-         HCZGBjtUs4NNeBJzZBhUZzpAf1J6b0/SOFXcOILIEbWeBD6jK5+NOSHRX2WutG4Imyoe
-         9sekVx4hyCISiLThUueXOesTnvClAFXByvhnk5klCgxyLtisIs0xHar1eiSqHT17mZU9
-         hdVfcyWolprbOTVk9ZWtrX67um6d3G6czQUj0IOU5fBLc6h3hL9h20F/hBhHqaLhNSgj
-         4x5yCfoWCG5tFDf3BMzew4G8W982FxYxwpSIn4IjJkhYpi6AlnhspI1VPyI77ikWAA1r
-         ND7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u+Bmxk2IAMXeVTesPFjOtn8QXeMSZNtPo2ofMvnKPE8=;
-        b=n2Fiai8P/HU6At0vbC22mJrt0edNN6T4nQmuvyyMGOnfXBurUgnADohvsoZrKUNkY4
-         SpFXFCviObsBhfKZZ7pZeNKkFiz4WDCEFsoeMPvuDR3opLM7MQzRCdaLyOoLclh5LeNY
-         ve/VAyCAxX+AEoax3PyPD6XjlwSyNtW6Yy1DcSbNSgzSrveK/VgWcn4OlEZze6qFWDdO
-         gBIS2DJHwdmNEmzG8Xh7a0rGmNq2jnCol2uWkhtKOr7pFnBsU/LYhRJlnKpGtejfXPIi
-         Ol3grAi8ujyIY4Sd36D53ecFWGObtuJei4IUI9qomon43wLiTOdw8oVXVNF+EElhJNJ8
-         40DA==
-X-Gm-Message-State: AOAM5303V2AM+4akHqWarsQPNDcE36dz6Jr1xswodng5VcuiBSX2FG0N
-        Ah9rF0UDA6xT9hYTNnTf3hqq/zIm6/ekQ9WT4a4=
-X-Google-Smtp-Source: ABdhPJxgvMb6rijrBxoTPj9bL2DtPwhMb+gm22Ugjm591xJp30gJpWkLtcPlr85g2pIfQd2XNFWlys9PWR8IkqKAObc=
-X-Received: by 2002:a05:6e02:1b89:b0:2cd:942d:86e3 with SMTP id
- h9-20020a056e021b8900b002cd942d86e3mr9976877ili.71.1651208525753; Thu, 28 Apr
- 2022 22:02:05 -0700 (PDT)
+        with ESMTP id S1356539AbiD2J0k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Apr 2022 05:26:40 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam07on2065.outbound.protection.outlook.com [40.107.95.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CFFC614D;
+        Fri, 29 Apr 2022 02:23:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gEJaJdR7cRjuuQGNBKY2TJpUMPujOG/eEzytXobqS3nmJK4OuqBQn2bqCkHxbCKftWY6PqxKkjKXBMPLkUGrGI3svked4RAL9PGZn6vCDGO1Hr+X7wyD4jBG7pI82Irh8Hi+KqnubsVpK0MN4dNN/QxQh75K3bhgQIw6tX9PVqdDKOPfdu9pz2risDa4P9DlD9lYmWXt5k9JVrLN4y5KiZ6q0z67mC3icJ9A60Yc+3maijwzN/7AaDWlx+4O3YQFY1RqKcWTXstf+xJysi7H0E9q0VvamobD63qS3s4ZHwBNN5AI2J9iUGl+0+CglL8NWo0YKI5rapHyVfatlLj8Vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TyiXUIW+5OOQ/0mVb4pPcZi0CmUxiKWVSRtDBjvI1uQ=;
+ b=dzn+2fON5ut48BKKUFMhbcShfnsENcH0yNDZv6JDJEONFOTlzQwuQrgvjOk6wVYz/tZknKXnZsN5HTp2b5TX7KPIy/okhn0MI5CazXpugHE32uy1/7pLGyFX+5xGCU4UxaxLWklTuCwzbLja3bqELd8iS3Q5KPNxqn1+vavqM6eeEOM802n5AFWiKMYs1bJ99MNSpjHiS+jM51Y8Yq6LOugR1ynNZs41ucKOFhkVFKywEKZLOjlIFRJ4U9Mdvibv1vzCGexN/gNAY/SmmrkaRJASCCg08zGdFwXC27Ns8GUl7vkSlFa1e9IYi8NlXxXzy2FdLIHOD2D0QG1fVE/HaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TyiXUIW+5OOQ/0mVb4pPcZi0CmUxiKWVSRtDBjvI1uQ=;
+ b=pHz7ZMoTQbkuEpIx4qnR0vIMyPJWo8CE8zS0Lj8JGkafQwMdLd2uJ+DRmrL7wk4itGMMiaPZNRz23REM9m1JivOphYXwQ5+k9gABRK0vkMFbaJ1hzPpm+Zx+BxSZKS5bj2prGXeg67NLMUA/m7Dl/SFDAR3riAyhcPVE4mTMPZTo/KHUhLZB8w0GruaoeWcFPZguRASG3kWSbhplLd923hOFeYL2J159d8N7xcGdfWByhXPmcnc9SBtIPARYKjBBv3vnP6qctEfuax4N9WKMsLSXWDDXeMi1gTNW2Stxh1UoQx21pU/STwfI53xDNKHUNq1XmhUq9w4GS41G6VBsig==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5150.namprd12.prod.outlook.com (2603:10b6:5:391::23)
+ by DM5PR12MB1322.namprd12.prod.outlook.com (2603:10b6:3:70::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.13; Fri, 29 Apr
+ 2022 09:23:21 +0000
+Received: from DM4PR12MB5150.namprd12.prod.outlook.com
+ ([fe80::a186:70f2:4280:14df]) by DM4PR12MB5150.namprd12.prod.outlook.com
+ ([fe80::a186:70f2:4280:14df%7]) with mapi id 15.20.5186.023; Fri, 29 Apr 2022
+ 09:23:20 +0000
+Message-ID: <0d496e79-afc5-39d6-59be-be4152b9b60b@nvidia.com>
+Date:   Fri, 29 Apr 2022 12:23:11 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH bpf-next v7 1/6] bpf: Use ipv6_only_sock in
+ bpf_tcp_gen_syncookie
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20220428153833.278064-1-maximmi@nvidia.com>
+ <20220428153833.278064-2-maximmi@nvidia.com>
+ <CAADnVQLw4yz_N3xR59XbSGdCH3ckU-pPWZ93JugomGejfo5hTA@mail.gmail.com>
+From:   Maxim Mikityanskiy <maximmi@nvidia.com>
+In-Reply-To: <CAADnVQLw4yz_N3xR59XbSGdCH3ckU-pPWZ93JugomGejfo5hTA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P265CA0005.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2ad::17) To DM4PR12MB5150.namprd12.prod.outlook.com
+ (2603:10b6:5:391::23)
 MIME-Version: 1.0
-References: <20220416042940.656344-1-kuifeng@fb.com> <20220416042940.656344-2-kuifeng@fb.com>
- <CAEf4BzY3eOOv-4V8npHwJz2NK7HEso7vdS8zQGMfuvw0D8euxQ@mail.gmail.com> <4e289d04fe799edbbcf5653f4f70883246ff2f8a.camel@fb.com>
-In-Reply-To: <4e289d04fe799edbbcf5653f4f70883246ff2f8a.camel@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 28 Apr 2022 22:01:54 -0700
-Message-ID: <CAEf4BzaYEXmKx9vmN4UxGz53CPu1ZadQ=RErJZa5ytT8dB5ZDw@mail.gmail.com>
-Subject: Re: [PATCH dwarves v6 1/6] bpf, x86: Generate trampolines from bpf_tramp_links
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a539f6f4-dd65-4476-1edd-08da29c1e6ef
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1322:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1322314B40DE3CC4480DD57FDCFC9@DM5PR12MB1322.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UvdXcnBB/AhE7Ae+8QUmhfvOP98EPnCZ2DQWKLp6g0JoNQRhl9wNI5VlMO1cu4oTNVFF1eyo9KV7JY/OMFHZV9v9dfTP1k+hM6y47YU8hTDqROGLiRJkSZ3Wz6PoHYhu+lDRUlo41Ou/Eo40iUgQyOajYI5/sQicgOCR7ZfN9dAIv3CaqVYheJUZXtPbiIASPCVXg0L0/4DID5QWy1GtNkVXsEaDLok9JRQVEYSzef1Jl1AiXFlPpAxwZrUHCx4TqeHskV7jyIiTaPdQMvxdAk7FoDYUgkf86HSODeEULDwSyswfsM5v+tI++lZpV0u4IKt1UjJ6mcMs3KapscUQ3ZYeaGbiwHTkDowjIzKxY0oFEKOqA7Pe3RJ/7hfum0FgL3g5t7RzAjQr/+GdaM+wvtd9NwFrBdubuRDw/2VCoKQbv/wTCjWFZDUD14B753K1OUTRD5OdTW8gsjzQWHXASbGxHvqQ0FeUZAq0xB+gztRB8w2QlMNjmrCvDLapxipq8Yx31x4DC8fLbeV6cQU/jQ/t7KvYxnBhQOgNGkI+MwOTix6UyGu93xMd1ougtHFiHinhsrMrRnMDGLwIt/ZQK85EYUwDbtOXG5/C4Nxu8witwqORwr2gnmCmY27vNdi1sGXledkTou9C+c0v2kj9ZQ+AUYET1NqGs6lC7heaU1vDWEaHcQP7BcVKUSXZeua/29Y1GXS0Qze6DsZTXcbaUfDC9vxyjTYPDZ9K9dOftck=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5150.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(6486002)(508600001)(86362001)(31696002)(2616005)(53546011)(26005)(6506007)(6512007)(38100700002)(6666004)(2906002)(66946007)(66476007)(316002)(66556008)(186003)(36756003)(5660300002)(8936002)(31686004)(54906003)(4326008)(6916009)(83380400001)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RFhaNXRtQW5sSW12WWtoUExLeXYvRW0rZHZ0Q1RrV2hhOTZEN1l2dUxNTFh4?=
+ =?utf-8?B?dStRelZQM0RtUDZHRE9zZ3gxU1lrTGMxNTFiMVdpN1c4NzVUMEZUeXFTc0sr?=
+ =?utf-8?B?eUlSTUcvcGtPU0FuNUVYR1o3TnlWN2ZTQlBqUUttN25BMmZnRFhqMjQ5cGdU?=
+ =?utf-8?B?YThXTTdxaE40WnlBMHBxRVJLTnVTYXphUmdTd1pYNnlUQndGTC95bkUyTkFq?=
+ =?utf-8?B?MlNaaWhZdkF1OC9HMmhLalAxdEJlUExTZVlYRmRIWGlWRUZxMjZncXJ0TDF3?=
+ =?utf-8?B?QmpsdmhYL1lOWUZVM1ZVQVA2QkVTR0dDY0pLNWNKeXVMcEx4a2hhMFk1dkNC?=
+ =?utf-8?B?ZTVOMGxuV0JOUm94bWhBRHRGaTRpczNsS0hzKzBUT0o4d0R1akdZNTg0WWhP?=
+ =?utf-8?B?VVQyWlhjTHVhcW5oTUk1SDVkMHRDU25jL0xHZG1FTGY1S1RpdlFqZ2tEN1M2?=
+ =?utf-8?B?TGYyOHhPTCs1LzlpME5VT0JmUXdnaDcrU1FVaVFjaUplSU1oL3d6M3ZVUDJN?=
+ =?utf-8?B?M3p1b3hpb0U4MWIxQnE2UElyeDhtNGdaVUFQRDJac0FEemUzYlkrV1NWclBU?=
+ =?utf-8?B?L0phaEVWZ0llK2dhY3E2WFdLQ1NHV1dqdWJSZlNmelZmd1FSdkZyK0U1SnB0?=
+ =?utf-8?B?V2p4b2RTcExraGcrQ3QyVHlvZ1poN3h6Rk14aDZrckJNc3dobnRHWnh6ZjFp?=
+ =?utf-8?B?RlNTTEJyOUhLMkF0cU9ucjZkSEthdm9hTkZkWmdLci9IUWZUV2wyK1NMTWhJ?=
+ =?utf-8?B?SVozZ20yTlpyWDZ0K2RHZ0xhL01vMDNQakkxZnRkVDBOTkQzdElyekVBZ3Ru?=
+ =?utf-8?B?WFdpNkQxazRjOHZFeWlDTE5hSmxlQ3N0UEtpUDZ3QmdkQ3UzOXJORS9ITFJ2?=
+ =?utf-8?B?Zzd5YkxGVkoyUk9kWjFTbXJuZDJ6VGdOcUs1d2tuY2lzNmMzZDRTOVhWWTFH?=
+ =?utf-8?B?Y2JZSy9Eb1hWaGs2cXBVS251VlJQenhQcE81RWNlMlJ1M2lXQk1ScWtTYWZy?=
+ =?utf-8?B?alUrLzFWM3lMd21lS3JqTXYvemZjdGFBaWs0bVl4NjB5RXlhem9TVU9HbkhL?=
+ =?utf-8?B?b0hjUU9xN0d1RTZZaG1PaDFTOEovcGdLK1hUYWloc3d1c2tkV3R1UURGQnhQ?=
+ =?utf-8?B?aXcwTnZsSDlHSmRXSG1BYUhsSm1BRkFYcGM4bGxiWGpISm50K0NPV3EwK2pI?=
+ =?utf-8?B?N2w2bSsvZU5FUlM5UWZreVVRWmo1d1liZHdUL0FHd2hNb0JHU3RYYlZhSU8z?=
+ =?utf-8?B?dWxseWZRaWV6MEdnZDJ5WkFEeHhhVlZSeDNMZ2xLelZrTDhMOTFZSHkrQ3g5?=
+ =?utf-8?B?bEk0akZDUVRYbWpmL3NkSUNIQzlTb0RSTjJReWU2MzJicXNRb1V5b01mMFlU?=
+ =?utf-8?B?eTNXbzJwMUtUOTdYTkhwOXBCT1g5K1RFdW5ZL0xZK3VPL0t3dE9GWWFaejE1?=
+ =?utf-8?B?eXBoNWg4NXRLZzhadWcrQTN3SGR5SWZqRC9vUG9EWG1SWktVaUt6WTVza3hu?=
+ =?utf-8?B?eWdaUFRyVk1lZHRua0ZqQjk0bHJHaVQwWkdqL1lDT0NCd29zZUJMamlqOFZt?=
+ =?utf-8?B?UGtqSFFJQ0txR3ZvMEdaZWlHcFhNbTI5MXBhYkd0dmlBemp5ays3dmNYakdZ?=
+ =?utf-8?B?aS9jeWgwVnFYa3VKR2dPZk9JVUQvZDVPL1JCSUNnV0VVaUxZTFhqbFFqTFdm?=
+ =?utf-8?B?Z1dQMlR4YkduTitkWXlPZjNIdlAwVTVMWU9jL1J5b1AycmkwK1FoU1ZTVXIx?=
+ =?utf-8?B?WmZrTkRhNmMxam1RcGNxZVh6enROWHcxUFduSHdzU1dxNGp0OVBRbk9HM3Zl?=
+ =?utf-8?B?VVJwclJ6NXZHQVlxVG4rZkRxVTdOMEZ6aHYvcnZjeklzbzhzMVdVQlgzS1g5?=
+ =?utf-8?B?WjdrdzdDQktWT2haQ3NRN0hMZDJ4T0ZIdE13dnlkdUVlTmJISjJqakN6Zy9o?=
+ =?utf-8?B?UkdKSFlsREQvVHVGUlhmQnpuUkV2SkZObVVGODZUQytaZGtBOG9HNDdxa1p2?=
+ =?utf-8?B?cUF3OEZSckM4dGVzb0hQc0xFUDlaODR5aWFBSjRDV3hIQ2NFSHl2TXRnUWpu?=
+ =?utf-8?B?NmlBNDh3TzBJenFxUm9NRHNOS1NkdVJiNDk0L1NoZ3Z0aVlUQmdQWm1CZnhK?=
+ =?utf-8?B?UG9FR2FRVmNwM0ZoamJ2RC9qV1hsMnptdTVTbVlnNm4ySm94QUhFZ3pjYm40?=
+ =?utf-8?B?L0IvR25nemRZYXBJdlZ6aUxNMEdCWVo3Yzd0am9mcTdCbjduKzQrVHI5RjZp?=
+ =?utf-8?B?ZldDRmcrdTZTR3RuekRXSmRiSnVnaXdzSG8zM09zSUhqVklDK29PN1ZzTG1h?=
+ =?utf-8?B?Smhoc2VWa284R3JLVHZ1ckxkUUlUcnBLcnIyUzFFamtTM0VjWklzQT09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a539f6f4-dd65-4476-1edd-08da29c1e6ef
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5150.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2022 09:23:20.8546
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dZTIvT4Rfjb10U33csbUKLjzdjJfmYoXw9rQocYfQZdK4j2TGrFUf3cuMxGdpkvkTZ/rrJZq/++QnmhGrXCoHA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1322
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 6:52 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
->
-> On Wed, 2022-04-20 at 10:37 -0700, Andrii Nakryiko wrote:
-> > On Fri, Apr 15, 2022 at 9:30 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
-> > >
-> > > Replace struct bpf_tramp_progs with struct bpf_tramp_links to
-> > > collect
-> > > struct bpf_tramp_link(s) for a trampoline.  struct bpf_tramp_link
-> > > extends bpf_link to act as a linked list node.
-> > >
-> > > arch_prepare_bpf_trampoline() accepts a struct bpf_tramp_links to
-> > > collects all bpf_tramp_link(s) that a trampoline should call.
-> > >
-> > > Change BPF trampoline and bpf_struct_ops to pass bpf_tramp_links
-> > > instead of bpf_tramp_progs.
-> > >
-> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> > > ---
-> > >  arch/x86/net/bpf_jit_comp.c    | 36 +++++++++--------
-> > >  include/linux/bpf.h            | 36 +++++++++++------
-> > >  include/linux/bpf_types.h      |  1 +
-> > >  include/uapi/linux/bpf.h       |  1 +
-> > >  kernel/bpf/bpf_struct_ops.c    | 69 ++++++++++++++++++++++--------
-> > > --
-> > >  kernel/bpf/syscall.c           | 23 ++++-------
-> > >  kernel/bpf/trampoline.c        | 73 +++++++++++++++++++-----------
-> > > ----
-> > >  net/bpf/bpf_dummy_struct_ops.c | 37 ++++++++++++++---
-> > >  tools/bpf/bpftool/link.c       |  1 +
-> > >  tools/include/uapi/linux/bpf.h |  1 +
-> > >  10 files changed, 175 insertions(+), 103 deletions(-)
-> > >
-> >
-> > [...]
-> >
-> > > @@ -385,6 +399,7 @@ static int
-> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> > >         for_each_member(i, t, member) {
-> > >                 const struct btf_type *mtype, *ptype;
-> > >                 struct bpf_prog *prog;
-> > > +               struct bpf_tramp_link *link;
-> > >                 u32 moff;
-> > >
-> > >                 moff = __btf_member_bit_offset(t, member) / 8;
-> > > @@ -438,16 +453,26 @@ static int
-> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> > >                         err = PTR_ERR(prog);
-> > >                         goto reset_unlock;
-> > >                 }
-> > > -               st_map->progs[i] = prog;
-> > >
-> > >                 if (prog->type != BPF_PROG_TYPE_STRUCT_OPS ||
-> > >                     prog->aux->attach_btf_id != st_ops->type_id ||
-> > >                     prog->expected_attach_type != i) {
-> > > +                       bpf_prog_put(prog);
-> > >                         err = -EINVAL;
-> > >                         goto reset_unlock;
-> > >                 }
-> > >
-> > > -               err = bpf_struct_ops_prepare_trampoline(tprogs,
-> > > prog,
-> > > +               link = kzalloc(sizeof(*link), GFP_USER);
-> >
-> > seems like you are leaking this link and all the links allocated in
-> > previous successful iterations of this loop?
-> >
-> > > +               if (!link) {
-> > > +                       bpf_prog_put(prog);
-> > > +                       err = -ENOMEM;
-> > > +                       goto reset_unlock;
-> > > +               }
-> > > +               bpf_link_init(&link->link,
-> > > BPF_LINK_TYPE_STRUCT_OPS,
-> > > +                             &bpf_struct_ops_link_lops, prog);
-> > > +               st_map->links[i] = &link->link;
-> > > +
-> > > +               err = bpf_struct_ops_prepare_trampoline(tlinks,
-> > > link,
-> > >                                                         &st_ops-
-> > > >func_models[i],
-> > >                                                         image,
-> > > image_end);
-> > >                 if (err < 0)
-> > > @@ -490,7 +515,7 @@ static int
-> > > bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> > >         memset(uvalue, 0, map->value_size);
-> > >         memset(kvalue, 0, map->value_size);
-> > >  unlock:
-> > > -       kfree(tprogs);
-> > > +       kfree(tlinks);
-> >
-> > so you'll need to free those links inside tlinks (or wherever else
-> > they are stored)
-> >
-> > >         mutex_unlock(&st_map->lock);
-> > >         return err;
-> > >  }
-> > > @@ -545,9 +570,9 @@ static void bpf_struct_ops_map_free(struct
-> > > bpf_map *map)
-> > >  {
-> > >         struct bpf_struct_ops_map *st_map = (struct
-> > > bpf_struct_ops_map *)map;
-> > >
-> > > -       if (st_map->progs)
-> > > +       if (st_map->links)
-> > >                 bpf_struct_ops_map_put_progs(st_map);
-> > > -       bpf_map_area_free(st_map->progs);
-> > > +       bpf_map_area_free(st_map->links);
-> > >         bpf_jit_free_exec(st_map->image);
-> > >         bpf_map_area_free(st_map->uvalue);
-> > >         bpf_map_area_free(st_map);
-> >
-> > [...]
-> >
-> > > @@ -105,10 +120,20 @@ int bpf_struct_ops_test_run(struct bpf_prog
-> > > *prog, const union bpf_attr *kattr,
-> > >         }
-> > >         set_vm_flush_reset_perms(image);
-> > >
-> > > +       link = kzalloc(sizeof(*link), GFP_USER);
-> > > +       if (!link) {
-> > > +               err = -ENOMEM;
-> > > +               goto out;
-> > > +       }
-> > > +       /* prog doesn't take the ownership of the reference from
-> > > caller */
-> > > +       bpf_prog_inc(prog);
-> > > +       bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS,
-> > > &bpf_struct_ops_link_lops, prog);
-> > > +
-> > >         op_idx = prog->expected_attach_type;
-> > > -       err = bpf_struct_ops_prepare_trampoline(tprogs, prog,
-> > > +       err = bpf_struct_ops_prepare_trampoline(tlinks, link,
-> > >                                                 &st_ops-
-> > > >func_models[op_idx],
-> > >                                                 image, image +
-> > > PAGE_SIZE);
-> > > +
-> >
-> > nit: no need for extra empty line here
-> >
-> > >         if (err < 0)
-> > >                 goto out;
-> > >
-> > > @@ -124,7 +149,9 @@ int bpf_struct_ops_test_run(struct bpf_prog
-> > > *prog, const union bpf_attr *kattr,
-> > >  out:
-> > >         kfree(args);
-> > >         bpf_jit_free_exec(image);
-> > > -       kfree(tprogs);
-> > > +       if (link)
-> > > +               bpf_link_put(&link->link);
-> >
-> > you never to bpf_link_prime() and bpf_link_settle() for these "pseudo
-> > links" for struct_ops, so there is no need for bpf_link_put(), it can
-> > be just bpf_link_free(), right?
->
-> Just realize that bpf_link_free() is a static function of
-> bpf/syscall.c.  And, this code is for testing only.  So, I don't touch
-> this line.
->
+On 2022-04-29 06:15, Alexei Starovoitov wrote:
+> On Thu, Apr 28, 2022 at 8:38 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
+>>
+>> Instead of querying the sk_ipv6only field directly, use the dedicated
+>> ipv6_only_sock helper.
+>>
+>> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
+>> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+>> Acked-by: John Fastabend <john.fastabend@gmail.com>
+>> Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+>> Acked-by: Petar Penkov <ppenkov@google.com>
+>> ---
+>>   net/core/filter.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/filter.c b/net/core/filter.c
+>> index 8847316ee20e..207a13db5c80 100644
+>> --- a/net/core/filter.c
+>> +++ b/net/core/filter.c
+>> @@ -7099,7 +7099,7 @@ BPF_CALL_5(bpf_tcp_gen_syncookie, struct sock *, sk, void *, iph, u32, iph_len,
+>>           */
+>>          switch (((struct iphdr *)iph)->version) {
+>>          case 4:
+>> -               if (sk->sk_family == AF_INET6 && sk->sk_ipv6only)
+>> +               if (sk->sk_family == AF_INET6 && ipv6_only_sock(sk))
+>>                          return -EINVAL;
+> 
+> Please rebase patches before resending.
 
-we can make it non-static and expose along with other generic bpf_link
-internal APIs, like bpf_link_cleanup()
+I'm sorry - it's totally my fault! I didn't fetch before rebasing =/
 
-> >
-> > > +       kfree(tlinks);
-> > >         return err;
-> > >  }
-> > >
-> > > diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> > > index 8fb0116f9136..6353a789322b 100644
-> > > --- a/tools/bpf/bpftool/link.c
-> > > +++ b/tools/bpf/bpftool/link.c
-> > > @@ -23,6 +23,7 @@ static const char * const link_type_name[] = {
-> > >         [BPF_LINK_TYPE_XDP]                     = "xdp",
-> > >         [BPF_LINK_TYPE_PERF_EVENT]              = "perf_event",
-> > >         [BPF_LINK_TYPE_KPROBE_MULTI]            = "kprobe_multi",
-> > > +       [BPF_LINK_TYPE_STRUCT_OPS]               = "struct_ops",
-> > >  };
-> > >
-> > >  static struct hashmap *link_table;
-> > > diff --git a/tools/include/uapi/linux/bpf.h
-> > > b/tools/include/uapi/linux/bpf.h
-> > > index d14b10b85e51..a4f557338af7 100644
-> > > --- a/tools/include/uapi/linux/bpf.h
-> > > +++ b/tools/include/uapi/linux/bpf.h
-> > > @@ -1013,6 +1013,7 @@ enum bpf_link_type {
-> > >         BPF_LINK_TYPE_XDP = 6,
-> > >         BPF_LINK_TYPE_PERF_EVENT = 7,
-> > >         BPF_LINK_TYPE_KPROBE_MULTI = 8,
-> > > +       BPF_LINK_TYPE_STRUCT_OPS = 9,
-> > >
-> > >         MAX_BPF_LINK_TYPE,
-> > >  };
-> > > --
-> > > 2.30.2
-> > >
->
+> Applying: bpf: Use ipv6_only_sock in bpf_tcp_gen_syncookie
+> Using index info to reconstruct a base tree...
+> M    net/core/filter.c
+> Falling back to patching base and 3-way merge...
+> Auto-merging net/core/filter.c
+> No changes -- Patch already applied.
+
+Someone else has made the same change as my first patch, so I'll drop it.
+
+> Applying: bpf: Fix documentation of th_len in bpf_tcp_{gen,check}_syncookie
+> Applying: bpf: Allow helpers to accept pointers with a fixed size
+> Applying: bpf: Add helpers to issue and check SYN cookies in XDP
+> error: sha1 information is lacking or useless (include/uapi/linux/bpf.h).
+> error: could not build fake ancestor
+> Patch failed at 0004 bpf: Add helpers to issue and check SYN cookies in XDP
+> 
+> 
+> Also trim your cc. You keep sending to addresses that are bouncing
+> (Lorenz's and Petar's).
+> 
+> Remove their Ack-s too or fix them with correct emails.
+
+As we don't need patch 1 anymore, I will drop it, and we won't have 
+these acks anymore. I'll also exclude these people from CC (I only kept 
+them because of their acks they gave when their emails still worked).
