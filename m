@@ -2,107 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD1B513F8B
-	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 02:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45272514016
+	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 03:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237230AbiD2AfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 20:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
+        id S1350180AbiD2BR2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 21:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234331AbiD2AfO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 20:35:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288A6B9F02;
-        Thu, 28 Apr 2022 17:31:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AD912B83260;
-        Fri, 29 Apr 2022 00:31:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D298DC385A9;
-        Fri, 29 Apr 2022 00:31:53 +0000 (UTC)
-Date:   Thu, 28 Apr 2022 20:31:52 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1352695AbiD2BRZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 21:17:25 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8144BC875;
+        Thu, 28 Apr 2022 18:14:08 -0700 (PDT)
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KqDxy30SdzfbB2;
+        Fri, 29 Apr 2022 09:13:10 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 29 Apr 2022 09:14:06 +0800
+Received: from k04.huawei.com (10.67.174.115) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 29 Apr 2022 09:14:06 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Pu Lehui <pulehui@huawei.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC bpf-next 4/4] selftests/bpf: Add attach bench test
-Message-ID: <20220428203152.41693bbe@gandalf.local.home>
-In-Reply-To: <20220428200945.5f6a5ba2@gandalf.local.home>
-References: <20220407125224.310255-1-jolsa@kernel.org>
-        <20220407125224.310255-5-jolsa@kernel.org>
-        <CAEf4BzbE1n3Lie+tWTzN69RQUWgjxePorxRr9J8CuiQVUfy-kA@mail.gmail.com>
-        <20220412094923.0abe90955e5db486b7bca279@kernel.org>
-        <CAEf4BzaQRcZGMqq5wqHo3wSHZAAVvY6AhizDk_dV_GtnwHuxLQ@mail.gmail.com>
-        <20220416232103.c0b241c2ec7f2b3b985a2f99@kernel.org>
-        <20220428095803.66c17c32@gandalf.local.home>
-        <CAADnVQKi+4oBt2C__qz7QoHqTtXYLUjaqwTNFoSE=up9c9k4cA@mail.gmail.com>
-        <20220428160519.04cc40c0@gandalf.local.home>
-        <CAEf4Bzbu3zuDcPj3ue8D6VCdMTw2PEREJBU42CbR1Pe=5qOrTQ@mail.gmail.com>
-        <20220428195303.6295e90b@gandalf.local.home>
-        <20220428200945.5f6a5ba2@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        KP Singh <kpsingh@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: [PATCH bpf-next v2 0/2] Support riscv jit to provide
+Date:   Fri, 29 Apr 2022 09:42:38 +0800
+Message-ID: <20220429014240.3434866-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.115]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 28 Apr 2022 20:09:45 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+patch 1 fix an issue that could not print bpf line info due
+to data inconsistency in 32-bit environment.
 
-> OK, I think I see the issue you have. Because the functions shown in
-> available_filter_functions which uses the simple "%ps" to show the function
-> name:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/trace/ftrace.c#n3692
-> 
-> And the code that does the actual matching uses kallsyms_lookup()
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/trace/ftrace.c#n4017
-> 
-> Which appears not to match the function for the address, you can't pass in
-> __bpf_tramp_exit because it wont match the symbol returned by
-> kallsyms_lookup.
+patch 2 add support for riscv jit to provide bpf_line_info.
+Both RV32 and RV64 tests have been passed as like follow:
 
-Never mind, in testing this I had marked the weak function as notrace,
-which was the reason I couldn't add it to the set_ftrace_notrace.
+./test_progs -a btf
+#19 btf:OK
+Summary: 1/215 PASSED, 0 SKIPPED, 0 FAILED
 
-After removing the notrace, kallsyms_lookup() doesn't make a difference. It
-appears that kallsyms will include overridden weak functions into the size
-of the function before it. I tried:
+v2:
+- Remove some trivial code
 
-	ret = kallsyms_lookup(rec->ip, &size, &offset, &modname, str);
-	if (!ret || offset > size) {
-		seq_printf(m, "no function at %lx", rec->ip);
-	} else {
-		seq_printf(m, "%s", str);
-		if (modname)
-			seq_printf(m, " [%s]", modname);
-	}
+v1: https://lore.kernel.org/bpf/20220426140924.3308472-1-pulehui@huawei.com
 
-And it made no difference.
+Pu Lehui (2):
+  bpf: Unify data extension operation of jited_ksyms and jited_linfo
+  riscv, bpf: Support riscv jit to provide bpf_line_info
 
-> 
-> This does indeed look like a bug in %ps.
-> 
+ arch/riscv/net/bpf_jit.h      | 1 +
+ arch/riscv/net/bpf_jit_core.c | 7 ++++++-
+ kernel/bpf/syscall.c          | 5 ++++-
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
-Yes, this does appear to be a issue with kallsyms in general.
+-- 
+2.25.1
 
--- Steve
