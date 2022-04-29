@@ -2,115 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 275125140FA
-	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 05:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D84851410E
+	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 05:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235634AbiD2DTD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Apr 2022 23:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
+        id S235709AbiD2DXe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Apr 2022 23:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235472AbiD2DSs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Apr 2022 23:18:48 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C04622BDE;
-        Thu, 28 Apr 2022 20:15:29 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id m14-20020a17090a34ce00b001d5fe250e23so6143996pjf.3;
-        Thu, 28 Apr 2022 20:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w4oIavX7ybBIKhipbmSb7D/VaFUzTRWKgHI15fCRjo8=;
-        b=O5QeWgujlX+we6uhRnxkXUrsCKJBY9CxWyUVVj70cg5tfVHqt5i9e4gHCGhUpE0KqN
-         6PRojHhRouAfFQVpGn6te1rUNhw11+oH4Itc1DfSoBPec8XuQR86l7FBzzMT8cibcO5F
-         lYTSEoMfISYWLRvMYhd8Nka3G6so4vEJ3X5HZ3b/a4xM2qVdFqcz9eVcV+W+h3kRJVz7
-         2t4B4ICJzkQJPwbaO/TxnwtACxhEt62nCmn4o2JvD0DpsaRgaGybkTpHW8W4sa+u+BJr
-         We2E9J5lBwHzzS/KoUInriJVFZCu1qDoSOarnL0tu+gCB5ajeIcarzW3bLJ0BcNSlB6P
-         QzTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w4oIavX7ybBIKhipbmSb7D/VaFUzTRWKgHI15fCRjo8=;
-        b=tOnNUexhelKqrvtc5jMQ02Lc2BUpVm01j328WE31xUA6R8bQ4PBuH7A7Tm9YvUnDFX
-         hXcENBeTErRHR9u3R0SQsm9aSGuaqxwtjUqOYrErGreE8eIw0s5+tlOnEj7Y6aTMgM3q
-         18LY04fWO7HT1bHFhukxDN3pYM0GUyh+2gSweGKXHU5ijqljjb9Z4F9zF3Zg0AL6SdQV
-         CDhv6rfgTedq6+agDTe54ACfEfqoIXCZ5wy6TeUzuFESnNtbqkGMdeJB3TiJ1CMOZDJR
-         Au1fFcnMMylo0WgzRGwC9EkOhkT3NeS40PxdvS7Om318mbv+wklHqaTQqVw+1+PHwenB
-         aRaQ==
-X-Gm-Message-State: AOAM532pQkprB7us/C2zuKmkeo09j2Tlx99IWPRvK3LmA+gSONCaMpvX
-        KpWEKMEXYc5i6eOkcZXNBJAtOSrA0QpGOCtulCc=
-X-Google-Smtp-Source: ABdhPJxG/xaKCZURmF4dAlabbfKM+wIVNo1eURmLe/0QdioFyB0liCAJ8fbG1DZTQCB3JZxNGnl6D4y/kLLM5Lgmcxo=
-X-Received: by 2002:a17:902:b189:b0:14d:6f87:7c25 with SMTP id
- s9-20020a170902b18900b0014d6f877c25mr36997314plr.31.1651202128854; Thu, 28
- Apr 2022 20:15:28 -0700 (PDT)
+        with ESMTP id S235676AbiD2DXd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Apr 2022 23:23:33 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1495A16B
+        for <bpf@vger.kernel.org>; Thu, 28 Apr 2022 20:20:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6CDE4B832B0
+        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 03:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 13833C385AC;
+        Fri, 29 Apr 2022 03:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1651202412;
+        bh=XreGJRAGNWzOn6jLfgjBnF8HFswEeW+6d8uAN0Tf7Xo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=NzA53EW0Vxt7xURuBXaU1qIrqOVLf3MsjsHaG02T8v3UbAtlMHzvaDCgihbf5k2Gt
+         DIvCK+dWn/8X3IzARUZKx5p3x1lddNcH47zez1bvRhucMeCw9Cf7pKlrsaccc1PfOV
+         9R5QU0Iz4t7O1cSjRoEtbLnQA33WKMkh6RxlFnr/j1IdstQmT2QGnI3+8XpbMg9H0t
+         yiBWrDDliG/bOrn6JoPYOBFipCraoxTDB/SBW/8dtnEwfOO5DwU/Bg/ZYEz9zcE2yU
+         W7jSUsBkOaRQZc4+0EV8MoY6KONrLEh6yS2HS8DuZQB+tdFP1Yj9BkFbhiGoCz62P0
+         9dgX9VyNOQ0aw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id ECBE8F03848;
+        Fri, 29 Apr 2022 03:20:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220428153833.278064-1-maximmi@nvidia.com> <20220428153833.278064-2-maximmi@nvidia.com>
-In-Reply-To: <20220428153833.278064-2-maximmi@nvidia.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 28 Apr 2022 20:15:17 -0700
-Message-ID: <CAADnVQLw4yz_N3xR59XbSGdCH3ckU-pPWZ93JugomGejfo5hTA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 1/6] bpf: Use ipv6_only_sock in bpf_tcp_gen_syncookie
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/4] libbpf: allow to opt-out from BPF map creation
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165120241196.28026.9393761391052858735.git-patchwork-notify@kernel.org>
+Date:   Fri, 29 Apr 2022 03:20:11 +0000
+References: <20220428041523.4089853-1-andrii@kernel.org>
+In-Reply-To: <20220428041523.4089853-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 8:38 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
->
-> Instead of querying the sk_ipv6only field directly, use the dedicated
-> ipv6_only_sock helper.
->
-> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Acked-by: Lorenz Bauer <lmb@cloudflare.com>
-> Acked-by: Petar Penkov <ppenkov@google.com>
-> ---
->  net/core/filter.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 8847316ee20e..207a13db5c80 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -7099,7 +7099,7 @@ BPF_CALL_5(bpf_tcp_gen_syncookie, struct sock *, sk, void *, iph, u32, iph_len,
->          */
->         switch (((struct iphdr *)iph)->version) {
->         case 4:
-> -               if (sk->sk_family == AF_INET6 && sk->sk_ipv6only)
-> +               if (sk->sk_family == AF_INET6 && ipv6_only_sock(sk))
->                         return -EINVAL;
+Hello:
 
-Please rebase patches before resending.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Applying: bpf: Use ipv6_only_sock in bpf_tcp_gen_syncookie
-Using index info to reconstruct a base tree...
-M    net/core/filter.c
-Falling back to patching base and 3-way merge...
-Auto-merging net/core/filter.c
-No changes -- Patch already applied.
-Applying: bpf: Fix documentation of th_len in bpf_tcp_{gen,check}_syncookie
-Applying: bpf: Allow helpers to accept pointers with a fixed size
-Applying: bpf: Add helpers to issue and check SYN cookies in XDP
-error: sha1 information is lacking or useless (include/uapi/linux/bpf.h).
-error: could not build fake ancestor
-Patch failed at 0004 bpf: Add helpers to issue and check SYN cookies in XDP
+On Wed, 27 Apr 2022 21:15:19 -0700 you wrote:
+> Add bpf_map__set_autocreate() API which is a BPF map counterpart of
+> bpf_program__set_autoload() and serves similar goal of allowing to build more
+> flexible CO-RE applications. See patch #3 for example scenarios in which the
+> need for such API came up previously.
+> 
+> Patch #1 is a follow-up patch to previous patch set adding verifier log fixup
+> logic, making sure bpf_core_format_spec()'s return result is used for
+> something useful.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,1/4] libbpf: append "..." in fixed up log if CO-RE spec is truncated
+    https://git.kernel.org/bpf/bpf-next/c/b198881d4b4c
+  - [bpf-next,2/4] libbpf: use libbpf_mem_ensure() when allocating new map
+    https://git.kernel.org/bpf/bpf-next/c/69721203b1f3
+  - [bpf-next,3/4] libbpf: allow to opt-out from creating BPF maps
+    https://git.kernel.org/bpf/bpf-next/c/ec41817b4af5
+  - [bpf-next,4/4] selftests/bpf: test bpf_map__set_autocreate() and related log fixup logic
+    https://git.kernel.org/bpf/bpf-next/c/68964e155677
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Also trim your cc. You keep sending to addresses that are bouncing
-(Lorenz's and Petar's).
-
-Remove their Ack-s too or fix them with correct emails.
