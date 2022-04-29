@@ -2,53 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0F4514E85
-	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 16:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137D0515003
+	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 17:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378063AbiD2O7m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Apr 2022 10:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S1351842AbiD2P7O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Apr 2022 11:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378055AbiD2O7i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Apr 2022 10:59:38 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AFFAF1F1;
-        Fri, 29 Apr 2022 07:56:19 -0700 (PDT)
+        with ESMTP id S1378265AbiD2P6y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Apr 2022 11:58:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB737E5A5;
+        Fri, 29 Apr 2022 08:55:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F1205B835DF;
-        Fri, 29 Apr 2022 14:56:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FAB9C385A7;
-        Fri, 29 Apr 2022 14:56:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 17A616227D;
+        Fri, 29 Apr 2022 15:55:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A2D5C385A4;
+        Fri, 29 Apr 2022 15:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651244176;
-        bh=55dPsFKyaJHm2X36nyJJ6CyaTJGEyAtYgXfkNvY8120=;
+        s=k20201202; t=1651247734;
+        bh=5H1m+PANeiREygLLUVo29Iv9EzBOmGijZgNPp5bTZl8=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nYb27mqCCvMQYHhGuOJj/ESE9vTGSFM+TWDg6GxTzLLlzjUAcKNQ4B7zCc8+g3ffM
-         q2SbAWlAnpje85wpNKgGQOJc9PB3o2WOLoJPeM7YaRgh3RmAHfTSOQ3Cra7lvB0x3O
-         doOHu9cyTZy2rMF9rvwNA/Wk5aYxXfZFFa1QWNE3uu4qxU7Tap20xm1wJZN29HKg4/
-         RfEG+xgerU6YkR7qZePkRPXZy9rDhLJ2AS2tQmM5j+h3JwxotqtCgJNUaiNmc3M7hP
-         V7LkhYvwWcUTysu6cUX+gZ+N+amu9Mc2eQAtO/l1p51cT2NaBB8R+I30XCSsNRL9kq
-         593RlzeNYOtCQ==
-Date:   Fri, 29 Apr 2022 23:56:11 +0900
+        b=V7ti3crvkpK22lQFNJedNoHfpGYZw4+zLiVl9dtU6H8Tk72HlViE13ECfOApq8cBo
+         FZXzZ920sVj8GnNb7r1hSn92dwCqgFfvv9XMOY+1g+uGiloV33bLi/bk3CLe4MUeC+
+         0nZ3o2Gxy+Dgpn8Rg5VUUx0GafBYyjFqyuhiLU2HchzHTaws3hufzjU5Mqope7xflK
+         k9Qf3BX1VsHul33dqxX+gnI7Cn5rXvBX94eG3jazJcjnpMpoGeYuJ26x6156RWTfQk
+         mJnyBDFylPGKBu3bnTxA5skScFawuR9NDDOuIPE6E2jh11W5DFtdbQUk/gn/8BC/em
+         pyM8EmzJphjRw==
+Date:   Sat, 30 Apr 2022 00:55:27 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCHv4 bpf-next 2/5] ftrace: Add ftrace_lookup_symbols
- function
-Message-Id: <20220429235611.4d14d87efc0b6189dadfe3b1@kernel.org>
-In-Reply-To: <20220428201207.954552-3-jolsa@kernel.org>
-References: <20220428201207.954552-1-jolsa@kernel.org>
-        <20220428201207.954552-3-jolsa@kernel.org>
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        kernel-team@fb.com, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf v2 4/4] arm64: rethook: Replace kretprobe trampoline
+ with rethook
+Message-Id: <20220430005527.80aadc7069dd92f7801df389@kernel.org>
+In-Reply-To: <YlXNPEZ18RPfjsd6@FVFF77S0Q05N.cambridge.arm.com>
+References: <164937903547.1272679.7244379141135199176.stgit@devnote2>
+        <164937908437.1272679.6436265245953600367.stgit@devnote2>
+        <YlXNPEZ18RPfjsd6@FVFF77S0Q05N.cambridge.arm.com>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -63,150 +70,254 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 28 Apr 2022 22:12:04 +0200
-Jiri Olsa <jolsa@kernel.org> wrote:
+Hi Mark,
 
-> Adding ftrace_lookup_symbols function that resolves array of symbols
-> with single pass over kallsyms.
-> 
-> The user provides array of string pointers with count and pointer to
-> allocated array for resolved values.
-> 
->   int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt,
->                             unsigned long *addrs)
-> 
-> It iterates all kallsyms symbols and tries to loop up each in provided
-> symbols array with bsearch. The symbols array needs to be sorted by
-> name for this reason.
-> 
-> We also check each symbol to pass ftrace_location, because this API
-> will be used for fprobe symbols resolving.
+Thanks for the comment, and sorry about late reply.
 
-This looks good to me.
+On Tue, 12 Apr 2022 20:04:28 +0100
+Mark Rutland <mark.rutland@arm.com> wrote:
 
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > diff --git a/arch/arm64/kernel/rethook.c b/arch/arm64/kernel/rethook.c
+> > new file mode 100644
+> > index 000000000000..07d8f6ea34a0
+> > --- /dev/null
+> > +++ b/arch/arm64/kernel/rethook.c
+> > @@ -0,0 +1,28 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Generic return hook for arm64.
+> > + * Most of the code is copied from arch/arm64/kernel/probes/kprobes.c
+> > + */
+> > +
+> > +#include <linux/kprobes.h>
+> > +#include <linux/rethook.h>
+> > +
+> > +/* This is called from arch_rethook_trampoline() */
+> > +unsigned long __used arch_rethook_trampoline_callback(struct pt_regs *regs);
+> > +
+> > +unsigned long __used arch_rethook_trampoline_callback(struct pt_regs *regs)
+> > +{
+> > +	return rethook_trampoline_handler(regs, regs->regs[29]);
+> > +}
+> > +NOKPROBE_SYMBOL(arch_rethook_trampoline_callback);
+> > +
+> > +int arch_rethook_prepare(struct rethook_node *rhn, struct pt_regs *regs, bool mcount)
+> 
+> What's the `mcount` paramater for, and why don't we seem to use it below?
+> 
+> The presence of that parameter suggests there is a subtle interaction with
+> ftrace, but the commit message doesn't mention anything of the sort. I really
+> worried that has implications for the unwinder.
 
-Thanks!
+mcount parameter is introduced only for arm arch at this point. Other arch will
+ignore this parameter. See [3/4] for details. When the rethook caller (ftrace
+or kprobe) hooks the function entry, how to get the real return address depends
+on whether it is called from ftrace (mcount) or kprobe.
+By kprobe, that is called from the first instruction of the function. Thus the
+real return address can be found from regs->lr. But from the ftrace (mcount)
+context, we can not find it from regs->lr (this LR register is used for saving
+the return address of mcount itself) on arm. On arm64, this seems to be fixed.
+So I'm not sure this is a real issue on arm or known limitation.
 
 > 
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/ftrace.h |  6 ++++
->  kernel/kallsyms.c      |  1 +
->  kernel/trace/ftrace.c  | 62 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 69 insertions(+)
+> I also see that (with these patches applied) it's possible to select
+> CONFIG_FPROBE, but the commit message doesn't describe that either, and I'm not
+> sure how to test any of that.
+
+Ah, Sorry. Fprobe requires this feature, so HAVE_RETHOOK=y, CONFIG_FPROBE is
+available on this architecture. If you enable CONFIG_FPROBE_SANITY_TEST=y,
+this feature is tested by fprobe.
+
 > 
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 4816b7e11047..820500430eae 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -303,6 +303,8 @@ int unregister_ftrace_function(struct ftrace_ops *ops);
->  extern void ftrace_stub(unsigned long a0, unsigned long a1,
->  			struct ftrace_ops *op, struct ftrace_regs *fregs);
->  
-> +
-> +int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs);
->  #else /* !CONFIG_FUNCTION_TRACER */
->  /*
->   * (un)register_ftrace_function must be a macro since the ops parameter
-> @@ -313,6 +315,10 @@ extern void ftrace_stub(unsigned long a0, unsigned long a1,
->  static inline void ftrace_kill(void) { }
->  static inline void ftrace_free_init_mem(void) { }
->  static inline void ftrace_free_mem(struct module *mod, void *start, void *end) { }
-> +static inline int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
->  #endif /* CONFIG_FUNCTION_TRACER */
->  
->  struct ftrace_func_entry {
-> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> index fdfd308bebc4..fbdf8d3279ac 100644
-> --- a/kernel/kallsyms.c
-> +++ b/kernel/kallsyms.c
-> @@ -29,6 +29,7 @@
->  #include <linux/compiler.h>
->  #include <linux/module.h>
->  #include <linux/kernel.h>
-> +#include <linux/bsearch.h>
->  
->  /*
->   * These will be re-linked against their real values
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 4f1d2f5e7263..07d87c7a525d 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -7964,3 +7964,65 @@ ftrace_enable_sysctl(struct ctl_table *table, int write,
->  	mutex_unlock(&ftrace_lock);
->  	return ret;
->  }
-> +
-> +static int symbols_cmp(const void *a, const void *b)
-> +{
-> +	const char **str_a = (const char **) a;
-> +	const char **str_b = (const char **) b;
-> +
-> +	return strcmp(*str_a, *str_b);
-> +}
-> +
-> +struct kallsyms_data {
-> +	unsigned long *addrs;
-> +	const char **syms;
-> +	size_t cnt;
-> +	size_t found;
-> +};
-> +
-> +static int kallsyms_callback(void *data, const char *name,
-> +			     struct module *mod, unsigned long addr)
-> +{
-> +	struct kallsyms_data *args = data;
-> +
-> +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
-> +		return 0;
-> +
-> +	addr = ftrace_location(addr);
-> +	if (!addr)
-> +		return 0;
-> +
-> +	args->addrs[args->found++] = addr;
-> +	return args->found == args->cnt ? 1 : 0;
-> +}
-> +
-> +/**
-> + * ftrace_lookup_symbols - Lookup addresses for array of symbols
-> + *
-> + * @sorted_syms: array of symbols pointers symbols to resolve,
-> + * must be alphabetically sorted
-> + * @cnt: number of symbols/addresses in @syms/@addrs arrays
-> + * @addrs: array for storing resulting addresses
-> + *
-> + * This function looks up addresses for array of symbols provided in
-> + * @syms array (must be alphabetically sorted) and stores them in
-> + * @addrs array, which needs to be big enough to store at least @cnt
-> + * addresses.
-> + *
-> + * This function returns 0 if all provided symbols are found,
-> + * -ESRCH otherwise.
-> + */
-> +int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
-> +{
-> +	struct kallsyms_data args;
-> +	int err;
-> +
-> +	args.addrs = addrs;
-> +	args.syms = sorted_syms;
-> +	args.cnt = cnt;
-> +	args.found = 0;
-> +	err = kallsyms_on_each_symbol(kallsyms_callback, &args);
-> +	if (err < 0)
-> +		return err;
-> +	return args.found == args.cnt ? 0 : -ESRCH;
-> +}
-> -- 
-> 2.35.1
+> > +{
+> > +	rhn->ret_addr = regs->regs[30];
+> > +	rhn->frame = regs->regs[29];
+> > +
+> > +	/* replace return addr (x30) with trampoline */
+> > +	regs->regs[30] = (u64)arch_rethook_trampoline;
+> > +	return 0;
+> > +}
+> > +NOKPROBE_SYMBOL(arch_rethook_prepare);
+> > diff --git a/arch/arm64/kernel/rethook_trampoline.S b/arch/arm64/kernel/rethook_trampoline.S
+> > new file mode 100644
+> > index 000000000000..146d4553674c
+> > --- /dev/null
+> > +++ b/arch/arm64/kernel/rethook_trampoline.S
+> > @@ -0,0 +1,87 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * trampoline entry and return code for rethook.
+> > + * Renamed from arch/arm64/kernel/probes/kprobes_trampoline.S
+> > + */
+> > +
+> > +#include <linux/linkage.h>
+> > +#include <asm/asm-offsets.h>
+> > +#include <asm/assembler.h>
+> > +
+> > +	.text
+> > +
+> > +	.macro	save_all_base_regs
+> > +	stp x0, x1, [sp, #S_X0]
+> > +	stp x2, x3, [sp, #S_X2]
+> > +	stp x4, x5, [sp, #S_X4]
+> > +	stp x6, x7, [sp, #S_X6]
+> > +	stp x8, x9, [sp, #S_X8]
+> > +	stp x10, x11, [sp, #S_X10]
+> > +	stp x12, x13, [sp, #S_X12]
+> > +	stp x14, x15, [sp, #S_X14]
+> > +	stp x16, x17, [sp, #S_X16]
+> > +	stp x18, x19, [sp, #S_X18]
+> > +	stp x20, x21, [sp, #S_X20]
+> > +	stp x22, x23, [sp, #S_X22]
+> > +	stp x24, x25, [sp, #S_X24]
+> > +	stp x26, x27, [sp, #S_X26]
+> > +	stp x28, x29, [sp, #S_X28]
+> > +	add x0, sp, #PT_REGS_SIZE
+> > +	stp lr, x0, [sp, #S_LR]
+> > +	/*
+> > +	 * Construct a useful saved PSTATE
+> > +	 */
+> > +	mrs x0, nzcv
+> > +	mrs x1, daif
+> > +	orr x0, x0, x1
+> > +	mrs x1, CurrentEL
+> > +	orr x0, x0, x1
+> > +	mrs x1, SPSel
+> > +	orr x0, x0, x1
 > 
+> I realise this is just a copy of the existing kretprobe code, but it would be
+> *really* nice if we could avoid faking the regs when we don't take an
+> exception, like the FTRACE_WITH_ARGS thing.
+
+No, since this is not a "function call". This is function exit, thus the
+all registers can be involved.
+
+> 
+> The "useful saved PSTATE" is getting increasingly bogus these days, since it
+> doesn't contain a bunch of values that are in the real PSTATE, and we don't
+> restore anything other than NZCV anyway.
+
+Hmm, that is a real bug. It should be fixed even without this patch, on kretprobes.
+Are there any good way to store those flags in the real PSTATE?
+
+I need arm64 maintainer's help to fix that. If there is a limitation of getting
+the PSTATE, I need to decide to
+- use kprobe instead of hand-assembly code (like powerpc) to hook the trampoline.
+or
+- just notice users this is a limitation of kretprobe on arm64.
+
+
+> 
+> > +	stp xzr, x0, [sp, #S_PC]
+> > +	.endm
+> > +
+> > +	.macro	restore_all_base_regs
+> > +	ldr x0, [sp, #S_PSTATE]
+> > +	and x0, x0, #(PSR_N_BIT | PSR_Z_BIT | PSR_C_BIT | PSR_V_BIT)
+> > +	msr nzcv, x0
+> > +	ldp x0, x1, [sp, #S_X0]
+> > +	ldp x2, x3, [sp, #S_X2]
+> > +	ldp x4, x5, [sp, #S_X4]
+> > +	ldp x6, x7, [sp, #S_X6]
+> > +	ldp x8, x9, [sp, #S_X8]
+> > +	ldp x10, x11, [sp, #S_X10]
+> > +	ldp x12, x13, [sp, #S_X12]
+> > +	ldp x14, x15, [sp, #S_X14]
+> > +	ldp x16, x17, [sp, #S_X16]
+> > +	ldp x18, x19, [sp, #S_X18]
+> > +	ldp x20, x21, [sp, #S_X20]
+> > +	ldp x22, x23, [sp, #S_X22]
+> > +	ldp x24, x25, [sp, #S_X24]
+> > +	ldp x26, x27, [sp, #S_X26]
+> > +	ldp x28, x29, [sp, #S_X28]
+> > +	.endm
+> > +
+> > +SYM_CODE_START(arch_rethook_trampoline)
+> > +	sub sp, sp, #PT_REGS_SIZE
+> > +
+> > +	save_all_base_regs
+> > +
+> > +	/* Setup a frame pointer. */
+> > +	add x29, sp, #S_FP
+> > +
+> > +	mov x0, sp
+> > +	bl arch_rethook_trampoline_callback
+> > +	/*
+> > +	 * Replace trampoline address in lr with actual orig_ret_addr return
+> > +	 * address.
+> > +	 */
+> > +	mov lr, x0
+> > +
+> > +	/* The frame pointer (x29) is restored with other registers. */
+> > +	restore_all_base_regs
+> > +
+> > +	add sp, sp, #PT_REGS_SIZE
+> > +	ret
+> > +
+> > +SYM_CODE_END(arch_rethook_trampoline)
+> > diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+> > index e4103e085681..5b717af4b555 100644
+> > --- a/arch/arm64/kernel/stacktrace.c
+> > +++ b/arch/arm64/kernel/stacktrace.c
+> > @@ -8,6 +8,7 @@
+> >  #include <linux/export.h>
+> >  #include <linux/ftrace.h>
+> >  #include <linux/kprobes.h>
+> > +#include <linux/rethook.h>
+> >  #include <linux/sched.h>
+> >  #include <linux/sched/debug.h>
+> >  #include <linux/sched/task_stack.h>
+> > @@ -38,7 +39,7 @@ static notrace void start_backtrace(struct stackframe *frame, unsigned long fp,
+> >  {
+> >  	frame->fp = fp;
+> >  	frame->pc = pc;
+> > -#ifdef CONFIG_KRETPROBES
+> > +#if defined(CONFIG_RETHOOK)
+> >  	frame->kr_cur = NULL;
+> >  #endif
+> >  
+> > @@ -134,9 +135,9 @@ static int notrace unwind_frame(struct task_struct *tsk,
+> >  		frame->pc = orig_pc;
+> >  	}
+> >  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+> > -#ifdef CONFIG_KRETPROBES
+> > -	if (is_kretprobe_trampoline(frame->pc))
+> > -		frame->pc = kretprobe_find_ret_addr(tsk, (void *)frame->fp, &frame->kr_cur);
+> > +#ifdef CONFIG_RETHOOK
+> > +	if (is_rethook_trampoline(frame->pc))
+> > +		frame->pc = rethook_find_ret_addr(tsk, frame->fp, &frame->kr_cur);
+> >  #endif
+> 
+> Is it possible to have an fprobe and a regular ftrace graph caller call on the
+> same ftrace callsite? ... or are those mutually exclusive?
+
+Hmm, those are too different at this moment, but I would like to do that.
+What I would like to do is
+- if the arch has no ftrace-graph implementation, rethook will use the
+  kretprobe trampoline based implementation. This can drop some events
+  because of the resource limitation.
+- else, it will use ftrace-graph implementation. This can be very effective
+  in some case (like tracing frequently called function) because it uses
+  par-task shadow stack. But not many arch implemented it.
+- Also, the interface needs to be unified. Rethook API is intended to be
+  used for the integration. kretprobe and fprobe will use the rethook, thus
+  the pt_regs is required.
+
+> 
+> The existing code here depends on kretprobes and ftrace graph caller
+> instrumentation nesting in a specific order, and I'm worried that might have
+> changed.
+
+Would you mean that the "nesting" is using kretprobe and ftrace-graph on
+same function, correct?
+At this moment, this rethook (kretprobe and fprobe) does not use the same
+shadow stack of the ftrace graph caller, so the nesting must work correctly.
+
+Thank you,
+
+> 
+> Thanks,
+> Mark.
 
 
 -- 
