@@ -2,72 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2789514CDA
-	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 16:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E9D514E04
+	for <lists+bpf@lfdr.de>; Fri, 29 Apr 2022 16:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376876AbiD2Obo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Apr 2022 10:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        id S1377752AbiD2OuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Apr 2022 10:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377303AbiD2Obl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Apr 2022 10:31:41 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CCCA146B;
-        Fri, 29 Apr 2022 07:28:23 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id e3so6178563ios.6;
-        Fri, 29 Apr 2022 07:28:23 -0700 (PDT)
+        with ESMTP id S1377869AbiD2OuG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Apr 2022 10:50:06 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37121A1464
+        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 07:46:47 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id o5so4123589ils.11
+        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 07:46:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gWFctTI+mXIW9rm2Z4IJhom0SL/RWdmtfrY+iQvt6FA=;
-        b=jHKhliWrqbQoVow7fGCTJdPFqzggfhuWVKTRIWSPuWhXKVYJ80krZWklu04o9V6Fd8
-         hhMCQw2L7yT0oPHMhQhZGJDTcaYrTC2DlX+AVI95wE2hlgexONqHGa36puC0yxFPGgYG
-         3XsLK7W4um51+z3cc8onQkPOYbNJnyJVWe4HH4wV8lDs2iQIPoo5XXbtavGiGs48lqtE
-         u3gXFJG7HiktowaHujwN1V6hNye2rTR2ahOQfj7VTwJiJZ7BLTmdbxEuR6qVGGIOBnyN
-         vxou52POOf7DvdjaagR9BjD9nMgbNBP7zQtWwokfmrbdGAOTP3im69zSNzdhlOg5EynW
-         ZE+g==
+         :cc:content-transfer-encoding;
+        bh=A7TVUwrrFYaNXbQvva6H/HX6gz1/1eCNjj2BOKVoe6s=;
+        b=k0MP9pyxu+pljzAGhtSXsm4MiL6/pd5AjUdRH+BFuhlpbInr6EIfN3Sieg5wuy+6k6
+         ySDxPJkaTQ+1H8e6YwXgG0Zl4hH9Aq7rE+rwNX36LHNf88d+s7Z2Iu7pF8oP5AVoH3uW
+         8laiGVelSI6fGqx3MKzfJgCKIMOlVGy3wmpfd3DmxvtR8Jy2PDM/MBDLjLDX3wP/MD9Z
+         rJBCCV9+CmaDY5KQTuFdMXaVzUQyh1EGjT907ApI98+nCF9KfOsCM8kLHWmCJa32fr2Z
+         ov82fUc8jzLs4OduRKFOz35zI/WagGzg56EYetsQYE807itElD9bLQU0a3Yn0D5/0XDV
+         jaeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gWFctTI+mXIW9rm2Z4IJhom0SL/RWdmtfrY+iQvt6FA=;
-        b=oklFnoFKIfymBuwM50GJWj25vqzPJS2QVbvsmZQpOs9fYf4NRM058GmzExPFXyHBza
-         Xmj9q13oy51J70GxYsZH6MFoPp6ztlbC0WHWBFLLogkZ9U7yf8kkY2D2w4wa15OkMb2V
-         Rf+V/AHtz4hJ+Meigl+NakNkhjC4FvRWDcV+vo7sfGdz0LX0aVnctKhZ3qOaz8eDocKk
-         wbtNa5X0x0r03265gwRt3g633H+8Jm3mfsaFfmdXhmwPZxk/7FS0ncYqDuasHgs3YZeP
-         knX+ajHVTJEXWMmYtULetaROi+TXQamhU1bbZnrWxoYXulh9xx3q9hNnjPUx8L/7FTNI
-         nX/w==
-X-Gm-Message-State: AOAM533Y7p7YQ9vstAyjS1nImK/8qBFba+khR8xlwSAKxhvueaQBWGtM
-        QrLu5u7aXZBpaMYgdY2aZPRCgka0Cr28vWkiZmPhSc7JcEI=
-X-Google-Smtp-Source: ABdhPJyyCIOvdRCtqPahekmTcRuVSJ2yQfDwIjwiwzZSYsa5H8jfW5J6Y97ndORmFNp37BD6XiDRj58+gRkvavDe6EY=
-X-Received: by 2002:a5e:8e42:0:b0:657:bc82:64e5 with SMTP id
- r2-20020a5e8e42000000b00657bc8264e5mr4118248ioo.112.1651242502506; Fri, 29
- Apr 2022 07:28:22 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=A7TVUwrrFYaNXbQvva6H/HX6gz1/1eCNjj2BOKVoe6s=;
+        b=dwfX/JN8lelEm/Cju45KNZTQGETKPjzFjehdUJelrn4xeSec+e3bu867o+2XKZnrQd
+         ExLEYihgyxgS/nE7tkMLenh0vSdg+BZP6+0GXu4EdmoMCVg48z8b+cfGGt0XBQhYPusy
+         YO7RNJ8Oqn2mTjdtsv+yWcJlFnIabEs3U54aPJsTAys9Qm/JLRke5m51FNUHDRIUZTVq
+         4g/o4HyYS8B7IrUC62WR6xWErBufvNPTorgYH3B2l/fQxoSOLfJ+NlDmuIaMYzQ1J79w
+         4PTeOLqgyi0nIZnfVi0uNXHElQuylo7BuUeXUvq9EaA4kn+P0nktLMruF0S1zqWOZuQt
+         k8NA==
+X-Gm-Message-State: AOAM5300kvDbYb82Cs54c6B8ETZpH/yKrISu1bs1+NBgtMXHFONIFErw
+        CwOLENCkuQWdBeBHBTa4xwQkYNprG1kbFN8udpS3Zw==
+X-Google-Smtp-Source: ABdhPJw011+WdqimhvrzHyr6d+jg1rEQ4VnoNPpO3nZieV+AeC2Mr0f+I5uz6YY/8MPXs2/cF8os6039yALb6pVfziA=
+X-Received: by 2002:a05:6e02:1788:b0:2cd:7dbf:9b30 with SMTP id
+ y8-20020a056e02178800b002cd7dbf9b30mr13421798ilu.44.1651243606608; Fri, 29
+ Apr 2022 07:46:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220428201207.954552-1-jolsa@kernel.org>
-In-Reply-To: <20220428201207.954552-1-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 29 Apr 2022 07:28:11 -0700
-Message-ID: <CAEf4BzYtXWvBWzmadhLGqwf8_e2sruK6999th6c=b=O0WLkHOA@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 0/5] bpf: Speed up symbol resolving in kprobe
- multi link
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+References: <20220422120259.10185-1-fankaixi.li@bytedance.com>
+ <20220422120259.10185-3-fankaixi.li@bytedance.com> <CAADnVQL9=XivjNeg3CyE67N3cp6xB+cetUhWG6b+DtXo-6x0VA@mail.gmail.com>
+ <CAEEdnKFjUQeZGYFF+gAtqEeyCzdz=5A91w-PFgAjsS-nkZ6BXw@mail.gmail.com>
+ <CAADnVQL2j-sLdDr+ZRHakKo8SVrKofCq3ffQJ8Fpqvr0gEXHPg@mail.gmail.com>
+ <CAEEdnKG-HeAhWrATMTOYKa7_OdKXs4NjrVrQpcxFXSicgNY1mw@mail.gmail.com> <20220426182451.jjqo6eifnhz6ptfn@MacBook-Pro.local>
+In-Reply-To: <20220426182451.jjqo6eifnhz6ptfn@MacBook-Pro.local>
+From:   Kaixi Fan <fankaixi.li@bytedance.com>
+Date:   Fri, 29 Apr 2022 22:46:35 +0800
+Message-ID: <CAEEdnKF_U-aSEzbTLysOVsZBh2dTy54q=L-p7vZsDFD-nqWaug@mail.gmail.com>
+Subject: Re: [External] [PATCH bpf-next v5 2/3] selftests/bpf: Move vxlan
+ tunnel testcases to test_progs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,70 +75,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 1:12 PM Jiri Olsa <jolsa@kernel.org> wrote:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> =E4=BA=8E2022=E5=B9=B44=
+=E6=9C=8827=E6=97=A5=E5=91=A8=E4=B8=89 02:24=E5=86=99=E9=81=93=EF=BC=9A
 >
-> hi,
-> sending additional fix for symbol resolving in kprobe multi link
-> requested by Alexei and Andrii [1].
+> On Sun, Apr 24, 2022 at 11:32:07AM +0800, Kaixi Fan wrote:
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> =E4=BA=8E2022=E5=B9=
+=B44=E6=9C=8824=E6=97=A5=E5=91=A8=E6=97=A5 10:57=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Fri, Apr 22, 2022 at 7:51 PM Kaixi Fan <fankaixi.li@bytedance.com>=
+ wrote:
+> > > >
+> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> =E4=BA=8E2022=E5=
+=B9=B44=E6=9C=8823=E6=97=A5=E5=91=A8=E5=85=AD 08:37=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > > > >
+> > > > > On Fri, Apr 22, 2022 at 5:04 AM <fankaixi.li@bytedance.com> wrote=
+:
+> > > > > > +#define VXLAN_TUNL_DEV0 "vxlan00"
+> > > > > > +#define VXLAN_TUNL_DEV1 "vxlan11"
+> > > > > > +#define IP6VXLAN_TUNL_DEV0 "ip6vxlan00"
+> > > > > > +#define IP6VXLAN_TUNL_DEV1 "ip6vxlan11"
+> > > > > > +
+> > > > > > +#define SRC_INGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_=
+ingress_src"
+> > > > > > +#define SRC_EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_e=
+gress_src"
+> > > > > > +#define DST_EGRESS_PROG_PIN_FILE "/sys/fs/bpf/tc/test_tunnel_e=
+gress_dst"
+> > > > > > +
+> > > > > > +#define PING_ARGS "-c 3 -w 10 -q"
+> > > >
+> > > > Thanks for the suggestion.
+> > > >
+> > > > >
+> > > > > Thanks for moving the test to test_progs,
+> > > > > but its runtime is excessive.
+> > > > >
+> > > > > time ./test_progs -t tunnel
+> > > > > #195 tunnel:OK
+> > > > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> > > > >
+> > > > > real    0m26.530s
+> > > > > user    0m0.075s
+> > > > > sys    0m1.317s
+> > > > >
+> > > > > Please find a way to test the functionality in a second or so.
+> > > >
+> > > > Hi Alexei,
+> > > > Do you mean the sys time should be in a second ?
+> > >
+> > > real time.
+> > > sys time is already there.
+> > > The big delta between real and sys time highlights
+> > > inefficiency of the test. The test sleeps most of the time.
+> >
+> > The tunnel test includes many types of tunnel testcases.  Add a new
+> > tunnel testcase would increase test time.
+> > So the real time could not be reduced into a second.
+> > The test code calls many shell commands to setup test environments. It
+> > may be the reason why there is a big
+> > delta bettween real and sys time.
 >
-> This speeds up bpftrace kprobe attachment, when using pure symbols
-> (3344 symbols) to attach:
+> Try reducing the number of shell commands.
+> For example, instead create+teardwon of netns keep it the same across
+> different tunnel tests and clean up once.
 >
-> Before:
+> > Reduce the ping packet interval would reduce the real and sys time
+> > significantly.
+> > real 0m7.088s
+> > user 0m0.062s
+> > sys 0m0.119s
 >
->   # perf stat -r 5 -e cycles ./src/bpftrace -e 'kprobe:x* {  } i:ms:1 { exit(); }'
->   ...
->   6.5681 +- 0.0225 seconds time elapsed  ( +-  0.34% )
->
-> After:
->
->   # perf stat -r 5 -e cycles ./src/bpftrace -e 'kprobe:x* {  } i:ms:1 { exit(); }'
->   ...
->   0.5661 +- 0.0275 seconds time elapsed  ( +-  4.85% )
->
-> v4 changes:
->   - fix compile issue [kernel test robot]
->   - added acks [Andrii]
->
-> v3 changes:
->   - renamed kallsyms_lookup_names to ftrace_lookup_symbols
->     and moved it to ftrace.c [Masami]
->   - added ack [Andrii]
->   - couple small test fixes [Andrii]
->
-> v2 changes (first version [2]):
->   - removed the 2 seconds check [Alexei]
->   - moving/forcing symbols sorting out of kallsyms_lookup_names function [Alexei]
->   - skipping one array allocation and copy_from_user [Andrii]
->   - several small fixes [Masami,Andrii]
->   - build fix [kernel test robot]
->
-> thanks,
-> jirka
->
->
-> [1] https://lore.kernel.org/bpf/CAEf4BzZtQaiUxQ-sm_hH2qKPRaqGHyOfEsW96DxtBHRaKLoL3Q@mail.gmail.com/
-> [2] https://lore.kernel.org/bpf/20220407125224.310255-1-jolsa@kernel.org/
-> ---
-> Jiri Olsa (5):
->       kallsyms: Fully export kallsyms_on_each_symbol function
->       ftrace: Add ftrace_lookup_symbols function
->       fprobe: Resolve symbols with ftrace_lookup_symbols
->       bpf: Resolve symbols with ftrace_lookup_symbols for kprobe multi link
->       selftests/bpf: Add attach bench test
->
+> Please try to reduce it further. Clearly all 7 seconds CPU mainly sleeps.
 
-Please check [0], it reports rcu_read_unlock() misuse
+Hi Alexei,
 
-  [0] https://github.com/kernel-patches/bpf/runs/6223167405?check_suite_focus=true
+I try to reduce test time to 3.3s by use libbpf api to attach tc programs a=
+nd
+remove some shell commands. These will be included in a serials v6
+patches.
 
->  include/linux/ftrace.h                                     |   6 ++++++
->  include/linux/kallsyms.h                                   |   7 ++++++-
->  kernel/kallsyms.c                                          |   3 +--
->  kernel/trace/bpf_trace.c                                   | 112 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------------------------------------
->  kernel/trace/fprobe.c                                      |  32 ++++++++++++--------------------
->  kernel/trace/ftrace.c                                      |  62 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 133 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tools/testing/selftests/bpf/progs/kprobe_multi_empty.c     |  12 ++++++++++++
->  8 files changed, 298 insertions(+), 69 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi_empty.c
+Thanks.
