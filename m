@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9681C5159FB
-	for <lists+bpf@lfdr.de>; Sat, 30 Apr 2022 05:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63587515A20
+	for <lists+bpf@lfdr.de>; Sat, 30 Apr 2022 05:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382096AbiD3DE2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Apr 2022 23:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
+        id S1382126AbiD3D3U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Apr 2022 23:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382113AbiD3DE0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Apr 2022 23:04:26 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0DF8C7F7;
-        Fri, 29 Apr 2022 20:01:05 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id p6so8607170plf.9;
-        Fri, 29 Apr 2022 20:01:05 -0700 (PDT)
+        with ESMTP id S240594AbiD3D3Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Apr 2022 23:29:16 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A0F3DDD9;
+        Fri, 29 Apr 2022 20:25:55 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id i62so7825048pgd.6;
+        Fri, 29 Apr 2022 20:25:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sJbeOZdGo/iGCzS2hb9T0p/O4FHAvUxSNhK6RnmmTD8=;
-        b=hRv1rLL+Moem4XVZIiZT+It+KR15QdGjR5AYYIbIoHIu+Y+nsCyj1o++gdwJFwIkAu
-         HsFQlTEN9s28kR6VXCE5gboa++uxnnZJTCKqyezC8hZYoZa4ormK5OHioWvWElKJEgXI
-         YaCpZ/aaOCnvWJVGInDQ7Q5AHY4DtI2PxmGSxQckE9WYw9XFhQ1NxazMej/a3hYrhUN1
-         VjVp+ZaShgksdN44x3xu/56s/ZVMbRSbwwm/ORq09+M/QAFI9V8mzemhcYG6juCLvF5C
-         rH4y1eBB1ETym1s1C2vt9RySabeY/Deu7p8ZCZ/1wDns6/8WUz+qJE4xfwvdRTKt1AKR
-         T8Bg==
+        bh=V/rmb8mYDIfG0Dw8vTZLFMAEPsG/q8erNk+9VYwTdkg=;
+        b=I6WvoswiznRnOAxJ07JT0J/zUA2m7hmIUBXHW1SIJG7eWjPrR8N+tUXHyBas0vSy6u
+         qCyPAvs+6pVOeAeu5LEK9396HjkU5pgY/5y5LMRZsm+5F8Q/yibQAzwKUlEBjat/S/fD
+         6ULCetFHwO8QKTs+gTf8QUS7N2maFnjyL4Ur+hSaDF/45eowzKMdbmqACGQc826qJJ1f
+         zgiAbuJ/wbfFIViV0ElsCr6nS0rTR0Gq++FQftYKNcLoi179ji0czDYc36E7ZGfqiqxx
+         Ii0qUkj644d3rrbWtwFkAchd4iOdeERMjUPBOobwbQ1mruXq2dLnuRMC4ilj/UrZZocF
+         /0TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sJbeOZdGo/iGCzS2hb9T0p/O4FHAvUxSNhK6RnmmTD8=;
-        b=wmULrwwpD7KMh0eOqGXgPgAeqW2fgrvk0FYdmxWINqXVuDQflmDQNOGPqiySx/Db63
-         GamcGG5iENdXck78dlFS0mOs2F6Ib0z6UOsw/QHJtcxVHZg/F1XHbcZb3kaEm9DXFqq8
-         pDmScEA9CNEXqRdZD02SrCuOOURm82G3CqMVreVu03IMqr8QpNLjAp5WpY231hxFBAAm
-         6EkG5MHVdHx3pxPSFSEjyAqZ5uM347HplPovG3Zc1TZHzJN7wvk/MloAFa0p5mBFBZdw
-         FgxfalfW3gKyEUdQaqPjbufclH5UJ41xxCIVjrqzQxcKU2xDerNxrod+c/X6cI1kv75P
-         n/MQ==
-X-Gm-Message-State: AOAM531rA31Xj2VusD0CnB5+Plny+1df+DxCsobUAE2ltCtiXEAl9TLJ
-        YjhQgTtz45g3/vjkw/6HjLu9fP4gAoBMcxWDZtw=
-X-Google-Smtp-Source: ABdhPJyDXUMYezfyoEDxL3YEYwI2StMRhSXxB6zRjHH5aWYlZLvZ52SIFKGSvmPDLCN9leJowR9UgCy9OUWMoEYRgBA=
-X-Received: by 2002:a17:902:d58a:b0:15d:1cf6:644c with SMTP id
- k10-20020a170902d58a00b0015d1cf6644cmr2181857plh.67.1651287665115; Fri, 29
- Apr 2022 20:01:05 -0700 (PDT)
+        bh=V/rmb8mYDIfG0Dw8vTZLFMAEPsG/q8erNk+9VYwTdkg=;
+        b=XEQ9Q0xELrUt/rZd4fzuK7m4wODZw5qC08iPcolmOL8hiYGAzev000dUAP6NjS7QaF
+         t1aC0OellvB0Ywvn/fqBxt/abzd6pwx4E4MgUamFDFLRsVdPB8mJjLZzf1BX/N6sbN4t
+         jjY86FHrC9hPeLLA7x1WGSwBPrfHCO1WJ91Y7af3967mW4UMo2IrsiHQ2F+1e8cYjykB
+         /VfxxvBTbG1TG5rqV+ekx2ZGgHlK21+SRtCEWRgq/Y4hJ1746NYCmggEN3/RiXTlgFC+
+         E9uO4xLuO9QZhazN4XDrl1LuqAcUu6xFKLBsYEFPr8StavX4CCUWtr8SGt1KGYUugw1E
+         R1Gw==
+X-Gm-Message-State: AOAM532XRRUc4B1JYmKuPh5gRrgDu7FnEjvMXQx8IUDGbc3MNjEWvIBx
+        QCOmJk+oTd2YCdFN776/rE9k4997Hwmhcxkcfkc=
+X-Google-Smtp-Source: ABdhPJzXPaHYqtfJNgLlpRjIlztZU5R50o/ioVcsPfNm8OX4cCd5O7f+dna5yjUe4VmJu7X8bf7ajAVr2iepX0iTX54=
+X-Received: by 2002:a65:6e41:0:b0:39c:c97b:2aef with SMTP id
+ be1-20020a656e41000000b0039cc97b2aefmr1812385pgb.473.1651289155031; Fri, 29
+ Apr 2022 20:25:55 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220421140740.459558-1-benjamin.tissoires@redhat.com>
- <20220426040314.ez3cdpv2w45vbgkk@MBP-98dd607d3435.dhcp.thefacebook.com> <CAO-hwJLziatB9n5Rut_EYRgfN94t2XX8Zx8B_Zmu2nucTw3k8g@mail.gmail.com>
-In-Reply-To: <CAO-hwJLziatB9n5Rut_EYRgfN94t2XX8Zx8B_Zmu2nucTw3k8g@mail.gmail.com>
+ <20220421140740.459558-3-benjamin.tissoires@redhat.com> <20220426040851.q3ovelrlcldvwhv5@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <CAO-hwJ+0w9-bX2LMJU1z7SGeGUbX1t-iMtfkrK=4M5HcfyjFCw@mail.gmail.com>
+In-Reply-To: <CAO-hwJ+0w9-bX2LMJU1z7SGeGUbX1t-iMtfkrK=4M5HcfyjFCw@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 29 Apr 2022 20:00:54 -0700
-Message-ID: <CAADnVQKN==eb3ASQhrJBg4yC8BuRdMQyY-OdRbXhdyv2P8L0-A@mail.gmail.com>
-Subject: Re: [RFC bpf-next v4 0/7] Introduce eBPF support for HID devices (new attempt)
+Date:   Fri, 29 Apr 2022 20:25:43 -0700
+Message-ID: <CAADnVQK2jJc94UTQyqKCs_CnWcLYmAP37-YcH=_DsPOrtAbDhA@mail.gmail.com>
+Subject: Re: [RFC bpf-next v4 2/7] bpf/verifier: allow kfunc to return an
+ allocated mem
 To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Cc:     Greg KH <gregkh@linuxfoundation.org>,
         Jiri Kosina <jikos@kernel.org>,
@@ -77,135 +79,226 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 12:20 AM Benjamin Tissoires
+On Tue, Apr 26, 2022 at 12:30 AM Benjamin Tissoires
 <benjamin.tissoires@redhat.com> wrote:
 >
-> On Tue, Apr 26, 2022 at 6:03 AM Alexei Starovoitov
+> On Tue, Apr 26, 2022 at 6:09 AM Alexei Starovoitov
 > <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Thu, Apr 21, 2022 at 04:07:33PM +0200, Benjamin Tissoires wrote:
-> > > Hi,
+> > On Thu, Apr 21, 2022 at 04:07:35PM +0200, Benjamin Tissoires wrote:
+> > > When a kfunc is not returning a pointer to a struct but to a plain type,
+> > > check if one of the arguments is called __sz and is a const from the
+> > > caller, and use this as the size of the allocated memory.
 > > >
-> > > so after the reviews from v3, and some discussion with Alexei, I am
-> > > back with a new version of HID-BPF.
+> > > For tracing programs, we consider the provided memory to be read only
+> > > unless the program is BPF_MODIFY_RETURN.
 > > >
-> > > This version is not complete (thus the RFC), but I'd like to share
-> > > it now to get initial feedback, in case I am too far from the actual
-> > > goal.
+> > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 > > >
-> > > FTR, the goal is to provide some changes in the core verifier/btf so
-> > > that we can plug in HID-BPF independently from BPF core. This way we can
-> > > extend it without having to care about bpf-next.
-> >
-> > Overall looks great. imo much cleaner, simpler and more extensible
-> > than the earlier versions.
-> > The bpf core extensions are nicely contained and HID side can be
-> > worked on in parallel.
->
-> \o/
->
-> >
-> > > The things I am not entirely sure are:
-> > > - do we need only fentry/fexit/fmod_ret BPF program types or should
-> > >   programs that modify the data stream use a different kind?
-> >
-> > Probably not. I'll reply in patch 2.
-> >
-> > > - patch 3/7 is probably not the correct approach (see comments in the
-> > >   patch itself)
+> > > ---
 > > >
-> > > We are missing quite a few bits here:
-> > > - selftests for patches 1 to 4
-> > > - add the ability to attach a program to a struct device, and run that
-> > >   program only for that struct device
+> > > new in v4
+> > > ---
+> > >  include/linux/btf.h   |  6 ++++
+> > >  kernel/bpf/btf.c      | 31 ++++++++++++++++----
+> > >  kernel/bpf/verifier.c | 66 +++++++++++++++++++++++++++++++++----------
+> > >  3 files changed, 83 insertions(+), 20 deletions(-)
+> > >
+> > > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > > index 36bc09b8e890..76a3ff48ae2a 100644
+> > > --- a/include/linux/btf.h
+> > > +++ b/include/linux/btf.h
+> > > @@ -332,6 +332,12 @@ static inline struct btf_param *btf_params(const struct btf_type *t)
+> > >       return (struct btf_param *)(t + 1);
+> > >  }
+> > >
+> > > +struct bpf_reg_state;
+> > > +
+> > > +bool btf_is_kfunc_arg_mem_size(const struct btf *btf,
+> > > +                            const struct btf_param *arg,
+> > > +                            const struct bpf_reg_state *reg);
+> > > +
+> > >  #ifdef CONFIG_BPF_SYSCALL
+> > >  struct bpf_prog;
+> > >
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index 76318a4c2d0e..22e6e3cdc7ee 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -5851,9 +5851,9 @@ static bool __btf_type_is_scalar_struct(struct bpf_verifier_log *log,
+> > >       return true;
+> > >  }
+> > >
+> > > -static bool is_kfunc_arg_mem_size(const struct btf *btf,
+> > > -                               const struct btf_param *arg,
+> > > -                               const struct bpf_reg_state *reg)
+> > > +bool btf_is_kfunc_arg_mem_size(const struct btf *btf,
+> > > +                            const struct btf_param *arg,
+> > > +                            const struct bpf_reg_state *reg)
+> > >  {
+> > >       int len, sfx_len = sizeof("__sz") - 1;
+> > >       const struct btf_type *t;
+> > > @@ -5976,7 +5976,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> > >                               reg_btf = reg->btf;
+> > >                               reg_ref_id = reg->btf_id;
+> > >                               /* Ensure only one argument is referenced
+> > > -                              * PTR_TO_BTF_ID, check_func_arg_reg_off relies
+> > > +                              * PTR_TO_BTF_ID or PTR_TO_MEM, check_func_arg_reg_off relies
+> > >                                * on only one referenced register being allowed
+> > >                                * for kfuncs.
+> > >                                */
+> > > @@ -6012,7 +6012,10 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> > >                       u32 type_size;
+> > >
+> > >                       if (is_kfunc) {
+> > > -                             bool arg_mem_size = i + 1 < nargs && is_kfunc_arg_mem_size(btf, &args[i + 1], &regs[regno + 1]);
+> > > +                             bool arg_mem_size = i + 1 < nargs &&
+> > > +                                                 btf_is_kfunc_arg_mem_size(btf,
+> > > +                                                                           &args[i + 1],
+> > > +                                                                           &regs[regno + 1]);
 > >
-> > yes. That is still to be figured out.
->
-> I spent some time on that, and I don't think it makes a lot of sense
-> to use the current trampoline approach if we want to keep on using
-> fentry/fexit...
-> - the trampoline is pretty nice, but it adds instructions before
-> calling the actual function, meaning that adding a check on struct
-> device will be quite hard to do ()we have no idea where the struct
-> device is in the arguments) and will take more space on the trampoline
-> itself
-> - there is a limit on how many functions can be attached to a
-> trampoline (38 IIRC), and we probably will explode that number quickly
-> enough when we get more BPF programs to support HID devices.
-
-Ohh. This is an obsolete limitation.
-38 was the number since we used half page optimization
-for bpf trampoline.
-It's gone now. We can easily lift this max.
-
-> So my chain of thoughts from yesterday was the following (completely
-> untested of course):
-> - instead of writing a new BPF API that might move in the future while
-> things are settling, I can actually simply load a tracer BPF program
-> from HID that monitors the BPF programs that are attached to a given
-> function
-> - I can also add a new API (a kfunc likely) that "registers" a given
-> BPF program (through its fd) to a given HID device
-> - when a device sends data, it hits hid_bpf_device_event() which will
-> have a default BPF program (loaded by the kernel) that dispatches the
-> registered BPF programs based on the HID device.
->
-> This would solve the 2 issues above IMO, except that the kfunc to
-> register a HID BPF program will suddenly be not standard.
-
-Could you add more details to these ideas?
-I thought you wanted bpf prog writers to be independent of each other.
-They would tell some framework HID device id/pcie id that they need
-and the rest would be automatic.
-Maybe we can achieve that by adding another layer before libbpf
-that would accept (bpf_prog, hid_id) tuple and insert
-if (hid->id != hid_id) return -E..;
-as the first insn into bpf_prog before loading into the kernel.
-All such progs will be kfunc-s attached to the same hook.
-The kernel will execute them sequentially.
-The framework will provide demux by auto-inserting this 'if'.
-This 'if (hid)' could be a part of sample code too.
-We can simply ask prog writers to follow this style.
-
-Another idea would be to do something like libxdp.
-Attach a "dispatcher" bpf prog to the kfunc hook and use
-some library to attach hid-specific progs as "freplace" kind of
-programs. It's a more involved solution.
-
-Another option is to use tail_calls.
-If hid_id is a relatively small number. The "dispatcher" bpf prog
-can do bpf_tail_call(prog_array, hid_id)
-while hid specific progs insert itself into prog_array
-instead of attaching to kfunc.
-
+> > bpf allows ~100 chars. No need to break the line so much.
 > >
-> > > - when running through bpf_prog_test_run_opts, how can we ensure we are
-> > >   talking to the correct device? (I have a feeling this is linked to the
-> > >   previous point)
-> > > - how can we reconnect the device when a report descriptor fixup BPF
-> > >   program is loaded (would it make sense to allow some notifications on
-> > >   when a BPF program is attached/detached to a device, and which
-> > >   function have been traced?)
+> > >
+> > >                               /* Permit pointer to mem, but only when argument
+> > >                                * type is pointer to scalar, or struct composed
+> > > @@ -6039,6 +6042,24 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> > >                                       i++;
+> > >                                       continue;
+> > >                               }
+> > > +
+> > > +                             if (rel && reg->ref_obj_id) {
+> > > +                                     /* Ensure only one argument is referenced
+> > > +                                      * PTR_TO_BTF_ID or PTR_TO_MEM, check_func_arg_reg_off
+> > > +                                      * relies on only one referenced register being allowed
+> > > +                                      * for kfuncs.
+> > > +                                      */
+> > > +                                     if (ref_obj_id) {
+> > > +                                             bpf_log(log,
+> > > +                                                     "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
+> > > +                                                     regno,
+> > > +                                                     reg->ref_obj_id,
+> > > +                                                     ref_obj_id);
+> > > +                                             return -EFAULT;
+> > > +                                     }
+> > > +                                     ref_regno = regno;
+> > > +                                     ref_obj_id = reg->ref_obj_id;
+> > > +                             }
+> > >                       }
+> > >
+> > >                       resolve_ret = btf_resolve_size(btf, ref_t, &type_size);
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 71827d14724a..0f339f9058f3 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -6974,7 +6974,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> > >       int err, insn_idx = *insn_idx_p;
+> > >       const struct btf_param *args;
+> > >       struct btf *desc_btf;
+> > > +     enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+> > >       bool acq;
+> > > +     size_t reg_size = 0;
+> > >
+> > >       /* skip for now, but return error when we find this in fixup_kfunc_call */
+> > >       if (!insn->imm)
+> > > @@ -7015,8 +7017,8 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> > >               }
+> > >       }
+> > >
+> > > -     for (i = 0; i < CALLER_SAVED_REGS; i++)
+> > > -             mark_reg_not_init(env, regs, caller_saved[i]);
+> > > +     /* reset REG_0 */
+> > > +     mark_reg_not_init(env, regs, BPF_REG_0);
+> > >
+> > >       /* Check return type */
+> > >       t = btf_type_skip_modifiers(desc_btf, func_proto->type, NULL);
+> > > @@ -7026,6 +7028,9 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> > >               return -EINVAL;
+> > >       }
+> > >
+> > > +     nargs = btf_type_vlen(func_proto);
+> > > +     args = btf_params(func_proto);
+> > > +
+> > >       if (btf_type_is_scalar(t)) {
+> > >               mark_reg_unknown(env, regs, BPF_REG_0);
+> > >               mark_btf_func_reg_size(env, BPF_REG_0, t->size);
+> > > @@ -7033,24 +7038,54 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> > >               ptr_type = btf_type_skip_modifiers(desc_btf, t->type,
+> > >                                                  &ptr_type_id);
+> > >               if (!btf_type_is_struct(ptr_type)) {
+> > > -                     ptr_type_name = btf_name_by_offset(desc_btf,
+> > > -                                                        ptr_type->name_off);
+> > > -                     verbose(env, "kernel function %s returns pointer type %s %s is not supported\n",
+> > > -                             func_name, btf_type_str(ptr_type),
+> > > -                             ptr_type_name);
+> > > -                     return -EINVAL;
+> > > +                     /* if we have an array, we must have a const argument named "__sz" */
+> > > +                     for (i = 0; i < nargs; i++) {
+> > > +                             u32 regno = i + BPF_REG_1;
+> > > +                             struct bpf_reg_state *reg = &regs[regno];
+> > > +
+> > > +                             /* look for any const scalar parameter of name "__sz" */
+> > > +                             if (!check_reg_arg(env, regno, SRC_OP) &&
+> > > +                                 tnum_is_const(regs[regno].var_off) &&
+> > > +                                 btf_is_kfunc_arg_mem_size(desc_btf, &args[i], reg))
+> > > +                                     reg_size = regs[regno].var_off.value;
+> > > +                     }
+> > > +
+> > > +                     if (!reg_size) {
+> > > +                             ptr_type_name = btf_name_by_offset(desc_btf,
+> > > +                                                                ptr_type->name_off);
+> > > +                             verbose(env,
+> > > +                                     "kernel function %s returns pointer type %s %s is not supported\n",
+> > > +                                     func_name,
+> > > +                                     btf_type_str(ptr_type),
+> > > +                                     ptr_type_name);
+> > > +                             return -EINVAL;
+> > > +                     }
+> > > +
+> > > +                     mark_reg_known_zero(env, regs, BPF_REG_0);
+> > > +                     regs[BPF_REG_0].type = PTR_TO_MEM;
+> > > +                     regs[BPF_REG_0].mem_size = reg_size;
+> > > +
+> > > +                     /* in case of tracing, only allow write access to
+> > > +                      * BPF_MODIFY_RETURN programs
+> > > +                      */
+> > > +                     if (prog_type == BPF_PROG_TYPE_TRACING &&
+> > > +                         env->prog->expected_attach_type != BPF_MODIFY_RETURN)
+> > > +                             regs[BPF_REG_0].type |= MEM_RDONLY;
 > >
-> > Not sure I follow. What kind of notification do you have in mind?
-> > To user space?
+> > MOD_RET restriction looks artificial.
+> > We can distinguish readonly vs writeable PTR_TO_MEM based on
+> > another naming convention.
+> > Currently arg_name__sz applies to the previous argument.
+> > Matching suffix made sense there.
+>
+> Oh, I missed the point of the "__sz". I did not realize it was
+> supposed to be a suffix.
+>
+> > Reusing the same suffix matching for a different purpose could be confusing.
+> > For this use case we may reserve a full argument name.
+> > Like "rdonly_buf_size" and "rdwr_buf_size" ?
 > >
 >
-> No, this is in-kernel notifications.
-> What I want to do, is when I load a BPF program that changes the HID
-> report descriptor, hid-core detects that and reconnects the attached
-> device.
+> I like the idea but I have 2 problems here:
+> 1. I do not really want to have 2 separate kfuncs for read only and
+> write operations
+> 2. How can I restrict the write operation to fmod_ret?
 >
-> But after a couple of days of thinking, and with the above approach
-> where HID would preload a BPF program, I should be able to achieve
-> that with the "register BPF through a HID kfunc call". When I see that
-> we are attaching a HID report descriptor fixup to a given HID device,
-> I can then reconnect the matching device.
->
-> It would certainly be cleaner to have a general "notify me when a
-> tracer is attached to this particular function", but we can hide that
-> right now with a preloaded BPF program :)
+> For 1, my guess is that the read-only operation will not be used
+> unless we solve 2.
+> For 2, the rationale is that I think tracing functions are not
+> supposed to change the behavior. This was said on the thread about
+> priorities for BPF programs. And it somehow makes sense that fentry
+> should be used for tracing only. OTOH, fmod_ret is clearly affecting
+> the behavior of the program, so I see it more "natural" that it can
+> change the context too.
 
-There are few lsm hooks in bpf core. It probably wwill be eird
-for hid core to hook into them. We can add a few tracepoints
-at attach functions if that helps.
+Well, if we say that fentry is rdonly and fmod_ret is rdwr
+then we probably shouldn't stop at return value.
+If bpf prog can access the argument and this argument is an array
+it should be writable.
+We can allow different kfuncs for fentry and fmod_ret too.
+They can be two tiny wrappers with different arg names (to distinguish
+rdonly vs rdwr) on top of the single always_inline function
+that returns a buffer.
