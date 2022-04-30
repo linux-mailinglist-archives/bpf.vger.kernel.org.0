@@ -2,72 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C5851597D
-	for <lists+bpf@lfdr.de>; Sat, 30 Apr 2022 03:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9681C5159FB
+	for <lists+bpf@lfdr.de>; Sat, 30 Apr 2022 05:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381957AbiD3BJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Apr 2022 21:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
+        id S1382096AbiD3DE2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Apr 2022 23:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344050AbiD3BJt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Apr 2022 21:09:49 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E1C3C721
-        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 18:06:22 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id p189so5454402wmp.3
-        for <bpf@vger.kernel.org>; Fri, 29 Apr 2022 18:06:22 -0700 (PDT)
+        with ESMTP id S1382113AbiD3DE0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Apr 2022 23:04:26 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0DF8C7F7;
+        Fri, 29 Apr 2022 20:01:05 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id p6so8607170plf.9;
+        Fri, 29 Apr 2022 20:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7qNaPs3zy12CvBRms+N52lGaX2W8Sk7OZR1Boqjrdfw=;
-        b=fzBN4zqk9f0mDBcHDK4k1QHYTJPu7Nknb1EJRsBQ9vMPgx1qb1gj4a1QNmjp32Msnr
-         RJ3J3WbmRZphW89zNTBWSESffPrHtPRwikEfblLCdcJuidEcCYTaj6TyNax1wbhf7vYH
-         ERG1FUiEJ6TpVqaT7vQah6Xuqa2RHjPIr4JcnOkF6mVYClMtIvpXz5zwhXsD+SwPdHXC
-         nCG1vrtSrMk6tM1l8q59jWsEPB4s7F13/XiE/EO/zyw2mqkT5S2ns1sPR4DPXGVFNchh
-         WmBqWw5A0g8a8eVJUj18Vt82esUlNyFxEh0sFf5ZHxsCWKAXyiIaRsXkR0Dh37QamZcp
-         hIIw==
+         :cc;
+        bh=sJbeOZdGo/iGCzS2hb9T0p/O4FHAvUxSNhK6RnmmTD8=;
+        b=hRv1rLL+Moem4XVZIiZT+It+KR15QdGjR5AYYIbIoHIu+Y+nsCyj1o++gdwJFwIkAu
+         HsFQlTEN9s28kR6VXCE5gboa++uxnnZJTCKqyezC8hZYoZa4ormK5OHioWvWElKJEgXI
+         YaCpZ/aaOCnvWJVGInDQ7Q5AHY4DtI2PxmGSxQckE9WYw9XFhQ1NxazMej/a3hYrhUN1
+         VjVp+ZaShgksdN44x3xu/56s/ZVMbRSbwwm/ORq09+M/QAFI9V8mzemhcYG6juCLvF5C
+         rH4y1eBB1ETym1s1C2vt9RySabeY/Deu7p8ZCZ/1wDns6/8WUz+qJE4xfwvdRTKt1AKR
+         T8Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7qNaPs3zy12CvBRms+N52lGaX2W8Sk7OZR1Boqjrdfw=;
-        b=yjZaNPWzv8CSucgag0/UIYvfX7LAQCV30ZgplqAWrDo6sXQ068eDZGLhB6ifMvCIvw
-         NgjnlWpnHxtPoEMFTt6bLKk8Aa/MY5sCLf7sEgynyovXMm7QX1RQHreyRwoBuY7CMQ27
-         pQ7CSRFO5X5VhICeeCnycrj0DGQvo6XzpYTRvAsE3YkWcPfBZvp6VGogJzVB+ykSXFLN
-         AfRvGr+1Y35/3vERb6j7lmSTRmj8CUGTGxpbWZGIkjF8DqF7SV731WoGmzopsvOmVraw
-         XuwvC1LdaqV5qmTrcssrdE4SIB5TTcxAGEpV5FSylI/B5rhvapaoJ8s+oiqQ+l/vs0go
-         lS0A==
-X-Gm-Message-State: AOAM532ORg5iPyFMG66e6EXWOoSp5OFmD5cTpUbsVTVFjF0eA1SyWma/
-        Hdl7xhe9yO/qvrX3u+hpzyUoj+htBw/dV44caOuT4Q==
-X-Google-Smtp-Source: ABdhPJzudrgwMR/5lX5j1Tj7DFcb9c9LBfuylXx7/ABuYasfhoeIqRi9pVrIYxF9lFh02/GDz9pVd8eP3hpF+mYCZp0=
-X-Received: by 2002:a1c:a301:0:b0:392:9bc5:203c with SMTP id
- m1-20020a1ca301000000b003929bc5203cmr1363872wme.67.1651280780620; Fri, 29 Apr
- 2022 18:06:20 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=sJbeOZdGo/iGCzS2hb9T0p/O4FHAvUxSNhK6RnmmTD8=;
+        b=wmULrwwpD7KMh0eOqGXgPgAeqW2fgrvk0FYdmxWINqXVuDQflmDQNOGPqiySx/Db63
+         GamcGG5iENdXck78dlFS0mOs2F6Ib0z6UOsw/QHJtcxVHZg/F1XHbcZb3kaEm9DXFqq8
+         pDmScEA9CNEXqRdZD02SrCuOOURm82G3CqMVreVu03IMqr8QpNLjAp5WpY231hxFBAAm
+         6EkG5MHVdHx3pxPSFSEjyAqZ5uM347HplPovG3Zc1TZHzJN7wvk/MloAFa0p5mBFBZdw
+         FgxfalfW3gKyEUdQaqPjbufclH5UJ41xxCIVjrqzQxcKU2xDerNxrod+c/X6cI1kv75P
+         n/MQ==
+X-Gm-Message-State: AOAM531rA31Xj2VusD0CnB5+Plny+1df+DxCsobUAE2ltCtiXEAl9TLJ
+        YjhQgTtz45g3/vjkw/6HjLu9fP4gAoBMcxWDZtw=
+X-Google-Smtp-Source: ABdhPJyDXUMYezfyoEDxL3YEYwI2StMRhSXxB6zRjHH5aWYlZLvZ52SIFKGSvmPDLCN9leJowR9UgCy9OUWMoEYRgBA=
+X-Received: by 2002:a17:902:d58a:b0:15d:1cf6:644c with SMTP id
+ k10-20020a170902d58a00b0015d1cf6644cmr2181857plh.67.1651287665115; Fri, 29
+ Apr 2022 20:01:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220408035616.1356953-1-irogers@google.com> <20220408035616.1356953-5-irogers@google.com>
- <c9205f19-52bf-43fe-b1ab-b599d5e2cc7a@intel.com> <CAP-5=fVNuQDW+yge897RjaWfE3cfQTD4ufFws6PS2k99Qe05Uw@mail.gmail.com>
- <e82c7ab0-605e-8795-58dd-dc182f80c6b3@intel.com>
-In-Reply-To: <e82c7ab0-605e-8795-58dd-dc182f80c6b3@intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 29 Apr 2022 18:06:07 -0700
-Message-ID: <CAP-5=fVMHzTfKdpWMXtbtx7t14u2f4WzNak+F0Q93cQ7CZfhbg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] perf evlist: Respect all_cpus when setting user_requested_cpus
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
+References: <20220421140740.459558-1-benjamin.tissoires@redhat.com>
+ <20220426040314.ez3cdpv2w45vbgkk@MBP-98dd607d3435.dhcp.thefacebook.com> <CAO-hwJLziatB9n5Rut_EYRgfN94t2XX8Zx8B_Zmu2nucTw3k8g@mail.gmail.com>
+In-Reply-To: <CAO-hwJLziatB9n5Rut_EYRgfN94t2XX8Zx8B_Zmu2nucTw3k8g@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 29 Apr 2022 20:00:54 -0700
+Message-ID: <CAADnVQKN==eb3ASQhrJBg4yC8BuRdMQyY-OdRbXhdyv2P8L0-A@mail.gmail.com>
+Subject: Re: [RFC bpf-next v4 0/7] Introduce eBPF support for HID devices (new attempt)
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -75,22 +62,14 @@ Cc:     Stephane Eranian <eranian@google.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        James Clark <james.clark@arm.com>,
-        German Gomez <german.gomez@arm.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,399 +77,135 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 29, 2022 at 4:34 AM Adrian Hunter <adrian.hunter@intel.com> wro=
-te:
+On Tue, Apr 26, 2022 at 12:20 AM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
 >
-> On 28/04/22 23:49, Ian Rogers wrote:
-> > On Thu, Apr 28, 2022 at 1:16 PM Adrian Hunter <adrian.hunter@intel.com =
-<mailto:adrian.hunter@intel.com>> wrote:
+> On Tue, Apr 26, 2022 at 6:03 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> >     On 8/04/22 06:56, Ian Rogers wrote:
-> >     > If all_cpus is calculated it represents the merge/union of all
-> >     > evsel cpu maps. By default user_requested_cpus is computed to be
-> >     > the online CPUs. For uncore events, it is often the case currentl=
-y
-> >     > that all_cpus is a subset of user_requested_cpus. Metrics printed
-> >     > without aggregation and with metric-only, in print_no_aggr_metric=
-,
-> >     > iterate over user_requested_cpus assuming every CPU has a metric =
-to
-> >     > print. For each CPU the prefix is printed, but then if the
-> >     > evsel's cpus doesn't contain anything you get an empty line like
-> >     > the following on a 2 socket 36 core SkylakeX:
-> >     >
-> >     > ```
-> >     > $ perf stat -A -M DRAM_BW_Use -a --metric-only -I 1000
-> >     >      1.000453137 CPU0                       0.00
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137 CPU18                      0.00
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      1.000453137
-> >     >      2.003717143 CPU0                       0.00
-> >     > ...
-> >     > ```
-> >     >
-> >     > While it is possible to be lazier in printing the prefix and
-> >     > trailing newline, having user_requested_cpus not be a subset of
-> >     > all_cpus is preferential so that wasted work isn't done elsewhere
-> >     > user_requested_cpus is used. The change modifies user_requested_c=
-pus
-> >     > to be the intersection of user specified CPUs, or default all onl=
-ine
-> >     > CPUs, with the CPUs computed through the merge of all evsel cpu m=
-aps.
-> >     >
-> >     > New behavior:
-> >     > ```
-> >     > $ perf stat -A -M DRAM_BW_Use -a --metric-only -I 1000
-> >     >      1.001086325 CPU0                       0.00
-> >     >      1.001086325 CPU18                      0.00
-> >     >      2.003671291 CPU0                       0.00
-> >     >      2.003671291 CPU18                      0.00
-> >     > ...
-> >     > ```
-> >     >
-> >     > Signed-off-by: Ian Rogers <irogers@google.com <mailto:irogers@goo=
-gle.com>>
-> >     > ---
-> >     >  tools/perf/util/evlist.c | 7 +++++++
-> >     >  1 file changed, 7 insertions(+)
-> >     >
-> >     > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> >     > index 52ea004ba01e..196d57b905a0 100644
-> >     > --- a/tools/perf/util/evlist.c
-> >     > +++ b/tools/perf/util/evlist.c
-> >     > @@ -1036,6 +1036,13 @@ int evlist__create_maps(struct evlist *evl=
-ist, struct target *target)
-> >     >       if (!cpus)
-> >     >               goto out_delete_threads;
-> >     >
-> >     > +     if (evlist->core.all_cpus) {
-> >     > +             struct perf_cpu_map *tmp;
-> >     > +
-> >     > +             tmp =3D perf_cpu_map__intersect(cpus, evlist->core.=
-all_cpus);
+> > On Thu, Apr 21, 2022 at 04:07:33PM +0200, Benjamin Tissoires wrote:
+> > > Hi,
+> > >
+> > > so after the reviews from v3, and some discussion with Alexei, I am
+> > > back with a new version of HID-BPF.
+> > >
+> > > This version is not complete (thus the RFC), but I'd like to share
+> > > it now to get initial feedback, in case I am too far from the actual
+> > > goal.
+> > >
+> > > FTR, the goal is to provide some changes in the core verifier/btf so
+> > > that we can plug in HID-BPF independently from BPF core. This way we can
+> > > extend it without having to care about bpf-next.
 > >
-> >     Isn't an uncore PMU represented as being on CPU0 actually
-> >     collecting data that can be due to any CPU.
-> >
-> >
-> > This is correct but the counter is only opened on CPU0 as the all_cpus =
-cpu_map will only contain CPU0. Trying to dump the counter for say CPU1 wil=
-l fail as there is no counter there. This is why the metric-only output isn=
-'t displaying anything above.
+> > Overall looks great. imo much cleaner, simpler and more extensible
+> > than the earlier versions.
+> > The bpf core extensions are nicely contained and HID side can be
+> > worked on in parallel.
 >
-> That's not what happens for me:
+> \o/
 >
-> $ perf stat -A -M DRAM_BW_Use -a --metric-only -I 1000 -- sleep 1
-> #           time CPU              DRAM_BW_Use
->      1.001114691 CPU0                       0.00
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.001114691
->      1.002265387 CPU0                       0.00
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
->      1.002265387
-
-Thanks! To be clear, getting rid of the unnecessary spew above is what
-this patch set is about.
-
-> perf stat -A -M DRAM_BW_Use -a --metric-only -I 1000 -C 1 -- sleep 1
-> #           time CPU              DRAM_BW_Use
->      1.001100827 CPU1                       0.00
->      1.002128527 CPU1                       0.00
-
-So this case I'd not been thinking about. What does it mean? We have a
-metric that is computed using uncore_imc that has a cpumask of 0 on
-your machine. You are requesting the data for CPU1. This feels like
-user error. After this change the behavior is:
-
-$ perf stat -A -M DRAM_BW_Use -a --metric-only -C 1 -- sleep 1
-Error:
-The sys_perf_event_open() syscall returned with 22 (Invalid argument)
-for event (uncore_imc/cas_count_write/).
-/bin/dmesg | grep -i perf may provide additional information.
-
-That kind of goes along with this. What has actually happened is the
-intersect has resulted in an empty cpu_map and so we try to program
-the events for CPU -1 and that fails.
-
-The existing behavior is to open the event for CPU1 and more than that
-it succeeds in the perf_event_open for CPU 1. I find that weird. With
-the CPU being 1 we have the user_requested_cpus being {1} and all_cpus
-being {0} (I'm using the curlies just to say it is really a set). That
-means, for example, the affinity iterator evlist__for_each_cpu [1]
-will not iterate over any of the evsels as there is no CPU where the
-evsel's cpu_map agrees with the all_cpu cpu_map.
-
-Now, I can imagine it being said the existing behavior is value add.
-We can move events away from the crowded CPU0 to some arbitrary CPU
-and I'm sympathetic to that. I think the bug this is highlighting is
-that in this case all_cpus should be {1} and not {0} as the code
-currently computes (hence the empty intersect and death). This would
-also fix the evlist__for_each_cpu loop.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/too=
-ls/perf/util/evlist.h?h=3Dperf/core#n353
-
 > >
+> > > The things I am not entirely sure are:
+> > > - do we need only fentry/fexit/fmod_ret BPF program types or should
+> > >   programs that modify the data stream use a different kind?
 > >
-> >     Or for an uncore PMU represented as being on CPU0-CPU4 on a
-> >     4 core 8 hyperthread processor, actually 1 PMU per core.
+> > Probably not. I'll reply in patch 2.
 > >
+> > > - patch 3/7 is probably not the correct approach (see comments in the
+> > >   patch itself)
+> > >
+> > > We are missing quite a few bits here:
+> > > - selftests for patches 1 to 4
+> > > - add the ability to attach a program to a struct device, and run that
+> > >   program only for that struct device
 > >
-> > In this case I believe the CPU map will be CPU0, CPU2, CPU4, CPU6. To g=
-et the core counter for hyperthreads on CPU0 and CPU1 you read on CPU0, the=
-re is no counter on CPU1 and trying to read it will fail as the counters ar=
-e indexed by a cpu map index into the all_cpus . Not long ago I cleaned up =
-the cpu_map code as there was quite a bit of confusion over cpus and indexe=
-s which were both of type int.
-> >
-> >
-> >     So I am not sure intersection makes sense.
-> >
-> >     Also it is not obvious what happens with hybrid CPUs or
-> >     per thread recording.
-> >
-> >
-> > The majority of code is using all_cpus, and so is unchanged by this cha=
-nge.
+> > yes. That is still to be figured out.
 >
-> I am not sure what you mean.  Every tool uses this code.  It affects ever=
-ything when using PMUs with their own cpus.
+> I spent some time on that, and I don't think it makes a lot of sense
+> to use the current trampoline approach if we want to keep on using
+> fentry/fexit...
+> - the trampoline is pretty nice, but it adds instructions before
+> calling the actual function, meaning that adding a check on struct
+> device will be quite hard to do ()we have no idea where the struct
+> device is in the arguments) and will take more space on the trampoline
+> itself
+> - there is a limit on how many functions can be attached to a
+> trampoline (38 IIRC), and we probably will explode that number quickly
+> enough when we get more BPF programs to support HID devices.
 
-My point was that because we use iterators on all_cpus then the common
-case is the all_cpus case, this code only affects user_requested_cpus.
-Looking at raw references there are more to user_requested_cpus than
-all_cpus, but I believe the main iterators in the stat code are
-largely based on all_cpus. In any case this doesn't matter given what
-I found below.
+Ohh. This is an obsolete limitation.
+38 was the number since we used half page optimization
+for bpf trampoline.
+It's gone now. We can easily lift this max.
 
-> >  Code that is affected, when it say needs to use counters, needs to che=
-ck that the user CPU was valid in all_cpus, and use the all_cpus index. The=
- metric-only output could be fixed in the same way, ie don't display lines =
-when the user_requested_cpu isn't in all_cpus. I prefered to solve the prob=
-lem this way as it is inefficient  to be processing cpus where there can be=
- no corresponding counters, etc. We may be setting something like affinity =
-unnecessarily - although that doesn't currently happen as that code iterate=
-s over all_cpus. I also think it is confusing from its name when the variab=
-le all_cpus is for a cpu_map that contains fewer cpus than user_requested_c=
-pus - albeit that was worse when user_requested_cpus was called just cpus.
-> >
-> > It could be hybrid or intel-pt have different assumptions on these cpu_=
-maps. I don't have access to a hybrid test system. For intel-pt it'd be gre=
-at if there were a perf test. Given that most code is using all_cpus and wa=
-s cleaned up as part of the cpu_map work, I believe the change to be correc=
-t.
+> So my chain of thoughts from yesterday was the following (completely
+> untested of course):
+> - instead of writing a new BPF API that might move in the future while
+> things are settling, I can actually simply load a tracer BPF program
+> from HID that monitors the BPF programs that are attached to a given
+> function
+> - I can also add a new API (a kfunc likely) that "registers" a given
+> BPF program (through its fd) to a given HID device
+> - when a device sends data, it hits hid_bpf_device_event() which will
+> have a default BPF program (loaded by the kernel) that dispatches the
+> registered BPF programs based on the HID device.
 >
-> Mainly what happens if you try to intersect all_cpus with dummy cpus?
+> This would solve the 2 issues above IMO, except that the kfunc to
+> register a HID BPF program will suddenly be not standard.
 
-The intersect of two dummy cpu_maps is a dummy cpu_map, as with merge.
-When all_cpus is computed during add:
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/l=
-ib/perf/evlist.c?h=3Dperf/core#n72
-dummy maps are treated as empty and evsel's cpumap is replaced with
-the user_requested_cpus which is empty:
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/l=
-ib/perf/evlist.c?h=3Dperf/core#n47
-It will then merge this empty cpu_map into all_cpus:
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/l=
-ib/perf/evlist.c?h=3Dperf/core#n55
-Rather than rely on the copy of an empty user_requested_cpus, I think
-the merge and intersect functions should explicitly handle dummy as an
-empty cpu_map.
+Could you add more details to these ideas?
+I thought you wanted bpf prog writers to be independent of each other.
+They would tell some framework HID device id/pcie id that they need
+and the rest would be automatic.
+Maybe we can achieve that by adding another layer before libbpf
+that would accept (bpf_prog, hid_id) tuple and insert
+if (hid->id != hid_id) return -E..;
+as the first insn into bpf_prog before loading into the kernel.
+All such progs will be kfunc-s attached to the same hook.
+The kernel will execute them sequentially.
+The framework will provide demux by auto-inserting this 'if'.
+This 'if (hid)' could be a part of sample code too.
+We can simply ask prog writers to follow this style.
 
-This code then sets user_requested_cpus and it will intersect it with
-all_cpus. This is then propagated to the empty cpu_maps in the evsels.
-This shows another bug in this change:
+Another idea would be to do something like libxdp.
+Attach a "dispatcher" bpf prog to the kfunc hook and use
+some library to attach hid-specific progs as "freplace" kind of
+programs. It's a more involved solution.
 
-Current behavior:
-```
-$ perf stat -A -M DRAM_BW_Use -e faults -a sleep 1
-
-Performance counter stats for 'system wide':
-
-CPU0                   280.09 MiB  uncore_imc/cas_count_read/ #
-0.00 DRAM_BW_Use
-CPU18                  184.07 MiB  uncore_imc/cas_count_read/ #
-0.00 DRAM_BW_Use
-CPU0                   167.29 MiB  uncore_imc/cas_count_write/
-CPU18                  149.95 MiB  uncore_imc/cas_count_write/
-CPU0            1,002,927,474 ns   duration_time
-CPU0                       42      faults
-CPU1                        2      faults
-CPU2                       19      faults
-CPU3                        0      faults
-CPU4                        2      faults
-CPU5                       88      faults
-CPU6                        0      faults
-CPU7                        6      faults
-CPU8                        2      faults
-CPU9                        2      faults
-CPU10                       2      faults
-CPU11                       0      faults
-CPU12                       0      faults
-CPU13                      12      faults
-CPU14                     158      faults
-CPU15                      31      faults
-CPU16                       0      faults
-CPU17                      18      faults
-CPU18                     108      faults
-CPU19                      27      faults
-CPU20                      23      faults
-CPU21                       9      faults
-CPU22                      10      faults
-CPU23                       0      faults
-CPU24                       0      faults
-CPU25                       1      faults
-CPU26                      38      faults
-CPU27                       1      faults
-CPU28                      16      faults
-CPU29                       0      faults
-CPU30                       3      faults
-CPU31                       5      faults
-CPU32                       2      faults
-CPU33                       1      faults
-CPU34                       3      faults
-CPU35                      41      faults
-
-      1.002927474 seconds time elapsed
-```
-
-New behavior:
-```
-$ /tmp/perf/perf stat -A -M DRAM_BW_Use -e faults -a sleep 1
-
-Performance counter stats for 'system wide':
-
-CPU0                   389.17 MiB  uncore_imc/cas_count_write/ #
-0.00 DRAM_BW_Use
-CPU18                  158.69 MiB  uncore_imc/cas_count_write/ #
-0.00 DRAM_BW_Use
-CPU0                   465.99 MiB  uncore_imc/cas_count_read/
-CPU18                  242.37 MiB  uncore_imc/cas_count_read/
-CPU0            1,003,287,405 ns   duration_time
-CPU0                      176      faults
-CPU18                     110      faults
-
-      1.003287405 seconds time elapsed
-```
-
-So I think I've come around to the idea that user_requested_cpus needs
-to be the original non-intersected value for the setting of
-empty/dummy evsel's cpu_map. We could add a valid_user_requested_cpus
-variable, which would be the intersect of the user_requested_cpus with
-all_cpus, but there seems little point.
-
-So I still need to follow this up to fix the bug and the bugs
-discovered in this thread. The main follow-up actions are:
-1) modify merge to explicitly handle dummy maps - and intersect if we
-still need intersect after these changes.
-2) document user_requested_cpus, detail why it can have more cpus than
-"all_cpus" and the behavior for dummy cpu maps
-3) rename all_cpus, to perhaps merged_evsel_cpus - I want to get away
-from the implication all_cpus is a super set of cpu maps like
-user_requested_cpus.
-4) fixup evsel cpu maps when the event will be opened on a cpu that
-isn't in the cpu_map.
-5) update the stat-display print_no_aggr_metric of user_requested_cpus
-so that CPUs not in all_cpus/merged_evsel_cpus don't get new lines
-printed.
-
-Thanks,
-Ian
+Another option is to use tail_calls.
+If hid_id is a relatively small number. The "dispatcher" bpf prog
+can do bpf_tail_call(prog_array, hid_id)
+while hid specific progs insert itself into prog_array
+instead of attaching to kfunc.
 
 > >
-> > Thanks,
-> > Ian
+> > > - when running through bpf_prog_test_run_opts, how can we ensure we are
+> > >   talking to the correct device? (I have a feeling this is linked to the
+> > >   previous point)
+> > > - how can we reconnect the device when a report descriptor fixup BPF
+> > >   program is loaded (would it make sense to allow some notifications on
+> > >   when a BPF program is attached/detached to a device, and which
+> > >   function have been traced?)
 > >
-> >
-> >     > +             perf_cpu_map__put(cpus);
-> >     > +             cpus =3D tmp;
-> >     > +     }
-> >     >       evlist->core.has_user_cpus =3D !!target->cpu_list && !targe=
-t->hybrid;
-> >     >
-> >     >       perf_evlist__set_maps(&evlist->core, cpus, threads);
+> > Not sure I follow. What kind of notification do you have in mind?
+> > To user space?
 > >
 >
+> No, this is in-kernel notifications.
+> What I want to do, is when I load a BPF program that changes the HID
+> report descriptor, hid-core detects that and reconnects the attached
+> device.
+>
+> But after a couple of days of thinking, and with the above approach
+> where HID would preload a BPF program, I should be able to achieve
+> that with the "register BPF through a HID kfunc call". When I see that
+> we are attaching a HID report descriptor fixup to a given HID device,
+> I can then reconnect the matching device.
+>
+> It would certainly be cleaner to have a general "notify me when a
+> tracer is attached to this particular function", but we can hide that
+> right now with a preloaded BPF program :)
+
+There are few lsm hooks in bpf core. It probably wwill be eird
+for hid core to hook into them. We can add a few tracepoints
+at attach functions if that helps.
