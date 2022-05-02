@@ -2,146 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D56751767C
-	for <lists+bpf@lfdr.de>; Mon,  2 May 2022 20:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE4A5178DE
+	for <lists+bpf@lfdr.de>; Mon,  2 May 2022 23:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386861AbiEBS1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 May 2022 14:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43524 "EHLO
+        id S1356265AbiEBVQL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 May 2022 17:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386860AbiEBS1g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 May 2022 14:27:36 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0C0A182;
-        Mon,  2 May 2022 11:24:04 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-ed9a75c453so4519349fac.11;
-        Mon, 02 May 2022 11:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PkoIJtcmp4WksNV5PxPejhCDc2tsgOUS55s91uI+wrs=;
-        b=qvKz5DCZZjNBfiE7zHNuuFyXsA2A5a7u6kYw/l+tQiFYjv+LkU3DTOwB+c3dtdXsjC
-         Dso3PjHFa+JNtMuUtKNm59DbEu0MBa/2pmgzOliadPsQOiAP6+XYBeXisJ894IKJIz+9
-         Ak8AZeX+kxMXWDHKPyE2Cip+uG6t42eEaq04vcu4s47d7xJ10YQbnVECwOQP3UsKV4fw
-         N/eY6pvrFR5wy9Zn3Nmdj3kyTsae0i6HbmNYMKw+sJRZsd/vJbV3GMqGPlENK6r8S3ul
-         fVT0ElDnvzjhpQ541JZtUgoCCidgC1dGyiJVLo21V4hHd67Rl9X0ak3u3HbpcNvpVJgU
-         P1zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PkoIJtcmp4WksNV5PxPejhCDc2tsgOUS55s91uI+wrs=;
-        b=xM51Yd4nzU0xKgxXVA2dp5WlKEdkhu30JcD/LnXEUEcVjGLFQGcMMwL9K0l5h7H6Sx
-         ab6zjYvZzykWfXBml9I+ejpCq07zL0YxXDbSQDbTbGAQG/KRmh2g0DSEjp1uga6+Z/QR
-         5u3N1CBT5rheOISVOlgtO4Oj2kBE8C6mjDS4xiSfZnHtEHfie55VJ12dlNSFShTfZqo6
-         TpS7f88rH1ZURfMpzemqUHDLFoZ6/v8m8l5qTmqCeUNXaCXztroZYlkEqdfrfAmcDW0C
-         J7AfTh0lpz19j4febdsPpJc5KWzU5HHztId3a5AMQ86D4zjW6NXYQ3dl0P5XO84hK7sr
-         K9jg==
-X-Gm-Message-State: AOAM533LtyXk6x6qMz2+keiCYG4Jec6Az6KuIQpFDfOVeL0MT8omhuge
-        9+SlCUMk19ap8OSs1azckX7FYfYaP6I=
-X-Google-Smtp-Source: ABdhPJzAbmuiua45HkZfqaHsfVlc8bhY08cu7p8BwEzp2U7+OsUJ4ry725CJXtT2bbc0MiWB6SITJA==
-X-Received: by 2002:a05:6870:2103:b0:e9:6d65:4abb with SMTP id f3-20020a056870210300b000e96d654abbmr195411oae.261.1651515843366;
-        Mon, 02 May 2022 11:24:03 -0700 (PDT)
-Received: from pop-os.attlocal.net ([2600:1700:65a0:ab60:7340:5d9f:8575:d25d])
-        by smtp.gmail.com with ESMTPSA id t13-20020a05683014cd00b0060603221245sm3129915otq.21.2022.05.02.11.24.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 May 2022 11:24:03 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: [Patch bpf-next v2 4/4] skmsg: get rid of unncessary memset()
-Date:   Mon,  2 May 2022 11:23:45 -0700
-Message-Id: <20220502182345.306970-5-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220502182345.306970-1-xiyou.wangcong@gmail.com>
-References: <20220502182345.306970-1-xiyou.wangcong@gmail.com>
+        with ESMTP id S234807AbiEBVQK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 May 2022 17:16:10 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7612193;
+        Mon,  2 May 2022 14:12:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1651525960; x=1683061960;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=PvDGCGLLuYuPDJStpkzYAsiPIWAWemnXH5cKtMSAIJ8=;
+  b=aTsLKOp0yhASlxAUDq+bMgYI9X0xvf6fqWccZ5wxbMjogxQaKyECEGaS
+   1G1MTaCSkPVHJHHKIM+Uc0C4LIjg6W0qbEiCJNEUkx3ecxVgl/Q7I+yVn
+   FjVbEtuPPigXd8xDWhDwn2svqX/p8WENvBSoMDchThyf+vOEIOr/vJDJ2
+   R8+uq+pFMwm/AWgcVd1XILOGLO84BGitilZlpUHlYnjdWN2Ty2DnnIlg/
+   A5TAh/gtLwov9FGbYuWYH8mhPqWYHK79Xlq6N46vJPmzQ4KmBOAXvrey/
+   GyhWivrgbSqD84h+b4hSWav9M1iYxv9WZyxD1bP3CmeNLFWTOv8h7UtbW
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10335"; a="247878457"
+X-IronPort-AV: E=Sophos;i="5.91,193,1647327600"; 
+   d="scan'208";a="247878457"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2022 14:12:40 -0700
+X-IronPort-AV: E=Sophos;i="5.91,193,1647327600"; 
+   d="scan'208";a="810393786"
+Received: from mjmartin-desk2.amr.corp.intel.com (HELO mjmartin-desk2.intel.com) ([10.212.141.55])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2022 14:12:40 -0700
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, mptcp@lists.linux.dev
+Subject: [PATCH bpf-next v3 0/8] bpf: mptcp: Support for mptcp_sock and is_mptcp
+Date:   Mon,  2 May 2022 14:12:26 -0700
+Message-Id: <20220502211235.142250-1-mathew.j.martineau@linux.intel.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+This patch set adds BPF access to the is_mptcp flag in tcp_sock and
+access to mptcp_sock structures, along with associated self tests. You
+may recognize some of the code from earlier
+(https://lore.kernel.org/bpf/20200918121046.190240-6-nicolas.rybowski@tessares.net/)
+but it has been reworked quite a bit.
 
-We always allocate skmsg with kzalloc(), so there is no need
-to call memset(0) on it, the only thing we need from
-sk_msg_init() is sg_init_marker(). So introduce a new helper
-which is just kzalloc()+sg_init_marker(), this saves an
-unncessary memset(0) for skmsg on fast path.
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- net/core/skmsg.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+v1 -> v2: Emit BTF type, add func_id checks in verifier.c and bpf_trace.c,
+remove build check for CONFIG_BPF_JIT, add selftest check for CONFIG_MPTCP,
+and add a patch to include CONFIG_IKCONFIG/CONFIG_IKCONFIG_PROC for the
+BPF self tests.
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 3ff86d73672c..6dbb735ec94d 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -497,23 +497,27 @@ bool sk_msg_is_readable(struct sock *sk)
- }
- EXPORT_SYMBOL_GPL(sk_msg_is_readable);
- 
--static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
--						  struct sk_buff *skb)
-+static struct sk_msg *alloc_sk_msg(void)
- {
- 	struct sk_msg *msg;
- 
--	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
-+	msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_KERNEL);
-+	if (unlikely(!msg))
- 		return NULL;
-+	sg_init_marker(msg->sg.data, NR_MSG_FRAG_IDS);
-+	return msg;
-+}
- 
--	if (!sk_rmem_schedule(sk, skb, skb->truesize))
-+static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
-+						  struct sk_buff *skb)
-+{
-+	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
- 		return NULL;
- 
--	msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_KERNEL);
--	if (unlikely(!msg))
-+	if (!sk_rmem_schedule(sk, skb, skb->truesize))
- 		return NULL;
- 
--	sk_msg_init(msg);
--	return msg;
-+	return alloc_sk_msg();
- }
- 
- static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
-@@ -590,13 +594,12 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
- static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb,
- 				     u32 off, u32 len)
- {
--	struct sk_msg *msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
-+	struct sk_msg *msg = alloc_sk_msg();
- 	struct sock *sk = psock->sk;
- 	int err;
- 
- 	if (unlikely(!msg))
- 		return -EAGAIN;
--	sk_msg_init(msg);
- 	skb_set_owner_r(skb, sk);
- 	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
- 	if (err < 0)
+v2 -> v3: Access sysctl through the filesystem to work around CI use of
+the more limited busybox sysctl command.
+
+
+Geliang Tang (6):
+  bpf: add bpf_skc_to_mptcp_sock_proto
+  selftests: bpf: Enable CONFIG_IKCONFIG_PROC in config
+  selftests: bpf: test bpf_skc_to_mptcp_sock
+  selftests: bpf: verify token of struct mptcp_sock
+  selftests: bpf: verify ca_name of struct mptcp_sock
+  selftests: bpf: verify first of struct mptcp_sock
+
+Nicolas Rybowski (2):
+  bpf: expose is_mptcp flag to bpf_tcp_sock
+  selftests: bpf: add MPTCP test base
+
+ MAINTAINERS                                   |   2 +
+ include/linux/bpf.h                           |   1 +
+ include/linux/btf_ids.h                       |   3 +-
+ include/net/mptcp.h                           |   6 +
+ include/uapi/linux/bpf.h                      |   8 +
+ kernel/bpf/verifier.c                         |   1 +
+ kernel/trace/bpf_trace.c                      |   2 +
+ net/core/filter.c                             |  27 +-
+ net/mptcp/Makefile                            |   2 +
+ net/mptcp/bpf.c                               |  22 ++
+ scripts/bpf_doc.py                            |   2 +
+ tools/include/uapi/linux/bpf.h                |   8 +
+ .../testing/selftests/bpf/bpf_mptcp_helpers.h |  17 ++
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h |   4 +
+ tools/testing/selftests/bpf/config            |   3 +
+ tools/testing/selftests/bpf/network_helpers.c |  43 ++-
+ tools/testing/selftests/bpf/network_helpers.h |   4 +
+ .../testing/selftests/bpf/prog_tests/mptcp.c  | 272 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/mptcp_sock.c  |  80 ++++++
+ 19 files changed, 497 insertions(+), 10 deletions(-)
+ create mode 100644 net/mptcp/bpf.c
+ create mode 100644 tools/testing/selftests/bpf/bpf_mptcp_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mptcp.c
+ create mode 100644 tools/testing/selftests/bpf/progs/mptcp_sock.c
+
+
+base-commit: 20b87e7c29dffcfa3f96f2e99daec84fd46cabdb
 -- 
-2.32.0
+2.36.0
 
