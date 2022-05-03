@@ -2,186 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB748518AEC
-	for <lists+bpf@lfdr.de>; Tue,  3 May 2022 19:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A161518AFA
+	for <lists+bpf@lfdr.de>; Tue,  3 May 2022 19:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbiECRYL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 May 2022 13:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
+        id S235416AbiECR0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 May 2022 13:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240321AbiECRYF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 May 2022 13:24:05 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32021EEC4
-        for <bpf@vger.kernel.org>; Tue,  3 May 2022 10:20:31 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 243HFiX4016700
-        for <bpf@vger.kernel.org>; Tue, 3 May 2022 10:20:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=yHWrQRU2g08z7qXAwNeRpE9dkB0WMs4HX+3rLZ/glYU=;
- b=knGnV1khZG5zUwhCLW5FynLQ3T18wXvy9iSHdqL3IChExDx1fyiJUAdtfiqwTDTiThDj
- ClDaLlwIG4Ecboxltn6uixrYXjS3pRGwZV0fO6oEXg1cmQLSfMGpbcPNXEyl2PQmFBXo
- KQsb3XdzbXZS8ViSOnKWYzycj/gqgeh7+JA= 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3fu6sb973r-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 03 May 2022 10:20:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jUidukZUI3qh/2lsgHFL0bdmFF7m5Rg4mPeTolCGf+dboGZcZ/0TRLrNonku/0rcLPKYl5L1Bt2N+/taISSl8texP+cXvb/pTLarEFWNBwTNqXWPoZllLK3ZsSU/Brtop2rGLpmmyt7IjPs+3Mu5cq068/mHmYwOFMNyjr9hfTntITH8WgtwIiRFSHMrmKiVGaMWoXvL54kvvoGl/mssIpfCmKLjXC+Jw2iYEQtZ+r1ESZeQIUQ0gg0K2fAlfqdgdC4693vdYBZRVLlZJdFuqXk2/atfHgeymVlVv3Mr9nE5Tj1nJrp9YKn1IufUFdQyQaRUVfFcrJJyiDRlvz2xFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4qTcrDg3WBo6O0Ce6AUOFufUjBzXihhCkcGW3Toq8Yw=;
- b=LDSPYf2PH3CUenoFQQLFXiu6YiuhQlCcvkcSzuRNwQELrcc7BzFk6DTtWGOK3UO6haYxnBPOVzZzexdNKSrA7Vld1LXBlde6W7zQq5GFEuUJpDJVN9by6bIVb/neDRXagk7Mk5kkx8zLMx/15/E1ceLs6cdSaf7tLn7+N+UvxVRuvrXiXNECgiu7GGqbWMoK1QUntKqMy+rQa4IAJbx0IxwLSuWDNBG03/SHMTGRPsWsvLzUmNbNGN8YG1+YP1J09o4pGUEXxxb/q3tkGzZBWmmwE+QsDVKsTOPpUEQ8MIfx0KkkbErjQkCVA5uatduqeufjx/lQYAf29eBoaSV20A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
- by MN2PR15MB2733.namprd15.prod.outlook.com (2603:10b6:208:126::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.24; Tue, 3 May
- 2022 17:20:26 +0000
-Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
- ([fe80::b5e0:1df4:e09d:6b5b]) by SJ0PR15MB5154.namprd15.prod.outlook.com
- ([fe80::b5e0:1df4:e09d:6b5b%5]) with mapi id 15.20.5186.028; Tue, 3 May 2022
- 17:20:26 +0000
-From:   Delyan Kratunov <delyank@fb.com>
-To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>
-Subject: Re: [PATCH bpf-next v2 2/5] bpf: implement sleepable uprobes by
- chaining tasks_trace and normal rcu
-Thread-Topic: [PATCH bpf-next v2 2/5] bpf: implement sleepable uprobes by
- chaining tasks_trace and normal rcu
-Thread-Index: AQHYXnmxxCe8fRcUS0a8mA9+CnJfNq0MscCAgAC0DwA=
-Date:   Tue, 3 May 2022 17:20:26 +0000
-Message-ID: <c7819d752137cf93be454c117812bb1c2c1866e4.camel@fb.com>
-References: <588dd77e9e7424e0abc0e0e624524ef8a2c7b847.1651532419.git.delyank@fb.com>
-         <202205031441.1fhDuUQK-lkp@intel.com>
-In-Reply-To: <202205031441.1fhDuUQK-lkp@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d4955af4-df03-4584-6523-08da2d293720
-x-ms-traffictypediagnostic: MN2PR15MB2733:EE_
-x-microsoft-antispam-prvs: <MN2PR15MB2733A1F8F427E4A94CCF84F8C1C09@MN2PR15MB2733.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: r4RN2VLoY2AgRXWYFfrEnWwseJEGNAHBydAHq/0xoFJLOff69M/lmQwF1AFfLrRzBGPsUAIbu/CJam1BLZTU2kQUJbns4CnykQCdq9mGeNVzIOU87x4qYGI6tUQAF5Ozb+lWbQJfxXCRPBon7w7Mlxak6bpcofWB8iolRmqVfFa+YlCJ5+DXeOl69NRETR5oB1mLhTE11VXOxkOs9wV4LQYXnObUB9UUmiqpPXDlzkQOp8sKHI04iPhSU/TKm7cccVKJKtu4E2pP0hnJyo8GnqTGAB3VyDcg2QzXVCN7WOBtQQXHVxEl8SEuokTYg+aGpjQ77toTgIgI2QhG2D6KpCyLenDAfUNfqzCa27xRy8DlSleYuVEm4no7BC8rOCieMspJtafSAI4WbCyIKCzlxGn8bDPbSWE+ey+KTnSVYOH5jN9Dh++kT9DEGxKie4cTiVZnylN1APvChmM4BziBa56j3Nt5upM7yF8GojSeAzqWO/+QIkyJMvQvx+D8XdYMUmVOvGfzh5IBiUEP6aOt9mN5ioIfN92HscfzUzbT/TlyCx8pM140tkB4Lf0KWP2yCv21sasoQTEupm/Hu2yyVjhM8617RhzcMfVlOGJzFLwEw6b9K5pIOAE8R9PDP/YDCilDO/YeLvQPcN54gRWbOAHWL5rCW8pVdFsm4RVC+JfnekL0fhTJ/NZXaYHdkJMXyLEPARQkYi8MEAL5InLIdFQPZhes3isPPNokMqKaR9ua6s6P3EXsLey+IufrfB5yVH7DKoiTkz6tNffldX3rgUblxdA/8QSAg1JjE+05sonzzvRZPj2jsOHVGlrKx8wr72iRPlS9PNjbrM2SbqTxyg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8936002)(966005)(71200400001)(6506007)(508600001)(6486002)(36756003)(5660300002)(316002)(6512007)(186003)(110136005)(2616005)(38100700002)(122000001)(83380400001)(38070700005)(86362001)(8676002)(66446008)(64756008)(66476007)(66556008)(2906002)(4326008)(66946007)(76116006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dWpBdURnU3IzM0J3aFRrdkh1K2RHSU1OdW9SK1JUOGtDSHVTNisxNmNUZWhS?=
- =?utf-8?B?UEZiRTJIdkpTWi9zV1JNQXVEMHpZelMwUTI5SjdYY01WZXBucXpGa2FlZ0t3?=
- =?utf-8?B?MHA2bWpIWC9OYWdKQVBvbmoySm9zVW5vL3d6a01vWnRpZEViZjh2SENMMG5j?=
- =?utf-8?B?ZzBPNlBMUTlFeUNzRkp0bzdqQk8rM3k3N0ZTVmdYUUNPdDEyYm15cnAvb1BR?=
- =?utf-8?B?N2xZenlobkRBUzlSOGxRaXFNSlZXNEhUb0YyU2dMdXY2OVEzVGFaY0Y4SzBn?=
- =?utf-8?B?MVJPd09yVll5TWticVlJY1NDdmpEZGF0NjU2M2ZpZnVQZVFYQ1FJeWdNa2RZ?=
- =?utf-8?B?c21hQXVyWUpJenNxV0RReDl1OHY3bk5UdGhrL0pWeGhubnlOSGtGRnVPNXMr?=
- =?utf-8?B?K0hMWW0zeUdEdER2L0xPUmRJNW1jbVEwV2dESUphY1V5SXNVT2duRHBYaStO?=
- =?utf-8?B?dWdNZTlRYWtZU2dnSCtzSzJhcVZBaDcyeWd3UWk3Y0pHcFp4TnRQK2FlMzY5?=
- =?utf-8?B?WnduUVgxd2Z5QXpON1dER3RuQ05WcktQdEFMRFFVZ1VZTDNjek5aZDBsVWtM?=
- =?utf-8?B?ZTdyS0dsLzQxUzhQUHRiZ2Q3Ykhsa3JyTkhxSHRZNUkvZytSazhCdTl2V2xj?=
- =?utf-8?B?RmJJUDh3T1I5dVgvU0hGajdBU1F2Mmw0bnFqUm5ENXZ4Tk9JK0tGYjcwK29Z?=
- =?utf-8?B?Y3Q3R082K0dSUDRTa0tSc3RoaDZBZjlvbklGbUVjcjRXSUg5dmNuMHhiTFFO?=
- =?utf-8?B?MjBja2FSSEk2R3kzRWEvQnh2L2hEUHBVRGVONDVxSE95Kzc2S05KT2VlN1Vn?=
- =?utf-8?B?U0Y2cExza3Nnek1DK1hlU01BbXpJb1FzUkJhendvMlBZQzhoOXAwS0F2NjFF?=
- =?utf-8?B?L20vQS9BajlIVkhFTWJEVHFBalJ0cWJwNzQxOFA3SUhNTWFVVWZMa3JIY2hE?=
- =?utf-8?B?RitYMTNvdFQrdHR6NnpCZjlzbTJZUFVsY3IrSHpnbEliclBaSkR0bVVGeGFu?=
- =?utf-8?B?SUlyTFRncEZvTHREN3RnYjJNRml6WEkyTjRXOEF0dVgvZmZvWVVuUkQ4d1hy?=
- =?utf-8?B?bnJMSmQzNjA0S1pQQWN2OUJtY3YrTE01c0hhc0cyL25sMEYvNEFad0JHQ0FI?=
- =?utf-8?B?Q041Z1Nib1Q4NXJYZWozOVNwT2JoNnc0QWZhZUJRd0hqUldxeUwwQm1CUmg4?=
- =?utf-8?B?V1N0dTJXUkprQjJRT1pIMXd6ZTA2Rk1hM0QxUmdYNUE1QzhCcVZQYmFtTkFq?=
- =?utf-8?B?WnVGM3NnVDBlVzhGWmJiZW5nOHh1djQvbDBFTjZIYUJwVkpCRDMwcy9GQ0Ix?=
- =?utf-8?B?blBCeVlZQ2dXNERwK2hacXV5NVdXeHprd1Q4NEJQTkpvamNzV0RXUzBLb1E5?=
- =?utf-8?B?T0dIeU4xYUdQaWM4cE5lZjc1QzVqN0hnVVBpNDRhQkdza2YwTnVuY0ZWMmVM?=
- =?utf-8?B?OEZvTFZNWDZyS0YyUkl4c0tTcGw0M2lqSmFWRGR0MGlRRzV0dFltSGFXb25X?=
- =?utf-8?B?YmNPY2NTUUlVaXAwR2JyUlQwZThJUWFsZ3dVVU1GTmtSZVRKQW0wTzRLOHNI?=
- =?utf-8?B?cWNVejJYcThLYWlyMlkwWHVIUTdBc1hnVGFFZ1JjdVJMTnpTSEMzOVBIUXds?=
- =?utf-8?B?cU9HUGF5VTdiVS94NnBBdXJEOTZYRzVQclVtL0hhVXBGL1RZL0ZmVDJjWFJw?=
- =?utf-8?B?ZDlxbkxGWWtsSUYyRWFIMW5xb1dSU1Robm5SUWwyNjNuVzJvSnlWdnNpclBG?=
- =?utf-8?B?Q0hNdzB4ZUxsb1Z0VTR3dVg3QWpUY3FKTy9RTG1qTHpHY3lBK0JYY2hvbEt6?=
- =?utf-8?B?WGpzOUdkQ0hYb1JHdkRkR0VrOXlTYWJBMlU0K1pVRE9iVjArazNZVmF3WVFP?=
- =?utf-8?B?dEtjbmMxUXhoR2JzWEhjcHRzTDBrKzE5aS9ETzNJNThjOXFGZ3ZjaVc4SkRH?=
- =?utf-8?B?SElrWFJJVGlTMjQyRWlEN3dRYW5pbExoQ2JaeU5xOFpxSnFNSXBHVjhNR1Np?=
- =?utf-8?B?MkRUa3EwdjdvVjVlbmRzMFV0NVJLbFVYTEI0TlBoaFhldDNTR1ZsQVMzTjVk?=
- =?utf-8?B?c1JYa3hRZXR3cFovbDNXWXR4NE5jL2ZxNWJPWElXdEoveWtFazJRTVBrRWlP?=
- =?utf-8?B?WDRLeHRuVmZKVmtjbGJ5T2VpeU9pcXB2V3BqT1NzZHlMa0ZOVWw1UjRxMzk2?=
- =?utf-8?B?SmEvREd4YU5MYm9vUUMxdzQrbzdkbkFTbG52QlNENXNDMnA3a0FmeFVNZHFN?=
- =?utf-8?B?NVpmV2FrUkROSEhva2JnK0laUDN6U2ZxMEJ3RnE2NHBBUDhhOHFFTWZndlpZ?=
- =?utf-8?B?U1BGR3JlZlAvTjhuZ25jbkVnREkvZkYrWlI0dW1yeGpCaU9XYUVTNy9mOGVI?=
- =?utf-8?Q?SBsjTV50TIo6ra+U=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7AD2F4EE93656941ADCD670E50697743@namprd15.prod.outlook.com>
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4955af4-df03-4584-6523-08da2d293720
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2022 17:20:26.7813
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LjGPGGZnU4dccc7Hn407ozoxR3U4pUsONVTl/9ofnOOzljCpNdfI7UfgLipY5FfQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2733
-X-Proofpoint-ORIG-GUID: 4yGHYI3LhPRNAqEyx1u5CyW3lido6oB6
-X-Proofpoint-GUID: 4yGHYI3LhPRNAqEyx1u5CyW3lido6oB6
-Content-Transfer-Encoding: base64
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+        with ESMTP id S240260AbiECR0x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 May 2022 13:26:53 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554FA240BE
+        for <bpf@vger.kernel.org>; Tue,  3 May 2022 10:23:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1651598601; x=1683134601;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=e4PDE2mGbZRg4qxmE9bSu18bomIt8xkIzFptIx2JBiY=;
+  b=kc3+LFkaWDaQ5eCOyNwFepcHz8oqJlJbMDGcDvl5gf5csajQTUmpfpJx
+   dHp0lEuG03iDFR3mS93rfWEGJ7V3QASH+wyhQMU5I8IeUXzz0tJDr97cG
+   nZ3OXZ41aE/Piz+p0ZAUim/Egb5oYwvnQysPZ/HWuq7RqV2NNZ6/R9ITu
+   Znnzi/PGMFqhweKJCf9fzxrExJ2aKZFMjIha/miGtbQqOSl2yCk49oeuE
+   FfqRHH6zAiNM5N1JJZDmpwkZmD61lhm69vIKAZ3N/7gc/YamioglA973A
+   5ORGiQQzqKXo3V6eZmvQkTzaqDwTVpMxkSnzBm2nhUCGQaiRTvjbshdwl
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10336"; a="248081515"
+X-IronPort-AV: E=Sophos;i="5.91,195,1647327600"; 
+   d="scan'208";a="248081515"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2022 10:23:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,195,1647327600"; 
+   d="scan'208";a="708110663"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 03 May 2022 10:23:19 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nlwF4-000AeX-O0;
+        Tue, 03 May 2022 17:23:18 +0000
+Date:   Wed, 4 May 2022 01:22:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 04/12] libbpf: Add btf enum64 support
+Message-ID: <202205040133.jd7yTwg5-lkp@intel.com>
+References: <20220501190023.2578209-1-yhs@fb.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-03_07,2022-05-02_03,2022-02-23_01
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220501190023.2578209-1-yhs@fb.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gVHVlLCAyMDIyLTA1LTAzIGF0IDE0OjMwICswODAwLCBrZXJuZWwgdGVzdCByb2JvdCB3cm90
-ZToNCj4gSGkgRGVseWFuLA0KPiANCj4gVGhhbmsgeW91IGZvciB0aGUgcGF0Y2ghIFlldCBzb21l
-dGhpbmcgdG8gaW1wcm92ZToNCj4gDQo+IFthdXRvIGJ1aWxkIHRlc3QgRVJST1Igb24gYnBmLW5l
-eHQvbWFzdGVyXQ0KPiANCj4gdXJsOiAgICBodHRwczovL2dpdGh1Yi5jb20vaW50ZWwtbGFiLWxr
-cC9saW51eC9jb21taXRzL0RlbHlhbi1LcmF0dW5vdi9zbGVlcGFibGUtdXByb2JlLXN1cHBvcnQv
-MjAyMjA1MDMtMDcxMjQ3DQo+IGJhc2U6ICAgaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2Nt
-L2xpbnV4L2tlcm5lbC9naXQvYnBmL2JwZi1uZXh0LmdpdCBtYXN0ZXINCj4gY29uZmlnOiBpMzg2
-LWRlZmNvbmZpZyAoaHR0cHM6Ly9kb3dubG9hZC4wMS5vcmcvMGRheS1jaS9hcmNoaXZlLzIwMjIw
-NTAzLzIwMjIwNTAzMTQ0MS4xZmhEdVVRSy1sa3BAaW50ZWwuY29tL2NvbmZpZyApDQo+IGNvbXBp
-bGVyOiBnY2MtMTEgKERlYmlhbiAxMS4yLjAtMjApIDExLjIuMA0KPiByZXByb2R1Y2UgKHRoaXMg
-aXMgYSBXPTEgYnVpbGQpOg0KPiAgICAgICAgICMgaHR0cHM6Ly9naXRodWIuY29tL2ludGVsLWxh
-Yi1sa3AvbGludXgvY29tbWl0L2NmYTBmMTE0ODI5OTAyYjU3OWRhMTZkNzUyMGEzOTMxNzkwNWM1
-MDINCj4gICAgICAgICBnaXQgcmVtb3RlIGFkZCBsaW51eC1yZXZpZXcgaHR0cHM6Ly9naXRodWIu
-Y29tL2ludGVsLWxhYi1sa3AvbGludXgNCj4gICAgICAgICBnaXQgZmV0Y2ggLS1uby10YWdzIGxp
-bnV4LXJldmlldyBEZWx5YW4tS3JhdHVub3Yvc2xlZXBhYmxlLXVwcm9iZS1zdXBwb3J0LzIwMjIw
-NTAzLTA3MTI0Nw0KPiAgICAgICAgIGdpdCBjaGVja291dCBjZmEwZjExNDgyOTkwMmI1NzlkYTE2
-ZDc1MjBhMzkzMTc5MDVjNTAyDQo+ICAgICAgICAgIyBzYXZlIHRoZSBjb25maWcgZmlsZQ0KPiAg
-ICAgICAgIG1rZGlyIGJ1aWxkX2RpciAmJiBjcCBjb25maWcgYnVpbGRfZGlyLy5jb25maWcNCj4g
-ICAgICAgICBtYWtlIFc9MSBPPWJ1aWxkX2RpciBBUkNIPWkzODYgU0hFTEw9L2Jpbi9iYXNoDQo+
-IA0KPiBJZiB5b3UgZml4IHRoZSBpc3N1ZSwga2luZGx5IGFkZCBmb2xsb3dpbmcgdGFnIGFzIGFw
-cHJvcHJpYXRlDQo+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNv
-bT4NCj4gDQo+IEFsbCBlcnJvcnMgKG5ldyBvbmVzIHByZWZpeGVkIGJ5ID4+KToNCj4gDQo+ICAg
-IGtlcm5lbC90cmFjZS90cmFjZV91cHJvYmUuYzogSW4gZnVuY3Rpb24gJ19fdXByb2JlX3BlcmZf
-ZnVuYyc6DQo+ID4gPiBrZXJuZWwvdHJhY2UvdHJhY2VfdXByb2JlLmM6MTM0OToyMzogZXJyb3I6
-IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uICd1cHJvYmVfY2FsbF9icGYnOyBkaWQg
-eW91IG1lYW4gJ3RyYWNlX2NhbGxfYnBmJz8gWy1XZXJyb3I9aW1wbGljaXQtZnVuY3Rpb24tZGVj
-bGFyYXRpb25dDQo+ICAgICAxMzQ5IHwgICAgICAgICAgICAgICAgIHJldCA9IHVwcm9iZV9jYWxs
-X2JwZihjYWxsLCByZWdzKTsNCj4gICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgXn5+
-fn5+fn5+fn5+fn5+DQo+ICAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgIHRyYWNlX2Nh
-bGxfYnBmDQo+ICAgIGNjMTogc29tZSB3YXJuaW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9ycw0K
-DQpIbSwgQ09ORklHX0JQRl9FVkVOVFMgZG9lc24ndCBzZWVtIHRvIGd1YXJkIHRoZSBjYWxsc2l0
-ZSBmcm9tIHRyYWNlX3Vwcm9iZS5jLCBpdCdzDQpvbmx5IGdhdGVkIGJ5IENPTkZJR19QRVJGX0VW
-RU5UUyB0aGVyZS4gQSBQRVJGX0VWRU5UUz15ICYmIEJQRl9FVkVOVFM9biBjb25maWcgd291bGQN
-CmxlYWQgdG8gdGhpcyBlcnJvci7CoA0KDQpUaGlzIGlzICBhIHByZS1leGlzdGluZyBpc3N1ZSBh
-bmQgSSdsbCBzZW5kIGEgc2VwYXJhdGUgcGF0Y2ggZm9yIGl0Lg0K
+Hi Yonghong,
+
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yonghong-Song/bpf-Add-64bit-enum-value-support/20220502-030301
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: i386-randconfig-m021 (https://download.01.org/0day-ci/archive/20220504/202205040133.jd7yTwg5-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+New smatch warnings:
+tools/lib/bpf/relo_core.c:348 bpf_core_fields_are_compat() warn: if();
+
+Old smatch warnings:
+tools/lib/bpf/relo_core.c:349 bpf_core_fields_are_compat() warn: if();
+
+vim +348 tools/lib/bpf/relo_core.c
+
+   314	
+   315	/* Check two types for compatibility for the purpose of field access
+   316	 * relocation. const/volatile/restrict and typedefs are skipped to ensure we
+   317	 * are relocating semantically compatible entities:
+   318	 *   - any two STRUCTs/UNIONs are compatible and can be mixed;
+   319	 *   - any two FWDs are compatible, if their names match (modulo flavor suffix);
+   320	 *   - any two PTRs are always compatible;
+   321	 *   - for ENUMs, names should be the same (ignoring flavor suffix) or at
+   322	 *     least one of enums should be anonymous;
+   323	 *   - for ENUMs, check sizes, names are ignored;
+   324	 *   - for INT, size and signedness are ignored;
+   325	 *   - any two FLOATs are always compatible;
+   326	 *   - for ARRAY, dimensionality is ignored, element types are checked for
+   327	 *     compatibility recursively;
+   328	 *   - everything else shouldn't be ever a target of relocation.
+   329	 * These rules are not set in stone and probably will be adjusted as we get
+   330	 * more experience with using BPF CO-RE relocations.
+   331	 */
+   332	static int bpf_core_fields_are_compat(const struct btf *local_btf,
+   333					      __u32 local_id,
+   334					      const struct btf *targ_btf,
+   335					      __u32 targ_id)
+   336	{
+   337		const struct btf_type *local_type, *targ_type;
+   338	
+   339	recur:
+   340		local_type = skip_mods_and_typedefs(local_btf, local_id, &local_id);
+   341		targ_type = skip_mods_and_typedefs(targ_btf, targ_id, &targ_id);
+   342		if (!local_type || !targ_type)
+   343			return -EINVAL;
+   344	
+   345		if (btf_is_composite(local_type) && btf_is_composite(targ_type))
+   346			return 1;
+   347		if (btf_kind(local_type) != btf_kind(targ_type)) {
+ > 348			if (btf_is_enum(local_type) && btf_is_enum64(targ_type)) ;
+   349			else if (btf_is_enum64(local_type) && btf_is_enum(targ_type)) ;
+   350			else return 0;
+   351		}
+   352	
+   353		switch (btf_kind(local_type)) {
+   354		case BTF_KIND_PTR:
+   355		case BTF_KIND_FLOAT:
+   356			return 1;
+   357		case BTF_KIND_FWD:
+   358		case BTF_KIND_ENUM:
+   359		case BTF_KIND_ENUM64: {
+   360			const char *local_name, *targ_name;
+   361			size_t local_len, targ_len;
+   362	
+   363			local_name = btf__name_by_offset(local_btf,
+   364							 local_type->name_off);
+   365			targ_name = btf__name_by_offset(targ_btf, targ_type->name_off);
+   366			local_len = bpf_core_essential_name_len(local_name);
+   367			targ_len = bpf_core_essential_name_len(targ_name);
+   368			/* one of them is anonymous or both w/ same flavor-less names */
+   369			return local_len == 0 || targ_len == 0 ||
+   370			       (local_len == targ_len &&
+   371				strncmp(local_name, targ_name, local_len) == 0);
+   372		}
+   373		case BTF_KIND_INT:
+   374			/* just reject deprecated bitfield-like integers; all other
+   375			 * integers are by default compatible between each other
+   376			 */
+   377			return btf_int_offset(local_type) == 0 &&
+   378			       btf_int_offset(targ_type) == 0;
+   379		case BTF_KIND_ARRAY:
+   380			local_id = btf_array(local_type)->type;
+   381			targ_id = btf_array(targ_type)->type;
+   382			goto recur;
+   383		default:
+   384			return 0;
+   385		}
+   386	}
+   387	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
