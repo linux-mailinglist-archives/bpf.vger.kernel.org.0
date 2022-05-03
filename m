@@ -2,218 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21939518C7C
-	for <lists+bpf@lfdr.de>; Tue,  3 May 2022 20:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF40518CD3
+	for <lists+bpf@lfdr.de>; Tue,  3 May 2022 21:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241528AbiECSlm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 May 2022 14:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
+        id S234201AbiECTHz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 May 2022 15:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbiECSlk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 May 2022 14:41:40 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA1D20196;
-        Tue,  3 May 2022 11:38:07 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id o69so14727432pjo.3;
-        Tue, 03 May 2022 11:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=17E+vPBmam0U7jjWivI4/nzQ5YVjAUL/ojgnwZTtVBU=;
-        b=i+pdc/2h8wNDWpasVUODXyv8OtqdliQnYApfYG25Af7DflZpjDqvsiIvGl7euxNXq8
-         800b+QMMVAPyASwtefqSXaH+NMKD1aMSXUq96jNclSM/iJAiZQumegr5G664iGXalKvb
-         tQ7+xZ9c5vstStz6lUihIrup9/qo4zfYqEdMp5ogLyUHxYlIrdNPypioxGe9tKvhD9dz
-         qtVGjzD6uWj4ZVO6d3oJ1mZNj0QcsWVEzgqxHoX6oZkagwFTo/GAdPiihUV7tbCzgQNU
-         L45Q6pqNaQ/il+sv22U43M+mEQ0QUiduz8K9uwFjpGf8b/uwzpAMg0LbPhqbhW1b1JFH
-         r/mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=17E+vPBmam0U7jjWivI4/nzQ5YVjAUL/ojgnwZTtVBU=;
-        b=bmB7NkZfNchMD7NZkUsIjRdgwVWLxBbWfZrEBhAQY7+XOh4obtzvadKNxAiFt1fdiJ
-         +f8OrfQYGsJShT599PTJi7Bwz5U0UvpHFoFtKof57zKgieVtfjyaUDupszDfqhlvyqmy
-         pAEQg/KgsZ9MBLCLdxZ8l1Vk04q93FwPuzd8xtHR3aGLVZeSRtq/O6gfMGWYu0esEOSE
-         1kqkTAswGntV/tPFORA1jg+moucFSl5rQPjSyeodciQplRY2gT1fnz1g4msHYhB/OydC
-         xp0oCvBBKFokBfJ+N9WhFBk3Lw375rY9+Gvzk2Iraeq2xVQJGS6cDwp4YJ+Mf1rn4DDq
-         w05A==
-X-Gm-Message-State: AOAM530C4zPcF4LI/tANZgSJBhPJjE2tnEJqoIjaGPdSGD7NzbjXqD1G
-        sVyhRW5A2MrpkEDuBOfcIYc=
-X-Google-Smtp-Source: ABdhPJyDCpBXCGVDN9GxjS3o4iDxH+VsDXnGlmFAAoT0W+pe3M2/8GQC0IhJNV6bweQsIx5oQe9Eow==
-X-Received: by 2002:a17:90a:7f94:b0:1cb:1853:da1b with SMTP id m20-20020a17090a7f9400b001cb1853da1bmr6132737pjl.14.1651603086813;
-        Tue, 03 May 2022 11:38:06 -0700 (PDT)
-Received: from mi-HP-ProDesk-680-G4-MT.xiaomi.com ([43.224.245.232])
-        by smtp.gmail.com with ESMTPSA id f21-20020a170902f39500b0015e8d4eb238sm6619193ple.130.2022.05.03.11.38.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 May 2022 11:38:06 -0700 (PDT)
-From:   Guowei Du <duguoweisz@gmail.com>
-To:     jack@suse.cz
-Cc:     amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        jmorris@namei.org, serge@hallyn.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-security-module@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        keescook@chromium.org, anton@enomsg.org, ccross@android.com,
-        tony.luck@intel.com, selinux@vger.kernel.org, duguoweisz@gmail.com,
-        duguowei <duguowei@xiaomi.com>
-Subject: [PATCH] fsnotify: add generic perm check for unlink/rmdir
-Date:   Wed,  4 May 2022 02:37:50 +0800
-Message-Id: <20220503183750.1977-1-duguoweisz@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232372AbiECTHz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 May 2022 15:07:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC233B3F8;
+        Tue,  3 May 2022 12:04:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A3420B81D9D;
+        Tue,  3 May 2022 19:04:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A07BC385A9;
+        Tue,  3 May 2022 19:04:17 +0000 (UTC)
+Date:   Tue, 3 May 2022 15:04:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: : [PATCH] ftrace/x86: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding
+ weak functions
+Message-ID: <20220503150410.2d9e88aa@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: duguowei <duguowei@xiaomi.com>
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-For now, there have been open/access/open_exec perms for file operation,
-so we add new perms check with unlink/rmdir syscall. if one app deletes
-any file/dir within pubic area, fsnotify can sends fsnotify_event to
-listener to deny that, even if the app have right dac/mac permissions.
+If an unused weak function was traced, it's call to fentry will still
+exist, which gets added into the __mcount_loc table. Ftrace will use
+kallsyms to retrieve the name for each location in __mcount_loc to display
+it in the available_filter_functions and used to enable functions via the
+name matching in set_ftrace_filter/notrace. Enabling these functions do
+nothing but enable an unused call to ftrace_caller. If a traced weak
+function is overridden, the symbol of the function would be used for it,
+which will either created duplicate names, or if the previous function was
+not traced, it would be incorrectly listed in available_filter_functions
+as a function that can be traced.
 
-Signed-off-by: duguowei <duguowei@xiaomi.com>
+This became an issue with BPF[1] as there are tooling that enables the
+direct callers via ftrace but then checks to see if the functions were
+actually enabled. The case of one function that was marked notrace, but
+was followed by an unused weak function that was traced. The unused
+function's call to fentry was added to the __mcount_loc section, and
+kallsyms retrieved the untraced function's symbol as the weak function was
+overridden. Since the untraced function would not get traced, the BPF
+check would detect this and fail.
+
+The real fix would be to fix kallsyms to not show address of weak
+functions as the function before it. But that would require adding code in
+the build to add function size to kallsyms so that it can know when the
+function ends instead of just using the start of the next known symbol.
+
+In the mean time, this is a work around. Add a FTRACE_MCOUNT_MAX_OFFSET
+macro that if defined, ftrace will ignore any function that has its call
+to fentry/mcount that has an offset from the symbol that is greater than
+FTRACE_MCOUNT_MAX_OFFSET.
+
+If CONFIG_HAVE_FENTRY is defined for x86, define FTRACE_MCOUNT_MAX_OFFSET
+to zero, which will have ftrace ignore all locations that are not at the
+start of the function.
+
+[1] https://lore.kernel.org/all/20220412094923.0abe90955e5db486b7bca279@kernel.org/
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- fs/notify/fsnotify.c             |  2 +-
- include/linux/fs.h               |  2 ++
- include/linux/fsnotify.h         | 16 ++++++++++++++++
- include/linux/fsnotify_backend.h |  6 +++++-
- security/security.c              | 12 ++++++++++--
- security/selinux/hooks.c         |  4 ++++
- 6 files changed, 38 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/ftrace.h |  5 ++++
+ kernel/trace/ftrace.c         | 50 +++++++++++++++++++++++++++++++++--
+ 2 files changed, 53 insertions(+), 2 deletions(-)
 
-diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
-index 70a8516b78bc..9c03a5f84be0 100644
---- a/fs/notify/fsnotify.c
-+++ b/fs/notify/fsnotify.c
-@@ -581,7 +581,7 @@ static __init int fsnotify_init(void)
- {
- 	int ret;
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+index 024d9797646e..70c88d49bf45 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -9,6 +9,11 @@
+ # define MCOUNT_ADDR		((unsigned long)(__fentry__))
+ #define MCOUNT_INSN_SIZE	5 /* sizeof mcount call */
  
--	BUILD_BUG_ON(HWEIGHT32(ALL_FSNOTIFY_BITS) != 25);
-+	BUILD_BUG_ON(HWEIGHT32(ALL_FSNOTIFY_BITS) != 27);
- 
- 	ret = init_srcu_struct(&fsnotify_mark_srcu);
- 	if (ret)
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index bbde95387a23..9c661584db7d 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -100,6 +100,8 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
- #define MAY_CHDIR		0x00000040
- /* called from RCU mode, don't block */
- #define MAY_NOT_BLOCK		0x00000080
-+#define MAY_UNLINK		0x00000100
-+#define MAY_RMDIR		0x00000200
- 
- /*
-  * flags in file.f_mode.  Note that FMODE_READ and FMODE_WRITE must correspond
-diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
-index bb8467cd11ae..68f5d4aaf1ae 100644
---- a/include/linux/fsnotify.h
-+++ b/include/linux/fsnotify.h
-@@ -80,6 +80,22 @@ static inline int fsnotify_parent(struct dentry *dentry, __u32 mask,
- 	return fsnotify(mask, data, data_type, NULL, NULL, inode, 0);
++/* Ignore unused weak functions which will have non zero offsets */
++#ifdef CONFIG_HAVE_FENTRY
++# define FTRACE_MCOUNT_MAX_OFFSET	0
++#endif
++
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ #define ARCH_SUPPORTS_FTRACE_OPS 1
+ #endif
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 5c465e70d146..3529c44ab9db 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -3665,6 +3665,31 @@ static void add_trampoline_func(struct seq_file *m, struct ftrace_ops *ops,
+ 		seq_printf(m, " ->%pS", ptr);
  }
  
-+static inline int fsnotify_path_perm(struct path *path, struct dentry *dentry, __u32 mask)
++#ifdef FTRACE_MCOUNT_MAX_OFFSET
++static int print_rec(struct seq_file *m, unsigned long ip)
 +{
-+	__u32 fsnotify_mask = 0;
++	unsigned long offset;
++	char str[KSYM_SYMBOL_LEN];
++	char *modname;
++	int ret;
 +
-+	if (!(mask & (MAY_UNLINK | MAY_RMDIR)))
++	ret = kallsyms_lookup(ip, NULL, &offset, &modname, str);
++	if (!ret || offset > FTRACE_MCOUNT_MAX_OFFSET)
++		return -1;
++
++	seq_puts(m, str);
++	if (modname)
++		seq_printf(m, " [%s]", modname);
++	return 0;
++}
++#else
++static int print_rec(struct seq_file *m, unsigned long ip)
++{
++	seq_printf(m, "%ps", (void *)ip);
++	return 0;
++}
++#endif
++
+ static int t_show(struct seq_file *m, void *v)
+ {
+ 	struct ftrace_iterator *iter = m->private;
+@@ -3689,7 +3714,9 @@ static int t_show(struct seq_file *m, void *v)
+ 	if (!rec)
+ 		return 0;
+ 
+-	seq_printf(m, "%ps", (void *)rec->ip);
++	if (print_rec(m, rec->ip))
 +		return 0;
 +
-+	if (mask & MAY_UNLINK)
-+		fsnotify_mask |= FS_UNLINK_PERM;
+ 	if (iter->flags & FTRACE_ITER_ENABLED) {
+ 		struct ftrace_ops *ops;
+ 
+@@ -4007,6 +4034,24 @@ add_rec_by_index(struct ftrace_hash *hash, struct ftrace_glob *func_g,
+ 	return 0;
+ }
+ 
++#ifdef FTRACE_MCOUNT_MAX_OFFSET
++static int lookup_ip(unsigned long ip, char **modname, char *str)
++{
++	unsigned long offset;
 +
-+	if (mask & MAY_RMDIR)
-+		fsnotify_mask |= FS_RMDIR_PERM;
-+
-+	return fsnotify_parent(dentry, fsnotify_mask, path, FSNOTIFY_EVENT_PATH);
++	kallsyms_lookup(ip, NULL, &offset, modname, str);
++	if (offset > FTRACE_MCOUNT_MAX_OFFSET)
++		return -1;
++	return 0;
 +}
++#else
++static int lookup_ip(unsigned long ip, char **modname, char *str)
++{
++	kallsyms_lookup(ip, NULL, NULL, modname, str);
++	return 0;
++}
++#endif
 +
- /*
-  * Simple wrappers to consolidate calls to fsnotify_parent() when an event
-  * is on a file/dentry.
-diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
-index 0805b74cae44..0e2e240e8234 100644
---- a/include/linux/fsnotify_backend.h
-+++ b/include/linux/fsnotify_backend.h
-@@ -54,6 +54,8 @@
- #define FS_OPEN_PERM		0x00010000	/* open event in an permission hook */
- #define FS_ACCESS_PERM		0x00020000	/* access event in a permissions hook */
- #define FS_OPEN_EXEC_PERM	0x00040000	/* open/exec event in a permission hook */
-+#define FS_UNLINK_PERM		0x00080000	/* unlink event in a permission hook */
-+#define FS_RMDIR_PERM		0x00100000	/* rmdir event in a permission hook */
+ static int
+ ftrace_match_record(struct dyn_ftrace *rec, struct ftrace_glob *func_g,
+ 		struct ftrace_glob *mod_g, int exclude_mod)
+@@ -4014,7 +4059,8 @@ ftrace_match_record(struct dyn_ftrace *rec, struct ftrace_glob *func_g,
+ 	char str[KSYM_SYMBOL_LEN];
+ 	char *modname;
  
- #define FS_EXCL_UNLINK		0x04000000	/* do not send events if object is unlinked */
- /*
-@@ -79,7 +81,9 @@
- #define ALL_FSNOTIFY_DIRENT_EVENTS (FS_CREATE | FS_DELETE | FS_MOVE | FS_RENAME)
+-	kallsyms_lookup(rec->ip, NULL, NULL, &modname, str);
++	if (lookup_ip(rec->ip, &modname, str))
++		return 0;
  
- #define ALL_FSNOTIFY_PERM_EVENTS (FS_OPEN_PERM | FS_ACCESS_PERM | \
--				  FS_OPEN_EXEC_PERM)
-+				  FS_OPEN_EXEC_PERM | \
-+				  FS_UNLINK_PERM | \
-+				  FS_RMDIR_PERM)
- 
- /*
-  * This is a list of all events that may get sent to a parent that is watching
-diff --git a/security/security.c b/security/security.c
-index b7cf5cbfdc67..8efc00ec02ed 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -1160,16 +1160,24 @@ EXPORT_SYMBOL(security_path_mkdir);
- 
- int security_path_rmdir(const struct path *dir, struct dentry *dentry)
- {
-+	int ret;
- 	if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
- 		return 0;
--	return call_int_hook(path_rmdir, 0, dir, dentry);
-+	ret = call_int_hook(path_rmdir, 0, dir, dentry);
-+	if (ret)
-+		return ret;
-+	return fsnotify_path_perm(dir, dentry, MAY_RMDIR);
- }
- 
- int security_path_unlink(const struct path *dir, struct dentry *dentry)
- {
-+	int ret;
- 	if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
- 		return 0;
--	return call_int_hook(path_unlink, 0, dir, dentry);
-+	ret = call_int_hook(path_unlink, 0, dir, dentry);
-+	if (ret)
-+		return ret;
-+	return fsnotify_path_perm(dir, dentry, MAY_UNLINK);
- }
- EXPORT_SYMBOL(security_path_unlink);
- 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index e9e959343de9..f0780f0eb903 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -1801,8 +1801,12 @@ static int may_create(struct inode *dir,
- }
- 
- #define MAY_LINK	0
-+#ifndef MAY_UNLINK
- #define MAY_UNLINK	1
-+#endif
-+#ifndef MAY_RMDIR
- #define MAY_RMDIR	2
-+#endif
- 
- /* Check whether a task can link, unlink, or rmdir a file/directory. */
- static int may_link(struct inode *dir,
+ 	if (mod_g) {
+ 		int mod_matches = (modname) ? ftrace_match(modname, mod_g) : 0;
 -- 
-2.17.1
+2.35.1
 
