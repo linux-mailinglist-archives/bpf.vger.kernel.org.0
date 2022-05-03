@@ -2,262 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DA1517B21
-	for <lists+bpf@lfdr.de>; Tue,  3 May 2022 02:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB99517D63
+	for <lists+bpf@lfdr.de>; Tue,  3 May 2022 08:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbiECAG4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 May 2022 20:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
+        id S229880AbiECGe7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 May 2022 02:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbiECAFv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 May 2022 20:05:51 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A99340CE
-        for <bpf@vger.kernel.org>; Mon,  2 May 2022 17:02:20 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-2ebf4b91212so164988687b3.8
-        for <bpf@vger.kernel.org>; Mon, 02 May 2022 17:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zmqp+Ft/zwvr/6XNHzx2dgjoZyo15357vIqJ54QbeHA=;
-        b=FZ+KcB9iEqqwL90YKZUo772ZoUj9XXSAm9P4FOwDoJXmA8uAPjiE8Rc/DEq5/8k3O9
-         iXXELsU5iHCsDLVmv/3Q6qjNsJlqgd1TfkwMOqJO3XmU2haOnU5OY+VgVNP6QQIh7hDD
-         3c9W+gbBshGo6H7JdXQ3Ny1CIIok1+LSaaSI9nYlhn6vst8wz3hy+fdN+NQmjlW9xCfy
-         5xW8i8DhoqfI7eJ2q7A1t3kvSfi8ajiAIus38733zzyeZ+XpKNUeADHT7xnp39WiOthN
-         WmIldhDEnEnHmKSkltBNutYuBK+6VKGAobwzurm13k76EFfccSDzep8MWJfClveNtFPl
-         YStg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zmqp+Ft/zwvr/6XNHzx2dgjoZyo15357vIqJ54QbeHA=;
-        b=l7DOf1g8vkdItqp+OpBIyC4BR5wbT0yiH7dyaCt/7bz8ayz8SwUDv7B/02Emv8ogHl
-         5wD9qF8FE09aDfeIu7I+bNGZq6j9VqYTPYispCwQUnZDNM8tQKeoLxm+9DjJZgQwIb/0
-         zW04c10OHjrxCDVlHx3C6TWSVLV3VPmkCZ6H2ynaFPB22MiN923zP01hi6tDtHVNR/5Z
-         VPH5+6dCOiIBdkULm/aAMjKrYIpG9UO8by3hN11K24IBgTj9l4DSW/unsNV9CXtqObcE
-         3n+rddsxOoe0kuWQbetGwz7giEIp+IU8P5nkOl6egh5OiUtFV+5MZzOJznSz2HveKaje
-         VBhg==
-X-Gm-Message-State: AOAM531XFUiNaB46AvNA3czEUSJToJo6eA6GxELLVzj3Bh3e+HdzIVkL
-        nerYTWVhAiFG33vCf9Rb+6MEZY+dw+6tLZsxhXRelw==
-X-Google-Smtp-Source: ABdhPJyRo7mWvjoH/vNqWXpdMy1k84mIgj6ZGRiuT5JyS+SJPkkLuo7YBmZ4s8l8oj5KMTVw1+1Vp6nJTwYlrkdsspo=
-X-Received: by 2002:a81:4f0c:0:b0:2f8:46f4:be90 with SMTP id
- d12-20020a814f0c000000b002f846f4be90mr13772455ywb.332.1651536139152; Mon, 02
- May 2022 17:02:19 -0700 (PDT)
+        with ESMTP id S229619AbiECGe6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 May 2022 02:34:58 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E355381A4
+        for <bpf@vger.kernel.org>; Mon,  2 May 2022 23:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1651559487; x=1683095487;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1f1O3yMU6c3p0LycQq2IAcghpdqtIOFHigL4woggFCM=;
+  b=Q35ecMlea/o4jXyiYO3T3Eb1eFvpWJ2qluNbUK2Q41hgwPuYGI5mlbEi
+   t6KE+UkIn3HlaYawS+j5QjQfdXzACSFYFefgcDI0ihWLblhpYn+TNmJ/q
+   0RuRwtt6kGp2a6jbNS8FqaSMtxl4WIPVjXkVDe3Zlc8leuK4efwU68WWN
+   VPKRJZ2gEI2OlEBuLsNwdHMiJ89Ly+K4Ts4+Wv6kZyHb/0edg8WolcGAi
+   gF8NrkU2o9U0m4uxskEC6l1Q0IVCkfS6TQbaxb40w2vuI42zYtZI40hQz
+   amugHGwri+FwZbH1mWwtoLGV6hMUdw1FoY4U8gzo1QACx22JEzSm5GroZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10335"; a="267287220"
+X-IronPort-AV: E=Sophos;i="5.91,194,1647327600"; 
+   d="scan'208";a="267287220"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 May 2022 23:31:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,194,1647327600"; 
+   d="scan'208";a="516447000"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 02 May 2022 23:31:25 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nlm4C-000ADb-I4;
+        Tue, 03 May 2022 06:31:24 +0000
+Date:   Tue, 3 May 2022 14:30:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Delyan Kratunov <delyank@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Cc:     kbuild-all@lists.01.org
+Subject: Re: [PATCH bpf-next v2 2/5] bpf: implement sleepable uprobes by
+ chaining tasks_trace and normal rcu
+Message-ID: <202205031441.1fhDuUQK-lkp@intel.com>
+References: <588dd77e9e7424e0abc0e0e624524ef8a2c7b847.1651532419.git.delyank@fb.com>
 MIME-Version: 1.0
-References: <20220502182345.306970-1-xiyou.wangcong@gmail.com> <20220502182345.306970-2-xiyou.wangcong@gmail.com>
-In-Reply-To: <20220502182345.306970-2-xiyou.wangcong@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 2 May 2022 17:02:07 -0700
-Message-ID: <CANn89i+fXaDBptNMYjUqKhAuZrRX7+0v7sv5DZqK4seLCzBO3A@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 1/4] tcp: introduce tcp_read_skb()
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <588dd77e9e7424e0abc0e0e624524ef8a2c7b847.1651532419.git.delyank@fb.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 2, 2022 at 11:24 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> From: Cong Wang <cong.wang@bytedance.com>
->
-> This patch inroduces tcp_read_skb() based on tcp_read_sock(),
-> a preparation for the next patch which actually introduces
-> a new sock ops.
->
-> TCP is special here, because it has tcp_read_sock() which is
-> mainly used by splice(). tcp_read_sock() supports partial read
-> and arbitrary offset, neither of them is needed for sockmap.
->
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
->  include/net/tcp.h |  2 ++
->  net/ipv4/tcp.c    | 63 +++++++++++++++++++++++++++++++++++++++++------
->  2 files changed, 57 insertions(+), 8 deletions(-)
->
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 94a52ad1101c..ab7516e5cc56 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -667,6 +667,8 @@ void tcp_get_info(struct sock *, struct tcp_info *);
->  /* Read 'sendfile()'-style from a TCP socket */
->  int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
->                   sk_read_actor_t recv_actor);
-> +int tcp_read_skb(struct sock *sk, read_descriptor_t *desc,
-> +                sk_read_actor_t recv_actor);
->
->  void tcp_initialize_rcv_mss(struct sock *sk);
->
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> index db55af9eb37b..8d48126e3694 100644
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@ -1600,7 +1600,7 @@ static void tcp_eat_recv_skb(struct sock *sk, struct sk_buff *skb)
->         __kfree_skb(skb);
->  }
->
-> -static struct sk_buff *tcp_recv_skb(struct sock *sk, u32 seq, u32 *off)
-> +static struct sk_buff *tcp_recv_skb(struct sock *sk, u32 seq, u32 *off, bool unlink)
->  {
->         struct sk_buff *skb;
->         u32 offset;
-> @@ -1613,6 +1613,8 @@ static struct sk_buff *tcp_recv_skb(struct sock *sk, u32 seq, u32 *off)
->                 }
->                 if (offset < skb->len || (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)) {
->                         *off = offset;
-> +                       if (unlink)
-> +                               __skb_unlink(skb, &sk->sk_receive_queue);
+Hi Delyan,
 
-Why adding this @unlink parameter ?
-This makes your patch more invasive than needed.
-Can not this unlink happen from your new helper instead ? See [3] later.
+Thank you for the patch! Yet something to improve:
 
->                         return skb;
->                 }
->                 /* This looks weird, but this can happen if TCP collapsing
-> @@ -1646,7 +1648,7 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
->
->         if (sk->sk_state == TCP_LISTEN)
->                 return -ENOTCONN;
-> -       while ((skb = tcp_recv_skb(sk, seq, &offset)) != NULL) {
-> +       while ((skb = tcp_recv_skb(sk, seq, &offset, false)) != NULL) {
->                 if (offset < skb->len) {
->                         int used;
->                         size_t len;
-> @@ -1677,7 +1679,7 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
->                          * getting here: tcp_collapse might have deleted it
->                          * while aggregating skbs from the socket queue.
->                          */
-> -                       skb = tcp_recv_skb(sk, seq - 1, &offset);
-> +                       skb = tcp_recv_skb(sk, seq - 1, &offset, false);
->                         if (!skb)
->                                 break;
->                         /* TCP coalescing might have appended data to the skb.
-> @@ -1702,13 +1704,58 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
->
->         /* Clean up data we have read: This will do ACK frames. */
->         if (copied > 0) {
-> -               tcp_recv_skb(sk, seq, &offset);
-> +               tcp_recv_skb(sk, seq, &offset, false);
->                 tcp_cleanup_rbuf(sk, copied);
->         }
->         return copied;
->  }
->  EXPORT_SYMBOL(tcp_read_sock);
->
-> +int tcp_read_skb(struct sock *sk, read_descriptor_t *desc,
-> +                sk_read_actor_t recv_actor)
-> +{
-> +       struct tcp_sock *tp = tcp_sk(sk);
-> +       u32 seq = tp->copied_seq;
-> +       struct sk_buff *skb;
-> +       int copied = 0;
-> +       u32 offset;
-> +
-> +       if (sk->sk_state == TCP_LISTEN)
-> +               return -ENOTCONN;
-> +
-> +       while ((skb = tcp_recv_skb(sk, seq, &offset, true)) != NULL) {
+[auto build test ERROR on bpf-next/master]
 
-[3]
-            The unlink from sk->sk_receive_queue could happen here.
+url:    https://github.com/intel-lab-lkp/linux/commits/Delyan-Kratunov/sleepable-uprobe-support/20220503-071247
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: i386-defconfig (https://download.01.org/0day-ci/archive/20220503/202205031441.1fhDuUQK-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/cfa0f114829902b579da16d7520a39317905c502
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Delyan-Kratunov/sleepable-uprobe-support/20220503-071247
+        git checkout cfa0f114829902b579da16d7520a39317905c502
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
 
-> +               int used = recv_actor(desc, skb, 0, skb->len);
-> +
-> +               if (used <= 0) {
-> +                       if (!copied)
-> +                               copied = used;
-> +                       break;
-> +               }
-> +               seq += used;
-> +               copied += used;
-> +
-> +               if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN) {
-> +                       kfree_skb(skb);
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-[1]
+All errors (new ones prefixed by >>):
 
-The two kfree_skb() ([1] & [2]) should be a consume_skb() ?
-
-> +                       ++seq;
-> +                       break;
-> +               }
-> +               kfree_skb(skb);
-
-[2]
+   kernel/trace/trace_uprobe.c: In function '__uprobe_perf_func':
+>> kernel/trace/trace_uprobe.c:1349:23: error: implicit declaration of function 'uprobe_call_bpf'; did you mean 'trace_call_bpf'? [-Werror=implicit-function-declaration]
+    1349 |                 ret = uprobe_call_bpf(call, regs);
+         |                       ^~~~~~~~~~~~~~~
+         |                       trace_call_bpf
+   cc1: some warnings being treated as errors
 
 
-> +               if (!desc->count)
-> +                       break;
-> +               WRITE_ONCE(tp->copied_seq, seq);
-> +       }
-> +       WRITE_ONCE(tp->copied_seq, seq);
-> +
-> +       tcp_rcv_space_adjust(sk);
-> +
-> +       /* Clean up data we have read: This will do ACK frames. */
-> +       if (copied > 0)
-> +               tcp_cleanup_rbuf(sk, copied);
-> +
-> +       return copied;
-> +}
-> +EXPORT_SYMBOL(tcp_read_skb);
-> +
->  int tcp_peek_len(struct socket *sock)
->  {
->         return tcp_inq(sock->sk);
-> @@ -1890,7 +1937,7 @@ static int receive_fallback_to_copy(struct sock *sk,
->                 struct sk_buff *skb;
->                 u32 offset;
->
-> -               skb = tcp_recv_skb(sk, tcp_sk(sk)->copied_seq, &offset);
-> +               skb = tcp_recv_skb(sk, tcp_sk(sk)->copied_seq, &offset, false);
->                 if (skb)
->                         tcp_zerocopy_set_hint_for_skb(sk, zc, skb, offset);
->         }
-> @@ -1937,7 +1984,7 @@ static int tcp_zc_handle_leftover(struct tcp_zerocopy_receive *zc,
->         if (skb) {
->                 offset = *seq - TCP_SKB_CB(skb)->seq;
->         } else {
-> -               skb = tcp_recv_skb(sk, *seq, &offset);
-> +               skb = tcp_recv_skb(sk, *seq, &offset, false);
->                 if (TCP_SKB_CB(skb)->has_rxtstamp) {
->                         tcp_update_recv_tstamps(skb, tss);
->                         zc->msg_flags |= TCP_CMSG_TS;
-> @@ -2130,7 +2177,7 @@ static int tcp_zerocopy_receive(struct sock *sk,
->                                 skb = skb->next;
->                                 offset = seq - TCP_SKB_CB(skb)->seq;
->                         } else {
-> -                               skb = tcp_recv_skb(sk, seq, &offset);
-> +                               skb = tcp_recv_skb(sk, seq, &offset, false);
->                         }
->
->                         if (TCP_SKB_CB(skb)->has_rxtstamp) {
-> @@ -2186,7 +2233,7 @@ static int tcp_zerocopy_receive(struct sock *sk,
->                 tcp_rcv_space_adjust(sk);
->
->                 /* Clean up data we have read: This will do ACK frames. */
-> -               tcp_recv_skb(sk, seq, &offset);
-> +               tcp_recv_skb(sk, seq, &offset, false);
->                 tcp_cleanup_rbuf(sk, length + copylen);
->                 ret = 0;
->                 if (length == zc->length)
-> --
-> 2.32.0
->
+vim +1349 kernel/trace/trace_uprobe.c
+
+  1334	
+  1335	static void __uprobe_perf_func(struct trace_uprobe *tu,
+  1336				       unsigned long func, struct pt_regs *regs,
+  1337				       struct uprobe_cpu_buffer *ucb, int dsize)
+  1338	{
+  1339		struct trace_event_call *call = trace_probe_event_call(&tu->tp);
+  1340		struct uprobe_trace_entry_head *entry;
+  1341		struct hlist_head *head;
+  1342		void *data;
+  1343		int size, esize;
+  1344		int rctx;
+  1345	
+  1346		if (bpf_prog_array_valid(call)) {
+  1347			u32 ret;
+  1348	
+> 1349			ret = uprobe_call_bpf(call, regs);
+  1350			if (!ret)
+  1351				return;
+  1352		}
+  1353	
+  1354		esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
+  1355	
+  1356		size = esize + tu->tp.size + dsize;
+  1357		size = ALIGN(size + sizeof(u32), sizeof(u64)) - sizeof(u32);
+  1358		if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE, "profile buffer not large enough"))
+  1359			return;
+  1360	
+  1361		preempt_disable();
+  1362		head = this_cpu_ptr(call->perf_events);
+  1363		if (hlist_empty(head))
+  1364			goto out;
+  1365	
+  1366		entry = perf_trace_buf_alloc(size, NULL, &rctx);
+  1367		if (!entry)
+  1368			goto out;
+  1369	
+  1370		if (is_ret_probe(tu)) {
+  1371			entry->vaddr[0] = func;
+  1372			entry->vaddr[1] = instruction_pointer(regs);
+  1373			data = DATAOF_TRACE_ENTRY(entry, true);
+  1374		} else {
+  1375			entry->vaddr[0] = instruction_pointer(regs);
+  1376			data = DATAOF_TRACE_ENTRY(entry, false);
+  1377		}
+  1378	
+  1379		memcpy(data, ucb->buf, tu->tp.size + dsize);
+  1380	
+  1381		if (size - esize > tu->tp.size + dsize) {
+  1382			int len = tu->tp.size + dsize;
+  1383	
+  1384			memset(data + len, 0, size - esize - len);
+  1385		}
+  1386	
+  1387		perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
+  1388				      head, NULL);
+  1389	 out:
+  1390		preempt_enable();
+  1391	}
+  1392	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
