@@ -2,141 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F8F51A08E
-	for <lists+bpf@lfdr.de>; Wed,  4 May 2022 15:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EB551A1ED
+	for <lists+bpf@lfdr.de>; Wed,  4 May 2022 16:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350322AbiEDNXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 May 2022 09:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
+        id S1350090AbiEDOQF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 May 2022 10:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350241AbiEDNXG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 May 2022 09:23:06 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FD41CFCD;
-        Wed,  4 May 2022 06:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1651670369; x=1683206369;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=H9BdaDvD0tI00BXc7t73JRza9VVjgjSUb1IhYY15jGU=;
-  b=bra9fYXHc7R9xaBslrTNMUOfR+HIxhiZcIM1VKLGM2At1pmci+SpBY9z
-   fiDYi5x+aoLPQM23vIsgaHLSd1CqmXEJJUpJLbTgYrZFG2IJx/fZMCoDd
-   uEjBP7q4GEQ+zUzfyHTjr3aRcGaUhHy95tfLxH+USb9/PcHrlbswm6MlQ
-   wG1SdC/7uGlfv8+1k3yj2444l0qGdvSmEXDe1kFlix9dUra/GrxgFBMle
-   q35E4S8B9sqAWS8Raa5s3/FpbVa09vgE7yDnU6qU7/4z3RaKvFpbZBnq+
-   Bc5uN0UX2fWQIy8euCC3si5BZUP8mm0Q15Fb99VAqzaoj9jIXKSeKW/Qs
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10336"; a="249744969"
-X-IronPort-AV: E=Sophos;i="5.91,198,1647327600"; 
-   d="scan'208";a="249744969"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2022 06:19:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,198,1647327600"; 
-   d="scan'208";a="562717663"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 04 May 2022 06:19:01 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nmEuC-000BPt-S7;
-        Wed, 04 May 2022 13:19:00 +0000
-Date:   Wed, 4 May 2022 21:18:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Guowei Du <duguoweisz@gmail.com>, jack@suse.cz
-Cc:     kbuild-all@lists.01.org, amir73il@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jmorris@namei.org, serge@hallyn.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        keescook@chromium.org, anton@enomsg.org, ccross@android.com,
-        tony.luck@intel.com, selinux@vger.kernel.org, duguoweisz@gmail.com,
-        duguowei <duguowei@xiaomi.com>
-Subject: Re: [PATCH] fsnotify: add generic perm check for unlink/rmdir
-Message-ID: <202205042136.nn1xy0Ae-lkp@intel.com>
-References: <20220503183750.1977-1-duguoweisz@gmail.com>
+        with ESMTP id S239972AbiEDOQE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 May 2022 10:16:04 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5733A419B9;
+        Wed,  4 May 2022 07:12:28 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id j6so993128qkp.9;
+        Wed, 04 May 2022 07:12:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Psvejb3DIehY3FGS9OyKG4+k8ZBKjnluQzek7tyYtG0=;
+        b=NVB19D360rzy8jza0DSZqGtGiZmC/x80ZU3H7ffmisxM/CTB+/votosoMhNguUMfTY
+         WlYYS0N8ZD8z/v9Lg3OXnVYB5t6J29WqUnzVXKmr5OxRvWHyWn1SZnpD0pMSlmNXJttS
+         W1W58AUFxiFeOe/JfNiK/O8waBaVshPzEL9nY5R0LOIjfQBy2Xq1PzgmWtJg0yN37azB
+         0UkhuWM0/abUZ/KYz1gW/I9BREH4B4jb3Gbn0nm3yK3GIsepCC4RLdYjYcWaRQSs4RPN
+         CELV+afKwSipQ1Bn0Hnzz27TM4DPrOhMvBdRhtH3Wn7VCl7j+DJptSiEJuumZoYgZ40z
+         QEWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Psvejb3DIehY3FGS9OyKG4+k8ZBKjnluQzek7tyYtG0=;
+        b=sBwWG877Vp2X7EyDElftfF2L54YIbwCvDliV+but8xND9RACDMBydL7guhj1ebb868
+         Um1p6jJhxO8mS9TgUVZl/ihod7dRbkI//nXfYPxfPBIfb5t4pIuNy4DCJRm+Txt5ntGn
+         EdYcqMIRhggf9f/6XGSnEwY9iUR1TlGF0Fg3Xtt+7bNOGATwFYL223b2XhWZE+cIPF4z
+         b4tgaAy9WrOM4SV2h/40URGat9bJCAxndSOHCAnZJCUd1Ep8oXwEFdcDWKwlOBJlU1Pe
+         5JAis5//s4chjE6rz76xyjrSLkaJF+1orLLbsIbd7PWk435vSRbZL3Vao/0KqxP4r1Un
+         7Tuw==
+X-Gm-Message-State: AOAM531m11k6IdR2AgIVMToozTNeyoYt/6JVLuRXN8n/KcAw0b1MTk9P
+        VgXtkIX0Dl8ydb6ezeTaKOT43yjh/jhkD6ae89s=
+X-Google-Smtp-Source: ABdhPJzz5bsZ8/aL9Y1deFid+bYg1ncUA1yDgx1BsSvWd8Twv3mzJ31ZoSG7kzsDEfKgcKrQ0EbXFGJdCiFmfS36M2U=
+X-Received: by 2002:a37:9381:0:b0:69f:62c6:56a7 with SMTP id
+ v123-20020a379381000000b0069f62c656a7mr16131554qkd.643.1651673547434; Wed, 04
+ May 2022 07:12:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220503183750.1977-1-duguoweisz@gmail.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220503183750.1977-1-duguoweisz@gmail.com> <20220503194943.6bcmsxjvinfjrqxa@quack3.lan>
+In-Reply-To: <20220503194943.6bcmsxjvinfjrqxa@quack3.lan>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 4 May 2022 17:12:16 +0300
+Message-ID: <CAOQ4uxguXW05_YSpgT=kGgxztQYqhJ3x4MFsz9ZTO0crc9=4tA@mail.gmail.com>
+Subject: Re: [PATCH] fsnotify: add generic perm check for unlink/rmdir
+To:     Jan Kara <jack@suse.cz>
+Cc:     Guowei Du <duguoweisz@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Kees Cook <keescook@chromium.org>, anton@enomsg.org,
+        ccross@android.com, tony.luck@intel.com, selinux@vger.kernel.org,
+        duguowei <duguowei@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Guowei,
+On Tue, May 3, 2022 at 10:49 PM Jan Kara <jack@suse.cz> wrote:
+>
+> On Wed 04-05-22 02:37:50, Guowei Du wrote:
+> > From: duguowei <duguowei@xiaomi.com>
+> >
+> > For now, there have been open/access/open_exec perms for file operation,
+> > so we add new perms check with unlink/rmdir syscall. if one app deletes
+> > any file/dir within pubic area, fsnotify can sends fsnotify_event to
+> > listener to deny that, even if the app have right dac/mac permissions.
+> >
+> > Signed-off-by: duguowei <duguowei@xiaomi.com>
+>
+> Before we go into technical details of implementation can you tell me more
+> details about the usecase? Why do you need to check specifically for unlink
+> / delete?
+>
+> Also on the design side of things: Do you realize these permission events
+> will not be usable together with other permission events like
+> FAN_OPEN_PERM? Because these require notification group returning file
+> descriptors while your events will return file handles... I guess we should
+> somehow fix that.
+>
 
-Thank you for the patch! Perhaps something to improve:
+IMO, regardless of file descriptions vs. file handles, blocking events have
+no business with async events in the same group at all.
+What is the use case for that?
+Sure, we have the legacy permission event, but if we do add new blocking
+events to UAPI, IMO they should be added to a group that was initialized with a
+different class to indicate "blocking events only".
 
-[auto build test WARNING on pcmoore-selinux/next]
-[also build test WARNING on linus/master jmorris-security/next-testing v5.18-rc5]
-[cannot apply to jack-fs/fsnotify next-20220503]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+And if we do that, we will not need to pollute the event mask namespace
+for every permission event.
+When users request to get FAN_UNLINK/FAN_RMDIR events in a
+FAN_CLASS_PERMISSION group, internally, that only captures
+events reported from fsnotify_perm()/fsnotify_path_perm().
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Guowei-Du/fsnotify-add-generic-perm-check-for-unlink-rmdir/20220504-024310
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git next
-config: openrisc-buildonly-randconfig-r003-20220501 (https://download.01.org/0day-ci/archive/20220504/202205042136.nn1xy0Ae-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 11.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/6f635019bbd2ab22a64e03164c8812a46531966e
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Guowei-Du/fsnotify-add-generic-perm-check-for-unlink-rmdir/20220504-024310
-        git checkout 6f635019bbd2ab22a64e03164c8812a46531966e
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=openrisc SHELL=/bin/bash
+FYI, I do intend to try and upload "pre-modify events" [1].
+I had no intention to expose those in fanotify and my implementation
+does not have the granularity of UNLINK/RMDIR, but we do need
+to think about not duplicating too much code with those overlapping
+features.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Thanks,
+Amir.
 
-All warnings (new ones prefixed by >>):
-
-   security/security.c: In function 'security_path_rmdir':
->> security/security.c:1169:35: warning: passing argument 1 of 'fsnotify_path_perm' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    1169 |         return fsnotify_path_perm(dir, dentry, MAY_RMDIR);
-         |                                   ^~~
-   In file included from security/security.c:24:
-   include/linux/fsnotify.h:83:51: note: expected 'struct path *' but argument is of type 'const struct path *'
-      83 | static inline int fsnotify_path_perm(struct path *path, struct dentry *dentry, __u32 mask)
-         |                                      ~~~~~~~~~~~~~^~~~
-   security/security.c: In function 'security_path_unlink':
-   security/security.c:1180:35: warning: passing argument 1 of 'fsnotify_path_perm' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    1180 |         return fsnotify_path_perm(dir, dentry, MAY_UNLINK);
-         |                                   ^~~
-   In file included from security/security.c:24:
-   include/linux/fsnotify.h:83:51: note: expected 'struct path *' but argument is of type 'const struct path *'
-      83 | static inline int fsnotify_path_perm(struct path *path, struct dentry *dentry, __u32 mask)
-         |                                      ~~~~~~~~~~~~~^~~~
-
-
-vim +1169 security/security.c
-
-  1160	
-  1161	int security_path_rmdir(const struct path *dir, struct dentry *dentry)
-  1162	{
-  1163		int ret;
-  1164		if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
-  1165			return 0;
-  1166		ret = call_int_hook(path_rmdir, 0, dir, dentry);
-  1167		if (ret)
-  1168			return ret;
-> 1169		return fsnotify_path_perm(dir, dentry, MAY_RMDIR);
-  1170	}
-  1171	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+[1] https://github.com/amir73il/linux/commits/fsnotify_pre_modify
