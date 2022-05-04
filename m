@@ -2,148 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13AD051AEA3
-	for <lists+bpf@lfdr.de>; Wed,  4 May 2022 22:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06C151B471
+	for <lists+bpf@lfdr.de>; Thu,  5 May 2022 02:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbiEDULI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 May 2022 16:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
+        id S237791AbiEEAFN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 May 2022 20:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbiEDULH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 May 2022 16:11:07 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD411205E8;
-        Wed,  4 May 2022 13:07:30 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id i19so4940263eja.11;
-        Wed, 04 May 2022 13:07:30 -0700 (PDT)
+        with ESMTP id S1352325AbiEDXyA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 May 2022 19:54:00 -0400
+Received: from mail-oa1-x41.google.com (mail-oa1-x41.google.com [IPv6:2001:4860:4864:20::41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7E315A0E
+        for <bpf@vger.kernel.org>; Wed,  4 May 2022 16:50:22 -0700 (PDT)
+Received: by mail-oa1-x41.google.com with SMTP id 586e51a60fabf-e2fa360f6dso2799267fac.2
+        for <bpf@vger.kernel.org>; Wed, 04 May 2022 16:50:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7lSSNpXXfR9Qy/9yZmZMditNWGkfTBxEtIAkXYQaMHY=;
-        b=DwrZPfkdvYwiBurT5FmmNntdTqHrVcc8lePpYW6+Ntes+tTNLEObFTfQJrJYVQTl5A
-         BJ+jQ6xn7udqIMO2MjGbtuOgMursdwv//eRcXUBeC0RjImLY78VJCOCnVJBcp2GUrjTr
-         4TUcKyKXcNUpqnn5WU8bRPUj6VMOdL5pI3scjr+2zSYIBvbg2sZfVcG88vFh5OkSe36A
-         sMfw1WtJe3tIipPmStwJQwzyRJISt9Y3Z8vkL2MplGRahYAd8JqVeGq8b4D6VqiAuqGq
-         k0l2x0ebEVOeHfzui4wu2UmbxvRqb2es+mmk4mOsaPDrRlxMatTClQgctgei0RB0Voch
-         5zrA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ampHH5WJLIBWSsxWwzVjbk5pO9UBFxn81pZ6QIDzZtY=;
+        b=YEwNer+zbOytdPczGSjCWUpruq3dWGV+AT1+vSvQZM3wLk8F6agUMIoiRFtI8JuOif
+         3cj/FssKZ763tQMle6QbmikQ6w3kh8HjwHGbGXvmdu0jxycrgUb+Rx2aaovTqzStpv6a
+         5NpmZ28LXyOm6MTO3YoBfN9usFKafzrAkGNnCYUVTLGBkW7vwki9H0sv1RgL0vqYaUcV
+         PSmTUdfzGx++9fjWvg8qHPTtK/H0/uVv6vMK9EmUotLfjiGVhiOoWghjKVUayLpwzZMg
+         p+JkaGXYDhc5DtHEuzvHk+VQc3GGBbUfDJ8GzuYg7EZYWb4UDSMTwB+cgSok6+foGz/8
+         klmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7lSSNpXXfR9Qy/9yZmZMditNWGkfTBxEtIAkXYQaMHY=;
-        b=yWc5Au9lAvJHeGNs9FKWjqUvrmQNvntWCFpZ5xy8AA8SXO38fwcTxGvEzEdkTw1AFd
-         f7YZpYTrCvIEXURncBSX2dbOa2PIOVK78t9zAlRgCzmJ4Cbk4dg5yBH4h0BtGgK7i8km
-         O3hDSaqYvkxJi29yZwY4gDIe/gvwJ1ODqYYxHtlhwHZmDA1JmeBTLfC8q8dZzXWynvIr
-         QJc3bjfPosV3lDPIRA1FtkzzRWYhHU9nGJuHyHksq1YrY3nFjp0SipNZWpracIlmN+W4
-         Fw68XyLCn0nxJmGpGbOx1nfSucnYmcfL+kNfB2OOEjCYVc1eDvHlcQTVzsWW6ktnHP5H
-         pLvQ==
-X-Gm-Message-State: AOAM533f0V53oYcAIWjKxwqw3In9NO8nHw6Z+9yjEIVBBrOaj+MSoAp7
-        UI+3NSCczgXGmon2Tx3E1+8=
-X-Google-Smtp-Source: ABdhPJzlGXzx5m76HwjZ3ekvNPEQriouGOD8PegIt5LcRvA/OXYGxxHNoM74Oe4PeDvJgXSnhTVgRw==
-X-Received: by 2002:a17:906:9b8a:b0:6f3:fcc9:f863 with SMTP id dd10-20020a1709069b8a00b006f3fcc9f863mr22090808ejc.672.1651694849219;
-        Wed, 04 May 2022 13:07:29 -0700 (PDT)
-Received: from skbuf ([188.25.160.86])
-        by smtp.gmail.com with ESMTPSA id hf27-20020a1709072c5b00b006f3ef214e2fsm6164979ejc.149.2022.05.04.13.07.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 May 2022 13:07:28 -0700 (PDT)
-Date:   Wed, 4 May 2022 23:07:26 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Arun Ramadoss <arun.ramadoss@microchip.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [Patch net-next v13 07/13] net: dsa: microchip: add LAN937x SPI
- driver
-Message-ID: <20220504200726.pn7y73gt7wc2dpsg@skbuf>
-References: <20220504151755.11737-1-arun.ramadoss@microchip.com>
- <20220504151755.11737-8-arun.ramadoss@microchip.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ampHH5WJLIBWSsxWwzVjbk5pO9UBFxn81pZ6QIDzZtY=;
+        b=MK5SnJIKTp1EgckPiIfTwgkcDxjum5KZUJwN7nA5W76u22/JVTZ2v5GWjs1Y+yLio3
+         EMP22M6O0dA9jfHu+3NtZXTTK45lBfuhxjj9miqbaBLzLvjFFpiET+O5sw53vV7Yl/Zq
+         wJWvDsigwMboq3WQu1fsf94SCbjHSSxN4H0DGsgjKZftkq1DnLctaUVgKy5jWIxzXcJc
+         VleLPD8dJCEAgRocs8nDVFQ0uwn6AJwzzZplGW5Ogo35APnW5a+K8uIs1a/V7Oswd0Pj
+         v1m9IeqJqayhH9PXLvbnZ0iGJRESoxcJ+tql3CRPNJAeHq4UijHutquq7QUXBoo2zoAF
+         +heA==
+X-Gm-Message-State: AOAM532c7TkrlbK82hetWBv9gIVj50OeozIgbSASAmg1kQYH4n27if1z
+        gnJtyZhR02LCNIetQzDe9dYVm7WJrZlNCNF1bJa4VLmBOaP4bg==
+X-Google-Smtp-Source: ABdhPJx7IBOxhDL7n8H2JjP8pWv8vaa/M3v/hCII4VltZvlf6mQzcUfLxf0CFddLvz6bEtRCB2lG1x+Sk3XgGfltZ58=
+X-Received: by 2002:a05:6871:453:b0:ed:d2f8:8ecc with SMTP id
+ e19-20020a056871045300b000edd2f88eccmr1020666oag.228.1651708221699; Wed, 04
+ May 2022 16:50:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220504151755.11737-8-arun.ramadoss@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6802:1a9:0:0:0:0 with HTTP; Wed, 4 May 2022 16:50:21
+ -0700 (PDT)
+Reply-To: ortegainvestmmentforrealinvest@gmail.com
+From:   Info <joybhector64@gmail.com>
+Date:   Thu, 5 May 2022 05:20:21 +0530
+Message-ID: <CAP7KLYjEvQy1NFXFAsF7L852zjDQ2sTySHZJ=cnA1gAffqJZfw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2001:4860:4864:20:0:0:0:41 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [joybhector64[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [joybhector64[at]gmail.com]
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 04, 2022 at 08:47:49PM +0530, Arun Ramadoss wrote:
-> This patch add the SPI driver for the LAN937x switches. It uses the
-> lan937x_main.c and lan937x_dev.c functions.
-> 
-> Signed-off-by: Arun Ramadoss <arun.ramadoss@microchip.com>
-> ---
->  drivers/net/dsa/microchip/Makefile      |   1 +
->  drivers/net/dsa/microchip/ksz_common.h  |   1 +
->  drivers/net/dsa/microchip/lan937x_dev.c |   7 +
->  drivers/net/dsa/microchip/lan937x_spi.c | 236 ++++++++++++++++++++++++
->  4 files changed, 245 insertions(+)
->  create mode 100644 drivers/net/dsa/microchip/lan937x_spi.c
-> 
-> diff --git a/drivers/net/dsa/microchip/Makefile b/drivers/net/dsa/microchip/Makefile
-> index d32ff38dc240..28d8eb62a795 100644
-> --- a/drivers/net/dsa/microchip/Makefile
-> +++ b/drivers/net/dsa/microchip/Makefile
-> @@ -10,3 +10,4 @@ obj-$(CONFIG_NET_DSA_MICROCHIP_KSZ8863_SMI)	+= ksz8863_smi.o
->  obj-$(CONFIG_NET_DSA_MICROCHIP_LAN937X)		+= lan937x.o
->  lan937x-objs := lan937x_dev.o
->  lan937x-objs += lan937x_main.o
-> +lan937x-objs += lan937x_spi.o
-> diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-> index 5671f580948d..fd9e0705d2d2 100644
-> --- a/drivers/net/dsa/microchip/ksz_common.h
-> +++ b/drivers/net/dsa/microchip/ksz_common.h
-> @@ -151,6 +151,7 @@ void ksz_switch_remove(struct ksz_device *dev);
->  int ksz8_switch_register(struct ksz_device *dev);
->  int ksz9477_switch_register(struct ksz_device *dev);
->  int lan937x_switch_register(struct ksz_device *dev);
-> +int lan937x_check_device_id(struct ksz_device *dev);
->  
->  void ksz_update_port_member(struct ksz_device *dev, int port);
->  void ksz_init_mib_timer(struct ksz_device *dev);
-> diff --git a/drivers/net/dsa/microchip/lan937x_dev.c b/drivers/net/dsa/microchip/lan937x_dev.c
-> index 3f1797cc1d16..f430a8711775 100644
-> --- a/drivers/net/dsa/microchip/lan937x_dev.c
-> +++ b/drivers/net/dsa/microchip/lan937x_dev.c
-> @@ -386,8 +386,15 @@ static int lan937x_mdio_register(struct ksz_device *dev)
->  
->  static int lan937x_switch_init(struct ksz_device *dev)
->  {
-> +	int ret;
-> +
->  	dev->ds->ops = &lan937x_switch_ops;
->  
-> +	/* Check device tree */
-> +	ret = lan937x_check_device_id(dev);
-> +	if (ret < 0)
-> +		return ret;
-> +
+-- 
+I am an investor. I came from the USA and I have many investments all
+over the world.
 
-Can't this be called from lan937x_spi_probe() directly, why do you need
-to go through lan937x_switch_register() first?
-
->  	dev->port_mask = (1 << dev->port_cnt) - 1;
->  
->  	dev->ports = devm_kzalloc(dev->dev,
+I want you to partner with me to invest in your country I am into many
+investment such as real Estate or buying of properties i can also
+invest money in any of existing business with equity royalty or by %
+percentage so on,
+Warm regards
