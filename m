@@ -2,137 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E180B51A471
-	for <lists+bpf@lfdr.de>; Wed,  4 May 2022 17:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3CE51A4A6
+	for <lists+bpf@lfdr.de>; Wed,  4 May 2022 17:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352744AbiEDPxk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 May 2022 11:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
+        id S1352931AbiEDP7T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 May 2022 11:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237205AbiEDPxk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 May 2022 11:53:40 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223A740E55;
-        Wed,  4 May 2022 08:50:01 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 882461F38D;
-        Wed,  4 May 2022 15:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1651679400; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pzZYtAWqOK0x1bSyjKyxPqiIg9Fcdav21K/7m+CpVfI=;
-        b=nbktz7u6eEaio1WfVT0QxWoaaEy+CZrGEGVR4d92gPZQIffDVi7oRxfPHukHGEfd1LTqsa
-        gKHZBdiINI8+YI8Wb0+dYMc3NG/ugKVPfWZLqdTEHqVWtojPnc+zujn4TIFwcEtdn+K7e8
-        ZObvRRMNDYaTLvnodYDN66RRhon/cNY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1651679400;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pzZYtAWqOK0x1bSyjKyxPqiIg9Fcdav21K/7m+CpVfI=;
-        b=txd/qOvmCUnW5d1S8GXNeHvBc6OD0LaoLQiFXYUco0/UgoF5iwrWeH7kyxXV+u9btcig+i
-        X5vmWtZZuPxuDgDw==
-Received: from quack3.suse.cz (unknown [10.100.224.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 3673E2C141;
-        Wed,  4 May 2022 15:49:59 +0000 (UTC)
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id D2BFAA061E; Wed,  4 May 2022 17:49:58 +0200 (CEST)
-Date:   Wed, 4 May 2022 17:49:58 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Guowei Du <duguoweisz@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Kees Cook <keescook@chromium.org>, anton@enomsg.org,
-        ccross@android.com, tony.luck@intel.com, selinux@vger.kernel.org,
-        duguowei <duguowei@xiaomi.com>
-Subject: Re: [PATCH] fsnotify: add generic perm check for unlink/rmdir
-Message-ID: <20220504154958.cnagolihr65vkmjf@quack3.lan>
-References: <20220503183750.1977-1-duguoweisz@gmail.com>
- <20220503194943.6bcmsxjvinfjrqxa@quack3.lan>
- <CAOQ4uxguXW05_YSpgT=kGgxztQYqhJ3x4MFsz9ZTO0crc9=4tA@mail.gmail.com>
+        with ESMTP id S1352921AbiEDP7O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 May 2022 11:59:14 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0627CB847;
+        Wed,  4 May 2022 08:55:38 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id v12so2615467wrv.10;
+        Wed, 04 May 2022 08:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wtP9hXDTn2yxCxN0X3of+jxBUyJ3pPE1spLSBo0Vj30=;
+        b=qqXa9svwL8NMhVK1Gy+nfEs6AsyyPj8v3ldoTOGdWz6T7rM9N+70zCY8ogsxibCHLh
+         6awoBFNjZXrfw6ZN4DGr71lSRCULT2WjFh+UcVjUjBZcy2SFdaE+R3K3+8ZJVBYVCV9t
+         ESvoJaKYDq/eeFRdics70hAMrc1ri9IPZu2ioz63ukeJGse/F3+2P3urmhmT707I2h1R
+         Fa1J5WZ/Rw7mi4kntJUDjTQBfj9KL79ANJtIOqollDoch0qutO8iKRcdzWlOcJLeMnVJ
+         jzhQC9Xp5jk5rGTnjYdMTQ2sL28rtULpMZd9YbIf7faFF2taVbzUndHYThXOfj6PdvQR
+         aAcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wtP9hXDTn2yxCxN0X3of+jxBUyJ3pPE1spLSBo0Vj30=;
+        b=JnXf/w9sHgHDUnHMZgA+pvCbLwf7aw0M3pyCjjeAojKG5i/mRisyVwEWmolYPlbQ38
+         q5t2Q4n9bHBrNCwpJyeydVvsxD1MmaiqEnAuP5Kh1Yz7eNsjDt0F2SARmA7+XYWTT6Wy
+         L+MNLgVIdHJc/Lze1JqWrxbGLu7KhBvskdR2YYv5naheLkzPbtWDyAvXSPB4QkdIt60N
+         EYe7TL9ptPTsaWX/ws7U66RUCvQldUUclg4D5clip0tfSmdg/bWFVvivkFPHPSR4O9Lz
+         y7kvxIj+x8jRHrpMeAK8J/ONU/SxBHfLoUhIcK9Fj8BEH9PQtMHc6QnLf8N9fyyhsEMy
+         1Dmg==
+X-Gm-Message-State: AOAM5318eVm7swomehxpuFuq6IZDQgBI0c4uEIHtowwbUVRLdx12xXJy
+        WQerS+X+GjH3mWlfS514C80=
+X-Google-Smtp-Source: ABdhPJyAO2ajDWK9KtBeiYVElkB0jr1JpnrWYOLIIW+ZDM2z1WSjOl3K/EKnkLOcao/sWhat3JyTkA==
+X-Received: by 2002:a5d:6c68:0:b0:20c:7246:a86 with SMTP id r8-20020a5d6c68000000b0020c72460a86mr7360076wrz.283.1651679736508;
+        Wed, 04 May 2022 08:55:36 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id bg3-20020a05600c3c8300b003942a244ed2sm5085334wmb.23.2022.05.04.08.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 May 2022 08:55:35 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] selftests/seccomp: Fix spelling mistake "Coud" -> "Could"
+Date:   Wed,  4 May 2022 16:55:35 +0100
+Message-Id: <20220504155535.239180-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxguXW05_YSpgT=kGgxztQYqhJ3x4MFsz9ZTO0crc9=4tA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed 04-05-22 17:12:16, Amir Goldstein wrote:
-> On Tue, May 3, 2022 at 10:49 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Wed 04-05-22 02:37:50, Guowei Du wrote:
-> > > From: duguowei <duguowei@xiaomi.com>
-> > >
-> > > For now, there have been open/access/open_exec perms for file operation,
-> > > so we add new perms check with unlink/rmdir syscall. if one app deletes
-> > > any file/dir within pubic area, fsnotify can sends fsnotify_event to
-> > > listener to deny that, even if the app have right dac/mac permissions.
-> > >
-> > > Signed-off-by: duguowei <duguowei@xiaomi.com>
-> >
-> > Before we go into technical details of implementation can you tell me more
-> > details about the usecase? Why do you need to check specifically for unlink
-> > / delete?
-> >
-> > Also on the design side of things: Do you realize these permission events
-> > will not be usable together with other permission events like
-> > FAN_OPEN_PERM? Because these require notification group returning file
-> > descriptors while your events will return file handles... I guess we should
-> > somehow fix that.
-> >
-> 
-> IMO, regardless of file descriptions vs. file handles, blocking events have
-> no business with async events in the same group at all.
-> What is the use case for that?
-> Sure, we have the legacy permission event, but if we do add new blocking
-> events to UAPI, IMO they should be added to a group that was initialized with a
-> different class to indicate "blocking events only".
-> 
-> And if we do that, we will not need to pollute the event mask namespace
-> for every permission event.
+There is a spelling mistake in an error message. Fix it.
 
-That's an interesting idea. I agree mixing of permission and normal events
-is not very useful and separating event mask for permission and other
-events looks like a compelling reason to really forbid that :). It's a pity
-nobody had this idea when proposing fanotify permission events.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> When users request to get FAN_UNLINK/FAN_RMDIR events in a
-> FAN_CLASS_PERMISSION group, internally, that only captures
-> events reported from fsnotify_perm()/fsnotify_path_perm().
-> 
-> FYI, I do intend to try and upload "pre-modify events" [1].
-> I had no intention to expose those in fanotify and my implementation
-> does not have the granularity of UNLINK/RMDIR, but we do need
-> to think about not duplicating too much code with those overlapping
-> features.
-
-Definitely.
-
-								Honza
-
-> [1] https://github.com/amir73il/linux/commits/fsnotify_pre_modify
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index 29c973f606b2..136df5b76319 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -4320,7 +4320,7 @@ static ssize_t get_nth(struct __test_metadata *_metadata, const char *path,
+ 
+ 	f = fopen(path, "r");
+ 	ASSERT_NE(f, NULL) {
+-		TH_LOG("Coud not open %s: %s", path, strerror(errno));
++		TH_LOG("Could not open %s: %s", path, strerror(errno));
+ 	}
+ 
+ 	for (i = 0; i < position; i++) {
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.35.1
+
