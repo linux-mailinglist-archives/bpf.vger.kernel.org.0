@@ -2,92 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1289F5192A0
-	for <lists+bpf@lfdr.de>; Wed,  4 May 2022 02:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC02519377
+	for <lists+bpf@lfdr.de>; Wed,  4 May 2022 03:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236741AbiEDARH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 May 2022 20:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        id S245451AbiEDBZQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 May 2022 21:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236338AbiEDARG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 May 2022 20:17:06 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B6613F37;
-        Tue,  3 May 2022 17:13:33 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id e24so16762109pjt.2;
-        Tue, 03 May 2022 17:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lrv6JjVDd5xci3Uj6JO2t4bk1n/CIJ8pZC08DqD624o=;
-        b=e1wd40kzz7Uy/yWBPhgZBC/CaIu14Vk0TzUilfDKSMMeng0rNwQy4KRWjcDEK/2jwu
-         D7hLk+gSOi+pvYTAjAjj5HB9FX2EqJ+4TGGhkvuDSfNX1eXvWsp8itTI9OIrblpf8PyR
-         sb4grZUbNAIPEXgGywx+zNEjRoL1aYy/uIDGFIOb3oygLdk56yCPHOnIQtsR3ag+gZDX
-         lNKwNhklTNuuv9rHFD8k5ipSL843CcS/ITUaM+fCCHA6wqqW5p4GSKYamVjUMniMa/FI
-         rs6qehTa+17+rG2iALcWMUJWoQfd9rWdW7p2SPaZyliwXhydVd3oTxPlVzNZkT2O0psW
-         APeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lrv6JjVDd5xci3Uj6JO2t4bk1n/CIJ8pZC08DqD624o=;
-        b=GReeqfe8JqIo6g0Lml78yNdEztE+Ue5sjiOS85HxUCWCQsgDOFYyWYqmSd/QZkNNjm
-         W6Nr3MZDCFXAtAAHJe9MqPeq5V6oQSKu4Yqprm9rhS+z+iFJVYhwSJcNIh66v3X9687e
-         NzxK0UV9uy6Q3EC7VuiF/qhKKLNG2kSeQh1TqX0pE1679N7jM5xtWQxiCkqxUYcoVP7N
-         Prvg5d+K8EfiiY4udjYJV+UEes+7238gkzPWPuk7GlWan6FkDgO21iuKcIkdfq/xxwLJ
-         dns7v/OMg2qJ/e82CKDAeegJRYYpdowUk6+o+pYgLqT12WYqst3SI0S0br4IIzRX7Utx
-         9Tuw==
-X-Gm-Message-State: AOAM530oRyBvgQPKKthWx7eYiVKmN3EPr7EVCb8/M4f94NiK0Ybqhg0S
-        ddHmN4+DqzZQMJVNyHypx0kWcH1wyX7T7puTK5qimSztfHk=
-X-Google-Smtp-Source: ABdhPJz00iQB2Y9B32Quwzz7cnnxKMyU4mGjSvyUnFvEbWkiQdmw6EtrbRmf+Vgu8mHC++10yZr+tsebwuyUVkKNPg0=
-X-Received: by 2002:a17:903:2d1:b0:156:7ceb:b56f with SMTP id
- s17-20020a17090302d100b001567cebb56fmr19325260plk.11.1651623212627; Tue, 03
- May 2022 17:13:32 -0700 (PDT)
+        with ESMTP id S245635AbiEDBZK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 May 2022 21:25:10 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD034616F;
+        Tue,  3 May 2022 18:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1651627235; x=1683163235;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=i4MxkxPDNSGtzMvlquogsvEU8lFtzY2vpeFrQnL7YOU=;
+  b=XM9QFrmZspa71IODuBGPKLe8jAEGqod/CRPLKATvxIqfNM+Bbf0wLYgA
+   ltahLkLodmGS9fp/hikMdbAbFCN6Yw9CSudtzs3AuJlv4MKmKI0SIId09
+   HtxaDbomHcPs6LxteZOHJWszPxnVblmw2kNH0JsBD5KWLVXXMM0bNXCto
+   P6M/FpvrbrQlZeLCVOSioDm+jgOZnNndFWIfFjcP0qw77GLINjYInvKF8
+   EtznMu+aFlJxDvwV9bl9PYdFBsAYIQ9yt8vSPXVOQRewIu3EMJULW++cD
+   h66q6IIEYDgqVeSKP2Sp0GhWz6qnp8Di1MdnRi1K/Nmi3PdTcb+6iUGPh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10336"; a="354072558"
+X-IronPort-AV: E=Sophos;i="5.91,196,1647327600"; 
+   d="scan'208";a="354072558"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2022 18:19:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,196,1647327600"; 
+   d="scan'208";a="516817108"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 03 May 2022 18:19:33 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nm3fw-000Avv-BI;
+        Wed, 04 May 2022 01:19:32 +0000
+Date:   Wed, 4 May 2022 09:19:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Guowei Du <duguoweisz@gmail.com>, jack@suse.cz
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, amir73il@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, jmorris@namei.org, serge@hallyn.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        keescook@chromium.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, selinux@vger.kernel.org, duguoweisz@gmail.com,
+        duguowei <duguowei@xiaomi.com>
+Subject: Re: [PATCH] fsnotify: add generic perm check for unlink/rmdir
+Message-ID: <202205040959.SAV6vlzH-lkp@intel.com>
+References: <20220503183750.1977-1-duguoweisz@gmail.com>
 MIME-Version: 1.0
-References: <20220502213705.1170077-1-ctakshak@fb.com> <20220502213705.1170077-2-ctakshak@fb.com>
-In-Reply-To: <20220502213705.1170077-2-ctakshak@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 3 May 2022 17:13:21 -0700
-Message-ID: <CAADnVQJjmd4Y0aMePdO+19UMPFTLQEUo3uDN_sAYPBY9FnKi8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: handle batch operations
- for map-in-map bpf-maps
-To:     Takshak Chahande <ctakshak@fb.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, ndixit@fb.com,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220503183750.1977-1-duguoweisz@gmail.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 2, 2022 at 2:37 PM Takshak Chahande <ctakshak@fb.com> wrote:
->
-> This patch adds up test cases that handles 4 combinations:
->  a) outer map: BPF_MAP_TYPE_ARRAY_OF_MAPS
->     inner maps: BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_HASH
->  b) outer map: BPF_MAP_TYPE_HASH_OF_MAPS
->     inner maps: BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_HASH
->
-> Signed-off-by: Takshak Chahande <ctakshak@fb.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
->  .../bpf/map_tests/map_in_map_batch_ops.c      | 245 ++++++++++++++++++
->  1 file changed, 245 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
->
-> v3->v4:
-> - Addressed nits; kept this map test together in map_tests/  (Yonghong, Andrii)
+Hi Guowei,
 
-Looks like it's causing another test to fail in CI.
-https://github.com/kernel-patches/bpf/runs/6264834580?check_suite_focus=true
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on pcmoore-selinux/next]
+[also build test ERROR on linus/master v5.18-rc5]
+[cannot apply to jack-fs/fsnotify next-20220503]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Guowei-Du/fsnotify-add-generic-perm-check-for-unlink-rmdir/20220504-024310
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git next
+config: hexagon-randconfig-r041-20220501 (https://download.01.org/0day-ci/archive/20220504/202205040959.SAV6vlzH-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 363b3a645a1e30011cc8da624f13dac5fd915628)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/6f635019bbd2ab22a64e03164c8812a46531966e
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Guowei-Du/fsnotify-add-generic-perm-check-for-unlink-rmdir/20220504-024310
+        git checkout 6f635019bbd2ab22a64e03164c8812a46531966e
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> security/security.c:1169:28: error: passing 'const struct path *' to parameter of type 'struct path *' discards qualifiers [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
+           return fsnotify_path_perm(dir, dentry, MAY_RMDIR);
+                                     ^~~
+   include/linux/fsnotify.h:83:51: note: passing argument to parameter 'path' here
+   static inline int fsnotify_path_perm(struct path *path, struct dentry *dentry, __u32 mask)
+                                                     ^
+   security/security.c:1180:28: error: passing 'const struct path *' to parameter of type 'struct path *' discards qualifiers [-Werror,-Wincompatible-pointer-types-discards-qualifiers]
+           return fsnotify_path_perm(dir, dentry, MAY_UNLINK);
+                                     ^~~
+   include/linux/fsnotify.h:83:51: note: passing argument to parameter 'path' here
+   static inline int fsnotify_path_perm(struct path *path, struct dentry *dentry, __u32 mask)
+                                                     ^
+   2 errors generated.
+
+
+vim +1169 security/security.c
+
+  1160	
+  1161	int security_path_rmdir(const struct path *dir, struct dentry *dentry)
+  1162	{
+  1163		int ret;
+  1164		if (unlikely(IS_PRIVATE(d_backing_inode(dir->dentry))))
+  1165			return 0;
+  1166		ret = call_int_hook(path_rmdir, 0, dir, dentry);
+  1167		if (ret)
+  1168			return ret;
+> 1169		return fsnotify_path_perm(dir, dentry, MAY_RMDIR);
+  1170	}
+  1171	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
