@@ -2,106 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9FF51C041
-	for <lists+bpf@lfdr.de>; Thu,  5 May 2022 15:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219CF51C1C3
+	for <lists+bpf@lfdr.de>; Thu,  5 May 2022 15:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbiEENMX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 May 2022 09:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+        id S1348398AbiEEOBY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 May 2022 10:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbiEENMX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 May 2022 09:12:23 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD3D5643F;
-        Thu,  5 May 2022 06:08:43 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id x52so3592445pfu.11;
-        Thu, 05 May 2022 06:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ygWgolZv0vpFbsXb9qRTpWXxJ3LS36RLc/Ro0DAsCd8=;
-        b=YUGiQ+r1PwViVgJIpKNS9sjK5Sl5tGqSNWQ3nBGzVihmoy8DVQnZDQnr/+R1ye3f1t
-         nUrdHk7eZnC2r+o+sV1pgnDNZJK1qdT4GBD7L6CJJtpaLz6LfRpSdYvsjTwjIJo51+Oy
-         +Cn6Ef3aeVPzbqo8R1sSl3U9LihbWk/z0fNnneGybSMDMU5svtlMTaQG0C40d8Hg4haN
-         7oH9y+yZdSVTrcews7k97lQLb4fcDhMxNIII5OjQPxjQ7SW8FDTOB60v5fQCv3AJgrDO
-         X6LsJI54hJ0NBLbv2Jl/82ItOtGmurheT3RNv63ldTkrvf7mG85Zh5JL/ubob/e7zUDP
-         X+Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ygWgolZv0vpFbsXb9qRTpWXxJ3LS36RLc/Ro0DAsCd8=;
-        b=Q2Y7rXrFHYfWfgZ2ajZZOLfakNqLewygMwifn3kQ6h1NcPmhuWfWLrGzJhMsxyaZmt
-         0lPb/w2o4HMDjle/TzZyTFSm3NAYHl+zEbFl3/GXUFjteHiQ8CJERjC4gXJQT3XV1jui
-         qvO6C5Dywsd3Af/xqi8GYk3Xqzkpf8azJzmNZyI11u8vs7fnlcs+9qnOWmKOF5X0S/a7
-         cZFS/LBqJCCdQBYeexI6ES4vmdnZLQ79kkXbmSNS0EpGExidEFkrEgBELI4pbmXSkVtd
-         1qFwGMZ15ZDvvtN4XDWScVmzOfSrPx99LPJWaxHR2a6L7JDgNYO3VpF9EmsA9R1CuWF4
-         Q3lQ==
-X-Gm-Message-State: AOAM533AGHaCrhkhXt1jqWp/CKcXyyOCX9bUP6S5LKziiswljfNnkrr+
-        /D3YXwNQv9H1jOYstZk279Jy6NpEEBaOPjBW
-X-Google-Smtp-Source: ABdhPJyuxZPZsvp6n9JXzaCaRV3rMdMn/XZ06g/dvH49I+5zl53Y9fPDzVmIuBEyTiJb3DA9Y/Qb9w==
-X-Received: by 2002:a63:89c3:0:b0:3ab:238f:134d with SMTP id v186-20020a6389c3000000b003ab238f134dmr22473029pgd.387.1651756122725;
-        Thu, 05 May 2022 06:08:42 -0700 (PDT)
-Received: from localhost.localdomain ([61.16.102.75])
-        by smtp.gmail.com with ESMTPSA id p2-20020a1709027ec200b0015e8d4eb2d9sm1431824plb.291.2022.05.05.06.08.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 May 2022 06:08:42 -0700 (PDT)
-From:   kerneljasonxing@gmail.com
-To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kerneljasonxing@gmail.com,
-        Jason Xing <xingwanli@kuaishou.com>
-Subject: [PATCH net-next] net: use the %px format to display sock
-Date:   Thu,  5 May 2022 21:08:26 +0800
-Message-Id: <20220505130826.40914-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        with ESMTP id S238597AbiEEOBX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 May 2022 10:01:23 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71ADE220E4;
+        Thu,  5 May 2022 06:57:44 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KvFc53K4NzfbJY;
+        Thu,  5 May 2022 21:56:37 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 5 May
+ 2022 21:57:42 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, <christylee@fb.com>
+CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] perf: Fix pass 0 to PTR_ERR
+Date:   Thu, 5 May 2022 21:57:13 +0800
+Message-ID: <20220505135713.18496-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+Passing NULL to PTR_ERR will result in 0 (success), also move
+evlist__find_evsel_by_str() behind for minor optimization.
 
-I found that the current socket address, say 000000009842d952, cannot be
-searched in messages because %p format function hashes and converts it
-into an unique identifier which is currently useless for debugging.
-
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+Fixes: 924b1cd61148 ("perf: Stop using bpf_map__def() API")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- net/ipv4/af_inet.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/util/bpf-loader.c | 15 ++++++++-------
+ tools/perf/util/bpf_map.c    |  2 +-
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index 72fde28..b17a4d4 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -139,12 +139,12 @@ void inet_sock_destruct(struct sock *sk)
- 	sk_mem_reclaim_final(sk);
+diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+index f8ad581ea247..b301ffc8c6e7 100644
+--- a/tools/perf/util/bpf-loader.c
++++ b/tools/perf/util/bpf-loader.c
+@@ -1253,21 +1253,22 @@ __bpf_map__config_event(struct bpf_map *map,
+ 			struct parse_events_term *term,
+ 			struct evlist *evlist)
+ {
+-	struct bpf_map_op *op;
+ 	const char *map_name = bpf_map__name(map);
+-	struct evsel *evsel = evlist__find_evsel_by_str(evlist, term->val.str);
++	struct bpf_map_op *op;
++	struct evsel *evsel;
  
- 	if (sk->sk_type == SOCK_STREAM && sk->sk_state != TCP_CLOSE) {
--		pr_err("Attempt to release TCP socket in state %d %p\n",
-+		pr_err("Attempt to release TCP socket in state %d %px\n",
- 		       sk->sk_state, sk);
- 		return;
- 	}
- 	if (!sock_flag(sk, SOCK_DEAD)) {
--		pr_err("Attempt to release alive inet socket %p\n", sk);
-+		pr_err("Attempt to release alive inet socket %px\n", sk);
- 		return;
++	if (!map) {
++		pr_debug("Map '%s' is invalid\n", map_name);
++		return -BPF_LOADER_ERRNO__INTERNAL;
++	}
++
++	evsel = evlist__find_evsel_by_str(evlist, term->val.str);
+ 	if (!evsel) {
+ 		pr_debug("Event (for '%s') '%s' doesn't exist\n",
+ 			 map_name, term->val.str);
+ 		return -BPF_LOADER_ERRNO__OBJCONF_MAP_NOEVT;
  	}
  
+-	if (!map) {
+-		pr_debug("Map '%s' is invalid\n", map_name);
+-		return PTR_ERR(map);
+-	}
+-
+ 	/*
+ 	 * No need to check key_size and value_size:
+ 	 * kernel has already checked them.
+diff --git a/tools/perf/util/bpf_map.c b/tools/perf/util/bpf_map.c
+index c863ae0c5cb5..c72aee6a91ee 100644
+--- a/tools/perf/util/bpf_map.c
++++ b/tools/perf/util/bpf_map.c
+@@ -36,7 +36,7 @@ int bpf_map__fprintf(struct bpf_map *map, FILE *fp)
+ 		return fd;
+ 
+ 	if (!map)
+-		return PTR_ERR(map);
++		return -EINVAL;
+ 
+ 	err = -ENOMEM;
+ 	key = malloc(bpf_map__key_size(map));
 -- 
-1.8.3.1
+2.17.1
 
