@@ -2,139 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D89151C292
-	for <lists+bpf@lfdr.de>; Thu,  5 May 2022 16:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F47351C3A5
+	for <lists+bpf@lfdr.de>; Thu,  5 May 2022 17:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380639AbiEEObS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 May 2022 10:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
+        id S243668AbiEEPTJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 May 2022 11:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbiEEObR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 May 2022 10:31:17 -0400
-Received: from us-smtp-delivery-74.mimecast.com (us-smtp-delivery-74.mimecast.com [170.10.133.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7268319C25
-        for <bpf@vger.kernel.org>; Thu,  5 May 2022 07:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1651760857;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hz8cN3gu7AH5J5jQIlr6+13kmwxut9ycO89aQGaXRjo=;
-        b=gGm/eOSLp7Gr5275ZDi6X+l0di8QO+vvX9DFTdCCoTMe8dqlt0SpB6BCoyaBNmc4JZLU2G
-        YgYm0EiLUSHLx4m63XqWTuKN0rx6O//xuWZxIcCI2ENjvMEiy0Ny6wYv/DvKUQd96KEuxU
-        0rtDIICTfh7cdY0BCobNsgqbb08vilQ=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-460-AOz0g4y_NYufiIC4ZmKOXA-1; Thu, 05 May 2022 10:27:36 -0400
-X-MC-Unique: AOz0g4y_NYufiIC4ZmKOXA-1
-Received: by mail-ed1-f72.google.com with SMTP id r30-20020a50d69e000000b00425e1e97671so2420481edi.18
-        for <bpf@vger.kernel.org>; Thu, 05 May 2022 07:27:36 -0700 (PDT)
+        with ESMTP id S242784AbiEEPSw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 May 2022 11:18:52 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F294F47054;
+        Thu,  5 May 2022 08:15:12 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id y3so9301562ejo.12;
+        Thu, 05 May 2022 08:15:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P9U8VtHTMpxS3daOmFxvM8CiEOLd4g2YjivTRqBj1gg=;
+        b=pylu+FcH16PRiwGxvsJ4Lvm8VVlU35vFQHYuCBoWRDRpESWBGDwGuKu0dR9BNAcbqc
+         cKx/JvbNE+O1OdTPQl6gHPG84lxarUomOauCC5h+37/TVx6QZovXxu0XTMAu09utWHin
+         B/eI9jpxuzn/9GpIC0QSQx88YVt0w5HNWJVybF52KdYjdZjezHNF3nZKTU9MuzUAzgvl
+         2E+gls8B87ahmQK74ZKRCUuaVIBgyVu1fyuwjwDFDVDcd/CxOz8RsmsRtJc7X9Gnzb6D
+         VDPU8wCLdF5sluzx4F1K3U6m00TU/VoR2kCAedh8Qq955i57wWN5IVEaQf0zTaNKqaTM
+         0kGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=hz8cN3gu7AH5J5jQIlr6+13kmwxut9ycO89aQGaXRjo=;
-        b=4nhBCQ5MgRT/w7BJVixLJQGRkTvrjrordAWdx9vwUoC2KUt8qY9Y11WLtOwKSyf4Uu
-         T/Ugsft12aS722LZQoHV2eROKty+iWe/9P8a9FymVh2JaBjgRaSDfA02UFu8EF0m3LmG
-         YSAXpF714tGcJnUewxY9dfY1dai7M8GrYbqnU3K1siEaDoHXvwTYln61nlt7UwR4UJJJ
-         Io5YkxoepHk2tn6cPTzQ4qo+hRa4JWSW8RclzmV+rNtTou89Yf3HnaNCzcq2OaoxsRwF
-         UeXIiSy1kOUg3WE0a7HW5x9HShs6SIiRjmiUg6OtOCJwJSCI/fSf7NAxeW4Em/qljEM0
-         mDgA==
-X-Gm-Message-State: AOAM533lTfezZwc3paPxf886JZCi13ilHKnNHdSLrQqn/dVILcT/hkG3
-        5G8UaPzfQInmJrHp9RXFiA2aSfriOdzNV7lDtEmqUSecCPKj69ObH4VZjcDVLLLDByKYyWpKHAq
-        +ih/uQizWfMNP
-X-Received: by 2002:a17:907:6294:b0:6e1:ea4:74a3 with SMTP id nd20-20020a170907629400b006e10ea474a3mr26223924ejc.168.1651760854354;
-        Thu, 05 May 2022 07:27:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwv7wnqPWL1ffvs/IM4PL/CBY4zMVBL4inCsI3m/n3fhEsCLH0JW5UDS797AgWj/J9aY6TrsQ==
-X-Received: by 2002:a17:907:6294:b0:6e1:ea4:74a3 with SMTP id nd20-20020a170907629400b006e10ea474a3mr26223834ejc.168.1651760853491;
-        Thu, 05 May 2022 07:27:33 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id k20-20020a170906971400b006f3ef214dc9sm805808ejx.47.2022.05.05.07.27.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P9U8VtHTMpxS3daOmFxvM8CiEOLd4g2YjivTRqBj1gg=;
+        b=Lao8he9CrL6bv3MSTmtyEmYok3GQv3hALya7AXShs8VChg19TrovSr4koYOJv7ukZG
+         CtWvetLGm+3JNP7JViVbW0PNpegHoparhK8jOFDlszjp02TK/3gXygi+WXJFUq15u9ne
+         6YAOoVb6MhKkUEZbKbQBy/0LhH16WA4uR+4WvQbfgM8SF4olev/e2gtgZRcY5KB621Vh
+         klutoSfk2ITQ2GsogK55setrm7cpAmyuKwKmIJcnvghG/diUOUT65WQaJIlsoR/cAQXA
+         rYveVoWsFZQFRkJbMtoN1CC+6qf09KJugKLQ2gc/zYSjoIAx2WvoR0ZLVq0OBSDszA0O
+         w1vA==
+X-Gm-Message-State: AOAM531nRd1/OicxJIRZBE6AgFigUmUbgckayVCQbwBWUU/CKEDOECBa
+        cC8VW7UUbMvoYcA86JsN1bU=
+X-Google-Smtp-Source: ABdhPJxbaNdvNnwR7fqSaGdLSEy4BrGkyc6cPNhTM1hE34Dag/JoDOsa5U4KH+iru1hh2yxHWfyfyg==
+X-Received: by 2002:a17:907:1c87:b0:6f0:29ea:cc01 with SMTP id nb7-20020a1709071c8700b006f029eacc01mr26942736ejc.671.1651763711293;
+        Thu, 05 May 2022 08:15:11 -0700 (PDT)
+Received: from skbuf ([188.25.160.86])
+        by smtp.gmail.com with ESMTPSA id b21-20020aa7c915000000b0042617ba6380sm954779edt.10.2022.05.05.08.15.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 May 2022 07:27:32 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B4CF734D4E7; Thu,  5 May 2022 16:27:31 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     shaozhengchao <shaozhengchao@huawei.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>
-Cc:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "bigeasy@linutronix.de" <bigeasy@linutronix.de>,
-        "imagedong@tencent.com" <imagedong@tencent.com>,
-        "petrm@nvidia.com" <petrm@nvidia.com>,
-        "memxor@gmail.com" <memxor@gmail.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "weiyongjun (A)" <weiyongjun1@huawei.com>,
-        yuehaibing <yuehaibing@huawei.com>
-Subject: Re: =?utf-8?B?562U5aSNOg==?= [PATCH bpf-next] bpf/xdp: Can't detach
- BPF XDP prog if not
- exist
-In-Reply-To: <594b5198d54c4c729728c20d167d9c2d@huawei.com>
-References: <20220504035207.98221-1-shaozhengchao@huawei.com>
- <875ymlwnmy.fsf@toke.dk> <594b5198d54c4c729728c20d167d9c2d@huawei.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 05 May 2022 16:27:31 +0200
-Message-ID: <87tua43vho.fsf@toke.dk>
+        Thu, 05 May 2022 08:15:10 -0700 (PDT)
+Date:   Thu, 5 May 2022 18:15:07 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Arun.Ramadoss@microchip.com
+Cc:     songliubraving@fb.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        robh+dt@kernel.org, andrew@lunn.ch, devicetree@vger.kernel.org,
+        linux@armlinux.org.uk, andrii@kernel.org,
+        UNGLinuxDriver@microchip.com, john.fastabend@gmail.com,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com, kuba@kernel.org,
+        kpsingh@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, kafai@fb.com, yhs@fb.com,
+        krzysztof.kozlowski+dt@linaro.org, davem@davemloft.net,
+        Woojung.Huh@microchip.com
+Subject: Re: [Patch net-next v13 07/13] net: dsa: microchip: add LAN937x SPI
+ driver
+Message-ID: <20220505151507.5fp3lur74gs4faee@skbuf>
+References: <20220504151755.11737-1-arun.ramadoss@microchip.com>
+ <20220504151755.11737-8-arun.ramadoss@microchip.com>
+ <20220504200726.pn7y73gt7wc2dpsg@skbuf>
+ <52e682a1bcd2aac1097f2b4f1948066fe5bb6924.camel@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52e682a1bcd2aac1097f2b4f1948066fe5bb6924.camel@microchip.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-shaozhengchao <shaozhengchao@huawei.com> writes:
+On Thu, May 05, 2022 at 10:32:17AM +0000, Arun.Ramadoss@microchip.com wrote:
+> > >  static int lan937x_switch_init(struct ksz_device *dev)
+> > >  {
+> > > +     int ret;
+> > > +
+> > >       dev->ds->ops = &lan937x_switch_ops;
+> > > 
+> > > +     /* Check device tree */
+> > > +     ret = lan937x_check_device_id(dev);
+> > > +     if (ret < 0)
+> > > +             return ret;
+> > > +
+> > 
+> > Can't this be called from lan937x_spi_probe() directly, why do you
+> > need
+> > to go through lan937x_switch_register() first?
+> 
+> lan937x_check_device_id function compares the dev->chip_id with the
+> lan937x_switch_chip array and populate the some of the parameters of
+> struct ksz_dev. The dev->chip_id is populated using the dev->dev_ops-
+> >detect in the ksz_switch_register function. If lan937x_check_device_id
+> needs to be called in spi_probe, then chip_id has to be identified as
+> part of spi_probe function. Since ksz_switch_register handles the
+> identifying the chip_id, checking the device_id is part of switch_init.
+>  
+>  if (dev->dev_ops->detect(dev))
+>              return -EINVAL;
+>  
+>  ret = dev->dev_ops->init(dev);
+>  if (ret)
+>             return ret;
 
-> Thank you for your reply. I wiil change sample application firstly.
-> But if kernel does nothing and return 0, maybe user will think setup
-> is OK, actually It failed. Is this acceptable?
+Whatever you do, please use a common pattern for all of ksz9477, ksz8,
+and your lan937x. This includes validation of chip id, placement of the
+chip_data and dev_ops structures, and reuse as much logic as possible.
+The key is to limit the chip-specific information to structured data
+(tables) wherever possible and let common code deal with them.
 
-Your patch was about detach; what has that got to do with "setup is OK"?
+For example there is no reason why struct ksz_chip_data is redefined for
+every switch, why copying from "chip" to "dev" is duplicated for every
+switch, and yet, why every other switch copies from "chip" to "dev" in
+the "switch_init" function yet lan937x does it from "check_device_id".
+So much boilerplate, yet different in subtle ways, makes the code very
+unpleasant to review.
 
-As for detaching, it's possible to write the application in a way that
-it will always get a consistent result. There are basically two cases
-when using netlink to detach an XDP program (bpf_link has its own
-semantics, so setting that aside here):
+I'm sure you'll find a straightforward way to code up a probing function.
 
-1. The application just wants to turn off XDP entirely on the interface
-   (e.g., 'ip link set dev XXX xdp off'). In this case you just send a
-   RTM_SETLINK message with an IFLA_XDP_FD of -1, and if you don't get
-   an error you can be sure that there is now no XDP program attached.
-   Whether this was because there was already no program attached, or
-   because you just detached it doesn't really matter in this case,
-   since you're doing an unspecific detach anyway.
+> As per the comment, enable_spi_indirect_access function called twice
+> https://lore.kernel.org/netdev/20220408232557.b62l3lksotq5vuvm@skbuf/
+> I have removed the enable_spi_indirect_access in the lan937x_setup
+> function in v13 patch 6. But it actually failed our regression.
+> The SPI indirect is required for accessing the Internal phy registers.
+> We have enabled it in lan937x_init before registering the
+> mdio_register. We need it for reading the phy id.
+> And another place enabled in lan937x_setup after lan937x_switch_reset
+> function. When I removed enabling in setup function, switch_reset
+> disables the spi indirecting addressing. Because of that further phy
+> register r/w fails. In Summary, we need to enable spi indirect access
+> in both the places, one for mdio_register and another after
+> switch_reset. 
+> 
+> Can I enable it both the places? Kindly suggest. 
 
-2. You attached a program earlier, and now you want to detach that (and
-   only that) program. Or, equivalently, you queried the link and want
-   to detach the program you know is attached there. In this case you
-   send an RTM_SETLINK message with an IFLA_XDP_FD of -1 and an
-   IFLA_XDP_EXPECTED_FD referring to the existing program. In this case
-   you will get an error if that specific program is not in fact
-   attached, whether because it was detached or swapped out in the
-   meantime.
+So you call lan937x_reset_switch() as the first thing in ds->ops->setup(),
+and this momentarily breaks the earlier MDIO bus setup done from probe
+-> ksz_switch_register() -> dev_ops->init().
 
-I don't see how case 1. is improved by returning ENOENT if there is no
-program attached; if you care about detaching a specific program you'd
-use case 2. anyway, and if you just want to check if a program is
-attached, you'd do an RTM_GETLINK.
-
--Toke
-
+So why don't you move the lan937x_enable_spi_indirect_access() and
+lan937x_mdio_register() calls to ds->ops->setup(), _after_ the switch
+soft reset, then?
