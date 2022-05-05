@@ -2,100 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06C151B471
-	for <lists+bpf@lfdr.de>; Thu,  5 May 2022 02:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4391C51B79F
+	for <lists+bpf@lfdr.de>; Thu,  5 May 2022 07:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237791AbiEEAFN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 May 2022 20:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
+        id S232518AbiEEF7Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 May 2022 01:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352325AbiEDXyA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 May 2022 19:54:00 -0400
-Received: from mail-oa1-x41.google.com (mail-oa1-x41.google.com [IPv6:2001:4860:4864:20::41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7E315A0E
-        for <bpf@vger.kernel.org>; Wed,  4 May 2022 16:50:22 -0700 (PDT)
-Received: by mail-oa1-x41.google.com with SMTP id 586e51a60fabf-e2fa360f6dso2799267fac.2
-        for <bpf@vger.kernel.org>; Wed, 04 May 2022 16:50:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ampHH5WJLIBWSsxWwzVjbk5pO9UBFxn81pZ6QIDzZtY=;
-        b=YEwNer+zbOytdPczGSjCWUpruq3dWGV+AT1+vSvQZM3wLk8F6agUMIoiRFtI8JuOif
-         3cj/FssKZ763tQMle6QbmikQ6w3kh8HjwHGbGXvmdu0jxycrgUb+Rx2aaovTqzStpv6a
-         5NpmZ28LXyOm6MTO3YoBfN9usFKafzrAkGNnCYUVTLGBkW7vwki9H0sv1RgL0vqYaUcV
-         PSmTUdfzGx++9fjWvg8qHPTtK/H0/uVv6vMK9EmUotLfjiGVhiOoWghjKVUayLpwzZMg
-         p+JkaGXYDhc5DtHEuzvHk+VQc3GGBbUfDJ8GzuYg7EZYWb4UDSMTwB+cgSok6+foGz/8
-         klmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ampHH5WJLIBWSsxWwzVjbk5pO9UBFxn81pZ6QIDzZtY=;
-        b=MK5SnJIKTp1EgckPiIfTwgkcDxjum5KZUJwN7nA5W76u22/JVTZ2v5GWjs1Y+yLio3
-         EMP22M6O0dA9jfHu+3NtZXTTK45lBfuhxjj9miqbaBLzLvjFFpiET+O5sw53vV7Yl/Zq
-         wJWvDsigwMboq3WQu1fsf94SCbjHSSxN4H0DGsgjKZftkq1DnLctaUVgKy5jWIxzXcJc
-         VleLPD8dJCEAgRocs8nDVFQ0uwn6AJwzzZplGW5Ogo35APnW5a+K8uIs1a/V7Oswd0Pj
-         v1m9IeqJqayhH9PXLvbnZ0iGJRESoxcJ+tql3CRPNJAeHq4UijHutquq7QUXBoo2zoAF
-         +heA==
-X-Gm-Message-State: AOAM532c7TkrlbK82hetWBv9gIVj50OeozIgbSASAmg1kQYH4n27if1z
-        gnJtyZhR02LCNIetQzDe9dYVm7WJrZlNCNF1bJa4VLmBOaP4bg==
-X-Google-Smtp-Source: ABdhPJx7IBOxhDL7n8H2JjP8pWv8vaa/M3v/hCII4VltZvlf6mQzcUfLxf0CFddLvz6bEtRCB2lG1x+Sk3XgGfltZ58=
-X-Received: by 2002:a05:6871:453:b0:ed:d2f8:8ecc with SMTP id
- e19-20020a056871045300b000edd2f88eccmr1020666oag.228.1651708221699; Wed, 04
- May 2022 16:50:21 -0700 (PDT)
+        with ESMTP id S231531AbiEEF7O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 May 2022 01:59:14 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A748B1AD8E;
+        Wed,  4 May 2022 22:55:34 -0700 (PDT)
+X-UUID: b391feff2acf4deea7391f61bc0538e2-20220505
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.4,REQID:3946083e-4c33-41de-bcf0-50e7fa125dcf,OB:0,LO
+        B:0,IP:0,URL:8,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,RULE:Release_Ham,AC
+        TION:release,TS:108
+X-CID-INFO: VERSION:1.1.4,REQID:3946083e-4c33-41de-bcf0-50e7fa125dcf,OB:0,LOB:
+        0,IP:0,URL:8,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,RULE:Spam_GS981B3D,AC
+        TION:quarantine,TS:108
+X-CID-META: VersionHash:faefae9,CLOUDID:b2474316-2e53-443e-b81a-655c13977218,C
+        OID:6060dbeaf70c,Recheck:0,SF:28|16|19|48,TC:nil,Content:0,EDM:-3,File:nil
+        ,QS:0,BEC:nil
+X-UUID: b391feff2acf4deea7391f61bc0538e2-20220505
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <lina.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1907580698; Thu, 05 May 2022 13:55:30 +0800
+Received: from mtkmbs07n1.mediatek.inc (172.21.101.16) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Thu, 5 May 2022 13:55:29 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 5 May 2022 13:55:29 +0800
+Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 5 May 2022 13:55:28 +0800
+From:   Lina Wang <lina.wang@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maciej enczykowski <maze@google.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <llvm@lists.linux.dev>,
+        Lina Wang <lina.wang@mediatek.com>
+Subject: [PATCH v6 1/2] net: fix wrong network header length
+Date:   Thu, 5 May 2022 13:48:49 +0800
+Message-ID: <20220505054850.4878-1-lina.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Received: by 2002:a05:6802:1a9:0:0:0:0 with HTTP; Wed, 4 May 2022 16:50:21
- -0700 (PDT)
-Reply-To: ortegainvestmmentforrealinvest@gmail.com
-From:   Info <joybhector64@gmail.com>
-Date:   Thu, 5 May 2022 05:20:21 +0530
-Message-ID: <CAP7KLYjEvQy1NFXFAsF7L852zjDQ2sTySHZJ=cnA1gAffqJZfw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2001:4860:4864:20:0:0:0:41 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [joybhector64[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [joybhector64[at]gmail.com]
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-I am an investor. I came from the USA and I have many investments all
-over the world.
+When clatd starts with ebpf offloaing, and NETIF_F_GRO_FRAGLIST is enable,
+several skbs are gathered in skb_shinfo(skb)->frag_list. The first skb's
+ipv6 header will be changed to ipv4 after bpf_skb_proto_6_to_4,
+network_header\transport_header\mac_header have been updated as ipv4 acts,
+but other skbs in frag_list didnot update anything, just ipv6 packets.
 
-I want you to partner with me to invest in your country I am into many
-investment such as real Estate or buying of properties i can also
-invest money in any of existing business with equity royalty or by %
-percentage so on,
-Warm regards
+udp_queue_rcv_skb will call skb_segment_list to traverse other skbs in
+frag_list and make sure right udp payload is delivered to user space.
+Unfortunately, other skbs in frag_list who are still ipv6 packets are
+updated like the first skb and will have wrong transport header length.
+
+e.g.before bpf_skb_proto_6_to_4,the first skb and other skbs in frag_list
+has the same network_header(24)& transport_header(64), after
+bpf_skb_proto_6_to_4, ipv6 protocol has been changed to ipv4, the first
+skb's network_header is 44,transport_header is 64, other skbs in frag_list
+didnot change.After skb_segment_list, the other skbs in frag_list has
+different network_header(24) and transport_header(44), so there will be 20
+bytes different from original,that is difference between ipv6 header and
+ipv4 header. Just change transport_header to be the same with original.
+
+Actually, there are two solutions to fix it, one is traversing all skbs
+and changing every skb header in bpf_skb_proto_6_to_4, the other is
+modifying frag_list skb's header in skb_segment_list. Considering
+efficiency, adopt the second one--- when the first skb and other skbs in
+frag_list has different network_header length, restore them to make sure
+right udp payload is delivered to user space.
+
+Signed-off-by: Lina Wang <lina.wang@mediatek.com>
+---
+ net/core/skbuff.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 10bde7c6db44..e8006e0a1b25 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -3897,7 +3897,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+ 	unsigned int delta_len = 0;
+ 	struct sk_buff *tail = NULL;
+ 	struct sk_buff *nskb, *tmp;
+-	int err;
++	int len_diff, err;
+ 
+ 	skb_push(skb, -skb_network_offset(skb) + offset);
+ 
+@@ -3937,9 +3937,11 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+ 		skb_push(nskb, -skb_network_offset(nskb) + offset);
+ 
+ 		skb_release_head_state(nskb);
++		len_diff = skb_network_header_len(nskb) - skb_network_header_len(skb);
+ 		__copy_skb_header(nskb, skb);
+ 
+ 		skb_headers_offset_update(nskb, skb_headroom(nskb) - skb_headroom(skb));
++		nskb->transport_header += len_diff;
+ 		skb_copy_from_linear_data_offset(skb, -tnl_hlen,
+ 						 nskb->data - tnl_hlen,
+ 						 offset + tnl_hlen);
+-- 
+2.18.0
+
