@@ -2,270 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B047E51CA2C
-	for <lists+bpf@lfdr.de>; Thu,  5 May 2022 22:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C073651CBDF
+	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 00:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385679AbiEEUNV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 May 2022 16:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
+        id S1386163AbiEEWKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 May 2022 18:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbiEEUNV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 May 2022 16:13:21 -0400
-Received: from us-smtp-delivery-74.mimecast.com (us-smtp-delivery-74.mimecast.com [170.10.133.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E20645F8EB
-        for <bpf@vger.kernel.org>; Thu,  5 May 2022 13:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1651781379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=isyTAQOpnJ50Qci6kWwR+BCUDagaIaL4jDCJfOF/3QY=;
-        b=BgKE7Rbi2iHYEYaMC+uZtTKXczvmyebRUiKTpWDY2KHjYAkEY0QOkc10G3uhRVsK/x6Arw
-        W0TqgRE9EpWxzHOrqV+n5vKJCOjDJ5SLWZcDrnIAQTcikgC2khsobGN22RSo/HDhqg6Mbl
-        YDpEcxof+dOR2oIzWrtIrBd9JJ2qIE0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-660-a8CvI7QEOiKKwxPCxOQhpQ-1; Thu, 05 May 2022 16:09:38 -0400
-X-MC-Unique: a8CvI7QEOiKKwxPCxOQhpQ-1
-Received: by mail-wm1-f72.google.com with SMTP id n26-20020a1c721a000000b003941ea1ced7so2052213wmc.7
-        for <bpf@vger.kernel.org>; Thu, 05 May 2022 13:09:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=isyTAQOpnJ50Qci6kWwR+BCUDagaIaL4jDCJfOF/3QY=;
-        b=GBCLtNJFunZJJ7fnKNiTm2AKfdt6qLVs9pFbUPqjvUca06/5ZDE0eFi8CYYqQq0l6F
-         nKjXluJFiKuivLtyiQu6eX4QsAdWe4X1o5O9kblWwGTXJ0KpnYxaVjBAzgbaR7Ohjuha
-         7bKxnUwZZx/FzJ7G9nWWnVr7DnpHmt8lO1qF/ZBnXFvxzeKAhZ3FPHzZAfhVBBMxIVXh
-         D3olrqtCOxkhhdXgubUsMVLeDk+twEifcOlnKKzweZiPoMIe9Vo0B2HPqpAeWDePm1mE
-         vfMSDasd1Gd16a6plBk61/L34d1r+pw2dWGfNOkvHMYV7sDPxITX2lywkTtRcm6Qs5cf
-         nPmQ==
-X-Gm-Message-State: AOAM530ggU1GlbvVdB7Y4DIVFw+BElslPxkh/n2bsj6iNxmphuzSP8PM
-        mrTr8vCFTNhO2nyIGl7oDHOBaXpkamkHOQpMJBsv8+aPU97JRMOoAK2cSwBLTwUQKfFpjUXmXU1
-        KWTrb8DBfSvwZ
-X-Received: by 2002:a7b:c081:0:b0:394:789b:915 with SMTP id r1-20020a7bc081000000b00394789b0915mr26289wmh.105.1651781377119;
-        Thu, 05 May 2022 13:09:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyNpu3Kq1OQpeGcBQJAWlDOeFgHLyIekOeIGdXroUkilc1GR7GLGJg7Y41bl+ujcpZFvSbDRA==
-X-Received: by 2002:a7b:c081:0:b0:394:789b:915 with SMTP id r1-20020a7bc081000000b00394789b0915mr26267wmh.105.1651781376904;
-        Thu, 05 May 2022 13:09:36 -0700 (PDT)
-Received: from localhost (net-93-71-56-156.cust.vodafonedsl.it. [93.71.56.156])
-        by smtp.gmail.com with ESMTPSA id ay33-20020a05600c1e2100b003942a244ec8sm2157597wmb.13.2022.05.05.13.09.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 May 2022 13:09:36 -0700 (PDT)
-Date:   Thu, 5 May 2022 22:09:34 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        tirthendu.sarkar@intel.com, daniel@iogearbox.net,
-        intel-wired-lan@lists.osuosl.org, toke@redhat.com, ast@kernel.org,
-        andrii@kernel.org, jbrouer@redhat.com, kuba@kernel.org,
-        bpf@vger.kernel.org, pabeni@redhat.com, davem@davemloft.net,
-        magnus.karlsson@intel.com
-Subject: Re: [Intel-wired-lan] [PATCH net-next] i40e: add xdp frags support
- to ndo_xdp_xmit
-Message-ID: <YnQu/iS7zXEzKWJ0@lore-desk>
-References: <c4e15c421c5579da7bfc77512e8d40b6a76beae1.1651769002.git.lorenzo@kernel.org>
- <469d3c7f-fcd1-3e8b-b02d-4b6e1826fa67@molgen.mpg.de>
+        with ESMTP id S236520AbiEEWKH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 May 2022 18:10:07 -0400
+Received: from posti.softwille.fi (posti.softwille.fi [84.20.137.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A8435DD38;
+        Thu,  5 May 2022 15:06:22 -0700 (PDT)
+Received: from w530 (unknown [192.168.0.57])
+        by posti.softwille.fi (Postfix) with ESMTPSA id 60992BFBE;
+        Fri,  6 May 2022 01:06:21 +0300 (EEST)
+From:   "Wille Kuutti" <wille.kuutti@kuutti.com>
+To:     "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Daniel Borkmann'" <daniel@iogearbox.net>,
+        "'Andrii Nakryiko'" <andrii@kernel.org>,
+        "'Martin KaFai Lau'" <kafai@fb.com>,
+        "'Song Liu'" <songliubraving@fb.com>,
+        "'Yonghong Song'" <yhs@fb.com>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'KP Singh'" <kpsingh@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Dumazet'" <edumazet@google.com>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Paolo Abeni'" <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net/core: Make bpf_skb_adjust_room BPF helper available for packets with non IPv4 or IPv6 payload
+Date:   Fri, 6 May 2022 01:06:20 +0300
+Message-ID: <00fd01d860cc$59d5fa60$0d81ef20$@kuutti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lvbnpHdqnGK8xMVN"
-Content-Disposition: inline
-In-Reply-To: <469d3c7f-fcd1-3e8b-b02d-4b6e1826fa67@molgen.mpg.de>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AdhgzElv/yEbhyXvR9OrydhkBONgSg==
+Content-Language: fi
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Network traffic is not limited to only IPv4 and IPv6 protocols, but several
+other L3 networking protocols are in common use in several
+applications and deployment scenarios which also could utilize BPF. This
+change enables the bpf_skb_adjust_room BPF helper to adjust the
+room after the MAC header using BPF_ADJ_ROOM_MAC option for packets with any
+L3 payload. For BPF_ADJ_ROOM_NET option only IPv4 and IPv6 are
+still supported as each L3 protocol would need it's own logic to determine
+the length of the L3 header to enable adjustment after the L3
+headers.
 
---lvbnpHdqnGK8xMVN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Wille Kuutti <wille.kuutti@kuutti.com>
+---
+net/core/filter.c | 5 +++--
+1 file changed, 3 insertions(+), 2 deletions(-)
 
->=20
->=20
-> Am 05.05.22 um 18:48 schrieb Lorenzo Bianconi:
-> > Add the capability to map non-linear xdp frames in XDP_TX and ndo_xdp_x=
-mit
-> > callback.
-> >=20
-> > Tested-by: Sarkar Tirthendu <tirthendu.sarkar@intel.com>
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >   drivers/net/ethernet/intel/i40e/i40e_txrx.c | 87 +++++++++++++++------
-> >   1 file changed, 62 insertions(+), 25 deletions(-)
-> >=20
-> > diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/=
-ethernet/intel/i40e/i40e_txrx.c
-> > index 7bc1174edf6b..b7967105a549 100644
-> > --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > @@ -2509,6 +2509,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx=
-_ring, int budget)
-> >   			hard_start =3D page_address(rx_buffer->page) +
-> >   				     rx_buffer->page_offset - offset;
-> >   			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
-> > +			xdp_buff_clear_frags_flag(&xdp);
-> >   #if (PAGE_SIZE > 4096)
-> >   			/* At larger PAGE_SIZE, frame_sz depend on len size */
-> >   			xdp.frame_sz =3D i40e_rx_frame_truesize(rx_ring, size);
-> > @@ -3713,35 +3714,55 @@ u16 i40e_lan_select_queue(struct net_device *ne=
-tdev,
-> >   static int i40e_xmit_xdp_ring(struct xdp_frame *xdpf,
-> >   			      struct i40e_ring *xdp_ring)
-> >   {
-> > -	u16 i =3D xdp_ring->next_to_use;
-> > -	struct i40e_tx_buffer *tx_bi;
-> > -	struct i40e_tx_desc *tx_desc;
-> > +	struct skb_shared_info *sinfo =3D xdp_get_shared_info_from_frame(xdpf=
-);
-> > +	u8 nr_frags =3D unlikely(xdp_frame_has_frags(xdpf)) ? sinfo->nr_frags=
- : 0;
-> > +	u16 i =3D 0, index =3D xdp_ring->next_to_use;
-> > +	struct i40e_tx_buffer *tx_head =3D &xdp_ring->tx_bi[index];
-> > +	struct i40e_tx_buffer *tx_bi =3D tx_head;
-> > +	struct i40e_tx_desc *tx_desc =3D I40E_TX_DESC(xdp_ring, index);
-> >   	void *data =3D xdpf->data;
-> >   	u32 size =3D xdpf->len;
-> > -	dma_addr_t dma;
-> > -	if (!unlikely(I40E_DESC_UNUSED(xdp_ring))) {
-> > +	if (unlikely(I40E_DESC_UNUSED(xdp_ring) < 1 + nr_frags)) {
-> >   		xdp_ring->tx_stats.tx_busy++;
-> >   		return I40E_XDP_CONSUMED;
-> >   	}
-> > -	dma =3D dma_map_single(xdp_ring->dev, data, size, DMA_TO_DEVICE);
-> > -	if (dma_mapping_error(xdp_ring->dev, dma))
-> > -		return I40E_XDP_CONSUMED;
-> > -	tx_bi =3D &xdp_ring->tx_bi[i];
-> > -	tx_bi->bytecount =3D size;
-> > -	tx_bi->gso_segs =3D 1;
-> > -	tx_bi->xdpf =3D xdpf;
-> > +	tx_head->bytecount =3D xdp_get_frame_len(xdpf);
-> > +	tx_head->gso_segs =3D 1;
-> > +	tx_head->xdpf =3D xdpf;
-> > -	/* record length, and DMA address */
-> > -	dma_unmap_len_set(tx_bi, len, size);
-> > -	dma_unmap_addr_set(tx_bi, dma, dma);
-> > +	for (;;) {
-> > +		dma_addr_t dma;
-> > -	tx_desc =3D I40E_TX_DESC(xdp_ring, i);
-> > -	tx_desc->buffer_addr =3D cpu_to_le64(dma);
-> > -	tx_desc->cmd_type_offset_bsz =3D build_ctob(I40E_TX_DESC_CMD_ICRC
-> > -						  | I40E_TXD_CMD,
-> > -						  0, size, 0);
-> > +		dma =3D dma_map_single(xdp_ring->dev, data, size, DMA_TO_DEVICE);
-> > +		if (dma_mapping_error(xdp_ring->dev, dma))
-> > +			goto unmap;
-> > +
-> > +		/* record length, and DMA address */
-> > +		dma_unmap_len_set(tx_bi, len, size);
-> > +		dma_unmap_addr_set(tx_bi, dma, dma);
-> > +
-> > +		tx_desc->buffer_addr =3D cpu_to_le64(dma);
-> > +		tx_desc->cmd_type_offset_bsz =3D
-> > +			build_ctob(I40E_TX_DESC_CMD_ICRC, 0, size, 0);
-> > +
-> > +		if (++index =3D=3D xdp_ring->count)
-> > +			index =3D 0;
-> > +
-> > +		if (i =3D=3D nr_frags)
-> > +			break;
-> > +
-> > +		tx_bi =3D &xdp_ring->tx_bi[index];
-> > +		tx_desc =3D I40E_TX_DESC(xdp_ring, index);
-> > +
-> > +		data =3D skb_frag_address(&sinfo->frags[i]);
-> > +		size =3D skb_frag_size(&sinfo->frags[i]);
-> > +		i++;
-> > +	}
-> > +
-> > +	tx_desc->cmd_type_offset_bsz |=3D
-> > +		cpu_to_le64(I40E_TXD_CMD << I40E_TXD_QW1_CMD_SHIFT);
-> >   	/* Make certain all of the status bits have been updated
-> >   	 * before next_to_watch is written.
-> > @@ -3749,14 +3770,30 @@ static int i40e_xmit_xdp_ring(struct xdp_frame =
-*xdpf,
-> >   	smp_wmb();
-> >   	xdp_ring->xdp_tx_active++;
-> > -	i++;
-> > -	if (i =3D=3D xdp_ring->count)
-> > -		i =3D 0;
-> > -	tx_bi->next_to_watch =3D tx_desc;
-> > -	xdp_ring->next_to_use =3D i;
-> > +	tx_head->next_to_watch =3D tx_desc;
-> > +	xdp_ring->next_to_use =3D index;
-> >   	return I40E_XDP_TX;
-> > +
-> > +unmap:
-> > +	for (;;) {
-> > +		tx_bi =3D &xdp_ring->tx_bi[index];
-> > +		if (dma_unmap_len(tx_bi, len))
-> > +			dma_unmap_page(xdp_ring->dev,
-> > +				       dma_unmap_addr(tx_bi, dma),
-> > +				       dma_unmap_len(tx_bi, len),
-> > +				       DMA_TO_DEVICE);
-> > +		dma_unmap_len_set(tx_bi, len, 0);
-> > +		if (tx_bi =3D=3D tx_head)
-> > +			break;
-> > +
-> > +		if (!index)
-> > +			index +=3D xdp_ring->count;
-> > +		index--;
-> > +	}
->=20
-> Could
->=20
-> ```
-> do {
->         tx_bi =3D &xdp_ring->tx_bi[index];
->         if (dma_unmap_len(tx_bi, len))
->                 dma_unmap_page(xdp_ring->dev,
->                                dma_unmap_addr(tx_bi, dma),
->                                dma_unmap_len(tx_bi, len),
->                                DMA_TO_DEVICE);
->         dma_unmap_len_set(tx_bi, len, 0);
->=20
->         if (!index)
->                 index +=3D xdp_ring->count;
->         index--;
-> } while (tx_bi !=3D tx_head);
-> ```
->=20
-> be used instead?
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 64470a727ef7..c6790a763c9b 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3362,7 +3362,7 @@ static u32 bpf_skb_net_base_len(const struct sk_buff
+*skb)
+        case htons(ETH_P_IPV6):
+                return sizeof(struct ipv6hdr);
+        default:
+-               return ~0U;
++               return 0U;
+        }
+}
 
-yes, it seems just a matter of test to me, doesn't it? :)
+@@ -3582,7 +3582,8 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb,
+s32, len_diff,
+        if (unlikely(len_diff_abs > 0xfffU))
+                return -EFAULT;
+        if (unlikely(proto != htons(ETH_P_IP) &&
+-                    proto != htons(ETH_P_IPV6)))
++                       proto != htons(ETH_P_IPV6) &&
++                       mode != BPF_ADJ_ROOM_MAC))
+                return -ENOTSUPP;
 
-Regards,
-Lorenzo
+        off = skb_mac_header_len(skb);
+--
+2.32.0
 
->=20
-> > +
-> > +	return I40E_XDP_CONSUMED;
-> >   }
-> >   /**
->=20
->=20
-> Kind regards,
->=20
-> Paul
->=20
-
---lvbnpHdqnGK8xMVN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYnQu/gAKCRA6cBh0uS2t
-rBQbAP40dlNi8MuEWZ6WyqSv98x5ThtQS08w7wyHrSC25YddgQEA14QUSfAVsXYM
-hFkS/P5KbbElkPb3gA8vSJSNBtEWfQw=
-=fGwN
------END PGP SIGNATURE-----
-
---lvbnpHdqnGK8xMVN--
 
