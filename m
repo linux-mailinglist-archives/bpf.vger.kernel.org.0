@@ -2,81 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE89C51E163
-	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 23:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6802551E190
+	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 00:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350903AbiEFVzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 17:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S1444679AbiEFWSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 18:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355406AbiEFVzJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 17:55:09 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1766C6FA13;
-        Fri,  6 May 2022 14:51:24 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id y11so5625004ilp.4;
-        Fri, 06 May 2022 14:51:24 -0700 (PDT)
+        with ESMTP id S241939AbiEFWSj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 18:18:39 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5C06540F;
+        Fri,  6 May 2022 15:14:54 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id e3so9521370ios.6;
+        Fri, 06 May 2022 15:14:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0H4j188mYRcN8sQWXRd1WWvL0ISYSoT0RTO3h++GtuQ=;
-        b=Vs2xhVj9PYXBDuBS0f/ikVUFzjYnQTstwaezXEJpVlnAHME/7NP/hlzk0r77I20ySs
-         gPppbe8iXsA3fkm6wirqG6/KpEgQMZzEvJRNH1DpJ/fvVGJmXp0bgZW5ZmGEGa4DsRHL
-         PsYWZLEx0I0WMfErH9FKAxr4J2Lxrk4Q6jzUt+iEFjk8swPqcGHFg4Fg2Ly5dUozuudv
-         1jzgFSoJ6B5Oqs0pVGrQN4lTC0Z+fguPgkVqN5C63ymuKD/gZeA6SB9ZzNpmom36nIvE
-         TS/82RFqct3zkg+N2NmmF0Boj11IW2A+wUPy2El35nuI56Zl0GrGD8XeRfM75+LZU3Ji
-         NJkg==
+        bh=rCTLTbLP/HCPwEyRHnS4Xntt1B1zffntB8D6OmsmIYM=;
+        b=pg0/Yt3QJEJeyRkqIy1cKjUnl4Q5IC5OVFEgPVFVI9uYOt7Xmm7edvsl6gBEjCELEg
+         SnFEiHqFqtJNoimavdRivrQjd4ET896Y+7gS9WthGdnonHoggAlP9MkvbgbP6KcJMIQl
+         YiQ0o0q2L55cEB6cjE892PJ3+EiEAMxf9ocexcwjUGMYC//ZCMkg/ArE9S/uU5/bN94+
+         zToBvUNywhFlS719I9+9aq7K/fkCLLnebbKWxol21h11RibuL5bzBKeS/i2GsyXDmcIk
+         rBHYqK3W9jk/APsnpp+ivf6nQ8PcPYp76lKw6ULV4lYD7s1gQQ+RYnIi8T821cOhijoG
+         bRAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0H4j188mYRcN8sQWXRd1WWvL0ISYSoT0RTO3h++GtuQ=;
-        b=0IcJ1YYDZL3szK7g1AzSJHgZxuQo69kx01PgZdtaKTHja3tyVf7ZgBw6GejEhU7g9F
-         Re6usAmBu7D0HcZmfIeMmfD+J4onMgFsEgf+pSbb4Cf+CYjFGaum40Ij4rZRjGy7qNOm
-         uO1ON7m6Ag8RmrhgRq5ZXw5dciPk5RqMGc7v8Tvcx7icNwQC9EdIxmHuEuJ3QgoAjJRT
-         Yzi53dJhtshBWDNPM4qronUHhjF/ycSOh2NePAnze+7uLnYvWJiaWtSoCKfZcZfp603u
-         d5BV7gkC1NLIJQTQpsvAryErvX00Qj2HHsr0L5/26Rxbb0HULaZ0mtMLf3c/J8LFZfXG
-         1Mrg==
-X-Gm-Message-State: AOAM531sdYaCODW42/sCKOSu6lWrsHKGfit+zcrSuyKcmVKZ70LCEIN4
-        umtkDkKA4ydJhDbOJUHsyuMpFmwsUCPED6J5OpA=
-X-Google-Smtp-Source: ABdhPJy538w8QL1UdWQu61v//rhuRVQiriUv8ahfZNQ3de36b/smTTpb2c3aib/Q6CWeXqjmIThBraihWSea0aQGjDE=
-X-Received: by 2002:a05:6e02:1b82:b0:2cf:199f:3b4b with SMTP id
- h2-20020a056e021b8200b002cf199f3b4bmr2090170ili.71.1651873883291; Fri, 06 May
- 2022 14:51:23 -0700 (PDT)
+        bh=rCTLTbLP/HCPwEyRHnS4Xntt1B1zffntB8D6OmsmIYM=;
+        b=QE1ZPlHhmfmfyaUe41Zlp99F0TlYN5cqXwHXfxtk1cWEPrvMul4AMQr1kZ/bFK0D+q
+         RBsRgwxZO8Ydrs+Rc/NCdgGLOT7RwMOJH72Pa7Df+nKwNRRTGaKbo/at2/bhtUubhIJD
+         LSuuFT9OM2Feu7BZa2Lwy9WkcJT1RL+32+txfq5S5JHVaSCrThhDs5uwb0vWTQpJ4jnc
+         Afq+DOz83nXufHY3Nbb88h7O8/iNDTpXDYY4rfEp6s0jgt+08m0Zg8qsxF6ca0v91M7J
+         xr5y8dh0s+kXomn2D1YG9BiRgUf7cFEs6A5mWt1KZNbB4nWTLTU5Yw6SYmOwBW1jzVFX
+         xjUw==
+X-Gm-Message-State: AOAM5332SyDtiWvYTLnVv2Au1cdbR5oiox3VIDj4HJC5xQcWDTVyODht
+        qDDBr/1nUF+yFKnWMwH80AK7+xKjm7jV8h+a+QC9goWp
+X-Google-Smtp-Source: ABdhPJx6cH8/kFAVuNSsKGTXPt73jPWXP1ujELpoKsSM82Mr15WnMzNVpnAQdo4BtqYozrL8n+V7/jh3uk/FDntTVvk=
+X-Received: by 2002:a05:6638:33a1:b0:32b:8e2b:f9ba with SMTP id
+ h33-20020a05663833a100b0032b8e2bf9bamr2370798jav.93.1651875293774; Fri, 06
+ May 2022 15:14:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220503171437.666326-1-maximmi@nvidia.com>
-In-Reply-To: <20220503171437.666326-1-maximmi@nvidia.com>
+References: <20220503150410.2d9e88aa@rorschach.local.home>
+In-Reply-To: <20220503150410.2d9e88aa@rorschach.local.home>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 May 2022 14:51:12 -0700
-Message-ID: <CAEf4BzbSO8oLK3_4Ecrx-c-o+Z6S8HMm3c_XQhZUQgpU8hfHoQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 0/5] New BPF helpers to accelerate synproxy
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 6 May 2022 15:14:43 -0700
+Message-ID: <CAEf4BzYJan2c0oy-eww++VC57ak=+QOt6a9SWUT1M__AKF8VSA@mail.gmail.com>
+Subject: Re: : [PATCH] ftrace/x86: Add FTRACE_MCOUNT_MAX_OFFSET to avoid
+ adding weak functions
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Stringer <joe@cilium.io>,
-        Florent Revest <revest@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Florian Westphal <fw@strlen.de>, pabeni@redhat.com
+        KP Singh <kpsingh@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -88,110 +77,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 3, 2022 at 10:14 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
+On Tue, May 3, 2022 at 12:04 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> The first patch of this series is a documentation fix.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 >
-> The second patch allows BPF helpers to accept memory regions of fixed
-> size without doing runtime size checks.
+> If an unused weak function was traced, it's call to fentry will still
+> exist, which gets added into the __mcount_loc table. Ftrace will use
+> kallsyms to retrieve the name for each location in __mcount_loc to display
+> it in the available_filter_functions and used to enable functions via the
+> name matching in set_ftrace_filter/notrace. Enabling these functions do
+> nothing but enable an unused call to ftrace_caller. If a traced weak
+> function is overridden, the symbol of the function would be used for it,
+> which will either created duplicate names, or if the previous function was
+> not traced, it would be incorrectly listed in available_filter_functions
+> as a function that can be traced.
 >
-> The two next patches add new functionality that allows XDP to
-> accelerate iptables synproxy.
+> This became an issue with BPF[1] as there are tooling that enables the
+> direct callers via ftrace but then checks to see if the functions were
+> actually enabled. The case of one function that was marked notrace, but
+> was followed by an unused weak function that was traced. The unused
+> function's call to fentry was added to the __mcount_loc section, and
+> kallsyms retrieved the untraced function's symbol as the weak function was
+> overridden. Since the untraced function would not get traced, the BPF
+> check would detect this and fail.
 >
-> v1 of this series [1] used to include a patch that exposed conntrack
-> lookup to BPF using stable helpers. It was superseded by series [2] by
-> Kumar Kartikeya Dwivedi, which implements this functionality using
-> unstable helpers.
+> The real fix would be to fix kallsyms to not show address of weak
+> functions as the function before it. But that would require adding code in
+> the build to add function size to kallsyms so that it can know when the
+> function ends instead of just using the start of the next known symbol.
 >
-> The third patch adds new helpers to issue and check SYN cookies without
-> binding to a socket, which is useful in the synproxy scenario.
+> In the mean time, this is a work around. Add a FTRACE_MCOUNT_MAX_OFFSET
+> macro that if defined, ftrace will ignore any function that has its call
+> to fentry/mcount that has an offset from the symbol that is greater than
+> FTRACE_MCOUNT_MAX_OFFSET.
 >
-> The fourth patch adds a selftest, which includes an XDP program and a
-> userspace control application. The XDP program uses socketless SYN
-> cookie helpers and queries conntrack status instead of socket status.
-> The userspace control application allows to tune parameters of the XDP
-> program. This program also serves as a minimal example of usage of the
-> new functionality.
+> If CONFIG_HAVE_FENTRY is defined for x86, define FTRACE_MCOUNT_MAX_OFFSET
+> to zero, which will have ftrace ignore all locations that are not at the
+> start of the function.
 >
-> The last patch exposes the new helpers to TC BPF.
+> [1] https://lore.kernel.org/all/20220412094923.0abe90955e5db486b7bca279@kernel.org/
 >
-> The draft of the new functionality was presented on Netdev 0x15 [3].
->
-> v2 changes:
->
-> Split into two series, submitted bugfixes to bpf, dropped the conntrack
-> patches, implemented the timestamp cookie in BPF using bpf_loop, dropped
-> the timestamp cookie patch.
->
-> v3 changes:
->
-> Moved some patches from bpf to bpf-next, dropped the patch that changed
-> error codes, split the new helpers into IPv4/IPv6, added verifier
-> functionality to accept memory regions of fixed size.
->
-> v4 changes:
->
-> Converted the selftest to the test_progs runner. Replaced some
-> deprecated functions in xdp_synproxy userspace helper.
->
-> v5 changes:
->
-> Fixed a bug in the selftest. Added questionable functionality to support
-> new helpers in TC BPF, added selftests for it.
->
-> v6 changes:
->
-> Wrap the new helpers themselves into #ifdef CONFIG_SYN_COOKIES, replaced
-> fclose with pclose and fixed the MSS for IPv6 in the selftest.
->
-> v7 changes:
->
-> Fixed the off-by-one error in indices, changed the section name to
-> "xdp", added missing kernel config options to vmtest in CI.
->
-> v8 changes:
->
-> Properly rebased, dropped the first patch (the same change was applied
-> by someone else), updated the cover letter.
->
-> v9 changes:
->
-> Fixed selftests for no_alu32.
->
-> [1]: https://lore.kernel.org/bpf/20211020095815.GJ28644@breakpoint.cc/t/
-> [2]: https://lore.kernel.org/bpf/20220114163953.1455836-1-memxor@gmail.com/
-> [3]: https://netdevconf.info/0x15/session.html?Accelerating-synproxy-with-XDP
->
-> Maxim Mikityanskiy (5):
->   bpf: Fix documentation of th_len in bpf_tcp_{gen,check}_syncookie
->   bpf: Allow helpers to accept pointers with a fixed size
->   bpf: Add helpers to issue and check SYN cookies in XDP
->   bpf: Add selftests for raw syncookie helpers
->   bpf: Allow the new syncookie helpers to work with SKBs
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  arch/x86/include/asm/ftrace.h |  5 ++++
+>  kernel/trace/ftrace.c         | 50 +++++++++++++++++++++++++++++++++--
+>  2 files changed, 53 insertions(+), 2 deletions(-)
 >
 
-Is it expected that your selftests will fail on s390x? Please check [0]
-
-  [0] https://github.com/kernel-patches/bpf/runs/6277764463?check_suite_focus=true#step:6:6130
-
->  include/linux/bpf.h                           |  10 +
->  include/net/tcp.h                             |   1 +
->  include/uapi/linux/bpf.h                      |  88 +-
->  kernel/bpf/verifier.c                         |  26 +-
->  net/core/filter.c                             | 128 +++
->  net/ipv4/tcp_input.c                          |   3 +-
->  scripts/bpf_doc.py                            |   4 +
->  tools/include/uapi/linux/bpf.h                |  88 +-
->  tools/testing/selftests/bpf/.gitignore        |   1 +
->  tools/testing/selftests/bpf/Makefile          |   5 +-
->  .../selftests/bpf/prog_tests/xdp_synproxy.c   | 144 +++
->  .../selftests/bpf/progs/xdp_synproxy_kern.c   | 819 ++++++++++++++++++
->  tools/testing/selftests/bpf/xdp_synproxy.c    | 466 ++++++++++
->  13 files changed, 1761 insertions(+), 22 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
->  create mode 100644 tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
->  create mode 100644 tools/testing/selftests/bpf/xdp_synproxy.c
->
-> --
-> 2.30.2
->
+Thanks for investigating and fixing this! I guess we'll need ENDBR
+handling, but otherwise it looks good to me!
