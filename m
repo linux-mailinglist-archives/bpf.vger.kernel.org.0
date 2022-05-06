@@ -2,66 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9000651DFB1
-	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 21:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8D351E005
+	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 22:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354073AbiEFTmf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 15:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
+        id S1442134AbiEFUUS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 16:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234627AbiEFTme (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 15:42:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749506A02F;
-        Fri,  6 May 2022 12:38:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FIb54Tdtxwc7K9ZK3q50mKbEdk86SKKI/PZygVgAfU8=; b=TnNmxTB4/QP1hdHO03zzCX21LW
-        wBYW++Kmfk9c6zCClKoGBZin7AfsCG+4bPSGnhBgndSd4ogQ7I9gI4n3+2MMSAKJNVp0IqTjoM9S+
-        X9M3B3bv553oKRLsMM9N2d9hvG8r0m7cT0TmhdBifCGYB9At5UCWv51D5TuRWn8Tz0HHIYx+WY+gd
-        /ndWv+dcsuQGHO2eO61WQYXdlTwaO+22Wq0wuD07I4p94xm61Uh/YKnwHo0IqZWz7r2C+juGkRgbM
-        pQrEQiwdQXPR7B1usbPZpU75dZ9uw9OlHwl70nVNmLRE68aF66s2uKIBhK/JF7YaRd6ejb4VnXMS3
-        0D2NakoQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nn3mY-00Bkkt-A5; Fri, 06 May 2022 19:38:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5F53430040C;
-        Fri,  6 May 2022 21:38:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4ADAC2029A1AC; Fri,  6 May 2022 21:38:29 +0200 (CEST)
-Date:   Fri, 6 May 2022 21:38:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, x86@kernel.org
-Subject: Re: : [PATCH] ftrace/x86: Add FTRACE_MCOUNT_MAX_OFFSET to avoid
- adding weak functions
-Message-ID: <YnV5NQ6lMwFY05nf@hirez.programming.kicks-ass.net>
-References: <20220503150410.2d9e88aa@rorschach.local.home>
+        with ESMTP id S1442115AbiEFUUR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 16:20:17 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2684D624;
+        Fri,  6 May 2022 13:16:30 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id z5-20020a17090a468500b001d2bc2743c4so7797811pjf.0;
+        Fri, 06 May 2022 13:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PnVTOmeWJdCW14+Uuj8JCfjLjJAP80qHcxM/0JW5PeM=;
+        b=Q17S6sSUCOxqpIi7tYiyZjfz/LZE9iOczEusYqcnh/qTIAK4z0g9ba9B+ZHC7cDO8h
+         zdq7bfUqSyiVYofBGVGAcjLSI68sWnISGiF9a7BEKSumngEivjgm+q+x0QenAq/PMmMg
+         Cb/9QYkw7lV/497WBHacu+BsKwpResU+vEFAh6vOMLYxBY1DbSI2OpdfyPNrhp2f0p2R
+         pEWnZJJZw0ZlcL0IMesBmRB4aKCXeaLwaKv9QAVA9AKp7MzcMQEAyAI6oB0+oPMT7dW3
+         koscAj6DLcFGofqU9ZtIWnn9oj4n/DII3dhxUWbWH6c4J4HGbCejSZot50hydHNxh1Xo
+         s8AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=PnVTOmeWJdCW14+Uuj8JCfjLjJAP80qHcxM/0JW5PeM=;
+        b=uBPS7eINyPamvFqvEm4FlBcwDJ+ktE673cLD7D35zkO4DmXso65SVEmk0EYfJXcOYi
+         xESFhBfE5FuDgCZ+04mBfmu0wzEGWM+DSxVva4tOdHaPpuczXENy1R/PsXnWBRM7UMrS
+         jdQVSU+fTtSA+6Vw0qKugArjxHbjwA6XIzIkAOFu45V2wWdaWCjpLYuM8NW4U6cZGJAk
+         i+++rBty+J0hf6cQiraGvpyvlP7x7LZpsCaoNJ3imQcCWDNxGa2ro7OECXPFY/JzBJQc
+         1axBkCprBLeXCqNkLKD8FLXA958VWCKLYeoViAIX+o+ekKR161WH1h/X0QiYczvjBKNS
+         ISoA==
+X-Gm-Message-State: AOAM530MWxqufp+rceDV6hGV3janPIA5amccaap46z+FuKnRnKlrSw8U
+        FwaMSDiWyyFu1YMRRXp3sYI=
+X-Google-Smtp-Source: ABdhPJyLVsfwZY95sq/VCjUFwjdh4dXE1f5LgZRey1ziDDJSCSZVuoavnF4ICtShwhNrA4pGt/6a0w==
+X-Received: by 2002:a17:90b:4b0d:b0:1dc:3d21:72c1 with SMTP id lx13-20020a17090b4b0d00b001dc3d2172c1mr14403583pjb.21.1651868190390;
+        Fri, 06 May 2022 13:16:30 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4f00:3590:a5d1:d7b7:dd61:c87b])
+        by smtp.gmail.com with ESMTPSA id m2-20020a170902db8200b0015e8d4eb268sm2160156pld.178.2022.05.06.13.16.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 May 2022 13:16:29 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Milian Wolff <milian.wolff@kdab.com>, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Blake Jones <blakejones@google.com>
+Subject: [RFC 0/4] perf record: Implement off-cpu profiling with BPF (v2)
+Date:   Fri,  6 May 2022 13:16:23 -0700
+Message-Id: <20220506201627.85598-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.36.0.512.ge40c2bad7a-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220503150410.2d9e88aa@rorschach.local.home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,52 +77,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 03, 2022 at 03:04:10PM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> If an unused weak function was traced, it's call to fentry will still
-> exist, which gets added into the __mcount_loc table. Ftrace will use
-> kallsyms to retrieve the name for each location in __mcount_loc to display
-> it in the available_filter_functions and used to enable functions via the
-> name matching in set_ftrace_filter/notrace. Enabling these functions do
-> nothing but enable an unused call to ftrace_caller. If a traced weak
-> function is overridden, the symbol of the function would be used for it,
-> which will either created duplicate names, or if the previous function was
-> not traced, it would be incorrectly listed in available_filter_functions
-> as a function that can be traced.
-> 
-> This became an issue with BPF[1] as there are tooling that enables the
-> direct callers via ftrace but then checks to see if the functions were
-> actually enabled. The case of one function that was marked notrace, but
-> was followed by an unused weak function that was traced. The unused
-> function's call to fentry was added to the __mcount_loc section, and
-> kallsyms retrieved the untraced function's symbol as the weak function was
-> overridden. Since the untraced function would not get traced, the BPF
-> check would detect this and fail.
-> 
-> The real fix would be to fix kallsyms to not show address of weak
-> functions as the function before it. But that would require adding code in
-> the build to add function size to kallsyms so that it can know when the
-> function ends instead of just using the start of the next known symbol.
-> 
-> In the mean time, this is a work around. Add a FTRACE_MCOUNT_MAX_OFFSET
-> macro that if defined, ftrace will ignore any function that has its call
-> to fentry/mcount that has an offset from the symbol that is greater than
-> FTRACE_MCOUNT_MAX_OFFSET.
+Hello,
 
-So for x86-64... objtool knows about these holes and *could* squash
-these entries if you want (at the cost of requiring link time objtool
-run).
+This is the second version of off-cpu profiling support.  Together with
+(PMU-based) cpu profiling, it can show holistic view of the performance
+characteristics of your application or system.
 
-Also see commit:
+Changes in v2)
+ * change sched_switch argument handling (Andrii)
+ * use task local storage (Hao)
+ * fix build error on !BUILD_BPF_SKEL (kernel test robot)
+ * add documentation regard fp callstack (Milian)
+ 
+ 
+With BPF, it can aggregate scheduling stats for interested tasks
+and/or states and convert the data into a form of perf sample records.
+I chose the bpf-output event which is a software event supposed to be
+consumed by BPF programs and renamed it as "offcpu-time".  So it
+requires no change on the perf report side except for setting sample
+types of bpf-output event.
 
-  4adb23686795 ("objtool: Ignore extra-symbol code")
+Basically it collects userspace callstack for tasks as it's what users
+want mostly.  Maybe we can add support for the kernel stacks but I'm
+afraid that it'd cause more overhead.  So the offcpu-time event will
+always have callchains regardless of the command line option, and it
+enables the children mode in perf report by default.
 
-But yeah, ensuring fentry is close ought to work.
+It adds --off-cpu option to perf record like below:
 
-> If CONFIG_HAVE_FENTRY is defined for x86, define FTRACE_MCOUNT_MAX_OFFSET
-> to zero, which will have ftrace ignore all locations that are not at the
-> start of the function.
+  $ sudo perf record -a --off-cpu -- perf bench sched messaging -l 1000
+  # Running 'sched/messaging' benchmark:
+  # 20 sender and receiver processes per group
+  # 10 groups == 400 processes run
 
-You forgot about IBT again? __fentry__ no longer lives at +0 on x86
-anymore.
+     Total time: 1.518 [sec]
+  [ perf record: Woken up 9 times to write data ]
+  [ perf record: Captured and wrote 5.313 MB perf.data (53341 samples) ]
+
+Then we can run perf report as usual.  The below is just to skip less
+important parts.
+
+  $ sudo perf report --stdio --call-graph=no --percent-limit=2
+  # To display the perf.data header info, please use --header/--header-only options.
+  #
+  #
+  # Total Lost Samples: 0
+  #
+  # Samples: 52K of event 'cycles'
+  # Event count (approx.): 42522453276
+  #
+  # Children      Self  Command          Shared Object     Symbol                            
+  # ........  ........  ...............  ................  ..................................
+  #
+       9.58%     9.58%  sched-messaging  [kernel.vmlinux]  [k] audit_filter_rules.constprop.0
+       8.46%     8.46%  sched-messaging  [kernel.vmlinux]  [k] audit_filter_syscall
+       4.54%     4.54%  sched-messaging  [kernel.vmlinux]  [k] copy_user_enhanced_fast_string
+       2.94%     2.94%  sched-messaging  [kernel.vmlinux]  [k] unix_stream_read_generic
+       2.45%     2.45%  sched-messaging  [kernel.vmlinux]  [k] memcg_slab_free_hook
+  
+  
+  # Samples: 983  of event 'offcpu-time'
+  # Event count (approx.): 684538813464
+  #
+  # Children      Self  Command          Shared Object         Symbol                    
+  # ........  ........  ...............  ....................  ..........................
+  #
+      83.86%     0.00%  sched-messaging  libc-2.33.so          [.] __libc_start_main
+      83.86%     0.00%  sched-messaging  perf                  [.] cmd_bench
+      83.86%     0.00%  sched-messaging  perf                  [.] main
+      83.86%     0.00%  sched-messaging  perf                  [.] run_builtin
+      83.64%     0.00%  sched-messaging  perf                  [.] bench_sched_messaging
+      41.35%    41.35%  sched-messaging  libpthread-2.33.so    [.] __read
+      38.88%    38.88%  sched-messaging  libpthread-2.33.so    [.] __write
+       3.41%     3.41%  sched-messaging  libc-2.33.so          [.] __poll
+
+The perf bench sched messaging created 400 processes to send/receive
+messages through unix sockets.  It spent a large portion of cpu cycles
+for audit filter and read/copy the messages while most of the
+offcpu-time was in read and write calls.
+
+You can get the code from 'perf/offcpu-v2' branch in my tree at
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Enjoy! :)
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (4):
+  perf report: Do not extend sample type of bpf-output event
+  perf record: Enable off-cpu analysis with BPF
+  perf record: Implement basic filtering for off-cpu
+  perf record: Handle argument change in sched_switch
+
+ tools/perf/Documentation/perf-record.txt |  10 +
+ tools/perf/Makefile.perf                 |   1 +
+ tools/perf/builtin-record.c              |  21 ++
+ tools/perf/util/Build                    |   1 +
+ tools/perf/util/bpf_off_cpu.c            | 298 +++++++++++++++++++++++
+ tools/perf/util/bpf_skel/off_cpu.bpf.c   | 209 ++++++++++++++++
+ tools/perf/util/evsel.c                  |   4 +-
+ tools/perf/util/off_cpu.h                |  24 ++
+ 8 files changed, 566 insertions(+), 2 deletions(-)
+ create mode 100644 tools/perf/util/bpf_off_cpu.c
+ create mode 100644 tools/perf/util/bpf_skel/off_cpu.bpf.c
+ create mode 100644 tools/perf/util/off_cpu.h
+
+
+base-commit: 33cd6928039c6bf18cf0baec936924d908e6c89b
+-- 
+2.36.0.512.ge40c2bad7a-goog
+
