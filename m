@@ -2,71 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675AB51E153
-	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 23:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE89C51E163
+	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 23:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444565AbiEFVsd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 17:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
+        id S1350903AbiEFVzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 17:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348985AbiEFVsb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 17:48:31 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E856FA1C;
-        Fri,  6 May 2022 14:44:47 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id l18so16722278ejc.7;
-        Fri, 06 May 2022 14:44:47 -0700 (PDT)
+        with ESMTP id S1355406AbiEFVzJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 17:55:09 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1766C6FA13;
+        Fri,  6 May 2022 14:51:24 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id y11so5625004ilp.4;
+        Fri, 06 May 2022 14:51:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=N3A1rf/Rj0PDegZIBfqZUEZZbtuVQj5afQJ+DdGLJXY=;
-        b=qIRoPoyIi9YUs2nECEBig8BQu3212ApJ192x/PT3kMGoYGdOdLgi4i/CpRitLS2c5Q
-         tR8aBD/U8y02V1Do3uwlRPKXizYTv0uL7qWSMEvP5UO3yhPCR6vYjRHr+gi32YQE415O
-         cTgbnS3ikd6RrO+hPDJc3+zcDE0Vtk/E+l5qf2hKFV+xpAAKmpcyHbmMplqWRjSIt3mb
-         aldH2gdqvT0FDDBx4XJYO6M3Szu3ig6UabTifk/hdSr8FRF5PeRgnUdgpF3B3i0jjhEt
-         jsxFTcGvFJtcYxIic4jEtB7hX3mtnva63X2s7cOyBCrMHiCOwDw4A99hJx/2KR7aemGd
-         OlwQ==
+        bh=0H4j188mYRcN8sQWXRd1WWvL0ISYSoT0RTO3h++GtuQ=;
+        b=Vs2xhVj9PYXBDuBS0f/ikVUFzjYnQTstwaezXEJpVlnAHME/7NP/hlzk0r77I20ySs
+         gPppbe8iXsA3fkm6wirqG6/KpEgQMZzEvJRNH1DpJ/fvVGJmXp0bgZW5ZmGEGa4DsRHL
+         PsYWZLEx0I0WMfErH9FKAxr4J2Lxrk4Q6jzUt+iEFjk8swPqcGHFg4Fg2Ly5dUozuudv
+         1jzgFSoJ6B5Oqs0pVGrQN4lTC0Z+fguPgkVqN5C63ymuKD/gZeA6SB9ZzNpmom36nIvE
+         TS/82RFqct3zkg+N2NmmF0Boj11IW2A+wUPy2El35nuI56Zl0GrGD8XeRfM75+LZU3Ji
+         NJkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=N3A1rf/Rj0PDegZIBfqZUEZZbtuVQj5afQJ+DdGLJXY=;
-        b=FDbXa2FWTQP909yFKrqk5VukJnrqiff9oGFqidS/pA2zQVEURTzway7KtuVVdAgxcu
-         8+L9hniKsmfpX+8HWw9fsTOppzSa6QYItgTVJg/sFi6ScFoFc2TwNHHd8QfoEmkSEzmx
-         KzrY2ES1X6y8q3TVLJ6HDeoKPy2Nu30hLqi6F2Y7bobHx6DjEqQmZiAiOaO5vPx2k/Uf
-         DperEChh7F8C4lZ7nyGjZRpnoUgWE1+gDom7LMRN+TEE1JrZEAxekmhuCu5vhZmskMw7
-         BE37qHRmD34rCfyFQ1F99e9xgdqZUB4UdvDQSgsBQpHVH/tEKvClqIVM52q8vnrKQMdJ
-         +GDg==
-X-Gm-Message-State: AOAM532pk8oE5SbAaUUMqxPjnVbTA8K9Fx2+xpEhBmL/nCX039QttLsF
-        fUfK5rTxozcKjqPgQkXxbOTZCcBPhNN9O80wC0o=
-X-Google-Smtp-Source: ABdhPJxKnXTPN1rE0ELs3y3hDsepy+hk9ObUJpCYg5aHeKL8ddu3x4IdwKD6k5cRrp+Yu12tRGxgzdfBai7wdCKbXO4=
-X-Received: by 2002:a17:907:6d9d:b0:6da:7d4c:287f with SMTP id
- sb29-20020a1709076d9d00b006da7d4c287fmr4633735ejc.741.1651873485631; Fri, 06
- May 2022 14:44:45 -0700 (PDT)
+        bh=0H4j188mYRcN8sQWXRd1WWvL0ISYSoT0RTO3h++GtuQ=;
+        b=0IcJ1YYDZL3szK7g1AzSJHgZxuQo69kx01PgZdtaKTHja3tyVf7ZgBw6GejEhU7g9F
+         Re6usAmBu7D0HcZmfIeMmfD+J4onMgFsEgf+pSbb4Cf+CYjFGaum40Ij4rZRjGy7qNOm
+         uO1ON7m6Ag8RmrhgRq5ZXw5dciPk5RqMGc7v8Tvcx7icNwQC9EdIxmHuEuJ3QgoAjJRT
+         Yzi53dJhtshBWDNPM4qronUHhjF/ycSOh2NePAnze+7uLnYvWJiaWtSoCKfZcZfp603u
+         d5BV7gkC1NLIJQTQpsvAryErvX00Qj2HHsr0L5/26Rxbb0HULaZ0mtMLf3c/J8LFZfXG
+         1Mrg==
+X-Gm-Message-State: AOAM531sdYaCODW42/sCKOSu6lWrsHKGfit+zcrSuyKcmVKZ70LCEIN4
+        umtkDkKA4ydJhDbOJUHsyuMpFmwsUCPED6J5OpA=
+X-Google-Smtp-Source: ABdhPJy538w8QL1UdWQu61v//rhuRVQiriUv8ahfZNQ3de36b/smTTpb2c3aib/Q6CWeXqjmIThBraihWSea0aQGjDE=
+X-Received: by 2002:a05:6e02:1b82:b0:2cf:199f:3b4b with SMTP id
+ h2-20020a056e021b8200b002cf199f3b4bmr2090170ili.71.1651873883291; Fri, 06 May
+ 2022 14:51:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220429014240.3434866-1-pulehui@huawei.com> <20220429014240.3434866-3-pulehui@huawei.com>
-In-Reply-To: <20220429014240.3434866-3-pulehui@huawei.com>
-From:   Luke Nelson <luke.r.nels@gmail.com>
-Date:   Fri, 6 May 2022 14:44:34 -0700
-Message-ID: <CAB-e3NRn9VgdWfakom6Cbx-3btakEzvpNVmiQw7k-h_-EtOMng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] riscv, bpf: Support riscv jit to provide bpf_line_info
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20220503171437.666326-1-maximmi@nvidia.com>
+In-Reply-To: <20220503171437.666326-1-maximmi@nvidia.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 6 May 2022 14:51:12 -0700
+Message-ID: <CAEf4BzbSO8oLK3_4Ecrx-c-o+Z6S8HMm3c_XQhZUQgpU8hfHoQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 0/5] New BPF helpers to accelerate synproxy
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Xi Wang <xi.wang@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Joe Stringer <joe@cilium.io>,
+        Florent Revest <revest@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Florian Westphal <fw@strlen.de>, pabeni@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -78,73 +88,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks for the patch! I have a couple of notes written down below.
+On Tue, May 3, 2022 at 10:14 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
+>
+> The first patch of this series is a documentation fix.
+>
+> The second patch allows BPF helpers to accept memory regions of fixed
+> size without doing runtime size checks.
+>
+> The two next patches add new functionality that allows XDP to
+> accelerate iptables synproxy.
+>
+> v1 of this series [1] used to include a patch that exposed conntrack
+> lookup to BPF using stable helpers. It was superseded by series [2] by
+> Kumar Kartikeya Dwivedi, which implements this functionality using
+> unstable helpers.
+>
+> The third patch adds new helpers to issue and check SYN cookies without
+> binding to a socket, which is useful in the synproxy scenario.
+>
+> The fourth patch adds a selftest, which includes an XDP program and a
+> userspace control application. The XDP program uses socketless SYN
+> cookie helpers and queries conntrack status instead of socket status.
+> The userspace control application allows to tune parameters of the XDP
+> program. This program also serves as a minimal example of usage of the
+> new functionality.
+>
+> The last patch exposes the new helpers to TC BPF.
+>
+> The draft of the new functionality was presented on Netdev 0x15 [3].
+>
+> v2 changes:
+>
+> Split into two series, submitted bugfixes to bpf, dropped the conntrack
+> patches, implemented the timestamp cookie in BPF using bpf_loop, dropped
+> the timestamp cookie patch.
+>
+> v3 changes:
+>
+> Moved some patches from bpf to bpf-next, dropped the patch that changed
+> error codes, split the new helpers into IPv4/IPv6, added verifier
+> functionality to accept memory regions of fixed size.
+>
+> v4 changes:
+>
+> Converted the selftest to the test_progs runner. Replaced some
+> deprecated functions in xdp_synproxy userspace helper.
+>
+> v5 changes:
+>
+> Fixed a bug in the selftest. Added questionable functionality to support
+> new helpers in TC BPF, added selftests for it.
+>
+> v6 changes:
+>
+> Wrap the new helpers themselves into #ifdef CONFIG_SYN_COOKIES, replaced
+> fclose with pclose and fixed the MSS for IPv6 in the selftest.
+>
+> v7 changes:
+>
+> Fixed the off-by-one error in indices, changed the section name to
+> "xdp", added missing kernel config options to vmtest in CI.
+>
+> v8 changes:
+>
+> Properly rebased, dropped the first patch (the same change was applied
+> by someone else), updated the cover letter.
+>
+> v9 changes:
+>
+> Fixed selftests for no_alu32.
+>
+> [1]: https://lore.kernel.org/bpf/20211020095815.GJ28644@breakpoint.cc/t/
+> [2]: https://lore.kernel.org/bpf/20220114163953.1455836-1-memxor@gmail.com/
+> [3]: https://netdevconf.info/0x15/session.html?Accelerating-synproxy-with-XDP
+>
+> Maxim Mikityanskiy (5):
+>   bpf: Fix documentation of th_len in bpf_tcp_{gen,check}_syncookie
+>   bpf: Allow helpers to accept pointers with a fixed size
+>   bpf: Add helpers to issue and check SYN cookies in XDP
+>   bpf: Add selftests for raw syncookie helpers
+>   bpf: Allow the new syncookie helpers to work with SKBs
+>
 
-> +               ctx->prologue_offset = ctx->ninsns;
-> ...
-> +               prologue_len = ctx->epilogue_offset - ctx->prologue_offset;
-> +               for (i = 0; i < prog->len; i++)
-> +                       ctx->offset[i] = ninsns_rvoff(prologue_len + ctx->offset[i]);
+Is it expected that your selftests will fail on s390x? Please check [0]
 
-The logic looks correct to me; my only nit is that the name
-prologue_offset might be a bit confusing. The prologue is always at
-the beginning of the final JITed program, it just happens to be that
-the prologue is emitted "out of order" on the initial/internal passes
-that compute offsets.
+  [0] https://github.com/kernel-patches/bpf/runs/6277764463?check_suite_focus=true#step:6:6130
 
-What prologue_offset really measures in your code is the length of the
-body of the JITed program. What do you think about renaming
-prologue_offset to something like body_len? Then the line to compute
-prologue_len becomes:
-
-        prologue_len = ctx->epilogue_offset - ctx->body_len;
-
-This version makes more sense to me why it's correct. Curious what you think.
-
-
-> +               bpf_prog_fill_jited_linfo(prog, ctx->offset);
-
-Here's a quote from the comment that documents
-bpf_prog_fill_jited_linfo in kernel/bpf/core.c:
-
-/* The jit engine is responsible to provide an array
- * for insn_off to the jited_off mapping (insn_to_jit_off).
-...
- * jited_off is the byte off to the last byte of the jited insn.
-
-This comment says that ctx->offset (passed to this function as
-insn_to_jit_off) should map each instruction to the offset of the last
-byte of the JITed instructions, but as I understand it your patch sets
-ctx->offset[i] to be the offset _one past_ the last byte of the JITed
-instructions (i.e., the first byte of the next instruction). I'm not
-sure if this is a bug in your code, in this comment, or in my
-understanding :)
-
-As a concrete example, suppose the BPF instruction at index 0 compiles
-to 2 (non-compressed) RISC-V instructions, or 8 bytes. Then
-ctx->offset[0] will be 2 after the initial JIT passes, and your code
-would update ctx->offset[0] to be 4*prologue_len + 8. This offset
-corresponds to the first byte of insns[1], not the last byte of
-insn[0], which would be 4*prologue_len + 7.
-
-My guess would be that the comment is out of date and your code is
-doing the correct thing, since it seems in line with what other JITs
-are doing. If that's the case, maybe we can consider updating that
-comment at some point. I'm curious if the tests you ran would break if
-you changed your code to match what the comment says (i.e.,
-subtracting 1 byte from each element in ctx->offset before passing to
-bpf_prog_fill_jited_linfo).
-
-
-> ./test_progs -a btf
-> #19 btf:OK
-> Summary: 1/215 PASSED, 0 SKIPPED, 0 FAILED
-
-Last, did you have a chance to run any of the other tests with your
-change (e.g., test_verifier, test_bpf.ko, other tests in test_progs)?
-I don't expect this change to break any tests, but may as well run
-them if it's easy enough just to be sure.
-
-
-Thanks!
-- Luke
+>  include/linux/bpf.h                           |  10 +
+>  include/net/tcp.h                             |   1 +
+>  include/uapi/linux/bpf.h                      |  88 +-
+>  kernel/bpf/verifier.c                         |  26 +-
+>  net/core/filter.c                             | 128 +++
+>  net/ipv4/tcp_input.c                          |   3 +-
+>  scripts/bpf_doc.py                            |   4 +
+>  tools/include/uapi/linux/bpf.h                |  88 +-
+>  tools/testing/selftests/bpf/.gitignore        |   1 +
+>  tools/testing/selftests/bpf/Makefile          |   5 +-
+>  .../selftests/bpf/prog_tests/xdp_synproxy.c   | 144 +++
+>  .../selftests/bpf/progs/xdp_synproxy_kern.c   | 819 ++++++++++++++++++
+>  tools/testing/selftests/bpf/xdp_synproxy.c    | 466 ++++++++++
+>  13 files changed, 1761 insertions(+), 22 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+>  create mode 100644 tools/testing/selftests/bpf/xdp_synproxy.c
+>
+> --
+> 2.30.2
+>
