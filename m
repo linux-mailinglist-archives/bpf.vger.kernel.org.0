@@ -2,128 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C9251E02A
-	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 22:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D03E51E05D
+	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 22:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347889AbiEFUgM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 16:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36010 "EHLO
+        id S1443786AbiEFU4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 16:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344781AbiEFUgL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 16:36:11 -0400
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED516D39C
-        for <bpf@vger.kernel.org>; Fri,  6 May 2022 13:32:28 -0700 (PDT)
-Received: by mail-qt1-f182.google.com with SMTP id t16so6848599qtr.9
-        for <bpf@vger.kernel.org>; Fri, 06 May 2022 13:32:28 -0700 (PDT)
+        with ESMTP id S1346231AbiEFU4N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 16:56:13 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7926D868;
+        Fri,  6 May 2022 13:52:29 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id d3so5537340ilr.10;
+        Fri, 06 May 2022 13:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=9xPGIlmt+FCGNXEvj1MOSv96z0C4C+W3xdxDnwzXgQk=;
+        b=qd/RTGT4cvHjjNKKdU66WSlVV7H62ZBoSTXe8fsJd8Naqd+UjqYP0eyksu6UbAR3dH
+         4vEoAmScldQv4EEts+780Eo/jhcy2WjAa9ZXIEH7TS3KkHAok4ss21kluk5AfPNeIfOH
+         Wnl36b8JUOpGTSM9EAlL2ok3mH2DdVdJZhg3Y0odCDE4nSSKY/MuA++j19lDo4eFJkwO
+         wYgXqJcpjONjJ0F4ASLDab7Yxb1k/O0pKZ0NtSHKYbAtXvtd2fho+S8SQn5zXtQEH5fR
+         SUJmA64PQzelMWmflFPKn2pQ3G5C1w4g9eSXhvbBC9HVD4n/qmO1rhTyXUnJgRyIbURg
+         XU2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AVB1ciUIbxTMzEXFl6eq1tF4eC/Z0kXKOVSSlLEKtjE=;
-        b=41nrgrm5Ow9A6Kh+tVC2atZgkYhIEaM37BZLmLyo87HYdKDWujjLyZcaOV3VM8yJ3n
-         ajUZjTh5AqOpwu3Ssd1G774TU65SYUDaNoLj8EVYZkdgmVfCFnURUDOWKefatYOZ38vJ
-         OKj9MLcH51/+kAZ6rBBWZST1B9lPyZ937+sK5+7tQR4NSv7Bh3kfDmkmN8+rbp3o6sQ/
-         KIhRXFcyNfz84eGUXQkNF4hAB1ah8DGVQb7NOIkZfUpW8s8xa11KRblhVvtaUQIstszD
-         T5vuir/noqnFm0UFYZbQn0S2RmPasknLKptywUj0ljkivCrLzOPkkp3joGtoxiRApknM
-         fH+w==
-X-Gm-Message-State: AOAM532vmQeXz4Kej65VOojyqpupd93rS0nIovOum/yZo4sZeMmw8vI9
-        mIe73Gldj/cofHgaK0c8/H8=
-X-Google-Smtp-Source: ABdhPJxBi20D9hQdxeDMczTv6yQAqmKyjGlKiwpM0X9zWyPaEa/FPOMchYRE7b6fJmwuPhNq4XaT3g==
-X-Received: by 2002:a05:622a:104d:b0:2f3:bc09:f05 with SMTP id f13-20020a05622a104d00b002f3bc090f05mr4606569qte.396.1651869147021;
-        Fri, 06 May 2022 13:32:27 -0700 (PDT)
-Received: from dev0025.ash9.facebook.com (fwdproxy-ash-014.fbsv.net. [2a03:2880:20ff:e::face:b00c])
-        by smtp.gmail.com with ESMTPSA id r12-20020ac867cc000000b002f39b99f6b7sm3041911qtp.81.2022.05.06.13.32.26
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=9xPGIlmt+FCGNXEvj1MOSv96z0C4C+W3xdxDnwzXgQk=;
+        b=dNvvjmfNgcrNl8q5GDHxSego/P2RIEw1jZFsqjw+CtxAfnYx6xgJSNqxB15AwNaqtW
+         DNUWPCCPfX0/kPlF4kVfSwjcRCyZaVjXP7gO6D82JyYZjq611D5PdxZhV9i95STTrKj7
+         RRiFLv8Oxyqzv4aOggPYacddyz1I57K3vEv0R0pwVUd7rtN//idnGExTU8WDrE5/noLL
+         AaqrG10wcEyxvO3dYVXkxzcR3hU3SkQmKJAcnsY/vrUkhDE9kSW5rYid8qo8PaYWiXM8
+         l2jM8d2giwCRW/iH1MquwEsOvNQh33gt3h7ictgARsUs6qyJ8Jp1qCgz6saT60i2cbys
+         zAzg==
+X-Gm-Message-State: AOAM533Rkxe27C4ChqZRET930/Ha0n/o7hyrB84eet2zWPAuU+BIETjA
+        J4nWwT01V98DM8bZ3r6zhyEcXY8anQrJnw==
+X-Google-Smtp-Source: ABdhPJxUDZbbJgYJBeV6AACgxuY7K30lobb69PEkOZ6zGK4shihN0gM71h+yUJD5dNpVB+Fzgbk40w==
+X-Received: by 2002:a05:6e02:20e1:b0:2cf:63de:22f7 with SMTP id q1-20020a056e0220e100b002cf63de22f7mr1927645ilv.24.1651870349197;
+        Fri, 06 May 2022 13:52:29 -0700 (PDT)
+Received: from localhost ([172.243.153.43])
+        by smtp.gmail.com with ESMTPSA id z15-20020a6b5c0f000000b0065a47e16f53sm1580551ioh.37.2022.05.06.13.52.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 May 2022 13:32:26 -0700 (PDT)
-Date:   Fri, 6 May 2022 13:32:24 -0700
-From:   David Vernet <void@manifault.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Fri, 06 May 2022 13:52:28 -0700 (PDT)
+Date:   Fri, 06 May 2022 13:52:19 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Pu Lehui <pulehui@huawei.com>, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pu Lehui <pulehui@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v3 1/6] bpf: Add MEM_UNINIT as a bpf_type_flag
-Message-ID: <20220506203224.e7pdw3jk6kqpe7dh@dev0025.ash9.facebook.com>
-References: <20220428211059.4065379-1-joannelkoong@gmail.com>
- <20220428211059.4065379-2-joannelkoong@gmail.com>
- <20220506150727.73dvaiyf5rerggj3@dev0025.ash9.facebook.com>
- <CAJnrk1Yc7G9BamfcNDGXvhMbHcrebROxN97GPPNENJ9_vGF5XA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJnrk1Yc7G9BamfcNDGXvhMbHcrebROxN97GPPNENJ9_vGF5XA@mail.gmail.com>
-User-Agent: NeoMutt/20211029
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Message-ID: <62758a83b512a_18fd5208b5@john.notmuch>
+In-Reply-To: <20220429014240.3434866-2-pulehui@huawei.com>
+References: <20220429014240.3434866-1-pulehui@huawei.com>
+ <20220429014240.3434866-2-pulehui@huawei.com>
+Subject: RE: [PATCH bpf-next v2 1/2] bpf: Unify data extension operation of
+ jited_ksyms and jited_linfo
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 06, 2022 at 12:09:37PM -0700, Joanne Koong wrote:
-> I think the bpf philosophy leans more towards conflating related-ish
-> patches into the same patchset. I think this patch could be its own
-> stand-alone patchset, but it's also related to the dynptr patchset in that
-> dynptrs need it to properly describe its initialization helper functions.
-> I'm happy to submit this as its own patchset though if that is preferred :)
-
-Totally up to you, if that's the BPF convention then that's fine with me.
-
+Pu Lehui wrote:
+> We found that 32-bit environment can not print bpf line info due
+> to data inconsistency between jited_ksyms[0] and jited_linfo[0].
 > 
-> > -     } else if (base_type(arg_type) == ARG_PTR_TO_MAP_VALUE ||
-> > > -                base_type(arg_type) == ARG_PTR_TO_UNINIT_MAP_VALUE) {
-> > > +     } else if (base_type(arg_type) == ARG_PTR_TO_MAP_VALUE) {
-> > >               if (type_may_be_null(arg_type) && register_is_null(reg))
-> > >                       return 0;
-> > >
-> > > @@ -5811,7 +5801,7 @@ static int check_func_arg(struct bpf_verifier_env
-> > *env, u32 arg,
-> > >                       verbose(env, "invalid map_ptr to access
-> > map->value\n");
-> > >                       return -EACCES;
-> > >               }
-> > > -             meta->raw_mode = (arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE);
-> > > +             meta->raw_mode = arg_type & MEM_UNINIT;
-> >
-> > Given that we're stashing in a bool here, should this be:
-> >
-> >         meta->raw_mode = (arg_type & MEM_UNINIT) != 0;
-> >
-> I think just arg_type & MEM_UNINIT is okay because it implicitly converts
-> from 1 -> true, 0 -> false. This is the convention that's used elsewhere in
-> the linux codebase as well
+> For example:
+> jited_kyms[0] = 0xb800067c, jited_linfo[0] = 0xffffffffb800067c
+> 
+> We know that both of them store bpf func address, but due to the
+> different data extension operations when extended to u64, they may
+> not be the same. We need to unify the data extension operations of
+> them.
+> 
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  kernel/bpf/syscall.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index e9e3e49c0eb7..18137ea5190d 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3871,13 +3871,16 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+>  		info.nr_jited_line_info = 0;
+>  	if (info.nr_jited_line_info && ulen) {
+>  		if (bpf_dump_raw_ok(file->f_cred)) {
+> +			unsigned long jited_linfo_addr;
+>  			__u64 __user *user_linfo;
+>  			u32 i;
+>  
+>  			user_linfo = u64_to_user_ptr(info.jited_line_info);
+>  			ulen = min_t(u32, info.nr_jited_line_info, ulen);
+>  			for (i = 0; i < ulen; i++) {
+> -				if (put_user((__u64)(long)prog->aux->jited_linfo[i],
+> +				jited_linfo_addr = (unsigned long)
+> +					prog->aux->jited_linfo[i];
+> +				if (put_user((__u64) jited_linfo_addr,
+>  					     &user_linfo[i]))
 
-Yeah I think functionally it will work just fine as is. I saw that a few
-other places in verifier.c use operators that explicitly make the result 0
-or 1, e.g.:
+the logic is fine but i'm going to nitpick a bit this 4 lines is ugly
+just make it slightly longer than 80chars or use a shoarter name? For
+example,
 
-14699
-14700         env->strict_alignment = !!(attr->prog_flags & BPF_F_STRICT_ALIGNMENT);
+			for (i = 0; i < ulen; i++) {
+				unsigned long l;
 
-But the compiler will indeed implicitly convert any nonzero value to 1 if
-it's stored in a bool, so it's not necessary for correctness. It looks like
-the kernel style guide also implies that using the extra operators isn't
-necessary, so I think we can leave it as you have it now:
-https://www.kernel.org/doc/html/latest/process/coding-style.html#using-bool
+				l = (unsigned long) prog->aux->jited_linfo[i];
+				if (put_user((__u64) l, &user_linfo[i]))
 
-> > What do you think about this as a possibly more concise way to express that
-> > the curr and next args differ?
-> >
-> >         return (base_type(arg_curr) == ARG_PTR_TO_MEM) !=
-> >                 arg_type_is_mem_size(arg_next);
-> >
-> I was trying to decide between this and the more verbose expression above
-> and ultimately went with the more verbose expression because it seemed more
-> readable to me. But I don't feel strongly :) I'm cool with either one
-
-I don't feel strongly either, if you think your way is more readable then
-don't feel obligated to change it.
+is much nicer -- no reason to smash single assignment across multiple
+lines. My $.02.
 
 Thanks,
-David
+John
