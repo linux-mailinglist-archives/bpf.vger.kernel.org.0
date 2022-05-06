@@ -2,78 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D03E51E05D
-	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 22:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A44E51E06E
+	for <lists+bpf@lfdr.de>; Fri,  6 May 2022 22:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443786AbiEFU4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 16:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
+        id S1346231AbiEFU71 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 16:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346231AbiEFU4N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 16:56:13 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7926D868;
-        Fri,  6 May 2022 13:52:29 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id d3so5537340ilr.10;
-        Fri, 06 May 2022 13:52:29 -0700 (PDT)
+        with ESMTP id S1443962AbiEFU7Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 16:59:25 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6301B65A4
+        for <bpf@vger.kernel.org>; Fri,  6 May 2022 13:55:40 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id n6so3639934ili.7
+        for <bpf@vger.kernel.org>; Fri, 06 May 2022 13:55:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=9xPGIlmt+FCGNXEvj1MOSv96z0C4C+W3xdxDnwzXgQk=;
-        b=qd/RTGT4cvHjjNKKdU66WSlVV7H62ZBoSTXe8fsJd8Naqd+UjqYP0eyksu6UbAR3dH
-         4vEoAmScldQv4EEts+780Eo/jhcy2WjAa9ZXIEH7TS3KkHAok4ss21kluk5AfPNeIfOH
-         Wnl36b8JUOpGTSM9EAlL2ok3mH2DdVdJZhg3Y0odCDE4nSSKY/MuA++j19lDo4eFJkwO
-         wYgXqJcpjONjJ0F4ASLDab7Yxb1k/O0pKZ0NtSHKYbAtXvtd2fho+S8SQn5zXtQEH5fR
-         SUJmA64PQzelMWmflFPKn2pQ3G5C1w4g9eSXhvbBC9HVD4n/qmO1rhTyXUnJgRyIbURg
-         XU2A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gSOjD5AkSdCSj3BP1gsriSDmnCRdW+lKnRIbG1nEGjc=;
+        b=oIX9ryDr9DeqXUYh1uI4YETeFk/O+uu9H71Oi/gdpzlqHKENDLiZxNaib6od/2VRWL
+         JGOry9IohYDerhygzYyXurpW+2TXX5aP59PFYYCOfVipn1mkDPKhJsBicsmh4LsIopaD
+         oJAOUcE9fQ5ZKK3S8+DM3g5n/SOEmvP+3/DbqBLoxShRk60Ry8LDuYClgTf2sr1oeA4n
+         9g0aCM5LI2zYmUF2bZP7kCZS560blvlP7e4FkaNqMtp3u5BMqw1ePJcYmB1IiIBQ5Bcn
+         2/sgfR+hfBqsxIB78kSxaylJrh+XehrdqXB7Na6A6B2P43TO9N+GORYcHm8pDjlqLdo/
+         BRPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=9xPGIlmt+FCGNXEvj1MOSv96z0C4C+W3xdxDnwzXgQk=;
-        b=dNvvjmfNgcrNl8q5GDHxSego/P2RIEw1jZFsqjw+CtxAfnYx6xgJSNqxB15AwNaqtW
-         DNUWPCCPfX0/kPlF4kVfSwjcRCyZaVjXP7gO6D82JyYZjq611D5PdxZhV9i95STTrKj7
-         RRiFLv8Oxyqzv4aOggPYacddyz1I57K3vEv0R0pwVUd7rtN//idnGExTU8WDrE5/noLL
-         AaqrG10wcEyxvO3dYVXkxzcR3hU3SkQmKJAcnsY/vrUkhDE9kSW5rYid8qo8PaYWiXM8
-         l2jM8d2giwCRW/iH1MquwEsOvNQh33gt3h7ictgARsUs6qyJ8Jp1qCgz6saT60i2cbys
-         zAzg==
-X-Gm-Message-State: AOAM533Rkxe27C4ChqZRET930/Ha0n/o7hyrB84eet2zWPAuU+BIETjA
-        J4nWwT01V98DM8bZ3r6zhyEcXY8anQrJnw==
-X-Google-Smtp-Source: ABdhPJxUDZbbJgYJBeV6AACgxuY7K30lobb69PEkOZ6zGK4shihN0gM71h+yUJD5dNpVB+Fzgbk40w==
-X-Received: by 2002:a05:6e02:20e1:b0:2cf:63de:22f7 with SMTP id q1-20020a056e0220e100b002cf63de22f7mr1927645ilv.24.1651870349197;
-        Fri, 06 May 2022 13:52:29 -0700 (PDT)
-Received: from localhost ([172.243.153.43])
-        by smtp.gmail.com with ESMTPSA id z15-20020a6b5c0f000000b0065a47e16f53sm1580551ioh.37.2022.05.06.13.52.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 May 2022 13:52:28 -0700 (PDT)
-Date:   Fri, 06 May 2022 13:52:19 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Pu Lehui <pulehui@huawei.com>, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pu Lehui <pulehui@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Message-ID: <62758a83b512a_18fd5208b5@john.notmuch>
-In-Reply-To: <20220429014240.3434866-2-pulehui@huawei.com>
-References: <20220429014240.3434866-1-pulehui@huawei.com>
- <20220429014240.3434866-2-pulehui@huawei.com>
-Subject: RE: [PATCH bpf-next v2 1/2] bpf: Unify data extension operation of
- jited_ksyms and jited_linfo
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gSOjD5AkSdCSj3BP1gsriSDmnCRdW+lKnRIbG1nEGjc=;
+        b=txhrgEoPWS0ZFhcV+aadnMHqHh3QXRqpnFFX46aj6auzh0Sw3sE6C+xs5rrEjKtbQj
+         DvzbPIhqQFztqBIem9lyr/04QvsGhOGPfc2Gf4A3wcgZpB9lDtoW1SGYsu0m/c4crN0d
+         Sl/Olb+42a2S6jeIW+/taIe2cdJ/Xb0HlnqNiOztJM+EjSUa5dQ8cQV9QjNE5WF8FLWH
+         XU4+3x2IuoKzyVf3Wn3+20YFYaHvZA0g6+3oAbyZ1lLX4tJZ29cpgFyLwgWsdjyooBar
+         3OQJj1l8B4iWffxDGI1wOivRifrNoxp+uZCrRlowhRiQwrNQa9ajkWGE54EUN1QlXqEY
+         fYHA==
+X-Gm-Message-State: AOAM531sjBY+jMZrtT5XcDo1zXgMJLfoRlvq5dpp6kSM5HtVr74c4ud3
+        riC6NWLb1nEM+qgBDQ6qyC3zIUVlG+wi+5xP6lg=
+X-Google-Smtp-Source: ABdhPJxSS37JZh0Iz4AW/McwhmXG/tbQpqum484Ob+Mlac+CeF0xLB4e2tI7TFng+f2ctSl5qabey0JBneaQx/ynrSc=
+X-Received: by 2002:a05:6e02:1d8d:b0:2cf:2112:2267 with SMTP id
+ h13-20020a056e021d8d00b002cf21122267mr1973534ila.239.1651870539647; Fri, 06
+ May 2022 13:55:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220427214337.716372-1-grantseltzer@gmail.com>
+ <CAEf4Bza4fW0v7gGO+57hwoHhhaPTeQjHPYKU5P_NzYTYdoxMdA@mail.gmail.com> <CAO658oW381jwCAe24uiySjqz+=XRpGfDSai+=opK=z6a2y5gUw@mail.gmail.com>
+In-Reply-To: <CAO658oW381jwCAe24uiySjqz+=XRpGfDSai+=opK=z6a2y5gUw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 6 May 2022 13:55:28 -0700
+Message-ID: <CAEf4BzYM7Uaaa=SvZvdzY4_XWmH-+T6rrao2w1cDA4z=G7Mj_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] API function for retrieving data from percpu map
+To:     Grant Seltzer Richman <grantseltzer@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,56 +65,160 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pu Lehui wrote:
-> We found that 32-bit environment can not print bpf line info due
-> to data inconsistency between jited_ksyms[0] and jited_linfo[0].
-> 
-> For example:
-> jited_kyms[0] = 0xb800067c, jited_linfo[0] = 0xffffffffb800067c
-> 
-> We know that both of them store bpf func address, but due to the
-> different data extension operations when extended to u64, they may
-> not be the same. We need to unify the data extension operations of
-> them.
-> 
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
->  kernel/bpf/syscall.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index e9e3e49c0eb7..18137ea5190d 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3871,13 +3871,16 @@ static int bpf_prog_get_info_by_fd(struct file *file,
->  		info.nr_jited_line_info = 0;
->  	if (info.nr_jited_line_info && ulen) {
->  		if (bpf_dump_raw_ok(file->f_cred)) {
-> +			unsigned long jited_linfo_addr;
->  			__u64 __user *user_linfo;
->  			u32 i;
->  
->  			user_linfo = u64_to_user_ptr(info.jited_line_info);
->  			ulen = min_t(u32, info.nr_jited_line_info, ulen);
->  			for (i = 0; i < ulen; i++) {
-> -				if (put_user((__u64)(long)prog->aux->jited_linfo[i],
-> +				jited_linfo_addr = (unsigned long)
-> +					prog->aux->jited_linfo[i];
-> +				if (put_user((__u64) jited_linfo_addr,
->  					     &user_linfo[i]))
+On Wed, Apr 27, 2022 at 7:55 PM Grant Seltzer Richman
+<grantseltzer@gmail.com> wrote:
+>
+> On Wed, Apr 27, 2022 at 6:16 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Apr 27, 2022 at 2:43 PM grantseltzer <grantseltzer@gmail.com> wrote:
+> > >
+> > > From: Grant Seltzer <grantseltzer@gmail.com>
+> > >
+> > > This adds a new API function used to retrieve all data from a
+> > > percpu array or percpu hashmap.
+> > >
+> > > This is useful because the current interface for doing so
+> > > requires knowledge of the layout of these BPF map internal
+> > > structures.
+> > >
+> > > Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c | 28 ++++++++++++++++++++++++++++
+> > >  tools/lib/bpf/libbpf.h | 25 +++++++++++++++++++++++++
+> > >  2 files changed, 53 insertions(+)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 873a29ce7781..8d72cff22688 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -36,6 +36,7 @@
+> > >  #include <linux/perf_event.h>
+> > >  #include <linux/ring_buffer.h>
+> > >  #include <linux/version.h>
+> > > +#include <linux/math.h>
+> > >  #include <sys/epoll.h>
+> > >  #include <sys/ioctl.h>
+> > >  #include <sys/mman.h>
+> > > @@ -4370,6 +4371,33 @@ int bpf_map__resize(struct bpf_map *map, __u32 max_entries)
+> > >         return bpf_map__set_max_entries(map, max_entries);
+> > >  }
+> > >
+> > > +void *bpf_map__get_percpu_value(const struct bpf_map *map, const void *key)
+> >
+> > I'd rather avoid API that allocates memory on behalf of user (and
+> > requires user to later free it) if possible. In this case there is no
+> > need for libbpf itself to allocate memory, user can allocate enough
+> > memory and pass it to libbpf.
+>
+> I see, this makes sense. I also considered defining a macro instead,
+> similar to `bpf_object__for_each_program`, except something like
+> `bpf_map__for_each_cpu`.
+>
+> >
+> > I'm actually working on few related APIs to avoid using low-level
+> > bpf_map_update_elem() from user-space. I want to add
+> > bpf_map__update_elem(), bpf_map__lookup_elem(),
+> > bpf_map__delete_elem(). It's TBD how it will look like for per-cpu
+> > maps, but I didn't plan to have a separate API for that. It would just
+> > change expectations of value size to be a value_size * num_cpus.
+>
+> Ah ok, you actually mentioned this to me once before, about modeling
+> the  API to accept key/value sizes and validate based on bpf_map's
+> definition. Please let me know if I can help with this, I'd be happy
+> to tackle it.
 
-the logic is fine but i'm going to nitpick a bit this 4 lines is ugly
-just make it slightly longer than 80chars or use a shoarter name? For
-example,
+It depends on whether you are planning to work on it soon. I'd like to
+get this into v0.8 in the next week or two. If you think you can
+actively work on it next week and iterate if necessary quickly, then
+yes, please go ahead. I have few other small things to wrap up besides
+this and this will free a bit of time for me.
 
-			for (i = 0; i < ulen; i++) {
-				unsigned long l;
+Basically, I was thinking to have an API like below:
 
-				l = (unsigned long) prog->aux->jited_linfo[i];
-				if (put_user((__u64) l, &user_linfo[i]))
+int bpf_map__lookup_elem(const struct bpf_map *map, const void *key,
+size_t key_sz, void *value, size_t value_sz);
 
-is much nicer -- no reason to smash single assignment across multiple
-lines. My $.02.
+and checking 1) that map is created (fd >= 0) 2) and key_sz/value_sz
+match our knowledge of the map's definition, which for per-CPU maps
+would mean that value_sz is actual value_size *
+libbpf_num_possible_cpus().
 
-Thanks,
-John
+Similarly for other very popular operations on maps: update and
+delete. We can probably also add wrappers for BPF_MAP_GET_NEXT_KEY and
+LOOKUP_AND_DELETE_ELEM commands. I didn't plan to add batch operations
+yet, as they are much less popular, so didn't want to over do it.
+
+>
+>
+> >
+> > So stay tuned, hopefully very soon
+> >
+> > > +{
+> > > +
+> > > +       if (!(bpf_map__type(map) == BPF_MAP_TYPE_PERCPU_ARRAY ||
+> > > +               bpf_map__type(map) == BPF_MAP_TYPE_PERCPU_HASH)) {
+> > > +               return libbpf_err_ptr(-EINVAL);
+> > > +       }
+> > > +
+> > > +       int num_cpus;
+> > > +       __u32 value_size;
+> > > +       num_cpus = libbpf_num_possible_cpus();
+> > > +
+> > > +       if (num_cpus < 0)
+> > > +               return libbpf_err_ptr(-EBUSY);
+> > > +
+> > > +       value_size = bpf_map__value_size(map);
+> > > +
+> > > +       void *data = malloc(roundup(value_size, 8) * num_cpus);
+> > > +       int err = bpf_map_lookup_elem(map->fd, key, data);
+> > > +       if (err) {
+> > > +               free(data);
+> > > +               return libbpf_err_ptr(err);
+> > > +       }
+> > > +
+> > > +       return data;
+> > > +}
+> > > +
+> > >  static int
+> > >  bpf_object__probe_loading(struct bpf_object *obj)
+> > >  {
+> > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > > index cdbfee60ea3e..99b218702dfb 100644
+> > > --- a/tools/lib/bpf/libbpf.h
+> > > +++ b/tools/lib/bpf/libbpf.h
+> > > @@ -921,6 +921,31 @@ LIBBPF_API const void *bpf_map__initial_value(struct bpf_map *map, size_t *psize
+> > >  LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_map__type() instead")
+> > >  LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
+> > >
+> > > +/**
+> > > + * @brief **bpf_map__get_percpu_value()** returns a pointer to an array
+> > > + * of data stored in a per-cpu array or per-cpu hashmap at a specified
+> > > + * key. Each element is padded to 8 bytes regardless of the value data
+> > > + * type stored in the per-cpu map. The index of each element in the array
+> > > + * corresponds with the cpu that the data was set from.
+> > > + * @param map per-cpu array or per-cpu hashmap
+> > > + * @param key the key or index in the map
+> > > + * @return pointer to the array of data
+> > > + *
+> > > + * example usage:
+> > > + *
+> > > + *  values = bpf_map__get_percpu_value(bpfmap, (void*)&zero);
+> > > + *  if (values == NULL) {
+> > > + *     // error handling
+> > > + *  }
+> > > + *
+> > > + *     void* ptr = values;
+> > > + *  for (int i = 0; i < num_cpus; i++) {
+> > > + *    printf("CPU %d: %ld\n", i, *(ulong*)ptr);
+> > > + *    ptr += 8;
+> > > + *  }
+> > > + */
+> > > +LIBBPF_API void *bpf_map__get_percpu_value(const struct bpf_map *map, const void *key);
+> > > +
+> > >  /**
+> > >   * @brief **bpf_map__is_internal()** tells the caller whether or not the
+> > >   * passed map is a special map created by libbpf automatically for things like
+> > > --
+> > > 2.34.1
+> > >
