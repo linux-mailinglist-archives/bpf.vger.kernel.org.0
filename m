@@ -2,70 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6802551E190
-	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 00:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF3A51E231
+	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 01:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444679AbiEFWSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 18:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
+        id S1351131AbiEFW23 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 18:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241939AbiEFWSj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 18:18:39 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5C06540F;
-        Fri,  6 May 2022 15:14:54 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id e3so9521370ios.6;
-        Fri, 06 May 2022 15:14:54 -0700 (PDT)
+        with ESMTP id S1444730AbiEFW20 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 18:28:26 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D015A5AC;
+        Fri,  6 May 2022 15:24:42 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id z18so9562688iob.5;
+        Fri, 06 May 2022 15:24:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rCTLTbLP/HCPwEyRHnS4Xntt1B1zffntB8D6OmsmIYM=;
-        b=pg0/Yt3QJEJeyRkqIy1cKjUnl4Q5IC5OVFEgPVFVI9uYOt7Xmm7edvsl6gBEjCELEg
-         SnFEiHqFqtJNoimavdRivrQjd4ET896Y+7gS9WthGdnonHoggAlP9MkvbgbP6KcJMIQl
-         YiQ0o0q2L55cEB6cjE892PJ3+EiEAMxf9ocexcwjUGMYC//ZCMkg/ArE9S/uU5/bN94+
-         zToBvUNywhFlS719I9+9aq7K/fkCLLnebbKWxol21h11RibuL5bzBKeS/i2GsyXDmcIk
-         rBHYqK3W9jk/APsnpp+ivf6nQ8PcPYp76lKw6ULV4lYD7s1gQQ+RYnIi8T821cOhijoG
-         bRAw==
+        bh=vCER+cZdcw6N/VGxFIusbKRClQ4HAt23kfcOf1wxrBE=;
+        b=KPz6NppaFeIqvV/fyw5JodOD0pAB/7SA+3vt1UjnDalEKL3MJzIXf83PCDcS6OodEh
+         O6tKEjWoKDYuoqVGAgZ+/QbT8MGUeFHSLZsB0lhyMJp5oHzG95lSxnFg+03Q/J5r5K3d
+         1e9VsHtroqWMuwLtN1a3d+LNX6UF+Ek+67cC92ujSYi5BXYJ7SyoPgw8XEj6/f56yYZO
+         pmT46MIWEmIVyiuV5ikPh6FxNFyqrF8FgfFidhq0TW9XX3wWIlnbMIK6F0tazHe3EyWs
+         jI1hRw0RVP9A5IYhZhQ4UCIannST01aeVJfUQss2rrhqHwm7YM1fCDJjJ44Qp9A8bZaw
+         L6NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rCTLTbLP/HCPwEyRHnS4Xntt1B1zffntB8D6OmsmIYM=;
-        b=QE1ZPlHhmfmfyaUe41Zlp99F0TlYN5cqXwHXfxtk1cWEPrvMul4AMQr1kZ/bFK0D+q
-         RBsRgwxZO8Ydrs+Rc/NCdgGLOT7RwMOJH72Pa7Df+nKwNRRTGaKbo/at2/bhtUubhIJD
-         LSuuFT9OM2Feu7BZa2Lwy9WkcJT1RL+32+txfq5S5JHVaSCrThhDs5uwb0vWTQpJ4jnc
-         Afq+DOz83nXufHY3Nbb88h7O8/iNDTpXDYY4rfEp6s0jgt+08m0Zg8qsxF6ca0v91M7J
-         xr5y8dh0s+kXomn2D1YG9BiRgUf7cFEs6A5mWt1KZNbB4nWTLTU5Yw6SYmOwBW1jzVFX
-         xjUw==
-X-Gm-Message-State: AOAM5332SyDtiWvYTLnVv2Au1cdbR5oiox3VIDj4HJC5xQcWDTVyODht
-        qDDBr/1nUF+yFKnWMwH80AK7+xKjm7jV8h+a+QC9goWp
-X-Google-Smtp-Source: ABdhPJx6cH8/kFAVuNSsKGTXPt73jPWXP1ujELpoKsSM82Mr15WnMzNVpnAQdo4BtqYozrL8n+V7/jh3uk/FDntTVvk=
+        bh=vCER+cZdcw6N/VGxFIusbKRClQ4HAt23kfcOf1wxrBE=;
+        b=ySjV1MKMDvFnU2TyCPKLOCL6D9cp42nTJDPyuxEu8L198ElzWst07L6tTHAKbHoKks
+         MY5mWbTI9X9bDT7GQOnmsTr3E6B4RMN+1HnzysNDT3XLopC8wZVcXYJ0YQ7hE1aW+Dil
+         AR8mRy7v2CX/BE+XhAG62JeI/CvAKOqSQjYYN/WHRQ6EzIsT/klX7EriqGf00NWIdZ7c
+         zxGPFE5Ckudbs0Z/cgTHmRpScMvlO/r5zFF9uTCi9hKCi8fADC6Fq0h160KFy2+6sk2b
+         4Vk+kOXb7O/vXdKq5PsS0ryi+IInAhVn3imfj6PYmUw5dy9xnEZJc2rUoIvVBRiaz7Ek
+         6d6g==
+X-Gm-Message-State: AOAM532nU8mVDtyfbeNmhC3IgO202R1Q7G1Bvh79TBupU6d1JxbE1BXz
+        2yHGveZNPLNcHQiTTdm21s86gYSuzTfA3fpbL6TfwG4c
+X-Google-Smtp-Source: ABdhPJyOgolGmqENHEccxh0k04YejU4QpnVg7BzBYfUKuKuGeSGqsQEalNt8THP8IsaN2697HA845IurSXeOtchUIXU=
 X-Received: by 2002:a05:6638:33a1:b0:32b:8e2b:f9ba with SMTP id
- h33-20020a05663833a100b0032b8e2bf9bamr2370798jav.93.1651875293774; Fri, 06
- May 2022 15:14:53 -0700 (PDT)
+ h33-20020a05663833a100b0032b8e2bf9bamr2382976jav.93.1651875881858; Fri, 06
+ May 2022 15:24:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220503150410.2d9e88aa@rorschach.local.home>
-In-Reply-To: <20220503150410.2d9e88aa@rorschach.local.home>
+References: <20220502211235.142250-1-mathew.j.martineau@linux.intel.com> <20220502211235.142250-5-mathew.j.martineau@linux.intel.com>
+In-Reply-To: <20220502211235.142250-5-mathew.j.martineau@linux.intel.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 May 2022 15:14:43 -0700
-Message-ID: <CAEf4BzYJan2c0oy-eww++VC57ak=+QOt6a9SWUT1M__AKF8VSA@mail.gmail.com>
-Subject: Re: : [PATCH] ftrace/x86: Add FTRACE_MCOUNT_MAX_OFFSET to avoid
- adding weak functions
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
+Date:   Fri, 6 May 2022 15:24:31 -0700
+Message-ID: <CAEf4BzYJ5R2Fz6hkf74c93AvNh23FQUa-_t46nBYQAeKhhtryg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/8] selftests: bpf: add MPTCP test base
+To:     Mat Martineau <mathew.j.martineau@linux.intel.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Nicolas Rybowski <nicolas.rybowski@tessares.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, mptcp@lists.linux.dev,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Geliang Tang <geliang.tang@suse.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -77,52 +70,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 3, 2022 at 12:04 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, May 2, 2022 at 2:12 PM Mat Martineau
+<mathew.j.martineau@linux.intel.com> wrote:
 >
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> From: Nicolas Rybowski <nicolas.rybowski@tessares.net>
 >
-> If an unused weak function was traced, it's call to fentry will still
-> exist, which gets added into the __mcount_loc table. Ftrace will use
-> kallsyms to retrieve the name for each location in __mcount_loc to display
-> it in the available_filter_functions and used to enable functions via the
-> name matching in set_ftrace_filter/notrace. Enabling these functions do
-> nothing but enable an unused call to ftrace_caller. If a traced weak
-> function is overridden, the symbol of the function would be used for it,
-> which will either created duplicate names, or if the previous function was
-> not traced, it would be incorrectly listed in available_filter_functions
-> as a function that can be traced.
+> This patch adds a base for MPTCP specific tests.
 >
-> This became an issue with BPF[1] as there are tooling that enables the
-> direct callers via ftrace but then checks to see if the functions were
-> actually enabled. The case of one function that was marked notrace, but
-> was followed by an unused weak function that was traced. The unused
-> function's call to fentry was added to the __mcount_loc section, and
-> kallsyms retrieved the untraced function's symbol as the weak function was
-> overridden. Since the untraced function would not get traced, the BPF
-> check would detect this and fail.
+> It is currently limited to the is_mptcp field in case of plain TCP
+> connection because there is no easy way to get the subflow sk from a msk
+> in userspace. This implies that we cannot lookup the sk_storage attached
+> to the subflow sk in the sockops program.
 >
-> The real fix would be to fix kallsyms to not show address of weak
-> functions as the function before it. But that would require adding code in
-> the build to add function size to kallsyms so that it can know when the
-> function ends instead of just using the start of the next known symbol.
->
-> In the mean time, this is a work around. Add a FTRACE_MCOUNT_MAX_OFFSET
-> macro that if defined, ftrace will ignore any function that has its call
-> to fentry/mcount that has an offset from the symbol that is greater than
-> FTRACE_MCOUNT_MAX_OFFSET.
->
-> If CONFIG_HAVE_FENTRY is defined for x86, define FTRACE_MCOUNT_MAX_OFFSET
-> to zero, which will have ftrace ignore all locations that are not at the
-> start of the function.
->
-> [1] https://lore.kernel.org/all/20220412094923.0abe90955e5db486b7bca279@kernel.org/
->
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> Co-developed-by: Geliang Tang <geliang.tang@suse.com>
+> Signed-off-by: Geliang Tang <geliang.tang@suse.com>
+> Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+> Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
 > ---
->  arch/x86/include/asm/ftrace.h |  5 ++++
->  kernel/trace/ftrace.c         | 50 +++++++++++++++++++++++++++++++++--
->  2 files changed, 53 insertions(+), 2 deletions(-)
+>  MAINTAINERS                                   |   1 +
+>  tools/testing/selftests/bpf/config            |   1 +
+>  tools/testing/selftests/bpf/network_helpers.c |  43 ++++--
+>  tools/testing/selftests/bpf/network_helpers.h |   4 +
+>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 136 ++++++++++++++++++
+>  .../testing/selftests/bpf/progs/mptcp_sock.c  |  50 +++++++
+>  6 files changed, 227 insertions(+), 8 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/mptcp.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/mptcp_sock.c
 >
 
-Thanks for investigating and fixing this! I guess we'll need ENDBR
-handling, but otherwise it looks good to me!
+[...]
+
+>  /* ipv4 test vector */
+> @@ -42,11 +43,14 @@ extern struct ipv6_packet pkt_v6;
+>  int settimeo(int fd, int timeout_ms);
+>  int start_server(int family, int type, const char *addr, __u16 port,
+>                  int timeout_ms);
+> +int start_mptcp_server(int family, const char *addr, __u16 port,
+> +                      int timeout_ms);
+>  int *start_reuseport_server(int family, int type, const char *addr_str,
+>                             __u16 port, int timeout_ms,
+>                             unsigned int nr_listens);
+>  void free_fds(int *fds, unsigned int nr_close_fds);
+>  int connect_to_fd(int server_fd, int timeout_ms);
+> +int connect_to_mptcp_fd(int server_fd, int timeout_ms);
+>  int connect_to_fd_opts(int server_fd, const struct network_helper_opts *opts);
+>  int connect_fd_to_fd(int client_fd, int server_fd, int timeout_ms);
+>  int fastopen_connect(int server_fd, const char *data, unsigned int data_len,
+> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> new file mode 100644
+> index 000000000000..cd548bb2828f
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> @@ -0,0 +1,136 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020, Tessares SA. */
+
+2022?
+
+> +
+> +#include <test_progs.h>
+> +#include "cgroup_helpers.h"
+> +#include "network_helpers.h"
+> +
+> +struct mptcp_storage {
+> +       __u32 invoked;
+> +       __u32 is_mptcp;
+> +};
+> +
+> +static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 is_mptcp)
+> +{
+> +       int err = 0, cfd = client_fd;
+> +       struct mptcp_storage val;
+> +
+> +       if (is_mptcp == 1)
+> +               return 0;
+> +
+> +       if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &cfd, &val) < 0)) {
+
+don't use CHECK and especially CHECK_FAIL, please use ASSERT_xxx()
+macros instead
+
+> +               perror("Failed to read socket storage");
+> +               return -1;
+> +       }
+> +
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/mptcp_sock.c b/tools/testing/selftests/bpf/progs/mptcp_sock.c
+> new file mode 100644
+> index 000000000000..0d65fb889d03
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/mptcp_sock.c
+> @@ -0,0 +1,50 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020, Tessares SA. */
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +__u32 _version SEC("version") = 1;
+
+version is not needed, please drop
+
+> +
+> +struct mptcp_storage {
+> +       __u32 invoked;
+> +       __u32 is_mptcp;
+> +};
+
+[...]
