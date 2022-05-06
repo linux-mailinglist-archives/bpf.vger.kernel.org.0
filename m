@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656EE51E1FA
-	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 01:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F221551E291
+	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 01:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344905AbiEFXeH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 19:34:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
+        id S1444772AbiEFXpr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 19:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1445018AbiEFXd5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 19:33:57 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F72712D4
-        for <bpf@vger.kernel.org>; Fri,  6 May 2022 16:30:12 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id z18so9679816iob.5
-        for <bpf@vger.kernel.org>; Fri, 06 May 2022 16:30:12 -0700 (PDT)
+        with ESMTP id S1359057AbiEFXpp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 19:45:45 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28AB712D4
+        for <bpf@vger.kernel.org>; Fri,  6 May 2022 16:41:59 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id d3so5743799ilr.10
+        for <bpf@vger.kernel.org>; Fri, 06 May 2022 16:41:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D/EY7jRXDPDzXNxoPdzPyXE+Tamk1LTjosOj/236u7o=;
-        b=ab4nMvG+13FL8IG6D/YjO/+s9gxOszTJ741VMbnIZ7DJBHyIIrDYasT56+AVUC2oYe
-         jEboPYCyGTz3Gm3Yp8Dk/teI9NdFFUKEiv7aMn0JNDmg3BRl/Whs/OhaZIyTVNIzAozZ
-         s2km46Rk8nkkavm4REXzakSeWWZRyL6wCBkChbp4wxn+pqkvQ6r58MpFa84a4BGVTNER
-         2KIzAcZZ7jMICaYp7Mn6KN4gZndmR+HwulLMnOI2UgEac5lbp9j3oNekqPhekNVQ2lT2
-         ewcCIHC8nAKf9iGwjTQ4c+TA0QU4gtaUFpDGntHjiTjyx8wX6q8/ABaZxvhnYh0QUpLI
-         wniQ==
+         :cc:content-transfer-encoding;
+        bh=ONwLMn6fhM9Z9WPJCocGKXpWdnUJm92v83esa47RvDc=;
+        b=fda4z9YJW9//K1w4/PNTl2+SHqlSQqJ4gFyV0nwunjgN4hDreu4LCu+8Z7XtdJKGQv
+         b8o03BHzNW7kspXsY25CIrvCqPVWY1ESAThHZxIa+6flj0dAZ0c6Kg5V4Syl8jVspAsE
+         Zx28uJxs2NSUH7UXbCCh3rYwQmOLGjjGZbKLkDXgoyKsrEqCGSl7CnsNM8x2XtdH+x2i
+         jxiJk6xgzLN9kTWKiuJEyl7TkzCSOiz1MmocueYD/L9kYVtCx8EgHUBoNxU7MrnHOjoU
+         Acf7VASWq3AhU0TMh/+sm/s/NkSg48S2Aqo92HQ3560AzHPo4yrwQqBsXAAjpfqe2w5m
+         0M2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D/EY7jRXDPDzXNxoPdzPyXE+Tamk1LTjosOj/236u7o=;
-        b=qEBDaCfeN6Vmez4nBpJxRyiZKrlr0Yf6hVGGS2kcXkYnTuuuPTH6rf4MsrkHw9LFh8
-         bjzMz/iK9jwLb1YQ6ahBzq5f0ie4N0S9gKLLa6DzersA1HVsNIDf4tsslb6f5beTSg4Z
-         USP0rh7rU8KPEmdm6ESfrksaICG6EzJy5uTjNIoQgjOuZPUWhDXX86kB2+VLmHhzXp4p
-         6ZVV4Zu20tdgjqWVia+8AvnoTWmCOnXvS31f06dFANibWv7wHDhklVKHb2QXghwEUmbK
-         NIHw1O/RIkJGPWTYa2PI9it9QaAjaJqVkMq7APj/t84odn8VRktGS3zsCPWOEpVwzeDq
-         8TTA==
-X-Gm-Message-State: AOAM530h0+tYc7Tapgv3FfmoFC3t9gKYJpr9kRDnY5/P+NN0ZsN2omVk
-        4ySz/3mbKI4nwgMaAlBDV0M6Mpqj8W4QgPCewz4=
-X-Google-Smtp-Source: ABdhPJwdSdDooigon9CjYeO1l4ZZ0aXofvLh+/N+S4IpHRjEDMqiITL/uNryjc9NCnxtVPyerkMNHKq8O6wG9qd8/K8=
-X-Received: by 2002:a05:6638:2104:b0:326:1e94:efa6 with SMTP id
- n4-20020a056638210400b003261e94efa6mr2564397jaj.234.1651879811742; Fri, 06
- May 2022 16:30:11 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ONwLMn6fhM9Z9WPJCocGKXpWdnUJm92v83esa47RvDc=;
+        b=qpVCfCQLJ/YxOQrhg0k29Ys+TDkgv5MbIdCnUOdO9hHJD8SPdn+Vezfhn9DxJvktDX
+         3bWpx1lgBJx6p3qG9kWc0GSj5gOY8qE7iyt0gGJbD8xzluLT89TSYRPXE8R+zvxX+/HM
+         UqfTNu23eOlV3r1qVKGexadn+IKCPUJFE7zP951ta90TwTmVQkrKBaYi9gGms2osLOTi
+         HeIHZuzOz2WyThMwHgeXowpYZDJvb+f16RvAM3FLInqHXWKlMPDyOXTN66DYSSvfJUlV
+         Jwe0589m0j6u859+mgVxJocRoNx03EzusDHLKyEooBsGVa1zrKxxwfEtEaR8SusNcdc1
+         g8Iw==
+X-Gm-Message-State: AOAM5313fiZm4NnkEEdYDejlJazPLlX6YMfn0rmhplZ5Ki31xV60h3Em
+        m8ev/t5Zxk8IYwFteKsttWU35evceU9LeoL0CF+3cTngs8A=
+X-Google-Smtp-Source: ABdhPJy7Oc7a+sUocbd0rc7SNiWFXeuee9AM1a0Stlh8nP7qSj3WPGEeDj1r8qgrJtWYV3jaoq075Xl1IyrJWcE0DRc=
+X-Received: by 2002:a05:6e02:1d8d:b0:2cf:2112:2267 with SMTP id
+ h13-20020a056e021d8d00b002cf21122267mr2170559ila.239.1651880519360; Fri, 06
+ May 2022 16:41:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220428211059.4065379-1-joannelkoong@gmail.com> <20220428211059.4065379-3-joannelkoong@gmail.com>
-In-Reply-To: <20220428211059.4065379-3-joannelkoong@gmail.com>
+References: <20220428211059.4065379-1-joannelkoong@gmail.com> <20220428211059.4065379-4-joannelkoong@gmail.com>
+In-Reply-To: <20220428211059.4065379-4-joannelkoong@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 May 2022 16:30:00 -0700
-Message-ID: <CAEf4BzaL=JEAqhE=zLG506-Z==TJBwK40A-bon5AzhwMzhhtTQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/6] bpf: Add verifier support for dynptrs and
- implement malloc dynptrs
+Date:   Fri, 6 May 2022 16:41:48 -0700
+Message-ID: <CAEf4Bzaz4=tEvESd_twhx1bdepdOP3L4SmUiaKqGFJtX=CJruQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Dynptr support for ring buffers
 To:     Joanne Koong <joannelkoong@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
@@ -59,6 +58,7 @@ Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,235 +69,176 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 28, 2022 at 2:12 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+On Thu, Apr 28, 2022 at 2:12 PM Joanne Koong <joannelkoong@gmail.com> wrote=
+:
 >
-> This patch adds the bulk of the verifier work for supporting dynamic
-> pointers (dynptrs) in bpf. This patch implements malloc-type dynptrs
-> through 2 new APIs (bpf_dynptr_alloc and bpf_dynptr_put) that can be
-> called by a bpf program. Malloc-type dynptrs are dynptrs that dynamically
-> allocate memory on behalf of the program.
+> Currently, our only way of writing dynamically-sized data into a ring
+> buffer is through bpf_ringbuf_output but this incurs an extra memcpy
+> cost. bpf_ringbuf_reserve + bpf_ringbuf_commit avoids this extra
+> memcpy, but it can only safely support reservation sizes that are
+> statically known since the verifier cannot guarantee that the bpf
+> program won=E2=80=99t access memory outside the reserved space.
 >
-> A bpf_dynptr is opaque to the bpf program. It is a 16-byte structure
-> defined internally as:
+> The bpf_dynptr abstraction allows for dynamically-sized ring buffer
+> reservations without the extra memcpy.
 >
-> struct bpf_dynptr_kern {
->     void *data;
->     u32 size;
->     u32 offset;
-> } __aligned(8);
+> There are 3 new APIs:
 >
-> The upper 8 bits of *size* is reserved (it contains extra metadata about
-> read-only status and dynptr type); consequently, a dynptr only supports
-> memory less than 16 MB.
+> long bpf_ringbuf_reserve_dynptr(void *ringbuf, u32 size, u64 flags, struc=
+t bpf_dynptr *ptr);
+> void bpf_ringbuf_submit_dynptr(struct bpf_dynptr *ptr, u64 flags);
+> void bpf_ringbuf_discard_dynptr(struct bpf_dynptr *ptr, u64 flags);
 >
-> The 2 new APIs for malloc-type dynptrs are:
->
-> long bpf_dynptr_alloc(u32 size, u64 flags, struct bpf_dynptr *ptr);
-> void bpf_dynptr_put(struct bpf_dynptr *ptr);
->
-> Please note that there *must* be a corresponding bpf_dynptr_put for
-> every bpf_dynptr_alloc (even if the alloc fails). This is enforced
-> by the verifier.
->
-> In the verifier, dynptr state information will be tracked in stack
-> slots. When the program passes in an uninitialized dynptr
-> (ARG_PTR_TO_DYNPTR | MEM_UNINIT), the stack slots corresponding
-> to the frame pointer where the dynptr resides at are marked STACK_DYNPTR.
->
-> For helper functions that take in initialized dynptrs (eg
-> bpf_dynptr_read + bpf_dynptr_write which are added later in this
-> patchset), the verifier enforces that the dynptr has been initialized
-> properly by checking that their corresponding stack slots have been marked
-> as STACK_DYNPTR. Dynptr release functions (eg bpf_dynptr_put) will clear the
-> stack slots. The verifier enforces at program exit that there are no
-> referenced dynptrs that haven't been released.
+> These closely follow the functionalities of the original ringbuf APIs.
+> For example, all ringbuffer dynptrs that have been reserved must be
+> either submitted or discarded before the program exits.
 >
 > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 > ---
->  include/linux/bpf.h            |  60 ++++++++-
->  include/linux/bpf_verifier.h   |  21 +++
->  include/uapi/linux/bpf.h       |  30 +++++
->  kernel/bpf/helpers.c           |  75 +++++++++++
->  kernel/bpf/verifier.c          | 225 ++++++++++++++++++++++++++++++++-
->  scripts/bpf_doc.py             |   2 +
->  tools/include/uapi/linux/bpf.h |  30 +++++
->  7 files changed, 440 insertions(+), 3 deletions(-)
+
+Looks great! Modulo those four underscores, they are super confusing...
+
+>  include/linux/bpf.h            | 10 ++++-
+>  include/uapi/linux/bpf.h       | 35 +++++++++++++++++
+>  kernel/bpf/helpers.c           |  6 +++
+>  kernel/bpf/ringbuf.c           | 71 ++++++++++++++++++++++++++++++++++
+>  kernel/bpf/verifier.c          | 18 +++++++--
+>  tools/include/uapi/linux/bpf.h | 35 +++++++++++++++++
+>  6 files changed, 171 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 757440406962..10efbec99e93 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -394,7 +394,10 @@ enum bpf_type_flag {
+>         /* DYNPTR points to dynamically allocated memory. */
+>         DYNPTR_TYPE_MALLOC      =3D BIT(8 + BPF_BASE_TYPE_BITS),
+>
+> -       __BPF_TYPE_LAST_FLAG    =3D DYNPTR_TYPE_MALLOC,
+> +       /* DYNPTR points to a ringbuf record. */
+> +       DYNPTR_TYPE_RINGBUF     =3D BIT(9 + BPF_BASE_TYPE_BITS),
+> +
+> +       __BPF_TYPE_LAST_FLAG    =3D DYNPTR_TYPE_RINGBUF,
+
+it's getting a bit old to have to update __BPF_TYPE_LAST_FLAG all the
+time, maybe let's do this:
+
+__BPF_TYPE_FLAG_MAX,
+__BPF_TYPE_LAST_FLAG =3D __BPF_TYPE_FLAG_MAX - 1,
+
+and never touch it again?
+
+>  };
 >
 
 [...]
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 4565684839f1..16b7ea54a7e0 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -187,6 +187,11 @@ struct bpf_verifier_stack_elem {
->                                           POISON_POINTER_DELTA))
->  #define BPF_MAP_PTR(X)         ((struct bpf_map *)((X) & ~BPF_MAP_PTR_UNPRIV))
->
-> +/* forward declarations */
+> + *
+> + * void bpf_ringbuf_discard_dynptr(struct bpf_dynptr *ptr, u64 flags)
+> + *     Description
+> + *             Discard reserved ring buffer sample through the dynptr
+> + *             interface. This is a no-op if the dynptr is invalid/null.
+> + *
+> + *             For more information on *flags*, please see
+> + *             'bpf_ringbuf_discard'.
+> + *     Return
+> + *             Nothing. Always succeeds.
+>   */
 
-it's kind of obvious from C syntax, this comment doesn't really add value
+let's also add bpf_dynptr_is_null() (or bpf_dynptr_is_valid(), not
+sure which one is more appropriate, probably just null one), so we can
+check in code whether some reservation was successful without knowing
+bpf_ringbuf_reserve_dynptr()'s return value
 
-> +static bool arg_type_is_mem_size(enum bpf_arg_type type);
-> +static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx);
-> +static int release_reference(struct bpf_verifier_env *env, int ref_obj_id);
-> +
+
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
 
 [...]
 
->  static struct bpf_func_state *func(struct bpf_verifier_env *env,
->                                    const struct bpf_reg_state *reg)
->  {
-> @@ -646,6 +672,134 @@ static void mark_verifier_state_scratched(struct bpf_verifier_env *env)
->         env->scratched_stack_slots = ~0ULL;
->  }
->
-> +#define DYNPTR_TYPE_FLAG_MASK          DYNPTR_TYPE_MALLOC
-
-can this be put near where DYNPTR_TYPE_MALLOC is defined? It's quite
-easy to forget to update this if it's somewhere far away
-
-> +
-> +static int arg_to_dynptr_type(enum bpf_arg_type arg_type)
+> +BPF_CALL_4(bpf_ringbuf_reserve_dynptr, struct bpf_map *, map, u32, size,=
+ u64, flags,
+> +          struct bpf_dynptr_kern *, ptr)
 > +{
-> +       switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
-> +       case DYNPTR_TYPE_MALLOC:
-> +               return BPF_DYNPTR_TYPE_MALLOC;
-> +       default:
-> +               return BPF_DYNPTR_TYPE_INVALID;
+> +       void *sample;
+> +       int err;
+> +
+> +       err =3D bpf_dynptr_check_size(size);
+> +       if (err) {
+> +               bpf_dynptr_set_null(ptr);
+> +               return err;
 > +       }
-> +}
 > +
+> +       sample =3D (void __force *)____bpf_ringbuf_reserve(map, size, fla=
+gs);
 
-[...]
+I was so confused by these four underscored for a bit... Is this
+what's defined inside BPF_CALL_4 (and thus makes it ungreppable). Can
+you instead just open-code container_of and __bpf_ringbuf_reserve()
+directly to make it a bit easier to follow? And flags check as well.
+It will so much easier to understand what's going on.
 
-> +static int unmark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
-> +{
-> +       struct bpf_func_state *state = func(env, reg);
-> +       int spi, i;
 > +
-> +       spi = get_spi(reg->off);
-> +
-> +       if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
+> +       if (!sample) {
+> +               bpf_dynptr_set_null(ptr);
 > +               return -EINVAL;
-> +
-> +       for (i = 0; i < BPF_REG_SIZE; i++) {
-> +               state->stack[spi].slot_type[i] = STACK_INVALID;
-> +               state->stack[spi - 1].slot_type[i] = STACK_INVALID;
 > +       }
 > +
-> +       /* Invalidate any slices associated with this dynptr */
-> +       if (dynptr_type_refcounted(state->stack[spi].spilled_ptr.dynptr.type)) {
-> +               release_reference(env, state->stack[spi].spilled_ptr.id);
-> +               state->stack[spi].spilled_ptr.id = 0;
-> +               state->stack[spi - 1].spilled_ptr.id = 0;
-> +       }
-> +
-> +       state->stack[spi].spilled_ptr.dynptr.type = 0;
-> +       state->stack[spi - 1].spilled_ptr.dynptr.type = 0;
-> +
-> +       state->stack[spi].spilled_ptr.dynptr.first_slot = false;
-
-nit: given you marked slots as STACK_INVALID, we shouldn't even look
-into spilled_ptr.dynptr, so this zeroing out isn't necessary, right?
-
+> +       bpf_dynptr_init(ptr, sample, BPF_DYNPTR_TYPE_RINGBUF, 0, size);
 > +
 > +       return 0;
 > +}
 > +
-> +static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> +const struct bpf_func_proto bpf_ringbuf_reserve_dynptr_proto =3D {
+> +       .func           =3D bpf_ringbuf_reserve_dynptr,
+> +       .ret_type       =3D RET_INTEGER,
+> +       .arg1_type      =3D ARG_CONST_MAP_PTR,
+> +       .arg2_type      =3D ARG_ANYTHING,
+> +       .arg3_type      =3D ARG_ANYTHING,
+> +       .arg4_type      =3D ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_RINGBUF | MEM=
+_UNINIT,
+> +};
+> +
+> +BPF_CALL_2(bpf_ringbuf_submit_dynptr, struct bpf_dynptr_kern *, ptr, u64=
+, flags)
 > +{
-> +       struct bpf_func_state *state = func(env, reg);
-> +       int spi = get_spi(reg->off);
-> +       int i;
+> +       if (!ptr->data)
+> +               return 0;
 > +
-> +       if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS))
-> +               return true;
+> +       ____bpf_ringbuf_submit(ptr->data, flags);
 
-hm... if spi bounds are invalid, shouldn't that be an error?...
+this just calls bpf_ringbuf_commit(), let's do it here explicitly as well
 
 > +
-> +       for (i = 0; i < BPF_REG_SIZE; i++) {
-> +               if (state->stack[spi].slot_type[i] == STACK_DYNPTR ||
-> +                   state->stack[spi - 1].slot_type[i] == STACK_DYNPTR)
-> +                       return false;
-> +       }
+> +       bpf_dynptr_set_null(ptr);
 > +
-> +       return true;
+> +       return 0;
 > +}
 > +
-> +static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-> +                                    enum bpf_arg_type arg_type)
+> +const struct bpf_func_proto bpf_ringbuf_submit_dynptr_proto =3D {
+> +       .func           =3D bpf_ringbuf_submit_dynptr,
+> +       .ret_type       =3D RET_VOID,
+> +       .arg1_type      =3D ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_RINGBUF | OBJ=
+_RELEASE,
+> +       .arg2_type      =3D ARG_ANYTHING,
+> +};
+> +
+> +BPF_CALL_2(bpf_ringbuf_discard_dynptr, struct bpf_dynptr_kern *, ptr, u6=
+4, flags)
 > +{
-> +       struct bpf_func_state *state = func(env, reg);
-> +       int spi = get_spi(reg->off);
-> +       int i;
+> +       if (!ptr->data)
+> +               return 0;
 > +
-> +       if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
-> +           !state->stack[spi].spilled_ptr.dynptr.first_slot)
-> +               return false;
+> +       ____bpf_ringbuf_discard(ptr->data, flags);
 > +
-> +       for (i = 0; i < BPF_REG_SIZE; i++) {
-> +           if (state->stack[spi].slot_type[i] != STACK_DYNPTR ||
-> +               state->stack[spi - 1].slot_type[i] != STACK_DYNPTR)
-> +                   return false;
-> +       }
 
-minor, but seems like it's pretty common operation to set or check all
-those "microslots" to STACK_DYNPTR, would two small helpers be useful
-for this (e.g., is_stack_dynptr() and set_stack_dynptr() or something
-along those lines)?
+ditto
 
+
+> +       bpf_dynptr_set_null(ptr);
 > +
-> +       /* ARG_PTR_TO_DYNPTR takes any type of dynptr */
-> +       if (arg_type == ARG_PTR_TO_DYNPTR)
-> +               return true;
-> +
-> +       return state->stack[spi].spilled_ptr.dynptr.type == arg_to_dynptr_type(arg_type);
+> +       return 0;
 > +}
 > +
-
-[...]
-
-> @@ -5837,6 +6011,35 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->                 bool zero_size_allowed = (arg_type == ARG_CONST_SIZE_OR_ZERO);
->
->                 err = check_mem_size_reg(env, reg, regno, zero_size_allowed, meta);
-> +       } else if (arg_type_is_dynptr(arg_type)) {
-> +               /* Can't pass in a dynptr at a weird offset */
-> +               if (reg->off % BPF_REG_SIZE) {
-> +                       verbose(env, "cannot pass in non-zero dynptr offset\n");
-> +                       return -EINVAL;
-> +               }
-> +
-> +               if (arg_type & MEM_UNINIT)  {
-> +                       if (!is_dynptr_reg_valid_uninit(env, reg)) {
-> +                               verbose(env, "Arg #%d dynptr has to be an uninitialized dynptr\n",
-> +                                       arg + BPF_REG_1);
-> +                               return -EINVAL;
-> +                       }
-> +
-> +                       meta->uninit_dynptr_regno = arg + BPF_REG_1;
-
-do we need a check that meta->uninit_dynptr_regno isn't already set?
-I.e., prevent two uninit dynptr in a helper?
-
-> +               } else if (!is_dynptr_reg_valid_init(env, reg, arg_type)) {
-> +                       const char *err_extra = "";
-> +
-> +                       switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
-> +                       case DYNPTR_TYPE_MALLOC:
-> +                               err_extra = "malloc ";
-> +                               break;
-> +                       default:
-> +                               break;
-> +                       }
-> +                       verbose(env, "Expected an initialized %sdynptr as arg #%d\n",
-> +                               err_extra, arg + BPF_REG_1);
-> +                       return -EINVAL;
-> +               }
->         } else if (arg_type_is_alloc_size(arg_type)) {
->                 if (!tnum_is_const(reg->var_off)) {
->                         verbose(env, "R%d is not a known constant'\n",
 
 [...]
