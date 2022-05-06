@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 666A351E1E7
-	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 01:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38B251E257
+	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 01:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444735AbiEFW3U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 18:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S1444743AbiEFWaz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 18:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444769AbiEFW3O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 18:29:14 -0400
+        with ESMTP id S1444734AbiEFWaz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 18:30:55 -0400
 Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AADA5F9F;
-        Fri,  6 May 2022 15:25:27 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id f4so9543866iov.2;
-        Fri, 06 May 2022 15:25:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D118427FE9;
+        Fri,  6 May 2022 15:27:10 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id g21so9528057iom.13;
+        Fri, 06 May 2022 15:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NKngyg6H4LzHGgY5WX93en+mLYjHn5tEgpXL8XPGins=;
-        b=UIsyoBtmGjQUf/J6PDrp0yL7O2eyyFWhQX8HMurJ4yoiwlXKR7JWg12h0zLkuP/KR/
-         7JxDrhGQzSMS5nqtKb71urWhTXjHBkzUadFMLMJGI5zhaCqjRLhuIibJcRRHf88Pl3oB
-         f2Maq0ax/4STkl0iBZ82j7W+r2RqIZZouLAUCFoQZAs5L0ITDosusKhsPbZ5QJAfIJYO
-         4jcMLfdlS6WYZv3tfaoc3/3NwoNBfbCWw++UrShOeGR7fGBA7i3HOQ+QVcZ3V1VqhBLG
-         p2bkhZRTHAa7q1/QSthBzYzCN4d+J/9Xf9WYI5u7S11r0fwS3G2YiRHaKaml51sOhrtp
-         MG+Q==
+        bh=YJWiJkdYGbBSzS+2Wxslwj9TmG4q/ytv0/hJtkg8UQg=;
+        b=ktcUjwf3H30s1wm61j3zKM6tKWY1rfKoW8d54w9wNM6bfoYJPvn8uNDW0i/BTaf7Ih
+         n/crwQWaJXGVKgNJPeLFb1LPGVQnxKJcQGwslGxFyuQ64tA9T5Gxx0KDEba39g3Eqx/L
+         CcSNL4FFmBIu61JFHYxatFI2rVA6jgHGp1iajc0v6KLmlG120keCx5CLXP0Za1vCSb5F
+         eauf5mBaXWoFmb00tr80prjDvzS7u57HQFxDYmFgpS9+8Yuj9zjpgn1Bfw/V8pDZt0Ko
+         YXrWgr+s2mxgI/WkTz7mQbZZ3TSSvp6A8PTkBzl6N8f3avwzRokMhOmIOpsO3zJd+JdQ
+         rsWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NKngyg6H4LzHGgY5WX93en+mLYjHn5tEgpXL8XPGins=;
-        b=5cIORzRmE2qvNTSVQ2FinQK5VTaTxvkrRz/ePew8xChob4KSdjatZOkd+rHn0ZU397
-         HQXJtMiHvPsqXhwPdyWxwlFY+tYpYiaubnruXMafBL2lsc7U+yaX3p8vQz0+SZxKxbH1
-         G+6sc7mYrgd3w2IGt6Gd4ZQNzwmTBrav0MPYQ2U4V782FytzKJ4wvn/W15rK2tRQihG0
-         gFHw/1aftJ9MZ4yU4L0iyrQbDaAw7rAIyT84IZDfUVZq9rIDEPbswgiXrkuzeCNr9x5g
-         U5w5EDDiLS7kH3wyXRBtP5IbJ1KeqPJSoM3R5hqGr6x0UtG/rC20CLL2vfycxRYiM/o4
-         CbBw==
-X-Gm-Message-State: AOAM531al03TVgn7Misad+S5LpWxxWf6mT/LDoyIN6pkSIgk+Asw/ibO
-        vNtbCdAxqntMBb0rz9BktAkJUCel8g3srnoSgmY=
-X-Google-Smtp-Source: ABdhPJzed2737G/RT9aiyHxZPSSu/yCRp9JOQeTbZw7imv2nbuSKOKUw41GLFxPxw99fJQHr2ZFSmig6pZLeoA9/foU=
-X-Received: by 2002:a05:6638:533:b0:32a:d418:b77b with SMTP id
- j19-20020a056638053300b0032ad418b77bmr2392102jar.237.1651875926938; Fri, 06
- May 2022 15:25:26 -0700 (PDT)
+        bh=YJWiJkdYGbBSzS+2Wxslwj9TmG4q/ytv0/hJtkg8UQg=;
+        b=xLxfYzDlXGwcWitDAgKe5/QcuKHrUidJx6/OVE9teBpX+hpPBZxjgBtLhJpaPiyuaD
+         1h40eyVThNuEyciOLwQuxTqDwObxzeRghYzix/ObCim5os/DXezLoS9PyaiqVBQHmSRS
+         9oHwXpe9/YhdRLRk1+jpB8JgVdTbVUoJp/aVAoYOnuDGkGXl5sd4FXF+PkL3fabVV/cI
+         J9vFNS8bY9ONQmttwQyMp5hLwisLWm17y7VzfpwU7VVo5BMN0phganWaCgDrapMYQ43k
+         8GtFJYi0Q3FBDZDFoNrH1y8O71c/cgCx7G7VBzWpF62+NqPiMKNbUbTFluJ29lVrL73b
+         7DVg==
+X-Gm-Message-State: AOAM530w3j2y8314S2RoC0sDiRIeIzCFG3MNEYLqWEG+mOIRh2KLLah3
+        dIdHLcsqHaMGdaB8JKdy+pg1vKNstvPR+NKZgcI=
+X-Google-Smtp-Source: ABdhPJzaj0DIFHrLtlkn84RWVvdJ/q3hiqsgHOI7ZpI37NHJVB/7z/MEMSqjQnZqZbefbKdJKKLOhOjszH4B5vTnS1k=
+X-Received: by 2002:a05:6638:33a1:b0:32b:8e2b:f9ba with SMTP id
+ h33-20020a05663833a100b0032b8e2bf9bamr2386086jav.93.1651876030268; Fri, 06
+ May 2022 15:27:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220502211235.142250-1-mathew.j.martineau@linux.intel.com> <20220502211235.142250-4-mathew.j.martineau@linux.intel.com>
-In-Reply-To: <20220502211235.142250-4-mathew.j.martineau@linux.intel.com>
+References: <20220502211235.142250-1-mathew.j.martineau@linux.intel.com> <20220502211235.142250-6-mathew.j.martineau@linux.intel.com>
+In-Reply-To: <20220502211235.142250-6-mathew.j.martineau@linux.intel.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 May 2022 15:25:16 -0700
-Message-ID: <CAEf4BzYKYtQLxHFk7cbGA47JNX7ND4cYEqaoDMiQLBttXYd5+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/8] selftests: bpf: Enable
- CONFIG_IKCONFIG_PROC in config
+Date:   Fri, 6 May 2022 15:26:59 -0700
+Message-ID: <CAEf4BzY-t=ZtmU+6yeSo5DD6+C==NUN=twAKq=OQyVb2rS2ENw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/8] selftests: bpf: test bpf_skc_to_mptcp_sock
 To:     Mat Martineau <mathew.j.martineau@linux.intel.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Geliang Tang <geliang.tang@suse.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, mptcp@lists.linux.dev
+        Andrii Nakryiko <andrii@kernel.org>, mptcp@lists.linux.dev,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,41 +74,72 @@ On Mon, May 2, 2022 at 2:12 PM Mat Martineau
 >
 > From: Geliang Tang <geliang.tang@suse.com>
 >
-> CONFIG_IKCONFIG_PROC is required by BPF selftests, otherwise we get
-> errors like this:
+> This patch extends the MPTCP test base, to test the new helper
+> bpf_skc_to_mptcp_sock().
 >
->  libbpf: failed to open system Kconfig
->  libbpf: failed to load object 'kprobe_multi'
->  libbpf: failed to load BPF skeleton 'kprobe_multi': -22
+> Define struct mptcp_sock in bpf_tcp_helpers.h, use bpf_skc_to_mptcp_sock
+> to get the msk socket in progs/mptcp_sock.c and store the infos in
+> socket_storage_map.
 >
-> It's because /proc/config.gz is opened in bpf_object__read_kconfig_file()
-> in tools/lib/bpf/libbpf.c:
+> Get the infos from socket_storage_map in prog_tests/mptcp.c. Add a new
+> function verify_msk() to verify the infos of MPTCP socket, and rename
+> verify_sk() to verify_tsk() to verify TCP socket only.
 >
->         file = gzopen("/proc/config.gz", "r");
+> v2: Add CONFIG_MPTCP check for clearer error messages
 >
-> So this patch enables CONFIG_IKCONFIG and CONFIG_IKCONFIG_PROC in
-> tools/testing/selftests/bpf/config.
->
-> Suggested-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 > Signed-off-by: Geliang Tang <geliang.tang@suse.com>
 > Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
 > ---
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  tools/testing/selftests/bpf/config | 2 ++
->  1 file changed, 2 insertions(+)
+>  MAINTAINERS                                   |  1 +
+>  .../testing/selftests/bpf/bpf_mptcp_helpers.h | 14 ++++++++
+>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 36 +++++++++++++++----
+>  .../testing/selftests/bpf/progs/mptcp_sock.c  | 24 ++++++++++---
+>  4 files changed, 65 insertions(+), 10 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/bpf_mptcp_helpers.h
 >
-> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> index 763db63a3890..8d7faff33c54 100644
-> --- a/tools/testing/selftests/bpf/config
-> +++ b/tools/testing/selftests/bpf/config
-> @@ -53,3 +53,5 @@ CONFIG_NF_DEFRAG_IPV4=y
->  CONFIG_NF_DEFRAG_IPV6=y
->  CONFIG_NF_CONNTRACK=y
->  CONFIG_USERFAULTFD=y
-> +CONFIG_IKCONFIG=y
-> +CONFIG_IKCONFIG_PROC=y
-> --
-> 2.36.0
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 359afc617b92..d48d3cb6abbc 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13780,6 +13780,7 @@ F:      include/net/mptcp.h
+>  F:     include/trace/events/mptcp.h
+>  F:     include/uapi/linux/mptcp.h
+>  F:     net/mptcp/
+> +F:     tools/testing/selftests/bpf/bpf_mptcp_helpers.h
+>  F:     tools/testing/selftests/bpf/*/*mptcp*.c
+>  F:     tools/testing/selftests/net/mptcp/
 >
+> diff --git a/tools/testing/selftests/bpf/bpf_mptcp_helpers.h b/tools/testing/selftests/bpf/bpf_mptcp_helpers.h
+> new file mode 100644
+> index 000000000000..18da4cc65e89
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/bpf_mptcp_helpers.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (c) 2022, SUSE. */
+> +
+> +#ifndef __BPF_MPTCP_HELPERS_H
+> +#define __BPF_MPTCP_HELPERS_H
+> +
+> +#include "bpf_tcp_helpers.h"
+> +
+> +struct mptcp_sock {
+> +       struct inet_connection_sock     sk;
+> +
+> +} __attribute__((preserve_access_index));
+
+why can't all this live in bpf_tcp_helpers.h? why do we need extra header?
+
+> +
+> +#endif
+> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> index cd548bb2828f..4b40bbdaf91f 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> @@ -10,14 +10,12 @@ struct mptcp_storage {
+>         __u32 is_mptcp;
+>  };
+>
+
+[...]
