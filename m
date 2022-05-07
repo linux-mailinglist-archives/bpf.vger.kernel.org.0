@@ -2,100 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C9A51E301
-	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 03:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9133051E357
+	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 03:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351942AbiEGBa3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 21:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
+        id S1348216AbiEGBwC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 21:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236738AbiEGBa2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 21:30:28 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849033AA49;
-        Fri,  6 May 2022 18:26:43 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-ee1e7362caso4872692fac.10;
-        Fri, 06 May 2022 18:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iDAhf762jxRhEv8fWwnY9wpSIpXGHrpFlmpaUo6C1zk=;
-        b=F3gz8XL26fGIg5x4zHuPywcBt3scsTWHmrRlxUXkNEfEVYZl/M35+V+YGFWfo1lE+P
-         yhotM6PX8de5M9NSCEYYSecqiOWoxVzkwSokt7PmQxJ834yfpEZne76p+bi2YybspM/P
-         el4Lyw701k1uZ1l9gYwf3BUAbccvic8rYHyzGmcHgGXyyUe9LpH1NrLphqCE2YFQrUu2
-         imT+3aMBlQzUZerRybx8SrUsoUBqjND8/NsQeokLI0WJ92ldvWKfU645zdimqXwxUIFn
-         VR4hTGFntXAmxyuG51Drm0j3zyzGuNxV6Oaf8Joh+TF+4fZj2wkPtC75Hkl6w+/UeU7W
-         dMpA==
+        with ESMTP id S243749AbiEGBv7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 21:51:59 -0400
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718DF703FB
+        for <bpf@vger.kernel.org>; Fri,  6 May 2022 18:48:14 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id o18so7269584qtk.7
+        for <bpf@vger.kernel.org>; Fri, 06 May 2022 18:48:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iDAhf762jxRhEv8fWwnY9wpSIpXGHrpFlmpaUo6C1zk=;
-        b=HrC149XtE6741vFJqlJh5VtsY2uPrN52rL4BzEp4teFAK1liLyNsY9WldqpmHHHjRY
-         v2Hph+6Nw4XS3PAYw4Ue2PvFRXRoV01AeUC0HHpuh82kqmghsG+gDN8ajnSfTYt3bMUX
-         cLIyoKTjqHlUOpg3PpakF1gdrohOqAv02vuRGxPjWrfaQbFD40KLtlETkN2dGh6zfVkL
-         R9IeY2wF/g56oZqPlcKZr8+IYTAFlky6kAZacfe/QFha28Jr9nIi1K3rZpGffnpsIV6R
-         f7e2sZAHvuEGLE/9l9i7AmGaxchSUfdmweqOjGkcHnW/FNXHfDqK8H/817gl6IYUOY7x
-         rWRQ==
-X-Gm-Message-State: AOAM531xJirNqfDe9ZbL7a7ayfk9sUVHB60W2wHoj/0r+4mxQ6oktcvG
-        wdCL2aKx2u6DhRp4H5pc2lAwRGTqSLzs0YEgFk3gzQkUMW0+WA==
-X-Google-Smtp-Source: ABdhPJzyLNv+Q6ZAyNJ7GFtl4fwjM7lLihcjDwTRVz3yxuhErRy90ery7vxfFURM1YDzqoGEyqq1Pfrc60/WgfWMP1E=
-X-Received: by 2002:a05:6870:1c7:b0:ed:b4b6:27a1 with SMTP id
- n7-20020a05687001c700b000edb4b627a1mr5626941oad.223.1651886802927; Fri, 06
- May 2022 18:26:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ogBFsD7up1GIjgEfK8y7bcN1Ut8kh3dUHAoi/AvVnJA=;
+        b=EPqEZGL1q7Yndlw5Co88v35DaMW5BV2XQ/3IPdoMugcsn8rYKccs4SbyseqjgvtN+K
+         Tjf+4JsBqf4bUavrYCa8rjDLhzakAZ7kxDzo6wHSWY/N8VnVzq4GlkOFKzzzyecyNp0B
+         i42jeEagQK8SMTpicOysTlnKYlY0oMZDaBY16AiBKK23QWYMKves2dbjeGhrCGvMhDvG
+         S5TfOvlrL1w+hsPhi0tPOsW/AqUVn2H5t21jd0D+Od2nW3Wjj69ZWAME6oj9SOWufEoH
+         MK2HSJPwGvy9WatwFikvZtrVTm5qf+dDxwjIrGAYFZfp3oNHrxVJ1JqxYehpjKZo09v8
+         +1fw==
+X-Gm-Message-State: AOAM531rlKzWdxZY91nhDshHJiOTelnWsmzLFG/LmyJOLv2G12HQh53n
+        RXW+Uy6YsjTFvFbu4f0UcmY=
+X-Google-Smtp-Source: ABdhPJxaM0kJI6pnLB2SGvUppMXP9fWNX8RmIPMkBP9heqKE94sSSmsKZF8giOntp0aOg5u7BKjDYw==
+X-Received: by 2002:a05:622a:606:b0:2f3:9740:d80b with SMTP id z6-20020a05622a060600b002f39740d80bmr5434223qta.166.1651888093460;
+        Fri, 06 May 2022 18:48:13 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-010.fbsv.net. [2a03:2880:20ff:a::face:b00c])
+        by smtp.gmail.com with ESMTPSA id z6-20020ac84546000000b002f39b99f6b4sm3439251qtn.78.2022.05.06.18.48.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 May 2022 18:48:13 -0700 (PDT)
+Date:   Fri, 6 May 2022 18:48:10 -0700
+From:   David Vernet <void@manifault.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v3 1/6] bpf: Add MEM_UNINIT as a bpf_type_flag
+Message-ID: <20220507014810.j2fckhhumdjn5b3x@dev0025.ash9.facebook.com>
+References: <20220428211059.4065379-1-joannelkoong@gmail.com>
+ <20220428211059.4065379-2-joannelkoong@gmail.com>
+ <20220506150727.73dvaiyf5rerggj3@dev0025.ash9.facebook.com>
+ <CAJnrk1Yc7G9BamfcNDGXvhMbHcrebROxN97GPPNENJ9_vGF5XA@mail.gmail.com>
+ <20220506203224.e7pdw3jk6kqpe7dh@dev0025.ash9.facebook.com>
+ <CAEf4BzavPM8o2OnYB3zSj_wfQp5us4rBjjKXzW4q-m-HARSZ1Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220505130826.40914-1-kerneljasonxing@gmail.com> <20220506185641.GA2289@bytedance>
-In-Reply-To: <20220506185641.GA2289@bytedance>
-From:   Jason Xing <kerneljasonxing@gmail.com>
-Date:   Sat, 7 May 2022 09:26:07 +0800
-Message-ID: <CAL+tcoBwQ2tijfzwOO6zb2MobCL27PcyN3foRcAw91MpyWg_VA@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: use the %px format to display sock
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzavPM8o2OnYB3zSj_wfQp5us4rBjjKXzW4q-m-HARSZ1Q@mail.gmail.com>
+User-Agent: NeoMutt/20211029
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 7, 2022 at 2:56 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
->
-> Hi Jason,
->
-> On Thu, May 05, 2022 at 09:08:26PM +0800, kerneljasonxing@gmail.com wrote:
-> > -             pr_err("Attempt to release TCP socket in state %d %p\n",
-> > +             pr_err("Attempt to release TCP socket in state %d %px\n",
->
-> I think we cannot use %px here for security reasons?  checkpatch is also
-> warning about it:
->
+On Fri, May 06, 2022 at 03:46:19PM -0700, Andrii Nakryiko wrote:
+> You meant
+> 
+> - [ARG_PTR_TO_UNINIT_MEM]         = &mem_types,
+> 
+> parts as stand-alone patch? That would be invalid on its own without
+> adding MEM_UNINT, so would potentially break bisection. So no, it
+> shouldn't be a stand-alone patch. Each patch has to be logically
+> separate but not causing any regressions in behavior, compilation,
+> selftest, etc. So, for example, while we normally put selftests into
+> separate tests, if kernel change breaks selftests, selftests have to
+> be fixed in the same patch to avoid having any point where bisection
+> can detect the breakage.
 
-I noticed this warning before submitting. Since the %p format doesn't
-print the real address, printing the address here will be helpless and
-we cannot trace what exactly the bad socket is.
-
-What do you suggest?
-
-Thanks,
-Jason
-
-> WARNING: Using vsprintf specifier '%px' potentially exposes the kernel memory layout, if you don't really need the address please consider using '%p'.
-> #21: FILE: net/ipv4/af_inet.c:142:
-> +               pr_err("Attempt to release TCP socket in state %d %px\n",
->                        sk->sk_state, sk);
->
-> Thanks,
-> Peilin Ye
->
+Thanks for clarifying, Andrii. I misunderstood the existing verifier code
+while I was reviewing the diff and mistakenly thought it was safe to remove
+these lines without MEM_UNINIT.  Apologies for the noise / confusion.
