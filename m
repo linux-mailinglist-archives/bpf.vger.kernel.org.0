@@ -2,64 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE37151E2D1
-	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 02:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C9A51E301
+	for <lists+bpf@lfdr.de>; Sat,  7 May 2022 03:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379508AbiEGAys (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 May 2022 20:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
+        id S1351942AbiEGBa3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 May 2022 21:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbiEGAyr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 May 2022 20:54:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE67750B2F;
-        Fri,  6 May 2022 17:51:02 -0700 (PDT)
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Kw81W5kmDzGpLg;
-        Sat,  7 May 2022 08:48:15 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 7 May 2022 08:51:00 +0800
-Received: from [10.67.109.184] (10.67.109.184) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 7 May 2022 08:51:00 +0800
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Unify data extension operation of
- jited_ksyms and jited_linfo
-To:     John Fastabend <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20220429014240.3434866-1-pulehui@huawei.com>
- <20220429014240.3434866-2-pulehui@huawei.com>
- <62758a83b512a_18fd5208b5@john.notmuch>
-From:   Pu Lehui <pulehui@huawei.com>
-Message-ID: <7e1ef7a3-582b-7443-8018-69126efdc587@huawei.com>
-Date:   Sat, 7 May 2022 08:51:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        with ESMTP id S236738AbiEGBa2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 May 2022 21:30:28 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849033AA49;
+        Fri,  6 May 2022 18:26:43 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-ee1e7362caso4872692fac.10;
+        Fri, 06 May 2022 18:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iDAhf762jxRhEv8fWwnY9wpSIpXGHrpFlmpaUo6C1zk=;
+        b=F3gz8XL26fGIg5x4zHuPywcBt3scsTWHmrRlxUXkNEfEVYZl/M35+V+YGFWfo1lE+P
+         yhotM6PX8de5M9NSCEYYSecqiOWoxVzkwSokt7PmQxJ834yfpEZne76p+bi2YybspM/P
+         el4Lyw701k1uZ1l9gYwf3BUAbccvic8rYHyzGmcHgGXyyUe9LpH1NrLphqCE2YFQrUu2
+         imT+3aMBlQzUZerRybx8SrUsoUBqjND8/NsQeokLI0WJ92ldvWKfU645zdimqXwxUIFn
+         VR4hTGFntXAmxyuG51Drm0j3zyzGuNxV6Oaf8Joh+TF+4fZj2wkPtC75Hkl6w+/UeU7W
+         dMpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iDAhf762jxRhEv8fWwnY9wpSIpXGHrpFlmpaUo6C1zk=;
+        b=HrC149XtE6741vFJqlJh5VtsY2uPrN52rL4BzEp4teFAK1liLyNsY9WldqpmHHHjRY
+         v2Hph+6Nw4XS3PAYw4Ue2PvFRXRoV01AeUC0HHpuh82kqmghsG+gDN8ajnSfTYt3bMUX
+         cLIyoKTjqHlUOpg3PpakF1gdrohOqAv02vuRGxPjWrfaQbFD40KLtlETkN2dGh6zfVkL
+         R9IeY2wF/g56oZqPlcKZr8+IYTAFlky6kAZacfe/QFha28Jr9nIi1K3rZpGffnpsIV6R
+         f7e2sZAHvuEGLE/9l9i7AmGaxchSUfdmweqOjGkcHnW/FNXHfDqK8H/817gl6IYUOY7x
+         rWRQ==
+X-Gm-Message-State: AOAM531xJirNqfDe9ZbL7a7ayfk9sUVHB60W2wHoj/0r+4mxQ6oktcvG
+        wdCL2aKx2u6DhRp4H5pc2lAwRGTqSLzs0YEgFk3gzQkUMW0+WA==
+X-Google-Smtp-Source: ABdhPJzyLNv+Q6ZAyNJ7GFtl4fwjM7lLihcjDwTRVz3yxuhErRy90ery7vxfFURM1YDzqoGEyqq1Pfrc60/WgfWMP1E=
+X-Received: by 2002:a05:6870:1c7:b0:ed:b4b6:27a1 with SMTP id
+ n7-20020a05687001c700b000edb4b627a1mr5626941oad.223.1651886802927; Fri, 06
+ May 2022 18:26:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <62758a83b512a_18fd5208b5@john.notmuch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20220505130826.40914-1-kerneljasonxing@gmail.com> <20220506185641.GA2289@bytedance>
+In-Reply-To: <20220506185641.GA2289@bytedance>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Sat, 7 May 2022 09:26:07 +0800
+Message-ID: <CAL+tcoBwQ2tijfzwOO6zb2MobCL27PcyN3foRcAw91MpyWg_VA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: use the %px format to display sock
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Jason Xing <xingwanli@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,64 +70,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, May 7, 2022 at 2:56 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+>
+> Hi Jason,
+>
+> On Thu, May 05, 2022 at 09:08:26PM +0800, kerneljasonxing@gmail.com wrote:
+> > -             pr_err("Attempt to release TCP socket in state %d %p\n",
+> > +             pr_err("Attempt to release TCP socket in state %d %px\n",
+>
+> I think we cannot use %px here for security reasons?  checkpatch is also
+> warning about it:
+>
 
+I noticed this warning before submitting. Since the %p format doesn't
+print the real address, printing the address here will be helpless and
+we cannot trace what exactly the bad socket is.
 
-On 2022/5/7 4:52, John Fastabend wrote:
-> Pu Lehui wrote:
->> We found that 32-bit environment can not print bpf line info due
->> to data inconsistency between jited_ksyms[0] and jited_linfo[0].
->>
->> For example:
->> jited_kyms[0] = 0xb800067c, jited_linfo[0] = 0xffffffffb800067c
->>
->> We know that both of them store bpf func address, but due to the
->> different data extension operations when extended to u64, they may
->> not be the same. We need to unify the data extension operations of
->> them.
->>
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> ---
->>   kernel/bpf/syscall.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index e9e3e49c0eb7..18137ea5190d 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -3871,13 +3871,16 @@ static int bpf_prog_get_info_by_fd(struct file *file,
->>   		info.nr_jited_line_info = 0;
->>   	if (info.nr_jited_line_info && ulen) {
->>   		if (bpf_dump_raw_ok(file->f_cred)) {
->> +			unsigned long jited_linfo_addr;
->>   			__u64 __user *user_linfo;
->>   			u32 i;
->>   
->>   			user_linfo = u64_to_user_ptr(info.jited_line_info);
->>   			ulen = min_t(u32, info.nr_jited_line_info, ulen);
->>   			for (i = 0; i < ulen; i++) {
->> -				if (put_user((__u64)(long)prog->aux->jited_linfo[i],
->> +				jited_linfo_addr = (unsigned long)
->> +					prog->aux->jited_linfo[i];
->> +				if (put_user((__u64) jited_linfo_addr,
->>   					     &user_linfo[i]))
-> 
-> the logic is fine but i'm going to nitpick a bit this 4 lines is ugly
-> just make it slightly longer than 80chars or use a shoarter name? For
-> example,
-> 
-> 			for (i = 0; i < ulen; i++) {
-> 				unsigned long l;
-> 
-> 				l = (unsigned long) prog->aux->jited_linfo[i];
-> 				if (put_user((__u64) l, &user_linfo[i]))
-> 
-> is much nicer -- no reason to smash single assignment across multiple
-> lines. My $.02.
-> 
+What do you suggest?
 
-Okay, It sounds good. I will make change in next version. Thanks.
+Thanks,
+Jason
 
+> WARNING: Using vsprintf specifier '%px' potentially exposes the kernel memory layout, if you don't really need the address please consider using '%p'.
+> #21: FILE: net/ipv4/af_inet.c:142:
+> +               pr_err("Attempt to release TCP socket in state %d %px\n",
+>                        sk->sk_state, sk);
+>
 > Thanks,
-> John
-> .
-> 
+> Peilin Ye
+>
