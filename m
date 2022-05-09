@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1B6520994
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 01:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9345A520992
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 01:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbiEIXrw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S231442AbiEIXrw (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 9 May 2022 19:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235087AbiEIXrQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S235080AbiEIXrQ (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 9 May 2022 19:47:16 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE742CDEFB
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:38:49 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id c11so21446110wrn.8
-        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:38:49 -0700 (PDT)
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899DC25F7B0
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:39:10 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id z18so16990229iob.5
+        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:39:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sBy5bQ444ApM567DCO16c1H5a9NXEJPXBZ5MA2W28+s=;
-        b=WRpbhfhuFGYZ/TpukmdpRgquU3ZR/Zh8CQmvxoYukdBxHzJYGuhdPHWghbidfWEnIs
-         2+OtGtNIiGhXegoj23HYmVNxgJzVtJuEBYu9Whz4PIliRTO4PLkjURZY7RN56ltiAWfi
-         Uo5BUlj6Pa/HjT+3ooHi9UdKn3xjZj6LbTqiVXVdc7vMMhwD0WUP+d4BLrABbGrkmQws
-         TK7h4I50xDTfdUR1f6le5UK/Pf24FEr8oTGJMYd1X5TmcRLqKL1m2wkuixBHhW6tQMaS
-         fKZEidXtuqHBDS98jVZRM8LycLKr0CakurU9VFLjRrYetawvJ5hfOCTr70JEYiFO93D1
-         Widg==
+        bh=uWKJn8DHkZVw+edUk9BtXDRC9Lic4cQCQSdWRvgJWqQ=;
+        b=IKoH+ZAEbw/jmLAae049xyMyrX83Ua5VZXuit3UPLbhi9IZ8Ap6a/kbHJoTSKK9zdy
+         WYSNiDNXmeeLadufM7A8/rCEOCqMLGmbYaiGyuR8zoTyB9hfmGgVqGW+Cw3gelhlSaa8
+         fuFrj/YKxI+tN5SEbLzxeaneWBKQ0IMZxxmuMvP+Y5AozHGfdue6DLl95dMIvxzdYJ5a
+         /bzXC8mSc+mYe8Kf/87GYZD4eXvyDPmzo4GVTkdnW7riFJwPX5M61OA4t01NszpW8V1j
+         VqNVkrqR6rsW4pxFj6IVG0tgGcdWNE0jotKmvmrq414psdC++Dv5grv7SWD6KVZDndgV
+         jYZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sBy5bQ444ApM567DCO16c1H5a9NXEJPXBZ5MA2W28+s=;
-        b=HvwUuvIHwjBkEt0zC86fSDdvo6kRESoe/hWhgTgBhq8rgGXNkHxeyz7jlQFUnlR8/C
-         Ezk1onFkcSiTOysYbDv5wWf+3B90HKM62tZLGH9aJcFjaLEEu1GRi7l4jxTlhT/P9hLm
-         D/kg1cTUweq0HkZrf5qJHcqNQUJdWlbOy8Z6HQ2AFajKymTefVv29OTbRRYx5BzTNE61
-         BdPik5NZiqSAsmK6/b/c5N91kFTG893jrPYeHPymm0uMnlqo/zUtKv1LFtLt/FQK1FBZ
-         32qcwOrryv4DdM+0uSge+OtjnSBl7UpplSbcgblkSFvyKi0yjYLtJGXuoMTNPzwibwqI
-         t2Aw==
-X-Gm-Message-State: AOAM5317sCQslAVulDgqnPnpL3Z9i7BeJdSg12Nib3CYeLEhFwc2+bC6
-        NnUj02XHLtIUblDtzMumFBlNtrDFc9TizaFZNk2zfw==
-X-Google-Smtp-Source: ABdhPJz4+c5hI8oSP0HBaO2+aSj8R7FcBjeyU9gavG2ZsjbSYkYjth9natJc0lsq1Q3Pb3hI65Y/Kjy6bFHvkfcQ9O0=
-X-Received: by 2002:a5d:6708:0:b0:20a:d1b3:3479 with SMTP id
- o8-20020a5d6708000000b0020ad1b33479mr16631403wru.463.1652139528213; Mon, 09
- May 2022 16:38:48 -0700 (PDT)
+        bh=uWKJn8DHkZVw+edUk9BtXDRC9Lic4cQCQSdWRvgJWqQ=;
+        b=jRTejz3Oqw3aqYHAr4G2CGRJI3mmPjf/ZkaH4JZ5CPflbEF878K+1UfB2WYAXJ5ONC
+         6Q17ty1OuPP+gVtStscBDj/1a0uxZSzR07u5IrcJc0SoCDue+8wB8EU1AxAvpapSML4o
+         HuweFNQUkZFr/ccGqTJBGJLOKQtMoKUGOyB95XMAusy8iIyRRATNqNAO5EUb1rhN1BeD
+         qz4NDFu7zGU5i/sNliRntMuO3fmZpU71YbGYRJxxc7eV5saHeqqmjjqJU5hfWyOhNs2u
+         lGh5dXHoJJ+oHp7Nm6AbWEhcwTWu0dRwqRH4+L64PTHC6/JVAr8eAuv4UiFPj+GHSN+n
+         Ac/Q==
+X-Gm-Message-State: AOAM532hnO0gA2eIQEhVX7KFD4hEXNXiEIwWTp3JfVp+iedqmA+gIXke
+        xkrNYKwuV94wJAu2QjJFMI+OBKlCuwpLQWK3e64=
+X-Google-Smtp-Source: ABdhPJxRjDmw5mtlq4iv/eVwaw1QrSngVkkGOMMCc9SGEaT9LR/8SEQLh2Z1BwAAoO455nuYGdJPfRqnVrQbBNMN4xc=
+X-Received: by 2002:a05:6602:2acd:b0:65a:9f9d:23dc with SMTP id
+ m13-20020a0566022acd00b0065a9f9d23dcmr7350846iov.154.1652139549972; Mon, 09
+ May 2022 16:39:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220429211540.715151-1-sdf@google.com> <20220429211540.715151-4-sdf@google.com>
- <20220506230244.4t4p5gnbgg6i4tht@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220506230244.4t4p5gnbgg6i4tht@kafai-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 9 May 2022 16:38:36 -0700
-Message-ID: <CAKH8qBsQnzHPtuAiCs67YvTh9m+CmVR+-9wVKJggKjZnV_oYtg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 03/10] bpf: per-cgroup lsm flavor
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
+References: <20220501190002.2576452-1-yhs@fb.com> <20220501190054.2580458-1-yhs@fb.com>
+In-Reply-To: <20220501190054.2580458-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 9 May 2022 16:38:59 -0700
+Message-ID: <CAEf4BzbiuoCOh0MFvh5CSPV1W+tVM6u0og6twNZ4wqpvSdWL7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 10/12] selftests/bpf: add a test for enum64 value relocation
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,504 +67,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-.
-
-On Fri, May 6, 2022 at 4:02 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Sun, May 1, 2022 at 12:01 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Fri, Apr 29, 2022 at 02:15:33PM -0700, Stanislav Fomichev wrote:
-> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> > index 064eccba641d..a0e68ef5dfb1 100644
-> > --- a/kernel/bpf/bpf_lsm.c
-> > +++ b/kernel/bpf/bpf_lsm.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/bpf_local_storage.h>
-> >  #include <linux/btf_ids.h>
-> >  #include <linux/ima.h>
-> > +#include <linux/bpf-cgroup.h>
-> >
-> >  /* For every LSM hook that allows attachment of BPF programs, declare a nop
-> >   * function where a BPF program can be attached.
-> > @@ -35,6 +36,66 @@ BTF_SET_START(bpf_lsm_hooks)
-> >  #undef LSM_HOOK
-> >  BTF_SET_END(bpf_lsm_hooks)
-> >
-> > +/* List of LSM hooks that should operate on 'current' cgroup regardless
-> > + * of function signature.
-> > + */
-> > +BTF_SET_START(bpf_lsm_current_hooks)
-> > +/* operate on freshly allocated sk without any cgroup association */
-> > +BTF_ID(func, bpf_lsm_sk_alloc_security)
-> > +BTF_ID(func, bpf_lsm_sk_free_security)
-> > +BTF_SET_END(bpf_lsm_current_hooks)
-> > +
-> > +int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
-> > +                          bpf_func_t *bpf_func)
-> > +{
-> > +     const struct btf_type *first_arg_type;
-> > +     const struct btf_type *sock_type;
-> > +     const struct btf_type *sk_type;
-> > +     const struct btf *btf_vmlinux;
-> > +     const struct btf_param *args;
-> > +     s32 type_id;
-> > +
-> > +     if (!prog->aux->attach_func_proto ||
-> > +         !btf_type_is_func_proto(prog->aux->attach_func_proto))
-> Also remove these tests during the attach time.  These should have
-> already been checked during the load time.
-
-Ack, makes sense!
-
-> > +             return -EINVAL;
-> > +
-> > +     if (btf_type_vlen(prog->aux->attach_func_proto) < 1 ||
-> > +         btf_id_set_contains(&bpf_lsm_current_hooks,
-> > +                             prog->aux->attach_btf_id)) {
-> > +             *bpf_func = __cgroup_bpf_run_lsm_current;
-> > +             return 0;
-> > +     }
-> > +
-> > +     args = btf_params(prog->aux->attach_func_proto);
-> > +
-> > +     btf_vmlinux = bpf_get_btf_vmlinux();
-> > +
-> > +     type_id = btf_find_by_name_kind(btf_vmlinux, "socket", BTF_KIND_STRUCT);
-> > +     if (type_id < 0)
-> > +             return -EINVAL;
-> > +     sock_type = btf_type_by_id(btf_vmlinux, type_id);
-> > +
-> > +     type_id = btf_find_by_name_kind(btf_vmlinux, "sock", BTF_KIND_STRUCT);
-> > +     if (type_id < 0)
-> > +             return -EINVAL;
-> > +     sk_type = btf_type_by_id(btf_vmlinux, type_id);
-> Although practical kconfig should have CONFIG_NET, not sure btf has
-> "socket" and "sock" in some unusual kconfig setup.  If it does not, it will
-> return error too early for other hooks.
+> Add a test for enum64 value relocations.
 >
-> May be put them under "#ifdef CONFIG_NET"?  While adding CONFIG_NET,
-> it will be easier to just use the btf_sock_ids[].  "socket" needs to be
-> added to btf_sock_ids[].  Take a look at btf_ids.h and filter.c.
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-That looks better, thx!
+Looks good, but can you also add some signed enums for testing?
 
-> > +
-> > +     first_arg_type = btf_type_resolve_ptr(btf_vmlinux, args[0].type, NULL);
-> > +     if (first_arg_type == sock_type)
-> > +             *bpf_func = __cgroup_bpf_run_lsm_socket;
-> > +     else if (first_arg_type == sk_type)
-> > +             *bpf_func = __cgroup_bpf_run_lsm_sock;
-> > +     else
-> > +             *bpf_func = __cgroup_bpf_run_lsm_current;
-> > +
-> > +     return 0;
-> > +}
+>  .../selftests/bpf/prog_tests/core_reloc.c     | 43 +++++++++++++++
+>  .../bpf/progs/btf__core_reloc_enum64val.c     |  3 ++
+>  .../progs/btf__core_reloc_enum64val___diff.c  |  3 ++
+>  .../btf__core_reloc_enum64val___err_missing.c |  3 ++
+>  ...btf__core_reloc_enum64val___val3_missing.c |  3 ++
+>  .../selftests/bpf/progs/core_reloc_types.h    | 47 ++++++++++++++++
+>  .../bpf/progs/test_core_reloc_enum64val.c     | 53 +++++++++++++++++++
+>  7 files changed, 155 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_enum64val.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_enum64val___diff.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_enum64val___err_missing.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_enum64val___val3_missing.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_enum64val.c
 >
-> [ ... ]
->
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > index 134785ab487c..9cc38454e402 100644
-> > --- a/kernel/bpf/cgroup.c
-> > +++ b/kernel/bpf/cgroup.c
-> > @@ -14,6 +14,9 @@
-> >  #include <linux/string.h>
-> >  #include <linux/bpf.h>
-> >  #include <linux/bpf-cgroup.h>
-> > +#include <linux/btf_ids.h>
-> > +#include <linux/bpf_lsm.h>
-> > +#include <linux/bpf_verifier.h>
-> >  #include <net/sock.h>
-> >  #include <net/bpf_sk_storage.h>
-> >
-> > @@ -61,6 +64,85 @@ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
-> >       return run_ctx.retval;
-> >  }
-> >
-> > +unsigned int __cgroup_bpf_run_lsm_sock(const void *ctx,
-> > +                                    const struct bpf_insn *insn)
-> > +{
-> > +     const struct bpf_prog *shim_prog;
-> > +     struct sock *sk;
-> > +     struct cgroup *cgrp;
-> > +     int ret = 0;
-> > +     u64 *regs;
-> > +
-> > +     regs = (u64 *)ctx;
-> > +     sk = (void *)(unsigned long)regs[BPF_REG_0];
-> > +     /*shim_prog = container_of(insn, struct bpf_prog, insnsi);*/
-> > +     shim_prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
-> > +
-> > +     cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> > +     if (likely(cgrp))
-> > +             ret = bpf_prog_run_array_cg(&cgrp->bpf,
-> > +                                         shim_prog->aux->cgroup_atype,
-> > +                                         ctx, bpf_prog_run, 0, NULL);
-> > +     return ret;
-> > +}
-> > +
-> > +unsigned int __cgroup_bpf_run_lsm_socket(const void *ctx,
-> > +                                      const struct bpf_insn *insn)
-> > +{
-> > +     const struct bpf_prog *shim_prog;
-> > +     struct socket *sock;
-> > +     struct cgroup *cgrp;
-> > +     int ret = 0;
-> > +     u64 *regs;
-> > +
-> > +     regs = (u64 *)ctx;
-> > +     sock = (void *)(unsigned long)regs[BPF_REG_0];
-> > +     /*shim_prog = container_of(insn, struct bpf_prog, insnsi);*/
-> > +     shim_prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
-> > +
-> > +     cgrp = sock_cgroup_ptr(&sock->sk->sk_cgrp_data);
-> > +     if (likely(cgrp))
-> > +             ret = bpf_prog_run_array_cg(&cgrp->bpf,
-> > +                                         shim_prog->aux->cgroup_atype,
-> > +                                         ctx, bpf_prog_run, 0, NULL);
-> > +     return ret;
-> > +}
-> > +
-> > +unsigned int __cgroup_bpf_run_lsm_current(const void *ctx,
-> > +                                       const struct bpf_insn *insn)
-> > +{
-> > +     const struct bpf_prog *shim_prog;
-> > +     struct cgroup *cgrp;
-> > +     int ret = 0;
-> From lsm_hook_defs.h, there are some default return values that are not 0.
-> Is it ok to always return 0 in cases like the cgroup array is empty ?
 
-That's a good point, I haven't thought about it. You're right, it
-seems like attaching to this hook for some LSMs will change the
-default from some error to zero.
-Let's start by prohibiting those hooks for now? I guess in theory,
-when we generate a trampoline, we can put this default value as an
-input arg to these new __cgroup_bpf_run_lsm_xxx helpers (in the
-future)?
-
-Another thing that seems to be related: there are a bunch of hooks
-that return void, so returning EPERM from the cgroup programs won't
-work as expected.
-I can probably record, at verification time, whether lsm_cgroup
-programs return any "non-success" return codes and prohibit attaching
-these progs to the void hooks?
-
-> > +
-> > +     if (unlikely(!current))
-> > +             return 0;
-> > +
-> > +     /*shim_prog = container_of(insn, struct bpf_prog, insnsi);*/
-> > +     shim_prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
-> > +
-> > +     rcu_read_lock();
-> > +     cgrp = task_dfl_cgroup(current);
-> > +     if (likely(cgrp))
-> > +             ret = bpf_prog_run_array_cg(&cgrp->bpf,
-> > +                                         shim_prog->aux->cgroup_atype,
-> > +                                         ctx, bpf_prog_run, 0, NULL);
-> > +     rcu_read_unlock();
-> > +     return ret;
-> > +}
->
-> [ ... ]
->
-> > @@ -479,6 +572,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >       struct bpf_prog *old_prog = NULL;
-> >       struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> >       struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> > +     struct bpf_attach_target_info tgt_info = {};
-> >       enum cgroup_bpf_attach_type atype;
-> >       struct bpf_prog_list *pl;
-> >       struct hlist_head *progs;
-> > @@ -495,9 +589,34 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >               /* replace_prog implies BPF_F_REPLACE, and vice versa */
-> >               return -EINVAL;
-> >
-> > -     atype = to_cgroup_bpf_attach_type(type);
-> > -     if (atype < 0)
-> > -             return -EINVAL;
-> > +     if (type == BPF_LSM_CGROUP) {
-> > +             struct bpf_prog *p = prog ? : link->link.prog;
-> nit. This "prog ? ...." has been done multiple times (new and existing codes)
-> in this function.  may be do it once at the very beginning.
-
-Yeah, but we need to do it in some clear way. Having p, prog and link
-is probably more confusing? I'll try:
-
-struct bpf_prog *new_prog = prog ? : link->link.prog;
-
-> > +
-> > +             if (replace_prog) {
-> > +                     /* Reusing shim from the original program. */
-> > +                     if (replace_prog->aux->attach_btf_id !=
-> > +                         p->aux->attach_btf_id)
-> > +                             return -EINVAL;
-> > +
-> > +                     atype = replace_prog->aux->cgroup_atype;
-> > +             } else {
-> > +                     err = bpf_check_attach_target(NULL, p, NULL,
-> > +                                                   p->aux->attach_btf_id,
-> > +                                                   &tgt_info);
-> > +                     if (err)
-> > +                             return -EINVAL;
-> return err;
->
-> > +
-> > +                     atype = bpf_lsm_attach_type_get(p->aux->attach_btf_id);
-> > +                     if (atype < 0)
-> > +                             return atype;
-> > +             }
-> > +
-> > +             p->aux->cgroup_atype = atype;
-> > +     } else {
-> > +             atype = to_cgroup_bpf_attach_type(type);
-> > +             if (atype < 0)
-> > +                     return -EINVAL;
-> > +     }
-> >
-> >       progs = &cgrp->bpf.progs[atype];
->
-> [ ... ]
->
-> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> > index 0c4fd194e801..77dfa517c47c 100644
-> > --- a/kernel/bpf/trampoline.c
-> > +++ b/kernel/bpf/trampoline.c
-> > @@ -11,6 +11,8 @@
-> >  #include <linux/rcupdate_wait.h>
-> >  #include <linux/module.h>
-> >  #include <linux/static_call.h>
-> > +#include <linux/bpf_verifier.h>
-> > +#include <linux/bpf_lsm.h>
-> >
-> >  /* dummy _ops. The verifier will operate on target program's ops. */
-> >  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-> > @@ -485,6 +487,147 @@ int bpf_trampoline_unlink_prog(struct bpf_prog *prog, struct bpf_trampoline *tr)
-> >       return err;
-> >  }
-> >
-> > +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
-> > +static struct bpf_prog *cgroup_shim_alloc(const struct bpf_prog *prog,
-> > +                                       bpf_func_t bpf_func)
-> > +{
-> > +     struct bpf_prog *p;
-> > +
-> > +     p = bpf_prog_alloc(1, 0);
-> > +     if (!p)
-> > +             return NULL;
-> > +
-> > +     p->jited = false;
-> > +     p->bpf_func = bpf_func;
-> > +
-> > +     p->aux->cgroup_atype = prog->aux->cgroup_atype;
-> > +     p->aux->attach_func_proto = prog->aux->attach_func_proto;
-> > +     p->aux->attach_btf_id = prog->aux->attach_btf_id;
-> > +     p->aux->attach_btf = prog->aux->attach_btf;
-> > +     btf_get(p->aux->attach_btf);
-> > +     p->type = BPF_PROG_TYPE_LSM;
-> > +     p->expected_attach_type = BPF_LSM_MAC;
-> > +     bpf_prog_inc(p);
-> > +
-> > +     return p;
-> > +}
-> > +
-> > +static struct bpf_prog *cgroup_shim_find(struct bpf_trampoline *tr,
-> > +                                      bpf_func_t bpf_func)
-> > +{
-> > +     const struct bpf_prog_aux *aux;
-> > +     int kind;
-> > +
-> > +     for (kind = 0; kind < BPF_TRAMP_MAX; kind++) {
-> > +             hlist_for_each_entry(aux, &tr->progs_hlist[kind], tramp_hlist) {
-> > +                     struct bpf_prog *p = aux->prog;
-> > +
-> > +                     if (p->bpf_func == bpf_func)
-> > +                             return p;
-> > +             }
-> > +     }
-> > +
-> > +     return NULL;
-> > +}
-> > +
-> > +int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
-> > +                                 struct bpf_attach_target_info *tgt_info)
-> > +{
-> > +     struct bpf_prog *shim_prog = NULL;
-> > +     struct bpf_trampoline *tr;
-> > +     bpf_func_t bpf_func;
-> > +     u64 key;
-> > +     int err;
-> > +
-> > +     key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
-> > +                                      prog->aux->attach_btf_id);
-> > +
-> > +     err = bpf_lsm_find_cgroup_shim(prog, &bpf_func);
-> > +     if (err)
-> > +             return err;
-> > +
-> > +     tr = bpf_trampoline_get(key, tgt_info);
-> > +     if (!tr)
-> > +             return  -ENOMEM;
-> > +
-> > +     mutex_lock(&tr->mutex);
-> > +
-> > +     shim_prog = cgroup_shim_find(tr, bpf_func);
-> > +     if (shim_prog) {
-> > +             /* Reusing existing shim attached by the other program. */
-> > +             bpf_prog_inc(shim_prog);
-> > +             mutex_unlock(&tr->mutex);
-> > +             return 0;
-> > +     }
-> > +
-> > +     /* Allocate and install new shim. */
-> > +
-> > +     shim_prog = cgroup_shim_alloc(prog, bpf_func);
-> > +     if (!shim_prog) {
-> > +             err = -ENOMEM;
-> > +             goto out;
-> > +     }
-> > +
-> > +     err = __bpf_trampoline_link_prog(shim_prog, tr);
-> > +     if (err)
-> > +             goto out;
-> > +
-> > +     mutex_unlock(&tr->mutex);
-> > +
-> > +     return 0;
-> > +out:
-> > +     if (shim_prog)
-> > +             bpf_prog_put(shim_prog);
-> > +
-> bpf_trampoline_get() was done earlier.
-> Does it need to call bpf_trampoline_put(tr) in error cases ?
-> More on tr refcnt later.
->
-> > +     mutex_unlock(&tr->mutex);
-> > +     return err;
-> > +}
-> > +
-> > +void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog)
-> > +{
-> > +     struct bpf_prog *shim_prog;
-> > +     struct bpf_trampoline *tr;
-> > +     bpf_func_t bpf_func;
-> > +     u64 key;
-> > +     int err;
-> > +
-> > +     key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
-> > +                                      prog->aux->attach_btf_id);
-> > +
-> > +     err = bpf_lsm_find_cgroup_shim(prog, &bpf_func);
-> > +     if (err)
-> > +             return;
-> > +
-> > +     tr = bpf_trampoline_lookup(key);
-> > +     if (!tr)
-> > +             return;
-> > +
-> > +     mutex_lock(&tr->mutex);
-> > +
-> > +     shim_prog = cgroup_shim_find(tr, bpf_func);
-> > +     if (shim_prog) {
-> > +             /* We use shim_prog refcnt for tracking whether to
-> > +              * remove the shim program from the trampoline.
-> > +              * Trampoline's mutex is held while refcnt is
-> > +              * added/subtracted so we don't need to care about
-> > +              * potential races.
-> > +              */
-> > +
-> > +             if (atomic64_read(&shim_prog->aux->refcnt) == 1)
-> > +                     WARN_ON_ONCE(__bpf_trampoline_unlink_prog(shim_prog, tr));
-> > +
-> > +             bpf_prog_put(shim_prog);
-> > +     }
-> > +
-> > +     mutex_unlock(&tr->mutex);
-> > +
-> > +     bpf_trampoline_put(tr); /* bpf_trampoline_lookup */
-> > +
-> > +     if (shim_prog)
-> > +             bpf_trampoline_put(tr);
-> While looking at the bpf_trampoline_{link,unlink}_cgroup_shim() again,
-> which prog (cgroup lsm progs or shim_prog) actually owns the tr.
-> It should be the shim_prog ?
->
-> How about storing tr in "shim_prog->aux->dst_trampoline = tr;"
-> Then the earlier bpf_prog_put(shim_prog) in this function will take care
-> of the bpf_trampoline_put(shim_prog->aux->dst_trampoline)
-> instead of each cgroup lsm prog owns a refcnt of the tr
-> and then this individual bpf_trampoline_put(tr) here can also
-> go away.
-
-Yeah, that seems like a much better way to handle it, didn't know
-about dst_trampoline.
-
-> > +}
-> > +#endif
-> > +
-> >  struct bpf_trampoline *bpf_trampoline_get(u64 key,
-> >                                         struct bpf_attach_target_info *tgt_info)
-> >  {
-> > @@ -609,6 +752,24 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
-> >       rcu_read_unlock();
-> >  }
-> >
-> > +u64 notrace __bpf_prog_enter_lsm_cgroup(struct bpf_prog *prog)
-> > +     __acquires(RCU)
-> > +{
-> > +     /* Runtime stats are exported via actual BPF_LSM_CGROUP
-> > +      * programs, not the shims.
-> > +      */
-> > +     rcu_read_lock();
-> > +     migrate_disable();
-> > +     return NO_START_TIME;
-> > +}
-> > +
-> > +void notrace __bpf_prog_exit_lsm_cgroup(struct bpf_prog *prog, u64 start)
-> > +     __releases(RCU)
-> > +{
-> > +     migrate_enable();
-> > +     rcu_read_unlock();
-> > +}
-> > +
-> >  u64 notrace __bpf_prog_enter_sleepable(struct bpf_prog *prog)
-> >  {
-> >       rcu_read_lock_trace();
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 813f6ee80419..99703d96c579 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -14455,6 +14455,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
-> >               fallthrough;
-> >       case BPF_MODIFY_RETURN:
-> >       case BPF_LSM_MAC:
-> > +     case BPF_LSM_CGROUP:
-> >       case BPF_TRACE_FENTRY:
-> >       case BPF_TRACE_FEXIT:
-> >               if (!btf_type_is_func(t)) {
-> > @@ -14633,6 +14634,33 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
-> >       return 0;
-> >  }
-> >
-> > +static int check_used_maps(struct bpf_verifier_env *env)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i = 0; i < env->used_map_cnt; i++) {
-> > +             struct bpf_map *map = env->used_maps[i];
-> > +
-> > +             switch (env->prog->expected_attach_type) {
-> > +             case BPF_LSM_CGROUP:
-> > +                     if (map->map_type != BPF_MAP_TYPE_CGROUP_STORAGE &&
-> > +                         map->map_type != BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)
-> > +                             break;
-> > +
-> > +                     if (map->key_size != sizeof(__u64)) {
-> Follow on my very last comment in v5.  I think we should not
-> limit the bpf_cgroup_storage_key and should allow using both
-> cgroup_inode_id and attach_type as the key to avoid
-> inconsistent surprise (some keys are not allowed in a specific
-> attach_type), so this check_used_maps() function can also be avoided.
-
-I should've replied to your original mail: it felt a bit confusing to
-me. But I guess we can enable this per-attach_type mode and let all
-lsm_cgroup programs use the same underlying storage. As you mentioned,
-we can later extend with attach_btf_id if needed. Will remove this new
-check_used_maps
+[...]
