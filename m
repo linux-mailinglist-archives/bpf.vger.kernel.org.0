@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3D751F264
-	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 03:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3EA51F252
+	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 03:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbiEIBbN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 8 May 2022 21:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
+        id S233950AbiEIBao convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sun, 8 May 2022 21:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbiEIAqG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 May 2022 20:46:06 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BDC6430
-        for <bpf@vger.kernel.org>; Sun,  8 May 2022 17:42:14 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 248L0AE9010450
-        for <bpf@vger.kernel.org>; Sun, 8 May 2022 17:42:13 -0700
+        with ESMTP id S235671AbiEIAqI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 May 2022 20:46:08 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDE36430
+        for <bpf@vger.kernel.org>; Sun,  8 May 2022 17:42:16 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 248NgROB006751
+        for <bpf@vger.kernel.org>; Sun, 8 May 2022 17:42:16 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3fxhwws2bq-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fwpfmns9f-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 08 May 2022 17:42:13 -0700
-Received: from twshared0725.22.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sun, 08 May 2022 17:42:16 -0700
+Received: from twshared3657.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sun, 8 May 2022 17:42:12 -0700
+ 15.1.2375.24; Sun, 8 May 2022 17:42:14 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 8E98419A4AD5A; Sun,  8 May 2022 17:42:03 -0700 (PDT)
+        id 98E0119A4AD77; Sun,  8 May 2022 17:42:05 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 7/9] libbpf: provide barrier() and barrier_var() in bpf_helpers.h
-Date:   Sun, 8 May 2022 17:41:46 -0700
-Message-ID: <20220509004148.1801791-8-andrii@kernel.org>
+Subject: [PATCH bpf-next 8/9] libbpf: automatically fix up BPF_MAP_TYPE_RINGBUF size, if necessary
+Date:   Sun, 8 May 2022 17:41:47 -0700
+Message-ID: <20220509004148.1801791-9-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220509004148.1801791-1-andrii@kernel.org>
 References: <20220509004148.1801791-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: SWIVyP9ulMQX5kbj2SJx9EJ4n6ZSCOhd
-X-Proofpoint-ORIG-GUID: SWIVyP9ulMQX5kbj2SJx9EJ4n6ZSCOhd
+X-Proofpoint-ORIG-GUID: I_gVbL6uU2OqL_xbsWCY1LvOUwmTgHWk
+X-Proofpoint-GUID: I_gVbL6uU2OqL_xbsWCY1LvOUwmTgHWk
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-08_09,2022-05-06_01,2022-02-23_01
@@ -55,124 +55,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add barrier() and barrier_var() macros into bpf_helpers.h to be used by
-end users. While a bit advanced and specialized instruments, they are
-sometimes indispensable. Instead of requiring each user to figure out
-exact asm volatile incantations for themselves, provide them from
-bpf_helpers.h.
+Kernel imposes a pretty particular restriction on ringbuf map size. It
+has to be a power-of-2 multiple of page size. While generally this isn't
+hard for user to satisfy, sometimes it's impossible to do this
+declaratively in BPF source code or just plain inconvenient to do at
+runtime.
 
-Also remove conflicting definitions from selftests. Some tests rely on
-barrier_var() definition being nothing, those will still work as libbpf
-does the #ifndef/#endif guarding for barrier() and barrier_var(),
-allowing users to redefine them, if necessary.
+One such example might be BPF libraries that are supposed to work on
+different architectures, which might not agree on what the common page
+size is.
+
+Let libbpf find the right size for user instead, if it turns out to not
+satisfy kernel requirements. If user didn't set size at all, that's most
+probably a mistake so don't upsize such zero size to one full page,
+though. Also we need to be careful about not overflowing __u32
+max_entries.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf_helpers.h                   | 24 +++++++++++++++++++
- .../selftests/bpf/progs/exhandler_kern.c      |  2 --
- tools/testing/selftests/bpf/progs/loop5.c     |  1 -
- tools/testing/selftests/bpf/progs/profiler1.c |  1 -
- tools/testing/selftests/bpf/progs/pyperf.h    |  2 --
- .../selftests/bpf/progs/test_pkt_access.c     |  2 --
- 6 files changed, 24 insertions(+), 8 deletions(-)
+ tools/lib/bpf/libbpf.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index bbae9a057bc8..fb04eaf367f1 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -75,6 +75,30 @@
- 	})
- #endif
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 63c0f412266c..15117b9a4d1e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4943,6 +4943,44 @@ bpf_object__populate_internal_map(struct bpf_object *obj, struct bpf_map *map)
  
-+/*
-+ * Compiler (optimization) barrier.
-+ */
-+#ifndef barrier
-+#define barrier() asm volatile("" ::: "memory")
-+#endif
+ static void bpf_map__destroy(struct bpf_map *map);
+ 
++static bool is_pow_of_2(size_t x)
++{
++	return x && (x & (x - 1));
++}
 +
-+/* Variable-specific compiler (optimization) barrier. It's a no-op which makes
-+ * compiler believe that there is some black box modification of a given
-+ * variable and thus prevents compiler from making extra assumption about its
-+ * value and potential simplifications and optimizations on this variable.
-+ *
-+ * E.g., compiler might often delay or even omit 32-bit to 64-bit casting of
-+ * a variable, making some code patterns unverifiable. Putting barrier_var()
-+ * in place will ensure that cast is performed before the barrier_var()
-+ * invocation, because compiler has to pessimistically assume that embedded
-+ * asm section might perform some extra operations on that variable.
-+ *
-+ * This is a variable-specific variant of more global barrier().
-+ */
-+#ifndef barrier_var
-+#define barrier_var(var) asm volatile("" : "=r"(var) : "0"(var))
-+#endif
++static size_t adjust_ringbuf_sz(size_t sz)
++{
++	__u32 page_sz = sysconf(_SC_PAGE_SIZE);
++	__u32 i, mul;
 +
- /*
-  * Helper macro to throw a compilation error if __bpf_unreachable() gets
-  * built into the resulting code. This works given BPF back end does not
-diff --git a/tools/testing/selftests/bpf/progs/exhandler_kern.c b/tools/testing/selftests/bpf/progs/exhandler_kern.c
-index dd9b30a0f0fc..20d009e2d266 100644
---- a/tools/testing/selftests/bpf/progs/exhandler_kern.c
-+++ b/tools/testing/selftests/bpf/progs/exhandler_kern.c
-@@ -7,8 +7,6 @@
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_core_read.h>
- 
--#define barrier_var(var) asm volatile("" : "=r"(var) : "0"(var))
--
- char _license[] SEC("license") = "GPL";
- 
- unsigned int exception_triggered;
-diff --git a/tools/testing/selftests/bpf/progs/loop5.c b/tools/testing/selftests/bpf/progs/loop5.c
-index 913791923fa3..1b13f37f85ec 100644
---- a/tools/testing/selftests/bpf/progs/loop5.c
-+++ b/tools/testing/selftests/bpf/progs/loop5.c
-@@ -2,7 +2,6 @@
- // Copyright (c) 2019 Facebook
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
--#define barrier() __asm__ __volatile__("": : :"memory")
- 
- char _license[] SEC("license") = "GPL";
- 
-diff --git a/tools/testing/selftests/bpf/progs/profiler1.c b/tools/testing/selftests/bpf/progs/profiler1.c
-index 4df9088bfc00..fb6b13522949 100644
---- a/tools/testing/selftests/bpf/progs/profiler1.c
-+++ b/tools/testing/selftests/bpf/progs/profiler1.c
-@@ -1,6 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
--#define barrier_var(var) asm volatile("" : "=r"(var) : "0"(var))
- #define UNROLL
- #define INLINE __always_inline
- #include "profiler.inc.h"
-diff --git a/tools/testing/selftests/bpf/progs/pyperf.h b/tools/testing/selftests/bpf/progs/pyperf.h
-index 5d3dc4d66d47..6c7b1fb268d6 100644
---- a/tools/testing/selftests/bpf/progs/pyperf.h
-+++ b/tools/testing/selftests/bpf/progs/pyperf.h
-@@ -171,8 +171,6 @@ struct process_frame_ctx {
- 	bool done;
- };
- 
--#define barrier_var(var) asm volatile("" : "=r"(var) : "0"(var))
--
- static int process_frame_callback(__u32 i, struct process_frame_ctx *ctx)
++	/* if user forgot to set any size, make sure they see error */
++	if (sz == 0)
++		return 0;
++	/* Kernel expects BPF_MAP_TYPE_RINGBUF's max_entries to be
++	 * a power-of-2 multiple of kernel's page size. If user diligently
++	 * satisified these conditions, pass the size through.
++	 */
++	if ((sz % page_sz) == 0 && is_pow_of_2(sz / page_sz))
++		return sz;
++
++	/* Otherwise find closest (page_sz * power_of_2) product bigger than
++	 * user-set size to satisfy both user size request and kernel
++	 * requirements and substitute correct max_entries for map creation.
++	 */
++	for (i = 0, mul = 1; ; i++, mul <<= 1) {
++		if (mul > UINT_MAX / page_sz) /* prevent __u32 overflow */
++			break;
++		if (mul * page_sz > sz)
++			return mul * page_sz;
++	}
++
++	/* if it's impossible to satisfy the conditions (i.e., user size is
++	 * very close to UINT_MAX but is not a power-of-2 multiple of
++	 * page_size) then just return original size and let kernel reject it
++	 */
++	return sz;
++}
++
+ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, bool is_inner)
  {
- 	int zero = 0;
-diff --git a/tools/testing/selftests/bpf/progs/test_pkt_access.c b/tools/testing/selftests/bpf/progs/test_pkt_access.c
-index 0558544e1ff0..5cd7c096f62d 100644
---- a/tools/testing/selftests/bpf/progs/test_pkt_access.c
-+++ b/tools/testing/selftests/bpf/progs/test_pkt_access.c
-@@ -14,8 +14,6 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
+ 	LIBBPF_OPTS(bpf_map_create_opts, create_attr);
+@@ -4981,6 +5019,9 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+ 	}
  
--#define barrier() __asm__ __volatile__("": : :"memory")
--
- /* llvm will optimize both subprograms into exactly the same BPF assembly
-  *
-  * Disassembly of section .text:
+ 	switch (def->type) {
++	case BPF_MAP_TYPE_RINGBUF:
++		map->def.max_entries = adjust_ringbuf_sz(map->def.max_entries);
++		/* fallthrough */
+ 	case BPF_MAP_TYPE_PERF_EVENT_ARRAY:
+ 	case BPF_MAP_TYPE_CGROUP_ARRAY:
+ 	case BPF_MAP_TYPE_STACK_TRACE:
+@@ -4994,7 +5035,6 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+ 	case BPF_MAP_TYPE_SOCKHASH:
+ 	case BPF_MAP_TYPE_QUEUE:
+ 	case BPF_MAP_TYPE_STACK:
+-	case BPF_MAP_TYPE_RINGBUF:
+ 		create_attr.btf_fd = 0;
+ 		create_attr.btf_key_type_id = 0;
+ 		create_attr.btf_value_type_id = 0;
 -- 
 2.30.2
 
