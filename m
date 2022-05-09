@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334C851F24F
-	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 03:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3D751F264
+	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 03:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233935AbiEIBam convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 8 May 2022 21:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
+        id S234320AbiEIBbN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sun, 8 May 2022 21:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235655AbiEIAp6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 8 May 2022 20:45:58 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A926573
-        for <bpf@vger.kernel.org>; Sun,  8 May 2022 17:42:07 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 248NQP6O023350
-        for <bpf@vger.kernel.org>; Sun, 8 May 2022 17:42:07 -0700
+        with ESMTP id S235668AbiEIAqG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 May 2022 20:46:06 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BDC6430
+        for <bpf@vger.kernel.org>; Sun,  8 May 2022 17:42:14 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 248L0AE9010450
+        for <bpf@vger.kernel.org>; Sun, 8 May 2022 17:42:13 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fwm3p63rp-2
+        by m0089730.ppops.net (PPS) with ESMTPS id 3fxhwws2bq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 08 May 2022 17:42:07 -0700
-Received: from twshared11660.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sun, 08 May 2022 17:42:13 -0700
+Received: from twshared0725.22.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sun, 8 May 2022 17:42:05 -0700
+ 15.1.2375.24; Sun, 8 May 2022 17:42:12 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 7E1AF19A4AD1C; Sun,  8 May 2022 17:42:01 -0700 (PDT)
+        id 8E98419A4AD5A; Sun,  8 May 2022 17:42:03 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 6/9] selftests/bpf: add bpf_core_field_offset() tests
-Date:   Sun, 8 May 2022 17:41:45 -0700
-Message-ID: <20220509004148.1801791-7-andrii@kernel.org>
+Subject: [PATCH bpf-next 7/9] libbpf: provide barrier() and barrier_var() in bpf_helpers.h
+Date:   Sun, 8 May 2022 17:41:46 -0700
+Message-ID: <20220509004148.1801791-8-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220509004148.1801791-1-andrii@kernel.org>
 References: <20220509004148.1801791-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 8rRxHUcw7Ud9NIvjkybBi5pQceKp46EJ
-X-Proofpoint-ORIG-GUID: 8rRxHUcw7Ud9NIvjkybBi5pQceKp46EJ
+X-Proofpoint-GUID: SWIVyP9ulMQX5kbj2SJx9EJ4n6ZSCOhd
+X-Proofpoint-ORIG-GUID: SWIVyP9ulMQX5kbj2SJx9EJ4n6ZSCOhd
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-08_09,2022-05-06_01,2022-02-23_01
@@ -55,164 +55,124 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test cases for bpf_core_field_offset() helper.
+Add barrier() and barrier_var() macros into bpf_helpers.h to be used by
+end users. While a bit advanced and specialized instruments, they are
+sometimes indispensable. Instead of requiring each user to figure out
+exact asm volatile incantations for themselves, provide them from
+bpf_helpers.h.
+
+Also remove conflicting definitions from selftests. Some tests rely on
+barrier_var() definition being nothing, those will still work as libbpf
+does the #ifndef/#endif guarding for barrier() and barrier_var(),
+allowing users to redefine them, if necessary.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/prog_tests/core_reloc.c     | 13 ++++++++--
- .../progs/btf__core_reloc_size___diff_offs.c  |  3 +++
- .../selftests/bpf/progs/core_reloc_types.h    | 18 +++++++++++++
- .../bpf/progs/test_core_reloc_size.c          | 25 ++++++++++++++++++-
- 4 files changed, 56 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_offs.c
+ tools/lib/bpf/bpf_helpers.h                   | 24 +++++++++++++++++++
+ .../selftests/bpf/progs/exhandler_kern.c      |  2 --
+ tools/testing/selftests/bpf/progs/loop5.c     |  1 -
+ tools/testing/selftests/bpf/progs/profiler1.c |  1 -
+ tools/testing/selftests/bpf/progs/pyperf.h    |  2 --
+ .../selftests/bpf/progs/test_pkt_access.c     |  2 --
+ 6 files changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index f28f75aa9154..3712dfe1be59 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -277,13 +277,21 @@ static int duration = 0;
- #define SIZE_OUTPUT_DATA(type)						\
- 	STRUCT_TO_CHAR_PTR(core_reloc_size_output) {			\
- 		.int_sz = sizeof(((type *)0)->int_field),		\
-+		.int_off = offsetof(type, int_field),			\
- 		.struct_sz = sizeof(((type *)0)->struct_field),		\
-+		.struct_off = offsetof(type, struct_field),		\
- 		.union_sz = sizeof(((type *)0)->union_field),		\
-+		.union_off = offsetof(type, union_field),		\
- 		.arr_sz = sizeof(((type *)0)->arr_field),		\
--		.arr_elem_sz = sizeof(((type *)0)->arr_field[0]),	\
-+		.arr_off = offsetof(type, arr_field),			\
-+		.arr_elem_sz = sizeof(((type *)0)->arr_field[1]),	\
-+		.arr_elem_off = offsetof(type, arr_field[1]),		\
- 		.ptr_sz = 8, /* always 8-byte pointer for BPF */	\
-+		.ptr_off = offsetof(type, ptr_field),			\
- 		.enum_sz = sizeof(((type *)0)->enum_field),		\
-+		.enum_off = offsetof(type, enum_field),			\
- 		.float_sz = sizeof(((type *)0)->float_field),		\
-+		.float_off = offsetof(type, float_field),		\
- 	}
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index bbae9a057bc8..fb04eaf367f1 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -75,6 +75,30 @@
+ 	})
+ #endif
  
- #define SIZE_CASE(name) {						\
-@@ -714,9 +722,10 @@ static const struct core_reloc_test_case test_cases[] = {
- 	}),
- 	BITFIELDS_ERR_CASE(bitfields___err_too_big_bitfield),
- 
--	/* size relocation checks */
-+	/* field size and offset relocation checks */
- 	SIZE_CASE(size),
- 	SIZE_CASE(size___diff_sz),
-+	SIZE_CASE(size___diff_offs),
- 	SIZE_ERR_CASE(size___err_ambiguous),
- 
- 	/* validate type existence and size relocations */
-diff --git a/tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_offs.c b/tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_offs.c
-new file mode 100644
-index 000000000000..3824345d82ab
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_offs.c
-@@ -0,0 +1,3 @@
-+#include "core_reloc_types.h"
++/*
++ * Compiler (optimization) barrier.
++ */
++#ifndef barrier
++#define barrier() asm volatile("" ::: "memory")
++#endif
 +
-+void f(struct core_reloc_size___diff_offs x) {}
-diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-index c95c0cabe951..f9dc9766546e 100644
---- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-+++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-@@ -785,13 +785,21 @@ struct core_reloc_bitfields___err_too_big_bitfield {
-  */
- struct core_reloc_size_output {
- 	int int_sz;
-+	int int_off;
- 	int struct_sz;
-+	int struct_off;
- 	int union_sz;
-+	int union_off;
- 	int arr_sz;
-+	int arr_off;
- 	int arr_elem_sz;
-+	int arr_elem_off;
- 	int ptr_sz;
-+	int ptr_off;
- 	int enum_sz;
-+	int enum_off;
- 	int float_sz;
-+	int float_off;
++/* Variable-specific compiler (optimization) barrier. It's a no-op which makes
++ * compiler believe that there is some black box modification of a given
++ * variable and thus prevents compiler from making extra assumption about its
++ * value and potential simplifications and optimizations on this variable.
++ *
++ * E.g., compiler might often delay or even omit 32-bit to 64-bit casting of
++ * a variable, making some code patterns unverifiable. Putting barrier_var()
++ * in place will ensure that cast is performed before the barrier_var()
++ * invocation, because compiler has to pessimistically assume that embedded
++ * asm section might perform some extra operations on that variable.
++ *
++ * This is a variable-specific variant of more global barrier().
++ */
++#ifndef barrier_var
++#define barrier_var(var) asm volatile("" : "=r"(var) : "0"(var))
++#endif
++
+ /*
+  * Helper macro to throw a compilation error if __bpf_unreachable() gets
+  * built into the resulting code. This works given BPF back end does not
+diff --git a/tools/testing/selftests/bpf/progs/exhandler_kern.c b/tools/testing/selftests/bpf/progs/exhandler_kern.c
+index dd9b30a0f0fc..20d009e2d266 100644
+--- a/tools/testing/selftests/bpf/progs/exhandler_kern.c
++++ b/tools/testing/selftests/bpf/progs/exhandler_kern.c
+@@ -7,8 +7,6 @@
+ #include <bpf/bpf_tracing.h>
+ #include <bpf/bpf_core_read.h>
+ 
+-#define barrier_var(var) asm volatile("" : "=r"(var) : "0"(var))
+-
+ char _license[] SEC("license") = "GPL";
+ 
+ unsigned int exception_triggered;
+diff --git a/tools/testing/selftests/bpf/progs/loop5.c b/tools/testing/selftests/bpf/progs/loop5.c
+index 913791923fa3..1b13f37f85ec 100644
+--- a/tools/testing/selftests/bpf/progs/loop5.c
++++ b/tools/testing/selftests/bpf/progs/loop5.c
+@@ -2,7 +2,6 @@
+ // Copyright (c) 2019 Facebook
+ #include <linux/bpf.h>
+ #include <bpf/bpf_helpers.h>
+-#define barrier() __asm__ __volatile__("": : :"memory")
+ 
+ char _license[] SEC("license") = "GPL";
+ 
+diff --git a/tools/testing/selftests/bpf/progs/profiler1.c b/tools/testing/selftests/bpf/progs/profiler1.c
+index 4df9088bfc00..fb6b13522949 100644
+--- a/tools/testing/selftests/bpf/progs/profiler1.c
++++ b/tools/testing/selftests/bpf/progs/profiler1.c
+@@ -1,6 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2020 Facebook */
+-#define barrier_var(var) asm volatile("" : "=r"(var) : "0"(var))
+ #define UNROLL
+ #define INLINE __always_inline
+ #include "profiler.inc.h"
+diff --git a/tools/testing/selftests/bpf/progs/pyperf.h b/tools/testing/selftests/bpf/progs/pyperf.h
+index 5d3dc4d66d47..6c7b1fb268d6 100644
+--- a/tools/testing/selftests/bpf/progs/pyperf.h
++++ b/tools/testing/selftests/bpf/progs/pyperf.h
+@@ -171,8 +171,6 @@ struct process_frame_ctx {
+ 	bool done;
  };
  
- struct core_reloc_size {
-@@ -814,6 +822,16 @@ struct core_reloc_size___diff_sz {
- 	double float_field;
- };
+-#define barrier_var(var) asm volatile("" : "=r"(var) : "0"(var))
+-
+ static int process_frame_callback(__u32 i, struct process_frame_ctx *ctx)
+ {
+ 	int zero = 0;
+diff --git a/tools/testing/selftests/bpf/progs/test_pkt_access.c b/tools/testing/selftests/bpf/progs/test_pkt_access.c
+index 0558544e1ff0..5cd7c096f62d 100644
+--- a/tools/testing/selftests/bpf/progs/test_pkt_access.c
++++ b/tools/testing/selftests/bpf/progs/test_pkt_access.c
+@@ -14,8 +14,6 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
  
-+struct core_reloc_size___diff_offs {
-+	float float_field;
-+	enum { YET_OTHER_VALUE = 123 } enum_field;
-+	void *ptr_field;
-+	int arr_field[4];
-+	union { int x; } union_field;
-+	struct { int x; } struct_field;
-+	int int_field;
-+};
-+
- /* Error case of two candidates with the fields (int_field) at the same
-  * offset, but with differing final relocation values: size 4 vs size 1
-  */
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_size.c b/tools/testing/selftests/bpf/progs/test_core_reloc_size.c
-index 6766addd2583..5b686053ce42 100644
---- a/tools/testing/selftests/bpf/progs/test_core_reloc_size.c
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_size.c
-@@ -15,13 +15,21 @@ struct {
- 
- struct core_reloc_size_output {
- 	int int_sz;
-+	int int_off;
- 	int struct_sz;
-+	int struct_off;
- 	int union_sz;
-+	int union_off;
- 	int arr_sz;
-+	int arr_off;
- 	int arr_elem_sz;
-+	int arr_elem_off;
- 	int ptr_sz;
-+	int ptr_off;
- 	int enum_sz;
-+	int enum_off;
- 	int float_sz;
-+	int float_off;
- };
- 
- struct core_reloc_size {
-@@ -41,13 +49,28 @@ int test_core_size(void *ctx)
- 	struct core_reloc_size_output *out = (void *)&data.out;
- 
- 	out->int_sz = bpf_core_field_size(in->int_field);
-+	out->int_off = bpf_core_field_offset(in->int_field);
-+
- 	out->struct_sz = bpf_core_field_size(in->struct_field);
-+	out->struct_off = bpf_core_field_offset(in->struct_field);
-+
- 	out->union_sz = bpf_core_field_size(in->union_field);
-+	out->union_off = bpf_core_field_offset(in->union_field);
-+
- 	out->arr_sz = bpf_core_field_size(in->arr_field);
--	out->arr_elem_sz = bpf_core_field_size(struct core_reloc_size, arr_field[0]);
-+	out->arr_off = bpf_core_field_offset(in->arr_field);
-+
-+	out->arr_elem_sz = bpf_core_field_size(struct core_reloc_size, arr_field[1]);
-+	out->arr_elem_off = bpf_core_field_offset(struct core_reloc_size, arr_field[1]);
-+
- 	out->ptr_sz = bpf_core_field_size(struct core_reloc_size, ptr_field);
-+	out->ptr_off = bpf_core_field_offset(struct core_reloc_size, ptr_field);
-+
- 	out->enum_sz = bpf_core_field_size(struct core_reloc_size, enum_field);
-+	out->enum_off = bpf_core_field_offset(struct core_reloc_size, enum_field);
-+
- 	out->float_sz = bpf_core_field_size(struct core_reloc_size, float_field);
-+	out->float_off = bpf_core_field_offset(struct core_reloc_size, float_field);
- 
- 	return 0;
- }
+-#define barrier() __asm__ __volatile__("": : :"memory")
+-
+ /* llvm will optimize both subprograms into exactly the same BPF assembly
+  *
+  * Disassembly of section .text:
 -- 
 2.30.2
 
