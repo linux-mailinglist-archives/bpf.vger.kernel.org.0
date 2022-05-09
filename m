@@ -2,33 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7835207F5
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 00:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9175207F2
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 00:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbiEIWsf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 9 May 2022 18:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
+        id S230431AbiEIWsc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 18:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231740AbiEIWse (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 18:48:34 -0400
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B123B2A28C7
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 15:44:38 -0700 (PDT)
+        with ESMTP id S231723AbiEIWsc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 18:48:32 -0400
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED8C2A28C9
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 15:44:34 -0700 (PDT)
 Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
-        id F2864C2576CE; Mon,  9 May 2022 15:44:18 -0700 (PDT)
+        id 0A11CC2576D0; Mon,  9 May 2022 15:44:19 -0700 (PDT)
 From:   Joanne Koong <joannelkoong@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH bpf-next v4 3/6] bpf: Dynptr support for ring buffers
-Date:   Mon,  9 May 2022 15:42:54 -0700
-Message-Id: <20220509224257.3222614-4-joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v4 4/6] bpf: Add bpf_dynptr_read and bpf_dynptr_write
+Date:   Mon,  9 May 2022 15:42:55 -0700
+Message-Id: <20220509224257.3222614-5-joannelkoong@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220509224257.3222614-1-joannelkoong@gmail.com>
 References: <20220509224257.3222614-1-joannelkoong@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=1.6 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
         FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
         SPF_HELO_PASS,SPF_SOFTFAIL,TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE
@@ -40,344 +39,221 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, our only way of writing dynamically-sized data into a ring
-buffer is through bpf_ringbuf_output but this incurs an extra memcpy
-cost. bpf_ringbuf_reserve + bpf_ringbuf_commit avoids this extra
-memcpy, but it can only safely support reservation sizes that are
-statically known since the verifier cannot guarantee that the bpf
-program won’t access memory outside the reserved space.
+This patch adds two helper functions, bpf_dynptr_read and
+bpf_dynptr_write:
 
-The bpf_dynptr abstraction allows for dynamically-sized ring buffer
-reservations without the extra memcpy.
+long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offs=
+et);
 
-There are 3 new APIs:
+long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, u32 =
+len);
 
-long bpf_ringbuf_reserve_dynptr(void *ringbuf, u32 size, u64 flags, struct bpf_dynptr *ptr);
-void bpf_ringbuf_submit_dynptr(struct bpf_dynptr *ptr, u64 flags);
-void bpf_ringbuf_discard_dynptr(struct bpf_dynptr *ptr, u64 flags);
-
-These closely follow the functionalities of the original ringbuf APIs.
-For example, all ringbuffer dynptrs that have been reserved must be
-either submitted or discarded before the program exits.
+The dynptr passed into these functions must be valid dynptrs that have
+been initialized.
 
 Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 ---
- include/linux/bpf.h            | 14 +++++-
- include/uapi/linux/bpf.h       | 35 +++++++++++++++
- kernel/bpf/helpers.c           |  6 +++
- kernel/bpf/ringbuf.c           | 78 ++++++++++++++++++++++++++++++++++
- kernel/bpf/verifier.c          | 16 ++++++-
- tools/include/uapi/linux/bpf.h | 35 +++++++++++++++
- 6 files changed, 180 insertions(+), 4 deletions(-)
+ include/linux/bpf.h            | 16 ++++++++++
+ include/uapi/linux/bpf.h       | 19 ++++++++++++
+ kernel/bpf/helpers.c           | 56 ++++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h | 19 ++++++++++++
+ 4 files changed, 110 insertions(+)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index e078b8a911fe..8fbe739b0dec 100644
+index 8fbe739b0dec..6f4fa0627620 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -394,10 +394,15 @@ enum bpf_type_flag {
- 	/* DYNPTR points to dynamically allocated memory. */
- 	DYNPTR_TYPE_MALLOC	= BIT(8 + BPF_BASE_TYPE_BITS),
- 
--	__BPF_TYPE_LAST_FLAG	= DYNPTR_TYPE_MALLOC,
-+	/* DYNPTR points to a ringbuf record. */
-+	DYNPTR_TYPE_RINGBUF	= BIT(9 + BPF_BASE_TYPE_BITS),
+@@ -2391,6 +2391,12 @@ enum bpf_dynptr_type {
+ #define DYNPTR_SIZE_MASK	0xFFFFFF
+ #define DYNPTR_TYPE_SHIFT	28
+ #define DYNPTR_TYPE_MASK	0x7
++#define DYNPTR_RDONLY_BIT	BIT(31)
 +
-+	__BPF_TYPE_FLAG_MAX,
++static inline bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
++{
++	return ptr->size & DYNPTR_RDONLY_BIT;
++}
+=20
+ static inline enum bpf_dynptr_type bpf_dynptr_get_type(struct bpf_dynptr=
+_kern *ptr)
+ {
+@@ -2412,6 +2418,16 @@ static inline int bpf_dynptr_check_size(u32 size)
+ 	return size > DYNPTR_MAX_SIZE ? -E2BIG : 0;
+ }
+=20
++static inline int bpf_dynptr_check_off_len(struct bpf_dynptr_kern *ptr, =
+u32 offset, u32 len)
++{
++	u32 size =3D bpf_dynptr_get_size(ptr);
 +
-+	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
- };
- 
--#define DYNPTR_TYPE_FLAG_MASK	DYNPTR_TYPE_MALLOC
-+#define DYNPTR_TYPE_FLAG_MASK	(DYNPTR_TYPE_MALLOC | DYNPTR_TYPE_RINGBUF)
- 
- /* Max number of base types. */
- #define BPF_BASE_TYPE_LIMIT	(1UL << BPF_BASE_TYPE_BITS)
-@@ -2205,6 +2210,9 @@ extern const struct bpf_func_proto bpf_ringbuf_reserve_proto;
- extern const struct bpf_func_proto bpf_ringbuf_submit_proto;
- extern const struct bpf_func_proto bpf_ringbuf_discard_proto;
- extern const struct bpf_func_proto bpf_ringbuf_query_proto;
-+extern const struct bpf_func_proto bpf_ringbuf_reserve_dynptr_proto;
-+extern const struct bpf_func_proto bpf_ringbuf_submit_dynptr_proto;
-+extern const struct bpf_func_proto bpf_ringbuf_discard_dynptr_proto;
- extern const struct bpf_func_proto bpf_skc_to_tcp6_sock_proto;
- extern const struct bpf_func_proto bpf_skc_to_tcp_sock_proto;
- extern const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto;
-@@ -2372,6 +2380,8 @@ enum bpf_dynptr_type {
- 	BPF_DYNPTR_TYPE_INVALID,
- 	/* Memory allocated dynamically by the kernel for the dynptr */
- 	BPF_DYNPTR_TYPE_MALLOC,
-+	/* Underlying data is a ringbuf record */
-+	BPF_DYNPTR_TYPE_RINGBUF,
- };
- 
- /* Since the upper 8 bits of dynptr->size is reserved, the
++	if (len > size || offset > size - len)
++		return -E2BIG;
++
++	return 0;
++}
++
+ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data, enum bpf_d=
+ynptr_type type,
+ 		     u32 offset, u32 size);
+=20
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 5a87ed654016..679f960d2514 100644
+index 679f960d2514..f0c5ca220d8e 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -5177,6 +5177,38 @@ union bpf_attr {
-  *		After this operation, *ptr* will be an invalidated dynptr.
+@@ -5209,6 +5209,23 @@ union bpf_attr {
+  *		'bpf_ringbuf_discard'.
   *	Return
-  *		Void.
+  *		Nothing. Always succeeds.
 + *
-+ * long bpf_ringbuf_reserve_dynptr(void *ringbuf, u32 size, u64 flags, struct bpf_dynptr *ptr)
++ * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 =
+offset)
 + *	Description
-+ *		Reserve *size* bytes of payload in a ring buffer *ringbuf*
-+ *		through the dynptr interface. *flags* must be 0.
-+ *
-+ *		Please note that a corresponding bpf_ringbuf_submit_dynptr or
-+ *		bpf_ringbuf_discard_dynptr must be called on *ptr*, even if the
-+ *		reservation fails. This is enforced by the verifier.
++ *		Read *len* bytes from *src* into *dst*, starting from *offset*
++ *		into *src*.
 + *	Return
-+ *		0 on success, or a negative error in case of failure.
++ *		0 on success, -E2BIG if *offset* + *len* exceeds the length
++ *		of *src*'s data, -EINVAL if *src* is an invalid dynptr.
 + *
-+ * void bpf_ringbuf_submit_dynptr(struct bpf_dynptr *ptr, u64 flags)
++ * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, =
+u32 len)
 + *	Description
-+ *		Submit reserved ring buffer sample, pointed to by *data*,
-+ *		through the dynptr interface. This is a no-op if the dynptr is
-+ *		invalid/null.
-+ *
-+ *		For more information on *flags*, please see
-+ *		'bpf_ringbuf_submit'.
++ *		Write *len* bytes from *src* into *dst*, starting from *offset*
++ *		into *dst*.
 + *	Return
-+ *		Nothing. Always succeeds.
-+ *
-+ * void bpf_ringbuf_discard_dynptr(struct bpf_dynptr *ptr, u64 flags)
-+ *	Description
-+ *		Discard reserved ring buffer sample through the dynptr
-+ *		interface. This is a no-op if the dynptr is invalid/null.
-+ *
-+ *		For more information on *flags*, please see
-+ *		'bpf_ringbuf_discard'.
-+ *	Return
-+ *		Nothing. Always succeeds.
++ *		0 on success, -E2BIG if *offset* + *len* exceeds the length
++ *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
++ *		is a read-only dynptr.
   */
  #define __BPF_FUNC_MAPPER(FN)		\
  	FN(unspec),			\
-@@ -5376,6 +5408,9 @@ union bpf_attr {
- 	FN(kptr_xchg),			\
- 	FN(dynptr_alloc),		\
- 	FN(dynptr_put),			\
-+	FN(ringbuf_reserve_dynptr),	\
-+	FN(ringbuf_submit_dynptr),	\
-+	FN(ringbuf_discard_dynptr),	\
+@@ -5411,6 +5428,8 @@ union bpf_attr {
+ 	FN(ringbuf_reserve_dynptr),	\
+ 	FN(ringbuf_submit_dynptr),	\
+ 	FN(ringbuf_discard_dynptr),	\
++	FN(dynptr_read),		\
++	FN(dynptr_write),		\
  	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+=20
+ /* integer value in 'imm' field of BPF_CALL instruction selects which he=
+lper
 diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index a4272e9239ea..2d6f2e28b580 100644
+index 2d6f2e28b580..7206b9e5322f 100644
 --- a/kernel/bpf/helpers.c
 +++ b/kernel/bpf/helpers.c
-@@ -1513,6 +1513,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
- 		return &bpf_ringbuf_discard_proto;
- 	case BPF_FUNC_ringbuf_query:
- 		return &bpf_ringbuf_query_proto;
-+	case BPF_FUNC_ringbuf_reserve_dynptr:
-+		return &bpf_ringbuf_reserve_dynptr_proto;
-+	case BPF_FUNC_ringbuf_submit_dynptr:
-+		return &bpf_ringbuf_submit_dynptr_proto;
-+	case BPF_FUNC_ringbuf_discard_dynptr:
-+		return &bpf_ringbuf_discard_dynptr_proto;
- 	case BPF_FUNC_for_each_map_elem:
- 		return &bpf_for_each_map_elem_proto;
- 	case BPF_FUNC_loop:
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 311264ab80c4..ded4faeca192 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -475,3 +475,81 @@ const struct bpf_func_proto bpf_ringbuf_query_proto = {
- 	.arg1_type	= ARG_CONST_MAP_PTR,
- 	.arg2_type	= ARG_ANYTHING,
+@@ -1467,6 +1467,58 @@ const struct bpf_func_proto bpf_dynptr_put_proto =3D=
+ {
+ 	.arg1_type	=3D ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_MALLOC | OBJ_RELEASE,
  };
-+
-+BPF_CALL_4(bpf_ringbuf_reserve_dynptr, struct bpf_map *, map, u32, size, u64, flags,
-+	   struct bpf_dynptr_kern *, ptr)
+=20
++BPF_CALL_4(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_ker=
+n *, src, u32, offset)
 +{
-+	struct bpf_ringbuf_map *rb_map;
-+	void *sample;
 +	int err;
 +
-+	if (unlikely(flags)) {
-+		bpf_dynptr_set_null(ptr);
++	if (!src->data)
 +		return -EINVAL;
-+	}
 +
-+	err = bpf_dynptr_check_size(size);
-+	if (err) {
-+		bpf_dynptr_set_null(ptr);
++	err =3D bpf_dynptr_check_off_len(src, offset, len);
++	if (err)
 +		return err;
-+	}
 +
-+	rb_map = container_of(map, struct bpf_ringbuf_map, map);
++	memcpy(dst, src->data + src->offset + offset, len);
 +
-+	sample = __bpf_ringbuf_reserve(rb_map->rb, size);
-+	if (!sample) {
-+		bpf_dynptr_set_null(ptr);
++	return 0;
++}
++
++const struct bpf_func_proto bpf_dynptr_read_proto =3D {
++	.func		=3D bpf_dynptr_read,
++	.gpl_only	=3D false,
++	.ret_type	=3D RET_INTEGER,
++	.arg1_type	=3D ARG_PTR_TO_UNINIT_MEM,
++	.arg2_type	=3D ARG_CONST_SIZE_OR_ZERO,
++	.arg3_type	=3D ARG_PTR_TO_DYNPTR,
++	.arg4_type	=3D ARG_ANYTHING,
++};
++
++BPF_CALL_4(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset,=
+ void *, src, u32, len)
++{
++	int err;
++
++	if (!dst->data || bpf_dynptr_is_rdonly(dst))
 +		return -EINVAL;
-+	}
 +
-+	bpf_dynptr_init(ptr, sample, BPF_DYNPTR_TYPE_RINGBUF, 0, size);
++	err =3D bpf_dynptr_check_off_len(dst, offset, len);
++	if (err)
++		return err;
 +
-+	return 0;
-+}
-+
-+const struct bpf_func_proto bpf_ringbuf_reserve_dynptr_proto = {
-+	.func		= bpf_ringbuf_reserve_dynptr,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_CONST_MAP_PTR,
-+	.arg2_type	= ARG_ANYTHING,
-+	.arg3_type	= ARG_ANYTHING,
-+	.arg4_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_RINGBUF | MEM_UNINIT,
-+};
-+
-+BPF_CALL_2(bpf_ringbuf_submit_dynptr, struct bpf_dynptr_kern *, ptr, u64, flags)
-+{
-+	if (!ptr->data)
-+		return 0;
-+
-+	bpf_ringbuf_commit(ptr->data, flags, false /* discard */);
-+
-+	bpf_dynptr_set_null(ptr);
++	memcpy(dst->data + dst->offset + offset, src, len);
 +
 +	return 0;
 +}
 +
-+const struct bpf_func_proto bpf_ringbuf_submit_dynptr_proto = {
-+	.func		= bpf_ringbuf_submit_dynptr,
-+	.ret_type	= RET_VOID,
-+	.arg1_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_RINGBUF | OBJ_RELEASE,
-+	.arg2_type	= ARG_ANYTHING,
++const struct bpf_func_proto bpf_dynptr_write_proto =3D {
++	.func		=3D bpf_dynptr_write,
++	.gpl_only	=3D false,
++	.ret_type	=3D RET_INTEGER,
++	.arg1_type	=3D ARG_PTR_TO_DYNPTR,
++	.arg2_type	=3D ARG_ANYTHING,
++	.arg3_type	=3D ARG_PTR_TO_MEM | MEM_RDONLY,
++	.arg4_type	=3D ARG_CONST_SIZE_OR_ZERO,
 +};
 +
-+BPF_CALL_2(bpf_ringbuf_discard_dynptr, struct bpf_dynptr_kern *, ptr, u64, flags)
-+{
-+	if (!ptr->data)
-+		return 0;
-+
-+	bpf_ringbuf_commit(ptr->data, flags, true /* discard */);
-+
-+	bpf_dynptr_set_null(ptr);
-+
-+	return 0;
-+}
-+
-+const struct bpf_func_proto bpf_ringbuf_discard_dynptr_proto = {
-+	.func		= bpf_ringbuf_discard_dynptr,
-+	.ret_type	= RET_VOID,
-+	.arg1_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_RINGBUF | OBJ_RELEASE,
-+	.arg2_type	= ARG_ANYTHING,
-+};
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 8cdedc776987..c17df5f17ba1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -676,6 +676,8 @@ static int arg_to_dynptr_type(enum bpf_arg_type arg_type)
- 	switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
- 	case DYNPTR_TYPE_MALLOC:
- 		return BPF_DYNPTR_TYPE_MALLOC;
-+	case DYNPTR_TYPE_RINGBUF:
-+		return BPF_DYNPTR_TYPE_RINGBUF;
+ const struct bpf_func_proto bpf_get_current_task_proto __weak;
+ const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+@@ -1529,6 +1581,10 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_dynptr_alloc_proto;
+ 	case BPF_FUNC_dynptr_put:
+ 		return &bpf_dynptr_put_proto;
++	case BPF_FUNC_dynptr_read:
++		return &bpf_dynptr_read_proto;
++	case BPF_FUNC_dynptr_write:
++		return &bpf_dynptr_write_proto;
  	default:
- 		return BPF_DYNPTR_TYPE_INVALID;
+ 		break;
  	}
-@@ -683,7 +685,7 @@ static int arg_to_dynptr_type(enum bpf_arg_type arg_type)
- 
- static inline bool dynptr_type_refcounted(enum bpf_dynptr_type type)
- {
--	return type == BPF_DYNPTR_TYPE_MALLOC;
-+	return type == BPF_DYNPTR_TYPE_MALLOC || type == BPF_DYNPTR_TYPE_RINGBUF;
- }
- 
- static int mark_stack_slots_dynptr(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-@@ -6036,9 +6038,13 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			case DYNPTR_TYPE_MALLOC:
- 				err_extra = "malloc ";
- 				break;
-+			case DYNPTR_TYPE_RINGBUF:
-+				err_extra = "ringbuf ";
-+				break;
- 			default:
- 				break;
- 			}
-+
- 			verbose(env, "Expected an initialized %sdynptr as arg #%d\n",
- 				err_extra, arg + BPF_REG_1);
- 			return -EINVAL;
-@@ -6164,7 +6170,10 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 	case BPF_MAP_TYPE_RINGBUF:
- 		if (func_id != BPF_FUNC_ringbuf_output &&
- 		    func_id != BPF_FUNC_ringbuf_reserve &&
--		    func_id != BPF_FUNC_ringbuf_query)
-+		    func_id != BPF_FUNC_ringbuf_query &&
-+		    func_id != BPF_FUNC_ringbuf_reserve_dynptr &&
-+		    func_id != BPF_FUNC_ringbuf_submit_dynptr &&
-+		    func_id != BPF_FUNC_ringbuf_discard_dynptr)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_STACK_TRACE:
-@@ -6280,6 +6289,9 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 	case BPF_FUNC_ringbuf_output:
- 	case BPF_FUNC_ringbuf_reserve:
- 	case BPF_FUNC_ringbuf_query:
-+	case BPF_FUNC_ringbuf_reserve_dynptr:
-+	case BPF_FUNC_ringbuf_submit_dynptr:
-+	case BPF_FUNC_ringbuf_discard_dynptr:
- 		if (map->map_type != BPF_MAP_TYPE_RINGBUF)
- 			goto error;
- 		break;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 5a87ed654016..679f960d2514 100644
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index 679f960d2514..f0c5ca220d8e 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -5177,6 +5177,38 @@ union bpf_attr {
-  *		After this operation, *ptr* will be an invalidated dynptr.
+@@ -5209,6 +5209,23 @@ union bpf_attr {
+  *		'bpf_ringbuf_discard'.
   *	Return
-  *		Void.
+  *		Nothing. Always succeeds.
 + *
-+ * long bpf_ringbuf_reserve_dynptr(void *ringbuf, u32 size, u64 flags, struct bpf_dynptr *ptr)
++ * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 =
+offset)
 + *	Description
-+ *		Reserve *size* bytes of payload in a ring buffer *ringbuf*
-+ *		through the dynptr interface. *flags* must be 0.
-+ *
-+ *		Please note that a corresponding bpf_ringbuf_submit_dynptr or
-+ *		bpf_ringbuf_discard_dynptr must be called on *ptr*, even if the
-+ *		reservation fails. This is enforced by the verifier.
++ *		Read *len* bytes from *src* into *dst*, starting from *offset*
++ *		into *src*.
 + *	Return
-+ *		0 on success, or a negative error in case of failure.
++ *		0 on success, -E2BIG if *offset* + *len* exceeds the length
++ *		of *src*'s data, -EINVAL if *src* is an invalid dynptr.
 + *
-+ * void bpf_ringbuf_submit_dynptr(struct bpf_dynptr *ptr, u64 flags)
++ * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, =
+u32 len)
 + *	Description
-+ *		Submit reserved ring buffer sample, pointed to by *data*,
-+ *		through the dynptr interface. This is a no-op if the dynptr is
-+ *		invalid/null.
-+ *
-+ *		For more information on *flags*, please see
-+ *		'bpf_ringbuf_submit'.
++ *		Write *len* bytes from *src* into *dst*, starting from *offset*
++ *		into *dst*.
 + *	Return
-+ *		Nothing. Always succeeds.
-+ *
-+ * void bpf_ringbuf_discard_dynptr(struct bpf_dynptr *ptr, u64 flags)
-+ *	Description
-+ *		Discard reserved ring buffer sample through the dynptr
-+ *		interface. This is a no-op if the dynptr is invalid/null.
-+ *
-+ *		For more information on *flags*, please see
-+ *		'bpf_ringbuf_discard'.
-+ *	Return
-+ *		Nothing. Always succeeds.
++ *		0 on success, -E2BIG if *offset* + *len* exceeds the length
++ *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
++ *		is a read-only dynptr.
   */
  #define __BPF_FUNC_MAPPER(FN)		\
  	FN(unspec),			\
-@@ -5376,6 +5408,9 @@ union bpf_attr {
- 	FN(kptr_xchg),			\
- 	FN(dynptr_alloc),		\
- 	FN(dynptr_put),			\
-+	FN(ringbuf_reserve_dynptr),	\
-+	FN(ringbuf_submit_dynptr),	\
-+	FN(ringbuf_discard_dynptr),	\
+@@ -5411,6 +5428,8 @@ union bpf_attr {
+ 	FN(ringbuf_reserve_dynptr),	\
+ 	FN(ringbuf_submit_dynptr),	\
+ 	FN(ringbuf_discard_dynptr),	\
++	FN(dynptr_read),		\
++	FN(dynptr_write),		\
  	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
--- 
+=20
+ /* integer value in 'imm' field of BPF_CALL instruction selects which he=
+lper
+--=20
 2.30.2
 
