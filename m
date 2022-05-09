@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D66F52098C
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 01:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C02052098D
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 01:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233340AbiEIXrn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 19:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        id S233405AbiEIXrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 19:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235053AbiEIXrP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S235065AbiEIXrP (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 9 May 2022 19:47:15 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C7E2CDEE8
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:38:36 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id q20so9202971wmq.1
-        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:38:36 -0700 (PDT)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721BB2CDEEC
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:38:42 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id q23so21470105wra.1
+        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:38:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=spcdF8uyBSDoApyhUhvHOvGJF+mSne/adtJmWUIeWd0=;
-        b=b166idcM+quZhwhX1zBamRMRavb0wPU3+lTWNqpZ6Kqpn6rv5QuVU5FGjUb4oDGrTE
-         37+XOBe5vLW6lczyIYi82hWbOM1EEp3O5BOph7tfKVI3mLthbIiiXmDuIJfX65j7NZNw
-         R02ltoPziVM0WLR+GTDvBDwzeBLJXAP+OgDPoG/7yDbByeQSPjE9tco6L52kSWqZpAq3
-         qW4I4CywfL2WKxxJv1xu24s6HPUcwtjszVAEngdgspIKxA7sOslAE2GMpvYlwURy+ou8
-         WeRvSK0/ZTuzHVAFWLQzKqc92LgKnTUrteBDXNlChXkCDmSVdY460NamAU2VMtycdbfw
-         Yl9Q==
+        bh=sEOoNgA37n+oAtmDFXjXYHfK9txRG9g+pJQQojjD46Y=;
+        b=XXu0vAfOWN76zZocMQkxmDXWgIDzGo83KaDB7NAjCJ2ILPSOZDv0fZ9UdN0P6frAwD
+         AwXmeS7Rjlnggyn135GHPcSKeRHe2VNehubW44MTeZXWk2lkSEXJj4O3w1Z7KdWO2z2i
+         rb4jQWCREBTTEZ5zOr+dOOdPArOAEFO8+5k3q34jtMoCvjMwbxBSb+2koRsh4rQ6PdQ1
+         ljjj6Vg9Fr5JqIVLgXyudWIV2JLHAqAjywTvH1eyhrm6EOVsWCzu9HRt07AwHjdRP4zh
+         ax5hKw2OL6a3O4+GmVpAwvm1YAtsAFkgroO1E7PjyDlvSutFIBZ7AA0axajHwjcEJd3n
+         SfBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=spcdF8uyBSDoApyhUhvHOvGJF+mSne/adtJmWUIeWd0=;
-        b=zacPHBII1PFnGSNB84tvWrQa4rrX3BIwuLwO9A2QxWX8Au29rtyj1icwzU1HZqrkKT
-         IwPz5vk3UTJJoGp/70reXpKTpsQMv95CzMVE4oJxua7ahDSVV3SD0bCRAT3jETN3gVx7
-         VmcCBSTa8VNCVMbMMXmD/4IV3116b66v7tTT3ZcvHn1i4+QIek+rUrlxMRSO1F7uuEa4
-         09BSwCCFSrNjm85KNIegb9toRzLV+C/e0CCJBr3dKlgSATHNXh4KQpAb9VbvA61Dd+KB
-         UPduLgj9HAv76247sPMrrVFb+qOUkYBx4Uz21g5tQ9w2iBQN/tRCp8XmmelEGaM65gAo
-         7Qdg==
-X-Gm-Message-State: AOAM532ibxa5v+2Dgd4E0DHN7SKLOBh5xgxdVxwZebtVJ85JUNgxcQ1t
-        eaQPYIcbkYgUPPanc7OXZEJNJPZIOH9kywulDdT6Uw==
-X-Google-Smtp-Source: ABdhPJwjPI/oeGbdnitaMa3s3w9e1mRw7dVxdeCzO8AmA5l5BAXZ8cL2+WTMiWwWU2seq90Y4LnU4lRaLf0RYDjBdqY=
-X-Received: by 2002:a05:600c:9:b0:393:ea67:1c68 with SMTP id
- g9-20020a05600c000900b00393ea671c68mr25576186wmc.92.1652139514823; Mon, 09
- May 2022 16:38:34 -0700 (PDT)
+        bh=sEOoNgA37n+oAtmDFXjXYHfK9txRG9g+pJQQojjD46Y=;
+        b=J3cmq+k1ueQ1M7V6ElwFGoFHmBSU0Qng2JpliN8xDxEZC4LjNOSUuQHP/8XaXq43iQ
+         Ifxl+Nag5/m9SQuPziHBH8+s8meiUIxgdGeHHSdfTtq2r/AGesNXDcH+8llzyjYc9f6W
+         OljnJWvQmRTGh9NfcFBTP3SVJo+t1QJ9cU1hdKjs7rRPzkY8yJYHMy4F1Z53+Jnuuwit
+         U9BBNeqXLbHOZdkpV5FUs6FX0r0rIVv9sd3g/covBRJ6RmvJk5UN4GGJ6wWIC7e8gmHK
+         BlDO1lzTWue/P/QZkv3Gc/XzgFdS7QLuC4vLFZ2rLycT/fz6MgGxdzhK6Io2QFAKYN9J
+         Y+hw==
+X-Gm-Message-State: AOAM532tg4GQWpL/bHir4K6EeVw+yUTSCnQLeNtjE/Y13WPw1fKEoM4C
+        nThxoD5PNvZigozZ2jorsyhCUrNWOlVLCQi+gZb1Mw==
+X-Google-Smtp-Source: ABdhPJzbOltZZaR3MgHCrXXhLNCDJBGfgjqHZbfMUBDfydO6J+pREiZbXz7ZkG+gqvomBwxUyol5h4urwh1GGFmxqEQ=
+X-Received: by 2002:adf:dc91:0:b0:20c:cb51:4160 with SMTP id
+ r17-20020adfdc91000000b0020ccb514160mr5366046wrj.568.1652139520845; Mon, 09
+ May 2022 16:38:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220429211540.715151-1-sdf@google.com> <20220429211540.715151-6-sdf@google.com>
- <CAEf4BzbSW3Wgpt_RYaFSHiPEmiGVkqa0ZsA45hD6pOnBqCFfuQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbSW3Wgpt_RYaFSHiPEmiGVkqa0ZsA45hD6pOnBqCFfuQ@mail.gmail.com>
+References: <20220429211540.715151-1-sdf@google.com> <20220429211540.715151-11-sdf@google.com>
+ <CAEf4BzY3Nd2pi+O-x4bp41=joFgPXU2+UFqBusdjR08ME62k5g@mail.gmail.com>
+In-Reply-To: <CAEf4BzY3Nd2pi+O-x4bp41=joFgPXU2+UFqBusdjR08ME62k5g@mail.gmail.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 9 May 2022 16:38:23 -0700
-Message-ID: <CAKH8qBtCe-sb==_PHeJoPgo=8uEUwqFwTXSEwS=tTGSizaoJnA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 05/10] bpf: implement BPF_PROG_QUERY for BPF_LSM_CGROUP
+Date:   Mon, 9 May 2022 16:38:29 -0700
+Message-ID: <CAKH8qBtk6CpR-29R6sWicz_zW=RCYUrXZqBZbgF9eqt4XGgNqQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 10/10] selftests/bpf: verify lsm_cgroup struct
+ sock access
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -69,78 +70,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 9, 2022 at 2:49 PM Andrii Nakryiko
+On Mon, May 9, 2022 at 2:54 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
-> On Fri, Apr 29, 2022 at 2:15 PM Stanislav Fomichev <sdf@google.com> wrote:
+> On Fri, Apr 29, 2022 at 2:16 PM Stanislav Fomichev <sdf@google.com> wrote:
 > >
-> > We have two options:
-> > 1. Treat all BPF_LSM_CGROUP as the same, regardless of attach_btf_id
-> > 2. Treat BPF_LSM_CGROUP+attach_btf_id as a separate hook point
+> > sk_priority & sk_mark are writable, the rest is readonly.
 > >
-> > I'm doing (2) here and adding attach_btf_id as a new BPF_PROG_QUERY
-> > argument. The downside is that it requires iterating over all possible
-> > bpf_lsm_ hook points in the userspace which might take some time.
+> > Add new ldx_offset fixups to lookup the offset of struct field.
+> > Allow using test.kfunc regardless of prog_type.
+> >
+> > One interesting thing here is that the verifier doesn't
+> > really force me to add NULL checks anywhere :-/
 > >
 > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > > ---
-> >  include/uapi/linux/bpf.h       |  1 +
-> >  kernel/bpf/cgroup.c            | 43 ++++++++++++++++++++++++----------
-> >  kernel/bpf/syscall.c           |  3 ++-
-> >  tools/include/uapi/linux/bpf.h |  1 +
-> >  tools/lib/bpf/bpf.c            | 42 ++++++++++++++++++++++++++-------
-> >  tools/lib/bpf/bpf.h            | 15 ++++++++++++
-> >  tools/lib/bpf/libbpf.map       |  1 +
->
-> please split kernel and libbpf changes into separate patches and mark
-> libbpf's with "libbpf: " prefix
-
-Ack, thanks, will do this and will address the rest.
-
-
-> >  7 files changed, 85 insertions(+), 21 deletions(-)
+> >  tools/testing/selftests/bpf/test_verifier.c   | 54 ++++++++++++++++++-
+> >  .../selftests/bpf/verifier/lsm_cgroup.c       | 34 ++++++++++++
+> >  2 files changed, 87 insertions(+), 1 deletion(-)
+> >  create mode 100644 tools/testing/selftests/bpf/verifier/lsm_cgroup.c
 > >
 >
 > [...]
 >
-> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > index a9d292c106c2..f62823451b99 100644
-> > --- a/tools/lib/bpf/bpf.c
-> > +++ b/tools/lib/bpf/bpf.c
-> > @@ -946,28 +946,54 @@ int bpf_iter_create(int link_fd)
-> >         return libbpf_err_errno(fd);
-> >  }
-> >
-> > -int bpf_prog_query(int target_fd, enum bpf_attach_type type, __u32 query_flags,
-> > -                  __u32 *attach_flags, __u32 *prog_ids, __u32 *prog_cnt)
-> > +int bpf_prog_query2(int target_fd,
->
-> this would have to be named bpf_prog_query_opts()
->
-> > +                   enum bpf_attach_type type,
-> > +                   struct bpf_prog_query_opts *opts)
-> >  {
-> >         union bpf_attr attr;
-> >         int ret;
-> >
-> >         memset(&attr, 0, sizeof(attr));
+> > diff --git a/tools/testing/selftests/bpf/verifier/lsm_cgroup.c b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
+> > new file mode 100644
+> > index 000000000000..af0efe783511
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
+> > @@ -0,0 +1,34 @@
+> > +#define SK_WRITABLE_FIELD(tp, field, size, res) \
+> > +{ \
+> > +       .descr = field, \
+> > +       .insns = { \
+> > +               /* r1 = *(u64 *)(r1 + 0) */ \
+> > +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
+> > +               /* r1 = *(u64 *)(r1 + offsetof(struct socket, sk)) */ \
+> > +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
+> > +               /* r2 = *(u64 *)(r1 + offsetof(struct sock, <field>)) */ \
+> > +               BPF_LDX_MEM(size, BPF_REG_2, BPF_REG_1, 0), \
+> > +               /* *(u64 *)(r1 + offsetof(struct sock, <field>)) = r2 */ \
+> > +               BPF_STX_MEM(size, BPF_REG_1, BPF_REG_2, 0), \
+> > +               BPF_MOV64_IMM(BPF_REG_0, 1), \
+> > +               BPF_EXIT_INSN(), \
+> > +       }, \
+> > +       .result = res, \
+> > +       .errstr = res ? "no write support to 'struct sock' at off" : "", \
+> > +       .prog_type = BPF_PROG_TYPE_LSM, \
+> > +       .expected_attach_type = BPF_LSM_CGROUP, \
+> > +       .kfunc = "socket_post_create", \
+> > +       .fixup_ldx = { \
+> > +               { "socket", "sk", 1 }, \
+> > +               { tp, field, 2 }, \
+> > +               { tp, field, 3 }, \
+> > +       }, \
+> > +}
+> > +
+> > +SK_WRITABLE_FIELD("sock_common", "skc_family", BPF_H, REJECT),
+> > +SK_WRITABLE_FIELD("sock", "sk_sndtimeo", BPF_DW, REJECT),
+> > +SK_WRITABLE_FIELD("sock", "sk_priority", BPF_W, ACCEPT),
+> > +SK_WRITABLE_FIELD("sock", "sk_mark", BPF_W, ACCEPT),
+> > +SK_WRITABLE_FIELD("sock", "sk_pacing_rate", BPF_DW, REJECT),
 > > +
 >
-> [...]
->
-> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > index b5bc84039407..5e5bb3e437cc 100644
-> > --- a/tools/lib/bpf/libbpf.map
-> > +++ b/tools/lib/bpf/libbpf.map
-> > @@ -450,4 +450,5 @@ LIBBPF_0.8.0 {
-> >                 bpf_program__attach_usdt;
-> >                 libbpf_register_prog_handler;
-> >                 libbpf_unregister_prog_handler;
-> > +               bpf_prog_query2;
->
-> this list is alphabetically ordered
->
-> >  } LIBBPF_0.7.0;
-> > --
-> > 2.36.0.464.gb9c8b46e94-goog
-> >
+> have you tried writing it as C program and adding the test to
+> test_progs? Does something not work there?
+
+Seems like it should work, I don't see any issues with writing 5
+programs to test each field.
+But test_verified still feels like a better fit? Any reason in
+particular you'd prefer test_progs over test_verifier?
