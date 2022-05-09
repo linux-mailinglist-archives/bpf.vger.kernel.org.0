@@ -2,106 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A882B51F52F
-	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 09:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31E451F6A1
+	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 10:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbiEIHWP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 03:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        id S230057AbiEIIMJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 04:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233462AbiEIHCH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 03:02:07 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63B971A35AA;
-        Sun,  8 May 2022 23:58:13 -0700 (PDT)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axuth4u3hiwqkOAA--.49630S5;
-        Mon, 09 May 2022 14:58:06 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S235581AbiEIHsU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 03:48:20 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC951868F6;
+        Mon,  9 May 2022 00:44:27 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id w24so7473665edx.3;
+        Mon, 09 May 2022 00:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wD4wrpiIMTLE9Vqz+Ed9vgX0VrJbTWHSjZ+io20J3fo=;
+        b=h4gJikTU3Cz8vJBBSlLRki+np3eKR0zza5prIh81iPY82uz9IQ1WwVf4Ttfoj/EfHW
+         /sKUaFlIAXGEY2G4ECavw+dI+egGB/GY1UCy+VzvYxX4Ge+YO4LnRatT0KU57boOWXIF
+         qz8oTLtidikzGNd2A8AIHIe1t3Rw3ywQGP8DkK0Iu4Lye9N80V+o6d0E0TQUSmKuppvq
+         rcDwRa5zNXzMGmCSzVk9wLxRKGJjNZ1fQDfhgVPB6D6hGfIIIAAbLK7n5Zwq2qmldcaK
+         WB2w+44qxh9ZHqA+tBhKcErgy+wQFa+CddKHfjqEfB3NpOQJkECSnrHWITLr4yDk9vho
+         Rx+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wD4wrpiIMTLE9Vqz+Ed9vgX0VrJbTWHSjZ+io20J3fo=;
+        b=H/ZY4Mrz1TgOJE1fi23EcNPxDXs46LEi+xWvmmCfuXIwW6exR0d8Y61NRoGSRS3k90
+         JHK3A6NAVSk6XvKEFh4wKog/Hble+S4AdnBp3W7UJ56g4jQsZcRe+hdNzRweyQvqfyfJ
+         o+NwcgosH2EJPpXWZ0/DDMXRq34gOGHuoclBv+cwJ35IQKXT973YErqVRqp5tXAsQa5H
+         STuRva/wH8MwDaJPuQjVKuCg3PKF/mZFxlt7EDpBUd5EHuqGqIGKo58NTp4FTU2D+rYV
+         SO9TEzQEyikQTXsMAs+qiJI5im8oIOYtHTvcDDIOvB4e9BXyHhVDrLxSKInroAtpYVNs
+         XD7Q==
+X-Gm-Message-State: AOAM530Nij55NryIHIrFpUzzvhAdbzYIxjzJH+PlgYyh/eIeoveZnTnn
+        7dRxYEFc5AsVYWj69GGgHZg=
+X-Google-Smtp-Source: ABdhPJyV1V8PsnexpLQx6EIdUakk5hqvyL5bQJKgX/ebMB+dvxkgLCe5ZbC6JAhoIEWjVE6VAsC5Sg==
+X-Received: by 2002:a05:6402:1297:b0:428:3848:a89d with SMTP id w23-20020a056402129700b004283848a89dmr16198006edv.94.1652082227109;
+        Mon, 09 May 2022 00:43:47 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id dk20-20020a0564021d9400b0042617ba63c0sm5906742edb.74.2022.05.09.00.43.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 May 2022 00:43:46 -0700 (PDT)
+Date:   Mon, 9 May 2022 09:43:44 +0200
+From:   Jiri Olsa <olsajiri@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] bpf: Print some info if disable bpf_jit_enable failed
-Date:   Mon,  9 May 2022 14:57:55 +0800
-Message-Id: <1652079475-16684-4-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1652079475-16684-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1652079475-16684-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Axuth4u3hiwqkOAA--.49630S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxJrW7KF43Cw4UAF45CryrCrg_yoW8XryUpr
-        48Gr92krZ8X34xG39rAFnaqr13trWUXF1UCrnrCa15X3WDXr9rJrsYgryUKFZFvrWqga43
-        Ar4Iyr9ruaykKa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUWwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280
-        aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
-        Aqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S
-        6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8AwCF04k20xvY0x
-        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07bz2NNUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCHv5 bpf-next 1/5] kallsyms: Fully export
+ kallsyms_on_each_symbol function
+Message-ID: <YnjGMAPFg+sIjrjk@krava>
+References: <20220507125711.2022238-1-jolsa@kernel.org>
+ <20220507125711.2022238-2-jolsa@kernel.org>
+ <20220509060104.GB16939@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220509060104.GB16939@lst.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A user told me that bpf_jit_enable can be disabled on one system, but he
-failed to disable bpf_jit_enable on the other system:
+On Mon, May 09, 2022 at 08:01:04AM +0200, Christoph Hellwig wrote:
+> I'm not sure how I'm supposed to review just a patch 1 out of 5
+> without the rest.
 
-  # echo 0 > /proc/sys/net/core/bpf_jit_enable
-  bash: echo: write error: Invalid argument
+sorry, I did not think the rest was needed, full patchset is in here:
+  https://lore.kernel.org/bpf/20220507125711.2022238-1-jolsa@kernel.org/
 
-No useful info is available through the dmesg log, a quick analysis shows
-that the issue is related with CONFIG_BPF_JIT_ALWAYS_ON.
+I'll cc you on full patchset in next version
 
-When CONFIG_BPF_JIT_ALWAYS_ON is enabled, bpf_jit_enable is permanently set
-to 1 and setting any other value than that will return failure.
+> 
+> What I can ѕay without the rest is that the subject line is wrong
+> as nothing is exported, and that you are adding an overly long line.
 
-It is better to print some info to tell the user if disable bpf_jit_enable
-failed.
+right, how about the change below?
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+thanks,
+jirka
+
+
 ---
- net/core/sysctl_net_core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Subject: [PATCH] kallsyms: Make kallsyms_on_each_symbol generally available
 
-diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-index 059352b..f8a1d450 100644
---- a/net/core/sysctl_net_core.c
-+++ b/net/core/sysctl_net_core.c
-@@ -266,6 +266,8 @@ static int proc_dointvec_minmax_bpf_enable(struct ctl_table *table, int write,
- 					   loff_t *ppos)
- {
- 	int ret, jit_enable = *(int *)table->data;
-+	int min = *(int *)table->extra1;
-+	int max = *(int *)table->extra2;
- 	struct ctl_table tmp = *table;
- 
- 	tmp.data = &jit_enable;
-@@ -280,6 +282,10 @@ static int proc_dointvec_minmax_bpf_enable(struct ctl_table *table, int write,
- 			ret = -EPERM;
- 		}
- 	}
-+
-+	if (write && ret && min == max)
-+		pr_info("CONFIG_BPF_JIT_ALWAYS_ON is enabled, bpf_jit_enable is permanently set to 1.\n");
-+
- 	return ret;
+Making kallsyms_on_each_symbol generally available, so it can be
+used outside CONFIG_LIVEPATCH option in following changes.
+
+Rather than adding another ifdef option let's make the function
+generally available (when CONFIG_KALLSYMS option is defined).
+
+Cc: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ include/linux/kallsyms.h | 7 ++++++-
+ kernel/kallsyms.c        | 2 --
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/kallsyms.h b/include/linux/kallsyms.h
+index ce1bd2fbf23e..ad39636e0c3f 100644
+--- a/include/linux/kallsyms.h
++++ b/include/linux/kallsyms.h
+@@ -65,11 +65,11 @@ static inline void *dereference_symbol_descriptor(void *ptr)
+ 	return ptr;
  }
  
++#ifdef CONFIG_KALLSYMS
+ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
+ 				      unsigned long),
+ 			    void *data);
+ 
+-#ifdef CONFIG_KALLSYMS
+ /* Lookup the address for a symbol. Returns 0 if not found. */
+ unsigned long kallsyms_lookup_name(const char *name);
+ 
+@@ -163,6 +163,11 @@ static inline bool kallsyms_show_value(const struct cred *cred)
+ 	return false;
+ }
+ 
++static inline int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
++					  unsigned long), void *data)
++{
++	return -EOPNOTSUPP;
++}
+ #endif /*CONFIG_KALLSYMS*/
+ 
+ static inline void print_ip_sym(const char *loglvl, unsigned long ip)
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 79f2eb617a62..fdfd308bebc4 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -228,7 +228,6 @@ unsigned long kallsyms_lookup_name(const char *name)
+ 	return module_kallsyms_lookup_name(name);
+ }
+ 
+-#ifdef CONFIG_LIVEPATCH
+ /*
+  * Iterate over all symbols in vmlinux.  For symbols from modules use
+  * module_kallsyms_on_each_symbol instead.
+@@ -251,7 +250,6 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
+ 	}
+ 	return 0;
+ }
+-#endif /* CONFIG_LIVEPATCH */
+ 
+ static unsigned long get_symbol_pos(unsigned long addr,
+ 				    unsigned long *symbolsize,
 -- 
-2.1.0
+2.35.3
 
