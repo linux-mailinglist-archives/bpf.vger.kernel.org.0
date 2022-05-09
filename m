@@ -2,65 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F55452065A
-	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 23:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F908520720
+	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 23:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbiEIVIZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 17:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S231144AbiEIV6B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 17:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbiEIVIY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 17:08:24 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311D2266F27
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 14:04:29 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id l20-20020a17090a409400b001dd2a9d555bso459719pjg.0
-        for <bpf@vger.kernel.org>; Mon, 09 May 2022 14:04:29 -0700 (PDT)
+        with ESMTP id S231246AbiEIVzp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 17:55:45 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B462CAA98;
+        Mon,  9 May 2022 14:49:15 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id r27so16783500iot.1;
+        Mon, 09 May 2022 14:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tkRR9zwU/rZNLr39saNXLKyItk/mmddUXgJskmDljrk=;
-        b=EGH7++qZLRx3XdmCrdXBoyhbomJm6F1/y6qodlIYRJtWO2EwNqEl74NkJc8CTJLFaB
-         E/fnn2XwJ0leOA0SgkF6Wymoh8H9/EK5lecmN/onauNh05xCKFV0WYjEPhQx9NVg0kKR
-         jqRncy2uETKMQA4VWY+HolEg8fR9D1ggVWyS7a11K2ssRonJ9Ub85reK6/MgcudmZ/+p
-         kLVZhejB0A2Ho8K0Z12FA2qeDj4WgNknTRLho17HC8yDhOjqS64k/rl/5VxHPj9a4wjV
-         weOOW4tJovaf5+f1DXL6cPhSjkFH2JqAXGEDojZJ7tEYjGVIMCb23O33ycXvLEBc/Awf
-         twEw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fhp+F4xfYnb8fD7mYS48fVBfznRXTRAmEck5eOq6Vj4=;
+        b=kwF3uZPpQP6cE69Wg+Cuk6xAb7uMcNTjugnQuuLlJP7H76lHYLKhAQcFW/CbIdWb/Q
+         MAMgU2k2X+1l766zZLs0L990062Bzz5woKw+zrSe0kmUKLbH4Iu8nK+2dgS2eExWiU3m
+         +LftxAVsPUPF98JYHsyM3od4E5YU0EzpBYZ0zJ999EzRl8bJsvgfK5FFDKBvV6NeNTKy
+         KdiPbfr9lRftIqEzm4rkv8x79Wr9t/1owUEumszq7RvPBef1x62GzVwyztbfdQhGBvSh
+         aAWJkr2kbUq9ElYb5/FHFl7wBNoEie1rhZ3W42ngPsNlGIYkEyJ9AkUVMTrBIjaqZ7I6
+         skbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tkRR9zwU/rZNLr39saNXLKyItk/mmddUXgJskmDljrk=;
-        b=3P7bE7BeQa/cQhfd5rju97Tpy630cQJ+szyazN2ZgnmhlbAm2tIEqv9RUhRORhg7Ye
-         lbC07qTj9ljP4ZwndTRYWoBDAkEXfoDKLgGPLTAzDQ63ZyEVQ7212YTzMkwMJItd2BV/
-         Ee4oB1yD7fD/Ww+rfDRgGnuNJrkZP+VjACz0JiMhs5Q4rgaVv47ij3avjHE+TjHrwGXz
-         xjIeIxKrlcS5qcwzWSl8BPPcM1uViQZqLrvurZpPx4cfB7TG31VD6Tb7pwT48KZ9RDFy
-         3prNwWZoQyIRNIGajQKi/1JQ+2/vBkciaQedHz2xBUcMedhX7pgpbYECFmlyv543p13j
-         mG8Q==
-X-Gm-Message-State: AOAM531iDTyfFLhvK6QNvPDZKDf2yMY555UPu9piuckzDszBBJgxTibR
-        pwV0gAjIcV5yYLCtlr5YMNc=
-X-Google-Smtp-Source: ABdhPJwPS/a63ksfgwYi7jMjNfWTMYQC/oR4R/iDt7Z1Djv2iqOfiI+TKjJOdbh3rMy7JpagGY5Caw==
-X-Received: by 2002:a17:90a:fd10:b0:1d9:2a41:6fe6 with SMTP id cv16-20020a17090afd1000b001d92a416fe6mr28070594pjb.196.1652130268668;
-        Mon, 09 May 2022 14:04:28 -0700 (PDT)
-Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::4:e8e5])
-        by smtp.gmail.com with ESMTPSA id i21-20020aa79095000000b0050dc76281ddsm9037256pfa.183.2022.05.09.14.04.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 May 2022 14:04:27 -0700 (PDT)
-Date:   Mon, 9 May 2022 14:04:25 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v7 2/5] bpf, x86: Create bpf_tramp_run_ctx on
- the caller thread's stack
-Message-ID: <20220509210425.igjjopd4virbtn3u@MBP-98dd607d3435.dhcp.thefacebook.com>
-References: <20220508032117.2783209-1-kuifeng@fb.com>
- <20220508032117.2783209-3-kuifeng@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fhp+F4xfYnb8fD7mYS48fVBfznRXTRAmEck5eOq6Vj4=;
+        b=zQs31oHoJkBY0wc4uL7GrXfJv5Mcn4R/bh7Ouh/e3SsCgKH93JaiwgIiadGMJl2pfa
+         4Flgfo2eGi/tOKDJblkL3wq9LUPCOASww1AoVhEKkZBCfdeZpqOEh9W7gyIfU9LS96pC
+         kKimdTnozywSt7+mdIl7v6l2JCUtTge5xz898efnUXCY3lX9T3QOh+A9Bk9S11eU3mfw
+         pFh7L5ZVI/AzWMG6tsAAEF85quEjgzupKNbOFwYIp8WCrJ8uxfwNJHn/Sg+OYqX5DAf2
+         Sl5K/0xMLgJ/cJ72KmeBJUP0FBrKTT4IFky5L64qwHsgL5ZpU5EUfCRzSs/jFizMhZ6H
+         YVxw==
+X-Gm-Message-State: AOAM531oDFeC5Uh4Udm6yx1idg4eTyQnE+nVYUEMtsSlWR5T2Zvy2DEA
+        DlH/PD/QhSlImATjFJ16WmUhVeeTmyuE8Gn7M5A=
+X-Google-Smtp-Source: ABdhPJyq5xGZnYmxwjyT3pi4tT+/AfimlEdcEmrm6paH0Q1FRW5zzXgWiI5LKWLRdy+NRG6ogZCYad8xIc06FBMsiWU=
+X-Received: by 2002:a02:5d47:0:b0:32b:4387:51c8 with SMTP id
+ w68-20020a025d47000000b0032b438751c8mr8369977jaa.103.1652132955122; Mon, 09
+ May 2022 14:49:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220508032117.2783209-3-kuifeng@fb.com>
+References: <20220429211540.715151-1-sdf@google.com> <20220429211540.715151-6-sdf@google.com>
+In-Reply-To: <20220429211540.715151-6-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 9 May 2022 14:49:04 -0700
+Message-ID: <CAEf4BzbSW3Wgpt_RYaFSHiPEmiGVkqa0ZsA45hD6pOnBqCFfuQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 05/10] bpf: implement BPF_PROG_QUERY for BPF_LSM_CGROUP
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -71,50 +67,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 07, 2022 at 08:21:14PM -0700, Kui-Feng Lee wrote:
->  
-> +	/* Prepare struct bpf_tramp_run_ctx.
-> +	 * sub rsp, sizeof(struct bpf_tramp_run_ctx)
-> +	 */
-> +	EMIT4(0x48, 0x83, 0xEC, sizeof(struct bpf_tramp_run_ctx));
-> +
->  	if (fentry->nr_links)
->  		if (invoke_bpf(m, &prog, fentry, regs_off,
->  			       flags & BPF_TRAMP_F_RET_FENTRY_RET))
-> @@ -2098,6 +2121,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	}
->  
->  	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-> +		/* pop struct bpf_tramp_run_ctx
-> +		 * add rsp, sizeof(struct bpf_tramp_run_ctx)
-> +		 */
-> +		EMIT4(0x48, 0x83, 0xC4, sizeof(struct bpf_tramp_run_ctx));
-> +
->  		restore_regs(m, &prog, nr_args, regs_off);
->  
->  		/* call original function */
-> @@ -2110,6 +2138,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  		im->ip_after_call = prog;
->  		memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
->  		prog += X86_PATCH_SIZE;
-> +
-> +		/* Prepare struct bpf_tramp_run_ctx.
-> +		 * sub rsp, sizeof(struct bpf_tramp_run_ctx)
-> +		 */
-> +		EMIT4(0x48, 0x83, 0xEC, sizeof(struct bpf_tramp_run_ctx));
->  	}
->  
->  	if (fmod_ret->nr_links) {
-> @@ -2133,6 +2166,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  			goto cleanup;
->  		}
->  
-> +	/* pop struct bpf_tramp_run_ctx
-> +	 * add rsp, sizeof(struct bpf_tramp_run_ctx)
-> +	 */
-> +	EMIT4(0x48, 0x83, 0xC4, sizeof(struct bpf_tramp_run_ctx));
+On Fri, Apr 29, 2022 at 2:15 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> We have two options:
+> 1. Treat all BPF_LSM_CGROUP as the same, regardless of attach_btf_id
+> 2. Treat BPF_LSM_CGROUP+attach_btf_id as a separate hook point
+>
+> I'm doing (2) here and adding attach_btf_id as a new BPF_PROG_QUERY
+> argument. The downside is that it requires iterating over all possible
+> bpf_lsm_ hook points in the userspace which might take some time.
+>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/bpf/cgroup.c            | 43 ++++++++++++++++++++++++----------
+>  kernel/bpf/syscall.c           |  3 ++-
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  tools/lib/bpf/bpf.c            | 42 ++++++++++++++++++++++++++-------
+>  tools/lib/bpf/bpf.h            | 15 ++++++++++++
+>  tools/lib/bpf/libbpf.map       |  1 +
+
+please split kernel and libbpf changes into separate patches and mark
+libbpf's with "libbpf: " prefix
+
+>  7 files changed, 85 insertions(+), 21 deletions(-)
+>
+
+[...]
+
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index a9d292c106c2..f62823451b99 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -946,28 +946,54 @@ int bpf_iter_create(int link_fd)
+>         return libbpf_err_errno(fd);
+>  }
+>
+> -int bpf_prog_query(int target_fd, enum bpf_attach_type type, __u32 query_flags,
+> -                  __u32 *attach_flags, __u32 *prog_ids, __u32 *prog_cnt)
+> +int bpf_prog_query2(int target_fd,
+
+this would have to be named bpf_prog_query_opts()
+
+> +                   enum bpf_attach_type type,
+> +                   struct bpf_prog_query_opts *opts)
+>  {
+>         union bpf_attr attr;
+>         int ret;
+>
+>         memset(&attr, 0, sizeof(attr));
 > +
 
-What is the point of all of these additional sub/add rsp ?
-It seems unconditionally increasing stack_size by sizeof(struct bpf_tramp_run_ctx)
-will achieve the same and above 4 extra insns won't be needed.
+[...]
+
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index b5bc84039407..5e5bb3e437cc 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -450,4 +450,5 @@ LIBBPF_0.8.0 {
+>                 bpf_program__attach_usdt;
+>                 libbpf_register_prog_handler;
+>                 libbpf_unregister_prog_handler;
+> +               bpf_prog_query2;
+
+this list is alphabetically ordered
+
+>  } LIBBPF_0.7.0;
+> --
+> 2.36.0.464.gb9c8b46e94-goog
+>
