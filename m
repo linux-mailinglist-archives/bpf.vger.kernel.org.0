@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2D15209B4
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 01:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D295209BA
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 01:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbiEIX5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 19:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        id S233068AbiEJABl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 20:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbiEIX5J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 19:57:09 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F04229B819
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:53:14 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id i20so17027412ion.0
-        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:53:14 -0700 (PDT)
+        with ESMTP id S232632AbiEJABf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 20:01:35 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116B12BD0EE
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:57:38 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id s23so5438226iog.13
+        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=B/Azu1SP8rTjquO3N9ZuOJnO0ZA53pk9Jbi+CkdSlWA=;
-        b=MLU2VWQB2LDGj7QsNItNdGQ8+CJmymtXw/+l9BUE4Ok+TFEWZg3zJPJ3IN5OnW3L5e
-         BcssQarX8QXccsVdHAQ7mLmXARvfzdk5tMV8fLLK2Gyi42Jbq9iOm/aouo5QPsqelHJi
-         rIB8X8Dr88s1Hk4Ejm3eiY2YdaCOVITP1zfTxcGIlaMACjS3flK5D6GUVWPHM8U9p5Zv
-         hp5iGz642fxsXy+L7aB8qnlTsAxEH9LyngyuW14WCj4XZaEV+tyXjwetnH5AdT1Qa3Rw
-         r37b/E8HZngkFXoa5bWgg9eRvZNmvp6P1dvAk3WyALckJgzQzeNq66tUtaG1iC47ti6E
-         Eu0g==
+        bh=TTEBUUSsJliv3Aa9AZPPsVnef5IJaRTdXm4qQO5UOhQ=;
+        b=br3q9Q11ykYcll9pIavl/nT9nt+shEEnU5jhZHNWdzUKmiMaH09htolAAg2IbReRQe
+         ESEUh4lDS+3sEq84eJZEn/j4wwEVTYSCLT4mxuArH76sM44beSsXTcZBOCFsg7yy1KfV
+         TkGFHjarTxgfvFfx+/pYAxtf1XIK69HRTnU3vRbThRvMn23ziPDIoVZx7PDdLgfGfPRK
+         1cpKXJ23dJnz/zhbQpUxWRpekyNLwesEP1p5lAQX47HCQAjtyjQj0irJEYdR0rqSlJOc
+         GY4XWlIHi2TvGXJgUfIkhJAaWHyL3gOZvAwaqUalYFtx4bIbkcq6ALBanLSJhb3UfSvX
+         AhBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B/Azu1SP8rTjquO3N9ZuOJnO0ZA53pk9Jbi+CkdSlWA=;
-        b=SMrs7KUsPAXQUjHYO+LGaGyc/ezjevm0Mm4nB/kkaMLz6PcnzLJYFS8sK+3due51iQ
-         WbIVE0PE+wXTLFjcIhsa3HzYwEMAX1nJt5autyreY/AJ0Tn48H0xetdEm7bacNrwntkk
-         CvL/q2G+btDAXukpvSrEDe+4ETqpI0Pgxt6PXv2/q3kY8VJFam7BI6y2l3lmB21bJSDl
-         0rgzydS/fmabLfRu64o24T/vehfgXftdMQcUMsGpPG8N8nz14/aqSt3bTfXiTY6Hoz+T
-         SXZakYnOYqtn1vPo3aL8FNL1iCafOOXUbpf3FFKhuvYeufLq99faJsqi0Qq3ahSmnjqj
-         FA2g==
-X-Gm-Message-State: AOAM533VDdiIP5rOMCNhxX8kxlZSSAP85z6sZYdxtQ2/ObHnFDNxB1uk
-        bucU1LngtJ6NfYu9ge1vfZZOZY5y/+0wEEzeb05nX1BEPj4=
-X-Google-Smtp-Source: ABdhPJy0/2RAywOKpWM880jP2Fp1fd9KX3iy8KoTjPDArWdLtfiPi/E1D7nZEAwQqU8JnoL4GEneQPyTaXLL/m4kvGk=
-X-Received: by 2002:a05:6638:533:b0:32a:d418:b77b with SMTP id
- j19-20020a056638053300b0032ad418b77bmr8464954jar.237.1652140393939; Mon, 09
- May 2022 16:53:13 -0700 (PDT)
+        bh=TTEBUUSsJliv3Aa9AZPPsVnef5IJaRTdXm4qQO5UOhQ=;
+        b=6+ClLxv1tubZ6VJ+BJag9prNhNg8tRrm0pwqAoITnhz0MklgOPgujSyUR2KQYvUetW
+         QJn/nGCFJK808XVXIfglu1ssJhcAUgE5e1pW6qy5HffUT2WekxGnyPmvuFZsU31f/K6L
+         edT1Ybxt5cOYrpHlwvQGgUwXxipzUYljBIXEBhI30oRYW4oz5VWYTrgGXRQfKsnCgCyE
+         ySOYclR7bprazuoC25uKfY8P92zjwf5PbbKDuizvGzLvorIn6g5f9qmzcDwsNOiMAme9
+         H9ETv3xvqGWILS8LFRXBLZwtKX1aYyQBhr1hmyEwEVFu1stVfmpVEN4YX6YkSCtlZflZ
+         bOXg==
+X-Gm-Message-State: AOAM530ZyNa8zF123p3nzK2g979OcKc8oYvKYBvBoHrZjGrl5PAIjYbC
+        RIgjNCqzFJZh6axWCah2TRC8ZTV0NpbHtDgyW3o=
+X-Google-Smtp-Source: ABdhPJx4IeYgm7sU8c+x1wxCKTG36J9ddvCRmDc3owGoJ3yU4+3WhLvNQuw1Fg2C9pEQo/euglsjRPC2S6/9Rd2nflM=
+X-Received: by 2002:a5d:9316:0:b0:657:a364:ceb with SMTP id
+ l22-20020a5d9316000000b00657a3640cebmr7354608ion.63.1652140657492; Mon, 09
+ May 2022 16:57:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1651532419.git.delyank@fb.com> <e109e32027ffa592f97ffe12854803101c85376d.1651532419.git.delyank@fb.com>
-In-Reply-To: <e109e32027ffa592f97ffe12854803101c85376d.1651532419.git.delyank@fb.com>
+References: <cover.1651532419.git.delyank@fb.com> <50290e7abc06f4aa7ea355a7aeb64f059a998c7f.1651532419.git.delyank@fb.com>
+In-Reply-To: <50290e7abc06f4aa7ea355a7aeb64f059a998c7f.1651532419.git.delyank@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 9 May 2022 16:53:03 -0700
-Message-ID: <CAEf4Bzasc6mJkuimpDUxX5o2TT+05YO8mZDwA0SSHugptPms9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/5] libbpf: add support for sleepable kprobe
- and uprobe programs
+Date:   Mon, 9 May 2022 16:57:26 -0700
+Message-ID: <CAEf4BzZj1wffF0WShEO7f85g1QrT4kjz7R7yfCKATtKMP2ghoQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 5/5] selftests/bpf: add tests for sleepable
+ kprobes and uprobes
 To:     Delyan Kratunov <delyank@fb.com>
 Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
@@ -70,56 +70,78 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, May 2, 2022 at 4:09 PM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> Add section mappings for uprobe.s and kprobe.s programs. The latter
-> cannot currently attach but they're still useful to open and load in
-> order to validate that prohibition.
+> Add tests that ensure sleepable kprobe programs cannot attach.
+>
+> Also attach both sleepable and non-sleepable uprobe programs to the same
+> location (i.e. same bpf_prog_array).
 >
 > Signed-off-by: Delyan Kratunov <delyank@fb.com>
 > ---
->  tools/lib/bpf/libbpf.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>  .../selftests/bpf/prog_tests/attach_probe.c   | 51 +++++++++++++++-
+>  .../selftests/bpf/progs/test_attach_probe.c   | 58 +++++++++++++++++++
+>  2 files changed, 108 insertions(+), 1 deletion(-)
 >
 
-One nit below, otherwise LGTM
+LGTM, suggestion below is just about making flag setting less verbose,
+but it's minor.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 63c0f412266c..d89529c9b52d 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -8945,8 +8945,10 @@ static const struct bpf_sec_def section_defs[] = {
->         SEC_DEF("sk_reuseport",         SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
->         SEC_DEF("kprobe+",              KPROBE, 0, SEC_NONE, attach_kprobe),
->         SEC_DEF("uprobe+",              KPROBE, 0, SEC_NONE, attach_uprobe),
-> +       SEC_DEF("uprobe.s+",            KPROBE, 0, SEC_SLEEPABLE, attach_uprobe),
->         SEC_DEF("kretprobe+",           KPROBE, 0, SEC_NONE, attach_kprobe),
->         SEC_DEF("uretprobe+",           KPROBE, 0, SEC_NONE, attach_uprobe),
-> +       SEC_DEF("uretprobe.s+",         KPROBE, 0, SEC_SLEEPABLE, attach_uprobe),
->         SEC_DEF("kprobe.multi+",        KPROBE, BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
->         SEC_DEF("kretprobe.multi+",     KPROBE, BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach_kprobe_multi),
->         SEC_DEF("usdt+",                KPROBE, 0, SEC_NONE, attach_usdt),
-> @@ -10697,6 +10699,7 @@ static int attach_kprobe(const struct bpf_program *prog, long cookie, struct bpf
->         else
->                 func_name = prog->sec_name + sizeof("kprobe/") - 1;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> index 08c0601b3e84..cddb17ab0588 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> @@ -17,6 +17,14 @@ static void trigger_func2(void)
+>         asm volatile ("");
+>  }
 >
+> +/* attach point for byname sleepable uprobe */
+> +static void trigger_func3(void)
+> +{
+> +       asm volatile ("");
+> +}
 > +
+> +static char test_data[] = "test_data";
+> +
+>  void test_attach_probe(void)
+>  {
+>         DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
+> @@ -27,6 +35,7 @@ void test_attach_probe(void)
+>         struct bpf_link *uprobe_err_link;
+>         bool legacy;
+>         char *mem;
+> +       int kprobe_s_flags;
+>
+>         /* Check if new-style kprobe/uprobe API is supported.
+>          * Kernels that support new FD-based kprobe and uprobe BPF attachment
+> @@ -49,9 +58,18 @@ void test_attach_probe(void)
+>         if (!ASSERT_GE(ref_ctr_offset, 0, "ref_ctr_offset"))
+>                 return;
+>
+> -       skel = test_attach_probe__open_and_load();
+> +       skel = test_attach_probe__open();
+>         if (!ASSERT_OK_PTR(skel, "skel_open"))
+>                 return;
+> +
+> +       /* sleepable kprobe test case needs flags set before loading */
+> +       kprobe_s_flags = bpf_program__flags(skel->progs.handle_kprobe_sleepable);
+> +       if (!ASSERT_OK(bpf_program__set_flags(skel->progs.handle_kprobe_sleepable,
+> +               kprobe_s_flags | BPF_F_SLEEPABLE), "kprobe_sleepable_flags"))
+> +               goto cleanup;
 
-unnecessary empty line?
+This feels like unnecessary checks and fetching of the flag. We
+control all this, so just doing
 
->         n = sscanf(func_name, "%m[a-zA-Z0-9_.]+%li", &func, &offset);
->         if (n < 1) {
->                 pr_warn("kprobe name is invalid: %s\n", func_name);
-> @@ -11222,7 +11225,8 @@ static int attach_uprobe(const struct bpf_program *prog, long cookie, struct bpf
->                 break;
->         case 3:
->         case 4:
-> -               opts.retprobe = strcmp(probe_type, "uretprobe") == 0;
-> +               opts.retprobe = strcmp(probe_type, "uretprobe") == 0 ||
-> +                               strcmp(probe_type, "uretprobe.s") == 0;
->                 if (opts.retprobe && offset != 0) {
->                         pr_warn("prog '%s': uretprobes do not support offset specification\n",
->                                 prog->name);
-> --
-> 2.35.1
+bpf_program__set_flag(skel->progs.handle_kprobe_sleepable, BPF_F_SLEEPABLE);
+
+seems totally justified and reliable
+
+> +
+> +       if (!ASSERT_OK(test_attach_probe__load(skel), "skel_load"))
+> +               goto cleanup;
+>         if (!ASSERT_OK_PTR(skel->bss, "check_bss"))
+>                 goto cleanup;
+>
+
+[...]
