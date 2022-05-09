@@ -2,30 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F270851F9DE
-	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 12:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6971551FA9E
+	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 12:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbiEIKc4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 06:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        id S229993AbiEIK7k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 06:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbiEIKcY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 06:32:24 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A91724EA2B;
-        Mon,  9 May 2022 03:27:53 -0700 (PDT)
-Received: from canpemm100008.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KxclT20G8zfbQ1;
-        Mon,  9 May 2022 18:26:13 +0800 (CST)
-Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
- canpemm100008.china.huawei.com (7.192.104.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 9 May 2022 18:27:23 +0800
-Received: from dggpeml500026.china.huawei.com ([7.185.36.106]) by
- dggpeml500026.china.huawei.com ([7.185.36.106]) with mapi id 15.01.2375.024;
- Mon, 9 May 2022 18:27:22 +0800
-From:   shaozhengchao <shaozhengchao@huawei.com>
-To:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
+        with ESMTP id S230140AbiEIK7i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 06:59:38 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7231FC2C7;
+        Mon,  9 May 2022 03:55:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 162F8B81145;
+        Mon,  9 May 2022 10:55:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1AB9C385AF;
+        Mon,  9 May 2022 10:55:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652093732;
+        bh=Snp0YM5oY+98yO5f1lRrD5u5TGRXMawbpEE91gZIEBQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=hhc0x8srpP5R7CMbkRuvVnQimzoWoUVt94wgD6dfEgEbs/DvIGFJRgdhImGQIRNJ8
+         etnjv14VTj8EbNy+vAoOx4lPeKAhoACCYSlbayzgsIy/UvqHafuZ9jnlMb+V+P0jVN
+         zCXVnQSsLH7QW+/PXbgf4HJ0R7tfRRqrMaQDqVmcrJa0ukG3ait5xOuRBTy64Li9iG
+         dZoJme+mqrS0V66HKBckNmcwmiDJNPe2j8+33jUR+1wx4WVkJh1Jx27FM3IFEYPhCh
+         J8SAnKvy9dHL+ccXsoYUF0SUmGFpBZVu+l8ChYS/OWW3JJaSOn4Fle3LzWLS2d1KDu
+         urqM5Y0P/EcWQ==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 8DD5C34DD39; Mon,  9 May 2022 12:55:29 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     shaozhengchao <shaozhengchao@huawei.com>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -40,28 +49,22 @@ To:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
         "songliubraving@fb.com" <songliubraving@fb.com>,
         "yhs@fb.com" <yhs@fb.com>,
         "kpsingh@kernel.org" <kpsingh@kernel.org>
-CC:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
+Cc:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
         yuehaibing <yuehaibing@huawei.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggYnBmLW5leHRdIHNhbXBsZXMvYnBmOiBjaGVjayBk?=
- =?utf-8?Q?etach_prog_exist_or_not_in_xdp=5Ffwd?=
-Thread-Topic: [PATCH bpf-next] samples/bpf: check detach prog exist or not in
- xdp_fwd
-Thread-Index: AQHYYz67ysyf9xnyEEa5gXY59XVHBq0VxqsAgACPrJA=
-Date:   Mon, 9 May 2022 10:27:22 +0000
-Message-ID: <f9c85578b94a4a38b3f7b9c796810a30@huawei.com>
+Subject: Re: =?utf-8?B?562U5aSNOg==?= [PATCH bpf-next] samples/bpf: check
+ detach prog exist or
+ not in xdp_fwd
+In-Reply-To: <f9c85578b94a4a38b3f7b9c796810a30@huawei.com>
 References: <20220509005105.271089-1-shaozhengchao@huawei.com>
- <87pmknyr6b.fsf@toke.dk>
-In-Reply-To: <87pmknyr6b.fsf@toke.dk>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.66]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <87pmknyr6b.fsf@toke.dk> <f9c85578b94a4a38b3f7b9c796810a30@huawei.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 09 May 2022 12:55:29 +0200
+Message-ID: <87h75zynz2.fsf@toke.dk>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,27 +73,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hku7bkuro6IFRva2UgSMO4aWxhbmQtSsO4cmdl
-bnNlbiBbbWFpbHRvOnRva2VAa2VybmVsLm9yZ10gDQrlj5HpgIHml7bpl7Q6IDIwMjLlubQ15pyI
-OeaXpSAxNzo0Ng0K5pS25Lu25Lq6OiBzaGFvemhlbmdjaGFvIDxzaGFvemhlbmdjaGFvQGh1YXdl
-aS5jb20+OyBicGZAdmdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51
-eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBhc3RAa2VybmVsLm9yZzsgZGFuaWVsQGlvZ2VhcmJv
-eC5uZXQ7IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGt1YmFAa2VybmVsLm9yZzsgaGF3a0BrZXJuZWwu
-b3JnOyBqb2huLmZhc3RhYmVuZEBnbWFpbC5jb207IGFuZHJpaUBrZXJuZWwub3JnOyBrYWZhaUBm
-Yi5jb207IHNvbmdsaXVicmF2aW5nQGZiLmNvbTsgeWhzQGZiLmNvbTsga3BzaW5naEBrZXJuZWwu
-b3JnDQrmioTpgIE6IHdlaXlvbmdqdW4gKEEpIDx3ZWl5b25nanVuMUBodWF3ZWkuY29tPjsgc2hh
-b3poZW5nY2hhbyA8c2hhb3poZW5nY2hhb0BodWF3ZWkuY29tPjsgeXVlaGFpYmluZyA8eXVlaGFp
-YmluZ0BodWF3ZWkuY29tPg0K5Li76aKYOiBSZTogW1BBVENIIGJwZi1uZXh0XSBzYW1wbGVzL2Jw
-ZjogY2hlY2sgZGV0YWNoIHByb2cgZXhpc3Qgb3Igbm90IGluIHhkcF9md2QNCg0KWmhlbmdjaGFv
-IFNoYW8gPHNoYW96aGVuZ2NoYW9AaHVhd2VpLmNvbT4gd3JpdGVzOg0KDQo+IEJlZm9yZSBkZXRh
-Y2ggdGhlIHByb2csIHdlIHNob3VsZCBjaGVjayBkZXRhY2ggcHJvZyBleGlzdCBvciBub3QuDQoN
-CklmIHdlJ3JlIGFkZGluZyBzdWNoIGEgY2hlY2sgd2Ugc2hvdWxkIGFsc28gY2hlY2sgdGhhdCBp
-dCdzIHRoZSAqcmlnaHQqIHByb2dyYW0uIEkuZS4sIHF1ZXJ5IHRoZSBJRCBmb3IgdGhlIHByb2dy
-YW0gbmFtZSBhbmQgY2hlY2sgdGhhdCBpdCBtYXRjaGVzIHdoYXQgdGhlIHByb2dyYW0gYXR0YWNo
-ZWQsIHRoZW4gb2J0YWluIGFuIGZkIGFuZCBwYXNzIHRoYXQgYXMgWERQX0VYUEVDVEVEX0ZEIG9u
-IGRldGFjaCB0byBtYWtlIHN1cmUgaXQgd2Fzbid0IHN3YXBwZWQgb3V0IGluIHRoZSBtZWFudGlt
-ZS4uLg0KDQotVG9rZQ0KDQpUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuIFdoZW4gZmluaXNoIHJ1
-bm5pbmcgeGRwX2Z3ZCB0byBhdHRhdGNoIHByb2csIHRoZSBwcm9ncmFtIHdpbGwgZXhpdCBhbmQg
-Y2FuJ3Qgc3RvcmUgZmQgYXMgWERQX0VYUEVDVEVEX0ZELiANCg0KSSB0aGluayB0aGUgc2FtcGxl
-IHhkcF9md2QgLWQgaXMganVzdCBkZXRhY2ggcHJvZyBhbmQgZG9uJ3QgY2FyZSBpZiB0aGUgZmQg
-aXMgZXhwZWN0ZWQuDQoNCi16aGVuZ2NoYW8gc2hhbyANCg==
+shaozhengchao <shaozhengchao@huawei.com> writes:
+
+> -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+> =E5=8F=91=E4=BB=B6=E4=BA=BA: Toke H=C3=B8iland-J=C3=B8rgensen [mailto:tok=
+e@kernel.org]=20
+> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2022=E5=B9=B45=E6=9C=889=E6=97=A5 1=
+7:46
+> =E6=94=B6=E4=BB=B6=E4=BA=BA: shaozhengchao <shaozhengchao@huawei.com>; bp=
+f@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org; as=
+t@kernel.org; daniel@iogearbox.net; davem@davemloft.net; kuba@kernel.org; h=
+awk@kernel.org; john.fastabend@gmail.com; andrii@kernel.org; kafai@fb.com; =
+songliubraving@fb.com; yhs@fb.com; kpsingh@kernel.org
+> =E6=8A=84=E9=80=81: weiyongjun (A) <weiyongjun1@huawei.com>; shaozhengcha=
+o <shaozhengchao@huawei.com>; yuehaibing <yuehaibing@huawei.com>
+> =E4=B8=BB=E9=A2=98: Re: [PATCH bpf-next] samples/bpf: check detach prog e=
+xist or not in xdp_fwd
+>
+> Zhengchao Shao <shaozhengchao@huawei.com> writes:
+>
+>> Before detach the prog, we should check detach prog exist or not.
+>
+> If we're adding such a check we should also check that it's the *right* p=
+rogram. I.e., query the ID for the program name and check that it matches w=
+hat the program attached, then obtain an fd and pass that as XDP_EXPECTED_F=
+D on detach to make sure it wasn't swapped out in the meantime...
+>
+> -Toke
+>
+> Thank you for your reply. When finish running xdp_fwd to attatch prog,
+> the program will exit and can't store fd as XDP_EXPECTED_FD.
+>
+> I think the sample xdp_fwd -d is just detach prog and don't care if
+> the fd is expected.
+
+So why are you adding the check? Either keep it the way it is, or add a
+proper check that examines the program type; you're right that it
+doesn't store the prog FD, but you can still check the program name and
+see if it matches to get some idea that it's not a totally separate
+program that's loaded. I think doing so would be an improvement to the
+sample, but just adding a check if a program is loaded is not, really...
+
+-Toke
