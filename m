@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF275207F4
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 00:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8E15207F7
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 00:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbiEIWsf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 18:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41058 "EHLO
+        id S231723AbiEIWsl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 18:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231723AbiEIWse (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 18:48:34 -0400
+        with ESMTP id S231918AbiEIWsk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 18:48:40 -0400
 Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94FE2A28C8
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 15:44:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6E92A28CD
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 15:44:43 -0700 (PDT)
 Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
-        id 1A5D3C2576D2; Mon,  9 May 2022 15:44:19 -0700 (PDT)
+        id 30B12C2576D4; Mon,  9 May 2022 15:44:19 -0700 (PDT)
 From:   Joanne Koong <joannelkoong@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
         Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH bpf-next v4 5/6] bpf: Add dynptr data slices
-Date:   Mon,  9 May 2022 15:42:56 -0700
-Message-Id: <20220509224257.3222614-6-joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v4 6/6] bpf: Dynptr tests
+Date:   Mon,  9 May 2022 15:42:57 -0700
+Message-Id: <20220509224257.3222614-7-joannelkoong@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220509224257.3222614-1-joannelkoong@gmail.com>
 References: <20220509224257.3222614-1-joannelkoong@gmail.com>
@@ -39,316 +39,982 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds a new helper function
-
-void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len);
-
-which returns a pointer to the underlying data of a dynptr. *len*
-must be a statically known value. The bpf program may access the returned
-data slice as a normal buffer (eg can do direct reads and writes), since
-the verifier associates the length with the returned pointer, and
-enforces that no out of bounds accesses occur.
+This patch adds tests for dynptrs, which include cases that the
+verifier needs to reject (for example, invalid bpf_dynptr_put usages
+and  invalid writes/reads), as well as cases that should successfully
+pass.
 
 Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/bpf.h            |  4 ++
- include/uapi/linux/bpf.h       | 12 ++++++
- kernel/bpf/helpers.c           | 28 ++++++++++++++
- kernel/bpf/verifier.c          | 67 +++++++++++++++++++++++++++++++---
- tools/include/uapi/linux/bpf.h | 12 ++++++
- 5 files changed, 117 insertions(+), 6 deletions(-)
+ .../testing/selftests/bpf/prog_tests/dynptr.c | 136 ++++
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 582 ++++++++++++++++++
+ .../selftests/bpf/progs/dynptr_success.c      | 206 +++++++
+ 3 files changed, 924 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dynptr_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/dynptr_success.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 6f4fa0627620..1893c8d41301 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -397,6 +397,9 @@ enum bpf_type_flag {
- 	/* DYNPTR points to a ringbuf record. */
- 	DYNPTR_TYPE_RINGBUF	=3D BIT(9 + BPF_BASE_TYPE_BITS),
-=20
-+	/* MEM is memory owned by a dynptr */
-+	MEM_DYNPTR		=3D BIT(10 + BPF_BASE_TYPE_BITS),
+diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/test=
+ing/selftests/bpf/prog_tests/dynptr.c
+new file mode 100644
+index 000000000000..fa287d498d0b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+@@ -0,0 +1,136 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Facebook */
 +
- 	__BPF_TYPE_FLAG_MAX,
-=20
- 	__BPF_TYPE_LAST_FLAG	=3D __BPF_TYPE_FLAG_MAX - 1,
-@@ -488,6 +491,7 @@ enum bpf_return_type {
- 	RET_PTR_TO_TCP_SOCK_OR_NULL	=3D PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
- 	RET_PTR_TO_SOCK_COMMON_OR_NULL	=3D PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COM=
-MON,
- 	RET_PTR_TO_ALLOC_MEM_OR_NULL	=3D PTR_MAYBE_NULL | MEM_ALLOC | RET_PTR_T=
-O_ALLOC_MEM,
-+	RET_PTR_TO_DYNPTR_MEM_OR_NULL	=3D PTR_MAYBE_NULL | MEM_DYNPTR | RET_PTR=
-_TO_ALLOC_MEM,
- 	RET_PTR_TO_BTF_ID_OR_NULL	=3D PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
-=20
- 	/* This must be the last entry. Its purpose is to ensure the enum is
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index f0c5ca220d8e..edeff26fbccd 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5226,6 +5226,17 @@ union bpf_attr {
-  *		0 on success, -E2BIG if *offset* + *len* exceeds the length
-  *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
-  *		is a read-only dynptr.
-+ *
-+ * void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len)
-+ *	Description
-+ *		Get a pointer to the underlying dynptr data.
-+ *
-+ *		*len* must be a statically known value. The returned data slice
-+ *		is invalidated whenever the dynptr is invalidated.
-+ *	Return
-+ *		Pointer to the underlying dynptr data, NULL if the dynptr is
-+ *		read-only, if the dynptr is invalid, or if the offset and length
-+ *		is out of bounds.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5430,6 +5441,7 @@ union bpf_attr {
- 	FN(ringbuf_discard_dynptr),	\
- 	FN(dynptr_read),		\
- 	FN(dynptr_write),		\
-+	FN(dynptr_data),		\
- 	/* */
-=20
- /* integer value in 'imm' field of BPF_CALL instruction selects which he=
-lper
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 7206b9e5322f..065815b9fb9f 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1519,6 +1519,32 @@ const struct bpf_func_proto bpf_dynptr_write_proto=
- =3D {
- 	.arg4_type	=3D ARG_CONST_SIZE_OR_ZERO,
- };
-=20
-+BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, =
-u32, len)
-+{
-+	int err;
++#include <test_progs.h>
++#include "dynptr_fail.skel.h"
++#include "dynptr_success.skel.h"
 +
-+	if (!ptr->data)
-+		return 0;
++static size_t log_buf_sz =3D 1048576; /* 1 MB */
++static char obj_log_buf[1048576];
 +
-+	err =3D bpf_dynptr_check_off_len(ptr, offset, len);
-+	if (err)
-+		return 0;
-+
-+	if (bpf_dynptr_is_rdonly(ptr))
-+		return 0;
-+
-+	return (unsigned long)(ptr->data + ptr->offset + offset);
-+}
-+
-+const struct bpf_func_proto bpf_dynptr_data_proto =3D {
-+	.func		=3D bpf_dynptr_data,
-+	.gpl_only	=3D false,
-+	.ret_type	=3D RET_PTR_TO_DYNPTR_MEM_OR_NULL,
-+	.arg1_type	=3D ARG_PTR_TO_DYNPTR,
-+	.arg2_type	=3D ARG_ANYTHING,
-+	.arg3_type	=3D ARG_CONST_ALLOC_SIZE_OR_ZERO,
++static struct {
++	const char *prog_name;
++	const char *expected_err_msg;
++} dynptr_tests[] =3D {
++	/* failure cases */
++	{"missing_put", "Unreleased reference id=3D1"},
++	{"missing_put_callback", "Unreleased reference id"},
++	{"put_nonalloc", "Expected an initialized malloc dynptr as arg #1"},
++	{"put_data_slice", "type=3Ddynptr_mem expected=3Dfp"},
++	{"put_uninit_dynptr", "arg 1 is an unacquired reference"},
++	{"use_after_put", "Expected an initialized dynptr as arg #3"},
++	{"alloc_twice", "Arg #3 dynptr has to be an uninitialized dynptr"},
++	{"add_dynptr_to_map1", "invalid indirect read from stack"},
++	{"add_dynptr_to_map2", "invalid indirect read from stack"},
++	{"ringbuf_invalid_access", "invalid mem access 'scalar'"},
++	{"ringbuf_invalid_api", "type=3Ddynptr_mem expected=3Dalloc_mem"},
++	{"ringbuf_out_of_bounds", "value is outside of the allowed memory range=
+"},
++	{"data_slice_out_of_bounds", "value is outside of the allowed memory ra=
+nge"},
++	{"data_slice_use_after_put", "invalid mem access 'scalar'"},
++	{"invalid_helper1", "invalid indirect read from stack"},
++	{"invalid_helper2", "Expected an initialized dynptr as arg #3"},
++	{"invalid_write1", "Expected an initialized malloc dynptr as arg #1"},
++	{"invalid_write2", "Expected an initialized dynptr as arg #3"},
++	{"invalid_write3", "Expected an initialized malloc dynptr as arg #1"},
++	{"invalid_write4", "arg 1 is an unacquired reference"},
++	{"invalid_read1", "invalid read from stack"},
++	{"invalid_read2", "cannot pass in non-zero dynptr offset"},
++	{"invalid_read3", "invalid read from stack"},
++	{"invalid_offset", "invalid write to stack"},
++	{"global", "R3 type=3Dmap_value expected=3Dfp"},
++	{"put_twice", "arg 1 is an unacquired reference"},
++	{"put_twice_callback", "arg 1 is an unacquired reference"},
++	{"zero_slice_access", "invalid access to memory, mem_size=3D0 off=3D0 s=
+ize=3D1"},
++	/* success cases */
++	{"test_basic", NULL},
++	{"test_data_slice", NULL},
++	{"test_ringbuf", NULL},
++	{"test_alloc_zero_bytes", NULL},
 +};
 +
- const struct bpf_func_proto bpf_get_current_task_proto __weak;
- const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
- const struct bpf_func_proto bpf_probe_read_user_proto __weak;
-@@ -1585,6 +1611,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
- 		return &bpf_dynptr_read_proto;
- 	case BPF_FUNC_dynptr_write:
- 		return &bpf_dynptr_write_proto;
-+	case BPF_FUNC_dynptr_data:
-+		return &bpf_dynptr_data_proto;
- 	default:
- 		break;
- 	}
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c17df5f17ba1..4d6e25c1113e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -484,7 +484,8 @@ static bool may_be_acquire_function(enum bpf_func_id =
-func_id)
- 		func_id =3D=3D BPF_FUNC_sk_lookup_udp ||
- 		func_id =3D=3D BPF_FUNC_skc_lookup_tcp ||
- 		func_id =3D=3D BPF_FUNC_map_lookup_elem ||
--	        func_id =3D=3D BPF_FUNC_ringbuf_reserve;
-+		func_id =3D=3D BPF_FUNC_ringbuf_reserve ||
-+		func_id =3D=3D BPF_FUNC_dynptr_data;
- }
-=20
- static bool is_acquire_function(enum bpf_func_id func_id,
-@@ -496,7 +497,8 @@ static bool is_acquire_function(enum bpf_func_id func=
-_id,
- 	    func_id =3D=3D BPF_FUNC_sk_lookup_udp ||
- 	    func_id =3D=3D BPF_FUNC_skc_lookup_tcp ||
- 	    func_id =3D=3D BPF_FUNC_ringbuf_reserve ||
--	    func_id =3D=3D BPF_FUNC_kptr_xchg)
-+	    func_id =3D=3D BPF_FUNC_kptr_xchg ||
-+	    func_id =3D=3D BPF_FUNC_dynptr_data)
- 		return true;
-=20
- 	if (func_id =3D=3D BPF_FUNC_map_lookup_elem &&
-@@ -518,6 +520,11 @@ static bool is_ptr_cast_function(enum bpf_func_id fu=
-nc_id)
- 		func_id =3D=3D BPF_FUNC_skc_to_tcp_request_sock;
- }
-=20
-+static inline bool is_dynptr_ref_function(enum bpf_func_id func_id)
++static void verify_fail(const char *prog_name, const char *expected_err_=
+msg)
 +{
-+	return func_id =3D=3D BPF_FUNC_dynptr_data;
-+}
++	LIBBPF_OPTS(bpf_object_open_opts, opts);
++	struct bpf_program *prog;
++	struct dynptr_fail *skel;
++	int err;
 +
- static bool is_cmpxchg_insn(const struct bpf_insn *insn)
- {
- 	return BPF_CLASS(insn->code) =3D=3D BPF_STX &&
-@@ -568,6 +575,8 @@ static const char *reg_type_str(struct bpf_verifier_e=
-nv *env,
- 		strncpy(prefix, "rdonly_", 32);
- 	if (type & MEM_ALLOC)
- 		strncpy(prefix, "alloc_", 32);
-+	if (type & MEM_DYNPTR)
-+		strncpy(prefix, "dynptr_", 32);
- 	if (type & MEM_USER)
- 		strncpy(prefix, "user_", 32);
- 	if (type & MEM_PERCPU)
-@@ -797,6 +806,20 @@ static bool is_dynptr_reg_valid_init(struct bpf_veri=
-fier_env *env, struct bpf_re
- 	return state->stack[spi].spilled_ptr.dynptr.type =3D=3D arg_to_dynptr_t=
-ype(arg_type);
- }
-=20
-+static bool is_ref_obj_id_dynptr(struct bpf_func_state *state, u32 id)
-+{
-+	int allocated_slots =3D state->allocated_stack / BPF_REG_SIZE;
-+	int i;
++	opts.kernel_log_buf =3D obj_log_buf;
++	opts.kernel_log_size =3D log_buf_sz;
++	opts.kernel_log_level =3D 1;
 +
-+	for (i =3D 0; i < allocated_slots; i++) {
-+		if (state->stack[i].slot_type[0] =3D=3D STACK_DYNPTR &&
-+		    state->stack[i].spilled_ptr.id =3D=3D id)
-+			return true;
++	skel =3D dynptr_fail__open_opts(&opts);
++	if (!ASSERT_OK_PTR(skel, "dynptr_fail__open_opts"))
++		goto cleanup;
++
++	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
++	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++		goto cleanup;
++
++	bpf_program__set_autoload(prog, true);
++
++	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
++
++	err =3D dynptr_fail__load(skel);
++	if (!ASSERT_ERR(err, "unexpected load success"))
++		goto cleanup;
++
++	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err=
+_msg")) {
++		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
++		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
 +	}
 +
-+	return false;
++cleanup:
++	dynptr_fail__destroy(skel);
 +}
 +
- /* The reg state of a pointer or a bounded scalar was saved when
-  * it was spilled to the stack.
-  */
-@@ -5647,6 +5670,7 @@ static const struct bpf_reg_types mem_types =3D {
- 		PTR_TO_MAP_VALUE,
- 		PTR_TO_MEM,
- 		PTR_TO_MEM | MEM_ALLOC,
-+		PTR_TO_MEM | MEM_DYNPTR,
- 		PTR_TO_BUF,
- 	},
- };
-@@ -5799,6 +5823,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env =
-*env,
- 	case PTR_TO_MEM:
- 	case PTR_TO_MEM | MEM_RDONLY:
- 	case PTR_TO_MEM | MEM_ALLOC:
-+	case PTR_TO_MEM | MEM_DYNPTR:
- 	case PTR_TO_BUF:
- 	case PTR_TO_BUF | MEM_RDONLY:
- 	case PTR_TO_STACK:
-@@ -5833,6 +5858,14 @@ int check_func_arg_reg_off(struct bpf_verifier_env=
- *env,
- 	return __check_ptr_off_reg(env, reg, regno, fixed_off_ok);
- }
-=20
-+static inline u32 stack_slot_get_id(struct bpf_verifier_env *env, struct=
- bpf_reg_state *reg)
++static void verify_success(const char *prog_name)
 +{
-+	struct bpf_func_state *state =3D func(env, reg);
-+	int spi =3D get_spi(reg->off);
++	struct dynptr_success *skel;
++	struct bpf_program *prog;
++	struct bpf_link *link;
 +
-+	return state->stack[spi].spilled_ptr.id;
++	skel =3D dynptr_success__open();
++	if (!ASSERT_OK_PTR(skel, "dynptr_success__open"))
++		return;
++
++	skel->bss->pid =3D getpid();
++
++	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
++
++	dynptr_success__load(skel);
++	if (!ASSERT_OK_PTR(skel, "dynptr_success__load"))
++		goto cleanup;
++
++	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
++	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++		goto cleanup;
++
++	link =3D bpf_program__attach(prog);
++	if (!ASSERT_OK_PTR(link, "bpf_program__attach"))
++		goto cleanup;
++
++	usleep(1);
++
++	ASSERT_EQ(skel->bss->err, 0, "err");
++
++	bpf_link__destroy(link);
++
++cleanup:
++	dynptr_success__destroy(skel);
 +}
 +
- static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			  struct bpf_call_arg_meta *meta,
- 			  const struct bpf_func_proto *fn)
-@@ -7371,10 +7404,31 @@ static int check_helper_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn
- 		/* For release_reference() */
- 		regs[BPF_REG_0].ref_obj_id =3D meta.ref_obj_id;
- 	} else if (is_acquire_function(func_id, meta.map_ptr)) {
--		int id =3D acquire_reference_state(env, insn_idx);
-+		int id =3D 0;
++void test_dynptr(void)
++{
++	int i;
 +
-+		if (is_dynptr_ref_function(func_id)) {
-+			int i;
++	for (i =3D 0; i < ARRAY_SIZE(dynptr_tests); i++) {
++		if (!test__start_subtest(dynptr_tests[i].prog_name))
++			continue;
 +
-+			/* Find the id of the dynptr we're acquiring a reference to */
-+			for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
-+				if (arg_type_is_dynptr(fn->arg_type[i])) {
-+					if (id) {
-+						verbose(env, "verifier internal error: more than one dynptr arg in=
- a dynptr ref func\n");
-+						return -EFAULT;
-+					}
-+					id =3D stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
-+				}
-+			}
-+			if (!id) {
-+				verbose(env, "verifier internal error: no dynptr args to a dynptr re=
-f func\n");
-+				return -EFAULT;
-+			}
-+		} else {
-+			id =3D acquire_reference_state(env, insn_idx);
-+			if (id < 0)
-+				return id;
++		if (dynptr_tests[i].expected_err_msg)
++			verify_fail(dynptr_tests[i].prog_name, dynptr_tests[i].expected_err_m=
+sg);
++		else
++			verify_success(dynptr_tests[i].prog_name);
++	}
++}
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/test=
+ing/selftests/bpf/progs/dynptr_fail.c
+new file mode 100644
+index 000000000000..dfa4593fa94a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -0,0 +1,582 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Facebook */
++
++#include <string.h>
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") =3D "GPL";
++
++struct test_info {
++	int x;
++	struct bpf_dynptr ptr;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, struct bpf_dynptr);
++} array_map1 SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, struct test_info);
++} array_map2 SEC(".maps");
++
++struct sample {
++	int pid;
++	long value;
++	char comm[16];
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++} ringbuf SEC(".maps");
++
++int err =3D 0;
++int val;
++
++/* Every bpf_dynptr_alloc call must have a corresponding bpf_dynptr_put =
+call */
++SEC("?raw_tp/sys_nanosleep")
++int missing_put(void *ctx)
++{
++	struct bpf_dynptr mem;
++
++	bpf_dynptr_alloc(8, 0, &mem);
++
++	/* missing a call to bpf_dynptr_put(&mem) */
++
++	return 0;
++}
++
++static int missing_put_callback_fn(__u32 index, void *data)
++{
++	struct bpf_dynptr ptr;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	val =3D index;
++
++	/* missing bpf_dynptr_put(&ptr) */
++
++	return 0;
++}
++
++/* Any dynptr initialized within a callback must have bpf_dynptr_put cal=
+led */
++SEC("?raw_tp/sys_nanosleep")
++int missing_put_callback(void *ctx)
++{
++	bpf_loop(10, missing_put_callback_fn, NULL, 0);
++	return 0;
++}
++
++/* A non-alloc-ed dynptr can't be used by bpf_dynptr_put */
++SEC("?raw_tp/sys_nanosleep")
++int put_nonalloc(void *ctx)
++{
++	struct bpf_dynptr ptr;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
++
++	/* this should fail */
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* A data slice from a dynptr can't be used by bpf_dynptr_put */
++SEC("?raw_tp/sys_nanosleep")
++int put_data_slice(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	void *data;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	data =3D bpf_dynptr_data(&ptr, 0, 8);
++	if (!data)
++		goto done;
++
++	/* this should fail */
++	bpf_dynptr_put(data);
++
++done:
++	bpf_dynptr_put(&ptr);
++	return 0;
++}
++
++/* Can't call bpf_dynptr_put on a non-initialized dynptr */
++SEC("?raw_tp/sys_nanosleep")
++int put_uninit_dynptr(void *ctx)
++{
++	struct bpf_dynptr ptr;
++
++	/* this should fail */
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* A dynptr can't be used after bpf_dynptr_put has been called on it */
++SEC("?raw_tp/sys_nanosleep")
++int use_after_put(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	char read_data[64] =3D {};
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
++
++	bpf_dynptr_put(&ptr);
++
++	/* this should fail */
++	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
++
++	return 0;
++}
++
++/*
++ * Can't bpf_dynptr_alloc an existing allocated bpf_dynptr that bpf_dynp=
+tr_put
++ * hasn't been called on yet
++ */
++SEC("?raw_tp/sys_nanosleep")
++int alloc_twice(void *ctx)
++{
++	struct bpf_dynptr ptr;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	/* this should fail */
++	bpf_dynptr_alloc(2, 0, &ptr);
++
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/*
++ * Can't access a ring buffer record after submit or discard has been ca=
+lled
++ * on the dynptr
++ */
++SEC("?raw_tp/sys_nanosleep")
++int ringbuf_invalid_access(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct sample *sample;
++
++	err =3D bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr);
++	sample =3D bpf_dynptr_data(&ptr, 0, sizeof(*sample));
++	if (!sample)
++		goto done;
++
++	sample->pid =3D 123;
++
++	bpf_ringbuf_submit_dynptr(&ptr, 0);
++
++	/* this should fail */
++	err =3D sample->pid;
++
++	return 0;
++
++done:
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++/* Can't call non-dynptr ringbuf APIs on a dynptr ringbuf sample */
++SEC("?raw_tp/sys_nanosleep")
++int ringbuf_invalid_api(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct sample *sample;
++
++	err =3D bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr);
++	sample =3D bpf_dynptr_data(&ptr, 0, sizeof(*sample));
++	if (!sample)
++		goto done;
++
++	sample->pid =3D 123;
++
++	/* invalid API use. need to use dynptr API to submit/discard */
++	bpf_ringbuf_submit(sample, 0);
++
++done:
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++/* Can't access memory outside a ringbuf record range */
++SEC("?raw_tp/sys_nanosleep")
++int ringbuf_out_of_bounds(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct sample *sample;
++
++	err =3D bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr);
++	sample =3D bpf_dynptr_data(&ptr, 0, sizeof(*sample));
++	if (!sample)
++		goto done;
++
++	/* Can't access beyond sample range */
++	*(__u8 *)((void *)sample + sizeof(*sample)) =3D 123;
++
++	bpf_ringbuf_submit_dynptr(&ptr, 0);
++
++	return 0;
++
++done:
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++/* Can't add a dynptr to a map */
++SEC("?raw_tp/sys_nanosleep")
++int add_dynptr_to_map1(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	int key =3D 0;
++
++	err =3D bpf_dynptr_alloc(sizeof(val), 0, &ptr);
++
++	/* this should fail */
++	bpf_map_update_elem(&array_map1, &key, &ptr, 0);
++
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* Can't add a struct with an embedded dynptr to a map */
++SEC("?raw_tp/sys_nanosleep")
++int add_dynptr_to_map2(void *ctx)
++{
++	struct test_info x;
++	int key =3D 0;
++
++	bpf_dynptr_alloc(sizeof(val), 0, &x.ptr);
++
++	/* this should fail */
++	bpf_map_update_elem(&array_map2, &key, &x, 0);
++
++	return 0;
++}
++
++/* Can't pass in a dynptr as an arg to a helper function that doesn't ta=
+ke in a
++ * dynptr argument
++ */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_helper1(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	/* this should fail */
++	bpf_strncmp((const char *)&ptr, sizeof(ptr), "hello!");
++
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* A dynptr can't be passed into a helper function at a non-zero offset =
+*/
++SEC("?raw_tp/sys_nanosleep")
++int invalid_helper2(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	char read_data[64] =3D {};
++
++	bpf_dynptr_alloc(sizeof(val), 0, &ptr);
++
++	/* this should fail */
++	bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 8, 0);
++
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* A data slice can't be accessed out of bounds */
++SEC("?raw_tp/sys_nanosleep")
++int data_slice_out_of_bounds(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	void *data;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	data =3D bpf_dynptr_data(&ptr, 0, 8);
++	if (!data)
++		goto done;
++
++	/* can't index out of bounds of the data slice */
++	val =3D *((char *)data + 8);
++
++done:
++	bpf_dynptr_put(&ptr);
++	return 0;
++}
++
++/* A data slice can't be used after bpf_dynptr_put is called */
++SEC("?raw_tp/sys_nanosleep")
++int data_slice_use_after_put(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	void *data;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	data =3D bpf_dynptr_data(&ptr, 0, 8);
++	if (!data)
++		goto done;
++
++	bpf_dynptr_put(&ptr);
++
++	/* this should fail */
++	val =3D *(__u8 *)data;
++
++done:
++	bpf_dynptr_put(&ptr);
++	return 0;
++}
++
++/* A bpf_dynptr can't be used as a dynptr if it's been written into */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_write1(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	__u8 x =3D 0;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	memcpy(&ptr, &x, sizeof(x));
++
++	/* this should fail */
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/*
++ * A bpf_dynptr can't be used as a dynptr if an offset into it has been
++ * written into
++ */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_write2(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	char read_data[64] =3D {};
++	__u8 x =3D 0, y =3D 0;
++
++	bpf_dynptr_alloc(sizeof(x), 0, &ptr);
++
++	memcpy((void *)&ptr + 8, &y, sizeof(y));
++
++	/* this should fail */
++	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
++
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/*
++ * A bpf_dynptr can't be used as a dynptr if a non-const offset into it
++ * has been written into
++ */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_write3(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	char stack_buf[16];
++	unsigned long len;
++	__u8 x =3D 0;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	memcpy(stack_buf, &val, sizeof(val));
++	len =3D stack_buf[0] & 0xf;
++
++	memcpy((void *)&ptr + len, &x, sizeof(x));
++
++	/* this should fail */
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++static int invalid_write4_callback(__u32 index, void *data)
++{
++	*(__u32 *)data =3D 123;
++
++	return 0;
++}
++
++/* If the dynptr is written into in a callback function, it should
++ * be invalidated as a dynptr
++ */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_write4(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	__u64 x =3D 0;
++
++	bpf_dynptr_alloc(sizeof(x), 0, &ptr);
++
++	bpf_loop(10, invalid_write4_callback, &ptr, 0);
++
++	/* this should fail */
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* A globally-defined bpf_dynptr can't be used (it must reside as a stac=
+k frame) */
++struct bpf_dynptr global_dynptr;
++SEC("?raw_tp/sys_nanosleep")
++int global(void *ctx)
++{
++	/* this should fail */
++	bpf_dynptr_alloc(4, 0, &global_dynptr);
++
++	bpf_dynptr_put(&global_dynptr);
++
++	return 0;
++}
++
++/* A direct read should fail */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_read1(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	__u32 x =3D 2;
++
++	bpf_dynptr_alloc(sizeof(x), 0, &ptr);
++
++	/* this should fail */
++	val =3D *(int *)&ptr;
++
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* A direct read at an offset should fail */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_read2(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++	char read_data[64] =3D {};
++	__u64 x =3D 0;
++
++	bpf_dynptr_alloc(sizeof(x), 0, &ptr);
++
++	/* this should fail */
++	bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 1, 0);
++
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* A direct read at an offset into the lower stack slot should fail */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_read3(void *ctx)
++{
++	struct bpf_dynptr ptr1 =3D {};
++	struct bpf_dynptr ptr2 =3D {};
++
++	bpf_dynptr_alloc(sizeof(val), 0, &ptr1);
++	bpf_dynptr_alloc(sizeof(val), 0, &ptr2);
++
++	/* this should fail */
++	memcpy(&val, (void *)&ptr1 + 8, sizeof(val));
++
++	bpf_dynptr_put(&ptr1);
++	bpf_dynptr_put(&ptr2);
++
++	return 0;
++}
++
++/* Calling bpf_dynptr_alloc on an offset should fail */
++SEC("?raw_tp/sys_nanosleep")
++int invalid_offset(void *ctx)
++{
++	struct bpf_dynptr ptr =3D {};
++
++	/* this should fail */
++	bpf_dynptr_alloc(sizeof(val), 0, &ptr + 1);
++
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++/* Can't call bpf_dynptr_put twice */
++SEC("?raw_tp/sys_nanosleep")
++int put_twice(void *ctx)
++{
++	struct bpf_dynptr ptr;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	bpf_dynptr_put(&ptr);
++
++	/* this second put should fail */
++	bpf_dynptr_put(&ptr);
++
++	return 0;
++}
++
++static int put_twice_callback_fn(__u32 index, void *data)
++{
++	/* this should fail */
++	bpf_dynptr_put(data);
++	val =3D index;
++	return 0;
++}
++
++/* Test that calling bpf_dynptr_put twice, where the 2nd put happens wit=
+hin a
++ * calback function, fails
++ */
++SEC("?raw_tp/sys_nanosleep")
++int put_twice_callback(void *ctx)
++{
++	struct bpf_dynptr ptr;
++
++	bpf_dynptr_alloc(8, 0, &ptr);
++
++	bpf_dynptr_put(&ptr);
++
++	bpf_loop(10, put_twice_callback_fn, &ptr, 0);
++
++	return 0;
++}
++
++/* Can't access memory in a zero-slice */
++SEC("?raw_tp/sys_nanosleep")
++int zero_slice_access(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	void *data;
++
++	bpf_dynptr_alloc(0, 0, &ptr);
++
++	data =3D bpf_dynptr_data(&ptr, 0, 0);
++	if (!data)
++		goto done;
++
++	/* this should fail */
++	*(__u8 *)data =3D 23;
++
++	val =3D *(__u8 *)data;
++
++done:
++	bpf_dynptr_put(&ptr);
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/t=
+esting/selftests/bpf/progs/dynptr_success.c
+new file mode 100644
+index 000000000000..bbb34943a6c6
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+@@ -0,0 +1,206 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Facebook */
++
++#include <string.h>
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++#include "errno.h"
++
++char _license[] SEC("license") =3D "GPL";
++
++int pid;
++int err;
++int val;
++
++struct sample {
++	int pid;
++	int seq;
++	long value;
++	char comm[16];
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++} ringbuf SEC(".maps");
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_basic(void *ctx)
++{
++	char write_data[64] =3D "hello there, world!!";
++	char read_data[64] =3D {}, buf[64] =3D {};
++	struct bpf_dynptr ptr =3D {};
++	int i;
++
++	if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
++		return 0;
++
++	err =3D bpf_dynptr_alloc(sizeof(write_data), 0, &ptr);
++
++	/* Write data into the dynptr */
++	err =3D err ?: bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data)=
+);
++
++	/* Read the data that was written into the dynptr */
++	err =3D err ?: bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
++
++	/* Ensure the data we read matches the data we wrote */
++	for (i =3D 0; i < sizeof(read_data); i++) {
++		if (read_data[i] !=3D write_data[i]) {
++			err =3D 1;
++			break;
 +		}
-=20
--		if (id < 0)
--			return id;
- 		/* For mark_ptr_or_null_reg() */
- 		regs[BPF_REG_0].id =3D id;
- 		/* For release_reference() */
-@@ -9810,7 +9864,8 @@ static void mark_ptr_or_null_regs(struct bpf_verifi=
-er_state *vstate, u32 regno,
- 	u32 id =3D regs[regno].id;
- 	int i;
-=20
--	if (ref_obj_id && ref_obj_id =3D=3D id && is_null)
-+	if (ref_obj_id && ref_obj_id =3D=3D id && is_null &&
-+	    !is_ref_obj_id_dynptr(state, id))
- 		/* regs[regno] is in the " =3D=3D NULL" branch.
- 		 * No one could have freed the reference state before
- 		 * doing the NULL check.
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-index f0c5ca220d8e..edeff26fbccd 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5226,6 +5226,17 @@ union bpf_attr {
-  *		0 on success, -E2BIG if *offset* + *len* exceeds the length
-  *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
-  *		is a read-only dynptr.
-+ *
-+ * void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len)
-+ *	Description
-+ *		Get a pointer to the underlying dynptr data.
-+ *
-+ *		*len* must be a statically known value. The returned data slice
-+ *		is invalidated whenever the dynptr is invalidated.
-+ *	Return
-+ *		Pointer to the underlying dynptr data, NULL if the dynptr is
-+ *		read-only, if the dynptr is invalid, or if the offset and length
-+ *		is out of bounds.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5430,6 +5441,7 @@ union bpf_attr {
- 	FN(ringbuf_discard_dynptr),	\
- 	FN(dynptr_read),		\
- 	FN(dynptr_write),		\
-+	FN(dynptr_data),		\
- 	/* */
-=20
- /* integer value in 'imm' field of BPF_CALL instruction selects which he=
-lper
++	}
++
++	bpf_dynptr_put(&ptr);
++	return 0;
++}
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_data_slice(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	__u32 alloc_size =3D 16;
++	void *data;
++
++	if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
++		return 0;
++
++	/* test passing in an invalid flag */
++	err =3D bpf_dynptr_alloc(alloc_size, 1, &ptr);
++	if (err !=3D -EINVAL) {
++		err =3D 1;
++		goto done;
++	}
++	bpf_dynptr_put(&ptr);
++
++	err =3D bpf_dynptr_alloc(alloc_size, 0, &ptr);
++	if (err)
++		goto done;
++
++	/* Try getting a data slice that is out of range */
++	data =3D bpf_dynptr_data(&ptr, alloc_size + 1, 1);
++	if (data) {
++		err =3D 2;
++		goto done;
++	}
++
++	/* Try getting more bytes than available */
++	data =3D bpf_dynptr_data(&ptr, 0, alloc_size + 1);
++	if (data) {
++		err =3D 3;
++		goto done;
++	}
++
++	data =3D bpf_dynptr_data(&ptr, 0, sizeof(int));
++	if (!data) {
++		err =3D 4;
++		goto done;
++	}
++
++	*(__u32 *)data =3D 999;
++
++	err =3D bpf_probe_read_kernel(&val, sizeof(val), data);
++	if (err)
++		goto done;
++
++	if (val !=3D *(int *)data)
++		err =3D 5;
++
++done:
++	bpf_dynptr_put(&ptr);
++	return 0;
++}
++
++static int ringbuf_callback(__u32 index, void *data)
++{
++	struct sample *sample;
++
++	struct bpf_dynptr *ptr =3D (struct bpf_dynptr *)data;
++
++	sample =3D bpf_dynptr_data(ptr, 0, sizeof(*sample));
++	if (!sample)
++		err =3D 2;
++	else
++		sample->pid +=3D val;
++
++	return 0;
++}
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_ringbuf(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	struct sample *sample;
++
++	if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
++		return 0;
++
++	val =3D 100;
++
++	/* check that you can reserve a dynamic size reservation */
++	err =3D bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
++
++	sample =3D err ? NULL : bpf_dynptr_data(&ptr, 0, sizeof(*sample));
++	if (!sample) {
++		err =3D 1;
++		goto done;
++	}
++
++	sample->pid =3D 123;
++
++	/* Can pass dynptr to callback functions */
++	bpf_loop(10, ringbuf_callback, &ptr, 0);
++
++	bpf_ringbuf_submit_dynptr(&ptr, 0);
++
++	return 0;
++
++done:
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_alloc_zero_bytes(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	void *data;
++	__u8 x =3D 0;
++
++	if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
++		return 0;
++
++	err =3D bpf_dynptr_alloc(0, 0, &ptr);
++	if (err)
++		goto done;
++
++	err =3D bpf_dynptr_write(&ptr, 0, &x, sizeof(x));
++	if (err !=3D -E2BIG) {
++		err =3D 1;
++		goto done;
++	}
++
++	err =3D bpf_dynptr_read(&x, sizeof(x), &ptr, 0);
++	if (err !=3D -E2BIG) {
++		err =3D 2;
++		goto done;
++	}
++	err =3D 0;
++
++	/* try to access memory we don't have access to */
++	data =3D bpf_dynptr_data(&ptr, 0, 1);
++	if (data) {
++		err =3D 3;
++		goto done;
++	}
++
++	data =3D bpf_dynptr_data(&ptr, 0, 0);
++	if (!data) {
++		err =3D 4;
++		goto done;
++	}
++
++done:
++	bpf_dynptr_put(&ptr);
++	return 0;
++}
 --=20
 2.30.2
 
