@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C02052098D
+	by mail.lfdr.de (Postfix) with ESMTP id A0A9852098E
 	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 01:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbiEIXrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 19:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        id S233370AbiEIXro (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 19:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235065AbiEIXrP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S235071AbiEIXrP (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 9 May 2022 19:47:15 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721BB2CDEEC
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:38:42 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id q23so21470105wra.1
-        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:38:42 -0700 (PDT)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375582CDEF6
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:38:46 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id k126so9205933wme.2
+        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:38:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sEOoNgA37n+oAtmDFXjXYHfK9txRG9g+pJQQojjD46Y=;
-        b=XXu0vAfOWN76zZocMQkxmDXWgIDzGo83KaDB7NAjCJ2ILPSOZDv0fZ9UdN0P6frAwD
-         AwXmeS7Rjlnggyn135GHPcSKeRHe2VNehubW44MTeZXWk2lkSEXJj4O3w1Z7KdWO2z2i
-         rb4jQWCREBTTEZ5zOr+dOOdPArOAEFO8+5k3q34jtMoCvjMwbxBSb+2koRsh4rQ6PdQ1
-         ljjj6Vg9Fr5JqIVLgXyudWIV2JLHAqAjywTvH1eyhrm6EOVsWCzu9HRt07AwHjdRP4zh
-         ax5hKw2OL6a3O4+GmVpAwvm1YAtsAFkgroO1E7PjyDlvSutFIBZ7AA0axajHwjcEJd3n
-         SfBw==
+        bh=BiDu/cswbMs2ANToqI4HMQbrSKEuxwAekDMrvSFW/wU=;
+        b=HPZCftN81HlFo2VUUHnUTiOGkvClHhws+4wBC0RhqHZbJGmAsq+ANp1LgpPuCS473b
+         n9zGOtu+IzLirs5GII/IkvdobaJsgPLCkAGJK346e2nVP1DNzd1AsG2zfmPV58EIqCvw
+         IdgH8z9n9uqv9Ziu6Up3r883uoFTu6djpcSQjQgSWpLkfwqJavNuNRCvKrK/RCl4TkOr
+         VY2uBvSORsW8pwa7qCacW4PjSuigDAC3BYj3UeGJDYX/fZur8jSw2vlu1FPyOq+H/nfi
+         o1fq2RX9pba/bCnf5RpRgWPly/tmsT+AgGpxPJ7fO5EdnSZKgp2cfLflLMNhjIKiPuvP
+         XNvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sEOoNgA37n+oAtmDFXjXYHfK9txRG9g+pJQQojjD46Y=;
-        b=J3cmq+k1ueQ1M7V6ElwFGoFHmBSU0Qng2JpliN8xDxEZC4LjNOSUuQHP/8XaXq43iQ
-         Ifxl+Nag5/m9SQuPziHBH8+s8meiUIxgdGeHHSdfTtq2r/AGesNXDcH+8llzyjYc9f6W
-         OljnJWvQmRTGh9NfcFBTP3SVJo+t1QJ9cU1hdKjs7rRPzkY8yJYHMy4F1Z53+Jnuuwit
-         U9BBNeqXLbHOZdkpV5FUs6FX0r0rIVv9sd3g/covBRJ6RmvJk5UN4GGJ6wWIC7e8gmHK
-         BlDO1lzTWue/P/QZkv3Gc/XzgFdS7QLuC4vLFZ2rLycT/fz6MgGxdzhK6Io2QFAKYN9J
-         Y+hw==
-X-Gm-Message-State: AOAM532tg4GQWpL/bHir4K6EeVw+yUTSCnQLeNtjE/Y13WPw1fKEoM4C
-        nThxoD5PNvZigozZ2jorsyhCUrNWOlVLCQi+gZb1Mw==
-X-Google-Smtp-Source: ABdhPJzbOltZZaR3MgHCrXXhLNCDJBGfgjqHZbfMUBDfydO6J+pREiZbXz7ZkG+gqvomBwxUyol5h4urwh1GGFmxqEQ=
-X-Received: by 2002:adf:dc91:0:b0:20c:cb51:4160 with SMTP id
- r17-20020adfdc91000000b0020ccb514160mr5366046wrj.568.1652139520845; Mon, 09
- May 2022 16:38:40 -0700 (PDT)
+        bh=BiDu/cswbMs2ANToqI4HMQbrSKEuxwAekDMrvSFW/wU=;
+        b=5QN9HmgWDMwAgy8rwoyjqEKzqg5nuBenNmMglrel/ynEv8dBRKqExydG6IzJvop9yx
+         Ybhwq1nY9TQEULa1dTqfNp4QYR1+xFYaGxaGJXiNcpmjXrA2HsafyDv/0dEvjXzPmBJX
+         9rIvOfob9Mqqk/0Di8AS9g0QaP2R7T5CPK0Fnd7MmKAyDU+5bNOFNes9WTgKW4ptqO7/
+         UUoYRKTI8TaQ4oPiC8rLG+39BkbSj/02GAU+ZPSTi5NvvVBFmYxRxk8NVPgwzEE46r8b
+         2HBb3lljo/ruQPVLUnuxGiK7rt81Lo2viQwXRYSbpbB4IztQEOyGxvqiRzd2VwYSn86I
+         CSig==
+X-Gm-Message-State: AOAM532oS7hG+iqjuDOQO/zTswP5zpbnKQK+tGvlooq3RQZmZ4ZHePn8
+        f7cg0VsrFwWraQIpar6JkSk9rauZhJ2o5I/GOTGFZg==
+X-Google-Smtp-Source: ABdhPJyDkzBMRxHN2Lb7kIARmFzaf/7CL+zLf3Q7+Lc9THuJ0TD3qAU1nDju/CcijufxD1c8fTr17wQQdAfNo36TAbo=
+X-Received: by 2002:a05:600c:4885:b0:393:fac6:f409 with SMTP id
+ j5-20020a05600c488500b00393fac6f409mr25282011wmp.150.1652139525611; Mon, 09
+ May 2022 16:38:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220429211540.715151-1-sdf@google.com> <20220429211540.715151-11-sdf@google.com>
- <CAEf4BzY3Nd2pi+O-x4bp41=joFgPXU2+UFqBusdjR08ME62k5g@mail.gmail.com>
-In-Reply-To: <CAEf4BzY3Nd2pi+O-x4bp41=joFgPXU2+UFqBusdjR08ME62k5g@mail.gmail.com>
+References: <20220429211540.715151-1-sdf@google.com> <20220429211540.715151-4-sdf@google.com>
+ <CAEf4BzZ_c62i9_QX+6PFBZynAKkEH-2VX-7y_hYQhrP0Ks-ftQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ_c62i9_QX+6PFBZynAKkEH-2VX-7y_hYQhrP0Ks-ftQ@mail.gmail.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 9 May 2022 16:38:29 -0700
-Message-ID: <CAKH8qBtk6CpR-29R6sWicz_zW=RCYUrXZqBZbgF9eqt4XGgNqQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 10/10] selftests/bpf: verify lsm_cgroup struct
- sock access
+Date:   Mon, 9 May 2022 16:38:34 -0700
+Message-ID: <CAKH8qBtn1+KpeE7VFYv4=5iB+NGvqb91yXFpOhyUmrAgmPqXOQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 03/10] bpf: per-cgroup lsm flavor
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -70,73 +69,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 9, 2022 at 2:54 PM Andrii Nakryiko
+On Mon, May 9, 2022 at 2:51 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
-> On Fri, Apr 29, 2022 at 2:16 PM Stanislav Fomichev <sdf@google.com> wrote:
+> On Fri, Apr 29, 2022 at 2:15 PM Stanislav Fomichev <sdf@google.com> wrote:
 > >
-> > sk_priority & sk_mark are writable, the rest is readonly.
+> > Allow attaching to lsm hooks in the cgroup context.
 > >
-> > Add new ldx_offset fixups to lookup the offset of struct field.
-> > Allow using test.kfunc regardless of prog_type.
+> > Attaching to per-cgroup LSM works exactly like attaching
+> > to other per-cgroup hooks. New BPF_LSM_CGROUP is added
+> > to trigger new mode; the actual lsm hook we attach to is
+> > signaled via existing attach_btf_id.
 > >
-> > One interesting thing here is that the verifier doesn't
-> > really force me to add NULL checks anywhere :-/
+> > For the hooks that have 'struct socket' or 'struct sock' as its first
+> > argument, we use the cgroup associated with that socket. For the rest,
+> > we use 'current' cgroup (this is all on default hierarchy == v2 only).
+> > Note that for some hooks that work on 'struct sock' we still
+> > take the cgroup from 'current' because some of them work on the socket
+> > that hasn't been properly initialized yet.
+> >
+> > Behind the scenes, we allocate a shim program that is attached
+> > to the trampoline and runs cgroup effective BPF programs array.
+> > This shim has some rudimentary ref counting and can be shared
+> > between several programs attaching to the same per-cgroup lsm hook.
+> >
+> > Note that this patch bloats cgroup size because we add 211
+> > cgroup_bpf_attach_type(s) for simplicity sake. This will be
+> > addressed in the subsequent patch.
+> >
+> > Also note that we only add non-sleepable flavor for now. To enable
+> > sleepable use-cases, bpf_prog_run_array_cg has to grab trace rcu,
+> > shim programs have to be freed via trace rcu, cgroup_bpf.effective
+> > should be also trace-rcu-managed + maybe some other changes that
+> > I'm not aware of.
 > >
 > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > > ---
-> >  tools/testing/selftests/bpf/test_verifier.c   | 54 ++++++++++++++++++-
-> >  .../selftests/bpf/verifier/lsm_cgroup.c       | 34 ++++++++++++
-> >  2 files changed, 87 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/testing/selftests/bpf/verifier/lsm_cgroup.c
+> >  arch/x86/net/bpf_jit_comp.c     |  22 ++--
+> >  include/linux/bpf-cgroup-defs.h |   6 ++
+> >  include/linux/bpf-cgroup.h      |   7 ++
+> >  include/linux/bpf.h             |  15 +++
+> >  include/linux/bpf_lsm.h         |  14 +++
+> >  include/uapi/linux/bpf.h        |   1 +
+> >  kernel/bpf/bpf_lsm.c            |  64 ++++++++++++
+> >  kernel/bpf/btf.c                |  11 ++
+> >  kernel/bpf/cgroup.c             | 179 +++++++++++++++++++++++++++++---
+> >  kernel/bpf/syscall.c            |  10 ++
+> >  kernel/bpf/trampoline.c         | 161 ++++++++++++++++++++++++++++
+> >  kernel/bpf/verifier.c           |  32 ++++++
+> >  tools/include/uapi/linux/bpf.h  |   1 +
+> >  13 files changed, 503 insertions(+), 20 deletions(-)
 > >
 >
 > [...]
 >
-> > diff --git a/tools/testing/selftests/bpf/verifier/lsm_cgroup.c b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
-> > new file mode 100644
-> > index 000000000000..af0efe783511
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
-> > @@ -0,0 +1,34 @@
-> > +#define SK_WRITABLE_FIELD(tp, field, size, res) \
-> > +{ \
-> > +       .descr = field, \
-> > +       .insns = { \
-> > +               /* r1 = *(u64 *)(r1 + 0) */ \
-> > +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
-> > +               /* r1 = *(u64 *)(r1 + offsetof(struct socket, sk)) */ \
-> > +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
-> > +               /* r2 = *(u64 *)(r1 + offsetof(struct sock, <field>)) */ \
-> > +               BPF_LDX_MEM(size, BPF_REG_2, BPF_REG_1, 0), \
-> > +               /* *(u64 *)(r1 + offsetof(struct sock, <field>)) = r2 */ \
-> > +               BPF_STX_MEM(size, BPF_REG_1, BPF_REG_2, 0), \
-> > +               BPF_MOV64_IMM(BPF_REG_0, 1), \
-> > +               BPF_EXIT_INSN(), \
-> > +       }, \
-> > +       .result = res, \
-> > +       .errstr = res ? "no write support to 'struct sock' at off" : "", \
-> > +       .prog_type = BPF_PROG_TYPE_LSM, \
-> > +       .expected_attach_type = BPF_LSM_CGROUP, \
-> > +       .kfunc = "socket_post_create", \
-> > +       .fixup_ldx = { \
-> > +               { "socket", "sk", 1 }, \
-> > +               { tp, field, 2 }, \
-> > +               { tp, field, 3 }, \
-> > +       }, \
-> > +}
-> > +
-> > +SK_WRITABLE_FIELD("sock_common", "skc_family", BPF_H, REJECT),
-> > +SK_WRITABLE_FIELD("sock", "sk_sndtimeo", BPF_DW, REJECT),
-> > +SK_WRITABLE_FIELD("sock", "sk_priority", BPF_W, ACCEPT),
-> > +SK_WRITABLE_FIELD("sock", "sk_mark", BPF_W, ACCEPT),
-> > +SK_WRITABLE_FIELD("sock", "sk_pacing_rate", BPF_DW, REJECT),
+> > @@ -3474,6 +3476,11 @@ static int bpf_prog_attach(const union bpf_attr *attr)
+> >         case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+> >         case BPF_PROG_TYPE_CGROUP_SYSCTL:
+> >         case BPF_PROG_TYPE_SOCK_OPS:
+> > +       case BPF_PROG_TYPE_LSM:
+> > +               if (ptype == BPF_PROG_TYPE_LSM &&
+> > +                   prog->expected_attach_type != BPF_LSM_CGROUP)
+> > +                       return -EINVAL;
 > > +
 >
-> have you tried writing it as C program and adding the test to
-> test_progs? Does something not work there?
+> Is it a hard requirement to support non-bpf_link attach for these BPF
+> trampoline-backed programs? Can we keep it bpf_link-only and use
+> LINK_CREATE for attachment? That way we won't need to extend query
+> command and instead add new field to bpf_link_info?
 
-Seems like it should work, I don't see any issues with writing 5
-programs to test each field.
-But test_verified still feels like a better fit? Any reason in
-particular you'd prefer test_progs over test_verifier?
+I didn't think it was an option :-) So if non-link-based apis are
+deprecated, I'll drop them from the patch series.
