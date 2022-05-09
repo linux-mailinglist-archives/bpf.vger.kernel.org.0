@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B7952064F
-	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 23:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F55452065A
+	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 23:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbiEIVE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 17:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        id S229942AbiEIVIZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 17:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbiEIVEZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 17:04:25 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC4D2B8D2A;
-        Mon,  9 May 2022 14:00:30 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id r27so16675339iot.1;
-        Mon, 09 May 2022 14:00:30 -0700 (PDT)
+        with ESMTP id S229499AbiEIVIY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 17:08:24 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311D2266F27
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 14:04:29 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id l20-20020a17090a409400b001dd2a9d555bso459719pjg.0
+        for <bpf@vger.kernel.org>; Mon, 09 May 2022 14:04:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sfa+L1MKfwEVwek6Xm7/cKDId/OMBsX1x8UVDLlmeV4=;
-        b=GCcrFI3Odr9GEQgYk8BV9rgcTKJnDUVqyrcwwE8GZdomb9ZZZ40xoKK1GBfnEosnPj
-         u9IrBFEnhZVUHU8eaZjvaGo70R4xC5KXjvW29q5KhLYK/fo6usoEYN6MIeeV0lc2ZdR6
-         x8dHu9Igf9AZjD0htWBDkZJgLP1JAG1nHNiKXfE+1TG9kOET4UfllxU5HDxhmv/jhDzO
-         VuF8hIfIi1d9kPdYYJqH02+/Z6zpxd5R65F++gsJoKvarCKcd6lrZ29HtkORxGzOOxGT
-         lP50Np5GQIk5WOeqdt8FqjvmP4yvwoaAG3FYMg8B6a91RV7dqj/fnUaYpvtKmNhjnjv7
-         Hzvw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tkRR9zwU/rZNLr39saNXLKyItk/mmddUXgJskmDljrk=;
+        b=EGH7++qZLRx3XdmCrdXBoyhbomJm6F1/y6qodlIYRJtWO2EwNqEl74NkJc8CTJLFaB
+         E/fnn2XwJ0leOA0SgkF6Wymoh8H9/EK5lecmN/onauNh05xCKFV0WYjEPhQx9NVg0kKR
+         jqRncy2uETKMQA4VWY+HolEg8fR9D1ggVWyS7a11K2ssRonJ9Ub85reK6/MgcudmZ/+p
+         kLVZhejB0A2Ho8K0Z12FA2qeDj4WgNknTRLho17HC8yDhOjqS64k/rl/5VxHPj9a4wjV
+         weOOW4tJovaf5+f1DXL6cPhSjkFH2JqAXGEDojZJ7tEYjGVIMCb23O33ycXvLEBc/Awf
+         twEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sfa+L1MKfwEVwek6Xm7/cKDId/OMBsX1x8UVDLlmeV4=;
-        b=JVfz7RWRVkYQXLmj0gkkFq4w97QI7nERGDOe3UPQcjUgTv/4n2T4M2zYqGOcz7T3BK
-         X+DjTVYkj/y46YqbgZKCckfwRBb7q1vbX9PGx4T0y2H3m/ZSllfMBPNR1+eZ5ZxiYUAG
-         bAhhtVJTpuEg/bHLDDUceaK57cKa1h69h6ibOF0khTt99EkXYZtpdWZHP6fOPQweL7sb
-         /RqxDLepeyeKt/foLgK6nGWrDdPLK+ODDvd4tIRk9B9tv3LDavfN7pDPRUVhYjkwSlDM
-         y1++iwOIyM1lNEglFyN1YqHmj9ypLqdPPrhf5JxqcLtJhrzdY/cvzj6xoLftlgTwkjXp
-         ouWg==
-X-Gm-Message-State: AOAM533i4oGRVoT6N0EjvNqrIdGHG4v/+DNsSgLyek1U//47T9+lSGlC
-        R7nj5BHGgMnJfM+S0LCr7Wonmi5u/SvdhlTiDvw=
-X-Google-Smtp-Source: ABdhPJwSq+cVlV6IA0h/x6EIQOBZsDxmow6vmYrzlXG44EPzm6h31VbH2TlRahj+ZSCn2GWJWzi9tjE0CBuyemGsSfY=
-X-Received: by 2002:a05:6638:16d6:b0:32b:a283:a822 with SMTP id
- g22-20020a05663816d600b0032ba283a822mr8275162jat.145.1652130029615; Mon, 09
- May 2022 14:00:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tkRR9zwU/rZNLr39saNXLKyItk/mmddUXgJskmDljrk=;
+        b=3P7bE7BeQa/cQhfd5rju97Tpy630cQJ+szyazN2ZgnmhlbAm2tIEqv9RUhRORhg7Ye
+         lbC07qTj9ljP4ZwndTRYWoBDAkEXfoDKLgGPLTAzDQ63ZyEVQ7212YTzMkwMJItd2BV/
+         Ee4oB1yD7fD/Ww+rfDRgGnuNJrkZP+VjACz0JiMhs5Q4rgaVv47ij3avjHE+TjHrwGXz
+         xjIeIxKrlcS5qcwzWSl8BPPcM1uViQZqLrvurZpPx4cfB7TG31VD6Tb7pwT48KZ9RDFy
+         3prNwWZoQyIRNIGajQKi/1JQ+2/vBkciaQedHz2xBUcMedhX7pgpbYECFmlyv543p13j
+         mG8Q==
+X-Gm-Message-State: AOAM531iDTyfFLhvK6QNvPDZKDf2yMY555UPu9piuckzDszBBJgxTibR
+        pwV0gAjIcV5yYLCtlr5YMNc=
+X-Google-Smtp-Source: ABdhPJwPS/a63ksfgwYi7jMjNfWTMYQC/oR4R/iDt7Z1Djv2iqOfiI+TKjJOdbh3rMy7JpagGY5Caw==
+X-Received: by 2002:a17:90a:fd10:b0:1d9:2a41:6fe6 with SMTP id cv16-20020a17090afd1000b001d92a416fe6mr28070594pjb.196.1652130268668;
+        Mon, 09 May 2022 14:04:28 -0700 (PDT)
+Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::4:e8e5])
+        by smtp.gmail.com with ESMTPSA id i21-20020aa79095000000b0050dc76281ddsm9037256pfa.183.2022.05.09.14.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 May 2022 14:04:27 -0700 (PDT)
+Date:   Mon, 9 May 2022 14:04:25 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v7 2/5] bpf, x86: Create bpf_tramp_run_ctx on
+ the caller thread's stack
+Message-ID: <20220509210425.igjjopd4virbtn3u@MBP-98dd607d3435.dhcp.thefacebook.com>
+References: <20220508032117.2783209-1-kuifeng@fb.com>
+ <20220508032117.2783209-3-kuifeng@fb.com>
 MIME-Version: 1.0
-References: <20220502211235.142250-1-mathew.j.martineau@linux.intel.com>
- <20220502211235.142250-6-mathew.j.martineau@linux.intel.com>
- <CAEf4BzY-t=ZtmU+6yeSo5DD6+C==NUN=twAKq=OQyVb2rS2ENw@mail.gmail.com> <8afe6b33-49c1-5060-87ed-80ef21096bbb@tessares.net>
-In-Reply-To: <8afe6b33-49c1-5060-87ed-80ef21096bbb@tessares.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 9 May 2022 14:00:18 -0700
-Message-ID: <CAEf4BzbwGHtoEooE3wFotgoYi8uDRYJcK=Y0Vdt-JUtWi4rqhg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/8] selftests: bpf: test bpf_skc_to_mptcp_sock
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, mptcp@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220508032117.2783209-3-kuifeng@fb.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -71,67 +71,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 9, 2022 at 2:00 AM Matthieu Baerts
-<matthieu.baerts@tessares.net> wrote:
->
-> Hi Andrii,
->
-> Thank you for the review!
->
-> On 07/05/2022 00:26, Andrii Nakryiko wrote:
-> > On Mon, May 2, 2022 at 2:12 PM Mat Martineau
-> > <mathew.j.martineau@linux.intel.com> wrote:
->
-> (...)
->
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index 359afc617b92..d48d3cb6abbc 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -13780,6 +13780,7 @@ F:      include/net/mptcp.h
-> >>  F:     include/trace/events/mptcp.h
-> >>  F:     include/uapi/linux/mptcp.h
-> >>  F:     net/mptcp/
-> >> +F:     tools/testing/selftests/bpf/bpf_mptcp_helpers.h
-> >>  F:     tools/testing/selftests/bpf/*/*mptcp*.c
-> >>  F:     tools/testing/selftests/net/mptcp/
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/bpf_mptcp_helpers.h b/tools/testing/selftests/bpf/bpf_mptcp_helpers.h
-> >> new file mode 100644
-> >> index 000000000000..18da4cc65e89
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/bpf/bpf_mptcp_helpers.h
-> >> @@ -0,0 +1,14 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0 */
-> >> +/* Copyright (c) 2022, SUSE. */
-> >> +
-> >> +#ifndef __BPF_MPTCP_HELPERS_H
-> >> +#define __BPF_MPTCP_HELPERS_H
-> >> +
-> >> +#include "bpf_tcp_helpers.h"
-> >> +
-> >> +struct mptcp_sock {
-> >> +       struct inet_connection_sock     sk;
-> >> +
-> >> +} __attribute__((preserve_access_index));
-> >
-> > why can't all this live in bpf_tcp_helpers.h? why do we need extra header?
->
-> The main reason is related to the maintenance: to have MPTCP ML being
-> cc'd for all patches modifying this file.
->
-> Do you prefer if all these specific MPTCP structures and macros and
-> mixed with TCP ones?
->
+On Sat, May 07, 2022 at 08:21:14PM -0700, Kui-Feng Lee wrote:
+>  
+> +	/* Prepare struct bpf_tramp_run_ctx.
+> +	 * sub rsp, sizeof(struct bpf_tramp_run_ctx)
+> +	 */
+> +	EMIT4(0x48, 0x83, 0xEC, sizeof(struct bpf_tramp_run_ctx));
+> +
+>  	if (fentry->nr_links)
+>  		if (invoke_bpf(m, &prog, fentry, regs_off,
+>  			       flags & BPF_TRAMP_F_RET_FENTRY_RET))
+> @@ -2098,6 +2121,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  	}
+>  
+>  	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+> +		/* pop struct bpf_tramp_run_ctx
+> +		 * add rsp, sizeof(struct bpf_tramp_run_ctx)
+> +		 */
+> +		EMIT4(0x48, 0x83, 0xC4, sizeof(struct bpf_tramp_run_ctx));
+> +
+>  		restore_regs(m, &prog, nr_args, regs_off);
+>  
+>  		/* call original function */
+> @@ -2110,6 +2138,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  		im->ip_after_call = prog;
+>  		memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
+>  		prog += X86_PATCH_SIZE;
+> +
+> +		/* Prepare struct bpf_tramp_run_ctx.
+> +		 * sub rsp, sizeof(struct bpf_tramp_run_ctx)
+> +		 */
+> +		EMIT4(0x48, 0x83, 0xEC, sizeof(struct bpf_tramp_run_ctx));
+>  	}
+>  
+>  	if (fmod_ret->nr_links) {
+> @@ -2133,6 +2166,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  			goto cleanup;
+>  		}
+>  
+> +	/* pop struct bpf_tramp_run_ctx
+> +	 * add rsp, sizeof(struct bpf_tramp_run_ctx)
+> +	 */
+> +	EMIT4(0x48, 0x83, 0xC4, sizeof(struct bpf_tramp_run_ctx));
+> +
 
-These definitions don't even have to be 1:1 w/ whatever is kernel
-defining in terms of having all the fields, or their order, etc. So I
-think it won't require active maintenance and thus can be merged into
-bpf_tcp_helpers.h to keep it in one place.
-
-
-> Cheers,
-> Matt
-> --
-> Tessares | Belgium | Hybrid Access Solutions
-> www.tessares.net
+What is the point of all of these additional sub/add rsp ?
+It seems unconditionally increasing stack_size by sizeof(struct bpf_tramp_run_ctx)
+will achieve the same and above 4 extra insns won't be needed.
