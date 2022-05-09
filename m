@@ -2,179 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB9D5205A3
-	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 22:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859D85205E3
+	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 22:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240767AbiEIUHF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 16:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        id S229700AbiEIUek (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 16:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240735AbiEIUHE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 16:07:04 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8A6200F62
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 13:03:09 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id q76so12900821pgq.10
-        for <bpf@vger.kernel.org>; Mon, 09 May 2022 13:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ixVfidBfjtS3og2Mo9gN8zk2z4PRDdweTrNBhFmf+HU=;
-        b=czfJXOtvvsTs2snJP9jORRwgp2nH7jPRpq5EKitZiqjil6AsYOtzBbt1KPVWWFQA/Z
-         up5SAdD7ptweEvd9Evz3GJ2yTcxYKQJ7qpSIdL4td3hcaSnLR/CXGEqcBQlPGEoZWGyP
-         5OVoSDR+aIIG4KUmiRwd4L4SIz0bJOe0q37wMCD9NW/Af12xDgp/fY5hJ+Jah0lDyZtf
-         +oWzD+Zxi2dBjJwLLAL7Z5lXHUBfcyhKD/JW6cn6IdzAmOiBXeP+5mzSsPH5k6L0/VDz
-         jrmy0xmI/W6KbLEqf5L+4B0csN2cwyIgbdG7VouMWCl+fpIbvz1+zw+zTSn9BpnfKkgF
-         0Qpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ixVfidBfjtS3og2Mo9gN8zk2z4PRDdweTrNBhFmf+HU=;
-        b=DbPj7t8pghkA4crqkmMp0qPjNQb/ypknZKFN/eMjCKtu0X2mMnqLV79Pz3y3twVfmj
-         wci85jnXP+LRvg/pX7sB0ScCGl0Eq4f7IncHHOuzfmkRXd6A+hglJgk+US0/MF+4RYTk
-         klsUBLeyPYWShj9OM2EzX1plk33ZBxlTa00yT4uF5T5dp2bqyWjQZREGCldeSM+PQCEb
-         U6UdwT+MVA/qSZ0QPHGN0KRI0/tI/HMZqeKroYf9GWYapP8LIE2bWp0tYyK1ebD1ohdM
-         D+lAK7AtxJdZ3yhzirK4nSIfYD9bD9B6y+JOdSpbaL3Pze4+je/IXzMXcwUlHzQzyqOl
-         V78w==
-X-Gm-Message-State: AOAM530/Kw1szO6cJ0ZbR4UaZ8H3mxWQP/bJQDulNb4iLzCzkZHT0tR0
-        XAkqS0II21XhZ6MqcONG29U=
-X-Google-Smtp-Source: ABdhPJw/+n2qhyKm8mreKll7pNZMTKY3S82TUk4O/Pfasy/dQjm3YnQvG/PiCFVabq0mTlm/xo6Ffg==
-X-Received: by 2002:a05:6a00:14cc:b0:510:4b70:403e with SMTP id w12-20020a056a0014cc00b005104b70403emr17386002pfu.55.1652126589106;
-        Mon, 09 May 2022 13:03:09 -0700 (PDT)
-Received: from localhost ([157.51.71.11])
-        by smtp.gmail.com with ESMTPSA id t3-20020aa79383000000b0050dc762817csm9065561pfe.86.2022.05.09.13.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 May 2022 13:03:08 -0700 (PDT)
-Date:   Tue, 10 May 2022 01:33:44 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next v6 12/13] selftests/bpf: Add verifier tests for
- kptr
-Message-ID: <20220509200344.bl7cpvh366fkfzrn@apollo.legion>
-References: <20220424214901.2743946-1-memxor@gmail.com>
- <20220424214901.2743946-13-memxor@gmail.com>
- <20220426033544.lxxnz6epet6qrzq6@MBP-98dd607d3435.dhcp.thefacebook.com>
-MIME-Version: 1.0
+        with ESMTP id S229683AbiEIUeO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 16:34:14 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F08147554;
+        Mon,  9 May 2022 13:25:07 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 249ILjm2027032;
+        Mon, 9 May 2022 13:24:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=X6cbIz/BIHmlMPxGu+PhZCmzZ9WAryrUMSw8jWUuQ7c=;
+ b=k+gwpBDcmDQn1PyyrYijJHrwZWnsVbv9rrFcYNs3Xzzi4aZ/0WfcrQH9AScQp2jIrOXR
+ WSY2TOUCcxyoNfDbcMylphYk9EMwG2EJN1pOGoneTuRQACKUq2O8CvEd5VNT1IRCDSTT
+ 9GauWF3kh9igEA8ukziLlWX0hT6E2kXLi3s= 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3fwn14bgvk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 09 May 2022 13:24:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TA6EIfhF7+3bmQtwt6vv26HBu4IafT65Si4T3Ha0fwxNNoOtR+/CR2PzodsyRuzNFJRHF1HqaN8dx159qRr4MBXJifMjEymjXmeijzRwh2o0wFYwIPLf1MbKSV0xiVJw9OY4KPL5Rs29ZQVStkGofSBSL/TN75BNR2RAxYGUXc//ijBOjekhPmm8n2U72Xw+9C8KSfI7dsYbGR25Ia5F4xBJSANAUc4TQeSTOL+FHglhD+Eg3l7rLrAGTK7Y2FgIqvPJgrfDItwZT5i2bZ3BL7Ucwhdf4q2UmwjE/wFJ53oYALdSzO7sKct9CEyArdrvIGS5iMflgZGVQCJCJXNDYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X6cbIz/BIHmlMPxGu+PhZCmzZ9WAryrUMSw8jWUuQ7c=;
+ b=Uq5m5pi8qTBSc24qHnEZH8CjjVKFCN27f0MOEryaq29pyTBn6OD6cBpx1B5vhdcwvL9cQM/09VAxSiOXC/F2n+kTrSt2Sm1ZaYsf82hq40fSNciM7BhMqL6DFnh9dk3f1jtYbCKmG1GRm+TziMAfWOVgXtg5SFlJI0ZvFYMP/TFDbM+dJ6aghFJv40MTTksMYZ/f0BsNioWnh+YyeGwH14tdsvNbcvRsH62pfoXr9KjmO5Pf3/7BVbAC5fWwe3W1c6sSdzDipXB7Fw25Bk/OA5F07fMYDMRbFvk+vYmodgGW+48Bbw8sBVX1Gi93eVdjjfh36JKgxxhZ5gdjiZ7W+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by DM6PR15MB4794.namprd15.prod.outlook.com (2603:10b6:5:1f8::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.23; Mon, 9 May
+ 2022 20:24:44 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::fd7d:7e89:37f4:1714]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::fd7d:7e89:37f4:1714%5]) with mapi id 15.20.5227.023; Mon, 9 May 2022
+ 20:24:44 +0000
+Date:   Mon, 9 May 2022 13:24:41 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Wille Kuutti <wille.kuutti@kuutti.com>
+Cc:     'Alexei Starovoitov' <ast@kernel.org>,
+        'Daniel Borkmann' <daniel@iogearbox.net>,
+        'Andrii Nakryiko' <andrii@kernel.org>,
+        'Song Liu' <songliubraving@fb.com>,
+        'Yonghong Song' <yhs@fb.com>,
+        'John Fastabend' <john.fastabend@gmail.com>,
+        'KP Singh' <kpsingh@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        'Eric Dumazet' <edumazet@google.com>,
+        'Jakub Kicinski' <kuba@kernel.org>,
+        'Paolo Abeni' <pabeni@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/core: Make bpf_skb_adjust_room BPF helper available
+ for packets with non IPv4 or IPv6 payload
+Message-ID: <20220509202441.l7jv5hnsfggpt2rg@kafai-mbp.dhcp.thefacebook.com>
+References: <00fd01d860cc$59d5fa60$0d81ef20$@kuutti.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220426033544.lxxnz6epet6qrzq6@MBP-98dd607d3435.dhcp.thefacebook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <00fd01d860cc$59d5fa60$0d81ef20$@kuutti.com>
+X-ClientProxiedBy: SJ0PR05CA0148.namprd05.prod.outlook.com
+ (2603:10b6:a03:33d::33) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4b546fbb-c20b-48be-df97-08da31f9f413
+X-MS-TrafficTypeDiagnostic: DM6PR15MB4794:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR15MB47941BD520A715979F175D48D5C69@DM6PR15MB4794.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VAU9WWjAA65T9eLxilz4HVIHe34dcr7SShLy019I94bECjMWN8JgmhZl3wqnbdylYvPt+2Yu+fYDfmcpez8t4C/uQlBMcpwYiySuOLMt6b/yBwA1kjAoh+IfxVPV8Uac4Uh4kad4DLPUhl1qNMXZHf54ReHTFhKN+PWW1CS52Wq8eEOuvdMr42l1EsR3Px7ltBMkGSQ3no9RMTdSBJ1RyxdeTte2IIhbJqeVC0xaShr1ZAvsuDwQwdDEo2f6jFTownbg1N25tK9Jj2cB3BwSlHgn+/ZO9033v9xTMvgxtk2gmIWctxQbPcX+YKLXL15dViRfxquUWHUUYg8QlaanNX06ocf6uq5zaNscw45qOCy8gaxy+pYRxOt8kM9ByTpE62biM8Glt1fntmSDnH63KVf1aru8s+fwaW9bEB+JEtw3sBPC205nmJ9Dn5pAE+lQ7RuIOUph6Qll0+Sfnzvrevgez7bwlZUpKbMWrlgeVYT7WrAktcCpoyy4d+s5PGbjWrgCD9afzgbRCjE7/dyrzomCXTYqEfDTN6NBWxXyd5z8lEE+upJ9jZxPsUQ7BA+4xUl0Q/lJLlALv8n7r3vAtGKebKlLOjKTJ0IlGCcJQKuMMbAe0T1OlheEK9Aak+R0MpsD+ndqTqiPkQ+YQ4sLaQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6486002)(316002)(508600001)(38100700002)(6916009)(54906003)(86362001)(4326008)(66946007)(8676002)(66476007)(6512007)(6666004)(7416002)(9686003)(83380400001)(6506007)(52116002)(1076003)(186003)(2906002)(5660300002)(8936002)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cpDSwWNAVExOtZc6wW7tnwaHVWibJv1zsFPWba/PHqdX2oMB6VWa5MFflh0X?=
+ =?us-ascii?Q?EZkJ1ZM0HTS9ejaHPhhgDRZgoEyzXpAqHrCCbXkwItFHCakX8Z8vGuxYvzjo?=
+ =?us-ascii?Q?6SxYDUXYHcxhUYCq2sZKKyjBKh0avS9WY+5Yu4TC/LYAhuGeZbzzFdD743W1?=
+ =?us-ascii?Q?mOYGVFJN8CvFXpjBfImFN+aYH/alfmAbZ6YeQz53CWZD0cMazd2oNUMiL8O3?=
+ =?us-ascii?Q?5KZkEik6/YdSM4OZRgXdYrpTVhbxXiCW4YI0PqAZd/XEXswdvMPqE60sAHVN?=
+ =?us-ascii?Q?qyc0lm08FM7+g+86EOcfFqFOaOfJH2qdwnxIaa5EC36LCp6cVwKbfwVPsWuA?=
+ =?us-ascii?Q?4vXOlbHLoypmM8W98TitTxrarhU7OajGg/eFEFgHxOP3uZF4qWu0iuC/hRBl?=
+ =?us-ascii?Q?0h0lomRu6amJmg2X6gTzFPT5NqUTrdvTIjE91hioL/HFnup0fAMV1dy1Qk+U?=
+ =?us-ascii?Q?FlQaGP2Ukdiu5netkRuH9l0g0EqVvutJd3o+NeTM31tt4X/UmBF2d/XKq7iD?=
+ =?us-ascii?Q?M0ygZWYO/6Shtq/3HO/uIax9fuZBFfw7hiGQ51JRA0iG4F75xs4a3UAJVMMn?=
+ =?us-ascii?Q?ckDg3zxpokPM+cc8BrEZ7uZFrwTUnj9xM0nkSbHhTn3/w2X44PG62Uh1ThvT?=
+ =?us-ascii?Q?cEZ5LDqHHqOUczMnSJPq9cDLHnakOQ/xt9ZYYdU6zOkuT5ULVR9xccVtLsoC?=
+ =?us-ascii?Q?WSSB35Pm4ICqOgVHJhgBSG4kQBQdandFzyqiqJ54ytLudO+WrZXqVnrFNwQN?=
+ =?us-ascii?Q?oxD3MUWccFMMTdJMuuzWhJliWe0CNiHZLGFyLwi99xz4WwFMAdZMYWkknyvE?=
+ =?us-ascii?Q?SgpLQNpncYDmP4IkNWft45ovYuFrIiYtvtBD6UvD+12rVwGQFOrX2tz3//cT?=
+ =?us-ascii?Q?e1r7F+9GYXfQxmRmpNKQGmvgpdNclTeqtMF5ecO+ytI8EO7IatdszzwkGctO?=
+ =?us-ascii?Q?eN2PhchKrMfnt1fPUAQ8u3/PfCGqkASCpuVDDSyk+pyArtG9p0f54PTHW7nE?=
+ =?us-ascii?Q?URxqNywv7tzYhDNd6x/V1e/lnAVS/pPK0oemMjcsWhu4wSNngt1AaTLMdkrw?=
+ =?us-ascii?Q?9fqrLg4IDXxFJnIGtYR2TBs1FCDeKj4ajhz/vIkQvI2ieObq1wITVft3rqjU?=
+ =?us-ascii?Q?0RjyuuK2gRaGdkZuBKI7EFZxNnFJ6WQ2xrX9jskrd4tODLDB/YgqcbQiNYaS?=
+ =?us-ascii?Q?OALAB9EOoWMaXOMY7il67guLEaQIHLVh4jbJDLDqKhs4oEk4Av5mmlA4azHH?=
+ =?us-ascii?Q?01XJKzq/F7OB+Y209Higarn5ISOwKzRqAQKkz0Of1e7ye4Ybb+M4G7pF2w+R?=
+ =?us-ascii?Q?ONyjCCz7+jjRSRCfx7aBZ4hQnTnmIm6zF3kQ32JZg4sOnxSbVQzvfMWjsHxF?=
+ =?us-ascii?Q?p6APLY9Mo0cmvEIzGvavxEN0AU0rFI7qq3xlsqpxlxrHuoAw9k13X/nnpka0?=
+ =?us-ascii?Q?BB1N/YTOF8tq915nxvoTZZhnT9WWA/N87aEVRdJqkn2ICCM1+wjyVZVFkcnb?=
+ =?us-ascii?Q?fPz9dDSIwRXQ8CE92VfNGUNHPTfu0Ez8PZljWbKKP0LxuWDPXKtw2dXOH1PX?=
+ =?us-ascii?Q?ituwzBA8g8bJGVP0jBwnfbAX2ThPuWFFAJpdGEaO4azFRE5Q9JpnZ9b8137+?=
+ =?us-ascii?Q?vEVm2rgQfyhJ7WlEqhFSYW7Sfvj4E6rYruW1kblwnRo30AHaSjiJ8dQjmQdu?=
+ =?us-ascii?Q?axRvHr8yBdwr35t+bIAZ8FbaGfrW8aTgvroyI7qKt6bq9M/ExBn2mwwuT7Iw?=
+ =?us-ascii?Q?yWrR2+ensfjrncpZ/JNotimi8byBL4w=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b546fbb-c20b-48be-df97-08da31f9f413
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2022 20:24:44.1512
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KcaS6JeFaaK8mGSUld8WFGDyiEtmwAh6ZwXXA5unLDdUg/ZmMqHTX4mtwAwQNmyW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4794
+X-Proofpoint-GUID: Zg6VV8I3iFsz-p21TK106IVW3EwotT77
+X-Proofpoint-ORIG-GUID: Zg6VV8I3iFsz-p21TK106IVW3EwotT77
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-09_05,2022-05-09_02,2022-02-23_01
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 09:05:44AM IST, Alexei Starovoitov wrote:
-> On Mon, Apr 25, 2022 at 03:19:00AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > Reuse bpf_prog_test functions to test the support for PTR_TO_BTF_ID in
-> > BPF map case, including some tests that verify implementation sanity and
-> > corner cases.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  net/bpf/test_run.c                            |  45 +-
-> >  tools/testing/selftests/bpf/test_verifier.c   |  55 +-
-> >  .../testing/selftests/bpf/verifier/map_kptr.c | 469 ++++++++++++++++++
-> >  3 files changed, 562 insertions(+), 7 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/verifier/map_kptr.c
-> >
-> > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> > index e7b9c2636d10..29fe32821e7e 100644
-> > --- a/net/bpf/test_run.c
-> > +++ b/net/bpf/test_run.c
-> > @@ -584,6 +584,12 @@ noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
-> >  {
-> >  }
-> >
-> > +noinline struct prog_test_ref_kfunc *
-> > +bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b)
-> > +{
-> > +	return &prog_test_struct;
-> > +}
-> > +
-> >  struct prog_test_pass1 {
-> >  	int x0;
-> >  	struct {
-> > @@ -669,6 +675,7 @@ BTF_ID(func, bpf_kfunc_call_test3)
-> >  BTF_ID(func, bpf_kfunc_call_test_acquire)
-> >  BTF_ID(func, bpf_kfunc_call_test_release)
-> >  BTF_ID(func, bpf_kfunc_call_memb_release)
-> > +BTF_ID(func, bpf_kfunc_call_test_kptr_get)
-> >  BTF_ID(func, bpf_kfunc_call_test_pass_ctx)
-> >  BTF_ID(func, bpf_kfunc_call_test_pass1)
-> >  BTF_ID(func, bpf_kfunc_call_test_pass2)
-> > @@ -682,6 +689,7 @@ BTF_SET_END(test_sk_check_kfunc_ids)
-> >
-> >  BTF_SET_START(test_sk_acquire_kfunc_ids)
-> >  BTF_ID(func, bpf_kfunc_call_test_acquire)
-> > +BTF_ID(func, bpf_kfunc_call_test_kptr_get)
-> >  BTF_SET_END(test_sk_acquire_kfunc_ids)
-> >
-> >  BTF_SET_START(test_sk_release_kfunc_ids)
-> > @@ -691,8 +699,13 @@ BTF_SET_END(test_sk_release_kfunc_ids)
-> >
-> >  BTF_SET_START(test_sk_ret_null_kfunc_ids)
-> >  BTF_ID(func, bpf_kfunc_call_test_acquire)
-> > +BTF_ID(func, bpf_kfunc_call_test_kptr_get)
-> >  BTF_SET_END(test_sk_ret_null_kfunc_ids)
-> >
-> > +BTF_SET_START(test_sk_kptr_acquire_kfunc_ids)
-> > +BTF_ID(func, bpf_kfunc_call_test_kptr_get)
-> > +BTF_SET_END(test_sk_kptr_acquire_kfunc_ids)
-> > +
-> >  static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
-> >  			   u32 size, u32 headroom, u32 tailroom)
-> >  {
-> > @@ -1579,14 +1592,36 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
-> >
-> >  static const struct btf_kfunc_id_set bpf_prog_test_kfunc_set = {
-> >  	.owner        = THIS_MODULE,
-> > -	.check_set    = &test_sk_check_kfunc_ids,
-> > -	.acquire_set  = &test_sk_acquire_kfunc_ids,
-> > -	.release_set  = &test_sk_release_kfunc_ids,
-> > -	.ret_null_set = &test_sk_ret_null_kfunc_ids,
-> > +	.check_set        = &test_sk_check_kfunc_ids,
-> > +	.acquire_set      = &test_sk_acquire_kfunc_ids,
-> > +	.release_set      = &test_sk_release_kfunc_ids,
-> > +	.ret_null_set     = &test_sk_ret_null_kfunc_ids,
-> > +	.kptr_acquire_set = &test_sk_kptr_acquire_kfunc_ids
-> >  };
->
-> This hunk probably should have been in the previous patch,
-> but since it's not affecting bisect I left it as-is.
->
-> > +BTF_ID_LIST(bpf_prog_test_dtor_kfunc_ids)
-> > +BTF_ID(struct, prog_test_ref_kfunc)
-> > +BTF_ID(func, bpf_kfunc_call_test_release)
-> > +BTF_ID(struct, prog_test_member)
-> > +BTF_ID(func, bpf_kfunc_call_memb_release)
->
-> dtor of prog_test_member doesn't seem to be used ?
->
+On Fri, May 06, 2022 at 01:06:20AM +0300, Wille Kuutti wrote:
+> Network traffic is not limited to only IPv4 and IPv6 protocols, but several
+> other L3 networking protocols are in common use in several
+> applications and deployment scenarios which also could utilize BPF. This
+> change enables the bpf_skb_adjust_room BPF helper to adjust the
+> room after the MAC header using BPF_ADJ_ROOM_MAC option for packets with any
+> L3 payload. For BPF_ADJ_ROOM_NET option only IPv4 and IPv6 are
+> still supported as each L3 protocol would need it's own logic to determine
+> the length of the L3 header to enable adjustment after the L3
+> headers.
+What are the non IPv4/6 use cases ? selftests are required for at least
+some of these use cases.
 
-It is necessary to be able to embed prog_test_member struct as a referenced kptr
-in a map value, so it is still called by the map implementation's free path. But
-since this is just used for verifier tests related to type matching when
-non-zero offset is involved, both acquire and release are dummy functions.
+Please tag the 'Subject' with bpf-next.
 
-> Please improve dtor and kptr_get test methods for
-> struct prog_test_ref_kfunc and prog_test_member to do the real refcnting.
-> Empty methods are not testing things fully.
+> Signed-off-by: Wille Kuutti <wille.kuutti@kuutti.com>
+> ---
+> net/core/filter.c | 5 +++--
+> 1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 64470a727ef7..c6790a763c9b 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3362,7 +3362,7 @@ static u32 bpf_skb_net_base_len(const struct sk_buff
+> *skb)
+>         case htons(ETH_P_IPV6):
+>                 return sizeof(struct ipv6hdr);
+>         default:
+> -               return ~0U;
+> +               return 0U;
+Does it affect the len_min test in bpf_skb_adjust_room ?
 
-I will leave out prog_test_member since it is not meant to be used at runtime,
-but I will add refcount_t to prog_test_ref_kfunc, and include tests for it.
-
---
-Kartikeya
+>         }
+> }
+> 
+> @@ -3582,7 +3582,8 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb,
+> s32, len_diff,
+>         if (unlikely(len_diff_abs > 0xfffU))
+>                 return -EFAULT;
+>         if (unlikely(proto != htons(ETH_P_IP) &&
+> -                    proto != htons(ETH_P_IPV6)))
+> +                       proto != htons(ETH_P_IPV6) &&
+> +                       mode != BPF_ADJ_ROOM_MAC))
+>                 return -ENOTSUPP;
+> 
+>         off = skb_mac_header_len(skb);
+> --
+> 2.32.0
+> 
+> 
