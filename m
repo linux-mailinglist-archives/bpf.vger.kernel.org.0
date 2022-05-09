@@ -2,64 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A23FD52056B
-	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 21:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061E6520580
+	for <lists+bpf@lfdr.de>; Mon,  9 May 2022 21:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240652AbiEITsp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 15:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36078 "EHLO
+        id S240674AbiEITwu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 15:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240639AbiEITso (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 15:48:44 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F392D9EF4
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 12:44:50 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id w187so26873493ybe.2
-        for <bpf@vger.kernel.org>; Mon, 09 May 2022 12:44:50 -0700 (PDT)
+        with ESMTP id S240672AbiEITwp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 15:52:45 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B2A3D1D1
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 12:48:50 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id cx11-20020a17090afd8b00b001d9fe5965b3so248070pjb.3
+        for <bpf@vger.kernel.org>; Mon, 09 May 2022 12:48:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zcXM3TjuUtOj4GCOwvh2CNZQLLNcr9SIqJ1uCHyGnzQ=;
-        b=ZRCsY60m3O1DoCxAyiYTT/OhPCKGKipeuM7ep/URmLBcGdFEOBgvHBhtnOWsnA0lM8
-         eCBuWoY50eJdA7a2jIlN6KjpNTAagCRL7pEOdJ3DgMkRwNJvnIBsePnIlCcmtlf1TYPg
-         L5Ck36TxjlSxxAYPjQVs86dgKcCRB7NRBA7QzVPs2V2Jq8NwnBeAzAdKkORadh5K2QQc
-         3EqUyeAwUntw1GEeDgm0cyOIAmbSZA8JdVh6livCO1TWyIR9iNaGSrrLEuFEwNWEQovI
-         JGVB6LzkZ7Xn4PuVYXI1tzFzfBwVy8+P7mOEzlti6NtnBV9q1osUDPZ8pkiUs8sLtTkv
-         3S5Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yTK8z47V6qkv5ZONU04tsUwj/ztrROmxaApguf+uIGo=;
+        b=AR/ri373fCt5Vi/hBFzVXDkd/EUToSAonmm7WX6GYnrooL5415OLlNj4mDfHYIyAPo
+         uOXZNuY4mZvQ1uabHBoYJZUvn6K4k7RSkRHuEMkUursy6/EsqI7kXGDSWLcD4u8DpZxg
+         7Z/7heXHqN3eubmOmbUet62QzY5p7Vclw4abgPUn7U9f48BTUfITC+Wl9J5mhMpMkjt1
+         JvYJtrAZhdaLHQ5zEvvX7r/I0MaDCewS/bMJ0BwsQuArXZSgRO/o+SPdr+5Ts9Wni6v9
+         vibjyLfsaJsCl/nserMKEv4iJIfH3pzTig1MOsHQ8ZpfitZFTDHgK+/5+8ncTtUn0ygs
+         7Lhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zcXM3TjuUtOj4GCOwvh2CNZQLLNcr9SIqJ1uCHyGnzQ=;
-        b=IaGXVlqcdBoyDjyVNyJbcctx6LzxgkSURG27jRMwzf5o+vwxmLDiyrU1XGzJziwVeP
-         F5kz1JZ/VMNlISQ4BxOnBPmKL/z8u6DgDO3XT1gzYiUCsRc8Jl1IILTZecew/BkjFviL
-         HnN9rdEyh9BH+gaiDCjHfvpZoi9u9Zey9mo7bBzZftjp1jfvryVg3BTBb1ZqY8wIhFzp
-         R4B63Y7SVl3yn6Pgc3DZ5h2G2SeivLRnmHNDhVyWpdwFlk4l9qZyeDO6wlKimSeOkG9X
-         AlLy8qBXLZoIy/QN7OlQSbbLMixPj4DkjsV1MxBjS9+2eUYKKuqDvYFGgDX6CbjDE6Yf
-         bk7Q==
-X-Gm-Message-State: AOAM530dvOpDVdgGZutqat/rs/IWx5AOfsyJ/1PC2gEvpovryaXztTLf
-        T03QkHaF9IET8/y4CQSUe4jCy5vhVsUPWjnWZn4aNfvL
-X-Google-Smtp-Source: ABdhPJyQSBSumA6Wuio9X/fDU4xXui32sv+wGxEdv1KzXNVzqAmIbScZIi0SFdh8KXZvV6Sqjn8p2kZUOT1EL6n29gk=
-X-Received: by 2002:a05:6902:13c2:b0:641:b6d:a151 with SMTP id
- y2-20020a05690213c200b006410b6da151mr14556563ybu.348.1652125489423; Mon, 09
- May 2022 12:44:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220428211059.4065379-1-joannelkoong@gmail.com>
- <20220428211059.4065379-4-joannelkoong@gmail.com> <CAEf4Bzaz4=tEvESd_twhx1bdepdOP3L4SmUiaKqGFJtX=CJruQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzaz4=tEvESd_twhx1bdepdOP3L4SmUiaKqGFJtX=CJruQ@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 9 May 2022 12:44:38 -0700
-Message-ID: <CAJnrk1YsJATpAc5X83FOD=t7ijrTTBFrxN6HphBJJO2Hnhghsw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] bpf: Dynptr support for ring buffers
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yTK8z47V6qkv5ZONU04tsUwj/ztrROmxaApguf+uIGo=;
+        b=jOEKSD/vTchhzETeEXtuVindpZ/++eGiZ7BeLrGssCqwFOi1pO2rd3WwwnTWHWvIZJ
+         gWJk4MtiVQjIR6i2UMOEzJHLnq0d1X24O660Zafrhr2V6A8kNDaYE4bEl4ZsPyXyM2dQ
+         3XRQ/Dqea2QYgmBWpjlyZOEPHP6L5o+fi0NJAe9bJkT7DFVfuvUWh4mZpN0osqUw6wwK
+         jdDYvU9OaoI9Rtc+Vo5FryOcDmOG0vyfYnW/wr7pRv8+yvn+rSuHJzCgsvaWZ+kYaB7r
+         a15fUyftIsWCddjI6BFIuZln0rw8SjLPMXmjJgjS20SKq+HgN23+wr9Iwuljwy9RanfH
+         fsvw==
+X-Gm-Message-State: AOAM531omZQSpkLE/RbxmAEwV4U1cZT9DG2bqV9PO1MBc+GyCkBRzb4n
+        maVrOddy1rd0t8X5RSpDIHCDCd01zcI=
+X-Google-Smtp-Source: ABdhPJzA1VrbKYXpa4P/S0azGw5CoeDZABKvsQVLFVsgoRDo+yXqruj8xSDp00YKgh1LfSqpA3r73w==
+X-Received: by 2002:a17:90b:4a01:b0:1dc:b062:da0e with SMTP id kk1-20020a17090b4a0100b001dcb062da0emr19495837pjb.87.1652125730079;
+        Mon, 09 May 2022 12:48:50 -0700 (PDT)
+Received: from localhost ([157.51.71.11])
+        by smtp.gmail.com with ESMTPSA id h27-20020a056a00001b00b0050dc76281d7sm9314477pfk.177.2022.05.09.12.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 May 2022 12:48:49 -0700 (PDT)
+Date:   Tue, 10 May 2022 01:19:23 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Joanne Koong <joannelkoong@gmail.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH bpf-next v6 13/13] selftests/bpf: Add test for strict BTF
+ type check
+Message-ID: <20220509194923.sgqurmefkaunpqat@apollo.legion>
+References: <20220424214901.2743946-1-memxor@gmail.com>
+ <20220424214901.2743946-14-memxor@gmail.com>
+ <20220426033937.jjcua6zchnka5dco@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <CAADnVQKdB13TUDUsKPUEtgMgKWDG9xUDa1WO3v7HSufqU-sE-w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKdB13TUDUsKPUEtgMgKWDG9xUDa1WO3v7HSufqU-sE-w@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -70,74 +77,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 6, 2022 at 4:41 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Apr 28, 2022 at 2:12 PM Joanne Koong <joannelkoong@gmail.com> wro=
-te:
+On Mon, May 09, 2022 at 03:29:13AM IST, Alexei Starovoitov wrote:
+> On Mon, Apr 25, 2022 at 8:39 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Currently, our only way of writing dynamically-sized data into a ring
-> > buffer is through bpf_ringbuf_output but this incurs an extra memcpy
-> > cost. bpf_ringbuf_reserve + bpf_ringbuf_commit avoids this extra
-> > memcpy, but it can only safely support reservation sizes that are
-> > statically known since the verifier cannot guarantee that the bpf
-> > program won=E2=80=99t access memory outside the reserved space.
+> > On Mon, Apr 25, 2022 at 03:19:01AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
+> > > index 2e03decb11b6..743ed34c1238 100644
+> > > --- a/tools/testing/selftests/bpf/verifier/calls.c
+> > > +++ b/tools/testing/selftests/bpf/verifier/calls.c
+> > > @@ -138,6 +138,26 @@
+> > >               { "bpf_kfunc_call_memb_release", 8 },
+> > >       },
+> > >  },
+> > > +{
+> > > +     "calls: invalid kfunc call: don't match first member type when passed to release kfunc",
+> > > +     .insns = {
+> > > +     BPF_MOV64_IMM(BPF_REG_0, 0),
+> > > +     BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
+> > > +     BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
+> > > +     BPF_EXIT_INSN(),
+> > > +     BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
+> > > +     BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
+> > > +     BPF_MOV64_IMM(BPF_REG_0, 0),
+> > > +     BPF_EXIT_INSN(),
+> > > +     },
+> > > +     .prog_type = BPF_PROG_TYPE_SCHED_CLS,
+> > > +     .result = REJECT,
+> > > +     .errstr = "kernel function bpf_kfunc_call_memb1_release args#0 expected pointer",
+> > > +     .fixup_kfunc_btf_id = {
+> > > +             { "bpf_kfunc_call_memb_acquire", 1 },
+> > > +             { "bpf_kfunc_call_memb1_release", 5 },
+> > > +     },
+> > > +},
 > >
-> > The bpf_dynptr abstraction allows for dynamically-sized ring buffer
-> > reservations without the extra memcpy.
-> >
-> > There are 3 new APIs:
-> >
-> > long bpf_ringbuf_reserve_dynptr(void *ringbuf, u32 size, u64 flags, str=
-uct bpf_dynptr *ptr);
-> > void bpf_ringbuf_submit_dynptr(struct bpf_dynptr *ptr, u64 flags);
-> > void bpf_ringbuf_discard_dynptr(struct bpf_dynptr *ptr, u64 flags);
-> >
-> > These closely follow the functionalities of the original ringbuf APIs.
-> > For example, all ringbuffer dynptrs that have been reserved must be
-> > either submitted or discarded before the program exits.
-> >
-> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> > ---
+> > Please add negative C tests as well.
+> > Consider using SEC("?tc") logic added by commit 0d7fefebea552
+> > and put a bunch of bpf progs that should fail to load in one .c
 >
-> Looks great! Modulo those four underscores, they are super confusing...
+> Kumar,
 >
-> >  include/linux/bpf.h            | 10 ++++-
-> >  include/uapi/linux/bpf.h       | 35 +++++++++++++++++
-> >  kernel/bpf/helpers.c           |  6 +++
-> >  kernel/bpf/ringbuf.c           | 71 ++++++++++++++++++++++++++++++++++
-> >  kernel/bpf/verifier.c          | 18 +++++++--
-> >  tools/include/uapi/linux/bpf.h | 35 +++++++++++++++++
-> >  6 files changed, 171 insertions(+), 4 deletions(-)
-> >
-[...]
-> >
->
-> [...]
->
-> > + *
-> > + * void bpf_ringbuf_discard_dynptr(struct bpf_dynptr *ptr, u64 flags)
-> > + *     Description
-> > + *             Discard reserved ring buffer sample through the dynptr
-> > + *             interface. This is a no-op if the dynptr is invalid/nul=
-l.
-> > + *
-> > + *             For more information on *flags*, please see
-> > + *             'bpf_ringbuf_discard'.
-> > + *     Return
-> > + *             Nothing. Always succeeds.
-> >   */
->
-> let's also add bpf_dynptr_is_null() (or bpf_dynptr_is_valid(), not
-> sure which one is more appropriate, probably just null one), so we can
-> check in code whether some reservation was successful without knowing
-> bpf_ringbuf_reserve_dynptr()'s return value
-I'm planning to add bpf_dynptr_is_null() in the 3rd dynptr patchset
-(convenience helpers). Do you prefer that this be part of this
-patchset instead? If so, do you think this should be part of the 2nd
-patch (aka the one where we set up the infra for dynptrs + implement
-malloc-type dynptrs) or this ringbuf patch or its own patch?
->
->
-[...]
-> [...]
+> ping?
+> Are you still working on the follow up?
+
+Yes, just got a bit stalled due to some IRL stuff... I'll post the follow up set
+tomorrow.
+
+--
+Kartikeya
