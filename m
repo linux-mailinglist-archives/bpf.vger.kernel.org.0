@@ -2,267 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C370A52156F
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 14:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9875A5215BF
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 14:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241813AbiEJMbe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 08:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
+        id S241373AbiEJMtf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 08:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241815AbiEJMbY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 08:31:24 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8A12A3760;
-        Tue, 10 May 2022 05:27:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 87C6BB81BD8;
-        Tue, 10 May 2022 12:27:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FCC6C385A6;
-        Tue, 10 May 2022 12:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652185644;
-        bh=IXtTKnWWf2sdyXq5urSn2z0rdlL4RzojJ6aPpiupcEo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PlHI/DvKS1DWL3xxCC8D5d/KL4LNAmZOE+DVdtJtTpzZLfteuyd7TQF1jr/7eI0sX
-         HJEZxb2e3mHyFBSdb6HZqpWMNOYXC3h27MMrO9jPrmZK99+wFy6Aj195TQyVsuV9me
-         N2UFG0r7AMCrNzRc7NzarPYRy2nx1wiQBNltEkVI/4wpW1RY1MgB0TOwiuNJn7tcHJ
-         u+epSnvJYYawDjBEIvAU4UEuJKibVAhqNWqFE1Yfu1MIsEwxch7+z5ep/vrfIT4nPa
-         BOAeZaXF/E2g0gTDfTow2ZMl5TXYtHPqk1CmbLGTfWDrXozF4Q/1WYwx+USnehJYiT
-         kq0vTo1b2QBYg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCHv6 bpf-next 5/5] selftests/bpf: Add attach bench test
-Date:   Tue, 10 May 2022 14:26:16 +0200
-Message-Id: <20220510122616.2652285-6-jolsa@kernel.org>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220510122616.2652285-1-jolsa@kernel.org>
-References: <20220510122616.2652285-1-jolsa@kernel.org>
+        with ESMTP id S241949AbiEJMte (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 08:49:34 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25BBF5521C
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 05:45:34 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id v10so14531195pgl.11
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 05:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=81CmoXK8W2fMc2E/XpNylErNEPWG7PeFWSGfTvENHek=;
+        b=BuizLo0eMVf1CFKzq5z5mJXXTCdmsbZnthwaSpGZvyOinz0zK1oVrwY+RjDSbz0lsj
+         W4/gcD2GsatA2CltDPm42940C9Zx8OlEiXWEDruJeUP+scX4B4Dn/BR45LSBkgx0ha/1
+         1lof9Sxe/0+TSOSmg+ZbSpzVPPfdI8D1n/IK23ovFovWMObnth4tWgSXWT44+EFOD5cw
+         YRdLOnhCKKUDhjj1PBpvvrU/SLEYIvonvF8JuhoBcVkVWvziCCxnA6XbN07WU1oTTJuX
+         9N9BICkQtsDiH2S5IvrqAAzmp2SqDTXhUfx7lB75VtVwJ+wJsJW+JGZukF4rewQyhJ7E
+         HF3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=81CmoXK8W2fMc2E/XpNylErNEPWG7PeFWSGfTvENHek=;
+        b=HySCVq93TNpDD0mqp+JQAYk+1/Ltgo/KNO58i2bHD1H1uOyMSzpVwis6gEaiDAj/k0
+         li544LquAAl0XkCCgwAnrySrry8FK3dxWIDHmeeIjsZpV8fut0hc/8tM17srK4HiyaMW
+         ib+xUcD1t65Bl7VzufRKAZthVzd/iwsaRQI3a/6Ux6I/y9ysaaiDVcirdzbtePuY6xOI
+         4ibCWEd0AYHPqNZ5Gpp78rhZTeVpxinTj7BpsGbRkMiMaud7Xx2zZmHaqIxUC0L4v2f0
+         nTB/8FtbQvMkjPITYmcCjapSXEhollBKjEWwkdGFdMSPhLtBfaLVvcxgq7nh+uYTA6Lt
+         6hdQ==
+X-Gm-Message-State: AOAM531sYx6ZJGwMxpM3i1YkfH1saGdpTSPugc8NYlI1JBiUQDqagtHS
+        Zt2OzZv4pHZCp5EVIQjZTh67crirYV8iZEoO
+X-Google-Smtp-Source: ABdhPJww7Eg4/Zxst2GZrQrVNwauUtpxNCsfNjZ19FUR133ytWOXTk+q1xGx0v1s2BhN+B7mV7yS+A==
+X-Received: by 2002:a63:2c8a:0:b0:3aa:86ea:f2c9 with SMTP id s132-20020a632c8a000000b003aa86eaf2c9mr16916062pgs.46.1652186733527;
+        Tue, 10 May 2022 05:45:33 -0700 (PDT)
+Received: from [192.168.1.100] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id q187-20020a632ac4000000b003c14af5063fsm10345438pgq.87.2022.05.10.05.45.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 May 2022 05:45:32 -0700 (PDT)
+Message-ID: <0e1b3d10-ae79-f987-187e-58109441ccee@kernel.dk>
+Date:   Tue, 10 May 2022 06:45:31 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [syzbot] KASAN: use-after-free Read in bio_poll
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>
+Cc:     syzbot <syzbot+99938118dfd9e1b0741a@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <00000000000029572505de968021@google.com>
+ <a72282ef-650c-143b-4b88-5185009c3ec2@kernel.dk> <YnmuRuO4yplt8p/p@T590>
+ <20220510055039.GA10576@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20220510055039.GA10576@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test that reads all functions from ftrace available_filter_functions
-file and attach them all through kprobe_multi API.
+On 5/9/22 11:50 PM, Christoph Hellwig wrote:
+> On Tue, May 10, 2022 at 08:13:58AM +0800, Ming Lei wrote:
+>>> Guys, should we just queue:
+>>>
+>>> ommit 9650b453a3d4b1b8ed4ea8bcb9b40109608d1faf
+>>> Author: Ming Lei <ming.lei@redhat.com>
+>>> Date:   Wed Apr 20 22:31:10 2022 +0800
+>>>
+>>>     block: ignore RWF_HIPRI hint for sync dio
+>>>
+>>> up for 5.18 and stable?
+>>
+>> I am fine with merging to 5.18 & stable.
+> 
+> I'm fine, too.  But are we sure this actually is one and the same
+> issue?  Otherwise I'll try to find some time to feed it to syzbot
+> first.
 
-It also prints stats info with -v option, like on my setup:
+I re-wrote the reproducer a bit and can reproduce it, so I can certainly
+test a backport. But yes, I was skeptical on this being the same issue
+too. My initial reaction was that this is likely due to the bio being
+"downgraded" from polled to IRQ driven, and hence completes without an
+extra reference before the bio_poll() is done on it. Which is not the
+issue described in the referenced commit.
 
-  test_bench_attach: found 48712 functions
-  test_bench_attach: attached in   1.069s
-  test_bench_attach: detached in   0.373s
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/kprobe_multi_test.c        | 143 ++++++++++++++++++
- .../selftests/bpf/progs/kprobe_multi_empty.c  |  12 ++
- 2 files changed, 155 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi_empty.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index c56db65d4c15..816eacededd1 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -2,6 +2,9 @@
- #include <test_progs.h>
- #include "kprobe_multi.skel.h"
- #include "trace_helpers.h"
-+#include "kprobe_multi_empty.skel.h"
-+#include "bpf/libbpf_internal.h"
-+#include "bpf/hashmap.h"
- 
- static void kprobe_multi_test_run(struct kprobe_multi *skel, bool test_return)
- {
-@@ -301,6 +304,144 @@ static void test_attach_api_fails(void)
- 	kprobe_multi__destroy(skel);
- }
- 
-+static inline __u64 get_time_ns(void)
-+{
-+	struct timespec t;
-+
-+	clock_gettime(CLOCK_MONOTONIC, &t);
-+	return (__u64) t.tv_sec * 1000000000 + t.tv_nsec;
-+}
-+
-+static size_t symbol_hash(const void *key, void *ctx __maybe_unused)
-+{
-+	return str_hash((const char *) key);
-+}
-+
-+static bool symbol_equal(const void *key1, const void *key2, void *ctx __maybe_unused)
-+{
-+	return strcmp((const char *) key1, (const char *) key2) == 0;
-+}
-+
-+static int get_syms(char ***symsp, size_t *cntp)
-+{
-+	size_t cap = 0, cnt = 0, i;
-+	char *name, **syms = NULL;
-+	struct hashmap *map;
-+	char buf[256];
-+	FILE *f;
-+	int err;
-+
-+	/*
-+	 * The available_filter_functions contains many duplicates,
-+	 * but other than that all symbols are usable in kprobe multi
-+	 * interface.
-+	 * Filtering out duplicates by using hashmap__add, which won't
-+	 * add existing entry.
-+	 */
-+	f = fopen("/sys/kernel/debug/tracing/available_filter_functions", "r");
-+	if (!f)
-+		return -EINVAL;
-+
-+	map = hashmap__new(symbol_hash, symbol_equal, NULL);
-+	if (IS_ERR(map))
-+		goto error;
-+
-+	while (fgets(buf, sizeof(buf), f)) {
-+		/* skip modules */
-+		if (strchr(buf, '['))
-+			continue;
-+		if (sscanf(buf, "%ms$*[^\n]\n", &name) != 1)
-+			continue;
-+		/*
-+		 * We attach to almost all kernel functions and some of them
-+		 * will cause 'suspicious RCU usage' when fprobe is attached
-+		 * to them. Filter out the current culprits - arch_cpu_idle
-+		 * and rcu_* functions.
-+		 */
-+		if (!strcmp(name, "arch_cpu_idle"))
-+			continue;
-+		if (!strncmp(name, "rcu_", 4))
-+			continue;
-+		err = hashmap__add(map, name, NULL);
-+		if (err) {
-+			free(name);
-+			if (err == -EEXIST)
-+				continue;
-+			goto error;
-+		}
-+		err = libbpf_ensure_mem((void **) &syms, &cap,
-+					sizeof(*syms), cnt + 1);
-+		if (err) {
-+			free(name);
-+			goto error;
-+		}
-+		syms[cnt] = name;
-+		cnt++;
-+	}
-+
-+	*symsp = syms;
-+	*cntp = cnt;
-+
-+error:
-+	fclose(f);
-+	hashmap__free(map);
-+	if (err) {
-+		for (i = 0; i < cnt; i++)
-+			free(syms[cnt]);
-+		free(syms);
-+	}
-+	return err;
-+}
-+
-+static void test_bench_attach(void)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	struct kprobe_multi_empty *skel = NULL;
-+	long attach_start_ns, attach_end_ns;
-+	long detach_start_ns, detach_end_ns;
-+	double attach_delta, detach_delta;
-+	struct bpf_link *link = NULL;
-+	char **syms = NULL;
-+	size_t cnt, i;
-+
-+	if (!ASSERT_OK(get_syms(&syms, &cnt), "get_syms"))
-+		return;
-+
-+	skel = kprobe_multi_empty__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "kprobe_multi_empty__open_and_load"))
-+		goto cleanup;
-+
-+	opts.syms = (const char **) syms;
-+	opts.cnt = cnt;
-+
-+	attach_start_ns = get_time_ns();
-+	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_empty,
-+						     NULL, &opts);
-+	attach_end_ns = get_time_ns();
-+
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach_kprobe_multi_opts"))
-+		goto cleanup;
-+
-+	detach_start_ns = get_time_ns();
-+	bpf_link__destroy(link);
-+	detach_end_ns = get_time_ns();
-+
-+	attach_delta = (attach_end_ns - attach_start_ns) / 1000000000.0;
-+	detach_delta = (detach_end_ns - detach_start_ns) / 1000000000.0;
-+
-+	printf("%s: found %lu functions\n", __func__, cnt);
-+	printf("%s: attached in %7.3lfs\n", __func__, attach_delta);
-+	printf("%s: detached in %7.3lfs\n", __func__, detach_delta);
-+
-+cleanup:
-+	kprobe_multi_empty__destroy(skel);
-+	if (syms) {
-+		for (i = 0; i < cnt; i++)
-+			free(syms[i]);
-+		free(syms);
-+	}
-+}
-+
- void test_kprobe_multi_test(void)
- {
- 	if (!ASSERT_OK(load_kallsyms(), "load_kallsyms"))
-@@ -320,4 +461,6 @@ void test_kprobe_multi_test(void)
- 		test_attach_api_syms();
- 	if (test__start_subtest("attach_api_fails"))
- 		test_attach_api_fails();
-+	if (test__start_subtest("bench_attach"))
-+		test_bench_attach();
- }
-diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi_empty.c b/tools/testing/selftests/bpf/progs/kprobe_multi_empty.c
-new file mode 100644
-index 000000000000..e76e499aca39
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/kprobe_multi_empty.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("kprobe.multi/")
-+int test_kprobe_empty(struct pt_regs *ctx)
-+{
-+	return 0;
-+}
 -- 
-2.35.3
+Jens Axboe
 
