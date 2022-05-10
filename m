@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F309522634
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 23:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3826522635
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 23:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233831AbiEJVRQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 17:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        id S230484AbiEJVRT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 17:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233972AbiEJVRL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 17:17:11 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181A250B36
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:17:10 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id i24so230200pfa.7
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:17:10 -0700 (PDT)
+        with ESMTP id S234364AbiEJVRR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 17:17:17 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA5150B36
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:17:16 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id o69so339475pjo.3
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:17:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wdNYtEXqXnxe/bOH0cqt6IjHmEIdndQN3AFnleszWM4=;
-        b=AR1M9REaQiXXyH81ZnwBpQZYnrLDiV6goG8S1wMSeQ+b9gVkc9j7sM83PvlWZERP8I
-         XEEnCUxaF1qC+ELmNvlc995qL+o92p4wvv/0lZRzqn0npmJGyd7p86REG0wxsm/M7gz2
-         2LU+ypud1dOdQa3Vzo2R29LmYoN+uDcuKooE5HcE6JbILSgn6OBzok+zrQINMcxYxX6f
-         yphzbvD6kh2GtTbf6eY6wlCXCNoeXGyXg0dpLmANNZIXpy6xZU5sLPSchx4a+oE851uM
-         7KdZcwXgFPqk//gt8qFzQXyRkwDbG5aR7FGgKobfaLui/M5DY4uhBOtCMeMJ6VyqetcI
-         u8Zg==
+        bh=Wv3FmdT/C04wTY/7IU4S3jeXHrRadJrM6ycSbz0/lpQ=;
+        b=ZkUq0QNr0behOTMaHhc0niJ+OaJoPWrDBpFcHSqXWz+f25wEknRFqYmaV6tW/TfznQ
+         Ixe3yX8tCR4u2K3vN8UKjUCvXzMutFy6i/csXU2Yatkx52HcioVVSy0cNgOOLu/4Xryd
+         GJk/T/J3HquTE+vFcVSWU0DfUiGiHpA7ezEeIZVx+9uylbEcoqWnsra9Eoi3nw5+uh22
+         MlB8GiTs7ylcf9+qZNkVbBR8V+R/wzqcBinhnN3s2I/zFtVcCR+dS4ZaIzu9Hjs1OoP8
+         xHr24Q0NY6EFqc55XGD64jYBMbOfB4Lr6MAvPnxxwG7TxL6y1gq0LHmUsr/Z+oUd8f1f
+         hVvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wdNYtEXqXnxe/bOH0cqt6IjHmEIdndQN3AFnleszWM4=;
-        b=NwpUtMXeJgZZQQbQBNJomwVJs1oMAsaLgW85gw7WOB2uZlZyMOBZENKoBDVvnOA5ja
-         wVewEvD4xJWoHnEAbq5GdwuJgzzwnbrS45dTkbEZZc0xQ/vcdi8Y7ZXA3iR9+QqkBPLH
-         EqpNDficfiqEDIL/fYywWLhbNHP+4oav/nEz1GOTpwN+2hXJF4YZr6Rp7w3NSMtzAEtc
-         rMkX79yfh7iXhc++sKw/ekgIoAxqUjpGA0eljD+8T18x+tNJtkZbI81EKM1fUy+pHyCM
-         RraUQ/rG86PLFaVbBRA2Xxp1YCBmsZps8WNVv/lO9qgKU+scMrZfsAM+JtQRywMz7BtW
-         JeYg==
-X-Gm-Message-State: AOAM530NrvqvgSgvuLHKK9c3IuR2t7ELrPauY5F2ZDG2axa+TTYpytiT
-        U4ix6BMCipLOcpybhv0T8TazqkqNLTg=
-X-Google-Smtp-Source: ABdhPJy/eF8E9WjhT9s4xjLJOP4cPkHnAN6RoqhHKNz57qNURdaKuz4/wwQR2FYo/2B5MlmfCa4HOg==
-X-Received: by 2002:a05:6a00:b94:b0:50f:2255:ae03 with SMTP id g20-20020a056a000b9400b0050f2255ae03mr22435088pfj.74.1652217429282;
-        Tue, 10 May 2022 14:17:09 -0700 (PDT)
+        bh=Wv3FmdT/C04wTY/7IU4S3jeXHrRadJrM6ycSbz0/lpQ=;
+        b=xuQkJD3OGJM47HsQtR3NA32QXnwOA/hEq6xcYJ0s20lrEXpy+7qrsXM0QpEK0X6Znl
+         7ouULZadp4cj39BJoXel9HSa6Rh04esnE2WD4CuhK+uOCNuEVc2f86DqqAYmoddpakSr
+         mtPVmlVmLP7EyzC/ppy3QxxFRLGtAA3onY5ZUI0gJxdRg1ozBnzBb37N0UTCiWMimNVl
+         SVMcnqOclTkavvCJdWB5z/B1ddxblg3LUlMfx4X94mhW4j3uUVObyD/m9L7EetQLNMVX
+         qx6ZBrAOn/5ETIb81CQfbe+QNxZVZrveHm5Ek2kl0NJtK/2kdM8pgDTQSPyWCCBCBD2f
+         BFaA==
+X-Gm-Message-State: AOAM532XVkv7RLqhVTptVwFtxQE5Yic+V6wIG7/IXb5CxWgtir1NDKHP
+        Jz2yKNVy6Sh36hVRokVTbcD9H9/pZRk=
+X-Google-Smtp-Source: ABdhPJz3HIX0JUadlI2uh1i4Ur4DwXb+/57Hag4ucd3WEn25C38MKthXBDPJ0Yoxng/T6dCV8LLKcg==
+X-Received: by 2002:a17:902:d50c:b0:15e:9455:19b2 with SMTP id b12-20020a170902d50c00b0015e945519b2mr21987445plg.140.1652217435371;
+        Tue, 10 May 2022 14:17:15 -0700 (PDT)
 Received: from localhost ([112.79.164.242])
-        by smtp.gmail.com with ESMTPSA id w11-20020a627b0b000000b0050dc76281c7sm1701pfc.161.2022.05.10.14.17.07
+        by smtp.gmail.com with ESMTPSA id b15-20020a056a0002cf00b0050dc76281c4sm2067pft.158.2022.05.10.14.17.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 May 2022 14:17:08 -0700 (PDT)
+        Tue, 10 May 2022 14:17:14 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v1 3/4] selftests/bpf: Add negative C tests for kptrs
-Date:   Wed, 11 May 2022 02:47:26 +0530
-Message-Id: <20220510211727.575686-4-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 4/4] selftests/bpf: Add tests for kptr_ref refcounting
+Date:   Wed, 11 May 2022 02:47:27 +0530
+Message-Id: <20220510211727.575686-5-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220510211727.575686-1-memxor@gmail.com>
 References: <20220510211727.575686-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13305; h=from:subject; bh=RgYQauBkTcoWSet6Nm5n73hArWfqreZruZIqXu4SDeM=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBietZj4jDMXGxaoXaXBS9FZblSlijfTOK6gyV5kaEC cTMOwOmJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYnrWYwAKCRBM4MiGSL8RyrgnD/ 4lkr9ISJhfO7gI111EZaa8Ta76Xx1yS5f5HNcdY8/Ro0J8ZINMXuo0eLPqznhiQ3ri18nK5Lc9iyCO heIxEK9rPqlAbx9F7wZ3CBQqP0nJH2maVabJAt9Q+qJ3J3PmwQXjXeOua1a4dT4kaMupYBmkGXCKG+ KsCaoXKv8ocORxV+1bsch3HBhbsO0BC3lqCt/shIa0eXNmnozxbYjIc+YBa3LdJ5wI5nm+wUBFBhDi 3s7Xj/ma54TEXROrdmFovtbkn2oh7MoClTuCDLHhAFkJIzeDK7JYAXJiKU7JHZdzg7cmxbx65YcmdY 79yb2hdvj/LedHHrpDQuMO7s7yrX9rKLmvI+K3X0figsZr5qsibGie8z/vSIDlIarwhySHHiqA/wBp mgKRPdkeN610Us3dMBrzFgzzAjNUNQEFWNVC38DkFlxUdkG+kRxUcYZ7VDyZrYrYMMv/L9aarQEnAS ejS4kHIj+BrBkeKhCyJcuIJ/6D5W8OMK/Oj+iZiv/riByyoibb62PaB06YFA7CgG5CeurCcikCaiA3 x4ipIFspGIAKrr6FWT308FWdgZ5ZmyurdM//Y6ra7qJNqJdVmChPcRVT1Srbf/DRXbezEyysrXbttZ 2YcixW92W7Lnbh3Vsk5byBfL2nqh6dJrXg1i7fphmYmqRk0FLTtVX/+/xoUw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5775; h=from:subject; bh=ibdNFv8R/LyxLH/8CN0QcQyhFKMejnH2v3V6RDcv7Ic=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBietZj3eIvP76MwGEcu8uF1oWGjbXe7cnPmvZsREmB 1egZEbWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYnrWYwAKCRBM4MiGSL8RyrHQD/ 4tULlZu5MV8hMx6lwGHnRNXfXyCn+Ya6wgw3UiE32KSHuv5WypkSTSPHEBLiXXSAIaD7+XyH/3PCv5 fCblpfyq7gh6c5nQ8IiZJLFtjfko+Z+Grp4cwk0TNkQT6SfhnURCOPer1kfZJLxN3ggg04F4mDejDe pr0yPQVcVFqgBgbC8jG7irLRMq2arudL2AY9Bt2Obpzy2SVdevgmut8sX4podrXfbn5Eshhbvj38jb Q1QhQGo6HjqHb6svSqWotcTSaNtbmHTdtnkgE2voHjtLBpzNDPMbDRwyo6+ZoNUwgxzxzii7aUx8wo ly4i+WI7lgxDBPSmSKZTSYqN9R+GCoH9mIi5Mj/8mQwZWs/KMrDWIy2oUtblJKl/8iUlOMtvLlmPCZ 9zJj+fGMT3I0vLRldkeHGFBOzoVOnNRrIvYPqe3+QcYbpOuf4Z8YxR5uEH8/3AnYkJ0vwPaLQJWC38 eSmyhhIuIRunThLobtbdoQ1Sg9cz9SIb2xTZv/ZEADBnlXvEz91s+4OxZS5dsdDE5r8vfTfffOVevp GYBebGw0ibB9q3z/g+UKs6AsM/iU7h/G3QkgmCvbaU9CoKEfs6Fu0rTzXTWo48pOBbOjZK1VE1pm5F t05A0ZFw6+AkSvZb+O0/HJisyaZXNzzaHsSphZ1uGrmggGIyrxnx1NpgA4jw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,547 +72,214 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This uses the newly added SEC("?foo") naming to disable autoload of
-programs, and then loads them one by one for the object and verifies
-that loading fails and matches the returned error string from verifier.
-This is similar to already existing verifier tests but provides coverage
-for BPF C.
+Check at runtime how various operations for kptr_ref affect its refcount
+and verify against the actual count. We use the per-CPU prog_test_struct
+to get an isolated object to inspect the refcount of.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- .../selftests/bpf/prog_tests/map_kptr.c       |  87 +++-
- .../selftests/bpf/progs/map_kptr_fail.c       | 419 ++++++++++++++++++
- 2 files changed, 505 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/map_kptr_fail.c
+ .../selftests/bpf/prog_tests/map_kptr.c       |  28 ++++-
+ tools/testing/selftests/bpf/progs/map_kptr.c  | 109 +++++++++++++++++-
+ 2 files changed, 132 insertions(+), 5 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-index 9e2fbda64a65..ffef3a319bac 100644
+index ffef3a319bac..bcee3e54e3ed 100644
 --- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
 +++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-@@ -2,8 +2,86 @@
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
  #include <test_progs.h>
++#include <network_helpers.h>
  
  #include "map_kptr.skel.h"
-+#include "map_kptr_fail.skel.h"
+ #include "map_kptr_fail.skel.h"
+@@ -81,8 +82,14 @@ static void test_map_kptr_fail(void)
+ 	}
+ }
  
--void test_map_kptr(void)
-+static char log_buf[1024 * 1024];
-+
-+struct {
-+	const char *prog_name;
-+	const char *err_msg;
-+} map_kptr_fail_tests[] = {
-+	{ "size_not_bpf_dw", "kptr access size must be BPF_DW" },
-+	{ "non_const_var_off", "kptr access cannot have variable offset" },
-+	{ "non_const_var_off_kptr_xchg", "R1 doesn't have constant offset. kptr has to be" },
-+	{ "misaligned_access_write", "kptr access misaligned expected=8 off=7" },
-+	{ "misaligned_access_read", "kptr access misaligned expected=8 off=1" },
-+	{ "reject_var_off_store", "variable untrusted_ptr_ access var_off=(0x0; 0x1e0)" },
-+	{ "reject_bad_type_match", "invalid kptr access, R1 type=untrusted_ptr_prog_test_ref_kfunc" },
-+	{ "marked_as_untrusted_or_null", "R1 type=untrusted_ptr_or_null_ expected=percpu_ptr_" },
-+	{ "correct_btf_id_check_size", "access beyond struct prog_test_ref_kfunc at off 32 size 4" },
-+	{ "inherit_untrusted_on_walk", "R1 type=untrusted_ptr_ expected=percpu_ptr_" },
-+	{ "reject_kptr_xchg_on_unref", "off=8 kptr isn't referenced kptr" },
-+	{ "reject_kptr_get_no_map_val", "arg#0 expected pointer to map value" },
-+	{ "reject_kptr_get_no_null_map_val", "arg#0 expected pointer to map value" },
-+	{ "reject_kptr_get_no_kptr", "arg#0 no referenced kptr at map value offset=0" },
-+	{ "reject_kptr_get_on_unref", "arg#0 no referenced kptr at map value offset=8" },
-+	{ "reject_kptr_get_bad_type_match", "kernel function bpf_kfunc_call_test_kptr_get args#0" },
-+	{ "mark_ref_as_untrusted_or_null", "R1 type=untrusted_ptr_or_null_ expected=percpu_ptr_" },
-+	{ "reject_untrusted_store_to_ref", "store to referenced kptr disallowed" },
-+	{ "reject_bad_type_xchg", "invalid kptr access, R2 type=ptr_prog_test_ref_kfunc expected=ptr_prog_test_member" },
-+	{ "reject_untrusted_xchg", "R2 type=untrusted_ptr_ expected=ptr_" },
-+	{ "reject_member_of_ref_xchg", "invalid kptr access, R2 type=ptr_prog_test_ref_kfunc" },
-+	{ "reject_indirect_helper_access", "kptr cannot be accessed indirectly by helper" },
-+	{ "reject_indirect_global_func_access", "kptr cannot be accessed indirectly by helper" },
-+	{ "kptr_xchg_ref_state", "Unreleased reference id=5 alloc_insn=18" },
-+	{ "kptr_get_ref_state", "Unreleased reference id=3 alloc_insn=12" },
-+};
-+
-+static void test_map_kptr_fail_prog(const char *prog_name, const char *err_msg)
-+{
-+	LIBBPF_OPTS(bpf_object_open_opts, opts, .kernel_log_buf = log_buf,
-+						.kernel_log_size = sizeof(log_buf),
-+						.kernel_log_level = 1);
-+	struct map_kptr_fail *skel;
-+	struct bpf_program *prog;
-+	int ret;
-+
-+	skel = map_kptr_fail__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "map_kptr_fail__open_opts"))
-+		return;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto end;
-+
-+	bpf_program__set_autoload(prog, true);
-+
-+	ret = map_kptr_fail__load(skel);
-+	if (!ASSERT_ERR(ret, "map_kptr__load must fail"))
-+		goto end;
-+
-+	if (!ASSERT_OK_PTR(strstr(log_buf, err_msg), "expected error message")) {
-+		fprintf(stderr, "Expected: %s\n", err_msg);
-+		fprintf(stderr, "Verifier: %s\n", log_buf);
-+	}
-+
-+end:
-+	map_kptr_fail__destroy(skel);
-+}
-+
-+static void test_map_kptr_fail(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(map_kptr_fail_tests); i++) {
-+		if (!test__start_subtest(map_kptr_fail_tests[i].prog_name))
-+			continue;
-+		test_map_kptr_fail_prog(map_kptr_fail_tests[i].prog_name,
-+					map_kptr_fail_tests[i].err_msg);
-+	}
-+}
-+
-+static void test_map_kptr_success(void)
+-static void test_map_kptr_success(void)
++static void test_map_kptr_success(bool test_run)
  {
++	LIBBPF_OPTS(bpf_test_run_opts, opts,
++		.data_in = &pkt_v4,
++		.data_size_in = sizeof(pkt_v4),
++		.repeat = 1,
++		.cpu = 0,
++	);
  	struct map_kptr *skel;
  	int key = 0, ret;
-@@ -35,3 +113,10 @@ void test_map_kptr(void)
+ 	char buf[24];
+@@ -91,6 +98,16 @@ static void test_map_kptr_success(void)
+ 	if (!ASSERT_OK_PTR(skel, "map_kptr__open_and_load"))
+ 		return;
  
- 	map_kptr__destroy(skel);
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref retval");
++	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref2), &opts);
++	ASSERT_OK(ret, "test_map_kptr_ref2 refcount");
++	ASSERT_OK(opts.retval, "test_map_kptr_ref2 retval");
++
++	if (test_run)
++		return;
++
+ 	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
+ 	ASSERT_OK(ret, "array_map update");
+ 	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
+@@ -116,7 +133,12 @@ static void test_map_kptr_success(void)
+ 
+ void test_map_kptr(void)
+ {
+-	if (test__start_subtest("success"))
+-		test_map_kptr_success();
++	if (test__start_subtest("success")) {
++		test_map_kptr_success(false);
++		/* Do test_run twice, so that we see refcount going back to 1
++		 * after we leave it in map from first iteration.
++		 */
++		test_map_kptr_success(true);
++	}
+ 	test_map_kptr_fail();
  }
-+
-+void test_map_kptr(void)
-+{
-+	if (test__start_subtest("success"))
-+		test_map_kptr_success();
-+	test_map_kptr_fail();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/map_kptr_fail.c b/tools/testing/selftests/bpf/progs/map_kptr_fail.c
-new file mode 100644
-index 000000000000..c4ef48224362
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/map_kptr_fail.c
-@@ -0,0 +1,419 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+
-+struct map_value {
-+	char buf[8];
-+	struct prog_test_ref_kfunc __kptr *unref_ptr;
-+	struct prog_test_ref_kfunc __kptr_ref *ref_ptr;
-+	struct prog_test_member __kptr_ref *ref_memb_ptr;
-+};
-+
-+struct array_map {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct map_value);
-+	__uint(max_entries, 1);
-+} array_map SEC(".maps");
-+
-+extern struct prog_test_ref_kfunc *bpf_kfunc_call_test_acquire(unsigned long *sp) __ksym;
-+extern struct prog_test_ref_kfunc *
-+bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b) __ksym;
-+
-+SEC("?tc")
-+int size_not_bpf_dw(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
+diff --git a/tools/testing/selftests/bpf/progs/map_kptr.c b/tools/testing/selftests/bpf/progs/map_kptr.c
+index 1b0e0409eaa5..569d7522bb9f 100644
+--- a/tools/testing/selftests/bpf/progs/map_kptr.c
++++ b/tools/testing/selftests/bpf/progs/map_kptr.c
+@@ -61,6 +61,7 @@ extern struct prog_test_ref_kfunc *bpf_kfunc_call_test_acquire(unsigned long *sp
+ extern struct prog_test_ref_kfunc *
+ bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b) __ksym;
+ extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
++extern struct prog_test_ref_kfunc prog_test_struct __ksym;
+ 
+ static void test_kptr_unref(struct map_value *v)
+ {
+@@ -141,7 +142,7 @@ SEC("tc")
+ int test_map_kptr(struct __sk_buff *ctx)
+ {
+ 	struct map_value *v;
+-	int i, key = 0;
 +	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	*(u32 *)&v->unref_ptr = 0;
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int non_const_var_off(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0, id;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	id = ctx->protocol;
-+	if (id < 4 || id > 12)
-+		return 0;
-+	*(u64 *)((void *)v + id) = 0;
-+
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int non_const_var_off_kptr_xchg(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0, id;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	id = ctx->protocol;
-+	if (id < 4 || id > 12)
-+		return 0;
-+	bpf_kptr_xchg((void *)v + id, NULL);
-+
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int misaligned_access_write(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
+ 
+ #define TEST(map)					\
+ 	v = bpf_map_lookup_elem(&map, &key);		\
+@@ -162,7 +163,7 @@ SEC("tc")
+ int test_map_in_map_kptr(struct __sk_buff *ctx)
+ {
+ 	struct map_value *v;
+-	int i, key = 0;
 +	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	*(void **)((void *)v + 7) = NULL;
-+
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int misaligned_access_read(struct __sk_buff *ctx)
+ 	void *map;
+ 
+ #define TEST(map_in_map)                                \
+@@ -187,4 +188,108 @@ int test_map_in_map_kptr(struct __sk_buff *ctx)
+ 	return 0;
+ }
+ 
++SEC("tc")
++int test_map_kptr_ref(struct __sk_buff *ctx)
 +{
++	struct prog_test_ref_kfunc *volatile p, *p_cpu;
++	unsigned long arg = 0;
 +	struct map_value *v;
-+	int key = 0;
++	int key = 0, ret;
 +
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
++	p_cpu = bpf_this_cpu_ptr(&prog_test_struct);
++	if (p_cpu->cnt.refs.counter != 1)
++		return 1;
 +
-+	return *(u64 *)((void *)v + 1);
-+}
-+
-+SEC("?tc")
-+int reject_var_off_store(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *unref_ptr;
-+	struct map_value *v;
-+	int key = 0, id;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	unref_ptr = v->unref_ptr;
-+	if (!unref_ptr)
-+		return 0;
-+	id = ctx->protocol;
-+	if (id < 4 || id > 12)
-+		return 0;
-+	unref_ptr += id;
-+	v->unref_ptr = unref_ptr;
-+
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int reject_bad_type_match(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *unref_ptr;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	unref_ptr = v->unref_ptr;
-+	if (!unref_ptr)
-+		return 0;
-+	unref_ptr = (void *)unref_ptr + 4;
-+	v->unref_ptr = unref_ptr;
-+
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int marked_as_untrusted_or_null(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	bpf_this_cpu_ptr(v->unref_ptr);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int correct_btf_id_check_size(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *p;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	p = v->unref_ptr;
++	p = bpf_kfunc_call_test_acquire(&arg);
 +	if (!p)
-+		return 0;
-+	return *(int *)((void *)p + bpf_core_type_size(struct prog_test_ref_kfunc));
-+}
-+
-+SEC("?tc")
-+int inherit_untrusted_on_walk(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *unref_ptr;
-+	struct map_value *v;
-+	int key = 0;
++		return 2;
++	if (p != p_cpu || p_cpu->cnt.refs.counter != 2) {
++		ret = 3;
++		goto end;
++	}
 +
 +	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
++	if (!v) {
++		ret = 4;
++		goto end;
++	}
 +
-+	unref_ptr = v->unref_ptr;
-+	if (!unref_ptr)
-+		return 0;
-+	unref_ptr = unref_ptr->next;
-+	bpf_this_cpu_ptr(unref_ptr);
-+	return 0;
-+}
++	p = bpf_kptr_xchg(&v->ref_ptr, p);
++	if (p) {
++		ret = 5;
++		goto end;
++	}
++	if (p_cpu->cnt.refs.counter != 2)
++		return 6;
 +
-+SEC("?tc")
-+int reject_kptr_xchg_on_unref(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	bpf_kptr_xchg(&v->unref_ptr, NULL);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int reject_kptr_get_no_map_val(struct __sk_buff *ctx)
-+{
-+	bpf_kfunc_call_test_kptr_get((void *)&ctx, 0, 0);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int reject_kptr_get_no_null_map_val(struct __sk_buff *ctx)
-+{
-+	bpf_kfunc_call_test_kptr_get(bpf_map_lookup_elem(&array_map, &(int){0}), 0, 0);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int reject_kptr_get_no_kptr(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	bpf_kfunc_call_test_kptr_get((void *)v, 0, 0);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int reject_kptr_get_on_unref(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	bpf_kfunc_call_test_kptr_get(&v->unref_ptr, 0, 0);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int reject_kptr_get_bad_type_match(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	bpf_kfunc_call_test_kptr_get((void *)&v->ref_memb_ptr, 0, 0);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int mark_ref_as_untrusted_or_null(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	bpf_this_cpu_ptr(v->ref_ptr);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int reject_untrusted_store_to_ref(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *p;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	p = v->ref_ptr;
++	p = bpf_kfunc_call_test_kptr_get(&v->ref_ptr, 0, 0);
 +	if (!p)
-+		return 0;
-+	/* Checkmate, clang */
-+	*(struct prog_test_ref_kfunc * volatile *)&v->ref_ptr = p;
-+	return 0;
-+}
++		return 7;
++	if (p_cpu->cnt.refs.counter != 3) {
++		ret = 8;
++		goto end;
++	}
++	bpf_kfunc_call_test_release(p);
++	if (p_cpu->cnt.refs.counter != 2)
++		return 9;
 +
-+SEC("?tc")
-+int reject_untrusted_xchg(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *p;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	p = v->ref_ptr;
++	p = bpf_kptr_xchg(&v->ref_ptr, NULL);
 +	if (!p)
-+		return 0;
-+	bpf_kptr_xchg(&v->ref_ptr, p);
-+	return 0;
-+}
++		return 10;
++	bpf_kfunc_call_test_release(p);
++	if (p_cpu->cnt.refs.counter != 1)
++		return 11;
 +
-+SEC("?tc")
-+int reject_bad_type_xchg(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *ref_ptr;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	ref_ptr = bpf_kfunc_call_test_acquire(&(unsigned long){0});
-+	if (!ref_ptr)
-+		return 0;
-+	bpf_kptr_xchg(&v->ref_memb_ptr, ref_ptr);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int reject_member_of_ref_xchg(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *ref_ptr;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	ref_ptr = bpf_kfunc_call_test_acquire(&(unsigned long){0});
-+	if (!ref_ptr)
-+		return 0;
-+	bpf_kptr_xchg(&v->ref_memb_ptr, &ref_ptr->memb);
-+	return 0;
-+}
-+
-+SEC("?syscall")
-+int reject_indirect_helper_access(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	bpf_get_current_comm(v, sizeof(v->buf) + 1);
-+	return 0;
-+}
-+
-+__noinline
-+int write_func(int *p)
-+{
-+
-+	return p ? *p = 42 : 0;
-+}
-+
-+SEC("?tc")
-+int reject_indirect_global_func_access(struct __sk_buff *ctx)
-+{
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	return write_func((void *)v + 5);
-+}
-+
-+SEC("?tc")
-+int kptr_xchg_ref_state(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *p;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 0;
-+
-+	p = bpf_kfunc_call_test_acquire(&(unsigned long){0});
++	p = bpf_kfunc_call_test_acquire(&arg);
 +	if (!p)
-+		return 0;
-+	bpf_kptr_xchg(&v->ref_ptr, p);
++		return 12;
++	p = bpf_kptr_xchg(&v->ref_ptr, p);
++	if (p) {
++		ret = 13;
++		goto end;
++	}
++	if (p_cpu->cnt.refs.counter != 2)
++		return 14;
++	/* Leave in map */
++
 +	return 0;
++end:
++	bpf_kfunc_call_test_release(p);
++	return ret;
 +}
 +
-+SEC("?tc")
-+int kptr_get_ref_state(struct __sk_buff *ctx)
++SEC("tc")
++int test_map_kptr_ref2(struct __sk_buff *ctx)
 +{
++	struct prog_test_ref_kfunc *volatile p, *p_cpu;
 +	struct map_value *v;
 +	int key = 0;
 +
++	p_cpu = bpf_this_cpu_ptr(&prog_test_struct);
++	if (p_cpu->cnt.refs.counter != 2)
++		return 1;
++
 +	v = bpf_map_lookup_elem(&array_map, &key);
 +	if (!v)
-+		return 0;
++		return 2;
 +
-+	bpf_kfunc_call_test_kptr_get(&v->ref_ptr, 0, 0);
++	p = bpf_kptr_xchg(&v->ref_ptr, NULL);
++	if (!p)
++		return 3;
++	if (p != p_cpu || p_cpu->cnt.refs.counter != 2) {
++		bpf_kfunc_call_test_release(p);
++		return 4;
++	}
++
++	p = bpf_kptr_xchg(&v->ref_ptr, p);
++	if (p) {
++		bpf_kfunc_call_test_release(p);
++		return 5;
++	}
++	if (p_cpu->cnt.refs.counter != 2)
++		return 6;
++
 +	return 0;
 +}
 +
-+char _license[] SEC("license") = "GPL";
+ char _license[] SEC("license") = "GPL";
 -- 
 2.35.1
 
