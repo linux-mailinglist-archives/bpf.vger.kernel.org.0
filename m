@@ -2,359 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48016520FA2
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 10:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678BC52141F
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 13:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233899AbiEJI0n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 04:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
+        id S229513AbiEJLtc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 07:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234405AbiEJI0l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 04:26:41 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA98291E41
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 01:22:44 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 249MUjwl013955
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 01:22:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=IkCkbVDtuDFmRwxsBpGg5CYm8dpBxzf80CAAIcmb+gE=;
- b=rmdQ4DKBiGq9j8iDAwRMrMn39JDdOqWn+j+ZKMp8oa5C9XPb/Qw0pYucSQQ3NfYTdc72
- b/dQgFl9UOxqoUV+F0qucSpB/syp0rJpTd4lYjWzK0zemCE4vRw7YTMMinPC10NuUnUP
- 4gGh0cHvCLpmVUryJxrS0YE/dPqCW8MA36o= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fxywsqdyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 01:22:43 -0700
-Received: from twshared16483.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 10 May 2022 01:22:42 -0700
-Received: by devvm2896.atn0.facebook.com (Postfix, from userid 153359)
-        id 1BA7614AE8B43; Tue, 10 May 2022 01:22:38 -0700 (PDT)
-From:   Takshak Chahande <ctakshak@fb.com>
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <ctakshak@fb.com>,
-        <ndixit@fb.com>, <kafai@fb.com>, <andriin@fb.com>,
-        <daniel@iogearbox.net>, <yhs@fb.com>
-Subject: [PATCH bpf-next v6 2/2] selftests/bpf: handle batch operations for map-in-map bpf-maps
-Date:   Tue, 10 May 2022 01:22:21 -0700
-Message-ID: <20220510082221.2390540-2-ctakshak@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220510082221.2390540-1-ctakshak@fb.com>
-References: <20220510082221.2390540-1-ctakshak@fb.com>
+        with ESMTP id S241194AbiEJLta (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 07:49:30 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40A325470C
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 04:45:32 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id z2so30794922ejj.3
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 04:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=7CJgZK/Q3TXpdrc82+EsjW+w5ztoxNGdpsgGltu/dv8=;
+        b=M6Kk70C20E34EyBk6iNsYOcQRG7DQcgLbFdyEulG2ocYzl7J0XnWxHqsZIlR6UUzud
+         OggPoFqx5m1Honn9I0w1BZnKD7rmMc3Tfmd+LacWlFoMg4qkRs2ztQlOjdaifDQKDUFL
+         PLpQc2nzaqrCYxqW7NDsqgcBWA3RhV/Oy2qFI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=7CJgZK/Q3TXpdrc82+EsjW+w5ztoxNGdpsgGltu/dv8=;
+        b=hp0IZlPKNcTM3VN5uoVjThpu1DPS6YtLRVxgb1P5ztCII6nybs6seA5knsgGsUT7o3
+         A6M8NIPAt5h+TVW2zxo+3B9DCZ3cxt0BoqB/7EpGdgGc/OBO3O8x2Kf+JFVMYNqpWUQU
+         iTMtu6ccU8w9CuBbswIQKeCCLv6Kk9QDegiXhVgZDOfEbmTpfkP824UvSU/p+dDM73Nd
+         BQWmBptV4/G27UXjdO90ElQI6p0liTVpoVaHlP3rzeBDf1/g3ln+kme9CH6q0Khvjlh2
+         M7k64mnt8CtR4byb/6kV2Sh7IKcFEfBT02wOjzE9grlA5k57bxzrAemGXYg2squLJSgv
+         E4bA==
+X-Gm-Message-State: AOAM5303HCYRVj4HS0Y0bpEsVhgETt2GG+4LhqviKeYwESkHjz96hTmr
+        W40KPI8Vsw5gwOsZAh52Z5rxUw==
+X-Google-Smtp-Source: ABdhPJyLAw11BXqovb/hyRd3O52ps0BA+TwNNEhz5hf8CzWAXREk2pVUIGq9fB6HrslFKPlLwZUkkw==
+X-Received: by 2002:a17:907:6d25:b0:6f4:d753:f250 with SMTP id sa37-20020a1709076d2500b006f4d753f250mr19240326ejc.580.1652183131282;
+        Tue, 10 May 2022 04:45:31 -0700 (PDT)
+Received: from cloudflare.com (79.184.139.106.ipv4.supernova.orange.pl. [79.184.139.106])
+        by smtp.gmail.com with ESMTPSA id n12-20020a1709065e0c00b006f3ef214e0bsm6127841eju.113.2022.05.10.04.45.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 04:45:30 -0700 (PDT)
+References: <20220424154028.1698685-1-xukuohai@huawei.com>
+ <20220424154028.1698685-6-xukuohai@huawei.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Xu Kuohai <xukuohai@huawei.com>
+Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Delyan Kratunov <delyank@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/7] bpf, arm64: Support to poke bpf prog
+Date:   Tue, 10 May 2022 11:36:59 +0200
+In-reply-to: <20220424154028.1698685-6-xukuohai@huawei.com>
+Message-ID: <87ilqdobl1.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: w17YWrocmSfm2M-xHuUCrP-PiyWzt_t8
-X-Proofpoint-ORIG-GUID: w17YWrocmSfm2M-xHuUCrP-PiyWzt_t8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-10_01,2022-05-09_02,2022-02-23_01
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds up test cases that handles 4 combinations:
- a) outer map: BPF_MAP_TYPE_ARRAY_OF_MAPS
-    inner maps: BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_HASH
- b) outer map: BPF_MAP_TYPE_HASH_OF_MAPS
-    inner maps: BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_HASH
+Thanks for incorporating the attach to BPF progs bits into the series.
 
-Signed-off-by: Takshak Chahande <ctakshak@fb.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
- .../bpf/map_tests/map_in_map_batch_ops.c      | 252 ++++++++++++++++++
- 1 file changed, 252 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_in_map_batc=
-h_ops.c
+I have a couple minor comments. Please see below.
 
-v5->v6:
-- Fixed all the other map fd leaks=20
+On Sun, Apr 24, 2022 at 11:40 AM -04, Xu Kuohai wrote:
+> 1. Set up the bpf prog entry in the same way as fentry to support
+>    trampoline. Now bpf prog entry looks like this:
+>
+>    bti c        // if BTI enabled
+>    mov x9, x30  // save lr
+>    nop          // to be replaced with jump instruction
+>    paciasp      // if PAC enabled
+>
+> 2. Update bpf_arch_text_poke() to poke bpf prog. If the instruction
+>    to be poked is bpf prog's first instruction, skip to the nop
+>    instruction in the prog entry.
+>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> ---
+>  arch/arm64/net/bpf_jit.h      |  1 +
+>  arch/arm64/net/bpf_jit_comp.c | 41 +++++++++++++++++++++++++++--------
+>  2 files changed, 33 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
+> index 194c95ccc1cf..1c4b0075a3e2 100644
+> --- a/arch/arm64/net/bpf_jit.h
+> +++ b/arch/arm64/net/bpf_jit.h
+> @@ -270,6 +270,7 @@
+>  #define A64_BTI_C  A64_HINT(AARCH64_INSN_HINT_BTIC)
+>  #define A64_BTI_J  A64_HINT(AARCH64_INSN_HINT_BTIJ)
+>  #define A64_BTI_JC A64_HINT(AARCH64_INSN_HINT_BTIJC)
+> +#define A64_NOP    A64_HINT(AARCH64_INSN_HINT_NOP)
+>  
+>  /* DMB */
+>  #define A64_DMB_ISH aarch64_insn_gen_dmb(AARCH64_INSN_MB_ISH)
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 3f9bdfec54c4..293bdefc5d0c 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -237,14 +237,23 @@ static bool is_lsi_offset(int offset, int scale)
+>  	return true;
+>  }
+>  
+> -/* Tail call offset to jump into */
+> -#if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) || \
+> -	IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL)
+> -#define PROLOGUE_OFFSET 9
+> +#if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
+> +#define BTI_INSNS	1
+> +#else
+> +#define BTI_INSNS	0
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL)
+> +#define PAC_INSNS	1
+>  #else
+> -#define PROLOGUE_OFFSET 8
+> +#define PAC_INSNS	0
+>  #endif
 
-v4->v5:
-- close all (inner and outer) map fds (Martin)
+Above can be folded into:
 
-v3->v4:
-- Addressed nits; kept this map test together in map_tests/  (Yonghong, A=
-ndrii)
+#define BTI_INSNS (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) ? 1 : 0)
+#define PAC_INSNS (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL) ? 1 : 0)
 
-v2->v3:
-- Handled transient ENOSPC correctly, bug was found in BPF CI (Daniel)
+>  
+> +/* Tail call offset to jump into */
+> +#define PROLOGUE_OFFSET	(BTI_INSNS + 2 + PAC_INSNS + 8)
+> +/* Offset of nop instruction in bpf prog entry to be poked */
+> +#define POKE_OFFSET	(BTI_INSNS + 1)
+> +
+>  static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>  {
+>  	const struct bpf_prog *prog = ctx->prog;
+> @@ -281,12 +290,15 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+>  	 *
+>  	 */
+>  
+> +	if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+> +		emit(A64_BTI_C, ctx);
 
-v1->v2:
-- Fixed no format arguments error (Andrii)
+I'm no arm64 expert, but this looks like a fix for BTI.
 
-diff --git a/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c=
- b/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
-new file mode 100644
-index 000000000000..f472d28ad11a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/map_tests/map_in_map_batch_ops.c
-@@ -0,0 +1,252 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <unistd.h>
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include <test_maps.h>
-+
-+#define OUTER_MAP_ENTRIES 10
-+
-+static __u32 get_map_id_from_fd(int map_fd)
-+{
-+	struct bpf_map_info map_info =3D {};
-+	uint32_t info_len =3D sizeof(map_info);
-+	int ret;
-+
-+	ret =3D bpf_obj_get_info_by_fd(map_fd, &map_info, &info_len);
-+	CHECK(ret < 0, "Finding map info failed", "error:%s\n",
-+	      strerror(errno));
-+
-+	return map_info.id;
-+}
-+
-+/* This creates number of OUTER_MAP_ENTRIES maps that will be stored
-+ * in outer map and return the created map_fds
-+ */
-+static void create_inner_maps(enum bpf_map_type map_type,
-+			      __u32 *inner_map_fds)
-+{
-+	int map_fd, map_index, ret;
-+	__u32 map_key =3D 0, map_id;
-+	char map_name[15];
-+
-+	for (map_index =3D 0; map_index < OUTER_MAP_ENTRIES; map_index++) {
-+		memset(map_name, 0, sizeof(map_name));
-+		sprintf(map_name, "inner_map_fd_%d", map_index);
-+		map_fd =3D bpf_map_create(map_type, map_name, sizeof(__u32),
-+					sizeof(__u32), 1, NULL);
-+		CHECK(map_fd < 0,
-+		      "inner bpf_map_create() failed",
-+		      "map_type=3D(%d) map_name(%s), error:%s\n",
-+		      map_type, map_name, strerror(errno));
-+
-+		/* keep track of the inner map fd as it is required
-+		 * to add records in outer map
-+		 */
-+		inner_map_fds[map_index] =3D map_fd;
-+
-+		/* Add entry into this created map
-+		 * eg: map1 key =3D 0, value =3D map1's map id
-+		 *     map2 key =3D 0, value =3D map2's map id
-+		 */
-+		map_id =3D get_map_id_from_fd(map_fd);
-+		ret =3D bpf_map_update_elem(map_fd, &map_key, &map_id, 0);
-+		CHECK(ret !=3D 0,
-+		      "bpf_map_update_elem failed",
-+		      "map_type=3D(%d) map_name(%s), error:%s\n",
-+		      map_type, map_name, strerror(errno));
-+	}
-+}
-+
-+static int create_outer_map(enum bpf_map_type map_type, __u32 inner_map_=
-fd)
-+{
-+	int outer_map_fd;
-+	LIBBPF_OPTS(bpf_map_create_opts, attr);
-+
-+	attr.inner_map_fd =3D inner_map_fd;
-+	outer_map_fd =3D bpf_map_create(map_type, "outer_map", sizeof(__u32),
-+				      sizeof(__u32), OUTER_MAP_ENTRIES,
-+				      &attr);
-+	CHECK(outer_map_fd < 0,
-+	      "outer bpf_map_create()",
-+	      "map_type=3D(%d), error:%s\n",
-+	      map_type, strerror(errno));
-+
-+	return outer_map_fd;
-+}
-+
-+static void validate_fetch_results(int outer_map_fd,
-+				   __u32 *fetched_keys, __u32 *fetched_values,
-+				   __u32 max_entries_fetched)
-+{
-+	__u32 inner_map_key, inner_map_value;
-+	int inner_map_fd, entry, err;
-+	__u32 outer_map_value;
-+
-+	for (entry =3D 0; entry < max_entries_fetched; ++entry) {
-+		outer_map_value =3D fetched_values[entry];
-+		inner_map_fd =3D bpf_map_get_fd_by_id(outer_map_value);
-+		CHECK(inner_map_fd < 0,
-+		      "Failed to get inner map fd",
-+		      "from id(%d), error=3D%s\n",
-+		      outer_map_value, strerror(errno));
-+		err =3D bpf_map_get_next_key(inner_map_fd, NULL, &inner_map_key);
-+		CHECK(err !=3D 0,
-+		      "Failed to get inner map key",
-+		      "error=3D%s\n", strerror(errno));
-+
-+		err =3D bpf_map_lookup_elem(inner_map_fd, &inner_map_key,
-+					  &inner_map_value);
-+
-+		close(inner_map_fd);
-+
-+		CHECK(err !=3D 0,
-+		      "Failed to get inner map value",
-+		      "for key(%d), error=3D%s\n",
-+		      inner_map_key, strerror(errno));
-+
-+		/* Actual value validation */
-+		CHECK(outer_map_value !=3D inner_map_value,
-+		      "Failed to validate inner map value",
-+		      "fetched(%d) and lookedup(%d)!\n",
-+		      outer_map_value, inner_map_value);
-+	}
-+}
-+
-+static void fetch_and_validate(int outer_map_fd,
-+			       struct bpf_map_batch_opts *opts,
-+			       __u32 batch_size, bool delete_entries)
-+{
-+	__u32 *fetched_keys, *fetched_values, total_fetched =3D 0;
-+	__u32 batch_key =3D 0, fetch_count, step_size;
-+	int err, max_entries =3D OUTER_MAP_ENTRIES;
-+	__u32 value_size =3D sizeof(__u32);
-+
-+	/* Total entries needs to be fetched */
-+	fetched_keys =3D calloc(max_entries, value_size);
-+	fetched_values =3D calloc(max_entries, value_size);
-+	CHECK((!fetched_keys || !fetched_values),
-+	      "Memory allocation failed for fetched_keys or fetched_values",
-+	      "error=3D%s\n", strerror(errno));
-+
-+	for (step_size =3D batch_size;
-+	     step_size <=3D max_entries;
-+	     step_size +=3D batch_size) {
-+		fetch_count =3D step_size;
-+		err =3D delete_entries
-+		      ? bpf_map_lookup_and_delete_batch(outer_map_fd,
-+				      total_fetched ? &batch_key : NULL,
-+				      &batch_key,
-+				      fetched_keys + total_fetched,
-+				      fetched_values + total_fetched,
-+				      &fetch_count, opts)
-+		      : bpf_map_lookup_batch(outer_map_fd,
-+				      total_fetched ? &batch_key : NULL,
-+				      &batch_key,
-+				      fetched_keys + total_fetched,
-+				      fetched_values + total_fetched,
-+				      &fetch_count, opts);
-+
-+		if (err && errno =3D=3D ENOSPC) {
-+			/* Fetch again with higher batch size */
-+			total_fetched =3D 0;
-+			continue;
-+		}
-+
-+		CHECK((err < 0 && (errno !=3D ENOENT)),
-+		      "lookup with steps failed",
-+		      "error: %s\n", strerror(errno));
-+
-+		/* Update the total fetched number */
-+		total_fetched +=3D fetch_count;
-+		if (err)
-+			break;
-+	}
-+
-+	CHECK((total_fetched !=3D max_entries),
-+	      "Unable to fetch expected entries !",
-+	      "total_fetched(%d) and max_entries(%d) error: (%d):%s\n",
-+	      total_fetched, max_entries, errno, strerror(errno));
-+
-+	/* validate the fetched entries */
-+	validate_fetch_results(outer_map_fd, fetched_keys,
-+			       fetched_values, total_fetched);
-+	printf("batch_op(%s) is successful with batch_size(%d)\n",
-+	       delete_entries ? "LOOKUP_AND_DELETE" : "LOOKUP", batch_size);
-+
-+	free(fetched_keys);
-+	free(fetched_values);
-+}
-+
-+static void _map_in_map_batch_ops(enum bpf_map_type outer_map_type,
-+				  enum bpf_map_type inner_map_type)
-+{
-+	__u32 *outer_map_keys, *inner_map_fds;
-+	__u32 max_entries =3D OUTER_MAP_ENTRIES;
-+	LIBBPF_OPTS(bpf_map_batch_opts, opts);
-+	__u32 value_size =3D sizeof(__u32);
-+	int batch_size[2] =3D {5, 10};
-+	__u32 map_index, op_index;
-+	int outer_map_fd, ret;
-+
-+	outer_map_keys =3D calloc(max_entries, value_size);
-+	inner_map_fds =3D calloc(max_entries, value_size);
-+	CHECK((!outer_map_keys || !inner_map_fds),
-+	      "Memory allocation failed for outer_map_keys or inner_map_fds",
-+	      "error=3D%s\n", strerror(errno));
-+
-+	create_inner_maps(inner_map_type, inner_map_fds);
-+
-+	outer_map_fd =3D create_outer_map(outer_map_type, *inner_map_fds);
-+	/* create outer map keys */
-+	for (map_index =3D 0; map_index < max_entries; map_index++)
-+		outer_map_keys[map_index] =3D
-+			((outer_map_type =3D=3D BPF_MAP_TYPE_ARRAY_OF_MAPS)
-+			 ? 9 : 1000) - map_index;
-+
-+	/* batch operation - map_update */
-+	ret =3D bpf_map_update_batch(outer_map_fd, outer_map_keys,
-+				   inner_map_fds, &max_entries, &opts);
-+	CHECK(ret !=3D 0,
-+	      "Failed to update the outer map batch ops",
-+	      "error=3D%s\n", strerror(errno));
-+
-+	/* batch operation - map_lookup */
-+	for (op_index =3D 0; op_index < 2; ++op_index)
-+		fetch_and_validate(outer_map_fd, &opts,
-+				   batch_size[op_index], false);
-+
-+	/* batch operation - map_lookup_delete */
-+	if (outer_map_type =3D=3D BPF_MAP_TYPE_HASH_OF_MAPS)
-+		fetch_and_validate(outer_map_fd, &opts,
-+				   max_entries, true /*delete*/);
-+
-+	/* close all map fds */
-+	for (map_index =3D 0; map_index < max_entries; map_index++)
-+		close(inner_map_fds[map_index]);
-+	close(outer_map_fd);
-+
-+	free(inner_map_fds);
-+	free(outer_map_keys);
-+}
-+
-+void test_map_in_map_batch_ops_array(void)
-+{
-+	_map_in_map_batch_ops(BPF_MAP_TYPE_ARRAY_OF_MAPS, BPF_MAP_TYPE_ARRAY);
-+	printf("%s:PASS with inner ARRAY map\n", __func__);
-+	_map_in_map_batch_ops(BPF_MAP_TYPE_ARRAY_OF_MAPS, BPF_MAP_TYPE_HASH);
-+	printf("%s:PASS with inner HASH map\n", __func__);
-+}
-+
-+void test_map_in_map_batch_ops_hash(void)
-+{
-+	_map_in_map_batch_ops(BPF_MAP_TYPE_HASH_OF_MAPS, BPF_MAP_TYPE_ARRAY);
-+	printf("%s:PASS with inner ARRAY map\n", __func__);
-+	_map_in_map_batch_ops(BPF_MAP_TYPE_HASH_OF_MAPS, BPF_MAP_TYPE_HASH);
-+	printf("%s:PASS with inner HASH map\n", __func__);
-+}
---=20
-2.30.2
+Currently we never emit BTI because ARM64_BTI_KERNEL depends on
+ARM64_PTR_AUTH_KERNEL, while BTI must be the first instruction for the
+jump target [1]. Am I following correctly?
 
+[1] https://lwn.net/Articles/804982/
+
+> +
+> +	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
+> +	emit(A64_NOP, ctx);
+> +
+>  	/* Sign lr */
+>  	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
+>  		emit(A64_PACIASP, ctx);
+> -	/* BTI landing pad */
+> -	else if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+> -		emit(A64_BTI_C, ctx);
+>  
+>  	/* Save FP and LR registers to stay align with ARM64 AAPCS */
+>  	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
+> @@ -1552,9 +1564,11 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+>  	u32 old_insn;
+>  	u32 new_insn;
+>  	u32 replaced;
+> +	unsigned long offset = ~0UL;
+>  	enum aarch64_insn_branch_type branch_type;
+> +	char namebuf[KSYM_NAME_LEN];
+>  
+> -	if (!is_bpf_text_address((long)ip))
+> +	if (!__bpf_address_lookup((unsigned long)ip, NULL, &offset, namebuf))
+>  		/* Only poking bpf text is supported. Since kernel function
+>  		 * entry is set up by ftrace, we reply on ftrace to poke kernel
+>  		 * functions. For kernel funcitons, bpf_arch_text_poke() is only
+> @@ -1565,6 +1579,15 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+>  		 */
+>  		return -EINVAL;
+>  
+> +	/* bpf entry */
+> +	if (offset == 0UL)
+> +		/* skip to the nop instruction in bpf prog entry:
+> +		 * bti c	// if BTI enabled
+> +		 * mov x9, x30
+> +		 * nop
+> +		 */
+> +		ip = (u32 *)ip + POKE_OFFSET;
+
+This is very much personal preference, however, I find the use pointer
+arithmetic too clever here. Would go for a more verbose:
+
+        offset = POKE_OFFSET * AARCH64_INSN_SIZE;          
+        ip = (void *)((unsigned long)ip + offset);
+
+> +
+>  	if (poke_type == BPF_MOD_CALL)
+>  		branch_type = AARCH64_INSN_BRANCH_LINK;
+>  	else
+
+I think it'd make more sense to merge this patch with patch 4 (the
+preceding one).
+
+Initial implementation of of bpf_arch_text_poke() from patch 4 is not
+fully functional, as it will always fail for bpf_arch_text_poke(ip,
+BPF_MOD_CALL, ...) calls. At least, I find it a bit confusing.
+
+Otherwise than that:
+
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
