@@ -2,61 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F51522602
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 23:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8465225FE
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 23:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbiEJVCT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 17:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
+        id S231157AbiEJVCC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 17:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233697AbiEJVCS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 17:02:18 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12934268EBD
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:02:18 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24AJH8QK014394
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:02:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=iZsOHRvgL5PWCUAfF/SrBmDyVmWKwdWIM4SHpyqMs+I=;
- b=oMPp60tgTZtAScOjE82roCjjtBw5Z9dZSNdGwrt88X3jYSInW2uwcTj67Yr8IcnVpDh/
- n815Z1m8vqN/K7eODjQSbonE/Gbaypxb38N9oDhSM07PqltcQw/+txTNl5hjfWigixrP
- eOV4jGVzcJ2CkSULUWvoxse3sWU8aBXE5Jc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fyx2n0scg-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:02:17 -0700
-Received: from twshared8307.18.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 10 May 2022 14:02:16 -0700
-Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 59E0832F2037; Tue, 10 May 2022 13:59:44 -0700 (PDT)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kernel-team@fb.com>
-CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH bpf-next v8 5/5] selftest/bpf: The test cses of BPF cookie for fentry/fexit/fmod_ret/lsm.
-Date:   Tue, 10 May 2022 13:59:23 -0700
-Message-ID: <20220510205923.3206889-6-kuifeng@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220510205923.3206889-1-kuifeng@fb.com>
-References: <20220510205923.3206889-1-kuifeng@fb.com>
+        with ESMTP id S235548AbiEJVBg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 17:01:36 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6861FA6E34;
+        Tue, 10 May 2022 14:01:35 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id x88so330886pjj.1;
+        Tue, 10 May 2022 14:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j3rcz6qVNZi20/uUbB9766ZMC6kcEWw22DciqK9/zDQ=;
+        b=M5ccWIy7d+bh8DqBj2aI3HFZZKskE0cwfDgQq3SKLrVgdAEFxXFPBkEBMgJ4qngmA2
+         6H8woKrDHM1reouusOvd4aPscHfCRI6hEodeZJsd4D6vPzWpj+/ESYcRIaKuxdIo+A+Q
+         REO2UUrR8BzAZBYQDBIpzFkYPdqzj+joI8K38ONynFtD+rXLjCemnJJiB6b4CFMkjshY
+         CYR1R/+q+MdBzjd4wFuiVS17ecBinIwmowmWql+VGUH65xm+Uu8/uHde/uKwZ03XLtU1
+         905SUSDqeXRgRwg7ZHM6aBsoRSIR0O+RAeQn1ZgTa7JGGDNCVlqjo9fhIzsr4tSQQYUz
+         Sx6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=j3rcz6qVNZi20/uUbB9766ZMC6kcEWw22DciqK9/zDQ=;
+        b=PuKCPaS0HAsSgcgGWarDJAeAuq/XZCODbc8Y8ueM9uOubhSOSuc2+yJsirFQ9Q/9H2
+         dbMPqAWwzqJSV+J3HgK1VY+ZChtMU/KchCUCnROPvmwljKmCUzWlGPPdiqtIYOFv9UIx
+         jqFBeZknXRQtjtJp2eKiTUETqqJeIa+SZBC6zZsMAFu95wDG1OOC+FQxakRQ6yQxfdiR
+         qxsd1j/Xi1GfBjLV5sCXBhT+yCzlrw+CtE2wVtrjofUvY0APfFPKh8XBJGNw0ELOEwpX
+         bR21oPc/Wo6VdsMC6QCN9RNJ52TBKAAG/wrMB38chIpGu050hnnQyu8uoeLAlUkUN68j
+         WDGw==
+X-Gm-Message-State: AOAM531m4bsLk/SaREZ7hMrUtGmAu1rpb18G2gWnYVHAYrvKW0xlcvy5
+        KgJYCHU4MU/RC1eQe3BRjwI=
+X-Google-Smtp-Source: ABdhPJy9jdEXmmo87FTb0xRrE+zHyYpgKETtEix579sUr19jNrUhpmBxb5moGjeyn6lcojK04HS9pw==
+X-Received: by 2002:a17:902:ce02:b0:153:bd65:5c0e with SMTP id k2-20020a170902ce0200b00153bd655c0emr22083797plg.160.1652216494792;
+        Tue, 10 May 2022 14:01:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:6c64])
+        by smtp.gmail.com with ESMTPSA id j4-20020a632304000000b003c15f7f2914sm162632pgj.24.2022.05.10.14.01.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 14:01:34 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 10 May 2022 11:01:32 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 1/9] bpf: introduce CGROUP_SUBSYS_RSTAT
+ program type
+Message-ID: <YnrSrKFTBn3IyUfa@slm.duckdns.org>
+References: <20220510001807.4132027-1-yosryahmed@google.com>
+ <20220510001807.4132027-2-yosryahmed@google.com>
+ <Ynqyh+K1tMyNCTUW@slm.duckdns.org>
+ <CAJD7tkZVXJY3s2k8M4pcq+eJVD+aX=iMDiDKtdE=j0_q+UWQzA@mail.gmail.com>
+ <YnrEDfZs1kuB1gu5@slm.duckdns.org>
+ <CAJD7tkahC1e-_K0xJMu-xXwd8WNVzYDRgJFua9=JhNRq7b+G8A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 6qA8hyPoTVpP00D4I2RM95OUSyn8uNHp
-X-Proofpoint-ORIG-GUID: 6qA8hyPoTVpP00D4I2RM95OUSyn8uNHp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-10_07,2022-05-10_01,2022-02-23_01
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkahC1e-_K0xJMu-xXwd8WNVzYDRgJFua9=JhNRq7b+G8A@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,207 +94,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make sure BPF cookies are correct for fentry/fexit/fmod_ret/lsm.
+Hello,
 
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 89 +++++++++++++++++++
- .../selftests/bpf/progs/test_bpf_cookie.c     | 52 +++++++++--
- 2 files changed, 133 insertions(+), 8 deletions(-)
+On Tue, May 10, 2022 at 01:43:46PM -0700, Yosry Ahmed wrote:
+> I assume if we do this optimization, and have separate updated lists
+> for controllers, we will still have a "core" updated list that is not
+> tied to any controller. Is this correct?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/=
-testing/selftests/bpf/prog_tests/bpf_cookie.c
-index 923a6139b2d8..83ef55e3caa4 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -4,8 +4,11 @@
- #include <pthread.h>
- #include <sched.h>
- #include <sys/syscall.h>
-+#include <sys/mman.h>
- #include <unistd.h>
- #include <test_progs.h>
-+#include <network_helpers.h>
-+#include <bpf/btf.h>
- #include "test_bpf_cookie.skel.h"
- #include "kprobe_multi.skel.h"
-=20
-@@ -410,6 +413,88 @@ static void pe_subtest(struct test_bpf_cookie *skel)
- 	bpf_link__destroy(link);
- }
-=20
-+static void tracing_subtest(struct test_bpf_cookie *skel)
-+{
-+	__u64 cookie;
-+	int prog_fd;
-+	int fentry_fd =3D -1, fexit_fd =3D -1, fmod_ret_fd =3D -1;
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
-+	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-+
-+	skel->bss->fentry_res =3D 0;
-+	skel->bss->fexit_res =3D 0;
-+
-+	cookie =3D 0x10000000000000L;
-+	prog_fd =3D bpf_program__fd(skel->progs.fentry_test1);
-+	link_opts.tracing.cookie =3D cookie;
-+	fentry_fd =3D bpf_link_create(prog_fd, 0, BPF_TRACE_FENTRY, &link_opts)=
-;
-+	if (!ASSERT_GE(fentry_fd, 0, "fentry.link_create"))
-+		goto cleanup;
-+
-+	cookie =3D 0x20000000000000L;
-+	prog_fd =3D bpf_program__fd(skel->progs.fexit_test1);
-+	link_opts.tracing.cookie =3D cookie;
-+	fexit_fd =3D bpf_link_create(prog_fd, 0, BPF_TRACE_FEXIT, &link_opts);
-+	if (!ASSERT_GE(fexit_fd, 0, "fexit.link_create"))
-+		goto cleanup;
-+
-+	cookie =3D 0x30000000000000L;
-+	prog_fd =3D bpf_program__fd(skel->progs.fmod_ret_test);
-+	link_opts.tracing.cookie =3D cookie;
-+	fmod_ret_fd =3D bpf_link_create(prog_fd, 0, BPF_MODIFY_RETURN, &link_op=
-ts);
-+	if (!ASSERT_GE(fmod_ret_fd, 0, "fmod_ret.link_create"))
-+		goto cleanup;
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.fentry_test1);
-+	bpf_prog_test_run_opts(prog_fd, &opts);
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.fmod_ret_test);
-+	bpf_prog_test_run_opts(prog_fd, &opts);
-+
-+	ASSERT_EQ(skel->bss->fentry_res, 0x10000000000000L, "fentry_res");
-+	ASSERT_EQ(skel->bss->fexit_res, 0x20000000000000L, "fexit_res");
-+	ASSERT_EQ(skel->bss->fmod_ret_res, 0x30000000000000L, "fmod_ret_res");
-+
-+cleanup:
-+	if (fentry_fd >=3D 0)
-+		close(fentry_fd);
-+	if (fexit_fd >=3D 0)
-+		close(fexit_fd);
-+	if (fmod_ret_fd >=3D 0)
-+		close(fmod_ret_fd);
-+}
-+
-+int stack_mprotect(void);
-+
-+static void lsm_subtest(struct test_bpf_cookie *skel)
-+{
-+	__u64 cookie;
-+	int prog_fd;
-+	int lsm_fd =3D -1;
-+	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-+
-+	skel->bss->lsm_res =3D 0;
-+
-+	cookie =3D 0x90000000000090L;
-+	prog_fd =3D bpf_program__fd(skel->progs.test_int_hook);
-+	link_opts.tracing.cookie =3D cookie;
-+	lsm_fd =3D bpf_link_create(prog_fd, 0, BPF_LSM_MAC, &link_opts);
-+	if (!ASSERT_GE(lsm_fd, 0, "lsm.link_create"))
-+		goto cleanup;
-+
-+	stack_mprotect();
-+	if (!ASSERT_EQ(errno, EPERM, "stack_mprotect"))
-+		goto cleanup;
-+
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->lsm_res, 0x90000000000090L, "fentry_res");
-+
-+cleanup:
-+	if (lsm_fd >=3D 0)
-+		close(lsm_fd);
-+}
-+
- void test_bpf_cookie(void)
- {
- 	struct test_bpf_cookie *skel;
-@@ -432,6 +517,10 @@ void test_bpf_cookie(void)
- 		tp_subtest(skel);
- 	if (test__start_subtest("perf_event"))
- 		pe_subtest(skel);
-+	if (test__start_subtest("trampoline"))
-+		tracing_subtest(skel);
-+	if (test__start_subtest("lsm"))
-+		lsm_subtest(skel);
-=20
- 	test_bpf_cookie__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c b/tools/=
-testing/selftests/bpf/progs/test_bpf_cookie.c
-index 0e2222968918..22d0ac8709b4 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
-@@ -4,18 +4,23 @@
- #include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-+#include <errno.h>
-=20
- int my_tid;
-=20
--int kprobe_res;
--int kprobe_multi_res;
--int kretprobe_res;
--int uprobe_res;
--int uretprobe_res;
--int tp_res;
--int pe_res;
-+__u64 kprobe_res;
-+__u64 kprobe_multi_res;
-+__u64 kretprobe_res;
-+__u64 uprobe_res;
-+__u64 uretprobe_res;
-+__u64 tp_res;
-+__u64 pe_res;
-+__u64 fentry_res;
-+__u64 fexit_res;
-+__u64 fmod_ret_res;
-+__u64 lsm_res;
-=20
--static void update(void *ctx, int *res)
-+static void update(void *ctx, __u64 *res)
- {
- 	if (my_tid !=3D (u32)bpf_get_current_pid_tgid())
- 		return;
-@@ -82,4 +87,35 @@ int handle_pe(struct pt_regs *ctx)
- 	return 0;
- }
-=20
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(fentry_test1, int a)
-+{
-+	update(ctx, &fentry_res);
-+	return 0;
-+}
-+
-+SEC("fexit/bpf_fentry_test1")
-+int BPF_PROG(fexit_test1, int a, int ret)
-+{
-+	update(ctx, &fexit_res);
-+	return 0;
-+}
-+
-+SEC("fmod_ret/bpf_modify_return_test")
-+int BPF_PROG(fmod_ret_test, int _a, int *_b, int _ret)
-+{
-+	update(ctx, &fmod_ret_res);
-+	return 1234;
-+}
-+
-+SEC("lsm/file_mprotect")
-+int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
-+	     unsigned long reqprot, unsigned long prot, int ret)
-+{
-+	if (my_tid !=3D (u32)bpf_get_current_pid_tgid())
-+		return ret;
-+	update(ctx, &lsm_res);
-+	return -EPERM;
-+}
-+
- char _license[] SEC("license") =3D "GPL";
---=20
-2.30.2
+Or we can create a dedicated updated list for the bpf progs, or even
+multiple for groups of them and so on.
 
+> If yes, then we can make the interface controller-agnostic (a global
+> list of BPF flushers). If we do the optimization later, we tie BPF
+> stats to the "core" updated list. We can even extend the userland
+> interface then to allow for controller-specific BPF stats if found
+> useful.
+
+We'll need that anyway as cpustats are tied to the cgroup themselves rather
+than the cpu controller.
+
+> If not, and there will only be controller-specific updated lists then,
+> then we might need to maintain a "core" updated list just for the sake
+> of BPF programs, which I don't think would be favorable.
+
+If needed, that's fine actually.
+
+> What do you think? Either-way, I will try to document our discussion
+> outcome in the commit message (and maybe the code), so that
+> if-and-when this optimization is made, we can come back to it.
+
+So, the main focus is keeping the userspace interface as simple as possible
+and solving performance issues on the rstat side. If we need however many
+updated lists to do that, that's all fine. FWIW, the experience up until now
+has been consistent with the assumptions that the current implementation
+makes and I haven't seen real any world cases where the shared updated list
+are problematic.
+
+Thanks.
+
+-- 
+tejun
