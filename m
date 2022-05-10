@@ -2,92 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B09952245F
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 20:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCA0522466
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 20:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbiEJSwO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 10 May 2022 14:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
+        id S236350AbiEJSya (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 14:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245507AbiEJSwN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 14:52:13 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A98350E20
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 11:52:13 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24AFLirT007221
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 11:52:13 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fxywsugu1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 11:52:12 -0700
-Received: from twshared18213.14.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 10 May 2022 11:52:10 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 73F0C19BA92A1; Tue, 10 May 2022 11:52:02 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH bpf-next] libbpf: clean up ringbuf size adjustment implementation
-Date:   Tue, 10 May 2022 11:51:59 -0700
-Message-ID: <20220510185159.754299-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S233830AbiEJSy3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 14:54:29 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAE312EA0B;
+        Tue, 10 May 2022 11:54:29 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id l11so9793524pgt.13;
+        Tue, 10 May 2022 11:54:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Se915aO2vPjgqlRAWsxAyLIac4mNleYAwasmX9ThcTs=;
+        b=qtKjfeAFfdWJmrcdiDBx3H9tdAengHKNuMfJ+52+dCHfb2fEN26tHa4yctHK9itWCi
+         /S7QNeU9Mg40uShLcIXkEmMQBAcSgSG8JD7arS1Sehk7BvdL17T/fc4ATxuX9eqVVo3M
+         5O0f9kenrSlerNMDKS+0efpEqXLaaxeNoAK3sb+ffui7C7i2Sh8tJUX66ZhJOL6H1JWb
+         cVEKHijbwtuXVvjBKUXvamEFrR0+KFcejFT4sK0xPlHJRPzLSrEI7qex90z2uxymQT3f
+         qY6M3x9dVrSQwXQJ89W7tNLpS467f62pp4xJkrmjfsjuLND+Utd1muiCbeJuVeU4BgDw
+         wiug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Se915aO2vPjgqlRAWsxAyLIac4mNleYAwasmX9ThcTs=;
+        b=Yjyw7v5N+iUZjL44wJ1lVodEQTyTU7xxIvqq+EZMsZ80kuO6Th9NReVIyQGmbrQfv5
+         Q21+VM7mZ51ZjMNGxwFUu45Z25qLE2F22pPTuFeqOGz8PwPvjOh/H0CMY4nUfvbIVe1M
+         ESOUrnWBVArz+vZFEIp0TC412qmFLO6zKlDaC88Hi+HtcnGCyE/eftym5GXcaqR61rPR
+         bJv6VP00o5hDsdjZl7qHYitQ7WqD4qgJh1GVp695mpT19tB/RXmVA4Nl++79Jy71OUO4
+         1bFXL53oBaMzO1760gW039lt3Oj7QRc+zxMHLlONIkkXUB8rk+ssIvAUqx51jJVyneyd
+         H+hg==
+X-Gm-Message-State: AOAM533SR8R+R28qjmBghAvsYalOD77rEKh1wKqcPBF9bHebZbLHUuGy
+        WfWY7P4zWYmRCfrRztB4fio=
+X-Google-Smtp-Source: ABdhPJweJ4qdfrx2+kzhEognD0PEYcgHg++Dtst9d97jC8SFSQp0MTMLH8RZ38mnOn0Ip+guLs6JoQ==
+X-Received: by 2002:aa7:83c2:0:b0:505:723f:6ace with SMTP id j2-20020aa783c2000000b00505723f6acemr21710594pfn.86.1652208868419;
+        Tue, 10 May 2022 11:54:28 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:6c64])
+        by smtp.gmail.com with ESMTPSA id r22-20020a170903021600b0015e8d4eb22csm2431432plh.118.2022.05.10.11.54.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 11:54:27 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 10 May 2022 08:54:26 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 8/9] bpf: Introduce cgroup iter
+Message-ID: <Ynq04gC1l7C2tx6o@slm.duckdns.org>
+References: <20220510001807.4132027-1-yosryahmed@google.com>
+ <20220510001807.4132027-9-yosryahmed@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 1LGwyxW7b1RkDcqNNunxVJwvAve82Fse
-X-Proofpoint-ORIG-GUID: 1LGwyxW7b1RkDcqNNunxVJwvAve82Fse
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-10_05,2022-05-10_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220510001807.4132027-9-yosryahmed@google.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Drop unused iteration variable, move overflow prevention check into the
-for loop.
+Hello,
 
-Fixes: 0087a681fa8c ("libbpf: Automatically fix up BPF_MAP_TYPE_RINGBUF size, if necessary")
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On Tue, May 10, 2022 at 12:18:06AM +0000, Yosry Ahmed wrote:
+> From: Hao Luo <haoluo@google.com>
+> 
+> Introduce a new type of iter prog: cgroup. Unlike other bpf_iter, this
+> iter doesn't iterate a set of kernel objects. Instead, it is supposed to
+> be parameterized by a cgroup id and prints only that cgroup. So one
+> needs to specify a target cgroup id when attaching this iter. The target
+> cgroup's state can be read out via a link of this iter.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 15117b9a4d1e..eb4565a89eab 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4951,7 +4951,7 @@ static bool is_pow_of_2(size_t x)
- static size_t adjust_ringbuf_sz(size_t sz)
- {
- 	__u32 page_sz = sysconf(_SC_PAGE_SIZE);
--	__u32 i, mul;
-+	__u32 mul;
- 
- 	/* if user forgot to set any size, make sure they see error */
- 	if (sz == 0)
-@@ -4967,9 +4967,7 @@ static size_t adjust_ringbuf_sz(size_t sz)
- 	 * user-set size to satisfy both user size request and kernel
- 	 * requirements and substitute correct max_entries for map creation.
- 	 */
--	for (i = 0, mul = 1; ; i++, mul <<= 1) {
--		if (mul > UINT_MAX / page_sz) /* prevent __u32 overflow */
--			break;
-+	for (mul = 1; mul <= UINT_MAX / page_sz; mul <<= 1) {
- 		if (mul * page_sz > sz)
- 			return mul * page_sz;
- 	}
+Is there a reason why this can't be a proper iterator which supports
+lseek64() to locate a specific cgroup?
+
+Thanks.
+
 -- 
-2.30.2
-
+tejun
