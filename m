@@ -2,34 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D36E520F94
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 10:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35E5520FA0
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 10:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238055AbiEJIVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 04:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
+        id S237466AbiEJI0m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 04:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237941AbiEJIU5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 04:20:57 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F397A28C9D3
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 01:17:00 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id BCC0B68AFE; Tue, 10 May 2022 10:16:57 +0200 (CEST)
-Date:   Tue, 10 May 2022 10:16:57 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     ast@kernel.org, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, "Harris, James R" <james.r.harris@intel.com>
-Subject: Re: LSF/MM session: eBPF standardization
-Message-ID: <20220510081657.GA12910@lst.de>
-References: <20220503140449.GA22470@lst.de>
+        with ESMTP id S233899AbiEJI0k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 04:26:40 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57287291CFF
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 01:22:41 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 249MUjDO013953
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 01:22:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=OfumEzhOnlOw70e2w1ij9HWvhgXZI9aRtgvjFfPDTmE=;
+ b=FdBTx+PaE2fGYefhuR+NM1ph9q//WaTlcR4GC5Jph2dJsqbXypgdztPF4DT50VcIdImZ
+ EZ2mTSUPIN+mYP+bpMbBPmdod9ZF94mQhDQmV2BkXWxPCfzSLHYsokiKmE8O7s2zmADt
+ 7qFZZ5sAASSKeS0pBP0L11sGdJBQH3TCPrw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fxywsqdyf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 01:22:40 -0700
+Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
+ snc-exhub104.TheFacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 10 May 2022 01:22:40 -0700
+Received: from twshared24024.25.frc3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 10 May 2022 01:22:39 -0700
+Received: by devvm2896.atn0.facebook.com (Postfix, from userid 153359)
+        id 0E77214AE8B3C; Tue, 10 May 2022 01:22:36 -0700 (PDT)
+From:   Takshak Chahande <ctakshak@fb.com>
+To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <ctakshak@fb.com>,
+        <ndixit@fb.com>, <kafai@fb.com>, <andriin@fb.com>,
+        <daniel@iogearbox.net>, <yhs@fb.com>
+Subject: [PATCH bpf-next v6 1/2] bpf: Extend batch operations for map-in-map bpf-maps
+Date:   Tue, 10 May 2022 01:22:20 -0700
+Message-ID: <20220510082221.2390540-1-ctakshak@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220503140449.GA22470@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: fuihkotq0W2Vm9dFKzdaYHcGOiQq1eoE
+X-Proofpoint-ORIG-GUID: fuihkotq0W2Vm9dFKzdaYHcGOiQq1eoE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-10_01,2022-05-09_02,2022-02-23_01
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,48 +66,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks everyone who participated.
+This patch extends batch operations support for map-in-map map-types:
+BPF_MAP_TYPE_HASH_OF_MAPS and BPF_MAP_TYPE_ARRAY_OF_MAPS
 
-Here is my rough memory an action items from the meeting.  As I
-was on stage and did not take notes these might be a bit off and
-may need correction.
+A usecase where outer HASH map holds hundred of VIP entries and its
+associated reuse-ports per VIP stored in REUSEPORT_SOCKARRAY type
+inner map, needs to do batch operation for performance gain.
 
-The separate instruction set document wasn't known by everyone but
-seens as a good idea.
+This patch leverages the exiting generic functions for most of the batch
+operations. As map-in-map's value contains the actual reference of the in=
+ner map,
+for BPF_MAP_TYPE_HASH_OF_MAPS type, it needed an extra step to fetch the
+map_id from the reference value.
 
-The content needs a little more work:
+selftests are added in next patch 2/2.
 
- - document the version levels, based on the clang cpu levels
-   (I plan to do this ASAP)
- - we need to decide to do about the legacy BPF packet access
-   instrutions.  Alexei mentioned that the modern JIT doesn't
-   even use those internally any more.
- - we need to document behavior for underflows / overflows and
-   other behavior not mentioned.  The example in the session
-   was divive by zero behavior.  Are there any notes on what
-   the consensus for a lot of this behavior is, or do we need
-   to reverse engineer it from the implementation?  I'd happily
-   write the documentation, but I'd be really grateful for any
-   input into what needs to go into it
+Signed-off-by: Takshak Chahande <ctakshak@fb.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/arraymap.c |  2 ++
+ kernel/bpf/hashtab.c  | 13 +++++++++++--
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-Discussion on where to host a definitive version of the document:
+v4->v6:
+- Changes in selftest/bpf patch 2/2
 
- - I think the rough consensus is to just host regular (hopefully
-   low cadence) documents and maybe the latest gratest at a eBPF
-   foundation website.  Whom do we need to work with at the fundation
-   to make this happen?
- - On a technical side we need to figure out a way how to build a
-   standalone document from the kerneldoc tree of documents.  I
-   volunteers to look into that as well.
+v3->v4:
+- Added blank line between var declaration and actual code block (Yonghon=
+g)
 
-The verifier is not very well documented, and mixes up generic behavior
-with that of specific implementations and program types.
+v1->v3:
+- Changes in selftest/bpf patch 2/2
 
- - as idea it was brought up to write a doument with the minimal
-   verification requirements required for any eBPF implementation
-   independent of the program type.  Again I can volunteer to
-   draft a documentation, but I need input on what such a consensus
-   would be.  In this case input from the non-Linux verifier
-   implementors (I only know the Microsoft research one) would
-   be very helpful as well.
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index b3bf31fd9458..724613da6576 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -1345,6 +1345,8 @@ const struct bpf_map_ops array_of_maps_map_ops =3D =
+{
+ 	.map_fd_put_ptr =3D bpf_map_fd_put_ptr,
+ 	.map_fd_sys_lookup_elem =3D bpf_map_fd_sys_lookup_elem,
+ 	.map_gen_lookup =3D array_of_map_gen_lookup,
++	.map_lookup_batch =3D generic_map_lookup_batch,
++	.map_update_batch =3D generic_map_update_batch,
+ 	.map_check_btf =3D map_check_no_btf,
+ 	.map_btf_id =3D &array_map_btf_ids[0],
+ };
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 3e00e62b2218..705841279d16 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -140,7 +140,7 @@ static inline bool htab_use_raw_lock(const struct bpf=
+_htab *htab)
+=20
+ static void htab_init_buckets(struct bpf_htab *htab)
+ {
+-	unsigned i;
++	unsigned int i;
+=20
+ 	for (i =3D 0; i < htab->n_buckets; i++) {
+ 		INIT_HLIST_NULLS_HEAD(&htab->buckets[i].head, i);
+@@ -1627,7 +1627,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *=
+map,
+ 	void __user *uvalues =3D u64_to_user_ptr(attr->batch.values);
+ 	void __user *ukeys =3D u64_to_user_ptr(attr->batch.keys);
+ 	void __user *ubatch =3D u64_to_user_ptr(attr->batch.in_batch);
+-	u32 batch, max_count, size, bucket_size;
++	u32 batch, max_count, size, bucket_size, map_id;
+ 	struct htab_elem *node_to_free =3D NULL;
+ 	u64 elem_map_flags, map_flags;
+ 	struct hlist_nulls_head *head;
+@@ -1752,6 +1752,14 @@ __htab_map_lookup_and_delete_batch(struct bpf_map =
+*map,
+ 			}
+ 		} else {
+ 			value =3D l->key + roundup_key_size;
++			if (map->map_type =3D=3D BPF_MAP_TYPE_HASH_OF_MAPS) {
++				struct bpf_map **inner_map =3D value;
++
++				 /* Actual value is the id of the inner map */
++				map_id =3D map->ops->map_fd_sys_lookup_elem(*inner_map);
++				value =3D &map_id;
++			}
++
+ 			if (elem_map_flags & BPF_F_LOCK)
+ 				copy_map_value_locked(map, dst_val, value,
+ 						      true);
+@@ -2450,5 +2458,6 @@ const struct bpf_map_ops htab_of_maps_map_ops =3D {
+ 	.map_fd_sys_lookup_elem =3D bpf_map_fd_sys_lookup_elem,
+ 	.map_gen_lookup =3D htab_of_map_gen_lookup,
+ 	.map_check_btf =3D map_check_no_btf,
++	BATCH_OPS(htab),
+ 	.map_btf_id =3D &htab_map_btf_ids[0],
+ };
+--=20
+2.30.2
 
