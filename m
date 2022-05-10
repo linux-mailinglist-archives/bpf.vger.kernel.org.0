@@ -2,157 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB4E522450
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 20:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48837522453
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 20:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbiEJSqi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 14:46:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
+        id S244819AbiEJSqn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 14:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349131AbiEJSqE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 14:46:04 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D8F2BE9EF
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 11:45:05 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id y11so11954895ilp.4
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 11:45:05 -0700 (PDT)
+        with ESMTP id S1349220AbiEJSq2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 14:46:28 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AD518B34;
+        Tue, 10 May 2022 11:45:49 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id n8so17550343plh.1;
+        Tue, 10 May 2022 11:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yVNhRiWKBNvdZSwQYih85AvoxdXpTeET9gWG+4pSft8=;
-        b=EZJsfROjoYZMHVIdj86AL5aXHZzRZ6zSe9KWQDSXYgHLToGTTbCZq7txlhqQIB/Lng
-         gRES2K5GDaka1CdPn8dlKynccZEkwgHdfxrQWHSYsDA+sKBhnwEblnuByYc1G+GdwLCn
-         8m2VcBxR9YyoD472bmJcmOONEMb7CYxvYvrndWIYfXw4UxTf01srKCJw89bgjL7HoxNr
-         TmFkCnDLsBLWw2hn+xYrk/1joMzmGttTFnsW+LKPyKNUAAFGwPMqhpMr+uXmDKsZKLLy
-         bUqBMGyANRb4Xj6yxtTsJbEFSmMxvElzH9JMTqlZIWtebsK0Ms5j3WfPlV3ojbWwBUUD
-         ktLw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QcmVbQMJdfUcOk6mFPVNXkZt9bGV2i5Pf6lVs2tBzVA=;
+        b=bqoGmmeD2eU6J99z/Cgc1jne4RgQpPHqrHsn7nRf2qGdxNoZDNh+phWWtcjNahz+vS
+         2wzLLe0k7L5MgwOmXV4u8/e8bmA8y+KMxpTTK99CMER/yylrAfLNCrqM9pBf4i8UPd7F
+         x01rnWDdO+g2G5i63rBkpou6zn2e8F2IVVB5UC2Jw0+9aTu1xi5qjBcJ3hsflIlrPT7D
+         Fr1W3f5vuXq3n3FeAS3U9rxOJGPOC01ANdO9TUcgKDyYhKd+50y7a7itYHn4PBVJVHuC
+         VJlXsJyHAWPwf/exDBl0ViOp0cw4dcXe1tEtFWNk1LNpx6jxtPpqSnV/GN0vySoL0GbS
+         QV9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yVNhRiWKBNvdZSwQYih85AvoxdXpTeET9gWG+4pSft8=;
-        b=O8WIYGbrcmRkS5kMw6ReQYrl4WH1yWo0mkFJFEJh2CMAZCXsu+08oz0ioPQN7ypfym
-         59y50ZATnSzJjP6nQSG/arOWNh61F/uNGmdKWrH1KF6SkHwms2Rts41qQLX08nsiuNgD
-         iDxS0yZxyVr3TM+/AVPnlTDMyJZ/1swaeWtBnUraFsqSzY0LWs07mHH8l4vOkFlzF8Fc
-         bZItEV1tDf1FjpNX7Yfx8twvzqnuvIhZvz0unP1lnRlhkx67Zk+/pcR6NrJHu8Cl1wJ+
-         UFkJ38djFccK+FwwPWspRvbQAsLSGWkcefiF6UKEcV1AX9Sej3EHxviGKy4qpR08HGDt
-         uGkg==
-X-Gm-Message-State: AOAM530G5lPAEiGGG8AROQw+58mBglaYWt7wWGZynVp1amQ5NnfKRptK
-        hDEO4rKlYkuRrQMmmUwPiQkgwA8Qnd0XZWnPQiM=
-X-Google-Smtp-Source: ABdhPJzwg6XBS7NhfAKFX1GGkWRVfVlf3YyYo+ltODfOZ7Z0cw66Nnayxvj2yCv3xRlII0NuLHTSwfzMiNVhY7mJD8k=
-X-Received: by 2002:a05:6e02:11a3:b0:2cf:90f9:30e0 with SMTP id
- 3-20020a056e0211a300b002cf90f930e0mr6385962ilj.252.1652208304796; Tue, 10 May
- 2022 11:45:04 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=QcmVbQMJdfUcOk6mFPVNXkZt9bGV2i5Pf6lVs2tBzVA=;
+        b=d7rBX3oj2UXQw5op9+YslQFwDVQpTcDKv7wd65IOucGy0eilLiawDuCfYvawtILMqs
+         sXOG61Bv+hg/oWtFn9jXVPv32dbh9L9YY4w9fT1Npoj886qrV1EwkYyBxrydV5/Bav6B
+         RCV8nx4AqehIui573NE/643eXs3KJzVm5Cx2AyUboL8Ok+VdlV0iv7jKHPcSDSXyQJaR
+         FQTgfB1YhgBcZ7VEze/IinhDip3SF0y+aDXzqCtXfSM2UYhMhut73hMopMlURmbfWQ5k
+         aW+Bp2CSL7c6sHhh0lyyndYoEU/VfIV4nGnXdN9+vMsuBgPMp91Ks+ezZyfqMabK0q6G
+         Qujw==
+X-Gm-Message-State: AOAM531xhKKmyJpoomxArpM+Z3dZusE8kMyGSa1IfG8cvekg1X02RYQ9
+        nTTxmM+vuQFFYkck3/64lCs=
+X-Google-Smtp-Source: ABdhPJzeiJHpXyGWeMyPwywIJfNtJuhkuj9PeElHaoIQmiZg/wqFKE7FFfFomIYdVMAGygq+gTnBKg==
+X-Received: by 2002:a17:903:1247:b0:156:25b4:4206 with SMTP id u7-20020a170903124700b0015625b44206mr22221552plh.146.1652208348998;
+        Tue, 10 May 2022 11:45:48 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:6c64])
+        by smtp.gmail.com with ESMTPSA id az4-20020a170902a58400b0015ee1797c7asm2410584plb.113.2022.05.10.11.45.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 11:45:48 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 10 May 2022 08:45:47 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 2/9] cgroup: bpf: flush bpf stats on rstat
+ flush
+Message-ID: <Ynqy20FjoCIqHZ1M@slm.duckdns.org>
+References: <20220510001807.4132027-1-yosryahmed@google.com>
+ <20220510001807.4132027-3-yosryahmed@google.com>
 MIME-Version: 1.0
-References: <20220508032117.2783209-1-kuifeng@fb.com> <20220508032117.2783209-4-kuifeng@fb.com>
- <CAEf4BzYitV038g5SW1DexVuxH1YNgdgfKs_yV+ExbRPuy++N3w@mail.gmail.com> <e3be9e432ba6ce95543977b542ee1a2a91e978e7.camel@fb.com>
-In-Reply-To: <e3be9e432ba6ce95543977b542ee1a2a91e978e7.camel@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 May 2022 11:44:53 -0700
-Message-ID: <CAEf4Bzb-9a=4bDxqAH5Rdoz3F_LJ9ks8DAm_SyEDKZqwVAjGkA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 3/5] bpf, x86: Attach a cookie to fentry/fexit/fmod_ret/lsm.
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220510001807.4132027-3-yosryahmed@google.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 10, 2022 at 9:44 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
->
-> On Mon, 2022-05-09 at 11:58 -0700, Andrii Nakryiko wrote:
-> > On Sat, May 7, 2022 at 8:21 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
-> > >
-> > > Pass a cookie along with BPF_LINK_CREATE requests.
-> > >
-> > > Add a bpf_cookie field to struct bpf_tracing_link to attach a
-> > > cookie.
-> > > The cookie of a bpf_tracing_link is available by calling
-> > > bpf_get_attach_cookie when running the BPF program of the attached
-> > > link.
-> > >
-> > > The value of a cookie will be set at bpf_tramp_run_ctx by the
-> > > trampoline of the link.
-> > >
-> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> > > ---
-> > >  arch/x86/net/bpf_jit_comp.c    | 12 ++++++++++--
-> > >  include/linux/bpf.h            |  1 +
-> > >  include/uapi/linux/bpf.h       |  9 +++++++++
-> > >  kernel/bpf/bpf_lsm.c           | 17 +++++++++++++++++
-> > >  kernel/bpf/syscall.c           | 12 ++++++++----
-> > >  kernel/bpf/trampoline.c        |  7 +++++--
-> > >  kernel/trace/bpf_trace.c       | 17 +++++++++++++++++
-> > >  tools/include/uapi/linux/bpf.h |  9 +++++++++
-> > >  8 files changed, 76 insertions(+), 8 deletions(-)
-> > >
-> >
-> > LGTM with a suggestion for some follow up clean up.
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > > diff --git a/arch/x86/net/bpf_jit_comp.c
-> > > b/arch/x86/net/bpf_jit_comp.c
-> > > index bf4576a6938c..52a5eba2d5e8 100644
-> > > --- a/arch/x86/net/bpf_jit_comp.c
-> > > +++ b/arch/x86/net/bpf_jit_comp.c
-> > > @@ -1764,13 +1764,21 @@ static int invoke_bpf_prog(const struct
-> > > btf_func_model *m, u8 **pprog,
-> > >                            struct bpf_tramp_link *l, int
-> > > stack_size,
-> > >                            bool save_ret)
-> > >  {
-> > > +       u64 cookie = 0;
-> > >         u8 *prog = *pprog;
-> > >         u8 *jmp_insn;
-> > >         int ctx_cookie_off = offsetof(struct bpf_tramp_run_ctx,
-> > > bpf_cookie);
-> > >         struct bpf_prog *p = l->link.prog;
-> > >
-> > > -       /* mov rdi, 0 */
-> > > -       emit_mov_imm64(&prog, BPF_REG_1, 0, 0);
-> > > +       if (l->link.type == BPF_LINK_TYPE_TRACING) {
-> >
-> > It would probably be nicer to put cookie field into struct
-> > bpf_tramp_link instead so that the JIT compiler doesn't have to do
-> > this special handling. It also makes sense that struct bpf_trampoline
-> > *trampoline is moved into struct bpf_tramp_link itself (given
-> > trampoline is always there for bpf_tramp_link).
->
-> It will increase the size of bpf_tramp_link a little bit, but they are
-> not used by bpf_struct_ops.
->
+On Tue, May 10, 2022 at 12:18:00AM +0000, Yosry Ahmed wrote:
+> When a cgroup is popped from the rstat updated tree, subsystems rstat
+> flushers are run through the css_rstat_flush() callback. Also run bpf
+> flushers for all subsystems that have at least one bpf rstat flusher
+> attached, and are enabled for this cgroup.
+> 
+> A list of subsystems that have attached rstat flushers is maintained to
+> avoid looping through all subsystems for all cpus for every cgroup that
+> is being popped from the updated tree. Since we introduce a lock here to
+> protect this list, also use it to protect rstat_flushers lists inside
+> each subsystem (since they both need to locked together anyway), and get
+> read of the locks in struct cgroup_subsys_bpf.
+> 
+> rstat flushers are run for any enabled subsystem that has flushers
+> attached, even if it does not subscribe to css flushing through
+> css_rstat_flush(). This gives flexibility for bpf programs to collect
+> stats for any subsystem, regardless of the implementation changes in the
+> kernel.
 
-It feels like the right tradeoff to keep architecture-specific
-trampoline code oblivious to these details. Some day structs_ops might
-support cookies as well. And either way 8 bytes for struct_ops link
-isn't a big deal.
+Yeah, again, the fact that these things are associated with a speicfic
+subsystem feels a bit jarring to me. Let's get that resolved first.
 
-> >
-> > > +               struct bpf_tracing_link *tr_link =
-> > > +                       container_of(l, struct bpf_tracing_link,
-> > > link);
-> > > +
-> > > +               cookie = tr_link->cookie;
-> > > +       }
-> > > +
-> > > +       /* mov rdi, cookie */
-> > > +       emit_mov_imm64(&prog, BPF_REG_1, (long) cookie >> 32, (u32)
-> > > (long) cookie);
-> > >
-> > >         /* Prepare struct bpf_tramp_run_ctx.
-> > >          *
-> >
-> > [...]
->
+Thanks.
+
+-- 
+tejun
