@@ -2,177 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8838B5227B9
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 01:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168F25227C2
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 01:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236979AbiEJXkO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 19:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
+        id S233701AbiEJXpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 19:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233259AbiEJXkN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 19:40:13 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70154A3F1
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 16:40:12 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id h85so390307iof.12
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 16:40:12 -0700 (PDT)
+        with ESMTP id S229837AbiEJXpN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 19:45:13 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8043A5BE6B;
+        Tue, 10 May 2022 16:45:12 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id e15so444151iob.3;
+        Tue, 10 May 2022 16:45:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HXtRybYckISTRpci33G1yAk25EH6RBZLjaPBJIavgKI=;
-        b=BF6ma3Yeo0IiWEVCZEN52zLYtPkOdU01JbJ20rm3MEMvlIB5YjFgFXVNYxuYWgRAVs
-         i251DHUVZ+8qGxsLovDX3++Z3KNJb1i6qT3GXIHYEP7TGzCqh/D5e2F0AmZgO2Bn2NCX
-         OvY5YvDX/z548j/PDLYRJQJmMPhMJ2w1PhdzA6vB1LQ6rPTvi5xgY+2zNj/vZqUiEo/w
-         IRi0j7thIPZUStbNgxfY55VHAFa1aAmsIhbK2N+Z8jDiCzt7HljvuBk3RSVJOy6DYhot
-         mRwN9IOEEcYNrtiRt17NZQy6LoU61Gqui2cp4hSeI2SRIAFykp0HqdR6uE5EMT9Us2Uv
-         477w==
+        bh=wATuxJ90w3SohnNFQrv277+BPZn2Ntr4DIlED5m3scw=;
+        b=dbheb9oJ9YgLDUok/wjCXtnU2EgK9IV3VjjeTOkTox5vtD9ImLTlhCjk75DT+EinMU
+         4XS3gcJo4K6wOL+ejoL1hHQZ7xo04Po9CAOEip58QhkZmZ1BRAah6yUYV3MRjZhszvA6
+         RNWV3r/04GUSrCh/9iTDB/OGdACCo5LxM1krcfA0m3/u2/9AseO5PN+EU6xy5knPpGo/
+         09SmNbdQAF4jgE23nZwjDmK6dtbHrlrOud4NMdRgogj6ONW86pmHFQtp1/88US4unvSZ
+         1o4fKLi6e+gDi6sQHUDlcYy2C0jYlddc7pSgDDD8BcAJd7AyieTF2G3mcn3ffvBR/2ge
+         wX9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HXtRybYckISTRpci33G1yAk25EH6RBZLjaPBJIavgKI=;
-        b=G+71cLtFHNuAuF0y9RDNy8gB6X7irP91wWVkTW36mejBb12LAEF4cZHOtVA1V3+Oop
-         drbEDnZbODUTq0sSAreDUyTuGZWM4rOy5fHxDEhl5aLtioO1EIz0WqXWpwsU2uaNvfgg
-         vZRpiKmHSH/zQsy4bjrZv2qYQCETt3VEI300c4vjv8Gvq15iiHN9wF3ZwyPJ2uPbM3jY
-         RTzMIJ3Tzv/6r55s0Zrz24zEfJTwxqkMzZ3Af2sLU1rq79Of7IBHSCay8JJFrlcfFwxN
-         lO2sI/5HzYHvzmV8z0zViKAjyRm5Oomv73N5CoHaRzHmQI3jDY4OFR+OoaaO4yiZETUi
-         bpWw==
-X-Gm-Message-State: AOAM530+qSSCzOgRvUZbjFnPf/UB7nraiBWm0z4lkjbs/Et2aCq4sXzO
-        XrtYRUK5gDDEIFbPA+s3bw8XsunQ4og9kTT4btI=
-X-Google-Smtp-Source: ABdhPJxpGa4fMdWrJJhUrDhDfGpwKbhV5qdh6Td+Xve89x0xgugNfh6qqUOefN661Ai8JpyjnXsgVSeqpBGdZsiIaLE=
-X-Received: by 2002:a02:5d47:0:b0:32b:4387:51c8 with SMTP id
- w68-20020a025d47000000b0032b438751c8mr11139663jaa.103.1652226012133; Tue, 10
- May 2022 16:40:12 -0700 (PDT)
+        bh=wATuxJ90w3SohnNFQrv277+BPZn2Ntr4DIlED5m3scw=;
+        b=De5NnQ1Al1vLBayFhTWgPeydGv9/oWvyWFo2Ha+jHIsxuGXhYM9KqVxjNovObHW5jX
+         MtBLdCjrOIqzo1TC9zCdCottgTXD1irbI/fIhLSvynk7H1lQeCHP0873LUkAdrMj6oXa
+         WzKUKq/QO/QaKDD4AecNBQIBYV5C/yE7GU0oZG1YAEfJ7uoT/r/FTV5rMV9KF5fHNjCv
+         6DVrVM32ay6LOeFdwTHaE2827pXr3rTK+kd/YYhE9W6ci8smidWAyjlVm+ZYhau4rfEM
+         eRM3XZZS6hs15HDHbaYAadMBpaXHUHxCxdrdX0H0XPXGfOhL0RMIib32T3JjTQhieCzq
+         aHww==
+X-Gm-Message-State: AOAM532ARF9HpNV/5l9OWnZCLW78C2tXAT6pX/iIFxKZurrWXnuCUFFu
+        AF/LNPP3YZRkMtvmD7r42O5MnJ8B/QIEHYIcMJU=
+X-Google-Smtp-Source: ABdhPJyY+v3smYSOc36bZa6g3lpDz8xQNV/WmwkBYGNeXJOu318bre8+/gDvUoeKaI4xZM7U8xgQMyb3ZELBHbgmUXY=
+X-Received: by 2002:a05:6638:16d6:b0:32b:a283:a822 with SMTP id
+ g22-20020a05663816d600b0032ba283a822mr11247396jat.145.1652226311934; Tue, 10
+ May 2022 16:45:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220501190002.2576452-1-yhs@fb.com> <20220501190023.2578209-1-yhs@fb.com>
- <CAEf4BzbXuN4YOYqm_ojgTuJMo4a+J_M6WPF=MUX1B9BK8DdmMQ@mail.gmail.com>
- <f9fa3310-0f63-18af-5424-b82df11c4a70@fb.com> <33fb48e5-ed62-cd2d-cedf-71860912143f@fb.com>
-In-Reply-To: <33fb48e5-ed62-cd2d-cedf-71860912143f@fb.com>
+References: <20220510074659.2557731-1-jolsa@kernel.org> <20220510074659.2557731-3-jolsa@kernel.org>
+In-Reply-To: <20220510074659.2557731-3-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 May 2022 16:40:01 -0700
-Message-ID: <CAEf4BzYOGkhMHBcX1qXK3fu1JQb68oDvw8=yUjPhiyz-adS6yg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 04/12] libbpf: Add btf enum64 support
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Tue, 10 May 2022 16:45:01 -0700
+Message-ID: <CAEf4Bzav8he-_fD=D5KMFW7s=PkJoZG9cUr+BOTuV54KKOC70A@mail.gmail.com>
+Subject: Re: [PATCHv2 perf/core 2/3] perf tools: Register fallback libbpf
+ section handler
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 10, 2022 at 4:02 PM Yonghong Song <yhs@fb.com> wrote:
+On Tue, May 10, 2022 at 12:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
+> Perf is using section name to declare special kprobe arguments,
+> which no longer works with current libbpf, that either requires
+> certain form of the section name or allows to register custom
+> handler.
 >
+> Adding perf support to register 'fallback' section handler to take
+> care of perf kprobe programs. The fallback means that it handles
+> any section definition besides the ones that libbpf handles.
 >
-> On 5/10/22 3:40 PM, Yonghong Song wrote:
-> >
-> >
-> > On 5/9/22 4:25 PM, Andrii Nakryiko wrote:
-> >> On Sun, May 1, 2022 at 12:00 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>
-> >>> Add BTF_KIND_ENUM64 support. Deprecated btf__add_enum() and
-> >>> btf__add_enum_value() and introduced the following new APIs
-> >>>    btf__add_enum32()
-> >>>    btf__add_enum32_value()
-> >>>    btf__add_enum64()
-> >>>    btf__add_enum64_value()
-> >>> due to new kind and introduction of kflag.
-> >>>
-> >>> To support old kernel with enum64, the sanitization is
-> >>> added to replace BTF_KIND_ENUM64 with a bunch of
-> >>> pointer-to-void types.
-> >>>
-> >>> The enum64 value relocation is also supported. The enum64
-> >>> forward resolution, with enum type as forward declaration
-> >>> and enum64 as the actual definition, is also supported.
-> >>>
-> >>> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >>> ---
-> >>>   tools/lib/bpf/btf.c                           | 226 +++++++++++++++++-
-> >>>   tools/lib/bpf/btf.h                           |  21 ++
-> >>>   tools/lib/bpf/btf_dump.c                      |  94 ++++++--
-> >>>   tools/lib/bpf/libbpf.c                        |  64 ++++-
-> >>>   tools/lib/bpf/libbpf.map                      |   4 +
-> >>>   tools/lib/bpf/libbpf_internal.h               |   2 +
-> >>>   tools/lib/bpf/linker.c                        |   2 +
-> >>>   tools/lib/bpf/relo_core.c                     |  93 ++++---
-> >>>   .../selftests/bpf/prog_tests/btf_dump.c       |  10 +-
-> >>>   .../selftests/bpf/prog_tests/btf_write.c      |   6 +-
-> >>>   10 files changed, 450 insertions(+), 72 deletions(-)
-> >>>
-> >>
-> [...]
-> >>
-> >>
-> >>> +       t->size = tsize;
-> >>> +
-> >>> +       return btf_commit_type(btf, sz);
-> >>> +}
-> >>> +
-> >>> +/*
-> >>> + * Append new BTF_KIND_ENUM type with:
-> >>> + *   - *name* - name of the enum, can be NULL or empty for anonymous
-> >>> enums;
-> >>> + *   - *is_unsigned* - whether the enum values are unsigned or not;
-> >>> + *
-> >>> + * Enum initially has no enum values in it (and corresponds to enum
-> >>> forward
-> >>> + * declaration). Enumerator values can be added by
-> >>> btf__add_enum64_value()
-> >>> + * immediately after btf__add_enum() succeeds.
-> >>> + *
-> >>> + * Returns:
-> >>> + *   - >0, type ID of newly added BTF type;
-> >>> + *   - <0, on error.
-> >>> + */
-> >>> +int btf__add_enum32(struct btf *btf, const char *name, bool
-> >>> is_unsigned)
-> >>
-> >> given it's still BTF_KIND_ENUM in UAPI, let's keep 32-bit ones as just
-> >> btf__add_enum()/btf__add_enum_value() and not deprecate anything.
-> >> ENUM64 can be thought about as more of a special case, so I think it's
-> >> ok.
-> >
-> > The current btf__add_enum api:
-> > LIBBPF_API int btf__add_enum(struct btf *btf, const char *name, __u32
-> > bytes_sz);
-> >
-> > The issue is it doesn't have signedness parameter. if the user input
-> > is
-> >     enum { A = -1, B = 0, C = 1 };
-> > the actual printout btf format will be
-> >     enum { A 4294967295, B = 0, C = 1}
-> > does not match the original source.
+> The handler serves two purposes:
+>   - allows perf programs to have special arguments in section name
+>   - allows perf to use pre-load callback where we can attach init
+>     code (zeroing all argument registers) to each perf program
 >
-> I think I found a way to keep the current btf__add_enum() API.
-> Initially, the signedness will be unsigned. But during
-> btf__add_enum_value() api calls, if any negative value
-> is found, the signedness will change to signed. I think
-> this should work.
+> The second is essential part of new prologue generation code,
+> that's coming in following patch.
 >
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/util/bpf-loader.c | 47 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>
+> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> index f8ad581ea247..2a2c9512c4e8 100644
+> --- a/tools/perf/util/bpf-loader.c
+> +++ b/tools/perf/util/bpf-loader.c
+> @@ -86,6 +86,7 @@ bpf_perf_object__next(struct bpf_perf_object *prev)
+>              (perf_obj) = (tmp), (tmp) = bpf_perf_object__next(tmp))
+>
+>  static bool libbpf_initialized;
+> +static int libbpf_sec_handler;
+>
+>  static int bpf_perf_object__add(struct bpf_object *obj)
+>  {
+> @@ -99,12 +100,58 @@ static int bpf_perf_object__add(struct bpf_object *obj)
+>         return perf_obj ? 0 : -ENOMEM;
+>  }
+>
+> +static struct bpf_insn prologue_init_insn[] = {
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_MOV64_IMM(BPF_REG_1, 0),
 
-Oops, didn't see this email when replying. Yeah, I guess this approach
-will work for 32-bit enum. For 64-bit one we probably better specify
-signedness explicitly and then accept __u64 as the value (which can be
-negative value casted to __u64, in practice).
+R0 should be initialized before exit anyway. R1 contains context, so
+doesn't need initialization, so I think you only need R2-R5?
 
-> >
-> >>
-> >>> +{
-> >>> +       return btf_add_enum_common(btf, name, is_unsigned,
-> >>> BTF_KIND_ENUM, 4);
-> >>> +}
-> >>> +
-> >>
-> >> [...]
-> >>
-> [...]
+> +       BPF_MOV64_IMM(BPF_REG_2, 0),
+> +       BPF_MOV64_IMM(BPF_REG_3, 0),
+> +       BPF_MOV64_IMM(BPF_REG_4, 0),
+> +       BPF_MOV64_IMM(BPF_REG_5, 0),
+> +};
+> +
+> +static int libbpf_prog_prepare_load_fn(struct bpf_program *prog,
+> +                                      struct bpf_prog_load_opts *opts __maybe_unused,
+> +                                      long cookie __maybe_unused)
+> +{
+> +       size_t init_size_cnt = ARRAY_SIZE(prologue_init_insn);
+> +       size_t orig_insn_cnt, insn_cnt, init_size, orig_size;
+> +       const struct bpf_insn *orig_insn;
+> +       struct bpf_insn *insn;
+> +
+> +       /* prepend initialization code to program instructions */
+> +       orig_insn = bpf_program__insns(prog);
+> +       orig_insn_cnt = bpf_program__insn_cnt(prog);
+> +       init_size = init_size_cnt * sizeof(*insn);
+> +       orig_size = orig_insn_cnt * sizeof(*insn);
+> +
+> +       insn_cnt = orig_insn_cnt + init_size_cnt;
+> +       insn = malloc(insn_cnt * sizeof(*insn));
+> +       if (!insn)
+> +               return -ENOMEM;
+> +
+> +       memcpy(insn, prologue_init_insn, init_size);
+> +       memcpy((char *) insn + init_size, orig_insn, orig_size);
+> +       bpf_program__set_insns(prog, insn, insn_cnt);
+> +       return 0;
+> +}
+> +
+>  static int libbpf_init(void)
+>  {
+> +       LIBBPF_OPTS(libbpf_prog_handler_opts, handler_opts,
+> +               .prog_prepare_load_fn = libbpf_prog_prepare_load_fn,
+> +       );
+> +
+>         if (libbpf_initialized)
+>                 return 0;
+>
+>         libbpf_set_print(libbpf_perf_print);
+> +       libbpf_sec_handler = libbpf_register_prog_handler(NULL, BPF_PROG_TYPE_KPROBE,
+> +                                                         0, &handler_opts);
+> +       if (libbpf_sec_handler < 0) {
+> +               pr_debug("bpf: failed to register libbpf section handler: %d\n",
+> +                        libbpf_sec_handler);
+> +               return -BPF_LOADER_ERRNO__INTERNAL;
+> +       }
+>         libbpf_initialized = true;
+>         return 0;
+>  }
+> --
+> 2.35.3
+>
