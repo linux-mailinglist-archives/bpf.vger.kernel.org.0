@@ -2,139 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3546522432
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 20:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D3C522441
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 20:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348991AbiEJSg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 14:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
+        id S1344053AbiEJSmQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 14:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348981AbiEJSg5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 14:36:57 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FB25534F
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 11:36:55 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id d5so25013399wrb.6
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 11:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o3DuZ6qMz/zwur/XREOAPzrxtrhGwT4mYkZCOIIgE34=;
-        b=WuHN5uHfYZAEE44qYg/3gHrDYCuYzwfu4xNG6V/Zli6CdrZFKQs64WVQEKWSplNQWr
-         n8LTONmYEdFhQr80eHUqicHY0F7KIyV9I6eytS4eIB2kbllV3FoHgnqv2JZ3QUbo9pqM
-         +yM5oaOfkvFmkC+Qdp4sevWhPH5KsMkvW4Bjd4X7ksx4LwclFy19gupcY7cFHeKQWOlk
-         XoyN5NTwbGfFVXSP1eGuJCbsfhL1nWx7LP2IxcKd3XCGVdDM2Z80UDhq/qt9sZuFwyKo
-         8BdnKJbzrJGC7LMInRLmjjoK5jNWC1i47zYKCcrZdPpq30LOSlVGfxVYgElsBoVJVAdZ
-         7OYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o3DuZ6qMz/zwur/XREOAPzrxtrhGwT4mYkZCOIIgE34=;
-        b=Es/axBQTpvIiRySZDRBJKBjHDk9aUomXh04bfFwHoy0RLQM4TmD6eRhLLht4nEI8/D
-         IYrwGXPaME4hA3X5C5znnukjp0okataF986nmJkak6heVknBGQAnlaULS4Rar7xz171+
-         jtl9iKyxS9F/2DFj2T7GoGPkYBXuAoLok5uiAFysgUDrcEb5hKUNXL7+DQ9ISm0gAQn3
-         Wtz358DZyaqk2RatMxtoLiz6/nnHIPepCZVEzEPq4IPlNhKtPeKlp5oSFPFGC5P/ud3b
-         UfB0mB2Niv7nIKDbwmwjLC+dkdZAtBwb2v8NPh1Xc0OgSdqZnM4hYQWGLJZ2OaL0aoo4
-         ZD3A==
-X-Gm-Message-State: AOAM5322AIEL1X9xNmbXoAW1fyhwQ+2rgoQPYPwDAzhBoAsfOz36wpuR
-        PphgG41lfOS8DDMEltKBVEhfqa3nL1tx5NEWzNl4BQ==
-X-Google-Smtp-Source: ABdhPJxI7a1Dw+ppNRDkdyvyzx0PfB9kRBRoWn3TqRmzZ+lYFRCytup5d/cNBSwLstiihoyHtEis/fPtivJkPuNCUYA=
-X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
- c5-20020adffb05000000b0020ae1138f3fmr20156028wrr.534.1652207813729; Tue, 10
- May 2022 11:36:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220510001807.4132027-1-yosryahmed@google.com>
- <20220510001807.4132027-7-yosryahmed@google.com> <YnqwFuhncWiR3rjq@slm.duckdns.org>
-In-Reply-To: <YnqwFuhncWiR3rjq@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 10 May 2022 11:36:17 -0700
-Message-ID: <CAJD7tkb_fP=qTQRR7Os1UXSqFQvCEX+GYA9QHvbcoXyW1Kq48Q@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 6/9] cgroup: add v1 support to cgroup_get_from_id()
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S243004AbiEJSmK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 14:42:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B591512F1FB
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 11:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1652208127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=My8Rl7ea47B+HwUMWyal7bJCbA6soPVSA7SmTGeFXV4=;
+        b=BLQlSYKEfb8pTb/64h83W6XmNaiHpJnclP9gwKSHReYMXBdvtfr47N+k3XIDHtbbb9FBRc
+        dvBB0p6me7yVIjFfkhFBwkbtjP7NDIECfDXTlQt4BNsqsStGMeB8Fri+K4hdoOjB7SDRDa
+        ez/aOfAlI1f+Dy/x3Dq9UBU3qxBSbUg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-62-gTJ2yLWsM_Ot9w76UMdo3Q-1; Tue, 10 May 2022 14:42:02 -0400
+X-MC-Unique: gTJ2yLWsM_Ot9w76UMdo3Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96F7A185A7BA;
+        Tue, 10 May 2022 18:42:01 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2036515230D2;
+        Tue, 10 May 2022 18:41:57 +0000 (UTC)
+Date:   Tue, 10 May 2022 20:41:55 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf] bpf_trace: bail out from
+ bpf_kprobe_multi_link_attach when in compat
+Message-ID: <20220510184155.GA8295@asgard.redhat.com>
+References: <20220506142148.GA24802@asgard.redhat.com>
+ <CAADnVQKNkEX-caBjozegRaOb67g1HNOHn1e-enRk_s-7Gtt=gg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKNkEX-caBjozegRaOb67g1HNOHn1e-enRk_s-7Gtt=gg@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 10, 2022 at 11:34 AM Tejun Heo <tj@kernel.org> wrote:
->
-> On Tue, May 10, 2022 at 12:18:04AM +0000, Yosry Ahmed wrote:
-> > The current implementation of cgroup_get_from_id() only searches the
-> > default hierarchy for the given id. Make it compatible with cgroup v1 by
-> > looking through all the roots instead.
+On Tue, May 10, 2022 at 11:10:35AM -0700, Alexei Starovoitov wrote:
+> On Fri, May 6, 2022 at 7:22 AM Eugene Syromiatnikov <esyr@redhat.com> wrote:
 > >
-> > cgrp_dfl_root should be the first element in the list so there shouldn't
-> > be a performance impact for cgroup v2 users (in the case of a valid id).
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > Since bpf_kprobe_multi_link_attach doesn't support 32-bit kernels
+> > for whatever reason,
+> 
+> Jiri,
+> why did you add this restriction?
+> 
+> > having it enabled for compat processes on 64-bit
+> > kernels makes even less sense due to discrepances in the type sizes
+> > that it does not handle.
+> 
+> I don't follow this logic.
+> bpf progs are always 64-bit. Even when user space is 32-bit.
+> Jiri's check is for the kernel.
+
+The interface as defined (and implemented in libbpf) expects arrays of userspace
+pointers to be passed (for example, syms points to an array of userspace
+pointers—character strings; same goes for addrs, but with generic userspace
+pointers) without regard to possible difference in the pointer size in case
+of compat userspace.
+
+> > Fixes: 0dcac272540613d4 ("bpf: Add multi kprobe link")
+> > Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
 > > ---
-> >  kernel/cgroup/cgroup.c | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >  kernel/trace/bpf_trace.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> > index af703cfcb9d2..12700cd21973 100644
-> > --- a/kernel/cgroup/cgroup.c
-> > +++ b/kernel/cgroup/cgroup.c
-> > @@ -5970,10 +5970,16 @@ void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
-> >   */
-> >  struct cgroup *cgroup_get_from_id(u64 id)
-> >  {
-> > -     struct kernfs_node *kn;
-> > +     struct kernfs_node *kn = NULL;
-> >       struct cgroup *cgrp = NULL;
-> > +     struct cgroup_root *root;
-> > +
-> > +     for_each_root(root) {
-> > +             kn = kernfs_find_and_get_node_by_id(root->kf_root, id);
-> > +             if (kn)
-> > +                     break;
-> > +     }
->
-> I can't see how this can work. You're smashing together separate namespaces
-> and the same IDs can exist across multiple of these hierarchies. You'd need
-> a bigger surgery to make this work for cgroup1 which would prolly involve
-> complications around 32bit ino's and file handle support too, which I'm not
-> likely to ack, so please give it up on adding these things to cgroup1.
->
-> Nacked-by: Tejun Heo <tj@kernel.org>
->
-> Thanks.
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index d8553f4..9560af6 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2410,7 +2410,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+> >         int err;
+> >
+> >         /* no support for 32bit archs yet */
+> > -       if (sizeof(u64) != sizeof(void *))
+> > +       if (sizeof(u64) != sizeof(void *) || in_compat_syscall())
+> >                 return -EOPNOTSUPP;
+> >
+> >         if (prog->expected_attach_type != BPF_TRACE_KPROBE_MULTI)
+> > --
+> > 2.1.4
+> >
+> 
 
-Completely understandable. I sent this patch knowing that it likely
-will not be accepted, with hopes of hearing feedback on whether this
-can be done in a simple way or not. Looks like I got my answer, so
-thanks for the info!
-
-Will drop this patch in the incoming versions.
-
->
-> --
-> tejun
