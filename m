@@ -2,64 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E92635209BF
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 01:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894615209C7
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 02:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbiEJACo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 20:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
+        id S231765AbiEJAEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 20:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbiEJACk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 20:02:40 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA722BD0F1
-        for <bpf@vger.kernel.org>; Mon,  9 May 2022 16:58:45 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id f2so16989844ioh.7
-        for <bpf@vger.kernel.org>; Mon, 09 May 2022 16:58:45 -0700 (PDT)
+        with ESMTP id S233335AbiEJAE3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 20:04:29 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972C02BD0F2
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 17:00:34 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id n6so8471393ili.7
+        for <bpf@vger.kernel.org>; Mon, 09 May 2022 17:00:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oll5CUghmQbVW85EUy7UohNMnCS5LzLiOBqs+W5Oy1E=;
-        b=RzY/fOsT7nOx6CNPAlbBXomLN3UVvWBQZFs1ENw99vJhPENemzeE9MR8AUhbaJeBeX
-         FB9Gx+qQ+esnqGTFxH1W4lUQ82UEsLZ2vYTeL6mcWuQfl7zRT/tMBCfciN0O8idx1xRY
-         aDyMuL4Onw2vQjXTYY07xGiOOFJx3f4ZiTA0iFXUgknE1GXOmK+Uadt+mwFWPkcO0NXA
-         nlY+peuiLPsuUNNSGCWrpr+sdjOtdLyLXGvdrV/Dq5cVaSMIo8UvtjKqragQ534Semrv
-         0pSmDtAMvaPLxqAHY3649mumElRV+y9JSY26fbyFRmBiYCoMZ/v4qIELTh5tO7xpR80P
-         RN5Q==
+        bh=P61VYHC3i6xEU/QnQf0liUJxhGpXc5cEdEz1skPCE98=;
+        b=puVno8HBca4GoS3Tgu5p6/fkSX+f5TP0w9ySA5g2dfYW7pDalOcPkURnu6xAonXc5A
+         7NZY+nzxK776pl3t2CS2h1ejOme06sz0FNLTn4QV0InU2qJv2ikSWfsv2Sx3ewcVb/sm
+         0nQOgRhtF08quiif6Weoe5blArb4419wqwBiGCvDkhS8KUEx0JvDar4cnLzgwTJg62cp
+         4H2jwU3VOnR8Argg6YSHdhF8zkZ75hugWgC1sXJXNWl5kL7QXaD0iRvp4wAWrEnJF6BE
+         hoSv6cQ1MApavoOLU0XdRiOTkk62FE9mgsoHn+BOExyJ2yDNZssDvnVWQUL1QhoBs9Wv
+         CRaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oll5CUghmQbVW85EUy7UohNMnCS5LzLiOBqs+W5Oy1E=;
-        b=oqdQ9i/ptRXSSCuIsF758A8J22pvPVCuK3VXRUZZiZY+yiBTHvY5aafOZJgbutNxh1
-         up5XfMXwKIWARY6Sjp0lYyLBz5BkCRgDbgJyz6gfBJ8aBNGMdVIabF13l4sxccObhvpH
-         xf3ruAR8byoRmr14UruQwAaHc8oZcGZ/JUHzU81y45yYNjF5+Qu4P4uBylaa479/93li
-         vDakMD08ilF2PEfhvmknnO88dnYOxCmY2XY1Bh6RIFBryEqF1e4eM7ce3OhwgIhtPnx2
-         LOd9V1Y6zQr6W8+U1nWS/a2u8lObodmzXnePCKjKrF4KYgnUUf8VJvdgvbhtpI5vSdi+
-         1kQQ==
-X-Gm-Message-State: AOAM532m5Gr/sCax01dMq8UAdrzNEBoe9X3x5iHHRTrew0qlL1K7GckG
-        R2CH8tyqGqnFlM/uGpECLJh+w6IIJjXLQPEJrfA=
-X-Google-Smtp-Source: ABdhPJwu5pV0l2M/RfazR8aL1TqczLMSIPOqhBtcqDVnRWCYnDpn21Hth8Vv8a4G0JYriS81Xp5dJfgIwmkhPnmuOs8=
-X-Received: by 2002:a02:5d47:0:b0:32b:4387:51c8 with SMTP id
- w68-20020a025d47000000b0032b438751c8mr8608828jaa.103.1652140724554; Mon, 09
- May 2022 16:58:44 -0700 (PDT)
+        bh=P61VYHC3i6xEU/QnQf0liUJxhGpXc5cEdEz1skPCE98=;
+        b=e21azSmhecpAbQvRya6E3Fjv4XtZdVGqV9+7uIb1O7hXLyORAs3s4utnb0VYaJxb0W
+         PYUhfGzzwNyPZlr0a5eyUY/lrtQmQ9ju2/yv2ZEXShtHb9P6DwA4AyEJ0hqWHTk9pHD+
+         J/dB0p/nj16H+eHzeXl5qeCVNghjMgDZbD2LwUOwum5WLzoWKUmyGyeV4X3N104RZ+bB
+         fa7ACtCDQYqjxo2wEx1jB2JTWWQ3SklhQOWpshpq4+AHm9w3FIsXOHRGeCTGX6/t7/6J
+         kVLCBX6zsgHcFezz7EPRLfgtuSX7S4jmPEHxsdZ/3ytdufvOsbfLST0bAc1CJmb1hG9y
+         xJpQ==
+X-Gm-Message-State: AOAM5332uYjrhaMYWeHmfY4b5N3y9gLL2lB56RJXgC64qh9WxNoUKpft
+        mKKehfTW1UtIMgx72VORkIYpoQ4i0kmWIjOjU4NJ6zXu
+X-Google-Smtp-Source: ABdhPJwqEcqORtNTzDH0Hi8ouk0v2Nm+GI9RY0KAtErLi1yHLZa8uAUb8fS0bk2uJqIIeIlmVPxPZOXZPZ/3T+nkCZQ=
+X-Received: by 2002:a05:6e02:11a3:b0:2cf:90f9:30e0 with SMTP id
+ 3-20020a056e0211a300b002cf90f930e0mr4525991ilj.252.1652140834039; Mon, 09 May
+ 2022 17:00:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <588dd77e9e7424e0abc0e0e624524ef8a2c7b847.1651532419.git.delyank@fb.com>
- <202205031441.1fhDuUQK-lkp@intel.com> <c7819d752137cf93be454c117812bb1c2c1866e4.camel@fb.com>
-In-Reply-To: <c7819d752137cf93be454c117812bb1c2c1866e4.camel@fb.com>
+References: <CAN9vWDLY24LEY-zhBSNVRTPBqbYQd+D62av0jKK_BqMvwt5-ig@mail.gmail.com>
+In-Reply-To: <CAN9vWDLY24LEY-zhBSNVRTPBqbYQd+D62av0jKK_BqMvwt5-ig@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 9 May 2022 16:58:33 -0700
-Message-ID: <CAEf4BzaLaQ_e2XNDxoaY+8MVejrWBGrQLbKL2kSyBfMENk-H0g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/5] bpf: implement sleepable uprobes by
- chaining tasks_trace and normal rcu
-To:     Delyan Kratunov <delyank@fb.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>
+Date:   Mon, 9 May 2022 17:00:23 -0700
+Message-ID: <CAEf4Bza6Ks-FGAGkLCGhK1KEDRdtqv==y7nN63KejF829XQtfA@mail.gmail.com>
+Subject: Re: BPF maps don't work without CONFIG_TRACING/CONFIG_FTRACE
+To:     Michael Zimmermann <sigmaepsilon92@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -71,45 +64,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 3, 2022 at 10:20 AM Delyan Kratunov <delyank@fb.com> wrote:
+On Tue, May 3, 2022 at 2:40 AM Michael Zimmermann
+<sigmaepsilon92@gmail.com> wrote:
 >
-> On Tue, 2022-05-03 at 14:30 +0800, kernel test robot wrote:
-> > Hi Delyan,
-> >
-> > Thank you for the patch! Yet something to improve:
-> >
-> > [auto build test ERROR on bpf-next/master]
-> >
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Delyan-Kratunov/sleepable-uprobe-support/20220503-071247
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> > config: i386-defconfig (https://download.01.org/0day-ci/archive/20220503/202205031441.1fhDuUQK-lkp@intel.com/config )
-> > compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
-> > reproduce (this is a W=1 build):
-> >         # https://github.com/intel-lab-lkp/linux/commit/cfa0f114829902b579da16d7520a39317905c502
-> >         git remote add linux-review https://github.com/intel-lab-lkp/linux
-> >         git fetch --no-tags linux-review Delyan-Kratunov/sleepable-uprobe-support/20220503-071247
-> >         git checkout cfa0f114829902b579da16d7520a39317905c502
-> >         # save the config file
-> >         mkdir build_dir && cp config build_dir/.config
-> >         make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    kernel/trace/trace_uprobe.c: In function '__uprobe_perf_func':
-> > > > kernel/trace/trace_uprobe.c:1349:23: error: implicit declaration of function 'uprobe_call_bpf'; did you mean 'trace_call_bpf'? [-Werror=implicit-function-declaration]
-> >     1349 |                 ret = uprobe_call_bpf(call, regs);
-> >          |                       ^~~~~~~~~~~~~~~
-> >          |                       trace_call_bpf
-> >    cc1: some warnings being treated as errors
+> Hi,
 >
-> Hm, CONFIG_BPF_EVENTS doesn't seem to guard the callsite from trace_uprobe.c, it's
-> only gated by CONFIG_PERF_EVENTS there. A PERF_EVENTS=y && BPF_EVENTS=n config would
-> lead to this error.
+> I'm using a kernel which has TRACING and FTRACE disabled and it looks
+> like BPF programs are unable to communicate with usespace.
+> I've reproduced this on aarch64 and x86_64 with both aya-rs's XDP
+> sample and bcc's "tc_perf_event.py" sample. bcc's sample uses
+> BPF_PERF_OUTPUT instead of maps though.
 >
-> This is  a pre-existing issue and I'll send a separate patch for it.
+> Everything seems to run and work correctly, but there's no data being
+> send to userspace resulting in no log output.
+> Is that expected or am I running into a weird bug here?
+>
 
-It would probably make sense to include it as a pre-patch for your
-series, so that bpf-next doesn't trigger these warnings?
+You probably need to provide few more details on what you are trying
+to do, what you expect to happen and what's actually happening. As it
+is it's hard to provide any useful help.
+
+> Thanks
+> Michael
