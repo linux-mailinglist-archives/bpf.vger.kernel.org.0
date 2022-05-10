@@ -2,143 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E73E05225BA
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 22:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757645225F8
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 22:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbiEJUoh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 16:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S232426AbiEJU7w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 16:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236975AbiEJUo3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 16:44:29 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CCB2A1FE8
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 13:44:24 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 129so81655wmz.0
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 13:44:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H+z42sapPI1YBphYIrh6dW0GFMAVRokw99cL8ZqGxg8=;
-        b=CTpiNl02mk2asLHcnBsuNAVd8tR5UxljFjwGWN7EPCdyw8jw1qTJN8Kj958PoCw+f9
-         C32LJd3iJyAPIc7JnhsDf3F+CLv0mIznaGhwzjGKAYcrkMmcqX0unecnaIRY4eg2RdS/
-         0wpRZMze08BUkQN9Kfpmmxj4PSmOnYIqgNxsMT/R3rkcd0HxVerVL26sQmKyCcoM0a/m
-         s7JJXvfYmJef+dh/gZmajmQP15BB/zKpZ1gNodzL0OvqccJTjiHJ10N8+lrMEhpadzdu
-         fFFf+dHjfdsLLT+W0V8q1dm0F4FO7Oj3L3kgVi1f9Ro2JBTKBHwIl+3Ypo+uOj1B/r4q
-         F3zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H+z42sapPI1YBphYIrh6dW0GFMAVRokw99cL8ZqGxg8=;
-        b=iHMLyGHeqPYXIRdcYYEYCPXtHXd1lz7UQ2hB3hREDTgGUIM6/xGAcWfaCursDvahDp
-         FuEiIbwPlls/KdIRE8gZfLb5GNSPHjqqJGki9+kHbwRZLUJbaPD98mMZztFzF2CHkPQ5
-         lbIVUogpQM8QHMwza0bQjBuIiVqmAmc6Z0BafRfFp2iRhXw2iTo/GWXm2i7irAVXlPYJ
-         dyQHQgFNnABjaIq5jFqVEOJPdk+iFEbtJREr/+nL7UniHGdRTNIHmj09FraMmh292pF5
-         rppVlJdUhiX6bQXuKQn2X1Zr9GraJc6ORh/Qw3VYrWSjS0SV0iQCL2D4HZJAJQGfT91r
-         74sg==
-X-Gm-Message-State: AOAM533WJUQyQHouDTtgBxnZ8Hg+ecc4oB6hki+KVJ5vqhZrIclp9dni
-        M5Sx6e/Y4Oek12JkSumu905lvTeJewpgWkAFPRtS/giJNCxicDNa
-X-Google-Smtp-Source: ABdhPJwliUlItsrpLn1+I5hrd9rEc+YvxNDiJSj3yNhjvh/mpLFiO4d78N2zmuNH2esxan4r8P2KPApz87peJAW0mPs=
-X-Received: by 2002:a05:600c:4ecc:b0:394:790d:5f69 with SMTP id
- g12-20020a05600c4ecc00b00394790d5f69mr1691105wmq.196.1652215462895; Tue, 10
- May 2022 13:44:22 -0700 (PDT)
+        with ESMTP id S229975AbiEJU7w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 16:59:52 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEB5267091
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 13:59:49 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24AFM5jY002594
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 13:59:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=dhZbyATImo8ncvRkrNaMek1HVF9urvQAiOoigkL9z10=;
+ b=qRL/lBSmG9fg+IQjD5iYFBv09p03OG8f92wvDvZLQ7e5Ntn7CQsJefQ2qVnDd3r5kdDC
+ WuSBLkWkXJ1So9mSkDdJA9B374vmbEjCbEgfP/emOqHp7sd2C9HLS4UV6xlOlcOqPxcc
+ Lfl/1viq/V6Si9AkUZcCPd90WBB9t2xZCns= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fygdk68et-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 13:59:49 -0700
+Received: from twshared19572.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 10 May 2022 13:59:46 -0700
+Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
+        id B1ADA32F202D; Tue, 10 May 2022 13:59:43 -0700 (PDT)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kernel-team@fb.com>
+CC:     Kui-Feng Lee <kuifeng@fb.com>, <xukuohai@huawei.com>
+Subject: [PATCH bpf-next v8 0/5] Attach a cookie to a tracing program.
+Date:   Tue, 10 May 2022 13:59:18 -0700
+Message-ID: <20220510205923.3206889-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: XjmaDaM3kOfdFvzWOu-fZRCjpEakdB2V
+X-Proofpoint-GUID: XjmaDaM3kOfdFvzWOu-fZRCjpEakdB2V
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20220510001807.4132027-1-yosryahmed@google.com>
- <20220510001807.4132027-2-yosryahmed@google.com> <Ynqyh+K1tMyNCTUW@slm.duckdns.org>
- <CAJD7tkZVXJY3s2k8M4pcq+eJVD+aX=iMDiDKtdE=j0_q+UWQzA@mail.gmail.com> <YnrEDfZs1kuB1gu5@slm.duckdns.org>
-In-Reply-To: <YnrEDfZs1kuB1gu5@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 10 May 2022 13:43:46 -0700
-Message-ID: <CAJD7tkahC1e-_K0xJMu-xXwd8WNVzYDRgJFua9=JhNRq7b+G8A@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/9] bpf: introduce CGROUP_SUBSYS_RSTAT
- program type
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-10_07,2022-05-10_01,2022-02-23_01
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 10, 2022 at 12:59 PM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, May 10, 2022 at 12:34:42PM -0700, Yosry Ahmed wrote:
-> > The rationale behind associating this work with cgroup_subsys is that
-> > usually the stats are associated with a resource (e.g. memory, cpu,
-> > etc). For example, if the memory controller is only enabled for a
-> > subtree in a big hierarchy, it would be more efficient to only run BPF
-> > rstat programs for those cgroups, not the entire hierarchy. It
-> > provides a way to control what part of the hierarchy you want to
-> > collect stats for. This is also semantically similar to the
-> > css_rstat_flush() callback.
->
-> Hmm... one major point of rstat is not having to worry about these things
-> because we iterate what's been active rather than what exists. Now, this
-> isn't entirely true because we share the same updated list for all sources.
-> This is a trade-off which makes sense because 1. the number of cgroups to
-> iterate each cycle is generally really low anyway 2. different controllers
-> often get enabled together. If the balance tilts towards "we're walking too
-> many due to the sharing of updated list across different sources", the
-> solution would be splitting the updated list so that we make the walk finer
-> grained.
->
-> Note that the above doesn't really affect the conceptual model. It's purely
-> an optimization decision. Tying these things to a cgroup_subsys does affect
-> the conceptual model and, in this case, the userland API for a performance
-> consideration which can be solved otherwise.
->
-> So, let's please keep this simple and in the (unlikely) case that the
-> overhead becomes an issue, solve it from rstat operation side.
->
-> Thanks.
+Allow users to attach a 64-bits cookie to a bpf_link of fentry, fexit,
+or fmod_ret.
 
-I assume if we do this optimization, and have separate updated lists
-for controllers, we will still have a "core" updated list that is not
-tied to any controller. Is this correct?
+This patchset includes several major changes.
 
-If yes, then we can make the interface controller-agnostic (a global
-list of BPF flushers). If we do the optimization later, we tie BPF
-stats to the "core" updated list. We can even extend the userland
-interface then to allow for controller-specific BPF stats if found
-useful.
+ - Define struct bpf_tramp_links to replace bpf_tramp_prog.
+   struct bpf_tramp_links collects bpf_links of a trampoline
 
-If not, and there will only be controller-specific updated lists then,
-then we might need to maintain a "core" updated list just for the sake
-of BPF programs, which I don't think would be favorable.
+ - Generate a trampoline to call bpf_progs of given bpf_links.
 
-What do you think? Either-way, I will try to document our discussion
-outcome in the commit message (and maybe the code), so that
-if-and-when this optimization is made, we can come back to it.
+ - Trampolines always set/reset bpf_run_ctx before/after
+   calling/leaving a tracing program.
 
+ - Attach a cookie to a bpf_link of fentry/fexit/fmod_ret/lsm.  The
+   value will be available when running the associated bpf_prog.
 
->
-> --
-> tejun
+Th major differences from v6:
+
+ - bpf_link_create() can create links of BPF_LSM_MAC attach type.
+
+ - Add a test for lsm.
+
+ - Add function proto of bpf_get_attach_cookie() for lsm.
+
+ - Check BPF_LSM_MAC in bpf_prog_has_trampoline().
+
+ - Adapt to the changes of LINK_CREATE made by Andrii.
+
+The major differences from v7:
+
+ - Change stack_size instead of pushing/popping run_ctx.
+
+ - Move cookie to bpf_tramp_link from bpf_tracing_link..
+
+v1: https://lore.kernel.org/all/20220126214809.3868787-1-kuifeng@fb.com/
+v2: https://lore.kernel.org/bpf/20220316004231.1103318-1-kuifeng@fb.com/
+v3: https://lore.kernel.org/bpf/20220407192552.2343076-1-kuifeng@fb.com/
+v4: https://lore.kernel.org/bpf/20220411173429.4139609-1-kuifeng@fb.com/
+v5: https://lore.kernel.org/bpf/20220412165555.4146407-1-kuifeng@fb.com/
+v6: https://lore.kernel.org/bpf/20220416042940.656344-1-kuifeng@fb.com/
+v7: https://lore.kernel.org/bpf/20220508032117.2783209-1-kuifeng@fb.com/
+
+Kui-Feng Lee (5):
+  bpf, x86: Generate trampolines from bpf_tramp_links
+  bpf, x86: Create bpf_tramp_run_ctx on the caller thread's stack
+  bpf, x86: Attach a cookie to fentry/fexit/fmod_ret/lsm.
+  libbpf: Assign cookies to links in libbpf.
+  selftest/bpf: The test cses of BPF cookie for
+    fentry/fexit/fmod_ret/lsm.
+
+ arch/x86/net/bpf_jit_comp.c                   |  76 ++++++++-----
+ include/linux/bpf.h                           |  54 +++++++---
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |  10 ++
+ kernel/bpf/bpf_lsm.c                          |  17 +++
+ kernel/bpf/bpf_struct_ops.c                   |  71 +++++++++----
+ kernel/bpf/syscall.c                          |  42 ++++----
+ kernel/bpf/trampoline.c                       | 100 +++++++++++-------
+ kernel/trace/bpf_trace.c                      |  17 +++
+ net/bpf/bpf_dummy_struct_ops.c                |  24 ++++-
+ tools/bpf/bpftool/link.c                      |   1 +
+ tools/include/uapi/linux/bpf.h                |  10 ++
+ tools/lib/bpf/bpf.c                           |   8 ++
+ tools/lib/bpf/bpf.h                           |   3 +
+ tools/lib/bpf/libbpf.c                        |  19 +++-
+ tools/lib/bpf/libbpf.h                        |  12 +++
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/bpf_cookie.c     |  89 ++++++++++++++++
+ .../selftests/bpf/progs/test_bpf_cookie.c     |  52 +++++++--
+ 19 files changed, 469 insertions(+), 138 deletions(-)
+
+--=20
+2.30.2
+
