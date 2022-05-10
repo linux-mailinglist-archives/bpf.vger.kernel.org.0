@@ -2,128 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B26E521EF8
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 17:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154E2522064
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 17:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243731AbiEJPjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 11:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47422 "EHLO
+        id S1345351AbiEJQCA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 12:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346018AbiEJPiu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 11:38:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730DD222C13
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 08:34:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C7576101F
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 15:34:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F22FC385A6;
-        Tue, 10 May 2022 15:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652196872;
-        bh=gXpekzy4uBt4nU42ofB5utDj8nYivN+u/Zv2X1uquuU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kh1UUMSGkZQA/4LCFg4q9672pKCHz8Kn2mCa5inyzOvzX3mpiDDZd7zQTUHuO35xH
-         b8r6TaU8tYCAOL+3XOCN4tzPAlPKU58h1Fcu+CTmlzWyOpxG5lZgMNOjxJUV/2Ao6t
-         1pXatPbILLytDClzGW+dWCFFY7x37IZDis7y0LlBKX+GaajpUaLhXs63/Jbcjh2iLm
-         JhSxgXLSYTe1W06Kso19DoEq7ETNL2WzD9GBNjKMcv+BeuVyzRxKbkTOMeAuCk/Lf1
-         8mV9zZLs47mk/zgH9zC9ctJ4mpAj0f/bB9OCSJY8zX84iXrXpyUG0SesBY4xvQlkE+
-         egUXZMsg3o3TQ==
-Date:   Tue, 10 May 2022 08:34:30 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, llvm@lists.linux.dev
-Subject: Re: [PATCH bpf-next 8/9] libbpf: automatically fix up
- BPF_MAP_TYPE_RINGBUF size, if necessary
-Message-ID: <YnqGBmOHIZhrZBFJ@dev-arch.thelio-3990X>
-References: <20220509004148.1801791-1-andrii@kernel.org>
- <20220509004148.1801791-9-andrii@kernel.org>
+        with ESMTP id S1346907AbiEJQAq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 12:00:46 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCA0CEF
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 08:53:32 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ks9so27425962ejb.2
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 08:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZPng3gQQU21gtXrDrIf72nGZCc3S4pS9ifNQl5/czIY=;
+        b=VMZ5H2qgoHzrONqT5dOuNz4eSjo95SwRHvmMyoxug73Qs7V41Bn8QVRNKR8y7mFDTK
+         o1z7PoirPgKelQGYp/qF3nmsHJG7n0AyLBXaRoIjCDzJreuQMqOG7Zje5Df0DgybbZud
+         khxNfJRrCkXUIqAgXSZih9isupEiDp1nwLF3WKKNNOH0y7Yq/PxB3JLxx96fzs++kPkU
+         cgsVkcljOD5kojupsqN51RYEfQffzA8+2UTNSjEmiN3OfsFp4AHf8deoUXV2RZdAZjLh
+         sfBuw2z9mEOoNzP0XFc1c6gLxNCcGpekz7EXIq/g+UfClewoVrOlXZcGnM+ftZy+/3q/
+         /20A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZPng3gQQU21gtXrDrIf72nGZCc3S4pS9ifNQl5/czIY=;
+        b=Y1t2CvzwwwUvhH+I/rVLCdrQ73zI66ZsYhL1b/XoDSMR6d0zovhes0UJWwt/eadibk
+         fiQo5uJFUfr5SSSJ/aAGQrTejniIij8LW4mSIB07bu2NltX0LJoDxnoRe3BiZCETWfB7
+         vbm7NEeCd6AQPJTCoNHTKnKvZiNOiE1arkeAtYsxXhByio3/RW7xnrSi+UvlJvgmpnW+
+         JZAbqQ0hrs/eOF0wfX+8Hfo4fvKMt8/YrJRJbrtYID7nJnPsQMau29Hk9b/7fq/c/pCB
+         y+o6o82kSlgT1ikbi2YbMtbiFK4R7w9XR1vC0ImoFpTBVAn+6N7BkBBITL7OlSMqyrjU
+         AQtQ==
+X-Gm-Message-State: AOAM531NOpwD5vKt5U36FgxUvfFw6Q06GPfWIgzCDy+vyl94dm7bxdfo
+        JgggzYQgmisA+VoUHOxBYWToKtr4QIHtfQ==
+X-Google-Smtp-Source: ABdhPJyZhzvq6LliK4nVjiaAU9lrvvK9UFrWKE5j2tx5Gik9QFh66C7ZKHeaKYpDVJQEmyOq/rWM4w==
+X-Received: by 2002:a17:907:9805:b0:6f4:fe0e:5547 with SMTP id ji5-20020a170907980500b006f4fe0e5547mr20242675ejc.426.1652198011275;
+        Tue, 10 May 2022 08:53:31 -0700 (PDT)
+Received: from erthalion.local (dslb-094-222-011-044.094.222.pools.vodafone-ip.de. [94.222.11.44])
+        by smtp.gmail.com with ESMTPSA id s30-20020a508d1e000000b0042617ba63b0sm7806088eds.58.2022.05.10.08.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 08:53:30 -0700 (PDT)
+From:   Dmitrii Dolgov <9erthalion6@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, yhs@fb.com, songliubraving@fb.com
+Cc:     Dmitrii Dolgov <9erthalion6@gmail.com>
+Subject: [PATCH bpf-next v2 0/4] bpf: bpf link iterator
+Date:   Tue, 10 May 2022 17:52:29 +0200
+Message-Id: <20220510155233.9815-1-9erthalion6@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220509004148.1801791-9-andrii@kernel.org>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
+Bpf links seem to be one of the important structures for which no
+iterator is provided. Such iterator could be useful in those cases when
+generic 'task/file' is not suitable or better performance is needed.
 
-On Sun, May 08, 2022 at 05:41:47PM -0700, Andrii Nakryiko wrote:
-> Kernel imposes a pretty particular restriction on ringbuf map size. It
-> has to be a power-of-2 multiple of page size. While generally this isn't
-> hard for user to satisfy, sometimes it's impossible to do this
-> declaratively in BPF source code or just plain inconvenient to do at
-> runtime.
-> 
-> One such example might be BPF libraries that are supposed to work on
-> different architectures, which might not agree on what the common page
-> size is.
-> 
-> Let libbpf find the right size for user instead, if it turns out to not
-> satisfy kernel requirements. If user didn't set size at all, that's most
-> probably a mistake so don't upsize such zero size to one full page,
-> though. Also we need to be careful about not overflowing __u32
-> max_entries.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+The implementation is mostly copied from prog iterator. This time tests were
+executed, although I still had to exclude test_bpf_nf (failed to find BTF info
+for global/extern symbol 'bpf_skb_ct_lookup') -- since it's unrelated, I hope
+it's a minor issue.
 
-<snip>
+Per suggestion from the previous discussion, there is a new patch for
+converting CHECK to corresponding ASSERT_* macro. Such replacement is done only
+if the final result would be the same, e.g. CHECK with important-looking custom
+formatting strings are still in place -- from what I understand ASSERT_*
+doesn't allow to specify such format.
 
-> +static size_t adjust_ringbuf_sz(size_t sz)
-> +{
-> +	__u32 page_sz = sysconf(_SC_PAGE_SIZE);
-> +	__u32 i, mul;
-> +
-> +	/* if user forgot to set any size, make sure they see error */
-> +	if (sz == 0)
-> +		return 0;
-> +	/* Kernel expects BPF_MAP_TYPE_RINGBUF's max_entries to be
-> +	 * a power-of-2 multiple of kernel's page size. If user diligently
-> +	 * satisified these conditions, pass the size through.
-> +	 */
-> +	if ((sz % page_sz) == 0 && is_pow_of_2(sz / page_sz))
-> +		return sz;
-> +
-> +	/* Otherwise find closest (page_sz * power_of_2) product bigger than
-> +	 * user-set size to satisfy both user size request and kernel
-> +	 * requirements and substitute correct max_entries for map creation.
-> +	 */
-> +	for (i = 0, mul = 1; ; i++, mul <<= 1) {
-> +		if (mul > UINT_MAX / page_sz) /* prevent __u32 overflow */
-> +			break;
-> +		if (mul * page_sz > sz)
-> +			return mul * page_sz;
-> +	}
-> +
-> +	/* if it's impossible to satisfy the conditions (i.e., user size is
-> +	 * very close to UINT_MAX but is not a power-of-2 multiple of
-> +	 * page_size) then just return original size and let kernel reject it
-> +	 */
-> +	return sz;
-> +}
+The third small patch fixes what looks like a copy-paste error in the condition
+checking.
 
-This patch in -next as commit 0087a681fa8c ("libbpf: Automatically fix
-up BPF_MAP_TYPE_RINGBUF size, if necessary") breaks the build with tip
-of tree LLVM due to [1] strengthening -Wunused-but-set-variable:
+Dmitrii Dolgov (4):
+  bpf: Add bpf_link iterator
+  selftests/bpf: Fix result check for test_bpf_hash_map
+  selftests/bpf: Use ASSERT_* instead of CHECK
+  selftests/bpf: Add bpf link iter test
 
-libbpf.c:4954:8: error: variable 'i' set but not used [-Werror,-Wunused-but-set-variable]
-        __u32 i, mul;
-              ^
-1 error generated.
+ include/linux/bpf.h                           |   1 +
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/link_iter.c                        | 107 +++++++
+ kernel/bpf/syscall.c                          |  19 ++
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 261 +++++++-----------
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
+ .../selftests/bpf/progs/bpf_iter_bpf_link.c   |  21 ++
+ 7 files changed, 261 insertions(+), 157 deletions(-)
+ create mode 100644 kernel/bpf/link_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_bpf_link.c
 
-Should i be removed or was it intended to be used somewhere that it is
-not?
+-- 
+2.32.0
 
-[1]: https://github.com/llvm/llvm-project/commit/2af845a6519c9cde5c8f58db5554f8b1084ce1ed
-
-Cheers,
-Nathan
