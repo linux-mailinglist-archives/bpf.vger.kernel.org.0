@@ -2,83 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E58D5520A5F
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 02:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DA0520A7B
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 03:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbiEJAyJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 May 2022 20:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
+        id S234080AbiEJBJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 May 2022 21:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbiEJAyJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 May 2022 20:54:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52F62B276F;
-        Mon,  9 May 2022 17:50:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CBD36158D;
-        Tue, 10 May 2022 00:50:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A3D80C385CC;
-        Tue, 10 May 2022 00:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652143812;
-        bh=zZOmZym5pqdBOPsCfPDOt0BQ17UULmanHfYJ/VIHmAM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ZN6mEdi8UxijWZM8bBJJzQNKmp0i5A/9T+vBas0XKBti3RVExqRflrDDPlYCfVend
-         5l1rBG5h+4g77nd10zGk4m9LENuE3FOAvZX9ggK4Gvi+sm6jjhNszWbAVNeXLb1brK
-         EWwXOHUE09CjAOt3MY70yxhkJuigaat4JzhnV5Fw8+oYwHb1OceBTPAVG6U/N/8Yas
-         M/eXk3LOdxh5fi5Lg0cEqcN/O/YptqY8WEFfXT6NSabe9x40QUhHDZcxsBx19FEv0R
-         5sx+ysSG55kY75rHgMQKxd7qpvgwzaqjwPp6NI0Qq2JcH/y/r3nOl6RjmRIL8kKohJ
-         08vHJ5b1XNm0g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7FD54F03932;
-        Tue, 10 May 2022 00:50:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232681AbiEJBJJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 May 2022 21:09:09 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2906297402
+        for <bpf@vger.kernel.org>; Mon,  9 May 2022 18:05:11 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id bg25so9264572wmb.4
+        for <bpf@vger.kernel.org>; Mon, 09 May 2022 18:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KWU2Ie7CLoGUJm4eKIboU9cuPF4R+pcVY2OmQlQkvqM=;
+        b=otwm5O7b+Cs+c/aJt5BGIr83OuJhOFQ+EMC0G8wlyaaPZowgDFt4HzUfoBEvfjN2aY
+         Yv4/Jg9DgzI5XFWIElJz9Tb7HhvTQRjoc+y5rrgMW7Rn9cwKP24ucRVlHfh88sRpAFZH
+         fKMYCJT4wx/aqhlflEQ3xcCLS5OeGO3gaVMUkhVwQDLhzrERSs2lTGN9YrRdp+Mmo2yr
+         mdfz0IqlWT0mzXP+aoCd4SAADN0+/Jz7sk3mKoI01VjDPDte/svmeTmqEWlT5AYyc5zF
+         7ZKdydGd3+TR7wyMLg6FCEOlo5vZ/+/NRZYm1D0tOaODkAV90tX/5L9EAl8JwyblQd4C
+         /JIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KWU2Ie7CLoGUJm4eKIboU9cuPF4R+pcVY2OmQlQkvqM=;
+        b=Trijrk6hJI+AZlo7kxJmwcCn9LMoEmosSoFwutULdOt4F+7mv3hb/6aAW8stQf1vEL
+         lULFOjfTJ3fL3bPQx63HpaTwYjc7nGx/onCqpxvFSXPzF2O7ofA2dyXTK13FwbkCBkJY
+         5M0VhX18xYEGUM9CeNk8Ydvlh4Q3BWhz8b7EbNZOt7SgeuMPMTImml40NM3NXFBciQ9w
+         Nn759+JDeWAjYtDkLhD1bl0JJiC00/rJgtZ3x0Awv9Tv06AyY4oghyT+fy/ck2l/3x+1
+         S/rOSKxKUuyTG/1kZ0nl2h0mvUNtvsVJqiYsyMTjQURROQoX7D73INQ2egi9GZ4d6Ieh
+         omcw==
+X-Gm-Message-State: AOAM532DwirkDsU9uQOVam+gxxETrp9/uCTgGh+2dINMrG28ZwjbmX+Z
+        D/3jE8+xccfWUqYj954iBHoD6Vq3txg47bLkFcYTIA==
+X-Google-Smtp-Source: ABdhPJxsM1M7GsdDp/lB/ItrtIwDET4ES/Y6Q0ul+CoEnC+3p/f+ETtL6JGwXfvrKvj4KjxP5g910tnq2NWXWh4sLVw=
+X-Received: by 2002:a05:600c:4ecc:b0:394:790d:5f69 with SMTP id
+ g12-20020a05600c4ecc00b00394790d5f69mr19448042wmq.196.1652144710286; Mon, 09
+ May 2022 18:05:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpftool: declare generator name
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165214381252.1602.949986695734841683.git-patchwork-notify@kernel.org>
-Date:   Tue, 10 May 2022 00:50:12 +0000
-References: <20220509090247.5457-1-jasowang@redhat.com>
-In-Reply-To: <20220509090247.5457-1-jasowang@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        peter.maydell@linaro.org, armbru@redhat.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220507024840.42662-1-zhoufeng.zf@bytedance.com> <CAEf4BzZD5q2j229_gL_nDFse2v=k2Ea0nfguH+sOA2O1Nm5sQw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZD5q2j229_gL_nDFse2v=k2Ea0nfguH+sOA2O1Nm5sQw@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 9 May 2022 18:04:34 -0700
+Message-ID: <CAJD7tkbd8qA-4goUCVW6Tf0xGpj2OSBXncpWhrWFn5y010oBMw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: add bpf_map_lookup_percpu_elem for percpu map
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Feng zhou <zhoufeng.zf@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joanne Koong <joannekoong@fb.com>,
+        Geliang Tang <geliang.tang@suse.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        duanxiongchun@bytedance.com,
+        Muchun Song <songmuchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        zhouchengming@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, May 9, 2022 at 5:34 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, May 6, 2022 at 7:49 PM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+> >
+> > From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> >
+> > Trace some functions, such as enqueue_task_fair, need to access the
+> > corresponding cpu, not the current cpu, and bpf_map_lookup_elem percpu map
+> > cannot do it. So add bpf_map_lookup_percpu_elem to accomplish it for
+> > percpu_array_map, percpu_hash_map, lru_percpu_hash_map.
+> >
+> > The implementation method is relatively simple, refer to the implementation
+> > method of map_lookup_elem of percpu map, increase the parameters of cpu, and
+> > obtain it according to the specified cpu.
+> >
+>
+> I don't think it's safe in general to access per-cpu data from another
+> CPU. I'd suggest just having either a ARRAY_OF_MAPS or adding CPU ID
+> as part of the key, if you need such a custom access pattern.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I actually just sent an RFC patch series containing a similar patch
+for the exact same purpose. There are instances in the kernel where
+per-cpu data is accessed from other cpus (e.g.
+mem_cgroup_css_rstat_flush()). I believe, like any other variable,
+percpu data can be safe or not safe to access, based on the access
+pattern. It is up to the user to coordinate accesses to the variable.
 
-On Mon,  9 May 2022 17:02:47 +0800 you wrote:
-> Most code generators declare its name so did this for bfptool.
-> 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  tools/bpf/bpftool/gen.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+For example, in my use case, one of the accessors only reads percpu
+values of different cpus, so it should be safe. If a user accesses
+percpu data of another cpu without guaranteeing safety, they corrupt
+their own data. I understand that the main purpose of percpu data is
+lockless (and therefore fast) access, but in some use cases the user
+may be able to safely (and locklessly) access the data concurrently.
 
-Here is the summary with links:
-  - bpftool: declare generator name
-    https://git.kernel.org/bpf/bpf-next/c/56c3e749d08a
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> > Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+> > ---
+> >  include/linux/bpf.h            |  2 ++
+> >  include/uapi/linux/bpf.h       |  9 +++++++++
+> >  kernel/bpf/arraymap.c          | 15 +++++++++++++++
+> >  kernel/bpf/core.c              |  1 +
+> >  kernel/bpf/hashtab.c           | 32 ++++++++++++++++++++++++++++++++
+> >  kernel/bpf/helpers.c           | 18 ++++++++++++++++++
+> >  kernel/bpf/verifier.c          | 17 +++++++++++++++--
+> >  kernel/trace/bpf_trace.c       |  2 ++
+> >  tools/include/uapi/linux/bpf.h |  9 +++++++++
+> >  9 files changed, 103 insertions(+), 2 deletions(-)
+> >
+>
+> [...]
