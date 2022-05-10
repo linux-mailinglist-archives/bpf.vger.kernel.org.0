@@ -2,284 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3826522635
-	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 23:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CD1522681
+	for <lists+bpf@lfdr.de>; Tue, 10 May 2022 23:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbiEJVRT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 17:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        id S229702AbiEJV42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 17:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234364AbiEJVRR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 17:17:17 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA5150B36
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:17:16 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id o69so339475pjo.3
-        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:17:16 -0700 (PDT)
+        with ESMTP id S235073AbiEJV4N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 17:56:13 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5E25711C
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:56:10 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id k2so426494wrd.5
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 14:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Wv3FmdT/C04wTY/7IU4S3jeXHrRadJrM6ycSbz0/lpQ=;
-        b=ZkUq0QNr0behOTMaHhc0niJ+OaJoPWrDBpFcHSqXWz+f25wEknRFqYmaV6tW/TfznQ
-         Ixe3yX8tCR4u2K3vN8UKjUCvXzMutFy6i/csXU2Yatkx52HcioVVSy0cNgOOLu/4Xryd
-         GJk/T/J3HquTE+vFcVSWU0DfUiGiHpA7ezEeIZVx+9uylbEcoqWnsra9Eoi3nw5+uh22
-         MlB8GiTs7ylcf9+qZNkVbBR8V+R/wzqcBinhnN3s2I/zFtVcCR+dS4ZaIzu9Hjs1OoP8
-         xHr24Q0NY6EFqc55XGD64jYBMbOfB4Lr6MAvPnxxwG7TxL6y1gq0LHmUsr/Z+oUd8f1f
-         hVvw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IwUgKUFNj7ibkuKWy6cspfPFQL3X6FyIq81DUZlFReI=;
+        b=pvu4vmnNkxBfNPaw9v92a2w+TVqfwi+iTgvjgFvjq+ssgXnL2/XxuczeCjzFigw6Fp
+         LdrwiJrm5va3fTljcIrhm2cCN2U3mHlAeGm/YCKUXs8GdTX9I68G+Bkv1+NDR1Vt5YAL
+         b0Oy+hcWXfNh68+frvkkZEUFC4PBzALS5U5cfl6+gErj5JV6cqdOWZypd5vUtHNf1ZvG
+         S5ld+Bo59W0iXbrlJP/mnDfnhgKqL6sJExvTb1S/4mzhTBYEDX1kSPUfTU+4U7XvOULp
+         BlWx/yzcaO3KNO9uZIsiptBfq34GgjqYlMOzrHkqYyBggfOuj6Q3k2CYVGzEXWLPerlF
+         PpIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Wv3FmdT/C04wTY/7IU4S3jeXHrRadJrM6ycSbz0/lpQ=;
-        b=xuQkJD3OGJM47HsQtR3NA32QXnwOA/hEq6xcYJ0s20lrEXpy+7qrsXM0QpEK0X6Znl
-         7ouULZadp4cj39BJoXel9HSa6Rh04esnE2WD4CuhK+uOCNuEVc2f86DqqAYmoddpakSr
-         mtPVmlVmLP7EyzC/ppy3QxxFRLGtAA3onY5ZUI0gJxdRg1ozBnzBb37N0UTCiWMimNVl
-         SVMcnqOclTkavvCJdWB5z/B1ddxblg3LUlMfx4X94mhW4j3uUVObyD/m9L7EetQLNMVX
-         qx6ZBrAOn/5ETIb81CQfbe+QNxZVZrveHm5Ek2kl0NJtK/2kdM8pgDTQSPyWCCBCBD2f
-         BFaA==
-X-Gm-Message-State: AOAM532XVkv7RLqhVTptVwFtxQE5Yic+V6wIG7/IXb5CxWgtir1NDKHP
-        Jz2yKNVy6Sh36hVRokVTbcD9H9/pZRk=
-X-Google-Smtp-Source: ABdhPJz3HIX0JUadlI2uh1i4Ur4DwXb+/57Hag4ucd3WEn25C38MKthXBDPJ0Yoxng/T6dCV8LLKcg==
-X-Received: by 2002:a17:902:d50c:b0:15e:9455:19b2 with SMTP id b12-20020a170902d50c00b0015e945519b2mr21987445plg.140.1652217435371;
-        Tue, 10 May 2022 14:17:15 -0700 (PDT)
-Received: from localhost ([112.79.164.242])
-        by smtp.gmail.com with ESMTPSA id b15-20020a056a0002cf00b0050dc76281c4sm2067pft.158.2022.05.10.14.17.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 May 2022 14:17:14 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v1 4/4] selftests/bpf: Add tests for kptr_ref refcounting
-Date:   Wed, 11 May 2022 02:47:27 +0530
-Message-Id: <20220510211727.575686-5-memxor@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220510211727.575686-1-memxor@gmail.com>
-References: <20220510211727.575686-1-memxor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IwUgKUFNj7ibkuKWy6cspfPFQL3X6FyIq81DUZlFReI=;
+        b=TubkJHoF1kndzxfs3BcQzZo5FlbocFes/hZ5B7H6vav22yHtY1UexEwMr9bTNIy0Ox
+         +GZHTVeMlouXVkbfWbsShSkf3aHnPy40E0OLEOxI60TiA1R6QSxvQSmYMTV50oew6JTl
+         8jTzCO0HV+VNjEftJr2dY0IMQUZRO9sie5vbZLSWlxM6fSVMWqOenXDwx0pvMJhq1UGX
+         kbquJgLv3ZRhECis5LqUC99PBY6zLEDZmM3ROcwtPWJWy+x1hCyCW/JnLHWFIVynrkWC
+         OABH4C4Tj2Z/phNNvtmJKd6yVQShteTBM8sizre0SzrHs+uLs9dcDuxsC/3oyVSQmX9e
+         asqQ==
+X-Gm-Message-State: AOAM530Xb6DZPGoPLpKbIgKQOwyQPDekHUGFgsAHQVtytA/I86g7AxQN
+        kUfyNTFZ2eUyF1K2iIp4X9xC0OZMVqkse9m+oLmkug==
+X-Google-Smtp-Source: ABdhPJyvhf5tHo+7ymkHhZKRFq0olhspXHd8enDR9DXvVol++Jwbk6xZofLsCZBaS03E9VdsgNBSy5whbtz0QVbHtl8=
+X-Received: by 2002:a05:6000:154a:b0:20c:7e65:c79e with SMTP id
+ 10-20020a056000154a00b0020c7e65c79emr20365907wry.582.1652219768969; Tue, 10
+ May 2022 14:56:08 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5775; h=from:subject; bh=ibdNFv8R/LyxLH/8CN0QcQyhFKMejnH2v3V6RDcv7Ic=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBietZj3eIvP76MwGEcu8uF1oWGjbXe7cnPmvZsREmB 1egZEbWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYnrWYwAKCRBM4MiGSL8RyrHQD/ 4tULlZu5MV8hMx6lwGHnRNXfXyCn+Ya6wgw3UiE32KSHuv5WypkSTSPHEBLiXXSAIaD7+XyH/3PCv5 fCblpfyq7gh6c5nQ8IiZJLFtjfko+Z+Grp4cwk0TNkQT6SfhnURCOPer1kfZJLxN3ggg04F4mDejDe pr0yPQVcVFqgBgbC8jG7irLRMq2arudL2AY9Bt2Obpzy2SVdevgmut8sX4podrXfbn5Eshhbvj38jb Q1QhQGo6HjqHb6svSqWotcTSaNtbmHTdtnkgE2voHjtLBpzNDPMbDRwyo6+ZoNUwgxzxzii7aUx8wo ly4i+WI7lgxDBPSmSKZTSYqN9R+GCoH9mIi5Mj/8mQwZWs/KMrDWIy2oUtblJKl/8iUlOMtvLlmPCZ 9zJj+fGMT3I0vLRldkeHGFBOzoVOnNRrIvYPqe3+QcYbpOuf4Z8YxR5uEH8/3AnYkJ0vwPaLQJWC38 eSmyhhIuIRunThLobtbdoQ1Sg9cz9SIb2xTZv/ZEADBnlXvEz91s+4OxZS5dsdDE5r8vfTfffOVevp GYBebGw0ibB9q3z/g+UKs6AsM/iU7h/G3QkgmCvbaU9CoKEfs6Fu0rTzXTWo48pOBbOjZK1VE1pm5F t05A0ZFw6+AkSvZb+O0/HJisyaZXNzzaHsSphZ1uGrmggGIyrxnx1NpgA4jw==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220510001807.4132027-1-yosryahmed@google.com>
+ <20220510001807.4132027-2-yosryahmed@google.com> <Ynqyh+K1tMyNCTUW@slm.duckdns.org>
+ <CAJD7tkZVXJY3s2k8M4pcq+eJVD+aX=iMDiDKtdE=j0_q+UWQzA@mail.gmail.com>
+ <YnrEDfZs1kuB1gu5@slm.duckdns.org> <CAJD7tkahC1e-_K0xJMu-xXwd8WNVzYDRgJFua9=JhNRq7b+G8A@mail.gmail.com>
+ <YnrSrKFTBn3IyUfa@slm.duckdns.org>
+In-Reply-To: <YnrSrKFTBn3IyUfa@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 10 May 2022 14:55:32 -0700
+Message-ID: <CAJD7tkbeZPH9UJXtGeopPnTSVPYN-GzzM51SE_QNuLmiaVNpeA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/9] bpf: introduce CGROUP_SUBSYS_RSTAT
+ program type
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Check at runtime how various operations for kptr_ref affect its refcount
-and verify against the actual count. We use the per-CPU prog_test_struct
-to get an isolated object to inspect the refcount of.
+On Tue, May 10, 2022 at 2:01 PM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Tue, May 10, 2022 at 01:43:46PM -0700, Yosry Ahmed wrote:
+> > I assume if we do this optimization, and have separate updated lists
+> > for controllers, we will still have a "core" updated list that is not
+> > tied to any controller. Is this correct?
+>
+> Or we can create a dedicated updated list for the bpf progs, or even
+> multiple for groups of them and so on.
+>
+> > If yes, then we can make the interface controller-agnostic (a global
+> > list of BPF flushers). If we do the optimization later, we tie BPF
+> > stats to the "core" updated list. We can even extend the userland
+> > interface then to allow for controller-specific BPF stats if found
+> > useful.
+>
+> We'll need that anyway as cpustats are tied to the cgroup themselves rather
+> than the cpu controller.
+>
+> > If not, and there will only be controller-specific updated lists then,
+> > then we might need to maintain a "core" updated list just for the sake
+> > of BPF programs, which I don't think would be favorable.
+>
+> If needed, that's fine actually.
+>
+> > What do you think? Either-way, I will try to document our discussion
+> > outcome in the commit message (and maybe the code), so that
+> > if-and-when this optimization is made, we can come back to it.
+>
+> So, the main focus is keeping the userspace interface as simple as possible
+> and solving performance issues on the rstat side. If we need however many
+> updated lists to do that, that's all fine. FWIW, the experience up until now
+> has been consistent with the assumptions that the current implementation
+> makes and I haven't seen real any world cases where the shared updated list
+> are problematic.
+>
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/map_kptr.c       |  28 ++++-
- tools/testing/selftests/bpf/progs/map_kptr.c  | 109 +++++++++++++++++-
- 2 files changed, 132 insertions(+), 5 deletions(-)
+Thanks again for your insights and time!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-index ffef3a319bac..bcee3e54e3ed 100644
---- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include <network_helpers.h>
- 
- #include "map_kptr.skel.h"
- #include "map_kptr_fail.skel.h"
-@@ -81,8 +82,14 @@ static void test_map_kptr_fail(void)
- 	}
- }
- 
--static void test_map_kptr_success(void)
-+static void test_map_kptr_success(bool test_run)
- {
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.repeat = 1,
-+		.cpu = 0,
-+	);
- 	struct map_kptr *skel;
- 	int key = 0, ret;
- 	char buf[24];
-@@ -91,6 +98,16 @@ static void test_map_kptr_success(void)
- 	if (!ASSERT_OK_PTR(skel, "map_kptr__open_and_load"))
- 		return;
- 
-+	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref), &opts);
-+	ASSERT_OK(ret, "test_map_kptr_ref refcount");
-+	ASSERT_OK(opts.retval, "test_map_kptr_ref retval");
-+	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.test_map_kptr_ref2), &opts);
-+	ASSERT_OK(ret, "test_map_kptr_ref2 refcount");
-+	ASSERT_OK(opts.retval, "test_map_kptr_ref2 retval");
-+
-+	if (test_run)
-+		return;
-+
- 	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
- 	ASSERT_OK(ret, "array_map update");
- 	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
-@@ -116,7 +133,12 @@ static void test_map_kptr_success(void)
- 
- void test_map_kptr(void)
- {
--	if (test__start_subtest("success"))
--		test_map_kptr_success();
-+	if (test__start_subtest("success")) {
-+		test_map_kptr_success(false);
-+		/* Do test_run twice, so that we see refcount going back to 1
-+		 * after we leave it in map from first iteration.
-+		 */
-+		test_map_kptr_success(true);
-+	}
- 	test_map_kptr_fail();
- }
-diff --git a/tools/testing/selftests/bpf/progs/map_kptr.c b/tools/testing/selftests/bpf/progs/map_kptr.c
-index 1b0e0409eaa5..569d7522bb9f 100644
---- a/tools/testing/selftests/bpf/progs/map_kptr.c
-+++ b/tools/testing/selftests/bpf/progs/map_kptr.c
-@@ -61,6 +61,7 @@ extern struct prog_test_ref_kfunc *bpf_kfunc_call_test_acquire(unsigned long *sp
- extern struct prog_test_ref_kfunc *
- bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **p, int a, int b) __ksym;
- extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
-+extern struct prog_test_ref_kfunc prog_test_struct __ksym;
- 
- static void test_kptr_unref(struct map_value *v)
- {
-@@ -141,7 +142,7 @@ SEC("tc")
- int test_map_kptr(struct __sk_buff *ctx)
- {
- 	struct map_value *v;
--	int i, key = 0;
-+	int key = 0;
- 
- #define TEST(map)					\
- 	v = bpf_map_lookup_elem(&map, &key);		\
-@@ -162,7 +163,7 @@ SEC("tc")
- int test_map_in_map_kptr(struct __sk_buff *ctx)
- {
- 	struct map_value *v;
--	int i, key = 0;
-+	int key = 0;
- 	void *map;
- 
- #define TEST(map_in_map)                                \
-@@ -187,4 +188,108 @@ int test_map_in_map_kptr(struct __sk_buff *ctx)
- 	return 0;
- }
- 
-+SEC("tc")
-+int test_map_kptr_ref(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *volatile p, *p_cpu;
-+	unsigned long arg = 0;
-+	struct map_value *v;
-+	int key = 0, ret;
-+
-+	p_cpu = bpf_this_cpu_ptr(&prog_test_struct);
-+	if (p_cpu->cnt.refs.counter != 1)
-+		return 1;
-+
-+	p = bpf_kfunc_call_test_acquire(&arg);
-+	if (!p)
-+		return 2;
-+	if (p != p_cpu || p_cpu->cnt.refs.counter != 2) {
-+		ret = 3;
-+		goto end;
-+	}
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v) {
-+		ret = 4;
-+		goto end;
-+	}
-+
-+	p = bpf_kptr_xchg(&v->ref_ptr, p);
-+	if (p) {
-+		ret = 5;
-+		goto end;
-+	}
-+	if (p_cpu->cnt.refs.counter != 2)
-+		return 6;
-+
-+	p = bpf_kfunc_call_test_kptr_get(&v->ref_ptr, 0, 0);
-+	if (!p)
-+		return 7;
-+	if (p_cpu->cnt.refs.counter != 3) {
-+		ret = 8;
-+		goto end;
-+	}
-+	bpf_kfunc_call_test_release(p);
-+	if (p_cpu->cnt.refs.counter != 2)
-+		return 9;
-+
-+	p = bpf_kptr_xchg(&v->ref_ptr, NULL);
-+	if (!p)
-+		return 10;
-+	bpf_kfunc_call_test_release(p);
-+	if (p_cpu->cnt.refs.counter != 1)
-+		return 11;
-+
-+	p = bpf_kfunc_call_test_acquire(&arg);
-+	if (!p)
-+		return 12;
-+	p = bpf_kptr_xchg(&v->ref_ptr, p);
-+	if (p) {
-+		ret = 13;
-+		goto end;
-+	}
-+	if (p_cpu->cnt.refs.counter != 2)
-+		return 14;
-+	/* Leave in map */
-+
-+	return 0;
-+end:
-+	bpf_kfunc_call_test_release(p);
-+	return ret;
-+}
-+
-+SEC("tc")
-+int test_map_kptr_ref2(struct __sk_buff *ctx)
-+{
-+	struct prog_test_ref_kfunc *volatile p, *p_cpu;
-+	struct map_value *v;
-+	int key = 0;
-+
-+	p_cpu = bpf_this_cpu_ptr(&prog_test_struct);
-+	if (p_cpu->cnt.refs.counter != 2)
-+		return 1;
-+
-+	v = bpf_map_lookup_elem(&array_map, &key);
-+	if (!v)
-+		return 2;
-+
-+	p = bpf_kptr_xchg(&v->ref_ptr, NULL);
-+	if (!p)
-+		return 3;
-+	if (p != p_cpu || p_cpu->cnt.refs.counter != 2) {
-+		bpf_kfunc_call_test_release(p);
-+		return 4;
-+	}
-+
-+	p = bpf_kptr_xchg(&v->ref_ptr, p);
-+	if (p) {
-+		bpf_kfunc_call_test_release(p);
-+		return 5;
-+	}
-+	if (p_cpu->cnt.refs.counter != 2)
-+		return 6;
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.35.1
+That's great to hear. I am all in for making the userspace interface
+simpler. I will rework this patch series so that the BPF programs just
+attach to "rstat" and send a V1.
+Any other concerns you have that you think I should address in V1?
 
+> Thanks.
+>
+> --
+> tejun
