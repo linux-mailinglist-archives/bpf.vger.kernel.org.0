@@ -2,67 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4C9523DB9
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 21:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36034523DCA
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 21:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347191AbiEKTl1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 15:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        id S238550AbiEKTqU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 15:46:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347091AbiEKTkx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 15:40:53 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA1B2624;
-        Wed, 11 May 2022 12:40:47 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 202so2647546pgc.9;
-        Wed, 11 May 2022 12:40:47 -0700 (PDT)
+        with ESMTP id S1347107AbiEKTqT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 15:46:19 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0182B1AE
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 12:46:18 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x18so2871802plg.6
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 12:46:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dPkym92MRzXkOG2DANEgEY8jF++hFd92UjLpouQ6HRo=;
-        b=ELOhNhmzQI79EeKD2P3pxVlOXNal8uOWHF6idOc6NJle6dWEMkR3wpDqyidgRHzBda
-         zrWe+vC/BFIuSb3BDBBQsHcURfQ1yUw6vT0j/RavE6iCbOtkh7frLTkTFJ/4ldmZE//5
-         9edY1mkJB+Whg490YbGA+BlHC8KBjzEJXrkx+MgBzzUd9RgnxDZix7ZJROcbXdbCeNNJ
-         RbQt6CHarl4a1TmSZWaLnDzRwjGWcf656mjezstD8HMVY6d7KQfFqcfSGVInKF83sUe/
-         xLVoJ7QuMYtK+8SOPSxFxZ4unjs1rkTdgDj16ALFVoGGMfnU4Gz5/YdzLGVVXr2lWgKB
-         KbFQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ppiTCHI+Dk2khVYJxgWHYySTDTYL6rBgVdN7EuCeY2g=;
+        b=iY0X7IfQ0kXdBMdwXK9JsaIjOan9f2Gu+c50cc7v5UVlDL2Oaev+YalHbMpeVCJIWn
+         QBHKa0jt0X0m+Bgk4Dq1QPivVIQABBxLnir9IchhHlufZ8mkZB1qad6C/kcncp/3K+G7
+         RKtJOofswfTwRGNmeHUJuehB/guZgB0boofZ837GuQ8kzexK2Wlnk7XW2+f+xscPuI6n
+         kbgvfReSM96Vo5PvKH9zy92XvmXwrjBZ0tipMSlNxCWNGwRYtgb5u47YU2Jri+GLvHIB
+         7yBTYpd6uhMzOEdWzoYIhOnHXPIHIqE1d2lc/n0W1Kf2OZ71lqXP/QkfACDwpvMQhyn/
+         kUAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dPkym92MRzXkOG2DANEgEY8jF++hFd92UjLpouQ6HRo=;
-        b=Qmrvdcu6DwlCsNv9BdcJzwc1H3748on1tqmUryCWpVS2n8qRkYOssqseIM25DAGC4J
-         5ErnNQLXnaz9wDVCATEwHnB4dXlmlAhohv1zbYQx/owO6gZntsJzPkurF4f4Vk2amorc
-         FZx0ip7oq01eM8LPi0kFzmfKpdkxT0zb0q7SveIXZoWlESM8SJryhJC9rBq6c7t1x32Q
-         fV6o3FS5py+2+/x2uJozOS3stHvXy8vxujidl/CZ5TMIVwHsOH9VgWnLms7VbvQgjiNi
-         +OjeHKu0WLSE9oWN/722o4dedrlGwxdaTIUjCKeKwnnyWMH6mpSJbEGgLf3KlX/LEpNb
-         Cttw==
-X-Gm-Message-State: AOAM533FirYTvANdQXK+rXHsiVsedZRZgA7blZ9M6h+iaQsJHInG77A6
-        q6I68bv89agmqXtsxg2t8AA=
-X-Google-Smtp-Source: ABdhPJzQGLl6yt3isM5vp9paIKLPgl8O5HCZi4v+47KJGreOq+CSAdX1iqOfWQ25rYwGztVX7g8RlQ==
-X-Received: by 2002:a62:484:0:b0:50d:a020:88e5 with SMTP id 126-20020a620484000000b0050da02088e5mr26518715pfe.51.1652298047355;
-        Wed, 11 May 2022 12:40:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ppiTCHI+Dk2khVYJxgWHYySTDTYL6rBgVdN7EuCeY2g=;
+        b=NZCqQKYPuoqzr92JwvxuaWMNN2TT1HnOsNG3XJFeIV5Dx81Q1nsqcQPr4Tn8KS+/2z
+         HGs0dYZyvGJuyvC2Y9Ig9vgr9+OHw7Y2UaQAW2bWQunGG8I/MUSKhMdL1qOEgjZk2rnY
+         5lWbqdKBTRQHDNT4Jl0GpfM4R3ivRLt1toMJQPjMXs8wVButuwyBMLHtosq3kZ88XErL
+         O4eZ2GKgvypCLh+wS1SWCBjv4vUSkDQmv9Csy1z3pc0C7OnSf46VLma7UVcIiwklkTwq
+         pielbgqryWgczNCEf/6WeBS4cgCpOEX8DzetH6nT4PBl+SxutzjVIwIwsBb5+ZDM3kmb
+         2GSA==
+X-Gm-Message-State: AOAM531lOuLS/oMLqluMEtyuopX1cRGNQLOZ/ePL0Dw9e9Q5UWa7ORvB
+        uRdaV2zF7d8r8bDJB0OBbvEq1ChmEj8=
+X-Google-Smtp-Source: ABdhPJwxoXykTqvsKwHdk8fsIHSM8IuJCz5eC2BXhMpKFaFoNQxGfbcfcCuYWa2IWSWqvo73DgvxHQ==
+X-Received: by 2002:a17:90b:4c8c:b0:1de:b3b5:ea21 with SMTP id my12-20020a17090b4c8c00b001deb3b5ea21mr6982506pjb.171.1652298377847;
+        Wed, 11 May 2022 12:46:17 -0700 (PDT)
 Received: from localhost ([112.79.166.171])
-        by smtp.gmail.com with ESMTPSA id 32-20020a631560000000b003c14af5060esm260825pgv.38.2022.05.11.12.40.46
+        by smtp.gmail.com with ESMTPSA id y128-20020a62ce86000000b0050dc76281d4sm2194427pfg.174.2022.05.11.12.46.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 May 2022 12:40:47 -0700 (PDT)
-Date:   Thu, 12 May 2022 01:11:23 +0530
+        Wed, 11 May 2022 12:46:17 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, pablo@netfilter.org,
-        fw@strlen.de, netfilter-devel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com
-Subject: Re: [PATCH bpf-next] net: netfilter: add kfunc helper to update ct
- timeout
-Message-ID: <20220511194123.g3grzln5cjwtmhb3@apollo.legion>
-References: <1327f8f5696ff2bc60400e8f3b79047914ccc837.1651595019.git.lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf-next v2 0/4] Follow ups for kptr series
+Date:   Thu, 12 May 2022 01:16:50 +0530
+Message-Id: <20220511194654.765705-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1327f8f5696ff2bc60400e8f3b79047914ccc837.1651595019.git.lorenzo@kernel.org>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1189; h=from:subject; bh=gXMa8yQY2NZwkXzaf8wwoXFQ2iDub3/PSC4DjXY3X08=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBifBG6cuLR/V9thKOJYd9AaieEc6cD8gxlpAbBS5Pu WvRnURiJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYnwRugAKCRBM4MiGSL8RyhTQD/ 9AAGlwdFjdN5LU8vPx/GXP7ceJrPhcyM+mHkzrkd1XUschv+yPG+9A/9hq1j+q2l4+bU406BfWc7y7 p2jzbeuxy7BFoJTzZRplJ2+pbthIpO3oeYUshshIGAdnqTBSvrFokUY8rWx4PMUXlT0g/NN8MXFqed Er2ZUWhBXBSxUpGw5B91azVRlX4bDzOpDJNl2pJTmrxbRp+I8RYfcoy/5c4jH1ACt94YAPiGjXPVns Ofig0TayWZ4U0pTvcpTXWwycpuQ0PAr4bR1Cn9I+CGp7L6neLugXNgZMIGYeb7H4zN/KWwbWGPnJkS 88ue5Od1VnP/hj7l54Hu0Wj9Il/NXzg/xGyxSEw3dLoFhIfmBl+agpk4CU3aaoZeNBFBmTUyZFDAOz zdIkmp7gsF3qlcoSDe424FHrUEXxNzsxebtMu2lxNUvFuGKCeWkxacwt0EGJ45S0YzJFKPQN0l3kJ1 zBp6GuN17tkYSXPGeHPOM4ysHV5Xq7XHXoc/RuTjdwi6U0iql7SMBW9ptLCQ3uL2xspjmdOh0l0pR+ 4jDhLW/jBLAtMvn53cpLYXvpUbUbJZeIsTTrSnsXXzwwJ/JWRsx2iAgssvq7eRz2DqrAfQlvsmEKnU d4GhTSxzircStn5/+8wToEPNHPSmbKIMA6MtNgvAUlOkwEymKcqVG0Dj7Few==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,122 +70,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 03, 2022 at 09:59:14PM IST, Lorenzo Bianconi wrote:
-> Introduce bpf_ct_refresh_timeout kfunc helper in order to update time
-> nf_conn lifetime. Move timeout update logic in nf_ct_refresh_timeout
-> utility routine.
->
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
+Fix a build time warning, and address comments from Alexei on the merged
+version [0].
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+  [0]: https://lore.kernel.org/bpf/20220424214901.2743946-1-memxor@gmail.com
 
-The sparse error can be ignored, kfunc is meant to be global without a
-prototype.
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20220510211727.575686-1-memxor@gmail.com
 
->  include/net/netfilter/nf_conntrack.h |  1 +
->  net/netfilter/nf_conntrack_bpf.c     | 20 ++++++++++++++++++++
->  net/netfilter/nf_conntrack_core.c    | 21 +++++++++++++--------
->  3 files changed, 34 insertions(+), 8 deletions(-)
->
-> diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-> index 69e6c6a218be..02b7115b92d0 100644
-> --- a/include/net/netfilter/nf_conntrack.h
-> +++ b/include/net/netfilter/nf_conntrack.h
-> @@ -205,6 +205,7 @@ bool nf_ct_get_tuplepr(const struct sk_buff *skb, unsigned int nhoff,
->  		       u_int16_t l3num, struct net *net,
->  		       struct nf_conntrack_tuple *tuple);
->
-> +void nf_ct_refresh_timeout(struct nf_conn *ct, u32 extra_jiffies);
->  void __nf_ct_refresh_acct(struct nf_conn *ct, enum ip_conntrack_info ctinfo,
->  			  const struct sk_buff *skb,
->  			  u32 extra_jiffies, bool do_acct);
-> diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
-> index bc4d5cd63a94..d6dcadf0e016 100644
-> --- a/net/netfilter/nf_conntrack_bpf.c
-> +++ b/net/netfilter/nf_conntrack_bpf.c
-> @@ -217,16 +217,36 @@ void bpf_ct_release(struct nf_conn *nfct)
->  	nf_ct_put(nfct);
->  }
->
-> +/* bpf_ct_refresh_timeout - Refresh nf_conn object
-> + *
-> + * Refresh timeout associated to the provided connection tracking entry.
-> + * This must be invoked for referenced PTR_TO_BTF_ID.
-> + *
-> + * Parameters:
-> + * @nf_conn      - Pointer to referenced nf_conn object, obtained using
-> + *		   bpf_xdp_ct_lookup or bpf_skb_ct_lookup.
-> + * @timeout      - delta time in msecs used to increase the ct entry lifetime.
-> + */
-> +void bpf_ct_refresh_timeout(struct nf_conn *nfct, u32 timeout)
-> +{
-> +	if (!nfct)
-> +		return;
-> +
-> +	nf_ct_refresh_timeout(nfct, msecs_to_jiffies(timeout));
-> +}
-> +
->  __diag_pop()
->
->  BTF_SET_START(nf_ct_xdp_check_kfunc_ids)
->  BTF_ID(func, bpf_xdp_ct_lookup)
->  BTF_ID(func, bpf_ct_release)
-> +BTF_ID(func, bpf_ct_refresh_timeout);
->  BTF_SET_END(nf_ct_xdp_check_kfunc_ids)
->
->  BTF_SET_START(nf_ct_tc_check_kfunc_ids)
->  BTF_ID(func, bpf_skb_ct_lookup)
->  BTF_ID(func, bpf_ct_release)
-> +BTF_ID(func, bpf_ct_refresh_timeout);
->  BTF_SET_END(nf_ct_tc_check_kfunc_ids)
->
->  BTF_SET_START(nf_ct_acquire_kfunc_ids)
-> diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-> index 0164e5f522e8..f43e743728bd 100644
-> --- a/net/netfilter/nf_conntrack_core.c
-> +++ b/net/netfilter/nf_conntrack_core.c
-> @@ -2030,16 +2030,11 @@ void nf_conntrack_alter_reply(struct nf_conn *ct,
->  }
->  EXPORT_SYMBOL_GPL(nf_conntrack_alter_reply);
->
-> -/* Refresh conntrack for this many jiffies and do accounting if do_acct is 1 */
-> -void __nf_ct_refresh_acct(struct nf_conn *ct,
-> -			  enum ip_conntrack_info ctinfo,
-> -			  const struct sk_buff *skb,
-> -			  u32 extra_jiffies,
-> -			  bool do_acct)
-> +void nf_ct_refresh_timeout(struct nf_conn *ct, u32 extra_jiffies)
->  {
->  	/* Only update if this is not a fixed timeout */
->  	if (test_bit(IPS_FIXED_TIMEOUT_BIT, &ct->status))
-> -		goto acct;
-> +		return;
->
->  	/* If not in hash table, timer will not be active yet */
->  	if (nf_ct_is_confirmed(ct))
-> @@ -2047,7 +2042,17 @@ void __nf_ct_refresh_acct(struct nf_conn *ct,
->
->  	if (READ_ONCE(ct->timeout) != extra_jiffies)
->  		WRITE_ONCE(ct->timeout, extra_jiffies);
-> -acct:
-> +}
-> +
-> +/* Refresh conntrack for this many jiffies and do accounting if do_acct is 1 */
-> +void __nf_ct_refresh_acct(struct nf_conn *ct,
-> +			  enum ip_conntrack_info ctinfo,
-> +			  const struct sk_buff *skb,
-> +			  u32 extra_jiffies,
-> +			  bool do_acct)
-> +{
-> +	nf_ct_refresh_timeout(ct, extra_jiffies);
-> +
->  	if (do_acct)
->  		nf_ct_acct_update(ct, CTINFO2DIR(ctinfo), skb->len);
->  }
-> --
-> 2.35.1
->
+ * Add Fixes tag to patch 1
+ * Fix test_progs-noalu32 failure in CI due to different alloc_insn (Alexei)
+ * Remove per-CPU struct, use global struct (Alexei)
 
---
-Kartikeya
+Kumar Kartikeya Dwivedi (4):
+  bpf: Fix sparse warning for bpf_kptr_xchg_proto
+  bpf: Prepare prog_test_struct kfuncs for runtime tests
+  selftests/bpf: Add negative C tests for kptrs
+  selftests/bpf: Add tests for kptr_ref refcounting
+
+ include/linux/bpf.h                           |   1 +
+ net/bpf/test_run.c                            |  23 +-
+ .../selftests/bpf/prog_tests/map_kptr.c       | 108 ++++-
+ tools/testing/selftests/bpf/progs/map_kptr.c  | 106 ++++-
+ .../selftests/bpf/progs/map_kptr_fail.c       | 418 ++++++++++++++++++
+ .../testing/selftests/bpf/verifier/map_kptr.c |   4 +-
+ 6 files changed, 649 insertions(+), 11 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/map_kptr_fail.c
+
+-- 
+2.35.1
+
