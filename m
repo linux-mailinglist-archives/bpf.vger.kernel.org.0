@@ -2,104 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A08E75236BB
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 17:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E924B5236C8
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 17:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245507AbiEKPKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 11:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
+        id S245576AbiEKPMq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 11:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245433AbiEKPKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 11:10:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721695A5BA;
-        Wed, 11 May 2022 08:10:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0BA7B61868;
-        Wed, 11 May 2022 15:10:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5CA4FC34113;
-        Wed, 11 May 2022 15:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652281816;
-        bh=soPN5LRFKFxmnNGlcEbk3jFGK+X6i0ROLF9+M0KmYAo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=gPrWIN2qkvbljmyPVcdiS20qBHd47vg/pi0Ig7v7JVlCSJHklETCrGT1kx6Rrj0wp
-         eEeFONZbeeeecGMI35Uc/P0Qr9eUweAvPcqrEAlFwP0/En6D59wEF0VImzz+xbvuGV
-         VnKRbfB38tQI3AGfu02Q5D6OhTiYxM/jR0AXepHuHZMQQs8qdR7aCl+7SHbL63Z4fa
-         JfqbigwnoMAzs2KTCiAehGxtIAx9n8TGW9wqKpItKd7oXA3K7Uvw024kvV3ht1u+rG
-         Gk8EnV3KHINm+7aHC+MMfJ4Pt6fttrUn9gsCTbgO9ZRQOXtUX4uwlcy0Y28pGiT4Ez
-         oOYByjCqWIh1A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3D9CDF03932;
-        Wed, 11 May 2022 15:10:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S245505AbiEKPMj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 11:12:39 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30EC7A820
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 08:12:37 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id a30so2998954ljq.9
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 08:12:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8z498OBrO5TrJpyBP8Q3gKeEhSZ26vQ1Lzs9/gCf97Q=;
+        b=FNLW5qV8Atgua0YkEbZQDW2UBmk3YRCnnkqyFVe3aGKCck2AHaL83EcikNnvN7rgLj
+         2BPSCtytd38QvMAoQr1r4oxeRxWA8mfPDwCyb6FcprZ+dRYo3lFNjGSVsAVEizXoSfzP
+         5GI6cLC5Op3LF82OaXtK8qaf1uSs8pK1jVvZHs1ct2CHb+WJ8k5T13oG2q37UWi2OKxp
+         mbifD7cPhhEtirixUfLFx62H0iEmTgy3B6zeIhALNVbcL8GUKvw24kJa541NqayUW1sO
+         owDvpOMIOP9wWyciR4Qm7bXhJ0B+R2fewddyqigfvwGfOHnVRUGkRgJco9OzeHgExUUO
+         bB4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8z498OBrO5TrJpyBP8Q3gKeEhSZ26vQ1Lzs9/gCf97Q=;
+        b=kxhB+hHvkXh+B66YiuNt8V+ZAIy9oJZ0l8TDAcTIMupQ0Nn9NxVUy9NfFXy+IFBgKx
+         VT8e6RGfExVp5ORL+YCt4xnPfvFnotm3nG8iTod0do4/jX7WyMJkzE4JQW1Obitmm73B
+         qZsPhtD5BWqiILwc5gfRbs8C/HvaF4B76CzicVypkXTduxm0Z0qja834GbTWtSFQXYPR
+         5ZX9xrWA8pRkUmrTWcTPl+RevbqaoBxZiGuqNsDapYUVGSCb9qETiouIaqg1MD2PlbRu
+         0apwaFtokIaUW/DO1gRia8A+HLg/XkwJba+QGZbfh4dFtdx2t4SMjx4O2G3s3v71AEm9
+         MtJQ==
+X-Gm-Message-State: AOAM5326871CrGZEhgRak3+ayaQIPFGeZWdxDCoFZFB9REpUgWGLdZad
+        SqGLkFosxhc9Fm3xxi4L02cHTJ0ol300deMrTtQ=
+X-Google-Smtp-Source: ABdhPJxGfte01+1Vx7sDkd0zyG194Glnit8cZwlZVr3Ivz5WglRAvsZZgy3t3AkJ3luRgMEsBKp9zXJz8MktNLWLtLI=
+X-Received: by 2002:a2e:944a:0:b0:24f:10bd:b7e8 with SMTP id
+ o10-20020a2e944a000000b0024f10bdb7e8mr17372273ljh.238.1652281956023; Wed, 11
+ May 2022 08:12:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/9] selftests: xsk: add busy-poll testing plus
- various fixes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165228181624.5151.11091684511221899070.git-patchwork-notify@kernel.org>
-Date:   Wed, 11 May 2022 15:10:16 +0000
-References: <20220510115604.8717-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20220510115604.8717-1-magnus.karlsson@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, yhs@fb.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220427214337.716372-1-grantseltzer@gmail.com>
+ <CAEf4Bza4fW0v7gGO+57hwoHhhaPTeQjHPYKU5P_NzYTYdoxMdA@mail.gmail.com>
+ <CAO658oW381jwCAe24uiySjqz+=XRpGfDSai+=opK=z6a2y5gUw@mail.gmail.com> <CAEf4BzYM7Uaaa=SvZvdzY4_XWmH-+T6rrao2w1cDA4z=G7Mj_g@mail.gmail.com>
+In-Reply-To: <CAEf4BzYM7Uaaa=SvZvdzY4_XWmH-+T6rrao2w1cDA4z=G7Mj_g@mail.gmail.com>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Wed, 11 May 2022 11:12:25 -0400
+Message-ID: <CAO658oVY0jb-j-z7=YFPfPWdd5Tt8yT=YyA_NaOGqbewMdkj7w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] API function for retrieving data from percpu map
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, May 6, 2022 at 4:55 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Apr 27, 2022 at 7:55 PM Grant Seltzer Richman
+> <grantseltzer@gmail.com> wrote:
+> >
+> > On Wed, Apr 27, 2022 at 6:16 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, Apr 27, 2022 at 2:43 PM grantseltzer <grantseltzer@gmail.com> wrote:
+> > > >
+> > > > From: Grant Seltzer <grantseltzer@gmail.com>
+> > > >
+> > > > This adds a new API function used to retrieve all data from a
+> > > > percpu array or percpu hashmap.
+> > > >
+> > > > This is useful because the current interface for doing so
+> > > > requires knowledge of the layout of these BPF map internal
+> > > > structures.
+> > > >
+> > > > Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> > > > ---
+> > > >  tools/lib/bpf/libbpf.c | 28 ++++++++++++++++++++++++++++
+> > > >  tools/lib/bpf/libbpf.h | 25 +++++++++++++++++++++++++
+> > > >  2 files changed, 53 insertions(+)
+> > > >
+> > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > index 873a29ce7781..8d72cff22688 100644
+> > > > --- a/tools/lib/bpf/libbpf.c
+> > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > @@ -36,6 +36,7 @@
+> > > >  #include <linux/perf_event.h>
+> > > >  #include <linux/ring_buffer.h>
+> > > >  #include <linux/version.h>
+> > > > +#include <linux/math.h>
+> > > >  #include <sys/epoll.h>
+> > > >  #include <sys/ioctl.h>
+> > > >  #include <sys/mman.h>
+> > > > @@ -4370,6 +4371,33 @@ int bpf_map__resize(struct bpf_map *map, __u32 max_entries)
+> > > >         return bpf_map__set_max_entries(map, max_entries);
+> > > >  }
+> > > >
+> > > > +void *bpf_map__get_percpu_value(const struct bpf_map *map, const void *key)
+> > >
+> > > I'd rather avoid API that allocates memory on behalf of user (and
+> > > requires user to later free it) if possible. In this case there is no
+> > > need for libbpf itself to allocate memory, user can allocate enough
+> > > memory and pass it to libbpf.
+> >
+> > I see, this makes sense. I also considered defining a macro instead,
+> > similar to `bpf_object__for_each_program`, except something like
+> > `bpf_map__for_each_cpu`.
+> >
+> > >
+> > > I'm actually working on few related APIs to avoid using low-level
+> > > bpf_map_update_elem() from user-space. I want to add
+> > > bpf_map__update_elem(), bpf_map__lookup_elem(),
+> > > bpf_map__delete_elem(). It's TBD how it will look like for per-cpu
+> > > maps, but I didn't plan to have a separate API for that. It would just
+> > > change expectations of value size to be a value_size * num_cpus.
+> >
+> > Ah ok, you actually mentioned this to me once before, about modeling
+> > the  API to accept key/value sizes and validate based on bpf_map's
+> > definition. Please let me know if I can help with this, I'd be happy
+> > to tackle it.
+>
+> It depends on whether you are planning to work on it soon. I'd like to
+> get this into v0.8 in the next week or two. If you think you can
+> actively work on it next week and iterate if necessary quickly, then
+> yes, please go ahead. I have few other small things to wrap up besides
+> this and this will free a bit of time for me.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Apologies for the delay, this slipped past my attention. I won't have
+time to work on this quickly so you can work on it for now, i'll look
+out for the patch!
 
-On Tue, 10 May 2022 13:55:55 +0200 you wrote:
-> This patch set adds busy-poll testing to the xsk selftests. It runs
-> exactly the same tests as with regular softirq processing, but with
-> busy-poll enabled. I have also included a number of fixes to the
-> selftests that have been bugging me for a while or was discovered
-> while implementing the busy-poll support. In summary these are:
-> 
-> * Fix the error reporting of failed tests. Each failed test used to be
->   reported as both failed and passed, messing up things.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,1/9] selftests: xsk: cleanup bash scripts
-    https://git.kernel.org/bpf/bpf-next/c/685e64a3c91d
-  - [bpf-next,2/9] selftests: xsk: do not send zero-length packets
-    https://git.kernel.org/bpf/bpf-next/c/f3e619bb34d3
-  - [bpf-next,3/9] selftests: xsk: run all tests for busy-poll
-    https://git.kernel.org/bpf/bpf-next/c/f90062b53229
-  - [bpf-next,4/9] selftests: xsk: fix reporting of failed tests
-    https://git.kernel.org/bpf/bpf-next/c/895b62eed2ab
-  - [bpf-next,5/9] selftests: xsk: add timeout to tests
-    https://git.kernel.org/bpf/bpf-next/c/db1bd7a99454
-  - [bpf-next,6/9] selftests: xsk: cleanup veth pair at ctrl-c
-    https://git.kernel.org/bpf/bpf-next/c/d41cb6c47474
-  - [bpf-next,7/9] selftests: xsk: introduce validation functions
-    https://git.kernel.org/bpf/bpf-next/c/76c576638f5d
-  - [bpf-next,8/9] selftests: xsk: make the stats tests normal tests
-    https://git.kernel.org/bpf/bpf-next/c/4fec7028ffea
-  - [bpf-next,9/9] selftests: xsk: make stat tests not spin on getsockopt
-    https://git.kernel.org/bpf/bpf-next/c/27e934bec35b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> Basically, I was thinking to have an API like below:
+>
+> int bpf_map__lookup_elem(const struct bpf_map *map, const void *key,
+> size_t key_sz, void *value, size_t value_sz);
+>
+> and checking 1) that map is created (fd >= 0) 2) and key_sz/value_sz
+> match our knowledge of the map's definition, which for per-CPU maps
+> would mean that value_sz is actual value_size *
+> libbpf_num_possible_cpus().
+>
+> Similarly for other very popular operations on maps: update and
+> delete. We can probably also add wrappers for BPF_MAP_GET_NEXT_KEY and
+> LOOKUP_AND_DELETE_ELEM commands. I didn't plan to add batch operations
+> yet, as they are much less popular, so didn't want to over do it.
+>
+> >
+> >
+> > >
+> > > So stay tuned, hopefully very soon
+> > >
+> > > > +{
+> > > > +
+> > > > +       if (!(bpf_map__type(map) == BPF_MAP_TYPE_PERCPU_ARRAY ||
+> > > > +               bpf_map__type(map) == BPF_MAP_TYPE_PERCPU_HASH)) {
+> > > > +               return libbpf_err_ptr(-EINVAL);
+> > > > +       }
+> > > > +
+> > > > +       int num_cpus;
+> > > > +       __u32 value_size;
+> > > > +       num_cpus = libbpf_num_possible_cpus();
+> > > > +
+> > > > +       if (num_cpus < 0)
+> > > > +               return libbpf_err_ptr(-EBUSY);
+> > > > +
+> > > > +       value_size = bpf_map__value_size(map);
+> > > > +
+> > > > +       void *data = malloc(roundup(value_size, 8) * num_cpus);
+> > > > +       int err = bpf_map_lookup_elem(map->fd, key, data);
+> > > > +       if (err) {
+> > > > +               free(data);
+> > > > +               return libbpf_err_ptr(err);
+> > > > +       }
+> > > > +
+> > > > +       return data;
+> > > > +}
+> > > > +
+> > > >  static int
+> > > >  bpf_object__probe_loading(struct bpf_object *obj)
+> > > >  {
+> > > > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > > > index cdbfee60ea3e..99b218702dfb 100644
+> > > > --- a/tools/lib/bpf/libbpf.h
+> > > > +++ b/tools/lib/bpf/libbpf.h
+> > > > @@ -921,6 +921,31 @@ LIBBPF_API const void *bpf_map__initial_value(struct bpf_map *map, size_t *psize
+> > > >  LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_map__type() instead")
+> > > >  LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
+> > > >
+> > > > +/**
+> > > > + * @brief **bpf_map__get_percpu_value()** returns a pointer to an array
+> > > > + * of data stored in a per-cpu array or per-cpu hashmap at a specified
+> > > > + * key. Each element is padded to 8 bytes regardless of the value data
+> > > > + * type stored in the per-cpu map. The index of each element in the array
+> > > > + * corresponds with the cpu that the data was set from.
+> > > > + * @param map per-cpu array or per-cpu hashmap
+> > > > + * @param key the key or index in the map
+> > > > + * @return pointer to the array of data
+> > > > + *
+> > > > + * example usage:
+> > > > + *
+> > > > + *  values = bpf_map__get_percpu_value(bpfmap, (void*)&zero);
+> > > > + *  if (values == NULL) {
+> > > > + *     // error handling
+> > > > + *  }
+> > > > + *
+> > > > + *     void* ptr = values;
+> > > > + *  for (int i = 0; i < num_cpus; i++) {
+> > > > + *    printf("CPU %d: %ld\n", i, *(ulong*)ptr);
+> > > > + *    ptr += 8;
+> > > > + *  }
+> > > > + */
+> > > > +LIBBPF_API void *bpf_map__get_percpu_value(const struct bpf_map *map, const void *key);
+> > > > +
+> > > >  /**
+> > > >   * @brief **bpf_map__is_internal()** tells the caller whether or not the
+> > > >   * passed map is a special map created by libbpf automatically for things like
+> > > > --
+> > > > 2.34.1
+> > > >
