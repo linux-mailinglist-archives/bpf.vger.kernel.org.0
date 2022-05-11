@@ -2,365 +2,427 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F31F252409B
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 01:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D7652409C
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 01:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349066AbiEKXPM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 11 May 2022 19:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
+        id S245684AbiEKXPN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 11 May 2022 19:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245684AbiEKXPK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 19:15:10 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BF316A13F
+        with ESMTP id S1349052AbiEKXPL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 19:15:11 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E46316A240
         for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:15:09 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24BMwb0F001891
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24BMwmBa018393
         for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:15:08 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g0gat33th-1
+        by m0089730.ppops.net (PPS) with ESMTPS id 3fyx1h9dd5-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:15:08 -0700
-Received: from twshared3657.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+Received: from twshared6447.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 11 May 2022 16:15:06 -0700
+ 15.1.2375.24; Wed, 11 May 2022 16:15:07 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 43EA219CA27A5; Wed, 11 May 2022 16:14:55 -0700 (PDT)
+        id 53C5119CA27AA; Wed, 11 May 2022 16:14:57 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 1/2] libbpf: add safer high-level wrappers for map operations
-Date:   Wed, 11 May 2022 16:14:47 -0700
-Message-ID: <20220511231448.571909-1-andrii@kernel.org>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: convert some selftests to high-level BPF map APIs
+Date:   Wed, 11 May 2022 16:14:48 -0700
+Message-ID: <20220511231448.571909-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220511231448.571909-1-andrii@kernel.org>
+References: <20220511231448.571909-1-andrii@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: C0TScI_-T85g4oWzZulcrR6DRZGEGzeT
-X-Proofpoint-GUID: C0TScI_-T85g4oWzZulcrR6DRZGEGzeT
+X-Proofpoint-GUID: pkT_MzP9n5mNSUG-Yx89l0ePmOLIYX1A
+X-Proofpoint-ORIG-GUID: pkT_MzP9n5mNSUG-Yx89l0ePmOLIYX1A
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-11_07,2022-05-11_01,2022-02-23_01
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add high-level API wrappers for most common and typical BPF map
-operations that works directly on instances of struct bpf_map * (so you
-don't have to call bpf_map__fd()) and validate key/value size
-expectations.
+Convert a bunch of selftests to using newly added high-level BPF map
+APIs.
 
-These helpers require users to specify key (and value, where
-appropriate) sizes when performing lookup/update/delete/etc. This forces
-user to actually think and validate (for themselves) those. This is
-a good thing as user is expected by kernel to implicitly provide correct
-key/value buffer sizes and kernel will just read/write necessary amount
-of data. If it so happens that user doesn't set up buffers correctly
-(which bit people for per-CPU maps especially) kernel either randomly
-overwrites stack data or return -EFAULT, depending on user's luck and
-circumstances. These high-level APIs are meant to prevent such
-unpleasant and hard to debug bugs.
-
-This patch also adds bpf_map_delete_elem_flags() low-level API and
-requires passing flags to bpf_map__delete_elem() API for consistency
-across all similar APIs, even though currently kernel doesn't expect any
-extra flags for BPF_MAP_DELETE_ELEM operation.
-
-List of map operations that get these high-level APIs:
-  - bpf_map_lookup_elem;
-  - bpf_map_update_elem;
-  - bpf_map_delete_elem;
-  - bpf_map_lookup_and_delete_elem;
-  - bpf_map_get_next_key.
+This change exposed that map_kptr selftests allocated too big buffer,
+which is fixed in this patch as well.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf.c      |  14 ++++++
- tools/lib/bpf/bpf.h      |   1 +
- tools/lib/bpf/libbpf.c   |  90 +++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.h   | 104 +++++++++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.map |   6 +++
- 5 files changed, 215 insertions(+)
+ .../selftests/bpf/prog_tests/core_autosize.c  |  2 +-
+ .../selftests/bpf/prog_tests/core_retro.c     | 17 ++++++-----
+ .../selftests/bpf/prog_tests/for_each.c       | 30 +++++++++++--------
+ .../bpf/prog_tests/lookup_and_delete.c        | 15 ++++++----
+ .../selftests/bpf/prog_tests/map_kptr.c       | 23 ++++++++------
+ .../bpf/prog_tests/stacktrace_build_id.c      |  8 ++---
+ .../bpf/prog_tests/stacktrace_build_id_nmi.c  | 11 +++----
+ .../selftests/bpf/prog_tests/timer_mim.c      |  2 +-
+ 8 files changed, 61 insertions(+), 47 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 5660268e103f..4677644d80f4 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -639,6 +639,20 @@ int bpf_map_delete_elem(int fd, const void *key)
- 	return libbpf_err_errno(ret);
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_autosize.c b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
+index 1dfe14ff6aa4..f2ce4fd1cdae 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_autosize.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
+@@ -167,7 +167,7 @@ void test_core_autosize(void)
+ 	if (!ASSERT_OK_PTR(bss_map, "bss_map_find"))
+ 		goto cleanup;
  
-+int bpf_map_delete_elem_flags(int fd, const void *key, __u64 flags)
-+{
-+	union bpf_attr attr;
-+	int ret;
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.map_fd = fd;
-+	attr.key = ptr_to_u64(key);
-+	attr.flags = flags;
-+
-+	ret = sys_bpf(BPF_MAP_DELETE_ELEM, &attr, sizeof(attr));
-+	return libbpf_err_errno(ret);
-+}
-+
- int bpf_map_get_next_key(int fd, const void *key, void *next_key)
+-	err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &zero, (void *)&out);
++	err = bpf_map__lookup_elem(bss_map, &zero, sizeof(zero), &out, sizeof(out), 0);
+ 	if (!ASSERT_OK(err, "bss_lookup"))
+ 		goto cleanup;
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_retro.c b/tools/testing/selftests/bpf/prog_tests/core_retro.c
+index 6acb0e94d4d7..4a2c256c8db6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_retro.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_retro.c
+@@ -6,31 +6,32 @@
+ 
+ void test_core_retro(void)
  {
- 	union bpf_attr attr;
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 34af2232928c..2e0d3731e4c0 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -244,6 +244,7 @@ LIBBPF_API int bpf_map_lookup_and_delete_elem(int fd, const void *key,
- LIBBPF_API int bpf_map_lookup_and_delete_elem_flags(int fd, const void *key,
- 						    void *value, __u64 flags);
- LIBBPF_API int bpf_map_delete_elem(int fd, const void *key);
-+LIBBPF_API int bpf_map_delete_elem_flags(int fd, const void *key, __u64 flags);
- LIBBPF_API int bpf_map_get_next_key(int fd, const void *key, void *next_key);
- LIBBPF_API int bpf_map_freeze(int fd);
+-	int err, zero = 0, res, duration = 0, my_pid = getpid();
++	int err, zero = 0, res, my_pid = getpid();
+ 	struct test_core_retro *skel;
  
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 4867a930628b..0ee3943aeaeb 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9949,6 +9949,96 @@ bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset)
- 	return libbpf_err_ptr(-ENOTSUP);
- }
+ 	/* load program */
+ 	skel = test_core_retro__open_and_load();
+-	if (CHECK(!skel, "skel_load", "skeleton open/load failed\n"))
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
+ 		goto out_close;
  
-+static int validate_map_op(const struct bpf_map *map, size_t key_sz,
-+			   size_t value_sz, bool check_value_sz)
-+{
-+	if (map->fd <= 0)
-+		return -ENOENT;
-+	if (map->def.key_size != key_sz)
-+		return -EINVAL;
-+
-+	if (!check_value_sz)
-+		return 0;
-+
-+	switch (map->def.type) {
-+	case BPF_MAP_TYPE_PERCPU_ARRAY:
-+	case BPF_MAP_TYPE_PERCPU_HASH:
-+	case BPF_MAP_TYPE_LRU_PERCPU_HASH:
-+	case BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE:
-+		if (value_sz != libbpf_num_possible_cpus() * roundup(map->def.value_size, 8))
-+			return -EINVAL;
-+		break;
-+	default:
-+		if (map->def.value_size != value_sz)
-+			return -EINVAL;
-+		break;
-+	}
-+	return 0;
-+}
-+
-+int bpf_map__lookup_elem(const struct bpf_map *map,
-+			 const void *key, size_t key_sz,
-+			 void *value, size_t value_sz, __u64 flags)
-+{
-+	int err;
-+
-+	err = validate_map_op(map, key_sz, value_sz, true);
-+	if (err)
-+		return libbpf_err(err);
-+
-+	return bpf_map_lookup_elem_flags(map->fd, key, value, flags);
-+}
-+
-+int bpf_map__update_elem(const struct bpf_map *map,
-+			 const void *key, size_t key_sz,
-+			 const void *value, size_t value_sz, __u64 flags)
-+{
-+	int err;
-+
-+	err = validate_map_op(map, key_sz, value_sz, true);
-+	if (err)
-+		return libbpf_err(err);
-+
-+	return bpf_map_update_elem(map->fd, key, value, flags);
-+}
-+
-+int bpf_map__delete_elem(const struct bpf_map *map,
-+			 const void *key, size_t key_sz, __u64 flags)
-+{
-+	int err;
-+
-+	err = validate_map_op(map, key_sz, 0, false /* check_value_sz */);
-+	if (err)
-+		return libbpf_err(err);
-+
-+	return bpf_map_delete_elem_flags(map->fd, key, flags);
-+}
-+
-+int bpf_map__lookup_and_delete_elem(const struct bpf_map *map,
-+				    const void *key, size_t key_sz,
-+				    void *value, size_t value_sz, __u64 flags)
-+{
-+	int err;
-+
-+	err = validate_map_op(map, key_sz, value_sz, true);
-+	if (err)
-+		return libbpf_err(err);
-+
-+	return bpf_map_lookup_and_delete_elem_flags(map->fd, key, value, flags);
-+}
-+
-+int bpf_map__get_next_key(const struct bpf_map *map,
-+			  const void *cur_key, void *next_key, size_t key_sz)
-+{
-+	int err;
-+
-+	err = validate_map_op(map, key_sz, 0, false /* check_value_sz */);
-+	if (err)
-+		return libbpf_err(err);
-+
-+	return bpf_map_get_next_key(map->fd, cur_key, next_key);
-+}
-+
- long libbpf_get_error(const void *ptr)
+-	err = bpf_map_update_elem(bpf_map__fd(skel->maps.exp_tgid_map), &zero, &my_pid, 0);
+-	if (CHECK(err, "map_update", "failed to set expected PID: %d\n", errno))
++	err = bpf_map__update_elem(skel->maps.exp_tgid_map, &zero, sizeof(zero),
++				   &my_pid, sizeof(my_pid), 0);
++	if (!ASSERT_OK(err, "map_update"))
+ 		goto out_close;
+ 
+ 	/* attach probe */
+ 	err = test_core_retro__attach(skel);
+-	if (CHECK(err, "attach_kprobe", "err %d\n", err))
++	if (!ASSERT_OK(err, "attach_kprobe"))
+ 		goto out_close;
+ 
+ 	/* trigger */
+ 	usleep(1);
+ 
+-	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.results), &zero, &res);
+-	if (CHECK(err, "map_lookup", "failed to lookup result: %d\n", errno))
++	err = bpf_map__lookup_elem(skel->maps.results, &zero, sizeof(zero), &res, sizeof(res), 0);
++	if (!ASSERT_OK(err, "map_lookup"))
+ 		goto out_close;
+ 
+-	CHECK(res != my_pid, "pid_check", "got %d != exp %d\n", res, my_pid);
++	ASSERT_EQ(res, my_pid, "pid_check");
+ 
+ out_close:
+ 	test_core_retro__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/prog_tests/for_each.c b/tools/testing/selftests/bpf/prog_tests/for_each.c
+index 754e80937e5d..8963f8a549f2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/for_each.c
++++ b/tools/testing/selftests/bpf/prog_tests/for_each.c
+@@ -10,9 +10,10 @@ static unsigned int duration;
+ 
+ static void test_hash_map(void)
  {
- 	if (!IS_ERR_OR_NULL(ptr))
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 21984dcd6dbe..9e9a3fd3edd8 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -990,6 +990,110 @@ LIBBPF_API int bpf_map__unpin(struct bpf_map *map, const char *path);
- LIBBPF_API int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd);
- LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
+-	int i, err, hashmap_fd, max_entries, percpu_map_fd;
++	int i, err, max_entries;
+ 	struct for_each_hash_map_elem *skel;
+ 	__u64 *percpu_valbuf = NULL;
++	size_t percpu_val_sz;
+ 	__u32 key, num_cpus;
+ 	__u64 val;
+ 	LIBBPF_OPTS(bpf_test_run_opts, topts,
+@@ -25,26 +26,27 @@ static void test_hash_map(void)
+ 	if (!ASSERT_OK_PTR(skel, "for_each_hash_map_elem__open_and_load"))
+ 		return;
  
-+/**
-+ * @brief **bpf_map__lookup_elem()** allows to lookup BPF map value
-+ * corresponding to provided key.
-+ * @param map BPF map to lookup element in
-+ * @param key pointer to memory containing bytes of the key used for lookup
-+ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-+ * @param value pointer to memory in which looked up value will be stored
-+ * @param value_sz size in byte of value data memory; it has to match BPF map
-+ * definition's **value_size**. For per-CPU BPF maps value size has to be
-+ * a product of BPF map value size and number of possible CPUs in the system
-+ * (could be fetched with **libbpf_num_possible_cpus()**). Note also that for
-+ * per-CPU values value size has to be aligned up to closest 8 bytes for
-+ * alignment reasons, so expected size is: `round_up(value_size, 8)
-+ * * libbpf_num_possible_cpus()`.
-+ * @flags extra flags passed to kernel for this operation
-+ * @return 0, on success; negative error, otherwise
-+ *
-+ * **bpf_map__lookup_elem()** is high-level equivalent of
-+ * **bpf_map_lookup_elem()** API with added check for key and value size.
-+ */
-+LIBBPF_API int bpf_map__lookup_elem(const struct bpf_map *map,
-+				    const void *key, size_t key_sz,
-+				    void *value, size_t value_sz, __u64 flags);
-+
-+/**
-+ * @brief **bpf_map__update_elem()** allows to insert or update value in BPF
-+ * map that corresponds to provided key.
-+ * @param map BPF map to insert to or update element in
-+ * @param key pointer to memory containing bytes of the key
-+ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-+ * @param value pointer to memory containing bytes of the value
-+ * @param value_sz size in byte of value data memory; it has to match BPF map
-+ * definition's **value_size**. For per-CPU BPF maps value size has to be
-+ * a product of BPF map value size and number of possible CPUs in the system
-+ * (could be fetched with **libbpf_num_possible_cpus()**). Note also that for
-+ * per-CPU values value size has to be aligned up to closest 8 bytes for
-+ * alignment reasons, so expected size is: `round_up(value_size, 8)
-+ * * libbpf_num_possible_cpus()`.
-+ * @flags extra flags passed to kernel for this operation
-+ * @return 0, on success; negative error, otherwise
-+ *
-+ * **bpf_map__update_elem()** is high-level equivalent of
-+ * **bpf_map_update_elem()** API with added check for key and value size.
-+ */
-+LIBBPF_API int bpf_map__update_elem(const struct bpf_map *map,
-+				    const void *key, size_t key_sz,
-+				    const void *value, size_t value_sz, __u64 flags);
-+
-+/**
-+ * @brief **bpf_map__delete_elem()** allows to delete element in BPF map that
-+ * corresponds to provided key.
-+ * @param map BPF map to delete element from
-+ * @param key pointer to memory containing bytes of the key
-+ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-+ * @flags extra flags passed to kernel for this operation
-+ * @return 0, on success; negative error, otherwise
-+ *
-+ * **bpf_map__delete_elem()** is high-level equivalent of
-+ * **bpf_map_delete_elem()** API with added check for key size.
-+ */
-+LIBBPF_API int bpf_map__delete_elem(const struct bpf_map *map,
-+				    const void *key, size_t key_sz, __u64 flags);
-+
-+/**
-+ * @brief **bpf_map__lookup_and_delete_elem()** allows to lookup BPF map value
-+ * corresponding to provided key and atomically delete it afterwards.
-+ * @param map BPF map to lookup element in
-+ * @param key pointer to memory containing bytes of the key used for lookup
-+ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-+ * @param value pointer to memory in which looked up value will be stored
-+ * @param value_sz size in byte of value data memory; it has to match BPF map
-+ * definition's **value_size**. For per-CPU BPF maps value size has to be
-+ * a product of BPF map value size and number of possible CPUs in the system
-+ * (could be fetched with **libbpf_num_possible_cpus()**). Note also that for
-+ * per-CPU values value size has to be aligned up to closest 8 bytes for
-+ * alignment reasons, so expected size is: `round_up(value_size, 8)
-+ * * libbpf_num_possible_cpus()`.
-+ * @flags extra flags passed to kernel for this operation
-+ * @return 0, on success; negative error, otherwise
-+ *
-+ * **bpf_map__lookup_and_delete_elem()** is high-level equivalent of
-+ * **bpf_map_lookup_and_delete_elem()** API with added check for key and value size.
-+ */
-+LIBBPF_API int bpf_map__lookup_and_delete_elem(const struct bpf_map *map,
-+					       const void *key, size_t key_sz,
-+					       void *value, size_t value_sz, __u64 flags);
-+
-+/**
-+ * @brief **bpf_map__get_next_key()** allows to iterate BPF map keys by
-+ * fetching next key that follows current key.
-+ * @param map BPF map to fetch next key from
-+ * @param cur_key pointer to memory containing bytes of current key or NULL to
-+ * fetch the first key
-+ * @param next_key pointer to memory to write next key into
-+ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
-+ * @return 0, on success; -ENOENT if **cur_key** is the last key in BPF map;
-+ * negative error, otherwise
-+ *
-+ * **bpf_map__get_next_key()** is high-level equivalent of
-+ * **bpf_map_get_next_key()** API with added check for key size.
-+ */
-+LIBBPF_API int bpf_map__get_next_key(const struct bpf_map *map,
-+				     const void *cur_key, void *next_key, size_t key_sz);
-+
- /**
-  * @brief **libbpf_get_error()** extracts the error code from the passed
-  * pointer
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 008da8db1d94..6b36f46ab5d8 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -443,7 +443,13 @@ LIBBPF_0.7.0 {
- LIBBPF_0.8.0 {
- 	global:
- 		bpf_map__autocreate;
-+		bpf_map__get_next_key;
-+		bpf_map__delete_elem;
-+		bpf_map__lookup_and_delete_elem;
-+		bpf_map__lookup_elem;
- 		bpf_map__set_autocreate;
-+		bpf_map__update_elem;
-+		bpf_map_delete_elem_flags;
- 		bpf_object__destroy_subskeleton;
- 		bpf_object__open_subskeleton;
- 		bpf_program__attach_kprobe_multi_opts;
+-	hashmap_fd = bpf_map__fd(skel->maps.hashmap);
+ 	max_entries = bpf_map__max_entries(skel->maps.hashmap);
+ 	for (i = 0; i < max_entries; i++) {
+ 		key = i;
+ 		val = i + 1;
+-		err = bpf_map_update_elem(hashmap_fd, &key, &val, BPF_ANY);
++		err = bpf_map__update_elem(skel->maps.hashmap, &key, sizeof(key),
++					   &val, sizeof(val), BPF_ANY);
+ 		if (!ASSERT_OK(err, "map_update"))
+ 			goto out;
+ 	}
+ 
+ 	num_cpus = bpf_num_possible_cpus();
+-	percpu_map_fd = bpf_map__fd(skel->maps.percpu_map);
+-	percpu_valbuf = malloc(sizeof(__u64) * num_cpus);
++	percpu_val_sz = sizeof(__u64) * num_cpus;
++	percpu_valbuf = malloc(percpu_val_sz);
+ 	if (!ASSERT_OK_PTR(percpu_valbuf, "percpu_valbuf"))
+ 		goto out;
+ 
+ 	key = 1;
+ 	for (i = 0; i < num_cpus; i++)
+ 		percpu_valbuf[i] = i + 1;
+-	err = bpf_map_update_elem(percpu_map_fd, &key, percpu_valbuf, BPF_ANY);
++	err = bpf_map__update_elem(skel->maps.percpu_map, &key, sizeof(key),
++				   percpu_valbuf, percpu_val_sz, BPF_ANY);
+ 	if (!ASSERT_OK(err, "percpu_map_update"))
+ 		goto out;
+ 
+@@ -58,7 +60,7 @@ static void test_hash_map(void)
+ 	ASSERT_EQ(skel->bss->hashmap_elems, max_entries, "hashmap_elems");
+ 
+ 	key = 1;
+-	err = bpf_map_lookup_elem(hashmap_fd, &key, &val);
++	err = bpf_map__lookup_elem(skel->maps.hashmap, &key, sizeof(key), &val, sizeof(val), 0);
+ 	ASSERT_ERR(err, "hashmap_lookup");
+ 
+ 	ASSERT_EQ(skel->bss->percpu_called, 1, "percpu_called");
+@@ -75,9 +77,10 @@ static void test_hash_map(void)
+ static void test_array_map(void)
+ {
+ 	__u32 key, num_cpus, max_entries;
+-	int i, arraymap_fd, percpu_map_fd, err;
++	int i, err;
+ 	struct for_each_array_map_elem *skel;
+ 	__u64 *percpu_valbuf = NULL;
++	size_t percpu_val_sz;
+ 	__u64 val, expected_total;
+ 	LIBBPF_OPTS(bpf_test_run_opts, topts,
+ 		.data_in = &pkt_v4,
+@@ -89,7 +92,6 @@ static void test_array_map(void)
+ 	if (!ASSERT_OK_PTR(skel, "for_each_array_map_elem__open_and_load"))
+ 		return;
+ 
+-	arraymap_fd = bpf_map__fd(skel->maps.arraymap);
+ 	expected_total = 0;
+ 	max_entries = bpf_map__max_entries(skel->maps.arraymap);
+ 	for (i = 0; i < max_entries; i++) {
+@@ -98,21 +100,23 @@ static void test_array_map(void)
+ 		/* skip the last iteration for expected total */
+ 		if (i != max_entries - 1)
+ 			expected_total += val;
+-		err = bpf_map_update_elem(arraymap_fd, &key, &val, BPF_ANY);
++		err = bpf_map__update_elem(skel->maps.arraymap, &key, sizeof(key),
++					   &val, sizeof(val), BPF_ANY);
+ 		if (!ASSERT_OK(err, "map_update"))
+ 			goto out;
+ 	}
+ 
+ 	num_cpus = bpf_num_possible_cpus();
+-	percpu_map_fd = bpf_map__fd(skel->maps.percpu_map);
+-	percpu_valbuf = malloc(sizeof(__u64) * num_cpus);
++	percpu_val_sz = sizeof(__u64) * num_cpus;
++	percpu_valbuf = malloc(percpu_val_sz);
+ 	if (!ASSERT_OK_PTR(percpu_valbuf, "percpu_valbuf"))
+ 		goto out;
+ 
+ 	key = 0;
+ 	for (i = 0; i < num_cpus; i++)
+ 		percpu_valbuf[i] = i + 1;
+-	err = bpf_map_update_elem(percpu_map_fd, &key, percpu_valbuf, BPF_ANY);
++	err = bpf_map__update_elem(skel->maps.percpu_map, &key, sizeof(key),
++				   percpu_valbuf, percpu_val_sz, BPF_ANY);
+ 	if (!ASSERT_OK(err, "percpu_map_update"))
+ 		goto out;
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c b/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+index beebfa9730e1..a767bb4a271c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
++++ b/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+@@ -112,7 +112,8 @@ static void test_lookup_and_delete_hash(void)
+ 
+ 	/* Lookup and delete element. */
+ 	key = 1;
+-	err = bpf_map_lookup_and_delete_elem(map_fd, &key, &value);
++	err = bpf_map__lookup_and_delete_elem(skel->maps.hash_map,
++					      &key, sizeof(key), &value, sizeof(value), 0);
+ 	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
+ 		goto cleanup;
+ 
+@@ -147,7 +148,8 @@ static void test_lookup_and_delete_percpu_hash(void)
+ 
+ 	/* Lookup and delete element. */
+ 	key = 1;
+-	err = bpf_map_lookup_and_delete_elem(map_fd, &key, value);
++	err = bpf_map__lookup_and_delete_elem(skel->maps.hash_map,
++					      &key, sizeof(key), value, sizeof(value), 0);
+ 	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
+ 		goto cleanup;
+ 
+@@ -191,7 +193,8 @@ static void test_lookup_and_delete_lru_hash(void)
+ 		goto cleanup;
+ 
+ 	/* Lookup and delete element 3. */
+-	err = bpf_map_lookup_and_delete_elem(map_fd, &key, &value);
++	err = bpf_map__lookup_and_delete_elem(skel->maps.hash_map,
++					      &key, sizeof(key), &value, sizeof(value), 0);
+ 	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
+ 		goto cleanup;
+ 
+@@ -240,10 +243,10 @@ static void test_lookup_and_delete_lru_percpu_hash(void)
+ 		value[i] = 0;
+ 
+ 	/* Lookup and delete element 3. */
+-	err = bpf_map_lookup_and_delete_elem(map_fd, &key, value);
+-	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem")) {
++	err = bpf_map__lookup_and_delete_elem(skel->maps.hash_map,
++					      &key, sizeof(key), value, sizeof(value), 0);
++	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
+ 		goto cleanup;
+-	}
+ 
+ 	/* Check if only one CPU has set the value. */
+ 	for (i = 0; i < nr_cpus; i++) {
+diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+index 9e2fbda64a65..a0211c294071 100644
+--- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
++++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
+@@ -7,30 +7,35 @@ void test_map_kptr(void)
+ {
+ 	struct map_kptr *skel;
+ 	int key = 0, ret;
+-	char buf[24];
++	char buf[16];
+ 
+ 	skel = map_kptr__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "map_kptr__open_and_load"))
+ 		return;
+ 
+-	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
++	ret = bpf_map__update_elem(skel->maps.array_map,
++				   &key, sizeof(key), buf, sizeof(buf), 0);
+ 	ASSERT_OK(ret, "array_map update");
+-	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
++	ret = bpf_map__update_elem(skel->maps.array_map,
++				   &key, sizeof(key), buf, sizeof(buf), 0);
+ 	ASSERT_OK(ret, "array_map update2");
+ 
+-	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.hash_map), &key, buf, 0);
++	ret = bpf_map__update_elem(skel->maps.hash_map,
++				   &key, sizeof(key), buf, sizeof(buf), 0);
+ 	ASSERT_OK(ret, "hash_map update");
+-	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.hash_map), &key);
++	ret = bpf_map__delete_elem(skel->maps.hash_map, &key, sizeof(key), 0);
+ 	ASSERT_OK(ret, "hash_map delete");
+ 
+-	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.hash_malloc_map), &key, buf, 0);
++	ret = bpf_map__update_elem(skel->maps.hash_malloc_map,
++				   &key, sizeof(key), buf, sizeof(buf), 0);
+ 	ASSERT_OK(ret, "hash_malloc_map update");
+-	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.hash_malloc_map), &key);
++	ret = bpf_map__delete_elem(skel->maps.hash_malloc_map, &key, sizeof(key), 0);
+ 	ASSERT_OK(ret, "hash_malloc_map delete");
+ 
+-	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.lru_hash_map), &key, buf, 0);
++	ret = bpf_map__update_elem(skel->maps.lru_hash_map,
++				   &key, sizeof(key), buf, sizeof(buf), 0);
+ 	ASSERT_OK(ret, "lru_hash_map update");
+-	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.lru_hash_map), &key);
++	ret = bpf_map__delete_elem(skel->maps.lru_hash_map, &key, sizeof(key), 0);
+ 	ASSERT_OK(ret, "lru_hash_map delete");
+ 
+ 	map_kptr__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
+index e8399ae50e77..9ad09a6c538a 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
++++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
+@@ -8,7 +8,7 @@ void test_stacktrace_build_id(void)
+ 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
+ 	struct test_stacktrace_build_id *skel;
+ 	int err, stack_trace_len;
+-	__u32 key, previous_key, val, duration = 0;
++	__u32 key, prev_key, val, duration = 0;
+ 	char buf[256];
+ 	int i, j;
+ 	struct bpf_stack_build_id id_offs[PERF_MAX_STACK_DEPTH];
+@@ -58,7 +58,7 @@ void test_stacktrace_build_id(void)
+ 		  "err %d errno %d\n", err, errno))
+ 		goto cleanup;
+ 
+-	err = bpf_map_get_next_key(stackmap_fd, NULL, &key);
++	err = bpf_map__get_next_key(skel->maps.stackmap, NULL, &key, sizeof(key));
+ 	if (CHECK(err, "get_next_key from stackmap",
+ 		  "err %d, errno %d\n", err, errno))
+ 		goto cleanup;
+@@ -79,8 +79,8 @@ void test_stacktrace_build_id(void)
+ 				if (strstr(buf, build_id) != NULL)
+ 					build_id_matches = 1;
+ 			}
+-		previous_key = key;
+-	} while (bpf_map_get_next_key(stackmap_fd, &previous_key, &key) == 0);
++		prev_key = key;
++	} while (bpf_map__get_next_key(skel->maps.stackmap, &prev_key, &key, sizeof(key)) == 0);
+ 
+ 	/* stack_map_get_build_id_offset() is racy and sometimes can return
+ 	 * BPF_STACK_BUILD_ID_IP instead of BPF_STACK_BUILD_ID_VALID;
+diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
+index f45a1d7b0a28..f4ea1a215ce4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
++++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
+@@ -27,7 +27,7 @@ void test_stacktrace_build_id_nmi(void)
+ 		.type = PERF_TYPE_HARDWARE,
+ 		.config = PERF_COUNT_HW_CPU_CYCLES,
+ 	};
+-	__u32 key, previous_key, val, duration = 0;
++	__u32 key, prev_key, val, duration = 0;
+ 	char buf[256];
+ 	int i, j;
+ 	struct bpf_stack_build_id id_offs[PERF_MAX_STACK_DEPTH];
+@@ -100,7 +100,7 @@ void test_stacktrace_build_id_nmi(void)
+ 		  "err %d errno %d\n", err, errno))
+ 		goto cleanup;
+ 
+-	err = bpf_map_get_next_key(stackmap_fd, NULL, &key);
++	err = bpf_map__get_next_key(skel->maps.stackmap, NULL, &key, sizeof(key));
+ 	if (CHECK(err, "get_next_key from stackmap",
+ 		  "err %d, errno %d\n", err, errno))
+ 		goto cleanup;
+@@ -108,7 +108,8 @@ void test_stacktrace_build_id_nmi(void)
+ 	do {
+ 		char build_id[64];
+ 
+-		err = bpf_map_lookup_elem(stackmap_fd, &key, id_offs);
++		err = bpf_map__lookup_elem(skel->maps.stackmap, &key, sizeof(key),
++					   id_offs, sizeof(id_offs), 0);
+ 		if (CHECK(err, "lookup_elem from stackmap",
+ 			  "err %d, errno %d\n", err, errno))
+ 			goto cleanup;
+@@ -121,8 +122,8 @@ void test_stacktrace_build_id_nmi(void)
+ 				if (strstr(buf, build_id) != NULL)
+ 					build_id_matches = 1;
+ 			}
+-		previous_key = key;
+-	} while (bpf_map_get_next_key(stackmap_fd, &previous_key, &key) == 0);
++		prev_key = key;
++	} while (bpf_map__get_next_key(skel->maps.stackmap, &prev_key, &key, sizeof(key)) == 0);
+ 
+ 	/* stack_map_get_build_id_offset() is racy and sometimes can return
+ 	 * BPF_STACK_BUILD_ID_IP instead of BPF_STACK_BUILD_ID_VALID;
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer_mim.c b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
+index 2ee5f5ae11d4..9ff7843909e7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/timer_mim.c
++++ b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
+@@ -35,7 +35,7 @@ static int timer_mim(struct timer_mim *timer_skel)
+ 	ASSERT_EQ(timer_skel->bss->ok, 1 | 2, "ok");
+ 
+ 	close(bpf_map__fd(timer_skel->maps.inner_htab));
+-	err = bpf_map_delete_elem(bpf_map__fd(timer_skel->maps.outer_arr), &key1);
++	err = bpf_map__delete_elem(timer_skel->maps.outer_arr, &key1, sizeof(key1), 0);
+ 	ASSERT_EQ(err, 0, "delete inner map");
+ 
+ 	/* check that timer_cb[12] are no longer running */
 -- 
 2.30.2
 
