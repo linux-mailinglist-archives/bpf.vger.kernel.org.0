@@ -2,65 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2BB522B6F
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 07:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FD1522BF8
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 08:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbiEKFCj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 01:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58766 "EHLO
+        id S237831AbiEKGCB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 02:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbiEKFCj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 01:02:39 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BBB47386;
-        Tue, 10 May 2022 22:02:37 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id z18so951282iob.5;
-        Tue, 10 May 2022 22:02:37 -0700 (PDT)
+        with ESMTP id S238865AbiEKGCA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 02:02:00 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92E136B6B
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 23:01:58 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id cx11-20020a17090afd8b00b001d9fe5965b3so3953599pjb.3
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 23:01:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qL43RrUbVH+f1B+3t8LwJt0lv0NOYwjIQ3uG3JnS6BE=;
-        b=F0KIyHKikIarjOy3zOURb8B2PJ0+zoYPqvfYVrQ4r0JhT2JRAwjSoa4lVTbNF8hu8r
-         xel8Dd7cIc3WrhcaEtbH+b2OPjm8uzSGML9VlDbgPXssf/iia5ISKuEsNXjUXXy55nT9
-         VtT5z1iqb4ucj5wfHSXBnDT2bxcDBdzdHTDccwyBxD5kM8k1GWcJ9pQvl+tfzoryNXL8
-         0fDdh5oW52CfD83SfOTt4BfePwrNc5p0HSyTQnr5QesVA2a5IDvz8/TvX2DkrsOPXhxI
-         wIVU2XkCwB1S7pupZqKZXhj7zIKTOuigjbdjC+mV4KjVy2ZfE7Kj21XDqYTK9hNHusqE
-         6VSA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZKgMOPl4DNCZDtTlwKH7hDPn7zlx8l1pfe5wXN/VCIE=;
+        b=V1UIwqHTuvTLO0TzIXa87BqSO8C46jqwDfCULmROa078Q14H1xJ3ClBAgBJ3f7G35d
+         uwPG2JkSGv2oZ70oBHJX1S4dtBMC6/35aqb7h6bKfFDEHg5BmavoArbNE7Cj5V5yDy71
+         uUD86xTaw0zm4SAmAOYnQ8vK+buHZ82rFv5yWF56+Nhj3omOMvUPn+ARMT6XA+uhwfSH
+         PQt/sobSKzwuPH7huHtvw516yFrhS2LnUB9vF3/EVLf9/mRujDGAC+23VFqZxjdHFNnf
+         W2uRmB+PS2h1tjPDPAJy/xDha8MORdzzwwhY04enSojJK8n6wbX/5psktqYV+vEzEi2g
+         rzQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qL43RrUbVH+f1B+3t8LwJt0lv0NOYwjIQ3uG3JnS6BE=;
-        b=rqklOA7OjHr3HDH8HQjT2cC82xs1e9N0/ZDnTAWn7Cu/9TmMpbY8weUVQ+cP6+0UKV
-         mT/Iy11tKGW8izo9VS5OBbcbHAMcfYRgiwUKwhCQMixdab9MzU1SoEnkRN8mwWN+DvvC
-         aEHM17kOoK2z4zwNMztw0D6SMZ1F9pwzmAcvdow05El1tEkmCogdDKZ3Z8949RXHUr5+
-         U59/ORLSTRNVRYqZIBLyMGKG3BbwyyN1cXvV77opXnXoMEVzR5wEakVNuGnln0ezPyVL
-         dfhXmEx/B3i5OfZERGNMWWPbdOffOsL7augvCrgLViQMycKzCca3HGxX9WDx4J2a6tJX
-         xwlg==
-X-Gm-Message-State: AOAM532NJLF0BwZVW5+HsZ/e+s6g3w+lr9FMQJ30iw9ZSZ9MZ7pk9sr+
-        p/4E/P/GBksdhhCejgmpnDUMuhT2icKbPzRCWRg=
-X-Google-Smtp-Source: ABdhPJx7zeGmihXLb1/F9NNyxkVglvSCzpITEorG6p1s3jMVe0vKT8kwVD0lhwyrK7MDGBl7TamOKrNLh8STlx7BpP8=
-X-Received: by 2002:a05:6638:533:b0:32a:d418:b77b with SMTP id
- j19-20020a056638053300b0032ad418b77bmr11456677jar.237.1652245357291; Tue, 10
- May 2022 22:02:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220502211235.142250-1-mathew.j.martineau@linux.intel.com>
- <20220502211235.142250-2-mathew.j.martineau@linux.intel.com> <20220511004818.qnfpzgepmg7xufwd@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220511004818.qnfpzgepmg7xufwd@kafai-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 May 2022 22:02:26 -0700
-Message-ID: <CAEf4BzbnsdSAKoZhQbX8WPuNtnJBx9hNLS2ct8gBkSRg-=Meog@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/8] bpf: expose is_mptcp flag to bpf_tcp_sock
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZKgMOPl4DNCZDtTlwKH7hDPn7zlx8l1pfe5wXN/VCIE=;
+        b=grn4sF1pLnNe5k8LIgCxfS2OcH4HxHnqzj31qIMfTh27wPPagjL37d7HdEOHYCkXLh
+         pC+5JNfVDw2YMe8eV8X2xTECMYgqNKDK6N/pb6KDGtg//Ewy4/fmsePP0jeNmPiT76AG
+         jbXcfrAPuWREongE44Dgl8+hFWSXmz2RBamIFAI/VB/AXn9krQ7OFOLHz3nNAjLrdfX3
+         QNh+rEwtQGcFIjHm4ovsnbmRjSuIYdP4UcMf5/ti4/2WjzTKo05+utRPY2IV0rKo0ipE
+         EtuvuI/BvMHiPIa7D1A+G4zphaOFX/GymtxxtQ8Nh73yPoR3UF3cZLdaiWLdFcAexpMu
+         DEjg==
+X-Gm-Message-State: AOAM532rfZjFsBsrg2uXRkCO67joAQUj9b1FhOn3+tlH50qsSOjbXJoi
+        xBqvjc3MotLYG9UNxlaroA4=
+X-Google-Smtp-Source: ABdhPJy8u5cQ3p0z6i8ToMyNE2N8jKJ6kGSG7z4QjsXLAIaqxD++UI6QGeiQRkWttAMmWKQl88ysPA==
+X-Received: by 2002:a17:903:40c2:b0:15c:fd2a:7198 with SMTP id t2-20020a17090340c200b0015cfd2a7198mr23728502pld.0.1652248918178;
+        Tue, 10 May 2022 23:01:58 -0700 (PDT)
+Received: from localhost ([112.79.142.241])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170902934c00b0015e8d4eb2a6sm704249plp.240.2022.05.10.23.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 May 2022 23:01:57 -0700 (PDT)
+Date:   Wed, 11 May 2022 11:32:33 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, mptcp@lists.linux.dev,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next v1 2/4] bpf: Prepare prog_test_struct kfuncs for
+ runtime tests
+Message-ID: <20220511060233.x2ew422zqnoj2itc@apollo.legion>
+References: <20220510211727.575686-1-memxor@gmail.com>
+ <20220510211727.575686-3-memxor@gmail.com>
+ <CAADnVQ+WFGc4yEAGVuxzbWkXsj2G+U2nN4YmEzMh7SHbHdknjA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+WFGc4yEAGVuxzbWkXsj2G+U2nN4YmEzMh7SHbHdknjA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -71,58 +73,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 10, 2022 at 5:48 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Mon, May 02, 2022 at 02:12:27PM -0700, Mat Martineau wrote:
-> > From: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+On Wed, May 11, 2022 at 10:07:35AM IST, Alexei Starovoitov wrote:
+> On Tue, May 10, 2022 at 2:17 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
 > >
-> > is_mptcp is a field from struct tcp_sock used to indicate that the
-> > current tcp_sock is part of the MPTCP protocol.
+> > In an effort to actually test the refcounting logic at runtime, add a
+> > refcount_t member to prog_test_ref_kfunc and use it in selftests to
+> > verify and test the whole logic more exhaustively.
 > >
-> > In this protocol, a first socket (mptcp_sock) is created with
-> > sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
-> > isn't directly on the wire. This is the role of the subflow (kernel)
-> > sockets which are classical tcp_sock with sk_protocol set to
-> > IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
-> > sockets is the is_mptcp field from tcp_sock.
-> >
-> > Such an exposure in BPF is thus required to be able to differentiate
-> > plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
-> > programs.
-> >
-> > The choice has been made to silently pass the case when CONFIG_MPTCP is
-> > unset by defaulting is_mptcp to 0 in order to make BPF independent of
-> > the MPTCP configuration. Another solution is to make the verifier fail
-> > in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
-> > '#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
-> > will not run if MPTCP is not set.
-> There is already bpf_skc_to_tcp_sock() and its returned tcp_sock pointer
-> can access all fields of the "struct tcp_sock" without extending
-> the bpf_tcp_sock.
+> > To ensure reading the count to verify it remains stable, make
+> > prog_test_ref_kfunc a per-CPU variable, so that inside a BPF program the
+> > count can be read reliably based on number of acquisitions made. Then,
+> > pairing them with releases and reading from the global per-CPU variable
+> > will allow verifying whether release operations put the refcount.
 >
-> iiuc, I believe the needs to extend bpf_tcp_sock here is to make the
-> same bpf sockops prog works for kernel with and without CONFIG_MPTCP
-> because tp->is_mptcp is not always available:
->
-> struct tcp_sock {
->         /* ... */
->
-> #if IS_ENABLED(CONFIG_MPTCP)
->         bool    is_mptcp;
-> #endif
-> };
->
-> Andrii, do you think bpf_core_field_exists() can be used in
-> the bpf prog to test if is_mptcp is available in the running kernel
-> such that the same bpf prog can be used in kernel with and without
-> CONFIG_MPTCP?
+> The patches look good, but the per-cpu part is a puzzle.
+> The test is not parallel. Everything looks sequential
+> and there are no races.
+> It seems to me if it was
+> static struct prog_test_ref_kfunc prog_test_struct = {..};
+> and none of [bpf_]this_cpu_ptr()
+> the test would work the same way.
+> What am I missing?
 
-yep, absolutely:
+You are not missing anything. It would work the same. I just made it per-CPU for
+the off chance that someone runs ./test_progs -t map_kptr in parallel on the
+same machine. Then one or both might fail, since count won't just be inc/dec by
+us, and reading it would produce something other than what we expect.
 
-bool is_mptcp = bpf_core_field_exists(struct tcp_sock, is_mptcp) ?
-sock->is_mptcp : false;
+One other benefit is getting non-ref PTR_TO_BTF_ID to prog_test_struct to
+inspect cnt after releasing acquired pointer (using bpf_this_cpu_ptr), but that
+can also be done by non-ref kfunc returning a pointer to it.
 
-One can also directly check if CONFIG_MPTCP is set with the following
-in BPF-side code:
+If you feel it's not worth it, I will drop it in the next version.
 
-extern bool CONFIG_MPTCP __kconfig;
+--
+Kartikeya
