@@ -2,146 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5978522C19
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 08:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8AA522C61
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 08:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbiEKGKt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 02:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        id S242130AbiEKGdM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 02:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbiEKGKs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 02:10:48 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE104205EE;
-        Tue, 10 May 2022 23:10:45 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id x88so1298964pjj.1;
-        Tue, 10 May 2022 23:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Rxwmw7F4yraTtQttPtF/0wZ/ikGq2Rscn+f5iMrT7V8=;
-        b=hk5nmcxWqr1+4XZIG4Y2EoHdn4MFyQuBSg3wMbJB03xCN3J0/fGQJI9kJKzQLLlWfP
-         ZDVe37fm/UkBmm/PkjCtG1P4jelVut0rqGMNUuM6eaNwDqMDWJXOAVNl43inn/9fzuiX
-         08PIOuW+zLnKULD33PrfJiIhTaBGApajk5KJgbDuUBGdDqvD325R1qkKy6xn2plIZWb6
-         q0aQvfYNQ6zMw9ug/iMN/mRFoKLZLTd/4HF2ZzjOoZxf4gLk0u7t38GhennBESJ0W/R3
-         gpWBhIKHac6jv9zJ8sSWOg69s2c3x674NJk5GSfVmEAeoaiakgRb0u/l55Wh9RH3czUw
-         sUqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Rxwmw7F4yraTtQttPtF/0wZ/ikGq2Rscn+f5iMrT7V8=;
-        b=wYldsW1JXUalSrSHKRfmylqPaxvLv3fbH5+8XCpmWHWujyespPWtDMZFl/OhQQIeuF
-         xN6sSG3THp+7hC+NeJHCqfYak2dtQAEgqOMTUF03TJXRFb4LF2iOlngGUZUODzmGZ3Ic
-         9xybs+godMM4/tPZH9Q0aDO1dJDHmDLSJ17gGpLVAD83Hs4Sxa9SZsSIEZdBDHiLR5qJ
-         DZZlO80ePidx8M9oxFVzHntQfBotPAK3APKc/u4wp+6sA4oKTXCcSmt3yN3ZSUlkzKYh
-         wI7nm3HKLd9l3bB48Wt5+szB9sszQZJAs1y2hpMPBzqlEpZq1VH2kmw9VrYEsFHNgyTf
-         Jo9A==
-X-Gm-Message-State: AOAM5332wQMR0n45xZCerDPjr3xV7gf+k0OxDq9WS6rP1uYIi4Gc9gG1
-        IaqFJD5bZGodb8djffbq3tfKdwNyBuwQc8CzyzrOOM/97bk=
-X-Google-Smtp-Source: ABdhPJyvXv/OGzpotKsy1AIe0kD136J2PA88iaQfJStWhn17wXqCV6y8+g7+UBAut26mWSxafLKVkQRZipa4VxIIYG4=
-X-Received: by 2002:a17:902:8f8d:b0:15b:7b98:22e6 with SMTP id
- z13-20020a1709028f8d00b0015b7b9822e6mr23907991plo.102.1652249445174; Tue, 10
- May 2022 23:10:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220502211235.142250-1-mathew.j.martineau@linux.intel.com>
- <20220502211235.142250-2-mathew.j.martineau@linux.intel.com>
- <20220511004818.qnfpzgepmg7xufwd@kafai-mbp.dhcp.thefacebook.com> <CAEf4BzbnsdSAKoZhQbX8WPuNtnJBx9hNLS2ct8gBkSRg-=Meog@mail.gmail.com>
-In-Reply-To: <CAEf4BzbnsdSAKoZhQbX8WPuNtnJBx9hNLS2ct8gBkSRg-=Meog@mail.gmail.com>
-From:   Geliang Tang <geliangtang@gmail.com>
-Date:   Wed, 11 May 2022 14:10:42 +0800
-Message-ID: <CA+WQbwvdOPk7c1s648kgkgVf+DOrEhRvOv2kz+WuP8eWV+qvBA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/8] bpf: expose is_mptcp flag to bpf_tcp_sock
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S240225AbiEKGdJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 02:33:09 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD1869B62;
+        Tue, 10 May 2022 23:33:07 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4KylTV0H1Lz4xXS;
+        Wed, 11 May 2022 16:33:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1652250782;
+        bh=zfteaCyKXsiowhc6NxU6PfuAwCM7GF0aOkUMghOEiHQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LPN0abuR1FZorftIfaddKrP4pXZfLlrvFNSRbKPRi5Ux6HPmEEjH9fj12Cw83ScCG
+         2qslfO/wLn9Lju+GoVzR9MUCNEtq1Yzigo32a37THQtjodx5rCfvTObLmelMQESep4
+         DRoBCBYSmFxSgqTrlseApcOi3kLi+z8lboj28RZqlqnkHCIegNFE1GN9PCFPISYLxB
+         IuKE5IOeGBeStDJSMj2+E47gOjq+E9zYxB4cipR8YmGJU33Hnd+YzK+VZkLFvIRkkH
+         UCpBxKv8J78b60IHrM+rGl2CnyA0MHCpGDMWqnpvkv5K5sG19+w70ZJcWhJqkwHVUz
+         GsGVvP4y/gLwg==
+Date:   Wed, 11 May 2022 16:33:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Wei Xiao <xiaowei66@huawei.com>
+Subject: linux-next: manual merge of the sysctl tree with the bpf-next tree
+Message-ID: <20220511163300.2647cd22@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/qLM32q4gp2woBuGRf4/knqT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> =E4=BA=8E2022=E5=B9=B45=E6=9C=
-=8811=E6=97=A5=E5=91=A8=E4=B8=89 13:02=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Tue, May 10, 2022 at 5:48 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Mon, May 02, 2022 at 02:12:27PM -0700, Mat Martineau wrote:
-> > > From: Nicolas Rybowski <nicolas.rybowski@tessares.net>
-> > >
-> > > is_mptcp is a field from struct tcp_sock used to indicate that the
-> > > current tcp_sock is part of the MPTCP protocol.
-> > >
-> > > In this protocol, a first socket (mptcp_sock) is created with
-> > > sk_protocol set to IPPROTO_MPTCP (=3D262) for control purpose but it
-> > > isn't directly on the wire. This is the role of the subflow (kernel)
-> > > sockets which are classical tcp_sock with sk_protocol set to
-> > > IPPROTO_TCP. The only way to differentiate such sockets from plain TC=
-P
-> > > sockets is the is_mptcp field from tcp_sock.
-> > >
-> > > Such an exposure in BPF is thus required to be able to differentiate
-> > > plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OP=
-S
-> > > programs.
-> > >
-> > > The choice has been made to silently pass the case when CONFIG_MPTCP =
-is
-> > > unset by defaulting is_mptcp to 0 in order to make BPF independent of
-> > > the MPTCP configuration. Another solution is to make the verifier fai=
-l
-> > > in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
-> > > '#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
-> > > will not run if MPTCP is not set.
-> > There is already bpf_skc_to_tcp_sock() and its returned tcp_sock pointe=
-r
-> > can access all fields of the "struct tcp_sock" without extending
-> > the bpf_tcp_sock.
-> >
-> > iiuc, I believe the needs to extend bpf_tcp_sock here is to make the
-> > same bpf sockops prog works for kernel with and without CONFIG_MPTCP
-> > because tp->is_mptcp is not always available:
-> >
-> > struct tcp_sock {
-> >         /* ... */
-> >
-> > #if IS_ENABLED(CONFIG_MPTCP)
-> >         bool    is_mptcp;
-> > #endif
-> > };
-> >
-> > Andrii, do you think bpf_core_field_exists() can be used in
-> > the bpf prog to test if is_mptcp is available in the running kernel
-> > such that the same bpf prog can be used in kernel with and without
-> > CONFIG_MPTCP?
->
-> yep, absolutely:
->
-> bool is_mptcp =3D bpf_core_field_exists(struct tcp_sock, is_mptcp) ?
-> sock->is_mptcp : false;
->
-> One can also directly check if CONFIG_MPTCP is set with the following
-> in BPF-side code:
->
-> extern bool CONFIG_MPTCP __kconfig;
+--Sig_/qLM32q4gp2woBuGRf4/knqT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks Martin & Andrii, will update this in v4.
+Hi all,
 
--Geliang
-SUSE
+Today's linux-next merge of the sysctl tree got a conflict in:
 
->
+  kernel/trace/ftrace.c
+
+between commit:
+
+  bed0d9a50dac ("ftrace: Add ftrace_lookup_symbols function")
+
+from the bpf-next tree and commit:
+
+  8e4e83b2278b ("ftrace: move sysctl_ftrace_enabled to ftrace.c")
+
+from the sysctl tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/trace/ftrace.c
+index 07d87c7a525d,1f89039f0feb..000000000000
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@@ -7965,64 -7969,21 +7969,83 @@@ ftrace_enable_sysctl(struct ctl_table *
+  	return ret;
+  }
+ =20
++ static struct ctl_table ftrace_sysctls[] =3D {
++ 	{
++ 		.procname       =3D "ftrace_enabled",
++ 		.data           =3D &ftrace_enabled,
++ 		.maxlen         =3D sizeof(int),
++ 		.mode           =3D 0644,
++ 		.proc_handler   =3D ftrace_enable_sysctl,
++ 	},
++ 	{}
++ };
++=20
++ static int __init ftrace_sysctl_init(void)
++ {
++ 	register_sysctl_init("kernel", ftrace_sysctls);
++ 	return 0;
++ }
++ late_initcall(ftrace_sysctl_init);
++ #endif
+++
+ +static int symbols_cmp(const void *a, const void *b)
+ +{
+ +	const char **str_a =3D (const char **) a;
+ +	const char **str_b =3D (const char **) b;
+ +
+ +	return strcmp(*str_a, *str_b);
+ +}
+ +
+ +struct kallsyms_data {
+ +	unsigned long *addrs;
+ +	const char **syms;
+ +	size_t cnt;
+ +	size_t found;
+ +};
+ +
+ +static int kallsyms_callback(void *data, const char *name,
+ +			     struct module *mod, unsigned long addr)
+ +{
+ +	struct kallsyms_data *args =3D data;
+ +
+ +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_=
+cmp))
+ +		return 0;
+ +
+ +	addr =3D ftrace_location(addr);
+ +	if (!addr)
+ +		return 0;
+ +
+ +	args->addrs[args->found++] =3D addr;
+ +	return args->found =3D=3D args->cnt ? 1 : 0;
+ +}
+ +
+ +/**
+ + * ftrace_lookup_symbols - Lookup addresses for array of symbols
+ + *
+ + * @sorted_syms: array of symbols pointers symbols to resolve,
+ + * must be alphabetically sorted
+ + * @cnt: number of symbols/addresses in @syms/@addrs arrays
+ + * @addrs: array for storing resulting addresses
+ + *
+ + * This function looks up addresses for array of symbols provided in
+ + * @syms array (must be alphabetically sorted) and stores them in
+ + * @addrs array, which needs to be big enough to store at least @cnt
+ + * addresses.
+ + *
+ + * This function returns 0 if all provided symbols are found,
+ + * -ESRCH otherwise.
+ + */
+ +int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned =
+long *addrs)
+ +{
+ +	struct kallsyms_data args;
+ +	int err;
+ +
+ +	args.addrs =3D addrs;
+ +	args.syms =3D sorted_syms;
+ +	args.cnt =3D cnt;
+ +	args.found =3D 0;
+ +	err =3D kallsyms_on_each_symbol(kallsyms_callback, &args);
+ +	if (err < 0)
+ +		return err;
+ +	return args.found =3D=3D args.cnt ? 0 : -ESRCH;
+ +}
+
+--Sig_/qLM32q4gp2woBuGRf4/knqT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmJ7WJwACgkQAVBC80lX
+0GyteAf8CmR7P5+kBg3EEqGfyzGLxPKdEL3dEJK1S3tAdADHVd4Lwpx1wTu+A3VZ
++41M+0ajKPWheyEl41Yr1N4intKdKW+5l3B2SpZXYZR6Ct8CqJb4TQfWJz/YgMT4
+Q9pwX+slZ3wH52YX0rRRHY7xcH8PC++3bWiiIaGW/MMomP5511YkaftFRWgZ2tep
+Ufbo7by6hXwQ4AseCkjLr1/pou4xadSO+C9Oj/TOP/KkVQk3buZ3M/oxPsuptnHv
+YGzCqt+5MfbGBAILvEdB01wixF+dyYojyTeCD8Awr3InBNWRiBYCKZdxzvesH1UF
+GbkjAt/8xPwFCE3YN6nLCnPF5+QTWQ==
+=vCeN
+-----END PGP SIGNATURE-----
+
+--Sig_/qLM32q4gp2woBuGRf4/knqT--
