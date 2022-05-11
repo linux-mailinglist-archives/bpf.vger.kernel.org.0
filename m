@@ -2,195 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8AA522C61
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 08:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36308522D72
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 09:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242130AbiEKGdM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 02:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
+        id S237494AbiEKHfm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 03:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240225AbiEKGdJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 02:33:09 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD1869B62;
-        Tue, 10 May 2022 23:33:07 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4KylTV0H1Lz4xXS;
-        Wed, 11 May 2022 16:33:02 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1652250782;
-        bh=zfteaCyKXsiowhc6NxU6PfuAwCM7GF0aOkUMghOEiHQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LPN0abuR1FZorftIfaddKrP4pXZfLlrvFNSRbKPRi5Ux6HPmEEjH9fj12Cw83ScCG
-         2qslfO/wLn9Lju+GoVzR9MUCNEtq1Yzigo32a37THQtjodx5rCfvTObLmelMQESep4
-         DRoBCBYSmFxSgqTrlseApcOi3kLi+z8lboj28RZqlqnkHCIegNFE1GN9PCFPISYLxB
-         IuKE5IOeGBeStDJSMj2+E47gOjq+E9zYxB4cipR8YmGJU33Hnd+YzK+VZkLFvIRkkH
-         UCpBxKv8J78b60IHrM+rGl2CnyA0MHCpGDMWqnpvkv5K5sG19+w70ZJcWhJqkwHVUz
-         GsGVvP4y/gLwg==
-Date:   Wed, 11 May 2022 16:33:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S233311AbiEKHfl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 03:35:41 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C255207934;
+        Wed, 11 May 2022 00:35:39 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id t5so1422332edw.11;
+        Wed, 11 May 2022 00:35:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7dkrO9tsVl8CbiOzfX55Fu1ZPdjir0mhiSXXk4Rty00=;
+        b=fjjSHerPTOTX1WzzGmcbxEp0rjq8QzyJWuSgWbnz0ikOMgQm2bukHucacitVdYHbaM
+         FKRl3vly/kitAQAa599AjdN0MOVDE3km5EEzXH71Heqr5wSlbuDHC8gVjcrhdxcOKio3
+         iQKZKSHrsux8K78YrhLcVJ5C8bXmpHn6t4UoFMrbgQKRnldW8tb+eVXk33EDHhJr/W8p
+         m0H4qD55EJWaZMi0yOc0Ue2EuuR/KtG9VjURE/PUY3P+U3Y+7jm2xjIrJkY5pB1ifqVp
+         5LdIKi9H+bHrVCU23O81e81E1Q5ZeQyfH7RXO6QoiG+IybJTrLH4k+0BK58LZE4mmEFH
+         uOkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7dkrO9tsVl8CbiOzfX55Fu1ZPdjir0mhiSXXk4Rty00=;
+        b=Hj10w6x5lD7aqnfhyH8kV0wkd+aHwiFHJsARb26hoQOj1dqcYt8sVcQ6Pt6CGPM+oq
+         zU6oPJhdnJ3WZP98NDZKqqBCoagLPObFxLa9V4HJWmt6WQWYunTv6fIta9T6iGFdZczJ
+         ScSj+9e8uO5QdmRBGVYYaSsw83mgnjLWmO6yKdtJ4m2F9ymZJT05i0/YZi4b8PFLvtYF
+         TvOLUBXLOuBhGr6K3J4Ay3Zsf/J2nJkvHoLnWOiEPdEzDH72eNvz+rwmygd/sHxEwQyJ
+         KuS9h+tFLGEgncMI5RCU9GKFDWysMFAKdA0jXNWkl/HgFyA/2I+729FHiUnZ6Dr09A23
+         c2ig==
+X-Gm-Message-State: AOAM531RNM7RsPBB3l6O0b4Ellb8ea0E2IjiK0vGU9Jmvdm9P4ePIQIx
+        etO/DgI/61/3c86FgLD2qKs=
+X-Google-Smtp-Source: ABdhPJz0zbo2rNIyor1uJ+07k7EPc1SrvQ+4KMUpUtXT/V75JwMO3dJbJDPrHjqYMwNMVhejdWxiZQ==
+X-Received: by 2002:aa7:db4c:0:b0:428:111c:b6bd with SMTP id n12-20020aa7db4c000000b00428111cb6bdmr26601684edt.318.1652254537806;
+        Wed, 11 May 2022 00:35:37 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id a18-20020a170906671200b006f3ef214e6fsm595445ejp.213.2022.05.11.00.35.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 May 2022 00:35:37 -0700 (PDT)
+Date:   Wed, 11 May 2022 09:35:34 +0200
+From:   Jiri Olsa <olsajiri@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Wei Xiao <xiaowei66@huawei.com>
-Subject: linux-next: manual merge of the sysctl tree with the bpf-next tree
-Message-ID: <20220511163300.2647cd22@canb.auug.org.au>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
+Message-ID: <YntnRixbfQ1HCm9T@krava>
+References: <20220510074659.2557731-1-jolsa@kernel.org>
+ <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qLM32q4gp2woBuGRf4/knqT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/qLM32q4gp2woBuGRf4/knqT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 10, 2022 at 04:48:55PM -0700, Andrii Nakryiko wrote:
+> On Tue, May 10, 2022 at 12:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > hi,
+> > sending change we discussed some time ago [1] to get rid of
+> > some deprecated functions we use in perf prologue code.
+> >
+> > Despite the gloomy discussion I think the final code does
+> > not look that bad ;-)
+> >
+> > This patchset removes following libbpf functions from perf:
+> >   bpf_program__set_prep
+> >   bpf_program__nth_fd
+> >   struct bpf_prog_prep_result
+> >
+> > v2 changes:
+> >   - use fallback section prog handler, so we don't need to
+> >     use section prefix [Andrii]
+> >   - realloc prog->insns array in bpf_program__set_insns [Andrii]
+> >   - squash patch 1 from previous version with
+> >     bpf_program__set_insns change [Daniel]
+> >   - patch 3 already merged [Arnaldo]
+> >   - added more comments
+> >
+> >   meanwhile.. perf/core and bpf-next diverged, so:
+> >     - libbpf bpf_program__set_insns change is based on bpf-next/master
+> >     - perf changes do not apply on bpf-next/master so they are based on
+> >       perf/core ... however they can be merged only after we release
+> >       libbpf 0.8.0 with bpf_program__set_insns change, so we don't break
+> >       the dynamic linking
+> >       I'm sending perf changes now just for review, I'll resend them
+> >       once libbpf 0.8.0 is released
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> > [1] https://lore.kernel.org/bpf/CAEf4BzaiBO3_617kkXZdYJ8hS8YF--ZLgapNbgeeEJ-pY0H88g@mail.gmail.com/
+> > ---
+> > Jiri Olsa (1):
+> >       libbpf: Add bpf_program__set_insns function
+> >
+> 
+> The first patch looks good to me. The rest I can't really review and
+> test properly, so I'll leave it up to Arnaldo.
+> 
+> Arnaldo, how do we coordinate these patches? Should they go through
+> bpf-next (after you Ack them) or you want them in your tree?
+> 
+> I'd like to get the bpf_program__set_insns() patch into bpf-next so
+> that I can do libbpf v0.8 release, having it in a separate tree is
+> extremely inconvenient. Please let me know how you think we should
+> proceed?
 
-Hi all,
+we need to wait with perf changes after the libbpf is merged and
+libbpf 0.8.0 is released.. so we don't break dynamic linking for
+perf
 
-Today's linux-next merge of the sysctl tree got a conflict in:
+at the moment please just take libbpf change and I'll resend the
+perf change later if needed
 
-  kernel/trace/ftrace.c
-
-between commit:
-
-  bed0d9a50dac ("ftrace: Add ftrace_lookup_symbols function")
-
-from the bpf-next tree and commit:
-
-  8e4e83b2278b ("ftrace: move sysctl_ftrace_enabled to ftrace.c")
-
-from the sysctl tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc kernel/trace/ftrace.c
-index 07d87c7a525d,1f89039f0feb..000000000000
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@@ -7965,64 -7969,21 +7969,83 @@@ ftrace_enable_sysctl(struct ctl_table *
-  	return ret;
-  }
- =20
-+ static struct ctl_table ftrace_sysctls[] =3D {
-+ 	{
-+ 		.procname       =3D "ftrace_enabled",
-+ 		.data           =3D &ftrace_enabled,
-+ 		.maxlen         =3D sizeof(int),
-+ 		.mode           =3D 0644,
-+ 		.proc_handler   =3D ftrace_enable_sysctl,
-+ 	},
-+ 	{}
-+ };
-+=20
-+ static int __init ftrace_sysctl_init(void)
-+ {
-+ 	register_sysctl_init("kernel", ftrace_sysctls);
-+ 	return 0;
-+ }
-+ late_initcall(ftrace_sysctl_init);
-+ #endif
-++
- +static int symbols_cmp(const void *a, const void *b)
- +{
- +	const char **str_a =3D (const char **) a;
- +	const char **str_b =3D (const char **) b;
- +
- +	return strcmp(*str_a, *str_b);
- +}
- +
- +struct kallsyms_data {
- +	unsigned long *addrs;
- +	const char **syms;
- +	size_t cnt;
- +	size_t found;
- +};
- +
- +static int kallsyms_callback(void *data, const char *name,
- +			     struct module *mod, unsigned long addr)
- +{
- +	struct kallsyms_data *args =3D data;
- +
- +	if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_=
-cmp))
- +		return 0;
- +
- +	addr =3D ftrace_location(addr);
- +	if (!addr)
- +		return 0;
- +
- +	args->addrs[args->found++] =3D addr;
- +	return args->found =3D=3D args->cnt ? 1 : 0;
- +}
- +
- +/**
- + * ftrace_lookup_symbols - Lookup addresses for array of symbols
- + *
- + * @sorted_syms: array of symbols pointers symbols to resolve,
- + * must be alphabetically sorted
- + * @cnt: number of symbols/addresses in @syms/@addrs arrays
- + * @addrs: array for storing resulting addresses
- + *
- + * This function looks up addresses for array of symbols provided in
- + * @syms array (must be alphabetically sorted) and stores them in
- + * @addrs array, which needs to be big enough to store at least @cnt
- + * addresses.
- + *
- + * This function returns 0 if all provided symbols are found,
- + * -ESRCH otherwise.
- + */
- +int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned =
-long *addrs)
- +{
- +	struct kallsyms_data args;
- +	int err;
- +
- +	args.addrs =3D addrs;
- +	args.syms =3D sorted_syms;
- +	args.cnt =3D cnt;
- +	args.found =3D 0;
- +	err =3D kallsyms_on_each_symbol(kallsyms_callback, &args);
- +	if (err < 0)
- +		return err;
- +	return args.found =3D=3D args.cnt ? 0 : -ESRCH;
- +}
-
---Sig_/qLM32q4gp2woBuGRf4/knqT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmJ7WJwACgkQAVBC80lX
-0GyteAf8CmR7P5+kBg3EEqGfyzGLxPKdEL3dEJK1S3tAdADHVd4Lwpx1wTu+A3VZ
-+41M+0ajKPWheyEl41Yr1N4intKdKW+5l3B2SpZXYZR6Ct8CqJb4TQfWJz/YgMT4
-Q9pwX+slZ3wH52YX0rRRHY7xcH8PC++3bWiiIaGW/MMomP5511YkaftFRWgZ2tep
-Ufbo7by6hXwQ4AseCkjLr1/pou4xadSO+C9Oj/TOP/KkVQk3buZ3M/oxPsuptnHv
-YGzCqt+5MfbGBAILvEdB01wixF+dyYojyTeCD8Awr3InBNWRiBYCKZdxzvesH1UF
-GbkjAt/8xPwFCE3YN6nLCnPF5+QTWQ==
-=vCeN
------END PGP SIGNATURE-----
-
---Sig_/qLM32q4gp2woBuGRf4/knqT--
+thanks,
+jirka
