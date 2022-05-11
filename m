@@ -2,456 +2,307 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4403B522849
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 02:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317EA522852
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 02:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbiEKAMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 20:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
+        id S230328AbiEKASV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 20:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239704AbiEKALP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 20:11:15 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A791A6ADE;
-        Tue, 10 May 2022 17:10:34 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id f2so479973ioh.7;
-        Tue, 10 May 2022 17:10:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FFF+PFMDjrEElTZYOkebXhsbt4cnKwHugOzJqI0BrWk=;
-        b=ZJrZ0zWECbMqbST1zlMlUxTpCzSmwiMIkdvb0CSnnQrALL7LGDPhn4kw5PqUPIk0xq
-         5exQTvSDz17PQb/66dA6HVqYl96fUltMLgq0IKSrNx0F17lFvxawKSNhjSFlmRIxjent
-         UajHunvxwdJP9keqf4aCtcrLaxmZgcjdpoAbo5s3pCo8fmPhO7YXpX84rI99OcMqObOu
-         KHFjAY4QdIl7sfejQBl/kXh2Vr8AtqUeruz3B3TD/fr7D+QZlIa1gH5PH1CjMUoNsFcf
-         A6cb6EKq6O8qaKsgUVVcwfXTD6LYvSvAPdGZnEbyKX1lKAU9Fj8NTFUwccXfrAQ+pNlR
-         shZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FFF+PFMDjrEElTZYOkebXhsbt4cnKwHugOzJqI0BrWk=;
-        b=1M9I5EoJf/55Yi5JDvSv61gCMcQhS0DxjrnyYzot8FZMLKAvjURi8XbX8kYuK53ujW
-         YH+SOVx0rrg9QlGS6jGn+THMbyTvrgq4vAqxluiZGQ7HW7LYLaA8XHenT8GLAnzLfuMa
-         6KNs0WPvWkZD25/Ok63fEgft5UwxTguAqqdrp1ixR9dJnH0TgJJZ3SXgyiq06pZdqUik
-         eDce1SEA2B9NrHpTLpne4VXdLu22pkheaBJ2l39bLx47SKnK2rNu0QifRnSv3ZZ9lZkO
-         aZYnLZgsoHDzxEMHGs1ck5IgGymPUG0KCVyp5tc51/xVfeavmN0oHj4li03T9h7+U5Xh
-         plug==
-X-Gm-Message-State: AOAM530uVUnIcgMJOBZgsg6usvHSdNTaX4XpNvrKTDPCWvTDE5Tk113r
-        jo/m3HnHwHBgz8I0qXY/cwTz3IxsyPWVyO5e4n4=
-X-Google-Smtp-Source: ABdhPJxF7ifxm7/VVIBQkGUoLqlEweTFW51WQYOrNeuh+rdN50BlPdiDfJOibBatmMW/CVoeyPnxEfRGVjKssxf9WCU=
-X-Received: by 2002:a02:5d47:0:b0:32b:4387:51c8 with SMTP id
- w68-20020a025d47000000b0032b438751c8mr11186698jaa.103.1652227834191; Tue, 10
- May 2022 17:10:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220503171437.666326-1-maximmi@nvidia.com> <20220503171437.666326-5-maximmi@nvidia.com>
- <CAEf4BzZoBjcUqf_X2zNfu5ZUL8uoV3=hqD5OQWptohbXVTT4gg@mail.gmail.com> <59947338-cb4a-f437-0148-8ed0b83db442@nvidia.com>
-In-Reply-To: <59947338-cb4a-f437-0148-8ed0b83db442@nvidia.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 May 2022 17:10:23 -0700
-Message-ID: <CAEf4Bzat1U+=sPPGXP0X-B-Ay8ruN81ppFK00dopgCGxAwmkzw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 4/5] bpf: Add selftests for raw syncookie helpers
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+        with ESMTP id S229593AbiEKASU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 20:18:20 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E40D1FD84C
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 17:18:18 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24ANKwjs009697;
+        Tue, 10 May 2022 17:18:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=roNy6tzNa9s4T+TyhxhmYU7Uv362jzYuDQPwhGi7j/0=;
+ b=HOGqnRnwzkLRCBLjip6IR04ruMBNKW79wylQ/5APJcA0GifA8cc182xjGsHVp5/k/v5j
+ lIb3v3kZIk84xfZYTu+6zMj7f5ozW4ig5ANNSe0Xl2PFGGvgL3Ez3usYkYJmTFtUCyWC
+ iEN9KfSoDo7nvwVlqb5XbiQ9hc9diQu1t5E= 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3fyn47wtrp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 May 2022 17:18:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YBfZBfOi5SchAGQIC4TcPDD3T8Uy49pXUg7YtqVH71t3NMeTD0aSC+tJt4sr8Ga2xd3gKSNFmYzIKxtVSfmRkOACNLkbAcsMbRAHjfMzKe+nB8EHkbLP8JYJp4K6pFF3Up16zXAOb1Yc7y7sIBhKXZKLTP37WT7R8gyeKFD5OsbCzQgIPA1NT6lm86WIaTbsh4XF1IDPLl2rXYChJiLg0hH+Yign2pQL+iK+yrDYXVCfAgtEbOTwmN5Ha2Sm+4eALhvTBcGX9QN5B4XyDShm3L9wNMf6blyykhcokY1KOb+aKp2THcxyE4iDt7zsqJ9M6T1tnAzhGQY85TM56chDJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qDuxMA5c1Px/GsUkp1oV3fmdrkUw4ULI3ATd1r8tM78=;
+ b=MbCAL2CgzB/UWYTI1IFNdWophUsLoAqDRVQclaMsuCWNquhOWHInzDSE+E6JEqaAynJpOvJWI8Lcz11Fh1frm7NWFWV/WxjiCSjDE6HpADtzaTypetoeHk8+yT2T1HkgOsLbtImkl1n4e/aHhVwBm1KcgfsOdNjem4Es2AS6id2glfeHHfe0Oc/CVvp2KTXtTR/39k10po+QT751IiHmQQ9n9NgBG8K5mJFnBtGNgl/CAw0gHle9tograWi84PKLdvhGaf2yiW5tS4GQF9pkEHpSXSrxdPDpITaBbConOV38lezmW0fMOeZivDJLlrlciRQ9BNoboesv3vXnvpUlYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by BY3PR15MB5107.namprd15.prod.outlook.com (2603:10b6:a03:3ce::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.23; Wed, 11 May
+ 2022 00:18:00 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::5811:4996:bbfd:3c53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::5811:4996:bbfd:3c53%7]) with mapi id 15.20.5227.021; Wed, 11 May 2022
+ 00:18:00 +0000
+Message-ID: <7e70bb95-9de9-cf79-bf5f-00e9bcef99b1@fb.com>
+Date:   Tue, 10 May 2022 17:17:58 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next 01/12] bpf: Add btf enum64 support
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Stringer <joe@cilium.io>,
-        Florent Revest <revest@chromium.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Florian Westphal <fw@strlen.de>, pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+References: <20220501190002.2576452-1-yhs@fb.com>
+ <20220501190007.2576808-1-yhs@fb.com>
+ <CAEf4BzbqQDVsiaY1u5G6QAu_3Zq8Vn19qBkzuzVYX0T_e3OLSw@mail.gmail.com>
+ <be27f832-c803-1ab0-2180-74bf7177ca41@fb.com>
+ <CAEf4BzZN-o+MnPsQ+3_MB+kxyUhmwGa2q9SqN_b6vE6dxsJv1Q@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <CAEf4BzZN-o+MnPsQ+3_MB+kxyUhmwGa2q9SqN_b6vE6dxsJv1Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: BY3PR05CA0049.namprd05.prod.outlook.com
+ (2603:10b6:a03:39b::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b141d873-bac6-452f-a69b-08da32e3b52c
+X-MS-TrafficTypeDiagnostic: BY3PR15MB5107:EE_
+X-Microsoft-Antispam-PRVS: <BY3PR15MB5107A9567CC9AF45C37D5423D3C89@BY3PR15MB5107.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yUmxohxGGmzltomyLDpTqiPbPM+iHzt2K/xK/Md7mRKPyJW4X8jBUgtOVV5lsjr89zQaLp9mflE2kEZBdP6thLMa8s51QAPXrLl8lc8ATXr/wAmOelYm/rSac6Hk0a7ABH0uaW7TMoytzq6bKPy2nxbaacqnTui7j/hm6o47VHOklXcyF59kdfmh+IeglZLHv8XiIyNUw/JY4nFUuBBwlUnIy1O8bhhe6YGIWyTA68xRrojDCIwlur57tQvAlG6ndMDcjXYLynOEdaXxpwOkY4BipiD5mW8YVkuf8RIsgLdXmvcjkm7gj0flTIGjxqGDPZjK9KpiOP0aK5/BHKH8Z21yD5v087tYOyRfR39UR/yvNThD3Pr/lSU30n8CHD9XDkKo3a5VBFywGaCY+qNrFt057QGBTvoxsXU6TKfVQlErUY+OXn0JEMvmjkLY5zUJ+sD945YI33soZ6mR4xyt1KHYoF7KO41WvkJR8tLSwJtRfZdu/lKn04JCAE0wTcgZckkcoyvRK+p21qEbuVOu6rVCtz6DrJYLZdG+Pwf19aXB1kdVEwPQYUxFjjdUh7pLLEAneLhOLeUW9YvXKEw54owKepFLSQL8BnLni0xz/ok65ZakY9xE8C/ajHN0vHzvaMT3vL/zzO6wYz/d6f8WG4YeWlmczHXAUMp5fvnOGtOpYLnSnbj2IpDn7P/VtdlXogYuguOthxoR2XAw46H8oYEw+99fGCJx33yAaIl3Dagt+P7lK6+OLngHifclha16JAceFILKxG4i7FjVRpb4cRfn3SBYqrSvUebrRFxw7qUldVTwB+rFRz5d4pEbBxhx5D5d0WDQ9tlDe3IIkb5VrQ0eIigWQVM2o7gM11E1Gvw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(52116002)(53546011)(6506007)(31686004)(83380400001)(6512007)(36756003)(66556008)(5660300002)(186003)(2616005)(2906002)(38100700002)(966005)(316002)(8936002)(31696002)(508600001)(6486002)(66476007)(66946007)(86362001)(8676002)(4326008)(54906003)(6916009)(87944003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1UxMHIyNUFLQmlnQjI4RjU1clFzVXU1d1hHTUFxZnprSUV5Lzdsc05HRFdL?=
+ =?utf-8?B?Q2NiTnhaZDB4YlF3elRYOTJjSTJpbWFESzBBVlJYTVdCSEw1SG45WHd2SHlj?=
+ =?utf-8?B?S28xTW1RYXdLR2ZMa1BKUjlHdDEwLzlpVkRFcGgxbnVFSE5vWWdPL0J5VmtI?=
+ =?utf-8?B?V2FocW96NURhSHRSY1hhVVM5a2VJU0N1UkhiTFFNS2RjSW1UaWt6Wi9IcHJv?=
+ =?utf-8?B?NFJtd1piLzk3U2JXbHBlQmFSUDhBYzA5SnRwWGRzbjBET3F1YU1vRjcrV3V3?=
+ =?utf-8?B?L1VSdVVzbW1zL25iL290NnBmdnBodDI3eHB5OHdsUVovQkp3ek9GS0lsc1JC?=
+ =?utf-8?B?a2pDZEE3dlZwWnFFTWFNbHd2L2FqK3R4eGpPR05Wa1dadk45dE5XYjN5Y3Ux?=
+ =?utf-8?B?SGFHSkJYY2hma29zcmJSNzJkaFFGYjFpUWtlK0QxMmN0M2JoOVBJaTFGN2hj?=
+ =?utf-8?B?RjlUM2Z4a3piQmpvSktVNEczdU05S2o4QXh3ejJZcFNRanJ6dU90S2IydGUv?=
+ =?utf-8?B?NmpiTGc4c0dOYzQzUklwV0ovakpaSHZyeVlzYW5WMHJkTU8vV212VE91b0xV?=
+ =?utf-8?B?b2hENGgrTTlGbzRvcVMzQVREb0ZWUG03bUlwRy9Eb1BhVnZZTmZCL2cwLzZ1?=
+ =?utf-8?B?bE5hQnZJTEp2dC9aa01uSVYrSmVsQmpBZWYzM2pOMklkbm0rRDZvQkRhanlm?=
+ =?utf-8?B?Wk9PUEcwNGFTZGowV2h2MVkzNDJxY0tZWWJmTElGMDQzeHJGOXpUdUI5bmw0?=
+ =?utf-8?B?dDZsVDBnUmplUUpEbkxORS82YUY1MU5TWWxYUndiSmZQaThYQmJxZys0RDVH?=
+ =?utf-8?B?ZFJLcStGYnp0TUY4Y2NwMGRDOE1oSml2TFFYYTdEN1hUZENBRFlGeWNqQ1Fu?=
+ =?utf-8?B?VjdpTFNicklJY1dwQUU0OE9aQ1lmUTVHVTdnWEo0aERkaWNRNWRQU1hqYVF6?=
+ =?utf-8?B?QXJ2d0JBS2lKOEhUTHRpSndxcWphd3BMQ2IyTTlXNWdXRmZDa2VlSS84TWxx?=
+ =?utf-8?B?SE02SDFITjk3ZGFPOEJBcFZRUmVqMy9UUmFPVlFPc2dJZ1BuOTFHOXFvdUpq?=
+ =?utf-8?B?VEJEdmdnNjI4L0RUVnNXSDJOTkIxdklveE9MOTBoSjNhTHowd0tjNHc0MW1T?=
+ =?utf-8?B?ZStSRi9EWEV0T1lndXpqTkpMSFJvZUNQSnJWRUZsQnduQUFuVmdJUUdrcm8z?=
+ =?utf-8?B?M0J5ODBsTjMyelhIYVZMVHRXS0VMeHNxRmF3cERacWlEL0VnRUwxaE5UOW80?=
+ =?utf-8?B?R3d6N0NoSXRsQU9PSk1PZG9oQm9HbFRKSmVMREtETXVibDF0cmRGMklVTWp5?=
+ =?utf-8?B?bWhOODFMaHNyc1d5UDZvS0MxK0U2aTdFV2x5MktlZzhsVEkzTE1RS3lYR1RO?=
+ =?utf-8?B?VHphTW1HL25NU1d4VnhoVExhOHJJSHhESDJjWkwxNWtOakg3UW9BaG5pMUgx?=
+ =?utf-8?B?SWVkQjVJVWttZWI0c2lXSHV6dWQ0azFGK0Q2WWVqblA5Nmg1NEdUZ0lvcEE4?=
+ =?utf-8?B?SDVRWG9MN1JVNk4xZzFYTkhBdWZ2NkJFYUlUK1I0SzhTOTBEQzhNMXlsQVpr?=
+ =?utf-8?B?WnY1WmtXRWZwZUxodEVZeDVhZzFONmUrZHQzQlNjK2x4ZmdlOGtNQS8yUEd6?=
+ =?utf-8?B?ckVIekoyazRobVhldEtLVWtkUk5hejdLblhsaTN0N052S2h4SEtuZXdKV0VR?=
+ =?utf-8?B?b1ZOUVBqOEU5MFdWYUFobmZWVkF1dXp5ZXdiZ0UwQ29mQzVaOXlkcFBHS1JX?=
+ =?utf-8?B?MUhZV0MxVkhxeXhMZGRITkg0cUI0aGQ2WWNqdjR3MmlKZm0vbzZUWTFTbHgw?=
+ =?utf-8?B?K0tpN0ltaFZVak9aTEhGcnlCQXAwWGZWKzI1aDA3K2dSdmRwRDBENWFiNVh2?=
+ =?utf-8?B?TGxpb2g0TWZXdHRWdTA0TGc1MkFrNE54YndOMGZBWmFMbzJseE02VHpqWlNY?=
+ =?utf-8?B?dFQzUDJZREFBQ2x1WTZuWkZYRDc3d1VHTE9MRnJkVmhiTFBUNkI5eDJsZUZN?=
+ =?utf-8?B?L1c3U2FITlNuTCtpUzIvRGhDZmFyYzNBR2dEc0FKbm9sN2pkVGhhSUZvbC8z?=
+ =?utf-8?B?SjZCYitXVU4wanBUSllIQUtBV0luMlpUVGNiSmh4TGpYU2hyWE5od3NuZkdQ?=
+ =?utf-8?B?Y3lxTEVFRGhwUjJxemR2TWZjMkhocEs2M1pMQ1lyOUtWYzBQL00wTUhPU2xU?=
+ =?utf-8?B?RVNZekpQZE5qMUY5UlRaMmdNMEg0d3J4aFdKN0FhaEJBc0d6dzRadkxSTGVm?=
+ =?utf-8?B?TWxBd1VTTGxqNlV0czZIUHFIc2RMTUYzcnFEUWF2UWI5a01VUzFxYms1RFhI?=
+ =?utf-8?B?VUwxM05IVVQxNDFZUXh4WS9PenBWOVhETTRJOElDSm04RmtCQkwxekYraitl?=
+ =?utf-8?Q?m3PHzjduCHcRjNZA=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b141d873-bac6-452f-a69b-08da32e3b52c
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2022 00:18:00.6163
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cxTIb1bdEyAexLHGhR1KJ2mZ5AFTk0fso+oomtNhNN32jDewciF6C0usjlg9r/v5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB5107
+X-Proofpoint-ORIG-GUID: P-C5TzcIbw47AX3JYmBkTOFc31FKJeUo
+X-Proofpoint-GUID: P-C5TzcIbw47AX3JYmBkTOFc31FKJeUo
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-10_07,2022-05-10_01,2022-02-23_01
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 10, 2022 at 12:21 PM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
->
-> On 2022-05-07 00:34, Andrii Nakryiko wrote:
-> > On Tue, May 3, 2022 at 10:15 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
-> >>
-> >> This commit adds selftests for the new BPF helpers:
-> >> bpf_tcp_raw_{gen,check}_syncookie_ipv{4,6}.
-> >>
-> >> xdp_synproxy_kern.c is a BPF program that generates SYN cookies on
-> >> allowed TCP ports and sends SYNACKs to clients, accelerating synproxy
-> >> iptables module.
-> >>
-> >> xdp_synproxy.c is a userspace control application that allows to
-> >> configure the following options in runtime: list of allowed ports, MSS,
-> >> window scale, TTL.
-> >>
-> >> A selftest is added to prog_tests that leverages the above programs to
-> >> test the functionality of the new helpers.
-> >>
-> >> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-> >> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> >> ---
-> >
-> > selftests should use "selftests/bpf: " subject prefix, not "bpf: ",
-> > please update so it's more obvious that this patch touches selftests
-> > and not kernel-side BPF functionality.
-> >
-> >>   tools/testing/selftests/bpf/.gitignore        |   1 +
-> >>   tools/testing/selftests/bpf/Makefile          |   5 +-
-> >>   .../selftests/bpf/prog_tests/xdp_synproxy.c   | 109 +++
-> >>   .../selftests/bpf/progs/xdp_synproxy_kern.c   | 750 ++++++++++++++++++
-> >>   tools/testing/selftests/bpf/xdp_synproxy.c    | 418 ++++++++++
-> >>   5 files changed, 1281 insertions(+), 2 deletions(-)
-> >>   create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> >>   create mode 100644 tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-> >>   create mode 100644 tools/testing/selftests/bpf/xdp_synproxy.c
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-> >> index 595565eb68c0..ca2f47f45670 100644
-> >> --- a/tools/testing/selftests/bpf/.gitignore
-> >> +++ b/tools/testing/selftests/bpf/.gitignore
-> >> @@ -43,3 +43,4 @@ test_cpp
-> >>   *.tmp
-> >>   xdpxceiver
-> >>   xdp_redirect_multi
-> >> +xdp_synproxy
-> >> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> >> index bafdc5373a13..8ae602843b16 100644
-> >> --- a/tools/testing/selftests/bpf/Makefile
-> >> +++ b/tools/testing/selftests/bpf/Makefile
-> >> @@ -82,9 +82,9 @@ TEST_PROGS_EXTENDED := with_addr.sh \
-> >>   TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
-> >>          flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
-> >>          test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
-> >> -       xdpxceiver xdp_redirect_multi
-> >> +       xdpxceiver xdp_redirect_multi xdp_synproxy
-> >>
-> >> -TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read
-> >> +TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read $(OUTPUT)/xdp_synproxy
-> >>
-> >>   # Emit succinct information message describing current building step
-> >>   # $1 - generic step name (e.g., CC, LINK, etc);
-> >> @@ -500,6 +500,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c      \
-> >>                           cap_helpers.c
-> >>   TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko \
-> >>                         $(OUTPUT)/liburandom_read.so                     \
-> >> +                      $(OUTPUT)/xdp_synproxy                           \
-> >
-> > this is the right way to make external binary available to test_progs
-> > flavors, but is there anything inherently requiring external binary
-> > instead of having a helper function doing the same? urandom_read has
-> > to be a separate binary.
->
-> If you remember v1, it used to be a sample, but I was asked to convert
-> it to a selftest, because samples are deprecated. The intention of
-> having this separate binary is to have a sample reference implementation
-> that can be used in real-world scenarios with minor or no changes.
->
 
-Ok, I'll let others chime in if they care enough about this. Selftests
-are first and foremost a test and not an almost production-ready
-collection of tools, but fine by me.
 
-> >>                         ima_setup.sh                                     \
-> >>                         $(wildcard progs/btf_dump_test_case_*.c)
-> >>   TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> >> new file mode 100644
-> >> index 000000000000..e08b28e25047
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-> >> @@ -0,0 +1,109 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +#include <test_progs.h>
-> >> +#include <network_helpers.h>
-> >> +
-> >> +#define SYS(cmd) ({ \
-> >> +       if (!ASSERT_OK(system(cmd), (cmd))) \
-> >> +               goto out; \
-> >> +})
-> >> +
-> >> +#define SYS_OUT(cmd) ({ \
-> >> +       FILE *f = popen((cmd), "r"); \
-> >> +       if (!ASSERT_OK_PTR(f, (cmd))) \
-> >> +               goto out; \
-> >> +       f; \
-> >> +})
-> >> +
-> >> +static bool expect_str(char *buf, size_t size, const char *str)
-> >> +{
-> >> +       if (size != strlen(str))
-> >> +               return false;
-> >> +       return !memcmp(buf, str, size);
-> >> +}
-> >> +
-> >> +void test_xdp_synproxy(void)
-> >> +{
-> >> +       int server_fd = -1, client_fd = -1, accept_fd = -1;
-> >> +       struct nstoken *ns = NULL;
-> >> +       FILE *ctrl_file = NULL;
-> >> +       char buf[1024];
-> >> +       size_t size;
-> >> +
-> >> +       SYS("ip netns add synproxy");
-> >> +
-> >> +       SYS("ip link add tmp0 type veth peer name tmp1");
-> >> +       SYS("ip link set tmp1 netns synproxy");
-> >> +       SYS("ip link set tmp0 up");
-> >> +       SYS("ip addr replace 198.18.0.1/24 dev tmp0");
-> >
-> >> +
-> >> +       // When checksum offload is enabled, the XDP program sees wrong
-> >> +       // checksums and drops packets.
-> >> +       SYS("ethtool -K tmp0 tx off");
-> >> +       // Workaround required for veth.
-> >
-> > don't use C++ comments, please stick to /* */
-> >
-> >> +       SYS("ip link set tmp0 xdp object xdp_dummy.o section xdp 2> /dev/null");
-> >> +
-> >> +       ns = open_netns("synproxy");
-> >> +       if (!ASSERT_OK_PTR(ns, "setns"))
-> >> +               goto out;
-> >> +
-> >> +       SYS("ip link set lo up");
-> >> +       SYS("ip link set tmp1 up");
-> >> +       SYS("ip addr replace 198.18.0.2/24 dev tmp1");
-> >> +       SYS("sysctl -w net.ipv4.tcp_syncookies=2");
-> >> +       SYS("sysctl -w net.ipv4.tcp_timestamps=1");
-> >> +       SYS("sysctl -w net.netfilter.nf_conntrack_tcp_loose=0");
-> >> +       SYS("iptables -t raw -I PREROUTING \
-> >> +           -i tmp1 -p tcp -m tcp --syn --dport 8080 -j CT --notrack");
-> >> +       SYS("iptables -t filter -A INPUT \
-> >> +           -i tmp1 -p tcp -m tcp --dport 8080 -m state --state INVALID,UNTRACKED \
-> >> +           -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460");
-> >> +       SYS("iptables -t filter -A INPUT \
-> >> +           -i tmp1 -m state --state INVALID -j DROP");
-> >> +
-> >> +       ctrl_file = SYS_OUT("./xdp_synproxy --iface tmp1 --ports 8080 --single \
-> >> +                           --mss4 1460 --mss6 1440 --wscale 7 --ttl 64");
-> >> +       size = fread(buf, 1, sizeof(buf), ctrl_file);
-> >
-> > buf is uninitialized so if fread fail strlen() can cause SIGSEGV or
-> > some other failure mode
->
-> No, it will exit on the assert below (size won't be equal to strlen(str)).
-
-it's better to use ASSERT_STREQ() which will also emit expected and
-actual strings if they don't match. So maybe check size first, and
-then ASSERT_STREQ() instead of custom expect_str() "helper"?
-
->
-> >
-> >> +       pclose(ctrl_file);
-> >> +       if (!ASSERT_TRUE(expect_str(buf, size, "Total SYNACKs generated: 0\n"),
-> >> +                        "initial SYNACKs"))
-> >> +               goto out;
-> >> +
-> >> +       server_fd = start_server(AF_INET, SOCK_STREAM, "198.18.0.2", 8080, 0);
-> >> +       if (!ASSERT_GE(server_fd, 0, "start_server"))
-> >> +               goto out;
-> >> +
-> >> +       close_netns(ns);
-> >> +       ns = NULL;
-> >> +
-> >> +       client_fd = connect_to_fd(server_fd, 10000);
-> >> +       if (!ASSERT_GE(client_fd, 0, "connect_to_fd"))
-> >> +               goto out;
-> >> +
-> >> +       accept_fd = accept(server_fd, NULL, NULL);
-> >> +       if (!ASSERT_GE(accept_fd, 0, "accept"))
-> >> +               goto out;
-> >> +
-> >> +       ns = open_netns("synproxy");
-> >> +       if (!ASSERT_OK_PTR(ns, "setns"))
-> >> +               goto out;
-> >> +
-> >> +       ctrl_file = SYS_OUT("./xdp_synproxy --iface tmp1 --single");
-> >> +       size = fread(buf, 1, sizeof(buf), ctrl_file);
-> >> +       pclose(ctrl_file);
-> >> +       if (!ASSERT_TRUE(expect_str(buf, size, "Total SYNACKs generated: 1\n"),
-> >> +                        "SYNACKs after connection"))
-> >
-> > please use ASSERT_STREQ instead, same above
->
-> It doesn't fit here for two reasons:
->
-> * It doesn't consider size (and ignoring size will cause a UB on errors
-> because of the uninitialized buf).
->
-> * buf is not '\0'-terminated, and ASSERT_STREQ uses strcmp.
-
-can it be non-zero-terminated in normal case? see above about checking
-for errors separately
-
->
-> >
-> >> +               goto out;
-> >> +
-> >> +out:
-> >> +       if (accept_fd >= 0)
-> >> +               close(accept_fd);
-> >> +       if (client_fd >= 0)
-> >> +               close(client_fd);
-> >> +       if (server_fd >= 0)
-> >> +               close(server_fd);
-> >> +       if (ns)
-> >> +               close_netns(ns);
-> >> +
-> >> +       system("ip link del tmp0");
-> >> +       system("ip netns del synproxy");
-> >> +}
-> >> diff --git a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-> >> new file mode 100644
-> >> index 000000000000..9ae85b189072
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-> >> @@ -0,0 +1,750 @@
-> >> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-> >
-> > Can you please elaborate on what Linux-OpenIB license is and why
-> > GPL-2.0 isn't enough? We usually have GPL-2.0 or LGPL-2.1 OR
-> > BSD-2-Clause
->
-> That's the license boilerplate we use in the mlx5e driver. I'll check
-> with the relevant people whether we can submit it as GPL-2.0 solely.
->
-
-ok
-
-> >> +/* Copyright (c) 2021, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
-> >> +
-> >> +#include "vmlinux.h"
-> >> +
-> >> +#include <bpf/bpf_helpers.h>
-> >> +#include <bpf/bpf_endian.h>
-> >> +#include <asm/errno.h>
-> >> +
-> >
-> > [...]
-> >
-> >> +
-> >> +static __always_inline __u16 csum_tcpudp_magic(__be32 saddr, __be32 daddr,
-> >> +                                              __u32 len, __u8 proto,
-> >> +                                              __u32 csum)
-> >> +{
-> >> +       __u64 s = csum;
-> >> +
-> >> +       s += (__u32)saddr;
-> >> +       s += (__u32)daddr;
-> >> +#if defined(__BIG_ENDIAN__)
-> >> +       s += proto + len;
-> >> +#elif defined(__LITTLE_ENDIAN__)
-> >
-> > I've got few nudges in libbpf code base previously to use
-> >
-> > #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-> > #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-> >
-> > instead (I don't remember the exact reason now, but there was a
-> > reason). Let's do the same here for consistency?
->
-> OK.
->
-> samples/bpf/xdpsock_user.c also still uses __BIG_ENDIAN__.
->
-> >> +       s += (proto + len) << 8;
-> >> +#else
-> >> +#error Unknown endian
-> >> +#endif
-> >> +       s = (s & 0xffffffff) + (s >> 32);
-> >> +       s = (s & 0xffffffff) + (s >> 32);
-> >> +
-> >> +       return csum_fold((__u32)s);
-> >> +}
-> >> +
-> >> +static __always_inline __u16 csum_ipv6_magic(const struct in6_addr *saddr,
-> >> +                                            const struct in6_addr *daddr,
-> >> +                                            __u32 len, __u8 proto, __u32 csum)
-> >> +{
-> >> +       __u64 sum = csum;
-> >> +       int i;
-> >> +
-> >> +#pragma unroll
-> >> +       for (i = 0; i < 4; i++)
-> >> +               sum += (__u32)saddr->in6_u.u6_addr32[i];
-> >> +
-> >> +#pragma unroll
-> >
-> > why unroll? BPF verifier handles such loops just fine, even if
-> > compiler decides to not unroll them
->
-> Optimization, see csum_ipv6_magic in net/ipv6/ip6_checksum.c that has
-> this loop unrolled manually.
->
-> >> +       for (i = 0; i < 4; i++)
-> >> +               sum += (__u32)daddr->in6_u.u6_addr32[i];
-> >> +
-> >> +       // Don't combine additions to avoid 32-bit overflow.
-> >> +       sum += bpf_htonl(len);
-> >> +       sum += bpf_htonl(proto);
-> >> +
-> >> +       sum = (sum & 0xffffffff) + (sum >> 32);
-> >> +       sum = (sum & 0xffffffff) + (sum >> 32);
-> >> +
-> >> +       return csum_fold((__u32)sum);
-> >> +}
-> >> +
-> >> +static __always_inline __u64 tcp_clock_ns(void)
-> >
-> > __always_inline isn't mandatory, you can just have static __u64
-> > tcp_clock_ns() here and let compiler decide on inlining? same for
-> > below
->
-> Do you mean just these three functions, or all functions below, or
-> actually all functions in this file?
->
-> It's not mandatory, but these are simple one-liners, it would be
-> unpleasant to waste an extra call in performance-critical code if the
-> compiler decides not to inline them.
->
-
-my point was that it's not mandatory anymore. Given this is a hybrid
-high-performance sample and selftest, I don't care. If it was just a
-test, there is no point in micro-optimizing this (similar for loop
-unrolling).
-
-> >> +{
-> >> +       return bpf_ktime_get_ns();
-> >> +}
-> >> +
-> >> +static __always_inline __u32 tcp_ns_to_ts(__u64 ns)
-> >> +{
-> >> +       return ns / (NSEC_PER_SEC / TCP_TS_HZ);
-> >> +}
-> >> +
-> >> +static __always_inline __u32 tcp_time_stamp_raw(void)
-> >> +{
-> >> +       return tcp_ns_to_ts(tcp_clock_ns());
-> >> +}
-> >> +
-> >
-> > [...]
-> >
-
+On 5/10/22 4:18 PM, Andrii Nakryiko wrote:
+> On Tue, May 10, 2022 at 3:06 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 5/9/22 3:29 PM, Andrii Nakryiko wrote:
+>>> On Sun, May 1, 2022 at 12:00 PM Yonghong Song <yhs@fb.com> wrote:
+>>>>
+>>>> Currently, BTF only supports upto 32bit enum value with BTF_KIND_ENUM.
+>>>> But in kernel, some enum indeed has 64bit values, e.g.,
+>>>> in uapi bpf.h, we have
+>>>>     enum {
+>>>>           BPF_F_INDEX_MASK                = 0xffffffffULL,
+>>>>           BPF_F_CURRENT_CPU               = BPF_F_INDEX_MASK,
+>>>>           BPF_F_CTXLEN_MASK               = (0xfffffULL << 32),
+>>>>     };
+>>>> In this case, BTF_KIND_ENUM will encode the value of BPF_F_CTXLEN_MASK
+>>>> as 0, which certainly is incorrect.
+>>>>
+>>>> This patch added a new btf kind, BTF_KIND_ENUM64, which permits
+>>>> 64bit value to cover the above use case. The BTF_KIND_ENUM64 has
+>>>> the following three bytes followed by the common type:
+>>>
+>>> you probably meant three fields, not bytes
+>>
+>> correct.
+>>
+>>>
+>>>>     struct bpf_enum64 {
+>>>>       __u32 nume_off;
+>>>>       __u32 hi32;
+>>>>       __u32 lo32;
+>>>
+>>> I'd like to nitpick on name here, as hi/lo of what? Maybe val_hi32 and
+>>> val_lo32? Can we also reverse the order here? For x86 you'll be able
+>>> to use &lo32 to get value directly if you really want, without a local
+>>> copy. It also just logically seems better to have something low first,
+>>> then high next.
+>>
+>> I can go with val_hi32, val_lo32 and put val_lo32 before val_hi32.
+>> I don't have any preference for the ordering of these two fields.
+>>
+>>>
+>>>
+>>>>     };
+>>>> Currently, btf type section has an alignment of 4 as all element types
+>>>> are u32. Representing the value with __u64 will introduce a pad
+>>>> for bpf_enum64 and may also introduce misalignment for the 64bit value.
+>>>> Hence, two members of hi32 and lo32 are chosen to avoid these issues.
+>>>>
+>>>> The kflag is also introduced for BTF_KIND_ENUM and BTF_KIND_ENUM64
+>>>> to indicate whether the value is signed or unsigned. The kflag intends
+>>>> to provide consistent output of BTF C fortmat with the original
+>>>> source code. For example, the original BTF_KIND_ENUM bit value is 0xffffffff.
+>>>> The format C has two choices, print out 0xffffffff or -1 and current libbpf
+>>>> prints out as unsigned value. But if the signedness is preserved in btf,
+>>>> the value can be printed the same as the original source code.
+>>>>
+>>>> The new BTF_KIND_ENUM64 is intended to support the enum value represented as
+>>>> 64bit value. But it can represent all BTF_KIND_ENUM values as well.
+>>>> The value size of BTF_KIND_ENUM64 is encoded to 8 to represent its intent.
+>>>> The compiler ([1]) and pahole will generate BTF_KIND_ENUM64 only if the value has
+>>>> to be represented with 64 bits.
+>>>>
+>>>>     [1] https://reviews.llvm.org/D124641
+>>>>
+>>>> Signed-off-by: Yonghong Song <yhs@fb.com>
 [...]
+>>>
+>>>>           btf_show_end_type(show);
+>>>>    }
+>>>>
+>>>> @@ -3770,6 +3779,109 @@ static struct btf_kind_operations enum_ops = {
+>>>>           .show = btf_enum_show,
+>>>>    };
+>>>>
+>>>> +static s32 btf_enum64_check_meta(struct btf_verifier_env *env,
+>>>> +                                const struct btf_type *t,
+>>>> +                                u32 meta_left)
+>>>> +{
+>>>> +       const struct btf_enum64 *enums = btf_type_enum64(t);
+>>>> +       struct btf *btf = env->btf;
+>>>> +       const char *fmt_str;
+>>>> +       u16 i, nr_enums;
+>>>> +       u32 meta_needed;
+>>>> +
+>>>> +       nr_enums = btf_type_vlen(t);
+>>>> +       meta_needed = nr_enums * sizeof(*enums);
+>>>> +
+>>>> +       if (meta_left < meta_needed) {
+>>>> +               btf_verifier_log_basic(env, t,
+>>>> +                                      "meta_left:%u meta_needed:%u",
+>>>> +                                      meta_left, meta_needed);
+>>>> +               return -EINVAL;
+>>>> +       }
+>>>> +
+>>>> +       if (t->size != 8) {
+>>>
+>>> technically there is nothing wrong with using enum64 for smaller
+>>> sizes, right? Any particular reason to prevent this? We can just
+>>> define that 64-bit value is sign-extended if enum is signed and has
+>>> size < 8?
+>>
+>> My original idea is to support 64-bit enum only for ENUM64 kind.
+>> But it is certainly possible to encode 32-bit enums as well for
+>> ENUM64. So I will remove this restriction.
+>>
+>> The dwarf only generates sizes 4 (for up-to 32 bit values)
+>> and 8 (for 64 bit values). But BTF_KIND_ENUM supports 1/2/4/8
+>> sizes, so BTF_KIND_ENUM64 will also support 1/2/4/8 sizes.
+> 
+> Little known fact, but it's not true:
+> 
+> $ bpftool btf dump file /sys/kernel/btf/vmlinux| rg 'ENUM.*size=1' -A8
+> [83476] ENUM 'hub_led_mode' size=1 vlen=8
+>          'INDICATOR_AUTO' val=0
+>          'INDICATOR_CYCLE' val=1
+>          'INDICATOR_GREEN_BLINK' val=2
+>          'INDICATOR_GREEN_BLINK_OFF' val=3
+>          'INDICATOR_AMBER_BLINK' val=4
+>          'INDICATOR_AMBER_BLINK_OFF' val=5
+>          'INDICATOR_ALT_BLINK' val=6
+>          'INDICATOR_ALT_BLINK_OFF' val=7
+> 
+> Defined as packed enum:
+> 
+> enum hub_led_mode {
+>          INDICATOR_AUTO = 0,
+>          INDICATOR_CYCLE,
+>          /* software blinks for attention:  software, hardware, reserved */
+>          INDICATOR_GREEN_BLINK, INDICATOR_GREEN_BLINK_OFF,
+>          INDICATOR_AMBER_BLINK, INDICATOR_AMBER_BLINK_OFF,
+>          INDICATOR_ALT_BLINK, INDICATOR_ALT_BLINK_OFF
+> } __attribute__ ((packed));
+
+I am not aware of this.... Good to know.
+
+> 
+> 
+>>
+>>>
+>>>> +               btf_verifier_log_type(env, t, "Unexpected size");
+>>>> +               return -EINVAL;
+>>>> +       }
+>>>> +
+>>>> +       /* enum type either no name or a valid one */
+>>>> +       if (t->name_off &&
+>>>> +           !btf_name_valid_identifier(env->btf, t->name_off)) {
+>>>> +               btf_verifier_log_type(env, t, "Invalid name");
+>>>> +               return -EINVAL;
+>>>> +       }
+>>>> +
+>>>
+>>> [...]
