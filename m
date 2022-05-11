@@ -2,242 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CBA523D05
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 21:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC131523D23
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 21:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241692AbiEKTHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 15:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
+        id S238919AbiEKTIr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 15:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236747AbiEKTHB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 15:07:01 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5418F694BD
-        for <bpf@vger.kernel.org>; Wed, 11 May 2022 12:06:58 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id c9so2804337plh.2
-        for <bpf@vger.kernel.org>; Wed, 11 May 2022 12:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OQ2DJoEMb9WJyctGe+oZoLFB0Yfp9azM45Or20+78So=;
-        b=BPGKqi9SpUDloK3pw9C06D25Yr8C+rCEUhPtdwI2afNkmmE3rVaHoWCWRkNSyTBkg0
-         lFqjnvmBiI/ebtIs9F7Sl/I9FpfgACzBws8TBe1cjcYlkKrj9kKce25ZzamG2q0lUJwk
-         mJVap3942fSz7YOUybyHN+sdtzNMgcyhuCNaUh+F2SVa4iH1CpkOwK8dAZAaxw4TsnEE
-         6D+yfdQFT4Rbh4gaQNHA+mELfelD+QZjLjsrMRcuT4BBAUxF6VRY/P63ZQyjNdzLWMPP
-         krykyd2HwYHWtR32V53Ci03hp+p22OPbjTSC/F2ftwg0klfInKkZCC+TwDDyZwyCJ+Kq
-         tHSw==
+        with ESMTP id S234118AbiEKTIq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 15:08:46 -0400
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334316BFD6
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 12:08:45 -0700 (PDT)
+Received: by mail-qt1-f179.google.com with SMTP id t16so2712536qtr.9
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 12:08:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OQ2DJoEMb9WJyctGe+oZoLFB0Yfp9azM45Or20+78So=;
-        b=fvprwuEqDfEOn3wLD1l/Q6ft85QBtY8tHw5rH4cPYrh6dUUK7sfLkBoAxI77QiFSNE
-         rccGD7Ov23FlXo50hDMtuqDHVqnJgdRNNrsTuyImD0fdTi5x3JEgFsfXFqeSva57Q/zi
-         R7KcaHdJlT9CBGbksPsVwHZ/uR9qdrgf8vwaD/rbjXgUEArdp4SeX04X0RSBAjg/sn/K
-         otR2SmJdfTyUMSSMR4eCtbHrAfJrCUyNHFxFUYxphtpO9kLniaT5iJrQ1bxY8LeZDt2y
-         aP43oQsmYlBwCSG0fIjb1Ni3fJvJjmAH/nclZTcIiIFgtU3TRLpdNfNqg1VADopjbF0c
-         v5Pg==
-X-Gm-Message-State: AOAM532MEAJtJBO7L91sdr+OQ3RwXcg/V4Hn0Sy4WpCwlYJQttFuEw3A
-        R+1xHp6qmLQoeuob2XrH+oU=
-X-Google-Smtp-Source: ABdhPJzMcgEKgrGgNQd+vTh0XKbF9nKrTfuinINc+ntadcI8RHEj1kr21bgz/uJTwadiZWvGxKvZEg==
-X-Received: by 2002:a17:902:ab5c:b0:15c:ea3a:9437 with SMTP id ij28-20020a170902ab5c00b0015cea3a9437mr26874206plb.9.1652296017639;
-        Wed, 11 May 2022 12:06:57 -0700 (PDT)
-Received: from localhost ([112.79.166.171])
-        by smtp.gmail.com with ESMTPSA id c18-20020a63d512000000b003c2677c9c9esm215206pgg.67.2022.05.11.12.06.52
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=R/BI2Fx61fomPWNl/8lR+3m1OdJfWsK2NDqUa/aEdLA=;
+        b=JWjENRQQQnh6u9Jq+mbi/mEtFH9RI/mDx+G8VRVfgm4qg0aw0XXt+AUWydscaeHlmw
+         VGJcPxTf5JYfsC52yjDztHX6nFlz+sccep5x41yuF3Bfq+6NOo6yc2GxIznW4FtFH+h2
+         LzVslHiF3y4KRSXije0Zh/JLtg2tc2cDMHFqwakvsBTK7H8AEHmVXBHIVDDKw4Y7tmQN
+         8gzZombXqNMCXha/YyVlfcR77SISuewgjHKU8Yw0XlLEPcNy+vxYCS0ilH6e3G8Yoq7B
+         10BinL2MY1ra9JMporoi3oJvwHTDaZWzh09Lp2qirWxJgGsVDNYkoMKGBILGPBCKSi2C
+         2CQA==
+X-Gm-Message-State: AOAM5317K4LqRr8+QXVLuCfK4C5vL8JblibI6pEWykm/Q7GZ2vAzn/G4
+        BZzz7UirRc5q2qrb4tZfTHc=
+X-Google-Smtp-Source: ABdhPJwnjLEnAoRwI6GwtoiLSWVklFWnY9fIaizz8PbB7y1iLdjYd6VpGbY5998LxQtSQKdIOWHb5w==
+X-Received: by 2002:ac8:7e96:0:b0:2f3:d427:533e with SMTP id w22-20020ac87e96000000b002f3d427533emr18271514qtj.41.1652296124075;
+        Wed, 11 May 2022 12:08:44 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-020.fbsv.net. [2a03:2880:20ff:14::face:b00c])
+        by smtp.gmail.com with ESMTPSA id k2-20020ac84782000000b002f39b99f6bfsm1595091qtq.89.2022.05.11.12.08.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 May 2022 12:06:54 -0700 (PDT)
-Date:   Thu, 12 May 2022 00:37:24 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Wed, 11 May 2022 12:08:43 -0700 (PDT)
+Date:   Wed, 11 May 2022 12:08:41 -0700
+From:   David Vernet <void@manifault.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next v1 2/4] bpf: Prepare prog_test_struct kfuncs for
- runtime tests
-Message-ID: <20220511190724.bphqd57s22qrbobu@apollo.legion>
-References: <20220510211727.575686-1-memxor@gmail.com>
- <20220510211727.575686-3-memxor@gmail.com>
- <CAADnVQ+WFGc4yEAGVuxzbWkXsj2G+U2nN4YmEzMh7SHbHdknjA@mail.gmail.com>
- <20220511060233.x2ew422zqnoj2itc@apollo.legion>
- <CAADnVQKi8mSMv5FMxyptFkAeJetpMgY5oqZz-n-y+WyXiCDbyg@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix a few clang compilation
+ errors
+Message-ID: <20220511190841.4oxswcsebp7teaa3@dev0025.ash9.facebook.com>
+References: <20220511184735.3670214-1-yhs@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQKi8mSMv5FMxyptFkAeJetpMgY5oqZz-n-y+WyXiCDbyg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220511184735.3670214-1-yhs@fb.com>
+User-Agent: NeoMutt/20211029
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 11, 2022 at 11:23:59PM IST, Alexei Starovoitov wrote:
-> On Tue, May 10, 2022 at 11:01 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Wed, May 11, 2022 at 10:07:35AM IST, Alexei Starovoitov wrote:
-> > > On Tue, May 10, 2022 at 2:17 PM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > In an effort to actually test the refcounting logic at runtime, add a
-> > > > refcount_t member to prog_test_ref_kfunc and use it in selftests to
-> > > > verify and test the whole logic more exhaustively.
-> > > >
-> > > > To ensure reading the count to verify it remains stable, make
-> > > > prog_test_ref_kfunc a per-CPU variable, so that inside a BPF program the
-> > > > count can be read reliably based on number of acquisitions made. Then,
-> > > > pairing them with releases and reading from the global per-CPU variable
-> > > > will allow verifying whether release operations put the refcount.
-> > >
-> > > The patches look good, but the per-cpu part is a puzzle.
-> > > The test is not parallel. Everything looks sequential
-> > > and there are no races.
-> > > It seems to me if it was
-> > > static struct prog_test_ref_kfunc prog_test_struct = {..};
-> > > and none of [bpf_]this_cpu_ptr()
-> > > the test would work the same way.
-> > > What am I missing?
-> >
-> > You are not missing anything. It would work the same. I just made it per-CPU for
-> > the off chance that someone runs ./test_progs -t map_kptr in parallel on the
-> > same machine. Then one or both might fail, since count won't just be inc/dec by
-> > us, and reading it would produce something other than what we expect.
->
-> I see. You should have mentioned that in the commit log.
-> But how per-cpu helps in this case?
-> prog_run is executed with cpu=0, so both test_progs -t map_kptr
-> will collide on the same cpu.
+On Wed, May 11, 2022 at 11:47:35AM -0700, Yonghong Song wrote:
+> With latest clang, I got the following compilation errors:
+>   .../prog_tests/test_tunnel.c:291:6: error: variable 'local_ip_map_fd' is used uninitialized
+>      whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+>        if (attach_tc_prog(&tc_hook, -1, set_dst_prog_fd))
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   .../bpf/prog_tests/test_tunnel.c:312:6: note: uninitialized use occurs here
+>         if (local_ip_map_fd >= 0)
+>             ^~~~~~~~~~~~~~~
+>   ...
+>   .../prog_tests/kprobe_multi_test.c:346:6: error: variable 'err' is used uninitialized
+>       whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+>         if (IS_ERR(map))
+>             ^~~~~~~~~~~
+>   .../prog_tests/kprobe_multi_test.c:388:6: note: uninitialized use occurs here
+>         if (err) {
+>             ^~~
+> 
+> This patch fixed the above compilation errors.
 
-Right, I was thinking bpf_prog_run disabled preemption, so that would prevent
-collisions, but it seems my knowledge is now outdated (only migration is
-disabled). Also, just realising, we rely on observing a specific count across
-test_run invocations, which won't be protected against for parallel runs
-anyway.
+I'd argue that these are real bugs that the compiler happens to have
+caught, and that the patch should perhaps be framed as fixing them rather
+than as avoiding compilation failures, but that might be unnecessarily
+nit-picky and I don't feel strongly about it.
 
-> At the end it's the same. one or both might fail?
->
-> In general all serial_ tests in test_progs will fail in
-> parallel run.
-> Even non-serial tests might fail.
-> The non-serial tests are ok for test_progs -j.
-> They're parallel between themselves, but there are no guarantees
-> that every individual test can be run parallel with itself.
-> Majority will probably be fine, but not all.
->
+> 
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 4 +++-
+>  tools/testing/selftests/bpf/prog_tests/test_tunnel.c       | 4 ++--
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> index 816eacededd1..586dc52d6fb9 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> @@ -343,8 +343,10 @@ static int get_syms(char ***symsp, size_t *cntp)
+>  		return -EINVAL;
+>  
+>  	map = hashmap__new(symbol_hash, symbol_equal, NULL);
+> -	if (IS_ERR(map))
+> +	if (IS_ERR(map)) {
+> +		err = libbpf_get_error(map);
+>  		goto error;
+> +	}
+>  
+>  	while (fgets(buf, sizeof(buf), f)) {
+>  		/* skip modules */
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> index 071c9c91b50f..3bba4a2a0530 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+> @@ -246,7 +246,7 @@ static void test_vxlan_tunnel(void)
+>  {
+>  	struct test_tunnel_kern *skel = NULL;
+>  	struct nstoken *nstoken;
+> -	int local_ip_map_fd;
+> +	int local_ip_map_fd = -1;
+>  	int set_src_prog_fd, get_src_prog_fd;
+>  	int set_dst_prog_fd;
+>  	int key = 0, ifindex = -1;
+> @@ -319,7 +319,7 @@ static void test_ip6vxlan_tunnel(void)
+>  {
+>  	struct test_tunnel_kern *skel = NULL;
+>  	struct nstoken *nstoken;
+> -	int local_ip_map_fd;
+> +	int local_ip_map_fd = -1;
+>  	int set_src_prog_fd, get_src_prog_fd;
+>  	int set_dst_prog_fd;
+>  	int key = 0, ifindex = -1;
+> -- 
+> 2.30.2
+> 
 
-I'll drop it and go with a global struct.
+I'm a bit surprised this ever successfully compiled. What version of clang
+did you have to upgrade to in order to see this error? IIRC I've used
+-Wsometimes-uninitialized on much older versions of clang.
 
-> > One other benefit is getting non-ref PTR_TO_BTF_ID to prog_test_struct to
-> > inspect cnt after releasing acquired pointer (using bpf_this_cpu_ptr), but that
-> > can also be done by non-ref kfunc returning a pointer to it.
->
-> Not following. non-ref == ptr_untrusted. That doesn't preclude
+Anyways, looks good to me.
 
-By non-ref PTR_TO_BTF_ID I meant normal (not untrusted) PTR_TO_BTF_ID with
-ref_obj_id = 0.
-
-bpf_this_cpu_ptr returns a normal PTR_TO_BTF_ID, not an untrusted one.
-
-> bpf prog from reading refcnt directly, but disallows passing
-> into helpers.
-> So with non-percpu the following hack
->  bpf_kfunc_call_test_release(p);
->  if (p_cpu->cnt.refs.counter ...)
-> wouldn't be necessary.
-> The prog could release(p) and read p->cnt.refs.counter right after.
-
-release(p) will kill p, so that won't work. I have a better idea, since
-p->next points to itself, just loading that will give me a pointer I can
-read after release(p).
-
-As an aside, do you think we should change the behaviour of killing released
-registers and skip it for refcounted PTR_TO_BTF_ID (perhaps mark it as untrusted
-pointer instead, with ref_obj_id reset to zero)? So loads are allowed into it,
-but passing into the kernel isn't, wdyt?
-
-p = acq();	  // p.type = PTR_TO_BTF_ID, ref_obj_id=X
-foo(p);		  // works
-bar(p->a + p->b); // works
-rel(p);		  // p.type = PTR_TO_BTF_ID | PTR_UNTRUSTED, ref_obj_id=0
-		  // Instead of mark_reg_unknown(p)
-
-There is still the case where you can do:
-p2 = p->next;
-rel(p);
-p3 = p->next;
-
-Now p2 is trusted PTR_TO_BTF_ID, while p3 is untrusted, but this is a separate
-problem which requires a more general fix, and needs more discussion.
-
-A bit of a digression, but I would like to know what you and other BPF
-developers think.
-
-So far my thinking (culminating towards an RFC) is this:
-
-For a refcounted PTR_TO_BTF_ID, it is marked as trusted.
-
-When loading from it, by default all loads yield untrusted pointers, except
-those which are specifically marked with some annotation ("bpf_ptr_trust") which
-indicates that parent holds reference to member pointer. This is a loose
-description to mean that for the lifetime of trusted parent pointer, member
-pointer may also be trusted. If lifetime can end (due to release), trusted
-member pointers will become untrusted. If it cannot (e.g. function arguments),
-it remains valid.
-
-This will use BTF tags.
-Known cases in the kernel which are useful and safe can be whitelisted.
-
-Such loads yield trusted pointers linked to refcounted PTR_TO_BTF_ID. Linked
-means the source refcounted PTR_TO_BTF_ID owns it.
-
-When releasing PTR_TO_BTF_ID, all registers with same ref_obj_id, and all linked
-PTR_TO_BTF_ID are marked as untrusted.
-
-As an example:
-
-struct foo {
-	struct bar __ref *br;
-	struct baz *bz;
-};
-
-struct foo *f = acq(); // f.type = PTR_TO_BTF_ID, ref_obj_id=X
-br = f->br;	       // br.type = PTR_TO_BTF_ID, linked_to=X
-bz = f->bz;	       // bz.type = PTR_TO_BTF_ID | PTR_UNTRUSTED
-rel(f);		       // f.type = PTR_TO_BTF_ID | PTR_UNTRUSTED
-		       // and since br.linked_to == f.ref_obj_id,
-		       // br.type = PTR_TO_BTF_ID | PTR_UNTRUSTED
-
-For trusted loads from br, linked_to will be same as X, so they will also be
-marked as untrusted, and so on.
-
-For tp_btf/LSM programs, pointer arguments will be non-refcounted trusted
-PTR_TO_BTF_ID. All rules as above apply, but since it cannot be released,
-trusted pointers obtained from them remain valid till BPF_EXIT.
-
-I have no idea how much backwards compat this will break, or how much of it can
-be tolerated.
-
-> While with per-cpu approach you had to do
-> p_cpu = bpf_this_cpu_ptr(&prog_test_struct);
-> hack and rely on intimate knowledge of the kernel side.
->
-> > If you feel it's not worth it, I will drop it in the next version.
->
-> So far I see the downsides.
-> Also check the CI. test_progs-no_alu32 fails:
-> test_map_kptr_fail_prog:PASS:map_kptr__load must fail 0 nsec
-> test_map_kptr_fail_prog:FAIL:expected error message unexpected error: -22
-> Expected: Unreleased reference id=5 alloc_insn=18
-> Verifier: 0: R1=ctx(off=0,imm=0) R10=fp0
-
-Yes, noticed that. It is because alloc_insn= is different for no_alu32. I'll
-drop the matching on specific insn idx number.
-
-Thanks for your feedback.
-
---
-Kartikeya
+Acked-by: David Vernet <void@manifault.com>
