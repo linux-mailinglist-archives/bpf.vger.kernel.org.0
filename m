@@ -2,239 +2,365 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CAD524019
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 00:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31F252409B
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 01:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348684AbiEKWLU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 18:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
+        id S1349066AbiEKXPM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 11 May 2022 19:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236598AbiEKWKz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 18:10:55 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F6013D78
-        for <bpf@vger.kernel.org>; Wed, 11 May 2022 15:10:52 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24BJg68Y009582;
-        Wed, 11 May 2022 15:10:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=MIQrVisolR9Q116+feuAMLPphIw08fsIDqoc7EjD79w=;
- b=PY+8DoCsaisXIez47DiHvhErJbpa6r9T0m4zSjsKp4zwO6G/jvQsfYhNx3nBrixpjpaY
- B7LROmCvxiK0jUmzIuAS+iw/3X5xfDoGDuJwhdUjBI0rqOAWfybPSxhWI+Nwl1Cn4wG5
- ZnxnBW5lJfSkpyQYNyXFpPYRAzDbN3Dr/5M= 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3fyx1h92xf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 11 May 2022 15:10:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WAG4vffaOGzWTPQxGf3EqFmbNTY1Bmh6hbUcl1JptAhKnagHo5jtp7b1ocX70XFr/3DRBvikmSRrrgY69HMcyRo535+mZNOypTyDQXEorFmZpBq6scfSxEXCq0pgrE1LsINRCpC1YGssOAKt9AjUHyj51+Ou5zVwfONEsOZk9DKeJHo38oAqeB4Xl5mdrkmaCR0L8MGiDA8J8HhMcbADxpJmu5mI3VOHqMqmng5kFqL2H7H6qSpGy26FVwA7gdMBvESpQlX4zFdlo5WtOvcHjN6jsLEV0VPV3h61frg8HSjuqitCro40zqjSC+p9eGtUzAd02kX6lQYfL6ZE1hfE/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MIQrVisolR9Q116+feuAMLPphIw08fsIDqoc7EjD79w=;
- b=W0oSNVOUpu64JeCAMMguoI39bSeZIdL8zHbrdYiRj+kg9gOdOFHbNLoqt3IYPyS0grn3IRCvE1P+t7toKr9sbhURJmXfqE5l3W5TZwhpmX50a3Xp7h2SEwMotEOHunVkrGJWktZ67RfwG0QXNybvvVbub1EW+so4/vWcgcdgGVA9iU4YcP9z10NCZt/n2UJZCbE3vjr6OE1NfYYW5OxqZv2yj5DMDxWdTf0GxMP0Q2F5Zp+WY1R9/GpzXpHI7qXpuUkzxvCxU3zyZI0NcZXWCgQzk3aRh7xI1HWoMWdf3bJsjYMyNMfartgxLCdXMRBUo5j9lSouMGM7yNFmr5GFFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
- by SA1PR15MB5094.namprd15.prod.outlook.com (2603:10b6:806:1dd::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.13; Wed, 11 May
- 2022 22:10:34 +0000
-Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
- ([fe80::29c5:e5e5:39e5:7df6]) by DM5PR1501MB2055.namprd15.prod.outlook.com
- ([fe80::29c5:e5e5:39e5:7df6%6]) with mapi id 15.20.5227.023; Wed, 11 May 2022
- 22:10:34 +0000
-Message-ID: <a5f32630-85e3-f9c6-3afc-e6e862b9a820@fb.com>
-Date:   Wed, 11 May 2022 15:10:32 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix a few clang compilation
- errors
-Content-Language: en-US
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-References: <20220511184735.3670214-1-yhs@fb.com>
- <20220511190841.4oxswcsebp7teaa3@dev0025.ash9.facebook.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220511190841.4oxswcsebp7teaa3@dev0025.ash9.facebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: SJ0PR13CA0071.namprd13.prod.outlook.com
- (2603:10b6:a03:2c4::16) To DM5PR1501MB2055.namprd15.prod.outlook.com
- (2603:10b6:4:a1::13)
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7184cc91-2b36-499d-2388-08da339b122e
-X-MS-TrafficTypeDiagnostic: SA1PR15MB5094:EE_
-X-Microsoft-Antispam-PRVS: <SA1PR15MB5094350E956B6211745147ADD3C89@SA1PR15MB5094.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eP27x9+zg8MFsl8eg3L8AS+HeegNrzL6fbY1MOc/vsNxEVdLhXW5QFPw9Km267e6lOR7zKsmQgcnWe5puUy9CxTYKjlG4DcjPBuQc3ODpHPGZPt1SI6hetjVo2a4WpjNLmjtjhNoSnsE3i6y9gJtGy0I2jd4/dmwfEmWV63q7FYtc4YEi/4toW2Hyy1QwxG+YZzkFVYn+Q2sMsSzC+BFsA/89Ttk/WcG9ekShkbiH5sXKG2PQewMtt18iFL60lmQjZcI1v4qCR8HcKF8h7y3AFbzaC5v6jizbv/CLU+00mA4FReXV6ekoF0oX5dlaMWPMfXQ+QRi3ugT6B8qKnNlvSzBPL1WpkzHncI5E8N9Z3FkYjEc9EDFklST0YXd1VDBnmsFRWbYDw6Ye/o97vpnpY4onAVJ8xsMakAair19tHmj/brtwkZIQ9y30NNertUpX/cb8Q9X80QzF8H7AVUhJE+OmYoibiIhPdvkaaTWrcCamJRgjPwKJz+6QZx7vjHFCoBeW2b/sAgeHuIT/b/weEpsSD1IINXn15omjDrNJX9w1zUJkIg04rVZrHWB0uYep/iJHgb11fvX+hO2Juf0Wet2EktweRu8W4JJ2GJs731wZr+uvCeZ33ugmo+pecvC5JAw6pC4b6QXv7ks3UWpZy3tT+HHLMjN7EstfbYIU8k/wXQ0QmQ3/2YqCHQwht4Cz27SnQDFOaGLRUFGI4J4vZ3Uc0RSzMUSKNVAIfsHKjCObZVDqCr1OjbTnNGyVVNQ3Gv5DZDYspOPl1vpXgBq/S3fqHGAgVlx3rOyV3lkpVP2OWbJeiWwmTR+pnBxq9Cr
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(53546011)(38100700002)(186003)(52116002)(6506007)(54906003)(86362001)(966005)(508600001)(6486002)(66946007)(2616005)(4326008)(8936002)(66556008)(8676002)(66476007)(6512007)(316002)(6916009)(31686004)(36756003)(83380400001)(5660300002)(2906002)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U0VxeEpLbUFFcG9oQ0xnU0M1V0JzUnB4dzkyT25mTXZlUndQLzVFcXIwUFRD?=
- =?utf-8?B?ZU9XcDJobDlhNDg0NXdOaWtCK1lOdDloU2NKYTQvWTNZRmhTYTdoMnJSUXNz?=
- =?utf-8?B?TmhKNk1RV0dLYVhLUUc3STMwQmlzZUpjek1PNHlJM1V5WEpNVUo1cWt6ajZr?=
- =?utf-8?B?dm5yY1M3OXRsbWpqN1ZqWjJweHVlUWRNS2tqS1VZTTdaR0tyajNDM3NCa0c2?=
- =?utf-8?B?b3oxSkE5U2ZTRnpqc0dYSFlqbFhJc0JiZDdxcXJMVHJ6SzVwbmZlS0c1dmpi?=
- =?utf-8?B?amNrNVZNMUhMVUlyY2xoQ0xRVzdNRnNWa3NUUFJUMVNaZXRydXNsN25qVGFr?=
- =?utf-8?B?STlrTG9SZDZqZStNc2U5a3lJNmRWMUhWT2dLZzJDbHh5elZJMmp1eUN3dTh1?=
- =?utf-8?B?L0VjdE5YQkZOaUtuSVd2YWg0NEJ5bmJoeDA3SlQva3NjWXc5SDZyZGx1ZXI2?=
- =?utf-8?B?K1lsSlF6TzNBMGxWM3gvV3U0SGRrOTB6VEkxOThDSjdSTDM2YmR4cXJhR0g1?=
- =?utf-8?B?VUc3MEZkN29vWEtrWkZNRURTZVRaVENEUFVuRGtUOVdPK3hMR1UwMEJFemJh?=
- =?utf-8?B?R1NsQzR4akNjV3FoQ3h4WGRvOGxMbzNpRmRUbFNZZ1NKWDc2YW4vekREbWYw?=
- =?utf-8?B?VXdXa1NhMjJlTnpqMlBSYm1hVHQzZ0FzdW5CbWFFdnAyNDR2YURXSkdQVTV5?=
- =?utf-8?B?ZHZuVmVCWTZ2UWlmMnkxRzNNMmt5VWV6dWlHbDBpVHBCbTRhaEp5bkFJYTVZ?=
- =?utf-8?B?aU1JYjB1RjF0OE9TbUlnaW9LOXJkWVd1UlJCV2h2RVNLc2JIamdpdCtHY2ww?=
- =?utf-8?B?QkswMFhsNlQ4aDM1akQzamNXT3I4dGVDYzQ3SW9LSmpHeEZoYXppYUx4OFMw?=
- =?utf-8?B?aWw3cUgxMlV3NHpyaDZZbERVN3lxcWhxdmgzTFhlanFSM2V0U2hnNS9nUWhR?=
- =?utf-8?B?ZW94RWt4QVVHQ1BNSnQxMzdoUWdhd0E3WGRQb3Fic1dKNGMyV1VWeU9UTjk3?=
- =?utf-8?B?OWRRT21VbVl2UytLU0JWaDgvSnpYYnhjZ1RwZ0lvbnRDcnNxeVoxTGpZTlhK?=
- =?utf-8?B?UlBRL3RHdlVSeitpcDBlRVBIc3NRaXN6U3p0UVNvcWIwUjlmcncrSjhZMlVG?=
- =?utf-8?B?R2t6dVVaTDM0aldlTTk1OGtrQXJ6cWc1T0ZCbC84Z2ZKMmRBd0ZtWWNXcmtS?=
- =?utf-8?B?TkRKVHEraVJYbXlSK09HbUlVZEJBMEs4bk5ZWk1FdWdFUmNyRXR3VFVvOXdt?=
- =?utf-8?B?R2pnVkhDa1h3dkE4M1dBTllRVWNIRWRpZ3h6YTFhbnc1L1ZnV0h3Uk5tdFFY?=
- =?utf-8?B?VXNyMUF5YjUvOGtHa1R0ZGpLRksyckR1NFZ1d1N4amdIV3hJSXZ4Rm0ycjRh?=
- =?utf-8?B?WXJhZ3dlWk5iT0xnQXJFbHBIUWtsbFExRTdZNGpzSTJmU0NDeVBYRkJack1P?=
- =?utf-8?B?RXRDYjFISG9KNk9NV2Ftdm45WDdPL3FuQjArR0VlRlNERWRwVFNjYmtlcXZq?=
- =?utf-8?B?blVPdkV4NVhJTzJIYkE4Zk14TU5UL2VBVWNuSnd3aHBHdWg2MHhaMDNIamlU?=
- =?utf-8?B?enYrQlAralBSNFlOSG0yVWRRSzhLSXcrYlFIcTNoeW9ZVFBkR3FNWWxyaSsw?=
- =?utf-8?B?bGMzYTAvWFlQYjVFY1RQTFJEb2VINkx4dDA1azMvVjM3SW53aDNrV0w4RVhL?=
- =?utf-8?B?R0duMFJkMHU3aXVNa2dBbHc3YitMQWIzL0t5YUgwckxRNURXRnplODVtY3JR?=
- =?utf-8?B?K3VNWFdoMExtUS9jaGpwSHZCWU1vSytjeHl0anNDTGp2dlVRWllqNzQrajRX?=
- =?utf-8?B?S2hrcnFheVo2dDNHeFpQYS9OclNqT3NjdmRBWmU3bi92YVJ1WVRmdlphSmV4?=
- =?utf-8?B?L0tDSk9VYzVrMVNLS0h2NFFOb1lZbGMvb2Rab0NycDVTbG55bTFKYU94SFpO?=
- =?utf-8?B?akVxckMxTXVsZVFQNUw3eFNuSFNpclExcTJxaXRtWjRpV25vVWNhQ3hPcWlM?=
- =?utf-8?B?ZHpkYmtDNnpPdkI0YTRFUjBRQW8wWm81SzcrSzQ3Tll0QlV6YVlOZFVMNVVK?=
- =?utf-8?B?eUNOckhRNWVqZmwvblpQSWtLcVR1eHFMVmFwVEsvWEVhd0lnaDBZbmJNUGVk?=
- =?utf-8?B?dXNFZEJKNlBjTmRoaGFZc0gwWStKc2c1Y1dCanVkSTNnNGZlb09ha1E2NTEx?=
- =?utf-8?B?bXRDZXdDS2MzZXhwZGJQZGY2SFU4SWNURDhLeUtHWEgvQ2dkNWIyclEvSG9y?=
- =?utf-8?B?V01vUEtnNGVkRDBCMldSTXFKWHVKV2RWZTVDNkt1MlpPajVYYmRqbzdscGRx?=
- =?utf-8?B?U1hUZjRtMEczTktYNGthVHRwdWxJSFRDWjF6S0JPNTZDMlViNmJOVEh4QVVw?=
- =?utf-8?Q?BFMbeFhuR1/Jp5ug=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7184cc91-2b36-499d-2388-08da339b122e
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2022 22:10:34.7432
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4sZs7x22gYVZuhoXfjUOri6IRp3ExAGC5GCbdnFx6Dtxig+czyM14pKNad9XFv8v
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5094
-X-Proofpoint-GUID: R3o4Yr5H-N3PitnFRfUrPklASZlv8dHl
-X-Proofpoint-ORIG-GUID: R3o4Yr5H-N3PitnFRfUrPklASZlv8dHl
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S245684AbiEKXPK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 19:15:10 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BF316A13F
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:15:09 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24BMwb0F001891
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:15:08 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g0gat33th-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:15:08 -0700
+Received: from twshared3657.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 11 May 2022 16:15:06 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 43EA219CA27A5; Wed, 11 May 2022 16:14:55 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 1/2] libbpf: add safer high-level wrappers for map operations
+Date:   Wed, 11 May 2022 16:14:47 -0700
+Message-ID: <20220511231448.571909-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: C0TScI_-T85g4oWzZulcrR6DRZGEGzeT
+X-Proofpoint-GUID: C0TScI_-T85g4oWzZulcrR6DRZGEGzeT
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-11_07,2022-05-11_01,2022-02-23_01
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add high-level API wrappers for most common and typical BPF map
+operations that works directly on instances of struct bpf_map * (so you
+don't have to call bpf_map__fd()) and validate key/value size
+expectations.
 
+These helpers require users to specify key (and value, where
+appropriate) sizes when performing lookup/update/delete/etc. This forces
+user to actually think and validate (for themselves) those. This is
+a good thing as user is expected by kernel to implicitly provide correct
+key/value buffer sizes and kernel will just read/write necessary amount
+of data. If it so happens that user doesn't set up buffers correctly
+(which bit people for per-CPU maps especially) kernel either randomly
+overwrites stack data or return -EFAULT, depending on user's luck and
+circumstances. These high-level APIs are meant to prevent such
+unpleasant and hard to debug bugs.
 
-On 5/11/22 12:08 PM, David Vernet wrote:
-> On Wed, May 11, 2022 at 11:47:35AM -0700, Yonghong Song wrote:
->> With latest clang, I got the following compilation errors:
->>    .../prog_tests/test_tunnel.c:291:6: error: variable 'local_ip_map_fd' is used uninitialized
->>       whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->>         if (attach_tc_prog(&tc_hook, -1, set_dst_prog_fd))
->>              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    .../bpf/prog_tests/test_tunnel.c:312:6: note: uninitialized use occurs here
->>          if (local_ip_map_fd >= 0)
->>              ^~~~~~~~~~~~~~~
->>    ...
->>    .../prog_tests/kprobe_multi_test.c:346:6: error: variable 'err' is used uninitialized
->>        whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->>          if (IS_ERR(map))
->>              ^~~~~~~~~~~
->>    .../prog_tests/kprobe_multi_test.c:388:6: note: uninitialized use occurs here
->>          if (err) {
->>              ^~~
->>
->> This patch fixed the above compilation errors.
-> 
-> I'd argue that these are real bugs that the compiler happens to have
-> caught, and that the patch should perhaps be framed as fixing them rather
-> than as avoiding compilation failures, but that might be unnecessarily
-> nit-picky and I don't feel strongly about it.
-> 
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 4 +++-
->>   tools/testing/selftests/bpf/prog_tests/test_tunnel.c       | 4 ++--
->>   2 files changed, 5 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
->> index 816eacededd1..586dc52d6fb9 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
->> @@ -343,8 +343,10 @@ static int get_syms(char ***symsp, size_t *cntp)
->>   		return -EINVAL;
->>   
->>   	map = hashmap__new(symbol_hash, symbol_equal, NULL);
->> -	if (IS_ERR(map))
->> +	if (IS_ERR(map)) {
->> +		err = libbpf_get_error(map);
->>   		goto error;
->> +	}
->>   
->>   	while (fgets(buf, sizeof(buf), f)) {
->>   		/* skip modules */
->> diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
->> index 071c9c91b50f..3bba4a2a0530 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
->> @@ -246,7 +246,7 @@ static void test_vxlan_tunnel(void)
->>   {
->>   	struct test_tunnel_kern *skel = NULL;
->>   	struct nstoken *nstoken;
->> -	int local_ip_map_fd;
->> +	int local_ip_map_fd = -1;
->>   	int set_src_prog_fd, get_src_prog_fd;
->>   	int set_dst_prog_fd;
->>   	int key = 0, ifindex = -1;
->> @@ -319,7 +319,7 @@ static void test_ip6vxlan_tunnel(void)
->>   {
->>   	struct test_tunnel_kern *skel = NULL;
->>   	struct nstoken *nstoken;
->> -	int local_ip_map_fd;
->> +	int local_ip_map_fd = -1;
->>   	int set_src_prog_fd, get_src_prog_fd;
->>   	int set_dst_prog_fd;
->>   	int key = 0, ifindex = -1;
->> -- 
->> 2.30.2
->>
-> 
-> I'm a bit surprised this ever successfully compiled. What version of clang
-> did you have to upgrade to in order to see this error? IIRC I've used
-> -Wsometimes-uninitialized on much older versions of clang.
+This patch also adds bpf_map_delete_elem_flags() low-level API and
+requires passing flags to bpf_map__delete_elem() API for consistency
+across all similar APIs, even though currently kernel doesn't expect any
+extra flags for BPF_MAP_DELETE_ELEM operation.
 
-I compiled with latest llvm-project source (llvm15 main branch).
-Since latest pahole (built from source) by default will do parallel
-dwarf parsing and btf generation when build vmlinux, you might need this 
-patch as well for pahole:
-   https://lore.kernel.org/bpf/20220511220249.525908-1-yhs@fb.com/
+List of map operations that get these high-level APIs:
+  - bpf_map_lookup_elem;
+  - bpf_map_update_elem;
+  - bpf_map_delete_elem;
+  - bpf_map_lookup_and_delete_elem;
+  - bpf_map_get_next_key.
 
-> 
-> Anyways, looks good to me.
-> 
-> Acked-by: David Vernet <void@manifault.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/bpf.c      |  14 ++++++
+ tools/lib/bpf/bpf.h      |   1 +
+ tools/lib/bpf/libbpf.c   |  90 +++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf.h   | 104 +++++++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf.map |   6 +++
+ 5 files changed, 215 insertions(+)
+
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 5660268e103f..4677644d80f4 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -639,6 +639,20 @@ int bpf_map_delete_elem(int fd, const void *key)
+ 	return libbpf_err_errno(ret);
+ }
+ 
++int bpf_map_delete_elem_flags(int fd, const void *key, __u64 flags)
++{
++	union bpf_attr attr;
++	int ret;
++
++	memset(&attr, 0, sizeof(attr));
++	attr.map_fd = fd;
++	attr.key = ptr_to_u64(key);
++	attr.flags = flags;
++
++	ret = sys_bpf(BPF_MAP_DELETE_ELEM, &attr, sizeof(attr));
++	return libbpf_err_errno(ret);
++}
++
+ int bpf_map_get_next_key(int fd, const void *key, void *next_key)
+ {
+ 	union bpf_attr attr;
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 34af2232928c..2e0d3731e4c0 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -244,6 +244,7 @@ LIBBPF_API int bpf_map_lookup_and_delete_elem(int fd, const void *key,
+ LIBBPF_API int bpf_map_lookup_and_delete_elem_flags(int fd, const void *key,
+ 						    void *value, __u64 flags);
+ LIBBPF_API int bpf_map_delete_elem(int fd, const void *key);
++LIBBPF_API int bpf_map_delete_elem_flags(int fd, const void *key, __u64 flags);
+ LIBBPF_API int bpf_map_get_next_key(int fd, const void *key, void *next_key);
+ LIBBPF_API int bpf_map_freeze(int fd);
+ 
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4867a930628b..0ee3943aeaeb 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9949,6 +9949,96 @@ bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset)
+ 	return libbpf_err_ptr(-ENOTSUP);
+ }
+ 
++static int validate_map_op(const struct bpf_map *map, size_t key_sz,
++			   size_t value_sz, bool check_value_sz)
++{
++	if (map->fd <= 0)
++		return -ENOENT;
++	if (map->def.key_size != key_sz)
++		return -EINVAL;
++
++	if (!check_value_sz)
++		return 0;
++
++	switch (map->def.type) {
++	case BPF_MAP_TYPE_PERCPU_ARRAY:
++	case BPF_MAP_TYPE_PERCPU_HASH:
++	case BPF_MAP_TYPE_LRU_PERCPU_HASH:
++	case BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE:
++		if (value_sz != libbpf_num_possible_cpus() * roundup(map->def.value_size, 8))
++			return -EINVAL;
++		break;
++	default:
++		if (map->def.value_size != value_sz)
++			return -EINVAL;
++		break;
++	}
++	return 0;
++}
++
++int bpf_map__lookup_elem(const struct bpf_map *map,
++			 const void *key, size_t key_sz,
++			 void *value, size_t value_sz, __u64 flags)
++{
++	int err;
++
++	err = validate_map_op(map, key_sz, value_sz, true);
++	if (err)
++		return libbpf_err(err);
++
++	return bpf_map_lookup_elem_flags(map->fd, key, value, flags);
++}
++
++int bpf_map__update_elem(const struct bpf_map *map,
++			 const void *key, size_t key_sz,
++			 const void *value, size_t value_sz, __u64 flags)
++{
++	int err;
++
++	err = validate_map_op(map, key_sz, value_sz, true);
++	if (err)
++		return libbpf_err(err);
++
++	return bpf_map_update_elem(map->fd, key, value, flags);
++}
++
++int bpf_map__delete_elem(const struct bpf_map *map,
++			 const void *key, size_t key_sz, __u64 flags)
++{
++	int err;
++
++	err = validate_map_op(map, key_sz, 0, false /* check_value_sz */);
++	if (err)
++		return libbpf_err(err);
++
++	return bpf_map_delete_elem_flags(map->fd, key, flags);
++}
++
++int bpf_map__lookup_and_delete_elem(const struct bpf_map *map,
++				    const void *key, size_t key_sz,
++				    void *value, size_t value_sz, __u64 flags)
++{
++	int err;
++
++	err = validate_map_op(map, key_sz, value_sz, true);
++	if (err)
++		return libbpf_err(err);
++
++	return bpf_map_lookup_and_delete_elem_flags(map->fd, key, value, flags);
++}
++
++int bpf_map__get_next_key(const struct bpf_map *map,
++			  const void *cur_key, void *next_key, size_t key_sz)
++{
++	int err;
++
++	err = validate_map_op(map, key_sz, 0, false /* check_value_sz */);
++	if (err)
++		return libbpf_err(err);
++
++	return bpf_map_get_next_key(map->fd, cur_key, next_key);
++}
++
+ long libbpf_get_error(const void *ptr)
+ {
+ 	if (!IS_ERR_OR_NULL(ptr))
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 21984dcd6dbe..9e9a3fd3edd8 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -990,6 +990,110 @@ LIBBPF_API int bpf_map__unpin(struct bpf_map *map, const char *path);
+ LIBBPF_API int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd);
+ LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
+ 
++/**
++ * @brief **bpf_map__lookup_elem()** allows to lookup BPF map value
++ * corresponding to provided key.
++ * @param map BPF map to lookup element in
++ * @param key pointer to memory containing bytes of the key used for lookup
++ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
++ * @param value pointer to memory in which looked up value will be stored
++ * @param value_sz size in byte of value data memory; it has to match BPF map
++ * definition's **value_size**. For per-CPU BPF maps value size has to be
++ * a product of BPF map value size and number of possible CPUs in the system
++ * (could be fetched with **libbpf_num_possible_cpus()**). Note also that for
++ * per-CPU values value size has to be aligned up to closest 8 bytes for
++ * alignment reasons, so expected size is: `round_up(value_size, 8)
++ * * libbpf_num_possible_cpus()`.
++ * @flags extra flags passed to kernel for this operation
++ * @return 0, on success; negative error, otherwise
++ *
++ * **bpf_map__lookup_elem()** is high-level equivalent of
++ * **bpf_map_lookup_elem()** API with added check for key and value size.
++ */
++LIBBPF_API int bpf_map__lookup_elem(const struct bpf_map *map,
++				    const void *key, size_t key_sz,
++				    void *value, size_t value_sz, __u64 flags);
++
++/**
++ * @brief **bpf_map__update_elem()** allows to insert or update value in BPF
++ * map that corresponds to provided key.
++ * @param map BPF map to insert to or update element in
++ * @param key pointer to memory containing bytes of the key
++ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
++ * @param value pointer to memory containing bytes of the value
++ * @param value_sz size in byte of value data memory; it has to match BPF map
++ * definition's **value_size**. For per-CPU BPF maps value size has to be
++ * a product of BPF map value size and number of possible CPUs in the system
++ * (could be fetched with **libbpf_num_possible_cpus()**). Note also that for
++ * per-CPU values value size has to be aligned up to closest 8 bytes for
++ * alignment reasons, so expected size is: `round_up(value_size, 8)
++ * * libbpf_num_possible_cpus()`.
++ * @flags extra flags passed to kernel for this operation
++ * @return 0, on success; negative error, otherwise
++ *
++ * **bpf_map__update_elem()** is high-level equivalent of
++ * **bpf_map_update_elem()** API with added check for key and value size.
++ */
++LIBBPF_API int bpf_map__update_elem(const struct bpf_map *map,
++				    const void *key, size_t key_sz,
++				    const void *value, size_t value_sz, __u64 flags);
++
++/**
++ * @brief **bpf_map__delete_elem()** allows to delete element in BPF map that
++ * corresponds to provided key.
++ * @param map BPF map to delete element from
++ * @param key pointer to memory containing bytes of the key
++ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
++ * @flags extra flags passed to kernel for this operation
++ * @return 0, on success; negative error, otherwise
++ *
++ * **bpf_map__delete_elem()** is high-level equivalent of
++ * **bpf_map_delete_elem()** API with added check for key size.
++ */
++LIBBPF_API int bpf_map__delete_elem(const struct bpf_map *map,
++				    const void *key, size_t key_sz, __u64 flags);
++
++/**
++ * @brief **bpf_map__lookup_and_delete_elem()** allows to lookup BPF map value
++ * corresponding to provided key and atomically delete it afterwards.
++ * @param map BPF map to lookup element in
++ * @param key pointer to memory containing bytes of the key used for lookup
++ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
++ * @param value pointer to memory in which looked up value will be stored
++ * @param value_sz size in byte of value data memory; it has to match BPF map
++ * definition's **value_size**. For per-CPU BPF maps value size has to be
++ * a product of BPF map value size and number of possible CPUs in the system
++ * (could be fetched with **libbpf_num_possible_cpus()**). Note also that for
++ * per-CPU values value size has to be aligned up to closest 8 bytes for
++ * alignment reasons, so expected size is: `round_up(value_size, 8)
++ * * libbpf_num_possible_cpus()`.
++ * @flags extra flags passed to kernel for this operation
++ * @return 0, on success; negative error, otherwise
++ *
++ * **bpf_map__lookup_and_delete_elem()** is high-level equivalent of
++ * **bpf_map_lookup_and_delete_elem()** API with added check for key and value size.
++ */
++LIBBPF_API int bpf_map__lookup_and_delete_elem(const struct bpf_map *map,
++					       const void *key, size_t key_sz,
++					       void *value, size_t value_sz, __u64 flags);
++
++/**
++ * @brief **bpf_map__get_next_key()** allows to iterate BPF map keys by
++ * fetching next key that follows current key.
++ * @param map BPF map to fetch next key from
++ * @param cur_key pointer to memory containing bytes of current key or NULL to
++ * fetch the first key
++ * @param next_key pointer to memory to write next key into
++ * @param key_sz size in bytes of key data, needs to match BPF map definition's **key_size**
++ * @return 0, on success; -ENOENT if **cur_key** is the last key in BPF map;
++ * negative error, otherwise
++ *
++ * **bpf_map__get_next_key()** is high-level equivalent of
++ * **bpf_map_get_next_key()** API with added check for key size.
++ */
++LIBBPF_API int bpf_map__get_next_key(const struct bpf_map *map,
++				     const void *cur_key, void *next_key, size_t key_sz);
++
+ /**
+  * @brief **libbpf_get_error()** extracts the error code from the passed
+  * pointer
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 008da8db1d94..6b36f46ab5d8 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -443,7 +443,13 @@ LIBBPF_0.7.0 {
+ LIBBPF_0.8.0 {
+ 	global:
+ 		bpf_map__autocreate;
++		bpf_map__get_next_key;
++		bpf_map__delete_elem;
++		bpf_map__lookup_and_delete_elem;
++		bpf_map__lookup_elem;
+ 		bpf_map__set_autocreate;
++		bpf_map__update_elem;
++		bpf_map_delete_elem_flags;
+ 		bpf_object__destroy_subskeleton;
+ 		bpf_object__open_subskeleton;
+ 		bpf_program__attach_kprobe_multi_opts;
+-- 
+2.30.2
+
