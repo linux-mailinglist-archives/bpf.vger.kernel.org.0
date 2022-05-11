@@ -2,88 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE6C523737
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 17:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C565237EB
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 17:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343645AbiEKP0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 11:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
+        id S244317AbiEKP67 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 11:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343633AbiEKP0k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 11:26:40 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB63B377E7;
-        Wed, 11 May 2022 08:26:39 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id f3so2344639qvi.2;
-        Wed, 11 May 2022 08:26:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q7Ehf8HVMk4hFN0gtPFwkycDqnQI5Sc0W9LhYQbeDYM=;
-        b=LmYZT/lJddRubn1os+gEg6veGjF+5UlCsck5gVQNemN17Y4loTgv+VdRdwbmEc0Wk8
-         Ir6mmtSK0EtnnVZROY/a39iIs9jGNW+YCvMPsk/SzOwy544uHqEPevezVFHwRU5Mq81E
-         JjsQuN/SAQiVsfPUDdgrxpUYasG2lvlg8RVr51yQd/q2SVL3bQi8IslwFmZCGXZ9FNfQ
-         SZFq08k/l6r+jHDofbsAv33vEt5LvgCh6DOwkaLIE6NPDqKKu4WzbddhTP1vLhZOWrZu
-         sjBqV2KpTNWAZKAxnlakivDQBdkbTC/O+QyQO8fV3eAsveNbCSaMx4RQ33+hk6bau+KP
-         F3FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q7Ehf8HVMk4hFN0gtPFwkycDqnQI5Sc0W9LhYQbeDYM=;
-        b=1cK0xAkNEH2psqhOZ9aRB33aLe2wIPdhbUUIzt7CDmcn6lhIwNovkkPt/2YMZBDClS
-         Sx82XACVasjK7nBxVBAjkeIaPQ9xn+ykF93ZAYAvm1TgQ2mbCG0kM8vfKcxkoM1cT94S
-         dpR3O4myUn1p8td48jF8Vmjjs6QnRGv/vWvPaR+bkZCl0YHZ+yX/10YIYwoEHV4aRvlY
-         WrEMdL+0Rn71NiPxvb/f/gPtekkkbAgou9+91BaYY+NSBghpVRlGzGDiwbaFvmrNCkmn
-         dGn+Bv7wQ79jMO4fEs1vJFiHNL4OQtbGmKglR52hh8Fu8bRzDf+3XL6NyGlMR5n0G5vH
-         TQ8w==
-X-Gm-Message-State: AOAM532WpkCWegzJ+RTK/3CKsML1hfuWks3+NLPnYhRpBgK7Jvj035cR
-        DYhVlBsmE5XHzgPuqEpD8LOoZKFSWTV8m19/QpM=
-X-Google-Smtp-Source: ABdhPJwF57CnU/d5s+HYeo9V1/sXiaWr5X3zghUeHL0tHGbsDb4LSmLiBNA0xY9qvPjlaf7oIXvd7zm3n1aOgrDKtKg=
-X-Received: by 2002:ad4:5ca3:0:b0:45a:89fb:3795 with SMTP id
- q3-20020ad45ca3000000b0045a89fb3795mr22749487qvh.63.1652282798755; Wed, 11
- May 2022 08:26:38 -0700 (PDT)
+        with ESMTP id S239167AbiEKP66 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 11:58:58 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4EC1505CF;
+        Wed, 11 May 2022 08:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kqE02dzRDRl7y2hgIY6W5nVbBS7sf7V+wbQ6b8v+gJ4=; b=vhAiG6IbQmevUMxUAN1yhan8tW
+        TQZT32pMZ4EJw3FKFbL+aCbeAGhRfWxCJg6N+4E/ZAACkM36RAO5ZV2H8/HfToxP8RmDsuBlLSkhJ
+        oCP639Pt/VSPnuGF81eSGXaoP+0o9afSBYunOzV8NoeJ6Cum9FWEjLn9Xmf4V8WJgJMr5h5ZlkDmz
+        JgBi8mwBumCFkp9OvSpl/gfS65rtNCOdVvdaWNfJkx/nKpYy6fWhmhCa2Oa7bXg2WmzULLyAgLLM4
+        gD4UdRK+5WNOyk4efWNgM1Pyu9SQTIiDiYukoMcyhGxDI5Lcu60Qt7O2dRJ9dkjt+vjI1BOZsJTnb
+        VrKvxQxg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1noojg-007gQb-4R; Wed, 11 May 2022 15:58:48 +0000
+Date:   Wed, 11 May 2022 08:58:48 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     songliubraving@fb.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] bpf.h: fix clang compiler warning with
+ unpriv_ebpf_notify()
+Message-ID: <YnvdOAaYmhNiA5WN@bombadil.infradead.org>
+References: <20220509203623.3856965-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-References: <1327f8f5696ff2bc60400e8f3b79047914ccc837.1651595019.git.lorenzo@kernel.org>
-In-Reply-To: <1327f8f5696ff2bc60400e8f3b79047914ccc837.1651595019.git.lorenzo@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 11 May 2022 08:26:27 -0700
-Message-ID: <CAADnVQK+1hOAZR-k1tQ6sNyhx-4pcKMp72uPuApC8KnSqzXdcQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] net: netfilter: add kfunc helper to update ct timeout
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220509203623.3856965-1-mcgrof@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 3, 2022 at 9:29 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->
-> Introduce bpf_ct_refresh_timeout kfunc helper in order to update time
-> nf_conn lifetime. Move timeout update logic in nf_ct_refresh_timeout
-> utility routine.
->
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+On Mon, May 09, 2022 at 01:36:23PM -0700, Luis Chamberlain wrote:
+> The recent commit "bpf: Move BPF sysctls from kernel/sysctl.c to BPF core"
+> triggered 0-day to issue an email for what seems to have been an old
+> clang warning. So this issue should have existed before as well, from
+> what I can tell. The issue is that clang expects a forward declaration
+> for routines declared as weak while gcc does not.
+> 
+> This can be reproduced with 0-day's x86_64-randconfig-c007
+> https://download.01.org/0day-ci/archive/20220424/202204240008.JDntM9cU-lkp@intel.com/config
+> 
+> And using:
+> 
+> COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 SHELL=/bin/bash kernel/bpf/syscall.o
+> Compiler will be installed in /home/mcgrof/0day
+> make --keep-going HOSTCC=/home/mcgrof/0day/clang/bin/clang CC=/home/mcgrof/0day/clang/bin/clang LD=/home/mcgrof/0day/clang/bin/ld.lld HOSTLD=/home/mcgrof/0day/clang/bin/ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-size READELF=llvm-readelf HOSTCXX=clang++ HOSTAR=llvm-ar CROSS_COMPILE=x86_64-linux-gnu- --jobs=24 W=1 ARCH=x86_64 SHELL=/bin/bash kernel/bpf/syscall.o
+>   DESCEND objtool
+>   CALL    scripts/atomic/check-atomics.sh
+>   CALL    scripts/checksyscalls.sh
+>   CC      kernel/bpf/syscall.o
+> kernel/bpf/syscall.c:4944:13: warning: no previous prototype for function 'unpriv_ebpf_notify' [-Wmissing-prototypes]
+> void __weak unpriv_ebpf_notify(int new_state)
+>             ^
+> kernel/bpf/syscall.c:4944:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> void __weak unpriv_ebpf_notify(int new_state)
+> ^
+> static
+> 
+> Fixes: 2900005ea287 ("bpf: Move BPF sysctls from kernel/sysctl.c to BPF core")
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+> 
+> Daniel,
+> 
+> Given what we did fore 2900005ea287 ("bpf: Move BPF sysctls from
+> kernel/sysctl.c to BPF core") where I had pulled pr/bpf-sysctl a
+> while ago into sysctl-next and then merged the patch in question,
+> should I just safely carry this patch onto sysctl-next? Let me know
+> how you'd like to proceed.
+> 
+> Also, it wasn't clear if putting this forward declaration on
+> bpf.h was your ideal preference.
 
-Looks good, but selftest and Ack from Kumar is needed.
+After testing this on sysctl-testing without issues going to move this
+to sysctl-next now.
+
+  Luis
