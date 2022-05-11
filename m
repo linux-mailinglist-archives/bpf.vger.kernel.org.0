@@ -2,107 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8825228AD
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 03:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F865228AA
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 03:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239955AbiEKBKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 May 2022 21:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
+        id S239965AbiEKBKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 May 2022 21:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239940AbiEKBKV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 May 2022 21:10:21 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE8B21553E;
-        Tue, 10 May 2022 18:10:19 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        with ESMTP id S233586AbiEKBKR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 May 2022 21:10:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336E621330F
+        for <bpf@vger.kernel.org>; Tue, 10 May 2022 18:10:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4KycK145GZz4xR1;
-        Wed, 11 May 2022 11:10:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1652231415;
-        bh=/50pI0KRJ589VMgCiJQAiMLEFbliv21CbjUjnNtZiPA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=C1IctHzFNLEjbF+bo+9BwpBiCrwgjM17YB1Yzpxy0/enrkLyxo6VE3N4aTH6O5/5I
-         6DjLWSL2xFeat8Y2Eg+vxYa8YEqmrW7bD+BnMmR//LcpwKFH1wiU+W7s0KphUsurjn
-         nMyS21z4lt7wF37XTDXOswFcBpBFI6WoW4IPAMXWKSRDG+uoWw2agLnPPcEzrrA8pq
-         swathpHuVvjWHsHclj5UabQsFpoRacZ85S3/6xjPBWn+EE8nLQRCbDr3ePTU5BrsPT
-         P132Y9k7sgY2w6GNQYMMI/0G4btU45S66OmDSmaWjMokl160X65B87+4Ykm+5QbAGK
-         zmFazGykk+qAA==
-Date:   Wed, 11 May 2022 11:10:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        David Miller <davem@davemloft.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Subject: linux-next: manual merge of the bpf-next tree with the net-next
- tree
-Message-ID: <20220511111012.22c08135@canb.auug.org.au>
+        by ams.source.kernel.org (Postfix) with ESMTPS id CE89BB82075
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 01:10:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6DF95C385D6;
+        Wed, 11 May 2022 01:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652231413;
+        bh=wZBd8ULT1tYxaEQGSlPzf6YYCsL+7bdToDWewC4Db+4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=iA7nO7XQ/iXlEP/ANUDpDxH954uqE6bbUROlVUJVIU4E/GVXs1tUdT+H3cst0H2Xh
+         boM/2IOSQ6EzCR0b05okmNmlKpnZKbqNXY+DiXzzQ8J3IZt4nx76AHe19uvH8AT/IZ
+         iVriLzaEw6BLqw53OZmMaH7sk8fv+bVLa6JJQbUI0Q+u1n3XpOqcfpe3Or5Gbj9V4o
+         zsjcCgZAvxNt8CxHsiXiuugYCMy5BOIpgsinMN+mc3ixgaoxIfW8VZDpmFElCIDALC
+         gERC9yvoFdhIGAqG/0UgnnTZ2IijH10YfsfyJKUzB/UqZEe21mnw5V2NLhoIGn4s0l
+         5A0hy3wCPnUWg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 519FEF0392C;
+        Wed, 11 May 2022 01:10:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+e5uSlANdXi62TvsRbQbd.C";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v8 0/5] Attach a cookie to a tracing program.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165223141333.20219.2489454778876097764.git-patchwork-notify@kernel.org>
+Date:   Wed, 11 May 2022 01:10:13 +0000
+References: <20220510205923.3206889-1-kuifeng@fb.com>
+In-Reply-To: <20220510205923.3206889-1-kuifeng@fb.com>
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, xukuohai@huawei.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/+e5uSlANdXi62TvsRbQbd.C
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Today's linux-next merge of the bpf-next tree got a conflict in:
+On Tue, 10 May 2022 13:59:18 -0700 you wrote:
+> Allow users to attach a 64-bits cookie to a bpf_link of fentry, fexit,
+> or fmod_ret.
+> 
+> This patchset includes several major changes.
+> 
+>  - Define struct bpf_tramp_links to replace bpf_tramp_prog.
+>    struct bpf_tramp_links collects bpf_links of a trampoline
+> 
+> [...]
 
-  net/core/sysctl_net_core.c
+Here is the summary with links:
+  - [bpf-next,v8,1/5] bpf, x86: Generate trampolines from bpf_tramp_links
+    https://git.kernel.org/bpf/bpf-next/c/f7e0beaf39d3
+  - [bpf-next,v8,2/5] bpf, x86: Create bpf_tramp_run_ctx on the caller thread's stack
+    https://git.kernel.org/bpf/bpf-next/c/e384c7b7b46d
+  - [bpf-next,v8,3/5] bpf, x86: Attach a cookie to fentry/fexit/fmod_ret/lsm.
+    https://git.kernel.org/bpf/bpf-next/c/22c1d9a17b82
+  - [bpf-next,v8,4/5] libbpf: Assign cookies to links in libbpf.
+    https://git.kernel.org/bpf/bpf-next/c/3d5602b6d8b9
+  - [bpf-next,v8,5/5] selftest/bpf: The test cses of BPF cookie for fentry/fexit/fmod_ret/lsm.
+    https://git.kernel.org/bpf/bpf-next/c/f3273797de13
 
-between commits:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  bd8a53675c0d ("net: sysctl: use shared sysctl macro")
-  4c7f24f857c7 ("net: sysctl: introduce sysctl SYSCTL_THREE")
 
-from the net-next tree and commit:
-
-  f922c8972fb5 ("net: sysctl: Use SYSCTL_TWO instead of &two")
-
-from the bpf-next tree.
-
-I fixed it up (bd8a53675c0d and f922c8972fb5 delete the same line) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+e5uSlANdXi62TvsRbQbd.C
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmJ7DPQACgkQAVBC80lX
-0Gx1wQgAi7w6IumhPsHFhfGCD8bYRT3RWZ9nARJ/Fcq+05mEqjAo9UNWWw8uOZsH
-cUVBaDEXzgaD/LeH2T1bNYpFz9XF8kZzWpcWes4Zd7Ezl3sca3LaPXDPVC0I328y
-JBH6NJsVkvSctusAinAvBVwa6AYIN7n+NjIPLxkKvjXNtOBiSP22pz2p4BoVH7Vp
-hR5WoRizcb3AmICnekeHyJIX5x9CNJEB4t9UD83eEQTHG+rWnn3c1zTikUU1BCMW
-Yxkk6L5KzCMFYTh4uiLXHZwisZE8XFVXlWJIlHWPBRqNEyh3kNFYq1iBrTE8ANxr
-r1RPBL/zQps1b7upUbLNxQvNALaGtA==
-=gbic
------END PGP SIGNATURE-----
-
---Sig_/+e5uSlANdXi62TvsRbQbd.C--
