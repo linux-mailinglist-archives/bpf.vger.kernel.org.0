@@ -2,92 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30444523502
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 16:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08E75236BB
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 17:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238199AbiEKOIY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 10:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        id S245507AbiEKPKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 11:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237330AbiEKOIX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 10:08:23 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18F56971F;
-        Wed, 11 May 2022 07:08:22 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id u3so3188527wrg.3;
-        Wed, 11 May 2022 07:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6jHNhIsFp4kduaT2yzDM1C+aRYIR1whbjUh2B6pI8SQ=;
-        b=ki+e9B+flOmXxUYcJBP9bxaV3kq4Wac2vKzGA6BCZbEvrpMpEi5spJFrATDTNoypYu
-         XQ0ZXurwdBXhjDixj/4mB7hNtsczj2m1xNSbn7UNCezVXsKdgnfWufHQx1URjr3rydhl
-         iWDBn11jqQ060ydDyJBzNwKNr4fVz1SXR9cjWZewaJlZfqTmoJK9HED5nb14gd5E9i1r
-         qhwTjSHri2qLkIb1zdKWK7x6y712g7XUZBJEs2S3YtSbVcNOBTF/aYYEuYPDq3eIiyCO
-         togM8wU051aktMlPpcbDeXjO0SQ1INhZMjqV4XlGaktNkpUWlWiCFoQRVzgEzrg6VnMX
-         03sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6jHNhIsFp4kduaT2yzDM1C+aRYIR1whbjUh2B6pI8SQ=;
-        b=jbRTQdvFW/u4Bf4A8+QhiXer9oMVlMWNlD0Edg4kSqFg4mnz+6FbkD/mUa+15RKkW5
-         IO39WqAI8LpwCpIEJ/3rb+9ZdUTRgZRthqyJZk33w1opsRzG3nFMEYGTFajhlZsMDyXb
-         8nKE9VjeLD+D/+Y1ZUgburlAbclfU/IhEwAIFgWJuGihpu78VX6cVXMUuCElq87J1vOO
-         fn0E3D4XFTS2Eoue0W66jzOTPduSxXGv4TWdM117cTvT+Ri1r1Rro1Xd3dGI/K6vXK1o
-         /pXZccAyaYfbc2es0vzCBiCu0UYT/8v3ZD5Pry8muOTig9JRtUdQ3PIE/7hwbWMpTdVp
-         zicw==
-X-Gm-Message-State: AOAM531vlZZCg1mdcADPXcd+MlClOHTFnMy9+xDXQD0cKtU0ig2QB0eB
-        kuOO/0bx/iPJznE0CjES3rVRCmnmbG4qYYz6kpw=
-X-Google-Smtp-Source: ABdhPJzdUeNU3ksgOnYentscHO/iMG9lPOYZzjBIeZSgy49gmT7l/Poen8MG6Wu5mPHLrklE7pY0p5hRkRxMh5yDN/A=
-X-Received: by 2002:adf:decb:0:b0:20a:c975:8eec with SMTP id
- i11-20020adfdecb000000b0020ac9758eecmr23553299wrn.438.1652278101189; Wed, 11
- May 2022 07:08:21 -0700 (PDT)
+        with ESMTP id S245433AbiEKPKS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 11:10:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721695A5BA;
+        Wed, 11 May 2022 08:10:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0BA7B61868;
+        Wed, 11 May 2022 15:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5CA4FC34113;
+        Wed, 11 May 2022 15:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652281816;
+        bh=soPN5LRFKFxmnNGlcEbk3jFGK+X6i0ROLF9+M0KmYAo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=gPrWIN2qkvbljmyPVcdiS20qBHd47vg/pi0Ig7v7JVlCSJHklETCrGT1kx6Rrj0wp
+         eEeFONZbeeeecGMI35Uc/P0Qr9eUweAvPcqrEAlFwP0/En6D59wEF0VImzz+xbvuGV
+         VnKRbfB38tQI3AGfu02Q5D6OhTiYxM/jR0AXepHuHZMQQs8qdR7aCl+7SHbL63Z4fa
+         JfqbigwnoMAzs2KTCiAehGxtIAx9n8TGW9wqKpItKd7oXA3K7Uvw024kvV3ht1u+rG
+         Gk8EnV3KHINm+7aHC+MMfJ4Pt6fttrUn9gsCTbgO9ZRQOXtUX4uwlcy0Y28pGiT4Ez
+         oOYByjCqWIh1A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3D9CDF03932;
+        Wed, 11 May 2022 15:10:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220510115604.8717-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20220510115604.8717-1-magnus.karlsson@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 11 May 2022 16:08:09 +0200
-Message-ID: <CAJ+HfNgfS9-rrtUoqN5LeNMdQ+h5s=8f7UWmfOUox8Y5H=3_AQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH bpf-next 0/9] selftests: xsk: add busy-poll testing plus
  various fixes
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165228181624.5151.11091684511221899070.git-patchwork-notify@kernel.org>
+Date:   Wed, 11 May 2022 15:10:16 +0000
+References: <20220510115604.8717-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20220510115604.8717-1-magnus.karlsson@gmail.com>
 To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, yhs@fb.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 10 May 2022 at 13:56, Magnus Karlsson <magnus.karlsson@gmail.com> w=
-rote:
->
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Tue, 10 May 2022 13:55:55 +0200 you wrote:
 > This patch set adds busy-poll testing to the xsk selftests. It runs
 > exactly the same tests as with regular softirq processing, but with
 > busy-poll enabled. I have also included a number of fixes to the
 > selftests that have been bugging me for a while or was discovered
 > while implementing the busy-poll support. In summary these are:
->
+> 
+> * Fix the error reporting of failed tests. Each failed test used to be
+>   reported as both failed and passed, messing up things.
+> 
+> [...]
 
-Nice additions, and nice cleanups. Awesome, Magnus!
+Here is the summary with links:
+  - [bpf-next,1/9] selftests: xsk: cleanup bash scripts
+    https://git.kernel.org/bpf/bpf-next/c/685e64a3c91d
+  - [bpf-next,2/9] selftests: xsk: do not send zero-length packets
+    https://git.kernel.org/bpf/bpf-next/c/f3e619bb34d3
+  - [bpf-next,3/9] selftests: xsk: run all tests for busy-poll
+    https://git.kernel.org/bpf/bpf-next/c/f90062b53229
+  - [bpf-next,4/9] selftests: xsk: fix reporting of failed tests
+    https://git.kernel.org/bpf/bpf-next/c/895b62eed2ab
+  - [bpf-next,5/9] selftests: xsk: add timeout to tests
+    https://git.kernel.org/bpf/bpf-next/c/db1bd7a99454
+  - [bpf-next,6/9] selftests: xsk: cleanup veth pair at ctrl-c
+    https://git.kernel.org/bpf/bpf-next/c/d41cb6c47474
+  - [bpf-next,7/9] selftests: xsk: introduce validation functions
+    https://git.kernel.org/bpf/bpf-next/c/76c576638f5d
+  - [bpf-next,8/9] selftests: xsk: make the stats tests normal tests
+    https://git.kernel.org/bpf/bpf-next/c/4fec7028ffea
+  - [bpf-next,9/9] selftests: xsk: make stat tests not spin on getsockopt
+    https://git.kernel.org/bpf/bpf-next/c/27e934bec35b
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
