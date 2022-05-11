@@ -2,137 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41087523C66
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 20:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D096523CD3
+	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 20:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237718AbiEKSWp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 14:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S234674AbiEKSru (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 14:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346198AbiEKSWo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 14:22:44 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CE2166475;
-        Wed, 11 May 2022 11:22:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 17577B825E9;
-        Wed, 11 May 2022 18:22:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8235FC340EE;
-        Wed, 11 May 2022 18:22:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652293360;
-        bh=xTkJ7hCldhqfQm7/paFj5vKnMjCleEcRs+asiWSm+T0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u4c2lZE0GGyxKdOs+mCCjcLY3HibLrQzdFO+bmtL7XnBggFtrDiBtup6R7fxe9dxT
-         1rdX6cnFRJx4aLhybBk9e2PgQbuD8xI5hUz4ehupQzsAjF7F93kD4cIWciyOQqJ8pF
-         WSawUtJi6rLL/eY69RQ0yKoDnRwb/W2uNb/EmfdooJjNW67jjmhrhwuJFYezQovfdp
-         99RMxjD/aOgO8Bi2D3K8smUKAaDkdiyko4blIpV+Kc23Tw2mTKC1eZarHmH/c6gwGt
-         PlKbs6gVcimaPpVPXvfuL78EhjDhhaBborMmSb6hW71qh2zah4gRO8Q4DOS9lkrKyS
-         ZXwOvYbl6ONmA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 42EC1400B1; Wed, 11 May 2022 15:22:38 -0300 (-03)
-Date:   Wed, 11 May 2022 15:22:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S1346464AbiEKSrs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 14:47:48 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDCCD19322F
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 11:47:45 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24BGKhrS026259
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 11:47:44 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Ggphd/uinDmGR6gNcHzsA/wlZjwlxpYHWyaDKsZnOK0=;
+ b=prWmwp99sYJaJH28EzVPsWQrVhjK0WqxUpDEFGFs/DtB5uBGrzLWF0iCvDV7xFHIGEfq
+ J44bfB0vC/7QEONpUlVA5OxErhEW+8e7d/5Sx0tGHxaidIJ9kZbiSEXGG6lpQUvqsDl/
+ za+SsceXXcR531F/18cFW5Dp9daDpI/Lu4w= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g04tb51ah-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 11:47:44 -0700
+Received: from twshared16483.05.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 11 May 2022 11:47:41 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id A15CBA2AD043; Wed, 11 May 2022 11:47:35 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
-Message-ID: <Ynv+7iaaAbyM38B6@kernel.org>
-References: <20220510074659.2557731-1-jolsa@kernel.org>
- <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
- <YntnRixbfQ1HCm9T@krava>
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix a few clang compilation errors
+Date:   Wed, 11 May 2022 11:47:35 -0700
+Message-ID: <20220511184735.3670214-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YntnRixbfQ1HCm9T@krava>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: ElF02oHPM8POll0bfE_2A5UNolEMyp-M
+X-Proofpoint-ORIG-GUID: ElF02oHPM8POll0bfE_2A5UNolEMyp-M
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-11_07,2022-05-11_01,2022-02-23_01
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, May 11, 2022 at 09:35:34AM +0200, Jiri Olsa escreveu:
-> On Tue, May 10, 2022 at 04:48:55PM -0700, Andrii Nakryiko wrote:
-> > On Tue, May 10, 2022 at 12:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > hi,
-> > > sending change we discussed some time ago [1] to get rid of
-> > > some deprecated functions we use in perf prologue code.
-> > >
-> > > Despite the gloomy discussion I think the final code does
-> > > not look that bad ;-)
-> > >
-> > > This patchset removes following libbpf functions from perf:
-> > >   bpf_program__set_prep
-> > >   bpf_program__nth_fd
-> > >   struct bpf_prog_prep_result
-> > >
-> > > v2 changes:
-> > >   - use fallback section prog handler, so we don't need to
-> > >     use section prefix [Andrii]
-> > >   - realloc prog->insns array in bpf_program__set_insns [Andrii]
-> > >   - squash patch 1 from previous version with
-> > >     bpf_program__set_insns change [Daniel]
-> > >   - patch 3 already merged [Arnaldo]
-> > >   - added more comments
-> > >
-> > >   meanwhile.. perf/core and bpf-next diverged, so:
-> > >     - libbpf bpf_program__set_insns change is based on bpf-next/master
-> > >     - perf changes do not apply on bpf-next/master so they are based on
-> > >       perf/core ... however they can be merged only after we release
-> > >       libbpf 0.8.0 with bpf_program__set_insns change, so we don't break
-> > >       the dynamic linking
-> > >       I'm sending perf changes now just for review, I'll resend them
-> > >       once libbpf 0.8.0 is released
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> > >
-> > > [1] https://lore.kernel.org/bpf/CAEf4BzaiBO3_617kkXZdYJ8hS8YF--ZLgapNbgeeEJ-pY0H88g@mail.gmail.com/
-> > > ---
-> > > Jiri Olsa (1):
-> > >       libbpf: Add bpf_program__set_insns function
-> > >
-> > 
-> > The first patch looks good to me. The rest I can't really review and
-> > test properly, so I'll leave it up to Arnaldo.
-> > 
-> > Arnaldo, how do we coordinate these patches? Should they go through
-> > bpf-next (after you Ack them) or you want them in your tree?
-> > 
-> > I'd like to get the bpf_program__set_insns() patch into bpf-next so
-> > that I can do libbpf v0.8 release, having it in a separate tree is
-> > extremely inconvenient. Please let me know how you think we should
-> > proceed?
-> 
-> we need to wait with perf changes after the libbpf is merged and
-> libbpf 0.8.0 is released.. so we don't break dynamic linking for
-> perf
-> 
-> at the moment please just take libbpf change and I'll resend the
-> perf change later if needed
+With latest clang, I got the following compilation errors:
+  .../prog_tests/test_tunnel.c:291:6: error: variable 'local_ip_map_fd' i=
+s used uninitialized
+     whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+       if (attach_tc_prog(&tc_hook, -1, set_dst_prog_fd))
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  .../bpf/prog_tests/test_tunnel.c:312:6: note: uninitialized use occurs =
+here
+        if (local_ip_map_fd >=3D 0)
+            ^~~~~~~~~~~~~~~
+  ...
+  .../prog_tests/kprobe_multi_test.c:346:6: error: variable 'err' is used=
+ uninitialized
+      whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+        if (IS_ERR(map))
+            ^~~~~~~~~~~
+  .../prog_tests/kprobe_multi_test.c:388:6: note: uninitialized use occur=
+s here
+        if (err) {
+            ^~~
 
-Ok.
+This patch fixed the above compilation errors.
 
-- Arnaldo
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 4 +++-
+ tools/testing/selftests/bpf/prog_tests/test_tunnel.c       | 4 ++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b=
+/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+index 816eacededd1..586dc52d6fb9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+@@ -343,8 +343,10 @@ static int get_syms(char ***symsp, size_t *cntp)
+ 		return -EINVAL;
+=20
+ 	map =3D hashmap__new(symbol_hash, symbol_equal, NULL);
+-	if (IS_ERR(map))
++	if (IS_ERR(map)) {
++		err =3D libbpf_get_error(map);
+ 		goto error;
++	}
+=20
+ 	while (fgets(buf, sizeof(buf), f)) {
+ 		/* skip modules */
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools=
+/testing/selftests/bpf/prog_tests/test_tunnel.c
+index 071c9c91b50f..3bba4a2a0530 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+@@ -246,7 +246,7 @@ static void test_vxlan_tunnel(void)
+ {
+ 	struct test_tunnel_kern *skel =3D NULL;
+ 	struct nstoken *nstoken;
+-	int local_ip_map_fd;
++	int local_ip_map_fd =3D -1;
+ 	int set_src_prog_fd, get_src_prog_fd;
+ 	int set_dst_prog_fd;
+ 	int key =3D 0, ifindex =3D -1;
+@@ -319,7 +319,7 @@ static void test_ip6vxlan_tunnel(void)
+ {
+ 	struct test_tunnel_kern *skel =3D NULL;
+ 	struct nstoken *nstoken;
+-	int local_ip_map_fd;
++	int local_ip_map_fd =3D -1;
+ 	int set_src_prog_fd, get_src_prog_fd;
+ 	int set_dst_prog_fd;
+ 	int key =3D 0, ifindex =3D -1;
+--=20
+2.30.2
+
