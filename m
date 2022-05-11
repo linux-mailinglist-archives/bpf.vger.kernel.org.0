@@ -2,53 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 424A2523E29
-	for <lists+bpf@lfdr.de>; Wed, 11 May 2022 22:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F067523FDB
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 00:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235290AbiEKUAR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 16:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
+        id S236481AbiEKWC5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 18:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233767AbiEKUAQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 16:00:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613AD231090
-        for <bpf@vger.kernel.org>; Wed, 11 May 2022 13:00:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 89C7B619D9
-        for <bpf@vger.kernel.org>; Wed, 11 May 2022 20:00:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DE110C34115;
-        Wed, 11 May 2022 20:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652299213;
-        bh=WlBbhex+7AXOzZm5T+Pz5oT+Fv31kvKBwCQT70/ShiI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nPHSOaETf+113Ths+H+CXQNAO08XhpwW8/SGcBkUHR7RhkJt8273O76PgeLXjXWsC
-         fFaArNYHq9sBMvsJXXDYoIswj8MLKEXVlDPnE3FaeHow3hLn2TRdhakLRn7vqL775g
-         Sz2l5LPwkFpl5OFiAM1/v+4uQuizGSuga291BnkCCtOu8vSjyW4y5nocLjd/nCXkTm
-         I0giqhybIgLehrx8m/4c8O/g+1Re3w6x25FpHR1BcZFDdZPsMh+LPZvJChwBcYCgTa
-         slD0D6wJONcAQwak5fe5xwvXtkJuYpluy7GHhjodWW5bpOENPY7ObjdHItEPEaEIAJ
-         hX8RpjB7KyF7Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BB4DAF03931;
-        Wed, 11 May 2022 20:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S234242AbiEKWC4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 18:02:56 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768F313F5B
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 15:02:55 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24BJfw3F007788
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 15:02:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=BpSYOXyg6wnT7RS6o6SrXwZrXLpUQf9GZTa0R/0RJu4=;
+ b=FpVDJBxjffDE1AKMe7I0CIntf6qDOAVSVC2PEWPQh3vJ6TGEA1Ty7Wrt4WTe07EAqlop
+ 7+si63cvXFCNU+h4fYrsTfrWc+clN8Blzo6yteK3OPRTzqwRqUsNlccs1yURUzSAbbKr
+ YJbDN0/1mEUeaq8MAl1CEdlJz0425EhhCr0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g0gat2qnr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 15:02:54 -0700
+Received: from twshared8307.18.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 11 May 2022 15:02:53 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id C9078A2C7776; Wed, 11 May 2022 15:02:43 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <dwarves@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH dwarves 1/2] libbpf: Sync with latest libbpf repo
+Date:   Wed, 11 May 2022 15:02:43 -0700
+Message-ID: <20220511220243.525215-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix a few clang compilation errors
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165229921376.1053.858684231749172500.git-patchwork-notify@kernel.org>
-Date:   Wed, 11 May 2022 20:00:13 +0000
-References: <20220511184735.3670214-1-yhs@fb.com>
-In-Reply-To: <20220511184735.3670214-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: BJfCiPD00-1_VZaFPeFP9volUXs0g_7T
+X-Proofpoint-GUID: BJfCiPD00-1_VZaFPeFP9volUXs0g_7T
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-11_07,2022-05-11_01,2022-02-23_01
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,38 +63,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Sync up to commit 87dff0a2c775 (vmtest: allow building foreign debian roo=
+tfs).
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ lib/bpf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Wed, 11 May 2022 11:47:35 -0700 you wrote:
-> With latest clang, I got the following compilation errors:
->   .../prog_tests/test_tunnel.c:291:6: error: variable 'local_ip_map_fd' is used uninitialized
->      whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->        if (attach_tc_prog(&tc_hook, -1, set_dst_prog_fd))
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   .../bpf/prog_tests/test_tunnel.c:312:6: note: uninitialized use occurs here
->         if (local_ip_map_fd >= 0)
->             ^~~~~~~~~~~~~~~
->   ...
->   .../prog_tests/kprobe_multi_test.c:346:6: error: variable 'err' is used uninitialized
->       whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->         if (IS_ERR(map))
->             ^~~~~~~~~~~
->   .../prog_tests/kprobe_multi_test.c:388:6: note: uninitialized use occurs here
->         if (err) {
->             ^~~
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: fix a few clang compilation errors
-    https://git.kernel.org/bpf/bpf-next/c/fd0ad6f1d10c
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/lib/bpf b/lib/bpf
+index 393a058..87dff0a 160000
+--- a/lib/bpf
++++ b/lib/bpf
+@@ -1 +1 @@
+-Subproject commit 393a058d061d49d5c3055fa9eefafb4c0c31ccc3
++Subproject commit 87dff0a2c775c5943ca9233e69c81a25f2ed1a77
+--=20
+2.30.2
 
