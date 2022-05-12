@@ -2,173 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F013D525301
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 18:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70991525331
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 19:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348145AbiELQvT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 12:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
+        id S1356824AbiELRFa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 13:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356694AbiELQvB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 12:51:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AB12DA8E
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 09:50:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E7DF6201B
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 16:50:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2F76C34117;
-        Thu, 12 May 2022 16:50:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652374259;
-        bh=LMwb7sE6yW4zYLMvgtLTavWoydCEk72JSc/VUWzllZQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NsYzf3eFPfys/nn7e3knlM4cU9rr1tCYmO6knVFJLW5P3h3UOx+mH47R+na/O0HJ1
-         jFjwiky6dkRKC6S18RdMiYHnnRGqK8Gb732H9KMXRcSp4o4r4Uknv74Uk4N1svfkiy
-         9FAB+YCfzOnh+ZL8h1OvysfPgVjAWpGKzkABI19Wxni1tR0Rzf/qQOYEzKitPRfXuF
-         ZOmhdyO9uQKrdMOGSJIOIdnaMWZrcylXb7qCOIAIFb7RXU/b2HmSOgzX6VD+98t+DM
-         cr9sxrds6gta6AuUOSIz51Jzm7YA250J+qznLrOgku0g57NC8c5dNRmRVcLvpQKw4J
-         jxYVqhMzBIeHQ==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1356839AbiELRF3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 13:05:29 -0400
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA159269EFD;
+        Thu, 12 May 2022 10:05:26 -0700 (PDT)
+Received: by mail-qt1-f182.google.com with SMTP id p4so4906023qtq.12;
+        Thu, 12 May 2022 10:05:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+6B2p5x2MsdiGQqOHTdj/jEV/QOhWbmjHIG+C1y2HyI=;
+        b=HVddJcFC1vwFoH8Vz9W+YE8WP8SAZuUOcUt9Ej4BteJZh6FgiF99kmT/9ZYBL+usw1
+         qiib83DDdL3aaBc1OxTZz+gS8aZ9qYwWiW1KNbxaKdkB/MXSUYFvxRPawj61yo1s/iC3
+         sluENUT3lt3xWc2IrBI8zHt+VBLFlvb12a3nUADTZlDSRJXXpIwpjnuEx9z66IgpoB23
+         7fTqwO+QNedSMl6lLYFToYW9czCtAvOVIw7VzkJV5AHxSgCJ7OZpc8q0QZRDPNx+6NOC
+         nuDjbHKJID9PUeZ/iEIc4R6gYMsrYrahz6qxOI2IzDFXHNidQZvuYkxWCEdxdpHptsJK
+         jKpA==
+X-Gm-Message-State: AOAM5309LOmoBo9Dexjibc8PFz0yAGzNOXUne+5GZjtInjzPLxndkkib
+        9LLu6Oz6e3dwBoJbYmRuwws=
+X-Google-Smtp-Source: ABdhPJyerLlG0Vc9EMfOfjsIemvOVeJd5Nd6Zc4QkNV1NHFFQZtrSBUY2HOMiIDSb+A1DVnZY5rbVg==
+X-Received: by 2002:ac8:5896:0:b0:2f3:d231:58a9 with SMTP id t22-20020ac85896000000b002f3d23158a9mr741939qta.131.1652375125492;
+        Thu, 12 May 2022 10:05:25 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-011.fbsv.net. [2a03:2880:20ff:b::face:b00c])
+        by smtp.gmail.com with ESMTPSA id t80-20020a374653000000b0069fc13ce231sm3183117qka.98.2022.05.12.10.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 May 2022 10:05:25 -0700 (PDT)
+Date:   Thu, 12 May 2022 10:05:22 -0700
+From:   David Vernet <void@manifault.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 2/2] bpf/selftests: Add a selftest for bpf_getxattr
-Date:   Thu, 12 May 2022 16:50:51 +0000
-Message-Id: <20220512165051.224772-3-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-In-Reply-To: <20220512165051.224772-1-kpsingh@kernel.org>
-References: <20220512165051.224772-1-kpsingh@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] bpf: use 'error_xxx' tags in
+ bpf_kprobe_multi_link_attach
+Message-ID: <20220512170522.3e47hwj53plhr4qq@dev0025.ash9.facebook.com>
+References: <20220512141710.116135-1-wanjiabing@vivo.com>
+ <20220512141710.116135-2-wanjiabing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220512141710.116135-2-wanjiabing@vivo.com>
+User-Agent: NeoMutt/20211029
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A simple test that adds an xattr on a copied /bin/ls and reads it back
-when the copied ls is executed.
+On Thu, May 12, 2022 at 10:17:08PM +0800, Wan Jiabing wrote:
+> Use 'error_addrs', 'error_cookies' and 'error_link' tags to make error
+> handling more efficient.
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/xattr.c  | 58 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/xattr.c     | 34 +++++++++++
- 2 files changed, 92 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xattr.c
- create mode 100644 tools/testing/selftests/bpf/progs/xattr.c
+Can you add a bit more context to this commit summary? The added goto
+labels aren't what make the code more performant, it's the avoidance of
+unnecessary free calls on NULL pointers that (supposedly) does.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xattr.c b/tools/testing/selftests/bpf/prog_tests/xattr.c
-new file mode 100644
-index 000000000000..442b6c1aed0e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xattr.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2022 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include <sys/xattr.h>
-+#include "xattr.skel.h"
-+
-+#define XATTR_NAME "security.bpf"
-+#define XATTR_VALUE "test_progs"
-+
-+static unsigned int duration;
-+
-+void test_xattr(void)
-+{
-+	struct xattr *skel = NULL;
-+	char tmp_dir_path[] = "/tmp/xattrXXXXXX";
-+	char tmp_exec_path[64];
-+	char cmd[256];
-+	int err;
-+
-+	if (CHECK(!mkdtemp(tmp_dir_path), "mkdtemp",
-+		  "unable to create tmpdir: %d\n", errno))
-+		goto close_prog;
-+
-+	snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_ls",
-+		 tmp_dir_path);
-+	snprintf(cmd, sizeof(cmd), "cp /bin/ls %s", tmp_exec_path);
-+	if (CHECK_FAIL(system(cmd)))
-+		goto close_prog_rmdir;
-+
-+	if (CHECK(setxattr(tmp_exec_path, XATTR_NAME, XATTR_VALUE,
-+			   sizeof(XATTR_VALUE), 0),
-+		  "setxattr", "unable to setxattr: %d", errno))
-+		goto close_prog_rmdir;
-+
-+	skel = xattr__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto close_prog_rmdir;
-+
-+	err = xattr__attach(skel);
-+	if (!ASSERT_OK(err, "xattr__attach failed"))
-+		goto close_prog_rmdir;
-+
-+	snprintf(cmd, sizeof(cmd), "%s -l", tmp_exec_path);
-+	if (CHECK_FAIL(system(cmd)))
-+		goto close_prog_rmdir;
-+
-+	ASSERT_EQ(skel->bss->result, 1, "xattr result");
-+
-+close_prog_rmdir:
-+	snprintf(cmd, sizeof(cmd), "rm -rf %s", tmp_dir_path);
-+	system(cmd);
-+close_prog:
-+	xattr__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/xattr.c b/tools/testing/selftests/bpf/progs/xattr.c
-new file mode 100644
-index 000000000000..3bf6966a7900
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/xattr.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2022 Google LLC.
-+ */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define XATTR_NAME "security.bpf"
-+#define XATTR_VALUE "test_progs"
-+
-+__u64 result = 0;
-+
-+SEC("lsm.s/bprm_committed_creds")
-+void BPF_PROG(bprm_cc, struct linux_binprm *bprm)
-+{
-+	struct task_struct *current = bpf_get_current_task_btf();
-+	char dir_xattr_value[64];
-+	int xattr_sz;
-+
-+	xattr_sz = bpf_getxattr(bprm->file->f_path.mnt->mnt_userns,
-+				bprm->file->f_path.dentry, XATTR_NAME,
-+				dir_xattr_value, 64);
-+
-+	if (xattr_sz <= 0)
-+		return;
-+
-+	if (!bpf_strncmp(dir_xattr_value, sizeof(XATTR_VALUE), XATTR_VALUE))
-+		result = 1;
-+}
--- 
-2.36.0.550.gb090851708-goog
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  kernel/trace/bpf_trace.c | 20 +++++++++++---------
+>  1 file changed, 11 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 2eaac094caf8..3a8b69ef9a0d 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2467,20 +2467,20 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>  	if (uaddrs) {
+>  		if (copy_from_user(addrs, uaddrs, size)) {
+>  			err = -EFAULT;
+> -			goto error;
+> +			goto error_addrs;
+>  		}
+>  	} else {
+>  		struct user_syms us;
+>  
+>  		err = copy_user_syms(&us, usyms, cnt);
+>  		if (err)
+> -			goto error;
+> +			goto error_addrs;
+>  
+>  		sort(us.syms, cnt, sizeof(*us.syms), symbols_cmp, NULL);
+>  		err = ftrace_lookup_symbols(us.syms, cnt, addrs);
+>  		free_user_syms(&us);
+>  		if (err)
+> -			goto error;
+> +			goto error_addrs;
+>  	}
+>  
+>  	ucookies = u64_to_user_ptr(attr->link_create.kprobe_multi.cookies);
+> @@ -2488,18 +2488,18 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>  		cookies = kvmalloc(size, GFP_KERNEL);
+>  		if (!cookies) {
+>  			err = -ENOMEM;
+> -			goto error;
+> +			goto error_addrs;
+>  		}
+>  		if (copy_from_user(cookies, ucookies, size)) {
+>  			err = -EFAULT;
+> -			goto error;
+> +			goto error_cookies;
+>  		}
+>  	}
+>  
+>  	link = kzalloc(sizeof(*link), GFP_KERNEL);
+>  	if (!link) {
+>  		err = -ENOMEM;
+> -		goto error;
+> +		goto error_cookies;
+>  	}
+>  
+>  	bpf_link_init(&link->link, BPF_LINK_TYPE_KPROBE_MULTI,
+> @@ -2507,7 +2507,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>  
+>  	err = bpf_link_prime(&link->link, &link_primer);
+>  	if (err)
+> -		goto error;
+> +		goto error_link;
+>  
+>  	if (flags & BPF_F_KPROBE_MULTI_RETURN)
+>  		link->fp.exit_handler = kprobe_multi_link_handler;
+> @@ -2539,10 +2539,12 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>  
+>  	return bpf_link_settle(&link_primer);
+>  
+> -error:
+> +error_link:
+>  	kfree(link);
+> -	kvfree(addrs);
+> +error_cookies:
+>  	kvfree(cookies);
+> +error_addrs:
+> +	kvfree(addrs);
+>  	return err;
+>  }
+>  #else /* !CONFIG_FPROBE */
+> -- 
+> 2.35.1
+> 
 
+Could you clarify what performance gains you observed from doing this? I
+wouldn't have expected avoiding a couple of calls and NULL checks to have a
+measurable impact on performance, and I'm wondering whether the complexity
+from having multiple goto labels is really worth any supposed performance
+gains.
+
+Thanks,
+David
