@@ -2,148 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5188524750
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 09:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39991524759
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 09:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351162AbiELHr1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 03:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        id S1351205AbiELHse (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 03:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351181AbiELHrX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 03:47:23 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37C91B57A0;
-        Thu, 12 May 2022 00:47:18 -0700 (PDT)
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24C4tf1p011245;
-        Thu, 12 May 2022 07:46:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=sJNqtW7ebykqIJ6MGEZr6hWe/bMGGF1zGAs008xihKQ=;
- b=U7qpwa6FFc9DwyTK5ybiNdjGISAEZUA9ayUluK9WVY6jih3efRrAToAKpI24Hf2wE4De
- 2zSdIjIaHa2uRa/vFwsv120UOekDU8AtOUZ+nceOQxPwvJBUqL+ku7Affz4cdoDMjHn5
- +eTOS68WeLAGKR6Kup5yzbsRTTPTeuLCj+dIiy8x88/29QY9bLYgZHakITdVSuNbeJF4
- UKd2KSGGrbu3L2MSp0orpG5VL+uWDw0+a6SfDkEfyH1cVc5Vys/E/a/d4xbHOK10rQUy
- UyipFFpkbq7RpjZp9fxLpRWPSZEJy92wiNDSsOfWA4Z2NE9OuCOHMWNCdgHKwyxi/dEO zA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g0un2jxek-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 May 2022 07:46:48 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24C7Ia6b022328;
-        Thu, 12 May 2022 07:46:48 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g0un2jxd8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 May 2022 07:46:47 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24C7bckD028290;
-        Thu, 12 May 2022 07:46:44 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma01fra.de.ibm.com with ESMTP id 3fwgd8n500-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 May 2022 07:46:44 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24C7kKCb29360470
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 May 2022 07:46:20 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9DAC7A4051;
-        Thu, 12 May 2022 07:46:41 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6BC89A4040;
-        Thu, 12 May 2022 07:46:33 +0000 (GMT)
-Received: from hbathini-workstation.ibm.com.com (unknown [9.211.109.30])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 May 2022 07:46:33 +0000 (GMT)
-From:   Hari Bathini <hbathini@linux.ibm.com>
-To:     bpf@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        netdev@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: [PATCH 5/5] bpf ppc32: Add instructions for atomic_[cmp]xchg
-Date:   Thu, 12 May 2022 13:15:46 +0530
-Message-Id: <20220512074546.231616-6-hbathini@linux.ibm.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220512074546.231616-1-hbathini@linux.ibm.com>
-References: <20220512074546.231616-1-hbathini@linux.ibm.com>
+        with ESMTP id S1351206AbiELHs3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 03:48:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BA95BD16
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 00:48:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DCA4D61E1D
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 07:48:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0681C385B8;
+        Thu, 12 May 2022 07:48:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652341701;
+        bh=fWljWNS5KfLft/haqYHuPhPKVr/bjtrftvn0biOJ1x4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=iWu237AetNha8fDvdCDEOX5eioi7ToVdjDxLpcZQABYREwHDdW90kL96h2f6CFqwy
+         rfsiuDw1hm3SY/Oohstfoh1Y9kBzyNJNdv68w58JTBzvFs3BfcW6qRIiK54/18lZsz
+         M8QoPGDiXZ4AvxMgngooohJ1Nmfm7mHffQSiYdCem2TmcoWrwqAd6J4Iq28LqUVcwO
+         Wk7UY0UYQTl1lKONtdaqrBsWOGT7IoS9iv0T8mjZjlPm5+SAGBYdLTks7zvAvcFsaa
+         IvR2W14u1Brv1ee1SI1yOFUrivT4RO9vTyL7tPHJx4Kce1wQV7XwaAR0xhYhlmfBJ8
+         NNU2+W1+pyq3w==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 51A2938E58C; Thu, 12 May 2022 09:48:17 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     Michael Zimmermann <sigmaepsilon92@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: BPF maps don't work without CONFIG_TRACING/CONFIG_FTRACE
+In-Reply-To: <CAN9vWDJHrYUVFtBU-cAz6trvJAx903hGgO2Yj6=3Bt2CjS61Yg@mail.gmail.com>
+References: <CAN9vWDLY24LEY-zhBSNVRTPBqbYQd+D62av0jKK_BqMvwt5-ig@mail.gmail.com>
+ <CAEf4Bza6Ks-FGAGkLCGhK1KEDRdtqv==y7nN63KejF829XQtfA@mail.gmail.com>
+ <CAN9vWD+6SBQtQqxZ__bvqJ8MsrOUr4cfQcU99at1XVPSUiOsmw@mail.gmail.com>
+ <CAEf4BzYtkLX8cYGC9rAnDyMBrQ8uHmgA8T8+nZ6dJe3c1X+73w@mail.gmail.com>
+ <CAN9vWDJHrYUVFtBU-cAz6trvJAx903hGgO2Yj6=3Bt2CjS61Yg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 12 May 2022 09:48:17 +0200
+Message-ID: <87czgji43i.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: r8QtyRJIHN0NPICWmDmD1c4VvQ9qLDwN
-X-Proofpoint-ORIG-GUID: DS3bfz7Bz7Ook08vLsStW7dHE20VY3uT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-11_07,2022-05-12_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- impostorscore=0 mlxscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- lowpriorityscore=0 bulkscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
- definitions=main-2205120034
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds two atomic opcodes BPF_XCHG and BPF_CMPXCHG on ppc32, both
-of which include the BPF_FETCH flag.  The kernel's atomic_cmpxchg
-operation fundamentally has 3 operands, but we only have two register
-fields. Therefore the operand we compare against (the kernel's API
-calls it 'old') is hard-coded to be BPF_REG_R0. Also, kernel's
-atomic_cmpxchg returns the previous value at dst_reg + off. JIT the
-same for BPF too with return value put in BPF_REG_0.
+Michael Zimmermann <sigmaepsilon92@gmail.com> writes:
 
-  BPF_REG_R0 = atomic_cmpxchg(dst_reg + off, BPF_REG_R0, src_reg);
+> On Thu, May 12, 2022 at 5:21 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Mon, May 9, 2022 at 10:12 PM Michael Zimmermann
+>> <sigmaepsilon92@gmail.com> wrote:
+>> >
+>> > Thank you for your answer.
+>> > What I'm ultimately trying to do is: Use aya-rs to watch egress on a
+>> > network interface and notify userspace through a map (for certain IPs
+>> > only).
+>> >
+>> > In my actual use case, the userspace is supposed to do more complex
+>> > stuff but for testing I simply logged the receival of a message
+>> > through the BPF map on the console. And that is what I expect to
+>> > happen and which does happen as long as CONFIG_TRACING/CONFIG_FTRACE
+>> > are active. If not, I simply never receive any messages on any map.
+>> >
+>> > I've also tried this using an XDP program which sends a message every
+>> > time it sees a packet. And while the program seemed to be
+>> > working(since it did block certain traffic), I never saw any data in
+>> > the map when those configs were disabled.
+>> >
+>> > Also, I'm giving you two configs(tracing and ftrace) since the other
+>> > one seems to get y-selected automatically if one of them is active.
+>>
+>> Please don't top post, reply inline instead.
+> Sorry for that, GMail does that by default and even hides that it's
+> quoting at all.
+>
+>>
+>> I don't think we have enough to investigate here, even "receive any
+>> messages on any map" is so ambiguous that it's hard to even guess what
+>> you are really trying to do. BPF maps are not sending/receiving
+>> messages. So please provide some pieces of code and what you are doing
+>> to check. CONFIG_TRACING and CONFIG_FTRACE shouldn't have any effect
+>> on functioning of BPF maps, so it's most probably that you are doing
+>> something besides BPF map update/lookup, but you don't provide enough
+>> information to check anything.
+>
+> An aya project I tested where I don't receive any events:
+> https://github.com/aya-rs/book/tree/6b52a6fac5fa3e5a1165f98591b2eaff9692048a/examples/myapp-03
 
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
----
- arch/powerpc/net/bpf_jit_comp32.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+It's using a PERF_EVENT_ARRAY map to send events to userspace. This
+requires CONFIG_BPF_EVENTS to work, which depends on CONFIG_PERF_EVENTS.
+Not sure if this depends on CONFIG_TRACING specifically, but maybe you
+disabled PERF_EVENTS as well?
 
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 5604ae1b60ab..4690fd6e9e52 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -829,6 +829,23 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 				/* we're done if this succeeded */
- 				PPC_BCC_SHORT(COND_NE, tmp_idx);
- 				break;
-+			case BPF_CMPXCHG:
-+				/* Compare with old value in BPF_REG_0 */
-+				EMIT(PPC_RAW_CMPW(bpf_to_ppc(BPF_REG_0), _R0));
-+				/* Don't set if different from old value */
-+				PPC_BCC_SHORT(COND_NE, (ctx->idx + 3) * 4);
-+				fallthrough;
-+			case BPF_XCHG:
-+				/* store new value */
-+				EMIT(PPC_RAW_STWCX(src_reg, tmp_reg, dst_reg));
-+				PPC_BCC_SHORT(COND_NE, tmp_idx);
-+				/*
-+				 * Return old value in src_reg for BPF_XCHG &
-+				 * BPF_REG_0 for BPF_CMPXCHG.
-+				 */
-+				EMIT(PPC_RAW_MR(imm == BPF_XCHG ? src_reg : bpf_to_ppc(BPF_REG_0),
-+						_R0));
-+				break;
- 			default:
- 				pr_err_ratelimited("eBPF filter atomic op code %02x (@%d) unsupported\n",
- 						   code, i);
--- 
-2.35.1
-
+-Toke
