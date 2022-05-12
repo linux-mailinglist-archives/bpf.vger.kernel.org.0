@@ -2,109 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2E45246B5
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 09:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F425246D4
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 09:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350872AbiELHS4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 03:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S1350936AbiELHXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 03:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350879AbiELHSt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 03:18:49 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7B1C5E48;
-        Thu, 12 May 2022 00:18:44 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 7so3808495pga.12;
-        Thu, 12 May 2022 00:18:44 -0700 (PDT)
+        with ESMTP id S242114AbiELHWw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 03:22:52 -0400
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A11D50E0F
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 00:22:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6UxEmmuG1N0Iwm83q5/mJkqiaq+2A/J4A3rU7XGWf4o=;
-        b=QzfF6VRn+PtiqILq7UWQRU7Axj4yufoeYfPInxBX51q6ughZBRyL9y5OxlmnWB8VSl
-         M1wqaRGIyhCFmeXWLPiM4/No7e9N5K8A+Ol23ys7+6HieRhL32gIWKFoAEBqEWeC0wn6
-         D43q9QbGLGudqgJzOD+06D+gC9NCfBgHR3h/fETyv66GirlkWzWJI1qaaSvdtAHnw/z5
-         TTtXUMCPdDLPs6oSE9+v1vD56PL/eZuGQTZEbdadKh3qhjII57SdGdDTvJFxHNfHUubC
-         Hldl4fGicdsscSX9siHY/wItIKmsG5wGf4a7rzlOpoUN+KHvjXc146wRKKmFJ+zWn9+J
-         xRPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6UxEmmuG1N0Iwm83q5/mJkqiaq+2A/J4A3rU7XGWf4o=;
-        b=wHyZBs/K+mAi6rQPFdCS9VWAs3IzmpaGMjvHYJPXlTv/guGVjcfAWUYRg9cRLPCHWd
-         ZpQ5mJanDkKE85GQCt/U24Opxrd3J1Z9PB1qW+5lE8pPl3xa6QXtVwtrdNhWoa2KUNL6
-         /1HNRHBPlp0OPLQpTa3QMmfWUPhNZ1/rs8Wn0fpYYjxI40Qf7L0FZoPl3LrRKnKlCgzM
-         SO2VyPdnaRo0GvYtltoCNXKG0QWzTZoi/fPWzqau8ifEuQKdmgoafVS8Mo4YiK5IiUof
-         Capdh/lTHB10VHvY1K0DCnEVX78K8MO6wOPaoyg/ez5ADscyJmrIGaNri8X9hlBg6W69
-         mJ7w==
-X-Gm-Message-State: AOAM533Wp3xYo0s0M+5e1A8ZRLqisWh/uNj/fqE3b/Oh5JYPsWvfuBkD
-        1sB14UFO/OROmcGgw/bl6Snp31NKt7BxZQ==
-X-Google-Smtp-Source: ABdhPJx75txHssOaqCjfGXODpikDMzECnWJ48mJvru2gYqIsztZyRWVG9hvJ7GlnfWu3Q+3yFIKP7A==
-X-Received: by 2002:a63:7e11:0:b0:3c6:84e3:9c59 with SMTP id z17-20020a637e11000000b003c684e39c59mr18812328pgc.615.1652339923413;
-        Thu, 12 May 2022 00:18:43 -0700 (PDT)
-Received: from Laptop-X1.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w17-20020a170902e89100b0015e8d4eb2b4sm3244533plg.254.2022.05.12.00.18.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 May 2022 00:18:42 -0700 (PDT)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCH net 2/2] selftests/bpf: add missed ima_setup.sh in Makefile
-Date:   Thu, 12 May 2022 15:18:19 +0800
-Message-Id: <20220512071819.199873-3-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220512071819.199873-1-liuhangbin@gmail.com>
-References: <20220512071819.199873-1-liuhangbin@gmail.com>
+  d=inria.fr; s=dc;
+  h=date:from:to:message-id:subject:mime-version:
+   content-transfer-encoding;
+  bh=lCQWLaOt9+OgO4Rxpzj2ZafoSvz5gbNP2BnbALB+1fs=;
+  b=WJYONESbwEyu2VO9P5kkyp3sKr8HcI1yX4854Fkku7JoDDZxgBp5/T4O
+   XhM+TvI7bxTBlMwBlUCkCRN8mosiV40S9wj5EThg7wBC0cIJMeS04ci9q
+   j2DR8UtWeSwYEfmLLDw6Iaa7CvYGmtWK85MjwYlT1s/OXpm9N+WmtUhOE
+   E=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=shenghao.yuan@inria.fr; spf=None smtp.helo=postmaster@zcs-store4.inria.fr
+Received-SPF: SoftFail (mail2-relais-roc.national.inria.fr:
+  domain of shenghao.yuan@inria.fr is inclined to not designate
+  128.93.142.31 as permitted sender) identity=mailfrom;
+  client-ip=128.93.142.31;
+  receiver=mail2-relais-roc.national.inria.fr;
+  envelope-from="shenghao.yuan@inria.fr";
+  x-sender="shenghao.yuan@inria.fr"; x-conformance=spf_only;
+  x-record-type="v=spf1"; x-record-text="v=spf1
+  ip4:192.134.164.0/24 mx ~all"
+Received-SPF: None (mail2-relais-roc.national.inria.fr: no sender
+  authenticity information available from domain of
+  postmaster@zcs-store4.inria.fr) identity=helo;
+  client-ip=128.93.142.31;
+  receiver=mail2-relais-roc.national.inria.fr;
+  envelope-from="shenghao.yuan@inria.fr";
+  x-sender="postmaster@zcs-store4.inria.fr";
+  x-conformance=spf_only
+X-IronPort-AV: E=Sophos;i="5.91,219,1647298800"; 
+   d="scan'208";a="35877073"
+X-MGA-submission: =?us-ascii?q?MDE0LqlhR7+zPamASJLx+fHk03r+OnBn1so3K+?=
+ =?us-ascii?q?CBMkHpT4Xnps0/RgnjN+HCiAUL0iNhrmaJzqvTPhHz14ynB4OFIrVvY1?=
+ =?us-ascii?q?54Co0H7FnCaNMvOKuvF2OecyUgiKAOXRXvFni44FJCts2QDfe6akraEg?=
+ =?us-ascii?q?EGR4JjcK6KLsRuTa5eEeUacg=3D=3D?=
+Received: from zcs-store4.inria.fr ([128.93.142.31])
+  by mail2-relais-roc.national.inria.fr with ESMTP; 12 May 2022 09:22:48 +0200
+Date:   Thu, 12 May 2022 09:22:48 +0200 (CEST)
+From:   Shenghao Yuan <shenghao.yuan@inria.fr>
+To:     bpf@vger.kernel.org
+Message-ID: <271219135.7057261.1652340168554.JavaMail.zimbra@inria.fr>
+Subject: Questions: JIT ARM32
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [131.254.242.109]
+X-Mailer: Zimbra 8.8.15_GA_4257 (ZimbraWebClient - GC84 (Linux)/8.8.15_GA_4257)
+Thread-Index: zB8AvIJjLNzG1kkevFShCizs5T9a4w==
+Thread-Topic: Questions: JIT ARM32
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When build bpf test and install it to another folder, e.g.
+Hello all, 
 
-  make -j10 install -C tools/testing/selftests/ TARGETS="bpf" \
-	SKIP_TARGETS="" INSTALL_PATH=/tmp/kselftests
+I am a beginner to learn the eBPF jit compiler (and also a Linux beginner), I have two questions when I read the eBPF-JIT ARM32 source code (I am using bootlin [1] and this eBPF document [2]), could you please give me some suggestions? 
 
-The ima_setup.sh is missed in target folder, which makes test_ima failed.
+1. mov instructions: I don't understand why it has a condition `imm == 1` [2] 
+```c 
+case BPF_ALU | BPF_MOV | BPF_K: 
+case BPF_ALU | BPF_MOV | BPF_X: 
+case BPF_ALU64 | BPF_MOV | BPF_K: 
+case BPF_ALU64 | BPF_MOV | BPF_X: 
+switch (BPF_SRC(code)) { 
+case BPF_X: 
+if (imm == 1) { // I don't understand here 
+/* Special mov32 for zext */ 
+emit_a32_mov_i(dst_hi, 0, ctx); 
+break; 
+} 
+emit_a32_mov_r64(is64, dst, src, ctx); 
+``` 
+2. alu32 instructions, why jit arm32 doesn't call/trigger alu32 operations [4] 
+```c 
+if (is64) { 
+const s8 *rs; 
 
-Fix it by adding ima_setup.sh to TEST_PROGS_EXTENDED.
+rs = arm_bpf_get_reg64(src, tmp2, ctx); 
 
-Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- tools/testing/selftests/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+/* ALU operation */ 
+emit_alu_r(rd[1], rs[1], true, false, op, ctx); 
+emit_alu_r(rd[0], rs[0], true, true, op, ctx); 
+} else { 
+s8 rs; 
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 5944d3a8fff6..b4fd1352a2ac 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -75,7 +75,7 @@ TEST_PROGS := test_kmod.sh \
- 	test_xsk.sh
- 
- TEST_PROGS_EXTENDED := with_addr.sh \
--	with_tunnels.sh \
-+	with_tunnels.sh ima_setup.sh \
- 	test_xdp_vlan.sh test_bpftool.py
- 
- # Compile but not part of 'make run_tests'
--- 
-2.35.1
+rs = arm_bpf_get_reg32(src_lo, tmp2[1], ctx); 
 
+/* ALU operation */ 
+emit_alu_r(rd[1], rs, true, false, op, ctx); //here it also set is64 as true? 
+if (!ctx->prog->aux->verifier_zext) 
+emit_a32_mov_i(rd[0], 0, ctx); 
+} 
+``` 
+
+[1] https://elixir.bootlin.com/linux/v5.18-rc6/source
+[2] https://github.com/iovisor/bpf-docs/blob/master/eBPF.md
+[3] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/net/bpf_jit_32.c#L1399 
+[4] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/net/bpf_jit_32.c#L754
+
+Best wishes, 
+----------------------- ----------------------- ------------ 
+Shenghao YUAN 
+
+TEA (Time, Events and Architectures) team 
+
+Inria Rennes 
+
+Tel: (+33) 0749504117
