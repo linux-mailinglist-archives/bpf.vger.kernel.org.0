@@ -2,175 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D4A524D5D
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 14:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A55524DF8
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 15:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241939AbiELMso (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 08:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
+        id S1348330AbiELNNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 09:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352157AbiELMsn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 08:48:43 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3830124D625
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 05:48:39 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id bu29so8958856lfb.0
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 05:48:39 -0700 (PDT)
+        with ESMTP id S241144AbiELNNk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 09:13:40 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E3220F9F8
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 06:13:36 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-d39f741ba0so6505251fac.13
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 06:13:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Zc35pogulMC60n85o7JSl7MYP5a9E2uD++K0T7qDYbg=;
-        b=VzdBX1dC99Ss/8QRwvmpetZ3YgLdsHPIWTss0aGICSIJWHB+jpIhv81eeEpM/ri8Pi
-         dCVyv70d28C4dudzgOnlgV0CxZbDLLTzVg7R9vN5NVLcPwXr772mS5j/bIaY9Aw+N1T0
-         w1XBo2w4F8HDMCXy5FP/uN/p70u5bZmeqUyistkjAG0jvvw7LD4r96tmNHKvFo90QpGP
-         nRVCWOKhL/n2By+ZKflDN7sYrayeq376w7TFD7EnMJ3FKgnTxcG5QLQ5OYnoNth3xwJN
-         pvEwxT3GxE3f67fImwXLTC8IbBJHWW9RUeSZLotTmlfn7vqkOWC/W0Zv7+I1KMagdvvu
-         CisQ==
+        bh=9b8EZDyUoN0uQXXzMQaW4MgPF/CGPA5fxKw0eOOwKUw=;
+        b=mPLsWmlqvgUCrE1gCj5V0tNTrtCPetOI3UpfETcDi3mzjSJBQ+JQgo0IBpMmgBdX+n
+         nfMl26BZWWwZPwR4bjFGMvgeUz+sW4Vc5ZvM0VErE3mjMHfPiBFa+wrffTzioZaBCEXb
+         +Jt4ip5oXZLmwFpoD8Xk1ErJy/YCAaM62qhjOZjCvLNYKzgdnAaupX0ozgoA5USwnyhi
+         SE30KPvt3ura78f2niux1w9viHQkCbokfb/oYlmdy+Zm8PUg/bBINW4XyLMujxo7A6X8
+         2kVsVoY9ND8JMA/+8XkMrBnCS1Esq9ni9/2731XU5B0Bw3tSrIRuH3QcjIaQXoS9+vpx
+         iN7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Zc35pogulMC60n85o7JSl7MYP5a9E2uD++K0T7qDYbg=;
-        b=4nPuhHn8/3ZlAh+P+j6YDSFhgjIcPOYdwhA+WcfmDFQ2tL6qN13AwmV6wq2028QeBV
-         8P4kzrfms2vn74bo3v73Ppsrs7fX9A6lTpDUk7O3Cbev12HmAjDg8U+jrOxG7wFzfY58
-         k+JZAA+yvF87AHx1eIpNOEF1g4F99EqcDYT2uqy5CGX3lHyCFriywJ20ZV3EB71VnLon
-         i7jIbsTUy9IHDYlWfMXJWLfadkkmGdbBAwnvxdYjzIljNj3pYIsifZjjxpWy/x0Cd6S9
-         0NBL85GVdFjHn5Z+fr3T7qCayRwM2pJhA83wn7aVcDlB79gcytMvF881SZjFC8QzdWIt
-         +OOw==
-X-Gm-Message-State: AOAM531k5Q1PcYD3M/EsX1DQolY22ps/AN8XOn1sz0TdqD0tNJQE0V3V
-        birswlWjmLhAHE1WwHfiB5xG7uR3LINqECVoqnoXbQ==
-X-Google-Smtp-Source: ABdhPJxXl2eFhmpJCUob2K0h3XdKxfTDVDgM7Wluv/tSa3tCP+EK2kphVO+LNgvV5A9N/eK1GMegWFCO3qsWXFyJf5Q=
-X-Received: by 2002:ac2:4ac9:0:b0:471:f6da:640d with SMTP id
- m9-20020ac24ac9000000b00471f6da640dmr23484196lfp.286.1652359717248; Thu, 12
- May 2022 05:48:37 -0700 (PDT)
+        bh=9b8EZDyUoN0uQXXzMQaW4MgPF/CGPA5fxKw0eOOwKUw=;
+        b=OM1uBWifU+/z1mH9mEKsfi5F6E7FV4Gv77PVWsm8O068tKyUyx+vks0NQCqcmcrzjQ
+         LxbYxYsn//mm3bEelJngRKc2qz/5Cpmjm2oacQ8EzWBXyG9WuHP135J7BLv9D9QViiKS
+         TKzvE0Lc1N+5vDs2t3uN2QHhrBX93gM5uSKcEID4acho7bHerTXu9d2GmLWx3EjcudxU
+         xWi7ZybihlBSHJf8FlLP1XMejf88/x5aRPVEXpa8Q8OWlGT3SmYufnB5wgbjr7RiXdjG
+         8b+exeQPsfyOeFZo6qJQ7Mbpvwk8W7pGbei0DaalUYMjNY9r0HYtomXD+RejtVPlLEmH
+         DCuQ==
+X-Gm-Message-State: AOAM532Y7h1chEmzke8MBDusF25QDzehmlYmIAyh7UVbRsDv5cDCh8bh
+        M5Wd4FeoxpX36kFQonlavDkp2tvTJa6hIKRS34lPLg==
+X-Google-Smtp-Source: ABdhPJxMxc7kko3AkZVfgGt5vvVL+nGl5Ndl+W4H9Y2j7zppHzfU9XW1TOayfygDx3RctO43yDSEZeUc5wS7rGVcfFQ=
+X-Received: by 2002:a05:6870:b61e:b0:ec:a426:bab5 with SMTP id
+ cm30-20020a056870b61e00b000eca426bab5mr5463201oab.163.1652361215217; Thu, 12
+ May 2022 06:13:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220511154503.28365-1-cgxu519@mykernel.net> <YnvbhmRUxPxWU2S3@casper.infradead.org>
- <YnwIDpkIBem+MeeC@gmail.com> <YnwuEt2Xm1iPjW7S@zeniv-ca.linux.org.uk> <CAADnVQ+tcrDQxb769yMYvyzPHcgZXozqYq0uj4QHi+kjzBYTvQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+tcrDQxb769yMYvyzPHcgZXozqYq0uj4QHi+kjzBYTvQ@mail.gmail.com>
-From:   Brian Vazquez <brianvv@google.com>
-Date:   Thu, 12 May 2022 05:48:25 -0700
-Message-ID: <CAMzD94Q+L-8YN89QX5_LS2b1oLX2Yq7p+bKVoaRsouaUT34hkA@mail.gmail.com>
-Subject: Re: [PATCH] vfs: move fdput() to right place in ksys_sync_file_range()
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        Alexei Starovoitov <ast@kernel.org>
+References: <000000000000c560bd05ad3c5187@google.com> <000000000000c7d07705d7c9b7a4@google.com>
+In-Reply-To: <000000000000c7d07705d7c9b7a4@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 12 May 2022 15:13:24 +0200
+Message-ID: <CACT4Y+aS6TpBVcFxW9h760J_PZN6nG+e_5oYMPtH7Sour4PJ3A@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in rtnl_dellink
+To:     syzbot <syzbot+b3b5c64f4880403edd36@syzkaller.appspotmail.com>
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        fw@strlen.de, harshit.m.mogalapalli@oracle.com, hawk@kernel.org,
+        jiri@mellanox.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        roopa@cumulusnetworks.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yajun.deng@linux.dev, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sure, let me take a look.
+On Sat, 12 Feb 2022 at 04:24, syzbot
+<syzbot+b3b5c64f4880403edd36@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit f123cffdd8fe8ea6c7fded4b88516a42798797d0
+> Author: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> Date:   Mon Nov 29 17:53:27 2021 +0000
+>
+>     net: netlink: af_netlink: Prevent empty skb by adding a check on len.
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=107b5472700000
+> start commit:   cd02217a5d81 Merge tag 'for-linus' of git://git.kernel.org..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b3b5c64f4880403edd36
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116f8172900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1145d1b1900000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: net: netlink: af_netlink: Prevent empty skb by adding a check on len.
 
-On Wed, May 11, 2022 at 7:04 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, May 11, 2022 at 2:43 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > [bpf folks Cc'd]
-> >
-> > On Wed, May 11, 2022 at 07:01:34PM +0000, Eric Biggers wrote:
-> > > On Wed, May 11, 2022 at 04:51:34PM +0100, Matthew Wilcox wrote:
-> > > > On Wed, May 11, 2022 at 11:45:03AM -0400, Chengguang Xu wrote:
-> > > > > Move fdput() to right place in ksys_sync_file_range() to
-> > > > > avoid fdput() after failed fdget().
-> > > >
-> > > > Why?  fdput() is already conditional on FDPUT_FPUT so you're ...
-> > > > optimising the failure case?
-> > >
-> > > "fdput() after failed fdget()" has confused people before, so IMO it's worth
-> > > cleaning this up.  But the commit message should make clear that it's a cleanup,
-> > > not a bug fix.  Also I recommend using an early return:
-> > >
-> > >       f = fdget(fd);
-> > >       if (!f.file)
-> > >               return -EBADF;
-> > >       ret = sync_file_range(f.file, offset, nbytes, flags);
-> > >       fdput(f);
-> > >       return ret;
-> >
-> > FWIW, fdput() after failed fdget() is rare, but there's no fundamental reasons
-> > why it would be wrong.  No objections against that patch, anyway.
-> >
-> > Out of curiousity, I've just looked at the existing users.  In mainline we have
-> > 203 callers of fdput()/fdput_pos(); all but 7 never get reached with NULL ->file.
-> >
-> > 1) There's ksys_sync_file_range(), kernel_read_file_from_fd() and ksys_readahead() -
-> > all with similar pattern.  I'm not sure that for readahead(2) "not opened for
-> > read" should yield the same error as "bad descriptor", but since it's been a part
-> > of userland ABI for a while...
-> >
-> > 2) two callers in perf_event_open(2) are playing silly buggers with explicit
-> >         struct fd group = {NULL, 0};
-> > and rely upon "fdput() is a no-op if we hadn't touched that" (note that if
-> > we try to touch it and get NULL ->file from fdget(), we do not hit those fdput()
-> > at all).
-> >
-> > 3) ovl_aio_put() is hard to follow (and some of the callers are poking
-> > where they shouldn't), no idea if it's correct.  struct fd is manually
-> > constructed there, anyway.
-> >
-> > 4) bpf generic_map_update_batch() is really asking for trouble.  The comment in
-> > there is wrong:
-> >         f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
-> > *NOTHING* we'd done earlier can guarantee that.  We might have a descriptor
-> > table shared with another thread, and it might have very well done dup2() since
-> > the last time we'd looked things up.  IOW, this fdget() is racy - the function
-> > assumes it refers to the same thing that gave us map back in bpf_map_do_batch(),
-> > but it's not guaranteed at all.
-> >
-> > I hadn't put together a reproducer, but that code is very suspicious.  As a general
-> > rule, you should treat descriptor table as shared object, modifiable by other
-> > threads.  It can be explicitly locked and it can be explicitly unshared, but
-> > short of that doing a lookup for the same descriptor twice in a row can yield
-> > different results.
-> >
-> > What's going on there?  Do you really want the same struct file you've got back in
-> > bpf_map_do_batch() (i.e. the one you've got the map from)?  What should happen
-> > if the descriptor changes its meaning during (or after) the operation?
->
-> Interesting.
-> If I got this right... in the following:
->
-> f = fdget(ufd);
-> map = __bpf_map_get(f);
-> if (IS_ERR(map))
->    return PTR_ERR(map);
-> ...
-> f = fdget(ufd);
-> here there are no guarantees that 'f' is valid and points
-> to the same map.
-> Argh. In hindsight that makes sense.
->
-> generic_map_update_batch calls bpf_map_update_value.
-> That could use 'f' for prog_array, fd_array and hash_of_maps
-> types of maps.
-> The first two types don't' define .map_update_batch callback.
-> So BPF_DO_BATCH(map->ops->map_update_batch); will error out
-> with -ENOTSUPP since that callback is NULL for that map type.
->
-> The hash_of_maps does seem to support it, but
-> that's an odd one to use with batch access.
->
-> Anyhow we certainly need to clean this up.
->
-> Brian,
-> do you mind fixing it up, since you've added that
-> secondary fdget() in the first place?
->
-> Thanks!
+#syz fix: net: netlink: af_netlink: Prevent empty skb by adding a check on len.
