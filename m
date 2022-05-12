@@ -2,127 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F425246D4
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 09:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F0F524733
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 09:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350936AbiELHXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 03:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
+        id S1351135AbiELHnf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 03:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242114AbiELHWw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 03:22:52 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A11D50E0F
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 00:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:message-id:subject:mime-version:
-   content-transfer-encoding;
-  bh=lCQWLaOt9+OgO4Rxpzj2ZafoSvz5gbNP2BnbALB+1fs=;
-  b=WJYONESbwEyu2VO9P5kkyp3sKr8HcI1yX4854Fkku7JoDDZxgBp5/T4O
-   XhM+TvI7bxTBlMwBlUCkCRN8mosiV40S9wj5EThg7wBC0cIJMeS04ci9q
-   j2DR8UtWeSwYEfmLLDw6Iaa7CvYGmtWK85MjwYlT1s/OXpm9N+WmtUhOE
-   E=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=shenghao.yuan@inria.fr; spf=None smtp.helo=postmaster@zcs-store4.inria.fr
-Received-SPF: SoftFail (mail2-relais-roc.national.inria.fr:
-  domain of shenghao.yuan@inria.fr is inclined to not designate
-  128.93.142.31 as permitted sender) identity=mailfrom;
-  client-ip=128.93.142.31;
-  receiver=mail2-relais-roc.national.inria.fr;
-  envelope-from="shenghao.yuan@inria.fr";
-  x-sender="shenghao.yuan@inria.fr"; x-conformance=spf_only;
-  x-record-type="v=spf1"; x-record-text="v=spf1
-  ip4:192.134.164.0/24 mx ~all"
-Received-SPF: None (mail2-relais-roc.national.inria.fr: no sender
-  authenticity information available from domain of
-  postmaster@zcs-store4.inria.fr) identity=helo;
-  client-ip=128.93.142.31;
-  receiver=mail2-relais-roc.national.inria.fr;
-  envelope-from="shenghao.yuan@inria.fr";
-  x-sender="postmaster@zcs-store4.inria.fr";
-  x-conformance=spf_only
-X-IronPort-AV: E=Sophos;i="5.91,219,1647298800"; 
-   d="scan'208";a="35877073"
-X-MGA-submission: =?us-ascii?q?MDE0LqlhR7+zPamASJLx+fHk03r+OnBn1so3K+?=
- =?us-ascii?q?CBMkHpT4Xnps0/RgnjN+HCiAUL0iNhrmaJzqvTPhHz14ynB4OFIrVvY1?=
- =?us-ascii?q?54Co0H7FnCaNMvOKuvF2OecyUgiKAOXRXvFni44FJCts2QDfe6akraEg?=
- =?us-ascii?q?EGR4JjcK6KLsRuTa5eEeUacg=3D=3D?=
-Received: from zcs-store4.inria.fr ([128.93.142.31])
-  by mail2-relais-roc.national.inria.fr with ESMTP; 12 May 2022 09:22:48 +0200
-Date:   Thu, 12 May 2022 09:22:48 +0200 (CEST)
-From:   Shenghao Yuan <shenghao.yuan@inria.fr>
-To:     bpf@vger.kernel.org
-Message-ID: <271219135.7057261.1652340168554.JavaMail.zimbra@inria.fr>
-Subject: Questions: JIT ARM32
+        with ESMTP id S1351130AbiELHnc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 03:43:32 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4B71A15D7
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 00:43:30 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24BMwcta022978
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 00:43:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=ByhkPJGjWMq6hRR0r0Icia/wFqttu4XpSB87h9gi23Q=;
+ b=PuP+5kSPSeljDRhMSwGFyDqaXDuI79xBPbgDMooc2totfBgihzV+yyttP+Oug6Gm3vzi
+ mnUZbMx9+ckrMZlfBAcYl7LRETBtT4/6jwulL/61OJDpl4rTiSDWBLk3l7MLCJcFe/KX
+ OJguRhTQ2/E5us5fbT2g1UgGF5VRdUgw+Vk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g055hrmdu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 00:43:30 -0700
+Received: from twshared4937.07.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 12 May 2022 00:43:29 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id 778E378F7CC2; Thu, 12 May 2022 00:43:26 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Rik van Riel <riel@surriel.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Yonghong Song <yhs@fb.com>, <kernel-team@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [RFC PATCH bpf-next 0/5] bpf: add get_reg_val helper
+Date:   Thu, 12 May 2022 00:43:16 -0700
+Message-ID: <20220512074321.2090073-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: IAmh_MS7EB_JBojWGUJY1vZVj8ROQAK1
+X-Proofpoint-GUID: IAmh_MS7EB_JBojWGUJY1vZVj8ROQAK1
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.254.242.109]
-X-Mailer: Zimbra 8.8.15_GA_4257 (ZimbraWebClient - GC84 (Linux)/8.8.15_GA_4257)
-Thread-Index: zB8AvIJjLNzG1kkevFShCizs5T9a4w==
-Thread-Topic: Questions: JIT ARM32
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-12_01,2022-05-12_01,2022-02-23_01
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello all, 
+Currently, BPF programs can access register values from struct pt_regs.
+Fetching other registers is not supported. For some usecases this limits
+the usefulness of BPF programs. This series adds a helper meant to
+fetch any register value for the architecture the program is running on.
 
-I am a beginner to learn the eBPF jit compiler (and also a Linux beginner), I have two questions when I read the eBPF-JIT ARM32 source code (I am using bootlin [1] and this eBPF document [2]), could you please give me some suggestions? 
+Concrete motivating usecase: Tracing programs often attach to User
+Statically-Defined Tracing (USDT) probes, which can pass arguments using
+registers. The registers used to pass arguments for a specific probe are
+determined at compile-time.=20
 
-1. mov instructions: I don't understand why it has a condition `imm == 1` [2] 
-```c 
-case BPF_ALU | BPF_MOV | BPF_K: 
-case BPF_ALU | BPF_MOV | BPF_X: 
-case BPF_ALU64 | BPF_MOV | BPF_K: 
-case BPF_ALU64 | BPF_MOV | BPF_X: 
-switch (BPF_SRC(code)) { 
-case BPF_X: 
-if (imm == 1) { // I don't understand here 
-/* Special mov32 for zext */ 
-emit_a32_mov_i(dst_hi, 0, ctx); 
-break; 
-} 
-emit_a32_mov_r64(is64, dst, src, ctx); 
-``` 
-2. alu32 instructions, why jit arm32 doesn't call/trigger alu32 operations [4] 
-```c 
-if (is64) { 
-const s8 *rs; 
+Although general-purpose registers which can be accessed via pt_regs are=20
+usually chosen, register pressure can cause others to be used. Recently
+we saw this happening in a Fedora libpthread library [0], where a xmm
+register was used. Similarly, floating-point arguments in USDTs will
+result in use of xmm register [1]. Since there is no way to access the
+registers used to pass these arguments, BPF programs can't use them.
 
-rs = arm_bpf_get_reg64(src, tmp2, ctx); 
+Another usecase: rdtsc access.
 
-/* ALU operation */ 
-emit_alu_r(rd[1], rs[1], true, false, op, ctx); 
-emit_alu_r(rd[0], rs[0], true, true, op, ctx); 
-} else { 
-s8 rs; 
+Initially the helper was meant to narrowly address the USDT xmm usecase
+but conversation with Andrii highlighted the usefulness of a more
+general helper. Although only x86 SSE reg fetching is added in this
+patchset, the path forward for adding other register sets and
+architectures should be clear.
 
-rs = arm_bpf_get_reg32(src_lo, tmp2[1], ctx); 
+Feedback from someone familiar with s390 or other arch regarding whether
+the helper would be usable for other archs in current form would be
+appreciated.
 
-/* ALU operation */ 
-emit_alu_r(rd[1], rs, true, false, op, ctx); //here it also set is64 as true? 
-if (!ctx->prog->aux->verifier_zext) 
-emit_a32_mov_i(rd[0], 0, ctx); 
-} 
-``` 
 
-[1] https://elixir.bootlin.com/linux/v5.18-rc6/source
-[2] https://github.com/iovisor/bpf-docs/blob/master/eBPF.md
-[3] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/net/bpf_jit_32.c#L1399 
-[4] https://elixir.bootlin.com/linux/v5.18-rc6/source/arch/arm/net/bpf_jit_32.c#L754
+Summary of patches:
 
-Best wishes, 
------------------------ ----------------------- ------------ 
-Shenghao YUAN 
+Patch 1 moves a header so fpregs_state_valid helper can be used.
 
-TEA (Time, Events and Architectures) team 
+Patches 2 and 3 contain the meat of the kernel- and libbpf-side
+changes, respectively. Libbpf-side changes add use of the helper to usdt
+lib in order to address USDT xmm issue that originally prompted this
+work.
 
-Inria Rennes 
+Patches 4 and 5 add tests.
 
-Tel: (+33) 0749504117
+Submitted as RFC for early feedback while failing usdt12 prog
+verification is addressed (see patch 3).
+
+  [0] - https://github.com/iovisor/bcc/pull/3880
+	[1] - https://github.com/iovisor/bcc/issues/3875
+
+Dave Marchevsky (5):
+  x86/fpu: Move context.h to include/asm
+  bpf: add get_reg_val helper
+  libbpf: usdt lib wiring of xmm reads
+  selftests/bpf: Add test for USDT parse of xmm reg
+  selftests/bpf: get_reg_val test exercising fxsave fetch
+
+ .../x86/{kernel =3D> include/asm}/fpu/context.h |   2 +
+ arch/x86/kernel/fpu/core.c                    |   2 +-
+ arch/x86/kernel/fpu/regset.c                  |   2 +-
+ arch/x86/kernel/fpu/signal.c                  |   2 +-
+ arch/x86/kernel/fpu/xstate.c                  |   2 +-
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |  40 +++++
+ kernel/trace/bpf_trace.c                      | 148 ++++++++++++++++++
+ kernel/trace/bpf_trace.h                      |   1 +
+ net/bpf/bpf_dummy_struct_ops.c                |  13 ++
+ tools/include/uapi/linux/bpf.h                |  40 +++++
+ tools/lib/bpf/usdt.bpf.h                      |  36 +++--
+ tools/lib/bpf/usdt.c                          |  51 +++++-
+ tools/testing/selftests/bpf/Makefile          |   8 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  13 ++
+ tools/testing/selftests/bpf/prog_tests/usdt.c |  49 ++++++
+ .../selftests/bpf/progs/test_urandom_usdt.c   |  37 +++++
+ tools/testing/selftests/bpf/test_progs.c      |   7 +
+ tools/testing/selftests/bpf/urandom_read.c    |   3 +
+ .../selftests/bpf/urandom_read_lib_xmm.c      |  62 ++++++++
+ 20 files changed, 499 insertions(+), 20 deletions(-)
+ rename arch/x86/{kernel =3D> include/asm}/fpu/context.h (96%)
+ create mode 100644 tools/testing/selftests/bpf/urandom_read_lib_xmm.c
+
+--=20
+2.30.2
+
