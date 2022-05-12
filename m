@@ -2,66 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3097F524247
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 04:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADFF5242D6
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 04:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbiELCED (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 22:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33692 "EHLO
+        id S242374AbiELCjs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 22:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbiELCED (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 22:04:03 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899F66004D;
-        Wed, 11 May 2022 19:04:01 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id i20so3353915qti.11;
-        Wed, 11 May 2022 19:04:01 -0700 (PDT)
+        with ESMTP id S229499AbiELCjr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 22:39:47 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E130A14A26B
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 19:39:45 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id bs17so3757284qkb.0
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 19:39:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LKj8jxm3PJ1HqAeGJYpiNS9EwKRD2eKy/LFheqZP3ac=;
-        b=faGP9WAoksFwotSiYEUmnlpq6avsHibD2TyMrneAdFu6WBXrrNx3wKqImB3xBlNajM
-         Xze1dUZ97pZMxskl6RxwGwtni1zfiU+LqZvkSVkBPm/mpCf8fMMouWm7tKSkGXyDZLhf
-         IxNIV1fKET+PmvenjZi8jN7WcxdtSXQR9FvcE/PVl8dUND2h1NFfe8ANG1opCBgt2H7x
-         Eb78u8AJkvI4TEuCt2Ib2ojeZdwYT6Dhs77khR860i+Q7I9cwiBxxaD8yvWPpfqSlwpq
-         sjHLypYC0vQfRNeATkSaZ8e2Ubb0wJG2ZUaUTYMefLwz3XZST2KtAdp9jlIwaJvWAM0I
-         zDqA==
+        bh=y90N8tOUma3AJ9n0Nwm8rTi29ne4uJwQQ7ukg3qfGC4=;
+        b=TquMCjUDFIm0DcnUxVQBJ4BgONsM63lIGwxXoX7vkjLNuYWxPnLJgLVMA86quw1h2u
+         b9uhGvglrDxiEExPxLPKtSo9nseDo7QBhRw6oAoFR700H9qPOutTGlCt6ghaEUo6u2Nj
+         b/Dnj2/FULhzA3DBawB4MTqPob2SXWyz5Q5xmbApoLL2HwxDunNcwuNQQezXIliTOuYX
+         HeGJROa6ZbX4bBH11ylY6TduF2hxLbfKnmXIbXXNb8+6vBtb8i6hvfShO+EPg0YBOQ5i
+         Yv+nUfmyiaHixh6Co9V7QHidlxKulxxw3+U6URNwmFQ4Myw4Gq6m885zudhzcHDzE/l1
+         UNFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LKj8jxm3PJ1HqAeGJYpiNS9EwKRD2eKy/LFheqZP3ac=;
-        b=1eYlHIVd+Owmyn2dHuQqaRPuv2pmjACbW7VOQmxcAIFlfaSr5X+8tggFN+LAK2x6dh
-         LQp67IOKgw3MRKmnI427yHXdxo25wzNpEap/GFA93Kb6DlYkyzL0AF07YAghR/l16pWP
-         1SA9IGKnXM3zCnBEzQvlnBuylGkVoFnDe+s/G2YXdTLRkJXDzMyuwc3JeUKDyIt9wy/K
-         tZnIP8WMDEGqiKVPhFPmiRI1CE3W/UMwKMVnob8t1vxjqdlM7U8/6ZIMcThLxf71j/oP
-         rn4dDNZFwjr9J2gFfnglYMyo3QWlk2+Jl/80DGmh2ZfDio9XcuS/CeE87ATzPikrp3mC
-         pabA==
-X-Gm-Message-State: AOAM531Gq9fYKRuxM08iuP4+0yWSovFz/IkeoFXrOOn9LskUSYCOo4HV
-        JtpOvLuiruMHurPBUSpEazoAt+Czl+aiuKLQQsQ=
-X-Google-Smtp-Source: ABdhPJwIsbYoZPpeisV04Xj/xUlru5weoOQq84uwSEf+EVi1KxdMcxbxFZ41GBSgGDYthyoDrfOamMudkWv3rsMItrI=
-X-Received: by 2002:ac8:5b06:0:b0:2f3:d6c1:e5df with SMTP id
- m6-20020ac85b06000000b002f3d6c1e5dfmr18413172qtw.535.1652321040586; Wed, 11
- May 2022 19:04:00 -0700 (PDT)
+        bh=y90N8tOUma3AJ9n0Nwm8rTi29ne4uJwQQ7ukg3qfGC4=;
+        b=cmxsIZQSPr+ndjd5bTgwTji098qpBRwYlhMtU9ttb0K7osBdKmSwVsNfhjNB1koCvN
+         gJZ74gWRN3qkN+I5EmryTW0LVlLOzaQSmXWzXRnffskQfCpLu8v6tqdMbXYGU29SGVwL
+         1gueNnFJ3O2Q7faFP6OfGvnh4gPwIxx+C/yU6zghLG5bjylAo9VPLu1w6GtSWNMJGu53
+         mn5gua3Kc+C1f6pjlslrSCU8cV0E1j6KIY+zDn5I6T8LLeD2t9VycnFIOF5JkOZq/oL1
+         7RW+qdNrhZAIYNqrkZJaVHQGOJDpErkrhCHTjJswaOUbZYZcU55cHOuRlqPUMRi7oLbO
+         c2pQ==
+X-Gm-Message-State: AOAM533lEP4swzzswfOK4apDciM2W/s59uoG4hwwQHhi4JeMzjB142Mw
+        Gtr85vYH/gREM+17uNqWTV+Jwv5s3VTc54jhAx8=
+X-Google-Smtp-Source: ABdhPJw/624jrgDdE6ZwG/XQ0IuiiAdfgJO2CAEjM/jJLyhLLaB+Ptea8HXTEK0Gd7JWKcrvrLPHyB80BtV7JlrUwPc=
+X-Received: by 2002:a05:620a:28c7:b0:6a0:5de3:e6 with SMTP id
+ l7-20020a05620a28c700b006a05de300e6mr16828861qkp.464.1652323184964; Wed, 11
+ May 2022 19:39:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220511154503.28365-1-cgxu519@mykernel.net> <YnvbhmRUxPxWU2S3@casper.infradead.org>
- <YnwIDpkIBem+MeeC@gmail.com> <YnwuEt2Xm1iPjW7S@zeniv-ca.linux.org.uk>
-In-Reply-To: <YnwuEt2Xm1iPjW7S@zeniv-ca.linux.org.uk>
+References: <20220503140449.GA22470@lst.de> <20220510081657.GA12910@lst.de>
+In-Reply-To: <20220510081657.GA12910@lst.de>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 11 May 2022 19:03:49 -0700
-Message-ID: <CAADnVQ+tcrDQxb769yMYvyzPHcgZXozqYq0uj4QHi+kjzBYTvQ@mail.gmail.com>
-Subject: Re: [PATCH] vfs: move fdput() to right place in ksys_sync_file_range()
-To:     Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        Brian Vazquez <brianvv@google.com>, Yonghong Song <yhs@fb.com>,
+Date:   Wed, 11 May 2022 19:39:34 -0700
+Message-ID: <CAADnVQKBbh6T0-cs0WB2bsapg0wbb9Zu1az==CHD19sxeD5o_g@mail.gmail.com>
+Subject: Re: LSF/MM session: eBPF standardization
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        Alexei Starovoitov <ast@kernel.org>
+        bpf <bpf@vger.kernel.org>,
+        "Harris, James R" <james.r.harris@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Thaler <dthaler@microsoft.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Joe Stringer <joe@cilium.io>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -73,97 +72,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 11, 2022 at 2:43 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Tue, May 10, 2022 at 1:17 AM Christoph Hellwig <hch@lst.de> wrote:
 >
-> [bpf folks Cc'd]
+> Thanks everyone who participated.
 >
-> On Wed, May 11, 2022 at 07:01:34PM +0000, Eric Biggers wrote:
-> > On Wed, May 11, 2022 at 04:51:34PM +0100, Matthew Wilcox wrote:
-> > > On Wed, May 11, 2022 at 11:45:03AM -0400, Chengguang Xu wrote:
-> > > > Move fdput() to right place in ksys_sync_file_range() to
-> > > > avoid fdput() after failed fdget().
-> > >
-> > > Why?  fdput() is already conditional on FDPUT_FPUT so you're ...
-> > > optimising the failure case?
-> >
-> > "fdput() after failed fdget()" has confused people before, so IMO it's worth
-> > cleaning this up.  But the commit message should make clear that it's a cleanup,
-> > not a bug fix.  Also I recommend using an early return:
-> >
-> >       f = fdget(fd);
-> >       if (!f.file)
-> >               return -EBADF;
-> >       ret = sync_file_range(f.file, offset, nbytes, flags);
-> >       fdput(f);
-> >       return ret;
+> Here is my rough memory an action items from the meeting.  As I
+> was on stage and did not take notes these might be a bit off and
+> may need correction.
 >
-> FWIW, fdput() after failed fdget() is rare, but there's no fundamental reasons
-> why it would be wrong.  No objections against that patch, anyway.
+> The separate instruction set document wasn't known by everyone but
+> seens as a good idea.
 >
-> Out of curiousity, I've just looked at the existing users.  In mainline we have
-> 203 callers of fdput()/fdput_pos(); all but 7 never get reached with NULL ->file.
+> The content needs a little more work:
 >
-> 1) There's ksys_sync_file_range(), kernel_read_file_from_fd() and ksys_readahead() -
-> all with similar pattern.  I'm not sure that for readahead(2) "not opened for
-> read" should yield the same error as "bad descriptor", but since it's been a part
-> of userland ABI for a while...
->
-> 2) two callers in perf_event_open(2) are playing silly buggers with explicit
->         struct fd group = {NULL, 0};
-> and rely upon "fdput() is a no-op if we hadn't touched that" (note that if
-> we try to touch it and get NULL ->file from fdget(), we do not hit those fdput()
-> at all).
->
-> 3) ovl_aio_put() is hard to follow (and some of the callers are poking
-> where they shouldn't), no idea if it's correct.  struct fd is manually
-> constructed there, anyway.
->
-> 4) bpf generic_map_update_batch() is really asking for trouble.  The comment in
-> there is wrong:
->         f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
-> *NOTHING* we'd done earlier can guarantee that.  We might have a descriptor
-> table shared with another thread, and it might have very well done dup2() since
-> the last time we'd looked things up.  IOW, this fdget() is racy - the function
-> assumes it refers to the same thing that gave us map back in bpf_map_do_batch(),
-> but it's not guaranteed at all.
->
-> I hadn't put together a reproducer, but that code is very suspicious.  As a general
-> rule, you should treat descriptor table as shared object, modifiable by other
-> threads.  It can be explicitly locked and it can be explicitly unshared, but
-> short of that doing a lookup for the same descriptor twice in a row can yield
-> different results.
->
-> What's going on there?  Do you really want the same struct file you've got back in
-> bpf_map_do_batch() (i.e. the one you've got the map from)?  What should happen
-> if the descriptor changes its meaning during (or after) the operation?
+>  - document the version levels, based on the clang cpu levels
+>    (I plan to do this ASAP)
 
-Interesting.
-If I got this right... in the following:
+Turns out that clang -mcpu=v1,v2,v3 are not exactly correct.
+We've extended ISA more than three times.
+For example when we added more atomics insns in
+https://lore.kernel.org/bpf/20210114181751.768687-1-jackmanb@google.com/
 
-f = fdget(ufd);
-map = __bpf_map_get(f);
-if (IS_ERR(map))
-   return PTR_ERR(map);
-...
-f = fdget(ufd);
-here there are no guarantees that 'f' is valid and points
-to the same map.
-Argh. In hindsight that makes sense.
+The corresponding llvm diff didn't add a new -mcpu flavor.
+There was no need to do it.
 
-generic_map_update_batch calls bpf_map_update_value.
-That could use 'f' for prog_array, fd_array and hash_of_maps
-types of maps.
-The first two types don't' define .map_update_batch callback.
-So BPF_DO_BATCH(map->ops->map_update_batch); will error out
-with -ENOTSUPP since that callback is NULL for that map type.
+Also llvm flags can turn a subset of insns on and off.
+Like llvm can turn on alu32, but without <,<= insns.
+-mcpu=v3 includes both. -mcpu=v2 are only <,<=.
 
-The hash_of_maps does seem to support it, but
-that's an odd one to use with batch access.
+So we need a plan B.
 
-Anyhow we certainly need to clean this up.
+How about using the commit sha where support was added to the verifier
+as a 'version' of the ISA ?
 
-Brian,
-do you mind fixing it up, since you've added that
-secondary fdget() in the first place?
+We can try to use a kernel version, but backports
+will ruin that picture.
+Looks like upstream 'commit sha' is the only stable number.
 
-Thanks!
+Another approach would be to declare the current ISA as
+1.0 (or bpf-isa-may-2022) and
+in the future bump it with every new insn.
+
+>  - we need to decide to do about the legacy BPF packet access
+>    instrutions.  Alexei mentioned that the modern JIT doesn't
+>    even use those internally any more.
+
+I think we need to document them as supported in the linux kernel,
+but deprecated in general.
+The standard might say "implementation defined" meaning that
+different run-times don't have to support them.
+
+>  - we need to document behavior for underflows / overflows and
+>    other behavior not mentioned.  The example in the session
+>    was divive by zero behavior.  Are there any notes on what
+>    the consensus for a lot of this behavior is, or do we need
+>    to reverse engineer it from the implementation?  I'd happily
+>    write the documentation, but I'd be really grateful for any
+>    input into what needs to go into it
+
+For div by zero see do_misc_fixups().
+We patch it with: 'if src_reg == 0 -> xor dst_reg, dst_reg'.
+Interpreter and JITs will execute div/0 as-is, but in practice
+it cannot happen because the verifier patched it.
+
+Other undefined/underflows/overflows are implementation defined.
+Meaning after JIT-ing they may behave differently on
+different architectures.
+For example the interpreter for shifts does
+DST = DST OP (SRC & 63);
+where OP is <<, >>
+to avoid undefined behavior in C.
+
+The JITs won't be adding the masking insns, since CPU HW will
+do a mask implicitly. Which could potentially change
+from one CPU to another.
+I don't think it's worth documenting all that.
+I would group all undefined/underflow/overflow as implementation
+defined and document only things that matter.
+
+>
+> Discussion on where to host a definitive version of the document:
+>
+>  - I think the rough consensus is to just host regular (hopefully
+>    low cadence) documents and maybe the latest gratest at a eBPF
+>    foundation website.  Whom do we need to work with at the fundation
+>    to make this happen?
+
+foundation folks cc-ed.
+
+>  - On a technical side we need to figure out a way how to build a
+>    standalone document from the kerneldoc tree of documents.  I
+>    volunteers to look into that as well.
+
++1
+
+> The verifier is not very well documented, and mixes up generic behavior
+> with that of specific implementations and program types.
+>
+>  - as idea it was brought up to write a doument with the minimal
+>    verification requirements required for any eBPF implementation
+>    independent of the program type.  Again I can volunteer to
+>    draft a documentation, but I need input on what such a consensus
+>    would be.  In this case input from the non-Linux verifier
+>    implementors (I only know the Microsoft research one) would
+>    be very helpful as well.
+
+The verifier is a moving target.
+I'd say minimal verification is the one that checks that:
+- instructions are formed correctly
+- opcode is valid
+- no reserved bits are used
+- registers are within range (r11+ are not used)
+- combination of opcode+regs+off+imm is valid
+- simple things like that
