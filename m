@@ -2,52 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0214552578D
-	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 00:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33AF5257FF
+	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 00:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358289AbiELWH2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 12 May 2022 18:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
+        id S1359307AbiELWti (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 18:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345855AbiELWH0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 18:07:26 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8D6674ED
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 15:07:25 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24CL95F8011174
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 15:07:24 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g19w9rgjs-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 15:07:24 -0700
-Received: from twshared13345.18.frc3.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 12 May 2022 15:07:21 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 4B11019D448E0; Thu, 12 May 2022 15:07:16 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: convert some selftests to high-level BPF map APIs
-Date:   Thu, 12 May 2022 15:07:13 -0700
-Message-ID: <20220512220713.2617964-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220512220713.2617964-1-andrii@kernel.org>
-References: <20220512220713.2617964-1-andrii@kernel.org>
+        with ESMTP id S1359306AbiELWtg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 18:49:36 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFE12854A6;
+        Thu, 12 May 2022 15:49:35 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id l15so4576064ilh.3;
+        Thu, 12 May 2022 15:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ENMBU/SUx1kqBZ6B9y2Wkt9q5CDmGboIAvjJKQ3EDI4=;
+        b=H0+KRJrEuECxhYhCWCEsN5DAWeWL8NWdOVkEbaHLVpSHQp3sS22xrzI/WXnO0A+JsQ
+         loP8PrEo4AGkc52ctJ+/GlVx1LmXHBC9cl8nKNbBNDexhQ6BgyeuAuOxAzLaRMqD1J61
+         UrvdjI6ZsJWSEhG6gsEY8oksZwoLrCboFAld6quQzqUt8irYhVzNOrCH7vs0eIb/9LcH
+         yqf6v4NW9UqTWA/8GMZ7jMbvzsSxNfaYt+YLAtVpxlQb8J5upJXdrN3b0nKKMNJ/cHwH
+         3Z0oGays/jlRw2ok8jejDPdQ05rFXggmRWqssy78v+bb4zluuTtKFtTk0rRDf2Lt1Xjs
+         +7Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ENMBU/SUx1kqBZ6B9y2Wkt9q5CDmGboIAvjJKQ3EDI4=;
+        b=ZB8vOuYW+0rKhkjc4VFRW5xTs1gZBbvuQDdHOixkuUQ0a+JKbtnQS0W9o/o7TzT0yA
+         zAbOqG4cN0PBdFs16V8uLiSlyp+Qy3/+mtm/K7E0gAFwZ8TUGLfN+8Q4pgVXz1QvF7K6
+         FprYNM+QVktb8C4qbdXUE3OvUvX2aZGYHKXbyHZ5GHpgB+ZUgchZoFhfaG2UKxF7baUP
+         cMZHwjNoWQjwzpOyL+PPiTalzbaQkVfCOibSibK/wiAha5rBijg6lDxYx0xkeu12Ewtu
+         pyyRDpcpKFyEttl5KtiAg5WW4navBTpE2i9K4McTCHnTgLbDVJ8vmPT2PsSEJ9Ijq/b8
+         KAXA==
+X-Gm-Message-State: AOAM531Ed2gczKZzXAZNzDvXNPSOTTYUmm4slJHMpjSql27B9HlJ3IfK
+        pRDMZRXQnHaIKFr0nfz1xrJfBEctKDgpDuKhzKUlkZmM
+X-Google-Smtp-Source: ABdhPJwS/AyowFSoijOIGMBlQxWt2q/jZUJq4ZjmbEbbp172ZlWEOHPoRhu6a3FTwwtH09FRbihbTACMgsTAzFGhxoY=
+X-Received: by 2002:a05:6e02:1d8d:b0:2cf:2112:2267 with SMTP id
+ h13-20020a056e021d8d00b002cf21122267mr1126500ila.239.1652395774708; Thu, 12
+ May 2022 15:49:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 2Uo5jZ3aGkPy015h42QddkOepJ6xhqot
-X-Proofpoint-GUID: 2Uo5jZ3aGkPy015h42QddkOepJ6xhqot
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-12_18,2022-05-12_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220511220243.525215-1-yhs@fb.com> <20220511220249.525908-1-yhs@fb.com>
+ <CAEf4BzZgby0RDcXXwHtB+zxof3Gmgn+EUnbeEyYOshb7dfbzyA@mail.gmail.com> <366cdcf9-3f94-6ac0-aebb-ceda500ab89a@fb.com>
+In-Reply-To: <366cdcf9-3f94-6ac0-aebb-ceda500ab89a@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 12 May 2022 15:49:23 -0700
+Message-ID: <CAEf4Bzbf1uPqJ+BzQLtvS3ye=Xv1Gbo8n1uOkc8iZ3RDNDUhyg@mail.gmail.com>
+Subject: Re: [PATCH dwarves 2/2] btf_encoder: Normalize array index type for
+ parallel dwarf loading case
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,376 +70,124 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Convert a bunch of selftests to using newly added high-level BPF map
-APIs.
+On Wed, May 11, 2022 at 9:13 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 5/11/22 5:32 PM, Andrii Nakryiko wrote:
+> > On Wed, May 11, 2022 at 3:02 PM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >> With latest llvm15 built kernel (make -j LLVM=1), I hit the following
+> >> error when build selftests (make -C tools/testing/selftests/bpf -j LLVM=1):
+> >>    In file included from skeleton/pid_iter.bpf.c:3:
+> >>    .../selftests/bpf/tools/build/bpftool/vmlinux.h:84050:9: error: unknown type name
+> >>         '__builtin_va_list___2'; did you mean '__builtin_va_list'?
+> >>    typedef __builtin_va_list___2 va_list___2;
+> >>            ^~~~~~~~~~~~~~~~~~~~~
+> >>            __builtin_va_list
+> >>    note: '__builtin_va_list' declared here
+> >>    In file included from skeleton/profiler.bpf.c:3:
+> >>    .../selftests/bpf/tools/build/bpftool/vmlinux.h:84050:9: error: unknown type name
+> >>         '__builtin_va_list__ _2'; did you mean '__builtin_va_list'?
+> >>    typedef __builtin_va_list___2 va_list___2;
+> >>            ^~~~~~~~~~~~~~~~~~~~~
+> >>            __builtin_va_list
+> >>    note: '__builtin_va_list' declared here
+> >>
+> >> The error can be easily explained with after-dedup vmlinux btf:
+> >>    [21] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> >>    [2300] STRUCT '__va_list_tag' size=24 vlen=4
+> >>          'gp_offset' type_id=2 bits_offset=0
+> >>          'fp_offset' type_id=2 bits_offset=32
+> >>          'overflow_arg_area' type_id=32 bits_offset=64
+> >>          'reg_save_area' type_id=32 bits_offset=128
+> >>    [2308] TYPEDEF 'va_list' type_id=2309
+> >>    [2309] TYPEDEF '__builtin_va_list' type_id=2310
+> >>    [2310] ARRAY '(anon)' type_id=2300 index_type_id=21 nr_elems=1
+> >>
+> >>    [5289] PTR '(anon)' type_id=2308
+> >>    [158520] STRUCT 'warn_args' size=32 vlen=2
+> >>          'fmt' type_id=14 bits_offset=0
+> >>          'args' type_id=2308 bits_offset=64
+> >>    [27299] INT '__ARRAY_SIZE_TYPE__' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+> >>    [34590] TYPEDEF '__builtin_va_list' type_id=34591
+> >>    [34591] ARRAY '(anon)' type_id=2300 index_type_id=27299 nr_elems=1
+> >>
+> >> The typedef __builtin_va_list is a builtin type for the compiler.
+> >> In the above case, two typedef __builtin_va_list are generated.
+> >> The reason is due to different array index_type_id. This happened
+> >> when pahole is running with more than one jobs when parsing dwarf
+> >> and generating btfs.
+> >>
+> >> Function btf_encoder__encode_cu() is used to do btf encoding for
+> >> each cu. The function will try to find an "int" type for the cu
+> >> if it is available, otherwise, it will create a special type
+> >> with name __ARRAY_SIZE_TYPE__. For example,
+> >>    file1: yes 'int' type
+> >>    file2: no 'int' type
+> >>
+> >> In serial mode, file1 is processed first, followed by file2.
+> >> both will have 'int' type as the array index type since file2
+> >> will inherit the index type from file1.
+> >>
+> >> In parallel mode though, arrays in file1 will have index type 'int',
+> >> and arrays in file2 wil have index type '__ARRAY_SIZE_TYPE__'.
+> >> This will prevent some legitimate dedup and may have generated
+> >> vmlinux.h having compilation error.
+> >>
+> >
+> > I think it is two separate problems.
+> >
+> > 1. Maybe instead of this generating __ARRAY_SIZE_TYPE__ we should
+> > generate proper 'int' type?
+>
+> This should work. Will post v2 with this.
+>
+> >
+> > 2. __builtin_va_list___2 shouldn't have happened, it's libbpf bug.
+> > Libbpf handles __builtin_va_list specially (see
+> > btf_dump_is_blacklisted()), so we need to fix libbpf to not get
+> > confused if there are two __builtin_va_list copies in BTF.
+>
+> I checked code. the libbpf prevents generating
+>     typedef <...> __builtin_va_list
+> since __builtin_va_list is a builtin type.
+>
+> Here, due to __ARRAY_SIZE_TYPE__ problem, the following are generated
+> in vmlinux.h.
+>
+> typedef __builtin_va_list va_list;
+> typedef __builtin_va_list___2 va_list___2;
+>
+> since __builtin_va_list appears twice in the BTF.
+> But due to the libbpf implementation to skip
+>     typedef <...> __builtin_va_list
+>
+> We don't have __builtin_va_list___2 defined and this
+> caused compilation error.
+>
+> Although we could workaround the issue in libbpf
+> such that if the typedef is in the format of
+>    typedef __builtin_va_list<...> <other_type>
+> we should just emit
+>    typedef __builtin_va_list <other_type>
+>
+> But fixing the issue in pahole is much better since
+> we won't have va_list___2 any more.
 
-This change exposed that map_kptr selftests allocated too big buffer,
-which is fixed in this patch as well.
+Sounds good, let's do it in pahole, thanks!
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/core_autosize.c  |  2 +-
- .../selftests/bpf/prog_tests/core_retro.c     | 17 ++++++-----
- .../selftests/bpf/prog_tests/for_each.c       | 30 +++++++++++--------
- .../bpf/prog_tests/lookup_and_delete.c        | 15 ++++++----
- .../selftests/bpf/prog_tests/map_kptr.c       | 23 ++++++++------
- .../bpf/prog_tests/stacktrace_build_id.c      |  8 ++---
- .../bpf/prog_tests/stacktrace_build_id_nmi.c  | 11 +++----
- .../selftests/bpf/prog_tests/timer_mim.c      |  2 +-
- 8 files changed, 61 insertions(+), 47 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_autosize.c b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-index 1dfe14ff6aa4..f2ce4fd1cdae 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-@@ -167,7 +167,7 @@ void test_core_autosize(void)
- 	if (!ASSERT_OK_PTR(bss_map, "bss_map_find"))
- 		goto cleanup;
- 
--	err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &zero, (void *)&out);
-+	err = bpf_map__lookup_elem(bss_map, &zero, sizeof(zero), &out, sizeof(out), 0);
- 	if (!ASSERT_OK(err, "bss_lookup"))
- 		goto cleanup;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_retro.c b/tools/testing/selftests/bpf/prog_tests/core_retro.c
-index 6acb0e94d4d7..4a2c256c8db6 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_retro.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_retro.c
-@@ -6,31 +6,32 @@
- 
- void test_core_retro(void)
- {
--	int err, zero = 0, res, duration = 0, my_pid = getpid();
-+	int err, zero = 0, res, my_pid = getpid();
- 	struct test_core_retro *skel;
- 
- 	/* load program */
- 	skel = test_core_retro__open_and_load();
--	if (CHECK(!skel, "skel_load", "skeleton open/load failed\n"))
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
- 		goto out_close;
- 
--	err = bpf_map_update_elem(bpf_map__fd(skel->maps.exp_tgid_map), &zero, &my_pid, 0);
--	if (CHECK(err, "map_update", "failed to set expected PID: %d\n", errno))
-+	err = bpf_map__update_elem(skel->maps.exp_tgid_map, &zero, sizeof(zero),
-+				   &my_pid, sizeof(my_pid), 0);
-+	if (!ASSERT_OK(err, "map_update"))
- 		goto out_close;
- 
- 	/* attach probe */
- 	err = test_core_retro__attach(skel);
--	if (CHECK(err, "attach_kprobe", "err %d\n", err))
-+	if (!ASSERT_OK(err, "attach_kprobe"))
- 		goto out_close;
- 
- 	/* trigger */
- 	usleep(1);
- 
--	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.results), &zero, &res);
--	if (CHECK(err, "map_lookup", "failed to lookup result: %d\n", errno))
-+	err = bpf_map__lookup_elem(skel->maps.results, &zero, sizeof(zero), &res, sizeof(res), 0);
-+	if (!ASSERT_OK(err, "map_lookup"))
- 		goto out_close;
- 
--	CHECK(res != my_pid, "pid_check", "got %d != exp %d\n", res, my_pid);
-+	ASSERT_EQ(res, my_pid, "pid_check");
- 
- out_close:
- 	test_core_retro__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/prog_tests/for_each.c b/tools/testing/selftests/bpf/prog_tests/for_each.c
-index 754e80937e5d..8963f8a549f2 100644
---- a/tools/testing/selftests/bpf/prog_tests/for_each.c
-+++ b/tools/testing/selftests/bpf/prog_tests/for_each.c
-@@ -10,9 +10,10 @@ static unsigned int duration;
- 
- static void test_hash_map(void)
- {
--	int i, err, hashmap_fd, max_entries, percpu_map_fd;
-+	int i, err, max_entries;
- 	struct for_each_hash_map_elem *skel;
- 	__u64 *percpu_valbuf = NULL;
-+	size_t percpu_val_sz;
- 	__u32 key, num_cpus;
- 	__u64 val;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts,
-@@ -25,26 +26,27 @@ static void test_hash_map(void)
- 	if (!ASSERT_OK_PTR(skel, "for_each_hash_map_elem__open_and_load"))
- 		return;
- 
--	hashmap_fd = bpf_map__fd(skel->maps.hashmap);
- 	max_entries = bpf_map__max_entries(skel->maps.hashmap);
- 	for (i = 0; i < max_entries; i++) {
- 		key = i;
- 		val = i + 1;
--		err = bpf_map_update_elem(hashmap_fd, &key, &val, BPF_ANY);
-+		err = bpf_map__update_elem(skel->maps.hashmap, &key, sizeof(key),
-+					   &val, sizeof(val), BPF_ANY);
- 		if (!ASSERT_OK(err, "map_update"))
- 			goto out;
- 	}
- 
- 	num_cpus = bpf_num_possible_cpus();
--	percpu_map_fd = bpf_map__fd(skel->maps.percpu_map);
--	percpu_valbuf = malloc(sizeof(__u64) * num_cpus);
-+	percpu_val_sz = sizeof(__u64) * num_cpus;
-+	percpu_valbuf = malloc(percpu_val_sz);
- 	if (!ASSERT_OK_PTR(percpu_valbuf, "percpu_valbuf"))
- 		goto out;
- 
- 	key = 1;
- 	for (i = 0; i < num_cpus; i++)
- 		percpu_valbuf[i] = i + 1;
--	err = bpf_map_update_elem(percpu_map_fd, &key, percpu_valbuf, BPF_ANY);
-+	err = bpf_map__update_elem(skel->maps.percpu_map, &key, sizeof(key),
-+				   percpu_valbuf, percpu_val_sz, BPF_ANY);
- 	if (!ASSERT_OK(err, "percpu_map_update"))
- 		goto out;
- 
-@@ -58,7 +60,7 @@ static void test_hash_map(void)
- 	ASSERT_EQ(skel->bss->hashmap_elems, max_entries, "hashmap_elems");
- 
- 	key = 1;
--	err = bpf_map_lookup_elem(hashmap_fd, &key, &val);
-+	err = bpf_map__lookup_elem(skel->maps.hashmap, &key, sizeof(key), &val, sizeof(val), 0);
- 	ASSERT_ERR(err, "hashmap_lookup");
- 
- 	ASSERT_EQ(skel->bss->percpu_called, 1, "percpu_called");
-@@ -75,9 +77,10 @@ static void test_hash_map(void)
- static void test_array_map(void)
- {
- 	__u32 key, num_cpus, max_entries;
--	int i, arraymap_fd, percpu_map_fd, err;
-+	int i, err;
- 	struct for_each_array_map_elem *skel;
- 	__u64 *percpu_valbuf = NULL;
-+	size_t percpu_val_sz;
- 	__u64 val, expected_total;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts,
- 		.data_in = &pkt_v4,
-@@ -89,7 +92,6 @@ static void test_array_map(void)
- 	if (!ASSERT_OK_PTR(skel, "for_each_array_map_elem__open_and_load"))
- 		return;
- 
--	arraymap_fd = bpf_map__fd(skel->maps.arraymap);
- 	expected_total = 0;
- 	max_entries = bpf_map__max_entries(skel->maps.arraymap);
- 	for (i = 0; i < max_entries; i++) {
-@@ -98,21 +100,23 @@ static void test_array_map(void)
- 		/* skip the last iteration for expected total */
- 		if (i != max_entries - 1)
- 			expected_total += val;
--		err = bpf_map_update_elem(arraymap_fd, &key, &val, BPF_ANY);
-+		err = bpf_map__update_elem(skel->maps.arraymap, &key, sizeof(key),
-+					   &val, sizeof(val), BPF_ANY);
- 		if (!ASSERT_OK(err, "map_update"))
- 			goto out;
- 	}
- 
- 	num_cpus = bpf_num_possible_cpus();
--	percpu_map_fd = bpf_map__fd(skel->maps.percpu_map);
--	percpu_valbuf = malloc(sizeof(__u64) * num_cpus);
-+	percpu_val_sz = sizeof(__u64) * num_cpus;
-+	percpu_valbuf = malloc(percpu_val_sz);
- 	if (!ASSERT_OK_PTR(percpu_valbuf, "percpu_valbuf"))
- 		goto out;
- 
- 	key = 0;
- 	for (i = 0; i < num_cpus; i++)
- 		percpu_valbuf[i] = i + 1;
--	err = bpf_map_update_elem(percpu_map_fd, &key, percpu_valbuf, BPF_ANY);
-+	err = bpf_map__update_elem(skel->maps.percpu_map, &key, sizeof(key),
-+				   percpu_valbuf, percpu_val_sz, BPF_ANY);
- 	if (!ASSERT_OK(err, "percpu_map_update"))
- 		goto out;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c b/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
-index beebfa9730e1..a767bb4a271c 100644
---- a/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
-+++ b/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
-@@ -112,7 +112,8 @@ static void test_lookup_and_delete_hash(void)
- 
- 	/* Lookup and delete element. */
- 	key = 1;
--	err = bpf_map_lookup_and_delete_elem(map_fd, &key, &value);
-+	err = bpf_map__lookup_and_delete_elem(skel->maps.hash_map,
-+					      &key, sizeof(key), &value, sizeof(value), 0);
- 	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
- 		goto cleanup;
- 
-@@ -147,7 +148,8 @@ static void test_lookup_and_delete_percpu_hash(void)
- 
- 	/* Lookup and delete element. */
- 	key = 1;
--	err = bpf_map_lookup_and_delete_elem(map_fd, &key, value);
-+	err = bpf_map__lookup_and_delete_elem(skel->maps.hash_map,
-+					      &key, sizeof(key), value, sizeof(value), 0);
- 	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
- 		goto cleanup;
- 
-@@ -191,7 +193,8 @@ static void test_lookup_and_delete_lru_hash(void)
- 		goto cleanup;
- 
- 	/* Lookup and delete element 3. */
--	err = bpf_map_lookup_and_delete_elem(map_fd, &key, &value);
-+	err = bpf_map__lookup_and_delete_elem(skel->maps.hash_map,
-+					      &key, sizeof(key), &value, sizeof(value), 0);
- 	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
- 		goto cleanup;
- 
-@@ -240,10 +243,10 @@ static void test_lookup_and_delete_lru_percpu_hash(void)
- 		value[i] = 0;
- 
- 	/* Lookup and delete element 3. */
--	err = bpf_map_lookup_and_delete_elem(map_fd, &key, value);
--	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem")) {
-+	err = bpf_map__lookup_and_delete_elem(skel->maps.hash_map,
-+					      &key, sizeof(key), value, sizeof(value), 0);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
- 		goto cleanup;
--	}
- 
- 	/* Check if only one CPU has set the value. */
- 	for (i = 0; i < nr_cpus; i++) {
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-index 8142dd9eff4c..fdcea7a61491 100644
---- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-@@ -91,7 +91,7 @@ static void test_map_kptr_success(bool test_run)
- 	);
- 	struct map_kptr *skel;
- 	int key = 0, ret;
--	char buf[24];
-+	char buf[16];
- 
- 	skel = map_kptr__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "map_kptr__open_and_load"))
-@@ -107,24 +107,29 @@ static void test_map_kptr_success(bool test_run)
- 	if (test_run)
- 		return;
- 
--	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
-+	ret = bpf_map__update_elem(skel->maps.array_map,
-+				   &key, sizeof(key), buf, sizeof(buf), 0);
- 	ASSERT_OK(ret, "array_map update");
--	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.array_map), &key, buf, 0);
-+	ret = bpf_map__update_elem(skel->maps.array_map,
-+				   &key, sizeof(key), buf, sizeof(buf), 0);
- 	ASSERT_OK(ret, "array_map update2");
- 
--	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.hash_map), &key, buf, 0);
-+	ret = bpf_map__update_elem(skel->maps.hash_map,
-+				   &key, sizeof(key), buf, sizeof(buf), 0);
- 	ASSERT_OK(ret, "hash_map update");
--	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.hash_map), &key);
-+	ret = bpf_map__delete_elem(skel->maps.hash_map, &key, sizeof(key), 0);
- 	ASSERT_OK(ret, "hash_map delete");
- 
--	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.hash_malloc_map), &key, buf, 0);
-+	ret = bpf_map__update_elem(skel->maps.hash_malloc_map,
-+				   &key, sizeof(key), buf, sizeof(buf), 0);
- 	ASSERT_OK(ret, "hash_malloc_map update");
--	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.hash_malloc_map), &key);
-+	ret = bpf_map__delete_elem(skel->maps.hash_malloc_map, &key, sizeof(key), 0);
- 	ASSERT_OK(ret, "hash_malloc_map delete");
- 
--	ret = bpf_map_update_elem(bpf_map__fd(skel->maps.lru_hash_map), &key, buf, 0);
-+	ret = bpf_map__update_elem(skel->maps.lru_hash_map,
-+				   &key, sizeof(key), buf, sizeof(buf), 0);
- 	ASSERT_OK(ret, "lru_hash_map update");
--	ret = bpf_map_delete_elem(bpf_map__fd(skel->maps.lru_hash_map), &key);
-+	ret = bpf_map__delete_elem(skel->maps.lru_hash_map, &key, sizeof(key), 0);
- 	ASSERT_OK(ret, "lru_hash_map delete");
- 
- 	map_kptr__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-index e8399ae50e77..9ad09a6c538a 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id.c
-@@ -8,7 +8,7 @@ void test_stacktrace_build_id(void)
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
- 	struct test_stacktrace_build_id *skel;
- 	int err, stack_trace_len;
--	__u32 key, previous_key, val, duration = 0;
-+	__u32 key, prev_key, val, duration = 0;
- 	char buf[256];
- 	int i, j;
- 	struct bpf_stack_build_id id_offs[PERF_MAX_STACK_DEPTH];
-@@ -58,7 +58,7 @@ void test_stacktrace_build_id(void)
- 		  "err %d errno %d\n", err, errno))
- 		goto cleanup;
- 
--	err = bpf_map_get_next_key(stackmap_fd, NULL, &key);
-+	err = bpf_map__get_next_key(skel->maps.stackmap, NULL, &key, sizeof(key));
- 	if (CHECK(err, "get_next_key from stackmap",
- 		  "err %d, errno %d\n", err, errno))
- 		goto cleanup;
-@@ -79,8 +79,8 @@ void test_stacktrace_build_id(void)
- 				if (strstr(buf, build_id) != NULL)
- 					build_id_matches = 1;
- 			}
--		previous_key = key;
--	} while (bpf_map_get_next_key(stackmap_fd, &previous_key, &key) == 0);
-+		prev_key = key;
-+	} while (bpf_map__get_next_key(skel->maps.stackmap, &prev_key, &key, sizeof(key)) == 0);
- 
- 	/* stack_map_get_build_id_offset() is racy and sometimes can return
- 	 * BPF_STACK_BUILD_ID_IP instead of BPF_STACK_BUILD_ID_VALID;
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-index f45a1d7b0a28..f4ea1a215ce4 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_build_id_nmi.c
-@@ -27,7 +27,7 @@ void test_stacktrace_build_id_nmi(void)
- 		.type = PERF_TYPE_HARDWARE,
- 		.config = PERF_COUNT_HW_CPU_CYCLES,
- 	};
--	__u32 key, previous_key, val, duration = 0;
-+	__u32 key, prev_key, val, duration = 0;
- 	char buf[256];
- 	int i, j;
- 	struct bpf_stack_build_id id_offs[PERF_MAX_STACK_DEPTH];
-@@ -100,7 +100,7 @@ void test_stacktrace_build_id_nmi(void)
- 		  "err %d errno %d\n", err, errno))
- 		goto cleanup;
- 
--	err = bpf_map_get_next_key(stackmap_fd, NULL, &key);
-+	err = bpf_map__get_next_key(skel->maps.stackmap, NULL, &key, sizeof(key));
- 	if (CHECK(err, "get_next_key from stackmap",
- 		  "err %d, errno %d\n", err, errno))
- 		goto cleanup;
-@@ -108,7 +108,8 @@ void test_stacktrace_build_id_nmi(void)
- 	do {
- 		char build_id[64];
- 
--		err = bpf_map_lookup_elem(stackmap_fd, &key, id_offs);
-+		err = bpf_map__lookup_elem(skel->maps.stackmap, &key, sizeof(key),
-+					   id_offs, sizeof(id_offs), 0);
- 		if (CHECK(err, "lookup_elem from stackmap",
- 			  "err %d, errno %d\n", err, errno))
- 			goto cleanup;
-@@ -121,8 +122,8 @@ void test_stacktrace_build_id_nmi(void)
- 				if (strstr(buf, build_id) != NULL)
- 					build_id_matches = 1;
- 			}
--		previous_key = key;
--	} while (bpf_map_get_next_key(stackmap_fd, &previous_key, &key) == 0);
-+		prev_key = key;
-+	} while (bpf_map__get_next_key(skel->maps.stackmap, &prev_key, &key, sizeof(key)) == 0);
- 
- 	/* stack_map_get_build_id_offset() is racy and sometimes can return
- 	 * BPF_STACK_BUILD_ID_IP instead of BPF_STACK_BUILD_ID_VALID;
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer_mim.c b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
-index 2ee5f5ae11d4..9ff7843909e7 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer_mim.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer_mim.c
-@@ -35,7 +35,7 @@ static int timer_mim(struct timer_mim *timer_skel)
- 	ASSERT_EQ(timer_skel->bss->ok, 1 | 2, "ok");
- 
- 	close(bpf_map__fd(timer_skel->maps.inner_htab));
--	err = bpf_map_delete_elem(bpf_map__fd(timer_skel->maps.outer_arr), &key1);
-+	err = bpf_map__delete_elem(timer_skel->maps.outer_arr, &key1, sizeof(key1), 0);
- 	ASSERT_EQ(err, 0, "delete inner map");
- 
- 	/* check that timer_cb[12] are no longer running */
--- 
-2.30.2
-
+>
+> >
+> >> This patch fixed the issue by normalizing all array_index types
+> >> to be the first array_index type in the whole btf.
+> >>
+> >> Signed-off-by: Yonghong Song <yhs@fb.com>
+> >> ---
+> >>   btf_encoder.c | 24 +++++++++++++++++++++---
+> >>   btf_encoder.h |  2 +-
+> >>   pahole.c      |  2 +-
+> >>   3 files changed, 23 insertions(+), 5 deletions(-)
+> >>
+> >
+> > [...]
