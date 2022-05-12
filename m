@@ -2,172 +2,283 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A7F524385
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 05:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B98B5243C6
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 05:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344569AbiELDiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 May 2022 23:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        id S1345480AbiELD66 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 23:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbiELDiC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 23:38:02 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03837252AA;
-        Wed, 11 May 2022 20:38:01 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id e3so4056508ios.6;
-        Wed, 11 May 2022 20:38:00 -0700 (PDT)
+        with ESMTP id S1345380AbiELD6z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 23:58:55 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F787275D3
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 20:58:53 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id w17-20020a17090a529100b001db302efed6so3759236pjh.4
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 20:58:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L006SjPdX5Xticdbo7RvVa2pKtl5XV/E8ac7wvDMDRg=;
-        b=b4Ajt7dkwAuyf+d/E1hEmc3TDC+F7MDLdJW53zbRGFxKgmySJHZkI/yJJKO0pHHrN/
-         4WxXJ7LAyByBJAdU782sKCLaYpy30ZBsnU/yW0x56kfUZ+vecbvoLx9NrhE4ZonjpEUJ
-         MXKK9Pbd4tP+uF4WJr3ZrvbhJpr9lsG2hHECTOITc9UDkhHYjic1WJhAhnXuivo1VhcF
-         PeyALUo+T0cj6RQUyDTqOJUS3/zm/z3nPILaGLjKjI45+HCX46IhuKionbhtzNYMqyBH
-         +x0CKZBvUPpHPZRi99uUCEpFe7tvHaWKAAFQ7n0efWDfGQvV7CePvclMUX6wq/aA744W
-         gljQ==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=9YHAxVCwMQX+pkLG4apffaFkY79VVK11xX1H1uNWoZU=;
+        b=ScQXX34kCFkg6LTVK5Bzh9wpxADbH4wZ2ElWqdVAhelSVmQCmHBJ5xv35LfYe4zUNt
+         P3tVg3LOYPpBbRkXg0TyHtFhp4yRfd/6UOxaOA2A3x8Ltw3+t/MAdOxWTFHo2hN3dwYZ
+         bvh4QfM3chkDhBDZFHZ1BDO9OOFLr89R+WaAhwmo7uidQMACOoqXWPBui/uJXHo/ZZXu
+         jJY6C3R5s3F/1AV7o0m2OKZmp80ce0TqdBlk63hV+XT3iKEaNiDKbOI/aEYoqZFDcGyk
+         Q71v8VRIrocJmsSEGBxWbOWgfxSvQga7LpGOCENbmx7+y67sc78rTONkFyaX4Z2D71yI
+         vKtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L006SjPdX5Xticdbo7RvVa2pKtl5XV/E8ac7wvDMDRg=;
-        b=JCXVw9qfhsHbvWe658x2TXZQsVdrhW//aDqmWY4Yn5Tmom4Yd1ouIRh11LH0rpCtl+
-         2ezmGuWrz0RVvvTMm3Yn6lX36X3wjLT12jvSCTcvZrmu0PLXd9utboYA95EotDdn6Zjm
-         HNi9IBo9Q86UJ825r/Dw7UcKWWgRRhV853YLb5UQr5q3mJawkUgkUd8JXvWEkh1YRt1i
-         Ejroo02DOP6abbYgMmLfCUknSKM6aHi/OSlyq+wdHSWU7ksx10GzetcIiHRgtYpcfM1a
-         L55Xt/1XdaIq0I1nrlDr3vm++H5zdPbCZWcMWdXnSumjMs19jPJqy3lB3O+/JW0ZyGD/
-         z2jw==
-X-Gm-Message-State: AOAM532Ls2YXmJd/YdgswteO32ZexlP4YMpDagq1D3F/N52pAbALmPVy
-        Suj6GEynvm/ZvOSN3FCaeLPnt9hws4Z2uOsRnLfHxiJW
-X-Google-Smtp-Source: ABdhPJze/Meo8bZOkseCNV0kb+Bax/T1SnVEGUB5b83Ku7ntFNulOWozQWt9pSpocpS00WgRpBQKEcL9HSJL50aWxTU=
-X-Received: by 2002:a05:6638:468e:b0:32b:fe5f:d73f with SMTP id
- bq14-20020a056638468e00b0032bfe5fd73fmr9515960jab.234.1652326680406; Wed, 11
- May 2022 20:38:00 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=9YHAxVCwMQX+pkLG4apffaFkY79VVK11xX1H1uNWoZU=;
+        b=S+FdBsqk0UQB2rirGBcbQK7/XmVsPR5QSDbm7P529JFciYcdPqNxQvzaD/BafG3GzN
+         UbrHPNnsdigdLhNep+33Z2zQty6fXlY1MN3HdGS1Qu5I07I42cuestvLOwKelqCnQ951
+         GsfSXbwfGkQLykLzcyP/wYboqAknXNyMCHKmSp7PYmzlbpjGzHAdExoQdldRyAhlvrGu
+         De6KC2mBoIfphF+UawgtPsZS/Ep9/Soh4iSs+a5fZF2d9eZaofVIoUax51c+VitOZaKG
+         l6ijHDLFgbPmwXetD11X2Hqf5WeNlAdcnuVCGBad4xUjvy9aIteccDPZdJWWJfHTjG4c
+         RgjA==
+X-Gm-Message-State: AOAM530nOiVYBp5KvmFDohP2pDIne78tUXLepD9xghX524UX0X8/PFMC
+        Uw7iQwezSrmNZnCCk6GB4CrQMA==
+X-Google-Smtp-Source: ABdhPJw7Gvd7Vmzcbe3csw65DdPgMsPWhr9XM9n7NF1XATLrbwnaKRj+eJoVADnAb7XbC8SNYwYRGw==
+X-Received: by 2002:a17:90b:4f87:b0:1dd:100b:7342 with SMTP id qe7-20020a17090b4f8700b001dd100b7342mr8703718pjb.64.1652327932987;
+        Wed, 11 May 2022 20:58:52 -0700 (PDT)
+Received: from [10.71.57.194] ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id y10-20020a1709027c8a00b0015e8d4eb234sm2654861pll.126.2022.05.11.20.58.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 May 2022 20:58:52 -0700 (PDT)
+Message-ID: <731c281a-9911-fa86-fec2-a3c1a3954461@bytedance.com>
+Date:   Thu, 12 May 2022 11:58:38 +0800
 MIME-Version: 1.0
-References: <20220429211540.715151-1-sdf@google.com> <20220429211540.715151-11-sdf@google.com>
- <CAEf4BzY3Nd2pi+O-x4bp41=joFgPXU2+UFqBusdjR08ME62k5g@mail.gmail.com>
- <CAKH8qBtk6CpR-29R6sWicz_zW=RCYUrXZqBZbgF9eqt4XGgNqQ@mail.gmail.com>
- <CAEf4BzZvVzHd9Sb=uH+614fq0wrht1wBAyG1zh6ZJg-_Qz0-rA@mail.gmail.com> <CAKH8qBv401RBdiouFD71JGZScG_oFD+3fUNav68JpzA=VWLkiA@mail.gmail.com>
-In-Reply-To: <CAKH8qBv401RBdiouFD71JGZScG_oFD+3fUNav68JpzA=VWLkiA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 May 2022 20:37:49 -0700
-Message-ID: <CAEf4Bzb0Dnh49rwy8eFwoZK1ThOn-YQjcwXJiKbT-p7aATqEQw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 10/10] selftests/bpf: verify lsm_cgroup struct
- sock access
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.2
+Subject: Re: [External] Re: [PATCH bpf-next v2 2/2] selftests/bpf: add test
+ case for bpf_map_lookup_percpu_elem
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joanne Koong <joannekoong@fb.com>,
+        Geliang Tang <geliang.tang@suse.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        duanxiongchun@bytedance.com,
+        Muchun Song <songmuchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        zhouchengming@bytedance.com, yosryahmed@google.com
+References: <20220511093854.411-1-zhoufeng.zf@bytedance.com>
+ <20220511093854.411-3-zhoufeng.zf@bytedance.com>
+ <CAEf4BzZL85C7KUwKv9i5cdLSDzM175cLjiW4EDjOqNfcxbLO+A@mail.gmail.com>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <CAEf4BzZL85C7KUwKv9i5cdLSDzM175cLjiW4EDjOqNfcxbLO+A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 10, 2022 at 10:31 AM Stanislav Fomichev <sdf@google.com> wrote:
+在 2022/5/12 上午11:34, Andrii Nakryiko 写道:
+> On Wed, May 11, 2022 at 2:39 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>
+>> test_progs:
+>> Tests new ebpf helpers bpf_map_lookup_percpu_elem.
+>>
+>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+>> ---
+>>   .../bpf/prog_tests/map_lookup_percpu_elem.c   | 46 ++++++++++++++++
+>>   .../bpf/progs/test_map_lookup_percpu_elem.c   | 54 +++++++++++++++++++
+>>   2 files changed, 100 insertions(+)
+>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
+>>   create mode 100644 tools/testing/selftests/bpf/progs/test_map_lookup_percpu_elem.c
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c b/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
+>> new file mode 100644
+>> index 000000000000..58b24c2112b0
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
+>> @@ -0,0 +1,46 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +// Copyright (c) 2022 Bytedance
+> /* */ instead of //
+
+Ok, I will do. Thanks.
+
+
 >
-> On Mon, May 9, 2022 at 4:44 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, May 9, 2022 at 4:38 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > >
-> > > On Mon, May 9, 2022 at 2:54 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Fri, Apr 29, 2022 at 2:16 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > > >
-> > > > > sk_priority & sk_mark are writable, the rest is readonly.
-> > > > >
-> > > > > Add new ldx_offset fixups to lookup the offset of struct field.
-> > > > > Allow using test.kfunc regardless of prog_type.
-> > > > >
-> > > > > One interesting thing here is that the verifier doesn't
-> > > > > really force me to add NULL checks anywhere :-/
-> > > > >
-> > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > > ---
-> > > > >  tools/testing/selftests/bpf/test_verifier.c   | 54 ++++++++++++++++++-
-> > > > >  .../selftests/bpf/verifier/lsm_cgroup.c       | 34 ++++++++++++
-> > > > >  2 files changed, 87 insertions(+), 1 deletion(-)
-> > > > >  create mode 100644 tools/testing/selftests/bpf/verifier/lsm_cgroup.c
-> > > > >
-> > > >
-> > > > [...]
-> > > >
-> > > > > diff --git a/tools/testing/selftests/bpf/verifier/lsm_cgroup.c b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..af0efe783511
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
-> > > > > @@ -0,0 +1,34 @@
-> > > > > +#define SK_WRITABLE_FIELD(tp, field, size, res) \
-> > > > > +{ \
-> > > > > +       .descr = field, \
-> > > > > +       .insns = { \
-> > > > > +               /* r1 = *(u64 *)(r1 + 0) */ \
-> > > > > +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
-> > > > > +               /* r1 = *(u64 *)(r1 + offsetof(struct socket, sk)) */ \
-> > > > > +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
-> > > > > +               /* r2 = *(u64 *)(r1 + offsetof(struct sock, <field>)) */ \
-> > > > > +               BPF_LDX_MEM(size, BPF_REG_2, BPF_REG_1, 0), \
-> > > > > +               /* *(u64 *)(r1 + offsetof(struct sock, <field>)) = r2 */ \
-> > > > > +               BPF_STX_MEM(size, BPF_REG_1, BPF_REG_2, 0), \
-> > > > > +               BPF_MOV64_IMM(BPF_REG_0, 1), \
-> > > > > +               BPF_EXIT_INSN(), \
-> > > > > +       }, \
-> > > > > +       .result = res, \
-> > > > > +       .errstr = res ? "no write support to 'struct sock' at off" : "", \
-> > > > > +       .prog_type = BPF_PROG_TYPE_LSM, \
-> > > > > +       .expected_attach_type = BPF_LSM_CGROUP, \
-> > > > > +       .kfunc = "socket_post_create", \
-> > > > > +       .fixup_ldx = { \
-> > > > > +               { "socket", "sk", 1 }, \
-> > > > > +               { tp, field, 2 }, \
-> > > > > +               { tp, field, 3 }, \
-> > > > > +       }, \
-> > > > > +}
-> > > > > +
-> > > > > +SK_WRITABLE_FIELD("sock_common", "skc_family", BPF_H, REJECT),
-> > > > > +SK_WRITABLE_FIELD("sock", "sk_sndtimeo", BPF_DW, REJECT),
-> > > > > +SK_WRITABLE_FIELD("sock", "sk_priority", BPF_W, ACCEPT),
-> > > > > +SK_WRITABLE_FIELD("sock", "sk_mark", BPF_W, ACCEPT),
-> > > > > +SK_WRITABLE_FIELD("sock", "sk_pacing_rate", BPF_DW, REJECT),
-> > > > > +
-> > > >
-> > > > have you tried writing it as C program and adding the test to
-> > > > test_progs? Does something not work there?
-> > >
-> > > Seems like it should work, I don't see any issues with writing 5
-> > > programs to test each field.
-> > > But test_verified still feels like a better fit? Any reason in
-> > > particular you'd prefer test_progs over test_verifier?
-> >
-> > Adding that fixup_ldx->strct special handling didn't feel like the
-> > best fit, tbh. test_progs is generally much nicer to deal with in
-> > terms of CI and in terms of comprehending what's going on and
-> > supporting the code longer term.
+>> +
+>> +#include <test_progs.h>
+>> +
+>> +#include "test_map_lookup_percpu_elem.skel.h"
+>> +
+>> +#define TEST_VALUE  1
+>> +
+>> +void test_map_lookup_percpu_elem(void)
+>> +{
+>> +       struct test_map_lookup_percpu_elem *skel;
+>> +       int key = 0, ret;
+>> +       int nr_cpus = sysconf(_SC_NPROCESSORS_ONLN);
+> I think this is actually wrong and will break selftests on systems
+> with offline CPUs. Please use libbpf_num_possible_cpus() instead.
+
+
+Ok, I will do. Thanks.
+
+
 >
-> This is not new, right? We already have a bunch of fixup_xxx things.
+>> +       int *buf;
+>> +
+>> +       buf = (int *)malloc(nr_cpus*sizeof(int));
+>> +       if (!ASSERT_OK_PTR(buf, "malloc"))
+>> +               return;
+>> +       memset(buf, 0, nr_cpus*sizeof(int));
+> this is wrong, kernel expects to have roundup(sz, 8) per each CPU,
+> while you have just 4 bytes per each element
+>
+> please also have spaces around multiplication operator here and above
 
-I'm not saying it's wrong, but we don't have to keep adding extra
-custom fixup_xxx things and having hand crafted assembly test cases if
-we can do C tests, right? BPF assembly tests are sometimes necessary
-if we need to craft some special conditions which are hard to
-guarantee from Clang side during C to BPF assembly translation. But
-this one doesn't seem to be the case.
 
-> I can try to move this into test_progs in largely the same manner if
-> you prefer, having a C file per field seems like an overkill.
+Ok, I will use 8 bytes for key and val. Thanks.
 
-You don't need a separate C file for each case. See what Joanne does
-with SEC("?...") for dynptr tests, or what Kumar did for his kptr
-tests. You can put multiple negative tests as separate BPF programs in
-one file with auto-load disabled through SEC("?...") and then
-open/load skeleton each time for each program, one at a time.
+
+>> +       buf[0] = TEST_VALUE;
+>> +
+>> +       skel = test_map_lookup_percpu_elem__open_and_load();
+>> +       if (!ASSERT_OK_PTR(skel, "test_map_lookup_percpu_elem__open_and_load"))
+>> +               return;
+> buf leaking here
+
+
+Yes, sorry for my negligence.
+
+
+>
+>> +       ret = test_map_lookup_percpu_elem__attach(skel);
+>> +       ASSERT_OK(ret, "test_map_lookup_percpu_elem__attach");
+>> +
+>> +       ret = bpf_map_update_elem(bpf_map__fd(skel->maps.percpu_array_map), &key, buf, 0);
+>> +       ASSERT_OK(ret, "percpu_array_map update");
+>> +
+>> +       ret = bpf_map_update_elem(bpf_map__fd(skel->maps.percpu_hash_map), &key, buf, 0);
+>> +       ASSERT_OK(ret, "percpu_hash_map update");
+>> +
+>> +       ret = bpf_map_update_elem(bpf_map__fd(skel->maps.percpu_lru_hash_map), &key, buf, 0);
+>> +       ASSERT_OK(ret, "percpu_lru_hash_map update");
+>> +
+>> +       syscall(__NR_getuid);
+>> +
+>> +       ret = skel->bss->percpu_array_elem_val == TEST_VALUE &&
+>> +             skel->bss->percpu_hash_elem_val == TEST_VALUE &&
+>> +             skel->bss->percpu_lru_hash_elem_val == TEST_VALUE;
+>> +       ASSERT_OK(!ret, "bpf_map_lookup_percpu_elem success");
+> this would be better done as three separate ASSERT_EQ(), combining
+> into opaque true/false isn't helpful if something breaks
+
+
+Good suggestion.
+
+
+>
+>> +
+>> +       test_map_lookup_percpu_elem__destroy(skel);
+>> +}
+>> diff --git a/tools/testing/selftests/bpf/progs/test_map_lookup_percpu_elem.c b/tools/testing/selftests/bpf/progs/test_map_lookup_percpu_elem.c
+>> new file mode 100644
+>> index 000000000000..5d4ef86cbf48
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/progs/test_map_lookup_percpu_elem.c
+>> @@ -0,0 +1,54 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +// Copyright (c) 2022 Bytedance
+> /* */ instead of //
+
+
+Ok, I will do. Thanks.
+
+
+>
+>> +
+>> +#include "vmlinux.h"
+>> +#include <bpf/bpf_helpers.h>
+>> +
+>> +int percpu_array_elem_val = 0;
+>> +int percpu_hash_elem_val = 0;
+>> +int percpu_lru_hash_elem_val = 0;
+>> +
+>> +struct {
+>> +       __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+>> +       __uint(max_entries, 1);
+>> +       __type(key, __u32);
+>> +       __type(value, __u32);
+>> +} percpu_array_map SEC(".maps");
+>> +
+>> +struct {
+>> +       __uint(type, BPF_MAP_TYPE_PERCPU_HASH);
+>> +       __uint(max_entries, 1);
+>> +       __type(key, __u32);
+>> +       __type(value, __u32);
+>> +} percpu_hash_map SEC(".maps");
+>> +
+>> +struct {
+>> +       __uint(type, BPF_MAP_TYPE_LRU_PERCPU_HASH);
+>> +       __uint(max_entries, 1);
+>> +       __type(key, __u32);
+>> +       __type(value, __u32);
+>> +} percpu_lru_hash_map SEC(".maps");
+>> +
+>> +SEC("tp/syscalls/sys_enter_getuid")
+>> +int sysenter_getuid(const void *ctx)
+>> +{
+>> +       __u32 key = 0;
+>> +       __u32 cpu = 0;
+>> +       __u32 *value;
+>> +
+>> +       value = bpf_map_lookup_percpu_elem(&percpu_array_map, &key, cpu);
+>> +       if (value)
+>> +               percpu_array_elem_val = *value;
+>> +
+>> +       value = bpf_map_lookup_percpu_elem(&percpu_hash_map, &key, cpu);
+>> +       if (value)
+>> +               percpu_hash_elem_val = *value;
+>> +
+>> +       value = bpf_map_lookup_percpu_elem(&percpu_lru_hash_map, &key, cpu);
+>> +       if (value)
+>> +               percpu_lru_hash_elem_val = *value;
+>> +
+> if the test happens to run on CPU 0 then the test doesn't really test
+> much. It would be more interesting to have a bpf_loop() iteration that
+> would fetch values on each possible CPU instead and do something with
+> it.
+
+
+Good suggestion. I check the code and find no bpf helper function to get 
+possible CPU nums.
+
+I think for the test function, read cpu0 elem value correctly should be 
+considered to be no problem.
+
+Or is it necessary to add a new helper function to get num_possible_cpus ?
+
+
+>
+>> +       return 0;
+>> +}
+>> +
+>> +char _license[] SEC("license") = "GPL";
+>> --
+>> 2.20.1
+>>
+
