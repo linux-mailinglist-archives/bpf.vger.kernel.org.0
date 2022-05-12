@@ -2,50 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF66B5240F6
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 01:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5830F524158
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 02:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349350AbiEKXXp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 11 May 2022 19:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        id S1349353AbiELAGA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 May 2022 20:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349347AbiEKXXf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 May 2022 19:23:35 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC223246D9C
-        for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:20:24 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24BMwcqN026791
-        for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:20:24 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g054exq4e-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 11 May 2022 16:20:24 -0700
-Received: from twshared31479.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 11 May 2022 16:20:22 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id CC6F619CA30B1; Wed, 11 May 2022 16:20:15 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: make fexit_stress test run in serial mode
-Date:   Wed, 11 May 2022 16:20:12 -0700
-Message-ID: <20220511232012.609370-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S1349551AbiELAFz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 May 2022 20:05:55 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF6B15FD6
+        for <bpf@vger.kernel.org>; Wed, 11 May 2022 17:05:53 -0700 (PDT)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nowL0-000CNy-CZ; Thu, 12 May 2022 02:05:50 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nowL0-000RR3-6e; Thu, 12 May 2022 02:05:50 +0200
+Subject: Re: [PATCH bpf-next v4 2/6] bpf: Add verifier support for dynptrs and
+ implement malloc dynptrs
+To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
+Cc:     andrii@kernel.org, ast@kernel.org
+References: <20220509224257.3222614-1-joannelkoong@gmail.com>
+ <20220509224257.3222614-3-joannelkoong@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6c0d9917-fcb2-6a74-81d7-4f9421867d76@iogearbox.net>
+Date:   Thu, 12 May 2022 02:05:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: C5KSJ8fcSf4UKVVTcUa2Wj8FUnkW80E8
-X-Proofpoint-GUID: C5KSJ8fcSf4UKVVTcUa2Wj8FUnkW80E8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-11_07,2022-05-11_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20220509224257.3222614-3-joannelkoong@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26538/Wed May 11 10:06:03 2022)
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,32 +51,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-fexit_stress is attaching maximum allowed amount of fexit programs to
-bpf_fentry_test1 kernel function, which is used by a bunch of other
-parallel tests, thus pretty frequently interfering with their execution.
+On 5/10/22 12:42 AM, Joanne Koong wrote:
+[...]
+> @@ -6498,6 +6523,11 @@ struct bpf_timer {
+>   	__u64 :64;
+>   } __attribute__((aligned(8)));
+>   
+> +struct bpf_dynptr {
+> +	__u64 :64;
+> +	__u64 :64;
+> +} __attribute__((aligned(8)));
+> +
+>   struct bpf_sysctl {
+>   	__u32	write;		/* Sysctl is being read (= 0) or written (= 1).
+>   				 * Allows 1,2,4-byte read, but no write.
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 8a2398ac14c2..a4272e9239ea 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1396,6 +1396,77 @@ const struct bpf_func_proto bpf_kptr_xchg_proto = {
+>   	.arg2_btf_id  = BPF_PTR_POISON,
+>   };
+>   
+> +void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data, enum bpf_dynptr_type type,
+> +		     u32 offset, u32 size)
+> +{
+> +	ptr->data = data;
+> +	ptr->offset = offset;
+> +	ptr->size = size;
+> +	bpf_dynptr_set_type(ptr, type);
+> +}
+> +
+> +void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr)
+> +{
+> +	memset(ptr, 0, sizeof(*ptr));
+> +}
+> +
+> +BPF_CALL_3(bpf_dynptr_alloc, u32, size, u64, flags, struct bpf_dynptr_kern *, ptr)
+> +{
+> +	gfp_t gfp_flags = GFP_ATOMIC;
 
-Given the test assumes nothing else is attaching to bpf_fentry_test1,
-mark it serial.
+nit: should also have __GFP_NOWARN
 
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/fexit_stress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I presume mem accounting cannot be done on this one given there is no real "ownership"
+of this piece of mem?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_stress.c b/tools/testing/selftests/bpf/prog_tests/fexit_stress.c
-index fe1f0f26ea14..a7e74297f15f 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_stress.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_stress.c
-@@ -5,7 +5,7 @@
- /* that's kernel internal BPF_MAX_TRAMP_PROGS define */
- #define CNT 38
- 
--void test_fexit_stress(void)
-+void serial_test_fexit_stress(void)
- {
- 	char test_skb[128] = {};
- 	int fexit_fd[CNT] = {};
--- 
-2.30.2
+Was planning to run some more local tests tomorrow, but from glance at selftest side
+I haven't seen sanity checks like these:
 
+bpf_dynptr_alloc(8, 0, &ptr);
+data = bpf_dynptr_data(&ptr, 0, 0);
+bpf_dynptr_put(&ptr);
+*(__u8 *)data = 23;
+
+How is this prevented? I think you do a ptr id check in the is_dynptr_ref_function
+check on the acquire function, but with above use, would our data pointer escape, or
+get invalidated via last put?
+
+Thanks,
+Daniel
