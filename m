@@ -2,141 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA1D524AE1
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 12:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D4A524D5D
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 14:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352880AbiELKzk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 06:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47374 "EHLO
+        id S241939AbiELMso (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 08:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352876AbiELKz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 06:55:29 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FDE6E8D9
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 03:55:27 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id g6so9459423ejw.1
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 03:55:27 -0700 (PDT)
+        with ESMTP id S1352157AbiELMsn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 08:48:43 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3830124D625
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 05:48:39 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id bu29so8958856lfb.0
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 05:48:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=Iwqqdpj/sCrfAf59NaNACtGSTRtAyJeA5sSf5Q8LpGQ=;
-        b=RD/cJqYlBYTnZgehRgve3MmDT02PYH0d0jFIKcdNePCxuFtfrzHeL8I0dT95rbUGLD
-         jaSKkMYjaWTSLcQ+lPaD98uG4IUjWd8v9P/2ImVWe7cvfWDZnjacKKm+1TIzpX3PPCJb
-         u51vcrC2TjaM7nDHHN4Qc/5yuUUyZCZP2wB8k=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zc35pogulMC60n85o7JSl7MYP5a9E2uD++K0T7qDYbg=;
+        b=VzdBX1dC99Ss/8QRwvmpetZ3YgLdsHPIWTss0aGICSIJWHB+jpIhv81eeEpM/ri8Pi
+         dCVyv70d28C4dudzgOnlgV0CxZbDLLTzVg7R9vN5NVLcPwXr772mS5j/bIaY9Aw+N1T0
+         w1XBo2w4F8HDMCXy5FP/uN/p70u5bZmeqUyistkjAG0jvvw7LD4r96tmNHKvFo90QpGP
+         nRVCWOKhL/n2By+ZKflDN7sYrayeq376w7TFD7EnMJ3FKgnTxcG5QLQ5OYnoNth3xwJN
+         pvEwxT3GxE3f67fImwXLTC8IbBJHWW9RUeSZLotTmlfn7vqkOWC/W0Zv7+I1KMagdvvu
+         CisQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=Iwqqdpj/sCrfAf59NaNACtGSTRtAyJeA5sSf5Q8LpGQ=;
-        b=Di4MpgzCdB+UwHylpaF31iYmGcvbnYWdI+dG6kFx9B6eDuxpk6Wa7VjBmJ4WfbU1Uy
-         Nu3oJ3tdY41iemH21lEXr1NBXYFuJl4eMet5YEz4N700hTNjZUjXq7/B6copYLsYAdj5
-         DqcRJR57O4RIYzq8FG3Luf35d5xZiiNxSJIQZD9xmvxosJa7Vb7kE62Tek3pLhFkMrxW
-         MBeYi3i+g4DUIofGHTx/7Y2GpxX+HwTvvHPWxiILDUevYzMSVg+ykEMA7QDljm0VkeuA
-         LguyrufJghvyf8T4txFL6E+nmXLgbq2QLrMluUfX2yBhYQwFxQA6lMd9lT/sIOPimeqH
-         Tx5w==
-X-Gm-Message-State: AOAM530/6krGgkCYFDZpOTNsE3/Yl5+uMDoWda00VyNqGFcnAPPMRaG9
-        5V7iTe/aTzhygVhTKrEiJEDBsQ==
-X-Google-Smtp-Source: ABdhPJyMEDJyGYlUhPgucEhy64Eh9s0++xx90SftrGOnxuQHSGFNdfGoGpgBQc0SpQTahAATxncZkw==
-X-Received: by 2002:a17:906:cb97:b0:6f3:c671:a337 with SMTP id mf23-20020a170906cb9700b006f3c671a337mr29293611ejb.93.1652352925651;
-        Thu, 12 May 2022 03:55:25 -0700 (PDT)
-Received: from cloudflare.com (79.184.128.236.ipv4.supernova.orange.pl. [79.184.128.236])
-        by smtp.gmail.com with ESMTPSA id s4-20020a170906a18400b006f52dbc192bsm2043862ejy.37.2022.05.12.03.55.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 May 2022 03:55:25 -0700 (PDT)
-References: <20220424154028.1698685-1-xukuohai@huawei.com>
- <20220424154028.1698685-6-xukuohai@huawei.com>
- <87ilqdobl1.fsf@cloudflare.com>
- <5fb30cc0-dcf6-75ec-b6fa-38be3e99dca6@huawei.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/7] bpf, arm64: Support to poke bpf prog
-Date:   Thu, 12 May 2022 12:54:07 +0200
-In-reply-to: <5fb30cc0-dcf6-75ec-b6fa-38be3e99dca6@huawei.com>
-Message-ID: <87wneryq8z.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zc35pogulMC60n85o7JSl7MYP5a9E2uD++K0T7qDYbg=;
+        b=4nPuhHn8/3ZlAh+P+j6YDSFhgjIcPOYdwhA+WcfmDFQ2tL6qN13AwmV6wq2028QeBV
+         8P4kzrfms2vn74bo3v73Ppsrs7fX9A6lTpDUk7O3Cbev12HmAjDg8U+jrOxG7wFzfY58
+         k+JZAA+yvF87AHx1eIpNOEF1g4F99EqcDYT2uqy5CGX3lHyCFriywJ20ZV3EB71VnLon
+         i7jIbsTUy9IHDYlWfMXJWLfadkkmGdbBAwnvxdYjzIljNj3pYIsifZjjxpWy/x0Cd6S9
+         0NBL85GVdFjHn5Z+fr3T7qCayRwM2pJhA83wn7aVcDlB79gcytMvF881SZjFC8QzdWIt
+         +OOw==
+X-Gm-Message-State: AOAM531k5Q1PcYD3M/EsX1DQolY22ps/AN8XOn1sz0TdqD0tNJQE0V3V
+        birswlWjmLhAHE1WwHfiB5xG7uR3LINqECVoqnoXbQ==
+X-Google-Smtp-Source: ABdhPJxXl2eFhmpJCUob2K0h3XdKxfTDVDgM7Wluv/tSa3tCP+EK2kphVO+LNgvV5A9N/eK1GMegWFCO3qsWXFyJf5Q=
+X-Received: by 2002:ac2:4ac9:0:b0:471:f6da:640d with SMTP id
+ m9-20020ac24ac9000000b00471f6da640dmr23484196lfp.286.1652359717248; Thu, 12
+ May 2022 05:48:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20220511154503.28365-1-cgxu519@mykernel.net> <YnvbhmRUxPxWU2S3@casper.infradead.org>
+ <YnwIDpkIBem+MeeC@gmail.com> <YnwuEt2Xm1iPjW7S@zeniv-ca.linux.org.uk> <CAADnVQ+tcrDQxb769yMYvyzPHcgZXozqYq0uj4QHi+kjzBYTvQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+tcrDQxb769yMYvyzPHcgZXozqYq0uj4QHi+kjzBYTvQ@mail.gmail.com>
+From:   Brian Vazquez <brianvv@google.com>
+Date:   Thu, 12 May 2022 05:48:25 -0700
+Message-ID: <CAMzD94Q+L-8YN89QX5_LS2b1oLX2Yq7p+bKVoaRsouaUT34hkA@mail.gmail.com>
+Subject: Re: [PATCH] vfs: move fdput() to right place in ksys_sync_file_range()
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        Xu Kuohai <xukuohai@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 11, 2022 at 11:12 AM +08, Xu Kuohai wrote:
-> On 5/10/2022 5:36 PM, Jakub Sitnicki wrote:
->> On Sun, Apr 24, 2022 at 11:40 AM -04, Xu Kuohai wrote:
+Sure, let me take a look.
 
-[...]
-
->>> @@ -281,12 +290,15 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->>>  	 *
->>>  	 */
->>>  
->>> +	if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
->>> +		emit(A64_BTI_C, ctx);
->> 
->> I'm no arm64 expert, but this looks like a fix for BTI.
->> 
->> Currently we never emit BTI because ARM64_BTI_KERNEL depends on
->> ARM64_PTR_AUTH_KERNEL, while BTI must be the first instruction for the
->> jump target [1]. Am I following correctly?
->> 
->> [1] https://lwn.net/Articles/804982/
->> 
+On Wed, May 11, 2022 at 7:04 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Not quite correct. When the jump target is a PACIASP instruction, no
-> Branch Target Exception is generated, so there is no need to insert a
-> BTI before PACIASP [2].
+> On Wed, May 11, 2022 at 2:43 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > [bpf folks Cc'd]
+> >
+> > On Wed, May 11, 2022 at 07:01:34PM +0000, Eric Biggers wrote:
+> > > On Wed, May 11, 2022 at 04:51:34PM +0100, Matthew Wilcox wrote:
+> > > > On Wed, May 11, 2022 at 11:45:03AM -0400, Chengguang Xu wrote:
+> > > > > Move fdput() to right place in ksys_sync_file_range() to
+> > > > > avoid fdput() after failed fdget().
+> > > >
+> > > > Why?  fdput() is already conditional on FDPUT_FPUT so you're ...
+> > > > optimising the failure case?
+> > >
+> > > "fdput() after failed fdget()" has confused people before, so IMO it's worth
+> > > cleaning this up.  But the commit message should make clear that it's a cleanup,
+> > > not a bug fix.  Also I recommend using an early return:
+> > >
+> > >       f = fdget(fd);
+> > >       if (!f.file)
+> > >               return -EBADF;
+> > >       ret = sync_file_range(f.file, offset, nbytes, flags);
+> > >       fdput(f);
+> > >       return ret;
+> >
+> > FWIW, fdput() after failed fdget() is rare, but there's no fundamental reasons
+> > why it would be wrong.  No objections against that patch, anyway.
+> >
+> > Out of curiousity, I've just looked at the existing users.  In mainline we have
+> > 203 callers of fdput()/fdput_pos(); all but 7 never get reached with NULL ->file.
+> >
+> > 1) There's ksys_sync_file_range(), kernel_read_file_from_fd() and ksys_readahead() -
+> > all with similar pattern.  I'm not sure that for readahead(2) "not opened for
+> > read" should yield the same error as "bad descriptor", but since it's been a part
+> > of userland ABI for a while...
+> >
+> > 2) two callers in perf_event_open(2) are playing silly buggers with explicit
+> >         struct fd group = {NULL, 0};
+> > and rely upon "fdput() is a no-op if we hadn't touched that" (note that if
+> > we try to touch it and get NULL ->file from fdget(), we do not hit those fdput()
+> > at all).
+> >
+> > 3) ovl_aio_put() is hard to follow (and some of the callers are poking
+> > where they shouldn't), no idea if it's correct.  struct fd is manually
+> > constructed there, anyway.
+> >
+> > 4) bpf generic_map_update_batch() is really asking for trouble.  The comment in
+> > there is wrong:
+> >         f = fdget(ufd); /* bpf_map_do_batch() guarantees ufd is valid */
+> > *NOTHING* we'd done earlier can guarantee that.  We might have a descriptor
+> > table shared with another thread, and it might have very well done dup2() since
+> > the last time we'd looked things up.  IOW, this fdget() is racy - the function
+> > assumes it refers to the same thing that gave us map back in bpf_map_do_batch(),
+> > but it's not guaranteed at all.
+> >
+> > I hadn't put together a reproducer, but that code is very suspicious.  As a general
+> > rule, you should treat descriptor table as shared object, modifiable by other
+> > threads.  It can be explicitly locked and it can be explicitly unshared, but
+> > short of that doing a lookup for the same descriptor twice in a row can yield
+> > different results.
+> >
+> > What's going on there?  Do you really want the same struct file you've got back in
+> > bpf_map_do_batch() (i.e. the one you've got the map from)?  What should happen
+> > if the descriptor changes its meaning during (or after) the operation?
 >
-> In order to attach trampoline to bpf prog, a MOV and NOP are inserted
-> before the PACIASP, so BTI instruction is required to avoid Branch
-> Target Exception.
+> Interesting.
+> If I got this right... in the following:
 >
-> The reason for inserting NOP before PACIASP instead of after PACIASP is
-> that no call frame is built before entering trampoline, so there is no
-> return address on the stack and nothing to be protected by PACIASP.
+> f = fdget(ufd);
+> map = __bpf_map_get(f);
+> if (IS_ERR(map))
+>    return PTR_ERR(map);
+> ...
+> f = fdget(ufd);
+> here there are no guarantees that 'f' is valid and points
+> to the same map.
+> Argh. In hindsight that makes sense.
 >
-> [2]
-> https://developer.arm.com/documentation/ddi0596/2021-12/Base-Instructions/BTI--Branch-Target-Identification-?lang=en
-
-That makes sense. Thanks for the explanation!
+> generic_map_update_batch calls bpf_map_update_value.
+> That could use 'f' for prog_array, fd_array and hash_of_maps
+> types of maps.
+> The first two types don't' define .map_update_batch callback.
+> So BPF_DO_BATCH(map->ops->map_update_batch); will error out
+> with -ENOTSUPP since that callback is NULL for that map type.
+>
+> The hash_of_maps does seem to support it, but
+> that's an odd one to use with batch access.
+>
+> Anyhow we certainly need to clean this up.
+>
+> Brian,
+> do you mind fixing it up, since you've added that
+> secondary fdget() in the first place?
+>
+> Thanks!
