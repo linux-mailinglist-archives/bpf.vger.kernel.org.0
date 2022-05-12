@@ -2,117 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCEE525336
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 19:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2C3525352
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 19:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347317AbiELRIo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 13:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
+        id S1355632AbiELRLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 13:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356840AbiELRIn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 13:08:43 -0400
-Received: from mail.nfschina.com (unknown [IPv6:2400:dd01:100f:2:72e2:84ff:fe10:5f45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9EA1B2609D0;
-        Thu, 12 May 2022 10:08:40 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by mail.nfschina.com (Postfix) with ESMTP id 151A61E80D6B;
-        Fri, 13 May 2022 01:03:03 +0800 (CST)
-X-Virus-Scanned: amavisd-new at test.com
-Received: from mail.nfschina.com ([127.0.0.1])
-        by localhost (mail.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Rv1vvkAr3Ckd; Fri, 13 May 2022 01:03:00 +0800 (CST)
-Received: from [172.30.21.106] (unknown [180.167.10.98])
-        (Authenticated sender: liqiong@nfschina.com)
-        by mail.nfschina.com (Postfix) with ESMTPA id 72B091E80D22;
-        Fri, 13 May 2022 01:02:59 +0800 (CST)
-Subject: Re: [PATCH 1/2] kernel/bpf: change "char *" string form to "char []"
-To:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hukun@nfschina.com, qixu@nfschina.com, yuzhe@nfschina.com,
-        renyu@nfschina.com
-References: <20220512142814.26705-1-liqiong@nfschina.com>
- <bd3d4379-e4aa-79c7-85b8-cc930a04f267@fb.com>
-From:   liqiong <liqiong@nfschina.com>
-Message-ID: <223f19c0-70a7-3b1f-6166-22d494b62b6e@nfschina.com>
-Date:   Fri, 13 May 2022 01:08:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        with ESMTP id S239481AbiELRLl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 13:11:41 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD44522E4
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 10:11:40 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id m1so8156359wrb.8
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 10:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qbaBo0tTt+Cva9G8P4T0fup/a/USRSsQXGBn/3A6eC0=;
+        b=HQIXePWzK3skOxKo/WNkTK2qMSDJPBP7ZTiW6GpWMo5ot3PH9jcBtSbQakdOq1+8PK
+         Nv/W1gTFzrm+wqtvXoxXUfmvI6i+D5hiraP8BmfgXOg0fV2sgS8iEBDHqvWCXNAicsd6
+         lv3DK0fSyQ/eYq4uJrljbZQPK1hbIlgz5Gi8Qwj6ng9yj9cRScA6HQExLepn3+HKBNVR
+         SHmN5sYsOWBPqcd/VRkW97yDJgX6MmHZQg3gWTpr6mTsZMQS8VJ3fAdvGeMkHldFK1/Q
+         f8AFs5ceXMcnSJ/b0p9U94xzgDNIxSkx/xjko260QBfwiFWL3GW1bkTYO1vzi5bD2gGV
+         XteA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qbaBo0tTt+Cva9G8P4T0fup/a/USRSsQXGBn/3A6eC0=;
+        b=qCwR/hj/sdxywiCBcpbNoMnrDeENVGksMxpnJxijGvvLQyjFgqBJ5aF1T2PBTcXOM/
+         LkKUArOC4rgPNFnRd80uraQLRvtZL9su6d5FSDCM1jvADmhSJYY1zF+DVSqTxjx5DnrE
+         n2cGALpmD/xLP4lkOri+QPddYgYuiv9peTg57Rtpy6aoc3e5PGSUwfnKBbIiwKTWrnUx
+         cBriPs0wo6AwBFY2k1076+A6kow3z55kV6Zr3sDT5pbiGq7MXFuKZCgU9129bSBIOja/
+         Cm89BZ5c4qSvEbeGkyIstaws7FdLrB8pyCK2z5yIBYovlA1UV1jZrzm+479I6u0nXoc6
+         iIVw==
+X-Gm-Message-State: AOAM533g3NOixwXk2CFEiVDWPvdPqVnzmtYpn2W5/pE0DW4006JRdk97
+        2BWLETMPH+oaIPpA373GLgNj2S0HG3ZjdL0R3nAYO2AbhCJAoA==
+X-Google-Smtp-Source: ABdhPJzS+KHIFt2i4JcT0YHnxCuNXi9kSQ8vsl2ND840iQcH8/sNqHLdoyfBphDmnoVI5uzOcn1EX6cFthwylISyqxE=
+X-Received: by 2002:a05:6000:1682:b0:20c:588c:7dfa with SMTP id
+ y2-20020a056000168200b0020c588c7dfamr582305wrd.15.1652375498513; Thu, 12 May
+ 2022 10:11:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bd3d4379-e4aa-79c7-85b8-cc930a04f267@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RDNS_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220429211540.715151-1-sdf@google.com> <20220429211540.715151-11-sdf@google.com>
+ <CAEf4BzY3Nd2pi+O-x4bp41=joFgPXU2+UFqBusdjR08ME62k5g@mail.gmail.com>
+ <CAKH8qBtk6CpR-29R6sWicz_zW=RCYUrXZqBZbgF9eqt4XGgNqQ@mail.gmail.com>
+ <CAEf4BzZvVzHd9Sb=uH+614fq0wrht1wBAyG1zh6ZJg-_Qz0-rA@mail.gmail.com>
+ <CAKH8qBv401RBdiouFD71JGZScG_oFD+3fUNav68JpzA=VWLkiA@mail.gmail.com> <CAEf4Bzb0Dnh49rwy8eFwoZK1ThOn-YQjcwXJiKbT-p7aATqEQw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb0Dnh49rwy8eFwoZK1ThOn-YQjcwXJiKbT-p7aATqEQw@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 12 May 2022 10:11:27 -0700
+Message-ID: <CAKH8qBuHU7OAjTMk-6GU08Nmwnn6J7Cw1TzP6GwCEq0x1Wwd9w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 10/10] selftests/bpf: verify lsm_cgroup struct
+ sock access
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2022年05月12日 23:16, Yonghong Song 写道:
+On Wed, May 11, 2022 at 8:38 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
+> On Tue, May 10, 2022 at 10:31 AM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > On Mon, May 9, 2022 at 4:44 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, May 9, 2022 at 4:38 PM Stanislav Fomichev <sdf@google.com> wrote:
+> > > >
+> > > > On Mon, May 9, 2022 at 2:54 PM Andrii Nakryiko
+> > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Apr 29, 2022 at 2:16 PM Stanislav Fomichev <sdf@google.com> wrote:
+> > > > > >
+> > > > > > sk_priority & sk_mark are writable, the rest is readonly.
+> > > > > >
+> > > > > > Add new ldx_offset fixups to lookup the offset of struct field.
+> > > > > > Allow using test.kfunc regardless of prog_type.
+> > > > > >
+> > > > > > One interesting thing here is that the verifier doesn't
+> > > > > > really force me to add NULL checks anywhere :-/
+> > > > > >
+> > > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > > > ---
+> > > > > >  tools/testing/selftests/bpf/test_verifier.c   | 54 ++++++++++++++++++-
+> > > > > >  .../selftests/bpf/verifier/lsm_cgroup.c       | 34 ++++++++++++
+> > > > > >  2 files changed, 87 insertions(+), 1 deletion(-)
+> > > > > >  create mode 100644 tools/testing/selftests/bpf/verifier/lsm_cgroup.c
+> > > > > >
+> > > > >
+> > > > > [...]
+> > > > >
+> > > > > > diff --git a/tools/testing/selftests/bpf/verifier/lsm_cgroup.c b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..af0efe783511
+> > > > > > --- /dev/null
+> > > > > > +++ b/tools/testing/selftests/bpf/verifier/lsm_cgroup.c
+> > > > > > @@ -0,0 +1,34 @@
+> > > > > > +#define SK_WRITABLE_FIELD(tp, field, size, res) \
+> > > > > > +{ \
+> > > > > > +       .descr = field, \
+> > > > > > +       .insns = { \
+> > > > > > +               /* r1 = *(u64 *)(r1 + 0) */ \
+> > > > > > +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
+> > > > > > +               /* r1 = *(u64 *)(r1 + offsetof(struct socket, sk)) */ \
+> > > > > > +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0), \
+> > > > > > +               /* r2 = *(u64 *)(r1 + offsetof(struct sock, <field>)) */ \
+> > > > > > +               BPF_LDX_MEM(size, BPF_REG_2, BPF_REG_1, 0), \
+> > > > > > +               /* *(u64 *)(r1 + offsetof(struct sock, <field>)) = r2 */ \
+> > > > > > +               BPF_STX_MEM(size, BPF_REG_1, BPF_REG_2, 0), \
+> > > > > > +               BPF_MOV64_IMM(BPF_REG_0, 1), \
+> > > > > > +               BPF_EXIT_INSN(), \
+> > > > > > +       }, \
+> > > > > > +       .result = res, \
+> > > > > > +       .errstr = res ? "no write support to 'struct sock' at off" : "", \
+> > > > > > +       .prog_type = BPF_PROG_TYPE_LSM, \
+> > > > > > +       .expected_attach_type = BPF_LSM_CGROUP, \
+> > > > > > +       .kfunc = "socket_post_create", \
+> > > > > > +       .fixup_ldx = { \
+> > > > > > +               { "socket", "sk", 1 }, \
+> > > > > > +               { tp, field, 2 }, \
+> > > > > > +               { tp, field, 3 }, \
+> > > > > > +       }, \
+> > > > > > +}
+> > > > > > +
+> > > > > > +SK_WRITABLE_FIELD("sock_common", "skc_family", BPF_H, REJECT),
+> > > > > > +SK_WRITABLE_FIELD("sock", "sk_sndtimeo", BPF_DW, REJECT),
+> > > > > > +SK_WRITABLE_FIELD("sock", "sk_priority", BPF_W, ACCEPT),
+> > > > > > +SK_WRITABLE_FIELD("sock", "sk_mark", BPF_W, ACCEPT),
+> > > > > > +SK_WRITABLE_FIELD("sock", "sk_pacing_rate", BPF_DW, REJECT),
+> > > > > > +
+> > > > >
+> > > > > have you tried writing it as C program and adding the test to
+> > > > > test_progs? Does something not work there?
+> > > >
+> > > > Seems like it should work, I don't see any issues with writing 5
+> > > > programs to test each field.
+> > > > But test_verified still feels like a better fit? Any reason in
+> > > > particular you'd prefer test_progs over test_verifier?
+> > >
+> > > Adding that fixup_ldx->strct special handling didn't feel like the
+> > > best fit, tbh. test_progs is generally much nicer to deal with in
+> > > terms of CI and in terms of comprehending what's going on and
+> > > supporting the code longer term.
+> >
+> > This is not new, right? We already have a bunch of fixup_xxx things.
 >
-> On 5/12/22 7:28 AM, liqiong wrote:
->> The string form of "char []" declares a single variable. It is better
->> than "char *" which creates two variables.
+> I'm not saying it's wrong, but we don't have to keep adding extra
+> custom fixup_xxx things and having hand crafted assembly test cases if
+> we can do C tests, right? BPF assembly tests are sometimes necessary
+> if we need to craft some special conditions which are hard to
+> guarantee from Clang side during C to BPF assembly translation. But
+> this one doesn't seem to be the case.
 >
-> Could you explain in details about why it is better in generated codes?
-> It is not clear to me why your patch is better than the original code.
-
-Hi there，
-
-The  string form of "char *" creates two variables in the final assembly output,
-a static string, and a char pointer to the static string.  Use  "objdump -S -D  *.o",
-can find out the static string  occurring  at "Contents of section .rodata".
-
+> > I can try to move this into test_progs in largely the same manner if
+> > you prefer, having a C file per field seems like an overkill.
 >
->>
->> Signed-off-by: liqiong <liqiong@nfschina.com>
->> ---
->>   kernel/bpf/btf.c      | 4 ++--
->>   kernel/bpf/verifier.c | 2 +-
->>   2 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> index 0918a39279f6..218a8ac73644 100644
->> --- a/kernel/bpf/btf.c
->> +++ b/kernel/bpf/btf.c
->> @@ -894,10 +894,10 @@ static const struct btf_type *btf_type_skip_qualifiers(const struct btf *btf,
->>   static const char *btf_show_name(struct btf_show *show)
->>   {
->>       /* BTF_MAX_ITER array suffixes "[]" */
->> -    const char *array_suffixes = "[][][][][][][][][][]";
->> +    static const char array_suffixes[] = "[][][][][][][][][][]";
->>       const char *array_suffix = &array_suffixes[strlen(array_suffixes)];
->>       /* BTF_MAX_ITER pointer suffixes "*" */
->> -    const char *ptr_suffixes = "**********";
->> +    static const char ptr_suffixes[] = "**********";
->>       const char *ptr_suffix = &ptr_suffixes[strlen(ptr_suffixes)];
->>       const char *name = NULL, *prefix = "", *parens = "";
->>       const struct btf_member *m = show->state.member;
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index d175b70067b3..78a090fcbc72 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -7346,7 +7346,7 @@ static int sanitize_err(struct bpf_verifier_env *env,
->>               const struct bpf_reg_state *off_reg,
->>               const struct bpf_reg_state *dst_reg)
->>   {
->> -    static const char *err = "pointer arithmetic with it prohibited for !root";
->> +    static const char err[] = "pointer arithmetic with it prohibited for !root";
->>       const char *op = BPF_OP(insn->code) == BPF_ADD ? "add" : "sub";
->>       u32 dst = insn->dst_reg, src = insn->src_reg;
->>   
+> You don't need a separate C file for each case. See what Joanne does
+> with SEC("?...") for dynptr tests, or what Kumar did for his kptr
+> tests. You can put multiple negative tests as separate BPF programs in
+> one file with auto-load disabled through SEC("?...") and then
+> open/load skeleton each time for each program, one at a time.
 
--- 
-李力琼 <13524287433>
-上海市浦东新区海科路99号中科院上海高等研究院3号楼3楼
-
+I'm gonna start with keeping the assembly, but moving it into
+test_progs. I think it looks a bit nicer than the fixup stuff I'm
+currently doing and I like how everything is in the same place. So
+please yell at me if you still don't like it next time I send it out
+and I'll try to explore SEC("?...").
