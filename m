@@ -2,148 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B30152510E
-	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 17:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3540252514B
+	for <lists+bpf@lfdr.de>; Thu, 12 May 2022 17:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355830AbiELPQw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 11:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
+        id S235613AbiELP3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 11:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241529AbiELPQv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 11:16:51 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED123381AA;
-        Thu, 12 May 2022 08:16:48 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24CCLm0f013987;
-        Thu, 12 May 2022 08:16:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Uq1HZPpHIUXgagpx3tkoZVcTDKLMfqJnHADbL1QSWE4=;
- b=Tw6waHZmyqbQYWNt2E0gjhc8q5nA05Oolfl4KaYlwKGA4dojDBMJ2Qe6Jo9UsF72ESZW
- cqqLTnz5UhTlgciH61+0Kjy5kCm0TYVm24sWuEzZJmC2mmLYBVNTI6xFZ+6GLAMs6C0w
- 5za24h+EO9zT3DyYJ+Q5yXfUSjsHg+1DHF4= 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2107.outbound.protection.outlook.com [104.47.70.107])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g04tbb9a7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 12 May 2022 08:16:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UB9Bx3QO7qnNPymiIIQJgRtq9oU4lJvLqMhqh4oyd9EnYHQmJ4AH1UnipV0QEI//408vJc8uaYdRE+C2d9k7rtlZhIcX2n7fyLHe5kxaK5tLytbJxq+LrVf8CQFbRXNIaqrlqemlL7lEk7hFgPkIIgI5n90SxDhXutHTkXrJarpwOXbTUg2ejpkuQxnLVpJQ4hiWrg8kFlfDJIHNa9mT7X9PB6W+utEth5Gjt2//s4pn/HeeVPayxw3fFNk60Rlvsc5sOF1MeZW2vaoS1EX1o506DlT97Q11PQ6cnVFQJJZlLr7pLQ5XpD6rOk3poXHBbnT+oieL1BuCHvICzVa5Zw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Uq1HZPpHIUXgagpx3tkoZVcTDKLMfqJnHADbL1QSWE4=;
- b=kVCyzu5mzoUG9R0lThY+TNlQuOXcFAyGdq0pDfprESiR3b1LdVFarOTa9nWb6M2pKFuhkwNRlQqEm7M+W7x3P701vJWDVIdUt7Y3CWTcUioqwKX1riCVKuDqncwUpeVQPISt67TLBjAmpKSTuoL3RUsTbWpQggwkltmpcw0yXoKAaeLnVizZnb57cP6leznjvTq+TJYOaWAv6MMzXN6zFJABoVmWums5DykPgqadlVZ480Y3bxOSDLUHsbTz6gpmM83a9LMDKhEWyqzhl4Qprn1Sb8hHAye6atcgMf/qIDhE27lGergJVK8Ya6YJtdasUsvMeF3lSs1l1tcEp5z8yQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BYAPR15MB3430.namprd15.prod.outlook.com (2603:10b6:a03:107::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.14; Thu, 12 May
- 2022 15:16:25 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::5811:4996:bbfd:3c53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::5811:4996:bbfd:3c53%7]) with mapi id 15.20.5250.014; Thu, 12 May 2022
- 15:16:25 +0000
-Message-ID: <bd3d4379-e4aa-79c7-85b8-cc930a04f267@fb.com>
-Date:   Thu, 12 May 2022 08:16:21 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH 1/2] kernel/bpf: change "char *" string form to "char []"
-Content-Language: en-US
-To:     liqiong <liqiong@nfschina.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S231296AbiELP3p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 11:29:45 -0400
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DFAF994CB
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 08:29:42 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id u35so4580633qtc.13
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 08:29:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fmgoK/J/F4oGk7HcZi5WYUnXHwCFG/+gIOWJLeNDZiE=;
+        b=N3itA8mhI7/ATiShIxsogatVXCWnmMD8ZKJ62XVOixoAv0xe6u4jVrk3trnr6DQBzo
+         w7EPmkxIbVhmc5yzcOqCXv2FRrYQaQ7Li0YGje+/Uj831fQ+PWqh/R6KIracfRbgRtMg
+         xs81ZzFkcGKTImiZD2wRJ5lDggtmuFRUQO4KAW9iQrylgAZnf+BW97pjWbomFPepIt4t
+         HgHS5O0f8e7jT8NKzpLnwj1FxZZc2dJiXWSaMsGfxgk8MvLDG8hZqZVWCGc1QVpfeXa9
+         QTyyMfdpH0L3oXipje1v8I6YMwRVlBTxqC/gPKEY3yk4X2h3Dvq6wPjLiGgJnFtK1og4
+         jdEg==
+X-Gm-Message-State: AOAM531tnUSTXIQsc149ppbI3H0S56N2LcWJqpOKEd18nW8MryfiyJKe
+        Pi7Ec3lRm10Nsr4H35uxgzw=
+X-Google-Smtp-Source: ABdhPJy5Hwl6Q0dlAWDxmD8at3IEglMVgpeb2i/FNcO+Iy12yWyRPbCesC1NrFVchi9cq0IrI2mg2g==
+X-Received: by 2002:a05:622a:284:b0:2f3:c6aa:6c96 with SMTP id z4-20020a05622a028400b002f3c6aa6c96mr305493qtw.512.1652369381115;
+        Thu, 12 May 2022 08:29:41 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-005.fbsv.net. [2a03:2880:20ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id o1-20020ac872c1000000b002f39b99f6b9sm2958396qtp.83.2022.05.12.08.29.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 May 2022 08:29:40 -0700 (PDT)
+Date:   Thu, 12 May 2022 08:29:38 -0700
+From:   David Vernet <void@manifault.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hukun@nfschina.com,
-        qixu@nfschina.com, yuzhe@nfschina.com, renyu@nfschina.com
-References: <20220512142814.26705-1-liqiong@nfschina.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220512142814.26705-1-liqiong@nfschina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0100.namprd13.prod.outlook.com
- (2603:10b6:a03:2c5::15) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Rik van Riel <riel@surriel.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Yonghong Song <yhs@fb.com>, kernel-team@fb.com
+Subject: Re: [RFC PATCH bpf-next 2/5] bpf: add get_reg_val helper
+Message-ID: <20220512152938.hfm64odsrrqlvfiy@dev0025.ash9.facebook.com>
+References: <20220512074321.2090073-1-davemarchevsky@fb.com>
+ <20220512074321.2090073-3-davemarchevsky@fb.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 444ead33-ff97-4b84-66e2-08da342a612d
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3430:EE_
-X-Microsoft-Antispam-PRVS: <BYAPR15MB34301901552B7F790D4EC4E6D3CB9@BYAPR15MB3430.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J6f9UDbHy6ycqwgNIw69aOzeOnrSJybJTUpGiwBkF0UtIBhGprkzHNEPa2/Bg29u6MCAMeXcaBzGFikQBGxM+91sQEJSFKoD1AGpCxTpsIu3Aj5ZvJhHmPZaIU7ru2saqu8yupUiaPBmsQ61DjfPb2Tn2bTu3R1slUyAyXGCgxBJjyys2OpyreYEw2HhmQgXLHuokmRSIm9UWR6qyXuYjMj5boEe67/H98t8vpHn/Gqo5y/DFFJO5F8B/ZcK+Hs53MlF7+d3pAWMw89VsvtpCIMSpCpVLhdlN4jDonYtl67RwoURSLrwHF+rFecRC1/CqEI1f3EoMx3ZBNMxhY1T+aS4JUziXV18kBRPYnlkyvGRljcHc6lrom/yIdCz3qkrerfHUB/qlJDfkSQiA94fhl+CWNRV9QsTiygM9rRNPdBa73D15Jgtcs3jZP31t6YOVctjwlLydhAmKIwybTboXh6E3gN6CVSDXyQaEhcCNh4/UCU6SzzieE9AyRRRcXYhP2a5ByrOapAWoNmS/YT8ovpiGNrSFMqxywg9mx/leiK5n31VTsAHMvx6/hlpa7rvRvfnihoWgVxy6art1fPKeMypBBQRF5/83blqBMrQMUV6RfOqKBlQ+dHbKR8XCkNto91g7umHxyp8si/esIAhk4XtQgXjQ7dnp3xgEAWrmHOxndqvsjYVnI/3lbwy5aet5t35DYWG4cThBv+tilzC4wV68pcI3u/roopcpPuhGWc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8676002)(2616005)(110136005)(4326008)(6666004)(53546011)(66946007)(66556008)(31696002)(86362001)(66476007)(316002)(6506007)(52116002)(38100700002)(508600001)(6486002)(83380400001)(6512007)(186003)(7416002)(8936002)(5660300002)(31686004)(36756003)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YjZKNVBLR0EvMTZMZC8zTFBDUE5ya2M2d2huL0pmbXA4a05veGxLa2pKRFBs?=
- =?utf-8?B?cnZRbHF0d3BuWEZHclBNc05TQ1hROFVhMjZ4WlBPYkFEeE1aN0NoR3Q0L1dC?=
- =?utf-8?B?cFRSNU14V2VJUDVvMlcvZURpdlZtd2V1OWRYK1JsVTU2b1RYemNWdVJUQk4z?=
- =?utf-8?B?QlJ6OGVhelh4N2VLbUxQSjFNaUFDUktoWFJVc3RFdWI5a042SStBTVpiazRk?=
- =?utf-8?B?bDdtMzZaajJmWDhQcHd5bExSYmdvRlRBZi8rWWJibFRQV0MwVXQ3aUUzMjJ0?=
- =?utf-8?B?THFra0JEa05FaTlGWTBnVTU1dVczRHFlcTN2dlRINTFHVHIvZUZGdTh4cDNz?=
- =?utf-8?B?QnkwVmFXS2R1NXJ2ZExBSW9VeUtHOG8xdk9CQ0dITWJOb3dPTjZsQ1QzNTIy?=
- =?utf-8?B?SmRuSDJ5OC9ZN1VWb1dzUnV1RUxHVjdSZlA4djl6S3BlL2pTcC9vQUxpU0Zv?=
- =?utf-8?B?Q1dBNjh5Vktod0dGSmlZa1BkRWRHczdCakdlL3ZKZ2RpZzliekZZeDdoY1Ax?=
- =?utf-8?B?bVB5RVY4VkZCVmxFaGtBUXVBcVpuWjJSd2FxRU15RjFyL2pmNXpRcmxlZlZr?=
- =?utf-8?B?VTlMbFpsTkxIMFlrN2VLM2UxRlpNbGUvWnRJelYwOUJtbGJQK1VEUEZENm9S?=
- =?utf-8?B?NHFKRU0wZmZ1bzJlQkx6dmc2ZCtOTGp2ZVViendkWTFJZ0EwWXdXcC9xSjd5?=
- =?utf-8?B?Z1ZqWW5telVERXh3eXJ5cVdCdUxJaVk3dUpSK1Q1SytIdTBwa2IwZUtpVmxN?=
- =?utf-8?B?eStHdlk0d0xtQ3ZadkRjNFNwQXlBZHkxa2lWTmdnK1JGcVZmWmZCWHVyTy85?=
- =?utf-8?B?L2lpUERUV2kzR29wSjBpaTh2VUdXb1NvK08wWjB6SVFia3VXYlBxeDMxV1Qw?=
- =?utf-8?B?OGtGcjJQK1hwWlRHckdtOFk0Z2J1cmFYOUE5RnFoNXpQekVQaS9qUk1hSnFt?=
- =?utf-8?B?NHJYTjN3WVYyQ0JzVXFWR1NuRVN0dC9rcktnWHZjQUwwbkt4eGM1Smh3aWMr?=
- =?utf-8?B?cEJ2V2RqbVI4SndyR3dNTVRoMC9lZjdEM1kydWVPQ2k2bEV1dldsZmZOWjc4?=
- =?utf-8?B?UlJEaXZ1QWFKWTVJdDRBTnY4bDhVQVlvY2pJaEhxUmJxRGk5R3ZyeEQyaWdO?=
- =?utf-8?B?YVdIbkJUdVNmSDJUMnpyN1ZJM3VZMUpLaDRuTnNFTlFmZ3BlUmxERG5FTnVk?=
- =?utf-8?B?TWZvNFc0bUNrZGZ0S1MrTTI1OHN4WUhhT011RFhIMzNnU3Fna3dSUVBrMTd1?=
- =?utf-8?B?TzNCQ3pvaWl2Q0JzWEhOMnpLSFQweXhiL0xoK2hYVWpIUlR1Qno1aDJyS2ZY?=
- =?utf-8?B?aTNINlhuMlVid0hkamhzR3JTNSsxYnpaK2tNc1dYdDVLTzBXYzVNa29XM0Fp?=
- =?utf-8?B?OEh0OXBiQXlNcWN4RVdDOXErdU8wak1xQjZ6TEo5eitxMng4ZWMzV2VHODNt?=
- =?utf-8?B?SnVSL0JESE13RDRUQ1ZoT1A3b2R0Y05HVWEvNTZrVjg1S3JvYWx0dFY0Z3RN?=
- =?utf-8?B?WUZmOXpyYk5UWXpkVmNOb1FadURrYkpPS2doQWFOck5oM2dTdENKNnNYTGU1?=
- =?utf-8?B?eGhFdWxVR1Z0cFkrby9kZGdCRFFzd1RudXQ1R2dGRDlUdEdiRnpIOElQa0Q0?=
- =?utf-8?B?SzNFanU0YUo4M1ArRGYxQXBzc2cyYkRNT2hHZXZNeEw1WFJLVjB2WlhWeXIz?=
- =?utf-8?B?eCtVQis5MGpPcmp1ekl5TEcwdkhHUHNUdnRvWEs3YUl0eC8xcjBWSmZVckR5?=
- =?utf-8?B?eXliMVJNdHhVWTZxRzZJOTYwYjhjaCtwdEdTNWx3VjVuSXVtK2N1QUpiVWph?=
- =?utf-8?B?b1VzMjhRVmdBc3IvMytoTWVJYjczaFNub1Zlc2xrT0JOWGtPREkxNkdKMmVV?=
- =?utf-8?B?bkk4TFc1Qk8ra0hPdmxPZkFhY29ZS0U3ejk3TUhPeHRCZEg0NThDOHIyZVUr?=
- =?utf-8?B?aEFIQmtDMUFVc1RNRWFSRlorTGpZYms4RENoK09QTm9aVjR5MVVSZG9aaUJY?=
- =?utf-8?B?bjIvK0ZwMG1Xdmc5dnhnT29YRTMrRE5wclFkdzhCWW5UR3dzOGxWN3ZzMkp0?=
- =?utf-8?B?NXYwN05vNi9KY0FGK3dpelFzNzlxVlZZeE51WVBuN2pGeVNqVkJYaGc1cDVj?=
- =?utf-8?B?em9vR0FGZ0pZVGxLOFVzdGtLNzZ5d2RveWJaL0xSVHkvUkR5Q2dzczdpNTRT?=
- =?utf-8?B?ZFhHcDRWcm9wTUdwd2xlWlNMTmRyZVAyMjF6RHVtblNLejBwMmJ0OVZyV1h3?=
- =?utf-8?B?NU1BRStXelFRNHp2NmQxRXBiVDNHOWhsKytTUjJiS0EvU3QySllSdzFDMlpE?=
- =?utf-8?B?ckV6UEl4cnZuK1dmWTFYUTlyb3h6MGZka2wyOXB1NGNzaVlSSWxKUWZWcmdu?=
- =?utf-8?Q?wO+9iLsv1zcP9UV0=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 444ead33-ff97-4b84-66e2-08da342a612d
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2022 15:16:25.2013
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kiRHt5i4IfHCqmKCvVT3JtV6XHCsYMty4n4HkNyQCx3dop4EfeA/AdDupW7NShyA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3430
-X-Proofpoint-GUID: -gXJYRRdqEAJ3gnR69m9QO4beZLtmMBz
-X-Proofpoint-ORIG-GUID: -gXJYRRdqEAJ3gnR69m9QO4beZLtmMBz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-12_12,2022-05-12_01,2022-02-23_01
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220512074321.2090073-3-davemarchevsky@fb.com>
+User-Agent: NeoMutt/20211029
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -151,49 +65,423 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 5/12/22 7:28 AM, liqiong wrote:
-> The string form of "char []" declares a single variable. It is better
-> than "char *" which creates two variables.
-
-Could you explain in details about why it is better in generated codes?
-It is not clear to me why your patch is better than the original code.
-
+On Thu, May 12, 2022 at 12:43:18AM -0700, Dave Marchevsky wrote:
+> Add a helper which reads the value of specified register into memory.
 > 
-> Signed-off-by: liqiong <liqiong@nfschina.com>
+> Currently, bpf programs only have access to general-purpose registers
+> via struct pt_regs. Other registers, like SSE regs %xmm0-15, are
+> inaccessible, which makes some tracing usecases impossible. For example,
+> User Statically-Defined Tracing (USDT) probes may use SSE registers to
+> pass their arguments on x86. While this patch adds support for %xmm0-15
+> only, the helper is meant to be generic enough to support fetching any
+> reg.
+> 
+> A useful "value of register" definition for bpf programs is "value of
+> register before control transfer to kernel". pt_regs gives us this
+> currently, so it's the default behavior of the new helper. Fetching the
+> actual _current_ reg value is possible, though, by passing
+> BPF_GETREG_F_CURRENT flag as part of input.
+> 
+> For SSE regs we try to avoid digging around in task's fpu state by first
+> reading _current_ value, then checking to see if the state of cpu's
+> floating point regs matches task's view of them. If so, we can just
+> return _current_ value.
+> 
+> Further usecases which are straightforward to support, but
+> unimplemented:
+>   * using the helper to fetch general-purpose register value.
+>   currently-unused pt_regs parameter exists for this reason.
+> 
+>   * fetching rdtsc (w/ BPF_GETREG_F_CURRENT)
+> 
+>   * other architectures. s390 specifically might benefit from similar
+>   fpu reg fetching as USDT library was recently updated to support that
+>   architecture.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 > ---
->   kernel/bpf/btf.c      | 4 ++--
->   kernel/bpf/verifier.c | 2 +-
->   2 files changed, 3 insertions(+), 3 deletions(-)
+>  include/uapi/linux/bpf.h       |  40 +++++++++
+>  kernel/trace/bpf_trace.c       | 148 +++++++++++++++++++++++++++++++++
+>  kernel/trace/bpf_trace.h       |   1 +
+>  tools/include/uapi/linux/bpf.h |  40 +++++++++
+>  4 files changed, 229 insertions(+)
 > 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 0918a39279f6..218a8ac73644 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -894,10 +894,10 @@ static const struct btf_type *btf_type_skip_qualifiers(const struct btf *btf,
->   static const char *btf_show_name(struct btf_show *show)
->   {
->   	/* BTF_MAX_ITER array suffixes "[]" */
-> -	const char *array_suffixes = "[][][][][][][][][][]";
-> +	static const char array_suffixes[] = "[][][][][][][][][][]";
->   	const char *array_suffix = &array_suffixes[strlen(array_suffixes)];
->   	/* BTF_MAX_ITER pointer suffixes "*" */
-> -	const char *ptr_suffixes = "**********";
-> +	static const char ptr_suffixes[] = "**********";
->   	const char *ptr_suffix = &ptr_suffixes[strlen(ptr_suffixes)];
->   	const char *name = NULL, *prefix = "", *parens = "";
->   	const struct btf_member *m = show->state.member;
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index d175b70067b3..78a090fcbc72 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -7346,7 +7346,7 @@ static int sanitize_err(struct bpf_verifier_env *env,
->   			const struct bpf_reg_state *off_reg,
->   			const struct bpf_reg_state *dst_reg)
->   {
-> -	static const char *err = "pointer arithmetic with it prohibited for !root";
-> +	static const char err[] = "pointer arithmetic with it prohibited for !root";
->   	const char *op = BPF_OP(insn->code) == BPF_ADD ? "add" : "sub";
->   	u32 dst = insn->dst_reg, src = insn->src_reg;
->   
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 444fe6f1cf35..3ef8f683ed9e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5154,6 +5154,18 @@ union bpf_attr {
+>   *		if not NULL, is a reference which must be released using its
+>   *		corresponding release function, or moved into a BPF map before
+>   *		program exit.
+> + *
+> + * long bpf_get_reg_val(void *dst, u32 size, u64 getreg_spec, struct pt_regs *regs, struct task_struct *tsk)
+> + *	Description
+> + *		Store the value of a SSE register specified by *getreg_spec*
+
+Even though this patch only adds support for SSE, if the helper is meant to
+be generic enough to support fetching any register, should the description
+be updated to not imply that it's only meant for fetching SSE? IMO the
+example below is sufficient to indicate that it can be used to fetch SSE
+regs.
+
+> + *		into memory region of size *size* specified by *dst*. *getreg_spec*
+> + *		is a combination of BPF_GETREG enum AND BPF_GETREG_F flag e.g.
+> + *		(BPF_GETREG_X86_XMM0 << 32) | BPF_GETREG_F_CURRENT.*
+> + *	Return
+> + *		0 on success
+> + *		**-ENOENT** if the system architecture does not have requested reg
+> + *		**-EINVAL** if *getreg_spec* is invalid
+> + *		**-EINVAL** if *size* != bytes necessary to store requested reg val
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5351,6 +5363,7 @@ union bpf_attr {
+>  	FN(skb_set_tstamp),		\
+>  	FN(ima_file_hash),		\
+>  	FN(kptr_xchg),			\
+> +	FN(get_reg_val),		\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> @@ -6318,6 +6331,33 @@ struct bpf_perf_event_value {
+>  	__u64 running;
+>  };
+>  
+> +/* bpf_get_reg_val register enum */
+> +enum {
+> +	BPF_GETREG_X86_XMM0 = 0,
+
+I know we do this in a few places in bpf.h, so please feel free to ignore
+this, but the C standard (section 6.7.2.2.1) formally states that if no
+value is specified for the first enumerator that its value is 0, so
+specifying the value here is strictly unnecessary. We're inconsistent in
+how we apply this in bpf.h, but IMHO if we're adding new enums, we should
+do the "standard" thing and only define the first element if it's nonzero.
+
+> +	BPF_GETREG_X86_XMM1,
+> +	BPF_GETREG_X86_XMM2,
+> +	BPF_GETREG_X86_XMM3,
+> +	BPF_GETREG_X86_XMM4,
+> +	BPF_GETREG_X86_XMM5,
+> +	BPF_GETREG_X86_XMM6,
+> +	BPF_GETREG_X86_XMM7,
+> +	BPF_GETREG_X86_XMM8,
+> +	BPF_GETREG_X86_XMM9,
+> +	BPF_GETREG_X86_XMM10,
+> +	BPF_GETREG_X86_XMM11,
+> +	BPF_GETREG_X86_XMM12,
+> +	BPF_GETREG_X86_XMM13,
+> +	BPF_GETREG_X86_XMM14,
+> +	BPF_GETREG_X86_XMM15,
+> +	__MAX_BPF_GETREG,
+> +};
+> +
+> +/* bpf_get_reg_val flags */
+> +enum {
+> +	BPF_GETREG_F_NONE = 0,
+> +	BPF_GETREG_F_CURRENT = (1U << 0),
+> +};
+
+Can you add a comment specifying what the BPF_GETREG_F_CURRENT flag does?
+The commit summary is very helpful, but it would be good to persist this in
+code as well.
+
+> +
+>  enum {
+>  	BPF_DEVCG_ACC_MKNOD	= (1ULL << 0),
+>  	BPF_DEVCG_ACC_READ	= (1ULL << 1),
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index f15b826f9899..0de7d6b3af5b 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -28,6 +28,10 @@
+>  
+>  #include <asm/tlb.h>
+>  
+> +#ifdef CONFIG_X86
+> +#include <asm/fpu/context.h>
+> +#endif
+> +
+>  #include "trace_probe.h"
+>  #include "trace.h"
+>  
+> @@ -1166,6 +1170,148 @@ static const struct bpf_func_proto bpf_get_func_arg_cnt_proto = {
+>  	.arg1_type	= ARG_PTR_TO_CTX,
+>  };
+>  
+> +#define XMM_REG_SZ 16
+> +
+> +#define __xmm_space_off(regno)				\
+> +	case BPF_GETREG_X86_XMM ## regno:		\
+> +		xmm_space_off = regno * 16;		\
+> +		break;
+> +
+> +static long getreg_read_xmm_fxsave(u32 reg, struct task_struct *tsk,
+> +				   void *data)
+> +{
+> +	struct fxregs_state *fxsave;
+> +	u32 xmm_space_off;
+> +
+> +	switch (reg) {
+> +	__xmm_space_off(0);
+> +	__xmm_space_off(1);
+> +	__xmm_space_off(2);
+> +	__xmm_space_off(3);
+> +	__xmm_space_off(4);
+> +	__xmm_space_off(5);
+> +	__xmm_space_off(6);
+> +	__xmm_space_off(7);
+> +#ifdef	CONFIG_X86_64
+> +	__xmm_space_off(8);
+> +	__xmm_space_off(9);
+> +	__xmm_space_off(10);
+> +	__xmm_space_off(11);
+> +	__xmm_space_off(12);
+> +	__xmm_space_off(13);
+> +	__xmm_space_off(14);
+> +	__xmm_space_off(15);
+> +#endif
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	fxsave = &tsk->thread.fpu.fpstate->regs.fxsave;
+> +	memcpy(data, (void *)&fxsave->xmm_space + xmm_space_off, XMM_REG_SZ);
+> +	return 0;
+> +}
+
+Does any of this also need to be wrapped in CONFIG_X86? IIUC, everything in
+struct thread_struct is arch specific, so I think this may fail to compile
+on a number of other architectures. Per my suggestion below, maybe we
+should just compile all of this logic out if we're not on x86, and update
+bpf_get_reg_val() to only call bpf_read_sse_reg() on x86?
+
+> +
+> +#undef __xmm_space_off
+> +
+> +static bool getreg_is_xmm(u32 reg)
+> +{
+> +	return reg >= BPF_GETREG_X86_XMM0 && reg <= BPF_GETREG_X86_XMM15;
+
+I think it's a bit confusing that we have a function here which confirms
+that a register is xmm, but then we have ifdef CONFIG_X86_64 in large
+switch statements in functions where we actually read the register and then
+return -EINVAL.  Should we just update this to do the CONFIG_X6_64
+preprocessor check, and then we can assume in getreg_read_xmm_fxsave() and
+bpf_read_sse_reg() that the register is a valid xmm register, and avoid
+having to do these switch statements at all? Note that this wouldn't change
+the existing behavior at all, as we'd still be returning -EINVAL on 32-bit
+x86 in either case.
+
+> +}
+> +
+> +#define __bpf_sse_read(regno)							\
+> +	case BPF_GETREG_X86_XMM ## regno:					\
+> +		asm("movdqa %%xmm" #regno ", %0" : "=m"(*(char *)data));	\
+> +		break;
+> +
+> +static long bpf_read_sse_reg(u32 reg, u32 flags, struct task_struct *tsk,
+> +			     void *data)
+> +{
+> +#ifdef CONFIG_X86
+> +	unsigned long irq_flags;
+> +	long err;
+> +
+> +	switch (reg) {
+> +	__bpf_sse_read(0);
+> +	__bpf_sse_read(1);
+> +	__bpf_sse_read(2);
+> +	__bpf_sse_read(3);
+> +	__bpf_sse_read(4);
+> +	__bpf_sse_read(5);
+> +	__bpf_sse_read(6);
+> +	__bpf_sse_read(7);
+> +#ifdef CONFIG_X86_64
+> +	__bpf_sse_read(8);
+> +	__bpf_sse_read(9);
+> +	__bpf_sse_read(10);
+> +	__bpf_sse_read(11);
+> +	__bpf_sse_read(12);
+> +	__bpf_sse_read(13);
+> +	__bpf_sse_read(14);
+> +	__bpf_sse_read(15);
+> +#endif /* CONFIG_X86_64 */
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (flags & BPF_GETREG_F_CURRENT)
+> +		return 0;
+> +
+> +	if (!fpregs_state_valid(&tsk->thread.fpu, smp_processor_id())) {
+> +		local_irq_save(irq_flags);
+> +		err = getreg_read_xmm_fxsave(reg, tsk, data);
+> +		local_irq_restore(irq_flags);
+> +		return err;
+> +	}
+
+Should we move the checks for current and fpregs_state_valid() above where
+we actually read the registers? That way we can avoid doing the xmm read if
+we'd have to read the fxsave region anyways. Not sure if that's common in
+practice or really necessary at all. What you have here seems fine as well.
+
+> +
+> +	return 0;
+> +#else
+> +	return -ENOENT;
+> +#endif /* CONFIG_X86 */
+> +}
+> +
+> +#undef __bpf_sse_read
+> +
+> +BPF_CALL_5(get_reg_val, void *, dst, u32, size,
+> +	   u64, getreg_spec, struct pt_regs *, regs,
+> +	   struct task_struct *, tsk)
+> +{
+> +	u32 reg, flags;
+> +
+> +	reg = (u32)(getreg_spec >> 32);
+> +	flags = (u32)getreg_spec;
+> +	if (reg >= __MAX_BPF_GETREG)
+> +		return -EINVAL;
+> +
+> +	if (getreg_is_xmm(reg)) {
+> +#ifndef CONFIG_X86
+> +		return -ENOENT;
+
+On CONFIG_X86 but !CONFIG_X86_64, we return -EINVAL if we try to access the
+wrong xmm register. Should we just change this to be return -EINVAL to keep
+the return value consistent between architectures? Or we should update the
+32 bit x86 case to return -ENOENT as well, and probably update the last
+return -EINVAL statement in the function to be return -ENOENT. In general,
+I'd say that returning -ENOENT if a register is specified that's
+< __MAX_BPF_GETREG seems like the most intuitive API.
+
+> +#else
+
+Is it necessary to have this ifdef check here if you also have it in
+bpf_read_sse_reg()? Maybe it makes more sense to keep this preprocessor
+check, and compile out bpf_read_sse_reg() altogether on other
+architectures? I think that probably makes sense given that we likely also
+want to wrap __bpf_sse_read() in an ifdef given that it emits x86 asm, and
+getreg_read_xmm_fxsave() which relies on the x86 definition of struct
+thread_struct.
+
+> +		if (size != XMM_REG_SZ)
+> +			return -EINVAL;
+> +
+> +		return bpf_read_sse_reg(reg, flags, tsk, dst);
+> +	}
+> +
+> +	return -EINVAL;
+> +#endif
+> +}
+> +
+> +BTF_ID_LIST(bpf_get_reg_val_ids)
+> +BTF_ID(struct, pt_regs)
+> +
+> +static const struct bpf_func_proto bpf_get_reg_val_proto = {
+> +	.func	= get_reg_val,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
+> +	.arg2_type	= ARG_CONST_SIZE,
+> +	.arg3_type	= ARG_ANYTHING,
+> +	.arg4_type	= ARG_PTR_TO_BTF_ID_OR_NULL,
+> +	.arg4_btf_id	= &bpf_get_reg_val_ids[0],
+> +	.arg5_type	= ARG_PTR_TO_BTF_ID_OR_NULL,
+> +	.arg5_btf_id	= &btf_tracing_ids[BTF_TRACING_TYPE_TASK],
+> +};
+> +
+>  static const struct bpf_func_proto *
+>  bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  {
+> @@ -1287,6 +1433,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  		return &bpf_find_vma_proto;
+>  	case BPF_FUNC_trace_vprintk:
+>  		return bpf_get_trace_vprintk_proto();
+> +	case BPF_FUNC_get_reg_val:
+> +		return &bpf_get_reg_val_proto;
+>  	default:
+>  		return bpf_base_func_proto(func_id);
+>  	}
+> diff --git a/kernel/trace/bpf_trace.h b/kernel/trace/bpf_trace.h
+> index 9acbc11ac7bb..b4b55706c2dd 100644
+> --- a/kernel/trace/bpf_trace.h
+> +++ b/kernel/trace/bpf_trace.h
+> @@ -29,6 +29,7 @@ TRACE_EVENT(bpf_trace_printk,
+>  
+>  #undef TRACE_INCLUDE_PATH
+>  #define TRACE_INCLUDE_PATH .
+> +#undef TRACE_INCLUDE_FILE
+>  #define TRACE_INCLUDE_FILE bpf_trace
+>  
+>  #include <trace/define_trace.h>
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 444fe6f1cf35..3ef8f683ed9e 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -5154,6 +5154,18 @@ union bpf_attr {
+>   *		if not NULL, is a reference which must be released using its
+>   *		corresponding release function, or moved into a BPF map before
+>   *		program exit.
+> + *
+> + * long bpf_get_reg_val(void *dst, u32 size, u64 getreg_spec, struct pt_regs *regs, struct task_struct *tsk)
+> + *	Description
+> + *		Store the value of a SSE register specified by *getreg_spec*
+> + *		into memory region of size *size* specified by *dst*. *getreg_spec*
+> + *		is a combination of BPF_GETREG enum AND BPF_GETREG_F flag e.g.
+> + *		(BPF_GETREG_X86_XMM0 << 32) | BPF_GETREG_F_CURRENT.*
+> + *	Return
+> + *		0 on success
+> + *		**-ENOENT** if the system architecture does not have requested reg
+> + *		**-EINVAL** if *getreg_spec* is invalid
+> + *		**-EINVAL** if *size* != bytes necessary to store requested reg val
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5351,6 +5363,7 @@ union bpf_attr {
+>  	FN(skb_set_tstamp),		\
+>  	FN(ima_file_hash),		\
+>  	FN(kptr_xchg),			\
+> +	FN(get_reg_val),		\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> @@ -6318,6 +6331,33 @@ struct bpf_perf_event_value {
+>  	__u64 running;
+>  };
+>  
+> +/* bpf_get_reg_val register enum */
+> +enum {
+> +	BPF_GETREG_X86_XMM0 = 0,
+> +	BPF_GETREG_X86_XMM1,
+> +	BPF_GETREG_X86_XMM2,
+> +	BPF_GETREG_X86_XMM3,
+> +	BPF_GETREG_X86_XMM4,
+> +	BPF_GETREG_X86_XMM5,
+> +	BPF_GETREG_X86_XMM6,
+> +	BPF_GETREG_X86_XMM7,
+> +	BPF_GETREG_X86_XMM8,
+> +	BPF_GETREG_X86_XMM9,
+> +	BPF_GETREG_X86_XMM10,
+> +	BPF_GETREG_X86_XMM11,
+> +	BPF_GETREG_X86_XMM12,
+> +	BPF_GETREG_X86_XMM13,
+> +	BPF_GETREG_X86_XMM14,
+> +	BPF_GETREG_X86_XMM15,
+> +	__MAX_BPF_GETREG,
+> +};
+> +
+> +/* bpf_get_reg_val flags */
+> +enum {
+> +	BPF_GETREG_F_NONE = 0,
+> +	BPF_GETREG_F_CURRENT = (1U << 0),
+> +};
+> +
+>  enum {
+>  	BPF_DEVCG_ACC_MKNOD	= (1ULL << 0),
+>  	BPF_DEVCG_ACC_READ	= (1ULL << 1),
+> -- 
+> 2.30.2
+> 
