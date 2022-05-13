@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDFE525957
+	by mail.lfdr.de (Postfix) with ESMTP id 21E3D525956
 	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 03:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376297AbiEMBWq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 21:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
+        id S1359866AbiEMBWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 21:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359866AbiEMBWn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1376272AbiEMBWn (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 12 May 2022 21:22:43 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32375468A
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:22:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9A4222C28
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:22:42 -0700 (PDT)
 Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24CNMMKP023307
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:22:41 -0700
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24CNMMKR023307
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:22:42 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
  date : message-id : references : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=M9Q/n+Ot9L1GEPwpFHfJyKZAmawudyNltWLxg/yWo7M=;
- b=iUCZNgOTWz30tPudgtPmT36udOaQBs7JLvx9L2sBfy6UKMJLKUTng14jH+rn7Ea4M6uF
- DemI21dKVqEJPNroTV5Z9/bODusn6iwss0eOTFJk+6Hbfm1/qFuzB8TIKwxhfA2eDab/
- baSKRSSkz7GZydvELivlbRMCeN70HSqaCWw= 
+ bh=lHtBKkfETCynWSNeWawNr5pR4Qsr14vpU29bRyCSVho=;
+ b=jrJ5Gic6i5EmQC/qVFBbPzjoBuQbaI/+vOCw8CkVvTXUhAy9R47uQN3I4snkI5d9HGXA
+ oN/s+Q5dwt87+Gcq7Qs0wQ2CEfxS7FtnSqUNNn8fS2pfRDoevPaia3kJmlb74+b1GQM9
+ AUkpCJI9l6573y/fapFJrZJzOctj1wpmSAQ= 
 Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g17vytvss-4
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g17vytvss-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:22:41 -0700
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:22:42 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OXKotopHq3UH7/XYFrPsVhoiTUtv/Zem4EhmSBsTnJfH0jKATdgYnIstdXlc6hQ+wSRJOQIsBxYmyyi1F54yZsK2owNkBAMYnC8mldo+iWFjNVbs/RnDJnYhuWCFCQ0CwuT3TGW4nODi2A5flYlO2PMSum/pWm0ZDB7Pq00mp27Fuz/nrB1vLXIVKzdfNKqPu2yp+HWJEVe8eCvtUhWIHHEUFXLgF84boQGsycaqt8BOePK9LQrAVlbha5hJULmQhI+/iROGsMDEFI2oQ8GBLNJMhAlFO42I6r/Uk2iVUB97dDcNP59EjURMvBhA0RPmMI0GxRhSJ16OnGTGFIXLFQ==
+ b=IS6yNUBTJZPsy513ub7a+QAj1dcUzmp3cUozJruJOdEAWQkK2Tmg12mNBAoBhNZ7RXOnfqx3SB7oTzAHsPhbub0gfq4bpTSfxXDKr3x8k6GOVu58/I3D9sD4zvxR8aYeaRFlS/pdcaVTAlMB1FQkhPfbzWWWCXQ/EU7S+hndBTg3n28PQsLSsHMLW4YTXae6VsfCbr/RxRe+2u9ajGOq+lMxmJC5g5rTz8LNeA+HuHfh+JBVOwSlqGEwU+ZlsXZR9/De8Ckk6WEWTof28zfihdUkQioEfILAYn5LarPrydnDILmz7sWQESV+HV+2EQ2dS5e2qB4YN8Tjn1D3lpIFvA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M9Q/n+Ot9L1GEPwpFHfJyKZAmawudyNltWLxg/yWo7M=;
- b=ngcONoFOeh0gxEnefeOjzqKEp2+ImWgGZ/I+glK2c2+8YMNXMf5AvaJGpHGNGteLJEkAhlVbLHpnFmgpDr98r9jvoMy2rBuvNZmij1+hDml/I22TvJu5wkobbEB5U4+gKr6rhLqkEvkEMhZUlt7FkuZ+x/eRSeAxVrs7G8Nj7XGJwg/p1yxfJ0I9r8YksVLxVhRHmNNdV53SvQ3uI+ujOMFxxMwVxTJb7TxObIWBPtHFmKh4buUH9NI3eOgMaH/gwfcRQb1uYhTqzwPHErAQ0HxO6+LJaL6pjhMu9KcE1LtnXHHVVudksjjhdM9ziuJN1CslDciss/uun94wbmVzUA==
+ bh=lHtBKkfETCynWSNeWawNr5pR4Qsr14vpU29bRyCSVho=;
+ b=cgDprRqjBhj6PyV3gt2XVkIKxEnmABMOX1J7f8WezXnH3Ud9F59AykOegShkiMbK3QObJcKEkwRciSD/0WsaXBLc8JG2mHwRRzDlDErDC0FJInX514vZjnoDfBOSz641s75wjvG9gCuhkBT34uCCbdML5ZYArQOMni5xSuNGk7c2ZLPSsIsgl4LLHQgOtBfbo32stah+lr3EAk8hXuQ/89sCItf9hSky192TMUzx8H/3ficoqDJuIDKA3SGWHGQuptMr9jzmwQyzoAwcMzK9Q/lnTMiFvc0C8Sa3aiVtzOQFtIWRJLGulAb2tAuJixhWEF9EvgHnErNgxa+fKNiOIA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
@@ -42,21 +42,23 @@ Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
  by DM5PR15MB1610.namprd15.prod.outlook.com (2603:10b6:3:127::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.14; Fri, 13 May
- 2022 01:22:38 +0000
+ 2022 01:22:39 +0000
 Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::b5e0:1df4:e09d:6b5b]) by SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::b5e0:1df4:e09d:6b5b%4]) with mapi id 15.20.5227.023; Fri, 13 May 2022
- 01:22:38 +0000
+ 01:22:39 +0000
 From:   Delyan Kratunov <delyank@fb.com>
 To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
         "andrii@kernel.org" <andrii@kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next v3 1/5] bpf: move bpf_prog to bpf.h
-Thread-Topic: [PATCH bpf-next v3 1/5] bpf: move bpf_prog to bpf.h
-Thread-Index: AQHYZmfu2xlqSOScpkSeB2xmTf4Fhw==
-Date:   Fri, 13 May 2022 01:22:38 +0000
-Message-ID: <529c88e0c8438db4bfd9768ed5d1fee508fabbfb.1652404870.git.delyank@fb.com>
+Subject: [PATCH bpf-next v3 4/5] libbpf: add support for sleepable uprobe
+ programs
+Thread-Topic: [PATCH bpf-next v3 4/5] libbpf: add support for sleepable uprobe
+ programs
+Thread-Index: AQHYZmfvOb5TNJ9xM0uvUmh9bzHu5g==
+Date:   Fri, 13 May 2022 01:22:39 +0000
+Message-ID: <3dc6d472dcb2c50846cda776f122fc99a0e3e277.1652404870.git.delyank@fb.com>
 References: <cover.1652404870.git.delyank@fb.com>
 In-Reply-To: <cover.1652404870.git.delyank@fb.com>
 Accept-Language: en-US
@@ -64,63 +66,63 @@ Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b20caa63-70f8-4585-445d-08da347f1188
+x-ms-office365-filtering-correlation-id: ff7d182e-f5be-4227-621a-08da347f11ec
 x-ms-traffictypediagnostic: DM5PR15MB1610:EE_
-x-microsoft-antispam-prvs: <DM5PR15MB16108EA5A8C721E146A9C303C1CA9@DM5PR15MB1610.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <DM5PR15MB161015E267D2F5D9987255C4C1CA9@DM5PR15MB1610.namprd15.prod.outlook.com>
 x-fb-source: Internal
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +9Gi6mP1W7sCsqvE+uNMkBd+8xU4sStfGbs9w5o7h0ARPszehHWNjhPR3as6Kixo7yz18+CJSJbKyykd1KparAaVFNDmOyIgSh/pe9sJlioT85Bmt39pbh14UvyZ77ysis/HhnH34Szcza4uMICfSZawCGcYNDz/xE72RmQiby4en0a2zhLzAW2SwQbVODrojRtZ9uYXOMMlnzepXrpt4H4enNh2OnO5w8M55+cJvz9YMy8IA4/odYsEj/ytSGneDwTYNGgCjiNZLnd3l46kUGogYrFNFzKKahhWFrAfX4M1mSZKXTFuVR2Pc5yIOLkwFgzl+x4U9j7s6f1lNfv8Q3sTm6uIqzDmGQADXWTM8t4pCeXeIIZfGOaqJIwpJgFPxDHpL7EHaQvSDHVlfRSBRu9xNss07pO+wrOWcfxjguPhtnuG4G+SOoTeKOs+L+J4mKy3wAMoFb8reeCwOKy+Ly928Sgvb6KiRY0/Ic6mx9eowt2BOPJvEph+/Tobnoa3KcPHHWSQmuH/d7WRTpnnwaz+eetou6frf1bVy6kIHERkQj9SFvDUcxK99H0b83UxBqz/CTzlzEkh29bt0PuE08bGKPUUhxlQ1ov/euL2l779PwekxW7l5miuuTKBoUM4ftERKcgff6umv9yLKNbzvCdVb8i2vVUcjypMjbz396MhmuBzZ52FAq6K4fKhluMauWH7l9HMq42VUy50IdHKWA==
+x-microsoft-antispam-message-info: v1/yDrBqsVdEVC8/CGm/q+IyZKCyi55thLXxeKrh5Cve1B1HBuI9s7HOPJ88EWtVItqk+d3Gyg0Fj0mPNaR7S+Ikg4IOrkM9Xr7XNuAOh4zjTTyh2heZ7X1ssFXu0cXZWwtYQIK5Jy/NbXj6lJMA3BbrH/aEXhrZlb/0W63y4q5eH4dx2Z0C3KyYf8IGTAVa0ttan1HVav54lXWwr9p2BMtqkNj9zmZilkUFPo58YZ2qKNItgYaajdm1fSurgX3v3BIHpbpam316GBoF5T3HmEl2xOmaxjy2SnsGpgbROTzrcHME6OnmNUnXe1p4vJloO6FyHjuilDROtfYjHbv54UKJu1m5yegPMt3tXP9ISRmobfV5FVMqG/zJJyoRHVjkZzuS5FVM9DSqtfaYmfYbh7tiRkg3MmUfKiVrjr76q5dP4LUEdDZGPj4lasW66/AXOq+1RqA6KQ0dLwUfJogN9bnAY3saOjCmLLOyTiOVmiIffJJIsYF/skb5QLtb6PY54WiN5S5/575ZrJo9Za1Cca5jok1yon27LEFyT0ryyQMUGreG1hq21D+m6GYmJXc8p7pgecRlffI3ayUyXTqUL0YaCphunyDGA9ly7m2Y8VV1KHcoGhB/pCRhTEScFTspFMt0UfAVRpuN5q485aL24+0CaQ/ApFf9kNAQh59sSX6Y9CYIwseBB2h3vAl9HNJ65HeaexXxJNh/hM+d4w825w==
 x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(83380400001)(110136005)(2906002)(66446008)(6512007)(5660300002)(38100700002)(38070700005)(8936002)(508600001)(91956017)(2616005)(76116006)(66556008)(66946007)(66476007)(36756003)(186003)(316002)(8676002)(86362001)(71200400001)(6506007)(122000001)(6486002)(64756008);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?0eqRivG5h3BFzkmMiJ+fqG9fuMRPyL7zljvom3FJUl1x7kDSn8ekkKRucV?=
- =?iso-8859-1?Q?pPZGXBpKFdP+86W48MBKddDYoz1ryT+RrabpGOTwg++e5ZJ/S0d3m28AzV?=
- =?iso-8859-1?Q?dlnDNaDeCzomgQikINOmDcSDIH5lzu78A9f8rCYlPgzJl5bUGUzPPpDqnp?=
- =?iso-8859-1?Q?xXIGIG37bcNynape7H+NV5xmuiXPRNazOwSK0iQUnHQF7Ft8wJQXAh4BAR?=
- =?iso-8859-1?Q?AlSgvICuuTA7DI8XRN3eFqfp6LVH9EE7nwWY+oItKDwDiLR9Lm+pWsz+mD?=
- =?iso-8859-1?Q?udTmahXfj2ZL9hyhTkWwNIq4E0vRnKcjJCTwz/uALadgCZ2iBxiKN4IT88?=
- =?iso-8859-1?Q?YrpOUe6QiNjy1I/m+PAZtscN1EYC4jYahdJMdUogwEPN01PaJgZExwy569?=
- =?iso-8859-1?Q?i8CtR1i4gIpkfa4jE8HS2EtwL7HX6XZXqWZMCQgE9MyvDNklRyeQyKP6mV?=
- =?iso-8859-1?Q?+h12j0Dnlpxen5xQaflEgEa/SWrfVO8ZAV2zfZ5Z4N9TM03ZMI6Y5IkF2V?=
- =?iso-8859-1?Q?sZKpUN8IZQWEXw8HSQX+pIV1cr+zu/JmNRT8+fI/XUyy1ProzuBaJviy8G?=
- =?iso-8859-1?Q?0S+RFE7698OSEmMMSHYE9+w4DoGa+nQsXlTo1KYOihVVXYiMUQYjad22DF?=
- =?iso-8859-1?Q?LvrQaMyX1j9WfJ8YMdK8ZqphAXE/rnmm6qz9loBxueKVAlnxBxkE2dc141?=
- =?iso-8859-1?Q?XSI9zyyz0RIgqQRmHA/O7Vfa+N3mQENrw/rgoy6oCFK72r9vDYNvmceaov?=
- =?iso-8859-1?Q?64LPws0dWNjYtHjPe9zahF8bRTCB+O+gJcoabPQFjNwfnde+mtJJzo6gzS?=
- =?iso-8859-1?Q?rTlfuz2kPjtE2CLrnHEd/3SJLXX0Hncpxzelggb9Qu4LRYTw795jmHsWw9?=
- =?iso-8859-1?Q?m9z+9q5Dy/+EZ8rH+XC+RnwUBth92MF/BW4EhSmrpEStYT8IoxJag/KXDT?=
- =?iso-8859-1?Q?5++v0RlwIfCDPS5sWsQSwCpUNWNMb326V2kbiEYrP/7A1O80XMDTvEhU9z?=
- =?iso-8859-1?Q?Pk+Xt2W4pgLX+TAk4LX0szJzRrp3Q6BJSkSbtR8wd8ZIo2jSwFUKVH/yiw?=
- =?iso-8859-1?Q?T7vPFiot2hpLofzhSZENgZPZv8Nssh39n8sQGLGUt/VrQPyY6VXI9gOD2m?=
- =?iso-8859-1?Q?bifEfIpBHjfZSO8oOSTwBVpZH84nIhwluLD86AMXsG5ZeIeygQb5jFGTqE?=
- =?iso-8859-1?Q?WKEs7aENZEObgyqqSQtgGpgqRBqAsgu88ByBZsqewHTXzGRq133edhT/2r?=
- =?iso-8859-1?Q?IquvwexrsOZ01bBwSicauj59uSe4hnq75OO068uzJienskZ7fZrjNc3hHc?=
- =?iso-8859-1?Q?LJ7aGPkzjEUYAfYvmGAuz11OuQgWbkA12+nWOOn9Ac2n1g7u9kGmFV+CzC?=
- =?iso-8859-1?Q?BcxM8uiGtmvcKtaP8jj0NnbzyyNbqwpMFFk5JJN4XA0YJtmTtJDjmsiOAN?=
- =?iso-8859-1?Q?yvesd2yjZ+6iXSKT1K8TmhkgEl2YzWd5apx7k35Q6gEOfZ/Lk44pSKPzDX?=
- =?iso-8859-1?Q?cvGu/4TMj0RQ3GnP5x5npxtHsF5jWWVsRRWs6q830O3Vw3fVm3WGEMWrHd?=
- =?iso-8859-1?Q?YgAF+4Zab/l0+Aw9CmMLbjveZzUDyzCnqW/Ck5nTvK8IrVbY9kHXUas8+P?=
- =?iso-8859-1?Q?YLblemkTHrVvJ7gNo44Po4dOw9RlDUWHWhfIN+cg38j17uQN+eTQty5xh4?=
- =?iso-8859-1?Q?dWCafwO8yRDdOqCmL/bJGT9HwumpqRedzzsdbeoVWuIHlr1v/fhGaAtzEV?=
- =?iso-8859-1?Q?J9kdQYrs2b120WpFm22HZGGRhavKGX40UxZmO8M6DuG2GHxCtKeyBlOB3G?=
- =?iso-8859-1?Q?puJ6n6sNnqoRW2crwuM7SkMmFm/NWQq7FxeOegUwZ+kGqUkcyKeX?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?23zmdWnG4R8uMjHeomorxE8RSVpqZkz6ZYUQabZf3c5TVhTzdj7t2/S/JO?=
+ =?iso-8859-1?Q?l0ALix53qw5wpH2840CJW4zFCc1Ha/FSjxWwEKf1kwgAuuReeXtaHWV0L/?=
+ =?iso-8859-1?Q?OGGqTVx/KPflApgnq7ECR3v1phmiamy2kc5NKXYoTaKtosVYFi+Y9e6ivM?=
+ =?iso-8859-1?Q?1ps0CpTt7kd06f+yGLzdE9UZdLIXPr+o+Ue2N32oxgOwCq50ywc2WkNJld?=
+ =?iso-8859-1?Q?pSYgiIsBhnsZ1x3D+txGnt6wyjLe640mljzMpF9x0NnIC4DrbonEdVT09B?=
+ =?iso-8859-1?Q?8GmewsCj4YlKRDq8oFcDoksMZbKxlS305IdLUZepVV/OVAYzF+6wl0FfBp?=
+ =?iso-8859-1?Q?q6MmmcsWyEml/t9rtD2Tle0SK4SAiv0uk+NZPRKLfmuoVvQR/bSymtaBHJ?=
+ =?iso-8859-1?Q?X2S7SJfCA9t4EL0PR43oDebA0MFlFDiuYGCUZR7P9aWP1BSWBbaLgbxn6d?=
+ =?iso-8859-1?Q?gh26dN20OQALKXB0Uhzd8uBQbdeX1VfM1JfB7tWiWpJV7RNmegLSHRmibo?=
+ =?iso-8859-1?Q?UlFuDQ/w8BJ6IbjLv6ZpTCZOLbfJWmVBSWtYYIgTgaHNZsOQpEBafb408L?=
+ =?iso-8859-1?Q?rew5B7bJ5VVnTu4g8sBzEfLVEXJfxzocb0zRRCsWVHWiNPZU5CwrLHPRoh?=
+ =?iso-8859-1?Q?1bKf8Ce2YA/7TAZuLXM97t2/arTHPvnmCGSGxRG9NuOe0iBW5/3zGHo0/k?=
+ =?iso-8859-1?Q?uaSunyl/PMasi3GnFJSicXdgxwl/aYfQtq7x2RHHRm54KE6BwyYTH65Va8?=
+ =?iso-8859-1?Q?kFEFqyUNZMDPwqB0qBPlZDNEEQU304Z0vl+LaZGTUZyiP0Zj5L5DEEdaR8?=
+ =?iso-8859-1?Q?SGXg/N9pzFXwfh/LWP1KdEjIW2i3qvX0ILg6mi+6V538E9nR69fr4URh65?=
+ =?iso-8859-1?Q?hhFF3yjDZFaMxafJwA5aILvVmktyHYYyZkrxtT2lm9eTgyDRULznVxjS8a?=
+ =?iso-8859-1?Q?FHKZ+l0tTrLT+UUp8EGXvit5zHUcbu31GMZVhf6zLI52O8rWCe0+V5OSzO?=
+ =?iso-8859-1?Q?XoXLLzixacq1mc7KO8kk4E4izgm2790kvn7kNSxPncVvr6IWqfTaJMzcnq?=
+ =?iso-8859-1?Q?+m5IQWT8GS5c59UT7LogGV+Ks5nYa/C9mHsy/DQqBl9fK0stIzV5qDD+KD?=
+ =?iso-8859-1?Q?LDfaqsuHsZ04eFOlg+Uj9H5Jyp5Obp2EOcxrypo51rSikwt140zZKLNoZW?=
+ =?iso-8859-1?Q?uAGnibgLE1RW7SbNshidV5brLMFjhP0wKdqnd9M6IoaBOZoOCgcVxCZ7f0?=
+ =?iso-8859-1?Q?y6W+fwpb06r8iXRiErXDXavef8kdJBEvbEEJYg6U8yaKtDLbCLcvb1/gl/?=
+ =?iso-8859-1?Q?+NUx2t8aBPCRghpRYiK9n+mTSBeFkPZA8Z/GGjGAZViReArgXpT+fteV4M?=
+ =?iso-8859-1?Q?96l+xKxgkDy75JAKnzQo7kPpCAJvxR6ZljzpxbSG4bTuWwIIyCFCoYxD31?=
+ =?iso-8859-1?Q?KGq9pZqCyPkUvCXuDp3aBgg9J3NspwzK8NKt0nNlMmZpjT5Y/lcpwoK95Y?=
+ =?iso-8859-1?Q?fkhdVLZ3WdrhO6qEpS3XVivW/d/YqG685w+xO+kTIw2EDROwANxSNKBN39?=
+ =?iso-8859-1?Q?R0PiVbWew5WxlKaZ/NwsscbtpzP6SKKjL36hjcYYRP0VHK0RQ+ImZ1+V8a?=
+ =?iso-8859-1?Q?5vEVtm4OLQ+SfAuOAWj2LGtTHVgltcgQVbrq1Nl0z3Q9ZV4wbc+jJSt1Y5?=
+ =?iso-8859-1?Q?5dHxDutfAYg2r6vWIFZev+E6EaVKezVy0U+SzCIysdwzkDk/6me5EvUvxW?=
+ =?iso-8859-1?Q?YfXCHr+kd2iSzwfdxs8iBr7ujA1eeifO6u13I4Of9GRZIqrR+y0MXc4957?=
+ =?iso-8859-1?Q?YMwRHXt2aq/2Rrh7s+hZnbEfKr4+ayiyX3/neDI5rErYrIgi+1Ua?=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: fb.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b20caa63-70f8-4585-445d-08da347f1188
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2022 01:22:38.3950
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff7d182e-f5be-4227-621a-08da347f11ec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2022 01:22:39.2229
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NsJ5T40SiI5S7YuQVIlmwcyz3tYbRJ75PjtZFGohYa+pdBrs8cHI+ohEC3YZed6C
+X-MS-Exchange-CrossTenant-userprincipalname: s5CohWll6YsEqy+/t4BPHxTKHi7YUZaqyHKMiG/dJVCw3COvwiu63onb2/9vNBO8
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1610
-X-Proofpoint-ORIG-GUID: 3AteVasVSJJcqnqbnw_UAcuMOjLhkAQz
-X-Proofpoint-GUID: 3AteVasVSJJcqnqbnw_UAcuMOjLhkAQz
+X-Proofpoint-ORIG-GUID: KU0TqfNcbfLPPhwFZw37lRtBXaTq1W1H
+X-Proofpoint-GUID: KU0TqfNcbfLPPhwFZw37lRtBXaTq1W1H
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-12_19,2022-05-12_01,2022-02-23_01
@@ -134,129 +136,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In order to add a version of bpf_prog_run_array which accesses the
-bpf_prog->aux member, bpf_prog needs to be more than a forward
-declaration inside bpf.h.
+Add section mappings for u(ret)probe.s programs.
 
-Given that filter.h already includes bpf.h, this merely reorders
-the type declarations for filter.h users. bpf.h users now have access to
-bpf_prog internals.
-
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Delyan Kratunov <delyank@fb.com>
 ---
- include/linux/bpf.h    | 36 ++++++++++++++++++++++++++++++++++++
- include/linux/filter.h | 34 ----------------------------------
- 2 files changed, 36 insertions(+), 34 deletions(-)
+ tools/lib/bpf/libbpf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5061ccd8b2dc..b67893b47da4 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -5,6 +5,7 @@
- #define _LINUX_BPF_H 1
-=20
- #include <uapi/linux/bpf.h>
-+#include <uapi/linux/filter.h>
-=20
- #include <linux/workqueue.h>
- #include <linux/file.h>
-@@ -22,6 +23,7 @@
- #include <linux/sched/mm.h>
- #include <linux/slab.h>
- #include <linux/percpu-refcount.h>
-+#include <linux/stddef.h>
- #include <linux/bpfptr.h>
- #include <linux/btf.h>
-=20
-@@ -1072,6 +1074,40 @@ struct bpf_prog_aux {
- 	};
- };
-=20
-+struct bpf_prog {
-+	u16			pages;		/* Number of allocated pages */
-+	u16			jited:1,	/* Is our filter JIT'ed? */
-+				jit_requested:1,/* archs need to JIT the prog */
-+				gpl_compatible:1, /* Is filter GPL compatible? */
-+				cb_access:1,	/* Is control block accessed? */
-+				dst_needed:1,	/* Do we need dst entry? */
-+				blinding_requested:1, /* needs constant blinding */
-+				blinded:1,	/* Was blinded */
-+				is_func:1,	/* program is a bpf function */
-+				kprobe_override:1, /* Do we override a kprobe? */
-+				has_callchain_buf:1, /* callchain buffer allocated? */
-+				enforce_expected_attach_type:1, /* Enforce expected_attach_type checki=
-ng at attach time */
-+				call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid() *=
-/
-+				call_get_func_ip:1, /* Do we call get_func_ip() */
-+				tstamp_type_access:1; /* Accessed __sk_buff->tstamp_type */
-+	enum bpf_prog_type	type;		/* Type of BPF program */
-+	enum bpf_attach_type	expected_attach_type; /* For some prog types */
-+	u32			len;		/* Number of filter blocks */
-+	u32			jited_len;	/* Size of jited insns in bytes */
-+	u8			tag[BPF_TAG_SIZE];
-+	struct bpf_prog_stats __percpu *stats;
-+	int __percpu		*active;
-+	unsigned int		(*bpf_func)(const void *ctx,
-+					    const struct bpf_insn *insn);
-+	struct bpf_prog_aux	*aux;		/* Auxiliary fields */
-+	struct sock_fprog_kern	*orig_prog;	/* Original BPF program */
-+	/* Instructions for interpreter */
-+	union {
-+		DECLARE_FLEX_ARRAY(struct sock_filter, insns);
-+		DECLARE_FLEX_ARRAY(struct bpf_insn, insnsi);
-+	};
-+};
-+
- struct bpf_array_aux {
- 	/* Programs with direct jumps into programs part of this array. */
- 	struct list_head poke_progs;
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index ed0c0ff42ad5..d0cbb31b1b4d 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -559,40 +559,6 @@ struct bpf_prog_stats {
- 	struct u64_stats_sync syncp;
- } __aligned(2 * sizeof(u64));
-=20
--struct bpf_prog {
--	u16			pages;		/* Number of allocated pages */
--	u16			jited:1,	/* Is our filter JIT'ed? */
--				jit_requested:1,/* archs need to JIT the prog */
--				gpl_compatible:1, /* Is filter GPL compatible? */
--				cb_access:1,	/* Is control block accessed? */
--				dst_needed:1,	/* Do we need dst entry? */
--				blinding_requested:1, /* needs constant blinding */
--				blinded:1,	/* Was blinded */
--				is_func:1,	/* program is a bpf function */
--				kprobe_override:1, /* Do we override a kprobe? */
--				has_callchain_buf:1, /* callchain buffer allocated? */
--				enforce_expected_attach_type:1, /* Enforce expected_attach_type checki=
-ng at attach time */
--				call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid() *=
-/
--				call_get_func_ip:1, /* Do we call get_func_ip() */
--				tstamp_type_access:1; /* Accessed __sk_buff->tstamp_type */
--	enum bpf_prog_type	type;		/* Type of BPF program */
--	enum bpf_attach_type	expected_attach_type; /* For some prog types */
--	u32			len;		/* Number of filter blocks */
--	u32			jited_len;	/* Size of jited insns in bytes */
--	u8			tag[BPF_TAG_SIZE];
--	struct bpf_prog_stats __percpu *stats;
--	int __percpu		*active;
--	unsigned int		(*bpf_func)(const void *ctx,
--					    const struct bpf_insn *insn);
--	struct bpf_prog_aux	*aux;		/* Auxiliary fields */
--	struct sock_fprog_kern	*orig_prog;	/* Original BPF program */
--	/* Instructions for interpreter */
--	union {
--		DECLARE_FLEX_ARRAY(struct sock_filter, insns);
--		DECLARE_FLEX_ARRAY(struct bpf_insn, insnsi);
--	};
--};
--
- struct sk_filter {
- 	refcount_t	refcnt;
- 	struct rcu_head	rcu;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4867a930628b..54ee6e422f60 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9005,8 +9005,10 @@ static const struct bpf_sec_def section_defs[] =3D {
+ 	SEC_DEF("sk_reuseport",		SK_REUSEPORT, BPF_SK_REUSEPORT_SELECT, SEC_ATTAC=
+HABLE | SEC_SLOPPY_PFX),
+ 	SEC_DEF("kprobe+",		KPROBE,	0, SEC_NONE, attach_kprobe),
+ 	SEC_DEF("uprobe+",		KPROBE,	0, SEC_NONE, attach_uprobe),
++	SEC_DEF("uprobe.s+",		KPROBE,	0, SEC_SLEEPABLE, attach_uprobe),
+ 	SEC_DEF("kretprobe+",		KPROBE, 0, SEC_NONE, attach_kprobe),
+ 	SEC_DEF("uretprobe+",		KPROBE, 0, SEC_NONE, attach_uprobe),
++	SEC_DEF("uretprobe.s+",		KPROBE, 0, SEC_SLEEPABLE, attach_uprobe),
+ 	SEC_DEF("kprobe.multi+",	KPROBE,	BPF_TRACE_KPROBE_MULTI, SEC_NONE, attach=
+_kprobe_multi),
+ 	SEC_DEF("kretprobe.multi+",	KPROBE,	BPF_TRACE_KPROBE_MULTI, SEC_NONE, att=
+ach_kprobe_multi),
+ 	SEC_DEF("usdt+",		KPROBE,	0, SEC_NONE, attach_usdt),
+@@ -11282,7 +11284,8 @@ static int attach_uprobe(const struct bpf_program *=
+prog, long cookie, struct bpf
+ 		break;
+ 	case 3:
+ 	case 4:
+-		opts.retprobe =3D strcmp(probe_type, "uretprobe") =3D=3D 0;
++		opts.retprobe =3D strcmp(probe_type, "uretprobe") =3D=3D 0 ||
++				strcmp(probe_type, "uretprobe.s") =3D=3D 0;
+ 		if (opts.retprobe && offset !=3D 0) {
+ 			pr_warn("prog '%s': uretprobes do not support offset specification\n",
+ 				prog->name);
 --=20
 2.35.3
