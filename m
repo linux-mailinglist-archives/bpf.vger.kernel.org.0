@@ -2,234 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7DD526C5E
-	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 23:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26923526C60
+	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 23:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239078AbiEMVgS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 May 2022 17:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        id S1353981AbiEMVhx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 May 2022 17:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232968AbiEMVgP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 May 2022 17:36:15 -0400
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFA13135E
-        for <bpf@vger.kernel.org>; Fri, 13 May 2022 14:36:14 -0700 (PDT)
-Received: by mail-qk1-f176.google.com with SMTP id c1so8328497qkf.13
-        for <bpf@vger.kernel.org>; Fri, 13 May 2022 14:36:14 -0700 (PDT)
+        with ESMTP id S232968AbiEMVhv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 May 2022 17:37:51 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524834A91B
+        for <bpf@vger.kernel.org>; Fri, 13 May 2022 14:37:50 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id x8so5213169pgr.4
+        for <bpf@vger.kernel.org>; Fri, 13 May 2022 14:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Qu47h7zREAfemvwculnWduEowXo5JEccOKAE9qdNbXE=;
+        b=IhKR2nv9IAul0e0AWYx5gKx+ghXQYZrIZgNReYgFdSSPuqvkOHnfFrRGe3uWRRPgPa
+         g+0xm2nbVIW8YXtUn2KbkUy8c891oR0r/8CWkemYugJ46IdWX9asVpI4OhGXoPdMQpq1
+         2jmw0sJKRtElP6PU2Og4uUpdS+8DL8/+a/sgFAO+oJRJ4aa9YWLNKJqhL69Pz09zqHrX
+         OxYC8yVNP+tgc8lqH4IBeid2PZbe3XJtEZ5dmoSpZ0SzYXtHKryaqV0J/idvnWirRpBu
+         jqf09VIKmLOMr5xnIk0fG6T/jMqRXZCgaHQPVc3Dk7TT0BI9Qd4zInln7mCExMYMVrSY
+         ocuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1wS7ywOzZt2XtrNci6zu6F6iMA8CkZkUFYx7MRjosu4=;
-        b=CqnuD7taUv+n+TI46tCtOJNNfZqWP7wFTGgCEdhmtxESniO4sHO0wUW2XNyTnnS3d6
-         5z1DCAN12+kfEKTfnCsNAOQb1Nv9WcliJlHx0668A0ffJG9DyEGKIjJf/pV4X9a12U3V
-         5wP569rjXpJKwc1q/OIlJHcxlrTdP1r6tQzptSc3wRdlbHy1hv1bi5x8ksrfXjX+vNqz
-         p71vQcXPZCxkaX/ZE+oVCATuSBOmpGNqERsNTzc1JU9ZJMh8BmsY73lSaEW3lOpjnmKr
-         KFApjqJ4FBnrozsOBzi7h1KYnQFhWsGadZiJPy995J4+xqs4Y88DLbb51EuICagAofKn
-         i7Dw==
-X-Gm-Message-State: AOAM532qArZIv+dCQKfpNGw1QIx5MEw/Obw2820PMUkxCrouJuREvuKc
-        jYtDXpMei/hoymbxZSLBPWM=
-X-Google-Smtp-Source: ABdhPJxGbukvIphMpf+CMo+k9wmmoytTVeVq3fmgaMQX20SQBu4ouToigDepQuYtRK1bVO02Mwh8wQ==
-X-Received: by 2002:a05:620a:2910:b0:6a0:40d:2c8b with SMTP id m16-20020a05620a291000b006a0040d2c8bmr5283858qkp.195.1652477772848;
-        Fri, 13 May 2022 14:36:12 -0700 (PDT)
-Received: from dev0025.ash9.facebook.com (fwdproxy-ash-015.fbsv.net. [2a03:2880:20ff:f::face:b00c])
-        by smtp.gmail.com with ESMTPSA id l5-20020ac848c5000000b002f3fbf28826sm2139296qtr.23.2022.05.13.14.36.12
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qu47h7zREAfemvwculnWduEowXo5JEccOKAE9qdNbXE=;
+        b=lFluB5T+OumRfpysZn6eoSU0LzgxJ87J/sKLdXLaI6cRkYRh23KUEH+OqOHYm7ei92
+         O1leztce4VxJEY809g13mVRTijr7gyrCbCRryluuZZJ4qVRPTI7Q/fjcZ2Eqf0tnGHXW
+         +vtMq0t3+VWzs/fDx3PvbKwZi9zgHZFmPnpGTcapM4c4BVNy19U62GcXgBEptu2VKGjn
+         +6KOwK4ceD79c5YsxzZl0iicqM/ZpNBz/jfWt8gDrtDXvdirVTldyzVjMigWKYew3BF0
+         Thu0WM1UJn8EJooQjtodzGSanJudQyigKJCPGDiYYj/NpY4NnPdyAvGeFRGJmzdkN5h9
+         6Ckw==
+X-Gm-Message-State: AOAM533tgn+KvgV9OmaNjunVvrfNu01HBShOUkLiPxyfZzaBYzHDkjHO
+        4mD2W80kL76ongMmDdmvV9c=
+X-Google-Smtp-Source: ABdhPJwq7LXYEmpfrlLwtjlkZZJE1azGnEK3I9Ddb8LX4bOmpnHLrvo+qVhOtT9BcrOZGbPcgebcEA==
+X-Received: by 2002:a62:64d8:0:b0:50d:c2f6:9983 with SMTP id y207-20020a6264d8000000b0050dc2f69983mr6271198pfb.34.1652477869651;
+        Fri, 13 May 2022 14:37:49 -0700 (PDT)
+Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::4:7ccc])
+        by smtp.gmail.com with ESMTPSA id x186-20020a6386c3000000b003c14af50634sm2103980pgd.76.2022.05.13.14.37.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 May 2022 14:36:12 -0700 (PDT)
-Date:   Fri, 13 May 2022 14:36:11 -0700
-From:   David Vernet <void@manifault.com>
+        Fri, 13 May 2022 14:37:49 -0700 (PDT)
+Date:   Fri, 13 May 2022 14:37:47 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Joanne Koong <joannelkoong@gmail.com>
 Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
         daniel@iogearbox.net
-Subject: Re: [PATCH bpf-next v4 2/6] bpf: Add verifier support for dynptrs
- and implement malloc dynptrs
-Message-ID: <20220513213611.exm67qnqrlti22a5@dev0025.ash9.facebook.com>
+Subject: Re: [PATCH bpf-next v4 5/6] bpf: Add dynptr data slices
+Message-ID: <20220513213747.j3tj2qtbnjszy64n@MBP-98dd607d3435.dhcp.thefacebook.com>
 References: <20220509224257.3222614-1-joannelkoong@gmail.com>
- <20220509224257.3222614-3-joannelkoong@gmail.com>
+ <20220509224257.3222614-6-joannelkoong@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220509224257.3222614-3-joannelkoong@gmail.com>
-User-Agent: NeoMutt/20211029
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20220509224257.3222614-6-joannelkoong@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 09, 2022 at 03:42:53PM -0700, Joanne Koong wrote:
-> This patch adds the bulk of the verifier work for supporting dynamic
-> pointers (dynptrs) in bpf. This patch implements malloc-type dynptrs
-> through 2 new APIs (bpf_dynptr_alloc and bpf_dynptr_put) that can be
-> called by a bpf program. Malloc-type dynptrs are dynptrs that dynamically
-> allocate memory on behalf of the program.
-> 
-> A bpf_dynptr is opaque to the bpf program. It is a 16-byte structure
-> defined internally as:
-> 
-> struct bpf_dynptr_kern {
->     void *data;
->     u32 size;
->     u32 offset;
-> } __aligned(8);
-> 
-> The upper 8 bits of *size* is reserved (it contains extra metadata about
-> read-only status and dynptr type); consequently, a dynptr only supports
-> memory less than 16 MB.
-> 
-
-Small nit: s/less than/up to?
-
-
-[...]
-
-> +/* the implementation of the opaque uapi struct bpf_dynptr */
-> +struct bpf_dynptr_kern {
-> +	void *data;
-> +	/* Size represents the number of usable bytes in the dynptr.
-> +	 * If for example the offset is at 200 for a malloc dynptr with
-> +	 * allocation size 256, the number of usable bytes is 56.
-> +	 *
-> +	 * The upper 8 bits are reserved.
-> +	 * Bit 31 denotes whether the dynptr is read-only.
-> +	 * Bits 28-30 denote the dynptr type.
-
-It's pretty clear from context, but just for completeness, could you also
-explicitly specify what bits 0 - 27 denote (24 - 27 reserved, 0 - 23 size)?
-
-> +	 */
-> +	u32 size;
-> +	u32 offset;
-> +} __aligned(8);
+On Mon, May 09, 2022 at 03:42:56PM -0700, Joanne Koong wrote:
+>  	} else if (is_acquire_function(func_id, meta.map_ptr)) {
+> -		int id = acquire_reference_state(env, insn_idx);
+> +		int id = 0;
 > +
-> +enum bpf_dynptr_type {
-> +	BPF_DYNPTR_TYPE_INVALID,
-> +	/* Memory allocated dynamically by the kernel for the dynptr */
-> +	BPF_DYNPTR_TYPE_MALLOC,
-> +};
+> +		if (is_dynptr_ref_function(func_id)) {
+> +			int i;
 > +
-> +/* Since the upper 8 bits of dynptr->size is reserved, the
-> + * maximum supported size is 2^24 - 1.
-> + */
-> +#define DYNPTR_MAX_SIZE	((1UL << 24) - 1)
-> +#define DYNPTR_SIZE_MASK	0xFFFFFF
-> +#define DYNPTR_TYPE_SHIFT	28
-> +#define DYNPTR_TYPE_MASK	0x7
+> +			/* Find the id of the dynptr we're acquiring a reference to */
+> +			for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> +				if (arg_type_is_dynptr(fn->arg_type[i])) {
+> +					if (id) {
+> +						verbose(env, "verifier internal error: more than one dynptr arg in a dynptr ref func\n");
+> +						return -EFAULT;
+> +					}
+> +					id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
 
-Should we add a static_assert(DYNPTR_SIZE_MASK >= DYNPTR_MAX_SIZE);
-Potentially overkill, but if we're going to have separate macros for them
-it might be prudent to add it?
+I'm afraid this approach doesn't work.
+Consider:
+  struct bpf_dynptr ptr;
+  u32 *data1, *data2;
 
-[...]
+  bpf_dynptr_alloc(8, 0, &ptr);
+  data1 = bpf_dynptr_data(&ptr, 0, 8);
+  data2 = bpf_dynptr_data(&ptr, 8, 8);
+  if (data1)
+     *data2 = 0; /* this will succeed, but shouldn't */
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 0fe1dea520ae..8cdedc776987 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -187,6 +187,10 @@ struct bpf_verifier_stack_elem {
->  					  POISON_POINTER_DELTA))
->  #define BPF_MAP_PTR(X)		((struct bpf_map *)((X) & ~BPF_MAP_PTR_UNPRIV))
->  
-> +static bool arg_type_is_mem_size(enum bpf_arg_type type);
-> +static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx);
-> +static int release_reference(struct bpf_verifier_env *env, int ref_obj_id);
-> +
->  static bool bpf_map_ptr_poisoned(const struct bpf_insn_aux_data *aux)
->  {
->  	return BPF_MAP_PTR(aux->map_ptr_state) == BPF_MAP_PTR_POISON;
-> @@ -259,6 +263,7 @@ struct bpf_call_arg_meta {
->  	u32 ret_btf_id;
->  	u32 subprogno;
->  	struct bpf_map_value_off_desc *kptr_off_desc;
-> +	u8 uninit_dynptr_regno;
->  };
->  
->  struct btf *btf_vmlinux;
-> @@ -580,6 +585,7 @@ static char slot_type_char[] = {
->  	[STACK_SPILL]	= 'r',
->  	[STACK_MISC]	= 'm',
->  	[STACK_ZERO]	= '0',
-> +	[STACK_DYNPTR]	= 'd',
->  };
->  
->  static void print_liveness(struct bpf_verifier_env *env,
-> @@ -595,6 +601,25 @@ static void print_liveness(struct bpf_verifier_env *env,
->  		verbose(env, "D");
->  }
->  
-> +static inline int get_spi(s32 off)
-> +{
-> +	return (-off - 1) / BPF_REG_SIZE;
-> +}
+The same 'id' is being reused for data1 and data2 to make sure
+that bpf_dynptr_put(&ptr); will clear data1/data2,
+but data1 and data2 will look the same in mark_ptr_or_null_reg().
 
-Small / optional nit: It's probably harmless to leave this as inline as the
-compiler will almost certainly inline it for you, but to that point, it's
-probably not necessary to mark this as inline. It looks like most other
-static functions in verifier.c are non-inline, so IMO it's probably best to
-follow that lead.
-
-[...]
-
->  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> @@ -5725,7 +5885,16 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->  
->  skip_type_check:
->  	if (arg_type_is_release(arg_type)) {
-> -		if (!reg->ref_obj_id && !register_is_null(reg)) {
-> +		if (arg_type_is_dynptr(arg_type)) {
-> +			struct bpf_func_state *state = func(env, reg);
-> +			int spi = get_spi(reg->off);
-> +
-> +			if (!is_spi_bounds_valid(state, spi, BPF_DYNPTR_NR_SLOTS) ||
-> +			    !state->stack[spi].spilled_ptr.id) {
-> +				verbose(env, "arg %d is an unacquired reference\n", regno);
-> +				return -EINVAL;
+> +				}
 > +			}
-> +		} else if (!reg->ref_obj_id && !register_is_null(reg)) {
->  			verbose(env, "R%d must be referenced when passed to release function\n",
->  				regno);
->  			return -EINVAL;
-> @@ -5837,6 +6006,43 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->  		bool zero_size_allowed = (arg_type == ARG_CONST_SIZE_OR_ZERO);
->  
->  		err = check_mem_size_reg(env, reg, regno, zero_size_allowed, meta);
-> +	} else if (arg_type_is_dynptr(arg_type)) {
-> +		/* Can't pass in a dynptr at a weird offset */
-> +		if (reg->off % BPF_REG_SIZE) {
-> +			verbose(env, "cannot pass in non-zero dynptr offset\n");
-> +			return -EINVAL;
-> +		}
-
-Should this check be moved to check_func_arg_reg_off()?
-
-> +
-> +		if (arg_type & MEM_UNINIT)  {
-> +			if (!is_dynptr_reg_valid_uninit(env, reg)) {
-> +				verbose(env, "Arg #%d dynptr has to be an uninitialized dynptr\n",
-> +					arg + BPF_REG_1);
-> +				return -EINVAL;
-> +			}
-> +
-> +			/* We only support one dynptr being uninitialized at the moment,
-> +			 * which is sufficient for the helper functions we have right now.
-> +			 */
-> +			if (meta->uninit_dynptr_regno) {
-> +				verbose(env, "verifier internal error: more than one uninitialized dynptr arg\n");
+> +			if (!id) {
+> +				verbose(env, "verifier internal error: no dynptr args to a dynptr ref func\n");
 > +				return -EFAULT;
 > +			}
-> +
-> +			meta->uninit_dynptr_regno = arg + BPF_REG_1;
+> +		} else {
+> +			id = acquire_reference_state(env, insn_idx);
+> +			if (id < 0)
+> +				return id;
+> +		}
+>  
+> -		if (id < 0)
+> -			return id;
+>  		/* For mark_ptr_or_null_reg() */
+>  		regs[BPF_REG_0].id = id;
+>  		/* For release_reference() */
+> @@ -9810,7 +9864,8 @@ static void mark_ptr_or_null_regs(struct bpf_verifier_state *vstate, u32 regno,
+>  	u32 id = regs[regno].id;
+>  	int i;
+>  
+> -	if (ref_obj_id && ref_obj_id == id && is_null)
+> +	if (ref_obj_id && ref_obj_id == id && is_null &&
+> +	    !is_ref_obj_id_dynptr(state, id))
 
-Can this be simplified to:
+This bit is avoiding doing release of dynptr's id,
+because id is shared between dynptr and slice's id.
 
-meta->uninit_dynptr_regno = regno;
+In this patch I'm not sure what is the purpose of bpf_dynptr_data()
+being an acquire function. data1 and data2 are not acquiring.
+They're not incrementing refcnt of dynptr.
 
-[...]
+I think normal logic of check_helper_call() that does:
+        if (type_may_be_null(regs[BPF_REG_0].type))
+                regs[BPF_REG_0].id = ++env->id_gen;
 
-Looks good otherwise, thanks!
+should be preserved.
+It will give different id-s to data1 and data2 and the problem
+described earlier will not exist.
 
-Acked-by: David Vernet <void@manifault.com>
+The transfer of ref_obj_id from dynptr into data1 and data2 needs to happen,
+but this part:
+        u32 ref_obj_id = regs[regno].ref_obj_id;
+        u32 id = regs[regno].id;
+        int i;
+
+        if (ref_obj_id && ref_obj_id == id && is_null)
+                /* regs[regno] is in the " == NULL" branch.
+                 * No one could have freed the reference state before
+                 * doing the NULL check.
+                 */
+                WARN_ON_ONCE(release_reference_state(state, id));
+
+should be left alone.
+bpf_dynptr_put(&ptr); will release dynptr and will clear data1 and data2.
+if (!data1)
+   will not release dynptr, because data1->id != data1->ref_obj_id.
+
+In other words bpf_dynptr_data() should behave like is_ptr_cast_function().
+It should trasnfer ref_obj_id to R0, but should give new R0->id.
+See big comment in bpf_verifier.h next to ref_obj_id.
