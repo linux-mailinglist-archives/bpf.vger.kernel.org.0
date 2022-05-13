@@ -2,63 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9033E525944
-	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 03:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70705525947
+	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 03:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376257AbiEMBKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 21:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
+        id S1350464AbiEMBMw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 21:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241655AbiEMBKc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 21:10:32 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB52128E4C3
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:10:31 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id i17so6489454pla.10
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:10:31 -0700 (PDT)
+        with ESMTP id S241655AbiEMBMv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 21:12:51 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621DF222C28
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:12:48 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id p1so2661651uak.1
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 18:12:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eMAVuBWEI5+paDRFtjVKtK4hsTH0OtcK4lrB4hxsV9g=;
-        b=bEm6VlQi3MRPDtploQ/o6weeH3kLkRK9tWjtec84R6Q0d+KuoXh4aP/yuapdB7SUJt
-         j7nrZnUqyAj+XZrFrzrohn1RohKz0pvDXg+VRr94qgtDWUtwnhVWiwBtbhecetzvT+Kv
-         X6YrgklOioxwcOEu5YN4nEOdssVIWyEcGnwXj1YPl1zjW3i57NXrcVD7ckhA9y4JxNMO
-         g1FRxVc/vLWLauakOOlLxBkmIJftXmc5dpCPiXXo4VL7Mwd8O/XKJlNVxtueJUjInhrU
-         VMW7CBl9sBCpG9fFWnPvQq7two0vrLsuKTUVsKdYP25kivMBYI2zAF+qASZpoitRlMrw
-         oX7w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=EZN/Mb9B2RBK+4vJv1FC96FcsAOneNfUlzQmf8YzSpo=;
+        b=H5PknNvXOcdoqKx+kwboaVEzPwIxsy8iTiOuXPBoKrvxZrvff/NHnZO0SCD/esV5EV
+         96vB2dD0NEEe2hVWcsDjanBlVccV02OVDkyo9Fi35G5gIli5fpwTLQ1/DhTSSElQtqw3
+         QjXXBkH7uF5Yk+o0EZUhFW52Q2uBtWHaV3vjd4KjgGYtLH9wOG8PTZAIlWGPZDrv+N0+
+         KSejel3HjapS1dlzcUWmOU5peQTNPMI3cdmGLo5a4HhkwFpiDhuPae2g4SAphbbW4Z7v
+         lr9Dxs5qfLvXuFIE4FyuDutXNIvcr9p3X/FDlRLZYFg2HXD7Dc8tCJGkLMAodNQ5Bk4d
+         1bwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eMAVuBWEI5+paDRFtjVKtK4hsTH0OtcK4lrB4hxsV9g=;
-        b=bl1JM+hZrwG+cG290luKHeT0GyUhx/JX+6abnFEdshGWQoy3MWmg+X+HIRBT0tHkcy
-         GiLwKF1tr97/YtF6viM/QWF383p0QbRX37rDh6L12dvNajkZ0tgeKDonrlbPIuovUn/C
-         m3+jQv76x95dJ2WUqrl8SuyGcUcNL8otXgrkW5+Qe+TfL5kLsudjYPW3lh/Ofsd76YFX
-         VbPo4NABO6ippqIz5d3Mo2Fiad+JwaRIXuyNg9RvyGCCbK9Hw7yLXPYrdYS8wQqiB2QJ
-         UnWo071f0dZ8InCkWSeHV9kb018bvLz65HMOtwYGlFYefngs+h/qguralypIg/U5qyKd
-         wSHA==
-X-Gm-Message-State: AOAM5334OouZmgLdZqzmg45kF+BVimZBRQ2GykA2TK5/aVHeJ+t4qkrw
-        jdROFbjIL1wMZHEeJYzyzl3Hj6UKo84=
-X-Google-Smtp-Source: ABdhPJysQ7pvz4Mnq6N2prhB2UsKrxCcFe3KQjnsYu/mYekhuCU/Mt0OzDMv5ZpLl+oOkP+3KnmyuA==
-X-Received: by 2002:a17:903:248:b0:155:ecb7:dfaf with SMTP id j8-20020a170903024800b00155ecb7dfafmr2442859plh.84.1652404231391;
-        Thu, 12 May 2022 18:10:31 -0700 (PDT)
-Received: from localhost.localdomain ([2620:10d:c090:400::4:7ccc])
-        by smtp.gmail.com with ESMTPSA id x11-20020a170902a38b00b0015e9d4a5d27sm545392pla.23.2022.05.12.18.10.30
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 12 May 2022 18:10:31 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Check combination of jit blinding and pointers to bpf subprogs.
-Date:   Thu, 12 May 2022 18:10:25 -0700
-Message-Id: <20220513011025.13344-2-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220513011025.13344-1-alexei.starovoitov@gmail.com>
-References: <20220513011025.13344-1-alexei.starovoitov@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=EZN/Mb9B2RBK+4vJv1FC96FcsAOneNfUlzQmf8YzSpo=;
+        b=shSdbARO4/UzX90FjRyhH54O+NBeKe7GOzWQpz6tMIqzH579mHyIwoDo1huYyIlPwK
+         gY2Yb7ocJMJ8BvHsCg6x2Lk07ZrTHW3DU0kWgIR6ZSfu7dp76zngd3q3ETeudqkSZS93
+         2n9DWvrdpCyLgadB2NVDGWNiyzGM7czEij83YRtnk0UbHrYiwTzef5Kdy4wtglhpNZPD
+         fVzFylLLKbKYYAFdPYYLI6dAKrRfKRyt7veXNaLego2C2Sj1O747r4OsCtuUaHsON4xa
+         im1PaCOMsAjhbyKLSK3VzNjx97w6uli5b5hV2x0FjUw6osuoA4sA9gqGjrXl7Pn5E9Fn
+         s3PQ==
+X-Gm-Message-State: AOAM531Ey5jE+sXDqYWqa7xKXjy3Tcb2dC25d6jzKK8SfKA2auVXybkh
+        hQsp9XfL/cgDJ3GKH2+N8btadGFm0nCuZBclFXh7bMvJBk4=
+X-Google-Smtp-Source: ABdhPJweHtPNddzbjVxxaJgcnLLKzvGHZuom97c5W0HpCOFIEflJMlwkhfznKCxKm7nFo8hP/LS+5/yNBPgaB9QxksA=
+X-Received: by 2002:a9f:2b44:0:b0:35c:d462:f54c with SMTP id
+ q4-20020a9f2b44000000b0035cd462f54cmr1522321uaj.22.1652404367193; Thu, 12 May
+ 2022 18:12:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK3+h2zMMMir6_ut=fb7gGj0Merzsc9vksG3fmt9JazCvk2=WA@mail.gmail.com>
+In-Reply-To: <CAK3+h2zMMMir6_ut=fb7gGj0Merzsc9vksG3fmt9JazCvk2=WA@mail.gmail.com>
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Thu, 12 May 2022 18:12:36 -0700
+Message-ID: <CAK3+h2z74LZ5OFQxNDktex8WYxpYhycQxaWt=KqqW3ZsTu1nwg@mail.gmail.com>
+Subject: Re: bpf selftest compiling error
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,42 +62,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Thu, May 12, 2022 at 5:49 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+>
+> Hi,
+>
+> I cloned the bpf-next and tried to compile the bpf selftest.
+>
+> first I got error
+>
+> "
+> CC      /usr/src/bpf
+> next/tools/testing/selftests/bpf/tools/build/bpftool/xlated_dumper.o
+>
+> make[1]: *** No rule to make target
+> '/usr/src/bpf-next/tools/include/asm-generic/bitops/find.h', needed by
+> '/usr/src/bpf-next/tools/testing/selftests/bpf/tools/build/bpftool/btf_dumper.o'.
+> Stop.
+>
+> I could not find find.h in
+> /usr/src/bpf-next/tools/include/asm-generic/bitops/find.h but I found
+> it in /usr/src/bpf-next/tools/include/linux/find.h, copied it to
+> /usr/src/bpf-next/tools/include/asm-generic/bitops, seems resolved the
+> problem,
+>
+> then I got another error below,
+>
+>   CLNG-BPF [test_maps] map_kptr.o
+>
+> progs/map_kptr.c:7:29: error: unknown attribute 'btf_type_tag' ignored
+> [-Werror,-Wunknown-attributes]
+>
+>         struct prog_test_ref_kfunc __kptr *unref_ptr;
+>
+>                                    ^~~~~~
+>
+> /usr/src/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:176:31:
+> note: expanded from macro '__kptr'
+>
+> #define __kptr __attribute__((btf_type_tag("kptr")))
+>
+>                               ^~~~~~~~~~~~~~~~~~~~
+>
+> progs/map_kptr.c:8:29: error: unknown attribute 'btf_type_tag' ignored
+> [-Werror,-Wunknown-attributes]
+>
+>         struct prog_test_ref_kfunc __kptr_ref *ref_ptr;
+>
+>                                    ^~~~~~~~~~
+>
+> /usr/src/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:177:35:
+> note: expanded from macro '__kptr_ref'
+>
+> #define __kptr_ref __attribute__((btf_type_tag("kptr_ref")))
+> "
+>
+> my clang is 12.0.1 and installed new clang from llvm github repository
+>
+> clang version 15.0.0 (https://github.com/llvm/llvm-project.git
+> e91a73de24d60954700d7ac0293c050ab2cbe90b)
+>
+> it resolved the problem, but now I got error
+>
+>   GEN-SKEL [test_progs] test_bpf_nf.skel.h
+>
+> libbpf: failed to find BTF info for global/extern symbol 'bpf_skb_ct_lookup'
+>
+> Error: failed to link
+> '/usr/src/bpf-next/tools/testing/selftests/bpf/test_bpf_nf.o': Unknown
+> error -2 (-2)
+>
+> make: *** [Makefile:508:
+> /usr/src/bpf-next/tools/testing/selftests/bpf/test_bpf_nf.skel.h]
+> Error 254
+>
+> running out of ideas on how to fix the compiling error. I hope I am
+> not doing something wrong :)
 
-Check that ld_imm64 with src_reg=1 (aka BPF_PSEUDO_FUNC) works
-with jit_blinding.
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- tools/testing/selftests/bpf/progs/test_subprogs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_subprogs.c b/tools/testing/selftests/bpf/progs/test_subprogs.c
-index b7c37ca09544..f8e9256cf18d 100644
---- a/tools/testing/selftests/bpf/progs/test_subprogs.c
-+++ b/tools/testing/selftests/bpf/progs/test_subprogs.c
-@@ -89,6 +89,11 @@ int prog2(void *ctx)
- 	return 0;
- }
- 
-+static int empty_callback(__u32 index, void *data)
-+{
-+	return 0;
-+}
-+
- /* prog3 has the same section name as prog1 */
- SEC("raw_tp/sys_enter")
- int prog3(void *ctx)
-@@ -98,6 +103,9 @@ int prog3(void *ctx)
- 	if (!BPF_CORE_READ(t, pid) || !get_task_tgid((uintptr_t)t))
- 		return 1;
- 
-+	/* test that ld_imm64 with BPF_PSEUDO_FUNC doesn't get blinded */
-+	bpf_loop(1, empty_callback, NULL, 0);
-+
- 	res3 = sub3(5) + 6; /* (5 + 3 + (4 + 1)) + 6 = 19 */
- 	return 0;
- }
--- 
-2.30.2
-
+I recompiled the bpf-next kernel tree after clang 15 installation with
+make bzImage; make modules; make and then recompiled bpf selftest, all
+compiling errors are gone, sorry for the noise.
