@@ -2,108 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6691525903
-	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 02:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C055952590F
+	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 02:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbiEMAlY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 20:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        id S243156AbiEMAqP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 20:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233569AbiEMAlX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 20:41:23 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7916B5FF28
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:41:21 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id i6-20020a17090a718600b001dc87aca289so3542210pjk.5
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:41:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=PLHfkBps8/NN/F93wiTb1I9xCzDthCPlSjntIH72rDE=;
-        b=I8afDsMFlizjC2WkKw9nEOj2vMJgklTATaw1Hsa/SWTOmJqlD7HHRMFbRFXtiK5hKb
-         eWR68srOtf34zMu8hRlFofRBQy/Kzvf9bIK5KmrMoPCtMhuNUIreuIDMCS0+HR7A97qA
-         4norc+7XY3Ry8c2YsW8H6ig1JhvGZVoetaN6esBwKE9GsFTgHy0aQb6TWGqWqT5+iagi
-         u0NOcqhn2xj8lDeq6QVIGMfypdzYQUXj/zwLC7cAmZdjvcQbS1bZDx2o2Swcm1uJ7M+H
-         MVP3texpB2djiZrBiw8E2Hcwgk3Wb3yQENmoEoJRD1eEtwku11QHqpbk9WVB9zxfdH3a
-         fmmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=PLHfkBps8/NN/F93wiTb1I9xCzDthCPlSjntIH72rDE=;
-        b=idQggOJ+GsTRTHO2HhEKElxNQQ4CFnFvn/ZgbrbAhMWx1dpxbDNBZB8vpg+TCqujv/
-         q7bpriFwckvpRNYUCw3J8CC9KBwt1eNCi2HAN/aHc3jXxOHMht8Hl0YMovn/S9P0LPHd
-         gSEjfWZ5/0dkj8LnUgIZtwOH/6OhYsevIUd3mbVyL2waH31jd2c6abXANyn8nR9e0+JD
-         l/bqUEUG2sLT822jaZNJMeniCL/EIqGpc9bgyxppP6MWiBnQI5BZUNgfubhl1beEJNhL
-         t8YQcvX04t8JyRwB4QOH3JELYrB9nUVPk9ZaN27olbcMku/XG88eu/hAWp1MtN0lR3/2
-         OWPg==
-X-Gm-Message-State: AOAM530qb+rppO0H8DhWBKtlvvgCslfA0cdhAuRrh5xLa5uj0C0fzOmK
-        Q8ELHVV1+sRn5SWYAWivwkFplkgZhXpJpX4J
-X-Google-Smtp-Source: ABdhPJyNqg86E2DPDFz9cP8m9RIs4OnDIdJI8SHawkmDOi6DsBWOzE4x5CksBx4CuyRBczY8XM/fFtpwNsdQ7jWf
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:90b:4b42:b0:1dc:15f8:821b with SMTP
- id mi2-20020a17090b4b4200b001dc15f8821bmr13529101pjb.131.1652402480734; Thu,
- 12 May 2022 17:41:20 -0700 (PDT)
-Date:   Fri, 13 May 2022 00:41:17 +0000
-Message-Id: <20220513004117.364577-1-yosryahmed@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-Subject: [PATCH bpf-next] selftests/bpf: fix building bpf selftests statically
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S1359776AbiEMAqO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 20:46:14 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B2B35DD6
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:46:09 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 05D86240026
+        for <bpf@vger.kernel.org>; Fri, 13 May 2022 02:46:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1652402767; bh=4ebF8wAV6SvHnq3h8oz6/loy6mvL1HyQ4U61TbGkLSI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Z+yNP8szDxQtwZB4c2bgzA/cpBF7T23SQprDff0mq+YwG7VVEob01XA7MO+sAL5ej
+         aryuVeH7pAv7hoG3wPGTY3CkA4IK9Ivhs1WKV2OGm83fxGcl0RGCFTyzlRCp606Vbj
+         U1wbksu0T8QUs+XlpZOLeeA2Ks4ECtA/t2p8nRbBlIJtOUwP3PIbUebY1Yz17xQnLE
+         Wjp/o7BOZzAa/s+Uoe3qDZqQVfRH2lJButyXwIVxorYdjCCYSlPahGEhAtc0ttx/5L
+         3sGcsyHNESh4OI3HBIqN3EFlXDdbp9dI7owbYDVUzYY3VtzBghxVDwZ54TmAKduvh0
+         RuU9x+SZ4iXHA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4KzqhD5fjLz6tmK;
+        Fri, 13 May 2022 02:46:04 +0200 (CEST)
+Date:   Fri, 13 May 2022 00:45:56 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Hardcode /sys/kernel/btf/vmlinux
+ in fewer places
+Message-ID: <20220513004556.75yufuhbv2trbnqh@nuc>
+References: <20220512234332.2852918-1-deso@posteo.net>
+ <CAEf4BzZ0q9Avxie9oAFi0M6s93P85OX7c7rpd1GZjvfwnCJV6w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZ0q9Avxie9oAFi0M6s93P85OX7c7rpd1GZjvfwnCJV6w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf selftests can no longer be built with CFLAGS=-static with
-liburandom_read.so and its dependent target.
+On Thu, May 12, 2022 at 05:08:29PM -0700, Andrii Nakryiko wrote:
+> On Thu, May 12, 2022 at 4:44 PM Daniel Müller <deso@posteo.net> wrote:
+> >
+> > Two of the BPF selftests hardcode the path to /sys/kernel/btf/vmlinux.
+> > The kernel image could potentially exist at a different location.
+> > libbpf_find_kernel_btf(), as introduced by commit fb2426ad00b1 ("libbpf:
+> > Expose bpf_find_kernel_btf as a LIBBPF_API"), knows about said
+> > locations.
+> >
+> > This change switches these two tests over to using this function
+> > instead, making the tests more likely to be runnable when
+> > /sys/kernel/btf/vmlinux may not be present and setting better precedent.
+> >
+> > Signed-off-by: Daniel Müller <deso@posteo.net>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/libbpf_probes.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+> > index 9f766dd..61c81a9 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+> > @@ -11,8 +11,8 @@ void test_libbpf_probe_prog_types(void)
+> >         const struct btf_enum *e;
+> >         int i, n, id;
+> >
+> > -       btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
+> 
+> Selftests go hand in hand with kernel and generally assume specific
+> kernel features enabled (like BTF and sysfs) and having very recent
+> (if not latest) kernel. So there is nothing bad about loading
+> /sys/kernel/btf/vmlinux, I think, it's actually more straightforward
+> to follow the code when it is used explicitly. Libbpf's logic for
+> finding kernel BTF in other places is for older systems. So I'd leave
+> it as is.
 
-Filter out -static for liburandom_read.so and its dependent target.
+Sounds good to me. Feel free to ignore the patch then.
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- tools/testing/selftests/bpf/Makefile | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 6bbc03161544..4eaefc187d5b 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -168,14 +168,17 @@ $(OUTPUT)/%:%.c
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(LINK.c) $^ $(LDLIBS) -o $@
- 
-+# If the tests are being built statically, exclude dynamic libraries defined
-+# in this Makefile and their dependencies.
-+DYNAMIC_CFLAGS := $(filter-out -static,$(CFLAGS))
- $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
- 	$(call msg,LIB,,$@)
--	$(Q)$(CC) $(CFLAGS) -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
-+	$(Q)$(CC) $(DYNAMIC_CFLAGS) -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
- 
- $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
- 	$(call msg,BINARY,,$@)
--	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.c,$^)			       \
--		  liburandom_read.so $(LDLIBS)	       			       \
-+	$(Q)$(CC) $(DYNAMIC_CFLAGS) $(LDFLAGS) $(filter %.c,$^)			\
-+		  liburandom_read.so $(LDLIBS)					\
- 		  -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
- 
- $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
--- 
-2.36.0.550.gb090851708-goog
-
+Daniel
