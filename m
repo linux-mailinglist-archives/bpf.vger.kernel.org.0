@@ -2,67 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4AD5258CD
-	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 01:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310785258DB
+	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 02:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359682AbiELX5v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 19:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        id S1359713AbiEMAIo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 20:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359683AbiELX5v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 19:57:51 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF545AA67
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 16:57:48 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id l20-20020a17090a409400b001dd2a9d555bso6305036pjg.0
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 16:57:48 -0700 (PDT)
+        with ESMTP id S230336AbiEMAIm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 20:08:42 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41119273F44
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:08:41 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id 63so2607255uaw.10
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:08:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=c9svqcbssJcny2tvvFYGGOPVW1dmIGXy1RjFa/y8bxo=;
-        b=fwul8VeM5XSeu1uAQxAlvP3iUU+AU0kCvhxqo4bcL16SQ8tc3UCLZvQlvk+awAbWDU
-         fAkzTf5Cuwiv2Pkd/RtSxHzeKV2WjF+NCyxb0uzWHNxHGR8t+JqlKtZaTN1xnh7AbbDt
-         hxsmqyL/OGG4FOd2SUZetZQxJ+vUduSOMk+1O7cRealytf6AXkHDhTRIvC+V59HSJcLG
-         gOaOtTkHm4NUtRBmG3op2EqMZbH8PJxA+84SzNLEJOpguAn6Zv0cQuRNLl3RfOn1yKay
-         fe/IFYBCIMkqfQuCXiOQuRN5czDdkxtSchwUjXMpIiRTOEChYi+xvQYmxkRPl8k/Wilj
-         0Z6A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kk8tlPTdr9wmQlxn4uNlZZ3gf8/QugkdKYrakb5b8M4=;
+        b=evoR07Ttrm1P7jNw95WXqBzEbxjLN2Oho5VYCZuNvTMpQG/a1m8TVhXrDuFttJTaq2
+         e+jiFuStJ1SbkS9PzKV742TnGZt80487u/BcsA+B3SPOaMZSbVRZuiV2lyZHGN//lCCG
+         23gsiRlOcf7cgth+KEFynaMtHjRr/9NMGlxix2+8EQjFqoxEtwNzeIm9upu4r8oBEhOH
+         oVnTGBxQ+tpM5xOYwE+b39c0JL2yOXKU1dHBD76kzOhx7UXg7krX2cg4Azo4R5DXcxpp
+         j2d2fUnwp61IMqBnsWDVlLMtvQcESGvqJ0FixqEHkRrtFtRKx2dk6HkN9bPR3yt9sLar
+         P1yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=c9svqcbssJcny2tvvFYGGOPVW1dmIGXy1RjFa/y8bxo=;
-        b=oHxb+qvfLJ2MQWqRwJWdQuVKTgdPWz211jRxNVtsECMKj3WASDm1qBRDrVBDK6dlkY
-         W4chVkJNwO3rWx2VDlq8scEMIGCJufffQrOWGIHG3MvYEwhZFHpJzepQu1g9Z3WSKuS6
-         kKweuVEq2V+q+3pKFAi4Br8YMbT26rcxhLU4TMVY25ZN6/xOFMB7sroaFhOsqytHkEKO
-         MoJck2uoVSwDEIowkX/rds23lX0eNf68h5LT8F0CO1N5d9kQFxKkLdoxrjRkajDdgi0c
-         MDOmqwzULyPYnfbbfsFN+j4PWHJkFLwE9Xc4bXeHvROgcRbxKJ2OW7RoD6CBMwdkA/NJ
-         fK0g==
-X-Gm-Message-State: AOAM533K6adlOWEatwimpnAeNkZ7e5/wzZfOMXEEEwWeqEHL3PWJA1NM
-        EbJVdTWi8nHen3QIlRPWN2Y=
-X-Google-Smtp-Source: ABdhPJyD0uZfQ9BnoR2I+zhNYY0fSSQe0JGgb0JGx9zN87c0J20424oCoSgdNZgayImZbUH+eUTMXA==
-X-Received: by 2002:a17:902:e742:b0:15e:9a7b:24c3 with SMTP id p2-20020a170902e74200b0015e9a7b24c3mr2173234plf.17.1652399868150;
-        Thu, 12 May 2022 16:57:48 -0700 (PDT)
-Received: from localhost ([157.51.2.229])
-        by smtp.gmail.com with ESMTPSA id q6-20020a170902a3c600b0015e8d4eb231sm454535plb.123.2022.05.12.16.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 May 2022 16:57:47 -0700 (PDT)
-Date:   Fri, 13 May 2022 05:28:28 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kk8tlPTdr9wmQlxn4uNlZZ3gf8/QugkdKYrakb5b8M4=;
+        b=lqWEvxtBh76RmKBgvZExMPPAjOGIV63k8dUBJcwzDmVf43QMX2OO7HOEX1HYBi+EwI
+         nKMxUTlaTVOA+HeTZY6A3w8O5YfJeJkbkDxnv4r39pp0fG2ZyyvsqJqTXGwpPfZCGwmB
+         guKZn+79UfXU6XGea7/yL8KOZfcyT6IXQjDXGI/aw1LtDZxy2xpJqqdz+Sia0r3ANS7U
+         8jkSipJygibR/jY8OWGf7uUp+KRtMaWmviFKo9HaW6hFP48iI6bwjtyHDYNaG25vuyQn
+         EVioJgTkap8lKlQq4hIkE2jgqyXpE6xS53KrNE6yqK7hTdGmJNH0zphXoG2QHVsDKAam
+         33Qw==
+X-Gm-Message-State: AOAM5311lkwIyryol+occz9+FjC0MhEvhxgV+ZxsgxAwayJYj3nGHJ2c
+        +VGBTxF3xt06w7eEYkfqBNSiCnh9RhMPrNwdsqg=
+X-Google-Smtp-Source: ABdhPJzc8P0x31HHwdpB13Adycr5T5i3HmKYkyEwgZdhVjoljkA0bw5uhP9iIQWd497Nge80wZZY3NCWh7Xch8XU8xY=
+X-Received: by 2002:ab0:5387:0:b0:35f:d5e8:d22c with SMTP id
+ k7-20020ab05387000000b0035fd5e8d22cmr1417987uaa.11.1652400520328; Thu, 12 May
+ 2022 17:08:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220512234332.2852918-1-deso@posteo.net>
+In-Reply-To: <20220512234332.2852918-1-deso@posteo.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 12 May 2022 17:08:29 -0700
+Message-ID: <CAEf4BzZ0q9Avxie9oAFi0M6s93P85OX7c7rpd1GZjvfwnCJV6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Hardcode /sys/kernel/btf/vmlinux
+ in fewer places
+To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next v2 3/4] selftests/bpf: Add negative C tests for
- kptrs
-Message-ID: <20220512235828.pmzwufm7wzmqss42@apollo.legion>
-References: <20220511194654.765705-1-memxor@gmail.com>
- <20220511194654.765705-4-memxor@gmail.com>
- <CAEf4BzZm2rVt3Xxahah4cDur3o1LtUU399KYe5+ZzOaDck+cGA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZm2rVt3Xxahah4cDur3o1LtUU399KYe5+ZzOaDck+cGA@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,58 +69,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 12, 2022 at 08:38:16AM IST, Andrii Nakryiko wrote:
-> On Wed, May 11, 2022 at 12:46 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > This uses the newly added SEC("?foo") naming to disable autoload of
-> > programs, and then loads them one by one for the object and verifies
-> > that loading fails and matches the returned error string from verifier.
-> > This is similar to already existing verifier tests but provides coverage
-> > for BPF C.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/map_kptr.c       |  87 +++-
-> >  .../selftests/bpf/progs/map_kptr_fail.c       | 418 ++++++++++++++++++
-> >  2 files changed, 504 insertions(+), 1 deletion(-)
-> >  create mode 100644 tools/testing/selftests/bpf/progs/map_kptr_fail.c
-> >
+On Thu, May 12, 2022 at 4:44 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
 >
-> [...]
+> Two of the BPF selftests hardcode the path to /sys/kernel/btf/vmlinux.
+> The kernel image could potentially exist at a different location.
+> libbpf_find_kernel_btf(), as introduced by commit fb2426ad00b1 ("libbpf:
+> Expose bpf_find_kernel_btf as a LIBBPF_API"), knows about said
+> locations.
 >
-> > +
-> > +static void test_map_kptr_success(void)
-> >  {
-> >         struct map_kptr *skel;
-> >         int key = 0, ret;
-> > @@ -35,3 +113,10 @@ void test_map_kptr(void)
-> >
-> >         map_kptr__destroy(skel);
-> >  }
-> > +
-> > +void test_map_kptr(void)
-> > +{
-> > +       if (test__start_subtest("success"))
-> > +               test_map_kptr_success();
-> > +       test_map_kptr_fail();
+> This change switches these two tests over to using this function
+> instead, making the tests more likely to be runnable when
+> /sys/kernel/btf/vmlinux may not be present and setting better precedent.
 >
-> I think the intent for this was to be another subtest, right? Worth
-> fixing in a follow up?
+> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/libbpf_probes.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
+> diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c b/too=
+ls/testing/selftests/bpf/prog_tests/libbpf_probes.c
+> index 9f766dd..61c81a9 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+> @@ -11,8 +11,8 @@ void test_libbpf_probe_prog_types(void)
+>         const struct btf_enum *e;
+>         int i, n, id;
+>
+> -       btf =3D btf__parse("/sys/kernel/btf/vmlinux", NULL);
 
-No, instead I am calling test__start_subtest inside it for each program name
-that is failing, to make them the subtest. In that case, it should be alright?
+Selftests go hand in hand with kernel and generally assume specific
+kernel features enabled (like BTF and sysfs) and having very recent
+(if not latest) kernel. So there is nothing bad about loading
+/sys/kernel/btf/vmlinux, I think, it's actually more straightforward
+to follow the code when it is used explicitly. Libbpf's logic for
+finding kernel BTF in other places is for older systems. So I'd leave
+it as is.
 
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/map_kptr_fail.c b/tools/testing/selftests/bpf/progs/map_kptr_fail.c
-> > new file mode 100644
-> > index 000000000000..05e209b1b12a
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/map_kptr_fail.c
-> > @@ -0,0 +1,418 @@
+> -       if (!ASSERT_OK_PTR(btf, "btf_parse"))
+> +       btf =3D libbpf_find_kernel_btf();
+> +       if (!ASSERT_OK_PTR(btf, "libbpf_find_kernel_btf"))
+>                 return;
 >
-> [...]
-
---
-Kartikeya
+>         /* find enum bpf_prog_type and enumerate each value */
+> @@ -49,8 +49,8 @@ void test_libbpf_probe_map_types(void)
+>         const struct btf_enum *e;
+>         int i, n, id;
+>
+> -       btf =3D btf__parse("/sys/kernel/btf/vmlinux", NULL);
+> -       if (!ASSERT_OK_PTR(btf, "btf_parse"))
+> +       btf =3D libbpf_find_kernel_btf();
+> +       if (!ASSERT_OK_PTR(btf, "libbpf_find_kernel_btf"))
+>                 return;
+>
+>         /* find enum bpf_map_type and enumerate each value */
+> --
+> 2.30.2
+>
