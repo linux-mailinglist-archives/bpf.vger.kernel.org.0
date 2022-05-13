@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E58525A56
+	by mail.lfdr.de (Postfix) with ESMTP id 527AF525A57
 	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 05:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348813AbiEMDo7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 23:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
+        id S1355420AbiEMDp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 23:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355420AbiEMDo6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 23:44:58 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FBA274A1B
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 20:44:58 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id f4so7484637iov.2
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 20:44:58 -0700 (PDT)
+        with ESMTP id S1347398AbiEMDpY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 23:45:24 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15682274A1B
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 20:45:23 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id j12so4854431ila.12
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 20:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cOJOELFTrSOl+4ppFWRF9IlkFBUEk/qDNiFQaF7Rtw0=;
-        b=pJdNRQvqTLLOMUjNL3q6NxDMXjgGbXgvlSNBYzfxSAO9jbyzNhflMAPXHkCIpVzttH
-         6kHBpuAySb9+OVcBhGrdFIuQmOc1kXPDciQnF/62G4F4drobwCVP0AKWIbZwbZ6QAKiI
-         SkFsqQb/xVZgciIvPi91r8/CNv3Y50M+FBDa3lgL1Vus348F8pE/oWWH5cO2XaK4CTDA
-         Ze7Vj0UUlazIBdcFVRfWeSL/f7z+MeeQMMwJyt52tMiGy8wJm9GlmqO0tl1xvhRSGaPq
-         gM2g3HhyK/54SPVDYj1zcbPVupAVkLLoP9J8vGs2/FC6mBiMkt5ilNR3VbonVGSzwI+A
-         FlOQ==
+        bh=ZcPOH1PTTZP0aG6fXK1GmLrxoMS5AarW0j+AvBHcsCs=;
+        b=nfVPH5j6xxLnYhetPViHKoplkdvQicISj7+Rjh/RLlaJNb5j5w2q96bpWXt0mJD0eU
+         0dK0mrluTxW70ADvc1c+AyWbYoLaluq0ML7g00v0yytcbjHA3ZZOxvViUoWFAnKfMuhJ
+         KQSt8u4qyzDPaxeI4pfHOuoi2gwy9+symj9C/RqWk8CD24QcraX6j6kgOCX9BOIsfwVn
+         S7jPcvpQfM5osKg8bSGKF1s1LMJ+t/QUeYFkQSqaYZRNV0rLpNMjouz6P5KhARFJv183
+         mFWmSmBAxrf24m8Y2K9qhOPobxSAeD7/eBpo4BEWqzZxSBM15WQKckDXuFJNMLf5R83C
+         1biw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cOJOELFTrSOl+4ppFWRF9IlkFBUEk/qDNiFQaF7Rtw0=;
-        b=7UvZXeXUH0IgYL+dCDxfVJlU8IVUjrB04aEXRbyyPXgYZz186jch+piH2saWwqKpEe
-         opLfbstOBaRZnoyB8/SSk0iVIxL+aWycvrQOIOjW3OeaPPo8ub1nqEQKbau9+5K5Em82
-         1nhhDjIe+Vhb3hw/6Ks4sQKyUAJNbpjlEclRMdO0HrG69FM/yfIb1H6OaGaM0IB2msp4
-         MXdTR/lPRJeZGl8Go2BC2tCfTdZbC0koXpm/zNWjRBhIbYiLJpaxPPswwApz6wj311Be
-         uolDOBf2aid9T+mUQ7YkyqZ85b7bgZGUH//KmFK1Mu+ox7iij2fu24mnC678++zGJ4tT
-         inOA==
-X-Gm-Message-State: AOAM530lYzjn1us/vb+22Z5MTAByHJ29sR3uG1GQxYNaO9OJwJlCv/ft
-        vz5kUol+d9iVZ3cEeWXkU4C5aD+po3mfI+RuymY=
-X-Google-Smtp-Source: ABdhPJyOG9OkQ9NSh28fXCBqTqO0bPL4394da3R99sue3K0jezkq1m2nF+xNpuveTAGmNT77fuBlSZPidMwKKqkRTRE=
-X-Received: by 2002:a5e:8e42:0:b0:657:bc82:64e5 with SMTP id
- r2-20020a5e8e42000000b00657bc8264e5mr1411162ioo.112.1652413497535; Thu, 12
- May 2022 20:44:57 -0700 (PDT)
+        bh=ZcPOH1PTTZP0aG6fXK1GmLrxoMS5AarW0j+AvBHcsCs=;
+        b=ItfOB9JD32T0p23pob2wAzhnXgvJ2VP4PVk1i38cDEUS7gjRJAbYYLQQeWOS3D84Sk
+         5qB4q8EFRgfjdiz+WOjrjpj7CdQhZl+2rIaeSWz7WlBNO0j6Qmqxq6/Rm0WYEsstMaBA
+         iu8/uBif2QCafUmhv1JxrAbhX9LU53aNvPTpwUn992bjdJYyiAEUb5xGQRpyS1nfJl6M
+         aNK1JM6jtcSHVlBzRS3pxFqvRaNjcS+Pd7qYDbIeXenJM+K7B2gwBaUyd0clbSMQ0PNy
+         gXil3RZi6YTH9anJNaiIJMI+KyTAd5Jac9zHS2gIEgefR/9tXoNMccIHym/U3EbKpUSe
+         Heew==
+X-Gm-Message-State: AOAM530Vj1ItIYyDYAoBg8O8L/wVJ4fpuxvdSb+goI8pN6kJgQvYWa0p
+        tK71LaI2GB2vou3mF8eRREsq+fFYJ/ORbBv1sRY=
+X-Google-Smtp-Source: ABdhPJwyEHKBrRrGDHtGBr8x6LYFCgDRwqpUDidHdLRuf3lzTGkHmnd07/2Gq58Vs6xuTI/4JGYqqEcnBhxK0dv8cvI=
+X-Received: by 2002:a05:6e02:1c03:b0:2cf:2a1d:d99c with SMTP id
+ l3-20020a056e021c0300b002cf2a1dd99cmr1568512ilh.98.1652413522534; Thu, 12 May
+ 2022 20:45:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220513011025.13344-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20220513011025.13344-1-alexei.starovoitov@gmail.com>
+References: <20220513011025.13344-1-alexei.starovoitov@gmail.com> <20220513011025.13344-2-alexei.starovoitov@gmail.com>
+In-Reply-To: <20220513011025.13344-2-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 May 2022 20:44:46 -0700
-Message-ID: <CAEf4BzZP__5CGCQM+f6RG3Vpiw-Usi9aR_O=7a7WA4N10eFhiQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix combination of jit blinding and
- pointers to bpf subprogs.
+Date:   Thu, 12 May 2022 20:45:11 -0700
+Message-ID: <CAEf4Bza2o+U4rhk-ceueOKbQB6S=opWiZT67zhi62Ky061JT4g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Check combination of jit
+ blinding and pointers to bpf subprogs.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -73,62 +73,43 @@ On Thu, May 12, 2022 at 6:10 PM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> The combination of jit blinding and pointers to bpf subprogs causes:
-> [   36.989548] BUG: unable to handle page fault for address: 0000000100000001
-> [   36.990342] #PF: supervisor instruction fetch in kernel mode
-> [   36.990968] #PF: error_code(0x0010) - not-present page
-> [   36.994859] RIP: 0010:0x100000001
-> [   36.995209] Code: Unable to access opcode bytes at RIP 0xffffffd7.
-> [   37.004091] Call Trace:
-> [   37.004351]  <TASK>
-> [   37.004576]  ? bpf_loop+0x4d/0x70
-> [   37.004932]  ? bpf_prog_3899083f75e4c5de_F+0xe3/0x13b
+> Check that ld_imm64 with src_reg=1 (aka BPF_PSEUDO_FUNC) works
+> with jit_blinding.
 >
-> The jit blinding logic didn't recognize that ld_imm64 with an address
-> of bpf subprogram is a special instruction and proceeded to randomize it.
-> By itself it wouldn't have been an issue, but jit_subprogs() logic
-> relies on two step process to JIT all subprogs and then JIT them
-> again when addresses of all subprogs are known.
-> Blinding process in the first JIT phase caused second JIT to miss
-> adjustment of special ld_imm64.
->
-> Fix this issue by ignoring special ld_imm64 instructions that don't have
-> user controlled constants and shouldn't be blinded.
->
-> Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
 
-Thanks for the fix, LGTM.
-
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-
->  kernel/bpf/core.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  tools/testing/selftests/bpf/progs/test_subprogs.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 76f68d0a7ae8..9cc91f0f3115 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1434,6 +1434,16 @@ struct bpf_prog *bpf_jit_blind_constants(struct bpf_prog *prog)
->         insn = clone->insnsi;
+> diff --git a/tools/testing/selftests/bpf/progs/test_subprogs.c b/tools/testing/selftests/bpf/progs/test_subprogs.c
+> index b7c37ca09544..f8e9256cf18d 100644
+> --- a/tools/testing/selftests/bpf/progs/test_subprogs.c
+> +++ b/tools/testing/selftests/bpf/progs/test_subprogs.c
+> @@ -89,6 +89,11 @@ int prog2(void *ctx)
+>         return 0;
+>  }
 >
->         for (i = 0; i < insn_cnt; i++, insn++) {
-> +               if (bpf_pseudo_func(insn)) {
-> +                       /* ld_imm64 with an address of bpf subprog is not
-> +                        * a user controlled constant. Don't randomize it,
-> +                        * since it will conflict with jit_subprogs() logic.
-> +                        */
-> +                       insn++;
-> +                       i++;
-> +                       continue;
-> +               }
+> +static int empty_callback(__u32 index, void *data)
+> +{
+> +       return 0;
+> +}
 > +
->                 /* We temporarily need to hold the original ld64 insn
->                  * so that we can still access the first part in the
->                  * second blinding run.
+>  /* prog3 has the same section name as prog1 */
+>  SEC("raw_tp/sys_enter")
+>  int prog3(void *ctx)
+> @@ -98,6 +103,9 @@ int prog3(void *ctx)
+>         if (!BPF_CORE_READ(t, pid) || !get_task_tgid((uintptr_t)t))
+>                 return 1;
+>
+> +       /* test that ld_imm64 with BPF_PSEUDO_FUNC doesn't get blinded */
+> +       bpf_loop(1, empty_callback, NULL, 0);
+> +
+>         res3 = sub3(5) + 6; /* (5 + 3 + (4 + 1)) + 6 = 19 */
+>         return 0;
+>  }
 > --
 > 2.30.2
 >
