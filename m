@@ -2,100 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFCF5258F0
-	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 02:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6691525903
+	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 02:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359423AbiEMAUu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 20:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
+        id S231351AbiEMAlY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 20:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359168AbiEMAUt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 20:20:49 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A122B1C923
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:20:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 35A14B82BCE
-        for <bpf@vger.kernel.org>; Fri, 13 May 2022 00:20:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E43B7C385B8
-        for <bpf@vger.kernel.org>; Fri, 13 May 2022 00:20:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652401242;
-        bh=oSdJDCeMTngMwdRoq1ZeEVJ84wpC22I6hhXqa6YehP4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=D7mkeWqPmtP+u7cqJXOwR5HgzpW1wstEA0cZOfQ7j9RE/yRF7kiF94gxcIXXcZIo4
-         N+Evk4+1URkaXj2vyR1fa+Poqqirs2NvqIyIZpgiN1FegazmSfONL9MM1SxC2pqkQV
-         FGssMGq3Z66gudpr5Fny6jG3y2/MwiZjpxirLGJ+KEcx3WsUpy/ofJjoN436AWFd8t
-         7JOxjU76HgE9RzAdr+LFNIDTDkjY8DIHr3mFn2gKzrEnqg7+TMNYON3mmWh6mLw49o
-         +LIQOvskviC/k5jIqJBnhDgkcgmShjergOjJ9iFxvXB5oBXGmmPKBAzM0otGHngqCE
-         QgvHDJ88oerdg==
-Received: by mail-lf1-f54.google.com with SMTP id t25so11819083lfg.7
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:20:42 -0700 (PDT)
-X-Gm-Message-State: AOAM5308G7IONzlMllkXbL25PhQ2Rw1vHvtfolfnv+2M8yATAm3qjBms
-        EekmqygKBh9kiFtL1omcknSYWTMV6dFZP2VJ63+usQ==
-X-Google-Smtp-Source: ABdhPJyOzxxaIWz+eEoh70X0nx4Xt+WEqw1O7tLrPxh7UhHNbs7+iWK5hs1BAqBNUmrPyktNdhvDtwhINKtBWjn3lJ4=
-X-Received: by 2002:a05:6512:1293:b0:474:d347:81a5 with SMTP id
- u19-20020a056512129300b00474d34781a5mr1579505lfs.649.1652401240944; Thu, 12
- May 2022 17:20:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220512165051.224772-1-kpsingh@kernel.org> <20220512165051.224772-2-kpsingh@kernel.org>
- <CAADnVQJwB4R=8yasfaLLftx_Ca9kg+9HKWUk1X8d2U72t-9i+A@mail.gmail.com>
-In-Reply-To: <CAADnVQJwB4R=8yasfaLLftx_Ca9kg+9HKWUk1X8d2U72t-9i+A@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Thu, 12 May 2022 17:20:30 -0700
-X-Gmail-Original-Message-ID: <CACYkzJ7grL665nEtQue=ud9AV=dKuMucm7HYDDRx5UxNCm=Ykg@mail.gmail.com>
-Message-ID: <CACYkzJ7grL665nEtQue=ud9AV=dKuMucm7HYDDRx5UxNCm=Ykg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Implement bpf_getxattr helper
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S233569AbiEMAlX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 20:41:23 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7916B5FF28
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:41:21 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id i6-20020a17090a718600b001dc87aca289so3542210pjk.5
+        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:41:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=PLHfkBps8/NN/F93wiTb1I9xCzDthCPlSjntIH72rDE=;
+        b=I8afDsMFlizjC2WkKw9nEOj2vMJgklTATaw1Hsa/SWTOmJqlD7HHRMFbRFXtiK5hKb
+         eWR68srOtf34zMu8hRlFofRBQy/Kzvf9bIK5KmrMoPCtMhuNUIreuIDMCS0+HR7A97qA
+         4norc+7XY3Ry8c2YsW8H6ig1JhvGZVoetaN6esBwKE9GsFTgHy0aQb6TWGqWqT5+iagi
+         u0NOcqhn2xj8lDeq6QVIGMfypdzYQUXj/zwLC7cAmZdjvcQbS1bZDx2o2Swcm1uJ7M+H
+         MVP3texpB2djiZrBiw8E2Hcwgk3Wb3yQENmoEoJRD1eEtwku11QHqpbk9WVB9zxfdH3a
+         fmmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=PLHfkBps8/NN/F93wiTb1I9xCzDthCPlSjntIH72rDE=;
+        b=idQggOJ+GsTRTHO2HhEKElxNQQ4CFnFvn/ZgbrbAhMWx1dpxbDNBZB8vpg+TCqujv/
+         q7bpriFwckvpRNYUCw3J8CC9KBwt1eNCi2HAN/aHc3jXxOHMht8Hl0YMovn/S9P0LPHd
+         gSEjfWZ5/0dkj8LnUgIZtwOH/6OhYsevIUd3mbVyL2waH31jd2c6abXANyn8nR9e0+JD
+         l/bqUEUG2sLT822jaZNJMeniCL/EIqGpc9bgyxppP6MWiBnQI5BZUNgfubhl1beEJNhL
+         t8YQcvX04t8JyRwB4QOH3JELYrB9nUVPk9ZaN27olbcMku/XG88eu/hAWp1MtN0lR3/2
+         OWPg==
+X-Gm-Message-State: AOAM530qb+rppO0H8DhWBKtlvvgCslfA0cdhAuRrh5xLa5uj0C0fzOmK
+        Q8ELHVV1+sRn5SWYAWivwkFplkgZhXpJpX4J
+X-Google-Smtp-Source: ABdhPJyNqg86E2DPDFz9cP8m9RIs4OnDIdJI8SHawkmDOi6DsBWOzE4x5CksBx4CuyRBczY8XM/fFtpwNsdQ7jWf
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:90b:4b42:b0:1dc:15f8:821b with SMTP
+ id mi2-20020a17090b4b4200b001dc15f8821bmr13529101pjb.131.1652402480734; Thu,
+ 12 May 2022 17:41:20 -0700 (PDT)
+Date:   Fri, 13 May 2022 00:41:17 +0000
+Message-Id: <20220513004117.364577-1-yosryahmed@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
+Subject: [PATCH bpf-next] selftests/bpf: fix building bpf selftests statically
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 12, 2022 at 10:30 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, May 12, 2022 at 9:50 AM KP Singh <kpsingh@kernel.org> wrote:
-> >
-> > +BPF_CALL_5(bpf_getxattr, struct user_namespace *, mnt_userns, struct dentry *,
-> > +          dentry, void *, name, void *, value, size_t, value_size)
-> > +{
-> > +       return vfs_getxattr(mnt_userns, dentry, name, value, value_size);
-> > +}
->
-> It will deadlock in tracing, since it grabs all kinds of locks
-> and calls lsm hooks (potentially calling other bpf progs).
+bpf selftests can no longer be built with CFLAGS=-static with
+liburandom_read.so and its dependent target.
 
-I wonder if we can limit these to just sleepable LSM programs
-and for sleepable hooks + programs.
+Filter out -static for liburandom_read.so and its dependent target.
 
-> It probably should be sleepable only.
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ tools/testing/selftests/bpf/Makefile | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Yes, it's currently sleepable only.
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 6bbc03161544..4eaefc187d5b 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -168,14 +168,17 @@ $(OUTPUT)/%:%.c
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(LINK.c) $^ $(LDLIBS) -o $@
+ 
++# If the tests are being built statically, exclude dynamic libraries defined
++# in this Makefile and their dependencies.
++DYNAMIC_CFLAGS := $(filter-out -static,$(CFLAGS))
+ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
+ 	$(call msg,LIB,,$@)
+-	$(Q)$(CC) $(CFLAGS) -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
++	$(Q)$(CC) $(DYNAMIC_CFLAGS) -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
+ 
+ $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
+ 	$(call msg,BINARY,,$@)
+-	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.c,$^)			       \
+-		  liburandom_read.so $(LDLIBS)	       			       \
++	$(Q)$(CC) $(DYNAMIC_CFLAGS) $(LDFLAGS) $(filter %.c,$^)			\
++		  liburandom_read.so $(LDLIBS)					\
+ 		  -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
+ 
+ $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
+-- 
+2.36.0.550.gb090851708-goog
 
-> Also there is no need to make it uapi.
-> kfunc is a better interface here.
-
-Sure, let me try with kfunc, simple wrappers like
-these are a good use-case for kfuncs.
-
-> __vfs_getxattr() is probably better too,
-> since vfs_getxattr() calls xattr_permission which calls
-> a bunch of capable*() which will return "random values"
-
-Agreed.
-
-
-
-> depending on the current task, since it's called from bpf prog.
