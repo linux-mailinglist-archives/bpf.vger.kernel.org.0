@@ -2,53 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE99F52591B
-	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 02:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C4E525931
+	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 03:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359155AbiEMAt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 May 2022 20:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        id S1376263AbiEMBB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 May 2022 21:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357287AbiEMAt6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 May 2022 20:49:58 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E174E16D5E8
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:49:56 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id o132so3474839vko.11
-        for <bpf@vger.kernel.org>; Thu, 12 May 2022 17:49:56 -0700 (PDT)
+        with ESMTP id S1376307AbiEMBBY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 May 2022 21:01:24 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89D42B26D;
+        Thu, 12 May 2022 18:01:22 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id o69so6703895pjo.3;
+        Thu, 12 May 2022 18:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=83o0Ss6BYiqL/LGviGVKlsserapDdnkGPhUKj7Syid8=;
-        b=ekrhGwp+g3KWs/6PKg6nW02iacM901VQLehO3L/7NyIjcq/Y0e9AHIJUYR+ZWSM27s
-         /FIPP8nq+M8PdDJGHax+PdZgbB558N9RZq/BHEi+L0B4FZcKboJXAaiX8xCU1+inEqC2
-         mbodinbH8iNOkzKXUIh84ieUi9Jg+YbIG+0X+NtFYa/hZoDp7QwcSDpa87JVWonLuJic
-         zsplb+wTyztZ/JUjGJNag7wHob3WmGTOwOsgxmx+clGMqXMH0jAPFB79tK6hdgICa0/y
-         yLt4CgMuO1aFFKuo2Y1EetE261zdM4ZyD5hOvtYYRyU2rtZH/wQ6ZK+7aAP7K0F+5o9s
-         ntcA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0aZiPrZA3Uw9Q6Q/H9pg4lyNcgm4eCcoGPtiM6CNiVw=;
+        b=KmoNLjFENSLuVegp3EcfVJP8lCgGIF5k9HWirGThj24bteaKHESuu+U/0P26DDeIGA
+         aZw5VnIqDjFrXnZ/uUWc05hy8KLiXQ6EXKldh2x1lW7XOWKHlW1u4QaBfgIR5siNDoZy
+         jBLt88YgEred/e+VfrZRk5FtnEQOAYHJeltqltlMCZSMsl66vWbnCFKC8rockPoDTU8o
+         DmWR0ZhJs9g0aeGIosMiscMFeodgY3GbSJ1uKxqmXr8p37Xy18qNBACRK8ZuD9YhpyAd
+         yS0UXqyP3sg0HVUrBJceP8eqVy+6ixBisHIYDGIOD7H5kj2HpljCcQYHJibtq1dCW7M7
+         56cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=83o0Ss6BYiqL/LGviGVKlsserapDdnkGPhUKj7Syid8=;
-        b=GnXVk3nc9iN1atjaLrqp2jtimsfFistHwQNpFwQluz3X1eFoCPHODi2IMz5X/moMNC
-         ba2bPjXK7N0HvbFDCd9O3phclZVoTevn/WEfhBRth1SnZaW4hgujnMc6JEAUSVKjauRi
-         beovoUDwzuTetgvGaGJgkgb2t8gW+m+P0YSa+b7sGD48YKhfz5Mz3BhBswUt3F9NV+vv
-         zyxNVrWBfKlfKurAxwp8tbVJIWBBpPRarboShGMjXvvq59r+zRCuTlgydnTHvA2oLoCx
-         zrTb2t6lfC8oD4Z5ZIgpTdKy/IQYe4yYIE2CvNCh65Et9ps5vSjTkX4GS6Bj/X2xW0+f
-         2WJA==
-X-Gm-Message-State: AOAM533YU6yO/KaG5/n4AmPH1ij1igsFhywKYMXfF+n1WtZoRxSArq6h
-        lCwuOxze9dpLG2zdfBsimMy+1JR9q5ACRl0Y6PVAk6h5FVM=
-X-Google-Smtp-Source: ABdhPJxhIfYlaUMhD9cya7smCBM0UlAcsd2Yrn0iYMaeKCmEbGtOjw4dxHKetpqRCJPBiOsdg2AP+ttopR3a6MjfLtY=
-X-Received: by 2002:a1f:6003:0:b0:34d:3d07:5827 with SMTP id
- u3-20020a1f6003000000b0034d3d075827mr1468561vkb.30.1652402995630; Thu, 12 May
- 2022 17:49:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0aZiPrZA3Uw9Q6Q/H9pg4lyNcgm4eCcoGPtiM6CNiVw=;
+        b=nJWflP8bx907496P7Rj6fndFw/7rlP5OTkD71JHyWj/4e44BZgE4SuoNbCsk3o5Nd+
+         aO5VZFTHLDyPmY6ZYYrEzq1XmWFdnvexM5DSywlSJF6z3aMkA8bShtyNrD8kWy/qzQBC
+         kOcJ6vlKQ0rC/Hl/PWd6wGGG9DZVDbPAIZo3MX33UzJHTqb5kmCmDN4D0xoeWPgjD3bx
+         YYCFfCOfFI4zxUkLPP5NvOiR4VMKe6OVZgDtodmUACRvt8B9YG6kLoDdKKzRAbr7PT+X
+         oGs3HOH5c3hUO9eVxs5CwTAUVJHT0odXzcERQgwMMsYXCS0HqzZ8BGe84rVs9L7OIa/4
+         IueA==
+X-Gm-Message-State: AOAM531kU6i0+HhaH/H/rsruHn0DPMy1McSZOThyfoYPCOMUwA6nnuC8
+        KvPNKNXnDs47st45oSp9AMnVKFBq2dhtaw==
+X-Google-Smtp-Source: ABdhPJxqMfdjVGYqKlO0op5wRtefWcftX9jjMjALe4s/fBRKlDEFwjbWUr93BC88o45oT/GjWv41pQ==
+X-Received: by 2002:a17:902:7fc9:b0:15f:2afd:82f3 with SMTP id t9-20020a1709027fc900b0015f2afd82f3mr2198496plb.91.1652403681920;
+        Thu, 12 May 2022 18:01:21 -0700 (PDT)
+Received: from Laptop-X1.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id i7-20020a63cd07000000b003c14af5063esm323149pgg.86.2022.05.12.18.01.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 May 2022 18:01:21 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv2 bpf-next 0/2] selftests/bpf: fix ima_setup.sh missing issue
+Date:   Fri, 13 May 2022 09:01:08 +0800
+Message-Id: <20220513010110.319061-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Thu, 12 May 2022 17:49:44 -0700
-Message-ID: <CAK3+h2zMMMir6_ut=fb7gGj0Merzsc9vksG3fmt9JazCvk2=WA@mail.gmail.com>
-Subject: bpf selftest compiling error
-To:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -59,76 +75,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+The ima_setup.sh is needed by test_progs test_ima. But the file is
+missed if we build test_progs separately or installed bpf test to
+another folder. This patch set fixed the issue in 2 different
+scenarios.
 
-I cloned the bpf-next and tried to compile the bpf selftest.
+v2: no code update, just repost to bpf-next
 
-first I got error
+Hangbin Liu (2):
+  selftests/bpf: Fix build error with ima_setup.sh
+  selftests/bpf: add missed ima_setup.sh in Makefile
 
-"
-CC      /usr/src/bpf
-next/tools/testing/selftests/bpf/tools/build/bpftool/xlated_dumper.o
+ tools/testing/selftests/bpf/Makefile | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-make[1]: *** No rule to make target
-'/usr/src/bpf-next/tools/include/asm-generic/bitops/find.h', needed by
-'/usr/src/bpf-next/tools/testing/selftests/bpf/tools/build/bpftool/btf_dumper.o'.
-Stop.
+-- 
+2.35.1
 
-I could not find find.h in
-/usr/src/bpf-next/tools/include/asm-generic/bitops/find.h but I found
-it in /usr/src/bpf-next/tools/include/linux/find.h, copied it to
-/usr/src/bpf-next/tools/include/asm-generic/bitops, seems resolved the
-problem,
-
-then I got another error below,
-
-  CLNG-BPF [test_maps] map_kptr.o
-
-progs/map_kptr.c:7:29: error: unknown attribute 'btf_type_tag' ignored
-[-Werror,-Wunknown-attributes]
-
-        struct prog_test_ref_kfunc __kptr *unref_ptr;
-
-                                   ^~~~~~
-
-/usr/src/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:176:31:
-note: expanded from macro '__kptr'
-
-#define __kptr __attribute__((btf_type_tag("kptr")))
-
-                              ^~~~~~~~~~~~~~~~~~~~
-
-progs/map_kptr.c:8:29: error: unknown attribute 'btf_type_tag' ignored
-[-Werror,-Wunknown-attributes]
-
-        struct prog_test_ref_kfunc __kptr_ref *ref_ptr;
-
-                                   ^~~~~~~~~~
-
-/usr/src/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:177:35:
-note: expanded from macro '__kptr_ref'
-
-#define __kptr_ref __attribute__((btf_type_tag("kptr_ref")))
-"
-
-my clang is 12.0.1 and installed new clang from llvm github repository
-
-clang version 15.0.0 (https://github.com/llvm/llvm-project.git
-e91a73de24d60954700d7ac0293c050ab2cbe90b)
-
-it resolved the problem, but now I got error
-
-  GEN-SKEL [test_progs] test_bpf_nf.skel.h
-
-libbpf: failed to find BTF info for global/extern symbol 'bpf_skb_ct_lookup'
-
-Error: failed to link
-'/usr/src/bpf-next/tools/testing/selftests/bpf/test_bpf_nf.o': Unknown
-error -2 (-2)
-
-make: *** [Makefile:508:
-/usr/src/bpf-next/tools/testing/selftests/bpf/test_bpf_nf.skel.h]
-Error 254
-
-running out of ideas on how to fix the compiling error. I hope I am
-not doing something wrong :)
