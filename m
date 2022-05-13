@@ -2,73 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BECC152619D
-	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 14:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47CC5261CB
+	for <lists+bpf@lfdr.de>; Fri, 13 May 2022 14:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241188AbiEMMOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 May 2022 08:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S232547AbiEMM07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 May 2022 08:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232430AbiEMMOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 May 2022 08:14:54 -0400
-X-Greylist: delayed 476 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 13 May 2022 05:14:53 PDT
-Received: from mail.0l.de (mail.0l.de [IPv6:2a09:11c0:200:101:5054:ff:fedc:4a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E722297400
-        for <bpf@vger.kernel.org>; Fri, 13 May 2022 05:14:53 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AC0EC2019A0F
-        for <bpf@vger.kernel.org>; Fri, 13 May 2022 14:06:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=steffenvogel.de;
-        s=dkim; t=1652443613; h=from:subject:date:message-id:to:mime-version:content-type:
-         content-transfer-encoding; bh=9P/Rk4f/QTFMYC3uJIsfd3XaA4oLvJ9Gll21n0wgyXo=;
-        b=KBkmqcLb1QbQk7FoXA4fY1KEY0FCyJ2zW5kWi8nrG3XwpeZyZYPyCJgEBpBtx2f/950cI3
-        r8S15FgvuzkQLIdYc8AzPJkoq8zBGMlXVyJwX771SRAyDj+S6mZVMGXfDVNLbncK+uYCQ+
-        urVzBxZx/rkJ796pBB2VomBBS3HRP4GuqyA8CqF5rIj7UAvhX2zTIBizGnjBRjAZSep3XZ
-        +sqo64FUOCqt0MnzBrKUC7uRXbaIVP5YEzgq4iFeFyImjhifNdH6a6Drr+VHUxJHqFsBUe
-        mm4nS2/jLOHVAR3loe7wE/V3C5Jg0AtU26b4giIc+s8OTUwU14DjD93dmOIpdQ==
-User-Agent: Microsoft-MacOutlook/16.60.22041000
-Date:   Fri, 13 May 2022 14:06:51 +0200
-Subject: bpf_skb_adjust_room after L4 header?
-From:   Steffen Vogel <post@steffenvogel.de>
-To:     <bpf@vger.kernel.org>
-Message-ID: <0150AA03-5A27-4AF4-8E59-A8AD7494CA0E@steffenvogel.de>
-Thread-Topic: bpf_skb_adjust_room after L4 header?
-Mime-version: 1.0
-Content-type: text/plain;
-        charset="UTF-8"
-Content-transfer-encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229798AbiEMM0x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 May 2022 08:26:53 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24868E7A;
+        Fri, 13 May 2022 05:26:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652444812; x=1683980812;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=JzsGeBssR2YonK6spqkj4DYYmCy1pfIl6z6FfG0gbLY=;
+  b=fhOyQhnX9huVW3xhj2s3wwUlFqBiG8vdnLs11/MvVdcGXT6uLW9p9Etx
+   q/qMIAAXYvWIkmYH/GkLnTuR0gF7A56PZ0moPsZ+7qX5zmrjZCfL6f6iW
+   a4qXnNvkkxKItB/hya7uRsXa8gr8FDFM+dLb93NBEqJ2J9jJPNScozcy2
+   f8r2Vnu4o84cju69NiGdfY8c3pM12gtPWmQeOIejM+yfhqn9qeyIz+PI1
+   v438E8SLsLScapRR6dDEsp/tFGlBmRPrE129GkNgJEO2fo3fE2jEjbxwc
+   lV2SduVhZ6IJCRydbg4gl0pZau4dYEVEDIkt0MBSFoqMrVvkEexiPRxUH
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10345"; a="270228370"
+X-IronPort-AV: E=Sophos;i="5.91,221,1647327600"; 
+   d="scan'208";a="270228370"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2022 05:26:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,221,1647327600"; 
+   d="scan'208";a="624848359"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga008.fm.intel.com with ESMTP; 13 May 2022 05:26:48 -0700
+Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 24DCQkFI015654;
+        Fri, 13 May 2022 13:26:46 +0100
+From:   Larysa Zaremba <larysa.zaremba@intel.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>
+Subject: [PATCH bpf-next v3] bpftool: Use sysfs vmlinux when dumping BTF by ID
+Date:   Fri, 13 May 2022 14:17:43 +0200
+Message-Id: <20220513121743.12411-1-larysa.zaremba@intel.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Currently, dumping almost all BTFs specified by id requires
+using the -B option to pass the base BTF. For kernel module
+BTFs the vmlinux BTF sysfs path should work.
 
-I am currently facing a checksums issue when attempting to insert a custom 4 Byte header between a L4/UDP header and the payload using a TC BPF egress filter.
-The goal is to use an eBPF program to transparently push/pop a TURN ChannelData message header from the UDP payload [1].
+This patch simplifies dumping by ID usage by loading
+vmlinux BTF from sysfs as base, if base BTF was not specified
+and the ID corresponds to a kernel module BTF.
 
-So far, I have tried to accomplish this with the bpf_skb_adjust_room(..., BPF_ADJ_ROOM_NET) helper by adding some room between after the IP header and manually shifting the UDP header to the newly gained space.
+Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+---
+From v2[0]:
+- instead of using vmlinux as base only after the first unsuccessful
+  attempt, set base to vmlinux before loading in applicable cases, precisely
+  if no base was provided by user and id belongs to a kernel module BTF.
 
-This works when TX checksum offloading is disabled. However, with TX checksum offloading the skb->transport_header is wrong as it has not been adjusted. This also causes to skb->csum_offset to point to the wrong place. 
+From v1[1]:
+- base BTF is assumed to be vmlinux only for kernel BTFs.
 
-I guess ideally, we would extend bpf_skb_adjust_room with a new flag value BPF_ADJ_ROOM_TRANSPORT?
+[0] https://lore.kernel.org/bpf/20220505130507.130670-1-larysa.zaremba@intel.com/
+[1] https://lore.kernel.org/bpf/20220428111442.111805-1-larysa.zaremba@intel.com/
+---
+ tools/bpf/bpftool/btf.c | 65 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 56 insertions(+), 9 deletions(-)
 
-XDP is not an option as we also need the eBPF to process the egress path.
-Maybe the helpers bpf_skb_change_{head,tail}() might work? But I am concerned about the performance impact caused by a memmove() of the UDP payload just for making new space in the front of the payload.
-
-Or are there any other ways of pushing a header between the L4 header and its payload while properly adjusting the header offsets in the SKB?
-
-Best regards,
-Steffen
-
-[1] https://datatracker.ietf.org/doc/html/rfc8656#section-12.4
-
-The problem has also been covered here: https://github.com/cilium/ebpf/issues/339
-And there is also feature request for the coturn TURN server: https://github.com/coturn/coturn/issues/759
-
-
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index a2c665beda87..0eb105c416fc 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -459,6 +459,54 @@ static int dump_btf_c(const struct btf *btf,
+ 	return err;
+ }
+ 
++static const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
++
++static struct btf *get_vmlinux_btf_from_sysfs(void)
++{
++	struct btf *base;
++
++	base = btf__parse(sysfs_vmlinux, NULL);
++	if (libbpf_get_error(base)) {
++		p_err("failed to parse vmlinux BTF at '%s': %ld\n",
++		      sysfs_vmlinux, libbpf_get_error(base));
++		base = NULL;
++	}
++
++	return base;
++}
++
++#define BTF_NAME_BUFF_LEN 64
++
++static bool btf_is_kernel_module(__u32 btf_id)
++{
++	struct bpf_btf_info btf_info = {};
++	char btf_name[BTF_NAME_BUFF_LEN];
++	int btf_fd;
++	__u32 len;
++	int err;
++
++	btf_fd = bpf_btf_get_fd_by_id(btf_id);
++	if (btf_fd < 0) {
++		p_err("can't get BTF object by id (%u): %s",
++		      btf_id, strerror(errno));
++		return false;
++	}
++
++	len = sizeof(btf_info);
++	btf_info.name = ptr_to_u64(btf_name);
++	btf_info.name_len = sizeof(btf_name);
++	err = bpf_obj_get_info_by_fd(btf_fd, &btf_info, &len);
++	close(btf_fd);
++
++	if (err) {
++		p_err("can't get BTF (ID %u) object info: %s",
++		      btf_id, strerror(errno));
++		return false;
++	}
++
++	return strncmp(btf_name, "vmlinux", sizeof(btf_name)) && btf_info.kernel_btf;
++}
++
+ static int do_dump(int argc, char **argv)
+ {
+ 	struct btf *btf = NULL, *base = NULL;
+@@ -536,18 +584,11 @@ static int do_dump(int argc, char **argv)
+ 		NEXT_ARG();
+ 	} else if (is_prefix(src, "file")) {
+ 		const char sysfs_prefix[] = "/sys/kernel/btf/";
+-		const char sysfs_vmlinux[] = "/sys/kernel/btf/vmlinux";
+ 
+ 		if (!base_btf &&
+ 		    strncmp(*argv, sysfs_prefix, sizeof(sysfs_prefix) - 1) == 0 &&
+-		    strcmp(*argv, sysfs_vmlinux) != 0) {
+-			base = btf__parse(sysfs_vmlinux, NULL);
+-			if (libbpf_get_error(base)) {
+-				p_err("failed to parse vmlinux BTF at '%s': %ld\n",
+-				      sysfs_vmlinux, libbpf_get_error(base));
+-				base = NULL;
+-			}
+-		}
++		    strcmp(*argv, sysfs_vmlinux))
++			base = get_vmlinux_btf_from_sysfs();
+ 
+ 		btf = btf__parse_split(*argv, base ?: base_btf);
+ 		err = libbpf_get_error(btf);
+@@ -591,6 +632,12 @@ static int do_dump(int argc, char **argv)
+ 	}
+ 
+ 	if (!btf) {
++		if (!base_btf && btf_is_kernel_module(btf_id)) {
++			p_info("Warning: valid base BTF was not specified with -B option, falling back on standard base BTF (%s)",
++			       sysfs_vmlinux);
++			base_btf = get_vmlinux_btf_from_sysfs();
++		}
++
+ 		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
+ 		err = libbpf_get_error(btf);
+ 		if (err) {
+-- 
+2.35.1
 
