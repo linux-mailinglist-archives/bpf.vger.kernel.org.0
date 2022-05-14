@@ -2,73 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E71526EC8
-	for <lists+bpf@lfdr.de>; Sat, 14 May 2022 09:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56685526F67
+	for <lists+bpf@lfdr.de>; Sat, 14 May 2022 09:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbiENCeJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 May 2022 22:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
+        id S229518AbiENBOA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 May 2022 21:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiENCeJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 May 2022 22:34:09 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7400C3320A2;
-        Fri, 13 May 2022 17:35:02 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id k8so8585165qki.8;
-        Fri, 13 May 2022 17:35:02 -0700 (PDT)
+        with ESMTP id S229515AbiENBN7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 May 2022 21:13:59 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EB532FBE0
+        for <bpf@vger.kernel.org>; Fri, 13 May 2022 17:46:18 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id x12so8919366pgj.7
+        for <bpf@vger.kernel.org>; Fri, 13 May 2022 17:46:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s1kbN3Mmp5+Lk+oKdZJFTs+4qDj5+hrlbzkKJ/sOC7Q=;
-        b=L4Eo5SzXtcXZ1ZqgmcB3pFT6peaQuEjTQW8XHbdAPbGuRrJ32T+9GFmpLfV3NZzuMU
-         R4NTESVE2tQ31Tn/FKWcyQ6npgdqmzNHSaMiQIHmXy0EXJT488qBHi2PkEmYH/32GN82
-         IesAw3ivYOxpYN7Ae9P8fd3fkLZ3VQk5LwgdRZCgKTaLXsNR5/pMkZbbQ97uqyvXa99D
-         aYGzwgrr4jcXKVlQnlGPKWsEEANe0HAIbzGJPCFy0lnhdcBXXz4tCUbzrCFT2KXSlLpf
-         yrrRAAC7mzN7FGJ1nT3fOT3w0Jou5QvjaToBuSXvXU7Nmj2EbESLRuEMPClKMUI/sH/y
-         H5kw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=A72XN0PYiKlNvKMfjm4RN8XOy+GKxQ9/x8pKk0YN5Xs=;
+        b=nemRP+e64mEOh3NAQuEM5YiDXf5VCW4NTaAx5gmZicqLl9mVnDUW+9AUEJrn33MRSj
+         ybeC7E0mdKO9EzqIPdm+hdPV4DEIHdaZyEzIlL5HouR6jslmqdmGEV2NGidHg1STIxcm
+         1PMQlIaJrshmLoUEH8VDfoRRV5uhAqxv0/C5FDiME0VJQqASZ/1kwAhOc9nNvabtX5fN
+         DhRrK4KTX5FnBUA377TLRuxVluew6EdE4d35iGMFZWZwTmhNxzCvB/9mxNRiyAQ+Ukro
+         5lm3udHjoSy2PCdU3GpTciaUBrZVQ6mBAY3RSnRm7v7AQLklOzXiqe86hAFuT9g4WYTf
+         GsfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s1kbN3Mmp5+Lk+oKdZJFTs+4qDj5+hrlbzkKJ/sOC7Q=;
-        b=TUypximYlx4uioOsq+3JVPw+FGCpnX5OF33vkA9i4WBTx91qWmMgPB+5/JpY7ZuWLC
-         sek5tla4hHfglgXO8tkfE/v8mdmGj8uLrIF9Q7EEnFj8wmIPS2MglQbgy/iuu3It4cHV
-         eZvImiOOCYP+2+WZqTvvpcZC092DdpB2px4yGg2Fjk0jP1f9LjqjM5cryWPnEYp2mG2g
-         eoHcROlw2HQe9jwK9zkUR+dp0t70FpAODi6z/GZTCvsLjz/n1vqLkLi7we05MBk2Vt12
-         n5o0lM8s1byuMNi+cDtTxjlqQkN4WgRErGkOvWzZt1EFHFtBdttSM6iVsvnnwzkOLTw8
-         MJyg==
-X-Gm-Message-State: AOAM531nyZ6BeLcsOMtwP7YwIBeTpKbJPh3DqiPPas5NZlJ3/PsBq+Sa
-        tNYKE20HPk0k/5lBXcu0MOwfiPQs3FTFSmWy9cuQ9bynuPc=
-X-Google-Smtp-Source: ABdhPJwfXOPE01/yRywnhBxbSsxVVjM3bYlxPufGQhDRtonP1eQsYBGqhDjggwn/0i+bSSSXMd+uK6TB9UbVmkSUHEE=
-X-Received: by 2002:ac8:570f:0:b0:2f3:db0a:4c37 with SMTP id
- 15-20020ac8570f000000b002f3db0a4c37mr6930864qtw.471.1652487707423; Fri, 13
- May 2022 17:21:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1652372970.git.lorenzo@kernel.org> <4841edea5de2ce5898092c057f61d45dec3d9a34.1652372970.git.lorenzo@kernel.org>
-In-Reply-To: <4841edea5de2ce5898092c057f61d45dec3d9a34.1652372970.git.lorenzo@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=A72XN0PYiKlNvKMfjm4RN8XOy+GKxQ9/x8pKk0YN5Xs=;
+        b=jhZ+bEpfEAat0GeW0A0d5YwWjwo85B8eVmfrvKBDV/gsjy77rDbuS9lvfXCc4mNcxf
+         JMY+C8x/v/Uij8P//tX7wtat+j2Y2oTxAj5VA9SfqRP8o7MOA7rjPJnGnOgw3u7l39f3
+         2z4C9bW5vfZ4vdREf4Ha5sqkyOFVRriQMMSHVI/rR/Ez6oX4m5do8gCJsn62shv3CtJ/
+         0fMUqqtpjpmr9bTeqXKWbKIsLG+yMuaQbku9d8LqEBcW3/f7vY3Se8mQyIX7z0qE25uB
+         6DlOm8x69HfCHjCg2fv5kktwumsPzovi7f5gpHSMoil7OaPj79IZM8lJzViJ2uqrYXOb
+         Rdsw==
+X-Gm-Message-State: AOAM533zF7nu8XDZNQup0hGw8hGIzUhpeFFGy1zF6vz8WivZL6/LPhuI
+        azSFpjkMdbwqSg1++8dw0xROHO0/Lys=
+X-Google-Smtp-Source: ABdhPJylspnJP+6RTm74ySEgKHyE2s95Z5wT3+g5mFZSGMUgBJ+24XcAKz2IH7WQNsvyfsC4zoiLQA==
+X-Received: by 2002:a65:6d06:0:b0:3c6:890:5609 with SMTP id bf6-20020a656d06000000b003c608905609mr5866541pgb.357.1652488884034;
+        Fri, 13 May 2022 17:41:24 -0700 (PDT)
+Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::4:7ccc])
+        by smtp.gmail.com with ESMTPSA id w2-20020a17090abc0200b001d9253a32fcsm2117081pjr.36.2022.05.13.17.41.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 May 2022 17:41:23 -0700 (PDT)
+Date:   Fri, 13 May 2022 17:41:21 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 13 May 2022 17:21:36 -0700
-Message-ID: <CAADnVQKys77rY+FLkGJwdmdww+h2pGosx08RxVvYwwkjZLSwEQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add selftest for
- bpf_ct_refresh_timeout kfunc
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Rik van Riel <riel@surriel.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Yonghong Song <yhs@fb.com>, kernel-team@fb.com
+Subject: Re: [RFC PATCH bpf-next 2/5] bpf: add get_reg_val helper
+Message-ID: <20220514004121.qkbj3jgibpih3sxy@MBP-98dd607d3435.dhcp.thefacebook.com>
+References: <20220512074321.2090073-1-davemarchevsky@fb.com>
+ <20220512074321.2090073-3-davemarchevsky@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220512074321.2090073-3-davemarchevsky@fb.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,15 +74,225 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 12, 2022 at 9:34 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->
-> Install a new ct entry in order to perform a successful lookup and
-> test bpf_ct_refresh_timeout kfunc helper.
->
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+On Thu, May 12, 2022 at 12:43:18AM -0700, Dave Marchevsky wrote:
+> Add a helper which reads the value of specified register into memory.
+> 
+> Currently, bpf programs only have access to general-purpose registers
+> via struct pt_regs. Other registers, like SSE regs %xmm0-15, are
+> inaccessible, which makes some tracing usecases impossible. For example,
+> User Statically-Defined Tracing (USDT) probes may use SSE registers to
+> pass their arguments on x86. While this patch adds support for %xmm0-15
+> only, the helper is meant to be generic enough to support fetching any
+> reg.
+> 
+> A useful "value of register" definition for bpf programs is "value of
+> register before control transfer to kernel". pt_regs gives us this
+> currently, so it's the default behavior of the new helper. Fetching the
+> actual _current_ reg value is possible, though, by passing
+> BPF_GETREG_F_CURRENT flag as part of input.
+> 
+> For SSE regs we try to avoid digging around in task's fpu state by first
+> reading _current_ value, then checking to see if the state of cpu's
+> floating point regs matches task's view of them. If so, we can just
+> return _current_ value.
+> 
+> Further usecases which are straightforward to support, but
+> unimplemented:
+>   * using the helper to fetch general-purpose register value.
+>   currently-unused pt_regs parameter exists for this reason.
+> 
+>   * fetching rdtsc (w/ BPF_GETREG_F_CURRENT)
+> 
+>   * other architectures. s390 specifically might benefit from similar
+>   fpu reg fetching as USDT library was recently updated to support that
+>   architecture.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
+>  include/uapi/linux/bpf.h       |  40 +++++++++
+>  kernel/trace/bpf_trace.c       | 148 +++++++++++++++++++++++++++++++++
+>  kernel/trace/bpf_trace.h       |   1 +
+>  tools/include/uapi/linux/bpf.h |  40 +++++++++
+>  4 files changed, 229 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 444fe6f1cf35..3ef8f683ed9e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5154,6 +5154,18 @@ union bpf_attr {
+>   *		if not NULL, is a reference which must be released using its
+>   *		corresponding release function, or moved into a BPF map before
+>   *		program exit.
+> + *
+> + * long bpf_get_reg_val(void *dst, u32 size, u64 getreg_spec, struct pt_regs *regs, struct task_struct *tsk)
+> + *	Description
+> + *		Store the value of a SSE register specified by *getreg_spec*
+> + *		into memory region of size *size* specified by *dst*. *getreg_spec*
+> + *		is a combination of BPF_GETREG enum AND BPF_GETREG_F flag e.g.
+> + *		(BPF_GETREG_X86_XMM0 << 32) | BPF_GETREG_F_CURRENT.*
+> + *	Return
+> + *		0 on success
+> + *		**-ENOENT** if the system architecture does not have requested reg
+> + *		**-EINVAL** if *getreg_spec* is invalid
+> + *		**-EINVAL** if *size* != bytes necessary to store requested reg val
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)		\
+>  	FN(unspec),			\
+> @@ -5351,6 +5363,7 @@ union bpf_attr {
+>  	FN(skb_set_tstamp),		\
+>  	FN(ima_file_hash),		\
+>  	FN(kptr_xchg),			\
+> +	FN(get_reg_val),		\
+>  	/* */
+>  
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> @@ -6318,6 +6331,33 @@ struct bpf_perf_event_value {
+>  	__u64 running;
+>  };
+>  
+> +/* bpf_get_reg_val register enum */
+> +enum {
+> +	BPF_GETREG_X86_XMM0 = 0,
+> +	BPF_GETREG_X86_XMM1,
+> +	BPF_GETREG_X86_XMM2,
+> +	BPF_GETREG_X86_XMM3,
+> +	BPF_GETREG_X86_XMM4,
+> +	BPF_GETREG_X86_XMM5,
+> +	BPF_GETREG_X86_XMM6,
+> +	BPF_GETREG_X86_XMM7,
+> +	BPF_GETREG_X86_XMM8,
+> +	BPF_GETREG_X86_XMM9,
+> +	BPF_GETREG_X86_XMM10,
+> +	BPF_GETREG_X86_XMM11,
+> +	BPF_GETREG_X86_XMM12,
+> +	BPF_GETREG_X86_XMM13,
+> +	BPF_GETREG_X86_XMM14,
+> +	BPF_GETREG_X86_XMM15,
+> +	__MAX_BPF_GETREG,
+> +};
 
-CI is failing:
-test_bpf_nf_ct:FAIL:flush ct entries unexpected error: 32512 (errno 2)
-test_bpf_nf_ct:FAIL:create ct entry unexpected error: 32512 (errno 2)
+Can we do BPF_GETREG_X86_XMM plus number instead?
+Enumerating every possible register will take quite some space in uapi
+and bpf progs probably won't be using these enum values directly anyway.
+usdt spec will have something like "xmm5" as a string.
 
-Please follow the links from patchwork for details.
+> +
+> +/* bpf_get_reg_val flags */
+> +enum {
+> +	BPF_GETREG_F_NONE = 0,
+> +	BPF_GETREG_F_CURRENT = (1U << 0),
+> +};
+> +
+>  enum {
+>  	BPF_DEVCG_ACC_MKNOD	= (1ULL << 0),
+>  	BPF_DEVCG_ACC_READ	= (1ULL << 1),
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index f15b826f9899..0de7d6b3af5b 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -28,6 +28,10 @@
+>  
+>  #include <asm/tlb.h>
+>  
+> +#ifdef CONFIG_X86
+> +#include <asm/fpu/context.h>
+> +#endif
+> +
+>  #include "trace_probe.h"
+>  #include "trace.h"
+>  
+> @@ -1166,6 +1170,148 @@ static const struct bpf_func_proto bpf_get_func_arg_cnt_proto = {
+>  	.arg1_type	= ARG_PTR_TO_CTX,
+>  };
+>  
+> +#define XMM_REG_SZ 16
+> +
+> +#define __xmm_space_off(regno)				\
+> +	case BPF_GETREG_X86_XMM ## regno:		\
+> +		xmm_space_off = regno * 16;		\
+> +		break;
+> +
+> +static long getreg_read_xmm_fxsave(u32 reg, struct task_struct *tsk,
+> +				   void *data)
+> +{
+> +	struct fxregs_state *fxsave;
+> +	u32 xmm_space_off;
+> +
+> +	switch (reg) {
+> +	__xmm_space_off(0);
+> +	__xmm_space_off(1);
+> +	__xmm_space_off(2);
+> +	__xmm_space_off(3);
+> +	__xmm_space_off(4);
+> +	__xmm_space_off(5);
+> +	__xmm_space_off(6);
+> +	__xmm_space_off(7);
+> +#ifdef	CONFIG_X86_64
+> +	__xmm_space_off(8);
+> +	__xmm_space_off(9);
+> +	__xmm_space_off(10);
+> +	__xmm_space_off(11);
+> +	__xmm_space_off(12);
+> +	__xmm_space_off(13);
+> +	__xmm_space_off(14);
+> +	__xmm_space_off(15);
+> +#endif
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	fxsave = &tsk->thread.fpu.fpstate->regs.fxsave;
+> +	memcpy(data, (void *)&fxsave->xmm_space + xmm_space_off, XMM_REG_SZ);
+> +	return 0;
+
+It's all arch specific.
+This one and majority of other functions should probably go
+into arch/x86/net/bpf_jit_comp.c? instead of generic code.
+bpf_trace.c doesn't fit.
+
+Try to avoid all ifdef-s. It's a red flag.
+
+> +static long bpf_read_sse_reg(u32 reg, u32 flags, struct task_struct *tsk,
+> +			     void *data)
+> +{
+> +#ifdef CONFIG_X86
+> +	unsigned long irq_flags;
+> +	long err;
+> +
+> +	switch (reg) {
+> +	__bpf_sse_read(0);
+> +	__bpf_sse_read(1);
+> +	__bpf_sse_read(2);
+> +	__bpf_sse_read(3);
+> +	__bpf_sse_read(4);
+> +	__bpf_sse_read(5);
+> +	__bpf_sse_read(6);
+> +	__bpf_sse_read(7);
+> +#ifdef CONFIG_X86_64
+> +	__bpf_sse_read(8);
+> +	__bpf_sse_read(9);
+> +	__bpf_sse_read(10);
+> +	__bpf_sse_read(11);
+> +	__bpf_sse_read(12);
+> +	__bpf_sse_read(13);
+> +	__bpf_sse_read(14);
+> +	__bpf_sse_read(15);
+> +#endif /* CONFIG_X86_64 */
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (flags & BPF_GETREG_F_CURRENT)
+> +		return 0;
+> +
+> +	if (!fpregs_state_valid(&tsk->thread.fpu, smp_processor_id())) {
+> +		local_irq_save(irq_flags);
+
+why disable irqs?
+
+> +		err = getreg_read_xmm_fxsave(reg, tsk, data);
+> +		local_irq_restore(irq_flags);
+> +		return err;
+> +	}
+
+What is the use case to read other task regs?
