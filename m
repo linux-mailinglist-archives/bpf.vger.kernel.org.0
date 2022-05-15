@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA18527500
-	for <lists+bpf@lfdr.de>; Sun, 15 May 2022 04:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C57527504
+	for <lists+bpf@lfdr.de>; Sun, 15 May 2022 04:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbiEOCfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 14 May 2022 22:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
+        id S230353AbiEOCgF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 14 May 2022 22:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233904AbiEOCfi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S233917AbiEOCfi (ORCPT <rfc822;bpf@vger.kernel.org>);
         Sat, 14 May 2022 22:35:38 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A779BF63
-        for <bpf@vger.kernel.org>; Sat, 14 May 2022 19:35:19 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id h23-20020a17090a051700b001dc9132f2e6so5062363pjh.6
-        for <bpf@vger.kernel.org>; Sat, 14 May 2022 19:35:19 -0700 (PDT)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D6FBF68
+        for <bpf@vger.kernel.org>; Sat, 14 May 2022 19:35:20 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id bj12-20020a056a02018c00b003a9eebaad34so5667055pgb.10
+        for <bpf@vger.kernel.org>; Sat, 14 May 2022 19:35:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ZEXZ/QXFU/CsHogdpQ7ZUfr7HZOPm4+DGygzngWTcUA=;
-        b=VzJ/P7BnyJakBf09tKg7be86cJFVoS7xh60Ky83Z8pkc38jrbA7tPJVJDl0Eavb7sy
-         6F0n1AOFaVZODO+9LdufUSnZkesvSAeupz5vDNamKzKRiTYHyTYai/WNfIMjDTAPfFNc
-         Df5vg2u6DjfW9LoKqgIgpQaHkfgIflGFQUkUGRPCgIruOzPU5oIaRAlLNLehj6bhk8sk
-         /DQRFoHI8weERppdosnMt3A10xwHidKLIGP7oJNURDjePFeKujvw6ulliemweAxKJGmQ
-         tKuDQylnBRQnE0Vw3efTiKkc99W1cN+ZX4CZpBVRrBxeS97ufLx7uvBUZVh+hsinhp8C
-         t4lQ==
+        bh=mivptsETNqNDdcSME2iU77WtyhUxYujtfDC8wYBwYo8=;
+        b=rMya0QjL40CIpu8Uv/ByKWJyDrwJG5QrMXKxZNnicY5ZklKuCvsXB5oQ2U+Z5FoVPS
+         NNID7KJ++02OQhQGC/O7udgQAt+/sF5cjRYPZqcf8Mj7qgc9httTO8QX5l1pGxivwgop
+         eXCz8XpLdo0k56s/4Xp2sMxYTBtxDAeEU1Lt4gvtI33dWiQaKbR2O99nlVMoQRoVY7s7
+         BBXZvaQSBFuYR6uMsX3D3mTwWX1M9QSzWMCbRG5fP5THFSoKblyRNfBoPrTCL9dO8hF1
+         PEq0BiUdinr0dtZQK4V8fQBCrsCqIWbguGR/Jzq4tqE9PEOy01Xl8+B35dPbm6xq8IrW
+         +B9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ZEXZ/QXFU/CsHogdpQ7ZUfr7HZOPm4+DGygzngWTcUA=;
-        b=u13mLQPeOkLaBwqmb7X0wZVq/e259QmNabiV36E6NBZBPFZ4Bo6uApf03Zv3N08Qf0
-         9AbwT8/5uwfFNCLyq57K3mtahWpzfZ60Am0N1BRsPPAHimt0u3mvaDf2XJOy9SGEmSgP
-         KBzFf4YevHja+lCiYDfpi305RwEvsZ+21QzUEMPimRxQfGuYjlc0zHcnj3EnM6573qpe
-         ydGj3ks+tbheRE37ISzsf+QCcMhr8ocNrlq75FMa2tOCmQj4C4ZFapkroBAtYJZM3sib
-         xcs5keeBis69qpzSHtTU1TqrBcx8mjNiT438yxbWTn/fR5rteMQdcVPa/854oJf+HSSc
-         76mA==
-X-Gm-Message-State: AOAM533SXviLn4q/bgriTFXblnEeWQNuVarvniVoxuPaHiGHbbOH8I0Y
-        ZmFsRmo6Us6XMvb3e0zg6ZMBF5fKCdiHllRK
-X-Google-Smtp-Source: ABdhPJzki7EdQw0sGqwb0SP3TzxosU+OOtJIEU8WS5UAu6wm/vCL6t2hRjdQlKKt/jSEjM7YFHBDBuu6oPhFXUWQ
+        bh=mivptsETNqNDdcSME2iU77WtyhUxYujtfDC8wYBwYo8=;
+        b=ufB1YELGOuxY4/gEzm86+pqoI3xevwvDc2VqzC94WhSnHVo55CR871RD+5zQJOWcuy
+         2Hm8Tq9sa2Y6HmSg521mwFkokjPORJ++db9+mE7KLorbqm95zGiygU51mqJaMKio6U9K
+         a1fsWilPQCG75yOq5VNw/y3vXor5ITtNpH+ctUAyptIp9bh+NjF24GuvkLmG6MdZgutW
+         avEMOM7njYZLzEJe34/1pTUyXk6RQ6HNqeUTtCBv1BkbAD25QOfUIg9X26Q+CV53oSYO
+         YlGrLQ045p2dKLvYCA/NpIlKe2WA7E8536G2KoZzisZTad1sJy8DyPXBB0W7zWOOwDbD
+         T91Q==
+X-Gm-Message-State: AOAM532anJC0dRD030jDRzqvdlxyF7Sw3nHFLReewlZfT4Hr3VcpYvhQ
+        MdgQZkdm++XJVwwv5X7xgeNH65WeiITKtinr
+X-Google-Smtp-Source: ABdhPJwounggXga93PA2rBarvjkcnVYOVj3yjgHbf+4I8K2y2Goh8JfuUZYlGSM5QCQ9r6xCJ8cAfkvFDofNY+Iu
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:902:da8b:b0:15e:aba7:43fe with SMTP
- id j11-20020a170902da8b00b0015eaba743femr11765556plx.9.1652582118569; Sat, 14
- May 2022 19:35:18 -0700 (PDT)
-Date:   Sun, 15 May 2022 02:35:01 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a17:903:24f:b0:15c:e3b8:a640 with SMTP
+ id j15-20020a170903024f00b0015ce3b8a640mr11562712plh.5.1652582119956; Sat, 14
+ May 2022 19:35:19 -0700 (PDT)
+Date:   Sun, 15 May 2022 02:35:02 +0000
 In-Reply-To: <20220515023504.1823463-1-yosryahmed@google.com>
-Message-Id: <20220515023504.1823463-5-yosryahmed@google.com>
+Message-Id: <20220515023504.1823463-6-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20220515023504.1823463-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-Subject: [RFC PATCH bpf-next v2 4/7] bpf: add bpf rstat helpers
+Subject: [RFC PATCH bpf-next v2 5/7] bpf: Introduce cgroup iter
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -83,182 +83,260 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add bpf_cgroup_rstat_updated() and bpf_cgroup_rstat_flush() helpers
-to enable  bpf programs that collect and output cgroup stats
-to communicate with the rstat frameworkto add a cgroup to the rstat
-updated tree or trigger an rstat flush before reading stats.
+From: Hao Luo <haoluo@google.com>
 
+Introduce a new type of iter prog: cgroup. Unlike other bpf_iter, this
+iter doesn't iterate a set of kernel objects. Instead, it is supposed to
+be parameterized by a cgroup id and prints only that cgroup. So one
+needs to specify a target cgroup id when attaching this iter. The target
+cgroup's state can be read out via a link of this iter.
+
+Signed-off-by: Hao Luo <haoluo@google.com>
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- include/linux/bpf.h            |  2 ++
- include/uapi/linux/bpf.h       | 18 ++++++++++++++++++
- kernel/bpf/helpers.c           | 30 ++++++++++++++++++++++++++++++
- kernel/trace/bpf_trace.c       |  4 ++++
- scripts/bpf_doc.py             |  2 ++
- tools/include/uapi/linux/bpf.h | 18 ++++++++++++++++++
- 6 files changed, 74 insertions(+)
+ include/linux/bpf.h            |   2 +
+ include/uapi/linux/bpf.h       |   6 ++
+ kernel/bpf/Makefile            |   2 +-
+ kernel/bpf/cgroup_iter.c       | 148 +++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |   6 ++
+ 5 files changed, 163 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/bpf/cgroup_iter.c
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5061ccd8b2dc..ca908a731cb4 100644
+index ca908a731cb4..45076c581f24 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -2205,6 +2205,8 @@ extern const struct bpf_func_proto bpf_sock_map_update_proto;
- extern const struct bpf_func_proto bpf_sock_hash_update_proto;
- extern const struct bpf_func_proto bpf_get_current_cgroup_id_proto;
- extern const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto;
-+extern const struct bpf_func_proto bpf_cgroup_rstat_updated_proto;
-+extern const struct bpf_func_proto bpf_cgroup_rstat_flush_proto;
- extern const struct bpf_func_proto bpf_msg_redirect_hash_proto;
- extern const struct bpf_func_proto bpf_msg_redirect_map_proto;
- extern const struct bpf_func_proto bpf_sk_redirect_hash_proto;
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 968e3cb02580..022522174286 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5175,6 +5175,22 @@ union bpf_attr {
-  * 	Return
-  * 		Map value associated to *key* on *cpu*, or **NULL** if no entry
-  * 		was found or *cpu* is invalid.
-+ *
-+ * void bpf_cgroup_rstat_updated(struct cgroup *cgrp)
-+ *	Description
-+ *		Notify the rstat framework that bpf stats were updated for
-+ *		*cgrp* on the current cpu. Directly calls cgroup_rstat_updated
-+ *		with the given *cgrp* and the current cpu.
-+ *	Return
-+ *		0
-+ *
-+ * void bpf_cgroup_rstat_flush(struct cgroup *cgrp)
-+ *	Description
-+ *		Collect all per-cpu stats in *cgrp*'s subtree into global
-+ *		counters and propagate them upwards. Directly calls
-+ *		cgroup_rstat_flush_irqsafe with the given *cgrp*.
-+ *	Return
-+ *		0
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5373,6 +5389,8 @@ union bpf_attr {
- 	FN(ima_file_hash),		\
- 	FN(kptr_xchg),			\
- 	FN(map_lookup_percpu_elem),     \
-+	FN(cgroup_rstat_updated),	\
-+	FN(cgroup_rstat_flush),		\
- 	/* */
+@@ -44,6 +44,7 @@ struct kobject;
+ struct mem_cgroup;
+ struct module;
+ struct bpf_func_state;
++struct cgroup;
  
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index d5f104a39092..88ed26cf45e2 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -416,6 +416,36 @@ const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto = {
- 	.arg1_type	= ARG_ANYTHING,
+ extern struct idr btf_idr;
+ extern spinlock_t btf_idr_lock;
+@@ -1579,6 +1580,7 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
+ 
+ struct bpf_iter_aux_info {
+ 	struct bpf_map *map;
++	struct cgroup *cgroup;
  };
  
-+BTF_ID_LIST_SINGLE(bpf_cgroup_btf_ids, struct, cgroup)
-+
-+BPF_CALL_1(bpf_cgroup_rstat_updated, struct cgroup *, cgrp)
-+{
-+	cgroup_rstat_updated(cgrp, smp_processor_id());
-+	return 0;
-+}
-+
-+const struct bpf_func_proto bpf_cgroup_rstat_updated_proto = {
-+	.func		= bpf_cgroup_rstat_updated,
-+	.gpl_only	= false,
-+	.ret_type	= RET_VOID,
-+	.arg1_type	= ARG_PTR_TO_BTF_ID,
-+	.arg1_btf_id	= &bpf_cgroup_btf_ids[0],
-+};
-+
-+BPF_CALL_1(bpf_cgroup_rstat_flush, struct cgroup *, cgrp)
-+{
-+	cgroup_rstat_flush_irqsafe(cgrp);
-+	return 0;
-+}
-+
-+const struct bpf_func_proto bpf_cgroup_rstat_flush_proto = {
-+	.func		= bpf_cgroup_rstat_flush,
-+	.gpl_only	= false,
-+	.ret_type	= RET_VOID,
-+	.arg1_type	= ARG_PTR_TO_BTF_ID,
-+	.arg1_btf_id	= &bpf_cgroup_btf_ids[0],
-+};
-+
- #ifdef CONFIG_CGROUP_BPF
+ typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 022522174286..9a93b72bf39c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -91,6 +91,9 @@ union bpf_iter_link_info {
+ 	struct {
+ 		__u32	map_fd;
+ 	} map;
++	struct {
++		__u64	cgroup_id;
++	} cgroup;
+ };
  
- BPF_CALL_2(bpf_get_local_storage, struct bpf_map *, map, u64, flags)
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 7141ca8a1c2d..e5a4f1b6e00d 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1255,6 +1255,10 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_current_cgroup_id_proto;
- 	case BPF_FUNC_get_current_ancestor_cgroup_id:
- 		return &bpf_get_current_ancestor_cgroup_id_proto;
-+	case BPF_FUNC_cgroup_rstat_updated:
-+		return &bpf_cgroup_rstat_updated_proto;
-+	case BPF_FUNC_cgroup_rstat_flush:
-+		return &bpf_cgroup_rstat_flush_proto;
- #endif
- 	case BPF_FUNC_send_signal:
- 		return &bpf_send_signal_proto;
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index 096625242475..9e2b08557a6f 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -633,6 +633,7 @@ class PrinterHelpers(Printer):
-             'struct socket',
-             'struct file',
-             'struct bpf_timer',
-+            'struct cgroup',
-     ]
-     known_types = {
-             '...',
-@@ -682,6 +683,7 @@ class PrinterHelpers(Printer):
-             'struct socket',
-             'struct file',
-             'struct bpf_timer',
-+            'struct cgroup',
-     }
-     mapped_types = {
-             'u8': '__u8',
+ /* BPF syscall commands, see bpf(2) man-page for more details. */
+@@ -5986,6 +5989,9 @@ struct bpf_link_info {
+ 				struct {
+ 					__u32 map_id;
+ 				} map;
++				struct {
++					__u64 cgroup_id;
++				} cgroup;
+ 			};
+ 		} iter;
+ 		struct  {
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index 0487133b799f..f2a6fd0633d6 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -37,7 +37,7 @@ obj-${CONFIG_BPF_LSM} += bpf_lsm.o
+ endif
+ obj-$(CONFIG_BPF_PRELOAD) += preload/
+ ifeq ($(CONFIG_CGROUPS),y)
+-obj-$(CONFIG_BPF_SYSCALL) += rstat.o
++obj-$(CONFIG_BPF_SYSCALL) += rstat.o cgroup_iter.o
+ endif
+ 
+ obj-$(CONFIG_BPF_SYSCALL) += relo_core.o
+diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+new file mode 100644
+index 000000000000..86bdfe135d24
+--- /dev/null
++++ b/kernel/bpf/cgroup_iter.c
+@@ -0,0 +1,148 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2022 Google */
++#include <linux/bpf.h>
++#include <linux/btf_ids.h>
++#include <linux/cgroup.h>
++#include <linux/kernel.h>
++#include <linux/seq_file.h>
++
++struct bpf_iter__cgroup {
++	__bpf_md_ptr(struct bpf_iter_meta *, meta);
++	__bpf_md_ptr(struct cgroup *, cgroup);
++};
++
++static void *cgroup_iter_seq_start(struct seq_file *seq, loff_t *pos)
++{
++	/* Only one session is supported. */
++	if (*pos > 0)
++		return NULL;
++
++	if (*pos == 0)
++		++*pos;
++
++	return *(struct cgroup **)seq->private;
++}
++
++static void *cgroup_iter_seq_next(struct seq_file *seq, void *v, loff_t *pos)
++{
++	++*pos;
++	return NULL;
++}
++
++static int cgroup_iter_seq_show(struct seq_file *seq, void *v)
++{
++	struct bpf_iter__cgroup ctx;
++	struct bpf_iter_meta meta;
++	struct bpf_prog *prog;
++	int ret = 0;
++
++	ctx.meta = &meta;
++	ctx.cgroup = v;
++	meta.seq = seq;
++	prog = bpf_iter_get_info(&meta, false);
++	if (prog)
++		ret = bpf_iter_run_prog(prog, &ctx);
++
++	return ret;
++}
++
++static void cgroup_iter_seq_stop(struct seq_file *seq, void *v)
++{
++}
++
++static const struct seq_operations cgroup_iter_seq_ops = {
++	.start  = cgroup_iter_seq_start,
++	.next   = cgroup_iter_seq_next,
++	.stop   = cgroup_iter_seq_stop,
++	.show   = cgroup_iter_seq_show,
++};
++
++BTF_ID_LIST_SINGLE(bpf_cgroup_btf_id, struct, cgroup)
++
++static int cgroup_iter_seq_init(void *priv_data, struct bpf_iter_aux_info *aux)
++{
++	*(struct cgroup **)priv_data = aux->cgroup;
++	return 0;
++}
++
++static const struct bpf_iter_seq_info cgroup_iter_seq_info = {
++	.seq_ops                = &cgroup_iter_seq_ops,
++	.init_seq_private       = cgroup_iter_seq_init,
++	.seq_priv_size          = sizeof(struct cgroup *),
++};
++
++static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
++				  union bpf_iter_link_info *linfo,
++				  struct bpf_iter_aux_info *aux)
++{
++	struct cgroup *cgroup;
++
++	cgroup = cgroup_get_from_id(linfo->cgroup.cgroup_id);
++	if (!cgroup)
++		return -EBUSY;
++
++	aux->cgroup = cgroup;
++	return 0;
++}
++
++static void bpf_iter_detach_cgroup(struct bpf_iter_aux_info *aux)
++{
++	if (aux->cgroup)
++		cgroup_put(aux->cgroup);
++}
++
++static void bpf_iter_cgroup_show_fdinfo(const struct bpf_iter_aux_info *aux,
++					struct seq_file *seq)
++{
++	char *buf;
++
++	seq_printf(seq, "cgroup_id:\t%llu\n", cgroup_id(aux->cgroup));
++
++	buf = kmalloc(PATH_MAX, GFP_KERNEL);
++	if (!buf) {
++		seq_puts(seq, "cgroup_path:\n");
++		return;
++	}
++
++	/* If cgroup_path_ns() fails, buf will be an empty string, cgroup_path
++	 * will print nothing.
++	 *
++	 * Cgroup_path is the path in the calliing process's cgroup namespace.
++	 */
++	cgroup_path_ns(aux->cgroup, buf, sizeof(buf),
++		       current->nsproxy->cgroup_ns);
++	seq_printf(seq, "cgroup_path:\t%s\n", buf);
++	kfree(buf);
++}
++
++static int bpf_iter_cgroup_fill_link_info(const struct bpf_iter_aux_info *aux,
++					  struct bpf_link_info *info)
++{
++	info->iter.cgroup.cgroup_id = cgroup_id(aux->cgroup);
++	return 0;
++}
++
++DEFINE_BPF_ITER_FUNC(cgroup, struct bpf_iter_meta *meta,
++		     struct cgroup *cgroup)
++
++static struct bpf_iter_reg bpf_cgroup_reg_info = {
++	.target			= "cgroup",
++	.attach_target		= bpf_iter_attach_cgroup,
++	.detach_target		= bpf_iter_detach_cgroup,
++	.show_fdinfo		= bpf_iter_cgroup_show_fdinfo,
++	.fill_link_info		= bpf_iter_cgroup_fill_link_info,
++	.ctx_arg_info_size	= 1,
++	.ctx_arg_info		= {
++		{ offsetof(struct bpf_iter__cgroup, cgroup),
++		  PTR_TO_BTF_ID },
++	},
++	.seq_info		= &cgroup_iter_seq_info,
++};
++
++static int __init bpf_cgroup_iter_init(void)
++{
++	bpf_cgroup_reg_info.ctx_arg_info[0].btf_id = bpf_cgroup_btf_id[0];
++	return bpf_iter_reg_target(&bpf_cgroup_reg_info);
++}
++
++late_initcall(bpf_cgroup_iter_init);
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 968e3cb02580..022522174286 100644
+index 022522174286..9a93b72bf39c 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -5175,6 +5175,22 @@ union bpf_attr {
-  * 	Return
-  * 		Map value associated to *key* on *cpu*, or **NULL** if no entry
-  * 		was found or *cpu* is invalid.
-+ *
-+ * void bpf_cgroup_rstat_updated(struct cgroup *cgrp)
-+ *	Description
-+ *		Notify the rstat framework that bpf stats were updated for
-+ *		*cgrp* on the current cpu. Directly calls cgroup_rstat_updated
-+ *		with the given *cgrp* and the current cpu.
-+ *	Return
-+ *		0
-+ *
-+ * void bpf_cgroup_rstat_flush(struct cgroup *cgrp)
-+ *	Description
-+ *		Collect all per-cpu stats in *cgrp*'s subtree into global
-+ *		counters and propagate them upwards. Directly calls
-+ *		cgroup_rstat_flush_irqsafe with the given *cgrp*.
-+ *	Return
-+ *		0
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5373,6 +5389,8 @@ union bpf_attr {
- 	FN(ima_file_hash),		\
- 	FN(kptr_xchg),			\
- 	FN(map_lookup_percpu_elem),     \
-+	FN(cgroup_rstat_updated),	\
-+	FN(cgroup_rstat_flush),		\
- 	/* */
+@@ -91,6 +91,9 @@ union bpf_iter_link_info {
+ 	struct {
+ 		__u32	map_fd;
+ 	} map;
++	struct {
++		__u64	cgroup_id;
++	} cgroup;
+ };
  
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+ /* BPF syscall commands, see bpf(2) man-page for more details. */
+@@ -5986,6 +5989,9 @@ struct bpf_link_info {
+ 				struct {
+ 					__u32 map_id;
+ 				} map;
++				struct {
++					__u64 cgroup_id;
++				} cgroup;
+ 			};
+ 		} iter;
+ 		struct  {
 -- 
 2.36.0.550.gb090851708-goog
 
