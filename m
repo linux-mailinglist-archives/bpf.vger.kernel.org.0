@@ -2,68 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FFB52950D
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E795529549
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346654AbiEPXQ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 19:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48204 "EHLO
+        id S1347864AbiEPX0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 19:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237243AbiEPXQ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 19:16:27 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7369B33355;
-        Mon, 16 May 2022 16:16:24 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id e3so17642030ios.6;
-        Mon, 16 May 2022 16:16:24 -0700 (PDT)
+        with ESMTP id S1350380AbiEPX0V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 19:26:21 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D13434B84
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:26:20 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id b11so7647887ilr.4
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:26:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CkJCpZYF3YiWQAlyyCzoYmT0xNfZ0LhU8zbi9exA0fY=;
-        b=WZWIn4cTUBVxmfh1NkllORnBTgLjF2t2Tw4qtcUtKnWI9Xf10TRiI6CjomCXVBT7Yu
-         ZIwM+AiiAEfivZhQoXoQJMEDBeYCCtZPmBNq75vE7Vh8oehv/8zniMcD7I3+V2VNGKIs
-         aNtHdqHBEkLwZrftH3+rxTtrdIiA8T71OUZUXtpdmabw2FFVM9X6vbrKZJMSiBCMzht2
-         rNwb/Xdbh+R1gLzHosJRQO9bINRNjDsWQZA/JIZ/nuAgJMj3mkuE0JSWRjdZH8Pc/NmT
-         KuPD+sAk458IO2xbqG7PpfZnV3WRX/6YDsdPvAHe+30e3a4UqbAlVebUf6UcWofVS5re
-         kL1Q==
+        bh=bN6v+QHbgqNtGWpXjoP83AoC7F/6S9DmuIN0DhuHnZQ=;
+        b=kIIN7Uv+9CGWW2CWoNZKY+UqIXk+RPIEZbrwtz7bKC/sem8jlW9fnPwOi8WD69OoHQ
+         iktuaEmr69vZyNDrbVjxvtl5LLtIz5GnDigPsi5nzsdfd/Lnc8yT21OKa+iYBmo6MiP8
+         JsA/XWgSvMwLNGkuvU48LUb98Zm+l7ik+KE/HfOyDmFjMjP6iweUW+0okVEATIaz9tQb
+         /YtKuLImS0MwglZTrGo5IA2XmCKGQf8Xc4VlXxN3u9BHEFpRsooV2o6ileCiXGwAvMG2
+         AQ0crLbl3Zbsh93Xpn8Bh+jNkYWEyx6OTD6/UQ7lF60ceTzyz63DgEuAltY35cyQ3cMv
+         5MIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CkJCpZYF3YiWQAlyyCzoYmT0xNfZ0LhU8zbi9exA0fY=;
-        b=PY6Vy71FZeAXwC+y9iMPqY+yKeIszM+d9AElknO2D5k+bSfzaySd/kamDElFkz21uf
-         F5v+af8F9+rF8Nqz1MSFiZcR2WlDb/RQYBQlo9vVU3f8w2Wd2O/Gs+UIjlW/qSjR9WGD
-         n5UkwB0yna3GaYJPYJKgaCpYs8vojgspHhqmWtaCOsNrjHQFJSEAFEZkzEdl390rM3nG
-         utS0zQqb2s3LUDCVhQI/GgSo2OAyVu95gtM96YpgMQzDj2BTy7db5yZm4TNnpSkAyxfZ
-         NEeBAWum6SIPC344LnJpgFMQR6gSp3BO/gBrcFkEokG1QTCNelNYybKlbGnEh2YM2YOF
-         EAEw==
-X-Gm-Message-State: AOAM530jxfMBtrfBJIkoCI0hmecoWi8netOu0jJfgdtRj2MBx/Sr75Be
-        Vglbb6q1vdcC0yNoda2k0D4jvdxnU3gm2Q5vp5zeVxN1lIo=
-X-Google-Smtp-Source: ABdhPJxsgMivtG1wJz81mSCLpYcBucq/j19d/vLSxCTD97TQ5HP/GBtUQs/ZzxG3c70XnQZmFH9b8k8FR1j5HUGNRP4=
-X-Received: by 2002:a05:6638:2393:b0:32e:319d:c7cc with SMTP id
- q19-20020a056638239300b0032e319dc7ccmr4010364jat.103.1652742983822; Mon, 16
- May 2022 16:16:23 -0700 (PDT)
+        bh=bN6v+QHbgqNtGWpXjoP83AoC7F/6S9DmuIN0DhuHnZQ=;
+        b=fgE4UqPZJfXESxGxkRva1+FM9V0j6pVdMz9hkTY+PRePj/2SKq+1aIsorrKd4fe1Ks
+         hhzlejxYVhxq2H7zevabowVjTeVtjKRodh2BnLMbJKLLyye4ajl3n1ce6lki0VrMhXX/
+         VN7SuqPRusqOaFJRwN7JsKAGXTY2Kd9QOMm6Q+atAUP3rsq9pMuam4djxErdBTnJz2Ge
+         iarugiSU9T5HNC5DPMSdOLnwpktLCoWQzhHUkfWaOAsIwC09Cxuw9GwNEXGPxzOAi8+i
+         6PfH5/kKVmtPDag0gaNFPsCnAarviXWxRdmT/AS70u3vLaZMXFGRJJQRac2Hfxqoucwq
+         /rCA==
+X-Gm-Message-State: AOAM531aUocktYaIAL5mXtEsPaRhLr1sFOejDP/KHrtLl7oLYJwHkm8/
+        RFL3h1tVzy2GKenHj6H4nR7YSEysYZs+qpmeZxo=
+X-Google-Smtp-Source: ABdhPJwScGij+Y7bbRq/hA09dIfOaMfI176gOhX3u/7ISZT7Hex/PvfAEia4rX5r3mX13JakH4h5vDIQURIScfMAGhs=
+X-Received: by 2002:a92:cd4c:0:b0:2d1:2ee7:5cef with SMTP id
+ v12-20020a92cd4c000000b002d12ee75cefmr1898824ilq.252.1652743579728; Mon, 16
+ May 2022 16:26:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4Bzah9K7dEa_7sXE4TnkuMTRHypMU9DxiLezgRvLjcqE_YA@mail.gmail.com>
- <20220513190821.431762-1-tadeusz.struk@linaro.org>
-In-Reply-To: <20220513190821.431762-1-tadeusz.struk@linaro.org>
+References: <20220512074321.2090073-1-davemarchevsky@fb.com> <20220512074321.2090073-4-davemarchevsky@fb.com>
+In-Reply-To: <20220512074321.2090073-4-davemarchevsky@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 May 2022 16:16:12 -0700
-Message-ID: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
-Subject: Re: [PATCH v3] bpf: Fix KASAN use-after-free Read in compute_effective_progs
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Mon, 16 May 2022 16:26:08 -0700
+Message-ID: <CAEf4BzaM0SC3D66NC3djt1fsEQcJ-af0-EgPx5UV8YLDLu8ibg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 3/5] libbpf: usdt lib wiring of xmm reads
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Rik van Riel <riel@surriel.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Yonghong Song <yhs@fb.com>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,174 +69,168 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 13, 2022 at 12:08 PM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+On Thu, May 12, 2022 at 12:43 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
 >
-> Syzbot found a Use After Free bug in compute_effective_progs().
-> The reproducer creates a number of BPF links, and causes a fault
-> injected alloc to fail, while calling bpf_link_detach on them.
-> Link detach triggers the link to be freed by bpf_link_free(),
-> which calls __cgroup_bpf_detach() and update_effective_progs().
-> If the memory allocation in this function fails, the function restores
-> the pointer to the bpf_cgroup_link on the cgroup list, but the memory
-> gets freed just after it returns. After this, every subsequent call to
-> update_effective_progs() causes this already deallocated pointer to be
-> dereferenced in prog_list_length(), and triggers KASAN UAF error.
+> Handle xmm0,...,xmm15 registers when parsing USDT arguments. Currently
+> only the first 64 bits of the fetched value are returned as I haven't
+> seen the rest of the register used in practice.
 >
-> To fix this issue don't preserve the pointer to the prog or link in the
-> list, but remove it and replace it with a dummy prog without shrinking
-> the table. The subsequent call to __cgroup_bpf_detach() or
-> __cgroup_bpf_detach() will correct it.
+> This patch also handles floats in USDT arg spec by ignoring the fact
+> that they're floats and considering them scalar. Currently we can't do
+> float math in BPF programs anyways, so might as well support passing to
+> userspace and converting there.
 >
-> Cc: "Alexei Starovoitov" <ast@kernel.org>
-> Cc: "Daniel Borkmann" <daniel@iogearbox.net>
-> Cc: "Andrii Nakryiko" <andrii@kernel.org>
-> Cc: "Martin KaFai Lau" <kafai@fb.com>
-> Cc: "Song Liu" <songliubraving@fb.com>
-> Cc: "Yonghong Song" <yhs@fb.com>
-> Cc: "John Fastabend" <john.fastabend@gmail.com>
-> Cc: "KP Singh" <kpsingh@kernel.org>
-> Cc: <netdev@vger.kernel.org>
-> Cc: <bpf@vger.kernel.org>
-> Cc: <stable@vger.kernel.org>
-> Cc: <linux-kernel@vger.kernel.org>
+> We can use existing ARG_REG sscanf + logic, adding XMM-specific logic
+> when calc_pt_regs_off fails. If the reg is xmm, arg_spec's reg_off is
+> repurposed to hold reg_no, which is passed to bpf_get_reg_val. Since the
+> helper does the digging around in fxregs_state it's not necessary to
+> calculate offset in bpf code for these regs.
 >
-> Link: https://syzkaller.appspot.com/bug?id=8ebf179a95c2a2670f7cf1ba62429ec044369db4
-> Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
-> Reported-by: <syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com>
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+> NOTE: Changes here cause verification failure for existing USDT tests.
+> Specifically, BPF_USDT prog 'usdt12' fails to verify due to too many
+> insns despite not having its insn count significantly changed.
+>
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 > ---
-> v2: Add a fall back path that removes a prog from the effective progs
->     table in case detach fails to allocate memory in compute_effective_progs().
+>  tools/lib/bpf/usdt.bpf.h | 36 ++++++++++++++++++++--------
+>  tools/lib/bpf/usdt.c     | 51 ++++++++++++++++++++++++++++++++++++----
+>  2 files changed, 73 insertions(+), 14 deletions(-)
 >
-> v3: Implement the fallback in a separate function purge_effective_progs
-> ---
->  kernel/bpf/cgroup.c | 64 +++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 56 insertions(+), 8 deletions(-)
+> diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
+> index 4181fddb3687..7b5ed4cbaa2f 100644
+> --- a/tools/lib/bpf/usdt.bpf.h
+> +++ b/tools/lib/bpf/usdt.bpf.h
+> @@ -43,6 +43,7 @@ enum __bpf_usdt_arg_type {
+>         BPF_USDT_ARG_CONST,
+>         BPF_USDT_ARG_REG,
+>         BPF_USDT_ARG_REG_DEREF,
+> +       BPF_USDT_ARG_XMM_REG,
+>  };
 >
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 128028efda64..9d3af4d6c055 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -681,6 +681,57 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
->         return ERR_PTR(-ENOENT);
->  }
+>  struct __bpf_usdt_arg_spec {
+> @@ -129,7 +130,9 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
+>  {
+>         struct __bpf_usdt_spec *spec;
+>         struct __bpf_usdt_arg_spec *arg_spec;
+> -       unsigned long val;
+> +       struct pt_regs *btf_regs;
+> +       struct task_struct *btf_task;
+> +       struct { __u64 a; __u64 unused; } val = {};
+>         int err, spec_id;
 >
-> +/**
-> + * purge_effective_progs() - After compute_effective_progs fails to alloc new
-> + *                           cgrp->bpf.inactive table we can recover by
-> + *                           recomputing the array in place.
-> + *
-> + * @cgrp: The cgroup which descendants to traverse
-> + * @link: A link to detach
-> + * @atype: Type of detach operation
-> + */
-> +static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
-> +                                 enum cgroup_bpf_attach_type atype)
+>         *res = 0;
+> @@ -151,7 +154,7 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
+>                 /* Arg is just a constant ("-4@$-9" in USDT arg spec).
+>                  * value is recorded in arg_spec->val_off directly.
+>                  */
+> -               val = arg_spec->val_off;
+> +               val.a = arg_spec->val_off;
+>                 break;
+>         case BPF_USDT_ARG_REG:
+>                 /* Arg is in a register (e.g, "8@%rax" in USDT arg spec),
+> @@ -159,7 +162,20 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
+>                  * struct pt_regs. To keep things simple user-space parts
+>                  * record offsetof(struct pt_regs, <regname>) in arg_spec->reg_off.
+>                  */
+> -               err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
+> +               err = bpf_probe_read_kernel(&val.a, sizeof(val.a), (void *)ctx + arg_spec->reg_off);
+> +               if (err)
+> +                       return err;
+> +               break;
+> +       case BPF_USDT_ARG_XMM_REG:
+
+nit: a bit too XMM-specific name here, we probably want to keep it a bit
+
+> +               /* Same as above, but arg is an xmm reg, so can't look
+> +                * in pt_regs, need to use special helper.
+> +                * reg_off is the regno ("xmm0" -> regno 0, etc)
+> +                */
+> +               btf_task = bpf_get_current_task_btf();
+> +               btf_regs = (struct pt_regs *)bpf_task_pt_regs(btf_task);
+
+I'd like to avoid taking dependency on bpf_get_current_task_btf() for
+rare case of XMM register, which makes it impossible to do USDT on
+older kernels. It seems like supporting reading registers from current
+(and maybe current pt_regs context) should cover a lot of practical
+uses.
+
+> +               err = bpf_get_reg_val(&val, sizeof(val),
+
+But regardless of the above, we'll need to use CO-RE to detect support
+for this new BPF helper (probably using bpf_core_enum_value_exists()?)
+to allow using USDTs on older kernels.
+
+
+> +                                    ((u64)arg_spec->reg_off + BPF_GETREG_X86_XMM0) << 32,
+> +                                    btf_regs, btf_task);
+>                 if (err)
+>                         return err;
+>                 break;
+> @@ -171,14 +187,14 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
+>                  * from pt_regs, then do another user-space probe read to
+>                  * fetch argument value itself.
+>                  */
+> -               err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
+> +               err = bpf_probe_read_kernel(&val.a, sizeof(val.a), (void *)ctx + arg_spec->reg_off);
+>                 if (err)
+>                         return err;
+> -               err = bpf_probe_read_user(&val, sizeof(val), (void *)val + arg_spec->val_off);
+> +               err = bpf_probe_read_user(&val.a, sizeof(val.a), (void *)val.a + arg_spec->val_off);
+
+is the useful value in xmm register normally in lower 64-bits of it?
+is it possible to just request reading just the first 64 bits from
+bpf_get_reg_val() and avoid this ugly union?
+
+>                 if (err)
+>                         return err;
+>  #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+> -               val >>= arg_spec->arg_bitshift;
+> +               val.a >>= arg_spec->arg_bitshift;
+>  #endif
+>                 break;
+>         default:
+
+[...]
+
+> +static int calc_xmm_regno(const char *reg_name)
 > +{
-> +       struct cgroup_subsys_state *css;
-> +       struct bpf_prog_array_item *item;
-> +       struct bpf_prog *tmp;
-> +       struct bpf_prog_array *array;
-> +       int index = 0, index_purge = -1;
+> +       static struct {
+> +               const char *name;
+> +               __u16 regno;
+> +       } xmm_reg_map[] = {
+> +               { "xmm0",  0 },
+> +               { "xmm1",  1 },
+> +               { "xmm2",  2 },
+> +               { "xmm3",  3 },
+> +               { "xmm4",  4 },
+> +               { "xmm5",  5 },
+> +               { "xmm6",  6 },
+> +               { "xmm7",  7 },
+> +#ifdef __x86_64__
+> +               { "xmm8",  8 },
+> +               { "xmm9",  9 },
+> +               { "xmm10",  10 },
+> +               { "xmm11",  11 },
+> +               { "xmm12",  12 },
+> +               { "xmm13",  13 },
+> +               { "xmm14",  14 },
+> +               { "xmm15",  15 },
+
+no-x86 arches parse this generically with sscanf(), seems like we can
+do this simple approach here as well?
+
+
+> +#endif
+> +       };
+> +       int i;
 > +
-> +       if (!prog)
-> +               return;
-> +
-> +       /* recompute effective prog array in place */
-> +       css_for_each_descendant_pre(css, &cgrp->self) {
-> +               struct cgroup *desc = container_of(css, struct cgroup, self);
-> +
-> +               array = desc->bpf.effective[atype];
-
-../kernel/bpf/cgroup.c:748:23: warning: incorrect type in assignment
-(different address spaces)
-../kernel/bpf/cgroup.c:748:23:    expected struct bpf_prog_array *array
-../kernel/bpf/cgroup.c:748:23:    got struct bpf_prog_array [noderef] __rcu *
-
-
-you need rcu_dereference here? but also see suggestions below to avoid
-iterating effective directly (it's ambiguous to search by prog only)
-
-> +               item = &array->items[0];
-> +
-> +               /* Find the index of the prog to purge */
-> +               while ((tmp = READ_ONCE(item->prog))) {
-> +                       if (tmp == prog) {
-
-I think comparing just prog isn't always correct, as the same program
-can be in effective array multiple times if attached through bpf_link.
-
-Looking at replace_effective_prog() I think we can do a very similar
-(and tested) approach:
-
-1. restore original pl state in __cgroup_bpf_detach (so we can find it
-by comparing pl->prog == prog && pl->link == link)
-2. use replace_effective_prog's approach to find position of pl in
-effective array (using this nested for loop over cgroup parents and
-list_for_each_entry inside)
-3. then instead of replacing one prog with another do
-bpf_prog_array_delete_safe_at ?
-
-I'd feel more comfortable using the same tested overall approach of
-replace_effective_prog.
-
-> +                               index_purge = index;
-> +                               break;
-> +                       }
-> +                       item++;
-> +                       index++;
-> +               }
-> +
-> +               /* Check if we found what's needed for removing the prog */
-> +               if (index_purge == -1 || index_purge == index - 1)
-> +                       continue;
-
-the search shouldn't fail, should it?
-
-> +
-> +               /* Remove the program from the array */
-> +               WARN_ONCE(bpf_prog_array_delete_safe_at(array, index_purge),
-> +                         "Failed to purge a prog from array at index %d", index_purge);
-> +
-> +               index = 0;
-> +               index_purge = -1;
+> +       for (i = 0; i < ARRAY_SIZE(xmm_reg_map); i++) {
+> +               if (strcmp(reg_name, xmm_reg_map[i].name) == 0)
+> +                       return xmm_reg_map[i].regno;
 > +       }
-> +}
 > +
->  /**
->   * __cgroup_bpf_detach() - Detach the program or link from a cgroup, and
->   *                         propagate the change to descendants
-> @@ -723,8 +774,11 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
->         pl->link = NULL;
->
->         err = update_effective_progs(cgrp, atype);
-> -       if (err)
-> -               goto cleanup;
-> +       if (err) {
-> +               struct bpf_prog *prog_purge = prog ? prog : link->link.prog;
-> +
-
-so here we shouldn't forget link, instead pass both link and prog (one
-of them will have to be NULL) into purge_effective_progs
-
-> +               purge_effective_progs(cgrp, prog_purge, atype);
-> +       }
->
->         /* now can actually delete it from this cgroup list */
->         list_del(&pl->node);
-> @@ -736,12 +790,6 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
->                 bpf_prog_put(old_prog);
->         static_branch_dec(&cgroup_bpf_enabled_key[atype]);
->         return 0;
-> -
-> -cleanup:
-> -       /* restore back prog or link */
-> -       pl->prog = old_prog;
-> -       pl->link = link;
-> -       return err;
+>         return -ENOENT;
 >  }
 >
->  static int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
-> --
-> 2.36.1
->
+
+[...]
