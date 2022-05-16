@@ -2,255 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E1A5294A3
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FFB52950D
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350205AbiEPXFu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 19:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
+        id S1346654AbiEPXQ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 19:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350088AbiEPXFo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 19:05:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 502CAB5D
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:05:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652742340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=klrXA/FHm9eGbHTShYXyEDFmf+TPE6BZwwZ122M7ZwY=;
-        b=dRSP3FKeY9Sp5zqpaYfm3YQGlo+OTvP1Dt8Ekk3GR/T4lWs0XqtaGE8UXXZm8+g0Gq0/7W
-        iL0Ot2Q61gonPQV15cklV2koY5+XHkaGoYx+zVgX/SkdVcvnnlIT0JjAq2KoRWVAzhN7rC
-        aMTCt+Czpl1UlOgQz+tnwDWAdsAjAqs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-179-HXOcWSGcOEyrFtkVF4nWyQ-1; Mon, 16 May 2022 19:05:36 -0400
-X-MC-Unique: HXOcWSGcOEyrFtkVF4nWyQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 208E7101AA44;
-        Mon, 16 May 2022 23:05:36 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6696E568626;
-        Mon, 16 May 2022 23:05:32 +0000 (UTC)
-Date:   Tue, 17 May 2022 01:05:29 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Jiri Olsa <jolsa@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S237243AbiEPXQ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 19:16:27 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7369B33355;
+        Mon, 16 May 2022 16:16:24 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id e3so17642030ios.6;
+        Mon, 16 May 2022 16:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CkJCpZYF3YiWQAlyyCzoYmT0xNfZ0LhU8zbi9exA0fY=;
+        b=WZWIn4cTUBVxmfh1NkllORnBTgLjF2t2Tw4qtcUtKnWI9Xf10TRiI6CjomCXVBT7Yu
+         ZIwM+AiiAEfivZhQoXoQJMEDBeYCCtZPmBNq75vE7Vh8oehv/8zniMcD7I3+V2VNGKIs
+         aNtHdqHBEkLwZrftH3+rxTtrdIiA8T71OUZUXtpdmabw2FFVM9X6vbrKZJMSiBCMzht2
+         rNwb/Xdbh+R1gLzHosJRQO9bINRNjDsWQZA/JIZ/nuAgJMj3mkuE0JSWRjdZH8Pc/NmT
+         KuPD+sAk458IO2xbqG7PpfZnV3WRX/6YDsdPvAHe+30e3a4UqbAlVebUf6UcWofVS5re
+         kL1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CkJCpZYF3YiWQAlyyCzoYmT0xNfZ0LhU8zbi9exA0fY=;
+        b=PY6Vy71FZeAXwC+y9iMPqY+yKeIszM+d9AElknO2D5k+bSfzaySd/kamDElFkz21uf
+         F5v+af8F9+rF8Nqz1MSFiZcR2WlDb/RQYBQlo9vVU3f8w2Wd2O/Gs+UIjlW/qSjR9WGD
+         n5UkwB0yna3GaYJPYJKgaCpYs8vojgspHhqmWtaCOsNrjHQFJSEAFEZkzEdl390rM3nG
+         utS0zQqb2s3LUDCVhQI/GgSo2OAyVu95gtM96YpgMQzDj2BTy7db5yZm4TNnpSkAyxfZ
+         NEeBAWum6SIPC344LnJpgFMQR6gSp3BO/gBrcFkEokG1QTCNelNYybKlbGnEh2YM2YOF
+         EAEw==
+X-Gm-Message-State: AOAM530jxfMBtrfBJIkoCI0hmecoWi8netOu0jJfgdtRj2MBx/Sr75Be
+        Vglbb6q1vdcC0yNoda2k0D4jvdxnU3gm2Q5vp5zeVxN1lIo=
+X-Google-Smtp-Source: ABdhPJxsgMivtG1wJz81mSCLpYcBucq/j19d/vLSxCTD97TQ5HP/GBtUQs/ZzxG3c70XnQZmFH9b8k8FR1j5HUGNRP4=
+X-Received: by 2002:a05:6638:2393:b0:32e:319d:c7cc with SMTP id
+ q19-20020a056638239300b0032e319dc7ccmr4010364jat.103.1652742983822; Mon, 16
+ May 2022 16:16:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAEf4Bzah9K7dEa_7sXE4TnkuMTRHypMU9DxiLezgRvLjcqE_YA@mail.gmail.com>
+ <20220513190821.431762-1-tadeusz.struk@linaro.org>
+In-Reply-To: <20220513190821.431762-1-tadeusz.struk@linaro.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 16 May 2022 16:16:12 -0700
+Message-ID: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
+Subject: Re: [PATCH v3] bpf: Fix KASAN use-after-free Read in compute_effective_progs
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf v2 4/4] bpf_trace: pass array of u64 values in
- kprobe_multi.addrs
-Message-ID: <20220516230529.GA25780@asgard.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With the interface as defined, it is impossible to pass 64-bit kernel
-addresses from a 32-bit userspace process in BPF_LINK_TYPE_KPROBE_MULTI,
-which severly limits the useability of the interface, change the ABI
-to accept an array of u64 values instead of (kernel? user?) longs.
-Interestingly, the rest of the libbpf infrastructure uses 64-bit values
-for kallsyms addresses already, so this patch also eliminates
-the sym_addr cast in tools/lib/bpf/libbpf.c:resolve_kprobe_multi_cb().
+On Fri, May 13, 2022 at 12:08 PM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+>
+> Syzbot found a Use After Free bug in compute_effective_progs().
+> The reproducer creates a number of BPF links, and causes a fault
+> injected alloc to fail, while calling bpf_link_detach on them.
+> Link detach triggers the link to be freed by bpf_link_free(),
+> which calls __cgroup_bpf_detach() and update_effective_progs().
+> If the memory allocation in this function fails, the function restores
+> the pointer to the bpf_cgroup_link on the cgroup list, but the memory
+> gets freed just after it returns. After this, every subsequent call to
+> update_effective_progs() causes this already deallocated pointer to be
+> dereferenced in prog_list_length(), and triggers KASAN UAF error.
+>
+> To fix this issue don't preserve the pointer to the prog or link in the
+> list, but remove it and replace it with a dummy prog without shrinking
+> the table. The subsequent call to __cgroup_bpf_detach() or
+> __cgroup_bpf_detach() will correct it.
+>
+> Cc: "Alexei Starovoitov" <ast@kernel.org>
+> Cc: "Daniel Borkmann" <daniel@iogearbox.net>
+> Cc: "Andrii Nakryiko" <andrii@kernel.org>
+> Cc: "Martin KaFai Lau" <kafai@fb.com>
+> Cc: "Song Liu" <songliubraving@fb.com>
+> Cc: "Yonghong Song" <yhs@fb.com>
+> Cc: "John Fastabend" <john.fastabend@gmail.com>
+> Cc: "KP Singh" <kpsingh@kernel.org>
+> Cc: <netdev@vger.kernel.org>
+> Cc: <bpf@vger.kernel.org>
+> Cc: <stable@vger.kernel.org>
+> Cc: <linux-kernel@vger.kernel.org>
+>
+> Link: https://syzkaller.appspot.com/bug?id=8ebf179a95c2a2670f7cf1ba62429ec044369db4
+> Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
+> Reported-by: <syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com>
+> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+> ---
+> v2: Add a fall back path that removes a prog from the effective progs
+>     table in case detach fails to allocate memory in compute_effective_progs().
+>
+> v3: Implement the fallback in a separate function purge_effective_progs
+> ---
+>  kernel/bpf/cgroup.c | 64 +++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 56 insertions(+), 8 deletions(-)
+>
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 128028efda64..9d3af4d6c055 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -681,6 +681,57 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
+>         return ERR_PTR(-ENOENT);
+>  }
+>
+> +/**
+> + * purge_effective_progs() - After compute_effective_progs fails to alloc new
+> + *                           cgrp->bpf.inactive table we can recover by
+> + *                           recomputing the array in place.
+> + *
+> + * @cgrp: The cgroup which descendants to traverse
+> + * @link: A link to detach
+> + * @atype: Type of detach operation
+> + */
+> +static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
+> +                                 enum cgroup_bpf_attach_type atype)
+> +{
+> +       struct cgroup_subsys_state *css;
+> +       struct bpf_prog_array_item *item;
+> +       struct bpf_prog *tmp;
+> +       struct bpf_prog_array *array;
+> +       int index = 0, index_purge = -1;
+> +
+> +       if (!prog)
+> +               return;
+> +
+> +       /* recompute effective prog array in place */
+> +       css_for_each_descendant_pre(css, &cgrp->self) {
+> +               struct cgroup *desc = container_of(css, struct cgroup, self);
+> +
+> +               array = desc->bpf.effective[atype];
 
-Fixes: 0dcac272540613d4 ("bpf: Add multi kprobe link")
-Fixes: 5117c26e877352bc ("libbpf: Add bpf_link_create support for multi kprobes")
-Fixes: ddc6b04989eb0993 ("libbpf: Add bpf_program__attach_kprobe_multi_opts function")
-Fixes: f7a11eeccb111854 ("selftests/bpf: Add kprobe_multi attach test")
-Fixes: 9271a0c7ae7a9147 ("selftests/bpf: Add attach test for bpf_program__attach_kprobe_multi_opts")
-Fixes: 2c6401c966ae1fbe ("selftests/bpf: Add kprobe_multi bpf_cookie test")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
----
- kernel/trace/bpf_trace.c                           | 25 ++++++++++++++++++----
- tools/lib/bpf/bpf.h                                |  2 +-
- tools/lib/bpf/libbpf.c                             |  8 +++----
- tools/lib/bpf/libbpf.h                             |  2 +-
- .../testing/selftests/bpf/prog_tests/bpf_cookie.c  |  2 +-
- .../selftests/bpf/prog_tests/kprobe_multi_test.c   |  8 +++----
- 6 files changed, 32 insertions(+), 15 deletions(-)
+../kernel/bpf/cgroup.c:748:23: warning: incorrect type in assignment
+(different address spaces)
+../kernel/bpf/cgroup.c:748:23:    expected struct bpf_prog_array *array
+../kernel/bpf/cgroup.c:748:23:    got struct bpf_prog_array [noderef] __rcu *
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 268c92b..a8a639a 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2413,7 +2413,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	void __user *ucookies;
- 	unsigned long *addrs;
- 	u32 flags, cnt, size, cookies_size;
--	void __user *uaddrs;
-+	u64 __user *uaddrs;
- 	u64 *cookies = NULL;
- 	void __user *usyms;
- 	int err;
-@@ -2446,9 +2446,26 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 		return -ENOMEM;
- 
- 	if (uaddrs) {
--		if (copy_from_user(addrs, uaddrs, size)) {
--			err = -EFAULT;
--			goto error;
-+		if (sizeof(*addrs) == sizeof(*uaddrs)) {
-+			if (copy_from_user(addrs, uaddrs, size)) {
-+				err = -EFAULT;
-+				goto error;
-+			}
-+		} else {
-+			u32 i;
-+			u64 addr;
-+
-+			for (i = 0; i < cnt; i++) {
-+				if (get_user(addr, uaddrs + i)) {
-+					err = -EFAULT;
-+					goto error;
-+				}
-+				if (addr > ULONG_MAX) {
-+					err = -EINVAL;
-+					goto error;
-+				}
-+				addrs[i] = addr;
-+			}
- 		}
- 	} else {
- 		err = kprobe_multi_resolve_syms(usyms, cnt, addrs);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index f4b4afb..f677602 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -417,7 +417,7 @@ struct bpf_link_create_opts {
- 			__u32 flags;
- 			__u32 cnt;
- 			const char **syms;
--			const unsigned long *addrs;
-+			const __u64 *addrs;
- 			const __u64 *cookies;
- 		} kprobe_multi;
- 	};
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 809fe20..03a14a6 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10279,7 +10279,7 @@ static bool glob_match(const char *str, const char *pat)
- 
- struct kprobe_multi_resolve {
- 	const char *pattern;
--	unsigned long *addrs;
-+	__u64 *addrs;
- 	size_t cap;
- 	size_t cnt;
- };
-@@ -10294,12 +10294,12 @@ resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
- 	if (!glob_match(sym_name, res->pattern))
- 		return 0;
- 
--	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
-+	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(__u64),
- 				res->cnt + 1);
- 	if (err)
- 		return err;
- 
--	res->addrs[res->cnt++] = (unsigned long) sym_addr;
-+	res->addrs[res->cnt++] = sym_addr;
- 	return 0;
- }
- 
-@@ -10314,7 +10314,7 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
- 	};
- 	struct bpf_link *link = NULL;
- 	char errmsg[STRERR_BUFSIZE];
--	const unsigned long *addrs;
-+	const __u64 *addrs;
- 	int err, link_fd, prog_fd;
- 	const __u64 *cookies;
- 	const char **syms;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 05dde85..ec1cb61 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -431,7 +431,7 @@ struct bpf_kprobe_multi_opts {
- 	/* array of function symbols to attach */
- 	const char **syms;
- 	/* array of function addresses to attach */
--	const unsigned long *addrs;
-+	const __u64 *addrs;
- 	/* array of user-provided values fetchable through bpf_get_attach_cookie */
- 	const __u64 *cookies;
- 	/* number of elements in syms/addrs/cookies arrays */
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-index 923a613..5aa482a 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -137,7 +137,7 @@ static void kprobe_multi_link_api_subtest(void)
- 	cookies[6] = 7;
- 	cookies[7] = 8;
- 
--	opts.kprobe_multi.addrs = (const unsigned long *) &addrs;
-+	opts.kprobe_multi.addrs = (const __u64 *) &addrs;
- 	opts.kprobe_multi.cnt = ARRAY_SIZE(addrs);
- 	opts.kprobe_multi.cookies = (const __u64 *) &cookies;
- 	prog_fd = bpf_program__fd(skel->progs.test_kprobe);
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index b9876b5..fbf4cf2 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -105,7 +105,7 @@ static void test_link_api_addrs(void)
- 	GET_ADDR("bpf_fentry_test7", addrs[6]);
- 	GET_ADDR("bpf_fentry_test8", addrs[7]);
- 
--	opts.kprobe_multi.addrs = (const unsigned long*) addrs;
-+	opts.kprobe_multi.addrs = (const __u64 *) addrs;
- 	opts.kprobe_multi.cnt = ARRAY_SIZE(addrs);
- 	test_link_api(&opts);
- }
-@@ -183,7 +183,7 @@ static void test_attach_api_addrs(void)
- 	GET_ADDR("bpf_fentry_test7", addrs[6]);
- 	GET_ADDR("bpf_fentry_test8", addrs[7]);
- 
--	opts.addrs = (const unsigned long *) addrs;
-+	opts.addrs = (const __u64 *) addrs;
- 	opts.cnt = ARRAY_SIZE(addrs);
- 	test_attach_api(NULL, &opts);
- }
-@@ -241,7 +241,7 @@ static void test_attach_api_fails(void)
- 		goto cleanup;
- 
- 	/* fail_2 - both addrs and syms set */
--	opts.addrs = (const unsigned long *) addrs;
-+	opts.addrs = (const __u64 *) addrs;
- 	opts.syms = syms;
- 	opts.cnt = ARRAY_SIZE(syms);
- 	opts.cookies = NULL;
-@@ -255,7 +255,7 @@ static void test_attach_api_fails(void)
- 		goto cleanup;
- 
- 	/* fail_3 - pattern and addrs set */
--	opts.addrs = (const unsigned long *) addrs;
-+	opts.addrs = (const __u64 *) addrs;
- 	opts.syms = NULL;
- 	opts.cnt = ARRAY_SIZE(syms);
- 	opts.cookies = NULL;
--- 
-2.1.4
 
+you need rcu_dereference here? but also see suggestions below to avoid
+iterating effective directly (it's ambiguous to search by prog only)
+
+> +               item = &array->items[0];
+> +
+> +               /* Find the index of the prog to purge */
+> +               while ((tmp = READ_ONCE(item->prog))) {
+> +                       if (tmp == prog) {
+
+I think comparing just prog isn't always correct, as the same program
+can be in effective array multiple times if attached through bpf_link.
+
+Looking at replace_effective_prog() I think we can do a very similar
+(and tested) approach:
+
+1. restore original pl state in __cgroup_bpf_detach (so we can find it
+by comparing pl->prog == prog && pl->link == link)
+2. use replace_effective_prog's approach to find position of pl in
+effective array (using this nested for loop over cgroup parents and
+list_for_each_entry inside)
+3. then instead of replacing one prog with another do
+bpf_prog_array_delete_safe_at ?
+
+I'd feel more comfortable using the same tested overall approach of
+replace_effective_prog.
+
+> +                               index_purge = index;
+> +                               break;
+> +                       }
+> +                       item++;
+> +                       index++;
+> +               }
+> +
+> +               /* Check if we found what's needed for removing the prog */
+> +               if (index_purge == -1 || index_purge == index - 1)
+> +                       continue;
+
+the search shouldn't fail, should it?
+
+> +
+> +               /* Remove the program from the array */
+> +               WARN_ONCE(bpf_prog_array_delete_safe_at(array, index_purge),
+> +                         "Failed to purge a prog from array at index %d", index_purge);
+> +
+> +               index = 0;
+> +               index_purge = -1;
+> +       }
+> +}
+> +
+>  /**
+>   * __cgroup_bpf_detach() - Detach the program or link from a cgroup, and
+>   *                         propagate the change to descendants
+> @@ -723,8 +774,11 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+>         pl->link = NULL;
+>
+>         err = update_effective_progs(cgrp, atype);
+> -       if (err)
+> -               goto cleanup;
+> +       if (err) {
+> +               struct bpf_prog *prog_purge = prog ? prog : link->link.prog;
+> +
+
+so here we shouldn't forget link, instead pass both link and prog (one
+of them will have to be NULL) into purge_effective_progs
+
+> +               purge_effective_progs(cgrp, prog_purge, atype);
+> +       }
+>
+>         /* now can actually delete it from this cgroup list */
+>         list_del(&pl->node);
+> @@ -736,12 +790,6 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+>                 bpf_prog_put(old_prog);
+>         static_branch_dec(&cgroup_bpf_enabled_key[atype]);
+>         return 0;
+> -
+> -cleanup:
+> -       /* restore back prog or link */
+> -       pl->prog = old_prog;
+> -       pl->link = link;
+> -       return err;
+>  }
+>
+>  static int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+> --
+> 2.36.1
+>
