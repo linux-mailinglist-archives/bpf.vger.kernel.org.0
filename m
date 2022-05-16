@@ -2,228 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96838528B65
-	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 18:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29918528BA6
+	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 19:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344015AbiEPQ6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 12:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
+        id S233953AbiEPRNP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 13:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344100AbiEPQ6P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 12:58:15 -0400
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9039527FEF
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 09:56:30 -0700 (PDT)
-Received: by mail-qk1-f171.google.com with SMTP id z126so12717225qkb.2
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 09:56:30 -0700 (PDT)
+        with ESMTP id S229525AbiEPRNO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 13:13:14 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A7C31902
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 10:13:13 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id i15so1045208ilk.5
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 10:13:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZUomNp+skmyyyZHCiUlkBBqqpocqzv6ZbhJP/7J4z2k=;
+        b=med6IjkglxDoJGbYEUA1BUIWre8fcapL7uc+2trdyrvsBtlgwArGNq8vl2Gnh1kIKG
+         xCYLqtZLKvpZvvnofSqNentC6r129NSdrf7BppbqB2uq6omEifaGxFrQY7BHXrfbb6EL
+         Tz7c623K+oNvl/ExfbZvdu6y8Y5s6KgLT+PLhXEy856iFAovxID1Siug9WuYmljgoQU+
+         IaxB636TMVBAV9tl8SOxZYqtPeTSxKkOlL6M4dBj6PMj1eqmaIlbPvQaFpPlhufo+sqp
+         f/iWbo2B8sr+tcIBoLCGVIChMUow6xuKZhBGqXB1l5psgtwdbOu0VGno0LCMpHQIg2VS
+         jKPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RZrqn9Bq0Hotpn8Ire8ifDoMJPnQzPFf+VXcloBuQWM=;
-        b=FKu1Js3IL3E0KEhANexP77mAYNvEsJknwX8YugEdxAZZtgRj4G8kPEcMLmv/ZfKy3F
-         5UoJ/JgJdzvzoirLMpZ9PuBgOcqUzIsLtBUmuCT5LQq3iRyrB6kxdBpS+1RZoP1wiwjL
-         bz2rl9KGIyV5w8NuiV8aAEhsqRU22y4lpWiZqTNGnkNaRqh8cUt0wGli5xyL4m/k53lg
-         K9NpPTCERXF5YW/245cFmss2Uk0ZND4w/z7jfpabXa7peG7r5dc30OCDZc1QQxcGBHKa
-         uBmNv/+Tta2rrM0elGHqsQ8c/+62eCXtBL9xtn7OCwHGNQVWEcCmZ8C5xUkOt75fbxAc
-         UPeA==
-X-Gm-Message-State: AOAM531zjHtk40Zgo4Ybf10ts29ludks8K4oBaCNLosuM8M7jvCclBOE
-        W/usP7knPuFD/Dknur8cmyVvZPlyeC0=
-X-Google-Smtp-Source: ABdhPJxOQFgXU47oo0IhQc/TNt1aj+jagozfWm4jnisNQGlBoMOvT9mQ563kHF+mNHGbLD6vPUCXRQ==
-X-Received: by 2002:a05:620a:448d:b0:6a0:9838:fc16 with SMTP id x13-20020a05620a448d00b006a09838fc16mr13173477qkp.718.1652720189515;
-        Mon, 16 May 2022 09:56:29 -0700 (PDT)
-Received: from dev0025.ash9.facebook.com (fwdproxy-ash-013.fbsv.net. [2a03:2880:20ff:d::face:b00c])
-        by smtp.gmail.com with ESMTPSA id bs41-20020a05620a472900b0069fe1fc72e7sm6314220qkb.90.2022.05.16.09.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 May 2022 09:56:29 -0700 (PDT)
-Date:   Mon, 16 May 2022 09:56:27 -0700
-From:   David Vernet <void@manifault.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net
-Subject: Re: [PATCH bpf-next v4 4/6] bpf: Add bpf_dynptr_read and
- bpf_dynptr_write
-Message-ID: <20220516165627.4a2kdpgzmln5ejew@dev0025.ash9.facebook.com>
-References: <20220509224257.3222614-1-joannelkoong@gmail.com>
- <20220509224257.3222614-5-joannelkoong@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZUomNp+skmyyyZHCiUlkBBqqpocqzv6ZbhJP/7J4z2k=;
+        b=XylQ8wkBF23MUcQBmZ4PJaNiLccHoNJ5LrQxvkDZdTGzLT7hNbYwmbtiUX16vE7cvK
+         rcyICGl4Ax0kMS3BFT/irkeMsTEeNCFe9abibNlSTXRFQWPDhjHWGBxuNTkeaFmJZEeq
+         +w2sJTNxCaQDKigxCcFtILxfbzY0fzeb8SHOFHrzAW/jPWJ3AGiiYP+yDfkJulO556y9
+         lWAkhe+BLm8TZ4oNwu2zxM9BfMBLbgqm0d6a9PX7kNyJDu2CUM7TKSfk7R5l9osHWnDI
+         fx0oNZhWZ70Za3Nrjuo5zhVgZrBPCWLc0spOddN/gkv8Ys4OYRo9pAQ0342yJgzRhpbN
+         vogA==
+X-Gm-Message-State: AOAM533GEQQ08o/en7DElsriLFFCPRUXGYyKXSCo1K1O70ixcc7DSV7l
+        Fye8SzCMpMXumyM+ShYILMx2dGemGwXY+9FoUcsD3ph5Znc=
+X-Google-Smtp-Source: ABdhPJxqnXM/gXWd8Jo27TQvspj5fF39VMlKuNwH8LJCDm6FBIw5WhhA4OrDAXC0ZkUESgC4DoS3xFtBCjO3A39J7f0=
+X-Received: by 2002:a05:6e02:1c82:b0:2cf:2b74:d155 with SMTP id
+ w2-20020a056e021c8200b002cf2b74d155mr9591747ill.4.1652721192751; Mon, 16 May
+ 2022 10:13:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220509224257.3222614-5-joannelkoong@gmail.com>
-User-Agent: NeoMutt/20211029
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20220509224257.3222614-1-joannelkoong@gmail.com>
+ <20220509224257.3222614-6-joannelkoong@gmail.com> <20220513213747.j3tj2qtbnjszy64n@MBP-98dd607d3435.dhcp.thefacebook.com>
+In-Reply-To: <20220513213747.j3tj2qtbnjszy64n@MBP-98dd607d3435.dhcp.thefacebook.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Mon, 16 May 2022 10:13:00 -0700
+Message-ID: <CAJnrk1bJx04bPj4BVypVXyugw-EX7xn+zYRShv8+1zZSoxrDDQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/6] bpf: Add dynptr data slices
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 09, 2022 at 03:42:55PM -0700, Joanne Koong wrote:
-> This patch adds two helper functions, bpf_dynptr_read and
-> bpf_dynptr_write:
-> 
-> long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offset);
-> 
-> long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, u32 len);
-> 
-> The dynptr passed into these functions must be valid dynptrs that have
-> been initialized.
-> 
-> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> ---
->  include/linux/bpf.h            | 16 ++++++++++
->  include/uapi/linux/bpf.h       | 19 ++++++++++++
->  kernel/bpf/helpers.c           | 56 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 19 ++++++++++++
->  4 files changed, 110 insertions(+)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 8fbe739b0dec..6f4fa0627620 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2391,6 +2391,12 @@ enum bpf_dynptr_type {
->  #define DYNPTR_SIZE_MASK	0xFFFFFF
->  #define DYNPTR_TYPE_SHIFT	28
->  #define DYNPTR_TYPE_MASK	0x7
-> +#define DYNPTR_RDONLY_BIT	BIT(31)
-> +
-> +static inline bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
-> +{
-> +	return ptr->size & DYNPTR_RDONLY_BIT;
-> +}
->  
->  static inline enum bpf_dynptr_type bpf_dynptr_get_type(struct bpf_dynptr_kern *ptr)
->  {
-> @@ -2412,6 +2418,16 @@ static inline int bpf_dynptr_check_size(u32 size)
->  	return size > DYNPTR_MAX_SIZE ? -E2BIG : 0;
->  }
->  
-> +static inline int bpf_dynptr_check_off_len(struct bpf_dynptr_kern *ptr, u32 offset, u32 len)
-> +{
-> +	u32 size = bpf_dynptr_get_size(ptr);
-> +
-> +	if (len > size || offset > size - len)
-> +		return -E2BIG;
-> +
-> +	return 0;
-> +}
-
-Does this need to be in bpf.h? Or could it be brought into helpers.c as a
-static function? I don't think there's any harm in leaving it here, but at
-first glance it seems like a helper function that doesn't really need to be
-exported.
-
-> +
->  void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data, enum bpf_dynptr_type type,
->  		     u32 offset, u32 size);
->  
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 679f960d2514..f0c5ca220d8e 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5209,6 +5209,23 @@ union bpf_attr {
->   *		'bpf_ringbuf_discard'.
->   *	Return
->   *		Nothing. Always succeeds.
-> + *
-> + * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offset)
-> + *	Description
-> + *		Read *len* bytes from *src* into *dst*, starting from *offset*
-> + *		into *src*.
-> + *	Return
-> + *		0 on success, -E2BIG if *offset* + *len* exceeds the length
-> + *		of *src*'s data, -EINVAL if *src* is an invalid dynptr.
-> + *
-> + * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, u32 len)
-> + *	Description
-> + *		Write *len* bytes from *src* into *dst*, starting from *offset*
-> + *		into *dst*.
-> + *	Return
-> + *		0 on success, -E2BIG if *offset* + *len* exceeds the length
-> + *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
-> + *		is a read-only dynptr.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -5411,6 +5428,8 @@ union bpf_attr {
->  	FN(ringbuf_reserve_dynptr),	\
->  	FN(ringbuf_submit_dynptr),	\
->  	FN(ringbuf_discard_dynptr),	\
-> +	FN(dynptr_read),		\
-> +	FN(dynptr_write),		\
->  	/* */
->  
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 2d6f2e28b580..7206b9e5322f 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1467,6 +1467,58 @@ const struct bpf_func_proto bpf_dynptr_put_proto = {
->  	.arg1_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_MALLOC | OBJ_RELEASE,
->  };
->  
-> +BPF_CALL_4(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_kern *, src, u32, offset)
-> +{
-> +	int err;
-> +
-> +	if (!src->data)
-> +		return -EINVAL;
-> +
-> +	err = bpf_dynptr_check_off_len(src, offset, len);
-> +	if (err)
-> +		return err;
-> +
-> +	memcpy(dst, src->data + src->offset + offset, len);
-> +
-> +	return 0;
-> +}
-> +
-> +const struct bpf_func_proto bpf_dynptr_read_proto = {
-> +	.func		= bpf_dynptr_read,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
-> +	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
-> +	.arg3_type	= ARG_PTR_TO_DYNPTR,
-> +	.arg4_type	= ARG_ANYTHING,
-
-I think what you have now is safe / correct, but is there a reason that we
-don't use ARG_CONST_SIZE_OR_ZERO for both the len and the offset, given
-that they're both bound by the size of a memory region? Same question
-applies to the function proto for bpf_dynptr_write() as well.
-
-> +};
-> +
-> +BPF_CALL_4(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset, void *, src, u32, len)
-> +{
-> +	int err;
-> +
-> +	if (!dst->data || bpf_dynptr_is_rdonly(dst))
-> +		return -EINVAL;
-> +
-> +	err = bpf_dynptr_check_off_len(dst, offset, len);
-> +	if (err)
-> +		return err;
-> +
-> +	memcpy(dst->data + dst->offset + offset, src, len);
-> +
-> +	return 0;
-> +}
-> +
-> +const struct bpf_func_proto bpf_dynptr_write_proto = {
-> +	.func		= bpf_dynptr_write,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_PTR_TO_DYNPTR,
-> +	.arg2_type	= ARG_ANYTHING,
-> +	.arg3_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
-> +	.arg4_type	= ARG_CONST_SIZE_OR_ZERO,
-> +};
-> +
-
-[...]
-
-Overall looks great.
+On Fri, May 13, 2022 at 2:37 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, May 09, 2022 at 03:42:56PM -0700, Joanne Koong wrote:
+> >       } else if (is_acquire_function(func_id, meta.map_ptr)) {
+> > -             int id = acquire_reference_state(env, insn_idx);
+> > +             int id = 0;
+> > +
+> > +             if (is_dynptr_ref_function(func_id)) {
+> > +                     int i;
+> > +
+> > +                     /* Find the id of the dynptr we're acquiring a reference to */
+> > +                     for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> > +                             if (arg_type_is_dynptr(fn->arg_type[i])) {
+> > +                                     if (id) {
+> > +                                             verbose(env, "verifier internal error: more than one dynptr arg in a dynptr ref func\n");
+> > +                                             return -EFAULT;
+> > +                                     }
+> > +                                     id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
+>
+> I'm afraid this approach doesn't work.
+> Consider:
+>   struct bpf_dynptr ptr;
+>   u32 *data1, *data2;
+>
+>   bpf_dynptr_alloc(8, 0, &ptr);
+>   data1 = bpf_dynptr_data(&ptr, 0, 8);
+>   data2 = bpf_dynptr_data(&ptr, 8, 8);
+>   if (data1)
+>      *data2 = 0; /* this will succeed, but shouldn't */
+>
+> The same 'id' is being reused for data1 and data2 to make sure
+> that bpf_dynptr_put(&ptr); will clear data1/data2,
+> but data1 and data2 will look the same in mark_ptr_or_null_reg().
+>
+> > +                             }
+> > +                     }
+> > +                     if (!id) {
+> > +                             verbose(env, "verifier internal error: no dynptr args to a dynptr ref func\n");
+> > +                             return -EFAULT;
+> > +                     }
+> > +             } else {
+> > +                     id = acquire_reference_state(env, insn_idx);
+> > +                     if (id < 0)
+> > +                             return id;
+> > +             }
+> >
+> > -             if (id < 0)
+> > -                     return id;
+> >               /* For mark_ptr_or_null_reg() */
+> >               regs[BPF_REG_0].id = id;
+> >               /* For release_reference() */
+> > @@ -9810,7 +9864,8 @@ static void mark_ptr_or_null_regs(struct bpf_verifier_state *vstate, u32 regno,
+> >       u32 id = regs[regno].id;
+> >       int i;
+> >
+> > -     if (ref_obj_id && ref_obj_id == id && is_null)
+> > +     if (ref_obj_id && ref_obj_id == id && is_null &&
+> > +         !is_ref_obj_id_dynptr(state, id))
+>
+> This bit is avoiding doing release of dynptr's id,
+> because id is shared between dynptr and slice's id.
+>
+> In this patch I'm not sure what is the purpose of bpf_dynptr_data()
+> being an acquire function. data1 and data2 are not acquiring.
+> They're not incrementing refcnt of dynptr.
+>
+> I think normal logic of check_helper_call() that does:
+>         if (type_may_be_null(regs[BPF_REG_0].type))
+>                 regs[BPF_REG_0].id = ++env->id_gen;
+>
+> should be preserved.
+> It will give different id-s to data1 and data2 and the problem
+> described earlier will not exist.
+>
+> The transfer of ref_obj_id from dynptr into data1 and data2 needs to happen,
+> but this part:
+>         u32 ref_obj_id = regs[regno].ref_obj_id;
+>         u32 id = regs[regno].id;
+>         int i;
+>
+>         if (ref_obj_id && ref_obj_id == id && is_null)
+>                 /* regs[regno] is in the " == NULL" branch.
+>                  * No one could have freed the reference state before
+>                  * doing the NULL check.
+>                  */
+>                 WARN_ON_ONCE(release_reference_state(state, id));
+>
+> should be left alone.
+> bpf_dynptr_put(&ptr); will release dynptr and will clear data1 and data2.
+> if (!data1)
+>    will not release dynptr, because data1->id != data1->ref_obj_id.
+>
+> In other words bpf_dynptr_data() should behave like is_ptr_cast_function().
+> It should trasnfer ref_obj_id to R0, but should give new R0->id.
+> See big comment in bpf_verifier.h next to ref_obj_id.
+Great, thanks for your feedback. I agree with everything you wrote. I
+will make these changes for v5 and add your data1 data2 example as a
+test case.
