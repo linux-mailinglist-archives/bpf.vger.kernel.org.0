@@ -2,63 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA380529571
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303C5529575
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347456AbiEPXnz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 19:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
+        id S236397AbiEPXqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 19:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238034AbiEPXny (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 19:43:54 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83023369D5
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:43:53 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id e3so17688699ios.6
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:43:53 -0700 (PDT)
+        with ESMTP id S232582AbiEPXqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 19:46:09 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4A621E32;
+        Mon, 16 May 2022 16:46:07 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id e194so17668271iof.11;
+        Mon, 16 May 2022 16:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7RBYF0Eag3EQ8BRE/ZBj5JUOHmqfvm0MbODfaaZVQhc=;
-        b=eN/AOebNGNkLE1mD1YTit1AjZ3jvWKF8B1VFESsofdFIdu13WQSPnW0DRx/8980k/d
-         LROg8Ly7d00jPDh/CnB16BD+AfPogqiE8hn0zm/8t/Zq6r0IiL+tYVpzzJ62ZGsHZvfi
-         y5oGy5uEutiPHWzuD7wGssg6YHHHxMWxSkI84lLkZuGohYjl+01U3k7oVs6XFg2/K4wT
-         2bYC5dfagveEa4+v/7CAXnHioR0prkIXLpKflvfpf1k5ITbRJ9hgaXsbDgDxp4ZTSmw1
-         LrThLm00bcfQEdOe51LuUZCJnJ1/qqWX11reu3ANPVbhXBcGOmkt6cRd9jUNDzduTdlk
-         eK5g==
+         :cc;
+        bh=NGmqOSoM/D/mlnC6zemgOPjMPqkvgQ6nvvptywkIkBQ=;
+        b=LUNfwdi8TjvvTwcSOEgYdD/CjULEhvBRWPbzoOorGdAgxNpqegtZbi3YapReYWF1uC
+         zhByIgHMeTEcEuzaBYbRLj1YEj9hJV06WVRvF29S9CLENehMxIwwM+ZIQAmGpBbIhz65
+         iyEqytk5wROHHWSkk1DYeo4IwVgupQEU/FWPfsGNnNr/xoHNbCyIaogVnULZqhhDZh0B
+         vTwkZv9tfLhaeM8pi+Ylj5NVHUvmi+XG9COEpF6gB7jIjv5G9cbWb+KNbdBy9D1KGK6N
+         kmflUrHLR3SFhZNU5NIy8E064V93c5PE1d/L2ZaU2RBpnk2SC+9ALUYa8E0KIJwP7rO3
+         VOIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7RBYF0Eag3EQ8BRE/ZBj5JUOHmqfvm0MbODfaaZVQhc=;
-        b=ixKYQImEnPjQaBAPZqusSqIvRignRfIvAzaXxS4qm725MVE6k8Rw+6tcLyF7xhhr9k
-         bfAYPXaGchuBn1ykC5KYTvGy7+C92KNOonazss/1hmUQQFf7vr1vHe3EKyD25EdKaBfP
-         JdFn3AP+RioP/CrAEQcpjqlHPW9pzPHxILI/cbJEQQCS//H5W2rzfLHv1q5DOafPuDGs
-         FLxcltUBOf0RR6KCyYfUoh/wfR9oBLy8aD2rYTJG0lKiHazh6LX1cDGS4ZOaicno3Dy5
-         LV072Mi4CS60gYr++dV2XswvTbG8JpPKQPpZnGESiQbg4LE0kXIctauRIFMSNJxHT3aD
-         2q0g==
-X-Gm-Message-State: AOAM533juxwGZm6Oqgd8krHmoav+Zj7m3bHRJC2D4ITQR27w0C6Q/Fne
-        qvDRDMvORsCRk2BB0X3CpHWGgySnlTvB1GWtbaI=
-X-Google-Smtp-Source: ABdhPJy00+MyF/JyQWIRs2duO/XukTveGBquIe5JoYm2CPvh1BZ/SK7VzDKTqwTfLykfa1wvKTFY4oBagjhs6kf5tGc=
-X-Received: by 2002:a5d:9316:0:b0:657:a364:ceb with SMTP id
- l22-20020a5d9316000000b00657a3640cebmr9247095ion.63.1652744632934; Mon, 16
- May 2022 16:43:52 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=NGmqOSoM/D/mlnC6zemgOPjMPqkvgQ6nvvptywkIkBQ=;
+        b=WIsyIrxDHhAPcP+KTGCUJ6VXRi8/dKNmbKPKXdIuw0UZWvPmLuvcu5dTpwGScNVDnm
+         /Jo9GL+GKrTNQZdCn8gomPrWBPYj1pkVQ1t2+e1T1oNOBIAz0sZUB7zJ5mz0RdKx9Owf
+         A8CJIprxyfN36W4VxmNaKGpDyfVbUllql83hCn+0jz1I8GjsxQHuPFvj7BeTjjBuuEXR
+         PyMxnnc+DJ/DAoeXRXzRBEldz6/75tocjQsvT9Ft7Fq5h6yDmF1cVP4XR7tnXcDs7RJx
+         DSUugmcaJddlJDnkuG1LmmVe9TwnoZ3Y6LLys+a2CRcU2Gc4rjW8FosOvGBa1/fw4u9O
+         OfZg==
+X-Gm-Message-State: AOAM532t6XIOG+BjsdYOIDrcMi3V+lT9B7qcYRU0gyLvZlAg8t6hEDsN
+        RoaOFYe+n+rb9L1DiG1grhW11VQPKgU4RCx5QKE=
+X-Google-Smtp-Source: ABdhPJx8vwSSxGyeZm7P5K9XJwN8Ufh6yWvDl4kzldAdJFHxSoLSzr2MrRLxy6rVWceYE43yCXVi+3OPsrtxvceSiX8=
+X-Received: by 2002:a05:6638:468e:b0:32b:fe5f:d73f with SMTP id
+ bq14-20020a056638468e00b0032bfe5fd73fmr10812141jab.234.1652744767089; Mon, 16
+ May 2022 16:46:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220516173540.3520665-1-deso@posteo.net>
-In-Reply-To: <20220516173540.3520665-1-deso@posteo.net>
+References: <CAEf4Bzah9K7dEa_7sXE4TnkuMTRHypMU9DxiLezgRvLjcqE_YA@mail.gmail.com>
+ <20220513190821.431762-1-tadeusz.struk@linaro.org> <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
+ <2fcdbecf-5352-ea81-ee42-ee10fbe2f72e@linaro.org>
+In-Reply-To: <2fcdbecf-5352-ea81-ee42-ee10fbe2f72e@linaro.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 May 2022 16:43:42 -0700
-Message-ID: <CAEf4BzYg24WGidanbqQHQnUUeWS0JFKze08cGCPtD+EX94LrFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/12] libbpf: Textual representation of enums
-To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Mon, 16 May 2022 16:45:56 -0700
+Message-ID: <CAEf4BzZSb7z=c+dqsO4rTBet7jUzqCXOG-mVxFxqX9y0y05cEw@mail.gmail.com>
+Subject: Re: [PATCH v3] bpf: Fix KASAN use-after-free Read in compute_effective_progs
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,91 +76,136 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 16, 2022 at 10:35 AM Daniel M=C3=BCller <deso@posteo.net> wrote=
-:
+On Mon, May 16, 2022 at 4:35 PM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
 >
-> This patch set introduces the means for querying a textual representation=
- of
-> the following BPF related enum types:
-> - enum bpf_map_type
-> - enum bpf_prog_type
-> - enum bpf_attach_type
-> - enum bpf_link_type
+> On 5/16/22 16:16, Andrii Nakryiko wrote:
+> > On Fri, May 13, 2022 at 12:08 PM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+> >>   kernel/bpf/cgroup.c | 64 +++++++++++++++++++++++++++++++++++++++------
+> >>   1 file changed, 56 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> >> index 128028efda64..9d3af4d6c055 100644
+> >> --- a/kernel/bpf/cgroup.c
+> >> +++ b/kernel/bpf/cgroup.c
+> >> @@ -681,6 +681,57 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
+> >>          return ERR_PTR(-ENOENT);
+> >>   }
+> >>
+> >> +/**
+> >> + * purge_effective_progs() - After compute_effective_progs fails to alloc new
+> >> + *                           cgrp->bpf.inactive table we can recover by
+> >> + *                           recomputing the array in place.
+> >> + *
+> >> + * @cgrp: The cgroup which descendants to traverse
+> >> + * @link: A link to detach
+> >> + * @atype: Type of detach operation
+> >> + */
+> >> +static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
+> >> +                                 enum cgroup_bpf_attach_type atype)
+> >> +{
+> >> +       struct cgroup_subsys_state *css;
+> >> +       struct bpf_prog_array_item *item;
+> >> +       struct bpf_prog *tmp;
+> >> +       struct bpf_prog_array *array;
+> >> +       int index = 0, index_purge = -1;
+> >> +
+> >> +       if (!prog)
+> >> +               return;
+> >> +
+> >> +       /* recompute effective prog array in place */
+> >> +       css_for_each_descendant_pre(css, &cgrp->self) {
+> >> +               struct cgroup *desc = container_of(css, struct cgroup, self);
+> >> +
+> >> +               array = desc->bpf.effective[atype];
+> >
+> > ../kernel/bpf/cgroup.c:748:23: warning: incorrect type in assignment
+> > (different address spaces)
+> > ../kernel/bpf/cgroup.c:748:23:    expected struct bpf_prog_array *array
+> > ../kernel/bpf/cgroup.c:748:23:    got struct bpf_prog_array [noderef] __rcu *
+> >
+> >
+> > you need rcu_dereference here? but also see suggestions below to avoid
+> > iterating effective directly (it's ambiguous to search by prog only)
 >
-> To make that possible, we introduce a new public function for each of the=
- types:
-> libbpf_bpf_<type>_type_str.
+> I didn't check it with sparse so I didn't see this warning.
+> Will fix in the next version.
 >
-> Having a way to query a textual representation has been asked for in the =
-past
-> (by systemd, among others). Such representations can generally be useful =
-in
-> tracing and logging contexts, among others. At this point, at least one c=
-lient,
-> bpftool, maintains such a mapping manually, which is prone to get out of =
-date as
-> new enum variants are introduced. libbpf is arguably best situated to kee=
-p this
-> list complete and up-to-date. This patch series adds BTF based tests to e=
-nsure
-> that exhaustiveness is upheld moving forward.
+> >
+> >> +               item = &array->items[0];
+> >> +
+> >> +               /* Find the index of the prog to purge */
+> >> +               while ((tmp = READ_ONCE(item->prog))) {
+> >> +                       if (tmp == prog) {
+> >
+> > I think comparing just prog isn't always correct, as the same program
+> > can be in effective array multiple times if attached through bpf_link.
+> >
+> > Looking at replace_effective_prog() I think we can do a very similar
+> > (and tested) approach:
+> >
+> > 1. restore original pl state in __cgroup_bpf_detach (so we can find it
+> > by comparing pl->prog == prog && pl->link == link)
+> > 2. use replace_effective_prog's approach to find position of pl in
+> > effective array (using this nested for loop over cgroup parents and
+> > list_for_each_entry inside)
+> > 3. then instead of replacing one prog with another do
+> > bpf_prog_array_delete_safe_at ?
+> >
+> > I'd feel more comfortable using the same tested overall approach of
+> > replace_effective_prog.
 >
-> The libbpf provided textual representation can be inferred from the
-> corresponding enum variant name by removing the prefix and lowercasing th=
-e
-> remainder. E.g., BPF_PROG_TYPE_SOCKET_FILTER -> socket_filter. Unfortunat=
-ely,
-> bpftool does not use such a programmatic approach for some of the
-> bpf_attach_type variants. We propose a work around keeping the existing b=
-ehavior
-> for the time being in the patch titled "bpftool: Use
-> libbpf_bpf_attach_type_str".
+> Ok, I can try that.
 >
-> The patch series is structured as follows:
-> - for each enumeration type in {bpf_prog_type, bpf_map_type, bpf_attach_t=
-ype,
->   bpf_link_type}:
->   - we first introduce the corresponding public libbpf API function
->   - we then add BTF based self-tests
->   - we lastly adjust bpftool to use the libbpf provided functionality
+> >
+> >> +                               index_purge = index;
+> >> +                               break;
+> >> +                       }
+> >> +                       item++;
+> >> +                       index++;
+> >> +               }
+> >> +
+> >> +               /* Check if we found what's needed for removing the prog */
+> >> +               if (index_purge == -1 || index_purge == index - 1)
+> >> +                       continue;
+> >
+> > the search shouldn't fail, should it?
 >
-> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
->
-> Daniel M=C3=BCller (12):
->   libbpf: Introduce libbpf_bpf_prog_type_str
->   selftests/bpf: Add test for libbpf_bpf_prog_type_str
->   bpftool: Use libbpf_bpf_prog_type_str
->   libbpf: Introduce libbpf_bpf_map_type_str
->   selftests/bpf: Add test for libbpf_bpf_map_type_str
->   bpftool: Use libbpf_bpf_map_type_str
->   libbpf: Introduce libbpf_bpf_attach_type_str
->   selftests/bpf: Add test for libbpf_bpf_attach_type_str
->   bpftool: Use libbpf_bpf_attach_type_str
->   libbpf: Introduce libbpf_bpf_link_type_str
->   selftests/bpf: Add test for libbpf_bpf_link_type_str
->   bpftool: Use libbpf_bpf_link_type_str
->
+> I wasn't if the prog will be present in all parents so I decided to add this
+> check to make sure it is found.
 
-Looks good to me overall. But keep in mind that libbpf v0.8 was just
-released, so these new APIs will have to go into 1.0 section in
-libbpf.map. It can't inherit from 0.8, btw, so this is a bit new
-procedure, I'll try to get to it in next few days. Meanwhile I'd like
-to get some feedback at least from Quentin on bpftool changes.
+Looking at replace_effective_prog (it's been a while since I touched
+this code) it has to be present, otherwise it's a bug
 
->  tools/bpf/bpftool/cgroup.c                    |  20 +-
->  tools/bpf/bpftool/common.c                    |  46 ----
->  tools/bpf/bpftool/feature.c                   |  87 +++++---
->  tools/bpf/bpftool/link.c                      |  61 +++---
->  tools/bpf/bpftool/main.h                      |   6 -
->  tools/bpf/bpftool/map.c                       |  82 +++----
->  tools/bpf/bpftool/prog.c                      |  51 +----
->  tools/lib/bpf/libbpf.c                        | 160 ++++++++++++++
->  tools/lib/bpf/libbpf.h                        |  36 ++++
->  tools/lib/bpf/libbpf.map                      |   4 +
->  .../selftests/bpf/prog_tests/libbpf_str.c     | 201 ++++++++++++++++++
->  11 files changed, 539 insertions(+), 215 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+>
+> >
+> >> +
+> >> +               /* Remove the program from the array */
+> >> +               WARN_ONCE(bpf_prog_array_delete_safe_at(array, index_purge),
+> >> +                         "Failed to purge a prog from array at index %d", index_purge);
+> >> +
+> >> +               index = 0;
+> >> +               index_purge = -1;
+> >> +       }
+> >> +}
+> >> +
+> >>   /**
+> >>    * __cgroup_bpf_detach() - Detach the program or link from a cgroup, and
+> >>    *                         propagate the change to descendants
+> >> @@ -723,8 +774,11 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+> >>          pl->link = NULL;
+> >>
+> >>          err = update_effective_progs(cgrp, atype);
+> >> -       if (err)
+> >> -               goto cleanup;
+> >> +       if (err) {
+> >> +               struct bpf_prog *prog_purge = prog ? prog : link->link.prog;
+> >> +
+> >
+> > so here we shouldn't forget link, instead pass both link and prog (one
+> > of them will have to be NULL) into purge_effective_progs
+>
+> ok, I will pass in both.
 >
 > --
-> 2.30.2
->
+> Thanks,
+> Tadeusz
