@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B20B528C17
-	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 19:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A69C528C16
+	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 19:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344312AbiEPRg3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1344315AbiEPRg3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 16 May 2022 13:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344360AbiEPRgQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 13:36:16 -0400
+        with ESMTP id S1344365AbiEPRgR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 13:36:17 -0400
 Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF96936E3C
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 10:36:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B3D2315D
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 10:36:14 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 90981240108
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 19:36:10 +0200 (CEST)
+        by mout02.posteo.de (Postfix) with ESMTPS id BA9EC240109
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 19:36:12 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1652722570; bh=vFwroQ+ZcFTzYzu6CcYEgLqnok5nhecsV5aUkDQole8=;
+        t=1652722572; bh=25gMvv23DZl5SlNV/7bRoWnhQc6mtpJziVrPY7kWXlw=;
         h=From:To:Subject:Date:From;
-        b=UdWvWWz4h0YiLfEM7ZzKL4SmPP0leSchFoQe3ii/5Wzlgb7VDOtHnptk22TeN5LlM
-         P7Z9vO0y3dfEeFR/XY8pGVj03RZKevkTMk98XW+Db9H6Ifb7jwHMqJTZ2nrU2MRfop
-         h5GUxtTbnv3ZOu1RV88boqEg0z+I1NoWgmxLHIyRjsDokwSdTwIMV6nv5ePnIKlFAf
-         nlmOwYOISYny24XJNFcUPpxbQO2OnzxKB0WdwwreGhYt+CNO5tY4+uw006k2TRGIwv
-         QXSQmq3+mWarS4UBOP26Hz950dyerOq0m83BRMerVuQY1Oy7UZ9Ss3ng0FA/uff951
-         /+OfbIXUyTCQA==
+        b=OYsZDpGpYBBXl2pIuaVZbwH4hANHm+vrkE9uC87gwxLoT6KLBro8AcTQuCvDAxuT2
+         qNnaU7u3QbyTwzrLPia1t+kQwudljlb16z9Gsg/x8W0ekC/IZKWN4WvKllH4Anny7X
+         Oc3GPM3qFYNc50CznPeIRb4IM0hhGcD/xsUOJy2Mi/WsnrqEQd89YJLv5ONts6otiH
+         et4skrklzPT3qSSHDRWVTlhsm5sYK7MBbhGW4bIsTzKcKb81ELSJP395YlQW5tKK7/
+         p4Vd7KSUlfnyQ/MJPpEnQgm66fMJKpgoCp74nDgj1J/ZufGcKetY1xF6ZEi0IsFRMW
+         oOeVUNzlrc38g==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4L25yK4cPPz9rxB;
-        Mon, 16 May 2022 19:36:09 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4L25yM6cp0z9rxV;
+        Mon, 16 May 2022 19:36:11 +0200 (CEST)
 From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, quentin@isovalent.com
-Subject: [PATCH bpf-next 11/12] selftests/bpf: Add test for libbpf_bpf_link_type_str
-Date:   Mon, 16 May 2022 17:35:39 +0000
-Message-Id: <20220516173540.3520665-12-deso@posteo.net>
+Subject: [PATCH bpf-next 12/12] bpftool: Use libbpf_bpf_link_type_str
+Date:   Mon, 16 May 2022 17:35:40 +0000
+Message-Id: <20220516173540.3520665-13-deso@posteo.net>
 In-Reply-To: <20220516173540.3520665-1-deso@posteo.net>
 References: <20220516173540.3520665-1-deso@posteo.net>
 MIME-Version: 1.0
@@ -50,80 +50,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change adds a test for libbpf_bpf_link_type_str. The test retrieves
-all variants of the bpf_link_type enumeration using BTF and makes sure
-that the function under test works as expected for them.
+This change switches bpftool over to using the recently introduced
+libbpf_bpf_link_type_str function instead of maintaining its own string
+representation for the bpf_link_type enum.
 
 Signed-off-by: Daniel Müller <deso@posteo.net>
 ---
- .../selftests/bpf/prog_tests/libbpf_str.c     | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ tools/bpf/bpftool/link.c | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-index f5fa09..1e45dd 100644
---- a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-+++ b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-@@ -59,6 +59,51 @@ static void test_libbpf_bpf_attach_type_str(void)
- 	btf__free(btf);
- }
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index 2dd0d01..24ab5a 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -13,19 +13,6 @@
+ #include "json_writer.h"
+ #include "main.h"
  
-+/**
-+ * Test case to check that all bpf_link_type variants are covered by
-+ * libbpf_bpf_link_type_str.
-+ */
-+static void test_libbpf_bpf_link_type_str(void)
-+{
-+	struct btf *btf;
-+	const struct btf_type *t;
-+	const struct btf_enum *e;
-+	int i, n, id;
-+
-+	btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
-+	if (!ASSERT_OK_PTR(btf, "btf_parse"))
-+		return;
-+
-+	/* find enum bpf_link_type and enumerate each value */
-+	id = btf__find_by_name_kind(btf, "bpf_link_type", BTF_KIND_ENUM);
-+	if (!ASSERT_GT(id, 0, "bpf_link_type_id"))
-+		goto cleanup;
-+	t = btf__type_by_id(btf, id);
-+	e = btf_enum(t);
-+	n = btf_vlen(t);
-+	for (i = 0; i < n; e++, i++) {
-+		enum bpf_link_type link_type = (enum bpf_link_type)e->val;
-+		const char *link_type_name;
-+		const char *link_type_str;
-+		char buf[256];
-+
-+		if (link_type == MAX_BPF_LINK_TYPE)
-+			continue;
-+
-+		link_type_name = btf__str_by_offset(btf, e->name_off);
-+		link_type_str = libbpf_bpf_link_type_str(link_type);
-+		ASSERT_OK_PTR(link_type_str, link_type_name);
-+
-+		snprintf(buf, sizeof(buf), "BPF_LINK_TYPE_%s", link_type_str);
-+		uppercase(buf);
-+
-+		ASSERT_STREQ(buf, link_type_name, "exp_str_value");
-+	}
-+
-+cleanup:
-+	btf__free(btf);
-+}
-+
- /**
-  * Test case to check that all bpf_map_type variants are covered by
-  * libbpf_bpf_map_type_str.
-@@ -151,6 +196,9 @@ void test_libbpf_str(void)
- 	if (test__start_subtest("bpf_attach_type_str"))
- 		test_libbpf_bpf_attach_type_str();
+-static const char * const link_type_name[] = {
+-	[BPF_LINK_TYPE_UNSPEC]			= "unspec",
+-	[BPF_LINK_TYPE_RAW_TRACEPOINT]		= "raw_tracepoint",
+-	[BPF_LINK_TYPE_TRACING]			= "tracing",
+-	[BPF_LINK_TYPE_CGROUP]			= "cgroup",
+-	[BPF_LINK_TYPE_ITER]			= "iter",
+-	[BPF_LINK_TYPE_NETNS]			= "netns",
+-	[BPF_LINK_TYPE_XDP]			= "xdp",
+-	[BPF_LINK_TYPE_PERF_EVENT]		= "perf_event",
+-	[BPF_LINK_TYPE_KPROBE_MULTI]		= "kprobe_multi",
+-	[BPF_LINK_TYPE_STRUCT_OPS]               = "struct_ops",
+-};
+-
+ static struct hashmap *link_table;
  
-+	if (test__start_subtest("bpf_link_type_str"))
-+		test_libbpf_bpf_link_type_str();
+ static int link_parse_fd(int *argc, char ***argv)
+@@ -67,9 +54,12 @@ static int link_parse_fd(int *argc, char ***argv)
+ static void
+ show_link_header_json(struct bpf_link_info *info, json_writer_t *wtr)
+ {
++	const char *link_type_str;
 +
- 	if (test__start_subtest("bpf_map_type_str"))
- 		test_libbpf_bpf_map_type_str();
+ 	jsonw_uint_field(wtr, "id", info->id);
+-	if (info->type < ARRAY_SIZE(link_type_name))
+-		jsonw_string_field(wtr, "type", link_type_name[info->type]);
++	link_type_str = libbpf_bpf_link_type_str(info->type);
++	if (link_type_str)
++		jsonw_string_field(wtr, "type", link_type_str);
+ 	else
+ 		jsonw_uint_field(wtr, "type", info->type);
+ 
+@@ -187,9 +177,12 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
+ 
+ static void show_link_header_plain(struct bpf_link_info *info)
+ {
++	const char *link_type_str;
++
+ 	printf("%u: ", info->id);
+-	if (info->type < ARRAY_SIZE(link_type_name))
+-		printf("%s  ", link_type_name[info->type]);
++	link_type_str = libbpf_bpf_link_type_str(info->type);
++	if (link_type_str)
++		printf("%s  ", link_type_str);
+ 	else
+ 		printf("type %u  ", info->type);
  
 -- 
 2.30.2
