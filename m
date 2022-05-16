@@ -2,162 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9836452858C
-	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 15:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD76E5289CD
+	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 18:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243804AbiEPNjo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 09:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35498 "EHLO
+        id S245716AbiEPQJq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 12:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243842AbiEPNjm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 09:39:42 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A2D2ED60;
-        Mon, 16 May 2022 06:39:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 15F5EB81216;
-        Mon, 16 May 2022 13:39:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CB8EC341C5;
-        Mon, 16 May 2022 13:39:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652708377;
-        bh=CnGkjps7/dZIHE7FzRA5oAC3vT184hDzmq6duMtMPl4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aGJSEkgXtPP0cdbxghB7KK1T9LA5HecxFsDwnK+Xe74PmhP3C2gsxturwLx6Ztwux
-         KAn1LODgaoNXClcsmN8uVxKlKOG2ReVequ8h0ueoKDGGpoL9B7/tqOibsSGZPyzz8M
-         pDagLNoD+z6rgb9YH4U65dtjwO2iqd3k3LTnTNV7tcwS4JJ6MhQ1weQXb83jih3oaI
-         qmMXBCFU1Fh+NCBYbU/P1bfADi5Htowk0IHTdpOG8yXdLhFX7RCh1UmCXEaua3UuDY
-         73C3JTaDQmIGNdJijhNeEOd+8KLdeDSX0j+8cZhrKAJw++JILQMWXywXRmOfdOAMP0
-         x3TgtfWNu/FZw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C78DA5C0744; Mon, 16 May 2022 06:39:36 -0700 (PDT)
-Date:   Mon, 16 May 2022 06:39:36 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH bpf-next 1/2] cpuidle/rcu: Making arch_cpu_idle and
- rcu_idle_exit noinstr
-Message-ID: <20220516133936.GW1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220515203653.4039075-1-jolsa@kernel.org>
- <20220516042535.GV1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220516114922.GA349949@lothringen>
+        with ESMTP id S242024AbiEPQJo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 12:09:44 -0400
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B169537BE6
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 09:09:36 -0700 (PDT)
+Received: by mail-qt1-f171.google.com with SMTP id h3so12430549qtn.4
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 09:09:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=5A3fC3LG9xhFT5OmLJx0Vov2wbp1md3QmcKxPsHHehk=;
+        b=RMtITERx0KHzjfeMFcYUQ5YwBoiNb9R11NyYH1Id6J8V+h+/L6hyhds+eA/ilaJS+b
+         YRIZN7EhCvti69lMKpEWUDxLpweg6Ds6kamzkC77wiVrVWaGJvpn2aeXEVcWN3UQG9ns
+         um5LjonHGlZeIggbpQJv+xT2HdGW7DL+bU7UlgPsbK8zmQAAjuIbeD/w3U/pAOi1IxAc
+         YEZqd7r571DrtNXlOYKamX6Es3tWY2z2J0eqfPWdbgvDezCJOSShMAACxzuJWwdD4FUw
+         ZNjtzSn5iJ/CA79eO6OKioVysDODsqOayoLGxCLwDaMT2AzhyHHWlG4JkZ9lWEfnlUEW
+         mu6Q==
+X-Gm-Message-State: AOAM533Eg8EXkBg+6Xtf2Bl8NNH3Ws+i7sEyuef7X4AF8n417OYzPWkT
+        g9PSnUtVnvf0qyKOzw9XyqU=
+X-Google-Smtp-Source: ABdhPJxaLYoSk22p+9ELkyOUmLJ2arHz6w3RoUHNqaL/xzMHVVyRQRoHCPV4tNU1ot7PnY88+ahosw==
+X-Received: by 2002:ac8:57c8:0:b0:2f3:bdc8:ede5 with SMTP id w8-20020ac857c8000000b002f3bdc8ede5mr15624403qta.458.1652717375606;
+        Mon, 16 May 2022 09:09:35 -0700 (PDT)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-015.fbsv.net. [2a03:2880:20ff:f::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 143-20020a370995000000b0069fc13ce207sm5895359qkj.56.2022.05.16.09.09.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 May 2022 09:09:35 -0700 (PDT)
+Date:   Mon, 16 May 2022 09:09:32 -0700
+From:   David Vernet <void@manifault.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Subject: Re: [PATCH bpf-next v4 3/6] bpf: Dynptr support for ring buffers
+Message-ID: <20220516160932.mttpfphr6rkm4ve7@dev0025.ash9.facebook.com>
+References: <20220509224257.3222614-1-joannelkoong@gmail.com>
+ <20220509224257.3222614-4-joannelkoong@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220516114922.GA349949@lothringen>
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220509224257.3222614-4-joannelkoong@gmail.com>
+User-Agent: NeoMutt/20211029
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 16, 2022 at 01:49:22PM +0200, Frederic Weisbecker wrote:
-> On Sun, May 15, 2022 at 09:25:35PM -0700, Paul E. McKenney wrote:
-> > On Sun, May 15, 2022 at 10:36:52PM +0200, Jiri Olsa wrote:
-> > > Making arch_cpu_idle and rcu_idle_exit noinstr. Both functions run
-> > > in rcu 'not watching' context and if there's tracer attached to
-> > > them, which uses rcu (e.g. kprobe multi interface) it will hit RCU
-> > > warning like:
-> > > 
-> > >   [    3.017540] WARNING: suspicious RCU usage
-> > >   ...
-> > >   [    3.018363]  kprobe_multi_link_handler+0x68/0x1c0
-> > >   [    3.018364]  ? kprobe_multi_link_handler+0x3e/0x1c0
-> > >   [    3.018366]  ? arch_cpu_idle_dead+0x10/0x10
-> > >   [    3.018367]  ? arch_cpu_idle_dead+0x10/0x10
-> > >   [    3.018371]  fprobe_handler.part.0+0xab/0x150
-> > >   [    3.018374]  0xffffffffa00080c8
-> > >   [    3.018393]  ? arch_cpu_idle+0x5/0x10
-> > >   [    3.018398]  arch_cpu_idle+0x5/0x10
-> > >   [    3.018399]  default_idle_call+0x59/0x90
-> > >   [    3.018401]  do_idle+0x1c3/0x1d0
-> > > 
-> > > The call path is following:
-> > > 
-> > > default_idle_call
-> > >   rcu_idle_enter
-> > >   arch_cpu_idle
-> > >   rcu_idle_exit
-> > > 
-> > > The arch_cpu_idle and rcu_idle_exit are the only ones from above
-> > > path that are traceble and cause this problem on my setup.
-> > > 
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > 
-> > From an RCU viewpoint:
-> > 
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > [ I considered asking for an instrumentation_on() in rcu_idle_exit(),
-> > but there is no point given that local_irq_restore() isn't something
-> > you instrument anyway. ]
+On Mon, May 09, 2022 at 03:42:54PM -0700, Joanne Koong wrote:
+> Currently, our only way of writing dynamically-sized data into a ring
+> buffer is through bpf_ringbuf_output but this incurs an extra memcpy
+> cost. bpf_ringbuf_reserve + bpf_ringbuf_commit avoids this extra
+> memcpy, but it can only safely support reservation sizes that are
+> statically known since the verifier cannot guarantee that the bpf
+> program won’t access memory outside the reserved space.
 > 
-> So local_irq_save() in the beginning of rcu_idle_exit() is unsafe because
-> it is instrumentable by the function (graph)  tracers and the irqsoff tracer.
+> The bpf_dynptr abstraction allows for dynamically-sized ring buffer
+> reservations without the extra memcpy.
 > 
-> Also it calls into lockdep that might make use of RCU.
+> There are 3 new APIs:
 > 
-> That's why rcu_idle_exit() is not noinstr yet. See this patch:
+> long bpf_ringbuf_reserve_dynptr(void *ringbuf, u32 size, u64 flags, struct bpf_dynptr *ptr);
+> void bpf_ringbuf_submit_dynptr(struct bpf_dynptr *ptr, u64 flags);
+> void bpf_ringbuf_discard_dynptr(struct bpf_dynptr *ptr, u64 flags);
 > 
-> https://lore.kernel.org/lkml/20220503100051.2799723-4-frederic@kernel.org/
+> These closely follow the functionalities of the original ringbuf APIs.
+> For example, all ringbuffer dynptrs that have been reserved must be
+> either submitted or discarded before the program exits.
+> 
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 
-Ah, I should have looked at the context-tracking series again!
+Looks good!
 
-And I have to ask...  How much debugging capability are we really losing
-by continuing to use the raw versions of local_irq_{save,restore}()?
-
-							Thanx, Paul
-
-> Thanks.
-> 
-> > 
-> > > ---
-> > >  arch/x86/kernel/process.c | 2 +-
-> > >  kernel/rcu/tree.c         | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> > > index b370767f5b19..1345cb0124a6 100644
-> > > --- a/arch/x86/kernel/process.c
-> > > +++ b/arch/x86/kernel/process.c
-> > > @@ -720,7 +720,7 @@ void arch_cpu_idle_dead(void)
-> > >  /*
-> > >   * Called from the generic idle code.
-> > >   */
-> > > -void arch_cpu_idle(void)
-> > > +void noinstr arch_cpu_idle(void)
-> > >  {
-> > >  	x86_idle();
-> > >  }
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index a4b8189455d5..20d529722f51 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -896,7 +896,7 @@ static void noinstr rcu_eqs_exit(bool user)
-> > >   * If you add or remove a call to rcu_idle_exit(), be sure to test with
-> > >   * CONFIG_RCU_EQS_DEBUG=y.
-> > >   */
-> > > -void rcu_idle_exit(void)
-> > > +void noinstr rcu_idle_exit(void)
-> > >  {
-> > >  	unsigned long flags;
-> > >  
-> > > -- 
-> > > 2.35.3
-> > > 
+Acked-by: David Vernet <void@manifault.com>
