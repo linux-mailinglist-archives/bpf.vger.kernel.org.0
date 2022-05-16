@@ -2,175 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 842FD529551
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E96529554
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348639AbiEPXcK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 19:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50894 "EHLO
+        id S1350327AbiEPXfL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 19:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350327AbiEPXcI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 19:32:08 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474EF34B84
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:32:07 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id o190so17654976iof.10
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:32:07 -0700 (PDT)
+        with ESMTP id S1348798AbiEPXfL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 19:35:11 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653B8403CF
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:35:08 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id gg20so5832056pjb.1
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=46LWP1WXBTP8NjntW13l6A0dEgpzkkBpzZzq7Vuie9I=;
-        b=pZJa+nPaDxYb3lFHnvqIgoYpE9N54o0a8ZYB/u7LJC1EqWdvJFKDvpeB8Ub8Na/8N9
-         6dQ+VOJgeCeERpyMd5+dR2Lwck7PQvp3YCho2F9KOrz8rBl5Ij6XQjKz5QfMH9kj+BcH
-         iUiCTbADF1ONU9xp4MRKbgyBm7BvCMKHZXrPp1xCInWxXoomgva0c/f+ePC1XZTJjS8s
-         TqqKC4QUIfuVTmjdGcy/6YXOK2uMwDc5L9IxbOfdyH51o6Ufo/jjdcxu+oV4RHsjkGrD
-         lx1pavcP95e9o+kjewqgz7sTMnWMKsihYh6EcC94rRc1lj3SDEMsStyvi093IpoNqdO2
-         GHoA==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=SW/UVWzWsdpJtnPhkcqrIpoiIUSTo1h+7uoKjNI2+sQ=;
+        b=EvEOYmoNSLO0F/CcduL33KGkB1dDXrs0mafz3naiC3Dca5nTLoBgRdodtmP1lB7IPT
+         qheWKdsw9O7nI9FVnktp0GhXxiTwqOcSPSxamYPQyroUlLiT2NEDcDMcMxIk0OTkNEFK
+         /+0KcO/3FdiAxEF+vMSkP6pxPzWQ7DCgbAAIkHNXhanU2Ao8T9HlBRdhVKYW+3FeKPQ2
+         drS9RMj6vOH4cHprgKeR5oJvUU7v5fZeH2EvdjmG34hm9465T9vpHBSLZZJcDuOKRSvh
+         ATJZRzaXCigEJr3VtTPmbOf5v9njTq4uM1nOx6DpISa/YbJVb0hD9t1hokEVX5HA7QRN
+         lj7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=46LWP1WXBTP8NjntW13l6A0dEgpzkkBpzZzq7Vuie9I=;
-        b=qc9f6TzD54blSmr3270aiUa6uDExIe+9X0LHGEU6GAGKwvjqZLRWbJ9b3Q4o0EkYPe
-         V1Tcjh/8J5dUQkX8l9rDC9CWe0B/bqLZ9QwfFzGJdqhyZ/HSFjmI5RqzNR4v8lzJeeII
-         7mY7Sf0YqzNl5cfJOguXLdvdEjoEXcpB4VX2AcPt/3RFJf8ZVsgAXMfS3hZY8oz5Rw0Y
-         c5TRsTVkZh6Qua+D/dkh7dXKrw0Z6O6CJy1LklO54kZo7pwzQWOFhGU3tGdVY8BNcvS9
-         pndn2oN4iZZExDl3xHV/o9amY54FBVTvySqy6c1lDhAp9MyAFu4dz7rORhIvaiDeV3pZ
-         sYRw==
-X-Gm-Message-State: AOAM533gdDKqfemSwEWjslPxcWM5chJi9i3MVMEuu2IaXMGS7y9k1wFZ
-        yf9SmRlwey9Li1auqKxm1kxZp5kVzwc9n83yoNxIW0StGkc=
-X-Google-Smtp-Source: ABdhPJxs8QJMug9dIR4cmrCgOIWLFU9HIiiXTpk3aFNliSi48e9U+8MmZEFlGLjbp7f1VIY/dZbJkQXrO/IXeEw+WYc=
-X-Received: by 2002:a5d:9316:0:b0:657:a364:ceb with SMTP id
- l22-20020a5d9316000000b00657a3640cebmr9229754ion.63.1652743926552; Mon, 16
- May 2022 16:32:06 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=SW/UVWzWsdpJtnPhkcqrIpoiIUSTo1h+7uoKjNI2+sQ=;
+        b=vOdTIMmHYo+Dxl1LoPaSCokyrq2noOoizjL5L0TGsHwklcnp1KNhJmSxGeENsPbwxJ
+         8GBVWanqcBapUTEH5fu3Nj20lNUWNe+IFoho4o/kZLtBYgtqpxMJu0si2veEDciARKpX
+         Pe9ulSRir8azn9Iq79PxcTJxo8BwjHQo6ohdfaa5utccUbqrXBPl9laTS34rFbcX9UBj
+         vHUm3/TiLdfRQM7/7P6YFTGFBTlJAi0CDnUUJqxBMpQuJM+4Cmhqir8dHQyTcWuTgNlq
+         HOnEW8f0YgXMYJ8rhX5jH3lbNoBFrNcyUV1L6yDP+8peWulRQavsJ0IfLjztY3u4iWth
+         H5mA==
+X-Gm-Message-State: AOAM533IWJiC3sRyn9ybQ8/2360ycW4vUdlbM5OhK8HvhOrn3i05rKlC
+        dzANiG5hM1wEZpIZ8my7w5WcwQ==
+X-Google-Smtp-Source: ABdhPJyNjNJettvNBuBgmW/vaef9bry0PDcDa2E6bPktWOuBgPoYjqvHActZgPFjBtpIdhY6VXtTKg==
+X-Received: by 2002:a17:90a:528f:b0:1dc:9a7c:4a3 with SMTP id w15-20020a17090a528f00b001dc9a7c04a3mr21607865pjh.112.1652744107892;
+        Mon, 16 May 2022 16:35:07 -0700 (PDT)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id j6-20020a17090adc8600b001df3a251cc2sm259493pjv.4.2022.05.16.16.35.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 May 2022 16:35:07 -0700 (PDT)
+Message-ID: <2fcdbecf-5352-ea81-ee42-ee10fbe2f72e@linaro.org>
+Date:   Mon, 16 May 2022 16:35:06 -0700
 MIME-Version: 1.0
-References: <20220512074321.2090073-1-davemarchevsky@fb.com> <20220512074321.2090073-5-davemarchevsky@fb.com>
-In-Reply-To: <20220512074321.2090073-5-davemarchevsky@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 May 2022 16:31:55 -0700
-Message-ID: <CAEf4BzYj2i4shfAFW4fUKaEDFQvkMtyirVpq8_5AQAX0pW36yQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 4/5] selftests/bpf: Add test for USDT parse
- of xmm reg
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Rik van Riel <riel@surriel.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Yonghong Song <yhs@fb.com>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
+References: <CAEf4Bzah9K7dEa_7sXE4TnkuMTRHypMU9DxiLezgRvLjcqE_YA@mail.gmail.com>
+ <20220513190821.431762-1-tadeusz.struk@linaro.org>
+ <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH v3] bpf: Fix KASAN use-after-free Read in
+ compute_effective_progs
+In-Reply-To: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 12, 2022 at 12:43 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->
-> Validate that bpf_get_reg_val helper solves the motivating problem of
-> this patch series: USDT args passed through xmm regs. The userspace
-> portion of the test forces STAP_PROBE macro to use %xmm0 and %xmm1 regs
-> to pass a float and an int, which the bpf-side successfully reads using
-> BPF_USDT.
->
-> In the wild I discovered a sanely-configured USDT in Fedora libpthread
-> using xmm regs to pass scalar values, likely due to register pressure.
-> urandom_read_lib_xmm mimics this by using -ffixed-$REG flag to mark
-> r11-r14 unusable and passing many USDT args.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  tools/testing/selftests/bpf/Makefile          |  8 ++-
->  tools/testing/selftests/bpf/prog_tests/usdt.c |  7 +++
->  .../selftests/bpf/progs/test_urandom_usdt.c   | 13 ++++
->  tools/testing/selftests/bpf/urandom_read.c    |  3 +
->  .../selftests/bpf/urandom_read_lib_xmm.c      | 62 +++++++++++++++++++
->  5 files changed, 91 insertions(+), 2 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/urandom_read_lib_xmm.c
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 6bbc03161544..19246e34dfe1 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -172,10 +172,14 @@ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
->         $(call msg,LIB,,$@)
->         $(Q)$(CC) $(CFLAGS) -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
->
-> -$(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
-> +$(OUTPUT)/liburandom_read_xmm.so: urandom_read_lib_xmm.c
-> +       $(call msg,LIB,,$@)
-> +       $(Q)$(CC) -O0 -ffixed-r11 -ffixed-r12 -ffixed-r13 -ffixed-r14 -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
+On 5/16/22 16:16, Andrii Nakryiko wrote:
+> On Fri, May 13, 2022 at 12:08 PM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+>>   kernel/bpf/cgroup.c | 64 +++++++++++++++++++++++++++++++++++++++------
+>>   1 file changed, 56 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>> index 128028efda64..9d3af4d6c055 100644
+>> --- a/kernel/bpf/cgroup.c
+>> +++ b/kernel/bpf/cgroup.c
+>> @@ -681,6 +681,57 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
+>>          return ERR_PTR(-ENOENT);
+>>   }
+>>
+>> +/**
+>> + * purge_effective_progs() - After compute_effective_progs fails to alloc new
+>> + *                           cgrp->bpf.inactive table we can recover by
+>> + *                           recomputing the array in place.
+>> + *
+>> + * @cgrp: The cgroup which descendants to traverse
+>> + * @link: A link to detach
+>> + * @atype: Type of detach operation
+>> + */
+>> +static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
+>> +                                 enum cgroup_bpf_attach_type atype)
+>> +{
+>> +       struct cgroup_subsys_state *css;
+>> +       struct bpf_prog_array_item *item;
+>> +       struct bpf_prog *tmp;
+>> +       struct bpf_prog_array *array;
+>> +       int index = 0, index_purge = -1;
+>> +
+>> +       if (!prog)
+>> +               return;
+>> +
+>> +       /* recompute effective prog array in place */
+>> +       css_for_each_descendant_pre(css, &cgrp->self) {
+>> +               struct cgroup *desc = container_of(css, struct cgroup, self);
+>> +
+>> +               array = desc->bpf.effective[atype];
+> 
+> ../kernel/bpf/cgroup.c:748:23: warning: incorrect type in assignment
+> (different address spaces)
+> ../kernel/bpf/cgroup.c:748:23:    expected struct bpf_prog_array *array
+> ../kernel/bpf/cgroup.c:748:23:    got struct bpf_prog_array [noderef] __rcu *
+> 
+> 
+> you need rcu_dereference here? but also see suggestions below to avoid
+> iterating effective directly (it's ambiguous to search by prog only)
 
-this looks very x86-specific, but we support other architectures as well
+I didn't check it with sparse so I didn't see this warning.
+Will fix in the next version.
 
-looking at sdt.h, it seems like STAP_PROBEx() macros support being
-called from assembly code, I wonder if it would be better to try to
-figure out how to use it from assembly and use some xmm register
-directly in inline assembly? I have never done that before, but am
-hopeful :)
+> 
+>> +               item = &array->items[0];
+>> +
+>> +               /* Find the index of the prog to purge */
+>> +               while ((tmp = READ_ONCE(item->prog))) {
+>> +                       if (tmp == prog) {
+> 
+> I think comparing just prog isn't always correct, as the same program
+> can be in effective array multiple times if attached through bpf_link.
+> 
+> Looking at replace_effective_prog() I think we can do a very similar
+> (and tested) approach:
+> 
+> 1. restore original pl state in __cgroup_bpf_detach (so we can find it
+> by comparing pl->prog == prog && pl->link == link)
+> 2. use replace_effective_prog's approach to find position of pl in
+> effective array (using this nested for loop over cgroup parents and
+> list_for_each_entry inside)
+> 3. then instead of replacing one prog with another do
+> bpf_prog_array_delete_safe_at ?
+> 
+> I'd feel more comfortable using the same tested overall approach of
+> replace_effective_prog.
 
-> +
-> +$(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so $(OUTPUT)/liburandom_read_xmm.so
->         $(call msg,BINARY,,$@)
->         $(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.c,$^)                        \
-> -                 liburandom_read.so $(LDLIBS)                                 \
-> +                 liburandom_read.so liburandom_read_xmm.so $(LDLIBS)          \
->                   -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
->
->  $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
-> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
-> index a71f51bdc08d..f98749ac74a7 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
-> @@ -385,6 +385,12 @@ static void subtest_urandom_usdt(bool auto_attach)
->                         goto cleanup;
->                 skel->links.urandlib_read_with_sema = l;
->
-> +               l = bpf_program__attach_usdt(skel->progs.urandlib_xmm_reg_read,
-> +                                            urand_pid, "./liburandom_read_xmm.so",
-> +                                            "urandlib", "xmm_reg_read", NULL);
-> +               if (!ASSERT_OK_PTR(l, "urandlib_xmm_reg_read"))
-> +                       goto cleanup;
-> +               skel->links.urandlib_xmm_reg_read = l;
->         }
->
->         /* trigger urandom_read USDTs */
-> @@ -402,6 +408,7 @@ static void subtest_urandom_usdt(bool auto_attach)
->         ASSERT_EQ(bss->urandlib_read_with_sema_call_cnt, 1, "urandlib_w_sema_cnt");
->         ASSERT_EQ(bss->urandlib_read_with_sema_buf_sz_sum, 256, "urandlib_w_sema_sum");
->
-> +       ASSERT_EQ(bss->urandlib_xmm_reg_read_buf_sz_sum, 256, "liburandom_read_xmm.so");
->  cleanup:
->         if (urand_pipe)
->                 pclose(urand_pipe);
-> diff --git a/tools/testing/selftests/bpf/progs/test_urandom_usdt.c b/tools/testing/selftests/bpf/progs/test_urandom_usdt.c
-> index 3539b02bd5f7..575761863eb6 100644
-> --- a/tools/testing/selftests/bpf/progs/test_urandom_usdt.c
-> +++ b/tools/testing/selftests/bpf/progs/test_urandom_usdt.c
-> @@ -67,4 +67,17 @@ int BPF_USDT(urandlib_read_with_sema, int iter_num, int iter_cnt, int buf_sz)
->         return 0;
->  }
->
-> +int urandlib_xmm_reg_read_buf_sz_sum;
+Ok, I can try that.
 
-nit: empty line here
+> 
+>> +                               index_purge = index;
+>> +                               break;
+>> +                       }
+>> +                       item++;
+>> +                       index++;
+>> +               }
+>> +
+>> +               /* Check if we found what's needed for removing the prog */
+>> +               if (index_purge == -1 || index_purge == index - 1)
+>> +                       continue;
+> 
+> the search shouldn't fail, should it?
 
-> +SEC("usdt/./liburandom_read_xmm.so:urandlib:xmm_reg_read")
-> +int BPF_USDT(urandlib_xmm_reg_read, int *f1, int *f2, int *f3, int a, int b,
-> +                                    int c /*should be float */, int d, int e,
-> +                                    int f, int g, int h, int buf_sz)
-> +{
-> +       if (urand_pid != (bpf_get_current_pid_tgid() >> 32))
-> +               return 0;
-> +
-> +       __sync_fetch_and_add(&urandlib_xmm_reg_read_buf_sz_sum, buf_sz);
-> +       return 0;
-> +}
-> +
+I wasn't if the prog will be present in all parents so I decided to add this
+check to make sure it is found.
 
-[...]
+> 
+>> +
+>> +               /* Remove the program from the array */
+>> +               WARN_ONCE(bpf_prog_array_delete_safe_at(array, index_purge),
+>> +                         "Failed to purge a prog from array at index %d", index_purge);
+>> +
+>> +               index = 0;
+>> +               index_purge = -1;
+>> +       }
+>> +}
+>> +
+>>   /**
+>>    * __cgroup_bpf_detach() - Detach the program or link from a cgroup, and
+>>    *                         propagate the change to descendants
+>> @@ -723,8 +774,11 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+>>          pl->link = NULL;
+>>
+>>          err = update_effective_progs(cgrp, atype);
+>> -       if (err)
+>> -               goto cleanup;
+>> +       if (err) {
+>> +               struct bpf_prog *prog_purge = prog ? prog : link->link.prog;
+>> +
+> 
+> so here we shouldn't forget link, instead pass both link and prog (one
+> of them will have to be NULL) into purge_effective_progs
+
+ok, I will pass in both.
+
+-- 
+Thanks,
+Tadeusz
