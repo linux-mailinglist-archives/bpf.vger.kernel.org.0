@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E795529549
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5219952954C
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 01:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347864AbiEPX0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 19:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
+        id S238157AbiEPX2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 19:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350380AbiEPX0V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 19:26:21 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D13434B84
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:26:20 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id b11so7647887ilr.4
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:26:20 -0700 (PDT)
+        with ESMTP id S1348036AbiEPX2b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 19:28:31 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075B83FBCC
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:28:31 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id s12so8971766iln.11
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 16:28:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bN6v+QHbgqNtGWpXjoP83AoC7F/6S9DmuIN0DhuHnZQ=;
-        b=kIIN7Uv+9CGWW2CWoNZKY+UqIXk+RPIEZbrwtz7bKC/sem8jlW9fnPwOi8WD69OoHQ
-         iktuaEmr69vZyNDrbVjxvtl5LLtIz5GnDigPsi5nzsdfd/Lnc8yT21OKa+iYBmo6MiP8
-         JsA/XWgSvMwLNGkuvU48LUb98Zm+l7ik+KE/HfOyDmFjMjP6iweUW+0okVEATIaz9tQb
-         /YtKuLImS0MwglZTrGo5IA2XmCKGQf8Xc4VlXxN3u9BHEFpRsooV2o6ileCiXGwAvMG2
-         AQ0crLbl3Zbsh93Xpn8Bh+jNkYWEyx6OTD6/UQ7lF60ceTzyz63DgEuAltY35cyQ3cMv
-         5MIA==
+        bh=IJTPwb08Mc83JjERwzwUE80vVRGVXxtoGmjI2915s1w=;
+        b=oG6pPgkF9rRI5rqSBg21cxkcdMoXIM4dfP17b7dgQqhk5oxoikn8zkp1Pf5+hW2v1j
+         nZkSnX3Gj6uKcye2FNHIlxMzBBNmJuCGbO3JlcNkGqv3w4Ae5tfpQIstgnFZ+ulqIgtl
+         Xw5RvGFCdIReEc0/s8VY9xheFIqHHx3dIxj1N8YBXgTagRJIkLi+AswbO/agW5BQRvAq
+         SIj64PMl+8DPUFEuEEuxyX/3Q9XPHGcq7cmBbOAlBlenoYvkbd0Li7Wb3Nal5fiuLRnA
+         WgnWokY12YHfMsN8lf8hz+/5Gjc7VUK1bViaJL6FIn+oDvZHCC4IpGnqg4BR7dRnAEDu
+         6j5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bN6v+QHbgqNtGWpXjoP83AoC7F/6S9DmuIN0DhuHnZQ=;
-        b=fgE4UqPZJfXESxGxkRva1+FM9V0j6pVdMz9hkTY+PRePj/2SKq+1aIsorrKd4fe1Ks
-         hhzlejxYVhxq2H7zevabowVjTeVtjKRodh2BnLMbJKLLyye4ajl3n1ce6lki0VrMhXX/
-         VN7SuqPRusqOaFJRwN7JsKAGXTY2Kd9QOMm6Q+atAUP3rsq9pMuam4djxErdBTnJz2Ge
-         iarugiSU9T5HNC5DPMSdOLnwpktLCoWQzhHUkfWaOAsIwC09Cxuw9GwNEXGPxzOAi8+i
-         6PfH5/kKVmtPDag0gaNFPsCnAarviXWxRdmT/AS70u3vLaZMXFGRJJQRac2Hfxqoucwq
-         /rCA==
-X-Gm-Message-State: AOAM531aUocktYaIAL5mXtEsPaRhLr1sFOejDP/KHrtLl7oLYJwHkm8/
-        RFL3h1tVzy2GKenHj6H4nR7YSEysYZs+qpmeZxo=
-X-Google-Smtp-Source: ABdhPJwScGij+Y7bbRq/hA09dIfOaMfI176gOhX3u/7ISZT7Hex/PvfAEia4rX5r3mX13JakH4h5vDIQURIScfMAGhs=
-X-Received: by 2002:a92:cd4c:0:b0:2d1:2ee7:5cef with SMTP id
- v12-20020a92cd4c000000b002d12ee75cefmr1898824ilq.252.1652743579728; Mon, 16
- May 2022 16:26:19 -0700 (PDT)
+        bh=IJTPwb08Mc83JjERwzwUE80vVRGVXxtoGmjI2915s1w=;
+        b=zZFIamYsmI2A7XIJ8HHc+oTk+xN+7RpZpWrZdZDtgUYuwJLZD0/yN5Hb0oCWq4SDSW
+         piLD/cNaBw/A5ar0EbxtCs4k1C71M587gMraneTaY8LldgpherRyuplcnuL36kKrbV1V
+         9CYYQlxkp5xj+ssorpZ4rQqZ2mOjCyIJI6v0xkKVwjS5OdEebWKhBfF2hZXGsqZYJOvr
+         nbUR7qeVdFPvArX4JpZG6OUy7WS74SpvCfxT63x9Mqg+6PsUfaxcjfofb7FB6Md7x0zT
+         X/mBDQdgWDZaBhtkhCrp9b1AjsU4psehstqqhS0wlm8gcd3cTrqJvlYL5aMNFIdc2e9h
+         +f7Q==
+X-Gm-Message-State: AOAM530mKJ3DPKnb8/IVOTQ94hWCj5dxcbgqSYX3b1kgWnBnJ8F4cNZv
+        5cFvUX26dAd7rIBEY8EpxHBrSa1Q6mv6gU8M54g=
+X-Google-Smtp-Source: ABdhPJyJkP9sOZceoeygEEhkntTPvWoUoNp+35NvIRbnpdHNriy0P5AUv9qSP+I1AmAEuipc/TWG0Hh2cxzHoQovoaw=
+X-Received: by 2002:a05:6e02:1c01:b0:2d1:262e:8d5f with SMTP id
+ l1-20020a056e021c0100b002d1262e8d5fmr2851482ilh.98.1652743710378; Mon, 16 May
+ 2022 16:28:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220512074321.2090073-1-davemarchevsky@fb.com> <20220512074321.2090073-4-davemarchevsky@fb.com>
-In-Reply-To: <20220512074321.2090073-4-davemarchevsky@fb.com>
+References: <20220512074321.2090073-1-davemarchevsky@fb.com> <20220512074321.2090073-6-davemarchevsky@fb.com>
+In-Reply-To: <20220512074321.2090073-6-davemarchevsky@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 May 2022 16:26:08 -0700
-Message-ID: <CAEf4BzaM0SC3D66NC3djt1fsEQcJ-af0-EgPx5UV8YLDLu8ibg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/5] libbpf: usdt lib wiring of xmm reads
+Date:   Mon, 16 May 2022 16:28:19 -0700
+Message-ID: <CAEf4Bzag3ESyhhnF=es5TFx41wpTCrqoA4J1pahiBCVan6ii5w@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 5/5] selftests/bpf: get_reg_val test
+ exercising fxsave fetch
 To:     Dave Marchevsky <davemarchevsky@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -71,166 +72,143 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, May 12, 2022 at 12:43 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
 >
-> Handle xmm0,...,xmm15 registers when parsing USDT arguments. Currently
-> only the first 64 bits of the fetched value are returned as I haven't
-> seen the rest of the register used in practice.
+> Add a test which calls bpf_get_reg_val with an xmm reg after forcing fpu
+> state save. The test program writes to %xmm10, then calls a BPF program
+> which forces fpu save and calls bpf_get_reg_val. This guarantees that
+> !fpregs_state_valid check will succeed, forcing bpf_get_reg_val to fetch
+> %xmm10's value from task's fpu state.
 >
-> This patch also handles floats in USDT arg spec by ignoring the fact
-> that they're floats and considering them scalar. Currently we can't do
-> float math in BPF programs anyways, so might as well support passing to
-> userspace and converting there.
+> A bpf_testmod_save_fpregs kfunc helper is added to bpf_testmod to enable
+> 'force fpu save'. Existing bpf_dummy_ops test infra is extended to
+> support calling the kfunc.
 >
-> We can use existing ARG_REG sscanf + logic, adding XMM-specific logic
-> when calc_pt_regs_off fails. If the reg is xmm, arg_spec's reg_off is
-> repurposed to hold reg_no, which is passed to bpf_get_reg_val. Since the
-> helper does the digging around in fxregs_state it's not necessary to
-> calculate offset in bpf code for these regs.
->
-> NOTE: Changes here cause verification failure for existing USDT tests.
-> Specifically, BPF_USDT prog 'usdt12' fails to verify due to too many
-> insns despite not having its insn count significantly changed.
+> unload_bpf_testmod would often fail with -EAGAIN when running the test
+> added in this patch, so a single retry w/ 20ms sleep is added.
 >
 > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 > ---
->  tools/lib/bpf/usdt.bpf.h | 36 ++++++++++++++++++++--------
->  tools/lib/bpf/usdt.c     | 51 ++++++++++++++++++++++++++++++++++++----
->  2 files changed, 73 insertions(+), 14 deletions(-)
+>  include/linux/bpf.h                           |  1 +
+>  kernel/trace/bpf_trace.c                      |  2 +-
+>  net/bpf/bpf_dummy_struct_ops.c                | 13 ++++++
+
+split kernel changes from selftests?
+
+>  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 13 ++++++
+>  tools/testing/selftests/bpf/prog_tests/usdt.c | 42 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_urandom_usdt.c   | 24 +++++++++++
+>  tools/testing/selftests/bpf/test_progs.c      |  7 ++++
+>  7 files changed, 101 insertions(+), 1 deletion(-)
 >
-> diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
-> index 4181fddb3687..7b5ed4cbaa2f 100644
-> --- a/tools/lib/bpf/usdt.bpf.h
-> +++ b/tools/lib/bpf/usdt.bpf.h
-> @@ -43,6 +43,7 @@ enum __bpf_usdt_arg_type {
->         BPF_USDT_ARG_CONST,
->         BPF_USDT_ARG_REG,
->         BPF_USDT_ARG_REG_DEREF,
-> +       BPF_USDT_ARG_XMM_REG,
->  };
->
->  struct __bpf_usdt_arg_spec {
-> @@ -129,7 +130,9 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
->  {
->         struct __bpf_usdt_spec *spec;
->         struct __bpf_usdt_arg_spec *arg_spec;
-> -       unsigned long val;
-> +       struct pt_regs *btf_regs;
-> +       struct task_struct *btf_task;
-> +       struct { __u64 a; __u64 unused; } val = {};
->         int err, spec_id;
->
->         *res = 0;
-> @@ -151,7 +154,7 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
->                 /* Arg is just a constant ("-4@$-9" in USDT arg spec).
->                  * value is recorded in arg_spec->val_off directly.
->                  */
-> -               val = arg_spec->val_off;
-> +               val.a = arg_spec->val_off;
->                 break;
->         case BPF_USDT_ARG_REG:
->                 /* Arg is in a register (e.g, "8@%rax" in USDT arg spec),
-> @@ -159,7 +162,20 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
->                  * struct pt_regs. To keep things simple user-space parts
->                  * record offsetof(struct pt_regs, <regname>) in arg_spec->reg_off.
->                  */
-> -               err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
-> +               err = bpf_probe_read_kernel(&val.a, sizeof(val.a), (void *)ctx + arg_spec->reg_off);
-> +               if (err)
-> +                       return err;
-> +               break;
-> +       case BPF_USDT_ARG_XMM_REG:
-
-nit: a bit too XMM-specific name here, we probably want to keep it a bit
-
-> +               /* Same as above, but arg is an xmm reg, so can't look
-> +                * in pt_regs, need to use special helper.
-> +                * reg_off is the regno ("xmm0" -> regno 0, etc)
-> +                */
-> +               btf_task = bpf_get_current_task_btf();
-> +               btf_regs = (struct pt_regs *)bpf_task_pt_regs(btf_task);
-
-I'd like to avoid taking dependency on bpf_get_current_task_btf() for
-rare case of XMM register, which makes it impossible to do USDT on
-older kernels. It seems like supporting reading registers from current
-(and maybe current pt_regs context) should cover a lot of practical
-uses.
-
-> +               err = bpf_get_reg_val(&val, sizeof(val),
-
-But regardless of the above, we'll need to use CO-RE to detect support
-for this new BPF helper (probably using bpf_core_enum_value_exists()?)
-to allow using USDTs on older kernels.
-
-
-> +                                    ((u64)arg_spec->reg_off + BPF_GETREG_X86_XMM0) << 32,
-> +                                    btf_regs, btf_task);
->                 if (err)
->                         return err;
->                 break;
-> @@ -171,14 +187,14 @@ int bpf_usdt_arg(struct pt_regs *ctx, __u64 arg_num, long *res)
->                  * from pt_regs, then do another user-space probe read to
->                  * fetch argument value itself.
->                  */
-> -               err = bpf_probe_read_kernel(&val, sizeof(val), (void *)ctx + arg_spec->reg_off);
-> +               err = bpf_probe_read_kernel(&val.a, sizeof(val.a), (void *)ctx + arg_spec->reg_off);
->                 if (err)
->                         return err;
-> -               err = bpf_probe_read_user(&val, sizeof(val), (void *)val + arg_spec->val_off);
-> +               err = bpf_probe_read_user(&val.a, sizeof(val.a), (void *)val.a + arg_spec->val_off);
-
-is the useful value in xmm register normally in lower 64-bits of it?
-is it possible to just request reading just the first 64 bits from
-bpf_get_reg_val() and avoid this ugly union?
-
->                 if (err)
->                         return err;
->  #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-> -               val >>= arg_spec->arg_bitshift;
-> +               val.a >>= arg_spec->arg_bitshift;
->  #endif
->                 break;
->         default:
 
 [...]
 
-> +static int calc_xmm_regno(const char *reg_name)
-> +{
-> +       static struct {
-> +               const char *name;
-> +               __u16 regno;
-> +       } xmm_reg_map[] = {
-> +               { "xmm0",  0 },
-> +               { "xmm1",  1 },
-> +               { "xmm2",  2 },
-> +               { "xmm3",  3 },
-> +               { "xmm4",  4 },
-> +               { "xmm5",  5 },
-> +               { "xmm6",  6 },
-> +               { "xmm7",  7 },
-> +#ifdef __x86_64__
-> +               { "xmm8",  8 },
-> +               { "xmm9",  9 },
-> +               { "xmm10",  10 },
-> +               { "xmm11",  11 },
-> +               { "xmm12",  12 },
-> +               { "xmm13",  13 },
-> +               { "xmm14",  14 },
-> +               { "xmm15",  15 },
-
-no-x86 arches parse this generically with sscanf(), seems like we can
-do this simple approach here as well?
-
-
-> +#endif
-> +       };
-> +       int i;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(xmm_reg_map); i++) {
-> +               if (strcmp(reg_name, xmm_reg_map[i].name) == 0)
-> +                       return xmm_reg_map[i].regno;
-> +       }
-> +
->         return -ENOENT;
+> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> index e585e1cefc77..b2b35138b097 100644
+> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> @@ -1,5 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* Copyright (c) 2020 Facebook */
+> +#include <asm/fpu/api.h>
+>  #include <linux/btf.h>
+>  #include <linux/btf_ids.h>
+>  #include <linux/error-injection.h>
+> @@ -25,6 +26,13 @@ bpf_testmod_test_mod_kfunc(int i)
+>         *(int *)this_cpu_ptr(&bpf_testmod_ksym_percpu) = i;
 >  }
 >
+> +noinline void
+> +bpf_testmod_save_fpregs(void)
+> +{
+> +       kernel_fpu_begin();
+> +       kernel_fpu_end();
+
+this seems to be x86-specific kernel functions, we need to think about
+building selftests (including bpf_testmod) on other architectures
+
+
+> +}
+> +
+>  struct bpf_testmod_btf_type_tag_1 {
+>         int a;
+>  };
+> @@ -150,6 +158,7 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
+>
+>  BTF_SET_START(bpf_testmod_check_kfunc_ids)
+>  BTF_ID(func, bpf_testmod_test_mod_kfunc)
+> +BTF_ID(func, bpf_testmod_save_fpregs)
+>  BTF_SET_END(bpf_testmod_check_kfunc_ids)
+>
+>  static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
+> @@ -166,6 +175,10 @@ static int bpf_testmod_init(void)
+>         ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_testmod_kfunc_set);
+>         if (ret < 0)
+>                 return ret;
+> +       ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &bpf_testmod_kfunc_set);
+> +       if (ret < 0)
+> +               return ret;
+> +
+>         if (bpf_fentry_test1(0) < 0)
+>                 return -EINVAL;
+>         return sysfs_create_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
+> diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
+> index f98749ac74a7..3866cb004b22 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/usdt.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
+> @@ -8,6 +8,11 @@
+>  #include "test_usdt.skel.h"
+>  #include "test_urandom_usdt.skel.h"
+>
+> +/* Need to keep consistent with definition in include/linux/bpf.h */
+> +struct bpf_dummy_ops_state {
+> +       int val;
+> +};
+> +
+>  int lets_test_this(int);
+>
+>  static volatile int idx = 2;
+> @@ -415,6 +420,41 @@ static void subtest_urandom_usdt(bool auto_attach)
+>         test_urandom_usdt__destroy(skel);
+>  }
+>
+> +static void subtest_reg_val_fpustate(void)
+> +{
+> +       struct bpf_dummy_ops_state in_state;
+> +       struct test_urandom_usdt__bss *bss;
+> +       struct test_urandom_usdt *skel;
+> +       u64 in_args[1];
+> +       u64 regval[2];
+> +       int err, fd;
+> +
+> +       in_state.val = 0; /* unused */
+> +       in_args[0] = (unsigned long)&in_state;
+> +
+> +       LIBBPF_OPTS(bpf_test_run_opts, attr,
+
+nit: LIBBPF_OPTS declares variable, so it had to be in variable
+declaration block
+
+> +                  .ctx_in = in_args,
+> +                  .ctx_size_in = sizeof(in_args),
+> +       );
+> +
+> +       skel = test_urandom_usdt__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +               return;
+> +       bss = skel->bss;
+> +
+> +       fd = bpf_program__fd(skel->progs.save_fpregs_and_read);
+> +       regval[0] = 42;
+> +       regval[1] = 0;
+> +       asm("movdqa %0, %%xmm10" : "=m"(*(char *)regval));
+> +
+> +       err = bpf_prog_test_run_opts(fd, &attr);
+> +       ASSERT_OK(err, "save_fpregs_and_read");
+> +       ASSERT_EQ(bss->fpregs_dummy_opts_xmm_val, 42, "fpregs_dummy_opts_xmm_val");
+> +
+> +       close(fd);
+> +       test_urandom_usdt__destroy(skel);
+> +}
+> +
 
 [...]
