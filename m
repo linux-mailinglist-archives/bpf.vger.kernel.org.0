@@ -2,233 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABF3527EFD
-	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 09:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8438C528123
+	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 12:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241389AbiEPH6u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 03:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        id S231435AbiEPKAB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 06:00:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232688AbiEPH6o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 03:58:44 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653D22AC4F;
-        Mon, 16 May 2022 00:58:41 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4L1s2L3zc3zCskB;
-        Mon, 16 May 2022 15:53:46 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 16 May 2022 15:58:38 +0800
-Message-ID: <06b33393-8af5-9faa-6faa-acb5111865f6@huawei.com>
-Date:   Mon, 16 May 2022 15:58:37 +0800
+        with ESMTP id S233747AbiEPJ77 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 05:59:59 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E520026E3
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 02:59:58 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id kq17so27605820ejb.4
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 02:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=kwwaIlAPzbUtG98dYHYYx2ThGuQFm14zkpYkXTJuiM4=;
+        b=EAZbWu4HE8adUn3cFR1p8ZhJGunEY23iXRbfqgLia/qljJyGDtdIh/MFTialRPooOU
+         d6BYX5f0F1cMtqJ4T59XVtMRK2PBJy1rCtO06pptHEahsCay+ke5EndF5UZJ7lG16ra2
+         AJh/MO6vbrEj1aDGDquz3wVlu7wRuY/P2MwVlDrwI3ako7VXhmaI1Wz/O6kBm0cQe3Vu
+         R3EZs/z6Wrwajc4vqzdGp1C5Yk4PvYST0zcYCE940M9vXdy/qDhS0qRnW7l1KFCyHXwT
+         BSagi1aw4BqByRBRHqum2xESeFZIs34C0PhO1l2RTiaw0ot9bzBwxzv3/7JiTysaKtPa
+         z9vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=kwwaIlAPzbUtG98dYHYYx2ThGuQFm14zkpYkXTJuiM4=;
+        b=2c44iGhFYg607SYMt7l6S1Re34BXw7Q7AMX0GmzEBfb1q8KCJVbYVhN9Xnw6NsmuOc
+         NaY6uRtT6mOxaqHBOOlJ9W7w2JVAqWVzvl82EATsZXPoFnmFVkhGuM7CnE2jSzXZUnrH
+         1zL/I2A0i1D/itykQXVoKPf3b7/GJeet26dayCDRp4XJ3pLnJI2OWhJzlRSRGmhia2Jz
+         GfajzcPnx03pQOMbnkFTmrqdPWsLClHUuwYTSwYPrMmwhusNVBE0wOo6Ko8Bj9EaGNRS
+         T4vbX9LBr0Ccjrn3r0qkd/USmwMlS5xGk/Iz3atXG9E8TGRuMNoERKq3432f+EPLCbRe
+         +4Qw==
+X-Gm-Message-State: AOAM5333qX37qkoonZs4CLCY4zWArgxcE1am+g76HJ/j4RtnHa+KaKe1
+        ShS9CzaHWSHH5oXSu0+P4sgIdwh77xJkekQ40OI=
+X-Google-Smtp-Source: ABdhPJxu0IISOc4IY1o0yUCoz9xrc0Otk9TFTOJP8KORcyqU33oiMW5JyLPyxIURp8PX4g4hXyXNW7aqfwVTrZ2ov94=
+X-Received: by 2002:a17:906:9c82:b0:6df:baa2:9f75 with SMTP id
+ fj2-20020a1709069c8200b006dfbaa29f75mr14182030ejc.762.1652695197042; Mon, 16
+ May 2022 02:59:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v3 4/7] bpf, arm64: Impelment
- bpf_arch_text_poke() for arm64
-Content-Language: en-US
-To:     Mark Rutland <mark.rutland@arm.com>
-CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <20220424154028.1698685-1-xukuohai@huawei.com>
- <20220424154028.1698685-5-xukuohai@huawei.com> <Yn5yb9F4uYkio4Xe@lakrids>
- <264ecbe1-4514-d6c8-182b-3af4babb457e@huawei.com>
- <YoH6yAtmzPQtWiFM@FVFF77S0Q05N>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <YoH6yAtmzPQtWiFM@FVFF77S0Q05N>
+Received: by 2002:a50:e88:0:0:0:0:0 with HTTP; Mon, 16 May 2022 02:59:56 -0700 (PDT)
+Reply-To: fundsrecoverycommittee@aol.com
+From:   Geoffrey Bristol - FUNDS RECOVERY COMMITTEE 
+        <cathydampry@gmail.com>
+Date:   Mon, 16 May 2022 02:59:56 -0700
+Message-ID: <CAJt1Du+tP72K9XnbrfV7m+=ZXxjLBYMMA3kJ=TPqtB9hB8VdYw@mail.gmail.com>
+Subject: COMPENSATION PROGRAM
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:643 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5005]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [cathydampry[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.4 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/16/2022 3:18 PM, Mark Rutland wrote:
-> On Mon, May 16, 2022 at 02:55:46PM +0800, Xu Kuohai wrote:
->> On 5/13/2022 10:59 PM, Mark Rutland wrote:
->>> On Sun, Apr 24, 2022 at 11:40:25AM -0400, Xu Kuohai wrote:
->>>> Impelment bpf_arch_text_poke() for arm64, so bpf trampoline code can use
->>>> it to replace nop with jump, or replace jump with nop.
->>>>
->>>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->>>> Acked-by: Song Liu <songliubraving@fb.com>
->>>> ---
->>>>  arch/arm64/net/bpf_jit_comp.c | 63 +++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 63 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
->>>> index 8ab4035dea27..3f9bdfec54c4 100644
->>>> --- a/arch/arm64/net/bpf_jit_comp.c
->>>> +++ b/arch/arm64/net/bpf_jit_comp.c
->>>> @@ -9,6 +9,7 @@
->>>>  
->>>>  #include <linux/bitfield.h>
->>>>  #include <linux/bpf.h>
->>>> +#include <linux/memory.h>
->>>>  #include <linux/filter.h>
->>>>  #include <linux/printk.h>
->>>>  #include <linux/slab.h>
->>>> @@ -18,6 +19,7 @@
->>>>  #include <asm/cacheflush.h>
->>>>  #include <asm/debug-monitors.h>
->>>>  #include <asm/insn.h>
->>>> +#include <asm/patching.h>
->>>>  #include <asm/set_memory.h>
->>>>  
->>>>  #include "bpf_jit.h"
->>>> @@ -1529,3 +1531,64 @@ void bpf_jit_free_exec(void *addr)
->>>>  {
->>>>  	return vfree(addr);
->>>>  }
->>>> +
->>>> +static int gen_branch_or_nop(enum aarch64_insn_branch_type type, void *ip,
->>>> +			     void *addr, u32 *insn)
->>>> +{
->>>> +	if (!addr)
->>>> +		*insn = aarch64_insn_gen_nop();
->>>> +	else
->>>> +		*insn = aarch64_insn_gen_branch_imm((unsigned long)ip,
->>>> +						    (unsigned long)addr,
->>>> +						    type);
->>>> +
->>>> +	return *insn != AARCH64_BREAK_FAULT ? 0 : -EFAULT;
->>>> +}
->>>> +
->>>> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
->>>> +		       void *old_addr, void *new_addr)
->>>> +{
->>>> +	int ret;
->>>> +	u32 old_insn;
->>>> +	u32 new_insn;
->>>> +	u32 replaced;
->>>> +	enum aarch64_insn_branch_type branch_type;
->>>> +
->>>> +	if (!is_bpf_text_address((long)ip))
->>>> +		/* Only poking bpf text is supported. Since kernel function
->>>> +		 * entry is set up by ftrace, we reply on ftrace to poke kernel
->>>> +		 * functions. For kernel funcitons, bpf_arch_text_poke() is only
->>>> +		 * called after a failed poke with ftrace. In this case, there
->>>> +		 * is probably something wrong with fentry, so there is nothing
->>>> +		 * we can do here. See register_fentry, unregister_fentry and
->>>> +		 * modify_fentry for details.
->>>> +		 */
->>>> +		return -EINVAL;
->>>
->>> If you rely on ftrace to poke functions, why do you need to patch text
->>> at all? Why does the rest of this function exist?
->>>
->>> I really don't like having another piece of code outside of ftrace
->>> patching the ftrace patch-site; this needs a much better explanation.
->>>
->>
->> Sorry for the incorrect explaination in the comment. I don't think it's
->> reasonable to patch ftrace patch-site without ftrace code either.
->>
->> The patching logic in register_fentry, unregister_fentry and
->> modify_fentry is as follows:
->>
->> if (tr->func.ftrace_managed)
->>         ret = register_ftrace_direct((long)ip, (long)new_addr);
->> else
->>         ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr,
->>                                  true);
->>
->> ftrace patch-site is patched by ftrace code. bpf_arch_text_poke() is
->> only used to patch bpf prog and bpf trampoline, which are not managed by
->> ftrace.
-> 
-> Sorry, I had misunderstood. Thanks for the correction!
-> 
-> I'll have another look with that in mind.
->>>>> +
->>>> +	if (poke_type == BPF_MOD_CALL)
->>>> +		branch_type = AARCH64_INSN_BRANCH_LINK;
->>>> +	else
->>>> +		branch_type = AARCH64_INSN_BRANCH_NOLINK;
->>>> +
->>>> +	if (gen_branch_or_nop(branch_type, ip, old_addr, &old_insn) < 0)
->>>> +		return -EFAULT;
->>>> +
->>>> +	if (gen_branch_or_nop(branch_type, ip, new_addr, &new_insn) < 0)
->>>> +		return -EFAULT;
->>>> +
->>>> +	mutex_lock(&text_mutex);
->>>> +	if (aarch64_insn_read(ip, &replaced)) {
->>>> +		ret = -EFAULT;
->>>> +		goto out;
->>>> +	}
->>>> +
->>>> +	if (replaced != old_insn) {
->>>> +		ret = -EFAULT;
->>>> +		goto out;
->>>> +	}
->>>> +
->>>> +	ret = aarch64_insn_patch_text_nosync((void *)ip, new_insn);
->>>
->>> ... and where does the actual synchronization come from in this case?
->>
->> aarch64_insn_patch_text_nosync() replaces an instruction atomically, so
->> no other CPUs will fetch a half-new and half-old instruction.
->>
->> The scenario here is that there is a chance that another CPU fetches the
->> old instruction after bpf_arch_text_poke() finishes, that is, different
->> CPUs may execute different versions of instructions at the same time.
->>
->> 1. When a new trampoline is attached, it doesn't seem to be an issue for
->> different CPUs to jump to different trampolines temporarily.
->>
->> 2. When an old trampoline is freed, we should wait for all other CPUs to
->> exit the trampoline and make sure the trampoline is no longer reachable,
->> IIUC, bpf_tramp_image_put() function already uses percpu_ref and rcu
->> tasks to do this.
-> 
-> It would be good to have a comment for these points>
+Dear victim,
+										
+The United Nations in conjunction with the European Union,
+International Monetary Fund and World Bank is offering compensation to
+internet fraud/scam victims globally.
+If you are interested kindly indicate with your response.
 
-will add a comment for this in v4, thanks!
-
-> Thanks,
-> Mark.
-> .
-
+Geoffrey Bristol(Chairman)
+FUNDS RECOVERY COMMITTEE.
