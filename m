@@ -2,139 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 974F4527CDE
-	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 06:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3828F527D14
+	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 07:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbiEPEZk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 00:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        id S229799AbiEPFlW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 16 May 2022 01:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbiEPEZj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 00:25:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4948419002;
-        Sun, 15 May 2022 21:25:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C958460EF1;
-        Mon, 16 May 2022 04:25:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28EB7C385AA;
-        Mon, 16 May 2022 04:25:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652675136;
-        bh=wkoCQQWOI/OVKH1UsJ9YAUTlpusbXlznvf72YaWzN7k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CLuSkDkWjDqJUtOB4cZDaMTD7Mb1pLfHh7tcgD9Rxe7Uql/SJYAZFQlBbff7rGA97
-         QixQ0PcvXWBOek2r6CW++e2A7pQiAdnF48JwhR5GWROHk3Ti3mfs5kJlio9GO7evcK
-         RbFKQXHH1qwaPS9lDtyF2BF+kCl/aCKCxBNW/+64QhMUpZEhNdyHXRzt1cw70f+gkI
-         jZQdsupkXvCQ4tQXYeoEKObagASYqa5JPe34jpv5zJ4oYNqylSIchtnHNbwqR/Cxnk
-         kPW+A/Zu+qwXM2WBjnKT0eIs1w3w3Mtlqeoav70v1rvy5Ku9khX49opmzcQkbrPw6h
-         rjUj4++lTeEdA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BBD275C0440; Sun, 15 May 2022 21:25:35 -0700 (PDT)
-Date:   Sun, 15 May 2022 21:25:35 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH bpf-next 1/2] cpuidle/rcu: Making arch_cpu_idle and
- rcu_idle_exit noinstr
-Message-ID: <20220516042535.GV1790663@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20220515203653.4039075-1-jolsa@kernel.org>
+        with ESMTP id S239655AbiEPFlJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 01:41:09 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A98DF48
+        for <bpf@vger.kernel.org>; Sun, 15 May 2022 22:41:08 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24FLEhGt019278
+        for <bpf@vger.kernel.org>; Sun, 15 May 2022 22:41:08 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g27rnqmb0-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sun, 15 May 2022 22:41:08 -0700
+Received: from twshared13345.18.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sun, 15 May 2022 22:41:00 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 348F37AEBBF4; Sun, 15 May 2022 22:40:56 -0700 (PDT)
+From:   Song Liu <song@kernel.org>
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <peterz@infradead.org>,
+        <mcgrof@kernel.org>, <torvalds@linux-foundation.org>,
+        <rick.p.edgecombe@intel.com>, <kernel-team@fb.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH bpf-next 0/5] bpf_prog_pack followup
+Date:   Sun, 15 May 2022 22:40:46 -0700
+Message-ID: <20220516054051.114490-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220515203653.4039075-1-jolsa@kernel.org>
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: o3GorWvJTB8RgDvjLygtASGTgxmH5nPQ
+X-Proofpoint-GUID: o3GorWvJTB8RgDvjLygtASGTgxmH5nPQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-15_11,2022-05-13_01,2022-02-23_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 15, 2022 at 10:36:52PM +0200, Jiri Olsa wrote:
-> Making arch_cpu_idle and rcu_idle_exit noinstr. Both functions run
-> in rcu 'not watching' context and if there's tracer attached to
-> them, which uses rcu (e.g. kprobe multi interface) it will hit RCU
-> warning like:
-> 
->   [    3.017540] WARNING: suspicious RCU usage
->   ...
->   [    3.018363]  kprobe_multi_link_handler+0x68/0x1c0
->   [    3.018364]  ? kprobe_multi_link_handler+0x3e/0x1c0
->   [    3.018366]  ? arch_cpu_idle_dead+0x10/0x10
->   [    3.018367]  ? arch_cpu_idle_dead+0x10/0x10
->   [    3.018371]  fprobe_handler.part.0+0xab/0x150
->   [    3.018374]  0xffffffffa00080c8
->   [    3.018393]  ? arch_cpu_idle+0x5/0x10
->   [    3.018398]  arch_cpu_idle+0x5/0x10
->   [    3.018399]  default_idle_call+0x59/0x90
->   [    3.018401]  do_idle+0x1c3/0x1d0
-> 
-> The call path is following:
-> 
-> default_idle_call
->   rcu_idle_enter
->   arch_cpu_idle
->   rcu_idle_exit
-> 
-> The arch_cpu_idle and rcu_idle_exit are the only ones from above
-> path that are traceble and cause this problem on my setup.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Resending the set, as the original ones didn't make through the maillist.
 
-From an RCU viewpoint:
+As of 5.18-rc6, x86_64 uses bpf_prog_pack on 4kB pages. This set contains
+two followups:
+  1/5 - 3/5 fills unused part of bpf_prog_pack with illegal instructions.
+  4/5 - 5/5 enables bpf_prog_pack on 2MB pages.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+The primary goal of bpf_prog_pack is to reduce iTLB miss rate and reduce
+direct memory mapping fragmentation. This leads to non-trivial performance
+improvements.
 
-[ I considered asking for an instrumentation_on() in rcu_idle_exit(),
-but there is no point given that local_irq_restore() isn't something
-you instrument anyway. ]
+For our web service production benchmark, bpf_prog_pack on 4kB pages
+gives 0.5% to 0.7% more throughput than not using bpf_prog_pack.
+bpf_prog_pack on 2MB pages 0.6% to 0.9% more throughput than not using
+bpf_prog_pack. Note that 0.5% is a huge improvement for our fleet. I
+believe this is also significant for other companies with many thousand
+servers.
 
-> ---
->  arch/x86/kernel/process.c | 2 +-
->  kernel/rcu/tree.c         | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> index b370767f5b19..1345cb0124a6 100644
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -720,7 +720,7 @@ void arch_cpu_idle_dead(void)
->  /*
->   * Called from the generic idle code.
->   */
-> -void arch_cpu_idle(void)
-> +void noinstr arch_cpu_idle(void)
->  {
->  	x86_idle();
->  }
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index a4b8189455d5..20d529722f51 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -896,7 +896,7 @@ static void noinstr rcu_eqs_exit(bool user)
->   * If you add or remove a call to rcu_idle_exit(), be sure to test with
->   * CONFIG_RCU_EQS_DEBUG=y.
->   */
-> -void rcu_idle_exit(void)
-> +void noinstr rcu_idle_exit(void)
->  {
->  	unsigned long flags;
->  
-> -- 
-> 2.35.3
-> 
+bpf_prog_pack on 2MB pages may use slightly more memory for systems
+without many BPF programs. However, such waste in memory (<2MB) is within
+noisy for modern x86_64 systems.
+
+Song Liu (5):
+  bpf: fill new bpf_prog_pack with illegal instructions
+  x86/alternative: introduce text_poke_set
+  bpf: introduce bpf_arch_text_invalidate for bpf_prog_pack
+  module: introduce module_alloc_huge
+  bpf: use module_alloc_huge for bpf_prog_pack
+
+ arch/x86/include/asm/text-patching.h |  1 +
+ arch/x86/kernel/alternative.c        | 70 ++++++++++++++++++++++++----
+ arch/x86/kernel/module.c             | 21 +++++++++
+ arch/x86/net/bpf_jit_comp.c          |  5 ++
+ include/linux/bpf.h                  |  1 +
+ include/linux/moduleloader.h         |  5 ++
+ kernel/bpf/core.c                    | 30 ++++++++----
+ kernel/module.c                      |  8 ++++
+ 8 files changed, 122 insertions(+), 19 deletions(-)
+
+--
+2.30.2
