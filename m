@@ -2,103 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4042D528DAA
-	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 21:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E999528E4D
+	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 21:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244547AbiEPTGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 15:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
+        id S1345949AbiEPTmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 15:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345325AbiEPTGK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 15:06:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F31920BD8;
-        Mon, 16 May 2022 12:06:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DBB50614CB;
-        Mon, 16 May 2022 19:06:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83024C385AA;
-        Mon, 16 May 2022 19:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652727967;
-        bh=2Resw6p+2SXUmxtcyRn6SOdYMRyAbxOVblDDKJZfhuk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BSfKI3ipMdkFD4rYZrdaySQegpDAWsCAylzId9ynBGOuOqecfeWt14fH5AoEc7BHS
-         V8gAZ8FUYAWZ7+5K/4PIDrD6pGIIdrV0O2Jn6D6ulUbwttrVFEhG/G9b0Md4pdqADY
-         53Xfp2wtiTvaziCmhPIFbYVTjPjsMkMemaBd4jPHGp7NQtU+tEhOGlW+KsaU0+Uy//
-         GqydFI+z4tPURPZqkSW3aoa95B2I32CoYGYQEgbbShn5S4SKud+VDFCFP1PSKk/hrU
-         wBLkQLJ+Vw6ANisqhMcgiJZpjptSCT72a9hpW4OU0IhEEp1d+2ZA0FAxOElhbv5Pqe
-         BtFm85iRWxmGA==
-Date:   Mon, 16 May 2022 12:06:05 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, netdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-sh@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-mm@kvack.org,
-        linux-mips@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
-        kunit-dev@googlegroups.com, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 1e1b28b936aed946122b4e0991e7144fdbbfd77e
-Message-ID: <20220516120605.7a6bb562@kernel.org>
-In-Reply-To: <6280f965.kTCPpIEVY9TwoNre%lkp@intel.com>
-References: <6280f965.kTCPpIEVY9TwoNre%lkp@intel.com>
+        with ESMTP id S1345778AbiEPTkZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 15:40:25 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED893EF05;
+        Mon, 16 May 2022 12:39:38 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id v11so14938896pff.6;
+        Mon, 16 May 2022 12:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GYimId1+Z3hhnSt3/2nNJtZTsF0tDudFtRYq4c1fKfY=;
+        b=R5Sk0i4/JyOhBJzBZp0K+RPNVt9HIka8OnOU+L2bHdV9YE2hWPmLIotmoiIZF8LZQz
+         66O7qWnBam0wZ/0whB93uSJVskDVMvHpzgCU2Mx8msc5Tdd1Ol1iQWq3gefC+JCK1rmS
+         b6ViDXxnzhTXexN/pWzDNBV6ZoSAOqS97ZXIxmbpSngi2n4HTDRElMO4v1s5YmxaX5tE
+         dxzDcIhljQenRUkMeyc/GfyfFeHvaVGJQ29jhYz6zLccANx9a6u7kVXG0iaK2JShglMp
+         C1PeVtT5MCq0I2hHMg+Xb3mcsgzvW9WWkeKUqVlBh306S+SLkBRla0iI3hrwd6u+vr4h
+         otwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=GYimId1+Z3hhnSt3/2nNJtZTsF0tDudFtRYq4c1fKfY=;
+        b=6TixvMxQ5UXauvQAJUSmedtn2di1jmSO7dky5m2wzlhzvBsZx9+9LsOXINmVL/udCu
+         h1jUqTFtTqbeBmeIAWX1WDkbMN47X//dl4CEAyNoOcCmHmVXblmnseicfz6IVj12EWNw
+         WtmVIENzOcWkdDkrhtIg2OLef9TYLvGqwYFNKcQzyttTbN0JinVg93diCa9kUusjzqzh
+         cBE620KlF4VdzJiNP4Wh0Ao4OZEGN2tcCsrDOv2q9QvGsR0qexGXQigrZhCGhHd0TmSZ
+         ZrLE6HUeV6OdlEmzXiUAAwg0DSvkOzQ0GW+ctoYBhGcO2iLkw9NqvxU6Q9YZsXqltvUk
+         ETsQ==
+X-Gm-Message-State: AOAM53096tXKH2CF3bPv3QIbqMJJKAxaGmhTjJsPojn+EdzTeLB2/NSS
+        uxm/WQHR0Nv6E+IKFXoDfrNusZA4Zc8=
+X-Google-Smtp-Source: ABdhPJyXzvwdQQ1UkYpxbYcYeTRiIKhHn0gzw4eDZjZeYj3t6YO9WJZtqDkNi2Ywf7TEKBylyV0nLA==
+X-Received: by 2002:a63:e64d:0:b0:3f2:470f:c45 with SMTP id p13-20020a63e64d000000b003f2470f0c45mr10044647pgj.208.1652729977580;
+        Mon, 16 May 2022 12:39:37 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:62fc])
+        by smtp.gmail.com with ESMTPSA id q19-20020a17090a2e1300b001df78f27c10sm59447pjd.42.2022.05.16.12.39.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 May 2022 12:39:37 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 16 May 2022 09:39:35 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next v2 0/7] bpf: rstat: cgroup hierarchical stats
+Message-ID: <YoKod9FdpAe0L5dz@slm.duckdns.org>
+References: <20220515023504.1823463-1-yosryahmed@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220515023504.1823463-1-yosryahmed@google.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 15 May 2022 21:00:21 +0800 kernel test robot wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> branch HEAD: 1e1b28b936aed946122b4e0991e7144fdbbfd77e  Add linux-next specific files for 20220513
-> 
-> Error/Warning reports:
-> 
-> https://lore.kernel.org/linux-mm/202204181931.klAC6fWo-lkp@intel.com
-> https://lore.kernel.org/linux-mm/202204291924.vTGZmerI-lkp@intel.com
-> https://lore.kernel.org/linux-mm/202205031017.4TwMan3l-lkp@intel.com
-> https://lore.kernel.org/linux-mm/202205041248.WgCwPcEV-lkp@intel.com
-> https://lore.kernel.org/linux-mm/202205122113.uLKzd3SZ-lkp@intel.com
-> https://lore.kernel.org/linux-mm/202205150051.3RzuooAG-lkp@intel.com
-> https://lore.kernel.org/linux-mm/202205150117.sd6HzBVm-lkp@intel.com
-> https://lore.kernel.org/lkml/202205100617.5UUm3Uet-lkp@intel.com
-> https://lore.kernel.org/llvm/202204210555.DNvfHvIb-lkp@intel.com
-> https://lore.kernel.org/llvm/202205060132.uhqyUx1l-lkp@intel.com
-> https://lore.kernel.org/llvm/202205120010.zWBednzM-lkp@intel.com
-> https://lore.kernel.org/llvm/202205141122.qihFGUem-lkp@intel.com
-> 
-> Error/Warning: (recently discovered and may have been fixed)
-> 
-> <command-line>: fatal error: ./include/generated/utsrelease.h: No such file or directory
-> arch/arm/mach-versatile/versatile.c:56:14: warning: no previous prototype for function 'mmc_status' [-Wmissing-prototypes]
-> arch/x86/kvm/pmu.h:20:32: warning: 'vmx_icl_pebs_cpu' defined but not used [-Wunused-const-variable=]
-> drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:5102:7: warning: variable 'allow_lttpr_non_transparent_mode' set but not used [-Wunused-but-set-variable]
-> drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:5147:6: warning: no previous prototype for function 'dp_parse_lttpr_mode' [-Wmissing-prototypes]
-> drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:1364:5: warning: no previous prototype for 'amdgpu_discovery_get_mall_info' [-Wmissing-prototypes]
-> drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c:1983:6: warning: no previous prototype for function 'gfx_v11_0_rlc_stop' [-Wmissing-prototypes]
-> drivers/gpu/drm/amd/amdgpu/soc21.c:171:6: warning: no previous prototype for 'soc21_grbm_select' [-Wmissing-prototypes]
-> drivers/gpu/drm/solomon/ssd130x-spi.c:154:35: warning: 'ssd130x_spi_table' defined but not used [-Wunused-const-variable=]
-> drivers/hwmon/nct6775-platform.c:199:9: sparse:    unsigned char
-> drivers/hwmon/nct6775-platform.c:199:9: sparse:    void
-> drivers/video/fbdev/omap/hwa742.c:492:5: warning: no previous prototype for 'hwa742_update_window_async' [-Wmissing-prototypes]
-> fs/buffer.c:2254:5: warning: stack frame size (2144) exceeds limit (1024) in 'block_read_full_folio' [-Wframe-larger-than]
-> fs/ntfs/aops.c:378:12: warning: stack frame size (2224) exceeds limit (1024) in 'ntfs_read_folio' [-Wframe-larger-than]
-> kernel/trace/fgraph.c:37:12: warning: no previous prototype for 'ftrace_enable_ftrace_graph_caller' [-Wmissing-prototypes]
-> kernel/trace/fgraph.c:46:12: warning: no previous prototype for 'ftrace_disable_ftrace_graph_caller' [-Wmissing-prototypes]
+Hello,
 
-Is this report CCed everywhere or there's a reason why netdev@ is CCed?
-I'm trying to figure out we need to care and it's not obvious..
+Looks good from cgroup side.
+
+Thanks.
+
+-- 
+tejun
