@@ -2,56 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CE5527D15
-	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 07:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB49527DEF
+	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 08:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbiEPFlX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 16 May 2022 01:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S240692AbiEPG4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 02:56:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239674AbiEPFlL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 01:41:11 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02030DF48
-        for <bpf@vger.kernel.org>; Sun, 15 May 2022 22:41:10 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24G1XTjx002200
-        for <bpf@vger.kernel.org>; Sun, 15 May 2022 22:41:10 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g2br3xwwn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 15 May 2022 22:41:10 -0700
-Received: from twshared8307.18.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        with ESMTP id S240595AbiEPGzw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 02:55:52 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751C5B1D;
+        Sun, 15 May 2022 23:55:50 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L1qjw6brpzgYLZ;
+        Mon, 16 May 2022 14:54:28 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sun, 15 May 2022 22:41:09 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id D36787AEBCA2; Sun, 15 May 2022 22:41:04 -0700 (PDT)
-From:   Song Liu <song@kernel.org>
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <peterz@infradead.org>,
-        <mcgrof@kernel.org>, <torvalds@linux-foundation.org>,
-        <rick.p.edgecombe@intel.com>, <kernel-team@fb.com>,
-        Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next 5/5] bpf: use module_alloc_huge for bpf_prog_pack
-Date:   Sun, 15 May 2022 22:40:51 -0700
-Message-ID: <20220516054051.114490-6-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220516054051.114490-1-song@kernel.org>
-References: <20220516054051.114490-1-song@kernel.org>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: bjMJUkHUo0EaVh2k4_rP4fwDZr14bkIT
-X-Proofpoint-ORIG-GUID: bjMJUkHUo0EaVh2k4_rP4fwDZr14bkIT
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ 15.1.2375.24; Mon, 16 May 2022 14:55:46 +0800
+Message-ID: <264ecbe1-4514-d6c8-182b-3af4babb457e@huawei.com>
+Date:   Mon, 16 May 2022 14:55:46 +0800
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-15_11,2022-05-13_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v3 4/7] bpf, arm64: Impelment
+ bpf_arch_text_poke() for arm64
+Content-Language: en-US
+To:     Mark Rutland <mark.rutland@arm.com>
+CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Delyan Kratunov <delyank@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20220424154028.1698685-1-xukuohai@huawei.com>
+ <20220424154028.1698685-5-xukuohai@huawei.com> <Yn5yb9F4uYkio4Xe@lakrids>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <Yn5yb9F4uYkio4Xe@lakrids>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,83 +83,150 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use module_alloc_huge for bpf_prog_pack so that BPF programs sit on
-PMD_SIZE pages. This benefits system performance by reducing iTLB miss
-rate. Benchmark of a real web service workload shows this change gives
-another ~0.2% performance boost on top of PAGE_SIZE bpf_prog_pack
-(which improve system throughput by ~0.5%).
+On 5/13/2022 10:59 PM, Mark Rutland wrote:
+> On Sun, Apr 24, 2022 at 11:40:25AM -0400, Xu Kuohai wrote:
+>> Impelment bpf_arch_text_poke() for arm64, so bpf trampoline code can use
+>> it to replace nop with jump, or replace jump with nop.
+>>
+>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>> Acked-by: Song Liu <songliubraving@fb.com>
+>> ---
+>>  arch/arm64/net/bpf_jit_comp.c | 63 +++++++++++++++++++++++++++++++++++
+>>  1 file changed, 63 insertions(+)
+>>
+>> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+>> index 8ab4035dea27..3f9bdfec54c4 100644
+>> --- a/arch/arm64/net/bpf_jit_comp.c
+>> +++ b/arch/arm64/net/bpf_jit_comp.c
+>> @@ -9,6 +9,7 @@
+>>  
+>>  #include <linux/bitfield.h>
+>>  #include <linux/bpf.h>
+>> +#include <linux/memory.h>
+>>  #include <linux/filter.h>
+>>  #include <linux/printk.h>
+>>  #include <linux/slab.h>
+>> @@ -18,6 +19,7 @@
+>>  #include <asm/cacheflush.h>
+>>  #include <asm/debug-monitors.h>
+>>  #include <asm/insn.h>
+>> +#include <asm/patching.h>
+>>  #include <asm/set_memory.h>
+>>  
+>>  #include "bpf_jit.h"
+>> @@ -1529,3 +1531,64 @@ void bpf_jit_free_exec(void *addr)
+>>  {
+>>  	return vfree(addr);
+>>  }
+>> +
+>> +static int gen_branch_or_nop(enum aarch64_insn_branch_type type, void *ip,
+>> +			     void *addr, u32 *insn)
+>> +{
+>> +	if (!addr)
+>> +		*insn = aarch64_insn_gen_nop();
+>> +	else
+>> +		*insn = aarch64_insn_gen_branch_imm((unsigned long)ip,
+>> +						    (unsigned long)addr,
+>> +						    type);
+>> +
+>> +	return *insn != AARCH64_BREAK_FAULT ? 0 : -EFAULT;
+>> +}
+>> +
+>> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+>> +		       void *old_addr, void *new_addr)
+>> +{
+>> +	int ret;
+>> +	u32 old_insn;
+>> +	u32 new_insn;
+>> +	u32 replaced;
+>> +	enum aarch64_insn_branch_type branch_type;
+>> +
+>> +	if (!is_bpf_text_address((long)ip))
+>> +		/* Only poking bpf text is supported. Since kernel function
+>> +		 * entry is set up by ftrace, we reply on ftrace to poke kernel
+>> +		 * functions. For kernel funcitons, bpf_arch_text_poke() is only
+>> +		 * called after a failed poke with ftrace. In this case, there
+>> +		 * is probably something wrong with fentry, so there is nothing
+>> +		 * we can do here. See register_fentry, unregister_fentry and
+>> +		 * modify_fentry for details.
+>> +		 */
+>> +		return -EINVAL;
+> 
+> If you rely on ftrace to poke functions, why do you need to patch text
+> at all? Why does the rest of this function exist?
+> 
+> I really don't like having another piece of code outside of ftrace
+> patching the ftrace patch-site; this needs a much better explanation.
+> 
 
-Also, remove set_vm_flush_reset_perms() from alloc_new_pack() and use
-set_memory_[nx|rw] in bpf_prog_pack_free(). This is because
-VM_FLUSH_RESET_PERMS does not work with huge pages yet. [1]
+Sorry for the incorrect explaination in the comment. I don't think it's
+reasonable to patch ftrace patch-site without ftrace code either.
 
-[1] https://lore.kernel.org/bpf/aeeeaf0b7ec63fdba55d4834d2f524d8bf05b71b.camel@intel.com/
-Suggested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Signed-off-by: Song Liu <song@kernel.org>
----
- kernel/bpf/core.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+The patching logic in register_fentry, unregister_fentry and
+modify_fentry is as follows:
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index cacd8684c3c4..b64d91fcb0ba 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -857,7 +857,7 @@ static size_t select_bpf_prog_pack_size(void)
- 	void *ptr;
- 
- 	size = BPF_HPAGE_SIZE * num_online_nodes();
--	ptr = module_alloc(size);
-+	ptr = module_alloc_huge(size);
- 
- 	/* Test whether we can get huge pages. If not just use PAGE_SIZE
- 	 * packs.
-@@ -881,7 +881,7 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
- 		       GFP_KERNEL);
- 	if (!pack)
- 		return NULL;
--	pack->ptr = module_alloc(bpf_prog_pack_size);
-+	pack->ptr = module_alloc_huge(bpf_prog_pack_size);
- 	if (!pack->ptr) {
- 		kfree(pack);
- 		return NULL;
-@@ -890,7 +890,6 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
- 	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
- 	list_add_tail(&pack->list, &pack_list);
- 
--	set_vm_flush_reset_perms(pack->ptr);
- 	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
- 	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
- 	return pack;
-@@ -909,10 +908,9 @@ static void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insn
- 
- 	if (size > bpf_prog_pack_size) {
- 		size = round_up(size, PAGE_SIZE);
--		ptr = module_alloc(size);
-+		ptr = module_alloc_huge(size);
- 		if (ptr) {
- 			bpf_fill_ill_insns(ptr, size);
--			set_vm_flush_reset_perms(ptr);
- 			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
- 			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
- 		}
-@@ -949,6 +947,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
- 
- 	mutex_lock(&pack_mutex);
- 	if (hdr->size > bpf_prog_pack_size) {
-+		set_memory_nx((unsigned long)hdr, hdr->size / PAGE_SIZE);
-+		set_memory_rw((unsigned long)hdr, hdr->size / PAGE_SIZE);
- 		module_memfree(hdr);
- 		goto out;
- 	}
-@@ -975,6 +975,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
- 	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
- 				       bpf_prog_chunk_count(), 0) == 0) {
- 		list_del(&pack->list);
-+		set_memory_nx((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
-+		set_memory_rw((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
- 		module_memfree(pack->ptr);
- 		kfree(pack);
- 	}
--- 
-2.30.2
+if (tr->func.ftrace_managed)
+        ret = register_ftrace_direct((long)ip, (long)new_addr);
+else
+        ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr,
+                                 true);
+
+ftrace patch-site is patched by ftrace code. bpf_arch_text_poke() is
+only used to patch bpf prog and bpf trampoline, which are not managed by
+ftrace.
+
+>> +
+>> +	if (poke_type == BPF_MOD_CALL)
+>> +		branch_type = AARCH64_INSN_BRANCH_LINK;
+>> +	else
+>> +		branch_type = AARCH64_INSN_BRANCH_NOLINK;
+>> +
+>> +	if (gen_branch_or_nop(branch_type, ip, old_addr, &old_insn) < 0)
+>> +		return -EFAULT;
+>> +
+>> +	if (gen_branch_or_nop(branch_type, ip, new_addr, &new_insn) < 0)
+>> +		return -EFAULT;
+>> +
+>> +	mutex_lock(&text_mutex);
+>> +	if (aarch64_insn_read(ip, &replaced)) {
+>> +		ret = -EFAULT;
+>> +		goto out;
+>> +	}
+>> +
+>> +	if (replaced != old_insn) {
+>> +		ret = -EFAULT;
+>> +		goto out;
+>> +	}
+>> +
+>> +	ret = aarch64_insn_patch_text_nosync((void *)ip, new_insn);
+> 
+> ... and where does the actual synchronization come from in this case?
+> 
+
+aarch64_insn_patch_text_nosync() replaces an instruction atomically, so
+no other CPUs will fetch a half-new and half-old instruction.
+
+The scenario here is that there is a chance that another CPU fetches the
+old instruction after bpf_arch_text_poke() finishes, that is, different
+CPUs may execute different versions of instructions at the same time.
+
+1. When a new trampoline is attached, it doesn't seem to be an issue for
+different CPUs to jump to different trampolines temporarily.
+
+2. When an old trampoline is freed, we should wait for all other CPUs to
+exit the trampoline and make sure the trampoline is no longer reachable,
+IIUC, bpf_tramp_image_put() function already uses percpu_ref and rcu
+tasks to do this.
+
+> Thanks,
+> Mark.
+> 
+>> +out:
+>> +	mutex_unlock(&text_mutex);
+>> +	return ret;
+>> +}
+>> -- 
+>> 2.30.2
+>>
+> .
 
