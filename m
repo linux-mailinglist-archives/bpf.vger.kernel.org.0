@@ -2,112 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC7D5279EF
-	for <lists+bpf@lfdr.de>; Sun, 15 May 2022 22:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E088A527B92
+	for <lists+bpf@lfdr.de>; Mon, 16 May 2022 03:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238696AbiEOUhZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 15 May 2022 16:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
+        id S239246AbiEPB4U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 15 May 2022 21:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238665AbiEOUhQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 15 May 2022 16:37:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4673B12600;
-        Sun, 15 May 2022 13:37:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CEE1FB80DDB;
-        Sun, 15 May 2022 20:37:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6354EC385B8;
-        Sun, 15 May 2022 20:37:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652647030;
-        bh=RcJBgCp3hjncPUbVdOsuPx3xKTW8fhv7TADAmDBK+xI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FxBo9+mUw16uIlgNo88CdSL25AKVNnpiSvqHVaNCOliKw93XjS8R/iCJJTONvmvqx
-         G02kCfjC9uVx+u0REvA2u6zSD6BiZCpgtgrOABPVufcegvqAUXwgL8DaeK2PKs7Gr0
-         CSgLbbq2e7tvbwbvOblmxX8a+E52tBf3u+QBx6udVV45MmgVOu0JRa3iV+uw+tVBs2
-         TmKDBnpcK90B4c6EZQoFrzQwf3oQ9NzkcEBCE7TnuCgq2C0aQICWCj7e/1d8PR3Fus
-         F4ChvoAjFU+vjK+YL5aShXrQoBtdRzgV2GuAyEz0cEEudd3I2wl1nb68jHbUFeEek6
-         4zCIpt9s2uJQg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Remove filter for unsafe functions in kprobe_multi test
-Date:   Sun, 15 May 2022 22:36:53 +0200
-Message-Id: <20220515203653.4039075-2-jolsa@kernel.org>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220515203653.4039075-1-jolsa@kernel.org>
-References: <20220515203653.4039075-1-jolsa@kernel.org>
+        with ESMTP id S232443AbiEPBz4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 15 May 2022 21:55:56 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5737862C5
+        for <bpf@vger.kernel.org>; Sun, 15 May 2022 18:55:54 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id o13-20020a17090a9f8d00b001df3fc52ea7so2052687pjp.3
+        for <bpf@vger.kernel.org>; Sun, 15 May 2022 18:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=KQnul6BomttjXRAElW8MXsYWinaGJAdMxQ34JNltdPE=;
+        b=lHEnF6heGEjJ30vDGmBAz//0dsf9/RNBPwzN+OFFUpaPvjAovS+THylUPUacjSp6df
+         12B4Wy+uYihi9szlnkEPWXJDvL5sd4FqIbsJ5+5K6L0zjbr5QUN7eFoVdz0Uqo2BxA9C
+         AqzLXKBpDNfAG1hXLUxIajsWYpek5ukHHrY1iwVscUHinDQK+XVisRXfGex8dOOya/Vq
+         rbNIwnbyZGCrS/iYhZWWm2k2qdzp22US3fvOjFOpxyFkL3psSHsu0SbMMbWyF+/OmN6q
+         A9ili3tCLYcJoQZ0wb1WqHEar+/5/bGXsjDXO9jmpd5ncQ5rs3Ca6oxtEI3vq/ZD1X3i
+         2z8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=KQnul6BomttjXRAElW8MXsYWinaGJAdMxQ34JNltdPE=;
+        b=USPBkxy7ebFNEgdYsije4pH3hc+SwwxZbCGHAkOFie1vmx0vNYGzde5+ulnp0QlUnn
+         Cj89GAfiUEnibOoWkGewVgKax3CXmoFB7RO8v779e8NE7UMHy8xo1OJD95DFJqRPf0e0
+         Y0LoBNkiWiq/JFpidgp21tPwoyIMSqpSkfuYXDJyF1p+WBXr9OCXpmUe1zrdX1t4vXDd
+         BVuMJ4zB9QetYX3GaTxzUweqUcGyD5jfRYOvOZ6vceHQJ5VxABTZZCX7PoR76PuAnDu/
+         oI0heCkIe/Uax+oso6TLom1WKY1nw9KIfMPy//8trosPf65tJkQ4j5zNnHfPEZ7fwVdN
+         guxw==
+X-Gm-Message-State: AOAM53158pNapUwxGZ6vgN6Qx1x07ctjmS401x8dyeh2haAxzBHzxaCT
+        Vd7iEM7FXfixq5OakggxUwE0MA==
+X-Google-Smtp-Source: ABdhPJyidz87m6gcjue2sTWA10gYK/ag05Ahv7NiReHPxORN5OC8cn+XAhREd3c9YiJMe8mZbhq2CQ==
+X-Received: by 2002:a17:90b:1251:b0:1d7:f7ae:9f1 with SMTP id gx17-20020a17090b125100b001d7f7ae09f1mr28343920pjb.65.1652666153928;
+        Sun, 15 May 2022 18:55:53 -0700 (PDT)
+Received: from [10.71.57.194] ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id y6-20020a655a06000000b003f24a2be89asm3137216pgs.8.2022.05.15.18.55.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 May 2022 18:55:53 -0700 (PDT)
+Message-ID: <192be0a3-47dd-221d-0061-4e04e489ff89@bytedance.com>
+Date:   Mon, 16 May 2022 09:55:42 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.2
+Subject: Re: [External] Re: [PATCH bpf-next v3 0/2] Introduce access remote
+ cpu elem support in BPF percpu map
+To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, jolsa@kernel.org, davemarchevsky@fb.com,
+        joannekoong@fb.com, geliang.tang@suse.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
+        songmuchun@bytedance.com, wangdongdong.6@bytedance.com,
+        cong.wang@bytedance.com, zhouchengming@bytedance.com,
+        yosryahmed@google.com
+References: <20220513063952.41794-1-zhoufeng.zf@bytedance.com>
+ <d8447eee-31d0-f730-bc31-7e55c76135f4@iogearbox.net>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <d8447eee-31d0-f730-bc31-7e55c76135f4@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Removing filter for arch_cpu_idle and rcu_* functions.
+在 2022/5/13 下午11:01, Daniel Borkmann 写道:
+> On 5/13/22 8:39 AM, Feng zhou wrote:
+> [...]
+>> Changelog:
+>> ----------
+>> v2->v3: Addressed comments from Andrii Nakryiko.
+>> - use /* */ instead of //
+>> - use libbpf_num_possible_cpus() instead of 
+>> sysconf(_SC_NPROCESSORS_ONLN)
+>> - use 8 bytes for value size
+>> - fix memory leak
+>> - use ASSERT_EQ instead of ASSERT_OK
+>> - add bpf_loop to fetch values on each possible CPU
+>> some details in here:
+>> https://lore.kernel.org/lkml/20220511093854.411-1-zhoufeng.zf@bytedance.com/T/ 
+>>
+>
+> The v2 of your series is already in bpf-next tree, please just send a 
+> relative diff for
+> the selftest patch.
+>
+> https://lore.kernel.org/lkml/165231901346.29050.11394051230756915389.git-patchwork-notify@kernel.org/ 
+>
+>
+> Thanks,
+> Daniel
 
-Attaching to them was causing RCU warnings [1]:
+Ok, will do. Thanks.
 
-  [    3.017540] WARNING: suspicious RCU usage
-  ...
-  [    3.018363]  kprobe_multi_link_handler+0x68/0x1c0
-  [    3.018364]  ? kprobe_multi_link_handler+0x3e/0x1c0
-  [    3.018366]  ? arch_cpu_idle_dead+0x10/0x10
-  [    3.018367]  ? arch_cpu_idle_dead+0x10/0x10
-  [    3.018371]  fprobe_handler.part.0+0xab/0x150
-  [    3.018374]  0xffffffffa00080c8
-  [    3.018393]  ? arch_cpu_idle+0x5/0x10
-  [    3.018398]  arch_cpu_idle+0x5/0x10
-  [    3.018399]  default_idle_call+0x59/0x90
-  [    3.018401]  do_idle+0x1c3/0x1d0
-
-With previous fix the functions causing that are no longer attachable.
-
-[1] https://lore.kernel.org/bpf/CAEf4BzYtXWvBWzmadhLGqwf8_e2sruK6999th6c=b=O0WLkHOA@mail.gmail.com/
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../selftests/bpf/prog_tests/kprobe_multi_test.c       | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index 586dc52d6fb9..8bb974c263c3 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -354,16 +354,6 @@ static int get_syms(char ***symsp, size_t *cntp)
- 			continue;
- 		if (sscanf(buf, "%ms$*[^\n]\n", &name) != 1)
- 			continue;
--		/*
--		 * We attach to almost all kernel functions and some of them
--		 * will cause 'suspicious RCU usage' when fprobe is attached
--		 * to them. Filter out the current culprits - arch_cpu_idle
--		 * and rcu_* functions.
--		 */
--		if (!strcmp(name, "arch_cpu_idle"))
--			continue;
--		if (!strncmp(name, "rcu_", 4))
--			continue;
- 		err = hashmap__add(map, name, NULL);
- 		if (err) {
- 			free(name);
--- 
-2.35.3
 
