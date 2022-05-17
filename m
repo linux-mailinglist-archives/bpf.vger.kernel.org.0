@@ -2,84 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7A8529E52
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 11:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A245529F2D
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 12:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245280AbiEQJoe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 05:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        id S1343866AbiEQKSD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 06:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245287AbiEQJnV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 05:43:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBBF403CE;
-        Tue, 17 May 2022 02:43:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A181A61525;
-        Tue, 17 May 2022 09:43:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFAB7C385B8;
-        Tue, 17 May 2022 09:43:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652780583;
-        bh=Tgs7wjVeAohg0a4a9UvVZ0DjnQPxJiN7q9133B2mpK4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=gcJI45JVKHpymUm+2nipGubhimzqiurnLTNBUUNn47UUWoOu0RYfESarTrptQrHDO
-         OlF6L/uqYYQ2HOnw34dODO8DziPPMnO2SaUNNTBfQh6dQNPeyWTQDWnBxo5Nm6TDtD
-         frI3L7Sa/+iWn4SI2rewYf0n/KjkRNhe+pfwP9B5Yg+gDQnDp0qnmMPlCel408GnMR
-         gRgAvTcEn/tNOK3UxP0s4MvMFXGdbrKLqNV5UtW2vA6U6wYE0xds0mRHRQKcNVbJUj
-         0fRgMuOqPG+Wm0bEA3D4lJdXKT7c+qZ5V+/CTY6gpGeOgpZ5TSV1kw0i0zaJdETa8o
-         wazCp7uHJeJGQ==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AEF4938E92E; Tue, 17 May 2022 11:42:59 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     shaozhengchao <shaozhengchao@huawei.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>
-Cc:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
-        yuehaibing <yuehaibing@huawei.com>
-Subject: Re: =?utf-8?B?562U5aSNOiDnrZTlpI06?= [PATCH bpf-next] samples/bpf:
- check detach prog exist
- or not in xdp_fwd
-In-Reply-To: <942eaafecf074ae8a5bb336c18658453@huawei.com>
-References: <20220509005105.271089-1-shaozhengchao@huawei.com>
- <87pmknyr6b.fsf@toke.dk> <f9c85578b94a4a38b3f7b9c796810a30@huawei.com>
- <87h75zynz2.fsf@toke.dk> <942eaafecf074ae8a5bb336c18658453@huawei.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 17 May 2022 11:42:59 +0200
-Message-ID: <877d6kcx5o.fsf@toke.dk>
+        with ESMTP id S1344390AbiEQKQv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 06:16:51 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526794C7A1;
+        Tue, 17 May 2022 03:13:50 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g12so6404808edq.4;
+        Tue, 17 May 2022 03:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pcZRdurBSN4nJPC8w1CaK4NSR1CQaP6KW/Ui8E5bIkg=;
+        b=EXz7bbzqjPPM2JEaA3Cof1ejuwXtUYJBP4fAvxFiFqmmKgDlPvnTbPGOYS0/RyEJao
+         3y/0Z4Patjm+EcQMpZO6jkjCIMzDhYeicRRbHGmzYDcDRqp/Rko6fYpRsjxYzjAcgN/U
+         34I51QD1n+GyPfB1bBPLL4PoCeh0xwsQv0hvfDPE92ZPvioSjdcwf46Gu4ACKZVh8BU2
+         j8do3nRQ/Shn2cq9DMV7fwq4A7RTAWgF/V2ced9sjFncBK1/0pvqQeTcxVh7EeLaPeWO
+         UO/4xATFinSmw7z+ulZ/sGShvbWukkKXvZujIUcSEyFboFOfzdBhktOdBuV7WT9NnBJW
+         hN4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pcZRdurBSN4nJPC8w1CaK4NSR1CQaP6KW/Ui8E5bIkg=;
+        b=6Rn1hYsf4FlctBMu2wweWGLBl1ObbbSYiIGOTvrgJEWX7iWRqfYlZZzHYAbsYqkhko
+         9tmElW4u8S+SLVJfsAwGRRnE3uUxkaR3CEJ3UGQnkgoTbelwcP0xZLCMaOs4t0FmoIvV
+         JtGAWjuQpoSAGah/9r2++erjBHWQL288qBVS2GM+krPaK9ggvbclltgb+eDzUcvTgMkT
+         YyB0p+ndPGdU33EgC+mmVjWwNvGOXU6AbHSfza48Ej4M8I3rwoj3PkS+MUw8MGfkv0zY
+         PGw78LbwTyK+fvkaJ43X+bsLnLY+u47Bs/2N4ZBQyBoR3eNNnurn7b1kSCQhUuDT3JpK
+         GXHQ==
+X-Gm-Message-State: AOAM530FimGyyncrXJHx5QIpB9dpV2GxVHnHgAHX54+nJnB0ZR7Kh/sm
+        exyh0/JVHI/E7mIJZVumNyc=
+X-Google-Smtp-Source: ABdhPJzU9534uohCsOtM++1lYyJGdQ9OYTEWax6NEX51VUdc+bPDRH3fyPitWL0JtHRFK7JLtbu08g==
+X-Received: by 2002:a05:6402:2d6:b0:42a:bb5f:a7d2 with SMTP id b22-20020a05640202d600b0042abb5fa7d2mr6565732edx.96.1652782428912;
+        Tue, 17 May 2022 03:13:48 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id eg16-20020a056402289000b0042abb914d6asm1929187edb.69.2022.05.17.03.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 May 2022 03:13:48 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 17 May 2022 12:13:45 +0200
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH bpf-next 1/2] cpuidle/rcu: Making arch_cpu_idle and
+ rcu_idle_exit noinstr
+Message-ID: <YoN1WULUoKtMKx8v@krava>
+References: <20220515203653.4039075-1-jolsa@kernel.org>
+ <20220516042535.GV1790663@paulmck-ThinkPad-P17-Gen-1>
+ <20220516114922.GA349949@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220516114922.GA349949@lothringen>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Could I add helper function to implement this function which can check
-> the program name and see if it attach to the device.
+On Mon, May 16, 2022 at 01:49:22PM +0200, Frederic Weisbecker wrote:
+> On Sun, May 15, 2022 at 09:25:35PM -0700, Paul E. McKenney wrote:
+> > On Sun, May 15, 2022 at 10:36:52PM +0200, Jiri Olsa wrote:
+> > > Making arch_cpu_idle and rcu_idle_exit noinstr. Both functions run
+> > > in rcu 'not watching' context and if there's tracer attached to
+> > > them, which uses rcu (e.g. kprobe multi interface) it will hit RCU
+> > > warning like:
+> > > 
+> > >   [    3.017540] WARNING: suspicious RCU usage
+> > >   ...
+> > >   [    3.018363]  kprobe_multi_link_handler+0x68/0x1c0
+> > >   [    3.018364]  ? kprobe_multi_link_handler+0x3e/0x1c0
+> > >   [    3.018366]  ? arch_cpu_idle_dead+0x10/0x10
+> > >   [    3.018367]  ? arch_cpu_idle_dead+0x10/0x10
+> > >   [    3.018371]  fprobe_handler.part.0+0xab/0x150
+> > >   [    3.018374]  0xffffffffa00080c8
+> > >   [    3.018393]  ? arch_cpu_idle+0x5/0x10
+> > >   [    3.018398]  arch_cpu_idle+0x5/0x10
+> > >   [    3.018399]  default_idle_call+0x59/0x90
+> > >   [    3.018401]  do_idle+0x1c3/0x1d0
+> > > 
+> > > The call path is following:
+> > > 
+> > > default_idle_call
+> > >   rcu_idle_enter
+> > >   arch_cpu_idle
+> > >   rcu_idle_exit
+> > > 
+> > > The arch_cpu_idle and rcu_idle_exit are the only ones from above
+> > > path that are traceble and cause this problem on my setup.
+> > > 
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > 
+> > From an RCU viewpoint:
+> > 
+> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > [ I considered asking for an instrumentation_on() in rcu_idle_exit(),
+> > but there is no point given that local_irq_restore() isn't something
+> > you instrument anyway. ]
+> 
+> So local_irq_save() in the beginning of rcu_idle_exit() is unsafe because
+> it is instrumentable by the function (graph)  tracers and the irqsoff tracer.
+> 
+> Also it calls into lockdep that might make use of RCU.
+> 
+> That's why rcu_idle_exit() is not noinstr yet. See this patch:
+> 
+> https://lore.kernel.org/lkml/20220503100051.2799723-4-frederic@kernel.org/
 
-You just need to call bpf_prog_get_fd_by_id() followed by
-bpf_obj_get_info_by_fd(), and the program name will be in info.name.
-Here's an example in libxdp where we pull out the prog name:
+I see, could we mark it at least with notrace meanwhile?
 
-https://github.com/xdp-project/xdp-tools/blob/master/lib/libxdp/libxdp.c#L1165
-
--Toke
+jirka
