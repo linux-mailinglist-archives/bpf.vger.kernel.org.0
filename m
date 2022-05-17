@@ -2,81 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E351952ADB1
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 23:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1DE52ADC9
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 00:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbiEQVw3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 17:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
+        id S229960AbiEQWDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 18:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbiEQVw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 17:52:28 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B094ECE3
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 14:52:27 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id w4so98506wrg.12
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 14:52:27 -0700 (PDT)
+        with ESMTP id S229805AbiEQWDG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 18:03:06 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5C749F29;
+        Tue, 17 May 2022 15:03:05 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id e3so316646ios.6;
+        Tue, 17 May 2022 15:03:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aMzWkBZQL9aXbZvmMQEZqAkqSC2fGMMdXYlck3K8ttk=;
-        b=lRZ5GxxxrkWxHuTV9nhyvyTmdpz78TOI1zQA1xl82f7kTLOB3C3gakvuMQbXDJXl2J
-         fogZI6IRq2L0TyIBR/A2xVS650k799Zw2lpmLrIq6BDVqOgi8hE7V6afS8zj/ASXKIML
-         hBwLR1q4KHyqWqK02TMxkkTUfiMmnIqO/KZQUBnZY7i4cpePrAZ7IcaqWfDjdYjhsEuv
-         CETs/qZ6oMbCJA3bXYsZ1e739HI5xqLkrgtNhwmuDCLZtqFcXquVY4QfqTGpKwF+W/p1
-         5Nqm7UL1nc1wjchOez5kkQqqyoXFBp6pKjpGucj3YGrBFFJ489gN2zLQOxiFk0KMwXRv
-         IEIA==
+        bh=XaC+lg6kNQzOzaKvEQSXtHYYtU/iVFLlFJMpbBidkyY=;
+        b=U8SshjRqyuJ0JDF7+pse2WF/4zZzkDbrUbLXQDjLV3woV7Yj/FO1pn84lB2hKYA6Lt
+         QmkagHD9wQtPXp/UzV656XNbhU69Yb5ErY6dff/okGI887Cxd5igB1pYkrSDArmAb8ck
+         u2blXKRMqoPX/6Utx7yconobN8YW2pBfCkHcX+CjOr8j0CSVMR1WpBdvNA54fi84pFY8
+         N62xoyKcNj6zLjPQMIsuUcjyauP6zZEUzVT9GOG6r+oFn8cBsavlrx+ERy0INKOVUSI1
+         YCYQsE46WvYCqNmTHjPZK1xsJlpu9ruP980xc2uf7Jqp9Vubrcs9/nemqaa58DqXXA6u
+         8+mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aMzWkBZQL9aXbZvmMQEZqAkqSC2fGMMdXYlck3K8ttk=;
-        b=oW0gbVsmL/lnuUmAzXyfEGTgf/RTstpvK04QOE14w15pQPMYfzRhKZn0mCxBCqqXU+
-         s/NEPOvG7vvx8aTgsnPamcWDhVb6T8ozg7oyxFSI5vIjB3O4WUvhf2GhDAjAZXDvNxUY
-         v3fbCmNSUuGvc/vfvkyhjC4FzUhs0kEKl98+trJRMyK/FWNqUEQ2vRr5tIuMRrcLoUwV
-         VyTmWvWVQ4weZQ+7VacrOqBSJAmmwYrS1UDfhdCnvD6LCo1qlb1wiyTUCdmXeP9ZqAXv
-         TJYahGB0QJyxw91T2RHIPfmYWDZvSiDt9wRPKighfc+LfhrPEo55uFJmTOqkSoJ7GTti
-         C/nQ==
-X-Gm-Message-State: AOAM531kiYJzbo6E+gNqBOA7MPibaKLjJx+rqBg9B/sfoFyqRMd5s5nk
-        DuPMK4C+mZKJSovhjcDWVjudpJpixDYTRO9U89zZHw==
-X-Google-Smtp-Source: ABdhPJwkD4NBCsYJCrEGudQHrl3n4XCoQFQunN5fD0Av9+UeGss5C/xYh6EoMYvlQ2BTtWl6HgiteKNolpbFPYtmWKA=
-X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
- c5-20020adffb05000000b0020ae1138f3fmr20501121wrr.534.1652824345517; Tue, 17
- May 2022 14:52:25 -0700 (PDT)
+        bh=XaC+lg6kNQzOzaKvEQSXtHYYtU/iVFLlFJMpbBidkyY=;
+        b=tXu1yCZvp/VCfsSz6j38YhiWW7QmSjQMs6rj2yl4JSNL4ACI4y7t9Sj1fhrV9ofS7A
+         CC4q80y7iud/ZZHkwepCPZoZK+nAv5kDhQNv8wT/hbRzUt9DoDf/3F1WaliGMPCSeNud
+         AFpzuy7dVxxyayorNOtbsZ0ppUYyaEGi59q5Yx+jUqAN0Hrv1kl+XF2OJRe2KEkps6km
+         orWYIdpKaEJotlhX5TvBE7Q4OY8WeBo5tI2PHhWD++U2iDKIQHXoJupsYJusWlI5CPNx
+         BP7fiQFPwZhe0IAwyUqKoSWCTkFsSNkwExuQW8MR2fyi2nkkku6o82r8s5xFBBcspFf2
+         TOOQ==
+X-Gm-Message-State: AOAM532IslX6Z6g9rBdUm9rRx1dEezmGTYOFeHMArfQQIesi+tsNNeqw
+        H0iCQjac9W3anXlfOSy++T69RRZdrMyFfO/CB/m04ZJG
+X-Google-Smtp-Source: ABdhPJz93sSJZvqwk5VRamRjZVgYfX4V2m91cPHae8WLkjVHmh+raHAi608yU8TchEaHxDgQgsnXz4kp8F4oYj8XT7s=
+X-Received: by 2002:a02:9f87:0:b0:32e:69ae:23df with SMTP id
+ a7-20020a029f87000000b0032e69ae23dfmr489970jam.237.1652824984799; Tue, 17 May
+ 2022 15:03:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220515023504.1823463-1-yosryahmed@google.com>
- <20220515023504.1823463-3-yosryahmed@google.com> <20220517020840.vyfp5cit66fs2k2o@MBP-98dd607d3435.dhcp.thefacebook.com>
-In-Reply-To: <20220517020840.vyfp5cit66fs2k2o@MBP-98dd607d3435.dhcp.thefacebook.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 17 May 2022 14:51:49 -0700
-Message-ID: <CAJD7tkbDtO=wDXFDDmnPLDnEeXG6JQXr=xqqeim+OEC6xTOCew@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next v2 2/7] cgroup: bpf: flush bpf stats on rstat flush
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20220510074659.2557731-1-jolsa@kernel.org> <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
+ <YntnRixbfQ1HCm9T@krava> <Ynv+7iaaAbyM38B6@kernel.org>
+In-Reply-To: <Ynv+7iaaAbyM38B6@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 17 May 2022 15:02:53 -0700
+Message-ID: <CAEf4BzaQsF31f3WuU32wDCzo6bw7eY8E9zF6Lo218jfw-VQmcA@mail.gmail.com>
+Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        cgroups@vger.kernel.org
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,92 +78,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 16, 2022 at 7:08 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, May 11, 2022 at 11:22 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> On Sun, May 15, 2022 at 02:34:59AM +0000, Yosry Ahmed wrote:
-> > +
-> > +void bpf_rstat_flush(struct cgroup *cgrp, int cpu)
-> > +{
-> > +     struct bpf_rstat_flusher *flusher;
-> > +     struct bpf_rstat_flush_ctx ctx = {
-> > +             .cgrp = cgrp,
-> > +             .parent = cgroup_parent(cgrp),
-> > +             .cpu = cpu,
-> > +     };
-> > +
-> > +     rcu_read_lock();
-> > +     migrate_disable();
-> > +     spin_lock(&bpf_rstat_flushers_lock);
-> > +
-> > +     list_for_each_entry(flusher, &bpf_rstat_flushers, list)
-> > +             (void) bpf_prog_run(flusher->prog, &ctx);
-> > +
-> > +     spin_unlock(&bpf_rstat_flushers_lock);
-> > +     migrate_enable();
-> > +     rcu_read_unlock();
-> > +}
-> > diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> > index 24b5c2ab5598..0285d496e807 100644
-> > --- a/kernel/cgroup/rstat.c
-> > +++ b/kernel/cgroup/rstat.c
-> > @@ -2,6 +2,7 @@
-> >  #include "cgroup-internal.h"
+> Em Wed, May 11, 2022 at 09:35:34AM +0200, Jiri Olsa escreveu:
+> > On Tue, May 10, 2022 at 04:48:55PM -0700, Andrii Nakryiko wrote:
+> > > On Tue, May 10, 2022 at 12:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > >
+> > > > hi,
+> > > > sending change we discussed some time ago [1] to get rid of
+> > > > some deprecated functions we use in perf prologue code.
+> > > >
+> > > > Despite the gloomy discussion I think the final code does
+> > > > not look that bad ;-)
+> > > >
+> > > > This patchset removes following libbpf functions from perf:
+> > > >   bpf_program__set_prep
+> > > >   bpf_program__nth_fd
+> > > >   struct bpf_prog_prep_result
+> > > >
+> > > > v2 changes:
+> > > >   - use fallback section prog handler, so we don't need to
+> > > >     use section prefix [Andrii]
+> > > >   - realloc prog->insns array in bpf_program__set_insns [Andrii]
+> > > >   - squash patch 1 from previous version with
+> > > >     bpf_program__set_insns change [Daniel]
+> > > >   - patch 3 already merged [Arnaldo]
+> > > >   - added more comments
+> > > >
+> > > >   meanwhile.. perf/core and bpf-next diverged, so:
+> > > >     - libbpf bpf_program__set_insns change is based on bpf-next/master
+> > > >     - perf changes do not apply on bpf-next/master so they are based on
+> > > >       perf/core ... however they can be merged only after we release
+> > > >       libbpf 0.8.0 with bpf_program__set_insns change, so we don't break
+> > > >       the dynamic linking
+> > > >       I'm sending perf changes now just for review, I'll resend them
+> > > >       once libbpf 0.8.0 is released
+> > > >
+> > > > thanks,
+> > > > jirka
+> > > >
+> > > >
+> > > > [1] https://lore.kernel.org/bpf/CAEf4BzaiBO3_617kkXZdYJ8hS8YF--ZLgapNbgeeEJ-pY0H88g@mail.gmail.com/
+> > > > ---
+> > > > Jiri Olsa (1):
+> > > >       libbpf: Add bpf_program__set_insns function
+> > > >
+> > >
+> > > The first patch looks good to me. The rest I can't really review and
+> > > test properly, so I'll leave it up to Arnaldo.
+> > >
+> > > Arnaldo, how do we coordinate these patches? Should they go through
+> > > bpf-next (after you Ack them) or you want them in your tree?
+> > >
+> > > I'd like to get the bpf_program__set_insns() patch into bpf-next so
+> > > that I can do libbpf v0.8 release, having it in a separate tree is
+> > > extremely inconvenient. Please let me know how you think we should
+> > > proceed?
 > >
-> >  #include <linux/sched/cputime.h>
-> > +#include <linux/bpf-rstat.h>
+> > we need to wait with perf changes after the libbpf is merged and
+> > libbpf 0.8.0 is released.. so we don't break dynamic linking for
+> > perf
 > >
-> >  static DEFINE_SPINLOCK(cgroup_rstat_lock);
-> >  static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
-> > @@ -168,6 +169,7 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp, bool may_sleep)
-> >                       struct cgroup_subsys_state *css;
-> >
-> >                       cgroup_base_stat_flush(pos, cpu);
-> > +                     bpf_rstat_flush(pos, cpu);
+> > at the moment please just take libbpf change and I'll resend the
+> > perf change later if needed
 >
-> Please use the following approach instead:
+> Ok.
 >
-> __weak noinline void bpf_rstat_flush(struct cgroup *cgrp, struct cgroup *parent, int cpu)
-> {
-> }
->
-> and change above line to:
->   bpf_rstat_flush(pos, cgroup_parent(pos), cpu);
->
-> Then tracing bpf fentry progs will be able to attach to bpf_rstat_flush.
-> Pretty much the patches 1, 2, 3 are not necessary.
-> In patch 4 add bpf_cgroup_rstat_updated/flush as two kfuncs instead of stable helpers.
->
-> This way patches 1,2,3,4 will become 2 trivial patches and we will be
-> able to extend the interface between cgroup rstat and bpf whenever we need
-> without worrying about uapi stability.
->
-> We had similar discusison with HID subsystem that plans to use bpf in HID
-> with the same approach.
-> See this patch set:
-> https://lore.kernel.org/bpf/20220421140740.459558-2-benjamin.tissoires@redhat.com/
-> You'd need patch 1 from it to enable kfuncs for tracing.
->
-> Your patch 5 is needed as-is.
-> Yonghong,
-> please review it.
-> Different approach for patch 1-4 won't affect patch 5.
-> Patches 6 and 7 look good.
->
-> With this approach that patch 7 will mostly stay as-is. Instead of:
-> +SEC("rstat/flush")
-> +int vmscan_flush(struct bpf_rstat_flush_ctx *ctx)
-> +{
-> +       struct vmscan_percpu *pcpu_stat;
-> +       struct vmscan *total_stat, *parent_stat;
-> +       struct cgroup *cgrp = ctx->cgrp, *parent = ctx->parent;
->
-> it will become
->
-> SEC("fentry/bpf_rstat_flush")
-> int BPF_PROG(vmscan_flush, struct cgroup *cgrp, struct cgroup *parent, int cpu)
 
-Thanks so much for taking the time to look into this.
+Jiri, libbpf v0.8 is out, can you please re-send your perf patches?
 
-Indeed, this approach looks cleaner and simpler. I will incorporate
-that into a V1 and send it. Thanks!
+
+> - Arnaldo
