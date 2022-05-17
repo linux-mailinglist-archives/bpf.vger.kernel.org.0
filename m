@@ -2,175 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1170552A712
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 17:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70B352A76C
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 17:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350266AbiEQPj5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 11:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
+        id S1350665AbiEQPyI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 11:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbiEQPj4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 11:39:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67C6A19B;
-        Tue, 17 May 2022 08:39:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 609A4B819D2;
-        Tue, 17 May 2022 15:39:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2354C34116;
-        Tue, 17 May 2022 15:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652801992;
-        bh=blnuPm+xDVANBqdOzb9CbPF25QESuuLZnhzceKMLgGs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pCVJ/HIwwbw6XdxB0/X8gM7W2DOn7BXmytLZCEcZ/ADOuLGFdxtYmfKWY/+KXjjyV
-         8l+SRugYUqvyvcUKTpCDFNW3DvOCP2/Orq3pcl29ADDUGD/SzOhMGdrZidwYf6C+YG
-         Tw2NykPIN6QNyKhYoB74X8xdg5MytsNdslpa5btmPmLLJ52WdRT543P93Jyb1ZO3z7
-         VeTTru4CFKoRWPQpOdtUJ4k90WLnBBBWxADeyjiMkwEnKRR1t24yUcz1yhJV2MZJPx
-         JsiGIwY2lToUe2vkBlgxkTBK/67KTicKkNQ5xXWGYZwqxLXH+JIOEZ5rjWkbbgFs9c
-         kagyj6y23A7yQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DBDB9400B1; Tue, 17 May 2022 12:39:48 -0300 (-03)
-Date:   Tue, 17 May 2022 12:39:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S1350662AbiEQPyC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 11:54:02 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62D950B26;
+        Tue, 17 May 2022 08:53:54 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 137so17293266pgb.5;
+        Tue, 17 May 2022 08:53:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rmBZXjHGe6pjrZrcbSckkH/iPjlINFANkKf9gszWPYU=;
+        b=mCL2WZQfUMWu4xy6yy7X1+ebSif5rAu/jKymgNsJYYzZFnA9ugCrwiihsPYjvzThIU
+         DFn5Lk91C0tZGoeUNkgplThRXBMayt2xcmaeF/kI+0KvGVR+kIISN5RmRdDJqe7Oadm+
+         ApJfECbPyywghswoV+jBSpOdkrBps9EXktTRVf3Url5a8fO/0L7wfegdHmd2rnO/VKqr
+         5aIFJRbhhBTCl8CG9Fz4O9HHJKwwrK9Rxg2vuvpaHSd9SFQ95LPDBKs/Xs2D02Uy/oXT
+         ZFn7YQQsYYxadnuLDDRi0dvdKAfQu/UzUbSJrsKeXA9Nrm8fbp9Bp3m1fdX1C87JU/JQ
+         FXxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rmBZXjHGe6pjrZrcbSckkH/iPjlINFANkKf9gszWPYU=;
+        b=Ib3dDUlTM04ry+BsbBJCGicKyfD0/9WIB+k0j8S6lgvmCrayRA2OM/3KYcnpChQHEa
+         YHGfzKJpQtQXXyWQlFXSCjnZOUVRV5qVeVqfERpxWHgm+3PqUfnhgt1SwnfYLoZKPh0Z
+         RSQOSYxo2Q5qO7xOHRKvsdOD/HjG46gWHysagO571KmfEWVkVA6zBf+TgVSw6CX0YF+L
+         QztLEkEaBOsZGsi5N7WMW7ixsMCoWMeyK1E4RrbNXpi+Ucb9F3Wqfqpq3dTdHhMfdnOw
+         LFC/Auv2sMTNW8+jV0Hrid8yRvHxMqj1/1oPNo5pNyk52iMC611MEgxS5TjxT+H32dht
+         iTsQ==
+X-Gm-Message-State: AOAM530j5FON1Djz9qZ5xcdpYGD1PkNHYtIYQpBTuyFwixC/CdWCkh77
+        HQ83wXMvDO4/v0SbDbDPquk=
+X-Google-Smtp-Source: ABdhPJxrXCSmhatJuzbkg3Oy+emIhom0t5nAYkNpvRG00a6Wimvdurd952Xq+8TaFxwV35QJJRu07A==
+X-Received: by 2002:a63:8442:0:b0:3c6:4271:cad with SMTP id k63-20020a638442000000b003c642710cadmr20242021pgd.275.1652802834212;
+        Tue, 17 May 2022 08:53:54 -0700 (PDT)
+Received: from MacBook-Pro.local ([2620:10d:c090:500::2:c22a])
+        by smtp.gmail.com with ESMTPSA id d14-20020a62f80e000000b0050dc76281fdsm6932pfh.215.2022.05.17.08.53.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 May 2022 08:53:53 -0700 (PDT)
+Date:   Tue, 17 May 2022 08:53:49 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Xu Kuohai <xukuohai@huawei.com>
+Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH dwarves v2 2/2] btf_encoder: Normalize array index type
- for parallel dwarf loading case
-Message-ID: <YoPBxEscJTw2YPTC@kernel.org>
-References: <20220512051759.2652236-1-yhs@fb.com>
- <20220512051804.2653507-1-yhs@fb.com>
- <CAEf4Bzbr1M-WZLk1CRbSy5Ai8CCAH6JJH_=hGJ0rgQtriV8Ndg@mail.gmail.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Delyan Kratunov <delyank@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/6] bpf: Move is_valid_bpf_tramp_flags() to
+ the public trampoline code
+Message-ID: <20220517155349.4jk5oymnjvrasw2p@MacBook-Pro.local>
+References: <20220517071838.3366093-1-xukuohai@huawei.com>
+ <20220517071838.3366093-4-xukuohai@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbr1M-WZLk1CRbSy5Ai8CCAH6JJH_=hGJ0rgQtriV8Ndg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220517071838.3366093-4-xukuohai@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, May 12, 2022 at 03:55:14PM -0700, Andrii Nakryiko escreveu:
-> On Wed, May 11, 2022 at 10:18 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > With latest llvm15 built kernel (make -j LLVM=1), I hit the following
-> > error when build selftests (make -C tools/testing/selftests/bpf -j LLVM=1):
-> >   In file included from skeleton/pid_iter.bpf.c:3:
-> >   .../selftests/bpf/tools/build/bpftool/vmlinux.h:84050:9: error: unknown type name
-> >        '__builtin_va_list___2'; did you mean '__builtin_va_list'?
-> >   typedef __builtin_va_list___2 va_list___2;
-> >           ^~~~~~~~~~~~~~~~~~~~~
-> >           __builtin_va_list
-> >   note: '__builtin_va_list' declared here
-> >   In file included from skeleton/profiler.bpf.c:3:
-> >   .../selftests/bpf/tools/build/bpftool/vmlinux.h:84050:9: error: unknown type name
-> >        '__builtin_va_list__ _2'; did you mean '__builtin_va_list'?
-> >   typedef __builtin_va_list___2 va_list___2;
-> >           ^~~~~~~~~~~~~~~~~~~~~
-> >           __builtin_va_list
-> >   note: '__builtin_va_list' declared here
-> >
-> > The error can be easily explained with after-dedup vmlinux btf:
-> >   [21] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> >   [2300] STRUCT '__va_list_tag' size=24 vlen=4
-> >         'gp_offset' type_id=2 bits_offset=0
-> >         'fp_offset' type_id=2 bits_offset=32
-> >         'overflow_arg_area' type_id=32 bits_offset=64
-> >         'reg_save_area' type_id=32 bits_offset=128
-> >   [2308] TYPEDEF 'va_list' type_id=2309
-> >   [2309] TYPEDEF '__builtin_va_list' type_id=2310
-> >   [2310] ARRAY '(anon)' type_id=2300 index_type_id=21 nr_elems=1
-> >
-> >   [5289] PTR '(anon)' type_id=2308
-> >   [158520] STRUCT 'warn_args' size=32 vlen=2
-> >         'fmt' type_id=14 bits_offset=0
-> >         'args' type_id=2308 bits_offset=64
-> >   [27299] INT '__ARRAY_SIZE_TYPE__' size=4 bits_offset=0 nr_bits=32 encoding=(none)
-> >   [34590] TYPEDEF '__builtin_va_list' type_id=34591
-> >   [34591] ARRAY '(anon)' type_id=2300 index_type_id=27299 nr_elems=1
-> >
-> > Note that two array index_type_id's are different so the va_list and __builtin_va_list
-> > will have two versions in the BTF. With this, vmlinux.h contains the following code,
-> >   typedef __builtin_va_list va_list;
-> >   typedef __builtin_va_list___2 va_list___2;
-> > Since __builtin_va_list is a builtin type for the compiler,
-> > libbpf does not generate
-> >   typedef <...> __builtin_va_list
-> > and this caused __builtin_va_list___2 is not defined and hence compilation error.
-> > This happened when pahole is running with more than one jobs when parsing dwarf
-> > and generating btfs.
-> >
-> > Function btf_encoder__encode_cu() is used to do btf encoding for
-> > each cu. The function will try to find an "int" type for the cu
-> > if it is available, otherwise, it will create a special type
-> > with name __ARRAY_SIZE_TYPE__. For example,
-> >   file1: yes 'int' type
-> >   file2: no 'int' type
-> >
-> > In serial mode, file1 is processed first, followed by file2.
-> > both will have 'int' type as the array index type since file2
-> > will inherit the index type from file1.
-> >
-> > In parallel mode though, arrays in file1 will have index type 'int',
-> > and arrays in file2 wil have index type '__ARRAY_SIZE_TYPE__'.
-> > This will prevent some legitimate dedup and may have generated
-> > vmlinux.h having compilation error.
-> >
-> > This patch fixed the issue by creating an 'int' type as the
-> > array index type, so all array index type should be the same
-> > for all cu's even in parallel mode.
-> >
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
-> >  btf_encoder.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> 
-> LGTM, it should work reliably.
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+On Tue, May 17, 2022 at 03:18:35AM -0400, Xu Kuohai wrote:
+>  
+> +static bool is_valid_bpf_tramp_flags(unsigned int flags)
+> +{
+> +	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
+> +	    (flags & BPF_TRAMP_F_SKIP_FRAME))
+> +		return false;
+> +
+> +	/* BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops,
+> +	 * and it must be used alone.
+> +	 */
+> +	if ((flags & BPF_TRAMP_F_RET_FENTRY_RET) &&
+> +	    (flags & ~BPF_TRAMP_F_RET_FENTRY_RET))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +int bpf_prepare_trampoline(struct bpf_tramp_image *tr, void *image,
+> +			   void *image_end, const struct btf_func_model *m,
+> +			   u32 flags, struct bpf_tramp_links *tlinks,
+> +			   void *orig_call)
+> +{
+> +	if (!is_valid_bpf_tramp_flags(flags))
+> +		return -EINVAL;
+> +
+> +	return arch_prepare_bpf_trampoline(tr, image, image_end, m, flags,
+> +					   tlinks, orig_call);
+> +}
 
-Applied and testing.
-
-- Arnaldo
- 
-> > Changelog:
-> >   v1 -> v2:
-> >    - change creation of array index type to be 'int' type,
-> >      the same as the type encoder tries to search in the current
-> >      types.
-> >
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index 1a42094..9e708e4 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -1460,7 +1460,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu)
-> >
-> >                 bt.name = 0;
-> >                 bt.bit_size = 32;
-> > -               btf_encoder__add_base_type(encoder, &bt, "__ARRAY_SIZE_TYPE__");
-> > +               bt.is_signed = true;
-> > +               btf_encoder__add_base_type(encoder, &bt, "int");
-> >                 encoder->has_index_type = true;
-> >         }
-> >
-> > --
-> > 2.30.2
-> >
-
--- 
-
-- Arnaldo
+It's an overkill to introduce a new helper function just to validate
+flags that almost compile time constants.
+The flags are not user supplied.
+Please move /* BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops ... */
+comment to bpf_struct_ops.c right before it calls arch_prepare_bpf_trampoline()
+And add a comment to trampoline.c saying that BPF_TRAMP_F_RESTORE_REGS
+and BPF_TRAMP_F_SKIP_FRAME should not be set together.
+We could add a warn_on there or in arch code, but feels like overkill.
