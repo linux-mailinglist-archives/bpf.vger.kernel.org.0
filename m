@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BF752AEA2
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 01:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1432A52AEB6
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 01:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbiEQXeH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 19:34:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S229829AbiEQXiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 19:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbiEQXeE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 19:34:04 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18A7527DA
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 16:34:03 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id r27so542323iot.1
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 16:34:03 -0700 (PDT)
+        with ESMTP id S229655AbiEQXiU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 19:38:20 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32753527DF
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 16:38:19 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id a10so511000ioe.9
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 16:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jEvE1vNwXcZPS2N+BLky0y70snAyglXlya3Vv5d2qRk=;
-        b=ZgleHdDbir4mpQJQie9+W2c9mYvUIl0bM5rOx5WeRP79ShvEZ+M4a9nEqnksGL52ME
-         8IYUAbZY7FkICCQU6KI11/cKi3QFbJhNdXHM6xI0XG2NfFJNs6sEkTbe6y6jXcgz7EUP
-         3DguaEhaLVxtURd3lvJHFL31mVDAWtWeltzJGXrT8nMynCify0/PRSMGvRmRKH2Dv5CS
-         Gqo4K0KTtRXSJ60vPhEsULGzNTc+lFG8ZJcNKgKxvqturPp6nKGQcfK43pHDkRTXRTkb
-         2N8qDxDMBqozL/SDetLz7NIYWFovASrIOeVj1iJ/OGqtJVIpE7Va0ZyrTeKUoz83smhQ
-         y0UA==
+        bh=wiw3WO8x8zxnY1TW5c7zBMjLoNOqIGACb7hWnzednpA=;
+        b=QNNd2z95cdFl3TqbmhzGTvl8/Z63N/rDipkf/DN/Tf7c82+19ZgBBlxpI4jnr2YxwE
+         kiCQBvTLLtrgh9DbqxMrSCEX/6h40IwQpx9u9HdQB1bgJldEYK7Z8moMp/PCPjv3JmIN
+         AFcxxnQR03o47/pFyUGZowoqlq2uFTcGyhnlU78rZdADONxUxu9DGzySXq5bDWtAXCTX
+         fi4s3TbvWX7P8UDRX9MshWjxt37X8Uuvx7XjG6rbRnlX74YqdA3e2PjQ102CyjBqPDtO
+         8noMeEbuSVeyiV2oQ4xtjJI/sJ4mZnW6/BMSbTLvRGLqYFKAe79eX+9AEl93Clg99idw
+         0Tyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jEvE1vNwXcZPS2N+BLky0y70snAyglXlya3Vv5d2qRk=;
-        b=H+842prpFp1u3t64FqM9IvsIwrdGe2uiF2g/E9bgN0u7IGULmAl/AHACTtaqB2XyFd
-         PpZT1Y0fMkbRy3/Sk/au+yUE9ocORKFf67SpeARsTy76CGbzw4H6ssIxOfX4fe21etd1
-         tTnIDthRIxdDO7NmsYVFX+1QB0Gi3tbJcLBJxRUCMmKaOXseE0/QwpYxpXFi6uLFzRZ6
-         pXQPl60eEoWlXD5TC76B0mpKBIg40rceVNAfDFByOexLdL2S9CnbV2EUGb6azo2LAykb
-         1M1KXm1y1e5tFdcvyZujhWHfNK2ydbpkySQuJzWFkPGZX1W9wzPi3iwvkXUSihHJDMeY
-         hpww==
-X-Gm-Message-State: AOAM530Iue+UCY+KFj9lJEAN4xg9Op9wxFgz2TynoMTop3H2PYOJhS6b
-        b8IiifsaBmCt+BE4nYyjtPzV5LG1qYMBQvtlPtg=
-X-Google-Smtp-Source: ABdhPJwvKyEsrK/Ga6HlyP3aSe/rU9GuGo+aX8iCy/PuNN0cyrLte+oxgfAwTVUbgyseE5hE0EImE9sEHiOFfgLjJxY=
-X-Received: by 2002:a05:6602:1695:b0:65d:cbd3:eed0 with SMTP id
- s21-20020a056602169500b0065dcbd3eed0mr11200444iow.144.1652830443428; Tue, 17
- May 2022 16:34:03 -0700 (PDT)
+        bh=wiw3WO8x8zxnY1TW5c7zBMjLoNOqIGACb7hWnzednpA=;
+        b=mwb+3r79S0dGcOV2xy8k8I+n5tgIDfIoYokZPCUepvM94EztHZyTBc3iFWs/ovDK5M
+         sUh8SXr4x7iSS5Z+S003eAc+LZWPrG9Kh6rZzQK6pfy0QaOthx3dtwrVWTPgC8Eryf2y
+         N2tMyYarHXQGr9QgsjKwDE4sC+Gyq30mclSyf5c6C/VV6A3NdIqSs1duaW6Wbitntt+d
+         ns6FL2m7z0ijSKftQNDYRFGN3thttQd0fiScj0v+72m6FifkCaQ2UvQ5Sw/sJCVopy/W
+         tgpN/GxhzdQWkH2G47yql2asdYN3YNsbYgbF9AtntPdIYTkPMkgBkrvJkjss4eSKTJhX
+         pA+Q==
+X-Gm-Message-State: AOAM53218clZJCWTPOyW0g/bIoAnNEjcbfR1G2dQlGwRsFFLfPWrwXbQ
+        QiRFgtw1NxWfqK35RnWbAuwsQv4XYSB1A+7FnfRQOGS3
+X-Google-Smtp-Source: ABdhPJyJuCVBXbXA949L0nPiDJMXmy9xfCqnl7mXwK7I/+CgQiFsceRhvxox9vOoAMuHfCFOEFWZ0VvR3T97nAJ0kmk=
+X-Received: by 2002:a05:6638:2393:b0:32e:319d:c7cc with SMTP id
+ q19-20020a056638239300b0032e319dc7ccmr6777210jat.103.1652830698558; Tue, 17
+ May 2022 16:38:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220514031221.3240268-1-yhs@fb.com> <20220514031324.3245558-1-yhs@fb.com>
-In-Reply-To: <20220514031324.3245558-1-yhs@fb.com>
+References: <20220514031221.3240268-1-yhs@fb.com> <20220514031319.3245326-1-yhs@fb.com>
+In-Reply-To: <20220514031319.3245326-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 17 May 2022 16:33:52 -0700
-Message-ID: <CAEf4Bzac+oRvDwv_yKMMpdwgasjo0JOHL06n3bcPrsk9PYW6Sw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 12/18] selftests/bpf: Fix selftests failure
+Date:   Tue, 17 May 2022 16:38:07 -0700
+Message-ID: <CAEf4BzZcPVsKzx+abjJruRAeg++iod6YnTfBWGhUkyit6VsGPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 11/18] bpftool: Add btf enum64 support
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -69,13 +69,114 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, May 13, 2022 at 8:13 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> The kflag is supported now for BTF_KIND_ENUM.
-> So remove the test which tests verifier failure
-> due to existence of kflag.
+> Add BTF_KIND_ENUM64 support.
+> For example, the following enum is defined in uapi bpf.h.
+>   $ cat core.c
+>   enum A {
+>         BPF_F_INDEX_MASK                = 0xffffffffULL,
+>         BPF_F_CURRENT_CPU               = BPF_F_INDEX_MASK,
+>         BPF_F_CTXLEN_MASK               = (0xfffffULL << 32),
+>   } g;
+> Compiled with
+>   clang -target bpf -O2 -g -c core.c
+> Using bpftool to dump types and generate format C file:
+>   $ bpftool btf dump file core.o
+>   ...
+>   [1] ENUM64 'A' size=8 vlen=3
+>         'BPF_F_INDEX_MASK' val=4294967295ULL
+>         'BPF_F_CURRENT_CPU' val=4294967295ULL
+>         'BPF_F_CTXLEN_MASK' val=4503595332403200ULL
+>   $ bpftool btf dump file core.o format c
+>   ...
+>   enum A {
+>         BPF_F_INDEX_MASK = 4294967295ULL,
+>         BPF_F_CURRENT_CPU = 4294967295ULL,
+>         BPF_F_CTXLEN_MASK = 4503595332403200ULL,
+>   };
+>   ...
 >
+> The 64bit value is represented properly in BTF and C dump.
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
+>  tools/bpf/bpftool/btf.c        | 49 ++++++++++++++++++++++++++++++++--
+>  tools/bpf/bpftool/btf_dumper.c | 29 ++++++++++++++++++++
+>  tools/bpf/bpftool/gen.c        |  1 +
+>  3 files changed, 77 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index a2c665beda87..9e5db870fe53 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -40,6 +40,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+>         [BTF_KIND_FLOAT]        = "FLOAT",
+>         [BTF_KIND_DECL_TAG]     = "DECL_TAG",
+>         [BTF_KIND_TYPE_TAG]     = "TYPE_TAG",
+> +       [BTF_KIND_ENUM64]       = "ENUM64",
+>  };
+>
+>  struct btf_attach_point {
+> @@ -228,10 +229,54 @@ static int dump_btf_type(const struct btf *btf, __u32 id,
+>                         if (json_output) {
+>                                 jsonw_start_object(w);
+>                                 jsonw_string_field(w, "name", name);
+> -                               jsonw_uint_field(w, "val", v->val);
+> +                               if (btf_kflag(t))
+> +                                       jsonw_int_field(w, "val", v->val);
+> +                               else
+> +                                       jsonw_uint_field(w, "val", v->val);
+>                                 jsonw_end_object(w);
+>                         } else {
+> -                               printf("\n\t'%s' val=%u", name, v->val);
+> +                               if (btf_kflag(t))
+> +                                       printf("\n\t'%s' val=%d", name, v->val);
+> +                               else
+> +                                       printf("\n\t'%s' val=%u", name, v->val);
+> +                       }
+> +               }
+> +               if (json_output)
+> +                       jsonw_end_array(w);
+> +               break;
+> +       }
+> +       case BTF_KIND_ENUM64: {
+> +               const struct btf_enum64 *v = btf_enum64(t);
+> +               __u16 vlen = btf_vlen(t);
+> +               int i;
+> +
+> +               if (json_output) {
+> +                       jsonw_uint_field(w, "size", t->size);
+> +                       jsonw_uint_field(w, "vlen", vlen);
+> +                       jsonw_name(w, "values");
+> +                       jsonw_start_array(w);
+> +               } else {
+> +                       printf(" size=%u vlen=%u", t->size, vlen);
+> +               }
+> +               for (i = 0; i < vlen; i++, v++) {
+> +                       const char *name = btf_str(btf, v->name_off);
+> +                       __u64 val = ((__u64)v->val_hi32 << 32) | v->val_lo32;
+> +
+> +                       if (json_output) {
+> +                               jsonw_start_object(w);
+> +                               jsonw_string_field(w, "name", name);
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+forgot emitting kflag itself (both in bpftool and in selftests), let's
+add that for both enum and enum64?
+
+> +                               if (btf_kflag(t))
+> +                                       jsonw_int_field(w, "val", val);
+> +                               else
+> +                                       jsonw_uint_field(w, "val", val);
+> +                               jsonw_end_object(w);
+> +                       } else {
+> +                               if (btf_kflag(t))
+> +                                       printf("\n\t'%s' val=%lldLL", name,
+> +                                              (unsigned long long)val);
+> +                               else
+> +                                       printf("\n\t'%s' val=%lluULL", name,
+> +                                              (unsigned long long)val);
+>                         }
+>                 }
+>                 if (json_output)
 
 [...]
