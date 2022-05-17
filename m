@@ -2,66 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3740052A51B
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 16:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1170552A712
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 17:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236258AbiEQOm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 10:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
+        id S1350266AbiEQPj5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 11:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349131AbiEQOmZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 10:42:25 -0400
+        with ESMTP id S230267AbiEQPj4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 11:39:56 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6507335857;
-        Tue, 17 May 2022 07:42:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67C6A19B;
+        Tue, 17 May 2022 08:39:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1BF8EB81882;
-        Tue, 17 May 2022 14:42:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C5C2C385B8;
-        Tue, 17 May 2022 14:42:20 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 609A4B819D2;
+        Tue, 17 May 2022 15:39:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2354C34116;
+        Tue, 17 May 2022 15:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652798541;
-        bh=Z9/e+OWfp+7R1xPJIDE0/n70s8MO3E+bncv8jpwAhqs=;
+        s=k20201202; t=1652801992;
+        bh=blnuPm+xDVANBqdOzb9CbPF25QESuuLZnhzceKMLgGs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L+eRWHydU3gYaPAfi2auwzftOFDzIF2dRsCPWSKDW/2l/AGUdsqNbk/f+gMWL5rmp
-         UFfowYFlYod5enOGxg4PMhem/HNQarLhyBX5iVEeHoDH2/wf/aGAQQYyUxOjWHlLg9
-         IZsqC1OrH6QeTLFf9vrKU31atUfJ2cfNXB9v68aHOD3fV7YMQh5fxRv4ztogECIJJ1
-         wU6fz2ckUzq3HMrSy5qbs9LwnlsE3qqmbw6H2GyO3y6zCeP3nGTYBqunVQAwDPncR+
-         HSA0HOaINjXF7YILh2ZiXCX3iU97J7pheG6z8MViOSvsQUV1pyId/yfL+hgEhkv11E
-         ITmI3tfNbnF3w==
-Date:   Tue, 17 May 2022 16:42:17 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        b=pCVJ/HIwwbw6XdxB0/X8gM7W2DOn7BXmytLZCEcZ/ADOuLGFdxtYmfKWY/+KXjjyV
+         8l+SRugYUqvyvcUKTpCDFNW3DvOCP2/Orq3pcl29ADDUGD/SzOhMGdrZidwYf6C+YG
+         Tw2NykPIN6QNyKhYoB74X8xdg5MytsNdslpa5btmPmLLJ52WdRT543P93Jyb1ZO3z7
+         VeTTru4CFKoRWPQpOdtUJ4k90WLnBBBWxADeyjiMkwEnKRR1t24yUcz1yhJV2MZJPx
+         JsiGIwY2lToUe2vkBlgxkTBK/67KTicKkNQ5xXWGYZwqxLXH+JIOEZ5rjWkbbgFs9c
+         kagyj6y23A7yQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DBDB9400B1; Tue, 17 May 2022 12:39:48 -0300 (-03)
+Date:   Tue, 17 May 2022 12:39:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add selftest for
- bpf_ct_refresh_timeout kfunc
-Message-ID: <YoO0SXy9DA3ESWE+@lore-desk>
-References: <cover.1652372970.git.lorenzo@kernel.org>
- <4841edea5de2ce5898092c057f61d45dec3d9a34.1652372970.git.lorenzo@kernel.org>
- <CAADnVQKys77rY+FLkGJwdmdww+h2pGosx08RxVvYwwkjZLSwEQ@mail.gmail.com>
- <Yn+HBKbo5eoYBPzj@lore-desk>
- <CAADnVQJbOZAg-nGrVutwCA5r=VATXVOXD5Y2EtbfkZHtCsrBbg@mail.gmail.com>
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH dwarves v2 2/2] btf_encoder: Normalize array index type
+ for parallel dwarf loading case
+Message-ID: <YoPBxEscJTw2YPTC@kernel.org>
+References: <20220512051759.2652236-1-yhs@fb.com>
+ <20220512051804.2653507-1-yhs@fb.com>
+ <CAEf4Bzbr1M-WZLk1CRbSy5Ai8CCAH6JJH_=hGJ0rgQtriV8Ndg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XGayC4HemFmqoBlp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJbOZAg-nGrVutwCA5r=VATXVOXD5Y2EtbfkZHtCsrBbg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbr1M-WZLk1CRbSy5Ai8CCAH6JJH_=hGJ0rgQtriV8Ndg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -72,58 +63,114 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---XGayC4HemFmqoBlp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On Sat, May 14, 2022 at 3:40 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
-te:
+Em Thu, May 12, 2022 at 03:55:14PM -0700, Andrii Nakryiko escreveu:
+> On Wed, May 11, 2022 at 10:18 PM Yonghong Song <yhs@fb.com> wrote:
 > >
-> > > On Thu, May 12, 2022 at 9:34 AM Lorenzo Bianconi <lorenzo@kernel.org>=
- wrote:
-> > > >
-> > > > Install a new ct entry in order to perform a successful lookup and
-> > > > test bpf_ct_refresh_timeout kfunc helper.
-> > > >
-> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > >
-> > > CI is failing:
-> > > test_bpf_nf_ct:FAIL:flush ct entries unexpected error: 32512 (errno 2)
-> > > test_bpf_nf_ct:FAIL:create ct entry unexpected error: 32512 (errno 2)
-> > >
-> > > Please follow the links from patchwork for details.
+> > With latest llvm15 built kernel (make -j LLVM=1), I hit the following
+> > error when build selftests (make -C tools/testing/selftests/bpf -j LLVM=1):
+> >   In file included from skeleton/pid_iter.bpf.c:3:
+> >   .../selftests/bpf/tools/build/bpftool/vmlinux.h:84050:9: error: unknown type name
+> >        '__builtin_va_list___2'; did you mean '__builtin_va_list'?
+> >   typedef __builtin_va_list___2 va_list___2;
+> >           ^~~~~~~~~~~~~~~~~~~~~
+> >           __builtin_va_list
+> >   note: '__builtin_va_list' declared here
+> >   In file included from skeleton/profiler.bpf.c:3:
+> >   .../selftests/bpf/tools/build/bpftool/vmlinux.h:84050:9: error: unknown type name
+> >        '__builtin_va_list__ _2'; did you mean '__builtin_va_list'?
+> >   typedef __builtin_va_list___2 va_list___2;
+> >           ^~~~~~~~~~~~~~~~~~~~~
+> >           __builtin_va_list
+> >   note: '__builtin_va_list' declared here
 > >
-> > Hi Alexei,
+> > The error can be easily explained with after-dedup vmlinux btf:
+> >   [21] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> >   [2300] STRUCT '__va_list_tag' size=24 vlen=4
+> >         'gp_offset' type_id=2 bits_offset=0
+> >         'fp_offset' type_id=2 bits_offset=32
+> >         'overflow_arg_area' type_id=32 bits_offset=64
+> >         'reg_save_area' type_id=32 bits_offset=128
+> >   [2308] TYPEDEF 'va_list' type_id=2309
+> >   [2309] TYPEDEF '__builtin_va_list' type_id=2310
+> >   [2310] ARRAY '(anon)' type_id=2300 index_type_id=21 nr_elems=1
 > >
-> > tests failed because conntrack is not installed on the system:
+> >   [5289] PTR '(anon)' type_id=2308
+> >   [158520] STRUCT 'warn_args' size=32 vlen=2
+> >         'fmt' type_id=14 bits_offset=0
+> >         'args' type_id=2308 bits_offset=64
+> >   [27299] INT '__ARRAY_SIZE_TYPE__' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+> >   [34590] TYPEDEF '__builtin_va_list' type_id=34591
+> >   [34591] ARRAY '(anon)' type_id=2300 index_type_id=27299 nr_elems=1
 > >
-> > 2022-05-14T00:12:09.0799053Z sh: line 1: conntrack: command not found
+> > Note that two array index_type_id's are different so the va_list and __builtin_va_list
+> > will have two versions in the BTF. With this, vmlinux.h contains the following code,
+> >   typedef __builtin_va_list va_list;
+> >   typedef __builtin_va_list___2 va_list___2;
+> > Since __builtin_va_list is a builtin type for the compiler,
+> > libbpf does not generate
+> >   typedef <...> __builtin_va_list
+> > and this caused __builtin_va_list___2 is not defined and hence compilation error.
+> > This happened when pahole is running with more than one jobs when parsing dwarf
+> > and generating btfs.
 > >
-> > Is it ok to just skip the test if conntrack is not installed on the sys=
-tem
-> > or do you prefer to directly send netlink messages to ct in order to ad=
-d a
-> > new ct entry?
->=20
-> It will take a long time to update x86 and s390 images.
-> Maybe we should add a kfunc that creates a ct entry?
+> > Function btf_encoder__encode_cu() is used to do btf encoding for
+> > each cu. The function will try to find an "int" type for the cu
+> > if it is available, otherwise, it will create a special type
+> > with name __ARRAY_SIZE_TYPE__. For example,
+> >   file1: yes 'int' type
+> >   file2: no 'int' type
+> >
+> > In serial mode, file1 is processed first, followed by file2.
+> > both will have 'int' type as the array index type since file2
+> > will inherit the index type from file1.
+> >
+> > In parallel mode though, arrays in file1 will have index type 'int',
+> > and arrays in file2 wil have index type '__ARRAY_SIZE_TYPE__'.
+> > This will prevent some legitimate dedup and may have generated
+> > vmlinux.h having compilation error.
+> >
+> > This patch fixed the issue by creating an 'int' type as the
+> > array index type, so all array index type should be the same
+> > for all cu's even in parallel mode.
+> >
+> > Signed-off-by: Yonghong Song <yhs@fb.com>
+> > ---
+> >  btf_encoder.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> 
+> LGTM, it should work reliably.
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-ack, I added the support for it. I will post it soon.
+Applied and testing.
 
-Regards,
-Lorenzo
+- Arnaldo
+ 
+> > Changelog:
+> >   v1 -> v2:
+> >    - change creation of array index type to be 'int' type,
+> >      the same as the type encoder tries to search in the current
+> >      types.
+> >
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index 1a42094..9e708e4 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -1460,7 +1460,8 @@ int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu)
+> >
+> >                 bt.name = 0;
+> >                 bt.bit_size = 32;
+> > -               btf_encoder__add_base_type(encoder, &bt, "__ARRAY_SIZE_TYPE__");
+> > +               bt.is_signed = true;
+> > +               btf_encoder__add_base_type(encoder, &bt, "int");
+> >                 encoder->has_index_type = true;
+> >         }
+> >
+> > --
+> > 2.30.2
+> >
 
---XGayC4HemFmqoBlp
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYoO0SQAKCRA6cBh0uS2t
-rGI8AP49d/EC0PE7uNPVHS33AfOY5EI09ZQ/gxwxMbVXqa2PAgEAyWOAaNwk/WCG
-lxIRMn1eiQ2iJyaqtqk5tT04NgR1hws=
-=kxEr
------END PGP SIGNATURE-----
-
---XGayC4HemFmqoBlp--
+- Arnaldo
