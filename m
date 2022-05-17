@@ -2,137 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6040652A907
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 19:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CB952A98E
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 19:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239696AbiEQRPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 13:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
+        id S243328AbiEQRr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 13:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233857AbiEQRPV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 13:15:21 -0400
+        with ESMTP id S234922AbiEQRr1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 13:47:27 -0400
 Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BDE4FC6F
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 10:15:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979974EDD4
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 10:47:23 -0700 (PDT)
 Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24H8JNfR008661;
-        Tue, 17 May 2022 10:15:06 -0700
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24HHJi4g008743;
+        Tue, 17 May 2022 10:47:07 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=UKYUaSZdIaFDHJ1ZfIY5lrp03LmSruqI4/of0vahUw8=;
- b=pxNiXCpp7NV6+mgQzmU1Q8pIB+tl6Hs7jTEwZgtXB9VKXUVGZUCrJfG0BUu4FFlnB8um
- eTWkS9BB/QW0Gx2yv1Zh5z65zeTScWCilPoNtcl2krz9OPN1r5xxeVrO8ZxgozdeJDUO
- bs5vAndAabY5TG4H1EcoWimR5Lfz79jSqrc= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3g4836kc0r-1
+ bh=55sBmCWvkR7EfgJAzZSt3vqYXsooxAGLwQtpkQsWNDY=;
+ b=LpOyJKcxL00N0ISB8SeoK5M/vaIO3dWDd7Ncfqqd4w2nLvwqGTPuG0JTkZYBhJ9JAZRw
+ F9nBw0q4f+Uo5NrucX0EAHAiaVIXxX4y3jzOUR2eZqlvSO0WJgd9euil+VYnOT4lyYpq
+ qKznMGxKWxvYho/3fnWwUXPXlzaWHJSusfc= 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3g4836km4r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 May 2022 10:15:06 -0700
+        Tue, 17 May 2022 10:47:06 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TYt2GRVndlV1APU68i/JiD3ytfsiIn0DHV/Pq2677hyiZickGIEkiodclq6GOdfqU5zp/+sJAFW0K8775giTO7efwLeFfct9vGaArt4/y8nnIqMnBWCCr7xkmbMpQCP4lzh/dgpsusRnWZRcWP4BWqEc27bFMeERIku4eJQNEHFl1cG9Eh4z5xfcXQhMNadJmxp4F+gsIq9AMGC90FtLWz9tb5Onyz7kMXttyJdeCKId6wDRiCV/zOJpV7zlQs9GVo/sXuNZnsNefLM3XCK+Vq0Yuefh27rsxk0PATGEeIA0EHZj2NQC0qJFal8aaMx9B0biYyUTifDvq1ZW7Nc4yw==
+ b=Bg5SisyPlFF8bKOxki9v0nqLunvPZKmzaT3YQiCuxxCzEt1sol8cYd1i1enwvA7x8T8g4YxkPI9aK9JBrBSDhAvBHCv3wJgtjU8B4a2Ty0ZbXMNkkvjSqLNNlNrd5FwNiqu9oYq5vjH4apx5bIeTIMz+ZUQK3Ej8IWqsQVdUO6GgqUQ+93545JHX6bwQyJO5ime+3cFtVlvbx7rffUpNiNtnj2RtZ7jMVpmw43iWDPQ0I10+vOSSNaIDB/d8xQy9U4egVTm7iiR3XTvklaPYeITyCOW2xv/x64t3v5r7YcGzhNlQvwMlfkkryHSQCX3N60zWHJ71AKjvVOkU1PgPdQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UKYUaSZdIaFDHJ1ZfIY5lrp03LmSruqI4/of0vahUw8=;
- b=kF13GWOZzEchecpq7YL/pWU6ZZuORvAOs2bXa7BC+idj5EdSEfKqDBKjrykF2iU4UeZeHlyduy+6Efmu83+fq6kIjsZdUIYbsz7Bt+HsfnQ+J3yduJJAm57/Zbo91LXBLGqr+t7ppW764kHCnfeyWbAxmVEr4S1kWZrlK+MgpEyQmB/Fzp+h59tBZNg60bowGC+fKSXEUHsAihGxfjOysA/A+uGzphw+Y9ct2HlZs0IfAOcmzBADDoE9PHslvNXHHjH8SEAZYONQr8bizF/rEDgUXdB1Vln84sB7Co1zyC+Jig5tLc6fxAw9X8UlmR0F1EYc4aBDjGv2Eb2JVQKqZg==
+ bh=55sBmCWvkR7EfgJAzZSt3vqYXsooxAGLwQtpkQsWNDY=;
+ b=FcpTtflUpIPsvqWNw22f/uIF1VGXJg2/wHT4VJV7eGPA23ZP5wYmx4QVr11jiZmhVqTcTDfZJ3EXAC3Sa47L/NpLuQk0/x+2/+1RgMeT87n8qBfgBAF5HLLFS7733ej0cst38SMJ/Ft+UatFjVbHn4n/+udeEQJ3nuJrgn7JxXF28wVghyeXaZF2xEzua1BX5wSe+/AMgkpzdB/ieHCqvQAvM6exMMEP9/4PCdMqphsm0vvBAt8MK+MKiueUBx/yIIjPBDy6OOuWTUFY6SjqIVK3E4lOAr4PWF+5gPgumn6+OuB4laU0uuEI4VIowRzXOfMi1yLV8/Fe6ZigE5wa5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MW2PR1501MB2106.namprd15.prod.outlook.com (2603:10b6:302:d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5250.18; Tue, 17 May
- 2022 17:15:04 +0000
+ by DM5PR15MB1932.namprd15.prod.outlook.com (2603:10b6:4:55::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5250.18; Tue, 17 May 2022 17:47:05 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::5811:4996:bbfd:3c53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::5811:4996:bbfd:3c53%7]) with mapi id 15.20.5273.013; Tue, 17 May 2022
- 17:15:04 +0000
-Message-ID: <59bebb88-b3b4-093e-46f7-18373172b998@fb.com>
-Date:   Tue, 17 May 2022 10:15:02 -0700
+ 17:47:05 +0000
+Message-ID: <9acb7673-8a7c-d9e9-efd3-f31148b47c7b@fb.com>
+Date:   Tue, 17 May 2022 10:47:02 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v2 07/18] libbpf: Add enum64 support for btf_dump
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: refine
+ kernel.unpriviliged_bpf_disabled behaviour
 Content-Language: en-US
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20220514031221.3240268-1-yhs@fb.com>
- <20220514031258.3242876-1-yhs@fb.com>
- <CAEf4BzZq1PdMukF4OCKOKAG0owD+NduZkKcYiTYJEM_RW-AZEg@mail.gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, keescook@chromium.org, bpf@vger.kernel.org
+References: <1652788780-25520-1-git-send-email-alan.maguire@oracle.com>
+ <1652788780-25520-2-git-send-email-alan.maguire@oracle.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <CAEf4BzZq1PdMukF4OCKOKAG0owD+NduZkKcYiTYJEM_RW-AZEg@mail.gmail.com>
+In-Reply-To: <1652788780-25520-2-git-send-email-alan.maguire@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0014.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR13CA0224.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c1::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ac32e695-11aa-4e96-d114-08da3828c8be
-X-MS-TrafficTypeDiagnostic: MW2PR1501MB2106:EE_
-X-Microsoft-Antispam-PRVS: <MW2PR1501MB21062AA8646837B9A6E2786CD3CE9@MW2PR1501MB2106.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 2128b54d-524f-496a-dbd3-08da382d417f
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1932:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR15MB19322F8A4F0716B2554429EFD3CE9@DM5PR15MB1932.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zej7G09fxgXcaJZtmp+edV3aBogFPYB74JcmOFkIdtJXghAQsUdkB3yh9QlLJ7FpYYIQuAnSU9jqvs0iHqvZw6Lxr+Cm1rR68IDgJKCyPzFudZk7zGz1BDsbuzfBtD6xrZNjuXQqRnWtOhE/aif2JZCt2uS6D3JWbBRQVXfLbGEIjxeyUbi+BTUrBk/os9w/bHHi24V1sKlqK24iq+0/p0jGgiiDC+aSH+ecK+UQbuocB18bmC8Qaet9RB+9IMTnPANiNVe+7k9a7KdRQTB3rdUnLB5BRaUVuJOx9o1IMnfdqp0UMReXVS55EHkAKpwlLdj6rPSxWq+KXKnjpPJRkb11fYZQhvM0jJiLuS+5hEZzazxyEQQBwjSSNDmTvn2qQ2i+slM6wL553fxoT2eQIxAf8Xe6MCC/LAH0L2bZ59e0qYV8es30cXZ1QcJvwAMTbDsBld4teux4DF20IB3f1KWkQ4ajqoee3B18jL94F3My+JvVmhjO3LICwN0qIu84kk8Sg3oG7A/dIbQOqRD2AIHesxAMp5FSVQKJ6ViKNTPImbrUfp8NIcdwkdKuAeyuSTHJ+9DVOsgFI3bErtBvmHeW7ryiI2SZ96Z2sXOSpzl5XgmvqJs2FQEihhrmUnL/R82vfsPqx2tyqs2IxGQnR/dxmGFvQ5pV8HPuQH6WdORJq7OWQvtq6Hh41RoRDiVESOb1Wh1IMc4m9qXT8bO6Nseffo3cK+zHhJ/OL2aLdFlUMD4yS+zvdFHYwT1uHOa6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(6486002)(6916009)(8676002)(66946007)(66476007)(66556008)(54906003)(31696002)(36756003)(2906002)(4326008)(86362001)(38100700002)(5660300002)(6512007)(31686004)(83380400001)(52116002)(53546011)(186003)(6506007)(8936002)(2616005)(508600001)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: mrBipv8XRCvmIhUvfG8MzAdubV/mq4AxBMNOIT/fdaXh6rRoLIzlQRySbn6THkaoD7V0qlOOpkj+ScAkKql7t2qFWosOSFqulE5UyC5qIdH9VkkGWigWds63G29ECLsNPlBLeb3tpbw06KC9AhTiJU18c48NYMidiu3cv2c91zo/eEJzjv9seQ/Pa/NJkvPUnwRHsabNqapvfPpz8dP5/7h+I5LHge7TpMNVmvIT4t9MqseCgVRJqYdh40xWrXQwYc3n7rr9KvQfrIam5qU2xt40LtU7ejNo4OiNFmRxaOQ+DVtpi0n5pJVk4+valy0b0hLCKhKkkKSXluY0SZGpw+ebULizGRffbhCJOAwUTG5EOqUWN4sDn/47U6uFfS/Fd6yraRN5GapzXzc5XNpw101cI193vrProkkfd0E+0xoc6AZwfaFES4TiSbcz2bJf0KcmX89QtLsp+L8OiijVL3lINiY+YkPob6qcEwe8+B7omiJ8LMw9Nnd4n21gukCbpEv5Bydzn4pTKUEOu/u05h/I//Fhotf7rkwgyrD9nyzE35kXIHaCZqiabOeb20Q48wHkPqUaR4Gf6uNldh3ce+99oLHKpCIe/a0XOuohHo0EYtxns0XXzlQuRYmx4SK1beLxD72g8DDv1dlDuF9oXlpUxdXER+zeYZNqyr9+cRRBDV3P/BhfN4j5BNPINZlktK/B6dejNAm9IBu2Rf6faqwbEncMVtTVj5xN274xMRpd+QZC4VV+2Enohu2XQrNM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(2906002)(5660300002)(6506007)(31696002)(83380400001)(6512007)(6666004)(53546011)(52116002)(316002)(508600001)(8936002)(6486002)(66476007)(66946007)(66556008)(2616005)(38100700002)(8676002)(186003)(4326008)(36756003)(31686004)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S1BlTmFwNUU1ZGZGU1plSmdMTHZ3TXNrb0E0TmU4Ry8wM3NBaStiaVhsNkM1?=
- =?utf-8?B?NUJJNlBOT0Q2b0pCRnZOSDJoRFpUaGFFT2JZV1RJWmQ3RXFWMmNxTU42dTg0?=
- =?utf-8?B?K1ZnWnpybzkrSEpjKzU4R2k3UnhEaFEyOHdnbk1VdmlmSlVkeDVGdFQzY3R1?=
- =?utf-8?B?K21kem16T0FpbHJoMU4zR2pzWTVnU0ozL0NjT1dycW9iNFk1Q2dvdnJNeGZF?=
- =?utf-8?B?SEZLeG1uME1FOGVMZ1JjVWZwd1FNd1B6TThnTGlIdUpHRkVSZ2hyUTZQaGxu?=
- =?utf-8?B?NHFuUWVhUXFWRm43SHd0Q0NWZCtza2VUZXlnYmc0V0pMZHNkaXVIbmFwTVhw?=
- =?utf-8?B?V280TFhHNlg3VFdPNVc1clhhM1NNaVdIeEZSUjlSSVZ0cEYydmVDMnhBUDZn?=
- =?utf-8?B?NUo2b21SMkpOWk5GM1N3bXVBK1dQZGhwd0Q0U3NkckxPbUEraWpRdGN4ZVc5?=
- =?utf-8?B?cUpoaG9vcU90cnZKWjB0WWFqU0JuL0RZcXJSQ2krV3V2dTlDdW02ZHpWamp6?=
- =?utf-8?B?WEYyS1VrOWE1Z3NuNnNnaUFVU2ppYnV6UHZBOVdDbFJNajNmRlNqdGpEWmhH?=
- =?utf-8?B?amZqZE9rMnpPejJ4K3ZoRTZteStmWlRHckllNkZUMllEd3VCcm13cFJTeWUz?=
- =?utf-8?B?RCtlQ0V6ZFN2YjFyWk81clRTVmNMbTFyWnRDRVVVQjgyUnJERHB2dzYzR1la?=
- =?utf-8?B?a016NTY2dmxqOXY1OEoxcmhwclJwbjUwOEFtNWM3a2s3aGRtZDdrRW13YWxw?=
- =?utf-8?B?dkUwbFY1R29weFN2ZHp1ZHJMZmJiNnpQcXpVVG9OdFZSWnhiMXBXZjQrQU9u?=
- =?utf-8?B?ZFpQMVVyK2tzNmZoU2RyeWlFZ0JYQ1Zxc1d0WjVobU8yMFZ6YWtZR0duZUtq?=
- =?utf-8?B?bDJMUGZvd0J1WitqdnpWbS9NVXEwMk5udjEreTB4bXBXMUZEN0dwRSs0bXRu?=
- =?utf-8?B?U1VSU2pZTDh3OWR6NW91TFFYZERUMWt3UVNHWkRZQm95MFZGQmhEd2J0QVdR?=
- =?utf-8?B?UHpNWjFJR28xZVQrN2U4NW1LczJ0T3JlbUJUemJGakVPbytLRFpGc3NLNjhn?=
- =?utf-8?B?VXZiSVNFV1ZnYTYrK2FVc3V4SUlIWUM3Q3A0K2JpRUJJTE5RMGhnalJ0Wnpl?=
- =?utf-8?B?cnNWWFdPWHlpRlpIMTdkakZJTnJNU3dsdWVUbFErZFUwSjlqdFZtajBEaWJX?=
- =?utf-8?B?aTdWcEpKMEZOajEzSUpTWWFnSkdKbDdHOVptVVpmcmtKWUFxTzkyaFl3UDA0?=
- =?utf-8?B?Tjk2OVdBQ2luUGpDODJ1cG1LVjlNZXhSM0hGOHAvOElPRjV3UUl1Y0VWR0xD?=
- =?utf-8?B?ajhob0N0Vml5UGc1TDRYQVR1bk4yREJvTEliZTNrUUtzMnlMUWZRKzFPQW80?=
- =?utf-8?B?NEx3MDREUXlzUUU5MHR6dkRvdFhVdTdqbzN2SHFWNHlrU01HL20zdGhVdTlT?=
- =?utf-8?B?T0FoQlRzby9nNmxkeDFiVTVFS3FUb3ZIY2s4ZzZkMzZUdTJUVmJENC9EWUVj?=
- =?utf-8?B?Zy91MjhycHJ4aVZ6aTVkVHBpbkpFS2ZUcGY1RWtWdi9oUlpqdVlFeEpQNW95?=
- =?utf-8?B?R05kSWRzUWNDWGQwZWhkVXc0RERydVNKOGdSMVVEQmVaWWo2YU1nTjdqWGhE?=
- =?utf-8?B?QXZmREt0eTFtZXBYcjF5WmIvd3BxMnBzREZmY3FwK1Rna0VEa3pNRnRpM2h2?=
- =?utf-8?B?R3UxaE1Fc0lFdmxzaERhN3U0bGRMUkFYNWhGWldjalh3WWNYY3pvM0dVa1Vu?=
- =?utf-8?B?SndZdGRMbHBzY21kS1F4WmRRTTBJdmVwNWl6eGM1aDgyZTF0bzBhM0VWaHFP?=
- =?utf-8?B?MXRSMmc2aGRCTGx1UXNiM0h3cnREUmplU2w2aWpWNDlmNkkybXVRN0VoNW1j?=
- =?utf-8?B?Y2FiQW5KL0NyRGdEMEZEa3kydFd0aEM5MFJ4NHdTQk1ob2VjQVQwM1ZZeFI0?=
- =?utf-8?B?UjdCdjZVdC9Ma0xRdTVpcnEwdmZXM1FZQVhYbStXVTFtM3k2aDFQdmc4ZXRy?=
- =?utf-8?B?UjBsSXIrQkUrQ1EwdDE1QTN0VWVZNFRyWGZDUVNMUmtTNEJXV0l3TDBraENN?=
- =?utf-8?B?Zm0xMnMxY3lTQm9SSTRVYytaV0I1cFRZbVV4UDVRWlBzWnQvcjFsQTdnWjBP?=
- =?utf-8?B?azRZb056Q2lYbzNXQXcvQi9OL1BHRVVUdHk4M3FCa0lKdERUR0dGZUVnWm9a?=
- =?utf-8?B?dTl1bU8yejdQc2RaSkVCb2hKdFlwa2ZFQzFvMEdqY0w0V1FmSTFIekxnN3A5?=
- =?utf-8?B?YXJyT3RpM0haNEZ3YWtES1dlRUJJRE9RM3FRUWV2VXBlTERMWkdqejRhRkg0?=
- =?utf-8?B?M0tybnVoR3E1d3V6TXhrb3VuTExMbUpwZGVVU2hWOXRMcWY5a2c3K0JrVDM5?=
- =?utf-8?Q?SSaksXWjzBKDD8hg=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QUFlRDRnUlUyRElQMkIxYXFBMFp6ME1panVsZXZWajhNL2paSmVJM0NHdmtR?=
+ =?utf-8?B?cmRkdHA5b25xRU5IR0J4aDAzS0NDUE1MUFRXdjR6MWVFOGF5OHppK1N2N1Rz?=
+ =?utf-8?B?ZCtZSFlwSGZBVGhBRGRzK0xXNFF2bTF6U245SGVSYWRrbkVaRVBnQ2dVYmdx?=
+ =?utf-8?B?L3UzQWhKeVhpb2xkREZtV0hMY2w1YmdRV0xiWlVNNmc3LzhiUEtXb1hMK2ZN?=
+ =?utf-8?B?RHcwbEwvbHBhdnA0enc1OUY4bE9zNk1VWkZ6L2pTR2hNbXNqTXpqRkNDNnJC?=
+ =?utf-8?B?U2VhQjZROTIyUFdXOVRHR1U1ZHNRaGpWWFpXUjlBTnZhQkh1K0poVjd5M09R?=
+ =?utf-8?B?ckxZNkxUY004MTE2ay9RcFd5NE1kdlFQZThtRVlPZHZXQThQM3hYYlVXK3FY?=
+ =?utf-8?B?VkV3K29iSFFXKyt0OUszZVpXb2I4TFgxUE1KN0ozemtDQnZIcGZwKy9maTF1?=
+ =?utf-8?B?dFJwY2tLelhsc3IyNndyM2Y1RVhNQWFwV0R3Q25EY09aVWhBWDE4eGU3UHJh?=
+ =?utf-8?B?WHpWZUpHQWRoUG1tbFRRbnN4dCtYWkNGRTc1emluQXJqaE05ZXRGWG5YR1Jj?=
+ =?utf-8?B?Q3lBMnBhUTRaWGljS3ZrbGlURENpR0tra1BBZnE1RXU3VHVMTDVmK2J2cW5w?=
+ =?utf-8?B?bG5EVk5XYnBRM0M4d0tWQ1ErSzZibytjNWZOMEgzVzB4ZXptc1lKb0hxc09r?=
+ =?utf-8?B?NHhTVFd5b2hIKzJMRkRFRjhVL0g2aGFQd3dlQ1ZzUE1VZlpiMlplSEVCNDQ0?=
+ =?utf-8?B?SjBZZzRzeFd3bEZzb1hQOWdnNGEraU44WnNuRXBWblkvRUl2ZmFIbmxOWUFt?=
+ =?utf-8?B?QTBCaXd4MUFBRDFwdTlKdEhuYWZ1czJpWjkwd2d4bmlOdVovZE5jK1FpOFZR?=
+ =?utf-8?B?ZVRXSmJJN0VyZ2JDVVhibi85TURaZnZRNE1NWElTdFFWV3JSV3p0UHpsN1BE?=
+ =?utf-8?B?MDk2SDJEeWhvS0dha1krd09EbzdwbGV5Uk05RU1rNXo5OWhqUzdVZzlDS0U1?=
+ =?utf-8?B?dDFaRVc1TEJYTFNvcWxVMmRSS0N1YW5naVVFQVdoWjBiWXE0N2NrbFlWL3lB?=
+ =?utf-8?B?TU9GYThmN1lDOGlZeUFJREVMTE9nOXh0cS9xUWFINytGZEZXQ0tvZ2hoZU9r?=
+ =?utf-8?B?cW8vS1p6bGo3dE5sVkR5YjdkMDdaS0g4cXg3UXJiT1FTaStOOWRlcEorazlq?=
+ =?utf-8?B?SG5PT2ZVc0NYRUFJSXpGM053ZENESW5sNmtxZGlEMlZ4QTRGL293SDh0ZG5B?=
+ =?utf-8?B?ekxOYTZIRVplYnZwSkp2aXFFZjg0eTcyZE40MUsyNXZ1S2ZpcDlINFROazVQ?=
+ =?utf-8?B?Q0Y2cW5yZWZoRHRnalVJdW5VbEJhRFlsYkVyd05Vdlozb05aT2k0NEJyVktI?=
+ =?utf-8?B?OWMzcXgzdlRoYVNsaE1OZ1U2QjVZbUVXOG03MDhLU2NJZ1VyRjN6S1NJamd4?=
+ =?utf-8?B?UXBzbmNOYzh1b0p5TEQ1YkRDZVVjN0hmRGViaEtQTDJTYzQ0VUNQMkJ5cUVs?=
+ =?utf-8?B?cStaTm1ReXFOakczTkdRb25iWVJiOEU4djVPanJtVmM1ZERzN1lBK3Y5Z0k4?=
+ =?utf-8?B?WThpcFpPRmM0eitIRzZuSEF4TGZwZFkyeGxpNURQaFluTHpDUzJLR2xtRWM3?=
+ =?utf-8?B?Q2JSS3Y2Q21udEVYRGpJYSt0dVBSeEV5VTBOeUdJdjhxdUJJTlZSRzRneHlM?=
+ =?utf-8?B?TGtXOWw2NjY5RzdreGhnWmlUdUdZS0VVc3AvcFdmQWtIYkNyelkrSXlUZE8w?=
+ =?utf-8?B?WXZWcDM5Q3RmYlQ1YzhuYmhRd2lZQWhiNWdQMGJCYnlOS2VSTFpNQlIwYlpI?=
+ =?utf-8?B?dEhCQlVRVGxzN3FKT3pEWmNnT1BFK2t5bEtzWVNIblUrWUMvU09CbVA5dlFC?=
+ =?utf-8?B?Z2NlOTV3eDBET2lucmNwTFQ1NlRUeFIzUkcybSthbWhLNGd3VlhZczdEVDNP?=
+ =?utf-8?B?bUxERVI5d2pNWHNVcDJ0TWYrTEk2WEd0dE5pOWdJT1BjRjl0cHN0bUdMOGpt?=
+ =?utf-8?B?RFFyV3pDWkNJaUlqMlJLaWtFcDd4SGV3RFhVV1J2bElsMlliNFd1Y1ZDWWhi?=
+ =?utf-8?B?Vnl2R3g1a0RJOEFEMHNWcU5weHZpVG1HOWl1TTdDTzYzRFlHdFJTbGJlR0FB?=
+ =?utf-8?B?RUNUc1lhdzNWNVhURjBPNmJNT2YrY3g3dE9xK20vM0VFOGszSWdFdlNvcnZ1?=
+ =?utf-8?B?cnpDYVB2ZTJZU09GMDdkaGJPNnVQd0toQTk3T0RKclNjZDZUSll0K0lZd2pi?=
+ =?utf-8?B?aWpvUUt6aTlYMXBQbkRMa1VyWTVoVlRMWGZWV0hMNWtlQ29vV2h6R244QlQr?=
+ =?utf-8?B?UzcxZUJOaER0eTdxNmlMN1FkNWt2UjcvdXI3ZVhVNzFJLzF0UHFBUVB0Z2tJ?=
+ =?utf-8?Q?sEj4uqDqmwzqme10=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac32e695-11aa-4e96-d114-08da3828c8be
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2128b54d-524f-496a-dbd3-08da382d417f
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2022 17:15:04.5548
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2022 17:47:05.1334
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2DONOEMJP6qV7kSLy9Bq4uoHxyCHSKPax8SHn5/08Ws+q5zz4wFbVlpS97St/3cm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR1501MB2106
-X-Proofpoint-GUID: 8_lUBqV_TRLPI5CcZ94rfeJqJwtT8Ze_
-X-Proofpoint-ORIG-GUID: 8_lUBqV_TRLPI5CcZ94rfeJqJwtT8Ze_
+X-MS-Exchange-CrossTenant-UserPrincipalName: WNirXAkhif0gAWlFYfTvtoR27usvNeJuSsfM103dRZGizyCfdPn53ymP6PD61n6+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1932
+X-Proofpoint-GUID: qKE6-AG_K8h4bc5bCJoBkQDTPJ1SJ6GR
+X-Proofpoint-ORIG-GUID: qKE6-AG_K8h4bc5bCJoBkQDTPJ1SJ6GR
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-17_03,2022-05-17_02,2022-02-23_01
@@ -149,83 +147,40 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 5/16/22 5:37 PM, Andrii Nakryiko wrote:
-> On Fri, May 13, 2022 at 8:13 PM Yonghong Song <yhs@fb.com> wrote:
->>
->> Add enum64 btf dumping support. For long long and unsigned long long
->> dump, suffixes 'LL' and 'ULL' are added to avoid compilation errors
->> in some cases.
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
->>   tools/lib/bpf/btf.h      |   5 ++
->>   tools/lib/bpf/btf_dump.c | 135 ++++++++++++++++++++++++++++++---------
->>   2 files changed, 110 insertions(+), 30 deletions(-)
->>
+On 5/17/22 4:59 AM, Alan Maguire wrote:
+> With unprivileged BPF disabled, all cmds associated with the BPF syscall
+> are blocked to users without CAP_BPF/CAP_SYS_ADMIN.  However there are
+> use cases where we may wish to allow interactions with BPF programs
+> without being able to load and attach them.  So for example, a process
+> with required capabilities loads/attaches a BPF program, and a process
+> with less capabilities interacts with it; retrieving perf/ring buffer
+> events, modifying map-specified config etc.  With all BPF syscall
+> commands blocked as a result of unprivileged BPF being disabled,
+> this mode of interaction becomes impossible for processes without
+> CAP_BPF.
 > 
-> [...]
+> As Alexei notes
 > 
->> @@ -989,38 +992,88 @@ static void btf_dump_emit_enum_fwd(struct btf_dump *d, __u32 id,
->>          btf_dump_printf(d, "enum %s", btf_dump_type_name(d, id));
->>   }
->>
->> -static void btf_dump_emit_enum_def(struct btf_dump *d, __u32 id,
->> -                                  const struct btf_type *t,
->> -                                  int lvl)
->> +static void btf_dump_emit_enum32_val(struct btf_dump *d,
->> +                                    const struct btf_type *t,
->> +                                    int lvl, __u16 vlen)
->>   {
->>          const struct btf_enum *v = btf_enum(t);
->> -       __u16 vlen = btf_vlen(t);
+> "The bpf ACL model is the same as traditional file's ACL.
+> The creds and ACLs are checked at open().  Then during file's write/read
+> additional checks might be performed. BPF has such functionality already.
+> Different map_creates have capability checks while map_lookup has:
+> map_get_sys_perms(map, f) & FMODE_CAN_READ.
+> In other words it's enough to gate FD-receiving parts of bpf
+> with unprivileged_bpf_disabled sysctl.
+> The rest is handled by availability of FD and access to files in bpffs."
 > 
-> why passing it from outside if we can just get it from t? you don't do
-> it for kflag, for example, so I see no reason to do that for vlen here
+> So key fd creation syscall commands BPF_PROG_LOAD and BPF_MAP_CREATE
+> are blocked with unprivileged BPF disabled and no CAP_BPF.
+> 
+> And as Alexei notes, map creation with unprivileged BPF disabled off
+> blocks creation of maps aside from array, hash and ringbuf maps.
+> 
+> Programs responsible for loading and attaching the BPF program
+> can still control access to its pinned representation by restricting
+> permissions on the pin path, as with normal files.
+> 
+> Fixes: 1be7f75d1668 ("bpf: enable non-root eBPF programs")
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 
-We have a vlen passed in because we have a check for vlen outside
-btf_dump_emit_enum32_val. Basically this function and some other codes
-will not be executed if vlen == 0.
-
-> 
->> +       bool is_signed = btf_kflag(t);
->> +       const char *fmt_str;
->>          const char *name;
->>          size_t dup_cnt;
->>          int i;
->>
->> +
-> 
-> nit: extra empty line?
-
-sure.
-
-> 
->> +       for (i = 0; i < vlen; i++, v++) {
->> +               name = btf_name_of(d, v->name_off);
->> +               /* enumerators share namespace with typedef idents */
->> +               dup_cnt = btf_dump_name_dups(d, d->ident_names, name);
->> +               if (dup_cnt > 1) {
->> +                       fmt_str = is_signed ? "\n%s%s___%zd = %d,"
->> +                                           : "\n%s%s___%zd = %u,";
->> +                       btf_dump_printf(d, fmt_str,
->> +                                       pfx(lvl + 1), name, dup_cnt,
->> +                                       v->val);
->> +               } else {
->> +                       fmt_str = is_signed ? "\n%s%s = %d,"
->> +                                           : "\n%s%s = %u,";
->> +                       btf_dump_printf(d, fmt_str,
->> +                                       pfx(lvl + 1), name,
->> +                                       v->val);
-> 
-> 100 character lines are ok now, try to make all those statements
-> single-line, if possible
-
-okay.
-
-> 
->> +               }
->> +       }
->> +}
->> +
-> 
-> [...]
+Acked-by: Yonghong Song <yhs@fb.com>
