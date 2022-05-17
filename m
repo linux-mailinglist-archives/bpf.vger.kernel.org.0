@@ -2,159 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D28F52A236
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 14:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5784452A494
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 16:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346293AbiEQM5a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 08:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
+        id S1347774AbiEQOSa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 10:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233877AbiEQM5T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 08:57:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29273C70B;
-        Tue, 17 May 2022 05:57:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B1070B8187F;
-        Tue, 17 May 2022 12:57:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F19DC34113;
-        Tue, 17 May 2022 12:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652792235;
-        bh=IlTqF9xbixgS80kjZ5i3ygHg1P4Ovvouhn3bcvuv1sY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=UkI3ZVQrwGL42WAhfAYCrgQUj3szOBRzKGGqLOLUTdZWWjVHtbXjONSSW5a6myelv
-         jufpLCBzKA28Eahta47EjXLGKyR30vmyvnE+7T/o+DAjiDpohSU0WprT8rDBgyvmJ2
-         j7Vjm8H8UVdeBz9AqMxNbHd4x6DktefIhvbfDTcWRoYBm2JDSxfrcXrZKaEbs1NnBq
-         1qFTp2/hJU9WaUGhHujoPJDA06ByAv2291SbJgMH8x7zc6SFMND4x+gzwMYHJK5J8O
-         FCrzeX9N2Hys0811KNFWnyaBJp22X6RtVeCBpqIot+3Y5h/sBYyw2v9n06LcTQskCR
-         j+knIXEfGac9g==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A904638E985; Tue, 17 May 2022 14:57:11 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Zhengchao Shao <shaozhengchao@huawei.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     weiyongjun1@huawei.com, shaozhengchao@huawei.com,
-        yuehaibing@huawei.com
-Subject: Re: [PATCH v2,bpf-next] samples/bpf: check detach prog exist or not
- in xdp_fwd
-In-Reply-To: <20220517112748.358295-1-shaozhengchao@huawei.com>
-References: <20220517112748.358295-1-shaozhengchao@huawei.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 17 May 2022 14:57:11 +0200
-Message-ID: <87tu9ob9lk.fsf@toke.dk>
+        with ESMTP id S236741AbiEQOS3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 10:18:29 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEAD3525B
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 07:18:26 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id h14so5327365wrc.6
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 07:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=XBVs8fikzU3Mb5xDa8B0h88bBC564LJpeHGNTfHHMW8=;
+        b=NFNnDU/9JmrX938+1paa7//KBjcP0O5FF9xRk7x1SFFeAbf29ixZXcpOFhqbKewwFF
+         we8YWFnE4PTJwR4p9JbnYUvSutN8gfKjyEC/+nIKTUk8NgWo0VNoDTmDAsL8f5SwDB3n
+         0j4eWJRVqOJDkX2ed9J3kviVCPScmtiEi5oI+5FPLc0DC0su8uozhUNlXjPa6OX+fbDN
+         E3kN/vqlMMtIHwDApS97Mq4eJjXrDE3JdUFpG9S14Ssqzwwi0ACHFsH0VEa7j0q6Af6m
+         xTIcJQ2qcxE+Xp8LsvFvEy9ZJHdwDB2n8zOZZWOarG6SVseznr02RiGnPx7NVHmsW0yu
+         NFCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=XBVs8fikzU3Mb5xDa8B0h88bBC564LJpeHGNTfHHMW8=;
+        b=P2x4N4W0kVOlWsAJESz/0VieoK0xLzmBtj120Nf0qy055tfJNholcwz5pyXOeOSEvz
+         mW6G+yvHz7dZRVx9/yNva8VpjH0YFgHiT3erfzdDQnbM7juzN1szhvlHSTO23rKxldmm
+         S/1q+kyF5J85tqW9HXXEZl63QqAJdnn5ubvuOaRVwLuH8yJId84uCbwH/YjqB7aBnx+f
+         R1WQPf0EWXUYGNRY9ACeiXYLo8WiyMfornzjgXg0+hjC5dCofjAaWiDPhL2wTzFjSfDN
+         pA8b1wijh3LQnSP/1fu4ZjOWsuR8WgSX68XtYMIubHzdoLnv8R4tOIxdjC8YP8aTtPkA
+         aidQ==
+X-Gm-Message-State: AOAM530w1uhwU+acS7qCofB/DXLaJa2EsxXsgqFfZ2Xl2GWNcd0Opwnc
+        QZuWbpyfsdwPjCgywOcao6H5Ug==
+X-Google-Smtp-Source: ABdhPJxdhfeeqCdS80IZ1Uj9dJ7kTH7Bett5qAnfDE29V3UzyKt6plxNJmc0UB6uNk48kOXf3kXI0A==
+X-Received: by 2002:a05:6000:2ae:b0:20c:57b6:32e1 with SMTP id l14-20020a05600002ae00b0020c57b632e1mr19094741wry.285.1652797105503;
+        Tue, 17 May 2022 07:18:25 -0700 (PDT)
+Received: from [192.168.178.21] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id d19-20020adf9b93000000b0020d03b5c33dsm7839664wrc.46.2022.05.17.07.18.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 May 2022 07:18:25 -0700 (PDT)
+Message-ID: <fce7ec43-4fae-ead8-df79-3f76fe9f173b@isovalent.com>
+Date:   Tue, 17 May 2022 15:18:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next 03/12] bpftool: Use libbpf_bpf_prog_type_str
+Content-Language: en-GB
+To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
+        bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+References: <20220516173540.3520665-1-deso@posteo.net>
+ <20220516173540.3520665-4-deso@posteo.net>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220516173540.3520665-4-deso@posteo.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zhengchao Shao <shaozhengchao@huawei.com> writes:
-
-> Before detach the prog, we should check detach prog exist or not.
->
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+2022-05-16 17:35 UTC+0000 ~ Daniel Müller <deso@posteo.net>
+> This change switches bpftool over to using the recently introduced
+> libbpf_bpf_prog_type_str function instead of maintaining its own string
+> representation for the bpf_prog_type enum.
+> 
+> Signed-off-by: Daniel Müller <deso@posteo.net>
 > ---
->  samples/bpf/xdp_fwd_user.c | 52 +++++++++++++++++++++++++++++++-------
->  1 file changed, 43 insertions(+), 9 deletions(-)
->
-> diff --git a/samples/bpf/xdp_fwd_user.c b/samples/bpf/xdp_fwd_user.c
-> index 1828487bae9a..2294486ef10a 100644
-> --- a/samples/bpf/xdp_fwd_user.c
-> +++ b/samples/bpf/xdp_fwd_user.c
-> @@ -47,17 +47,51 @@ static int do_attach(int idx, int prog_fd, int map_fd, const char *name)
->  	return err;
+>  tools/bpf/bpftool/feature.c | 57 +++++++++++++++++++++++--------------
+>  tools/bpf/bpftool/link.c    | 19 +++++++------
+>  tools/bpf/bpftool/main.h    |  3 --
+>  tools/bpf/bpftool/map.c     | 13 +++++----
+>  tools/bpf/bpftool/prog.c    | 51 ++++++---------------------------
+>  5 files changed, 64 insertions(+), 79 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+> index d12f460..a093e1 100644
+> --- a/tools/bpf/bpftool/feature.c
+> +++ b/tools/bpf/bpftool/feature.c
+
+> @@ -728,10 +724,10 @@ probe_helper_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
 >  }
 >  
-> -static int do_detach(int idx, const char *name)
-> +static int do_detach(int idx, const char *name, const char *prog_name)
+>  static void
+> -probe_helpers_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
+> +probe_helpers_for_progtype(enum bpf_prog_type prog_type,
+> +			   char const *prog_type_str, bool supported_type,
 
-two 'name' arguments is a bit confusing; could we rename the parameters
-to 'ifindex', 'ifname' and 'app_name', then use 'prog_name' for the
-stack variable below instead of 'namepad'?
+Nit: "const char*" for consistency?
 
+>  			   const char *define_prefix, __u32 ifindex)
 >  {
-> -	int err;
-> +	int err = 1;
-> +	__u32 info_len, curr_prog_id;
-> +	struct bpf_prog_info prog_info = {};
-> +	int prog_fd;
-> +	char namepad[BPF_OBJ_NAME_LEN];
-
-Reverse x-mas tree, please.
-
-> +
-> +	if (bpf_xdp_query_id(idx, xdp_flags, &curr_prog_id)) {
-> +		printf("ERROR: bpf_xdp_query_id failed\n");
-
-strerror(errno) might be nice to add to the error message, so users have
-an inkling as to why the call is failing (same below).
-
-> +		return err;
-> +	}
-> +
-> +	if (!curr_prog_id) {
-> +		printf("ERROR: flags(0x%x) xdp prog is not attached to %s\n",
-> +			xdp_flags, name);
-> +		return err;
-> +	}
->  
-> -	err = bpf_xdp_detach(idx, xdp_flags, NULL);
-> -	if (err < 0)
-> -		printf("ERROR: failed to detach program from %s\n", name);
-> +	info_len = sizeof(prog_info);
-> +	prog_fd = bpf_prog_get_fd_by_id(curr_prog_id);
-> +	if (prog_fd < 0 && errno == ENOENT) {
-
-Why the ENOENT check? This should error out regardless of the errno, no?
-
-> +		printf("ERROR: bpf_prog_get_fd_by_id failed\n");
-
-strerror(errno)
-
-> +		return err;
-> +	}
-> +
-> +	err = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &info_len);
-> +	if (err) {
-> +		printf("ERROR: bpf_obj_get_info_by_fd failed\n");
-
-strerror(errno)
-
-> +		return err;
-> +	}
-> +	snprintf(namepad, sizeof(namepad), "%s_prog", prog_name);
-
-If the binary somehow gets renamed, this may overflow and you'll end up
-without a NULL byte terminating the string. So either check the input
-length first, or make sure to set the last byte to '\0' after this
-call...
-
-> +
-> +	if (strcmp(prog_info.name, namepad)) {
-> +		printf("ERROR: %s isn't attached to %s\n", prog_name, name);
-> +	} else {
-> +		err = bpf_xdp_detach(idx, xdp_flags, NULL);
-
-This call should be including an opts struct with the fd obtained above
-as the old_prog_fd (so make sure it wasn't swapped out since the check).
-
-> +		if (err < 0)
-> +			printf("ERROR: failed to detach program from %s\n",
-> +				name);
-
-strerror(errno)
-
--Toke
