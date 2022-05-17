@@ -2,77 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F26529698
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 03:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF72752969E
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 03:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238277AbiEQBO3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 21:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
+        id S230251AbiEQBR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 21:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236359AbiEQBOP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 21:14:15 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EB741984;
-        Mon, 16 May 2022 18:14:14 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 202so15624060pgc.9;
-        Mon, 16 May 2022 18:14:14 -0700 (PDT)
+        with ESMTP id S229730AbiEQBR4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 21:17:56 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5AB165B8
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 18:17:55 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id i17so16007682pla.10
+        for <bpf@vger.kernel.org>; Mon, 16 May 2022 18:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=yvfLNgzj0LlML7YO1Uk64PllzBEDEnVgEw1ErIJEf1c=;
-        b=fNItWEesTtzgODmxS5UzL83e0LdGMRcZUHKoHxfdsqWlRDPMw4VjeO7/83Q6yA+AjJ
-         xfogqJxIzSLw/84O91UkEZGLrMFafY6nqi31d+06pn8t367x1pg4yt9jWbutGlUrk8s5
-         UvjE/W0kEXSZsKM4KW07CPKGjPu1cZA02MJ12uMppQKHNF7DCAPtXBss2Y+OzaoLVPHE
-         uwvr/6+FHE2ttqKrv7PhiirbSCKa8HaVPqbDbWFQzssUbW3juphOV71pChMR4JGxxKQf
-         xWvy5SBA3Jvt6LR/tQ2cFvWjS9blMa97lAB5Zs8Z/apyTbzb0s8sVYV7HWN+WYj5ix13
-         WdpQ==
+        bh=urpZgCt/ZhOHec7427fz215Q1NE4DW47dm7yE98R5JQ=;
+        b=PUUhdp72m1Wvlii5EFHxZtiG7UnbgbNHwky6i03k0H6yBGKa7eiaY70+5yR4DwJGQo
+         7IB340r/ek2VQkkuD1C8Q8mDk8dlu5cSn9vfQHp5KlYmNSDfbtiopsmwniKPatFORUUG
+         hGQqcBc21rTtBdJcKyVhMeYhPdePNoHK+qEn+HXiE/LwZP7HF4lf8A8jlg55NIziynmI
+         +spKdEtlu7KySne5Fjw/ib9OfAyJ3q1CEE19oPyg46a0IKYHv7NUYTSFUx9/UpLoYVv9
+         RoFTGx/yGEnIr/ehUCmxCkjT8MX/GUB3NPUajk8bM+RkI7JHswKMgHEJJmuIRtBY+mce
+         R60w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=yvfLNgzj0LlML7YO1Uk64PllzBEDEnVgEw1ErIJEf1c=;
-        b=JOd3uMUxKoB8qOWj0Jm/eYx/1nG6egLKZZz0myVNWk4W6wSN+KTmCNvURZj6I8JLg5
-         ppozharNJ6xXetks+A19hbV+XPRXM76cQXFK0NGemJNYrVoZBlDhGGeQLGYPJ6YqZDJy
-         NtWjskK/WOVp/3/jGojB+JVN9kSxi4Ewetra0XNCjMCUWqrfqAeb0He7pXVZrHnR+23p
-         K8u0hp/CG6K+3j+H4yw7OOXlF3AKs8MACjWPpxFKBFaRB2BgUWWaF2bqtNWu1Lkxqdm9
-         Dib0Hpi2L21v2ryr5COCXgGLcdP+kwJ/zGw7S5EdI/uSgD/21m1cgaGtjVbVAREgKOBu
-         FiYQ==
-X-Gm-Message-State: AOAM530cjjg9pQQ35C6yLpSTqCFCcYoEhZQAdSPR5utqBkYI3lHAvsek
-        2z9M0Ja4+BCmyVd1Dd1lkiA=
-X-Google-Smtp-Source: ABdhPJz4auVTYWheSOfsiZtbJjA5qb3+6f/OJK+ZHip29RXltDL0KkzN5+jbnVcLSWEttXrtzZ1Y6w==
-X-Received: by 2002:a63:9553:0:b0:3c6:25b2:9525 with SMTP id t19-20020a639553000000b003c625b29525mr17669892pgn.294.1652750053728;
-        Mon, 16 May 2022 18:14:13 -0700 (PDT)
+        bh=urpZgCt/ZhOHec7427fz215Q1NE4DW47dm7yE98R5JQ=;
+        b=t/Tcpj47TtjkojnrqmoBcLREEdmd8KFZ1qVabl1LF1kTET4vcUSXhHz9H62qx9dNK6
+         ohkSt73bX/KFAgfVnYU3kMeGrznbkZH02KenNrvDm3QY9gnCBG+/Puks7JShzaBL0Aff
+         6FTZvwm8VxatEZKPI4qd7EAXWsxTMUIM/H8rGeEVI8qUfw7A4O8pq5VVUImknWzziqkv
+         IxIomqhrTLq6T8HbSrFBdbUNBBRM1BOQqPiTwg5Qp+dUARHCHw/XXBNf4oJH9+E3tm07
+         Kbv2JcesSrGFv4WuKuf+bYOOvlZHZ1ttjBZinrlSEcQ4QPTGmJ4I7CcfvCA/G/RMCYbU
+         JK0g==
+X-Gm-Message-State: AOAM533q13z9Gofs7TQ/RPT/xkm1b943XQJ78tTGF2c44MkjmCXKPhD1
+        YQ3v7EjFys8hXDotXxFiRdk=
+X-Google-Smtp-Source: ABdhPJzeYi0BR5TESzDJmRw9pU212Il9F9NUi5dFxnPp3qURAB36F285eBxADR9Ze9e5EC0QMoQirA==
+X-Received: by 2002:a17:902:c404:b0:15e:a090:dc8a with SMTP id k4-20020a170902c40400b0015ea090dc8amr19887748plk.31.1652750275215;
+        Mon, 16 May 2022 18:17:55 -0700 (PDT)
 Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::4:3651])
-        by smtp.gmail.com with ESMTPSA id z11-20020a1709027e8b00b0016144a84c31sm5556207pla.119.2022.05.16.18.14.11
+        by smtp.gmail.com with ESMTPSA id 185-20020a6204c2000000b0050dc76281d8sm7679761pfe.178.2022.05.16.18.17.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 May 2022 18:14:13 -0700 (PDT)
-Date:   Mon, 16 May 2022 18:14:09 -0700
+        Mon, 16 May 2022 18:17:54 -0700 (PDT)
+Date:   Mon, 16 May 2022 18:17:52 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Eugene Syromiatnikov <esyr@redhat.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf 1/4] bpf_trace: check size for overflow in
- bpf_kprobe_multi_link_attach
-Message-ID: <20220517011409.qexxrowf6b2ticid@MBP-98dd607d3435.dhcp.thefacebook.com>
-References: <20220516182708.GA29437@asgard.redhat.com>
- <YoLDdaObEQePcIN+@krava>
- <20220516224934.GA5013@asgard.redhat.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Rik van Riel <riel@surriel.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Yonghong Song <yhs@fb.com>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [RFC PATCH bpf-next 4/5] selftests/bpf: Add test for USDT parse
+ of xmm reg
+Message-ID: <20220517011752.or6r4k5qwcc3kgy3@MBP-98dd607d3435.dhcp.thefacebook.com>
+References: <20220512074321.2090073-1-davemarchevsky@fb.com>
+ <20220512074321.2090073-5-davemarchevsky@fb.com>
+ <CAEf4BzYj2i4shfAFW4fUKaEDFQvkMtyirVpq8_5AQAX0pW36yQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220516224934.GA5013@asgard.redhat.com>
+In-Reply-To: <CAEf4BzYj2i4shfAFW4fUKaEDFQvkMtyirVpq8_5AQAX0pW36yQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,20 +77,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 17, 2022 at 12:49:34AM +0200, Eugene Syromiatnikov wrote:
-> On Mon, May 16, 2022 at 11:34:45PM +0200, Jiri Olsa wrote:
-> > On Mon, May 16, 2022 at 08:27:08PM +0200, Eugene Syromiatnikov wrote:
-> > > +	if (check_mul_overflow(cnt, sizeof(*syms), &size))
-> > > +		return -EOVERFLOW;
-> > 
-> > there was an update already:
-> > 
-> >   0236fec57a15 bpf: Resolve symbols with ftrace_lookup_symbols for kprobe multi link
-> > 
-> > so this won't apply anymore, could you please rebase on top of the latest bpf-next/master?
+On Mon, May 16, 2022 at 04:31:55PM -0700, Andrii Nakryiko wrote:
+> On Thu, May 12, 2022 at 12:43 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+> >
+> > Validate that bpf_get_reg_val helper solves the motivating problem of
+> > this patch series: USDT args passed through xmm regs. The userspace
+> > portion of the test forces STAP_PROBE macro to use %xmm0 and %xmm1 regs
+> > to pass a float and an int, which the bpf-side successfully reads using
+> > BPF_USDT.
+> >
+> > In the wild I discovered a sanely-configured USDT in Fedora libpthread
+> > using xmm regs to pass scalar values, likely due to register pressure.
+> > urandom_read_lib_xmm mimics this by using -ffixed-$REG flag to mark
+> > r11-r14 unusable and passing many USDT args.
+> >
+> > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> > ---
+> >  tools/testing/selftests/bpf/Makefile          |  8 ++-
+> >  tools/testing/selftests/bpf/prog_tests/usdt.c |  7 +++
+> >  .../selftests/bpf/progs/test_urandom_usdt.c   | 13 ++++
+> >  tools/testing/selftests/bpf/urandom_read.c    |  3 +
+> >  .../selftests/bpf/urandom_read_lib_xmm.c      | 62 +++++++++++++++++++
+> >  5 files changed, 91 insertions(+), 2 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/urandom_read_lib_xmm.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index 6bbc03161544..19246e34dfe1 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -172,10 +172,14 @@ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
+> >         $(call msg,LIB,,$@)
+> >         $(Q)$(CC) $(CFLAGS) -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
+> >
+> > -$(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
+> > +$(OUTPUT)/liburandom_read_xmm.so: urandom_read_lib_xmm.c
+> > +       $(call msg,LIB,,$@)
+> > +       $(Q)$(CC) -O0 -ffixed-r11 -ffixed-r12 -ffixed-r13 -ffixed-r14 -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
 > 
-> The issue that this specific check has to go in 4.18, as it covers
-> possible out-of-bounds write, I'm not sure how to handle it, have
-> a branch where it is merged manually?
+> this looks very x86-specific, but we support other architectures as well
+> 
+> looking at sdt.h, it seems like STAP_PROBEx() macros support being
+> called from assembly code, I wonder if it would be better to try to
+> figure out how to use it from assembly and use some xmm register
+> directly in inline assembly? I have never done that before, but am
+> hopeful :)
 
-As Jiri said, please use bpf-next.
+stap_probe in asm won't help cross arch issue.
+It's better to stay with C.
+Maybe some makefile magic can make the above x86 only?
+The test should be skipped on other archs anyway.
