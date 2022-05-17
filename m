@@ -2,168 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F22529B67
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 09:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C09529D91
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 11:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbiEQHtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 03:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
+        id S243712AbiEQJL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 05:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240976AbiEQHtj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 03:49:39 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A5445042;
-        Tue, 17 May 2022 00:49:38 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id r30so5799973wra.13;
-        Tue, 17 May 2022 00:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WTGEJWoQ+KMazLH3yrW+72dqg/PgbNlHkEqCaVYjBog=;
-        b=S3tFYVXPftNGoe5TTjpXm86BtSRghMjVlXdOUH2GD46ypvT1ThoEiwVTzn7hgCGpJk
-         +nHv0D//dyxLGIkqyM81f3shdBf/VjFq0DIkE9F9u2HKyakKyu/E+jPaM3Z/3vskPz9z
-         CGZmze3XBYZgRhfGtTfYZjC01r8YvACZ9Gb9j6c81Uy9iRMyFcqaPIcPOP5hIoGVePTW
-         dFewKBjJ38Ksu+dAIpzjG2FomSnV8cEFnnXxyMf5qbB0BBSK2O/Dhl2GsowhnjvunWpW
-         tx3yeC92V1dHnI4zakpxXu8sJtW4pnncqdJNE28QdzM2I2bFkORTcquXiL3OeNiVxnql
-         tl1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WTGEJWoQ+KMazLH3yrW+72dqg/PgbNlHkEqCaVYjBog=;
-        b=iL6buniMRSDpD2xPO5RjodaB9AYGzA0MIVtAWmdhuj82DMnJiujvz+Yp4iGpPaUQvh
-         GvsDA75HIHSq8xnY/9cRI6DGEq5J15NRKedpWHERfe6KchdTaonPFrLTMDu42G1p5/Kv
-         d3p9muqnUgsy0+mfhLK1pNdDMaOnSzOvJH/estgGQAdnYEAy78nwAQrov5ToIryetXFI
-         WJxr0V7Xkp9MNRV6h9SgnpBUU6GEd3KSZl+4vdFOdeBQfb0XeCZBy4wdzZorp9ChCNsX
-         N4EGPYBtZOdtcUq5mfBxrgn7q3Rrg4dlXyzX+O0F4LRVckzMYHKqTasKXr2FnLSSpa5X
-         9iTw==
-X-Gm-Message-State: AOAM532TTcurBjozB4OYhATmKnItdFGfhqz5jOZ32RBADQBlCulnBAFY
-        esacUuQCoJrX0dZ3J2JeL4A=
-X-Google-Smtp-Source: ABdhPJwJinC9xx8aL+n7AyfzFJtP5Esjdc5ojELdSIdDtMIUyooc4KUFhKwdwVHaXenKsX4dnQ61gA==
-X-Received: by 2002:a5d:4988:0:b0:20d:9b8:e560 with SMTP id r8-20020a5d4988000000b0020d09b8e560mr6820985wrq.33.1652773776628;
-        Tue, 17 May 2022 00:49:36 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id m26-20020a7bce1a000000b003942a244f3fsm1200543wmc.24.2022.05.17.00.49.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 May 2022 00:49:36 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 17 May 2022 09:49:33 +0200
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S244266AbiEQJKn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 05:10:43 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B4529E
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 02:10:15 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B95BB67373; Tue, 17 May 2022 11:10:11 +0200 (CEST)
+Date:   Tue, 17 May 2022 11:10:11 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        "Harris, James R" <james.r.harris@intel.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH bpf-next 1/2] cpuidle/rcu: Making arch_cpu_idle and
- rcu_idle_exit noinstr
-Message-ID: <YoNTjXBDLQe9xj27@krava>
-References: <20220515203653.4039075-1-jolsa@kernel.org>
- <5b4bd044-ba88-649b-9b85-e08e175691f9@fb.com>
+        Dave Thaler <dthaler@microsoft.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Joe Stringer <joe@cilium.io>
+Subject: Re: LSF/MM session: eBPF standardization
+Message-ID: <20220517091011.GA18723@lst.de>
+References: <20220503140449.GA22470@lst.de> <20220510081657.GA12910@lst.de> <CAADnVQKBbh6T0-cs0WB2bsapg0wbb9Zu1az==CHD19sxeD5o_g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5b4bd044-ba88-649b-9b85-e08e175691f9@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQKBbh6T0-cs0WB2bsapg0wbb9Zu1az==CHD19sxeD5o_g@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 16, 2022 at 07:54:37PM -0700, Yonghong Song wrote:
+On Wed, May 11, 2022 at 07:39:34PM -0700, Alexei Starovoitov wrote:
+> Turns out that clang -mcpu=v1,v2,v3 are not exactly correct.
+> We've extended ISA more than three times.
+> For example when we added more atomics insns in
+> https://lore.kernel.org/bpf/20210114181751.768687-1-jackmanb@google.com/
 > 
+> The corresponding llvm diff didn't add a new -mcpu flavor.
+> There was no need to do it.
+
+.. because all uses of these new instructions are through builtins
+that wouldn't other be available, yes.
+
+> Also llvm flags can turn a subset of insns on and off.
+> Like llvm can turn on alu32, but without <,<= insns.
+> -mcpu=v3 includes both. -mcpu=v2 are only <,<=.
 > 
-> On 5/15/22 1:36 PM, Jiri Olsa wrote:
-> > Making arch_cpu_idle and rcu_idle_exit noinstr. Both functions run
-> > in rcu 'not watching' context and if there's tracer attached to
-> > them, which uses rcu (e.g. kprobe multi interface) it will hit RCU
-> > warning like:
-> > 
-> >    [    3.017540] WARNING: suspicious RCU usage
-> >    ...
-> >    [    3.018363]  kprobe_multi_link_handler+0x68/0x1c0
-> >    [    3.018364]  ? kprobe_multi_link_handler+0x3e/0x1c0
-> >    [    3.018366]  ? arch_cpu_idle_dead+0x10/0x10
-> >    [    3.018367]  ? arch_cpu_idle_dead+0x10/0x10
-> >    [    3.018371]  fprobe_handler.part.0+0xab/0x150
-> >    [    3.018374]  0xffffffffa00080c8
-> >    [    3.018393]  ? arch_cpu_idle+0x5/0x10
-> >    [    3.018398]  arch_cpu_idle+0x5/0x10
-> >    [    3.018399]  default_idle_call+0x59/0x90
-> >    [    3.018401]  do_idle+0x1c3/0x1d0
-> > 
-> > The call path is following:
-> > 
-> > default_idle_call
-> >    rcu_idle_enter
-> >    arch_cpu_idle
-> >    rcu_idle_exit
-> > 
-> > The arch_cpu_idle and rcu_idle_exit are the only ones from above
-> > path that are traceble and cause this problem on my setup.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >   arch/x86/kernel/process.c | 2 +-
-> >   kernel/rcu/tree.c         | 2 +-
-> >   2 files changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> > index b370767f5b19..1345cb0124a6 100644
-> > --- a/arch/x86/kernel/process.c
-> > +++ b/arch/x86/kernel/process.c
-> > @@ -720,7 +720,7 @@ void arch_cpu_idle_dead(void)
-> >   /*
-> >    * Called from the generic idle code.
-> >    */
-> > -void arch_cpu_idle(void)
-> > +void noinstr arch_cpu_idle(void)
+> So we need a plan B.
+
+Yes.
+
+> How about using the commit sha where support was added to the verifier
+> as a 'version' of the ISA ?
 > 
-> noinstr includes a lot of attributes:
+> We can try to use a kernel version, but backports
+> will ruin that picture.
+> Looks like upstream 'commit sha' is the only stable number.
+
+Using kernel release hashes is a pretty horrible interface, especially
+for non-kernel users.  I also think the compilers and other tools
+would really like some vaguely meaninfuly identifiers.
+
+> Another approach would be to declare the current ISA as
+> 1.0 (or bpf-isa-may-2022) and
+> in the future bump it with every new insn.
+
+I think that is a much more reasonable starting position.  However, are
+we sure the ISA actually evolves linearly?  As far as I can tell support
+for full atomics only exists for a few JITs so far.
+
+So maybe starting with a basedline, and then just have name for
+each meaningful extension (e.g. the full atomics as a start) might be
+even better.  For the Linux kernel case we can then also have a user
+interface where userspace programs can query which extensions are
+supported before loading eBPF programs that rely on them instead of
+doing a roundtrip through the verifier.
+
+> >  - we need to decide to do about the legacy BPF packet access
+> >    instrutions.  Alexei mentioned that the modern JIT doesn't
+> >    even use those internally any more.
 > 
-> #define noinstr                                                         \
->         noinline notrace __attribute((__section__(".noinstr.text")))    \
->         __no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage
+> I think we need to document them as supported in the linux kernel,
+> but deprecated in general.
+> The standard might say "implementation defined" meaning that
+> different run-times don't have to support them.
+
+Yeah.  If we do the extensions proposal above we could make these
+a specific extension as well.
+
+> [...]
+> I don't think it's worth documenting all that.
+> I would group all undefined/underflow/overflow as implementation
+> defined and document only things that matter.
+
+Makese sense.
+
+> > Discussion on where to host a definitive version of the document:
+> >
+> >  - I think the rough consensus is to just host regular (hopefully
+> >    low cadence) documents and maybe the latest gratest at a eBPF
+> >    foundation website.  Whom do we need to work with at the fundation
+> >    to make this happen?
 > 
-> should we use notrace here?
+> foundation folks cc-ed.
 
-hm right, so notrace should be enough for our case (kprobe_multi)
-which is based on ftrace/fprobe jump
+I'd be rally glad if we could kick off this ASAP.  Feel free to contact
+me privately if we want to keep it off the list.
 
-noinstr (among other things) adds the function also the kprobes
-blacklist, which will prevent standard kprobes to attach
-
-ASAICS standard kprobes use rcu in probe path as well, like in
-opt_pre_handler function
-
-so I think we should go with noinstr
-
-jirka
-
+> >  - as idea it was brought up to write a doument with the minimal
+> >    verification requirements required for any eBPF implementation
+> >    independent of the program type.  Again I can volunteer to
+> >    draft a documentation, but I need input on what such a consensus
+> >    would be.  In this case input from the non-Linux verifier
+> >    implementors (I only know the Microsoft research one) would
+> >    be very helpful as well.
 > 
-> >   {
-> >   	x86_idle();
-> >   }
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index a4b8189455d5..20d529722f51 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -896,7 +896,7 @@ static void noinstr rcu_eqs_exit(bool user)
-> >    * If you add or remove a call to rcu_idle_exit(), be sure to test with
-> >    * CONFIG_RCU_EQS_DEBUG=y.
-> >    */
-> > -void rcu_idle_exit(void)
-> > +void noinstr rcu_idle_exit(void)
-> >   {
-> >   	unsigned long flags;
+> The verifier is a moving target.
+
+Absolutely.
+
+> I'd say minimal verification is the one that checks that:
+> - instructions are formed correctly
+> - opcode is valid
+> - no reserved bits are used
+> - registers are within range (r11+ are not used)
+> - combination of opcode+regs+off+imm is valid
+> - simple things like that
+
+Sounds good.  One useful thing for this would be an opcode table
+with all the optional field usage in machine readable format.
+
+Jim who is on CC has already built a nice table off all opcodes based
+on existing material that might be a good starting point.
