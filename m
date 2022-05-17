@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 874BC52AECD
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 01:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E786652AED2
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 01:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbiEQXpk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 19:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
+        id S232063AbiEQXr5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 19:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbiEQXpj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 19:45:39 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A58B3A5D6
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 16:45:38 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id t2so401410ilm.13
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 16:45:38 -0700 (PDT)
+        with ESMTP id S232022AbiEQXr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 19:47:56 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FEB4ECD4
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 16:47:55 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id s23so506658iog.13
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 16:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=M7jJgR7NsuPevLfW+kLFYqo95HDEnFI1O8uHN6rJr2Q=;
-        b=YtJvymFBc1cAtwNApMUnKJ5ubG6eCrY83ibm+NiM0jgSlhPEF3XBN4pHEikWMbUJVX
-         HlTVUckrzoYmaIaYem/RHx6wIEABELAz7XMbr0ylfQ1Afo1IlChVGoKOUwomIYNLwFW8
-         sC7OEiFowyVvETZgmOfTcEqzsjZzn8xe+BPf1IdzO+pVP2q5HDLi9tO1VfhN/L3AvZ5F
-         +8+5CYA3g0YAR0MaCB59Ch57i4W1FPH6e+Z7dmjkdamwFLZHVFSL+CSpoYrLfQWKeV9H
-         RyMB6K1maHghpXkMvkdaxTJF1pxXLrkhRdHUHGFpmE5RTKquaEgqxVp/ZC/ZU7Hs7IgL
-         whdQ==
+        bh=T/Fi4/M/EGmplrpa6Jy6M6+BkvnddCT4QMY4XFLd80A=;
+        b=iyJzQ+zNigtxJXJyLH3vkbbrMmvKeZYBBNM9Hoy15ASI34UTCnSLTToZgzi9YyqTFa
+         cRmWkzbIHefi/E2RTYle4YEfJG+B+KvQ5+PKp3gDwBvW8diA5cYB63ScU/iAn6lIsaSx
+         0WpLoTD07x9xOWzhwTin8Fyte8l5oLIhlkaqeY3xGA5HG/bHtka2c/BCNVRYEnUCevmi
+         5a3bLFxoqmXzdhJu9HTQ1AanDUYvLlgo7Ra+25nvUQe1rIrGQD4FyvsoPXRZeVdvYKCW
+         i9GkyO/112C+dmDGD6zWhmtSvOvtt+BskGQaebKeADUolAt81yzBcnxByQ/LU36PKSVN
+         YZVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=M7jJgR7NsuPevLfW+kLFYqo95HDEnFI1O8uHN6rJr2Q=;
-        b=T20cannLhtVWcUIaRSbnO+3tcnR9SThH8edvNGo30XQ8PxfVh5hrFA2/xf+j+RvOpF
-         4ijfVryrUgST/S5YoBJ9pA2cNDFzY/1VkzbicCRFod2THaX7q+MUcjifjjV/Q9o2VYZ0
-         PPuiPDJPBvvhgKyhY3eHUVQ4pKr9mcsvzL9tO+wOsrqZpozJTr95KE+MZ2HJC2SDXEL6
-         44y/0raT9sYuraMfuftW2tY3lGqbDpFVxa/2DyCQgDGfcc2+ciRlJhMBT3NauocAblsB
-         tiwpeo9axvQlZb9uWbATby1zpbazfyrDrAtj7kolqCvG2WjNxo0LhInU2BraCc/aRcUq
-         MHOA==
-X-Gm-Message-State: AOAM5337DWio23loMESD0FM80RH4C2t/SmliZy1os/eovBb29rLOWgPv
-        SdxbEjOLxbOHjCbE+8nRR7OKaF3S7jpYrlPtWUw/BCShePk=
-X-Google-Smtp-Source: ABdhPJzFzh1gT5JoBPrTJK9hAdS8FiFzl/aANe6TWUMSkV4eSjxdJPoJGXsBXzzqaaAoDvSYXNhegkkfbCu2ihFqrA8=
-X-Received: by 2002:a05:6e02:1d85:b0:2d1:39cf:380c with SMTP id
- h5-20020a056e021d8500b002d139cf380cmr2876533ila.239.1652831137494; Tue, 17
- May 2022 16:45:37 -0700 (PDT)
+        bh=T/Fi4/M/EGmplrpa6Jy6M6+BkvnddCT4QMY4XFLd80A=;
+        b=w6QdBmp+WOzkYTtwudtjdrHhDSyskXptxVN6iw5VqwIGeA5dIhKye2c5finngYJVIo
+         +q0M1mEsSBJfZ+74c9IZ1hapMefeJhpF0YovgALaHdC0r/5/bbx3a+u6wdodCbr6Gn54
+         9Hu5EXFLllgCzTmzUYxYd1/hcOC50bSZpGWOj5o5MrbK6omAAD/OYOqFVmbwUj9kH7XU
+         uCDN+7ba4cTd9qYnQq4mY5cGkD8msLUrZRpXkxYhNgzXw2uLe1V3pcTRje1RLJVD0u+j
+         dSgxlFPQFYMu0FycNjxJUERJ+z3P1wZGqroQx6pGRW7tR+LWL9l53vH4VXIDsR/NLBtm
+         N6yQ==
+X-Gm-Message-State: AOAM5302o6JkZIyl0tXXgNCjUKdlmuw4BxrFNZ/DzmI5FiVmZa7BxRHl
+        PqXIwY79SdgjCLnZf4/gCVw+D8K2zxDrx34qCMM=
+X-Google-Smtp-Source: ABdhPJyeUA+JpImhsodxVR/lgjOzGFI7Baxi/aNsbfr/hG5aoi0Di9YhC5ZZwd14IdJx/JllTx4kxqLJObXSAxqqHLQ=
+X-Received: by 2002:a05:6638:2393:b0:32e:319d:c7cc with SMTP id
+ q19-20020a056638239300b0032e319dc7ccmr6791724jat.103.1652831275431; Tue, 17
+ May 2022 16:47:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220514031221.3240268-1-yhs@fb.com> <20220514031350.3247432-1-yhs@fb.com>
-In-Reply-To: <20220514031350.3247432-1-yhs@fb.com>
+References: <20220514031221.3240268-1-yhs@fb.com> <20220514031356.3247576-1-yhs@fb.com>
+In-Reply-To: <20220514031356.3247576-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 17 May 2022 16:45:26 -0700
-Message-ID: <CAEf4BzaQYByqHEUB70mLu+VFVfSRpNE7okV1HJckMQ692B-a5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 17/18] selftests/bpf: Clarify llvm dependency
- with possible selftest failures
+Date:   Tue, 17 May 2022 16:47:44 -0700
+Message-ID: <CAEf4BzZJ-UoVK75tgzh+sFRVw3X+OsGEQHU6iDgpnb=Y3gLrcw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 18/18] docs/bpf: Update documentation for
+ BTF_KIND_ENUM64 support
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -70,45 +70,54 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, May 13, 2022 at 8:14 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Certain subtests in selftests core_reloc and core_reloc_btfgen
-> requires llvm ENUM64 support in llvm15. If an older compiler
-> is used, these subtests will fail. Make this requirement clear
-> in selftests README.rst file.
+> Add BTF_KIND_ENUM64 documentation in btf.rst.
+> Also fixed a typo for section number for BTF_KIND_TYPE_TAG
+> from 2.2.17 to 2.2.18.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
 
+LGTM, but see pedantic note below
+
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  tools/testing/selftests/bpf/README.rst | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+>  Documentation/bpf/btf.rst | 34 +++++++++++++++++++++++++++++-----
+>  1 file changed, 29 insertions(+), 5 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-> index eb1b7541f39d..a83d78a58014 100644
-> --- a/tools/testing/selftests/bpf/README.rst
-> +++ b/tools/testing/selftests/bpf/README.rst
-> @@ -266,3 +266,21 @@ from running test_progs will look like:
->    test_xdpwall:FAIL:Does LLVM have https://reviews.llvm.org/D109073? unexpected error: -4007
+
+[...]
+
+> +2.2.19 BTF_KIND_ENUM64
+> +~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +``struct btf_type`` encoding requirement:
+> +  * ``name_off``: 0 or offset to a valid C identifier
+> +  * ``info.kind_flag``: 0 for unsigned, 1 for signed
+> +  * ``info.kind``: BTF_KIND_ENUM64
+> +  * ``info.vlen``: number of enum values
+> +  * ``size``: 1/2/4/8
+> +
+> +``btf_type`` is followed by ``info.vlen`` number of ``struct btf_enum64``.::
+> +
+> +    struct btf_enum64 {
+> +        __u32   name_off;
+> +        __u32   val_lo32;
+> +        __u32   val_hi32;
+> +    };
+> +
+> +The ``btf_enum64`` encoding:
+> +  * ``name_off``: offset to a valid C identifier
+> +  * ``val_lo32``: lower 32-bit value for a 64-bit value
+> +  * ``val_hi32``: high 32-bit value for a 64-bit value
+> +
+
+I presume if size is < 8 then val_hi32 will be sign-extended (i.e.,
+0xffffffff for signed enum and negative enumerator values, 0
+otherwise), right? Should it be specified here?
+
+>  3. BTF Kernel API
+>  =================
 >
->  __ https://reviews.llvm.org/D109073
-> +
-> +ENUM64 support and Clang version
-> +================================
-> +
-> +There are a few selftests requiring LLVM ENUM64 support. The LLVM ENUM64 is
-> +introduced in `Clang 15` [0_]. Without proper compiler support, the following selftests
-> +will fail:
-> +
-> +.. code-block:: console
-> +
-> +  #45 /73    core_reloc/enum64val:FAIL
-> +  #45 /74    core_reloc/enum64val___diff:FAIL
-> +  #45 /75    core_reloc/enum64val___val3_missing:FAIL
-> +  #46 /73    core_reloc_btfgen/enum64val:FAIL
-> +  #46 /74    core_reloc_btfgen/enum64val___diff:FAIL
-> +  #46 /75    core_reloc_btfgen/enum64val___val3_missing:FAIL
-> +
-> +.. _0: https://reviews.llvm.org/D124641
 > --
 > 2.30.2
 >
