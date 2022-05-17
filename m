@@ -2,258 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BF3529B11
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 09:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F22529B67
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 09:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241974AbiEQHia (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 03:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43068 "EHLO
+        id S233495AbiEQHtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 03:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241684AbiEQHhK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 03:37:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B44248E6B
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 00:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652773020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mqoy+gV+cPqf1cM9iO48i7hrZpV+uT4NBe8cPuE9DHk=;
-        b=CxJ+M0tAy+rk8LlickzFKL6A2UkKI0ofYRYjyfr4PjSOWg/S+tP41tXQDUw4gVEjAwMsij
-        720p/TjhZoEJ/YrU5tR5P1g0C2VAxljz3ZSMe/IiMg2Vn/P27BofKpTjVUvDxfDDiN7PND
-        QskTZnrjOtX+7LfefcVSByLDSwYzXPY=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-88-cZvUbg2HOE6qVtAgQLSAdg-1; Tue, 17 May 2022 03:36:55 -0400
-X-MC-Unique: cZvUbg2HOE6qVtAgQLSAdg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0DF6F299E751;
-        Tue, 17 May 2022 07:36:54 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2B55215687CF;
-        Tue, 17 May 2022 07:36:49 +0000 (UTC)
-Date:   Tue, 17 May 2022 09:36:47 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Jiri Olsa <jolsa@kernel.org>,
+        with ESMTP id S240976AbiEQHtj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 03:49:39 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A5445042;
+        Tue, 17 May 2022 00:49:38 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r30so5799973wra.13;
+        Tue, 17 May 2022 00:49:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WTGEJWoQ+KMazLH3yrW+72dqg/PgbNlHkEqCaVYjBog=;
+        b=S3tFYVXPftNGoe5TTjpXm86BtSRghMjVlXdOUH2GD46ypvT1ThoEiwVTzn7hgCGpJk
+         +nHv0D//dyxLGIkqyM81f3shdBf/VjFq0DIkE9F9u2HKyakKyu/E+jPaM3Z/3vskPz9z
+         CGZmze3XBYZgRhfGtTfYZjC01r8YvACZ9Gb9j6c81Uy9iRMyFcqaPIcPOP5hIoGVePTW
+         dFewKBjJ38Ksu+dAIpzjG2FomSnV8cEFnnXxyMf5qbB0BBSK2O/Dhl2GsowhnjvunWpW
+         tx3yeC92V1dHnI4zakpxXu8sJtW4pnncqdJNE28QdzM2I2bFkORTcquXiL3OeNiVxnql
+         tl1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WTGEJWoQ+KMazLH3yrW+72dqg/PgbNlHkEqCaVYjBog=;
+        b=iL6buniMRSDpD2xPO5RjodaB9AYGzA0MIVtAWmdhuj82DMnJiujvz+Yp4iGpPaUQvh
+         GvsDA75HIHSq8xnY/9cRI6DGEq5J15NRKedpWHERfe6KchdTaonPFrLTMDu42G1p5/Kv
+         d3p9muqnUgsy0+mfhLK1pNdDMaOnSzOvJH/estgGQAdnYEAy78nwAQrov5ToIryetXFI
+         WJxr0V7Xkp9MNRV6h9SgnpBUU6GEd3KSZl+4vdFOdeBQfb0XeCZBy4wdzZorp9ChCNsX
+         N4EGPYBtZOdtcUq5mfBxrgn7q3Rrg4dlXyzX+O0F4LRVckzMYHKqTasKXr2FnLSSpa5X
+         9iTw==
+X-Gm-Message-State: AOAM532TTcurBjozB4OYhATmKnItdFGfhqz5jOZ32RBADQBlCulnBAFY
+        esacUuQCoJrX0dZ3J2JeL4A=
+X-Google-Smtp-Source: ABdhPJwJinC9xx8aL+n7AyfzFJtP5Esjdc5ojELdSIdDtMIUyooc4KUFhKwdwVHaXenKsX4dnQ61gA==
+X-Received: by 2002:a5d:4988:0:b0:20d:9b8:e560 with SMTP id r8-20020a5d4988000000b0020d09b8e560mr6820985wrq.33.1652773776628;
+        Tue, 17 May 2022 00:49:36 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id m26-20020a7bce1a000000b003942a244f3fsm1200543wmc.24.2022.05.17.00.49.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 May 2022 00:49:36 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 17 May 2022 09:49:33 +0200
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v3 4/4] bpf_trace: pass array of u64 values in
- kprobe_multi.addrs
-Message-ID: <6ef675aeeea442fa8fc168cd1cb4e4e474f65a3f.1652772731.git.esyr@redhat.com>
-References: <cover.1652772731.git.esyr@redhat.com>
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH bpf-next 1/2] cpuidle/rcu: Making arch_cpu_idle and
+ rcu_idle_exit noinstr
+Message-ID: <YoNTjXBDLQe9xj27@krava>
+References: <20220515203653.4039075-1-jolsa@kernel.org>
+ <5b4bd044-ba88-649b-9b85-e08e175691f9@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1652772731.git.esyr@redhat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <5b4bd044-ba88-649b-9b85-e08e175691f9@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With the interface as defined, it is impossible to pass 64-bit kernel
-addresses from a 32-bit userspace process in BPF_LINK_TYPE_KPROBE_MULTI,
-which severly limits the useability of the interface, change the ABI
-to accept an array of u64 values instead of (kernel? user?) longs.
-Interestingly, the rest of the libbpf infrastructure uses 64-bit values
-for kallsyms addresses already, so this patch also eliminates
-the sym_addr cast in tools/lib/bpf/libbpf.c:resolve_kprobe_multi_cb().
+On Mon, May 16, 2022 at 07:54:37PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 5/15/22 1:36 PM, Jiri Olsa wrote:
+> > Making arch_cpu_idle and rcu_idle_exit noinstr. Both functions run
+> > in rcu 'not watching' context and if there's tracer attached to
+> > them, which uses rcu (e.g. kprobe multi interface) it will hit RCU
+> > warning like:
+> > 
+> >    [    3.017540] WARNING: suspicious RCU usage
+> >    ...
+> >    [    3.018363]  kprobe_multi_link_handler+0x68/0x1c0
+> >    [    3.018364]  ? kprobe_multi_link_handler+0x3e/0x1c0
+> >    [    3.018366]  ? arch_cpu_idle_dead+0x10/0x10
+> >    [    3.018367]  ? arch_cpu_idle_dead+0x10/0x10
+> >    [    3.018371]  fprobe_handler.part.0+0xab/0x150
+> >    [    3.018374]  0xffffffffa00080c8
+> >    [    3.018393]  ? arch_cpu_idle+0x5/0x10
+> >    [    3.018398]  arch_cpu_idle+0x5/0x10
+> >    [    3.018399]  default_idle_call+0x59/0x90
+> >    [    3.018401]  do_idle+0x1c3/0x1d0
+> > 
+> > The call path is following:
+> > 
+> > default_idle_call
+> >    rcu_idle_enter
+> >    arch_cpu_idle
+> >    rcu_idle_exit
+> > 
+> > The arch_cpu_idle and rcu_idle_exit are the only ones from above
+> > path that are traceble and cause this problem on my setup.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >   arch/x86/kernel/process.c | 2 +-
+> >   kernel/rcu/tree.c         | 2 +-
+> >   2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> > index b370767f5b19..1345cb0124a6 100644
+> > --- a/arch/x86/kernel/process.c
+> > +++ b/arch/x86/kernel/process.c
+> > @@ -720,7 +720,7 @@ void arch_cpu_idle_dead(void)
+> >   /*
+> >    * Called from the generic idle code.
+> >    */
+> > -void arch_cpu_idle(void)
+> > +void noinstr arch_cpu_idle(void)
+> 
+> noinstr includes a lot of attributes:
+> 
+> #define noinstr                                                         \
+>         noinline notrace __attribute((__section__(".noinstr.text")))    \
+>         __no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage
+> 
+> should we use notrace here?
 
-Fixes: 0dcac272540613d4 ("bpf: Add multi kprobe link")
-Fixes: 5117c26e877352bc ("libbpf: Add bpf_link_create support for multi kprobes")
-Fixes: ddc6b04989eb0993 ("libbpf: Add bpf_program__attach_kprobe_multi_opts function")
-Fixes: f7a11eeccb111854 ("selftests/bpf: Add kprobe_multi attach test")
-Fixes: 9271a0c7ae7a9147 ("selftests/bpf: Add attach test for bpf_program__attach_kprobe_multi_opts")
-Fixes: 2c6401c966ae1fbe ("selftests/bpf: Add kprobe_multi bpf_cookie test")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
----
- kernel/trace/bpf_trace.c                           | 25 ++++++++++++++++++----
- tools/lib/bpf/bpf.h                                |  2 +-
- tools/lib/bpf/libbpf.c                             |  8 +++----
- tools/lib/bpf/libbpf.h                             |  2 +-
- .../testing/selftests/bpf/prog_tests/bpf_cookie.c  |  2 +-
- .../selftests/bpf/prog_tests/kprobe_multi_test.c   |  8 +++----
- 6 files changed, 32 insertions(+), 15 deletions(-)
+hm right, so notrace should be enough for our case (kprobe_multi)
+which is based on ftrace/fprobe jump
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 9d3028a..30a15b3 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2454,7 +2454,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	void __user *ucookies;
- 	unsigned long *addrs;
- 	u32 flags, cnt, size, cookies_size;
--	void __user *uaddrs;
-+	u64 __user *uaddrs;
- 	u64 *cookies = NULL;
- 	void __user *usyms;
- 	int err;
-@@ -2486,9 +2486,26 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 		return -ENOMEM;
- 
- 	if (uaddrs) {
--		if (copy_from_user(addrs, uaddrs, size)) {
--			err = -EFAULT;
--			goto error;
-+		if (sizeof(*addrs) == sizeof(*uaddrs)) {
-+			if (copy_from_user(addrs, uaddrs, size)) {
-+				err = -EFAULT;
-+				goto error;
-+			}
-+		} else {
-+			u32 i;
-+			u64 addr;
-+
-+			for (i = 0; i < cnt; i++) {
-+				if (get_user(addr, uaddrs + i)) {
-+					err = -EFAULT;
-+					goto error;
-+				}
-+				if (addr > ULONG_MAX) {
-+					err = -EINVAL;
-+					goto error;
-+				}
-+				addrs[i] = addr;
-+			}
- 		}
- 	} else {
- 		struct user_syms us;
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 2e0d373..da9c6037 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -418,7 +418,7 @@ struct bpf_link_create_opts {
- 			__u32 flags;
- 			__u32 cnt;
- 			const char **syms;
--			const unsigned long *addrs;
-+			const __u64 *addrs;
- 			const __u64 *cookies;
- 		} kprobe_multi;
- 		struct {
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ef7f302..35fa9c5 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10737,7 +10737,7 @@ static bool glob_match(const char *str, const char *pat)
- 
- struct kprobe_multi_resolve {
- 	const char *pattern;
--	unsigned long *addrs;
-+	__u64 *addrs;
- 	size_t cap;
- 	size_t cnt;
- };
-@@ -10752,12 +10752,12 @@ resolve_kprobe_multi_cb(unsigned long long sym_addr, char sym_type,
- 	if (!glob_match(sym_name, res->pattern))
- 		return 0;
- 
--	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(unsigned long),
-+	err = libbpf_ensure_mem((void **) &res->addrs, &res->cap, sizeof(__u64),
- 				res->cnt + 1);
- 	if (err)
- 		return err;
- 
--	res->addrs[res->cnt++] = (unsigned long) sym_addr;
-+	res->addrs[res->cnt++] = sym_addr;
- 	return 0;
- }
- 
-@@ -10772,7 +10772,7 @@ bpf_program__attach_kprobe_multi_opts(const struct bpf_program *prog,
- 	};
- 	struct bpf_link *link = NULL;
- 	char errmsg[STRERR_BUFSIZE];
--	const unsigned long *addrs;
-+	const __u64 *addrs;
- 	int err, link_fd, prog_fd;
- 	const __u64 *cookies;
- 	const char **syms;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 9e9a3fd..76e171d 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -489,7 +489,7 @@ struct bpf_kprobe_multi_opts {
- 	/* array of function symbols to attach */
- 	const char **syms;
- 	/* array of function addresses to attach */
--	const unsigned long *addrs;
-+	const __u64 *addrs;
- 	/* array of user-provided values fetchable through bpf_get_attach_cookie */
- 	const __u64 *cookies;
- 	/* number of elements in syms/addrs/cookies arrays */
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-index 83ef55e3..e843840 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -140,7 +140,7 @@ static void kprobe_multi_link_api_subtest(void)
- 	cookies[6] = 7;
- 	cookies[7] = 8;
- 
--	opts.kprobe_multi.addrs = (const unsigned long *) &addrs;
-+	opts.kprobe_multi.addrs = (const __u64 *) &addrs;
- 	opts.kprobe_multi.cnt = ARRAY_SIZE(addrs);
- 	opts.kprobe_multi.cookies = (const __u64 *) &cookies;
- 	prog_fd = bpf_program__fd(skel->progs.test_kprobe);
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-index 586dc52..7646112 100644
---- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-@@ -108,7 +108,7 @@ static void test_link_api_addrs(void)
- 	GET_ADDR("bpf_fentry_test7", addrs[6]);
- 	GET_ADDR("bpf_fentry_test8", addrs[7]);
- 
--	opts.kprobe_multi.addrs = (const unsigned long*) addrs;
-+	opts.kprobe_multi.addrs = (const __u64 *) addrs;
- 	opts.kprobe_multi.cnt = ARRAY_SIZE(addrs);
- 	test_link_api(&opts);
- }
-@@ -186,7 +186,7 @@ static void test_attach_api_addrs(void)
- 	GET_ADDR("bpf_fentry_test7", addrs[6]);
- 	GET_ADDR("bpf_fentry_test8", addrs[7]);
- 
--	opts.addrs = (const unsigned long *) addrs;
-+	opts.addrs = (const __u64 *) addrs;
- 	opts.cnt = ARRAY_SIZE(addrs);
- 	test_attach_api(NULL, &opts);
- }
-@@ -244,7 +244,7 @@ static void test_attach_api_fails(void)
- 		goto cleanup;
- 
- 	/* fail_2 - both addrs and syms set */
--	opts.addrs = (const unsigned long *) addrs;
-+	opts.addrs = (const __u64 *) addrs;
- 	opts.syms = syms;
- 	opts.cnt = ARRAY_SIZE(syms);
- 	opts.cookies = NULL;
-@@ -258,7 +258,7 @@ static void test_attach_api_fails(void)
- 		goto cleanup;
- 
- 	/* fail_3 - pattern and addrs set */
--	opts.addrs = (const unsigned long *) addrs;
-+	opts.addrs = (const __u64 *) addrs;
- 	opts.syms = NULL;
- 	opts.cnt = ARRAY_SIZE(syms);
- 	opts.cookies = NULL;
--- 
-2.1.4
+noinstr (among other things) adds the function also the kprobes
+blacklist, which will prevent standard kprobes to attach
 
+ASAICS standard kprobes use rcu in probe path as well, like in
+opt_pre_handler function
+
+so I think we should go with noinstr
+
+jirka
+
+> 
+> >   {
+> >   	x86_idle();
+> >   }
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index a4b8189455d5..20d529722f51 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -896,7 +896,7 @@ static void noinstr rcu_eqs_exit(bool user)
+> >    * If you add or remove a call to rcu_idle_exit(), be sure to test with
+> >    * CONFIG_RCU_EQS_DEBUG=y.
+> >    */
+> > -void rcu_idle_exit(void)
+> > +void noinstr rcu_idle_exit(void)
+> >   {
+> >   	unsigned long flags;
