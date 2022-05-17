@@ -2,98 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A70B352A76C
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 17:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5671D52A87D
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 18:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350665AbiEQPyI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 11:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
+        id S1351158AbiEQQqy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 12:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350662AbiEQPyC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 11:54:02 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62D950B26;
-        Tue, 17 May 2022 08:53:54 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 137so17293266pgb.5;
-        Tue, 17 May 2022 08:53:54 -0700 (PDT)
+        with ESMTP id S1351106AbiEQQqw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 12:46:52 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3174EA1D
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 09:46:51 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id j6so14968921qkp.9
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 09:46:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rmBZXjHGe6pjrZrcbSckkH/iPjlINFANkKf9gszWPYU=;
-        b=mCL2WZQfUMWu4xy6yy7X1+ebSif5rAu/jKymgNsJYYzZFnA9ugCrwiihsPYjvzThIU
-         DFn5Lk91C0tZGoeUNkgplThRXBMayt2xcmaeF/kI+0KvGVR+kIISN5RmRdDJqe7Oadm+
-         ApJfECbPyywghswoV+jBSpOdkrBps9EXktTRVf3Url5a8fO/0L7wfegdHmd2rnO/VKqr
-         5aIFJRbhhBTCl8CG9Fz4O9HHJKwwrK9Rxg2vuvpaHSd9SFQ95LPDBKs/Xs2D02Uy/oXT
-         ZFn7YQQsYYxadnuLDDRi0dvdKAfQu/UzUbSJrsKeXA9Nrm8fbp9Bp3m1fdX1C87JU/JQ
-         FXxw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=83JZuRYGMhEYFc20Maeu6xSYCHW0XJW5bKDmH70MtQo=;
+        b=MNP5Ej/XjSsUpaMUaJ9NuwYfo0zef1CZTQthL3MVO8gWobO7oyeJrXOpOSaeaLUCFm
+         c7k+CFrdZxeGI8qeZXwXjCJI6mJoinSIpCAJfLiSK9OD21444+ryy9dcXkKFu7tc7eV0
+         +hNgtoFGDvxjFW/jhAF+mhmdTTJyrCGj13Q/cF2IuwfoN7cGMbBJV7T6YFYfxcf9olm0
+         RzrNYWjJxKx+im/DZ73EydtDYF+7co7Qs8ZASh6fmVMbmlwspJ7im4yk0oH41nQguoEX
+         Al/ulRuW4TpbRUY0SGxUTHbKLQYz5c0lohSqa23uvM0Ip3afPh5craHMXWWd4ZTUfVh4
+         piSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rmBZXjHGe6pjrZrcbSckkH/iPjlINFANkKf9gszWPYU=;
-        b=Ib3dDUlTM04ry+BsbBJCGicKyfD0/9WIB+k0j8S6lgvmCrayRA2OM/3KYcnpChQHEa
-         YHGfzKJpQtQXXyWQlFXSCjnZOUVRV5qVeVqfERpxWHgm+3PqUfnhgt1SwnfYLoZKPh0Z
-         RSQOSYxo2Q5qO7xOHRKvsdOD/HjG46gWHysagO571KmfEWVkVA6zBf+TgVSw6CX0YF+L
-         QztLEkEaBOsZGsi5N7WMW7ixsMCoWMeyK1E4RrbNXpi+Ucb9F3Wqfqpq3dTdHhMfdnOw
-         LFC/Auv2sMTNW8+jV0Hrid8yRvHxMqj1/1oPNo5pNyk52iMC611MEgxS5TjxT+H32dht
-         iTsQ==
-X-Gm-Message-State: AOAM530j5FON1Djz9qZ5xcdpYGD1PkNHYtIYQpBTuyFwixC/CdWCkh77
-        HQ83wXMvDO4/v0SbDbDPquk=
-X-Google-Smtp-Source: ABdhPJxrXCSmhatJuzbkg3Oy+emIhom0t5nAYkNpvRG00a6Wimvdurd952Xq+8TaFxwV35QJJRu07A==
-X-Received: by 2002:a63:8442:0:b0:3c6:4271:cad with SMTP id k63-20020a638442000000b003c642710cadmr20242021pgd.275.1652802834212;
-        Tue, 17 May 2022 08:53:54 -0700 (PDT)
-Received: from MacBook-Pro.local ([2620:10d:c090:500::2:c22a])
-        by smtp.gmail.com with ESMTPSA id d14-20020a62f80e000000b0050dc76281fdsm6932pfh.215.2022.05.17.08.53.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 May 2022 08:53:53 -0700 (PDT)
-Date:   Tue, 17 May 2022 08:53:49 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=83JZuRYGMhEYFc20Maeu6xSYCHW0XJW5bKDmH70MtQo=;
+        b=XM0A6IcdYgrUb8aq2QKnR3yosmHP8bSOBbmTVvX6Lx6xDxHQa217Q0AksjVDgWW8H5
+         ug7iNyzf/DRYWV5il1Gft7KaiFlAyu+VRd1Z4xi1yfgVA1u76wFENqKRFLvCdRajH5Y4
+         49qgTV/LCahnQVbXEjYaTCA0tg0raXakPLAnobnkU6FoHyasHlnxz6Wkhpf/zpAzzf45
+         gsl8S1cSTdZmBABIkm5Cdm12SESHz1cIGoq5brdyicoQ3NfEEaVloE5BHtwlUFmL1Bcc
+         dQOm/JuI3ptTZQz39yoKjx7hCQ5yK/XGX+LDFCL1c86faCes2OE86GULOtlCe2Pu9FZw
+         FRrA==
+X-Gm-Message-State: AOAM5323DK7bQNRnNTxLECT2qqkvof2G/+OM3LEs1VCYXOhCwRgpNqk7
+        QHKWY1+5PK6b/c/GQ98yq0T8f/c34bPSt05+Z/dtfeiMCzw=
+X-Google-Smtp-Source: ABdhPJzeqcJmMVRjW5QfNTw/P0HR+k0uX08XAMJ34XFFpjsqr9C4JesoakSwocgg+0eX8kqVZOQSben0aWT5/Rt9ACY=
+X-Received: by 2002:a05:620a:146:b0:6a0:267b:49ea with SMTP id
+ e6-20020a05620a014600b006a0267b49eamr17120215qkn.256.1652806010221; Tue, 17
+ May 2022 09:46:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <1652788780-25520-1-git-send-email-alan.maguire@oracle.com> <1652788780-25520-3-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1652788780-25520-3-git-send-email-alan.maguire@oracle.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
+Date:   Tue, 17 May 2022 09:45:09 -0700
+Message-ID: <CAADnVQJ7xn4dzX=d7d7mBtdQAUHza2xVZaHbmQHgD5yjV94uXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add tests verifying
+ unprivileged bpf disabled behaviour
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/6] bpf: Move is_valid_bpf_tramp_flags() to
- the public trampoline code
-Message-ID: <20220517155349.4jk5oymnjvrasw2p@MacBook-Pro.local>
-References: <20220517071838.3366093-1-xukuohai@huawei.com>
- <20220517071838.3366093-4-xukuohai@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220517071838.3366093-4-xukuohai@huawei.com>
+        Kees Cook <keescook@chromium.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -104,41 +72,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 17, 2022 at 03:18:35AM -0400, Xu Kuohai wrote:
->  
-> +static bool is_valid_bpf_tramp_flags(unsigned int flags)
-> +{
-> +	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
-> +	    (flags & BPF_TRAMP_F_SKIP_FRAME))
-> +		return false;
-> +
-> +	/* BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops,
-> +	 * and it must be used alone.
-> +	 */
-> +	if ((flags & BPF_TRAMP_F_RET_FENTRY_RET) &&
-> +	    (flags & ~BPF_TRAMP_F_RET_FENTRY_RET))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +int bpf_prepare_trampoline(struct bpf_tramp_image *tr, void *image,
-> +			   void *image_end, const struct btf_func_model *m,
-> +			   u32 flags, struct bpf_tramp_links *tlinks,
-> +			   void *orig_call)
-> +{
-> +	if (!is_valid_bpf_tramp_flags(flags))
-> +		return -EINVAL;
-> +
-> +	return arch_prepare_bpf_trampoline(tr, image, image_end, m, flags,
-> +					   tlinks, orig_call);
-> +}
+On Tue, May 17, 2022 at 5:00 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> tests load/attach bpf prog with maps, perfbuf and ringbuf, pinning
+> them.  Then effective caps are dropped and we verify we can
+>
+> - pick up the pin
+> - create ringbuf/perfbuf
+> - get ringbuf/perfbuf events, carry out map update, lookup and delete
+> - create a link
+>
+> Negative testing also ensures
+>
+> - BPF prog load fails
+> - BPF map create fails
+> - get fd by id fails
+> - get next id fails
+> - query fails
+> - BTF load fails
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 
-It's an overkill to introduce a new helper function just to validate
-flags that almost compile time constants.
-The flags are not user supplied.
-Please move /* BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops ... */
-comment to bpf_struct_ops.c right before it calls arch_prepare_bpf_trampoline()
-And add a comment to trampoline.c saying that BPF_TRAMP_F_RESTORE_REGS
-and BPF_TRAMP_F_SKIP_FRAME should not be set together.
-We could add a warn_on there or in arch code, but feels like overkill.
+It fails with clang build.
+See BPF CI.
+prog_tests/unpriv_bpf_disabled.c:207:36: error: implicit conversion
+from enumeration type 'enum bpf_prog_type' to different enumeration
+type 'enum bpf_attach_type' [-Werror,-Wenum-conversion]
+ASSERT_EQ(bpf_prog_query(prog_fd, BPF_PROG_TYPE_TRACING, 0,
+&attach_flags, prog_ids,
