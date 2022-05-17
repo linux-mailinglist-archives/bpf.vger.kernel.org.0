@@ -2,136 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CA152961C
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 02:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26872529650
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 02:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbiEQAhx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 May 2022 20:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
+        id S232813AbiEQA56 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 May 2022 20:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbiEQAhw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 May 2022 20:37:52 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1275DEEE
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 17:37:50 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id s14so11653700ild.6
-        for <bpf@vger.kernel.org>; Mon, 16 May 2022 17:37:50 -0700 (PDT)
+        with ESMTP id S239719AbiEQAzx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 May 2022 20:55:53 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62042DEA3;
+        Mon, 16 May 2022 17:55:46 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id t11-20020a17090a6a0b00b001df6f318a8bso958517pjj.4;
+        Mon, 16 May 2022 17:55:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3lntBFGTLUGtHy43ugCwAaLnkXsAgUbMEuYgfnsEfFs=;
-        b=djyTM+Bw9JPfwN+uV8gvdhLnvfOLNybd07rjF/Oh+29MzvhPJ2+eRoSNSc9Q46Bn0Y
-         4A8x0Uaim03qQCue7rdU8GpiHuwqDs5Mm1Z8mg3BVCMEsFabpTqi0o2C4O4evU7BwqMK
-         cudoR1XjOyMJomtEG1Gy3LWopgKaI3S8SRFIWXGnHDgkhAdw+hI/l9T9G0qGuYvpLb1g
-         JVG/UYMBLSwzSmgcqws5+YAUMh/j9+lt4U52kek7ttFN8Hcw6pwV4EISyyP7uAwZUXol
-         2ZNv0mXw6ay6Zf4Hj0NoqDvngndB+xb8Uv7VZv8wT7a3pfBmRZJu6f35GE7PMRI7Krmn
-         BenA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oszu+rft9ZMt8hn3XlfQBiWXh4vkWerpEVjVpNGVwQE=;
+        b=GmR3175J1QJA++Kl/bkM18GAR0pdIOR/nKTuYJ02O2yIkNWXEOJPq5w2+cfh2DL/TI
+         +jpF745GD82YqiM0gAdhkEKWSc1XbAzth44QQ+UornMYJ4amJjWzRY33tQN2cmVR4ZWe
+         aUt8vVXkkVq0g7off74SJU92u11TirCMvQligM3DUzTK7LwzvsjXzY8jNQyQTQVHUY6G
+         Wl/ZlIgB8DVF8oJQKkNjJGtI74NFgq2+9SOhSvo8bQx38xZOaKs6snbLQD2nvg3DT4wT
+         j7yJRDZp4nZL3LnHSNNdGMqGRVp+SBRs8NMW1exWDQAv5MMUkn6s4sPJL4eNLfA873eH
+         Wwzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3lntBFGTLUGtHy43ugCwAaLnkXsAgUbMEuYgfnsEfFs=;
-        b=fohnh7eOPD6Q8WgFtTv4w9qqv/QapLDE2nAgQJfBmlDUxAX+KXC1kRf7S9J2hudDnE
-         25bya69JSo3xNh4iBJ7/wuVAqGBh0ogKN4P7+yX6LEZWQt9gS6/FOSZkcd4KeaqT8Rn+
-         RAYT7P+i4uIJmhX8dRoRrUUSGSrlldGQ31Gmnix1PJaJHRDjLD4OpD0xn0xvtLJLuLRJ
-         6ZboHRzSRLLOEH5T0mnL9DFoIv48/bkDkL5KToNNigAlUmr01pV3lR2kW/rdlkVZY9M7
-         tXEABd2Z/U+vZohcSrROqj5A6g1F2sLl2gLG8AwLUvaTluE7wq+MYiOlsyY83kLyB+Bo
-         kU0w==
-X-Gm-Message-State: AOAM531v+LX22a4UwPMXrvBQzLehhYY35BoMq+jnk66N6PPwejhEjwTH
-        rT+vXqf6MF4ukKWMtSl7wZ0ndllPRBeKR03kI/NF/sFY
-X-Google-Smtp-Source: ABdhPJy9tisGJf73u/xen3zdukAmmhIjWVWB90S0qb38aDpnvqeq9sg+W9kJYW5hH4l9sc5t901omFfeL3KJSRqwnSM=
-X-Received: by 2002:a05:6e02:1c01:b0:2d1:262e:8d5f with SMTP id
- l1-20020a056e021c0100b002d1262e8d5fmr2954140ilh.98.1652747870195; Mon, 16 May
- 2022 17:37:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220514031221.3240268-1-yhs@fb.com> <20220514031258.3242876-1-yhs@fb.com>
-In-Reply-To: <20220514031258.3242876-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 May 2022 17:37:39 -0700
-Message-ID: <CAEf4BzZq1PdMukF4OCKOKAG0owD+NduZkKcYiTYJEM_RW-AZEg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 07/18] libbpf: Add enum64 support for btf_dump
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oszu+rft9ZMt8hn3XlfQBiWXh4vkWerpEVjVpNGVwQE=;
+        b=veYIC+h+A4zg0b7UWqwWJlDCvLPIpRUv/1yxy+CU1IYSF6NNZ8psnOmMAveYLobQna
+         5WV24ZS0mQzhki7NoxQ/CSCZUNa2HfiPkLNtnwaGg9a2xfCBPJDmgxTEPJItSaxvEkWW
+         K71kzgFbEyGKo14lwtb8sts5GoBhkIRc0NZ3VVy/FHFBLAoz0JkpQ8B5MMvMYq/gGH/a
+         uyX11BztmYu/rl67yBhXt3wOsrRO8/VXqo+vDaFiZhQpDhE93VfX9hBmu5lInyKzX5mG
+         o8R9OOJfSY8az1n+iWoFxzUJW1r6KZATradB2fy0TcCK/2TxxjI9vzgXHvSZCjGF1VSK
+         7VJQ==
+X-Gm-Message-State: AOAM532+XcaJnOvigQUJUa3x3O8MimYT/47q0OUDwva7KQPenxFg8CwX
+        rewvzBJenoF+SUXxSBhkAMzaV8OeOgEElw==
+X-Google-Smtp-Source: ABdhPJx6yIrIZNvt4OMM4DykP/blCEK67dJ+2zkDI1WzYEMFAxHoTyKI6A15UXJyEq9tmctm+aFOgQ==
+X-Received: by 2002:a17:902:ce11:b0:15f:4acc:f1fb with SMTP id k17-20020a170902ce1100b0015f4accf1fbmr19520857plg.76.1652748945576;
+        Mon, 16 May 2022 17:55:45 -0700 (PDT)
+Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
+        by smtp.gmail.com with ESMTPSA id p26-20020a62b81a000000b0050dc7628177sm7474333pfe.81.2022.05.16.17.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 May 2022 17:55:44 -0700 (PDT)
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Openrisc <openrisc@lists.librecores.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v2 06/13] openrisc: Update litex defconfig to support glibc userland
+Date:   Tue, 17 May 2022 09:55:03 +0900
+Message-Id: <20220517005510.3500105-7-shorne@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220517005510.3500105-1-shorne@gmail.com>
+References: <20220517005510.3500105-1-shorne@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 13, 2022 at 8:13 PM Yonghong Song <yhs@fb.com> wrote:
->
-> Add enum64 btf dumping support. For long long and unsigned long long
-> dump, suffixes 'LL' and 'ULL' are added to avoid compilation errors
-> in some cases.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  tools/lib/bpf/btf.h      |   5 ++
->  tools/lib/bpf/btf_dump.c | 135 ++++++++++++++++++++++++++++++---------
->  2 files changed, 110 insertions(+), 30 deletions(-)
->
+I have been using a litex SoC for glibc verification.  Update the
+default litex config to support required userspace API's needed for the
+full glibc testsuite to pass.
 
-[...]
+This includes enabling the litex mmc driver and filesystems used
+in a typical litex environment.
 
-> @@ -989,38 +992,88 @@ static void btf_dump_emit_enum_fwd(struct btf_dump *d, __u32 id,
->         btf_dump_printf(d, "enum %s", btf_dump_type_name(d, id));
->  }
->
-> -static void btf_dump_emit_enum_def(struct btf_dump *d, __u32 id,
-> -                                  const struct btf_type *t,
-> -                                  int lvl)
-> +static void btf_dump_emit_enum32_val(struct btf_dump *d,
-> +                                    const struct btf_type *t,
-> +                                    int lvl, __u16 vlen)
->  {
->         const struct btf_enum *v = btf_enum(t);
-> -       __u16 vlen = btf_vlen(t);
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+---
+ arch/openrisc/configs/or1klitex_defconfig | 33 +++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-why passing it from outside if we can just get it from t? you don't do
-it for kflag, for example, so I see no reason to do that for vlen here
+diff --git a/arch/openrisc/configs/or1klitex_defconfig b/arch/openrisc/configs/or1klitex_defconfig
+index d695879a4d26..4c0138340bd9 100644
+--- a/arch/openrisc/configs/or1klitex_defconfig
++++ b/arch/openrisc/configs/or1klitex_defconfig
+@@ -1,22 +1,55 @@
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_CGROUPS=y
++CONFIG_NAMESPACES=y
++CONFIG_USER_NS=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++CONFIG_SGETMASK_SYSCALL=y
+ CONFIG_EMBEDDED=y
+ CONFIG_OPENRISC_BUILTIN_DTB="or1klitex"
++# CONFIG_OPENRISC_HAVE_INST_RORI is not set
+ CONFIG_HZ_100=y
++CONFIG_OPENRISC_HAVE_SHADOW_GPRS=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
++CONFIG_PACKET_DIAG=y
+ CONFIG_UNIX=y
++CONFIG_UNIX_DIAG=y
+ CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++CONFIG_INET_UDP_DIAG=y
++CONFIG_INET_RAW_DIAG=y
++# CONFIG_WIRELESS is not set
++# CONFIG_ETHTOOL_NETLINK is not set
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_NETDEVICES=y
+ CONFIG_LITEX_LITEETH=y
++# CONFIG_WLAN is not set
+ CONFIG_SERIAL_LITEUART=y
+ CONFIG_SERIAL_LITEUART_CONSOLE=y
+ CONFIG_TTY_PRINTK=y
++# CONFIG_GPIO_CDEV is not set
++CONFIG_MMC=y
++CONFIG_MMC_LITEX=y
++# CONFIG_VHOST_MENU is not set
++# CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_LITEX_SOC_CONTROLLER=y
++CONFIG_EXT2_FS=y
++CONFIG_EXT3_FS=y
++CONFIG_MSDOS_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_EXFAT_FS=y
+ CONFIG_TMPFS=y
++CONFIG_NFS_FS=y
++CONFIG_NFS_V3_ACL=y
++CONFIG_NFS_V4=y
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ISO8859_1=y
++CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,bpf"
+ CONFIG_PRINTK_TIME=y
+ CONFIG_PANIC_ON_OOPS=y
+ CONFIG_SOFTLOCKUP_DETECTOR=y
+-- 
+2.31.1
 
-> +       bool is_signed = btf_kflag(t);
-> +       const char *fmt_str;
->         const char *name;
->         size_t dup_cnt;
->         int i;
->
-> +
-
-nit: extra empty line?
-
-> +       for (i = 0; i < vlen; i++, v++) {
-> +               name = btf_name_of(d, v->name_off);
-> +               /* enumerators share namespace with typedef idents */
-> +               dup_cnt = btf_dump_name_dups(d, d->ident_names, name);
-> +               if (dup_cnt > 1) {
-> +                       fmt_str = is_signed ? "\n%s%s___%zd = %d,"
-> +                                           : "\n%s%s___%zd = %u,";
-> +                       btf_dump_printf(d, fmt_str,
-> +                                       pfx(lvl + 1), name, dup_cnt,
-> +                                       v->val);
-> +               } else {
-> +                       fmt_str = is_signed ? "\n%s%s = %d,"
-> +                                           : "\n%s%s = %u,";
-> +                       btf_dump_printf(d, fmt_str,
-> +                                       pfx(lvl + 1), name,
-> +                                       v->val);
-
-100 character lines are ok now, try to make all those statements
-single-line, if possible
-
-> +               }
-> +       }
-> +}
-> +
-
-[...]
