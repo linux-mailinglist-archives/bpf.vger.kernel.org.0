@@ -2,71 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1DE52ADC9
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 00:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B85952AE09
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 00:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbiEQWDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 18:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        id S230426AbiEQWWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 18:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbiEQWDG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 18:03:06 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5C749F29;
-        Tue, 17 May 2022 15:03:05 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id e3so316646ios.6;
-        Tue, 17 May 2022 15:03:05 -0700 (PDT)
+        with ESMTP id S230444AbiEQWWe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 18:22:34 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D452FFDE
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 15:22:33 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id z144so149967vsz.13
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 15:22:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XaC+lg6kNQzOzaKvEQSXtHYYtU/iVFLlFJMpbBidkyY=;
-        b=U8SshjRqyuJ0JDF7+pse2WF/4zZzkDbrUbLXQDjLV3woV7Yj/FO1pn84lB2hKYA6Lt
-         QmkagHD9wQtPXp/UzV656XNbhU69Yb5ErY6dff/okGI887Cxd5igB1pYkrSDArmAb8ck
-         u2blXKRMqoPX/6Utx7yconobN8YW2pBfCkHcX+CjOr8j0CSVMR1WpBdvNA54fi84pFY8
-         N62xoyKcNj6zLjPQMIsuUcjyauP6zZEUzVT9GOG6r+oFn8cBsavlrx+ERy0INKOVUSI1
-         YCYQsE46WvYCqNmTHjPZK1xsJlpu9ruP980xc2uf7Jqp9Vubrcs9/nemqaa58DqXXA6u
-         8+mA==
+        bh=MOYBr1+tJ/MjYHcv06yEe4yL7LXUGyFlMW+Ti+TRzoM=;
+        b=E4qKV9pIx8ytcDKx+E77rd1xXPHPRmnooMyhyflC60oxceHNujYS3A4ji9F78+R5s2
+         rEATifUxg3/XrgQAIgDGVWIuhTKXQ8LCfwJwuLRyX0hFXu7ruCu0ScnkYV/M89d53P2K
+         fWToC+1Umm9RfFyg2s+hLOagM9jUeH4FkwXyNI7YaR4init4/97lUOWxgrTe0i7prFdW
+         lrTfJR2djnz8XNEWyFyo/HeZoyWPxQ7fiiTRLZ+AuBYp23VxjEUwmZsVmfISfL3q0UTL
+         F5o+MsOfxStXCW8tR8XYS2FotDe1FuQja67hdWs6AaZssM6qOMzvVgNp7AydgDo/Nihq
+         WW7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XaC+lg6kNQzOzaKvEQSXtHYYtU/iVFLlFJMpbBidkyY=;
-        b=tXu1yCZvp/VCfsSz6j38YhiWW7QmSjQMs6rj2yl4JSNL4ACI4y7t9Sj1fhrV9ofS7A
-         CC4q80y7iud/ZZHkwepCPZoZK+nAv5kDhQNv8wT/hbRzUt9DoDf/3F1WaliGMPCSeNud
-         AFpzuy7dVxxyayorNOtbsZ0ppUYyaEGi59q5Yx+jUqAN0Hrv1kl+XF2OJRe2KEkps6km
-         orWYIdpKaEJotlhX5TvBE7Q4OY8WeBo5tI2PHhWD++U2iDKIQHXoJupsYJusWlI5CPNx
-         BP7fiQFPwZhe0IAwyUqKoSWCTkFsSNkwExuQW8MR2fyi2nkkku6o82r8s5xFBBcspFf2
-         TOOQ==
-X-Gm-Message-State: AOAM532IslX6Z6g9rBdUm9rRx1dEezmGTYOFeHMArfQQIesi+tsNNeqw
-        H0iCQjac9W3anXlfOSy++T69RRZdrMyFfO/CB/m04ZJG
-X-Google-Smtp-Source: ABdhPJz93sSJZvqwk5VRamRjZVgYfX4V2m91cPHae8WLkjVHmh+raHAi608yU8TchEaHxDgQgsnXz4kp8F4oYj8XT7s=
-X-Received: by 2002:a02:9f87:0:b0:32e:69ae:23df with SMTP id
- a7-20020a029f87000000b0032e69ae23dfmr489970jam.237.1652824984799; Tue, 17 May
- 2022 15:03:04 -0700 (PDT)
+        bh=MOYBr1+tJ/MjYHcv06yEe4yL7LXUGyFlMW+Ti+TRzoM=;
+        b=obU7oFr+j+VDsIceTJ0USoialsNURBpKOwQaarRbtgkOJRFdHbWdrkEkvvTxI/9vnV
+         UtqGAeVCnl0l+vjjtAOnIDssndd0+gY4ojUanGWC5PC0effVL3M9sLMcZ92/wXTLAGh7
+         RZrztssk5GLlxsHfQPE1BYQdZ86T+EqQNswmvIofSrWd9ssXuY18BkKaANKaEm3K3x1o
+         35lKqns78EblT6x25XIqUUPBrvkCscckQal9FpidW03PK6LfttpoLHvHIQrr61AZ9xFW
+         Gh/zGNkkGE7BnSanpjf2TGyVrNcEqcgkh6nz9kXRgfXQKnMyi92W1cHVEKtHXEUr342f
+         Nk6w==
+X-Gm-Message-State: AOAM531Y3bW4EAKcX/0jgSyqzFjFNLvEpxWBkNIKnOAblrMJSZiJ1tLD
+        R973ayH0iRSvcowKIjSCgNJHe2Mdt/Tjeq2Rdf0=
+X-Google-Smtp-Source: ABdhPJxSjA3yexJ/jS/uhR7H0YC8jraCjGt7RkvhXXgZw36iuC3PR/9tg1jB605g5dcktAqFjFptcDgiJvTUBtzwCYs=
+X-Received: by 2002:a05:6102:370a:b0:333:c0e7:77e8 with SMTP id
+ s10-20020a056102370a00b00333c0e777e8mr10772682vst.54.1652826152494; Tue, 17
+ May 2022 15:22:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220510074659.2557731-1-jolsa@kernel.org> <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
- <YntnRixbfQ1HCm9T@krava> <Ynv+7iaaAbyM38B6@kernel.org>
-In-Reply-To: <Ynv+7iaaAbyM38B6@kernel.org>
+References: <20220514031221.3240268-1-yhs@fb.com> <20220514031253.3242578-1-yhs@fb.com>
+ <CAEf4BzYqC8BhUHk=SW-=dLyF=4ZPqYXoo2eBTLcqd1VXjK0xUg@mail.gmail.com> <804bf498-a272-86ac-7a24-e4662e8288a1@fb.com>
+In-Reply-To: <804bf498-a272-86ac-7a24-e4662e8288a1@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 17 May 2022 15:02:53 -0700
-Message-ID: <CAEf4BzaQsF31f3WuU32wDCzo6bw7eY8E9zF6Lo218jfw-VQmcA@mail.gmail.com>
-Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Tue, 17 May 2022 15:22:21 -0700
+Message-ID: <CAEf4BzaV_uuE6FcqeCJqK4EjA+yPkNLfx6SnwhCWHN4Hq8f7qg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 06/18] libbpf: Add enum64 deduplication support
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ian Rogers <irogers@google.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -78,75 +68,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 11, 2022 at 11:22 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Tue, May 17, 2022 at 10:11 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> Em Wed, May 11, 2022 at 09:35:34AM +0200, Jiri Olsa escreveu:
-> > On Tue, May 10, 2022 at 04:48:55PM -0700, Andrii Nakryiko wrote:
-> > > On Tue, May 10, 2022 at 12:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > hi,
-> > > > sending change we discussed some time ago [1] to get rid of
-> > > > some deprecated functions we use in perf prologue code.
-> > > >
-> > > > Despite the gloomy discussion I think the final code does
-> > > > not look that bad ;-)
-> > > >
-> > > > This patchset removes following libbpf functions from perf:
-> > > >   bpf_program__set_prep
-> > > >   bpf_program__nth_fd
-> > > >   struct bpf_prog_prep_result
-> > > >
-> > > > v2 changes:
-> > > >   - use fallback section prog handler, so we don't need to
-> > > >     use section prefix [Andrii]
-> > > >   - realloc prog->insns array in bpf_program__set_insns [Andrii]
-> > > >   - squash patch 1 from previous version with
-> > > >     bpf_program__set_insns change [Daniel]
-> > > >   - patch 3 already merged [Arnaldo]
-> > > >   - added more comments
-> > > >
-> > > >   meanwhile.. perf/core and bpf-next diverged, so:
-> > > >     - libbpf bpf_program__set_insns change is based on bpf-next/master
-> > > >     - perf changes do not apply on bpf-next/master so they are based on
-> > > >       perf/core ... however they can be merged only after we release
-> > > >       libbpf 0.8.0 with bpf_program__set_insns change, so we don't break
-> > > >       the dynamic linking
-> > > >       I'm sending perf changes now just for review, I'll resend them
-> > > >       once libbpf 0.8.0 is released
-> > > >
-> > > > thanks,
-> > > > jirka
-> > > >
-> > > >
-> > > > [1] https://lore.kernel.org/bpf/CAEf4BzaiBO3_617kkXZdYJ8hS8YF--ZLgapNbgeeEJ-pY0H88g@mail.gmail.com/
-> > > > ---
-> > > > Jiri Olsa (1):
-> > > >       libbpf: Add bpf_program__set_insns function
-> > > >
-> > >
-> > > The first patch looks good to me. The rest I can't really review and
-> > > test properly, so I'll leave it up to Arnaldo.
-> > >
-> > > Arnaldo, how do we coordinate these patches? Should they go through
-> > > bpf-next (after you Ack them) or you want them in your tree?
-> > >
-> > > I'd like to get the bpf_program__set_insns() patch into bpf-next so
-> > > that I can do libbpf v0.8 release, having it in a separate tree is
-> > > extremely inconvenient. Please let me know how you think we should
-> > > proceed?
+>
+>
+> On 5/16/22 5:28 PM, Andrii Nakryiko wrote:
+> > On Fri, May 13, 2022 at 8:13 PM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >> Add enum64 deduplication support. BTF_KIND_ENUM64 handling
+> >> is very similar to BTF_KIND_ENUM.
+> >>
+> >> Signed-off-by: Yonghong Song <yhs@fb.com>
+> >> ---
+> >>   tools/lib/bpf/btf.c | 55 +++++++++++++++++++++++++++++++++------------
+> >>   tools/lib/bpf/btf.h |  5 +++++
+> >>   2 files changed, 46 insertions(+), 14 deletions(-)
+> >>
 > >
-> > we need to wait with perf changes after the libbpf is merged and
-> > libbpf 0.8.0 is released.. so we don't break dynamic linking for
-> > perf
+> > [...]
 > >
-> > at the moment please just take libbpf change and I'll resend the
-> > perf change later if needed
+> >> +static bool btf_equal_enum64_val(struct btf_type *t1, struct btf_type *t2)
+> >> +{
+> >> +       const struct btf_enum64 *m1, *m2;
+> >> +       __u16 vlen = btf_vlen(t1);
+> >> +       int i;
+> >> +
+> >> +       m1 = btf_enum64(t1);
+> >> +       m2 = btf_enum64(t2);
+> >> +       for (i = 0; i < vlen; i++) {
+> >> +               if (m1->name_off != m2->name_off || m1->val_lo32 != m2->val_lo32 ||
+> >> +                   m1->val_hi32 != m2->val_hi32)
+> >> +                       return false;
+> >> +               m1++;
+> >> +               m2++;
+> >> +       }
+> >> +       return true;
+> >> +}
+> >> +
+> >> +/* Check structural equality of two ENUMs. */
+> >> +static bool btf_equal_enum_or_enum64(struct btf_type *t1, struct btf_type *t2)
+> >
+> > I find this helper quite confusing. It implies it can compare any enum
+> > or enum64 with each other, but it really allows only enum vs enum and
+> > enum64 vs enum64 (as it should!). Let's keep
+> > btf_equal_enum()/btf_compat_enum() completely intact and add
+> > btf_equal_enum64()/btf_compat_enum64() separately (few lines of
+> > copy-pasted code is totally fine to keep them separate, IMO). See
+> > below.
 >
-> Ok.
+> I debate with myself about whether I should use separate functions or
+> use one function for both enum/enum64. My current approach will have
+> less code changes. But I can do what you suggested to have separate
+> functions for enum and enum64. This will apply to btf_compat_enum
+> as well.
+
+yep, thanks!
+
 >
-
-Jiri, libbpf v0.8 is out, can you please re-send your perf patches?
-
-
-> - Arnaldo
+> >
+> >> +{
+> >> +       if (!btf_equal_common(t1, t2))
+> >> +               return false;
+> >> +
+> >> +       if (btf_is_enum(t1))
+> >> +               return btf_equal_enum32_val(t1, t2);
+> >> +       return btf_equal_enum64_val(t1, t2);
+> >> +}
+> >> +
+> >>   static inline bool btf_is_enum_fwd(struct btf_type *t)
+> >>   {
+> >> -       return btf_is_enum(t) && btf_vlen(t) == 0;
+> >> +       return btf_type_is_any_enum(t) && btf_vlen(t) == 0;
+> >>   }
+> >>
+> [...]
