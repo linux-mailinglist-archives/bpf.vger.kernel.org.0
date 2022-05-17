@@ -2,64 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3951552A8B7
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 18:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483C752A8C2
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 19:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351271AbiEQQ6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 12:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        id S1351340AbiEQRBH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 13:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347238AbiEQQ6J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 12:58:09 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D414FC56;
-        Tue, 17 May 2022 09:58:08 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id e20so1898337qvr.6;
-        Tue, 17 May 2022 09:58:08 -0700 (PDT)
+        with ESMTP id S1351306AbiEQRA7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 13:00:59 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A3F3FDAC;
+        Tue, 17 May 2022 10:00:58 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id bs17so15068503qkb.0;
+        Tue, 17 May 2022 10:00:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zag6DxyUvX35uCpSTZxUOhCfsgCuB2xeq5nyKpnfous=;
-        b=aBvv7qbEuM5NOK3+ms6RjRMvBBgwoYcmyMWEJ2iAj+Z6C4UoNLxpGtx0dTrTVKbZyI
-         0764LNEo1doQjfRHRBHMytNVoRvB+SaLNlTi2PksdbJZuZX9pJASZbAWdNz+KRZAX9S4
-         K6zeDGxpNYqm3M5ariW1ZapeflzxN9VQ2esmRbg0SMxaksjNGT4FRv4KmoxuM90r6QsS
-         72gtk9imp5a7Yf/5L72DUC+fnnV31SkMTSoo++hNq7EVJJUkUsUW5NXhiBekuINSlU9V
-         uvBhHKLGvuv9q3ORJUxP263ruNJZM/35ID3sE4gzCgw5bkJfN8RSNuKLJDRYjn7EmJCX
-         RcVw==
+         :cc:content-transfer-encoding;
+        bh=JQfz7/9xIwZXm9owxDLXdrtXLr0FcC/lv49DpFzTm/w=;
+        b=KllF1yFDNMuYt8/7qrB0ktpdb+81T1SrApDtTOsVrHcMhq673CWem5wB4dLaly0uZB
+         +0b4yDMOD+PUQ5PUeT61AfniwPm6jJfRNoaOTY5PEjT0a9Zg/UNuJSXbnp1OYnAyMJoP
+         TPBwE6Vby5NWvsqTEhzb5xMRstgMpq4DPchwpx8a3w+nx1JkXIlYJovY04+TZyWe3C3+
+         q+13GBcAXHa3Vh5Ef4VX6ka0TN4khAHdDou8zfQJTxA4MtI+OlWkN1I3I/8uDUOgh9sw
+         G/AKWxJRpSKTEW1s42ASC1Vx0/5WdwiCAQkg9PFZaR/DArVMzvsPsXAflz+ftBLUMdKY
+         EqvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zag6DxyUvX35uCpSTZxUOhCfsgCuB2xeq5nyKpnfous=;
-        b=du4FLCdAP/dzt1OaETFN7pq6b+1oqcpz2RX9WA2QbH0rG2Pv4BcOk7v1hJ+QcPduqn
-         Rl/4BXn/Ef3cNLWtCR5mbvutkWS5skPh3GVrbkqFXGHQ7sQ0Hn6EJ5lTtWrf5eVE4KSD
-         kueYzHT6ZsW3GbXtP0zyg4oetIpHO+A41HH9cacdY2NQKBqMQDFbx8+KUK3gW3gopU/D
-         EncIXc5ZBCwJwj1eDTbiryTIi8vTJV9iMJ0LkEsJhvQsc6IyxS3ZVyHI/RQASdTZ1c5A
-         ZrYO6UtSUvs/8+gWUQEGb/0miAEYZHPMwFXEAfCFjn1pk/7z2w4Prr9IxZywCZMK4NZ+
-         krFA==
-X-Gm-Message-State: AOAM532nV/RAdv2HwfwFFG4R86PVocCsacjDcwmfFzcaR8LfQMe2HLgI
-        1GctQxvPhbRBKqeWOiE3/d1sJBrxuXWYbCGolYeaynIPhLs=
-X-Google-Smtp-Source: ABdhPJzRetzGWaJgM5Bm8XUyu7JFJUNEPNIplk6KRyI2Mbb/gbaZFn5rwik9ILly613XvLY63cw4sgsA4PSnFm+j93s=
-X-Received: by 2002:ad4:5c6e:0:b0:45a:aefd:f551 with SMTP id
- i14-20020ad45c6e000000b0045aaefdf551mr21174026qvh.95.1652806687381; Tue, 17
- May 2022 09:58:07 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JQfz7/9xIwZXm9owxDLXdrtXLr0FcC/lv49DpFzTm/w=;
+        b=iEYhtJ9aNb0k8yiu/8ySLZC1deUiBpcrFScu82H16PJc332AIIf8zF1tT0K2pdBXLP
+         NgEQSFdK71HR4WpXhcR8BGMPkI/uFZ3a6v4epieRzAEtqueTkSqW1ETiXOXL3gRba7x9
+         0otk5lwY/K+5P1eRhAI7fM1vITSwUR5gSL8d/bokQttg7UnyJzmVDLCXK2a7AY/PtgHR
+         AX5lf6RWt/L2gE4oWSYERtZeC4XG92zTXNGmmbQ7MZplU+rOFJ14PSIKImH96Ahigyex
+         Le9aJEbFtbF4aYjpa7ssM0sFugIcH8hnMGMaVSSNXTI8MHCS3dxcozxcAIS7ah4KO44B
+         R79Q==
+X-Gm-Message-State: AOAM533pBW9U/qmOf8NeXuwgxlvmBFQu4c37qo97CIOWSc712rOSYetw
+        bh7My829KqfQCUg7nfxuJ+BQ5I1A1CgIfN0k6k4=
+X-Google-Smtp-Source: ABdhPJyc0I91BWWjtZVgl+EUrAbG6Tfb9o74K2EpzYJFWxb9b781DfjS9ZrI6ajXliDgmZM28LTPoF7yVklrLtOEFRQ=
+X-Received: by 2002:a05:620a:28c7:b0:6a0:5de3:e6 with SMTP id
+ l7-20020a05620a28c700b006a05de300e6mr17521955qkp.464.1652806857719; Tue, 17
+ May 2022 10:00:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220517034107.92194-1-imagedong@tencent.com>
-In-Reply-To: <20220517034107.92194-1-imagedong@tencent.com>
+References: <20220513224827.662254-1-mathew.j.martineau@linux.intel.com>
+ <20220513224827.662254-2-mathew.j.martineau@linux.intel.com>
+ <20220517010730.mmv6u2h25xyz4uwl@kafai-mbp.dhcp.thefacebook.com> <CA+WQbwvHidwt0ua=g67CJfmjtCow8SCvZp4Sz=2AZa+ocDxnpg@mail.gmail.com>
+In-Reply-To: <CA+WQbwvHidwt0ua=g67CJfmjtCow8SCvZp4Sz=2AZa+ocDxnpg@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 17 May 2022 09:57:56 -0700
-Message-ID: <CAADnVQLRmv107zFL-dgB07Mf8NmR0TCAC9eG9aZ1O4DG3=ityw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: add access control for map
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Menglong Dong <imagedong@tencent.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Tue, 17 May 2022 10:00:46 -0700
+Message-ID: <CAADnVQJ8V-B0GvOsQg1m37ij2nGJbzemB9p46o1PG4VSnf0kSg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/7] bpf: add bpf_skc_to_mptcp_sock_proto
+To:     Geliang Tang <geliangtang@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Geliang Tang <geliang.tang@suse.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        MPTCP Upstream <mptcp@lists.linux.dev>,
+        Nicolas Rybowski <nicolas.rybowski@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -70,127 +76,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 16, 2022 at 8:44 PM <menglong8.dong@gmail.com> wrote:
+On Mon, May 16, 2022 at 10:26 PM Geliang Tang <geliangtang@gmail.com> wrote=
+:
 >
-> From: Menglong Dong <imagedong@tencent.com>
+> Martin KaFai Lau <kafai@fb.com> =E4=BA=8E2022=E5=B9=B45=E6=9C=8817=E6=97=
+=A5=E5=91=A8=E4=BA=8C 09:07=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Fri, May 13, 2022 at 03:48:21PM -0700, Mat Martineau wrote:
+> > [ ... ]
+> >
+> > > diff --git a/include/net/mptcp.h b/include/net/mptcp.h
+> > > index 8b1afd6f5cc4..2ba09de955c7 100644
+> > > --- a/include/net/mptcp.h
+> > > +++ b/include/net/mptcp.h
+> > > @@ -284,4 +284,10 @@ static inline int mptcpv6_init(void) { return 0;=
+ }
+> > >  static inline void mptcpv6_handle_mapped(struct sock *sk, bool mappe=
+d) { }
+> > >  #endif
+> > >
+> > > +#if defined(CONFIG_MPTCP) && defined(CONFIG_BPF_SYSCALL)
+> > > +struct mptcp_sock *bpf_mptcp_sock_from_subflow(struct sock *sk);
+> > Can this be inline ?
 >
-> Hello,
+> This function can't be inline since it uses struct mptcp_subflow_context.
 >
-> I have a idea about the access control of eBPF map, could you help
-> to see if it works?
->
-> For now, only users with the CAP_SYS_ADMIN or CAP_BPF have the right
-> to access the data in eBPF maps. So I'm thinking, are there any way
-> to control the access to the maps, just like what we do to files?
+> mptcp_subflow_context is defined in net/mptcp/protocol.h, and we don't
+> want to export it to user space in net/mptcp/protocol.h.
 
-The bpf objects pinned in bpffs should always be accessible
-as files regardless of sysctl or cap-s.
-
-> Therefore, we can decide who have the right to read the map and who
-> can write.
->
-> I think it is useful in some case. For example, I made a eBPF-based
-> network statistics program, and the information is stored in an array
-> map. And I want all users can read the information in the map, without
-> changing the capacity of them. As the information is iunsensitive,
-> normal users can read it. This make publish-consume mode possible,
-> the eBPF program is publisher and the user space program is consumer.
-
-Right. It is a choice of the bpf prog which data expose in the map.
-
-> So this aim can be achieve, if we can control the access of maps as a
-> file. There are many ways I thought, and I choosed one to implement:
->
-> While pining the map, add the inode that is created to a list on the
-> map. root can change the permission of the inode through the pin path.
-> Therefore, we can try to find the inode corresponding to current user
-> namespace in the list, and check whether user have permission to read
-> or write.
->
-> The steps can be:
->
-> 1. create the map with BPF_F_UMODE flags, which imply that enable
->    access control in this map.
-> 2. load and pin the map on /sys/fs/bpf/xxx.
-> 3. change the umode of /sys/fs/bpf/xxx with 'chmod 744 /sys/fs/bpf/xxx',
->    therefor all user can read the map.
-
-This behavior should be available by default.
-Only sysctl was preventing it. It's being fixed by
-the following patch. Please take a look at:
-https://patchwork.kernel.org/project/netdevbpf/patch/1652788780-25520-2-git-send-email-alan.maguire@oracle.com/
-
-Does it solve your use case?
-
-> @@ -542,14 +557,26 @@ int bpf_obj_get_user(const char __user *pathname, int flags)
->         if (IS_ERR(raw))
->                 return PTR_ERR(raw);
->
-> -       if (type == BPF_TYPE_PROG)
-> +       if (type != BPF_TYPE_MAP && !bpf_capable())
-> +               return -EPERM;
-
-obj_get already implements normal ACL style access to files.
-Let's not fragment this security model with extra cap checks.
-
-> +
-> +       switch (type) {
-> +       case BPF_TYPE_PROG:
->                 ret = bpf_prog_new_fd(raw);
-> -       else if (type == BPF_TYPE_MAP)
-> +               break;
-> +       case BPF_TYPE_MAP:
-> +               if (bpf_map_permission(raw, f_flags)) {
-> +                       bpf_any_put(raw, type);
-> +                       return -EPERM;
-> +               }
-
-bpf_obj_do_get() already does such check.
-
-> +int bpf_map_permission(struct bpf_map *map, int flags)
-> +{
-> +       struct bpf_map_inode *map_inode;
-> +       struct user_namespace *ns;
-> +
-> +       if (capable(CAP_SYS_ADMIN))
-> +               return 0;
-> +
-> +       if (!(map->map_flags & BPF_F_UMODE))
-> +               return -1;
-> +
-> +       rcu_read_lock();
-> +       list_for_each_entry_rcu(map_inode, &map->inode_list, list) {
-> +               ns = map_inode->inode->i_sb->s_user_ns;
-> +               if (ns == current_user_ns())
-> +                       goto found;
-> +       }
-> +       rcu_read_unlock();
-> +       return -1;
-> +found:
-> +       rcu_read_unlock();
-> +       return inode_permission(ns, map_inode->inode, ACC_MODE(flags));
-> +}
-
-See path_permission() in bpf_obj_do_get().
-
->  static int bpf_map_get_fd_by_id(const union bpf_attr *attr)
-> @@ -3720,9 +3757,6 @@ static int bpf_map_get_fd_by_id(const union bpf_attr *attr)
->             attr->open_flags & ~BPF_OBJ_FLAG_MASK)
->                 return -EINVAL;
->
-> -       if (!capable(CAP_SYS_ADMIN))
-> -               return -EPERM;
-> -
-
-This part we cannot relax.
-What you're trying to do is to bypass path checks
-by pointing at a map with its ID only.
-That contradicts to your official goal in the cover letter.
-
-bpf_map_get_fd_by_id() has to stay cap_sys_admin only.
-Exactly for the reason that bpf subsystem has file ACL style.
-fd_by_id is a debug interface used by tools like bpftool and
-root admin that needs to see the system as a whole.
-Normal tasks/processes need to use bpffs and pin files with
-correct permissions to pass maps from one process to another.
-Or use FD passing kernel facilities.
+The above function can be made static inline in a header file.
+That doesn't automatically expose it to user space.
