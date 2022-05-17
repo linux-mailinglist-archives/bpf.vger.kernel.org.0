@@ -2,220 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9023152A9F0
-	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 20:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E232852AB4B
+	for <lists+bpf@lfdr.de>; Tue, 17 May 2022 20:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351830AbiEQSGg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 May 2022 14:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        id S237267AbiEQSyk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 May 2022 14:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352136AbiEQSGO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 May 2022 14:06:14 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C08D50B18
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 11:06:11 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id q4so18022277plr.11
-        for <bpf@vger.kernel.org>; Tue, 17 May 2022 11:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uIitL07LK0k850ajz6+8lfu5spWDwMgSk+A3BueQxNA=;
-        b=KHtt2vWHU6kZ9pH1SCH86CyKfw1zEp0NmXtgICisUwjK8zr7Insg5zZB4aeYbN4HAp
-         gcdRPVte0tTh9wp0OpzcFMKYxe9ecm+31v6RkScxkpx5mabf5tu33sSIBNLRVwFJqqfm
-         lzCQ0/ML22EDn8YkDrXIzskqt8JD7NWAJuTjOMCY8IVGllaaSKIQjH/ekiBxRZFkSYoX
-         lg5/FbF+pC9AgaqNNlW+nAUUv63Vj+GASvIK+PLE1qBLZ/HUe6qTs2G2WponrjNZewjI
-         +Q7oh5W0zk77vqryRwr3zbOmZhwPkawTikWYWdzD21/5MOO0dTU03aOGvsnEzfy1759e
-         RiyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uIitL07LK0k850ajz6+8lfu5spWDwMgSk+A3BueQxNA=;
-        b=Vf1BCGTsKnFBBZVrVXGIE0ZJJjRlSdyvsM+Gt4bYzG7mxgYU2bQCX0b7azzSsxJ9kr
-         Xd9ym1CX9j+3Lpen1KIFwJ3UjTtu+jm9aN0XpkyTjPMNwlg1KMPsqHGOXhhNkTJjnSzD
-         eC/xNMRWMtNDYYDXm8a/C/0vtaWolBbbasyV+dX8iFQthY1Fd4gMxQ3davH4BOfcOrGn
-         FegVkoiap2gmZzsRwig4Vi/HWiJp6vkWgoHCMnajH2xdxjCFkuWsDZtSNYllFbPq95wm
-         fIz1R1qumVe5pTZpDwrEddd9SeWEUieMaU58qRj+JhB4Iyr/etVxtl6N0KxS0eCbd/Bc
-         ROAg==
-X-Gm-Message-State: AOAM532f5S0kzZNd8NWL0wrzwAjJiPOD++bt4aVCUaTK7bRqmlDVCCgH
-        KPCSMYEQtwbWjhHkm0FbYD6usw==
-X-Google-Smtp-Source: ABdhPJyxTDE3qUWOdndVfYN9Y9POy917sjTZcXNmsHowuoVHsWMdu/gc3rF8V92A3Xa6ojAGOrEJTQ==
-X-Received: by 2002:a17:902:b413:b0:15e:e6a8:b3e with SMTP id x19-20020a170902b41300b0015ee6a80b3emr23390640plr.24.1652810770573;
-        Tue, 17 May 2022 11:06:10 -0700 (PDT)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id g11-20020a17090a7d0b00b001ded0506655sm1952086pjl.51.2022.05.17.11.06.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 May 2022 11:06:10 -0700 (PDT)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     andrii.nakryiko@gmail.com
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>,
-        "Song Liu" <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        "KP Singh" <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
-Subject: [PATCH v4] bpf: Fix KASAN use-after-free Read in compute_effective_progs
-Date:   Tue, 17 May 2022 11:04:20 -0700
-Message-Id: <20220517180420.87954-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
-References: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
+        with ESMTP id S234727AbiEQSyg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 May 2022 14:54:36 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B496E4ECEE
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 11:54:34 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 57DB224002C
+        for <bpf@vger.kernel.org>; Tue, 17 May 2022 20:54:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1652813672; bh=+krm7JhiFSG29lT7iRsdWJhy1rFKjxjyvi1VkFxfwio=;
+        h=Date:From:To:Cc:Subject:From;
+        b=g4wA9HnZQ0B9F7vkQAroVgmty93NESo6/hmvlck+463DiY4FnWSE6muFTk68FN+Dn
+         oqXJMLKB8m9oRnNhFNBZFBEMh48/QJkE1iIo51T7QRc8ba87fMnxGeJiqSoxbA3Pzs
+         Ctp+f9yuFSLPN/4rhNboVXYXCwUMcF4hAvJT8Tj15NkqcAq7VTpOyqsmeRBfRKIjGU
+         YNWchIlV86ok8wcMmrmqMras2N0jTuqzA+OUk0fJnLIXHUzeWcO+UAGXpPZHKAokdH
+         Hr4khGB98mfBZ1v3UHErktbeleFTsompdetWe9OE+DTCU+/2WZYji6yeVQQ7oCmVpw
+         llRpq6QiuEifw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4L2lfG2G6Tz9rxV;
+        Tue, 17 May 2022 20:54:30 +0200 (CEST)
+Date:   Tue, 17 May 2022 18:54:27 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 09/12] bpftool: Use libbpf_bpf_attach_type_str
+Message-ID: <20220517185427.tafxhqk7vplj6ie4@devvm5318.vll0.facebook.com>
+References: <20220516173540.3520665-1-deso@posteo.net>
+ <20220516173540.3520665-10-deso@posteo.net>
+ <CAEf4BzYXxSerQnw3U5SKU10HAbM1KrTj9z_DvX+tQqaq7+2CUQ@mail.gmail.com>
+ <a1a518b6-4006-7a65-178d-6100ada34a2d@isovalent.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <a1a518b6-4006-7a65-178d-6100ada34a2d@isovalent.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzbot found a Use After Free bug in compute_effective_progs().
-The reproducer creates a number of BPF links, and causes a fault
-injected alloc to fail, while calling bpf_link_detach on them.
-Link detach triggers the link to be freed by bpf_link_free(),
-which calls __cgroup_bpf_detach() and update_effective_progs().
-If the memory allocation in this function fails, the function restores
-the pointer to the bpf_cgroup_link on the cgroup list, but the memory
-gets freed just after it returns. After this, every subsequent call to
-update_effective_progs() causes this already deallocated pointer to be
-dereferenced in prog_list_length(), and triggers KASAN UAF error.
+On Tue, May 17, 2022 at 03:18:41PM +0100, Quentin Monnet wrote:
+> 2022-05-16 16:41 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > On Mon, May 16, 2022 at 10:36 AM Daniel Müller <deso@posteo.net> wrote:
+> >>
+> >> This change switches bpftool over to using the recently introduced
+> >> libbpf_bpf_attach_type_str function instead of maintaining its own
+> >> string representation for the bpf_attach_type enum.
+> >>
+> >> Note that contrary to other enum types, the variant names that bpftool
+> >> maps bpf_attach_type to do not follow a simple to follow rule. With
+> >> bpf_prog_type, for example, the textual representation can easily be
+> >> inferred by stripping the BPF_PROG_TYPE_ prefix and lowercasing the
+> >> remaining string. bpf_attach_type violates this rule for various
+> >> variants. In order to not brake compatibility (these textual
+> >> representations appear in JSON and are used to parse user input), we
+> >> introduce a program local bpf_attach_type_str that overrides the
+> >> variants in question.
+> >> We should consider removing this function and expect the libbpf string
+> >> representation with the next backwards compatibility breaking release,
+> >> if possible.
+> >>
+> >> Signed-off-by: Daniel Müller <deso@posteo.net>
+> >> ---
+> > 
+> > Quentin, any opinion on this approach? Should we fallback to libbpf's
+> > API for all the future cases or it's better to keep bpftool's own
+> > attach_type mapping?
+> Hi Andrii, Daniel,
 
-To fix this issue don't preserve the pointer to the prog or link in the
-list, but remove it and replace it with a dummy prog without shrinking
-the table. The subsequent call to __cgroup_bpf_detach() or
-__cgroup_bpf_detach() will correct it.
+Hi Quentin,
 
-Cc: "Alexei Starovoitov" <ast@kernel.org>
-Cc: "Daniel Borkmann" <daniel@iogearbox.net>
-Cc: "Andrii Nakryiko" <andrii@kernel.org>
-Cc: "Martin KaFai Lau" <kafai@fb.com>
-Cc: "Song Liu" <songliubraving@fb.com>
-Cc: "Yonghong Song" <yhs@fb.com>
-Cc: "John Fastabend" <john.fastabend@gmail.com>
-Cc: "KP Singh" <kpsingh@kernel.org>
-Cc: <netdev@vger.kernel.org>
-Cc: <bpf@vger.kernel.org>
-Cc: <stable@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
+> Thanks for the ping! I'm unsure what's best, to be honest. Maybe we
+> should look at bpftool's inputs and outputs separately.
+> 
+> For attach types printed as part of the output:
+> 
+> Thinking about it, I'd say go for the libbpf API, and make the change
+> now. As much as we all dislike breaking things for user space, I believe
+> that on the long term, we would benefit from having a more consistent
+> naming scheme for those strings (prefix + lowercase attach type); and
+> more importantly, if querying the string from libbpf spreads to other
+> tools, these will be the reference strings for the attach types and it
+> will be a pain to convert bpftool's specific exceptions to "regular"
+> textual representations to interface with other tools.
+> 
+> And if we must break things, I'd as well have it synchronised with the
+> release of libbpf 1.0, so I'd say let's just change it now? Note that
+> we're now tagging bpftool releases on the GitHub mirror (I did 6.8.0
+> earlier today), so at least that's one place where we can have a
+> changelog and mention breaking changes.
 
-Link: https://syzkaller.appspot.com/bug?id=8ebf179a95c2a2670f7cf1ba62429ec044369db4
-Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
-Reported-by: <syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com>
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
-v2: Add a fall back path that removes a prog from the effective progs
-    table in case detach fails to allocate memory in compute_effective_progs().
+Thanks for the feedback. This sounds good to me. I can make the change. But do
+you think we should do it as part of this stack? We could make this very stack a
+behavior preserving step (that can reasonably stand on its own). Given the
+additional changes to tests & documentation that you mention below, it would
+make sense to me to keep individual patches in this series similar in nature.
+I'd be happy to author a follow-on, but can also amend this series if that's
+preferred. Please let me know your preference.
 
-v3: Implement the fallback in a separate function purge_effective_progs
+> Now for the attach types parsed as input parameters:
+> 
+> I wonder if it would be worth supporting the two values for attach types
+> where they differ, so that we would avoid breaking bpftool commands
+> themselves? It's a bit more code, but then the list would be relatively
+> short, and not expected to grow. We can update the documentation to
+> mention only the new names, and just keep the short compat list hidden.
 
-v4: Changed purge_effective_progs() to manipulate the array in a similar way
-    how replace_effective_prog() does it.
----
- kernel/bpf/cgroup.c | 68 +++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 60 insertions(+), 8 deletions(-)
+Yes, that should be easily possible. I do have a similar question to above,
+though (as it involves updating documentation for new preference): can/should
+that be a separate patch?
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 128028efda64..6f1a6160c99e 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -681,6 +681,60 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
- 	return ERR_PTR(-ENOENT);
- }
- 
-+/**
-+ * purge_effective_progs() - After compute_effective_progs fails to alloc new
-+ *                           cgrp->bpf.inactive table we can recover by
-+ *                           recomputing the array in place.
-+ *
-+ * @cgrp: The cgroup which descendants to travers
-+ * @prog: A program to detach or NULL
-+ * @link: A link to detach or NULL
-+ * @atype: Type of detach operation
-+ */
-+static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
-+				  struct bpf_cgroup_link *link,
-+				  enum cgroup_bpf_attach_type atype)
-+{
-+	struct cgroup_subsys_state *css;
-+	struct bpf_prog_array *progs;
-+	struct bpf_prog_list *pl;
-+	struct list_head *head;
-+	struct cgroup *cg;
-+	int pos;
-+
-+	/* recompute effective prog array in place */
-+	css_for_each_descendant_pre(css, &cgrp->self) {
-+		struct cgroup *desc = container_of(css, struct cgroup, self);
-+
-+		if (percpu_ref_is_zero(&desc->bpf.refcnt))
-+			continue;
-+
-+		/* find position of link or prog in effective progs array */
-+		for (pos = 0, cg = desc; cg; cg = cgroup_parent(cg)) {
-+			if (pos && !(cg->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
-+				continue;
-+
-+			head = &cg->bpf.progs[atype];
-+			list_for_each_entry(pl, head, node) {
-+				if (!prog_list_prog(pl))
-+					continue;
-+				if (pl->prog == prog && pl->link == link)
-+					goto found;
-+				pos++;
-+			}
-+		}
-+found:
-+		BUG_ON(!cg);
-+		progs = rcu_dereference_protected(
-+				desc->bpf.effective[atype],
-+				lockdep_is_held(&cgroup_mutex));
-+
-+		/* Remove the program from the array */
-+		WARN_ONCE(bpf_prog_array_delete_safe_at(progs, pos),
-+			  "Failed to purge a prog from array at index %d", pos);
-+	}
-+}
-+
- /**
-  * __cgroup_bpf_detach() - Detach the program or link from a cgroup, and
-  *                         propagate the change to descendants
-@@ -723,8 +777,12 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
- 	pl->link = NULL;
- 
- 	err = update_effective_progs(cgrp, atype);
--	if (err)
--		goto cleanup;
-+	if (err) {
-+		/* If update affective array failed replace the prog with a dummy prog*/
-+		pl->prog = old_prog;
-+		pl->link = link;
-+		purge_effective_progs(cgrp, old_prog, link, atype);
-+	}
- 
- 	/* now can actually delete it from this cgroup list */
- 	list_del(&pl->node);
-@@ -736,12 +794,6 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
- 		bpf_prog_put(old_prog);
- 	static_branch_dec(&cgroup_bpf_enabled_key[atype]);
- 	return 0;
--
--cleanup:
--	/* restore back prog or link */
--	pl->prog = old_prog;
--	pl->link = link;
--	return err;
- }
- 
- static int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
--- 
-2.36.1
+> Some additional notes on the patch:
+> 
+> There is also attach_type_strings[] in prog.c where strings for attach
+> types are re-defined, this time for when non cgroup-related programs are
+> attached (through "bpftool prog attach"). It's used for parsing the
+> input, so should be treated the same as the attach list in commons.c.
 
+Good point. If we want to use libbpf text representations moving forward then I
+can adjust this array as well. Do I assume correctly that we would want to keep
+the existing variants as hidden fallbacks here too, as you mentioned above?
+
+> If changing the attach type names, we should also update the following:
+> - man pages: tools/bpf/bpftool/Documentation/bpftool-{cgroup,prog}.rst
+> - interactive help (cgroup.c:HELP_SPEC_ATTACH_TYPES + prog.c:do_help())
+> - bash completion: tools/bpf/bpftool/bash-completion/bpftool
+> 
+> Some of the tests in
+> tools/testing/selftests/bpf/test_bpftool_synctypes.py, related to
+> keeping those lists up-to-date, will also need to be modified to parse
+> the names from libbpf instead of bpftool sources. I can help with that
+> if necessary.
+
+Sounds good; will do that here or as a follow-on (and reach out to you if I need
+assistance), depending on your preference as inquired above.
+
+Thanks,
+Daniel
