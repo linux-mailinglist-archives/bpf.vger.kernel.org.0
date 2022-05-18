@@ -2,73 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C60B52BC6A
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 16:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C35C52BC3F
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 16:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237976AbiERNe5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 09:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
+        id S237956AbiERNex (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 09:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237966AbiERNez (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 09:34:55 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9468615E600
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 06:34:54 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24IBn1Bk011872;
+        with ESMTP id S237966AbiERNev (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 09:34:51 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6F715A77A
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 06:34:49 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24IBmnq8001099;
         Wed, 18 May 2022 13:34:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : content-type :
  mime-version; s=corp-2021-07-09;
- bh=HsIE4VoHEmHhJ8h/FcH6/fQLpk/GcJAoUWDTtYkfjI0=;
- b=P+miHpbYxUaxZXfZLv1g9Our70+rNb7dQgCakIh7LqNmgwLELpbWIC4E0KrbNGadcGGb
- hxhD0E64SM6MOeMIsH2h7W15wLJjy1RXytI1d1eGtEe1mOG7o/gxpzA4oabjfzKzMa2Y
- tUgZzkn5j3S4bNeQV3boSRYks7fDoQoDiXjQ5qt2D1tMLHB5NCMDf6YGQbpYLawG6wKf
- ShM9Y06GDjqhkxvjYSLEKZNfIkyUNSfEClKf3GeWvPHtgDs7+D1PHVPRUY4kfTm+axF1
- z69bcL/JsChEP4wF202gi+X4m9ww9iNBF0/fL8UNsj3229CrH5UROzwyp6hrlqVRIf+P fA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3g2310sb0h-1
+ bh=zgv1SrWoUDdj4R1R5HEtgQy7YoW3falybi2I9MIDJIU=;
+ b=rVyIe3URvG0ky0xm/80ZpCnmrvqHFDCjWaB+tMcxZ3DX6/0i93O3y03adWa14Foja7jx
+ x66R7Q+CfInSt+JTy/23fyKog52apUZIrjibhsQmnkyjfblv702YSYFX2Dfy2p714Ftc
+ cj8i0L053e0u3+oaA4wZwcem3DRh2u52I1/neSld+TGD9vY7XTx1dZnx2uzN9JfJ1wOW
+ 4pJU9Yk3CZ3s5CV6jVhhEfYI81wUFMXL7bZGCkW99P/PI5WSmbjzT2nqLOEMj8v1odiF
+ 6jYdIYhovAm1L38uhGUX+UjictTtxiHBck2r+AIkn2uts8uZQ4NHYXuuLsCVSmEIUWmd ng== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3g241s98rc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Wed, 18 May 2022 13:34:31 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 24IDVnHU008066;
-        Wed, 18 May 2022 13:34:30 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3g22v4d5r0-1
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 24IDU0OG020658;
+        Wed, 18 May 2022 13:34:31 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2041.outbound.protection.outlook.com [104.47.74.41])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com with ESMTP id 3g22v9tadm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 May 2022 13:34:29 +0000
+        Wed, 18 May 2022 13:34:31 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C22AenDVlVocjmZwIxTD4d85msgRbQWmA6QFrQ9Iow4oFTyv1F/pJ9luRSvGDr36Mq8cn2egzl5oU6625efX3s76zUcTn4Yg2jF534nMDi74AtHnMikoQyTHJKtzVoP1oGurdNIdwMymq2E0VP9EcMoOI2e8kJW6S20ri6khRIveGpAzkW7F/28muKnljSvknSKy5dUpB2GlLrj52wjud0jRY7dkpHwwv9hIe/cOROTxsgAALJSfJmQDIQixUUgk+rBHI4UHGnBd99seJb1TQ/GEAXfX8/cP3MiIIVgRxp+2jlLVnYQG74HkzH+KndfK/zJ7BGlprcfSJAhnmOq8MQ==
+ b=RO9VZAlPsYZkC0cpksfvEYzLGgJQFlEasPf2Iu1/moSPZ8Xi8g4aV7Co72YewAnUb3f+9+YUFkxHbxKUCKjPXEd3eqSpiif04fgGyq3g8ifikrCcDA33biur1VGGZZMdBZUBDMN/jkVYJ0yj3r9K6ufjy6Mr5tPdTu6zwNBHxtQS9/IRhfItmV2ZTBWJeGGZdUX7BLk4LeNE1jsjI+zw1aGU6RwP5IP39GyDSOXujeu2ky1LHOWMrioAXpwgGbMAjFPbsPw6G4yNCk1gb7a7b4w2joLolYHJZpiQELlz+fwauNj77P38LJtScagAIMQ4LUWYpTpxZQBGlgmOHqxXgg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HsIE4VoHEmHhJ8h/FcH6/fQLpk/GcJAoUWDTtYkfjI0=;
- b=QS9nAQI5P9+OupuGNGg4ZuiZLb5Vdz+1zdcnjnhwfVX0wYUeQiVvhCLxgu7x1GZCYRtcwhOu6kLI9nSEtMejb20vnSlPa6e0fpxu8Gkt0B05lIEBnV2fJIbl1rS0PvN7A3CuUWeVePjTpakVs76htoNz6vEBctra7O1X/k435WAT57siZZTrmhtzWamf16Pu+IsAaPL2CubGauKugIYmfsvlg0bGYYyvHlMEn7umAHvqgS/bEU0AVayr0uaYPFWm3ESIONaTpHfsO9nRK/Han29WCHkwAhqB0GSBAqANbodM/x3R/cKUJNF7+kap2Jdw5wEUNY1mXs+z30kO1TJZ+A==
+ bh=zgv1SrWoUDdj4R1R5HEtgQy7YoW3falybi2I9MIDJIU=;
+ b=kITrnQce3us52sZ+wucl3t2SPbni9X41675WXhrvWlxojvK3Hg4qKTa7qZdqZ5IN0Jbw0By+i4OzlLwa/yom87XOCqkib+iU9KmvsTLnkRGe1EOq1PTvIEg8HpOIwXqdYKXQsJmPpYBL3Rdj5tCEXvNrWpq7DDMJS27WakBr3evKaloIkhSmgc2l9yaBJoReqlFnPlUh4cxIJvYDMDLfkTbNNbzJqHbYkDc1b2xdbMifGrgXw2uvOHhRCN90Q2M/OD0Bs9LPb2l6chSiDrUoHWwWdNdWAvmd81iZcefrgmRblsP+hCZhX/0Uoc/VYFsJAl6AVr2ENPzetoppSfKnlw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HsIE4VoHEmHhJ8h/FcH6/fQLpk/GcJAoUWDTtYkfjI0=;
- b=C7aDpRd+XhGkGE/IWZoJkxeXP/hFEvMcWSLCkjgXOztnQIyIE8HfNhBAa1HlpXOnDtytWDPI7K41ygjibHwfCTAm+S7i5lVt+qXkw6VmzcYi0V/6QfWDUU8qvPrOKvydV7Hm/7xFsTs4h5haQa650Yfpqz6PZsXbaG56v65Ve2E=
+ bh=zgv1SrWoUDdj4R1R5HEtgQy7YoW3falybi2I9MIDJIU=;
+ b=P/M9awqEoCZtOJVnWE4/V9poDbgke8y3PWdt1aSck9/oGmD/C3+FdqKLUbLeT+oFuV5IU9uahiVSOwbfT6vMxVS53nRGWdPqsm6CrN6PEgJWln70EeTrSrSsw7pgLEYBiy4BeTQ+gF/LpCg7d8fFjVoObjg+mJpfUQoV4qQYK4o=
 Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by SJ0PR10MB5836.namprd10.prod.outlook.com (2603:10b6:a03:3ed::11) with
+ by CH2PR10MB4039.namprd10.prod.outlook.com (2603:10b6:610:10::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.20; Wed, 18 May
- 2022 13:34:27 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.13; Wed, 18 May
+ 2022 13:34:29 +0000
 Received: from BLAPR10MB5267.namprd10.prod.outlook.com
  ([fe80::6969:7923:5c22:a739]) by BLAPR10MB5267.namprd10.prod.outlook.com
  ([fe80::6969:7923:5c22:a739%4]) with mapi id 15.20.5273.015; Wed, 18 May 2022
- 13:34:27 +0000
+ 13:34:29 +0000
 From:   Alan Maguire <alan.maguire@oracle.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org,
         keescook@chromium.org, bpf@vger.kernel.org
-Subject: [PATCH v3 bpf-next 1/2] bpf: refine kernel.unpriviliged_bpf_disabled behaviour
-Date:   Wed, 18 May 2022 14:34:20 +0100
-Message-Id: <1652880861-27373-2-git-send-email-alan.maguire@oracle.com>
+Subject: [PATCH v3 bpf-next 2/2] selftests/bpf: add tests verifying unprivileged bpf behaviour
+Date:   Wed, 18 May 2022 14:34:21 +0100
+Message-Id: <1652880861-27373-3-git-send-email-alan.maguire@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1652880861-27373-1-git-send-email-alan.maguire@oracle.com>
 References: <1652880861-27373-1-git-send-email-alan.maguire@oracle.com>
@@ -78,139 +78,496 @@ X-ClientProxiedBy: AM0PR06CA0078.eurprd06.prod.outlook.com
  (2603:10b6:208:30e::22)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d696b4d9-57c8-46bb-3697-08da38d32133
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB5836:EE_
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB5836761ED04592696846972EEFD19@SJ0PR10MB5836.namprd10.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: f1e6c1ad-9dd9-4a59-a48a-08da38d32258
+X-MS-TrafficTypeDiagnostic: CH2PR10MB4039:EE_
+X-Microsoft-Antispam-PRVS: <CH2PR10MB40391BDF2EA1198012D61397EFD19@CH2PR10MB4039.namprd10.prod.outlook.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Doz+1qwaXhxngKuFCEdYjyBJEWPWx1+47Pka2BelamJLGjkQ9FVYgTSH2CdFD/WjhW9Wy8PMFRNu4K2noacDl/J8PtIZs3CMtdCtf+PmuneOLp7BL1PPYIUj576uJDA+j80CBaPk3qCj0+yLAP/5WFAc62ro0CZjSSm/29ZnPvBq+mhENJe3MJPFAUA5H1We2xjf1tTdZjjIEs7JGsCAhhRn8/9GLjm1ZbdwQvqLU9XuF0mSI33A0P7vaLTKjDtumDPZRjLW1+KDAMS7Prq/wX07maEPDHJWwyiTth6Cete+eSEEbtHriYjvnaD5urovlGtHm6de5DkdVdH6WTzQg8YdWzzNXwrFQLhtoJz1z4y+ThtBnHdaJWPqhpWvmfscr9eHB50LiUiO3A9pG8hNMt7v/jOPvU9gWGs6eMRf85bjwp57C23Gml+miTCjumb0zxy4I8csmu05ooTlUVs7wLenlEwGdXlNCT+Am/wTTscCpGV0l+uITMqUvAIYAZg7nVPj/MwMopBdKncJk2yY8KzsGsusfg0ksMnasACvbW56SyPM4E2Blyng2wvrWWZEGJn9X3jMkL9TMoR60PUjwP4gOapznr8OopU4YQXjUKbIs4zUk+qnrmYUZYFfT7d8/w8qH2h6uzXT4ZqHRxYKZ1Gvwk6ZYg9OWnc+6DBIEsU4kgUV70nV6IX5HcTerE6EE7XNvEcd8/i65+uF232BWQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(86362001)(316002)(36756003)(66476007)(6666004)(4326008)(66946007)(186003)(7416002)(38350700002)(2906002)(6486002)(508600001)(8676002)(6506007)(83380400001)(38100700002)(66556008)(2616005)(8936002)(44832011)(5660300002)(26005)(6512007)(52116002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: EiYijHkPWA7Vd3QnSDCXMpcgxdrKG7to1+X/IOCAdRSoouLk0TPPKzbL+aYEBLCoS1t6B3ZQ4dWhFNNIjtnIKnHZ97e9qCDdE3M67qHU9XyatvsfFCVKlWa9JVYnQ56vYUAjLidUDADnjzcayaTQLyIxIHsIILhM8KYFPcxJ50YebJODdWJiskgv7BGAi+6F2MZCU+D6xxdwVwN5JV6Z5x6FdUUcBE3/k0vcKlnJvmtZKCxFzQJybWCWrTOHvx2eIQKZJXHB/yxEt+WsESDN9XmDj8e86IpeIH8lPqaJt8n4FV6FlpTN+EzKD3Qw8wvfvjmPyPB/v8nvEGKtjj8UjRJq3Ar5h4RPaDDL8A2gadLCCMtn8EzphScmBjdCQK195x6NPDiIbzVxPNRZjlzWpC642u2VV21waEGEch3k+EwJU0p1t3PUIZNGyP87roMkPiIqBVtRTXFvl0UzAHwNCCrgzBIQNA2cPLW2r/n2saaoc84znj0dQEr9+Za6wZJ7Oesok3gMsi2s0O5VMK05W0q2kCeO9pFJqO5ojDN2gPfpdzmGSUqTMeZuikr4zOj1C97Ze4plBBBfEGuIyDtVfb+/jVnP/MOroD+sjkUyTGzsG89/SLTAZELc+A7KNS35l0u5gOQVzpa191ScQxQOwoQosFYnKX3WZa3G1/V/kcmOkfV/S5x8xQjxnixQcr3wakR/rVHMpqMguuk80Ex1EA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(38350700002)(38100700002)(5660300002)(7416002)(83380400001)(186003)(30864003)(2616005)(36756003)(316002)(26005)(6512007)(2906002)(15650500001)(6486002)(66476007)(52116002)(6666004)(66946007)(66556008)(8936002)(6506007)(86362001)(4326008)(8676002)(508600001)(44832011);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+el0+2PwQtCdVdeCZf1KM7tlgC/hSchVPJaIJqH8nkcaodBtZufpVrMCRO4v?=
- =?us-ascii?Q?e9o9yiEgfR58/qK4tkbT8YMLFOjXaI8K89cGAE9z+KIetNNa6taI2oDnHBqE?=
- =?us-ascii?Q?/SrpqNsHWz/9fWE6n3UAH88r9Ko7/6drN1W8EaNSYq9sbEvmu+EtDitYSsx7?=
- =?us-ascii?Q?sAoQgwAOwGNhxu0ws/wcfuxUj3GoUj/dLxCYh4JdwLBaRHYLw/KOMjs4XeMP?=
- =?us-ascii?Q?q5lQqclqcZZ0N3yMjPkZwxKe+1b6I2O0/RwE6Ft6OodXYy9NFpVl4Yr6b43y?=
- =?us-ascii?Q?MLaL3P8IjNaStAK2JpZpPYIJ6heYS2A3ymhmfYNpGA75a2sd4LDnU5u46clz?=
- =?us-ascii?Q?N+3xqufT/f/dqY9w+5OGSAGizAI8XOQ22w0mAV4itcv7UlWRinsELthMpZ85?=
- =?us-ascii?Q?jxj8F4rkj/P4gZh4rpL+d71sFt8XJXwlSVzI6dz0jMZqWqyRlcaDM5YR9adN?=
- =?us-ascii?Q?etpbHymZSehVv9q+anHbZ4J8s+nBIgvgvo1pH6TXq0TZQWHtdx9+1N4s4zeX?=
- =?us-ascii?Q?38IFD7NN3A4NN04YQdDjkN7PsX4wKD/kP4dm9F1iUbxYzzQf90e3r6BuIT8U?=
- =?us-ascii?Q?hiFs2Xx0kk35jXhKg4EjtCYcZ7aklSlftAIuQAtK/AZ7jB8pL3qt+ygAPN0T?=
- =?us-ascii?Q?Dl7Pd/ZllNm7SY2cF3iK12EV2myvgpCI186DRQW7oBhBk5+lupO9zXM829lc?=
- =?us-ascii?Q?8JESS1xkaim/eyYvrghBFbabElPxTpBVGNpvQrPkitWxKz5ZZMOCiIQt0H1n?=
- =?us-ascii?Q?fcHN8YGgugacqhjD3Ag0QOnSznTPuffcNeELnOMl29rVyVc1BlsNmSZ+VwLe?=
- =?us-ascii?Q?456NCp4qpnaKNfYWL2voSbCXli9roXjE+TnLyNTJrU3zuCWJKF/0Yb4eRpub?=
- =?us-ascii?Q?pcV33ORc0fWzbAnU6toR72wtfNcqUfM0s5ngdZI6ffTR5V0tEDqoWKjbz5X3?=
- =?us-ascii?Q?1ZdOaKcO/itDS+Pc8hC5WxULwcWluDrgKAc02aWIJ9qFnkS/An6+pENnJ+aN?=
- =?us-ascii?Q?8BQwimzOP7FqgchMvsO2NmVw4tsT+HJoCTlO5Uh5YBjh1pB07U6m0RI2PW99?=
- =?us-ascii?Q?HkG1GT+XXF1E3MDtp1h3lSQH5HsXvw4Q13O8l/hpstyCV/ulpnnMviidKEoz?=
- =?us-ascii?Q?o+jTEE3WmElYLZHrQUSsWfToQDtYE/sJ0GzqtzzWxuUcmnyJiCOtB40fdMG1?=
- =?us-ascii?Q?U5yWhFXyq0f9YwbJ5B0JhPXlrHtcUYAU73m0WeZOyf3NZaeKDJGjNT78J336?=
- =?us-ascii?Q?zPc3D9roRJMaKRz6KmZZq4/uCEGgyMrqHoDRkv2MYOmLfHla+7dPLa3ggaXn?=
- =?us-ascii?Q?myRv93ZWCqXiyOF234xxlI6wGNdnmWUimVemgDItXJ6vnDt2OHUgjlSPqDRb?=
- =?us-ascii?Q?VQYjpWAG7PU2hrL02Xp8S6Ve+oORmjSHfYPkI8PG0qnFa5bN3FqsMQTylgwm?=
- =?us-ascii?Q?GkRD48KZRa8Q/I/EefBARfkhmUbEQWWsJ6Sj+ZPbeud8OzmbEDSrT/JHL7mn?=
- =?us-ascii?Q?BpJHu4fSnbsiu7tGMI29zLdJHEx3R2QeOrfUNcb/ioxEYyPM5iNpQwGF9/f7?=
- =?us-ascii?Q?S1yippQsco7NlWnodkxBlWKc6iDHUwVqVKPrqAlbMd695rwsoWEIfmWBLtPn?=
- =?us-ascii?Q?SydUcdPrXDj1pKLHhkAkhLp11t+TlqdpBQGiCEhDpx16kS+F32PsgiXxaphm?=
- =?us-ascii?Q?WerprZH9dqBJGhuGhIOdBOVEmy+d9O5Mw4qmw1eKoAsNMNcGFosUfgACy9V5?=
- =?us-ascii?Q?y0Bcwdplxa2PW3mEEOBFNp9HVfYz10A=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QLA/PT7FWJFHVyVjnzDAuQSgG1UaFvbl81e+7ztgyQe4+9Jc4Be90Oo6JjBO?=
+ =?us-ascii?Q?3tulYlk9t4pOGd4CgAkCX/nq+l429gFoq1WLXkRqDWd9iD4WyUnpWqELg5jg?=
+ =?us-ascii?Q?Bg/PTz5X9TpwyysJVEr1tV7uBnDG3wF+reSCLoRM+MeixMLs5/miAPqsnyZQ?=
+ =?us-ascii?Q?GYXdLHCEMMflFcEKC4+kJ/Ipf/7miknDfcx5aj6p+b52XgAtTytAQfv9rxo+?=
+ =?us-ascii?Q?ve0LUmqzDzPvgANqPG5KDpNXLh4e/2JAKN5/MrlW9n/bBCXV1GE6mSfV2dcl?=
+ =?us-ascii?Q?f/zJ/JK4SaaQ+jqu/LDAjIC4B7a9UgCW+SX7XPzHxkPVwevhrzu7D/5P4zOq?=
+ =?us-ascii?Q?Fbew5bEySPEbleeBI1Z5tCZ5TXTh+BENvr5EiRjeyqIi7cxkwyX+c87u2X7k?=
+ =?us-ascii?Q?R+lU+IAjseWALc3DjUM8iSGStjSb0wFLPaWY1WQPDEat5tPqYU12ApbgOvu5?=
+ =?us-ascii?Q?KeVTQA7E8UJ9597Rv8dIarD3SLm99SSX6y5l/n4GkcFalmX6fAwuf1IkutIc?=
+ =?us-ascii?Q?zi+ri5GBCvykc3bVVyp+yp3UyGCdkRFIlQXown/TnwNnH3frjhiZLT5RqrMJ?=
+ =?us-ascii?Q?aQxmwRgnn6HjqGLhWfHHGXVglk3wwPuyQf0BqEakIlrx8G0vF+V79I4hVgSF?=
+ =?us-ascii?Q?XCdsRObcYDaWCVdUTg75+EQSOkJpmq/FnyZLpg2RS9yvWX29v0VgmGvKHEGb?=
+ =?us-ascii?Q?o0werjoAE2Dj+RmUIpLmw+Pbi26rNb9f6gps7eTwiExtKdsjoChEMqDUrfTx?=
+ =?us-ascii?Q?KZ3uiNYtseTb2sXS5MhiEYltwb8VFs/NKVwmH2Rm3oDDoqDv1U3gpc1gnXMa?=
+ =?us-ascii?Q?t+SA+C3QJrfnuzpMmFFWJpBGBVWQ3kiDomn7dAdhFPiQ9fvRQR7lHmf6tYLX?=
+ =?us-ascii?Q?wHxkTJBRvcCIXNQYk7ircyQqxt+bWOb6mDTjiJuDD947LQRe/RP9dulqGHNE?=
+ =?us-ascii?Q?ZhXJD5V2CJ4i8VzuBADW68FIKDWCbQoutCNw6iOFAhnZOUQnK0/Lt+K9u1Ep?=
+ =?us-ascii?Q?8zn8w18kxDV2NTT7hfujOamJVpkGEm7nJHqvsoB9m/M3OADC2LMyhSw67kQY?=
+ =?us-ascii?Q?Xg9G8vQ5YbyTnXZp7bHFYOTZRFmCXOs//bnCucTJGFpVSXaYmtr+9jCtFK9w?=
+ =?us-ascii?Q?LKV98CeyBmvarLVA4IVJeYN4A6dQUNj4Q8WfOSQkdIWJWCwHkp4G7RMKo/mC?=
+ =?us-ascii?Q?iS3DOnYBj8edNl0cWSJqKD7DBUPvkMLgBOIifVWYl7sg7d6+kCvwhn1WT5AL?=
+ =?us-ascii?Q?uF+njX5sMITb+5qpS+DJmxX+0S0z95Bm5AUOA26UGRi05E+tvDmU2sJxN+aX?=
+ =?us-ascii?Q?p7UBgthzuD6CQVUVol0410dy7fRpf90zlUVjqzBD81WiiPC0e0BFckocfAWx?=
+ =?us-ascii?Q?/s6IrXnCqgfLXtAayO7XCWd6pupvR9DcZK8tZcYgmnUzI0fkaYPx8cPKMQsL?=
+ =?us-ascii?Q?b87gTYKc1iG/EyQdPLILrCKapQX2WRT78/+0fMNh92bH/PlzgR0x1OpF7FmL?=
+ =?us-ascii?Q?ZbCxlf+Pxs4AMfK4Pqd22R4VDwB4AcIZ8g0eHz7c8qRNzz4fsvOvXuN/bQ31?=
+ =?us-ascii?Q?1ktogmYaK/BYbbn7VIFtXT5sAPuBWFKSapcXJyuGbMmduygFaE+ajR3WMAGa?=
+ =?us-ascii?Q?kxZt14qn2X0LdeMNtYhp0KkGbVy/XLZK+IFx7YOEZQN4/AJhmddStGxr7pNW?=
+ =?us-ascii?Q?QNHyCtSqw9dl1bhhAhrfzZHU72qxsO6uKdh69qN/6B3q8UXsBTbevYxSFWAm?=
+ =?us-ascii?Q?Ap3PZR1/rbZw/qoezTPGVyrzs5rR4pQ=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d696b4d9-57c8-46bb-3697-08da38d32133
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1e6c1ad-9dd9-4a59-a48a-08da38d32258
 X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2022 13:34:27.6564
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2022 13:34:29.3085
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jxuQBX9UW2di3UPIZJAQfJwv+FBHTL48g6oGYx3IqC5N69qrbek9qbS56jWoqCk1KEzHXSDHVlrufWEvEV2L+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5836
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8auDdpGF3/SgLDYxf5dR3sXY7czNf85M03RPe9MDb14hqMBoMNgxrF4RbHiSGFttyuZoFFvnvg6W3l9Id8ePAw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4039
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.486,18.0.874
  definitions=2022-05-18_04:2022-05-17,2022-05-18 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 suspectscore=0 malwarescore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2205180079
-X-Proofpoint-ORIG-GUID: H7xsahR_6UM0yHlhn71VEUJ-hZeCkcdk
-X-Proofpoint-GUID: H7xsahR_6UM0yHlhn71VEUJ-hZeCkcdk
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2205180079
+X-Proofpoint-GUID: vLc4t9sP0TfcS4NBQ4Xg9EcBmU3-An6f
+X-Proofpoint-ORIG-GUID: vLc4t9sP0TfcS4NBQ4Xg9EcBmU3-An6f
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With unprivileged BPF disabled, all cmds associated with the BPF syscall
-are blocked to users without CAP_BPF/CAP_SYS_ADMIN.  However there are
-use cases where we may wish to allow interactions with BPF programs
-without being able to load and attach them.  So for example, a process
-with required capabilities loads/attaches a BPF program, and a process
-with less capabilities interacts with it; retrieving perf/ring buffer
-events, modifying map-specified config etc.  With all BPF syscall
-commands blocked as a result of unprivileged BPF being disabled,
-this mode of interaction becomes impossible for processes without
-CAP_BPF.
+tests load/attach bpf prog with maps, perfbuf and ringbuf, pinning
+them.  Then effective caps are dropped and we verify we can
 
-As Alexei notes
+- pick up the pin
+- create ringbuf/perfbuf
+- get ringbuf/perfbuf events, carry out map update, lookup and delete
+- create a link
 
-"The bpf ACL model is the same as traditional file's ACL.
-The creds and ACLs are checked at open().  Then during file's write/read
-additional checks might be performed. BPF has such functionality already.
-Different map_creates have capability checks while map_lookup has:
-map_get_sys_perms(map, f) & FMODE_CAN_READ.
-In other words it's enough to gate FD-receiving parts of bpf
-with unprivileged_bpf_disabled sysctl.
-The rest is handled by availability of FD and access to files in bpffs."
+Negative testing also ensures
 
-So key fd creation syscall commands BPF_PROG_LOAD and BPF_MAP_CREATE
-are blocked with unprivileged BPF disabled and no CAP_BPF.
-
-And as Alexei notes, map creation with unprivileged BPF disabled off
-blocks creation of maps aside from array, hash and ringbuf maps.
-
-Programs responsible for loading and attaching the BPF program
-can still control access to its pinned representation by restricting
-permissions on the pin path, as with normal files.
+- BPF prog load fails
+- BPF map create fails
+- get fd by id fails
+- get next id fails
+- query fails
+- BTF load fails
 
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 Acked-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/bpf/syscall.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ .../bpf/prog_tests/unpriv_bpf_disabled.c      | 301 ++++++++++++++++++
+ .../bpf/progs/test_unpriv_bpf_disabled.c      |  83 +++++
+ 2 files changed, 384 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_unpriv_bpf_disabled.c
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 72e53489165d..2b69306d3c6e 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -4863,9 +4863,21 @@ static int bpf_prog_bind_map(union bpf_attr *attr)
- static int __sys_bpf(int cmd, bpfptr_t uattr, unsigned int size)
- {
- 	union bpf_attr attr;
-+	bool capable;
- 	int err;
- 
--	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
-+	capable = bpf_capable() || !sysctl_unprivileged_bpf_disabled;
+diff --git a/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c b/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
+new file mode 100644
+index 000000000000..ac51193a30a7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
+@@ -0,0 +1,301 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022, Oracle and/or its affiliates. */
 +
-+	/* Intent here is for unprivileged_bpf_disabled to block key object
-+	 * creation commands for unprivileged users; other actions depend
-+	 * of fd availability and access to bpffs, so are dependent on
-+	 * object creation success.  Capabilities are later verified for
-+	 * operations such as load and map create, so even with unprivileged
-+	 * BPF disabled, capability checks are still carried out for these
-+	 * and other operations.
++#include <test_progs.h>
++#include <bpf/btf.h>
++
++#include "test_unpriv_bpf_disabled.skel.h"
++
++#include "cap_helpers.h"
++
++#define ALL_CAPS	((2ULL << CAP_LAST_CAP) - 1)
++
++#define PINPATH		"/sys/fs/bpf/unpriv_bpf_disabled_"
++#define NUM_MAPS	7
++
++static char *map_paths[NUM_MAPS] =	{ PINPATH "array",
++					  PINPATH "percpu_array",
++					  PINPATH "hash",
++					  PINPATH "percpu_hash",
++					  PINPATH "perfbuf",
++					  PINPATH "ringbuf",
++					  PINPATH "prog_array" };
++static int map_fds[NUM_MAPS];
++static struct test_unpriv_bpf_disabled *skel;
++static __u32 prog_id;
++static int prog_fd, perf_fd;
++static __u32 got_perfbuf_val;
++static __u32 got_ringbuf_val;
++
++static int process_ringbuf(void *ctx, void *data, size_t len)
++{
++	if (ASSERT_EQ(len, sizeof(__u32), "ringbuf_size_valid"))
++		got_ringbuf_val = *(__u32 *)data;
++	return 0;
++}
++
++static void process_perfbuf(void *ctx, int cpu, void *data, __u32 len)
++{
++	if (ASSERT_EQ(len, sizeof(__u32), "perfbuf_size_valid"))
++		got_perfbuf_val = *(__u32 *)data;
++}
++
++static int sysctl_set(const char *sysctl_path, char *old_val, const char *new_val)
++{
++	int ret = 0;
++	FILE *fp;
++
++	fp = fopen(sysctl_path, "r+");
++	if (!fp)
++		return -errno;
++	if (old_val && fscanf(fp, "%s", old_val) <= 0) {
++		ret = -ENOENT;
++	} else if (!old_val || strcmp(old_val, new_val) != 0) {
++		fseek(fp, 0, SEEK_SET);
++		if (fprintf(fp, "%s", new_val) < 0)
++			ret = -errno;
++	}
++	fclose(fp);
++
++	return ret;
++}
++
++static void test_unpriv_bpf_disabled_positive(void)
++{
++	struct perf_buffer *perfbuf = NULL;
++	struct ring_buffer *ringbuf = NULL;
++	int i, nr_cpus, link_fd = -1;
++
++	nr_cpus = bpf_num_possible_cpus();
++
++	skel->bss->perfbuf_val = 1;
++	skel->bss->ringbuf_val = 2;
++
++	/* Positive tests for unprivileged BPF disabled. Verify we can
++	 * - retrieve and interact with pinned maps;
++	 * - set up and interact with perf buffer;
++	 * - set up and interact with ring buffer;
++	 * - create a link
 +	 */
-+	if (!capable &&
-+	    (cmd == BPF_MAP_CREATE || cmd == BPF_PROG_LOAD))
- 		return -EPERM;
- 
- 	err = bpf_check_uarg_tail_zero(uattr, sizeof(attr), size);
++	perfbuf = perf_buffer__new(bpf_map__fd(skel->maps.perfbuf), 8, process_perfbuf, NULL, NULL,
++				   NULL);
++	if (!ASSERT_OK_PTR(perfbuf, "perf_buffer__new"))
++		goto cleanup;
++
++	ringbuf = ring_buffer__new(bpf_map__fd(skel->maps.ringbuf), process_ringbuf, NULL, NULL);
++	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
++		goto cleanup;
++
++	/* trigger & validate perf event, ringbuf output */
++	usleep(1);
++
++	ASSERT_GT(perf_buffer__poll(perfbuf, 100), -1, "perf_buffer__poll");
++	ASSERT_EQ(got_perfbuf_val, skel->bss->perfbuf_val, "check_perfbuf_val");
++	ASSERT_EQ(ring_buffer__consume(ringbuf), 1, "ring_buffer__consume");
++	ASSERT_EQ(got_ringbuf_val, skel->bss->ringbuf_val, "check_ringbuf_val");
++
++	for (i = 0; i < ARRAY_SIZE(map_fds); i++) {
++		map_fds[i] = bpf_obj_get(map_paths[i]);
++		if (!ASSERT_GT(map_fds[i], -1, "obj_get"))
++			goto cleanup;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(map_fds); i++) {
++		bool prog_array = strstr(map_paths[i], "prog_array") != NULL;
++		bool array = strstr(map_paths[i], "array") != NULL;
++		bool buf = strstr(map_paths[i], "buf") != NULL;
++		__u32 key = 0, vals[nr_cpus], lookup_vals[nr_cpus];
++		__u32 expected_val = 1;
++		int j;
++
++		/* skip ringbuf, perfbuf */
++		if (buf)
++			continue;
++
++		for (j = 0; j < nr_cpus; j++)
++			vals[j] = expected_val;
++
++		if (prog_array) {
++			/* need valid prog array value */
++			vals[0] = prog_fd;
++			/* prog array lookup returns prog id, not fd */
++			expected_val = prog_id;
++		}
++		ASSERT_OK(bpf_map_update_elem(map_fds[i], &key, vals, 0), "map_update_elem");
++		ASSERT_OK(bpf_map_lookup_elem(map_fds[i], &key, &lookup_vals), "map_lookup_elem");
++		ASSERT_EQ(lookup_vals[0], expected_val, "map_lookup_elem_values");
++		if (!array)
++			ASSERT_OK(bpf_map_delete_elem(map_fds[i], &key), "map_delete_elem");
++	}
++
++	link_fd = bpf_link_create(bpf_program__fd(skel->progs.handle_perf_event), perf_fd,
++				  BPF_PERF_EVENT, NULL);
++	ASSERT_GT(link_fd, 0, "link_create");
++
++cleanup:
++	if (link_fd)
++		close(link_fd);
++	if (perfbuf)
++		perf_buffer__free(perfbuf);
++	if (ringbuf)
++		ring_buffer__free(ringbuf);
++}
++
++static void test_unpriv_bpf_disabled_negative(void)
++{
++	const struct bpf_insn prog_insns[] = {
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	};
++	const size_t prog_insn_cnt = sizeof(prog_insns) / sizeof(struct bpf_insn);
++	LIBBPF_OPTS(bpf_prog_load_opts, load_opts);
++	struct bpf_map_info map_info = {};
++	__u32 map_info_len = sizeof(map_info);
++	struct bpf_link_info link_info = {};
++	__u32 link_info_len = sizeof(link_info);
++	struct btf *btf = NULL;
++	__u32 attach_flags = 0;
++	__u32 prog_ids[3] = {};
++	__u32 prog_cnt = 3;
++	__u32 next;
++	int i;
++
++	/* Negative tests for unprivileged BPF disabled.  Verify we cannot
++	 * - load BPF programs;
++	 * - create BPF maps;
++	 * - get a prog/map/link fd by id;
++	 * - get next prog/map/link id
++	 * - query prog
++	 * - BTF load
++	 */
++	ASSERT_EQ(bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "simple_prog", "GPL",
++				prog_insns, prog_insn_cnt, &load_opts),
++		  -EPERM, "prog_load_fails");
++
++	for (i = BPF_MAP_TYPE_HASH; i <= BPF_MAP_TYPE_BLOOM_FILTER; i++)
++		ASSERT_EQ(bpf_map_create(i, NULL, sizeof(int), sizeof(int), 1, NULL),
++			  -EPERM, "map_create_fails");
++
++	ASSERT_EQ(bpf_prog_get_fd_by_id(prog_id), -EPERM, "prog_get_fd_by_id_fails");
++	ASSERT_EQ(bpf_prog_get_next_id(prog_id, &next), -EPERM, "prog_get_next_id_fails");
++	ASSERT_EQ(bpf_prog_get_next_id(0, &next), -EPERM, "prog_get_next_id_fails");
++
++	if (ASSERT_OK(bpf_obj_get_info_by_fd(map_fds[0], &map_info, &map_info_len),
++		      "obj_get_info_by_fd")) {
++		ASSERT_EQ(bpf_map_get_fd_by_id(map_info.id), -EPERM, "map_get_fd_by_id_fails");
++		ASSERT_EQ(bpf_map_get_next_id(map_info.id, &next), -EPERM,
++			  "map_get_next_id_fails");
++	}
++	ASSERT_EQ(bpf_map_get_next_id(0, &next), -EPERM, "map_get_next_id_fails");
++
++	if (ASSERT_OK(bpf_obj_get_info_by_fd(bpf_link__fd(skel->links.sys_nanosleep_enter),
++					     &link_info, &link_info_len),
++		      "obj_get_info_by_fd")) {
++		ASSERT_EQ(bpf_link_get_fd_by_id(link_info.id), -EPERM, "link_get_fd_by_id_fails");
++		ASSERT_EQ(bpf_link_get_next_id(link_info.id, &next), -EPERM,
++			  "link_get_next_id_fails");
++	}
++	ASSERT_EQ(bpf_link_get_next_id(0, &next), -EPERM, "link_get_next_id_fails");
++
++	ASSERT_EQ(bpf_prog_query(prog_fd, BPF_TRACE_FENTRY, 0, &attach_flags, prog_ids,
++				 &prog_cnt), -EPERM, "prog_query_fails");
++
++	btf = btf__new_empty();
++	if (ASSERT_OK_PTR(btf, "empty_btf") &&
++	    ASSERT_GT(btf__add_int(btf, "int", 4, 0), 0, "unpriv_int_type")) {
++		const void *raw_btf_data;
++		__u32 raw_btf_size;
++
++		raw_btf_data = btf__raw_data(btf, &raw_btf_size);
++		if (ASSERT_OK_PTR(raw_btf_data, "raw_btf_data_good"))
++			ASSERT_EQ(bpf_btf_load(raw_btf_data, raw_btf_size, NULL), -EPERM,
++				  "bpf_btf_load_fails");
++	}
++	btf__free(btf);
++}
++
++void test_unpriv_bpf_disabled(void)
++{
++	char unprivileged_bpf_disabled_orig[32] = {};
++	char perf_event_paranoid_orig[32] = {};
++	struct bpf_prog_info prog_info = {};
++	__u32 prog_info_len = sizeof(prog_info);
++	struct perf_event_attr attr = {};
++	__u64 save_caps = 0;
++	int i, ret;
++
++	skel = test_unpriv_bpf_disabled__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	skel->bss->test_pid = getpid();
++
++	map_fds[0] = bpf_map__fd(skel->maps.array);
++	map_fds[1] = bpf_map__fd(skel->maps.percpu_array);
++	map_fds[2] = bpf_map__fd(skel->maps.hash);
++	map_fds[3] = bpf_map__fd(skel->maps.percpu_hash);
++	map_fds[4] = bpf_map__fd(skel->maps.perfbuf);
++	map_fds[5] = bpf_map__fd(skel->maps.ringbuf);
++	map_fds[6] = bpf_map__fd(skel->maps.prog_array);
++
++	for (i = 0; i < ARRAY_SIZE(map_fds); i++)
++		ASSERT_OK(bpf_obj_pin(map_fds[i], map_paths[i]), "pin map_fd");
++
++	/* allow user without caps to use perf events */
++	if (!ASSERT_OK(sysctl_set("/proc/sys/kernel/perf_event_paranoid", perf_event_paranoid_orig,
++				  "-1"),
++		       "set_perf_event_paranoid"))
++		goto cleanup;
++	/* ensure unprivileged bpf disabled is set */
++	ret = sysctl_set("/proc/sys/kernel/unprivileged_bpf_disabled",
++			 unprivileged_bpf_disabled_orig, "2");
++	if (ret == -EPERM) {
++		/* if unprivileged_bpf_disabled=1, we get -EPERM back; that's okay. */
++		if (!ASSERT_OK(strcmp(unprivileged_bpf_disabled_orig, "1"),
++			       "unpriviliged_bpf_disabled_on"))
++			goto cleanup;
++	} else {
++		if (!ASSERT_OK(ret, "set unpriviliged_bpf_disabled"))
++			goto cleanup;
++	}
++
++	prog_fd = bpf_program__fd(skel->progs.sys_nanosleep_enter);
++	ASSERT_OK(bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len),
++		  "obj_get_info_by_fd");
++	prog_id = prog_info.id;
++	ASSERT_GT(prog_id, 0, "valid_prog_id");
++
++	attr.size = sizeof(attr);
++	attr.type = PERF_TYPE_SOFTWARE;
++	attr.config = PERF_COUNT_SW_CPU_CLOCK;
++	attr.freq = 1;
++	attr.sample_freq = 1000;
++	perf_fd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
++	if (!ASSERT_GE(perf_fd, 0, "perf_fd"))
++		goto cleanup;
++
++	if (!ASSERT_OK(test_unpriv_bpf_disabled__attach(skel), "skel_attach"))
++		goto cleanup;
++
++	if (!ASSERT_OK(cap_disable_effective(ALL_CAPS, &save_caps), "disable caps"))
++		goto cleanup;
++
++	if (test__start_subtest("unpriv_bpf_disabled_positive"))
++		test_unpriv_bpf_disabled_positive();
++
++	if (test__start_subtest("unpriv_bpf_disabled_negative"))
++		test_unpriv_bpf_disabled_negative();
++
++cleanup:
++	close(perf_fd);
++	if (save_caps)
++		cap_enable_effective(save_caps, NULL);
++	if (strlen(perf_event_paranoid_orig) > 0)
++		sysctl_set("/proc/sys/kernel/perf_event_paranoid", NULL, perf_event_paranoid_orig);
++	if (strlen(unprivileged_bpf_disabled_orig) > 0)
++		sysctl_set("/proc/sys/kernel/unprivileged_bpf_disabled", NULL,
++			   unprivileged_bpf_disabled_orig);
++	for (i = 0; i < ARRAY_SIZE(map_paths); i++)
++		unlink(map_paths[i]);
++	test_unpriv_bpf_disabled__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_unpriv_bpf_disabled.c b/tools/testing/selftests/bpf/progs/test_unpriv_bpf_disabled.c
+new file mode 100644
+index 000000000000..fc423e43a3cd
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_unpriv_bpf_disabled.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022, Oracle and/or its affiliates. */
++
++#include "vmlinux.h"
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++
++__u32 perfbuf_val = 0;
++__u32 ringbuf_val = 0;
++
++int test_pid;
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++} array SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++} percpu_array SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++} hash SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++} percpu_hash SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
++	__type(key, __u32);
++	__type(value, __u32);
++} perfbuf SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, 1 << 12);
++} ringbuf SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
++	__uint(max_entries, 1);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(__u32));
++} prog_array SEC(".maps");
++
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int sys_nanosleep_enter(void *ctx)
++{
++	int cur_pid;
++
++	cur_pid = bpf_get_current_pid_tgid() >> 32;
++
++	if (cur_pid != test_pid)
++		return 0;
++
++	bpf_perf_event_output(ctx, &perfbuf, BPF_F_CURRENT_CPU, &perfbuf_val, sizeof(perfbuf_val));
++	bpf_ringbuf_output(&ringbuf, &ringbuf_val, sizeof(ringbuf_val), 0);
++
++	return 0;
++}
++
++SEC("perf_event")
++int handle_perf_event(void *ctx)
++{
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.27.0
 
