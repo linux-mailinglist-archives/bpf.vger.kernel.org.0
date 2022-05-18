@@ -2,164 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE8052C6D6
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 00:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B2252C75B
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 01:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbiERW5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 18:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
+        id S230516AbiERXOE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 19:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbiERW4d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 18:56:33 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA656CF50
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 15:55:57 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id i16-20020a170902cf1000b001540b6a09e3so1598019plg.0
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 15:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=2ifMzJdcStY/5O5m6nh5Ja6Hm2K26IpKO1V8xVAoPAA=;
-        b=YXhPrApKNkUQKwlm2mGARh4GMIFWll80cKgOCU0MXAqSBAntXKsil1cubi+/1mhEb8
-         Fu9CHujxwdnmwT82yz6cIzjBjLdWfyuJIJu9cNn1g4a1IOB900Lb5eiAIA4YQnPGlYto
-         tnP8wtQaFattfbLovkQChzNWJ7Ju6sL/n97UnxifSCZfwpse/dAIKN5Thfe6JReM2lhg
-         RFudkvkniz1nnpDb9w7AdH7NQcfdMvFoWeuxqw6EUc4sOfPvtFh5PldUQJCfppG1Ad01
-         DYVZVvxx5D6wYRk4Tym8g/6G7pdK+X3/jo8GHoHGdC+UbTiQwaskhDz57+15AnO7r3B8
-         HCIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=2ifMzJdcStY/5O5m6nh5Ja6Hm2K26IpKO1V8xVAoPAA=;
-        b=gaMJtrrta9lcoOLvHo2GefWUWD6ZO5fOoWcn0q659ePeqQO2XKoIIpiOJyC19G8Sl+
-         MjjON5eLgFfQcUpc3MJUZguH2oWAUAtl2FG+2Bz4buNoWprJ7SiGm2PI6s+zqiDWwIBz
-         ME2JRtqoGT1XbGah6CDLh03q6SNYZk4oB8+1lzdlWcv/OLse+EX36bUzTjW4wrs5xgBF
-         3EcV11TFYxlIR+5rkXA6OIqhxVipLDXb7+9OkKAtJ0myNFmyfC/dn1NhTtSlhBPSXiaD
-         /bDOcIn1A+h9p2l4wU3IvUFk7efqYD4QYREKrB4/IALSiw/HViF3KTLixmQ31xgUg/1u
-         v4Zw==
-X-Gm-Message-State: AOAM533efVR6UlMwYRiPuPrXCdP2AsQc7g0dUrbyY4ILOf6G9qRGVVpi
-        vgA4bUNhV/Qkgjtm8NUfU9gYEF0=
-X-Google-Smtp-Source: ABdhPJw0k7LpVBazAYEoSnhzKwo955ffrSG+h/J0BWzBQFCMtKcK8ga39AoNhoSey4mBzYj/Qm0dpz0=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:f763:3448:2567:bf00])
- (user=sdf job=sendgmr) by 2002:a17:90b:4b02:b0:1df:d622:dd07 with SMTP id
- lx2-20020a17090b4b0200b001dfd622dd07mr276056pjb.160.1652914557091; Wed, 18
- May 2022 15:55:57 -0700 (PDT)
-Date:   Wed, 18 May 2022 15:55:31 -0700
-In-Reply-To: <20220518225531.558008-1-sdf@google.com>
-Message-Id: <20220518225531.558008-12-sdf@google.com>
-Mime-Version: 1.0
-References: <20220518225531.558008-1-sdf@google.com>
-X-Mailer: git-send-email 2.36.1.124.g0e6072fb45-goog
-Subject: [PATCH bpf-next v7 11/11] selftests/bpf: verify lsm_cgroup struct
- sock access
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230325AbiERXOD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 19:14:03 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E817C1BF1B1;
+        Wed, 18 May 2022 16:13:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652915640; x=1684451640;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+7xC5Q1BjsTKNBVhZVtbzNmmX8AWYp8Ft3lMIBj1NRY=;
+  b=Ax5zVSZI2szv4bngM+GS+WFJ5jf5fYQA8rdZrlWXNxAKg+thdu17fA98
+   ahkijLxD4SyRtvbeaDIxq+TanPSalquWkOqkmD3f5Q6MIoVXYsGWSNygN
+   J8+tGh9BLOjTc0Z14sQvzOUjZ4qHs1z/b3N+O8kKny56mrInoUkpY/ZiY
+   JzbzdC+2Ax5ZcXPr7m1Wyo/Z4PBY/zMZh7Up99vODIb5iRB7y49CjdfAx
+   sLLZceRkhFvfkg9LPHCW4He5qw6yf0WTjXX4CWZ2l1lp/H0wT1nokBZXC
+   JJ4W46j+p/GSJjodNWedccgMo59LlfaUTHx4ukz8s2cQawc+0BvwC+iZX
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10351"; a="358339175"
+X-IronPort-AV: E=Sophos;i="5.91,235,1647327600"; 
+   d="scan'208";a="358339175"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2022 16:13:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,235,1647327600"; 
+   d="scan'208";a="898481096"
+Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 18 May 2022 16:13:54 -0700
+Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nrSrZ-0002l7-Hr;
+        Wed, 18 May 2022 23:13:53 +0000
+Date:   Thu, 19 May 2022 07:13:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Greg KH <greg@kroah.com>, Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>
+Cc:     kbuild-all@lists.01.org, Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [PATCH bpf-next v5 09/17] HID: bpf: allocate data memory for
+ device_event BPF programs
+Message-ID: <202205190720.TIuHyCp6-lkp@intel.com>
+References: <20220518205924.399291-10-benjamin.tissoires@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220518205924.399291-10-benjamin.tissoires@redhat.com>
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-sk_priority & sk_mark are writable, the rest is readonly.
+Hi Benjamin,
 
-One interesting thing here is that the verifier doesn't
-really force me to add NULL checks anywhere :-/
+I love your patch! Yet something to improve:
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/lsm_cgroup.c     | 69 +++++++++++++++++++
- 1 file changed, 69 insertions(+)
+[auto build test ERROR on bpf-next/master]
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-index 29292ec40343..64b6830e03f5 100644
---- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-@@ -270,8 +270,77 @@ static void test_lsm_cgroup_functional(void)
- 	lsm_cgroup__destroy(skel);
- }
- 
-+static int field_offset(const char *type, const char *field)
-+{
-+	const struct btf_member *memb;
-+	const struct btf_type *tp;
-+	const char *name;
-+	struct btf *btf;
-+	int btf_id;
-+	int i;
-+
-+	btf = btf__load_vmlinux_btf();
-+	if (!btf)
-+		return -1;
-+
-+	btf_id = btf__find_by_name_kind(btf, type, BTF_KIND_STRUCT);
-+	if (btf_id < 0)
-+		return -1;
-+
-+	tp = btf__type_by_id(btf, btf_id);
-+	memb = btf_members(tp);
-+
-+	for (i = 0; i < btf_vlen(tp); i++) {
-+		name = btf__name_by_offset(btf,
-+					   memb->name_off);
-+		if (strcmp(field, name) == 0)
-+			return memb->offset / 8;
-+		memb++;
-+	}
-+
-+	return -1;
-+}
-+
-+static bool sk_writable_field(const char *type, const char *field, int size)
-+{
-+	LIBBPF_OPTS(bpf_prog_load_opts, opts,
-+		    .expected_attach_type = BPF_LSM_CGROUP);
-+	struct bpf_insn	insns[] = {
-+		/* r1 = *(u64 *)(r1 + 0) */
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0),
-+		/* r1 = *(u64 *)(r1 + offsetof(struct socket, sk)) */
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, field_offset("socket", "sk")),
-+		/* r2 = *(u64 *)(r1 + offsetof(struct sock, <field>)) */
-+		BPF_LDX_MEM(size, BPF_REG_2, BPF_REG_1, field_offset(type, field)),
-+		/* *(u64 *)(r1 + offsetof(struct sock, <field>)) = r2 */
-+		BPF_STX_MEM(size, BPF_REG_1, BPF_REG_2, field_offset(type, field)),
-+		BPF_MOV64_IMM(BPF_REG_0, 1),
-+		BPF_EXIT_INSN(),
-+	};
-+	int fd;
-+
-+	opts.attach_btf_id = libbpf_find_vmlinux_btf_id("socket_post_create",
-+							opts.expected_attach_type);
-+
-+	fd = bpf_prog_load(BPF_PROG_TYPE_LSM, NULL, "GPL", insns, ARRAY_SIZE(insns), &opts);
-+	if (fd >= 0)
-+		close(fd);
-+	return fd >= 0;
-+}
-+
-+static void test_lsm_cgroup_access(void)
-+{
-+	ASSERT_FALSE(sk_writable_field("sock_common", "skc_family", BPF_H), "skc_family");
-+	ASSERT_FALSE(sk_writable_field("sock", "sk_sndtimeo", BPF_DW), "sk_sndtimeo");
-+	ASSERT_TRUE(sk_writable_field("sock", "sk_priority", BPF_W), "sk_priority");
-+	ASSERT_TRUE(sk_writable_field("sock", "sk_mark", BPF_W), "sk_mark");
-+	ASSERT_FALSE(sk_writable_field("sock", "sk_pacing_rate", BPF_DW), "sk_pacing_rate");
-+}
-+
- void test_lsm_cgroup(void)
- {
- 	if (test__start_subtest("functional"))
- 		test_lsm_cgroup_functional();
-+	if (test__start_subtest("access"))
-+		test_lsm_cgroup_access();
- }
+url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Tissoires/Introduce-eBPF-support-for-HID-devices/20220519-050506
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20220519/202205190720.TIuHyCp6-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.2.0-20) 11.2.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/ce32a9c683e801ac875c4e4eece32778040ed5cc
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Benjamin-Tissoires/Introduce-eBPF-support-for-HID-devices/20220519-050506
+        git checkout ce32a9c683e801ac875c4e4eece32778040ed5cc
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=um SUBARCH=i386 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   /usr/bin/ld: drivers/hid/hid-core.o: in function `hid_destroy_device':
+   hid-core.c:(.text+0x10c0): undefined reference to `hid_bpf_destroy_device'
+   /usr/bin/ld: drivers/hid/hid-core.o: in function `hid_allocate_device':
+   hid-core.c:(.text+0x15c6): undefined reference to `hid_bpf_device_init'
+   /usr/bin/ld: drivers/hid/hid-core.o: in function `hid_input_report':
+   hid-core.c:(.text+0x22f7): undefined reference to `dispatch_hid_bpf_device_event'
+   /usr/bin/ld: drivers/hid/hid-core.o: in function `hid_connect':
+>> hid-core.c:(.text+0x25da): undefined reference to `hid_bpf_connect_device'
+   /usr/bin/ld: drivers/hid/hid-core.o: in function `hid_disconnect':
+>> hid-core.c:(.text+0xca1): undefined reference to `hid_bpf_disconnect_device'
+   /usr/bin/ld: drivers/hid/hid-core.o: in function `hid_exit':
+   hid-core.c:(.exit.text+0x7): undefined reference to `hid_bpf_ops'
+   /usr/bin/ld: drivers/hid/hid-core.o: in function `hid_init':
+   hid-core.c:(.init.text+0x35): undefined reference to `hid_bpf_ops'
+   collect2: error: ld returned 1 exit status
+
 -- 
-2.36.1.124.g0e6072fb45-goog
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
