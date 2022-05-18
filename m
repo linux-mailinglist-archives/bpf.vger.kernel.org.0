@@ -2,111 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A0F52C3D6
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 21:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F324052C3F8
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 22:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242248AbiERT6I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 15:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58922 "EHLO
+        id S242261AbiERUAY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 16:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242217AbiERT6H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 15:58:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73951227817;
-        Wed, 18 May 2022 12:58:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S242269AbiERUAX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 16:00:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE4D0227825
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 13:00:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1652904021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aS7gQ5qpFeKUv7/KfR+Cnnmeed9eVIGi0Wg+eyJp4Fg=;
+        b=BFx6cd2GJz791w1yA1ySXzcb7N1lBCdAsbYlz/2M5tY21CRJpAYb15eb0nXCkWVD4NmVzo
+        YzlAjaLbMu3/4Hs4OsP/8SQSfNntQ+ZgaRBK1QHjZRdwtzt6WUrwp4D52lecXmXxDxEyfb
+        Iz+AcIJI4OaQ9ncSV33unjtfvRKZSLI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-31-HEMs9FENPBm7CP3UBs-DXA-1; Wed, 18 May 2022 16:00:18 -0400
+X-MC-Unique: HEMs9FENPBm7CP3UBs-DXA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AA5686191F;
-        Wed, 18 May 2022 19:58:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21195C34113;
-        Wed, 18 May 2022 19:58:01 +0000 (UTC)
-Date:   Wed, 18 May 2022 15:57:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C54F818019D7;
+        Wed, 18 May 2022 20:00:17 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D5051492C14;
+        Wed, 18 May 2022 20:00:13 +0000 (UTC)
+Date:   Wed, 18 May 2022 22:00:10 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/6] ftrace: Fix deadloop caused by direct
- call in ftrace selftest
-Message-ID: <20220518155759.4054d9a2@gandalf.local.home>
-In-Reply-To: <20220517071838.3366093-3-xukuohai@huawei.com>
-References: <20220517071838.3366093-1-xukuohai@huawei.com>
-        <20220517071838.3366093-3-xukuohai@huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf v3 1/2] bpf_trace: check size for overflow in
+ bpf_kprobe_multi_link_attach
+Message-ID: <20220518200010.GA29226@asgard.redhat.com>
+References: <cover.1652876187.git.esyr@redhat.com>
+ <39c4a91f2867684dc51c5395d26cb56ffe9d995d.1652876188.git.esyr@redhat.com>
+ <412bf136-6a5b-f442-1e84-778697e2b694@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <412bf136-6a5b-f442-1e84-778697e2b694@fb.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 17 May 2022 03:18:34 -0400
-Xu Kuohai <xukuohai@huawei.com> wrote:
+On Wed, May 18, 2022 at 09:34:22AM -0700, Yonghong Song wrote:
+> On 5/18/22 5:22 AM, Eugene Syromiatnikov wrote:
+> >-	size = cnt * sizeof(*syms);
+> >+	if (check_mul_overflow(cnt, (u32)sizeof(*syms), &size))
+> >+		return -EOVERFLOW;
+> 
+> In mm/util.c kvmalloc_node(), we have
+> 
+>         /* Don't even allow crazy sizes */
+>         if (unlikely(size > INT_MAX)) {
+>                 WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+>                 return NULL;
+>         }
+> 
+> Basically the maximum size to be allocated in INT_MAX.
+> 
+> Here, we have 'size' as u32, which means if the size is 0xffff0000,
+> the check_mul_overflow will return false (no overflow) but
+> kvzalloc will still have a warning.
+> 
+> I think we should change the type of 'size' to be 'int' which
+> should catch the above case and be consistent with
+> what kvmalloc_node() intends to warn.
 
-> After direct call is enabled for arm64, ftrace selftest enters a
-> dead loop:
-> 
-> <trace_selftest_dynamic_test_func>:
-> 00  bti     c
-> 01  mov     x9, x30                            <trace_direct_tramp>:
-> 02  bl      <trace_direct_tramp>    ---------->     ret
->                                                      |
->                                          lr/x30 is 03, return to 03
->                                                      |
-> 03  mov     w0, #0x0   <-----------------------------|
->      |                                               |
->      |                   dead loop!                  |
->      |                                               |
-> 04  ret   ---- lr/x30 is still 03, go back to 03 ----|
-> 
-> The reason is that when the direct caller trace_direct_tramp() returns
-> to the patched function trace_selftest_dynamic_test_func(), lr is still
-> the address after the instrumented instruction in the patched function,
-> so when the patched function exits, it returns to itself!
-> 
-> To fix this issue, we need to restore lr before trace_direct_tramp()
-> exits, so rewrite a dedicated trace_direct_tramp() for arm64.
-> 
-> Reported-by: Li Huafei <lihuafei1@huawei.com>
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> ---
+Huh, it's a bitmore complicated as check_mul_overflow requires types to
+match; what do you think about
 
-Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
++	if (check_mul_overflow(cnt, (u32)sizeof(*syms), &size) || size > INT_MAX)
 
--- Steve
+?
+
