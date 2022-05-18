@@ -2,202 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA8252BD46
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 16:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BCD52BCF3
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 16:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237896AbiERNbr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 09:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        id S237984AbiERNe6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 09:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237967AbiERNbq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 09:31:46 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1168934650
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 06:31:44 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id w4so2706560wrg.12
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 06:31:44 -0700 (PDT)
+        with ESMTP id S237969AbiERNe4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 09:34:56 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AAE166463
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 06:34:55 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24IBn1Bi011872;
+        Wed, 18 May 2022 13:34:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=k9dTMALnxkjmzCR6yUgb26RAoeEdK/JcY23Bsk3mPfI=;
+ b=XPidkUHjMBYel3sOvdOAxsCekFBAeTJjHmu4J12E1LTw2wbSzTV56vSknyAtRrbblFOh
+ WQwM353iZUcMi8dpR7/1VDX7pOD1Zd+23nASiMZhZwQd9DV771AxPTqaJvOH+wbroOFc
+ kSOOAiFhzzfFaAtV0/GYQDPz534+J+tv+hVBO0prxs/POPJhjqePwe2952+YV1eA3S8V
+ 33LVR7tgxXDY9kuynZlcUUAInujrngh6yQ6u/A65Kx3Ybs5Z6bppGubFhGTJMr5Y3hr1
+ 4pAfwyFMzh3saegWAzbIPMgJQ4gMI4adO0xo0LAz6bHMZdlLArJH106+q6iHDAh5TW3E Zw== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3g2310sb0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 May 2022 13:34:28 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 24IDVjZS039753;
+        Wed, 18 May 2022 13:34:28 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3g37cqdf11-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 May 2022 13:34:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CDEHb7MFN5g1SOMCaHIOo2lp0z7NsyytANRktkfpOwA2nUqBLpxEhO7Jnd7Qj9M21WpMsv/ddE/jy6fOtJ+WAyA+nj87fs9AF8xbjakxufl7fc3iiDmWL4w0STxlDMWILZXTOH5/T67A4+JERAQX7CjKrxGw9q1DBsZC/XkRjaKURqR7ymOG1yTQRVRpOFbmkUiB3ofD1g1lmgSagUJhyQl+0hPwV3DrdbhQGXjbgW9gTFx3lnFW+Tr2nnxW2Yy2ddyQkcPbGVgG//latUi+uUvofpUKZ2h1g3g1PGWFGf8PFBY/Rp2CqEc4NKPZ3F4lWrD6vHvKaX82Lu10b/fdMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=k9dTMALnxkjmzCR6yUgb26RAoeEdK/JcY23Bsk3mPfI=;
+ b=FQ05sq91DFSG89EcHOKzrH9OUFikGpGc/b0KVY9wSJf3Ne8P04fkUYS6TM0MdaKr6gn5ouscEXjactdpV0s8aEYTTaclLRXCbBkqEL+9acSwtZlLjux0+4/XQJdQC8a7AgTsIMgD5PoQA6851zckGUYDCH//SFqDl7a1o2LWRUFKLea5Ri6xmzU4LM1qclekVXW/lm/dyk+nv+ZgriDgJvFZMR/cM1voh0Y8ax937EU01thMw02YXGnhsyme39t979TkfXbMOGbI+Vczl5k0wwiy4gpjGmfkqvOoANwmT27GEp7rR09o5jZPsgubtpiv0TzK/G3HbFuHIQqKwlxQcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=oSzTrk2MWG03IFEkRjj+Bvhq5SI1uyW/JXov8b5N7UY=;
-        b=3QYH0ZyfUpKtSQPLGw78ePJSKahyqrC7zdXD2P3ZjEkP6jhupGUWvRxqIORA2ybMZw
-         btQz+TKVGoqJEVbZY2aTIJkOhZYMDZt0Jfss7uZReUM3x1glzCndHjsEPjECK/scWdwC
-         3lNLtt1pdGqUXkse+Gwkg6YxmI2H4EKOJm9Xpv2aQLCuw/vhYQnxZ7N+48jJ/Z9kfIw+
-         LqDMqJz3YqyU6SAwwclXaMxgpjRKci+XrmkMeW61eqBt/YZ26XfB59u7LOKeM0gwmw5v
-         NmVqeT78Pvt2Ms+iGYwZKxQ2WGy9W5zC/koQXzlbfFhWtPlxfP+fd+KJSnYkQP8ihUSo
-         GDEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=oSzTrk2MWG03IFEkRjj+Bvhq5SI1uyW/JXov8b5N7UY=;
-        b=f40MpXFzfEyqzONk56pAMJPKn59jiVtgLYWZhjSXQOHCG6EzUtVQvi1QnPnrdnGBi6
-         QggCakf3I6dIKyw8+lZIBbVDpLNGEp11rW6d96x04cGvq+Thkz8w23pEiJGRIWzLfjQv
-         3vKPLx+AU0OtDwu761pHyXP0ns34fiOnq7dlWktl8EVrdPgbA8rPqY8DF31zaUZVxOJG
-         vNkvR6KQiI0hKjKLPU5/1OXyhjTiwisZujSou+1rGlL9q8p3BT6JELPS+ejdi6GzoJyA
-         9Bv5eupyQ4BQ7RV46ugk55QS7I4mT79qyVGPu5X2j9DTpcmWgw0y4Jqfp9O/kemrwOJW
-         YuLA==
-X-Gm-Message-State: AOAM532MuOIG22fm6xXK06DQdCC7mIpnskzhUwbNrr3q+GxU5kPyh1BH
-        P88pDPtnsvglsFJrS2rV2ToyAQ==
-X-Google-Smtp-Source: ABdhPJx8OiioEkNi/dMaRbOxrdU4XUiwn6BL5A5Ah+HEfiVsapLuiDjydJHcstrqoez4CuWIeycN6w==
-X-Received: by 2002:adf:e70a:0:b0:20d:e3e:f79f with SMTP id c10-20020adfe70a000000b0020d0e3ef79fmr11010947wrm.105.1652880703176;
-        Wed, 18 May 2022 06:31:43 -0700 (PDT)
-Received: from [192.168.178.21] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id ay1-20020a05600c1e0100b0039706782e06sm1793154wmb.33.2022.05.18.06.31.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 May 2022 06:31:42 -0700 (PDT)
-Message-ID: <1198532c-3be3-badd-cfc2-052aa435d697@isovalent.com>
-Date:   Wed, 18 May 2022 14:31:40 +0100
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k9dTMALnxkjmzCR6yUgb26RAoeEdK/JcY23Bsk3mPfI=;
+ b=NMmMSiLRkzWlO+Q3gcWO99OLS1A43KXOkHUrj4jrbFaVT6GUWpf/iRR8R8QmFKBl1SHnoyBpjC60J7srzCPeQoGBtw1IQ9NyzzVlhIWRaMKpVa+9OVzhI0nudBTJTAH8hl1/KEHhFTXtv5fvZ8UrYYQC9ceUcJFyEXZIWWt9qBo=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by SJ0PR10MB5836.namprd10.prod.outlook.com (2603:10b6:a03:3ed::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.20; Wed, 18 May
+ 2022 13:34:25 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::6969:7923:5c22:a739]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::6969:7923:5c22:a739%4]) with mapi id 15.20.5273.015; Wed, 18 May 2022
+ 13:34:25 +0000
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        keescook@chromium.org, bpf@vger.kernel.org
+Subject: [PATCH v3 bpf-next 0/2] bpf: refine kernel.unprivileged_bpf_disabled behaviour
+Date:   Wed, 18 May 2022 14:34:19 +0100
+Message-Id: <1652880861-27373-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR06CA0078.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::19) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-From:   Quentin Monnet <quentin@isovalent.com>
-Subject: Re: [PATCH bpf-next 09/12] bpftool: Use libbpf_bpf_attach_type_str
-To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20220516173540.3520665-1-deso@posteo.net>
- <20220516173540.3520665-10-deso@posteo.net>
- <CAEf4BzYXxSerQnw3U5SKU10HAbM1KrTj9z_DvX+tQqaq7+2CUQ@mail.gmail.com>
- <a1a518b6-4006-7a65-178d-6100ada34a2d@isovalent.com>
- <20220517185427.tafxhqk7vplj6ie4@devvm5318.vll0.facebook.com>
-Content-Language: en-GB
-In-Reply-To: <20220517185427.tafxhqk7vplj6ie4@devvm5318.vll0.facebook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 34535149-67f5-46ef-83d5-08da38d32015
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB5836:EE_
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB5836B97F40585FBA46528FCEEFD19@SJ0PR10MB5836.namprd10.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wa2wtjqher2WM5jt21XkWSZTdlw6x3bQq/chZBIKYzoxac3hJ3QI/iQii22b26a7YQpLgkOGGeopoLe+/2SKDBs4upDmJQE08tFRp+eFPsjdGLmbsDEN8ns5g37ycEgIifgg33ZkfSE+1Aq/VFfNg62Tw5H12ehETXmUg2wpo19SU69I0oqhSTS8W1PrGsXXeVRIR3epUDxI9wEYRcyja44v1UO4pIyTKOp2nbxv/oZ0Wgq3RVmHFFM5ju7lUdAEvpOnVWaWRtuUH7vLajvN4pvXA5zc8vr02FaaO160ejiqTU/taLiTCSCHutkOaRL757S10W8FdYspgA9RriWnkbwZirtMMjsuP45S06a1KyXbu4khLkFgh0fr0jbpXSc1l2inDpR5DFs9xCT+bV6jCqA8swXDJFB/0zcCh0P6QisxNFJ563t+W84SvUVJ8KcrX0/c5CvvgMeUSlzj2ERltV3e8cAuDyn0xx1jyqjKy7buS0HVhCzDHAEqOpnM/KNU/V12c7emX8dVBtMnBVc8jGtjNwnD334whhnrodtGI2G/BN9HLdUHnzYanwvN0xYjRdY3hrfdqI95XH5aP23LQTnJQPAzBbQhHKgk+6RJGHbP1jz6AoNVM/5I5WHxpAfzJUstJHL81KK2SPKptTcgGrum5Lg1qTRGIjWnhGRGKWnBaqayDs9oV/H7TKg8nqHs7NjSROqAiSoF2xI3dOqShMMaaM0ssyrdMWIBKfiU/ydUynjlW6kFFm/rUQekRZudipB15VwolGPdeS5gEelDTxNSIQfs8QLki4YfQn2IZ858ROlR48/Kw18s9M0U3OtiR70Kdoyo7cmWCK86djM0OQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(86362001)(316002)(36756003)(66476007)(6666004)(4326008)(66946007)(186003)(7416002)(38350700002)(2906002)(6486002)(508600001)(8676002)(6506007)(966005)(83380400001)(38100700002)(66556008)(2616005)(8936002)(44832011)(5660300002)(26005)(6512007)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2QhELwiO4MyYG7KSbNPAh4Ti4zZ5inpTgVKiPSGDk5UeMtfU32KSey1MDgGK?=
+ =?us-ascii?Q?tSMWquq6Rnoc5AaACiFJegDg5PeitdsuBF7NkdmuuqWCRpvnPVoblUnDsAJc?=
+ =?us-ascii?Q?Eq7n5eIuhLxFUNkzJ/+rRLV6rOmKEllp7cnui78/MH6xwujFQa6rvg2JJJCQ?=
+ =?us-ascii?Q?XHptSZfV9hj2JyLqLFHMqamnb13syElF2i9G3LI94ou86/jDQp3ToREPgi91?=
+ =?us-ascii?Q?+FOw1Dg/ZgpZ/LCjztj5TVfBKensdNXVPIRXpItT+OC/2G+itXzeSsIvCQij?=
+ =?us-ascii?Q?BpZas5ufLRwnpCmtU1dX1tz18aXIuoQwtgIUlzkbH+KGAHiwN9I5rRz5R8IC?=
+ =?us-ascii?Q?/WN9msWvAwlfloxvG8uWKrwbZMqi/ZJ3+kg4/+owJc/IISR3DgLUuzWCowTM?=
+ =?us-ascii?Q?Vv2nZ9yob61bGK3v4yzZo6UnUFKGN40UG1ZlbYYW3IxGosc27XWRXJ6KR9w3?=
+ =?us-ascii?Q?ApAMeHWYKyYytOyYPck3kpK5yDaZlsKfsFwtxS2hRliS+mLzYJ5QsMXZyEXU?=
+ =?us-ascii?Q?0P+WHrlyo5W+5wgnIEuPayKwzskkdlflc7OBiBwNRQhXNHs0r4uoxAQs5Hfp?=
+ =?us-ascii?Q?BSeWrVGXbNuSH+8aZyO/XaFDrLhCUKiQ4YiGC6QWm8gJl3HTzqBNvrJ1Hpgy?=
+ =?us-ascii?Q?LBeaaebLG9ZxerPhlSUgIYuHiqot9oHHvSI38SB0+UFjU1ddURLu5UXYpn5b?=
+ =?us-ascii?Q?R6gl7qBXChoFDcnc4EUetlTtAXEWDt8JgEcFn7t/hktPJClWzKwBEfyla5P0?=
+ =?us-ascii?Q?hqxUrO+ocNwbEhHd2LZQ4yoYtjWiTOYVA1JiMhMHFHcFDARlD746X/UGkUFQ?=
+ =?us-ascii?Q?ZfKcbPN2FT46flfMUwhYJ/152eMZIXNw3zlb62ajEpd+jh8IvOTYNYspOKb4?=
+ =?us-ascii?Q?TiV/baFZVSzJnmoBUe7Qd+4LQ9QrbtVcyHng/Es8JWA0KVTZli+flHpG2Nio?=
+ =?us-ascii?Q?AfyMw0VNXJkDbKA6rSIO3Id7I60HsAn12ZYgf1ESLOAel/1fgld8mQ9FO9tE?=
+ =?us-ascii?Q?xyI76B6AOuWYGHCImCS5yZNDRV1OdtVaJuJJZ6iKX3GE8Ouns/odGMalgtZs?=
+ =?us-ascii?Q?PRb+VmoaW/8s52ZKLYPel5ACIKqb87DarOMGHng8mjSKPGWchiHp6dAv3Vtp?=
+ =?us-ascii?Q?4Z7GWnsOi5LqLASPZX4bq5J2N/l7BrcbTU5rQJj8U8xPbhAC7V0HXiNwWoq4?=
+ =?us-ascii?Q?dLBU9YboRczDUJUk0UlEECAU2Eu1wkGzfCCF8tcBg2u68YvN8qLGdyOvKcKX?=
+ =?us-ascii?Q?lHQATHpWj7X1m8b6EIK+cBvZVSs61Bq1/ezQjGQXBnPt3KOZY0SmYw2AbHMF?=
+ =?us-ascii?Q?n1L4Qr9g03YhrCc57fk3Vgy6mttHEKj+7+F0z6Bgqx16Uh1FmhJykSnSxqcu?=
+ =?us-ascii?Q?w+6IAJkY+Wk30u5KQcV0+gpMoGOOTY4wurSPRG2YXJPbXDGDCV629JSmpzBT?=
+ =?us-ascii?Q?cQA3iH9nzEEhHIFs9jtXS7CDXiyTffOceNk12/UVWXC8AP0uSilfsO0nsEUL?=
+ =?us-ascii?Q?AuFbraEZdG2wHRG3i7KZewr24n2nRtMSKVG3Exe/0iyUevsXkCLJ7rUYCJsZ?=
+ =?us-ascii?Q?CdWEfN3fCMQCWxevk8KnBhBSJIFdnCyhPl6Cq50N0VqwfyLuyEFsUwg/f3RW?=
+ =?us-ascii?Q?P8y/nrg0Tb1ddwXKdf2FEEYMcadd8k/7b0G2K14bRGRUhamYOgPAbbBrNWtC?=
+ =?us-ascii?Q?vUU7dVCKnEMtSZY1FQQDXHzNZ797Xafl4/ObofQq2RJFFJbtLOyVl4vjBLB6?=
+ =?us-ascii?Q?s7Lrwethg5DOLCb7bQh6Q7Jror30ph8=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34535149-67f5-46ef-83d5-08da38d32015
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2022 13:34:25.7476
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CqMbPFSPDqcd3iolRD/wcqU/oURynib+w0OtK+dx4U7oMeklfqh2ZtfJk5w+3QriTnvaagCrhEHcIqyuda/dQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5836
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.486,18.0.874
+ definitions=2022-05-18_04:2022-05-17,2022-05-18 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2205180079
+X-Proofpoint-ORIG-GUID: 3C70_jm_dKfT2IxXGCy0GbWYAwGJMJDb
+X-Proofpoint-GUID: 3C70_jm_dKfT2IxXGCy0GbWYAwGJMJDb
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022-05-17 18:54 UTC+0000 ~ Daniel Müller <deso@posteo.net>
-> On Tue, May 17, 2022 at 03:18:41PM +0100, Quentin Monnet wrote:
->> 2022-05-16 16:41 UTC-0700 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
->>> On Mon, May 16, 2022 at 10:36 AM Daniel Müller <deso@posteo.net> wrote:
->>>>
->>>> This change switches bpftool over to using the recently introduced
->>>> libbpf_bpf_attach_type_str function instead of maintaining its own
->>>> string representation for the bpf_attach_type enum.
->>>>
->>>> Note that contrary to other enum types, the variant names that bpftool
->>>> maps bpf_attach_type to do not follow a simple to follow rule. With
->>>> bpf_prog_type, for example, the textual representation can easily be
->>>> inferred by stripping the BPF_PROG_TYPE_ prefix and lowercasing the
->>>> remaining string. bpf_attach_type violates this rule for various
->>>> variants. In order to not brake compatibility (these textual
->>>> representations appear in JSON and are used to parse user input), we
->>>> introduce a program local bpf_attach_type_str that overrides the
->>>> variants in question.
->>>> We should consider removing this function and expect the libbpf string
->>>> representation with the next backwards compatibility breaking release,
->>>> if possible.
->>>>
->>>> Signed-off-by: Daniel Müller <deso@posteo.net>
->>>> ---
->>>
->>> Quentin, any opinion on this approach? Should we fallback to libbpf's
->>> API for all the future cases or it's better to keep bpftool's own
->>> attach_type mapping?
->> Hi Andrii, Daniel,
-> 
-> Hi Quentin,
-> 
->> Thanks for the ping! I'm unsure what's best, to be honest. Maybe we
->> should look at bpftool's inputs and outputs separately.
->>
->> For attach types printed as part of the output:
->>
->> Thinking about it, I'd say go for the libbpf API, and make the change
->> now. As much as we all dislike breaking things for user space, I believe
->> that on the long term, we would benefit from having a more consistent
->> naming scheme for those strings (prefix + lowercase attach type); and
->> more importantly, if querying the string from libbpf spreads to other
->> tools, these will be the reference strings for the attach types and it
->> will be a pain to convert bpftool's specific exceptions to "regular"
->> textual representations to interface with other tools.
->>
->> And if we must break things, I'd as well have it synchronised with the
->> release of libbpf 1.0, so I'd say let's just change it now? Note that
->> we're now tagging bpftool releases on the GitHub mirror (I did 6.8.0
->> earlier today), so at least that's one place where we can have a
->> changelog and mention breaking changes.
-> 
-> Thanks for the feedback. This sounds good to me. I can make the change. But do
-> you think we should do it as part of this stack? We could make this very stack a
-> behavior preserving step (that can reasonably stand on its own). Given the
-> additional changes to tests & documentation that you mention below, it would
-> make sense to me to keep individual patches in this series similar in nature.
-> I'd be happy to author a follow-on, but can also amend this series if that's
-> preferred. Please let me know your preference.
+Unprivileged BPF disabled (kernel.unprivileged_bpf_disabled >= 1)
+is the default in most cases now; when set, the BPF system call is
+blocked for users without CAP_BPF/CAP_SYS_ADMIN.  In some cases
+however, it makes sense to split activities between capability-requiring
+ones - such as program load/attach - and those that might not require
+capabilities such as reading perf/ringbuf events, reading or
+updating BPF map configuration etc.  One example of this sort of
+approach is a service that loads a BPF program, and a user-space
+program that interacts with it.
 
-So I would have a slight preference for having everything together, but
-at the same time I understand that the current patchset is already in
-a good state and that you don't want to "overgrow" it too much. So
-follow-up is fine by me, mostly (see next paragraph), if it lands before
-libbpf v1.0 is released. If I understand correctly, you would have the
-addition of the new names as an alternative for input parameters in this
-set, and follow-up with the breaking changes (using the new names for
-output, and switching to new names for input in docs) as a follow-up, is
-this correct?
+Here - rather than blocking all BPF syscall commands - unprivileged
+BPF disabled blocks the key object-creating commands (prog load,
+map load).  Discussion has alluded to this idea in the past [1],
+and Alexei mentioned it was also discussed at LSF/MM/BPF this year.
 
-Still, the tests in test_bpftool_synctypes.py should be updated in this
-PR, because the bpftool tests in the CI break otherwise [0]. This is due
-to the removal of the lists of names in bpftool: the test parses them to
-compare the lists with what's present in UAPI bpf.h, bpftool man pages,
-etc. I believe it would be best to keep this in a running state.
+Changes since v2 [2]:
 
-[0]
-https://github.com/kernel-patches/bpf/runs/6459959177?check_suite_focus=true#step:6:678
+- added acks from Yonghong
+- clang compilation issue in selftest with bpf_prog_query()
+  (Alexei, patch 2)
+- disable all capabilities for test (Yonghong, patch 2)
+- add assertions that size of perf/ringbuf data matches expectations
+  (Yonghong, patch 2)
+- add map array size definition, remove unneeded whitespace
+  (Yonghong, patch 2)
 
-> 
->> Now for the attach types parsed as input parameters:
->>
->> I wonder if it would be worth supporting the two values for attach types
->> where they differ, so that we would avoid breaking bpftool commands
->> themselves? It's a bit more code, but then the list would be relatively
->> short, and not expected to grow. We can update the documentation to
->> mention only the new names, and just keep the short compat list hidden.
-> 
-> Yes, that should be easily possible. I do have a similar question to above,
-> though (as it involves updating documentation for new preference): can/should
-> that be a separate patch?
-> 
->> Some additional notes on the patch:
->>
->> There is also attach_type_strings[] in prog.c where strings for attach
->> types are re-defined, this time for when non cgroup-related programs are
->> attached (through "bpftool prog attach"). It's used for parsing the
->> input, so should be treated the same as the attach list in commons.c.
-> 
-> Good point. If we want to use libbpf text representations moving forward then I
-> can adjust this array as well. Do I assume correctly that we would want to keep
-> the existing variants as hidden fallbacks here too, as you mentioned above?
+Changes since RFC [3]:
 
-Yes, exactly.
+- widened scope of commands unprivileged BPF disabled allows
+  (Alexei, patch 1)
+- removed restrictions on map types for lookup, update, delete
+  (Alexei, patch 1)
+- removed kernel CONFIG parameter controlling unprivileged bpf disabled
+  change (Alexei, patch 1)
+- widened test scope to cover most BPF syscall commands, with positive
+  and negative subtests
 
->> If changing the attach type names, we should also update the following:
->> - man pages: tools/bpf/bpftool/Documentation/bpftool-{cgroup,prog}.rst
->> - interactive help (cgroup.c:HELP_SPEC_ATTACH_TYPES + prog.c:do_help())
->> - bash completion: tools/bpf/bpftool/bash-completion/bpftool
->>
->> Some of the tests in
->> tools/testing/selftests/bpf/test_bpftool_synctypes.py, related to
->> keeping those lists up-to-date, will also need to be modified to parse
->> the names from libbpf instead of bpftool sources. I can help with that
->> if necessary.
-> 
-> Sounds good; will do that here or as a follow-on (and reach out to you if I need
-> assistance), depending on your preference as inquired above.
+[1] https://lore.kernel.org/bpf/CAADnVQLTBhCTAx1a_nev7CgMZxv1Bb7ecz1AFRin8tHmjPREJA@mail.gmail.com/
+[2] https://lore.kernel.org/bpf/1652788780-25520-1-git-send-email-alan.maguire@oracle.com/T/#t
+[3] https://lore.kernel.org/bpf/20220511163604.5kuczj6jx3ec5qv6@MBP-98dd607d3435.dhcp.thefacebook.com/T/#mae65f35a193279e718f37686da636094d69b96ee
 
-Sounds like a plan :)
-Thanks,
-Quentin
+Alan Maguire (2):
+  bpf: refine kernel.unpriviliged_bpf_disabled behaviour
+  selftests/bpf: add tests verifying unprivileged bpf behaviour
+
+ kernel/bpf/syscall.c                          |  14 +-
+ .../bpf/prog_tests/unpriv_bpf_disabled.c      | 301 ++++++++++++++++++
+ .../bpf/progs/test_unpriv_bpf_disabled.c      |  83 +++++
+ 3 files changed, 397 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_unpriv_bpf_disabled.c
+
+-- 
+2.27.0
+
