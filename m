@@ -2,178 +2,355 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FEC52C272
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 20:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9255252C2D5
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 21:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241418AbiERSea (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 14:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38510 "EHLO
+        id S241703AbiERSzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 14:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241492AbiERSeX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 14:34:23 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F311CEEED;
-        Wed, 18 May 2022 11:34:22 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24IHDWND030997;
-        Wed, 18 May 2022 11:34:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=BxeQEfAHYAnS1zRiKPAV6HwkjbUlWUje/Eezwkv746U=;
- b=DavC8xU0xJJj9ZihueLR1yCGx40089qHbfQrUtpZH+Gq4tTfUfpGdOMiH9oG4cYdRA4Y
- v9dTqYTS/FesI0EX9XlI5yDbqwS0AdzsohElo+AtP2V2wvMvdUmb7li1Qn+KfQGZe34j
- RJIk+iEHB+2+YOL23e5DASDep0mxqM6lqt8= 
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2047.outbound.protection.outlook.com [104.47.74.47])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3g4836v1wa-2
+        with ESMTP id S241698AbiERSze (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 14:55:34 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403B1230200;
+        Wed, 18 May 2022 11:55:33 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24IHDVUo014469;
+        Wed, 18 May 2022 11:55:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=Y4fXA3SqzN/AtYvCKUWjmfX9QgZiDHvvv+NW5g+TU18=;
+ b=eVpZiByMARwEkKNWlglyOv3JRXBUGOJN3MXf6Pk9y/6Ok5SbZdUeJ36SGa3rpncGL5Yh
+ qWEPwlHLXj2OWzuYPVDD7y017RsV7mvjGH+6JIfC0luBrV5XNZXyLtY53ezud1I4Coyk
+ sRURtbAFflrb8pqIw3izNFbU3YqQxJdLzuA= 
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2176.outbound.protection.outlook.com [104.47.73.176])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g3yq0efn0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 May 2022 11:34:21 -0700
+        Wed, 18 May 2022 11:55:08 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TjvHUpD0PoopT/WGNuIg50TJVyNF5fQMi9G+19a99C28A2CXl7Xc4gKtbDHKU+dQh7EYkPbjWM47HD4cgyyGHGBibH5m/RORXg1aZvUDgvBA4v92lh1sVtJIlGJ1po/oU6m0p0NQ95UM7CnjHY5FVoYldWD+iXujDNLwbp6x8h2NtGN2WRZ3KT10KMYg7bItCcFJa7iOVRQT5T9NflnU04Vz2RyobLFz0Mlszy2doB1npcrHb59l6vX24O99JCyHUGGMbDkOXJnS8MWT+yIz9qJ3Mo4NnuQL1+ve1s2xAC20seKV2p7zkVrMSOr6QCEdKrX70TvVAVpeIB3b2R0t4g==
+ b=SgUOkrh2ZSjepNOOu+784zQR87Lgv2Ny3iDB6mwkbHBSsjkdxnEfZnrrdbrop6fMdkk8W7H5kfX+7yr1HmRPCA+zcmQ6/i4ZdXQFXpKebt6txrDSs8LIdW4tZHSCr9Vqi+czco1ooN2+jM9880Yk1gkuHO8nL0BpTCkeV9K9aJj20KYCD9N14a5CGzNx3wTezD+jQjMasMTSlwxHLZL/cZo22jw4c0bK7BrTU1g8ECTcuZvH3E478qukvAcDpVJEvFtaf07jy5xom6HX3LqynyltQda3AU+/Cxw22+B/X5xtyiqhYBZHe48LcqRDwgUfv7xhFyQ31F8FEi0bD1Nu1g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BxeQEfAHYAnS1zRiKPAV6HwkjbUlWUje/Eezwkv746U=;
- b=EYwfdEC65fZhaw8CTHiCUI4pfl2BQyXXv1nP3C9zxmcHwOdVXNb4hVPYec4jf3sfvqz1kpjI33fhqVrEoKm0koiu7kw/BTzsCLHSf0ox+aTIXDBC/Bw9ctsd7OYLHjRK+uaG9qp3S3DQIdDurEuurfx0bjzK8Oywtu/38OHTKB4KW7SijwYYXfSpP8pvEnk2yt1SP+/Hw4J0D1p+/xkH9cwDNuWCNmInuXcEx4a1o6ZUP3EAOj1S/GqZaS7AhDk6Pm9twkUtWke6YH07frYZLKrQTDVioG1Kaki0tDsxgr+ota3ncQgE4XEy9PJObncmISbPmwxIGw2I8cBSxuYTbg==
+ bh=Y4fXA3SqzN/AtYvCKUWjmfX9QgZiDHvvv+NW5g+TU18=;
+ b=XB8/b+fRe+pSPB0i+c762716X0gyUpSBU2ifNGcKMt9KkiR3p3E0U4EgKRYHnvqiv4pdLdYamm92PZploetB+J1M4pbIFdJWN2o1EMeaOMwvraM9WjltoBjTQ9bvxrYXWaSU3K3ogJcSPIFn5oErE1BiDIkFZEmTV8pRP3cacGR1rdTE8mJIxTYCXKZF6xXD+UAMUr1P/LH/ghJzIOCR/HTsSt/kEjHwoXI7gJOprfUEIj62WuCx4A1Geyw5Hb1siOtQ8XiNe0AQ/2pLBIfe3byAhtPG6VehscBPcOEOb/LebEKTypVg4VlG1zPwgAfzKtNXiirbhVq3ofz0N4E7NA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by MN2PR15MB2541.namprd15.prod.outlook.com (2603:10b6:208:122::23) with
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by BN6PR15MB1698.namprd15.prod.outlook.com (2603:10b6:405:4f::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.15; Wed, 18 May
- 2022 18:34:18 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::3061:40ff:2ad:33aa]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::3061:40ff:2ad:33aa%4]) with mapi id 15.20.5250.018; Wed, 18 May 2022
- 18:34:18 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Song Liu <song@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "Torvalds, Linus" <torvalds@linux-foundation.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 2/5] x86/alternative: introduce text_poke_set
-Thread-Topic: [PATCH bpf-next 2/5] x86/alternative: introduce text_poke_set
-Thread-Index: AQHYaOeQGQ/WNhSrw0WYR6bm3RcCIa0k4kgAgAAXq4A=
-Date:   Wed, 18 May 2022 18:34:18 +0000
-Message-ID: <A4019486-85F3-4900-8073-6879608706B1@fb.com>
-References: <20220516054051.114490-1-song@kernel.org>
- <20220516054051.114490-3-song@kernel.org>
- <20220518170934.GG10117@worktop.programming.kicks-ass.net>
-In-Reply-To: <20220518170934.GG10117@worktop.programming.kicks-ass.net>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.14; Wed, 18 May
+ 2022 18:55:05 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::5811:4996:bbfd:3c53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::5811:4996:bbfd:3c53%7]) with mapi id 15.20.5273.015; Wed, 18 May 2022
+ 18:55:05 +0000
+Message-ID: <1e426140-d374-5bfc-89f8-37df9ead26ba@fb.com>
+Date:   Wed, 18 May 2022 11:55:03 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.9.0
+Subject: Re: [PATCH v3 bpf-next 5/5] selftests/bpf: add selftest for
+ bpf_xdp_ct_add and bpf_ct_refresh_timeout kfunc
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.80.82.1.1)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3a115b7c-5e6b-402b-7a9c-08da38fd04ed
-x-ms-traffictypediagnostic: MN2PR15MB2541:EE_
-x-microsoft-antispam-prvs: <MN2PR15MB25411969A7DE72C6AA3A3640B3D19@MN2PR15MB2541.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: A/HPbOGaMzChcM+U5BBeGa8GAXUf00KCb6YNr49NryWJCiuyN/mWUyK9iK51TMQ84Leet2QSkW2ZV4Aa57RNR+jvPIkA/nx8ZUfZ3CusRFVj5zZN+XalW6xqYSOegVez1wK5EVEdkuKzkxzCjMCMETYgDRRFFWROI7lIF20RcLCfb7F2kfl+woefJkWa6kUSF6ReW9NtibCDGg7mzdSscJFTss25B9KXn1hHCWa3GlvBRITfUIDAxST4vhh8hOjwYgt7lMukyj1/bGkd4Lw3xDeU2sx2ssZNIMLkJAM8WjPowri636e6o7ctdtx00MI9r/tYVrZIs1FXUXFj4I7dvw6opn+lO7eg3GeSABIuID46hzM7jlvmMZWi9P4DnH4xcr03SkNzKgtgNQ/jlg57dNAFu8zabrMJsInKvf8IVdjO8D1pxYshXL8jnCde4jDsRfSV/CMdYzDcG6ZeDRW/9z2UHAmuJ6ue7fC7GpBM2f7jLPJSUvQitxqOUngNFPRMeyrxew/vGNdjUuZ8+N4rm/s6gFCFIjWV+c2Tw91qX+FRCxMVFqKP+90g4oLgt6sOHLTZJ4E+qiAU/lZxObslH2g+HFtD58Bt/NVTF4s5SbNseF4IHpLfW6FPLHGhgqvihCBbfmJJDeNrPyEGjXdKd2DQFitZDhQY6QcdZeayh9niMnQUoFEYG54cODqJlEboafoc7Uv3+Cnq1Y+RZ7Ev6HDy6aDVqoszxFCsEMz5Dav/cR+Ig4Kn5tQUFpTeES0b
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(2906002)(186003)(38070700005)(6512007)(122000001)(38100700002)(2616005)(6506007)(53546011)(5660300002)(66946007)(64756008)(76116006)(66446008)(66556008)(66476007)(6916009)(54906003)(4326008)(83380400001)(86362001)(91956017)(316002)(508600001)(36756003)(71200400001)(8676002)(33656002)(8936002)(6486002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q3g1MjBUQ3Y5R0N2KzRibkRUTjdqK24xb29HellLc2NZY0sxSHhWMFhTazFn?=
- =?utf-8?B?QlkwQnRYV2RrTUcwYy9xdnRxQ3hGZG4xd1FWTkpMdGtKQlIvUWRBYnhHc2xD?=
- =?utf-8?B?Y1piTnYxelg2RkdXb2FjUGtXaGY2dU1rTXREMEtkYzRNSXRCeWduQytLdFpW?=
- =?utf-8?B?NXRXOFduQVNIL0VBZHRiRDVYcDltUFJnMW9jWjNaanVGV2pKR3djMHBGazcr?=
- =?utf-8?B?SDVENDNSRmJsZ2w1UW9DTnF0cElyai9sSDR4Ulc3VWRSZ2pmZlR6cE1ncENn?=
- =?utf-8?B?TVZCOG1icTR0bTFOZmNOdXpBOGx3OTFGNUR2UlhwMDdOMGpxa3laNjR4bUdn?=
- =?utf-8?B?SEpRZzVkNWorU09wTEliWDlqVjh0c2J2czZBTEZlbWVNcElDMDlQMTROT0h1?=
- =?utf-8?B?Y1AwZVJpLzlJd3hZNHVKTG5jdFRXZithUlNBUzZyQkRKN1Q0NnYxRnNqdm15?=
- =?utf-8?B?WkhwZEx5cUZISUNpNGVKSEVjS0RYYzZvclZ5eEZqUlVPaEpMc0tZay9FYS9T?=
- =?utf-8?B?MDBTWVErd3RQR1RoYy9PVzhGR1RONHZvTmNOc0xTZFZvSnJ1OTBwNzFxQzEw?=
- =?utf-8?B?NFE1UGpRODNWTGtSSzAxZE1tend0ZTlIdjJXNmtSb1JNc1hHc0pwdnNDcUxk?=
- =?utf-8?B?QzdCUjBLTEZZMWtUR2I0ZU9MbzRXZUFhVnl3TmcxbDNMc2lvYUlTYXFiUUZy?=
- =?utf-8?B?Rk8xTG5oMDBRVURKZ1Rndk0zVlN0a243ZWFtTmg1VzR3R3BYSnR2R3FmbnRv?=
- =?utf-8?B?OXgwMnpUaXFZTE5BQkc5eW1XS2FWbGRTTy9QN0haRWoxWmtxa3dJRVIyUHhG?=
- =?utf-8?B?azAxUDVCeWhjcTlVbG5MNWw2NGxzRkJRZEJzMVkxL2o5d3FVUTJueHdTaFg4?=
- =?utf-8?B?ZFVKOTQ1dG5udXdDSjc1cSt0VDhLSnlQRkoybTNZSzJ3bUNaS2dEeFQyTXRr?=
- =?utf-8?B?R1NCaG56cmlJMHZlOEtuQWNreGlZN3hPRDBJL3dVR3ZDd3RUTHlKTmNNOFdG?=
- =?utf-8?B?Z1BHNHdqWHZ5M2kxVHhHMllnQnZLbzRNcXVoSVA2N0FCeTcvOTJsc0dZbEo1?=
- =?utf-8?B?VG4zNXU2SUtoWW1OZENxNDdhVklvTmJ0WjR3S1dLRDY4V1J0dEpXRmFDb3Bn?=
- =?utf-8?B?SWp1aVUxZjhsa1hPUHhLWFpaZkVJVndDUUJFeUxhcklDOWc1TzQ5S0pKekpO?=
- =?utf-8?B?aUdScHkrN3ZyTVpTSzNKNkNVVlI3dWhLYjZIOUpoZHB2NVd4cmlGOTJTbklJ?=
- =?utf-8?B?dVFmV0pLczNIY1ZqeDBzUXNCR3BEcUdoV1kwcjJMWThORTUrVWFkWGJrMzQ5?=
- =?utf-8?B?RDc3b0JJQndiY3JxL245d3o3NnQzTVJvUndpbHdieE41VytoTjh1VmdQc3or?=
- =?utf-8?B?ZDBGRmxGWlFIWUVlMm92MkxGN1ZSNVFVRDV5SlgrYmpJRlJoQzkzeU1yMENT?=
- =?utf-8?B?dEQ1d3YxUjFibzdKYkJvQit2UlRUaDE3L2RpdlJwU29sN2xCWUN4RXBac0lY?=
- =?utf-8?B?WDZlc3hNbUx4Y2o2S1dOTWlZeFJqVWMzbTErbWJNSldacXlpZlpMQ28yYy9T?=
- =?utf-8?B?OGU4ZVdsdWgvOFExOFpxcW9CR2tvOXM0anJrOFlQR0VtSlZjdlpKUTE2OUg1?=
- =?utf-8?B?ajB1UzZFZGNGclZINjdmWkUzYWQrMnBWTW96WHNCVUxoT29qd0xOKzNTb3Nr?=
- =?utf-8?B?WGRPbHZRemxWeXNIVitSOGR5Zm8yTzlWYWdWbVJFT0RaWWR0SElScmhNQU1k?=
- =?utf-8?B?cEhmWDNycHhNeGIrNlZNZUlWU0IyY1kwbnNvMXFDUXR6WGYwN2dPNXIyb0w2?=
- =?utf-8?B?K1VydHRMVVhCVEhXU0JaMTVvWHlFY014K1VUMVFicnZ4K2Fva2JlbTJlTkh3?=
- =?utf-8?B?UVh6TWxUYld2L3ZFWTRRTmdzdklNaXdjRUx4STIrS3V5WmVZZDhRRkNnNERH?=
- =?utf-8?B?dTc5enVKYldPSmhlNnRxdGJSeEFna3djRWdxTjBTaDZZcnpZN0FZV1FnS1M2?=
- =?utf-8?B?ZEwrQjVvZmI0VC9PSDFxUFBUSE16c01OY2svV2I1cWFBZjJjcmdHVEsyVkhH?=
- =?utf-8?B?T1ZkVkQ4QUMrbFJrK0t1ZTcyRVVwenF0WEltNkVucytGUVJKcHpOUFlULzY0?=
- =?utf-8?B?M1N6VGtwTVp6dVFIN3VKcjdTQW45YUJidEswbW9CTVJOTnRhenhnWlFBVzB3?=
- =?utf-8?B?WnB3OWV0SlM4Ymh5TUlXYUxKQ1EwSGxxcDJ2NXZ1VkhOMklJR2FNMWZmZ2k5?=
- =?utf-8?B?ME5vcWVRQXU3N2VOM1ZhTHJVM1pTNHJBRk45WnRsYW1ZV0VWU0JDbUROM21r?=
- =?utf-8?B?bW9Tdk9hWUl5aTRVb28yL090NFdoNElLTzB6NzBUR3FNNU5jRjdKUFZ0UGd4?=
- =?utf-8?Q?J1ZgHzNRSlrwE9JDLHuIKqULSfVkIxc9rERML?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E7133D1BD412E140A35AD2D42FCDF9CB@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com, pablo@netfilter.org,
+        fw@strlen.de, netfilter-devel@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
+        memxor@gmail.com
+References: <cover.1652870182.git.lorenzo@kernel.org>
+ <e95abdd9c6fa1fa97f3ca60e8eb06799784e671a.1652870182.git.lorenzo@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <e95abdd9c6fa1fa97f3ca60e8eb06799784e671a.1652870182.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0170.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c7::25) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fec70019-5464-49bb-4277-08da38ffec13
+X-MS-TrafficTypeDiagnostic: BN6PR15MB1698:EE_
+X-Microsoft-Antispam-PRVS: <BN6PR15MB1698EABD04D88CE5ED5F2702D3D19@BN6PR15MB1698.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: We9NRwQ3O2vIqk/FiYv5xmfsimGq/sEZ4fUUWYxLnV0hS5oHOTdiA3+0ahf16LPo5RhSuQg+wHWYwH9ftuBsQCmaDH0H/R2AxbCQJDRk1ZEmFooUw2eVWeB9gLcuPV5fgoQpApRTYwxWjLM+kF4lVhyrmhVl/gM/go4ImlKXw9tA5GsFd+45MnNZ3f/JwdcCA/sT6p2Z7GAaP8zDBhsy19UA9LNK64diXIy8fIMU1Sx8uChXxGfNDjwc8AD4z0uluF/Hsk8bG5A2toTvAhDF8RfG6j8TFkywaZFYrr+D6Z+ai3NKPGgnGijgH9c+6IDqxuTZSrsjP54dEzcMVqaQjgq/mTDhuJ7tGelggIeicvzEq4frbB6AMHpDCABpm0lcVg/DDvG00oNUYHFSE/eF1Er8lVZhWRjHgyMoAEtm1FmUlRkef3xhA641prBZXgHzODq2oBeGua69A8qMID1uCDWScRobHHPz5dtLhkHGhH9rC+2y4Y/zoQtQogZdpD/AHW9LLDOVxBuW4Fnk7PTwe4VaMgFtNpta4f+yTbIUpF84WLrA4P7vDyY1N41v7u4C5lFiOY/P0LksQpd14TVNvXp7UvP6RbkxwG/3jWfr68tFX8T0oDUksj+AbsePgl/7IZqAp91lDyfW2ZANN45MxwWlRVK8zQMvrvppm8LGl7co7vXMMhpgnVDWtbSCt78M4pMiL5QxBGEs2CotV4pTa1VKev7Y605lzzk5XxDrZYqT3l1GPvx5Ocrxx59/X+x/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(38100700002)(2616005)(6512007)(6486002)(508600001)(186003)(52116002)(53546011)(6506007)(83380400001)(4326008)(36756003)(31686004)(8676002)(316002)(66476007)(66556008)(66946007)(86362001)(31696002)(5660300002)(2906002)(7416002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dmNJcXhGQmFoa0g0Z2l5U0NoZkVtQmt4TmtWdVNwaFpwWVdCSGZIOERmSGsz?=
+ =?utf-8?B?MU9PSmJtZDNGdTA2d1ZNVUJoTW1TV0s2Y0FwRUJVQWNCN3dkcUFlM3JPR1kz?=
+ =?utf-8?B?WThJaGJtKzFxYWZqbzAwSmJSUXZOTWM2NmhSaHRnK3pDSGlhalpzU2xVbzZo?=
+ =?utf-8?B?a3VZY2pCd01RVkgxYXFtRTRIUjNVL2EwNE4vamluYlR4bDZVdTB6UDVVbU93?=
+ =?utf-8?B?YzdjR3ROQnpmdTZpY3lSeHl5WlVZZ3o3dlFWRi9oYkxVWEVQWExwSVp3MnFW?=
+ =?utf-8?B?RzYyeHg1L1RkOE1GV21zaEo0bHVGb3hIUjVFTzJ0KzE1TFAwNkVVamdadGtO?=
+ =?utf-8?B?QkEyYzgxck11bitvanZOSk13cDRGYmlXSSs3amNWTGxMWHpRWVQvZDNZdm40?=
+ =?utf-8?B?UTQyUHNTcHltWk8wR2I5TlYxOEtadWJXRitBaXh6NFhOSkZiN25IYTEzNm9Q?=
+ =?utf-8?B?eHdFSzBQWmNrWWNlYUZGREFoWi96TFk4TjBLelBJcVAyZU5GeUJMS05zc09V?=
+ =?utf-8?B?NTZYM295Z3M3YlpIL1UrUS9wdHhLcVRiRVExT2tDTXNmdU0wUXJGREJ2Y0Z6?=
+ =?utf-8?B?eW1uU01td1ptODFxQUltb09hZ0NoVFZhQlc4bVB1WG4xbHNyTHNLTTVZOEJY?=
+ =?utf-8?B?OGM2c3dvNUFxdFlhQ2xXZnBiMDZsQitqMmFTaXM4WTJGUUxtU3ZIMVhQckpL?=
+ =?utf-8?B?SzdMOUdoV1ppcFNPbm0vZFhvQStXcGZUKzNiMnEyN09MMVRCTTVEaFFid3A4?=
+ =?utf-8?B?ZmpqdDE3SjhEVXVWUnNETzZkZTRRYnhPSXhXQTUxNFNGM080eU93U1BuT1dL?=
+ =?utf-8?B?RkdXNmtCRlVpK2VaM2VXcHFZMEs3eGdMSUVSLzR1UkNFU0crTmdxMTlqaWsv?=
+ =?utf-8?B?L0UxKy90WkxIT0pNWDhoY0xscEpWUlc0VDF6dmhZb3NlUlpSZ0Q2NnRGN1Y3?=
+ =?utf-8?B?RHlCMHF3NlVhcGVPa25FemVER001cjZISW1vVFJWR1hsMkZGN0lRUDN0b0Z4?=
+ =?utf-8?B?aXVOT3RYbmE1QlRvZFFkRkhSbGNKS215dG1Dbk52VVRZL3Y4a0psSzJxcDU4?=
+ =?utf-8?B?TlJEdHVsQnRVVnNYWjNya2svTTRoS1QyeU9PU2RoQlJRVWh3b0NIVlZUWm8x?=
+ =?utf-8?B?aUd4UXhQaWZCZWRhVWs4aTg4aFcxQjZDbmpTUzIra2M2bkIweWxyaUdVRThQ?=
+ =?utf-8?B?QzFsZURmQnI5TVE3c050MDBjMHdPTnlHeUo3RnNRM0tmaXN0TFA0VW45NFox?=
+ =?utf-8?B?MGR3Sm1CM001WDhtRko2Y3BMNlI1eFRTUHJYMEJmd1Y1dXFUUXlWN1FrWW1u?=
+ =?utf-8?B?djlXL28wU3R3SUI1WXE3NkxjTWhpVmljc201T1pDdkFpMXJwUitWd2NOYzg2?=
+ =?utf-8?B?WE5wNjVDTFBHNkdYTHJJVlhMcm1jd0dOMXRid3pMc0hPRHpUOTl2Wk5JVmtR?=
+ =?utf-8?B?cExmU2cySHBIeCsrWUF5ZzdCd2I1eHMvZWp3TmM0M2hkTGJ6bGZlK1JRcFUz?=
+ =?utf-8?B?UWYwT3V4RWE5dHg2RU9ObjYrSlY4Ynlta1lNWTg3TUkwQVI0eDk1K3dZWld5?=
+ =?utf-8?B?Nm1NOUNmNTl6Z3BzbDlCeUJJZ1NwWlFPS1cxQkxBVWNodjM0dTRLNm9WVlE5?=
+ =?utf-8?B?dEpQcGF1MFJVVzhWU3VnY2NvNmlERlBvVDJtUXpQaE43dGNXN2ZBZnFCMkFF?=
+ =?utf-8?B?NWhaV2hXdzRON3NNVnFrV25kTzVvdmhaT2xnalhNVnlRUUZ3dTQrcWR5bVNl?=
+ =?utf-8?B?M0wwVHB3MUJiUEp4SlBMYUhIY0JRNkxSVmN6bWIxNnJPK29VUG9PNk1ZMU1P?=
+ =?utf-8?B?MFFLQ0Z5SzhXNDJlZlNrWjlGSUVGQWx1bXJaeDgvZzIrUFRhdUllNVZibnU1?=
+ =?utf-8?B?enBtL3d2QXl3TSt0bVhJaUw2Q2w5Tkw3T2JlN21NME5jWjdNL1cyb2wzd1VY?=
+ =?utf-8?B?VWo3MzBId0tRbVFtUFp1TUNvZk1WTnkwWHhEeDdVcGpOei9IeXhUbkxRRWNC?=
+ =?utf-8?B?ZW9lc2VKQ0tPSW9KT3FBNG9ydTkyWk9OWlo1Mi9aRm10eFpyWG11MVpqU2FC?=
+ =?utf-8?B?c1Jjcm1DQUNDV2YxRWwvNXQ3OHZsZDN3ZEUzZDFqckh1NElndGlaWmpaQUFs?=
+ =?utf-8?B?UlkzejJteWZDSlJQVjBkNTNYcy9KNFRGdDEvb204SXhXU2ZIK0hvNVd4NkUv?=
+ =?utf-8?B?NWpwY2pzNzBpOWJkWm1BbzJHdXZISUVmNGFtbm5YRUI0cmNueXQ3MEtUcFZ4?=
+ =?utf-8?B?ZHJvSnRGR0IraVFSMkd0b0R4M3pDN2lpSXZsU1BIMUdVVTdwSk9QTmd5U21h?=
+ =?utf-8?B?VG9jRWRqNW80cHl2aWZqU09qOGZ0T1J0QzJNZDdzM3hpRXpRTlZpYTNqWUpo?=
+ =?utf-8?Q?K++k+OSLlmTKbnP4=3D?=
 X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fec70019-5464-49bb-4277-08da38ffec13
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a115b7c-5e6b-402b-7a9c-08da38fd04ed
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 May 2022 18:34:18.6743
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2022 18:55:05.7191
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pgDa9J4+hqkqekwgG4fRIc/XR7To4jKK+NN2QQ1vuGpdcZ1H+DOSw6GcGJwibgEpaFwaZ53ZvUhuX9XoD2UsAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2541
-X-Proofpoint-GUID: xheJV9WGQNV5Kicl-3DxPhTRb49SuGqL
-X-Proofpoint-ORIG-GUID: xheJV9WGQNV5Kicl-3DxPhTRb49SuGqL
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s3Nsanq+Y+l2eLUOzwRmwNPRqX2rjgpfqSAXpAePCRFLPpT8WZ+OhQsVj2hQrbL2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1698
+X-Proofpoint-GUID: F43r2SXnI1ZvXNR2tEjbqqylCtw66vu_
+X-Proofpoint-ORIG-GUID: F43r2SXnI1ZvXNR2tEjbqqylCtw66vu_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-18_06,2022-05-17_02,2022-02-23_01
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gT24gTWF5IDE4LCAyMDIyLCBhdCAxMDowOSBBTSwgUGV0ZXIgWmlqbHN0cmEgPHBldGVy
-ekBpbmZyYWRlYWQub3JnPiB3cm90ZToNCj4gDQo+IE9uIFN1biwgTWF5IDE1LCAyMDIyIGF0IDEw
-OjQwOjQ4UE0gLTA3MDAsIFNvbmcgTGl1IHdyb3RlOg0KPj4gSW50cm9kdWNlIGEgbWVtc2V0IGxp
-a2UgQVBJIGZvciB0ZXh0X3Bva2UuIFRoaXMgd2lsbCBiZSB1c2VkIHRvIGZpbGwgdGhlDQo+PiB1
-bnVzZWQgUlggbWVtb3J5IHdpdGggaWxsZWdhbCBpbnN0cnVjdGlvbnMuDQo+IA0KPiBGV0lXLCB5
-b3UncmUgZ29pbmcgdG8gdXNlIGl0IHRvIHNldCBJTlQzICgweENDKSwgdGhhdCdzIG5vdCBhbiBp
-bGxlZ2FsDQo+IGluc3RydWN0aW9uLiBJTlRPICgweENFKSB3b3VsZCBiZSBhbiBpbGxlZ2FsIGlu
-c3RydWN0aW9uIChpbiA2NGJpdA0KPiBtb2RlKS4NCg0KSG1t4oCmIHdlIGhhdmUgYmVlbiB1c2lu
-ZyBJTlQzIGFzIGlsbGVnYWwvaW52YWxpZC9zcGVjaWFsIGluc3RydWN0aW9ucyBpbiANCnRoZSBK
-SVQuIEkgZ3Vlc3MgdGhleSBhcmUgZXF1YWxseSBnb29kIGZvciB0aGlzIGpvYj8NCg0KPiANCj4g
-DQo+PiArCXJldHVybiBhZGRyOw0KPj4gK30NCj4+ICsNCj4+ICsvKioNCj4+ICsgKiB0ZXh0X3Bv
-a2Vfc2V0IC0gbWVtc2V0IGludG8gKGFuIHVudXNlZCBwYXJ0IG9mKSBSWCBtZW1vcnkNCj4+ICsg
-KiBAYWRkcjogYWRkcmVzcyB0byBtb2RpZnkNCj4+ICsgKiBAYzogdGhlIGJ5dGUgdG8gZmlsbCB0
-aGUgYXJlYSB3aXRoDQo+PiArICogQGxlbjogbGVuZ3RoIHRvIGNvcHksIGNvdWxkIGJlIG1vcmUg
-dGhhbiAyeCBQQUdFX1NJWkUNCj4+ICsgKg0KPj4gKyAqIE5vdCBzYWZlIGFnYWluc3QgY29uY3Vy
-cmVudCBleGVjdXRpb247IHVzZWZ1bCBmb3IgSklUcyB0byBkdW1wDQo+PiArICogbmV3IGNvZGUg
-YmxvY2tzIGludG8gdW51c2VkIHJlZ2lvbnMgb2YgUlggbWVtb3J5LiBDYW4gYmUgdXNlZCBpbg0K
-Pj4gKyAqIGNvbmp1bmN0aW9uIHdpdGggc3luY2hyb25pemVfcmN1X3Rhc2tzKCkgdG8gd2FpdCBm
-b3IgZXhpc3RpbmcNCj4+ICsgKiBleGVjdXRpb24gdG8gcXVpZXNjZSBhZnRlciBoYXZpbmcgbWFk
-ZSBzdXJlIG5vIGV4aXN0aW5nIGZ1bmN0aW9ucw0KPj4gKyAqIHBvaW50ZXJzIGFyZSBsaXZlLg0K
-PiANCj4gVGhhdCBjb21tZW50IHN1ZmZlcnMgZnJvbSBjb3B5LXBhc3RhIGFuZCBuZWVkcyBhbiB1
-cGRhdGUgYmVjYXVzZSBpdA0KPiBjbGVhcmx5IGlzbid0IGNvcnJlY3QuDQoNCldpbGwgZml4IGlu
-IHRoZSBuZXh0IHZlcnNpb24uIA0KDQo+IA0KPj4gKyAqLw0KPiANCj4gT3RoZXIgdGhhbiB0aGF0
-LCBzZWVtcyBmaW5lLg0KPiANCj4gQWNrZWQtYnk6IFBldGVyIFppamxzdHJhIChJbnRlbCkgPHBl
-dGVyekBpbmZyYWRlYWQub3JnPg0KDQpUaGFua3MsDQpTb25n
+
+
+On 5/18/22 3:43 AM, Lorenzo Bianconi wrote:
+> Introduce selftests for the following kfunc helpers:
+> - bpf_xdp_ct_add
+> - bpf_skb_ct_add
+> - bpf_ct_refresh_timeout
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>   .../testing/selftests/bpf/prog_tests/bpf_nf.c |  4 ++
+>   .../testing/selftests/bpf/progs/test_bpf_nf.c | 72 +++++++++++++++----
+>   2 files changed, 64 insertions(+), 12 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> index dd30b1e3a67c..be6c5650892f 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> @@ -39,6 +39,10 @@ void test_bpf_nf_ct(int mode)
+>   	ASSERT_EQ(skel->bss->test_enonet_netns_id, -ENONET, "Test ENONET for bad but valid netns_id");
+>   	ASSERT_EQ(skel->bss->test_enoent_lookup, -ENOENT, "Test ENOENT for failed lookup");
+>   	ASSERT_EQ(skel->bss->test_eafnosupport, -EAFNOSUPPORT, "Test EAFNOSUPPORT for invalid len__tuple");
+> +	ASSERT_EQ(skel->bss->test_add_entry, 0, "Test for adding new entry");
+> +	ASSERT_EQ(skel->bss->test_succ_lookup, 0, "Test for successful lookup");
+
+The default value for test_add_entry/test_succ_lookup are 0. So even if 
+the program didn't execute, the above still succeeds. So testing with
+a non-default value (0) might be a better choice.
+
+> +	ASSERT_TRUE(skel->bss->test_delta_timeout > 9 && skel->bss->test_delta_timeout <= 10,
+> +		    "Test for ct timeout update");
+
+ASSERT_TRUE(skel->bss->test_delta_timeout == 10, ...)? Could you add 
+some comments on why the value should be 10. It is not obvious by
+inspecting the code.
+
+>   end:
+>   	test_bpf_nf__destroy(skel);
+>   }
+> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> index f00a9731930e..361430dde3f7 100644
+> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> @@ -1,6 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   #include <vmlinux.h>
+>   #include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_endian.h>
+>   
+>   #define EAFNOSUPPORT 97
+>   #define EPROTO 71
+> @@ -8,6 +9,8 @@
+>   #define EINVAL 22
+>   #define ENOENT 2
+>   
+> +extern unsigned long CONFIG_HZ __kconfig;
+> +
+>   int test_einval_bpf_tuple = 0;
+>   int test_einval_reserved = 0;
+>   int test_einval_netns_id = 0;
+> @@ -16,6 +19,9 @@ int test_eproto_l4proto = 0;
+>   int test_enonet_netns_id = 0;
+>   int test_enoent_lookup = 0;
+>   int test_eafnosupport = 0;
+> +int test_add_entry = 0;
+> +int test_succ_lookup = 0;
+> +u32 test_delta_timeout = 0;
+>   
+>   struct nf_conn;
+>   
+> @@ -26,31 +32,40 @@ struct bpf_ct_opts___local {
+>   	u8 reserved[3];
+>   } __attribute__((preserve_access_index));
+>   
+> +struct nf_conn *bpf_xdp_ct_add(struct xdp_md *, struct bpf_sock_tuple *, u32,
+> +			       struct bpf_ct_opts___local *, u32) __ksym;
+>   struct nf_conn *bpf_xdp_ct_lookup(struct xdp_md *, struct bpf_sock_tuple *, u32,
+>   				  struct bpf_ct_opts___local *, u32) __ksym;
+> +struct nf_conn *bpf_skb_ct_add(struct __sk_buff *, struct bpf_sock_tuple *, u32,
+> +			       struct bpf_ct_opts___local *, u32) __ksym;
+>   struct nf_conn *bpf_skb_ct_lookup(struct __sk_buff *, struct bpf_sock_tuple *, u32,
+>   				  struct bpf_ct_opts___local *, u32) __ksym;
+>   void bpf_ct_release(struct nf_conn *) __ksym;
+> +void bpf_ct_refresh_timeout(struct nf_conn *, u32) __ksym;
+>   
+>   static __always_inline void
+> -nf_ct_test(struct nf_conn *(*func)(void *, struct bpf_sock_tuple *, u32,
+> -				   struct bpf_ct_opts___local *, u32),
+> +nf_ct_test(struct nf_conn *(*look_fn)(void *, struct bpf_sock_tuple *, u32,
+> +				      struct bpf_ct_opts___local *, u32),
+> +	   struct nf_conn *(*add_fn)(void *, struct bpf_sock_tuple *, u32,
+> +				     struct bpf_ct_opts___local *, u32),
+>   	   void *ctx)
+>   {
+>   	struct bpf_ct_opts___local opts_def = { .l4proto = IPPROTO_TCP, .netns_id = -1 };
+>   	struct bpf_sock_tuple bpf_tuple;
+>   	struct nf_conn *ct;
+> +	int err;
+>   
+>   	__builtin_memset(&bpf_tuple, 0, sizeof(bpf_tuple.ipv4));
+>   
+> -	ct = func(ctx, NULL, 0, &opts_def, sizeof(opts_def));
+> +	ct = look_fn(ctx, NULL, 0, &opts_def, sizeof(opts_def));
+>   	if (ct)
+>   		bpf_ct_release(ct);
+>   	else
+>   		test_einval_bpf_tuple = opts_def.error;
+>   
+>   	opts_def.reserved[0] = 1;
+> -	ct = func(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def, sizeof(opts_def));
+> +	ct = look_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> +		     sizeof(opts_def));
+>   	opts_def.reserved[0] = 0;
+>   	opts_def.l4proto = IPPROTO_TCP;
+>   	if (ct)
+> @@ -59,21 +74,24 @@ nf_ct_test(struct nf_conn *(*func)(void *, struct bpf_sock_tuple *, u32,
+>   		test_einval_reserved = opts_def.error;
+>   
+>   	opts_def.netns_id = -2;
+> -	ct = func(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def, sizeof(opts_def));
+> +	ct = look_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> +		     sizeof(opts_def));
+>   	opts_def.netns_id = -1;
+>   	if (ct)
+>   		bpf_ct_release(ct);
+>   	else
+>   		test_einval_netns_id = opts_def.error;
+>   
+> -	ct = func(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def, sizeof(opts_def) - 1);
+> +	ct = look_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> +		     sizeof(opts_def) - 1);
+>   	if (ct)
+>   		bpf_ct_release(ct);
+>   	else
+>   		test_einval_len_opts = opts_def.error;
+>   
+>   	opts_def.l4proto = IPPROTO_ICMP;
+> -	ct = func(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def, sizeof(opts_def));
+> +	ct = look_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> +		     sizeof(opts_def));
+>   	opts_def.l4proto = IPPROTO_TCP;
+>   	if (ct)
+>   		bpf_ct_release(ct);
+> @@ -81,37 +99,67 @@ nf_ct_test(struct nf_conn *(*func)(void *, struct bpf_sock_tuple *, u32,
+>   		test_eproto_l4proto = opts_def.error;
+>   
+>   	opts_def.netns_id = 0xf00f;
+> -	ct = func(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def, sizeof(opts_def));
+> +	ct = look_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> +		     sizeof(opts_def));
+>   	opts_def.netns_id = -1;
+>   	if (ct)
+>   		bpf_ct_release(ct);
+>   	else
+>   		test_enonet_netns_id = opts_def.error;
+>   
+> -	ct = func(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def, sizeof(opts_def));
+> +	ct = look_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> +		     sizeof(opts_def));
+>   	if (ct)
+>   		bpf_ct_release(ct);
+>   	else
+>   		test_enoent_lookup = opts_def.error;
+>   
+> -	ct = func(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4) - 1, &opts_def, sizeof(opts_def));
+> +	ct = look_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4) - 1, &opts_def,
+> +		     sizeof(opts_def));
+>   	if (ct)
+>   		bpf_ct_release(ct);
+>   	else
+>   		test_eafnosupport = opts_def.error;
+> +
+> +	bpf_tuple.ipv4.saddr = bpf_get_prandom_u32(); /* src IP */
+> +	bpf_tuple.ipv4.daddr = bpf_get_prandom_u32(); /* dst IP */
+> +	bpf_tuple.ipv4.sport = bpf_htons(bpf_get_prandom_u32()); /* src port */
+> +	bpf_tuple.ipv4.dport = bpf_htons(bpf_get_prandom_u32()); /* dst port */
+
+Since it is already random number, bpf_htons is not needed here.
+bpf_endian.h can also be removed.
+
+> +
+> +	ct = add_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> +		    sizeof(opts_def));
+> +	if (ct) {
+> +		struct nf_conn *ct_lk;
+> +
+> +		ct_lk = look_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4),
+> +				&opts_def, sizeof(opts_def));
+> +		if (ct_lk) {
+> +			/* update ct entry timeout */
+> +			bpf_ct_refresh_timeout(ct_lk, 10000);
+> +			test_delta_timeout = ct_lk->timeout - bpf_jiffies64();
+> +			test_delta_timeout /= CONFIG_HZ;
+> +			bpf_ct_release(ct_lk);
+> +		} else {
+> +			test_succ_lookup = opts_def.error;
+> +		}
+> +		bpf_ct_release(ct);
+> +	} else {
+> +		test_add_entry = opts_def.error;
+> +		test_succ_lookup = opts_def.error;
+> +	}
+>   }
+>   
+[...]
