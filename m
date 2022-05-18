@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BA052BA6F
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 14:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28ED52BAC5
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 14:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbiERM1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 08:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48636 "EHLO
+        id S236960AbiERMcv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 08:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236545AbiERM10 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 08:27:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9503FD35E;
-        Wed, 18 May 2022 05:27:24 -0700 (PDT)
+        with ESMTP id S237013AbiERMbY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 08:31:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEA319C748;
+        Wed, 18 May 2022 05:28:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 316F5615FE;
-        Wed, 18 May 2022 12:27:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FA0FC36AE3;
-        Wed, 18 May 2022 12:27:21 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DFC19B81FBA;
+        Wed, 18 May 2022 12:28:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFD6CC385AA;
+        Wed, 18 May 2022 12:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652876843;
-        bh=kxOZ5QqWCnpmv5KQaoJ4TOsadG16Vztf+q4rTiMkJ3E=;
+        s=k20201202; t=1652876895;
+        bh=59034JlVFmmJqNI8BkjyG9GauHmmps4h9zRtuWOswGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Umit11Mac3n7EFrWi5vz93Vy/DmAFIE5ZX28dqxdFCNvpjmxYi3gtyh6q+ZMFG3Hy
-         WHVb6G1689lubJcoCxpjyvC1YyBfvtv2doUxNJw85CgqF+06CQm/dzDzsNgzYdn9QZ
-         6DOqopQyvO0HwZAkCOUGfQ6cWa2gUQ7B/lw0BYpylWX914Iz4OVgUhthM6GdtbkWhP
-         BrvsdpTg2xO5f446fEsxAGYSyoeRaSIEq1FvsK/qBz/NtaSz2XByyW4/3ZwWZJgZ8N
-         PacclyS9foGpKN5di0JCbXuMBMhN0HvlzOXHejsqq9FrE9pipf5pZ24faJVkjBetgY
-         CaeMm1ZRSq4Rg==
+        b=Uv25hGStdhTcomC6evrU4/Oy1SN0Hl8b1yldSYZPt+X2MixOT2Efn7Kz/KpzP2+ms
+         XmLetg56rTQqPgmDGApj0Mvig9mNMTqnwGA1K1ct3YL2mWiyecZiPMOTC4Xo3wXbpS
+         yd+3vVM2hJuzz8Daubri9ArMKpUs4z51LILDpjbFHLAkfmiuRkhx+/uh4kweW4RPPF
+         aADhyu1CCtocf+9g9g77dsIJOlOo+dhYDk3rD/F+3xlmlcJUFfciBK05/HZIT418t1
+         Y+P9eQOIGGVn4Raw+vMSPYbK0sTabBROj5nYdBDF0/YRMswIwBEsb4JH4BDGU1Jjas
+         U74sq2WIpSqhQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Lina Wang <lina.wang@mediatek.com>,
@@ -42,12 +42,12 @@ Cc:     Lina Wang <lina.wang@mediatek.com>,
         luiz.von.dentz@intel.com, netdev@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 14/23] net: fix wrong network header length
-Date:   Wed, 18 May 2022 08:26:27 -0400
-Message-Id: <20220518122641.342120-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 08/17] net: fix wrong network header length
+Date:   Wed, 18 May 2022 08:27:42 -0400
+Message-Id: <20220518122753.342758-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220518122641.342120-1-sashal@kernel.org>
-References: <20220518122641.342120-1-sashal@kernel.org>
+In-Reply-To: <20220518122753.342758-1-sashal@kernel.org>
+References: <20220518122753.342758-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -101,10 +101,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 180fa6a26ad4..708cc9b1b176 100644
+index e4badc189e37..7ef0f5a8ab03 100644
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
-@@ -3896,7 +3896,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+@@ -3873,7 +3873,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
  	unsigned int delta_len = 0;
  	struct sk_buff *tail = NULL;
  	struct sk_buff *nskb, *tmp;
@@ -113,7 +113,7 @@ index 180fa6a26ad4..708cc9b1b176 100644
  
  	skb_push(skb, -skb_network_offset(skb) + offset);
  
-@@ -3936,9 +3936,11 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+@@ -3913,9 +3913,11 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
  		skb_push(nskb, -skb_network_offset(nskb) + offset);
  
  		skb_release_head_state(nskb);
