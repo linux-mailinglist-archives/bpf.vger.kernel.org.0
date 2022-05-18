@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A1752C69D
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 00:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC07852C693
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 00:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbiERWrm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 18:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
+        id S230267AbiERWru (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 18:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbiERWrg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 18:47:36 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36801F68A7;
-        Wed, 18 May 2022 15:47:32 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h186so3428394pgc.3;
-        Wed, 18 May 2022 15:47:32 -0700 (PDT)
+        with ESMTP id S230223AbiERWrk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 18:47:40 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6105C149159;
+        Wed, 18 May 2022 15:47:33 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id pq9-20020a17090b3d8900b001df622bf81dso3472815pjb.3;
+        Wed, 18 May 2022 15:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6/vKyzls7syv00DbTMSXJKHt/yE06QGrFeT+BAiim5I=;
-        b=B+PqxvLVuo7JR62fdK74JSKwXF0yOd8vPTRoOe7kLQPrv2EAkm8iGEv7UkD9s2Lsaq
-         kT3hV15fEuBypK8aZnQfFF8ZLBGGHSKAbpYfymFEC50tLgzx6ORuOZUOE1KFeEaXhz6D
-         Xu1UU2K3R38oPWFQIb4M4ffJLWX2dKuZ4tF6BHtUtdcIIkCFlYVTJdlk4lht/NN/OFno
-         3J/HxwGmk7hukbcxOIYuzOxvJ8//6bHzhaIypYZrRntxd9osRqYc+XMIDYNiJiwU3f/Y
-         BybVYK0MAZPLf1LExTjp0bybT9vWImwmc+EIfK4kcE4e3ZFppgoZ0hn/FEfBnGFvt4Qb
-         /v6Q==
+        bh=a//VlMypHjw3Cd3kRCT2B/bQ9DLIRsRYt3Pyz9Ujkpg=;
+        b=YBYFZ/HvKpKBW/+JVtbbfEKcS2R2W4ZNR0VeUUy7ohJ4KL2IYUcVQdb9Bgu0b3f/z8
+         jHamO32CcL0CgE2Vx22F9uiRtbXH+IzcVodBigYZrX4og4YUlgTh/S2a00Aa3HMFj2IR
+         bRILlt23gobg6JnYzZyJOsiAUD02Pq9d2n81Qg5RUr2hoHUFngb87OYuT8Mxv6EjR52w
+         WpTsNg3wVO05oW3LH7ajZW4C4aIujPMMRd3sI3e4AYRkJVshFViQi+4SrevFCtWmhiID
+         hdYr5gCJ6HnTzd5ffQTZ6uYwyD58c+d2LwGPpaErP0Y2QVPkpK6PyCCVnqbU/h5QnjNS
+         Yf4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=6/vKyzls7syv00DbTMSXJKHt/yE06QGrFeT+BAiim5I=;
-        b=aY5ZJULj4aRrgKSI+HO5mdznOTeKcEDoztmjwRf8HCHdT3x8aCr42MtieMeEo/5BIF
-         3lu+Go+gz9svxmUdN/xOOifM8Wip0jETThAiwn3njuKGjYjlJxmjU5UNC6kHWvsQyMak
-         Sk2fCvyA4Tt+kOJhmiIFUDFoQk7cBB9CXEW/7w+vMTTwG+7mwmOGzNkiqXxhPJnYwWsH
-         0dwyyWHq3HGxhXlf6oHrPLjDB6YtWs6pfG26Q6gT8vNXBCjn9mO/WfsQWW+v54OjHzov
-         MN49eym89IUCJrGtOyCjJfo4QEYvYmxmk57Tm7joQw+bMTZupu8aWWJ2dTBAQk+uCBY5
-         fRrQ==
-X-Gm-Message-State: AOAM53069WcZ7er3mowboEVfXDzzPdGAm227nEMLCascJCxfL5C1gX53
-        gPNuoJueHK7kr09tAIqDq7U=
-X-Google-Smtp-Source: ABdhPJxv8Q2CtbizcugUZbgc+ae3NHGmBDrEGzA2CQleVUsGJPaMd94wAq20h9xVRFiR6JP4Sopidg==
-X-Received: by 2002:a63:5f4a:0:b0:3f5:d34e:dd44 with SMTP id t71-20020a635f4a000000b003f5d34edd44mr1346184pgb.567.1652914051587;
-        Wed, 18 May 2022 15:47:31 -0700 (PDT)
+        bh=a//VlMypHjw3Cd3kRCT2B/bQ9DLIRsRYt3Pyz9Ujkpg=;
+        b=GES2ewEMbMXCr5DQIyBWli193uxRZ6/JjMEgL9HItM1vbeyPMSxXbpeKeu8Xe5jf84
+         QGZo4nO58sfD0r4tnl270YL8NLxSBNo0IGTZ4QjUN2WALEaD499NioPaiouGGJ4UNDsU
+         x7ZULF8FKgpXj3b75TuSBMjxDTmC144SArqXQQIk+uDpea0QYHpCQwsFJ58RF6k7Iy7b
+         ARJZDJh4kTeZz6uzkkIP45cDbkCP3odQaeWkufqPTdUqgUqPj6jd46kI/j/37/lji3f3
+         zZysp3mbgnMGQEciLZAXbFmZY6ILlD0ILQtP8w5ttHqXNyuRezwfpeZjuELl3DaS1LYX
+         MFEA==
+X-Gm-Message-State: AOAM532gqVsiekPCdh43TXipguqNSJ/zBhTHmgo5vf7lgZ1NarWtdBot
+        tvc1DV+FosYdcsrUWSUQe/g=
+X-Google-Smtp-Source: ABdhPJxavr7kpoXACNuQHWfwF2pWztidKf2V9Ygml/ydeRNTl4FO2a+wJrFpk9GfDkDz9G/qTU9T8w==
+X-Received: by 2002:a17:903:230b:b0:15e:bc9c:18c7 with SMTP id d11-20020a170903230b00b0015ebc9c18c7mr1803429plh.29.1652914052889;
+        Wed, 18 May 2022 15:47:32 -0700 (PDT)
 Received: from balhae.corp.google.com ([2620:15c:2c1:200:a718:cbfe:31cb:3a04])
-        by smtp.gmail.com with ESMTPSA id d23-20020a170902aa9700b0015e8d4eb2besm2214100plr.264.2022.05.18.15.47.30
+        by smtp.gmail.com with ESMTPSA id d23-20020a170902aa9700b0015e8d4eb2besm2214100plr.264.2022.05.18.15.47.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 May 2022 15:47:31 -0700 (PDT)
+        Wed, 18 May 2022 15:47:32 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Milian Wolff <milian.wolff@kdab.com>, bpf@vger.kernel.org,
         linux-perf-users@vger.kernel.org,
         Blake Jones <blakejones@google.com>
-Subject: [PATCH 3/6] perf record: Implement basic filtering for off-cpu
-Date:   Wed, 18 May 2022 15:47:22 -0700
-Message-Id: <20220518224725.742882-4-namhyung@kernel.org>
+Subject: [PATCH 4/6] perf record: Handle argument change in sched_switch
+Date:   Wed, 18 May 2022 15:47:23 -0700
+Message-Id: <20220518224725.742882-5-namhyung@kernel.org>
 X-Mailer: git-send-email 2.36.1.124.g0e6072fb45-goog
 In-Reply-To: <20220518224725.742882-1-namhyung@kernel.org>
 References: <20220518224725.742882-1-namhyung@kernel.org>
@@ -79,258 +79,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It should honor cpu and task filtering with -a, -C or -p, -t options.
+Recently sched_switch tracepoint added a new argument for prev_state,
+but it's hard to handle the change in a BPF program.  Instead, we can
+check the function prototype in BTF before loading the program.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-record.c            |  2 +-
- tools/perf/util/bpf_off_cpu.c          | 78 +++++++++++++++++++++++---
- tools/perf/util/bpf_skel/off_cpu.bpf.c | 52 +++++++++++++++--
- tools/perf/util/off_cpu.h              |  6 +-
- 4 files changed, 123 insertions(+), 15 deletions(-)
+ tools/perf/util/bpf_off_cpu.c          | 28 +++++++++++++++++++++
+ tools/perf/util/bpf_skel/off_cpu.bpf.c | 35 ++++++++++++++++++--------
+ 2 files changed, 52 insertions(+), 11 deletions(-)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 91f88501412e..7f60d2eac0b4 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -907,7 +907,7 @@ static int record__config_text_poke(struct evlist *evlist)
- 
- static int record__config_off_cpu(struct record *rec)
- {
--	return off_cpu_prepare(rec->evlist);
-+	return off_cpu_prepare(rec->evlist, &rec->opts.target);
- }
- 
- static bool record__kcore_readable(struct machine *machine)
 diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
-index 9ed7aca3f4ac..b5e2d038da50 100644
+index b5e2d038da50..874856c55101 100644
 --- a/tools/perf/util/bpf_off_cpu.c
 +++ b/tools/perf/util/bpf_off_cpu.c
-@@ -6,6 +6,9 @@
- #include "util/off_cpu.h"
- #include "util/perf-hooks.h"
- #include "util/session.h"
-+#include "util/target.h"
-+#include "util/cpumap.h"
-+#include "util/thread_map.h"
- #include <bpf/bpf.h>
- 
- #include "bpf_skel/off_cpu.skel.h"
-@@ -60,8 +63,23 @@ static int off_cpu_config(struct evlist *evlist)
- 	return 0;
- }
- 
--static void off_cpu_start(void *arg __maybe_unused)
-+static void off_cpu_start(void *arg)
- {
-+	struct evlist *evlist = arg;
-+
-+	/* update task filter for the given workload */
-+	if (!skel->bss->has_cpu && !skel->bss->has_task &&
-+	    perf_thread_map__pid(evlist->core.threads, 0) != -1) {
-+		int fd;
-+		u32 pid;
-+		u8 val = 1;
-+
-+		skel->bss->has_task = 1;
-+		fd = bpf_map__fd(skel->maps.task_filter);
-+		pid = perf_thread_map__pid(evlist->core.threads, 0);
-+		bpf_map_update_elem(fd, &pid, &val, BPF_ANY);
-+	}
-+
- 	skel->bss->enabled = 1;
- }
- 
-@@ -71,31 +89,75 @@ static void off_cpu_finish(void *arg __maybe_unused)
+@@ -89,6 +89,33 @@ static void off_cpu_finish(void *arg __maybe_unused)
  	off_cpu_bpf__destroy(skel);
  }
  
--int off_cpu_prepare(struct evlist *evlist)
-+int off_cpu_prepare(struct evlist *evlist, struct target *target)
- {
--	int err;
-+	int err, fd, i;
-+	int ncpus = 1, ntasks = 1;
- 
- 	if (off_cpu_config(evlist) < 0) {
- 		pr_err("Failed to config off-cpu BPF event\n");
- 		return -1;
- 	}
- 
--	set_max_rlimit();
--
--	skel = off_cpu_bpf__open_and_load();
-+	skel = off_cpu_bpf__open();
- 	if (!skel) {
- 		pr_err("Failed to open off-cpu BPF skeleton\n");
- 		return -1;
- 	}
- 
-+	/* don't need to set cpu filter for system-wide mode */
-+	if (target->cpu_list) {
-+		ncpus = perf_cpu_map__nr(evlist->core.user_requested_cpus);
-+		bpf_map__set_max_entries(skel->maps.cpu_filter, ncpus);
-+	}
-+
-+	if (target__has_task(target)) {
-+		ntasks = perf_thread_map__nr(evlist->core.threads);
-+		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
-+	}
-+
-+	set_max_rlimit();
-+
-+	err = off_cpu_bpf__load(skel);
-+	if (err) {
-+		pr_err("Failed to load off-cpu skeleton\n");
-+		goto out;
-+	}
-+
-+	if (target->cpu_list) {
-+		u32 cpu;
-+		u8 val = 1;
-+
-+		skel->bss->has_cpu = 1;
-+		fd = bpf_map__fd(skel->maps.cpu_filter);
-+
-+		for (i = 0; i < ncpus; i++) {
-+			cpu = perf_cpu_map__cpu(evlist->core.user_requested_cpus, i).cpu;
-+			bpf_map_update_elem(fd, &cpu, &val, BPF_ANY);
-+		}
-+	}
-+
-+	if (target__has_task(target)) {
-+		u32 pid;
-+		u8 val = 1;
-+
-+		skel->bss->has_task = 1;
-+		fd = bpf_map__fd(skel->maps.task_filter);
-+
-+		for (i = 0; i < ntasks; i++) {
-+			pid = perf_thread_map__pid(evlist->core.threads, i);
-+			bpf_map_update_elem(fd, &pid, &val, BPF_ANY);
-+		}
-+	}
-+
- 	err = off_cpu_bpf__attach(skel);
- 	if (err) {
- 		pr_err("Failed to attach off-cpu BPF skeleton\n");
- 		goto out;
- 	}
- 
--	if (perf_hooks__set_hook("record_start", off_cpu_start, NULL) ||
--	    perf_hooks__set_hook("record_end", off_cpu_finish, NULL)) {
-+	if (perf_hooks__set_hook("record_start", off_cpu_start, evlist) ||
-+	    perf_hooks__set_hook("record_end", off_cpu_finish, evlist)) {
- 		pr_err("Failed to attach off-cpu skeleton\n");
- 		goto out;
- 	}
-diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-index 5173ed882fdf..78cdcc8ff863 100644
---- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
-+++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-@@ -49,12 +49,28 @@ struct {
- 	__uint(max_entries, MAX_ENTRIES);
- } off_cpu SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u8));
-+	__uint(max_entries, 1);
-+} cpu_filter SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u8));
-+	__uint(max_entries, 1);
-+} task_filter SEC(".maps");
-+
- /* old kernel task_struct definition */
- struct task_struct___old {
- 	long state;
- } __attribute__((preserve_access_index));
- 
- int enabled = 0;
-+int has_cpu = 0;
-+int has_task = 0;
- 
- /*
-  * Old kernel used to call it task_struct->state and now it's '__state'.
-@@ -74,6 +90,37 @@ static inline int get_task_state(struct task_struct *t)
- 	return BPF_CORE_READ(t_old, state);
- }
- 
-+static inline int can_record(struct task_struct *t, int state)
++/* v5.18 kernel added prev_state arg, so it needs to check the signature */
++static void check_sched_switch_args(void)
 +{
-+	/* kernel threads don't have user stack */
-+	if (t->flags & PF_KTHREAD)
-+		return 0;
++	const struct btf *btf = bpf_object__btf(skel->obj);
++	const struct btf_type *t1, *t2, *t3;
++	u32 type_id;
 +
-+	if (state != TASK_INTERRUPTIBLE &&
-+	    state != TASK_UNINTERRUPTIBLE)
-+		return 0;
++	type_id = btf__find_by_name_kind(btf, "bpf_trace_sched_switch",
++					 BTF_KIND_TYPEDEF);
++	if ((s32)type_id < 0)
++		return;
 +
-+	if (has_cpu) {
-+		__u32 cpu = bpf_get_smp_processor_id();
-+		__u8 *ok;
++	t1 = btf__type_by_id(btf, type_id);
++	if (t1 == NULL)
++		return;
 +
-+		ok = bpf_map_lookup_elem(&cpu_filter, &cpu);
-+		if (!ok)
-+			return 0;
++	t2 = btf__type_by_id(btf, t1->type);
++	if (t2 == NULL || !btf_is_ptr(t2))
++		return;
++
++	t3 = btf__type_by_id(btf, t2->type);
++	if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) == 4) {
++		/* new format: pass prev_state as 4th arg */
++		skel->rodata->has_prev_state = true;
 +	}
-+
-+	if (has_task) {
-+		__u8 *ok;
-+		__u32 pid = t->pid;
-+
-+		ok = bpf_map_lookup_elem(&task_filter, &pid);
-+		if (!ok)
-+			return 0;
-+	}
-+
-+	return 1;
 +}
 +
- SEC("tp_btf/sched_switch")
- int on_switch(u64 *ctx)
+ int off_cpu_prepare(struct evlist *evlist, struct target *target)
  {
-@@ -92,10 +139,7 @@ int on_switch(u64 *ctx)
+ 	int err, fd, i;
+@@ -117,6 +144,7 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target)
+ 	}
  
+ 	set_max_rlimit();
++	check_sched_switch_args();
+ 
+ 	err = off_cpu_bpf__load(skel);
+ 	if (err) {
+diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+index 78cdcc8ff863..986d7db6e75d 100644
+--- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
++++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+@@ -72,6 +72,8 @@ int enabled = 0;
+ int has_cpu = 0;
+ int has_task = 0;
+ 
++const volatile bool has_prev_state = false;
++
+ /*
+  * Old kernel used to call it task_struct->state and now it's '__state'.
+  * Use BPF CO-RE "ignored suffix rule" to deal with it like below:
+@@ -121,22 +123,13 @@ static inline int can_record(struct task_struct *t, int state)
+ 	return 1;
+ }
+ 
+-SEC("tp_btf/sched_switch")
+-int on_switch(u64 *ctx)
++static int off_cpu_stat(u64 *ctx, struct task_struct *prev,
++			struct task_struct *next, int state)
+ {
+ 	__u64 ts;
+-	int state;
+ 	__u32 stack_id;
+-	struct task_struct *prev, *next;
+ 	struct tstamp_data *pelem;
+ 
+-	if (!enabled)
+-		return 0;
+-
+-	prev = (struct task_struct *)ctx[1];
+-	next = (struct task_struct *)ctx[2];
+-	state = get_task_state(prev);
+-
  	ts = bpf_ktime_get_ns();
  
--	if (prev->flags & PF_KTHREAD)
--		goto next;
--	if (state != TASK_INTERRUPTIBLE &&
--	    state != TASK_UNINTERRUPTIBLE)
-+	if (!can_record(prev, state))
- 		goto next;
- 
- 	stack_id = bpf_get_stackid(ctx, &stacks,
-diff --git a/tools/perf/util/off_cpu.h b/tools/perf/util/off_cpu.h
-index 375d03c424ea..f47af0232e55 100644
---- a/tools/perf/util/off_cpu.h
-+++ b/tools/perf/util/off_cpu.h
-@@ -2,15 +2,17 @@
- #define PERF_UTIL_OFF_CPU_H
- 
- struct evlist;
-+struct target;
- struct perf_session;
- 
- #define OFFCPU_EVENT  "offcpu-time"
- 
- #ifdef HAVE_BPF_SKEL
--int off_cpu_prepare(struct evlist *evlist);
-+int off_cpu_prepare(struct evlist *evlist, struct target *target);
- int off_cpu_write(struct perf_session *session);
- #else
--static inline int off_cpu_prepare(struct evlist *evlist __maybe_unused)
-+static inline int off_cpu_prepare(struct evlist *evlist __maybe_unused,
-+				  struct target *target __maybe_unused)
- {
- 	return -1;
+ 	if (!can_record(prev, state))
+@@ -180,4 +173,24 @@ int on_switch(u64 *ctx)
+ 	return 0;
  }
+ 
++SEC("tp_btf/sched_switch")
++int on_switch(u64 *ctx)
++{
++	struct task_struct *prev, *next;
++	int prev_state;
++
++	if (!enabled)
++		return 0;
++
++	prev = (struct task_struct *)ctx[1];
++	next = (struct task_struct *)ctx[2];
++
++	if (has_prev_state)
++		prev_state = (int)ctx[3];
++	else
++		prev_state = get_task_state(prev);
++
++	return off_cpu_stat(ctx, prev, next, prev_state);
++}
++
+ char LICENSE[] SEC("license") = "Dual BSD/GPL";
 -- 
 2.36.1.124.g0e6072fb45-goog
 
