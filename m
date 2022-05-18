@@ -2,59 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B28ED52BAC5
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 14:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 646B952BA5D
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 14:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236960AbiERMcv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 08:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
+        id S237064AbiERMfk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 08:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237013AbiERMbY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 08:31:24 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEA319C748;
-        Wed, 18 May 2022 05:28:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S236691AbiERMew (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 08:34:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B0B89196684
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 05:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1652877035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2LCFQ3BaiAODg52eVM1mGg1zRamZE6jNoZ6Ptxb2fNI=;
+        b=InxmeWFn/13zeF7RpWsPz2G0icYldRDFBCV3nICqaigL4K5YUsQGVEtpZ0fcorfrbQ7jg4
+        a5cIMwRdqsXYTb3An/arbzuutkUZ//q0hQtNym3I8ubRcLo7Jtf6pm6HH+yvJJZ6M+q/S7
+        TBI+xDBf3Rx1AoZECmw1oWXDYIqjrCU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-627-YxyU2fNjOvaFcC_5G4hFKw-1; Wed, 18 May 2022 08:30:32 -0400
+X-MC-Unique: YxyU2fNjOvaFcC_5G4hFKw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DFC19B81FBA;
-        Wed, 18 May 2022 12:28:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFD6CC385AA;
-        Wed, 18 May 2022 12:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652876895;
-        bh=59034JlVFmmJqNI8BkjyG9GauHmmps4h9zRtuWOswGM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uv25hGStdhTcomC6evrU4/Oy1SN0Hl8b1yldSYZPt+X2MixOT2Efn7Kz/KpzP2+ms
-         XmLetg56rTQqPgmDGApj0Mvig9mNMTqnwGA1K1ct3YL2mWiyecZiPMOTC4Xo3wXbpS
-         yd+3vVM2hJuzz8Daubri9ArMKpUs4z51LILDpjbFHLAkfmiuRkhx+/uh4kweW4RPPF
-         aADhyu1CCtocf+9g9g77dsIJOlOo+dhYDk3rD/F+3xlmlcJUFfciBK05/HZIT418t1
-         Y+P9eQOIGGVn4Raw+vMSPYbK0sTabBROj5nYdBDF0/YRMswIwBEsb4JH4BDGU1Jjas
-         U74sq2WIpSqhQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lina Wang <lina.wang@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, matthias.bgg@gmail.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        ilias.apalodimas@linaro.org, vasily.averin@linux.dev,
-        luiz.von.dentz@intel.com, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 08/17] net: fix wrong network header length
-Date:   Wed, 18 May 2022 08:27:42 -0400
-Message-Id: <20220518122753.342758-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220518122753.342758-1-sashal@kernel.org>
-References: <20220518122753.342758-1-sashal@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 235FD86B8A2;
+        Wed, 18 May 2022 12:30:31 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5779C7C2A;
+        Wed, 18 May 2022 12:30:25 +0000 (UTC)
+Date:   Wed, 18 May 2022 14:30:22 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 4/4] bpf_trace: pass array of u64 values in
+ kprobe_multi.addrs
+Message-ID: <20220518123022.GA5425@asgard.redhat.com>
+References: <cover.1652772731.git.esyr@redhat.com>
+ <6ef675aeeea442fa8fc168cd1cb4e4e474f65a3f.1652772731.git.esyr@redhat.com>
+ <YoNnAgDsIWef82is@krava>
+ <20220517123050.GA25149@asgard.redhat.com>
+ <YoP/eEMqAn3sVFXf@krava>
+ <7c5e64f2-f2cf-61b7-9231-fc267bf0f2d8@fb.com>
+ <YoTXiAk1EpZ0rLKE@krava>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YoTXiAk1EpZ0rLKE@krava>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,69 +77,66 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Lina Wang <lina.wang@mediatek.com>
+On Wed, May 18, 2022 at 01:24:56PM +0200, Jiri Olsa wrote:
+> On Tue, May 17, 2022 at 02:34:55PM -0700, Yonghong Song wrote:
+> > On 5/17/22 1:03 PM, Jiri Olsa wrote:
+> > > On Tue, May 17, 2022 at 02:30:50PM +0200, Eugene Syromiatnikov wrote:
+> > > > On Tue, May 17, 2022 at 11:12:34AM +0200, Jiri Olsa wrote:
+> > > > > On Tue, May 17, 2022 at 09:36:47AM +0200, Eugene Syromiatnikov wrote:
+> > > > > > With the interface as defined, it is impossible to pass 64-bit kernel
+> > > > > > addresses from a 32-bit userspace process in BPF_LINK_TYPE_KPROBE_MULTI,
+> > > > > > which severly limits the useability of the interface, change the ABI
+> > > > > > to accept an array of u64 values instead of (kernel? user?) longs.
+> > > > > > Interestingly, the rest of the libbpf infrastructure uses 64-bit values
+> > > > > > for kallsyms addresses already, so this patch also eliminates
+> > > > > > the sym_addr cast in tools/lib/bpf/libbpf.c:resolve_kprobe_multi_cb().
+> > > > > 
+> > > > > so the problem is when we have 32bit user sace on 64bit kernel right?
+> > > > > 
+> > > > > I think we should keep addrs as longs in uapi and have kernel to figure out
+> > > > > if it needs to read u32 or u64, like you did for symbols in previous patch
+> > > > 
+> > > > No, it's not possible here, as addrs are kernel addrs and not user space
+> > > > addrs, so user space has to explicitly pass 64-bit addresses on 64-bit
+> > > > kernels (or have a notion whether it is running on a 64-bit
+> > > > or 32-bit kernel, and form the passed array accordingly, which is against
+> > > > the idea of compat layer that tries to abstract it out).
+> > > 
+> > > hum :-\ I'll need to check on compat layer.. there must
+> > > be some other code doing this already somewhere, right?
+> 
+> so the 32bit application running on 64bit kernel using libbpf won't
+> work at the moment, right? because it sees:
+> 
+>   bpf_kprobe_multi_opts::addrs as its 'unsigned long'
+> 
+> which is 4 bytes and it needs to put there 64bits kernel addresses
+> 
+> if we force the libbpf interface to use u64, then we should be fine
 
-[ Upstream commit cf3ab8d4a797960b4be20565abb3bcd227b18a68 ]
+Yes, that's correct.
 
-When clatd starts with ebpf offloaing, and NETIF_F_GRO_FRAGLIST is enable,
-several skbs are gathered in skb_shinfo(skb)->frag_list. The first skb's
-ipv6 header will be changed to ipv4 after bpf_skb_proto_6_to_4,
-network_header\transport_header\mac_header have been updated as ipv4 acts,
-but other skbs in frag_list didnot update anything, just ipv6 packets.
+> > I am not familiar with all these compatibility thing. But if we
+> > have 64-bit pointer for **syms, maybe we could also have
+> > 64-bit pointer for *syms for consistency?
+> 
+> right, perhaps we could have one function to read both syms and addrs arrays
 
-udp_queue_rcv_skb will call skb_segment_list to traverse other skbs in
-frag_list and make sure right udp payload is delivered to user space.
-Unfortunately, other skbs in frag_list who are still ipv6 packets are
-updated like the first skb and will have wrong transport header length.
+The distinction here it that syms are user space pointers (so they are
+naturally 32-bit for 32-bit applications) and addrs are kernel-space
+pointers (so they may be 64-bit even when the application is 32-bit).
+Nothing prevents from changing the interface so that syms is an array
+of 64-bit values treated as user space pointers, of course.
 
-e.g.before bpf_skb_proto_6_to_4,the first skb and other skbs in frag_list
-has the same network_header(24)& transport_header(64), after
-bpf_skb_proto_6_to_4, ipv6 protocol has been changed to ipv4, the first
-skb's network_header is 44,transport_header is 64, other skbs in frag_list
-didnot change.After skb_segment_list, the other skbs in frag_list has
-different network_header(24) and transport_header(44), so there will be 20
-bytes different from original,that is difference between ipv6 header and
-ipv4 header. Just change transport_header to be the same with original.
+> > > > > we'll need to fix also bpf_kprobe_multi_cookie_swap because it assumes
+> > > > > 64bit user space pointers
+> 
+> if we have both addresses and cookies 64 then this should be ok
+> 
+> > > > > 
+> > > > > would be gret if we could have selftest for this
+> 
+> let's add selftest for this
 
-Actually, there are two solutions to fix it, one is traversing all skbs
-and changing every skb header in bpf_skb_proto_6_to_4, the other is
-modifying frag_list skb's header in skb_segment_list. Considering
-efficiency, adopt the second one--- when the first skb and other skbs in
-frag_list has different network_header length, restore them to make sure
-right udp payload is delivered to user space.
-
-Signed-off-by: Lina Wang <lina.wang@mediatek.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/core/skbuff.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index e4badc189e37..7ef0f5a8ab03 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -3873,7 +3873,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
- 	unsigned int delta_len = 0;
- 	struct sk_buff *tail = NULL;
- 	struct sk_buff *nskb, *tmp;
--	int err;
-+	int len_diff, err;
- 
- 	skb_push(skb, -skb_network_offset(skb) + offset);
- 
-@@ -3913,9 +3913,11 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
- 		skb_push(nskb, -skb_network_offset(nskb) + offset);
- 
- 		skb_release_head_state(nskb);
-+		len_diff = skb_network_header_len(nskb) - skb_network_header_len(skb);
- 		__copy_skb_header(nskb, skb);
- 
- 		skb_headers_offset_update(nskb, skb_headroom(nskb) - skb_headroom(skb));
-+		nskb->transport_header += len_diff;
- 		skb_copy_from_linear_data_offset(skb, -tnl_hlen,
- 						 nskb->data - tnl_hlen,
- 						 offset + tnl_hlen);
--- 
-2.35.1
+Sure, I'll try to write one.
 
