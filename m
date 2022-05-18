@@ -2,37 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F114A52C2E2
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 21:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F8D52C2E9
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 21:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241849AbiERS7y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 18 May 2022 14:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
+        id S241823AbiERS7b convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 18 May 2022 14:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241859AbiERS7w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 14:59:52 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B653CA5B
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 11:59:48 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24IHDaRK021979
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 11:59:48 -0700
+        with ESMTP id S241820AbiERS7b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 14:59:31 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9063CA5B
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 11:59:30 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24IHDXOl031032
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 11:59:29 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g4d8227uy-1
+        by m0089730.ppops.net (PPS) with ESMTPS id 3g4836v7ay-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 11:59:48 -0700
-Received: from twshared13579.04.prn5.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 11:59:29 -0700
+Received: from twshared0725.22.frc3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.28; Wed, 18 May 2022 11:59:26 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 79F411A12C551; Wed, 18 May 2022 11:59:20 -0700 (PDT)
+        id 8C8351A12C57B; Wed, 18 May 2022 11:59:22 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/3] libbpf: start 1.0 development cycle
-Date:   Wed, 18 May 2022 11:59:14 -0700
-Message-ID: <20220518185915.3529475-3-andrii@kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH bpf-next 3/3] libbpf: remove bpf_create_map*() APIs
+Date:   Wed, 18 May 2022 11:59:15 -0700
+Message-ID: <20220518185915.3529475-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220518185915.3529475-1-andrii@kernel.org>
 References: <20220518185915.3529475-1-andrii@kernel.org>
@@ -40,8 +42,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 32fTuAElj4XznDPi5Llezf6QRR_Vgr0-
-X-Proofpoint-ORIG-GUID: 32fTuAElj4XznDPi5Llezf6QRR_Vgr0-
+X-Proofpoint-GUID: Ak8NiBwLrzOvEhKfcl4QSiZ1JKL4sFVM
+X-Proofpoint-ORIG-GUID: Ak8NiBwLrzOvEhKfcl4QSiZ1JKL4sFVM
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-18_06,2022-05-17_02,2022-02-23_01
@@ -55,43 +57,162 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Start libbpf 1.0 development cycle by adding LIBBPF_1.0.0 section to
-libbpf.map file and marking all current symbols as local. As we remove
-all the deprecated APIs we'll populate global list before the final 1.0
-release.
+To test API removal, get rid of bpf_create_map*() APIs. Perf defines
+__weak implementation of bpf_map_create() that redirects to old
+bpf_create_map() and that seems to compile and run fine.
 
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.map       | 4 ++++
- tools/lib/bpf/libbpf_version.h | 4 ++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ tools/lib/bpf/bpf.c | 80 ---------------------------------------------
+ tools/lib/bpf/bpf.h | 42 ------------------------
+ 2 files changed, 122 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 6b36f46ab5d8..52973cffc20c 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -459,3 +459,7 @@ LIBBPF_0.8.0 {
- 		libbpf_register_prog_handler;
- 		libbpf_unregister_prog_handler;
- } LIBBPF_0.7.0;
-+
-+LIBBPF_1.0.0 {
-+	local: *;
-+};
-diff --git a/tools/lib/bpf/libbpf_version.h b/tools/lib/bpf/libbpf_version.h
-index 61f2039404b6..2fb2f4290080 100644
---- a/tools/lib/bpf/libbpf_version.h
-+++ b/tools/lib/bpf/libbpf_version.h
-@@ -3,7 +3,7 @@
- #ifndef __LIBBPF_VERSION_H
- #define __LIBBPF_VERSION_H
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 4677644d80f4..240186aac8e6 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -208,86 +208,6 @@ int bpf_map_create(enum bpf_map_type map_type,
+ 	return libbpf_err_errno(fd);
+ }
  
--#define LIBBPF_MAJOR_VERSION 0
--#define LIBBPF_MINOR_VERSION 8
-+#define LIBBPF_MAJOR_VERSION 1
-+#define LIBBPF_MINOR_VERSION 0
+-int bpf_create_map_xattr(const struct bpf_create_map_attr *create_attr)
+-{
+-	LIBBPF_OPTS(bpf_map_create_opts, p);
+-
+-	p.map_flags = create_attr->map_flags;
+-	p.numa_node = create_attr->numa_node;
+-	p.btf_fd = create_attr->btf_fd;
+-	p.btf_key_type_id = create_attr->btf_key_type_id;
+-	p.btf_value_type_id = create_attr->btf_value_type_id;
+-	p.map_ifindex = create_attr->map_ifindex;
+-	if (create_attr->map_type == BPF_MAP_TYPE_STRUCT_OPS)
+-		p.btf_vmlinux_value_type_id = create_attr->btf_vmlinux_value_type_id;
+-	else
+-		p.inner_map_fd = create_attr->inner_map_fd;
+-
+-	return bpf_map_create(create_attr->map_type, create_attr->name,
+-			      create_attr->key_size, create_attr->value_size,
+-			      create_attr->max_entries, &p);
+-}
+-
+-int bpf_create_map_node(enum bpf_map_type map_type, const char *name,
+-			int key_size, int value_size, int max_entries,
+-			__u32 map_flags, int node)
+-{
+-	LIBBPF_OPTS(bpf_map_create_opts, opts);
+-
+-	opts.map_flags = map_flags;
+-	if (node >= 0) {
+-		opts.numa_node = node;
+-		opts.map_flags |= BPF_F_NUMA_NODE;
+-	}
+-
+-	return bpf_map_create(map_type, name, key_size, value_size, max_entries, &opts);
+-}
+-
+-int bpf_create_map(enum bpf_map_type map_type, int key_size,
+-		   int value_size, int max_entries, __u32 map_flags)
+-{
+-	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = map_flags);
+-
+-	return bpf_map_create(map_type, NULL, key_size, value_size, max_entries, &opts);
+-}
+-
+-int bpf_create_map_name(enum bpf_map_type map_type, const char *name,
+-			int key_size, int value_size, int max_entries,
+-			__u32 map_flags)
+-{
+-	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = map_flags);
+-
+-	return bpf_map_create(map_type, name, key_size, value_size, max_entries, &opts);
+-}
+-
+-int bpf_create_map_in_map_node(enum bpf_map_type map_type, const char *name,
+-			       int key_size, int inner_map_fd, int max_entries,
+-			       __u32 map_flags, int node)
+-{
+-	LIBBPF_OPTS(bpf_map_create_opts, opts);
+-
+-	opts.inner_map_fd = inner_map_fd;
+-	opts.map_flags = map_flags;
+-	if (node >= 0) {
+-		opts.map_flags |= BPF_F_NUMA_NODE;
+-		opts.numa_node = node;
+-	}
+-
+-	return bpf_map_create(map_type, name, key_size, 4, max_entries, &opts);
+-}
+-
+-int bpf_create_map_in_map(enum bpf_map_type map_type, const char *name,
+-			  int key_size, int inner_map_fd, int max_entries,
+-			  __u32 map_flags)
+-{
+-	LIBBPF_OPTS(bpf_map_create_opts, opts,
+-		.inner_map_fd = inner_map_fd,
+-		.map_flags = map_flags,
+-	);
+-
+-	return bpf_map_create(map_type, name, key_size, 4, max_entries, &opts);
+-}
+-
+ static void *
+ alloc_zero_tailing_info(const void *orecord, __u32 cnt,
+ 			__u32 actual_rec_size, __u32 expected_rec_size)
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 2e0d3731e4c0..cabc03703e29 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -61,48 +61,6 @@ LIBBPF_API int bpf_map_create(enum bpf_map_type map_type,
+ 			      __u32 max_entries,
+ 			      const struct bpf_map_create_opts *opts);
  
- #endif /* __LIBBPF_VERSION_H */
+-struct bpf_create_map_attr {
+-	const char *name;
+-	enum bpf_map_type map_type;
+-	__u32 map_flags;
+-	__u32 key_size;
+-	__u32 value_size;
+-	__u32 max_entries;
+-	__u32 numa_node;
+-	__u32 btf_fd;
+-	__u32 btf_key_type_id;
+-	__u32 btf_value_type_id;
+-	__u32 map_ifindex;
+-	union {
+-		__u32 inner_map_fd;
+-		__u32 btf_vmlinux_value_type_id;
+-	};
+-};
+-
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_map_create() instead")
+-LIBBPF_API int bpf_create_map_xattr(const struct bpf_create_map_attr *create_attr);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_map_create() instead")
+-LIBBPF_API int bpf_create_map_node(enum bpf_map_type map_type, const char *name,
+-				   int key_size, int value_size,
+-				   int max_entries, __u32 map_flags, int node);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_map_create() instead")
+-LIBBPF_API int bpf_create_map_name(enum bpf_map_type map_type, const char *name,
+-				   int key_size, int value_size,
+-				   int max_entries, __u32 map_flags);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_map_create() instead")
+-LIBBPF_API int bpf_create_map(enum bpf_map_type map_type, int key_size,
+-			      int value_size, int max_entries, __u32 map_flags);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_map_create() instead")
+-LIBBPF_API int bpf_create_map_in_map_node(enum bpf_map_type map_type,
+-					  const char *name, int key_size,
+-					  int inner_map_fd, int max_entries,
+-					  __u32 map_flags, int node);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_map_create() instead")
+-LIBBPF_API int bpf_create_map_in_map(enum bpf_map_type map_type,
+-				     const char *name, int key_size,
+-				     int inner_map_fd, int max_entries,
+-				     __u32 map_flags);
+-
+ struct bpf_prog_load_opts {
+ 	size_t sz; /* size of this struct for forward/backward compatibility */
+ 
 -- 
 2.30.2
 
