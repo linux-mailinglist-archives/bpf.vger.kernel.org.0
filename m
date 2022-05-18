@@ -2,70 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C80E52C65D
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 00:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC5852C675
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 00:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbiERWhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 18:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+        id S229801AbiERWmp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 18:42:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbiERWhG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 18:37:06 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FA56D1BE;
-        Wed, 18 May 2022 15:37:05 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id a10so3938881ioe.9;
-        Wed, 18 May 2022 15:37:05 -0700 (PDT)
+        with ESMTP id S229656AbiERWmo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 18:42:44 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F61B14D782;
+        Wed, 18 May 2022 15:42:43 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id l14so3464624pjk.2;
+        Wed, 18 May 2022 15:42:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0UsOrN8L2jk9f8YbUqb1h5IfPLIvfbGbF/K8sUgKLa8=;
-        b=pfQVWJSaI650YZeOaa35tgCa5V78lxkK9XS2gIkwjXKHVtvZ425s0Y1UzT4Kg9zhQU
-         ki5XTi7DxF06BVh+i3mn+ChDmsAzAG80tP47vzheLmohV7k22GhmgOzR4qZTl5MrEwsT
-         lsjqDC0SOna7dZX3qdL6euvQOOCGNeRytsprrHOngAdN1jLqx3AY+M3wFKZXigQxERcD
-         bVV7qUGrLZtzdMTfjq1SBUNZsChlitJdbgPWmhwvQw024OzPCIevC+Sci5VrYY0mvEcf
-         wCf55pTaiE4cHk/bixrljcgx7fAVp7ORcRA0chPK6Vx2CDwUoqxEl1wGzJy3+BqZoA79
-         17mw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=o/5HbRUzUeishq4OoRNF2vTxxeTguE/szejcn40/RQ8=;
+        b=XL6GlW8tbi15ldh/hhco82zJ+xLlWJgXXEKw36mepVErwbWRXrPknk4m4+QR03LSQF
+         OcvYbg90vkXwmL0VMKX9siCStdsl0e55o/N1Nye5JaeGwPPiUGGxJzcRQYisRWAfgfe7
+         OP7JBxmRa+Qx3XfaNe1Ndv8JAYqqg2RYcYXegTYuGIM4yI8nR1DY+aRQKYD4LJ8mUoKu
+         kzSJvQaOR0Q0IzpJ9byM7LnKXtALM31Jr9+jDNTzq3ByT6SPzSxOPn3i7kxU+6vZbCeq
+         +C5i7ojt+z0/45D7BVISXEJ0hx5D67qwIpuinbOairOBDM86tHouDVHlcDRgzICalbaZ
+         jyfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0UsOrN8L2jk9f8YbUqb1h5IfPLIvfbGbF/K8sUgKLa8=;
-        b=o0EG/Dn0L80UZkjRhQXbRVPhWUMpLsuj7OQdgDVoxUtGiKz60ZXhDBJPXPdO2lJyjP
-         6GWJe4I82ZhG2rzwuhfxFz85dxnUj0V9BbwqKtcwctOqcaYWy+KrUoQ5z6fVPyJkuoma
-         lZDNwFD40kgwvmkzhSMlMYG8NHiNuJFaYboe2mO4JYWal0L1J/p8vquKBV7c9B3PL2LR
-         ngXRcfmDjRreM+jWB6e2FqJV/ngp7V5kIuwqIkKihFdMa2Rk2q4yuI2qdSKfzMdHT8ST
-         UEYLCwYStwiHQR5G8nLgKP9fYkUitb8ypEOV20EwYlIIpYpKaElL0S1GZzKkPMX+6b3K
-         9Z+A==
-X-Gm-Message-State: AOAM531qECYA9ViU1c2eKtxU+UbOccRuxybk4yDQ4LTCWPXhnfNh26AX
-        ft7UEQ8bBoj2dFO3T2GhuokfcBrRf7F74ETGS40=
-X-Google-Smtp-Source: ABdhPJxoC2STA3TBSyALtE6G83AWgatXTc29FjZdK2oqtrZtEGtnxLST3voiVz6FPJJI267q/Z0++69FQ1rcgr1tb60=
-X-Received: by 2002:a05:6638:468e:b0:32b:fe5f:d73f with SMTP id
- bq14-20020a056638468e00b0032bfe5fd73fmr1037971jab.234.1652913424002; Wed, 18
- May 2022 15:37:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220512071819.199873-1-liuhangbin@gmail.com> <20220512071819.199873-2-liuhangbin@gmail.com>
- <CAEf4BzZuj90MFaXci3av2BF+=m-P26Y3Zer8TogBiZ8fYsYP=g@mail.gmail.com> <YoHKw/at89Wp19F/@Laptop-X1>
-In-Reply-To: <YoHKw/at89Wp19F/@Laptop-X1>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 May 2022 15:36:53 -0700
-Message-ID: <CAEf4BzZhKpikBQFCEyRMmUHdTEt6xi+0ntfPswHA5WWK39cFjQ@mail.gmail.com>
-Subject: Re: [PATCH net 1/2] selftests/bpf: Fix build error with ima_setup.sh
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=o/5HbRUzUeishq4OoRNF2vTxxeTguE/szejcn40/RQ8=;
+        b=Zgtt5pdeLwC7MfF0nplNiwR5cCCoGaPR1QaTiQlppfJUdzEbH8RBDMd1EA1IjpAvqj
+         hRmwyvhRswAFkYmm7ZUa6SYP/GM5fSG3MdVUmnZz7uvTR0Pe/wKqbDiWdPzhmhYCrxdh
+         NcHl80T7st7rvg1HSfAoxmX0Yn4pWxC2DOQ9Y057qIpR+HV+yMN4VHG+CWWkcp2Zoxkd
+         cDxii4rZSJRbyHXf6bVzpnLVaMsS6I7jfJhCDCAnSWNfJxrJxhbyxnFMdoIy9HUetSsQ
+         9fJwZTubw4GhBwSfcBgBqczlNIXEtndbXxYwFuNIL7NBlNG3O9gnHbjs+e7Dw6tGOqaJ
+         OhTw==
+X-Gm-Message-State: AOAM530uuLJg5965r1NZCQPpTDfi3k2KOh2XWioEhkDpyTuu4tB1WJmY
+        WciVnJxw5NZhfFy5prPX1cU=
+X-Google-Smtp-Source: ABdhPJxqrql2Mi72Vgj+Hv9WaAqmjbILCqjPcNYNfKcmZqvZIxkPzhuq/7QbRMUBgSqtHkrhFoa5qQ==
+X-Received: by 2002:a17:90b:4d90:b0:1dc:c03e:3a39 with SMTP id oj16-20020a17090b4d9000b001dcc03e3a39mr2317650pjb.116.1652913762949;
+        Wed, 18 May 2022 15:42:42 -0700 (PDT)
+Received: from localhost ([157.51.69.231])
+        by smtp.gmail.com with ESMTPSA id k11-20020aa788cb000000b0050dc76281c7sm2486111pff.161.2022.05.18.15.42.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 May 2022 15:42:42 -0700 (PDT)
+Date:   Thu, 19 May 2022 04:13:30 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH v3 bpf-next 4/5] net: netfilter: add kfunc helper to add
+ a new ct entry
+Message-ID: <20220518224330.omsokbbhqoe5mc3v@apollo.legion>
+References: <cover.1652870182.git.lorenzo@kernel.org>
+ <40e7ce4b79c86c46e5fbf22e9cafb51b9172da19.1652870182.git.lorenzo@kernel.org>
+ <87y1yy8t6j.fsf@toke.dk>
+ <YoVgZ8OHlF/OpgHq@lore-desk>
+ <CAADnVQ+6-cywf0StZ_K0nKSSdXJsZ4S_ZBhGZPHDmKtaL3k9-g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+6-cywf0StZ_K0nKSSdXJsZ4S_ZBhGZPHDmKtaL3k9-g@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,85 +88,156 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 15, 2022 at 8:53 PM Hangbin Liu <liuhangbin@gmail.com> wrote:
->
-> On Fri, May 13, 2022 at 02:58:05PM -0700, Andrii Nakryiko wrote:
-> > > -TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmo=
-d.ko \
-> > > -                      ima_setup.sh                                  =
-   \
-> > > +TRUNNER_EXTRA_BUILD :=3D $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmo=
-d.ko \
-> > >                        $(wildcard progs/btf_dump_test_case_*.c)
+On Thu, May 19, 2022 at 03:44:58AM IST, Alexei Starovoitov wrote:
+> On Wed, May 18, 2022 at 2:09 PM Lorenzo Bianconi
+> <lorenzo.bianconi@redhat.com> wrote:
 > >
+> > > Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> > >
+> > > > Introduce bpf_xdp_ct_add and bpf_skb_ct_add kfunc helpers in order to
+> > > > add a new entry to ct map from an ebpf program.
+> > > > Introduce bpf_nf_ct_tuple_parse utility routine.
+> > > >
+> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > > ---
+> > > >  net/netfilter/nf_conntrack_bpf.c | 212 +++++++++++++++++++++++++++----
+> > > >  1 file changed, 189 insertions(+), 23 deletions(-)
+> > > >
+> > > > diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
+> > > > index a9271418db88..3d31b602fdf1 100644
+> > > > --- a/net/netfilter/nf_conntrack_bpf.c
+> > > > +++ b/net/netfilter/nf_conntrack_bpf.c
+> > > > @@ -55,41 +55,114 @@ enum {
+> > > >     NF_BPF_CT_OPTS_SZ = 12,
+> > > >  };
+> > > >
+> > > > -static struct nf_conn *__bpf_nf_ct_lookup(struct net *net,
+> > > > -                                     struct bpf_sock_tuple *bpf_tuple,
+> > > > -                                     u32 tuple_len, u8 protonum,
+> > > > -                                     s32 netns_id, u8 *dir)
+> > > > +static int bpf_nf_ct_tuple_parse(struct bpf_sock_tuple *bpf_tuple,
+> > > > +                            u32 tuple_len, u8 protonum, u8 dir,
+> > > > +                            struct nf_conntrack_tuple *tuple)
+> > > >  {
+> > > > -   struct nf_conntrack_tuple_hash *hash;
+> > > > -   struct nf_conntrack_tuple tuple;
+> > > > -   struct nf_conn *ct;
+> > > > +   union nf_inet_addr *src = dir ? &tuple->dst.u3 : &tuple->src.u3;
+> > > > +   union nf_inet_addr *dst = dir ? &tuple->src.u3 : &tuple->dst.u3;
+> > > > +   union nf_conntrack_man_proto *sport = dir ? (void *)&tuple->dst.u
+> > > > +                                             : &tuple->src.u;
+> > > > +   union nf_conntrack_man_proto *dport = dir ? &tuple->src.u
+> > > > +                                             : (void *)&tuple->dst.u;
+> > > >
+> > > >     if (unlikely(protonum != IPPROTO_TCP && protonum != IPPROTO_UDP))
+> > > > -           return ERR_PTR(-EPROTO);
+> > > > -   if (unlikely(netns_id < BPF_F_CURRENT_NETNS))
+> > > > -           return ERR_PTR(-EINVAL);
+> > > > +           return -EPROTO;
+> > > > +
+> > > > +   memset(tuple, 0, sizeof(*tuple));
+> > > >
+> > > > -   memset(&tuple, 0, sizeof(tuple));
+> > > >     switch (tuple_len) {
+> > > >     case sizeof(bpf_tuple->ipv4):
+> > > > -           tuple.src.l3num = AF_INET;
+> > > > -           tuple.src.u3.ip = bpf_tuple->ipv4.saddr;
+> > > > -           tuple.src.u.tcp.port = bpf_tuple->ipv4.sport;
+> > > > -           tuple.dst.u3.ip = bpf_tuple->ipv4.daddr;
+> > > > -           tuple.dst.u.tcp.port = bpf_tuple->ipv4.dport;
+> > > > +           tuple->src.l3num = AF_INET;
+> > > > +           src->ip = bpf_tuple->ipv4.saddr;
+> > > > +           sport->tcp.port = bpf_tuple->ipv4.sport;
+> > > > +           dst->ip = bpf_tuple->ipv4.daddr;
+> > > > +           dport->tcp.port = bpf_tuple->ipv4.dport;
+> > > >             break;
+> > > >     case sizeof(bpf_tuple->ipv6):
+> > > > -           tuple.src.l3num = AF_INET6;
+> > > > -           memcpy(tuple.src.u3.ip6, bpf_tuple->ipv6.saddr, sizeof(bpf_tuple->ipv6.saddr));
+> > > > -           tuple.src.u.tcp.port = bpf_tuple->ipv6.sport;
+> > > > -           memcpy(tuple.dst.u3.ip6, bpf_tuple->ipv6.daddr, sizeof(bpf_tuple->ipv6.daddr));
+> > > > -           tuple.dst.u.tcp.port = bpf_tuple->ipv6.dport;
+> > > > +           tuple->src.l3num = AF_INET6;
+> > > > +           memcpy(src->ip6, bpf_tuple->ipv6.saddr, sizeof(bpf_tuple->ipv6.saddr));
+> > > > +           sport->tcp.port = bpf_tuple->ipv6.sport;
+> > > > +           memcpy(dst->ip6, bpf_tuple->ipv6.daddr, sizeof(bpf_tuple->ipv6.daddr));
+> > > > +           dport->tcp.port = bpf_tuple->ipv6.dport;
+> > > >             break;
+> > > >     default:
+> > > > -           return ERR_PTR(-EAFNOSUPPORT);
+> > > > +           return -EAFNOSUPPORT;
+> > > >     }
+> > > > +   tuple->dst.protonum = protonum;
+> > > > +   tuple->dst.dir = dir;
+> > > > +
+> > > > +   return 0;
+> > > > +}
+> > > >
+> > > > -   tuple.dst.protonum = protonum;
+> > > > +struct nf_conn *
+> > > > +__bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
+> > > > +                   u32 tuple_len, u8 protonum, s32 netns_id, u32 timeout)
+> > > > +{
+> > > > +   struct nf_conntrack_tuple otuple, rtuple;
+> > > > +   struct nf_conn *ct;
+> > > > +   int err;
+> > > > +
+> > > > +   if (unlikely(netns_id < BPF_F_CURRENT_NETNS))
+> > > > +           return ERR_PTR(-EINVAL);
+> > > > +
+> > > > +   err = bpf_nf_ct_tuple_parse(bpf_tuple, tuple_len, protonum,
+> > > > +                               IP_CT_DIR_ORIGINAL, &otuple);
+> > > > +   if (err < 0)
+> > > > +           return ERR_PTR(err);
+> > > > +
+> > > > +   err = bpf_nf_ct_tuple_parse(bpf_tuple, tuple_len, protonum,
+> > > > +                               IP_CT_DIR_REPLY, &rtuple);
+> > > > +   if (err < 0)
+> > > > +           return ERR_PTR(err);
+> > > > +
+> > > > +   if (netns_id >= 0) {
+> > > > +           net = get_net_ns_by_id(net, netns_id);
+> > > > +           if (unlikely(!net))
+> > > > +                   return ERR_PTR(-ENONET);
+> > > > +   }
+> > > > +
+> > > > +   ct = nf_conntrack_alloc(net, &nf_ct_zone_dflt, &otuple, &rtuple,
+> > > > +                           GFP_ATOMIC);
+> > > > +   if (IS_ERR(ct))
+> > > > +           goto out;
+> > > > +
+> > > > +   ct->timeout = timeout * HZ + jiffies;
+> > > > +   ct->status |= IPS_CONFIRMED;
+> > > > +
+> > > > +   memset(&ct->proto, 0, sizeof(ct->proto));
+> > > > +   if (protonum == IPPROTO_TCP)
+> > > > +           ct->proto.tcp.state = TCP_CONNTRACK_ESTABLISHED;
+> > >
+> > > Hmm, isn't it a bit limiting to hard-code this to ESTABLISHED
+> > > connections? Presumably for TCP you'd want to use this when you see a
+> > > SYN and then rely on conntrack to help with the subsequent state
+> > > tracking for when the SYN-ACK comes back? What's the usecase for
+> > > creating an entry in ESTABLISHED state, exactly?
 > >
-> > note that progs/btf_dump_test_case_*.c are not built, they are just
-> > copied over (C source files), so I don't think this fix is necessary.
-> >
-> > btw, I tried running `OUTPUT=3D"/tmp/bpf" make test_progs` and it didn'=
-t
-> > error out. But tbh, I'd recommend building everything instead of
-> > building individual targets.
+> > I guess we can even add a parameter and pass the state from the caller.
+> > I was not sure if it is mandatory.
 >
-> After update the code to latest bpf-next. It works this time, the ima_set=
-up.sh
-> was copied to target folder correctly.
->
->   EXT-COPY [test_progs] urandom_read bpf_testmod.ko liburandom_read.so im=
-a_setup.sh btf_dump_test_case_bitfields.c btf_dump_test_case_multidim.c btf=
-_dump_test_case_namespacing.c btf_dump_test_case_ordering.c btf_dump_test_c=
-ase_packing.c btf_dump_test_case_padding.c btf_dump_test_case_syntax.c
->   BINARY   test_progs
->
-> Not sure why the previous kernel doesn't work. But anyway I will drop thi=
-s patch.
->
-> On the other hand, when I build with latest bpf-next. I got error like:
->
-> """
-> # OUTPUT=3D"/tmp/bpf" make test_progs
->   BINARY   urandom_read                                                  =
-                                                                           =
-                          gcc -g -O0 -rdynamic -Wall -Werror -DHAVE_GENHDR =
- -I/home/net/tools/testing/selftests/bpf -I/tmp/bpf/tools/include -I/home/n=
-et/include/generated -I/home/net/tools/lib -I/home/net/tools/include -I/hom=
-e/net/tools/include/uapi -I/tmp/bpf  urandom_read.c urandom_read_aux.c  \
->           liburandom_read.so -lelf -lz -lrt -lpthread   \
->           -Wl,-rpath=3D. -Wl,--build-id=3Dsha1 -o /tmp/bpf/urandom_read
+> It's probably cleaner and more flexible to split
+> _alloc and _insert into two kfuncs and let bpf
+> prog populate ct directly.
 
-we assume liburandom_read.so is going to be under selftests/bpf here,
-but it's actually under $(OUTPUT)/
+Right, so we can just whitelist a few fields and allow assignments into those.
+One small problem is that we should probably only permit this for nf_conn
+PTR_TO_BTF_ID obtained from _alloc, and make it rdonly on _insert.
 
-Can you try $(OUTPUT)/liburandom_read.so? I suspect this might break
--rpath=3D., though, but let's try this first?
+We can do the rw->ro conversion by taking in ref from alloc, and releasing on
+_insert, then returning ref from _insert.
 
+For the other part, either return a different shadow PTR_TO_BTF_ID with only the
+fields that can be set, convert insns for it, and then on insert return the
+rdonly PTR_TO_BTF_ID of struct nf_conn, or otherwise store the source func in
+the per-register state and use that to deny BPF_WRITE for normal nf_conn.
+Thoughts?
 
-> /usr/bin/ld: cannot find liburandom_read.so: No such file or directory   =
-                                                                           =
-                          collect2: error: ld returned 1 exit status
-> make: *** [Makefile:177: /tmp/bpf/urandom_read] Error 1
->
-> # ls /tmp/bpf/liburandom_read.so
-> /tmp/bpf/liburandom_read.so
-> """
->
-> after I copy to liburandom_read.so back to tools/testing/selftests/bpf th=
-e build
-> success.
->
-> """
-> # cp /tmp/bpf/liburandom_read.so /home/net/tools/testing/selftests/bpf/
-> # gcc -g -O0 -rdynamic -Wall -Werror -DHAVE_GENHDR -I/home/net/tools/test=
-ing/selftests/bpf -I/tmp/bpf/tools/include -I/home/net/include/generated -I=
-/home/net/tools/lib -I/home/net/tools/include -I/home/net/tools/include/uap=
-i -I/tmp/bpf  urandom_read.c urandom_read_aux.c liburandom_read.so -lelf -l=
-z -lrt -lpthread -Wl,-rpath=3D. -Wl,--build-id=3Dsha1 -o /tmp/bpf/urandom_r=
-ead
-> # echo $?
-> 0
-> """
->
-> Do you know why this happens?
->
-> Thanks
-> Hangbin
+--
+Kartikeya
