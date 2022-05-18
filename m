@@ -2,63 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEE552BDBF
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 17:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22D052BE76
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 17:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238860AbiERO6a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 10:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
+        id S239228AbiERPQf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 11:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238888AbiERO63 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 10:58:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364E319FF45
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 07:58:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E99B0B80EA7
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 14:58:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAE2AC3411E
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 14:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652885905;
-        bh=C6D4LIf8HlYFTqAV2/sOWrBoL9eB5yi4jDHkyCghsCY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PcSW5ChKBPwVjelCssY5RlQxmM8GLf42R5CrVeyOydE+3KFhWslrPx0Jw+qUz+E9m
-         EWOGVXC9DdrDwwGmrl+Tbz/42HFk6Mjw23+XSNQzy546AUX785Bis/L3oX9tdHkL6L
-         w0xZdHPhkaLVQzuRpREPr/tiJ4tSn9gklz/2oncZnUg9EouGIAAZZHA4EubHCShsQb
-         e3MGHERAjnO8TrESbZKz7OGfk9Ck2I4srLkQheItjCVQSohR8l4HnfnHadFAAnO4GO
-         v0b6WYTG4oCCwMf160I6nkkb9vcnga4b7/MCDqurGIpNLVm0uOyQIYmVSdjirUrkgl
-         z/c4tyB5yYQyg==
-Received: by mail-lj1-f169.google.com with SMTP id b32so2878518ljf.1
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 07:58:25 -0700 (PDT)
-X-Gm-Message-State: AOAM530UH//9qn3vORWvsxXTP2IkdV2klOJ+hWyrlikO531vZ61mZxG4
-        P7Uwzzo5eeNlyFtTt38ZSnepmpUL+OYDHobH7WaUvg==
-X-Google-Smtp-Source: ABdhPJzCXWuLXUdyiw1JlShMEc9xIVqWElG0K5bhpjqdaG26JCpzmZrJgSfgXxXrJCSxFe/aU+/XiBnz6syUEk/3kno=
-X-Received: by 2002:a2e:9105:0:b0:24f:2558:8787 with SMTP id
- m5-20020a2e9105000000b0024f25588787mr17236394ljg.65.1652885903568; Wed, 18
- May 2022 07:58:23 -0700 (PDT)
+        with ESMTP id S239198AbiERPQe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 11:16:34 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDAD6A417
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 08:16:31 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id r30so3135051wra.13
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 08:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=i4HUA0YJMkIO+o2Vg/Sq8Fq4maURSbUg0U3Z/Q7nYmw=;
+        b=mCKcHJYp2Bkepx7tlhuTqmlwG2RU5dk/pP+zG6cVSW1uHEbtHNJYikT7mZaVAiglMa
+         raOMDK2+n6x1tKD0JDmDETmGusgmL7dydzBYQOv8r0HKqb4dISJlFZiqSN/Ml2p8v7J9
+         VXl6YRXrCXASYkVEKjbgu6b8yOlFKEXtu07iI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=i4HUA0YJMkIO+o2Vg/Sq8Fq4maURSbUg0U3Z/Q7nYmw=;
+        b=chImOy0PUeCYbJX3vO3S/fAWgm50xeJxeW0v8lVmNiOfl1len5HsGEtYWMtpJ5FIVg
+         O5eiV0J5YnPTCkpAS4XcYI89tGQPFyz8TH3sMAKHwCKEJuOHi+ZqCImFpuiLAo1yk4yN
+         g+xnPgOexjgwPNlWLQQ9/6SXGvjn6iNS9kHWroXCJrb2E8lZonKh5YHgaI9WGz+Znnhf
+         dNvCAalEpiQOvQm1tIpEAy+CqjB4p9sfNSKlE6sY7skd7d7oJXQgwtTs6iF0Ptjg5H2L
+         /LULEi2p0juFCOMrnjYP9U6/hVtkq/wdBTIvwMe9GdzWDcPyjW3PgUD08tFQX/akqgUt
+         0PaQ==
+X-Gm-Message-State: AOAM530P4EsyiVxehEQIhT48iMY5TUcpU27J41tojJkVoo6vZwEatMVD
+        DQSKWua1Xqq4oaApXKGI2aAH/w==
+X-Google-Smtp-Source: ABdhPJzsslAUSZJ41bnZ5U6Qa3jOAILR0ulx7dyfyWKaMyd7dAnUunZ1WrgxrQa2qVyCYWM+1YhpiA==
+X-Received: by 2002:adf:d090:0:b0:20d:3d4:8845 with SMTP id y16-20020adfd090000000b0020d03d48845mr192537wrh.162.1652886990119;
+        Wed, 18 May 2022 08:16:30 -0700 (PDT)
+Received: from cloudflare.com ([85.88.143.70])
+        by smtp.gmail.com with ESMTPSA id v14-20020a056000144e00b0020cdf6ecafbsm3303773wrx.81.2022.05.18.08.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 May 2022 08:16:29 -0700 (PDT)
+References: <20220429211540.715151-1-sdf@google.com>
+ <20220429211540.715151-3-sdf@google.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Subject: Re: [PATCH bpf-next v6 02/10] bpf: convert cgroup_bpf.progs to hlist
+Date:   Wed, 18 May 2022 16:16:08 +0100
+In-reply-to: <20220429211540.715151-3-sdf@google.com>
+Message-ID: <875ym2zx9v.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <1652880861-27373-1-git-send-email-alan.maguire@oracle.com>
- <1652880861-27373-2-git-send-email-alan.maguire@oracle.com> <YoUA9k9iowy0meN3@syu-laptop>
-In-Reply-To: <YoUA9k9iowy0meN3@syu-laptop>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 18 May 2022 16:58:12 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6xjTBWq5jNPc-VDMmgOL4=eMevJNUBMj7ki=BYot+=WA@mail.gmail.com>
-Message-ID: <CACYkzJ6xjTBWq5jNPc-VDMmgOL4=eMevJNUBMj7ki=BYot+=WA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/2] bpf: refine kernel.unpriviliged_bpf_disabled
- behaviour
-To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        keescook@chromium.org, bpf@vger.kernel.org,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,44 +67,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 4:21 PM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+On Fri, Apr 29, 2022 at 02:15 PM -07, Stanislav Fomichev wrote:
+> This lets us reclaim some space to be used by new cgroup lsm slots.
 >
-> On Wed, May 18, 2022 at 02:34:20PM +0100, Alan Maguire wrote:
-> > With unprivileged BPF disabled, all cmds associated with the BPF syscall
-> > are blocked to users without CAP_BPF/CAP_SYS_ADMIN.  However there are
-> > use cases where we may wish to allow interactions with BPF programs
-> > without being able to load and attach them.  So for example, a process
-> > with required capabilities loads/attaches a BPF program, and a process
-> > with less capabilities interacts with it; retrieving perf/ring buffer
-> > events, modifying map-specified config etc.  With all BPF syscall
-> > commands blocked as a result of unprivileged BPF being disabled,
-> > this mode of interaction becomes impossible for processes without
-> > CAP_BPF.
-> >
-> > As Alexei notes
-> >
-> > "The bpf ACL model is the same as traditional file's ACL.
-> > The creds and ACLs are checked at open().  Then during file's write/read
-> > additional checks might be performed. BPF has such functionality already.
-> > Different map_creates have capability checks while map_lookup has:
-> > map_get_sys_perms(map, f) & FMODE_CAN_READ.
-> > In other words it's enough to gate FD-receiving parts of bpf
-> > with unprivileged_bpf_disabled sysctl.
-> > The rest is handled by availability of FD and access to files in bpffs."
-> >
-> > So key fd creation syscall commands BPF_PROG_LOAD and BPF_MAP_CREATE
-> > are blocked with unprivileged BPF disabled and no CAP_BPF.
-> >
-> > And as Alexei notes, map creation with unprivileged BPF disabled off
-> > blocks creation of maps aside from array, hash and ringbuf maps.
-> >
-> > Programs responsible for loading and attaching the BPF program
-> > can still control access to its pinned representation by restricting
-> > permissions on the pin path, as with normal files.
-> >
-> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > Acked-by: Yonghong Song <yhs@fb.com>
+> Before:
+> struct cgroup_bpf {
+> 	struct bpf_prog_array *    effective[23];        /*     0   184 */
+> 	/* --- cacheline 2 boundary (128 bytes) was 56 bytes ago --- */
+> 	struct list_head           progs[23];            /*   184   368 */
+> 	/* --- cacheline 8 boundary (512 bytes) was 40 bytes ago --- */
+> 	u32                        flags[23];            /*   552    92 */
 >
-> Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> 	/* XXX 4 bytes hole, try to pack */
+>
+> 	/* --- cacheline 10 boundary (640 bytes) was 8 bytes ago --- */
+> 	struct list_head           storages;             /*   648    16 */
+> 	struct bpf_prog_array *    inactive;             /*   664     8 */
+> 	struct percpu_ref          refcnt;               /*   672    16 */
+> 	struct work_struct         release_work;         /*   688    32 */
+>
+> 	/* size: 720, cachelines: 12, members: 7 */
+> 	/* sum members: 716, holes: 1, sum holes: 4 */
+> 	/* last cacheline: 16 bytes */
+> };
+>
+> After:
+> struct cgroup_bpf {
+> 	struct bpf_prog_array *    effective[23];        /*     0   184 */
+> 	/* --- cacheline 2 boundary (128 bytes) was 56 bytes ago --- */
+> 	struct hlist_head          progs[23];            /*   184   184 */
+> 	/* --- cacheline 5 boundary (320 bytes) was 48 bytes ago --- */
+> 	u8                         flags[23];            /*   368    23 */
+>
+> 	/* XXX 1 byte hole, try to pack */
+>
+> 	/* --- cacheline 6 boundary (384 bytes) was 8 bytes ago --- */
+> 	struct list_head           storages;             /*   392    16 */
+> 	struct bpf_prog_array *    inactive;             /*   408     8 */
+> 	struct percpu_ref          refcnt;               /*   416    16 */
+> 	struct work_struct         release_work;         /*   432    72 */
+>
+> 	/* size: 504, cachelines: 8, members: 7 */
+> 	/* sum members: 503, holes: 1, sum holes: 1 */
+> 	/* last cacheline: 56 bytes */
+> };
+>
+> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
