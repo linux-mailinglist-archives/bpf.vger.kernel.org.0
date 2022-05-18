@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC7852C569
-	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 23:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52AD52C576
+	for <lists+bpf@lfdr.de>; Wed, 18 May 2022 23:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243078AbiERVKR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 17:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
+        id S243120AbiERVLN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 17:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243004AbiERVKQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 17:10:16 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7324236764
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 14:10:13 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24IKiCm7027653;
-        Wed, 18 May 2022 14:09:59 -0700
+        with ESMTP id S243252AbiERVLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 17:11:09 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F1A2FE45
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 14:11:05 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24IKi7ts012756;
+        Wed, 18 May 2022 14:10:51 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=d1mgyHrMRFKaknLydAHVDFeoXoM2ogXWhUYt/KiA9Es=;
- b=jGUp0OvjaxHkSQzOUf6iZUcEBe1EiEEqdJ1isYVuqUyvz26NOvKvcBE9UGi/JtHe7Xgf
- I0p5jcFIPtH2SMACiBh2TM0NtIHc9H9+BqUpwaqajkeyhUl//Q3Dp9SDvs/bk3wjviN0
- B2ADSoqOkyAfLzohpqVQ0cEx2LY027CYtMs= 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g4ap6v98n-1
+ bh=4fusLV4TrtI0Lvpk1xcgp7ScoBTGEqfuMm1QwN1goKU=;
+ b=cfM2KXP+z8KK8guSi7OvWGOYCbNUzNJZfuVWVbgCdeg8bJ4KZzYHYw5vsYTZ5EH4gIyG
+ gK1GwjMBiJTiLpuF2QENCMdRgRfiQ1ieGKJgcPCxk6+uXbOrOWo+bU6MeCmT8ouep/DK
+ Ttqn/m/IGZpe39diYR71EEIryDzOvYgs7aA= 
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2046.outbound.protection.outlook.com [104.47.57.46])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3g4myhqbyx-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 18 May 2022 14:09:59 -0700
+        Wed, 18 May 2022 14:10:51 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WJwFixZ9FdO5dE5DTM4YvmY5bfEl27rWcZWZ4Ac0Y8hlFwDBmP/U+eVUT8Gg4PAs/F37oGDOAmsdovbJUGEUCpn0WHOr/8hj3wiqETgvOaX4PFv7h/ieyy5R3B1Miyp459J4Q2CnxWIvcNL7vQIJPmx992KHiuyCf0CP1wmQe86rw2/uzB4/BbTSDUwDA4x26pkf11NrqKA2aP73mMtCj0QgrDtrTts8NJvys9YBPxtTsVgg9f5XCkoRZ25NdWQFNKmCy5tqfqe1SiNR16JDBQnT1qhlMzZLTpuryelD2dCI7uoyDpHPxNRbGArDM+ukiZEZWt1PMmHYIeuE7BpESg==
+ b=Xa3ivzTem34HyHmXuKldnHXfVM4ZHZDUQrG7hx/TDdoXCzC3dYwob8DiqXEONmGJZTLlmivMaXwafGtTx9zmeyZtsp8b7lCrtWTOrhcPhAgG5LYZdNUjWWwswcO3xEgZHlzBBMyNNMR/lpADcJokogM6HuDW5k1SoOMEeMTHoZEojBoBQL2w1azW2h3HVNqUvIrsQSidB7ydmcr+lcNqOe+vXxfEU7xTiH/RhyhVhVvTI84ibrQ0ovnHU06KD9VJXNXDu9prMz5fi7YZ3zbv+jdpmd8gFYicbatmEExxh6uxKWOh9eF1frvOVEsmvyHckalJjkjWwSVhGhZFEyU3og==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d1mgyHrMRFKaknLydAHVDFeoXoM2ogXWhUYt/KiA9Es=;
- b=B3jLhxiA8l0Zte5jHZaAcrmIEMeeys+U8fzObaiLYHP/Dk56NpQKeGY+NSiOlknKEAY7lL52+xIGRjowcLFcenf9KwdjNE/6GcejLNzNYrn2VHkWrHi8XYQtZQO95kXYp71E5mMNWGMc8xO2FMFuP7lvI13jDcBMM5zJXDqb/aYsA3nRRvPpMsV15CXZ9voDOT+n7bwai3xRTmYpFuHpAY6k2GsC87fpwo+/iU98mLtcLF5gTMOh2MVsqku2ihkqJIQmuT4ZObxw7ztE3mSzcyV/qcRMOyIrNSiGgt/e1XK3j+V49MZlneAozspLRaVUDsn4Mzu2AYo6iRGUQGvZww==
+ bh=4fusLV4TrtI0Lvpk1xcgp7ScoBTGEqfuMm1QwN1goKU=;
+ b=W6McszfcmMqujgGljp3Ra5uX8CIhJ6qRJz/IxZ0lJxa+Ku14P8mj8z5Hd+gjuzDHRI5OTYCj/D+swMhjWqqO/WJR7Kk87jBVGveiRjaP22AWiszQJZCdCXLTlRjgRkFh5XIRPiRMSFZl5fRu/GXpFIDo7XNMuUodqdUzDw5V90q+qsy8GhPys8ExtsxgMtvZn2aUqmYeyCIPc2n4t882IlVvr19ZViseKQVvzdY8KGgO9XfJspXqW35rMHUohD3mX9Ky9LHUTM7DvwYTeZzoau1AfS6BbQ1+1pI2d8cqQCcpGfrO/mFdNq4c84VPNInXVVlZ4oIhWuOf7aOtgsfDzQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by CO6PR15MB4228.namprd15.prod.outlook.com (2603:10b6:5:349::24) with
+ by MWHPR15MB1152.namprd15.prod.outlook.com (2603:10b6:320:25::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.13; Wed, 18 May
- 2022 21:09:57 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.15; Wed, 18 May
+ 2022 21:10:48 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::5811:4996:bbfd:3c53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::5811:4996:bbfd:3c53%7]) with mapi id 15.20.5273.015; Wed, 18 May 2022
- 21:09:57 +0000
-Message-ID: <a5976134-3e16-94ea-fd7b-1053b83747a4@fb.com>
-Date:   Wed, 18 May 2022 14:09:53 -0700
+ 21:10:48 +0000
+Message-ID: <b59b2370-de7c-752b-1acb-6afe81550c92@fb.com>
+Date:   Wed, 18 May 2022 14:10:46 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v2 10/18] libbpf: Add enum64 relocation support
+Subject: Re: [PATCH bpf-next v2 11/18] bpftool: Add btf enum64 support
 Content-Language: en-US
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -59,80 +59,80 @@ Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 References: <20220514031221.3240268-1-yhs@fb.com>
- <20220514031314.3244410-1-yhs@fb.com>
- <CAEf4BzarwX0idepo1nA8QvyirRYQ-hZL3ZxKh3H=HWP=8P-=LQ@mail.gmail.com>
+ <20220514031319.3245326-1-yhs@fb.com>
+ <CAEf4BzZcPVsKzx+abjJruRAeg++iod6YnTfBWGhUkyit6VsGPw@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <CAEf4BzarwX0idepo1nA8QvyirRYQ-hZL3ZxKh3H=HWP=8P-=LQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZcPVsKzx+abjJruRAeg++iod6YnTfBWGhUkyit6VsGPw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN6PR17CA0058.namprd17.prod.outlook.com
- (2603:10b6:405:75::47) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: BYAPR07CA0059.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::36) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 727fed61-91cd-49dc-b804-08da3912c2fc
-X-MS-TrafficTypeDiagnostic: CO6PR15MB4228:EE_
-X-Microsoft-Antispam-PRVS: <CO6PR15MB42289C3A3B31E6D09C7EC474D3D19@CO6PR15MB4228.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: e9a75dc8-4cc0-444e-b40d-08da3912e158
+X-MS-TrafficTypeDiagnostic: MWHPR15MB1152:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR15MB115230CEA5D78C330D743FE9D3D19@MWHPR15MB1152.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WPdKop0vch6hTAKZDhlmW6key/mIGLWRG8vBJmZJUlMtKGoQEAGp2VvSamsqODxhUNMMLhmUFs3VKusc/pwbmzrLMOAzKwgWB5JslWgWCdHXIASaVc5x7yqWNNk78tjTpCvdwLC4/i+3yPKnTzsSMN6016ttM+jrmV1BysYE5gyq29FFHlImi3elX41rEPyw25opNePX4jjuNDZga4Cs19HNocyzsVwkhfht9UpyLTqUsHeaoxqlT8yXzbWsqHNJIXCbFlTQLpHs2EIP+QGByQDFJCfTotFlXXxa395yGyn85DqaPNYbuxaIH17z2A/zPH1U8j0IOeoAzWcQ8sPc3aTAvAFuvckd9tGdalFoFcC9d2ClSG/Xy3msZc9U5G/UOPVsHg/kxAyO/8zr8W7THuR0oj77TbC1S6MO6UVtUJvqeujOMBKBObZ6bgAlOGY2DXS+xmZDpnxq2H2cw+EtrhrkUgXSi8pyvEMuo5mVyfD4+LlxXx7U08NorkaC+gemkaaTMNkFNa4XHmmkhlwjVKZKHVbOwE/qqP3EDWyeBD4Yqubz6AMEXfDXjKPZhQQLVTd0eu8U0rFtoiYFkgGd/B2J53s/XhF8brDtjOqRIL0zGiCVJBpYWT6Zq6AtXA/kZr+ZXe3C+hdaW1D0JBNoe1FBsluttMTuibcmFUQZbyQqYzEDh9Yj1WWT/YJha7/MMHBDEs4bNTVz7ixWbGxhS8RwTe0jCGw2wQ0o68BxqZw7RjmEhzyCQcJEah9knBR8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(83380400001)(8936002)(5660300002)(66946007)(6512007)(6506007)(508600001)(38100700002)(2906002)(66556008)(53546011)(36756003)(31696002)(2616005)(54906003)(316002)(86362001)(31686004)(8676002)(6666004)(66476007)(6916009)(52116002)(6486002)(4326008)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: xUJ5soxVKf6+HzHBhlLRw7StV8qzDBvWyxYKeRxJMGcMDPpaMPu4N4BRBroPnvd8JkXbhwllmewx0Ka3ZcesSXd2/h8CjvnQyB1JQQjwJv6S/7V7qkmvn7Gtdp6tuj+udnTf6TT85aFZYMP3MrdS0d+5Pxefvp8hPG0Yr2YOZ4r+4CRcq2CJW2YJw0GLVNL/p8L3vpRnpnbjeOQsjcM5mUoRF+xE6C8XGHsJBAcFhuixoeOcUtR9ic+8CAYSuV9lyo+Qu8p2o4I8B9U+nOaB2EYnpoeJJzI3ZgCYZtl8LMGvw2KQ0Yqw2Ur89F9CSYGEkBp0a/EmyK5I2CBYRX8F2Vd13G6wEqad3xjp7ZI2yoj01yc7BfH2i8yGpXOk+b+VnErkOkRznuoKVagqayZrBP0j9NokTWt8AUpy2az1qFVdEBSpeoLALTeZStJ9ZvvWGhuX9WelwHmkENiXuN/uBc3GFa7u+ZJG08HbcXqRwhIzVNSfvAQQlCBT/WEB4a7lHiAE9Moi3ud5TmbfVv3c8yvBepGvogdA4gsq65JcYcFGnydP2IU3uyA+/QXO5WGOr5xLhC5BVSYMjwePnKA0lKnEF7DF7RvaihFK6NHA3nI3RKmTXdN3vWpD0zrxahulo3qBzYiN+DE389/PF8ozHlpbwcIcJWlUUryDsMXt3QdvjC166MRvy3ze1UqEvOVdS3eeABik2oq4mTCP/xkf6V2IY+TRPB4jcR2ycbbzgx812eCYArnkcRBP7tHFAKro
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(316002)(8676002)(54906003)(6916009)(36756003)(66476007)(6486002)(508600001)(66946007)(4326008)(66556008)(83380400001)(8936002)(2906002)(38100700002)(186003)(52116002)(53546011)(5660300002)(86362001)(31686004)(31696002)(6506007)(6512007)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V2JmRWJJK3cyUUxYWUVkM1dWL3pMckt2VUN6RXBFZjR1OGF5L0dZU2ZOa1F0?=
- =?utf-8?B?ZDN1YllDcDdlc2pWOEh4WlRNYW56M3ZLM1hWUkxwVUd4OUFNNjFOVTFXTmRI?=
- =?utf-8?B?S0IrNm8ra0tydmVjcWF2WmZmdGNNTEVVaUZZRDAzQi9Db2R0RndqeWFuck5X?=
- =?utf-8?B?TkxOaHZKd2dPYTNkekhjVDd2MHB1bWYzRW90S3VScGdyVGNhUEpKRGFodjJw?=
- =?utf-8?B?ZGJ2UHJFRGFINHlMUWZZRzlmQ2ZPc0EyQlRlblJ1MjZ0SEZMcVhCSjZxcm54?=
- =?utf-8?B?SG8rZVkxbEtrendJbzZKL3R3SlcwcFVDRmswcHArMFNBUG95cExYeVFVcVQ1?=
- =?utf-8?B?SytYNXBxamVjTEhtRmZwWllobGxHT0xCZ1hKbmMyUzVpNXpaR1BZZ1diMWJk?=
- =?utf-8?B?aFIvaU4zS2VoaVRac0hDRXNxVmw2bUJQZzAzMWxXQnp4OUFOT0E0SXFZZHNZ?=
- =?utf-8?B?YXVYNXc0NWhaaGh3c0N3ckUrZkR2N2pMR2VGZ3lyZ0pOTVd2Q3hQa0Rud1NZ?=
- =?utf-8?B?RXBlNW1nYitZZmJmamtvc2JlN2k4dHpucUVObExHN2lyeTlxaURRRHFWc2Vx?=
- =?utf-8?B?VHhGclJnaTE3NFBodEpmcm5VZjBDd0xCOUJwejJtOXF1SWE4SFNYRjNxM1Nv?=
- =?utf-8?B?VjVYUVcyc0oyeDBNRC91ajNYbWhEOHJCd3B6ckpPaWlObExBanVvTzUxeCt1?=
- =?utf-8?B?VE9QOElVYXpFQStzRURuZk5HVFNZcDZsMmJJZGlJeEFNUVczM2ZWYzBVbUVz?=
- =?utf-8?B?YStQOVkrdHVQMGxQZHdPZ0lNS1g3enhJcDBFaU1ucm5YY0NRRmNTTHFyd1hs?=
- =?utf-8?B?SUNYYWFMTlo3NmIrSWhSM1Fuenc1TE91M083a0x6Z01Gd3IzUEp3SUV1anVW?=
- =?utf-8?B?NWFnUVJ5QzJuYUpocHNWSGIrQ0tmeWcyOEIyNHdtOGxyd0pkUDIzak0xakRo?=
- =?utf-8?B?REVjN3pwYzR6NWhHWUdHOHN6VU9RWThpd1NNQzJKNXQyV2dKaUlwczBzUVRD?=
- =?utf-8?B?VHRuVWNpWDJMc2E1TUlkUUhXaEZScHZWalVwUUQrWldPVGRsZlhBa3FKVnAx?=
- =?utf-8?B?bDFmbXFRN2lSSW9SM2F6MElPekJIYk56RnlHNDNCcy9JaXBQZnlpSFVTL1Bt?=
- =?utf-8?B?RXBiSDM5b0ZlN0ZkVW4wWFBuSlprNmNwQW96Z3Y5Q0gyb1JxTU9HcnZQcm1x?=
- =?utf-8?B?YXZxQXZRS0YxRUdiaFlBVlV5ZjdwMDNsY0lnMlJ6b21pOWk2WWN5eHVrUWlj?=
- =?utf-8?B?QS9mRnpsYkxRRXBVVEFWTFlHNk1BcXVaYkNLRUNPeUlsNm9mQ0p4M1BwNUc3?=
- =?utf-8?B?ajB1NnJ6eHJlV1V1S0Q5djFnc0tGU2dqTEFscU5BTXdkUGpRMGFoV05qK2xI?=
- =?utf-8?B?NGhpSXJXL1RUVnFKODk0MzlZdlRmUFk4MXVhTkpWd2tFQUZEakNIK09WTlpY?=
- =?utf-8?B?V0ZKT2haMDk4T3RlK3RkZXh1ejg2RkFJclhzTmtCemlsZ3BRcGQyb2JvREY5?=
- =?utf-8?B?UFhnZ1pXckk2QnhreTEvb0x5blZUQ09XcmJKZ0QxcEdQb2Ruci9ReVFmYSs2?=
- =?utf-8?B?b2MzVWRwM2gzSHJzejJ1RUlvVHVqSjRUcDdzeFdzbE1ldmMvcGF5cFplR2N6?=
- =?utf-8?B?ZUpKT0M1VzJjMXgyMk53MzBMSldCc0pSeWJQYkt3VlhBVnRBSHVzU2NFQm1K?=
- =?utf-8?B?S3VPN3RjcmtzN3hVek8xU3ZWRDlPZzk3OFdBVHlkNVowZXcxcUcrRzdlYUNv?=
- =?utf-8?B?dEV6OE82Q1VWbnVhK2JhSXpMdlJjTDlTd2x0NVFXeHExK0ljREp5eDVLbzZv?=
- =?utf-8?B?a2cwY3NMdHBZOHpxeUU4aFBQSEVQZlp5Z2xzZUhLbEk0WkVkN1hWNFA3RFEz?=
- =?utf-8?B?SW5WNkYvUHg4ei9CK0ZtZVZZUVlSWmVnUXV0WHhFVWxLYzFDMW85cFpVMkJD?=
- =?utf-8?B?cHFKL3JyNG9kMGxwZXluVW95Zmw4MkV1eDlVS1VLMGhjaS80UHRxMDNFNWNR?=
- =?utf-8?B?bjRDZUFmK1pBMHdDUStrUDZwcjYzQ0pWeThoZk5uYWlkS3dYSWVrUWN6a0M2?=
- =?utf-8?B?WmdsaEs2MkdaaGJSWnBVc3doUnh6WnJPUTBneDVrcGRrbHVWd0ZDOHBNQ0k4?=
- =?utf-8?B?U09rb1UyZXBHdE5ldHVvQ1E4dmVvZHVXY3p2aEFIR1ZoRUhWcGxsbWx4Tzlk?=
- =?utf-8?B?cjRQUFBnck9rcGZmcGFXN3VkRUZBVVFvNHlCWVY3OFFMeXc2WE51ZjNSZ0lC?=
- =?utf-8?B?YWR6Ty9vbHJMUU8yWU80WnAyWU1zQlBHUER3Szc1QjE0MTV1QUZwTzlLM0h4?=
- =?utf-8?B?cytCK050T1JCbzlDazRWR0o4VEFXMGkvOWlmcVZDL24yaDFtQ3crS0UyRXVr?=
- =?utf-8?Q?AwgDHVzTpMwyaEH4=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?anhncHozL3hkdHMrcjJPYStRa2UyTi9idzZ6TDFLT3YxZjgycHRzRm5BUkNm?=
+ =?utf-8?B?Z2hXRjFjc25vYWxlMnJhc3I4c0k5TnI4R2IyOC9NcTZFMHJOWTcweEh2bHJa?=
+ =?utf-8?B?UWh6TTQvNUhpSVg5dHFZN3ErUmJqVzhVdXNKYU16Sk1EQlU3K0U3OTcwTjli?=
+ =?utf-8?B?aTMzVm5qUDNMaE9Hb0lFWHU2SXg5U2wxVjNvMXhWSGMzd3FLQUZLRGljaVZp?=
+ =?utf-8?B?eUZQNU5PUWhKYVRJbnNTL0FTY2oyaE5QT1dSdDJ3bDJYbDJNeEx2VU1UTGtU?=
+ =?utf-8?B?ZjN2ZGtLa0s0U081dkFwdnpRaGhiV3FDNUIrMjZVdnBCc3pqMDhML3o4UGpX?=
+ =?utf-8?B?dGw2Z25tNE1SQWdLWkt4MlBIMFpjWmlZRUdLWlhvS29DcDFKbHF0Si96VHh5?=
+ =?utf-8?B?cWpReGRjZWxST3ZGTEZhRFNpRzhLSG1JS3JhSmh0aU1rL01kYkhzOVhFTTNy?=
+ =?utf-8?B?bkx3alczWXIrQytpQWZLQmp1WGxQT0k5RXFrb1JMZ1h3dCtXLy9MZlBMc1N4?=
+ =?utf-8?B?VUpYbzFEQm5GNk8yQmYrWUJHd0FhcVZrOEFMcVRUSDVJcmlOWkhQZnN3Z2dT?=
+ =?utf-8?B?L1hsNnR3ZjNkaWg3emFmeFpPa1JmbGVrVkpTYWhXVGZ0clZUL0djQkI4VWxG?=
+ =?utf-8?B?ZUJWb1R1K3NLc2laSE5FeWYybEVEeHFGR0xqTTZ4dndHeW5JKzFZVWtpL2xq?=
+ =?utf-8?B?UCsyWHZSZEZrOUpXSWtidFhzaDFFK2w5aU80YURrQlBLZU9lSWFnbCsvZ09q?=
+ =?utf-8?B?ZFkrTXRWdS9IcGNRdzBodk9TMS9ybDRqM2RhNjA3YjBaVGR0Tyt4MkNXczBS?=
+ =?utf-8?B?NU5jSzZHejRPWWdVNTE5ZHhxc3E1RENCOEZIaExRcG91eno3OUN0Vlpybndj?=
+ =?utf-8?B?UTJaOEUzT1poQURBU3QyeTFFMitoa1IydVZEVGZ1YjRDTkpUWEtCazhBUDJT?=
+ =?utf-8?B?Si9YUmhPSHA3Q3Q0N0YrNmx1MEFkVkg2VldXRDRlamtSQThBNVdQN3l6RzEr?=
+ =?utf-8?B?RmFldm1yT2wwNGdXYk04dXJIUHlaQWZWUE9zQ216cDVBV2RXVHVyQUdNTEpx?=
+ =?utf-8?B?aEFPUTlMRnpnZExYNzRKVndQZUltNmhrLzdpRGNYTHdhQ3IxSEx6Z01NZUxN?=
+ =?utf-8?B?aTJnU3lhUGppZEMvcVNiUHU3KzBlN2doVGZGVFFkYzREZmZBZ2RsRzJQV2NY?=
+ =?utf-8?B?Z1lCSUFMckxERUhxRUN5OTJGRzhEZkszNG1QdkdBbkVEYytJOUJDL1NkZUMx?=
+ =?utf-8?B?L2NRZ0xlSkhNOWRjdVdya0t2d2ZLOHM5R1JINlVFZ2ZHWHJKbVYxQ0JWZW1C?=
+ =?utf-8?B?REVFN1JxKzROcDZFNkdhVDUvaElmRnlCdGRWNTBMbU1zV3Y3SG4zNEZ6T2N0?=
+ =?utf-8?B?bnVSNjA3RTkwdGp2c1d4aWFFTEdoaUVrSjk0dDN2YnAwaHVlRStXRzJEczQz?=
+ =?utf-8?B?TWI1THBJVUZnZ1dEZ3VKcWFlOFBqYkE5L1FLUXZ0ZDNwTWVWZUtOWmxZVmhO?=
+ =?utf-8?B?VUZQTHMvekRUTkZCeGl3cUl0blBLUE1rd0hpb3JmZEpGYi85K29LQ0ZKME96?=
+ =?utf-8?B?S3dhVFFBWGlqRDQxWnFvNlJYM2V2WTlFR2VUcU1sSTJ2WEVXdHV5SWZmVVcx?=
+ =?utf-8?B?ZTdNQkxlbVhiVW5vTGh5aVRBS1JQWGtESnI0Qzk2YXh6QkNGQ1Bqc3grSlBI?=
+ =?utf-8?B?Wk5HKzdBWE9LQjFMY1RGenZTQ1lKMi91MEUxYU1XM2FmUlJSOWpMOVlRQS9N?=
+ =?utf-8?B?MGpIREhUQzMvWFBQbWZtQU8veVhxWGJDNkhsR0Q4TTZieDU4SktrcmJJVGsy?=
+ =?utf-8?B?NmsydHhpcnliTFprWFo3eEV3aEtYWnQwMUlDa2FQYkswQ1BsUUlkNjErY0xD?=
+ =?utf-8?B?N1BUdmNSbWFZS3JydFdCclFvVmxaU2w1NGpLU2ZmS0dUbFZxZm5FTHlRS1BL?=
+ =?utf-8?B?UFJBbHNwdDgvYVo1OFlkQTIyUEp1V0N0ajM4elR2MWpUamhuMEZOa25mclh5?=
+ =?utf-8?B?N3hUS0xNMnFLQWZxK3FXYm0vd3lTNGdLS2lPallXbmlhMWFlUHhnWVVNZi9h?=
+ =?utf-8?B?UzBNaTVpMmptRk5qNU9jaFpJOGNUVjRyay9oTjQ3NXVaVGptaFpzRnZ0K1RK?=
+ =?utf-8?B?bS9BSEJ1MllVbWxnL1N1SHdreGtqdUQ5NVZESWlNYkQyeVQ2U3dLYU9yUkd0?=
+ =?utf-8?B?MG1xNHFnSndSUmNiZXM3eGFHK3p0ZjNMZFJ6QVN2b3k5WURmcTdaUkU5N25W?=
+ =?utf-8?B?R09ORGt3T0N2b1VYbU9zZjMrWWVSakVqdVR5ZldvYkVhNlBZK2hyd2RGaGVE?=
+ =?utf-8?B?bUJtTUYzemJFSzhsMUhoTndGNnJiS2hoY2FzbFJRbGk5Z0E2T0JkV0lxVzZl?=
+ =?utf-8?Q?qJDOoXtcvo0IRIAM=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 727fed61-91cd-49dc-b804-08da3912c2fc
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9a75dc8-4cc0-444e-b40d-08da3912e158
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2022 21:09:57.0976
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2022 21:10:48.0946
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZVh5VmciEkk5PNAvelEU/ZaX7Lspi82jxXsu7WUIAGiUl22+BA58yt1MSORJ3tGP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR15MB4228
-X-Proofpoint-GUID: FnJJ8X5ef3TGxvdGunKLNxJqufmSc9Wo
-X-Proofpoint-ORIG-GUID: FnJJ8X5ef3TGxvdGunKLNxJqufmSc9Wo
+X-MS-Exchange-CrossTenant-UserPrincipalName: xwzpG0LwZKe2X6xJrP91V8pbi/qkBUAoRzHzTcaTdQy4rMY0QOOgm706yeJNNVC9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1152
+X-Proofpoint-ORIG-GUID: XXNoZfJ7LJenEjKfXEepp6YafDKcUsjI
+X-Proofpoint-GUID: XXNoZfJ7LJenEjKfXEepp6YafDKcUsjI
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-18_06,2022-05-17_02,2022-02-23_01
@@ -149,109 +149,120 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 5/17/22 4:32 PM, Andrii Nakryiko wrote:
+On 5/17/22 4:38 PM, Andrii Nakryiko wrote:
 > On Fri, May 13, 2022 at 8:13 PM Yonghong Song <yhs@fb.com> wrote:
 >>
->> The enum64 relocation support is added. The bpf local type
->> could be either enum or enum64 and the remote type could be
->> either enum or enum64 too. The all combinations of local enum/enum64
->> and remote enum/enum64 are supported.
+>> Add BTF_KIND_ENUM64 support.
+>> For example, the following enum is defined in uapi bpf.h.
+>>    $ cat core.c
+>>    enum A {
+>>          BPF_F_INDEX_MASK                = 0xffffffffULL,
+>>          BPF_F_CURRENT_CPU               = BPF_F_INDEX_MASK,
+>>          BPF_F_CTXLEN_MASK               = (0xfffffULL << 32),
+>>    } g;
+>> Compiled with
+>>    clang -target bpf -O2 -g -c core.c
+>> Using bpftool to dump types and generate format C file:
+>>    $ bpftool btf dump file core.o
+>>    ...
+>>    [1] ENUM64 'A' size=8 vlen=3
+>>          'BPF_F_INDEX_MASK' val=4294967295ULL
+>>          'BPF_F_CURRENT_CPU' val=4294967295ULL
+>>          'BPF_F_CTXLEN_MASK' val=4503595332403200ULL
+>>    $ bpftool btf dump file core.o format c
+>>    ...
+>>    enum A {
+>>          BPF_F_INDEX_MASK = 4294967295ULL,
+>>          BPF_F_CURRENT_CPU = 4294967295ULL,
+>>          BPF_F_CTXLEN_MASK = 4503595332403200ULL,
+>>    };
+>>    ...
 >>
+>> The 64bit value is represented properly in BTF and C dump.
+>>
+>> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 >> Signed-off-by: Yonghong Song <yhs@fb.com>
 >> ---
->>   tools/lib/bpf/btf.h       |  7 ++++++
->>   tools/lib/bpf/libbpf.c    |  7 +++---
->>   tools/lib/bpf/relo_core.c | 49 ++++++++++++++++++++++++++-------------
->>   3 files changed, 44 insertions(+), 19 deletions(-)
+>>   tools/bpf/bpftool/btf.c        | 49 ++++++++++++++++++++++++++++++++--
+>>   tools/bpf/bpftool/btf_dumper.c | 29 ++++++++++++++++++++
+>>   tools/bpf/bpftool/gen.c        |  1 +
+>>   3 files changed, 77 insertions(+), 2 deletions(-)
 >>
-> 
-> [...]
-> 
->>          memset(targ_spec, 0, sizeof(*targ_spec));
->>          targ_spec->btf = targ_btf;
->> @@ -494,18 +498,22 @@ static int bpf_core_spec_match(struct bpf_core_spec *local_spec,
+>> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+>> index a2c665beda87..9e5db870fe53 100644
+>> --- a/tools/bpf/bpftool/btf.c
+>> +++ b/tools/bpf/bpftool/btf.c
+>> @@ -40,6 +40,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+>>          [BTF_KIND_FLOAT]        = "FLOAT",
+>>          [BTF_KIND_DECL_TAG]     = "DECL_TAG",
+>>          [BTF_KIND_TYPE_TAG]     = "TYPE_TAG",
+>> +       [BTF_KIND_ENUM64]       = "ENUM64",
+>>   };
 >>
->>          if (core_relo_is_enumval_based(local_spec->relo_kind)) {
->>                  size_t local_essent_len, targ_essent_len;
->> -               const struct btf_enum *e;
->>                  const char *targ_name;
->>
->>                  /* has to resolve to an enum */
->>                  targ_type = skip_mods_and_typedefs(targ_spec->btf, targ_id, &targ_id);
->> -               if (!btf_is_enum(targ_type))
->> +               if (!btf_type_is_any_enum(targ_type))
-> 
-> just noticed this discrepancy, can you please rename
-> s/btf_type_is_any_enum/btf_is_any_enum/ so it's consistent with
-> btf_is_enum and btf_is_enum64?
-
-okay.
-
-> 
->>                          return 0;
->>
->>                  local_essent_len = bpf_core_essential_name_len(local_acc->name);
->>
->> -               for (i = 0, e = btf_enum(targ_type); i < btf_vlen(targ_type); i++, e++) {
->> -                       targ_name = btf__name_by_offset(targ_spec->btf, e->name_off);
->> +               for (i = 0; i < btf_vlen(targ_type); i++) {
->> +                       if (btf_is_enum(targ_type))
->> +                               name_off = btf_enum(targ_type)[i].name_off;
->> +                       else
->> +                               name_off = btf_enum64(targ_type)[i].name_off;
->> +
->> +                       targ_name = btf__name_by_offset(targ_spec->btf, name_off);
->>                          targ_essent_len = bpf_core_essential_name_len(targ_name);
->>                          if (targ_essent_len != local_essent_len)
->>                                  continue;
->> @@ -681,7 +689,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
->>                  break;
->>          case BPF_CORE_FIELD_SIGNED:
->>                  /* enums will be assumed unsigned */
-> 
-> we don't have to assume anymore, right? let's use kflag for btf_is_any_enum()?
-
-old comment is not accurate any more, will remove.
-
-> 
->> -               *val = btf_is_enum(mt) ||
->> +               *val = btf_type_is_any_enum(mt) ||
->>                         (btf_int_encoding(mt) & BTF_INT_SIGNED);
->>                  if (validate)
->>                          *validate = true; /* signedness is never ambiguous */
-> 
-> [...]
-> 
->> @@ -1089,10 +1097,19 @@ int bpf_core_format_spec(char *buf, size_t buf_sz, const struct bpf_core_spec *s
->>
->>          if (core_relo_is_enumval_based(spec->relo_kind)) {
->>                  t = skip_mods_and_typedefs(spec->btf, type_id, NULL);
->> -               e = btf_enum(t) + spec->raw_spec[0];
->> -               s = btf__name_by_offset(spec->btf, e->name_off);
->> +               if (btf_is_enum(t)) {
->> +                       const struct btf_enum *e;
->>
->> -               append_buf("::%s = %u", s, e->val);
->> +                       e = btf_enum(t) + spec->raw_spec[0];
->> +                       s = btf__name_by_offset(spec->btf, e->name_off);
->> +                       append_buf("::%s = %u", s, e->val);
->> +               } else {
->> +                       const struct btf_enum64 *e;
->> +
->> +                       e = btf_enum64(t) + spec->raw_spec[0];
->> +                       s = btf__name_by_offset(spec->btf, e->name_off);
->> +                       append_buf("::%s = %llu", s, btf_enum64_value(e));
-> 
-> nit: we do have a sign bit now, so maybe let's print %lld or %llu
-> (same for %d and %u above)? btw, please cast (unsigned long long) here
-
-will do.
-
-> 
+>>   struct btf_attach_point {
+>> @@ -228,10 +229,54 @@ static int dump_btf_type(const struct btf *btf, __u32 id,
+>>                          if (json_output) {
+>>                                  jsonw_start_object(w);
+>>                                  jsonw_string_field(w, "name", name);
+>> -                               jsonw_uint_field(w, "val", v->val);
+>> +                               if (btf_kflag(t))
+>> +                                       jsonw_int_field(w, "val", v->val);
+>> +                               else
+>> +                                       jsonw_uint_field(w, "val", v->val);
+>>                                  jsonw_end_object(w);
+>>                          } else {
+>> -                               printf("\n\t'%s' val=%u", name, v->val);
+>> +                               if (btf_kflag(t))
+>> +                                       printf("\n\t'%s' val=%d", name, v->val);
+>> +                               else
+>> +                                       printf("\n\t'%s' val=%u", name, v->val);
+>> +                       }
 >> +               }
->>                  return len;
->>          }
->>
->> --
->> 2.30.2
->>
+>> +               if (json_output)
+>> +                       jsonw_end_array(w);
+>> +               break;
+>> +       }
+>> +       case BTF_KIND_ENUM64: {
+>> +               const struct btf_enum64 *v = btf_enum64(t);
+>> +               __u16 vlen = btf_vlen(t);
+>> +               int i;
+>> +
+>> +               if (json_output) {
+>> +                       jsonw_uint_field(w, "size", t->size);
+>> +                       jsonw_uint_field(w, "vlen", vlen);
+>> +                       jsonw_name(w, "values");
+>> +                       jsonw_start_array(w);
+>> +               } else {
+>> +                       printf(" size=%u vlen=%u", t->size, vlen);
+>> +               }
+>> +               for (i = 0; i < vlen; i++, v++) {
+>> +                       const char *name = btf_str(btf, v->name_off);
+>> +                       __u64 val = ((__u64)v->val_hi32 << 32) | v->val_lo32;
+>> +
+>> +                       if (json_output) {
+>> +                               jsonw_start_object(w);
+>> +                               jsonw_string_field(w, "name", name);
+> 
+> forgot emitting kflag itself (both in bpftool and in selftests), let's
+> add that for both enum and enum64?
+
+will do. I will also check other places whether I missed or not.
+
+> 
+>> +                               if (btf_kflag(t))
+>> +                                       jsonw_int_field(w, "val", val);
+>> +                               else
+>> +                                       jsonw_uint_field(w, "val", val);
+>> +                               jsonw_end_object(w);
+>> +                       } else {
+>> +                               if (btf_kflag(t))
+>> +                                       printf("\n\t'%s' val=%lldLL", name,
+>> +                                              (unsigned long long)val);
+>> +                               else
+>> +                                       printf("\n\t'%s' val=%lluULL", name,
+>> +                                              (unsigned long long)val);
+>>                          }
+>>                  }
+>>                  if (json_output)
+> 
+> [...]
