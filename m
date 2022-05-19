@@ -2,297 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2195352DA83
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 18:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B8452DAB9
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 18:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239704AbiESQpp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 May 2022 12:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
+        id S240550AbiESQ5A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 May 2022 12:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232767AbiESQpn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 May 2022 12:45:43 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B828095;
-        Thu, 19 May 2022 09:45:42 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24JFG9Kk014619;
-        Thu, 19 May 2022 09:45:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=DIZgqqj6mr9C/+jBVLdKdCC+It0hJhCQSJzwY6nZvGQ=;
- b=OY7jR2hwR5+eW8RRZfU58Um5QB4ck6/m4pTDHqbjbs1MKpnErwpQssssAItzRdRppozq
- 82LnKoD22vU9akO7YTpKS8VpHR5VCU+OUZPzb3Npj4EAjyAwpds/Ix+U4GxaHVvzmZZS
- pslxr6hnpP/2JQtvxGIUvEQCzml8egvRv0A= 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g4ck0s84f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 May 2022 09:45:26 -0700
+        with ESMTP id S242298AbiESQ45 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 May 2022 12:56:57 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2377D793B6;
+        Thu, 19 May 2022 09:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652979416; x=1684515416;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=3Y7T2iBY7k8sQbr1JMgzXY9OjOh6JyAkHRjwEJ3jL78=;
+  b=ekaSK7a4TQpWSpyCOmCOVvr78wdbCSp/BsSnx6akwEvWzfd9YwgPzeZB
+   WE1XoRO/5STMkX/claj/aKD113p/6eIcEY6mADuKuoVajSnSwccZ5soV6
+   TVg5oEzEWLIn+rVxGEvLI57TbjtwMDqmZL6qNAKHr66Ln76c4qPwphTxs
+   q+0zSQo2vWiTQuqroKhN3c1ADYMcXAZXIGjizuQMLzAc9+yNGpmyBdL/x
+   G+OwI746FJ3fPOWUttc3ive4JI4n2Z/7Dx+4Mkj9h4AYkeR5SV0oSY4wm
+   jsy0zg/ohiSs4Dyt2HTeNa/RKYJVeH7Tm/UwNgUtSb3GzLGbTJxqc2Z/y
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10352"; a="271102441"
+X-IronPort-AV: E=Sophos;i="5.91,237,1647327600"; 
+   d="scan'208";a="271102441"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2022 09:56:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,237,1647327600"; 
+   d="scan'208";a="606577563"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by orsmga001.jf.intel.com with ESMTP; 19 May 2022 09:56:55 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Thu, 19 May 2022 09:56:54 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Thu, 19 May 2022 09:56:54 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27 via Frontend Transport; Thu, 19 May 2022 09:56:54 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.27; Thu, 19 May 2022 09:56:54 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YMAUSnKeL4tugj4/svhrNPlg80PlTBomtqU/lB+AEVJLYHlG9eDA5zMxWCnyNH7sEZC2nmbufrRRTw/4nh1M4b/UsUVyYXcRgWVbGIQRnb2gJAk1zwX0Z7LDyJDpV+HSQvzgNPOaV743zPaW5INxHkBQLwavokCayiX3oUDA3o+4Gv4uJ+yc/PCgeN5/hvMN6pWF7EinPaMlKorND7Le0DfA3gOnfDLe91jPrZI6jCUNPu7ZNrDE/DMLk85VmO3856QuIa2B9d5Sk91PzY/7tEESyDNhBOG/4qTdJZP1nE4zHWsHOdm16vdmzmtxv7sHFAA19RPgaHWDcNeQghR9Gg==
+ b=MQJrlDPZa6eVq7Zn97R6SA1dtDjRKq7WmMtoFpnPwdG61wix+Sm+6WofjYYJOElDn8clZBs0q/+6uaY/IW3miULLVwwXTGKs0sfjzm1z7fzCEN6WZ/SBPzv37Xqnp38mS/JUoBvgCGjzkgxx/mtMnrQACjDK8g34Tv8+jzdDTBFYS1QkMDoVzA5CF7qNDzzMQ3w2jIBf62gzcVnqTXdZxWN/h2RJkGQmdIDr1jI6nHlNM28Qb+zO4g0a2aBV7zBzyot8wKjItpBl1xpRGRMqRPvVAhBDvQVO4fEMEzQwnMzfYgqLA00CdJrkSuU+4OfOMCmiWMfABBMDk1c4puJkwA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DIZgqqj6mr9C/+jBVLdKdCC+It0hJhCQSJzwY6nZvGQ=;
- b=JMDbrpuIlxB20Ddi8FPp0r4QnnwbFoSSw2zKNwaXdRvAwcXY7Ik9BS47qN9xBowZZDkU+i7zJ0AFjs7or4zlEJSAaieOb5PT2PlnSwE4ohhy7awHYtxwzKcfqeTa6rqon8oum0lEjxhpqZDnPzUHDgqB4N/sdhYbnHoHbs3oytdWDBpD/dxEvr3xVwZGInspC5Nye4k3oWRIhjHYOuD6v0xReUjCWQajHXJpvLtX4n472st4M9p7S3WLs/m3MDFME2b9WzWBo5oCLGqLe5TLOAUbPmk9hnlBZqbXBGZvj6QBWNw9aSvcPhybghB81o7iLPlxTbY/10PzCqxC4aK+dw==
+ bh=3Y7T2iBY7k8sQbr1JMgzXY9OjOh6JyAkHRjwEJ3jL78=;
+ b=CdKyC4zXi1tR+ceM0jIYIzXZZVm+wQca2NKouz+ckTh07lbxV7wg7M2tjXI+V9tuH8a3gzzEH7VHKxMGAukqe+jBAdtEt7P8c26XycgM7xxNgs6B6/686zIiNm0yHuGSwoPKYABnS+GDoMXT3bJkU3Ly7jjlsqIhcvYso9z8lAZA1z5MJkRP/UBKLt8eaphqbyyXhKuQVyL3gyI+H+uuDA6HbBV4g/41oFByUeJzYhklfcY/cGAt48l+8cPbVGMTF0pK4Z3T340PGe7iE0wl+jcHvxDxCtRVZEMu4+mey0ngFxxNhejimPhet4sE7afinC81ydjEtR2FNy7LlWkZOw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM5PR15MB1932.namprd15.prod.outlook.com (2603:10b6:4:55::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5273.16; Thu, 19 May 2022 16:45:24 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::5811:4996:bbfd:3c53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::5811:4996:bbfd:3c53%7]) with mapi id 15.20.5273.015; Thu, 19 May 2022
- 16:45:24 +0000
-Message-ID: <0f904395-350d-5ee7-152e-93d104742e98@fb.com>
-Date:   Thu, 19 May 2022 09:45:21 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [External] Re: [PATCH] bpf: avoid grabbing spin_locks of all cpus
- when no free elems
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MWHPR11MB1392.namprd11.prod.outlook.com (2603:10b6:300:24::14)
+ by BN6PR11MB1523.namprd11.prod.outlook.com (2603:10b6:405:10::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.13; Thu, 19 May
+ 2022 16:56:52 +0000
+Received: from MWHPR11MB1392.namprd11.prod.outlook.com
+ ([fe80::34f6:8e1d:ac6b:6e03]) by MWHPR11MB1392.namprd11.prod.outlook.com
+ ([fe80::34f6:8e1d:ac6b:6e03%12]) with mapi id 15.20.5273.015; Thu, 19 May
+ 2022 16:56:51 +0000
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "songliubraving@fb.com" <songliubraving@fb.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Torvalds, Linus" <torvalds@linux-foundation.org>,
+        "Kernel-team@fb.com" <Kernel-team@fb.com>,
+        "song@kernel.org" <song@kernel.org>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>
+Subject: Re: [PATCH bpf-next 5/5] bpf: use module_alloc_huge for bpf_prog_pack
+Thread-Topic: [PATCH bpf-next 5/5] bpf: use module_alloc_huge for
+ bpf_prog_pack
+Thread-Index: AQHYaOe12KXACXSTpU+YN3bK6iMF8a0jcwCAgAAfpACAAC+eAIACAzeAgACrloA=
+Date:   Thu, 19 May 2022 16:56:51 +0000
+Message-ID: <d3de84ce7fa62c9e460a49143ffa4709b6351390.camel@intel.com>
+References: <20220516054051.114490-1-song@kernel.org>
+         <20220516054051.114490-6-song@kernel.org>
+         <83a69976cb93e69c5ad7a9511b5e57c402eee19d.camel@intel.com>
+         <68615225-D09D-465A-8EEC-6F81EF074854@fb.com>
+         <dc23afb892846ef41d73a41d58c07f6620cb6312.camel@intel.com>
+         <E0C04599-E7E0-4377-8826-74FA073FC631@fb.com>
+In-Reply-To: <E0C04599-E7E0-4377-8826-74FA073FC631@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Feng Zhou <zhoufeng.zf@bytedance.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20220518062715.27809-1-zhoufeng.zf@bytedance.com>
- <CAADnVQ+x-A87Z9_c+3vuRJOYm=gCOBXmyCJQ64CiCNukHS6FpA@mail.gmail.com>
- <6ae715b3-96b1-2b42-4d1a-5267444d586b@bytedance.com>
- <9c0c3e0b-33bc-51a7-7916-7278f14f308e@fb.com>
- <380fa11e-f15d-da1a-51f7-70e14ed58ffc@bytedance.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <380fa11e-f15d-da1a-51f7-70e14ed58ffc@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BY5PR04CA0004.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::14) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 271284ee-441a-46cc-a64e-08da39b89250
+x-ms-traffictypediagnostic: BN6PR11MB1523:EE_
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-microsoft-antispam-prvs: <BN6PR11MB1523B3DA51CFB70096A74C1DC9D09@BN6PR11MB1523.namprd11.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: c85Pz1ufmIF6xAdabonA0X7XXpKgkGl4BzDb/P3XhWp8lB+C5VHSS5BAlcJ7FyLSN3NeIWN4Q4eclvvgtjKZTFNrKy6kpz2h8QntjQUhHBkVBkYQ+YSFFOvi4W3SI97OSYX4OloDh+pGT+2iPPWhT9E9MbFoMzq7JoTClirx+C1ScGqQetGVnTJT2lInRO4kuOZZ8xLj/cxNwus++pbRNNFCY7iisaNi31mNRiwNsA6DJ0YzOPWWiyMly+yMT/Adcg5xE+4mENpPI/6z6naHuHgouJ6iw3SXatviCTsh/wJGJkf9dBytuifuEacAQQ731nh1G/PXg5YO/wEwRzPIcQxhvZXY5rB6Fg7MwkgtqDG1xI3F0V3l3ZR5Q+nd8Octc7G6kh33FftDhQqyL5SKsDPRgd+3mRuSBo4nNI5adN6Erdz+OBw2gsjMWoxqTIassuBEQnu5hLjnV3w8jfcrBghrLwKv/nemwuEXHMJrc5vAoOQGlvWPM4v/XxXHiyJjsKevdLC0SnX7NgjGl9b1D9ES2ekiKYR/Cb64khP7cGsF7Ke+jk93aEU06Y8jRmLxhJRallxvUPk9V44o4uXM/mNqUFARN1sp1VSCZbHAfxmIKDRrY8TtM4OFlJ5c756CmgpDkPMQhHZSJ4Kbt09EJrr43Uao7dKC3JIV+DKcqh0CHZ9JxkKoPOqHwpHwsan0fSievvVQlI0cpSNcKe2pE/YYSHDiZc8rP6Gf1kZtBFo8M2ap6CfqnmTv/RqQ3OYH
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(86362001)(83380400001)(4326008)(316002)(508600001)(8936002)(54906003)(6916009)(64756008)(76116006)(66446008)(66556008)(66946007)(66476007)(5660300002)(71200400001)(6486002)(8676002)(7416002)(36756003)(122000001)(6512007)(38070700005)(2906002)(186003)(6506007)(2616005)(26005)(82960400001)(38100700002)(99106002)(14583001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WmRqcFJRQnF1RDFScm9jcHVzeTRWbFRaSU0zdzA2S1VLcGJqS1RYaFl2MEgz?=
+ =?utf-8?B?RG55a3R5czNaTTZsK0dYaXBCSVFTeXFXUlEzVUczbDM2STc2WHp2M1ZiYkRn?=
+ =?utf-8?B?SUh6OG9mS3RxSVExQ3I5ZEYvS3ZZWkdEREpmb0tMRXZHZExNOU5PeWp2MlFv?=
+ =?utf-8?B?cDBLaC9HandjZEUvZEU3QlpIUEc2bUZBcmVqTWNLQzdGZFg2QnU0MERNSVE3?=
+ =?utf-8?B?aWQyVEViZUJJZFRWNTFoaElNV2xPaHhVR25DbEdhZnlQNlBadmV5MlF0NjFK?=
+ =?utf-8?B?NUpLSFE5cWxOTy93WGROWG9ncUNtUVdNN3pqNHkweWZIdHplYWk1YXV0THZU?=
+ =?utf-8?B?N0dZbTJxZXdEK2tKVktnZ2xCM082cVhESWlRRjIwWEk4NTdIa3pkc1ExRzRS?=
+ =?utf-8?B?WndZN3pNR2VlVkRRd2hhQVNoSlhoKzJWT09iemZyRU5VKzZhaGZkMW4xeGpE?=
+ =?utf-8?B?Y2JVTW9WQ3drSDJndU9Odk81K0hDRm1STkRaZnFQdkdSWFJBSFNWaDlhVkU4?=
+ =?utf-8?B?YVNRaTNIUmdKaE8weWZrK2dUVk1yb00xVFFEUWZhZGdMbGZqRHFpc0tJR0sv?=
+ =?utf-8?B?M2RFenMxV1NGOTVnRENBMHFiT0tkeEZSNGN2TnFNZ0ZvZUE3N0psMmkzY1h4?=
+ =?utf-8?B?U05sZmlXdm5EbmJtRnJRNFlRV1JjRjgvS05GS3ViMmtvRGFyZzZhQlJOYTJO?=
+ =?utf-8?B?L1RyVmJQQjNzVVZ4RThjL3ZDNHROdTVnOURXM3d4aWtrVVQ4MVByMzNZbHc0?=
+ =?utf-8?B?RDNxZnVKMTJGNktLQWF6bTZxRkxkZkZBVzM0WEg5aFdpeDhnNDlDN2ducWRs?=
+ =?utf-8?B?U00zU1BwcTIwc3ZCZE4va0F0Y3dUOGJrbERzYTkrTDBKWWE2ZWVJTDdZRFhl?=
+ =?utf-8?B?VjdtVyswMGcrVDBmUUQ5UnVMUnhDZi9XOHdja0FKWWxERFNGRHBOSGMwR3FZ?=
+ =?utf-8?B?NXdRNTRqRVJ5MUJKYlEzdEVBR1QydWQ5RWU0NFpHcGRwTUNES3dtZHdrM21x?=
+ =?utf-8?B?Mm9CakZ5ZDFiaHloWTJnaG1ISERoMjV6U0JnckVhblUwVkh6THdYN1IyU0t3?=
+ =?utf-8?B?SS82dmNpSWUxTkN3YnBENzZsYlZMUW5KYWRCQW9ibDlwRkNLUkJXcXNxNHht?=
+ =?utf-8?B?UTE1ZDgwVUtSaGFTYWVjYjhTbHdEVFV4Zml3d0VXZjR4RjNCU1BQc0lRL1A2?=
+ =?utf-8?B?a0lkY0hQdzZrUlRMS3E4UCtGNlJIL3ZzaUwzdmhLS1pBTVpucmt3S2lXN0ov?=
+ =?utf-8?B?UXUyL1pYMGpmZ0loMUtzVWZZVHVzUmJvTkFGM1VuSFdPaExMQkVpWTdGLzBx?=
+ =?utf-8?B?eFhIVjdMc3pBbjl5L2RHODBOZmhKMGFNRnFvVDFwQTB3Wm53VU5wdjhlYVFX?=
+ =?utf-8?B?UDhmODRqZmtuUyt0Rm5hOXZFV3JFZjA5QTlYa2x2MjV5enVkbjhjR1NFcENC?=
+ =?utf-8?B?M3ZJMm4wc1dqNWhlVkRBdmFQTk5SbUVYOEh2MW0vaFQxdHRGRFl0OU9VQnhH?=
+ =?utf-8?B?cllMZFNuUUsySldPQkxFU2J4cXd6QXpjaEZZaGY1YjZCUTlzTXltMEJKYWRx?=
+ =?utf-8?B?b2R6Mk1kaFJtdytNSWI1M2V5cW55RkNOditTWXpEMld0T3BOdWJlTy90eXFM?=
+ =?utf-8?B?cFFYSUNTVDQ0K0pGbVdFV0lrV1F5Rk1uT3owK0dkWW4vQ1llc1I1Q2txN3JX?=
+ =?utf-8?B?bFVxeUNWK080OWFDTHhJM2NGcXRUeVE4L1hQM2I1LzJYSHZvVU5wdERBa1dr?=
+ =?utf-8?B?QzYwcUlxYzFHdm8vT0Y3QVVxMS92YjhFdWZJTk9YY3VZV2dRTVc0REZjOHE1?=
+ =?utf-8?B?ZXdsSUYrNDVVZDZrc3pMakVRODBwSTA2V0hhTXRURHN2RVVJeXoxSTVkU00x?=
+ =?utf-8?B?a0wwdFNIaFhXcnM2OUNmZmR2OVVlbE03UnQxOWxtVzNYczFMOVdqc1hQblN2?=
+ =?utf-8?B?cGlmWkVnY1A2NEJsSjhORUZkcEJYaWtEeFpvVE5nRWtYcGRJN0NkTWRKKzJV?=
+ =?utf-8?B?M3lpT2xXTmlZbmcwUVZwNUhKRFNIZ1o2L2lleU85ZG9RMW9ldGFKS2taOVo4?=
+ =?utf-8?B?TXBzcUZWcG9qazErdG5lcXdibldveW9NMHd5ZFpHNFUvWENrVmlDcm9FeFBF?=
+ =?utf-8?B?a1FIVEEvb1JCaTF4THQwZUZjZisybjRNN1U1R0FxR1c4TjRCM2gwWnVzeUc3?=
+ =?utf-8?B?dURzYnJLYWthUk5UUTBzZ2lqejdvVXViRWxwKzc0TkFpZTluSkpVcjczdEVQ?=
+ =?utf-8?B?TFpOSkR6RE02RHJ2V1ZwNGcrdmFuc1FaNmtyT0U0Uk9Kb2RRMjFFY05MenJx?=
+ =?utf-8?B?bUpLWmpsVjB1eXd0alBrMFIvbWhBZGtjdHVLQ1k3eTJOUXFIOFNlakZHNkZU?=
+ =?utf-8?Q?/amSUl3C/9749ulDCa7x/7ImISR6ODwii59+K?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E954A2FD3483334FA7C881E5043ACA0B@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f49fbc37-03cb-4ecc-44ca-08da39b6f847
-X-MS-TrafficTypeDiagnostic: DM5PR15MB1932:EE_
-X-Microsoft-Antispam-PRVS: <DM5PR15MB19322831C74E149E9549B680D3D09@DM5PR15MB1932.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z4eYAQ2eUoPTgzjjioa2YU2n6L7Opp6WeD+lztrhdHjymt6AZC0wPbJTSuhCXKVZPZ3buZJcnnoe3Znj8n/oc6LWxFRZ5Zw6xMIe0oNg9Lj/NCGrHGwpsog31ynMLphuPg8xOkir7u9aSaHUtmknBw4ax3Lg1M9hXIFV/Y/HEcEPOgBQ4/ohMK6lOTm+9wuu+SUqlKOPI2k+oGmFrC6awxkydQJEj+rmixz0xVA63W1zPAv+Wva92LcdmzSjV88C0sWeS1GYwN0aYbPnkJXYiyKfcPFTqjUFM61TyAHjIKtDFoLiVXIxYNgO7Wmu74s4oe0WpajIqxM537WBiJbgrs7nT95jKV8FvSFWqwFT7aLWw6d3mwD62Sg5ynoLmkoH5twAgaDrEbDZ3bLtX+/mBgASdxuH6kfONRWwdSHfpxXpPJoDCJ6ZBuu/f5CgkTpCrQvgh6a2v5bFNLtqwPi+Oc5otSivRiB2luIujL8RDtxdQ+D5GnfE/IBTFOvkG0H/T0MT5DbT9YH6pcOow7WGQquMHtv8IEiyzTlgFi7SZVDyoc83GK1AUXFSoFCYE0FTE9EPp/GAZAvCczEafv43Ig1ohRzsulWCNb2BbaVooczy7jrhaQOI4thrbf9Vmi2XUXXzeEkKwGSn03mEXSGyspEBAmCq+xfZ/WbxqKi9mt7Zgsz7Y/EM/ciER0yD6B8f58cHfAF8NRSi/p1fgkHILYLQH80oE10rM8H4bBc8NB4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(31696002)(8676002)(66556008)(7416002)(8936002)(66476007)(4326008)(5660300002)(38100700002)(86362001)(2906002)(110136005)(36756003)(66946007)(186003)(54906003)(6666004)(316002)(6512007)(508600001)(6486002)(52116002)(6506007)(2616005)(83380400001)(31686004)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bXFYUGJhNm5ObEswQWlxYXhVRHJ1RkVpRG5rR3ZpclFrdklrMEsvWGVQS1Rh?=
- =?utf-8?B?VjRTVml3TURyaCtSemlWZlp0VHFoMkkzdGVGQklLQzJDME93ZXdxbVErb0d1?=
- =?utf-8?B?QmhZdVlWTXVmYjR6aUtsT3dCd1RXOWp0Z21CeWxjdTVGVjFqTUI2MjMyUGR1?=
- =?utf-8?B?RDZLeFBNTzJsMk9sbFBzMXNMV1kxbmd6Wk5GSEFJRjlxWUxtaDdSdkJqRVI0?=
- =?utf-8?B?SU1HOTlYSXJKZEVzTDJyVEpQOTFJaW85T3RyVEFnaDBtQXVVNk1scGlrQzhZ?=
- =?utf-8?B?VVEvdWE1UllXUUZOT0FycGpHSEUwQ2E3c1JDakdieUZ1VXdyVmx0bVBaNHg1?=
- =?utf-8?B?WktUa1FXUERuUndOZGpmSy9meFE3dDVwRWNkQ0JUbktqNktORVFLa05yZnJB?=
- =?utf-8?B?RlBJdmxBVzhVOEp0bjZHcEV3VTYxUVdWaUlodVVHcDlEa25rczZYRVlvYzEr?=
- =?utf-8?B?VFFVT25PNWVWbStMQTNLZGRWYkw4UnJzTzVKYnF3eUZqQWo2UEVNaUhoMTNN?=
- =?utf-8?B?UFBtS0lYVGl5eThTcDRQc2tUVFEwOUkxS1BRdk83YkRvZ0FSbFN4Zk1vRlh0?=
- =?utf-8?B?QTUxLzg5QXgrK0Jjam9YQkFUeXRMVkl4azFIcThHWDNoYmFweUlWN2lTUXpi?=
- =?utf-8?B?Ukg4Q01MY3o3NFBBSjZwVTh0YTh1aDRpVHZremZNcXI1OFZRQkQ2d2ZnS1Jm?=
- =?utf-8?B?MWt0M1JrZTR5MlBRMFBKdjBjTEtvRnZjVTA2cTQrQTBHbEc3TWdCQm9USFoy?=
- =?utf-8?B?Nmw2N29mUndpVFBlUGxhRjEyREp3MWF2eDhhc0svTlY3VnhOd0FQU1F0aGto?=
- =?utf-8?B?a2V5ZzNZaXFFL2Y3YS90YUt6ejZyVmlkZGpRVlpmS1FVb3A2aS95UEJ3cVFO?=
- =?utf-8?B?RFdRWkkvSW42Q0hrQmpJa1BrZVJxVHQvdGkxMlpqK1c3cnQ4eXJyK2lxREJo?=
- =?utf-8?B?TnkvUVovaTd6YzBHVDJqY3N5U3ZIaGRJV3pCL3Q1WlAwTHBhYlVuQ0RGc203?=
- =?utf-8?B?VE9nTHBoa1NXTnR0OVJDcjdKbTBBa2FsSHhjVmtZcVJ1a01rUUhFZ1VOSUdK?=
- =?utf-8?B?Q2NmK0s1VE8zdDdzdFI4TEZ3Z08zM0tBQkhyUjgvdHlhRHBKbWk3d2N2d1Rq?=
- =?utf-8?B?N09TczdCMEliK0FlZVdMUzV3Q2N0UWdlcmg1dUZPYlZSamtSWHZQcDhDeWt4?=
- =?utf-8?B?eW53anNzVDFPRjAwWEticm0zWU1JNTJXbXl2TllzZFJxZlZUR25pbUpjZEZo?=
- =?utf-8?B?L1BBa3JRdHYxVVdjOFZXZUxIVWNPSmR4UUNVdkJxamZSVCtuOGYySSthNzg0?=
- =?utf-8?B?ZTBPQjZreWd3eW1WTldtZGE5Qi9WUE42QzRSWVN1TFlNb2J3eFcyUEZoSHNB?=
- =?utf-8?B?V2lHMUpQeTNjQzBseEppTXdnM2I3WVNiUkpnakRmbkVPTEpmejcycHM1aThK?=
- =?utf-8?B?TXhPYWdpVmxQVHE4eVlQOXpseHpBN0F2dWh2TjNmcWJUYjd0WlBWTkY3RTBa?=
- =?utf-8?B?bnJPa01rbTE2eWdFaGMzeitLUWhMMUkxNXRVV292NTdib3BLZWV6UktiZTVs?=
- =?utf-8?B?Sk9jMitPa09BTElmVEs0blIrbDM3WjRudVNMSnpFbUx0bzZXTVpFNUpoV1BP?=
- =?utf-8?B?dlFCQmEzVGx4K0dUSGErZzY5NUJiU3hRcUFnYTN5Z3hoWDVvYTI5alRTU3c2?=
- =?utf-8?B?SEJGWERKejBHeEVnL1RYejRNdHFmSTNXM094b2x3Sm9aS2ZoYlNSU1RQZ0Fj?=
- =?utf-8?B?RXFzRzRqLzJ3KzJJWi9KYVI1b3dQbEd0TXh1VnM3bHJuNTM5dHZ0cnZVdW93?=
- =?utf-8?B?eVFXcmEydUZoOTE2YzluTGxrQlBydWxXWi95M2JWNmZCbk1ZaC9MWXJaUXFj?=
- =?utf-8?B?NjNOQXkyZTFSMUpLeW4vK0RWM2xHV1lyTEovOXlJcXA2QmxjdjlZbUhiTVhX?=
- =?utf-8?B?YndKaUFXc2ZOcEhKbW9KVWIrVUlqbVk3ZGlDWnR3T3V0U2hxYldKd3Q5a1BR?=
- =?utf-8?B?SnJJQjdSSVBYVGxPL3Q4akJRUXpmNklMWGlIb0QxUTFuM095ZktqaUhQdDZX?=
- =?utf-8?B?VUdrZkVram05QWFaWlV6dFBDUHVnV3BBQk8vV2g4Mi9ORVdndnR2RUhpRmxx?=
- =?utf-8?B?bEJiR2JLYjNXMitoK3pYNExweEloZ3Zrc3lyMHNmWlh1MDBiM1UrSWx3a3Ey?=
- =?utf-8?B?NmpOOTdxSElrLzRHVnR1cGtYZzl4ZzFUSTNYL3JFNG5WVE1jeTZGSVhldk4v?=
- =?utf-8?B?NWJseGw1Tmx1ZEI5aWUrQ3JSc0FSZFd3VzBCNVpwcEhTdVhqQ2VvS3NBSUUw?=
- =?utf-8?B?TTdsSGYwMUZMaDQraTRYdW5qWnM2WTA5aDNsS1VJSHdIT1BRbEFPSjZCM2pG?=
- =?utf-8?Q?HcyGZuzw8kBoEVbg=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f49fbc37-03cb-4ecc-44ca-08da39b6f847
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2022 16:45:24.0160
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 271284ee-441a-46cc-a64e-08da39b89250
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2022 16:56:51.7714
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hVa3h8sEY8sJaTKbdJ8gzBZY5g6qTpzi4GxZp0CbQpalj0ZRg8YmqoTZlTtECuIV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1932
-X-Proofpoint-GUID: vBIB075y-84RjfD3qIok4FMFUrOTFr1J
-X-Proofpoint-ORIG-GUID: vBIB075y-84RjfD3qIok4FMFUrOTFr1J
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-19_05,2022-05-19_03,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aTNZ+1P/WHOB3htnt/6CWSA74q0WcJtATrNCaCGdiQAqFdSu9jXZmMRfXmUmEe24tg7+Mvq4nlXQz0pVf2evFpbeM9JXIP+QRvsO0/Zauw8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1523
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 5/18/22 8:12 PM, Feng Zhou wrote:
-> 在 2022/5/19 上午4:39, Yonghong Song 写道:
->>
->>
->> On 5/17/22 11:57 PM, Feng Zhou wrote:
->>> 在 2022/5/18 下午2:32, Alexei Starovoitov 写道:
->>>> On Tue, May 17, 2022 at 11:27 PM Feng zhou 
->>>> <zhoufeng.zf@bytedance.com> wrote:
->>>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>>>
->>>>> We encountered bad case on big system with 96 CPUs that
->>>>> alloc_htab_elem() would last for 1ms. The reason is that after the
->>>>> prealloc hashtab has no free elems, when trying to update, it will 
->>>>> still
->>>>> grab spin_locks of all cpus. If there are multiple update users, the
->>>>> competition is very serious.
->>>>>
->>>>> So this patch add is_empty in pcpu_freelist_head to check freelist
->>>>> having free or not. If having, grab spin_lock, or check next cpu's
->>>>> freelist.
->>>>>
->>>>> Before patch: hash_map performance
->>>>> ./map_perf_test 1
->>
->> could you explain what parameter '1' means here?
-> 
-> This code is here:
-> samples/bpf/map_perf_test_user.c
-> samples/bpf/map_perf_test_kern.c
-> parameter '1' means testcase flag, test hash_map's performance
-> parameter '2048' means test hash_map's performance when free=0.
-> testcase flag '2048' is added by myself to reproduce the problem 
-> phenomenon.
-> 
->>
->>>>> 0:hash_map_perf pre-alloc 975345 events per sec
->>>>> 4:hash_map_perf pre-alloc 855367 events per sec
->>>>> 12:hash_map_perf pre-alloc 860862 events per sec
->>>>> 8:hash_map_perf pre-alloc 849561 events per sec
->>>>> 3:hash_map_perf pre-alloc 849074 events per sec
->>>>> 6:hash_map_perf pre-alloc 847120 events per sec
->>>>> 10:hash_map_perf pre-alloc 845047 events per sec
->>>>> 5:hash_map_perf pre-alloc 841266 events per sec
->>>>> 14:hash_map_perf pre-alloc 849740 events per sec
->>>>> 2:hash_map_perf pre-alloc 839598 events per sec
->>>>> 9:hash_map_perf pre-alloc 838695 events per sec
->>>>> 11:hash_map_perf pre-alloc 845390 events per sec
->>>>> 7:hash_map_perf pre-alloc 834865 events per sec
->>>>> 13:hash_map_perf pre-alloc 842619 events per sec
->>>>> 1:hash_map_perf pre-alloc 804231 events per sec
->>>>> 15:hash_map_perf pre-alloc 795314 events per sec
->>>>>
->>>>> hash_map the worst: no free
->>>>> ./map_perf_test 2048
->>>>> 6:worse hash_map_perf pre-alloc 28628 events per sec
->>>>> 5:worse hash_map_perf pre-alloc 28553 events per sec
->>>>> 11:worse hash_map_perf pre-alloc 28543 events per sec
->>>>> 3:worse hash_map_perf pre-alloc 28444 events per sec
->>>>> 1:worse hash_map_perf pre-alloc 28418 events per sec
->>>>> 7:worse hash_map_perf pre-alloc 28427 events per sec
->>>>> 13:worse hash_map_perf pre-alloc 28330 events per sec
->>>>> 14:worse hash_map_perf pre-alloc 28263 events per sec
->>>>> 9:worse hash_map_perf pre-alloc 28211 events per sec
->>>>> 15:worse hash_map_perf pre-alloc 28193 events per sec
->>>>> 12:worse hash_map_perf pre-alloc 28190 events per sec
->>>>> 10:worse hash_map_perf pre-alloc 28129 events per sec
->>>>> 8:worse hash_map_perf pre-alloc 28116 events per sec
->>>>> 4:worse hash_map_perf pre-alloc 27906 events per sec
->>>>> 2:worse hash_map_perf pre-alloc 27801 events per sec
->>>>> 0:worse hash_map_perf pre-alloc 27416 events per sec
->>>>> 3:worse hash_map_perf pre-alloc 28188 events per sec
->>>>>
->>>>> ftrace trace
->>>>>
->>>>> 0)               |  htab_map_update_elem() {
->>>>> 0)   0.198 us    |    migrate_disable();
->>>>> 0)               |    _raw_spin_lock_irqsave() {
->>>>> 0)   0.157 us    |      preempt_count_add();
->>>>> 0)   0.538 us    |    }
->>>>> 0)   0.260 us    |    lookup_elem_raw();
->>>>> 0)               |    alloc_htab_elem() {
->>>>> 0)               |      __pcpu_freelist_pop() {
->>>>> 0)               |        _raw_spin_lock() {
->>>>> 0)   0.152 us    |          preempt_count_add();
->>>>> 0)   0.352 us    | native_queued_spin_lock_slowpath();
->>>>> 0)   1.065 us    |        }
->>>>>                   |        ...
->>>>> 0)               |        _raw_spin_unlock() {
->>>>> 0)   0.254 us    |          preempt_count_sub();
->>>>> 0)   0.555 us    |        }
->>>>> 0) + 25.188 us   |      }
->>>>> 0) + 25.486 us   |    }
->>>>> 0)               |    _raw_spin_unlock_irqrestore() {
->>>>> 0)   0.155 us    |      preempt_count_sub();
->>>>> 0)   0.454 us    |    }
->>>>> 0)   0.148 us    |    migrate_enable();
->>>>> 0) + 28.439 us   |  }
->>>>>
->>>>> The test machine is 16C, trying to get spin_lock 17 times, in addition
->>>>> to 16c, there is an extralist.
->>>> Is this with small max_entries and a large number of cpus?
->>>>
->>>> If so, probably better to fix would be to artificially
->>>> bump max_entries to be 4x of num_cpus.
->>>> Racy is_empty check still wastes the loop.
->>>
->>> This hash_map worst testcase with 16 CPUs, map's max_entries is 1000.
->>>
->>> This is the test case I constructed, it is to fill the map on 
->>> purpose, and then
->>>
->>> continue to update, just to reproduce the problem phenomenon.
->>>
->>> The bad case we encountered with 96 CPUs, map's max_entries is 10240.
->>
->> For such cases, most likely the map is *almost* full. What is the 
->> performance if we increase map size, e.g., from 10240 to 16K(16192)?
-> 
-> Yes, increasing max_entries can temporarily solve this problem, but when 
-> 16k is used up,
-> it will still encounter this problem. This patch is to try to fix this 
-> corner case.
-
-Okay, if I understand correctly, in your use case, you have lots of 
-different keys and your intention is NOT to capture all the keys in
-the hash table. So given a hash table, it is possible that the hash
-will become full even if you increase the hashtable size.
-
-Maybe you will occasionally delete some keys which will free some
-space but the space will be quickly occupied by the new updates.
-
-For such cases, yes, check whether the free list is empty or not
-before taking the lock should be helpful. But I am wondering
-what is the rationale behind your use case.
+T24gVGh1LCAyMDIyLTA1LTE5IGF0IDA2OjQyICswMDAwLCBTb25nIExpdSB3cm90ZToNCj4gVGhp
+bmtpbmcgbW9yZSBvbiB0aGlzLiBFdmVuIGh1Z2UgcGFnZSBpcyBub3Qgc3VwcG9ydGVkLCB3ZSBj
+YW4NCj4gYWxsb2NhdGUNCj4gMk1CIHdvcnRoIG9mIDRrQiBwYWdlcyBhbmQga2VlcCB1c2luZyBp
+dC4gVGhpcyB3b3VsZCBoZWxwIGRpcmVjdCBtYXANCj4gZnJhZ21lbnRhdGlvbi4gQW5kIHRoZSBj
+b2RlIHdvdWxkIGFsc28gYmUgc2ltcGxlci4gDQo+IA0KPiBSaWNrLCBJIGd1ZXNzIHRoaXMgaXMg
+aW5saW5lIHdpdGggc29tZSBvZiB5b3VyIGlkZWFzPw0KDQpZZWEsIHRoYXQgaXMgd2hhdCBJIHdv
+bmRlcmluZy4gUG90ZW50aWFsIGJlbmVmaXRzIGFyZSBqdXN0IHNwZWN1bGF0aXZlDQp0aG91Z2gu
+IFRoZXJlIGlzIGEgbWVtb3J5IG92ZXJoZWFkIGNvc3QsIHNvIGl0J3Mgbm90IGZyZWUuDQoNCkFz
+IGZvciB0aGUgb3RoZXIgcXVlc3Rpb24gb2Ygd2hldGhlciB0byBmaXggVk1fRkxVU0hfUkVTRVRf
+UEVSTVMuIElmDQp0aGVyZSByZWFsbHkgaXMgYW4gaW50ZW50aW9uIHRvIGNyZWF0ZSBhIG1vcmUg
+Z2VuZXJhbCBtb2R1bGVfYWxsb2MoKQ0KcmVwbGFjZW1lbnQgc29vbiwgdGhlbiBJIHRoaW5rIGl0
+IGlzIG9rIHRvIHNpZGUgc3RlcCBpdC4gQW4gb3B0aW1hbA0KcmVwbGFjZW1lbnQgbWlnaHQgbm90
+IG5lZWQgaXQgYW5kIGl0IGNvdWxkIGJlIHJlbW92ZWQgaW4gdGhhdCBjYXNlLg0KTGV0J3MgYXQg
+bGVhc3QgYWRkIGEgV0FSTiBhYm91dCBpdCBub3Qgd29ya2luZyB3aXRoIGh1Z2UgcGFnZXMgdGhv
+dWdoLg0KDQpJIGFsc28gdGhpbmsgdGhlIGJlbmNobWFya2luZyBzbyBmYXIgaXMgbm90IHN1ZmZp
+Y2llbnQgdG8gbWFrZSB0aGUgY2FzZQ0KdGhhdCBodWdlIHBhZ2UgbWFwcGluZ3MgaGVscCB5b3Vy
+IHdvcmtsb2FkIHNpbmNlIHRoZSBkaXJlY3QgbWFwIHNwbGl0cw0Kd2VyZSBhbHNvIGRpZmZlcmVu
+dCBiZXR3ZWVuIHRoZSB0ZXN0cy4gSSB3YXMgZXhwZWN0aW5nIGl0IHRvIGhlbHANCnRob3VnaC4g
+T3RoZXJzIHdlcmUgdGhlIG9uZXMgdGhhdCBhc2tlZCBmb3IgdGhhdCwgc28ganVzdCBjb21tZW50
+aW5nIG15DQphbmFseXNpcyBoZXJlLg0KDQoNCg==
