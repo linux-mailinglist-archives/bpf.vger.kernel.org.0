@@ -2,106 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C71F52C890
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 02:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B7E52C8BE
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 02:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbiESAWY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 20:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
+        id S230371AbiESAir (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 20:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbiESAWV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 20:22:21 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC075958F
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 17:22:20 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 5CC5B240029
-        for <bpf@vger.kernel.org>; Thu, 19 May 2022 02:22:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1652919739; bh=1KNa+jm+fsenHMWQe2O+ARYuJ8QT/zd+IDNvXLiv2qk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oXScjHOJGEWZuYAMXzW5KYx16rNayh97TShlAhlsp2KQmY8fxgq4QtP6rvo2JnLrg
-         sFMWoHbQcOMjDjimud0i67QNpEt1W7G9RIiron3lWU2TfZLWlcbXbp46OtEWmZ0yyh
-         /thxvoil/qLJvv9LXkMPrvOxTz8FdEd7YAcvFsLeft/9y12i3DU4TA2VkWyOThS4DC
-         sw8G/pu/tJLzPbQt0K+6Nw4/JlcE9G4qWJo2pX6pAuhHSsF0ViHErlaprFAINYIxQb
-         z4RlUhhi1gKlvBVthmPq4tHnexOtitDDqgkcvucPX7ExVv2v+EwQFa7HYS8kFCAbTL
-         4YqGxkHzEiD2g==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4L3Vt003z9z9rxG;
-        Thu, 19 May 2022 02:22:15 +0200 (CEST)
-Date:   Thu, 19 May 2022 00:22:12 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-Cc:     yhs@fb.com, quentin@isovalent.com
-Subject: Re: [PATCH bpf-next v2 00/12] libbpf: Textual representation of enums
-Message-ID: <20220519002212.lpjeg5x5goql7crq@muellerd-fedora-MJ0AC3F3>
-References: <20220519001815.1944959-1-deso@posteo.net>
+        with ESMTP id S232166AbiESAip (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 20:38:45 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7370C1146A;
+        Wed, 18 May 2022 17:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652920724; x=1684456724;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=cFC8jcO78qA01RntGmU573DM5JIcBhHlyGrN8UMrGVQ=;
+  b=PMWsJJ5/fIdmxWOHIv11B7RnBA8o3LmA9GospV/Add1DNWrB6+WVXXwh
+   3YG7RzYSnizM6Nx0zrnigoeQ12rtekMtNbyTqmOQxpKFmSwwhXtRIWt5j
+   u9CnGSQhyO20o8TM3VJmWpyFnq7/lfcdOc6GmB8HmOsXt8MgKCMZlgkaB
+   xKfjCMvJVSQTnBi1WoROAT9Vynh2usOJBglkwlwJ7qTZVTwVbAWCENsdQ
+   0YFFTHXljFB2d/pMZtmWdWrkYAc8ieXloeev9tb6+tpey/05bzSU46F//
+   hKIYN6jGPaUfTi+WU6LWa09moPustQuQg0WjFEgDTsD0K8haNX0J52UIw
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10351"; a="259525634"
+X-IronPort-AV: E=Sophos;i="5.91,236,1647327600"; 
+   d="scan'208";a="259525634"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2022 17:38:43 -0700
+X-IronPort-AV: E=Sophos;i="5.91,236,1647327600"; 
+   d="scan'208";a="569839606"
+Received: from asova-mobl.amr.corp.intel.com ([10.209.69.6])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2022 17:38:43 -0700
+Date:   Wed, 18 May 2022 17:38:43 -0700 (PDT)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     Geliang Tang <geliangtang@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Geliang Tang <geliang.tang@suse.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        MPTCP Upstream <mptcp@lists.linux.dev>,
+        Nicolas Rybowski <nicolas.rybowski@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH bpf-next v4 1/7] bpf: add bpf_skc_to_mptcp_sock_proto
+In-Reply-To: <CAADnVQJ8V-B0GvOsQg1m37ij2nGJbzemB9p46o1PG4VSnf0kSg@mail.gmail.com>
+Message-ID: <cb2c23b0-a41a-bbf6-1440-69bbc58f8e8b@linux.intel.com>
+References: <20220513224827.662254-1-mathew.j.martineau@linux.intel.com> <20220513224827.662254-2-mathew.j.martineau@linux.intel.com> <20220517010730.mmv6u2h25xyz4uwl@kafai-mbp.dhcp.thefacebook.com> <CA+WQbwvHidwt0ua=g67CJfmjtCow8SCvZp4Sz=2AZa+ocDxnpg@mail.gmail.com>
+ <CAADnVQJ8V-B0GvOsQg1m37ij2nGJbzemB9p46o1PG4VSnf0kSg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220519001815.1944959-1-deso@posteo.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="0-537796903-1652920296=:30893"
+Content-ID: <c1438e4c-6efd-6295-a7cb-dd36271ac169@linux.intel.com>
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 19, 2022 at 12:18:03AM +0000, Daniel Müller wrote:
-> This patch set introduces the means for querying a textual representation of
-> the following BPF related enum types:
-> - enum bpf_map_type
-> - enum bpf_prog_type
-> - enum bpf_attach_type
-> - enum bpf_link_type
-> 
-> To make that possible, we introduce a new public function for each of the types:
-> libbpf_bpf_<type>_type_str.
-> 
-> Having a way to query a textual representation has been asked for in the past
-> (by systemd, among others). Such representations can generally be useful in
-> tracing and logging contexts, among others. At this point, at least one client,
-> bpftool, maintains such a mapping manually, which is prone to get out of date as
-> new enum variants are introduced. libbpf is arguably best situated to keep this
-> list complete and up-to-date. This patch series adds BTF based tests to ensure
-> that exhaustiveness is upheld moving forward.
-> 
-> The libbpf provided textual representation can be inferred from the
-> corresponding enum variant name by removing the prefix and lowercasing the
-> remainder. E.g., BPF_PROG_TYPE_SOCKET_FILTER -> socket_filter. Unfortunately,
-> bpftool does not use such a programmatic approach for some of the
-> bpf_attach_type variants. We decided changing its behavior to work with libbpf
-> representations. However, for user inputs, specifically, we do keep support for
-> the traditionally used names around (please see patch "bpftool: Use
-> libbpf_bpf_attach_type_str").
-> 
-> The patch series is structured as follows:
-> - for each enumeration type in {bpf_prog_type, bpf_map_type, bpf_attach_type,
->   bpf_link_type}:
->   - we first introduce the corresponding public libbpf API function
->   - we then add BTF based self-tests
->   - we lastly adjust bpftool to use the libbpf provided functionality
-> 
-> Changelog:
-> v1 -> v2:
-> - adjusted bpftool to work with algorithmically determined attach types as
->   libbpf now uses (just removed prefix from enum name and lowercased the rest)
->   - adjusted tests, man page, and completion script to work with the new names
->   - renamed bpf_attach_type_str -> bpf_attach_type_input_str
->   - for input: added special cases that accept the traditionally used strings as
->     well
-> - changed 'char const *' -> 'const char *'
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I forgot to add the following: this patch set will need another revision in
-order to integrate with Andrii's
-https://patchwork.kernel.org/project/netdevbpf/patch/20220518185915.3529475-3-andrii@kernel.org/
-once merged. This revision is mostly send out to get more feedback for the
-changes to bpftool, which are rather significant.
+--0-537796903-1652920296=:30893
+Content-Type: text/plain; CHARSET=ISO-2022-JP; format=flowed
+Content-ID: <a0455cf1-f672-f24a-a2ae-95e7aa48e76b@linux.intel.com>
 
-Thanks,
-Daniel
+On Tue, 17 May 2022, Alexei Starovoitov wrote:
+
+> On Mon, May 16, 2022 at 10:26 PM Geliang Tang <geliangtang@gmail.com> wrote:
+>>
+>> Martin KaFai Lau <kafai@fb.com> $BP2(J2022$BG/(J5$B7n(J17$BF|<~Fs(J 09:07$B<LF;!'(J
+>>>
+>>> On Fri, May 13, 2022 at 03:48:21PM -0700, Mat Martineau wrote:
+>>> [ ... ]
+>>>
+>>>> diff --git a/include/net/mptcp.h b/include/net/mptcp.h
+>>>> index 8b1afd6f5cc4..2ba09de955c7 100644
+>>>> --- a/include/net/mptcp.h
+>>>> +++ b/include/net/mptcp.h
+>>>> @@ -284,4 +284,10 @@ static inline int mptcpv6_init(void) { return 0; }
+>>>>  static inline void mptcpv6_handle_mapped(struct sock *sk, bool mapped) { }
+>>>>  #endif
+>>>>
+>>>> +#if defined(CONFIG_MPTCP) && defined(CONFIG_BPF_SYSCALL)
+>>>> +struct mptcp_sock *bpf_mptcp_sock_from_subflow(struct sock *sk);
+>>> Can this be inline ?
+>>
+>> This function can't be inline since it uses struct mptcp_subflow_context.
+>>
+>> mptcp_subflow_context is defined in net/mptcp/protocol.h, and we don't
+>> want to export it to user space in net/mptcp/protocol.h.
+>
+> The above function can be made static inline in a header file.
+> That doesn't automatically expose it to user space.
+>
+
+True, it's not a question of userspace exposure. But making this one 
+function inline involves a bunch of churn in the (non-BPF) mptcp headers 
+that I'd rather avoid. The definitions in protocol.h are there because 
+they aren't relevant outside of the mptcp subsystem code.
+
+Does making this one function inline benefit BPF, specifically, in a 
+meaningful way? If not, I'd like to leave it as-is.
+
+--
+Mat Martineau
+Intel
+--0-537796903-1652920296=:30893--
