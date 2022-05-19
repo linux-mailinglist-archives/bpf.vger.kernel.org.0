@@ -2,78 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD5B52CB2A
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 06:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F53652CB3D
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 06:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbiESEin (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 May 2022 00:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        id S233765AbiESEm1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 May 2022 00:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbiESEil (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 May 2022 00:38:41 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534135BD3D;
-        Wed, 18 May 2022 21:38:40 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id e15so4617399iob.3;
-        Wed, 18 May 2022 21:38:40 -0700 (PDT)
+        with ESMTP id S233769AbiESEmZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 May 2022 00:42:25 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115776005E;
+        Wed, 18 May 2022 21:42:24 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id o190so4588030iof.10;
+        Wed, 18 May 2022 21:42:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gxZjiYTaN4ezKLlxi7VUQHVQNtVzg+Slph/Lq3uj/4I=;
-        b=DEx0kfEIQ0viEYpwSgupzdmCv9f6S1pVgkUjBRB2A1z7icJARW+u/y8u01Cqu+HfBy
-         BAPVwAD/mcutOGfUJPJkYizgwR39E0iL9I9t6r9LYR8fsGpeLLA4wZLcr/TAdv0h5XFX
-         JW8xZhxsJjSAUqb/B0u36itSTNPQvlYrg0Rw752iunh9sxO2b7ljGKU/EzX05zEsIyTh
-         /hESa2z4xWeRlayS6ge/a+r+W7RJC1jtN/1ZDpMKWGgfR45VE4wJAH9vcvoajtmODchM
-         JSDhlytoTpfaJW2mtSMNQPQ2Tq318zRVapM5mq6ygVZavJ59IzSUqAHYVcCladH++wDZ
-         PvcQ==
+         :cc;
+        bh=3p2RmX54Nl+qu0eLlsWLYFrSbWckEmVL0yWxFMlgwAA=;
+        b=Ohmbav6isHcmvaBs0lKmpTanHP10xbh/uPwF9AWkcAMlnEiRUp1upwyCGCufmfGy/8
+         5db2cyJyJMTObsO/D41xiGiu7fbHqI01IYdfZeqyc7PmoplvtlGFZhLHpZvNj8vVR8Py
+         leCDf/HfYu4J0sgJw5wt0f0g9vBl7e/kdver89gBRFrUlT9YV+YAAvOBpfBMw3jjqyby
+         EY8+uoEjlGCdMAP8opZ3+XciFZJMFJ5Eo6FbQx+4v9V6XfanPSmpUyEtlQn3bWG4Exxt
+         c9ulomqH+h4NKCSRlm789FzZ8t1Zxq4MpElHrAwY8Fy5SbbiOAu/5e6H99BNpMxsY/18
+         cEbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gxZjiYTaN4ezKLlxi7VUQHVQNtVzg+Slph/Lq3uj/4I=;
-        b=DbS+EPetkAOfMDzBFXhiPEjCfU0sZQ5u/DUmQ69aOTn4g3FGl3Tm+Mp/Y6oCfNl1Qk
-         PfMtrdZKSARopRbVLBzkqbQHUBUi7YfrqdgY5oIj3MtFcYMGmspi44VS9MXkwQ4wMyna
-         z2dsPrOrJnVq59/DxvS1+tmUIaseo/wMISohP/wj/NdDHF3iGQxA2kA1Jj5t90kGzdft
-         F9PFdny3ZUPCjtgG/4Ld7N4PCZv+lLoXR3f49A4J6lotRkThuUXsb2PkjEzArQBecfb/
-         tVgWENmVV1NR/ZaNQ0goH1/rOFn+fGeJbehdDr1AVQ5OZAtSzrMVWyC0fc9AX+reRI0l
-         YTWQ==
-X-Gm-Message-State: AOAM530HZRoke4/ipoAhwISjtoZJL1XaK/CozK3Mh467SYlsh1rWC/dN
-        UUZi+a0XpGCXTSbZav5FFMWhzK7O7o9XLPz1lYA=
-X-Google-Smtp-Source: ABdhPJw22ffAQ9T+RrX0TY5bFNOry0J9oMO3fKkDKsDBJ988QAdDiXND6i6Nus6WHLG9t4c7c3TRmQl2lNjWPjEbKrw=
-X-Received: by 2002:a05:6602:1695:b0:65d:cbd3:eed0 with SMTP id
- s21-20020a056602169500b0065dcbd3eed0mr1497971iow.144.1652935119729; Wed, 18
- May 2022 21:38:39 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=3p2RmX54Nl+qu0eLlsWLYFrSbWckEmVL0yWxFMlgwAA=;
+        b=qJUqF72t6cKEfM58tfu8/9ZI2DOIix8mk6gFgXaI9aCzhcODz1EFRW1OVeb8rPmKvy
+         rLn0bdUL3YCQiaPeOkqyiMPXYLLpGLI1Rwp4lgG0ah4cK9Id79pdkH2tjzwbfUDSlDKr
+         Rk51x2aLEYbrhIubYH1+gmNs/FuEogn7L/evBnULC0aKXFlX4sln+ZbAoZXjwdbbLaBr
+         mUgA0jj590SG2mTtxrZ8N7bAB/BxsIT6ixMjaxZS64MpFu2krAa/1YNvphmGQCLyvyCZ
+         BUESUKBHIWcEgkXhwBm5Y90NgJV3r6MH0Jv3A9974jotXHjsyoGtuGuSg0BQtqPsgmZL
+         TNgA==
+X-Gm-Message-State: AOAM532XKrim+4LCvaOFC0RzdPgwRVZ2h3RPr3YvOxG8G8g2Sm4MxxZy
+        AyHSEHFmJfj5XqPlcmPobjlIcX3Rtee4iLVudXE=
+X-Google-Smtp-Source: ABdhPJxyfAkP3RamK35fbam2DglCrWDBTRYIhHWBrCHtJFJtFRXSXHaIfrTBTl6mBKsGOsTtHsxIvp8iJsUdhdeVPxo=
+X-Received: by 2002:a02:9f87:0:b0:32e:69ae:23df with SMTP id
+ a7-20020a029f87000000b0032e69ae23dfmr1620828jam.237.1652935343429; Wed, 18
+ May 2022 21:42:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220516022453.68420-1-zhoufeng.zf@bytedance.com>
- <CAEf4BzZ0eRh4ufQnc69B=6WQt_Oy3DNPL-TM-rsUW1KX--SBvQ@mail.gmail.com> <196f6ae9-f899-16c8-a5d3-a1c771fa9900@bytedance.com>
-In-Reply-To: <196f6ae9-f899-16c8-a5d3-a1c771fa9900@bytedance.com>
+References: <20220503171437.666326-1-maximmi@nvidia.com> <CAEf4BzbSO8oLK3_4Ecrx-c-o+Z6S8HMm3c_XQhZUQgpU8hfHoQ@mail.gmail.com>
+ <a330e7d6-e064-5734-4430-9d7a3d141c04@nvidia.com> <CAEf4BzYnVK_1J_m-W8UxfFZNhZ1BpbRs=zQWwN3eejvSBJRrXw@mail.gmail.com>
+ <13051d07-babc-1991-104b-f4969ac24b9b@nvidia.com> <48df5a60-f6e2-de05-1413-4511825511a5@nvidia.com>
+ <ab156744-21fe-61dd-8471-8626c88e6218@nvidia.com>
+In-Reply-To: <ab156744-21fe-61dd-8471-8626c88e6218@nvidia.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 May 2022 21:38:28 -0700
-Message-ID: <CAEf4BzabT5xdscH8jgTbAVhj415k=1MziKmAXTi6yfeo1DTBRw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next] selftests/bpf: fix some bugs in
- map_lookup_percpu_elem testcase
-To:     Feng Zhou <zhoufeng.zf@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 18 May 2022 21:42:12 -0700
+Message-ID: <CAEf4BzbQ853vZyq1aYS8NQz_sAO0EVBUgOnHg8-ivS19nc1eFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 0/5] New BPF helpers to accelerate synproxy
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joanne Koong <joannekoong@fb.com>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        zhouchengming@bytedance.com, Yosry Ahmed <yosryahmed@google.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Joe Stringer <joe@cilium.io>,
+        Florent Revest <revest@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Florian Westphal <fw@strlen.de>, pabeni@redhat.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,129 +92,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 8:27 PM Feng Zhou <zhoufeng.zf@bytedance.com> wrote=
-:
+On Wed, May 18, 2022 at 6:43 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
 >
-> =E5=9C=A8 2022/5/19 =E4=B8=8A=E5=8D=888:17, Andrii Nakryiko =E5=86=99=E9=
-=81=93:
-> > On Sun, May 15, 2022 at 7:25 PM Feng zhou <zhoufeng.zf@bytedance.com> w=
-rote:
-> >> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> On 2022-05-16 20:17, Maxim Mikityanskiy wrote:
+> > On 2022-05-11 14:48, Maxim Mikityanskiy wrote:
+> >> On 2022-05-11 02:59, Andrii Nakryiko wrote:
+> >>> On Tue, May 10, 2022 at 12:21 PM Maxim Mikityanskiy
+> >>> <maximmi@nvidia.com> wrote:
+> >>>>
+> >>>> On 2022-05-07 00:51, Andrii Nakryiko wrote:
+> >>>>>
+> >>>>> Is it expected that your selftests will fail on s390x? Please check
+> >>>>> [0]
+> >>>>
+> >>>> I see it fails with:
+> >>>>
+> >>>> test_synproxy:FAIL:ethtool -K tmp0 tx off unexpected error: 32512
+> >>>> (errno 2)
+> >>>>
+> >>>> errno 2 is ENOENT, probably the ethtool binary is missing from the
+> >>>> s390x
+> >>>> image? When reviewing v6, you said you added ethtool to the CI image.
+> >>>> Maybe it was added to x86_64 only? Could you add it to s390x?
+> >>>>
+> >>>
+> >>> Could be that it was outdated in s390x, but with [0] just merged in it
+> >>> should have pretty recent one.
 > >>
-> >> comments from Andrii Nakryiko, details in here:
-> >> https://lore.kernel.org/lkml/20220511093854.411-1-zhoufeng.zf@bytedanc=
-e.com/T/
-> >>
-> >> use /* */ instead of //
-> >> use libbpf_num_possible_cpus() instead of sysconf(_SC_NPROCESSORS_ONLN=
-)
-> >> use 8 bytes for value size
-> >> fix memory leak
-> >> use ASSERT_EQ instead of ASSERT_OK
-> >> add bpf_loop to fetch values on each possible CPU
-> >>
-> >> Fixes: ed7c13776e20c74486b0939a3c1de984c5efb6aa ("selftests/bpf: add t=
-est case for bpf_map_lookup_percpu_elem")
-> >> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
-> >> ---
-> >>   .../bpf/prog_tests/map_lookup_percpu_elem.c   | 49 +++++++++------
-> >>   .../bpf/progs/test_map_lookup_percpu_elem.c   | 61 ++++++++++++-----=
---
-> >>   2 files changed, 70 insertions(+), 40 deletions(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_=
-elem.c b/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
-> >> index 58b24c2112b0..89ca170f1c25 100644
-> >> --- a/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
-> >> @@ -1,30 +1,39 @@
-> >> -// SPDX-License-Identifier: GPL-2.0
-> >> -// Copyright (c) 2022 Bytedance
-> >> +/* SPDX-License-Identifier: GPL-2.0 */
-> > heh, so for SPDX license comment the rule is to use // in .c files :)
-> > so keep SPDX as // and all others as /* */
->
-> will do. Thanks.
->
+> >> Do you mean the image was outdated and didn't contain ethtool? Or
+> >> ethtool was in the image, but was outdated? If the latter, I would
+> >> expect it to work, this specific ethtool command has worked for ages.
 > >
-> >> +/* Copyright (c) 2022 Bytedance */
-> >>
-> >>   #include <test_progs.h>
-> >>
-> >>   #include "test_map_lookup_percpu_elem.skel.h"
-> >>
-> >> -#define TEST_VALUE  1
-> >> -
-> >>   void test_map_lookup_percpu_elem(void)
-> >>   {
-> >>          struct test_map_lookup_percpu_elem *skel;
-> >> -       int key =3D 0, ret;
-> >> -       int nr_cpus =3D sysconf(_SC_NPROCESSORS_ONLN);
-> >> -       int *buf;
-> >> +       __u64 key =3D 0, sum;
-> >> +       int ret, i;
-> >> +       int nr_cpus =3D libbpf_num_possible_cpus();
-> >> +       __u64 *buf;
-> >>
-> >> -       buf =3D (int *)malloc(nr_cpus*sizeof(int));
-> >> +       buf =3D (__u64 *)malloc(nr_cpus*sizeof(__u64));
-> > no need for casting
+> > Hi Andrii,
+> >
+> > Could you reply this question? I need to understand whether I need to
+> > make any changes to the CI before resubmitting.
 >
-> casting means no '(__u64 *)'?
-> just like this:
-> 'buf =3D malloc(nr_cpus * sizeof(__u64));'
+> I brought up a s390x VM to run the test locally, and there are two
+> issues with the latest (2022-05-09) s390x image:
+>
+> 1. It lacks stdbuf. stdbuf is used by
+> tools/testing/selftests/bpf/vmtest.sh to run any test, and this is
+> clearly broken. Hence two questions:
+>
+> 1.1. How does CI work without stdbuf in the image? I thought it used the
+> same vmtest.sh script, is that right?
+
+no, CI doesn't use vmtest.sh. vmtest.sh is an approximation of what CI
+is doing, but it doesn't share the code/scripts (it does use the same
+kernel config and VM image, though)
+
+>
+> 1.2. Who can add stdbuf to the image (to fix local runs)?
 >
 
-yes, in C you don't need to explicitly cast void * to other pointer types
+For s390x things I usually ping Ilya. Ilya, can you help here please?
 
-> >
-> >>          if (!ASSERT_OK_PTR(buf, "malloc"))
-> >>                  return;
-> >> -       memset(buf, 0, nr_cpus*sizeof(int));
-> >> -       buf[0] =3D TEST_VALUE;
-> >>
-> >> -       skel =3D test_map_lookup_percpu_elem__open_and_load();
-> >> -       if (!ASSERT_OK_PTR(skel, "test_map_lookup_percpu_elem__open_an=
-d_load"))
-> >> -               return;
-> >> +       for (i=3D0; i<nr_cpus; i++)
-> > spaces between operators
+> 2. It lacks iptables needed by my test, so if I resubmit my series, it
+> will fail on the CI again. Who can add iptables to the image?
+
+Ditto, I'll defer to Ilya for this.
+
 >
-> will do. Thanks.
+> I also compared the old (2021-03-24) and the new (2022-05-09) s390x
+> images, and ethtool was indeed added only after my submission, so that
+> explains the current CI error.
 >
-> >
-> >> +               buf[i] =3D i;
-> >> +       sum =3D (nr_cpus-1)*nr_cpus/2;
-> > same, please follow kernel code style
->
-> will do. Thanks.
->
-> >
-> >> +
-> >> +       skel =3D test_map_lookup_percpu_elem__open();
-> >> +       if (!ASSERT_OK_PTR(skel, "test_map_lookup_percpu_elem__open"))
-> >> +               goto exit;
-> >> +
-> > nit: keep it simple, init skel to NULL and use single cleanup goto
-> > label that will destroy skel unconditionally (it deals with NULL just
-> > fine)
->
-> will do. Thanks.
->
-> >> +       skel->rodata->nr_cpus =3D nr_cpus;
-> >> +
-> >> +       ret =3D test_map_lookup_percpu_elem__load(skel);
-> >> +       if (!ASSERT_OK(ret, "test_map_lookup_percpu_elem__load"))
-> >> +               goto cleanup;
-> >> +
-> >>          ret =3D test_map_lookup_percpu_elem__attach(skel);
-> >> -       ASSERT_OK(ret, "test_map_lookup_percpu_elem__attach");
-> >> +       if (!ASSERT_OK(ret, "test_map_lookup_percpu_elem__attach"))
-> >> +               goto cleanup;
-> >>
-> >>          ret =3D bpf_map_update_elem(bpf_map__fd(skel->maps.percpu_arr=
-ay_map), &key, buf, 0);
-> >>          ASSERT_OK(ret, "percpu_array_map update");
-> > [...]
->
+> > Thanks,
+> > Max
 >
