@@ -2,182 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CF352C87A
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 02:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F7252C887
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 02:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbiESARw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 20:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
+        id S231979AbiESAS0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 20:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbiESARv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 20:17:51 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE54515A75D;
-        Wed, 18 May 2022 17:17:50 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id o190so4156060iof.10;
-        Wed, 18 May 2022 17:17:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rsodxv1uujAoBr5rf41kHtNtg4fZ2kPnNV1adJVqSYw=;
-        b=CET+1EbI5AcAiJaQ/OrsHIhR/yc8Y2tPT7vLYi/VH3d14Ja+x5Uafk3sjBs4VOtyKd
-         CjHAMjFUqQdBykKa157xXTvWvSOGzmZTKGAtSKzbrjj6EBDudEmVV9vFeCgYH+VX2UC/
-         ORx0SKMdFcD5Hs56pnJ6AmZZhHzlVk8oEjQ4NSAlYVGTinVcHC7qpNY3WO7D+/WGK2Cg
-         Mv9POFNOcsHiECJVGvDebe/LxtTfphAbUVcijnFrJoV6PRiW1Zspbu4nEN0qSlWDLRq8
-         B2b3tJKIBtkvtKpD7elQvYX/3u3ehMqux3cntZHi8ucs688Nkf/wyMOab9V4DE80MnOe
-         SxZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rsodxv1uujAoBr5rf41kHtNtg4fZ2kPnNV1adJVqSYw=;
-        b=YTJLUG6hY9gUoZQETFlnCd1WyK8i3XFSLMdwQTxaBly/1fqQ4O5VRIQPbiFUk2YMzy
-         230vVRIdMJygNnkCzFp8B95Opc43DYo5q4QfkaQbkL+nnv2K7ev4FUrWHX2VSVn9JBwi
-         2IuO15s8PuegssyGDsJzp8UBaF/+4rVzPWwjIVkVSdDjSgqISZL1vn/exNNOxJO3DJSr
-         XJDc8S+vuqskfAgGhV6psUf6Kpz3FsjapcqMx8XgEMSVIV8jYfS5Somec6NvKUyp3xay
-         5GWYtAYSuT/PmPrZMt+GeT2hYfLDMpJuyauyr3zwnGjnk7p5BKpABHNEbCC4XGDXF1Xa
-         b+Lg==
-X-Gm-Message-State: AOAM533A9IMrmiKouQ862soD+cRAm1cWa//MacvyAorLsaGDoLHGBbNs
-        PruRV9X+QS5It/fmB22eyJknC1mSWhHFo5oFRE4=
-X-Google-Smtp-Source: ABdhPJyT38Rf56OZvapKSjQ6bbloRA8ZIz2svND/grgwY8nwsfLMoB6vGx85gTKcxZvN3RkryRDF1Lc4S/BHME3INSo=
-X-Received: by 2002:a05:6602:248f:b0:65a:fb17:7a6b with SMTP id
- g15-20020a056602248f00b0065afb177a6bmr1073752ioe.79.1652919470125; Wed, 18
- May 2022 17:17:50 -0700 (PDT)
+        with ESMTP id S231962AbiESASV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 20:18:21 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C47C163F54
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 17:18:19 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id A07EA240109
+        for <bpf@vger.kernel.org>; Thu, 19 May 2022 02:18:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1652919497; bh=G3jBMWIgZ0bnwQxaOeM07nDjSzabi+ByQSK7kB88/VU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jzZBH03C3PvkanJg1OHjjmGruDNbKRNZVeQNKpkUtsxNKAnVB4eB7tE/UpxJVRH95
+         5/fRVI4TzaX74jJairatLXZkLQ+So0rjZgcuxT5MWabmuHJJmCrl3xQdHwceOxwBJA
+         q6ax4nXcWQnyCearjbvuLK2NjUBQp2zw7juw1vgYc1EBQCEilGaeVXQnxwgNU/9RxZ
+         Jj6+zRWKfhsLIqbYXQKZjNHQ4vrJlKqdbSvsjmbHkNUh1edNCOK9oHc/BPMuZAqckk
+         DNoXwLnVxxl8Yg+YQ/a8wQdRd31rsas11FOhhsFrbfuZMvDHoFFFzMumSySFfStSpT
+         CHhnGTKkjjqsA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4L3VnN4KcCz9rxF;
+        Thu, 19 May 2022 02:18:16 +0200 (CEST)
+From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+Cc:     yhs@fb.com, quentin@isovalent.com
+Subject: [PATCH bpf-next v2 00/12] libbpf: Textual representation of enums
+Date:   Thu, 19 May 2022 00:18:03 +0000
+Message-Id: <20220519001815.1944959-1-deso@posteo.net>
 MIME-Version: 1.0
-References: <20220516022453.68420-1-zhoufeng.zf@bytedance.com>
-In-Reply-To: <20220516022453.68420-1-zhoufeng.zf@bytedance.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 May 2022 17:17:39 -0700
-Message-ID: <CAEf4BzZ0eRh4ufQnc69B=6WQt_Oy3DNPL-TM-rsUW1KX--SBvQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix some bugs in
- map_lookup_percpu_elem testcase
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joanne Koong <joannekoong@fb.com>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        zhouchengming@bytedance.com, Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 15, 2022 at 7:25 PM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
->
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->
-> comments from Andrii Nakryiko, details in here:
-> https://lore.kernel.org/lkml/20220511093854.411-1-zhoufeng.zf@bytedance.com/T/
->
-> use /* */ instead of //
-> use libbpf_num_possible_cpus() instead of sysconf(_SC_NPROCESSORS_ONLN)
-> use 8 bytes for value size
-> fix memory leak
-> use ASSERT_EQ instead of ASSERT_OK
-> add bpf_loop to fetch values on each possible CPU
->
-> Fixes: ed7c13776e20c74486b0939a3c1de984c5efb6aa ("selftests/bpf: add test case for bpf_map_lookup_percpu_elem")
-> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
-> ---
->  .../bpf/prog_tests/map_lookup_percpu_elem.c   | 49 +++++++++------
->  .../bpf/progs/test_map_lookup_percpu_elem.c   | 61 ++++++++++++-------
->  2 files changed, 70 insertions(+), 40 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c b/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
-> index 58b24c2112b0..89ca170f1c25 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
-> @@ -1,30 +1,39 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -// Copyright (c) 2022 Bytedance
-> +/* SPDX-License-Identifier: GPL-2.0 */
+This patch set introduces the means for querying a textual representation of
+the following BPF related enum types:
+- enum bpf_map_type
+- enum bpf_prog_type
+- enum bpf_attach_type
+- enum bpf_link_type
 
-heh, so for SPDX license comment the rule is to use // in .c files :)
-so keep SPDX as // and all others as /* */
+To make that possible, we introduce a new public function for each of the types:
+libbpf_bpf_<type>_type_str.
 
-> +/* Copyright (c) 2022 Bytedance */
->
->  #include <test_progs.h>
->
->  #include "test_map_lookup_percpu_elem.skel.h"
->
-> -#define TEST_VALUE  1
-> -
->  void test_map_lookup_percpu_elem(void)
->  {
->         struct test_map_lookup_percpu_elem *skel;
-> -       int key = 0, ret;
-> -       int nr_cpus = sysconf(_SC_NPROCESSORS_ONLN);
-> -       int *buf;
-> +       __u64 key = 0, sum;
-> +       int ret, i;
-> +       int nr_cpus = libbpf_num_possible_cpus();
-> +       __u64 *buf;
->
-> -       buf = (int *)malloc(nr_cpus*sizeof(int));
-> +       buf = (__u64 *)malloc(nr_cpus*sizeof(__u64));
+Having a way to query a textual representation has been asked for in the past
+(by systemd, among others). Such representations can generally be useful in
+tracing and logging contexts, among others. At this point, at least one client,
+bpftool, maintains such a mapping manually, which is prone to get out of date as
+new enum variants are introduced. libbpf is arguably best situated to keep this
+list complete and up-to-date. This patch series adds BTF based tests to ensure
+that exhaustiveness is upheld moving forward.
 
-no need for casting
+The libbpf provided textual representation can be inferred from the
+corresponding enum variant name by removing the prefix and lowercasing the
+remainder. E.g., BPF_PROG_TYPE_SOCKET_FILTER -> socket_filter. Unfortunately,
+bpftool does not use such a programmatic approach for some of the
+bpf_attach_type variants. We decided changing its behavior to work with libbpf
+representations. However, for user inputs, specifically, we do keep support for
+the traditionally used names around (please see patch "bpftool: Use
+libbpf_bpf_attach_type_str").
 
->         if (!ASSERT_OK_PTR(buf, "malloc"))
->                 return;
-> -       memset(buf, 0, nr_cpus*sizeof(int));
-> -       buf[0] = TEST_VALUE;
->
-> -       skel = test_map_lookup_percpu_elem__open_and_load();
-> -       if (!ASSERT_OK_PTR(skel, "test_map_lookup_percpu_elem__open_and_load"))
-> -               return;
-> +       for (i=0; i<nr_cpus; i++)
+The patch series is structured as follows:
+- for each enumeration type in {bpf_prog_type, bpf_map_type, bpf_attach_type,
+  bpf_link_type}:
+  - we first introduce the corresponding public libbpf API function
+  - we then add BTF based self-tests
+  - we lastly adjust bpftool to use the libbpf provided functionality
 
-spaces between operators
+Changelog:
+v1 -> v2:
+- adjusted bpftool to work with algorithmically determined attach types as
+  libbpf now uses (just removed prefix from enum name and lowercased the rest)
+  - adjusted tests, man page, and completion script to work with the new names
+  - renamed bpf_attach_type_str -> bpf_attach_type_input_str
+  - for input: added special cases that accept the traditionally used strings as
+    well
+- changed 'char const *' -> 'const char *'
 
-> +               buf[i] = i;
-> +       sum = (nr_cpus-1)*nr_cpus/2;
+Signed-off-by: Daniel Müller <deso@posteo.net>
+Acked-by: Yonghong Song <yhs@fb.com>
+Cc: Quentin Monnet <quentin@isovalent.com>
 
-same, please follow kernel code style
+Daniel Müller (12):
+  libbpf: Introduce libbpf_bpf_prog_type_str
+  selftests/bpf: Add test for libbpf_bpf_prog_type_str
+  bpftool: Use libbpf_bpf_prog_type_str
+  libbpf: Introduce libbpf_bpf_map_type_str
+  selftests/bpf: Add test for libbpf_bpf_map_type_str
+  bpftool: Use libbpf_bpf_map_type_str
+  libbpf: Introduce libbpf_bpf_attach_type_str
+  selftests/bpf: Add test for libbpf_bpf_attach_type_str
+  bpftool: Use libbpf_bpf_attach_type_str
+  libbpf: Introduce libbpf_bpf_link_type_str
+  selftests/bpf: Add test for libbpf_bpf_link_type_str
+  bpftool: Use libbpf_bpf_link_type_str
 
-> +
-> +       skel = test_map_lookup_percpu_elem__open();
-> +       if (!ASSERT_OK_PTR(skel, "test_map_lookup_percpu_elem__open"))
-> +               goto exit;
-> +
+ .../bpftool/Documentation/bpftool-cgroup.rst  |  16 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   5 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  18 +-
+ tools/bpf/bpftool/cgroup.c                    |  49 +++--
+ tools/bpf/bpftool/common.c                    |  82 +++----
+ tools/bpf/bpftool/feature.c                   |  87 +++++---
+ tools/bpf/bpftool/link.c                      |  61 +++---
+ tools/bpf/bpftool/main.h                      |  23 +-
+ tools/bpf/bpftool/map.c                       |  82 +++----
+ tools/bpf/bpftool/prog.c                      |  77 +++----
+ tools/lib/bpf/libbpf.c                        | 160 ++++++++++++++
+ tools/lib/bpf/libbpf.h                        |  36 +++
+ tools/lib/bpf/libbpf.map                      |   4 +
+ .../selftests/bpf/prog_tests/libbpf_str.c     | 207 ++++++++++++++++++
+ .../selftests/bpf/test_bpftool_synctypes.py   | 163 ++++++--------
+ 15 files changed, 736 insertions(+), 334 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_str.c
 
-nit: keep it simple, init skel to NULL and use single cleanup goto
-label that will destroy skel unconditionally (it deals with NULL just
-fine)
+-- 
+2.30.2
 
-> +       skel->rodata->nr_cpus = nr_cpus;
-> +
-> +       ret = test_map_lookup_percpu_elem__load(skel);
-> +       if (!ASSERT_OK(ret, "test_map_lookup_percpu_elem__load"))
-> +               goto cleanup;
-> +
->         ret = test_map_lookup_percpu_elem__attach(skel);
-> -       ASSERT_OK(ret, "test_map_lookup_percpu_elem__attach");
-> +       if (!ASSERT_OK(ret, "test_map_lookup_percpu_elem__attach"))
-> +               goto cleanup;
->
->         ret = bpf_map_update_elem(bpf_map__fd(skel->maps.percpu_array_map), &key, buf, 0);
->         ASSERT_OK(ret, "percpu_array_map update");
-
-[...]
