@@ -2,327 +2,1034 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC8952D6EB
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 17:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9134252D76E
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 17:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240374AbiESPGr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 May 2022 11:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        id S240906AbiESPZR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 May 2022 11:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235070AbiESPGo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 May 2022 11:06:44 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1482C13F;
-        Thu, 19 May 2022 08:06:42 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id v10so5307799pgl.11;
-        Thu, 19 May 2022 08:06:42 -0700 (PDT)
+        with ESMTP id S240874AbiESPZP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 May 2022 11:25:15 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03581EC328
+        for <bpf@vger.kernel.org>; Thu, 19 May 2022 08:25:13 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id m18so2110058uao.9
+        for <bpf@vger.kernel.org>; Thu, 19 May 2022 08:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EucD8D1Hopx9myMTmlYjgrvRoh4xz50vqffBCpTlf4s=;
-        b=HLb2/gkOCAtGsnmd/tHYpzeQNKrQwcnhkUrQOoA3qLFXMnX9uHH0Xwbjsv0OqX0TuS
-         8VWMsmu2QrlHt9/aMusoRbhlCGPlVY62+AQ28zFaOyNMT77Ysiwmkyi3cz60AmUiKmQr
-         MK6BY3YhY51Yuv/uTFrnB5APmzMseJUq/2WG2B7h4ebbRkad2HSLU4gBnoGXvCXZxw5E
-         vvE+SA6997pIrJOBrHo+kBK6jglT7GpBZIKibhl08djLAEIE1/J73/CGo1v47Me8R9ti
-         v0uCTY0JEtRPciErtZ5EzY2tLjpRzX8PSpo64/eOKih5zgPtSXuwYRTv0WeucnkpOEGW
-         FAxg==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=TmWHiYDgikD+y21KQHJfo1bogRQx/GcSZlpZz3o2tKI=;
+        b=N7qa5Vi43Xaemg3sFGQCH1NkNts5R/ivhc+jm9Qm+TfierH8UN7P5t3d9w0lU9VJBW
+         so0F3026T9wowBmEq7aiNNU3ic4rAFfd+OVuYTzGKUU+YmzJ/CGf8iCAGLc4lACbmHoj
+         iMCqpnT70cLMvL9/GrgWNtmSiKuyEmMFjrMHR6lwNiKcoMIa4ENIJk6FoXtr9gxpvCR0
+         CA+I1Q/SBjfcca2IWkqe1ch1fZpjh+/xcPP0arJTF+SvVik1g8+9M8zPhrXtTw7pXaW1
+         wSr/nCSiXmlfIfDnEc3dyX6iBVjOmluFF1tBv6th1B2620nqTRhnbm5ERRufhLMdz4Ow
+         mjMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EucD8D1Hopx9myMTmlYjgrvRoh4xz50vqffBCpTlf4s=;
-        b=DzsNVwgvlmAH2J0RPaNPchrsNIewb1ApVvJYJNTu7sItfj+7/Q4/LXUhmEXoiZ7rZ+
-         Hd+alrwloag7eblWOs86whPGz7y2t/7PQePFH+QUx5CHa3SDHVAhjlykp8t7B7LlIDVw
-         MSI+DnBfv/GWA9olUiP9rpAyGRzybozRHWCLoT7qOGTPI2U6Y2/6kgpSDJzd9MHFg8/g
-         /+NP4JSKnJumPgjgHCM67J2qJqXLacUug+Wne8LA6aOgDWB4wVj/w7V3HrGRbANDEHe+
-         1YRiVckN/xZfuox09MYush9rlZRdM7ieyK00f+rQysdVqK3ttsjgl6hr2CaoomNKVdpN
-         ZEeg==
-X-Gm-Message-State: AOAM5303ut4jQURr4R6CnpSTTte9VNG2vANAZFBkhPnU9ZCoVh7MCEQd
-        9BXQCzG6A6l56r2LsZCFXSc=
-X-Google-Smtp-Source: ABdhPJwS7q92N95rTBohYsdxSKlwUJWCJnPq9iyzHkSKMq4zkvXpHiLIZMhK9oAL2vGPJpFOZnfAFQ==
-X-Received: by 2002:a63:6bc2:0:b0:3c2:13cc:1dec with SMTP id g185-20020a636bc2000000b003c213cc1decmr4316155pgc.263.1652972802133;
-        Thu, 19 May 2022 08:06:42 -0700 (PDT)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id n22-20020a056a0007d600b0050dc7628139sm4536687pfu.19.2022.05.19.08.06.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 May 2022 08:06:41 -0700 (PDT)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     andrii.nakryiko@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@kernel.org,
-        kafai@fb.com, kpsingh@kernel.org, kuifeng@fb.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, shuah@kernel.org, songliubraving@fb.com,
-        sunyucong@gmail.com, toke@redhat.com, yhs@fb.com, ytcoode@gmail.com
-Subject: [PATCH bpf-next v2] selftests/bpf: Add missing trampoline program type to trampoline_count test
-Date:   Thu, 19 May 2022 23:06:10 +0800
-Message-Id: <20220519150610.601313-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <CAEf4BzYr+RZ8A00Yn=Pamt6bk-AmoMyjUHxosgJmrTjkYMhShQ@mail.gmail.com>
-References: <CAEf4BzYr+RZ8A00Yn=Pamt6bk-AmoMyjUHxosgJmrTjkYMhShQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=TmWHiYDgikD+y21KQHJfo1bogRQx/GcSZlpZz3o2tKI=;
+        b=BC850BqVRHB+6vxg3v4nqUfvF71Y8Wgxdg/+od0ak1LXqu+2Sc7p/TYOHrigEdojg8
+         SSGLGjvZVIzL81SYWQtGRkqEa6yfPuDS0f0P8+l6+yBiK/okz8m7SvHSrowP45yq9a/8
+         8sDqkcQd+kano/ZwE03w6OZuJ9bCnC3igSwkI7bvYZW/bnI53uz/wC6xGKtx/bohQ8sz
+         Zz+iuIrLKr+kBBkaJfGgU3gh7DkBX+ziUgb3pfwsCA7f1oHv67frwWsvwaMgFccM2tuc
+         hULASW/SVPSCsBvLVaD8hfvrHq+8gYYiBmX/Pm7fZyI9Y6ikM45FxnU+Diu3Xy2sTirw
+         TWVw==
+X-Gm-Message-State: AOAM531+0JFJ+d3cQvCR2admlaMBwLZVTRp2jgBWushA4/DRCQMtVMFo
+        MyHIENmuVtBuxus4YZUJeMG1bxt8vLtunaTuH8nyVoRzv/2xHw==
+X-Google-Smtp-Source: ABdhPJz/4V9a4JFymoyjPS9JFahH5af1dY+LvmuUCCC2bF24uaIO/lcSpnWtFrPDGYVvC+LBNc6UCGT/Z2IKGWoDL8o=
+X-Received: by 2002:ab0:15ed:0:b0:365:f250:7384 with SMTP id
+ j42-20020ab015ed000000b00365f2507384mr2201639uae.44.1652973911451; Thu, 19
+ May 2022 08:25:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Thu, 19 May 2022 08:25:00 -0700
+Message-ID: <CAK3+h2xA+K-yby7m+3Hp1G6qinafZPW1OB=Uk5-AKxUfztBtEA@mail.gmail.com>
+Subject: libbpf: failed to load program 'vxlan_get_tunnel_src'
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently the trampoline_count test doesn't include any fmod_ret bpf
-programs, fix it to make the test cover all possible trampoline program
-types.
+Hi,
 
-Since fmod_ret bpf programs can't be attached to __set_task_comm function,
-as it's neither whitelisted for error injection nor a security hook, change
-it to bpf_modify_return_test.
+Here is my step to run bpf selftest on Ubuntu 20.04.2 LTS
 
-This patch also does some other cleanups such as removing duplicate code,
-dropping inconsistent comments, etc.
+git clone https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+cd bpf-next; cp /boot/config-5.10.0-051000-generic .config; yes "" |
+make oldconfig; make bzImage; make modules; cd
+tools/testing/selftests/bpf/; make
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
-v1->v2: call bpf_prog_test_run() to trigger bpf_modify_return_test in kernel
+then below, am I missing something in kernel config to cause "libbpf:
+failed to load program 'vxlan_get_tunnel_src'"
 
- include/linux/bpf.h                           |   2 +-
- .../bpf/prog_tests/trampoline_count.c         | 134 +++++++-----------
- .../bpf/progs/test_trampoline_count.c         |  16 ++-
- 3 files changed, 61 insertions(+), 91 deletions(-)
+./test_progs -a tunnel
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index c107392b0ba7..cb01f247e05f 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -724,7 +724,7 @@ struct btf_func_model {
- #define BPF_TRAMP_F_RET_FENTRY_RET	BIT(4)
- 
- /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
-- * bytes on x86.  Pick a number to fit into BPF_IMAGE_SIZE / 2
-+ * bytes on x86.
-  */
- #define BPF_MAX_TRAMP_LINKS 38
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-index 9c795ee52b7b..b0acbda6dbf5 100644
---- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-+++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-@@ -1,126 +1,94 @@
- // SPDX-License-Identifier: GPL-2.0-only
- #define _GNU_SOURCE
--#include <sched.h>
--#include <sys/prctl.h>
- #include <test_progs.h>
- 
- #define MAX_TRAMP_PROGS 38
- 
- struct inst {
- 	struct bpf_object *obj;
--	struct bpf_link   *link_fentry;
--	struct bpf_link   *link_fexit;
-+	struct bpf_link   *link;
- };
- 
--static int test_task_rename(void)
--{
--	int fd, duration = 0, err;
--	char buf[] = "test_overhead";
--
--	fd = open("/proc/self/comm", O_WRONLY|O_TRUNC);
--	if (CHECK(fd < 0, "open /proc", "err %d", errno))
--		return -1;
--	err = write(fd, buf, sizeof(buf));
--	if (err < 0) {
--		CHECK(err < 0, "task rename", "err %d", errno);
--		close(fd);
--		return -1;
--	}
--	close(fd);
--	return 0;
--}
--
--static struct bpf_link *load(struct bpf_object *obj, const char *name)
-+static struct bpf_program *load_prog(char *file, char *name, struct inst *inst)
- {
-+	struct bpf_object *obj;
- 	struct bpf_program *prog;
--	int duration = 0;
-+	int err;
-+
-+	obj = bpf_object__open_file(file, NULL);
-+	if (!ASSERT_OK_PTR(obj, "obj_open_file"))
-+		return NULL;
-+
-+	inst->obj = obj;
-+
-+	err = bpf_object__load(obj);
-+	if (!ASSERT_OK(err, "obj_load"))
-+		return NULL;
- 
- 	prog = bpf_object__find_program_by_name(obj, name);
--	if (CHECK(!prog, "find_probe", "prog '%s' not found\n", name))
--		return ERR_PTR(-EINVAL);
--	return bpf_program__attach_trace(prog);
-+	if (!ASSERT_OK_PTR(prog, "obj_find_prog"))
-+		return NULL;
-+
-+	return prog;
- }
- 
- /* TODO: use different target function to run in concurrent mode */
- void serial_test_trampoline_count(void)
- {
--	const char *fentry_name = "prog1";
--	const char *fexit_name = "prog2";
--	const char *object = "test_trampoline_count.o";
--	struct inst inst[MAX_TRAMP_PROGS] = {};
--	int err, i = 0, duration = 0;
--	struct bpf_object *obj;
-+	char *file = "test_trampoline_count.o";
-+	char *const progs[] = { "fentry_test", "fmod_ret_test", "fexit_test" };
-+	struct inst inst[MAX_TRAMP_PROGS + 1] = {};
-+	struct bpf_program *prog;
- 	struct bpf_link *link;
--	char comm[16] = {};
-+	int prog_fd, err, i;
-+	LIBBPF_OPTS(bpf_test_run_opts, opts);
- 
- 	/* attach 'allowed' trampoline programs */
- 	for (i = 0; i < MAX_TRAMP_PROGS; i++) {
--		obj = bpf_object__open_file(object, NULL);
--		if (!ASSERT_OK_PTR(obj, "obj_open_file")) {
--			obj = NULL;
-+		prog = load_prog(file, progs[i % ARRAY_SIZE(progs)], &inst[i]);
-+		if (!prog)
- 			goto cleanup;
--		}
- 
--		err = bpf_object__load(obj);
--		if (CHECK(err, "obj_load", "err %d\n", err))
-+		link = bpf_program__attach(prog);
-+		if (!ASSERT_OK_PTR(link, "attach_prog"))
- 			goto cleanup;
--		inst[i].obj = obj;
--		obj = NULL;
--
--		if (rand() % 2) {
--			link = load(inst[i].obj, fentry_name);
--			if (!ASSERT_OK_PTR(link, "attach_prog")) {
--				link = NULL;
--				goto cleanup;
--			}
--			inst[i].link_fentry = link;
--		} else {
--			link = load(inst[i].obj, fexit_name);
--			if (!ASSERT_OK_PTR(link, "attach_prog")) {
--				link = NULL;
--				goto cleanup;
--			}
--			inst[i].link_fexit = link;
--		}
-+
-+		inst[i].link = link;
- 	}
- 
- 	/* and try 1 extra.. */
--	obj = bpf_object__open_file(object, NULL);
--	if (!ASSERT_OK_PTR(obj, "obj_open_file")) {
--		obj = NULL;
-+	prog = load_prog(file, "fmod_ret_test", &inst[i]);
-+	if (!prog)
- 		goto cleanup;
--	}
--
--	err = bpf_object__load(obj);
--	if (CHECK(err, "obj_load", "err %d\n", err))
--		goto cleanup_extra;
- 
- 	/* ..that needs to fail */
--	link = load(obj, fentry_name);
--	err = libbpf_get_error(link);
--	if (!ASSERT_ERR_PTR(link, "cannot attach over the limit")) {
--		bpf_link__destroy(link);
--		goto cleanup_extra;
-+	link = bpf_program__attach(prog);
-+	if (!ASSERT_ERR_PTR(link, "attach_prog")) {
-+		inst[i].link = link;
-+		goto cleanup;
- 	}
- 
- 	/* with E2BIG error */
--	ASSERT_EQ(err, -E2BIG, "proper error check");
--	ASSERT_EQ(link, NULL, "ptr_is_null");
-+	if (!ASSERT_EQ(libbpf_get_error(link), -E2BIG, "E2BIG"))
-+		goto cleanup;
-+	if (!ASSERT_EQ(link, NULL, "ptr_is_null"))
-+		goto cleanup;
- 
- 	/* and finaly execute the probe */
--	if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
--		goto cleanup_extra;
--	CHECK_FAIL(test_task_rename());
--	CHECK_FAIL(prctl(PR_SET_NAME, comm, 0L, 0L, 0L));
-+	prog_fd = bpf_program__fd(prog);
-+	if (!ASSERT_GE(prog_fd, 0, "bpf_program__fd"))
-+		goto cleanup;
-+
-+	err = bpf_prog_test_run_opts(prog_fd, &opts);
-+	if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(opts.retval & 0xffff, 4, "bpf_modify_return_test.result");
-+	ASSERT_EQ(opts.retval >> 16, 1, "bpf_modify_return_test.side_effect");
- 
--cleanup_extra:
--	bpf_object__close(obj);
- cleanup:
--	if (i >= MAX_TRAMP_PROGS)
--		i = MAX_TRAMP_PROGS - 1;
- 	for (; i >= 0; i--) {
--		bpf_link__destroy(inst[i].link_fentry);
--		bpf_link__destroy(inst[i].link_fexit);
-+		bpf_link__destroy(inst[i].link);
- 		bpf_object__close(inst[i].obj);
- 	}
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_trampoline_count.c b/tools/testing/selftests/bpf/progs/test_trampoline_count.c
-index f030e469d05b..7765720da7d5 100644
---- a/tools/testing/selftests/bpf/progs/test_trampoline_count.c
-+++ b/tools/testing/selftests/bpf/progs/test_trampoline_count.c
-@@ -1,20 +1,22 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <stdbool.h>
--#include <stddef.h>
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- 
--struct task_struct;
-+SEC("fentry/bpf_modify_return_test")
-+int BPF_PROG(fentry_test, int a, int *b)
-+{
-+	return 0;
-+}
- 
--SEC("fentry/__set_task_comm")
--int BPF_PROG(prog1, struct task_struct *tsk, const char *buf, bool exec)
-+SEC("fmod_ret/bpf_modify_return_test")
-+int BPF_PROG(fmod_ret_test, int a, int *b, int ret)
- {
- 	return 0;
- }
- 
--SEC("fexit/__set_task_comm")
--int BPF_PROG(prog2, struct task_struct *tsk, const char *buf, bool exec)
-+SEC("fexit/bpf_modify_return_test")
-+int BPF_PROG(fexit_test, int a, int *b, int ret)
- {
- 	return 0;
- }
--- 
-2.36.1
+Failed to load bpf_testmod.ko into the kernel: -8
 
+WARNING! Selftests relying on bpf_testmod.ko will be skipped.
+
+serial_test_tunnel:PASS:pthread_create 0 nsec
+
+config_device:PASS:ip netns add at_ns0 0 nsec
+
+config_device:PASS:ip link add veth0 type veth peer name veth1 0 nsec
+
+config_device:PASS:ip link set veth0 netns at_ns0 0 nsec
+
+config_device:PASS:ip addr add 172.16.1.200/24 dev veth1 0 nsec
+
+config_device:PASS:ip addr add 172.16.1.20/24 dev veth1 0 nsec
+
+config_device:PASS:ip link set dev veth1 up mtu 1500 0 nsec
+
+config_device:PASS:ip netns exec at_ns0 ip addr add 172.16.1.100/24
+dev veth0 0 nsec
+
+config_device:PASS:ip netns exec at_ns0 ip link set dev veth0 up mtu 1500 0 nsec
+
+add_vxlan_tunnel:PASS:ip netns exec at_ns0 ip link add dev vxlan00
+type vxlan external gbp dstport 4789 0 nsec
+
+add_vxlan_tunnel:PASS:ip netns exec at_ns0 ip link set dev vxlan00
+address 52:54:00:d9:01:00 up 0 nsec
+
+add_vxlan_tunnel:PASS:ip netns exec at_ns0 ip addr add dev vxlan00
+10.1.1.100/24 0 nsec
+
+add_vxlan_tunnel:PASS:ip netns exec at_ns0 ip neigh add 10.1.1.200
+lladdr 52:54:00:d9:02:00 dev vxlan00 0 nsec
+
+add_vxlan_tunnel:PASS:ip link add dev vxlan11 type vxlan external gbp
+dstport 4789 0 nsec
+
+add_vxlan_tunnel:PASS:ip link set dev vxlan11 address
+52:54:00:d9:02:00 up 0 nsec
+
+add_vxlan_tunnel:PASS:ip addr add dev vxlan11 10.1.1.200/24 0 nsec
+
+add_vxlan_tunnel:PASS:ip neigh add 10.1.1.100 lladdr 52:54:00:d9:01:00
+dev vxlan11 0 nsec
+
+test_vxlan_tunnel:PASS:add vxlan tunnel 0 nsec
+
+libbpf: prog 'vxlan_get_tunnel_src': BPF program load failed: Invalid argument
+
+libbpf: prog 'vxlan_get_tunnel_src': -- BEGIN PROG LOAD LOG --
+
+; int vxlan_get_tunnel_src(struct __sk_buff *skb)
+
+0: (bf) r7 = r1
+
+1: (b4) w1 = 0
+
+; __u32 index = 0;
+
+2: (63) *(u32 *)(r10 -60) = r1
+
+last_idx 2 first_idx 0
+
+regs=2 stack=0 before 1: (b4) w1 = 0
+
+3: (bf) r2 = r10
+
+;
+
+4: (07) r2 += -60
+
+; local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
+
+5: (18) r1 = 0xffff8ec4dfed6400
+
+7: (85) call bpf_map_lookup_elem#1
+
+8: (bf) r6 = r0
+
+; if (!local_ip) {
+
+9: (55) if r6 != 0x0 goto pc+5
+
+
+from 9 to 15: R0_w=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R6_w=map_value(id=0,off=0,ks=4,vs=4,imm=0) R7_w=ctx(id=0,off=0,imm=0)
+R10=fp0 fp-64=mmmm????
+
+; log_err(ret);
+
+15: (bf) r2 = r10
+
+; ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
+
+16: (07) r2 += -48
+
+17: (bf) r1 = r7
+
+18: (b4) w3 = 44
+
+19: (b7) r4 = 0
+
+20: (85) call bpf_skb_get_tunnel_key#20
+
+last_idx 20 first_idx 0
+
+regs=8 stack=0 before 19: (b7) r4 = 0
+
+regs=8 stack=0 before 18: (b4) w3 = 44
+
+; if (ret < 0) {
+
+21: (66) if w0 s> 0xffffffff goto pc+6
+
+
+from 21 to 28: R0=inv(id=0,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0) R7=ctx(id=0,off=0,imm=0)
+R10=fp0 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-64=mmmm????
+
+; log_err(ret);
+
+28: (bf) r2 = r10
+
+; ret = bpf_skb_get_tunnel_opt(skb, &md, sizeof(md));
+
+29: (07) r2 += -56
+
+30: (bf) r1 = r7
+
+31: (b4) w3 = 4
+
+32: (85) call bpf_skb_get_tunnel_opt#29
+
+last_idx 32 first_idx 21
+
+regs=8 stack=0 before 31: (b4) w3 = 4
+
+33: (bf) r7 = r0
+
+; if (ret < 0) {
+
+34: (66) if w7 s> 0xffffffff goto pc+5
+
+
+from 34 to 40: R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; log_err(ret);
+
+40: (61) r1 = *(u32 *)(r10 -56)
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+41: (61) r3 = *(u32 *)(r6 +0)
+
+ R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+42: (61) r2 = *(u32 *)(r10 -20)
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+43: (5e) if w2 != w3 goto pc+2
+
+ R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R2_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R3_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+44: (b4) w0 = 0
+
+45: (16) if w1 == 0x800ff goto pc+25
+
+ R0=inv0 R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R3=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; bpf_printk("vxlan key %d local ip 0x%x remote ip 0x%x gbp 0x%x\n",
+
+46: (7b) *(u64 *)(r10 -88) = r2
+
+47: (7b) *(u64 *)(r10 -72) = r1
+
+48: (61) r1 = *(u32 *)(r10 -48)
+
+49: (7b) *(u64 *)(r10 -96) = r1
+
+50: (61) r1 = *(u32 *)(r10 -44)
+
+51: (7b) *(u64 *)(r10 -80) = r1
+
+52: (bf) r3 = r10
+
+53: (07) r3 += -96
+
+54: (18) r1 = 0xffffabaec02c82af
+
+56: (b4) w2 = 52
+
+57: (b4) w4 = 32
+
+58: (85) call unknown#177
+
+invalid func unknown#177
+
+processed 64 insns (limit 1000000) max_states_per_insn 1 total_states
+5 peak_states 5 mark_read 2
+
+-- END PROG LOAD LOG --
+
+libbpf: failed to load program 'vxlan_get_tunnel_src'
+
+libbpf: failed to load object 'test_tunnel_kern'
+
+libbpf: failed to load BPF skeleton 'test_tunnel_kern': -22
+
+test_vxlan_tunnel:FAIL:test_tunnel_kern__open_and_load unexpected error: -22
+
+#198/1     tunnel/vxlan_tunnel:FAIL
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip -6 addr add ::11/96
+dev veth0 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip link set dev veth0 up 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip -6 addr add ::22/96 dev veth1 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip -6 addr add ::bb/96 dev veth1 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip link set dev veth1 up 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip link add dev
+ip6vxlan00 type vxlan external dstport 4789 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip addr add dev
+ip6vxlan00 10.1.1.100/24 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip link set dev
+ip6vxlan00 address 52:54:00:d9:01:00 up 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip link add dev ip6vxlan11 type vxlan
+external dstport 4789 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip addr add dev ip6vxlan11 10.1.1.200/24 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip link set dev ip6vxlan11 address
+52:54:00:d9:02:00 up 0 nsec
+
+test_ip6vxlan_tunnel:PASS:add_ip6vxlan_tunnel 0 nsec
+
+libbpf: prog 'vxlan_get_tunnel_src': BPF program load failed: Invalid argument
+
+libbpf: prog 'vxlan_get_tunnel_src': -- BEGIN PROG LOAD LOG --
+
+; int vxlan_get_tunnel_src(struct __sk_buff *skb)
+
+0: (bf) r7 = r1
+
+1: (b4) w1 = 0
+
+; __u32 index = 0;
+
+2: (63) *(u32 *)(r10 -60) = r1
+
+last_idx 2 first_idx 0
+
+regs=2 stack=0 before 1: (b4) w1 = 0
+
+3: (bf) r2 = r10
+
+;
+
+4: (07) r2 += -60
+
+; local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
+
+5: (18) r1 = 0xffff8ec4de898600
+
+7: (85) call bpf_map_lookup_elem#1
+
+8: (bf) r6 = r0
+
+; if (!local_ip) {
+
+9: (55) if r6 != 0x0 goto pc+5
+
+
+from 9 to 15: R0_w=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R6_w=map_value(id=0,off=0,ks=4,vs=4,imm=0) R7_w=ctx(id=0,off=0,imm=0)
+R10=fp0 fp-64=mmmm????
+
+; log_err(ret);
+
+15: (bf) r2 = r10
+
+; ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
+
+16: (07) r2 += -48
+
+17: (bf) r1 = r7
+
+18: (b4) w3 = 44
+
+19: (b7) r4 = 0
+
+20: (85) call bpf_skb_get_tunnel_key#20
+
+last_idx 20 first_idx 0
+
+regs=8 stack=0 before 19: (b7) r4 = 0
+
+regs=8 stack=0 before 18: (b4) w3 = 44
+
+; if (ret < 0) {
+
+21: (66) if w0 s> 0xffffffff goto pc+6
+
+
+from 21 to 28: R0=inv(id=0,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0) R7=ctx(id=0,off=0,imm=0)
+R10=fp0 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-64=mmmm????
+
+; log_err(ret);
+
+28: (bf) r2 = r10
+
+; ret = bpf_skb_get_tunnel_opt(skb, &md, sizeof(md));
+
+29: (07) r2 += -56
+
+30: (bf) r1 = r7
+
+31: (b4) w3 = 4
+
+32: (85) call bpf_skb_get_tunnel_opt#29
+
+last_idx 32 first_idx 21
+
+regs=8 stack=0 before 31: (b4) w3 = 4
+
+33: (bf) r7 = r0
+
+; if (ret < 0) {
+
+34: (66) if w7 s> 0xffffffff goto pc+5
+
+
+from 34 to 40: R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; log_err(ret);
+
+40: (61) r1 = *(u32 *)(r10 -56)
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+41: (61) r3 = *(u32 *)(r6 +0)
+
+ R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+42: (61) r2 = *(u32 *)(r10 -20)
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+43: (5e) if w2 != w3 goto pc+2
+
+ R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R2_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R3_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+44: (b4) w0 = 0
+
+45: (16) if w1 == 0x800ff goto pc+25
+
+ R0=inv0 R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R3=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; bpf_printk("vxlan key %d local ip 0x%x remote ip 0x%x gbp 0x%x\n",
+
+46: (7b) *(u64 *)(r10 -88) = r2
+
+47: (7b) *(u64 *)(r10 -72) = r1
+
+48: (61) r1 = *(u32 *)(r10 -48)
+
+49: (7b) *(u64 *)(r10 -96) = r1
+
+50: (61) r1 = *(u32 *)(r10 -44)
+
+51: (7b) *(u64 *)(r10 -80) = r1
+
+52: (bf) r3 = r10
+
+53: (07) r3 += -96
+
+54: (18) r1 = 0xffffabaec02c82af
+
+56: (b4) w2 = 52
+
+57: (b4) w4 = 32
+
+58: (85) call unknown#177
+
+invalid func unknown#177
+
+processed 64 insns (limit 1000000) max_states_per_insn 1 total_states
+5 peak_states 5 mark_read 2
+
+-- END PROG LOAD LOG --
+
+libbpf: failed to load program 'vxlan_get_tunnel_src'
+
+libbpf: failed to load object 'test_tunnel_kern'
+
+libbpf: failed to load BPF skeleton 'test_tunnel_kern': -22
+
+test_ip6vxlan_tunnel:FAIL:test_tunnel_kern__open_and_load unexpected error: -22
+
+serial_test_tunnel:PASS:pthread_join 0 nsec
+
+#198/2     tunnel/ip6vxlan_tunnel:FAIL
+
+#198       tunnel:FAIL
+
+
+All error logs:
+
+serial_test_tunnel:PASS:pthread_create 0 nsec
+
+config_device:PASS:ip netns add at_ns0 0 nsec
+
+config_device:PASS:ip link add veth0 type veth peer name veth1 0 nsec
+
+config_device:PASS:ip link set veth0 netns at_ns0 0 nsec
+
+config_device:PASS:ip addr add 172.16.1.200/24 dev veth1 0 nsec
+
+config_device:PASS:ip addr add 172.16.1.20/24 dev veth1 0 nsec
+
+config_device:PASS:ip link set dev veth1 up mtu 1500 0 nsec
+
+config_device:PASS:ip netns exec at_ns0 ip addr add 172.16.1.100/24
+dev veth0 0 nsec
+
+config_device:PASS:ip netns exec at_ns0 ip link set dev veth0 up mtu 1500 0 nsec
+
+add_vxlan_tunnel:PASS:ip netns exec at_ns0 ip link add dev vxlan00
+type vxlan external gbp dstport 4789 0 nsec
+
+add_vxlan_tunnel:PASS:ip netns exec at_ns0 ip link set dev vxlan00
+address 52:54:00:d9:01:00 up 0 nsec
+
+add_vxlan_tunnel:PASS:ip netns exec at_ns0 ip addr add dev vxlan00
+10.1.1.100/24 0 nsec
+
+add_vxlan_tunnel:PASS:ip netns exec at_ns0 ip neigh add 10.1.1.200
+lladdr 52:54:00:d9:02:00 dev vxlan00 0 nsec
+
+add_vxlan_tunnel:PASS:ip link add dev vxlan11 type vxlan external gbp
+dstport 4789 0 nsec
+
+add_vxlan_tunnel:PASS:ip link set dev vxlan11 address
+52:54:00:d9:02:00 up 0 nsec
+
+add_vxlan_tunnel:PASS:ip addr add dev vxlan11 10.1.1.200/24 0 nsec
+
+add_vxlan_tunnel:PASS:ip neigh add 10.1.1.100 lladdr 52:54:00:d9:01:00
+dev vxlan11 0 nsec
+
+test_vxlan_tunnel:PASS:add vxlan tunnel 0 nsec
+
+libbpf: prog 'vxlan_get_tunnel_src': BPF program load failed: Invalid argument
+
+libbpf: prog 'vxlan_get_tunnel_src': -- BEGIN PROG LOAD LOG --
+
+; int vxlan_get_tunnel_src(struct __sk_buff *skb)
+
+0: (bf) r7 = r1
+
+1: (b4) w1 = 0
+
+; __u32 index = 0;
+
+2: (63) *(u32 *)(r10 -60) = r1
+
+last_idx 2 first_idx 0
+
+regs=2 stack=0 before 1: (b4) w1 = 0
+
+3: (bf) r2 = r10
+
+;
+
+4: (07) r2 += -60
+
+; local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
+
+5: (18) r1 = 0xffff8ec4dfed6400
+
+7: (85) call bpf_map_lookup_elem#1
+
+8: (bf) r6 = r0
+
+; if (!local_ip) {
+
+9: (55) if r6 != 0x0 goto pc+5
+
+
+from 9 to 15: R0_w=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R6_w=map_value(id=0,off=0,ks=4,vs=4,imm=0) R7_w=ctx(id=0,off=0,imm=0)
+R10=fp0 fp-64=mmmm????
+
+; log_err(ret);
+
+15: (bf) r2 = r10
+
+; ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
+
+16: (07) r2 += -48
+
+17: (bf) r1 = r7
+
+18: (b4) w3 = 44
+
+19: (b7) r4 = 0
+
+20: (85) call bpf_skb_get_tunnel_key#20
+
+last_idx 20 first_idx 0
+
+regs=8 stack=0 before 19: (b7) r4 = 0
+
+regs=8 stack=0 before 18: (b4) w3 = 44
+
+; if (ret < 0) {
+
+21: (66) if w0 s> 0xffffffff goto pc+6
+
+
+from 21 to 28: R0=inv(id=0,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0) R7=ctx(id=0,off=0,imm=0)
+R10=fp0 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-64=mmmm????
+
+; log_err(ret);
+
+28: (bf) r2 = r10
+
+; ret = bpf_skb_get_tunnel_opt(skb, &md, sizeof(md));
+
+29: (07) r2 += -56
+
+30: (bf) r1 = r7
+
+31: (b4) w3 = 4
+
+32: (85) call bpf_skb_get_tunnel_opt#29
+
+last_idx 32 first_idx 21
+
+regs=8 stack=0 before 31: (b4) w3 = 4
+
+33: (bf) r7 = r0
+
+; if (ret < 0) {
+
+34: (66) if w7 s> 0xffffffff goto pc+5
+
+
+from 34 to 40: R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; log_err(ret);
+
+40: (61) r1 = *(u32 *)(r10 -56)
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+41: (61) r3 = *(u32 *)(r6 +0)
+
+ R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+42: (61) r2 = *(u32 *)(r10 -20)
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+43: (5e) if w2 != w3 goto pc+2
+
+ R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R2_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R3_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+44: (b4) w0 = 0
+
+45: (16) if w1 == 0x800ff goto pc+25
+
+ R0=inv0 R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R3=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; bpf_printk("vxlan key %d local ip 0x%x remote ip 0x%x gbp 0x%x\n",
+
+46: (7b) *(u64 *)(r10 -88) = r2
+
+47: (7b) *(u64 *)(r10 -72) = r1
+
+48: (61) r1 = *(u32 *)(r10 -48)
+
+49: (7b) *(u64 *)(r10 -96) = r1
+
+50: (61) r1 = *(u32 *)(r10 -44)
+
+51: (7b) *(u64 *)(r10 -80) = r1
+
+52: (bf) r3 = r10
+
+53: (07) r3 += -96
+
+54: (18) r1 = 0xffffabaec02c82af
+
+56: (b4) w2 = 52
+
+57: (b4) w4 = 32
+
+58: (85) call unknown#177
+
+invalid func unknown#177
+
+processed 64 insns (limit 1000000) max_states_per_insn 1 total_states
+5 peak_states 5 mark_read 2
+
+-- END PROG LOAD LOG --
+
+libbpf: failed to load program 'vxlan_get_tunnel_src'
+
+libbpf: failed to load object 'test_tunnel_kern'
+
+libbpf: failed to load BPF skeleton 'test_tunnel_kern': -22
+
+test_vxlan_tunnel:FAIL:test_tunnel_kern__open_and_load unexpected error: -22
+
+#198/1     tunnel/vxlan_tunnel:FAIL
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip -6 addr add ::11/96
+dev veth0 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip link set dev veth0 up 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip -6 addr add ::22/96 dev veth1 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip -6 addr add ::bb/96 dev veth1 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip link set dev veth1 up 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip link add dev
+ip6vxlan00 type vxlan external dstport 4789 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip addr add dev
+ip6vxlan00 10.1.1.100/24 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip netns exec at_ns0 ip link set dev
+ip6vxlan00 address 52:54:00:d9:01:00 up 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip link add dev ip6vxlan11 type vxlan
+external dstport 4789 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip addr add dev ip6vxlan11 10.1.1.200/24 0 nsec
+
+add_ip6vxlan_tunnel:PASS:ip link set dev ip6vxlan11 address
+52:54:00:d9:02:00 up 0 nsec
+
+test_ip6vxlan_tunnel:PASS:add_ip6vxlan_tunnel 0 nsec
+
+libbpf: prog 'vxlan_get_tunnel_src': BPF program load failed: Invalid argument
+
+libbpf: prog 'vxlan_get_tunnel_src': -- BEGIN PROG LOAD LOG --
+
+; int vxlan_get_tunnel_src(struct __sk_buff *skb)
+
+0: (bf) r7 = r1
+
+1: (b4) w1 = 0
+
+; __u32 index = 0;
+
+2: (63) *(u32 *)(r10 -60) = r1
+
+last_idx 2 first_idx 0
+
+regs=2 stack=0 before 1: (b4) w1 = 0
+
+3: (bf) r2 = r10
+
+;
+
+4: (07) r2 += -60
+
+; local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
+
+5: (18) r1 = 0xffff8ec4de898600
+
+7: (85) call bpf_map_lookup_elem#1
+
+8: (bf) r6 = r0
+
+; if (!local_ip) {
+
+9: (55) if r6 != 0x0 goto pc+5
+
+
+from 9 to 15: R0_w=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R6_w=map_value(id=0,off=0,ks=4,vs=4,imm=0) R7_w=ctx(id=0,off=0,imm=0)
+R10=fp0 fp-64=mmmm????
+
+; log_err(ret);
+
+15: (bf) r2 = r10
+
+; ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
+
+16: (07) r2 += -48
+
+17: (bf) r1 = r7
+
+18: (b4) w3 = 44
+
+19: (b7) r4 = 0
+
+20: (85) call bpf_skb_get_tunnel_key#20
+
+last_idx 20 first_idx 0
+
+regs=8 stack=0 before 19: (b7) r4 = 0
+
+regs=8 stack=0 before 18: (b4) w3 = 44
+
+; if (ret < 0) {
+
+21: (66) if w0 s> 0xffffffff goto pc+6
+
+
+from 21 to 28: R0=inv(id=0,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0) R7=ctx(id=0,off=0,imm=0)
+R10=fp0 fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-64=mmmm????
+
+; log_err(ret);
+
+28: (bf) r2 = r10
+
+; ret = bpf_skb_get_tunnel_opt(skb, &md, sizeof(md));
+
+29: (07) r2 += -56
+
+30: (bf) r1 = r7
+
+31: (b4) w3 = 4
+
+32: (85) call bpf_skb_get_tunnel_opt#29
+
+last_idx 32 first_idx 21
+
+regs=8 stack=0 before 31: (b4) w3 = 4
+
+33: (bf) r7 = r0
+
+; if (ret < 0) {
+
+34: (66) if w7 s> 0xffffffff goto pc+5
+
+
+from 34 to 40: R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; log_err(ret);
+
+40: (61) r1 = *(u32 *)(r10 -56)
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+41: (61) r3 = *(u32 *)(r6 +0)
+
+ R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+42: (61) r2 = *(u32 *)(r10 -20)
+
+; if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
+
+43: (5e) if w2 != w3 goto pc+2
+
+ R0_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647)
+R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R2_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R3_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7_w=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+44: (b4) w0 = 0
+
+45: (16) if w1 == 0x800ff goto pc+25
+
+ R0=inv0 R1=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R2=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R3=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+R6=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+R7=inv(id=2,smax_value=9223372034707292159,umax_value=18446744071562067967,var_off=(0x0;
+0xffffffff7fffffff),s32_min_value=0,u32_max_value=2147483647) R10=fp0
+fp-8=????mmmm fp-16=mmmmmmmm fp-24=mmmmmmmm fp-32=mmmmmmmm
+fp-40=mmmmmmmm fp-48=mmmmmmmm fp-56=????mmmm fp-64=mmmm????
+
+; bpf_printk("vxlan key %d local ip 0x%x remote ip 0x%x gbp 0x%x\n",
+
+46: (7b) *(u64 *)(r10 -88) = r2
+
+47: (7b) *(u64 *)(r10 -72) = r1
+
+48: (61) r1 = *(u32 *)(r10 -48)
+
+49: (7b) *(u64 *)(r10 -96) = r1
+
+50: (61) r1 = *(u32 *)(r10 -44)
+
+51: (7b) *(u64 *)(r10 -80) = r1
+
+52: (bf) r3 = r10
+
+53: (07) r3 += -96
+
+54: (18) r1 = 0xffffabaec02c82af
+
+56: (b4) w2 = 52
+
+57: (b4) w4 = 32
+
+58: (85) call unknown#177
+
+invalid func unknown#177
+
+processed 64 insns (limit 1000000) max_states_per_insn 1 total_states
+5 peak_states 5 mark_read 2
+
+-- END PROG LOAD LOG --
+
+libbpf: failed to load program 'vxlan_get_tunnel_src'
+
+libbpf: failed to load object 'test_tunnel_kern'
+
+libbpf: failed to load BPF skeleton 'test_tunnel_kern': -22
+
+test_ip6vxlan_tunnel:FAIL:test_tunnel_kern__open_and_load unexpected error: -22
+
+serial_test_tunnel:PASS:pthread_join 0 nsec
+
+#198/2     tunnel/ip6vxlan_tunnel:FAIL
+
+#198       tunnel:FAIL
+
+Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
