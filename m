@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 133B952DF56
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 23:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5F952DF4E
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 23:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234566AbiESVaR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 May 2022 17:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
+        id S234583AbiESVaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 May 2022 17:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234567AbiESVaP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 May 2022 17:30:15 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8FCED72A
-        for <bpf@vger.kernel.org>; Thu, 19 May 2022 14:30:14 -0700 (PDT)
+        with ESMTP id S234542AbiESVaR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 May 2022 17:30:17 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3B5A76C3
+        for <bpf@vger.kernel.org>; Thu, 19 May 2022 14:30:17 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 81820240027
-        for <bpf@vger.kernel.org>; Thu, 19 May 2022 23:30:13 +0200 (CEST)
+        by mout02.posteo.de (Postfix) with ESMTPS id B0774240109
+        for <bpf@vger.kernel.org>; Thu, 19 May 2022 23:30:15 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1652995813; bh=5I1xEod7qd/W7xcYhuPajU5c6s6yHVnlJIzwM0f1iLM=;
+        t=1652995815; bh=vjKFQcygCT1Y4SNC69GT0iF0cDzTFXiedGe+w9bVimU=;
         h=From:To:Cc:Subject:Date:From;
-        b=TFm+e/jgBpQw1JAgt106OQ+1vNePFZsrRZj3mJti9VSyX4YN95FUwXybjecCqthl6
-         mPM2ac5t4Fu9Ovl825vYaqt9trjeYqJT8cqRzszGyZkZqoPJ2eAa3Q9GzEfZyW/UML
-         9YFf2NSIXrUE6zpCbXKpnCwt4uZWgdUJjuHAJvDH4yEwew2CZbmjD5DBuW1ttt4Y0/
-         LLIMQjpY7NHjdOXFCC7PfteeYdsJiTte69m8eVJdL0HK9sNRlYoiDCh6PNxZl9HY9x
-         KYv3VxdDwSYiTOjilROmXv2ogzFzrs7+OWMHbZxstj0jDceG4X7aF7gNS0lbO9xPzf
-         4wSwvAOvYrglA==
+        b=oG/SF/S/WNfUwloGbNtAJoSN7YOArSWIpKUHk3gES/lruw0eikAUM9ccSEqZpBSbG
+         8nk1vPxYzSVaZA2xR8ALcRArkC/g8Zs4rq8q9KaZqcB5aZZxmJnCBPIQ5PHoEv3iw/
+         WaNvnQl8sAtZt1fDRtHSUN0Zc8bb3BCUW6q8wXVbMSV+hPghRIb2GHduN7jZy1unS/
+         fuVB5fUkkSY9nj4rBIU02G2Vj9awlQQMBuQ3cKERVjRAMflk4Jah9fgNMCq5EByZdN
+         VVSsxYIr2ovEWCOA5k1BOvkLBqGJnXpDS1zFvEv2rr5SkjNbQMP9l6pJ8HUStBpjZf
+         +CrrelLcsDzmA==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4L43105HRsz6tmW;
-        Thu, 19 May 2022 23:30:12 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4L4312612Kz6tq0;
+        Thu, 19 May 2022 23:30:14 +0200 (CEST)
 From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com
 Cc:     yhs@fb.com, quentin@isovalent.com
-Subject: [PATCH bpf-next v3 04/12] libbpf: Introduce libbpf_bpf_map_type_str
-Date:   Thu, 19 May 2022 21:29:53 +0000
-Message-Id: <20220519213001.729261-5-deso@posteo.net>
+Subject: [PATCH bpf-next v3 05/12] selftests/bpf: Add test for libbpf_bpf_map_type_str
+Date:   Thu, 19 May 2022 21:29:54 +0000
+Message-Id: <20220519213001.729261-6-deso@posteo.net>
 In-Reply-To: <20220519213001.729261-1-deso@posteo.net>
 References: <20220519213001.729261-1-deso@posteo.net>
 MIME-Version: 1.0
@@ -51,109 +51,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change introduces a new function, libbpf_bpf_map_type_str, to the
-public libbpf API. The function allows users to get a string
-representation for a bpf_map_type enum variant.
+This change adds a test for libbpf_bpf_map_type_str. The test retrieves
+all variants of the bpf_map_type enumeration using BTF and makes sure
+that the function under test works as expected for them.
 
 Signed-off-by: Daniel Müller <deso@posteo.net>
 ---
- tools/lib/bpf/libbpf.c   | 42 ++++++++++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.h   |  9 +++++++++
- tools/lib/bpf/libbpf.map |  1 +
- 3 files changed, 52 insertions(+)
+ .../selftests/bpf/prog_tests/libbpf_str.c     | 56 ++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6b9c0f..1cbe90 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -72,6 +72,40 @@
- static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
- static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
- 
-+static const char * const map_type_name[] = {
-+	[BPF_MAP_TYPE_UNSPEC]			= "unspec",
-+	[BPF_MAP_TYPE_HASH]			= "hash",
-+	[BPF_MAP_TYPE_ARRAY]			= "array",
-+	[BPF_MAP_TYPE_PROG_ARRAY]		= "prog_array",
-+	[BPF_MAP_TYPE_PERF_EVENT_ARRAY]		= "perf_event_array",
-+	[BPF_MAP_TYPE_PERCPU_HASH]		= "percpu_hash",
-+	[BPF_MAP_TYPE_PERCPU_ARRAY]		= "percpu_array",
-+	[BPF_MAP_TYPE_STACK_TRACE]		= "stack_trace",
-+	[BPF_MAP_TYPE_CGROUP_ARRAY]		= "cgroup_array",
-+	[BPF_MAP_TYPE_LRU_HASH]			= "lru_hash",
-+	[BPF_MAP_TYPE_LRU_PERCPU_HASH]		= "lru_percpu_hash",
-+	[BPF_MAP_TYPE_LPM_TRIE]			= "lpm_trie",
-+	[BPF_MAP_TYPE_ARRAY_OF_MAPS]		= "array_of_maps",
-+	[BPF_MAP_TYPE_HASH_OF_MAPS]		= "hash_of_maps",
-+	[BPF_MAP_TYPE_DEVMAP]			= "devmap",
-+	[BPF_MAP_TYPE_DEVMAP_HASH]		= "devmap_hash",
-+	[BPF_MAP_TYPE_SOCKMAP]			= "sockmap",
-+	[BPF_MAP_TYPE_CPUMAP]			= "cpumap",
-+	[BPF_MAP_TYPE_XSKMAP]			= "xskmap",
-+	[BPF_MAP_TYPE_SOCKHASH]			= "sockhash",
-+	[BPF_MAP_TYPE_CGROUP_STORAGE]		= "cgroup_storage",
-+	[BPF_MAP_TYPE_REUSEPORT_SOCKARRAY]	= "reuseport_sockarray",
-+	[BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE]	= "percpu_cgroup_storage",
-+	[BPF_MAP_TYPE_QUEUE]			= "queue",
-+	[BPF_MAP_TYPE_STACK]			= "stack",
-+	[BPF_MAP_TYPE_SK_STORAGE]		= "sk_storage",
-+	[BPF_MAP_TYPE_STRUCT_OPS]		= "struct_ops",
-+	[BPF_MAP_TYPE_RINGBUF]			= "ringbuf",
-+	[BPF_MAP_TYPE_INODE_STORAGE]		= "inode_storage",
-+	[BPF_MAP_TYPE_TASK_STORAGE]		= "task_storage",
-+	[BPF_MAP_TYPE_BLOOM_FILTER]		= "bloom_filter",
-+};
-+
- static const char * const prog_type_name[] = {
- 	[BPF_PROG_TYPE_UNSPEC]			= "unspec",
- 	[BPF_PROG_TYPE_SOCKET_FILTER]		= "socket_filter",
-@@ -9335,6 +9369,14 @@ int libbpf_prog_type_by_name(const char *name, enum bpf_prog_type *prog_type,
- 	return libbpf_err(-ESRCH);
+diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+index 3e7a14..0f15aaa 100644
+--- a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
++++ b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+@@ -14,11 +14,53 @@ static void uppercase(char *s)
+ 		*s = toupper(*s);
  }
  
-+const char *libbpf_bpf_map_type_str(enum bpf_map_type t)
++/**
++ * Test case to check that all bpf_map_type variants are covered by
++ * libbpf_bpf_map_type_str.
++ */
++static void test_libbpf_bpf_map_type_str(void)
 +{
-+	if (t < 0 || t >= ARRAY_SIZE(map_type_name))
-+		return NULL;
++	struct btf *btf;
++	const struct btf_type *t;
++	const struct btf_enum *e;
++	int i, n, id;
 +
-+	return map_type_name[t];
++	btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
++	if (!ASSERT_OK_PTR(btf, "btf_parse"))
++		return;
++
++	/* find enum bpf_map_type and enumerate each value */
++	id = btf__find_by_name_kind(btf, "bpf_map_type", BTF_KIND_ENUM);
++	if (!ASSERT_GT(id, 0, "bpf_map_type_id"))
++		goto cleanup;
++	t = btf__type_by_id(btf, id);
++	e = btf_enum(t);
++	n = btf_vlen(t);
++	for (i = 0; i < n; e++, i++) {
++		enum bpf_map_type map_type = (enum bpf_map_type)e->val;
++		const char *map_type_name;
++		const char *map_type_str;
++		char buf[256];
++
++		map_type_name = btf__str_by_offset(btf, e->name_off);
++		map_type_str = libbpf_bpf_map_type_str(map_type);
++		ASSERT_OK_PTR(map_type_str, map_type_name);
++
++		snprintf(buf, sizeof(buf), "BPF_MAP_TYPE_%s", map_type_str);
++		uppercase(buf);
++
++		ASSERT_STREQ(buf, map_type_name, "exp_str_value");
++	}
++
++cleanup:
++	btf__free(btf);
 +}
 +
- const char *libbpf_bpf_prog_type_str(enum bpf_prog_type t)
- {
- 	if (t < 0 || t >= ARRAY_SIZE(prog_type_name))
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 11b5f8c..6c5b07 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -51,6 +51,15 @@ enum libbpf_errno {
- 
- LIBBPF_API int libbpf_strerror(int err, char *buf, size_t size);
- 
-+/**
-+ * @brief **libbpf_bpf_map_type_str()** converts the provided map type value
-+ * into a textual representation.
-+ * @param t The map type.
-+ * @return Pointer to a static string identifying the map type. NULL is
-+ * returned for unknown **bpf_map_type** values.
-+ */
-+LIBBPF_API const char *libbpf_bpf_map_type_str(enum bpf_map_type t);
-+
  /**
-  * @brief **libbpf_bpf_prog_type_str()** converts the provided program type
-  * value into a textual representation.
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index b12d290..16065ac 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -462,6 +462,7 @@ LIBBPF_0.8.0 {
- 
- LIBBPF_1.0.0 {
- 	global:
-+		libbpf_bpf_map_type_str;
- 		libbpf_bpf_prog_type_str;
- 
- 	local: *;
+  * Test case to check that all bpf_prog_type variants are covered by
+  * libbpf_bpf_prog_type_str.
+  */
+-void test_libbpf_bpf_prog_type_str(void)
++static void test_libbpf_bpf_prog_type_str(void)
+ {
+ 	struct btf *btf;
+ 	const struct btf_type *t;
+@@ -55,3 +97,15 @@ void test_libbpf_bpf_prog_type_str(void)
+ cleanup:
+ 	btf__free(btf);
+ }
++
++/**
++ * Run all libbpf str conversion tests.
++ */
++void test_libbpf_str(void)
++{
++	if (test__start_subtest("bpf_map_type_str"))
++		test_libbpf_bpf_map_type_str();
++
++	if (test__start_subtest("bpf_prog_type_str"))
++		test_libbpf_bpf_prog_type_str();
++}
 -- 
 2.30.2
 
