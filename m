@@ -2,264 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8481852D0CA
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 12:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339F652D116
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 13:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234705AbiESKqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 May 2022 06:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
+        id S237215AbiESLDO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 May 2022 07:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236984AbiESKp7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 May 2022 06:45:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C5FADE1
-        for <bpf@vger.kernel.org>; Thu, 19 May 2022 03:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1652957157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8rut9GNc4WtSroF96b47WlHm5eXtcsOWXAAJ8NlKUQQ=;
-        b=EbXPD7GdFHOh1fW/kdjtxPSXrzpoLK1KMoxwIzRHLGUoMjqXmqskBM6Y8AoCwwDhFBBWrX
-        E8tGSG8Z9f4HKeJNchXRlkp4n4mR7k01IFgZpVfPRyDt9C9EUxfvUOPqvJlfFyoLNWGqvN
-        n07uMAQHrT6mW7/ChAGyqGSvB38dYlQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-619-MRRR5JCrPDmpB-zFt2lfjw-1; Thu, 19 May 2022 06:45:56 -0400
-X-MC-Unique: MRRR5JCrPDmpB-zFt2lfjw-1
-Received: by mail-ej1-f71.google.com with SMTP id gn26-20020a1709070d1a00b006f453043956so2323012ejc.15
-        for <bpf@vger.kernel.org>; Thu, 19 May 2022 03:45:56 -0700 (PDT)
+        with ESMTP id S237187AbiESLDL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 May 2022 07:03:11 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14EB23A5F3;
+        Thu, 19 May 2022 04:03:10 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id t6so6638006wra.4;
+        Thu, 19 May 2022 04:03:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gXGKvrxbHJV3I8yg1mV9yWVFPv2HTYtrEzxLyQt8eLg=;
+        b=SqKNGJ6hMqBJSagUicT++5RTS2FFFIgWO8EWkU5ferPqO06ANhP/hBjOvWdcVm5fVA
+         jaCs0j1fKs7uD0tVS2KFhXaNNOyYvvXRftzWd9hTbsI1x4c5e/RJGhskw4cHBX/cyCl2
+         3NaLcVsOhLTQ1Q+hhRvf12r2RTjJYhKbr06T2yUUz++X/erSzb+mwUI+4CURVtaMf4n5
+         ravx0aRzyTdbmtVdtp+d9HnjKW0nfI7xhkWlVqRKfMFpkkukLQfX9LN3QWPAYHnOLDCy
+         VXbbABZhI8kha0F0Tb9GAB4idZb9oVel7QGMpEuXl/DVexUcdgwELW1LmxgdWK5H6SNK
+         le8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=8rut9GNc4WtSroF96b47WlHm5eXtcsOWXAAJ8NlKUQQ=;
-        b=DQD6qEpxQYubSFuRDSVALXJSl4C7EBejI0r1WRQlU/g8s+7OQ0gdYp4bxRcIISSbn4
-         tLQqxY3dLE8Tl7MOySxcjDI+p78F1d/xtwPNvCjey9jEl7hUelCKBYTRvYePsW7TKx7Z
-         300LpbedjHcTgGVdSvvY8uSIwiEXakDOcb0tIqe04bBC1FetPbzuBHVkRu5GaXIi2DDC
-         4JsaiEQ9rXyYNoCfRgrAboxqRe3g688Nn7bNweBlNNyExXrorvpjX3SbfNWuMh3oVwk5
-         W+NNP+vii05S+wyr8OTWhrX8CdGaChJb0AtPlt6eXISbAuy4zIy5jmriEnB/GppNP3Ko
-         e5/Q==
-X-Gm-Message-State: AOAM531VbCdSHRrPqhsTtDvTn2H8/qIREC3xuRTkIlv72ruwTid0Zq4Y
-        funuQfC9jkh3tn/UsAflh37q6WAVNyhmmq4aprWH7fV2GB8o0BpsyfIwZtaXs+UqcKyAOCKB+Qn
-        OrOsM3zmzGBJg
-X-Received: by 2002:a17:907:961e:b0:6f4:b201:6629 with SMTP id gb30-20020a170907961e00b006f4b2016629mr3745628ejc.152.1652957153387;
-        Thu, 19 May 2022 03:45:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx52dO1ml/cCp+uLuLPFVwIUuT7zd2gIPRWnBOP1j1BK0pQWadGJYAMHEh2QAWSCJvZgUTRrA==
-X-Received: by 2002:a17:907:961e:b0:6f4:b201:6629 with SMTP id gb30-20020a170907961e00b006f4b2016629mr3745561ejc.152.1652957152469;
-        Thu, 19 May 2022 03:45:52 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id j22-20020aa7ca56000000b0042acc78178bsm2623753edt.93.2022.05.19.03.45.51
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gXGKvrxbHJV3I8yg1mV9yWVFPv2HTYtrEzxLyQt8eLg=;
+        b=JI27YZm/HF+Dtgx8WpABK6HMRWLfI9Rav8c83nWCaAIJdbt4lBMZxIfh+/c8KyHyuk
+         sjDnZSarp62S/8tLJXsyLWOE6rj+lce9BkRKGHImiv24hPbSzQf34AaoL8bAccY+qYpg
+         /zISfioburYiLTG782PSNBU5jdyt61E5TcY30SRjzOCc+jcYrDYFSwAY/+cHitqSK8Gq
+         scUxiPZKL7u+fllrVCYu84t6RW80cYecZXz7GY8wtJ89Dky52Vh+mHOdvtaxnivNH8mY
+         q7EZqRCUS4C6Ey1rDMdrE0Bm97P3nm4lH6/fqb3/xYr6vZZ3/VO0ZhvcVjqdRV5MypJh
+         O/kw==
+X-Gm-Message-State: AOAM5320dTXSyj2/ftSyEctBPC6XphlZmF7eb7cQJ5Zp1DhPtu28lfkS
+        NGqbtOsA8BjB3SeE+qWcYDQ=
+X-Google-Smtp-Source: ABdhPJx/UHpBMXNEqLPm2PKDYlqcOHyIBzCi24Jdyhhp3HywmcRtD3ikB96pfLEHvXb1mTqXPztGLQ==
+X-Received: by 2002:a5d:64a1:0:b0:20e:5bac:1aa7 with SMTP id m1-20020a5d64a1000000b0020e5bac1aa7mr3399266wrp.667.1652958188489;
+        Thu, 19 May 2022 04:03:08 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id m64-20020a1ca343000000b003942a244ee4sm4359217wme.41.2022.05.19.04.03.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 May 2022 03:45:51 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 47CED38EE17; Thu, 19 May 2022 12:45:51 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+        Thu, 19 May 2022 04:03:07 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 19 May 2022 13:03:05 +0200
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH v3 bpf-next 4/5] net: netfilter: add kfunc helper to add
- a new ct entry
-In-Reply-To: <20220518224330.omsokbbhqoe5mc3v@apollo.legion>
-References: <cover.1652870182.git.lorenzo@kernel.org>
- <40e7ce4b79c86c46e5fbf22e9cafb51b9172da19.1652870182.git.lorenzo@kernel.org>
- <87y1yy8t6j.fsf@toke.dk> <YoVgZ8OHlF/OpgHq@lore-desk>
- <CAADnVQ+6-cywf0StZ_K0nKSSdXJsZ4S_ZBhGZPHDmKtaL3k9-g@mail.gmail.com>
- <20220518224330.omsokbbhqoe5mc3v@apollo.legion>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 19 May 2022 12:45:51 +0200
-Message-ID: <87czg994ww.fsf@toke.dk>
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
+Message-ID: <YoYj6cb0aPNN/olH@krava>
+References: <20220510074659.2557731-1-jolsa@kernel.org>
+ <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
+ <YntnRixbfQ1HCm9T@krava>
+ <Ynv+7iaaAbyM38B6@kernel.org>
+ <CAEf4BzaQsF31f3WuU32wDCzo6bw7eY8E9zF6Lo218jfw-VQmcA@mail.gmail.com>
+ <YoTAhC+6j4JshqN8@krava>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YoTAhC+6j4JshqN8@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+On Wed, May 18, 2022 at 11:46:44AM +0200, Jiri Olsa wrote:
+> On Tue, May 17, 2022 at 03:02:53PM -0700, Andrii Nakryiko wrote:
+> > On Wed, May 11, 2022 at 11:22 AM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > >
+> > > Em Wed, May 11, 2022 at 09:35:34AM +0200, Jiri Olsa escreveu:
+> > > > On Tue, May 10, 2022 at 04:48:55PM -0700, Andrii Nakryiko wrote:
+> > > > > On Tue, May 10, 2022 at 12:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > > > >
+> > > > > > hi,
+> > > > > > sending change we discussed some time ago [1] to get rid of
+> > > > > > some deprecated functions we use in perf prologue code.
+> > > > > >
+> > > > > > Despite the gloomy discussion I think the final code does
+> > > > > > not look that bad ;-)
+> > > > > >
+> > > > > > This patchset removes following libbpf functions from perf:
+> > > > > >   bpf_program__set_prep
+> > > > > >   bpf_program__nth_fd
+> > > > > >   struct bpf_prog_prep_result
+> > > > > >
+> > > > > > v2 changes:
+> > > > > >   - use fallback section prog handler, so we don't need to
+> > > > > >     use section prefix [Andrii]
+> > > > > >   - realloc prog->insns array in bpf_program__set_insns [Andrii]
+> > > > > >   - squash patch 1 from previous version with
+> > > > > >     bpf_program__set_insns change [Daniel]
+> > > > > >   - patch 3 already merged [Arnaldo]
+> > > > > >   - added more comments
+> > > > > >
+> > > > > >   meanwhile.. perf/core and bpf-next diverged, so:
+> > > > > >     - libbpf bpf_program__set_insns change is based on bpf-next/master
+> > > > > >     - perf changes do not apply on bpf-next/master so they are based on
+> > > > > >       perf/core ... however they can be merged only after we release
+> > > > > >       libbpf 0.8.0 with bpf_program__set_insns change, so we don't break
+> > > > > >       the dynamic linking
+> > > > > >       I'm sending perf changes now just for review, I'll resend them
+> > > > > >       once libbpf 0.8.0 is released
+> > > > > >
+> > > > > > thanks,
+> > > > > > jirka
+> > > > > >
+> > > > > >
+> > > > > > [1] https://lore.kernel.org/bpf/CAEf4BzaiBO3_617kkXZdYJ8hS8YF--ZLgapNbgeeEJ-pY0H88g@mail.gmail.com/
+> > > > > > ---
+> > > > > > Jiri Olsa (1):
+> > > > > >       libbpf: Add bpf_program__set_insns function
+> > > > > >
+> > > > >
+> > > > > The first patch looks good to me. The rest I can't really review and
+> > > > > test properly, so I'll leave it up to Arnaldo.
+> > > > >
+> > > > > Arnaldo, how do we coordinate these patches? Should they go through
+> > > > > bpf-next (after you Ack them) or you want them in your tree?
+> > > > >
+> > > > > I'd like to get the bpf_program__set_insns() patch into bpf-next so
+> > > > > that I can do libbpf v0.8 release, having it in a separate tree is
+> > > > > extremely inconvenient. Please let me know how you think we should
+> > > > > proceed?
+> > > >
+> > > > we need to wait with perf changes after the libbpf is merged and
+> > > > libbpf 0.8.0 is released.. so we don't break dynamic linking for
+> > > > perf
+> > > >
+> > > > at the moment please just take libbpf change and I'll resend the
+> > > > perf change later if needed
+> > >
+> > > Ok.
+> > >
+> > 
+> > Jiri, libbpf v0.8 is out, can you please re-send your perf patches?
+> 
+> yep, just made new fedora package.. will resend the perf changes soon
 
-> On Thu, May 19, 2022 at 03:44:58AM IST, Alexei Starovoitov wrote:
->> On Wed, May 18, 2022 at 2:09 PM Lorenzo Bianconi
->> <lorenzo.bianconi@redhat.com> wrote:
->> >
->> > > Lorenzo Bianconi <lorenzo@kernel.org> writes:
->> > >
->> > > > Introduce bpf_xdp_ct_add and bpf_skb_ct_add kfunc helpers in order to
->> > > > add a new entry to ct map from an ebpf program.
->> > > > Introduce bpf_nf_ct_tuple_parse utility routine.
->> > > >
->> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
->> > > > ---
->> > > >  net/netfilter/nf_conntrack_bpf.c | 212 +++++++++++++++++++++++++++----
->> > > >  1 file changed, 189 insertions(+), 23 deletions(-)
->> > > >
->> > > > diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
->> > > > index a9271418db88..3d31b602fdf1 100644
->> > > > --- a/net/netfilter/nf_conntrack_bpf.c
->> > > > +++ b/net/netfilter/nf_conntrack_bpf.c
->> > > > @@ -55,41 +55,114 @@ enum {
->> > > >     NF_BPF_CT_OPTS_SZ = 12,
->> > > >  };
->> > > >
->> > > > -static struct nf_conn *__bpf_nf_ct_lookup(struct net *net,
->> > > > -                                     struct bpf_sock_tuple *bpf_tuple,
->> > > > -                                     u32 tuple_len, u8 protonum,
->> > > > -                                     s32 netns_id, u8 *dir)
->> > > > +static int bpf_nf_ct_tuple_parse(struct bpf_sock_tuple *bpf_tuple,
->> > > > +                            u32 tuple_len, u8 protonum, u8 dir,
->> > > > +                            struct nf_conntrack_tuple *tuple)
->> > > >  {
->> > > > -   struct nf_conntrack_tuple_hash *hash;
->> > > > -   struct nf_conntrack_tuple tuple;
->> > > > -   struct nf_conn *ct;
->> > > > +   union nf_inet_addr *src = dir ? &tuple->dst.u3 : &tuple->src.u3;
->> > > > +   union nf_inet_addr *dst = dir ? &tuple->src.u3 : &tuple->dst.u3;
->> > > > +   union nf_conntrack_man_proto *sport = dir ? (void *)&tuple->dst.u
->> > > > +                                             : &tuple->src.u;
->> > > > +   union nf_conntrack_man_proto *dport = dir ? &tuple->src.u
->> > > > +                                             : (void *)&tuple->dst.u;
->> > > >
->> > > >     if (unlikely(protonum != IPPROTO_TCP && protonum != IPPROTO_UDP))
->> > > > -           return ERR_PTR(-EPROTO);
->> > > > -   if (unlikely(netns_id < BPF_F_CURRENT_NETNS))
->> > > > -           return ERR_PTR(-EINVAL);
->> > > > +           return -EPROTO;
->> > > > +
->> > > > +   memset(tuple, 0, sizeof(*tuple));
->> > > >
->> > > > -   memset(&tuple, 0, sizeof(tuple));
->> > > >     switch (tuple_len) {
->> > > >     case sizeof(bpf_tuple->ipv4):
->> > > > -           tuple.src.l3num = AF_INET;
->> > > > -           tuple.src.u3.ip = bpf_tuple->ipv4.saddr;
->> > > > -           tuple.src.u.tcp.port = bpf_tuple->ipv4.sport;
->> > > > -           tuple.dst.u3.ip = bpf_tuple->ipv4.daddr;
->> > > > -           tuple.dst.u.tcp.port = bpf_tuple->ipv4.dport;
->> > > > +           tuple->src.l3num = AF_INET;
->> > > > +           src->ip = bpf_tuple->ipv4.saddr;
->> > > > +           sport->tcp.port = bpf_tuple->ipv4.sport;
->> > > > +           dst->ip = bpf_tuple->ipv4.daddr;
->> > > > +           dport->tcp.port = bpf_tuple->ipv4.dport;
->> > > >             break;
->> > > >     case sizeof(bpf_tuple->ipv6):
->> > > > -           tuple.src.l3num = AF_INET6;
->> > > > -           memcpy(tuple.src.u3.ip6, bpf_tuple->ipv6.saddr, sizeof(bpf_tuple->ipv6.saddr));
->> > > > -           tuple.src.u.tcp.port = bpf_tuple->ipv6.sport;
->> > > > -           memcpy(tuple.dst.u3.ip6, bpf_tuple->ipv6.daddr, sizeof(bpf_tuple->ipv6.daddr));
->> > > > -           tuple.dst.u.tcp.port = bpf_tuple->ipv6.dport;
->> > > > +           tuple->src.l3num = AF_INET6;
->> > > > +           memcpy(src->ip6, bpf_tuple->ipv6.saddr, sizeof(bpf_tuple->ipv6.saddr));
->> > > > +           sport->tcp.port = bpf_tuple->ipv6.sport;
->> > > > +           memcpy(dst->ip6, bpf_tuple->ipv6.daddr, sizeof(bpf_tuple->ipv6.daddr));
->> > > > +           dport->tcp.port = bpf_tuple->ipv6.dport;
->> > > >             break;
->> > > >     default:
->> > > > -           return ERR_PTR(-EAFNOSUPPORT);
->> > > > +           return -EAFNOSUPPORT;
->> > > >     }
->> > > > +   tuple->dst.protonum = protonum;
->> > > > +   tuple->dst.dir = dir;
->> > > > +
->> > > > +   return 0;
->> > > > +}
->> > > >
->> > > > -   tuple.dst.protonum = protonum;
->> > > > +struct nf_conn *
->> > > > +__bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
->> > > > +                   u32 tuple_len, u8 protonum, s32 netns_id, u32 timeout)
->> > > > +{
->> > > > +   struct nf_conntrack_tuple otuple, rtuple;
->> > > > +   struct nf_conn *ct;
->> > > > +   int err;
->> > > > +
->> > > > +   if (unlikely(netns_id < BPF_F_CURRENT_NETNS))
->> > > > +           return ERR_PTR(-EINVAL);
->> > > > +
->> > > > +   err = bpf_nf_ct_tuple_parse(bpf_tuple, tuple_len, protonum,
->> > > > +                               IP_CT_DIR_ORIGINAL, &otuple);
->> > > > +   if (err < 0)
->> > > > +           return ERR_PTR(err);
->> > > > +
->> > > > +   err = bpf_nf_ct_tuple_parse(bpf_tuple, tuple_len, protonum,
->> > > > +                               IP_CT_DIR_REPLY, &rtuple);
->> > > > +   if (err < 0)
->> > > > +           return ERR_PTR(err);
->> > > > +
->> > > > +   if (netns_id >= 0) {
->> > > > +           net = get_net_ns_by_id(net, netns_id);
->> > > > +           if (unlikely(!net))
->> > > > +                   return ERR_PTR(-ENONET);
->> > > > +   }
->> > > > +
->> > > > +   ct = nf_conntrack_alloc(net, &nf_ct_zone_dflt, &otuple, &rtuple,
->> > > > +                           GFP_ATOMIC);
->> > > > +   if (IS_ERR(ct))
->> > > > +           goto out;
->> > > > +
->> > > > +   ct->timeout = timeout * HZ + jiffies;
->> > > > +   ct->status |= IPS_CONFIRMED;
->> > > > +
->> > > > +   memset(&ct->proto, 0, sizeof(ct->proto));
->> > > > +   if (protonum == IPPROTO_TCP)
->> > > > +           ct->proto.tcp.state = TCP_CONNTRACK_ESTABLISHED;
->> > >
->> > > Hmm, isn't it a bit limiting to hard-code this to ESTABLISHED
->> > > connections? Presumably for TCP you'd want to use this when you see a
->> > > SYN and then rely on conntrack to help with the subsequent state
->> > > tracking for when the SYN-ACK comes back? What's the usecase for
->> > > creating an entry in ESTABLISHED state, exactly?
->> >
->> > I guess we can even add a parameter and pass the state from the caller.
->> > I was not sure if it is mandatory.
->>
->> It's probably cleaner and more flexible to split
->> _alloc and _insert into two kfuncs and let bpf
->> prog populate ct directly.
->
-> Right, so we can just whitelist a few fields and allow assignments into those.
-> One small problem is that we should probably only permit this for nf_conn
-> PTR_TO_BTF_ID obtained from _alloc, and make it rdonly on _insert.
->
-> We can do the rw->ro conversion by taking in ref from alloc, and releasing on
-> _insert, then returning ref from _insert.
+fedora package is on the way, but I'll need perf/core to merge
+the bpf_program__set_insns change.. Arnaldo, any idea when this
+could happen?
 
-Sounds reasonable enough; I guess _insert would also need to
-sanity-check some of the values to prevent injecting invalid state into
-the conntrack table.
-
-> For the other part, either return a different shadow PTR_TO_BTF_ID
-> with only the fields that can be set, convert insns for it, and then
-> on insert return the rdonly PTR_TO_BTF_ID of struct nf_conn, or
-> otherwise store the source func in the per-register state and use that
-> to deny BPF_WRITE for normal nf_conn. Thoughts?
-
-Hmm, if they're different BTF IDs wouldn't the BPF program have to be
-aware of this and use two different structs for the pointer storage?
-That seems a bit awkward from an API PoV?
-
-Also, what about updating? For this to be useful with TCP, you'd really
-want to be able to update the CT state as the connection is going
-through the handshake state transitions...
-
--Toke
-
+thanks,
+jirka
