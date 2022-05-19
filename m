@@ -2,211 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FEB52CA21
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 05:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A5E52CA38
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 05:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbiESDNA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 23:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
+        id S233171AbiESDUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 23:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbiESDM6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 23:12:58 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9C452534
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 20:12:56 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id j6so3919331pfe.13
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 20:12:56 -0700 (PDT)
+        with ESMTP id S233140AbiESDUO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 23:20:14 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45473506CD
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 20:20:12 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2fb7bf98f1aso35905257b3.5
+        for <bpf@vger.kernel.org>; Wed, 18 May 2022 20:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=6IaBYwoRHRaxkHU7M30ifQh1nkElBKl7D4YjtOVQqYY=;
-        b=CmMzXeOJAh6BIxM8VcearYEZsPNG9i4weY+q0nBdW/+BaDt1HixZChQkPCHJpLaFM7
-         gh2obS+UcjYG0UD1Zzi6jChw2pK2dmnPTxkqiz/a2tQk+ySShqt6zI0ze1PSFW2Zh5vy
-         Cy3yhDsfZDC2IsslcYrGQrJ+QxodnGjkB25mv4dWDvi3VM80N+m4jMsYApmhQYoQEp5W
-         S4wsZ8kHOG3Ain84sAEhYas2SFMEovVrJNKOGoHUfI/eRmz2HTt4J3vVJyb1PrUcgF41
-         hSWestDp09u0gU2aNUQwKLW2BG0Cj07bm8J17UId2NUxFocnIUmAFADJQUXc320KMH59
-         TP+Q==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LuxVni4aHwzoBwXpBkpdF8i7m2uNy0PLkWHwBcKxQ00=;
+        b=CCKtd7GR8nSvO6PQYhltu3h/jGWY/Y8WgaHPFGIar1fsm8WFvHmlZ0ipzwvPm3DWKC
+         NSlOLAJ62X7PsFEYEtcdlaB4Z5rUBdR/sFiebQA3VN8/cEXtjINVhzPsVo10qoRtC+BO
+         Y3oeM5c/vtsngEFrpCFJUILd43x2CdCOybSn5Wvi3hgKSy9CLgtbG5ywEJACY1rLJoR0
+         dEi2EVtz4lOrC3s2MG6Joh1qutsBpdwj5GZaQm57tHmxPJJYT6T2kJYIKbP6Zzvh3cQk
+         sLtId9YpMX4I8w7xhLE7CckWwGWjv/cvopWJMGTRtbAgowx+3eqyH2WpFhy9oW68f3Jz
+         xVdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=6IaBYwoRHRaxkHU7M30ifQh1nkElBKl7D4YjtOVQqYY=;
-        b=fx9JGEVQv8uYYJ5vMCDogUYGpA4z25mOYq0N74iy1cEZQvMzSQnZJIno1oPGp+0+KO
-         ZSAXGJJOVgoyU7ckV6DbsLzJ1ZUnwJkxAMf4a2E0weV5vh1GmLoVH7fP8U9IGvlNy/CH
-         y4Nd5crNbipaOmbhyIa/VceW0KuJGPQuSJUaIcKVhJ60RET0HBRG+/gw8qoaaGnzL3o1
-         mG3aZ8EW8VM0X6T4Ra41e8qpVT062k2PbZK4cZmDSmNW2em7CnbZYV0RTUY5cjRtIeQt
-         623XFW6PzqaPqRk8s9DKrn7z8PGPcVC4yYKuL3J5TYbX4/IYtfIVJiwfs6DFkYZAcY9p
-         maow==
-X-Gm-Message-State: AOAM533auXywpOCOezAQSfLmk3Srnvz8ce/BxIMsgxLquG9BEQ72vmqC
-        q7pj5SKDOm7d2j/jhP7LIrBg6A==
-X-Google-Smtp-Source: ABdhPJzAwdneH86y+C+f93UpPYQmWHPQcqB6CktJpVLQcQRz7TZouVpUAZ61nvn7xEbk4XNMgbmkkA==
-X-Received: by 2002:a62:2701:0:b0:518:2570:b8f6 with SMTP id n1-20020a622701000000b005182570b8f6mr2489091pfn.19.1652929976048;
-        Wed, 18 May 2022 20:12:56 -0700 (PDT)
-Received: from [10.71.57.194] ([139.177.225.241])
-        by smtp.gmail.com with ESMTPSA id bv11-20020a17090af18b00b001d6a79768b6sm2264863pjb.49.2022.05.18.20.12.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 May 2022 20:12:55 -0700 (PDT)
-Message-ID: <380fa11e-f15d-da1a-51f7-70e14ed58ffc@bytedance.com>
-Date:   Thu, 19 May 2022 11:12:48 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [External] Re: [PATCH] bpf: avoid grabbing spin_locks of all cpus
- when no free elems
-To:     Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LuxVni4aHwzoBwXpBkpdF8i7m2uNy0PLkWHwBcKxQ00=;
+        b=UhB+EgfhLYc9vIxtVNWIEfFoMgUoaE+rvXjukAp1eCp8s6Oxkg/Xp+w91ubPVTGcMC
+         8O+SKqT4X+buc8SA+lKJiMhevg2Ta/LmCv8LTJg5ykvHvxAyr4TfiqEz+EAyJ++tM0/0
+         DMkAvIVfVS9nNogTlaU4Ql9H55xaNXxXuq0OPRtSE1rl1A2rigV9CfUXjdmiTyA4PYRP
+         FRqoa8q4hILmyLxhDx+AnH6wMHclpFeppLHlXosUo1FdIPdjEXvHZvq0i1GVhjvv5e5j
+         9kTmDhVBLovRyf/XEHLeAuq5/C5NJ56zRIfYzpJe7KZDZAryYqN2eJVIEAPTRXxj3T1e
+         LhBA==
+X-Gm-Message-State: AOAM533i0ztWMdCYuolrFXdGm1Ohpv01gTYH2SjUVaK7PY40ht1gEzoo
+        CCAdjSRQfNQ6n830YGzp5p9opUsGX2Dm
+X-Google-Smtp-Source: ABdhPJzG1oTOx2/i021ptIUrHFpfkP7ts5RITI/ZnnYmmrugR/Rhh79It43/VBwAMEbVyobDpdUWt238HZS7
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:a233:bf3c:6ac:2a98])
+ (user=irogers job=sendgmr) by 2002:a05:6902:1002:b0:649:70c2:db58 with SMTP
+ id w2-20020a056902100200b0064970c2db58mr2518912ybt.68.1652930411395; Wed, 18
+ May 2022 20:20:11 -0700 (PDT)
+Date:   Wed, 18 May 2022 20:20:00 -0700
+Message-Id: <20220519032005.1273691-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.1.124.g0e6072fb45-goog
+Subject: [PATCH 0/5] perf_counts clean up and perf stat report bug fix
+From:   Ian Rogers <irogers@google.com>
+To:     Michael Petlan <mpetlan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20220518062715.27809-1-zhoufeng.zf@bytedance.com>
- <CAADnVQ+x-A87Z9_c+3vuRJOYm=gCOBXmyCJQ64CiCNukHS6FpA@mail.gmail.com>
- <6ae715b3-96b1-2b42-4d1a-5267444d586b@bytedance.com>
- <9c0c3e0b-33bc-51a7-7916-7278f14f308e@fb.com>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <9c0c3e0b-33bc-51a7-7916-7278f14f308e@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2022/5/19 上午4:39, Yonghong Song 写道:
->
->
-> On 5/17/22 11:57 PM, Feng Zhou wrote:
->> 在 2022/5/18 下午2:32, Alexei Starovoitov 写道:
->>> On Tue, May 17, 2022 at 11:27 PM Feng zhou 
->>> <zhoufeng.zf@bytedance.com> wrote:
->>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>>
->>>> We encountered bad case on big system with 96 CPUs that
->>>> alloc_htab_elem() would last for 1ms. The reason is that after the
->>>> prealloc hashtab has no free elems, when trying to update, it will 
->>>> still
->>>> grab spin_locks of all cpus. If there are multiple update users, the
->>>> competition is very serious.
->>>>
->>>> So this patch add is_empty in pcpu_freelist_head to check freelist
->>>> having free or not. If having, grab spin_lock, or check next cpu's
->>>> freelist.
->>>>
->>>> Before patch: hash_map performance
->>>> ./map_perf_test 1
->
-> could you explain what parameter '1' means here?
+perf_counts takes a CPU map index as an argument, however, there were
+a few places where this hadn't been cleaned up and the index was
+called cpu. In part this led to the bug discovered by Michael Petlan in:
+https://lore.kernel.org/linux-perf-users/CAP-5=fWQR=sCuiSMktvUtcbOLidEpUJLCybVF6=BRvORcDOq+g@mail.gmail.com/
 
-This code is here:
-samples/bpf/map_perf_test_user.c
-samples/bpf/map_perf_test_kern.c
-parameter '1' means testcase flag, test hash_map's performance
-parameter '2048' means test hash_map's performance when free=0.
-testcase flag '2048' is added by myself to reproduce the problem phenomenon.
+Fix the bug, tidy up more of the arguments passed to perf_counts, add
+a test to ensure the bug isn't reintroduced and add a helper macro to
+iterate over just CPU map indices.
 
->
->>>> 0:hash_map_perf pre-alloc 975345 events per sec
->>>> 4:hash_map_perf pre-alloc 855367 events per sec
->>>> 12:hash_map_perf pre-alloc 860862 events per sec
->>>> 8:hash_map_perf pre-alloc 849561 events per sec
->>>> 3:hash_map_perf pre-alloc 849074 events per sec
->>>> 6:hash_map_perf pre-alloc 847120 events per sec
->>>> 10:hash_map_perf pre-alloc 845047 events per sec
->>>> 5:hash_map_perf pre-alloc 841266 events per sec
->>>> 14:hash_map_perf pre-alloc 849740 events per sec
->>>> 2:hash_map_perf pre-alloc 839598 events per sec
->>>> 9:hash_map_perf pre-alloc 838695 events per sec
->>>> 11:hash_map_perf pre-alloc 845390 events per sec
->>>> 7:hash_map_perf pre-alloc 834865 events per sec
->>>> 13:hash_map_perf pre-alloc 842619 events per sec
->>>> 1:hash_map_perf pre-alloc 804231 events per sec
->>>> 15:hash_map_perf pre-alloc 795314 events per sec
->>>>
->>>> hash_map the worst: no free
->>>> ./map_perf_test 2048
->>>> 6:worse hash_map_perf pre-alloc 28628 events per sec
->>>> 5:worse hash_map_perf pre-alloc 28553 events per sec
->>>> 11:worse hash_map_perf pre-alloc 28543 events per sec
->>>> 3:worse hash_map_perf pre-alloc 28444 events per sec
->>>> 1:worse hash_map_perf pre-alloc 28418 events per sec
->>>> 7:worse hash_map_perf pre-alloc 28427 events per sec
->>>> 13:worse hash_map_perf pre-alloc 28330 events per sec
->>>> 14:worse hash_map_perf pre-alloc 28263 events per sec
->>>> 9:worse hash_map_perf pre-alloc 28211 events per sec
->>>> 15:worse hash_map_perf pre-alloc 28193 events per sec
->>>> 12:worse hash_map_perf pre-alloc 28190 events per sec
->>>> 10:worse hash_map_perf pre-alloc 28129 events per sec
->>>> 8:worse hash_map_perf pre-alloc 28116 events per sec
->>>> 4:worse hash_map_perf pre-alloc 27906 events per sec
->>>> 2:worse hash_map_perf pre-alloc 27801 events per sec
->>>> 0:worse hash_map_perf pre-alloc 27416 events per sec
->>>> 3:worse hash_map_perf pre-alloc 28188 events per sec
->>>>
->>>> ftrace trace
->>>>
->>>> 0)               |  htab_map_update_elem() {
->>>> 0)   0.198 us    |    migrate_disable();
->>>> 0)               |    _raw_spin_lock_irqsave() {
->>>> 0)   0.157 us    |      preempt_count_add();
->>>> 0)   0.538 us    |    }
->>>> 0)   0.260 us    |    lookup_elem_raw();
->>>> 0)               |    alloc_htab_elem() {
->>>> 0)               |      __pcpu_freelist_pop() {
->>>> 0)               |        _raw_spin_lock() {
->>>> 0)   0.152 us    |          preempt_count_add();
->>>> 0)   0.352 us    | native_queued_spin_lock_slowpath();
->>>> 0)   1.065 us    |        }
->>>>                   |        ...
->>>> 0)               |        _raw_spin_unlock() {
->>>> 0)   0.254 us    |          preempt_count_sub();
->>>> 0)   0.555 us    |        }
->>>> 0) + 25.188 us   |      }
->>>> 0) + 25.486 us   |    }
->>>> 0)               |    _raw_spin_unlock_irqrestore() {
->>>> 0)   0.155 us    |      preempt_count_sub();
->>>> 0)   0.454 us    |    }
->>>> 0)   0.148 us    |    migrate_enable();
->>>> 0) + 28.439 us   |  }
->>>>
->>>> The test machine is 16C, trying to get spin_lock 17 times, in addition
->>>> to 16c, there is an extralist.
->>> Is this with small max_entries and a large number of cpus?
->>>
->>> If so, probably better to fix would be to artificially
->>> bump max_entries to be 4x of num_cpus.
->>> Racy is_empty check still wastes the loop.
->>
->> This hash_map worst testcase with 16 CPUs, map's max_entries is 1000.
->>
->> This is the test case I constructed, it is to fill the map on 
->> purpose, and then
->>
->> continue to update, just to reproduce the problem phenomenon.
->>
->> The bad case we encountered with 96 CPUs, map's max_entries is 10240.
->
-> For such cases, most likely the map is *almost* full. What is the 
-> performance if we increase map size, e.g., from 10240 to 16K(16192)?
+Ian Rogers (5):
+  perf stat: Fix and validate inputs in stat events
+  perf stat: Add stat record+report test
+  perf cpumap: Add perf_cpu_map__for_each_idx
+  perf bpf_counter: Tidy use of CPU map index
+  perf stat: Make use of index clearer with perf_counts
 
-Yes, increasing max_entries can temporarily solve this problem, but when 
-16k is used up,
-it will still encounter this problem. This patch is to try to fix this 
-corner case.
+ tools/lib/perf/include/perf/cpumap.h |  3 ++
+ tools/perf/tests/shell/stat.sh       | 13 ++++++
+ tools/perf/util/bpf_counter.c        | 61 ++++++++++++++++------------
+ tools/perf/util/stat-display.c       | 22 +++++-----
+ tools/perf/util/stat.c               | 27 ++++++++----
+ 5 files changed, 81 insertions(+), 45 deletions(-)
 
+-- 
+2.36.1.124.g0e6072fb45-goog
 
