@@ -2,118 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B46B552C889
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 02:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E02952C88C
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 02:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbiESASu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 20:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        id S231980AbiESAUQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 20:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbiESASq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 20:18:46 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F041166D7F
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 17:18:45 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id F34A0240108
-        for <bpf@vger.kernel.org>; Thu, 19 May 2022 02:18:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1652919524; bh=LPOX4mr6qOBGXTuxqzj7L3VNNnBuyqF+gXX9fAz5lMM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cByJRVPGPhWN0bmEGfRONsBYp861gJ1HUuJyz+tfvhQqo3YyXpdL1k30VwLOxkLI3
-         pwyo9lqoAOFhTDs1EjsUXWSKWYm5auZ4eZuXXi7zh7UihOIvau/VPP8N73H2wk/mZE
-         PtbJXRxhoBvCHXVIPsAWnCBRmyOY2XrWd64q7gLRVWRci1hcq5pm2fRUERL58aHXo7
-         BCWQ/nefVu+I347rFNNRaB2bX42JmyQEXCwb683egvC6KmtOsw2NcaKfDDwoplrwfb
-         TtJ/BtMNm7ziy45Kzz8Splp2cv3gj8b6D/pWCG39/r/VJ6quCSWCODIzAET5pV8od4
-         0VydeE33ZcbhQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4L3Vnv1KD6z6tpj;
-        Thu, 19 May 2022 02:18:43 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-Cc:     yhs@fb.com, quentin@isovalent.com
-Subject: [PATCH bpf-next v2 12/12] bpftool: Use libbpf_bpf_link_type_str
-Date:   Thu, 19 May 2022 00:18:15 +0000
-Message-Id: <20220519001815.1944959-13-deso@posteo.net>
-In-Reply-To: <20220519001815.1944959-1-deso@posteo.net>
-References: <20220519001815.1944959-1-deso@posteo.net>
+        with ESMTP id S231967AbiESAUP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 20:20:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91578BD3B;
+        Wed, 18 May 2022 17:20:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D3575617A0;
+        Thu, 19 May 2022 00:20:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3490AC385A9;
+        Thu, 19 May 2022 00:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652919612;
+        bh=jRp6y1bDxc2yAiFV8gQbgEIBEpjOZYAWnd8HQTx1XdQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=rhUHTsI9ecC7aJ9b/TWprqiIHwYxusjOakrlL/NmALufD5VnJ9TxWQhw1tLMLzzzK
+         oszoassqpgEAN5avX0h2bqhNM/U8Z1/Qg0uHQkCTCdC0jNGL+z6+VaRm7JlGevGfIg
+         UEl83ABUZsC2de3SGY2BzSvzGcpvxUMBuw1XRlwnhO2kuyf4f2CDoUkdQiRJ5EXgCZ
+         +b8IVAea3wOkJCVrTzobmw8p/SkhQ8NuZc9xzKFVSkJZzikKSVkZsEUoAin6+P2i39
+         KYNbwiN7Wf1lD6ME3eDIPL+X+rUanjfQHLFrhGxrwQzA4XyaugI4nT65mWzejQMcP+
+         DskF5e3c1LOEg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 19E01F0392C;
+        Thu, 19 May 2022 00:20:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCHv3 bpf-next] selftests/bpf: add missed ima_setup.sh in Makefile
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165291961210.22195.3504343038749230473.git-patchwork-notify@kernel.org>
+Date:   Thu, 19 May 2022 00:20:12 +0000
+References: <20220516040020.653291-1-liuhangbin@gmail.com>
+In-Reply-To: <20220516040020.653291-1-liuhangbin@gmail.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        davem@davemloft.net, m.xhonneux@gmail.com, lmb@cloudflare.com,
+        u9012063@gmail.com, toshiaki.makita1@gmail.com, brouer@redhat.com
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change switches bpftool over to using the recently introduced
-libbpf_bpf_link_type_str function instead of maintaining its own string
-representation for the bpf_link_type enum.
+Hello:
 
-Signed-off-by: Daniel Müller <deso@posteo.net>
----
- tools/bpf/bpftool/link.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index 66a254..7a2093 100644
---- a/tools/bpf/bpftool/link.c
-+++ b/tools/bpf/bpftool/link.c
-@@ -13,19 +13,6 @@
- #include "json_writer.h"
- #include "main.h"
- 
--static const char * const link_type_name[] = {
--	[BPF_LINK_TYPE_UNSPEC]			= "unspec",
--	[BPF_LINK_TYPE_RAW_TRACEPOINT]		= "raw_tracepoint",
--	[BPF_LINK_TYPE_TRACING]			= "tracing",
--	[BPF_LINK_TYPE_CGROUP]			= "cgroup",
--	[BPF_LINK_TYPE_ITER]			= "iter",
--	[BPF_LINK_TYPE_NETNS]			= "netns",
--	[BPF_LINK_TYPE_XDP]			= "xdp",
--	[BPF_LINK_TYPE_PERF_EVENT]		= "perf_event",
--	[BPF_LINK_TYPE_KPROBE_MULTI]		= "kprobe_multi",
--	[BPF_LINK_TYPE_STRUCT_OPS]               = "struct_ops",
--};
--
- static struct hashmap *link_table;
- 
- static int link_parse_fd(int *argc, char ***argv)
-@@ -67,9 +54,12 @@ static int link_parse_fd(int *argc, char ***argv)
- static void
- show_link_header_json(struct bpf_link_info *info, json_writer_t *wtr)
- {
-+	const char *link_type_str;
-+
- 	jsonw_uint_field(wtr, "id", info->id);
--	if (info->type < ARRAY_SIZE(link_type_name))
--		jsonw_string_field(wtr, "type", link_type_name[info->type]);
-+	link_type_str = libbpf_bpf_link_type_str(info->type);
-+	if (link_type_str)
-+		jsonw_string_field(wtr, "type", link_type_str);
- 	else
- 		jsonw_uint_field(wtr, "type", info->type);
- 
-@@ -187,9 +177,12 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
- 
- static void show_link_header_plain(struct bpf_link_info *info)
- {
-+	const char *link_type_str;
-+
- 	printf("%u: ", info->id);
--	if (info->type < ARRAY_SIZE(link_type_name))
--		printf("%s  ", link_type_name[info->type]);
-+	link_type_str = libbpf_bpf_link_type_str(info->type);
-+	if (link_type_str)
-+		printf("%s  ", link_type_str);
- 	else
- 		printf("type %u  ", info->type);
- 
+On Mon, 16 May 2022 12:00:20 +0800 you wrote:
+> When build bpf test and install it to another folder, e.g.
+> 
+>   make -j10 install -C tools/testing/selftests/ TARGETS="bpf" \
+> 	SKIP_TARGETS="" INSTALL_PATH=/tmp/kselftests
+> 
+> The ima_setup.sh is missed in target folder, which makes test_ima failed.
+> 
+> [...]
+
+Here is the summary with links:
+  - [PATCHv3,bpf-next] selftests/bpf: add missed ima_setup.sh in Makefile
+    https://git.kernel.org/bpf/bpf-next/c/70a1b25326dd
+
+You are awesome, thank you!
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
