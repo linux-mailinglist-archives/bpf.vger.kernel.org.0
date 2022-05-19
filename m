@@ -2,167 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D644152CAB6
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 06:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD5B52CB2A
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 06:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233507AbiESEIt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 May 2022 00:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
+        id S233470AbiESEin (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 May 2022 00:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbiESEIr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 May 2022 00:08:47 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B8995DDD
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 21:08:46 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id j24so5346449wrb.1
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 21:08:46 -0700 (PDT)
+        with ESMTP id S230128AbiESEil (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 May 2022 00:38:41 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534135BD3D;
+        Wed, 18 May 2022 21:38:40 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id e15so4617399iob.3;
+        Wed, 18 May 2022 21:38:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5NuTN6+F3TBVlFzEcXPbTfTSxJJpUOQDs3Y2ry8Jne0=;
-        b=mH2llISZenMBvGXANBcqE5aANz8QcBamzb+hFox7K8HGfGN/weV2lCOdRhy/dPSPCO
-         3z3OXGaMdfYxtwPSOduMuc2kYwvHrLSKBpcUhlgW/stCQzC8NPyYNDO4cyA5T+OKPuZJ
-         CNaR8UiojwlJ2MMZAzLARljH+2A8OblwDbaYp1A9Wx9X4vKuojYxUiIRq8DFS304i8vY
-         OIWojYSH/2ofFVTbXBTf4UCB/WSc2ZBN0ChjfqUviwzjZQ8mgrXmc90Moy/N/t+I4OVq
-         uhQY3n4xH35mgxMEGit9nVTDO3hZxN4FBSJeyOlKz9iguRPkWU2X9KiTd2YgCn0aNvKt
-         1ZkQ==
+         :cc:content-transfer-encoding;
+        bh=gxZjiYTaN4ezKLlxi7VUQHVQNtVzg+Slph/Lq3uj/4I=;
+        b=DEx0kfEIQ0viEYpwSgupzdmCv9f6S1pVgkUjBRB2A1z7icJARW+u/y8u01Cqu+HfBy
+         BAPVwAD/mcutOGfUJPJkYizgwR39E0iL9I9t6r9LYR8fsGpeLLA4wZLcr/TAdv0h5XFX
+         JW8xZhxsJjSAUqb/B0u36itSTNPQvlYrg0Rw752iunh9sxO2b7ljGKU/EzX05zEsIyTh
+         /hESa2z4xWeRlayS6ge/a+r+W7RJC1jtN/1ZDpMKWGgfR45VE4wJAH9vcvoajtmODchM
+         JSDhlytoTpfaJW2mtSMNQPQ2Tq318zRVapM5mq6ygVZavJ59IzSUqAHYVcCladH++wDZ
+         PvcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5NuTN6+F3TBVlFzEcXPbTfTSxJJpUOQDs3Y2ry8Jne0=;
-        b=0dKzWw73K7dCkiCycpl1g+J1Wtde4pu2Xuxay+P+D5YY+oSbDFtBHsbmr+UzHZzRK7
-         mSRY2UaLTTsT0RAeH2/kVQx3paTwVDH2dI1JAKFGRU0AluTPxFlzWPX0seVr57BxCNm/
-         YuY+N/00rTK8YQ7wzXy6QlSQrqqLEjLXH5GIE7UGsKTjGuDuBUvvoxUZIKb0OLtWU9AV
-         TnehtNysNpQ3T0ibrEcaWoyMU8tJdk4l4LVsKxDfGSSL88GfHZqsh3WN7XKLb0mwxzbE
-         xjssU3Fpp2yc35AQAlipBR6pZN4l8VIPOulT46IDMQ0WIVgr9EhEv7yAN8mqGYRWdWEM
-         xbfw==
-X-Gm-Message-State: AOAM531Kj/PQr9LLTiHX2KDyFNjnDrZ+SBw9fmcoagmDPP5FXDbee4Vk
-        suEWO1142ZxBaYeNlks0f04LGPBMiCJ9EAbSujgT1cXpl9p/jCwH
-X-Google-Smtp-Source: ABdhPJxWnZ/+po2yuf7QTqvUbRYgFyJlL22dsPnz5xfr+cYG0iUXYo+9qOcpeEbzVPemTgXOZyJ3sflpJUuYqb9FRPk=
-X-Received: by 2002:a05:6000:78b:b0:20d:101b:2854 with SMTP id
- bu11-20020a056000078b00b0020d101b2854mr2119695wrb.300.1652933313841; Wed, 18
- May 2022 21:08:33 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gxZjiYTaN4ezKLlxi7VUQHVQNtVzg+Slph/Lq3uj/4I=;
+        b=DbS+EPetkAOfMDzBFXhiPEjCfU0sZQ5u/DUmQ69aOTn4g3FGl3Tm+Mp/Y6oCfNl1Qk
+         PfMtrdZKSARopRbVLBzkqbQHUBUi7YfrqdgY5oIj3MtFcYMGmspi44VS9MXkwQ4wMyna
+         z2dsPrOrJnVq59/DxvS1+tmUIaseo/wMISohP/wj/NdDHF3iGQxA2kA1Jj5t90kGzdft
+         F9PFdny3ZUPCjtgG/4Ld7N4PCZv+lLoXR3f49A4J6lotRkThuUXsb2PkjEzArQBecfb/
+         tVgWENmVV1NR/ZaNQ0goH1/rOFn+fGeJbehdDr1AVQ5OZAtSzrMVWyC0fc9AX+reRI0l
+         YTWQ==
+X-Gm-Message-State: AOAM530HZRoke4/ipoAhwISjtoZJL1XaK/CozK3Mh467SYlsh1rWC/dN
+        UUZi+a0XpGCXTSbZav5FFMWhzK7O7o9XLPz1lYA=
+X-Google-Smtp-Source: ABdhPJw22ffAQ9T+RrX0TY5bFNOry0J9oMO3fKkDKsDBJ988QAdDiXND6i6Nus6WHLG9t4c7c3TRmQl2lNjWPjEbKrw=
+X-Received: by 2002:a05:6602:1695:b0:65d:cbd3:eed0 with SMTP id
+ s21-20020a056602169500b0065dcbd3eed0mr1497971iow.144.1652935119729; Wed, 18
+ May 2022 21:38:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220518224725.742882-1-namhyung@kernel.org> <20220518224725.742882-7-namhyung@kernel.org>
-In-Reply-To: <20220518224725.742882-7-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 18 May 2022 21:08:21 -0700
-Message-ID: <CAP-5=fWyH=-XDdOsCjLTOHO09vCHnUcnijvVT0mw0zp6Ft57zA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] perf test: Add a basic offcpu profiling test
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Milian Wolff <milian.wolff@kdab.com>, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Blake Jones <blakejones@google.com>
+References: <20220516022453.68420-1-zhoufeng.zf@bytedance.com>
+ <CAEf4BzZ0eRh4ufQnc69B=6WQt_Oy3DNPL-TM-rsUW1KX--SBvQ@mail.gmail.com> <196f6ae9-f899-16c8-a5d3-a1c771fa9900@bytedance.com>
+In-Reply-To: <196f6ae9-f899-16c8-a5d3-a1c771fa9900@bytedance.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 18 May 2022 21:38:28 -0700
+Message-ID: <CAEf4BzabT5xdscH8jgTbAVhj415k=1MziKmAXTi6yfeo1DTBRw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next] selftests/bpf: fix some bugs in
+ map_lookup_percpu_elem testcase
+To:     Feng Zhou <zhoufeng.zf@bytedance.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joanne Koong <joannekoong@fb.com>,
+        Geliang Tang <geliang.tang@suse.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        duanxiongchun@bytedance.com,
+        Muchun Song <songmuchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        zhouchengming@bytedance.com, Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 3:47 PM Namhyung Kim <namhyung@kernel.org> wrote:
+On Wed, May 18, 2022 at 8:27 PM Feng Zhou <zhoufeng.zf@bytedance.com> wrote=
+:
 >
->   $ sudo ./perf test -v offcpu
->    88: perf record offcpu profiling tests                              :
->   --- start ---
->   test child forked, pid 685966
->   Basic off-cpu test
->   Basic off-cpu test [Success]
->   test child finished with 0
->   ---- end ----
->   perf record offcpu profiling tests: Ok
+> =E5=9C=A8 2022/5/19 =E4=B8=8A=E5=8D=888:17, Andrii Nakryiko =E5=86=99=E9=
+=81=93:
+> > On Sun, May 15, 2022 at 7:25 PM Feng zhou <zhoufeng.zf@bytedance.com> w=
+rote:
+> >> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> >>
+> >> comments from Andrii Nakryiko, details in here:
+> >> https://lore.kernel.org/lkml/20220511093854.411-1-zhoufeng.zf@bytedanc=
+e.com/T/
+> >>
+> >> use /* */ instead of //
+> >> use libbpf_num_possible_cpus() instead of sysconf(_SC_NPROCESSORS_ONLN=
+)
+> >> use 8 bytes for value size
+> >> fix memory leak
+> >> use ASSERT_EQ instead of ASSERT_OK
+> >> add bpf_loop to fetch values on each possible CPU
+> >>
+> >> Fixes: ed7c13776e20c74486b0939a3c1de984c5efb6aa ("selftests/bpf: add t=
+est case for bpf_map_lookup_percpu_elem")
+> >> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+> >> ---
+> >>   .../bpf/prog_tests/map_lookup_percpu_elem.c   | 49 +++++++++------
+> >>   .../bpf/progs/test_map_lookup_percpu_elem.c   | 61 ++++++++++++-----=
+--
+> >>   2 files changed, 70 insertions(+), 40 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_=
+elem.c b/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
+> >> index 58b24c2112b0..89ca170f1c25 100644
+> >> --- a/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
+> >> +++ b/tools/testing/selftests/bpf/prog_tests/map_lookup_percpu_elem.c
+> >> @@ -1,30 +1,39 @@
+> >> -// SPDX-License-Identifier: GPL-2.0
+> >> -// Copyright (c) 2022 Bytedance
+> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> > heh, so for SPDX license comment the rule is to use // in .c files :)
+> > so keep SPDX as // and all others as /* */
 >
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-
-Acked-by: Ian Rogers <irogers@google.com>
-
-Thanks,
-Ian
-
-> ---
->  tools/perf/tests/shell/record_offcpu.sh | 60 +++++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100755 tools/perf/tests/shell/record_offcpu.sh
+> will do. Thanks.
 >
-> diff --git a/tools/perf/tests/shell/record_offcpu.sh b/tools/perf/tests/shell/record_offcpu.sh
-> new file mode 100755
-> index 000000000000..96e0739f7478
-> --- /dev/null
-> +++ b/tools/perf/tests/shell/record_offcpu.sh
-> @@ -0,0 +1,60 @@
-> +#!/bin/sh
-> +# perf record offcpu profiling tests
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -e
-> +
-> +err=0
-> +perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
-> +
-> +cleanup() {
-> +  rm -f ${perfdata}
-> +  rm -f ${perfdata}.old
-> +  trap - exit term int
-> +}
-> +
-> +trap_cleanup() {
-> +  cleanup
-> +  exit 1
-> +}
-> +trap trap_cleanup exit term int
-> +
-> +test_offcpu() {
-> +  echo "Basic off-cpu test"
-> +  if [ `id -u` != 0 ]
-> +  then
-> +    echo "Basic off-cpu test [Skipped permission]"
-> +    err=2
-> +    return
-> +  fi
-> +  if perf record --off-cpu -o ${perfdata} --quiet true 2>&1 | grep BUILD_BPF_SKEL
-> +  then
-> +    echo "Basic off-cpu test [Skipped missing BPF support]"
-> +    err=2
-> +    return
-> +  fi
-> +  if ! perf record --off-cpu -e dummy -o ${perfdata} sleep 1 2> /dev/null
-> +  then
-> +    echo "Basic off-cpu test [Failed record]"
-> +    err=1
-> +    return
-> +  fi
-> +  if ! perf evlist -i ${perfdata} | grep -q "offcpu-time"
-> +  then
-> +    echo "Basic off-cpu test [Failed record]"
-> +    err=1
-> +    return
-> +  fi
-> +  if ! perf report -i ${perfdata} -q --percent-limit=90 | egrep -q sleep
-> +  then
-> +    echo "Basic off-cpu test [Failed missing output]"
-> +    err=1
-> +    return
-> +  fi
-> +  echo "Basic off-cpu test [Success]"
-> +}
-> +
-> +test_offcpu
-> +
-> +cleanup
-> +exit $err
-> --
-> 2.36.1.124.g0e6072fb45-goog
+> >
+> >> +/* Copyright (c) 2022 Bytedance */
+> >>
+> >>   #include <test_progs.h>
+> >>
+> >>   #include "test_map_lookup_percpu_elem.skel.h"
+> >>
+> >> -#define TEST_VALUE  1
+> >> -
+> >>   void test_map_lookup_percpu_elem(void)
+> >>   {
+> >>          struct test_map_lookup_percpu_elem *skel;
+> >> -       int key =3D 0, ret;
+> >> -       int nr_cpus =3D sysconf(_SC_NPROCESSORS_ONLN);
+> >> -       int *buf;
+> >> +       __u64 key =3D 0, sum;
+> >> +       int ret, i;
+> >> +       int nr_cpus =3D libbpf_num_possible_cpus();
+> >> +       __u64 *buf;
+> >>
+> >> -       buf =3D (int *)malloc(nr_cpus*sizeof(int));
+> >> +       buf =3D (__u64 *)malloc(nr_cpus*sizeof(__u64));
+> > no need for casting
+>
+> casting means no '(__u64 *)'?
+> just like this:
+> 'buf =3D malloc(nr_cpus * sizeof(__u64));'
+>
+
+yes, in C you don't need to explicitly cast void * to other pointer types
+
+> >
+> >>          if (!ASSERT_OK_PTR(buf, "malloc"))
+> >>                  return;
+> >> -       memset(buf, 0, nr_cpus*sizeof(int));
+> >> -       buf[0] =3D TEST_VALUE;
+> >>
+> >> -       skel =3D test_map_lookup_percpu_elem__open_and_load();
+> >> -       if (!ASSERT_OK_PTR(skel, "test_map_lookup_percpu_elem__open_an=
+d_load"))
+> >> -               return;
+> >> +       for (i=3D0; i<nr_cpus; i++)
+> > spaces between operators
+>
+> will do. Thanks.
+>
+> >
+> >> +               buf[i] =3D i;
+> >> +       sum =3D (nr_cpus-1)*nr_cpus/2;
+> > same, please follow kernel code style
+>
+> will do. Thanks.
+>
+> >
+> >> +
+> >> +       skel =3D test_map_lookup_percpu_elem__open();
+> >> +       if (!ASSERT_OK_PTR(skel, "test_map_lookup_percpu_elem__open"))
+> >> +               goto exit;
+> >> +
+> > nit: keep it simple, init skel to NULL and use single cleanup goto
+> > label that will destroy skel unconditionally (it deals with NULL just
+> > fine)
+>
+> will do. Thanks.
+>
+> >> +       skel->rodata->nr_cpus =3D nr_cpus;
+> >> +
+> >> +       ret =3D test_map_lookup_percpu_elem__load(skel);
+> >> +       if (!ASSERT_OK(ret, "test_map_lookup_percpu_elem__load"))
+> >> +               goto cleanup;
+> >> +
+> >>          ret =3D test_map_lookup_percpu_elem__attach(skel);
+> >> -       ASSERT_OK(ret, "test_map_lookup_percpu_elem__attach");
+> >> +       if (!ASSERT_OK(ret, "test_map_lookup_percpu_elem__attach"))
+> >> +               goto cleanup;
+> >>
+> >>          ret =3D bpf_map_update_elem(bpf_map__fd(skel->maps.percpu_arr=
+ay_map), &key, buf, 0);
+> >>          ASSERT_OK(ret, "percpu_array_map update");
+> > [...]
+>
 >
