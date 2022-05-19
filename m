@@ -2,70 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C8F52C83C
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 01:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D3752C842
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 02:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbiERX4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 May 2022 19:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
+        id S230164AbiESAAa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 May 2022 20:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbiERX4g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 May 2022 19:56:36 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE658A206F
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 16:56:32 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id f4so4157678iov.2
-        for <bpf@vger.kernel.org>; Wed, 18 May 2022 16:56:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tTVp0omBsMURoaHte8QkIXwAGpc4ue46lcRcjhB3O+w=;
-        b=mgdcBupvj4w4ixBZ7xWci8Ics4l9l2vyBnk0LeoYPOok3t2ePfsB703cqSOiMx2zS0
-         lE/2pVeC3JC1djR+Cul3zbvmykzeYkkpoo3B77mMd4sCcLV1n286pphLjipMzmZPPwEo
-         jwJp3laRsJ7kO5GWiCchWlt1VSq+8IXiLIEaky7wPZC8QPEr3+pdYUW8ZB99mKmqThWT
-         5SWMiZc6QocS1/xAGK3gVR6kiZum62dSxF6GpSUVya/TDKs3kRrpBwfhI0rQ/cwyQzfY
-         X00fT2vLo2h+lev2ofxcsQ/X2owBGLErvPmuATrRUiUFahoheP5P0ZyvBjS3HpdkGBXp
-         dsOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tTVp0omBsMURoaHte8QkIXwAGpc4ue46lcRcjhB3O+w=;
-        b=TGgV4ZVfde5pkzu+U34CYBQor8YS9kLcsnS9DfARNik2Ecl6ufrdKE3SMRRh3x2Zes
-         8+CzKGepVbUaNMqEjHTunbLBkRBV7L1zkOWlEbyMfV3q227YqYKknFgO3R/APFHj1tbN
-         o8a2ojWN/ZWPOW9EGUzOoTX26eKX+HqYMC0p9aH7763UrxnwmQ//QZ4iq+tZiK3/sYEY
-         XD77fAq/00J1hpJYOlFpuW3SJD6RQOZdlwhmzHgy+ERZ/4d0zKXCvRxjAMlu377M/udg
-         vU/QJCm54HS1IRRXpTDpnx1Rpbd5EK9fkfAyrcUScLRTG5Q+C6uFurgY0FUCoPWJwMGG
-         sdlw==
-X-Gm-Message-State: AOAM5324bD4ALQ95EffqbgGfNMcu+37c4XVNuFRD1h2+rLiGUrpkbzyh
-        1sFAJw7jM7gGpBV7+Zvy0bYcl5lJeaYgGqcOmzI=
-X-Google-Smtp-Source: ABdhPJxB/bSWYZXNS4h6N+kevhWnjs7tgyGODgMBYVUkK8lZDagLSHdl+btaJmLfRh8TkMFplQ3XkSukPpeakGHnwj0=
-X-Received: by 2002:a5e:8e42:0:b0:657:bc82:64e5 with SMTP id
- r2-20020a5e8e42000000b00657bc8264e5mr1049993ioo.112.1652918192265; Wed, 18
- May 2022 16:56:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220512074321.2090073-1-davemarchevsky@fb.com>
- <20220512074321.2090073-5-davemarchevsky@fb.com> <CAEf4BzYj2i4shfAFW4fUKaEDFQvkMtyirVpq8_5AQAX0pW36yQ@mail.gmail.com>
- <20220517011752.or6r4k5qwcc3kgy3@MBP-98dd607d3435.dhcp.thefacebook.com>
-In-Reply-To: <20220517011752.or6r4k5qwcc3kgy3@MBP-98dd607d3435.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 May 2022 16:56:21 -0700
-Message-ID: <CAEf4Bza6yPAqE58Xt+_C6XZ2acC-Dfg7dFfU8U6X-4rY01Ji3Q@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 4/5] selftests/bpf: Add test for USDT parse
- of xmm reg
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S229534AbiESAA3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 May 2022 20:00:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BECBA443;
+        Wed, 18 May 2022 17:00:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3E6BDB821A0;
+        Thu, 19 May 2022 00:00:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D35ADC385A9;
+        Thu, 19 May 2022 00:00:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1652918426;
+        bh=UJDjyjdzJqFlsW+gZGyIlrnGpTTEXVykogO9NpO8GSg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZDyT9+VweRaKpvQzDQcdDwZvvGOP9AJ/iYyLTzBQYbYX4thh2d9uTI/Z+SLGY5L/n
+         qsPsewTWZI9TvWUgzSL7Ev5t2s12Bc/c8P4VbHBNgf2PIfrprC710OCCSLk0e/FMxF
+         IAWC/4Y+q85nKQlyLA5/8j3aXJUrFg6jduAQUAVT62cEf3JtsxgZMKXyaP3SHu/az8
+         P3x/MTOrPi9BUlcZjmwS78UQoK17ALBH47vL1mUwTSx0trXghcJrqmqe0zzetF07AT
+         jzB2uavtwPyMhP8VEMHT2u9E1qfonCneVuFnJNZNRVVsWd6+9MoJpAL27ahfyLn8Xn
+         hndLL75AC6BFQ==
+Date:   Thu, 19 May 2022 09:00:20 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Rik van Riel <riel@surriel.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Yonghong Song <yhs@fb.com>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH bpf-next 1/2] cpuidle/rcu: Making arch_cpu_idle and
+ rcu_idle_exit noinstr
+Message-Id: <20220519090020.828c697fcf4767722d02bc1a@kernel.org>
+In-Reply-To: <YoNTjXBDLQe9xj27@krava>
+References: <20220515203653.4039075-1-jolsa@kernel.org>
+        <5b4bd044-ba88-649b-9b85-e08e175691f9@fb.com>
+        <YoNTjXBDLQe9xj27@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,63 +66,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 16, 2022 at 6:17 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, May 16, 2022 at 04:31:55PM -0700, Andrii Nakryiko wrote:
-> > On Thu, May 12, 2022 at 12:43 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
-> > >
-> > > Validate that bpf_get_reg_val helper solves the motivating problem of
-> > > this patch series: USDT args passed through xmm regs. The userspace
-> > > portion of the test forces STAP_PROBE macro to use %xmm0 and %xmm1 regs
-> > > to pass a float and an int, which the bpf-side successfully reads using
-> > > BPF_USDT.
-> > >
-> > > In the wild I discovered a sanely-configured USDT in Fedora libpthread
-> > > using xmm regs to pass scalar values, likely due to register pressure.
-> > > urandom_read_lib_xmm mimics this by using -ffixed-$REG flag to mark
-> > > r11-r14 unusable and passing many USDT args.
-> > >
-> > > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/Makefile          |  8 ++-
-> > >  tools/testing/selftests/bpf/prog_tests/usdt.c |  7 +++
-> > >  .../selftests/bpf/progs/test_urandom_usdt.c   | 13 ++++
-> > >  tools/testing/selftests/bpf/urandom_read.c    |  3 +
-> > >  .../selftests/bpf/urandom_read_lib_xmm.c      | 62 +++++++++++++++++++
-> > >  5 files changed, 91 insertions(+), 2 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/urandom_read_lib_xmm.c
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > > index 6bbc03161544..19246e34dfe1 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -172,10 +172,14 @@ $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
-> > >         $(call msg,LIB,,$@)
-> > >         $(Q)$(CC) $(CFLAGS) -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
-> > >
-> > > -$(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
-> > > +$(OUTPUT)/liburandom_read_xmm.so: urandom_read_lib_xmm.c
-> > > +       $(call msg,LIB,,$@)
-> > > +       $(Q)$(CC) -O0 -ffixed-r11 -ffixed-r12 -ffixed-r13 -ffixed-r14 -fPIC $(LDFLAGS) $^ $(LDLIBS) --shared -o $@
-> >
-> > this looks very x86-specific, but we support other architectures as well
-> >
-> > looking at sdt.h, it seems like STAP_PROBEx() macros support being
-> > called from assembly code, I wonder if it would be better to try to
-> > figure out how to use it from assembly and use some xmm register
-> > directly in inline assembly? I have never done that before, but am
-> > hopeful :)
->
-> stap_probe in asm won't help cross arch issue.
-> It's better to stay with C.
-> Maybe some makefile magic can make the above x86 only?
-> The test should be skipped on other archs anyway.
+On Tue, 17 May 2022 09:49:33 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-It seems easier (or rather cleaner) to maintain arch-specific pieces
-within .c file through #if __x86_64__ instead of doing equivalent
-changes to Makefile. Suggestion for using assembly was due to needing
-to make sure xmmX register is used and desired to avoid maintaining
-arch-specific compile-time flags like -ffixed-r11. But truth be told I
-have zero idea how STAP_PROBE() use from assembly would look like, so
-just a suggestion to consider.
+> On Mon, May 16, 2022 at 07:54:37PM -0700, Yonghong Song wrote:
+> > 
+> > 
+> > On 5/15/22 1:36 PM, Jiri Olsa wrote:
+> > > Making arch_cpu_idle and rcu_idle_exit noinstr. Both functions run
+> > > in rcu 'not watching' context and if there's tracer attached to
+> > > them, which uses rcu (e.g. kprobe multi interface) it will hit RCU
+> > > warning like:
+> > > 
+> > >    [    3.017540] WARNING: suspicious RCU usage
+> > >    ...
+> > >    [    3.018363]  kprobe_multi_link_handler+0x68/0x1c0
+> > >    [    3.018364]  ? kprobe_multi_link_handler+0x3e/0x1c0
+> > >    [    3.018366]  ? arch_cpu_idle_dead+0x10/0x10
+> > >    [    3.018367]  ? arch_cpu_idle_dead+0x10/0x10
+> > >    [    3.018371]  fprobe_handler.part.0+0xab/0x150
+> > >    [    3.018374]  0xffffffffa00080c8
+> > >    [    3.018393]  ? arch_cpu_idle+0x5/0x10
+> > >    [    3.018398]  arch_cpu_idle+0x5/0x10
+> > >    [    3.018399]  default_idle_call+0x59/0x90
+> > >    [    3.018401]  do_idle+0x1c3/0x1d0
+> > > 
+> > > The call path is following:
+> > > 
+> > > default_idle_call
+> > >    rcu_idle_enter
+> > >    arch_cpu_idle
+> > >    rcu_idle_exit
+> > > 
+> > > The arch_cpu_idle and rcu_idle_exit are the only ones from above
+> > > path that are traceble and cause this problem on my setup.
+> > > 
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >   arch/x86/kernel/process.c | 2 +-
+> > >   kernel/rcu/tree.c         | 2 +-
+> > >   2 files changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> > > index b370767f5b19..1345cb0124a6 100644
+> > > --- a/arch/x86/kernel/process.c
+> > > +++ b/arch/x86/kernel/process.c
+> > > @@ -720,7 +720,7 @@ void arch_cpu_idle_dead(void)
+> > >   /*
+> > >    * Called from the generic idle code.
+> > >    */
+> > > -void arch_cpu_idle(void)
+> > > +void noinstr arch_cpu_idle(void)
+> > 
+> > noinstr includes a lot of attributes:
+> > 
+> > #define noinstr                                                         \
+> >         noinline notrace __attribute((__section__(".noinstr.text")))    \
+> >         __no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage
+> > 
+> > should we use notrace here?
+> 
+> hm right, so notrace should be enough for our case (kprobe_multi)
+> which is based on ftrace/fprobe jump
+> 
+> noinstr (among other things) adds the function also the kprobes
+> blacklist, which will prevent standard kprobes to attach
+> 
+> ASAICS standard kprobes use rcu in probe path as well, like in
+> opt_pre_handler function
+> 
+> so I think we should go with noinstr
+
+Yes, I agree that noinstr is preferrable for these functions.
+
+Thank you!
+
+> 
+> jirka
+> 
+> > 
+> > >   {
+> > >   	x86_idle();
+> > >   }
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index a4b8189455d5..20d529722f51 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -896,7 +896,7 @@ static void noinstr rcu_eqs_exit(bool user)
+> > >    * If you add or remove a call to rcu_idle_exit(), be sure to test with
+> > >    * CONFIG_RCU_EQS_DEBUG=y.
+> > >    */
+> > > -void rcu_idle_exit(void)
+> > > +void noinstr rcu_idle_exit(void)
+> > >   {
+> > >   	unsigned long flags;
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
