@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1372652CD43
-	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 09:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9135452CDF8
+	for <lists+bpf@lfdr.de>; Thu, 19 May 2022 10:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbiESHi7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 May 2022 03:38:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
+        id S235219AbiESILJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 May 2022 04:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232733AbiESHi6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 May 2022 03:38:58 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1398A7E29;
-        Thu, 19 May 2022 00:38:56 -0700 (PDT)
+        with ESMTP id S235207AbiESILF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 May 2022 04:11:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2FA32ED4;
+        Thu, 19 May 2022 01:11:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=2WGn3U5iWYbqhAEYerCkhKo3tyszE5fO2isMfocp72s=; b=MqRC9ZtBC0maLPeCbKteZ8lGuo
-        /1I+a4DLnSkHaU6Ku3WgpUTD0sh0NOBM2nHYNQ/MoIen0wmdivi/AGROJYerl0XSwwmK0FTC9jtpM
-        uR8G03NFam87OKw8l2TL+1ynj4ud3YZUQkq4rAfC5UHTYasK1fyuupcqB+c33dmSSc+/uWMeq21Mh
-        mWboozwGQ5XQJvvsmomxwlk40EHk/NujNUwBefWCvBe9V9WvbMMUNJuA+Nit6VJu3yS3/wCfp1qNf
-        7PzSvwWJfyYutYO/d5sAc9iYvMN6DM9WbdNd7PBRTeBnNAjB+5JLcNJbPeJ68dbQY7poPQEYLXIlv
-        ypjazLKA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nrajr-001leT-8U; Thu, 19 May 2022 07:38:27 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 084EC980BF7; Thu, 19 May 2022 09:38:25 +0200 (CEST)
-Date:   Thu, 19 May 2022 09:38:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P7hBfgfR5V/lg9pLTdIBC/hWy6eM9dq7h/FVFtkFAq8=; b=rdosXHdo2i8UPLrk/NfgCsQQXa
+        NceHcHgDpc15rlXcvlJlOrvKZ07wttU2W4xYEEJ6/rwixNTeoFQGrtYIfP88p3Ebs08aAqDTCIgNz
+        pLdQx96nbRVquBG/2pxsNXQCMYj08yyvHjs1NkoW9tWhq0aCFNmUPZVm0RT+FxOycqrOLtkimO1gU
+        qVdbj5lP7g6hJLzWrzaga1BFb3fwvsbBm6/6U5xAB3UEw/VdGyTJZ6qYAs7dAErfDL0kHi1ZTR5jm
+        OpDM/iSINt2WRl+K0pmS1DIg6BnDkcGe3O+dUNeHJrXrDUtyifs6d74AsrJbhyhbCDXwNL+hCKQCR
+        CXtb89mQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nrbFA-005iMY-O2; Thu, 19 May 2022 08:10:48 +0000
+Date:   Thu, 19 May 2022 01:10:48 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        "Torvalds, Linus" <torvalds@linux-foundation.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 2/5] x86/alternative: introduce text_poke_set
-Message-ID: <20220519073824.GA2578@worktop.programming.kicks-ass.net>
-References: <20220516054051.114490-1-song@kernel.org>
- <20220516054051.114490-3-song@kernel.org>
- <20220518170934.GG10117@worktop.programming.kicks-ass.net>
- <A4019486-85F3-4900-8073-6879608706B1@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 00/17] Introduce eBPF support for HID devices
+Message-ID: <YoX7iHddAd4FkQRQ@infradead.org>
+References: <20220518205924.399291-1-benjamin.tissoires@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <A4019486-85F3-4900-8073-6879608706B1@fb.com>
+In-Reply-To: <20220518205924.399291-1-benjamin.tissoires@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -61,23 +62,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 06:34:18PM +0000, Song Liu wrote:
-> 
-> 
-> > On May 18, 2022, at 10:09 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > On Sun, May 15, 2022 at 10:40:48PM -0700, Song Liu wrote:
-> >> Introduce a memset like API for text_poke. This will be used to fill the
-> >> unused RX memory with illegal instructions.
-> > 
-> > FWIW, you're going to use it to set INT3 (0xCC), that's not an illegal
-> > instruction. INTO (0xCE) would be an illegal instruction (in 64bit
-> > mode).
-> 
-> Hmm… we have been using INT3 as illegal/invalid/special instructions in 
-> the JIT. I guess they are equally good for this job?
+> The logic is the following (see also the last patch for some more
+> documentation):
+> - hid-bpf first preloads a BPF program in the kernel that does a few
+>   things:
+>    * find out which attach_btf_id are associated with our trace points
+>    * adds a bpf_tail_call() BPF program that I can use to "call" any
+>      other BPF program stored into a jump table
+>    * monitors the releases of struct bpf_prog, and when there are no
+>      other users than us, detach the bpf progs from the HID devices
+> - users then declare their tracepoints and then call
+>   hid_bpf_attach_prog() in a SEC("syscall") program
+> - hid-bpf then calls multiple time the bpf_tail_call() program with a
+>   different index in the jump table whenever there is an event coming
+>   from a matching HID device
 
-INT3 is right, it's just not illegal. Terminology is everything :-)
+So driver abstractions like UDI are now perfectly fine as long as they
+are written using a hip new VM?
 
-INT3 is the breakpoint instruction, it raises #BP, an illegal
-instruction would raise #UD. Different exception vectors and such.
+This whole idea seems like a bad idea, against the Linux spirit and
+now actually useful - it is totally trivial to write a new HID
+driver alreay, and if it isn't in some cases we need to fix that.
+
+So a big fat NAK to the idea of using eBPF for actual driver logic.
