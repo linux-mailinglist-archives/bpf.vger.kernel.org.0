@@ -2,79 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAF152F56F
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 00:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C40152F57A
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 00:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353815AbiETWBK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 18:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
+        id S1352443AbiETWFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 18:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233685AbiETWA7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 18:00:59 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF03D116;
-        Fri, 20 May 2022 15:00:57 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id s12so6357454iln.11;
-        Fri, 20 May 2022 15:00:57 -0700 (PDT)
+        with ESMTP id S243602AbiETWFD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 18:05:03 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE7A13F90;
+        Fri, 20 May 2022 15:05:02 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id m2so9618787vsr.8;
+        Fri, 20 May 2022 15:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=b5LP2LIe+3dg0Ns3WLvfbA/mpjcRdxbZZTeIf8hpFzg=;
-        b=mWbQqr3Eo/woi67Rkec0dQ5oP4bMID1ncR7y8jmdgFNYY2O6M5gj8coWMLX3OwBsyK
-         q1cOSxtRo8VSS2jktb9nHi2ZrTbUs9Wyc3ZXFTeFcDGMG+tBdyqasMBOF+a4KNpYb6FH
-         d7lgzmn1EATifjMZwFckFsvHocP5/Jb4+cAUNalZ9Fvrbh/AmLk3suZrlX1UdrfzbGpx
-         u2jiB3Hsrv4h0k+gAJkk7EnA+bQF5H29KeSly50OEiwBvgyI9IJNjSPrEuD+ybEo7HW5
-         +S3xhzHcL87JpOm/3DfE3DODprQZ0ct1o1pMMlv2zFRHScESS/sKnb61csRKua8jS3j3
-         h0Vg==
+        bh=vEa8wOAy1yjkPGX5niq7cKlzEqEbn5vgGX01uFZeyx0=;
+        b=pf70By7pF1e4r2VxjsJ+FR0Y8tv1NHuzHngxTbWZ4GdEEmJFJRgFbpOAbwK+6OMDmo
+         HOvHve0yGJJSxZqdrIQ2BZry2tZa3COk6oPdZ+A++RYVd+PQVLNsNFMfPlz+YsdaWQV8
+         3mHnHJbDXP8vf77dloAQ6q43VBjMCXepxMrst0GTmUtgics4M3b4YsJNeycrrJZUM5Qz
+         mAdTnX/o+Duku4LqfFR34vbyjHYPjxIpW7sBGc1Eet99H6RajPD4lMbQfruCKJOBXN5G
+         sB2UFGzQugUs5xojtTwkqJF+3sjfGMiHR69OxghqKVkML9qWYKJZDe3EkZM3xLsSIcI4
+         NXUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=b5LP2LIe+3dg0Ns3WLvfbA/mpjcRdxbZZTeIf8hpFzg=;
-        b=FflSkezWMJGCXDK3gRjS1TfZ48X0dZsvQ+22ui5DVBrl7g96A6lEIsgroY12mVBIVT
-         EU9ZVzZG8Y+gjLCXFKkHjquJ5g7vaODf/Hx51w+oEY+qVtvpkaTHmxec4V1gRCrQvxHx
-         1Rf6E+CXy9GIL9bQu3Dg62W6GrmK+ZNZ6yRD0HXaN2KGIX+nWm2yNpcJQXQIdlMYGjoZ
-         rOx0ZZHI3M7akrMUMJVtO6Wza+iPsh7Fdd+YojfYdrtPh7diQA7YjwwJ75KQqYzMjIRc
-         lRjh+iqPzCieurZKMzhRe8v+ZFA8QXkk/pWrQPX1n21kYkGZfAytn7gatV0tjsGu1R1v
-         peoQ==
-X-Gm-Message-State: AOAM532MqjMjt4eEFq+ksmXacAQkPbUWeprb4cM4Lkvb3RLySHhhtsm9
-        zLbHB+bMvc+qvzOep5nMqfm5uGx7/KKqI27v0cA=
-X-Google-Smtp-Source: ABdhPJyJb0eVNhgKBfC77kDmoao+VgMr3e9kEx3X2a00wVO7CgIbfAgL7/YAUXBddLKw+ZIPQcW30W2lm27Ua6wsjjs=
-X-Received: by 2002:a05:6e02:1a6e:b0:2d1:68e9:e8da with SMTP id
- w14-20020a056e021a6e00b002d168e9e8damr4910952ilv.252.1653084056901; Fri, 20
- May 2022 15:00:56 -0700 (PDT)
+        bh=vEa8wOAy1yjkPGX5niq7cKlzEqEbn5vgGX01uFZeyx0=;
+        b=5vFid8GigkJ5F+XG39D1PWKyZdOeKs78ACXpkaWv2OEHuvS0YU7JwdvxqehWdbHAMC
+         R0Smk5W75cHLEOEQYZcQ2c8pIMQedNxlXYlJhCLkzC6H8Z07nrvEdKusFymDs0B+2WvO
+         Rh8AdNimQFGUCFs0WwBKL0CxZuUqAjuxYuN6JrHAAPy8Dx6c7UrqttciKTro2cP6Io6K
+         t2mSHu2SOlvymVRm+iTq9lAVDuBkni5JMUcZhYTwtepPeFUmWJd3dEwzU0OINUhCFDFJ
+         wRukI8zwkIqDQrBqWADpYzTuycM3wua2HOw0sOkJS84pF2QzwDIoFB1HqMAWwK9Yn9Ud
+         krMQ==
+X-Gm-Message-State: AOAM531xtyZ/JLOJDSWAYi6SuHlWxaSFMqDy4qfdpqsZ3wbpS2jS2Zog
+        ajKhBW0SvHR2QSHhU9wSqJxHJWg0IK/bWQ98B35sMho9
+X-Google-Smtp-Source: ABdhPJylF+Cpre/GiNn3g19TPGrcInAvsIOw3/g+SromJnXzeeMISXrmlBvn+4RN1atdrpxe1dwbke3HGSoWnNXtBmc=
+X-Received: by 2002:a67:f745:0:b0:335:e652:c692 with SMTP id
+ w5-20020a67f745000000b00335e652c692mr4980498vso.52.1653084301990; Fri, 20 May
+ 2022 15:05:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220518025053.20492-1-zhoufeng.zf@bytedance.com> <cd5bb286-506b-5cdb-f721-0464a58659db@fb.com>
-In-Reply-To: <cd5bb286-506b-5cdb-f721-0464a58659db@fb.com>
+References: <cover.1652870182.git.lorenzo@kernel.org> <e95abdd9c6fa1fa97f3ca60e8eb06799784e671a.1652870182.git.lorenzo@kernel.org>
+In-Reply-To: <e95abdd9c6fa1fa97f3ca60e8eb06799784e671a.1652870182.git.lorenzo@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 20 May 2022 15:00:45 -0700
-Message-ID: <CAEf4BzaE_WJBQ6xxMy8VmJy3OsPyCCjyRKi_F-CdPLwVVp+7Ng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix some bugs in
- map_lookup_percpu_elem testcase
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Feng zhou <zhoufeng.zf@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>,
+Date:   Fri, 20 May 2022 15:04:47 -0700
+Message-ID: <CAEf4BzZuKOR2y1LOzZLWm1sMFw3psPuzFcoYJ-yj0+PgzB2C1g@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 5/5] selftests/bpf: add selftest for
+ bpf_xdp_ct_add and bpf_ct_refresh_timeout kfunc
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joanne Koong <joannekoong@fb.com>,
-        Geliang Tang <geliang.tang@suse.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        zhouchengming@bytedance.com, Yosry Ahmed <yosryahmed@google.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>, pabeni@redhat.com,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -86,29 +78,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 8:44 AM Yonghong Song <yhs@fb.com> wrote:
+On Wed, May 18, 2022 at 3:44 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >
+> Introduce selftests for the following kfunc helpers:
+> - bpf_xdp_ct_add
+> - bpf_skb_ct_add
+> - bpf_ct_refresh_timeout
 >
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  .../testing/selftests/bpf/prog_tests/bpf_nf.c |  4 ++
+>  .../testing/selftests/bpf/progs/test_bpf_nf.c | 72 +++++++++++++++----
+>  2 files changed, 64 insertions(+), 12 deletions(-)
 >
-> On 5/17/22 7:50 PM, Feng zhou wrote:
-> > From: Feng Zhou <zhoufeng.zf@bytedance.com>
-> >
-> > comments from Andrii Nakryiko, details in here:
-> > https://lore.kernel.org/lkml/20220511093854.411-1-zhoufeng.zf@bytedance.com/T/
-> >
-> > use /* */ instead of //
-> > use libbpf_num_possible_cpus() instead of sysconf(_SC_NPROCESSORS_ONLN)
-> > use 8 bytes for value size
-> > fix memory leak
-> > use ASSERT_EQ instead of ASSERT_OK
-> > add bpf_loop to fetch values on each possible CPU
-> >
-> > Fixes: ed7c13776e20c74486b0939a3c1de984c5efb6aa ("selftests/bpf: add test case for bpf_map_lookup_percpu_elem")
-> > Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->
-> Acked-by: Yonghong Song <yhs@fb.com>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> index dd30b1e3a67c..be6c5650892f 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> @@ -39,6 +39,10 @@ void test_bpf_nf_ct(int mode)
+>         ASSERT_EQ(skel->bss->test_enonet_netns_id, -ENONET, "Test ENONET for bad but valid netns_id");
+>         ASSERT_EQ(skel->bss->test_enoent_lookup, -ENOENT, "Test ENOENT for failed lookup");
+>         ASSERT_EQ(skel->bss->test_eafnosupport, -EAFNOSUPPORT, "Test EAFNOSUPPORT for invalid len__tuple");
+> +       ASSERT_EQ(skel->bss->test_add_entry, 0, "Test for adding new entry");
+> +       ASSERT_EQ(skel->bss->test_succ_lookup, 0, "Test for successful lookup");
+> +       ASSERT_TRUE(skel->bss->test_delta_timeout > 9 && skel->bss->test_delta_timeout <= 10,
+> +                   "Test for ct timeout update");
+
+if/when this fails we'll have "true != false" message not knowing what
+was the actual value of skel->bss->test_delta_timeout.
+
+This is equivalent to a much better:
+
+ASSERT_GT(skel->bss->test_delta_timeout, 9, "ct_timeout1");
+ASSERT_LE(skel->bss->test_delta_timeout, 10, "ct_timeout2");
+
+>  end:
+>         test_bpf_nf__destroy(skel);
+>  }
 
 
-I've fixed remaining formatting issues and added my_pid check to avoid
-accidental interference with other tests/processes. Applied to
-bpf-next, thanks.
+[...]
