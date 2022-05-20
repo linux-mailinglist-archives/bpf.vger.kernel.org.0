@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C5752E636
-	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 09:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B3652E668
+	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 09:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346409AbiETHYu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 03:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56286 "EHLO
+        id S1346578AbiETHl3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 03:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242746AbiETHYt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 03:24:49 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F63214ACBE;
-        Fri, 20 May 2022 00:24:48 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id z3so5553239pgn.4;
-        Fri, 20 May 2022 00:24:48 -0700 (PDT)
+        with ESMTP id S235703AbiETHl2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 03:41:28 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C643B427D2;
+        Fri, 20 May 2022 00:41:26 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id w200so7080310pfc.10;
+        Fri, 20 May 2022 00:41:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=XeafRqcB/dUPhMnvYlhk8N3gK6kHX7tikPF48apxqmw=;
-        b=cJ9CJuPHHTubONmMlTRk8f+pyXocuBGlxy7/QoVBvkeelp7nLsvi/2E3QAn80sU9fj
-         4+NsAa9yCw5EJsUcLaGnbkELNj4M/LDEaF0eh9sNdGdaFnrl9yUV/qRnf+xr/JHuL66X
-         a7S//c7Gqwn7LYFue2cBGcUPCnQNj+nqYBYPA13AGB0JJCnF+ZhmhOr+vA1Gc3m9FJfv
-         oOppPDMGp9IXsXgwpZmbopLq6bc/3wyEzAbGJoe8O0NJ2x8dYrfNnCmE/w/dO+aqQLRN
-         04faEAXLVzkjgi7ZzoH2hzx9SmLt3TJZGDaGdojTLZUI7pKIuwka6ZaoiQzpOvdNURRZ
-         4sAA==
+        bh=RCiECH/4G+z+xrwvKHneVVOuojV/v569kz7/GW36BxA=;
+        b=Y8SCxfyRjKdY8qHJ3D4MDAZ5k3+J3h3mX8JWQ+xBHcE8p3iO9tZ9IBCP5gj32yCPE8
+         Clg7iXRfHY0fEx7/ycD4AG4FtmgatsPL53gSb+rNQffMPMQq+aeV4Sbw4RVVJmZxhQu5
+         1Owu29+6Z4Ha2goDPmiWf/TyIsNFhmhYVbYH7RxaWBMA5P/4SIoTBrXueUvhjNT2k8gW
+         qMY/Y2kIMoC31//gOwbZ8QeLasI0I4hDPGUIGRVFoiiH89bdBuFbnhXt6lkosObFJ4yq
+         U0xBnKJpnSaRD0o1i1A5o7yqYLZpXQXDF2twY3a2B97ob6Hz5ulQIqFmU41wGVN+9V3E
+         0inA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=XeafRqcB/dUPhMnvYlhk8N3gK6kHX7tikPF48apxqmw=;
-        b=TD3iaCnScsw2nm+F2Z7l5ByCV1w8LJE115n5kJ44NwAYx/WCTF83ITbxL72Dftsi90
-         TgP/6YrOW85cVSK3xlAONbd2BN4Xa6HsvgMcTLdyQY/9uNAf7FxdQae6Ege6c76eZ3Wa
-         H6apXhPxgoKgntSBdFAGNemCLUq++4+iqsFbLj35fqgjsHfTHhDWsxco9DpkQqnJB+jP
-         ISZUjI2FPWwbn1QW8sUHeAz/1WhYYfFDVWSH87LjZs15804FMxV1xJiqAuqVrNiEOAqj
-         mxeV6hyUrilAOeXPZpBgLD1DCtcluIY8gYTeC6RL9Us9dWo/+stlblXtQFAqxPHVlyWm
-         Yl+Q==
-X-Gm-Message-State: AOAM531ogXiavwo1FOukdUFAabXCTyHsGzt7IfgGXgmLB9Z98qVmEoMy
-        QGUDbIBsjDCZ6eAv91eoifk=
-X-Google-Smtp-Source: ABdhPJwkMr+sTWJc8WLzm0jCGLrX1wqE6gCvsUk6ga6zRArMtZVx1hEhLi+KOd5tHcN5g4pNsJtGNQ==
-X-Received: by 2002:a63:7d4a:0:b0:398:dad:6963 with SMTP id m10-20020a637d4a000000b003980dad6963mr7342754pgn.329.1653031487396;
-        Fri, 20 May 2022 00:24:47 -0700 (PDT)
+        bh=RCiECH/4G+z+xrwvKHneVVOuojV/v569kz7/GW36BxA=;
+        b=sHYaSfHbJKGB/3TMiWHsMjuf6G+U9D4TPVGfUk9jwrQfx1loIve1o20SnFa7ux4Y8B
+         mqu0J+2KxJWOUO2geTMfcctD29ZzsD6WXIbZ5tjiaPDnE9ANgLNzhamINefQHmxU5wvn
+         kH8OkmnMxdDkqhMRvfLEr32YZSPo3mvs6pGj2ZIw+ZvCX5jKAQ4Q0ne3A8bk2ZfiQPgZ
+         TJp5aUXrDBZx10PdwO9T1c1RUYywy8ykGxezzT2hQfKHZeWKgDlPcmjhwATgH40g59Xb
+         MR9Rgx1DzzhniztqD097Uv/ZvU7EMckhkoj/i8bIooA8h2eMvDBUc28AQ6Ij89NZJ+k6
+         UyxQ==
+X-Gm-Message-State: AOAM533e05pqoZ00EFm3rBdWleKiAk0HiFZJ8vY/Y11jgZIu431l6VKu
+        JSbQTbeDalWIWGNxj5pYRFc=
+X-Google-Smtp-Source: ABdhPJxcTEkof1uQ6x1eykZuGZYblVaFc0hP+mm+mT9iEKeVIpGAv/+B1zkRoAOzKGQG7BIpRCsjyQ==
+X-Received: by 2002:a05:6a00:a94:b0:4fd:c14b:21cb with SMTP id b20-20020a056a000a9400b004fdc14b21cbmr8999494pfl.53.1653032486217;
+        Fri, 20 May 2022 00:41:26 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::4:1761])
-        by smtp.gmail.com with ESMTPSA id nk10-20020a17090b194a00b001df6ccdf3f6sm1062191pjb.47.2022.05.20.00.24.46
+        by smtp.gmail.com with ESMTPSA id o10-20020a170902d4ca00b0015e8d4eb228sm5091246plg.114.2022.05.20.00.41.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 May 2022 00:24:46 -0700 (PDT)
+        Fri, 20 May 2022 00:41:25 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 19 May 2022 21:24:45 -1000
+Date:   Thu, 19 May 2022 21:41:23 -1000
 From:   Tejun Heo <tj@kernel.org>
 To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -69,15 +69,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1 2/5] cgroup: bpf: add cgroup_rstat_updated()
- and cgroup_rstat_flush() kfuncs
-Message-ID: <YodCPWqZodr7Shnj@slm.duckdns.org>
+Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
+Message-ID: <YodGI73xq8aIBrNM@slm.duckdns.org>
 References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-3-yosryahmed@google.com>
+ <20220520012133.1217211-4-yosryahmed@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220520012133.1217211-3-yosryahmed@google.com>
+In-Reply-To: <20220520012133.1217211-4-yosryahmed@google.com>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -89,16 +88,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 20, 2022 at 01:21:30AM +0000, Yosry Ahmed wrote:
-> Add cgroup_rstat_updated() and cgroup_rstat_flush() kfuncs to bpf
-> tracing programs. bpf programs that make use of rstat can use these
-> functions to inform rstat when they update stats for a cgroup, and when
-> they need to flush the stats.
+On Fri, May 20, 2022 at 01:21:31AM +0000, Yosry Ahmed wrote:
+> From: Hao Luo <haoluo@google.com>
 > 
+> Introduce a new type of iter prog: cgroup. Unlike other bpf_iter, this
+> iter doesn't iterate a set of kernel objects. Instead, it is supposed to
+> be parameterized by a cgroup id and prints only that cgroup. So one
+> needs to specify a target cgroup id when attaching this iter. The target
+> cgroup's state can be read out via a link of this iter.
+> 
+> Signed-off-by: Hao Luo <haoluo@google.com>
 > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
-Do patch 1 and 2 need to be separate? Also, can you explain and comment why
-it's __weak?
+This could be me not understanding why it's structured this way but it keeps
+bothering me that this is adding a cgroup iterator which doesn't iterate
+cgroups. If all that's needed is extracting information from a specific
+cgroup, why does this need to be an iterator? e.g. why can't I use
+BPF_PROG_TEST_RUN which looks up the cgroup with the provided ID, flushes
+rstat, retrieves whatever information necessary and returns that as the
+result?
 
 Thanks.
 
