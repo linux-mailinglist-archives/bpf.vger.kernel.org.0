@@ -2,85 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E6F52EF61
-	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 17:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC8252F007
+	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 18:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350944AbiETPjo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 11:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
+        id S1351333AbiETQH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 12:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351026AbiETPj2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 11:39:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EB25A179966
-        for <bpf@vger.kernel.org>; Fri, 20 May 2022 08:39:26 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9B921477;
-        Fri, 20 May 2022 08:39:26 -0700 (PDT)
-Received: from e126130.arm.com (unknown [10.57.83.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B0CC23F73D;
-        Fri, 20 May 2022 08:39:25 -0700 (PDT)
-From:   Douglas RAILLARD <douglas.raillard@arm.com>
-To:     bpf@vger.kernel.org
-Cc:     beata.michalska@arm.com
-Subject: [PATCH] libbpf: Fix determine_ptr_size() guessing
-Date:   Fri, 20 May 2022 16:38:51 +0100
-Message-Id: <20220520153851.2873337-1-douglas.raillard@arm.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S1351323AbiETQHZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 12:07:25 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CB6179C0A
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 09:07:24 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id m20so968014wrb.13
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 09:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vjm4J0UEt15jqND8yu0VfF/JH1EN98mQjkeJ7hl8/Ec=;
+        b=pPChiNi8weWzvtqUuLzWWN2Kgh2JKNWRx5//iF1unO8QpnGtgal2d+z5kUsLbQsqKy
+         iHC3AYYDtLWRRgw2yCAySZ8Ywti0zeA2fYn2pv1Xe4XdvkmRTRyUHnRjCLoEL43VJa0g
+         1J8laDrC6/zJaUOeTtGsHCUINSBHrKxQ7oXtFbZabduDuf43ww/MDXDlbez6NkDjViSO
+         LsjWN1wqp7T6IXSp894JQqkMs270xetYAn1vvBHxJ++4OeXX48qWMWNLUTLtcY1aSWDJ
+         pnmt8q1zLR1CrKceQKXburkrirj3qSugVm3o12bP8B2MFxjXwSKaUfM01FpwzqTdSzsH
+         J+WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vjm4J0UEt15jqND8yu0VfF/JH1EN98mQjkeJ7hl8/Ec=;
+        b=ecLnUiqbk/F2QTVd/zY1PXoAjRJkQq2pt8bbtNtlwGnCqedHSVQtzjAzlyXtiVPvnw
+         oqHEEBgzeRkE6kK1ua3upbzzlJo3DY3Ql4KOa63E0txdUDHL6HbNHbv+Nn99ShBEUwIY
+         P+Rqk5L6Fbet6AY9/u2nbQHmNGXkC4J0pFL9vSnbwTKxnX86P28QrVaht5ilRmvtfaFw
+         yVPzcWXtLOej5cAbvpbz32iKLlQbiPNACfAlxQ+J57ziro5fV8+RBw25Jc/hltGFlWZh
+         D9czeFaCgC0qHs7ICVFhfLsKQMV6KRSDZovmc+JJSG/UOs4gc2OvczLvH3ttIItKQnng
+         UGdA==
+X-Gm-Message-State: AOAM530BizHYxXw7+jxV6lIheDqPcjJKiKEgdN119syZUSQIk1hGcFyz
+        MnSTM/q+wBc+lgdCNByslWHn7O/sdR5/qGWF+yjjQw==
+X-Google-Smtp-Source: ABdhPJyvrAp0ppwCu/vsoKM0hStCVU3p6mote7hU6XHEUMdo4mKSp8lLrUmaB2i0ZQ9fpvWW0qLPhEi2esy86EUcAKM=
+X-Received: by 2002:a5d:6146:0:b0:20d:d42:e954 with SMTP id
+ y6-20020a5d6146000000b0020d0d42e954mr8938736wrt.372.1653062842564; Fri, 20
+ May 2022 09:07:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220520012133.1217211-3-yosryahmed@google.com> <YodCPWqZodr7Shnj@slm.duckdns.org>
+ <CAJD7tkYDLc9irHLFROcYSg1shwCw+Stt5HTS08FW3ceQ5b8vqQ@mail.gmail.com>
+ <20220520093607.sadvim2igfde6x22@apollo.legion> <Yod4cN+HayIDhR/c@slm.duckdns.org>
+In-Reply-To: <Yod4cN+HayIDhR/c@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 20 May 2022 09:06:45 -0700
+Message-ID: <CAJD7tkaPD94+61hrdr8qTV66RtfWOC+35=nGb9id_N1LrisCPA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/5] cgroup: bpf: add cgroup_rstat_updated()
+ and cgroup_rstat_flush() kfuncs
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Douglas Raillard <douglas.raillard@arm.com>
+On Fri, May 20, 2022 at 4:16 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Fri, May 20, 2022 at 03:06:07PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > With static noinline, the compiler will optimize away the function. With global
+> > noinline, it can still optimize away the call site, but will keep the function
+> > definition, so attach works. Therefore __weak is needed to ensure call is still
+> > emitted. With GCC __attribute__((noipa)) might have been more appropritate, but
+> > LLVM doesn't support it, so __weak is the next best thing supported by both with
+> > the same side effect.
 
-One strategy employed by libbpf to guess the pointer size is by finding
-the size of "unsigned long" type. This is achieved by looking for a type
-of with the expected name and checking its size.
+Thanks a lot for the explanation!
 
-Unfortunately, the C syntax is friendlier to humans than to computers
-as there is some variety in how such a type can be named. Specifically,
-gcc and clang do not use the same name in debug info.
+>
+> Ah, okay, so it's to prevent compiler from optimizing away call to a noop
+> function by telling it that we don't know what the function might eventually
+> be. Thanks for the explanation. Yosry, can you please add a comment
+> explaining what's going on?
 
-Lookup all the names for such a type so that libbpf can hope to find the
-information it wants.
+Will add a comment explaining things in the next section.  Thanks for
+reviewing this, Tejun!
 
-Signed-off-by: Douglas Raillard <douglas.raillard@arm.com>
----
- tools/lib/bpf/btf.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 1383e26c5d1f..ce05e4b1febd 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -489,8 +489,18 @@ static int determine_ptr_size(const struct btf *btf)
- 		if (!name)
- 			continue;
- 
--		if (strcmp(name, "long int") == 0 ||
--		    strcmp(name, "long unsigned int") == 0) {
-+		if (
-+			strcmp(name, "long int") == 0 ||
-+			strcmp(name, "int long") == 0 ||
-+			strcmp(name, "unsigned long") == 0 ||
-+			strcmp(name, "long unsigned") == 0 ||
-+			strcmp(name, "unsigned long int") == 0 ||
-+			strcmp(name, "unsigned int long") == 0 ||
-+			strcmp(name, "long unsigned int") == 0 ||
-+			strcmp(name, "long int unsigned") == 0 ||
-+			strcmp(name, "int unsigned long") == 0 ||
-+			strcmp(name, "int long unsigned") == 0
-+		) {
- 			if (t->size != 4 && t->size != 8)
- 				continue;
- 			return t->size;
--- 
-2.25.1
-
+>
+> Thanks.
+>
+> --
+> tejun
