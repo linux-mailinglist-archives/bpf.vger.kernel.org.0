@@ -2,984 +2,557 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD7352E3FC
-	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 06:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4AC52E4CA
+	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 08:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345414AbiETEns (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 00:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        id S1345741AbiETGKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 02:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345383AbiETEnq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 00:43:46 -0400
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A411F14AC83
-        for <bpf@vger.kernel.org>; Thu, 19 May 2022 21:43:36 -0700 (PDT)
-Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
-        id 68F09C9E2024; Thu, 19 May 2022 21:43:25 -0700 (PDT)
-From:   Joanne Koong <joannelkoong@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH bpf-next v5 6/6] selftests/bpf: Dynptr tests
-Date:   Thu, 19 May 2022 21:42:45 -0700
-Message-Id: <20220520044245.3305025-7-joannelkoong@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220520044245.3305025-1-joannelkoong@gmail.com>
-References: <20220520044245.3305025-1-joannelkoong@gmail.com>
+        with ESMTP id S234755AbiETGKL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 02:10:11 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75E114B672;
+        Thu, 19 May 2022 23:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653027008; x=1684563008;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0IGNZy702JKiu4Ffd+miSfnDB5aL95QU70i4umciOZU=;
+  b=nMje4jNl21GKaG7y7MeqERj2cfFKj7CzwZMn+boqkviRLEsG11FS3U9o
+   GzK09/dAjU2bSUo5DYhcvotApEfeBb2gGd+ElvBz2A9tbGF0PY6UrvAml
+   x9iqyS0YJ49622ymdZqPqck8s+ZeNN/olGlMvqOAzmfLYOQXhvI1bt/yZ
+   CODlUn7dAc9Mh0/OUeHk1MH12Nbo/OA7XMMtk+GJ5P1iLxRVbT4bChvBr
+   ANMkXeD9bxOtco79T2Gw+ro6bE2FgCds60737YNO5DWZuvD77Q4NGENDY
+   Y/IsDI0+17J6OObDNsIkyy2A+qCL+9TII5QgfmnpA+dukxzsHjNg4d1ei
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10352"; a="253019642"
+X-IronPort-AV: E=Sophos;i="5.91,238,1647327600"; 
+   d="scan'208";a="253019642"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2022 23:10:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,238,1647327600"; 
+   d="scan'208";a="576024797"
+Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 19 May 2022 23:10:03 -0700
+Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nrvpr-0004Lj-5P;
+        Fri, 20 May 2022 06:10:03 +0000
+Date:   Fri, 20 May 2022 14:08:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     netdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-sh@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-mm@kvack.org, linux-hwmon@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, linux-arch@vger.kernel.org,
+        kvm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 21498d01d045c5b95b93e0a0625ae965b4330ebe
+Message-ID: <62873074.g1g0twvcKbX70gr/%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=1.6 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
-        SPF_HELO_PASS,SPF_SOFTFAIL,TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds tests for dynptrs, which include cases that the
-verifier needs to reject (for example, a bpf_ringbuf_reserve_dynptr
-without a corresponding bpf_ringbuf_submit/discard_dynptr) as well
-as cases that should successfully pass.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 21498d01d045c5b95b93e0a0625ae965b4330ebe  Add linux-next specific files for 20220519
 
-Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/dynptr.c | 137 ++++
- .../testing/selftests/bpf/progs/dynptr_fail.c | 588 ++++++++++++++++++
- .../selftests/bpf/progs/dynptr_success.c      | 164 +++++
- 3 files changed, 889 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/dynptr.c
- create mode 100644 tools/testing/selftests/bpf/progs/dynptr_fail.c
- create mode 100644 tools/testing/selftests/bpf/progs/dynptr_success.c
+Error/Warning reports:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/test=
-ing/selftests/bpf/prog_tests/dynptr.c
-new file mode 100644
-index 000000000000..11af3c5ef2c7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-@@ -0,0 +1,137 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Facebook */
-+
-+#include <test_progs.h>
-+#include "dynptr_fail.skel.h"
-+#include "dynptr_success.skel.h"
-+
-+static size_t log_buf_sz =3D 1048576; /* 1 MB */
-+static char obj_log_buf[1048576];
-+
-+static struct {
-+	const char *prog_name;
-+	const char *expected_err_msg;
-+} dynptr_tests[] =3D {
-+	/* failure cases */
-+	{"ringbuf_missing_release1", "Unreleased reference id=3D1"},
-+	{"ringbuf_missing_release2", "Unreleased reference id=3D2"},
-+	{"ringbuf_missing_release_callback", "Unreleased reference id"},
-+	{"use_after_invalid", "Expected an initialized dynptr as arg #3"},
-+	{"ringbuf_invalid_api", "type=3Ddynptr_mem expected=3Dalloc_mem"},
-+	{"add_dynptr_to_map1", "invalid indirect read from stack"},
-+	{"add_dynptr_to_map2", "invalid indirect read from stack"},
-+	{"data_slice_out_of_bounds_ringbuf", "value is outside of the allowed m=
-emory range"},
-+	{"data_slice_out_of_bounds_map_value", "value is outside of the allowed=
- memory range"},
-+	{"data_slice_use_after_release", "invalid mem access 'scalar'"},
-+	{"data_slice_missing_null_check1", "invalid mem access 'dynptr_mem_or_n=
-ull'"},
-+	{"data_slice_missing_null_check2", "invalid mem access 'dynptr_mem_or_n=
-ull'"},
-+	{"invalid_helper1", "invalid indirect read from stack"},
-+	{"invalid_helper2", "Expected an initialized dynptr as arg #3"},
-+	{"invalid_write1", "Expected an initialized dynptr as arg #1"},
-+	{"invalid_write2", "Expected an initialized dynptr as arg #3"},
-+	{"invalid_write3", "Expected an initialized ringbuf dynptr as arg #1"},
-+	{"invalid_write4", "arg 1 is an unacquired reference"},
-+	{"invalid_read1", "invalid read from stack"},
-+	{"invalid_read2", "cannot pass in dynptr at an offset"},
-+	{"invalid_read3", "invalid read from stack"},
-+	{"invalid_read4", "invalid read from stack"},
-+	{"invalid_offset", "invalid write to stack"},
-+	{"global", "type=3Dmap_value expected=3Dfp"},
-+	{"release_twice", "arg 1 is an unacquired reference"},
-+	{"release_twice_callback", "arg 1 is an unacquired reference"},
-+	{"dynptr_from_mem_invalid_api",
-+		"Unsupported reg type fp for arg type ARG_PTR_TO_MEM with DYNPTR_TYPE_=
-LOCAL set"},
-+
-+	/* success cases */
-+	{"test_read_write", NULL},
-+	{"test_data_slice", NULL},
-+	{"test_ringbuf", NULL},
-+};
-+
-+static void verify_fail(const char *prog_name, const char *expected_err_=
-msg)
-+{
-+	LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	struct bpf_program *prog;
-+	struct dynptr_fail *skel;
-+	int err;
-+
-+	opts.kernel_log_buf =3D obj_log_buf;
-+	opts.kernel_log_size =3D log_buf_sz;
-+	opts.kernel_log_level =3D 1;
-+
-+	skel =3D dynptr_fail__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "dynptr_fail__open_opts"))
-+		goto cleanup;
-+
-+	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto cleanup;
-+
-+	bpf_program__set_autoload(prog, true);
-+
-+	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
-+
-+	err =3D dynptr_fail__load(skel);
-+	if (!ASSERT_ERR(err, "unexpected load success"))
-+		goto cleanup;
-+
-+	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err=
-_msg")) {
-+		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
-+		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
-+	}
-+
-+cleanup:
-+	dynptr_fail__destroy(skel);
-+}
-+
-+static void verify_success(const char *prog_name)
-+{
-+	struct dynptr_success *skel;
-+	struct bpf_program *prog;
-+	struct bpf_link *link;
-+
-+	skel =3D dynptr_success__open();
-+	if (!ASSERT_OK_PTR(skel, "dynptr_success__open"))
-+		return;
-+
-+	skel->bss->pid =3D getpid();
-+
-+	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
-+
-+	dynptr_success__load(skel);
-+	if (!ASSERT_OK_PTR(skel, "dynptr_success__load"))
-+		goto cleanup;
-+
-+	prog =3D bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto cleanup;
-+
-+	link =3D bpf_program__attach(prog);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach"))
-+		goto cleanup;
-+
-+	usleep(1);
-+
-+	ASSERT_EQ(skel->bss->err, 0, "err");
-+
-+	bpf_link__destroy(link);
-+
-+cleanup:
-+	dynptr_success__destroy(skel);
-+}
-+
-+void test_dynptr(void)
-+{
-+	int i;
-+
-+	for (i =3D 0; i < ARRAY_SIZE(dynptr_tests); i++) {
-+		if (!test__start_subtest(dynptr_tests[i].prog_name))
-+			continue;
-+
-+		if (dynptr_tests[i].expected_err_msg)
-+			verify_fail(dynptr_tests[i].prog_name,
-+				    dynptr_tests[i].expected_err_msg);
-+		else
-+			verify_success(dynptr_tests[i].prog_name);
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/test=
-ing/selftests/bpf/progs/dynptr_fail.c
-new file mode 100644
-index 000000000000..d811cff73597
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-@@ -0,0 +1,588 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Facebook */
-+
-+#include <errno.h>
-+#include <string.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct test_info {
-+	int x;
-+	struct bpf_dynptr ptr;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct bpf_dynptr);
-+} array_map1 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct test_info);
-+} array_map2 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} array_map3 SEC(".maps");
-+
-+struct sample {
-+	int pid;
-+	long value;
-+	char comm[16];
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+} ringbuf SEC(".maps");
-+
-+int err, val;
-+
-+static int get_map_val_dynptr(struct bpf_dynptr *ptr)
-+{
-+	__u32 key =3D 0, *map_val;
-+
-+	bpf_map_update_elem(&array_map3, &key, &val, 0);
-+
-+	map_val =3D bpf_map_lookup_elem(&array_map3, &key);
-+	if (!map_val)
-+		return -ENOENT;
-+
-+	bpf_dynptr_from_mem(map_val, sizeof(*map_val), 0, ptr);
-+
-+	return 0;
-+}
-+
-+/* Every bpf_ringbuf_reserve_dynptr call must have a corresponding
-+ * bpf_ringbuf_submit/discard_dynptr call
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int ringbuf_missing_release1(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
-+
-+	/* missing a call to bpf_ringbuf_discard/submit_dynptr */
-+
-+	return 0;
-+}
-+
-+SEC("?raw_tp/sys_nanosleep")
-+int ringbuf_missing_release2(void *ctx)
-+{
-+	struct bpf_dynptr ptr1, ptr2;
-+	struct sample *sample;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr1);
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr2);
-+
-+	sample =3D bpf_dynptr_data(&ptr1, 0, sizeof(*sample));
-+	if (!sample) {
-+		bpf_ringbuf_discard_dynptr(&ptr1, 0);
-+		bpf_ringbuf_discard_dynptr(&ptr2, 0);
-+		return 0;
-+	}
-+
-+	bpf_ringbuf_submit_dynptr(&ptr1, 0);
-+
-+	/* missing a call to bpf_ringbuf_discard/submit_dynptr on ptr2 */
-+
-+	return 0;
-+}
-+
-+static int missing_release_callback_fn(__u32 index, void *data)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
-+
-+	/* missing a call to bpf_ringbuf_discard/submit_dynptr */
-+
-+	return 0;
-+}
-+
-+/* Any dynptr initialized within a callback must have bpf_dynptr_put cal=
-led */
-+SEC("?raw_tp/sys_nanosleep")
-+int ringbuf_missing_release_callback(void *ctx)
-+{
-+	bpf_loop(10, missing_release_callback_fn, NULL, 0);
-+	return 0;
-+}
-+
-+/* Can't call bpf_ringbuf_submit/discard_dynptr on a non-initialized dyn=
-ptr */
-+SEC("?raw_tp/sys_nanosleep")
-+int ringbuf_release_uninit_dynptr(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	/* this should fail */
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* A dynptr can't be used after it has been invalidated */
-+SEC("?raw_tp/sys_nanosleep")
-+int use_after_invalid(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	char read_data[64];
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(read_data), 0, &ptr);
-+
-+	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
-+
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+
-+	/* this should fail */
-+	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* Can't call non-dynptr ringbuf APIs on a dynptr ringbuf sample */
-+SEC("?raw_tp/sys_nanosleep")
-+int ringbuf_invalid_api(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	struct sample *sample;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr);
-+	sample =3D bpf_dynptr_data(&ptr, 0, sizeof(*sample));
-+	if (!sample)
-+		goto done;
-+
-+	sample->pid =3D 123;
-+
-+	/* invalid API use. need to use dynptr API to submit/discard */
-+	bpf_ringbuf_submit(sample, 0);
-+
-+done:
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+	return 0;
-+}
-+
-+/* Can't add a dynptr to a map */
-+SEC("?raw_tp/sys_nanosleep")
-+int add_dynptr_to_map1(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	int key =3D 0;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
-+
-+	/* this should fail */
-+	bpf_map_update_elem(&array_map1, &key, &ptr, 0);
-+
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* Can't add a struct with an embedded dynptr to a map */
-+SEC("?raw_tp/sys_nanosleep")
-+int add_dynptr_to_map2(void *ctx)
-+{
-+	struct test_info x;
-+	int key =3D 0;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &x.ptr);
-+
-+	/* this should fail */
-+	bpf_map_update_elem(&array_map2, &key, &x, 0);
-+
-+	bpf_ringbuf_submit_dynptr(&x.ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* A data slice can't be accessed out of bounds */
-+SEC("?raw_tp/sys_nanosleep")
-+int data_slice_out_of_bounds_ringbuf(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	void *data;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 8, 0, &ptr);
-+
-+	data  =3D bpf_dynptr_data(&ptr, 0, 8);
-+	if (!data)
-+		goto done;
-+
-+	/* can't index out of bounds of the data slice */
-+	val =3D *((char *)data + 8);
-+
-+done:
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+	return 0;
-+}
-+
-+SEC("?raw_tp/sys_nanosleep")
-+int data_slice_out_of_bounds_map_value(void *ctx)
-+{
-+	__u32 key =3D 0, map_val;
-+	struct bpf_dynptr ptr;
-+	void *data;
-+
-+	get_map_val_dynptr(&ptr);
-+
-+	data  =3D bpf_dynptr_data(&ptr, 0, sizeof(map_val));
-+	if (!data)
-+		return 0;
-+
-+	/* can't index out of bounds of the data slice */
-+	val =3D *((char *)data + (sizeof(map_val) + 1));
-+
-+	return 0;
-+}
-+
-+/* A data slice can't be used after it has been released */
-+SEC("?raw_tp/sys_nanosleep")
-+int data_slice_use_after_release(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	struct sample *sample;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr);
-+	sample =3D bpf_dynptr_data(&ptr, 0, sizeof(*sample));
-+	if (!sample)
-+		goto done;
-+
-+	sample->pid =3D 123;
-+
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+
-+	/* this should fail */
-+	val =3D sample->pid;
-+
-+	return 0;
-+
-+done:
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+	return 0;
-+}
-+
-+/* A data slice must be first checked for NULL */
-+SEC("?raw_tp/sys_nanosleep")
-+int data_slice_missing_null_check1(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	void *data;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 8, 0, &ptr);
-+
-+	data  =3D bpf_dynptr_data(&ptr, 0, 8);
-+
-+	/* missing if (!data) check */
-+
-+	/* this should fail */
-+	*(__u8 *)data =3D 3;
-+
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+	return 0;
-+}
-+
-+/* A data slice can't be dereferenced if it wasn't checked for null */
-+SEC("?raw_tp/sys_nanosleep")
-+int data_slice_missing_null_check2(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	__u64 *data1, *data2;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 16, 0, &ptr);
-+
-+	data1 =3D bpf_dynptr_data(&ptr, 0, 8);
-+	data2 =3D bpf_dynptr_data(&ptr, 0, 8);
-+	if (data1)
-+		/* this should fail */
-+		*data2 =3D 3;
-+
-+done:
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+	return 0;
-+}
-+
-+/* Can't pass in a dynptr as an arg to a helper function that doesn't ta=
-ke in a
-+ * dynptr argument
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_helper1(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	get_map_val_dynptr(&ptr);
-+
-+	/* this should fail */
-+	bpf_strncmp((const char *)&ptr, sizeof(ptr), "hello!");
-+
-+	return 0;
-+}
-+
-+/* A dynptr can't be passed into a helper function at a non-zero offset =
-*/
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_helper2(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	char read_data[64];
-+
-+	get_map_val_dynptr(&ptr);
-+
-+	/* this should fail */
-+	bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 8, 0);
-+
-+	return 0;
-+}
-+
-+/* A bpf_dynptr is invalidated if it's been written into */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_write1(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	void *data;
-+	__u8 x =3D 0;
-+
-+	get_map_val_dynptr(&ptr);
-+
-+	memcpy(&ptr, &x, sizeof(x));
-+
-+	/* this should fail */
-+	data =3D bpf_dynptr_data(&ptr, 0, 1);
-+
-+	return 0;
-+}
-+
-+/*
-+ * A bpf_dynptr can't be used as a dynptr if it has been written into at=
- a fixed
-+ * offset
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_write2(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	char read_data[64];
-+	__u8 x =3D 0;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr);
-+
-+	memcpy((void *)&ptr + 8, &x, sizeof(x));
-+
-+	/* this should fail */
-+	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
-+
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+/*
-+ * A bpf_dynptr can't be used as a dynptr if it has been written into at=
- a
-+ * non-const offset
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_write3(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	char stack_buf[16];
-+	unsigned long len;
-+	__u8 x =3D 0;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 8, 0, &ptr);
-+
-+	memcpy(stack_buf, &val, sizeof(val));
-+	len =3D stack_buf[0] & 0xf;
-+
-+	memcpy((void *)&ptr + len, &x, sizeof(x));
-+
-+	/* this should fail */
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+static int invalid_write4_callback(__u32 index, void *data)
-+{
-+	*(__u32 *)data =3D 123;
-+
-+	return 0;
-+}
-+
-+/* If the dynptr is written into in a callback function, it should
-+ * be invalidated as a dynptr
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_write4(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr);
-+
-+	bpf_loop(10, invalid_write4_callback, &ptr, 0);
-+
-+	/* this should fail */
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* A globally-defined bpf_dynptr can't be used (it must reside as a stac=
-k frame) */
-+struct bpf_dynptr global_dynptr;
-+SEC("?raw_tp/sys_nanosleep")
-+int global(void *ctx)
-+{
-+	/* this should fail */
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 16, 0, &global_dynptr);
-+
-+	bpf_ringbuf_discard_dynptr(&global_dynptr, 0);
-+
-+	return 0;
-+}
-+
-+/* A direct read should fail */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_read1(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr);
-+
-+	/* this should fail */
-+	val =3D *(int *)&ptr;
-+
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* A direct read at an offset should fail */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_read2(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	char read_data[64];
-+
-+	get_map_val_dynptr(&ptr);
-+
-+	/* this should fail */
-+	bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 1, 0);
-+
-+	return 0;
-+}
-+
-+/* A direct read at an offset into the lower stack slot should fail */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_read3(void *ctx)
-+{
-+	struct bpf_dynptr ptr1, ptr2;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 16, 0, &ptr1);
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 16, 0, &ptr2);
-+
-+	/* this should fail */
-+	memcpy(&val, (void *)&ptr1 + 8, sizeof(val));
-+
-+	bpf_ringbuf_discard_dynptr(&ptr1, 0);
-+	bpf_ringbuf_discard_dynptr(&ptr2, 0);
-+
-+	return 0;
-+}
-+
-+static int invalid_read4_callback(__u32 index, void *data)
-+{
-+	/* this should fail */
-+	val =3D *(__u32 *)data;
-+
-+	return 0;
-+}
-+
-+/* A direct read within a callback function should fail */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_read4(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr);
-+
-+	bpf_loop(10, invalid_read4_callback, &ptr, 0);
-+
-+	bpf_ringbuf_submit_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* Initializing a dynptr on an offset should fail */
-+SEC("?raw_tp/sys_nanosleep")
-+int invalid_offset(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	/* this should fail */
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr + 1);
-+
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* Can't release a dynptr twice */
-+SEC("?raw_tp/sys_nanosleep")
-+int release_twice(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 16, 0, &ptr);
-+
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+
-+	/* this second release should fail */
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+
-+	return 0;
-+}
-+
-+static int release_twice_callback_fn(__u32 index, void *data)
-+{
-+	/* this should fail */
-+	bpf_ringbuf_discard_dynptr(data, 0);
-+
-+	return 0;
-+}
-+
-+/* Test that releasing a dynptr twice, where one of the releases happens
-+ * within a calback function, fails
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int release_twice_callback(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 32, 0, &ptr);
-+
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+
-+	bpf_loop(10, release_twice_callback_fn, &ptr, 0);
-+
-+	return 0;
-+}
-+
-+/* Reject unsupported local mem types for dynptr_from_mem API */
-+SEC("?raw_tp/sys_nanosleep")
-+int dynptr_from_mem_invalid_api(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	int x =3D 0;
-+
-+	/* this should fail */
-+	bpf_dynptr_from_mem(&x, sizeof(x), 0, &ptr);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/t=
-esting/selftests/bpf/progs/dynptr_success.c
-new file mode 100644
-index 000000000000..d67be48df4b2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
-@@ -0,0 +1,164 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Facebook */
-+
-+#include <string.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "errno.h"
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+int pid, err, val;
-+
-+struct sample {
-+	int pid;
-+	int seq;
-+	long value;
-+	char comm[16];
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+} ringbuf SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} array_map SEC(".maps");
-+
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int test_read_write(void *ctx)
-+{
-+	char write_data[64] =3D "hello there, world!!";
-+	char read_data[64] =3D {}, buf[64] =3D {};
-+	struct bpf_dynptr ptr;
-+	int i;
-+
-+	if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
-+		return 0;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(write_data), 0, &ptr);
-+
-+	/* Write data into the dynptr */
-+	err =3D err ?: bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data)=
-);
-+
-+	/* Read the data that was written into the dynptr */
-+	err =3D err ?: bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
-+
-+	/* Ensure the data we read matches the data we wrote */
-+	for (i =3D 0; i < sizeof(read_data); i++) {
-+		if (read_data[i] !=3D write_data[i]) {
-+			err =3D 1;
-+			break;
-+		}
-+	}
-+
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+	return 0;
-+}
-+
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int test_data_slice(void *ctx)
-+{
-+	__u32 key =3D 0, val =3D 235, *map_val;
-+	struct bpf_dynptr ptr;
-+	__u32 map_val_size;
-+	void *data;
-+
-+	map_val_size =3D sizeof(*map_val);
-+
-+	if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
-+		return 0;
-+
-+	bpf_map_update_elem(&array_map, &key, &val, 0);
-+
-+	map_val =3D bpf_map_lookup_elem(&array_map, &key);
-+	if (!map_val) {
-+		err =3D 1;
-+		return 0;
-+	}
-+
-+	bpf_dynptr_from_mem(map_val, map_val_size, 0, &ptr);
-+
-+	/* Try getting a data slice that is out of range */
-+	data =3D bpf_dynptr_data(&ptr, map_val_size + 1, 1);
-+	if (data) {
-+		err =3D 2;
-+		return 0;
-+	}
-+
-+	/* Try getting more bytes than available */
-+	data =3D bpf_dynptr_data(&ptr, 0, map_val_size + 1);
-+	if (data) {
-+		err =3D 3;
-+		return 0;
-+	}
-+
-+	data =3D bpf_dynptr_data(&ptr, 0, sizeof(__u32));
-+	if (!data) {
-+		err =3D 4;
-+		return 0;
-+	}
-+
-+	*(__u32 *)data =3D 999;
-+
-+	err =3D bpf_probe_read_kernel(&val, sizeof(val), data);
-+	if (err)
-+		return 0;
-+
-+	if (val !=3D *(int *)data)
-+		err =3D 5;
-+
-+	return 0;
-+}
-+
-+static int ringbuf_callback(__u32 index, void *data)
-+{
-+	struct sample *sample;
-+
-+	struct bpf_dynptr *ptr =3D (struct bpf_dynptr *)data;
-+
-+	sample =3D bpf_dynptr_data(ptr, 0, sizeof(*sample));
-+	if (!sample)
-+		err =3D 2;
-+	else
-+		sample->pid +=3D index;
-+
-+	return 0;
-+}
-+
-+SEC("tp/syscalls/sys_enter_nanosleep")
-+int test_ringbuf(void *ctx)
-+{
-+	struct bpf_dynptr ptr;
-+	struct sample *sample;
-+
-+	if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
-+		return 0;
-+
-+	val =3D 100;
-+
-+	/* check that you can reserve a dynamic size reservation */
-+	err =3D bpf_ringbuf_reserve_dynptr(&ringbuf, val, 0, &ptr);
-+
-+	sample =3D err ? NULL : bpf_dynptr_data(&ptr, 0, sizeof(*sample));
-+	if (!sample) {
-+		err =3D 1;
-+		goto done;
-+	}
-+
-+	sample->pid =3D 10;
-+
-+	/* Can pass dynptr to callback functions */
-+	bpf_loop(10, ringbuf_callback, &ptr, 0);
-+
-+	if (sample->pid !=3D 55)
-+		err =3D 2;
-+
-+done:
-+	bpf_ringbuf_discard_dynptr(&ptr, 0);
-+	return 0;
-+}
---=20
-2.30.2
+https://lore.kernel.org/linux-mm/202204291924.vTGZmerI-lkp@intel.com
+https://lore.kernel.org/linux-mm/202205041248.WgCwPcEV-lkp@intel.com
+https://lore.kernel.org/linux-mm/202205122113.uLKzd3SZ-lkp@intel.com
+https://lore.kernel.org/linux-mm/202205172344.3GFeaum1-lkp@intel.com
+https://lore.kernel.org/linux-mm/202205192041.eAjgoXSY-lkp@intel.com
+https://lore.kernel.org/linux-mm/202205192334.DNijFnTC-lkp@intel.com
+https://lore.kernel.org/linux-mm/202205200219.llzx7zfy-lkp@intel.com
+https://lore.kernel.org/llvm/202205052057.2TyEsXsL-lkp@intel.com
+https://lore.kernel.org/llvm/202205060132.uhqyUx1l-lkp@intel.com
+https://lore.kernel.org/llvm/202205170352.5YjuBP5H-lkp@intel.com
+https://lore.kernel.org/llvm/202205200012.68rPHREP-lkp@intel.com
 
+Error/Warning: (recently discovered and may have been fixed)
+
+<command-line>: fatal error: ./include/generated/utsrelease.h: No such file or directory
+ERROR: modpost: "devm_ioremap_resource" [drivers/net/can/ctucanfd/ctucanfd_platform.ko] undefined!
+arch/x86/kvm/hyperv.c:1983:22: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
+arch/x86/kvm/pmu.h:20:32: warning: 'vmx_icl_pebs_cpu' defined but not used [-Wunused-const-variable=]
+drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:1364:5: warning: no previous prototype for 'amdgpu_discovery_get_mall_info' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c:1986:6: warning: no previous prototype for function 'gfx_v11_0_rlc_stop' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/soc21.c:171:6: warning: no previous prototype for 'soc21_grbm_select' [-Wmissing-prototypes]
+drivers/gpu/drm/solomon/ssd130x-spi.c:154:35: warning: 'ssd130x_spi_table' defined but not used [-Wunused-const-variable=]
+drivers/hwmon/nct6775-platform.c:199:9: sparse:    unsigned char
+drivers/hwmon/nct6775-platform.c:199:9: sparse:    void
+drivers/net/ethernet/dec/tulip/eeprom.c:120:54: error: 'struct pci_dev' has no member named 'pdev'; did you mean 'dev'?
+drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.h:22:6: warning: no previous prototype for function 'mlx5_lag_mpesw_init' [-Wmissing-prototypes]
+drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.h:23:6: warning: no previous prototype for function 'mlx5_lag_mpesw_cleanup' [-Wmissing-prototypes]
+drivers/nvme/host/fc.c:1914: undefined reference to `blkcg_get_fc_appid'
+drivers/video/fbdev/omap/hwa742.c:492:5: warning: no previous prototype for 'hwa742_update_window_async' [-Wmissing-prototypes]
+include/asm-generic/bitops/const_hweight.h:21:76: warning: right shift count >= width of type [-Wshift-count-overflow]
+kernel/trace/fgraph.c:37:12: warning: no previous prototype for function 'ftrace_enable_ftrace_graph_caller' [-Wmissing-prototypes]
+kernel/trace/fgraph.c:46:12: warning: no previous prototype for function 'ftrace_disable_ftrace_graph_caller' [-Wmissing-prototypes]
+
+Unverified Error/Warning (likely false positive, please contact us if interested):
+
+Makefile:686: arch/h8300/Makefile: No such file or directory
+arch/Kconfig:10: can't open file "arch/h8300/Kconfig"
+arch/riscv/include/asm/tlbflush.h:23:2: error: expected assembly-time absolute expression
+drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:1364:5: warning: no previous prototype for function 'amdgpu_discovery_get_mall_info' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c:129:6: warning: no previous prototype for function 'amdgpu_ucode_print_imu_hdr' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/imu_v11_0.c:302:6: warning: no previous prototype for function 'program_imu_rlc_ram' [-Wmissing-prototypes]
+drivers/gpu/drm/amd/amdgpu/soc21.c:171:6: warning: no previous prototype for function 'soc21_grbm_select' [-Wmissing-prototypes]
+drivers/gpu/drm/bridge/adv7511/adv7511.h:229:17: warning: 'ADV7511_REG_CEC_RX_FRAME_HDR' defined but not used [-Wunused-const-variable=]
+drivers/gpu/drm/bridge/adv7511/adv7511.h:235:17: warning: 'ADV7511_REG_CEC_RX_FRAME_LEN' defined but not used [-Wunused-const-variable=]
+drivers/gpu/drm/i915/gt/intel_gt_sysfs_pm.c:276:27: error: implicit declaration of function 'sysfs_gt_attribute_r_max_func' [-Werror=implicit-function-declaration]
+drivers/gpu/drm/i915/gt/intel_gt_sysfs_pm.c:327:16: error: implicit declaration of function 'sysfs_gt_attribute_w_func' [-Werror=implicit-function-declaration]
+drivers/gpu/drm/i915/gt/intel_gt_sysfs_pm.c:416:24: error: implicit declaration of function 'sysfs_gt_attribute_r_min_func' [-Werror=implicit-function-declaration]
+drivers/gpu/drm/i915/gt/intel_gt_sysfs_pm.c:47 sysfs_gt_attribute_w_func() error: uninitialized symbol 'ret'.
+drivers/gpu/drm/i915/gt/intel_rps.c:2325 rps_read_mmio() error: uninitialized symbol 'val'.
+drivers/infiniband/hw/hns/hns_roce_hw_v2.c:309:9: sparse: sparse: dubious: x & !y
+drivers/staging/vt6655/card.c:759:16: sparse: sparse: cast to restricted __le64
+fc.c:(.text+0x432): undefined reference to `blkcg_get_fc_appid'
+fc.c:(.text+0x492): undefined reference to `blkcg_get_fc_appid'
+fc.c:(.text+0x5fe): undefined reference to `blkcg_get_fc_appid'
+fc.c:(.text+0x790): undefined reference to `blkcg_get_fc_appid'
+fc.c:(.text+0x7de): undefined reference to `blkcg_get_fc_appid'
+kernel/bpf/verifier.c:5354 process_kptr_func() warn: passing zero to 'PTR_ERR'
+ld.lld: error: undefined symbol: blkcg_get_fc_appid
+make[1]: *** No rule to make target 'arch/h8300/Makefile'.
+mm/shmem.c:1910 shmem_getpage_gfp() warn: should '(((1) << 12) / 512) << folio_order(folio)' be a 64 bit type?
+powerpc64-linux-ld: drivers/gpu/drm/bridge/analogix/analogix_dp_reg.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/gpu/drm/bridge/analogix/analogix_dp_core.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: drivers/mfd/mt6397-irq.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/mfd/mt6397-core.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: drivers/mmc/core/host.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/mmc/core/bus.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: drivers/mtd/mtdchar.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/mtd/mtdsuper.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: drivers/nfc/nxp-nci/firmware.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/nfc/nxp-nci/core.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: drivers/nfc/s3fwrn5/nci.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/nfc/s3fwrn5/firmware.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: drivers/soundwire/master.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/soundwire/bus.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: drivers/staging/greybus/audio_manager_module.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/staging/greybus/audio_manager.o:(.bss+0x40): first defined here
+powerpc64-linux-ld: drivers/w1/w1_int.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; drivers/w1/w1.o:(.bss+0x40): first defined here
+powerpc64-linux-ld: fs/exfat/namei.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; fs/exfat/inode.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: fs/hpfs/anode.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; fs/hpfs/alloc.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: fs/omfs/dir.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; fs/omfs/bitmap.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: fs/pstore/pmsg.o:(.bss+0x40): multiple definition of `____cacheline_aligned'; fs/pstore/platform.o:(.bss+0x40): first defined here
+powerpc64-linux-ld: net/decnet/dn_route.o:(.bss+0x40): multiple definition of `____cacheline_aligned'; net/decnet/dn_nsp_out.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: net/nfc/nci/ntf.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; net/nfc/nci/data.o:(.bss+0x0): first defined here
+powerpc64-linux-ld: net/nfc/rawsock.o:(.bss+0x40): multiple definition of `____cacheline_aligned'; net/nfc/af_nfc.o:(.bss+0x40): first defined here
+powerpc64-linux-ld: net/unix/sysctl_net_unix.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; net/unix/garbage.o:(.bss+0x40): first defined here
+powerpc64-linux-ld: sound/soc/bcm/bcm63xx-pcm-whistler.o:(.bss+0x0): multiple definition of `____cacheline_aligned'; sound/soc/bcm/bcm63xx-i2s-whistler.o:(.bss+0x0): first defined here
+{standard input}:1991: Error: unknown pseudo-op: `.lc'
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- alpha-randconfig-s032-20220519
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- arc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- arc-randconfig-r043-20220519
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- arm-allmodconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-video-fbdev-omap-hwa742.c:warning:no-previous-prototype-for-hwa742_update_window_async
+|-- arm-allyesconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-video-fbdev-omap-hwa742.c:warning:no-previous-prototype-for-hwa742_update_window_async
+|-- arm-randconfig-r024-20220519
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- arm-rpc_defconfig
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- arm64-allmodconfig
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- arm64-allyesconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- arm64-randconfig-r006-20220519
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- csky-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   |-- drivers-pci-pci.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-pci_power_t-assigned-usertype-state-got-int
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- csky-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- h8300-allmodconfig
+|   |-- Makefile:arch-h8300-Makefile:No-such-file-or-directory
+|   |-- arch-Kconfig:can-t-open-file-arch-h8300-Kconfig
+|   `-- make:No-rule-to-make-target-arch-h8300-Makefile-.
+|-- h8300-allyesconfig
+|   |-- Makefile:arch-h8300-Makefile:No-such-file-or-directory
+|   |-- arch-Kconfig:can-t-open-file-arch-h8300-Kconfig
+|   `-- make:No-rule-to-make-target-arch-h8300-Makefile-.
+|-- i386-allmodconfig
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- i386-allyesconfig
+|   |-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_HDR-defined-but-not-used
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_LEN-defined-but-not-used
+|   `-- drivers-gpu-drm-solomon-ssd13-spi.c:warning:ssd13_spi_table-defined-but-not-used
+|-- i386-debian-10.3
+|   `-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|-- i386-debian-10.3-kselftests
+|   `-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|-- i386-randconfig-a003
+|   |-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|   `-- include-asm-generic-bitops-const_hweight.h:warning:right-shift-count-width-of-type
+|-- i386-randconfig-a012
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_HDR-defined-but-not-used
+|   `-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_LEN-defined-but-not-used
+|-- i386-randconfig-a014
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_HDR-defined-but-not-used
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_LEN-defined-but-not-used
+|   `-- fc.c:(.text):undefined-reference-to-blkcg_get_fc_appid
+|-- i386-randconfig-a016
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_HDR-defined-but-not-used
+|   `-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_LEN-defined-but-not-used
+|-- i386-randconfig-c001
+|   `-- fc.c:(.text):undefined-reference-to-blkcg_get_fc_appid
+|-- i386-randconfig-m021
+|   |-- kernel-bpf-verifier.c-process_kptr_func()-warn:passing-zero-to-PTR_ERR
+|   `-- mm-shmem.c-shmem_getpage_gfp()-warn:should-((()-)-)-folio_order(folio)-be-a-bit-type
+|-- i386-randconfig-s001
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_HDR-defined-but-not-used
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_LEN-defined-but-not-used
+|   |-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_r_max_func
+|   |-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_r_min_func
+|   `-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_w_func
+|-- i386-randconfig-s002
+|   `-- drivers-pci-pci.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-pci_power_t-assigned-usertype-state-got-int
+|-- ia64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- ia64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- m68k-allmodconfig
+|   |-- drivers-hwmon-nct6775-platform.c:sparse:sparse:incompatible-types-in-conditional-expression-(different-base-types):
+|   |-- drivers-hwmon-nct6775-platform.c:sparse:unsigned-char
+|   `-- drivers-hwmon-nct6775-platform.c:sparse:void
+|-- m68k-allyesconfig
+|   |-- drivers-hwmon-nct6775-platform.c:sparse:sparse:incompatible-types-in-conditional-expression-(different-base-types):
+|   |-- drivers-hwmon-nct6775-platform.c:sparse:unsigned-char
+|   `-- drivers-hwmon-nct6775-platform.c:sparse:void
+|-- mips-allmodconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- mips-allyesconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- mips-randconfig-r014-20220519
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- nios2-randconfig-r015-20220519
+|   `-- drivers-nvme-host-fc.c:undefined-reference-to-blkcg_get_fc_appid
+|-- parisc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   |-- drivers-net-ethernet-dec-tulip-eeprom.c:error:struct-pci_dev-has-no-member-named-pdev
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- parisc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   |-- drivers-net-ethernet-dec-tulip-eeprom.c:error:struct-pci_dev-has-no-member-named-pdev
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- parisc-defconfig
+|   `-- drivers-net-ethernet-dec-tulip-eeprom.c:error:struct-pci_dev-has-no-member-named-pdev
+|-- parisc64-allmodconfig
+|   `-- drivers-net-ethernet-dec-tulip-eeprom.c:error:struct-pci_dev-has-no-member-named-pdev
+|-- parisc64-defconfig
+|   `-- drivers-net-ethernet-dec-tulip-eeprom.c:error:struct-pci_dev-has-no-member-named-pdev
+|-- powerpc-allmodconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- powerpc-allyesconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- powerpc-randconfig-r001-20220519
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- powerpc-randconfig-r005-20220519
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- powerpc64-randconfig-c003-20220519
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- powerpc64-randconfig-r036-20220519
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-gpu-drm-bridge-analogix-analogix_dp_core.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-mfd-mt6397-core.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-mmc-core-bus.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-mtd-mtdsuper.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-nfc-nxp-nci-core.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-nfc-s3fwrn5-firmware.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-soundwire-bus.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-staging-greybus-audio_manager.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-drivers-w1-w1.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-fs-exfat-inode.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-fs-hpfs-alloc.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-fs-omfs-bitmap.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-fs-pstore-platform.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-net-decnet-dn_nsp_out.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-net-nfc-af_nfc.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-net-nfc-nci-data.o:(.bss):first-defined-here
+|   |-- multiple-definition-of-____cacheline_aligned-net-unix-garbage.o:(.bss):first-defined-here
+|   `-- multiple-definition-of-____cacheline_aligned-sound-soc-bcm-bcm63xx-i2s-whistler.o:(.bss):first-defined-here
+|-- riscv-allmodconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- riscv-allyesconfig
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|-- riscv-randconfig-r034-20220519
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- s390-allmodconfig
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- s390-allyesconfig
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- s390-randconfig-r002-20220519
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- s390-randconfig-r034-20220519
+|   `-- ERROR:devm_ioremap_resource-drivers-net-can-ctucanfd-ctucanfd_platform.ko-undefined
+|-- sh-allmodconfig
+|   |-- arch-sh-kernel-crash_dump.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-addr-got-void-noderef-__iomem
+|   `-- standard-input:Error:unknown-pseudo-op:lc
+|-- sh-allyesconfig
+|   |-- arch-sh-kernel-crash_dump.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-const-addr-got-void-noderef-__iomem
+|   `-- standard-input:Error:unknown-pseudo-op:lc
+|-- sparc-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   |-- drivers-infiniband-hw-hns-hns_roce_hw_v2.c:sparse:sparse:dubious:x-y
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- sparc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   `-- drivers-staging-vt6655-card.c:sparse:sparse:cast-to-restricted-__le64
+|-- x86_64-allmodconfig
+|   `-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|-- x86_64-allyesconfig
+|   |-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|   |-- command-line:fatal-error:.-include-generated-utsrelease.h:No-such-file-or-directory
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_HDR-defined-but-not-used
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_LEN-defined-but-not-used
+|   `-- drivers-gpu-drm-solomon-ssd13-spi.c:warning:ssd13_spi_table-defined-but-not-used
+|-- x86_64-kexec
+|   `-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|-- x86_64-randconfig-a002
+|   |-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|   `-- fc.c:(.text):undefined-reference-to-blkcg_get_fc_appid
+|-- x86_64-randconfig-a011
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_HDR-defined-but-not-used
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_LEN-defined-but-not-used
+|   |-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_r_max_func
+|   |-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_r_min_func
+|   `-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_w_func
+|-- x86_64-randconfig-a015
+|   |-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|   `-- fc.c:(.text):undefined-reference-to-blkcg_get_fc_appid
+|-- x86_64-randconfig-c002
+|   |-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_r_max_func
+|   |-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_r_min_func
+|   `-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c:error:implicit-declaration-of-function-sysfs_gt_attribute_w_func
+|-- x86_64-randconfig-s021
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_HDR-defined-but-not-used
+|   |-- drivers-gpu-drm-bridge-adv7511-adv7511.h:warning:ADV7511_REG_CEC_RX_FRAME_LEN-defined-but-not-used
+|   `-- fc.c:(.text):undefined-reference-to-blkcg_get_fc_appid
+|-- x86_64-rhel-8.3
+|   `-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|-- x86_64-rhel-8.3-func
+|   `-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|-- x86_64-rhel-8.3-kselftests
+|   |-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|   |-- drivers-gpu-drm-i915-gt-intel_gt_sysfs_pm.c-sysfs_gt_attribute_w_func()-error:uninitialized-symbol-ret-.
+|   |-- drivers-gpu-drm-i915-gt-intel_rps.c-rps_read_mmio()-error:uninitialized-symbol-val-.
+|   `-- kernel-bpf-verifier.c-process_kptr_func()-warn:passing-zero-to-PTR_ERR
+|-- x86_64-rhel-8.3-kunit
+|   `-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|-- x86_64-rhel-8.3-syz
+|   `-- arch-x86-kvm-pmu.h:warning:vmx_icl_pebs_cpu-defined-but-not-used
+|-- xtensa-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+|   `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+`-- xtensa-allyesconfig
+    |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-amdgpu_discovery_get_mall_info
+    `-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-soc21_grbm_select
+
+clang_recent_errors
+|-- i386-randconfig-a002
+|   `-- arch-x86-kvm-hyperv.c:error:shift-count-width-of-type-Werror-Wshift-count-overflow
+|-- i386-randconfig-a004
+|   `-- ld.lld:error:undefined-symbol:blkcg_get_fc_appid
+|-- i386-randconfig-a015
+|   |-- drivers-net-ethernet-mellanox-mlx5-core-lag-mpesw.h:warning:no-previous-prototype-for-function-mlx5_lag_mpesw_cleanup
+|   `-- drivers-net-ethernet-mellanox-mlx5-core-lag-mpesw.h:warning:no-previous-prototype-for-function-mlx5_lag_mpesw_init
+|-- riscv-randconfig-r042-20220519
+|   |-- arch-riscv-include-asm-tlbflush.h:error:expected-assembly-time-absolute-expression
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_discovery.c:warning:no-previous-prototype-for-function-amdgpu_discovery_get_mall_info
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ucode.c:warning:no-previous-prototype-for-function-amdgpu_ucode_print_imu_hdr
+|   |-- drivers-gpu-drm-amd-amdgpu-gfx_v11_0.c:warning:no-previous-prototype-for-function-gfx_v11_0_rlc_stop
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0.c:warning:no-previous-prototype-for-function-program_imu_rlc_ram
+|   |-- drivers-gpu-drm-amd-amdgpu-soc21.c:warning:no-previous-prototype-for-function-soc21_grbm_select
+|   |-- kernel-trace-fgraph.c:warning:no-previous-prototype-for-function-ftrace_disable_ftrace_graph_caller
+|   `-- kernel-trace-fgraph.c:warning:no-previous-prototype-for-function-ftrace_enable_ftrace_graph_caller
+`-- x86_64-randconfig-a003
+    `-- ld.lld:error:undefined-symbol:blkcg_get_fc_appid
+
+elapsed time: 1189m
+
+configs tested: 102
+configs skipped: 4
+
+gcc tested configs:
+arm                              allmodconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+arm                                 defconfig
+arm64                               defconfig
+x86_64                           allyesconfig
+i386                             allyesconfig
+ia64                             allmodconfig
+mips                             allyesconfig
+riscv                            allyesconfig
+um                           x86_64_defconfig
+riscv                            allmodconfig
+um                             i386_defconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+m68k                             allyesconfig
+s390                             allmodconfig
+s390                             allyesconfig
+m68k                             allmodconfig
+powerpc                          allyesconfig
+i386                          randconfig-c001
+sparc                            allyesconfig
+parisc                           allyesconfig
+sh                               allmodconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                              allyesconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+powerpc                     mpc83xx_defconfig
+sh                           se7705_defconfig
+powerpc                     taishan_defconfig
+arm                             rpc_defconfig
+m68k                       m5208evb_defconfig
+m68k                        mvme147_defconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+alpha                               defconfig
+csky                                defconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                                defconfig
+parisc64                            defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                                defconfig
+sparc                               defconfig
+nios2                               defconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a014
+i386                          randconfig-a012
+i386                          randconfig-a016
+arc                  randconfig-r043-20220519
+riscv                    nommu_k210_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                             allnoconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                         rhel-8.3-kunit
+x86_64                           rhel-8.3-syz
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                               rhel-8.3
+x86_64                              defconfig
+
+clang tested configs:
+powerpc                     mpc512x_defconfig
+arm                          pxa168_defconfig
+mips                      pic32mzda_defconfig
+mips                  cavium_octeon_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                       mainstone_defconfig
+powerpc                   bluestone_defconfig
+arm                          ixp4xx_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                           rs90_defconfig
+arm                         socfpga_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+hexagon              randconfig-r041-20220519
+hexagon              randconfig-r045-20220519
+s390                 randconfig-r044-20220519
+riscv                randconfig-r042-20220519
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
