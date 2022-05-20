@@ -2,176 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7E252F4EF
-	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 23:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0920F52F54D
+	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 23:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351251AbiETVTY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 17:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
+        id S1346814AbiETVrD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 17:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245500AbiETVTX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 17:19:23 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC1A19C777
-        for <bpf@vger.kernel.org>; Fri, 20 May 2022 14:19:21 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id f2so13087074wrc.0
-        for <bpf@vger.kernel.org>; Fri, 20 May 2022 14:19:21 -0700 (PDT)
+        with ESMTP id S234295AbiETVrD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 17:47:03 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FC76C552;
+        Fri, 20 May 2022 14:47:01 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id a4so1921257ilr.12;
+        Fri, 20 May 2022 14:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fjiL3NxvzYrXKj45aHBa+PDLeI3SrPcf1o9kYao+3oU=;
-        b=f1SZJ5wLl9KsySVn8cTyhGlWJMoGbRfZWdXIbT19HvldLNIfxvW+e8t2QACM0vOjjl
-         TTkCnR8Uv4N+prXqmTruAvJV4jPFv1yFQG5Mcwc/JNk/2wd7QMX3xCRWlmOHUKqiOa8m
-         7rN49OeStoRttGDgdidlQT1/mlxLY42xKmmDXWeXODcWslDYXMO/z0UyC6ANAVntoFnN
-         dNYejFKQpABvj/LLi6y+ekG47MHIQYksaSFuqWQxHCnopiPAMI0U+V5dHZGF9MC72GLu
-         k9uItHw/yoSOK+kR4G3a/Qmt5aepyIBViRMr2gyaWIABqizZ0tr7XgaAqAuOnTlWVB55
-         E0tQ==
+        bh=1ZBMik1/6QTQj/BPf0IKq3hyUY0m96ZoQKEjpAqqJBE=;
+        b=DsVwANrETf0ddWyA2eJZwLfz4mUw+xFrltRyLu2TrUpkloZBT+bG8V6bSq8bxOHs0P
+         RsHjLXXwxNkPRA4/m/+3a+LM1ji0Aw0phn/l79T0+BmYe9IuLPo/vcffP4VUW7FRiDUF
+         u1Cjg8u6gVcTOGyUZWDZbG8JQ+SPzz1I7nm2zDHMwzqJww1vzRul2nUoSBiKj87bSOK2
+         BOJsNYdZ/OFOlQhEoknmGP/305qbjh59gjjFM7hhHftbkzp5e1XnyLCFcuhkoq2nxDgF
+         pZGNPEEfXP6/fAVWpodPk0pPUSH7Plb9K06s3ra8yoHAJU2M/jTeiPPujNjNJ7rgui0t
+         YeJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fjiL3NxvzYrXKj45aHBa+PDLeI3SrPcf1o9kYao+3oU=;
-        b=73s9qkLWcp26sssUxoGTVvfjG7N71V8SwGW7PHy7Bq+CgV4eWF+teHSoXWXWCyL/uF
-         WD/aJIFBcfplNGB5s85+d3AyU6a2TRHWlMFHZaWMqsfMAgwTZWy/TY+uyIn0Nhy+GgwM
-         7f3l1od/2WmnZY6ij9TApbMg+7GOII7jXeni88Ym5hPdIOJBcb4/I3zR+tSJEcyoabTn
-         5nHCS6YBmgKmgO1oWPFVZny/tyljCiusF6sOyMajK745wreHvgWMGDoHgrrmQqPIRes4
-         itLlgj/qbY6XhvH71ujL6DjFr7wP/eFNyuqqoS9jmoO1ZmgX+quca052txyrnxdXbUUU
-         VBaA==
-X-Gm-Message-State: AOAM531kYd9lWmkGM/Av5RVOQ39Mjj48V0HFfzI64yTQHB0udb1WtfI5
-        Ox1Ocr5khGqe7laEnNLdrAO6UxmzwhsottBCBwrymw==
-X-Google-Smtp-Source: ABdhPJxqSoOtBnq+VE7TR7nxBu5p/47iKtCzXj6VNgKmecJ8rniStzCBDa3ZKu7nYV6YfZMbRec8O2mWvNPLdaBfTb0=
-X-Received: by 2002:adf:fb05:0:b0:20a:e113:8f3f with SMTP id
- c5-20020adffb05000000b0020ae1138f3fmr10019749wrr.534.1653081559944; Fri, 20
- May 2022 14:19:19 -0700 (PDT)
+        bh=1ZBMik1/6QTQj/BPf0IKq3hyUY0m96ZoQKEjpAqqJBE=;
+        b=eCUNWx9H+cVH0R/1Iw827DqctZATS8FJ3JM5q9sIz6VgmQPxGeXSn5Rk1WETOkoORp
+         RFb2RsKF/EoMCOP334V6K1IAFmHOjRaq4zG6vo3936BpvK7d7EHQQZqLfX3mBGfgPf6W
+         qW1CyrgjZg/NTMHxk/qy6fOpzJs4aUKGNKY3pOseJaeOaTpkRdbV2H//YQIYvR9ydTnG
+         xUbEMP7868/e9S1eEDr7DEYF33/mdB6NAEXFOyWOAOnH9a20KJEXV40RWxxlNxBtAEJs
+         rdQLk6W4huc9eKChIGfU40m76YJDT8dqxAh1Wn6Xs9pCQ57PBKvqIIU5pG0Nc8uSgUAz
+         a9EQ==
+X-Gm-Message-State: AOAM531GqXh4h50aaTGIcbEAsCr417qlwDEIuxpy2A0RfFGAV4zCPHac
+        gTDsDNuE2izYDHn9WXA/i2ml0qp4rxj14m+EfEY=
+X-Google-Smtp-Source: ABdhPJyUHD91SOzGOEoo8E850KuSMicoVjRb50KAskyoApwG9rLDR0Y66EfP9db3xuLEIQD/rL7CzXE4o6vRaIcQE1g=
+X-Received: by 2002:a05:6e02:1c01:b0:2d1:262e:8d5f with SMTP id
+ l1-20020a056e021c0100b002d1262e8d5fmr6238661ilh.98.1653083220919; Fri, 20 May
+ 2022 14:47:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
- <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
- <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
- <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
-In-Reply-To: <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 20 May 2022 14:18:42 -0700
-Message-ID: <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
-To:     Hao Luo <haoluo@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Yonghong Song <yhs@fb.com>,
+References: <20220510074659.2557731-1-jolsa@kernel.org> <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
+ <YntnRixbfQ1HCm9T@krava> <Ynv+7iaaAbyM38B6@kernel.org> <CAEf4BzaQsF31f3WuU32wDCzo6bw7eY8E9zF6Lo218jfw-VQmcA@mail.gmail.com>
+ <YoTAhC+6j4JshqN8@krava> <YoYj6cb0aPNN/olH@krava>
+In-Reply-To: <YoYj6cb0aPNN/olH@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 20 May 2022 14:46:49 -0700
+Message-ID: <CAEf4Bzaa60kZJbWT0xAqcDMyXBzbg98ShuizJAv7x+8_3X0ZBg@mail.gmail.com>
+Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 20, 2022 at 12:43 PM Hao Luo <haoluo@google.com> wrote:
+On Thu, May 19, 2022 at 4:03 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> Hi Tejun and Yonghong,
->
-> On Fri, May 20, 2022 at 9:45 AM Tejun Heo <tj@kernel.org> wrote:
-> > On Fri, May 20, 2022 at 09:29:43AM -0700, Yonghong Song wrote:
-> > > Maybe you can have a bpf program signature like below:
+> On Wed, May 18, 2022 at 11:46:44AM +0200, Jiri Olsa wrote:
+> > On Tue, May 17, 2022 at 03:02:53PM -0700, Andrii Nakryiko wrote:
+> > > On Wed, May 11, 2022 at 11:22 AM Arnaldo Carvalho de Melo
+> > > <acme@kernel.org> wrote:
+> > > >
+> > > > Em Wed, May 11, 2022 at 09:35:34AM +0200, Jiri Olsa escreveu:
+> > > > > On Tue, May 10, 2022 at 04:48:55PM -0700, Andrii Nakryiko wrote:
+> > > > > > On Tue, May 10, 2022 at 12:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > > > > >
+> > > > > > > hi,
+> > > > > > > sending change we discussed some time ago [1] to get rid of
+> > > > > > > some deprecated functions we use in perf prologue code.
+> > > > > > >
+> > > > > > > Despite the gloomy discussion I think the final code does
+> > > > > > > not look that bad ;-)
+> > > > > > >
+> > > > > > > This patchset removes following libbpf functions from perf:
+> > > > > > >   bpf_program__set_prep
+> > > > > > >   bpf_program__nth_fd
+> > > > > > >   struct bpf_prog_prep_result
+> > > > > > >
+> > > > > > > v2 changes:
+> > > > > > >   - use fallback section prog handler, so we don't need to
+> > > > > > >     use section prefix [Andrii]
+> > > > > > >   - realloc prog->insns array in bpf_program__set_insns [Andrii]
+> > > > > > >   - squash patch 1 from previous version with
+> > > > > > >     bpf_program__set_insns change [Daniel]
+> > > > > > >   - patch 3 already merged [Arnaldo]
+> > > > > > >   - added more comments
+> > > > > > >
+> > > > > > >   meanwhile.. perf/core and bpf-next diverged, so:
+> > > > > > >     - libbpf bpf_program__set_insns change is based on bpf-next/master
+> > > > > > >     - perf changes do not apply on bpf-next/master so they are based on
+> > > > > > >       perf/core ... however they can be merged only after we release
+> > > > > > >       libbpf 0.8.0 with bpf_program__set_insns change, so we don't break
+> > > > > > >       the dynamic linking
+> > > > > > >       I'm sending perf changes now just for review, I'll resend them
+> > > > > > >       once libbpf 0.8.0 is released
+> > > > > > >
+> > > > > > > thanks,
+> > > > > > > jirka
+> > > > > > >
+> > > > > > >
+> > > > > > > [1] https://lore.kernel.org/bpf/CAEf4BzaiBO3_617kkXZdYJ8hS8YF--ZLgapNbgeeEJ-pY0H88g@mail.gmail.com/
+> > > > > > > ---
+> > > > > > > Jiri Olsa (1):
+> > > > > > >       libbpf: Add bpf_program__set_insns function
+> > > > > > >
+> > > > > >
+> > > > > > The first patch looks good to me. The rest I can't really review and
+> > > > > > test properly, so I'll leave it up to Arnaldo.
+> > > > > >
+> > > > > > Arnaldo, how do we coordinate these patches? Should they go through
+> > > > > > bpf-next (after you Ack them) or you want them in your tree?
+> > > > > >
+> > > > > > I'd like to get the bpf_program__set_insns() patch into bpf-next so
+> > > > > > that I can do libbpf v0.8 release, having it in a separate tree is
+> > > > > > extremely inconvenient. Please let me know how you think we should
+> > > > > > proceed?
+> > > > >
+> > > > > we need to wait with perf changes after the libbpf is merged and
+> > > > > libbpf 0.8.0 is released.. so we don't break dynamic linking for
+> > > > > perf
+> > > > >
+> > > > > at the moment please just take libbpf change and I'll resend the
+> > > > > perf change later if needed
+> > > >
+> > > > Ok.
+> > > >
 > > >
-> > > int BPF_PROG(dump_vmscan, struct bpf_iter_meta *meta, struct cgroup *cgrp,
-> > > struct cgroup *parent_cgrp)
-> > >
-> > > parent_cgrp is NULL when cgrp is the root cgroup.
-> > >
-> > > I would like the bpf program should send the following information to
-> > > user space:
-> > >    <parent cgroup dir name> <current cgroup dir name>
+> > > Jiri, libbpf v0.8 is out, can you please re-send your perf patches?
 > >
-> > I don't think parent cgroup dir name would be sufficient to reconstruct the
-> > path given that multiple cgroups in different subtrees can have the same
-> > name. For live cgroups, userspace can find the path from id (or ino) without
-> > traversing anything by constructing the fhandle, open it open_by_handle_at()
-> > and then reading /proc/self/fd/$FD symlink -
-> > https://lkml.org/lkml/2020/12/2/1126. This isn't available for dead cgroups
-> > but I'm not sure how much that'd matter given that they aren't visible from
-> > userspace anyway.
-> >
+> > yep, just made new fedora package.. will resend the perf changes soon
 >
-> Sending cgroup id is better than cgroup dir name, also because IIUC
-> the path obtained from cgroup id depends on the namespace of the
-> userspace process. So if the dump file may be potentially read by
-> processes within a container, it's better to have the output
-> namespaced IMO.
+> fedora package is on the way, but I'll need perf/core to merge
+> the bpf_program__set_insns change.. Arnaldo, any idea when this
+> could happen?
 >
-> > >    <various stats interested by the user>
-> > >
-> > > This way, user space can easily construct the cgroup hierarchy stat like
-> > >                            cpu   mem   cpu pressure   mem pressure ...
-> > >    cgroup1                 ...
-> > >       child1               ...
-> > >         grandchild1        ...
-> > >       child2               ...
-> > >    cgroup 2                ...
-> > >       child 3              ...
-> > >         ...                ...
-> > >
-> > > the bpf iterator can have additional parameter like
-> > > cgroup_id = ... to only call bpf program once with that
-> > > cgroup_id if specified.
->
-> Yep, this should work. We just need to make the cgroup_id parameter
-> optional. If it is specified when creating bpf_iter_link, we print for
-> that cgroup only. If it is not specified, we iterate over all cgroups.
-> If I understand correctly, sounds doable.
->
-> > > The kernel part of cgroup_iter can call cgroup_rstat_flush()
-> > > before calling cgroup_iter bpf program.
->
-> Sounds good to me as well. But my knowledge on rstat_flush is limited.
-> Yosry can give this a try.
->
-> >
-> > Would it work to just pass in @cgrp and provide a group of helpers so that
-> > the program can do whatever it wanna do including looking up the full path
-> > and passing that to userspace?
-> >
->
-> My understanding is, yes, doable. If we need the full path information
-> of a cgroup, helpers or kfuncs are needed.
->
-> The userspace needs to specify the identity of the cgroup, when
-> creating bpf_iter. This identity could be cgroup id or fd. This
-> identity needs to be converted to cgroup object somewhere before
-> passing into bpf program to use.
 
+Jiri, Arnaldo,
 
-Let's sum up the discussion here, I feel like we are losing track of
-the main problem. IIUC the main concern is that cgroup_iter is not
-effectively an iterator, it rather dumps information for one cgroup. I
-like the suggestion to make it iterate cgroups by default, and an
-optional cgroup_id parameter to make it only "iterate" this one
-cgroup. IIUC, this cgroup_id parameter would be a link parameter,
-similar to the current approach. Basically, we extend the current
-patch so that if cgroup_id is not specified the iterator gets called
-for all cgroups instead of one. This fixes the problem for our use
-case and also keeps cgroup_iter generic enough. Is my understanding
-correct? If yes, I don't see a need to flush rstat in the kernel on
-behalf of cgroup_iter progs.
+Can we land these patches through bpf-next to avoid such complicated
+cross-tree dependencies? As I started removing libbpf APIs I also
+noticed that perf is still using few other deprecated APIs:
+  - bpf_map__next;
+  - bpf_program__next;
+  - bpf_load_program;
+  - btf__get_from_id;
+
+It's trivial to fix up, but doing it across few trees will delay
+libbpf work as well.
+
+So let's land this through bpf-next, if Arnaldo doesn't mind?
+
+> thanks,
+> jirka
