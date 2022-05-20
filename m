@@ -2,96 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B19152F581
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 00:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC1352F59A
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 00:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353829AbiETWKR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 18:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50264 "EHLO
+        id S1344762AbiETWT3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 18:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353796AbiETWKQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 18:10:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5061A075F;
-        Fri, 20 May 2022 15:10:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A01D4B82E29;
-        Fri, 20 May 2022 22:10:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5CA44C34115;
-        Fri, 20 May 2022 22:10:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653084612;
-        bh=clr5/eeqDOssSIb7q2BDlSM1acoinPQZnJpbFkRjumo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=TvP2S582NxDvAdUUOztoxtb6+Sq6arO/UZX0OwrvX1hz6DHBni8C+xpp4bb3GEma/
-         Bn7HLxdekdU43LVXsBviOS3pWP/hKPeptTOvmRE0csak7KcDhiCQMUeRCEuSAOfRkN
-         NTvrTEFghdeWoarIGz3MiTaXKD1dL+yn0TsJCnYuN1mghhEI80g1FkZ9biMGZ+e4ba
-         tmQUQX/JgdJ2vGFqlUifg13K5p679yA1D3ZRrs0tUSUUBuMK9qm8UY6YZgxSu4IunC
-         3TS08TW4gsSTzXPEcFf5WFFQocV79RwjVHgjMYTwvoALuGutbQXlD1tv1X6eJ4subf
-         VTTSrHw/rxClQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3B42AF03935;
-        Fri, 20 May 2022 22:10:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S1353875AbiETWT0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 18:19:26 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED4EB1A076B;
+        Fri, 20 May 2022 15:19:24 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id 202so1824916pfu.0;
+        Fri, 20 May 2022 15:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b7Vm31N1KmiKaz7SbohqBjKzTjmGJnpUAVkpKWUThMY=;
+        b=H3ZjIy79fwHtkOfYF1Ill/fMPUjrPR7E2pkOa/YhCb1jGsvLLxRr6uOQICQCl8yq2h
+         KzSERIApbRFXR9lmG4Uk3nHZvFVq8Uue1kE4LnmFLR/v/rN9npvSJts7f+iytk8LCo9a
+         fpRMMlwIruvdNJLVHaMg5qOJAgX4M5Fc/F1tt0tD6yZZrIAOeapE9xs6S16JiuWCsju2
+         Asxl3i8dLiXmCXxEAOBresM3uaNtP212C8mONg3FwmL4Z7oqEaT+taMPqifRHmMmn/nx
+         2IQLI+zcVqY30ca/PvxFcTrMC7DqzhHrftAfzpFMlIUEPLJgJV9MGm5xgioYQqWSeEHB
+         nm+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b7Vm31N1KmiKaz7SbohqBjKzTjmGJnpUAVkpKWUThMY=;
+        b=CMWLtJPDj7rM4ifpTEJnVv7hK+1MX4Egzl1yiDoI66yNBAcCKJYr1dn3idm9L1rrh2
+         YPqr7D+iKQA8kDh2ysmWJAZbvqXkRVboaxGI/F6wxP5iCzWGHKSYLVlPJVkUg137/AhG
+         /hG4oCcr+v1ofdxWwogIiBiN6E0ZMH1UI9gsH5WPbB2J3ol+RJB6j3yu42yP2xQDWtY3
+         qljKbMz7OtsJHmbNYOQwTS8TWtxEywLRMCk48KN2Myrd3ylNm1GGHr71ZjXMTUnM7Mut
+         SY13+WmIEInbHD0Xhdl0s4RgGx2xk4jY2Cn6K7N9ZLQB997W60mWwhSWTh4LSbej77JD
+         K/Xw==
+X-Gm-Message-State: AOAM533PD2bbh9lT193sVem6ulWXOY6Q5nPrUAHnGf15JsN/bMOk3FV/
+        qR2PHZg3uOpeYf8kt5NHnQk=
+X-Google-Smtp-Source: ABdhPJyPatIaMfb0cUQB/du9LTA4vnmzNEjYiWrANLt3pPuau5sPW8xt9dH/j17WoeJK1uo/EDZDAg==
+X-Received: by 2002:a63:dc42:0:b0:3c5:e187:572 with SMTP id f2-20020a63dc42000000b003c5e1870572mr10364737pgj.82.1653085164314;
+        Fri, 20 May 2022 15:19:24 -0700 (PDT)
+Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:500::1:c6aa])
+        by smtp.gmail.com with ESMTPSA id 7-20020a17090a098700b001d25dfb9d39sm2356730pjo.14.2022.05.20.15.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 May 2022 15:19:23 -0700 (PDT)
+Date:   Fri, 20 May 2022 15:19:19 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
+Message-ID: <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220520012133.1217211-4-yosryahmed@google.com>
+ <YodGI73xq8aIBrNM@slm.duckdns.org>
+ <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
+ <YodNLpxut+Zddnre@slm.duckdns.org>
+ <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
+ <YofFli6UCX4J5YnU@slm.duckdns.org>
+ <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
+ <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix some bugs in
- map_lookup_percpu_elem testcase
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165308461223.21331.279651299076160105.git-patchwork-notify@kernel.org>
-Date:   Fri, 20 May 2022 22:10:12 +0000
-References: <20220518025053.20492-1-zhoufeng.zf@bytedance.com>
-In-Reply-To: <20220518025053.20492-1-zhoufeng.zf@bytedance.com>
-To:     Feng Zhou <zhoufeng.zf@bytedance.com>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, jolsa@kernel.org, davemarchevsky@fb.com,
-        joannekoong@fb.com, geliang.tang@suse.com,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        duanxiongchun@bytedance.com, songmuchun@bytedance.com,
-        wangdongdong.6@bytedance.com, cong.wang@bytedance.com,
-        zhouchengming@bytedance.com, yosryahmed@google.com
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Wed, 18 May 2022 10:50:53 +0800 you wrote:
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+On Fri, May 20, 2022 at 02:18:42PM -0700, Yosry Ahmed wrote:
+> >
+> > The userspace needs to specify the identity of the cgroup, when
+> > creating bpf_iter. This identity could be cgroup id or fd. This
+> > identity needs to be converted to cgroup object somewhere before
+> > passing into bpf program to use.
 > 
-> comments from Andrii Nakryiko, details in here:
-> https://lore.kernel.org/lkml/20220511093854.411-1-zhoufeng.zf@bytedance.com/T/
 > 
-> use /* */ instead of //
-> use libbpf_num_possible_cpus() instead of sysconf(_SC_NPROCESSORS_ONLN)
-> use 8 bytes for value size
-> fix memory leak
-> use ASSERT_EQ instead of ASSERT_OK
-> add bpf_loop to fetch values on each possible CPU
-> 
-> [...]
+> Let's sum up the discussion here, I feel like we are losing track of
+> the main problem. IIUC the main concern is that cgroup_iter is not
+> effectively an iterator, it rather dumps information for one cgroup. I
+> like the suggestion to make it iterate cgroups by default, and an
+> optional cgroup_id parameter to make it only "iterate" this one
+> cgroup.
 
-Here is the summary with links:
-  - [bpf-next,v2] selftests/bpf: fix some bugs in map_lookup_percpu_elem testcase
-    https://git.kernel.org/bpf/bpf-next/c/7aa424e02a04
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+We have bpf_map iterator that walks all bpf maps.
+When map iterator is parametrized with map_fd the iterator walks
+all elements of that map.
+cgroup iterator should have similar semantics.
+When non-parameterized it will walk all cgroups and their descendent
+depth first way. I believe that's what Yonghong is proposing.
+When parametrized it will start from that particular cgroup and
+walk all descendant of that cgroup only.
+The bpf prog can stop the iteration right away with ret 1.
+Maybe we can add two parameters. One -> cgroup_fd to use and another ->
+the order of iteration css_for_each_descendant_pre vs _post.
+wdyt?
