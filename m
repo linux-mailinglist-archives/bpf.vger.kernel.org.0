@@ -2,63 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F0952F0EF
-	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 18:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BB552F1AA
+	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 19:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350334AbiETQpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 12:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49626 "EHLO
+        id S1350950AbiETRas (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 13:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiETQpN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 12:45:13 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D5D178567;
-        Fri, 20 May 2022 09:45:12 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d22so7803215plr.9;
-        Fri, 20 May 2022 09:45:12 -0700 (PDT)
+        with ESMTP id S1349335AbiETRar (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 13:30:47 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B91F17DDC6
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 10:30:43 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id m1so7389648qkn.10
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 10:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u22Vdb8ad4QsGUpvqDD4jw8opLANlipXffF4J28OkDw=;
-        b=alC71XCAjWLZ2L+MKQYDKx3KTDbWUY+ds3nxi6wLqgO7s9wjvHmeS0X4mp5EnSoUUl
-         5azRlTmtfw/UqAiUwhI5sZANOPrUEC/QVcgidBJjdj4vzvuMoqNBW3nF9tMw2moyZlgN
-         8wyQDt0+i8Ada0za5PsJuWKfV+qMDHHHk2GretQeRaKoVLkVf0wFl6lveJrSxek6tugV
-         CGXMeMWuv7bzSJ5ekUqL6IxWkCb1TWH3HxYnZOseiU6svnyorwth8UX8rb5PIV8m9KMA
-         KOP4TMl/Nnd2YqrNvrxDocxEl3yX1fsJgCEhZhQWU9/MAB/jhNnUTNVoxy08eGE2Tu0V
-         r/5A==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CPavKVkR8bELd7v5gex0nX0RA6A8QGn+WltRM5Og+4g=;
+        b=MSLFYCHCp/SZxn9cm5CoWu+3FpwqYMeTrBILRT4T9npnAg/BaxF/9YpOt/8BpfCeIi
+         QNFKHiQ8wH5t6TjjD362O2oxnfrihMLlQiPFrrUH+NDukCfPWUuGOvL3+zuu3fi7AGdj
+         qgdT4/2uMNS7DYiZi6YKk9IXmhduvHlRP/0woJyAJMNWtD0YS0jrjWL0wPpxdQM3uspA
+         vJgbRI25KoLUFPhjSaZoBEnuSQDq+i0ze73pH1kri1TDLTflSDd6UyZwXBxmu5eVfBh6
+         UxiMZ9l7YRjsNMFPzIyBLQzKMTq6kkJMswyxyU98m9mX63TaYJcYhQG5GnSYZ1S/bTgH
+         STSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=u22Vdb8ad4QsGUpvqDD4jw8opLANlipXffF4J28OkDw=;
-        b=IOtTvcJiQ8WXVNaJploMVtDsmP/0ioJ8LIo6qbOKA8PBVzkaqhbGsSnzlqr3PPAmx1
-         HTZdskCfxZ6kobIxp/pLmmnUAQLTocSwwSVTPRT+mUnskJLEQSZW/5/F2AILMVbVo+Bn
-         abQ4kEBLSnYUf8IeeQEorU6IyQ427T1twq7712qCViQXHEb280Epndgd77zPb/QPavRa
-         PG8Z2+8cD0nG59V3KA6mRVXUsEUtIW162uujDcNf8rx4rwDKRqtgl2+o5RqJwjPGvOng
-         DMNEAft2AsCC4I3D+eRE7UuxFGp4FmBPLJvRMZIgmiQ9j9naXZPe3PfQQ7b2fxlAYO7R
-         mdBQ==
-X-Gm-Message-State: AOAM533unz4xbJLttFEap9bNm7IAS1QM4dwHhSsG7XxbrVHYAv7LqyLv
-        ZeL2It1tQCf5NmXZwXJCsLg=
-X-Google-Smtp-Source: ABdhPJyP4R45XL7Ygkc11JWnS15dH4cQ+zV/iI/2vxrlGm1gisg0ogaD4Bj036lBydbUC7eRTm8umQ==
-X-Received: by 2002:a17:90a:cc02:b0:1df:257a:5396 with SMTP id b2-20020a17090acc0200b001df257a5396mr12031837pju.190.1653065111792;
-        Fri, 20 May 2022 09:45:11 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:1761])
-        by smtp.gmail.com with ESMTPSA id j7-20020a170902690700b001616b71e5e6sm5917456plk.175.2022.05.20.09.45.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 May 2022 09:45:11 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 20 May 2022 06:45:10 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CPavKVkR8bELd7v5gex0nX0RA6A8QGn+WltRM5Og+4g=;
+        b=fqq30Fn+V/DIvuce9Vgi+RZQpYCjtWy0n/qG5daNbc0NdKdoJ2DeI50qmhyqzXYxIL
+         CxgZ2/NJ3W+rtx0j5kP+VgxZDs61wWzrtqwxeXzehFiHkXZzTtKf2MaXS9GJzDONjOzH
+         FwsVXeWCvHH7t3/p3vzXTZahwHVjTd7jWCGACa7BbZP9RGzFqKTZ1Z2vS949HfZNosI4
+         axOCIOvypddo/uEiFvpoF3fdB4+F8aO4Tq6iWkmvFnKiv/lqjjblTG6HyYTMULJJhrOF
+         KygVlaUuxzcWbUd3qo5y/Qoblz7ds2xFkwGpSxcWEJN9ndn+NKbMC42RiQGyf3Dkz7Qu
+         Ip+w==
+X-Gm-Message-State: AOAM531VhpqIZSnlmw4mQlisEXbaffxSaNgW8s990529J1fkBu+VVpBp
+        h/eXOLWuxSx7D1f8L7cRv60v+GJhloktTwt+9iJmJQ==
+X-Google-Smtp-Source: ABdhPJz5Mikyb2ZCSmg67TYUBBxgrBCM373X9eLBJ7/2D7arGeeYjmMXzqAYDcgIFIxH6qSqWi8VtqwbhGeWuNrgTig=
+X-Received: by 2002:a05:620a:2849:b0:687:651:54ee with SMTP id
+ h9-20020a05620a284900b00687065154eemr7084966qkp.446.1653067842202; Fri, 20
+ May 2022 10:30:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
+ <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com> <YodNLpxut+Zddnre@slm.duckdns.org>
+In-Reply-To: <YodNLpxut+Zddnre@slm.duckdns.org>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 20 May 2022 10:30:30 -0700
+Message-ID: <CA+khW7iN_=9yg6r9wSX5T3biWgUyAZ6quUUjsVp=hXBY9meJ9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
+To:     Tejun Heo <tj@kernel.org>
 Cc:     Yosry Ahmed <yosryahmed@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        KP Singh <kpsingh@kernel.org>,
         Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Shuah Khan <shuah@kernel.org>,
@@ -71,78 +74,98 @@ Cc:     Yosry Ahmed <yosryahmed@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
-Message-ID: <YofFli6UCX4J5YnU@slm.duckdns.org>
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-4-yosryahmed@google.com>
- <YodGI73xq8aIBrNM@slm.duckdns.org>
- <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
- <YodNLpxut+Zddnre@slm.duckdns.org>
- <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, Yonghong.
+Hi Tejun,
 
-On Fri, May 20, 2022 at 09:29:43AM -0700, Yonghong Song wrote:
-> Maybe you can have a bpf program signature like below:
-> 
-> int BPF_PROG(dump_vmscan, struct bpf_iter_meta *meta, struct cgroup *cgrp,
-> struct cgroup *parent_cgrp)
-> 
-> parent_cgrp is NULL when cgrp is the root cgroup.
-> 
-> I would like the bpf program should send the following information to
-> user space:
->    <parent cgroup dir name> <current cgroup dir name>
+On Fri, May 20, 2022 at 1:11 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Fri, May 20, 2022 at 12:58:52AM -0700, Yosry Ahmed wrote:
+> > On Fri, May 20, 2022 at 12:41 AM Tejun Heo <tj@kernel.org> wrote:
+> > >
+> > > On Fri, May 20, 2022 at 01:21:31AM +0000, Yosry Ahmed wrote:
+> > > > From: Hao Luo <haoluo@google.com>
+> > > >
+> > > > Introduce a new type of iter prog: cgroup. Unlike other bpf_iter, this
+> > > > iter doesn't iterate a set of kernel objects. Instead, it is supposed to
+> > > > be parameterized by a cgroup id and prints only that cgroup. So one
+> > > > needs to specify a target cgroup id when attaching this iter. The target
+> > > > cgroup's state can be read out via a link of this iter.
+> > > >
+> > > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > >
+> > > This could be me not understanding why it's structured this way but it keeps
+> > > bothering me that this is adding a cgroup iterator which doesn't iterate
+> > > cgroups. If all that's needed is extracting information from a specific
+> > > cgroup, why does this need to be an iterator? e.g. why can't I use
+> > > BPF_PROG_TEST_RUN which looks up the cgroup with the provided ID, flushes
+> > > rstat, retrieves whatever information necessary and returns that as the
+> > > result?
+> >
+> > I will let Hao and Yonghong reply here as they have a lot more
+> > context, and they had previous discussions about cgroup_iter. I just
+> > want to say that exposing the stats in a file is extremely convenient
+> > for userspace apps. It becomes very similar to reading stats from
+> > cgroupfs. It also makes migrating cgroup stats that we have
+> > implemented in the kernel to BPF a lot easier.
+>
+> So, if it were upto me, I'd rather direct energy towards making retrieving
+> information through TEST_RUN_PROG easier rather than clinging to making
+> kernel output text. I get that text interface is familiar but it kinda
+> sucks in many ways.
+>
 
-I don't think parent cgroup dir name would be sufficient to reconstruct the
-path given that multiple cgroups in different subtrees can have the same
-name. For live cgroups, userspace can find the path from id (or ino) without
-traversing anything by constructing the fhandle, open it open_by_handle_at()
-and then reading /proc/self/fd/$FD symlink -
-https://lkml.org/lkml/2020/12/2/1126. This isn't available for dead cgroups
-but I'm not sure how much that'd matter given that they aren't visible from
-userspace anyway.
+Tejun, could you explain more about the downside of text interfaces
+and why TEST_RUN_PROG would address the problems in text output? From
+the discussion we had last time, I understand that your concern was
+the unstable interface if we introduce bpf files in cgroupfs, so we
+are moving toward replicating the directory structure in bpffs. But I
+am not sure about the issue of text format output
 
->    <various stats interested by the user>
-> 
-> This way, user space can easily construct the cgroup hierarchy stat like
->                            cpu   mem   cpu pressure   mem pressure ...
->    cgroup1                 ...
->       child1               ...
->         grandchild1        ...
->       child2               ...
->    cgroup 2                ...
->       child 3              ...
->         ...                ...
-> 
-> the bpf iterator can have additional parameter like
-> cgroup_id = ... to only call bpf program once with that
-> cgroup_id if specified.
-> 
-> The kernel part of cgroup_iter can call cgroup_rstat_flush()
-> before calling cgroup_iter bpf program.
-> 
-> WDYT?
+> > AFAIK there are also discussions about using overlayfs to have links
+> > to the bpffs files in cgroupfs, which makes it even better. So I would
+> > really prefer keeping the approach we have here of reading stats
+> > through a file from userspace. As for how we go about this (and why a
+> > cgroup iterator doesn't iterate cgroups) I will leave this for Hao and
+> > Yonghong to explain the rationale behind it. Ideally we can keep the
+> > same functionality under a more descriptive name/type.
+>
+> My answer would be the same here. You guys seem dead set on making the
+> kernel emulate cgroup1. I'm not gonna explicitly block that but would
+> strongly suggest having a longer term view.
+>
 
-Would it work to just pass in @cgrp and provide a group of helpers so that
-the program can do whatever it wanna do including looking up the full path
-and passing that to userspace?
+The reason why Yosry and I are still pushing toward this direction is
+that our user space applications rely heavily on extracting
+information from text output for cgroups. Please understand that
+migrating them from the traditional model to a new model is a bigger
+pain. But I agree that if we have a better, concrete solution (for
+example, maybe TEST_RUN_PROG) to convince them and help them migrate,
+I really would love to contribute and work on it.
 
-Thanks.
+> If you *must* do the iterator, can you at least make it a proper iterator
+> which supports seeking? AFAICS there's nothing fundamentally preventing bpf
+> iterators from supporting seeking. Or is it that you need something which is
+> pinned to a cgroup so that you can emulate the directory structure?
+>
 
--- 
-tejun
+Yonghong may comment on adding seek for bpf_iter. I would love to
+contribute if we are in need of that. Right now, we don't have a use
+case that needs seek for bpf_iter, I think. My thought: for cgroups,
+we can seek using cgroup id. Maybe, not all kernel objects are
+indexable, so seeking doesn't apply there?
+
+Hao
