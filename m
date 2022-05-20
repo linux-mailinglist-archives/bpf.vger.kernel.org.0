@@ -2,136 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6838B52E2B6
-	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 04:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309C752E2CD
+	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 05:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244118AbiETCx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 May 2022 22:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40778 "EHLO
+        id S237545AbiETDCi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 May 2022 23:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbiETCx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 May 2022 22:53:57 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFCCB41E2;
-        Thu, 19 May 2022 19:53:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653015236; x=1684551236;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T+kF11TKdf/Yw7gXtARSc8OVLWJ0w+qZ62oJVBw1bK8=;
-  b=e5uc8AdSAtQ18MESRR214S75RviNsMBIocyL5Nex/IN45v+Eyb7DNL5J
-   Gy6+Nco6v9ivPqNqtKjCnYkBShTBp7bFxu5T/bcdefAG79NeBdW0KPCvj
-   TfFa2T1G1XXBHvpGy2EaHWhSOUOSoDc8fCngO55OwbJGbdfyfXFF0XkwS
-   Zz1BSe8gd9mnqZ5pU2MauAoobywyCEFoFMukfkYBr6TdtGW8+SytlBUID
-   k8X85w3qb7vBOvXVlqx0IPWUhoaOYexi4JGjuF1eWYVn+1faIJXSmYF8J
-   jqb0D9xpykMyeZHVZt2QXw+zb6FdiPtcq1PLNIEHYvwaHW+vJmvreM2ZU
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10352"; a="297771234"
-X-IronPort-AV: E=Sophos;i="5.91,238,1647327600"; 
-   d="scan'208";a="297771234"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2022 19:53:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,238,1647327600"; 
-   d="scan'208";a="524426313"
-Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 19 May 2022 19:53:52 -0700
-Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nrsm0-0004DH-2n;
-        Fri, 20 May 2022 02:53:52 +0000
-Date:   Fri, 20 May 2022 10:53:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Song Liu <song@kernel.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-mm@kvack.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, ast@kernel.org,
-        daniel@iogearbox.net, mcgrof@kernel.org,
-        torvalds@linux-foundation.org, rick.p.edgecombe@intel.com,
-        kernel-team@fb.com, Song Liu <song@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 8/8] bpf: simplify select_bpf_prog_pack_size
-Message-ID: <202205201001.kKBulowq-lkp@intel.com>
-References: <20220519202037.2401584-9-song@kernel.org>
+        with ESMTP id S1344975AbiETDCh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 May 2022 23:02:37 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC17BB82F8
+        for <bpf@vger.kernel.org>; Thu, 19 May 2022 20:02:34 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id nr2-20020a17090b240200b001df2b1bfc40so10323449pjb.5
+        for <bpf@vger.kernel.org>; Thu, 19 May 2022 20:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=T49autrwazSVPbqM6JLQ0qnBuicehxkova35EuZCJaU=;
+        b=YAQzupJhJUp7xZHECAP6liV1GLyneKC7ORPbdztHF98+Q7076sqC9DSsyMYsCmP6cA
+         oWwweI2rAbNR1XW76OAHHX4lpS3lIfOkzqlEwwScfdtl/YFj4oxt/7O2AA+TtnDWZAu3
+         0/8tnXWRPpE/h6SoJ+lwC43FRUQPlDADpf0y0r99L9hq/jeXx3sg1Lw9uJenlEYTz3ce
+         X0kJzXObUKCU7TOOJ30K4XEuS8xNv1TIaxRHNg9Qf0/aDLsQIdKLa/l0wrOuRfha3dgu
+         2/KpF94tfXYOkEX/1t6Lf1IuRtSmd9XMFw8WvsUvYNNQY2Aq791p0vpJ09dUsT0RNHIi
+         hgEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=T49autrwazSVPbqM6JLQ0qnBuicehxkova35EuZCJaU=;
+        b=UMBJe2tAwFBuDrdYXQq59Jd9oO8IFuKaH3TU+8ZQhNfcGUMuG+juInRc47Wic0XbUW
+         0tzOXqtUVUB5a2i58nIQPnQ+PlDT144goJ6/nzca6JNtud8qVdoAgLvlV9bR9LRVxAD1
+         uHqdbYODy96RKCIfM8hszB9wwfq6GnTAqEoG5CCX9+FK44rF1bWQGpnDWFrawWPE5GHB
+         F/PGIPdCLwrA9IP10gFMXGRRmUZ7iL7eMiZMSIDIDaPF3qGK7LVesZyCLs+BsO2jZIsq
+         7QwGsQN7er7QEd0yPQ8H9aIl4blIsYOqpKPcxjPeFP0em5prfupVz0534T+rHO5puyau
+         cxtA==
+X-Gm-Message-State: AOAM533O58C1QbJkTWXPmj8dsdxsa6iXD41V9fxL5Kvu9Y/3gf+VmF0Z
+        hlYiOIZ6URwIMoJd15rMmoUrlQ==
+X-Google-Smtp-Source: ABdhPJwOjHkRwZ7scwMzECt6n/SIMuW/O/aZf3GaVbzT7jr3FkELxpScQ0hys0wR4wtFxD+F+4Ucpg==
+X-Received: by 2002:a17:903:1c7:b0:161:9d6f:376a with SMTP id e7-20020a17090301c700b001619d6f376amr7770822plh.147.1653015754279;
+        Thu, 19 May 2022 20:02:34 -0700 (PDT)
+Received: from [10.71.57.194] ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id n1-20020a170902e54100b0015e8d4eb219sm4574667plf.99.2022.05.19.20.02.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 May 2022 20:02:33 -0700 (PDT)
+Message-ID: <344e2064-62f8-845e-7d1d-2afcaeb0e524@bytedance.com>
+Date:   Fri, 20 May 2022 11:02:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220519202037.2401584-9-song@kernel.org>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.9.0
+Subject: Re: [External] Re: [PATCH] bpf: avoid grabbing spin_locks of all cpus
+ when no free elems
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20220518062715.27809-1-zhoufeng.zf@bytedance.com>
+ <CAADnVQ+x-A87Z9_c+3vuRJOYm=gCOBXmyCJQ64CiCNukHS6FpA@mail.gmail.com>
+ <6ae715b3-96b1-2b42-4d1a-5267444d586b@bytedance.com>
+ <9c0c3e0b-33bc-51a7-7916-7278f14f308e@fb.com>
+ <380fa11e-f15d-da1a-51f7-70e14ed58ffc@bytedance.com>
+ <CAADnVQL9naBBKzQdAOWu2ZH=i7HA1VDi7uNzsDQ1TM9Jr+c0Ww@mail.gmail.com>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <CAADnVQL9naBBKzQdAOWu2ZH=i7HA1VDi7uNzsDQ1TM9Jr+c0Ww@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Song,
+在 2022/5/20 上午12:12, Alexei Starovoitov 写道:
+> On Wed, May 18, 2022 at 8:12 PM Feng Zhou <zhoufeng.zf@bytedance.com> wrote:
+>> 在 2022/5/19 上午4:39, Yonghong Song 写道:
+>>>
+>>> On 5/17/22 11:57 PM, Feng Zhou wrote:
+>>>> 在 2022/5/18 下午2:32, Alexei Starovoitov 写道:
+>>>>> On Tue, May 17, 2022 at 11:27 PM Feng zhou
+>>>>> <zhoufeng.zf@bytedance.com> wrote:
+>>>>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>>>>>
+>>>>>> We encountered bad case on big system with 96 CPUs that
+>>>>>> alloc_htab_elem() would last for 1ms. The reason is that after the
+>>>>>> prealloc hashtab has no free elems, when trying to update, it will
+>>>>>> still
+>>>>>> grab spin_locks of all cpus. If there are multiple update users, the
+>>>>>> competition is very serious.
+>>>>>>
+>>>>>> So this patch add is_empty in pcpu_freelist_head to check freelist
+>>>>>> having free or not. If having, grab spin_lock, or check next cpu's
+>>>>>> freelist.
+>>>>>>
+>>>>>> Before patch: hash_map performance
+>>>>>> ./map_perf_test 1
+>>> could you explain what parameter '1' means here?
+>> This code is here:
+>> samples/bpf/map_perf_test_user.c
+>> samples/bpf/map_perf_test_kern.c
+>> parameter '1' means testcase flag, test hash_map's performance
+>> parameter '2048' means test hash_map's performance when free=0.
+>> testcase flag '2048' is added by myself to reproduce the problem phenomenon.
+> Please convert it to selftests/bpf/bench,
+> so that everyone can reproduce the issue you're seeing
+> and can assess whether it's a real issue or a corner case.
+>
+> Also please avoid adding indent in the patch.
+> Instead of
+>   if (!s->extralist.is_empty) {
+>    .. churn
+>
+> do
+>
+>   if (s->extralist.is_empty)
 
-I love your patch! Perhaps something to improve:
+Ok, will do. Thanks.
 
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/bpf_prog_pack-followup/20220520-043417
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: x86_64-randconfig-a005 (https://download.01.org/0day-ci/archive/20220520/202205201001.kKBulowq-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project e00cbbec06c08dc616a0d52a20f678b8fbd4e304)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/2d5d4beb45be09f3130b694f49ab1b1fd1aa4470
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Song-Liu/bpf_prog_pack-followup/20220520-043417
-        git checkout 2d5d4beb45be09f3130b694f49ab1b1fd1aa4470
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash kernel/bpf/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/core.c:857:8: warning: unused variable 'ptr' [-Wunused-variable]
-           void *ptr;
-                 ^
-   kernel/bpf/core.c:1656:12: warning: no previous prototype for function 'bpf_probe_read_kernel' [-Wmissing-prototypes]
-   u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-              ^
-   kernel/bpf/core.c:1656:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-   ^
-   static 
-   kernel/bpf/core.c:2099:6: warning: no previous prototype for function 'bpf_patch_call_args' [-Wmissing-prototypes]
-   void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
-        ^
-   kernel/bpf/core.c:2099:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
-   ^
-   static 
-   3 warnings generated.
-
-
-vim +/ptr +857 kernel/bpf/core.c
-
-e581094167beb6 Song Liu 2022-03-21  853  
-ef078600eec20f Song Liu 2022-03-11  854  static size_t select_bpf_prog_pack_size(void)
-ef078600eec20f Song Liu 2022-03-11  855  {
-ef078600eec20f Song Liu 2022-03-11  856  	size_t size;
-ef078600eec20f Song Liu 2022-03-11 @857  	void *ptr;
-ef078600eec20f Song Liu 2022-03-11  858  
-2d5d4beb45be09 Song Liu 2022-05-19  859  	if (huge_vmalloc_supported()) {
-e581094167beb6 Song Liu 2022-03-21  860  		size = BPF_HPAGE_SIZE * num_online_nodes();
-2d5d4beb45be09 Song Liu 2022-05-19  861  		bpf_prog_pack_mask = BPF_HPAGE_MASK;
-2d5d4beb45be09 Song Liu 2022-05-19  862  	} else {
-ef078600eec20f Song Liu 2022-03-11  863  		size = PAGE_SIZE;
-96805674e5624b Song Liu 2022-03-21  864  		bpf_prog_pack_mask = PAGE_MASK;
-96805674e5624b Song Liu 2022-03-21  865  	}
-ef078600eec20f Song Liu 2022-03-11  866  
-ef078600eec20f Song Liu 2022-03-11  867  	return size;
-ef078600eec20f Song Liu 2022-03-11  868  }
-ef078600eec20f Song Liu 2022-03-11  869  
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
