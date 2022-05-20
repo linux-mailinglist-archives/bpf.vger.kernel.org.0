@@ -2,138 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 463B052F679
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 02:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED7552F67E
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 02:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354164AbiEUACC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 20:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39328 "EHLO
+        id S234439AbiEUADc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 20 May 2022 20:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345609AbiEUACB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 20:02:01 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FB55DE49;
-        Fri, 20 May 2022 17:02:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653091320; x=1684627320;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=AWk5EzpwQakMCN7K4ikJj1LOGHAGUToZe4PbLyD2PRk=;
-  b=bXc++wjzFb72gG0CPsprV/4WzqOKl9dPflakFJbabcHeZ8M24G4wVvZs
-   MZVaKgFiuwpzUJIBOd/nLi8vETw4l86+acwJE58g+/vucQIKZKVIahuBE
-   4f2qjrodNC2AmkMP5qHtTAu7wb06aTc+9T6EPC9/dEVNdA5IaMdCoaWU8
-   wyQdvwTJcgeoWEaTB96AfyjmyUg+2HS02guybrqxDB1GYF8IGeZyJ2MTe
-   u1iDit9Gl211pDT+oITdiZRrh3E/XzLaeFMwCrCLDuZjRbqDbUxVhPxL9
-   sis1t/c7pVUEbqBX8JpEcTs07fV708UBTqK4EyoAwmiSfAFbYBIR+b5oK
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="272749357"
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; 
-   d="scan'208";a="272749357"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2022 17:02:00 -0700
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; 
-   d="scan'208";a="524882953"
-Received: from ofirfata-mobl1.amr.corp.intel.com ([10.209.118.159])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2022 17:02:00 -0700
-Date:   Fri, 20 May 2022 17:01:53 -0700 (PDT)
-From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Geliang Tang <geliang.tang@suse.com>, mptcp@lists.linux.dev
-Subject: Re: [PATCH bpf-next v5 0/7] bpf: mptcp: Support for mptcp_sock
-In-Reply-To: <CAEf4BzaZ07_VRN_z6xPogcx-YQuPQR8FCkC=K621r5oo1vBViQ@mail.gmail.com>
-Message-ID: <1043967d-395f-aa6-680-9ab7eec780d3@linux.intel.com>
-References: <20220519233016.105670-1-mathew.j.martineau@linux.intel.com> <CAEf4BzaZ07_VRN_z6xPogcx-YQuPQR8FCkC=K621r5oo1vBViQ@mail.gmail.com>
+        with ESMTP id S1349504AbiEUADa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 20:03:30 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F0B1A813F
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 17:03:28 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24KMs92H021833
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 17:03:28 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3g5wkrg37c-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 17:03:27 -0700
+Received: from twshared10560.18.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Fri, 20 May 2022 17:03:24 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id F0FCA7E221FE; Fri, 20 May 2022 16:58:18 -0700 (PDT)
+From:   Song Liu <song@kernel.org>
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-mm@kvack.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <peterz@infradead.org>,
+        <mcgrof@kernel.org>, <torvalds@linux-foundation.org>,
+        <rick.p.edgecombe@intel.com>, <kernel-team@fb.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH v4 bpf-next 5/8] bpf: use module_alloc_huge for bpf_prog_pack
+Date:   Fri, 20 May 2022 16:57:55 -0700
+Message-ID: <20220520235758.1858153-6-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220520235758.1858153-1-song@kernel.org>
+References: <20220520235758.1858153-1-song@kernel.org>
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: QWZw_ItaARmGch153RQPa9K30DFHhImb
+X-Proofpoint-ORIG-GUID: QWZw_ItaARmGch153RQPa9K30DFHhImb
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-20_08,2022-05-20_02,2022-02-23_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 20 May 2022, Andrii Nakryiko wrote:
+Use module_alloc_huge for bpf_prog_pack so that BPF programs sit on
+PMD_SIZE pages. This benefits system performance by reducing iTLB miss
+rate. Benchmark of a real web service workload shows this change gives
+another ~0.2% performance boost on top of PAGE_SIZE bpf_prog_pack
+(which improve system throughput by ~0.5%).
 
-> On Thu, May 19, 2022 at 4:30 PM Mat Martineau
-> <mathew.j.martineau@linux.intel.com> wrote:
->>
->> This patch set adds BPF access to mptcp_sock structures, along with
->> associated self tests. You may recognize some of the code from earlier
->> (https://lore.kernel.org/bpf/20200918121046.190240-6-nicolas.rybowski@tessares.net/)
->> but it has been reworked quite a bit.
->>
->>
->> v1 -> v2: Emit BTF type, add func_id checks in verifier.c and bpf_trace.c,
->> remove build check for CONFIG_BPF_JIT, add selftest check for CONFIG_MPTCP,
->> and add a patch to include CONFIG_IKCONFIG/CONFIG_IKCONFIG_PROC for the
->> BPF self tests.
->>
->> v2 -> v3: Access sysctl through the filesystem to work around CI use of
->> the more limited busybox sysctl command.
->>
->> v3 -> v4: Dropped special case kernel code for tcp_sock is_mptcp, use
->> existing bpf_tcp_helpers.h, and add check for 'ip mptcp monitor' support.
->>
->> v4 -> v5: Use BPF test skeleton, more consistent use of ASSERT macros,
->> drop some unnecessary parameters / checks, and use tracing to acquire
->> MPTCP token.
->>
->> Geliang Tang (6):
->>   bpf: add bpf_skc_to_mptcp_sock_proto
->>   selftests/bpf: Enable CONFIG_IKCONFIG_PROC in config
->>   selftests/bpf: test bpf_skc_to_mptcp_sock
->>   selftests/bpf: verify token of struct mptcp_sock
->>   selftests/bpf: verify ca_name of struct mptcp_sock
->>   selftests/bpf: verify first of struct mptcp_sock
->>
->> Nicolas Rybowski (1):
->>   selftests/bpf: add MPTCP test base
->>
->>  MAINTAINERS                                   |   1 +
->>  include/linux/bpf.h                           |   1 +
->>  include/linux/btf_ids.h                       |   3 +-
->>  include/net/mptcp.h                           |   6 +
->>  include/uapi/linux/bpf.h                      |   7 +
->>  kernel/bpf/verifier.c                         |   1 +
->>  kernel/trace/bpf_trace.c                      |   2 +
->>  net/core/filter.c                             |  18 ++
->>  net/mptcp/Makefile                            |   2 +
->>  net/mptcp/bpf.c                               |  21 +++
->>  scripts/bpf_doc.py                            |   2 +
->>  tools/include/uapi/linux/bpf.h                |   7 +
->>  tools/testing/selftests/bpf/bpf_tcp_helpers.h |  13 ++
->>  tools/testing/selftests/bpf/config            |   3 +
->>  tools/testing/selftests/bpf/network_helpers.c |  40 +++-
->>  tools/testing/selftests/bpf/network_helpers.h |   2 +
->>  .../testing/selftests/bpf/prog_tests/mptcp.c  | 174 ++++++++++++++++++
->>  .../testing/selftests/bpf/progs/mptcp_sock.c  |  89 +++++++++
->>  18 files changed, 382 insertions(+), 10 deletions(-)
->>  create mode 100644 net/mptcp/bpf.c
->>  create mode 100644 tools/testing/selftests/bpf/prog_tests/mptcp.c
->>  create mode 100644 tools/testing/selftests/bpf/progs/mptcp_sock.c
->>
->>
->> base-commit: 834650b50ed283d9d34a32b425d668256bf2e487
->> --
->> 2.36.1
->>
->
-> I've added missing static for test_base and some other helper and
-> replaced bzero and memcpy in BPF-side code with __builtin_memset and
-> __builtin_memcpy (and dropped string.h include, it's not supposed to
-> be used from BPF-side code). Applied to bpf-next, thanks.
->
+Also, remove set_vm_flush_reset_perms() from alloc_new_pack() and use
+set_memory_[nx|rw] in bpf_prog_pack_free(). This is because
+VM_FLUSH_RESET_PERMS does not work with huge pages yet. [1]
 
-Thanks for the fixups.
+[1] https://lore.kernel.org/bpf/aeeeaf0b7ec63fdba55d4834d2f524d8bf05b71b.camel@intel.com/
+Suggested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ kernel/bpf/core.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
---
-Mat Martineau
-Intel
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index cacd8684c3c4..b64d91fcb0ba 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -857,7 +857,7 @@ static size_t select_bpf_prog_pack_size(void)
+ 	void *ptr;
+ 
+ 	size = BPF_HPAGE_SIZE * num_online_nodes();
+-	ptr = module_alloc(size);
++	ptr = module_alloc_huge(size);
+ 
+ 	/* Test whether we can get huge pages. If not just use PAGE_SIZE
+ 	 * packs.
+@@ -881,7 +881,7 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
+ 		       GFP_KERNEL);
+ 	if (!pack)
+ 		return NULL;
+-	pack->ptr = module_alloc(bpf_prog_pack_size);
++	pack->ptr = module_alloc_huge(bpf_prog_pack_size);
+ 	if (!pack->ptr) {
+ 		kfree(pack);
+ 		return NULL;
+@@ -890,7 +890,6 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
+ 	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
+ 	list_add_tail(&pack->list, &pack_list);
+ 
+-	set_vm_flush_reset_perms(pack->ptr);
+ 	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+ 	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+ 	return pack;
+@@ -909,10 +908,9 @@ static void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insn
+ 
+ 	if (size > bpf_prog_pack_size) {
+ 		size = round_up(size, PAGE_SIZE);
+-		ptr = module_alloc(size);
++		ptr = module_alloc_huge(size);
+ 		if (ptr) {
+ 			bpf_fill_ill_insns(ptr, size);
+-			set_vm_flush_reset_perms(ptr);
+ 			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
+ 			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
+ 		}
+@@ -949,6 +947,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 
+ 	mutex_lock(&pack_mutex);
+ 	if (hdr->size > bpf_prog_pack_size) {
++		set_memory_nx((unsigned long)hdr, hdr->size / PAGE_SIZE);
++		set_memory_rw((unsigned long)hdr, hdr->size / PAGE_SIZE);
+ 		module_memfree(hdr);
+ 		goto out;
+ 	}
+@@ -975,6 +975,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
+ 				       bpf_prog_chunk_count(), 0) == 0) {
+ 		list_del(&pack->list);
++		set_memory_nx((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
++		set_memory_rw((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+ 		module_memfree(pack->ptr);
+ 		kfree(pack);
+ 	}
+-- 
+2.30.2
+
