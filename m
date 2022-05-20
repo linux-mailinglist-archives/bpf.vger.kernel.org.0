@@ -2,212 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 813E452F073
-	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 18:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07E152F079
+	for <lists+bpf@lfdr.de>; Fri, 20 May 2022 18:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351553AbiETQUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 12:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
+        id S1351576AbiETQWh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 12:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351537AbiETQUu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 12:20:50 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFEE6479
-        for <bpf@vger.kernel.org>; Fri, 20 May 2022 09:20:45 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id h5so11024919wrb.11
-        for <bpf@vger.kernel.org>; Fri, 20 May 2022 09:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GarL2Kn/zNIJwCptfjfJ4swfJzGY6bIsUnYiG/oxiuI=;
-        b=TtgVg9kR94FReHMcINrx3ZC/s6A7a4psy4/9RGzmCb8xCqRJZPWW8LNcgsK1sWrGU5
-         ho2BYDZmtkjRspH22M5aAr+RU9dkyIOmWM4MwgpfWKF/iGU0tz/r5P67ilQptFsP60xT
-         Q3gKb4yQ1eQudnLBQXSua2hijgHXcJ97MVbOBBeKTXZ3SHjyElxW0IrGEgvIles1NlSY
-         zYVejH5s8+UGST9GpZVVizOO2UpSavsx1LEFhvf99w/sp5+VrNr/M6yaapC2S09Vbn0u
-         YALTWwv9FeqDgRBHzzPava+DO/9LNGzsLNp0LCHcsRE5JDGH6JkMH01Az6bZ7IeMUK6f
-         0OUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GarL2Kn/zNIJwCptfjfJ4swfJzGY6bIsUnYiG/oxiuI=;
-        b=VjtAW472XVUUmGFSOTU8VkcmcS5/9Ie5tx7+Z71qQOJPUF+0i981W8HtTZzpIi2zZy
-         T74l7rJzPdAPnEg1XWZ6nlis35ZXAr+EErg5kXYOnZ6A2dvTsfggzNIVbAQwKmxJvHDm
-         cTbxcWVs3Z4+Dc1nulf+PemF5ZE1p0q6NsU6Ov5Wh96718mIAKlVrGrYHYmVJ6r/qJ32
-         z/MtpvwiiIpeaZxRpND3m7+4axgVE9zdMkrvVXy9bXlESxqYoJGlqRK3ki+naTyQPINz
-         ST9PUYVE6yEOOTi+85jNFTTAK693x310ryhNrCRZsWu0KVUMg6mpGYcRjDTHzEDY4gkq
-         l1DQ==
-X-Gm-Message-State: AOAM531wjcLRDebxV+Cxo+UOPIQO3K97qt2th1aWAlwKFFfSDb/zhi7E
-        fnZRgjFwpND/QepNmK3Bpwa7EmiWzLMy5+kkNXDgTA==
-X-Google-Smtp-Source: ABdhPJwXihn6Eo/eN5yZSzV0l8oNjnwxVa2GX1v/ldHoA3ps70mSdd2dNpogTkqoScf7BEeYJR9EV+TAX3/KMcgAu7o=
-X-Received: by 2002:adf:f042:0:b0:20e:5be7:f473 with SMTP id
- t2-20020adff042000000b0020e5be7f473mr8983437wro.80.1653063643790; Fri, 20 May
- 2022 09:20:43 -0700 (PDT)
+        with ESMTP id S1351534AbiETQW2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 12:22:28 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B5D170F13
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 09:22:27 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id BBB18240109
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 18:22:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1653063744; bh=pO+0dl8prUVCrsjwIJUITX12QmFzLJFT/66dWfNfMoI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qGuiQ1/zkzPdPfByhYWg+dY88s+ghT9lwSIifSjojJhFX9lK1V9xEZlyYrbfB+ZzL
+         6+otf13TpgK9NZvGmxfmJhQl/RwzSsBWvjjzo+6QMQrCCwE8QUhIqEpJDZLBSMu/KO
+         LGqOdpaLE7/+33S13ApiyvVbypsO33me5AuiO0oiaEsrNAuUMeqPzzQVJwPM/b7XdE
+         J1Lgd6EqCxqx/mFwu9pc0TdmKJ+6nLyBWc3de7TE/tpNE8hQ2N7tD5odkiI2hsg8Zw
+         VM5hgLFh5bxCFVa3q7DyBukloc2TvsPu0CtGLtUKP4sLli1/o62GyCLNAI22hDjQpb
+         ADT79udo+DlDA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4L4X7K51dhz9rxF;
+        Fri, 20 May 2022 18:22:21 +0200 (CEST)
+Date:   Fri, 20 May 2022 16:22:18 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Mykola Lysenko <mykolal@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix subtest number formatting in
+ test_progs
+Message-ID: <20220520162112.pffjqfxy5gnermlx@muellerd-fedora-MJ0AC3F3>
+References: <20220520070144.10312-1-mykolal@fb.com>
 MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-3-yosryahmed@google.com> <fa3b35a6-5c3c-42a1-23f0-a8143b4eaa57@fb.com>
- <CAJD7tkanipJ7-9H_L6KMUjpD2qS29-YCrnMXw+8BAKfbOk5P9Q@mail.gmail.com> <eca39189-9258-b1cc-0a1d-a0d7e6027861@fb.com>
-In-Reply-To: <eca39189-9258-b1cc-0a1d-a0d7e6027861@fb.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 20 May 2022 09:20:07 -0700
-Message-ID: <CAJD7tkZq_GE-nR3UUwXJ+iE9WCDv9HN2MtT8as4bg2NKcNc3xQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/5] cgroup: bpf: add cgroup_rstat_updated()
- and cgroup_rstat_flush() kfuncs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220520070144.10312-1-mykolal@fb.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 20, 2022 at 9:16 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 5/20/22 9:08 AM, Yosry Ahmed wrote:
-> > On Fri, May 20, 2022 at 8:15 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 5/19/22 6:21 PM, Yosry Ahmed wrote:
-> >>> Add cgroup_rstat_updated() and cgroup_rstat_flush() kfuncs to bpf
-> >>> tracing programs. bpf programs that make use of rstat can use these
-> >>> functions to inform rstat when they update stats for a cgroup, and wh=
-en
-> >>> they need to flush the stats.
-> >>>
-> >>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> >>> ---
-> >>>    kernel/cgroup/rstat.c | 35 ++++++++++++++++++++++++++++++++++-
-> >>>    1 file changed, 34 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> >>> index e7a88d2600bd..a16a851bc0a1 100644
-> >>> --- a/kernel/cgroup/rstat.c
-> >>> +++ b/kernel/cgroup/rstat.c
-> >>> @@ -3,6 +3,11 @@
-> >>>
-> >>>    #include <linux/sched/cputime.h>
-> >>>
-> >>> +#include <linux/bpf.h>
-> >>> +#include <linux/btf.h>
-> >>> +#include <linux/btf_ids.h>
-> >>> +
-> >>> +
-> >>>    static DEFINE_SPINLOCK(cgroup_rstat_lock);
-> >>>    static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
-> >>>
-> >>> @@ -141,7 +146,12 @@ static struct cgroup *cgroup_rstat_cpu_pop_updat=
-ed(struct cgroup *pos,
-> >>>        return pos;
-> >>>    }
-> >>>
-> >>> -/* A hook for bpf stat collectors to attach to and flush their stats=
- */
-> >>> +/*
-> >>> + * A hook for bpf stat collectors to attach to and flush their stats=
-.
-> >>> + * Together with providing bpf kfuncs for cgroup_rstat_updated() and
-> >>> + * cgroup_rstat_flush(), this enables a complete workflow where bpf =
-progs that
-> >>> + * collect cgroup stats can integrate with rstat for efficient flush=
-ing.
-> >>> + */
-> >>>    __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
-> >>>                                     struct cgroup *parent, int cpu)
-> >>>    {
-> >>> @@ -476,3 +486,26 @@ void cgroup_base_stat_cputime_show(struct seq_fi=
-le *seq)
-> >>>                   "system_usec %llu\n",
-> >>>                   usage, utime, stime);
-> >>>    }
-> >>> +
-> >>> +/* Add bpf kfuncs for cgroup_rstat_updated() and cgroup_rstat_flush(=
-) */
-> >>> +BTF_SET_START(bpf_rstat_check_kfunc_ids)
-> >>> +BTF_ID(func, cgroup_rstat_updated)
-> >>> +BTF_ID(func, cgroup_rstat_flush)
-> >>> +BTF_SET_END(bpf_rstat_check_kfunc_ids)
-> >>> +
-> >>> +BTF_SET_START(bpf_rstat_sleepable_kfunc_ids)
-> >>> +BTF_ID(func, cgroup_rstat_flush)
-> >>> +BTF_SET_END(bpf_rstat_sleepable_kfunc_ids)
-> >>> +
-> >>> +static const struct btf_kfunc_id_set bpf_rstat_kfunc_set =3D {
-> >>> +     .owner          =3D THIS_MODULE,
-> >>> +     .check_set      =3D &bpf_rstat_check_kfunc_ids,
-> >>> +     .sleepable_set  =3D &bpf_rstat_sleepable_kfunc_ids,
-> >>
-> >> There is a compilation error here:
-> >>
-> >> kernel/cgroup/rstat.c:503:3: error: =E2=80=98const struct btf_kfunc_id=
-_set=E2=80=99 has
-> >> no member named =E2=80=98sleepable_set=E2=80=99; did you mean =E2=80=
-=98release_set=E2=80=99?
-> >>       503 |  .sleepable_set =3D &bpf_rstat_sleepable_kfunc_ids,
-> >>           |   ^~~~~~~~~~~~~
-> >>           |   release_set
-> >>     kernel/cgroup/rstat.c:503:19: warning: excess elements in struct
-> >> initializer
-> >>       503 |  .sleepable_set =3D &bpf_rstat_sleepable_kfunc_ids,
-> >>           |                   ^
-> >>     kernel/cgroup/rstat.c:503:19: note: (near initialization for
-> >> =E2=80=98bpf_rstat_kfunc_set=E2=80=99)
-> >>     make[3]: *** [scripts/Makefile.build:288: kernel/cgroup/rstat.o] E=
-rror 1
-> >>
-> >> Please fix.
-> >
-> > This patch series is rebased on top of 2 patches in the mailing list:
-> > - bpf/btf: also allow kfunc in tracing and syscall programs
-> > - btf: Add a new kfunc set which allows to mark a function to be
-> >    sleepable
-> >
-> > I specified this in the cover letter, do I need to do something else
-> > in this situation? Re-send the patches as part of my series?
->
-> At least put a link in the cover letter for the above two patches?
-> This way, people can easily find them to double check.
+On Fri, May 20, 2022 at 12:01:44AM -0700, Mykola Lysenko wrote:
+> Remove weird spaces around / while preserving proper
+> indentation
+> 
+> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+> ---
+>  tools/testing/selftests/bpf/test_progs.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> index ecf69fce036e..262b7577b0ef 100644
+> --- a/tools/testing/selftests/bpf/test_progs.c
+> +++ b/tools/testing/selftests/bpf/test_progs.c
+> @@ -230,9 +230,14 @@ static void print_test_log(char *log_buf, size_t log_cnt)
+>  		fprintf(env.stdout, "\n");
+>  }
+>  
+> +#define TEST_NUM_WIDTH 7
+> +#define STRINGIFY(value) #value
+> +#define QUOTE(macro) STRINGIFY(macro)
+> +#define TEST_NUM_WIDTH_STR QUOTE(TEST_NUM_WIDTH)
+> +
+>  static void print_test_name(int test_num, const char *test_name, char *result)
+>  {
+> -	fprintf(env.stdout, "#%-9d %s", test_num, test_name);
+> +	fprintf(env.stdout, "#%-" TEST_NUM_WIDTH_STR "d %s", test_num, test_name);
+>  
+>  	if (result)
+>  		fprintf(env.stdout, ":%s", result);
+> @@ -244,8 +249,12 @@ static void print_subtest_name(int test_num, int subtest_num,
+>  			       const char *test_name, char *subtest_name,
+>  			       char *result)
+>  {
+> -	fprintf(env.stdout, "#%-3d/%-5d %s/%s",
+> -		test_num, subtest_num,
+> +	char test_num_str[TEST_NUM_WIDTH + 1];
+> +
+> +	snprintf(test_num_str, sizeof(test_num_str), "%d/%d", test_num, subtest_num);
+> +
+> +	fprintf(env.stdout, "#%-" TEST_NUM_WIDTH_STR "s %s/%s",
+> +		test_num_str,
+>  		test_name, subtest_name);
+>  
+>  	if (result)
+> -- 
+> 2.30.2
+> 
 
-Right. Will do this in the next version. Sorry for the inconvenience.
+Looks good to me, thanks.
 
->
-> >
-> >
-> >
-> >>
-> >>> +};
-> >>> +
-> >>> +static int __init bpf_rstat_kfunc_init(void)
-> >>> +{
-> >>> +     return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-> >>> +                                      &bpf_rstat_kfunc_set);
-> >>> +}
-> >>> +late_initcall(bpf_rstat_kfunc_init);
+Acked-by: Daniel Müller <deso@posteo.net>
