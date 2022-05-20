@@ -2,61 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C88652F66C
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 01:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA5952F674
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 02:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243389AbiETX5z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 19:57:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
+        id S1354161AbiEUAAm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 20 May 2022 20:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236380AbiETX5y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 19:57:54 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB8A1A0ADC
-        for <bpf@vger.kernel.org>; Fri, 20 May 2022 16:57:53 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id 2so458837iou.5
-        for <bpf@vger.kernel.org>; Fri, 20 May 2022 16:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hpuih7eD25YoaQgoLTJ1wM4vKXDRK+qjLExm0GvIyjw=;
-        b=E57J/zm47SygoqB1IVqnk7yPsB9njvpFSgxWyk0YjU07bDMLf+H9OJVWvvNKrM3gj8
-         5odTxHXu9uokgRwqiltMPe1UXkWsMQ5AAEMlMyhdaVs40Rd7H394KhXX+PmkXE251J+M
-         R+JEHlDurvCJP71gMcgf10zlX8lgukZde0RVShYdffHeK4QkwuwdSl5I0aX95kDtgIwk
-         vlAeb9MZgmNzZrsWX5lrxF5RC7F2gQeZZL/mPgUSd2PTZjl5YIUelY7O7dz2akEOJFim
-         qlyhI4FO2fyMuwEj5yeL6xaZ9FC3jIbCq7+LthJUShPyixRaYWjcTpUWP0hzHefJxw89
-         q25A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hpuih7eD25YoaQgoLTJ1wM4vKXDRK+qjLExm0GvIyjw=;
-        b=2Jpm2hgRDO9/FunkyUBnkeMSo74h8wYO9/qCAQy7HW+g6+TMGMVauCMRRCuAUbTv0S
-         ITOCQND+JVqHEV0W+CDS4yLInZ1LpB/rtb3JeiputGIBlgm72mwTAPpap87RYfQDx6o5
-         yIY5Pg9Vimz8A2iOUtaTo79Rle58OYxHcsGeIT9+IzpFPVI96yDU+hkvlvXNDZizsJkf
-         OR3YeYG1BPng80R4yLp/eZDADpCaHbkOPkq3+sXfkrjanKPjOCkHqXkeUbMTqUxh5kJy
-         ef/p4rZJ3VvUa3DhTXr9fxoU0aNIQD7pdUXvYQC/NCQXNXS9mEKjAJ7kuPdHYV3BRQC7
-         RghA==
-X-Gm-Message-State: AOAM532Pb8VVzr9zER2O+L5y5HVnPuwNR6PjcJZfqWboP3Fs+5+q8Ytl
-        PEatXIrGuVdhuBKle4hVD1fSM/msw4YdMn/3cIrTE/M1wjc=
-X-Google-Smtp-Source: ABdhPJx1+BCASC+BuZlsob2+AUZEok6xsrdlsNlIx5s73E+OIHCyA8sEdE6toFjDIkgkEgQUck+KqB9c8s8eIrbHwEw=
-X-Received: by 2002:a05:6602:2acd:b0:65a:9f9d:23dc with SMTP id
- m13-20020a0566022acd00b0065a9f9d23dcmr5875903iov.154.1653091072864; Fri, 20
- May 2022 16:57:52 -0700 (PDT)
+        with ESMTP id S236380AbiEUAAk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 20:00:40 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9098E1A0AE2
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 17:00:39 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24KMsAmE021874
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 17:00:38 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3g5wkrg2ru-14
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 17:00:38 -0700
+Received: from twshared8307.18.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Fri, 20 May 2022 17:00:35 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 1FA317E2217E; Fri, 20 May 2022 16:58:07 -0700 (PDT)
+From:   Song Liu <song@kernel.org>
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-mm@kvack.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <peterz@infradead.org>,
+        <mcgrof@kernel.org>, <torvalds@linux-foundation.org>,
+        <rick.p.edgecombe@intel.com>, <kernel-team@fb.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH v4 bpf-next 0/8] bpf_prog_pack followup
+Date:   Fri, 20 May 2022 16:57:50 -0700
+Message-ID: <20220520235758.1858153-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CAK3+h2xA+K-yby7m+3Hp1G6qinafZPW1OB=Uk5-AKxUfztBtEA@mail.gmail.com>
-In-Reply-To: <CAK3+h2xA+K-yby7m+3Hp1G6qinafZPW1OB=Uk5-AKxUfztBtEA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 20 May 2022 16:57:41 -0700
-Message-ID: <CAEf4Bzbtj5UnkhHEiVxgbVByCoqiCp5zm_vSBq=+LFKVsLcCLg@mail.gmail.com>
-Subject: Re: libbpf: failed to load program 'vxlan_get_tunnel_src'
-To:     Vincent Li <vincent.mc.li@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: n4z1ZKzl6ar-TiiZsxPNcp1p4ffEsagV
+X-Proofpoint-ORIG-GUID: n4z1ZKzl6ar-TiiZsxPNcp1p4ffEsagV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-20_08,2022-05-20_02,2022-02-23_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,29 +57,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 19, 2022 at 11:14 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
->
-> Hi,
->
-> Here is my step to run bpf selftest on Ubuntu 20.04.2 LTS
->
-> git clone https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-> cd bpf-next; cp /boot/config-5.10.0-051000-generic .config; yes "" |
-> make oldconfig; make bzImage; make modules; cd
-> tools/testing/selftests/bpf/; make
->
-> then below, am I missing something in kernel config to cause "libbpf:
-> failed to load program 'vxlan_get_tunnel_src'"
->
-> ./test_progs -a tunnel
->
+Changes v3 => v4:
+1. Shorten CC list on 4/8, so it is not dropped by the mail list.
 
-  > invalid func unknown#177
+Changes v2 => v3:
+1. Fix issues reported by kernel test robot <lkp@intel.com>.
 
-Yes, you are missing bpf_trace_vprintk() (that's helper #177), which
-is called through log_err() -> bpf_printk() -> bpf_trace_vprintk().
-Either use recent enough kernel or remove log_err() statements.
+Changes v1 => v2:
+1. Add WARN to set_vm_flush_reset_perms() on huge pages. (Rick Edgecombe)
+2. Simplify select_bpf_prog_pack_size. (Rick Edgecombe)
 
+As of 5.18-rc6, x86_64 uses bpf_prog_pack on 4kB pages. This set contains
+a few followups:
+  1/8 - 3/8 fills unused part of bpf_prog_pack with illegal instructions.
+  4/8 - 5/8 enables bpf_prog_pack on 2MB pages.
 
+The primary goal of bpf_prog_pack is to reduce iTLB miss rate and reduce
+direct memory mapping fragmentation. This leads to non-trivial performance
+improvements.
 
-[...]
+For our web service production benchmark, bpf_prog_pack on 4kB pages
+gives 0.5% to 0.7% more throughput than not using bpf_prog_pack.
+bpf_prog_pack on 2MB pages 0.6% to 0.9% more throughput than not using
+bpf_prog_pack. Note that 0.5% is a huge improvement for our fleet. I
+believe this is also significant for other companies with many thousand
+servers.
+
+bpf_prog_pack on 2MB pages may use slightly more memory for systems
+without many BPF programs. However, such waste in memory (<2MB) is within
+noisy for modern x86_64 systems.
+
+Song Liu (8):
+  bpf: fill new bpf_prog_pack with illegal instructions
+  x86/alternative: introduce text_poke_set
+  bpf: introduce bpf_arch_text_invalidate for bpf_prog_pack
+  module: introduce module_alloc_huge
+  bpf: use module_alloc_huge for bpf_prog_pack
+  vmalloc: WARN for set_vm_flush_reset_perms() on huge pages
+  vmalloc: introduce huge_vmalloc_supported
+  bpf: simplify select_bpf_prog_pack_size
+
+ arch/x86/include/asm/text-patching.h |  1 +
+ arch/x86/kernel/alternative.c        | 67 +++++++++++++++++++++++-----
+ arch/x86/kernel/module.c             | 21 +++++++++
+ arch/x86/net/bpf_jit_comp.c          |  5 +++
+ include/linux/bpf.h                  |  1 +
+ include/linux/moduleloader.h         |  5 +++
+ include/linux/vmalloc.h              |  7 +++
+ kernel/bpf/core.c                    | 43 ++++++++++--------
+ kernel/module.c                      |  8 ++++
+ mm/vmalloc.c                         |  5 +++
+ 10 files changed, 134 insertions(+), 29 deletions(-)
+
+--
+2.30.2
