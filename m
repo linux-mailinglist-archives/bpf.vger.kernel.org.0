@@ -2,60 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB8052FCDA
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 15:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B5752FD96
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 17:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235247AbiEUNZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 May 2022 09:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        id S243709AbiEUPNp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 May 2022 11:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355031AbiEUNZa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 May 2022 09:25:30 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95887606E7
-        for <bpf@vger.kernel.org>; Sat, 21 May 2022 06:25:29 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id nr2-20020a17090b240200b001df2b1bfc40so13654948pjb.5
-        for <bpf@vger.kernel.org>; Sat, 21 May 2022 06:25:29 -0700 (PDT)
+        with ESMTP id S241662AbiEUPNp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 May 2022 11:13:45 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFDF554A3;
+        Sat, 21 May 2022 08:13:44 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id h13so3757862pfq.5;
+        Sat, 21 May 2022 08:13:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=urg7HfnilktPs2aIRMbLMbkmP5FphJkEQhbOUOa4EG8=;
-        b=g8cPnHm4wJgtKSWeZko3Fc3xmGjDNsxgVJx2YQl7RmtI8no1zVjk/exR1G++jSyFTH
-         Hj09zQ/br7b062JZkQUoUWQmbyPXqy+OARTNJYBsoh8okprwx+XjjQ7dhh1e1mIY3bGB
-         gKkaT5xi1e+IswCEzSZxGV6W4sA/PJ6RZ8u6Y/EXEDDlWlb0KAJKAU6qp/QVVGLhwBRg
-         DV4jMi/IDpGfZKuu0PhPB6AHlLeXdi4GUkA9q1yheaLNU682czo3NbARTIrpHuMIWFVB
-         AniwdqWXy8YXlDWADPwwo7wHr8QDrO5dV/q0L0BWImBvCqVAJVmPfYqHSv0nKy4YKVKR
-         NDdQ==
+        bh=LbhcB3YHNqKynKttP0KjjWCMDlfixCXwusmnm/NYx0A=;
+        b=KZ4hcy/La625YXR2kT4LQSvC7ofjEGGn5R4OCf5Azd5fYGSckwqppA+N8sjZwRDlPz
+         hHx5AVMjdevHD56FYnsc5wWQD0Vg9TlriYnTHuH0bEdah4m/Gi+tGMxRPlHY2GEezS6L
+         p0eW8UMzmsSo9XSdZYrcc6GJKaIntSuhbcuFyL2dAQsv3W4uMubRb+LjKZQ8mbLGjnV6
+         yo2K+R7Dlr2oEfxTlkS/gUeLq2BdO7bt3WR1xbFzBfM90oWi2Yz6yfsvPYnNrIKj+8ZW
+         4mr9btjVlU7ESodu/qqBzTsiU3Q9bdtxCXok0O+iTlIZj7kK+zujPk5RTb9TSZ/7/px1
+         eHeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=urg7HfnilktPs2aIRMbLMbkmP5FphJkEQhbOUOa4EG8=;
-        b=JiyN/gNK0dRd/5GcZ47xiPAUzL/IwsLVP2NwXoTFOoKg2GHoF4QAl3dAnZi2zJy4k4
-         9ydDYRXPY/iRVAe1O7ajq1cSlw/vru7z8eY7be1LMmin/rKsb7lde1xfjPe561q34OZC
-         S7h7jS+j7bOzeDfzDK04xU9u/wC17/SddDUab4HGr/XPqaVFJW1WMhFHmYVI5H2VTd/f
-         9jQz37kgtodlw5Ul4FVLcEn+ZYM7YkBpUZIdVD+JIiUc2Gr7A2beYGi37UTxDuoMwClQ
-         i51thx73BveYvCj+4Y6sSMMlgXr/yxLhRWpoNYBnMqPeqcbpGPvQwydeyqqQJPjDx0DI
-         c1bA==
-X-Gm-Message-State: AOAM531fxn7a8UBpbYS0winBJumoOjmZYmM11s6So2wt7mv2nauoPd/P
-        OKaE1Q56GN41d+wLxJe+jMxVbKYymX0=
-X-Google-Smtp-Source: ABdhPJyUBqR9jvPUgtrSC42KCbNuENT7UtqX+SbXrt/LmMTQDRLHEUUeX7twzkJTGXqP6NEzP3UX7w==
-X-Received: by 2002:a17:90a:4f0a:b0:1df:b37b:75b1 with SMTP id p10-20020a17090a4f0a00b001dfb37b75b1mr17132642pjh.199.1653139528940;
-        Sat, 21 May 2022 06:25:28 -0700 (PDT)
-Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id cw25-20020a056a00451900b0050dc76281d3sm3665587pfb.173.2022.05.21.06.25.28
+        bh=LbhcB3YHNqKynKttP0KjjWCMDlfixCXwusmnm/NYx0A=;
+        b=XJbWqB0PY3mMNN9TpwGc0JIl7P9TcWnNZ/E0Y43GsDzV2HnLDfCAA8u+U73MKsblRm
+         Zqk5anRYgHrEdtWOVJNo1jOFj57FxOz773HnuaMrA3AexjFp4InyOZOYpEbuA7MaOv0Z
+         pScmpBwuN3TEgmK/CMYfws4pc4TcTP9L5s4SaUf8Bf4auFUchZGNLjJeqsDaGGN2/jTh
+         bpRm6+4nRmS7B7zDio9TM9LKQEv/PJ5hVLkhA52GnpKR7C4hwVSG3albCb1yYGL6IN8e
+         +FSM85x02HUB2rFN455RlEvGnSC+0vmo4Dxblpqn7UZtlqC8MDGCR/w7e/UgduAmN12z
+         dW2g==
+X-Gm-Message-State: AOAM531HEcLDXvwvRwX3ZzjD6/UIdowY6rh/khiWiTpGiuwBzEtwz2KN
+        aRT2aLzcaRSqdFfYTiqA3yQ=
+X-Google-Smtp-Source: ABdhPJz28g5r6L61tgSyG/mhNaBfJU55V1hDA6V2h6Yza2rVPm1FKMGPwK/4Znn6kewASDCoiRJGPA==
+X-Received: by 2002:a63:5d10:0:b0:3c5:e836:ffd2 with SMTP id r16-20020a635d10000000b003c5e836ffd2mr13173642pgb.32.1653146024229;
+        Sat, 21 May 2022 08:13:44 -0700 (PDT)
+Received: from localhost.localdomain ([223.212.58.71])
+        by smtp.gmail.com with ESMTPSA id d17-20020a170903209100b0015e8e7db067sm1749565plc.4.2022.05.21.08.13.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 May 2022 06:25:28 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next] bpf: Suppress 'passing zero to PTR_ERR' warning
-Date:   Sat, 21 May 2022 18:56:20 +0530
-Message-Id: <20220521132620.1976921-1-memxor@gmail.com>
+        Sat, 21 May 2022 08:13:43 -0700 (PDT)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix test_run logic in fexit_stress.c
+Date:   Sat, 21 May 2022 23:13:29 +0800
+Message-Id: <20220521151329.648013-1-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -69,28 +73,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kernel Test Robot complains about passing zero to PTR_ERR for the said
-line, suppress it by using PTR_ERR_OR_ZERO.
+In the commit da00d2f117a0 ("bpf: Add test ops for BPF_PROG_TYPE_TRACING"),
+the bpf_fentry_test1 function was moved into bpf_prog_test_run_tracing(),
+which is the test_run function of the tracing BPF programs.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Thus calling 'bpf_prog_test_run_opts(filter_fd, &topts)' will not trigger
+bpf_fentry_test1 function as filter_fd is a sk_filter BPF program.
+
+Fix it by replacing filter_fd with fexit_fd in the bpf_prog_test_run_opts()
+function.
+
+Fixes: da00d2f117a0 ("bpf: Add test ops for BPF_PROG_TYPE_TRACING")
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/fexit_stress.c   | 32 +++----------------
+ 1 file changed, 4 insertions(+), 28 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 14e8c17d3d8d..45153cbc2bd6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5352,7 +5352,7 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
- 		return -EINVAL;
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_stress.c b/tools/testing/selftests/bpf/prog_tests/fexit_stress.c
+index a7e74297f15f..5a7e6011f6bf 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_stress.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_stress.c
+@@ -7,11 +7,9 @@
+ 
+ void serial_test_fexit_stress(void)
+ {
+-	char test_skb[128] = {};
+ 	int fexit_fd[CNT] = {};
+ 	int link_fd[CNT] = {};
+-	char error[4096];
+-	int err, i, filter_fd;
++	int err, i;
+ 
+ 	const struct bpf_insn trace_program[] = {
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+@@ -20,25 +18,9 @@ void serial_test_fexit_stress(void)
+ 
+ 	LIBBPF_OPTS(bpf_prog_load_opts, trace_opts,
+ 		.expected_attach_type = BPF_TRACE_FEXIT,
+-		.log_buf = error,
+-		.log_size = sizeof(error),
+ 	);
+ 
+-	const struct bpf_insn skb_program[] = {
+-		BPF_MOV64_IMM(BPF_REG_0, 0),
+-		BPF_EXIT_INSN(),
+-	};
+-
+-	LIBBPF_OPTS(bpf_prog_load_opts, skb_opts,
+-		.log_buf = error,
+-		.log_size = sizeof(error),
+-	);
+-
+-	LIBBPF_OPTS(bpf_test_run_opts, topts,
+-		.data_in = test_skb,
+-		.data_size_in = sizeof(test_skb),
+-		.repeat = 1,
+-	);
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
+ 
+ 	err = libbpf_find_vmlinux_btf_id("bpf_fentry_test1",
+ 					 trace_opts.expected_attach_type);
+@@ -58,15 +40,9 @@ void serial_test_fexit_stress(void)
+ 			goto out;
  	}
- 	if (!map_value_has_kptrs(map_ptr)) {
--		ret = PTR_ERR(map_ptr->kptr_off_tab);
-+		ret = PTR_ERR_OR_ZERO(map_ptr->kptr_off_tab);
- 		if (ret == -E2BIG)
- 			verbose(env, "map '%s' has more than %d kptr\n", map_ptr->name,
- 				BPF_MAP_VALUE_OFF_MAX);
---
+ 
+-	filter_fd = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL",
+-				  skb_program, sizeof(skb_program) / sizeof(struct bpf_insn),
+-				  &skb_opts);
+-	if (!ASSERT_GE(filter_fd, 0, "test_program_loaded"))
+-		goto out;
++	err = bpf_prog_test_run_opts(fexit_fd[0], &topts);
++	ASSERT_OK(err, "bpf_prog_test_run_opts");
+ 
+-	err = bpf_prog_test_run_opts(filter_fd, &topts);
+-	close(filter_fd);
+-	CHECK_FAIL(err);
+ out:
+ 	for (i = 0; i < CNT; i++) {
+ 		if (link_fd[i])
+-- 
 2.36.1
 
