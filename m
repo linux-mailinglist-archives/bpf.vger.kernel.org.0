@@ -2,132 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE7B52FC33
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 13:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5FA52FCA2
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 15:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243870AbiEULrs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 May 2022 07:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
+        id S1354134AbiEUNOE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 May 2022 09:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbiEULro (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 May 2022 07:47:44 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE6F5F254;
-        Sat, 21 May 2022 04:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653133663; x=1684669663;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5JYbmecEfaojoV0o0RHmSf31Bg5PL/dcrqKwNqVLbR8=;
-  b=fogFnyJFdEebJI8H2OgOkFQ0UFIgy9W9qeo3iOSn7/qZMC3EcdI9Qume
-   fBjLgY2Y1XR335zRJtHM3Mb/hf1iWAl+TJKU7S5SrtJU2wDuQHVHQ5RDB
-   bHxVOxJYqY3pm3w2U4PnKocYRT9ocdHE/ym2PfbSA6LjRmARdGp9G97WJ
-   E7zjZvY8mvVRtXunU5xMketKTN5feacevLQGopS3CvrK4sfJWk7SrgNYk
-   kqaG3lUuiG/100eEAOoRRsAuhL2POkpHA2WQVqfkbvbvCcNNEa11hHO2E
-   G2ka7Hho339v/ORoJVIXnhHrrS+BtbQ+36H+d+ai5bZcSOIxOMuyNj5Py
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="272819376"
-X-IronPort-AV: E=Sophos;i="5.91,242,1647327600"; 
-   d="scan'208";a="272819376"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2022 04:47:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,242,1647327600"; 
-   d="scan'208";a="557873765"
-Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 21 May 2022 04:47:38 -0700
-Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nsNa5-0006Fa-L8;
-        Sat, 21 May 2022 11:47:37 +0000
-Date:   Sat, 21 May 2022 19:47:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yosry Ahmed <yosryahmed@google.com>,
+        with ESMTP id S1351062AbiEUNOA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 May 2022 09:14:00 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CEB38BDE;
+        Sat, 21 May 2022 06:13:58 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id bh5so9415864plb.6;
+        Sat, 21 May 2022 06:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oLH4/O4hnVy3wOLUc8vz0oBE8xaj2C4NuAcXjfnz4nc=;
+        b=niDfWBSUsX18Eo+z1BzxhZCU0ofsCu4DzD5HfoxNZ2DTnYgxx7Gju+frSRnrp+vCXH
+         56FcSy+kE3Tzknxnz265wjA6qtdrDw1NHLH7gpTBurdvVMhyQfaY0IKmh7x14FEGzU1J
+         sokW175+Q/YkF0Gw+GsrOdzkjO18FNWMHN1NdbBbAoMdbwIW0mTkc6R5dyILzQVh5azT
+         7Ga+jYtgsuuqtCBn5LRVaIhqfvZdesaxpIyqKyAymbcjamb7ctqYXusn8eTGtzEEFGP6
+         4CMKup3FFKMfsGCjPmY/nUiko07rH+dTyYeXaYgzHKD3aYcjlrH5w+6oDj6SX6PyVyaI
+         MVMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oLH4/O4hnVy3wOLUc8vz0oBE8xaj2C4NuAcXjfnz4nc=;
+        b=wrk5VsgdJssWNrao876mDNE2tiLGNdHfW1SIBi2LFS3nU/ITnC32Y366N1bjhoZcrg
+         sNBzqGoY1iF4X4a/lE5KquoZrMIW934hbIdIRbV22CKIhvjEKNb1DTwI7oKVZ/Zxu/wA
+         0EFnf3Y/XN3IY3gDk4sA/U9IBmmtEswDLFFU1NMKX6JyGttH4s9pJmLi07HqM63LmM0t
+         0L52cdgI17RZcezcT/QMG3hikzu4LL9FjtNyiFz8ugfFa+qce98jgA55UIzP3nC6se0B
+         DLrPzaHrDNC1x3Q8jg5lfTI3yLbGMZZSZEl8VCym7UDhiVWfn6GeUoB7haPNZkzL2/er
+         4F1g==
+X-Gm-Message-State: AOAM532fyjYQp0J0adzioKmSCancqTRZb+uoB7lnmcD4P0xf5UNnrQTw
+        ABsyKJiB0s088HuWq+S+PIHOEZbWKlEDMQ==
+X-Google-Smtp-Source: ABdhPJzKwRby6wAL6fXmsCoBg2Jo18skM3PQfHlN6h+jnaXjyVK1aQ/gnt4kwrr5w8dLwD11V0/c0A==
+X-Received: by 2002:a17:90b:1b41:b0:1e0:17f:d17 with SMTP id nv1-20020a17090b1b4100b001e0017f0d17mr7128754pjb.85.1653138837559;
+        Sat, 21 May 2022 06:13:57 -0700 (PDT)
+Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
+        by smtp.gmail.com with ESMTPSA id y16-20020a62b510000000b0051843980605sm3593579pfe.181.2022.05.21.06.13.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 May 2022 06:13:57 -0700 (PDT)
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Openrisc <openrisc@lists.librecores.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>
-Cc:     kbuild-all@lists.01.org, Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH bpf-next v1 2/5] cgroup: bpf: add cgroup_rstat_updated()
- and cgroup_rstat_flush() kfuncs
-Message-ID: <202205211913.wPnVDaPm-lkp@intel.com>
-References: <20220520012133.1217211-3-yosryahmed@google.com>
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v3 06/13] openrisc: Update litex defconfig to support glibc userland
+Date:   Sat, 21 May 2022 22:13:16 +0900
+Message-Id: <20220521131323.631209-7-shorne@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220521131323.631209-1-shorne@gmail.com>
+References: <20220521131323.631209-1-shorne@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220520012133.1217211-3-yosryahmed@google.com>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Yosry,
+I have been using a litex SoC for glibc verification.  Update the
+default litex config to support required userspace API's needed for the
+full glibc testsuite to pass.
 
-Thank you for the patch! Perhaps something to improve:
+This includes enabling the litex mmc driver and filesystems used
+in a typical litex environment.
 
-[auto build test WARNING on bpf-next/master]
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+---
+ arch/openrisc/configs/or1klitex_defconfig | 32 +++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/bpf-rstat-cgroup-hierarchical-stats/20220520-093041
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20220521/202205211913.wPnVDaPm-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/203797424b1159b12702cea9d9a20acc24ea92e0
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Yosry-Ahmed/bpf-rstat-cgroup-hierarchical-stats/20220520-093041
-        git checkout 203797424b1159b12702cea9d9a20acc24ea92e0
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=um SUBARCH=i386 SHELL=/bin/bash kernel/cgroup/
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   kernel/cgroup/rstat.c:155:22: warning: no previous prototype for 'bpf_rstat_flush' [-Wmissing-prototypes]
-     155 | __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
-         |                      ^~~~~~~~~~~~~~~
-   kernel/cgroup/rstat.c:503:10: error: 'const struct btf_kfunc_id_set' has no member named 'sleepable_set'; did you mean 'release_set'?
-     503 |         .sleepable_set  = &bpf_rstat_sleepable_kfunc_ids,
-         |          ^~~~~~~~~~~~~
-         |          release_set
->> kernel/cgroup/rstat.c:503:27: warning: excess elements in struct initializer
-     503 |         .sleepable_set  = &bpf_rstat_sleepable_kfunc_ids,
-         |                           ^
-   kernel/cgroup/rstat.c:503:27: note: (near initialization for 'bpf_rstat_kfunc_set')
-
-
-vim +503 kernel/cgroup/rstat.c
-
-   499	
-   500	static const struct btf_kfunc_id_set bpf_rstat_kfunc_set = {
-   501		.owner		= THIS_MODULE,
-   502		.check_set	= &bpf_rstat_check_kfunc_ids,
- > 503		.sleepable_set	= &bpf_rstat_sleepable_kfunc_ids,
-   504	};
-   505	
-
+diff --git a/arch/openrisc/configs/or1klitex_defconfig b/arch/openrisc/configs/or1klitex_defconfig
+index d695879a4d26..d3fb964b4f85 100644
+--- a/arch/openrisc/configs/or1klitex_defconfig
++++ b/arch/openrisc/configs/or1klitex_defconfig
+@@ -1,22 +1,54 @@
++CONFIG_SYSVIPC=y
++CONFIG_POSIX_MQUEUE=y
++CONFIG_CGROUPS=y
++CONFIG_NAMESPACES=y
++CONFIG_USER_NS=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
++CONFIG_SGETMASK_SYSCALL=y
+ CONFIG_EMBEDDED=y
+ CONFIG_OPENRISC_BUILTIN_DTB="or1klitex"
+ CONFIG_HZ_100=y
++CONFIG_OPENRISC_HAVE_SHADOW_GPRS=y
+ CONFIG_NET=y
+ CONFIG_PACKET=y
++CONFIG_PACKET_DIAG=y
+ CONFIG_UNIX=y
++CONFIG_UNIX_DIAG=y
+ CONFIG_INET=y
++CONFIG_IP_MULTICAST=y
++CONFIG_IP_ADVANCED_ROUTER=y
++CONFIG_INET_UDP_DIAG=y
++CONFIG_INET_RAW_DIAG=y
++# CONFIG_WIRELESS is not set
++# CONFIG_ETHTOOL_NETLINK is not set
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_OF_OVERLAY=y
+ CONFIG_NETDEVICES=y
+ CONFIG_LITEX_LITEETH=y
++# CONFIG_WLAN is not set
+ CONFIG_SERIAL_LITEUART=y
+ CONFIG_SERIAL_LITEUART_CONSOLE=y
+ CONFIG_TTY_PRINTK=y
++# CONFIG_GPIO_CDEV is not set
++CONFIG_MMC=y
++CONFIG_MMC_LITEX=y
++# CONFIG_VHOST_MENU is not set
++# CONFIG_IOMMU_SUPPORT is not set
+ CONFIG_LITEX_SOC_CONTROLLER=y
++CONFIG_EXT2_FS=y
++CONFIG_EXT3_FS=y
++CONFIG_MSDOS_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_EXFAT_FS=y
+ CONFIG_TMPFS=y
++CONFIG_NFS_FS=y
++CONFIG_NFS_V3_ACL=y
++CONFIG_NFS_V4=y
++CONFIG_NLS_CODEPAGE_437=y
++CONFIG_NLS_ISO8859_1=y
++CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,bpf"
+ CONFIG_PRINTK_TIME=y
+ CONFIG_PANIC_ON_OOPS=y
+ CONFIG_SOFTLOCKUP_DETECTOR=y
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.31.1
+
