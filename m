@@ -2,97 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4826152F693
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 02:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D8C52F697
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 02:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245759AbiEUAJr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 20:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
+        id S238411AbiEUAKv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 20:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232019AbiEUAJq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 20:09:46 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43087185CBA;
-        Fri, 20 May 2022 17:09:45 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b5so1528178plx.10;
-        Fri, 20 May 2022 17:09:45 -0700 (PDT)
+        with ESMTP id S243537AbiEUAKt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 20:10:49 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97291DBE
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 17:10:48 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id e3so10290593ios.6
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 17:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=151EddftrZhDh/91EEBfNEmgh9HiWO/wmSjB/1IWmjE=;
-        b=ig3G1TzM6niiGVY07X0kHudPr79o1wawS3OA/WLkBYr0EsIn/SDBQXrJ7/JpLiq5FR
-         8USOXfzloV+gyi18NFVqxGo881D6v4hgPiF9PMK2/PR3uAu1iFlvoD4qhgxRkILWkyTO
-         hzi2JqSWgJZAULroVYLlhtjVrWA9skKuY5lCK7e5t0YtjBDKoX91Aq4NPNRccJPGVTMm
-         ia4IX0cmw82iHhKxuIoSm0KzqCahYhL2Aate0Ur6TXdfyYy+d7jyI1fZzuU/lRx5l/72
-         i57snCE9AcY4zI8hvQC92lbOM9HjCDJxVT0lFxnC75W95e/Q/PzbFXjHN15WT/E0MLBv
-         U1eg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kn/LwdemDIEt1SQPG8WeFtkZOHFnM0zGsySB8T2F+Zc=;
+        b=RyYWE8IiCx2XfrNxaX7bPq+P3tycOmg3HQ33xV48znUFXH/51v+83E17epgnz1hM0l
+         HckjdQd3GQz6stKIuHRyYUEnvnbOfoMI7aqO/I+Ud+KrSF0SXHNQO9BeOr3BjYYHgPY1
+         4ocym83M2S7ztecbyLWmQUEbB5qI8MKgU9G7nk07OqC2vjaZ3oKDy6grc/EUGLcrGqd/
+         tO7y9sQk1yxE2qQXRN7wpJXIfnYQcTFsvDOiVinCzBxSMzbDrDclSAOXSX2a5O0pUyCC
+         l1reNcyEuBwRMM5AfiJEFZtuzPqSonLR9EHmLL3jD06V2I17MmqR2XgEu1iWAB/YBUPZ
+         0a2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=151EddftrZhDh/91EEBfNEmgh9HiWO/wmSjB/1IWmjE=;
-        b=sZrQqMckMNgTa1eXP6KXVhsRXypgmoblEQ1jol/3U1oaX1IPTCSLS1f0giyfv+lGGT
-         dlcF1jx/NU8bUPzDGuL+X0P3tKPJmA6jTIZiR/Jr00/vEaumNT++09MGZuvD/kqX8/le
-         pKLY42xAPJEltWPLKhRRazKDRcGEOr8/sYXNquveJNh1wbW4sGDqyOS1pn4ma1n5noFW
-         btuL+GkYpZcIS/C0J/fX5kpymbAtTK0bNVyCjR1UkRx07r362fmg6SwMVeE4yWsQdQ54
-         mNkIL3uUrFJiHM9OWtyhW4Eq9rTMyOq9kASyINsTTaF8tPNUtQzQqJUm3mbsm8L7tTMW
-         Sqyg==
-X-Gm-Message-State: AOAM531EiGCjMCMN5XAX2Hq9N499BQ+gdr5HiwZqOT1ytXOAdqSe58st
-        exWZ9VA0UNG0D9YuRMPyB/Q=
-X-Google-Smtp-Source: ABdhPJzZJ3PXUYOpDYTH6V6GmF0cwwSxNlLIOFvnW/QjRfyKPcOXubaaKYKiFlU1lyQwakZgPiZgag==
-X-Received: by 2002:a17:90b:4c0f:b0:1e0:237:d3f6 with SMTP id na15-20020a17090b4c0f00b001e00237d3f6mr4308905pjb.166.1653091784723;
-        Fri, 20 May 2022 17:09:44 -0700 (PDT)
-Received: from ubuntu.localdomain ([116.21.69.15])
-        by smtp.gmail.com with ESMTPSA id nm11-20020a17090b19cb00b001df40d766e9sm2475956pjb.21.2022.05.20.17.09.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 May 2022 17:09:44 -0700 (PDT)
-From:   Ruijian Li <ruijian63@gmail.com>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, 798073189@qq.com,
-        Ruijian Li <ruijian63@gmail.com>
-Subject: [PATCH] samples: fix compile failure error
-Date:   Sat, 21 May 2022 08:09:21 +0800
-Message-Id: <20220521000921.8337-1-ruijian63@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kn/LwdemDIEt1SQPG8WeFtkZOHFnM0zGsySB8T2F+Zc=;
+        b=z/8ISrQjXnEfLXw+WW4G1mIIlftYeIhETsF/1l+3ttxjzRiT7AaB3yngQn/vD45feS
+         9TmGT5CYdFzgq7fL1PXjB7QDLPAQKC78Ep989osD8ku1KnRD2hsrNdNld6SFpx8Q4mxe
+         pYJWTpF7tB8Q2XoUYpkbWEh9V4U/sPym5iSEnkTpde0Q8tzOxG2gTrriYjCSV7yM5QaI
+         89/PMzDJVuk0qgqXR3XR4Q63aLNSP3VoEJpiFmT4On+vVWetPSJ62DwDEys8lLsA2CuZ
+         Z+3JzVKocAw9cUFgKJMFTW8DEvpwbh2U1itWMCRq17PA0IypbYpEPFd4aLxgfqAd6H/6
+         Bykw==
+X-Gm-Message-State: AOAM533ZWa4K+M9OW5LvfNE5uB0Xq7J9dUPLC/hFvYnA06TzAtytaNZg
+        8FIUqwKwGOrp+j9b7fo+YGPT4nox/RQz/kBy/phU1V4f
+X-Google-Smtp-Source: ABdhPJy9DNUqGxhKDFVZCdPmG3/Tlwa0d+08N2hjuRCRib6Io6Xn5iDM+U5pFVDgGdktGF3GCzACFZcm8Qvcch2ViRE=
+X-Received: by 2002:a05:6638:2393:b0:32e:319d:c7cc with SMTP id
+ q19-20020a056638239300b0032e319dc7ccmr6703176jat.103.1653091848017; Fri, 20
+ May 2022 17:10:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAPxVHdL-dT2GQh-HEkNjNoTEzA9DRL4W4ZfmUzc1+Bdz89fftQ@mail.gmail.com>
+In-Reply-To: <CAPxVHdL-dT2GQh-HEkNjNoTEzA9DRL4W4ZfmUzc1+Bdz89fftQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 20 May 2022 17:10:37 -0700
+Message-ID: <CAEf4BzZg0r4YptYPu8Y_-qp=rY__W6dmb9kLwMV5MAH6C-2PSg@mail.gmail.com>
+Subject: Re: Tracing NVMe Driver with BPF missing events
+To:     John Mazzie <john.p.mazzie@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "John Mazzie (jmazzie)" <jmazzie@micron.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Because compile samples/bpf/test_lru_dist failure, I remove the
-declaration of the struct list_head.
+On Wed, May 18, 2022 at 2:35 PM John Mazzie <john.p.mazzie@gmail.com> wrote:
+>
+> My group at Micron is using BPF and love the tracing capabilities it
+> provides. We are mainly focused on the storage subsystem and BPF has
+> been really helpful in understanding how the storage subsystem
+> interacts with our drives while running applications.
+>
+> In the process of developing a tool using BPF to trace the nvme
+> driver, we ran into an issue with some missing events. I wanted to
+> check to see if this is possibly a bug/limitation that I'm hitting or
+> if it's expected behavior with heavy tracing. We are trying to trace 2
+> trace points (nvme_setup_cmd and nvme_complete_rq) around 1M times a
+> second.
+> We noticed if we just trace one of the two, we see all the expected
+> events, but if we trace both at the same time, the nvme_complete_rq
 
-Signed-off-by: Ruijian Li <ruijian63@gmail.com>
----
- samples/bpf/test_lru_dist.c | 4 ----
- 1 file changed, 4 deletions(-)
+kprobe programs have per-CPU reentrancy protection. That is, if some
+BPF kprobe/tracepoint program is running and something happens (e.g.,
+BPF program calls some kernel function that has another BPF program
+attached to it, or preemption happens and another BPF program is
+supposed to run) that would trigger another BPF program, then that
+nested BPF program invocation will be skipped.
 
-diff --git a/samples/bpf/test_lru_dist.c b/samples/bpf/test_lru_dist.c
-index 75e877853596..dd7eb470653b 100644
---- a/samples/bpf/test_lru_dist.c
-+++ b/samples/bpf/test_lru_dist.c
-@@ -33,10 +33,6 @@ static int nr_cpus;
- static unsigned long long *dist_keys;
- static unsigned int dist_key_counts;
- 
--struct list_head {
--	struct list_head *next, *prev;
--};
--
- static inline void INIT_LIST_HEAD(struct list_head *list)
- {
- 	list->next = list;
--- 
-2.32.0
+This might be what happens in your case.
 
+> misses events. I am using two different percpu_hash maps to count both
+> events. One for setup and another for complete. My expectation was
+> that tracing these events would affect performance, somewhat, but not
+> miss events. Ultimately the tool would be used to trace nvme latencies
+> at the driver level by device and process.
+>
+> My tool was developed using libbpf v0.7, and I've tested on Rocky
+> Linux 8.5 (Kernel 4.18.0), Ubuntu 20.04 (Kernel 5.4) and Fedora 36
+> (Kernel 5.17.6) with the same results.
+>
+> Thanks,
+> John Mazzie
+> Principal Storage Solutions Engineer
+> Micron Technology, Inc.
