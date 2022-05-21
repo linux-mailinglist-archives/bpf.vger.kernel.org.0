@@ -2,513 +2,343 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A3352F8E2
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 07:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2DC52F969
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 08:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbiEUFWq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 May 2022 01:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
+        id S240269AbiEUG4j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 May 2022 02:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbiEUFWp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 May 2022 01:22:45 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F9846B37
-        for <bpf@vger.kernel.org>; Fri, 20 May 2022 22:22:44 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24L3Xoas019726;
-        Fri, 20 May 2022 22:22:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=QDlPpV09kqE4TpGEtWW2fA9MbwwhvPK/YHberaBQb+s=;
- b=ROTffXdnDCQfRt2pztzkbsgQlrniGiLUWeNsw9IteD6H7Ga6eey/TcAslLfTlwqoPiLi
- 7HkUAXN4g8MgoNHjY4BtFUx7eA75DTnYv9TV1/R9E7pgHPJ5jVrXEagSNoc3qWHYhaDh
- FaWXm988E2r8rG/LFBotSUzmwxYpGyQpdXg= 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g5xexgrf4-1
+        with ESMTP id S240245AbiEUG4h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 May 2022 02:56:37 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2F4A0D30;
+        Fri, 20 May 2022 23:56:36 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24L3YDHk014827;
+        Fri, 20 May 2022 23:56:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=ucB3WZ74cNAIH4kto/o0gh/KKlzZTcIAEOqeWMpMbOM=;
+ b=OgCyv2L71bWrGN9TaBlDzNYHJ+musK0y4nujiYWovWN69E6XnWXNpihE0TCqOIHDY9JQ
+ CXpH6FbR9NOtvzj1ZDtzp5I2+/fU8lBft6MWChfRyQsSEa55QA0QycSf6JfWlv1ku6E8
+ VBnhQiYdsyeIHyzoNsazjgoqvo2lPrCvKXU= 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g59tc0ggs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 May 2022 22:22:25 -0700
+        Fri, 20 May 2022 23:56:21 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CuI7fNpTmL74yDcSFhR/c5NXjonq3BwtXqziXzCQYdmRKoBptAwy2f6YiCDJ1XdjQXkYH+y/0ezrlUKOJY+Aj44fXydgmZX6e3TbxrrHdjW/LzlFT2Z83Zvvuwus+7hNGyKrkFvNn1GkyFbbfaoyqwViz5mTE057Yh6n/gW61oVNTNU6fLK8oEzBts8vUZGSbNX+eIrlAMI4MsUazvlYf/DfdtVOhdNFfi34v+EQBuPnH7t0j5GT1PRhiZBTERHkKpZwoXu1A0L+ftD6cg4Wd8RXHs9ZBnQgwaNHaCqFsadDteY80NVzps760anRyR9eUdRlTg3i4Jbqm46CUca8KA==
+ b=LlqPXwJhAmOfUgv+YZKDYIYYpadkL/WbOqFuxj99/P+44PKYAzSbxVFIZTbDhRmx7QJxDVUHk5Ot3rZj+BKxOiOF49VaPNNCyi/J9iaCOMI0FrTIRKhwUrlqq70c8JpHHS8AufLJ6AQMs3ibPF5eCsakjFL8XS5bMoOv3CnHNTioOLwn9+qISDIylEf3iASqIzjnEmH27bPENxhuHEd328AHxmGiWPFYEtBrIedh35O14fcjd1WksSUeI208RPNw5U7pMW4u0NRb/0leYlZUx7CFZh9Ih9QCB8wr8DB4Jn/SYyosHEs+OQbHUocZHHQ4NjmFu8EwcqWMnmBf2Jtf2Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QDlPpV09kqE4TpGEtWW2fA9MbwwhvPK/YHberaBQb+s=;
- b=chGAMZlwVU05COizLZmGA4Yt6j7KlYzW4lNmDWsnzEFNQPvxyc446kuwM1sSmG8nEzd8EeXvK7WQy5IFZvYOzG69l7e5pEgMQkn7ySBhPMVsm9Rgh3/EgJDiQ3ark7u0/LzuJd5BRm5ens2Mau5zMdBAhbrSqoZwxbh1Q5AqmmgERlplJovrJpr4ANx/0ZURaKoKVzp0IqTKPozKlWOze4f7SB5YJgVd2qDPMLx4tDVd+GJELPglaqEvkWlx0XSzHTIEHrDJJZHiVoZr+Ccw94LJgS1ztgdtSQwnaXQR1kgrvUfOJuuuHJ7crUErYh6cTowtAtvkxaOaf43drJXQsw==
+ bh=ucB3WZ74cNAIH4kto/o0gh/KKlzZTcIAEOqeWMpMbOM=;
+ b=QkCxJ/78MXU1ktoXsQMh/1RHYxUg7NPJ8vT6uQpo909FTda0kJyrp0WkJYpZWANhvGcfkan34tyST1cfTyApfTVnq5f2ubHuA04NTaWL9xnxT34jj2bqaGm+qd7iOzdJ3hGtdgsHRkfmBjLODSqzBwxj4Xl+yirruVpxXZEdvzlSSNsbuztnNgsB7nxrBbFcOimqxDXlNzPQfu7mvK0qtgKW9nyqc8x0UUoAKX2i6JRck2U6OqPV482NCSFBM1oZqC+ufluxb1XAijgKEZhz4cYhijKc7Sv6qSPlIJo2ihRey0KL0yAOz5SNEnkuBE1YucBw50ezPQZHAslKlbowVw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by SJ0PR15MB5132.namprd15.prod.outlook.com (2603:10b6:a03:425::13) with
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
+ by MW2PR1501MB1995.namprd15.prod.outlook.com (2603:10b6:302:d::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.16; Sat, 21 May
- 2022 05:22:22 +0000
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::108d:108:5da8:4acb]) by DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::108d:108:5da8:4acb%8]) with mapi id 15.20.5273.017; Sat, 21 May 2022
- 05:22:22 +0000
-Message-ID: <2daebb4f-eb00-b536-85d0-985079a5ee1c@fb.com>
-Date:   Sat, 21 May 2022 01:22:20 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Add benchmark for
- local_storage get
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-References: <20220518035131.725193-1-davemarchevsky@fb.com>
- <CAEf4BzYw-wKk8Wu2KEMi=tiP6akxQa4cjHwCYCvWDipkwy2SWg@mail.gmail.com>
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-In-Reply-To: <CAEf4BzYw-wKk8Wu2KEMi=tiP6akxQa4cjHwCYCvWDipkwy2SWg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-X-ClientProxiedBy: MN2PR01CA0025.prod.exchangelabs.com (2603:10b6:208:10c::38)
- To DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.19; Sat, 21 May
+ 2022 06:56:17 +0000
+Received: from SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::f172:8f37:fe43:19a3]) by SA1PR15MB5016.namprd15.prod.outlook.com
+ ([fe80::f172:8f37:fe43:19a3%6]) with mapi id 15.20.5273.019; Sat, 21 May 2022
+ 06:56:16 +0000
+Date:   Fri, 20 May 2022 23:56:14 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Subject: Re: [PATCH bpf-next v7 04/11] bpf: minimize number of allocated lsm
+ slots per program
+Message-ID: <20220521065614.w7jqj4xg2skfg73u@kafai-mbp>
+References: <20220518225531.558008-1-sdf@google.com>
+ <20220518225531.558008-5-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220518225531.558008-5-sdf@google.com>
+X-ClientProxiedBy: SJ0PR13CA0039.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::14) To SA1PR15MB5016.namprd15.prod.outlook.com
+ (2603:10b6:806:1db::19)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c96ec9b5-acf0-4f17-5f4a-08da3ae9e207
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB5132:EE_
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB5132DA6070DBD11613873239A0D29@SJ0PR15MB5132.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 0c28454a-318e-4df8-750e-08da3af7006c
+X-MS-TrafficTypeDiagnostic: MW2PR1501MB1995:EE_
+X-Microsoft-Antispam-PRVS: <MW2PR1501MB199507FCC0EA035673220061D5D29@MW2PR1501MB1995.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fTlZa6TvcQhWymcpenyhv9NKNF6M+Vy2KAmXIw4NKcVgnVQHKLVsouCk2gg1niD7l4F6MjKNzkrq5JDc6idedT3E6pWNO1559RuVboy9MnmvJicaegWAfu2L0PiMZ8Oi057lbzZxJS2fSGFiW+Hm2QyW+szJPe95Egs3qFcvy2/N+hSL6raWk6UWiHj/LfWJt9cW9EH7NoRIzqt51YcG4LHPHudWx29lw8Xu62UffWgJ72eLK+q4uZg0IDXdKaqa4q+KgNS7hk79gLlIgiduZ+JBH4XEgx5R2Vcdt5Q8L/9ay3zwT1eYML2l8ULmrUn5gS92gkQGJFzednS6HZql5KRCQTFw909JBr0w/O8sY7SGIo+/GePZOebounSmbgKdDbc9lBNq6qSnatPz5Haz3W6VjsQ7U7TOk85pS10Cv4hLaeaf0PjSaTRswO/FcgXJrWh3O2336ToKtJMX9cQo8gITbNK41M8py/eJ47RGd4AHT+dvhzITTQ2iU5TrD9v8ccIa45FWjHDq+as02Ob9dzwC2h3TGIunG8XZuTmrNDzslKdSxsqJvRRo7KQv+p1IU0fxUCAHhxeenfRgAUnVhj8yzkLIliOppScZ0eG7cpNfdLWxxYECsAPHgZV7/KxSCMzAgMfzZXmrBhOq24LYuzCSXCMPuulJEfl1Icevu1LdKB0aQC+wFuqabv+HhXT0dRx8gsQMdm0KnVpSZv3nBu1J0fTRFY31iyoX3t/1bA+C3BS0gfWh8k19vkjguqbjNtUr8z0yxKnw0jakuR8ykUH0HxUQ3f0hpXWHl+0VsCHww52Z+a1L5lNvPyzdxjah
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(86362001)(6916009)(54906003)(36756003)(966005)(6486002)(66476007)(8676002)(66556008)(5660300002)(31686004)(31696002)(4326008)(66946007)(316002)(30864003)(508600001)(8936002)(6512007)(83380400001)(2906002)(53546011)(38100700002)(6506007)(2616005)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: /7+voyBDPwtHcxxNYcUfAvM8+2e71OUeVoMc+3VJH68fZoDvukO+ObD40EWso/DKeT708iC+Dr7ixz4iqFwYswIFyTC02bxsxw3m5vyD3tH/BrrqFkL8yx3sNjshSJ1QzQeicxG9fnua40MHgz0z4phLb40QUHTztzXMgLo3KK3j4iffqMyRosX7D+3EoAF/9xI55Ha96+rV1wkwhOcBb3d1mcciMVatmntKNoQf/bJuYPtH0vo3dgZnsUT2gpTSe13IUUFbeSOOCI0otR4B/Y7YdW9YUMFd5QsLKV1Lp3WQ32LXPn/8ZWxz29vUkEVsBHL4bLoCvIV99IwdjtwbEyS+lN3oxcmnSh/h5Fx8UiYHrx4rdJSSZmBQFdiL4CerYwgcjvXoCtgvOXwN68GQE6EQ+Crnyjrh64eJny5aPfsT66neJb6QesKksYD8H3hooZ92gFKylEYhwWv+PO6Zrajne8ybvDyY6UuMMe/zccbbFLH/lIlykuNCAZHbAqJ7GG985Wwt6JAslx456JbLj8q1fX+LMZnHDiijht0aSW4ZfaehGzPNdUGev2vzGSwB+FIdAa7O82Vt+VE/KailBXEniU6wgMr4OfgUb+ui6LANpSB6vPIPYMd/bgsdK9aiuy+fkNzKQatLIgGK2koTcEqMrJxbBESdSe7syTMcguNSVLC6TBaxlIMWEpmTP/8b
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(4636009)(366004)(6506007)(5660300002)(9686003)(6486002)(316002)(2906002)(8936002)(52116002)(1076003)(186003)(6512007)(8676002)(6916009)(83380400001)(33716001)(66476007)(66946007)(66556008)(38100700002)(508600001)(86362001)(4326008)(21314003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K3VJRHREcEFGdzJJQ0UwMVVsWDM5eXhCb05GaDRQZlhXeHZJblBWRXBpUERT?=
- =?utf-8?B?Y1RvVGpWa0x5ODRBbjkvRGcxZGwrS1cvMHJLYTFEdjRIc2xYdXZiVllXQ1FW?=
- =?utf-8?B?YVJoemhyaE85WXQzOElrWFdzamUwaVM2Y2tMUytMWmhuT2pOV3B6SXo3ZkpL?=
- =?utf-8?B?QVZibkdFbjkzdExGYlE1MXR6SysySTZMbERhSG44V3VwMk5UK21ybUFhMlNC?=
- =?utf-8?B?VjlDSjVyR1NKS0RDbFFhNXdyZzhRb2NPalQ2OUtqVHB4LzZ0OVVjNzlNSFRk?=
- =?utf-8?B?Mlp1UHEvdklTSXJKbGRUMFV6NkFWakl2dk42S3pMVndKRUI2OFlZNXVOSlhx?=
- =?utf-8?B?SDJ0dk1RcnpIMDF4MjVwRHZoNjNjdUQ3YldEbHVkUThTcUxvSW1ZYU1wVEFX?=
- =?utf-8?B?Y3lSUm93UVFURktwenhXTUZpM3dmeXFWdHB5MEpYME91Y1hueGhXd0tUUWJ3?=
- =?utf-8?B?TUdaMkVHVmFqRVh0VnE3Um1obWVKNitoUVU2T1prU24rUjV1Uk4vMUdrZjZF?=
- =?utf-8?B?bEJ6dUhyYmRscTJ0N09XdVFKRWhYbjlrcDhDc1hTb05TVmRkZkE1TS9STS9p?=
- =?utf-8?B?ZThYbWlTbEw3c3JDcE10YUY2ZUZackpwVFVuWGV6VFdreFdqakkwdUhhbnY0?=
- =?utf-8?B?RHJZUHlyQWlqN3RuNEpjcHJRMFFTUXM5Nloxa3ZiNFRLN055QUJMTHdibXBi?=
- =?utf-8?B?alhsV0dveHkySzcwbGkxeDZGOGFPbDRsWE14RFhoaXNXMlVXV3grNy9RNWp5?=
- =?utf-8?B?eHo5NmJyRHptajRWaGE5QnBRSUhLZm5hZTNSOEtKWHBYeVZ2N3hGSXRYT0l6?=
- =?utf-8?B?ZEF4RGxvcVdBTFIrL1lzVlpib2xnWE1ybzJzMU5OR2JkQnl0RTNpcTBlU1NK?=
- =?utf-8?B?RUtTWHFtM04zakhtbC9WM1h3c1JLMDdsWWg5NWZ0ZGxzOTRZdUNOTHZmUlZN?=
- =?utf-8?B?V3ZKWm5qSUI5UENoQ0NGZFUwbWxNK3Z0N3Y3RGtqNjJhdTRkbDlsUWFNTkp2?=
- =?utf-8?B?bTFBZElYaXYzSkpSRkpOeFM2OUlIeXpxUWk5eG5CUkhrS2wzNE16WTBOSE9H?=
- =?utf-8?B?cHp0ZFNmem5meDRsR3gxV0RlVlhkWXRTMGRhOG9YY0lNUWVLNGVFYjg5aExo?=
- =?utf-8?B?ZEpDWXNKZzgyZ2llbWE2ZlBmTnpQWE1FWWc1OG56TURmRDhsZEU3VUFmMDI4?=
- =?utf-8?B?eDBmcjZDUDUrb29CRUl1OGNZVXZRaVVQUUg0Q0Y2bDNEVGpFSzVpMlFyMUNX?=
- =?utf-8?B?c1pjOGtCcXdmNGZrRFhWc0VwSnlTcVJEb1JPUjIrMVlZTEwwUmcwMTVOZlpO?=
- =?utf-8?B?aGZDWGRyZzZvRVVFVnNqVGVoOFE4RWhHeVRsaDk0ZVIwWE85QndUaWNSdlIz?=
- =?utf-8?B?c2xOSWFhZzlnbGtYdkhBbVkvN25QMGprTnJDK2gzdTBNdUp6TDZQRERsQXJj?=
- =?utf-8?B?LzJhTFJaVkErWFpXbE5UN25ScitRRVZBcGRiOU8rTk1FcGNZUzJnNDFBRHNv?=
- =?utf-8?B?UTdXajV0dk11MWlmQmJqdWVzazdBU1pjRDdha24rSmlYdEQ1ODFwek90aUo0?=
- =?utf-8?B?dUcwY0FLYStZMmMxM3A4QzN2OFNiWStQc0YzUEFSR2txQ2pOWE1iRWFZdU0x?=
- =?utf-8?B?RlRpNk9pUG5SelBwRHhxR2lOa0FGLzd1YU5IYUMwV0QyemQ2WmQ1LytjK1l5?=
- =?utf-8?B?eXM4VllRb1R3ZU10SUZ1YjN4NGFtbkdTUzB5eDZ5NnlJN3pSK252WHpUR2xV?=
- =?utf-8?B?aVBsLzVBNXJQejdUM0tEbXRiZ3Jsd3VJdUxNYnEzbHMzUkRlSFNmWlZLNDJu?=
- =?utf-8?B?WWNwOW0renFDbGtaaVdRaEtBWmE2cytpalNuQW1wbS9rRWZyZXlVRjQ0UU9a?=
- =?utf-8?B?MXBMYXo5L1RCTkROY2lPbk1QcjBFZnFiSmJzYURmK0RNZHFnamwvUDdSMndk?=
- =?utf-8?B?V2NLRVUzMzQxYVBVSDhKNzg1VmVpTWJCUmp0WXJXUUN0czlpUHN6ZGcxV0Zx?=
- =?utf-8?B?c1lLUUo3Z2NQdlMvQVphbFhESmFydS9KWlppT2g1S2d1RmlabDZtcGZZSFZQ?=
- =?utf-8?B?d0Z4NDk0ckxMcExKZmQ0UzI0SGFIZ040emJMQ2RrTG5iTVl2NnIyTkJid002?=
- =?utf-8?B?TE82ZmpEZGFWNDFwZjRPUktTbExCa1pkekNrczdDajE3TFAvZHBVZ0YrSHRB?=
- =?utf-8?B?a0pZbUY4VERCbllIbWc1Y3A1eDRBYjJjWHNTUzlKSm5wUXBzSXdlc3pyQ2Jz?=
- =?utf-8?B?T1Q2WFMwYWl4LzhZS3R6TG1MTFNPM0h4QW5Qd0x6eWdOcGVuOFIwU1hYT08z?=
- =?utf-8?B?bWlHMC9EWWgwVk1Vd0ZWclY3NDd5MUJlOTJnK2x3TzJtd1BIYXB4Mk14a215?=
- =?utf-8?Q?j7iuFw9PShv7Z1UMPcjrlQsRNBPJA44BoM3Da?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1prbzQBAysem/+XKzMmfwgrG+TwqbyDu3+2geC611OAMsUtlrHhgf1Fw9H1N?=
+ =?us-ascii?Q?/4Ylfidce0BKObhZUhO/YZcVlkTDChCaOt2peySKi4PJfeGbo9zhanKXMyt4?=
+ =?us-ascii?Q?Z3eCB6eesxZw2FCFcopyzyHKJrJHFi6pQ4thfgVhdhYB3vCW/RUlLmhdah2r?=
+ =?us-ascii?Q?Vlti4TDC3QES4baNWV9Wavni3LbGc/Y2E+M48IoHStbYY+vXypVSRkVhjlOH?=
+ =?us-ascii?Q?BB4akrH797KuqvVUajD6lGJyuFmPIajRFtOQVP6fDR2MH2YDg90rxC4cjWAF?=
+ =?us-ascii?Q?E2X+BivaRnhL5QyUpv3mL2M1wXK4Ouj1LJT/QFXJkbzy9B/HhanVbamq3f8F?=
+ =?us-ascii?Q?gh2r+Bboz3844wfM0Aj3R6tWdt5cW668QZatl6QJvrkBPHkTJVHA1wAt4n6p?=
+ =?us-ascii?Q?hX1+RdwhyJYLBJT4eUn+g0ypur6FNB0mmIBvc+iR2fMAFoRVrBpcycnPf/IQ?=
+ =?us-ascii?Q?GEaLR9lRkuwlUN5xUPSy8iIzQ4NVuQbMt6o03M2LqTtBUd1vNhiyrk6FzZTr?=
+ =?us-ascii?Q?N5i3XzxKahYoVL2y8w/r5so/UEcOFgP+NpN5aFgl3mkd6VRWWXZ2D8UiVAYX?=
+ =?us-ascii?Q?jssd6ElTwrEtDQWvhOPq5lCJy4eiEebIJq7wvWroLwvu7+apHdNXBWykB6fE?=
+ =?us-ascii?Q?bljXyvYO/NeyTchjnOQhCLpoVk7GzogG6PFu5Xx4lDBxVEX3C9+WYLKd0Xd4?=
+ =?us-ascii?Q?gCGvg7Pj6djZiNNoxGIlOnolqGOqEAbYhJSOTUFTEiP1R2AWCkAGaNTUFCj3?=
+ =?us-ascii?Q?B/gwOnwe1VgFaQRfHe4wR6hmEQhGF8QDeRRoTGUITF1VatY1QiESxlZk/ev2?=
+ =?us-ascii?Q?ftKGyFF4CMOZovfLsngvIR+11l0PdRCeX8gYUJw2i+XF+ws6IGREkxlP8e7o?=
+ =?us-ascii?Q?gO7zl2EUGVBUXCb7YeVLqjBHVTCmujsBiYigUERZE/4xQa8u388HTkApBv0t?=
+ =?us-ascii?Q?fsxuTTHB2rEvJAEAlBJKmLABNTtd5J1mezv/lpk+YPx6T1RR+G8spbLoGWWJ?=
+ =?us-ascii?Q?D8zP5asjIQ5O+7jVoxggkKTE7KEIdUY5pgt/ZncBo/X3xy4CHtvIsRW+koJs?=
+ =?us-ascii?Q?2T2uYhrxbwQG5eEah9Nty9X5cIsjWlDGs14BeRfEf082pVDT/G6QataJ3+7C?=
+ =?us-ascii?Q?TgONcKkwrGTypsXhKXNrgYJckK76jsvyjFRwyNothW4C1G1pSx0KqsYwUsOb?=
+ =?us-ascii?Q?9DyEsnrtbQRHjL0eBpE3S8+WC5nnxlRqLPUkwS/amhiS+Ad8CIMFW57nwQli?=
+ =?us-ascii?Q?ZrpFzTUiOBBMr5kjnPxGUeAKoLkBknnJY3NTSB6lZEdhCARPSDSSlSdmHHv7?=
+ =?us-ascii?Q?3W4Hv6iX2AxPxi/M9BVi/Wm5SoQBTo23hWsOyOJ7BloVn/j2BXoyNd5BWbHm?=
+ =?us-ascii?Q?rW3VJbroyB4qOvCkmoPdaxkKl/0n0pv1t7OdnJkJkGOhm6fEo1+pvEfYI8AF?=
+ =?us-ascii?Q?qsKlM4HNatj38vBQ7gJInOlowCQMJUFpIC4tQldpteZjsrKuV2TQB/t1PUUB?=
+ =?us-ascii?Q?Sg2rjCv1e2boslJtxmuBN6nbphxDe98tX7//V7M777psuJpSk/0+/sb3a13z?=
+ =?us-ascii?Q?+n3msf1PevwhhC6IA6tct0+u3uYsm3TbCMDq4a9uBpaBqDmSvHtg76h17PPg?=
+ =?us-ascii?Q?j0vjliZJ5rGe2zxw2PexPnRNMoT3ZR/KuwsfWavNbthTOgfp6et94lNZVAF+?=
+ =?us-ascii?Q?ccGj2E3en01oqcV4ZlEtQE5u1ljFH74szL3wdCBuvzvxOasCcGuXV/lVY2Wu?=
+ =?us-ascii?Q?/YEWuqbXh420pL/XkTlBUAyDy0Jchxo=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c96ec9b5-acf0-4f17-5f4a-08da3ae9e207
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c28454a-318e-4df8-750e-08da3af7006c
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2022 05:22:22.4957
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2022 06:56:16.6505
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RyKjGsjUfeljzWDvwe1bRYLeSsQIpakr7gSfg2y7Z4TBE1sb3NFf/7Sz2NBxm1NL54WUp3ddoxmqwK34LErKGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB5132
-X-Proofpoint-ORIG-GUID: 4QVzy5HjJtSztrtfPAd48xJ1ttdq3nby
-X-Proofpoint-GUID: 4QVzy5HjJtSztrtfPAd48xJ1ttdq3nby
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vqv6MMxg+Zf98bxEiknr3rxQyNxMKIx+t0/sW8ldVNNWOitkhBCDKMcUcTJgKa3A
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR1501MB1995
+X-Proofpoint-ORIG-GUID: DKHObFdy7DlDwkXv8EflfYXCLEfgpP2x
+X-Proofpoint-GUID: DKHObFdy7DlDwkXv8EflfYXCLEfgpP2x
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-20_08,2022-05-20_02,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/20/22 8:41 PM, Andrii Nakryiko wrote:   
-> On Tue, May 17, 2022 at 8:51 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->>
->> Add a benchmarks to demonstrate the performance cliff for local_storage
->> get as the number of local_storage maps increases beyond current
->> local_storage implementation's cache size.
->>
->> "sequential get" and "interleaved get" benchmarks are added, both of
->> which do many bpf_task_storage_get calls on sets of task local_storage
->> maps of various counts, while considering a single specific map to be
->> 'important' and counting task_storage_gets to the important map
->> separately in addition to normal 'hits' count of all gets. Goal here is
->> to mimic scenario where a particular program using one map - the
->> important one - is running on a system where many other local_storage
->> maps exist and are accessed often.
->>
->> While "sequential get" benchmark does bpf_task_storage_get for map 0, 1,
->> ..., {9, 99, 999} in order, "interleaved" benchmark interleaves 4
->> bpf_task_storage_gets for the important map for every 10 map gets. This
->> is meant to highlight performance differences when important map is
->> accessed far more frequently than non-important maps.
->>
->> A "hashmap control" benchmark is also included for easy comparison of
->> standard bpf hashmap lookup vs local_storage get. The benchmark is
->> identical to "sequential get", but creates and uses BPF_MAP_TYPE_HASH
->> instead of local storage.
->>
->> Addition of this benchmark is inspired by conversation with Alexei in a
->> previous patchset's thread [0], which highlighted the need for such a
->> benchmark to motivate and validate improvements to local_storage
->> implementation. My approach in that series focused on improving
->> performance for explicitly-marked 'important' maps and was rejected
->> with feedback to make more generally-applicable improvements while
->> avoiding explicitly marking maps as important. Thus the benchmark
->> reports both general and important-map-focused metrics, so effect of
->> future work on both is clear.
->>
->> Regarding the benchmark results. On a powerful system (Skylake, 20
->> cores, 256gb ram):
->>
->> Local Storage
->> =============
+On Wed, May 18, 2022 at 03:55:24PM -0700, Stanislav Fomichev wrote:
+> Previous patch adds 1:1 mapping between all 211 LSM hooks
+> and bpf_cgroup program array. Instead of reserving a slot per
+> possible hook, reserve 10 slots per cgroup for lsm programs.
+> Those slots are dynamically allocated on demand and reclaimed.
 > 
-> [...]
+> struct cgroup_bpf {
+> 	struct bpf_prog_array *    effective[33];        /*     0   264 */
+> 	/* --- cacheline 4 boundary (256 bytes) was 8 bytes ago --- */
+> 	struct hlist_head          progs[33];            /*   264   264 */
+> 	/* --- cacheline 8 boundary (512 bytes) was 16 bytes ago --- */
+> 	u8                         flags[33];            /*   528    33 */
 > 
->>
->> Looking at the "sequential get" results, it's clear that as the
->> number of task local_storage maps grows beyond the current cache size
->> (16), there's a significant reduction in hits throughput. Note that
->> current local_storage implementation assigns a cache_idx to maps as they
->> are created. Since "sequential get" is creating maps 0..n in order and
->> then doing bpf_task_storage_get calls in the same order, the benchmark
->> is effectively ensuring that a map will not be in cache when the program
->> tries to access it.
->>
->> For "interleaved get" results, important-map hits throughput is greatly
->> increased as the important map is more likely to be in cache by virtue
->> of being accessed far more frequently. Throughput still reduces as #
->> maps increases, though.
->>
->> Note that the test programs need to split task_storage_get calls across
->> multiple programs to work around the verifier's MAX_USED_MAPS
->> limitations. As evidenced by the unintuitive-looking results for smaller
->> num_maps benchmark runs, overhead which is amortized across larger
->> num_maps in other runs dominates when there are fewer maps. To get a
->> sense of the overhead, I commented out
->> bpf_task_storage_get/bpf_map_lookup_elem in local_storage_bench.h and
->> ran the benchmark on the same host as 'real' run. Results:
->>
->> Local Storage
->> =============
+> 	/* XXX 7 bytes hole, try to pack */
 > 
-> [...]
+> 	struct list_head           storages;             /*   568    16 */
+> 	/* --- cacheline 9 boundary (576 bytes) was 8 bytes ago --- */
+> 	struct bpf_prog_array *    inactive;             /*   584     8 */
+> 	struct percpu_ref          refcnt;               /*   592    16 */
+> 	struct work_struct         release_work;         /*   608    72 */
 > 
->>
->> Adjusting for overhead, latency numbers for "hashmap control" and "sequential get" are:
->>
->> hashmap_control:     ~6.8ns
->> sequential_get_1:    ~15.5ns
->> sequential_get_10:   ~20ns
->> sequential_get_16:   ~17.8ns
->> sequential_get_17:   ~21.8ns
->> sequential_get_24:   ~45.2ns
->> sequential_get_32:   ~69.7ns
->> sequential_get_100:  ~153.3ns
->> sequential_get_1000: ~2300ns
->>
->> Clearly demonstrating a cliff.
->>
->> When running the benchmarks it may be necessary to bump 'open files'
->> ulimit for a successful run.
->>
->>   [0]: https://lore.kernel.org/all/20220420002143.1096548-1-davemarchevsky@fb.com
->>
->> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
->> ---
->> Changelog:
->>
->> v1 -> v2:
->>   * Adopt ARRAY_OF_MAPS approach for bpf program, allowing truly
->>     configurable # of maps (Andrii)
->>   * Add hashmap benchmark (Alexei)
->>         * Add discussion of overhead
->>
+> 	/* size: 680, cachelines: 11, members: 7 */
+> 	/* sum members: 673, holes: 1, sum holes: 7 */
+> 	/* last cacheline: 40 bytes */
+> };
 > 
-> [...]
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  include/linux/bpf-cgroup-defs.h |   3 +-
+>  include/linux/bpf_lsm.h         |   6 --
+>  kernel/bpf/bpf_lsm.c            |   5 --
+>  kernel/bpf/cgroup.c             | 135 +++++++++++++++++++++++++++++---
+>  4 files changed, 125 insertions(+), 24 deletions(-)
 > 
->> +
->> +/* Keep in sync w/ array of maps in bpf */
->> +#define MAX_NR_MAPS 1000
->> +/* Keep in sync w/ number of progs in bpf app */
->> +#define MAX_NR_PROGS 20
->> +
->> +static struct {
->> +       void (*destroy_skel)(void *obj);
->> +       int (*load_skel)(void *obj);
->> +       long *important_hits;
->> +       long *hits;
->> +       void *progs;
->> +       void *skel;
->> +       struct bpf_map *array_of_maps;
->> +} ctx;
->> +
->> +int created_maps[MAX_NR_MAPS];
->> +struct bpf_link *attached_links[MAX_NR_PROGS];
->> +
-> 
-> static?
+> diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+> index d5a70a35dace..359d3f16abea 100644
+> --- a/include/linux/bpf-cgroup-defs.h
+> +++ b/include/linux/bpf-cgroup-defs.h
+> @@ -10,7 +10,8 @@
+>  
+>  struct bpf_prog_array;
+>  
+> -#define CGROUP_LSM_NUM 211 /* will be addressed in the next patch */
+> +/* Maximum number of concurrently attachable per-cgroup LSM hooks. */
+> +#define CGROUP_LSM_NUM 10
+>  
+>  enum cgroup_bpf_attach_type {
+>  	CGROUP_BPF_ATTACH_TYPE_INVALID = -1,
+> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> index 7f0e59f5f9be..613de44aa429 100644
+> --- a/include/linux/bpf_lsm.h
+> +++ b/include/linux/bpf_lsm.h
+> @@ -43,7 +43,6 @@ extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
+>  void bpf_inode_storage_free(struct inode *inode);
+>  
+>  int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
+> -int bpf_lsm_hook_idx(u32 btf_id);
+>  
+>  #else /* !CONFIG_BPF_LSM */
+>  
+> @@ -74,11 +73,6 @@ static inline int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+>  	return -ENOENT;
+>  }
+>  
+> -static inline int bpf_lsm_hook_idx(u32 btf_id)
+> -{
+> -	return -EINVAL;
+> -}
+> -
+>  #endif /* CONFIG_BPF_LSM */
+>  
+>  #endif /* _LINUX_BPF_LSM_H */
+> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> index 654c23577ad3..96503c3e7a71 100644
+> --- a/kernel/bpf/bpf_lsm.c
+> +++ b/kernel/bpf/bpf_lsm.c
+> @@ -71,11 +71,6 @@ int bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+>  	return 0;
+>  }
+>  
+> -int bpf_lsm_hook_idx(u32 btf_id)
+> -{
+> -	return btf_id_set_index(&bpf_lsm_hooks, btf_id);
+> -}
+> -
+>  int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+>  			const struct bpf_prog *prog)
+>  {
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 2c356a38f4cf..a959cdd22870 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -132,15 +132,110 @@ unsigned int __cgroup_bpf_run_lsm_current(const void *ctx,
+>  }
+>  
+>  #ifdef CONFIG_BPF_LSM
+> +struct list_head unused_bpf_lsm_atypes;
+> +struct list_head used_bpf_lsm_atypes;
+> +
+> +struct bpf_lsm_attach_type {
+> +	int index;
+> +	u32 btf_id;
+> +	int usecnt;
+> +	struct list_head atypes;
+> +	struct rcu_head rcu_head;
+> +};
+> +
+> +static int __init bpf_lsm_attach_type_init(void)
+> +{
+> +	struct bpf_lsm_attach_type *atype;
+> +	int i;
+> +
+> +	INIT_LIST_HEAD_RCU(&unused_bpf_lsm_atypes);
+> +	INIT_LIST_HEAD_RCU(&used_bpf_lsm_atypes);
+> +
+> +	for (i = 0; i < CGROUP_LSM_NUM; i++) {
+> +		atype = kzalloc(sizeof(*atype), GFP_KERNEL);
+> +		if (!atype)
+> +			continue;
+> +
+> +		atype->index = i;
+> +		list_add_tail_rcu(&atype->atypes, &unused_bpf_lsm_atypes);
+> +	}
+> +
+> +	return 0;
+> +}
+> +late_initcall(bpf_lsm_attach_type_init);
+> +
+>  static enum cgroup_bpf_attach_type bpf_lsm_attach_type_get(u32 attach_btf_id)
+>  {
+> -	return CGROUP_LSM_START + bpf_lsm_hook_idx(attach_btf_id);
+> +	struct bpf_lsm_attach_type *atype;
+> +
+> +	lockdep_assert_held(&cgroup_mutex);
+> +
+> +	list_for_each_entry_rcu(atype, &used_bpf_lsm_atypes, atypes) {
+> +		if (atype->btf_id != attach_btf_id)
+> +			continue;
+> +
+> +		atype->usecnt++;
+> +		return CGROUP_LSM_START + atype->index;
+> +	}
+> +
+> +	atype = list_first_or_null_rcu(&unused_bpf_lsm_atypes, struct bpf_lsm_attach_type, atypes);
+> +	if (!atype)
+> +		return -E2BIG;
+> +
+> +	list_del_rcu(&atype->atypes);
+> +	atype->btf_id = attach_btf_id;
+> +	atype->usecnt = 1;
+> +	list_add_tail_rcu(&atype->atypes, &used_bpf_lsm_atypes);
+> +
+> +	return CGROUP_LSM_START + atype->index;
+> +}
+> +
+> +static void bpf_lsm_attach_type_reclaim(struct rcu_head *head)
+> +{
+> +	struct bpf_lsm_attach_type *atype =
+> +		container_of(head, struct bpf_lsm_attach_type, rcu_head);
+> +
+> +	atype->btf_id = 0;
+> +	atype->usecnt = 0;
+> +	list_add_tail_rcu(&atype->atypes, &unused_bpf_lsm_atypes);
+hmm...... no need to hold the cgroup_mutex when changing
+the unused_bpf_lsm_atypes list ?
+but it is a rcu callback, so spinlock is needed.
 
-I sent v3 before seeing this email, but luckily most of your comments are
-addressed already. 
+> +}
+> +
+> +static void bpf_lsm_attach_type_put(u32 attach_btf_id)
+> +{
+> +	struct bpf_lsm_attach_type *atype;
+> +
+> +	lockdep_assert_held(&cgroup_mutex);
+> +
+> +	list_for_each_entry_rcu(atype, &used_bpf_lsm_atypes, atypes) {
+> +		if (atype->btf_id != attach_btf_id)
+> +			continue;
+> +
+> +		if (--atype->usecnt <= 0) {
+> +			list_del_rcu(&atype->atypes);
+> +			WARN_ON_ONCE(atype->usecnt < 0);
+> +
+> +			/* call_rcu here prevents atype reuse within
+> +			 * the same rcu grace period.
+> +			 * shim programs use __bpf_prog_enter_lsm_cgroup
+> +			 * which starts RCU read section.
+It is a bit unclear for me to think through why
+there is no need to assign 'shim_prog->aux->cgroup_atype = CGROUP_BPF_ATTACH_TYPE_INVALID'
+here before reclaim and the shim_prog->bpf_func does not need to check
+shim_prog->aux->cgroup_atype before using it.
 
-attached_links is removed in v3, created_maps is moved to ctx
+It will be very useful to have a few word comments here to explain this.
 
-> 
-> 
->> +static void teardown(void)
->> +{
->> +       int i;
->> +
->> +       for (i = 0; i < MAX_NR_PROGS; i++) {
->> +               if (!attached_links[i])
->> +                       break;
->> +               bpf_link__detach(attached_links[i]);
->> +       }
->> +
->> +       if (ctx.destroy_skel && ctx.skel)
->> +               ctx.destroy_skel(ctx.skel);
->> +
->> +       for (i = 0; i < MAX_NR_MAPS; i++) {
->> +               if (!created_maps[i])
->> +                       break;
->> +               close(created_maps[i]);
->> +       }
->> +}
->> +
-> 
-> Wouldn't all this be cleaned up on bench exit anyway?.. We've been
-> less strict about proper clean up for bench to keep code simpler.
+> +			 */
+> +			call_rcu(&atype->rcu_head, bpf_lsm_attach_type_reclaim);
+How about doing this bpf_lsm_attach_type_put() in bpf_prog_free_deferred().
+And only do it for the shim_prog but not the cgroup-lsm prog.
+The shim_prog is the only one needing cgroup_atype.  Then the cgroup_atype
+naturally can be reused when the shim_prog is being destroyed.
 
-It's important to explicitly clean up created_maps because local_storage maps
-are assigned a cache slot when the map is created, and count of "how many maps
-are assigned to this cache slot" is incr'd. On map free the count is decr'd.
+bpf_prog_free_deferred has already gone through a rcu grace
+period (__bpf_prog_put_rcu) and it can block, so cgroup_mutex
+can be used.
 
-So cache behavior of subsequently alloc'd maps can be affected if these are kept
-around.
+The need for the rcu_head here should go away also.  The v6 array approach
+could be reconsidered.
 
-Not a big deal now since just 1 bench is run and process exits, but if that
-changes in the future I don't want the benchmark to silently give odd results.
-
-> 
-> 
-> [...]
-> 
->> diff --git a/tools/testing/selftests/bpf/progs/local_storage_bench.h b/tools/testing/selftests/bpf/progs/local_storage_bench.h
->> new file mode 100644
->> index 000000000000..b5e358dee245
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/local_storage_bench.h
->> @@ -0,0 +1,69 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
->> +
->> +struct {
->> +       __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
->> +       __uint(max_entries, 1000);
->> +       __type(key, int);
->> +       __type(value, int);
->> +} array_of_maps SEC(".maps");
-> 
-> you don't need setup_inner_map_and_load and load_btf, you can just
-> declaratively have two ARRAY_OF_MAPS, one using inner hashmap and
-> another using inner task_local_storage. Grep for __array in selftests
-> to see how to declaratively define inner map prototype, e.g., see
-> test_ringbuf_multi.c. With the below suggestion one of do_lookup
-> flavors will use array_of_hashes and another will use
-> array_of_storages explicitly. From user-space you can create and setup
-> as many inner maps as needed. If you need btf_id for value_type_id for
-> inner map, see if bpf_map__inner_map() would be useful.
-> 
-
-Declaratively specifying an inner task_local_storage map will result in libbpf
-creating such a map to pass as the inner_map_fd, no? This will have same
-effect on cache_idx assignment as my previous comment. 
-
->> +
->> +long important_hits;
->> +long hits;
->> +
->> +#ifdef LOOKUP_HASHMAP
-> 
-> why #ifdef'ing if you can have do_lookup_hashmap and
-> do_lookup_task_storage and choose which one to call using read-only
-> variable:
-> 
-> const volatile bool use_hashmap;
-> 
-> just set it before load and verifier will know that one of do_lookup
-> flavors is dead code
-
-I want it to be obvious that the hashmap part of the benchmark is not a flavor
-of local_storage, the distinct separation of do_lookups here makes this easier
-to notice.
-
-Can do a v4 addressing this if you feel strongly about it.
-
-> 
->> +static int do_lookup(unsigned int elem, struct task_struct *task /* unused */)
->> +{
->> +       void *map;
->> +       int zero = 0;
->> +
->> +       map = bpf_map_lookup_elem(&array_of_maps, &elem);
->> +       if (!map)
->> +               return -1;
->> +
->> +       bpf_map_lookup_elem(map, &zero);
->> +       __sync_add_and_fetch(&hits, 1);
->> +       if (!elem)
->> +               __sync_add_and_fetch(&important_hits, 1);
->> +       return 0;
->> +}
->> +#else
->> +static int do_lookup(unsigned int elem, struct task_struct *task)
->> +{
->> +       void *map;
->> +
->> +       map = bpf_map_lookup_elem(&array_of_maps, &elem);
->> +       if (!map)
->> +               return -1;
->> +
->> +       bpf_task_storage_get(map, task, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
->> +       __sync_add_and_fetch(&hits, 1);
->> +       if (!elem)
->> +               __sync_add_and_fetch(&important_hits, 1);
->> +       return 0;
->> +}
->> +#endif /* LOOKUP_HASHMAP */
->> +
->> +#define __TASK_STORAGE_GET_LOOP_PROG(array, start, interleave) \
->> +SEC("fentry/" SYS_PREFIX "sys_getpgid")                        \
->> +int get_local_ ## start(void *ctx)                             \
->> +{                                                              \
->> +       struct task_struct *task;                               \
->> +       unsigned int i, elem;                                   \
->> +       void *map;                                              \
->> +                                                               \
->> +       task = bpf_get_current_task_btf();                      \
->> +       for (i = 0; i < 50; i++) {                              \
-> 
-> I'm trying to understand why you didn't just do
-> 
-> 
-> for (i = 0; i < 1000; i++) { ... }
-> 
-> and avoid all the macro stuff? what didn't work?
-> 
-> 
->> +               elem = start + i;                               \
->> +               if (do_lookup(elem, task))                      \
->> +                       return 0;                               \
->> +               if (interleave && i % 3 == 0)                   \
-> 
-> nit % 3 will be slow(-ish), why not pick some power of 2?
-
-Few reasons:
-
-1) This results in a ratio of "get important map" to "get any other map" closest
-to v1 of this patchset, and similar interleaving pattern. Made it easy to
-compare results after big refactor and be reasonably sure I didn't break the
-benchmark.
-
-2) The current local_storage cache has 16 entries and the current
-cache slot assignment algorithm will always give the important map cache_idx
-0 since it's created first. Second created map - idx 1 in the ARRAY_OF_MAPS -
-will get cache_idx 1, etc, so for this benchmark
-cache_idx = map_of_maps_idx % 16. (Assuming no other task_local_storage maps
-have been created on the system).
-
-We want to pick a small number because in 'important map' scenario the
-important map is accessed significantly more often than other maps. So < 16.
-Considering current implementation with fixed cache_idx, if we pick a power
-of 2 that's < 16, there will always be the same 'gap' between important
-map get and other map gets with same cache_idx. We care about these specifically
-since they'll be knocking each other out of cache slot. 
-
-If an odd number is used the gaps will vary, resulting in a benchmark more 
-closely mimicing "bunch of unrelated progs accessing maps in arbitrary order,
-with one important prog accessing its map very frequently".
-
-Probably moving to bpf_get_prandom or some userspace nondeterminism to feed
-list of indices to interleave gets of important map is the best solution,
-but I'm hoping to keep things simple for now.
-
-> 
->> +                       do_lookup(0, task);                     \
->> +       }                                                       \
->> +       return 0;                                               \
->> +}
->> +
->> +#define TASK_STORAGE_GET_LOOP_PROG_SEQ(array, start) \
->> +       __TASK_STORAGE_GET_LOOP_PROG(array, start, false)
->> +#define TASK_STORAGE_GET_LOOP_PROG_INT(array, start) \
->> +       __TASK_STORAGE_GET_LOOP_PROG(array, start, true)
-> 
-> [...]
-> 
->> +
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 0);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 50);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 100);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 150);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 200);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 250);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 300);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 350);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 400);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 450);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 500);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 550);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 600);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 650);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 700);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 750);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 800);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 850);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 900);
->> +TASK_STORAGE_GET_LOOP_PROG_SEQ(array_of_maps, 950);
->> +
-> 
-> all these macro make me sad, I'd like to understand why it has to be
-> done this way
-> 
-
-Macro and "why not i < 1000" are addressed in v3. v1 of this patch - before your
-ARRAY_OF_MAPS suggestion - was hitting MAX_USED_MAPS limit and failing
-verification when trying to access all 1k maps in a single program. I assumed
-that accessing maps from within an ARRAY_OF_MAPS would trigger similar limit,
-but this is not the case.
-
->> +char _license[] SEC("license") = "GPL";
->> --
->> 2.30.2
->>
+The cgroup-lsm prog does not necessarily need to hold a usecnt to the cgroup_atype.
+Their aux->cgroup_atype can be CGROUP_BPF_ATTACH_TYPE_INVALID.
+My understanding is the replace_prog->aux->cgroup_atype during attach
+is an optimization, it can always search again.
