@@ -2,335 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0BE52F70A
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 02:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E3552F72F
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 02:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235683AbiEUAxg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 20:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        id S237899AbiEUA7M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 20:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348108AbiEUAxe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 20:53:34 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6C31AD5AD;
-        Fri, 20 May 2022 17:53:33 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24KMsDHs016756;
-        Fri, 20 May 2022 17:53:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=dReKlJAoh9cTQjhadVlaBca/ZLFhYcp+JdvzdGLURlg=;
- b=FWQt0c27MbC59JMv+w1aibSJ+P+R4YlDYnXYf2hKCJaVOsMb3hTpEtBoFQMZcL6rMGtW
- zBOwiGUkBUtTXY1TlC2JEg4JoeIegIfCU9ql8VtdzmbB80h+7ABss8c8A4QI1Mr9lQI6
- VZCMSPIAnqhIpFE39jEbw37LvYJ9y2mf1k4= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g5pj53ufc-1
+        with ESMTP id S232046AbiEUA7M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 20:59:12 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46801AEC54;
+        Fri, 20 May 2022 17:59:10 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24KMsIvu022240;
+        Fri, 20 May 2022 17:58:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=KIpZs9jKbqBOvPrqHQrp3jSELXI1Phrut9mQHwVWCrA=;
+ b=J/xkxKQDc2QW7jfk9g/qUIAonSVzVHwhrRW6Wt6Ii+7Q6GCmciBQJxv9RV1AtKN+U5jr
+ q6jdn51i65NeFeSmQNQy+2A81Cth7gVfavnLw2PE3EQV5RvAsyZC6SGKW2bwLyB2fSyf
+ 9rhmH2U6kpjS+BQF4gqVMf6X5uJ+2jwoTBc= 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3g5wkrg98n-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 May 2022 17:53:18 -0700
+        Fri, 20 May 2022 17:58:52 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oc8w4O7Nzv0ZjmsWlsKI3tkyKNx3XZR6vURlkzaXcg8XKJ4f6+6nJFiGBhLH7KYTNfxDlO/aL1pkT+yx69Fsm7AJoSAGWJ+7W5/ZOYdxUffiVru1Ok62gbjyT1orNNcLgGEhC/J0BUoxEVLpr6W9pGOLWWERmRP3/MH5Gz6wHcBBPc+7o5oF3Aq/QNKGY9xUxRH7NhmIoPl8vBYjE0O/RUKNtKPOgyS6sFmLzCN+SpLeUdzJJ8svHTCxkhaX+Q2/E5LUBSl0UVpnuegF0X/LXvpal9WjLvsefMEVkk0LLCW3/nfPBUviKdoYvnmKhSGi//kF/ii6s9kwak0QNglpvg==
+ b=na3zHKV0NrJNFlrKFptKdNuWnL0LOI+LpCpobpTR0oS4+6YxHKZKLNbZi5vjQK2FKUKDOioCgml4kZfhOVf9eCDexiPKyNqJ4dnGpS655tO4PX2DBTMgXE/NvIcbXU7zvLzjRlukyMApvlCeQoLZIkSkpvbOdnEY5tXrR/l+YYUosO/0yy2zmU1bCGZGveKxJtZkYA1GcyMbGxesDyBBy0Dr1BDbXUcaUj5fwXHIVe+QjT83+h8nA9nrUHBsdZ9eT1X+KhZ3kJ06OEvRU30R2H6HIrj9mwtTaM2meUAJapM1Bypq096AbAGS7D3EBtbSGzyUYV1mBXkEFbHzoemFfA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dReKlJAoh9cTQjhadVlaBca/ZLFhYcp+JdvzdGLURlg=;
- b=UPR1lGyPP+Yn+sbghzMgvN3hLoQD6Ewlobd9z8FIv8M18CSi4M+xpnx0dka/RrlJQzQAYP/C+fIqNjgo1V4bIolhCyyDo0Y9NtwrZhsRiFBKMCzF2Y8ayAEAPhyJbvfDh0/zv0fC3lM6SUUjzJT6shG8PzqHWGNnDJ6oOmtubqDcMWNC+bDSDHsV+jSdXV8ZLSfIARiUWEr4ViKzXm/A8smRg4etnPdts8O/GLPrmprcb5yS7RF7XNe2b7Lsks9IpZBXZCnc93i1SyKv2cXeb0mwvXgqFXmY7rDncoO4znsZ5dgMVYX5y42uqbzHEQOcUCTZ0jgj3JB93QSMQYGJvw==
+ bh=KIpZs9jKbqBOvPrqHQrp3jSELXI1Phrut9mQHwVWCrA=;
+ b=VIBlM4BICoJd4KKS7oBN7FMbUOJTusvok24gBs3RqQQSvAe3DfRYOdoXNemVuOZ09XBT5A13RCRODFOEQYjfTYzdXYM9ruhDciG7uSUdgnsUutScAsKv+jheh/A3PU1C0vhNqu6SNnKBT/92twdaCsKnMWjdxIG2ha9OPsJKYtGiQZqrSIkUaCNf8Zv6sNbpvac/7OASURqjulygwDIYJ2S3Sc0bmDZ1+bzLvgKvmavyiUqagO98pVkafSlnKYz7fatqRIHgqIatLzKqfg69fdNB8PcKSEkJR5hXV6Pu83EmKR3Zw3E9Wexcu7S1YG2JqxGuLPVdvgEEJCEODnJNeg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SJ0PR15MB4156.namprd15.prod.outlook.com (2603:10b6:a03:2e3::17) with
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by PH0PR15MB5088.namprd15.prod.outlook.com (2603:10b6:510:cf::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.18; Sat, 21 May
- 2022 00:53:16 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::f172:8f37:fe43:19a3]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::f172:8f37:fe43:19a3%6]) with mapi id 15.20.5273.019; Sat, 21 May 2022
- 00:53:16 +0000
-Date:   Fri, 20 May 2022 17:53:13 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH bpf-next v7 03/11] bpf: per-cgroup lsm flavor
-Message-ID: <20220521005313.3q3w2ventgwrccrd@kafai-mbp>
-References: <20220518225531.558008-1-sdf@google.com>
- <20220518225531.558008-4-sdf@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220518225531.558008-4-sdf@google.com>
-X-ClientProxiedBy: BY5PR17CA0015.namprd17.prod.outlook.com
- (2603:10b6:a03:1b8::28) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.19; Sat, 21 May
+ 2022 00:58:50 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::5811:4996:bbfd:3c53]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::5811:4996:bbfd:3c53%7]) with mapi id 15.20.5273.017; Sat, 21 May 2022
+ 00:58:49 +0000
+Message-ID: <4cbdd3e9-c6fe-d796-5560-cd09c9220868@fb.com>
+Date:   Fri, 20 May 2022 17:58:47 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
+Content-Language: en-US
+To:     Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220520012133.1217211-4-yosryahmed@google.com>
+ <YodGI73xq8aIBrNM@slm.duckdns.org>
+ <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
+ <YodNLpxut+Zddnre@slm.duckdns.org>
+ <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
+ <YofFli6UCX4J5YnU@slm.duckdns.org>
+ <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
+ <CA+khW7iDDkO3h5WQixEA=nUL-tBmCTh7fMAf3iwNy98UfM-k9g@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <CA+khW7iDDkO3h5WQixEA=nUL-tBmCTh7fMAf3iwNy98UfM-k9g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0175.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::30) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c5a5e18d-504a-468b-8d4d-08da3ac44a26
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4156:EE_
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB41561B83CA5B386645CC1B0DD5D29@SJ0PR15MB4156.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 4805a361-820a-485e-16ad-08da3ac5111b
+X-MS-TrafficTypeDiagnostic: PH0PR15MB5088:EE_
+X-Microsoft-Antispam-PRVS: <PH0PR15MB5088828AFFCBC8283FC50201D3D29@PH0PR15MB5088.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dnjLQrXRg6ybnjKR8LWCNHgX4fsnjcyzEg9D57kB2ASzhi3ohvUqaLtOv5kX5X1R1NO5DKAC0rgzZSaCXu02NSueHMQXxnp96JpwyaZtuihEp0p03goxRr7yePwYbiW82VzmJUdbcv8UcBxun73sEkXHGaDmyQO3KAlLL0v0V7VhxTug4dyY2rDBUV9nv0KtXR59F4qpx7QZdRaJwShV+ftSVflbmQ3zKYf6gZEtF7tB5/8Dpgv5q6sld0qu9oaQtwMLvvMnMHu3H5YBiIx/XXvSxsbHrl8RrNzfjfyILzYOiCGBdlZcostwGh9EnIg5O851dZI2/RwHKSJesIbES9cVhgwjGVCzZmbJlLy32/ObJOtza4tE88+jfApsTYz/0/16oOVRoE7U2uiBugS5wToiheVu/skUBc4x5qy3FSbDzBQrBK0haRTQDOxySok0tYo7I1kvkrPlIfJNs7DCZTlm+zsjX5cToEax04B9s3Qbmr4jJkH7gkRoRH5hhVAwWg0Qr9Kr8m1q2t3X5BuArgEQwTfz+E843+ZiNAL8u6JUXSUky2pRGzExeF7vFuwWQPcXPuXQ6/P9XGEB/YUsq2Emf/WQQucSoe7pSlb3HV4qo402YLsecw/P5RK/1xrnFn1mOVtxmpX9Xaa8eTmdug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(9686003)(6512007)(6506007)(186003)(316002)(6916009)(52116002)(66946007)(1076003)(8676002)(86362001)(83380400001)(4326008)(33716001)(8936002)(5660300002)(66476007)(2906002)(6666004)(6486002)(66556008)(38100700002)(508600001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: Ur3A5XKwPqevbOO2vb2HSDiKxmRUk75k14jEcTtGC/x0umJOFHPIv/vN7QxareK+t0+U7/PMzVTabxU2Se3VJyL52D+8rH9ISRv4k04hkPsnltK/BJyu09UVokjS4F5/vhrqDiH7n2yBFAUkQQZp4ftCBfnB1m6oFr0e4hlWYYuxcS1EbvUQ4qx7NBQRnpOB4Pzz9QbK7JPEoxNoZpOofgCOzkyrwCRSSjEkY2S8xYuWVvc//hZiTfalcPRin2mbkMtAIpry9z3epv7uYKVt0JRCcusSMn23572fwW3nmMXeUACBbSv4/qsStHpT+UTv7VYJbPlTC4bKHr7RqQ/yLmOlfHbspgp+yBSPdYLoHf5t302SORoMPYhal60wBWXoHQDAS0pfHOjkh5TkrbKl32gCKzrx0jXk4TNBmcyYG/FuBTRsIkNi8QzgriVyE6M3VcSH/3Gwwp+SRUNOvqJO9MN5dEFsj8SQJD/itnqrCj9fbpiMGVoWtFX9BlTx8FBHzibLxvH6QpHbb3DYiL1CgxQlkW9WyLMUqrjPJoCikOdsA2GfxwpQJP/sJg1PQC65rFGITLT7veFnhj2jwwjr/an/a/QeYulN+J0lrq5o1m/memodPe8tv8w/JPSeudb6kei1bbgqd9+CVR7zwixV56iNG7RvQewrbqWpxp4by5RAWx8oND2oNTQcn4FwiDko92cHKQ6WTGn+r8XIhWw707++ebhgTHu3SIk7A0xLwrjh6udZNOWxhAQOLXqb5gf1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66946007)(66476007)(7416002)(508600001)(6486002)(66556008)(38100700002)(2906002)(4326008)(31686004)(6512007)(6506007)(53546011)(52116002)(86362001)(54906003)(8676002)(2616005)(316002)(186003)(5660300002)(8936002)(31696002)(36756003)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LQzjBLhRYmCdY1QPFAbmqQ8f9JwoxtoNK5yBhgokUVZM0u6zkoMMxIEJQ5E4?=
- =?us-ascii?Q?bbj/tERhmeiCyDqfGM3esPNrkpzHo8VrFg7cfRcZC6MoUC5bD4G985I00L7/?=
- =?us-ascii?Q?/UMUsB97mnySIwP/SFEIOYTOEpbmLJWnvjuRPg9sTFNx7CI6tCVscvDQaFoM?=
- =?us-ascii?Q?b7f79HMTG32SNTN+4hAesuv8lZN08CH4rkpDZgWrs48l5s2K96Z+T4bn00Ps?=
- =?us-ascii?Q?fTS7IO6f5C7XqebP62qRihEAbaRX1ISP+p93jvs31vI0lLEXkPFOd8oN7B0T?=
- =?us-ascii?Q?m3/ox9Gfg7F3q22T02thVhFew0fPEvuNQA8KPEKkByRe7c1rTOUG0CgQQ+EE?=
- =?us-ascii?Q?metpAqWhlnUgk4zthSmhxYOhF/Zx8Dk7Q0p1XEmmW+XJWUdiZlpoLy1WvkAP?=
- =?us-ascii?Q?Uj9N1ouleBTQZXaJOTR/hxk8wiP3266W6BDcucUAOQAjQdZd4alRATJFS3Or?=
- =?us-ascii?Q?JonCa+SqxuJRmnPuCvPUCRNWModtcCaQxBbOJWL4uZAZQ7wrMJk5iK4W9ePO?=
- =?us-ascii?Q?7s1GVg2cLrgN+OKUBC4clnxspu+bL6o4xRFDM+nLOVlgk/D/hEHKwq15qV99?=
- =?us-ascii?Q?x9OlEPPiZ2V/liy57/IGE/PirmSp2yEzNoBdKgBINQ2wRlrfts+t5HWJdeKP?=
- =?us-ascii?Q?giVQIpzN+RXWdx/lF8kZz1tyAoHjlaXoR1+q//LWHGVew2k80LqFY1G2nb/G?=
- =?us-ascii?Q?FN40tL0Qmk8lEwAjj27o0i3wfI6lXia3DCefJvKaeo3Y9ONk1X0X5N/qyei5?=
- =?us-ascii?Q?sRUYPpeWZpPykIW1klT/S483vBfeyNaLhkjWW2DzlwW8w60lfMBJP+8vGrWM?=
- =?us-ascii?Q?OXr7X82CqnCzq2TcvOsMUfu7FMnTaVFfjkewTQYaSbOkHiT8sQn2XUBrXXGK?=
- =?us-ascii?Q?M99H/AZhGB7Do3jbDc1XPwGCGxfJ+BjI3Y8rwK0SMjrkWZxxRqrfcSm7BA3D?=
- =?us-ascii?Q?yiR41u6NNXdDZ2GypoukcPxN75qnYGmoC9aNkipojULxIODlnjcb+xf+QgkM?=
- =?us-ascii?Q?b5ysRqVToqgikBx5YMFn3r3GA9tW0XxybRXjz1t1yuBEY5dul9zdwe2d9Rmx?=
- =?us-ascii?Q?TxqAhzE8Q869P3lLvtl0lXSPxfAI8+5mQTQGnAwpcvrtoSmpgu7+z9UrB98M?=
- =?us-ascii?Q?P/a4/cNoSqI6CDwusKWMFUcQ/61Uv+j7TI6bUwHVpYZrQycd9V/6Wq4tJNfv?=
- =?us-ascii?Q?M/LiN/lzwieTXgWzFFkFFyV6/+VvHpp35lqqjUIgfb5JIiR09htzF5AHT5j9?=
- =?us-ascii?Q?M5nJf6rUj8pwJyKGqDxjKItnms/BUV0dMLFZxYCN95eHIRPOEkltQSoQ7ber?=
- =?us-ascii?Q?m9sMWy3bPnKCen5xrq9nLEeDPFWQm/yUFh1lZFsDc9wzbJnbTRzSoWyovM79?=
- =?us-ascii?Q?rCMfONdtUL41Xy/s5KymUiAXAhga48rFjhHmTqKxn3JjK4VHfLAKy4ITZbLU?=
- =?us-ascii?Q?w+T46oxFYynEJykmiGYYv9W5O0nsUa3meVD/VBiPyDu+DYE8Q7MMNbIk5ln+?=
- =?us-ascii?Q?D3Qx6yIEWb6E6eXMTtHStwtoQ6g/Fvnb7fV45a5IdlcrhK6ZrjHQasZNLmm4?=
- =?us-ascii?Q?SNjhkG95wb3UB9vEBmI8zIOKk+BXh8fp9/xQo6r3BjAbi06cEw2SwBr7qK0Y?=
- =?us-ascii?Q?/kiKG7e53euHVvY50QUleAXwLjbC2/OLMoskfuqjHYESHEVsrwTDhw1ax/Rf?=
- =?us-ascii?Q?ecGjnOrL9BGfDKCUmeWkdcI8ASCEdB4Ct2JXKPADsdaWhgq60KbZt+0IfS1z?=
- =?us-ascii?Q?UUEExWgaNRJefmaUuhwvWUQJysfsdm4=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aEtKZTk5SUNlNTE3cEV3WkxDL3Y1WTZsKzlsOTd1SHdoZmlJdlZZMEN3MG0x?=
+ =?utf-8?B?SlRCUGFmOEUzOGwvYjAzVHZ1a1ZQVzVEeXN4MjB5dWRCc3RycUpkTmdpS2NE?=
+ =?utf-8?B?NU4vcnNndkdxOTZCMmlSSDhWMkM2WG9CK3B0emNIc3VEa2QxWEFHWDFzL1FI?=
+ =?utf-8?B?dmwvTjFjUlhRaU9uTDhXUTVEajViTzBxODQvWE5weGQ5aWYxZytQaVYyUkN6?=
+ =?utf-8?B?c3lwNmtOcnVkOGZSelc5MHlhU3dSRm9rR3Nsanhvb2pHMU5zcEk4RE1RRVl0?=
+ =?utf-8?B?bWVoNmZGbzlJQ3J6OSt2OG0zaVRMelVBUDJ5Zk1KNTJ5TEtuQmx4ZGt4S1ky?=
+ =?utf-8?B?QXBiVzdJdUJDSG1Vc0hLcithYnZQYWphN2FyWjNFQTZKZTJHRjlqcHo5d3kv?=
+ =?utf-8?B?VnpNMjMwSFNzSWhrYWx2SEg2QkpmaHh6dlNQVVYxeTlUemJpY0tIZ1FLSFZM?=
+ =?utf-8?B?ajQ0NnhUenQ1UXp6Uk1Hdi96ZGgrT0cxTVl2UXkwS2VENzBLUlJzS0p3WlhE?=
+ =?utf-8?B?Ykw3cUdVcUIrUkZDS3JueFRLK3ZDbmxvTktVMmhsbjN4bm1TZ1A3Nmo0U2gr?=
+ =?utf-8?B?Uzh4bjlsRjNPVjE1RHhZazBPZ21Uck5ScnZYOUFUZndHbVVhTjNSY0toUGZ3?=
+ =?utf-8?B?K1lybjVwaEJRKzJPYzdBR0ltbkVWakFpeGFldWZjNmhCNGJ4U204dGxSTEl5?=
+ =?utf-8?B?YU1vU0xBNXhFOUsrc1V5TTBENkRmSHUyWFVDUWk2MWxaemQ4dlVRN2FLek1s?=
+ =?utf-8?B?ek8vYTdtVFBFYWZxdzdxNmtLRy82eWpKM0tQNzlWb2dGcnpEekR4bDR6eE1P?=
+ =?utf-8?B?YzVWSDRPa3BtR0k1aWZ6UC8vZlY2WUVYak52QldwVTV3UEVpOXhla1FzRjhF?=
+ =?utf-8?B?by9aT1NYcjFZWm8xcWorb1ZpNFI2THBtUjZaY2JZalM3SWpHTk9jV0xRQ3BU?=
+ =?utf-8?B?VTBHVkdnYlgrcWN5R0tmdkVTZDZmK3lxbGEzVG1WaE1TVGE5em10aWV3cG1Y?=
+ =?utf-8?B?RXYrVEZ1MHZBdnlPeTY4LzFEblFqU0xLcndNS0NHY3V6SXl4bVhTRWU1Wk93?=
+ =?utf-8?B?blZKM250TVhuNzZxSDhCeVNRRXpPczlmak01TkN2Z3I3NGxXanpiUHBUZUpJ?=
+ =?utf-8?B?QkRpazg0R2JPWkZ3NzJCN1FadHg2TkdYWGwyQjgzS25MbEEzcHFFQS9YcnVU?=
+ =?utf-8?B?ZkhUTURUYUV2S2NvenMvZGxXaFNCTmFPZDUwY1lVUzFTZVJDQUlYS1VONFhG?=
+ =?utf-8?B?eC9uVWVVaTJRU3VSekIwVzdzU1ZXenE1SkFib1dVRU9MdE5UVE9FY1FnOGcr?=
+ =?utf-8?B?WXByWlo0M0hDa0MrSGwzd2k0MGZwbEdGZWtWVnBxaVRIekl4bzc5Ykg5dkNo?=
+ =?utf-8?B?VFJhZzlPanU5TnRKKy82SVpDYkc2N3pUMXNhclRDeHRaU1VEcFVLbW5WTXZJ?=
+ =?utf-8?B?cGlxTWFMMDlpclhPNWRyc083VEY2YkoyNVFJUjhSYU5kNXB6REJFRUlvVi9W?=
+ =?utf-8?B?UHpvUDBwK2k5TEpFNGJaOURvbEZ6dVVxaDRhU0VITXQxVCtzc2dsU0JVVFMz?=
+ =?utf-8?B?WHdMZGdHdlBta1p2RjVyb0VsKzZzcSs4UHJQbnBLT09YaW1ycXpqb003M3JK?=
+ =?utf-8?B?ZWQ2T0pDQ2Fra0RUY2xTOVJYNXNYV0UwMkNYL25mZHZDcjRoUE5sRG94TDJp?=
+ =?utf-8?B?RThGZkhWbVBCMm9iRmNJSEVNOWpBK1F3Zkx0Z3JGVEVIVVN2bWhkSkNCM01z?=
+ =?utf-8?B?N3ZPbC9RSkY4OFpoYUd3UlZPbG83a3duakphM05LZUJXYmR4cm95WWt2a1k1?=
+ =?utf-8?B?UmRxcVVTRWp5bHRKUUFwcG5lVVAwMVp6LzFHWnpYcEZ2d3FDZWdGeWtTNCty?=
+ =?utf-8?B?QWx6TVM3dWcvNmgzNEx0cFRic0RKN1VvdllnMlFCNjF4THFWVW14MThMU01q?=
+ =?utf-8?B?UXp2Mm9XNzV5YmpoUzRkblRSUlU3UWFCRnJsMmx0bmdQNXltNFJZMFlxK3pM?=
+ =?utf-8?B?dlkwTmJyZE5sMk5idGxZenJhRVpMRVRTMG8wUXVDUG1ocUdrWVhSTU1SLzBT?=
+ =?utf-8?B?MUZ1SmVPNUJqMnhHNjBrSmpRcHZYUjlpUklQQ0Z0eU5MNnlxdEwzUEIraTdy?=
+ =?utf-8?B?blpYWTM4WFI3bU5nV3U1eXczQ0pyazc5bHRYNDdPaGUxNWs5b2pmOU52bllo?=
+ =?utf-8?B?M1pmcko2cGRUNDVXcDNiTjBkWXVLMDNUSHVoK28zek4vWXZPaXRBZXFJVTR4?=
+ =?utf-8?B?MDFYNGNkNGF1U3ZUMFF2TzdmdmordTBYTnhHcjl3OTZzVXpuTm5lcVI4enNE?=
+ =?utf-8?B?QmRldm91SjdRaTJIUTJHcG41bVU5MTZ4cHQwMXRJV2wvZDlLempIZWhZb29W?=
+ =?utf-8?Q?sll7WQ0kU9MQEYlk=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5a5e18d-504a-468b-8d4d-08da3ac44a26
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4805a361-820a-485e-16ad-08da3ac5111b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2022 00:53:16.0887
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2022 00:58:49.8021
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VmK3/YGmWzCZZHjqi3ICIEzOEsqbjWCUdk/JhrllFnmT4oBYSbHDnMHDy0stm9Ii
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4156
-X-Proofpoint-GUID: cpryEoATiGtH3AP-xtaVPU4YL0LM23ys
-X-Proofpoint-ORIG-GUID: cpryEoATiGtH3AP-xtaVPU4YL0LM23ys
+X-MS-Exchange-CrossTenant-UserPrincipalName: qE/N17bxWsZhPpq1KWuSKyT16scCwXVV+DkNdbmfwoqwvLIP/YA1UE3bBi8mhcdW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB5088
+X-Proofpoint-GUID: hEr9imfLMsJU0VK8JtOiCmOYyFEOGOsS
+X-Proofpoint-ORIG-GUID: hEr9imfLMsJU0VK8JtOiCmOYyFEOGOsS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
  definitions=2022-05-20_08,2022-05-20_02,2022-02-23_01
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 03:55:23PM -0700, Stanislav Fomichev wrote:
 
-[ ... ]
 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index ea3674a415f9..70cf1dad91df 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -768,6 +768,10 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start, struct bpf_tramp_
->  u64 notrace __bpf_prog_enter_sleepable(struct bpf_prog *prog, struct bpf_tramp_run_ctx *run_ctx);
->  void notrace __bpf_prog_exit_sleepable(struct bpf_prog *prog, u64 start,
->  				       struct bpf_tramp_run_ctx *run_ctx);
-> +u64 notrace __bpf_prog_enter_lsm_cgroup(struct bpf_prog *prog,
-> +					struct bpf_tramp_run_ctx *run_ctx);
-> +void notrace __bpf_prog_exit_lsm_cgroup(struct bpf_prog *prog, u64 start,
-> +					struct bpf_tramp_run_ctx *run_ctx);
->  void notrace __bpf_tramp_enter(struct bpf_tramp_image *tr);
->  void notrace __bpf_tramp_exit(struct bpf_tramp_image *tr);
->  
-> @@ -1035,6 +1039,7 @@ struct bpf_prog_aux {
->  	u64 load_time; /* ns since boottime */
->  	u32 verified_insns;
->  	struct bpf_map *cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE];
-> +	int cgroup_atype; /* enum cgroup_bpf_attach_type */
->  	char name[BPF_OBJ_NAME_LEN];
->  #ifdef CONFIG_SECURITY
->  	void *security;
-> @@ -1107,6 +1112,12 @@ struct bpf_tramp_link {
->  	u64 cookie;
->  };
->  
-> +struct bpf_shim_tramp_link {
-> +	struct bpf_tramp_link tramp_link;
-> +	struct bpf_trampoline *tr;
-> +	atomic64_t refcnt;
-There is already a refcnt in 'struct bpf_link'.
-Reuse that one if possible.
+On 5/20/22 2:49 PM, Hao Luo wrote:
+> Hi Tejun and Yonghong,
+> 
+> On Fri, May 20, 2022 at 12:42 PM Hao Luo <haoluo@google.com> wrote:
+>>
+>> Hi Tejun and Yonghong,
+>>
+>> On Fri, May 20, 2022 at 9:45 AM Tejun Heo <tj@kernel.org> wrote:
+>>> On Fri, May 20, 2022 at 09:29:43AM -0700, Yonghong Song wrote:
+>>>>     <various stats interested by the user>
+>>>>
+>>>> This way, user space can easily construct the cgroup hierarchy stat like
+>>>>                             cpu   mem   cpu pressure   mem pressure ...
+>>>>     cgroup1                 ...
+>>>>        child1               ...
+>>>>          grandchild1        ...
+>>>>        child2               ...
+>>>>     cgroup 2                ...
+>>>>        child 3              ...
+>>>>          ...                ...
+>>>>
+>>>> the bpf iterator can have additional parameter like
+>>>> cgroup_id = ... to only call bpf program once with that
+>>>> cgroup_id if specified.
+>>
+>> Yep, this should work. We just need to make the cgroup_id parameter
+>> optional. If it is specified when creating bpf_iter_link, we print for
+>> that cgroup only. If it is not specified, we iterate over all cgroups.
+>> If I understand correctly, sounds doable.
+>>
+> 
+> Yonghong, I realized that seek() which Tejun has been calling out, can
+> be used to specify the target cgroup, rather than adding a new
+> parameter. Maybe, we can pass cgroup_id to seek() on cgroup bpf_iter,
+> which will instruct read() to return the corresponding cgroup's stats.
+> On the other hand, reading without calling seek() beforehand will
+> return all the cgroups.
 
-[ ... ]
+Currently, seek is not supported for bpf_iter.
 
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 01ce78c1df80..c424056f0b35 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -11,6 +11,8 @@
->  #include <linux/rcupdate_wait.h>
->  #include <linux/module.h>
->  #include <linux/static_call.h>
-> +#include <linux/bpf_verifier.h>
-> +#include <linux/bpf_lsm.h>
->  
->  /* dummy _ops. The verifier will operate on target program's ops. */
->  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-> @@ -497,6 +499,163 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
->  	return err;
->  }
->  
-> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
-> +static struct bpf_shim_tramp_link *cgroup_shim_alloc(const struct bpf_prog *prog,
-> +						     bpf_func_t bpf_func)
-> +{
-> +	struct bpf_shim_tramp_link *shim_link = NULL;
-> +	struct bpf_prog *p;
-> +
-> +	shim_link = kzalloc(sizeof(*shim_link), GFP_USER);
-> +	if (!shim_link)
-> +		return NULL;
-> +
-> +	p = bpf_prog_alloc(1, 0);
-> +	if (!p) {
-> +		kfree(shim_link);
-> +		return NULL;
-> +	}
-> +
-> +	p->jited = false;
-> +	p->bpf_func = bpf_func;
-> +
-> +	p->aux->cgroup_atype = prog->aux->cgroup_atype;
-> +	p->aux->attach_func_proto = prog->aux->attach_func_proto;
-> +	p->aux->attach_btf_id = prog->aux->attach_btf_id;
-> +	p->aux->attach_btf = prog->aux->attach_btf;
-> +	btf_get(p->aux->attach_btf);
-> +	p->type = BPF_PROG_TYPE_LSM;
-> +	p->expected_attach_type = BPF_LSM_MAC;
-> +	bpf_prog_inc(p);
-> +	bpf_link_init(&shim_link->tramp_link.link, BPF_LINK_TYPE_TRACING, NULL, p);
-> +	atomic64_set(&shim_link->refcnt, 1);
-> +
-> +	return shim_link;
-> +}
-> +
-> +static struct bpf_shim_tramp_link *cgroup_shim_find(struct bpf_trampoline *tr,
-> +						    bpf_func_t bpf_func)
-> +{
-> +	struct bpf_tramp_link *link;
-> +	int kind;
-> +
-> +	for (kind = 0; kind < BPF_TRAMP_MAX; kind++) {
-> +		hlist_for_each_entry(link, &tr->progs_hlist[kind], tramp_hlist) {
-> +			struct bpf_prog *p = link->link.prog;
-> +
-> +			if (p->bpf_func == bpf_func)
-> +				return container_of(link, struct bpf_shim_tramp_link, tramp_link);
-> +		}
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static void cgroup_shim_put(struct bpf_shim_tramp_link *shim_link)
-> +{
-> +	if (shim_link->tr)
-I have been spinning back and forth with this "shim_link->tr" test and
-the "!shim_link->tr" test below with an atomic64_dec_and_test() test
-in between  :)
+const struct file_operations bpf_iter_fops = {
+         .open           = iter_open,
+         .llseek         = no_llseek,
+         .read           = bpf_seq_read,
+         .release        = iter_release,
+};
 
-> +		bpf_trampoline_put(shim_link->tr);
-Why put(tr) here? 
+But if seek() works, I don't mind to remove this restriction.
+But not sure what to seek. Do you mean to provide a cgroup_fd/cgroup_id
+as the seek() syscall parameter? This may work.
 
-Intuitive thinking is that should be done after __bpf_trampoline_unlink_prog(.., tr)
-which is still using the tr.
-or I missed something inside __bpf_trampoline_unlink_prog(..., tr) ?
+But considering we have parameterized example (map_fd) and
+in the future, we may have other parameterized bpf_iter
+(e.g., for one task). Maybe parameter-based approach is better.
 
-> +
-> +	if (!atomic64_dec_and_test(&shim_link->refcnt))
-> +		return;
-> +
-> +	if (!shim_link->tr)
-And this is only for the error case in bpf_trampoline_link_cgroup_shim()?
-Can it be handled locally in bpf_trampoline_link_cgroup_shim()
-where it could actually happen ?
-
-> +		return;
-> +
-> +	WARN_ON_ONCE(__bpf_trampoline_unlink_prog(&shim_link->tramp_link, shim_link->tr));
-> +	kfree(shim_link);
-How about shim_link->tramp_link.link.prog, is the prog freed ?
-
-Considering the bpf_link_put() does bpf_prog_put(link->prog).
-Is there a reason the bpf_link_put() not used and needs to
-manage its own shim_link->refcnt here ?
-
-> +}
-> +
-> +int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
-> +				    struct bpf_attach_target_info *tgt_info)
-> +{
-> +	struct bpf_shim_tramp_link *shim_link = NULL;
-> +	struct bpf_trampoline *tr;
-> +	bpf_func_t bpf_func;
-> +	u64 key;
-> +	int err;
-> +
-> +	key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
-> +					 prog->aux->attach_btf_id);
-> +
-> +	err = bpf_lsm_find_cgroup_shim(prog, &bpf_func);
-> +	if (err)
-> +		return err;
-> +
-> +	tr = bpf_trampoline_get(key, tgt_info);
-> +	if (!tr)
-> +		return  -ENOMEM;
-> +
-> +	mutex_lock(&tr->mutex);
-> +
-> +	shim_link = cgroup_shim_find(tr, bpf_func);
-> +	if (shim_link) {
-> +		/* Reusing existing shim attached by the other program. */
-> +		atomic64_inc(&shim_link->refcnt);
-> +		/* note, we're still holding tr refcnt from above */
-hmm... why it still needs to hold the tr refcnt ?
-
-> +
-> +		mutex_unlock(&tr->mutex);
-> +		return 0;
-> +	}
-> +
-> +	/* Allocate and install new shim. */
-> +
-> +	shim_link = cgroup_shim_alloc(prog, bpf_func);
-> +	if (!shim_link) {
-> +		bpf_trampoline_put(tr);
-> +		err = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	err = __bpf_trampoline_link_prog(&shim_link->tramp_link, tr);
-> +	if (err)
-> +		goto out;
-> +
-> +	shim_link->tr = tr;
-> +
-> +	mutex_unlock(&tr->mutex);
-> +
-> +	return 0;
-> +out:
-> +	mutex_unlock(&tr->mutex);
-> +
-> +	if (shim_link)
-> +		cgroup_shim_put(shim_link);
-> +
-> +	return err;
-> +}
-> +
+> 
+> WDYT?
