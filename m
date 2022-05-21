@@ -2,78 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AB552F7B6
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 04:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1C652F7D0
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 05:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351986AbiEUCq6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 May 2022 22:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
+        id S239452AbiEUDAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 May 2022 23:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351151AbiEUCq5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 May 2022 22:46:57 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E8B6353F;
-        Fri, 20 May 2022 19:46:56 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id bo5so9149868pfb.4;
-        Fri, 20 May 2022 19:46:56 -0700 (PDT)
+        with ESMTP id S1354400AbiEUDAk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 May 2022 23:00:40 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05031195BD0
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 20:00:40 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id gh17so5597297ejc.6
+        for <bpf@vger.kernel.org>; Fri, 20 May 2022 20:00:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hlMWsJTCZidavUuAPKzwU9yhf4WgPtPDAYKHfwZT1Kk=;
-        b=QI24hacwG+UXk14hfyOzgbyuqZGE9Jc+lSW/TFk5ve7qn3j3BS7C46wRq/kvQhwyov
-         TdX+YRaN4v9iAuPnq13vnHilN0DUGkdqFAO2gjar0TcABj9t0chpVmJdxhmle8Jk7IRK
-         QGnEXhQFcfZoBp3mFCsxiovbDAmb/1pFKIAQSyciyQFI0cQY5GD85QkOt3len3rHA+ik
-         OKjuE2i+HUW3llK+C6bAtaExagW+4HhCx9KW977jPnoFPu9us8CrdaSZ0CRT57E3TQFl
-         DM/F5ro7O+Cq4In1Yeej8/kKHTBWYdL/CTC6IkCE1XQg/KT3rip9v/DKWq/QpKIOt+FW
-         O6NA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I8y1fSGTOmygkP390NLyY/duHVCTwNV3nBe97WgtbRU=;
+        b=COupurDvuBPOCMLJjQz6y/ipZZMd7tYb2/urgCBJP7quhh+CDJBjfVFDetlGnsA9RM
+         1TLdRkYYuEjrIT/W5x1oF9ouIZhs+/HxMh6wh1n1P4BLoMF4GRYrBOQZWXNIL5Dq47m5
+         9HD54vSfGyOQB2ixyZfQuSCY5S2Muue6cwsjMopB7NvR6CouuQultysSfcp6kej1PWHC
+         z208j5Qn/UaJVsy1/imC0J/gl1kgbZD+1iqDIZu4kAZsP1Z59jEWNqsvEVdwq2xUWDZ3
+         BrRzo4EXJAtoTD3x5ZjivcpKNA+Ha1yIJspxKKJjXfSVdCw6KVZFZbmgcEF+Hqmg0GdD
+         tb8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hlMWsJTCZidavUuAPKzwU9yhf4WgPtPDAYKHfwZT1Kk=;
-        b=7V7z3oHhL4u+jClR4q6LmIQzihMYVU9zbdp42U9iuxDDAVla8dayTzIAvSAFJI04Nh
-         yY/kSKBfJWqi7M4Mlwh/8B6FHadaihOEvuOtCBpDUJ5rtkBrrs4cPumQ1iJWlVyjvdvA
-         IqZ1fjObMUrjbQR9OOnBuJbXchPS/eoGeziII2mNg4lzVTnco/T/awn0Gkv43mcRexD8
-         kS9/NkGtMny+IWGN4htOW6ouqf+hYisLiGWcc3kDOB77rVLQnsWI4ALZ1PEzeK1Owa/j
-         In+tIHhW3dCU1qdBQHcJbK0wGeIp9ueSMyCNOSHZghSY+kdBs1IioDxedELymXHoJ1LV
-         IXIw==
-X-Gm-Message-State: AOAM533MRcMmh4Zo2R+ZQQ3CkGAewgxcHU+kovqCnVkUKRTXzuE0U7T8
-        Hr7spXrco0udq9hYBf0au8Q=
-X-Google-Smtp-Source: ABdhPJxTMM/zJvD/ZsVF7ArHkK+UgEQYH2UcY6QfJhpPSJ8N2T5v3ir2qxN5yEPI61s0GafkZ4S5Xw==
-X-Received: by 2002:a63:f255:0:b0:3c6:afc0:56b4 with SMTP id d21-20020a63f255000000b003c6afc056b4mr11017538pgk.407.1653101216241;
-        Fri, 20 May 2022 19:46:56 -0700 (PDT)
-Received: from MBP-98dd607d3435.dhcp.thefacebook.com ([2620:10d:c090:400::4:d798])
-        by smtp.gmail.com with ESMTPSA id d19-20020a170902c19300b00161947ecc82sm403281pld.199.2022.05.20.19.46.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 May 2022 19:46:55 -0700 (PDT)
-Date:   Fri, 20 May 2022 19:46:51 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I8y1fSGTOmygkP390NLyY/duHVCTwNV3nBe97WgtbRU=;
+        b=YE4p/OcDGchtgHdhnEbLxZcvXUePFa3dcEM6Yd5puImnB/sSWirg5Y51DlX4lYCd8a
+         p+YuxLvv4q6Du0x4wJBgWX7iquUbtHbROVjuzPKynRgxFPV5pU528kWcVW5oufDdSDbV
+         hvqp4J+eRNo4m2TNHek3666/6Ccu3iBLmKGlXzhg7EH6O5D1974MfwwfbAQTcLB+WFPL
+         WRS9MA6YjFGBrfTCg7D/Cqw+gvD2ACT+HjNCTJk0+/ejeTq+OuzdtO8joe+5R4PdUAWO
+         S6cguLKDrqxOJjt2OU9Op/7L4UxzeDOtc1wn+iSoIuvrXeqRYdRhjdXxfVd6or2+9HSY
+         /Kuw==
+X-Gm-Message-State: AOAM530h9A/897izyBT9PwtoIHs3BF89Q+67geaWpkvLK5WwlkRks4Zv
+        UJUTfcLkt+oahv1z6Qqbfv/OJniowC2zfiCUWrQ=
+X-Google-Smtp-Source: ABdhPJzfRcMAMeeoWMazdce+t2ma7ho+/HT1pneqRbsPNeakmny0oCnCMZQBGuyxA44KVQ/Mb3FUfrg8gJLqnDRwzb8=
+X-Received: by 2002:a17:906:9f0c:b0:6f5:bed:d0a8 with SMTP id
+ fy12-20020a1709069f0c00b006f50bedd0a8mr11221070ejc.94.1653102038462; Fri, 20
+ May 2022 20:00:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <1652970334-30510-1-git-send-email-alan.maguire@oracle.com> <1652970334-30510-3-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1652970334-30510-3-git-send-email-alan.maguire@oracle.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 20 May 2022 20:00:26 -0700
+Message-ID: <CAADnVQKsz4jrajs3bNkz75gUgA2eQxTV93TfWLu6HL3FSm4a8g@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: add tests verifying
+ unprivileged bpf behaviour
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 13/17] HID: bpf: allow to change the report
- descriptor
-Message-ID: <20220521024651.ngjv52kk7jrkt6mo@MBP-98dd607d3435.dhcp.thefacebook.com>
-References: <20220518205924.399291-1-benjamin.tissoires@redhat.com>
- <20220518205924.399291-14-benjamin.tissoires@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220518205924.399291-14-benjamin.tissoires@redhat.com>
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,39 +72,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 10:59:20PM +0200, Benjamin Tissoires wrote:
-> Add a new tracepoint hid_bpf_rdesc_fixup() so we can trigger a
-> report descriptor fixup in the bpf world.
-> 
-> Whenever the program gets attached/detached, the device is reconnected
-> meaning that userspace will see it disappearing and reappearing with
-> the new report descriptor.
-> 
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> 
-> ---
-> 
-> changes in v5:
-> - adapted for new API
-> 
-> not in v4
-> 
-> changes in v3:
-> - ensure the ctx.size is properly bounded by allocated size
-> - s/link_attached/post_link_attach/
-> - removed the switch statement with only one case
-> 
-> changes in v2:
-> - split the series by bpf/libbpf/hid/selftests and samples
-> ---
->  drivers/hid/bpf/entrypoints/entrypoints.bpf.c |   6 +
->  .../hid/bpf/entrypoints/entrypoints.lskel.h   | 965 +++++++++---------
+On Thu, May 19, 2022 at 7:26 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> +void test_unpriv_bpf_disabled(void)
+> +{
+> +       char *map_paths[NUM_MAPS] = {   PINPATH "array",
+> +                                       PINPATH "percpu_array",
+> +                                       PINPATH "hash",
+> +                                       PINPATH "percpu_hash",
+> +                                       PINPATH "perfbuf",
+> +                                       PINPATH "ringbuf",
+> +                                       PINPATH "prog_array" };
+> +       int map_fds[NUM_MAPS];
+> +       struct test_unpriv_bpf_disabled *skel;
+> +       char unprivileged_bpf_disabled_orig[32] = {};
+> +       char perf_event_paranoid_orig[32] = {};
+> +       struct bpf_prog_info prog_info = {};
+> +       __u32 prog_info_len = sizeof(prog_info);
+> +       struct perf_event_attr attr = {};
+> +       int prog_fd, perf_fd, i, ret;
+> +       __u64 save_caps = 0;
+> +       __u32 prog_id;
+> +
+> +       skel = test_unpriv_bpf_disabled__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +               return;
+> +
+> +       skel->bss->test_pid = getpid();
+> +
+> +       map_fds[0] = bpf_map__fd(skel->maps.array);
+> +       map_fds[1] = bpf_map__fd(skel->maps.percpu_array);
+> +       map_fds[2] = bpf_map__fd(skel->maps.hash);
+> +       map_fds[3] = bpf_map__fd(skel->maps.percpu_hash);
+> +       map_fds[4] = bpf_map__fd(skel->maps.perfbuf);
+> +       map_fds[5] = bpf_map__fd(skel->maps.ringbuf);
+> +       map_fds[6] = bpf_map__fd(skel->maps.prog_array);
+> +
+> +       for (i = 0; i < NUM_MAPS; i++)
+> +               ASSERT_OK(bpf_obj_pin(map_fds[i], map_paths[i]), "pin map_fd");
+> +
+> +       /* allow user without caps to use perf events */
+> +       if (!ASSERT_OK(sysctl_set("/proc/sys/kernel/perf_event_paranoid", perf_event_paranoid_orig,
+> +                                 "-1"),
+> +                      "set_perf_event_paranoid"))
+> +               goto cleanup;
+> +       /* ensure unprivileged bpf disabled is set */
+> +       ret = sysctl_set("/proc/sys/kernel/unprivileged_bpf_disabled",
+> +                        unprivileged_bpf_disabled_orig, "2");
+> +       if (ret == -EPERM) {
+> +               /* if unprivileged_bpf_disabled=1, we get -EPERM back; that's okay. */
+> +               if (!ASSERT_OK(strcmp(unprivileged_bpf_disabled_orig, "1"),
+> +                              "unpriviliged_bpf_disabled_on"))
+> +                       goto cleanup;
+> +       } else {
+> +               if (!ASSERT_OK(ret, "set unpriviliged_bpf_disabled"))
+> +                       goto cleanup;
+> +       }
 
-Probably add the lskel once in the series to avoid the churn.
-It's not reviewable anyway.
+Alan,
 
->  drivers/hid/bpf/hid_bpf_dispatch.c            |  77 +-
->  drivers/hid/bpf/hid_bpf_dispatch.h            |   1 +
->  drivers/hid/bpf/hid_bpf_jmp_table.c           |   8 +
+same as in v3 the BPF CI complained when selftests are built with clang.
 
-I'll take a close look at dispatch logic next week.
+/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c:267:7:
+error: variable 'perf_fd' is used uninitialized whenever 'if'
+condition is true [-Werror,-Wsometimes-uninitialized]
+                if (!ASSERT_OK(ret, "set unpriviliged_bpf_disabled"))
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c:301:8:
+note: uninitialized use occurs here
+        close(perf_fd);
+              ^~~~~~~
+/tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c:267:3:
+note: remove the 'if' if its condition is always false
+                if (!ASSERT_OK(ret, "set unpriviliged_bpf_disabled"))
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Looks like clang found the real issue.
+I've addressed with:
+-       int prog_fd, perf_fd, i, ret;
++       int prog_fd, perf_fd = -1, i, ret;
+
+while applying.
+
+Please pay attention to CI errors.
+
+To repro do: make LLVM=1 -j
