@@ -2,143 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FCD52FA80
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 12:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAD152FB22
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 13:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238733AbiEUJ4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 May 2022 05:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
+        id S240775AbiEULOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 May 2022 07:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbiEUJ4X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 May 2022 05:56:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07235710C;
-        Sat, 21 May 2022 02:56:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59FCB60FE1;
-        Sat, 21 May 2022 09:56:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 325F1C385A9;
-        Sat, 21 May 2022 09:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653126980;
-        bh=J8Kl5QDh8G+60wtyKm/zQ9HhPyt2i6OdeEYkmZ3BVvE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dAjv74qHO4EfDSQWLqA0PaKO0yJrasf+pxkt1VZWq+8RDjaA546ve+YaNo8HTkcPC
-         qR5E8alM4IIixPPC1DDHyw/cub+xov3uifJJl73it+V/WRSHXWEKHM9U7D+XyTBbyT
-         z6B6ewShVvpgtkp842ad77p/wxLJf58YaMC+Ci13J6EWyOOCqyYHN9C8Zfmh/TEv/p
-         MZLISYH9ihoKkG7XV9S4vkDEfhle9PmN0ojXP6KKkEtVQDj7zrfg0pJrFTb+4d1QG+
-         RTLzKMlyPh7ClLlv9weorocYVd6SRS20/GNW0GCOfjJSmoEPcMoa88H44kLDoDQ0Se
-         h5BnmvQgxZjag==
-Date:   Sat, 21 May 2022 11:56:16 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1354921AbiEULM5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 May 2022 07:12:57 -0400
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5CB5A0A3;
+        Sat, 21 May 2022 04:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vki7c+Z/XcQTedYYjJ9Z0HiIFJR55lVzHQlQz/ICUmA=;
+  b=AePPL+2rg5Fzf39quers+bpIAxjl2WaizQ6BU0sMPrYyzt+/p589nV/t
+   gnKH3S/XeEH2Pvqs3xffsreaWCdK+ughutTD20g9D2Yoe3nym2weVkogr
+   VbFle9whGw6JqibuwhXFY5ey6/5ILOTADthgl4ukAdXX7HECKOF1Fc4Be
+   Y=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="5.91,242,1647298800"; 
+   d="scan'208";a="14727979"
+Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2022 13:12:04 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     kernel-janitors@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, pabeni@redhat.com,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 5/5] selftests/bpf: add selftest for
- bpf_xdp_ct_add and bpf_ct_refresh_timeout kfunc
-Message-ID: <Yoi3QLuCD5Q5iG46@lore-desk>
-References: <cover.1652870182.git.lorenzo@kernel.org>
- <e95abdd9c6fa1fa97f3ca60e8eb06799784e671a.1652870182.git.lorenzo@kernel.org>
- <CAEf4BzZuKOR2y1LOzZLWm1sMFw3psPuzFcoYJ-yj0+PgzB2C1g@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] libbpf: fix typo in comment
+Date:   Sat, 21 May 2022 13:11:21 +0200
+Message-Id: <20220521111145.81697-71-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Lh+jlsCfG/elROdQ"
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZuKOR2y1LOzZLWm1sMFw3psPuzFcoYJ-yj0+PgzB2C1g@mail.gmail.com>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Spelling mistake (triple letters) in comment.
+Detected with the help of Coccinelle.
 
---Lh+jlsCfG/elROdQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-> On Wed, May 18, 2022 at 3:44 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
-te:
-> >
-> > Introduce selftests for the following kfunc helpers:
-> > - bpf_xdp_ct_add
-> > - bpf_skb_ct_add
-> > - bpf_ct_refresh_timeout
-> >
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  .../testing/selftests/bpf/prog_tests/bpf_nf.c |  4 ++
-> >  .../testing/selftests/bpf/progs/test_bpf_nf.c | 72 +++++++++++++++----
-> >  2 files changed, 64 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_nf.c
-> > index dd30b1e3a67c..be6c5650892f 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> > @@ -39,6 +39,10 @@ void test_bpf_nf_ct(int mode)
-> >         ASSERT_EQ(skel->bss->test_enonet_netns_id, -ENONET, "Test ENONE=
-T for bad but valid netns_id");
-> >         ASSERT_EQ(skel->bss->test_enoent_lookup, -ENOENT, "Test ENOENT =
-for failed lookup");
-> >         ASSERT_EQ(skel->bss->test_eafnosupport, -EAFNOSUPPORT, "Test EA=
-FNOSUPPORT for invalid len__tuple");
-> > +       ASSERT_EQ(skel->bss->test_add_entry, 0, "Test for adding new en=
-try");
-> > +       ASSERT_EQ(skel->bss->test_succ_lookup, 0, "Test for successful =
-lookup");
-> > +       ASSERT_TRUE(skel->bss->test_delta_timeout > 9 && skel->bss->tes=
-t_delta_timeout <=3D 10,
-> > +                   "Test for ct timeout update");
->=20
-> if/when this fails we'll have "true !=3D false" message not knowing what
-> was the actual value of skel->bss->test_delta_timeout.
->=20
-> This is equivalent to a much better:
->=20
-> ASSERT_GT(skel->bss->test_delta_timeout, 9, "ct_timeout1");
-> ASSERT_LE(skel->bss->test_delta_timeout, 10, "ct_timeout2");
+---
+ tools/lib/bpf/libbpf.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-ack, I will fix it in the next version.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index ef7f302e542f..e89cc9c885b3 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -6873,7 +6873,7 @@ static int bpf_object_load_prog_instance(struct bpf_object *obj, struct bpf_prog
+ 	}
+ 
+ retry_load:
+-	/* if log_level is zero, we don't request logs initiallly even if
++	/* if log_level is zero, we don't request logs initially even if
+ 	 * custom log_buf is specified; if the program load fails, then we'll
+ 	 * bump log_level to 1 and use either custom log_buf or we'll allocate
+ 	 * our own and retry the load to get details on what failed
 
-Regards,
-Lorenzo
-
->=20
-> >  end:
-> >         test_bpf_nf__destroy(skel);
-> >  }
->=20
->=20
-> [...]
-
---Lh+jlsCfG/elROdQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYoi3QAAKCRA6cBh0uS2t
-rFLUAP9rOXf1/ICvLv8w6S0EJMMsADYMvo0Sd9xeb08Pr0JaCgD9FNDYMzWbuZAj
-mFKaos0hE8FQfvkk6HZ1VMPy6p8VpgY=
-=02hG
------END PGP SIGNATURE-----
-
---Lh+jlsCfG/elROdQ--
