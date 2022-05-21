@@ -2,158 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5FA52FCA2
-	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 15:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB8052FCDA
+	for <lists+bpf@lfdr.de>; Sat, 21 May 2022 15:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354134AbiEUNOE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 May 2022 09:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
+        id S235247AbiEUNZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 May 2022 09:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351062AbiEUNOA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 May 2022 09:14:00 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CEB38BDE;
-        Sat, 21 May 2022 06:13:58 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id bh5so9415864plb.6;
-        Sat, 21 May 2022 06:13:58 -0700 (PDT)
+        with ESMTP id S1355031AbiEUNZa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 May 2022 09:25:30 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95887606E7
+        for <bpf@vger.kernel.org>; Sat, 21 May 2022 06:25:29 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id nr2-20020a17090b240200b001df2b1bfc40so13654948pjb.5
+        for <bpf@vger.kernel.org>; Sat, 21 May 2022 06:25:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oLH4/O4hnVy3wOLUc8vz0oBE8xaj2C4NuAcXjfnz4nc=;
-        b=niDfWBSUsX18Eo+z1BzxhZCU0ofsCu4DzD5HfoxNZ2DTnYgxx7Gju+frSRnrp+vCXH
-         56FcSy+kE3Tzknxnz265wjA6qtdrDw1NHLH7gpTBurdvVMhyQfaY0IKmh7x14FEGzU1J
-         sokW175+Q/YkF0Gw+GsrOdzkjO18FNWMHN1NdbBbAoMdbwIW0mTkc6R5dyILzQVh5azT
-         7Ga+jYtgsuuqtCBn5LRVaIhqfvZdesaxpIyqKyAymbcjamb7ctqYXusn8eTGtzEEFGP6
-         4CMKup3FFKMfsGCjPmY/nUiko07rH+dTyYeXaYgzHKD3aYcjlrH5w+6oDj6SX6PyVyaI
-         MVMA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=urg7HfnilktPs2aIRMbLMbkmP5FphJkEQhbOUOa4EG8=;
+        b=g8cPnHm4wJgtKSWeZko3Fc3xmGjDNsxgVJx2YQl7RmtI8no1zVjk/exR1G++jSyFTH
+         Hj09zQ/br7b062JZkQUoUWQmbyPXqy+OARTNJYBsoh8okprwx+XjjQ7dhh1e1mIY3bGB
+         gKkaT5xi1e+IswCEzSZxGV6W4sA/PJ6RZ8u6Y/EXEDDlWlb0KAJKAU6qp/QVVGLhwBRg
+         DV4jMi/IDpGfZKuu0PhPB6AHlLeXdi4GUkA9q1yheaLNU682czo3NbARTIrpHuMIWFVB
+         AniwdqWXy8YXlDWADPwwo7wHr8QDrO5dV/q0L0BWImBvCqVAJVmPfYqHSv0nKy4YKVKR
+         NDdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oLH4/O4hnVy3wOLUc8vz0oBE8xaj2C4NuAcXjfnz4nc=;
-        b=wrk5VsgdJssWNrao876mDNE2tiLGNdHfW1SIBi2LFS3nU/ITnC32Y366N1bjhoZcrg
-         sNBzqGoY1iF4X4a/lE5KquoZrMIW934hbIdIRbV22CKIhvjEKNb1DTwI7oKVZ/Zxu/wA
-         0EFnf3Y/XN3IY3gDk4sA/U9IBmmtEswDLFFU1NMKX6JyGttH4s9pJmLi07HqM63LmM0t
-         0L52cdgI17RZcezcT/QMG3hikzu4LL9FjtNyiFz8ugfFa+qce98jgA55UIzP3nC6se0B
-         DLrPzaHrDNC1x3Q8jg5lfTI3yLbGMZZSZEl8VCym7UDhiVWfn6GeUoB7haPNZkzL2/er
-         4F1g==
-X-Gm-Message-State: AOAM532fyjYQp0J0adzioKmSCancqTRZb+uoB7lnmcD4P0xf5UNnrQTw
-        ABsyKJiB0s088HuWq+S+PIHOEZbWKlEDMQ==
-X-Google-Smtp-Source: ABdhPJzKwRby6wAL6fXmsCoBg2Jo18skM3PQfHlN6h+jnaXjyVK1aQ/gnt4kwrr5w8dLwD11V0/c0A==
-X-Received: by 2002:a17:90b:1b41:b0:1e0:17f:d17 with SMTP id nv1-20020a17090b1b4100b001e0017f0d17mr7128754pjb.85.1653138837559;
-        Sat, 21 May 2022 06:13:57 -0700 (PDT)
-Received: from localhost ([2409:10:24a0:4700:e8ad:216a:2a9d:6d0c])
-        by smtp.gmail.com with ESMTPSA id y16-20020a62b510000000b0051843980605sm3593579pfe.181.2022.05.21.06.13.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=urg7HfnilktPs2aIRMbLMbkmP5FphJkEQhbOUOa4EG8=;
+        b=JiyN/gNK0dRd/5GcZ47xiPAUzL/IwsLVP2NwXoTFOoKg2GHoF4QAl3dAnZi2zJy4k4
+         9ydDYRXPY/iRVAe1O7ajq1cSlw/vru7z8eY7be1LMmin/rKsb7lde1xfjPe561q34OZC
+         S7h7jS+j7bOzeDfzDK04xU9u/wC17/SddDUab4HGr/XPqaVFJW1WMhFHmYVI5H2VTd/f
+         9jQz37kgtodlw5Ul4FVLcEn+ZYM7YkBpUZIdVD+JIiUc2Gr7A2beYGi37UTxDuoMwClQ
+         i51thx73BveYvCj+4Y6sSMMlgXr/yxLhRWpoNYBnMqPeqcbpGPvQwydeyqqQJPjDx0DI
+         c1bA==
+X-Gm-Message-State: AOAM531fxn7a8UBpbYS0winBJumoOjmZYmM11s6So2wt7mv2nauoPd/P
+        OKaE1Q56GN41d+wLxJe+jMxVbKYymX0=
+X-Google-Smtp-Source: ABdhPJyUBqR9jvPUgtrSC42KCbNuENT7UtqX+SbXrt/LmMTQDRLHEUUeX7twzkJTGXqP6NEzP3UX7w==
+X-Received: by 2002:a17:90a:4f0a:b0:1df:b37b:75b1 with SMTP id p10-20020a17090a4f0a00b001dfb37b75b1mr17132642pjh.199.1653139528940;
+        Sat, 21 May 2022 06:25:28 -0700 (PDT)
+Received: from localhost ([14.96.13.220])
+        by smtp.gmail.com with ESMTPSA id cw25-20020a056a00451900b0050dc76281d3sm3665587pfb.173.2022.05.21.06.25.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 May 2022 06:13:57 -0700 (PDT)
-From:   Stafford Horne <shorne@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Openrisc <openrisc@lists.librecores.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel Somlo <gsomlo@gmail.com>,
-        Joel Stanley <joel@jms.id.au>,
+        Sat, 21 May 2022 06:25:28 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH v3 06/13] openrisc: Update litex defconfig to support glibc userland
-Date:   Sat, 21 May 2022 22:13:16 +0900
-Message-Id: <20220521131323.631209-7-shorne@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220521131323.631209-1-shorne@gmail.com>
-References: <20220521131323.631209-1-shorne@gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf-next] bpf: Suppress 'passing zero to PTR_ERR' warning
+Date:   Sat, 21 May 2022 18:56:20 +0530
+Message-Id: <20220521132620.1976921-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I have been using a litex SoC for glibc verification.  Update the
-default litex config to support required userspace API's needed for the
-full glibc testsuite to pass.
+Kernel Test Robot complains about passing zero to PTR_ERR for the said
+line, suppress it by using PTR_ERR_OR_ZERO.
 
-This includes enabling the litex mmc driver and filesystems used
-in a typical litex environment.
-
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- arch/openrisc/configs/or1klitex_defconfig | 32 +++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/openrisc/configs/or1klitex_defconfig b/arch/openrisc/configs/or1klitex_defconfig
-index d695879a4d26..d3fb964b4f85 100644
---- a/arch/openrisc/configs/or1klitex_defconfig
-+++ b/arch/openrisc/configs/or1klitex_defconfig
-@@ -1,22 +1,54 @@
-+CONFIG_SYSVIPC=y
-+CONFIG_POSIX_MQUEUE=y
-+CONFIG_CGROUPS=y
-+CONFIG_NAMESPACES=y
-+CONFIG_USER_NS=y
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+CONFIG_SGETMASK_SYSCALL=y
- CONFIG_EMBEDDED=y
- CONFIG_OPENRISC_BUILTIN_DTB="or1klitex"
- CONFIG_HZ_100=y
-+CONFIG_OPENRISC_HAVE_SHADOW_GPRS=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-+CONFIG_PACKET_DIAG=y
- CONFIG_UNIX=y
-+CONFIG_UNIX_DIAG=y
- CONFIG_INET=y
-+CONFIG_IP_MULTICAST=y
-+CONFIG_IP_ADVANCED_ROUTER=y
-+CONFIG_INET_UDP_DIAG=y
-+CONFIG_INET_RAW_DIAG=y
-+# CONFIG_WIRELESS is not set
-+# CONFIG_ETHTOOL_NETLINK is not set
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_OF_OVERLAY=y
- CONFIG_NETDEVICES=y
- CONFIG_LITEX_LITEETH=y
-+# CONFIG_WLAN is not set
- CONFIG_SERIAL_LITEUART=y
- CONFIG_SERIAL_LITEUART_CONSOLE=y
- CONFIG_TTY_PRINTK=y
-+# CONFIG_GPIO_CDEV is not set
-+CONFIG_MMC=y
-+CONFIG_MMC_LITEX=y
-+# CONFIG_VHOST_MENU is not set
-+# CONFIG_IOMMU_SUPPORT is not set
- CONFIG_LITEX_SOC_CONTROLLER=y
-+CONFIG_EXT2_FS=y
-+CONFIG_EXT3_FS=y
-+CONFIG_MSDOS_FS=y
-+CONFIG_VFAT_FS=y
-+CONFIG_EXFAT_FS=y
- CONFIG_TMPFS=y
-+CONFIG_NFS_FS=y
-+CONFIG_NFS_V3_ACL=y
-+CONFIG_NFS_V4=y
-+CONFIG_NLS_CODEPAGE_437=y
-+CONFIG_NLS_ISO8859_1=y
-+CONFIG_LSM="lockdown,yama,loadpin,safesetid,integrity,bpf"
- CONFIG_PRINTK_TIME=y
- CONFIG_PANIC_ON_OOPS=y
- CONFIG_SOFTLOCKUP_DETECTOR=y
--- 
-2.31.1
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 14e8c17d3d8d..45153cbc2bd6 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5352,7 +5352,7 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
+ 		return -EINVAL;
+ 	}
+ 	if (!map_value_has_kptrs(map_ptr)) {
+-		ret = PTR_ERR(map_ptr->kptr_off_tab);
++		ret = PTR_ERR_OR_ZERO(map_ptr->kptr_off_tab);
+ 		if (ret == -E2BIG)
+ 			verbose(env, "map '%s' has more than %d kptr\n", map_ptr->name,
+ 				BPF_MAP_VALUE_OFF_MAX);
+--
+2.36.1
 
