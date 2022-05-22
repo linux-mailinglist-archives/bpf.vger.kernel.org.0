@@ -2,224 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFD8530119
-	for <lists+bpf@lfdr.de>; Sun, 22 May 2022 07:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB03153067E
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 00:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238314AbiEVFit (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 May 2022 01:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
+        id S1348506AbiEVWWl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 May 2022 18:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236370AbiEVFis (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 May 2022 01:38:48 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FD83631B;
-        Sat, 21 May 2022 22:38:47 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id i5so7950750ilv.0;
-        Sat, 21 May 2022 22:38:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UqpfJk04j/G5TmmjLU8r49li3eldLMLnOiRVESjdyI8=;
-        b=ivRLGjoe7oeWVXb5T7H5TYS5+s/CuBjy2qGzxyg3TyXZsEUPFbJvL/vc35ATasUoBJ
-         w72HL9I+hjZmcuZZ1wXPyp8SgJlr40GyoNKGSOpf56lsO7yn7MRMmG/aH4cXQnK57zK5
-         Uf8wJ/if2IMsWna6b435xvHBLcRGTY6Y0vQy0tl5gj6hJ3Xj9yrcbb06TJhiUCbrz08s
-         UeN/GLQ9+yBIWG+zpZvtIf9MwIAJ4aCk8dB1pGTBQfd6KZHUANRzvy4oW208ckl9ZE6e
-         HZf2ID07SMKRpIphsvzOFeyAFmQWeiOGmc5TeWU14Oh5usTsuYBdnaa3PN2U92ExeAd/
-         4EVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UqpfJk04j/G5TmmjLU8r49li3eldLMLnOiRVESjdyI8=;
-        b=ZAWJk+0clEw7GWht5hre2SjSEL744vJavCKbrY3s6pbsb7pFnSWJ9SaTaMFh1Qd6zV
-         DVer4Ux3LSeU17/YcZW1LeryTM16WFrhSBzIjMK3iHPNxcGgKOowWOcgTbpy8LTyd8oo
-         musTcp5+aZJ8kSNi3MYpuzGRE8lSLBqTNImr9lq3+FYm5geqs0gpgjM0zBCfrVfu7Ko6
-         ql0VEOPsm1hqDoIGSx6MwmVCqfKx+zM+mJbN6nrZVjD36agrTbHi5MIcRBZOmjvfMFlw
-         aBYEf32jZnYoPlC/rgzbz/u0PdFvmEMyCRGBKTwH4wOfcIap7jRNvupTAJKiwg0Su6PY
-         bpvA==
-X-Gm-Message-State: AOAM530olHwigl/sRGgnpxnpKeovutET546oBlo8YO/HtUDdyDqLkXcN
-        e4tVJuBrpHB33RqlJi7qThs=
-X-Google-Smtp-Source: ABdhPJwzfydJBjgFeHlR0T+XUVy/nXpQIewgUbh3FoTL0sMB7MFxQA/tguvONEiCkVhgPfy/xD3K2g==
-X-Received: by 2002:a92:c262:0:b0:2d1:3722:a3eb with SMTP id h2-20020a92c262000000b002d13722a3ebmr8880184ild.270.1653197926895;
-        Sat, 21 May 2022 22:38:46 -0700 (PDT)
-Received: from n2.us-central1-a.c.spheric-algebra-350919.internal (151.16.70.34.bc.googleusercontent.com. [34.70.16.151])
-        by smtp.gmail.com with ESMTPSA id e16-20020a92d750000000b002cde6e352d9sm3031298ilq.35.2022.05.21.22.38.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 May 2022 22:38:46 -0700 (PDT)
-Date:   Sun, 22 May 2022 05:38:44 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Song Liu <song@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-mm@kvack.org, ast@kernel.org, daniel@iogearbox.net,
-        peterz@infradead.org, mcgrof@kernel.org,
-        torvalds@linux-foundation.org, rick.p.edgecombe@intel.com,
-        kernel-team@fb.com
-Subject: Re: [PATCH v3 bpf-next 2/8] x86/alternative: introduce text_poke_set
-Message-ID: <YonMZLyn6YJYnmjp@n2.us-central1-a.c.spheric-algebra-350919.internal>
-References: <20220520031548.338934-1-song@kernel.org>
- <20220520031548.338934-3-song@kernel.org>
+        with ESMTP id S230175AbiEVWWi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 May 2022 18:22:38 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ACC240B3;
+        Sun, 22 May 2022 15:22:38 -0700 (PDT)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24MFaj3F025929;
+        Sun, 22 May 2022 22:22:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=5CkdRqjRscNq/Ois0QptfV9yb1J2HpaTPOg5VbcQ8DM=;
+ b=ShFAZ760kNLQYQxjy+FL61em62g/2n0j5me7facf9m9W/gxImVhntSrsQzpfVvo9tJi4
+ ff4TtoU6GCnXzPtEi0T20VCw47GgpEEZlvFKiMEBeJEbMdZhkp/C8G0YV94p3rkHYPBB
+ P+Sio2DbjRPy4PQVxaI9lpHSd1gaRQ7qgwaHE7ipG6WCk08aUIMM8gXCkns3g+gbcftd
+ /zOyCLZA9gZ4a3FWJ9jzAb+6y8oVUZ0KJMFqcAcxEyhvilEceewfCBtUKUfCrAuTSs0l
+ UGqLfcpCOeu+ckjL0uhB0nVLkrylE+2F3URtHah0Xtz1/mK8uiXgR8G6J4E1sDOuh86V ag== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g79f4y0m6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 22 May 2022 22:22:21 +0000
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24MMKcRX020257;
+        Sun, 22 May 2022 22:22:20 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g79f4y0ke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 22 May 2022 22:22:20 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24MMCtgG010241;
+        Sun, 22 May 2022 22:22:18 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 3g6qq8t2pv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 22 May 2022 22:22:17 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24MMMEQE24052000
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 22 May 2022 22:22:14 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E876AE045;
+        Sun, 22 May 2022 22:22:14 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 898D6AE051;
+        Sun, 22 May 2022 22:22:13 +0000 (GMT)
+Received: from [9.171.72.230] (unknown [9.171.72.230])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 22 May 2022 22:22:13 +0000 (GMT)
+Message-ID: <63d07a63565b0f059f5b04dbe294dc4f8d4c91fb.camel@linux.ibm.com>
+Subject: Re: [PATCH] s390/bpf: fix typo in comment
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     kernel-janitors@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 23 May 2022 00:22:13 +0200
+In-Reply-To: <20220521111145.81697-84-Julia.Lawall@inria.fr>
+References: <20220521111145.81697-84-Julia.Lawall@inria.fr>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220520031548.338934-3-song@kernel.org>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 2B8uQRJxfEHvQ1900hIT0sofz4GMyRxR
+X-Proofpoint-ORIG-GUID: -ZVWZf9s398XuI8rUJoJfa6A7Zahz82o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-22_12,2022-05-20_02,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 suspectscore=0 clxscore=1011 phishscore=0
+ mlxlogscore=999 adultscore=0 priorityscore=1501 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2205220140
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 19, 2022 at 08:15:42PM -0700, Song Liu wrote:
-> Introduce a memset like API for text_poke. This will be used to fill the
-> unused RX memory with illegal instructions.
+On Sat, 2022-05-21 at 13:11 +0200, Julia Lawall wrote:
+> Spelling mistake (triple letters) in comment.
+> Detected with the help of Coccinelle.
 > 
-> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Song Liu <song@kernel.org>
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> 
 > ---
->  arch/x86/include/asm/text-patching.h |  1 +
->  arch/x86/kernel/alternative.c        | 67 +++++++++++++++++++++++-----
->  2 files changed, 58 insertions(+), 10 deletions(-)
+>  arch/s390/net/bpf_jit_comp.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/include/asm/text-patching.h b/arch/x86/include/asm/text-patching.h
-> index d20ab0921480..1cc15528ce29 100644
-> --- a/arch/x86/include/asm/text-patching.h
-> +++ b/arch/x86/include/asm/text-patching.h
-> @@ -45,6 +45,7 @@ extern void *text_poke(void *addr, const void *opcode, size_t len);
->  extern void text_poke_sync(void);
->  extern void *text_poke_kgdb(void *addr, const void *opcode, size_t len);
->  extern void *text_poke_copy(void *addr, const void *opcode, size_t len);
-> +extern void *text_poke_set(void *addr, int c, size_t len);
->  extern int poke_int3_handler(struct pt_regs *regs);
->  extern void text_poke_bp(void *addr, const void *opcode, size_t len, const void *emulate);
->  
-> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-> index d374cb3cf024..7563b5bc8328 100644
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -994,7 +994,21 @@ static inline void unuse_temporary_mm(temp_mm_state_t prev_state)
->  __ro_after_init struct mm_struct *poking_mm;
->  __ro_after_init unsigned long poking_addr;
->  
-> -static void *__text_poke(void *addr, const void *opcode, size_t len)
-> +static void text_poke_memcpy(void *dst, const void *src, size_t len)
-> +{
-> +	memcpy(dst, src, len);
-> +}
-> +
-> +static void text_poke_memset(void *dst, const void *src, size_t len)
-> +{
-> +	int c = *(const int *)src;
-> +
-> +	memset(dst, c, len);
-> +}
-> +
-> +typedef void text_poke_f(void *dst, const void *src, size_t len);
-> +
-> +static void *__text_poke(text_poke_f func, void *addr, const void *src, size_t len)
->  {
->  	bool cross_page_boundary = offset_in_page(addr) + len > PAGE_SIZE;
->  	struct page *pages[2] = {NULL};
-> @@ -1059,7 +1073,7 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
->  	prev = use_temporary_mm(poking_mm);
->  
->  	kasan_disable_current();
-> -	memcpy((u8 *)poking_addr + offset_in_page(addr), opcode, len);
-> +	func((u8 *)poking_addr + offset_in_page(addr), src, len);
->  	kasan_enable_current();
->  
->  	/*
-> @@ -1087,11 +1101,13 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
->  			   (cross_page_boundary ? 2 : 1) * PAGE_SIZE,
->  			   PAGE_SHIFT, false);
->  
-> -	/*
-> -	 * If the text does not match what we just wrote then something is
-> -	 * fundamentally screwy; there's nothing we can really do about that.
-> -	 */
-> -	BUG_ON(memcmp(addr, opcode, len));
-> +	if (func == text_poke_memcpy) {
-> +		/*
-> +		 * If the text does not match what we just wrote then something is
-> +		 * fundamentally screwy; there's nothing we can really do about that.
-> +		 */
-> +		BUG_ON(memcmp(addr, src, len));
-
-Maybe something like this?
-
-	} else if (func == text_poke_memset) {
-		WARN_ON or BUG_ON(memchr_inv(addr, *((const int *)src), len));
-	}
-
-Thanks,
-Hyeonggon
-
->  
->  	local_irq_restore(flags);
->  	pte_unmap_unlock(ptep, ptl);
-> @@ -1118,7 +1134,7 @@ void *text_poke(void *addr, const void *opcode, size_t len)
->  {
->  	lockdep_assert_held(&text_mutex);
->  
-> -	return __text_poke(addr, opcode, len);
-> +	return __text_poke(text_poke_memcpy, addr, opcode, len);
->  }
->  
->  /**
-> @@ -1137,7 +1153,7 @@ void *text_poke(void *addr, const void *opcode, size_t len)
->   */
->  void *text_poke_kgdb(void *addr, const void *opcode, size_t len)
->  {
-> -	return __text_poke(addr, opcode, len);
-> +	return __text_poke(text_poke_memcpy, addr, opcode, len);
->  }
->  
->  /**
-> @@ -1167,7 +1183,38 @@ void *text_poke_copy(void *addr, const void *opcode, size_t len)
->  
->  		s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len - patched);
->  
-> -		__text_poke((void *)ptr, opcode + patched, s);
-> +		__text_poke(text_poke_memcpy, (void *)ptr, opcode + patched, s);
-> +		patched += s;
-> +	}
-> +	mutex_unlock(&text_mutex);
-> +	return addr;
-> +}
-> +
-> +/**
-> + * text_poke_set - memset into (an unused part of) RX memory
-> + * @addr: address to modify
-> + * @c: the byte to fill the area with
-> + * @len: length to copy, could be more than 2x PAGE_SIZE
-> + *
-> + * This is useful to overwrite unused regions of RX memory with illegal
-> + * instructions.
-> + */
-> +void *text_poke_set(void *addr, int c, size_t len)
-> +{
-> +	unsigned long start = (unsigned long)addr;
-> +	size_t patched = 0;
-> +
-> +	if (WARN_ON_ONCE(core_kernel_text(start)))
-> +		return NULL;
-> +
-> +	mutex_lock(&text_mutex);
-> +	while (patched < len) {
-> +		unsigned long ptr = start + patched;
-> +		size_t s;
-> +
-> +		s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len - patched);
-> +
-> +		__text_poke(text_poke_memset, (void *)ptr, (void *)&c, s);
->  		patched += s;
->  	}
->  	mutex_unlock(&text_mutex);
-> -- 
-> 2.30.2
+> diff --git a/arch/s390/net/bpf_jit_comp.c
+> b/arch/s390/net/bpf_jit_comp.c
+> index aede9a3ca3f7..af35052d06ed 100644
+> --- a/arch/s390/net/bpf_jit_comp.c
+> +++ b/arch/s390/net/bpf_jit_comp.c
+> @@ -1809,7 +1809,7 @@ struct bpf_prog *bpf_int_jit_compile(struct
+> bpf_prog *fp)
+>         /*
+>          * Three initial passes:
+>          *   - 1/2: Determine clobbered registers
+> -        *   - 3:   Calculate program size and addrs arrray
+> +        *   - 3:   Calculate program size and addrs array
+>          */
+>         for (pass = 1; pass <= 3; pass++) {
+>                 if (bpf_jit_prog(&jit, fp, extra_pass, stack_depth))
+> {
 > 
-> 
+
+Thanks!
+
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
