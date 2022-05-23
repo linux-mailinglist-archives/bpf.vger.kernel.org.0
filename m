@@ -2,67 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD1D530F82
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 15:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5572530FAF
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 15:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235513AbiEWMgd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 08:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
+        id S235618AbiEWMm6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 08:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235650AbiEWMeO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 08:34:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C667542A39;
-        Mon, 23 May 2022 05:34:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7D134B80FF4;
-        Mon, 23 May 2022 12:34:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0082C385AA;
-        Mon, 23 May 2022 12:34:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653309251;
-        bh=IqR90Auy8+tT5aBpfUUHrQsHhH/KbDi15pMJuDCIMFc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=imDXnGyIkgwwzqBvghc35XlYOcVmZcIlk/acnHhC5QP+tPXLaT8oHoiSYIRyVJiOp
-         MjSi1ss6NJPbXhE9hGfUWHWL1MOfG4qc5LxnLDw0w4tcnmiiRYIm0IxnHgGXg+mllw
-         he3OmR83kipEPT9BP9NqKRyXpeYO7O4IKFJr2Lh/I51p9s0ra41n1V8FoBJbsIQxpG
-         GIOECSmMZgDGeYPkDIMXu4g7nEypp+EsvLa9+J+Ni3aqsNqq6S/LBuZGhecVcuPOW3
-         StAfBCcMyRNiC7BDd+arC80MCOsv832gnMGvOgz8sTqTF+rHuoqTWoAKFlyfOX7Aab
-         TrjYb0mcY4Izg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 02E33400B1; Mon, 23 May 2022 09:34:07 -0300 (-03)
-Date:   Mon, 23 May 2022 09:34:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        with ESMTP id S235586AbiEWMm5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 08:42:57 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB82E20F70;
+        Mon, 23 May 2022 05:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653309776; x=1684845776;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=CYBlt4HV9JNO/N88R6DDSsOe+zvHqFJW0VyNiGAZBvU=;
+  b=iD3CNxtMPuSS7sTCf9qEh54+j5w7vU8kNEfOiM9uji6u/kew/HsdJ5lf
+   vKX7hohv1CACvWwwVTlD7yic204nO5IlYAcj1MMESlOWinbaApdiKd/RM
+   o0NOgsd6IofN/XaVKnJmyZ/+57xHng8IKq1B5auuqu3alnJDFjcz1jUfN
+   NEognW8BeVMn8rdwWAaNgjCpp/AlXTqStgeWurrv2NPn1EhOgpfESMY+C
+   izHvSWbVvTop4x8IXJsOkhdtAVaf6egWqudFRLaMdEcKBRRCuAobHay5i
+   iEJ4oBBtYL3TE7MbPWQqsYZmnkF0p39+ysk235cF6dFgwCXLWsqTBCAsW
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10355"; a="336268135"
+X-IronPort-AV: E=Sophos;i="5.91,246,1647327600"; 
+   d="scan'208";a="336268135"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2022 05:42:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,246,1647327600"; 
+   d="scan'208";a="572081945"
+Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
+  by orsmga007.jf.intel.com with ESMTP; 23 May 2022 05:42:52 -0700
+Date:   Mon, 23 May 2022 14:42:51 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] perf build: Error for BPF skeletons without LIBBPF
-Message-ID: <Yot/P/QO0sAK2iwg@kernel.org>
-References: <20220520211826.1828180-1-irogers@google.com>
- <YotP8BrIK/dwLJLL@krava>
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next] MAINTAINERS: add maintainer to AF_XDP
+Message-ID: <YouBSxZWZEsCLfIl@boxer>
+References: <20220523083254.32285-1-magnus.karlsson@gmail.com>
+ <CAJ+HfNghrcajNC=m_hJAtKSRX906NARB4f6LWeginirZhuyg+Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YotP8BrIK/dwLJLL@krava>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ+HfNghrcajNC=m_hJAtKSRX906NARB4f6LWeginirZhuyg+Q@mail.gmail.com>
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,47 +73,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, May 23, 2022 at 11:12:16AM +0200, Jiri Olsa escreveu:
-> On Fri, May 20, 2022 at 02:18:26PM -0700, Ian Rogers wrote:
-> > LIBBPF requires LIBELF so doing "make BUILD_BPF_SKEL=1 NO_LIBELF=1"
-> > fails with compiler errors about missing declarations. Similar could
-> > happen if libbpf feature detection fails. Prefer to error when
-> > BUILD_BPF_SKEL is enabled but LIBBPF isn't.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+On Mon, May 23, 2022 at 12:25:47PM +0200, Björn Töpel wrote:
+> On Mon, 23 May 2022 at 10:33, Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+> >
+> > Maciej Fijalkowski has gracefully accepted to become the third
+> > maintainer for the AF_XDP code. Thank you Maciej!
+> >
 > 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> Awesome, and thanks for helping out, Maciej!
 
-Thanks, applied.
+It is my pleasure, thanks!
 
-- Arnaldo
+Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
- 
-> thanks,
-> jirka
 > 
+> Acked-by: Björn Töpel <bjorn@kernel.org>
+> 
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@gmail.com>
 > > ---
-> >  tools/perf/Makefile.config | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > index d9b699ad402c..bedb734bd6f2 100644
-> > --- a/tools/perf/Makefile.config
-> > +++ b/tools/perf/Makefile.config
-> > @@ -664,6 +664,9 @@ ifdef BUILD_BPF_SKEL
-> >    ifeq ($(feature-clang-bpf-co-re), 0)
-> >      dummy := $(error Error: clang too old/not installed. Please install recent clang to build with BUILD_BPF_SKEL)
-> >    endif
-> > +  ifeq ($(filter -DHAVE_LIBBPF_SUPPORT, $(CFLAGS)),)
-> > +    dummy := $(error Error: BPF skeleton support requires libbpf)
-> > +  endif
-> >    $(call detected,CONFIG_PERF_BPF_SKEL)
-> >    CFLAGS += -DHAVE_BPF_SKEL
-> >  endif
-> > -- 
-> > 2.36.1.124.g0e6072fb45-goog
-> > 
-
--- 
-
-- Arnaldo
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 359afc617b92..adc63e18e601 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -21507,6 +21507,7 @@ K:      (?:\b|_)xdp(?:\b|_)
+> >  XDP SOCKETS (AF_XDP)
+> >  M:     Björn Töpel <bjorn@kernel.org>
+> >  M:     Magnus Karlsson <magnus.karlsson@intel.com>
+> > +M:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> >  R:     Jonathan Lemon <jonathan.lemon@gmail.com>
+> >  L:     netdev@vger.kernel.org
+> >  L:     bpf@vger.kernel.org
+> >
+> > base-commit: c272e259116973b4c2d5c5ae7b6a4181aeeb38c7
+> > --
+> > 2.34.1
+> >
