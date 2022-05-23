@@ -2,61 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B66531F3F
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FEC531F7E
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbiEWXeA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 19:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        id S229567AbiEWX6f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 19:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbiEWXeA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 19:34:00 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E1F77F24;
-        Mon, 23 May 2022 16:33:59 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id o16so10852410ilq.8;
-        Mon, 23 May 2022 16:33:59 -0700 (PDT)
+        with ESMTP id S229556AbiEWX6e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 19:58:34 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7E15641F;
+        Mon, 23 May 2022 16:58:33 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id m2so16646917vsr.8;
+        Mon, 23 May 2022 16:58:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=476l4F/D25kQOCryGZZoOaZyzK6uQ7tT24Y3edD6ytI=;
-        b=QYNFBhlOZzxOA0oFygMpe3R/z8AYqTAZ1vkPJN8POkpHrqk0VkRxICzbXRXp4sjpUi
-         mcPLquXexRiaYq8Te00XrSiVXVZ/I/D1H9kOLmfxbUv+NEABVExd+RK+JfnvboKRNbdI
-         WiH2c6SzLGFJGQPA2cQrkYGnLqzp7oft7jO67w8hKxX81IdC5uBBtZpUZq78oxjD/StS
-         807YuSIOt6u87B3SgLOBvHlgcFse9c+3DLz6Tb/AGaSJ4u/o179Qz3cH0IYAn2U41aSJ
-         g9IGo0JPdWJ8vUtT7V1OiRlRS0jDBGTPAZhArLywOj1LkJb/KSNVR0hjsb7oDzG7/NFG
-         swqQ==
+        bh=M2mIELVIK9I45bOrNaHoPQeyzkFn9jybEus0u38+96s=;
+        b=VnHsSTwMUvjWYssSawwJ5pEcHjByONf8kYvt/w+HAsB3Hf7IGHDWS7Y6jAhIIJxgVO
+         uoGHf8AFlhnmaVzAx0LDqsXEYOMIdGPPaWZdOMXF2ti7VVCbzwWoI2o+2zpOlp7ZeH3J
+         MG1TDy/haiNsWsXjjsgMr33/RadE8QOFl81bmI+r2cxjuo9+SGSEhVv1HObsiUTkmyqb
+         LI1Tbohh27CSgCiIQUxZpaBNMPAvQn0IJ6akPOEMssVnm8VnXOVQ8JTz2zkzPUhvWMN1
+         g3mXFAPZy5hecxQph9G377xJS3izBXLE4OarMwRfQIzugPfNcTNsD/CykzREfCaaYKOp
+         I/DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=476l4F/D25kQOCryGZZoOaZyzK6uQ7tT24Y3edD6ytI=;
-        b=YiWDgu/9ou/WMu1qe/2uo/OtYUpQW/FNoPICm/DAOLQHKM2roe+yVoSDuUwc9TE5zz
-         A2bchyEWVhL2LIgtMjLQ0jQALtLttKcxFIHf7uxwOyyuTjLXtnjYgVFUUBGZGQOpLI+9
-         2hyxt3c3SaAbR2El6RPqMEza+0PfX541bz3vMRF+a4YEwyC8Tf3y+addN2yxC3+VL5of
-         HYU8bHl3W8BuFdxV9wnU38tR2pkEj0K+dXe0RgWY4GluUemKazNhlFRaTTfuob39I2qm
-         /5z1JFoMUuIL0i7fyQGYRhUoDzg1V4WML79Q8NSUsrblESZGIM2x53EHKpH+ABGSX6jD
-         9deQ==
-X-Gm-Message-State: AOAM53346kA6OahvETIR/y4hQ3LsRhAywKH9ASDwqVNqHFzMUTohjugK
-        UO4Ih8CiSSIaQ2XuR4R3TI8bv3lAMtpUJCdRX58=
-X-Google-Smtp-Source: ABdhPJywvhrHXotPmsWNBsR0ADXyhG7BWADyrBZFQCJTCydL6Msq2a+bhDph78pmFIkUeqVtrAh35dnQf/zVTAin0i0=
-X-Received: by 2002:a05:6e02:1352:b0:2d1:6424:60b8 with SMTP id
- k18-20020a056e02135200b002d1642460b8mr11873417ilr.305.1653348838757; Mon, 23
- May 2022 16:33:58 -0700 (PDT)
+        bh=M2mIELVIK9I45bOrNaHoPQeyzkFn9jybEus0u38+96s=;
+        b=o1YKi7c58x61vPmQpSgBmj0qQOFWucIBgLfD7+3/X0pwjWiWS5a5lkW0OxsKMdsVJN
+         06rphcSiuM4di/KkmTw3SZwX8KvXwMBiYORg3RHYB+OycIEUAEIwS6Prs8nwOkkXy2Ig
+         SA0+Lv4VcadMr9dikRmSO/S8fgcP1W6aZq6JZOJYsBAqAkZcHOo8JyapCsaupXMlnm07
+         fyeHqVgxSFF+760Mcm9YRZVzT2YOcdk+osTvPMWKWMzrxRi1WKILhfvX0Ax6JRvL501b
+         lA1Wj6IfGHOHlCwq2K8aDip0YRPIy2Nx9KzcRW9z9QcIbZv8fA0z/KI5rcxiwaaM+ops
+         TZCg==
+X-Gm-Message-State: AOAM5330SZyB1aRLJlaCzE9I07HaEbKgEP8A9Ouulok9jhhlHciWd4tJ
+        LYhos46Ra/RjBztKoXKGd5wkLsbscZ8T9HAQEQE=
+X-Google-Smtp-Source: ABdhPJxwCKmMnH4OgSMhAdsGQBe98EmDee0JQhww6ofjmF/YXQkY8Da7LhFUWMNZKWyVcyCHLboQtG3BzyQK1MYjp9k=
+X-Received: by 2002:a05:6102:4b6:b0:335:f244:2286 with SMTP id
+ r22-20020a05610204b600b00335f2442286mr7796011vsa.54.1653350312371; Mon, 23
+ May 2022 16:58:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220518225531.558008-1-sdf@google.com> <20220518225531.558008-12-sdf@google.com>
-In-Reply-To: <20220518225531.558008-12-sdf@google.com>
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
+ <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
+ <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
+ <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
+ <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
+ <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
+ <Yogc0Kb5ZVDaQ0oU@slm.duckdns.org> <5b301151-0a65-df43-3a3a-6d57e10cfc2d@fb.com>
+ <CA+khW7gGrwTrDsfWp7wj=QaCg01FNj381a1QLs1ThsjAkW85eQ@mail.gmail.com>
+In-Reply-To: <CA+khW7gGrwTrDsfWp7wj=QaCg01FNj381a1QLs1ThsjAkW85eQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 May 2022 16:33:47 -0700
-Message-ID: <CAEf4BzaG2bOcyVfGZxcNU1p8i0Xipez7v-789bq8qYDE1Ce-sQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 11/11] selftests/bpf: verify lsm_cgroup struct
- sock access
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Mon, 23 May 2022 16:58:21 -0700
+Message-ID: <CAEf4BzbaHeyaHK1sChPMF=L4aQsaBGNtU+R3veqCOFz0A+svEA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
+To:     Hao Luo <haoluo@google.com>
+Cc:     Yonghong Song <yhs@fb.com>, Tejun Heo <tj@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,133 +93,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 3:56 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Fri, May 20, 2022 at 7:35 PM Hao Luo <haoluo@google.com> wrote:
 >
-> sk_priority & sk_mark are writable, the rest is readonly.
+> On Fri, May 20, 2022 at 5:59 PM Yonghong Song <yhs@fb.com> wrote:
+> > On 5/20/22 3:57 PM, Tejun Heo wrote:
+> > > Hello,
+> > >
+> > > On Fri, May 20, 2022 at 03:19:19PM -0700, Alexei Starovoitov wrote:
+> > >> We have bpf_map iterator that walks all bpf maps.
+> > >> When map iterator is parametrized with map_fd the iterator walks
+> > >> all elements of that map.
+> > >> cgroup iterator should have similar semantics.
+> > >> When non-parameterized it will walk all cgroups and their descendent
+> > >> depth first way. I believe that's what Yonghong is proposing.
+> > >> When parametrized it will start from that particular cgroup and
+> > >> walk all descendant of that cgroup only.
+> > >> The bpf prog can stop the iteration right away with ret 1.
+> > >> Maybe we can add two parameters. One -> cgroup_fd to use and another ->
+> > >> the order of iteration css_for_each_descendant_pre vs _post.
+> > >> wdyt?
+> > >
+> > > Sounds perfectly reasonable to me.
+> >
+> > This works for me too. Thanks!
+> >
 >
-> One interesting thing here is that the verifier doesn't
-> really force me to add NULL checks anywhere :-/
->
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  .../selftests/bpf/prog_tests/lsm_cgroup.c     | 69 +++++++++++++++++++
->  1 file changed, 69 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-> index 29292ec40343..64b6830e03f5 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-> @@ -270,8 +270,77 @@ static void test_lsm_cgroup_functional(void)
->         lsm_cgroup__destroy(skel);
->  }
->
-> +static int field_offset(const char *type, const char *field)
-> +{
-> +       const struct btf_member *memb;
-> +       const struct btf_type *tp;
-> +       const char *name;
-> +       struct btf *btf;
-> +       int btf_id;
-> +       int i;
-> +
-> +       btf = btf__load_vmlinux_btf();
-> +       if (!btf)
-> +               return -1;
-> +
-> +       btf_id = btf__find_by_name_kind(btf, type, BTF_KIND_STRUCT);
-> +       if (btf_id < 0)
-> +               return -1;
-> +
-> +       tp = btf__type_by_id(btf, btf_id);
-> +       memb = btf_members(tp);
-> +
-> +       for (i = 0; i < btf_vlen(tp); i++) {
-> +               name = btf__name_by_offset(btf,
-> +                                          memb->name_off);
-> +               if (strcmp(field, name) == 0)
-> +                       return memb->offset / 8;
-> +               memb++;
-> +       }
-> +
-> +       return -1;
-> +}
-> +
-> +static bool sk_writable_field(const char *type, const char *field, int size)
-> +{
-> +       LIBBPF_OPTS(bpf_prog_load_opts, opts,
-> +                   .expected_attach_type = BPF_LSM_CGROUP);
-> +       struct bpf_insn insns[] = {
-> +               /* r1 = *(u64 *)(r1 + 0) */
-> +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 0),
-> +               /* r1 = *(u64 *)(r1 + offsetof(struct socket, sk)) */
-> +               BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, field_offset("socket", "sk")),
-> +               /* r2 = *(u64 *)(r1 + offsetof(struct sock, <field>)) */
-> +               BPF_LDX_MEM(size, BPF_REG_2, BPF_REG_1, field_offset(type, field)),
-> +               /* *(u64 *)(r1 + offsetof(struct sock, <field>)) = r2 */
-> +               BPF_STX_MEM(size, BPF_REG_1, BPF_REG_2, field_offset(type, field)),
-> +               BPF_MOV64_IMM(BPF_REG_0, 1),
-> +               BPF_EXIT_INSN(),
-> +       };
-> +       int fd;
+> This sounds good to me. Thanks. Let's try to do it in the next iteration.
 
-This is really not much better than test_verifier assembly. What I had
-in mind when I was suggesting to use test_progs was that you'd have a
-normal C source code for BPF part, something like this:
-
-__u64 tmp;
-
-SEC("?lsm_cgroup/socket_bind")
-int BPF_PROG(access1_bad, struct socket *sock, struct sockaddr
-*address, int addrlen)
-{
-    *(volatile u16 *)(sock->sk.skc_family) = *(volatile u16
-*)sock->sk.skc_family;
-    return 0;
-}
-
-
-SEC("?lsm_cgroup/socket_bind")
-int BPF_PROG(access2_bad, struct socket *sock, struct sockaddr
-*address, int addrlen)
-{
-    *(volatile u64 *)(sock->sk.sk_sndtimeo) = *(volatile u64
-*)sock->sk.sk_sndtimeo;
-    return 0;
-}
-
-and so on. From user-space you'd be loading just one of those
-accessX_bad programs at a time (note SEC("?"))
-
-
-But having said that, what you did is pretty self-contained, so not
-too bad. It's just not what I was suggesting :)
-
-> +
-> +       opts.attach_btf_id = libbpf_find_vmlinux_btf_id("socket_post_create",
-> +                                                       opts.expected_attach_type);
-> +
-> +       fd = bpf_prog_load(BPF_PROG_TYPE_LSM, NULL, "GPL", insns, ARRAY_SIZE(insns), &opts);
-> +       if (fd >= 0)
-> +               close(fd);
-> +       return fd >= 0;
-> +}
-> +
-> +static void test_lsm_cgroup_access(void)
-> +{
-> +       ASSERT_FALSE(sk_writable_field("sock_common", "skc_family", BPF_H), "skc_family");
-> +       ASSERT_FALSE(sk_writable_field("sock", "sk_sndtimeo", BPF_DW), "sk_sndtimeo");
-> +       ASSERT_TRUE(sk_writable_field("sock", "sk_priority", BPF_W), "sk_priority");
-> +       ASSERT_TRUE(sk_writable_field("sock", "sk_mark", BPF_W), "sk_mark");
-> +       ASSERT_FALSE(sk_writable_field("sock", "sk_pacing_rate", BPF_DW), "sk_pacing_rate");
-> +}
-> +
->  void test_lsm_cgroup(void)
->  {
->         if (test__start_subtest("functional"))
->                 test_lsm_cgroup_functional();
-> +       if (test__start_subtest("access"))
-> +               test_lsm_cgroup_access();
->  }
-> --
-> 2.36.1.124.g0e6072fb45-goog
->
+Can we, in addition to descendant_pre and descendant_post walk
+algorithms also add the one that does ascendants walk (i.e., start
+from specified cgroup and walk up to the root cgroup)? I don't have
+specific example, but it seems natural to include it for "cgroup
+iterator" in general. Hopefully it won't add much code to the
+implementation.
