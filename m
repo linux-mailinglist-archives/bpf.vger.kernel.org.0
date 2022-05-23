@@ -2,148 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B474531311
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 18:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F89653121A
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 18:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237681AbiEWPUy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 11:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
+        id S237779AbiEWPWb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 11:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237734AbiEWPUx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 11:20:53 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AA75DA7F
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 08:20:51 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24N8qlTw026927
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 08:20:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=LKRfxk7fSTHvRbAUg+0bXFDqYlW0I8BK8H9263ZIg/8=;
- b=dTM3qJ2oCWrQQ7lS9YbpYPic8w1AtO6pGBeiZCclimhpU8YqTKIyyhLs8fElq/U3CHl5
- oOoHIUCro+4wfcFA1r3QGN2ZV0Pw9sU8qi4sUHEE9W151YL9Yamcrg1IrloVCb5R1F/E
- bj3y4WkXSfZgJEnAcsAgGUDLZHrNqFb36fI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3g6uk7huxk-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 08:20:50 -0700
-Received: from twshared24024.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 23 May 2022 08:20:50 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 057AEAB381DD; Mon, 23 May 2022 08:20:44 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Mykola Lysenko <mykolal@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix btf_dump/btf_dump due to recent clang change
-Date:   Mon, 23 May 2022 08:20:44 -0700
-Message-ID: <20220523152044.3905809-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: F3LjnVWdr03UxwImI31bGn-1huIVM9Ul
-X-Proofpoint-GUID: F3LjnVWdr03UxwImI31bGn-1huIVM9Ul
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S237842AbiEWPV7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 11:21:59 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E70036B45
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 08:21:56 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id z6so15252272vsp.0
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 08:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m6XXQuHPwwQn+dkW9Dk35i1PpW0XB0zk5QI4ALOKEaA=;
+        b=GZgtf7+aHefZNnI/GJuqgpXJgD3+8AXOljN2l9+glvu67rCAtCIdVQofTuyAy+BaYE
+         U2vEgaxFjWcKVkrIlMPHL0HXC+RiurNj2LCnEo6Lmko1za+5QAuEl4rxyYsvl4Nr+fRO
+         x3NZU9KkRiij1FF9R64hymjSwp7/j2mJPJ3YTylyiK291hRuWR1roSmwmCjIJeig05mj
+         UqScmOirXkX36Qgfyb2LWZH47ZyDZkQRHKaI5LL8i2x/SfUxq9U+Ri78uL7u2lKYBEjM
+         ir8ybJRx+yO75rij9YZ8JylQRo0v2mRQ71PaoqVR5EXgh/ApQmrDvzRI9JBM0gpvKt2j
+         nvYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m6XXQuHPwwQn+dkW9Dk35i1PpW0XB0zk5QI4ALOKEaA=;
+        b=fJSsensVE58LS0IU8JJOdocJD+EvD+dcicTM3PI8NS63rKnGIJQ3ei40Se6Oj8KRPC
+         TI+Mlh1eCIPN6M7+yNC/OXFX0rZd+04idfOaQmNCMOIWtwT2z0pjN8gETU9E19Bv25fL
+         tXJif0aOS01Unydh6a3DLYAambL5Pe7oKuYuDOqolcsDs6s8AhqyizRgf1wgwziw/WXQ
+         H+otxy2rWTtpEHRehZhpNovKKkhq3L7tExf17jxXl/CKzwbxW3GQvA7TkcT/35AsAX5F
+         c7/qWXuRIkcS4/2ti0FTLdaMkEsvxlPO5gd2duWG++E14ApfdPVr0QJ42feYVoZXBVp8
+         BcQA==
+X-Gm-Message-State: AOAM531IedSRVQfbKojaggapLU/OrmVv3fI/wNzUg6KLFLUnT/BwU/yk
+        Jabqar+oaL6dd/JtTkfkh+U8qEZWgcFoaP8LG/NwMrNgSS0=
+X-Google-Smtp-Source: ABdhPJxrL6d6nFz6jFYMpwYkH6X4dFXoW2N6IHcjJtE3e0Bdy8CiuaPjzCLrv9xc060BdIlA/bT0M64iXr2fkf0sN8M=
+X-Received: by 2002:a67:c502:0:b0:337:ac26:a1da with SMTP id
+ e2-20020a67c502000000b00337ac26a1damr2482276vsk.65.1653319315610; Mon, 23 May
+ 2022 08:21:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-23_06,2022-05-23_01,2022-02-23_01
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAK3+h2xA+K-yby7m+3Hp1G6qinafZPW1OB=Uk5-AKxUfztBtEA@mail.gmail.com>
+ <YotBr8cRTx8qt8Ot@syu-laptop> <YotDQtN4qhqBVi22@syu-laptop>
+In-Reply-To: <YotDQtN4qhqBVi22@syu-laptop>
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Mon, 23 May 2022 08:21:44 -0700
+Message-ID: <CAK3+h2ynxJCX8GNWmJ=FAiqsiAOYnFQYORVDjgxL0bUTL6XrFA@mail.gmail.com>
+Subject: Re: libbpf: failed to load program 'vxlan_get_tunnel_src'
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Latest llvm-project upstream had a change of behavior
-related to qualifiers on function return type ([1]).
-This caused selftests btf_dump/btf_dump failure.
-The following example shows what changed.
+On Mon, May 23, 2022 at 1:18 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+>
+> On Mon, May 23, 2022 at 04:11:27PM +0800, Shung-Hsi Yu wrote:
+> > On Thu, May 19, 2022 at 08:25:00AM -0700, Vincent Li wrote:
+> > > Hi,
+> > >
+> > > Here is my step to run bpf selftest on Ubuntu 20.04.2 LTS
+> > >
+> > > git clone https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> > > cd bpf-next; cp /boot/config-5.10.0-051000-generic .config; yes "" |
+> > > make oldconfig; make bzImage; make modules; cd
+> > > tools/testing/selftests/bpf/; make
+> >
+> > [snip...]
+> >
+> > > ; bpf_printk("vxlan key %d local ip 0x%x remote ip 0x%x gbp 0x%x\n",
+> > >
+> > > 46: (7b) *(u64 *)(r10 -88) = r2
+> > >
+> > > 47: (7b) *(u64 *)(r10 -72) = r1
+> > >
+> > > 48: (61) r1 = *(u32 *)(r10 -48)
+> > >
+> > > 49: (7b) *(u64 *)(r10 -96) = r1
+> > >
+> > > 50: (61) r1 = *(u32 *)(r10 -44)
+> > >
+> > > 51: (7b) *(u64 *)(r10 -80) = r1
+> > >
+> > > 52: (bf) r3 = r10
+> > >
+> > > 53: (07) r3 += -96
+> > >
+> > > 54: (18) r1 = 0xffffabaec02c82af
+> > >
+> > > 56: (b4) w2 = 52
+> > >
+> > > 57: (b4) w4 = 32
+> > >
+> > > 58: (85) call unknown#177
+> > >
+> > > invalid func unknown#177
+> >
+> > This should be the reason that why vxlan_get_tunnel_src fails to load, the
+> > kernel does not recognize the helper function that the program is trying to
+> > call.
+>
+> Just realized Andrii already pointed this out in an earlier email. Consider
+> this an expanded answer to his then :)
+>
 
-  $ cat t.c
-  typedef const char * const (* const (* const fn_ptr_arr2_t[5])())(char * =
-(*)(int));
-  struct t {
-    int a;
-    fn_ptr_arr2_t l;
-  };
-  int foo(struct t *arg) {
-    return arg->a;
-  }
+Thank you both for the answer, I was wondering where the number #177
+came from, you
+answered it :)
 
-Compiled with latest upstream llvm15,
-  $ clang -O2 -g -target bpf -S -emit-llvm t.c
-The related generated debuginfo IR looks like:
-  !16 =3D !DIDerivedType(tag: DW_TAG_typedef, name: "fn_ptr_arr2_t", file: =
-!1, line: 1, baseType: !17)
-  !17 =3D !DICompositeType(tag: DW_TAG_array_type, baseType: !18, size: 320=
-, elements: !32)
-  !18 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !19)
-  !19 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !20, size: 64)
-  !20 =3D !DISubroutineType(types: !21)
-  !21 =3D !{!22, null}
-  !22 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !23, size: 64)
-  !23 =3D !DISubroutineType(types: !24)
-  !24 =3D !{!25, !28}
-  !25 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !26, size: 64)
-  !26 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !27)
-  !27 =3D !DIBasicType(name: "char", size: 8, encoding: DW_ATE_signed_char)
-You can see two intermediate const qualifier to pointer are dropped in debu=
-ginfo IR.
-
-With llvm14, we have following debuginfo IR:
-  !16 =3D !DIDerivedType(tag: DW_TAG_typedef, name: "fn_ptr_arr2_t", file: =
-!1, line: 1, baseType: !17)
-  !17 =3D !DICompositeType(tag: DW_TAG_array_type, baseType: !18, size: 320=
-, elements: !34)
-  !18 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !19)
-  !19 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !20, size: 64)
-  !20 =3D !DISubroutineType(types: !21)
-  !21 =3D !{!22, null}
-  !22 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !23)
-  !23 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !24, size: 64)
-  !24 =3D !DISubroutineType(types: !25)
-  !25 =3D !{!26, !30}
-  !26 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !27)
-  !27 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !28, size: 64)
-  !28 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !29)
-  !29 =3D !DIBasicType(name: "char", size: 8, encoding: DW_ATE_signed_char)
-All const qualifiers are preserved.
-
-To adapt the selftest to both old and new llvm, this patch removed
-the intermediate const qualifier in const-to-ptr types, to make the
-test succeed again.
-
-  [1] https://reviews.llvm.org/D125919
-
-Reported-by: Mykola Lysenko <mykolal@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c =
-b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-index 1c7105fcae3c..4ee4748133fe 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-@@ -94,7 +94,7 @@ typedef void (* (*signal_t)(int, void (*)(int)))(int);
-=20
- typedef char * (*fn_ptr_arr1_t[10])(int **);
-=20
--typedef char * (* const (* const fn_ptr_arr2_t[5])())(char * (*)(int));
-+typedef char * (* (* const fn_ptr_arr2_t[5])())(char * (*)(int));
-=20
- struct struct_w_typedefs {
- 	int_t a;
---=20
-2.30.2
-
+> > And that helper function is bpf_trace_vprintk (determined with v5.17.4
+> > vmlinux).
+> >
+> >  $ bpftool btf dump file /sys/kernel/btf/vmlinux format c | grep -e 'BPF_FUNC_.* 177,'
+> >       BPF_FUNC_trace_vprintk = 177,
+> >
+> > Based on your description you're using a v5.10-based kernel, which explains
+> > why it doesn't have bpf_trace_vprintk(), since it was not added until commit
+> > 10aceb629e19 ("bpf: Add bpf_trace_vprintk helper") in v5.16.
+> >
+> > The call to bpf_trace_vprintk() comes from the bpf_printk() call, which is
+> > actually a macro that uses either bpf_trace_printk() or bpf_trace_vprintk()
+> > depending on the number of arguments given[1].
+> >
+> > In general I think it'd make more sense to run bpf-next selftests on a
+> > bpf-next kernel, either compile and install on the machine that you're
+> > testing on or use tools/testing/selftests/bpf/vmtest.sh which spins up a VM
+> > with suitable environment (though I haven't tried vmtest.sh myself).
+> >
+> >
+> > Shung-Hsi
+> >
+> > 1: https://github.com/libbpf/libbpf/blob/master/src/bpf_helpers.h
+> >
+> > > processed 64 insns (limit 1000000) max_states_per_insn 1 total_states
+> > > 5 peak_states 5 mark_read 2
+> > >
+> > > -- END PROG LOAD LOG --
+> > >
+> > > libbpf: failed to load program 'vxlan_get_tunnel_src'
+> > >
+> > > libbpf: failed to load object 'test_tunnel_kern'
+> > >
+> > > libbpf: failed to load BPF skeleton 'test_tunnel_kern': -22
+> > >
+> > > test_ip6vxlan_tunnel:FAIL:test_tunnel_kern__open_and_load unexpected error: -22
+> > >
+> > > serial_test_tunnel:PASS:pthread_join 0 nsec
+> > >
+> > > #198/2     tunnel/ip6vxlan_tunnel:FAIL
+> > >
+> > > #198       tunnel:FAIL
+> > >
+> > > Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+> > >
+> >
+> >
+>
