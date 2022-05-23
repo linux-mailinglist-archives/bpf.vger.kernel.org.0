@@ -2,74 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34438531F1C
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C281C531F2C
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbiEWXJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 19:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
+        id S229952AbiEWXWv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 19:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbiEWXI7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 19:08:59 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FF970369;
-        Mon, 23 May 2022 16:08:58 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id c1so13916330qkf.13;
-        Mon, 23 May 2022 16:08:58 -0700 (PDT)
+        with ESMTP id S229481AbiEWXWu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 19:22:50 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969046C56A;
+        Mon, 23 May 2022 16:22:49 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id j7so4541476vsp.12;
+        Mon, 23 May 2022 16:22:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RM70btlxkJMcJZU115/sfApSU8coL9mAakE0PyR/h4Y=;
-        b=Z+O4x3cYzdfYcBo+qMsyV+PE4neCzLxUeNKd0uGm+7pOIGn2SvhFHXsWE5j1ADZgFM
-         /9Wn6I+zqKBfX7MCQxKpCMl0c7oafuo4U0o51+RHgfcZHad66+9Vl7LCGHWIMvyZl1T/
-         nHOd3iHn5hTzpKFR+Iv+UyY7KgyOtooAfntO+fJze/d7dZYoqJbbh/1NxwLBJzweXq3u
-         Ewz9nL60KfNVOua+CJkMUQOKZTKdSH9NiCSx8UBFVydJNnMmsaTN9+cn27baIcMVsgG6
-         mDo0hv14ycnGJszVkW27C0aali7KWXzRlgKlPb6Dew+pth3VpCO8lBWUJ/Kob/3XfZSl
-         fOEA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T74LvEQCUkDpmgdMl6Xd1TSwKVQRkgh3mHfZgMoviWQ=;
+        b=oTtJaPCIyDyNjcXChkbnkL2NgutUs1GnqLnWuVTfx5wvuGcpCE5uulh8amtlL02Lru
+         x0oPP3csGrdAiWMg1V6EZs+7RE0GQAhQ+AqwohszvXdk5qh9uydLhMNaAASarcvhngcv
+         lgh/e83uHg51RQNHuJoBBNF2acUQ3JAVe7psZwZoG7Cex9GM9gW57H1Cy3NFCdPySOly
+         mwwsOEVvOK7ZgTqsWnvHnmjucOODjHRMyKFdTZyNJIhhx0GgNxOXvnLKMDsrBh9mf5VB
+         w1LE39ri9KFv+dGFamBe/sfJrlv97ISBW33nBRzvygdmHHHLgapEvVXyMN4Jx+XgsKxS
+         tEPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RM70btlxkJMcJZU115/sfApSU8coL9mAakE0PyR/h4Y=;
-        b=dXp1xMrgNoQfVHvwozjQeQ72dxyhjOpvVlLVgfcnjI8HHsmFbsxxxfhMYod0Q6V+d0
-         u+DqiSCmSC2XAVWf4bgUE9ocN5apcQjVP+E8pV/j4bTdYH1hd5Z8h5+pUDD99c49DEqy
-         0NEt+gvfsJ/3Zhqkq0zg77oex2D40/Scajmox9BdrByYJnoiz6tOo0AChyQCqINavbFy
-         KA4H/t7SievrKuQw4ZUqMZ6C5VMxD8M2QsoJfVrFTIKreUlaioTWJYaZKr3AoIvZUQh2
-         AE8evK1h6ix3O7bROtb55m2i2lKuxOvX+tfnwXXcu8GF6ih2W9Gyn0yCLanh0uF+IXPV
-         Ad3Q==
-X-Gm-Message-State: AOAM531J4YlDXpqTxrdpRpHDfySu5d11/ZrxWOJrfabBOlFoZwLDqcQ0
-        SPL7yz/NtZIjuOjOueREy2s=
-X-Google-Smtp-Source: ABdhPJx93GEPHLMwAQ23oDH+D205VadsPlC8SagMZbgHJWaXPsONy7Omp3isK0Yt4jw+pD2Ik+JUZw==
-X-Received: by 2002:a05:620a:2456:b0:6a3:769a:653e with SMTP id h22-20020a05620a245600b006a3769a653emr5997540qkn.148.1653347337363;
-        Mon, 23 May 2022 16:08:57 -0700 (PDT)
-Received: from jup ([2607:fea8:e2e4:d600::6ece])
-        by smtp.gmail.com with ESMTPSA id c10-20020ac86e8a000000b002f3ef928fbbsm1821926qtv.72.2022.05.23.16.08.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 May 2022 16:08:56 -0700 (PDT)
-Date:   Mon, 23 May 2022 19:08:54 -0400
-From:   Michael Mullin <masmullin@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpftool: mmaped fields missing map structure in
- generated skeletons
-Message-ID: <20220523230854.3hdduizw36huxvxw@jup>
-References: <20220523202649.6iiz4h2wf5ryx3w2@jup>
- <CAEf4BzaecP2XkzftmH7GeeTfj1E+pv=20=L4ztrxe4-JU7MuUw@mail.gmail.com>
- <20220523221954.dsqvy55ron4cfdqq@jup>
- <CAEf4BzY-K8UoT1HhXf=fwdWtY2fdprttUF27Zm6WwSUSRq8ycA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T74LvEQCUkDpmgdMl6Xd1TSwKVQRkgh3mHfZgMoviWQ=;
+        b=trwe4pBr0op86eZ9vBWLzVeX9+3k7W7syVVN2IgL1lAHeJZA60rbtplwMAFtd+HDpU
+         OS7J+8VwHgSL958ybouuc/BCZIYP9K4NDG3qnd3NdpyxGfs/4uvTJ74SjJxxiP7OkPEW
+         +qkS789CELsvRjst1xhPOTiGfDB109PcYzZqdlzyTvY3TFEMVl71YxkZVq76nEKI1fu9
+         MRZ0E9qEz6Dqv8pW8C3gXr0FugKG8n5BGgINKCnsxqSdn3TPZT40jxDDXBbzouPt6+72
+         ql/HwTtcERruwu0tUM9kk4RsmX95f/U7RTAcScVZqpnqqa+SyyB1oyGQIbjaKQr5HGcj
+         UGyw==
+X-Gm-Message-State: AOAM532CoqJrMeuNUig8of6jJW4Q5XCQiC5zGGgGzWECpT9rrGv2+XQt
+        hjP6FYPhceazL8oJN10X6Msedin3qgjryUdwahn4eYHP
+X-Google-Smtp-Source: ABdhPJwRtmzoXx62/vMWqMo463GFm4hrLIl8+Xw4QnfkFNZeXiX+JCh/5BnrWBL9PmXNq4acrG5pR/zBYUMcTX/OKd8=
+X-Received: by 2002:a67:e0d5:0:b0:337:b2f4:afe0 with SMTP id
+ m21-20020a67e0d5000000b00337b2f4afe0mr3042998vsl.11.1653348168754; Mon, 23
+ May 2022 16:22:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzY-K8UoT1HhXf=fwdWtY2fdprttUF27Zm6WwSUSRq8ycA@mail.gmail.com>
+References: <20220518225531.558008-1-sdf@google.com> <20220518225531.558008-8-sdf@google.com>
+In-Reply-To: <20220518225531.558008-8-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 23 May 2022 16:22:37 -0700
+Message-ID: <CAEf4BzaYx9EdabuxjLsN4HKTcq+EfwRzpAYdY-D+74YOTpr4Yg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 07/11] libbpf: implement bpf_prog_query_opts
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,67 +67,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 23, 2022 at 03:38:03PM -0700, Andrii Nakryiko wrote:
-> On Mon, May 23, 2022 at 3:19 PM Michael Mullin <masmullin@gmail.com> wrote:
-> >
-> > On Mon, May 23, 2022 at 03:02:31PM -0700, Andrii Nakryiko wrote:
-> > > On Mon, May 23, 2022 at 1:26 PM Michael Mullin <masmullin@gmail.com> wrote:
-> > > >
-> > > > When generating a skeleton which has an mmaped map field, bpftool's
-> > > > output is missing the map structure.  This causes a compile break when
-> > > > the generated skeleton is compiled as the field belongs to the internal
-> > > > struct maps, not directly to the obj.
-> > > >
-> > > > Signed-off-by: Michael Mullin <masmullin@gmail.com>
-> > > > ---
-> > > >  tools/bpf/bpftool/gen.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > > > index f158dc1c2149..b49293795ba0 100644
-> > > > --- a/tools/bpf/bpftool/gen.c
-> > > > +++ b/tools/bpf/bpftool/gen.c
-> > > > @@ -853,7 +853,7 @@ codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped)
-> > > >                         i, bpf_map__name(map), i, ident);
-> > > >                 /* memory-mapped internal maps */
-> > > >                 if (mmaped && is_internal_mmapable_map(map, ident, sizeof(ident))) {
-> > > > -                       printf("\ts->maps[%zu].mmaped = (void **)&obj->%s;\n",
-> > > > +                       printf("\ts->maps[%zu].mmaped = (void **)&obj->maps.%s;\n",
-> > >
-> > > That's not right. maps.my_map is struct bpf_map *, but mmaped is
-> > > supposed to be a blob of memory that is memory-mapped into map.
-> > >
-> > > Can you elaborate on how you trigger that compilation error with a
-> > > small example?
-> >
-> > I have an a very small example on github. I have added some sed fixes to
-> > my Makefile make my sample program compile.
-> > https://github.com/masmullin2000/libbpf-sample/tree/main/c/simple
-> >
-> > https://github.com/masmullin2000/libbpf-sample/tree/02c7f945bf9027daedec04f485a320ba2df28204/c/simple
-> > contains broken code.
-> 
-> You are missing -g when calling clang to generate debug info (DWARF
-> and subsequently BTF). When BPF object file doesn't have BTF, we don't
-> generate those bss/data/rodata/etc sections of the skeleton. You
-> should be good just by adding -g.
-> 
+On Wed, May 18, 2022 at 3:55 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> Implement bpf_prog_query_opts as a more expendable version of
+> bpf_prog_query. Expose new prog_attach_flags and attach_btf_func_id as
+> well:
+>
+> * prog_attach_flags is a per-program attach_type; relevant only for
+>   lsm cgroup program which might have different attach_flags
+>   per attach_btf_id
+> * attach_btf_func_id is a new field expose for prog_query which
+>   specifies real btf function id for lsm cgroup attachments
+>
 
-Thank you. By using -g, I am also unable to trigger the segfault
-I was trying to fix with the patch
-https://lore.kernel.org/bpf/20220523194917.igkgorco42537arb@jup/T/#u
+just thoughts aloud... Shouldn't bpf_prog_query() also return link_id
+if the attachment was done with LINK_CREATE? And then attach flags
+could actually be fetched through corresponding struct bpf_link_info.
+That is, bpf_prog_query() returns a list of link_ids, and whatever
+link-specific information can be fetched by querying individual links.
+Seems more logical (and useful overall) to extend struct bpf_link_info
+(you can get it more generically from bpftool, by querying fdinfo,
+etc).
 
-I am not sure if there would be other ways to trigger the segfault.
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  tools/include/uapi/linux/bpf.h |  5 ++++
+>  tools/lib/bpf/bpf.c            | 42 +++++++++++++++++++++++++++-------
+>  tools/lib/bpf/bpf.h            | 15 ++++++++++++
+>  tools/lib/bpf/libbpf.map       |  1 +
+>  4 files changed, 55 insertions(+), 8 deletions(-)
+>
 
-> >
-> > I apologize if this is an incorrect way to share external code.  I
-> > haven't found the proper way to share example code from
-> > kernelnewbies.org
-> >
-> > >
-> > > >                                 i, ident);
-> > > >                 }
-> > > >                 i++;
-> > > > --
-> > > > 2.36.1
-> > > >
+[...]
+
+>         ret = sys_bpf(BPF_PROG_QUERY, &attr, sizeof(attr));
+>
+> -       if (attach_flags)
+> -               *attach_flags = attr.query.attach_flags;
+> -       *prog_cnt = attr.query.prog_cnt;
+> +       if (OPTS_HAS(opts, prog_cnt))
+> +               opts->prog_cnt = attr.query.prog_cnt;
+
+just use OPTS_SET() instead of OPTS_HAS check
+
+> +       if (OPTS_HAS(opts, attach_flags))
+> +               opts->attach_flags = attr.query.attach_flags;
+>
+>         return libbpf_err_errno(ret);
+>  }
+>
+
+[...]
+
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 6b36f46ab5d8..24f7a5147bf2 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -452,6 +452,7 @@ LIBBPF_0.8.0 {
+>                 bpf_map_delete_elem_flags;
+>                 bpf_object__destroy_subskeleton;
+>                 bpf_object__open_subskeleton;
+> +               bpf_prog_query_opts;
+
+please put it into LIBBPF_1.0.0 section, 0.8 is closed now
+
+
+>                 bpf_program__attach_kprobe_multi_opts;
+>                 bpf_program__attach_trace_opts;
+>                 bpf_program__attach_usdt;
+> --
+> 2.36.1.124.g0e6072fb45-goog
+>
