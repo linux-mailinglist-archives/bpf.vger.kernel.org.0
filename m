@@ -2,187 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C16530F1F
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 15:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B474531311
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 18:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236187AbiEWNNV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 09:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
+        id S237681AbiEWPUy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 11:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235975AbiEWNMf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 09:12:35 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0302C67F;
-        Mon, 23 May 2022 06:12:33 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id c10so19095454edr.2;
-        Mon, 23 May 2022 06:12:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7NA2oe+MVM7ExjHQjWCs0WPJ0CBdjVVraxVqOmP4Fes=;
-        b=cWAVdSaZXqJGz+OvDHUfqE01JxN72tuVNTGyDJG/XwACyy5uHOtfrYd3bahvHlGjar
-         KzINXyw3H4tL6Ake6FKsbtO7F/yse6h77LrQ38UC12dKBH2v8NwTd7LBY6N0JCUkAqqH
-         KlLH+X3+YvnJ3CixwM/G8TY45RTZD8UqLNMdg0daLYBi1pZfwhueqgwJ6+sPVCibOR9N
-         rxpaR9w9jhFpSmJGefzqTtDCC4h2SMnIqJgN5fFQKBRG21ZQmEKRzlMEy8UTfo8ciRE3
-         nAwYL6KH2XbR/6FcIxc5vy2QnmNFJNfF0bZ7NnZk0adNBiHt3UA1CPbg/DBLAWYnldh/
-         E2hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7NA2oe+MVM7ExjHQjWCs0WPJ0CBdjVVraxVqOmP4Fes=;
-        b=SWNYq69etqMP/FrLV3vPC+c3kaFGObYcBlfQbdgRjbKSWX0M4MBdh0jUQZyupqjZ9w
-         7Bl5tdVd9BYT8/tPSgSq6dM3hhHl4ttXX0Ia1mSYRBqvjjewyAteGGT7p0ijMm6pgCjf
-         yZ3jHuIEyepAXJbMW1yAY8NKdx6Vm7FHJlnHzrm37cmpzRmWJEamSTiC28gBchu5ZlvF
-         W/ckZmj3zLX05qy50TrK8ZkRb0PiA2pWzZH6ot601fw+46czVqXNjNu9T68tERJn8I5W
-         KixDwiFWfeC7tooWczZD2jXoC90n6r2w8PUhluRTNWdWkzXQGKY3n2pfKrqm3G5DQ8t5
-         ohoA==
-X-Gm-Message-State: AOAM533Q+2NFWgwdUuqXCmfjtbziviqG5lHvgLXYR0qboUS2Wzzh48Aw
-        zyTsj5YHGC3pz7jK9N1OqZs=
-X-Google-Smtp-Source: ABdhPJzUoE4/x0Lb9cEwrCB6U8QMGVPzd8davX3nPNrRmeHUE4waHiTZbekOYW7zuT42kOklIF7Tvw==
-X-Received: by 2002:a05:6402:206f:b0:42a:a8c1:1637 with SMTP id bd15-20020a056402206f00b0042aa8c11637mr23391901edb.302.1653311551744;
-        Mon, 23 May 2022 06:12:31 -0700 (PDT)
-Received: from krava (net-93-65-240-241.cust.vodafonedsl.it. [93.65.240.241])
-        by smtp.gmail.com with ESMTPSA id jz27-20020a17090775fb00b006f3ef214e6dsm6076136ejc.211.2022.05.23.06.12.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 May 2022 06:12:31 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 23 May 2022 15:12:28 +0200
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S237734AbiEWPUx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 11:20:53 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AA75DA7F
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 08:20:51 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 24N8qlTw026927
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 08:20:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=LKRfxk7fSTHvRbAUg+0bXFDqYlW0I8BK8H9263ZIg/8=;
+ b=dTM3qJ2oCWrQQ7lS9YbpYPic8w1AtO6pGBeiZCclimhpU8YqTKIyyhLs8fElq/U3CHl5
+ oOoHIUCro+4wfcFA1r3QGN2ZV0Pw9sU8qi4sUHEE9W151YL9Yamcrg1IrloVCb5R1F/E
+ bj3y4WkXSfZgJEnAcsAgGUDLZHrNqFb36fI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3g6uk7huxk-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 08:20:50 -0700
+Received: from twshared24024.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Mon, 23 May 2022 08:20:50 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 057AEAB381DD; Mon, 23 May 2022 08:20:44 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH bpf-next 1/2] cpuidle/rcu: Making arch_cpu_idle and
- rcu_idle_exit noinstr
-Message-ID: <YouIPHx2l0S3bMLv@krava>
-References: <20220515203653.4039075-1-jolsa@kernel.org>
- <20220516042535.GV1790663@paulmck-ThinkPad-P17-Gen-1>
- <20220516114922.GA349949@lothringen>
- <YoN1WULUoKtMKx8v@krava>
- <20220518162118.GA2661055@paulmck-ThinkPad-P17-Gen-1>
- <YoYq/M6ZSQ+U2sar@krava>
- <20220519135439.GX1790663@paulmck-ThinkPad-P17-Gen-1>
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix btf_dump/btf_dump due to recent clang change
+Date:   Mon, 23 May 2022 08:20:44 -0700
+Message-ID: <20220523152044.3905809-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: F3LjnVWdr03UxwImI31bGn-1huIVM9Ul
+X-Proofpoint-GUID: F3LjnVWdr03UxwImI31bGn-1huIVM9Ul
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220519135439.GX1790663@paulmck-ThinkPad-P17-Gen-1>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-23_06,2022-05-23_01,2022-02-23_01
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 19, 2022 at 06:54:39AM -0700, Paul E. McKenney wrote:
-> On Thu, May 19, 2022 at 01:33:16PM +0200, Jiri Olsa wrote:
-> > On Wed, May 18, 2022 at 09:21:18AM -0700, Paul E. McKenney wrote:
-> > > On Tue, May 17, 2022 at 12:13:45PM +0200, Jiri Olsa wrote:
-> > > > On Mon, May 16, 2022 at 01:49:22PM +0200, Frederic Weisbecker wrote:
-> > > > > On Sun, May 15, 2022 at 09:25:35PM -0700, Paul E. McKenney wrote:
-> > > > > > On Sun, May 15, 2022 at 10:36:52PM +0200, Jiri Olsa wrote:
-> > > > > > > Making arch_cpu_idle and rcu_idle_exit noinstr. Both functions run
-> > > > > > > in rcu 'not watching' context and if there's tracer attached to
-> > > > > > > them, which uses rcu (e.g. kprobe multi interface) it will hit RCU
-> > > > > > > warning like:
-> > > > > > > 
-> > > > > > >   [    3.017540] WARNING: suspicious RCU usage
-> > > > > > >   ...
-> > > > > > >   [    3.018363]  kprobe_multi_link_handler+0x68/0x1c0
-> > > > > > >   [    3.018364]  ? kprobe_multi_link_handler+0x3e/0x1c0
-> > > > > > >   [    3.018366]  ? arch_cpu_idle_dead+0x10/0x10
-> > > > > > >   [    3.018367]  ? arch_cpu_idle_dead+0x10/0x10
-> > > > > > >   [    3.018371]  fprobe_handler.part.0+0xab/0x150
-> > > > > > >   [    3.018374]  0xffffffffa00080c8
-> > > > > > >   [    3.018393]  ? arch_cpu_idle+0x5/0x10
-> > > > > > >   [    3.018398]  arch_cpu_idle+0x5/0x10
-> > > > > > >   [    3.018399]  default_idle_call+0x59/0x90
-> > > > > > >   [    3.018401]  do_idle+0x1c3/0x1d0
-> > > > > > > 
-> > > > > > > The call path is following:
-> > > > > > > 
-> > > > > > > default_idle_call
-> > > > > > >   rcu_idle_enter
-> > > > > > >   arch_cpu_idle
-> > > > > > >   rcu_idle_exit
-> > > > > > > 
-> > > > > > > The arch_cpu_idle and rcu_idle_exit are the only ones from above
-> > > > > > > path that are traceble and cause this problem on my setup.
-> > > > > > > 
-> > > > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > > 
-> > > > > > From an RCU viewpoint:
-> > > > > > 
-> > > > > > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > > 
-> > > > > > [ I considered asking for an instrumentation_on() in rcu_idle_exit(),
-> > > > > > but there is no point given that local_irq_restore() isn't something
-> > > > > > you instrument anyway. ]
-> > > > > 
-> > > > > So local_irq_save() in the beginning of rcu_idle_exit() is unsafe because
-> > > > > it is instrumentable by the function (graph)  tracers and the irqsoff tracer.
-> > > > > 
-> > > > > Also it calls into lockdep that might make use of RCU.
-> > > > > 
-> > > > > That's why rcu_idle_exit() is not noinstr yet. See this patch:
-> > > > > 
-> > > > > https://lore.kernel.org/lkml/20220503100051.2799723-4-frederic@kernel.org/
-> > > > 
-> > > > I see, could we mark it at least with notrace meanwhile?
-> > > 
-> > > For the RCU part, how about as follows?
-> > > 
-> > > If this approach is reasonable, my guess would be that Frederic will pull
-> > > it into his context-tracking series, perhaps using a revert of this patch
-> > > to maintain sanity in the near term.
-> > > 
-> > > If this approach is unreasonable, well, that is Murphy for you!
-> > 
-> > I checked and it works in my test ;-)
-> 
-> Whew!!!  One piece of the problem might be solved, then.  ;-)
-> 
-> > > For the x86 idle part, my feeling is still that the rcu_idle_enter()
-> > > and rcu_idle_exit() need to be pushed deeper into the code.  Perhaps
-> > > an ongoing process as the idle loop continues to be dug deeper?
-> > 
-> > for arch_cpu_idle with noinstr I'm getting this W=1 warning:
-> > 
-> > vmlinux.o: warning: objtool: arch_cpu_idle()+0xb: call to {dynamic}() leaves .noinstr.text section
-> > 
-> > we could have it with notrace if that's a problem
-> 
-> I would be happy to queue the arch_cpu_idle() portion of your patch on
-> -rcu, if that would move things forward.  I suspect that additional
-> x86_idle() surgery is required, but maybe I am just getting confused
-> about what the x86_idle() function pointer can point to.  But it looks
-> to me like these need further help:
-> 
-> o	static void amd_e400_idle(void)
-> 	Plus things it calls, like tick_broadcast_enter() and
-> 	tick_broadcast_exit().
-> 
-> o	static __cpuidle void mwait_idle(void)
-> 
-> So it might not be all that much additional work, even if I have avoided
-> confusion about what the x86_idle() function pointer can point to.  But
-> I do not trust my ability to test this accurately.
+Latest llvm-project upstream had a change of behavior
+related to qualifiers on function return type ([1]).
+This caused selftests btf_dump/btf_dump failure.
+The following example shows what changed.
 
-same here ;-) you're right, there will be other places based
-on x86_idle function pointer.. I'll check it, but perhaps we
-could address that when someone reports that
+  $ cat t.c
+  typedef const char * const (* const (* const fn_ptr_arr2_t[5])())(char * =
+(*)(int));
+  struct t {
+    int a;
+    fn_ptr_arr2_t l;
+  };
+  int foo(struct t *arg) {
+    return arg->a;
+  }
 
-jirka
+Compiled with latest upstream llvm15,
+  $ clang -O2 -g -target bpf -S -emit-llvm t.c
+The related generated debuginfo IR looks like:
+  !16 =3D !DIDerivedType(tag: DW_TAG_typedef, name: "fn_ptr_arr2_t", file: =
+!1, line: 1, baseType: !17)
+  !17 =3D !DICompositeType(tag: DW_TAG_array_type, baseType: !18, size: 320=
+, elements: !32)
+  !18 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !19)
+  !19 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !20, size: 64)
+  !20 =3D !DISubroutineType(types: !21)
+  !21 =3D !{!22, null}
+  !22 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !23, size: 64)
+  !23 =3D !DISubroutineType(types: !24)
+  !24 =3D !{!25, !28}
+  !25 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !26, size: 64)
+  !26 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !27)
+  !27 =3D !DIBasicType(name: "char", size: 8, encoding: DW_ATE_signed_char)
+You can see two intermediate const qualifier to pointer are dropped in debu=
+ginfo IR.
+
+With llvm14, we have following debuginfo IR:
+  !16 =3D !DIDerivedType(tag: DW_TAG_typedef, name: "fn_ptr_arr2_t", file: =
+!1, line: 1, baseType: !17)
+  !17 =3D !DICompositeType(tag: DW_TAG_array_type, baseType: !18, size: 320=
+, elements: !34)
+  !18 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !19)
+  !19 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !20, size: 64)
+  !20 =3D !DISubroutineType(types: !21)
+  !21 =3D !{!22, null}
+  !22 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !23)
+  !23 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !24, size: 64)
+  !24 =3D !DISubroutineType(types: !25)
+  !25 =3D !{!26, !30}
+  !26 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !27)
+  !27 =3D !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !28, size: 64)
+  !28 =3D !DIDerivedType(tag: DW_TAG_const_type, baseType: !29)
+  !29 =3D !DIBasicType(name: "char", size: 8, encoding: DW_ATE_signed_char)
+All const qualifiers are preserved.
+
+To adapt the selftest to both old and new llvm, this patch removed
+the intermediate const qualifier in const-to-ptr types, to make the
+test succeed again.
+
+  [1] https://reviews.llvm.org/D125919
+
+Reported-by: Mykola Lysenko <mykolal@fb.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c =
+b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+index 1c7105fcae3c..4ee4748133fe 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+@@ -94,7 +94,7 @@ typedef void (* (*signal_t)(int, void (*)(int)))(int);
+=20
+ typedef char * (*fn_ptr_arr1_t[10])(int **);
+=20
+-typedef char * (* const (* const fn_ptr_arr2_t[5])())(char * (*)(int));
++typedef char * (* (* const fn_ptr_arr2_t[5])())(char * (*)(int));
+=20
+ struct struct_w_typedefs {
+ 	int_t a;
+--=20
+2.30.2
+
