@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A003B531F11
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC811531F12
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbiEWXEt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 19:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        id S231234AbiEWXEv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 19:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbiEWXEs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 19:04:48 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF3EAFAFC
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 16:04:47 -0700 (PDT)
+        with ESMTP id S231379AbiEWXEv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 19:04:51 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177F4B0411
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 16:04:50 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 56451240108
-        for <bpf@vger.kernel.org>; Tue, 24 May 2022 01:04:46 +0200 (CEST)
+        by mout01.posteo.de (Postfix) with ESMTPS id B99E6240027
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 01:04:48 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1653347086; bh=0Ftap8g82aJIvdnp3T45rKv1VmbviCqo/CxwZCFvSOs=;
+        t=1653347088; bh=PZ6HxSEKECVIeEu/EgyA2TNLNDiDwab5Z8OYe2VTTHo=;
         h=From:To:Cc:Subject:Date:From;
-        b=Ysmp2I+y/+7H29ux2P7Fn/8LBbcEX8AnUKDjYPDnz/pkvU3uj6JMI2kHeCumLiS3h
-         6yS16Wn9r4CgmtFccdNoX60Vw9Glltcs6uGiXVatU4vzm1aksNQZWjRaJHQozOGfTm
-         BfM8TrI6T0pChAUg2YK11CYsw4LIUWyH5riYgSapcyUdCiM8cgzOQt6rH8Xdk0a8q4
-         9mpWos6mNuaVS0bXO7MWqh3YzOgQQRRW0ZmAHyWCAZQtonc2oEBqP10s9VZJMJ5fLb
-         zwhwxU/5M3XpLFCWoTKGuihx1Ij9qHkcop0aBEdikZDc3qXgr5JGIepm1m89tYHWNv
-         Xbpm1AmSuHmlA==
+        b=lq5v8hEh7sLMI6zvJX/rJmF7F5/0GQR5dzXRxTIGiAXC1Ecy+Dkk/6QANhgFT25k4
+         0+OzaiHEHNsPUISg4SSuORjoZoZMGQc5maYuLL4xEgk6TX99wTLJg/h878Z9b0coUa
+         XEYxAdfrgBHrOQOGa5TTHXCLxk7JjA6/FM9ebjeKqczDLrjrm+BoYy6VrVtkPY/8xb
+         XR0xvXUTu2KDy15Nc8vZeoCGq9U3n0Pvlcxr1JSDrQdxw9sry/8aeycwQ0EB3+IZrG
+         p7bsE+b37KXIoEQ9O+xsp30XWqXBe3El/pww6Y1fB7moB0/cdxguuGvbFNbqE/cCM+
+         uT0fetY5/DsuA==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4L6XwF55t2z6tmF;
-        Tue, 24 May 2022 01:04:45 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4L6XwH74Gnz9rxD;
+        Tue, 24 May 2022 01:04:47 +0200 (CEST)
 From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com
 Cc:     yhs@fb.com, quentin@isovalent.com
-Subject: [PATCH bpf-next v4 07/12] libbpf: Introduce libbpf_bpf_attach_type_str
-Date:   Mon, 23 May 2022 23:04:23 +0000
-Message-Id: <20220523230428.3077108-8-deso@posteo.net>
+Subject: [PATCH bpf-next v4 08/12] selftests/bpf: Add test for libbpf_bpf_attach_type_str
+Date:   Mon, 23 May 2022 23:04:24 +0000
+Message-Id: <20220523230428.3077108-9-deso@posteo.net>
 In-Reply-To: <20220523230428.3077108-1-deso@posteo.net>
 References: <20220523230428.3077108-1-deso@posteo.net>
 MIME-Version: 1.0
@@ -51,122 +51,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change introduces a new function, libbpf_bpf_attach_type_str, to
-the public libbpf API. The function allows users to get a string
-representation for a bpf_attach_type variant.
+This change adds a test for libbpf_bpf_attach_type_str. The test
+retrieves all variants of the bpf_attach_type enumeration using BTF and
+makes sure that the function under test works as expected for them.
 
 Signed-off-by: Daniel Müller <deso@posteo.net>
 Acked-by: Quentin Monnet <quentin@isovalent.com>
 Acked-by: Yonghong Song <yhs@fb.com>
 ---
- tools/lib/bpf/libbpf.c   | 54 ++++++++++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.h   |  9 +++++++
- tools/lib/bpf/libbpf.map |  1 +
- 3 files changed, 64 insertions(+)
+ .../selftests/bpf/prog_tests/libbpf_str.c     | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index a345bc..fa3987b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -72,6 +72,52 @@
- static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
- static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
- 
-+static const char * const attach_type_name[] = {
-+	[BPF_CGROUP_INET_INGRESS]	= "cgroup_inet_ingress",
-+	[BPF_CGROUP_INET_EGRESS]	= "cgroup_inet_egress",
-+	[BPF_CGROUP_INET_SOCK_CREATE]	= "cgroup_inet_sock_create",
-+	[BPF_CGROUP_INET_SOCK_RELEASE]	= "cgroup_inet_sock_release",
-+	[BPF_CGROUP_SOCK_OPS]		= "cgroup_sock_ops",
-+	[BPF_CGROUP_DEVICE]		= "cgroup_device",
-+	[BPF_CGROUP_INET4_BIND]		= "cgroup_inet4_bind",
-+	[BPF_CGROUP_INET6_BIND]		= "cgroup_inet6_bind",
-+	[BPF_CGROUP_INET4_CONNECT]	= "cgroup_inet4_connect",
-+	[BPF_CGROUP_INET6_CONNECT]	= "cgroup_inet6_connect",
-+	[BPF_CGROUP_INET4_POST_BIND]	= "cgroup_inet4_post_bind",
-+	[BPF_CGROUP_INET6_POST_BIND]	= "cgroup_inet6_post_bind",
-+	[BPF_CGROUP_INET4_GETPEERNAME]	= "cgroup_inet4_getpeername",
-+	[BPF_CGROUP_INET6_GETPEERNAME]	= "cgroup_inet6_getpeername",
-+	[BPF_CGROUP_INET4_GETSOCKNAME]	= "cgroup_inet4_getsockname",
-+	[BPF_CGROUP_INET6_GETSOCKNAME]	= "cgroup_inet6_getsockname",
-+	[BPF_CGROUP_UDP4_SENDMSG]	= "cgroup_udp4_sendmsg",
-+	[BPF_CGROUP_UDP6_SENDMSG]	= "cgroup_udp6_sendmsg",
-+	[BPF_CGROUP_SYSCTL]		= "cgroup_sysctl",
-+	[BPF_CGROUP_UDP4_RECVMSG]	= "cgroup_udp4_recvmsg",
-+	[BPF_CGROUP_UDP6_RECVMSG]	= "cgroup_udp6_recvmsg",
-+	[BPF_CGROUP_GETSOCKOPT]		= "cgroup_getsockopt",
-+	[BPF_CGROUP_SETSOCKOPT]		= "cgroup_setsockopt",
-+	[BPF_SK_SKB_STREAM_PARSER]	= "sk_skb_stream_parser",
-+	[BPF_SK_SKB_STREAM_VERDICT]	= "sk_skb_stream_verdict",
-+	[BPF_SK_SKB_VERDICT]		= "sk_skb_verdict",
-+	[BPF_SK_MSG_VERDICT]		= "sk_msg_verdict",
-+	[BPF_LIRC_MODE2]		= "lirc_mode2",
-+	[BPF_FLOW_DISSECTOR]		= "flow_dissector",
-+	[BPF_TRACE_RAW_TP]		= "trace_raw_tp",
-+	[BPF_TRACE_FENTRY]		= "trace_fentry",
-+	[BPF_TRACE_FEXIT]		= "trace_fexit",
-+	[BPF_MODIFY_RETURN]		= "modify_return",
-+	[BPF_LSM_MAC]			= "lsm_mac",
-+	[BPF_SK_LOOKUP]			= "sk_lookup",
-+	[BPF_TRACE_ITER]		= "trace_iter",
-+	[BPF_XDP_DEVMAP]		= "xdp_devmap",
-+	[BPF_XDP_CPUMAP]		= "xdp_cpumap",
-+	[BPF_XDP]			= "xdp",
-+	[BPF_SK_REUSEPORT_SELECT]	= "sk_reuseport_select",
-+	[BPF_SK_REUSEPORT_SELECT_OR_MIGRATE]	= "sk_reuseport_select_or_migrate",
-+	[BPF_PERF_EVENT]		= "perf_event",
-+	[BPF_TRACE_KPROBE_MULTI]	= "trace_kprobe_multi",
-+};
-+
- static const char * const map_type_name[] = {
- 	[BPF_MAP_TYPE_UNSPEC]			= "unspec",
- 	[BPF_MAP_TYPE_HASH]			= "hash",
-@@ -9369,6 +9415,14 @@ int libbpf_prog_type_by_name(const char *name, enum bpf_prog_type *prog_type,
- 	return libbpf_err(-ESRCH);
+diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+index f5185a..c88df9 100644
+--- a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
++++ b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+@@ -14,6 +14,51 @@ static void uppercase(char *s)
+ 		*s = toupper(*s);
  }
  
-+const char *libbpf_bpf_attach_type_str(enum bpf_attach_type t)
++/*
++ * Test case to check that all bpf_attach_type variants are covered by
++ * libbpf_bpf_attach_type_str.
++ */
++static void test_libbpf_bpf_attach_type_str(void)
 +{
-+	if (t < 0 || t >= ARRAY_SIZE(attach_type_name))
-+		return NULL;
++	struct btf *btf;
++	const struct btf_type *t;
++	const struct btf_enum *e;
++	int i, n, id;
 +
-+	return attach_type_name[t];
++	btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
++	if (!ASSERT_OK_PTR(btf, "btf_parse"))
++		return;
++
++	/* find enum bpf_attach_type and enumerate each value */
++	id = btf__find_by_name_kind(btf, "bpf_attach_type", BTF_KIND_ENUM);
++	if (!ASSERT_GT(id, 0, "bpf_attach_type_id"))
++		goto cleanup;
++	t = btf__type_by_id(btf, id);
++	e = btf_enum(t);
++	n = btf_vlen(t);
++	for (i = 0; i < n; e++, i++) {
++		enum bpf_attach_type attach_type = (enum bpf_attach_type)e->val;
++		const char *attach_type_name;
++		const char *attach_type_str;
++		char buf[256];
++
++		if (attach_type == __MAX_BPF_ATTACH_TYPE)
++			continue;
++
++		attach_type_name = btf__str_by_offset(btf, e->name_off);
++		attach_type_str = libbpf_bpf_attach_type_str(attach_type);
++		ASSERT_OK_PTR(attach_type_str, attach_type_name);
++
++		snprintf(buf, sizeof(buf), "BPF_%s", attach_type_str);
++		uppercase(buf);
++
++		ASSERT_STREQ(buf, attach_type_name, "exp_str_value");
++	}
++
++cleanup:
++	btf__free(btf);
 +}
 +
- const char *libbpf_bpf_map_type_str(enum bpf_map_type t)
+ /*
+  * Test case to check that all bpf_map_type variants are covered by
+  * libbpf_bpf_map_type_str.
+@@ -103,6 +148,9 @@ static void test_libbpf_bpf_prog_type_str(void)
+  */
+ void test_libbpf_str(void)
  {
- 	if (t < 0 || t >= ARRAY_SIZE(map_type_name))
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 6c5b07..37a234 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -51,6 +51,15 @@ enum libbpf_errno {
- 
- LIBBPF_API int libbpf_strerror(int err, char *buf, size_t size);
- 
-+/**
-+ * @brief **libbpf_bpf_attach_type_str()** converts the provided attach type
-+ * value into a textual representation.
-+ * @param t The attach type.
-+ * @return Pointer to a static string identifying the attach type. NULL is
-+ * returned for unknown **bpf_attach_type** values.
-+ */
-+LIBBPF_API const char *libbpf_bpf_attach_type_str(enum bpf_attach_type t);
++	if (test__start_subtest("bpf_attach_type_str"))
++		test_libbpf_bpf_attach_type_str();
 +
- /**
-  * @brief **libbpf_bpf_map_type_str()** converts the provided map type value
-  * into a textual representation.
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 16065ac..44c536 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -462,6 +462,7 @@ LIBBPF_0.8.0 {
- 
- LIBBPF_1.0.0 {
- 	global:
-+		libbpf_bpf_attach_type_str;
- 		libbpf_bpf_map_type_str;
- 		libbpf_bpf_prog_type_str;
+ 	if (test__start_subtest("bpf_map_type_str"))
+ 		test_libbpf_bpf_map_type_str();
  
 -- 
 2.30.2
