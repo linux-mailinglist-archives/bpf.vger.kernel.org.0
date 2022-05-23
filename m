@@ -2,173 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9363E531DC1
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 23:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE430531DDE
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 23:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbiEWV37 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 17:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
+        id S229876AbiEWVgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 17:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbiEWV2S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 17:28:18 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A398DA3087
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 14:28:17 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id o21-20020aa79795000000b0051841039a63so4970473pfp.19
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 14:28:17 -0700 (PDT)
+        with ESMTP id S231202AbiEWVgT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 17:36:19 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDF01FA62
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 14:36:17 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id m12so14224105plb.4
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 14:36:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=P0dc/hsbLfI6NQ/lZ14Xz2MO6AZmT1SEz1e3p5QB+CU=;
-        b=KVrjJMgWtZ9fFnNlRcHeO9QfwmEQXGUYiM0Ui1qQ4KnHJmna9s7rviKOq0Z8+DZFab
-         WoTShCn3U+p969h7FMSarMxfW03rqebUa9FnCSrcgdW5FAMmQEy/3xslLTP+lVrtfbgh
-         FpTeL6PuyYBVU3AWdfm8cEvFE+jEyAdqJC3w6L29HQZgvlGaSpZWHwpmTbj9ZOYlyZ6T
-         3l2q52e67phuNwBvOtTsUP2MlvAzBOqe0Z5kmRkSj/ohrgU4t5KFApNEFcIeMwMHxR+J
-         Mik+DeJP40n01Fb3l9lUEze3hJ5QELzbKZAlITxvhPCXr0ajJTO+LpBkRh+EfmVJsPpk
-         78Pw==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=cFyUjo7TXFGNA9Vlb9U6HZu558P2zH6nVOh7Dxt0LTM=;
+        b=ShMK6JV6ksfybNkk+0YyVThN5JnG4yPToYC1vRO/yJirv9y4OIZg8zY8WEVYhbOiHu
+         SfJCT6LK//7yeMr1Y6L5v45V3rNLbstrNubQV887Rsu0jkrfV95bExET/lChM79FWJN7
+         uT7EBEGlkwMP+T8WKzxdFPcQMerXt8RPhT6NaiAmf1gfJ0n9UopRsXHQHMW0MASsXLLu
+         5EHMKIvsirHpgBPW05dWtFJN0lXgflvkSFfOvAFZOndD32hFaK5dW6znojGAe7FZCReQ
+         UmBmvVjuYiXG8w4KkZkv48SBy5M+YARnELXrwj51G4IR8uOffHUMvUNYT2PYA/ZsL/9b
+         CXuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=P0dc/hsbLfI6NQ/lZ14Xz2MO6AZmT1SEz1e3p5QB+CU=;
-        b=Gz8wJyo58ErVJZ8RjYIC7pyklttADm+OGJFnHhSwHST9FMSAVOavJ+lITxtbwSERjE
-         OU2BRoozlu/Dhc8x8SbAvgBJUWpF/dIqh+HLRYSIgzH29g5+8PeK4qo1LlYMqg4zdB2g
-         PUZYKsLAPOLn9+fbqWVDIYYsBu20gsnzfEib3B+3KIgITfy6S9o1TyaRVDkrf0ZoONm9
-         x5SyXFEwZ/x86KwUG0hBmem/CKYHSZW1fvfRdKuyky/sLyhxnWo61jxddacb/EaM3tde
-         Al8LlAu2srVnKc/kyeVkNJJg2kJbsWHACxi7e3tV9QcWzsB9cf8itwhWLq9lE5sj2ikB
-         1ZuA==
-X-Gm-Message-State: AOAM5322HVeELgP+66GeorBsYEsSKBNL3RtpzTZiMZu76ZMslPPT1boX
-        VWtDuSG9r87AuAvDiI/5OxhwFCwofUbm
-X-Google-Smtp-Source: ABdhPJzgRdtm4fQ9Gk9r0fxFUaClViNc9qKqf3adycUhzmR2wWez23rCUHfEtkxkewzkPqALGbiYy8s3HHc3
-X-Received: from connoro.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:a99])
- (user=connoro job=sendgmr) by 2002:aa7:9019:0:b0:4fa:7532:9551 with SMTP id
- m25-20020aa79019000000b004fa75329551mr25987515pfo.26.1653341297002; Mon, 23
- May 2022 14:28:17 -0700 (PDT)
-Date:   Mon, 23 May 2022 21:28:08 +0000
-Message-Id: <20220523212808.603526-1-connoro@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.36.1.124.g0e6072fb45-goog
-Subject: [PATCH bpf-next v2] libbpf: also check /sys/kernel/tracing for
- tracefs files
-From:   "Connor O'Brien" <connoro@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=cFyUjo7TXFGNA9Vlb9U6HZu558P2zH6nVOh7Dxt0LTM=;
+        b=D0sSpgKJ43wN1yBmGg8nHNgOkQbO7ABRN73MDbtdtjRkVoxE0FRZceeKf9Zvhv0yPs
+         ft/1C684dB7SPWoC68SG4t+P572TcOh/mmmifIrMvITZz34sYs/OaLZFH37wJlxnn2uW
+         nojg9PCP7Basvg0Z6fxUm1iz6cQ3RPvAHHxrNTkqhc8SGPwWZXALNH42H77cNjeUeP6W
+         m/arUhyMZVGdC+/51S5T50KXIR2YSRntz9AK/uNAPa4nSTf9x/5WmrPqELi6/ZhFlBd1
+         NfLyFb6agOgMhnNgwelC+7r0wdgu439ncKpZHSFkyZ36w3VjyDrm32jzkpdUFMZ7GxlM
+         LZPg==
+X-Gm-Message-State: AOAM5318s/OJevKW12/9Cw4DnKGehXs4n9LhTATnN3TkSWRNd989nQOT
+        hDesxuhCjLIyWKbn/YFeq7V7hA==
+X-Google-Smtp-Source: ABdhPJz9TWHJO0uTnEH11z5LyTOZcm715iSh7ffMmuvVWfo02YVSLquj6JyD79gOjEaXQOwi2IzyrA==
+X-Received: by 2002:a17:902:d48b:b0:161:c136:2c40 with SMTP id c11-20020a170902d48b00b00161c1362c40mr24766018plg.77.1653341776881;
+        Mon, 23 May 2022 14:36:16 -0700 (PDT)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id c78-20020a621c51000000b0050dc76281fdsm7654239pfc.215.2022.05.23.14.36.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 May 2022 14:36:16 -0700 (PDT)
+Message-ID: <7949d722-86e8-8122-e607-4b09944b76ae@linaro.org>
+Date:   Mon, 23 May 2022 14:36:15 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH v4] bpf: Fix KASAN use-after-free Read in
+ compute_effective_progs
+Content-Language: en-US
+To:     andrii.nakryiko@gmail.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Connor O'Brien" <connoro@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        bpf@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
+References: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
+ <20220517180420.87954-1-tadeusz.struk@linaro.org>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+In-Reply-To: <20220517180420.87954-1-tadeusz.struk@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf looks for tracefs files only under debugfs, but tracefs may be
-mounted even if debugfs is not. When /sys/kernel/debug/tracing is
-absent, try looking under /sys/kernel/tracing instead.
+On 5/17/22 11:04, Tadeusz Struk wrote:
+> Syzbot found a Use After Free bug in compute_effective_progs().
+> The reproducer creates a number of BPF links, and causes a fault
+> injected alloc to fail, while calling bpf_link_detach on them.
+> Link detach triggers the link to be freed by bpf_link_free(),
+> which calls __cgroup_bpf_detach() and update_effective_progs().
+> If the memory allocation in this function fails, the function restores
+> the pointer to the bpf_cgroup_link on the cgroup list, but the memory
+> gets freed just after it returns. After this, every subsequent call to
+> update_effective_progs() causes this already deallocated pointer to be
+> dereferenced in prog_list_length(), and triggers KASAN UAF error.
+> 
+> To fix this issue don't preserve the pointer to the prog or link in the
+> list, but remove it and replace it with a dummy prog without shrinking
+> the table. The subsequent call to __cgroup_bpf_detach() or
+> __cgroup_bpf_detach() will correct it.
+> 
+> Cc: "Alexei Starovoitov" <ast@kernel.org>
+> Cc: "Daniel Borkmann" <daniel@iogearbox.net>
+> Cc: "Andrii Nakryiko" <andrii@kernel.org>
+> Cc: "Martin KaFai Lau" <kafai@fb.com>
+> Cc: "Song Liu" <songliubraving@fb.com>
+> Cc: "Yonghong Song" <yhs@fb.com>
+> Cc: "John Fastabend" <john.fastabend@gmail.com>
+> Cc: "KP Singh" <kpsingh@kernel.org>
+> Cc: <netdev@vger.kernel.org>
+> Cc: <bpf@vger.kernel.org>
+> Cc: <stable@vger.kernel.org>
+> Cc: <linux-kernel@vger.kernel.org>
+> 
+> Link: https://syzkaller.appspot.com/bug?id=8ebf179a95c2a2670f7cf1ba62429ec044369db4
+> Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
+> Reported-by: <syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com>
+> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+> ---
+> v2: Add a fall back path that removes a prog from the effective progs
+>      table in case detach fails to allocate memory in compute_effective_progs().
+> 
+> v3: Implement the fallback in a separate function purge_effective_progs
+> 
+> v4: Changed purge_effective_progs() to manipulate the array in a similar way
+>      how replace_effective_prog() does it.
+> ---
+>   kernel/bpf/cgroup.c | 68 +++++++++++++++++++++++++++++++++++++++------
+>   1 file changed, 60 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 128028efda64..6f1a6160c99e 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -681,6 +681,60 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
+>   	return ERR_PTR(-ENOENT);
+>   }
+>   
+> +/**
+> + * purge_effective_progs() - After compute_effective_progs fails to alloc new
+> + *                           cgrp->bpf.inactive table we can recover by
+> + *                           recomputing the array in place.
+> + *
+> + * @cgrp: The cgroup which descendants to travers
+> + * @prog: A program to detach or NULL
+> + * @link: A link to detach or NULL
+> + * @atype: Type of detach operation
+> + */
+> +static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
+> +				  struct bpf_cgroup_link *link,
+> +				  enum cgroup_bpf_attach_type atype)
+> +{
+> +	struct cgroup_subsys_state *css;
+> +	struct bpf_prog_array *progs;
+> +	struct bpf_prog_list *pl;
+> +	struct list_head *head;
+> +	struct cgroup *cg;
+> +	int pos;
+> +
+> +	/* recompute effective prog array in place */
+> +	css_for_each_descendant_pre(css, &cgrp->self) {
+> +		struct cgroup *desc = container_of(css, struct cgroup, self);
+> +
+> +		if (percpu_ref_is_zero(&desc->bpf.refcnt))
+> +			continue;
+> +
+> +		/* find position of link or prog in effective progs array */
+> +		for (pos = 0, cg = desc; cg; cg = cgroup_parent(cg)) {
+> +			if (pos && !(cg->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
+> +				continue;
+> +
+> +			head = &cg->bpf.progs[atype];
+> +			list_for_each_entry(pl, head, node) {
+> +				if (!prog_list_prog(pl))
+> +					continue;
+> +				if (pl->prog == prog && pl->link == link)
+> +					goto found;
+> +				pos++;
+> +			}
+> +		}
+> +found:
+> +		BUG_ON(!cg);
+> +		progs = rcu_dereference_protected(
+> +				desc->bpf.effective[atype],
+> +				lockdep_is_held(&cgroup_mutex));
+> +
+> +		/* Remove the program from the array */
+> +		WARN_ONCE(bpf_prog_array_delete_safe_at(progs, pos),
+> +			  "Failed to purge a prog from array at index %d", pos);
+> +	}
+> +}
+> +
+>   /**
+>    * __cgroup_bpf_detach() - Detach the program or link from a cgroup, and
+>    *                         propagate the change to descendants
+> @@ -723,8 +777,12 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+>   	pl->link = NULL;
+>   
+>   	err = update_effective_progs(cgrp, atype);
+> -	if (err)
+> -		goto cleanup;
+> +	if (err) {
+> +		/* If update affective array failed replace the prog with a dummy prog*/
+> +		pl->prog = old_prog;
+> +		pl->link = link;
+> +		purge_effective_progs(cgrp, old_prog, link, atype);
+> +	}
+>   
+>   	/* now can actually delete it from this cgroup list */
+>   	list_del(&pl->node);
+> @@ -736,12 +794,6 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+>   		bpf_prog_put(old_prog);
+>   	static_branch_dec(&cgroup_bpf_enabled_key[atype]);
+>   	return 0;
+> -
+> -cleanup:
+> -	/* restore back prog or link */
+> -	pl->prog = old_prog;
+> -	pl->link = link;
+> -	return err;
+>   }
+>   
+>   static int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
 
-Signed-off-by: Connor O'Brien <connoro@google.com>
----
-v1->v2: cache result of debugfs check.
-
- src/libbpf.c | 32 +++++++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 7 deletions(-)
-
-diff --git a/src/libbpf.c b/src/libbpf.c
-index 2262bcd..cc47c52 100644
---- a/src/libbpf.c
-+++ b/src/libbpf.c
-@@ -9945,10 +9945,22 @@ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
- 		 __sync_fetch_and_add(&index, 1));
- }
- 
-+static bool debugfs_available(void)
-+{
-+	static bool initialized = false, available;
-+
-+	if (!initialized) {
-+		available = !access("/sys/kernel/debug/tracing", F_OK);
-+		initialized = true;
-+	}
-+	return available;
-+}
-+
- static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
- 				   const char *kfunc_name, size_t offset)
- {
--	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
-+	const char *file = debugfs_available() ? "/sys/kernel/debug/tracing/kprobe_events" :
-+		"/sys/kernel/tracing/kprobe_events";
- 
- 	return append_to_file(file, "%c:%s/%s %s+0x%zx",
- 			      retprobe ? 'r' : 'p',
-@@ -9958,7 +9970,8 @@ static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
- 
- static int remove_kprobe_event_legacy(const char *probe_name, bool retprobe)
- {
--	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
-+	const char *file = debugfs_available() ? "/sys/kernel/debug/tracing/kprobe_events" :
-+		"/sys/kernel/tracing/kprobe_events";
- 
- 	return append_to_file(file, "-:%s/%s", retprobe ? "kretprobes" : "kprobes", probe_name);
- }
-@@ -9968,7 +9981,8 @@ static int determine_kprobe_perf_type_legacy(const char *probe_name, bool retpro
- 	char file[256];
- 
- 	snprintf(file, sizeof(file),
--		 "/sys/kernel/debug/tracing/events/%s/%s/id",
-+		 debugfs_available() ? "/sys/kernel/debug/tracing/events/%s/%s/id" :
-+		 "/sys/kernel/tracing/events/%s/%s/id",
- 		 retprobe ? "kretprobes" : "kprobes", probe_name);
- 
- 	return parse_uint_from_file(file, "%d\n");
-@@ -10144,7 +10158,8 @@ static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
- static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
- 					  const char *binary_path, size_t offset)
- {
--	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
-+	const char *file = debugfs_available() ? "/sys/kernel/debug/tracing/uprobe_events" :
-+		"/sys/kernel/tracing/uprobe_events";
- 
- 	return append_to_file(file, "%c:%s/%s %s:0x%zx",
- 			      retprobe ? 'r' : 'p',
-@@ -10154,7 +10169,8 @@ static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
- 
- static inline int remove_uprobe_event_legacy(const char *probe_name, bool retprobe)
- {
--	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
-+	const char *file = debugfs_available() ? "/sys/kernel/debug/tracing/uprobe_events" :
-+		"/sys/kernel/tracing/uprobe_events";
- 
- 	return append_to_file(file, "-:%s/%s", retprobe ? "uretprobes" : "uprobes", probe_name);
- }
-@@ -10164,7 +10180,8 @@ static int determine_uprobe_perf_type_legacy(const char *probe_name, bool retpro
- 	char file[512];
- 
- 	snprintf(file, sizeof(file),
--		 "/sys/kernel/debug/tracing/events/%s/%s/id",
-+		 debugfs_available() ? "/sys/kernel/debug/tracing/events/%s/%s/id" :
-+		 "/sys/kernel/tracing/events/%s/%s/id",
- 		 retprobe ? "uretprobes" : "uprobes", probe_name);
- 
- 	return parse_uint_from_file(file, "%d\n");
-@@ -10295,7 +10312,8 @@ static int determine_tracepoint_id(const char *tp_category,
- 	int ret;
- 
- 	ret = snprintf(file, sizeof(file),
--		       "/sys/kernel/debug/tracing/events/%s/%s/id",
-+		       debugfs_available() ? "/sys/kernel/debug/tracing/events/%s/%s/id" :
-+		       "/sys/kernel/tracing/events/%s/%s/id",
- 		       tp_category, tp_name);
- 	if (ret < 0)
- 		return -errno;
+Hi Andrii,
+Do you have any more feedback? Does it look better to you now?
 -- 
-2.36.1.124.g0e6072fb45-goog
-
+Thanks,
+Tadeusz
