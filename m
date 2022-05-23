@@ -2,51 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A13531CD8
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 22:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FC5531C07
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 22:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbiEWUZo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 16:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
+        id S233052AbiEWU1A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 16:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232921AbiEWUZo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 16:25:44 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1282CC5DB9;
-        Mon, 23 May 2022 13:25:43 -0700 (PDT)
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ntEcR-0000zc-VY; Mon, 23 May 2022 22:25:36 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ntEcR-000GNc-AC; Mon, 23 May 2022 22:25:35 +0200
-Subject: Re: [PATCH] bpf: fix probe read error in ___bpf_prog_run()
-To:     menglong8.dong@gmail.com, ast@kernel.org
-Cc:     andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <imagedong@tencent.com>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Hao Peng <flyingpeng@tencent.com>
-References: <20220523073732.296247-1-imagedong@tencent.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <abb90d45-e39e-4fdc-9930-17e3f6f87c06@iogearbox.net>
-Date:   Mon, 23 May 2022 22:25:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S233015AbiEWU0y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 16:26:54 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD57B4161C;
+        Mon, 23 May 2022 13:26:53 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id v14so13433668qtc.3;
+        Mon, 23 May 2022 13:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=TneNowabt0wjfzcxvQYZmn9RWQW8O4p43QsS4BuL4Dc=;
+        b=e1TDt/NRrfz4ypJXJ1NfIg0Ve5DTTcDwjCMlowV3pyQ0izpa5NAHmyd7TsQlZ+GHJs
+         zdvFIsIY3zGT7Brd2Ua+3ox7t8IWK0JFr8HcUVZRfJ8SWFO9W57lwA3RuuF1zUYGxxeZ
+         rRUjs3WiD5g9vQc8R+V/vDtmzlLSDY4sraJEioNKgOL0UQPtJaCYH7lFxWoMcrvfDeVo
+         Cr/wdW3EymvdF3L23Fg8uT0+/8TRXzwW3U41Xru4ygGOWs6QfzSwnJA0RlvPSRX1xx6a
+         /fssiRVo1N2uFsBDOR3WrYSFAC9nXgseXfKe03Gi7ckpMoAc1bvn3x/KiAnc5ifgZDtD
+         ewKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=TneNowabt0wjfzcxvQYZmn9RWQW8O4p43QsS4BuL4Dc=;
+        b=yICmhUtSL1xkukmTotgfb3ttECrbLYDtOhJolaL1TAcuYvmH/weKBcZquJsrqEDFag
+         9NK9Yz05+j8cY6RprCDcyKFzi+xQxewmk1heitYs8hEXK+OoQQLjtL51O5Eu03ik1wpt
+         S5fr6W7KE/hWTBaAzJAtDRHVKCnGp1zIzKV+gFIlU9wwif3/4Eenmy6QhBQ+2t1XBcc8
+         YqjvIDhZWC5JAvBVQJ0GLhO7suaRFzqGQkGTTmOhvE9xS51aGAzBPg1juwVffn7pEBIn
+         Plx9mh48mkOudMkN0bDIktf3owWNqpSekmYEc8cfge5C4SznEfZKQKORMYc9PAu34fqo
+         kiOg==
+X-Gm-Message-State: AOAM533Vfm89dEtZscZNZffkSAh21GTuwyExTy3j1iv1bwTQ0h48moEq
+        KsEKUhzLqOI882q2ZGXjjE5Hq7O4kb9r3Q==
+X-Google-Smtp-Source: ABdhPJx+GTqxMCPSbvVea/sP0y3LdvjzYe3CmSBpp3szH5MjEEVnyVxGQftCkBeg+wfP//3sAGjtOw==
+X-Received: by 2002:ac8:5892:0:b0:2f9:1720:9e43 with SMTP id t18-20020ac85892000000b002f917209e43mr14664867qta.627.1653337612864;
+        Mon, 23 May 2022 13:26:52 -0700 (PDT)
+Received: from jup ([2607:fea8:e2e4:d600::6ece])
+        by smtp.gmail.com with ESMTPSA id x11-20020a05620a0ecb00b006a33c895d25sm4865604qkm.21.2022.05.23.13.26.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 May 2022 13:26:52 -0700 (PDT)
+Date:   Mon, 23 May 2022 16:26:49 -0400
+From:   Michael Mullin <masmullin@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bpftool: mmaped fields missing map structure in generated
+ skeletons
+Message-ID: <20220523202649.6iiz4h2wf5ryx3w2@jup>
 MIME-Version: 1.0
-In-Reply-To: <20220523073732.296247-1-imagedong@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26550/Mon May 23 10:05:39 2022)
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,109 +72,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/23/22 9:37 AM, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <imagedong@tencent.com>
-> 
-> I think there is something wrong with BPF_PROBE_MEM in ___bpf_prog_run()
-> in big-endian machine. Let's make a test and see what will happen if we
-> want to load a 'u16' with BPF_PROBE_MEM.
-> 
-> Let's make the src value '0x0001', the value of dest register will become
-> 0x0001000000000000, as the value will be loaded to the first 2 byte of
-> DST with following code:
-> 
->    bpf_probe_read_kernel(&DST, SIZE, (const void *)(long) (SRC + insn->off));
-> 
-> Obviously, the value in DST is not correct. In fact, we can compare
-> BPF_PROBE_MEM with LDX_MEM_H:
-> 
->    DST = *(SIZE *)(unsigned long) (SRC + insn->off);
-> 
-> If the memory load is done by LDX_MEM_H, the value in DST will be 0x1 now.
-> 
-> And I think this error results in the test case 'test_bpf_sk_storage_map'
-> failing:
-> 
->    test_bpf_sk_storage_map:PASS:bpf_iter_bpf_sk_storage_map__open_and_load 0 nsec
->    test_bpf_sk_storage_map:PASS:socket 0 nsec
->    test_bpf_sk_storage_map:PASS:map_update 0 nsec
->    test_bpf_sk_storage_map:PASS:socket 0 nsec
->    test_bpf_sk_storage_map:PASS:map_update 0 nsec
->    test_bpf_sk_storage_map:PASS:socket 0 nsec
->    test_bpf_sk_storage_map:PASS:map_update 0 nsec
->    test_bpf_sk_storage_map:PASS:attach_iter 0 nsec
->    test_bpf_sk_storage_map:PASS:create_iter 0 nsec
->    test_bpf_sk_storage_map:PASS:read 0 nsec
->    test_bpf_sk_storage_map:FAIL:ipv6_sk_count got 0 expected 3
->    $10/26 bpf_iter/bpf_sk_storage_map:FAIL
-> 
-> The code of the test case is simply, it will load sk->sk_family to the
-> register with BPF_PROBE_MEM and check if it is AF_INET6. With this patch,
-> now the test case 'bpf_iter' can pass:
-> 
->    $10  bpf_iter:OK
-> 
-> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
-> Reviewed-by: Hao Peng <flyingpeng@tencent.com>
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> ---
->   kernel/bpf/core.c | 11 ++++++-----
->   1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 13e9dbeeedf3..09e3f374739a 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1945,14 +1945,15 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
->   	LDST(W,  u32)
->   	LDST(DW, u64)
->   #undef LDST
-> -#define LDX_PROBE(SIZEOP, SIZE)							\
-> +#define LDX_PROBE(SIZEOP, SIZE, TYPE)						\
->   	LDX_PROBE_MEM_##SIZEOP:							\
->   		bpf_probe_read_kernel(&DST, SIZE, (const void *)(long) (SRC + insn->off));	\
-> +		DST = *((TYPE *)&DST);						\
->   		CONT;
-> -	LDX_PROBE(B,  1)
-> -	LDX_PROBE(H,  2)
-> -	LDX_PROBE(W,  4)
-> -	LDX_PROBE(DW, 8)
-> +	LDX_PROBE(B,  1, u8)
-> +	LDX_PROBE(H,  2, u16)
-> +	LDX_PROBE(W,  4, u32)
-> +	LDX_PROBE(DW, 8, u64)
+When generating a skeleton which has an mmaped map field, bpftool's
+output is missing the map structure.  This causes a compile break when
+the generated skeleton is compiled as the field belongs to the internal
+struct maps, not directly to the obj.
 
-Completely uncompiled, but maybe just fold it into LDST instead:
+Signed-off-by: Michael Mullin <masmullin@gmail.com>
+---
+ tools/bpf/bpftool/gen.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 9cc91f0f3115..fc5c29243739 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1948,6 +1948,11 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
-                 CONT;                                                   \
-         LDX_MEM_##SIZEOP:                                               \
-                 DST = *(SIZE *)(unsigned long) (SRC + insn->off);       \
-+               CONT;                                                   \
-+       LDX_PROBE_MEM_##SIZEOP:                                         \
-+               bpf_probe_read_kernel(&DST, sizeof(SIZE),               \
-+                                     (const void *)(long)(SRC + insn->off)); \
-+               DST = *((SIZE *)&DST);                                  \
-                 CONT;
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index f158dc1c2149..b49293795ba0 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -853,7 +853,7 @@ codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped)
+ 			i, bpf_map__name(map), i, ident);
+ 		/* memory-mapped internal maps */
+ 		if (mmaped && is_internal_mmapable_map(map, ident, sizeof(ident))) {
+-			printf("\ts->maps[%zu].mmaped = (void **)&obj->%s;\n",
++			printf("\ts->maps[%zu].mmaped = (void **)&obj->maps.%s;\n",
+ 				i, ident);
+ 		}
+ 		i++;
+-- 
+2.36.1
 
-         LDST(B,   u8)
-@@ -1955,15 +1960,6 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
-         LDST(W,  u32)
-         LDST(DW, u64)
-  #undef LDST
--#define LDX_PROBE(SIZEOP, SIZE)                                                        \
--       LDX_PROBE_MEM_##SIZEOP:                                                 \
--               bpf_probe_read_kernel(&DST, SIZE, (const void *)(long) (SRC + insn->off));      \
--               CONT;
--       LDX_PROBE(B,  1)
--       LDX_PROBE(H,  2)
--       LDX_PROBE(W,  4)
--       LDX_PROBE(DW, 8)
--#undef LDX_PROBE
-
-Thanks,
-Daniel
