@@ -2,51 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6311A5318F4
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 22:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1741531A72
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 22:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbiEWUAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 16:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
+        id S232411AbiEWUKP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 16:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbiEWUAO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 16:00:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51C67A807
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 13:00:13 -0700 (PDT)
+        with ESMTP id S231847AbiEWUKO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 16:10:14 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A9F9858C;
+        Mon, 23 May 2022 13:10:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E2326140D
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 20:00:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 972F7C34115;
-        Mon, 23 May 2022 20:00:12 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 90427B815C3;
+        Mon, 23 May 2022 20:10:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 49CF4C385A9;
+        Mon, 23 May 2022 20:10:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653336012;
-        bh=2ApgDAMrwHYJRvhcakA/QPtHJUi0qgv/0Vqjsyf87Xg=;
+        s=k20201202; t=1653336611;
+        bh=t9ed7xwBhw3HzY0r4U+A4ALzGc8ApH2AjH9dQPtOGUI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UFkTOTvScIPHS875tXGj1WuFvrhGRaOQS9S7JQ6tFZ2z2GgvhlB3sFSQB0mtyJJpb
-         pTgqtyeHTm9LjnGJHo/oO0d7HOLgwJJU6PRE7kgqJ33az022NxsDJSBXR4xBkpiQWO
-         fCFDW6ffcRT1v3/5Y97sPdIbQGg1MHssYTXOv3IlWTzMTXf7seDuhkEZRabKbPTZlE
-         JivE/jVJHX3I27HU0pUSeHOQ9dVBVymilQtZvTqQ8a/IxkzVL+pjZW+Q0vw2sCEp/Z
-         VCvWFS+8h3ZrKhCX7EZYOBWpvPmIApU6Yog+8qpZ1Ai1mpTm8z5+iUdXMQlNICsYdV
-         r4MYb1FUTn8kg==
+        b=MdefCYG1oiwzFjXK5Mn04e3xtjZ8uIaM5MdwBLAtUzhEEEpvHUXtIxhRlM2roiXRH
+         WnC4XP/sCvCRn+FUopdfBjacmiZraEuyMH8SVfLqMo6uHu4f73hD4Xu3idaPxmlAU7
+         /9UHhWdw4YLnVUJKRbfBzbZEHJFybD3GLA0YgWrRQzgN6BFQIZ4sXVob1tWIJ2XLjq
+         lshvLo56LJ8NnFJ10vUqMOiIRuPwiiM09LcZM3xN2znD6NVRTJrwAXMIQc6Mcv5a6L
+         EkubBBbJcVvfYcGd/5dw3I9kPIbcChpZfxd/Y6McC+VPp9LyYinsdi6HU9BchCOuBf
+         GPTub+sHBebYA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 778D3EAC081;
-        Mon, 23 May 2022 20:00:12 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2AEB1F03938;
+        Mon, 23 May 2022 20:10:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix btf_dump/btf_dump due to recent
- clang change
+Subject: Re: [PATCH][next] selftests/bpf: Fix spelling mistake: "unpriviliged" ->
+ "unprivileged"
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165333601248.24888.11360657395318959311.git-patchwork-notify@kernel.org>
-Date:   Mon, 23 May 2022 20:00:12 +0000
-References: <20220523152044.3905809-1-yhs@fb.com>
-In-Reply-To: <20220523152044.3905809-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, mykolal@fb.com
+Message-Id: <165333661117.30857.3574938614262437532.git-patchwork-notify@kernel.org>
+Date:   Mon, 23 May 2022 20:10:11 +0000
+References: <20220523115604.49942-1-colin.i.king@gmail.com>
+In-Reply-To: <20220523115604.49942-1-colin.i.king@gmail.com>
+To:     Colin Ian King <colin.i.king@gmail.com>
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,29 +64,19 @@ X-Mailing-List: bpf@vger.kernel.org
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Mon, 23 May 2022 08:20:44 -0700 you wrote:
-> Latest llvm-project upstream had a change of behavior
-> related to qualifiers on function return type ([1]).
-> This caused selftests btf_dump/btf_dump failure.
-> The following example shows what changed.
+On Mon, 23 May 2022 12:56:04 +0100 you wrote:
+> There are spelling mistakes in ASSERT messages. Fix these.
 > 
->   $ cat t.c
->   typedef const char * const (* const (* const fn_ptr_arr2_t[5])())(char * (*)(int));
->   struct t {
->     int a;
->     fn_ptr_arr2_t l;
->   };
->   int foo(struct t *arg) {
->     return arg->a;
->   }
-> 
-> [...]
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/unpriv_bpf_disabled.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
 Here is the summary with links:
-  - [bpf-next] selftests/bpf: fix btf_dump/btf_dump due to recent clang change
-    https://git.kernel.org/bpf/bpf-next/c/4050764cbaa2
+  - [next] selftests/bpf: Fix spelling mistake: "unpriviliged" -> "unprivileged"
+    https://git.kernel.org/bpf/bpf-next/c/f9a3eca4bc04
 
 You are awesome, thank you!
 -- 
