@@ -2,238 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDBA5307A0
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 04:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBA4530AC5
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 10:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352706AbiEWCYn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 May 2022 22:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
+        id S229957AbiEWHjO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 03:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352398AbiEWCYm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 May 2022 22:24:42 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B4436686
-        for <bpf@vger.kernel.org>; Sun, 22 May 2022 19:24:40 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id q76so12467442pgq.10
-        for <bpf@vger.kernel.org>; Sun, 22 May 2022 19:24:40 -0700 (PDT)
+        with ESMTP id S229952AbiEWHjH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 03:39:07 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D818F13DF9;
+        Mon, 23 May 2022 00:39:04 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w200so12924942pfc.10;
+        Mon, 23 May 2022 00:39:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=aOMiWykzTAkss9hiOWvH4knj9DdODFE029xQgfTUVrU=;
-        b=vMYjUcNMrOX2c7g4XD3BjJ9X9Z8/cvadMUidMtCGEEz4yigIjRhf8BViP+CBRrFuDx
-         fv3Y28zgTKOmWSxd30HhDWGkN8hnG69SmYfTPKO1Kkb38gABLq7MqP7LuHjrE/cZCIFu
-         iEdwypssPKclptjD8hDfnYuPc+HklmtKXkIjRjbr2kgkLxO2msSDH4ElLTJQ9MSDrE3q
-         UfAQAR5qE+XcwfPRm0dzisp8kHEwDM0mRg0Fo0eJmDYxgvJT2zRnB3XqA1l+a/0YguC4
-         vW5woMO9vkCMGbHf6Ju29W4zD/gsUFMqihwrENXIEIGODWt5Bh/ENU56clFIfMEt4PpY
-         4OXQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FDKEez4LL/T5vz5sGrr37Im2D5hBP4Hr0638TS/hH4w=;
+        b=qWlHQua1NGt2HLFYqYJKMsocOeNT5XL7JjMoe7VhhejqbWyffuDbiIez8cPfKAxmM9
+         zDzEZFcT2zR4bCq+EWZsWu1QtweEij42nIPNEFCbFcGVcQWCXteZnFWG395yQ+qTUkW7
+         fyPoux3wi9J8M0JJ5ASaZx/VXgyGTNvg6xcuVt59pyFzXc0O5pXG0PlSEONemYH2Q8zI
+         fHZk8/2mkBkogsgh1+hEcGkBr8jlGLOOsNSkS/YQicDZEEkucvUvaO0qY1ckiB4qUmF+
+         p+MyyiacObjIhVqW82sEBPtfXxNe7XF3RPLShb3OKc/hzDIrX/oHw/nzHDqYnWxOHtSN
+         ARZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=aOMiWykzTAkss9hiOWvH4knj9DdODFE029xQgfTUVrU=;
-        b=TAGoZjehx6GgOxMbceZ+tSK0HaQZ+zo1ryfDaIgnRVrhlFT8tZkeL6GAxzh61vexJl
-         KR4Plaa/70G3khVQjTBLYTy5GqHJuR0PIUTzZaNfm9GMzz57CX7hljAqjCe6JA9NtPHk
-         DcX5BD7lJKFFMlcOx8FYX3NR2dCfhFyAeY+MyiQsDdBxQskOCaY6nCP5H1Y584T2S84S
-         eEY3YZKFRw+vN+DyD995Zt/LBOFv8uNdhIC8slLawtC/xh5wnTXkNovgsBspGowJABW8
-         gZtESYBRptOxpRFXecxIgqwVGmSOGuM9U8Q5gJRjL0r1S+if4CkYNLvBLGhgfXLo38IY
-         WRnQ==
-X-Gm-Message-State: AOAM5326L6EY65omqSZ7dw+JN4u7Ay5i4XYbpb/WkSLlsaM97VsRcFU3
-        LjwT6N0yJco4PNm1hYCu3AUZWQ==
-X-Google-Smtp-Source: ABdhPJzNZKi4tFMTcZBcZTd5ceElD4O7tWT7ehNN2D75Mue6UDOpiO/0ro3lkff3rjoKDXamJp9/ig==
-X-Received: by 2002:a63:b705:0:b0:3fa:5e1c:ca11 with SMTP id t5-20020a63b705000000b003fa5e1cca11mr2127687pgf.31.1653272680033;
-        Sun, 22 May 2022 19:24:40 -0700 (PDT)
-Received: from [10.71.57.194] ([139.177.225.241])
-        by smtp.gmail.com with ESMTPSA id t3-20020a62d143000000b0051868677e6dsm5802559pfl.51.2022.05.22.19.24.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 May 2022 19:24:39 -0700 (PDT)
-Message-ID: <877ac441-045b-1844-6938-fcaee5eee7f2@bytedance.com>
-Date:   Mon, 23 May 2022 10:24:32 +0800
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FDKEez4LL/T5vz5sGrr37Im2D5hBP4Hr0638TS/hH4w=;
+        b=jAq0E6xaiOxYu+DrCX6bwVPp03TEfMWW47RToubd/jJBJGx5BXGhsqO5gH1dV1Em3Q
+         YQacqGneqVE8a3meBbQUzdKzHywA/RR87nz89TbSZBxfAECBIgoxLLfZJrMadlUFIVZq
+         KdqhcKUNzmBPAGeDLIFXJ4hPeMGYTdKBJEZUEGx/uMRqhznUMUtWRKqpv+6k6j0qT49d
+         C0fxMshEoYO2ZE/OWeM8yb2vyp71oyIb3uOf9p5V57nMZ0fh4e1bMWn8FQtGD+HuU/i4
+         oNWasB9vNRQSFlWy9jqWHChKGKwbnz3yYrSj7eVTTBhRELOj4VfhBY1LXHeZGkyhHX0S
+         wRnw==
+X-Gm-Message-State: AOAM5333lIvDZZ+1nwZVS7WRUjdVh10mbRaXk6ODaSkqnozKEPgSQzAG
+        +MqKjtKv59XjNKkioDjlM/o=
+X-Google-Smtp-Source: ABdhPJxFCqI8Rwlcssa1BNjfxrK8HpuSbbIopph7tby9Jp/NcYLy0dbo9U6k2v/Tq/lyxQUdkq/4xA==
+X-Received: by 2002:a63:e017:0:b0:3f2:543b:8402 with SMTP id e23-20020a63e017000000b003f2543b8402mr19085100pgh.209.1653291544335;
+        Mon, 23 May 2022 00:39:04 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.21])
+        by smtp.gmail.com with ESMTPSA id d13-20020a170902e14d00b0015e8d4eb204sm4360048pla.78.2022.05.23.00.39.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 May 2022 00:39:03 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Hao Peng <flyingpeng@tencent.com>
+Subject: [PATCH] bpf: fix probe read error in ___bpf_prog_run()
+Date:   Mon, 23 May 2022 15:37:32 +0800
+Message-Id: <20220523073732.296247-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [External] Re: [PATCH] bpf: avoid grabbing spin_locks of all cpus
- when no free elems
-To:     Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20220518062715.27809-1-zhoufeng.zf@bytedance.com>
- <CAADnVQ+x-A87Z9_c+3vuRJOYm=gCOBXmyCJQ64CiCNukHS6FpA@mail.gmail.com>
- <6ae715b3-96b1-2b42-4d1a-5267444d586b@bytedance.com>
- <9c0c3e0b-33bc-51a7-7916-7278f14f308e@fb.com>
- <380fa11e-f15d-da1a-51f7-70e14ed58ffc@bytedance.com>
- <0f904395-350d-5ee7-152e-93d104742e98@fb.com>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <0f904395-350d-5ee7-152e-93d104742e98@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2022/5/20 上午12:45, Yonghong Song 写道:
->
->
-> On 5/18/22 8:12 PM, Feng Zhou wrote:
->> 在 2022/5/19 上午4:39, Yonghong Song 写道:
->>>
->>>
->>> On 5/17/22 11:57 PM, Feng Zhou wrote:
->>>> 在 2022/5/18 下午2:32, Alexei Starovoitov 写道:
->>>>> On Tue, May 17, 2022 at 11:27 PM Feng zhou 
->>>>> <zhoufeng.zf@bytedance.com> wrote:
->>>>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>>>>
->>>>>> We encountered bad case on big system with 96 CPUs that
->>>>>> alloc_htab_elem() would last for 1ms. The reason is that after the
->>>>>> prealloc hashtab has no free elems, when trying to update, it 
->>>>>> will still
->>>>>> grab spin_locks of all cpus. If there are multiple update users, the
->>>>>> competition is very serious.
->>>>>>
->>>>>> So this patch add is_empty in pcpu_freelist_head to check freelist
->>>>>> having free or not. If having, grab spin_lock, or check next cpu's
->>>>>> freelist.
->>>>>>
->>>>>> Before patch: hash_map performance
->>>>>> ./map_perf_test 1
->>>
->>> could you explain what parameter '1' means here?
->>
->> This code is here:
->> samples/bpf/map_perf_test_user.c
->> samples/bpf/map_perf_test_kern.c
->> parameter '1' means testcase flag, test hash_map's performance
->> parameter '2048' means test hash_map's performance when free=0.
->> testcase flag '2048' is added by myself to reproduce the problem 
->> phenomenon.
->>
->>>
->>>>>> 0:hash_map_perf pre-alloc 975345 events per sec
->>>>>> 4:hash_map_perf pre-alloc 855367 events per sec
->>>>>> 12:hash_map_perf pre-alloc 860862 events per sec
->>>>>> 8:hash_map_perf pre-alloc 849561 events per sec
->>>>>> 3:hash_map_perf pre-alloc 849074 events per sec
->>>>>> 6:hash_map_perf pre-alloc 847120 events per sec
->>>>>> 10:hash_map_perf pre-alloc 845047 events per sec
->>>>>> 5:hash_map_perf pre-alloc 841266 events per sec
->>>>>> 14:hash_map_perf pre-alloc 849740 events per sec
->>>>>> 2:hash_map_perf pre-alloc 839598 events per sec
->>>>>> 9:hash_map_perf pre-alloc 838695 events per sec
->>>>>> 11:hash_map_perf pre-alloc 845390 events per sec
->>>>>> 7:hash_map_perf pre-alloc 834865 events per sec
->>>>>> 13:hash_map_perf pre-alloc 842619 events per sec
->>>>>> 1:hash_map_perf pre-alloc 804231 events per sec
->>>>>> 15:hash_map_perf pre-alloc 795314 events per sec
->>>>>>
->>>>>> hash_map the worst: no free
->>>>>> ./map_perf_test 2048
->>>>>> 6:worse hash_map_perf pre-alloc 28628 events per sec
->>>>>> 5:worse hash_map_perf pre-alloc 28553 events per sec
->>>>>> 11:worse hash_map_perf pre-alloc 28543 events per sec
->>>>>> 3:worse hash_map_perf pre-alloc 28444 events per sec
->>>>>> 1:worse hash_map_perf pre-alloc 28418 events per sec
->>>>>> 7:worse hash_map_perf pre-alloc 28427 events per sec
->>>>>> 13:worse hash_map_perf pre-alloc 28330 events per sec
->>>>>> 14:worse hash_map_perf pre-alloc 28263 events per sec
->>>>>> 9:worse hash_map_perf pre-alloc 28211 events per sec
->>>>>> 15:worse hash_map_perf pre-alloc 28193 events per sec
->>>>>> 12:worse hash_map_perf pre-alloc 28190 events per sec
->>>>>> 10:worse hash_map_perf pre-alloc 28129 events per sec
->>>>>> 8:worse hash_map_perf pre-alloc 28116 events per sec
->>>>>> 4:worse hash_map_perf pre-alloc 27906 events per sec
->>>>>> 2:worse hash_map_perf pre-alloc 27801 events per sec
->>>>>> 0:worse hash_map_perf pre-alloc 27416 events per sec
->>>>>> 3:worse hash_map_perf pre-alloc 28188 events per sec
->>>>>>
->>>>>> ftrace trace
->>>>>>
->>>>>> 0)               |  htab_map_update_elem() {
->>>>>> 0)   0.198 us    |    migrate_disable();
->>>>>> 0)               |    _raw_spin_lock_irqsave() {
->>>>>> 0)   0.157 us    |      preempt_count_add();
->>>>>> 0)   0.538 us    |    }
->>>>>> 0)   0.260 us    |    lookup_elem_raw();
->>>>>> 0)               |    alloc_htab_elem() {
->>>>>> 0)               |      __pcpu_freelist_pop() {
->>>>>> 0)               |        _raw_spin_lock() {
->>>>>> 0)   0.152 us    |          preempt_count_add();
->>>>>> 0)   0.352 us    | native_queued_spin_lock_slowpath();
->>>>>> 0)   1.065 us    |        }
->>>>>>                   |        ...
->>>>>> 0)               |        _raw_spin_unlock() {
->>>>>> 0)   0.254 us    |          preempt_count_sub();
->>>>>> 0)   0.555 us    |        }
->>>>>> 0) + 25.188 us   |      }
->>>>>> 0) + 25.486 us   |    }
->>>>>> 0)               |    _raw_spin_unlock_irqrestore() {
->>>>>> 0)   0.155 us    |      preempt_count_sub();
->>>>>> 0)   0.454 us    |    }
->>>>>> 0)   0.148 us    |    migrate_enable();
->>>>>> 0) + 28.439 us   |  }
->>>>>>
->>>>>> The test machine is 16C, trying to get spin_lock 17 times, in 
->>>>>> addition
->>>>>> to 16c, there is an extralist.
->>>>> Is this with small max_entries and a large number of cpus?
->>>>>
->>>>> If so, probably better to fix would be to artificially
->>>>> bump max_entries to be 4x of num_cpus.
->>>>> Racy is_empty check still wastes the loop.
->>>>
->>>> This hash_map worst testcase with 16 CPUs, map's max_entries is 1000.
->>>>
->>>> This is the test case I constructed, it is to fill the map on 
->>>> purpose, and then
->>>>
->>>> continue to update, just to reproduce the problem phenomenon.
->>>>
->>>> The bad case we encountered with 96 CPUs, map's max_entries is 10240.
->>>
->>> For such cases, most likely the map is *almost* full. What is the 
->>> performance if we increase map size, e.g., from 10240 to 16K(16192)?
->>
->> Yes, increasing max_entries can temporarily solve this problem, but 
->> when 16k is used up,
->> it will still encounter this problem. This patch is to try to fix 
->> this corner case.
->
-> Okay, if I understand correctly, in your use case, you have lots of 
-> different keys and your intention is NOT to capture all the keys in
-> the hash table. So given a hash table, it is possible that the hash
-> will become full even if you increase the hashtable size.
->
-> Maybe you will occasionally delete some keys which will free some
-> space but the space will be quickly occupied by the new updates.
->
-> For such cases, yes, check whether the free list is empty or not
-> before taking the lock should be helpful. But I am wondering
-> what is the rationale behind your use case.
+From: Menglong Dong <imagedong@tencent.com>
 
-My use case is to monitor the network traffic of the server, and use 
-five-tuple as the key.
-When there is a surge in network traffic, it is possible to cause the 
-hash_map to be full.
+I think there is something wrong with BPF_PROBE_MEM in ___bpf_prog_run()
+in big-endian machine. Let's make a test and see what will happen if we
+want to load a 'u16' with BPF_PROBE_MEM.
 
+Let's make the src value '0x0001', the value of dest register will become
+0x0001000000000000, as the value will be loaded to the first 2 byte of
+DST with following code:
 
+  bpf_probe_read_kernel(&DST, SIZE, (const void *)(long) (SRC + insn->off));
 
+Obviously, the value in DST is not correct. In fact, we can compare
+BPF_PROBE_MEM with LDX_MEM_H:
+
+  DST = *(SIZE *)(unsigned long) (SRC + insn->off);
+
+If the memory load is done by LDX_MEM_H, the value in DST will be 0x1 now.
+
+And I think this error results in the test case 'test_bpf_sk_storage_map'
+failing:
+
+  test_bpf_sk_storage_map:PASS:bpf_iter_bpf_sk_storage_map__open_and_load 0 nsec
+  test_bpf_sk_storage_map:PASS:socket 0 nsec
+  test_bpf_sk_storage_map:PASS:map_update 0 nsec
+  test_bpf_sk_storage_map:PASS:socket 0 nsec
+  test_bpf_sk_storage_map:PASS:map_update 0 nsec
+  test_bpf_sk_storage_map:PASS:socket 0 nsec
+  test_bpf_sk_storage_map:PASS:map_update 0 nsec
+  test_bpf_sk_storage_map:PASS:attach_iter 0 nsec
+  test_bpf_sk_storage_map:PASS:create_iter 0 nsec
+  test_bpf_sk_storage_map:PASS:read 0 nsec
+  test_bpf_sk_storage_map:FAIL:ipv6_sk_count got 0 expected 3
+  $10/26 bpf_iter/bpf_sk_storage_map:FAIL
+
+The code of the test case is simply, it will load sk->sk_family to the
+register with BPF_PROBE_MEM and check if it is AF_INET6. With this patch,
+now the test case 'bpf_iter' can pass:
+
+  $10  bpf_iter:OK
+
+Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+Reviewed-by: Hao Peng <flyingpeng@tencent.com>
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+---
+ kernel/bpf/core.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 13e9dbeeedf3..09e3f374739a 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1945,14 +1945,15 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+ 	LDST(W,  u32)
+ 	LDST(DW, u64)
+ #undef LDST
+-#define LDX_PROBE(SIZEOP, SIZE)							\
++#define LDX_PROBE(SIZEOP, SIZE, TYPE)						\
+ 	LDX_PROBE_MEM_##SIZEOP:							\
+ 		bpf_probe_read_kernel(&DST, SIZE, (const void *)(long) (SRC + insn->off));	\
++		DST = *((TYPE *)&DST);						\
+ 		CONT;
+-	LDX_PROBE(B,  1)
+-	LDX_PROBE(H,  2)
+-	LDX_PROBE(W,  4)
+-	LDX_PROBE(DW, 8)
++	LDX_PROBE(B,  1, u8)
++	LDX_PROBE(H,  2, u16)
++	LDX_PROBE(W,  4, u32)
++	LDX_PROBE(DW, 8, u64)
+ #undef LDX_PROBE
+ 
+ #define ATOMIC_ALU_OP(BOP, KOP)						\
+-- 
+2.36.1
 
