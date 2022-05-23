@@ -2,103 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F5E531EF8
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 00:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042AD531F09
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbiEWW6g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 18:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43934 "EHLO
+        id S230451AbiEWXEg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 19:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbiEWW6f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 18:58:35 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9081AE26E
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 15:58:33 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id n18so14356930plg.5
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 15:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=wHq+sg+OE/u6XNRtcECxJ1AD+aYhdnsIcvM4tS+oY0A=;
-        b=HH9lC4SqxtFMayytf5nJNoi4ila54ZKzSRCTL24yAn7OFNVoa6phG8fDQ9eVmPE+J9
-         sSjSrb5luDqAww9yG6enkpIHjWsORVNOeKWYESsgej5xUMMVlaOtQ42w1QpX6SZgB76+
-         f48i1aiWOGhAg8hUEB+nnSa9lOIyEHgolz5wZ/hVIDAQD1h8ZLzSQlXXZPSbonXx5pel
-         Uy1kP8o6c79hPwhcGwNT+TL2po3DHtqzRUk9nEbqh5r5wWA6Dp/m+4POSgOSxtkAVb48
-         SiXaQTFWfJDrSx8wqzELL0y+fb8gQU/uAP6mW5B3Adeo/usrxgXQXeb2j0uJxO/adZb/
-         54nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=wHq+sg+OE/u6XNRtcECxJ1AD+aYhdnsIcvM4tS+oY0A=;
-        b=RE3MHawuShC0akIQGhedJAiQCdYlEPQlSmpbDT7LPVarzWZhTrEYCOzuqV2R0OF4r1
-         yLiLuGqyXw0NzIYo86YCMTBcXUz650KcKspwocSA8OM3U7Fb5d2+0WP5f9vFDc/d6Vut
-         XukZN0cUbsnpE32+C3b3s1lldh7F6dJbWsRHnPkGdoy2xQruBsHs1znBC7QSx+cESPuJ
-         vjr6x6sIk4WMmAx3p/yOkJiTHilNBrf2vmSi+qm+GsYTu7RxRppJS26OY4M0wUZRDHiY
-         rOp86X5Of+fmXJV4PZ7nCNWah4pTv18uTjP9FN4o1MGHjn/k9agT/d+jxdKx6C9nKU6u
-         GZDA==
-X-Gm-Message-State: AOAM532cJjvcr7u+/9xuXVsaD2qxahL5X51g5zJsJuEx4EfqW9DboeeF
-        VdHy4RbyfJxe4/XP/VbY7Uf+FA==
-X-Google-Smtp-Source: ABdhPJyC8aRGUUkFw4ktiNZ/AjvdeMkpEncOwD2eaAk791J5zOV+npFs6nxjPMcxl+jFBkUObiG/XQ==
-X-Received: by 2002:a17:90a:e612:b0:1df:4e85:1ad2 with SMTP id j18-20020a17090ae61200b001df4e851ad2mr1321861pjy.242.1653346713120;
-        Mon, 23 May 2022 15:58:33 -0700 (PDT)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id jh5-20020a170903328500b00161527e1d9fsm5645340plb.294.2022.05.23.15.58.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 May 2022 15:58:32 -0700 (PDT)
-Message-ID: <ab35f4fb-b058-8aa7-71f2-fab8d4a5cf26@linaro.org>
-Date:   Mon, 23 May 2022 15:58:31 -0700
+        with ESMTP id S229498AbiEWXEf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 19:04:35 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929B6AF1E7
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 16:04:33 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 9308F240107
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 01:04:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1653347071; bh=3jAwinoZFsIuP6ENXkuzZ1W9QUGoCzXqCQir17LMcyc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kxUdALIGl91titSP/tWM2CrcVl++3T7dJR3tDrlVDle+bAZveZOtUas/NbWfEIRYl
+         NTg/HjswE/NM0fhixQl2ijcHmdPxe+9/v/q7fgoj8U9L0kZ/AwX2TQ4t2eM7IB0PIB
+         m7md1M23VULi6UMMpW/UR5FGMZogYPTcoFq6TvmB/3d1BN//5oyJ1Sj6ykyUvSbk5T
+         06YitwaViZyFJMkLM3rU7pFRIEuh6rL5zFmrKKbt3iRgMJM8p9LZzXiKxmXGkVSBoG
+         Z9dcW2h67Xz5DAdxXYv0ovwnosrnZt6mOEXRPJG8seEDmix6IFEE2lLOnrGLt4jLAq
+         hlrnonnaRikQg==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4L6Xvy2cjDz6tmB;
+        Tue, 24 May 2022 01:04:30 +0200 (CEST)
+From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+Cc:     yhs@fb.com, quentin@isovalent.com
+Subject: [PATCH bpf-next v4 00/12] libbpf: Textual representation of enums
+Date:   Mon, 23 May 2022 23:04:16 +0000
+Message-Id: <20220523230428.3077108-1-deso@posteo.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v4] bpf: Fix KASAN use-after-free Read in
- compute_effective_progs
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
-References: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
- <20220517180420.87954-1-tadeusz.struk@linaro.org>
- <7949d722-86e8-8122-e607-4b09944b76ae@linaro.org>
- <CAEf4BzaD1Z6uOZwbquPYWB0_Z0+CkEKiXQ6zS2imiSHpTgX3pg@mail.gmail.com>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <CAEf4BzaD1Z6uOZwbquPYWB0_Z0+CkEKiXQ6zS2imiSHpTgX3pg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/23/22 15:47, Andrii Nakryiko wrote:
->> Hi Andrii,
->> Do you have any more feedback? Does it look better to you now?
-> Hi, this is on my TODO list, but I need a bit more focused time to
-> think all this through and I haven't managed to get it in last week.
-> I'm worried about the percpu_ref_is_zero(&desc->bpf.refcnt) portion
-> and whether it can cause some skew in the calculated array index, I
-> need to look at this a bit more in depth. Sorry for the delay.
+This patch set introduces the means for querying a textual representation of
+the following BPF related enum types:
+- enum bpf_map_type
+- enum bpf_prog_type
+- enum bpf_attach_type
+- enum bpf_link_type
 
-That's fine. take your time and let me know if there is anything else
-to change/improve. FWIW I tested it extensively with the syzbot repro
-and the issue doesn't trigger anymore.
+To make that possible, we introduce a new public function for each of the types:
+libbpf_bpf_<type>_type_str.
+
+Having a way to query a textual representation has been asked for in the past
+(by systemd, among others). Such representations can generally be useful in
+tracing and logging contexts, among others. At this point, at least one client,
+bpftool, maintains such a mapping manually, which is prone to get out of date as
+new enum variants are introduced. libbpf is arguably best situated to keep this
+list complete and up-to-date. This patch series adds BTF based tests to ensure
+that exhaustiveness is upheld moving forward.
+
+The libbpf provided textual representation can be inferred from the
+corresponding enum variant name by removing the prefix and lowercasing the
+remainder. E.g., BPF_PROG_TYPE_SOCKET_FILTER -> socket_filter. Unfortunately,
+bpftool does not use such a programmatic approach for some of the
+bpf_attach_type variants. We decided in favor of changing its behavior to work
+with libbpf representations. However, for user inputs, specifically, we do
+maintain support for the traditionally used names around (please see patch
+"bpftool: Use libbpf_bpf_attach_type_str").
+
+The patch series is structured as follows:
+- for each enumeration type in {bpf_prog_type, bpf_map_type, bpf_attach_type,
+  bpf_link_type}:
+  - we first introduce the corresponding public libbpf API function
+  - we then add BTF based self-tests
+  - we lastly adjust bpftool to use the libbpf provided functionality
+
+Signed-off-by: Daniel Müller <deso@posteo.net>
+Cc: Quentin Monnet <quentin@isovalent.com>
+
+---
+Changelog:
+v3 -> v4:
+- use full string comparison for newly added attach types
+- switched away from erroneously used kdoc-style comments
+- removed unused prog_types variable and containing section from
+  test_bpftool_synctypes.py
+- adjusted wording in documentation of get_types_from_array function
+- split various test_bpftool_synctypes.py changes into commits where they are
+  required to eliminate temporary failures of this test
+
+v2 -> v3:
+- use LIBBPF_1.0.0 section in libbpf.map for newly added exports
+
+v1 -> v2:
+- adjusted bpftool to work with algorithmically determined attach types as
+  libbpf now uses (just removed prefix from enum name and lowercased the rest)
+  - adjusted tests, man page, and completion script to work with the new names
+  - renamed bpf_attach_type_str -> bpf_attach_type_input_str
+  - for input: added special cases that accept the traditionally used strings as
+    well
+- changed 'char const *' -> 'const char *'
+
+Daniel Müller (12):
+  libbpf: Introduce libbpf_bpf_prog_type_str
+  selftests/bpf: Add test for libbpf_bpf_prog_type_str
+  bpftool: Use libbpf_bpf_prog_type_str
+  libbpf: Introduce libbpf_bpf_map_type_str
+  selftests/bpf: Add test for libbpf_bpf_map_type_str
+  bpftool: Use libbpf_bpf_map_type_str
+  libbpf: Introduce libbpf_bpf_attach_type_str
+  selftests/bpf: Add test for libbpf_bpf_attach_type_str
+  bpftool: Use libbpf_bpf_attach_type_str
+  libbpf: Introduce libbpf_bpf_link_type_str
+  selftests/bpf: Add test for libbpf_bpf_link_type_str
+  bpftool: Use libbpf_bpf_link_type_str
+
+ .../bpftool/Documentation/bpftool-cgroup.rst  |  16 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   5 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  18 +-
+ tools/bpf/bpftool/cgroup.c                    |  53 +++--
+ tools/bpf/bpftool/common.c                    |  82 +++----
+ tools/bpf/bpftool/feature.c                   |  87 +++++---
+ tools/bpf/bpftool/link.c                      |  61 +++---
+ tools/bpf/bpftool/main.h                      |  20 +-
+ tools/bpf/bpftool/map.c                       |  82 +++----
+ tools/bpf/bpftool/prog.c                      |  77 +++----
+ tools/lib/bpf/libbpf.c                        | 160 ++++++++++++++
+ tools/lib/bpf/libbpf.h                        |  36 +++
+ tools/lib/bpf/libbpf.map                      |   6 +
+ .../selftests/bpf/prog_tests/libbpf_str.c     | 207 ++++++++++++++++++
+ .../selftests/bpf/test_bpftool_synctypes.py   | 166 ++++++--------
+ 15 files changed, 738 insertions(+), 338 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_str.c
 
 -- 
-Thanks,
-Tadeusz
+2.30.2
+
