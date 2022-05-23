@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D66531F0B
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8695A531F0C
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 01:04:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbiEWXEi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 19:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        id S231231AbiEWXEm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 19:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbiEWXEh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 19:04:37 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48ECAF1E7
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 16:04:36 -0700 (PDT)
+        with ESMTP id S231181AbiEWXEl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 19:04:41 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D37AF1E7
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 16:04:39 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 75FFC240026
-        for <bpf@vger.kernel.org>; Tue, 24 May 2022 01:04:35 +0200 (CEST)
+        by mout02.posteo.de (Postfix) with ESMTPS id 32874240109
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 01:04:38 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1653347075; bh=Sf4iC7gAUDHgwEV+0emX43wb1LaDPitMA/3OQvH1Xe0=;
+        t=1653347078; bh=tpzraUuhILaL6ydaDGPhVxjviyNPwdJjmr7moXDSC4A=;
         h=From:To:Cc:Subject:Date:From;
-        b=rZzR7WyAQ2vQE/QPV14MgDBX2V431a8iQCNlcDUex5JM2fi/sX+ELkgsCgUE5vIvt
-         F3A+hTILdDcgs/9EM87NrWxn8NGwAsZ4BCNc9+jm0Mo9mVSQ6P2jHI16X5N88OioOb
-         z8akVQtVLT5ioOtbPLCAXz8XT40MdbQdPG2kcCGLJdHXzuvp+Fd7/QXNisfVsHXnXC
-         GGDaaHJjy6tTAWrDyeV3HRJh/oNluHbImiOsd+q05s19tA2p25tlbUrWD8pMVQdPPQ
-         lOBshkIj/mzVoCXH60vQIiDtMOOSaElxJvSM85E1heqCQc6fwrpxm+pbIYPj00SLmC
-         lzWbShanIKCBQ==
+        b=AsUyPJqrQzBF4MZQ2mCaXLLlFCmtnPjaZOGC+tbIGUGrzFZPS6ed+wZUlJJzwrFii
+         2Ef0tt4JR9SYjE2zL+H6q9q+2huoh/o5ryUdaD4ptKaw5YrlrOcFdvtSekEMU3qxIl
+         MIi5PNRZyiAuB641+GFablsjQme0vKzZyVog/79Y6HMA5t+7Jn+5u8/XfRzGzDm2BT
+         b3W0rhjk6Z/OeaGDsHgxSnVSINzucwILttqvqUGpDLK/TkcqmYbfgKoQmVrrfQZ/2i
+         5cZLInLEEVT/411YHb6iP85bqApIaNuJJMUxGzYZqfoO+KnCbDL18vE4QfOdu5dHfE
+         mZIfFWbVOwuDg==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4L6Xw26Bjcz6tmB;
-        Tue, 24 May 2022 01:04:34 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4L6Xw52g1Sz6tmB;
+        Tue, 24 May 2022 01:04:37 +0200 (CEST)
 From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com
 Cc:     yhs@fb.com, quentin@isovalent.com
-Subject: [PATCH bpf-next v4 02/12] selftests/bpf: Add test for libbpf_bpf_prog_type_str
-Date:   Mon, 23 May 2022 23:04:18 +0000
-Message-Id: <20220523230428.3077108-3-deso@posteo.net>
+Subject: [PATCH bpf-next v4 03/12] bpftool: Use libbpf_bpf_prog_type_str
+Date:   Mon, 23 May 2022 23:04:19 +0000
+Message-Id: <20220523230428.3077108-4-deso@posteo.net>
 In-Reply-To: <20220523230428.3077108-1-deso@posteo.net>
 References: <20220523230428.3077108-1-deso@posteo.net>
 MIME-Version: 1.0
@@ -51,81 +51,379 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change adds a test for libbpf_bpf_prog_type_str. The test retrieves
-all variants of the bpf_prog_type enumeration using BTF and makes sure
-that the function under test works as expected for them.
+This change switches bpftool over to using the recently introduced
+libbpf_bpf_prog_type_str function instead of maintaining its own string
+representation for the bpf_prog_type enum.
 
 Signed-off-by: Daniel Müller <deso@posteo.net>
-Acked-by: Quentin Monnet <quentin@isovalent.com>
 Acked-by: Yonghong Song <yhs@fb.com>
+Acked-by: Quentin Monnet <quentin@isovalent.com>
 ---
- .../selftests/bpf/prog_tests/libbpf_str.c     | 57 +++++++++++++++++++
- 1 file changed, 57 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+ tools/bpf/bpftool/feature.c                   | 57 ++++++++++++-------
+ tools/bpf/bpftool/link.c                      | 19 ++++---
+ tools/bpf/bpftool/main.h                      |  3 -
+ tools/bpf/bpftool/map.c                       | 13 +++--
+ tools/bpf/bpftool/prog.c                      | 51 +++--------------
+ .../selftests/bpf/test_bpftool_synctypes.py   | 14 +----
+ 6 files changed, 65 insertions(+), 92 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-new file mode 100644
-index 0000000..42696a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include <ctype.h>
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+
-+/*
-+ * Utility function uppercasing an entire string.
-+ */
-+static void uppercase(char *s)
-+{
-+	for (; *s != '\0'; s++)
-+		*s = toupper(*s);
-+}
-+
-+/*
-+ * Test case to check that all bpf_prog_type variants are covered by
-+ * libbpf_bpf_prog_type_str.
-+ */
-+void test_libbpf_bpf_prog_type_str(void)
-+{
-+	struct btf *btf;
-+	const struct btf_type *t;
-+	const struct btf_enum *e;
-+	int i, n, id;
-+
-+	btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
-+	if (!ASSERT_OK_PTR(btf, "btf_parse"))
-+		return;
-+
-+	/* find enum bpf_prog_type and enumerate each value */
-+	id = btf__find_by_name_kind(btf, "bpf_prog_type", BTF_KIND_ENUM);
-+	if (!ASSERT_GT(id, 0, "bpf_prog_type_id"))
-+		goto cleanup;
-+	t = btf__type_by_id(btf, id);
-+	e = btf_enum(t);
-+	n = btf_vlen(t);
-+	for (i = 0; i < n; e++, i++) {
-+		enum bpf_prog_type prog_type = (enum bpf_prog_type)e->val;
-+		const char *prog_type_name;
-+		const char *prog_type_str;
-+		char buf[256];
-+
-+		prog_type_name = btf__str_by_offset(btf, e->name_off);
+diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+index d12f460..02753f 100644
+--- a/tools/bpf/bpftool/feature.c
++++ b/tools/bpf/bpftool/feature.c
+@@ -548,8 +548,8 @@ static bool probe_prog_type_ifindex(enum bpf_prog_type prog_type, __u32 ifindex)
+ }
+ 
+ static void
+-probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
+-		const char *define_prefix, __u32 ifindex)
++probe_prog_type(enum bpf_prog_type prog_type, const char *prog_type_str,
++		bool *supported_types, const char *define_prefix, __u32 ifindex)
+ {
+ 	char feat_name[128], plain_desc[128], define_name[128];
+ 	const char *plain_comment = "eBPF program_type ";
+@@ -580,20 +580,16 @@ probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
+ 
+ 	supported_types[prog_type] |= res;
+ 
+-	if (!prog_type_name[prog_type]) {
+-		p_info("program type name not found (type %d)", prog_type);
+-		return;
+-	}
+ 	maxlen = sizeof(plain_desc) - strlen(plain_comment) - 1;
+-	if (strlen(prog_type_name[prog_type]) > maxlen) {
++	if (strlen(prog_type_str) > maxlen) {
+ 		p_info("program type name too long");
+ 		return;
+ 	}
+ 
+-	sprintf(feat_name, "have_%s_prog_type", prog_type_name[prog_type]);
+-	sprintf(define_name, "%s_prog_type", prog_type_name[prog_type]);
++	sprintf(feat_name, "have_%s_prog_type", prog_type_str);
++	sprintf(define_name, "%s_prog_type", prog_type_str);
+ 	uppercase(define_name, sizeof(define_name));
+-	sprintf(plain_desc, "%s%s", plain_comment, prog_type_name[prog_type]);
++	sprintf(plain_desc, "%s%s", plain_comment, prog_type_str);
+ 	print_bool_feature(feat_name, plain_desc, define_name, res,
+ 			   define_prefix);
+ }
+@@ -728,10 +724,10 @@ probe_helper_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
+ }
+ 
+ static void
+-probe_helpers_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
++probe_helpers_for_progtype(enum bpf_prog_type prog_type,
++			   const char *prog_type_str, bool supported_type,
+ 			   const char *define_prefix, __u32 ifindex)
+ {
+-	const char *ptype_name = prog_type_name[prog_type];
+ 	char feat_name[128];
+ 	unsigned int id;
+ 	bool probe_res = false;
+@@ -747,12 +743,12 @@ probe_helpers_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
+ 		}
+ 
+ 	if (json_output) {
+-		sprintf(feat_name, "%s_available_helpers", ptype_name);
++		sprintf(feat_name, "%s_available_helpers", prog_type_str);
+ 		jsonw_name(json_wtr, feat_name);
+ 		jsonw_start_array(json_wtr);
+ 	} else if (!define_prefix) {
+ 		printf("eBPF helpers supported for program type %s:",
+-		       ptype_name);
++		       prog_type_str);
+ 	}
+ 
+ 	for (id = 1; id < ARRAY_SIZE(helper_name); id++) {
+@@ -768,7 +764,7 @@ probe_helpers_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
+ 			/* fallthrough */
+ 		default:
+ 			probe_res |= probe_helper_for_progtype(prog_type, supported_type,
+-						  define_prefix, id, ptype_name,
++						  define_prefix, id, prog_type_str,
+ 						  ifindex);
+ 		}
+ 	}
+@@ -943,15 +939,24 @@ static void
+ section_program_types(bool *supported_types, const char *define_prefix,
+ 		      __u32 ifindex)
+ {
+-	unsigned int i;
++	unsigned int prog_type = BPF_PROG_TYPE_UNSPEC;
++	const char *prog_type_str;
+ 
+ 	print_start_section("program_types",
+ 			    "Scanning eBPF program types...",
+ 			    "/*** eBPF program types ***/",
+ 			    define_prefix);
+ 
+-	for (i = BPF_PROG_TYPE_UNSPEC + 1; i < prog_type_name_size; i++)
+-		probe_prog_type(i, supported_types, define_prefix, ifindex);
++	while (true) {
++		prog_type++;
 +		prog_type_str = libbpf_bpf_prog_type_str(prog_type);
-+		ASSERT_OK_PTR(prog_type_str, prog_type_name);
++		/* libbpf will return NULL for variants unknown to it. */
++		if (!prog_type_str)
++			break;
 +
-+		snprintf(buf, sizeof(buf), "BPF_PROG_TYPE_%s", prog_type_str);
-+		uppercase(buf);
-+
-+		ASSERT_STREQ(buf, prog_type_name, "exp_str_value");
++		probe_prog_type(prog_type, prog_type_str, supported_types, define_prefix,
++				ifindex);
 +	}
+ 
+ 	print_end_section();
+ }
+@@ -974,7 +979,8 @@ static void section_map_types(const char *define_prefix, __u32 ifindex)
+ static void
+ section_helpers(bool *supported_types, const char *define_prefix, __u32 ifindex)
+ {
+-	unsigned int i;
++	unsigned int prog_type = BPF_PROG_TYPE_UNSPEC;
++	const char *prog_type_str;
+ 
+ 	print_start_section("helpers",
+ 			    "Scanning eBPF helper functions...",
+@@ -996,9 +1002,18 @@ section_helpers(bool *supported_types, const char *define_prefix, __u32 ifindex)
+ 		       "	%sBPF__PROG_TYPE_ ## prog_type ## __HELPER_ ## helper\n",
+ 		       define_prefix, define_prefix, define_prefix,
+ 		       define_prefix);
+-	for (i = BPF_PROG_TYPE_UNSPEC + 1; i < prog_type_name_size; i++)
+-		probe_helpers_for_progtype(i, supported_types[i], define_prefix,
++	while (true) {
++		prog_type++;
++		prog_type_str = libbpf_bpf_prog_type_str(prog_type);
++		/* libbpf will return NULL for variants unknown to it. */
++		if (!prog_type_str)
++			break;
 +
-+cleanup:
-+	btf__free(btf);
-+}
++		probe_helpers_for_progtype(prog_type, prog_type_str,
++					   supported_types[prog_type],
++					   define_prefix,
+ 					   ifindex);
++	}
+ 
+ 	print_end_section();
+ }
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index 6353a78..e27108 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -121,6 +121,7 @@ static int get_prog_info(int prog_id, struct bpf_prog_info *info)
+ static int show_link_close_json(int fd, struct bpf_link_info *info)
+ {
+ 	struct bpf_prog_info prog_info;
++	const char *prog_type_str;
+ 	int err;
+ 
+ 	jsonw_start_object(json_wtr);
+@@ -137,12 +138,12 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
+ 		if (err)
+ 			return err;
+ 
+-		if (prog_info.type < prog_type_name_size)
+-			jsonw_string_field(json_wtr, "prog_type",
+-					   prog_type_name[prog_info.type]);
++		prog_type_str = libbpf_bpf_prog_type_str(prog_info.type);
++		/* libbpf will return NULL for variants unknown to it. */
++		if (prog_type_str)
++			jsonw_string_field(json_wtr, "prog_type", prog_type_str);
+ 		else
+-			jsonw_uint_field(json_wtr, "prog_type",
+-					 prog_info.type);
++			jsonw_uint_field(json_wtr, "prog_type", prog_info.type);
+ 
+ 		show_link_attach_type_json(info->tracing.attach_type,
+ 					   json_wtr);
+@@ -214,6 +215,7 @@ static void show_iter_plain(struct bpf_link_info *info)
+ static int show_link_close_plain(int fd, struct bpf_link_info *info)
+ {
+ 	struct bpf_prog_info prog_info;
++	const char *prog_type_str;
+ 	int err;
+ 
+ 	show_link_header_plain(info);
+@@ -228,9 +230,10 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
+ 		if (err)
+ 			return err;
+ 
+-		if (prog_info.type < prog_type_name_size)
+-			printf("\n\tprog_type %s  ",
+-			       prog_type_name[prog_info.type]);
++		prog_type_str = libbpf_bpf_prog_type_str(prog_info.type);
++		/* libbpf will return NULL for variants unknown to it. */
++		if (prog_type_str)
++			printf("\n\tprog_type %s  ", prog_type_str);
+ 		else
+ 			printf("\n\tprog_type %u  ", prog_info.type);
+ 
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index aa99ff..74204d 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -63,9 +63,6 @@ static inline void *u64_to_ptr(__u64 ptr)
+ #define HELP_SPEC_LINK							\
+ 	"LINK := { id LINK_ID | pinned FILE }"
+ 
+-extern const char * const prog_type_name[];
+-extern const size_t prog_type_name_size;
+-
+ extern const char * const attach_type_name[__MAX_BPF_ATTACH_TYPE];
+ 
+ extern const char * const map_type_name[];
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index 877387..70a1fd5 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -513,10 +513,12 @@ static int show_map_close_json(int fd, struct bpf_map_info *info)
+ 
+ 		if (owner_prog_type) {
+ 			unsigned int prog_type = atoi(owner_prog_type);
++			const char *prog_type_str;
+ 
+-			if (prog_type < prog_type_name_size)
++			prog_type_str = libbpf_bpf_prog_type_str(prog_type);
++			if (prog_type_str)
+ 				jsonw_string_field(json_wtr, "owner_prog_type",
+-						   prog_type_name[prog_type]);
++						   prog_type_str);
+ 			else
+ 				jsonw_uint_field(json_wtr, "owner_prog_type",
+ 						 prog_type);
+@@ -597,10 +599,11 @@ static int show_map_close_plain(int fd, struct bpf_map_info *info)
+ 			printf("\n\t");
+ 		if (owner_prog_type) {
+ 			unsigned int prog_type = atoi(owner_prog_type);
++			const char *prog_type_str;
+ 
+-			if (prog_type < prog_type_name_size)
+-				printf("owner_prog_type %s  ",
+-				       prog_type_name[prog_type]);
++			prog_type_str = libbpf_bpf_prog_type_str(prog_type);
++			if (prog_type_str)
++				printf("owner_prog_type %s  ", prog_type_str);
+ 			else
+ 				printf("owner_prog_type %d  ", prog_type);
+ 		}
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 5c2c63..39e1e71 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -36,43 +36,6 @@
+ #define BPF_METADATA_PREFIX "bpf_metadata_"
+ #define BPF_METADATA_PREFIX_LEN (sizeof(BPF_METADATA_PREFIX) - 1)
+ 
+-const char * const prog_type_name[] = {
+-	[BPF_PROG_TYPE_UNSPEC]			= "unspec",
+-	[BPF_PROG_TYPE_SOCKET_FILTER]		= "socket_filter",
+-	[BPF_PROG_TYPE_KPROBE]			= "kprobe",
+-	[BPF_PROG_TYPE_SCHED_CLS]		= "sched_cls",
+-	[BPF_PROG_TYPE_SCHED_ACT]		= "sched_act",
+-	[BPF_PROG_TYPE_TRACEPOINT]		= "tracepoint",
+-	[BPF_PROG_TYPE_XDP]			= "xdp",
+-	[BPF_PROG_TYPE_PERF_EVENT]		= "perf_event",
+-	[BPF_PROG_TYPE_CGROUP_SKB]		= "cgroup_skb",
+-	[BPF_PROG_TYPE_CGROUP_SOCK]		= "cgroup_sock",
+-	[BPF_PROG_TYPE_LWT_IN]			= "lwt_in",
+-	[BPF_PROG_TYPE_LWT_OUT]			= "lwt_out",
+-	[BPF_PROG_TYPE_LWT_XMIT]		= "lwt_xmit",
+-	[BPF_PROG_TYPE_SOCK_OPS]		= "sock_ops",
+-	[BPF_PROG_TYPE_SK_SKB]			= "sk_skb",
+-	[BPF_PROG_TYPE_CGROUP_DEVICE]		= "cgroup_device",
+-	[BPF_PROG_TYPE_SK_MSG]			= "sk_msg",
+-	[BPF_PROG_TYPE_RAW_TRACEPOINT]		= "raw_tracepoint",
+-	[BPF_PROG_TYPE_CGROUP_SOCK_ADDR]	= "cgroup_sock_addr",
+-	[BPF_PROG_TYPE_LWT_SEG6LOCAL]		= "lwt_seg6local",
+-	[BPF_PROG_TYPE_LIRC_MODE2]		= "lirc_mode2",
+-	[BPF_PROG_TYPE_SK_REUSEPORT]		= "sk_reuseport",
+-	[BPF_PROG_TYPE_FLOW_DISSECTOR]		= "flow_dissector",
+-	[BPF_PROG_TYPE_CGROUP_SYSCTL]		= "cgroup_sysctl",
+-	[BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE]	= "raw_tracepoint_writable",
+-	[BPF_PROG_TYPE_CGROUP_SOCKOPT]		= "cgroup_sockopt",
+-	[BPF_PROG_TYPE_TRACING]			= "tracing",
+-	[BPF_PROG_TYPE_STRUCT_OPS]		= "struct_ops",
+-	[BPF_PROG_TYPE_EXT]			= "ext",
+-	[BPF_PROG_TYPE_LSM]			= "lsm",
+-	[BPF_PROG_TYPE_SK_LOOKUP]		= "sk_lookup",
+-	[BPF_PROG_TYPE_SYSCALL]			= "syscall",
+-};
+-
+-const size_t prog_type_name_size = ARRAY_SIZE(prog_type_name);
+-
+ enum dump_mode {
+ 	DUMP_JITED,
+ 	DUMP_XLATED,
+@@ -428,12 +391,14 @@ static void show_prog_metadata(int fd, __u32 num_maps)
+ 
+ static void print_prog_header_json(struct bpf_prog_info *info, int fd)
+ {
++	const char *prog_type_str;
+ 	char prog_name[MAX_PROG_FULL_NAME];
+ 
+ 	jsonw_uint_field(json_wtr, "id", info->id);
+-	if (info->type < ARRAY_SIZE(prog_type_name))
+-		jsonw_string_field(json_wtr, "type",
+-				   prog_type_name[info->type]);
++	prog_type_str = libbpf_bpf_prog_type_str(info->type);
++
++	if (prog_type_str)
++		jsonw_string_field(json_wtr, "type", prog_type_str);
+ 	else
+ 		jsonw_uint_field(json_wtr, "type", info->type);
+ 
+@@ -515,11 +480,13 @@ static void print_prog_json(struct bpf_prog_info *info, int fd)
+ 
+ static void print_prog_header_plain(struct bpf_prog_info *info, int fd)
+ {
++	const char *prog_type_str;
+ 	char prog_name[MAX_PROG_FULL_NAME];
+ 
+ 	printf("%u: ", info->id);
+-	if (info->type < ARRAY_SIZE(prog_type_name))
+-		printf("%s  ", prog_type_name[info->type]);
++	prog_type_str = libbpf_bpf_prog_type_str(info->type);
++	if (prog_type_str)
++		printf("%s  ", prog_type_str);
+ 	else
+ 		printf("type %u  ", info->type);
+ 
+diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+index c0e7acd..1f0ff78 100755
+--- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
++++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+@@ -333,9 +333,6 @@ class ProgFileExtractor(SourceFileExtractor):
+     """
+     filename = os.path.join(BPFTOOL_DIR, 'prog.c')
+ 
+-    def get_prog_types(self):
+-        return self.get_types_from_array('prog_type_name')
+-
+     def get_attach_types(self):
+         return self.get_types_from_array('attach_type_strings')
+ 
+@@ -533,16 +530,6 @@ def main():
+     verify(source_map_types, bashcomp_map_types,
+             f'Comparing {MapFileExtractor.filename} (map_type_name) and {BashcompExtractor.filename} (BPFTOOL_MAP_CREATE_TYPES):')
+ 
+-    # Program types (enum)
+-
+-    ref = bpf_info.get_prog_types()
+-
+-    prog_info = ProgFileExtractor()
+-    prog_types = set(prog_info.get_prog_types().keys())
+-
+-    verify(ref, prog_types,
+-            f'Comparing BPF header (enum bpf_prog_type) and {ProgFileExtractor.filename} (prog_type_name):')
+-
+     # Attach types (enum)
+ 
+     ref = bpf_info.get_attach_types()
+@@ -556,6 +543,7 @@ def main():
+ 
+     # Attach types (names)
+ 
++    prog_info = ProgFileExtractor()
+     source_prog_attach_types = set(prog_info.get_attach_types().values())
+ 
+     help_prog_attach_types = prog_info.get_prog_attach_help()
 -- 
 2.30.2
 
