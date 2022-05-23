@@ -2,135 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB03153067E
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 00:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E056153072A
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 03:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348506AbiEVWWl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 May 2022 18:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
+        id S245216AbiEWBg7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 May 2022 21:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbiEVWWi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 May 2022 18:22:38 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ACC240B3;
-        Sun, 22 May 2022 15:22:38 -0700 (PDT)
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24MFaj3F025929;
-        Sun, 22 May 2022 22:22:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=5CkdRqjRscNq/Ois0QptfV9yb1J2HpaTPOg5VbcQ8DM=;
- b=ShFAZ760kNLQYQxjy+FL61em62g/2n0j5me7facf9m9W/gxImVhntSrsQzpfVvo9tJi4
- ff4TtoU6GCnXzPtEi0T20VCw47GgpEEZlvFKiMEBeJEbMdZhkp/C8G0YV94p3rkHYPBB
- P+Sio2DbjRPy4PQVxaI9lpHSd1gaRQ7qgwaHE7ipG6WCk08aUIMM8gXCkns3g+gbcftd
- /zOyCLZA9gZ4a3FWJ9jzAb+6y8oVUZ0KJMFqcAcxEyhvilEceewfCBtUKUfCrAuTSs0l
- UGqLfcpCOeu+ckjL0uhB0nVLkrylE+2F3URtHah0Xtz1/mK8uiXgR8G6J4E1sDOuh86V ag== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g79f4y0m6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 22 May 2022 22:22:21 +0000
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 24MMKcRX020257;
-        Sun, 22 May 2022 22:22:20 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3g79f4y0ke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 22 May 2022 22:22:20 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 24MMCtgG010241;
-        Sun, 22 May 2022 22:22:18 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 3g6qq8t2pv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 22 May 2022 22:22:17 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 24MMMEQE24052000
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 22 May 2022 22:22:14 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E876AE045;
-        Sun, 22 May 2022 22:22:14 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 898D6AE051;
-        Sun, 22 May 2022 22:22:13 +0000 (GMT)
-Received: from [9.171.72.230] (unknown [9.171.72.230])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 22 May 2022 22:22:13 +0000 (GMT)
-Message-ID: <63d07a63565b0f059f5b04dbe294dc4f8d4c91fb.camel@linux.ibm.com>
-Subject: Re: [PATCH] s390/bpf: fix typo in comment
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     kernel-janitors@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S244170AbiEWBg6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 May 2022 21:36:58 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593DD2FE58
+        for <bpf@vger.kernel.org>; Sun, 22 May 2022 18:36:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 11346B80E8D
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 01:36:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C013BC341C0
+        for <bpf@vger.kernel.org>; Mon, 23 May 2022 01:36:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653269812;
+        bh=L6h6qT+8nc10xaEUPypDDnsnQ4L6qOJI2IkYaR1N0QA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O/fVkXaQICAKI8TeLh/3g55975QrYytC9Zj8DgRPCvgtKljx0u5I6uvOuBSBA8+bQ
+         4BjFse2W6uERi0GXiYtNbBiH7cJiej2DETjY8V+nFt03WAcsFqedhfgeld1YUDCGC4
+         G5tbKz+hBO/hde9oUtaCbuYH0LjqR5Rh2Zr5VIOo00u6DWqvbNbmCN5XJYVKCa8dmg
+         +DnbTnN7dDDaJhYfWwH0velWxUkKZKZT/7XyvsMi1ppdA+Tcs7vZ98ufHodArkXj2t
+         UqoMfLbhgMWEzBQtAOxYyeKcaK5ilFq4kHmcGKRlT+a2iuzuUztB4gFCY8Z/3+1Hsg
+         bj1ywxNlY1KUQ==
+Received: by mail-lf1-f47.google.com with SMTP id v8so21170940lfd.8
+        for <bpf@vger.kernel.org>; Sun, 22 May 2022 18:36:52 -0700 (PDT)
+X-Gm-Message-State: AOAM532ihcv2QtR6UvnAcGjvnmlkyqdM2m1yWfLkWtFPWhiCSifo05Tv
+        rWF56JVKk2ecvJZFUE79Dzai4dx4GdtlKShYRCo3lw==
+X-Google-Smtp-Source: ABdhPJzNMfUSnjPL4tskSLO9/0qH0Iujngwr3hBiPy5ZdMwuNLZtASCMVPJR2EEsK4dUQC+cUo0tl+kZ2sYROe7TD1o=
+X-Received: by 2002:a05:6512:3a84:b0:472:6384:4de0 with SMTP id
+ q4-20020a0565123a8400b0047263844de0mr14237606lfu.456.1653269810602; Sun, 22
+ May 2022 18:36:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220518131638.3401509-1-xukuohai@huawei.com> <20220518131638.3401509-6-xukuohai@huawei.com>
+In-Reply-To: <20220518131638.3401509-6-xukuohai@huawei.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Mon, 23 May 2022 03:36:39 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ7r=hP_w_brOv3_d1JAta1_Obi2-EvMu4TEQTyBQMSs6g@mail.gmail.com>
+Message-ID: <CACYkzJ7r=hP_w_brOv3_d1JAta1_Obi2-EvMu4TEQTyBQMSs6g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 5/6] bpf, arm64: bpf trampoline for arm64
+To:     Xu Kuohai <xukuohai@huawei.com>
+Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 23 May 2022 00:22:13 +0200
-In-Reply-To: <20220521111145.81697-84-Julia.Lawall@inria.fr>
-References: <20220521111145.81697-84-Julia.Lawall@inria.fr>
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Delyan Kratunov <delyank@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 2B8uQRJxfEHvQ1900hIT0sofz4GMyRxR
-X-Proofpoint-ORIG-GUID: -ZVWZf9s398XuI8rUJoJfa6A7Zahz82o
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-22_12,2022-05-20_02,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- impostorscore=0 mlxscore=0 suspectscore=0 clxscore=1011 phishscore=0
- mlxlogscore=999 adultscore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2205220140
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2022-05-21 at 13:11 +0200, Julia Lawall wrote:
-> Spelling mistake (triple letters) in comment.
-> Detected with the help of Coccinelle.
-> 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> 
-> ---
->  arch/s390/net/bpf_jit_comp.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/net/bpf_jit_comp.c
-> b/arch/s390/net/bpf_jit_comp.c
-> index aede9a3ca3f7..af35052d06ed 100644
-> --- a/arch/s390/net/bpf_jit_comp.c
-> +++ b/arch/s390/net/bpf_jit_comp.c
-> @@ -1809,7 +1809,7 @@ struct bpf_prog *bpf_int_jit_compile(struct
-> bpf_prog *fp)
->         /*
->          * Three initial passes:
->          *   - 1/2: Determine clobbered registers
-> -        *   - 3:   Calculate program size and addrs arrray
-> +        *   - 3:   Calculate program size and addrs array
->          */
->         for (pass = 1; pass <= 3; pass++) {
->                 if (bpf_jit_prog(&jit, fp, extra_pass, stack_depth))
-> {
-> 
+On Wed, May 18, 2022 at 3:54 PM Xu Kuohai <xukuohai@huawei.com> wrote:
+>
+> Add bpf trampoline support for arm64. Most of the logic is the same as
+> x86.
+>
+> Tested on raspberry pi 4b and qemu with KASLR disabled (avoid long jump),
+> result:
+>  #9  /1     bpf_cookie/kprobe:OK
+>  #9  /2     bpf_cookie/multi_kprobe_link_api:FAIL
+>  #9  /3     bpf_cookie/multi_kprobe_attach_api:FAIL
+>  #9  /4     bpf_cookie/uprobe:OK
+>  #9  /5     bpf_cookie/tracepoint:OK
+>  #9  /6     bpf_cookie/perf_event:OK
+>  #9  /7     bpf_cookie/trampoline:OK
+>  #9  /8     bpf_cookie/lsm:OK
+>  #9         bpf_cookie:FAIL
+>  #18 /1     bpf_tcp_ca/dctcp:OK
+>  #18 /2     bpf_tcp_ca/cubic:OK
+>  #18 /3     bpf_tcp_ca/invalid_license:OK
+>  #18 /4     bpf_tcp_ca/dctcp_fallback:OK
+>  #18 /5     bpf_tcp_ca/rel_setsockopt:OK
+>  #18        bpf_tcp_ca:OK
+>  #51 /1     dummy_st_ops/dummy_st_ops_attach:OK
+>  #51 /2     dummy_st_ops/dummy_init_ret_value:OK
+>  #51 /3     dummy_st_ops/dummy_init_ptr_arg:OK
+>  #51 /4     dummy_st_ops/dummy_multiple_args:OK
+>  #51        dummy_st_ops:OK
+>  #55        fentry_fexit:OK
+>  #56        fentry_test:OK
+>  #57 /1     fexit_bpf2bpf/target_no_callees:OK
+>  #57 /2     fexit_bpf2bpf/target_yes_callees:OK
+>  #57 /3     fexit_bpf2bpf/func_replace:OK
+>  #57 /4     fexit_bpf2bpf/func_replace_verify:OK
+>  #57 /5     fexit_bpf2bpf/func_sockmap_update:OK
+>  #57 /6     fexit_bpf2bpf/func_replace_return_code:OK
+>  #57 /7     fexit_bpf2bpf/func_map_prog_compatibility:OK
+>  #57 /8     fexit_bpf2bpf/func_replace_multi:OK
+>  #57 /9     fexit_bpf2bpf/fmod_ret_freplace:OK
+>  #57        fexit_bpf2bpf:OK
+>  #58        fexit_sleep:OK
+>  #59        fexit_stress:OK
+>  #60        fexit_test:OK
+>  #67        get_func_args_test:OK
+>  #68        get_func_ip_test:OK
+>  #104       modify_return:OK
+>  #237       xdp_bpf2bpf:OK
+>
+> bpf_cookie/multi_kprobe_link_api and bpf_cookie/multi_kprobe_attach_api
+> failed due to lack of multi_kprobe on arm64.
+>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> Acked-by: Song Liu <songliubraving@fb.com>
 
-Thanks!
+Acked-by: KP Singh <kpsingh@kernel.org>
 
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Thanks! This is exciting.
