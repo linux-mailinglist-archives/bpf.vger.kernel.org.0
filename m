@@ -2,153 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B43B531C46
-	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 22:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECF8531825
+	for <lists+bpf@lfdr.de>; Mon, 23 May 2022 22:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbiEWScG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 14:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
+        id S243053AbiEWSrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 14:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240593AbiEWSas (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 14:30:48 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A4F149165
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 11:05:22 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id s23so16079798iog.13
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 11:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hEZ0SLZqkb+4njl47hhZJ/bl4+/t9hX6T5xlTxC0ecc=;
-        b=DDMSWjmjwqQ0UMhcR4HjDsvUczf7UcBxHR0ux1zr0zhtg0jlFq1oAJR0iV8PxMRwox
-         uliiHQdOoi45cUhauwlcYmV+w8xM2DX7D+MAsG5K/ufRLFkRuzUc7ldF3B7hBomTKGnO
-         GlqSJF2Vgrgm7cVQLnU40DI5e/gCJ7DjQ0rt00tNuDJJNorO7JCPH4yVW2Cgp1IniiwB
-         /9uHv6qQTH2p0XoY27UyiGOCtdK7JCeXCsF/iK2kdjMNda0jr58T73td/r73qzHEvZ3N
-         YCJokL75nLn+TBRaT9qaIwYzPDOA3dDPNt3xTDRSfoSNx3X8psem86ERHpd4i2P1Y/Aj
-         8n9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hEZ0SLZqkb+4njl47hhZJ/bl4+/t9hX6T5xlTxC0ecc=;
-        b=sXXZ8TN6R+FTCd4iGNcG6g7F2MQlcb5rbqNwYvMj6bxDx0pHVSC09as2F2x1kF2rb7
-         RP22Y125VBHVaGEBbryCAsPXkEN0maB9NbnbdAGNXbbyPyO0r/YN1/ZRzLpwM6HxkFml
-         BjOUpS8psGpI4+u9+M40xKbZlzNhS6oyLE7ImeXstXF/Ay56p1g1RhbJ3IeJ19ibPt6A
-         d02eYSb8yyxM9V3yp7ogPzS8uqzzpYy7zGbkFaRmrsA+uK7qSYcCP2yqpvnukwpNF8NZ
-         JJvSRGiXmuN3yGMlIIq3p3x+AuvD+d+6w4f+gJ/3Zmw4yt+lOaRKFi85jjC25cU08Q30
-         oBBw==
-X-Gm-Message-State: AOAM532F/+z1DY/azyub8zExIUSeNw55eLAOgpgYa2Dr+doXaDZNrlnQ
-        QWUJ5UW6PLCCZqiE546nfA3IyvmxI1yvcRfsU+3/DPES
-X-Google-Smtp-Source: ABdhPJyo3EkNA44bxYmONsTiz0GC+dG2DyIqsBXdzQqv0Z0amX8S3jenUsVwatGhlqilURNTFbNQo9vW/rUuKLq6rTk=
-X-Received: by 2002:a05:6638:2393:b0:32e:319d:c7cc with SMTP id
- q19-20020a056638239300b0032e319dc7ccmr12030471jat.103.1653329118914; Mon, 23
- May 2022 11:05:18 -0700 (PDT)
+        with ESMTP id S244613AbiEWSqe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 14:46:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A050813FD47;
+        Mon, 23 May 2022 11:30:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 87F9EB81221;
+        Mon, 23 May 2022 18:30:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3E21CC34117;
+        Mon, 23 May 2022 18:30:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653330612;
+        bh=zWVDv4dbGwoq4snZdUxm70TnPh1v/67voIzRwGurLvo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fSkBk3ZMYZUd+ampc3vwe7YX/RUaWjctKGslJC8EqpHg0kd2NMSQ8eYgcibGBH7u1
+         ih2R+wNAS8yhPGQnZhUeNkOAj/wsyMWP3URkMQTmiGil1DKsObSviYFWyi59zj1iwy
+         d6tCqXrx2jXFto/4oNyldOmwG96hX6TbrGZ6bRTWSVIpxUhLyAaS70yNwc012eGjyD
+         D6CpLPWykUOU5BBGLkNdIH3sRLkU/F5pxtVYgsxMbV2bbnf86DbaswC5Kdl/+VXF5G
+         uEFTzxKRSpcZk5UFR9/drUeKzTs62DVY3STsU+oqi1onmvN3qdYISq/J89ZvjcNEZU
+         rk1HRSZcHgQ7w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 22FD8F03948;
+        Mon, 23 May 2022 18:30:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220519213001.729261-1-deso@posteo.net> <20220519213001.729261-10-deso@posteo.net>
- <83796c5c-bb91-bfd0-b02d-e99fa5117a61@isovalent.com>
-In-Reply-To: <83796c5c-bb91-bfd0-b02d-e99fa5117a61@isovalent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 May 2022 11:05:08 -0700
-Message-ID: <CAEf4BzYr1Bi4QGXHH2zYQO-tGNw=08vJnfHE1mogS+jAUka6Ow@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 09/12] bpftool: Use libbpf_bpf_attach_type_str
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] libbpf: fix typo in comment
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165333061214.5065.10109451382087512586.git-patchwork-notify@kernel.org>
+Date:   Mon, 23 May 2022 18:30:12 +0000
+References: <20220521111145.81697-71-Julia.Lawall@inria.fr>
+In-Reply-To: <20220521111145.81697-71-Julia.Lawall@inria.fr>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     ast@kernel.org, kernel-janitors@vger.kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 23, 2022 at 4:48 AM Quentin Monnet <quentin@isovalent.com> wrot=
-e:
->
-> 2022-05-19 21:29 UTC+0000 ~ Daniel M=C3=BCller <deso@posteo.net>
-> > This change switches bpftool over to using the recently introduced
-> > libbpf_bpf_attach_type_str function instead of maintaining its own
-> > string representation for the bpf_attach_type enum.
-> >
-> > Note that contrary to other enum types, the variant names that bpftool
-> > maps bpf_attach_type to do not follow a simple to follow rule. With
-> > bpf_prog_type, for example, the textual representation can easily be
-> > inferred by stripping the BPF_PROG_TYPE_ prefix and lowercasing the
-> > remaining string. bpf_attach_type violates this rule for various
-> > variants.
-> > We decided to fix up this deficiency with this change, meaning that
-> > bpftool uses the same textual representations as libbpf. Supporting
-> > test, completion scripts, and man pages have been adjusted accordingly.
-> > However, we did add support for accepting (the now undocumented)
-> > original attach type names when they are provided by users.
-> >
-> > For the test (test_bpftool_synctypes.py), I have removed the enum
-> > representation checks, because we no longer mirror the various enum
-> > variant names in bpftool source code. For the man page, help text, and
-> > completion script checks we are now using enum definitions from
-> > uapi/linux/bpf.h as the source of truth directly.
-> >
-> > Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
-> > ---
-> >  .../bpftool/Documentation/bpftool-cgroup.rst  |  16 +-
-> >  .../bpftool/Documentation/bpftool-prog.rst    |   5 +-
-> >  tools/bpf/bpftool/bash-completion/bpftool     |  18 +-
-> >  tools/bpf/bpftool/cgroup.c                    |  49 ++++--
-> >  tools/bpf/bpftool/common.c                    |  82 ++++-----
-> >  tools/bpf/bpftool/link.c                      |  15 +-
-> >  tools/bpf/bpftool/main.h                      |  17 ++
-> >  tools/bpf/bpftool/prog.c                      |  26 ++-
-> >  .../selftests/bpf/test_bpftool_synctypes.py   | 163 ++++++++----------
-> >  9 files changed, 213 insertions(+), 178 deletions(-)
+Hello:
 
-[...]
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-> >  static enum bpf_attach_type parse_attach_type(const char *str)
-> >  {
-> > +     const char *attach_type_str;
-> >       enum bpf_attach_type type;
-> >
-> > -     for (type =3D 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
-> > -             if (attach_type_name[type] &&
-> > -                 is_prefix(str, attach_type_name[type]))
-> > +     for (type =3D 0; ; type++) {
-> > +             attach_type_str =3D libbpf_bpf_attach_type_str(type);
-> > +             if (!attach_type_str)
-> > +                     break;
-> > +             if (is_prefix(str, attach_type_str))
->
-> With so many shared prefixes here, I'm wondering if it would make more
-> sense to compare the whole string instead? Otherwise it's hard to guess
-> which type =E2=80=9Cbpftool c a <cgroup> cgroup_ <prog>=E2=80=9D will use=
-. At the same
-> time we allow prefixing arguments everywhere else, so maybe not worth
-> changing it here. Or we could maybe error out if the string length is <=
-=3D
-> strlen("cgroup_")? Let's see for a follow-up maybe.
->
+On Sat, 21 May 2022 13:11:21 +0200 you wrote:
+> Spelling mistake (triple letters) in comment.
+> Detected with the help of Coccinelle.
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> 
+> ---
+>  tools/lib/bpf/libbpf.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Let's make string match exact for new strings and keep is_prefix()
-logic for legacy values? It's better to split this loop into two then,
-one over new-style strings and then over legacy strings.
+Here is the summary with links:
+  - libbpf: fix typo in comment
+    https://git.kernel.org/bpf/bpf-next/c/bb412cf1d712
 
-> > +                     return type;
-> > +
-> > +             /* Also check traditionally used attach type strings. */
-> > +             attach_type_str =3D bpf_attach_type_input_str(type);
-> > +             if (!attach_type_str)
-> > +                     continue;
-> > +             if (is_prefix(str, attach_type_str))
-> >                       return type;
-> >       }
-> >
->
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-[...]
+
