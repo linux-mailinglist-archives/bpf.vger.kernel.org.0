@@ -2,36 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6718A5323F4
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 09:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BDE5323F6
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 09:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235127AbiEXHU0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 03:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
+        id S232070AbiEXHWN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 03:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbiEXHU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 03:20:26 -0400
+        with ESMTP id S229978AbiEXHWL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 03:22:11 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9935080227;
-        Tue, 24 May 2022 00:20:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F9868305;
+        Tue, 24 May 2022 00:22:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 387CF61554;
-        Tue, 24 May 2022 07:20:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF41EC385AA;
-        Tue, 24 May 2022 07:20:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DDA061554;
+        Tue, 24 May 2022 07:22:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFF89C385AA;
+        Tue, 24 May 2022 07:22:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653376824;
-        bh=2YWf5LxWQDyQyGJemUCiBxpas8j1IUwZLhuvPzte3HM=;
+        s=k20201202; t=1653376929;
+        bh=JuLXRJsUYyT+aAnxt3kzSeplRAxtuhdEB5InII5VG+U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S8zlWKJoM1xCnDH9WqSPWhxWmzwEydonb/vHZc4fHCcpm3Z6HKIjvCRgICxTWICxn
-         MLbPJhboH4pqHkQ3C/Cl6V8u9+LgJsuiQyT2iLWNHsLkhMI+fWKebL6pChLJx/6BWU
-         LIUwLyYk6GlHcjw1nu9Ei3Tj7PCp6sRjBXhfD3EFc/2Nz3npVb5aOG6ZYWcGDan1ga
-         sZcH0LhidrM/i++lVphhY6bzcZaotJr46v6fqOXj/+3Ls8Rg3CrZVzHuLRqK1wSmvy
-         6+KQEzV9tSvQfm2+dD8R8cyzNYqAz/iy2kDzi7WIfp3FBW+LCKFaTYPO5rif5fuNRb
-         yEbC+p8uVHV+g==
-Date:   Tue, 24 May 2022 10:20:17 +0300
+        b=q9+iy9pjSipFy99mAL8Ub74cT+tARNvauwU80QfyDRYFLsQvvXqX72q4+4PgnUop7
+         Gn7054YAJwJkdHwVFpf0NajqVMbfDH7rE4VZGQkWraOoum9ubMDA5FVFgeT4/Ege6P
+         R7SeyTGvGACGt1JSVVMFHLtE7D/h8rhgaCaGzW9riIHWUF7/i9nVZ4UVhb29PaS491
+         Q8Nkh4fYOCr/PyIlTBiJDbrekoKAoHS9eomuO4XuhzpoHuBfRg1bLD/IUZQMQznfft
+         kQ+eRUzK8Fknhko3h7+XDoRC5hbXB2X2tKzb5fqaoQRsxz0NQaCRKVF/8A4q3PoFFX
+         Gv/iHmakUfPPA==
+Date:   Tue, 24 May 2022 10:22:00 +0300
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Song Liu <song@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
@@ -39,15 +39,15 @@ Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         peterz@infradead.org, mcgrof@kernel.org,
         torvalds@linux-foundation.org, rick.p.edgecombe@intel.com,
         kernel-team@fb.com
-Subject: Re: [PATCH v4 bpf-next 3/8] bpf: introduce bpf_arch_text_invalidate
- for bpf_prog_pack
-Message-ID: <YoyHMXpsGRW2gJ19@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 5/8] bpf: use module_alloc_huge for
+ bpf_prog_pack
+Message-ID: <YoyHmGoEN7kQSw3N@kernel.org>
 References: <20220520235758.1858153-1-song@kernel.org>
- <20220520235758.1858153-4-song@kernel.org>
+ <20220520235758.1858153-6-song@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220520235758.1858153-4-song@kernel.org>
+In-Reply-To: <20220520235758.1858153-6-song@kernel.org>
 X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,76 +58,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 20, 2022 at 04:57:53PM -0700, Song Liu wrote:
-> Introduce bpf_arch_text_invalidate and use it to fill unused part of the
-> bpf_prog_pack with illegal instructions when a BPF program is freed.
+On Fri, May 20, 2022 at 04:57:55PM -0700, Song Liu wrote:
+> Use module_alloc_huge for bpf_prog_pack so that BPF programs sit on
+> PMD_SIZE pages. This benefits system performance by reducing iTLB miss
+> rate. Benchmark of a real web service workload shows this change gives
+> another ~0.2% performance boost on top of PAGE_SIZE bpf_prog_pack
+> (which improve system throughput by ~0.5%).
 > 
+> Also, remove set_vm_flush_reset_perms() from alloc_new_pack() and use
+> set_memory_[nx|rw] in bpf_prog_pack_free(). This is because
+> VM_FLUSH_RESET_PERMS does not work with huge pages yet. [1]
+> 
+> [1] https://lore.kernel.org/bpf/aeeeaf0b7ec63fdba55d4834d2f524d8bf05b71b.camel@intel.com/
+> Suggested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 > Signed-off-by: Song Liu <song@kernel.org>
 > ---
->  arch/x86/net/bpf_jit_comp.c | 5 +++++
->  include/linux/bpf.h         | 1 +
->  kernel/bpf/core.c           | 8 ++++++++
->  3 files changed, 14 insertions(+)
+>  kernel/bpf/core.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 > 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index a2b6d197c226..f298b18a9a3d 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -228,6 +228,11 @@ static void jit_fill_hole(void *area, unsigned int size)
->  	memset(area, 0xcc, size);
->  }
->  
-> +int bpf_arch_text_invalidate(void *dst, size_t len)
-> +{
-> +	return IS_ERR_OR_NULL(text_poke_set(dst, 0xcc, len));
-> +}
-> +
->  struct jit_context {
->  	int cleanup_addr; /* Epilogue code offset */
->  
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index cc4d5e394031..a9b1875212f6 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2365,6 +2365,7 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
->  		       void *addr1, void *addr2);
->  
->  void *bpf_arch_text_copy(void *dst, void *src, size_t len);
-> +int bpf_arch_text_invalidate(void *dst, size_t len);
->  
->  struct btf_id_set;
->  bool btf_id_set_contains(const struct btf_id_set *set, u32 id);
 > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 2d0c9d4696ad..cacd8684c3c4 100644
+> index cacd8684c3c4..b64d91fcb0ba 100644
 > --- a/kernel/bpf/core.c
 > +++ b/kernel/bpf/core.c
-> @@ -968,6 +968,9 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
->  	nbits = BPF_PROG_SIZE_TO_NBITS(hdr->size);
->  	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
+> @@ -857,7 +857,7 @@ static size_t select_bpf_prog_pack_size(void)
+>  	void *ptr;
 >  
-> +	WARN_ONCE(bpf_arch_text_invalidate(hdr, hdr->size),
-> +		  "bpf_prog_pack bug: missing bpf_arch_text_invalidate?\n");
+>  	size = BPF_HPAGE_SIZE * num_online_nodes();
+> -	ptr = module_alloc(size);
+> +	ptr = module_alloc_huge(size);
+>  
+>  	/* Test whether we can get huge pages. If not just use PAGE_SIZE
+>  	 * packs.
+> @@ -881,7 +881,7 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
+>  		       GFP_KERNEL);
+>  	if (!pack)
+>  		return NULL;
+> -	pack->ptr = module_alloc(bpf_prog_pack_size);
+> +	pack->ptr = module_alloc_huge(bpf_prog_pack_size);
+>  	if (!pack->ptr) {
+>  		kfree(pack);
+>  		return NULL;
+> @@ -890,7 +890,6 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
+>  	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
+>  	list_add_tail(&pack->list, &pack_list);
+>  
+> -	set_vm_flush_reset_perms(pack->ptr);
+>  	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+>  	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+>  	return pack;
+> @@ -909,10 +908,9 @@ static void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insn
+>  
+>  	if (size > bpf_prog_pack_size) {
+>  		size = round_up(size, PAGE_SIZE);
+> -		ptr = module_alloc(size);
+> +		ptr = module_alloc_huge(size);
+>  		if (ptr) {
+>  			bpf_fill_ill_insns(ptr, size);
+> -			set_vm_flush_reset_perms(ptr);
+>  			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
+>  			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
+>  		}
+> @@ -949,6 +947,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+>  
+>  	mutex_lock(&pack_mutex);
+>  	if (hdr->size > bpf_prog_pack_size) {
+> +		set_memory_nx((unsigned long)hdr, hdr->size / PAGE_SIZE);
+> +		set_memory_rw((unsigned long)hdr, hdr->size / PAGE_SIZE);
 
-Why is this a WARN?
+set_memory_{nx,rw} can fail. Please take care of error handling.
 
-What happens if bpf_arch_text_invalidate() is implemented but returns an error?
-
-> +
->  	bitmap_clear(pack->bitmap, pos, nbits);
+>  		module_memfree(hdr);
+>  		goto out;
+>  	}
+> @@ -975,6 +975,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
 >  	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
 >  				       bpf_prog_chunk_count(), 0) == 0) {
-> @@ -2740,6 +2743,11 @@ void * __weak bpf_arch_text_copy(void *dst, void *src, size_t len)
->  	return ERR_PTR(-ENOTSUPP);
->  }
->  
-> +int __weak bpf_arch_text_invalidate(void *dst, size_t len)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +
->  DEFINE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
->  EXPORT_SYMBOL(bpf_stats_enabled_key);
->  
+>  		list_del(&pack->list);
+> +		set_memory_nx((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+> +		set_memory_rw((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+
+ditto.
+
+>  		module_memfree(pack->ptr);
+>  		kfree(pack);
+>  	}
 > -- 
 > 2.30.2
 > 
