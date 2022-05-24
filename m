@@ -2,156 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFB4532537
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 10:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD8853261E
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 11:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbiEXI3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 04:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        id S234884AbiEXJGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 05:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbiEXI3B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 04:29:01 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DB068999;
-        Tue, 24 May 2022 01:29:00 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id m20so33745549ejj.10;
-        Tue, 24 May 2022 01:29:00 -0700 (PDT)
+        with ESMTP id S235531AbiEXJGb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 05:06:31 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAF831DC7
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 02:06:30 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id t6so24752216wra.4
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 02:06:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J8iMMwvJrOhJib/WJO5AOkA8/W55ndUDelj0bAqrtOY=;
-        b=fXEML4H/V5GrBQrh3PHPt8RNeDd8yeZYwgqDIIHQMQdxhZeYcVy6veC7X/t8sSZvJu
-         KXQTUV6kQxDcvRZKFlXo79UIx4fzIzzqup6uS4gEVRoHryjE7nU2bWNrudmiJutDLO2F
-         A2sExxibinYyWT3BlAo7x6oeQ8DEd0qhsnG/pZOqFvOUD+ROkBxCkoZ2NmlF0WEoQWiB
-         slkbhP7kqKL9wt9/nfsrp2T5W7sXBv3IJsfKmtAkH2N0LaDH2h+N5RHittLYkC/gtZn8
-         SztrDmtsqRd0VGkbz9CbgVwS1nJnmWPeTYm4eHv48ETnLqo6ABaBPHkHq8k9xRxecBgp
-         HV6g==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=xh7cYU8Wq2KxTr228j/cNTFLA81xx3ODWjDCwRg52qk=;
+        b=s68ncFXLx3XCZ/al4U2j5S0eh/tBIZcfCFNCk2j0qnnFPYCA8BNMUh1NQiiH54T1wL
+         kEmd9PvwPP14lWaw5EoqGF3GlwZMzLB6BwXcpYtaO6I0dg6zgtYWa70A8R9sTF0mNkdm
+         ZeIY9881xr1kBKTew3A37c5JpD83ZjGs1EltVU7cXnzHlOb1N0lYKVIJcsLyR2ejpIp4
+         7ssiHpGhBBv/dO5jc109fd7/FFYtXK/fi6iXl3tOj0/K5kW9YxKUOktRBu0Nfl9m8R9S
+         pjhgTJLtFweX2rvsK6opkEdrIXP801V+QzQ1bX5QXUsgggWGpI8i+HThXfb3OBa/5nyf
+         CZvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J8iMMwvJrOhJib/WJO5AOkA8/W55ndUDelj0bAqrtOY=;
-        b=6/CfLZvU6hy6Lktih0RMMCvFNgE75h1OEpVOtV/JS2nkHv9m1i4KZBT7NOXeABkbe0
-         8ZcEjYN9vTqDD9wK2kd4snHz4CtzV5y1/pHplD+gbs6QR7grBJDdHt8q5zUUPvRGr+v9
-         w23QPwgFT0gPKz1u7yWZUKXVOm3jLbvxEtBpzdjN/LfcLM3FrN1W69bolTNhnT8zFKuR
-         U8VDQGdWe/65WqpHLqsagk8jvrUI6edrn3ST/DCGJNl+O2GL+TfeW9MmdRlcahNLZ9jO
-         VwUy024NOhlEdrlJ0aRccANq0Q1ebF9LPDoWJw5m9a9QBtlGtGs1yWBRzgc/iI0tIYih
-         R2+Q==
-X-Gm-Message-State: AOAM5338O2PAM/zjELO5mafIBrvZE/yeO8k/KzQGZdarqZaaWOCQ9dPM
-        8mVQ5JSP2KxowCuXupmJ1XY=
-X-Google-Smtp-Source: ABdhPJxTczwxiPsr8ovX72x6BYU4i9HL5iwVHq/+83cYj9WhBgoaVX33wiNKyOvI5ZSfx2DUHNp3lQ==
-X-Received: by 2002:a17:907:7f8e:b0:6ff:1f9:61f5 with SMTP id qk14-20020a1709077f8e00b006ff01f961f5mr2542597ejc.722.1653380938422;
-        Tue, 24 May 2022 01:28:58 -0700 (PDT)
-Received: from krava (net-93-147-242-253.cust.vodafonedsl.it. [93.147.242.253])
-        by smtp.gmail.com with ESMTPSA id d13-20020a05640208cd00b0042617ba639esm9239873edz.40.2022.05.24.01.28.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 May 2022 01:28:57 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 24 May 2022 10:28:54 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
-Message-ID: <YoyXRij2LaxxTicC@krava>
-References: <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
- <YntnRixbfQ1HCm9T@krava>
- <Ynv+7iaaAbyM38B6@kernel.org>
- <CAEf4BzaQsF31f3WuU32wDCzo6bw7eY8E9zF6Lo218jfw-VQmcA@mail.gmail.com>
- <YoTAhC+6j4JshqN8@krava>
- <YoYj6cb0aPNN/olH@krava>
- <CAEf4Bzaa60kZJbWT0xAqcDMyXBzbg98ShuizJAv7x+8_3X0ZBg@mail.gmail.com>
- <Yokk5XRxBd72fqoW@kernel.org>
- <Yos8hq3NmBwemoJw@krava>
- <CAEf4BzYRJj8sXjYs2ioz6Qq7L2UshZDi4Kt0XLsLtwQSGCpAzg@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=xh7cYU8Wq2KxTr228j/cNTFLA81xx3ODWjDCwRg52qk=;
+        b=fRwWjZz5Cy+QHmCjE+PWtMNf9bboYcnwWL718B0KVa3BSdscEiKFL6psy1ChvhM98y
+         v1tOm4/ZaOAX5LXzyvglsmwjiPg03roeLSuTf6kvgceeWL8KHC3kDMcY/Hw/F1p4KN6J
+         bD1vTbpv8UPxq0YKmWgOkGoCG1R/Ja8RfMS8ChHXfr7ttI+fce8Pf8bHR8wuMJHqzG6c
+         JBPaBG7Xuzz+zavgPYf4ohXxECbcXG/HszxJ+XZNhsGnhGAONgJekK5AyhoQ1I5CDJSq
+         CGa69XWa+6TKURKpZ8srScqgWhR9hdrKkd66ck2LqkaOddY99zFJCMtRWCsCUUrtgtVX
+         9diw==
+X-Gm-Message-State: AOAM532xWeqYWTqwyid5oA19/sHZhyRleQcrEjMbLnr71hWXT7AVDV7W
+        JCKrfD7kNAkO8WuRA+w+ELR1Sw==
+X-Google-Smtp-Source: ABdhPJy42p7BjFVgu3GhZfbou6XS5HRM8dP2UUTyeLLS/H2Skul1FpUTGESdum1vFEh/obT9xuXCrA==
+X-Received: by 2002:adf:8bc2:0:b0:20e:7a89:277 with SMTP id w2-20020adf8bc2000000b0020e7a890277mr17106769wra.58.1653383188821;
+        Tue, 24 May 2022 02:06:28 -0700 (PDT)
+Received: from [192.168.178.21] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id l15-20020adfbd8f000000b0020e65d7d36asm12590250wrh.11.2022.05.24.02.06.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 May 2022 02:06:28 -0700 (PDT)
+Message-ID: <3d5afb9c-4603-5678-610e-13f025827a60@isovalent.com>
+Date:   Tue, 24 May 2022 10:06:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYRJj8sXjYs2ioz6Qq7L2UshZDi4Kt0XLsLtwQSGCpAzg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v4 09/12] bpftool: Use libbpf_bpf_attach_type_str
+Content-Language: en-GB
+To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
+        bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+Cc:     yhs@fb.com
+References: <20220523230428.3077108-1-deso@posteo.net>
+ <20220523230428.3077108-10-deso@posteo.net>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220523230428.3077108-10-deso@posteo.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 23, 2022 at 03:43:10PM -0700, Andrii Nakryiko wrote:
-> On Mon, May 23, 2022 at 12:49 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Sat, May 21, 2022 at 02:44:05PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Fri, May 20, 2022 at 02:46:49PM -0700, Andrii Nakryiko escreveu:
-> > > > On Thu, May 19, 2022 at 4:03 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > > On Wed, May 18, 2022 at 11:46:44AM +0200, Jiri Olsa wrote:
-> > > > > > On Tue, May 17, 2022 at 03:02:53PM -0700, Andrii Nakryiko wrote:
-> > > > > > > Jiri, libbpf v0.8 is out, can you please re-send your perf patches?
-> > >
-> > > > > > yep, just made new fedora package.. will resend the perf changes soon
-> > >
-> > > > > fedora package is on the way, but I'll need perf/core to merge
-> > > > > the bpf_program__set_insns change.. Arnaldo, any idea when this
-> > > > > could happen?
-> > >
-> > > > Can we land these patches through bpf-next to avoid such complicated
-> > > > cross-tree dependencies? As I started removing libbpf APIs I also
-> > > > noticed that perf is still using few other deprecated APIs:
-> > > >   - bpf_map__next;
-> > > >   - bpf_program__next;
-> > > >   - bpf_load_program;
-> > > >   - btf__get_from_id;
-> >
-> > these were added just to bypass the time window when they were not
-> > available in the package, so can be removed now (in the patch below)
-> >
-> > >
-> > > > It's trivial to fix up, but doing it across few trees will delay
-> > > > libbpf work as well.
-> > >
-> > > > So let's land this through bpf-next, if Arnaldo doesn't mind?
-> > >
-> > > Yeah, that should be ok, the only consideration is that I'm submitting
-> > > this today to Linus:
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=tmp.perf/urgent&id=0ae065a5d265bc5ada13e350015458e0c5e5c351
-> > >
-> > > To address this:
-> > >
-> > > https://lore.kernel.org/linux-perf-users/f0add43b-3de5-20c5-22c4-70aff4af959f@scylladb.com/
-> >
-> > ok, we can do that via bpf-next, but of course there's a problem ;-)
-> >
-> > perf/core already has dependency commit [1]
-> >
-> > so either we wait for perf/core and bpf-next/master to sync or:
-> >
-> >   - perf/core reverts [1] and
-> >   - bpf-next/master takes [1] and the rest
-> >
-> > I have the changes ready if you guys are ok with that
+2022-05-23 23:04 UTC+0000 ~ Daniel Müller <deso@posteo.net>
+> This change switches bpftool over to using the recently introduced
+> libbpf_bpf_attach_type_str function instead of maintaining its own
+> string representation for the bpf_attach_type enum.
 > 
-> So, if I understand correctly, with merge window open bpf-next/master
-> will get code from perf/core soon when we merge tip back in. So we can
-> wait for that to happen and not revert anything.
+> Note that contrary to other enum types, the variant names that bpftool
+> maps bpf_attach_type to do not adhere a simple to follow rule. With
+> bpf_prog_type, for example, the textual representation can easily be
+> inferred by stripping the BPF_PROG_TYPE_ prefix and lowercasing the
+> remaining string. bpf_attach_type violates this rule for various
+> variants.
+> We decided to fix up this deficiency with this change, meaning that
+> bpftool uses the same textual representations as libbpf. Supporting
+> tests, completion scripts, and man pages have been adjusted accordingly.
+> However, we did add support for accepting (the now undocumented)
+> original attach type names when they are provided by users.
 > 
-> So please add the below patch to your series and resend once tip is
-> merged into bpf-next? Thanks!
+> For the test (test_bpftool_synctypes.py), I have removed the enum
+> representation checks, because we no longer mirror the various enum
+> variant names in bpftool source code. For the man page, help text, and
+> completion script checks we are now using enum definitions from
+> uapi/linux/bpf.h as the source of truth directly.
+> 
+> Signed-off-by: Daniel Müller <deso@posteo.net>
 
-ok
+Looks all good to me this time, thanks again! And thank you for
+splitting the changes on the test script, it's also easier to follow.
 
-jirka
+Acked-by: Quentin Monnet <quentin@isovalent.com>
+
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index 39e1e71..6e08a30 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -41,12 +41,24 @@ enum dump_mode {
+>  	DUMP_XLATED,
+>  };
+>  
+> +static const bool attach_types[] = {
+> +	[BPF_SK_SKB_STREAM_PARSER] = true,
+> +	[BPF_SK_SKB_STREAM_VERDICT] = true,
+> +	[BPF_SK_SKB_VERDICT] = true,
+> +	[BPF_SK_MSG_VERDICT] = true,
+> +	[BPF_FLOW_DISSECTOR] = true,
+> +	[__MAX_BPF_ATTACH_TYPE] = false,
+> +};
+> +
+> +/*
+> + * Textual representations traditionally used by the program and kept around for
+> + * the sake of backwards compatibility.
+> + */
+
+Nit: Opening marker for comments should be on the same line as the text,
+but this is not worth a respin.
