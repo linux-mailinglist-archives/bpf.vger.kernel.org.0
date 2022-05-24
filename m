@@ -2,91 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F84C532047
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 03:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6087F53205A
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 03:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbiEXBad (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 May 2022 21:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
+        id S229924AbiEXBsD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 May 2022 21:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbiEXBac (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 May 2022 21:30:32 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA106FD01;
-        Mon, 23 May 2022 18:30:31 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id a10so17026542ioe.9;
-        Mon, 23 May 2022 18:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WWmcSlMLXyPAtUCAvd6HT22Q24cwWlGO+SKtL9DeqKU=;
-        b=g2y1NFt4Sseyx742KMl6xBdUityeBuD37EEwViwqBrkw+a2f6FepgoHeNqAcHs4pnS
-         0d1Nacm02K76ckrC3k60Cc4C8TIqbozizgZCpdm9jM366ElB583C3x0+qMEiKbQa79DU
-         YHDMuqpINrn+W61mvf7NC/5707+lHWwF+Tx1zT+xJQt83X08GyKfcGSLHmDD3wcDUyir
-         po18oBXtV7uTSIYeNHC59VElipZiBC9rlK0g45oJrdVu0oHLfbAF5/b+3h665gFYveW/
-         UjseAlbhaDpLGIt8CVLkZtoWQnBcZcOnoemVbm/5tZaLqXOTTdnmZXZGuhjPdA4Nr1ff
-         j5mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WWmcSlMLXyPAtUCAvd6HT22Q24cwWlGO+SKtL9DeqKU=;
-        b=ANCSUm8y4iPMs/k1ZgOeYd9zz5DtxYtFR11Ky0uYDfp6lOT9DPn63VA4o+Fos2UsKZ
-         x8thq+MWlYGvKMQh+E9ZKYoJU0m+r0vAywNdDlmCW1n4QlVMi6T1JQ3sZfBd/vPJaZ4A
-         JRTT4F0RM52fkMhSIHmThfswutA1OoF/N/yG/yjHkzKGOqe+ooZIGE5YL9ql6BdJ65G3
-         nIHzzeaRmUg8L7Sp9OGGWsCbzChBklpu2WFLYXfqxem7pZBCbXbDd8pOXRXQyGYmMpyh
-         7rRUQKPHeTgnP4Bb+Ltcduw83ynwpByJBuOANJ1LbhP0sFF9iMGedFmr8dwCBiVDJYYp
-         zkTQ==
-X-Gm-Message-State: AOAM5327Qs8gNlxvjDEtZ++tX+3qPGxVtCMwPJF+nZul+dfLxFZqwAlx
-        13UQGZcrFppArHfmhXDqwPHSuwA0QS7aSZJFXlA=
-X-Google-Smtp-Source: ABdhPJwJ0HxGpuHzjlxDM9gFmOF4eLOzadWHpqw1yyOV7Hg8tQXEiwNz+geTsT3zy8fXNVnYebhfAjqXReaLuaUp2N8=
-X-Received: by 2002:a05:6638:2393:b0:32e:319d:c7cc with SMTP id
- q19-20020a056638239300b0032e319dc7ccmr12749526jat.103.1653355831019; Mon, 23
- May 2022 18:30:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220520012133.1217211-1-yosryahmed@google.com>
- <20220520012133.1217211-4-yosryahmed@google.com> <YodGI73xq8aIBrNM@slm.duckdns.org>
- <CAJD7tkbvMcMWESMcWi6TtdCKLr6keBNGgZTnqcHZvBrPa1qWPw@mail.gmail.com>
- <YodNLpxut+Zddnre@slm.duckdns.org> <73fd9853-5dab-8b59-24a0-74c0a6cae88e@fb.com>
- <YofFli6UCX4J5YnU@slm.duckdns.org> <CA+khW7gjWVKrwCgDD-4ZdCf5CMcA4-YL0bLm6aWM74+qNQ4c0A@mail.gmail.com>
- <CAJD7tkaJQjfSy+YARFRkqQ8m7OGJHO9v91mSk-cFeo9Z5UVJKg@mail.gmail.com>
- <20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com>
- <Yogc0Kb5ZVDaQ0oU@slm.duckdns.org> <5b301151-0a65-df43-3a3a-6d57e10cfc2d@fb.com>
- <CA+khW7gGrwTrDsfWp7wj=QaCg01FNj381a1QLs1ThsjAkW85eQ@mail.gmail.com>
- <CAEf4BzbaHeyaHK1sChPMF=L4aQsaBGNtU+R3veqCOFz0A+svEA@mail.gmail.com> <CA+khW7h-fgo+X=OUxAWDe2sPMyWDXUmp574Kq_J884j9whoBfw@mail.gmail.com>
-In-Reply-To: <CA+khW7h-fgo+X=OUxAWDe2sPMyWDXUmp574Kq_J884j9whoBfw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 May 2022 18:30:20 -0700
-Message-ID: <CAEf4BzZOE0zXnRs3rEiO4+KZix7Druu5TqkJH+xX01tgMfQOtQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/5] bpf: Introduce cgroup iter
-To:     Hao Luo <haoluo@google.com>
-Cc:     Yonghong Song <yhs@fb.com>, Tejun Heo <tj@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229783AbiEXBsD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 May 2022 21:48:03 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04177093F;
+        Mon, 23 May 2022 18:48:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4L6cXY58Kpz4xXg;
+        Tue, 24 May 2022 11:47:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1653356880;
+        bh=K1+revtH/yv0Qrw2WEGJdkSco7dLfoks/ykFPLpkllA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VdzKFCZzKZYHAMW/GlIgod3jp04n1EdFzULjxFha9Yr3cCMoPn8uE6POS/ZhIw12L
+         Iu8moSpWKqx3uTjGIc+QtwJfA9dzcdNKLNm6R+OeWuaq+ze+DCYcHkokMUI2JqTKyg
+         vfz7WsfEHvEKJXPEs1TqnonZmiTx2dxHCvfOIoiL6Z7xK/0umxkxzQAmJJ6HHoVjbH
+         ddw9Plx2Hza9grT+R9FvnKY3f4t1rHrTIsFKexngOoGuus3mscu19GieaEb+/NIn7k
+         OJEyK+L3en2dC++/SOcG3+YkKnwwXOMMhTWn3LXv8N5RMG+h2p8a6qt3UjM7gKIrW5
+         3lQOxWYhze5+Q==
+Date:   Tue, 24 May 2022 11:47:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Yan Zhu <zhuyan34@huawei.com>,
+        tangmeng <tangmeng@uniontech.com>
+Subject: Re: linux-next: manual merge of the tip tree with the bpf-next,
+ sysctl trees
+Message-ID: <20220524114756.7cf12f51@canb.auug.org.au>
+In-Reply-To: <20220414112812.652190b5@canb.auug.org.au>
+References: <20220414112812.652190b5@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/.jZxa_kqH6=AjqA_rdVtqsZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,56 +62,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 23, 2022 at 5:53 PM Hao Luo <haoluo@google.com> wrote:
->
-> On Mon, May 23, 2022 at 4:58 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, May 20, 2022 at 7:35 PM Hao Luo <haoluo@google.com> wrote:
-> > >
-> > > On Fri, May 20, 2022 at 5:59 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > On 5/20/22 3:57 PM, Tejun Heo wrote:
-> > > > > Hello,
-> > > > >
-> > > > > On Fri, May 20, 2022 at 03:19:19PM -0700, Alexei Starovoitov wrote:
-> > > > >> We have bpf_map iterator that walks all bpf maps.
-> > > > >> When map iterator is parametrized with map_fd the iterator walks
-> > > > >> all elements of that map.
-> > > > >> cgroup iterator should have similar semantics.
-> > > > >> When non-parameterized it will walk all cgroups and their descendent
-> > > > >> depth first way. I believe that's what Yonghong is proposing.
-> > > > >> When parametrized it will start from that particular cgroup and
-> > > > >> walk all descendant of that cgroup only.
-> > > > >> The bpf prog can stop the iteration right away with ret 1.
-> > > > >> Maybe we can add two parameters. One -> cgroup_fd to use and another ->
-> > > > >> the order of iteration css_for_each_descendant_pre vs _post.
-> > > > >> wdyt?
-> > > > >
-> > > > > Sounds perfectly reasonable to me.
-> > > >
-> > > > This works for me too. Thanks!
-> > > >
-> > >
-> > > This sounds good to me. Thanks. Let's try to do it in the next iteration.
-> >
-> > Can we, in addition to descendant_pre and descendant_post walk
-> > algorithms also add the one that does ascendants walk (i.e., start
-> > from specified cgroup and walk up to the root cgroup)? I don't have
-> > specific example, but it seems natural to include it for "cgroup
-> > iterator" in general. Hopefully it won't add much code to the
-> > implementation.
->
-> Yep. Sounds reasonable and doable. It's just adding a flag to specify
-> traversal order, like:
->
-> {
->   WALK_DESCENDANT_PRE,
->   WALK_DESCENDANT_POST,
->   WALK_PARENT_UP,
+--Sig_/.jZxa_kqH6=AjqA_rdVtqsZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Probably something more like BPF_CG_WALK_DESCENDANT_PRE and so on?
+Hi all,
 
-> };
+On Thu, 14 Apr 2022 11:29:05 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> In bpf_iter's seq_next(), change the algorithm to yield the parent of
-> the current cgroup.
+> Today's linux-next merge of the tip tree got a conflict in:
+>=20
+>   kernel/sysctl.c
+>=20
+> between commit:
+>=20
+>   2900005ea287 ("bpf: Move BPF sysctls from kernel/sysctl.c to BPF core")
+>=20
+> from the bpf-next, sysctl trees and commit:
+>=20
+>   efaa0227f6c6 ("timers: Move timer sysctl into the timer code")
+>=20
+> from the tip tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc kernel/sysctl.c
+> index 47139877f62d,5b7b1a82ae6a..000000000000
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@@ -2227,17 -2288,24 +2227,6 @@@ static struct ctl_table kern_table[] =
+=3D=20
+>   		.extra1		=3D SYSCTL_ZERO,
+>   		.extra2		=3D SYSCTL_ONE,
+>   	},
+> - #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
+>  -#ifdef CONFIG_BPF_SYSCALL
+> --	{
+> - 		.procname	=3D "timer_migration",
+> - 		.data		=3D &sysctl_timer_migration,
+> - 		.maxlen		=3D sizeof(unsigned int),
+>  -		.procname	=3D "unprivileged_bpf_disabled",
+>  -		.data		=3D &sysctl_unprivileged_bpf_disabled,
+>  -		.maxlen		=3D sizeof(sysctl_unprivileged_bpf_disabled),
+> --		.mode		=3D 0644,
+> - 		.proc_handler	=3D timer_migration_handler,
+>  -		.proc_handler	=3D bpf_unpriv_handler,
+> --		.extra1		=3D SYSCTL_ZERO,
+> - 		.extra2		=3D SYSCTL_ONE,
+>  -		.extra2		=3D SYSCTL_TWO,
+>  -	},
+>  -	{
+>  -		.procname	=3D "bpf_stats_enabled",
+>  -		.data		=3D &bpf_stats_enabled_key.key,
+>  -		.maxlen		=3D sizeof(bpf_stats_enabled_key),
+>  -		.mode		=3D 0644,
+>  -		.proc_handler	=3D bpf_stats_handler,
+> --	},
+> --#endif
+>   #if defined(CONFIG_TREE_RCU)
+>   	{
+>   		.procname	=3D "panic_on_rcu_stall",
+
+This is now a conflict between the tip tree and the net-next and sysctl tre=
+es.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.jZxa_kqH6=AjqA_rdVtqsZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmKMOUwACgkQAVBC80lX
+0GxKdAf/VCapTkpdl2TaeRrxWy6kUnx1mUsopvgKxcTGlBtnTkjj4IjJxpxpzV2K
+06qL9ivblASgnykiDHGdf3viUrVdkqVIxQahO2PO6BW9ZFAcWo4y7odNTPDViQUM
+wqbGX3JtiJ98CAcMzZHbTYu29MFjMVmBOe1fpC4zsC/iDZoVCn3rNnxSf+lppsvo
+n9zdrCafsonn2Q1NC3GfpikS3YvZESgeOteHtP/9MMLHw+o6cDVlgqMD7SNvZQrM
+sFpiZO2TQ1PQunZ6W1ikN8DQPHlckXT4xRkv6BDgHKqW/FNf0rsLvZGouM7QpjVJ
+nMqaakNeTv15xhlxO/SXx1SM32YUgw==
+=+mp5
+-----END PGP SIGNATURE-----
+
+--Sig_/.jZxa_kqH6=AjqA_rdVtqsZ--
