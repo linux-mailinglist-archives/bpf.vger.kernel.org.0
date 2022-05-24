@@ -2,72 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A59532D03
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 17:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8292B532DE3
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 17:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235238AbiEXPMk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 11:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
+        id S239110AbiEXPzV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 11:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbiEXPMj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 11:12:39 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3498A33D;
-        Tue, 24 May 2022 08:12:38 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id t5so105514edc.2;
-        Tue, 24 May 2022 08:12:38 -0700 (PDT)
+        with ESMTP id S239111AbiEXPzT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 11:55:19 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11DF95DDB
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 08:55:17 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id t6so26345040wra.4
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 08:55:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1XavLDdHzelFmWJ9+pgUk0yb2GJUxOMHo5yqFSbed4U=;
-        b=fY+byTLZNmtu1GIwmP23F/BSNvSazTj6nd4gKVeAHYsn4dfxYU93P2qbeoPlKoTLQ3
-         BhpE8Ea1lSmDsyCT/b7pUD7+yPX7X5LYOgbCdfhx0VCeupGtjN8SMKIqHmWhVzEe9TQ4
-         +Kb2F7qtu1XmgF1H4Kl10s7a99sjyu02cBY/cPAUa1P8K8NreLDysfBma4Xzsk07HZmw
-         5p+zQC55tJqc2BDufOLrFSUizgpVyEQId4EHgmveDC15wtKFKXnGe6lif3X6k25fGn0W
-         WSu7s7gvPTveMipa2e/ngcG47lVBGYM8nQLkysIFhcga+c72qQIJ5A5IekOQ50AsSG2B
-         eANQ==
+        bh=PRjMEPpJhhvNzJfYuyFcpUO/ZYV0Mptzs7O7U43AFao=;
+        b=YU4ymip4VgpuHKC1Plgw9bCu2Vou5zASXvaxwPMzAuHYh6vot1oedEgJKi483OOgyr
+         Qo958CQyNJoqusHva9hZVWgYfpFIjzGnxuvBWVpt0q/umYVKQrSEQMRID86edrm1SG6d
+         RPPUW/gWFTkiEjlHDuolfxpf2keLNfsU2dREORGFAasIhFVDF3QwGXKYJ3TUodk6+Rk/
+         3OzOron4VDTeUad0BrKdH523qovgEtLfpIOUdkjNEfIV7R2UfDZrBIVqvqEY3NNn/1oM
+         OKGgjYhlcO8KJSMan8h0XZDnGUE0l9ra+ik4jsI8UyAijU/8XlrfRfvHDLxrZc35Dq3S
+         /ltA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1XavLDdHzelFmWJ9+pgUk0yb2GJUxOMHo5yqFSbed4U=;
-        b=TA1qTDvvdS9VUqwICXuIVO5RWbO5DwSU2awfN23pN3+cK77uiLpGamvl08SQTBXWjK
-         o+dBBPtbsJfV/j9ptFUxvvoQ3wWMvl7HZRhiaDhOJaO/WXdMNxzLLEHRg6Ei0SlBdnC+
-         3DrUuScr6b5ksBgJEGgFQI9QlRFYDtFNsTv/yu61tEaWgsm7bXY52gXA5EEw1b5AV6ox
-         IiwByMDK0QHxMxqNRRGA5EULGjGpMUa/jHBxEvO2J4C8SsgQRvt6JF8GZOw3TdNTX76B
-         H8twFT4l9UThe9WV9a3DxJXS4sSVvvC697VudH1hOSTF4SLq1vivHMLt6vmAbnFbeldr
-         17MQ==
-X-Gm-Message-State: AOAM532kTWX7GSTIz+ZWcrFivQqWakABXXV/3XSp0MZgUciIfIxR2JE2
-        Okego/VTO8SMcHZjSXD0XVp52GDVb7r+QV2TgXA=
-X-Google-Smtp-Source: ABdhPJxe3+1zeD4MOFcUnzIuExnm4pSPOWOaFzSYeK3ztpYZqG7hqNhYP1Mt6DNvpUnCuOo6ST9rGP235P2bYTJPDs4=
-X-Received: by 2002:aa7:da8d:0:b0:42a:aa60:8af3 with SMTP id
- q13-20020aa7da8d000000b0042aaa608af3mr29264843eds.94.1653405156815; Tue, 24
- May 2022 08:12:36 -0700 (PDT)
+        bh=PRjMEPpJhhvNzJfYuyFcpUO/ZYV0Mptzs7O7U43AFao=;
+        b=Z3QUKr4vsvi3z3lJHbGrypWChFU/wvhpl7Rh5jU6wjt2EQz1uQcCBSTrAoloLvg7Nh
+         UYCzPVwJUTJBIuQ7ohxPwFOtAR2R7ANAOR/b1bL58mKOB61Dq0/L6CVGnCOHEYZl4ql1
+         WT7+Y0RrcsUfOnKSx2M/ir6w4xcCzG3diEVtWxXlXIz7o0vf6IQPy9J7Q0bbNvB3RMnf
+         S8068mAdPao+/bNc7sYzCYNumWTAUVmWY6K9C4Lju10ZTkPIE16M+yW8iiocRtJtLUFV
+         B6/X4OcNktvQjAMXz/H078oBgREXe3QlQzWTCex6yBvBlPowkaxWu799sRWd2O86zaMg
+         bZiw==
+X-Gm-Message-State: AOAM53286hi8o89GHQAdfJIHHSRRIJ43OKwq6dlpGU5RJZUj4sgpSBIH
+        kcZDScqylwoLIBbdb63SOHlIYLW9ZOiT8YJiOjSxiQ==
+X-Google-Smtp-Source: ABdhPJyUDMAvKVuAcuDBaufoBbVCEZnPdvxhjNOY7R1wk0PEda2kq3i22SmGXXB/RxGnHqNsmUl7FcZnlbM/mmpGVAA=
+X-Received: by 2002:a5d:4a43:0:b0:20f:c53d:6796 with SMTP id
+ v3-20020a5d4a43000000b0020fc53d6796mr9078837wrs.15.1653407716152; Tue, 24 May
+ 2022 08:55:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220520113728.12708-1-shung-hsi.yu@suse.com> <20220520113728.12708-3-shung-hsi.yu@suse.com>
- <f9511485-cda4-4e5e-fe1f-60ffe57e27d1@fb.com> <0cf50c32-ab67-ef23-7b84-ef1d4e007c33@fb.com>
- <YoyEbYGIoiULPQEk@syu-laptop>
-In-Reply-To: <YoyEbYGIoiULPQEk@syu-laptop>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 24 May 2022 08:12:24 -0700
-Message-ID: <CAADnVQ+gJ8ksqGRgYn0kbfTBm2BsvZyc-hRAMbAWhj05LdW6Lw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] bpf: verifier: explain opcode check in check_ld_imm()
-To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
+References: <20220518225531.558008-1-sdf@google.com> <20220518225531.558008-6-sdf@google.com>
+ <20220524034857.jwbjciq3rfb3l5kx@kafai-mbp>
+In-Reply-To: <20220524034857.jwbjciq3rfb3l5kx@kafai-mbp>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 24 May 2022 08:55:04 -0700
+Message-ID: <CAKH8qBuCZVNPZaCRWrTiv7deDCyOkofT_ypvAiuE=OMz=TUuJw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 05/11] bpf: implement BPF_PROG_QUERY for BPF_LSM_CGROUP
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,124 +67,214 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 24, 2022 at 12:11 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+On Mon, May 23, 2022 at 8:49 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Fri, May 20, 2022 at 05:25:36PM -0700, Yonghong Song wrote:
-> > On 5/20/22 4:50 PM, Yonghong Song wrote:
-> > > On 5/20/22 4:37 AM, Shung-Hsi Yu wrote:
-> > > > The BPF_SIZE check in the beginning of check_ld_imm() actually guard
-> > > > against program with JMP instructions that goes to the second
-> > > > instruction of BPF_LD_IMM64, but may be easily dismissed as an simple
-> > > > opcode check that's duplicating the effort of bpf_opcode_in_insntable().
-> > > >
-> > > > Add comment to better reflect the importance of the check.
-> > > >
-> > > > Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> > > > ---
-> > > >   kernel/bpf/verifier.c | 4 ++++
-> > > >   1 file changed, 4 insertions(+)
-> > > >
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index 79a2695ee2e2..133929751f80 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -9921,6 +9921,10 @@ static int check_ld_imm(struct
-> > > > bpf_verifier_env *env, struct bpf_insn *insn)
-> > > >       struct bpf_map *map;
-> > > >       int err;
-> > > > +    /* checks that this is not the second part of BPF_LD_IMM64, which is
-> > > > +     * skipped over during opcode check, but a JMP with invalid
-> > > > offset may
-> > > > +     * cause check_ld_imm() to be called upon it.
-> > > > +     */
-> > >
-> > > The check_ld_imm() call context is:
-> > >
-> > >                  } else if (class == BPF_LD) {
-> > >                          u8 mode = BPF_MODE(insn->code);
-> > >
-> > >                          if (mode == BPF_ABS || mode == BPF_IND) {
-> > >                                  err = check_ld_abs(env, insn);
-> > >                                  if (err)
-> > >                                          return err;
-> > >
-> > >                          } else if (mode == BPF_IMM) {
-> > >                                  err = check_ld_imm(env, insn);
-> > >                                  if (err)
-> > >                                          return err;
-> > >
-> > >                                  env->insn_idx++;
-> > >                                  sanitize_mark_insn_seen(env);
-> > >                          } else {
-> > >                                  verbose(env, "invalid BPF_LD mode\n");
-> > >                                  return -EINVAL;
-> > >                          }
-> > >                  }
-> > >
-> > > which is a normal checking of LD_imm64 insn.
-> > >
-> > > I think the to-be-added comment is incorrect and unnecessary.
+> On Wed, May 18, 2022 at 03:55:25PM -0700, Stanislav Fomichev wrote:
+> > We have two options:
+> > 1. Treat all BPF_LSM_CGROUP the same, regardless of attach_btf_id
+> > 2. Treat BPF_LSM_CGROUP+attach_btf_id as a separate hook point
 > >
-> > Okay, double check again and now I understand what happens
-> > when hitting the second insn of ldimm64 with a branch target.
-> > Here we have BPF_LD = 0 and BPF_IMM = 0, so for a branch
-> > target to the 2nd part of ldimm64, it will come to
-> > check_ld_imm() and have error "invalid BPF_LD_IMM insn"
->
-> Yes, the 2nd instruction uses the reserved opcode 0, which could be
-> interpreted as BPF_LD | BPF_W | BPF_IMM.
->
-> > So check_ld_imm() is to check whether the insn is a
-> > *legal* insn for the first part of ldimm64.
+> > I was doing (2) in the original patch, but switching to (1) here:
 > >
-> > So the comment may be rewritten as below.
+> > * bpf_prog_query returns all attached BPF_LSM_CGROUP programs
+> > regardless of attach_btf_id
+> > * attach_btf_id is exported via bpf_prog_info
 > >
-> > This is to verify whether an insn is a BPF_LD_IMM64
-> > or not. But since BPF_LD = 0 and BPF_IMM = 0, if the branch
-> > target comes to the second part of BPF_LD_IMM64,
-> > the control may come here as well.
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  include/uapi/linux/bpf.h |   5 ++
+> >  kernel/bpf/cgroup.c      | 103 +++++++++++++++++++++++++++------------
+> >  kernel/bpf/syscall.c     |   4 +-
+> >  3 files changed, 81 insertions(+), 31 deletions(-)
 > >
-> > > >       if (BPF_SIZE(insn->code) != BPF_DW) {
-> > > >           verbose(env, "invalid BPF_LD_IMM insn\n");
-> > > >           return -EINVAL;
->
-> After giving it a bit more though, maybe it'd be clearer if we simply detect
-> such case in the JMP branch of do_check().
->
-> Something like this instead. Though I haven't tested yet, and it still check
-> the jump destination even it's a dead branch.
->
-> ---
->  kernel/bpf/verifier.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index aedac2ac02b9..59228806884e 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -12191,6 +12191,25 @@ static int do_check(struct bpf_verifier_env *env)
->                         u8 opcode = BPF_OP(insn->code);
->
->                         env->jmps_processed++;
-> +
-> +                       /* check jump offset */
-> +                       if (opcode != BPF_CALL && opcode != BPF_EXIT) {
-> +                               u32 dst_insn_idx = env->insn_idx + insn->off + 1;
-> +                               struct bpf_insn *dst_insn = &insns[dst_insn_idx];
-> +
-> +                               if (dst_insn_idx > insn_cnt) {
-> +                                       verbose(env, "invalid JMP idx %d off %d beyond end of program insn_cnt %d\n", env->insn_idx, insn->off, insn_cnt);
-> +                                       return -EFAULT;
-> +                               }
-> +                               if (!bpf_opcode_in_insntable(dst_insn->code)) {
-> +                                       /* Should we simply tell the user that it's a
-> +                                        * jump to the 2nd LD_IMM64 instruction
-> +                                        * here? */
-> +                                       verbose(env, "idx %d JMP to idx %d with unknown opcode %02x\n", env->insn_idx, dst_insn_idx, insn->code);
-> +                                       return -EINVAL;
-> +                               }
-> +                       }
-> +
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index b9d2d6de63a7..432fc5f49567 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1432,6 +1432,7 @@ union bpf_attr {
+> >               __u32           attach_flags;
+> >               __aligned_u64   prog_ids;
+> >               __u32           prog_cnt;
+> > +             __aligned_u64   prog_attach_flags; /* output: per-program attach_flags */
+> >       } query;
+> >
+> >       struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+> > @@ -5911,6 +5912,10 @@ struct bpf_prog_info {
+> >       __u64 run_cnt;
+> >       __u64 recursion_misses;
+> >       __u32 verified_insns;
+> > +     /* BTF ID of the function to attach to within BTF object identified
+> > +      * by btf_id.
+> > +      */
+> > +     __u32 attach_btf_func_id;
+> >  } __attribute__((aligned(8)));
+> >
+> >  struct bpf_map_info {
+> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > index a959cdd22870..08a1015ee09e 100644
+> > --- a/kernel/bpf/cgroup.c
+> > +++ b/kernel/bpf/cgroup.c
+> > @@ -1074,6 +1074,7 @@ static int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+> >  static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+> >                             union bpf_attr __user *uattr)
+> >  {
+> > +     __u32 __user *prog_attach_flags = u64_to_user_ptr(attr->query.prog_attach_flags);
+> >       __u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+> >       enum bpf_attach_type type = attr->query.attach_type;
+> >       enum cgroup_bpf_attach_type atype;
+> > @@ -1081,50 +1082,92 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+> >       struct hlist_head *progs;
+> >       struct bpf_prog *prog;
+> >       int cnt, ret = 0, i;
+> > +     int total_cnt = 0;
+> >       u32 flags;
+> >
+> > -     atype = to_cgroup_bpf_attach_type(type);
+> > -     if (atype < 0)
+> > -             return -EINVAL;
+> > +     enum cgroup_bpf_attach_type from_atype, to_atype;
+> >
+> > -     progs = &cgrp->bpf.progs[atype];
+> > -     flags = cgrp->bpf.flags[atype];
+> > +     if (type == BPF_LSM_CGROUP) {
+> > +             from_atype = CGROUP_LSM_START;
+> > +             to_atype = CGROUP_LSM_END;
+> > +     } else {
+> > +             from_atype = to_cgroup_bpf_attach_type(type);
+> > +             if (from_atype < 0)
+> > +                     return -EINVAL;
+> > +             to_atype = from_atype;
+> > +     }
+> >
+> > -     effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
+> > -                                           lockdep_is_held(&cgroup_mutex));
+> > +     for (atype = from_atype; atype <= to_atype; atype++) {
+> > +             progs = &cgrp->bpf.progs[atype];
+> > +             flags = cgrp->bpf.flags[atype];
+> >
+> > -     if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE)
+> > -             cnt = bpf_prog_array_length(effective);
+> > -     else
+> > -             cnt = prog_list_length(progs);
+> > +             effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
+> > +                                                   lockdep_is_held(&cgroup_mutex));
+> >
+> > -     if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
+> > -             return -EFAULT;
+> > -     if (copy_to_user(&uattr->query.prog_cnt, &cnt, sizeof(cnt)))
+> > +             if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE)
+> > +                     total_cnt += bpf_prog_array_length(effective);
+> > +             else
+> > +                     total_cnt += prog_list_length(progs);
+> > +     }
+> > +
+> > +     if (type != BPF_LSM_CGROUP)
+> > +             if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
+> > +                     return -EFAULT;
+> > +     if (copy_to_user(&uattr->query.prog_cnt, &total_cnt, sizeof(total_cnt)))
+> >               return -EFAULT;
+> > -     if (attr->query.prog_cnt == 0 || !prog_ids || !cnt)
+> > +     if (attr->query.prog_cnt == 0 || !prog_ids || !total_cnt)
+> >               /* return early if user requested only program count + flags */
+> >               return 0;
+> > -     if (attr->query.prog_cnt < cnt) {
+> > -             cnt = attr->query.prog_cnt;
+> > +
+> > +     if (attr->query.prog_cnt < total_cnt) {
+> > +             total_cnt = attr->query.prog_cnt;
+> >               ret = -ENOSPC;
+> >       }
+> >
+> > -     if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE) {
+> > -             return bpf_prog_array_copy_to_user(effective, prog_ids, cnt);
+> > -     } else {
+> > -             struct bpf_prog_list *pl;
+> > -             u32 id;
+> > +     for (atype = from_atype; atype <= to_atype; atype++) {
+> > +             if (total_cnt <= 0)
+> > +                     break;
+> >
+> > -             i = 0;
+> > -             hlist_for_each_entry(pl, progs, node) {
+> > -                     prog = prog_list_prog(pl);
+> > -                     id = prog->aux->id;
+> > -                     if (copy_to_user(prog_ids + i, &id, sizeof(id)))
+> > -                             return -EFAULT;
+> > -                     if (++i == cnt)
+> > -                             break;
+> > +             progs = &cgrp->bpf.progs[atype];
+> > +             flags = cgrp->bpf.flags[atype];
+> > +
+> > +             effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
+> > +                                                   lockdep_is_held(&cgroup_mutex));
+> > +
+> > +             if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE)
+> > +                     cnt = bpf_prog_array_length(effective);
+> > +             else
+> > +                     cnt = prog_list_length(progs);
+> > +
+> > +             if (cnt >= total_cnt)
+> > +                     cnt = total_cnt;
+> > +
+> > +             if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE) {
+> > +                     ret = bpf_prog_array_copy_to_user(effective, prog_ids, cnt);
+> > +             } else {
+> > +                     struct bpf_prog_list *pl;
+> > +                     u32 id;
+> > +
+> > +                     i = 0;
+> > +                     hlist_for_each_entry(pl, progs, node) {
+> > +                             prog = prog_list_prog(pl);
+> > +                             id = prog->aux->id;
+> > +                             if (copy_to_user(prog_ids + i, &id, sizeof(id)))
+> > +                                     return -EFAULT;
+> > +                             if (++i == cnt)
+> > +                                     break;
+> > +                     }
+> >               }
+> > +
+> > +             if (prog_attach_flags)
+> > +                     for (i = 0; i < cnt; i++)
+> > +                             if (copy_to_user(prog_attach_flags + i, &flags, sizeof(flags)))
+> > +                                     return -EFAULT;
+> > +
+> > +             prog_ids += cnt;
+> > +             total_cnt -= cnt;
+> > +             if (prog_attach_flags)
+> > +                     prog_attach_flags += cnt;
+> >       }
+> >       return ret;
+> >  }
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 5ed2093e51cc..4137583c04a2 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -3520,7 +3520,7 @@ static int bpf_prog_detach(const union bpf_attr *attr)
+> >       }
+> >  }
+> >
+> > -#define BPF_PROG_QUERY_LAST_FIELD query.prog_cnt
+> > +#define BPF_PROG_QUERY_LAST_FIELD query.prog_attach_flags
+> >
+> >  static int bpf_prog_query(const union bpf_attr *attr,
+> >                         union bpf_attr __user *uattr)
+> > @@ -3556,6 +3556,7 @@ static int bpf_prog_query(const union bpf_attr *attr,
+> >       case BPF_CGROUP_SYSCTL:
+> >       case BPF_CGROUP_GETSOCKOPT:
+> >       case BPF_CGROUP_SETSOCKOPT:
+> > +     case BPF_LSM_CGROUP:
+> >               return cgroup_bpf_prog_query(attr, uattr);
+> >       case BPF_LIRC_MODE2:
+> >               return lirc_prog_query(attr, uattr);
+> > @@ -4066,6 +4067,7 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+> >
+> >       if (prog->aux->btf)
+> >               info.btf_id = btf_obj_id(prog->aux->btf);
+> > +     info.attach_btf_func_id = prog->aux->attach_btf_id;
+> Note that exposing prog->aux->attach_btf_id only may not be enough
+> unless it can assume info.attach_btf_id is always referring to btf_vmlinux
+> for all bpf prog types.
 
-This makes the code worse.
-There is no need for these patches.
+We also export btf_id two lines above, right? Btw, I left a comment in
+the bpftool about those btf_ids, I'm not sure how resolve them and
+always assume vmlinux for now.
