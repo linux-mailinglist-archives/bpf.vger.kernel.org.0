@@ -2,65 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70637532DED
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 17:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBD2532EAE
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 18:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239167AbiEXP47 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 11:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
+        id S234944AbiEXQMz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 12:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232287AbiEXP4u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 11:56:50 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511EE980B4
-        for <bpf@vger.kernel.org>; Tue, 24 May 2022 08:56:48 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id c190-20020a1c35c7000000b0038e37907b5bso1703274wma.0
-        for <bpf@vger.kernel.org>; Tue, 24 May 2022 08:56:48 -0700 (PDT)
+        with ESMTP id S234263AbiEXQMx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 12:12:53 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9967B7E1DA
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 09:12:52 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id d198so13772995iof.12
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 09:12:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3cffZCgP4sr8BnADi733FLoP9vNC7tnFYq6HsCC4n/0=;
-        b=HnoxOwV62O7lG84mgl/xi2qvJFSmAGCP43AcwiVCYPHXEK804cz2ynCdzxQz/nzdYK
-         Iw4qozHTg0zzWkg2ukbeN8BvY5HXrAUvj9m0llajqakPRGXclXzoJIKz+k9+cClkA363
-         dMZp+/1XAxbb0Z016MxDuuhcPa73iEdqXeuCAhtFJwsoVkbgUTA8syLeEqCM8l0oKMth
-         f++tZTJ/+DYvMABxwDcRZWd5ErNOXfnSIkPIIun04J7QBoRxU0nxa22+TApjCx8WB1hN
-         6/PkfZwBOdkRrCfi/J7dQyuniGTh3iCqfZMw6QE2lWbWqHvsbOsEjW/BElcLkNHy0z0q
-         bf8Q==
+        bh=PqnGyjMG/9xSW1zrt309NMQhq/hbepQwLrO4jaLcpgU=;
+        b=h2nyyc3N7FOMlm/oSnvjLjnwe8Uo2EbEKNdPZZBUjaEhMFvzxG3h4TmG7ur2yw3K+N
+         LRcBan9LvqX8nxR18WCdyv63nZOeaaHbtZd3fpcOs24G9qm/NgHzbxd/ans0qDfrLKYk
+         VsRwphyP/rCPtPkJxGmq2HHUg/aJl5NHGE6nI8DHWJNO1jvgg4frnn/8a6XJSieAx9Wk
+         ZfWYxhzj6EwX3y4O0Y3Rl0Up4/dA/BycZsGilLIhehe+lQWaIQRgGwvNS5CqSbmKDtih
+         Ic4dtv0CMolWZ8ihDDHMa3qdv/HBMTc1oJ79EM3ze01Z5aueRVPdni/tYs7RKZ1+JjMk
+         R20Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3cffZCgP4sr8BnADi733FLoP9vNC7tnFYq6HsCC4n/0=;
-        b=qrX8plJoHQYPojl32ghBm8/XB9Nw7sHclcdJ9MwczERKKxmSADVf8p6cPTvBnps9Ds
-         rkcX2/Z48MjlfRr+VsNaRblSzvqLylQt7Qs9fT5oYNqi8X4pFHgekB6+q8JVlqdEARyl
-         iCumu34dE97nGBMouOPPt/pB7j77JoxJ3cACD0TXLqqtzST8L9c1Udxo0/fd4MWLeC+E
-         eK+U0D3mnECMK2yQataBU21k5RxU2sTgqZ3/cBEYRm9CUMi4G4AwHAtsbkSIx7ZM9stB
-         QQfGQkweNFYKiIIWyRZ/FbbGtmqeu9ui4hRlgarXNzORHRHLmBLMCLY2SsrTJ8j3BJlp
-         Ag2Q==
-X-Gm-Message-State: AOAM533gSnxQhEJKAKJLUqKB+X7EbKt6XZDXnmEjtHPEWMnyt9Jo11IO
-        Vpr8NjfOAiGTcAd9rMUqMDfZP7IL6bBImK3E0WWzKy0pZBXpgQ==
-X-Google-Smtp-Source: ABdhPJxRpy4RwaYAEWNGB/4NZSVDsLgz1+2j8/xGCCV6MIR8Q/mJ+Hm+ZqIqtlsbJPQBqgwtocQAFY4h4+4Gzw1eGTw=
-X-Received: by 2002:a05:600c:a42:b0:393:d831:bf05 with SMTP id
- c2-20020a05600c0a4200b00393d831bf05mr4265524wmq.187.1653407806702; Tue, 24
- May 2022 08:56:46 -0700 (PDT)
+        bh=PqnGyjMG/9xSW1zrt309NMQhq/hbepQwLrO4jaLcpgU=;
+        b=5THbNA/3uK7Aiff29nTcBUVp/mx9lw2odhAe7n+y0FVuE+6vN26JT9FQeeJogxUpUu
+         Cl2kWLcwdn0AlEW8NXT9qXgC+4tbUd9kC0TsZHdkkkKE+QB3P73dRVkOL0dXCIYFkhxE
+         Q/JiBrYIDRpmSU7wYndI1gvkczyfdCfCAJkoI9/a8rOnvdMBGYt12bgJpE7NwfnBbUSu
+         jnKxr8tdixghVLU9ngLl/TZ3FI32MxZiflsTZ/9XURzDRXn/JszxJH1bajyKP7mgxHzO
+         Fi046MPOhoH7UoScwsmknDaNQlfeCviDovW9Z95iHb7Vw02okTy12bkI3AgSULKkZEev
+         ZRQg==
+X-Gm-Message-State: AOAM532YQ7Rw/JjVVV37ZOYXe/LbXVCpY2TcwtgvfgRXsNgTjM0qG7Mu
+        LkrsIiCEsThpLJCrypNcMjG0jkxe+Ot/9CrsfD0=
+X-Google-Smtp-Source: ABdhPJzKeM2bI+FV6XhQv4wmRqOuePnzwxBcM64YGhSWAUcxOIWtEjPafZTXw2xfCQHIEFnJ62JuWKmIjR8I+43rbY4=
+X-Received: by 2002:a6b:ed06:0:b0:649:d35f:852c with SMTP id
+ n6-20020a6bed06000000b00649d35f852cmr12594236iog.186.1653408771926; Tue, 24
+ May 2022 09:12:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220518225531.558008-1-sdf@google.com> <20220518225531.558008-4-sdf@google.com>
- <20220521005313.3q3w2ventgwrccrd@kafai-mbp> <CAKH8qBuUW8vSgTaF-K_kOPoX3kXBy5Z=ufcMx8mwTwkxs2wQ6g@mail.gmail.com>
- <20220524054007.nskzzkghazi73xr4@kafai-mbp>
-In-Reply-To: <20220524054007.nskzzkghazi73xr4@kafai-mbp>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 24 May 2022 08:56:35 -0700
-Message-ID: <CAKH8qBudhdTz7w90-pVZGKA57H9+1ymh8jwrc0SPLuNeXr+JRA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 03/11] bpf: per-cgroup lsm flavor
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
+References: <CAPxVHdL-dT2GQh-HEkNjNoTEzA9DRL4W4ZfmUzc1+Bdz89fftQ@mail.gmail.com>
+ <CAEf4BzZg0r4YptYPu8Y_-qp=rY__W6dmb9kLwMV5MAH6C-2PSg@mail.gmail.com> <CAPxVHdJbnu5fk5btxATWM5NTd0NofeJREuX_8R_2i3GX_ho87g@mail.gmail.com>
+In-Reply-To: <CAPxVHdJbnu5fk5btxATWM5NTd0NofeJREuX_8R_2i3GX_ho87g@mail.gmail.com>
+From:   John Mazzie <john.p.mazzie@gmail.com>
+Date:   Tue, 24 May 2022 11:12:39 -0500
+Message-ID: <CAPxVHd+_fmCvhhYWCtjjjvzNi5GNfoDP3=aHgihVwzSwN9vKnQ@mail.gmail.com>
+Subject: Re: Tracing NVMe Driver with BPF missing events
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "John Mazzie (jmazzie)" <jmazzie@micron.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,218 +66,88 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 23, 2022 at 10:40 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Mon, May 23, 2022 at 07:15:03PM -0700, Stanislav Fomichev wrote:
-> > ,
-> >
-> > On Fri, May 20, 2022 at 5:53 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Wed, May 18, 2022 at 03:55:23PM -0700, Stanislav Fomichev wrote:
-> > >
-> > > [ ... ]
-> > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index ea3674a415f9..70cf1dad91df 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -768,6 +768,10 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start, struct bpf_tramp_
-> > > >  u64 notrace __bpf_prog_enter_sleepable(struct bpf_prog *prog, struct bpf_tramp_run_ctx *run_ctx);
-> > > >  void notrace __bpf_prog_exit_sleepable(struct bpf_prog *prog, u64 start,
-> > > >                                      struct bpf_tramp_run_ctx *run_ctx);
-> > > > +u64 notrace __bpf_prog_enter_lsm_cgroup(struct bpf_prog *prog,
-> > > > +                                     struct bpf_tramp_run_ctx *run_ctx);
-> > > > +void notrace __bpf_prog_exit_lsm_cgroup(struct bpf_prog *prog, u64 start,
-> > > > +                                     struct bpf_tramp_run_ctx *run_ctx);
-> > > >  void notrace __bpf_tramp_enter(struct bpf_tramp_image *tr);
-> > > >  void notrace __bpf_tramp_exit(struct bpf_tramp_image *tr);
-> > > >
-> > > > @@ -1035,6 +1039,7 @@ struct bpf_prog_aux {
-> > > >       u64 load_time; /* ns since boottime */
-> > > >       u32 verified_insns;
-> > > >       struct bpf_map *cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE];
-> > > > +     int cgroup_atype; /* enum cgroup_bpf_attach_type */
-> > > >       char name[BPF_OBJ_NAME_LEN];
-> > > >  #ifdef CONFIG_SECURITY
-> > > >       void *security;
-> > > > @@ -1107,6 +1112,12 @@ struct bpf_tramp_link {
-> > > >       u64 cookie;
-> > > >  };
-> > > >
-> > > > +struct bpf_shim_tramp_link {
-> > > > +     struct bpf_tramp_link tramp_link;
-> > > > +     struct bpf_trampoline *tr;
-> > > > +     atomic64_t refcnt;
-> > > There is already a refcnt in 'struct bpf_link'.
-> > > Reuse that one if possible.
-> >
-> > I was assuming that having a per-bpf_shim_tramp_link recfnt might be
-> > more readable. I'll switch to the one from bpf_link per comments
-> > below.
-> >
-> > > [ ... ]
-> > >
-> > > > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> > > > index 01ce78c1df80..c424056f0b35 100644
-> > > > --- a/kernel/bpf/trampoline.c
-> > > > +++ b/kernel/bpf/trampoline.c
-> > > > @@ -11,6 +11,8 @@
-> > > >  #include <linux/rcupdate_wait.h>
-> > > >  #include <linux/module.h>
-> > > >  #include <linux/static_call.h>
-> > > > +#include <linux/bpf_verifier.h>
-> > > > +#include <linux/bpf_lsm.h>
-> > > >
-> > > >  /* dummy _ops. The verifier will operate on target program's ops. */
-> > > >  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-> > > > @@ -497,6 +499,163 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
-> > > >       return err;
-> > > >  }
-> > > >
-> > > > +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
-> > > > +static struct bpf_shim_tramp_link *cgroup_shim_alloc(const struct bpf_prog *prog,
-> > > > +                                                  bpf_func_t bpf_func)
-> > > > +{
-> > > > +     struct bpf_shim_tramp_link *shim_link = NULL;
-> > > > +     struct bpf_prog *p;
-> > > > +
-> > > > +     shim_link = kzalloc(sizeof(*shim_link), GFP_USER);
-> > > > +     if (!shim_link)
-> > > > +             return NULL;
-> > > > +
-> > > > +     p = bpf_prog_alloc(1, 0);
-> > > > +     if (!p) {
-> > > > +             kfree(shim_link);
-> > > > +             return NULL;
-> > > > +     }
-> > > > +
-> > > > +     p->jited = false;
-> > > > +     p->bpf_func = bpf_func;
-> > > > +
-> > > > +     p->aux->cgroup_atype = prog->aux->cgroup_atype;
-> > > > +     p->aux->attach_func_proto = prog->aux->attach_func_proto;
-> > > > +     p->aux->attach_btf_id = prog->aux->attach_btf_id;
-> > > > +     p->aux->attach_btf = prog->aux->attach_btf;
-> > > > +     btf_get(p->aux->attach_btf);
-> > > > +     p->type = BPF_PROG_TYPE_LSM;
-> > > > +     p->expected_attach_type = BPF_LSM_MAC;
-> > > > +     bpf_prog_inc(p);
-> > > > +     bpf_link_init(&shim_link->tramp_link.link, BPF_LINK_TYPE_TRACING, NULL, p);
-> > > > +     atomic64_set(&shim_link->refcnt, 1);
-> > > > +
-> > > > +     return shim_link;
-> > > > +}
-> > > > +
-> > > > +static struct bpf_shim_tramp_link *cgroup_shim_find(struct bpf_trampoline *tr,
-> > > > +                                                 bpf_func_t bpf_func)
-> > > > +{
-> > > > +     struct bpf_tramp_link *link;
-> > > > +     int kind;
-> > > > +
-> > > > +     for (kind = 0; kind < BPF_TRAMP_MAX; kind++) {
-> > > > +             hlist_for_each_entry(link, &tr->progs_hlist[kind], tramp_hlist) {
-> > > > +                     struct bpf_prog *p = link->link.prog;
-> > > > +
-> > > > +                     if (p->bpf_func == bpf_func)
-> > > > +                             return container_of(link, struct bpf_shim_tramp_link, tramp_link);
-> > > > +             }
-> > > > +     }
-> > > > +
-> > > > +     return NULL;
-> > > > +}
-> > > > +
-> > > > +static void cgroup_shim_put(struct bpf_shim_tramp_link *shim_link)
-> > > > +{
-> > > > +     if (shim_link->tr)
-> > > I have been spinning back and forth with this "shim_link->tr" test and
-> > > the "!shim_link->tr" test below with an atomic64_dec_and_test() test
-> > > in between  :)
-> >
-> > I did this dance so I can call cgroup_shim_put from
-> > bpf_trampoline_link_cgroup_shim, I guess that's confusing.
-> > bpf_trampoline_link_cgroup_shim can call cgroup_shim_put when
-> > __bpf_trampoline_link_prog fails (shim_prog->tr==NULL);
-> > cgroup_shim_put can be also called to unlink the prog from the
-> > trampoline (shim_prog->tr!=NULL).
-> >
-> > > > +             bpf_trampoline_put(shim_link->tr);
-> > > Why put(tr) here?
-> > >
-> > > Intuitive thinking is that should be done after __bpf_trampoline_unlink_prog(.., tr)
-> > > which is still using the tr.
-> > > or I missed something inside __bpf_trampoline_unlink_prog(..., tr) ?
-> > >
-> > > > +
-> > > > +     if (!atomic64_dec_and_test(&shim_link->refcnt))
-> > > > +             return;
-> > > > +
-> > > > +     if (!shim_link->tr)
-> > > And this is only for the error case in bpf_trampoline_link_cgroup_shim()?
-> > > Can it be handled locally in bpf_trampoline_link_cgroup_shim()
-> > > where it could actually happen ?
-> >
-> > Yeah, agreed, I'll move the cleanup path to
-> > bpf_trampoline_link_cgroup_shim to make it less confusing here.
-> >
-> > > > +             return;
-> > > > +
-> > > > +     WARN_ON_ONCE(__bpf_trampoline_unlink_prog(&shim_link->tramp_link, shim_link->tr));
-> > > > +     kfree(shim_link);
-> > > How about shim_link->tramp_link.link.prog, is the prog freed ?
-> > >
-> > > Considering the bpf_link_put() does bpf_prog_put(link->prog).
-> > > Is there a reason the bpf_link_put() not used and needs to
-> > > manage its own shim_link->refcnt here ?
-> >
-> > Good catch, I've missed the bpf_prog_put(link->prog) part. Let me see
-> > if I can use the link's refcnt, it seems like I can define my own
-> > link->ops->dealloc to call __bpf_trampoline_unlink_prog and the rest
-> > will be taken care of.
-> >
-> > > > +}
-> > > > +
-> > > > +int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
-> > > > +                                 struct bpf_attach_target_info *tgt_info)
-> > > > +{
-> > > > +     struct bpf_shim_tramp_link *shim_link = NULL;
-> > > > +     struct bpf_trampoline *tr;
-> > > > +     bpf_func_t bpf_func;
-> > > > +     u64 key;
-> > > > +     int err;
-> > > > +
-> > > > +     key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
-> > > > +                                      prog->aux->attach_btf_id);
-> > > > +
-> > > > +     err = bpf_lsm_find_cgroup_shim(prog, &bpf_func);
-> > > > +     if (err)
-> > > > +             return err;
-> > > > +
-> > > > +     tr = bpf_trampoline_get(key, tgt_info);
-> > > > +     if (!tr)
-> > > > +             return  -ENOMEM;
-> > > > +
-> > > > +     mutex_lock(&tr->mutex);
-> > > > +
-> > > > +     shim_link = cgroup_shim_find(tr, bpf_func);
-> > > > +     if (shim_link) {
-> > > > +             /* Reusing existing shim attached by the other program. */
-> > > > +             atomic64_inc(&shim_link->refcnt);
-> > > > +             /* note, we're still holding tr refcnt from above */
-> > > hmm... why it still needs to hold the tr refcnt ?
-> >
-> > I'm assuming we need to hold the trampoline for as long as shim_prog
-> > is attached to it, right? Otherwise it gets kfreed.
-> Each 'attached' cgroup-lsm prog holds the shim_link's refcnt.
-> shim_link holds both the trampoline's and the shim_prog's refcnt.
->
-> As long as there is attached cgroup-lsm prog(s).  shim_link's refcnt
-> should not be zero.  The shim_link will stay and so does the
-> shim_link's trampoline and shim_prog.
->
-> When the last cgroup-lsm prog is detached, bpf_link_put() should
-> unlink itself (and its shim_prog) from the trampoline first and
-> then do a bpf_trampoline_put(tr) and bpf_prog_put(shim_prog).
-> I think bpf_tracing_link_release() is doing something similar also.
+After thinking about this more, maybe it's more to do with the
+interrupt handler for nvme_complete_rq.
 
-Yeah, I played with it a bit yesterday and ended up with the same
-contents as bpf_tracing_link_release. Thanks for the pointers!
+In this situation, sometimes the handler for nvme_setup_cmd could be
+interrupted to handle nvme_complete_rq and in this situation the
+nvme_complete_rq handler wouldn't run. because the nvme_setup_cmd
+handler is not complete.
+
+Is this understanding correct? I'm assuming there is no real
+workaround for this situation, so we may just need to accept some
+missed events.
+
+John
+
+On Sat, May 21, 2022 at 11:52 AM John Mazzie <john.p.mazzie@gmail.com> wrote:
+>
+> In this case is a BPF program the individual handler of a tracepoint,
+> or in my context, a BPF program my compiled program that traces both
+> tracepoints? We aren't running any other BPF tracing during these
+> tests besides my program counting these 2 tracepoints.
+>
+> In my program I have 2 handlers, one for
+> tracepoint:nvme:nvme_setup_cmd and another for
+> tracepoint:nvme:nvme_complete_rq. I've created a PERCPU_HASH map for
+> each handler (unique map for each) to use that keeps track of each
+> time the handler is invoked. The only thing that handler is doing in
+> each case is incrementing the count value in the map. Though I do
+> filter by device on each tracepoint. If I comment out the
+> nvme_setup_cmd code the nvme_complete_rq does get the correct count.
+>
+> The user side of my program just prints the values for each of these
+> maps on a 10 second increment.
+>
+> I can share my code to make this easier, is it preferred that I upload
+> my code to github and share the link in this thread?
+>
+> I agree that your suggestion could be my issue, but I just want to
+> make sure we're on the same page since I'm less familiar with the
+> internals of BPF.
+>
+> Thanks,
+> John
+>
+> On Fri, May 20, 2022 at 7:10 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, May 18, 2022 at 2:35 PM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> > >
+> > > My group at Micron is using BPF and love the tracing capabilities it
+> > > provides. We are mainly focused on the storage subsystem and BPF has
+> > > been really helpful in understanding how the storage subsystem
+> > > interacts with our drives while running applications.
+> > >
+> > > In the process of developing a tool using BPF to trace the nvme
+> > > driver, we ran into an issue with some missing events. I wanted to
+> > > check to see if this is possibly a bug/limitation that I'm hitting or
+> > > if it's expected behavior with heavy tracing. We are trying to trace 2
+> > > trace points (nvme_setup_cmd and nvme_complete_rq) around 1M times a
+> > > second.
+> > > We noticed if we just trace one of the two, we see all the expected
+> > > events, but if we trace both at the same time, the nvme_complete_rq
+> >
+> > kprobe programs have per-CPU reentrancy protection. That is, if some
+> > BPF kprobe/tracepoint program is running and something happens (e.g.,
+> > BPF program calls some kernel function that has another BPF program
+> > attached to it, or preemption happens and another BPF program is
+> > supposed to run) that would trigger another BPF program, then that
+> > nested BPF program invocation will be skipped.
+> >
+> > This might be what happens in your case.
+> >
+> > > misses events. I am using two different percpu_hash maps to count both
+> > > events. One for setup and another for complete. My expectation was
+> > > that tracing these events would affect performance, somewhat, but not
+> > > miss events. Ultimately the tool would be used to trace nvme latencies
+> > > at the driver level by device and process.
+> > >
+> > > My tool was developed using libbpf v0.7, and I've tested on Rocky
+> > > Linux 8.5 (Kernel 4.18.0), Ubuntu 20.04 (Kernel 5.4) and Fedora 36
+> > > (Kernel 5.17.6) with the same results.
+> > >
+> > > Thanks,
+> > > John Mazzie
+> > > Principal Storage Solutions Engineer
+> > > Micron Technology, Inc.
