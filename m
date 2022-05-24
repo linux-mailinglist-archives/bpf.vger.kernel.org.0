@@ -2,168 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BDF532429
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 09:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFB4532537
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 10:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233797AbiEXHfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 03:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
+        id S229615AbiEXI3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 04:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235300AbiEXHfl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 03:35:41 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B727A6AA65;
-        Tue, 24 May 2022 00:35:39 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L6mDv52lwzhYnG;
-        Tue, 24 May 2022 15:34:55 +0800 (CST)
-Received: from container.huawei.com (10.175.104.82) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 24 May 2022 15:35:36 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <ast@kernel.org>, <john.fastabend@gmail.com>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>, <jakub@cloudflare.com>,
-        <lmb@cloudflare.com>, <davem@davemloft.net>, <kafai@fb.com>,
-        <dsahern@kernel.org>, <kuba@kernel.org>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Wang Yufen <wangyufen@huawei.com>
-Subject: [PATCH bpf-next] bpf,sockmap: fix sk->sk_forward_alloc warn_on in sk_stream_kill_queues
-Date:   Tue, 24 May 2022 15:53:11 +0800
-Message-ID: <20220524075311.649153-1-wangyufen@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229534AbiEXI3B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 04:29:01 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DB068999;
+        Tue, 24 May 2022 01:29:00 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id m20so33745549ejj.10;
+        Tue, 24 May 2022 01:29:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J8iMMwvJrOhJib/WJO5AOkA8/W55ndUDelj0bAqrtOY=;
+        b=fXEML4H/V5GrBQrh3PHPt8RNeDd8yeZYwgqDIIHQMQdxhZeYcVy6veC7X/t8sSZvJu
+         KXQTUV6kQxDcvRZKFlXo79UIx4fzIzzqup6uS4gEVRoHryjE7nU2bWNrudmiJutDLO2F
+         A2sExxibinYyWT3BlAo7x6oeQ8DEd0qhsnG/pZOqFvOUD+ROkBxCkoZ2NmlF0WEoQWiB
+         slkbhP7kqKL9wt9/nfsrp2T5W7sXBv3IJsfKmtAkH2N0LaDH2h+N5RHittLYkC/gtZn8
+         SztrDmtsqRd0VGkbz9CbgVwS1nJnmWPeTYm4eHv48ETnLqo6ABaBPHkHq8k9xRxecBgp
+         HV6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J8iMMwvJrOhJib/WJO5AOkA8/W55ndUDelj0bAqrtOY=;
+        b=6/CfLZvU6hy6Lktih0RMMCvFNgE75h1OEpVOtV/JS2nkHv9m1i4KZBT7NOXeABkbe0
+         8ZcEjYN9vTqDD9wK2kd4snHz4CtzV5y1/pHplD+gbs6QR7grBJDdHt8q5zUUPvRGr+v9
+         w23QPwgFT0gPKz1u7yWZUKXVOm3jLbvxEtBpzdjN/LfcLM3FrN1W69bolTNhnT8zFKuR
+         U8VDQGdWe/65WqpHLqsagk8jvrUI6edrn3ST/DCGJNl+O2GL+TfeW9MmdRlcahNLZ9jO
+         VwUy024NOhlEdrlJ0aRccANq0Q1ebF9LPDoWJw5m9a9QBtlGtGs1yWBRzgc/iI0tIYih
+         R2+Q==
+X-Gm-Message-State: AOAM5338O2PAM/zjELO5mafIBrvZE/yeO8k/KzQGZdarqZaaWOCQ9dPM
+        8mVQ5JSP2KxowCuXupmJ1XY=
+X-Google-Smtp-Source: ABdhPJxTczwxiPsr8ovX72x6BYU4i9HL5iwVHq/+83cYj9WhBgoaVX33wiNKyOvI5ZSfx2DUHNp3lQ==
+X-Received: by 2002:a17:907:7f8e:b0:6ff:1f9:61f5 with SMTP id qk14-20020a1709077f8e00b006ff01f961f5mr2542597ejc.722.1653380938422;
+        Tue, 24 May 2022 01:28:58 -0700 (PDT)
+Received: from krava (net-93-147-242-253.cust.vodafonedsl.it. [93.147.242.253])
+        by smtp.gmail.com with ESMTPSA id d13-20020a05640208cd00b0042617ba639esm9239873edz.40.2022.05.24.01.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 May 2022 01:28:57 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 24 May 2022 10:28:54 +0200
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
+Message-ID: <YoyXRij2LaxxTicC@krava>
+References: <CAEf4BzbK9zgetgE1yKkCANTZqizUrXgamJa2X0f0XmzQUdFrCQ@mail.gmail.com>
+ <YntnRixbfQ1HCm9T@krava>
+ <Ynv+7iaaAbyM38B6@kernel.org>
+ <CAEf4BzaQsF31f3WuU32wDCzo6bw7eY8E9zF6Lo218jfw-VQmcA@mail.gmail.com>
+ <YoTAhC+6j4JshqN8@krava>
+ <YoYj6cb0aPNN/olH@krava>
+ <CAEf4Bzaa60kZJbWT0xAqcDMyXBzbg98ShuizJAv7x+8_3X0ZBg@mail.gmail.com>
+ <Yokk5XRxBd72fqoW@kernel.org>
+ <Yos8hq3NmBwemoJw@krava>
+ <CAEf4BzYRJj8sXjYs2ioz6Qq7L2UshZDi4Kt0XLsLtwQSGCpAzg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYRJj8sXjYs2ioz6Qq7L2UshZDi4Kt0XLsLtwQSGCpAzg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-During TCP sockmap redirect pressure test, the following warning is triggered:
-WARNING: CPU: 3 PID: 2145 at net/core/stream.c:205 sk_stream_kill_queues+0xbc/0xd0
-CPU: 3 PID: 2145 Comm: iperf Kdump: loaded Tainted: G        W         5.10.0+ #9
-Call Trace:
- inet_csk_destroy_sock+0x55/0x110
- inet_csk_listen_stop+0xbb/0x380
- tcp_close+0x41b/0x480
- inet_release+0x42/0x80
- __sock_release+0x3d/0xa0
- sock_close+0x11/0x20
- __fput+0x9d/0x240
- task_work_run+0x62/0x90
- exit_to_user_mode_prepare+0x110/0x120
- syscall_exit_to_user_mode+0x27/0x190
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Mon, May 23, 2022 at 03:43:10PM -0700, Andrii Nakryiko wrote:
+> On Mon, May 23, 2022 at 12:49 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Sat, May 21, 2022 at 02:44:05PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > Em Fri, May 20, 2022 at 02:46:49PM -0700, Andrii Nakryiko escreveu:
+> > > > On Thu, May 19, 2022 at 4:03 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> > > > > On Wed, May 18, 2022 at 11:46:44AM +0200, Jiri Olsa wrote:
+> > > > > > On Tue, May 17, 2022 at 03:02:53PM -0700, Andrii Nakryiko wrote:
+> > > > > > > Jiri, libbpf v0.8 is out, can you please re-send your perf patches?
+> > >
+> > > > > > yep, just made new fedora package.. will resend the perf changes soon
+> > >
+> > > > > fedora package is on the way, but I'll need perf/core to merge
+> > > > > the bpf_program__set_insns change.. Arnaldo, any idea when this
+> > > > > could happen?
+> > >
+> > > > Can we land these patches through bpf-next to avoid such complicated
+> > > > cross-tree dependencies? As I started removing libbpf APIs I also
+> > > > noticed that perf is still using few other deprecated APIs:
+> > > >   - bpf_map__next;
+> > > >   - bpf_program__next;
+> > > >   - bpf_load_program;
+> > > >   - btf__get_from_id;
+> >
+> > these were added just to bypass the time window when they were not
+> > available in the package, so can be removed now (in the patch below)
+> >
+> > >
+> > > > It's trivial to fix up, but doing it across few trees will delay
+> > > > libbpf work as well.
+> > >
+> > > > So let's land this through bpf-next, if Arnaldo doesn't mind?
+> > >
+> > > Yeah, that should be ok, the only consideration is that I'm submitting
+> > > this today to Linus:
+> > >
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=tmp.perf/urgent&id=0ae065a5d265bc5ada13e350015458e0c5e5c351
+> > >
+> > > To address this:
+> > >
+> > > https://lore.kernel.org/linux-perf-users/f0add43b-3de5-20c5-22c4-70aff4af959f@scylladb.com/
+> >
+> > ok, we can do that via bpf-next, but of course there's a problem ;-)
+> >
+> > perf/core already has dependency commit [1]
+> >
+> > so either we wait for perf/core and bpf-next/master to sync or:
+> >
+> >   - perf/core reverts [1] and
+> >   - bpf-next/master takes [1] and the rest
+> >
+> > I have the changes ready if you guys are ok with that
+> 
+> So, if I understand correctly, with merge window open bpf-next/master
+> will get code from perf/core soon when we merge tip back in. So we can
+> wait for that to happen and not revert anything.
+> 
+> So please add the below patch to your series and resend once tip is
+> merged into bpf-next? Thanks!
 
-The reason we observed is that:
-When the listener is closing, a connection may have completed the three-way
-handshake but not accepted, and the client has sent some packets. The child
-sks in accept queue release by inet_child_forget()->inet_csk_destroy_sock(),
-but psocks of child sks have not released.
+ok
 
-To fix, add sock_map_destroy to release psocks.
-
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
----
- include/linux/bpf.h   |  1 +
- include/linux/skmsg.h |  1 +
- net/core/skmsg.c      |  1 +
- net/core/sock_map.c   | 23 +++++++++++++++++++++++
- net/ipv4/tcp_bpf.c    |  1 +
- 5 files changed, 27 insertions(+)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index cc4d5e394031..c4de82d5e72c 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2092,6 +2092,7 @@ int sock_map_bpf_prog_query(const union bpf_attr *attr,
- 			    union bpf_attr __user *uattr);
- 
- void sock_map_unhash(struct sock *sk);
-+void sock_map_destroy(struct sock *sk);
- void sock_map_close(struct sock *sk, long timeout);
- #else
- static inline int bpf_prog_offload_init(struct bpf_prog *prog,
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index c5a2d6f50f25..153b6dec9b6a 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -95,6 +95,7 @@ struct sk_psock {
- 	spinlock_t			link_lock;
- 	refcount_t			refcnt;
- 	void (*saved_unhash)(struct sock *sk);
-+	void (*saved_destroy)(struct sock *sk);
- 	void (*saved_close)(struct sock *sk, long timeout);
- 	void (*saved_write_space)(struct sock *sk);
- 	void (*saved_data_ready)(struct sock *sk);
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 22b983ade0e7..7e03f96e441b 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -715,6 +715,7 @@ struct sk_psock *sk_psock_init(struct sock *sk, int node)
- 	psock->eval = __SK_NONE;
- 	psock->sk_proto = prot;
- 	psock->saved_unhash = prot->unhash;
-+	psock->saved_destroy = prot->destroy;
- 	psock->saved_close = prot->close;
- 	psock->saved_write_space = sk->sk_write_space;
- 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 81d4b4756a02..9f08ccfaf6da 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1561,6 +1561,29 @@ void sock_map_unhash(struct sock *sk)
- }
- EXPORT_SYMBOL_GPL(sock_map_unhash);
- 
-+void sock_map_destroy(struct sock *sk)
-+{
-+	void (*saved_destroy)(struct sock *sk);
-+	struct sk_psock *psock;
-+
-+	rcu_read_lock();
-+	psock = sk_psock_get(sk);
-+	if (unlikely(!psock)) {
-+		rcu_read_unlock();
-+		if (sk->sk_prot->destroy)
-+			sk->sk_prot->destroy(sk);
-+		return;
-+	}
-+
-+	saved_destroy = psock->saved_destroy;
-+	sock_map_remove_links(sk, psock);
-+	rcu_read_unlock();
-+	sk_psock_stop(psock, true);
-+	sk_psock_put(sk, psock);
-+	saved_destroy(sk);
-+}
-+EXPORT_SYMBOL_GPL(sock_map_destroy);
-+
- void sock_map_close(struct sock *sk, long timeout)
- {
- 	void (*saved_close)(struct sock *sk, long timeout);
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index be3947e70fec..38550bb1b90b 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -540,6 +540,7 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
- 				   struct proto *base)
- {
- 	prot[TCP_BPF_BASE]			= *base;
-+	prot[TCP_BPF_BASE].destroy		= sock_map_destroy;
- 	prot[TCP_BPF_BASE].close		= sock_map_close;
- 	prot[TCP_BPF_BASE].recvmsg		= tcp_bpf_recvmsg;
- 	prot[TCP_BPF_BASE].sock_is_readable	= sk_msg_is_readable;
--- 
-2.25.1
-
+jirka
