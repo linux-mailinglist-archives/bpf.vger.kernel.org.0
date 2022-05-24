@@ -2,69 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B99915333EB
-	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 01:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8D95333F7
+	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 01:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbiEXXaF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 19:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
+        id S242235AbiEXXkL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 19:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbiEXXaE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 19:30:04 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39777377C8;
-        Tue, 24 May 2022 16:30:02 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id 2so10040738iou.5;
-        Tue, 24 May 2022 16:30:02 -0700 (PDT)
+        with ESMTP id S240644AbiEXXkH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 19:40:07 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C3F5DA7C
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 16:40:06 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id 3so12875658ily.2
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 16:40:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SWo+xqDM08+qEGv9DZGrSSOnKr+Gp8sn94xTo1Uky0E=;
-        b=Goep18DWb6PBCJrMTtE4URNqHUXeS0E+bdZB4L+k55Yqd13BdTMAz69Jn5hF/kZbkw
-         4W8ghCktd4gEjzs1oq/GIPZaODjhJ6vyVvpBI81Sz07kPdxgX4tsFrL7UvnUDKVlBPSY
-         bEXvH8pUhhIyIDhlTp/rnpzyltslnVmVZAT1gFr3Wd5d2cTqfGSEY0cG1HI5gGaOMOIh
-         ITpuh+IixooD4xgfuo3j82JF4q4zrUJHMUANqtbiZeD3fCL+YyIEYHp/O9Zv7Va2h9YX
-         XxB2Or1V/TFspr+g5+AqgAKcMypddPCVFlr1myAj21PSVhHV9qoG/FqT6Zx1LSHZ1OVz
-         hLXw==
+        bh=4lVnptcVVZxz8gglgU751AS5ETSOAYe3JoKUEGpDm5w=;
+        b=kpvvyMI3FyDqVBkaTklgqh6n/wISj5MJrxdNVIssAxLfMEz1G0z08cHd39+xUylwxF
+         ryCFLVuoWvjJL8Iz6nSOK/3lTJoFIyVDE60C5L4qX+d3nDw4MxT3knF84iD9osLaz9TU
+         TFKmPTRFxGD8TlKyZ+GdTJJECcvfnJrGvSGnYivCHg/rH/o+TUy29vl9BQKJKONdcC5E
+         VgLFX7684uPnc8zKDvSG3K2EkZr0+HQnbvxQ/sNqdklTm9DXWFtEksNXZlTw4Jf9uUjv
+         LyMmkJHDaP6sHzt0m0Z9S8q2bcQhAwoMv0kfyZYVyVW8uzD+XvGtsmHMlkPeyKyqGlaU
+         EmBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SWo+xqDM08+qEGv9DZGrSSOnKr+Gp8sn94xTo1Uky0E=;
-        b=Wmwok0f1NbGPZXTIWc2kUMet1azxrSPdFtgtPGj/QcBILHWlRjZV4Y6bp9CP8B9rRo
-         ANFM1bp0qEIS0byF22q4h+3IIT0GL/UBR3fy6PvPdU4XnGW78u+nKlMVpVIUWryWU5fj
-         keSWd7sapja1vHFEnxpHiKXaBpMYj7B2Lh24/IhSaesUKqH/k2XTiKR48bzM+VQSC883
-         p//X0aQ475qrnsSTSS8O93i9S0dZhw9oOyqi5P5vrWY6P3tOp9XKEk3oPHvjn+eifFQl
-         O9oov/uhwKADrIO2XKgaVryvT7HGfVgQWj18+JJonIFDXgyGgZyGbN7Ur0eyI2QIP0QB
-         Y0jA==
-X-Gm-Message-State: AOAM531Pq5WvL26QxP3hc2aAEERMHZHBm0R6p/jaaMj6rQOc9ptvANhe
-        /oJZa1MD07HCH9hcFc6H/jKF3m1Pqy+auaIkSog=
-X-Google-Smtp-Source: ABdhPJyGKSLjdEimuoKNOtuP93bYx4DVK3ftxYDEWPHqnqZO3YIoEgjG31EFeH9P4RfA4BW+yANYN9BphrUKOUlGy6E=
-X-Received: by 2002:a05:6638:3894:b0:32e:ef72:be9d with SMTP id
- b20-20020a056638389400b0032eef72be9dmr2269117jav.145.1653435001631; Tue, 24
- May 2022 16:30:01 -0700 (PDT)
+        bh=4lVnptcVVZxz8gglgU751AS5ETSOAYe3JoKUEGpDm5w=;
+        b=ybSN2/v9NntGnU38JwjBSURWkNlZK4LfqR/ehoAlwtXjXi6/uTWbMw+HSkH7VuAraz
+         R8RONkiq91NygyJm5H1Qk951Sr/DBpHyb8nL5QuWfMIqlaxvaRoS9i/VRtTOIRw7SHC0
+         frwh27fl+54RRKB/FG3cTsHQ8/0oPk0/h+udiIOJxP1LrGnZv+7h/p0uzQkzTr6PuBFN
+         q2ys+JUWysk0X8YOCSl1PnQU+49AS2ONSCDodU5iPatXHLfADnuv15GWkXCf5t+efvYd
+         iGT9S/wvd32aHpndDJ9yuIqQc0p6WTquhLjqy7WtPckkx3zbXuH727PkB83Tfnx3iE/O
+         E6/w==
+X-Gm-Message-State: AOAM530vLYQx2bYXCdny3nfCS+R/qjqiixSsawx7dJEfZogj7QxHpbKm
+        9eQzB6JcBKs889g+LM3jQid23f9ZNC1yO3A2Qle0LLQI
+X-Google-Smtp-Source: ABdhPJw7Gg2+m0u9GLa6zAkp2rgfTTNG0BPxOvjuxK0+wvjt+wTy19vHcoFZ+mXJ9K9Z7Fb5pVUxb4o4dSuAaENl23k=
+X-Received: by 2002:a05:6e02:1b8f:b0:2d1:b707:3022 with SMTP id
+ h15-20020a056e021b8f00b002d1b7073022mr5195412ili.71.1653435605870; Tue, 24
+ May 2022 16:40:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220524075306.32306-1-zhoufeng.zf@bytedance.com> <20220524075306.32306-3-zhoufeng.zf@bytedance.com>
-In-Reply-To: <20220524075306.32306-3-zhoufeng.zf@bytedance.com>
+References: <CAPxVHdL-dT2GQh-HEkNjNoTEzA9DRL4W4ZfmUzc1+Bdz89fftQ@mail.gmail.com>
+ <CAEf4BzZg0r4YptYPu8Y_-qp=rY__W6dmb9kLwMV5MAH6C-2PSg@mail.gmail.com>
+ <CAPxVHdJbnu5fk5btxATWM5NTd0NofeJREuX_8R_2i3GX_ho87g@mail.gmail.com> <CAPxVHd+_fmCvhhYWCtjjjvzNi5GNfoDP3=aHgihVwzSwN9vKnQ@mail.gmail.com>
+In-Reply-To: <CAPxVHd+_fmCvhhYWCtjjjvzNi5GNfoDP3=aHgihVwzSwN9vKnQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 24 May 2022 16:29:50 -0700
-Message-ID: <CAEf4BzbPrfFe-3TGf=jJxrp9DT6Z1JaEDhWCd3wTYOPsihUmkA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] selftest/bpf/benchs: Add bpf_map benchmark
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        zhouchengming@bytedance.com
+Date:   Tue, 24 May 2022 16:39:54 -0700
+Message-ID: <CAEf4BzbhvD_f=y3SDAiFqNvuErcnXt4fErMRSfanjYQg5=7GJg@mail.gmail.com>
+Subject: Re: Tracing NVMe Driver with BPF missing events
+To:     John Mazzie <john.p.mazzie@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "John Mazzie (jmazzie)" <jmazzie@micron.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -76,122 +67,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 24, 2022 at 12:53 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+On Tue, May 24, 2022 at 9:12 AM John Mazzie <john.p.mazzie@gmail.com> wrote:
 >
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+> After thinking about this more, maybe it's more to do with the
+> interrupt handler for nvme_complete_rq.
 >
-> Add benchmark for hash_map to reproduce the worst case
-> that non-stop update when map's free is zero.
+> In this situation, sometimes the handler for nvme_setup_cmd could be
+> interrupted to handle nvme_complete_rq and in this situation the
+> nvme_complete_rq handler wouldn't run. because the nvme_setup_cmd
+> handler is not complete.
 >
-> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
-> ---
->  tools/testing/selftests/bpf/Makefile          |  4 +-
->  tools/testing/selftests/bpf/bench.c           |  2 +
->  .../selftests/bpf/benchs/bench_bpf_map.c      | 78 +++++++++++++++++++
->  .../selftests/bpf/benchs/run_bench_bpf_map.sh | 10 +++
->  .../selftests/bpf/progs/bpf_map_bench.c       | 27 +++++++
->  5 files changed, 120 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_map.c
->  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_map.sh
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_bench.c
+> Is this understanding correct?
+
+Yes.
+
+> I'm assuming there is no real
+> workaround for this situation, so we may just need to accept some
+> missed events.
+
+Try using fentry/fexit programs instead. They use different reentrancy
+protection which is at a per-program level.
+
 >
-
-[...]
-
-> +static void setup(void)
-> +{
-> +       struct bpf_link *link;
-> +       int map_fd, i, max_entries;
-> +
-> +       setup_libbpf();
-> +
-> +       ctx.skel = bpf_map_bench__open_and_load();
-> +       if (!ctx.skel) {
-> +               fprintf(stderr, "failed to open skeleton\n");
-> +               exit(1);
-> +       }
-> +
-> +       link = bpf_program__attach(ctx.skel->progs.benchmark);
-> +       if (!link) {
-> +               fprintf(stderr, "failed to attach program!\n");
-> +               exit(1);
-> +       }
-> +
-> +       //fill hash_map
-
-don't use C++ comments
-
-> +       map_fd = bpf_map__fd(ctx.skel->maps.hash_map_bench);
-> +       max_entries = bpf_map__max_entries(ctx.skel->maps.hash_map_bench);
-> +       for (i = 0; i < max_entries; i++)
-> +               bpf_map_update_elem(map_fd, &i, &i, BPF_ANY);
-> +}
-> +
-> +const struct bench bench_bpf_map = {
-> +       .name = "bpf-map",
-
-this is too generic name, it's testing one particular scenario, so
-call this out in the name. bpf-hashmap-full-update or something (same
-for all the relevant function and file names)
-
-
-> +       .validate = validate,
-> +       .setup = setup,
-> +       .producer_thread = producer,
-> +       .consumer_thread = consumer,
-> +       .measure = measure,
-> +       .report_progress = ops_report_progress,
-> +       .report_final = ops_report_final,
-> +};
-> diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bpf_map.sh b/tools/testing/selftests/bpf/benchs/run_bench_bpf_map.sh
-> new file mode 100755
-> index 000000000000..d7cc969e4f85
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/benchs/run_bench_bpf_map.sh
-> @@ -0,0 +1,10 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +source ./benchs/run_common.sh
-> +
-> +set -eufo pipefail
-> +
-> +nr_threads=`expr $(cat /proc/cpuinfo | grep "processor"| wc -l) - 1`
-> +summary=$($RUN_BENCH -p $nr_threads bpf-map)
-> +printf "$summary"
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_map_bench.c b/tools/testing/selftests/bpf/progs/bpf_map_bench.c
-> new file mode 100644
-> index 000000000000..655366e6e0f4
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_map_bench.c
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Bytedance */
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define MAX_ENTRIES 1000
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_HASH);
-> +       __type(key, u32);
-> +       __type(value, u64);
-> +       __uint(max_entries, MAX_ENTRIES);
-> +} hash_map_bench SEC(".maps");
-> +
-> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
-> +int benchmark(void *ctx)
-> +{
-> +       u32 key = bpf_get_prandom_u32();
-> +       u64 init_val = 1;
-> +
-> +       bpf_map_update_elem(&hash_map_bench, &key, &init_val, BPF_ANY);
-> +       return 0;
-> +}
-> --
-> 2.20.1
+> John
 >
+> On Sat, May 21, 2022 at 11:52 AM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> >
+> > In this case is a BPF program the individual handler of a tracepoint,
+> > or in my context, a BPF program my compiled program that traces both
+> > tracepoints? We aren't running any other BPF tracing during these
+> > tests besides my program counting these 2 tracepoints.
+> >
+> > In my program I have 2 handlers, one for
+> > tracepoint:nvme:nvme_setup_cmd and another for
+> > tracepoint:nvme:nvme_complete_rq. I've created a PERCPU_HASH map for
+> > each handler (unique map for each) to use that keeps track of each
+> > time the handler is invoked. The only thing that handler is doing in
+> > each case is incrementing the count value in the map. Though I do
+> > filter by device on each tracepoint. If I comment out the
+> > nvme_setup_cmd code the nvme_complete_rq does get the correct count.
+> >
+> > The user side of my program just prints the values for each of these
+> > maps on a 10 second increment.
+> >
+> > I can share my code to make this easier, is it preferred that I upload
+> > my code to github and share the link in this thread?
+> >
+> > I agree that your suggestion could be my issue, but I just want to
+> > make sure we're on the same page since I'm less familiar with the
+> > internals of BPF.
+> >
+> > Thanks,
+> > John
+> >
+> > On Fri, May 20, 2022 at 7:10 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, May 18, 2022 at 2:35 PM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> > > >
+> > > > My group at Micron is using BPF and love the tracing capabilities it
+> > > > provides. We are mainly focused on the storage subsystem and BPF has
+> > > > been really helpful in understanding how the storage subsystem
+> > > > interacts with our drives while running applications.
+> > > >
+> > > > In the process of developing a tool using BPF to trace the nvme
+> > > > driver, we ran into an issue with some missing events. I wanted to
+> > > > check to see if this is possibly a bug/limitation that I'm hitting or
+> > > > if it's expected behavior with heavy tracing. We are trying to trace 2
+> > > > trace points (nvme_setup_cmd and nvme_complete_rq) around 1M times a
+> > > > second.
+> > > > We noticed if we just trace one of the two, we see all the expected
+> > > > events, but if we trace both at the same time, the nvme_complete_rq
+> > >
+> > > kprobe programs have per-CPU reentrancy protection. That is, if some
+> > > BPF kprobe/tracepoint program is running and something happens (e.g.,
+> > > BPF program calls some kernel function that has another BPF program
+> > > attached to it, or preemption happens and another BPF program is
+> > > supposed to run) that would trigger another BPF program, then that
+> > > nested BPF program invocation will be skipped.
+> > >
+> > > This might be what happens in your case.
+> > >
+> > > > misses events. I am using two different percpu_hash maps to count both
+> > > > events. One for setup and another for complete. My expectation was
+> > > > that tracing these events would affect performance, somewhat, but not
+> > > > miss events. Ultimately the tool would be used to trace nvme latencies
+> > > > at the driver level by device and process.
+> > > >
+> > > > My tool was developed using libbpf v0.7, and I've tested on Rocky
+> > > > Linux 8.5 (Kernel 4.18.0), Ubuntu 20.04 (Kernel 5.4) and Fedora 36
+> > > > (Kernel 5.17.6) with the same results.
+> > > >
+> > > > Thanks,
+> > > > John Mazzie
+> > > > Principal Storage Solutions Engineer
+> > > > Micron Technology, Inc.
