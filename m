@@ -2,134 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 171B65326BE
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 11:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60606532784
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 12:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235178AbiEXJox (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 05:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
+        id S236066AbiEXKZA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 06:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbiEXJow (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 05:44:52 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6239752E5F;
-        Tue, 24 May 2022 02:44:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EDF9D1FB;
-        Tue, 24 May 2022 02:44:50 -0700 (PDT)
-Received: from e126130.arm.com (unknown [10.57.82.248])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4C7313F73D;
-        Tue, 24 May 2022 02:44:44 -0700 (PDT)
-From:   Douglas RAILLARD <douglas.raillard@arm.com>
-To:     bpf@vger.kernel.org
-Cc:     beata.michalska@arm.com,
-        Douglas Raillard <douglas.raillard@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH v3] libbpf: Fix determine_ptr_size() guessing
-Date:   Tue, 24 May 2022 10:44:47 +0100
-Message-Id: <20220524094447.332186-1-douglas.raillard@arm.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S234324AbiEXKY7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 06:24:59 -0400
+X-Greylist: delayed 751 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 24 May 2022 03:24:58 PDT
+Received: from oftenbest.adminbbserv.bond (adminbbserv.bond [213.108.199.214])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF85884A19;
+        Tue, 24 May 2022 03:24:58 -0700 (PDT)
+Received: from webmail.adminbbserv.bond (localhost.localdomain [IPv6:::1])
+        by oftenbest.adminbbserv.bond (Postfix) with ESMTPSA id BD70F5D0B;
+        Tue, 24 May 2022 06:12:15 -0400 (EDT)
+Authentication-Results: oftenbest.adminbbserv.bond;
+        spf=pass (sender IP is ::1) smtp.mailfrom=trade@adminbbserv.bond smtp.helo=webmail.adminbbserv.bond
+Received-SPF: pass (oftenbest.adminbbserv.bond: connection is authenticated)
 MIME-Version: 1.0
+Date:   Tue, 24 May 2022 11:12:15 +0100
+From:   HR <trade@adminbbserv.bond>
+To:     undisclosed-recipients:;
+Subject: Alkalmaz
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <5e47c2710091ec8f6456244c9a4b4b85@adminbbserv.bond>
+X-Sender: trade@adminbbserv.bond
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_50,FORGED_SPF_HELO,
+        KHOP_HELO_FCRDNS,MIXED_ES,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Douglas Raillard <douglas.raillard@arm.com>
 
-One strategy employed by libbpf to guess the pointer size is by finding
-the size of "unsigned long" type. This is achieved by looking for a type
-of with the expected name and checking its size.
 
-Unfortunately, the C syntax is friendlier to humans than to computers
-as there is some variety in how such a type can be named. Specifically,
-gcc and clang do not use the same names for integer types in debug info:
+Helló,
 
-    - clang uses "unsigned long"
-    - gcc uses "long unsigned int"
+Örömmel értesítjük Önt egy elérhető távmunka részmunkaidős ügyintézői 
+állásról, heti 500 eurós bérért. Ha az időbeosztása elég rugalmas ahhoz, 
+hogy betöltse ezt a pozíciót, kérjük, írjon az 
+"apply@blenheimbuildings.uk" címre a pozícióval kapcsolatos további 
+részletekért. Kérjük, jelentkezéskor tüntesse fel mobiltelefonszámát, 
+valamint a lakóhelyét. Figyelem: Ez a pozíció érkezési sorrendben 
+foglalható el.
 
-Lookup all the names for such a type so that libbpf can hope to find the
-information it wants.
-
-Acked-by: Yonghong Song <yhs@fb.com> 
-Signed-off-by: Douglas Raillard <douglas.raillard@arm.com>
----
- tools/lib/bpf/btf.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
-
- CHANGELOG
-    v2:
-        * Added missing case for "long"
-    v3:
-        * Refactor a bit to use a table
-        * Provide the type names used by gcc and clang in commit msg
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 1383e26c5d1f..65c492a6807f 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -470,12 +470,25 @@ const struct btf_type *btf__type_by_id(const struct btf *btf, __u32 type_id)
- 	return btf_type_by_id((struct btf *)btf, type_id);
- }
- 
-+static const char * const long_aliases[] = {
-+	"long",
-+	"long int",
-+	"int long",
-+	"unsigned long",
-+	"long unsigned",
-+	"unsigned long int",
-+	"unsigned int long",
-+	"long unsigned int",
-+	"long int unsigned",
-+	"int unsigned long",
-+	"int long unsigned",
-+};
-+
- static int determine_ptr_size(const struct btf *btf)
- {
- 	const struct btf_type *t;
- 	const char *name;
--	int i, n;
--
-+	int i, j, n;
- 	if (btf->base_btf && btf->base_btf->ptr_sz > 0)
- 		return btf->base_btf->ptr_sz;
- 
-@@ -489,12 +502,12 @@ static int determine_ptr_size(const struct btf *btf)
- 		if (!name)
- 			continue;
- 
--		if (strcmp(name, "long int") == 0 ||
--		    strcmp(name, "long unsigned int") == 0) {
--			if (t->size != 4 && t->size != 8)
--				continue;
--			return t->size;
--		}
-+		if (t->size != 4 && t->size != 8)
-+			continue;
-+
-+		for (j = 0; j < ARRAY_SIZE(long_aliases); j++)
-+			if (!strcmp(name, long_aliases[j]))
-+				return t->size;
- 	}
- 
- 	return -1;
--- 
-2.25.1
-
+Üdvözlettel
+Bánkiné Józsa Mária
+HR vezető/tanácsadó
+Magyarországi Munkaügyi Hivatal.
