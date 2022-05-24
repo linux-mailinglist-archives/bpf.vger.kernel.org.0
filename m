@@ -2,207 +2,306 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 817F65322C4
-	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 07:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E6D5323BF
+	for <lists+bpf@lfdr.de>; Tue, 24 May 2022 09:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbiEXF6X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 24 May 2022 01:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
+        id S234818AbiEXHLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 03:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbiEXF6W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 01:58:22 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BB12D1E9
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 22:58:21 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24NKGs6h003894
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 22:58:21 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3g6v4k6dkf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 23 May 2022 22:58:21 -0700
-Received: from twshared31479.05.prn5.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 23 May 2022 22:58:20 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id E368A1A53FCB6; Mon, 23 May 2022 22:58:15 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <mhiramat@kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>
-CC:     <rihams@fb.com>, <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH] BUG: demonstration of uprobe/uretprobe corrupted stack traces
-Date:   Mon, 23 May 2022 22:57:48 -0700
-Message-ID: <20220524055748.4064533-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S234717AbiEXHK5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 03:10:57 -0400
+Received: from de-smtp-delivery-102.mimecast.com (de-smtp-delivery-102.mimecast.com [194.104.109.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBD3939A7
+        for <bpf@vger.kernel.org>; Tue, 24 May 2022 00:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1653376254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TAGFP9/HFXubeeav8O0YNo9svlg8MO+fWwwxxvYrjHc=;
+        b=gMNEwiMnATYkYom8m79AR+CMF3yKGbkPZctqv0geT63s0rMbHdQ7pAq4dfaGAe8MwTwall
+        NujK1ix51ymSzlbXuwSXMqZ8DKPQ8Wvn8yDl99btjO+7vKdLJb0LdSp7hb2FD0bdjBW6T9
+        qVNIUSIZHXctXnifKepj/yuUyMp1aLo=
+Received: from EUR02-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur02lp2055.outbound.protection.outlook.com [104.47.5.55]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ de-mta-29-NYv1RREVNUmHgz3Uk1zDww-1; Tue, 24 May 2022 09:10:52 +0200
+X-MC-Unique: NYv1RREVNUmHgz3Uk1zDww-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=apmRTFtyLIaQ1UNkxJav7RHfW/gPnusk5HL43JQypicTQkg9j40/i6XvIDLtscYeemnQ+FmXpK/zjOcQwVXyR15YWeQAhSsWmi9CtPIpQzkERDqspxodTBmTfy9xFUGqB0a+7fuTZrQiR0RUGTVd+KMGz3Nyk8snmUtcNm/9l4JwazRHl0Uuf0AUysrAoP3vIN8KxStstCepXm4wlqbLxdlRU/8xA8PByuIQZ49dfSxR8aBAsTE4w3A1Uyg00F3hGWgInzddYsxckBSICKYds5VcfEsqwHYr53jm7E3GEE2SvIJfg7+s/NEdjjZM42m3AQJ4KhuIT9N5fj+JrsAlHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=z8MO+lIxdCe3+XczJ2KKW88YGXKbCQ03WH6b1GtXWas=;
+ b=boXEeuJOhBl5RTFw3iO5cIEqZuVBWh3Jl41RqwKF8bjhsjYlgKxD1A871LAGj6scdAtFVt7d0ap5RIytrohUBrPxgVN6S5ht9ET7F2yRqprpLMpYQtE8d2f/1DHkaHqyipZ/KRrnejNBGChF3OsnQaYd0oiCDHi1wmBNakKCqFC/Perh7/eBuaSDx2OdA8wogj4k+wa+aAagbBRftGLFSeRotgmn/anKPZ0cpSWILtJ5RrJButQarB0Tf2YZNGdDvoAi4SktR1IB/nF/2TDbsMzeVi5GxhjNsWynAH9jVjn32n+gCLQCUzH2QQkN5p+Cp6b+yU5vJUpGBgTP19+GXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com (2603:10a6:10:243::20)
+ by VI1PR0402MB2703.eurprd04.prod.outlook.com (2603:10a6:800:ae::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.23; Tue, 24 May
+ 2022 07:10:50 +0000
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::40a2:1b77:8319:a7fa]) by DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::40a2:1b77:8319:a7fa%5]) with mapi id 15.20.5273.023; Tue, 24 May 2022
+ 07:10:50 +0000
+Date:   Tue, 24 May 2022 15:10:39 +0800
+From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH bpf-next 2/4] bpf: verifier: explain opcode check in
+ check_ld_imm()
+Message-ID: <YoyEbYGIoiULPQEk@syu-laptop>
+References: <20220520113728.12708-1-shung-hsi.yu@suse.com>
+ <20220520113728.12708-3-shung-hsi.yu@suse.com>
+ <f9511485-cda4-4e5e-fe1f-60ffe57e27d1@fb.com>
+ <0cf50c32-ab67-ef23-7b84-ef1d4e007c33@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0cf50c32-ab67-ef23-7b84-ef1d4e007c33@fb.com>
+X-ClientProxiedBy: HK0PR03CA0111.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::27) To DB9PR04MB8107.eurprd04.prod.outlook.com
+ (2603:10a6:10:243::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: KT7dbLEysWh2lhCZuRVdcwdsAUQA4SXv
-X-Proofpoint-GUID: KT7dbLEysWh2lhCZuRVdcwdsAUQA4SXv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-24_01,2022-05-23_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e213bfc0-23e9-4d46-57eb-08da3d548878
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB2703:EE_
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB2703C345B1779914F34F3B40BFD79@VI1PR0402MB2703.eurprd04.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VDGogBOxNGOu98UGBaPGxQWv4BXPCR7bxdOcukF7Fm5aOYdemadqGCzefqWOy1nIRGY1/IyU4o614vYoYKDVHdDug574e4GqaIOwwgiJnswLQyp6g8t3CxSBOv9gfxiE8XvlALAoTc87nu5731ZlSZeqO15+oPNW5iGkyQAQ3+blzM0Bh7pD6eeKKywEc0JQc0iq69RnZg2xhCAUTfKVVtQjr2Fx7AouRwVQ92Alrd+c8kC/BArsHp/IAQLVwNXWiEaJu0q+JfaeqdUel0wqluNLG5ZyP3LYmJ+a002s6qiOUUaRCAxa+bQ3raZvKlTXJYQwPIk2TQBmnc+yqTe0C8j8oOcEtEIAey6+/u/FahHI9zyk0M9D4Wr2VY0Mu0bXSfzwUDlwYydGjCT8e3NPVN+JLA0N/01k7oBfIr41NvKbePLKnrYikpIeupWLN+2HvOKpfjxJ2PRItx5xoU8NHpPP4gchuNZZuhREb8sckfV2mjTYeTIKUPGnmc8tJMINznwX8e98numqPe9UrmQyhhqF+K0W6E2vXFZ6yFl+Bh81jd0dnSGbO9qmBhl/9CreOomxHy4df9fDmgAKLX+sx/CslwiGlvrJ4zGgz8kzh7YzJ8iVCflPfVRjXwTJ2Ch2jy9os8izc/epb5HPldsbbQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB8107.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(366004)(33716001)(86362001)(4326008)(8676002)(6666004)(6506007)(53546011)(2906002)(6486002)(5660300002)(8936002)(508600001)(26005)(9686003)(83380400001)(7416002)(6512007)(38100700002)(6916009)(54906003)(186003)(66556008)(66476007)(66946007)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oP0mAy3DDSX4CCiyd8qBD4RIIt7NTmOt1PgvDyAnb/7DvNUzM7AUmEtXfhOb?=
+ =?us-ascii?Q?yxzAkdAo/kOjPv0vuCR/Ke9YY/JDY8FEecUz4GdGD7phidwPb9yP22sieYKW?=
+ =?us-ascii?Q?y/d8mUV95Sfcb4Ei9NXP6DRyH01uWoDM46Z+/czt+/la2BGpYlZdOUxQW9n3?=
+ =?us-ascii?Q?yKu/LIxlyCui3MnC1UaTVazxSWIlHI6WxZ7XASxd/s5RuHnLgkVxfzrUIwQQ?=
+ =?us-ascii?Q?MTC0rQ5bdJiKlrrgWlgP5JzYNnYzRCR5ECfNsH8DSO4aA28bLS5VyWALUva6?=
+ =?us-ascii?Q?6w8kb/6WWHqsgr2z4q0KAC0tDehYJDlGezA87cMP6hxw6Ggc793cvFTQK/Ch?=
+ =?us-ascii?Q?d0Lfzhnqg4rcNq9EPeqou3UN+jpC+PjMF/Jz2JPERiv7RL7qanUGg3umuSpv?=
+ =?us-ascii?Q?E0MHw2PYmMMQU4jDGPFMeCnGUIxwRmvv/gw0zHFnIYqcj+oEZQlHeImCZwd/?=
+ =?us-ascii?Q?WT41wbaVADxdUdO024l2jXb5p0Yp3Fs5sLtl7wo8+IMuEha3GruM81tWcQIA?=
+ =?us-ascii?Q?ggac+9xMm0shE02KV5hj3omG6lPthTdFmKbcquwrtW3buSTcrcxdt8flWdYf?=
+ =?us-ascii?Q?gCNoL8ydPuX6Dof/UMnEu4T1y03q41MSIpL4AGAEwTQuboHwfR0eihW62Xqw?=
+ =?us-ascii?Q?zb5Fi3/1pIVgqha3/p8FSnv0oN/IFB/0ygCRgY0d3XEZDNGGWgBk3ZxS9hNR?=
+ =?us-ascii?Q?y4M7h0KBuXhn8+zG2SacpMxjH20LQSQTIkLjkblfAp/InK+c4XByePf1ux/a?=
+ =?us-ascii?Q?wMTE22VrrvpLixGu7J32qyX3OLgx9xoVVZ0JtyJ8zsb4KOpQe2lRhBUmVLEV?=
+ =?us-ascii?Q?Lw7vJXVvp71HDNIOW4tTPqM4zbnvwDE0YO5pTy3oHWx9U03HazBABrknmLwZ?=
+ =?us-ascii?Q?9015PFvURVWYhRkgZ9gNXX4ndyLshJZfhHFCiKHbkFMzWdgXtx5H3wQc43tv?=
+ =?us-ascii?Q?DxA82yQnBqPmWW1z4+eLSnuAerqj5mQzXCYZFK22xUXxCsT8OYvwx8rkLn35?=
+ =?us-ascii?Q?FqBF1OoFr2snTP/eJrcv/rBDMFH3GdZYkAZVXgcL1jgjRYCIHS/VI3+CGkJg?=
+ =?us-ascii?Q?Hlhdad+q8HbB+e88TRS4lpv4RVr85otrH5NtnyihoMOEY0z9ynwoxDv6cWtJ?=
+ =?us-ascii?Q?Ao6BN7n/g97iowpvi2zaThC5jakNb3g8MjVbKNur8JTUWkIRJd9MDzbkSMhB?=
+ =?us-ascii?Q?/BiRfCIOGOJKfAkiDy+NoFFsmFZv6DGeeykg+YEDt1bx7c7uwJFOLE4yudYv?=
+ =?us-ascii?Q?+0tcdYer8EEUFXjE39Y156sOKIRsBEH/ARsIrrFDQObR7WIlQsfERkv0otAS?=
+ =?us-ascii?Q?M72+JXB+LA6AJCcz7zDN8p10YjejtUbMS80TKWt0HNICMfMiF+Ims/SrvibQ?=
+ =?us-ascii?Q?marXtzrbqI5NhE4znVGe4ZcUSKU0c0JYcz3OxLwDM3s6uiQO8NpFoRrRFFNM?=
+ =?us-ascii?Q?Kn7MX7mhjWNF2sO9KWo0Ogs/uUWwJbRwLjZWjSfbF7iHBB8BlfYnWqu9AsA8?=
+ =?us-ascii?Q?gh0OzrixuND5pbCPTAOQjuyKk+5u6CqPoPPmYptD+gnq0/rvOhQNFKfJMizu?=
+ =?us-ascii?Q?Moraf88qaIzLmEyUeoe/IBxOB3+JgvlNxeQ3yDPBH2+3giFsbHQitp0OpPZ0?=
+ =?us-ascii?Q?0NdyjMclH9HtSvZDJ5ARYqP1KpX5Q0vdavlfW1djT70Cfr3xYS69LMrcqPhy?=
+ =?us-ascii?Q?vy41bOG5vwugqiCdryhSLrjeOZTODNdLB7gF9kWVE7Np9Ckk+TT0M5S3L7vg?=
+ =?us-ascii?Q?zx/yH40XSA=3D=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e213bfc0-23e9-4d46-57eb-08da3d548878
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB8107.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2022 07:10:50.5293
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1b8W8KRypsYmHbCNCCzdCZ06kg95qNNuIMAC+tdaVZ4E/4Vql3ORz9Wu5xyXfhITvlv+uhIQZHiSQr/+VOJArQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2703
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Masami,
+On Fri, May 20, 2022 at 05:25:36PM -0700, Yonghong Song wrote:
+> On 5/20/22 4:50 PM, Yonghong Song wrote:
+> > On 5/20/22 4:37 AM, Shung-Hsi Yu wrote:
+> > > The BPF_SIZE check in the beginning of check_ld_imm() actually guard
+> > > against program with JMP instructions that goes to the second
+> > > instruction of BPF_LD_IMM64, but may be easily dismissed as an simple
+> > > opcode check that's duplicating the effort of bpf_opcode_in_insntable=
+().
+> > >=20
+> > > Add comment to better reflect the importance of the check.
+> > >=20
+> > > Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > > ---
+> > > =C2=A0 kernel/bpf/verifier.c | 4 ++++
+> > > =C2=A0 1 file changed, 4 insertions(+)
+> > >=20
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 79a2695ee2e2..133929751f80 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -9921,6 +9921,10 @@ static int check_ld_imm(struct
+> > > bpf_verifier_env *env, struct bpf_insn *insn)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bpf_map *map;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int err;
+> > > +=C2=A0=C2=A0=C2=A0 /* checks that this is not the second part of BPF=
+_LD_IMM64, which is
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 * skipped over during opcode check, but a J=
+MP with invalid
+> > > offset may
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 * cause check_ld_imm() to be called upon it=
+.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 */
+> >=20
+> > The check_ld_imm() call context is:
+> >=20
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 } else if (class =3D=3D BPF_LD) {
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 mo=
+de =3D BPF_MODE(insn->code);
+> >=20
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (m=
+ode =3D=3D BPF_ABS || mode =3D=3D BPF_IND) {
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err =3D check_ld_abs(env, insn);
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (err)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return err;
+> >=20
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } els=
+e if (mode =3D=3D BPF_IMM) {
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err =3D check_ld_imm(env, insn);
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (err)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return err;
+> >=20
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 env->insn_idx++;
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sanitize_mark_insn_seen(env);
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } els=
+e {
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 verbose(env, "invalid BPF_LD mod=
+e\n");
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 }
+> >=20
+> > which is a normal checking of LD_imm64 insn.
+> >=20
+> > I think the to-be-added comment is incorrect and unnecessary.
+>=20
+> Okay, double check again and now I understand what happens
+> when hitting the second insn of ldimm64 with a branch target.
+> Here we have BPF_LD =3D 0 and BPF_IMM =3D 0, so for a branch
+> target to the 2nd part of ldimm64, it will come to
+> check_ld_imm() and have error "invalid BPF_LD_IMM insn"
 
-We've got reports about partially corrupt stack traces when being captured from
-uretprobes. Trying the simplest repro seems to confirm that something is not
-quite right here. I'll try to debug it a bit more this week, but I was hoping
-for you to take a look as well, if you get a chance.
+Yes, the 2nd instruction uses the reserved opcode 0, which could be
+interpreted as BPF_LD | BPF_W | BPF_IMM.
 
-Simple repro built on top of BPF selftests.
+> So check_ld_imm() is to check whether the insn is a
+> *legal* insn for the first part of ldimm64.
+>=20
+> So the comment may be rewritten as below.
+>=20
+> This is to verify whether an insn is a BPF_LD_IMM64
+> or not. But since BPF_LD =3D 0 and BPF_IMM =3D 0, if the branch
+> target comes to the second part of BPF_LD_IMM64,
+> the control may come here as well.
+>=20
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (BPF_SIZE(insn->code) !=3D BPF_DW) =
+{
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 verbose(env, "=
+invalid BPF_LD_IMM insn\n");
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL=
+;
 
-  $ sudo ./test_progs -a uprobe_autoattach -v
-  ...
-  FN ADDR 0x55fde0 - 0x55fdef
-  UPROBE SZ 40 (CNT 5)       URETPROBE SZ 40 (CNT 5)
-  UPROBE 0x55fde0           URETPROBE 0x55ffd4
-  UPROBE 0x584653           URETPROBE 0x584653
-  UPROBE 0x585cc9           URETPROBE 0x585cc9
-  UPROBE 0x7fa9a31eaca3     URETPROBE 0x7fa9a31eaca3
-  UPROBE 0x5541f689495641d7 URETPROBE 0x5541f689495641d7
-  ...
-  #203     uprobe_autoattach:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+After giving it a bit more though, maybe it'd be clearer if we simply detec=
+t
+such case in the JMP branch of do_check().
 
-There seem to be two distinct problems.
+Something like this instead. Though I haven't tested yet, and it still chec=
+k
+the jump destination even it's a dead branch.
 
-1. Last two entries for both uprobe and uretprobe stacks are not user-space
-addressed (0x7fa9a31eaca3) and the very last one doesn't even look like a valid
-address (0x5541f689495641d7).
-
-2. Looking at first entry for UPROBE vs URETPROBE, you can see that uprobe
-one's is correct and points exactly to the beginning of autoattach_trigger_func
-(0x55fde0) as expected, but uretprobe entry (0x55ffd4) is way out of
-autoattach_trigger_func (which is just 15 bytes long and ends at 0x55fdef).
-Using addr2line it shows that it points to:
-
-  0x000000000055ffd4: test_uprobe_autoattach at /data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c:33
-
-Which is a valid function and location to which autoattach_trigger_func()
-should return (see objdump snippet below), but from uretprobe I'd imagine that
-we are going to get address within traced user function (that is 0x55fde0 -
-0x55fdef range), not the return address in a parent function.
-
-     55ffc4:       89 83 3c 08 00 00       mov    %eax,0x83c(%rbx)
-     55ffca:       8b 45 e8                mov    -0x18(%rbp),%eax
-     55ffcd:       89 c7                   mov    %eax,%edi
-     55ffcf:       e8 0c fe ff ff          call   55fde0 <autoattach_trigger_func>
--->  55ffd4:       89 45 a8                mov    %eax,-0x58(%rbp)
-     55ffd7:       ba ef fd 55 00          mov    $0x55fdef,%edx
-
-Both issues above seem unexpected, can you please see if I have some wrong
-assumptions here?
-
-Thanks in advance for taking a look!
-
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Riham Selim <rihams@fb.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile               |  3 ++-
- .../selftests/bpf/prog_tests/uprobe_autoattach.c   | 14 ++++++++++++++
- .../selftests/bpf/progs/test_uprobe_autoattach.c   | 11 +++++++++++
- 3 files changed, 27 insertions(+), 1 deletion(-)
+ kernel/bpf/verifier.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 2d3c8c8f558a..0d3109c8d8d5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -23,7 +23,8 @@ BPF_GCC		?= $(shell command -v bpf-gcc;)
- SAN_CFLAGS	?=
- CFLAGS += -g -O0 -rdynamic -Wall -Werror $(GENFLAGS) $(SAN_CFLAGS)	\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
--	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
-+	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT) -fno-omit-frame-pointer
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index aedac2ac02b9..59228806884e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12191,6 +12191,25 @@ static int do_check(struct bpf_verifier_env *env)
+ 			u8 opcode =3D BPF_OP(insn->code);
+=20
+ 			env->jmps_processed++;
 +
- LDFLAGS += $(SAN_CFLAGS)
- LDLIBS += -lelf -lz -lrt -lpthread
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c b/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
-index 35b87c7ba5be..c0fbe4d240be 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_autoattach.c
-@@ -10,6 +10,7 @@ static noinline int autoattach_trigger_func(int arg)
- 	asm volatile ("");
- 	return arg + 1;
- }
-+static noinline int autoattach_trigger_func_post(int arg) { return 0; }
- 
- void test_uprobe_autoattach(void)
- {
-@@ -17,6 +18,7 @@ void test_uprobe_autoattach(void)
- 	int trigger_val = 100, trigger_ret;
- 	size_t malloc_sz = 1;
- 	char *mem;
-+	int i;
- 
- 	skel = test_uprobe_autoattach__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
-@@ -30,6 +32,18 @@ void test_uprobe_autoattach(void)
- 	/* trigger & validate uprobe & uretprobe */
- 	trigger_ret = autoattach_trigger_func(trigger_val);
- 
-+	printf("FN ADDR %p - %p\n", autoattach_trigger_func, autoattach_trigger_func_post);
-+	printf("UPROBE SZ %d (CNT %d)      URETPROBE SZ %d (CNT %d)\n",
-+		skel->bss->uprobe_stack_sz,
-+		skel->bss->uprobe_stack_sz / 8,
-+		skel->bss->uretprobe_stack_sz,
-+		skel->bss->uretprobe_stack_sz / 8);
-+	for (i = 0; i < skel->bss->uprobe_stack_sz / 8; i++) {
-+		printf("UPROBE %-18p URETPROBE %-18p\n",
-+			(void *)skel->bss->uprobe_stack[i],
-+			(void *)skel->bss->uretprobe_stack[i]);
-+	}
++			/* check jump offset */
++			if (opcode !=3D BPF_CALL && opcode !=3D BPF_EXIT) {
++				u32 dst_insn_idx =3D env->insn_idx + insn->off + 1;
++				struct bpf_insn *dst_insn =3D &insns[dst_insn_idx];
 +
- 	skel->bss->test_pid = getpid();
- 
- 	/* trigger & validate shared library u[ret]probes attached by name */
-diff --git a/tools/testing/selftests/bpf/progs/test_uprobe_autoattach.c b/tools/testing/selftests/bpf/progs/test_uprobe_autoattach.c
-index ab75522e2eeb..f630f83b4426 100644
---- a/tools/testing/selftests/bpf/progs/test_uprobe_autoattach.c
-+++ b/tools/testing/selftests/bpf/progs/test_uprobe_autoattach.c
-@@ -27,11 +27,19 @@ int handle_uprobe_noautoattach(struct pt_regs *ctx)
- 	return 0;
- }
- 
-+__u64 uprobe_stack[128];
-+__u64 uretprobe_stack[128];
-+int uprobe_stack_sz, uretprobe_stack_sz;
++				if (dst_insn_idx > insn_cnt) {
++					verbose(env, "invalid JMP idx %d off %d beyond end of program insn_cn=
+t %d\n", env->insn_idx, insn->off, insn_cnt);
++					return -EFAULT;
++				}
++				if (!bpf_opcode_in_insntable(dst_insn->code)) {
++					/* Should we simply tell the user that it's a
++					 * jump to the 2nd LD_IMM64 instruction
++					 * here? */
++					verbose(env, "idx %d JMP to idx %d with unknown opcode %02x\n", env->=
+insn_idx, dst_insn_idx, insn->code);
++					return -EINVAL;
++				}
++			}
 +
- SEC("uprobe//proc/self/exe:autoattach_trigger_func")
- int handle_uprobe_byname(struct pt_regs *ctx)
- {
- 	uprobe_byname_parm1 = PT_REGS_PARM1_CORE(ctx);
- 	uprobe_byname_ran = 1;
-+
-+	uprobe_stack_sz = bpf_get_stack(ctx,
-+					uprobe_stack, sizeof(uprobe_stack),
-+					BPF_F_USER_STACK);
- 	return 0;
- }
- 
-@@ -40,6 +48,9 @@ int handle_uretprobe_byname(struct pt_regs *ctx)
- {
- 	uretprobe_byname_rc = PT_REGS_RC_CORE(ctx);
- 	uretprobe_byname_ran = 2;
-+	uretprobe_stack_sz = bpf_get_stack(ctx,
-+					   uretprobe_stack, sizeof(uretprobe_stack),
-+					   BPF_F_USER_STACK);
- 	return 0;
- }
- 
--- 
-2.30.2
+ 			if (opcode =3D=3D BPF_CALL) {
+ 				if (BPF_SRC(insn->code) !=3D BPF_K ||
+ 				    (insn->src_reg !=3D BPF_PSEUDO_KFUNC_CALL
+--=20
+2.36.1
 
