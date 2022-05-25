@@ -2,132 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2291053342D
-	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 02:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6465B5334FC
+	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 03:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241419AbiEYAOJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 20:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        id S240604AbiEYBvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 21:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbiEYAOI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 20:14:08 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D50644C8;
-        Tue, 24 May 2022 17:14:06 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id jx22so25056435ejb.12;
-        Tue, 24 May 2022 17:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LlvSs3obt5oULDHmS1XNERwmxsxhjqQkfPX3nHVQPYU=;
-        b=LBhJPNe1HvZjQWzshs1kzM4Wi0BuHBA9dkpiWn/bfHtFpNscBaKsRhXGNEeNzyHZQB
-         sIM6VNx8ZGhVRig+9p41P8jobz4zz6q2+3/85mlFX0WzfQ9EbDUGAWXriPJBFvE3o/0k
-         IdeIB31f/zgIk8Zv6Fqc19cUh6O45w/OXUPHuZIZC1GRHmpk35JCUtGq1gGWMsoJCGwy
-         +S3F0CjQXmlo9EvrdW4Cj+grFFlW98vjw2ghtyeZpja5/91L6yF8+7PWQ9W9gUIiGNje
-         EehS6Em/rBL6RD6exJApLLq2KUPdxv8M6crek+aVg8dqygPey3u1ozVNb++jIcg7x+f1
-         hIOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LlvSs3obt5oULDHmS1XNERwmxsxhjqQkfPX3nHVQPYU=;
-        b=QItfmaftj5DyiYvFXIBruILe5HGDs1MjICHDh3ytDXV/xw3fXE3Uq9uKm2EnFO29vx
-         Jb6MW0FESB1db/7cq9SfCNhAPW+NQIV/nwFBmkIARiCbXlBrJn4KT87g7l+pHGHdHWQx
-         s9tiaAvVvTtURx28Ma3RDFC4PJuqO3KkXYti4bE9AXIVtgo6Htiiwu9naS0VbrMHmCgu
-         puw6/1lQb6lBTr3eRlgV9JKSZCPznd6Ym3Sf9A/tDE413lRlqS8xDtbJo4ratYEh8QLJ
-         JxWhmfoU06nqAm+JdgPC6cGcfSM5JUoKZbJPjRZZ336m5jflM/xAruDeFie9VqHgtREf
-         Q2BQ==
-X-Gm-Message-State: AOAM532ZLEOQsUtVHITHAUQzGKV2TbH7ZQFGHFWWHJuS/mt53naNni6Q
-        DC1v6hVK/69OLe4k5DpnYcVsGLVuc2J05KHOSvY=
-X-Google-Smtp-Source: ABdhPJz/Wc1v3DMnWrLIeeKw/Z+TPUeHNRniVWCCCc9Js0AJxp+TOOf0HH19Jgj8KxHpjgqoh29PLsuY4vJTOoEB2JU=
-X-Received: by 2002:a17:907:c26:b0:6fe:bd5e:2bb6 with SMTP id
- ga38-20020a1709070c2600b006febd5e2bb6mr16447123ejc.708.1653437644996; Tue, 24
- May 2022 17:14:04 -0700 (PDT)
+        with ESMTP id S235156AbiEYBu5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 21:50:57 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB131AF39;
+        Tue, 24 May 2022 18:50:56 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L7DWm3NwJzgYJN;
+        Wed, 25 May 2022 09:49:24 +0800 (CST)
+Received: from container.huawei.com (10.175.104.82) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 25 May 2022 09:50:54 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <davem@davemloft.net>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next v2] ipv6: Fix signed integer overflow in __ip6_append_data
+Date:   Wed, 25 May 2022 10:08:27 +0800
+Message-ID: <20220525020827.1571021-1-wangyufen@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220524075306.32306-1-zhoufeng.zf@bytedance.com> <20220524075306.32306-3-zhoufeng.zf@bytedance.com>
-In-Reply-To: <20220524075306.32306-3-zhoufeng.zf@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 24 May 2022 17:13:52 -0700
-Message-ID: <CAADnVQL-RQqGcfqn9kTsH=UWAG4ZKduG+zNaptiqwjECTqR37Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] selftest/bpf/benchs: Add bpf_map benchmark
-To:     Feng zhou <zhoufeng.zf@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 24, 2022 at 12:53 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
-> +static void setup(void)
-> +{
-> +       struct bpf_link *link;
-> +       int map_fd, i, max_entries;
-> +
-> +       setup_libbpf();
-> +
-> +       ctx.skel = bpf_map_bench__open_and_load();
-> +       if (!ctx.skel) {
-> +               fprintf(stderr, "failed to open skeleton\n");
-> +               exit(1);
-> +       }
-> +
-> +       link = bpf_program__attach(ctx.skel->progs.benchmark);
-> +       if (!link) {
-> +               fprintf(stderr, "failed to attach program!\n");
-> +               exit(1);
-> +       }
-> +
-> +       //fill hash_map
-> +       map_fd = bpf_map__fd(ctx.skel->maps.hash_map_bench);
-> +       max_entries = bpf_map__max_entries(ctx.skel->maps.hash_map_bench);
-> +       for (i = 0; i < max_entries; i++)
-> +               bpf_map_update_elem(map_fd, &i, &i, BPF_ANY);
-> +}
-...
- +SEC("fentry/" SYS_PREFIX "sys_getpgid")
-> +int benchmark(void *ctx)
-> +{
-> +       u32 key = bpf_get_prandom_u32();
-> +       u64 init_val = 1;
-> +
-> +       bpf_map_update_elem(&hash_map_bench, &key, &init_val, BPF_ANY);
-> +       return 0;
-> +}
+Resurrect ubsan overflow checks and ubsan report this warning,
+fix it by change the variable [length] type to size_t.
 
-This benchmark is artificial at its extreme.
-First it populates the map till max_entries and then
-constantly bounces off the max_entries limit in a bpf prog.
-Sometimes random_u32 will be less than max_entries
-and map_update_elem will hit a fast path,
-but most of the time it will fail to alloc_htab_elem()
-and will fail to map_update_elem.
+UBSAN: signed-integer-overflow in net/ipv6/ip6_output.c:1489:19
+2147479552 + 8567 cannot be represented in type 'int'
+CPU: 0 PID: 253 Comm: err Not tainted 5.16.0+ #1
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+  dump_backtrace+0x214/0x230
+  show_stack+0x30/0x78
+  dump_stack_lvl+0xf8/0x118
+  dump_stack+0x18/0x30
+  ubsan_epilogue+0x18/0x60
+  handle_overflow+0xd0/0xf0
+  __ubsan_handle_add_overflow+0x34/0x44
+  __ip6_append_data.isra.48+0x1598/0x1688
+  ip6_append_data+0x128/0x260
+  udpv6_sendmsg+0x680/0xdd0
+  inet6_sendmsg+0x54/0x90
+  sock_sendmsg+0x70/0x88
+  ____sys_sendmsg+0xe8/0x368
+  ___sys_sendmsg+0x98/0xe0
+  __sys_sendmmsg+0xf4/0x3b8
+  __arm64_sys_sendmmsg+0x34/0x48
+  invoke_syscall+0x64/0x160
+  el0_svc_common.constprop.4+0x124/0x300
+  do_el0_svc+0x44/0xc8
+  el0_svc+0x3c/0x1e8
+  el0t_64_sync_handler+0x88/0xb0
+  el0t_64_sync+0x16c/0x170
 
-It does demonstrate that percpu_free_list is inefficient
-when it's empty, but there is no way such a microbenchmark
-justifies optimizing this corner case.
+Changes since v1: 
+-Change the variable [length] type to unsigned, as Eric Dumazet suggested.
+  
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+---
+ include/net/ipv6.h    | 4 ++--
+ net/ipv6/ip6_output.c | 8 ++++----
+ net/ipv6/udp.c        | 2 +-
+ net/l2tp/l2tp_ip6.c   | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-If there is a production use case please code it up in
-a benchmark.
+diff --git a/include/net/ipv6.h b/include/net/ipv6.h
+index 5b38bf1a586b..de9dcc5652c4 100644
+--- a/include/net/ipv6.h
++++ b/include/net/ipv6.h
+@@ -1063,7 +1063,7 @@ int ip6_find_1stfragopt(struct sk_buff *skb, u8 **nexthdr);
+ int ip6_append_data(struct sock *sk,
+ 		    int getfrag(void *from, char *to, int offset, int len,
+ 				int odd, struct sk_buff *skb),
+-		    void *from, int length, int transhdrlen,
++		    void *from, size_t length, int transhdrlen,
+ 		    struct ipcm6_cookie *ipc6, struct flowi6 *fl6,
+ 		    struct rt6_info *rt, unsigned int flags);
+ 
+@@ -1079,7 +1079,7 @@ struct sk_buff *__ip6_make_skb(struct sock *sk, struct sk_buff_head *queue,
+ struct sk_buff *ip6_make_skb(struct sock *sk,
+ 			     int getfrag(void *from, char *to, int offset,
+ 					 int len, int odd, struct sk_buff *skb),
+-			     void *from, int length, int transhdrlen,
++			     void *from, size_t length, int transhdrlen,
+ 			     struct ipcm6_cookie *ipc6,
+ 			     struct rt6_info *rt, unsigned int flags,
+ 			     struct inet_cork_full *cork);
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 4081b12a01ff..7d47ddd1e1f2 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -1450,7 +1450,7 @@ static int __ip6_append_data(struct sock *sk,
+ 			     struct page_frag *pfrag,
+ 			     int getfrag(void *from, char *to, int offset,
+ 					 int len, int odd, struct sk_buff *skb),
+-			     void *from, int length, int transhdrlen,
++			     void *from, size_t length, int transhdrlen,
+ 			     unsigned int flags, struct ipcm6_cookie *ipc6)
+ {
+ 	struct sk_buff *skb, *skb_prev = NULL;
+@@ -1798,7 +1798,7 @@ static int __ip6_append_data(struct sock *sk,
+ int ip6_append_data(struct sock *sk,
+ 		    int getfrag(void *from, char *to, int offset, int len,
+ 				int odd, struct sk_buff *skb),
+-		    void *from, int length, int transhdrlen,
++		    void *from, size_t length, int transhdrlen,
+ 		    struct ipcm6_cookie *ipc6, struct flowi6 *fl6,
+ 		    struct rt6_info *rt, unsigned int flags)
+ {
+@@ -1995,13 +1995,13 @@ EXPORT_SYMBOL_GPL(ip6_flush_pending_frames);
+ struct sk_buff *ip6_make_skb(struct sock *sk,
+ 			     int getfrag(void *from, char *to, int offset,
+ 					 int len, int odd, struct sk_buff *skb),
+-			     void *from, int length, int transhdrlen,
++			     void *from, size_t length, int transhdrlen,
+ 			     struct ipcm6_cookie *ipc6, struct rt6_info *rt,
+ 			     unsigned int flags, struct inet_cork_full *cork)
+ {
+ 	struct inet6_cork v6_cork;
+ 	struct sk_buff_head queue;
+-	int exthdrlen = (ipc6->opt ? ipc6->opt->opt_flen : 0);
++	size_t exthdrlen = (ipc6->opt ? ipc6->opt->opt_flen : 0);
+ 	int err;
+ 
+ 	if (flags & MSG_PROBE) {
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 55afd7f39c04..91704bbc7715 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -1308,7 +1308,7 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 	struct ipcm6_cookie ipc6;
+ 	int addr_len = msg->msg_namelen;
+ 	bool connected = false;
+-	int ulen = len;
++	size_t ulen = len;
+ 	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
+ 	int err;
+ 	int is_udplite = IS_UDPLITE(sk);
+diff --git a/net/l2tp/l2tp_ip6.c b/net/l2tp/l2tp_ip6.c
+index c6ff8bf9b55f..5981d6e25776 100644
+--- a/net/l2tp/l2tp_ip6.c
++++ b/net/l2tp/l2tp_ip6.c
+@@ -504,7 +504,7 @@ static int l2tp_ip6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ 	struct ipcm6_cookie ipc6;
+ 	int addr_len = msg->msg_namelen;
+ 	int transhdrlen = 4; /* zero session-id */
+-	int ulen = len + transhdrlen;
++	size_t ulen = len + transhdrlen;
+ 	int err;
+ 
+ 	/* Rough check on arithmetic overflow,
+-- 
+2.25.1
 
-Also there is a lot of other overhead: syscall and atomic-s.
-To stress map_update_elem please use a for() loop inside bpf prog.
