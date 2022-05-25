@@ -2,88 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C0E533A4F
-	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 11:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B8E533B88
+	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 13:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235297AbiEYJzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 May 2022 05:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
+        id S231191AbiEYLPs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 May 2022 07:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240418AbiEYJzq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 May 2022 05:55:46 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900B548E6D
-        for <bpf@vger.kernel.org>; Wed, 25 May 2022 02:55:44 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id a15so524545ilq.12
-        for <bpf@vger.kernel.org>; Wed, 25 May 2022 02:55:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=NvPg3g1sb2KF0lsVLKmOciRLB5HpeJ/qMtV1hiJ5YEU=;
-        b=QhAswP38aVdWFdBD/kntfKnoBsZN4wbjkt4kLK1KMTm4aokd1iPXAhmekGK/ZpsQJh
-         wHdBxBanosxwcu01HCnsmyrYbWyLs1CWOVc0XP1HR19GOh2g1euzXG9eJQLbZA0YNh6Z
-         Erk2POwQAjY7ri1hVhiLXVuIxqIOi/FOAg+Jj83EF5k6kr4uvtfS16fK8rCLIEGoK1HI
-         /szBYK+1YNM7xY0DL9kMpHDnb8NpDBgMFpWi9JiXhTwKaPrJXb+6QI2+86cKniWNHgFZ
-         Y+AyJpB+nuwiSNPpxRahsUzWJlE8swV+WfWxBY1S1fJbXZUJpF8LRyhiyubsznqgulnC
-         NjCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=NvPg3g1sb2KF0lsVLKmOciRLB5HpeJ/qMtV1hiJ5YEU=;
-        b=jdPtV5nsQ7sZ8APZrQHYc/c5oAen1QtWVFRH2KBKEpNVE/vMHkIpb/ato5yZ3k3ECc
-         T/5Tad8cG6dlwS2Yvh1M16DD/srTPFJBA+2Sh42bQghfc8KeABwzicCgem1BDv2c5iGb
-         ns4pSL/5IedfT1h14EHP8DOOAMlvKPsp7I9he/knD6bc78sIZdY4P4/eU5jStK0/CBKI
-         +rEtyw9/+E6y3Hzr600c/kHq6wRk5hxPqXsv/IwzXX61oUNX4YaKAog06+f66e0mNY4z
-         /WXFUN+cG20cIzRegKi5QNvvZ6lO75BrEKzdFDNQvK4qBVgsBPS8r48n6Vnz5iDbjjUd
-         2p+g==
-X-Gm-Message-State: AOAM533bK05t/UjkSItsY74Ac0fNyefxvip3E0ivNwZKckvFDXrgLah5
-        FwKgNzkdN89UaXiWLwr8Zye8KnIloLiMA971FEPTkBj6HGY5RUNj4FI=
-X-Google-Smtp-Source: ABdhPJzTYAkwsJG0EF16Apq4qSl5bbWhNjIYYGDOljRFuerMCbBWgDMP5VUbwsIhD3sRntUVe5T26FqJz3E/p8bLvKA=
-X-Received: by 2002:a05:6e02:be8:b0:2cf:b8d:5fa with SMTP id
- d8-20020a056e020be800b002cf0b8d05famr16610776ilu.93.1653472543809; Wed, 25
- May 2022 02:55:43 -0700 (PDT)
+        with ESMTP id S242942AbiEYLPi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 May 2022 07:15:38 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF1294192;
+        Wed, 25 May 2022 04:15:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0288FB81CA3;
+        Wed, 25 May 2022 11:15:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E18DC385B8;
+        Wed, 25 May 2022 11:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653477330;
+        bh=MsdbkVlYtrgkT4W07at59fEGoLNJC4CRitFwyTCa1hI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=TfskDXstcbI3M0FA3iakW6qeBj5kPi8k0M7qG1bgJwNqUng53JPtiwwZsZUEpngxB
+         oDI/kPfGO01mDzCW7sB1g6tEuwU83ZZX2H7lGRaIw9bYIXoR06bIriKeWnHGRBGI36
+         zEa41fjh7rZs6gMvSx7+nM1sPMnhENCvRFcb/dGOwl1oHmTVtxCY4UZmuflsFDMDfc
+         uW0hA+8yZfmxwmrYmGBaEQtu4CYkeP10YNuCLbGzqjdExerbkGsvB43gnwdGpoPohI
+         vcFdWEEyep5tvUzReMHx7pHDur5DZrGflSJ25Rw2ZGLcw7InVlemJTAdGg62Qbcyn2
+         oZ3pfdKREgoSw==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1845D3DED4A; Wed, 25 May 2022 13:15:28 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     Zhengchao Shao <shaozhengchao@huawei.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org
+Cc:     weiyongjun1@huawei.com, shaozhengchao@huawei.com,
+        yuehaibing@huawei.com
+Subject: Re: [PATCH v3,bpf-next] samples/bpf: check detach prog exist or not
+ in xdp_fwd
+In-Reply-To: <20220521043509.389007-1-shaozhengchao@huawei.com>
+References: <20220521043509.389007-1-shaozhengchao@huawei.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 25 May 2022 13:15:28 +0200
+Message-ID: <87o7zloobz.fsf@toke.dk>
 MIME-Version: 1.0
-From:   Ye ZhengMao <yezhengmaolove@gmail.com>
-Date:   Wed, 25 May 2022 17:55:09 +0800
-Message-ID: <CAJ=PnJmZVmAszzyfc8PLUCheQk04iCATXkrLJFxHL4Z=Pc1+Zg@mail.gmail.com>
-Subject: bpftool coredump
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-i using cross compiler to compile the bpftool for aarch64 and when gen
-skeleton for the minimal.bpf.o, bpftool core.
+Zhengchao Shao <shaozhengchao@huawei.com> writes:
 
-libbpf: loading object 'minimal_bpf' from buffer
-libbpf: elf: section(2) tp/syscalls/sys_enter_write, size 104, link 0,
-flags 6, type=1
-libbpf: elf: section(3) license, size 13, link 0, flags 3, type=1
-libbpf: license of minimal_bpf is Dual BSD/GPL
-libbpf: elf: section(4) .bss, size 4, link 0, flags 3, type=8
-libbpf: elf: section(5) .rodata, size 28, link 0, flags 2, type=1
-libbpf: elf: section(6) .symtab, size 192, link 8, flags 0, type=2
-libbpf: elf: section(7) .reltp/syscalls/sys_enter_write, size 32, link
-6, flags 0, type=9
-libbpf: looking for externs among 8 symbols...
-libbpf: collected 0 externs total
-libbpf: map 'minimal_.bss' (global data): at sec_idx 4, offset 0, flags 400.
-libbpf: map 0 is "minimal_.bss"
-libbpf: map 'minimal_.rodata' (global data): at sec_idx 5, offset 0, flags 480.
-libbpf: map 1 is "minimal_.rodata"
-libbpf: sec '.reltp/syscalls/sys_enter_write': collecting relocation
-for section(2) 'tp/syscalls/sys_enter_write'
-libbpf: sec '.reltp/syscalls/sys_enter_write': relo #0: insn #2 against 'my_pid'
-Segmentation fault (core dumped)
+> Before detach the prog, we should check detach prog exist or not.
+>
+> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+> ---
+>  samples/bpf/xdp_fwd_user.c | 59 ++++++++++++++++++++++++++++++++------
+>  1 file changed, 50 insertions(+), 9 deletions(-)
+>
+> diff --git a/samples/bpf/xdp_fwd_user.c b/samples/bpf/xdp_fwd_user.c
+> index 1828487bae9a..03a50f64e99a 100644
+> --- a/samples/bpf/xdp_fwd_user.c
+> +++ b/samples/bpf/xdp_fwd_user.c
+> @@ -47,17 +47,58 @@ static int do_attach(int idx, int prog_fd, int map_fd, const char *name)
+>  	return err;
+>  }
+>  
+> -static int do_detach(int idx, const char *name)
+> +static int do_detach(int ifindex, const char *ifname, const char *app_name)
+>  {
+> -	int err;
+> +	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
+> +	struct bpf_prog_info prog_info = {};
+> +	char prog_name[BPF_OBJ_NAME_LEN];
+> +	__u32 info_len, curr_prog_id;
+> +	int prog_fd;
+> +	int err = 1;
+> +
+> +	if (bpf_xdp_query_id(ifindex, xdp_flags, &curr_prog_id)) {
+> +		printf("ERROR: bpf_xdp_query_id failed (%s)\n",
+> +		       strerror(errno));
+> +		return err;
+> +	}
+> +
+> +	if (!curr_prog_id) {
+> +		printf("ERROR: flags(0x%x) xdp prog is not attached to %s\n",
+> +		       xdp_flags, ifname);
+> +		return err;
+> +	}
+>  
+> -	err = bpf_xdp_detach(idx, xdp_flags, NULL);
+> -	if (err < 0)
+> -		printf("ERROR: failed to detach program from %s\n", name);
+> +	info_len = sizeof(prog_info);
+> +	prog_fd = bpf_prog_get_fd_by_id(curr_prog_id);
 
-core in function find_prog_by_sec_insn
+This fd is never closed again; you'll need to replace the 'return err'
+statement below with a 'goto err' and add a label at the end that closes
+the fd before returning - see comments below.
 
-i using gdb to found the obj->nr_programs == 0
-prog = &obj->programs[l]; can`t work fine
+> +	if (prog_fd < 0) {
+> +		printf("ERROR: bpf_prog_get_fd_by_id failed (%s)\n",
+> +		       strerror(errno));
+> +		return err;
+
+err is not actually set here; you could either 'return prog_fd' or
+'return -errno'.
+
+> +	}
+> +
+> +	err = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &info_len);
+> +	if (err) {
+> +		printf("ERROR: bpf_obj_get_info_by_fd failed (%s)\n",
+> +		       strerror(errno));
+> +		return err;
+
+make this 'goto err'...
+> +	}
+> +	snprintf(prog_name, sizeof(prog_name), "%s_prog", app_name);
+> +	prog_name[BPF_OBJ_NAME_LEN - 1] = '\0';
+> +
+> +	if (strcmp(prog_info.name, prog_name)) {
+> +		printf("ERROR: %s isn't attached to %s\n", app_name, ifname);
+> +		err = 1;
+> +	} else {
+> +		opts.old_prog_fd = prog_fd;
+> +		err = bpf_xdp_detach(ifindex, xdp_flags, &opts);
+> +		if (err < 0)
+> +			printf("ERROR: failed to detach program from %s (%s)\n",
+> +			       ifname, strerror(errno));
+> +		/* TODO: Remember to cleanup map, when adding use of shared map
+> +		 *  bpf_map_delete_elem((map_fd, &idx);
+> +		 */
+> +	}
+>  
+> -	/* TODO: Remember to cleanup map, when adding use of shared map
+> -	 *  bpf_map_delete_elem((map_fd, &idx);
+> -	 */
+...and add something like:
+
+err:
+        close(prog_fd);
+>  	return err;
+>  }
+>  
+> @@ -169,7 +210,7 @@ int main(int argc, char **argv)
+>  			return 1;
+>  		}
+>  		if (!attach) {
+> -			err = do_detach(idx, argv[i]);
+> +			err = do_detach(idx, argv[i], prog_name);
+>  			if (err)
+>  				ret = err;
+>  		} else {
+> -- 
+> 2.17.1
