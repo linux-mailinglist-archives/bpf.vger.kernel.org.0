@@ -2,296 +2,343 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAD3533EDA
-	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 16:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461B55340F0
+	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 18:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244597AbiEYOKm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 May 2022 10:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
+        id S235833AbiEYQBr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 May 2022 12:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244556AbiEYOKl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 May 2022 10:10:41 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 07D55A30A3;
-        Wed, 25 May 2022 07:10:40 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FEC6106F;
-        Wed, 25 May 2022 07:10:39 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.0.228])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56BF23F66F;
-        Wed, 25 May 2022 07:10:33 -0700 (PDT)
-Date:   Wed, 25 May 2022 15:10:28 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/6] bpf, arm64: Impelment
- bpf_arch_text_poke() for arm64
-Message-ID: <Yo441FR4mXpa2yNx@FVFF77S0Q05N>
-References: <20220518131638.3401509-1-xukuohai@huawei.com>
- <20220518131638.3401509-5-xukuohai@huawei.com>
+        with ESMTP id S229869AbiEYQBq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 May 2022 12:01:46 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4884E93993
+        for <bpf@vger.kernel.org>; Wed, 25 May 2022 09:01:43 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id i9so576411wrc.13
+        for <bpf@vger.kernel.org>; Wed, 25 May 2022 09:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1bT/SRtJA60uXkshI7XI2yP202vOkkHNq//n5wAg2xQ=;
+        b=pShoJ9JqlF44PN48yTuy8vbKYfA8Edw0CpVbu5z/H8SQ6wLjZoz4778SRM5LFTRrIT
+         LO7NkX4s4w7b6rHWXk06UDHPVDCLkHsbK7bPPwd9Ext87T887ce06WQayNBWNEJMKdAV
+         YmvhOWL1Voq9mAW0ylEdr9plBXHuZ06hkTLTZL6iv9tsaW7ZZkyBD/uB5fh9N7z+twiZ
+         nr3+nZZOialVAzH4N/Bltf5XH0H79LnT4ZqKr/yJWE9iAVtbDMLxMTo/7QNG0ldnqJzr
+         4iOHWfretAWbHwTlPKVouFstjEwynshwKu6j7wIJBATpsZfFfkFH2RP+I0mjhGXC7sRo
+         kKuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1bT/SRtJA60uXkshI7XI2yP202vOkkHNq//n5wAg2xQ=;
+        b=3jcnQAwpLM4D2YW2UCcH3UQ75aSxA9cbmeICIGJzvGa1mzs6htJ6H5C4ae7vruslng
+         wqz2aKV0TI9TtWKo804Yj9lRMgnf6u6x2cEie8dC6v08pIs3pYENklYzN5SYSa2/U9+m
+         9j6/rd9NsvdKCnHh0wuoDjQ6iMw8Ol3S2smmlLOJbliSr1unewL5gpyMbK0YhSH8GHB1
+         iI/so1MmtIRe5DurpntuMCGg5QoZ6c19Vpa9Isq8ADuuPd4On7Zcgc+H9tchHS5ihVya
+         Tbd+8Ekab7BCv6TGzui+U8rdhBSFuD9ZDJDq6QuHQJ/+WEuim6wmn/IAmJn2iugguqYm
+         5klQ==
+X-Gm-Message-State: AOAM532Y80VKT/AQl6u77dfAfbLNLCzfN+b7XefaALm58zysRo8iH+WZ
+        FXIWM7iQ0ZJ2G3FIsSMpvu75dMF/ZEe9h1jeyfY4ww==
+X-Google-Smtp-Source: ABdhPJxE/GRM3CwbwFN/rN9bAtxg7Z/jg3Sy+Autai6Mi7YPdR6OkLDL6o+U3kG5ek7bYPQI0uNUfgq5deqB+StjbpU=
+X-Received: by 2002:a5d:6c6e:0:b0:20f:c39b:c416 with SMTP id
+ r14-20020a5d6c6e000000b0020fc39bc416mr20081467wrz.463.1653494501379; Wed, 25
+ May 2022 09:01:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220518131638.3401509-5-xukuohai@huawei.com>
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220518225531.558008-1-sdf@google.com> <20220518225531.558008-6-sdf@google.com>
+ <20220524034857.jwbjciq3rfb3l5kx@kafai-mbp> <CAKH8qBuCZVNPZaCRWrTiv7deDCyOkofT_ypvAiuE=OMz=TUuJw@mail.gmail.com>
+ <20220524175035.i2ltl7gcrp2sng5r@kafai-mbp> <CAEf4BzYEXKQ-J8EQtTiYci1wdrRG7SPpuGhejJFY0cc5QQovEQ@mail.gmail.com>
+ <CAKH8qBuRvnVoY-KEa6ofTjc2Jh2HUZYb1U2USSxgT=ozk0_JUA@mail.gmail.com> <CAEf4BzYdH9aayLvKAVTAeQ2XSLZPDX9N+fbP+yZnagcKd7ytNA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYdH9aayLvKAVTAeQ2XSLZPDX9N+fbP+yZnagcKd7ytNA@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 25 May 2022 09:01:29 -0700
+Message-ID: <CAKH8qBvQHFcSQQiig6YGRdnjTHnu0T7-q-mPNjRb_nbY49N-Xw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 05/11] bpf: implement BPF_PROG_QUERY for BPF_LSM_CGROUP
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 09:16:36AM -0400, Xu Kuohai wrote:
-> Impelment bpf_arch_text_poke() for arm64, so bpf trampoline code can use
-> it to replace nop with jump, or replace jump with nop.
-> 
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
-> Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
->  arch/arm64/net/bpf_jit.h      |   1 +
->  arch/arm64/net/bpf_jit_comp.c | 107 +++++++++++++++++++++++++++++++---
->  2 files changed, 99 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-> index 194c95ccc1cf..1c4b0075a3e2 100644
-> --- a/arch/arm64/net/bpf_jit.h
-> +++ b/arch/arm64/net/bpf_jit.h
-> @@ -270,6 +270,7 @@
->  #define A64_BTI_C  A64_HINT(AARCH64_INSN_HINT_BTIC)
->  #define A64_BTI_J  A64_HINT(AARCH64_INSN_HINT_BTIJ)
->  #define A64_BTI_JC A64_HINT(AARCH64_INSN_HINT_BTIJC)
-> +#define A64_NOP    A64_HINT(AARCH64_INSN_HINT_NOP)
->  
->  /* DMB */
->  #define A64_DMB_ISH aarch64_insn_gen_dmb(AARCH64_INSN_MB_ISH)
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index 8ab4035dea27..5ce6ed5f42a1 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -9,6 +9,7 @@
->  
->  #include <linux/bitfield.h>
->  #include <linux/bpf.h>
-> +#include <linux/memory.h>
->  #include <linux/filter.h>
->  #include <linux/printk.h>
->  #include <linux/slab.h>
-> @@ -18,6 +19,7 @@
->  #include <asm/cacheflush.h>
->  #include <asm/debug-monitors.h>
->  #include <asm/insn.h>
-> +#include <asm/patching.h>
->  #include <asm/set_memory.h>
->  
->  #include "bpf_jit.h"
-> @@ -235,13 +237,13 @@ static bool is_lsi_offset(int offset, int scale)
->  	return true;
->  }
->  
-> +#define BTI_INSNS (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) ? 1 : 0)
-> +#define PAC_INSNS (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL) ? 1 : 0)
-> +
->  /* Tail call offset to jump into */
-> -#if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL) || \
-> -	IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL)
-> -#define PROLOGUE_OFFSET 9
-> -#else
-> -#define PROLOGUE_OFFSET 8
-> -#endif
-> +#define PROLOGUE_OFFSET	(BTI_INSNS + 2 + PAC_INSNS + 8)
-> +/* Offset of nop instruction in bpf prog entry to be poked */
-> +#define POKE_OFFSET	(BTI_INSNS + 1)
->  
->  static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->  {
-> @@ -279,12 +281,15 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
->  	 *
->  	 */
->  
-> +	if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
-> +		emit(A64_BTI_C, ctx);
-> +
-> +	emit(A64_MOV(1, A64_R(9), A64_LR), ctx);
-> +	emit(A64_NOP, ctx);
+On Tue, May 24, 2022 at 9:39 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, May 24, 2022 at 9:03 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > On Tue, May 24, 2022 at 4:45 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Tue, May 24, 2022 at 10:50 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > >
+> > > > On Tue, May 24, 2022 at 08:55:04AM -0700, Stanislav Fomichev wrote:
+> > > > > On Mon, May 23, 2022 at 8:49 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > > > >
+> > > > > > On Wed, May 18, 2022 at 03:55:25PM -0700, Stanislav Fomichev wrote:
+> > > > > > > We have two options:
+> > > > > > > 1. Treat all BPF_LSM_CGROUP the same, regardless of attach_btf_id
+> > > > > > > 2. Treat BPF_LSM_CGROUP+attach_btf_id as a separate hook point
+> > > > > > >
+> > > > > > > I was doing (2) in the original patch, but switching to (1) here:
+> > > > > > >
+> > > > > > > * bpf_prog_query returns all attached BPF_LSM_CGROUP programs
+> > > > > > > regardless of attach_btf_id
+> > > > > > > * attach_btf_id is exported via bpf_prog_info
+> > > > > > >
+> > > > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > > > > ---
+> > > > > > >  include/uapi/linux/bpf.h |   5 ++
+> > > > > > >  kernel/bpf/cgroup.c      | 103 +++++++++++++++++++++++++++------------
+> > > > > > >  kernel/bpf/syscall.c     |   4 +-
+> > > > > > >  3 files changed, 81 insertions(+), 31 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > > > > > index b9d2d6de63a7..432fc5f49567 100644
+> > > > > > > --- a/include/uapi/linux/bpf.h
+> > > > > > > +++ b/include/uapi/linux/bpf.h
+> > > > > > > @@ -1432,6 +1432,7 @@ union bpf_attr {
+> > > > > > >               __u32           attach_flags;
+> > > > > > >               __aligned_u64   prog_ids;
+> > > > > > >               __u32           prog_cnt;
+> > > > > > > +             __aligned_u64   prog_attach_flags; /* output: per-program attach_flags */
+> > > > > > >       } query;
+> > > > > > >
+> > > > > > >       struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+> > > > > > > @@ -5911,6 +5912,10 @@ struct bpf_prog_info {
+> > > > > > >       __u64 run_cnt;
+> > > > > > >       __u64 recursion_misses;
+> > > > > > >       __u32 verified_insns;
+> > > > > > > +     /* BTF ID of the function to attach to within BTF object identified
+> > > > > > > +      * by btf_id.
+> > > > > > > +      */
+> > > > > > > +     __u32 attach_btf_func_id;
+> > > > > > >  } __attribute__((aligned(8)));
+> > > > > > >
+> > > > > > >  struct bpf_map_info {
+> > > > > > > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > > > > > > index a959cdd22870..08a1015ee09e 100644
+> > > > > > > --- a/kernel/bpf/cgroup.c
+> > > > > > > +++ b/kernel/bpf/cgroup.c
+> > > > > > > @@ -1074,6 +1074,7 @@ static int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+> > > > > > >  static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+> > > > > > >                             union bpf_attr __user *uattr)
+> > > > > > >  {
+> > > > > > > +     __u32 __user *prog_attach_flags = u64_to_user_ptr(attr->query.prog_attach_flags);
+> > > > > > >       __u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+> > > > > > >       enum bpf_attach_type type = attr->query.attach_type;
+> > > > > > >       enum cgroup_bpf_attach_type atype;
+> > > > > > > @@ -1081,50 +1082,92 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+> > > > > > >       struct hlist_head *progs;
+> > > > > > >       struct bpf_prog *prog;
+> > > > > > >       int cnt, ret = 0, i;
+> > > > > > > +     int total_cnt = 0;
+> > > > > > >       u32 flags;
+> > > > > > >
+> > > > > > > -     atype = to_cgroup_bpf_attach_type(type);
+> > > > > > > -     if (atype < 0)
+> > > > > > > -             return -EINVAL;
+> > > > > > > +     enum cgroup_bpf_attach_type from_atype, to_atype;
+> > > > > > >
+> > > > > > > -     progs = &cgrp->bpf.progs[atype];
+> > > > > > > -     flags = cgrp->bpf.flags[atype];
+> > > > > > > +     if (type == BPF_LSM_CGROUP) {
+> > > > > > > +             from_atype = CGROUP_LSM_START;
+> > > > > > > +             to_atype = CGROUP_LSM_END;
+> > > > > > > +     } else {
+> > > > > > > +             from_atype = to_cgroup_bpf_attach_type(type);
+> > > > > > > +             if (from_atype < 0)
+> > > > > > > +                     return -EINVAL;
+> > > > > > > +             to_atype = from_atype;
+> > > > > > > +     }
+> > > > > > >
+> > > > > > > -     effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
+> > > > > > > -                                           lockdep_is_held(&cgroup_mutex));
+> > > > > > > +     for (atype = from_atype; atype <= to_atype; atype++) {
+> > > > > > > +             progs = &cgrp->bpf.progs[atype];
+> > > > > > > +             flags = cgrp->bpf.flags[atype];
+> > > > > > >
+> > > > > > > -     if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE)
+> > > > > > > -             cnt = bpf_prog_array_length(effective);
+> > > > > > > -     else
+> > > > > > > -             cnt = prog_list_length(progs);
+> > > > > > > +             effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
+> > > > > > > +                                                   lockdep_is_held(&cgroup_mutex));
+> > > > > > >
+> > > > > > > -     if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
+> > > > > > > -             return -EFAULT;
+> > > > > > > -     if (copy_to_user(&uattr->query.prog_cnt, &cnt, sizeof(cnt)))
+> > > > > > > +             if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE)
+> > > > > > > +                     total_cnt += bpf_prog_array_length(effective);
+> > > > > > > +             else
+> > > > > > > +                     total_cnt += prog_list_length(progs);
+> > > > > > > +     }
+> > > > > > > +
+> > > > > > > +     if (type != BPF_LSM_CGROUP)
+> > > > > > > +             if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
+> > > > > > > +                     return -EFAULT;
+> > > > > > > +     if (copy_to_user(&uattr->query.prog_cnt, &total_cnt, sizeof(total_cnt)))
+> > > > > > >               return -EFAULT;
+> > > > > > > -     if (attr->query.prog_cnt == 0 || !prog_ids || !cnt)
+> > > > > > > +     if (attr->query.prog_cnt == 0 || !prog_ids || !total_cnt)
+> > > > > > >               /* return early if user requested only program count + flags */
+> > > > > > >               return 0;
+> > > > > > > -     if (attr->query.prog_cnt < cnt) {
+> > > > > > > -             cnt = attr->query.prog_cnt;
+> > > > > > > +
+> > > > > > > +     if (attr->query.prog_cnt < total_cnt) {
+> > > > > > > +             total_cnt = attr->query.prog_cnt;
+> > > > > > >               ret = -ENOSPC;
+> > > > > > >       }
+> > > > > > >
+> > > > > > > -     if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE) {
+> > > > > > > -             return bpf_prog_array_copy_to_user(effective, prog_ids, cnt);
+> > > > > > > -     } else {
+> > > > > > > -             struct bpf_prog_list *pl;
+> > > > > > > -             u32 id;
+> > > > > > > +     for (atype = from_atype; atype <= to_atype; atype++) {
+> > > > > > > +             if (total_cnt <= 0)
+> > > > > > > +                     break;
+> > > > > > >
+> > > > > > > -             i = 0;
+> > > > > > > -             hlist_for_each_entry(pl, progs, node) {
+> > > > > > > -                     prog = prog_list_prog(pl);
+> > > > > > > -                     id = prog->aux->id;
+> > > > > > > -                     if (copy_to_user(prog_ids + i, &id, sizeof(id)))
+> > > > > > > -                             return -EFAULT;
+> > > > > > > -                     if (++i == cnt)
+> > > > > > > -                             break;
+> > > > > > > +             progs = &cgrp->bpf.progs[atype];
+> > > > > > > +             flags = cgrp->bpf.flags[atype];
+> > > > > > > +
+> > > > > > > +             effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
+> > > > > > > +                                                   lockdep_is_held(&cgroup_mutex));
+> > > > > > > +
+> > > > > > > +             if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE)
+> > > > > > > +                     cnt = bpf_prog_array_length(effective);
+> > > > > > > +             else
+> > > > > > > +                     cnt = prog_list_length(progs);
+> > > > > > > +
+> > > > > > > +             if (cnt >= total_cnt)
+> > > > > > > +                     cnt = total_cnt;
+> > > > > > > +
+> > > > > > > +             if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE) {
+> > > > > > > +                     ret = bpf_prog_array_copy_to_user(effective, prog_ids, cnt);
+> > > > > > > +             } else {
+> > > > > > > +                     struct bpf_prog_list *pl;
+> > > > > > > +                     u32 id;
+> > > > > > > +
+> > > > > > > +                     i = 0;
+> > > > > > > +                     hlist_for_each_entry(pl, progs, node) {
+> > > > > > > +                             prog = prog_list_prog(pl);
+> > > > > > > +                             id = prog->aux->id;
+> > > > > > > +                             if (copy_to_user(prog_ids + i, &id, sizeof(id)))
+> > > > > > > +                                     return -EFAULT;
+> > > > > > > +                             if (++i == cnt)
+> > > > > > > +                                     break;
+> > > > > > > +                     }
+> > > > > > >               }
+> > > > > > > +
+> > > > > > > +             if (prog_attach_flags)
+> > > > > > > +                     for (i = 0; i < cnt; i++)
+> > > > > > > +                             if (copy_to_user(prog_attach_flags + i, &flags, sizeof(flags)))
+> > > > > > > +                                     return -EFAULT;
+> > > > > > > +
+> > > > > > > +             prog_ids += cnt;
+> > > > > > > +             total_cnt -= cnt;
+> > > > > > > +             if (prog_attach_flags)
+> > > > > > > +                     prog_attach_flags += cnt;
+> > > > > > >       }
+> > > > > > >       return ret;
+> > > > > > >  }
+> > > > > > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > > > > > > index 5ed2093e51cc..4137583c04a2 100644
+> > > > > > > --- a/kernel/bpf/syscall.c
+> > > > > > > +++ b/kernel/bpf/syscall.c
+> > > > > > > @@ -3520,7 +3520,7 @@ static int bpf_prog_detach(const union bpf_attr *attr)
+> > > > > > >       }
+> > > > > > >  }
+> > > > > > >
+> > > > > > > -#define BPF_PROG_QUERY_LAST_FIELD query.prog_cnt
+> > > > > > > +#define BPF_PROG_QUERY_LAST_FIELD query.prog_attach_flags
+> > > > > > >
+> > > > > > >  static int bpf_prog_query(const union bpf_attr *attr,
+> > > > > > >                         union bpf_attr __user *uattr)
+> > > > > > > @@ -3556,6 +3556,7 @@ static int bpf_prog_query(const union bpf_attr *attr,
+> > > > > > >       case BPF_CGROUP_SYSCTL:
+> > > > > > >       case BPF_CGROUP_GETSOCKOPT:
+> > > > > > >       case BPF_CGROUP_SETSOCKOPT:
+> > > > > > > +     case BPF_LSM_CGROUP:
+> > > > > > >               return cgroup_bpf_prog_query(attr, uattr);
+> > > > > > >       case BPF_LIRC_MODE2:
+> > > > > > >               return lirc_prog_query(attr, uattr);
+> > > > > > > @@ -4066,6 +4067,7 @@ static int bpf_prog_get_info_by_fd(struct file *file,
+> > > > > > >
+> > > > > > >       if (prog->aux->btf)
+> > > > > > >               info.btf_id = btf_obj_id(prog->aux->btf);
+> > > > > > > +     info.attach_btf_func_id = prog->aux->attach_btf_id;
+> > > > > > Note that exposing prog->aux->attach_btf_id only may not be enough
+> > > > > > unless it can assume info.attach_btf_id is always referring to btf_vmlinux
+> > > > > > for all bpf prog types.
+> > > > >
+> > > > > We also export btf_id two lines above, right? Btw, I left a comment in
+> > > > > the bpftool about those btf_ids, I'm not sure how resolve them and
+> > > > > always assume vmlinux for now.
+> > > > yeah, that btf_id above is the cgroup-lsm prog's btf_id which has its
+> > > > func info, line info...etc.   It is not the one the attach_btf_id correspond
+> > > > to.  attach_btf_id refers to either aux->attach_btf or aux->dst_prog's btf (or
+> > > > target btf id here).
+> > > >
+> > > > It needs a consensus on where this attach_btf_id, target btf id, and
+> > > > prog_attach_flags should be.  If I read the patch 7 thread correctly,
+> > > > I think Andrii is suggesting to expose them to userspace through link, so
+> > > > potentially putting them in bpf_link_info.  The bpf_prog_query will
+> > > > output a list of link ids.  The same probably applies to
+> > >
+> > > Yep and I think it makes sense because link is representing one
+> > > specific attachment (and I presume flags can be stored inside the link
+> > > itself as well, right?).
+> > >
+> > > But if legacy non-link BPF_PROG_ATTACH is supported then using
+> > > bpf_link_info won't cover legacy prog-only attachments.
+> >
+> > I don't have any attachment to the legacy apis, I'm supporting them
+> > only because it takes two lines of code; we can go link-only if there
+> > is an agreement that it's inherently better.
+> >
+> > How about I keep sys_bpf(BPF_PROG_QUERY) as is and I do a loop in the
+> > userspace (for BPF_LSM_CGROUP only) over all links
+> > (BPF_LINK_GET_NEXT_ID) and will find the the ones with matching prog
+> > ids (BPF_LINK_GET_FD_BY_ID+BPF_OBJ_GET_INFO_BY_FD)?
+> >
+> > That way we keep new fields in bpf_link_info, but we don't have to
+> > extend sys_bpf(BPF_PROG_QUERY) because there doesn't seem to be a good
+> > way to do it. Exporting links via new link_fds would mean we'd have to
+> > support BPF_F_QUERY_EFFECTIVE, but getting an effective array of links
+> > seems to be messy. If, in the future, we figure out a better way to
+> > expose a list of attached/effective links per cgroup, we can
+> > convert/optimize bpftool.
+>
+> Why not use iter/bpf_link program (see progs/bpf_iter_bpf_link.c for
+> an example) instead? Once you have struct bpf_link and you know it's
+> cgroup link, you can cast it to struct bpf_cgroup_link and get access
+> to prog and cgroup. From cgroup to cgroup_bpf you can even get access
+> to effective array. Basically whatever kernel has access to you can
+> have access to from bpftool without extending any UAPIs.
 
-I take it the idea is to make this the same as the regular ftrace patch-site
-sequence, so that this can call the same trampoline(s) ?
-
-If so, we need some commentary to that effect, and we need some comments in the
-ftrace code explaining that this needs to be kept in-sync.
-
-> +
->  	/* Sign lr */
->  	if (IS_ENABLED(CONFIG_ARM64_PTR_AUTH_KERNEL))
->  		emit(A64_PACIASP, ctx);
-> -	/* BTI landing pad */
-> -	else if (IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
-> -		emit(A64_BTI_C, ctx);
->  
->  	/* Save FP and LR registers to stay align with ARM64 AAPCS */
->  	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
-> @@ -1529,3 +1534,87 @@ void bpf_jit_free_exec(void *addr)
->  {
->  	return vfree(addr);
->  }
-> +
-> +static int gen_branch_or_nop(enum aarch64_insn_branch_type type, void *ip,
-> +			     void *addr, u32 *insn)
-> +{
-> +	if (!addr)
-> +		*insn = aarch64_insn_gen_nop();
-> +	else
-> +		*insn = aarch64_insn_gen_branch_imm((unsigned long)ip,
-> +						    (unsigned long)addr,
-> +						    type);
-> +
-> +	return *insn != AARCH64_BREAK_FAULT ? 0 : -EFAULT;
-> +}
-> +
-> +int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
-> +		       void *old_addr, void *new_addr)
-> +{
-> +	int ret;
-> +	u32 old_insn;
-> +	u32 new_insn;
-> +	u32 replaced;
-> +	unsigned long offset = ~0UL;
-> +	enum aarch64_insn_branch_type branch_type;
-> +	char namebuf[KSYM_NAME_LEN];
-> +
-> +	if (!__bpf_address_lookup((unsigned long)ip, NULL, &offset, namebuf))
-> +		/* Only poking bpf text is supported. Since kernel function
-> +		 * entry is set up by ftrace, we reply on ftrace to poke kernel
-> +		 * functions.
-> +		 */
-> +		return -EINVAL;
-> +
-> +	/* bpf entry */
-> +	if (offset == 0UL)
-> +		/* skip to the nop instruction in bpf prog entry:
-> +		 * bti c	// if BTI enabled
-> +		 * mov x9, x30
-> +		 * nop
-> +		 */
-> +		ip = ip + POKE_OFFSET * AARCH64_INSN_SIZE;
-
-When is offset non-zero? is this ever called to patch other instructions, and
-could this ever be used to try to patch the BTI specifically?
-
-I strongly suspect we need a higher-level API to say "poke the patchable
-callsite in the prologue", rather than assuming that offset 0 always means
-that, or it'll be *very* easy for this to go wrong.
-
-> +
-> +	if (poke_type == BPF_MOD_CALL)
-> +		branch_type = AARCH64_INSN_BRANCH_LINK;
-> +	else
-> +		branch_type = AARCH64_INSN_BRANCH_NOLINK;
-
-When is poke_type *not* BPF_MOD_CALL?
-
-I assume that means BPF also uses this for non-ftrace reasons?
-
-> +	if (gen_branch_or_nop(branch_type, ip, old_addr, &old_insn) < 0)
-> +		return -EFAULT;
-> +
-> +	if (gen_branch_or_nop(branch_type, ip, new_addr, &new_insn) < 0)
-> +		return -EFAULT;
-> +
-> +	mutex_lock(&text_mutex);
-> +	if (aarch64_insn_read(ip, &replaced)) {
-> +		ret = -EFAULT;
-> +		goto out;
-> +	}
-> +
-> +	if (replaced != old_insn) {
-> +		ret = -EFAULT;
-> +		goto out;
-> +	}
-> +
-> +	/* We call aarch64_insn_patch_text_nosync() to replace instruction
-> +	 * atomically, so no other CPUs will fetch a half-new and half-old
-> +	 * instruction. But there is chance that another CPU fetches the old
-> +	 * instruction after bpf_arch_text_poke() finishes, that is, different
-> +	 * CPUs may execute different versions of instructions at the same
-> +	 * time before the icache is synchronized by hardware.
-> +	 *
-> +	 * 1. when a new trampoline is attached, it is not an issue for
-> +	 *    different CPUs to jump to different trampolines temporarily.
-> +	 *
-> +	 * 2. when an old trampoline is freed, we should wait for all other
-> +	 *    CPUs to exit the trampoline and make sure the trampoline is no
-> +	 *    longer reachable, since bpf_tramp_image_put() function already
-> +	 *    uses percpu_ref and rcu task to do the sync, no need to call the
-> +	 *    sync interface here.
-> +	 */
-
-How is RCU used for that? It's not clear to me how that works for PREEMPT_RCU
-(which is the usual configuration for arm64), since we can easily be in a
-preemptible context, outside of an RCU read side critical section, yet call
-into a trampoline.
-
-I know that for livepatching we need to use stacktracing to ensure we've
-finished using code we'd like to free, and I can't immediately see how you can
-avoid that here. I'm suspicious that there's still a race where threads can
-enter the trampoline and it can be subsequently freed.
-
-For ftrace today we get away with entering the existing trampolines when not
-intended because those are statically allocated, and the race is caught when
-acquiring the ops inside the ftrace core code. This case is different because
-the CPU can fetch the instruction and execute that at any time, without any RCU
-involvement.
-
-Can you give more details on how the scheme described above works? How
-*exactly*` do you ensure that threads which have entered the trampoline (and
-may have been immediately preempted by an interrupt) have returned? Which RCU
-mechanism are you using?
-
-If you can point me at where this is implemented I'm happy to take a look.
-
-Thanks,
-Mark.
-
-> +	ret = aarch64_insn_patch_text_nosync(ip, new_insn);
-> +out:
-> +	mutex_unlock(&text_mutex);
-> +	return ret;
-> +}
-> -- 
-> 2.30.2
-> 
+Seems a bit too involved just to read back the fields? I might as well
+use drgn? I'm also not sure about the implementation: will I be able
+to upcast bpf_link to bpf_cgroup_link in the bpf prog? And getting
+attach_type might be problematic from the iterator program as well: I
+need to call kernel's bpf_lsm_attach_type_get to find atype for
+attach_btf_id, I'd have to export it as kfunc?
