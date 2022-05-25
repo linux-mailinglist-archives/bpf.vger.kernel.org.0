@@ -2,42 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6465B5334FC
-	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 03:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A593C5335CB
+	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 05:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240604AbiEYBvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 May 2022 21:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
+        id S238792AbiEYD1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 May 2022 23:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235156AbiEYBu5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 May 2022 21:50:57 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB131AF39;
-        Tue, 24 May 2022 18:50:56 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L7DWm3NwJzgYJN;
-        Wed, 25 May 2022 09:49:24 +0800 (CST)
-Received: from container.huawei.com (10.175.104.82) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+        with ESMTP id S235350AbiEYD1h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 May 2022 23:27:37 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F152C77F28;
+        Tue, 24 May 2022 20:27:35 -0700 (PDT)
+Received: from canpemm100007.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L7Ggt3dF5zhXZW;
+        Wed, 25 May 2022 11:26:34 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
+ canpemm100007.china.huawei.com (7.192.105.181) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 25 May 2022 09:50:54 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <davem@davemloft.net>, <yoshfuji@linux-ipv6.org>,
-        <dsahern@kernel.org>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH net-next v2] ipv6: Fix signed integer overflow in __ip6_append_data
-Date:   Wed, 25 May 2022 10:08:27 +0800
-Message-ID: <20220525020827.1571021-1-wangyufen@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ 15.1.2375.24; Wed, 25 May 2022 11:27:33 +0800
+Received: from dggpeml500026.china.huawei.com ([7.185.36.106]) by
+ dggpeml500026.china.huawei.com ([7.185.36.106]) with mapi id 15.01.2375.024;
+ Wed, 25 May 2022 11:27:33 +0800
+From:   shaozhengchao <shaozhengchao@huawei.com>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
+CC:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        yuehaibing <yuehaibing@huawei.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjMsYnBmLW5leHRdIHNhbXBsZXMvYnBmOiBjaGVj?=
+ =?utf-8?Q?k_detach_prog_exist_or_not_in_xdp=5Ffwd?=
+Thread-Topic: [PATCH v3,bpf-next] samples/bpf: check detach prog exist or not
+ in xdp_fwd
+Thread-Index: AQHYbMwX/T6Yw+1VQUW5SPSwZfp9Ia0u9MSQ
+Date:   Wed, 25 May 2022 03:27:33 +0000
+Message-ID: <eb8ee7fe2ffc477299eb2eceb622ca29@huawei.com>
+References: <20220521043509.389007-1-shaozhengchao@huawei.com>
+In-Reply-To: <20220521043509.389007-1-shaozhengchao@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.66]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -48,135 +69,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Resurrect ubsan overflow checks and ubsan report this warning,
-fix it by change the variable [length] type to size_t.
-
-UBSAN: signed-integer-overflow in net/ipv6/ip6_output.c:1489:19
-2147479552 + 8567 cannot be represented in type 'int'
-CPU: 0 PID: 253 Comm: err Not tainted 5.16.0+ #1
-Hardware name: linux,dummy-virt (DT)
-Call trace:
-  dump_backtrace+0x214/0x230
-  show_stack+0x30/0x78
-  dump_stack_lvl+0xf8/0x118
-  dump_stack+0x18/0x30
-  ubsan_epilogue+0x18/0x60
-  handle_overflow+0xd0/0xf0
-  __ubsan_handle_add_overflow+0x34/0x44
-  __ip6_append_data.isra.48+0x1598/0x1688
-  ip6_append_data+0x128/0x260
-  udpv6_sendmsg+0x680/0xdd0
-  inet6_sendmsg+0x54/0x90
-  sock_sendmsg+0x70/0x88
-  ____sys_sendmsg+0xe8/0x368
-  ___sys_sendmsg+0x98/0xe0
-  __sys_sendmmsg+0xf4/0x3b8
-  __arm64_sys_sendmmsg+0x34/0x48
-  invoke_syscall+0x64/0x160
-  el0_svc_common.constprop.4+0x124/0x300
-  do_el0_svc+0x44/0xc8
-  el0_svc+0x3c/0x1e8
-  el0t_64_sync_handler+0x88/0xb0
-  el0t_64_sync+0x16c/0x170
-
-Changes since v1: 
--Change the variable [length] type to unsigned, as Eric Dumazet suggested.
-  
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
----
- include/net/ipv6.h    | 4 ++--
- net/ipv6/ip6_output.c | 8 ++++----
- net/ipv6/udp.c        | 2 +-
- net/l2tp/l2tp_ip6.c   | 2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/include/net/ipv6.h b/include/net/ipv6.h
-index 5b38bf1a586b..de9dcc5652c4 100644
---- a/include/net/ipv6.h
-+++ b/include/net/ipv6.h
-@@ -1063,7 +1063,7 @@ int ip6_find_1stfragopt(struct sk_buff *skb, u8 **nexthdr);
- int ip6_append_data(struct sock *sk,
- 		    int getfrag(void *from, char *to, int offset, int len,
- 				int odd, struct sk_buff *skb),
--		    void *from, int length, int transhdrlen,
-+		    void *from, size_t length, int transhdrlen,
- 		    struct ipcm6_cookie *ipc6, struct flowi6 *fl6,
- 		    struct rt6_info *rt, unsigned int flags);
- 
-@@ -1079,7 +1079,7 @@ struct sk_buff *__ip6_make_skb(struct sock *sk, struct sk_buff_head *queue,
- struct sk_buff *ip6_make_skb(struct sock *sk,
- 			     int getfrag(void *from, char *to, int offset,
- 					 int len, int odd, struct sk_buff *skb),
--			     void *from, int length, int transhdrlen,
-+			     void *from, size_t length, int transhdrlen,
- 			     struct ipcm6_cookie *ipc6,
- 			     struct rt6_info *rt, unsigned int flags,
- 			     struct inet_cork_full *cork);
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 4081b12a01ff..7d47ddd1e1f2 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1450,7 +1450,7 @@ static int __ip6_append_data(struct sock *sk,
- 			     struct page_frag *pfrag,
- 			     int getfrag(void *from, char *to, int offset,
- 					 int len, int odd, struct sk_buff *skb),
--			     void *from, int length, int transhdrlen,
-+			     void *from, size_t length, int transhdrlen,
- 			     unsigned int flags, struct ipcm6_cookie *ipc6)
- {
- 	struct sk_buff *skb, *skb_prev = NULL;
-@@ -1798,7 +1798,7 @@ static int __ip6_append_data(struct sock *sk,
- int ip6_append_data(struct sock *sk,
- 		    int getfrag(void *from, char *to, int offset, int len,
- 				int odd, struct sk_buff *skb),
--		    void *from, int length, int transhdrlen,
-+		    void *from, size_t length, int transhdrlen,
- 		    struct ipcm6_cookie *ipc6, struct flowi6 *fl6,
- 		    struct rt6_info *rt, unsigned int flags)
- {
-@@ -1995,13 +1995,13 @@ EXPORT_SYMBOL_GPL(ip6_flush_pending_frames);
- struct sk_buff *ip6_make_skb(struct sock *sk,
- 			     int getfrag(void *from, char *to, int offset,
- 					 int len, int odd, struct sk_buff *skb),
--			     void *from, int length, int transhdrlen,
-+			     void *from, size_t length, int transhdrlen,
- 			     struct ipcm6_cookie *ipc6, struct rt6_info *rt,
- 			     unsigned int flags, struct inet_cork_full *cork)
- {
- 	struct inet6_cork v6_cork;
- 	struct sk_buff_head queue;
--	int exthdrlen = (ipc6->opt ? ipc6->opt->opt_flen : 0);
-+	size_t exthdrlen = (ipc6->opt ? ipc6->opt->opt_flen : 0);
- 	int err;
- 
- 	if (flags & MSG_PROBE) {
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 55afd7f39c04..91704bbc7715 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -1308,7 +1308,7 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 	struct ipcm6_cookie ipc6;
- 	int addr_len = msg->msg_namelen;
- 	bool connected = false;
--	int ulen = len;
-+	size_t ulen = len;
- 	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
- 	int err;
- 	int is_udplite = IS_UDPLITE(sk);
-diff --git a/net/l2tp/l2tp_ip6.c b/net/l2tp/l2tp_ip6.c
-index c6ff8bf9b55f..5981d6e25776 100644
---- a/net/l2tp/l2tp_ip6.c
-+++ b/net/l2tp/l2tp_ip6.c
-@@ -504,7 +504,7 @@ static int l2tp_ip6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 	struct ipcm6_cookie ipc6;
- 	int addr_len = msg->msg_namelen;
- 	int transhdrlen = 4; /* zero session-id */
--	int ulen = len + transhdrlen;
-+	size_t ulen = len + transhdrlen;
- 	int err;
- 
- 	/* Rough check on arithmetic overflow,
--- 
-2.25.1
-
+LS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiBzaGFvemhlbmdjaGFvIA0K5Y+R6YCB
+5pe26Ze0OiAyMDIy5bm0NeaciDIx5pelIDEyOjM1DQrmlLbku7bkuro6IGJwZkB2Z2VyLmtlcm5l
+bC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc7IGFzdEBrZXJuZWwub3JnOyBkYW5pZWxAaW9nZWFyYm94Lm5ldDsgZGF2ZW1AZGF2ZW1sb2Z0
+Lm5ldDsga3ViYUBrZXJuZWwub3JnOyBoYXdrQGtlcm5lbC5vcmc7IGpvaG4uZmFzdGFiZW5kQGdt
+YWlsLmNvbTsgYW5kcmlpQGtlcm5lbC5vcmc7IGthZmFpQGZiLmNvbTsgc29uZ2xpdWJyYXZpbmdA
+ZmIuY29tOyB5aHNAZmIuY29tOyBrcHNpbmdoQGtlcm5lbC5vcmcNCuaKhOmAgTogd2VpeW9uZ2p1
+biAoQSkgPHdlaXlvbmdqdW4xQGh1YXdlaS5jb20+OyBzaGFvemhlbmdjaGFvIDxzaGFvemhlbmdj
+aGFvQGh1YXdlaS5jb20+OyB5dWVoYWliaW5nIDx5dWVoYWliaW5nQGh1YXdlaS5jb20+DQrkuLvp
+opg6IFtQQVRDSCB2MyxicGYtbmV4dF0gc2FtcGxlcy9icGY6IGNoZWNrIGRldGFjaCBwcm9nIGV4
+aXN0IG9yIG5vdCBpbiB4ZHBfZndkDQoNCkJlZm9yZSBkZXRhY2ggdGhlIHByb2csIHdlIHNob3Vs
+ZCBjaGVjayBkZXRhY2ggcHJvZyBleGlzdCBvciBub3QuDQoNClNpZ25lZC1vZmYtYnk6IFpoZW5n
+Y2hhbyBTaGFvIDxzaGFvemhlbmdjaGFvQGh1YXdlaS5jb20+DQotLS0NCiBzYW1wbGVzL2JwZi94
+ZHBfZndkX3VzZXIuYyB8IDU5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0t
+DQogMSBmaWxlIGNoYW5nZWQsIDUwIGluc2VydGlvbnMoKyksIDkgZGVsZXRpb25zKC0pDQoNCmRp
+ZmYgLS1naXQgYS9zYW1wbGVzL2JwZi94ZHBfZndkX3VzZXIuYyBiL3NhbXBsZXMvYnBmL3hkcF9m
+d2RfdXNlci5jIGluZGV4IDE4Mjg0ODdiYWU5YS4uMDNhNTBmNjRlOTlhIDEwMDY0NA0KLS0tIGEv
+c2FtcGxlcy9icGYveGRwX2Z3ZF91c2VyLmMNCisrKyBiL3NhbXBsZXMvYnBmL3hkcF9md2RfdXNl
+ci5jDQpAQCAtNDcsMTcgKzQ3LDU4IEBAIHN0YXRpYyBpbnQgZG9fYXR0YWNoKGludCBpZHgsIGlu
+dCBwcm9nX2ZkLCBpbnQgbWFwX2ZkLCBjb25zdCBjaGFyICpuYW1lKQ0KIAlyZXR1cm4gZXJyOw0K
+IH0NCiANCi1zdGF0aWMgaW50IGRvX2RldGFjaChpbnQgaWR4LCBjb25zdCBjaGFyICpuYW1lKQ0K
+K3N0YXRpYyBpbnQgZG9fZGV0YWNoKGludCBpZmluZGV4LCBjb25zdCBjaGFyICppZm5hbWUsIGNv
+bnN0IGNoYXIgDQorKmFwcF9uYW1lKQ0KIHsNCi0JaW50IGVycjsNCisJTElCQlBGX09QVFMoYnBm
+X3hkcF9hdHRhY2hfb3B0cywgb3B0cyk7DQorCXN0cnVjdCBicGZfcHJvZ19pbmZvIHByb2dfaW5m
+byA9IHt9Ow0KKwljaGFyIHByb2dfbmFtZVtCUEZfT0JKX05BTUVfTEVOXTsNCisJX191MzIgaW5m
+b19sZW4sIGN1cnJfcHJvZ19pZDsNCisJaW50IHByb2dfZmQ7DQorCWludCBlcnIgPSAxOw0KKw0K
+KwlpZiAoYnBmX3hkcF9xdWVyeV9pZChpZmluZGV4LCB4ZHBfZmxhZ3MsICZjdXJyX3Byb2dfaWQp
+KSB7DQorCQlwcmludGYoIkVSUk9SOiBicGZfeGRwX3F1ZXJ5X2lkIGZhaWxlZCAoJXMpXG4iLA0K
+KwkJICAgICAgIHN0cmVycm9yKGVycm5vKSk7DQorCQlyZXR1cm4gZXJyOw0KKwl9DQorDQorCWlm
+ICghY3Vycl9wcm9nX2lkKSB7DQorCQlwcmludGYoIkVSUk9SOiBmbGFncygweCV4KSB4ZHAgcHJv
+ZyBpcyBub3QgYXR0YWNoZWQgdG8gJXNcbiIsDQorCQkgICAgICAgeGRwX2ZsYWdzLCBpZm5hbWUp
+Ow0KKwkJcmV0dXJuIGVycjsNCisJfQ0KIA0KLQllcnIgPSBicGZfeGRwX2RldGFjaChpZHgsIHhk
+cF9mbGFncywgTlVMTCk7DQotCWlmIChlcnIgPCAwKQ0KLQkJcHJpbnRmKCJFUlJPUjogZmFpbGVk
+IHRvIGRldGFjaCBwcm9ncmFtIGZyb20gJXNcbiIsIG5hbWUpOw0KKwlpbmZvX2xlbiA9IHNpemVv
+Zihwcm9nX2luZm8pOw0KKwlwcm9nX2ZkID0gYnBmX3Byb2dfZ2V0X2ZkX2J5X2lkKGN1cnJfcHJv
+Z19pZCk7DQorCWlmIChwcm9nX2ZkIDwgMCkgew0KKwkJcHJpbnRmKCJFUlJPUjogYnBmX3Byb2df
+Z2V0X2ZkX2J5X2lkIGZhaWxlZCAoJXMpXG4iLA0KKwkJICAgICAgIHN0cmVycm9yKGVycm5vKSk7
+DQorCQlyZXR1cm4gZXJyOw0KKwl9DQorDQorCWVyciA9IGJwZl9vYmpfZ2V0X2luZm9fYnlfZmQo
+cHJvZ19mZCwgJnByb2dfaW5mbywgJmluZm9fbGVuKTsNCisJaWYgKGVycikgew0KKwkJcHJpbnRm
+KCJFUlJPUjogYnBmX29ial9nZXRfaW5mb19ieV9mZCBmYWlsZWQgKCVzKVxuIiwNCisJCSAgICAg
+ICBzdHJlcnJvcihlcnJubykpOw0KKwkJcmV0dXJuIGVycjsNCisJfQ0KKwlzbnByaW50Zihwcm9n
+X25hbWUsIHNpemVvZihwcm9nX25hbWUpLCAiJXNfcHJvZyIsIGFwcF9uYW1lKTsNCisJcHJvZ19u
+YW1lW0JQRl9PQkpfTkFNRV9MRU4gLSAxXSA9ICdcMCc7DQorDQorCWlmIChzdHJjbXAocHJvZ19p
+bmZvLm5hbWUsIHByb2dfbmFtZSkpIHsNCisJCXByaW50ZigiRVJST1I6ICVzIGlzbid0IGF0dGFj
+aGVkIHRvICVzXG4iLCBhcHBfbmFtZSwgaWZuYW1lKTsNCisJCWVyciA9IDE7DQorCX0gZWxzZSB7
+DQorCQlvcHRzLm9sZF9wcm9nX2ZkID0gcHJvZ19mZDsNCisJCWVyciA9IGJwZl94ZHBfZGV0YWNo
+KGlmaW5kZXgsIHhkcF9mbGFncywgJm9wdHMpOw0KKwkJaWYgKGVyciA8IDApDQorCQkJcHJpbnRm
+KCJFUlJPUjogZmFpbGVkIHRvIGRldGFjaCBwcm9ncmFtIGZyb20gJXMgKCVzKVxuIiwNCisJCQkg
+ICAgICAgaWZuYW1lLCBzdHJlcnJvcihlcnJubykpOw0KKwkJLyogVE9ETzogUmVtZW1iZXIgdG8g
+Y2xlYW51cCBtYXAsIHdoZW4gYWRkaW5nIHVzZSBvZiBzaGFyZWQgbWFwDQorCQkgKiAgYnBmX21h
+cF9kZWxldGVfZWxlbSgobWFwX2ZkLCAmaWR4KTsNCisJCSAqLw0KKwl9DQogDQotCS8qIFRPRE86
+IFJlbWVtYmVyIHRvIGNsZWFudXAgbWFwLCB3aGVuIGFkZGluZyB1c2Ugb2Ygc2hhcmVkIG1hcA0K
+LQkgKiAgYnBmX21hcF9kZWxldGVfZWxlbSgobWFwX2ZkLCAmaWR4KTsNCi0JICovDQogCXJldHVy
+biBlcnI7DQogfQ0KIA0KQEAgLTE2OSw3ICsyMTAsNyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hh
+ciAqKmFyZ3YpDQogCQkJcmV0dXJuIDE7DQogCQl9DQogCQlpZiAoIWF0dGFjaCkgew0KLQkJCWVy
+ciA9IGRvX2RldGFjaChpZHgsIGFyZ3ZbaV0pOw0KKwkJCWVyciA9IGRvX2RldGFjaChpZHgsIGFy
+Z3ZbaV0sIHByb2dfbmFtZSk7DQogCQkJaWYgKGVycikNCiAJCQkJcmV0ID0gZXJyOw0KIAkJfSBl
+bHNlIHsNCi0tDQoyLjE3LjENCg0KDQpIaSBUb2tlLA0KRG8geW91IGhhdmUgYW55IG1vcmUgZmVl
+ZGJhY2s/IERvZXMgaXQgbG9vayBiZXR0ZXIgdG8geW91IG5vdz8NCg==
