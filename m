@@ -2,47 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 022D3533A30
-	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 11:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F53B533A4B
+	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 11:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239543AbiEYJpY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 May 2022 05:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        id S232181AbiEYJyA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 May 2022 05:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236037AbiEYJo5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 May 2022 05:44:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AB2DFBC;
-        Wed, 25 May 2022 02:44:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E0CB061939;
-        Wed, 25 May 2022 09:44:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4329C385B8;
-        Wed, 25 May 2022 09:44:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653471892;
-        bh=KG14qChgKVofiN/Si1BwcR0SdLiFvEg3NyIULz1j+Nc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=M8BsAbVG3vH68QSiQllpUlhw9/qKjSqoSDoSihFCpIIYnn4IVVkl5jxxLumdescUL
-         suG378nYqMW97g2LC0Uo/TTx+Zo3jE8M8EsJRWxYxR82Cg283TDcgBSsrv98dzUADV
-         9akXm7x2i6tEZULdzt6/MkK7JyXBSu4blO0zcc2NlLUbiG5Kerl5zh4rcaq/LphLpd
-         RYJXe8iBbwO5CbyheptOpcAUaAJcOb2FxioaUPxY8Th0EwIaQpKM4/NuJgPbGZm/Ne
-         z/PJeh5Zm+Md2NdjzNZwKBuT4KbQSNp2gfoXjXMDuzGrpuOjk0Y9XTbfz2dtJTfZd3
-         LXSdUCuzKU1GQ==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        netdev@vger.kernel.org, lorenzo.bianconi@redhat.com
-Subject: [PATCH bpf-next] sample: bpf: xdp_router_ipv4: allow the kernel to send arp requests
-Date:   Wed, 25 May 2022 11:44:27 +0200
-Message-Id: <60bde5496d108089080504f58199bcf1143ea938.1653471558.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.35.3
+        with ESMTP id S229485AbiEYJx7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 May 2022 05:53:59 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53783389E
+        for <bpf@vger.kernel.org>; Wed, 25 May 2022 02:53:57 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id w14so35094990lfl.13
+        for <bpf@vger.kernel.org>; Wed, 25 May 2022 02:53:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=exein.io; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=19ACUZNmVFF0eEBc/MLM0oKPVOi7r9yqDs83zxO2K3U=;
+        b=OMGPUOeS3/M+klN/zfobP2ZVKCHtH10u3pI0jkXWknJ3DY/U69OWMGI4X81yIzlFBY
+         zZvcGLEhPaFNEqyI6GO7WgfTV5f/g1QSI37yNA4ZIRA7e76rCGnterdEQFou+TGum8Iw
+         tojS/bPd3tVonxnvpSKTE1Pm/8Tcjvdc2+DxQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=19ACUZNmVFF0eEBc/MLM0oKPVOi7r9yqDs83zxO2K3U=;
+        b=Et26hfCi2rLLyk4CVXCI4Kp339iTaVxkJhl2RCb0ImxYTY+CN/p+1NNXX7EivrO07s
+         e3JOzie3c9zNCIp+q7+SjD19x2G0mdOXCjF3N6Hz0sTxzcxcDVPTCPoDc6dJUmav/qbN
+         zUiiH0D1O6k67Y1agoK37eseXJj5Nm/Um07S/+gFoP3mHDlVon4jtBid24FM0FeZhl1f
+         EIQECoDhxadoJVvonZEWpM2vfRNe+l22BxRUJRUmtjeStPQRwkNo9/EtjULpkjtrhh7E
+         SCqiPh/Y8w/pgbTfPxSfn++3a5RTkc0blcRtS6aiTr28pSA5BUZsDzea/Ek3gr1QvUor
+         JDvQ==
+X-Gm-Message-State: AOAM532KphL6cQpmyRkqoUWZ14NyhCC6gE/qo8NFm39zk0SbjO2HPnLW
+        huCaHVCyWY1R7XmWGF5Ig1bnrN6u0eBxX7Rq6Ah3X2ANhJhozfhu
+X-Google-Smtp-Source: ABdhPJzG7/QWK4QdUP9H43MVf1D7Q+tdu6tGhi+o24xEzN70Ha3F1wgqzSo8jmlNIPdMrXiFV0GUXsTY/mPMpiEHQlg=
+X-Received: by 2002:a05:6512:50d:b0:478:5590:de00 with SMTP id
+ o13-20020a056512050d00b004785590de00mr16846111lfb.644.1653472436128; Wed, 25
+ May 2022 02:53:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+From:   Matteo Nardi <matteo@exein.io>
+Date:   Wed, 25 May 2022 11:53:45 +0200
+Message-ID: <CALo96CRkg4eH=Ee0qvx3YigyP9mPyzz6vhTtpqNN1n4mvUQUPA@mail.gmail.com>
+Subject: Relocation error on 32 bit systems of longs from vmlinux.h
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,35 +56,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Forward the packet to the kernel if the gw router mac address is missing
-in to trigger ARP discovery.
+This program will compile and run fine on my 64 bit system, but it
+will fail with a relocation error on 32 bit systems:
 
-Fixes: 85bf1f51691c ("samples: bpf: Convert xdp_router_ipv4 to XDP samples helper")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- samples/bpf/xdp_router_ipv4.bpf.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+SEC("tp/raw_syscalls/sys_enter")
+int sys_enter(struct trace_event_raw_sys_enter *ctx) {
+        long int n = ctx->id;
+        bpf_printk("hello world %d", n);
+        return 0;
+}
 
-diff --git a/samples/bpf/xdp_router_ipv4.bpf.c b/samples/bpf/xdp_router_ipv4.bpf.c
-index 248119ca7938..0643330d1d2e 100644
---- a/samples/bpf/xdp_router_ipv4.bpf.c
-+++ b/samples/bpf/xdp_router_ipv4.bpf.c
-@@ -150,6 +150,15 @@ int xdp_router_ipv4_prog(struct xdp_md *ctx)
- 
- 				dest_mac = bpf_map_lookup_elem(&arp_table,
- 							       &prefix_value->gw);
-+				if (!dest_mac) {
-+					/* Forward the packet to the kernel in
-+					 * order to trigger ARP discovery for
-+					 * the default gw.
-+					 */
-+					if (rec)
-+						NO_TEAR_INC(rec->xdp_pass);
-+					return XDP_PASS;
-+				}
- 			}
- 		}
- 
--- 
-2.35.3
+```
+libbpf: prog 'sys_enter': relo #0: insn #0 (LDX/ST/STX) accesses field
+incorrectly. Make sure you are accessing pointers, unsigned integers,
+or fields of matching type and size.
+libbpf: prog 'sys_enter': BPF program load failed: Invalid argument
+libbpf: prog 'sys_enter': -- BEGIN PROG LOAD LOG --
+R1 type=ctx expected=fp
+; long int n = ctx->id;
+0: (85) call unknown#195896080
+invalid func unknown#195896080
+processed 1 insns (limit 1000000) max_states_per_insn 0 total_states 0
+peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: failed to load program 'sys_enter'
+libbpf: failed to load object 'bootstrap_bpf'
+libbpf: failed to load BPF skeleton 'bootstrap_bpf': -22
+Failed to load and verify BPF skeleton
+```
 
+I'm cross-compiling using a Yocto build. I've reproduced this both
+with arm and x86.
+
+From my understanding, the issue comes from the `long int` in
+`trace_event_raw_sys_enter`, which is 64 bit in the compiled eBPF
+program, but 32 bit in the target kernel.
+
+struct trace_event_raw_sys_enter {
+        struct trace_entry ent;
+        long int id;
+        long unsigned int args[6];
+        char __data[0];
+} __attribute__((preserve_access_index));
+
+Indeed, manually changing the `id` definition  in `vmlinux.h` will fix
+the relocation error:
+
+struct trace_event_raw_sys_enter {
+        u32 id;
+} __attribute__((preserve_access_index));
+
+
+"Q: clang flag for target bpf?"[0] hints that using a native target
+could help, but I guess that would completely break CORE relocations
+since `preserve_access_index` is a `-target bpf`-specific attribute,
+right?
+
+Am I missing something? If I had to fix the issue right now I would
+replace all long definitions in `vmlinux.h` to u32 when targeting 32
+bit systems. Could `bpftool btf dump` handle this?
+We're using eBPF on embedded systems, where 32 bit is still fairly common.
+
+Thanks.
+
+Best regards,
+Matteo Nardi
+
+[0] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html#q-clang-flag-for-target-bpf
