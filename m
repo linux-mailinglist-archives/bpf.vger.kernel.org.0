@@ -2,70 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C65A533E27
-	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 15:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF7F533EC2
+	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 16:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239057AbiEYNpZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 May 2022 09:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
+        id S240829AbiEYOHG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 May 2022 10:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbiEYNpY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 May 2022 09:45:24 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38A156D395;
-        Wed, 25 May 2022 06:45:23 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D24C91042;
-        Wed, 25 May 2022 06:45:22 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.0.228])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E24743F66F;
-        Wed, 25 May 2022 06:45:14 -0700 (PDT)
-Date:   Wed, 25 May 2022 14:45:11 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/6] bpf: Remove is_valid_bpf_tramp_flags()
-Message-ID: <Yo4y54M6Jb41lqX+@FVFF77S0Q05N>
-References: <20220518131638.3401509-1-xukuohai@huawei.com>
- <20220518131638.3401509-4-xukuohai@huawei.com>
+        with ESMTP id S229674AbiEYOHE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 May 2022 10:07:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE7C8D6BD;
+        Wed, 25 May 2022 07:07:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CAD326194D;
+        Wed, 25 May 2022 14:07:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E6DDC385B8;
+        Wed, 25 May 2022 14:07:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653487622;
+        bh=RgiR9Ce9ArVW3S3ZN6uRtn/r+jgQvDF3aziT/UtAWIY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u+CGMZEy7km5nHUeszhvjzBdwLcKs1gXYrev5uk9bWRbelFW2rjqQUYCyU4N523cM
+         pFvS2lUqFxKH2y7o1UT26f8ILVibpRSvAhrmNdt/uH0vAfk4AR8O7oTy1uqNDd1//y
+         TlmYyNLa8s40kewMqH8JP+rMcObq27ceUvnaIfIKMLcNUNpQB2y3f4a+F/3l58Z2+K
+         SijzzIN1u530ELvnyL3SDTIn59BtyzLtBGuXuJq0v1wTDlxLTyPTlL8+JeS0rmnWw7
+         pywPG9MZLIUnyBQhX34wxvUcoPe8J5G9ZoHYUGgqliD15H2lr2zcKy9SeQueH6sdXm
+         Es/Z7VZ6uLYIQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C7EEF4007E; Wed, 25 May 2022 11:06:58 -0300 (-03)
+Date:   Wed, 25 May 2022 11:06:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Milian Wolff <milian.wolff@kdab.com>,
+        bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Blake Jones <blakejones@google.com>
+Subject: Re: [PATCH 3/6] perf record: Implement basic filtering for off-cpu
+Message-ID: <Yo44AppGsPKvf7Al@kernel.org>
+References: <20220518224725.742882-1-namhyung@kernel.org>
+ <20220518224725.742882-4-namhyung@kernel.org>
+ <CAP-5=fWfZ_MqiAUx-tdO1C=Dyyzno6FbBp+KGAb_MweXs+N7Jw@mail.gmail.com>
+ <CAM9d7cgxdFJJQOg6ivuy4+nh=WME2fgjvM-kSWLv9zd49yxR4A@mail.gmail.com>
+ <Yo4SqnEqzo2Rt+PF@kernel.org>
+ <Yo4Wpqzwp+XmfkMV@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220518131638.3401509-4-xukuohai@huawei.com>
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+In-Reply-To: <Yo4Wpqzwp+XmfkMV@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,91 +69,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 18, 2022 at 09:16:35AM -0400, Xu Kuohai wrote:
-> BPF_TRAM_F_XXX flags are not used by user code and are almost constant
-> at compile time, so run time validation is a bit overkill. Remove
-> is_valid_bpf_tramp_flags() and add some usage comments.
-> 
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
+Em Wed, May 25, 2022 at 08:44:38AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, May 25, 2022 at 08:27:38AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Thu, May 19, 2022 at 02:02:28PM -0700, Namhyung Kim escreveu:
+> > > On Wed, May 18, 2022 at 9:02 PM Ian Rogers <irogers@google.com> wrote:
+> > > > Perhaps more concise with a for_each:
 
-Am I right in thinking this is independent of the arm64-specific bits, and
-could be taken on its own now?
+> > > > perf_cpu_map__for_each_cpu(cpu, idx, evlist->core.user_requested_cpus)
+> > > >   bpf_map_update_elem(fd, &cpu.cpu, &val, BPF_ANY);
 
-Mark.
+> > So I'll wait for a new version of this patchset.
 
-> ---
->  arch/x86/net/bpf_jit_comp.c | 20 --------------------
->  kernel/bpf/bpf_struct_ops.c |  3 +++
->  kernel/bpf/trampoline.c     |  3 +++
->  3 files changed, 6 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index a2b6d197c226..7698ef3b4821 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1922,23 +1922,6 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
->  	return 0;
->  }
->  
-> -static bool is_valid_bpf_tramp_flags(unsigned int flags)
-> -{
-> -	if ((flags & BPF_TRAMP_F_RESTORE_REGS) &&
-> -	    (flags & BPF_TRAMP_F_SKIP_FRAME))
-> -		return false;
-> -
-> -	/*
-> -	 * BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops,
-> -	 * and it must be used alone.
-> -	 */
-> -	if ((flags & BPF_TRAMP_F_RET_FENTRY_RET) &&
-> -	    (flags & ~BPF_TRAMP_F_RET_FENTRY_RET))
-> -		return false;
-> -
-> -	return true;
-> -}
-> -
->  /* Example:
->   * __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev);
->   * its 'struct btf_func_model' will be nr_args=2
-> @@ -2017,9 +2000,6 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	if (nr_args > 6)
->  		return -ENOTSUPP;
->  
-> -	if (!is_valid_bpf_tramp_flags(flags))
-> -		return -EINVAL;
-> -
->  	/* Generated trampoline stack layout:
->  	 *
->  	 * RBP + 8         [ return address  ]
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index d9a3c9207240..0572cc5aeb28 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -341,6 +341,9 @@ int bpf_struct_ops_prepare_trampoline(struct bpf_tramp_links *tlinks,
->  
->  	tlinks[BPF_TRAMP_FENTRY].links[0] = link;
->  	tlinks[BPF_TRAMP_FENTRY].nr_links = 1;
-> +	/* BPF_TRAMP_F_RET_FENTRY_RET is only used by bpf_struct_ops,
-> +	 * and it must be used alone.
-> +	 */
->  	flags = model->ret_size > 0 ? BPF_TRAMP_F_RET_FENTRY_RET : 0;
->  	return arch_prepare_bpf_trampoline(NULL, image, image_end,
->  					   model, flags, tlinks, NULL);
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 93c7675f0c9e..bd3f2e673874 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -358,6 +358,9 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
->  
->  	if (tlinks[BPF_TRAMP_FEXIT].nr_links ||
->  	    tlinks[BPF_TRAMP_MODIFY_RETURN].nr_links)
-> +		/* NOTE: BPF_TRAMP_F_RESTORE_REGS and BPF_TRAMP_F_SKIP_FRAME
-> +		 * should not be set together.
-> +		 */
->  		flags = BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_SKIP_FRAME;
->  
->  	if (ip_arg)
-> -- 
-> 2.30.2
-> 
+> I take that back, will apply and this can be a follow up patch, right?
+
+I tested it and added some committer notes, everything is now at my
+tmp.perf/core branch and will transition to perf/core on its way to 5.19
+later today, after tests finish.
+
+- Arnaldo
