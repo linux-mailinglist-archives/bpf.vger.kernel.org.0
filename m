@@ -2,124 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F53B533A4B
-	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 11:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C0E533A4F
+	for <lists+bpf@lfdr.de>; Wed, 25 May 2022 11:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbiEYJyA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 May 2022 05:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
+        id S235297AbiEYJzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 May 2022 05:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbiEYJx7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 May 2022 05:53:59 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53783389E
-        for <bpf@vger.kernel.org>; Wed, 25 May 2022 02:53:57 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id w14so35094990lfl.13
-        for <bpf@vger.kernel.org>; Wed, 25 May 2022 02:53:57 -0700 (PDT)
+        with ESMTP id S240418AbiEYJzq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 May 2022 05:55:46 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900B548E6D
+        for <bpf@vger.kernel.org>; Wed, 25 May 2022 02:55:44 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id a15so524545ilq.12
+        for <bpf@vger.kernel.org>; Wed, 25 May 2022 02:55:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=exein.io; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:from:date:message-id:subject:to;
-        bh=19ACUZNmVFF0eEBc/MLM0oKPVOi7r9yqDs83zxO2K3U=;
-        b=OMGPUOeS3/M+klN/zfobP2ZVKCHtH10u3pI0jkXWknJ3DY/U69OWMGI4X81yIzlFBY
-         zZvcGLEhPaFNEqyI6GO7WgfTV5f/g1QSI37yNA4ZIRA7e76rCGnterdEQFou+TGum8Iw
-         tojS/bPd3tVonxnvpSKTE1Pm/8Tcjvdc2+DxQ=
+        bh=NvPg3g1sb2KF0lsVLKmOciRLB5HpeJ/qMtV1hiJ5YEU=;
+        b=QhAswP38aVdWFdBD/kntfKnoBsZN4wbjkt4kLK1KMTm4aokd1iPXAhmekGK/ZpsQJh
+         wHdBxBanosxwcu01HCnsmyrYbWyLs1CWOVc0XP1HR19GOh2g1euzXG9eJQLbZA0YNh6Z
+         Erk2POwQAjY7ri1hVhiLXVuIxqIOi/FOAg+Jj83EF5k6kr4uvtfS16fK8rCLIEGoK1HI
+         /szBYK+1YNM7xY0DL9kMpHDnb8NpDBgMFpWi9JiXhTwKaPrJXb+6QI2+86cKniWNHgFZ
+         Y+AyJpB+nuwiSNPpxRahsUzWJlE8swV+WfWxBY1S1fJbXZUJpF8LRyhiyubsznqgulnC
+         NjCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=19ACUZNmVFF0eEBc/MLM0oKPVOi7r9yqDs83zxO2K3U=;
-        b=Et26hfCi2rLLyk4CVXCI4Kp339iTaVxkJhl2RCb0ImxYTY+CN/p+1NNXX7EivrO07s
-         e3JOzie3c9zNCIp+q7+SjD19x2G0mdOXCjF3N6Hz0sTxzcxcDVPTCPoDc6dJUmav/qbN
-         zUiiH0D1O6k67Y1agoK37eseXJj5Nm/Um07S/+gFoP3mHDlVon4jtBid24FM0FeZhl1f
-         EIQECoDhxadoJVvonZEWpM2vfRNe+l22BxRUJRUmtjeStPQRwkNo9/EtjULpkjtrhh7E
-         SCqiPh/Y8w/pgbTfPxSfn++3a5RTkc0blcRtS6aiTr28pSA5BUZsDzea/Ek3gr1QvUor
-         JDvQ==
-X-Gm-Message-State: AOAM532KphL6cQpmyRkqoUWZ14NyhCC6gE/qo8NFm39zk0SbjO2HPnLW
-        huCaHVCyWY1R7XmWGF5Ig1bnrN6u0eBxX7Rq6Ah3X2ANhJhozfhu
-X-Google-Smtp-Source: ABdhPJzG7/QWK4QdUP9H43MVf1D7Q+tdu6tGhi+o24xEzN70Ha3F1wgqzSo8jmlNIPdMrXiFV0GUXsTY/mPMpiEHQlg=
-X-Received: by 2002:a05:6512:50d:b0:478:5590:de00 with SMTP id
- o13-20020a056512050d00b004785590de00mr16846111lfb.644.1653472436128; Wed, 25
- May 2022 02:53:56 -0700 (PDT)
+        bh=NvPg3g1sb2KF0lsVLKmOciRLB5HpeJ/qMtV1hiJ5YEU=;
+        b=jdPtV5nsQ7sZ8APZrQHYc/c5oAen1QtWVFRH2KBKEpNVE/vMHkIpb/ato5yZ3k3ECc
+         T/5Tad8cG6dlwS2Yvh1M16DD/srTPFJBA+2Sh42bQghfc8KeABwzicCgem1BDv2c5iGb
+         ns4pSL/5IedfT1h14EHP8DOOAMlvKPsp7I9he/knD6bc78sIZdY4P4/eU5jStK0/CBKI
+         +rEtyw9/+E6y3Hzr600c/kHq6wRk5hxPqXsv/IwzXX61oUNX4YaKAog06+f66e0mNY4z
+         /WXFUN+cG20cIzRegKi5QNvvZ6lO75BrEKzdFDNQvK4qBVgsBPS8r48n6Vnz5iDbjjUd
+         2p+g==
+X-Gm-Message-State: AOAM533bK05t/UjkSItsY74Ac0fNyefxvip3E0ivNwZKckvFDXrgLah5
+        FwKgNzkdN89UaXiWLwr8Zye8KnIloLiMA971FEPTkBj6HGY5RUNj4FI=
+X-Google-Smtp-Source: ABdhPJzTYAkwsJG0EF16Apq4qSl5bbWhNjIYYGDOljRFuerMCbBWgDMP5VUbwsIhD3sRntUVe5T26FqJz3E/p8bLvKA=
+X-Received: by 2002:a05:6e02:be8:b0:2cf:b8d:5fa with SMTP id
+ d8-20020a056e020be800b002cf0b8d05famr16610776ilu.93.1653472543809; Wed, 25
+ May 2022 02:55:43 -0700 (PDT)
 MIME-Version: 1.0
-From:   Matteo Nardi <matteo@exein.io>
-Date:   Wed, 25 May 2022 11:53:45 +0200
-Message-ID: <CALo96CRkg4eH=Ee0qvx3YigyP9mPyzz6vhTtpqNN1n4mvUQUPA@mail.gmail.com>
-Subject: Relocation error on 32 bit systems of longs from vmlinux.h
+From:   Ye ZhengMao <yezhengmaolove@gmail.com>
+Date:   Wed, 25 May 2022 17:55:09 +0800
+Message-ID: <CAJ=PnJmZVmAszzyfc8PLUCheQk04iCATXkrLJFxHL4Z=Pc1+Zg@mail.gmail.com>
+Subject: bpftool coredump
 To:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This program will compile and run fine on my 64 bit system, but it
-will fail with a relocation error on 32 bit systems:
+i using cross compiler to compile the bpftool for aarch64 and when gen
+skeleton for the minimal.bpf.o, bpftool core.
 
-SEC("tp/raw_syscalls/sys_enter")
-int sys_enter(struct trace_event_raw_sys_enter *ctx) {
-        long int n = ctx->id;
-        bpf_printk("hello world %d", n);
-        return 0;
-}
+libbpf: loading object 'minimal_bpf' from buffer
+libbpf: elf: section(2) tp/syscalls/sys_enter_write, size 104, link 0,
+flags 6, type=1
+libbpf: elf: section(3) license, size 13, link 0, flags 3, type=1
+libbpf: license of minimal_bpf is Dual BSD/GPL
+libbpf: elf: section(4) .bss, size 4, link 0, flags 3, type=8
+libbpf: elf: section(5) .rodata, size 28, link 0, flags 2, type=1
+libbpf: elf: section(6) .symtab, size 192, link 8, flags 0, type=2
+libbpf: elf: section(7) .reltp/syscalls/sys_enter_write, size 32, link
+6, flags 0, type=9
+libbpf: looking for externs among 8 symbols...
+libbpf: collected 0 externs total
+libbpf: map 'minimal_.bss' (global data): at sec_idx 4, offset 0, flags 400.
+libbpf: map 0 is "minimal_.bss"
+libbpf: map 'minimal_.rodata' (global data): at sec_idx 5, offset 0, flags 480.
+libbpf: map 1 is "minimal_.rodata"
+libbpf: sec '.reltp/syscalls/sys_enter_write': collecting relocation
+for section(2) 'tp/syscalls/sys_enter_write'
+libbpf: sec '.reltp/syscalls/sys_enter_write': relo #0: insn #2 against 'my_pid'
+Segmentation fault (core dumped)
 
-```
-libbpf: prog 'sys_enter': relo #0: insn #0 (LDX/ST/STX) accesses field
-incorrectly. Make sure you are accessing pointers, unsigned integers,
-or fields of matching type and size.
-libbpf: prog 'sys_enter': BPF program load failed: Invalid argument
-libbpf: prog 'sys_enter': -- BEGIN PROG LOAD LOG --
-R1 type=ctx expected=fp
-; long int n = ctx->id;
-0: (85) call unknown#195896080
-invalid func unknown#195896080
-processed 1 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
--- END PROG LOAD LOG --
-libbpf: failed to load program 'sys_enter'
-libbpf: failed to load object 'bootstrap_bpf'
-libbpf: failed to load BPF skeleton 'bootstrap_bpf': -22
-Failed to load and verify BPF skeleton
-```
+core in function find_prog_by_sec_insn
 
-I'm cross-compiling using a Yocto build. I've reproduced this both
-with arm and x86.
-
-From my understanding, the issue comes from the `long int` in
-`trace_event_raw_sys_enter`, which is 64 bit in the compiled eBPF
-program, but 32 bit in the target kernel.
-
-struct trace_event_raw_sys_enter {
-        struct trace_entry ent;
-        long int id;
-        long unsigned int args[6];
-        char __data[0];
-} __attribute__((preserve_access_index));
-
-Indeed, manually changing the `id` definition  in `vmlinux.h` will fix
-the relocation error:
-
-struct trace_event_raw_sys_enter {
-        u32 id;
-} __attribute__((preserve_access_index));
-
-
-"Q: clang flag for target bpf?"[0] hints that using a native target
-could help, but I guess that would completely break CORE relocations
-since `preserve_access_index` is a `-target bpf`-specific attribute,
-right?
-
-Am I missing something? If I had to fix the issue right now I would
-replace all long definitions in `vmlinux.h` to u32 when targeting 32
-bit systems. Could `bpftool btf dump` handle this?
-We're using eBPF on embedded systems, where 32 bit is still fairly common.
-
-Thanks.
-
-Best regards,
-Matteo Nardi
-
-[0] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html#q-clang-flag-for-target-bpf
+i using gdb to found the obj->nr_programs == 0
+prog = &obj->programs[l]; can`t work fine
