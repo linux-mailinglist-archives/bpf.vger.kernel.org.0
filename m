@@ -2,187 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F45C5353AE
-	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 20:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3245353D0
+	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 21:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245505AbiEZS40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 May 2022 14:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        id S242960AbiEZTP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 May 2022 15:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348728AbiEZS4X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 May 2022 14:56:23 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713539BAC1
-        for <bpf@vger.kernel.org>; Thu, 26 May 2022 11:56:15 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24QInvE2022477
-        for <bpf@vger.kernel.org>; Thu, 26 May 2022 11:56:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=QnLQousHmfIqt9QE+5H/OC11xEeDxU0pjPg9USgxfhU=;
- b=olXyC1ZWzQe/ZVYUU+miP/jA7OkkxxFbDmvTEhmejmVDEOpxmHb43I1Xs9PHW/pr27Nf
- fzqgCg/2LpmqN87TOK/DwqcRcUYwamACBryoTrpJXgY8OQVapWBD6ILx33yYyIS3yc4R
- o/La9E+0Y54CCWHRhNAGObHvlr6oTsb0zv4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ga5x8ux5a-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 26 May 2022 11:56:14 -0700
-Received: from twshared19572.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Thu, 26 May 2022 11:56:13 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 14409AD83DFA; Thu, 26 May 2022 11:56:07 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 18/18] docs/bpf: Update documentation for BTF_KIND_ENUM64 support
-Date:   Thu, 26 May 2022 11:56:07 -0700
-Message-ID: <20220526185607.2552623-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220526185432.2545879-1-yhs@fb.com>
-References: <20220526185432.2545879-1-yhs@fb.com>
+        with ESMTP id S229896AbiEZTP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 May 2022 15:15:57 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E019CF52
+        for <bpf@vger.kernel.org>; Thu, 26 May 2022 12:15:56 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id i74so2543258ioa.4
+        for <bpf@vger.kernel.org>; Thu, 26 May 2022 12:15:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=w2dOZ6bp8A3fvOPrCxoccsER/gU+Zt9Vu0OlRdlnzVk=;
+        b=ppMBVwF3Fl6aCd64fY0BRERkvagmDfo7gUlU6cKPwzUCzabLVvjAzKR50NREYxVjQJ
+         kMqUVfUgvg6sH0DhgdPeRzDqB/ZS6Ny+jNAM4smOVkg8VjKg1ckMDdey6RsmSvh91m8S
+         zw/7UxisRe1P5unNuUx4DsEa6R79bPrhe+1h0np1B06jrm3vdbMr6kwcanm+atdzyzy2
+         X2zJlH1Yt/yFNIYaRIfSHy7SuimdM+J2RzeGr+X82MPdpf5ihE0PuRkvzGRgnED6zZoZ
+         wSXjHwObRNXi10RYyKRHVXrIGYWx02ybgTFnS5HL3yJe7TUhyJ0SGW3N8fDIv0QMNswr
+         wPuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=w2dOZ6bp8A3fvOPrCxoccsER/gU+Zt9Vu0OlRdlnzVk=;
+        b=Oo7TbUOyCz1dKvTeY85hJJfADBN6SKfbxyH/V8udNoXpwm9Zkhmw/FdFQF0t2BBlIE
+         KUV90RTaGYmhCPfDvw+ptaaGdZiC8JysOy/RZBtE1QklyGG/Lkq1V2dhPIVaWWaxMd3O
+         Vhd5UeYsWW8VTBGa4I/EYbQd03yQ96w1Ez7EZC5fFVY6TSf6CU8aPmFvgSS8qx0KEBFv
+         xOegeL5rEFEPitWLJMOL4TCoNPSKsJZCGPhMB3TvSM+D9qDy7UL4HbXQ4gLY04iQD/D4
+         rzM/MnuhkhoVouoGtcGYOuY7oXnaIxFIGkJtNVEfqiEIRFh+71uZkOeY1/oUeyBrO8ch
+         sd2w==
+X-Gm-Message-State: AOAM533eE8dGpT4/wkZ8qNs87FONRj/q+1ohP+Me3kiudelD8sBNS7LT
+        vAUryrOqih39UwT0IKlH9RSfbBnJC3sypHrXAZ9lAx7phNMs4Q==
+X-Google-Smtp-Source: ABdhPJzSDKZ9E7b6WBTtlJaA2XJES04mKZ8iM3gar8qhaJxD2tF4SUTOGx27ZIuo07X/BEBOYPfdJIOX4TvDxpZ9/KI=
+X-Received: by 2002:a05:6638:411f:b0:32e:a114:54e with SMTP id
+ ay31-20020a056638411f00b0032ea114054emr15534111jab.82.1653592555258; Thu, 26
+ May 2022 12:15:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: jcZiCTzIQ259pN7PbmpL6ODRYgr79s7Q
-X-Proofpoint-GUID: jcZiCTzIQ259pN7PbmpL6ODRYgr79s7Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-05-26_10,2022-05-25_02,2022-02-23_01
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   John Mazzie <john.p.mazzie@gmail.com>
+Date:   Thu, 26 May 2022 14:15:44 -0500
+Message-ID: <CAPxVHd+hHXFjc3DvK0G5RWnLChOTbGXHZp_W-exCE6onCMSRuA@mail.gmail.com>
+Subject: BPF_CORE_READ issue with nvme_submit_cmd kprobe.
+To:     bpf <bpf@vger.kernel.org>,
+        "John Mazzie (jmazzie)" <jmazzie@micron.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add BTF_KIND_ENUM64 documentation in btf.rst.
-Also fixed a typo for section number for BTF_KIND_TYPE_TAG
-from 2.2.17 to 2.2.18, and fixed a type size issue for
-BTF_KIND_ENUM.
+While attempting to learn more about BPF and libbpf, I ran into an
+issue I can't quite seem to resolve.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Documentation/bpf/btf.rst | 43 +++++++++++++++++++++++++++++++++------
- 1 file changed, 37 insertions(+), 6 deletions(-)
+While writing some tools to practice tracing with libbpf, I came
+across a situation where I get an error when using BPF_CORE_READ,
+which appears to be that CO-RE relocation failed to find a
+corresponding field. Compilation doesn't complain, just when I try to
+execute.
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index 7940da9bc6c1..f49aeef62d0c 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -74,7 +74,7 @@ sequentially and type id is assigned to each recognized=
- type starting from id
-     #define BTF_KIND_ARRAY          3       /* Array        */
-     #define BTF_KIND_STRUCT         4       /* Struct       */
-     #define BTF_KIND_UNION          5       /* Union        */
--    #define BTF_KIND_ENUM           6       /* Enumeration  */
-+    #define BTF_KIND_ENUM           6       /* Enumeration up to 32-bit =
-values */
-     #define BTF_KIND_FWD            7       /* Forward      */
-     #define BTF_KIND_TYPEDEF        8       /* Typedef      */
-     #define BTF_KIND_VOLATILE       9       /* Volatile     */
-@@ -87,6 +87,7 @@ sequentially and type id is assigned to each recognized=
- type starting from id
-     #define BTF_KIND_FLOAT          16      /* Floating point       */
-     #define BTF_KIND_DECL_TAG       17      /* Decl Tag     */
-     #define BTF_KIND_TYPE_TAG       18      /* Type Tag     */
-+    #define BTF_KIND_ENUM64         19      /* Enumeration up to 64-bit =
-values */
-=20
- Note that the type section encodes debug info, not just pure types.
- ``BTF_KIND_FUNC`` is not a type, and it represents a defined subprogram.
-@@ -101,10 +102,10 @@ Each type contains the following common data::
-          * bits 24-28: kind (e.g. int, ptr, array...etc)
-          * bits 29-30: unused
-          * bit     31: kind_flag, currently used by
--         *             struct, union and fwd
-+         *             struct, union, fwd, enum and enum64.
-          */
-         __u32 info;
--        /* "size" is used by INT, ENUM, STRUCT and UNION.
-+        /* "size" is used by INT, ENUM, STRUCT, UNION and ENUM64.
-          * "size" tells the size of the type it is describing.
-          *
-          * "type" is used by PTR, TYPEDEF, VOLATILE, CONST, RESTRICT,
-@@ -281,10 +282,10 @@ modes exist:
-=20
- ``struct btf_type`` encoding requirement:
-   * ``name_off``: 0 or offset to a valid C identifier
--  * ``info.kind_flag``: 0
-+  * ``info.kind_flag``: 0 for unsigned, 1 for signed
-   * ``info.kind``: BTF_KIND_ENUM
-   * ``info.vlen``: number of enum values
--  * ``size``: 4
-+  * ``size``: 1/2/4/8
-=20
- ``btf_type`` is followed by ``info.vlen`` number of ``struct btf_enum``.=
-::
-=20
-@@ -297,6 +298,10 @@ The ``btf_enum`` encoding:
-   * ``name_off``: offset to a valid C identifier
-   * ``val``: any value
-=20
-+If the original enum value is signed and the size is less than 4,
-+that value will be sign extended into 4 bytes. If the size is 8,
-+the value will be truncated into 4 bytes.
-+
- 2.2.7 BTF_KIND_FWD
- ~~~~~~~~~~~~~~~~~~
-=20
-@@ -493,7 +498,7 @@ the attribute is applied to a ``struct``/``union`` me=
-mber or
- a ``func`` argument, and ``btf_decl_tag.component_idx`` should be a
- valid index (starting from 0) pointing to a member or an argument.
-=20
--2.2.17 BTF_KIND_TYPE_TAG
-+2.2.18 BTF_KIND_TYPE_TAG
- ~~~~~~~~~~~~~~~~~~~~~~~~
-=20
- ``struct btf_type`` encoding requirement:
-@@ -516,6 +521,32 @@ type_tag, then zero or more const/volatile/restrict/=
-typedef
- and finally the base type. The base type is one of
- int, ptr, array, struct, union, enum, func_proto and float types.
-=20
-+2.2.19 BTF_KIND_ENUM64
-+~~~~~~~~~~~~~~~~~~~~~~
-+
-+``struct btf_type`` encoding requirement:
-+  * ``name_off``: 0 or offset to a valid C identifier
-+  * ``info.kind_flag``: 0 for unsigned, 1 for signed
-+  * ``info.kind``: BTF_KIND_ENUM64
-+  * ``info.vlen``: number of enum values
-+  * ``size``: 1/2/4/8
-+
-+``btf_type`` is followed by ``info.vlen`` number of ``struct btf_enum64`=
-`.::
-+
-+    struct btf_enum64 {
-+        __u32   name_off;
-+        __u32   val_lo32;
-+        __u32   val_hi32;
-+    };
-+
-+The ``btf_enum64`` encoding:
-+  * ``name_off``: offset to a valid C identifier
-+  * ``val_lo32``: lower 32-bit value for a 64-bit value
-+  * ``val_hi32``: high 32-bit value for a 64-bit value
-+
-+If the original enum value is signed and the size is less than 8,
-+that value will be sign extended into 8 bytes.
-+
- 3. BTF Kernel API
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
---=20
-2.30.2
+Error Message:
+---------------------------------------------
+8: (85) call unknown#195896080
+invalid func unknown#195896080
 
+I'm using the Makefile from libbpf-bootstrap to build my program. The
+other example programs build and execute properly, and I've also
+successfully used tracepoints to trace the nvme_setup_cmd and
+nvme_complete_rq functions. My issue appears to be when I attempt to
+use kprobes for the nvme_submit_cmd function.
+
+In the program I'm attempting to trace the nvme_command structure to
+get the opcode of the command in the function nvme_submit_cmd. I'm
+using Rocky Linux (RedHat based distro) with their kernel version of
+4.18. I verified the structures and interfaces in the source code, vs
+the default 4.18 version of the kernel and made the appropriate
+changes.
+
+traceopcode.bpf.c
+---------------------------------------------
+#include "vmlinux.h"
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_tracing.h>
+#include <bpf/bpf_core_read.h>
+#include "traceopcode.h"
+
+char LICENSE[] SEC("license") = "Dual BSD/GPL";
+
+struct {
+    __uint(type, BPF_MAP_TYPE_RINGBUF);
+    __uint(max_entries, 1024 * 1024);
+} ring_buffer SEC(".maps");
+
+struct nvme_common_command {
+    __u8         opcode;
+} __attribute__((preserve_access_index));
+
+struct nvme_command {
+    union {
+        struct nvme_common_command common;
+    };
+} __attribute__((preserve_access_index));
+
+SEC("kprobe/nvme_submit_cmd")
+int BPF_KPROBE(nvme_submit_cmd, void *nvmeq, struct nvme_command *cmd,
+bool write_sq)
+{
+    struct opcode_event *e;
+
+    e = bpf_ringbuf_reserve(&ring_buffer, sizeof(*e), 0);
+    if (!e)
+        return 0;
+
+    e->opcode = BPF_CORE_READ(cmd, common.opcode);
+    //e->opcode = cmd->common.opcode;
+    bpf_ringbuf_submit(e, 0);
+
+   return 0;
+}
+
+
+traceopcode.h
+---------------------------------------------
+#ifndef __TRACEOPCODE_H
+#define __TRACEOPCODE_H
+
+struct opcode_event {
+    __u8 opcode;
+};
+
+#endif
+
+
+My userspace code is basically the same as the bootstrap example, with
+a modification to the handler that just prints out the opcode from the
+opcode_event structure. My guess is that I have some problem with how
+I'm defining the structs that I'm using for nvme_command, as they
+aren't part of vmlinux and need to be defined in my bpf program.
+
+Any help or guidance would be appreciated.
+
+Thanks,
+John Mazzie
