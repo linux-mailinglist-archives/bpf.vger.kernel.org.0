@@ -2,35 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EABC0535262
-	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 19:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B2C535317
+	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 20:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242650AbiEZRFj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 May 2022 13:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        id S242817AbiEZSCc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 May 2022 14:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236465AbiEZRFf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 May 2022 13:05:35 -0400
+        with ESMTP id S230133AbiEZSCc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 May 2022 14:02:32 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F907B8BCF;
-        Thu, 26 May 2022 10:05:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD179344B;
+        Thu, 26 May 2022 11:02:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C04FFB821A7;
-        Thu, 26 May 2022 17:05:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B66BFC385A9;
-        Thu, 26 May 2022 17:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1653584732;
-        bh=ttHzwS3+6S8DIxLTSpaMeV6rBTKrdyWH2+ueiD9zPlc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xbe6Gj1hwRN5QopnG6IFiIurq0CwPC3mdG3u/S+0mpto2x2Vq2VHu3eDGf6SlcoCr
-         WoF9Shyy//0VEjfIFAxbhQJrW9b32gS+MreTVjchsyb84oBV6s2UffWpC+T3xs9VrO
-         PdsG0tDJL/hSGsbZMTNm2E4LYv56TY2Gd2cj/wrM=
-Date:   Thu, 26 May 2022 10:05:30 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
+        by ams.source.kernel.org (Postfix) with ESMTPS id DF8F3B821A7;
+        Thu, 26 May 2022 18:02:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA83EC385A9;
+        Thu, 26 May 2022 18:02:26 +0000 (UTC)
+Date:   Thu, 26 May 2022 14:02:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
@@ -46,41 +39,49 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
 Subject: Re: [PATCH v3] ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding
  weak functions
-Message-Id: <20220526100530.6ef0a17084f6abab77d8b2ba@linux-foundation.org>
-In-Reply-To: <20220526103810.026560dd@gandalf.local.home>
+Message-ID: <20220526140225.357a577e@gandalf.local.home>
+In-Reply-To: <20220526100530.6ef0a17084f6abab77d8b2ba@linux-foundation.org>
 References: <20220526103810.026560dd@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
+        <20220526100530.6ef0a17084f6abab77d8b2ba@linux-foundation.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 26 May 2022 10:38:10 -0400 Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, 26 May 2022 10:05:30 -0700
+Andrew Morton <akpm@linux-foundation.org> wrote:
 
-> If an unused weak function was traced, it's call to fentry will still
-> exist, which gets added into the __mcount_loc table. Ftrace will use
-> kallsyms to retrieve the name for each location in __mcount_loc to display
-> it in the available_filter_functions and used to enable functions via the
-> name matching in set_ftrace_filter/notrace. Enabling these functions do
-> nothing but enable an unused call to ftrace_caller. If a traced weak
-> function is overridden, the symbol of the function would be used for it,
-> which will either created duplicate names, or if the previous function was
-> not traced, it would be incorrectly listed in available_filter_functions
-> as a function that can be traced.
+> On Thu, 26 May 2022 10:38:10 -0400 Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > If an unused weak function was traced, it's call to fentry will still
+> > exist, which gets added into the __mcount_loc table. Ftrace will use
+> > kallsyms to retrieve the name for each location in __mcount_loc to display
+> > it in the available_filter_functions and used to enable functions via the
+> > name matching in set_ftrace_filter/notrace. Enabling these functions do
+> > nothing but enable an unused call to ftrace_caller. If a traced weak
+> > function is overridden, the symbol of the function would be used for it,
+> > which will either created duplicate names, or if the previous function was
+> > not traced, it would be incorrectly listed in available_filter_functions
+> > as a function that can be traced.  
+> 
+> This might be dependent on binutils version.  In some situations the
+> unused __weak function might be dropped altogether.  This change
+> (https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=d1bcae833b32f1)
+> tripped up recordmcount
+> (https://lore.kernel.org/all/20220518181828.645877-1-naveen.n.rao@linux.vnet.ibm.com/T/#u).
+> 
+> The kexec fix will be to just give up on using __weak.
 
-This might be dependent on binutils version.  In some situations the
-unused __weak function might be dropped altogether.  This change
-(https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=d1bcae833b32f1)
-tripped up recordmcount
-(https://lore.kernel.org/all/20220518181828.645877-1-naveen.n.rao@linux.vnet.ibm.com/T/#u).
+Yes that's as separate issue with weak functions. Which reminds me, I told
+Jon Corbet I would write up an article about the problems of weak functions
+and ftrace ;-)
 
-The kexec fix will be to just give up on using __weak.
-
+-- Steve
