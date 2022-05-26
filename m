@@ -2,84 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 358AB53509C
-	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 16:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D775350DB
+	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 16:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347641AbiEZO2y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 May 2022 10:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
+        id S239390AbiEZOjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 May 2022 10:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347639AbiEZO2t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 May 2022 10:28:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2B2C6E6D;
-        Thu, 26 May 2022 07:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k7apNoi1g1YhGHKMlKvo5ejDwWGQrfqPL3Ty5xTWm5Q=; b=jt2D3c7xgVZUKhGsBafhmm2sFE
-        7iHXpIRdAmkRqKCTrByt8vvIu4Y3EGktUCpnmPTFxq5LEtvIgLU7neTQ7C/IsI99LeEY7HaXKuYy7
-        5ZrEicxpMCl0i/enkPZwHxhNQ3wSCLz0PWMpopuxkJst9ua3Mey2ATEpeisJ/smtNzknhVcxsQdkT
-        dSKtJhfNJpH19fcWEk13NeBfTP6RD6LPE68nShdvuaPUklK12w19DAh/i1OVAzpUZ0A5rCLZKasUp
-        WeWqziAdu0JgzoPn8WlmbMtIWF1JBvKksSw7KZdNfdrklRu0O6zxydJrgJF+gvKG7sfmTWPCyIS6G
-        yc+jDrmg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nuETR-001JAt-Fo; Thu, 26 May 2022 14:28:25 +0000
-Date:   Thu, 26 May 2022 15:28:25 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Clarke <jrtc27@jrtc27.com>,
-        kernel test robot <lkp@intel.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-riscv@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-parport@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-mm@kvack.org, linux-fbdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 8cb8311e95e3bb58bd84d6350365f14a718faa6d
-Message-ID: <Yo+OiR6abzVksVTM@casper.infradead.org>
-References: <628ea118.wJYf60YnZco0hs9o%lkp@intel.com>
- <20220525145056.953631743a4c494aabf000dc@linux-foundation.org>
- <F0E25DFF-8256-48FF-8B88-C0E3730A3E5E@jrtc27.com>
- <20220525152006.e87d3fa50aca58fdc1b43b6a@linux-foundation.org>
- <Yo7U8kglHlcvQ0Ri@casper.infradead.org>
- <20220526084832.GC2146@kadam>
+        with ESMTP id S1347735AbiEZOio (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 May 2022 10:38:44 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB00D4100;
+        Thu, 26 May 2022 07:38:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6649AB820F0;
+        Thu, 26 May 2022 14:38:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 385E7C385A9;
+        Thu, 26 May 2022 14:38:12 +0000 (UTC)
+Date:   Thu, 26 May 2022 10:38:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: [PATCH v3] ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding
+ weak functions
+Message-ID: <20220526103810.026560dd@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220526084832.GC2146@kadam>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 26, 2022 at 11:48:32AM +0300, Dan Carpenter wrote:
-> On Thu, May 26, 2022 at 02:16:34AM +0100, Matthew Wilcox wrote:
-> > Bizarre this started showing up now.  The recent patch was:
-> > 
-> > -       info->alloced += compound_nr(page);
-> > -       inode->i_blocks += BLOCKS_PER_PAGE << compound_order(page);
-> > +       info->alloced += folio_nr_pages(folio);
-> > +       inode->i_blocks += BLOCKS_PER_PAGE << folio_order(folio);
-> > 
-> > so it could tell that compound_order() was small, but folio_order()
-> > might be large?
-> 
-> The old code also generates a warning on my test system.  Smatch thinks
-> both compound_order() and folio_order() are 0-255.  I guess because of
-> the "unsigned char compound_order;" in the struct page.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-It'd be nice if we could annotate that as "contains a value between
-1 and BITS_PER_LONG - PAGE_SHIFT".  Then be able to optionally enable
-a checker that ensures that's true on loads/stores.  Maybe we need a
-language that isn't C :-P  Ada can do this ... I don't think Rust can.
+If an unused weak function was traced, it's call to fentry will still
+exist, which gets added into the __mcount_loc table. Ftrace will use
+kallsyms to retrieve the name for each location in __mcount_loc to display
+it in the available_filter_functions and used to enable functions via the
+name matching in set_ftrace_filter/notrace. Enabling these functions do
+nothing but enable an unused call to ftrace_caller. If a traced weak
+function is overridden, the symbol of the function would be used for it,
+which will either created duplicate names, or if the previous function was
+not traced, it would be incorrectly listed in available_filter_functions
+as a function that can be traced.
+
+This became an issue with BPF[1] as there are tooling that enables the
+direct callers via ftrace but then checks to see if the functions were
+actually enabled. The case of one function that was marked notrace, but
+was followed by an unused weak function that was traced. The unused
+function's call to fentry was added to the __mcount_loc section, and
+kallsyms retrieved the untraced function's symbol as the weak function was
+overridden. Since the untraced function would not get traced, the BPF
+check would detect this and fail.
+
+The real fix would be to fix kallsyms to not show address of weak
+functions as the function before it. But that would require adding code in
+the build to add function size to kallsyms so that it can know when the
+function ends instead of just using the start of the next known symbol.
+
+In the mean time, this is a work around. Add a FTRACE_MCOUNT_MAX_OFFSET
+macro that if defined, ftrace will ignore any function that has its call
+to fentry/mcount that has an offset from the symbol that is greater than
+FTRACE_MCOUNT_MAX_OFFSET.
+
+If CONFIG_HAVE_FENTRY is defined for x86, define FTRACE_MCOUNT_MAX_OFFSET
+to zero (unless IBT is enabled), which will have ftrace ignore all locations
+that are not at the start of the function.
+
+[1] https://lore.kernel.org/all/20220412094923.0abe90955e5db486b7bca279@kernel.org/
+
+Acked-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v2: https://lore.kernel.org/all/20220525180553.419eac77@gandalf.local.home/
+ - Mention "IBT" in change log. (Peter Zijlstra)
+ - Fix return value check of kallsyms_lookup() to be a const char *
+   and not an int. (My tests caught this)
+
+ arch/x86/include/asm/ftrace.h |  5 ++++
+ kernel/trace/ftrace.c         | 50 +++++++++++++++++++++++++++++++++--
+ 2 files changed, 53 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+index 024d9797646e..70c88d49bf45 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -9,6 +9,11 @@
+ # define MCOUNT_ADDR		((unsigned long)(__fentry__))
+ #define MCOUNT_INSN_SIZE	5 /* sizeof mcount call */
+ 
++/* Ignore unused weak functions which will have non zero offsets */
++#ifdef CONFIG_HAVE_FENTRY
++# define FTRACE_MCOUNT_MAX_OFFSET	0
++#endif
++
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ #define ARCH_SUPPORTS_FTRACE_OPS 1
+ #endif
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index d653ef4febc5..f20704a44875 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -3654,6 +3654,31 @@ static void add_trampoline_func(struct seq_file *m, struct ftrace_ops *ops,
+ 		seq_printf(m, " ->%pS", ptr);
+ }
+ 
++#ifdef FTRACE_MCOUNT_MAX_OFFSET
++static int print_rec(struct seq_file *m, unsigned long ip)
++{
++	unsigned long offset;
++	char str[KSYM_SYMBOL_LEN];
++	char *modname;
++	const char *ret;
++
++	ret = kallsyms_lookup(ip, NULL, &offset, &modname, str);
++	if (!ret || offset > FTRACE_MCOUNT_MAX_OFFSET)
++		return -1;
++
++	seq_puts(m, str);
++	if (modname)
++		seq_printf(m, " [%s]", modname);
++	return 0;
++}
++#else
++static int print_rec(struct seq_file *m, unsigned long ip)
++{
++	seq_printf(m, "%ps", (void *)ip);
++	return 0;
++}
++#endif
++
+ static int t_show(struct seq_file *m, void *v)
+ {
+ 	struct ftrace_iterator *iter = m->private;
+@@ -3678,7 +3703,9 @@ static int t_show(struct seq_file *m, void *v)
+ 	if (!rec)
+ 		return 0;
+ 
+-	seq_printf(m, "%ps", (void *)rec->ip);
++	if (print_rec(m, rec->ip))
++		return 0;
++
+ 	if (iter->flags & FTRACE_ITER_ENABLED) {
+ 		struct ftrace_ops *ops;
+ 
+@@ -3996,6 +4023,24 @@ add_rec_by_index(struct ftrace_hash *hash, struct ftrace_glob *func_g,
+ 	return 0;
+ }
+ 
++#ifdef FTRACE_MCOUNT_MAX_OFFSET
++static int lookup_ip(unsigned long ip, char **modname, char *str)
++{
++	unsigned long offset;
++
++	kallsyms_lookup(ip, NULL, &offset, modname, str);
++	if (offset > FTRACE_MCOUNT_MAX_OFFSET)
++		return -1;
++	return 0;
++}
++#else
++static int lookup_ip(unsigned long ip, char **modname, char *str)
++{
++	kallsyms_lookup(ip, NULL, NULL, modname, str);
++	return 0;
++}
++#endif
++
+ static int
+ ftrace_match_record(struct dyn_ftrace *rec, struct ftrace_glob *func_g,
+ 		struct ftrace_glob *mod_g, int exclude_mod)
+@@ -4003,7 +4048,8 @@ ftrace_match_record(struct dyn_ftrace *rec, struct ftrace_glob *func_g,
+ 	char str[KSYM_SYMBOL_LEN];
+ 	char *modname;
+ 
+-	kallsyms_lookup(rec->ip, NULL, NULL, &modname, str);
++	if (lookup_ip(rec->ip, &modname, str))
++		return 0;
+ 
+ 	if (mod_g) {
+ 		int mod_matches = (modname) ? ftrace_match(modname, mod_g) : 0;
+-- 
+2.35.1
+
