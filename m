@@ -2,57 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3245353D0
-	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 21:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D465353D1
+	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 21:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242960AbiEZTP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 May 2022 15:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
+        id S243556AbiEZTQ0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 26 May 2022 15:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbiEZTP5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 May 2022 15:15:57 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E019CF52
-        for <bpf@vger.kernel.org>; Thu, 26 May 2022 12:15:56 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id i74so2543258ioa.4
-        for <bpf@vger.kernel.org>; Thu, 26 May 2022 12:15:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=w2dOZ6bp8A3fvOPrCxoccsER/gU+Zt9Vu0OlRdlnzVk=;
-        b=ppMBVwF3Fl6aCd64fY0BRERkvagmDfo7gUlU6cKPwzUCzabLVvjAzKR50NREYxVjQJ
-         kMqUVfUgvg6sH0DhgdPeRzDqB/ZS6Ny+jNAM4smOVkg8VjKg1ckMDdey6RsmSvh91m8S
-         zw/7UxisRe1P5unNuUx4DsEa6R79bPrhe+1h0np1B06jrm3vdbMr6kwcanm+atdzyzy2
-         X2zJlH1Yt/yFNIYaRIfSHy7SuimdM+J2RzeGr+X82MPdpf5ihE0PuRkvzGRgnED6zZoZ
-         wSXjHwObRNXi10RYyKRHVXrIGYWx02ybgTFnS5HL3yJe7TUhyJ0SGW3N8fDIv0QMNswr
-         wPuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=w2dOZ6bp8A3fvOPrCxoccsER/gU+Zt9Vu0OlRdlnzVk=;
-        b=Oo7TbUOyCz1dKvTeY85hJJfADBN6SKfbxyH/V8udNoXpwm9Zkhmw/FdFQF0t2BBlIE
-         KUV90RTaGYmhCPfDvw+ptaaGdZiC8JysOy/RZBtE1QklyGG/Lkq1V2dhPIVaWWaxMd3O
-         Vhd5UeYsWW8VTBGa4I/EYbQd03yQ96w1Ez7EZC5fFVY6TSf6CU8aPmFvgSS8qx0KEBFv
-         xOegeL5rEFEPitWLJMOL4TCoNPSKsJZCGPhMB3TvSM+D9qDy7UL4HbXQ4gLY04iQD/D4
-         rzM/MnuhkhoVouoGtcGYOuY7oXnaIxFIGkJtNVEfqiEIRFh+71uZkOeY1/oUeyBrO8ch
-         sd2w==
-X-Gm-Message-State: AOAM533eE8dGpT4/wkZ8qNs87FONRj/q+1ohP+Me3kiudelD8sBNS7LT
-        vAUryrOqih39UwT0IKlH9RSfbBnJC3sypHrXAZ9lAx7phNMs4Q==
-X-Google-Smtp-Source: ABdhPJzSDKZ9E7b6WBTtlJaA2XJES04mKZ8iM3gar8qhaJxD2tF4SUTOGx27ZIuo07X/BEBOYPfdJIOX4TvDxpZ9/KI=
-X-Received: by 2002:a05:6638:411f:b0:32e:a114:54e with SMTP id
- ay31-20020a056638411f00b0032ea114054emr15534111jab.82.1653592555258; Thu, 26
- May 2022 12:15:55 -0700 (PDT)
+        with ESMTP id S229896AbiEZTQ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 May 2022 15:16:26 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA0E19035
+        for <bpf@vger.kernel.org>; Thu, 26 May 2022 12:16:25 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24QJ6n3N018079
+        for <bpf@vger.kernel.org>; Thu, 26 May 2022 12:16:25 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gaafu2ebb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 26 May 2022 12:16:25 -0700
+Received: from twshared10560.18.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Thu, 26 May 2022 12:16:24 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 185AE821AA87; Thu, 26 May 2022 12:16:18 -0700 (PDT)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, Song Liu <song@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>
+Subject: [PATCH bpf] selftests/bpf: fix stacktrace_build_id with missing kprobe/urandom_read
+Date:   Thu, 26 May 2022 12:16:08 -0700
+Message-ID: <20220526191608.2364049-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-From:   John Mazzie <john.p.mazzie@gmail.com>
-Date:   Thu, 26 May 2022 14:15:44 -0500
-Message-ID: <CAPxVHd+hHXFjc3DvK0G5RWnLChOTbGXHZp_W-exCE6onCMSRuA@mail.gmail.com>
-Subject: BPF_CORE_READ issue with nvme_submit_cmd kprobe.
-To:     bpf <bpf@vger.kernel.org>,
-        "John Mazzie (jmazzie)" <jmazzie@micron.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: hLpyOdk33GLDDR6umzNNrlFCNL3J6ZvN
+X-Proofpoint-ORIG-GUID: hLpyOdk33GLDDR6umzNNrlFCNL3J6ZvN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-26_10,2022-05-25_02,2022-02-23_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,95 +55,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While attempting to learn more about BPF and libbpf, I ran into an
-issue I can't quite seem to resolve.
+Kernel function urandom_read is replaced with urandom_read_iter.
+Therefore, kprobe on urandom_read is not working any more:
 
-While writing some tools to practice tracing with libbpf, I came
-across a situation where I get an error when using BPF_CORE_READ,
-which appears to be that CO-RE relocation failed to find a
-corresponding field. Compilation doesn't complain, just when I try to
-execute.
+[root@eth50-1 bpf]# ./test_progs -n 161
+test_stacktrace_build_id:PASS:skel_open_and_load 0 nsec
+libbpf: kprobe perf_event_open() failed: No such file or directory
+libbpf: prog 'oncpu': failed to create kprobe 'urandom_read+0x0' \
+        perf event: No such file or directory
+libbpf: prog 'oncpu': failed to auto-attach: -2
+test_stacktrace_build_id:FAIL:attach_tp err -2
+161     stacktrace_build_id:FAIL
 
-Error Message:
----------------------------------------------
-8: (85) call unknown#195896080
-invalid func unknown#195896080
+Fix this by replacing urandom_read with urandom_read_iter in the test.
 
-I'm using the Makefile from libbpf-bootstrap to build my program. The
-other example programs build and execute properly, and I've also
-successfully used tracepoints to trace the nvme_setup_cmd and
-nvme_complete_rq functions. My issue appears to be when I attempt to
-use kprobes for the nvme_submit_cmd function.
+Fixes: 1b388e7765f2 ("random: convert to using fops->read_iter()")
+Reported-by: Mykola Lysenko <mykolal@fb.com>
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ tools/testing/selftests/bpf/progs/test_stacktrace_build_id.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In the program I'm attempting to trace the nvme_command structure to
-get the opcode of the command in the function nvme_submit_cmd. I'm
-using Rocky Linux (RedHat based distro) with their kernel version of
-4.18. I verified the structures and interfaces in the source code, vs
-the default 4.18 version of the kernel and made the appropriate
-changes.
+diff --git a/tools/testing/selftests/bpf/progs/test_stacktrace_build_id.c b/tools/testing/selftests/bpf/progs/test_stacktrace_build_id.c
+index 6c62bfb8bb6f..0c4426592a26 100644
+--- a/tools/testing/selftests/bpf/progs/test_stacktrace_build_id.c
++++ b/tools/testing/selftests/bpf/progs/test_stacktrace_build_id.c
+@@ -39,7 +39,7 @@ struct {
+ 	__type(value, stack_trace_t);
+ } stack_amap SEC(".maps");
+ 
+-SEC("kprobe/urandom_read")
++SEC("kprobe/urandom_read_iter")
+ int oncpu(struct pt_regs *args)
+ {
+ 	__u32 max_len = sizeof(struct bpf_stack_build_id)
+-- 
+2.30.2
 
-traceopcode.bpf.c
----------------------------------------------
-#include "vmlinux.h"
-#include <bpf/bpf_helpers.h>
-#include <bpf/bpf_tracing.h>
-#include <bpf/bpf_core_read.h>
-#include "traceopcode.h"
-
-char LICENSE[] SEC("license") = "Dual BSD/GPL";
-
-struct {
-    __uint(type, BPF_MAP_TYPE_RINGBUF);
-    __uint(max_entries, 1024 * 1024);
-} ring_buffer SEC(".maps");
-
-struct nvme_common_command {
-    __u8         opcode;
-} __attribute__((preserve_access_index));
-
-struct nvme_command {
-    union {
-        struct nvme_common_command common;
-    };
-} __attribute__((preserve_access_index));
-
-SEC("kprobe/nvme_submit_cmd")
-int BPF_KPROBE(nvme_submit_cmd, void *nvmeq, struct nvme_command *cmd,
-bool write_sq)
-{
-    struct opcode_event *e;
-
-    e = bpf_ringbuf_reserve(&ring_buffer, sizeof(*e), 0);
-    if (!e)
-        return 0;
-
-    e->opcode = BPF_CORE_READ(cmd, common.opcode);
-    //e->opcode = cmd->common.opcode;
-    bpf_ringbuf_submit(e, 0);
-
-   return 0;
-}
-
-
-traceopcode.h
----------------------------------------------
-#ifndef __TRACEOPCODE_H
-#define __TRACEOPCODE_H
-
-struct opcode_event {
-    __u8 opcode;
-};
-
-#endif
-
-
-My userspace code is basically the same as the bootstrap example, with
-a modification to the handler that just prints out the opcode from the
-opcode_event structure. My guess is that I have some problem with how
-I'm defining the structs that I'm using for nvme_command, as they
-aren't part of vmlinux and need to be defined in my bpf program.
-
-Any help or guidance would be appreciated.
-
-Thanks,
-John Mazzie
