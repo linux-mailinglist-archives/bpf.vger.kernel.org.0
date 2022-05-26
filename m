@@ -2,64 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2F1535430
-	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 21:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B73535584
+	for <lists+bpf@lfdr.de>; Thu, 26 May 2022 23:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235380AbiEZT6o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 May 2022 15:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
+        id S1348235AbiEZVfZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 May 2022 17:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233948AbiEZT6o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 May 2022 15:58:44 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD8746667
-        for <bpf@vger.kernel.org>; Thu, 26 May 2022 12:58:43 -0700 (PDT)
+        with ESMTP id S1348775AbiEZVfZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 May 2022 17:35:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10DB8A075;
+        Thu, 26 May 2022 14:35:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BD05EB8219C
-        for <bpf@vger.kernel.org>; Thu, 26 May 2022 19:58:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9157C385A9;
-        Thu, 26 May 2022 19:58:39 +0000 (UTC)
-Date:   Thu, 26 May 2022 15:58:38 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     masami Hiramatsu <mhiramat@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: help to debug a kretprobe_dispatcher issue with 5.12
-Message-ID: <20220526155838.2cdef490@gandalf.local.home>
-In-Reply-To: <a5e75f2e-37ad-10e5-ff32-86e5fb7d3f5d@fb.com>
-References: <a5e75f2e-37ad-10e5-ff32-86e5fb7d3f5d@fb.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6E9C3B82208;
+        Thu, 26 May 2022 21:35:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAD01C385A9;
+        Thu, 26 May 2022 21:35:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653600921;
+        bh=qwyv+nJxlBVdDqdbd2VTKT9hv2wBJCSqK1tCHBMY/+g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IYn0VSwgwkkmsGR108hPDZOx0qg28bpENvgoWj0w25ef0I47jjC6fS1xhiyID0RG3
+         wIhIcEj2tbRXU0CYAn484+QHu9PoG99+AjVDX2pS5J0lHCguduI7GzSlAANSRm+Q0r
+         img6Ew3vUQGuH6OZjs0jTPnaHLsNO2C+v104t4VtNee9lhf3ugX+wuFH+ATi/u2RBL
+         FQOE3uDsZhsDwaKrIUDOZYbB6ZmEG0goo+Xrh+UkZLGzaPLOrWrhHAQmUVSDrrxPXM
+         QNy08q14RZFWVNYi5kBY++ahJnCQVfPZfhBwubcjnARAxC8E2GnNPJhaODI5IkyX1L
+         rtjKe2wPJRoXA==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com, pablo@netfilter.org,
+        fw@strlen.de, netfilter-devel@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
+        memxor@gmail.com, yhs@fb.com
+Subject: [PATCH v4 bpf-next 00/14] net: netfilter: add kfunc helper to update ct timeout
+Date:   Thu, 26 May 2022 23:34:48 +0200
+Message-Id: <cover.1653600577.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 26 May 2022 12:48:41 -0700
-Yonghong Song <yhs@fb.com> wrote:
+Changes since v3:
+- split bpf_xdp_ct_add in bpf_xdp_ct_alloc/bpf_skb_ct_alloc and
+  bpf_ct_insert_entry
+- add verifier code to properly populate/configure ct entry
+- improve selftests
 
-> So I suspect there is a race condition between kretprobe_dispatcher()
-> (or higher level kretprobe_trampoline_handler()) and 
-> unregister_kretprobes(). I looked at kernel/trace code and had not
-> found an obvious race yet. I will continue to check.
-> But at the same time, I would like to seek some expert advice to see
-> whether you are aware of any potential issues in 5.12 or not and where
-> are possible places I should focus on to add debug codes for experiments.
+Changes since v2:
+- add bpf_xdp_ct_add and bpf_ct_refresh_timeout kfunc helpers
+- remove conntrack dependency from selftests
+- add support for forcing kfunc args to be referenced and related selftests
 
-First thing I'll ask is if you can reproduce this on a vanilla 5.12 kernel.
+Changes since v1:
+- add bpf_ct_refresh_timeout kfunc selftest
 
-If not, then we can't help you.
+Kumar Kartikeya Dwivedi (11):
+  bpf: Add support for forcing kfunc args to be referenced
+  bpf: Print multiple type flags in verifier log
+  bpf: Support rdonly PTR_TO_BTF_ID for pointer to const return value
+  bpf: Support storing rdonly PTR_TO_BTF_ID in BPF maps
+  bpf: Support passing rdonly PTR_TO_BTF_ID to kfunc
+  bpf: Whitelist some fields in nf_conn for BPF_WRITE
+  bpf: Define acquire-release pairs for kfuncs
+  selftests/bpf: Add verifier tests for forced kfunc ref args
+  selftests/bpf: Add C tests for rdonly PTR_TO_BTF_ID
+  selftests/bpf: Add verifier tests for rdonly PTR_TO_BTF_ID
+  selftests/bpf: Add negative tests for bpf_nf
 
-If you can, I would ask if it is reproducible on the latest mainline kernel.
-If it is, then we'll help you look into it. If not, we'll ask if you can
-try to bisect it to at least find what version it was fixed in.
+Lorenzo Bianconi (3):
+  net: netfilter: add kfunc helper to update ct timeout
+  net: netfilter: add kfunc helpers to alloc and insert a new ct entry
+  selftests/bpf: add selftest for bpf_xdp_ct_add and
+    bpf_ct_refresh_timeout kfunc
 
--- Steve
+ include/linux/bpf.h                           |  17 +-
+ include/linux/bpf_verifier.h                  |   1 +
+ include/linux/btf.h                           |  40 ++
+ include/linux/filter.h                        |   3 +
+ include/net/netfilter/nf_conntrack.h          |   1 +
+ include/net/netfilter/nf_conntrack_bpf.h      |   5 +
+ include/uapi/linux/bpf.h                      |   2 +-
+ kernel/bpf/btf.c                              | 206 ++++++++--
+ kernel/bpf/helpers.c                          |   4 +-
+ kernel/bpf/verifier.c                         | 110 ++++--
+ net/bpf/test_run.c                            |  20 +-
+ net/core/filter.c                             |  28 ++
+ net/netfilter/nf_conntrack_bpf.c              | 367 ++++++++++++++++--
+ net/netfilter/nf_conntrack_core.c             |  23 +-
+ tools/include/uapi/linux/bpf.h                |   2 +-
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |  58 ++-
+ .../selftests/bpf/prog_tests/map_kptr.c       |   9 +-
+ tools/testing/selftests/bpf/progs/map_kptr.c  |  31 +-
+ .../selftests/bpf/progs/map_kptr_fail.c       | 114 ++++++
+ .../testing/selftests/bpf/progs/test_bpf_nf.c |  87 ++++-
+ .../selftests/bpf/progs/test_bpf_nf_fail.c    |  73 ++++
+ tools/testing/selftests/bpf/test_verifier.c   |  17 +-
+ tools/testing/selftests/bpf/verifier/calls.c  |  53 +++
+ .../testing/selftests/bpf/verifier/map_kptr.c | 156 ++++++++
+ 24 files changed, 1276 insertions(+), 151 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_nf_fail.c
+
+-- 
+2.35.3
+
