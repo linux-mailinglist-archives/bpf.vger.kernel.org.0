@@ -2,118 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F8E5363B7
-	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 16:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C18D5363DC
+	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 16:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346116AbiE0OEK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 10:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
+        id S1351317AbiE0OOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 May 2022 10:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236013AbiE0OEH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 10:04:07 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFFC275FE;
-        Fri, 27 May 2022 07:04:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653660245; x=1685196245;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PqdxjODClt15VT2awJtvXXZ53wPVcAebxtqdPJLcC5M=;
-  b=CsK3FrhoN62zDVh5KFm8mwRLncMrsUZrj+42WfCkkM2ynSQ9nfA3FFPE
-   V0/v85vdR5YC42+wsYw3uQr45+8rMWgBR/07BKo/QPHQ5PNAYhogRQtaw
-   vkAPIOtPaZE8vWH40Q9FVxGcDysihxcGmAs5onn0cPV7sz/Eg8LYevGD5
-   ddjFJou+FWJ47W1wyzC2cfflKig/iBdbvlExcIKzk9PpIbbkOHQa/Mxvi
-   6LsH+QW0D7x5ATAjNLKg+CmWBnVsa+wckWguTnA1NEthg9HQ0mLyltTtK
-   pJoR1xumfAXXQoKL23LrvkvGIOJ9PQYMiyoLRngpD7l7G4Mv2IQ73R1/m
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10359"; a="254980770"
-X-IronPort-AV: E=Sophos;i="5.91,255,1647327600"; 
-   d="scan'208";a="254980770"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2022 07:04:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,255,1647327600"; 
-   d="scan'208";a="603902168"
-Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 27 May 2022 07:03:59 -0700
-Received: from kbuild by db63a1be7222 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nuaZK-0004pq-DI;
-        Fri, 27 May 2022 14:03:58 +0000
-Date:   Fri, 27 May 2022 22:03:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     menglong8.dong@gmail.com, kuba@kernel.org
-Cc:     kbuild-all@lists.01.org, rostedt@goodmis.org, mingo@redhat.com,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        nhorman@tuxdriver.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        imagedong@tencent.com, dsahern@kernel.org, talalahmad@google.com,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 2/3] net: skb: use auto-generation to convert
- skb drop reason to string
-Message-ID: <202205272154.7zdeh6A3-lkp@intel.com>
-References: <20220527071522.116422-3-imagedong@tencent.com>
+        with ESMTP id S236208AbiE0OOL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 May 2022 10:14:11 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DB75AA4A;
+        Fri, 27 May 2022 07:14:08 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id wh22so9067983ejb.7;
+        Fri, 27 May 2022 07:14:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mDpmMrX6ZAj99tYsLUoYw7iDnZGlJpEI/3VF/4/WHsM=;
+        b=hmiV/2279z7xlKaFk+GxCbmDFupUyDQeF53CqctYwc3ylvA1+g67fm9AYwf3aJD52U
+         2Y0VNqCIPfJbF0YC3jT9aXfuCTHrZQH0zxRrdU5jcN1U1Kr3Xyjgnel+Kg8sZAH6ee2U
+         0dRC/R9cIcfp4pxd3fmznfBJMykLh8g3O16PpM3SZgOtK4GcYkW2MzmtU5DshhyBsBBf
+         3dKOBekLlhYbIn1nXTFG8IGd4yeaLAs2b4LMzjf8mjbboq9RHjfL3e/PH9gzng8YZQoR
+         wqBZqmfZxrzbCTzS+9/EGH3SBeLUcCO/TOjFgUVkrnmnGi4VHBCbnbAcC3eLlGOH/cDk
+         d4rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mDpmMrX6ZAj99tYsLUoYw7iDnZGlJpEI/3VF/4/WHsM=;
+        b=XWvs1OzpyEqn2rhMU2sOJAnRMC9Qb0KkWrQvEEpybCDANviWERnMzdKTzV8aiyBUGn
+         HfqcPxGd+loh56t7alMhH3Q0ezryCE1SoGoUud6dfyt939qEQ4TrgjxJjr4BEoNWPvNZ
+         nmKroZJUnPRTnYy980ah4Ud0Ta9/Ccdh3twtCIZrU/dqNDrlTKjQK/GZPi6iKeX3sY0f
+         gWEXI5FzA9O12F2/E7cSft5VY1WiOxWEv4rVUMWSCqIdp44M+qyDKeZR/WAONDI2BG8v
+         K2gQVHlJ3wEXPjZyQtzfG1xN+aWXYySc4QaQiaVBdXQ5mtkDd1o6ca2HmJVlmG6XPbT9
+         ePnA==
+X-Gm-Message-State: AOAM5320hwJ+ArNo4XFq8NN+JwUKClRz+yG1JczUhHhT/Y10LQMQqysQ
+        wQRha3zL6V8EzSfVax4KAaQES3v6XH5Ksu67WVk=
+X-Google-Smtp-Source: ABdhPJzu+h5wDUX4t7z5kJNxgp3+mHRNUPXxSn4d+Qux7XVdKfp9P59rjLYvyQHCXOcEAGyObqTC+BjeidAUXP/vTKc=
+X-Received: by 2002:a17:907:7da5:b0:6fe:d818:ee49 with SMTP id
+ oz37-20020a1709077da500b006fed818ee49mr24958685ejc.58.1653660847121; Fri, 27
+ May 2022 07:14:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220527071522.116422-3-imagedong@tencent.com>
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220527110959.54559-1-zhangyuchen.lcr@bytedance.com>
+In-Reply-To: <20220527110959.54559-1-zhangyuchen.lcr@bytedance.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 27 May 2022 07:13:54 -0700
+Message-ID: <CAADnVQL69J8MWhaNzNG=ANL_i8_QqABON+pWJDuqRTkFGPJYUQ@mail.gmail.com>
+Subject: Re: [PATCH] procfs: add syscall statistics
+To:     Zhang Yuchen <zhangyuchen.lcr@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>, fam.zheng@bytedance.com,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Fri, May 27, 2022 at 4:10 AM Zhang Yuchen
+<zhangyuchen.lcr@bytedance.com> wrote:
+>
+> Add /proc/syscalls to display percpu syscall count.
 
-Thank you for the patch! Yet something to improve:
+I second Peter's nack.
+We don't add debug features to the production kernel.
 
-[auto build test ERROR on net-next/master]
+> We need a less resource-intensive way to count syscall per cpu
+> for system problem location.
+>
+> There is a similar utility syscount in the BCC project, but syscount
+> has a high performance cost.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/menglong8-dong-gmail-com/reorganize-the-code-of-the-enum-skb_drop_reason/20220527-152050
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 7e062cda7d90543ac8c7700fc7c5527d0c0f22ad
-config: x86_64-randconfig-a013 (https://download.01.org/0day-ci/archive/20220527/202205272154.7zdeh6A3-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/0a1ac892edba0134b4891c9e61e06d462f8262a9
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review menglong8-dong-gmail-com/reorganize-the-code-of-the-enum-skb_drop_reason/20220527-152050
-        git checkout 0a1ac892edba0134b4891c9e61e06d462f8262a9
-        # save the config file
-        make W=1 ARCH=x86_64 
+There are two syscount tools in BCC:
+tools/syscount
+libbpf-tools/syscount
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Which one has this 42% overhead?
 
-All errors (new ones prefixed by >>):
+The former tool is obsolete though.
+It was written in the days when bpf had 1/10 of
+the features it has today.
+Both tools can be optimized.
+They attach to raw_syscalls tracepoint.
+tracepoints are not cheap.
+In terms of overhead:
+tracepoint > raw_tracepoint > fentry.
+bpf can attach to all three.
 
-   In file included from net/core/skbuff.c:85:
-   ./net/core/dropreason_str.h:1:1: error: stray '\' in program
-       1 | \n#define __DEFINE_SKB_DROP_REASON(FN) \
-         | ^
-   ./net/core/dropreason_str.h:1:3: error: stray '#' in program
-       1 | \n#define __DEFINE_SKB_DROP_REASON(FN) \
-         |   ^
->> ./net/core/dropreason_str.h:1:2: error: unknown type name 'n'
-       1 | \n#define __DEFINE_SKB_DROP_REASON(FN) \
-         |  ^
->> ./net/core/dropreason_str.h:1:11: error: expected '=', ',', ';', 'asm' or '__attribute__' before '__DEFINE_SKB_DROP_REASON'
-       1 | \n#define __DEFINE_SKB_DROP_REASON(FN) \
-         |           ^~~~~~~~~~~~~~~~~~~~~~~~
->> net/core/skbuff.c:101:9: error: implicit declaration of function '__DEFINE_SKB_DROP_REASON' [-Werror=implicit-function-declaration]
-     101 |         __DEFINE_SKB_DROP_REASON(FN)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~
->> net/core/skbuff.c:101:34: error: 'FN' undeclared here (not in a function)
-     101 |         __DEFINE_SKB_DROP_REASON(FN)
-         |                                  ^~
-   cc1: some warnings being treated as errors
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Please profile libbpf-tools/syscount tool
+with perf and unixbench, understand where overhead
+comes from and then optimize the tool.
