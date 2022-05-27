@@ -2,92 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1D0536822
-	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 22:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BB6536845
+	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 22:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240992AbiE0Ugt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 16:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
+        id S1350763AbiE0U4X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 May 2022 16:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbiE0Ugs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 16:36:48 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A1A606CD;
-        Fri, 27 May 2022 13:36:47 -0700 (PDT)
+        with ESMTP id S237744AbiE0U4W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 May 2022 16:56:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FA115FC0;
+        Fri, 27 May 2022 13:56:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 37F1AB82644;
-        Fri, 27 May 2022 20:36:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 222BEC385B8;
-        Fri, 27 May 2022 20:36:42 +0000 (UTC)
-Date:   Fri, 27 May 2022 16:36:41 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id A8CEEB82522;
+        Fri, 27 May 2022 20:56:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F714C385A9;
+        Fri, 27 May 2022 20:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653684979;
+        bh=ouLxdfpPr93wSzVLMEJWXsalJLxfF1Dpqw0Ygd5TG3U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eLtrHsjt76J6u2ihrMzg64T6VTrtgYFZ7JyOqOBXFuLeXlkWIPtO+Uu8utoGSXkN9
+         HAIhIOcB/8tgxaHVLoTQS8TLbSbeAfpdiWgHRg35b8sgeBRMDMiiQDwRUgAiSb7Fv2
+         g2eIj40wujY2zKxDTY3Kq5rRz31aRjbuWgWLzsBoUWlsK3yHFEzO/0fUk/LtOL20UE
+         mQ4iTKknT+6s3fraTmGwZBoAzEbYUXfwlF9jyQq5wdp27vMTjNn+yr64ssq2kkii3B
+         2LDO3s7+YR/vo7KgoPejDWg2EOEFXMoXwwGzUNV5RZjaQ7ouVJrJYk3WTGgp8Bh0kf
+         wEcFg5MK6Rm/g==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [PATCH v2] ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding
- weak function
-Message-ID: <20220527163641.67d97382@gandalf.local.home>
-In-Reply-To: <YpCiHlBjj99hALbV@gmail.com>
-References: <20220525180553.419eac77@gandalf.local.home>
-        <Yo7q6dwphFexGuRA@gmail.com>
-        <20220526091106.1eb2287a@gandalf.local.home>
-        <YpCiHlBjj99hALbV@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH bpf-next 0/3] bpf: Fix cookie values for kprobe multi
+Date:   Fri, 27 May 2022 22:56:08 +0200
+Message-Id: <20220527205611.655282-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 27 May 2022 12:04:14 +0200
-Ingo Molnar <mingo@kernel.org> wrote:
+hi,
+there's bug in kprobe_multi link that makes cookies misplaced when
+using symbols to attach. The reason is that we sort symbols by name
+but not adjacent cookie values. Current test did not find it because
+bpf_fentry_test* are already sorted by name.
 
-> For those which implement objtool, it certainly should: as we parse through 
-> each object file during the build, generating kallsyms data structures is 
-> relatively straightforward.
-> 
-> Objtool availability is a big gating condition though. :-/
-> 
-> [ ... and still Acked-by on -v4 too. ]
+thanks,
+jirka
 
-I just sent out a v5 and removed your Acked-by because the changes to v5
-are non-trivial like the previous changes in the other versions were.
 
-The big difference was that I needed place holders for the invalid
-functions in the available_filter_functions file, as I forgot that
-libtracefs uses the line number of these functions as a way to enable them
-in the set_ftrace_filter and set_ftrace_notrace files. Removing them made
-the indexing not in sync, and broke trace-cmd.
+---
+Jiri Olsa (3):
+      selftests/bpf: Shuffle cookies symbols in kprobe multi test
+      ftrace: Keep address offset in ftrace_lookup_symbols
+      bpf: Force cookies array to follow symbols sorting
 
-I also added a work queue at boot up to run through all the records and
-mark any of the ones that fail the kallsyms check as DISABLED.
-
-If you want, feel free to review and ack that change too.
-
-  https://lore.kernel.org/all/20220527163205.421c7828@gandalf.local.home/
-
-I need to add a selftest to test the indexing code as well. The only reason
-I found it was that I was writing my presentation for Embedded Recipes and
-was using it as an example. And when the filtering wasn't working, I had to
-figure out why.
-
--- Steve
+ kernel/trace/bpf_trace.c                            | 65 ++++++++++++++++++++++++++++++++++++++++++++++++++---------------
+ kernel/trace/ftrace.c                               | 13 +++++++++++--
+ tools/testing/selftests/bpf/prog_tests/bpf_cookie.c | 78 +++++++++++++++++++++++++++++++++++++++---------------------------------------
+ tools/testing/selftests/bpf/progs/kprobe_multi.c    | 24 ++++++++++++------------
+ 4 files changed, 112 insertions(+), 68 deletions(-)
