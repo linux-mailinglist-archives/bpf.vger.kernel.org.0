@@ -2,133 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB325362C5
-	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 14:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F8E5363B7
+	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 16:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352506AbiE0MlO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 08:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
+        id S1346116AbiE0OEK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 May 2022 10:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353162AbiE0MkO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 08:40:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B950B1C920;
-        Fri, 27 May 2022 05:30:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 728C7B823D0;
-        Fri, 27 May 2022 12:30:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 903ADC385A9;
-        Fri, 27 May 2022 12:30:45 +0000 (UTC)
-Date:   Fri, 27 May 2022 08:30:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: Re: [PATCH v4] ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding
- weak function
-Message-ID: <20220527083043.022e8e36@gandalf.local.home>
-In-Reply-To: <20220526141912.794c2786@gandalf.local.home>
-References: <20220526141912.794c2786@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S236013AbiE0OEH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 May 2022 10:04:07 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFFC275FE;
+        Fri, 27 May 2022 07:04:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653660245; x=1685196245;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PqdxjODClt15VT2awJtvXXZ53wPVcAebxtqdPJLcC5M=;
+  b=CsK3FrhoN62zDVh5KFm8mwRLncMrsUZrj+42WfCkkM2ynSQ9nfA3FFPE
+   V0/v85vdR5YC42+wsYw3uQr45+8rMWgBR/07BKo/QPHQ5PNAYhogRQtaw
+   vkAPIOtPaZE8vWH40Q9FVxGcDysihxcGmAs5onn0cPV7sz/Eg8LYevGD5
+   ddjFJou+FWJ47W1wyzC2cfflKig/iBdbvlExcIKzk9PpIbbkOHQa/Mxvi
+   6LsH+QW0D7x5ATAjNLKg+CmWBnVsa+wckWguTnA1NEthg9HQ0mLyltTtK
+   pJoR1xumfAXXQoKL23LrvkvGIOJ9PQYMiyoLRngpD7l7G4Mv2IQ73R1/m
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10359"; a="254980770"
+X-IronPort-AV: E=Sophos;i="5.91,255,1647327600"; 
+   d="scan'208";a="254980770"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2022 07:04:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,255,1647327600"; 
+   d="scan'208";a="603902168"
+Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 27 May 2022 07:03:59 -0700
+Received: from kbuild by db63a1be7222 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nuaZK-0004pq-DI;
+        Fri, 27 May 2022 14:03:58 +0000
+Date:   Fri, 27 May 2022 22:03:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     menglong8.dong@gmail.com, kuba@kernel.org
+Cc:     kbuild-all@lists.01.org, rostedt@goodmis.org, mingo@redhat.com,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        nhorman@tuxdriver.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        imagedong@tencent.com, dsahern@kernel.org, talalahmad@google.com,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 2/3] net: skb: use auto-generation to convert
+ skb drop reason to string
+Message-ID: <202205272154.7zdeh6A3-lkp@intel.com>
+References: <20220527071522.116422-3-imagedong@tencent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220527071522.116422-3-imagedong@tencent.com>
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 26 May 2022 14:19:12 -0400
-Steven Rostedt <rostedt@goodmis.org> (by way of Steven Rostedt
-<rostedt@goodmis.org>) wrote:
+Hi,
 
-> +++ b/kernel/trace/ftrace.c
-> @@ -3654,6 +3654,31 @@ static void add_trampoline_func(struct seq_file *m, struct ftrace_ops *ops,
->  		seq_printf(m, " ->%pS", ptr);
->  }
->  
-> +#ifdef FTRACE_MCOUNT_MAX_OFFSET
-> +static int print_rec(struct seq_file *m, unsigned long ip)
-> +{
-> +	unsigned long offset;
-> +	char str[KSYM_SYMBOL_LEN];
-> +	char *modname;
-> +	const char *ret;
-> +
-> +	ret = kallsyms_lookup(ip, NULL, &offset, &modname, str);
-> +	if (!ret || offset > FTRACE_MCOUNT_MAX_OFFSET)
-> +		return -1;
+Thank you for the patch! Yet something to improve:
 
-Unfortunately, I can't just skip printing these functions. The reason is
-because it breaks trace-cmd (libtracefs specifically). As trace-cmd can
-filter with full regular expressions (regex(3)), and does so by searching
-the available_filter_functions. It collects an index of functions to
-enabled, then passes that into set_ftrace_filter.
+[auto build test ERROR on net-next/master]
 
-As a speed up, set_ftrace_filter allows you to pass an index, defined by the
-line in available_filter_functions, into it that uses array indexing into
-the ftrace table to enable/disable functions for tracing. By skipping
-entries, it breaks the indexing, because the index is a 1 to 1 paring of
-the lines of available_filter_functions.
+url:    https://github.com/intel-lab-lkp/linux/commits/menglong8-dong-gmail-com/reorganize-the-code-of-the-enum-skb_drop_reason/20220527-152050
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 7e062cda7d90543ac8c7700fc7c5527d0c0f22ad
+config: x86_64-randconfig-a013 (https://download.01.org/0day-ci/archive/20220527/202205272154.7zdeh6A3-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/0a1ac892edba0134b4891c9e61e06d462f8262a9
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review menglong8-dong-gmail-com/reorganize-the-code-of-the-enum-skb_drop_reason/20220527-152050
+        git checkout 0a1ac892edba0134b4891c9e61e06d462f8262a9
+        # save the config file
+        make W=1 ARCH=x86_64 
 
-To solve this, instead of printing nothing, I have this:
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
-	ret = kallsyms_lookup(ip, NULL, &offset, &modname, str);
-	/* Weak functions can cause invalid addresses */
-	if (!ret || offset > FTRACE_MCOUNT_MAX_OFFSET) {
-		snprintf(str, KSYM_SYMBOL_LEN, "%s_%ld",
-			 FTRACE_INVALID_FUNCTION, offset);
-	}
+All errors (new ones prefixed by >>):
 
-Where:
+   In file included from net/core/skbuff.c:85:
+   ./net/core/dropreason_str.h:1:1: error: stray '\' in program
+       1 | \n#define __DEFINE_SKB_DROP_REASON(FN) \
+         | ^
+   ./net/core/dropreason_str.h:1:3: error: stray '#' in program
+       1 | \n#define __DEFINE_SKB_DROP_REASON(FN) \
+         |   ^
+>> ./net/core/dropreason_str.h:1:2: error: unknown type name 'n'
+       1 | \n#define __DEFINE_SKB_DROP_REASON(FN) \
+         |  ^
+>> ./net/core/dropreason_str.h:1:11: error: expected '=', ',', ';', 'asm' or '__attribute__' before '__DEFINE_SKB_DROP_REASON'
+       1 | \n#define __DEFINE_SKB_DROP_REASON(FN) \
+         |           ^~~~~~~~~~~~~~~~~~~~~~~~
+>> net/core/skbuff.c:101:9: error: implicit declaration of function '__DEFINE_SKB_DROP_REASON' [-Werror=implicit-function-declaration]
+     101 |         __DEFINE_SKB_DROP_REASON(FN)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~
+>> net/core/skbuff.c:101:34: error: 'FN' undeclared here (not in a function)
+     101 |         __DEFINE_SKB_DROP_REASON(FN)
+         |                                  ^~
+   cc1: some warnings being treated as errors
 
-#define FTRACE_INVALID_FUNCTION		"__ftrace_invalid_address__"
-
-When doing this, the available_filter_functions file has 546 invalid
-entries. 14 of which are for the kvm module. Probably to deal with the
-differences between Intel and AMD.
-
-When a function is read as invalid, the rec->flags get set as DISABLED,
-which will keep it from being enabled in the future.
-
-Of course, one can just enter in numbers without reading any of the files,
-and that will allow them to be set. It won't do anything bad, it would just
-act like it does today.
-
-Does anyone have any issues with this approach (with
-__ftrace_invalid_address__%d inserted into available_filter_functions)?
-
-
--- Steve
-
-
-> +
-> +	seq_puts(m, str);
-> +	if (modname)
-> +		seq_printf(m, " [%s]", modname);
-> +	return 0;
-> +}
-> +#else
-> +static int print_rec(struct seq_file *m, unsigned long ip)
-> +{
-> +	seq_printf(m, "%ps", (void *)ip);
-> +	return 0;
-> +}
-> +#endif
-> +
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
