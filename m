@@ -2,91 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C2253681F
-	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 22:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1D0536822
+	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 22:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351123AbiE0UeN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 16:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
+        id S240992AbiE0Ugt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 May 2022 16:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234627AbiE0UeL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 16:34:11 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463D91269B6
-        for <bpf@vger.kernel.org>; Fri, 27 May 2022 13:34:10 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id p8so5234140pfh.8
-        for <bpf@vger.kernel.org>; Fri, 27 May 2022 13:34:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BhWiy+u6CGIxU/xIbrrvAKnLH+DMq1tyIbHLZpH6IYA=;
-        b=KSwFPHiiGG1DMPxJblwbpP1Ur2ictm9QtDr7vMqJeyIoPo+SXOmrbr2i/OYxRbDxM3
-         o4jKrNaKqIm4jhthNdZ9zuB1J0dnww89O+V/4/KFWWq8kII6xZ+XamzwcRqtbR1iPQ5A
-         rwieHD4Y2s344gn/ma8mBg38ntnc9PXu4cW7A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BhWiy+u6CGIxU/xIbrrvAKnLH+DMq1tyIbHLZpH6IYA=;
-        b=pQpWfQ+m8U7GLNxgW1392+inP9/64xUkGFpOuKFTHC8XmsV8IvFOtt+J4+TCsH6qKk
-         umEsT951AF15oATA7vSn01HWiPx/3trbW5Wveos220/wb+t0pcD5JroXUdX9AnlQ1d8E
-         Rl6Tnab/yWvNfd2AGvCKuqhasY+zSo1tOVnELckaQwOJL49HDv9FxhgfUy3Vpihrr9oC
-         zo8PudMkqC8Qr290vmw3JeDFwCbySQFenRqZl9JIsA9sihflGl46dbJVP//J4MHRZU4D
-         MM4T3C6F5f5sqlN/iF13ybfkQNGRM+Gq3pRJdYQ/Is5MMWkbGHlMID5edSdj16gd53U/
-         /3kg==
-X-Gm-Message-State: AOAM533XCxj345CnSdkwmOpotgpAHpirx0Vi3IEeHhKPgyB4UFlLoTMV
-        KXUcn3QE1ZSN4hUHdy7TtZN9vC0kNn8x9g==
-X-Google-Smtp-Source: ABdhPJzUD2QjIliB8iVM+amgGA8Khu4/8pI/8T3lk3zMUpCf+RrhJEX4WjwNEWS14JAuyuRq1ZpcCw==
-X-Received: by 2002:a63:1a17:0:b0:3fa:e901:1c68 with SMTP id a23-20020a631a17000000b003fae9011c68mr11571011pga.243.1653683649828;
-        Fri, 27 May 2022 13:34:09 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v9-20020a17090a0e0900b001df93c8e737sm2009741pje.39.2022.05.27.13.34.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 May 2022 13:34:09 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     zhuyifei@google.com
-Cc:     Kees Cook <keescook@chromium.org>, shuah@kernel.org,
-        luto@amacapital.net, wad@chromium.org, bpf@vger.kernel.org,
-        brauner@kernel.org, llvm@lists.linux.dev,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH seccomp] selftests/seccomp: Fix compile warning when CC=clang
-Date:   Fri, 27 May 2022 13:34:01 -0700
-Message-Id: <165368363912.774765.17949173463800378438.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220526223407.1686936-1-zhuyifei@google.com>
-References: <20220526223407.1686936-1-zhuyifei@google.com>
+        with ESMTP id S230135AbiE0Ugs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 May 2022 16:36:48 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A1A606CD;
+        Fri, 27 May 2022 13:36:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 37F1AB82644;
+        Fri, 27 May 2022 20:36:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 222BEC385B8;
+        Fri, 27 May 2022 20:36:42 +0000 (UTC)
+Date:   Fri, 27 May 2022 16:36:41 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
+Subject: Re: [PATCH v2] ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding
+ weak function
+Message-ID: <20220527163641.67d97382@gandalf.local.home>
+In-Reply-To: <YpCiHlBjj99hALbV@gmail.com>
+References: <20220525180553.419eac77@gandalf.local.home>
+        <Yo7q6dwphFexGuRA@gmail.com>
+        <20220526091106.1eb2287a@gandalf.local.home>
+        <YpCiHlBjj99hALbV@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 26 May 2022 22:34:07 +0000, YiFei Zhu wrote:
-> clang has -Wconstant-conversion by default, and the constant 0xAAAAAAAAA
-> (9 As) being converted to an int, which is generally 32 bits, results
-> in the compile warning:
+On Fri, 27 May 2022 12:04:14 +0200
+Ingo Molnar <mingo@kernel.org> wrote:
+
+> For those which implement objtool, it certainly should: as we parse through 
+> each object file during the build, generating kallsyms data structures is 
+> relatively straightforward.
 > 
->   clang -Wl,-no-as-needed -Wall -isystem ../../../../usr/include/  -lpthread  seccomp_bpf.c -lcap -o seccomp_bpf
->   seccomp_bpf.c:812:67: warning: implicit conversion from 'long' to 'int' changes value from 45812984490 to -1431655766 [-Wconstant-conversion]
->           int kill = kill_how == KILL_PROCESS ? SECCOMP_RET_KILL_PROCESS : 0xAAAAAAAAA;
->               ~~~~                                                         ^~~~~~~~~~~
->   1 warning generated.
+> Objtool availability is a big gating condition though. :-/
 > 
-> [...]
+> [ ... and still Acked-by on -v4 too. ]
 
-Applied to for-next/seccomp, thanks!
+I just sent out a v5 and removed your Acked-by because the changes to v5
+are non-trivial like the previous changes in the other versions were.
 
-[1/1] selftests/seccomp: Fix compile warning when CC=clang
-      https://git.kernel.org/kees/c/73a8dbafd31a
+The big difference was that I needed place holders for the invalid
+functions in the available_filter_functions file, as I forgot that
+libtracefs uses the line number of these functions as a way to enable them
+in the set_ftrace_filter and set_ftrace_notrace files. Removing them made
+the indexing not in sync, and broke trace-cmd.
 
--- 
-Kees Cook
+I also added a work queue at boot up to run through all the records and
+mark any of the ones that fail the kallsyms check as DISABLED.
 
+If you want, feel free to review and ack that change too.
+
+  https://lore.kernel.org/all/20220527163205.421c7828@gandalf.local.home/
+
+I need to add a selftest to test the indexing code as well. The only reason
+I found it was that I was writing my presentation for Embedded Recipes and
+was using it as an example. And when the filtering wasn't working, I had to
+figure out why.
+
+-- Steve
