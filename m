@@ -2,52 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 479E5536480
-	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 17:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4300B536510
+	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 17:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352095AbiE0PKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 11:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
+        id S1352173AbiE0Pzs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 May 2022 11:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241203AbiE0PKP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 11:10:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E4A41F9E;
-        Fri, 27 May 2022 08:10:14 -0700 (PDT)
+        with ESMTP id S1345868AbiE0Pzs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 May 2022 11:55:48 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEC713F420;
+        Fri, 27 May 2022 08:55:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6C114B8255C;
-        Fri, 27 May 2022 15:10:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0A8F3C34113;
-        Fri, 27 May 2022 15:10:12 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id A6CE5CE259F;
+        Fri, 27 May 2022 15:55:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C648AC385A9;
+        Fri, 27 May 2022 15:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653664212;
-        bh=ovoahaMNfS6UEYpJPEXiV4cUjWIsZMQP/Yr3pKFPIIE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YGFZbVLVmOWGVlQF/KzJQXegksOK1TyK/20YBLM1PFXpH/e13w1qHVEUjaXRuQwWx
-         7HNhmXzA1puvZRH1s8G3EFAQwDpeBDquQtc5GmFp+IFkYLQwpCOrRfIs6PNx9QdGJo
-         JxHBgH2ZYbGUvlqmut910/6iCcbKVT7qMBYL/i+4P3W6XQB2e5zS1qeYBCInpJaZvH
-         RPY7CPLY2aLo8FTY0bY1TSgC1N79jQFrqZTNmb3L0aEgg3b3ERJTo0ZqlDI9ObnusD
-         G/DPyMWe5c4M0TsWnyV0XyDtSk85guuWJsKJqq7R0+Lq9K8cjgSrnVFzrgvBwgori/
-         +BCKEusyx/SNg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E057AF03947;
-        Fri, 27 May 2022 15:10:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1653666943;
+        bh=cCOkIPySWpvVdaAN06SdyUyZG3iiUBVWghvfYHnbzYk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gsAvd6roIaIqzKsnQUK5DspCDPDDGAQJXkPtmL1depNCcT4JpOnPu0V0J752DWZl+
+         4udQcnsOftggPJYYy7C7XYP56rFgNMesvlXZyOBmt5BBYgUQiz8jVobYlLI+XaRcen
+         4YHielmJTa/YwQtL4tzyhq9r0q9aQyS5FGcQsGG/kpLQrS3tsqXUAHETCTT12Oflv+
+         HLfj+9FX+bmJFwyra1PaeHel/GGjyn60TiQNok/9nqvPf+4xGN3EgkpLr4xuVoxQHj
+         rRAHZzTsin6DPOr/ZL4/8zneeY+Y/aeTUKVE+89r5/ZYvSdG+2kbqXCn3l1vAoas0l
+         A9+BQVv7/tceA==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns NULL in kretprobe_dispatcher()
+Date:   Sat, 28 May 2022 00:55:39 +0900
+Message-Id: <165366693881.797669.16926184644089588731.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] selftests/bpf: fix stacktrace_build_id with missing
- kprobe/urandom_read
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165366421191.28804.10243668813609197004.git-patchwork-notify@kernel.org>
-Date:   Fri, 27 May 2022 15:10:11 +0000
-References: <20220526191608.2364049-1-song@kernel.org>
-In-Reply-To: <20220526191608.2364049-1-song@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com,
-        mykolal@fb.com
 X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,33 +56,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+There is a small chance that get_kretprobe(ri) returns NULL in
+kretprobe_dispatcher() when another CPU unregisters the kretprobe
+right after __kretprobe_trampoline_handler().
 
-On Thu, 26 May 2022 12:16:08 -0700 you wrote:
-> Kernel function urandom_read is replaced with urandom_read_iter.
-> Therefore, kprobe on urandom_read is not working any more:
-> 
-> [root@eth50-1 bpf]# ./test_progs -n 161
-> test_stacktrace_build_id:PASS:skel_open_and_load 0 nsec
-> libbpf: kprobe perf_event_open() failed: No such file or directory
-> libbpf: prog 'oncpu': failed to create kprobe 'urandom_read+0x0' \
->         perf event: No such file or directory
-> libbpf: prog 'oncpu': failed to auto-attach: -2
-> test_stacktrace_build_id:FAIL:attach_tp err -2
-> 161     stacktrace_build_id:FAIL
-> 
-> [...]
+To avoid this issue, kretprobe_dispatcher() checks the get_kretprobe()
+return value again. And if it is NULL, it returns soon because that
+kretprobe is under unregistering process.
 
-Here is the summary with links:
-  - [bpf] selftests/bpf: fix stacktrace_build_id with missing kprobe/urandom_read
-    https://git.kernel.org/bpf/bpf/c/59ed76fe2f98
+This issue has been introduced when the kretprobe is decoupled
+from the struct kretprobe_instance by commit d741bf41d7c7
+("kprobes: Remove kretprobe hash"). Before that commit, the
+struct kretprob_instance::rp directly points the kretprobe
+and it is never be NULL.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Reported-by: Yonghong Song <yhs@fb.com>
+Fixes: d741bf41d7c7 ("kprobes: Remove kretprobe hash")
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ kernel/trace/trace_kprobe.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 93507330462c..a245ea673715 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1718,8 +1718,17 @@ static int
+ kretprobe_dispatcher(struct kretprobe_instance *ri, struct pt_regs *regs)
+ {
+ 	struct kretprobe *rp = get_kretprobe(ri);
+-	struct trace_kprobe *tk = container_of(rp, struct trace_kprobe, rp);
++	struct trace_kprobe *tk;
++
++	/*
++	 * There is a small chance that get_kretprobe(ri) returns NULL when
++	 * the kretprobe is unregister on another CPU between kretprobe's
++	 * trampoline_handler and this function.
++	 */
++	if (unlikely(!rp))
++		return 0;
+ 
++	tk = container_of(rp, struct trace_kprobe, rp);
+ 	raw_cpu_inc(*tk->nhit);
+ 
+ 	if (trace_probe_test_flag(&tk->tp, TP_FLAG_TRACE))
 
