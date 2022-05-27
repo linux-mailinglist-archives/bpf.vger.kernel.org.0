@@ -2,65 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E072E5356DD
-	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 01:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A694535742
+	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 03:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbiEZX6F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 May 2022 19:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
+        id S231869AbiE0BQR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 May 2022 21:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241821AbiEZX5R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 May 2022 19:57:17 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89252EBE88;
-        Thu, 26 May 2022 16:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653609361; x=1685145361;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IJGf5RepmEDrnwHRwu4dMdbVrN0wb3olBg9WO6yrmPs=;
-  b=FZ8FLh8lEmDv89DPI+BITUJhno1Fm35u2MEBinJTbXr6ofE8TtfaYljb
-   TChcafjad6+HUjOern/g7IMT3EVFhsfr6M6XE+a9T1UPSIUYGCgxON3C7
-   k6ke/jaWZPOk4fECwPq+jfA4hfs3c/xNEzN7iwbJtQMN+Jrsm9C9QhiEq
-   DEbtkdKZGdBDF8QHcnPj+CG2V8kSE1p9di5aOeQuCxuVNnWLWyObyCUQx
-   YKn+RK1ZM5vQy1tYUzgFX3JD/Ki6HXksXDg13L1kL8Z8VN1Uz0UcaOSz3
-   VdpJnehbkJfYZUjQwFCEtDJ6T5bxJJRyAzv/cx7Sizs8vj0EojBv+9pgP
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10359"; a="273141771"
-X-IronPort-AV: E=Sophos;i="5.91,252,1647327600"; 
-   d="scan'208";a="273141771"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 May 2022 16:56:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,252,1647327600"; 
-   d="scan'208";a="603453275"
-Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 26 May 2022 16:55:56 -0700
-Received: from kbuild by db63a1be7222 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nuNKd-0004Fs-G4;
-        Thu, 26 May 2022 23:55:55 +0000
-Date:   Fri, 27 May 2022 07:55:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
-        memxor@gmail.com, yhs@fb.com
-Subject: Re: [PATCH v4 bpf-next 06/14] bpf: Whitelist some fields in nf_conn
- for BPF_WRITE
-Message-ID: <202205270749.blol7EcF-lkp@intel.com>
-References: <2954ab26de09afeecf3a56ba93624f9629072102.1653600578.git.lorenzo@kernel.org>
+        with ESMTP id S231819AbiE0BQQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 May 2022 21:16:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9696F271;
+        Thu, 26 May 2022 18:16:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2020761CB5;
+        Fri, 27 May 2022 01:16:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CDA9C34116;
+        Fri, 27 May 2022 01:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653614174;
+        bh=3OBYAY/ttRUgYAlC1eiThaGMaCz44RoEL561Vc+b8wM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WWLaLjekoR9RLT01/AGKfzkLzbX0ZqQnEgHD7m9xpIKFnE8QW1c/m2eJuLfs6m5qr
+         b/+AWQFoz82mq4om+LUaPNpMWgWJUBdwHpxciwJaefeKaFXRkfO/dF6A5YpvS42wU/
+         K3ZwnWjdTtjRHou0Ijo9WQwaHZqQUVzQOAYg9TbNQmswucS/p5kJr/6CbFcj/MRmk3
+         9+qq/PEzpecNvNPDjqfHyP2ZengmijD6HBePI9OG4ulEm+xajDDjPViEJXyNbj29X3
+         LQZ2D8XlZx3xACwR0VQlye7m9g1xdWD4+dooD44dbDHAy8dpyP+4VeudkhhnTlQ1cT
+         +AaYdckUbFcMg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0FD7E4036D; Thu, 26 May 2022 22:16:11 -0300 (-03)
+Date:   Thu, 26 May 2022 22:16:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
+Message-ID: <YpAmW/BDq4346OaI@kernel.org>
+References: <20220510074659.2557731-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2954ab26de09afeecf3a56ba93624f9629072102.1653600578.git.lorenzo@kernel.org>
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20220510074659.2557731-1-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,64 +66,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Lorenzo,
+Em Tue, May 10, 2022 at 09:46:56AM +0200, Jiri Olsa escreveu:
+> hi,
+> sending change we discussed some time ago [1] to get rid of
+> some deprecated functions we use in perf prologue code.
+> 
+> Despite the gloomy discussion I think the final code does
+> not look that bad ;-)
+> 
+> This patchset removes following libbpf functions from perf:
+>   bpf_program__set_prep
+>   bpf_program__nth_fd
+>   struct bpf_prog_prep_result
 
-Thank you for the patch! Yet something to improve:
+So, the first patch is already in torvalds/master, I tried applying the
+other two patches to my local perf/core, that already is merged with
+torvalds/master and:
 
-[auto build test ERROR on bpf-next/master]
+[root@quaco ~]# perf test 42
+ 42: BPF filter                                                      :
+ 42.1: Basic BPF filtering                                           : FAILED!
+ 42.2: BPF pinning                                                   : FAILED!
+ 42.3: BPF prologue generation                                       : FAILED!
+[root@quaco ~]#
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Lorenzo-Bianconi/net-netfilter-add-kfunc-helper-to-update-ct-timeout/20220527-053913
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20220527/202205270749.blol7EcF-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/c346565af9b023d9231ca8fca2e1b8c66a782f84
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Lorenzo-Bianconi/net-netfilter-add-kfunc-helper-to-update-ct-timeout/20220527-053913
-        git checkout c346565af9b023d9231ca8fca2e1b8c66a782f84
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=um SUBARCH=i386 SHELL=/bin/bash
+I'll push my local perf/core to tmp.perf/core and continue tomorrow.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Its failing around here:
 
-All errors (new ones prefixed by >>):
+Open Debuginfo file: /root/.cache/debuginfod_client/e1c3de4b4c5db158f2098e80f2bf9140e8cfbdb6/debuginfo
+Try to find probe point from debuginfo.
+Matched function: do_epoll_wait [3806bb5]
+Probe point found: do_epoll_wait+0
+Found 1 probe_trace_events.
+Looking at the vmlinux_path (8 entries long)
+symsrc__init: build id mismatch for vmlinux.
+symsrc__init: cannot get elf header.
+Using /proc/kcore for kernel data
+Using /proc/kallsyms for symbols
+do_epoll_wait is out of .text, skip it.
+Post processing failed or all events are skipped. (1)
+Probe point 'do_epoll_wait' not found.
+bpf_probe: failed to convert perf probe events
+Failed to add events selected by BPF
+test child finished with -1
+---- end ----
+BPF filter subtest 1: FAILED
 
-   net/core/filter.c: In function 'xdp_tc_btf_struct_access':
->> net/core/filter.c:10479:16: error: implicit declaration of function 'btf_struct_access'; did you mean 'xdp_tc_btf_struct_access'? [-Werror=implicit-function-declaration]
-   10479 |         return btf_struct_access(log, btf, t, off, size, atype, next_btf_id, flag);
-         |                ^~~~~~~~~~~~~~~~~
-         |                xdp_tc_btf_struct_access
-   cc1: some warnings being treated as errors
+But:
 
+[root@quaco ~]# grep do_epoll_wait /proc/kallsyms
+ffffffff973c2a30 t do_epoll_wait
+[root@quaco ~]#
 
-vim +10479 net/core/filter.c
-
- 10459	
- 10460	static int xdp_tc_btf_struct_access(struct bpf_verifier_log *log,
- 10461					    const struct btf *btf,
- 10462					    const struct btf_type *t, int off, int size,
- 10463					    enum bpf_access_type atype,
- 10464					    u32 *next_btf_id, enum bpf_type_flag *flag)
- 10465	{
- 10466		int ret;
- 10467	
- 10468		if (atype == BPF_READ || !READ_ONCE(nf_conn_btf_struct_access))
- 10469			goto end;
- 10470		mutex_lock(&nf_conn_btf_struct_access_mtx);
- 10471		if (!nf_conn_btf_struct_access)
- 10472			goto end_unlock;
- 10473		ret = nf_conn_btf_struct_access(log, btf, t, off, size, atype, next_btf_id, flag);
- 10474		mutex_unlock(&nf_conn_btf_struct_access_mtx);
- 10475		return ret;
- 10476	end_unlock:
- 10477		mutex_unlock(&nf_conn_btf_struct_access_mtx);
- 10478	end:
- 10479		return btf_struct_access(log, btf, t, off, size, atype, next_btf_id, flag);
- 10480	}
- 10481	
+- Arnaldo
+ 
+> v2 changes:
+>   - use fallback section prog handler, so we don't need to
+>     use section prefix [Andrii]
+>   - realloc prog->insns array in bpf_program__set_insns [Andrii]
+>   - squash patch 1 from previous version with
+>     bpf_program__set_insns change [Daniel]
+>   - patch 3 already merged [Arnaldo]
+>   - added more comments
+> 
+>   meanwhile.. perf/core and bpf-next diverged, so:
+>     - libbpf bpf_program__set_insns change is based on bpf-next/master
+>     - perf changes do not apply on bpf-next/master so they are based on
+>       perf/core ... however they can be merged only after we release
+>       libbpf 0.8.0 with bpf_program__set_insns change, so we don't break
+>       the dynamic linking
+>       I'm sending perf changes now just for review, I'll resend them
+>       once libbpf 0.8.0 is released
+> 
+> thanks,
+> jirka
+> 
+> 
+> [1] https://lore.kernel.org/bpf/CAEf4BzaiBO3_617kkXZdYJ8hS8YF--ZLgapNbgeeEJ-pY0H88g@mail.gmail.com/
+> ---
+> Jiri Olsa (1):
+>       libbpf: Add bpf_program__set_insns function
+> 
+>  tools/lib/bpf/libbpf.c   | 22 ++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h   | 18 ++++++++++++++++++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 41 insertions(+)
+> 
+> Jiri Olsa (2):
+>       perf tools: Register fallback libbpf section handler
+>       perf tools: Rework prologue generation code
+> 
+>  tools/perf/util/bpf-loader.c | 175 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------
+>  1 file changed, 157 insertions(+), 18 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+
+- Arnaldo
