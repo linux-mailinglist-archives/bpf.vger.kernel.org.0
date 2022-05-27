@@ -2,58 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7100853684B
-	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 22:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00062536860
+	for <lists+bpf@lfdr.de>; Fri, 27 May 2022 23:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354680AbiE0U5I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 16:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
+        id S1351372AbiE0VNB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 May 2022 17:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354676AbiE0U5G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 16:57:06 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A101313568E;
-        Fri, 27 May 2022 13:57:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4D64DB8263F;
-        Fri, 27 May 2022 20:57:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FC73C385A9;
-        Fri, 27 May 2022 20:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653685020;
-        bh=T32Ol85wSFYdZ0/N54UobqI+0SkXzCt5QKO7YjA1m6A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vFoOj2uYIuJ/geQyjO/Fg2BccL0rZbxwxyNoxif8wWrORJFO/EPbCoBohex7lmMkF
-         CyArPleeAMUmCDoLVszMmPx13naM9qowAQKGOawtFgf5s5db+fVlJZ1NEtsaWqaRJ9
-         npNCudZ/AWjj/wBbSd//1TdgN8Br33cY78wi3iVo4sneHeQMj5hwstg9zLk8S53ev+
-         iDMrAnyPIcrmio60rAAk0FBgbwFDlzX15Ezj1BJcvQNgMaCF2t//KwQrqLlGm50c8x
-         g/KxIQYFxLF+/P1t+l08GaWBBIu5JuESLDv43lgAd1pzS4xUYPkY1ItlxmJGTzLC2z
-         CCRfkFM1GYiRw==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH bpf-next 3/3] bpf: Force cookies array to follow symbols sorting
-Date:   Fri, 27 May 2022 22:56:11 +0200
-Message-Id: <20220527205611.655282-4-jolsa@kernel.org>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220527205611.655282-1-jolsa@kernel.org>
-References: <20220527205611.655282-1-jolsa@kernel.org>
+        with ESMTP id S243869AbiE0VNA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 May 2022 17:13:00 -0400
+X-Greylist: delayed 593 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 27 May 2022 14:12:55 PDT
+Received: from s291.goserver.host (s291.goserver.host [185.30.35.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E063B293
+        for <bpf@vger.kernel.org>; Fri, 27 May 2022 14:12:55 -0700 (PDT)
+Received: from s291.goserver.host (localhost [127.0.0.1])
+        by s291.goserver.host (Postfix) with SMTP id 452A8D5E3F10
+        for <bpf@vger.kernel.org>; Fri, 27 May 2022 23:02:57 +0200 (CEST)
+Received: (from info@physiomansour.de)
+        by s291.goserver.host (mini_sendmail/1.3.6 20apr2017);
+        Fri, 27 May 2022 23:02:57 CEST
+        (sender web255@s291.goserver.host)
+To:     bpf@vger.kernel.org
+Subject: =?UTF-8?Q?Anfrage_via_Kontaktformular_Praxis_f=C3=BCr_Physio?=
+ =?UTF-8?Q?therapie_Mansour?=
+Date:   Fri, 27 May 2022 21:02:57 +0000
+From:   WordPress <info@physiomansour.de>
+Message-ID: <EYOqL1ugs2C5hB2Zawtvsk4zPVSTC9cbbeRaQMbUMI@physiomansour.de>
+X-Mailer: PHPMailer 6.6.0 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,126 +41,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When user specifies symbols and cookies for kprobe_multi link
-interface it's very likely the cookies will be misplaced and
-returned to wrong functions (via get_attach_cookie helper).
+Hallo 💗 Jennifer want to play with you! Start Game: https://wondergirl22.page.link/29hQ?fjri 💗,
 
-The reason is that to resolve the provided functions we sort
-them before passing them to ftrace_lookup_symbols, but we do
-not do the same sort on the cookie values.
+vielen Dank für deine Anfrage. 
 
-Fixing this by using sort_r function with custom swap callback
-that swaps cookie values as well.
+Das ist eine automatisierte Antwort.
+Wir melden uns umgehend bei Dir.
 
-Fixes: 0236fec57a15 ("bpf: Resolve symbols with ftrace_lookup_symbols for kprobe multi link")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/trace/bpf_trace.c | 65 ++++++++++++++++++++++++++++++----------
- 1 file changed, 50 insertions(+), 15 deletions(-)
+viele Grüße
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 10b157a6d73e..e5c423b835ab 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2423,7 +2423,12 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long entry_ip,
- 	kprobe_multi_link_prog_run(link, entry_ip, regs);
- }
- 
--static int symbols_cmp(const void *a, const void *b)
-+struct multi_symbols_sort {
-+	const char **funcs;
-+	u64 *cookies;
-+};
-+
-+static int symbols_cmp_r(const void *a, const void *b, const void *priv)
- {
- 	const char **str_a = (const char **) a;
- 	const char **str_b = (const char **) b;
-@@ -2431,6 +2436,25 @@ static int symbols_cmp(const void *a, const void *b)
- 	return strcmp(*str_a, *str_b);
- }
- 
-+static void symbols_swap_r(void *a, void *b, int size, const void *priv)
-+{
-+	const struct multi_symbols_sort *data = priv;
-+	const char **name_a = a, **name_b = b;
-+	u64 *cookie_a, *cookie_b;
-+
-+	cookie_a = data->cookies + (name_a - data->funcs);
-+	cookie_b = data->cookies + (name_b - data->funcs);
-+
-+	/* swap name_a/name_b and cookie_a/cookie_b values */
-+	swap(*name_a, *name_b);
-+	swap(*cookie_a, *cookie_b);
-+}
-+
-+static int symbols_cmp(const void *a, const void *b)
-+{
-+	return symbols_cmp_r(a, b, NULL);
-+}
-+
- int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- {
- 	struct bpf_kprobe_multi_link *link = NULL;
-@@ -2468,6 +2492,19 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	if (!addrs)
- 		return -ENOMEM;
- 
-+	ucookies = u64_to_user_ptr(attr->link_create.kprobe_multi.cookies);
-+	if (ucookies) {
-+		cookies = kvmalloc(size, GFP_KERNEL);
-+		if (!cookies) {
-+			err = -ENOMEM;
-+			goto error;
-+		}
-+		if (copy_from_user(cookies, ucookies, size)) {
-+			err = -EFAULT;
-+			goto error;
-+		}
-+	}
-+
- 	if (uaddrs) {
- 		if (copy_from_user(addrs, uaddrs, size)) {
- 			err = -EFAULT;
-@@ -2480,26 +2517,24 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 		if (err)
- 			goto error;
- 
--		sort(us.syms, cnt, sizeof(*us.syms), symbols_cmp, NULL);
-+		if (cookies) {
-+			struct multi_symbols_sort data = {
-+				.cookies = cookies,
-+				.funcs = us.syms,
-+			};
-+
-+			sort_r(us.syms, cnt, sizeof(*us.syms), symbols_cmp_r,
-+			       symbols_swap_r, &data);
-+		} else {
-+			sort(us.syms, cnt, sizeof(*us.syms), symbols_cmp, NULL);
-+		}
-+
- 		err = ftrace_lookup_symbols(us.syms, cnt, addrs);
- 		free_user_syms(&us);
- 		if (err)
- 			goto error;
- 	}
- 
--	ucookies = u64_to_user_ptr(attr->link_create.kprobe_multi.cookies);
--	if (ucookies) {
--		cookies = kvmalloc(size, GFP_KERNEL);
--		if (!cookies) {
--			err = -ENOMEM;
--			goto error;
--		}
--		if (copy_from_user(cookies, ucookies, size)) {
--			err = -EFAULT;
--			goto error;
--		}
--	}
--
- 	link = kzalloc(sizeof(*link), GFP_KERNEL);
- 	if (!link) {
- 		err = -ENOMEM;
--- 
-2.35.3
+Dein Praxis Team
 
