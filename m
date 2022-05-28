@@ -2,50 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE53536A74
-	for <lists+bpf@lfdr.de>; Sat, 28 May 2022 05:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8BA536A7C
+	for <lists+bpf@lfdr.de>; Sat, 28 May 2022 05:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244284AbiE1DkM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 23:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        id S1353559AbiE1D6k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 May 2022 23:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbiE1DkL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 23:40:11 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03C711CA03;
-        Fri, 27 May 2022 20:40:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2945BB8268D;
-        Sat, 28 May 2022 03:40:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DDDFC34100;
-        Sat, 28 May 2022 03:40:05 +0000 (UTC)
-Date:   Fri, 27 May 2022 23:40:03 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Subject: [PATCH v6] ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding
- weak function
-Message-ID: <20220527234003.2719e6c6@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229683AbiE1D6j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 May 2022 23:58:39 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648655EBCD
+        for <bpf@vger.kernel.org>; Fri, 27 May 2022 20:58:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653710318; x=1685246318;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ilybc3HInNxoW9v9y4QpNgM3s38lZeWVNtlPNButV5A=;
+  b=PcYE1xK/qIxD4tnmCc1n6QsGTsRY07NLkc5vX5qzzhMKnKrpjlfv90p0
+   kQHUKQofLokxriUtaKjxoP+pwggEJRimwO1OO6onHbADJLrjqVcUwH/Xk
+   jXK9EAkrIf8siK2Sbb1rQxyIwtm7YS9vUtlxHEVWCVO9X0ITgxchL3Zhi
+   HtTUrM3LkTiFCEK+CR1XT/ZST1P0pdTiUym+Ya7LAXGA0eUbmaDYW8y5Q
+   xLiOnAddDRFEGnc8bxAQ6IbayaNjmAID2ntqk3sujjtS/DnIYuuF2YSW8
+   6nPjF/V+6VigeUNSQm9lVcNecQRYE+pHlL8X+/9haXzZh6AVl9CatfaAN
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10360"; a="274350847"
+X-IronPort-AV: E=Sophos;i="5.91,257,1647327600"; 
+   d="scan'208";a="274350847"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2022 20:58:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,257,1647327600"; 
+   d="scan'208";a="705421970"
+Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 27 May 2022 20:58:36 -0700
+Received: from kbuild by db63a1be7222 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nunb1-0005QL-FY;
+        Sat, 28 May 2022 03:58:35 +0000
+Date:   Sat, 28 May 2022 11:58:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Cc:     kbuild-all@lists.01.org, eddyz87@gmail.com
+Subject: Re: [PATCH bpf-next 3/3] bpf: Inline calls to bpf_loop when callback
+ is known
+Message-ID: <202205281148.rY3lJqB4-lkp@intel.com>
+References: <20220527235228.224879-3-eddyz87@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220527235228.224879-3-eddyz87@gmail.com>
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,279 +65,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi Eduard,
 
-If an unused weak function was traced, it's call to fentry will still
-exist, which gets added into the __mcount_loc table. Ftrace will use
-kallsyms to retrieve the name for each location in __mcount_loc to display
-it in the available_filter_functions and used to enable functions via the
-name matching in set_ftrace_filter/notrace. Enabling these functions do
-nothing but enable an unused call to ftrace_caller. If a traced weak
-function is overridden, the symbol of the function would be used for it,
-which will either created duplicate names, or if the previous function was
-not traced, it would be incorrectly be listed in available_filter_functions
-as a function that can be traced.
+Thank you for the patch! Perhaps something to improve:
 
-This became an issue with BPF[1] as there are tooling that enables the
-direct callers via ftrace but then checks to see if the functions were
-actually enabled. The case of one function that was marked notrace, but
-was followed by an unused weak function that was traced. The unused
-function's call to fentry was added to the __mcount_loc section, and
-kallsyms retrieved the untraced function's symbol as the weak function was
-overridden. Since the untraced function would not get traced, the BPF
-check would detect this and fail.
+[auto build test WARNING on bpf-next/master]
 
-The real fix would be to fix kallsyms to not show addresses of weak
-functions as the function before it. But that would require adding code in
-the build to add function size to kallsyms so that it can know when the
-function ends instead of just using the start of the next known symbol.
+url:    https://github.com/intel-lab-lkp/linux/commits/Eduard-Zingerman/bpf_loop-inlining/20220528-075454
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: x86_64-randconfig-a013 (https://download.01.org/0day-ci/archive/20220528/202205281148.rY3lJqB4-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/05c5a11449d4e5c75ada599a71d8290bef8a5d1a
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Eduard-Zingerman/bpf_loop-inlining/20220528-075454
+        git checkout 05c5a11449d4e5c75ada599a71d8290bef8a5d1a
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash kernel/bpf/
 
-In the mean time, this is a work around. Add a FTRACE_MCOUNT_MAX_OFFSET
-macro that if defined, ftrace will ignore any function that has its call
-to fentry/mcount that has an offset from the symbol that is greater than
-FTRACE_MCOUNT_MAX_OFFSET.
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
-If CONFIG_HAVE_FENTRY is defined for x86, define FTRACE_MCOUNT_MAX_OFFSET
-to zero (unless IBT is enabled), which will have ftrace ignore all locations
-that are not at the start of the function (or one after the ENDBR
-instruction).
+All warnings (new ones prefixed by >>):
 
-A worker thread is added at boot up to scan all the ftrace record entries,
-and will mark any that fail the FTRACE_MCOUNT_MAX_OFFSET test as disabled.
-They will still appear in the available_filter_functions file as:
+   kernel/bpf/verifier.c: In function 'adjust_stack_depth_for_loop_inlining':
+>> kernel/bpf/verifier.c:7127:16: warning: variable 'subprog_start' set but not used [-Wunused-but-set-variable]
+    7127 |         int i, subprog_start, subprog_end, cur_subprog = 0;
+         |                ^~~~~~~~~~~~~
 
-  __ftrace_invalid_address___<invalid-offset>
 
-(showing the offset that caused it to be invalid).
+vim +/subprog_start +7127 kernel/bpf/verifier.c
 
-This is required for tools that use libtracefs (like trace-cmd does) that
-scan the available_filter_functions and enable set_ftrace_filter and
-set_ftrace_notrace using indexes of the function listed in the file (this
-is a speedup, as enabling thousands of files via names is an O(n^2)
-operation and can take minutes to complete, where the indexing takes less
-than a second).
+  7117	
+  7118	/* For all sub-programs in the program (including main) checks
+  7119	 * insn_aux_data to see if there are bpf_loop calls that require
+  7120	 * inlining. If such calls are found subprog stack_depth is increased
+  7121	 * by the size of 3 registers. Reserved space would be used in the
+  7122	 * do_misc_fixups to spill values of the R6, R7, R8 to use these
+  7123	 * registers for loop iteration.
+  7124	 */
+  7125	static void adjust_stack_depth_for_loop_inlining(struct bpf_verifier_env *env)
+  7126	{
+> 7127		int i, subprog_start, subprog_end, cur_subprog = 0;
+  7128		struct bpf_subprog_info *subprog = env->subprog_info;
+  7129		int insn_cnt = env->prog->len;
+  7130	
+  7131		subprog_start = subprog[cur_subprog].start;
+  7132		subprog_end = env->subprog_cnt > 1
+  7133			? subprog[cur_subprog + 1].start
+  7134			: insn_cnt;
+  7135		for (i = 0; i < insn_cnt; i++) {
+  7136			if (fit_for_bpf_loop_inline(&env->insn_aux_data[i])) {
+  7137				/* reserve space for 3 registers  */
+  7138				subprog->stack_depth += BPF_REG_SIZE * 3;
+  7139				/* skip to the next subprog */
+  7140				i = subprog_end - 1;
+  7141			}
+  7142			if (i == subprog_end - 1) {
+  7143				subprog_start = subprog_end;
+  7144				cur_subprog++;
+  7145				if (cur_subprog < env->subprog_cnt)
+  7146					subprog_end = subprog[cur_subprog + 1].start;
+  7147			}
+  7148		}
+  7149	
+  7150		env->prog->aux->stack_depth = env->subprog_info[0].stack_depth;
+  7151	}
+  7152	
 
-The invalid functions cannot be removed from available_filter_functions as
-the names there correspond to the ftrace records in the array that manages
-them (and the indexing depends on this).
-
-[1] https://lore.kernel.org/all/20220412094923.0abe90955e5db486b7bca279@kernel.org/
-
-Link: https://lkml.kernel.org/r/20220526141912.794c2786@gandalf.local.home
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v5: https://lkml.kernel.org/r/20220526141912.794c2786@gandalf.local.home
- - Do not WARN_ON in ftrace_match_record() if the lookup_ip fails
-   offset not being within range and the max and the record is not
-   yet set to DISABLED. Only WARN_ON() if the system is running.
-
- arch/x86/include/asm/ftrace.h |   7 ++
- kernel/trace/ftrace.c         | 138 +++++++++++++++++++++++++++++++++-
- 2 files changed, 143 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index 024d9797646e..b5ef474be858 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -9,6 +9,13 @@
- # define MCOUNT_ADDR		((unsigned long)(__fentry__))
- #define MCOUNT_INSN_SIZE	5 /* sizeof mcount call */
- 
-+/* Ignore unused weak functions which will have non zero offsets */
-+#ifdef CONFIG_HAVE_FENTRY
-+# include <asm/ibt.h>
-+/* Add offset for endbr64 if IBT enabled */
-+# define FTRACE_MCOUNT_MAX_OFFSET	ENDBR_INSN_SIZE
-+#endif
-+
- #ifdef CONFIG_DYNAMIC_FTRACE
- #define ARCH_SUPPORTS_FTRACE_OPS 1
- #endif
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index d653ef4febc5..fb58d18d4f78 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -45,6 +45,8 @@
- #include "trace_output.h"
- #include "trace_stat.h"
- 
-+#define FTRACE_INVALID_FUNCTION		"__ftrace_invalid_address__"
-+
- #define FTRACE_WARN_ON(cond)			\
- 	({					\
- 		int ___r = cond;		\
-@@ -3654,6 +3656,105 @@ static void add_trampoline_func(struct seq_file *m, struct ftrace_ops *ops,
- 		seq_printf(m, " ->%pS", ptr);
- }
- 
-+#ifdef FTRACE_MCOUNT_MAX_OFFSET
-+/*
-+ * Weak functions can still have an mcount/fentry that is saved in
-+ * the __mcount_loc section. These can be detected by having a
-+ * symbol offset of greater than FTRACE_MCOUNT_MAX_OFFSET, as the
-+ * symbol found by kallsyms is not the function that the mcount/fentry
-+ * is part of. The offset is much greater in these cases.
-+ *
-+ * Test the record to make sure that the ip points to a valid kallsyms
-+ * and if not, mark it disabled.
-+ */
-+static int test_for_valid_rec(struct dyn_ftrace *rec)
-+{
-+	char str[KSYM_SYMBOL_LEN];
-+	unsigned long offset;
-+	const char *ret;
-+
-+	ret = kallsyms_lookup(rec->ip, NULL, &offset, NULL, str);
-+
-+	/* Weak functions can cause invalid addresses */
-+	if (!ret || offset > FTRACE_MCOUNT_MAX_OFFSET) {
-+		rec->flags |= FTRACE_FL_DISABLED;
-+		return 0;
-+	}
-+	return 1;
-+}
-+
-+static struct workqueue_struct *ftrace_check_wq __initdata;
-+static struct work_struct ftrace_check_work __initdata;
-+
-+/*
-+ * Scan all the mcount/fentry entries to make sure they are valid.
-+ */
-+static __init void ftrace_check_work_func(struct work_struct *work)
-+{
-+	struct ftrace_page *pg;
-+	struct dyn_ftrace *rec;
-+
-+	mutex_lock(&ftrace_lock);
-+	do_for_each_ftrace_rec(pg, rec) {
-+		test_for_valid_rec(rec);
-+	} while_for_each_ftrace_rec();
-+	mutex_unlock(&ftrace_lock);
-+}
-+
-+static int __init ftrace_check_for_weak_functions(void)
-+{
-+	INIT_WORK(&ftrace_check_work, ftrace_check_work_func);
-+
-+	ftrace_check_wq = alloc_workqueue("ftrace_check_wq", WQ_UNBOUND, 0);
-+
-+	queue_work(ftrace_check_wq, &ftrace_check_work);
-+	return 0;
-+}
-+
-+static int __init ftrace_check_sync(void)
-+{
-+	/* Make sure the ftrace_check updates are finished */
-+	if (ftrace_check_wq)
-+		destroy_workqueue(ftrace_check_wq);
-+	return 0;
-+}
-+
-+late_initcall_sync(ftrace_check_sync);
-+subsys_initcall(ftrace_check_for_weak_functions);
-+
-+static int print_rec(struct seq_file *m, unsigned long ip)
-+{
-+	unsigned long offset;
-+	char str[KSYM_SYMBOL_LEN];
-+	char *modname;
-+	const char *ret;
-+
-+	ret = kallsyms_lookup(ip, NULL, &offset, &modname, str);
-+	/* Weak functions can cause invalid addresses */
-+	if (!ret || offset > FTRACE_MCOUNT_MAX_OFFSET) {
-+		snprintf(str, KSYM_SYMBOL_LEN, "%s_%ld",
-+			 FTRACE_INVALID_FUNCTION, offset);
-+		ret = NULL;
-+	}
-+
-+	seq_puts(m, str);
-+	if (modname)
-+		seq_printf(m, " [%s]", modname);
-+	return ret == NULL ? -1 : 0;
-+}
-+#else
-+static inline int test_for_valid_rec(struct dyn_ftrace *rec)
-+{
-+	return 1;
-+}
-+
-+static inline int print_rec(struct seq_file *m, unsigned long ip)
-+{
-+	seq_printf(m, "%ps", (void *)ip);
-+	return 0;
-+}
-+#endif
-+
- static int t_show(struct seq_file *m, void *v)
- {
- 	struct ftrace_iterator *iter = m->private;
-@@ -3678,7 +3779,13 @@ static int t_show(struct seq_file *m, void *v)
- 	if (!rec)
- 		return 0;
- 
--	seq_printf(m, "%ps", (void *)rec->ip);
-+	if (print_rec(m, rec->ip)) {
-+		/* This should only happen when a rec is disabled */
-+		WARN_ON_ONCE(!(rec->flags & FTRACE_FL_DISABLED));
-+		seq_putc(m, '\n');
-+		return 0;
-+	}
-+
- 	if (iter->flags & FTRACE_ITER_ENABLED) {
- 		struct ftrace_ops *ops;
- 
-@@ -3996,6 +4103,24 @@ add_rec_by_index(struct ftrace_hash *hash, struct ftrace_glob *func_g,
- 	return 0;
- }
- 
-+#ifdef FTRACE_MCOUNT_MAX_OFFSET
-+static int lookup_ip(unsigned long ip, char **modname, char *str)
-+{
-+	unsigned long offset;
-+
-+	kallsyms_lookup(ip, NULL, &offset, modname, str);
-+	if (offset > FTRACE_MCOUNT_MAX_OFFSET)
-+		return -1;
-+	return 0;
-+}
-+#else
-+static int lookup_ip(unsigned long ip, char **modname, char *str)
-+{
-+	kallsyms_lookup(ip, NULL, NULL, modname, str);
-+	return 0;
-+}
-+#endif
-+
- static int
- ftrace_match_record(struct dyn_ftrace *rec, struct ftrace_glob *func_g,
- 		struct ftrace_glob *mod_g, int exclude_mod)
-@@ -4003,7 +4128,12 @@ ftrace_match_record(struct dyn_ftrace *rec, struct ftrace_glob *func_g,
- 	char str[KSYM_SYMBOL_LEN];
- 	char *modname;
- 
--	kallsyms_lookup(rec->ip, NULL, NULL, &modname, str);
-+	if (lookup_ip(rec->ip, &modname, str)) {
-+		/* This should only happen when a rec is disabled */
-+		WARN_ON_ONCE(system_state == SYSTEM_RUNNING &&
-+			     !(rec->flags & FTRACE_FL_DISABLED));
-+		return 0;
-+	}
- 
- 	if (mod_g) {
- 		int mod_matches = (modname) ? ftrace_match(modname, mod_g) : 0;
-@@ -6830,6 +6960,10 @@ void ftrace_module_enable(struct module *mod)
- 		if (ftrace_start_up)
- 			cnt += referenced_filters(rec);
- 
-+		/* Weak functions should still be ignored */
-+		if (!test_for_valid_rec(rec))
-+			continue;
-+
- 		rec->flags &= ~FTRACE_FL_DISABLED;
- 		rec->flags += cnt;
- 
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
