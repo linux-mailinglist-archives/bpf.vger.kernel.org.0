@@ -2,138 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8BA536A7C
-	for <lists+bpf@lfdr.de>; Sat, 28 May 2022 05:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2534D536AB6
+	for <lists+bpf@lfdr.de>; Sat, 28 May 2022 06:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353559AbiE1D6k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 23:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
+        id S229507AbiE1E1I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 May 2022 00:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbiE1D6j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 23:58:39 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648655EBCD
-        for <bpf@vger.kernel.org>; Fri, 27 May 2022 20:58:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1653710318; x=1685246318;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ilybc3HInNxoW9v9y4QpNgM3s38lZeWVNtlPNButV5A=;
-  b=PcYE1xK/qIxD4tnmCc1n6QsGTsRY07NLkc5vX5qzzhMKnKrpjlfv90p0
-   kQHUKQofLokxriUtaKjxoP+pwggEJRimwO1OO6onHbADJLrjqVcUwH/Xk
-   jXK9EAkrIf8siK2Sbb1rQxyIwtm7YS9vUtlxHEVWCVO9X0ITgxchL3Zhi
-   HtTUrM3LkTiFCEK+CR1XT/ZST1P0pdTiUym+Ya7LAXGA0eUbmaDYW8y5Q
-   xLiOnAddDRFEGnc8bxAQ6IbayaNjmAID2ntqk3sujjtS/DnIYuuF2YSW8
-   6nPjF/V+6VigeUNSQm9lVcNecQRYE+pHlL8X+/9haXzZh6AVl9CatfaAN
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10360"; a="274350847"
-X-IronPort-AV: E=Sophos;i="5.91,257,1647327600"; 
-   d="scan'208";a="274350847"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 May 2022 20:58:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,257,1647327600"; 
-   d="scan'208";a="705421970"
-Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 27 May 2022 20:58:36 -0700
-Received: from kbuild by db63a1be7222 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nunb1-0005QL-FY;
-        Sat, 28 May 2022 03:58:35 +0000
-Date:   Sat, 28 May 2022 11:58:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-Cc:     kbuild-all@lists.01.org, eddyz87@gmail.com
-Subject: Re: [PATCH bpf-next 3/3] bpf: Inline calls to bpf_loop when callback
- is known
-Message-ID: <202205281148.rY3lJqB4-lkp@intel.com>
-References: <20220527235228.224879-3-eddyz87@gmail.com>
+        with ESMTP id S1349774AbiE1E1F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 May 2022 00:27:05 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CA05BE7B;
+        Fri, 27 May 2022 21:26:55 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id jx22so11876239ejb.12;
+        Fri, 27 May 2022 21:26:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AH8OnCXRC51Mg4MBO4ivuHAwds1YuEo+ZbFbIglk25k=;
+        b=c0VKYFgSHpb0/8AKdLqgatVQSCC+/mDi9S4RMNPyPuqG7IF0j0cFnom/jsmvY2lpWg
+         T2DucG2NXVXOD2Klh8NHl7onmOERFTK3TtK9sL5Us+4Ug54ojF1gyhh130c6DHjstucT
+         NLUT3P8zzdXMrVTg07MSxJGQ5Z0SNtwk+R7RJUDdhM9iaR27ySkGT54Q7Bw6lwEMr9me
+         SoWUnGE7hA0LTMx8owdpPAO7r/5hUbGOqb9qo7D4enZezrKO97kuWutagxdlyr7bHVC6
+         jcbwE6d4ffpAoa3BA03Ld5Wvii1ver+hDfGhxZhwyT/xmDg019/TGHWP/NoaFbSmj3Ln
+         +oiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AH8OnCXRC51Mg4MBO4ivuHAwds1YuEo+ZbFbIglk25k=;
+        b=Coe1xVj7wTZEYC2WfMTuRFyj4MAdmwyrbLjn8gkzPVOytdWUDKn8y28+Rn0eGWnwrX
+         y4dZBrGhMJmMCPnlpLCvF/Bd9tN+3/Ycgqq8YWCoUCetoJk27Y1be09uUGR+mYCJsO1O
+         dfcayziVqmMK+QcBCsKwe7mUWZ6+HDuAojlGFZbE2oh/SJtR4GzznRg2sMI+8DOCh8PG
+         UT3V8rfIvgClXjNJ4Ln7XcYyPdmOB8+/ILXCb18F06Lnj8qlE/nafAezpzQp1fXV7Q9i
+         mrkpTpX/IpyX3uutRLNZUJV+fOK6BQypSS2lDVgkdm/4atMK0KnuD4Cmhj+/iITQS9L3
+         3zBA==
+X-Gm-Message-State: AOAM531mdDdnMcI2Bg3jrx9Fo02QbLNBOksBW/tuFOZQ6fDHqmovHzS9
+        KcbNZyotvVTkd4tcGR1Di07f0AQOv2sb3SmUL0Y=
+X-Google-Smtp-Source: ABdhPJx+Bye2Fi8Q2Yp/a2pdYrI2N1T2SeWCiZr66i3gzr7t/ESq3IlDhQNK/eh3WnVIs1U2wmBM8BN1dVFByGtHOk0=
+X-Received: by 2002:a17:907:3f17:b0:6fe:bc5d:8d8e with SMTP id
+ hq23-20020a1709073f1700b006febc5d8d8emr30880227ejc.439.1653712014572; Fri, 27
+ May 2022 21:26:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220527235228.224879-3-eddyz87@gmail.com>
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220527071522.116422-1-imagedong@tencent.com>
+ <20220527071522.116422-3-imagedong@tencent.com> <20220527181426.126367e5@kernel.org>
+In-Reply-To: <20220527181426.126367e5@kernel.org>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Sat, 28 May 2022 12:26:43 +0800
+Message-ID: <CADxym3YJKOmxmZPvqAJGS_WHUv5i+Cb0MSwu583wK+G6BO0MOw@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/3] net: skb: use auto-generation to convert skb
+ drop reason to string
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Menglong Dong <imagedong@tencent.com>,
+        David Ahern <dsahern@kernel.org>,
+        Talal Ahmad <talalahmad@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Eduard,
+On Sat, May 28, 2022 at 9:14 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Fri, 27 May 2022 15:15:21 +0800 menglong8.dong@gmail.com wrote:
+> > +clean-files := dropreason_str.h
+> > +
+> > +quiet_cmd_dropreason_str = GEN     $@
+> > +cmd_dropreason_str = echo '\n\#define __DEFINE_SKB_DROP_REASON(FN) \' > $@;\
+>
+> echo -n
+>
+> > +     sed -e '/enum skb_drop_reason {/,/}/!d' $< | \
+> > +     awk -F ',' '/SKB_DROP_REASON_/{printf " FN(%s) \\\n", substr($$1, 18)}' >> $@;\
+> > +     echo '' >> $@
+>
+> Trying to figure out when we're in the enum could be more robust
+> in case more stuff gets added to the header:
+>
+>  | awk -F ',' '/^enum skb_drop/ { dr=1; }
+>                /\}\;/           { dr=0; }
+>                /^\tSKB_DROP/    { if (dr) {print $1;}}'
+>
+> > +$(obj)/dropreason_str.h: $(srctree)/include/linux/dropreason.h
+> > +     $(call cmd,dropreason_str)
+> > +
+> > +$(obj)/skbuff.o: $(obj)/dropreason_str.h
+>
+> Since we just generate the array directly now should we generate
+> a source file with it directly instead of generating a header with
+> the huge define?
 
-Thank you for the patch! Perhaps something to improve:
+This seems to be a good idea, which is able to decouple the
+definition of the array with skbuff.c. I'll try this.
 
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Eduard-Zingerman/bpf_loop-inlining/20220528-075454
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: x86_64-randconfig-a013 (https://download.01.org/0day-ci/archive/20220528/202205281148.rY3lJqB4-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/05c5a11449d4e5c75ada599a71d8290bef8a5d1a
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Eduard-Zingerman/bpf_loop-inlining/20220528-075454
-        git checkout 05c5a11449d4e5c75ada599a71d8290bef8a5d1a
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash kernel/bpf/
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   kernel/bpf/verifier.c: In function 'adjust_stack_depth_for_loop_inlining':
->> kernel/bpf/verifier.c:7127:16: warning: variable 'subprog_start' set but not used [-Wunused-but-set-variable]
-    7127 |         int i, subprog_start, subprog_end, cur_subprog = 0;
-         |                ^~~~~~~~~~~~~
-
-
-vim +/subprog_start +7127 kernel/bpf/verifier.c
-
-  7117	
-  7118	/* For all sub-programs in the program (including main) checks
-  7119	 * insn_aux_data to see if there are bpf_loop calls that require
-  7120	 * inlining. If such calls are found subprog stack_depth is increased
-  7121	 * by the size of 3 registers. Reserved space would be used in the
-  7122	 * do_misc_fixups to spill values of the R6, R7, R8 to use these
-  7123	 * registers for loop iteration.
-  7124	 */
-  7125	static void adjust_stack_depth_for_loop_inlining(struct bpf_verifier_env *env)
-  7126	{
-> 7127		int i, subprog_start, subprog_end, cur_subprog = 0;
-  7128		struct bpf_subprog_info *subprog = env->subprog_info;
-  7129		int insn_cnt = env->prog->len;
-  7130	
-  7131		subprog_start = subprog[cur_subprog].start;
-  7132		subprog_end = env->subprog_cnt > 1
-  7133			? subprog[cur_subprog + 1].start
-  7134			: insn_cnt;
-  7135		for (i = 0; i < insn_cnt; i++) {
-  7136			if (fit_for_bpf_loop_inline(&env->insn_aux_data[i])) {
-  7137				/* reserve space for 3 registers  */
-  7138				subprog->stack_depth += BPF_REG_SIZE * 3;
-  7139				/* skip to the next subprog */
-  7140				i = subprog_end - 1;
-  7141			}
-  7142			if (i == subprog_end - 1) {
-  7143				subprog_start = subprog_end;
-  7144				cur_subprog++;
-  7145				if (cur_subprog < env->subprog_cnt)
-  7146					subprog_end = subprog[cur_subprog + 1].start;
-  7147			}
-  7148		}
-  7149	
-  7150		env->prog->aux->stack_depth = env->subprog_info[0].stack_depth;
-  7151	}
-  7152	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Thanks!
+Menglong Dong
