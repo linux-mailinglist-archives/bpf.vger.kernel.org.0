@@ -2,83 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C479A5369B5
-	for <lists+bpf@lfdr.de>; Sat, 28 May 2022 03:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F075369ED
+	for <lists+bpf@lfdr.de>; Sat, 28 May 2022 03:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbiE1Bag (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 May 2022 21:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60108 "EHLO
+        id S245216AbiE1Byp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 May 2022 21:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355541AbiE1BaQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 May 2022 21:30:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67CB132763;
-        Fri, 27 May 2022 18:30:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5CAF0B8266C;
-        Sat, 28 May 2022 01:30:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0AB48C34118;
-        Sat, 28 May 2022 01:30:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653701413;
-        bh=AeiVdeemn2VoJJ5oKgiWG1CbPKXwsJzZe2l4g528u9Y=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Dct8lGSPLdpaDdWk6DtcHuXhxMoJqUwfjV8UKn1xc2hkaU2dD1CjGxETTY26WQTRQ
-         blLoPR92TdYVuB/AHr675049CjINcT5J4zToboNADaWQJb6/R2RRv7BechpecgMg1e
-         ezBB3yBny17xt4rDZ/8wAVipjgOnn5Hse3eYak1byhjvTyfhjpdvit0/LHTVX20y65
-         sFi3cGN4geTjn/3ImJGkQ2ZQ4v6jvSENe7XAGVFiiAW5Ui8+xaOd3UKvnRpZZBFQVT
-         UuesEQKTLcQRdYaJhZR9Q5E6Fe18YyVpTouc1NFa1E0apqPQjOuVfh2ML79dldcMS9
-         QWXv4lBZkWLWg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DD320F0394D;
-        Sat, 28 May 2022 01:30:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S238672AbiE1Byo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 May 2022 21:54:44 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930713BF80;
+        Fri, 27 May 2022 18:54:43 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4L94Sg1mFvzgYLs;
+        Sat, 28 May 2022 09:53:07 +0800 (CST)
+Received: from [10.174.177.215] (10.174.177.215) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 28 May 2022 09:54:40 +0800
+Subject: Re: [PATCH bpf-next] bpf,sockmap: fix sk->sk_forward_alloc warn_on in
+ sk_stream_kill_queues
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     <ast@kernel.org>, <john.fastabend@gmail.com>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>, <jakub@cloudflare.com>,
+        <lmb@cloudflare.com>, <davem@davemloft.net>, <kafai@fb.com>,
+        <dsahern@kernel.org>, <kuba@kernel.org>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <20220524075311.649153-1-wangyufen@huawei.com>
+ <YpFEmCp+fm1nC23U@pop-os.localdomain>
+From:   wangyufen <wangyufen@huawei.com>
+Message-ID: <3d11ae70-8c2d-b021-b173-b000dce588e0@huawei.com>
+Date:   Sat, 28 May 2022 09:54:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <YpFEmCp+fm1nC23U@pop-os.localdomain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf 2022-05-28
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165370141290.14527.2591249078702010731.git-patchwork-notify@kernel.org>
-Date:   Sat, 28 May 2022 01:30:12 +0000
-References: <20220527235042.8526-1-daniel@iogearbox.net>
-In-Reply-To: <20220527235042.8526-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.177.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
 
-This pull request was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+在 2022/5/28 5:37, Cong Wang 写道:
+> On Tue, May 24, 2022 at 03:53:11PM +0800, Wang Yufen wrote:
+>> During TCP sockmap redirect pressure test, the following warning is triggered:
+>> WARNING: CPU: 3 PID: 2145 at net/core/stream.c:205 sk_stream_kill_queues+0xbc/0xd0
+>> CPU: 3 PID: 2145 Comm: iperf Kdump: loaded Tainted: G        W         5.10.0+ #9
+>> Call Trace:
+>>   inet_csk_destroy_sock+0x55/0x110
+>>   inet_csk_listen_stop+0xbb/0x380
+>>   tcp_close+0x41b/0x480
+>>   inet_release+0x42/0x80
+>>   __sock_release+0x3d/0xa0
+>>   sock_close+0x11/0x20
+>>   __fput+0x9d/0x240
+>>   task_work_run+0x62/0x90
+>>   exit_to_user_mode_prepare+0x110/0x120
+>>   syscall_exit_to_user_mode+0x27/0x190
+>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> The reason we observed is that:
+>> When the listener is closing, a connection may have completed the three-way
+>> handshake but not accepted, and the client has sent some packets. The child
+>> sks in accept queue release by inet_child_forget()->inet_csk_destroy_sock(),
+>> but psocks of child sks have not released.
+>>
+> Hm, in this scenario, how does the child socket end up in the sockmap?
+> Clearly user-space does not have a chance to get an fd yet.
+>
+> And, how does your patch work? Since the child sock does not even inheirt
+> the sock proto after clone (see the comments above tcp_bpf_clone()) at
+> all?
+>
+> Thanks.
+> .
+My test cases are as follows:
 
-On Sat, 28 May 2022 01:50:42 +0200 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
-> 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 2 non-merge commits during the last 1 day(s) which contain
-> a total of 2 files changed, 6 insertions(+), 10 deletions(-).
-> 
-> [...]
+__section("sockops")
+int bpf_sockmap(struct bpf_sock_ops *skops)
+{
+     switch (skops->op) {
+         case BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB:
+         case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
+             ...
+             bpf_sock_hash_update(skops, &sock_ops_map, &key, BPF_NOEXIST);
+             break;
+         ...
+}
 
-Here is the summary with links:
-  - pull-request: bpf 2022-05-28
-    https://git.kernel.org/netdev/net/c/6b51935a2651
+__section("sk_msg")
+int bpf_redir(struct sk_msg_md *msg)
+{
+     ...
+     bpf_msg_redirect_hash(msg, &sock_ops_map, &key, BPF_F_INGRESS);
+     return SK_PASS;
+}
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+//tcp_server
+int main(char **argv)
+{
+     int sk = 0;
+     int port, ret;
+     struct sockaddr_in addr;
+
+     signal(SIGCHLD, SIG_IGN);
+
+     sk = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+     if (sk < 0) {
+         perror("Can't create socket");
+         return -1;
+     }
+
+     port = atoi(argv[1]);
+     memset(&addr, 0, sizeof(addr));
+     addr.sin_family = AF_INET;
+     addr.sin_addr.s_addr = htonl(INADDR_ANY);
+     addr.sin_port = htons(port);
+
+     printf("Binding to port %d\n", port);
+
+     ret = bind(sk, (struct sockaddr *)&addr, sizeof(addr));
+     if (ret < 0) {
+         perror("Can't bind socket");
+         return -1;
+     }
+
+     ret = listen(sk, size);
+     if (ret < 0) {
+         perror("Can't put sock to listen");
+         return -1;
+     }
+
+     printf("Waiting for connections\n");
+     while (1) {
+         //not accpet
+         sleep(1);
+     }
+}
+
+//tcp_client
+int main(char **argv)
+{
+     int port, write_size;
+     int val[10], rval[10];
+     int sk = 0;
+
+     port = atoi(argv[2]);
+     val[0] = 1;
+
+     sk = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+     if (sk < 0) {
+         perror("Can't create socket");
+         return -1;
+     }
+
+     memset(&addr, 0, sizeof(addr));
+     addr.sin_family = AF_INET;
+     inet_aton(argv[1], &addr.sin_addr);
+     addr.sin_port = htons(port);
+
+     ret = connect(sk[i], (struct sockaddr *)&addr, sizeof(addr));
+     if (ret < 0) {
+         perror("Can't connect");
+         return -1;
+     }
+
+    while (1) {
+         printf("send %d -> %d\n", val[0], val[0]);
+         write(sk, &val, sizeof(val));
+         val[0]++;
+         sleep(1);
+    }
+}
 
 
+1. start tcp_server
+2. start tcp_client
+3. kill tcp_server
+The problem can be reproduced easily.
