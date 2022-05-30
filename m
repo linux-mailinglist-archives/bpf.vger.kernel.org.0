@@ -2,83 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67D15385AE
-	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 17:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA55D538644
+	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 18:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242364AbiE3P6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 May 2022 11:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
+        id S241764AbiE3Qmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 May 2022 12:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242363AbiE3P6k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 May 2022 11:58:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0768912777
-        for <bpf@vger.kernel.org>; Mon, 30 May 2022 08:50:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653925813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LHfTPjbR/ocaEKI2euekEd9CUNVAA+DZiRkvQmDrTN0=;
-        b=LfuRcErQ7+Y0iuP3f7ap5eGrI10V2XOmghWr1tmU2VYe1vGBVfrXQ5WQTiQiaZ5SqjeDp/
-        qzLJIP6L9sVWrgJAOl+12xbte7+F++MgJ0ttjZKixws79s2gWDgRUjfx0puFOP5bUDeEtF
-        XGZDEnpIObAWUUSOrvN+aQz9n5twl3U=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-611-x-KMnQgIMVyaRdip0G570w-1; Mon, 30 May 2022 11:50:12 -0400
-X-MC-Unique: x-KMnQgIMVyaRdip0G570w-1
-Received: by mail-pg1-f200.google.com with SMTP id b9-20020a656689000000b003f672946300so4567849pgw.16
-        for <bpf@vger.kernel.org>; Mon, 30 May 2022 08:50:11 -0700 (PDT)
+        with ESMTP id S238531AbiE3Qmo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 May 2022 12:42:44 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF5536E31
+        for <bpf@vger.kernel.org>; Mon, 30 May 2022 09:42:43 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id fd25so14270277edb.3
+        for <bpf@vger.kernel.org>; Mon, 30 May 2022 09:42:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version:content-transfer-encoding;
+        bh=ZzUJSpqcxysJA0FMqtBD/l2cdeNEuDGl5om00DPjVGs=;
+        b=WU1GrImStgdlVJmF7nbji+wbR3acdngO6M7rrLgUsddm67wrsaSka30vl2s2m9sgzR
+         zfOubprAw+UcjEDMcR+2t70m7ZQUWZ5hBOb6MyYhNDcSgbzRKxIiw3uu53/orn6bboz8
+         bX0sIcldVjjf/nct1ibe40E5EGTB+qxIsZa4k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LHfTPjbR/ocaEKI2euekEd9CUNVAA+DZiRkvQmDrTN0=;
-        b=ZURRKTtPwZajztPNW1WEBH2ELsTMK0XbA1xfKnYSUeELSpU2oq42zuDQxADC5SOpkH
-         iCLHrLa4II+10xpgFXts4bRNnI/aocBlKVOI19BZAU0lqpJpf0rKCqHiKiH3J9oNPI8r
-         NEOrMx/3LC8WA9L9FN2qSWE8bHL42timXImiCKn6CKDQ4Zb2MGjL24emDGmZGTvbqkhw
-         wmb4DdbYCUA1eX2COvvlGgk2H88dOGvS5fOaZpaIOpG3wZCN/xWF9yvfNRx09vy3NkoO
-         SJa/3IPoyPx9TT2CsnsCVqMdVugpKIsnUY4hMu9PEn+PPxUq79lmCiixfCr9wpDo/fFb
-         pq5A==
-X-Gm-Message-State: AOAM532P9VZ/IjGvBbyOUJNpIlbvY48Y/0YMPeBhKjEGQu5Z4gx7AXdV
-        TV4hxV9fAMrBCdWhdm9tABTUVJWcvmvqYkMIN9FtI+cUX1FZNf9bPBrcwFoV8PTeafoPMuZfE+k
-        gttIBYeG1dZSoh4Sw6MSR8LvZp+xr
-X-Received: by 2002:a17:902:c412:b0:161:af8b:f478 with SMTP id k18-20020a170902c41200b00161af8bf478mr57106611plk.67.1653925809331;
-        Mon, 30 May 2022 08:50:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwt/D2VuCWPTO7sVCA8hoMuQ8Fn3PJTSQG33YbBFyxoNdQnbLzbKX3nn4EZ/Unmr7KcDDyuk40Jn4yLRKcdgdY=
-X-Received: by 2002:a17:902:c412:b0:161:af8b:f478 with SMTP id
- k18-20020a170902c41200b00161af8bf478mr57106583plk.67.1653925809012; Mon, 30
- May 2022 08:50:09 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version:content-transfer-encoding;
+        bh=ZzUJSpqcxysJA0FMqtBD/l2cdeNEuDGl5om00DPjVGs=;
+        b=b232iB86bs+jrbgLR+f1EmA0vQWZ4db8to2Yq3CSPtprCy7ZHpIWMTYUdUEo+Z6qsN
+         RBXQGqz9lXQ5oACS9OLLPsXlh1AbBt+KtGNzZIlrZxY3fjP9BAyjJJrT0PJoHBxNW06T
+         fUqAgn2TT9h9P0drWptiqMzhtjMR6fVU7mnqqiU+mVh1GaAfCKh+MUFdRhBtdi96HtXd
+         2HZJlcLXh1sOIvRZuHqp/oXYBf0sbtXYXa7ti7iEHUqNn0d5SI5i8EzvtYajHu1xERbW
+         xXY+1tSh8eI/kcOnCXmMkc+Q9MMB+nQ8OmdKanlP2nkmh9QEfmC//5tmyYVZH5DlQoKc
+         ee8A==
+X-Gm-Message-State: AOAM532Og36zoWJAXtJAUaBEgFrhFKZYvwVww34nt7FJO919WhnOGxdT
+        5sTknNSgS/mCz/noTx/v3cWbxsthe7qg5Q==
+X-Google-Smtp-Source: ABdhPJzWoQbFxd5DRXeZJxWa/+gowf0V5kInJ/pSde+54jpxRkNa4ba544r/TFKCUgGi1m9ctLVi2w==
+X-Received: by 2002:aa7:d806:0:b0:42d:deb4:9bb3 with SMTP id v6-20020aa7d806000000b0042ddeb49bb3mr420170edq.83.1653928961964;
+        Mon, 30 May 2022 09:42:41 -0700 (PDT)
+Received: from cloudflare.com (79.191.58.36.ipv4.supernova.orange.pl. [79.191.58.36])
+        by smtp.gmail.com with ESMTPSA id i23-20020a508717000000b0042dc6336684sm3756869edb.73.2022.05.30.09.42.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 May 2022 09:42:41 -0700 (PDT)
+References: <20220524075311.649153-1-wangyufen@huawei.com>
+ <YpFEmCp+fm1nC23U@pop-os.localdomain>
+ <3d11ae70-8c2d-b021-b173-b000dce588e0@huawei.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        wangyufen <wangyufen@huawei.com>
+Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        daniel@iogearbox.net, lmb@cloudflare.com, davem@davemloft.net,
+        kafai@fb.com, dsahern@kernel.org, kuba@kernel.org,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf,sockmap: fix sk->sk_forward_alloc warn_on
+ in sk_stream_kill_queues
+Date:   Mon, 30 May 2022 18:37:16 +0200
+In-reply-to: <3d11ae70-8c2d-b021-b173-b000dce588e0@huawei.com>
+Message-ID: <878rqjm0ov.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20220518205924.399291-1-benjamin.tissoires@redhat.com> <799ae406-ce12-f0d4-d213-4dd455236e49@linux.intel.com>
-In-Reply-To: <799ae406-ce12-f0d4-d213-4dd455236e49@linux.intel.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 30 May 2022 17:49:57 +0200
-Message-ID: <CAO-hwJJwznZqLgeULJ+fksH0VfJ4Jjszut_+zZgi2KEUyPCdbw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 00/17] Introduce eBPF support for HID devices
-To:     Tero Kristo <tero.kristo@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,190 +74,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Tero,
-
-On Fri, May 27, 2022 at 9:26 AM Tero Kristo <tero.kristo@linux.intel.com> wrote:
+On Sat, May 28, 2022 at 09:54 AM +08, wangyufen wrote:
+> =E5=9C=A8 2022/5/28 5:37, Cong Wang =E5=86=99=E9=81=93:
+>> On Tue, May 24, 2022 at 03:53:11PM +0800, Wang Yufen wrote:
+>>> During TCP sockmap redirect pressure test, the following warning is tri=
+ggered:
+>>> WARNING: CPU: 3 PID: 2145 at net/core/stream.c:205 sk_stream_kill_queue=
+s+0xbc/0xd0
+>>> CPU: 3 PID: 2145 Comm: iperf Kdump: loaded Tainted: G        W         =
+5.10.0+ #9
+>>> Call Trace:
+>>>   inet_csk_destroy_sock+0x55/0x110
+>>>   inet_csk_listen_stop+0xbb/0x380
+>>>   tcp_close+0x41b/0x480
+>>>   inet_release+0x42/0x80
+>>>   __sock_release+0x3d/0xa0
+>>>   sock_close+0x11/0x20
+>>>   __fput+0x9d/0x240
+>>>   task_work_run+0x62/0x90
+>>>   exit_to_user_mode_prepare+0x110/0x120
+>>>   syscall_exit_to_user_mode+0x27/0x190
+>>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>
+>>> The reason we observed is that:
+>>> When the listener is closing, a connection may have completed the three=
+-way
+>>> handshake but not accepted, and the client has sent some packets. The c=
+hild
+>>> sks in accept queue release by inet_child_forget()->inet_csk_destroy_so=
+ck(),
+>>> but psocks of child sks have not released.
+>>>
+>> Hm, in this scenario, how does the child socket end up in the sockmap?
+>> Clearly user-space does not have a chance to get an fd yet.
+>>
+>> And, how does your patch work? Since the child sock does not even inheirt
+>> the sock proto after clone (see the comments above tcp_bpf_clone()) at
+>> all?
+>>
+>> Thanks.
+>> .
+> My test cases are as follows:
 >
-> Hi Benjamin,
->
-> I noticed a couple of issues with this series, but was able to
-> fix/workaround them locally and got my USI program working with it.
->
-> 1) You seem to be missing tools/include/uapi/linux/hid_bpf.h from index,
-> I wasn't able to compile the selftests (or my own program) without
-> adding this. It is included from
-> tools/testing/selftests/bpf/prog_tests/hid.c: #include <linux/hid_bpf.h>
+> __section("sockops")
+> int bpf_sockmap(struct bpf_sock_ops *skops)
+> {
+> =C2=A0=C2=A0=C2=A0 switch (skops->op) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_SOCK_OPS_PASSIVE_ESTA=
+BLISHED_CB:
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_SOCK_OPS_ACTIVE_ESTAB=
+LISHED_CB:
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bpf_so=
+ck_hash_update(skops, &sock_ops_map, &key, BPF_NOEXIST);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> }
 
-Hmm... I initially thought that this would be "fixed" when the kernel
-headers are properly installed, so I don't need to manually keep a
-duplicate in the tools tree. But now that you mention it, I probably
-need to do it the way you mention it.
+Right, when processing the final ACK in tcp_rcv_state_process(), we
+invoke the BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB BPF callback.
 
->
-> 2) The limitation of needing to hardcode the size for hid_bpf_get_data()
-> seems somewhat worrying, especially as the kernel side limits this to
-> the ctx->allocated_size. I used a sufficiently large number for my
-> purposes for now (256) which seems to work, but how should I handle my
-> case where I basically need to read the whole input report and parse
-> certain portions of it? How does the HID subsystem select the size of
-> the ctx->allocated_size?
+This gives a chance to install sockmap sk_prot callbacks.
 
-The allocated size is based on the maximum size of the reports allowed
-in the device. It is dynamically computed based on the report
-descriptor.
+An accept() without ever calling accept() ;-)
 
-I also had the exact same issue you mentioned (dynamically retrieve
-the whole report), and that's why I added a couple of things:
-- struct hid_bpf_ctx->allocated_size which gives the allocated size,
-so you can use this as an upper bound in a for loop
-- the allocated size is guaranteed to be a multiple of 64 bytes.
-
-Which means you can have the following for loop:
-
-for (i = 0; i * 64 < hid_ctx->allocated_size && i < 64; i++) {
-  data = hid_bpf_get_data(hid_ctx, i * 64, 64);
-  /* some more processing */
-}
-
-("i < 64" makes an upper bound of 4KB of data, which should be enough
-in most cases).
-
-Cheers,
-Benjamin
-
->
-> -Tero
->
-> On 18/05/2022 23:59, Benjamin Tissoires wrote:
-> > Hi,
-> >
-> > And here comes the v5 of the HID-BPF series.
-> >
-> > I managed to achive the same functionalities than v3 this time.
-> > Handling per-device BPF program was "interesting" to say the least,
-> > but I don't know if we can have a generic BPF way of handling such
-> > situation.
-> >
-> > The interesting bits is that now the BPF core changes are rather small,
-> > and I am mostly using existing facilities.
-> > I didn't managed to write selftests for the RET_PTR_TO_MEM kfunc,
-> > because I can not call kmalloc while in a SEC("tc") program to match
-> > what the other kfunc tests are doing.
-> > And AFAICT, the most interesting bits would be to implement verifier
-> > selftests, which are way out of my league, given that they are
-> > implemented as plain bytecode.
-> >
-> > The logic is the following (see also the last patch for some more
-> > documentation):
-> > - hid-bpf first preloads a BPF program in the kernel that does a few
-> >    things:
-> >     * find out which attach_btf_id are associated with our trace points
-> >     * adds a bpf_tail_call() BPF program that I can use to "call" any
-> >       other BPF program stored into a jump table
-> >     * monitors the releases of struct bpf_prog, and when there are no
-> >       other users than us, detach the bpf progs from the HID devices
-> > - users then declare their tracepoints and then call
-> >    hid_bpf_attach_prog() in a SEC("syscall") program
-> > - hid-bpf then calls multiple time the bpf_tail_call() program with a
-> >    different index in the jump table whenever there is an event coming
-> >    from a matching HID device
-> >
-> > Note that I am tempted to pin an "attach_hid_program" in the bpffs so
-> > that users don't need to declare one, but I am afraid this will be one
-> > more API to handle, so maybe not.
-> >
-> > I am also wondering if I should not strip out hid_bpf_jmp_table of most
-> > of its features and implement everything as a BPF program. This might
-> > remove the need to add the kernel light skeleton implementations of map
-> > modifications, and might also possibly be more re-usable for other
-> > subsystems. But every plan I do in my head involves a lot of back and
-> > forth between the kernel and BPF to achieve the same, which doesn't feel
-> > right. The tricky part is the RCU list of programs that is stored in each
-> > device and also the global state of the jump table.
-> > Anyway, something to look for in a next version if there is a push for it.
-> >
-> > FWIW, patch 1 is something I'd like to get merged sooner. With 2
-> > colleagues, we are also working on supporting the "revoke" functionality
-> > of a fd for USB and for hidraw. While hidraw can be emulated with the
-> > current features, we need the syscall kfuncs for USB, because when we
-> > revoke a USB access, we also need to kick out the user, and for that, we
-> > need to actually execute code in the kernel from a userspace event.
-> >
-> > Anyway, happy reviewing.
-> >
-> > Cheers,
-> > Benjamin
-> >
-> > [Patch series based on commit 68084a136420 ("selftests/bpf: Fix building bpf selftests statically")
-> > in the bpf-next tree]
-> >
-> > Benjamin Tissoires (17):
-> >    bpf/btf: also allow kfunc in tracing and syscall programs
-> >    bpf/verifier: allow kfunc to return an allocated mem
-> >    bpf: prepare for more bpf syscall to be used from kernel and user
-> >      space.
-> >    libbpf: add map_get_fd_by_id and map_delete_elem in light skeleton
-> >    HID: core: store the unique system identifier in hid_device
-> >    HID: export hid_report_type to uapi
-> >    HID: initial BPF implementation
-> >    selftests/bpf: add tests for the HID-bpf initial implementation
-> >    HID: bpf: allocate data memory for device_event BPF programs
-> >    selftests/bpf/hid: add test to change the report size
-> >    HID: bpf: introduce hid_hw_request()
-> >    selftests/bpf: add tests for bpf_hid_hw_request
-> >    HID: bpf: allow to change the report descriptor
-> >    selftests/bpf: add report descriptor fixup tests
-> >    samples/bpf: add new hid_mouse example
-> >    selftests/bpf: Add a test for BPF_F_INSERT_HEAD
-> >    Documentation: add HID-BPF docs
-> >
-> >   Documentation/hid/hid-bpf.rst                 | 528 ++++++++++
-> >   Documentation/hid/index.rst                   |   1 +
-> >   drivers/hid/Kconfig                           |   2 +
-> >   drivers/hid/Makefile                          |   2 +
-> >   drivers/hid/bpf/Kconfig                       |  19 +
-> >   drivers/hid/bpf/Makefile                      |  11 +
-> >   drivers/hid/bpf/entrypoints/Makefile          |  88 ++
-> >   drivers/hid/bpf/entrypoints/README            |   4 +
-> >   drivers/hid/bpf/entrypoints/entrypoints.bpf.c |  78 ++
-> >   .../hid/bpf/entrypoints/entrypoints.lskel.h   | 782 ++++++++++++++
-> >   drivers/hid/bpf/hid_bpf_dispatch.c            | 565 ++++++++++
-> >   drivers/hid/bpf/hid_bpf_dispatch.h            |  28 +
-> >   drivers/hid/bpf/hid_bpf_jmp_table.c           | 587 +++++++++++
-> >   drivers/hid/hid-core.c                        |  43 +-
-> >   include/linux/btf.h                           |   7 +
-> >   include/linux/hid.h                           |  29 +-
-> >   include/linux/hid_bpf.h                       | 144 +++
-> >   include/uapi/linux/hid.h                      |  12 +
-> >   include/uapi/linux/hid_bpf.h                  |  25 +
-> >   kernel/bpf/btf.c                              |  47 +-
-> >   kernel/bpf/syscall.c                          |  10 +-
-> >   kernel/bpf/verifier.c                         |  72 +-
-> >   samples/bpf/.gitignore                        |   1 +
-> >   samples/bpf/Makefile                          |  23 +
-> >   samples/bpf/hid_mouse.bpf.c                   | 134 +++
-> >   samples/bpf/hid_mouse.c                       | 157 +++
-> >   tools/lib/bpf/skel_internal.h                 |  23 +
-> >   tools/testing/selftests/bpf/config            |   3 +
-> >   tools/testing/selftests/bpf/prog_tests/hid.c  | 990 ++++++++++++++++++
-> >   tools/testing/selftests/bpf/progs/hid.c       | 222 ++++
-> >   30 files changed, 4593 insertions(+), 44 deletions(-)
-> >   create mode 100644 Documentation/hid/hid-bpf.rst
-> >   create mode 100644 drivers/hid/bpf/Kconfig
-> >   create mode 100644 drivers/hid/bpf/Makefile
-> >   create mode 100644 drivers/hid/bpf/entrypoints/Makefile
-> >   create mode 100644 drivers/hid/bpf/entrypoints/README
-> >   create mode 100644 drivers/hid/bpf/entrypoints/entrypoints.bpf.c
-> >   create mode 100644 drivers/hid/bpf/entrypoints/entrypoints.lskel.h
-> >   create mode 100644 drivers/hid/bpf/hid_bpf_dispatch.c
-> >   create mode 100644 drivers/hid/bpf/hid_bpf_dispatch.h
-> >   create mode 100644 drivers/hid/bpf/hid_bpf_jmp_table.c
-> >   create mode 100644 include/linux/hid_bpf.h
-> >   create mode 100644 include/uapi/linux/hid_bpf.h
-> >   create mode 100644 samples/bpf/hid_mouse.bpf.c
-> >   create mode 100644 samples/bpf/hid_mouse.c
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/hid.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/hid.c
-> >
->
-
+[...]
