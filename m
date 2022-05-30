@@ -2,100 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2375388B9
-	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 23:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941075388C7
+	for <lists+bpf@lfdr.de>; Tue, 31 May 2022 00:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242036AbiE3VzX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 May 2022 17:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        id S239598AbiE3WH2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 30 May 2022 18:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240312AbiE3VzW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 May 2022 17:55:22 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EEF56C08;
-        Mon, 30 May 2022 14:55:19 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nvnLz-0001Zh-5r; Mon, 30 May 2022 23:55:11 +0200
-Received: from [85.1.206.226] (helo=linux-2.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nvnLy-000Laq-UY; Mon, 30 May 2022 23:55:10 +0200
-Subject: Re: [PATCH 1/2] libbpf: Retry map access with read-only permission
-To:     Roberto Sassu <roberto.sassu@huawei.com>, ast@kernel.org,
-        andrii@kernel.org, kpsingh@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220530084514.10170-1-roberto.sassu@huawei.com>
- <20220530084514.10170-2-roberto.sassu@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4089f118-662c-4ea2-131f-c8a9b702b6ca@iogearbox.net>
-Date:   Mon, 30 May 2022 23:55:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S239182AbiE3WH1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 May 2022 18:07:27 -0400
+X-Greylist: delayed 432 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 30 May 2022 15:07:26 PDT
+Received: from relay4.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994D14BBA7;
+        Mon, 30 May 2022 15:07:26 -0700 (PDT)
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay01.hostedemail.com (Postfix) with ESMTP id B5E396031E;
+        Mon, 30 May 2022 22:00:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf03.hostedemail.com (Postfix) with ESMTPA id 96F2360010;
+        Mon, 30 May 2022 22:00:06 +0000 (UTC)
+Date:   Tue, 31 May 2022 00:00:06 +0200
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_tracing/kprobes=3A_Check_whether_get=5Fk?= =?US-ASCII?Q?retprobe=28=29_returns_NULL_in_kretprobe=5Fdispatcher=28=29?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <0204f480-cdb0-e49f-9034-602eced02966@iogearbox.net>
+References: <165366693881.797669.16926184644089588731.stgit@devnote2> <0204f480-cdb0-e49f-9034-602eced02966@iogearbox.net>
+Message-ID: <7619DB57-C39B-4A49-808C-7ACF12D58592@goodmis.org>
 MIME-Version: 1.0
-In-Reply-To: <20220530084514.10170-2-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26557/Mon May 30 10:05:44 2022)
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 96F2360010
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        KHOP_HELO_FCRDNS,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
+X-Stat-Signature: c5jjitb71wxu61mgg3cdk4ifxq19mnzc
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Session-ID: U2FsdGVkX19SJ4DA/RUAg8tgaymn2dO+x7FzwARsHRg=
+X-HE-Tag: 1653948006-138409
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/30/22 10:45 AM, Roberto Sassu wrote:
-> Retry map access with read-only permission, if access was denied when all
-> permissions were requested (open_flags is set to zero). Write access might
-> have been denied by the bpf_map security hook.
-> 
-> Some operations, such as show and dump, don't need write permissions, so
-> there is a good chance of success with retrying.
-> 
-> Prefer this solution to extending the API, as otherwise a new mechanism
-> would need to be implemented to determine the right permissions for an
-> operation.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->   tools/lib/bpf/bpf.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 240186aac8e6..b4eec39021a4 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -1056,6 +1056,11 @@ int bpf_map_get_fd_by_id(__u32 id)
->   	attr.map_id = id;
->   
->   	fd = sys_bpf_fd(BPF_MAP_GET_FD_BY_ID, &attr, sizeof(attr));
-> +	if (fd < 0) {
-> +		attr.open_flags = BPF_F_RDONLY;
-> +		fd = sys_bpf_fd(BPF_MAP_GET_FD_BY_ID, &attr, sizeof(attr));
-> +	}
-> +
 
-But then what about bpf_obj_get() API in libbpf? attr.file_flags has similar
-purpose as attr.open_flags in this case.
 
-The other issue is that this could have upgrade implications, e.g. where an
-application bailed out before, it is now passing wrt bpf_map_get_fd_by_id(),
-but then suddenly failing during map update calls.
+On May 30, 2022 9:33:23 PM GMT+02:00, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>On 5/27/22 5:55 PM, Masami Hiramatsu (Google) wrote:
+>> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>> 
+>> There is a small chance that get_kretprobe(ri) returns NULL in
+>> kretprobe_dispatcher() when another CPU unregisters the kretprobe
+>> right after __kretprobe_trampoline_handler().
+>> 
+>> To avoid this issue, kretprobe_dispatcher() checks the get_kretprobe()
+>> return value again. And if it is NULL, it returns soon because that
+>> kretprobe is under unregistering process.
+>> 
+>> This issue has been introduced when the kretprobe is decoupled
+>> from the struct kretprobe_instance by commit d741bf41d7c7
+>> ("kprobes: Remove kretprobe hash"). Before that commit, the
+>> struct kretprob_instance::rp directly points the kretprobe
+>> and it is never be NULL.
+>> 
+>> Reported-by: Yonghong Song <yhs@fb.com>
+>> Fixes: d741bf41d7c7 ("kprobes: Remove kretprobe hash")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+>Steven, I presume you'll pick this fix up?
 
-Imho, it might be better to be explicit about user intent w/o the lib doing
-guess work upon failure cases (... or have the BPF LSM set the attr.open_flags
-to BPF_F_RDONLY from within the BPF prog).
+I'm currently at Embedded/Kernel Recipes, but yeah, I'll take a look at it. (Just need to finish my slides first ;-)
 
->   	return libbpf_err_errno(fd);
->   }
->   
-> 
+-- Steve
+>
+>Thanks,
+>Daniel
 
+-- 
+Sent from my Android device with K-9 Mail. Please excuse my brevity and top posting.
