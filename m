@@ -2,169 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C955376FD
-	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 10:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0C253780F
+	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 12:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbiE3Ip5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 May 2022 04:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S234696AbiE3JNy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 May 2022 05:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233523AbiE3Ip4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 May 2022 04:45:56 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4D052B3A;
-        Mon, 30 May 2022 01:45:55 -0700 (PDT)
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LBTR21D2wz685ZP;
-        Mon, 30 May 2022 16:41:34 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 30 May 2022 10:45:53 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kpsingh@kernel.org>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH 2/2] selftests/bpf: Add test for retrying access to map with read-only perm
-Date:   Mon, 30 May 2022 10:45:14 +0200
-Message-ID: <20220530084514.10170-3-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220530084514.10170-1-roberto.sassu@huawei.com>
-References: <20220530084514.10170-1-roberto.sassu@huawei.com>
+        with ESMTP id S232661AbiE3JNy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 May 2022 05:13:54 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDE95D188
+        for <bpf@vger.kernel.org>; Mon, 30 May 2022 02:13:53 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id u12-20020a17090a1d4c00b001df78c7c209so13071829pju.1
+        for <bpf@vger.kernel.org>; Mon, 30 May 2022 02:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JNP+R0ohcLUjNtDJRZoqQVoepX4pDHJ5Tzsqw/Ip/us=;
+        b=1zsRDNM7+bOnSAXrGT8GTnB+LPiaiWeULGvPDxnh8ygbaIBhoXtWi5qIMtlR+0jVC3
+         mCvGt4XP1HvP05Ke+93gP1wyUTIWPC8TqTkPUCoiPi8wDLv8QUjVuAY9G0wfAwfbjglm
+         NoKvGVb3RhJ+KbFn1b/3H6xRut1xSH5jjCVxn04Hu4IuhaomW+hHiu/5rI8BZ8F3q5pX
+         eBlK0Kq1pBmWUk7cwGnPfxh4Z4PAB1MyZytQjrashWTXpKvEnWe8/jjjhSVvNtkcdGZ2
+         VnvSXj+wY3xyfzW3dI1WBCB648rq6dK65QaH+KQdProsmF9O+QYp5Geg7zOqauaANpg9
+         6iUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JNP+R0ohcLUjNtDJRZoqQVoepX4pDHJ5Tzsqw/Ip/us=;
+        b=uSzXfnnQJiTMUEDiyhjHicdzNhro+nxAk2ejDzCJAglDC8PF3cp4U7ZEZ8UsKNWH7e
+         2zAeHjZO1krvcbAv4vkGxlVNw8cCi3RrRjpNedd7cizpQTKD5AE0L2pfuKIHBICajffh
+         hoJfQ1yoYJTJbbuvTs2HuGMk1NlDnhCCUaaFZP8f1qicSfyx/RK+CYDOCTH2jF7vSlY+
+         FUVYbkIbh3sZ1e0gYTBMvAnYoRXjhTmZcS2YfxedqPr3ib3QCGD7XWDsU7ziPUYFN5fO
+         O0WHyqah56nBAnk45Il5MHOZXKCZau8WOnR24HK9H1ggBmpDGnmc+Hb3Qe9SBkDleESP
+         g4Hw==
+X-Gm-Message-State: AOAM531vXoHSEa0gyiA/siku2oHXVt/vQRYhzeF2E3x+Xm6/0Cc+NO33
+        TXU0AREdMc56KWFx4LLHvHWazg==
+X-Google-Smtp-Source: ABdhPJy6/T1nAe2l6F6QTn/YqY4r78bM0hS6jGpWftKdzqrtiEzTF325nNWOg/9YtvKgUD7qLfn7Yw==
+X-Received: by 2002:a17:903:22cc:b0:162:4d8b:e2eb with SMTP id y12-20020a17090322cc00b001624d8be2ebmr29890361plg.22.1653902032530;
+        Mon, 30 May 2022 02:13:52 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id p2-20020a170902ebc200b0015e8d4eb20dsm8640644plg.87.2022.05.30.02.13.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 May 2022 02:13:52 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
+        songmuchun@bytedance.com, wangdongdong.6@bytedance.com,
+        cong.wang@bytedance.com, zhouchengming@bytedance.com,
+        zhoufeng.zf@bytedance.com
+Subject: [PATCH v3 0/2] Optimize performance of update hash-map when free is zero
+Date:   Mon, 30 May 2022 17:13:38 +0800
+Message-Id: <20220530091340.53443-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.63.22]
-X-ClientProxiedBy: lhreml753-chm.china.huawei.com (10.201.108.203) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test to check the ability of bpf_map_get_fd_by_id() to get a map file
-descriptor if write permission is denied.
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-Also ensure that a map update operation fails with the obtained read-only
-file descriptor.
+We encountered bad case on big system with 96 CPUs that
+alloc_htab_elem() would last for 1ms. The reason is that after the
+prealloc hashtab has no free elems, when trying to update, it will still
+grab spin_locks of all cpus. If there are multiple update users, the
+competition is very serious.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- .../bpf/prog_tests/test_map_retry_access.c    | 54 +++++++++++++++++++
- .../selftests/bpf/progs/map_retry_access.c    | 36 +++++++++++++
- 2 files changed, 90 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_map_retry_access.c
- create mode 100644 tools/testing/selftests/bpf/progs/map_retry_access.c
+0001: Add is_empty to check whether the free list is empty or not before taking
+the lock.
+0002: Add benchmark to reproduce this worst case.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_map_retry_access.c b/tools/testing/selftests/bpf/prog_tests/test_map_retry_access.c
-new file mode 100644
-index 000000000000..beffb2026dcd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_map_retry_access.c
-@@ -0,0 +1,54 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Roberto Sassu <roberto.sassu@huawei.com>
-+ */
-+
-+#include <test_progs.h>
-+
-+#include "map_retry_access.skel.h"
-+
-+void test_test_map_retry_access(void)
-+{
-+	struct map_retry_access *skel;
-+	struct bpf_map_info info;
-+	struct bpf_map *map;
-+	__u32 len = sizeof(info);
-+	int ret, zero = 0, fd, duration = 0;
-+
-+	skel = map_retry_access__open_and_load();
-+	if (CHECK(!skel, "skel", "open_and_load failed\n"))
-+		goto close_prog;
-+
-+	ret = map_retry_access__attach(skel);
-+	if (CHECK(ret < 0, "skel", "attach failed\n"))
-+		goto close_prog;
-+
-+	map = bpf_object__find_map_by_name(skel->obj, "data_input");
-+	if (CHECK(!map, "bpf_object__find_map_by_name", "not found\n"))
-+		goto close_prog;
-+
-+	ret = bpf_obj_get_info_by_fd(bpf_map__fd(map), &info, &len);
-+	if (CHECK(ret < 0, "bpf_obj_get_info_by_fd", "error: %d\n", ret))
-+		goto close_prog;
-+
-+	fd = bpf_map_get_fd_by_id(info.id);
-+	if (CHECK(fd < 0, "bpf_map_get_fd_by_id", "error: %d\n", fd))
-+		goto close_prog;
-+
-+	ret = bpf_map_update_elem(fd, &zero, &len, BPF_ANY);
-+
-+	close(fd);
-+
-+	if (CHECK(!ret, "bpf_map_update_elem",
-+		  "should fail (read-only permission)\n"))
-+		goto close_prog;
-+
-+	ret = bpf_map_update_elem(bpf_map__fd(map), &zero, &len, BPF_ANY);
-+
-+	CHECK(ret < 0, "bpf_map_update_elem", "error: %d\n", ret);
-+close_prog:
-+	map_retry_access__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/map_retry_access.c b/tools/testing/selftests/bpf/progs/map_retry_access.c
-new file mode 100644
-index 000000000000..1ed7b137a286
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/map_retry_access.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Roberto Sassu <roberto.sassu@huawei.com>
-+ */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+/* From include/linux/mm.h. */
-+#define FMODE_WRITE	0x2
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} data_input SEC(".maps");
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("lsm/bpf_map")
-+int BPF_PROG(bpf_map_retry_access, struct bpf_map *map, fmode_t fmode)
-+{
-+	if (map != (struct bpf_map *)&data_input)
-+		return 0;
-+
-+	if (fmode & FMODE_WRITE)
-+		return -EACCES;
-+
-+	return 0;
-+}
+Changelog:
+v2->v3: Addressed comments from Alexei Starovoitov, Andrii Nakryiko.
+- Adjust the way the benchmark is tested.
+- Adjust the code format.
+some details in here:
+https://lore.kernel.org/all/20220524075306.32306-1-zhoufeng.zf@bytedance.com/T/
+
+v1->v2: Addressed comments from Alexei Starovoitov.
+- add a benchmark to reproduce the issue.
+- Adjust the code format that avoid adding indent.
+some details in here:
+https://lore.kernel.org/all/877ac441-045b-1844-6938-fcaee5eee7f2@bytedance.com/T/
+
+Feng Zhou (2):
+  bpf: avoid grabbing spin_locks of all cpus when no free elems
+  selftest/bpf/benchs: Add bpf_map benchmark
+
+ kernel/bpf/percpu_freelist.c                  | 28 +++++-
+ kernel/bpf/percpu_freelist.h                  |  1 +
+ tools/testing/selftests/bpf/Makefile          |  4 +-
+ tools/testing/selftests/bpf/bench.c           |  2 +
+ .../benchs/bench_bpf_hashmap_full_update.c    | 96 +++++++++++++++++++
+ .../run_bench_bpf_hashmap_full_update.sh      | 11 +++
+ .../bpf/progs/bpf_hashmap_full_update_bench.c | 40 ++++++++
+ 7 files changed, 178 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_hashmap_full_update_bench.c
+
 -- 
-2.25.1
+2.20.1
 
