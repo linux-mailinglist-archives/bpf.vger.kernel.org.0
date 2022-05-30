@@ -2,71 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA55D538644
-	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 18:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2475387B1
+	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 21:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241764AbiE3Qmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 May 2022 12:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
+        id S243053AbiE3TUS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 May 2022 15:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238531AbiE3Qmo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 May 2022 12:42:44 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF5536E31
-        for <bpf@vger.kernel.org>; Mon, 30 May 2022 09:42:43 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id fd25so14270277edb.3
-        for <bpf@vger.kernel.org>; Mon, 30 May 2022 09:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=ZzUJSpqcxysJA0FMqtBD/l2cdeNEuDGl5om00DPjVGs=;
-        b=WU1GrImStgdlVJmF7nbji+wbR3acdngO6M7rrLgUsddm67wrsaSka30vl2s2m9sgzR
-         zfOubprAw+UcjEDMcR+2t70m7ZQUWZ5hBOb6MyYhNDcSgbzRKxIiw3uu53/orn6bboz8
-         bX0sIcldVjjf/nct1ibe40E5EGTB+qxIsZa4k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=ZzUJSpqcxysJA0FMqtBD/l2cdeNEuDGl5om00DPjVGs=;
-        b=b232iB86bs+jrbgLR+f1EmA0vQWZ4db8to2Yq3CSPtprCy7ZHpIWMTYUdUEo+Z6qsN
-         RBXQGqz9lXQ5oACS9OLLPsXlh1AbBt+KtGNzZIlrZxY3fjP9BAyjJJrT0PJoHBxNW06T
-         fUqAgn2TT9h9P0drWptiqMzhtjMR6fVU7mnqqiU+mVh1GaAfCKh+MUFdRhBtdi96HtXd
-         2HZJlcLXh1sOIvRZuHqp/oXYBf0sbtXYXa7ti7iEHUqNn0d5SI5i8EzvtYajHu1xERbW
-         xXY+1tSh8eI/kcOnCXmMkc+Q9MMB+nQ8OmdKanlP2nkmh9QEfmC//5tmyYVZH5DlQoKc
-         ee8A==
-X-Gm-Message-State: AOAM532Og36zoWJAXtJAUaBEgFrhFKZYvwVww34nt7FJO919WhnOGxdT
-        5sTknNSgS/mCz/noTx/v3cWbxsthe7qg5Q==
-X-Google-Smtp-Source: ABdhPJzWoQbFxd5DRXeZJxWa/+gowf0V5kInJ/pSde+54jpxRkNa4ba544r/TFKCUgGi1m9ctLVi2w==
-X-Received: by 2002:aa7:d806:0:b0:42d:deb4:9bb3 with SMTP id v6-20020aa7d806000000b0042ddeb49bb3mr420170edq.83.1653928961964;
-        Mon, 30 May 2022 09:42:41 -0700 (PDT)
-Received: from cloudflare.com (79.191.58.36.ipv4.supernova.orange.pl. [79.191.58.36])
-        by smtp.gmail.com with ESMTPSA id i23-20020a508717000000b0042dc6336684sm3756869edb.73.2022.05.30.09.42.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 May 2022 09:42:41 -0700 (PDT)
-References: <20220524075311.649153-1-wangyufen@huawei.com>
- <YpFEmCp+fm1nC23U@pop-os.localdomain>
- <3d11ae70-8c2d-b021-b173-b000dce588e0@huawei.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        wangyufen <wangyufen@huawei.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        daniel@iogearbox.net, lmb@cloudflare.com, davem@davemloft.net,
-        kafai@fb.com, dsahern@kernel.org, kuba@kernel.org,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] bpf,sockmap: fix sk->sk_forward_alloc warn_on
- in sk_stream_kill_queues
-Date:   Mon, 30 May 2022 18:37:16 +0200
-In-reply-to: <3d11ae70-8c2d-b021-b173-b000dce588e0@huawei.com>
-Message-ID: <878rqjm0ov.fsf@cloudflare.com>
+        with ESMTP id S243028AbiE3TUP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 May 2022 15:20:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F3B87237;
+        Mon, 30 May 2022 12:20:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0BF1960EAE;
+        Mon, 30 May 2022 19:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5C56CC34119;
+        Mon, 30 May 2022 19:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653938412;
+        bh=2lVaGIxVR4kXXdSgKh4r5LLuYR0AG9tw1iwnnfurZC4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=f3OedaXy3uFSq+n2w8LVwbDnJYgO/JHLnsWPRdZPJ4arxFWnmszyjaf2cc4zO+TNA
+         FPa57/D9XB6CYIBQmTHAcBBPOPqvxLHyUCu70x+e76EZagVCzLV8P0T/7jBCwy0SXP
+         BOnWI1UTjTxqjB9oPl0gCQ9C1kSbajGYE9bvqKBZoy9Y5ACTAh4YsQM37H0xRH7BlR
+         c0iJVladtiBXcso6REVXIBscrVn7tJ4S2PD2kV85MKrjL4W89tTJN2mrT8KLFQPlC+
+         c/KbPJWU9nknm1bQv3Cj19pIuOeCcrt9PtGqufpHoER74g5vuMxysRUE5+gJfSr/cU
+         1nXgrFmjoHs0g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3BE15F0394C;
+        Mon, 30 May 2022 19:20:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: xdp: Directly use ida_alloc()/free()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165393841223.30061.14830701198740912669.git-patchwork-notify@kernel.org>
+Date:   Mon, 30 May 2022 19:20:12 +0000
+References: <20220527064609.2358482-1-liuke94@huawei.com>
+In-Reply-To: <20220527064609.2358482-1-liuke94@huawei.com>
+To:     Ke Liu <liuke94@huawei.com>
+Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,68 +60,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 28, 2022 at 09:54 AM +08, wangyufen wrote:
-> =E5=9C=A8 2022/5/28 5:37, Cong Wang =E5=86=99=E9=81=93:
->> On Tue, May 24, 2022 at 03:53:11PM +0800, Wang Yufen wrote:
->>> During TCP sockmap redirect pressure test, the following warning is tri=
-ggered:
->>> WARNING: CPU: 3 PID: 2145 at net/core/stream.c:205 sk_stream_kill_queue=
-s+0xbc/0xd0
->>> CPU: 3 PID: 2145 Comm: iperf Kdump: loaded Tainted: G        W         =
-5.10.0+ #9
->>> Call Trace:
->>>   inet_csk_destroy_sock+0x55/0x110
->>>   inet_csk_listen_stop+0xbb/0x380
->>>   tcp_close+0x41b/0x480
->>>   inet_release+0x42/0x80
->>>   __sock_release+0x3d/0xa0
->>>   sock_close+0x11/0x20
->>>   __fput+0x9d/0x240
->>>   task_work_run+0x62/0x90
->>>   exit_to_user_mode_prepare+0x110/0x120
->>>   syscall_exit_to_user_mode+0x27/0x190
->>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>>
->>> The reason we observed is that:
->>> When the listener is closing, a connection may have completed the three=
--way
->>> handshake but not accepted, and the client has sent some packets. The c=
-hild
->>> sks in accept queue release by inet_child_forget()->inet_csk_destroy_so=
-ck(),
->>> but psocks of child sks have not released.
->>>
->> Hm, in this scenario, how does the child socket end up in the sockmap?
->> Clearly user-space does not have a chance to get an fd yet.
->>
->> And, how does your patch work? Since the child sock does not even inheirt
->> the sock proto after clone (see the comments above tcp_bpf_clone()) at
->> all?
->>
->> Thanks.
->> .
-> My test cases are as follows:
->
-> __section("sockops")
-> int bpf_sockmap(struct bpf_sock_ops *skops)
-> {
-> =C2=A0=C2=A0=C2=A0 switch (skops->op) {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_SOCK_OPS_PASSIVE_ESTA=
-BLISHED_CB:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_SOCK_OPS_ACTIVE_ESTAB=
-LISHED_CB:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bpf_so=
-ck_hash_update(skops, &sock_ops_map, &key, BPF_NOEXIST);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> }
+Hello:
 
-Right, when processing the final ACK in tcp_rcv_state_process(), we
-invoke the BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB BPF callback.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-This gives a chance to install sockmap sk_prot callbacks.
+On Fri, 27 May 2022 06:46:09 +0000 you wrote:
+> Use ida_alloc()/ida_free() instead of deprecated
+> ida_simple_get()/ida_simple_remove() .
+> 
+> Signed-off-by: keliu <liuke94@huawei.com>
+> ---
+>  net/xdp/xdp_umem.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-An accept() without ever calling accept() ;-)
+Here is the summary with links:
+  - net: xdp: Directly use ida_alloc()/free()
+    https://git.kernel.org/bpf/bpf-next/c/1626f57f061c
 
-[...]
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
