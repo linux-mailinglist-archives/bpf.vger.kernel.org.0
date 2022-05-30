@@ -2,46 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBF85372FB
-	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 01:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAD453732E
+	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 03:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbiE2Xpx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 May 2022 19:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55102 "EHLO
+        id S232004AbiE3BDT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 May 2022 21:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbiE2Xpt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 May 2022 19:45:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112454EDFD
-        for <bpf@vger.kernel.org>; Sun, 29 May 2022 16:45:48 -0700 (PDT)
+        with ESMTP id S229603AbiE3BDS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 29 May 2022 21:03:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EE65E744;
+        Sun, 29 May 2022 18:03:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 930CD60F9D
-        for <bpf@vger.kernel.org>; Sun, 29 May 2022 23:45:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDD7BC385A9;
-        Sun, 29 May 2022 23:45:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9520760FDD;
+        Mon, 30 May 2022 01:03:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88B1C385A9;
+        Mon, 30 May 2022 01:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653867946;
-        bh=dLACW2KUNWPv5YuGz51F5ceixxxwKq3nW5qBsEH2Kn0=;
+        s=k20201202; t=1653872595;
+        bh=16kfMHANr14G2Fw7JOodCftfv67KCK1i1z0jnxn/vdk=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dWi51YhomD73EVkelwwEO+JNLWcjECB+gH07VNMX+cn6yTNozzsesP//z9uZZQrfn
-         Wtgo40p82W5/usAiwisa8JdZB/+stcCU7BtXIOLdRgnWq6wIRlM8J1cYZ3eT6BxvW+
-         vgnpSrBzNsQExDELxOL+BwsFm6UKWBla2GSvUYhJhdV76u6FAWIbnTDSKbcoOaSUZf
-         TpKBqH286f/8ta41kz92R9sPA/6kBcsaesV1aD2TVBpVXLKDPb0jYeYLc57aWDu1iT
-         1xeHXkkfpLdaNDwT+3FCIBvAX5JWeMaIQhHljpIuntdhI/ntRP9KljDHXVymNwr0GM
-         M2B1jL10qfhmQ==
-Date:   Mon, 30 May 2022 08:45:42 +0900
+        b=lxJgUMesJPKEt55yh3FMik8u0Pv4PfofDycfkbW/g8DbNsd++2/cLQkcwWwQItHoK
+         kNvuk3J4Uz5lLvuQ+bp7XYHGvYvJqeWU3AV+XdpxUTE0mTeK+ktZT/A4WMs5+Ur2zf
+         /TM75CW0XfB1ObdR42mtQ90jzuhDb6tmre62ChAccC2cy4EyjaOLOlRtYkTu8ZCkYD
+         wWdcl534vR+9Qk3LP9bgUMimyvfo5fB+wxLbSlEhGtKJqkWnonvXrm8+mM87G3GJXC
+         f+jyTybEdsM7U0sbTajlgHSg7kCXxpL8NXBcAvml1K0T+fsUSbmUJMa/1F86BIzhTm
+         LCP/Ox7WjYBfQ==
+Date:   Mon, 30 May 2022 10:03:10 +0900
 From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: help to debug a kretprobe_dispatcher issue with 5.12
-Message-Id: <20220530084542.efcc18255a1cf8733cf2e0b6@kernel.org>
-In-Reply-To: <73ec8d7e-07dc-fbc0-8a27-2a5b212b39d3@fb.com>
-References: <a5e75f2e-37ad-10e5-ff32-86e5fb7d3f5d@fb.com>
-        <20220527210940.93c0ee60838ada827c177ada@kernel.org>
-        <73ec8d7e-07dc-fbc0-8a27-2a5b212b39d3@fb.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        cj.chengjian@huawei.com, huawei.libin@huawei.com,
+        xiexiuqi@huawei.com, liwei391@huawei.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        catalin.marinas@arm.com, will@kernel.org, zengshun.wu@outlook.com,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH -next v2 3/4] arm64/ftrace: support dynamically
+ allocated trampolines
+Message-Id: <20220530100310.c22c36df4ea9324cb9cb3515@kernel.org>
+In-Reply-To: <Yo4eWqHA/IjNElNN@FVFF77S0Q05N>
+References: <YmLlmaXF00hPkOID@lakrids>
+        <20220426174749.b5372c5769af7bf901649a05@kernel.org>
+        <YnJUTuOIX9YoJq23@FVFF77S0Q05N>
+        <20220505121538.04773ac98e2a8ba17f675d39@kernel.org>
+        <20220509142203.6c4f2913@gandalf.local.home>
+        <20220510181012.d5cba23a2547f14d14f016b9@kernel.org>
+        <20220510104446.6d23b596@gandalf.local.home>
+        <20220511233450.40136cdf6a53eb32cd825be8@kernel.org>
+        <20220511111207.25d1a693@gandalf.local.home>
+        <20220512210231.f9178a98f20a37981b1e89e3@kernel.org>
+        <Yo4eWqHA/IjNElNN@FVFF77S0Q05N>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -56,174 +70,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 27 May 2022 09:45:11 -0700
-Yonghong Song <yhs@fb.com> wrote:
+(Cc: BPF ML)
+
+On Wed, 25 May 2022 13:17:30 +0100
+Mark Rutland <mark.rutland@arm.com> wrote:
+
+> On Thu, May 12, 2022 at 09:02:31PM +0900, Masami Hiramatsu wrote:
+> > On Wed, 11 May 2022 11:12:07 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > 
+> > > On Wed, 11 May 2022 23:34:50 +0900
+> > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > 
+> > > > OK, so fregs::regs will have a subset of pt_regs, and accessibility of
+> > > > the registers depends on the architecture. If we can have a checker like
+> > > > 
+> > > > ftrace_regs_exist(fregs, reg_offset)
+> > > 
+> > > Or something. I'd have to see the use case.
+> > > 
+> > > > 
+> > > > kprobe on ftrace or fprobe user (BPF) can filter user's requests.
+> > > > I think I can introduce a flag for kprobes so that user can make a
+> > > > kprobe handler only using a subset of registers. 
+> > > > Maybe similar filter code is also needed for BPF 'user space' library
+> > > > because this check must be done when compiling BPF.
+> > > 
+> > > Is there any other case without full regs that the user would want anything
+> > > other than the args, stack pointer and instruction pointer?
+> > 
+> > For the kprobes APIs/events, yes, it needs to access to the registers
+> > which is used for local variables when probing inside the function body.
+> > However at the function entry, I think almost no use case. (BTW, pstate
+> > is a bit special, that may show the actual processor-level status
+> > (context), so for the debugging, user might want to read it.)
+> 
+> As before, if we really need PSTATE we *must* take an exception to get a
+> reliable snapshot (or to alter the value). So I'd really like to split this
+> into two cases:
+> 
+> * Where users *really* need PSTATE (or arbitrary GPRs), they use kprobes. That
+>   always takes an exception and they can have a complete, real struct pt_regs.
+> 
+> * Where users just need to capture a function call boundary, they use ftrace.
+>   That uses a trampoline without taking an exception, and they get the minimal
+>   set of registers relevant to the function call boundary (which does not
+>   include PSTATE or most GPRs).
+
+I totally agree with this idea. The x86 is a special case, since the
+-fentry option puts a call on the first instruction of the function entry,
+I had to reuse the ftrace instead of swbp for kprobes.
+But on arm64 (and other RISCs), we can use them properly.
+
+My concern is that the eBPF depends on kprobe (pt_regs) interface, thus
+I need to ask them that it is OK to not accessable to some part of
+pt_regs (especially, PSTATE) if they puts probes on function entry
+with ftrace (fprobe in this case.)
+
+(Jiri and BPF developers)
+Currently fprobe is only enabled on x86 for "multiple kprobes" BPF
+interface, but in the future, it will be enabled on arm64. And at
+that point, it will be only accessible to the regs for function
+arguments. Is that OK for your use case? And will the BPF compiler
+be able to restrict the user program to access only those registers
+when using the "multiple kprobes"?
+
+> > Thus the BPF use case via fprobes, I think there is no usecase.
+> > My concern is that the BPF may allow user program to access any
+> > field of pt_regs. Thus if the user miss-programmed, they may see
+> > a wrong value (I guess the fregs is not zero-filled) for unsaved
+> > registers.
+> > 
+> > > That is, have a flag that says "only_args" or something, that says they
+> > > will only get the registers for arguments, a stack pointer, and the
+> > > instruction pointer (note, the fregs may not have the instruction pointer
+> > > as that is passed to the the caller via the "ip" parameter. If the fregs
+> > > needs that, we can add a "ftrace_regs_set_ip()" before calling the
+> > > callback registered to the fprobe).
+> > 
+> > Yes, that is what I'm thinking. If "only_args" flag is set, BPF runtime
+> > must check the user program. And if it finds the program access the
+> > unsaved registers, it should stop executing.
+> > 
+> > BTW, "what register is saved" can be determined statically, thus I think
+> > we just need the offset for checking (for fprobe usecase, since it will
+> > set the ftrace_ops flag by itself.)
+> 
+> For arm64 I'd like to make this static, and have ftrace *always* capture a
+> minimal set of ftrace_regs, which would be:
+> 
+>   X0 to X8 inclusive
+>   SP
+>   PC
+>   LR
+>   FP
+> 
+> Since X0 to X8 + SP is all that we need for arguments and return values (per
+> the calling convention we use), and PC+LR+FP gives us everything we need for
+> unwinding and live patching.
+
+It would be good for me. So is it enabled with CONFIG_DYNAMIC_FTRACE_WITH_ARGS,
+instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS?
+
+Thank you,
 
 > 
+> I *might* want to add x18 to that when SCS is enabled, but I'm not immediately
+> sure.
 > 
-> On 5/27/22 5:09 AM, Masami Hiramatsu (Google) wrote:
-> > On Thu, 26 May 2022 12:48:41 -0700
-> > Yonghong Song <yhs@fb.com> wrote:
-> > 
-> >> Hi, Masami,
-> >>
-> >> In our production servers, with 5.12, we hit an oops like below:
-> >>
-> >> Backtrace:
-> >> #0  kretprobe_dispatcher (kernel/trace/trace_kprobe.c:1744:2)
-> >> #1  __kretprobe_trampoline_handler (kernel/kprobes.c:1960:4)
-> >> #2  kretprobe_trampoline_handler (include/linux/kprobes.h:219:8)
-> >> #3  trampoline_handler (arch/x86/kernel/kprobes/core.c:846:2)
-> >> #4  __kretprobe_trampoline+0x2a/0x4b
-> >> #5  0xffffffff810c91e0
-> >> Dmesg:
-> >> ...
-> >> [1435716.133501] BUG: kernel NULL pointer dereference, address:
-> >> 00000000000000a0
-> >> [1435716.147783] #PF: supervisor read access in kernel mode
-> >> [1435716.158411] #PF: error_code(0x0000) - not-present page
-> >> [1435716.169039] PGD 6df216067 P4D 6df216067 PUD 6aad80067 PMD 0
-> >> [1435716.180714] Oops: 0000 [#1] SMP
-> >> [1435716.187343] CPU: 19 PID: 3139400 Comm: tupperware-agen Kdump:
-> >> loaded Tainted: G S         O  K   5.12.0-0_fbk5_clang_4818_g9939bf8c1268 #1
-> >> [1435716.212570] Hardware name: Wiwynn Twin Lakes MP/Twin Lakes Passive
-> >> MP, BIOS YMM16 05/24/2021
-> >> [1435716.229803] RIP: 0010:kretprobe_dispatcher+0x16/0x70
-> >> [1435716.240089] Code: b5 3d 00 48 8b 83 d8 00 00 00 8b 00 eb d8 31 c0
-> >> 5b 41 5e c3 41 57 41 56 53 49 89 f6 48 89 fb 48 8b 47 18 48 8b 00 4c 8d
-> >> 78 e8 <48> 8b 88 a0 00 00 00 65 48 ff 01 48 8b 80 c0 00 00 00 8b 00 a8 01
-> >> [1435716.278001] RSP: 0018:ffffc90001d77db8 EFLAGS: 00010286
-> >> [1435716.288797] RAX: 0000000000000000 RBX: ffff8884b586fa00 RCX:
-> >> 0000000000000000
-> >> [1435716.303416] RDX: 0000000000000001 RSI: ffffc90001d77e30 RDI:
-> >> ffff8884b586fa00
-> >> [1435716.318037] RBP: ffff8884b586fa10 R08: 0000000000000078 R09:
-> >> ffff888450a944b0
-> >> [1435716.332659] R10: 0000000000000013 R11: ffffffff82c56d38 R12:
-> >> ffff888765e5ae00
-> >> [1435716.347278] R13: ffff8884b586fa10 R14: ffffc90001d77e30 R15:
-> >> ffffffffffffffe8
-> >> [1435716.361896] FS:  00007f3897afd700(0000) GS:ffff88885fcc0000(0000)
-> >> knlGS:0000000000000000
-> >> [1435716.378427] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >> [1435716.390264] CR2: 00000000000000a0 CR3: 0000000674c5f003 CR4:
-> >> 00000000007706e0
-> >> [1435716.404882] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> >> 0000000000000000
-> >> [1435716.419502] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> >> 0000000000000400
-> >> [1435716.434121] PKRU: 55555554
-> >> [1435716.439876] Call Trace:
-> >>
-> >> Our 5.12 is not exactly the upstream stable 5.12, which contains some
-> >> additional backport. But I checked kernel/trace, kernel/events and
-> >> arch/x86 directory, we didn't add any major changes except some bpf
-> >> changes which I think should not trigger the above oops.
-> >>
-> >> Further code analysis (through checking asm codes) find the issue
-> >> is below:
-> >>
-> >> static nokprobe_inline struct kretprobe *get_kretprobe(struct
-> >> kretprobe_instance *ri)
-> >> {
-> >>           RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
-> >>                   "Kretprobe is accessed from instance under preemptive
-> >> context");
-> >>
-> >>           return READ_ONCE(ri->rph->rp);
-> >> }
-> >>
-> >> static int
-> >> kretprobe_dispatcher(struct kretprobe_instance *ri, struct pt_regs *regs)
-> >> {
-> >>           struct kretprobe *rp = get_kretprobe(ri);
-> >>               <=== rp is a NULL pointer here
-> >>           struct trace_kprobe *tk = container_of(rp, struct trace_kprobe,
-> >> rp);
-> >>
-> >>           raw_cpu_inc(*tk->nhit);
-> >>           ...
-> >> }
-> >>
-> >> It looks like 'rp' is a NULL pointer at the time of failure. And the
-> >> only places I found 'rp' could be NULL is in unregister_kretprobes.
-> >>
-> >> void unregister_kretprobes(struct kretprobe **rps, int num)
-> >> {
-> >>           int i;
-> >>
-> >>           if (num <= 0)
-> >>                   return;
-> >>           mutex_lock(&kprobe_mutex);
-> >>           for (i = 0; i < num; i++) {
-> >>                   if (__unregister_kprobe_top(&rps[i]->kp) < 0)
-> >>                           rps[i]->kp.addr = NULL;
-> >>                   rps[i]->rph->rp = NULL;
-> >>           }
-> >>           mutex_unlock(&kprobe_mutex);
-> >>           ...
-> >> }
-> >>
-> >> So I suspect there is a race condition between kretprobe_dispatcher()
-> >> (or higher level kretprobe_trampoline_handler()) and
-> >> unregister_kretprobes(). I looked at kernel/trace code and had not
-> >> found an obvious race yet. I will continue to check.
-> >> But at the same time, I would like to seek some expert advice to see
-> >> whether you are aware of any potential issues in 5.12 or not and where
-> >> are possible places I should focus on to add debug codes for experiments.
-> > 
-> > Thanks for reporting! Yes, it could happen.
-> > 
-> > __kretprobe_trampoline_handler() checks that the get_kretprobe(ri) returns
-> > not NULL, but since that is not locked, it is possible to be NULL afterwards.
-> > I think this has been introduced when we make kretprobe lockless. I think
-> > this is not a bug but a specification change (all kretprobe handler must
-> > check the return value of get_kretprobe(ri) or get kretprobe from current
-> > kprobe.) Anyway, trace_kprobe.c should be updated to solve this issue.
-> > 
-> > 	CPU0					CPU1
-> > 
-> > __kretprobe_trampoline_handler()
-> > 	rp = get_kretprobe(ri);
-> > ...						unregister_kretprobe()
-> > 	rp->handler(ri, regs);		rps[i]->rph->rp = NULL;
-> > -> kretprobe_dispatcher()
-> > 	rp = get_kretprobe(ri)
-> 
-> In __kretprobe_trampoline_handler, I see:
-> 
->                  rp = get_kretprobe(ri);
->                  if (rp && rp->handler) {
->                          struct kprobe *prev = kprobe_running();
-> 
->                          __this_cpu_write(current_kprobe, &rp->kp);
->                          ri->ret_addr = correct_ret_addr;
->                          rp->handler(ri, regs);
->                          __this_cpu_write(current_kprobe, prev);
->                  }
-> 
-> So it is possible get_kretprobe(ri) could be NULL. But it may not
-> be NULL at that point, but may become NULL inside kretprobe_dispatcher() 
-> due to the above race.
-
-Yes, and get_kretprobe(ri) == NULL in the rp->handler() doesn't mean
-the kretprobe is already freed, but it means that the kretprobe is under
-unregistration (the rp->kp is disarmed, but not reclaimed).
-We can continue to use it while this RCU critial section, but it is
-safer to quit earler.
-
-> 
-> Thanks for analysis. I am looking forward to the patch to solve
-> this problem.
-
-Thank you!
-
-> 
-> > 
-> > 
-> > Thank you,
-> > 
-> > 
+> Thanks,
+> Mark.
 
 
 -- 
