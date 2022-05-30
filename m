@@ -2,44 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBFE537BBD
-	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 15:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB51537D1A
+	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 15:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236844AbiE3NZ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 May 2022 09:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
+        id S237560AbiE3Nio (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 May 2022 09:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236757AbiE3NZe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 May 2022 09:25:34 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDA384A23;
-        Mon, 30 May 2022 06:25:16 -0700 (PDT)
+        with ESMTP id S237583AbiE3Nhy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 May 2022 09:37:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD6B8AE7E;
+        Mon, 30 May 2022 06:31:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D6589B80D89;
-        Mon, 30 May 2022 13:25:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 923FCC385B8;
-        Mon, 30 May 2022 13:25:12 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5FF6FB80DAE;
+        Mon, 30 May 2022 13:31:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B659CC3411A;
+        Mon, 30 May 2022 13:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653917113;
-        bh=1Nut9CRMqLigdsqkyxIk7KKSPWoZoP6lmxG2cVbPM1g=;
+        s=k20201202; t=1653917468;
+        bh=ogyjMyihZQAL3OGvTEq7dTUDoOlDFa9mgae1624z+fw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g2v1SeVN8R8UfgljPcqOpIBMblL1E3LV6PqfltTe0fjLQ38woNjZ4UVJF5jRqZVxt
-         pw76dXRafRDYn1d9MPWCmMRXe4XTj19JHt3KWpBFGgY+DJfUPcEWU6tK+/Zs6ESRf7
-         jUWowRpktGQTDvlNLxJnyQTAjkY8ogBIV2F0AuMrXJqdSbcg/rIzI7X2dS/VJ62W+F
-         U25U3gIEiMM83BqLuuRm1mDBw8BqyvwkHpAMGD06TaBYVGIhk+pT9QYXOCCzQbziNF
-         nEVSiOi5JcKaCBvbeYsLmO3JY2CvR2ZichGZeLPmwhPExUUry1cNYgXtOjEIq1OdT6
-         /DdxYc2eg5P9Q==
+        b=j2L1kTWAyPjhPKHO7z/G5szrbt8QI/lUAPhqQJeUe8ujfM3WElT1FPN1WLAN4LTwG
+         qLCugSuI9FbAOqtx/kqpmtuP7JYlzipLW5T8jgM8dmhbfVMQBKeEbn/RYYV1Nm7Mfp
+         /m+gT1aqJIeoFKCu1BsFIKsN6VmPLenz2TZkOSwgPUgV14gHqbbRo9oGKB4mPk6GKS
+         lQv98BUU/DSuxhPRFcRhFA69vAyjPgvqXqyByj5cVb9LjxuvN0myasNyOxCeZ/7D14
+         nRkUsjA89Cu9cJkdM+MSVHTBjaMkw+XQmIcMptli20fD5+tLzhkZoazSbhAJshMO5R
+         KEcK9MkX7nJ+w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Runqing Yang <rainkin1993@gmail.com>,
+Cc:     Yuntao Wang <ytcoode@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 020/159] libbpf: Fix a bug with checking bpf_probe_read_kernel() support in old kernels
-Date:   Mon, 30 May 2022 09:22:05 -0400
-Message-Id: <20220530132425.1929512-20-sashal@kernel.org>
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
+        ast@kernel.org, daniel@iogearbox.net, shuah@kernel.org,
+        sunyucong@gmail.com, kuifeng@fb.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 148/159] selftests/bpf: Add missing trampoline program type to trampoline_count test
+Date:   Mon, 30 May 2022 09:24:13 -0400
+Message-Id: <20220530132425.1929512-148-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
 References: <20220530132425.1929512-1-sashal@kernel.org>
@@ -57,75 +59,261 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Runqing Yang <rainkin1993@gmail.com>
+From: Yuntao Wang <ytcoode@gmail.com>
 
-[ Upstream commit d252a4a499a07bec21c65873f605c3a1ef52ffed ]
+[ Upstream commit b23316aabffa835ecc516cb81daeef5b9155e8a5 ]
 
-Background:
-Libbpf automatically replaces calls to BPF bpf_probe_read_{kernel,user}
-[_str]() helpers with bpf_probe_read[_str](), if libbpf detects that
-kernel doesn't support new APIs. Specifically, libbpf invokes the
-probe_kern_probe_read_kernel function to load a small eBPF program into
-the kernel in which bpf_probe_read_kernel API is invoked and lets the
-kernel checks whether the new API is valid. If the loading fails, libbpf
-considers the new API invalid and replaces it with the old API.
+Currently the trampoline_count test doesn't include any fmod_ret bpf
+programs, fix it to make the test cover all possible trampoline program
+types.
 
-static int probe_kern_probe_read_kernel(void)
-{
-	struct bpf_insn insns[] = {
-		BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),	/* r1 = r10 (fp) */
-		BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),	/* r1 += -8 */
-		BPF_MOV64_IMM(BPF_REG_2, 8),		/* r2 = 8 */
-		BPF_MOV64_IMM(BPF_REG_3, 0),		/* r3 = 0 */
-		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_probe_read_kernel),
-		BPF_EXIT_INSN(),
-	};
-	int fd, insn_cnt = ARRAY_SIZE(insns);
+Since fmod_ret bpf programs can't be attached to __set_task_comm function,
+as it's neither whitelisted for error injection nor a security hook, change
+it to bpf_modify_return_test.
 
-	fd = bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL,
-                           "GPL", insns, insn_cnt, NULL);
-	return probe_fd(fd);
-}
+This patch also does some other cleanups such as removing duplicate code,
+dropping inconsistent comments, etc.
 
-Bug:
-On older kernel versions [0], the kernel checks whether the version
-number provided in the bpf syscall, matches the LINUX_VERSION_CODE.
-If not matched, the bpf syscall fails. eBPF However, the
-probe_kern_probe_read_kernel code does not set the kernel version
-number provided to the bpf syscall, which causes the loading process
-alwasys fails for old versions. It means that libbpf will replace the
-new API with the old one even the kernel supports the new one.
-
-Solution:
-After a discussion in [1], the solution is using BPF_PROG_TYPE_TRACEPOINT
-program type instead of BPF_PROG_TYPE_KPROBE because kernel does not
-enfoce version check for tracepoint programs. I test the patch in old
-kernels (4.18 and 4.19) and it works well.
-
-  [0] https://elixir.bootlin.com/linux/v4.19/source/kernel/bpf/syscall.c#L1360
-  [1] Closes: https://github.com/libbpf/libbpf/issues/473
-
-Signed-off-by: Runqing Yang <rainkin1993@gmail.com>
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20220409144928.27499-1-rainkin1993@gmail.com
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20220519150610.601313-1-ytcoode@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/bpf.h                           |   2 +-
+ .../bpf/prog_tests/trampoline_count.c         | 134 +++++++-----------
+ .../bpf/progs/test_trampoline_count.c         |  16 ++-
+ 3 files changed, 61 insertions(+), 91 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 809fe209cdcc..dabf9a1451c3 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4587,7 +4587,7 @@ static int probe_kern_probe_read_kernel(void)
- 	};
- 	int fd, insn_cnt = ARRAY_SIZE(insns);
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index bdb5298735ce..f084b251fce7 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -672,7 +672,7 @@ struct btf_func_model {
+ #define BPF_TRAMP_F_RET_FENTRY_RET	BIT(4)
  
--	fd = bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, "GPL", insns, insn_cnt, NULL);
-+	fd = bpf_prog_load(BPF_PROG_TYPE_TRACEPOINT, NULL, "GPL", insns, insn_cnt, NULL);
- 	return probe_fd(fd);
+ /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
+- * bytes on x86.  Pick a number to fit into BPF_IMAGE_SIZE / 2
++ * bytes on x86.
+  */
+ #define BPF_MAX_TRAMP_PROGS 38
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+index 9c795ee52b7b..b0acbda6dbf5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
++++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
+@@ -1,126 +1,94 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ #define _GNU_SOURCE
+-#include <sched.h>
+-#include <sys/prctl.h>
+ #include <test_progs.h>
+ 
+ #define MAX_TRAMP_PROGS 38
+ 
+ struct inst {
+ 	struct bpf_object *obj;
+-	struct bpf_link   *link_fentry;
+-	struct bpf_link   *link_fexit;
++	struct bpf_link   *link;
+ };
+ 
+-static int test_task_rename(void)
+-{
+-	int fd, duration = 0, err;
+-	char buf[] = "test_overhead";
+-
+-	fd = open("/proc/self/comm", O_WRONLY|O_TRUNC);
+-	if (CHECK(fd < 0, "open /proc", "err %d", errno))
+-		return -1;
+-	err = write(fd, buf, sizeof(buf));
+-	if (err < 0) {
+-		CHECK(err < 0, "task rename", "err %d", errno);
+-		close(fd);
+-		return -1;
+-	}
+-	close(fd);
+-	return 0;
+-}
+-
+-static struct bpf_link *load(struct bpf_object *obj, const char *name)
++static struct bpf_program *load_prog(char *file, char *name, struct inst *inst)
+ {
++	struct bpf_object *obj;
+ 	struct bpf_program *prog;
+-	int duration = 0;
++	int err;
++
++	obj = bpf_object__open_file(file, NULL);
++	if (!ASSERT_OK_PTR(obj, "obj_open_file"))
++		return NULL;
++
++	inst->obj = obj;
++
++	err = bpf_object__load(obj);
++	if (!ASSERT_OK(err, "obj_load"))
++		return NULL;
+ 
+ 	prog = bpf_object__find_program_by_name(obj, name);
+-	if (CHECK(!prog, "find_probe", "prog '%s' not found\n", name))
+-		return ERR_PTR(-EINVAL);
+-	return bpf_program__attach_trace(prog);
++	if (!ASSERT_OK_PTR(prog, "obj_find_prog"))
++		return NULL;
++
++	return prog;
  }
  
+ /* TODO: use different target function to run in concurrent mode */
+ void serial_test_trampoline_count(void)
+ {
+-	const char *fentry_name = "prog1";
+-	const char *fexit_name = "prog2";
+-	const char *object = "test_trampoline_count.o";
+-	struct inst inst[MAX_TRAMP_PROGS] = {};
+-	int err, i = 0, duration = 0;
+-	struct bpf_object *obj;
++	char *file = "test_trampoline_count.o";
++	char *const progs[] = { "fentry_test", "fmod_ret_test", "fexit_test" };
++	struct inst inst[MAX_TRAMP_PROGS + 1] = {};
++	struct bpf_program *prog;
+ 	struct bpf_link *link;
+-	char comm[16] = {};
++	int prog_fd, err, i;
++	LIBBPF_OPTS(bpf_test_run_opts, opts);
+ 
+ 	/* attach 'allowed' trampoline programs */
+ 	for (i = 0; i < MAX_TRAMP_PROGS; i++) {
+-		obj = bpf_object__open_file(object, NULL);
+-		if (!ASSERT_OK_PTR(obj, "obj_open_file")) {
+-			obj = NULL;
++		prog = load_prog(file, progs[i % ARRAY_SIZE(progs)], &inst[i]);
++		if (!prog)
+ 			goto cleanup;
+-		}
+ 
+-		err = bpf_object__load(obj);
+-		if (CHECK(err, "obj_load", "err %d\n", err))
++		link = bpf_program__attach(prog);
++		if (!ASSERT_OK_PTR(link, "attach_prog"))
+ 			goto cleanup;
+-		inst[i].obj = obj;
+-		obj = NULL;
+-
+-		if (rand() % 2) {
+-			link = load(inst[i].obj, fentry_name);
+-			if (!ASSERT_OK_PTR(link, "attach_prog")) {
+-				link = NULL;
+-				goto cleanup;
+-			}
+-			inst[i].link_fentry = link;
+-		} else {
+-			link = load(inst[i].obj, fexit_name);
+-			if (!ASSERT_OK_PTR(link, "attach_prog")) {
+-				link = NULL;
+-				goto cleanup;
+-			}
+-			inst[i].link_fexit = link;
+-		}
++
++		inst[i].link = link;
+ 	}
+ 
+ 	/* and try 1 extra.. */
+-	obj = bpf_object__open_file(object, NULL);
+-	if (!ASSERT_OK_PTR(obj, "obj_open_file")) {
+-		obj = NULL;
++	prog = load_prog(file, "fmod_ret_test", &inst[i]);
++	if (!prog)
+ 		goto cleanup;
+-	}
+-
+-	err = bpf_object__load(obj);
+-	if (CHECK(err, "obj_load", "err %d\n", err))
+-		goto cleanup_extra;
+ 
+ 	/* ..that needs to fail */
+-	link = load(obj, fentry_name);
+-	err = libbpf_get_error(link);
+-	if (!ASSERT_ERR_PTR(link, "cannot attach over the limit")) {
+-		bpf_link__destroy(link);
+-		goto cleanup_extra;
++	link = bpf_program__attach(prog);
++	if (!ASSERT_ERR_PTR(link, "attach_prog")) {
++		inst[i].link = link;
++		goto cleanup;
+ 	}
+ 
+ 	/* with E2BIG error */
+-	ASSERT_EQ(err, -E2BIG, "proper error check");
+-	ASSERT_EQ(link, NULL, "ptr_is_null");
++	if (!ASSERT_EQ(libbpf_get_error(link), -E2BIG, "E2BIG"))
++		goto cleanup;
++	if (!ASSERT_EQ(link, NULL, "ptr_is_null"))
++		goto cleanup;
+ 
+ 	/* and finaly execute the probe */
+-	if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
+-		goto cleanup_extra;
+-	CHECK_FAIL(test_task_rename());
+-	CHECK_FAIL(prctl(PR_SET_NAME, comm, 0L, 0L, 0L));
++	prog_fd = bpf_program__fd(prog);
++	if (!ASSERT_GE(prog_fd, 0, "bpf_program__fd"))
++		goto cleanup;
++
++	err = bpf_prog_test_run_opts(prog_fd, &opts);
++	if (!ASSERT_OK(err, "bpf_prog_test_run_opts"))
++		goto cleanup;
++
++	ASSERT_EQ(opts.retval & 0xffff, 4, "bpf_modify_return_test.result");
++	ASSERT_EQ(opts.retval >> 16, 1, "bpf_modify_return_test.side_effect");
+ 
+-cleanup_extra:
+-	bpf_object__close(obj);
+ cleanup:
+-	if (i >= MAX_TRAMP_PROGS)
+-		i = MAX_TRAMP_PROGS - 1;
+ 	for (; i >= 0; i--) {
+-		bpf_link__destroy(inst[i].link_fentry);
+-		bpf_link__destroy(inst[i].link_fexit);
++		bpf_link__destroy(inst[i].link);
+ 		bpf_object__close(inst[i].obj);
+ 	}
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_trampoline_count.c b/tools/testing/selftests/bpf/progs/test_trampoline_count.c
+index f030e469d05b..7765720da7d5 100644
+--- a/tools/testing/selftests/bpf/progs/test_trampoline_count.c
++++ b/tools/testing/selftests/bpf/progs/test_trampoline_count.c
+@@ -1,20 +1,22 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#include <stdbool.h>
+-#include <stddef.h>
+ #include <linux/bpf.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+-struct task_struct;
++SEC("fentry/bpf_modify_return_test")
++int BPF_PROG(fentry_test, int a, int *b)
++{
++	return 0;
++}
+ 
+-SEC("fentry/__set_task_comm")
+-int BPF_PROG(prog1, struct task_struct *tsk, const char *buf, bool exec)
++SEC("fmod_ret/bpf_modify_return_test")
++int BPF_PROG(fmod_ret_test, int a, int *b, int ret)
+ {
+ 	return 0;
+ }
+ 
+-SEC("fexit/__set_task_comm")
+-int BPF_PROG(prog2, struct task_struct *tsk, const char *buf, bool exec)
++SEC("fexit/bpf_modify_return_test")
++int BPF_PROG(fexit_test, int a, int *b, int ret)
+ {
+ 	return 0;
+ }
 -- 
 2.35.1
 
