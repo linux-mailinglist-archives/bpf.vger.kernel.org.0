@@ -2,185 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAAD453732E
-	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 03:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C36537442
+	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 07:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbiE3BDT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 May 2022 21:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
+        id S232543AbiE3FUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 May 2022 01:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbiE3BDS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 May 2022 21:03:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EE65E744;
-        Sun, 29 May 2022 18:03:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9520760FDD;
-        Mon, 30 May 2022 01:03:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88B1C385A9;
-        Mon, 30 May 2022 01:03:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653872595;
-        bh=16kfMHANr14G2Fw7JOodCftfv67KCK1i1z0jnxn/vdk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lxJgUMesJPKEt55yh3FMik8u0Pv4PfofDycfkbW/g8DbNsd++2/cLQkcwWwQItHoK
-         kNvuk3J4Uz5lLvuQ+bp7XYHGvYvJqeWU3AV+XdpxUTE0mTeK+ktZT/A4WMs5+Ur2zf
-         /TM75CW0XfB1ObdR42mtQ90jzuhDb6tmre62ChAccC2cy4EyjaOLOlRtYkTu8ZCkYD
-         wWdcl534vR+9Qk3LP9bgUMimyvfo5fB+wxLbSlEhGtKJqkWnonvXrm8+mM87G3GJXC
-         f+jyTybEdsM7U0sbTajlgHSg7kCXxpL8NXBcAvml1K0T+fsUSbmUJMa/1F86BIzhTm
-         LCP/Ox7WjYBfQ==
-Date:   Mon, 30 May 2022 10:03:10 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        cj.chengjian@huawei.com, huawei.libin@huawei.com,
-        xiexiuqi@huawei.com, liwei391@huawei.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        catalin.marinas@arm.com, will@kernel.org, zengshun.wu@outlook.com,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH -next v2 3/4] arm64/ftrace: support dynamically
- allocated trampolines
-Message-Id: <20220530100310.c22c36df4ea9324cb9cb3515@kernel.org>
-In-Reply-To: <Yo4eWqHA/IjNElNN@FVFF77S0Q05N>
-References: <YmLlmaXF00hPkOID@lakrids>
-        <20220426174749.b5372c5769af7bf901649a05@kernel.org>
-        <YnJUTuOIX9YoJq23@FVFF77S0Q05N>
-        <20220505121538.04773ac98e2a8ba17f675d39@kernel.org>
-        <20220509142203.6c4f2913@gandalf.local.home>
-        <20220510181012.d5cba23a2547f14d14f016b9@kernel.org>
-        <20220510104446.6d23b596@gandalf.local.home>
-        <20220511233450.40136cdf6a53eb32cd825be8@kernel.org>
-        <20220511111207.25d1a693@gandalf.local.home>
-        <20220512210231.f9178a98f20a37981b1e89e3@kernel.org>
-        <Yo4eWqHA/IjNElNN@FVFF77S0Q05N>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S231211AbiE3FT7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 May 2022 01:19:59 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88D112D17;
+        Sun, 29 May 2022 22:19:57 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24THDEgg026309;
+        Sun, 29 May 2022 22:19:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=kebkptH03v++6rCwE38cOXi9ev8u+vxirTH5QLqFEDo=;
+ b=rkEvypPVI+i2s4H5ETCjJUev0xtGgXJTL8WvBOKRvjddWTwF0KVk8l2f6e+Kv99Oizwd
+ zBkNRgvkfoYlk3ijXouDv5yS9wSoKSrXg4ErOrZ3R0CQ1VZ/maDhK1S37mZss1iIHDg3
+ iJjLQyMNKRVchGUzVQRZx2UOj7573p2qV2U= 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gbk22p7vw-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 29 May 2022 22:19:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c0PsBgpseTT7V8QIJPOi5vyl339+OG3jK/SuEQlAAq9MCcjCVyIhYyaQmEx41u8zHsDmBr6wl8iVH1GMhU9No9xSa4J4h9qb1MH4KQWrejNkEJY6LghoP9l9zjbwiuxHxEyT/McEbP2IqgRzCWEBmbDfAYaQZcP0zeqzp6hrKHShYo8Agr4Zo8An8kYG3LqPzaU8pnkjgFSWCnda2XEeKWNC0txUryYkZUCSWCuyOvAWzDEvEr03tfIcHRHfkHL0i3i9JRTRite5WxW+aqr8/Rx8WQnTOkZIfxlc+dDWqfpw+gofZ0ogw7fqKCxaDI0lbtbDKufhZ+UwNcsz/90bdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kebkptH03v++6rCwE38cOXi9ev8u+vxirTH5QLqFEDo=;
+ b=hKy3CeouVYYZJvknlisoJDQHbSULwrHcJ480paqYdeWQWn4qCIJtb4xtuc2JnOMb2iVL8JyobIFrnWolACBwotVyqeYbBiDzVWBE359LfpWmw2TEOUYmuMZpmfcumEp91QlmLXByZiz2pR7yQFKrM7hIgjPLeoVI7Mp23KF0ydZ20IPqPaISeK2LzuQfgW2zoJa+IEL+hQnn711oLp7TE7wjif7A7CpEpJGid2Abd4EqMO45q0QQwtGvvVhpDqQdgk5mbqkQN49xoIDgNCj6dKH3d6GvhlAWBD3KUDZXRtfbFGhRrA+9BZ93szqLMKTs/K7GBQnePVwh1mV1CxsBoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by DM6PR15MB4108.namprd15.prod.outlook.com (2603:10b6:5:c4::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.19; Mon, 30 May
+ 2022 05:19:53 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::3061:40ff:2ad:33aa]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::3061:40ff:2ad:33aa%5]) with mapi id 15.20.5293.019; Mon, 30 May 2022
+ 05:19:53 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns
+ NULL in kretprobe_dispatcher()
+Thread-Topic: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns
+ NULL in kretprobe_dispatcher()
+Thread-Index: AQHYceI9+nNYqnip2EqaqGe+bD34G6025gMA
+Date:   Mon, 30 May 2022 05:19:53 +0000
+Message-ID: <5EBCF33B-D777-4763-ADC3-0EBE676AC220@fb.com>
+References: <165366693881.797669.16926184644089588731.stgit@devnote2>
+In-Reply-To: <165366693881.797669.16926184644089588731.stgit@devnote2>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.80.82.1.1)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7b7b48eb-e84e-488d-7bd2-08da41fc0752
+x-ms-traffictypediagnostic: DM6PR15MB4108:EE_
+x-microsoft-antispam-prvs: <DM6PR15MB41089213A7A7167D5BF87A50B3DD9@DM6PR15MB4108.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sPN58LKaqcC74/SDr/r93/Y6CQNmA9hol7mwODHXgKBW/VsjCfgVozWwmRZPHQbkdPeoWDk3X1CHti8JtyZw0ZHpvB9AhymwKB35RAhU4Q/IUnbpHL+0kCqQPpoW61QXAPABaej5VNHj5GM30TMktPgRaHYoUaBomIFRJ40eY3jQGNaatalL5Ho/cz4Osgu+DTufga32WWZLitnPl+Zj76qGxs8OSAZcL9YoLPuz/oasFVSDsYmY7lI4KfuqBRSvqL5X0sO2wt4Fn/NbnAkvSkuZNieQ84MDuo3gbpC495BqG/0W8Sqi3BBd2oZTNwydKHFa+hJ21tL0EMbASGRVcSjSXM9nLQVB9SD55A23AZwfx68LwYXyMh7dgA+uFIn6Z6fIM3tSq9NkR4iLTBFngpu3l2ixr/9PohfbOixKd3iHjIEqL0pr7NULgV3Vq5hna2mKrK0NEsxc0BkcN4sCOSsoPI+Rh2qw/dS1mq+5XZjtE8ek4c23OKtvvBF3iRq1pssRaodbbfgfvvDYcQsW30U5ED/Ht/WbnGuyQWv4lRQSw5+L27YeOvUw4hr6tdOto3ykc5sxq/p/x0z1oybq//kdn32Q/Ledr0K/z7UzSe54yrWCku7UJygNiNPOYEmMXH3TsPcGS54t4LEW1KIHNI90c5fpjU8pQhVSKsOgBUJYd2sa6BHhGp1g6kWDBVKKlZjY9j1q7lAoIiFivr700X9rwbAhKHZQMAANNcAEu6pNduCtuSB7qx0dvEWwhDUj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66556008)(66946007)(66476007)(36756003)(66446008)(91956017)(86362001)(54906003)(6512007)(71200400001)(186003)(2616005)(76116006)(64756008)(38100700002)(38070700005)(122000001)(53546011)(6506007)(4326008)(2906002)(8676002)(4744005)(6486002)(316002)(508600001)(33656002)(5660300002)(6916009)(8936002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5uRNC9BU+a/PO6vgX6yjSMKTnurycMPfWWLTIOHBJSksd6oKqloDAXDQ/kGg?=
+ =?us-ascii?Q?gRIbINFMyRDAl3iSXqABUkDwAbrmFHqwow1+jVTCFDTe+UfRHAam1ss+++70?=
+ =?us-ascii?Q?b/HJzGkRWGHlNFUnGtqnEpx7bcxNbVlkck0Xwbjw2rnXoi9l5HkuEB2SD5fZ?=
+ =?us-ascii?Q?P9v1+DiZEChjcgqPth36q5snaE8wl2MlaXeuHpN64tKfJJ11bTG6Ju4ta7iT?=
+ =?us-ascii?Q?Mg7aS+cwZSHGpn0q5ggeTXrPJuMhFT9QTvHej31KW62YVewAaQgz+aKPggBu?=
+ =?us-ascii?Q?Fb5RdShpCIP1kbZMHkmKnA/kP8soCQqQCh/QZW687TFbuNyGaJZuuCBfaTe+?=
+ =?us-ascii?Q?r9bcUqJnBcmHJQ2+F7T9cP1KQWA348yngkGp9jXTDHVBwbquU20bECI8mJ5p?=
+ =?us-ascii?Q?Ovcbi5IhHx/bmPqeXebRe26VVunFwOcoTWQwuvRHAoIIpYCMVn6mh4qa+pp6?=
+ =?us-ascii?Q?EMAPubpUrmP1EWkT3fA3x2eu4i1gNTDrB5CzH5BwLWth6bUiwZz5ziM9Usa7?=
+ =?us-ascii?Q?NisK4ZAezaRWATHqpHDJc2hHM6Gbsn5NDFVKn1uBDrJcb3pGoQ7LNG+4Iqcl?=
+ =?us-ascii?Q?IbDElqsXa7A6y14UNLB6GCC2h9Qt9dHpCNIkAcF899tzEs5WUNiqi3katA8u?=
+ =?us-ascii?Q?YSIojKaUGySR+8wbb/VC4aCaSJcCtt8p/z7BD1AZqdEZ4be+EWiFparql2AX?=
+ =?us-ascii?Q?wqI/SyLncSN6/9qW+yLGZswBrtQO1EmOfH8lE3A/bQuipQCQwnY9JC0HFaZ8?=
+ =?us-ascii?Q?mX5bWOcrcH+ExiVrQyJU8kOwLbKfA8m2JWtdu/Nktho1+O3EZ3VtlKrKP0id?=
+ =?us-ascii?Q?aKtavi2niDrdGNwPiWbY32n3iP30kz0kRuHqxJDJ/dvgw+qxujfF5hvViqUV?=
+ =?us-ascii?Q?uFL0DcCHV5/EMppeqBXMbcwWYR5wg/i09GTWYklT21q0eqWRHxyphsGrxevD?=
+ =?us-ascii?Q?v2xCmidswp+hHfH+YX7D1zRVAfMBmXcBllR2FBJTz6wiWm4KaMgYBT8P0mMv?=
+ =?us-ascii?Q?2TOfbGRdkzHaaNrYwOvRtW/cxyBI9tpR7J87swnmND6oJscnXHoN3mDCWadG?=
+ =?us-ascii?Q?5SMURRYc2hMsEM2vguQj7IYq8KxdR4vX2HMkUPwBWnISr/tIfdPIbLw+Mgh4?=
+ =?us-ascii?Q?uCPVKBGVIYtJtUnimjdvJJaylRPBFwzqB8sYPSB4Ag3FIEvECE0RBN/0UFu0?=
+ =?us-ascii?Q?8COmPcUkNi/he5xlkextSWND5RTOWGSHL//7MIbWDtUMPLqhYwO53stfpzcE?=
+ =?us-ascii?Q?CJFLBn/PmBJ9d2x4mIEzWXmAmoM8/c9QO6Leegqd/oTIEvip+kjEgfRVzWPl?=
+ =?us-ascii?Q?qMrhBrbaOMZz8NktxYL+nXES6kZQM+yOHi80UtxRbdKA9o9yCCn93++6vhKM?=
+ =?us-ascii?Q?LAs+zDkUxl7T4nrkxrCib/SNyOiBVDOWs47MnAX836dO1i9bICvUw6lFC+Uj?=
+ =?us-ascii?Q?xzLtStp6UzE8V3e5WIBypcPOz7T4MgnK9Yh7cYdP/YpoT83chmrTDKKl+2Sm?=
+ =?us-ascii?Q?a4UkHfg0moOoDIbW3tn/iuGdbtCCuJbGq+bKIjsNxVenUBvYEl+q2KDDBYBl?=
+ =?us-ascii?Q?1DdvewUo04bM4nD9OxuPp6u5snhIbTtqtudcMNMlwjdY3Dwnrm6dgHrJQOX2?=
+ =?us-ascii?Q?3YK6RVEeXioEBkQULzqYTkPilY4eIpnpfaJmK1moZDYUvCzuFEtOsZzpLdAY?=
+ =?us-ascii?Q?/LZX2wReEWB5UULt4kc1aLKcmC1t9TBG+mB0xDi/Z8ISoNXtNSwVH4k4A4lu?=
+ =?us-ascii?Q?4OXEKGGd2nNVZ89lXGg5ysF0nt0wLX1UTJ3FqPPv5lKPOxJURfJI?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1EB8AF69DD47C74381B20341D43D1EAE@namprd15.prod.outlook.com>
+MIME-Version: 1.0
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b7b48eb-e84e-488d-7bd2-08da41fc0752
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2022 05:19:53.6287
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RlAzn4G7yq6bW6wR/UCNfk9xoBHpfEZUGAe2Q/vtwfH+C6C8LitFOka2ARHb0fmV4ORitGql3iLHxfmzbI4DjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4108
+X-Proofpoint-GUID: cKFkQRDjqyuI5-ex_Zp3k7vJjWW8yAg0
+X-Proofpoint-ORIG-GUID: cKFkQRDjqyuI5-ex_Zp3k7vJjWW8yAg0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-30_01,2022-05-27_01,2022-02-23_01
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-(Cc: BPF ML)
 
-On Wed, 25 May 2022 13:17:30 +0100
-Mark Rutland <mark.rutland@arm.com> wrote:
 
-> On Thu, May 12, 2022 at 09:02:31PM +0900, Masami Hiramatsu wrote:
-> > On Wed, 11 May 2022 11:12:07 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> > > On Wed, 11 May 2022 23:34:50 +0900
-> > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > 
-> > > > OK, so fregs::regs will have a subset of pt_regs, and accessibility of
-> > > > the registers depends on the architecture. If we can have a checker like
-> > > > 
-> > > > ftrace_regs_exist(fregs, reg_offset)
-> > > 
-> > > Or something. I'd have to see the use case.
-> > > 
-> > > > 
-> > > > kprobe on ftrace or fprobe user (BPF) can filter user's requests.
-> > > > I think I can introduce a flag for kprobes so that user can make a
-> > > > kprobe handler only using a subset of registers. 
-> > > > Maybe similar filter code is also needed for BPF 'user space' library
-> > > > because this check must be done when compiling BPF.
-> > > 
-> > > Is there any other case without full regs that the user would want anything
-> > > other than the args, stack pointer and instruction pointer?
-> > 
-> > For the kprobes APIs/events, yes, it needs to access to the registers
-> > which is used for local variables when probing inside the function body.
-> > However at the function entry, I think almost no use case. (BTW, pstate
-> > is a bit special, that may show the actual processor-level status
-> > (context), so for the debugging, user might want to read it.)
+> On May 27, 2022, at 8:55 AM, Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 > 
-> As before, if we really need PSTATE we *must* take an exception to get a
-> reliable snapshot (or to alter the value). So I'd really like to split this
-> into two cases:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> * Where users *really* need PSTATE (or arbitrary GPRs), they use kprobes. That
->   always takes an exception and they can have a complete, real struct pt_regs.
+> There is a small chance that get_kretprobe(ri) returns NULL in
+> kretprobe_dispatcher() when another CPU unregisters the kretprobe
+> right after __kretprobe_trampoline_handler().
 > 
-> * Where users just need to capture a function call boundary, they use ftrace.
->   That uses a trampoline without taking an exception, and they get the minimal
->   set of registers relevant to the function call boundary (which does not
->   include PSTATE or most GPRs).
-
-I totally agree with this idea. The x86 is a special case, since the
--fentry option puts a call on the first instruction of the function entry,
-I had to reuse the ftrace instead of swbp for kprobes.
-But on arm64 (and other RISCs), we can use them properly.
-
-My concern is that the eBPF depends on kprobe (pt_regs) interface, thus
-I need to ask them that it is OK to not accessable to some part of
-pt_regs (especially, PSTATE) if they puts probes on function entry
-with ftrace (fprobe in this case.)
-
-(Jiri and BPF developers)
-Currently fprobe is only enabled on x86 for "multiple kprobes" BPF
-interface, but in the future, it will be enabled on arm64. And at
-that point, it will be only accessible to the regs for function
-arguments. Is that OK for your use case? And will the BPF compiler
-be able to restrict the user program to access only those registers
-when using the "multiple kprobes"?
-
-> > Thus the BPF use case via fprobes, I think there is no usecase.
-> > My concern is that the BPF may allow user program to access any
-> > field of pt_regs. Thus if the user miss-programmed, they may see
-> > a wrong value (I guess the fregs is not zero-filled) for unsaved
-> > registers.
-> > 
-> > > That is, have a flag that says "only_args" or something, that says they
-> > > will only get the registers for arguments, a stack pointer, and the
-> > > instruction pointer (note, the fregs may not have the instruction pointer
-> > > as that is passed to the the caller via the "ip" parameter. If the fregs
-> > > needs that, we can add a "ftrace_regs_set_ip()" before calling the
-> > > callback registered to the fprobe).
-> > 
-> > Yes, that is what I'm thinking. If "only_args" flag is set, BPF runtime
-> > must check the user program. And if it finds the program access the
-> > unsaved registers, it should stop executing.
-> > 
-> > BTW, "what register is saved" can be determined statically, thus I think
-> > we just need the offset for checking (for fprobe usecase, since it will
-> > set the ftrace_ops flag by itself.)
+> To avoid this issue, kretprobe_dispatcher() checks the get_kretprobe()
+> return value again. And if it is NULL, it returns soon because that
+> kretprobe is under unregistering process.
 > 
-> For arm64 I'd like to make this static, and have ftrace *always* capture a
-> minimal set of ftrace_regs, which would be:
+> This issue has been introduced when the kretprobe is decoupled
+> from the struct kretprobe_instance by commit d741bf41d7c7
+> ("kprobes: Remove kretprobe hash"). Before that commit, the
+> struct kretprob_instance::rp directly points the kretprobe
+> and it is never be NULL.
 > 
->   X0 to X8 inclusive
->   SP
->   PC
->   LR
->   FP
-> 
-> Since X0 to X8 + SP is all that we need for arguments and return values (per
-> the calling convention we use), and PC+LR+FP gives us everything we need for
-> unwinding and live patching.
+> Reported-by: Yonghong Song <yhs@fb.com>
+> Fixes: d741bf41d7c7 ("kprobes: Remove kretprobe hash")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-It would be good for me. So is it enabled with CONFIG_DYNAMIC_FTRACE_WITH_ARGS,
-instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS?
+Acked-by: Song Liu <song@kernel.org>
 
-Thank you,
-
-> 
-> I *might* want to add x18 to that when SCS is enabled, but I'm not immediately
-> sure.
-> 
-> Thanks,
-> Mark.
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+[...]
