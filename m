@@ -2,57 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00065538291
-	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 16:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98215384CA
+	for <lists+bpf@lfdr.de>; Mon, 30 May 2022 17:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237643AbiE3OYb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 May 2022 10:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S236084AbiE3PZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 May 2022 11:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242233AbiE3OSe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 May 2022 10:18:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31EF11CB67;
-        Mon, 30 May 2022 06:49:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9902D60FEE;
-        Mon, 30 May 2022 13:49:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B2ABC385B8;
-        Mon, 30 May 2022 13:49:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653918564;
-        bh=KC745XvqyuuZYSvsSRRk9yKT/qjIcafkwRqQ36ofcRg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qPx/ZUgCUH+B3zPCtxyIHp9XAS0BP+61XqwO9H6neaDzEVl+xFivrH2j+CLuH60E9
-         icEWiF1/AxujpZCWx9Ka8VC+RTlEhs+0/3f2JAWetWQaNiKsrayCKKLbrwz4URse6E
-         lEE0KywtvmesJtU5ChYfB/3d9CIFftWuZ6nYAm7B4IA+XnIr2n7z2Y2ArgNtniYMb2
-         91TciR+bYMfEoNnaU2zMgadRVpxdyezv0W4igK9wie3ErSA6UC4Wfy2ARXBEeM1ZAC
-         xj12lc1jYNKfoo80LJi1b4ZN08FQQk4iE9DUZONQxplVFx+e5Tvqtr+cnxsViTPU15
-         O+G9Yi4ZlQ4jg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, shuah@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, sunyucong@gmail.com,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.4 55/55] selftests/bpf: fix btf_dump/btf_dump due to recent clang change
-Date:   Mon, 30 May 2022 09:47:01 -0400
-Message-Id: <20220530134701.1935933-55-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530134701.1935933-1-sashal@kernel.org>
-References: <20220530134701.1935933-1-sashal@kernel.org>
+        with ESMTP id S240201AbiE3PYv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 May 2022 11:24:51 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAC01CC605;
+        Mon, 30 May 2022 07:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653920737; x=1685456737;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qa66nN8IHyybRSUPiNIjAkNufZbxITgV0L9y8AsjeHI=;
+  b=fL8+57KS9STNQ8MQVO1DWL17X2fwwiNGtuI1sjKw71qp73CVlebZuwEY
+   2GSYdAT/YVliJzcJWmBtTXFcnJT0myLqpxpuWggveSzCZmq2uB1+5yGxK
+   i8RPxvtNnkmGUqzR4ZftloEULEtlPgFVtfVQGaG5woKNyNjF+G0q/0vQp
+   sl96J7ac6ic/BbJ2MWTOGnrX3HAmSrE3mUwU6nl2Wyc/ZPurR9ehlsIyY
+   AmWw7UwCV66cc37R6kmUtE5WLGNOaLIOh3fg9bTGQ6fcYMDfufD3Wkd+d
+   4atSGh1IMfX2u8kh/JPycGQ70MaMwrLFc/lpkxb1SB3TBORhlMSRzMyrG
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10363"; a="254888820"
+X-IronPort-AV: E=Sophos;i="5.91,263,1647327600"; 
+   d="scan'208";a="254888820"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2022 07:25:36 -0700
+X-IronPort-AV: E=Sophos;i="5.91,263,1647327600"; 
+   d="scan'208";a="605212357"
+Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.142])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2022 07:25:30 -0700
+Date:   Mon, 30 May 2022 22:23:53 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     menglong8.dong@gmail.com, kuba@kernel.org, kbuild-all@lists.01.org,
+        rostedt@goodmis.org, mingo@redhat.com, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, nhorman@tuxdriver.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        imagedong@tencent.com, dsahern@kernel.org, talalahmad@google.com,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v2 2/3] net: skb: use auto-generation to convert
+ skb drop reason to string
+Message-ID: <YpTTedzTnj3s1hdo@rli9-dbox>
+References: <20220530081201.10151-3-imagedong@tencent.com>
+ <202205301730.inNRSOxX-lkp@intel.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202205301730.inNRSOxX-lkp@intel.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,87 +67,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+On Mon, May 30, 2022 at 06:01:36PM +0800, kernel test robot wrote:
+> Hi,
+> 
+> Thank you for the patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on net-next/master]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/menglong8-dong-gmail-com/reorganize-the-code-of-the-enum-skb_drop_reason/20220530-161614
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 7e062cda7d90543ac8c7700fc7c5527d0c0f22ad
+> config: nios2-defconfig (https://download.01.org/0day-ci/archive/20220530/202205301730.inNRSOxX-lkp@intel.com/config)
+> compiler: nios2-linux-gcc (GCC) 11.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/intel-lab-lkp/linux/commit/73e3b002fb9086fc734ba4dcc3041f9bb56eb1a2
+>         git remote add linux-review https://github.com/intel-lab-lkp/linux
+>         git fetch --no-tags linux-review menglong8-dong-gmail-com/reorganize-the-code-of-the-enum-skb_drop_reason/20220530-161614
+>         git checkout 73e3b002fb9086fc734ba4dcc3041f9bb56eb1a2
+>         # save the config file
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 ARCH=nios2 
+> 
+> If you fix the issue, kindly add following tag where applicable
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
 
-[ Upstream commit 4050764cbaa25760aab40857f723393c07898474 ]
+Kindly ignore this report, the report itself has issue with empty
+warnings here. We will check and resolve this.
 
-Latest llvm-project upstream had a change of behavior
-related to qualifiers on function return type ([1]).
-This caused selftests btf_dump/btf_dump failure.
-The following example shows what changed.
-
-  $ cat t.c
-  typedef const char * const (* const (* const fn_ptr_arr2_t[5])())(char * (*)(int));
-  struct t {
-    int a;
-    fn_ptr_arr2_t l;
-  };
-  int foo(struct t *arg) {
-    return arg->a;
-  }
-
-Compiled with latest upstream llvm15,
-  $ clang -O2 -g -target bpf -S -emit-llvm t.c
-The related generated debuginfo IR looks like:
-  !16 = !DIDerivedType(tag: DW_TAG_typedef, name: "fn_ptr_arr2_t", file: !1, line: 1, baseType: !17)
-  !17 = !DICompositeType(tag: DW_TAG_array_type, baseType: !18, size: 320, elements: !32)
-  !18 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !19)
-  !19 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !20, size: 64)
-  !20 = !DISubroutineType(types: !21)
-  !21 = !{!22, null}
-  !22 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !23, size: 64)
-  !23 = !DISubroutineType(types: !24)
-  !24 = !{!25, !28}
-  !25 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !26, size: 64)
-  !26 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !27)
-  !27 = !DIBasicType(name: "char", size: 8, encoding: DW_ATE_signed_char)
-You can see two intermediate const qualifier to pointer are dropped in debuginfo IR.
-
-With llvm14, we have following debuginfo IR:
-  !16 = !DIDerivedType(tag: DW_TAG_typedef, name: "fn_ptr_arr2_t", file: !1, line: 1, baseType: !17)
-  !17 = !DICompositeType(tag: DW_TAG_array_type, baseType: !18, size: 320, elements: !34)
-  !18 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !19)
-  !19 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !20, size: 64)
-  !20 = !DISubroutineType(types: !21)
-  !21 = !{!22, null}
-  !22 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !23)
-  !23 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !24, size: 64)
-  !24 = !DISubroutineType(types: !25)
-  !25 = !{!26, !30}
-  !26 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !27)
-  !27 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !28, size: 64)
-  !28 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !29)
-  !29 = !DIBasicType(name: "char", size: 8, encoding: DW_ATE_signed_char)
-All const qualifiers are preserved.
-
-To adapt the selftest to both old and new llvm, this patch removed
-the intermediate const qualifier in const-to-ptr types, to make the
-test succeed again.
-
-  [1] https://reviews.llvm.org/D125919
-
-Reported-by: Mykola Lysenko <mykolal@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/r/20220523152044.3905809-1-yhs@fb.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-index d4a02fe44a12..0620580a5c16 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-@@ -94,7 +94,7 @@ typedef void (* (*signal_t)(int, void (*)(int)))(int);
- 
- typedef char * (*fn_ptr_arr1_t[10])(int **);
- 
--typedef char * (* const (* const fn_ptr_arr2_t[5])())(char * (*)(int));
-+typedef char * (* (* const fn_ptr_arr2_t[5])())(char * (*)(int));
- 
- struct struct_w_typedefs {
- 	int_t a;
--- 
-2.35.1
-
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://01.org/lkp
