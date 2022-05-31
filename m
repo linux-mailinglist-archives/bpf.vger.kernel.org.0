@@ -2,272 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 876A0538A32
-	for <lists+bpf@lfdr.de>; Tue, 31 May 2022 05:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF83538D27
+	for <lists+bpf@lfdr.de>; Tue, 31 May 2022 10:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240708AbiEaDYm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 May 2022 23:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53974 "EHLO
+        id S244960AbiEaIsE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 May 2022 04:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236001AbiEaDYk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 May 2022 23:24:40 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F330791587
-        for <bpf@vger.kernel.org>; Mon, 30 May 2022 20:24:38 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id n13-20020a17090a394d00b001e30a60f82dso1145602pjf.5
-        for <bpf@vger.kernel.org>; Mon, 30 May 2022 20:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=QLemg35dtO0TggrOtHsmX2G8r9FZ0B/KT3RLAejsh4U=;
-        b=rC54PeeMuU8j1dq+b34pSGbGrDtfYR37oseYqNxdFvlQSERPokecvYHWf8gIyG/zms
-         26C6vVO6Lo8uYlfas7oTx3YECIhiuOI0ycylVWHwCJHJh9YbC7naOatjDp4H2C0dQc6/
-         5msyN/q0LSM5BUlAUXdkylWWzWcMySYE5p/KNjDoS/yqYuHBMJ6nJ8D0we5fGlGakM8/
-         Pl9ak5WZuD4rcyVmhrQYtWDeWyrMljDocktriE4F8kuu7itM1x9eQ07FYbW+AmU4QC6R
-         gzxV5VGFhSA11k3VH9Mq89S/28tZhKbBxXsgtgOptDsHsJnssWeiTGDJTPuyy6xY9235
-         AIJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=QLemg35dtO0TggrOtHsmX2G8r9FZ0B/KT3RLAejsh4U=;
-        b=Ht03a8hceEjBCkHeh1Lp1ynXcWUPq0DVszh3+aTsJ5Bk/lmlbNQsLQiGlZZvOGVeXv
-         ahVq114opAMYDVgBqMO+VkYJn4S6g4CTYtbgnY+QILXAYcGyU0rOgWAxgbXSx50n4Ysv
-         Qgq+P3tIg0wrA/PohGEil/W8vOwkgjOMWcWxcEUVHJkOoolr/UYXoz+Nx+uxtJzBLAd/
-         0QUFkh970s3rDvKo6jkIp3NAWVqFJzAc8hEMsplA9XAQudu8Ke0XNPlrwhdDs6Vxhpf9
-         QAIYWe0Q5JTu6L2OdIyAWGRWAhw+ZdayF0Bt5LUUFFe4drxs4wi5SfoQ8QN3TrVaHP0S
-         MRCg==
-X-Gm-Message-State: AOAM5318QpwULJMGmAXa+tS0SoDR7JxcXcafb/WUc10bG3K/SLcBOc2T
-        66AhhIY5vDBC8YoJg946EELjpw==
-X-Google-Smtp-Source: ABdhPJyVXeL/+sKZJvszTSuatiJtXzvb33Ze9d4ceYMbJ7rWDV4jLin5P6/QcPPZPdrhwG127DAP0A==
-X-Received: by 2002:a17:902:e552:b0:163:6a5e:4e0d with SMTP id n18-20020a170902e55200b001636a5e4e0dmr27124956plf.66.1653967478391;
-        Mon, 30 May 2022 20:24:38 -0700 (PDT)
-Received: from [10.71.57.194] ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id z3-20020a17090a8b8300b001e2afd35791sm476368pjn.18.2022.05.30.20.24.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 May 2022 20:24:38 -0700 (PDT)
-Message-ID: <1302ea6d-3b25-bcc9-e988-9f538231e088@bytedance.com>
-Date:   Tue, 31 May 2022 11:24:30 +0800
+        with ESMTP id S244908AbiEaIsD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 May 2022 04:48:03 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC7B3E5F8;
+        Tue, 31 May 2022 01:48:02 -0700 (PDT)
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LC5W25ffgz6H7q1;
+        Tue, 31 May 2022 16:47:10 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 31 May 2022 10:47:59 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
+ Tue, 31 May 2022 10:47:59 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/2] libbpf: Retry map access with read-only permission
+Thread-Topic: [PATCH 1/2] libbpf: Retry map access with read-only permission
+Thread-Index: AQHYdAGr6HbH9aP+3U6x+kyoxSOBpK031lIAgADW9rA=
+Date:   Tue, 31 May 2022 08:47:59 +0000
+Message-ID: <8473aece18f64fbea2d27ddd30036685@huawei.com>
+References: <20220530084514.10170-1-roberto.sassu@huawei.com>
+ <20220530084514.10170-2-roberto.sassu@huawei.com>
+ <4089f118-662c-4ea2-131f-c8a9b702b6ca@iogearbox.net>
+In-Reply-To: <4089f118-662c-4ea2-131f-c8a9b702b6ca@iogearbox.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.204.63.21]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: Re: [PATCH v3 1/2] bpf: avoid grabbing spin_locks of all cpus
- when no free elems
-To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
-        songmuchun@bytedance.com, wangdongdong.6@bytedance.com,
-        cong.wang@bytedance.com, zhouchengming@bytedance.com
-References: <20220530091340.53443-1-zhoufeng.zf@bytedance.com>
- <20220530091340.53443-2-zhoufeng.zf@bytedance.com>
- <3cd2bc87-d766-0466-7079-eaff14fbe422@iogearbox.net>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <3cd2bc87-d766-0466-7079-eaff14fbe422@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2022/5/31 上午5:20, Daniel Borkmann 写道:
-> On 5/30/22 11:13 AM, Feng zhou wrote:
->> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>
->> This patch add is_empty in pcpu_freelist_head to check freelist
->> having free or not. If having, grab spin_lock, or check next cpu's
->> freelist.
->>
->> Before patch: hash_map performance
->> ./map_perf_test 1
->> 0:hash_map_perf pre-alloc 975345 events per sec
->> 4:hash_map_perf pre-alloc 855367 events per sec
->> 12:hash_map_perf pre-alloc 860862 events per sec
->> 8:hash_map_perf pre-alloc 849561 events per sec
->> 3:hash_map_perf pre-alloc 849074 events per sec
->> 6:hash_map_perf pre-alloc 847120 events per sec
->> 10:hash_map_perf pre-alloc 845047 events per sec
->> 5:hash_map_perf pre-alloc 841266 events per sec
->> 14:hash_map_perf pre-alloc 849740 events per sec
->> 2:hash_map_perf pre-alloc 839598 events per sec
->> 9:hash_map_perf pre-alloc 838695 events per sec
->> 11:hash_map_perf pre-alloc 845390 events per sec
->> 7:hash_map_perf pre-alloc 834865 events per sec
->> 13:hash_map_perf pre-alloc 842619 events per sec
->> 1:hash_map_perf pre-alloc 804231 events per sec
->> 15:hash_map_perf pre-alloc 795314 events per sec
->>
->> hash_map the worst: no free
->> ./map_perf_test 2048
->> 6:worse hash_map_perf pre-alloc 28628 events per sec
->> 5:worse hash_map_perf pre-alloc 28553 events per sec
->> 11:worse hash_map_perf pre-alloc 28543 events per sec
->> 3:worse hash_map_perf pre-alloc 28444 events per sec
->> 1:worse hash_map_perf pre-alloc 28418 events per sec
->> 7:worse hash_map_perf pre-alloc 28427 events per sec
->> 13:worse hash_map_perf pre-alloc 28330 events per sec
->> 14:worse hash_map_perf pre-alloc 28263 events per sec
->> 9:worse hash_map_perf pre-alloc 28211 events per sec
->> 15:worse hash_map_perf pre-alloc 28193 events per sec
->> 12:worse hash_map_perf pre-alloc 28190 events per sec
->> 10:worse hash_map_perf pre-alloc 28129 events per sec
->> 8:worse hash_map_perf pre-alloc 28116 events per sec
->> 4:worse hash_map_perf pre-alloc 27906 events per sec
->> 2:worse hash_map_perf pre-alloc 27801 events per sec
->> 0:worse hash_map_perf pre-alloc 27416 events per sec
->> 3:worse hash_map_perf pre-alloc 28188 events per sec
->>
->> ftrace trace
->>
->> 0)               |  htab_map_update_elem() {
->> 0)   0.198 us    |    migrate_disable();
->> 0)               |    _raw_spin_lock_irqsave() {
->> 0)   0.157 us    |      preempt_count_add();
->> 0)   0.538 us    |    }
->> 0)   0.260 us    |    lookup_elem_raw();
->> 0)               |    alloc_htab_elem() {
->> 0)               |      __pcpu_freelist_pop() {
->> 0)               |        _raw_spin_lock() {
->> 0)   0.152 us    |          preempt_count_add();
->> 0)   0.352 us    |          native_queued_spin_lock_slowpath();
->> 0)   1.065 us    |        }
->>          |      ...
->> 0)               |        _raw_spin_unlock() {
->> 0)   0.254 us    |          preempt_count_sub();
->> 0)   0.555 us    |        }
->> 0) + 25.188 us   |      }
->> 0) + 25.486 us   |    }
->> 0)               |    _raw_spin_unlock_irqrestore() {
->> 0)   0.155 us    |      preempt_count_sub();
->> 0)   0.454 us    |    }
->> 0)   0.148 us    |    migrate_enable();
->> 0) + 28.439 us   |  }
->>
->> The test machine is 16C, trying to get spin_lock 17 times, in addition
->> to 16c, there is an extralist.
->>
->> after patch: hash_map performance
->> ./map_perf_test 1
->> 0:hash_map_perf pre-alloc 969348 events per sec
->> 10:hash_map_perf pre-alloc 906526 events per sec
->> 11:hash_map_perf pre-alloc 904557 events per sec
->> 9:hash_map_perf pre-alloc 902384 events per sec
->> 15:hash_map_perf pre-alloc 912287 events per sec
->> 14:hash_map_perf pre-alloc 905689 events per sec
->> 12:hash_map_perf pre-alloc 903680 events per sec
->> 13:hash_map_perf pre-alloc 902631 events per sec
->> 8:hash_map_perf pre-alloc 875369 events per sec
->> 4:hash_map_perf pre-alloc 862808 events per sec
->> 1:hash_map_perf pre-alloc 857218 events per sec
->> 2:hash_map_perf pre-alloc 852875 events per sec
->> 5:hash_map_perf pre-alloc 846497 events per sec
->> 6:hash_map_perf pre-alloc 828467 events per sec
->> 3:hash_map_perf pre-alloc 812542 events per sec
->> 7:hash_map_perf pre-alloc 805336 events per sec
->>
->> hash_map worst: no free
->> ./map_perf_test 2048
->> 7:worse hash_map_perf pre-alloc 391104 events per sec
->> 4:worse hash_map_perf pre-alloc 388073 events per sec
->> 5:worse hash_map_perf pre-alloc 387038 events per sec
->> 1:worse hash_map_perf pre-alloc 386546 events per sec
->> 0:worse hash_map_perf pre-alloc 384590 events per sec
->> 11:worse hash_map_perf pre-alloc 379378 events per sec
->> 10:worse hash_map_perf pre-alloc 375480 events per sec
->> 12:worse hash_map_perf pre-alloc 372394 events per sec
->> 6:worse hash_map_perf pre-alloc 367692 events per sec
->> 3:worse hash_map_perf pre-alloc 363970 events per sec
->> 9:worse hash_map_perf pre-alloc 364008 events per sec
->> 8:worse hash_map_perf pre-alloc 363759 events per sec
->> 2:worse hash_map_perf pre-alloc 360743 events per sec
->> 14:worse hash_map_perf pre-alloc 361195 events per sec
->> 13:worse hash_map_perf pre-alloc 360276 events per sec
->> 15:worse hash_map_perf pre-alloc 360057 events per sec
->> 0:worse hash_map_perf pre-alloc 378177 events per sec
->>
->> ftrace trace
->> 0)               |  htab_map_update_elem() {
->> 0)   0.317 us    |    migrate_disable();
->> 0)               |    _raw_spin_lock_irqsave() {
->> 0)   0.260 us    |      preempt_count_add();
->> 0)   1.803 us    |    }
->> 0)   0.276 us    |    lookup_elem_raw();
->> 0)               |    alloc_htab_elem() {
->> 0)   0.586 us    |      __pcpu_freelist_pop();
->> 0)   0.945 us    |    }
->> 0)               |    _raw_spin_unlock_irqrestore() {
->> 0)   0.160 us    |      preempt_count_sub();
->> 0)   0.972 us    |    }
->> 0)   0.657 us    |    migrate_enable();
->> 0)   8.669 us    |  }
->>
->> It can be seen that after adding this patch, the map performance is
->> almost not degraded, and when free=0, first check is_empty instead of
->> directly acquiring spin_lock.
->>
->> As for why to add is_empty instead of directly judging head->first, my
->> understanding is this, head->first is frequently modified during 
->> updating
->> map, which will lead to invalid other cpus's cache, and is_empty is 
->> after
->> freelist having no free elems will be changed, the performance will 
->> be better.
->>
->> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->> ---
->>   kernel/bpf/percpu_freelist.c | 28 +++++++++++++++++++++++++---
->>   kernel/bpf/percpu_freelist.h |  1 +
->>   2 files changed, 26 insertions(+), 3 deletions(-)
-> [...]
->>       /* per cpu lists are all empty, try extralist */
->> +    if (s->extralist.is_empty)
->> +        return NULL;
->>       raw_spin_lock(&s->extralist.lock);
->>       node = s->extralist.first;
->> -    if (node)
->> +    if (node) {
->>           s->extralist.first = node->next;
->> +        if (!s->extralist.first)
->> +            s->extralist.is_empty = true;
->> +    }
->>       raw_spin_unlock(&s->extralist.lock);
->>       return node;
->>   }
->> @@ -164,15 +178,20 @@ ___pcpu_freelist_pop_nmi(struct pcpu_freelist *s)
->>       orig_cpu = cpu = raw_smp_processor_id();
->>       while (1) {
->>           head = per_cpu_ptr(s->freelist, cpu);
->> +        if (head->is_empty)
->
-> This should use READ_ONCE/WRITE_ONCE pair for head->is_empty.
-
-Yes, will do. Thanks.
-
->
->> +            goto next_cpu;
->>           if (raw_spin_trylock(&head->lock)) {
->>               node = head->first;
->>               if (node) {
->>                   head->first = node->next;
->> +                if (!head->first)
->> +                    head->is_empty = true;
->>                   raw_spin_unlock(&head->lock);
->>                   return node;
->>               }
->>               raw_spin_unlock(&head->lock);
->>           }
->> +next_cpu:
->>           cpu = cpumask_next(cpu, cpu_possible_mask);
->>           if (cpu >= nr_cpu_ids)
->>               cpu = 0;
-
-
+PiBGcm9tOiBEYW5pZWwgQm9ya21hbm4gW21haWx0bzpkYW5pZWxAaW9nZWFyYm94Lm5ldF0NCj4g
+U2VudDogTW9uZGF5LCBNYXkgMzAsIDIwMjIgMTE6NTUgUE0NCj4gT24gNS8zMC8yMiAxMDo0NSBB
+TSwgUm9iZXJ0byBTYXNzdSB3cm90ZToNCj4gPiBSZXRyeSBtYXAgYWNjZXNzIHdpdGggcmVhZC1v
+bmx5IHBlcm1pc3Npb24sIGlmIGFjY2VzcyB3YXMgZGVuaWVkIHdoZW4gYWxsDQo+ID4gcGVybWlz
+c2lvbnMgd2VyZSByZXF1ZXN0ZWQgKG9wZW5fZmxhZ3MgaXMgc2V0IHRvIHplcm8pLiBXcml0ZSBh
+Y2Nlc3MgbWlnaHQNCj4gPiBoYXZlIGJlZW4gZGVuaWVkIGJ5IHRoZSBicGZfbWFwIHNlY3VyaXR5
+IGhvb2suDQo+ID4NCj4gPiBTb21lIG9wZXJhdGlvbnMsIHN1Y2ggYXMgc2hvdyBhbmQgZHVtcCwg
+ZG9uJ3QgbmVlZCB3cml0ZSBwZXJtaXNzaW9ucywgc28NCj4gPiB0aGVyZSBpcyBhIGdvb2QgY2hh
+bmNlIG9mIHN1Y2Nlc3Mgd2l0aCByZXRyeWluZy4NCj4gPg0KPiA+IFByZWZlciB0aGlzIHNvbHV0
+aW9uIHRvIGV4dGVuZGluZyB0aGUgQVBJLCBhcyBvdGhlcndpc2UgYSBuZXcgbWVjaGFuaXNtDQo+
+ID4gd291bGQgbmVlZCB0byBiZSBpbXBsZW1lbnRlZCB0byBkZXRlcm1pbmUgdGhlIHJpZ2h0IHBl
+cm1pc3Npb25zIGZvciBhbg0KPiA+IG9wZXJhdGlvbi4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IFJvYmVydG8gU2Fzc3UgPHJvYmVydG8uc2Fzc3VAaHVhd2VpLmNvbT4NCj4gPiAtLS0NCj4gPiAg
+IHRvb2xzL2xpYi9icGYvYnBmLmMgfCA1ICsrKysrDQo+ID4gICAxIGZpbGUgY2hhbmdlZCwgNSBp
+bnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvdG9vbHMvbGliL2JwZi9icGYuYyBi
+L3Rvb2xzL2xpYi9icGYvYnBmLmMNCj4gPiBpbmRleCAyNDAxODZhYWM4ZTYuLmI0ZWVjMzkwMjFh
+NCAxMDA2NDQNCj4gPiAtLS0gYS90b29scy9saWIvYnBmL2JwZi5jDQo+ID4gKysrIGIvdG9vbHMv
+bGliL2JwZi9icGYuYw0KPiA+IEBAIC0xMDU2LDYgKzEwNTYsMTEgQEAgaW50IGJwZl9tYXBfZ2V0
+X2ZkX2J5X2lkKF9fdTMyIGlkKQ0KPiA+ICAgCWF0dHIubWFwX2lkID0gaWQ7DQo+ID4NCj4gPiAg
+IAlmZCA9IHN5c19icGZfZmQoQlBGX01BUF9HRVRfRkRfQllfSUQsICZhdHRyLCBzaXplb2YoYXR0
+cikpOw0KPiA+ICsJaWYgKGZkIDwgMCkgew0KPiA+ICsJCWF0dHIub3Blbl9mbGFncyA9IEJQRl9G
+X1JET05MWTsNCj4gPiArCQlmZCA9IHN5c19icGZfZmQoQlBGX01BUF9HRVRfRkRfQllfSUQsICZh
+dHRyLCBzaXplb2YoYXR0cikpOw0KPiA+ICsJfQ0KPiA+ICsNCj4gDQo+IEJ1dCB0aGVuIHdoYXQg
+YWJvdXQgYnBmX29ial9nZXQoKSBBUEkgaW4gbGliYnBmPyBhdHRyLmZpbGVfZmxhZ3MgaGFzIHNp
+bWlsYXINCj4gcHVycG9zZSBhcyBhdHRyLm9wZW5fZmxhZ3MgaW4gdGhpcyBjYXNlLg0KDQpPaywg
+SSBtaXNzZWQgaXQuDQoNCj4gVGhlIG90aGVyIGlzc3VlIGlzIHRoYXQgdGhpcyBjb3VsZCBoYXZl
+IHVwZ3JhZGUgaW1wbGljYXRpb25zLCBlLmcuIHdoZXJlIGFuDQo+IGFwcGxpY2F0aW9uIGJhaWxl
+ZCBvdXQgYmVmb3JlLCBpdCBpcyBub3cgcGFzc2luZyB3cnQgYnBmX21hcF9nZXRfZmRfYnlfaWQo
+KSwNCj4gYnV0IHRoZW4gc3VkZGVubHkgZmFpbGluZyBkdXJpbmcgbWFwIHVwZGF0ZSBjYWxscy4N
+Cg0KR29vZCBwb2ludC4NCg0KPiBJbWhvLCBpdCBtaWdodCBiZSBiZXR0ZXIgdG8gYmUgZXhwbGlj
+aXQgYWJvdXQgdXNlciBpbnRlbnQgdy9vIHRoZSBsaWIgZG9pbmcNCj4gZ3Vlc3Mgd29yayB1cG9u
+IGZhaWx1cmUgY2FzZXMgKC4uLiBvciBoYXZlIHRoZSBCUEYgTFNNIHNldCB0aGUgYXR0ci5vcGVu
+X2ZsYWdzDQo+IHRvIEJQRl9GX1JET05MWSBmcm9tIHdpdGhpbiB0aGUgQlBGIHByb2cpLg0KDQpV
+aG0sIEkgZG9uJ3QgbGlrZSB0aGF0IHRoZSB1c2VycyBzaG91bGQgYmUgYXdhcmUgb2YgcGVybWlz
+c2lvbnMgYXNzaWduZWQNCnRvIG1hcHMgdGhhdCB0aGV5IGRvbid0IG93bi4NCg0KTWF5YmUsIGJl
+dHRlciB0aGUgb3JpZ2luYWwgaWRlYSwgcmVxdWVzdCByZWFkLW9ubHkgcGVybWlzc2lvbiBmb3Ig
+dGhlDQpsaXN0IGFuZCBkdW1wIG9wZXJhdGlvbnMuDQoNClJvYmVydG8NCg0KSFVBV0VJIFRFQ0hO
+T0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYwNjMNCk1hbmFnaW5nIERpcmVjdG9yOiBM
+aSBQZW5nLCBaaG9uZyBSb25naHVhDQo=
