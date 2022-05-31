@@ -2,57 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EE753995F
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 00:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C4C539965
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 00:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbiEaWKf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 May 2022 18:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        id S1348337AbiEaWSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 May 2022 18:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348334AbiEaWKd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 May 2022 18:10:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0D89CF75
-        for <bpf@vger.kernel.org>; Tue, 31 May 2022 15:10:32 -0700 (PDT)
+        with ESMTP id S237879AbiEaWSB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 May 2022 18:18:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801369C2DB;
+        Tue, 31 May 2022 15:18:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C54D161411
-        for <bpf@vger.kernel.org>; Tue, 31 May 2022 22:10:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3412EC385A9
-        for <bpf@vger.kernel.org>; Tue, 31 May 2022 22:10:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 22413B81639;
+        Tue, 31 May 2022 22:17:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5E44C3411F;
+        Tue, 31 May 2022 22:17:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654035031;
-        bh=qHCb7kYRoXeGCPVBv2+M5Wy88Kx31lZ3P8HtZKDvQF8=;
+        s=k20201202; t=1654035477;
+        bh=kPz0kmcHmoiNz8TJQWJnQubb6pcM5fXPAa3VnwIRwsM=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kZv8i5vSgJ/7bM3Plg2jbdZoZj9JscoYhBPM+wzgFI4tYTLQBnkY39PXbXnUOmYqT
-         IJK3ZiotV+auyRb9PXCBBFeLIsxlFYg5tiwOsVMNWvTeHfltAEUFGISBAgyRfBJq8+
-         0e2uzCNvfDNRbuMOEGneZwgr3GHI/YqLfLAxOMX2ICZBN//GqxOlHeXpxg3HlyJIz4
-         0ZvBXUiEXkv3brVEnd8E2/akNPMk9CYaMqeetS/XoTEH46j1OutsXxbLzCh5Em+50E
-         QhSzmsskutDuUI4gYS/epg62Rebo7ZQSCTiL1cYE7jGG/R5vulBvuCAXSqpHVgcNbw
-         CWb+UkuJ8eu+w==
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-30c1c9b9b6cso90571097b3.13
-        for <bpf@vger.kernel.org>; Tue, 31 May 2022 15:10:31 -0700 (PDT)
-X-Gm-Message-State: AOAM5323wy6DYcIy6ukzhC5lXZhLstSha8GQhovWRwNdCLcnvISP+cNR
-        ijO7urDfYYkVQXaw/dWmCnN5iCWgph54W7Q1TtU=
-X-Google-Smtp-Source: ABdhPJxpESs+alkHsd+lWqlt689NSRvlWkna/Flsqch+NhvQwVYdTLgyo8yvYIv/i20bRmnd8QfsKleyfLaEG/aRxCU=
-X-Received: by 2002:a81:4a82:0:b0:2ff:94b4:b4d1 with SMTP id
- x124-20020a814a82000000b002ff94b4b4d1mr59190854ywa.130.1654035030163; Tue, 31
- May 2022 15:10:30 -0700 (PDT)
+        b=RQwd3Pe/cnpI/xPt98ZR2wM7u5vCkUNSisG1AxUYH+YIfi1XHnZb/I3cciwqdGGNW
+         l7OfgZU4RcR5dtJoqeYa8SfT9nhqh77qHoM0LZmYEL8c91+ukb/789rKaItyV5dTOl
+         IL2ShR0Wbpn94u11kQOFnTDE+IFQJk2FvzvrZjcmwqozCWuO0f3nMdoswNdu/FW+2R
+         Xm+c87VXBPsMDWw2MsDP/GRQrFm+RUU4b/VX7P9vK7XoCUSgWjvMMtYwekWFNSH/VI
+         qMCYHBUCss5uCifImZLNKWiIzctPz1ya4PFipba9kGkgZ6o2zVSqo2DZGln1/4TSE+
+         QTbaz+WKDscqA==
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-30ec2aa3b6cso1397127b3.11;
+        Tue, 31 May 2022 15:17:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533gGJGYhnSPMmN59m5pf++de8VKmewQZhHy0O6Z4LhcUMzhh+Lx
+        EdOX3XDaGQW0j8tlmGA2yT3my3DnPOYeY872+50=
+X-Google-Smtp-Source: ABdhPJzAHdyFLSBA7NcpOHiWNPWZHzx+Rx8RVyhdqXbl126xCzVD1uGCHamNm2Q0Lvci71OClw3JekoaaLJoSUffXQc=
+X-Received: by 2002:a0d:eb4d:0:b0:30c:9849:27a1 with SMTP id
+ u74-20020a0deb4d000000b0030c984927a1mr8212639ywe.472.1654035476770; Tue, 31
+ May 2022 15:17:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220529223646.862464-1-eddyz87@gmail.com> <20220529223646.862464-4-eddyz87@gmail.com>
-In-Reply-To: <20220529223646.862464-4-eddyz87@gmail.com>
+References: <20220531215113.1100754-1-eric.dumazet@gmail.com>
+In-Reply-To: <20220531215113.1100754-1-eric.dumazet@gmail.com>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 31 May 2022 15:10:19 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW66_coKcYi-NmKx86BqzEv-bd1b-jzaMAJk--QpWnLH3w@mail.gmail.com>
-Message-ID: <CAPhsuW66_coKcYi-NmKx86BqzEv-bd1b-jzaMAJk--QpWnLH3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] bpf: Inline calls to bpf_loop when
- callback is known
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Tue, 31 May 2022 15:17:46 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4vhjb6TAtT4XqWVqdbBrAVMuaZrvVfZZK=jyaoBaxKMQ@mail.gmail.com>
+Message-ID: <CAPhsuW4vhjb6TAtT4XqWVqdbBrAVMuaZrvVfZZK=jyaoBaxKMQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: arm64: clear prog->jited_len along prog->jited
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>,
+        syzbot <syzkaller@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -64,252 +67,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 29, 2022 at 3:37 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Tue, May 31, 2022 at 2:51 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
 >
-[...]
+> From: Eric Dumazet <edumazet@google.com>
 >
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> syzbot reported an illegal copy_to_user() attempt
+> from bpf_prog_get_info_by_fd() [1]
+>
+> There was no repro yet on this bug, but I think
+> that commit 0aef499f3172 ("mm/usercopy: Detect vmalloc overruns")
+> is exposing a prior bug in bpf arm64.
+>
+> bpf_prog_get_info_by_fd() looks at prog->jited_len
+> to determine if the JIT image can be copied out to user space.
+>
+> My theory is that syzbot managed to get a prog where prog->jited_len
+> has been set to 43, while prog->bpf_func has ben cleared.
+>
+> It is not clear why copy_to_user(uinsns, NULL, ulen) is triggering
+> this particular warning.
+> I thought find_vma_area(NULL) would not find a vm_struct.
+> As we do not hold vmap_area_lock spinlock, it might be possible
+> that the found vm_struct was garbage.
+>
+> [1]
+> usercopy: Kernel memory exposure attempt detected from vmalloc (offset 792633534417210172, size 43)!
+> kernel BUG at mm/usercopy.c:101!
+> Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+> Modules linked in:
+> CPU: 0 PID: 25002 Comm: syz-executor.1 Not tainted 5.18.0-syzkaller-10139-g8291eaafed36 #0
+> Hardware name: linux,dummy-virt (DT)
+> pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> pc : usercopy_abort+0x90/0x94 mm/usercopy.c:101
+> lr : usercopy_abort+0x90/0x94 mm/usercopy.c:89
+> sp : ffff80000b773a20
+> x29: ffff80000b773a30 x28: faff80000b745000 x27: ffff80000b773b48
+> x26: 0000000000000000 x25: 000000000000002b x24: 0000000000000000
+> x23: 00000000000000e0 x22: ffff80000b75db67 x21: 0000000000000001
+> x20: 000000000000002b x19: ffff80000b75db3c x18: 00000000fffffffd
+> x17: 2820636f6c6c616d x16: 76206d6f72662064 x15: 6574636574656420
+> x14: 74706d6574746120 x13: 2129333420657a69 x12: 73202c3237313031
+> x11: 3237313434333533 x10: 3336323937207465 x9 : 657275736f707865
+> x8 : ffff80000a30c550 x7 : ffff80000b773830 x6 : ffff80000b773830
+> x5 : 0000000000000000 x4 : ffff00007fbbaa10 x3 : 0000000000000000
+> x2 : 0000000000000000 x1 : f7ff000028fc0000 x0 : 0000000000000064
+> Call trace:
+>  usercopy_abort+0x90/0x94 mm/usercopy.c:89
+>  check_heap_object mm/usercopy.c:186 [inline]
+>  __check_object_size mm/usercopy.c:252 [inline]
+>  __check_object_size+0x198/0x36c mm/usercopy.c:214
+>  check_object_size include/linux/thread_info.h:199 [inline]
+>  check_copy_size include/linux/thread_info.h:235 [inline]
+>  copy_to_user include/linux/uaccess.h:159 [inline]
+>  bpf_prog_get_info_by_fd.isra.0+0xf14/0xfdc kernel/bpf/syscall.c:3993
+>  bpf_obj_get_info_by_fd+0x12c/0x510 kernel/bpf/syscall.c:4253
+>  __sys_bpf+0x900/0x2150 kernel/bpf/syscall.c:4956
+>  __do_sys_bpf kernel/bpf/syscall.c:5021 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:5019 [inline]
+>  __arm64_sys_bpf+0x28/0x40 kernel/bpf/syscall.c:5019
+>  __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+>  invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:52
+>  el0_svc_common.constprop.0+0x44/0xec arch/arm64/kernel/syscall.c:142
+>  do_el0_svc+0xa0/0xc0 arch/arm64/kernel/syscall.c:206
+>  el0_svc+0x44/0xb0 arch/arm64/kernel/entry-common.c:624
+>  el0t_64_sync_handler+0x1ac/0x1b0 arch/arm64/kernel/entry-common.c:642
+>  el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:581
+> Code: aa0003e3 d00038c0 91248000 97fff65f (d4210000)
+>
+> Fixes: db496944fdaa ("bpf: arm64: add JIT support for multi-function programs")
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Reported-by: syzbot <syzkaller@googlegroups.com>
 
-Please put kernel changes, test_prog changes, and test_verifier changes to 3
-separate patches.
+Acked-by: Song Liu <songliubraving@fb.com>
 
 > ---
->  include/linux/bpf_verifier.h                  |  16 ++
->  kernel/bpf/bpf_iter.c                         |   9 +-
->  kernel/bpf/verifier.c                         | 184 ++++++++++++-
->  .../selftests/bpf/prog_tests/bpf_loop.c       |  62 +++++
->  tools/testing/selftests/bpf/progs/bpf_loop.c  | 122 +++++++++
->  .../selftests/bpf/verifier/bpf_loop_inline.c  | 244 ++++++++++++++++++
->  6 files changed, 628 insertions(+), 9 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-[...]
-> +/* For all sub-programs in the program (including main) checks
-> + * insn_aux_data to see if there are bpf_loop calls that require
-> + * inlining. If such calls are found subprog stack_depth is increased
-> + * by the size of 3 registers. Reserved space would be used in the
-> + * do_misc_fixups to spill values of the R6, R7, R8 to use these
-> + * registers for loop iteration.
-> + */
-> +static void adjust_stack_depth_for_loop_inlining(struct bpf_verifier_env *env)
-> +{
-> +       int i, subprog_end, cur_subprog = 0;
-> +       struct bpf_subprog_info *subprogs = env->subprog_info;
-> +       int insn_cnt = env->prog->len;
-> +       bool proc_updated = false;
-
-nit: I guess this should be called subprog_updated?
-
-> +       s32 stack_base;
-> +
-> +       subprog_end = (env->subprog_cnt > 1
-> +                      ? subprogs[cur_subprog + 1].start
-> +                      : insn_cnt);
-> +       for (i = 0; i < insn_cnt; i++) {
-> +               struct bpf_insn_aux_data *aux = &env->insn_aux_data[i];
-> +
-
-[...]
-
-> +static struct bpf_prog *inline_bpf_loop(struct bpf_verifier_env *env,
-> +                                       int position, u32 *cnt)
-> +{
-> +       struct bpf_insn_aux_data *aux = &env->insn_aux_data[position];
-> +       s32 stack_base = aux->loop_inline_state.stack_base;
-> +       s32 r6_offset = stack_base + 0 * BPF_REG_SIZE;
-> +       s32 r7_offset = stack_base + 1 * BPF_REG_SIZE;
-> +       s32 r8_offset = stack_base + 2 * BPF_REG_SIZE;
-> +       int reg_loop_max = BPF_REG_6;
-> +       int reg_loop_cnt = BPF_REG_7;
-> +       int reg_loop_ctx = BPF_REG_8;
-> +
-> +       struct bpf_prog *new_prog;
-> +       u32 callback_subprogno = aux->loop_inline_state.callback_subprogno;
-> +       u32 callback_start;
-> +       u32 call_insn_offset;
-> +       s32 callback_offset;
-> +
-> +       struct bpf_insn insn_buf[] = {
-> +               /* Return error and jump to the end of the patch if
-> +                * expected number of iterations is too big.  This
-> +                * repeats the check done in bpf_loop helper function,
-> +                * be careful to modify this code in sync.
-> +                */
-> +               BPF_JMP_IMM(BPF_JLE, BPF_REG_1, BPF_MAX_LOOPS, 2),
-> +               BPF_MOV32_IMM(BPF_REG_0, -E2BIG),
-> +               BPF_JMP_IMM(BPF_JA, 0, 0, 16),
-> +               /* spill R6, R7, R8 to use these as loop vars */
-> +               BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_6, r6_offset),
-> +               BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_7, r7_offset),
-> +               BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_8, r8_offset),
-> +               /* initialize loop vars */
-> +               BPF_MOV64_REG(reg_loop_max, BPF_REG_1),
-> +               BPF_MOV32_IMM(reg_loop_cnt, 0),
-> +               BPF_MOV64_REG(reg_loop_ctx, BPF_REG_3),
-> +               /* loop header,
-> +                * if reg_loop_cnt >= reg_loop_max skip the loop body
-> +                */
-> +               BPF_JMP_REG(BPF_JGE, reg_loop_cnt, reg_loop_max, 5),
-> +               /* callback call,
-> +                * correct callback offset would be set after patching
-> +                */
-> +               BPF_MOV64_REG(BPF_REG_1, reg_loop_cnt),
-> +               BPF_MOV64_REG(BPF_REG_2, reg_loop_ctx),
-> +               BPF_CALL_REL(0),
-> +               /* increment loop counter */
-> +               BPF_ALU64_IMM(BPF_ADD, reg_loop_cnt, 1),
-> +               /* jump to loop header if callback returned 0 */
-> +               BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, -6),
-> +               /* return value of bpf_loop,
-> +                * set R0 to the number of iterations
-> +                */
-> +               BPF_MOV64_REG(BPF_REG_0, reg_loop_cnt),
-> +               /* restore original values of R6, R7, R8 */
-> +               BPF_LDX_MEM(BPF_DW, BPF_REG_6, BPF_REG_10, r6_offset),
-> +               BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_10, r7_offset),
-> +               BPF_LDX_MEM(BPF_DW, BPF_REG_8, BPF_REG_10, r8_offset),
-> +       };
-> +
-> +       *cnt = ARRAY_SIZE(insn_buf);
-> +       new_prog = bpf_patch_insn_data(env, position, insn_buf, *cnt);
-> +       if (!new_prog)
-> +               return new_prog;
-> +
-> +       /* callback start is known only after patching */
-> +       callback_start = env->subprog_info[callback_subprogno].start;
-> +       call_insn_offset = position + 12;
-
-IIUC, magic number 12 is calculated based on the content of insn_buf.
-Can we make this more robust for future changes? We should at least
-add a comment here.
-
-> +       callback_offset = callback_start - call_insn_offset - 1;
-> +       env->prog->insnsi[call_insn_offset].imm = callback_offset;
-> +
-> +       return new_prog;
-> +}
-> +
->  /* Do various post-verification rewrites in a single program pass.
->   * These rewrites simplify JIT and interpreter implementations.
->   */
-> @@ -14258,6 +14417,18 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->                         continue;
+>  arch/arm64/net/bpf_jit_comp.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 8ab4035dea2742b704dc7501b0b2128320899b1e..42f2e9a8616c3095609c182e6f50defdbe862b46 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -1478,6 +1478,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>                         bpf_jit_binary_free(header);
+>                         prog->bpf_func = NULL;
+>                         prog->jited = 0;
+> +                       prog->jited_len = 0;
+>                         goto out_off;
 >                 }
+>                 bpf_jit_binary_lock_ro(header);
+> --
+> 2.36.1.255.ge46751e96f-goog
 >
-> +               if (insn->imm == BPF_FUNC_loop &&
-> +                   fit_for_bpf_loop_inline(&env->insn_aux_data[i + delta])) {
-> +                       new_prog = inline_bpf_loop(env, i + delta, &cnt);
-> +                       if (!new_prog)
-> +                               return -ENOMEM;
-> +
-> +                       delta    += cnt - 1;
-> +                       env->prog = prog = new_prog;
-> +                       insn      = new_prog->insnsi + i + delta;
-> +                       continue;
-> +               }
-> +
->  patch_call_imm:
->                 fn = env->ops->get_func_proto(insn->imm, env->prog);
->                 /* all functions that have prototype and verifier allowed
-> @@ -15030,6 +15201,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
->         if (ret == 0)
->                 ret = check_max_stack_depth(env);
->
-> +       if (ret == 0)
-> +               adjust_stack_depth_for_loop_inlining(env);
-> +
->         /* instruction rewrites happen after this point */
->         if (is_priv) {
->                 if (ret == 0)
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_loop.c b/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
-> index 380d7a2072e3..1caa495be48c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
-> @@ -120,6 +120,64 @@ static void check_nested_calls(struct bpf_loop *skel)
->         bpf_link__destroy(link);
->  }
->
-> +static void check_non_constant_callback(struct bpf_loop *skel)
-> +{
-> +       struct bpf_link *link =
-> +               bpf_program__attach(skel->progs.prog_non_constant_callback);
-> +
-> +       if (!ASSERT_OK_PTR(link, "link"))
-> +               return;
-> +
-> +       skel->bss->callback_selector = 0x0F;
-> +       usleep(1);
-> +       ASSERT_EQ(skel->bss->g_output, 0x0F, "g_output #1");
-> +
-> +       skel->bss->callback_selector = 0xF0;
-> +       usleep(1);
-> +       ASSERT_EQ(skel->bss->g_output, 0xF0, "g_output #2");
-> +
-> +       bpf_link__destroy(link);
-> +}
-> +
-> +static void check_stack(struct bpf_loop *skel)
-> +{
-> +       struct bpf_link *link =
-> +               bpf_program__attach(skel->progs.stack_check);
-> +
-> +       if (!ASSERT_OK_PTR(link, "link"))
-> +               goto out;
-
-We can just return here.
-
-> +
-> +       int map_fd = bpf_map__fd(skel->maps.map1);
-Please move variable definition to the beginning of the function.
-
-> +
-> +       if (!ASSERT_GE(map_fd, 0, "bpf_map__fd"))
-> +               goto out;
-> +
-> +       for (int key = 1; key <= 16; ++key) {
-> +               int val = key;
-> +               int err = bpf_map_update_elem(map_fd, &key, &val, BPF_NOEXIST);
-> +
-> +               if (!ASSERT_OK(err, "bpf_map_update_elem"))
-> +                       goto out;
-> +       }
-> +
-> +       usleep(1);
-> +
-> +       for (int key = 1; key <= 16; ++key) {
-> +               int val;
-> +               int err = bpf_map_lookup_elem(map_fd, &key, &val);
-> +
-> +               if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-> +                       goto out;
-> +               ASSERT_EQ(val, key + 1, "bad value in the map");
-> +       }
-> +
-> +out:
-> +       if (map_fd >= 0)
-> +               close(map_fd);
-
-map1 is part of the skeleton, we should not close it here.
-
-> +       if (link)
-> +               bpf_link__destroy(link);
-
-No need to check "if (link)"
-
-> +}
-> +
->  void test_bpf_loop(void)
->  {
->         struct bpf_loop *skel;
-> @@ -140,6 +198,10 @@ void test_bpf_loop(void)
->                 check_invalid_flags(skel);
->         if (test__start_subtest("check_nested_calls"))
->                 check_nested_calls(skel);
-> +       if (test__start_subtest("check_non_constant_callback"))
-> +               check_non_constant_callback(skel);
-> +       if (test__start_subtest("check_stack"))
-> +               check_stack(skel);
->
->         bpf_loop__destroy(skel);
->  }
-
-[...]
