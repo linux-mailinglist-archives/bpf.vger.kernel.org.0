@@ -2,161 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D025153895E
-	for <lists+bpf@lfdr.de>; Tue, 31 May 2022 03:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876A0538A32
+	for <lists+bpf@lfdr.de>; Tue, 31 May 2022 05:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241938AbiEaBAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 May 2022 21:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        id S240708AbiEaDYm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 May 2022 23:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238350AbiEaBAJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 May 2022 21:00:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8490D56C04;
-        Mon, 30 May 2022 18:00:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D02060F15;
-        Tue, 31 May 2022 01:00:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50E11C385B8;
-        Tue, 31 May 2022 01:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653958806;
-        bh=jNUPq/Tf7RZLxM01lVMgFQXyzyWU02Zq99rarwAuvzQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H9giW1zQMpscgulPFUwCl5b84ckvXqhU7BmMSZ35f4dwWJM4XXjWrqB5ZMlaH6RiV
-         2ybrnwbU96e7unajuXF7G7Nw7kQpbO7rowgaOD/vvuo+ptSBgg5TM1+jyJvEljcuoq
-         twANhFTRPo5JIB7eNqXRKu7bbuGIb9KvpjG7weSytHtV4a1H4UXyfRw2zrWyz0MGg9
-         oyuCy0WYpemdU5SdNE7SszZRhr+diV6HbccanRZOTX6tCOBiKpdYbcAKDqduoIeIlN
-         yptHxjHgvjHc0uARiI/alXiIS0KMWPkRZNYPUhTmKxx3aS3Zp9PGvDHOJ376+JzTg2
-         VQ7n1OsU6AcVA==
-Date:   Tue, 31 May 2022 10:00:00 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        cj.chengjian@huawei.com, huawei.libin@huawei.com,
-        xiexiuqi@huawei.com, liwei391@huawei.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        catalin.marinas@arm.com, will@kernel.org, zengshun.wu@outlook.com,
-        bpf@vger.kernel.org
-Subject: Re: [RFC PATCH -next v2 3/4] arm64/ftrace: support dynamically
- allocated trampolines
-Message-Id: <20220531100000.cbd18c4c08eacb67b95fba5b@kernel.org>
-In-Reply-To: <YpS6x0g8AimeaAw9@krava>
-References: <YnJUTuOIX9YoJq23@FVFF77S0Q05N>
-        <20220505121538.04773ac98e2a8ba17f675d39@kernel.org>
-        <20220509142203.6c4f2913@gandalf.local.home>
-        <20220510181012.d5cba23a2547f14d14f016b9@kernel.org>
-        <20220510104446.6d23b596@gandalf.local.home>
-        <20220511233450.40136cdf6a53eb32cd825be8@kernel.org>
-        <20220511111207.25d1a693@gandalf.local.home>
-        <20220512210231.f9178a98f20a37981b1e89e3@kernel.org>
-        <Yo4eWqHA/IjNElNN@FVFF77S0Q05N>
-        <20220530100310.c22c36df4ea9324cb9cb3515@kernel.org>
-        <YpS6x0g8AimeaAw9@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S236001AbiEaDYk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 May 2022 23:24:40 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F330791587
+        for <bpf@vger.kernel.org>; Mon, 30 May 2022 20:24:38 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id n13-20020a17090a394d00b001e30a60f82dso1145602pjf.5
+        for <bpf@vger.kernel.org>; Mon, 30 May 2022 20:24:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=QLemg35dtO0TggrOtHsmX2G8r9FZ0B/KT3RLAejsh4U=;
+        b=rC54PeeMuU8j1dq+b34pSGbGrDtfYR37oseYqNxdFvlQSERPokecvYHWf8gIyG/zms
+         26C6vVO6Lo8uYlfas7oTx3YECIhiuOI0ycylVWHwCJHJh9YbC7naOatjDp4H2C0dQc6/
+         5msyN/q0LSM5BUlAUXdkylWWzWcMySYE5p/KNjDoS/yqYuHBMJ6nJ8D0we5fGlGakM8/
+         Pl9ak5WZuD4rcyVmhrQYtWDeWyrMljDocktriE4F8kuu7itM1x9eQ07FYbW+AmU4QC6R
+         gzxV5VGFhSA11k3VH9Mq89S/28tZhKbBxXsgtgOptDsHsJnssWeiTGDJTPuyy6xY9235
+         AIJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=QLemg35dtO0TggrOtHsmX2G8r9FZ0B/KT3RLAejsh4U=;
+        b=Ht03a8hceEjBCkHeh1Lp1ynXcWUPq0DVszh3+aTsJ5Bk/lmlbNQsLQiGlZZvOGVeXv
+         ahVq114opAMYDVgBqMO+VkYJn4S6g4CTYtbgnY+QILXAYcGyU0rOgWAxgbXSx50n4Ysv
+         Qgq+P3tIg0wrA/PohGEil/W8vOwkgjOMWcWxcEUVHJkOoolr/UYXoz+Nx+uxtJzBLAd/
+         0QUFkh970s3rDvKo6jkIp3NAWVqFJzAc8hEMsplA9XAQudu8Ke0XNPlrwhdDs6Vxhpf9
+         QAIYWe0Q5JTu6L2OdIyAWGRWAhw+ZdayF0Bt5LUUFFe4drxs4wi5SfoQ8QN3TrVaHP0S
+         MRCg==
+X-Gm-Message-State: AOAM5318QpwULJMGmAXa+tS0SoDR7JxcXcafb/WUc10bG3K/SLcBOc2T
+        66AhhIY5vDBC8YoJg946EELjpw==
+X-Google-Smtp-Source: ABdhPJyVXeL/+sKZJvszTSuatiJtXzvb33Ze9d4ceYMbJ7rWDV4jLin5P6/QcPPZPdrhwG127DAP0A==
+X-Received: by 2002:a17:902:e552:b0:163:6a5e:4e0d with SMTP id n18-20020a170902e55200b001636a5e4e0dmr27124956plf.66.1653967478391;
+        Mon, 30 May 2022 20:24:38 -0700 (PDT)
+Received: from [10.71.57.194] ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id z3-20020a17090a8b8300b001e2afd35791sm476368pjn.18.2022.05.30.20.24.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 May 2022 20:24:38 -0700 (PDT)
+Message-ID: <1302ea6d-3b25-bcc9-e988-9f538231e088@bytedance.com>
+Date:   Tue, 31 May 2022 11:24:30 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.9.0
+Subject: Re: Re: [PATCH v3 1/2] bpf: avoid grabbing spin_locks of all cpus
+ when no free elems
+To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
+        songmuchun@bytedance.com, wangdongdong.6@bytedance.com,
+        cong.wang@bytedance.com, zhouchengming@bytedance.com
+References: <20220530091340.53443-1-zhoufeng.zf@bytedance.com>
+ <20220530091340.53443-2-zhoufeng.zf@bytedance.com>
+ <3cd2bc87-d766-0466-7079-eaff14fbe422@iogearbox.net>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <3cd2bc87-d766-0466-7079-eaff14fbe422@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 30 May 2022 14:38:31 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
+在 2022/5/31 上午5:20, Daniel Borkmann 写道:
+> On 5/30/22 11:13 AM, Feng zhou wrote:
+>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>
+>> This patch add is_empty in pcpu_freelist_head to check freelist
+>> having free or not. If having, grab spin_lock, or check next cpu's
+>> freelist.
+>>
+>> Before patch: hash_map performance
+>> ./map_perf_test 1
+>> 0:hash_map_perf pre-alloc 975345 events per sec
+>> 4:hash_map_perf pre-alloc 855367 events per sec
+>> 12:hash_map_perf pre-alloc 860862 events per sec
+>> 8:hash_map_perf pre-alloc 849561 events per sec
+>> 3:hash_map_perf pre-alloc 849074 events per sec
+>> 6:hash_map_perf pre-alloc 847120 events per sec
+>> 10:hash_map_perf pre-alloc 845047 events per sec
+>> 5:hash_map_perf pre-alloc 841266 events per sec
+>> 14:hash_map_perf pre-alloc 849740 events per sec
+>> 2:hash_map_perf pre-alloc 839598 events per sec
+>> 9:hash_map_perf pre-alloc 838695 events per sec
+>> 11:hash_map_perf pre-alloc 845390 events per sec
+>> 7:hash_map_perf pre-alloc 834865 events per sec
+>> 13:hash_map_perf pre-alloc 842619 events per sec
+>> 1:hash_map_perf pre-alloc 804231 events per sec
+>> 15:hash_map_perf pre-alloc 795314 events per sec
+>>
+>> hash_map the worst: no free
+>> ./map_perf_test 2048
+>> 6:worse hash_map_perf pre-alloc 28628 events per sec
+>> 5:worse hash_map_perf pre-alloc 28553 events per sec
+>> 11:worse hash_map_perf pre-alloc 28543 events per sec
+>> 3:worse hash_map_perf pre-alloc 28444 events per sec
+>> 1:worse hash_map_perf pre-alloc 28418 events per sec
+>> 7:worse hash_map_perf pre-alloc 28427 events per sec
+>> 13:worse hash_map_perf pre-alloc 28330 events per sec
+>> 14:worse hash_map_perf pre-alloc 28263 events per sec
+>> 9:worse hash_map_perf pre-alloc 28211 events per sec
+>> 15:worse hash_map_perf pre-alloc 28193 events per sec
+>> 12:worse hash_map_perf pre-alloc 28190 events per sec
+>> 10:worse hash_map_perf pre-alloc 28129 events per sec
+>> 8:worse hash_map_perf pre-alloc 28116 events per sec
+>> 4:worse hash_map_perf pre-alloc 27906 events per sec
+>> 2:worse hash_map_perf pre-alloc 27801 events per sec
+>> 0:worse hash_map_perf pre-alloc 27416 events per sec
+>> 3:worse hash_map_perf pre-alloc 28188 events per sec
+>>
+>> ftrace trace
+>>
+>> 0)               |  htab_map_update_elem() {
+>> 0)   0.198 us    |    migrate_disable();
+>> 0)               |    _raw_spin_lock_irqsave() {
+>> 0)   0.157 us    |      preempt_count_add();
+>> 0)   0.538 us    |    }
+>> 0)   0.260 us    |    lookup_elem_raw();
+>> 0)               |    alloc_htab_elem() {
+>> 0)               |      __pcpu_freelist_pop() {
+>> 0)               |        _raw_spin_lock() {
+>> 0)   0.152 us    |          preempt_count_add();
+>> 0)   0.352 us    |          native_queued_spin_lock_slowpath();
+>> 0)   1.065 us    |        }
+>>          |      ...
+>> 0)               |        _raw_spin_unlock() {
+>> 0)   0.254 us    |          preempt_count_sub();
+>> 0)   0.555 us    |        }
+>> 0) + 25.188 us   |      }
+>> 0) + 25.486 us   |    }
+>> 0)               |    _raw_spin_unlock_irqrestore() {
+>> 0)   0.155 us    |      preempt_count_sub();
+>> 0)   0.454 us    |    }
+>> 0)   0.148 us    |    migrate_enable();
+>> 0) + 28.439 us   |  }
+>>
+>> The test machine is 16C, trying to get spin_lock 17 times, in addition
+>> to 16c, there is an extralist.
+>>
+>> after patch: hash_map performance
+>> ./map_perf_test 1
+>> 0:hash_map_perf pre-alloc 969348 events per sec
+>> 10:hash_map_perf pre-alloc 906526 events per sec
+>> 11:hash_map_perf pre-alloc 904557 events per sec
+>> 9:hash_map_perf pre-alloc 902384 events per sec
+>> 15:hash_map_perf pre-alloc 912287 events per sec
+>> 14:hash_map_perf pre-alloc 905689 events per sec
+>> 12:hash_map_perf pre-alloc 903680 events per sec
+>> 13:hash_map_perf pre-alloc 902631 events per sec
+>> 8:hash_map_perf pre-alloc 875369 events per sec
+>> 4:hash_map_perf pre-alloc 862808 events per sec
+>> 1:hash_map_perf pre-alloc 857218 events per sec
+>> 2:hash_map_perf pre-alloc 852875 events per sec
+>> 5:hash_map_perf pre-alloc 846497 events per sec
+>> 6:hash_map_perf pre-alloc 828467 events per sec
+>> 3:hash_map_perf pre-alloc 812542 events per sec
+>> 7:hash_map_perf pre-alloc 805336 events per sec
+>>
+>> hash_map worst: no free
+>> ./map_perf_test 2048
+>> 7:worse hash_map_perf pre-alloc 391104 events per sec
+>> 4:worse hash_map_perf pre-alloc 388073 events per sec
+>> 5:worse hash_map_perf pre-alloc 387038 events per sec
+>> 1:worse hash_map_perf pre-alloc 386546 events per sec
+>> 0:worse hash_map_perf pre-alloc 384590 events per sec
+>> 11:worse hash_map_perf pre-alloc 379378 events per sec
+>> 10:worse hash_map_perf pre-alloc 375480 events per sec
+>> 12:worse hash_map_perf pre-alloc 372394 events per sec
+>> 6:worse hash_map_perf pre-alloc 367692 events per sec
+>> 3:worse hash_map_perf pre-alloc 363970 events per sec
+>> 9:worse hash_map_perf pre-alloc 364008 events per sec
+>> 8:worse hash_map_perf pre-alloc 363759 events per sec
+>> 2:worse hash_map_perf pre-alloc 360743 events per sec
+>> 14:worse hash_map_perf pre-alloc 361195 events per sec
+>> 13:worse hash_map_perf pre-alloc 360276 events per sec
+>> 15:worse hash_map_perf pre-alloc 360057 events per sec
+>> 0:worse hash_map_perf pre-alloc 378177 events per sec
+>>
+>> ftrace trace
+>> 0)               |  htab_map_update_elem() {
+>> 0)   0.317 us    |    migrate_disable();
+>> 0)               |    _raw_spin_lock_irqsave() {
+>> 0)   0.260 us    |      preempt_count_add();
+>> 0)   1.803 us    |    }
+>> 0)   0.276 us    |    lookup_elem_raw();
+>> 0)               |    alloc_htab_elem() {
+>> 0)   0.586 us    |      __pcpu_freelist_pop();
+>> 0)   0.945 us    |    }
+>> 0)               |    _raw_spin_unlock_irqrestore() {
+>> 0)   0.160 us    |      preempt_count_sub();
+>> 0)   0.972 us    |    }
+>> 0)   0.657 us    |    migrate_enable();
+>> 0)   8.669 us    |  }
+>>
+>> It can be seen that after adding this patch, the map performance is
+>> almost not degraded, and when free=0, first check is_empty instead of
+>> directly acquiring spin_lock.
+>>
+>> As for why to add is_empty instead of directly judging head->first, my
+>> understanding is this, head->first is frequently modified during 
+>> updating
+>> map, which will lead to invalid other cpus's cache, and is_empty is 
+>> after
+>> freelist having no free elems will be changed, the performance will 
+>> be better.
+>>
+>> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+>> ---
+>>   kernel/bpf/percpu_freelist.c | 28 +++++++++++++++++++++++++---
+>>   kernel/bpf/percpu_freelist.h |  1 +
+>>   2 files changed, 26 insertions(+), 3 deletions(-)
+> [...]
+>>       /* per cpu lists are all empty, try extralist */
+>> +    if (s->extralist.is_empty)
+>> +        return NULL;
+>>       raw_spin_lock(&s->extralist.lock);
+>>       node = s->extralist.first;
+>> -    if (node)
+>> +    if (node) {
+>>           s->extralist.first = node->next;
+>> +        if (!s->extralist.first)
+>> +            s->extralist.is_empty = true;
+>> +    }
+>>       raw_spin_unlock(&s->extralist.lock);
+>>       return node;
+>>   }
+>> @@ -164,15 +178,20 @@ ___pcpu_freelist_pop_nmi(struct pcpu_freelist *s)
+>>       orig_cpu = cpu = raw_smp_processor_id();
+>>       while (1) {
+>>           head = per_cpu_ptr(s->freelist, cpu);
+>> +        if (head->is_empty)
+>
+> This should use READ_ONCE/WRITE_ONCE pair for head->is_empty.
 
-> On Mon, May 30, 2022 at 10:03:10AM +0900, Masami Hiramatsu wrote:
-> > (Cc: BPF ML)
-> > 
-> > On Wed, 25 May 2022 13:17:30 +0100
-> > Mark Rutland <mark.rutland@arm.com> wrote:
-> > 
-> > > On Thu, May 12, 2022 at 09:02:31PM +0900, Masami Hiramatsu wrote:
-> > > > On Wed, 11 May 2022 11:12:07 -0400
-> > > > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > > 
-> > > > > On Wed, 11 May 2022 23:34:50 +0900
-> > > > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > > > 
-> > > > > > OK, so fregs::regs will have a subset of pt_regs, and accessibility of
-> > > > > > the registers depends on the architecture. If we can have a checker like
-> > > > > > 
-> > > > > > ftrace_regs_exist(fregs, reg_offset)
-> > > > > 
-> > > > > Or something. I'd have to see the use case.
-> > > > > 
-> > > > > > 
-> > > > > > kprobe on ftrace or fprobe user (BPF) can filter user's requests.
-> > > > > > I think I can introduce a flag for kprobes so that user can make a
-> > > > > > kprobe handler only using a subset of registers. 
-> > > > > > Maybe similar filter code is also needed for BPF 'user space' library
-> > > > > > because this check must be done when compiling BPF.
-> > > > > 
-> > > > > Is there any other case without full regs that the user would want anything
-> > > > > other than the args, stack pointer and instruction pointer?
-> > > > 
-> > > > For the kprobes APIs/events, yes, it needs to access to the registers
-> > > > which is used for local variables when probing inside the function body.
-> > > > However at the function entry, I think almost no use case. (BTW, pstate
-> > > > is a bit special, that may show the actual processor-level status
-> > > > (context), so for the debugging, user might want to read it.)
-> > > 
-> > > As before, if we really need PSTATE we *must* take an exception to get a
-> > > reliable snapshot (or to alter the value). So I'd really like to split this
-> > > into two cases:
-> > > 
-> > > * Where users *really* need PSTATE (or arbitrary GPRs), they use kprobes. That
-> > >   always takes an exception and they can have a complete, real struct pt_regs.
-> > > 
-> > > * Where users just need to capture a function call boundary, they use ftrace.
-> > >   That uses a trampoline without taking an exception, and they get the minimal
-> > >   set of registers relevant to the function call boundary (which does not
-> > >   include PSTATE or most GPRs).
-> > 
-> > I totally agree with this idea. The x86 is a special case, since the
-> > -fentry option puts a call on the first instruction of the function entry,
-> > I had to reuse the ftrace instead of swbp for kprobes.
-> > But on arm64 (and other RISCs), we can use them properly.
-> > 
-> > My concern is that the eBPF depends on kprobe (pt_regs) interface, thus
-> > I need to ask them that it is OK to not accessable to some part of
-> > pt_regs (especially, PSTATE) if they puts probes on function entry
-> > with ftrace (fprobe in this case.)
-> > 
-> > (Jiri and BPF developers)
-> > Currently fprobe is only enabled on x86 for "multiple kprobes" BPF
-> > interface, but in the future, it will be enabled on arm64. And at
-> > that point, it will be only accessible to the regs for function
-> > arguments. Is that OK for your use case? And will the BPF compiler
-> 
-> I guess from practical POV registers for arguments and ip should be enough,
-> but whole pt_regs was already exposed to programs, so people can already use
-> any of them.. not sure it's good idea to restrict it
-> 
-> > be able to restrict the user program to access only those registers
-> > when using the "multiple kprobes"?
-> 
-> pt-regs pointer is provided to kprobe programs, I guess we could provide copy
-> of that with just available values
+Yes, will do. Thanks.
 
-Yes, ftrace_regs already provides partial filled pt_regs (which registers
-are valid is arch-dependent). Thus, my idea is changing fprobe's handler
-interface to expose ftrace_regs instead of pt_regs, and the BPF handler
-will extract the internal pt_regs.
-If the BPF compiler can list which registers will be accessed form the
-user program, the kernel side can filter it.
-I think similar feature can be done in the kprobe-event (new fprobe event?).
+>
+>> +            goto next_cpu;
+>>           if (raw_spin_trylock(&head->lock)) {
+>>               node = head->first;
+>>               if (node) {
+>>                   head->first = node->next;
+>> +                if (!head->first)
+>> +                    head->is_empty = true;
+>>                   raw_spin_unlock(&head->lock);
+>>                   return node;
+>>               }
+>>               raw_spin_unlock(&head->lock);
+>>           }
+>> +next_cpu:
+>>           cpu = cpumask_next(cpu, cpu_possible_mask);
+>>           if (cpu >= nr_cpu_ids)
+>>               cpu = 0;
 
-Thank you,
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
