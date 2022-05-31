@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BEE539A36
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 01:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6186539A3C
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 01:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237770AbiEaXum (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 May 2022 19:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S243717AbiEaX5f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 May 2022 19:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346644AbiEaXuj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 May 2022 19:50:39 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D829CF7C
-        for <bpf@vger.kernel.org>; Tue, 31 May 2022 16:50:39 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id q14so33879vsr.12
-        for <bpf@vger.kernel.org>; Tue, 31 May 2022 16:50:39 -0700 (PDT)
+        with ESMTP id S234487AbiEaX5e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 May 2022 19:57:34 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E2C1A3B3
+        for <bpf@vger.kernel.org>; Tue, 31 May 2022 16:57:33 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id c62so55739vsc.10
+        for <bpf@vger.kernel.org>; Tue, 31 May 2022 16:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ea0J7hW3PIvhrBKtpgP+gK0p5uIj4bTIowF770pNVpg=;
-        b=g1FfMvxxKrMbtBog/PdwnjbrU/h8xkaH+fMDqkvs5mve3IiThTS1MvgYCQiyzcggNZ
-         /ez+NIcF+17iaHq+xkDaxyF/prhvRTr3ktgVRGCLZjTsMIt5IlYzgjVQLFsLp58mkAip
-         rwaRxo04M8NiLj5i9znnc9b6GBE+UYemrNutryKL3eJuxUCS1fxIgikTDqezI9Bauh6I
-         If2IpBIOJt9jbz67hVyzXwPXPdl5HDPpfuOT8gBaed2RM/wDCKJglmJGo/tQqneypHWp
-         YD1Ht8EetCeBD5LxST0HRKuNaLjUsyNfLCLzhKyAGhR1XlMsGQIdXb+M9pb8jQU0tv+g
-         dFeQ==
+        bh=qGsoyZ11s4rwB9WpTRZ1U/WtvIXK7dzZbADyFr6Mkhg=;
+        b=qKoFoheGZYnN0llN0Rn3C8X69Pc109/W8zKJ1naHGD9O71sEM0MX9CHXIg38sWF7Mf
+         P670mbyhpae26wNBBYKFU4IZBXrKY0TrYulQuY197ab86DlEwALPGQptVk4k5Ebm1dK+
+         LS39NEFvfLG4oHFHGCLCKCQNBw/EzM9jji9i/VqYUZ+X6iWyrXWFcXni7GrFK9rtgmHZ
+         ax4UFEnU+V8IKb1q/Kql8/FSM9m8ExVbzMTpG9drpuKW+gF3Yf8gLyjahQ6t0AHWhR59
+         KzhgCxnUwwAiCRykhlQgw301KC1voKbeF+tbeHafELXkNTUOVpWoFxqoNkdvWzfai//y
+         E2dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ea0J7hW3PIvhrBKtpgP+gK0p5uIj4bTIowF770pNVpg=;
-        b=r+yiDgSeATQ1nTjYx7coaQbYE/gApnrH0U67H3Nkh0VHL3iJ2hGkfG+QVdC5Uplkhn
-         eAyk/rn0hbFyYw4dGC4FhgI7n29A1tahuwUgaolORqMUNk+yXgBR8ZMZzbjFtitMoIFz
-         82U1LVyPpudWzCPG1plYdH/01nfI/CAQAZaSNAGNMv0sFQQsLhcoRbohWE2Z3lCCNL3M
-         ZvItuYaKVTy7fU8huuKcYTaJqbMcKThcaTfuBgTdNCRI25kSn9mCj48Yew+MMist1bDs
-         dgU9345P+gAt5BpQMtWxDD86DrIQ1jDN0M5ihw/hv111V0XTpm1lRebConJzSL8TKaG+
-         M4KQ==
-X-Gm-Message-State: AOAM531dixYzdrHm0bvplwrhKITyDdNEDWsYSuF3k0QM3zVHto2iTWJQ
-        WT2FM+8YbdlmNjerA+u0fEjUFbS7WxOUDweAsNE=
-X-Google-Smtp-Source: ABdhPJwTcIdlRchsVE6Q0g1mQxf2nyXBfwfVEnsruiP77eTkiUUS4V0Y6FB1Fg5g/YNAimuTLBsTcP+AljB9D26xF2Y=
-X-Received: by 2002:a67:f745:0:b0:335:e652:c692 with SMTP id
- w5-20020a67f745000000b00335e652c692mr24338602vso.52.1654041038208; Tue, 31
- May 2022 16:50:38 -0700 (PDT)
+        bh=qGsoyZ11s4rwB9WpTRZ1U/WtvIXK7dzZbADyFr6Mkhg=;
+        b=L0c+vTJ9KVQ8I/WjjDWfXBpxuxhtJ1tS20uORQ8FH/fH6JaUy4wGjIdMZaRvOxE8Qy
+         k6IvimQCE0ar8dyUNTyZzOColq933VqQFDQR8pk3emuRhpHxF/pee4IueEXEXknWxfLd
+         TbnL7REwwA3M+K9NyDbsQXfcSX6zHhIjjo3KwsY2wU9xKoJ0l7IUDTZRBXZgnLjYpu69
+         MsBtLh/VMlMo+h04y0IYpwMrM8kABZZf+2TZILrShQ5XBs4NYAkmI8lgKx9DbNWsLUhu
+         zFyE3ahAslXK+SVbF5/IMtf5HpxbB52amAsLjWjlp8aWAhR1LiumOOLyqGm1+3uXnYM7
+         8OkQ==
+X-Gm-Message-State: AOAM5313aB00fRH9ET6fIhZusLLgvAwWuQ+xF18Oo9uW2ar49Toxa6qp
+        kv2XAZFHMpddtQpKciD1Udlnoz0xHMKLFbr3a+c=
+X-Google-Smtp-Source: ABdhPJz82pNXXpBINRWh5y3exbO/67d+Cool/nV+ueCOwt9kQnvmvVpPZYRiMnC2j1zjn33sLRu9MtQNmGAN3SqDu1E=
+X-Received: by 2002:a67:e0d5:0:b0:337:b2f4:afe0 with SMTP id
+ m21-20020a67e0d5000000b00337b2f4afe0mr19050422vsl.11.1654041452544; Tue, 31
+ May 2022 16:57:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220526185432.2545879-1-yhs@fb.com> <20220526185503.2548083-1-yhs@fb.com>
-In-Reply-To: <20220526185503.2548083-1-yhs@fb.com>
+References: <20220526185432.2545879-1-yhs@fb.com> <20220526185509.2548233-1-yhs@fb.com>
+In-Reply-To: <20220526185509.2548233-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 May 2022 16:50:25 -0700
-Message-ID: <CAEf4BzaCiYvsfBLAqFKnciiL5QKKVqZp8enRbZTUUUekygCHUQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 06/18] libbpf: Add enum64 deduplication support
+Date:   Tue, 31 May 2022 16:57:21 -0700
+Message-ID: <CAEf4BzaJCisZuVWPtriqzZS3T=DehvNC1ouXiTJx=4msSmAoLw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 07/18] libbpf: Add enum64 support for btf_dump
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -69,39 +69,20 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, May 26, 2022 at 11:55 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> Add enum64 deduplication support. BTF_KIND_ENUM64 handling
-> is very similar to BTF_KIND_ENUM.
+> Add enum64 btf dumping support. For long long and unsigned long long
+> dump, suffixes 'LL' and 'ULL' are added to avoid compilation errors
+> in some cases.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  tools/lib/bpf/btf.c | 62 +++++++++++++++++++++++++++++++++++++++++++--
->  tools/lib/bpf/btf.h |  5 ++++
->  2 files changed, 65 insertions(+), 2 deletions(-)
+>  tools/lib/bpf/btf.h      |   5 ++
+>  tools/lib/bpf/btf_dump.c | 128 ++++++++++++++++++++++++++++++---------
+>  2 files changed, 103 insertions(+), 30 deletions(-)
 >
 
-[...]
+I suspect we have bug in btf_dump_get_enum_value(), we unconditionally
+sign-extend values. It seems wrong. Can you please extend that part to
+take into account signed bit (kflag) and do a proper signed/unsigned
+casting? Thanks!
 
-> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-> index a41463bf9060..b22c648c69ff 100644
-> --- a/tools/lib/bpf/btf.h
-> +++ b/tools/lib/bpf/btf.h
-> @@ -531,6 +531,11 @@ static inline bool btf_is_type_tag(const struct btf_type *t)
->         return btf_kind(t) == BTF_KIND_TYPE_TAG;
->  }
->
-> +static inline bool btf_type_is_any_enum(const struct btf_type *t)
-
-btf_is_any_enum() for consistency with all other helpers?
-
-The rest looks great!
-
-> +{
-> +       return btf_is_enum(t) || btf_is_enum64(t);
-> +}
-> +
->  static inline __u8 btf_int_encoding(const struct btf_type *t)
->  {
->         return BTF_INT_ENCODING(*(__u32 *)(t + 1));
-> --
-> 2.30.2
->
+Other than that, it looks good!
