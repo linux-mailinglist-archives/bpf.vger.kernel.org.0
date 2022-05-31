@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A77C539530
-	for <lists+bpf@lfdr.de>; Tue, 31 May 2022 19:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B55539545
+	for <lists+bpf@lfdr.de>; Tue, 31 May 2022 19:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346160AbiEaREv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 May 2022 13:04:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        id S237433AbiEaRLg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 May 2022 13:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238234AbiEaREt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 May 2022 13:04:49 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B1C8DDCC;
-        Tue, 31 May 2022 10:04:47 -0700 (PDT)
+        with ESMTP id S236090AbiEaRLf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 May 2022 13:11:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777D58BD1E;
+        Tue, 31 May 2022 10:11:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 0BFD8CE1796;
-        Tue, 31 May 2022 17:04:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47727C3411F;
-        Tue, 31 May 2022 17:04:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC64860A54;
+        Tue, 31 May 2022 17:11:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 631D5C3411D;
+        Tue, 31 May 2022 17:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654016684;
-        bh=j6s+IalVNYTBUA6wgYGP0AcZEJmrt0aOpCnaWU1k1AI=;
+        s=k20201202; t=1654017093;
+        bh=PiJTFDNVbEqwodufEmKeOFpsiPkT1+3psU+PLhFiVvU=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=P3682zCCL69GcHpwMCjJpBaQnRgMtwuXh9+cfVEf+V0w9cxd9vwV19GSXvldWAK2o
-         Eg4KqpuDdUEW5NAEwwjsqOL8duStTFknbbT4gQaEbEKvgIByScXX1Aij/+UWCSQKDP
-         SioFa9jae6NIbvqHviJpXhYhfXCjJTy/cceXJET9Bb6yrVmNIDjeB010xxLVpJ8CGs
-         g52qgh3FJxYzHVFCCK9/9+5cCuYmWF+QSIsxTea6LyGPK2Nsrz566/v06hJQanRYm3
-         nbHmdO8gQr+czBrOLi3lWukECTWe/iK7Of9YCv0GqMlXt41zeeMdkS0hGR1FZcN4mg
-         Af1Iayvp1AiPg==
-Received: by mail-yb1-f180.google.com with SMTP id f34so11926203ybj.6;
-        Tue, 31 May 2022 10:04:44 -0700 (PDT)
-X-Gm-Message-State: AOAM532gnAQHvq+hUbLa2bFvFLdUoesu89CtVjxOKXfea5OXwO4dLO9m
-        BTai0LkbuMCrN98Dmtks/DlH3D/EMXPoibHcgHU=
-X-Google-Smtp-Source: ABdhPJzqIftVjeP8D3QiVTvl+6CgAWHDhosTcS1v7b8iyGp7C79UUnQqjMkeQMKziYevILPRTrMSyXfh4Omy4fUNPBY=
-X-Received: by 2002:a25:7e84:0:b0:650:10e0:87bd with SMTP id
- z126-20020a257e84000000b0065010e087bdmr39214644ybc.257.1654016683266; Tue, 31
- May 2022 10:04:43 -0700 (PDT)
+        b=a1kBtGxeowAhq9hi8kGTWlPnjN6B174ifLpjM0UytOV0o/RNsLoF97qVr5j31gMHo
+         8UQ9FmXxVkOntl7m1kJNMvlMQahstqASa/9BC5oh2XcmhM2C5GTJYbgZLcq1wAXYtz
+         a1hRp9RsIGzu7Va8u8+dvr4Zu9T57Osn1ip4rNLIiwZmb2OGzY5KGvMlWldrqDv1sf
+         8rBaurh9N9UnJ7QJuSG8E7kbrQXxJTsGoJ9KnbxocUfWHqomOLPmqDeqS2mcDiMwMW
+         SPr73kr0YRSgFvuA5fgcuz3gekf3c19qRq+l/abo4ZmhT0PFeiDssuavc4h1hDXPHA
+         owNDiCUGP40tA==
+Received: by mail-yb1-f169.google.com with SMTP id i11so24997869ybq.9;
+        Tue, 31 May 2022 10:11:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532IHZ3o/Zo1ERSBqel7rb6JQ+Zj1jKFHLGfd7C7PGnRQh33Eym9
+        phGv4HSgqSiBHuLlQKPidHpzoif8jr7Z0sXgh5s=
+X-Google-Smtp-Source: ABdhPJwvDKqKQC9u2rSsjZrg7aOLDH1q98E2Fy1YGgfjIjyvfPDnWPlwAS8Sm1EVf3Ec6+b95jlZB9zo0bfU7vsaVUM=
+X-Received: by 2002:a25:4705:0:b0:65d:43f8:5652 with SMTP id
+ u5-20020a254705000000b0065d43f85652mr3648473yba.389.1654017092431; Tue, 31
+ May 2022 10:11:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1653861287.git.dxu@dxuuu.xyz> <b544771c7bce102f2a97a34e2f5e7ebbb9ea0a24.1653861287.git.dxu@dxuuu.xyz>
-In-Reply-To: <b544771c7bce102f2a97a34e2f5e7ebbb9ea0a24.1653861287.git.dxu@dxuuu.xyz>
+References: <cover.1653861287.git.dxu@dxuuu.xyz> <a8f5faada9b96218d79beb7b7ddebe6a837a5536.1653861287.git.dxu@dxuuu.xyz>
+In-Reply-To: <a8f5faada9b96218d79beb7b7ddebe6a837a5536.1653861287.git.dxu@dxuuu.xyz>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 31 May 2022 10:04:32 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5EGq2uFgO5P3zaX_mcyvn86Fyq9ByEy4QretjL0R3Pcg@mail.gmail.com>
-Message-ID: <CAPhsuW5EGq2uFgO5P3zaX_mcyvn86Fyq9ByEy4QretjL0R3Pcg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf, test_run: Add PROG_TEST_RUN support to kprobe
+Date:   Tue, 31 May 2022 10:11:21 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6eQXZrnJdRGUEu6jQAjpXnEB_f4bzBF1rXst4LWBWd=g@mail.gmail.com>
+Message-ID: <CAPhsuW6eQXZrnJdRGUEu6jQAjpXnEB_f4bzBF1rXst4LWBWd=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add PROG_TEST_RUN selftest
+ for BPF_PROG_TYPE_KPROBE
 To:     Daniel Xu <dxu@dxuuu.xyz>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,129 +66,133 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sun, May 29, 2022 at 3:06 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> This commit adds PROG_TEST_RUN support to BPF_PROG_TYPE_KPROBE progs. On
-> top of being generally useful for unit testing kprobe progs, this commit
-> more specifically helps solve a relability problem with bpftrace BEGIN
-> and END probes.
->
-> BEGIN and END probes are run exactly once at the beginning and end of a
-> bpftrace tracing session, respectively. bpftrace currently implements
-> the probes by creating two dummy functions and attaching the BEGIN and
-> END progs, if defined, to those functions and calling the dummy
-> functions as appropriate. This works pretty well most of the time except
-> for when distros strip symbols from bpftrace. Every now and then this
-> happens and users get confused. Having PROG_TEST_RUN support will help
-> solve this issue by allowing us to directly trigger uprobes from
-> userspace.
->
-> Admittedly, this is a pretty specific problem and could probably be
-> solved other ways. However, PROG_TEST_RUN also makes unit testing more
-> convenient, especially as users start building more complex tracing
-> applications. So I see this as killing two birds with one stone.
+> This commit adds a selftest to test that we can both PROG_TEST_RUN a
+> kprobe prog and set its context.
+
+nit: per Documentation/process/submitting-patches.rst:
+
+Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+to do frotz", as if you are giving orders to the codebase to change
+its behaviour.
+
 >
 > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+
+Other than that,
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
+
 > ---
->  include/linux/bpf.h      | 10 ++++++++++
->  kernel/trace/bpf_trace.c |  1 +
->  net/bpf/test_run.c       | 36 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 47 insertions(+)
+>  .../selftests/bpf/prog_tests/kprobe_ctx.c     | 57 +++++++++++++++++++
+>  .../testing/selftests/bpf/progs/kprobe_ctx.c  | 33 +++++++++++
+>  2 files changed, 90 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_ctx.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/kprobe_ctx.c
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 2b914a56a2c5..dec3082ee158 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1751,6 +1751,9 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
->  int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog,
->                                 const union bpf_attr *kattr,
->                                 union bpf_attr __user *uattr);
-> +int bpf_prog_test_run_kprobe(struct bpf_prog *prog,
-> +                            const union bpf_attr *kattr,
-> +                            union bpf_attr __user *uattr);
->  bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->                     const struct bpf_prog *prog,
->                     struct bpf_insn_access_aux *info);
-> @@ -1998,6 +2001,13 @@ static inline int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog,
->         return -ENOTSUPP;
->  }
->
-> +static inline int bpf_prog_test_run_kprobe(struct bpf_prog *prog,
-> +                                          const union bpf_attr *kattr,
-> +                                          union bpf_attr __user *uattr)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_ctx.c b/tools/testing/selftests/bpf/prog_tests/kprobe_ctx.c
+> new file mode 100644
+> index 000000000000..260966fd4506
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_ctx.c
+> @@ -0,0 +1,57 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <linux/ptrace.h>
+> +#include "kprobe_ctx.skel.h"
+> +
+> +/*
+> + * x86_64 happens to be one of the architectures that exports the
+> + * kernel `struct pt_regs` to userspace ABI. For the architectures
+> + * that don't, users will have to extract `struct pt_regs` from vmlinux
+> + * BTF in order to use BPF_PROG_TYPE_KPROBE's BPF_PROG_RUN functionality.
+> + *
+> + * We choose to only test x86 here to keep the test simple.
+> + */
+> +void test_kprobe_ctx(void)
 > +{
-> +       return -ENOTSUPP;
-> +}
-
-As the kernel test bot reported, this is not enough to cover all
-different configs. We can
-follow the pattern with bpf_prog_test_run_tracing().
-
-Otherwise, this looks good to me.
-
-Song
-
+> +#ifdef __x86_64__
+> +       struct pt_regs regs = {
+> +               .rdi = 1,
+> +               .rsi = 2,
+> +               .rdx = 3,
+> +               .rcx = 4,
+> +               .r8 = 5,
+> +       };
 > +
->  static inline void bpf_map_put(struct bpf_map *map)
->  {
->  }
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 10b157a6d73e..b452e84b9ba4 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1363,6 +1363,7 @@ const struct bpf_verifier_ops kprobe_verifier_ops = {
->  };
->
->  const struct bpf_prog_ops kprobe_prog_ops = {
-> +       .test_run = bpf_prog_test_run_kprobe,
->  };
->
->  BPF_CALL_5(bpf_perf_event_output_tp, void *, tp_buff, struct bpf_map *, map,
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index 56f059b3c242..0b6fc17ce901 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -1622,6 +1622,42 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
->         return err;
->  }
->
-> +int bpf_prog_test_run_kprobe(struct bpf_prog *prog,
-> +                            const union bpf_attr *kattr,
-> +                            union bpf_attr __user *uattr)
+> +       LIBBPF_OPTS(bpf_test_run_opts, tattr,
+> +               .ctx_in = &regs,
+> +               .ctx_size_in = sizeof(regs),
+> +       );
+> +
+> +       struct kprobe_ctx *skel = NULL;
+> +       int prog_fd;
+> +       int err;
+> +
+> +       skel = kprobe_ctx__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +               return;
+> +
+> +       skel->bss->expected_p1 = (void *)1;
+> +       skel->bss->expected_p2 = (void *)2;
+> +       skel->bss->expected_p3 = (void *)3;
+> +       skel->bss->expected_p4 = (void *)4;
+> +       skel->bss->expected_p5 = (void *)5;
+> +
+> +       prog_fd = bpf_program__fd(skel->progs.prog);
+> +       err = bpf_prog_test_run_opts(prog_fd, &tattr);
+> +       if (!ASSERT_OK(err, "bpf_prog_test_run"))
+> +               goto cleanup;
+> +
+> +       if (!ASSERT_TRUE(skel->bss->ret, "ret"))
+> +               goto cleanup;
+> +
+> +       if (!ASSERT_GT(tattr.duration, 0, "duration"))
+> +               goto cleanup;
+> +cleanup:
+> +       kprobe_ctx__destroy(skel);
+> +#endif
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/kprobe_ctx.c b/tools/testing/selftests/bpf/progs/kprobe_ctx.c
+> new file mode 100644
+> index 000000000000..98063c549930
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/kprobe_ctx.c
+> @@ -0,0 +1,33 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +volatile void *expected_p1;
+> +volatile void *expected_p2;
+> +volatile void *expected_p3;
+> +volatile void *expected_p4;
+> +volatile void *expected_p5;
+> +volatile bool ret = false;
+> +
+> +SEC("kprobe/this_function_does_not_exist")
+> +int prog(struct pt_regs *ctx)
 > +{
-> +       void __user *ctx_in = u64_to_user_ptr(kattr->test.ctx_in);
-> +       __u32 ctx_size_in = kattr->test.ctx_size_in;
-> +       u32 repeat = kattr->test.repeat;
-> +       struct pt_regs *ctx = NULL;
-> +       u32 retval, duration;
-> +       int err = 0;
+> +       void *p1, *p2, *p3, *p4, *p5;
 > +
-> +       if (kattr->test.data_in || kattr->test.data_out ||
-> +           kattr->test.ctx_out || kattr->test.flags ||
-> +           kattr->test.cpu || kattr->test.batch_size)
-> +               return -EINVAL;
+> +       p1 = (void *)PT_REGS_PARM1(ctx);
+> +       p2 = (void *)PT_REGS_PARM2(ctx);
+> +       p3 = (void *)PT_REGS_PARM3(ctx);
+> +       p4 = (void *)PT_REGS_PARM4(ctx);
+> +       p5 = (void *)PT_REGS_PARM5(ctx);
 > +
-> +       if (ctx_size_in != sizeof(struct pt_regs))
-> +               return -EINVAL;
+> +       if (p1 != expected_p1 || p2 != expected_p2 || p3 != expected_p3 ||
+> +           p4 != expected_p4 || p5 != expected_p5)
+> +               return 0;
 > +
-> +       ctx = memdup_user(ctx_in, ctx_size_in);
-> +       if (IS_ERR(ctx))
-> +               return PTR_ERR(ctx);
-> +
-> +       err = bpf_test_run(prog, ctx, repeat, &retval, &duration, false);
-> +       if (err)
-> +               goto out;
-> +
-> +       if (copy_to_user(&uattr->test.retval, &retval, sizeof(retval)) ||
-> +           copy_to_user(&uattr->test.duration, &duration, sizeof(duration))) {
-> +               err = -EFAULT;
-> +       }
-> +out:
-> +       kfree(ctx);
-> +       return err;
+> +       ret = true;
+> +       return 0;
 > +}
 > +
->  static const struct btf_kfunc_id_set bpf_prog_test_kfunc_set = {
->         .owner        = THIS_MODULE,
->         .check_set        = &test_sk_check_kfunc_ids,
+> +char _license[] SEC("license") = "GPL";
 > --
 > 2.36.1
 >
