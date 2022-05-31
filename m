@@ -2,159 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A46539A16
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 01:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DB2539A35
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 01:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244041AbiEaXkR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 May 2022 19:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57524 "EHLO
+        id S238559AbiEaXuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 May 2022 19:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241462AbiEaXkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 May 2022 19:40:17 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A02E4EA1F;
-        Tue, 31 May 2022 16:40:14 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id i9so54811ioa.6;
-        Tue, 31 May 2022 16:40:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=AtJsyzOUbu4GDp7o+VK71yiymtsTb77RW+MF+k9JICo=;
-        b=RRi8z/yTb2PUOzcfXLioAwotBbgWJWVacW8fuxAbpsnvxRtgP+ktoIJ0YjxcdtQwXS
-         hRIIDcJ7ZYS7kAeZQpe1YroaSXo18caeoaRvRMMz7DYd8mPnv6zzV+Lpn5bFdJPdir2R
-         83Cz0lwXYvd/61nY3IHpabuq73sh4F5A5dXZBvcxNsbIxg9pde8PjDgb4hJKe24tf+F2
-         i2vlhicPovoMUMiNM8L+PcZEJ1CvHvLF5bD6T0+mpMe8BkBa8NtUIR6wIzm5Qoby0uT3
-         JIp+fFv/hJaI+aUT0NiEtDapRGbwfqS2PnIwoqftqjG1rAbNXzJUWNKbfPSfL22KfG9G
-         2zkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=AtJsyzOUbu4GDp7o+VK71yiymtsTb77RW+MF+k9JICo=;
-        b=FF7EgvkAjHN4T3PoRihRFoPUP/y7nIKkF4V/h0HzpHOA2jcAVm7J1G7mdlh1ghiMnL
-         tNF1MSgiPwCo1MKF3OsuxHU+t4O9kgCBw6OHJLHBxOcdL1nribBf2yTaLGgkzB9jmu3C
-         weSXSdWhG7VoNkozCXh6OQZ4qE+o+q6lmQ+Ep10BuqC51U/nyDe2YiPYHgvRB7/QetwT
-         qTdEulpR8B03UVGHNQAvgwOuBj7oODuxy21uLv+Ls8UhOyx4br9Ocj3PTbDDUTK5CRlP
-         tPTMly1VL5mxPsvg6FOrM4/kjQDWvDIYHE64wTKkplJ5j4+SKNSXACjHKOnpwaLsdoqT
-         /yLA==
-X-Gm-Message-State: AOAM531nQozHRUmokYo/Gp9I+xnZWo270Bl3DW5Nsmqa57djUNV6D2ft
-        hZ4/7L9mhK9uiPinbx+Hbqlb9T80mmYPJA==
-X-Google-Smtp-Source: ABdhPJzs+ZUNbw52nRonzmXx8I0zlnkgEThNKQXEFUZotUPOQjjMbRbhqhiYoaEJv1jt8W38B3153A==
-X-Received: by 2002:a02:b796:0:b0:32e:a41e:df35 with SMTP id f22-20020a02b796000000b0032ea41edf35mr29703341jam.9.1654040412705;
-        Tue, 31 May 2022 16:40:12 -0700 (PDT)
-Received: from localhost ([172.243.153.43])
-        by smtp.gmail.com with ESMTPSA id 11-20020a92c64b000000b002d1e3e3e475sm80748ill.32.2022.05.31.16.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 May 2022 16:40:12 -0700 (PDT)
-Date:   Tue, 31 May 2022 16:40:04 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        wangyufen <wangyufen@huawei.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        daniel@iogearbox.net, lmb@cloudflare.com, davem@davemloft.net,
-        kafai@fb.com, dsahern@kernel.org, kuba@kernel.org,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <6296a754d3f2b_2cd1a208d4@john.notmuch>
-In-Reply-To: <878rqjm0ov.fsf@cloudflare.com>
-References: <20220524075311.649153-1-wangyufen@huawei.com>
- <YpFEmCp+fm1nC23U@pop-os.localdomain>
- <3d11ae70-8c2d-b021-b173-b000dce588e0@huawei.com>
- <878rqjm0ov.fsf@cloudflare.com>
+        with ESMTP id S237770AbiEaXuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 May 2022 19:50:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9534D9CF21;
+        Tue, 31 May 2022 16:50:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1237CB81739;
+        Tue, 31 May 2022 23:50:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B791EC3411D;
+        Tue, 31 May 2022 23:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654041013;
+        bh=tvec4ouEsqif07kqYk3jWXeGiptT9fUwA8mQ/zFtYQ4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GWuVDvq/eqooPNQH2EJpCsKq9XXnNil9B6xJRXzw3uLxneCJ4X7I6BC/Qp+3cIRto
+         xzkqVVB62bcuV88QK80kScUMEGrC82pQNOUgymACgRAhH+4hzIiP55AKfrs76RLN/M
+         8CKiPKLI809D79omiKLsDrBI1Bi9f1MMbPuV+Ub1vgtaFJUB7LNpMeFpsw5QuESmq3
+         9pMZRpWHMDBJOGfD1IN/mQggxcRSVQYuyBlBQRfZVimYu2GYnUVOKUBojPlXC1lzlK
+         lyASZyMf4+AuwW7rGBIsYsC+cFnvRc8NEC1vyVx5UVLMVT8S5c2HdPKue9zboe/YOM
+         150gMJhxSw7XQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 93D52F0394D;
+        Tue, 31 May 2022 23:50:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH bpf-next] bpf,sockmap: fix sk->sk_forward_alloc warn_on in
  sk_stream_kill_queues
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165404101360.6040.8102115666257855130.git-patchwork-notify@kernel.org>
+Date:   Tue, 31 May 2022 23:50:13 +0000
+References: <20220524075311.649153-1-wangyufen@huawei.com>
+In-Reply-To: <20220524075311.649153-1-wangyufen@huawei.com>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        daniel@iogearbox.net, jakub@cloudflare.com, lmb@cloudflare.com,
+        davem@davemloft.net, kafai@fb.com, dsahern@kernel.org,
+        kuba@kernel.org, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Sat, May 28, 2022 at 09:54 AM +08, wangyufen wrote:
-> > =E5=9C=A8 2022/5/28 5:37, Cong Wang =E5=86=99=E9=81=93:
-> >> On Tue, May 24, 2022 at 03:53:11PM +0800, Wang Yufen wrote:
-> >>> During TCP sockmap redirect pressure test, the following warning is=
- triggered:
-> >>> WARNING: CPU: 3 PID: 2145 at net/core/stream.c:205 sk_stream_kill_q=
-ueues+0xbc/0xd0
-> >>> CPU: 3 PID: 2145 Comm: iperf Kdump: loaded Tainted: G        W     =
-    5.10.0+ #9
-> >>> Call Trace:
-> >>>   inet_csk_destroy_sock+0x55/0x110
-> >>>   inet_csk_listen_stop+0xbb/0x380
-> >>>   tcp_close+0x41b/0x480
-> >>>   inet_release+0x42/0x80
-> >>>   __sock_release+0x3d/0xa0
-> >>>   sock_close+0x11/0x20
-> >>>   __fput+0x9d/0x240
-> >>>   task_work_run+0x62/0x90
-> >>>   exit_to_user_mode_prepare+0x110/0x120
-> >>>   syscall_exit_to_user_mode+0x27/0x190
-> >>>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>
-> >>> The reason we observed is that:
-> >>> When the listener is closing, a connection may have completed the t=
-hree-way
-> >>> handshake but not accepted, and the client has sent some packets. T=
-he child
-> >>> sks in accept queue release by inet_child_forget()->inet_csk_destro=
-y_sock(),
-> >>> but psocks of child sks have not released.
-> >>>
-> >> Hm, in this scenario, how does the child socket end up in the sockma=
-p?
-> >> Clearly user-space does not have a chance to get an fd yet.
-> >>
-> >> And, how does your patch work? Since the child sock does not even in=
-heirt
-> >> the sock proto after clone (see the comments above tcp_bpf_clone()) =
-at
-> >> all?
-> >>
-> >> Thanks.
-> >> .
-> > My test cases are as follows:
-> >
-> > __section("sockops")
-> > int bpf_sockmap(struct bpf_sock_ops *skops)
-> > {
-> > =C2=A0=C2=A0=C2=A0 switch (skops->op) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_SOCK_OPS_PASSIVE_=
-ESTABLISHED_CB:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_SOCK_OPS_ACTIVE_E=
-STABLISHED_CB:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ..=
-.
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bp=
-f_sock_hash_update(skops, &sock_ops_map, &key, BPF_NOEXIST);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 br=
-eak;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> > }
-> =
+Hello:
 
-> Right, when processing the final ACK in tcp_rcv_state_process(), we
-> invoke the BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB BPF callback.
-> =
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-> This gives a chance to install sockmap sk_prot callbacks.
-> =
-
-> An accept() without ever calling accept() ;-)
-> =
-
+On Tue, 24 May 2022 15:53:11 +0800 you wrote:
+> During TCP sockmap redirect pressure test, the following warning is triggered:
+> WARNING: CPU: 3 PID: 2145 at net/core/stream.c:205 sk_stream_kill_queues+0xbc/0xd0
+> CPU: 3 PID: 2145 Comm: iperf Kdump: loaded Tainted: G        W         5.10.0+ #9
+> Call Trace:
+>  inet_csk_destroy_sock+0x55/0x110
+>  inet_csk_listen_stop+0xbb/0x380
+>  tcp_close+0x41b/0x480
+>  inet_release+0x42/0x80
+>  __sock_release+0x3d/0xa0
+>  sock_close+0x11/0x20
+>  __fput+0x9d/0x240
+>  task_work_run+0x62/0x90
+>  exit_to_user_mode_prepare+0x110/0x120
+>  syscall_exit_to_user_mode+0x27/0x190
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
 > [...]
 
-LGTM as well.
+Here is the summary with links:
+  - [bpf-next] bpf,sockmap: fix sk->sk_forward_alloc warn_on in sk_stream_kill_queues
+    https://git.kernel.org/bpf/bpf-next/c/84dc313f7b79
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>=
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
