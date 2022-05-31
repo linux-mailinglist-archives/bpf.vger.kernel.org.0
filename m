@@ -2,110 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC0C5399ED
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 01:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CEC539A02
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 01:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348617AbiEaXIw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 May 2022 19:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41012 "EHLO
+        id S1348689AbiEaXUG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 May 2022 19:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbiEaXIv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 May 2022 19:08:51 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1805005A;
-        Tue, 31 May 2022 16:08:50 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id e7so100450vkh.2;
-        Tue, 31 May 2022 16:08:50 -0700 (PDT)
+        with ESMTP id S1348688AbiEaXUG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 May 2022 19:20:06 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BC78D6A0
+        for <bpf@vger.kernel.org>; Tue, 31 May 2022 16:20:04 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id l13so23762799lfp.11
+        for <bpf@vger.kernel.org>; Tue, 31 May 2022 16:20:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rng1DtEmjOfsc28R1+vQxmPpAFzote6MnieP84LTVVQ=;
-        b=gFAoyg4B6makpShZ73D7TERoEA1EYdTmgfo7LpPLkgpagLr1QLMwerizw8LCbOVzSz
-         0z2JXJt7DYJnuaTelxmOk+nQoSvcYdfrmLTd7BqYaZJpKf2cXSo+SnuzL5kVlXrYkeNr
-         6CWGVphPxaELhXQT4FC2fEd9hW6WUMOTd2ta7fZja7BmT17vPj6EdEkhZ6xASzXYyNzS
-         yGGUm4Nndqdpmcd4X3OLogC5ZluscHuSWaVFsTFEtUOpI8/KnMYhtJJr8cCIV9xFoOof
-         iPx9KcqGqISnqxE/lzGpY3Zd/8jqM7WaAYZ8i6V/N7oGtVxFCCJfugtgNTZN/X8rEhUq
-         sKlQ==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=MSeLrRu24RgS4btUOjL9ry/0YUWVtDZ8aanDCkWdkhk=;
+        b=U6m5X2oK/fImz4b7ZftrdlFS+rTntrSPM1dH/18qDNrRPOSdjBQYsbHmPIc47+j85e
+         AOlDgRaFd8Jq63rbLuIAre4GQ903a65fJcCCdhKmzA/vECHUt8PA7ZoJl215ojeK5eZG
+         o2z9vdezxJ3AszgSGFqARAzJ84IyzXtJFqIQGj6pVYkSI4kF4TPIa8fXmSCEjAgh7k5e
+         v5sPE1pdUzZQi6gA9iS5M9Z4qqBpB4uUHiRBglCHB6p9LrQzXyG6U3Trhq1084j12MbB
+         y6IUJ/BEZrt+g11vxcGmwJjXjJ2Hn7PJOfxsOfttSX8jM2f8PiKNGHhQiMDd340OSrPg
+         0aLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rng1DtEmjOfsc28R1+vQxmPpAFzote6MnieP84LTVVQ=;
-        b=ILirwEa5E7VCG2n5N5vBfxRwzJZ9S/ZwTC1xFbWmWi5f3kSTcH4dwaPBQOjcfNO+4p
-         s9o56Gpcdx1fMqrQQrRONxKTexkFC++gFgqEQmza14RlHZ9anqtDocAyA+pzvD5Q5ivh
-         o92yEf4yAHKmYrANUo6YTK/hzunWQz/LfJ2DRusKvKNvXwFAow99CZs4X6kCTtq4vZ7l
-         SSNZoaj3pLbs7xrh2bkuOxk7GDZWUWU2fMx33IK84F3NhfbU//o+f1UTry6v60nwlLGX
-         tSZ5o4c0p3D2WHQ1V9UjgSR1htaKqk34Ngodmpl4Rb7uwBufGQbgtUMi2TfDcnmmf0H3
-         KdnA==
-X-Gm-Message-State: AOAM531PT6QVNudU/fxY0jdUWv0GydgvgI3kSDmn6ictMp/fvg7SV7xt
-        l1ZGwXRX2KRzxOVGnTVAQmVXQMnx4mon+PbRTp0=
-X-Google-Smtp-Source: ABdhPJyvnnIcS6OzwHtYKKLDib5TGZkpZxD9p4cY9NeY3TXW6B2yOO3cF4H4Lmbu8yr+F7boe1k0rmjK2IdiCmsRnhE=
-X-Received: by 2002:a1f:5907:0:b0:352:6327:926f with SMTP id
- n7-20020a1f5907000000b003526327926fmr23352593vkb.1.1654038529488; Tue, 31 May
- 2022 16:08:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAKH8qBuCZVNPZaCRWrTiv7deDCyOkofT_ypvAiuE=OMz=TUuJw@mail.gmail.com>
- <20220524175035.i2ltl7gcrp2sng5r@kafai-mbp> <CAEf4BzYEXKQ-J8EQtTiYci1wdrRG7SPpuGhejJFY0cc5QQovEQ@mail.gmail.com>
- <CAKH8qBuRvnVoY-KEa6ofTjc2Jh2HUZYb1U2USSxgT=ozk0_JUA@mail.gmail.com>
- <CAEf4BzYdH9aayLvKAVTAeQ2XSLZPDX9N+fbP+yZnagcKd7ytNA@mail.gmail.com>
- <CAKH8qBvQHFcSQQiig6YGRdnjTHnu0T7-q-mPNjRb_nbY49N-Xw@mail.gmail.com>
- <CAKH8qBsjUgzEFQEzN9dwD4EQdJyno4TW2vDDp-cSejs1gFS4Ww@mail.gmail.com>
- <20220525203935.xkjeb7qkfltjsfqc@kafai-mbp> <Yo6e4sNHnnazM+Cx@google.com>
- <20220526000332.soaacn3n7bic3fq5@kafai-mbp> <20220526012330.dnicj2mrdlr4o6oo@kafai-mbp>
- <CAKH8qBskY75CtDuNcNrgV_5gm87qZO3zEZcLZO0zof2ty8zvdA@mail.gmail.com>
-In-Reply-To: <CAKH8qBskY75CtDuNcNrgV_5gm87qZO3zEZcLZO0zof2ty8zvdA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 31 May 2022 16:08:38 -0700
-Message-ID: <CAEf4BzbbvFnnZES0fivCAHbijKAium5C7uLmBp7zsYKn_ZM15g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 05/11] bpf: implement BPF_PROG_QUERY for BPF_LSM_CGROUP
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=MSeLrRu24RgS4btUOjL9ry/0YUWVtDZ8aanDCkWdkhk=;
+        b=jupS+6fz5P14FN1iZCzwjbzi01fOtOKZtKCK/2uKws0cZESKJfzP3YdUzpD2KcaOdf
+         ajtBpF0yFrmqLAlWKogxj5sEUgzYAMsZg7atwAf2Vb255yWDZbf2PX1j7JbDWWeOyl/Z
+         7kgTZaX+3D3nv0sNQMzfOeJuivb6CzY6SlkY5nSv/pHnhfVzWpdTM4daQyWRKXbyceUp
+         0gu0Lkh42IM9dp31V3fwF/uxk4SfrVpkG/9vsuKMch7ocumOJb31zhvdVs6+nvfwtN1B
+         aY2IFfRBfm5n1dQRVpcYGID2uobC371T0NJBPsh18x1O+i2IZFtHBaGv3QOKLH1q8KUI
+         1b5g==
+X-Gm-Message-State: AOAM530kjhJjCwAPrjlENqoaHNl3XEKkZDn76eycQ3zKzUG7GIrDAhW/
+        O4X3LedFD7Z+mAZtCsVFyvJmRhv3eQv/DA==
+X-Google-Smtp-Source: ABdhPJwB+muZOsu9/EJ6eZInNsShgY7uqG3T/bZM0rilkZ9uJd8lw4Cg8tcfZcFM1mnJrRxYGPPm4w==
+X-Received: by 2002:a05:6512:3daa:b0:478:55b8:88a9 with SMTP id k42-20020a0565123daa00b0047855b888a9mr41483304lfv.289.1654039202952;
+        Tue, 31 May 2022 16:20:02 -0700 (PDT)
+Received: from pluto (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id e13-20020a19500d000000b00478c1ac6d98sm2761095lfb.248.2022.05.31.16.20.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 May 2022 16:20:02 -0700 (PDT)
+Message-ID: <b517e19ffbd19b24b630cdeafdb4adb444a8dd56.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] selftests/bpf: allow BTF specs and func
+ infos in test_verifier tests
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Song Liu <song@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Kernel Team <kernel-team@fb.com>
+Date:   Wed, 01 Jun 2022 02:20:01 +0300
+In-Reply-To: <CAPhsuW7wwt+J=oHXeB_8s8Tu63dzgODh56aCFPv-Vp43bofutA@mail.gmail.com>
+References: <20220529223646.862464-1-eddyz87@gmail.com>
+         <20220529223646.862464-3-eddyz87@gmail.com>
+         <CAPhsuW7wwt+J=oHXeB_8s8Tu63dzgODh56aCFPv-Vp43bofutA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 25, 2022 at 7:50 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> On Wed, May 25, 2022 at 6:23 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Wed, May 25, 2022 at 05:03:40PM -0700, Martin KaFai Lau wrote:
-> > > > But the problem with going link-only is that I'd have to teach bpftool
-> > > > to use links for BPF_LSM_CGROUP and it brings a bunch of problems:
-> > > > * I'd have to pin those links somewhere to make them stick around
-> > > > * Those pin paths essentially become an API now because "detach" now
-> > > >   depends on them?
-> > > > * (right now it automatically works with the legacy apis without any
-> > > > changes)
-> > > It is already the current API for all links (tracing, cgroup...).  It goes
-> > > away (detach) with the process unless it is pinned.  but yeah, it will
-> > > be a new exception in the "bpftool cgroup" subcommand only for
-> > > BPF_LSM_CGROUP.
-> > >
-> > > If it is an issue with your use case, may be going back to v6 that extends
-> > > the query bpf_attr with attach_btf_id and support both attach API ?
-> > [ hit sent too early... ]
-> > or extending the bpf_prog_info as you also mentioned in the earlier reply.
-> > It seems all have their ups and downs.
->
-> I'm thinking on putting everything I need into bpf_prog_info and
-> exporting a list of attach_flags in prog_query (as it's done here in
-> v7 + add attach_btf_obj_id).
-> I'm a bit concerned with special casing bpf_lsm_cgroup even more if we
-> go with a link-only api :-(
-> I can definitely also put this info into bpf_link_info, but I'm not
-> sure what's Andrii's preference? I'm assuming he was suggesting to do
-> either bpf_prog_info or bpf_link_info, but not both?
+> On Tue, 2022-05-31 at 13:52 -0700, Song Liu wrote:
 
-I don't care much, tbh. Whichever makes most sense to you.
+Hi Song,
+
+Thanks a lot for the review, I'll apply the suggested changes and
+provide the v3 in one or two days. My only objection is below.
+
+> >  {
+> > -       int fd_prog, expected_ret, alignment_prevented_execution;
+> > +       int fd_prog, btf_fd, expected_ret, alignment_prevented_execution;
+> >         int prog_len, prog_type = test->prog_type;
+> >         struct bpf_insn *prog = test->insns;
+> >         LIBBPF_OPTS(bpf_prog_load_opts, opts);        __u32 pflags;
+> >         int i, err;
+> > 
+> > +       fd_prog = -1;
+> 
+> This is not really necessary.
+
+Actually this one is necessary to avoid compiler warning, note the
+following fragment of the do_test_single function below:
+
+static void do_test_single(...)
+{
+        ...
+        if (...) {
+                btf_fd = load_btf_for_test(...);
+                if (btf_fd < 0)
+                        goto fail_log;
+                opts.prog_btf_fd = btf_fd;
+        }
+        ...
+        fd_prog = bpf_prog_load(..., &opts);
+        ...
+close_fds:
+        ...
+        close(fd_prog);
+        close(btf_fd);
+        ...
+        return;
+fail_log:
+        ...
+        goto close_fds;
+}
+
+If load_btf_for_test fails the goto fail_log would eventually jump to
+close_fds, where fd_prog would be in an uninitialised state.
+
+Best regards,
+Eduard
+
