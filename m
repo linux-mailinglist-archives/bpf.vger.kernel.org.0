@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EED3B539982
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 00:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD6753999A
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 00:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244800AbiEaWaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 31 May 2022 18:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36704 "EHLO
+        id S1348477AbiEaWkP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 31 May 2022 18:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348419AbiEaWaO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 31 May 2022 18:30:14 -0400
+        with ESMTP id S238162AbiEaWkO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 31 May 2022 18:40:14 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D80C9E9DD;
-        Tue, 31 May 2022 15:30:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8773F9EB4A;
+        Tue, 31 May 2022 15:40:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E0C2A61454;
-        Tue, 31 May 2022 22:30:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3DDA5C3411D;
-        Tue, 31 May 2022 22:30:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 23DAD61468;
+        Tue, 31 May 2022 22:40:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6F7EAC3411D;
+        Tue, 31 May 2022 22:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654036213;
-        bh=9CKFF1v1EuML4c9sbd8g8eEThV0z6jr7sag1RJZVsVQ=;
+        s=k20201202; t=1654036812;
+        bh=4cd7A12mmB7TOFG1oNOqmQmjZoSqWu2ThW8sKS2FhmY=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=O0TdG8p6Muv4GNkaiYcpNUOQjXdI7Ys2BaegeqJ9TjURLkmmcdmwP9wSfTGfC4wtp
-         6LQ+l1QQTTkNVV7vICicf2rOq8c3qqon7I0Fd6wrGS2n0hsR+oejLA8sQKHAAEpEYn
-         yVylGcTPCimH2OmOxXJzrNvUeSLj/0sVwbS+EehioQkCiDZyCwZr/W5sy2uHExu0uG
-         JIAT8n7/IB90s46KbDiySe7oRf7De0r99bB/lIQOaM9sYqpi1YG3E52tGxOPTTfNOZ
-         z/9JWa4jbUI763n5NpkUZxrEsjOFMnvYEtArXshkQ3Q0Ou2UD9TtTUuZ8y7ZMIqaIG
-         r1hoGvP4fwImA==
+        b=ePU8nggokZOUGbrVKMRgoXk1AjyOxfFmbvGUNPTB+EKtObcTwS/DQ61tZNjOePdSt
+         7zivQqMyoBXVO/01C0juKlMB7YWZlZ3FR0BsWEs/HJT8IpMX8CaE17jWTgjB8rQd+I
+         0Ogv/AX1cBPppgI+pMZ5DDJMNzs/fXFa7LDko+7KNBhcfa+Gsw7Gih1wE+VLFb8X+F
+         WFsFmx3OkC+TPqvRGVtaeV2JpMHkJK/3E+f07nbNDRTUcdZVPgEuZg37vCn12qRC9M
+         s+2liPRW3TEQEkfzYODhQ4Uhur2KJXhNijZdfyD3wE6Ab2xvbwj5+0pT9WMYu3XI/P
+         xON7OBoyJfBhA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1ED99F0394D;
-        Tue, 31 May 2022 22:30:13 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4D6A9F0394D;
+        Tue, 31 May 2022 22:40:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf: arm64: clear prog->jited_len along prog->jited
+Subject: Re: [PATCH] Check for NULL ptr of btf in codegen_asserts
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165403621312.30952.5989556122316481247.git-patchwork-notify@kernel.org>
-Date:   Tue, 31 May 2022 22:30:13 +0000
-References: <20220531215113.1100754-1-eric.dumazet@gmail.com>
-In-Reply-To: <20220531215113.1100754-1-eric.dumazet@gmail.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
+Message-Id: <165403681231.3395.15965102902497727563.git-patchwork-notify@kernel.org>
+Date:   Tue, 31 May 2022 22:40:12 +0000
+References: <20220523194917.igkgorco42537arb@jup>
+In-Reply-To: <20220523194917.igkgorco42537arb@jup>
+To:     Michael Mullin <masmullin@gmail.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        zlim.lnx@gmail.com, davem@davemloft.net, netdev@vger.kernel.org,
-        edumazet@google.com, bpf@vger.kernel.org,
-        syzkaller@googlegroups.com
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,24 +61,22 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-On Tue, 31 May 2022 14:51:13 -0700 you wrote:
-> From: Eric Dumazet <edumazet@google.com>
+On Mon, 23 May 2022 15:49:17 -0400 you wrote:
+> bpf_object__btf() can return a NULL value.  If bpf_object__btf returns
+> null, do not progress through codegen_asserts(). This avoids a null ptr
+> dereference at the call btf__type_cnt() in the function find_type_for_map()
 > 
-> syzbot reported an illegal copy_to_user() attempt
-> from bpf_prog_get_info_by_fd() [1]
-> 
-> There was no repro yet on this bug, but I think
-> that commit 0aef499f3172 ("mm/usercopy: Detect vmalloc overruns")
-> is exposing a prior bug in bpf arm64.
-> 
-> [...]
+> Signed-off-by: Michael Mullin <masmullin@gmail.com>
+> ---
+>  tools/bpf/bpftool/gen.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
 Here is the summary with links:
-  - [bpf] bpf: arm64: clear prog->jited_len along prog->jited
-    https://git.kernel.org/bpf/bpf/c/e0491b11c131
+  - Check for NULL ptr of btf in codegen_asserts
+    https://git.kernel.org/bpf/bpf-next/c/d992a11f1171
 
 You are awesome, thank you!
 -- 
