@@ -2,116 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C7A53AA54
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 17:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892ED53AA89
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 17:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355767AbiFAPkc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 11:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
+        id S1355900AbiFAPym (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 11:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345941AbiFAPkb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 11:40:31 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206F32B1AE
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 08:40:30 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 1212624010C
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 17:40:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1654098028; bh=NdRlku+BA7FU9K8kgblXaX45bWHf86JfBwt12gqii8A=;
-        h=From:To:Subject:Date:From;
-        b=I4zHLTiIHAxPSACcKzbJKKliCFqt9cAlb9odGAqd6sogzjJjrnemcruUH8LcPfemH
-         D0P/E0bTzszVlrXfintbScYrmIP7UOiDh5oEvnTa3UGrBUzuylKDtfS1eoZUz1Fr8m
-         7Y+HTv//SwhB0TzFUyX5PRKO2a1ZFgYZGhUMG4rNPkxj5etObiJ0D5CSXRiKThCk/l
-         +z5LGrM583tFGR4W8cLhFCEE0AaaTyHWE3IN7rdTtYaeYDORWrBDOZ34sq+q9cr1IN
-         PC7FvowIwPFN8FZ9oDOW1IYSfkQR4nZ4EgpUccXlDxQ91VUNhZShej02gT9vG1PyCD
-         vKapI3GaX2r9A==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LCtdR1qcDz6tm4;
-        Wed,  1 Jun 2022 17:40:27 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-Subject: [PATCH bpf-next] libbpf: Fix a couple of typos
-Date:   Wed,  1 Jun 2022 15:40:25 +0000
-Message-Id: <20220601154025.3295035-1-deso@posteo.net>
+        with ESMTP id S1355899AbiFAPyk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 11:54:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ECB4EF57;
+        Wed,  1 Jun 2022 08:54:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9AF166154D;
+        Wed,  1 Jun 2022 15:54:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 005F3C341C0;
+        Wed,  1 Jun 2022 15:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654098879;
+        bh=e6Mna80ZspxyJQOd2dpH7QWG2Ug46f911yLUGDUxQH8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qYdX9qlassQM7uQXqDKZoHY7KTJKw4/j7zbd0Mhde2G2/ja+4TOlot9XhOJil0tAP
+         eUWqcNUFfMu5pwVN3mP+7r7MgnTATy33duaB3sNXt4yvfsYyB/x+BbpvlFA6zD3NwF
+         iSf8rOqtf3L01B6EyzEQ3726rXnpBPPCKTxawfWQpD6PEr7/4zt/DS/lkOoBu3o9za
+         Gqa5M5vOkZtuqamHNEasH2EtYeCsyJoIgPGi5CbKnGFUXA8EU6hzfW6SF/utaCmTGT
+         HZf5xG17afh6QsGAqHSw48ZhnF1eBe16CPgjnN6axsMANWzF0punFxi+bGGo8yR4ro
+         FBs3g5DPWQntQ==
+Received: by mail-yb1-f177.google.com with SMTP id i11so3647200ybq.9;
+        Wed, 01 Jun 2022 08:54:38 -0700 (PDT)
+X-Gm-Message-State: AOAM531S/hS3G/glsTbFnbFakCS19dJyDUC1Tpf3n3PB+/uFZGe48Ux7
+        /4iyVaPNYC8qWBMCPk4rYgaCeTh5DvUsHp3mYQ0=
+X-Google-Smtp-Source: ABdhPJxDULUZimykAAiyTJY1pmwtfTjTIeATsCu98SHFPpPlNMPxRzB8uBI2GLQQP9FV4OEh+S7pU42zj4IPRo35WtQ=
+X-Received: by 2002:a05:6902:114c:b0:641:87a7:da90 with SMTP id
+ p12-20020a056902114c00b0064187a7da90mr388126ybu.561.1654098877958; Wed, 01
+ Jun 2022 08:54:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220601084840.11024-1-lina.wang@mediatek.com>
+In-Reply-To: <20220601084840.11024-1-lina.wang@mediatek.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 1 Jun 2022 08:54:26 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7jxdpWSKm8+PAAJYBLRvg3bsE0w=TGXkPTy4VrYSGttA@mail.gmail.com>
+Message-ID: <CAPhsuW7jxdpWSKm8+PAAJYBLRvg3bsE0w=TGXkPTy4VrYSGttA@mail.gmail.com>
+Subject: Re: [PATCH v2] selftests net: fix bpf build error
+To:     Lina Wang <lina.wang@mediatek.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Maciej enczykowski <maze@google.com>,
+        Networking <netdev@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>, rong.a.chen@intel.com,
+        kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change fixes a couple of typos that were encountered while studying
-the source code.
+On Wed, Jun 1, 2022 at 1:55 AM Lina Wang <lina.wang@mediatek.com> wrote:
+>
+> bpf_helpers.h has been moved to tools/lib/bpf since 5.10, so add more
+> including path.
+>
+> Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Lina Wang <lina.wang@mediatek.com>
 
-Signed-off-by: Daniel Müller <deso@posteo.net>
----
- tools/lib/bpf/btf.c       | 2 +-
- tools/lib/bpf/libbpf.h    | 2 +-
- tools/lib/bpf/relo_core.c | 8 ++++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
+Acked-by: Song Liu <songliubraving@fb.com>
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 3d6c30d9..2e9c23b 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -130,7 +130,7 @@ static inline __u64 ptr_to_u64(const void *ptr)
- 
- /* Ensure given dynamically allocated memory region pointed to by *data* with
-  * capacity of *cap_cnt* elements each taking *elem_sz* bytes has enough
-- * memory to accomodate *add_cnt* new elements, assuming *cur_cnt* elements
-+ * memory to accommodate *add_cnt* new elements, assuming *cur_cnt* elements
-  * are already used. At most *max_cnt* elements can be ever allocated.
-  * If necessary, memory is reallocated and all existing data is copied over,
-  * new pointer to the memory region is stored at *data, new memory region
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 5b34ca..fa2796 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -107,7 +107,7 @@ struct bpf_object_open_attr {
- };
- 
- struct bpf_object_open_opts {
--	/* size of this struct, for forward/backward compatiblity */
-+	/* size of this struct, for forward/backward compatibility */
- 	size_t sz;
- 	/* object name override, if provided:
- 	 * - for object open from file, this will override setting object
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index ba4453..d8ab4c6 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -167,7 +167,7 @@ static bool core_relo_is_enumval_based(enum bpf_core_relo_kind kind)
-  * just a parsed access string representation): [0, 1, 2, 3].
-  *
-  * High-level spec will capture only 3 points:
-- *   - intial zero-index access by pointer (&s->... is the same as &s[0]...);
-+ *   - initial zero-index access by pointer (&s->... is the same as &s[0]...);
-  *   - field 'a' access (corresponds to '2' in low-level spec);
-  *   - array element #3 access (corresponds to '3' in low-level spec).
-  *
-@@ -1148,11 +1148,11 @@ int bpf_core_format_spec(char *buf, size_t buf_sz, const struct bpf_core_spec *s
-  * 3. It is supported and expected that there might be multiple flavors
-  *    matching the spec. As long as all the specs resolve to the same set of
-  *    offsets across all candidates, there is no error. If there is any
-- *    ambiguity, CO-RE relocation will fail. This is necessary to accomodate
-- *    imprefection of BTF deduplication, which can cause slight duplication of
-+ *    ambiguity, CO-RE relocation will fail. This is necessary to accommodate
-+ *    imperfection of BTF deduplication, which can cause slight duplication of
-  *    the same BTF type, if some directly or indirectly referenced (by
-  *    pointer) type gets resolved to different actual types in different
-- *    object files. If such situation occurs, deduplicated BTF will end up
-+ *    object files. If such a situation occurs, deduplicated BTF will end up
-  *    with two (or more) structurally identical types, which differ only in
-  *    types they refer to through pointer. This should be OK in most cases and
-  *    is not an error.
--- 
-2.30.2
+PS: When sending v2, you can include Acked-by/Reviewed-by received for v1.
 
+[...]
