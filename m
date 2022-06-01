@@ -2,67 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 044CF53A2A3
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 12:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1BC53A2C8
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 12:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240890AbiFAKdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 06:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
+        id S233479AbiFAKhN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 06:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbiFAKdo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 06:33:44 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3415A69CFD;
-        Wed,  1 Jun 2022 03:33:42 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LClnX0p3Rz1K98Z;
-        Wed,  1 Jun 2022 18:32:00 +0800 (CST)
-Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 1 Jun 2022 18:33:39 +0800
-Received: from dggpeml500026.china.huawei.com ([7.185.36.106]) by
- dggpeml500026.china.huawei.com ([7.185.36.106]) with mapi id 15.01.2375.024;
- Wed, 1 Jun 2022 18:33:39 +0800
-From:   shaozhengchao <shaozhengchao@huawei.com>
-To:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>
-CC:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
-        yuehaibing <yuehaibing@huawei.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjQsYnBmLW5leHRdIHNhbXBsZXMvYnBmOiBjaGVj?=
- =?utf-8?Q?k_detach_prog_exist_or_not_in_xdp=5Ffwd?=
-Thread-Topic: [PATCH v4,bpf-next] samples/bpf: check detach prog exist or not
- in xdp_fwd
-Thread-Index: AQHYdOeYthSV0XjomkS2wUDhrYtil605wyQAgACYzaA=
-Date:   Wed, 1 Jun 2022 10:33:39 +0000
-Message-ID: <6c5bdb8886784d1298cc954a7b1027bf@huawei.com>
-References: <20220531121804.194901-1-shaozhengchao@huawei.com>
- <87pmjs7n1z.fsf@toke.dk>
-In-Reply-To: <87pmjs7n1z.fsf@toke.dk>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.66]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S230373AbiFAKhI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 06:37:08 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDC556FA4;
+        Wed,  1 Jun 2022 03:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654079826; x=1685615826;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yRzXRhmweAXGfPI0innNsyhnWdgFvifkjj5F+obP+I4=;
+  b=aps6OuqhIRFBNAS1IZS7ztBmKH3sJ3szfc9HIia7Az+AKHyd/NKTUCmC
+   x21alCb21Awf6ux4NKPMhrk7U57tBa7u+Ub7s9hFu7ImADqhruM3Oj0ow
+   Rw85vQbjv3OCKpgEEIlQMM1/4OaBMgmh9ujniyGqia+BiHIVUCE4x/78o
+   7e1OBXtvDF1zBTh7umPElRI99iGWSWCjmfUht1KSg8sqls7xd7cpsyL/F
+   L9wwjKMH+L1otH4aWdlnK3T9gpVdMgrSqmr4kLlSYoPFP9YcuqxN9NyI3
+   uVMOgVmrIHUKtpB+xyl+P/MIJMwEE0Gwhernm0ZgYk1uphVpnO2Ow5yWL
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10364"; a="273109712"
+X-IronPort-AV: E=Sophos;i="5.91,268,1647327600"; 
+   d="scan'208";a="273109712"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2022 03:36:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,268,1647327600"; 
+   d="scan'208";a="612264968"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 01 Jun 2022 03:36:56 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nwLih-0003rO-OH;
+        Wed, 01 Jun 2022 10:36:55 +0000
+Date:   Wed, 1 Jun 2022 18:36:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] bpf, test_run: Add PROG_TEST_RUN support to
+ kprobe
+Message-ID: <202206011814.9lsKlbB0-lkp@intel.com>
+References: <b544771c7bce102f2a97a34e2f5e7ebbb9ea0a24.1653861287.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b544771c7bce102f2a97a34e2f5e7ebbb9ea0a24.1653861287.git.dxu@dxuuu.xyz>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,75 +65,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hku7bkuro6IFRva2UgSMO4aWxhbmQtSsO4cmdl
-bnNlbiBbbWFpbHRvOnRva2VAa2VybmVsLm9yZ10gDQrlj5HpgIHml7bpl7Q6IDIwMjLlubQ25pyI
-MeaXpSAxNzoyNQ0K5pS25Lu25Lq6OiBzaGFvemhlbmdjaGFvIDxzaGFvemhlbmdjaGFvQGh1YXdl
-aS5jb20+OyBicGZAdmdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBsaW51
-eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBhc3RAa2VybmVsLm9yZzsgZGFuaWVsQGlvZ2VhcmJv
-eC5uZXQ7IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGt1YmFAa2VybmVsLm9yZzsgaGF3a0BrZXJuZWwu
-b3JnOyBqb2huLmZhc3RhYmVuZEBnbWFpbC5jb207IGFuZHJpaUBrZXJuZWwub3JnOyBrYWZhaUBm
-Yi5jb207IHNvbmdsaXVicmF2aW5nQGZiLmNvbTsgeWhzQGZiLmNvbTsga3BzaW5naEBrZXJuZWwu
-b3JnDQrmioTpgIE6IHdlaXlvbmdqdW4gKEEpIDx3ZWl5b25nanVuMUBodWF3ZWkuY29tPjsgc2hh
-b3poZW5nY2hhbyA8c2hhb3poZW5nY2hhb0BodWF3ZWkuY29tPjsgeXVlaGFpYmluZyA8eXVlaGFp
-YmluZ0BodWF3ZWkuY29tPg0K5Li76aKYOiBSZTogW1BBVENIIHY0LGJwZi1uZXh0XSBzYW1wbGVz
-L2JwZjogY2hlY2sgZGV0YWNoIHByb2cgZXhpc3Qgb3Igbm90IGluIHhkcF9md2QNCg0KWmhlbmdj
-aGFvIFNoYW8gPHNoYW96aGVuZ2NoYW9AaHVhd2VpLmNvbT4gd3JpdGVzOg0KDQo+IEJlZm9yZSBk
-ZXRhY2ggdGhlIHByb2csIHdlIHNob3VsZCBjaGVjayBkZXRhY2ggcHJvZyBleGlzdCBvciBub3Qu
-DQo+DQo+IFNpZ25lZC1vZmYtYnk6IFpoZW5nY2hhbyBTaGFvIDxzaGFvemhlbmdjaGFvQGh1YXdl
-aS5jb20+DQoNClRoZSBsb2dpYyBsb29rcyBnb29kIG5vdywganVzdCBzcG90dGVkIG9uZSBpc3N1
-ZSB3aXRoIHRoZSB1c2Ugb2YgJ3JldHVybiBlcnJubycgKHdoaWNoIEkganVzdCByZWFsaXNlZCBJ
-IHN1Z2dlc3RlZCBvbiB0aGUgbGFzdCB2ZXJzaW9uLCBzb3JyeSBhYm91dCB0aGF0KS4NCg0KPiAg
-c2FtcGxlcy9icGYveGRwX2Z3ZF91c2VyLmMgfCA2MiANCj4gKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKystLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA1MyBpbnNlcnRpb25zKCspLCA5
-IGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvc2FtcGxlcy9icGYveGRwX2Z3ZF91c2Vy
-LmMgYi9zYW1wbGVzL2JwZi94ZHBfZndkX3VzZXIuYyANCj4gaW5kZXggMTgyODQ4N2JhZTlhLi5h
-NGJhNTM4OTE2NTMgMTAwNjQ0DQo+IC0tLSBhL3NhbXBsZXMvYnBmL3hkcF9md2RfdXNlci5jDQo+
-ICsrKyBiL3NhbXBsZXMvYnBmL3hkcF9md2RfdXNlci5jDQo+IEBAIC00NywxNyArNDcsNjEgQEAg
-c3RhdGljIGludCBkb19hdHRhY2goaW50IGlkeCwgaW50IHByb2dfZmQsIGludCBtYXBfZmQsIGNv
-bnN0IGNoYXIgKm5hbWUpDQo+ICAJcmV0dXJuIGVycjsNCj4gIH0NCj4gIA0KPiAtc3RhdGljIGlu
-dCBkb19kZXRhY2goaW50IGlkeCwgY29uc3QgY2hhciAqbmFtZSkNCj4gK3N0YXRpYyBpbnQgZG9f
-ZGV0YWNoKGludCBpZmluZGV4LCBjb25zdCBjaGFyICppZm5hbWUsIGNvbnN0IGNoYXIgDQo+ICsq
-YXBwX25hbWUpDQo+ICB7DQo+IC0JaW50IGVycjsNCj4gKwlMSUJCUEZfT1BUUyhicGZfeGRwX2F0
-dGFjaF9vcHRzLCBvcHRzKTsNCj4gKwlzdHJ1Y3QgYnBmX3Byb2dfaW5mbyBwcm9nX2luZm8gPSB7
-fTsNCj4gKwljaGFyIHByb2dfbmFtZVtCUEZfT0JKX05BTUVfTEVOXTsNCj4gKwlfX3UzMiBpbmZv
-X2xlbiwgY3Vycl9wcm9nX2lkOw0KPiArCWludCBwcm9nX2ZkOw0KPiArCWludCBlcnIgPSAxOw0K
-PiArDQo+ICsJaWYgKGJwZl94ZHBfcXVlcnlfaWQoaWZpbmRleCwgeGRwX2ZsYWdzLCAmY3Vycl9w
-cm9nX2lkKSkgew0KPiArCQlwcmludGYoIkVSUk9SOiBicGZfeGRwX3F1ZXJ5X2lkIGZhaWxlZCAo
-JXMpXG4iLA0KPiArCQkgICAgICAgc3RyZXJyb3IoZXJybm8pKTsNCj4gKwkJcmV0dXJuIC1lcnJu
-bzsNCg0KVGhlIHByaW50ZiBhYm92ZSBtYXkgb3ZlcnJpZGUgZXJybm8sIHNvIHRoaXMgY291bGQg
-cmV0dXJuIDA7IHRoZSBhY3R1YWwgcmV0dXJuIHZhbHVlIGlzIG5vdCByZWFsbHkgdXNlZCBieSB0
-aGUgY2FsbGVyLCBzbyB5b3UgY291bGQganVzdCBhbHdheXMgJ3JldHVybiAtMScgb3IgJ3JldHVy
-biBlcnInLg0KDQo+ICsJfQ0KPiArDQo+ICsJaWYgKCFjdXJyX3Byb2dfaWQpIHsNCj4gKwkJcHJp
-bnRmKCJFUlJPUjogZmxhZ3MoMHgleCkgeGRwIHByb2cgaXMgbm90IGF0dGFjaGVkIHRvICVzXG4i
-LA0KPiArCQkgICAgICAgeGRwX2ZsYWdzLCBpZm5hbWUpOw0KPiArCQlnb3RvIGVycl9vdXQ7DQoN
-CkRvZXNuJ3QgcmVhbGx5IG5lZWQgYSBsYWJlbCwganVzdCBkbyBhIGRpcmVjdCByZXR1cm4gaGVy
-ZSBhcyB3ZWxsLg0KDQo+ICsJfQ0KPiAgDQo+IC0JZXJyID0gYnBmX3hkcF9kZXRhY2goaWR4LCB4
-ZHBfZmxhZ3MsIE5VTEwpOw0KPiAtCWlmIChlcnIgPCAwKQ0KPiAtCQlwcmludGYoIkVSUk9SOiBm
-YWlsZWQgdG8gZGV0YWNoIHByb2dyYW0gZnJvbSAlc1xuIiwgbmFtZSk7DQo+ICsJaW5mb19sZW4g
-PSBzaXplb2YocHJvZ19pbmZvKTsNCj4gKwlwcm9nX2ZkID0gYnBmX3Byb2dfZ2V0X2ZkX2J5X2lk
-KGN1cnJfcHJvZ19pZCk7DQo+ICsJaWYgKHByb2dfZmQgPCAwKSB7DQo+ICsJCXByaW50ZigiRVJS
-T1I6IGJwZl9wcm9nX2dldF9mZF9ieV9pZCBmYWlsZWQgKCVzKVxuIiwNCj4gKwkJICAgICAgIHN0
-cmVycm9yKGVycm5vKSk7DQo+ICsJCXJldHVybiAtZXJybm87DQoNClNhbWUgaXNzdWUgYXMgYWJv
-dmUgd2l0aCBlcnJubyBiZWluZyBvdmVyd3JpdHRlbi4NCg0KPiArCX0NCj4gKw0KPiArCWVyciA9
-IGJwZl9vYmpfZ2V0X2luZm9fYnlfZmQocHJvZ19mZCwgJnByb2dfaW5mbywgJmluZm9fbGVuKTsN
-Cj4gKwlpZiAoZXJyKSB7DQo+ICsJCXByaW50ZigiRVJST1I6IGJwZl9vYmpfZ2V0X2luZm9fYnlf
-ZmQgZmFpbGVkICglcylcbiIsDQo+ICsJCSAgICAgICBzdHJlcnJvcihlcnJubykpOw0KPiArCQln
-b3RvIGNsb3NlX291dDsNCj4gKwl9DQo+ICsJc25wcmludGYocHJvZ19uYW1lLCBzaXplb2YocHJv
-Z19uYW1lKSwgIiVzX3Byb2ciLCBhcHBfbmFtZSk7DQo+ICsJcHJvZ19uYW1lW0JQRl9PQkpfTkFN
-RV9MRU4gLSAxXSA9ICdcMCc7DQo+ICsNCj4gKwlpZiAoc3RyY21wKHByb2dfaW5mby5uYW1lLCBw
-cm9nX25hbWUpKSB7DQo+ICsJCXByaW50ZigiRVJST1I6ICVzIGlzbid0IGF0dGFjaGVkIHRvICVz
-XG4iLCBhcHBfbmFtZSwgaWZuYW1lKTsNCj4gKwkJZXJyID0gMTsNCj4gKwl9IGVsc2Ugew0KDQpZ
-b3UgY2FuIHNhdmUgYSBsZXZlbCBvZiBpbmRlbnRhdGlvbiBieSBhZGRpbmcgYSAnZ290byBjbG9z
-ZV9vdXQnIGFmdGVyICdlcnI9MScgaW5zdGVhZCBvZiB1c2luZyBhbiAnZWxzZScgYmxvY2suDQoN
-Cj4gKwkJb3B0cy5vbGRfcHJvZ19mZCA9IHByb2dfZmQ7DQo+ICsJCWVyciA9IGJwZl94ZHBfZGV0
-YWNoKGlmaW5kZXgsIHhkcF9mbGFncywgJm9wdHMpOw0KPiArCQlpZiAoZXJyIDwgMCkNCj4gKwkJ
-CXByaW50ZigiRVJST1I6IGZhaWxlZCB0byBkZXRhY2ggcHJvZ3JhbSBmcm9tICVzICglcylcbiIs
-DQo+ICsJCQkgICAgICAgaWZuYW1lLCBzdHJlcnJvcihlcnJubykpOw0KPiArCQkvKiBUT0RPOiBS
-ZW1lbWJlciB0byBjbGVhbnVwIG1hcCwgd2hlbiBhZGRpbmcgdXNlIG9mIHNoYXJlZCBtYXANCj4g
-KwkJICogIGJwZl9tYXBfZGVsZXRlX2VsZW0oKG1hcF9mZCwgJmlkeCk7DQo+ICsJCSAqLw0KPiAr
-CX0NCj4gIA0KPiAtCS8qIFRPRE86IFJlbWVtYmVyIHRvIGNsZWFudXAgbWFwLCB3aGVuIGFkZGlu
-ZyB1c2Ugb2Ygc2hhcmVkIG1hcA0KPiAtCSAqICBicGZfbWFwX2RlbGV0ZV9lbGVtKChtYXBfZmQs
-ICZpZHgpOw0KPiAtCSAqLw0KPiArY2xvc2Vfb3V0Og0KPiArCWNsb3NlKHByb2dfZmQpOw0KPiAr
-ZXJyX291dDoNCg0KZG9uJ3QgbmVlZCB0aGUgZXJyX291dCBsYWJlbCwgc2VlIGFib3ZlLg0KDQot
-VG9rZQ0KDQpIaSBUb2tlOg0KCVRoYW5rIHlvdSBmb3IgeW91ciByZXBseS4gSSB3aWxsIGZpeCBp
-dCBpbiBuZXh0IHBhdGNoLg0KDQpaaGVuZ2NoYW8gU2hhbw0KDQo=
+Hi Daniel,
+
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Xu/Add-PROG_TEST_RUN-support-to-BPF_PROG_TYPE_KPROBE/20220530-060742
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: s390-randconfig-r002-20220531 (https://download.01.org/0day-ci/archive/20220601/202206011814.9lsKlbB0-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project c825abd6b0198fb088d9752f556a70705bc99dfd)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install s390 cross compiling tool for clang build
+        # apt-get install binutils-s390x-linux-gnu
+        # https://github.com/intel-lab-lkp/linux/commit/a547a4c795103fd002d3bbb5ee4d7141113716c0
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Daniel-Xu/Add-PROG_TEST_RUN-support-to-BPF_PROG_TYPE_KPROBE/20220530-060742
+        git checkout a547a4c795103fd002d3bbb5ee4d7141113716c0
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> /opt/cross/gcc-11.3.0-nolibc/s390x-linux/bin/s390x-linux-ld: kernel/trace/bpf_trace.o:kernel/trace/bpf_trace.c:1365: undefined reference to `bpf_prog_test_run_kprobe'
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
