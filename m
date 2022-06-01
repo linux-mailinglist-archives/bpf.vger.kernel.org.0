@@ -2,200 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B2E53AF27
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 00:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E6253AFC2
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 00:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbiFAVyK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 17:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
+        id S232126AbiFAWCm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 18:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbiFAVyJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 17:54:09 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79B5F33
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 14:54:07 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 1so3392853ljp.8
-        for <bpf@vger.kernel.org>; Wed, 01 Jun 2022 14:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SuaapL0Q76FBQl3M4eXy12kJLwhsS+avsGho6pNF6uA=;
-        b=MlO1yruvhjBbxh+yZSqpDhQAMxCPcFNmSJCVPYNq2/y29k0ZnThPGcDeWXGEe2zhEa
-         PcjYbJhGbdO6ggsQrT293hGVS5UdyCVw7nrMHQSyqIG6FSuan4vN49C9hD+GIu9XYvmQ
-         M/hwndr73HOKqol8EmQ6j9wYFN8zEytW5dP4bdNnLpKY+SWDY3NpwS/UotXUX2tBe8Gd
-         QMfBMb9SJYot6d4OjF3Pvgw27Qcu65JsZnQ0kTxk3hCUpI0ilX6b6l2vczhOAPnPejKF
-         gJc0h6ZpkkXUQUAYrHG22hqyswjNaA+S+nlDvjyqjmymKKgTSQxuJacGcp1PIp8iJ//x
-         +I8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SuaapL0Q76FBQl3M4eXy12kJLwhsS+avsGho6pNF6uA=;
-        b=sLewjVNZ+StYlYRwXCLUSEUqXPzzen3V6hHL0bGa3q/Xf0Hgsi95QaTXbqUVkVolkm
-         ElBywMvxC3c6FW7zN+pEAtLGZ6Wo5MhbKWHSI9CF90aoi2CsiQONSIctsLg3iSLr+gvm
-         pX3TcnZVS9o0di7l72JFyAtGyHbZfxNKi+MeSoMWLpvWkA62mxGm1EGUmVB7T34nW0YF
-         VLFXdqoZ7sG+NxVqBKDdX5aVfH7K3VU1faFGVSPi1MSo6R4d2tbkz3S7oAm8BOEcW9X+
-         pwmcjh/hJS/4TFvDd3bUY/yHF3AGPWPCjbzk8pnYMLXVQ0U3cNXTcaUxqeyjxTMQbXLx
-         jHWg==
-X-Gm-Message-State: AOAM531dNQLNHj7YqhFUeGhMDivEgZOzcxyFvksxMaT4iWPEqXQoyFUO
-        Akh5O7jlxHLNY8pC3OMAQ7chbPv1nGS+0kvaN6tAHR8q
-X-Google-Smtp-Source: ABdhPJx05cubcj+XTphZu3hXh/Z6YOVRUgorcF7+zaIvB+2T5PMRHe3XHJIn+XpSunDXwTUManlqPYRUGy/1oikqKMs=
-X-Received: by 2002:a05:651c:994:b0:253:c449:12f with SMTP id
- b20-20020a05651c099400b00253c449012fmr39956816ljq.413.1654120446006; Wed, 01
- Jun 2022 14:54:06 -0700 (PDT)
+        with ESMTP id S232276AbiFAWCl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 18:02:41 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494A2B842;
+        Wed,  1 Jun 2022 15:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654120960; x=1685656960;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TTojbk3zhQLGZQY5ZUmuvOKg1nRm4x/zxYu3AiWIBHA=;
+  b=HD8/O/JXngM1pZQO0wu/NbV9NVYGHPxHRO8TCIUsjbMELpHG0Ln3fqYN
+   WtUnvLwZ/XBsOtSYB+0pwMidYQMM1Z8Tfe90AJg5Ri6umRXzS5iX/JTSF
+   7dw3w0Vr1M3fnxbc+gSzEXaRsEixSrqgbM9K4GDrkeXG1pMQadyT4b5aV
+   Uhz8yfzWc8tCXJcm/4Q4Ye7wxQx4DaqRncbKL/V3EhfxrIee4gnfmDTdW
+   7xbKhmg8JNawJHnFOIbF3YYXW8+UjK2AHlZawGvrsCXcRtPYPFIo1pDzR
+   AIISsdRoCwGkWFGj4WgSFzXzsiM/33ygmo3wxp/ZezJBgurxWC4mMAuaj
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10365"; a="255614614"
+X-IronPort-AV: E=Sophos;i="5.91,269,1647327600"; 
+   d="scan'208";a="255614614"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2022 15:02:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,269,1647327600"; 
+   d="scan'208";a="707266896"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 01 Jun 2022 15:02:24 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nwWQ4-0004SU-38;
+        Wed, 01 Jun 2022 22:02:24 +0000
+Date:   Thu, 2 Jun 2022 06:01:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Song Liu <song@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, rostedt@goodmis.org,
+        jolsa@kernel.org, Song Liu <song@kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] ftrace: introduce
+ FTRACE_OPS_FL_SHARE_IPMODIFY
+Message-ID: <202206020533.bBh0IXx6-lkp@intel.com>
+References: <20220601175749.3071572-4-song@kernel.org>
 MIME-Version: 1.0
-References: <20220526185432.2545879-1-yhs@fb.com> <20220526185524.2550356-1-yhs@fb.com>
- <CAEf4BzYp=9pntdwgc40RF5-1RhwgJqPyQ8B7svaX_TzfO+joag@mail.gmail.com> <442f83af-70dd-da94-5cd6-5098c173cd35@fb.com>
-In-Reply-To: <442f83af-70dd-da94-5cd6-5098c173cd35@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 1 Jun 2022 14:53:54 -0700
-Message-ID: <CAEf4BzYREChWD7bmB1MddhLQC-UgAAouuivew3nBKBds=omZiQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 10/18] libbpf: Add enum64 relocation support
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220601175749.3071572-4-song@kernel.org>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 1, 2022 at 12:14 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 5/31/22 5:07 PM, Andrii Nakryiko wrote:
-> > On Thu, May 26, 2022 at 11:55 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >> The enum64 relocation support is added. The bpf local type
-> >> could be either enum or enum64 and the remote type could be
-> >> either enum or enum64 too. The all combinations of local enum/enum64
-> >> and remote enum/enum64 are supported.
-> >>
-> >> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >> ---
-> >>   tools/lib/bpf/btf.h       |  7 +++++
-> >>   tools/lib/bpf/libbpf.c    |  7 ++---
-> >>   tools/lib/bpf/relo_core.c | 54 +++++++++++++++++++++++++++------------
-> >>   3 files changed, 48 insertions(+), 20 deletions(-)
-> >>
-> >
-> > [...]
-> >
-> >>                  local_essent_len = bpf_core_essential_name_len(local_acc->name);
-> >>
-> >> -               for (i = 0, e = btf_enum(targ_type); i < btf_vlen(targ_type); i++, e++) {
-> >> -                       targ_name = btf__name_by_offset(targ_spec->btf, e->name_off);
-> >> +               for (i = 0; i < btf_vlen(targ_type); i++) {
-> >> +                       if (btf_is_enum(targ_type))
-> >> +                               name_off = btf_enum(targ_type)[i].name_off;
-> >> +                       else
-> >> +                               name_off = btf_enum64(targ_type)[i].name_off;
-> >> +
-> >> +                       targ_name = btf__name_by_offset(targ_spec->btf, name_off);
-> >>                          targ_essent_len = bpf_core_essential_name_len(targ_name);
-> >>                          if (targ_essent_len != local_essent_len)
-> >>                                  continue;
-> >> @@ -680,8 +688,7 @@ static int bpf_core_calc_field_relo(const char *prog_name,
-> >>                  *val = byte_sz;
-> >>                  break;
-> >>          case BPF_CORE_FIELD_SIGNED:
-> >> -               /* enums will be assumed unsigned */
-> >> -               *val = btf_is_enum(mt) ||
-> >> +               *val = btf_type_is_any_enum(mt) ||
-> >
-> > wouldn't this be more correct with kflag meaning "signed":
-> >
-> > (btf_type_is_any_enum(mt) && btf_kflag(mt)) ||
->
-> Will fix.
->
-> >
-> > ?
-> >
-> >>                         (btf_int_encoding(mt) & BTF_INT_SIGNED);
-> >>                  if (validate)
-> >>                          *validate = true; /* signedness is never ambiguous */
-> >> @@ -754,7 +761,6 @@ static int bpf_core_calc_enumval_relo(const struct bpf_core_relo *relo,
-> >>                                        __u64 *val)
-> >>   {
-> >>          const struct btf_type *t;
-> >> -       const struct btf_enum *e;
-> >>
-> >>          switch (relo->kind) {
-> >>          case BPF_CORE_ENUMVAL_EXISTS:
-> >> @@ -764,8 +770,10 @@ static int bpf_core_calc_enumval_relo(const struct bpf_core_relo *relo,
-> >>                  if (!spec)
-> >>                          return -EUCLEAN; /* request instruction poisoning */
-> >>                  t = btf_type_by_id(spec->btf, spec->spec[0].type_id);
-> >> -               e = btf_enum(t) + spec->spec[0].idx;
-> >> -               *val = e->val;
-> >> +               if (btf_is_enum(t))
-> >> +                       *val = btf_enum(t)[spec->spec[0].idx].val;
-> >> +               else
-> >> +                       *val = btf_enum64_value(btf_enum64(t) + spec->spec[0].idx);
-> >>                  break;
-> >>          default:
-> >>                  return -EOPNOTSUPP;
-> >> @@ -1060,7 +1068,6 @@ int bpf_core_patch_insn(const char *prog_name, struct bpf_insn *insn,
-> >>   int bpf_core_format_spec(char *buf, size_t buf_sz, const struct bpf_core_spec *spec)
-> >>   {
-> >>          const struct btf_type *t;
-> >> -       const struct btf_enum *e;
-> >>          const char *s;
-> >>          __u32 type_id;
-> >>          int i, len = 0;
-> >> @@ -1089,10 +1096,23 @@ int bpf_core_format_spec(char *buf, size_t buf_sz, const struct bpf_core_spec *s
-> >>
-> >>          if (core_relo_is_enumval_based(spec->relo_kind)) {
-> >>                  t = skip_mods_and_typedefs(spec->btf, type_id, NULL);
-> >> -               e = btf_enum(t) + spec->raw_spec[0];
-> >> -               s = btf__name_by_offset(spec->btf, e->name_off);
-> >> +               if (btf_is_enum(t)) {
-> >> +                       const struct btf_enum *e;
-> >> +                       const char *fmt_str;
-> >> +
-> >> +                       e = btf_enum(t) + spec->raw_spec[0];
-> >> +                       s = btf__name_by_offset(spec->btf, e->name_off);
-> >> +                       fmt_str = BTF_INFO_KFLAG(t->info) ? "::%s = %d" : "::%s = %u";
-> >
-> > minor nit: btf_kflag(t) instead of BTF_INFO_KFLAGS(t->info)?
->
-> relo_core.c is used by both the kernel and libbpf. The btf_kflag
-> is not available in kernel. That is why I am using BTF_INFO_KFLAG.
-> I guess I can introduce btf_kflag in the kernel to avoid using
-> BTF_INFO_KFLAG.
+Hi Song,
 
-ah, in that case it's fine, nothing wrong with it per se, if it was
-purely libbpf code btf_kflag() is a bit cleaner, but given it's shared
-it's fine to keep it as is.
+I love your patch! Yet something to improve:
 
->
-> >
-> >
-> >
-> >> +                       append_buf(fmt_str, s, e->val);
-> >> +               } else {
-> >> +                       const struct btf_enum64 *e;
-> >> +                       const char *fmt_str;
-> >>
-> >> -               append_buf("::%s = %u", s, e->val);
-> >> +                       e = btf_enum64(t) + spec->raw_spec[0];
-> >> +                       s = btf__name_by_offset(spec->btf, e->name_off);
-> >> +                       fmt_str = BTF_INFO_KFLAG(t->info) ? "::%s = %lld" : "::%s = %llu";
-> >> +                       append_buf(fmt_str, s, (unsigned long long)btf_enum64_value(e));
-> >> +               }
-> >>                  return len;
-> >>          }
-> >>
-> >> --
-> >> 2.30.2
-> >>
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/ftrace-host-klp-and-bpf-trampoline-together/20220602-020112
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: parisc-randconfig-r005-20220531 (https://download.01.org/0day-ci/archive/20220602/202206020533.bBh0IXx6-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/a710d92bb10a7a0376af57af15208ea1b4396545
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Song-Liu/ftrace-host-klp-and-bpf-trampoline-together/20220602-020112
+        git checkout a710d92bb10a7a0376af57af15208ea1b4396545
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=parisc SHELL=/bin/bash kernel/trace/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   kernel/trace/ftrace.c: In function 'prepare_direct_functions_for_ipmodify':
+   kernel/trace/ftrace.c:8005:21: error: 'direct_mutex' undeclared (first use in this function); did you mean 'event_mutex'?
+    8005 |         mutex_lock(&direct_mutex);
+         |                     ^~~~~~~~~~~~
+         |                     event_mutex
+   kernel/trace/ftrace.c:8005:21: note: each undeclared identifier is reported only once for each function it appears in
+>> kernel/trace/ftrace.c:8007:19: error: 'struct ftrace_ops' has no member named 'func_hash'
+    8007 |         hash = ops->func_hash->filter_hash;
+         |                   ^~
+>> kernel/trace/ftrace.c:8020:37: error: implicit declaration of function 'ops_references_ip' [-Werror=implicit-function-declaration]
+    8020 |                                 if (ops_references_ip(op, ip)) {
+         |                                     ^~~~~~~~~~~~~~~~~
+>> kernel/trace/ftrace.c:8028:40: error: 'struct ftrace_ops' has no member named 'ops_func'
+    8028 |                                 if (!op->ops_func) {
+         |                                        ^~
+   kernel/trace/ftrace.c:8032:41: error: 'struct ftrace_ops' has no member named 'ops_func'
+    8032 |                                 ret = op->ops_func(op, FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY);
+         |                                         ^~
+   kernel/trace/ftrace.c: In function 'register_ftrace_function':
+   kernel/trace/ftrace.c:8084:31: error: 'direct_mutex' undeclared (first use in this function); did you mean 'event_mutex'?
+    8084 |                 mutex_unlock(&direct_mutex);
+         |                               ^~~~~~~~~~~~
+         |                               event_mutex
+   cc1: some warnings being treated as errors
+
+
+vim +8007 kernel/trace/ftrace.c
+
+  7974	
+  7975	/*
+  7976	 * When registering ftrace_ops with IPMODIFY (not direct), it is necessary
+  7977	 * to make sure it doesn't conflict with any direct ftrace_ops. If there is
+  7978	 * existing direct ftrace_ops on a kernel function being patched, call
+  7979	 * FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY on it to enable sharing.
+  7980	 *
+  7981	 * @ops:     ftrace_ops being registered.
+  7982	 *
+  7983	 * Returns:
+  7984	 *         0 - @ops does have IPMODIFY or @ops itself is DIRECT, no change
+  7985	 *             needed;
+  7986	 *         1 - @ops has IPMODIFY, hold direct_mutex;
+  7987	 *         -EBUSY - currently registered DIRECT ftrace_ops does not support
+  7988	 *                  SHARE_IPMODIFY, we need to abort the register.
+  7989	 *         -EAGAIN - cannot make changes to currently registered DIRECT
+  7990	 *                   ftrace_ops at the moment, but we can retry later. This
+  7991	 *                   is needed to avoid potential deadlocks.
+  7992	 */
+  7993	static int prepare_direct_functions_for_ipmodify(struct ftrace_ops *ops)
+  7994		__acquires(&direct_mutex)
+  7995	{
+  7996		struct ftrace_func_entry *entry;
+  7997		struct ftrace_hash *hash;
+  7998		struct ftrace_ops *op;
+  7999		int size, i, ret;
+  8000	
+  8001		if (!(ops->flags & FTRACE_OPS_FL_IPMODIFY) ||
+  8002		    (ops->flags & FTRACE_OPS_FL_DIRECT))
+  8003			return 0;
+  8004	
+  8005		mutex_lock(&direct_mutex);
+  8006	
+> 8007		hash = ops->func_hash->filter_hash;
+  8008		size = 1 << hash->size_bits;
+  8009		for (i = 0; i < size; i++) {
+  8010			hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
+  8011				unsigned long ip = entry->ip;
+  8012				bool found_op = false;
+  8013	
+  8014				mutex_lock(&ftrace_lock);
+  8015				do_for_each_ftrace_op(op, ftrace_ops_list) {
+  8016					if (!(op->flags & FTRACE_OPS_FL_DIRECT))
+  8017						continue;
+  8018					if (op->flags & FTRACE_OPS_FL_SHARE_IPMODIFY)
+  8019						break;
+> 8020					if (ops_references_ip(op, ip)) {
+  8021						found_op = true;
+  8022						break;
+  8023					}
+  8024				} while_for_each_ftrace_op(op);
+  8025				mutex_unlock(&ftrace_lock);
+  8026	
+  8027				if (found_op) {
+> 8028					if (!op->ops_func) {
+  8029						ret = -EBUSY;
+  8030						goto err_out;
+  8031					}
+  8032					ret = op->ops_func(op, FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY);
+  8033					if (ret)
+  8034						goto err_out;
+  8035				}
+  8036			}
+  8037		}
+  8038	
+  8039		/*
+  8040		 * Didn't find any overlap with any direct function, or the direct
+  8041		 * function can share with ipmodify. Hold direct_mutex to make sure
+  8042		 * this doesn't change until we are done.
+  8043		 */
+  8044		return 1;
+  8045	
+  8046	err_out:
+  8047		mutex_unlock(&direct_mutex);
+  8048		return ret;
+  8049	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
