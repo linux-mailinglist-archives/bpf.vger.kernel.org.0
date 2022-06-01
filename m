@@ -2,90 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB53C539DF4
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 09:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C14A539FB8
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 10:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350235AbiFAHQ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 03:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
+        id S233068AbiFAImH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 04:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350844AbiFAHPy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 03:15:54 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50282A26E6;
-        Wed,  1 Jun 2022 00:15:36 -0700 (PDT)
-X-UUID: 716a8cf323a7496ba4f7d438554a5a9b-20220601
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.5,REQID:1aa1ea8f-56af-4e4f-9002-5fef85241bad,OB:0,LO
-        B:0,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:54,FILE:0,RULE:Release_Ham,ACT
-        ION:release,TS:54
-X-CID-INFO: VERSION:1.1.5,REQID:1aa1ea8f-56af-4e4f-9002-5fef85241bad,OB:0,LOB:
-        0,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:54,FILE:0,RULE:Release_HamU,ACTI
-        ON:release,TS:54
-X-CID-META: VersionHash:2a19b09,CLOUDID:67008514-f88c-475e-badf-d9ee54230b8f,C
-        OID:d03bb2fe049f,Recheck:0,SF:28|16|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,QS:0,BEC:nil
-X-UUID: 716a8cf323a7496ba4f7d438554a5a9b-20220601
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <lina.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 748532127; Wed, 01 Jun 2022 15:15:27 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Wed, 1 Jun 2022 15:15:26 +0800
-Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Wed, 1 Jun 2022 15:15:25 +0800
-From:   Lina Wang <lina.wang@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Maciej enczykowski <maze@google.com>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lkp@intel.com>,
-        <rong.a.chen@intel.com>, kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH] selftests net: fix bpf build error
-Date:   Wed, 1 Jun 2022 15:08:44 +0800
-Message-ID: <20220601070844.10515-1-lina.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <9c462ffc-f2c0-f542-4e61-251571da8c22@iogearbox.net>
-References: <9c462ffc-f2c0-f542-4e61-251571da8c22@iogearbox.net>
+        with ESMTP id S234629AbiFAImE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 04:42:04 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2ED5BE6E
+        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 01:42:02 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id gc3-20020a17090b310300b001e33092c737so1405069pjb.3
+        for <bpf@vger.kernel.org>; Wed, 01 Jun 2022 01:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=17jbuB5ApQ2iSURu9wqbSRYsL+H5kiM4U+n5E3wCBBM=;
+        b=YYZpXVz73I9bIFut7IGyzJAak1gGAmGFP83a1uzg+MbXHP4zJnmYRW9bqGEDjGyR2I
+         HJXNd8uEjusQFPFgN6CF3/Or0xXd9WObAbppzV4d8Kjakf1n5Bqq541sZNKKbrak0Rf1
+         hrDXWpV3hBS7wdFZwABFJY2YTT0OEV3UliHm8En96ewOikvWUC24a3lWC5aEIyjl1Rq3
+         Pa6mrpOFzFDUQXjNa0LWgt2GDywWPnSzh6tHJvyuW2v+Jyn5xhWaNAl/abKtz2/oxhuw
+         DEZnaVlwaujCN2IiKgLcW9S1QrinBOu344RdmTHD3dq3DqOWnxjSb1oExOmkyerAVMQ+
+         kWNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=17jbuB5ApQ2iSURu9wqbSRYsL+H5kiM4U+n5E3wCBBM=;
+        b=2dNGu0tiatbkWRiz4NyOIkDWH954uadL/o/IrU2NqK8WDlCZgEBHxQE/tX7gDNubYi
+         /uSK/bqSwZ53JH9dsL3HwlsYl9Vdule92Q7yhXgQqWW2nclP5r3R2MY3DBPkdscOYaHF
+         SYYln0/0Sa8NxtTZ2PDuAcJPJq1oAOEmwYvrEqhrYbXsA1QRnZVWaw0dA44+G4W9hmbQ
+         kDeZOxDW/Hx+NDjyNbRu+8piJrTFu67aU0I5dDY+Q4XSM2oZn25RpGDHpRUmsMBhSklQ
+         wELed+6j8vm3EX67g4spBG7LkPQoJcTmuRIF6qL7WE2MhxbUcncO+LGDp6EpARbnvhRU
+         AqYg==
+X-Gm-Message-State: AOAM532a/1o6C5hdjhw+Cr34Y3J5+rJgsXthg1ZSmnhQbrHRBZJdksIC
+        rRH/yRqyGlM+OONM+bN06eP3uQ==
+X-Google-Smtp-Source: ABdhPJwRgSG1EOyJ20GwRk9Y2BJbzzZUUJFfjUP4QN+PP1rE56lDFxd9N311EPujHZyQhJ1llk8qXQ==
+X-Received: by 2002:a17:902:8c90:b0:163:b989:3cd6 with SMTP id t16-20020a1709028c9000b00163b9893cd6mr17865260plo.170.1654072922062;
+        Wed, 01 Jun 2022 01:42:02 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([139.177.225.241])
+        by smtp.gmail.com with ESMTPSA id u11-20020a63d34b000000b003c14af505f6sm827952pgi.14.2022.06.01.01.41.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 01 Jun 2022 01:42:01 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
+        songmuchun@bytedance.com, wangdongdong.6@bytedance.com,
+        cong.wang@bytedance.com, zhouchengming@bytedance.com,
+        zhoufeng.zf@bytedance.com
+Subject: [PATCH v4 0/2] Optimize performance of update hash-map when free is zero
+Date:   Wed,  1 Jun 2022 16:41:47 +0800
+Message-Id: <20220601084149.13097-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-06-01 at 01:01 +0200, Daniel Borkmann wrote:
-> On 5/30/22 8:21 AM, Lina Wang wrote:
-> clang -O2 -target bpf -c bpf/nat6to4.c -I../../bpf -I../../../../lib
-> -I../../../../../usr/include/ -o
-> /root/daniel/bpf/tools/testing/selftests/net/bpf/nat6to4.o
-> In file included from bpf/nat6to4.c:27:
-> In file included from /usr/include/linux/bpf.h:11:
-> /usr/include/linux/types.h:5:10: fatal error: 'asm/types.h' file not
-> found
-> #include <asm/types.h>
->           ^~~~~~~~~~~~~
-> 1 error generated.
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-maybe your pc is ubuntu or Debian, you should apt-get install gcc-multilib, 
-guys on the internet meets the same problem when build libbpf related, just
-install gcc-multilib package
+We encountered bad case on big system with 96 CPUs that
+alloc_htab_elem() would last for 1ms. The reason is that after the
+prealloc hashtab has no free elems, when trying to update, it will still
+grab spin_locks of all cpus. If there are multiple update users, the
+competition is very serious.
 
-> Could we reuse the build infra from tools/testing/selftests/bpf/ for nat6to4.c?
+0001: Add is_empty to check whether the free list is empty or not before taking
+the lock.
+0002: Add benchmark to reproduce this worst case.
 
-We discussed it before, please refer to https://patchwork.kernel.org/project/netdevbpf/patch/20220407084727.10241-1-lina.wang@mediatek.com/
+Changelog:
+v3->v4: Addressed comments from Daniel Borkmann.
+- Use READ_ONCE/WRITE_ONCE.
+some details in here:
+https://lore.kernel.org/all/20220530091340.53443-1-zhoufeng.zf@bytedance.com/
 
-Thanks!
+v2->v3: Addressed comments from Alexei Starovoitov, Andrii Nakryiko.
+- Adjust the way the benchmark is tested.
+- Adjust the code format.
+some details in here:
+https://lore.kernel.org/all/20220524075306.32306-1-zhoufeng.zf@bytedance.com/T/
+
+v1->v2: Addressed comments from Alexei Starovoitov.
+- add a benchmark to reproduce the issue.
+- Adjust the code format that avoid adding indent.
+some details in here:
+https://lore.kernel.org/all/877ac441-045b-1844-6938-fcaee5eee7f2@bytedance.com/T/
+
+Feng Zhou (2):
+  bpf: avoid grabbing spin_locks of all cpus when no free elems
+  selftest/bpf/benchs: Add bpf_map benchmark
+
+ kernel/bpf/percpu_freelist.c                  | 28 +++++-
+ kernel/bpf/percpu_freelist.h                  |  1 +
+ tools/testing/selftests/bpf/Makefile          |  4 +-
+ tools/testing/selftests/bpf/bench.c           |  2 +
+ .../benchs/bench_bpf_hashmap_full_update.c    | 96 +++++++++++++++++++
+ .../run_bench_bpf_hashmap_full_update.sh      | 11 +++
+ .../bpf/progs/bpf_hashmap_full_update_bench.c | 40 ++++++++
+ 7 files changed, 178 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_hashmap_full_update_bench.c
+
+-- 
+2.20.1
 
