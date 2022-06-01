@@ -2,77 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CD453A441
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 13:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C7A53AA54
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 17:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348219AbiFALiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 07:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
+        id S1355767AbiFAPkc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 11:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbiFALiM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 07:38:12 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FAD1402B;
-        Wed,  1 Jun 2022 04:38:11 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u12so3138708eja.8;
-        Wed, 01 Jun 2022 04:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lgS1YFKqi2uJamBMChe9mVllG2N97UqDarRjzfMsUHA=;
-        b=k3AZWD76xz4xvkaZhjc5Lihx1Q8j5csqqFFCXPOgzynZ/ZJfptD505c242PQNC/kHo
-         G1c1IrXEAY+ON8jBfBf6OK0vsb/SYYrdXMv0TXuj1TgnC10vaCfYWOH5tBiFcfIqXPP9
-         NP0L4l7Xyb+NrOnJF69Be+jLaHTnHXhHLD7wDfoOx44uvVvMhvUdaI4pAwNIwV4gmbSL
-         pvHKj63AaYFegrF10wTl//I4FSdbbuK2tKGjdg4QB7mvdDeSqAW5lttLAm5oi/QFapIM
-         XyjBye5KnRWmXfqzNsn7dL1y80T6M/t11gwfsE20rgtN2FLUMB9o7ZAPALLB3cgU0kGb
-         +sjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lgS1YFKqi2uJamBMChe9mVllG2N97UqDarRjzfMsUHA=;
-        b=RQyiuZNTyQ/nfd+MYIOMoqQPLYeSKx+FKFjJvxiUEEycyviyPL9/1lf5cTWmZo92KG
-         Wd0U9H+x3rXjFZYJET4nRB+rgbHATbAAav/v29Xu/GXFrpk2T2JrqxrkRNsghnDwG1KX
-         cOudNG43ZikL8uWwTud+VJivRFiiLExvzHr3lqlrsEo2ewKcZ+l+eXB4k+fp63WMlJzD
-         x/ukGLwwQ3o2lfd4HPffpC3ebej0bM8hGGZyd3pRGPH6irGhW5KR5xByGT+Z3MssqbRM
-         0a6en+PSnULioCkzmyH4JkJMxBjKk5cdu9hcohQvnjmtT4UgDYVUTbGwKS95m8tvdL+t
-         3vgA==
-X-Gm-Message-State: AOAM530HbIJTMkYlaaTQYBQVhPFse8moH1RmHzXoPuHlRbmogWCQhNh1
-        3gMkViBZy306M6NNAo3slQLZHuCsxPh9+JfO6TE=
-X-Google-Smtp-Source: ABdhPJzpyud0gjdD8atnNWym6HYdwiRdif+39wJ5pJ94vMsLOYcyoez7mgdupUeOn085sMyyJKlTcdmzLABlsLkb3QQ=
-X-Received: by 2002:a17:907:7da5:b0:6fe:d818:ee49 with SMTP id
- oz37-20020a1709077da500b006fed818ee49mr44795116ejc.58.1654083489501; Wed, 01
- Jun 2022 04:38:09 -0700 (PDT)
+        with ESMTP id S1345941AbiFAPkb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 11:40:31 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206F32B1AE
+        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 08:40:30 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 1212624010C
+        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 17:40:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1654098028; bh=NdRlku+BA7FU9K8kgblXaX45bWHf86JfBwt12gqii8A=;
+        h=From:To:Subject:Date:From;
+        b=I4zHLTiIHAxPSACcKzbJKKliCFqt9cAlb9odGAqd6sogzjJjrnemcruUH8LcPfemH
+         D0P/E0bTzszVlrXfintbScYrmIP7UOiDh5oEvnTa3UGrBUzuylKDtfS1eoZUz1Fr8m
+         7Y+HTv//SwhB0TzFUyX5PRKO2a1ZFgYZGhUMG4rNPkxj5etObiJ0D5CSXRiKThCk/l
+         +z5LGrM583tFGR4W8cLhFCEE0AaaTyHWE3IN7rdTtYaeYDORWrBDOZ34sq+q9cr1IN
+         PC7FvowIwPFN8FZ9oDOW1IYSfkQR4nZ4EgpUccXlDxQ91VUNhZShej02gT9vG1PyCD
+         vKapI3GaX2r9A==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LCtdR1qcDz6tm4;
+        Wed,  1 Jun 2022 17:40:27 +0200 (CEST)
+From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+Subject: [PATCH bpf-next] libbpf: Fix a couple of typos
+Date:   Wed,  1 Jun 2022 15:40:25 +0000
+Message-Id: <20220601154025.3295035-1-deso@posteo.net>
 MIME-Version: 1.0
-References: <20220601084149.13097-1-zhoufeng.zf@bytedance.com>
- <20220601084149.13097-3-zhoufeng.zf@bytedance.com> <CAADnVQ+qmvYK_Ttsjgo49Ga7paghicFg_O3=1sYZKbdps4877Q@mail.gmail.com>
- <041465f0-0fd3-fd39-0dac-8093a1c98c00@bytedance.com>
-In-Reply-To: <041465f0-0fd3-fd39-0dac-8093a1c98c00@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 1 Jun 2022 13:37:57 +0200
-Message-ID: <CAADnVQ+cCoH=DAoyLGtJ5HvdNVgFBgTW=wCHs1wvFQuwyhcWOw@mail.gmail.com>
-Subject: Re: Re: [PATCH v4 2/2] selftest/bpf/benchs: Add bpf_map benchmark
-To:     Feng Zhou <zhoufeng.zf@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,52 +48,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 1, 2022 at 1:17 PM Feng Zhou <zhoufeng.zf@bytedance.com> wrote:
->
-> =E5=9C=A8 2022/6/1 =E4=B8=8B=E5=8D=885:53, Alexei Starovoitov =E5=86=99=
-=E9=81=93:
-> > On Wed, Jun 1, 2022 at 10:42 AM Feng zhou <zhoufeng.zf@bytedance.com> w=
-rote:
-> >> +struct {
-> >> +       __uint(type, BPF_MAP_TYPE_HASH);
-> >> +       __type(key, u32);
-> >> +       __type(value, u64);
-> >> +       __uint(max_entries, MAX_ENTRIES);
-> >> +} hash_map_bench SEC(".maps");
-> >> +
-> >> +u64 __attribute__((__aligned__(256))) percpu_time[256];
-> > aligned 256 ?
-> > What is the point?
->
-> I didn't think too much about it here, just referenced it from
-> tools/testing/selftests/bpf/progs/bloom_filter_bench.c
->
-> >
-> >> +u64 nr_loops;
-> >> +
-> >> +static int loop_update_callback(__u32 index, u32 *key)
-> >> +{
-> >> +       u64 init_val =3D 1;
-> >> +
-> >> +       bpf_map_update_elem(&hash_map_bench, key, &init_val, BPF_ANY);
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
-> >> +int benchmark(void *ctx)
-> >> +{
-> >> +       u32 key =3D bpf_get_prandom_u32() % MAX_ENTRIES + MAX_ENTRIES;
-> > What is the point of random ?
-> > just key =3D MAX_ENTRIES would be the same, no?
-> > or key =3D -1 ?
->
-> If all threads on different cpu trigger sys_getpgid and lookup the same
-> key, it will cause
-> "ret =3D htab_lock_bucket(htab, b, hash, &flags); "
-> the lock competition here is fierce, and unnecessary overhead is
-> introduced,
-> and I don't want it to interfere with the test.
+This change fixes a couple of typos that were encountered while studying
+the source code.
 
-I see.
-but using random leaves it to chance.
-Use cpu+max_entries then?
+Signed-off-by: Daniel Müller <deso@posteo.net>
+---
+ tools/lib/bpf/btf.c       | 2 +-
+ tools/lib/bpf/libbpf.h    | 2 +-
+ tools/lib/bpf/relo_core.c | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 3d6c30d9..2e9c23b 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -130,7 +130,7 @@ static inline __u64 ptr_to_u64(const void *ptr)
+ 
+ /* Ensure given dynamically allocated memory region pointed to by *data* with
+  * capacity of *cap_cnt* elements each taking *elem_sz* bytes has enough
+- * memory to accomodate *add_cnt* new elements, assuming *cur_cnt* elements
++ * memory to accommodate *add_cnt* new elements, assuming *cur_cnt* elements
+  * are already used. At most *max_cnt* elements can be ever allocated.
+  * If necessary, memory is reallocated and all existing data is copied over,
+  * new pointer to the memory region is stored at *data, new memory region
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 5b34ca..fa2796 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -107,7 +107,7 @@ struct bpf_object_open_attr {
+ };
+ 
+ struct bpf_object_open_opts {
+-	/* size of this struct, for forward/backward compatiblity */
++	/* size of this struct, for forward/backward compatibility */
+ 	size_t sz;
+ 	/* object name override, if provided:
+ 	 * - for object open from file, this will override setting object
+diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+index ba4453..d8ab4c6 100644
+--- a/tools/lib/bpf/relo_core.c
++++ b/tools/lib/bpf/relo_core.c
+@@ -167,7 +167,7 @@ static bool core_relo_is_enumval_based(enum bpf_core_relo_kind kind)
+  * just a parsed access string representation): [0, 1, 2, 3].
+  *
+  * High-level spec will capture only 3 points:
+- *   - intial zero-index access by pointer (&s->... is the same as &s[0]...);
++ *   - initial zero-index access by pointer (&s->... is the same as &s[0]...);
+  *   - field 'a' access (corresponds to '2' in low-level spec);
+  *   - array element #3 access (corresponds to '3' in low-level spec).
+  *
+@@ -1148,11 +1148,11 @@ int bpf_core_format_spec(char *buf, size_t buf_sz, const struct bpf_core_spec *s
+  * 3. It is supported and expected that there might be multiple flavors
+  *    matching the spec. As long as all the specs resolve to the same set of
+  *    offsets across all candidates, there is no error. If there is any
+- *    ambiguity, CO-RE relocation will fail. This is necessary to accomodate
+- *    imprefection of BTF deduplication, which can cause slight duplication of
++ *    ambiguity, CO-RE relocation will fail. This is necessary to accommodate
++ *    imperfection of BTF deduplication, which can cause slight duplication of
+  *    the same BTF type, if some directly or indirectly referenced (by
+  *    pointer) type gets resolved to different actual types in different
+- *    object files. If such situation occurs, deduplicated BTF will end up
++ *    object files. If such a situation occurs, deduplicated BTF will end up
+  *    with two (or more) structurally identical types, which differ only in
+  *    types they refer to through pointer. This should be OK in most cases and
+  *    is not an error.
+-- 
+2.30.2
+
