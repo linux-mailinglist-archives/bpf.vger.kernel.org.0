@@ -2,83 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22ECC53AFF1
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 00:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392D753AFFD
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 00:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbiFAWKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 18:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
+        id S232233AbiFAWVW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 18:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbiFAWKR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 18:10:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F245716B
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 15:10:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D04B5B81BBA
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 22:10:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7E408C385B8;
-        Wed,  1 Jun 2022 22:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654121413;
-        bh=XoxvJM3hnE28mzycl0V5c7NI9ppybakIZZrOYRgs/xc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cro3Qju11yC8iQUNaXavhk8U97ztpcY6Iy7eCYsi9AmmwjpWfcxDD+sviiTKXsNgs
-         C27HloG7Qhfd5gucGxr8I+E9sSYTEOzkFZ0UaKuzY7TLc26vl4H+EyGmY3BbZtHnGB
-         oMo9QnU1C0H/riolPBc7Y/aU5HlxGTGRqm9KJlcl/IF7RMzssJYW3O941IFtY6X0QT
-         ITbXTsCePhKqyhSTVR24ooyEeds5gaAaNabtJhA/RcyDhjUUCNfzcGdexL/GP8owAD
-         LcsWo0DthVxYbagr/Rqzs85/DMdjcRoXABqO+JkigbzRNBkMuZm7C1/Yvxx+dq+zxW
-         mJQnsvrwsJcmg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5BB11F03950;
-        Wed,  1 Jun 2022 22:10:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232229AbiFAWVV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 18:21:21 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B8B219B;
+        Wed,  1 Jun 2022 15:21:19 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id j10so4946237lfe.12;
+        Wed, 01 Jun 2022 15:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=njJsicR1yE+/aibL6omJMNQApdZ8bBro7j/h/gtmdp0=;
+        b=YVtbLZFM+TJ/eDlZLyyZlPjM5j7ZlRzx9x5IVWtr5562rabm/6/ALJGNytNX/T0o5G
+         YPiP6S2w66M16QECfhpMOA06nlcbuQKp1vdrHCbfFg7BoRZcez2KmLHQGSoqQC+DLPN+
+         1cg6L0ugM4VAd5jWQDQIa3PLs0alDpQjJCO+JgiSAXYROnAwYV7OljqWP3OQ5dVTph97
+         iI0QfmwNLrpeI/Ln1bFkfxchhwEorbef64cVMQ/bmZbGvgMOP8CwNYCnts9DPH2nmofM
+         NLBS6w3o+CKV+YAImtZqVRne2rZ/9Kly/o/6GT3G7GzxNRGFydnaZgys0liMVdXlyydf
+         rPlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=njJsicR1yE+/aibL6omJMNQApdZ8bBro7j/h/gtmdp0=;
+        b=7vjhlDr+7kN4+hnhgEbaS8MgF+Xy6J0x3FA0E1yiUT/abGzHgKE36sZQ2WoStUDIlG
+         2SJ1D12uVqrrKKPBW0QPyTRQnXOwilqd4ubYdeYr4BgiaTpixaDFrIauouEtliCa6m85
+         AgPw4XULvBe9RSd0Og9/W/zCRElGt7Iq8EZO9jJ+FVVtN4PZjQeioUwkRUM5JXsTDiHj
+         qdZJk/l8KRrNtHSbWdAOrHSwiqnwWT1cyKiQnzO9nTb2ixFlL4oIDxrt9cc29TLNvREv
+         VItEz064XYIts2yz+U1fKSbco4b/F9mrBhRh2efQ1M6FC97Qm+kybj6/lv3h9fXlw0TS
+         HqiA==
+X-Gm-Message-State: AOAM5338DDJmMiPKI7UHwZVOD3jEpWPMilSF9Y/totWGpRpqjRNevumx
+        zzZjMeiKm0Fx7pWgw+jlftbMPNYUbHnw2pYdDmo=
+X-Google-Smtp-Source: ABdhPJyNCbpCCL6hkAZ4a+6ambKozrTo7gYQF3w3vzgixykHltcMhFSvFT1tISB6xZXeWrkNXs4WsidugAoxKCFEmF8=
+X-Received: by 2002:a05:6512:2625:b0:478:5a51:7fe3 with SMTP id
+ bt37-20020a056512262500b004785a517fe3mr1126311lfb.158.1654122078170; Wed, 01
+ Jun 2022 15:21:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] libbpf: Fix a couple of typos
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165412141336.14276.4196564802431402682.git-patchwork-notify@kernel.org>
-Date:   Wed, 01 Jun 2022 22:10:13 +0000
-References: <20220601154025.3295035-1-deso@posteo.net>
-In-Reply-To: <20220601154025.3295035-1-deso@posteo.net>
-To:     =?utf-8?q?Daniel_M=C3=BCller_=3Cdeso=40posteo=2Enet=3E?=@ci.codeaurora.org
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220510074659.2557731-1-jolsa@kernel.org> <YpAmW/BDq4346OaI@kernel.org>
+ <YperyVk8bTVT+s2U@krava>
+In-Reply-To: <YperyVk8bTVT+s2U@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 1 Jun 2022 15:21:06 -0700
+Message-ID: <CAEf4BzZrd4mXtGXmiH3VCCYtQacG1n9+3eJbtdAZJi5SW_Mj6A@mail.gmail.com>
+Subject: Re: [PATCHv2 0/3] perf tools: Fix prologue generation
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Jun 1, 2022 at 11:11 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+>
+> On Thu, May 26, 2022 at 10:16:11PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, May 10, 2022 at 09:46:56AM +0200, Jiri Olsa escreveu:
+> > > hi,
+> > > sending change we discussed some time ago [1] to get rid of
+> > > some deprecated functions we use in perf prologue code.
+> > >
+> > > Despite the gloomy discussion I think the final code does
+> > > not look that bad ;-)
+> > >
+> > > This patchset removes following libbpf functions from perf:
+> > >   bpf_program__set_prep
+> > >   bpf_program__nth_fd
+> > >   struct bpf_prog_prep_result
+> >
+> > So, the first patch is already in torvalds/master, I tried applying the
+> > other two patches to my local perf/core, that already is merged with
+> > torvalds/master and:
+> >
+> > [root@quaco ~]# perf test 42
+> >  42: BPF filter                                                      :
+> >  42.1: Basic BPF filtering                                           : FAILED!
+> >  42.2: BPF pinning                                                   : FAILED!
+> >  42.3: BPF prologue generation                                       : FAILED!
+> > [root@quaco ~]#
+> >
+> > I'll push my local perf/core to tmp.perf/core and continue tomorrow.
+>
+> hi,
+> I just rebased my changes on top of your perf/core and it seems to work:
+>
+>         [root@krava perf]# ./perf test bpf
+>          40: LLVM search and compile                                         :
+>          40.1: Basic BPF llvm compile                                        : Ok
+>          40.3: Compile source for BPF prologue generation                    : Ok
+>          40.4: Compile source for BPF relocation                             : Ok
+>          42: BPF filter                                                      :
+>          42.1: Basic BPF filtering                                           : Ok
+>          42.2: BPF pinning                                                   : Ok
+>          42.3: BPF prologue generation                                       : Ok
+>
+> is it still a problem?
+>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed,  1 Jun 2022 15:40:25 +0000 you wrote:
-> This change fixes a couple of typos that were encountered while studying
-> the source code.
-> 
-> Signed-off-by: Daniel Müller <deso@posteo.net>
-> ---
->  tools/lib/bpf/btf.c       | 2 +-
->  tools/lib/bpf/libbpf.h    | 2 +-
->  tools/lib/bpf/relo_core.c | 8 ++++----
->  3 files changed, 6 insertions(+), 6 deletions(-)
-
-Here is the summary with links:
-  - [bpf-next] libbpf: Fix a couple of typos
-    https://git.kernel.org/bpf/bpf-next/c/788542f2b407
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Ok, so I checked with Jakub, net-next will be forwarded to
+linus/master tomorrow or so, so after that bpf-next will get forwarded
+as well and we'll have all those patches of yours. So let's go back to
+plan A: send your perf changes based on bpf-next. Thanks and sorry for
+the extra noise with all the back and forth.
 
 
+> jirka
