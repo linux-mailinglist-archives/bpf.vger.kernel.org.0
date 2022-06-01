@@ -2,55 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E78B53AC58
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 19:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD7953AC71
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 20:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356546AbiFAR60 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 1 Jun 2022 13:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
+        id S1345259AbiFASGy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 14:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356551AbiFAR6X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 13:58:23 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41F49BADC
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 10:58:21 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 251E8H3L020065
-        for <bpf@vger.kernel.org>; Wed, 1 Jun 2022 10:58:21 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ge9m2hps7-11
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 01 Jun 2022 10:58:20 -0700
-Received: from twshared5413.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Wed, 1 Jun 2022 10:58:18 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id E9AEB8603D06; Wed,  1 Jun 2022 10:58:14 -0700 (PDT)
-From:   Song Liu <song@kernel.org>
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kernel-team@fb.com>, <rostedt@goodmis.org>, <jolsa@kernel.org>,
-        Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next 5/5] bpf: trampoline: support FTRACE_OPS_FL_SHARE_IPMODIFY
-Date:   Wed, 1 Jun 2022 10:57:49 -0700
-Message-ID: <20220601175749.3071572-6-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220601175749.3071572-1-song@kernel.org>
-References: <20220601175749.3071572-1-song@kernel.org>
+        with ESMTP id S244739AbiFASGx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 14:06:53 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8936865FC
+        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 11:06:52 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id p1so1852122ilj.9
+        for <bpf@vger.kernel.org>; Wed, 01 Jun 2022 11:06:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZGMXeni8cysCuUEEvQtYR0p9OPCMRlMAhTfHQj0S/IA=;
+        b=E3cW18snqss1lHKVmO1TnEcgelnViETd5ZLAM72F+56PL6qlERy+VBvIFWs4Ik7+XI
+         ox9DDZS8y+AMnFZxL9Z6I9Ybp+2hiMDHyApZFydNcHyBYLdPt74tcjlsY+lREVivRnuW
+         wlCFsMbDQ96dqSGxdbh/xt+yoOcYVRMvfA13LuN5u+N8JULJ5m86pVEEOJWKtRKjouCk
+         xB3HXLLiubr/wKQA10/TOJX+94fXQc7xcETxRTltKWQfzblCtJOQAAAwTXBgWQiS8g8E
+         ceukT07iGDxo2ZyaaDjeCvinFC17wvbQcm5ASWY7/wdeQhMRwwQ2rUO/jJPIiLw2zDFm
+         fSqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZGMXeni8cysCuUEEvQtYR0p9OPCMRlMAhTfHQj0S/IA=;
+        b=PmtxFP6FWqADE5A4oerDBRyP5FR7j1zphyF7t0SXIxHytFvXuwBdJ7kBmxX5cf5qGU
+         oKYQAmIqenHp5KcsDP6ccOWZWMXJfGTVgvtJunTMUWBrX85YO6yoS8JpPDRRTq60i19E
+         9r6RHQ5LB4Atl06d6ZeclSSo0KP6KbaU5jmtvs4Xobf99Ry83dWOvGKMlGBTAoAboY4B
+         D6jW4OOc5JwBn2hVHpYXoXY1ecXRKc3NcXyhmdVEnB1CJv7w7jC4g80cut9q01RgpjPc
+         oRJN8blD5YgND3E6qf/TJmYUXJH3GcfxI5IVN7wlH8lwlK8xUMwIvqICzpPpEdiui7O3
+         na4g==
+X-Gm-Message-State: AOAM531YwLteXxIZA433iAZKgjlvhxN/GXYHsglpxIVjn6E0tFfXUCva
+        junU+S1VD8DNCOBr5R0ynycmEPqpNPtT5C9tUSfp9cgYoi/OZQ==
+X-Google-Smtp-Source: ABdhPJwfsjr4mwV1QrSOTJjw42pKdcdn/L7jnkzIaj+uGrz9QsVQV9zr54aOBkc2TJt78g7/NBWk9IUI4W8nwlw5sgY=
+X-Received: by 2002:a05:6e02:b4e:b0:2d3:dd2a:5d58 with SMTP id
+ f14-20020a056e020b4e00b002d3dd2a5d58mr860991ilu.26.1654106811751; Wed, 01 Jun
+ 2022 11:06:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: lfycq86cUX-31IjxP54K-QCe8Q3Tr2hd
-X-Proofpoint-ORIG-GUID: lfycq86cUX-31IjxP54K-QCe8Q3Tr2hd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-01_06,2022-06-01_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <CAPxVHd+hHXFjc3DvK0G5RWnLChOTbGXHZp_W-exCE6onCMSRuA@mail.gmail.com>
+ <CAEf4BzbiiZd7OJxN17=3ikZTor_mcqVO2XTdK6dbpcm9NqgX8w@mail.gmail.com>
+ <CAPxVHdJL6-m3BbDSaHOn_kq31cBh2LEHeEqNnw7ecOXz7Aqijg@mail.gmail.com> <CAEf4BzYKsf2BSgxbqFH0EVThj+14wx4p2SX7HVpkzXZxPQzvdA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYKsf2BSgxbqFH0EVThj+14wx4p2SX7HVpkzXZxPQzvdA@mail.gmail.com>
+From:   John Mazzie <john.p.mazzie@gmail.com>
+Date:   Wed, 1 Jun 2022 13:06:40 -0500
+Message-ID: <CAPxVHd+mXTgjssKT9ChyDuo7S9B9c+qGW_jVRz3B0mO-afb0GQ@mail.gmail.com>
+Subject: Re: BPF_CORE_READ issue with nvme_submit_cmd kprobe.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "John Mazzie (jmazzie)" <jmazzie@micron.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,246 +67,166 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This allows bpf trampoline to trace kernel functions with live patch.
-Also, move bpf trampoline to *_ftrace_direct_multi APIs, which allows
-setting different flags of ftrace_ops.
+It appears that it might be some kind of kernel dependency. I tested
+on Rocky Linux (RHEL based image) with Kernel 4.18 and Ubuntu 20.04
+(Kernel 5.4) with the same issue running the simplified code.
 
-Signed-off-by: Song Liu <song@kernel.org>
----
- include/linux/bpf.h     |   3 ++
- kernel/bpf/trampoline.c | 100 +++++++++++++++++++++++++++++++++++-----
- 2 files changed, 91 insertions(+), 12 deletions(-)
+Error
+-----------------------
+libbpf: sec 'kprobe/nvme_submit_cmd': found 2 CO-RE relocations
+libbpf: CO-RE relocating [2] struct pt_regs: found target candidate
+[202] struct pt_regs in [vmlinux]
+libbpf: prog 'nvme_submit_cmd': relo #0: <byte_off> [2] struct
+pt_regs.si (0:13 @ offset 104)
+libbpf: prog 'nvme_submit_cmd': relo #0: matching candidate #0
+<byte_off> [202] struct pt_regs.si (0:13 @ offset 104)
+libbpf: prog 'nvme_submit_cmd': relo #0: patched insn #0 (LDX/ST/STX)
+off 104 -> 104
+libbpf: prog 'nvme_submit_cmd': relo #1: <byte_off> [7] struct
+nvme_command.common.opcode (0:0:0:0 @ offset 0)
+libbpf: prog 'nvme_submit_cmd': relo #1: no matching targets found
+libbpf: prog 'nvme_submit_cmd': relo #1: substituting insn #1 w/ invalid insn
+libbpf: prog 'nvme_submit_cmd': BPF program load failed: Invalid argument
+libbpf: prog 'nvme_submit_cmd': -- BEGIN PROG LOAD LOG --
+Unrecognized arg#0 type PTR
+; int BPF_KPROBE(nvme_submit_cmd, void *nvmeq, struct nvme_command
+*cmd, bool write_sq)
+0: (79) r3 = *(u64 *)(r1 +104)
+1: <invalid CO-RE relocation>
+failed to resolve CO-RE relocation <byte_off> [7] struct
+nvme_command.common.opcode (0:0:0:0 @ offset 0)
+processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0
+peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a6e06f384e81..20a8ed600ca6 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -44,6 +44,7 @@ struct kobject;
- struct mem_cgroup;
- struct module;
- struct bpf_func_state;
-+struct ftrace_ops;
- 
- extern struct idr btf_idr;
- extern spinlock_t btf_idr_lock;
-@@ -816,6 +817,7 @@ struct bpf_tramp_image {
- struct bpf_trampoline {
- 	/* hlist for trampoline_table */
- 	struct hlist_node hlist;
-+	struct ftrace_ops *fops;
- 	/* serializes access to fields of this trampoline */
- 	struct mutex mutex;
- 	refcount_t refcnt;
-@@ -838,6 +840,7 @@ struct bpf_trampoline {
- 	struct bpf_tramp_image *cur_image;
- 	u64 selector;
- 	struct module *mod;
-+	bool indirect_call;
- };
- 
- struct bpf_attach_target_info {
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 93c7675f0c9e..33d70d6ed165 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -27,6 +27,8 @@ static struct hlist_head trampoline_table[TRAMPOLINE_TABLE_SIZE];
- /* serializes access to trampoline_table */
- static DEFINE_MUTEX(trampoline_mutex);
- 
-+static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *op, enum ftrace_ops_cmd cmd);
-+
- bool bpf_prog_has_trampoline(const struct bpf_prog *prog)
- {
- 	enum bpf_attach_type eatype = prog->expected_attach_type;
-@@ -87,8 +89,16 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
- 	tr = kzalloc(sizeof(*tr), GFP_KERNEL);
- 	if (!tr)
- 		goto out;
-+	tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
-+	if (!tr->fops) {
-+		kfree(tr);
-+		tr = NULL;
-+		goto out;
-+	}
- 
- 	tr->key = key;
-+	tr->fops->private = tr;
-+	tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
- 	INIT_HLIST_NODE(&tr->hlist);
- 	hlist_add_head(&tr->hlist, head);
- 	refcount_set(&tr->refcnt, 1);
-@@ -126,7 +136,7 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
- 	int ret;
- 
- 	if (tr->func.ftrace_managed)
--		ret = unregister_ftrace_direct((long)ip, (long)old_addr);
-+		ret = unregister_ftrace_direct_multi(tr->fops, (long)old_addr);
- 	else
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
- 
-@@ -135,15 +145,20 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
- 	return ret;
- }
- 
--static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_addr)
-+static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_addr,
-+			 bool lock_direct_mutex)
- {
- 	void *ip = tr->func.addr;
- 	int ret;
- 
--	if (tr->func.ftrace_managed)
--		ret = modify_ftrace_direct((long)ip, (long)old_addr, (long)new_addr);
--	else
-+	if (tr->func.ftrace_managed) {
-+		if (lock_direct_mutex)
-+			ret = modify_ftrace_direct_multi(tr->fops, (long)new_addr);
-+		else
-+			ret = modify_ftrace_direct_multi_nolock(tr->fops, (long)new_addr);
-+	} else {
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, new_addr);
-+	}
- 	return ret;
- }
- 
-@@ -161,10 +176,15 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- 	if (bpf_trampoline_module_get(tr))
- 		return -ENOENT;
- 
--	if (tr->func.ftrace_managed)
--		ret = register_ftrace_direct((long)ip, (long)new_addr);
--	else
-+	if (tr->func.ftrace_managed) {
-+		ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 0);
-+		ret = register_ftrace_direct_multi(tr->fops, (long)new_addr);
-+		if (ret)
-+			ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 1, 0);
-+
-+	} else {
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
-+	}
- 
- 	if (ret)
- 		bpf_trampoline_module_put(tr);
-@@ -330,7 +350,7 @@ static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key, u32 idx)
- 	return ERR_PTR(err);
- }
- 
--static int bpf_trampoline_update(struct bpf_trampoline *tr)
-+static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex)
- {
- 	struct bpf_tramp_image *im;
- 	struct bpf_tramp_links *tlinks;
-@@ -363,20 +383,40 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
- 	if (ip_arg)
- 		flags |= BPF_TRAMP_F_IP_ARG;
- 
-+again:
-+	if (tr->indirect_call)
-+		flags |= BPF_TRAMP_F_ORIG_STACK;
-+
- 	err = arch_prepare_bpf_trampoline(im, im->image, im->image + PAGE_SIZE,
- 					  &tr->func.model, flags, tlinks,
- 					  tr->func.addr);
- 	if (err < 0)
- 		goto out;
- 
-+	if (tr->indirect_call)
-+		tr->fops->flags |= FTRACE_OPS_FL_SHARE_IPMODIFY;
-+
- 	WARN_ON(tr->cur_image && tr->selector == 0);
- 	WARN_ON(!tr->cur_image && tr->selector);
- 	if (tr->cur_image)
- 		/* progs already running at this address */
--		err = modify_fentry(tr, tr->cur_image->image, im->image);
-+		err = modify_fentry(tr, tr->cur_image->image, im->image, lock_direct_mutex);
- 	else
- 		/* first time registering */
- 		err = register_fentry(tr, im->image);
-+
-+	if (err == -EAGAIN) {
-+		if (WARN_ON_ONCE(tr->indirect_call))
-+			goto out;
-+		/* should only retry on the first register */
-+		if (WARN_ON_ONCE(tr->cur_image))
-+			goto out;
-+		tr->indirect_call = true;
-+		tr->fops->func = NULL;
-+		tr->fops->trampoline = 0;
-+		goto again;
-+	}
-+
- 	if (err)
- 		goto out;
- 	if (tr->cur_image)
-@@ -388,6 +428,41 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
- 	return err;
- }
- 
-+static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *ops, enum ftrace_ops_cmd cmd)
-+{
-+	struct bpf_trampoline *tr = ops->private;
-+	int ret;
-+
-+	/*
-+	 * The normal locking order is
-+	 *    tr->mutex => direct_mutex (ftrace.c) => ftrace_lock (ftrace.c)
-+	 *
-+	 * This is called from prepare_direct_functions_for_ipmodify, with
-+	 * direct_mutex locked. Use mutex_trylock() to avoid dead lock.
-+	 * Also, bpf_trampoline_update here should not lock direct_mutex.
-+	 */
-+	if (!mutex_trylock(&tr->mutex))
-+		return -EAGAIN;
-+
-+	switch (cmd) {
-+	case FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY:
-+		tr->indirect_call = true;
-+		ret = bpf_trampoline_update(tr, false /* lock_direct_mutex */);
-+		break;
-+	case FTRACE_OPS_CMD_DISABLE_SHARE_IPMODIFY:
-+		tr->indirect_call = false;
-+		tr->fops->flags &= ~FTRACE_OPS_FL_SHARE_IPMODIFY;
-+		ret = bpf_trampoline_update(tr, false /* lock_direct_mutex */);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	};
-+	mutex_unlock(&tr->mutex);
-+	return ret;
-+}
-+
-+
- static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
- {
- 	switch (prog->expected_attach_type) {
-@@ -460,7 +535,7 @@ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline
- 
- 	hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
- 	tr->progs_cnt[kind]++;
--	err = bpf_trampoline_update(tr);
-+	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
- 	if (err) {
- 		hlist_del_init(&link->tramp_hlist);
- 		tr->progs_cnt[kind]--;
-@@ -487,7 +562,7 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
- 	}
- 	hlist_del_init(&link->tramp_hlist);
- 	tr->progs_cnt[kind]--;
--	err = bpf_trampoline_update(tr);
-+	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
- out:
- 	mutex_unlock(&tr->mutex);
- 	return err;
-@@ -535,6 +610,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
- 	 * multiple rcu callbacks.
- 	 */
- 	hlist_del(&tr->hlist);
-+	kfree(tr->fops);
- 	kfree(tr);
- out:
- 	mutex_unlock(&trampoline_mutex);
--- 
-2.30.2
+I did have a breakthrough when upgrading Ubuntu to the HWE kernel
+(5.13) where the tool worked properly. We can start using the HWE
+Kernel for our development and make progress with our tools, but I
+would still like to try to understand why it may not be working on
+Ubuntu 20.04 Kernel 5.4 or RedHat's version of 4.18.
 
+I verified the following kernel configuration parameters.
+
+CONFIG_KPROBES=y
+CONFIG_UPROBES=y
+CONFIG_DEBUG_FS=y
+CONFIG_FTRACE=y
+CONFIG_FTRACE_SYSCALLS=y
+CONFIG_KPROBE_EVENTS=y
+CONFIG_UPROBE_EVENTS=y
+CONFIG_BPF_EVENTS=y
+
+Are there other config settings that I might not be thinking of for
+these kernels?
+
+
+On Tue, May 31, 2022 at 11:51 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, May 31, 2022 at 7:16 PM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> >
+> > I pulled the latest libbpf-bootstrap and rebuilt my programs. The
+> > error message is clearer now. I think last time I tried
+> > libbpf-bootstrap was still linked to 0.7 instead of 0.8.
+> >
+> > The new message is the following which makes sense in regard to what you said.
+> >
+> > <invalid CO-RE relocation>
+> > failed to resolve CO-RE relocation <byte_off> [14] struct
+> > nvme_command.common.opcode (0:0:0:0 @ offset 0)
+> > processed 8 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> > peak_states 0 mark_read 0
+> >
+> > This struct is part of the nvme driver, which is running on this
+> > system as it only has nvme devices (including boot device). I've been
+> > able to access this data using bpftrace on the same system. If I don't
+> > try to access this struct I can count the correct number of
+> > nvme_submit_cmd triggers, so I believe the probe is working correctly.
+> > Is this a case where I need to define more/all of the struct?
+> >
+>
+> Look at debug logs from libbpf. I tried simplified version of your
+> program and it all works for me.
+>
+> struct nvme_common_command {
+>     __u8         opcode;
+> } __attribute__((preserve_access_index));
+>
+> struct nvme_command {
+>     union {
+>         struct nvme_common_command common;
+>     };
+> } __attribute__((preserve_access_index));
+>
+> SEC("kprobe/nvme_submit_cmd")
+> int BPF_KPROBE(nvme_submit_cmd, void *nvmeq, struct nvme_command *cmd,
+> bool write_sq)
+> {
+>     bpf_printk("OPCODE %d", BPF_CORE_READ(cmd, common.opcode));
+>
+>    return 0;
+> }
+>
+>
+> Libbpf logs:
+>
+> libbpf: sec 'kprobe/nvme_submit_cmd': found 2 CO-RE relocations
+> libbpf: CO-RE relocating [6] struct pt_regs: found target candidate
+> [226] struct pt_regs in [vmlinux]
+> libbpf: prog 'nvme_submit_cmd': relo #0: kind <byte_off> (0), spec is
+> [6] struct pt_regs.si (0:13 @ offset 104)
+> libbpf: prog 'nvme_submit_cmd': relo #0: matching candidate #0 [226]
+> struct pt_regs.si (0:13 @ offset 104)
+> libbpf: prog 'nvme_submit_cmd': relo #0: patched insn #0 (LDX/ST/STX)
+> off 104 -> 104
+> libbpf: CO-RE relocating [10] struct nvme_command: found target
+> candidate [107390] struct nvme_command in [nvme_core]
+> libbpf: CO-RE relocating [10] struct nvme_command: found target
+> candidate [106451] struct nvme_command in [nvme]
+> libbpf: prog 'nvme_submit_cmd': relo #1: kind <byte_off> (0), spec is
+> [10] struct nvme_command.common.opcode (0:0:0:0 @ offset 0)
+> libbpf: prog 'nvme_submit_cmd': relo #1: matching candidate #0
+> [107390] struct nvme_command.common.opcode (0:0:0:0 @ offset 0)
+> libbpf: prog 'nvme_submit_cmd': relo #1: matching candidate #1
+> [106451] struct nvme_command.common.opcode (0:0:0:0 @ offset 0)
+> libbpf: prog 'nvme_submit_cmd': relo #1: patched insn #1 (ALU/ALU64) imm 0 -> 0
+> Successfully started! Please run `sudo cat
+> /sys/kernel/debug/tracing/trace_pipe` to see output of the BPF
+> programs.
+> ..............^C
+>
+>
+>
+> > On Tue, May 31, 2022 at 7:22 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Fri, May 27, 2022 at 3:07 AM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> > > >
+> > > > While attempting to learn more about BPF and libbpf, I ran into an
+> > > > issue I can't quite seem to resolve.
+> > > >
+> > > > While writing some tools to practice tracing with libbpf, I came
+> > > > across a situation where I get an error when using BPF_CORE_READ,
+> > > > which appears to be that CO-RE relocation failed to find a
+> > > > corresponding field. Compilation doesn't complain, just when I try to
+> > > > execute.
+> > > >
+> > > > Error Message:
+> > > > ---------------------------------------------
+> > > > 8: (85) call unknown#195896080
+> > > > invalid func unknown#195896080
+> > >
+> > > This means CO-RE relocation failed. If you update libbpf submodule (or
+> > > maybe we already did it for libbpf-bootstrap recently), you'll get
+> > > more meaningful error and details. But basically in running kernel
+> > > there is no cmd->common.opcode.
+> > >
+> > > >
+> > > > I'm using the Makefile from libbpf-bootstrap to build my program. The
+> > > > other example programs build and execute properly, and I've also
+> > > > successfully used tracepoints to trace the nvme_setup_cmd and
+> > > > nvme_complete_rq functions. My issue appears to be when I attempt to
+> > > > use kprobes for the nvme_submit_cmd function.
+> > > >
+> > >
+> > > [...]
