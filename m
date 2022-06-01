@@ -2,99 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1BC53A2C8
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 12:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1FD53A3A2
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 13:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233479AbiFAKhN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 06:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
+        id S1352514AbiFALLF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 07:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbiFAKhI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 06:37:08 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDC556FA4;
-        Wed,  1 Jun 2022 03:37:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654079826; x=1685615826;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yRzXRhmweAXGfPI0innNsyhnWdgFvifkjj5F+obP+I4=;
-  b=aps6OuqhIRFBNAS1IZS7ztBmKH3sJ3szfc9HIia7Az+AKHyd/NKTUCmC
-   x21alCb21Awf6ux4NKPMhrk7U57tBa7u+Ub7s9hFu7ImADqhruM3Oj0ow
-   Rw85vQbjv3OCKpgEEIlQMM1/4OaBMgmh9ujniyGqia+BiHIVUCE4x/78o
-   7e1OBXtvDF1zBTh7umPElRI99iGWSWCjmfUht1KSg8sqls7xd7cpsyL/F
-   L9wwjKMH+L1otH4aWdlnK3T9gpVdMgrSqmr4kLlSYoPFP9YcuqxN9NyI3
-   uVMOgVmrIHUKtpB+xyl+P/MIJMwEE0Gwhernm0ZgYk1uphVpnO2Ow5yWL
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10364"; a="273109712"
-X-IronPort-AV: E=Sophos;i="5.91,268,1647327600"; 
-   d="scan'208";a="273109712"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2022 03:36:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,268,1647327600"; 
-   d="scan'208";a="612264968"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 01 Jun 2022 03:36:56 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nwLih-0003rO-OH;
-        Wed, 01 Jun 2022 10:36:55 +0000
-Date:   Wed, 1 Jun 2022 18:36:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] bpf, test_run: Add PROG_TEST_RUN support to
- kprobe
-Message-ID: <202206011814.9lsKlbB0-lkp@intel.com>
-References: <b544771c7bce102f2a97a34e2f5e7ebbb9ea0a24.1653861287.git.dxu@dxuuu.xyz>
+        with ESMTP id S1346186AbiFALLE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 07:11:04 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085A68A306
+        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 04:11:03 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id o17so1477918pla.6
+        for <bpf@vger.kernel.org>; Wed, 01 Jun 2022 04:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=RztceQpkOH+b1euLJDregPonfnUXBMYlNLzc07b5pM8=;
+        b=6hqNElVOq7Fdo6fAS2LEGbyJoFnKEwclCRU2ohzM7SaeW06XVagil5PBJWp0Hxf58G
+         cw0VUGew8cXRfwXbZQH+1fgUB3/TyrnDWnp3a2dxWpUQOBo5ldw8m4PwUGXhngsYkQiT
+         7cpkBQ9kUhEQojIweIzDgp0NoBKwHxWKxBowt2OwKQ2XoABy8TaX5+PqNSghjj4z+zwG
+         7/8mtNDbAOn2Jn1pExFrw7i/X1oqXJr24MOVnRGfS/FjO5urGgRc30Kr7E2gA3JDTCNn
+         WIWmI6ZJ6C/gAhBei1vXDSWLg/xuZJ+X7a9X9QThkCx+wRoHvAh7nTb7dohyYRvIoB7P
+         K33A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=RztceQpkOH+b1euLJDregPonfnUXBMYlNLzc07b5pM8=;
+        b=GS/S/d7KLik/eIVc3GcfarOvgA6QrxJHGOV2aQNdaQGBhRxBJxBsnUhT1TfQEPLYT2
+         9fM8S32CnaqxqhyzTixOcnRsNNCByJUiRvC3Vx/4BObhiAqOGs4JIH/GU5x/LB0GVSOM
+         J1pJ6nuWC8GHAfKp4FNdlYDF4vKPfyoXuMg3K9nKTWJv//pq7T59URY+FutcQLJRYKvd
+         f9osVtouz4NE3v0MJfEw/Y/42hPF4s80Xr3Cq5a964w+OxlpEd1LNOOYOqkaU7xbDsIn
+         4BpT9WJls+NmByzqATrWpwwy1T4GZzUANQ9YT8nbkr195gwqDuGoMn1D4on5lY3gf5rB
+         PYyQ==
+X-Gm-Message-State: AOAM533Em0b+YFNDwWW6RT0jn+fiwXidyLqrV5iTz6LmxJVXFAIe6ye9
+        fsP54ZAK8EzSuyww7QAfo0NiyA==
+X-Google-Smtp-Source: ABdhPJzCdkK+KSwdCRzkP90vR3+34vwgGt1T6MFBz3VtYKpv+73JwCS/c52eDkgH47wjQk7wk9cBFA==
+X-Received: by 2002:a17:903:11c9:b0:154:be2d:eb9 with SMTP id q9-20020a17090311c900b00154be2d0eb9mr64668108plh.91.1654081862570;
+        Wed, 01 Jun 2022 04:11:02 -0700 (PDT)
+Received: from [10.71.57.194] ([139.177.225.241])
+        by smtp.gmail.com with ESMTPSA id e16-20020a056a0000d000b0050dc762819bsm1206315pfj.117.2022.06.01.04.10.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jun 2022 04:11:02 -0700 (PDT)
+Message-ID: <21ec90e3-2e89-09c1-fd22-de76e6794d68@bytedance.com>
+Date:   Wed, 1 Jun 2022 19:10:54 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b544771c7bce102f2a97a34e2f5e7ebbb9ea0a24.1653861287.git.dxu@dxuuu.xyz>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.9.0
+Subject: Re: [External] Re: [PATCH v4 1/2] bpf: avoid grabbing spin_locks of
+ all cpus when no free elems
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20220601084149.13097-1-zhoufeng.zf@bytedance.com>
+ <20220601084149.13097-2-zhoufeng.zf@bytedance.com>
+ <CAADnVQJcbDXtQsYNn=j0NzKx3SFSPE1YTwbmtkxkpzmFt-zh9Q@mail.gmail.com>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <CAADnVQJcbDXtQsYNn=j0NzKx3SFSPE1YTwbmtkxkpzmFt-zh9Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Daniel,
+在 2022/6/1 下午5:50, Alexei Starovoitov 写道:
+> On Wed, Jun 1, 2022 at 10:42 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+>>   static inline void ___pcpu_freelist_push(struct pcpu_freelist_head *head,
+>> @@ -130,14 +134,19 @@ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+>>          orig_cpu = cpu = raw_smp_processor_id();
+>>          while (1) {
+>>                  head = per_cpu_ptr(s->freelist, cpu);
+>> +               if (READ_ONCE(head->is_empty))
+>> +                       goto next_cpu;
+>>                  raw_spin_lock(&head->lock);
+>>                  node = head->first;
+>>                  if (node) {
+> extra bool is unnecessary.
+> just READ_ONCE(head->first)
 
-Thank you for the patch! Yet something to improve:
+As for why to add is_empty instead of directly judging head->first, my
+understanding is this, head->first is frequently modified during updating
+map, which will lead to invalid other cpus's cache, and is_empty is after
+freelist having no free elems will be changed, the performance will be 
+better.
+If I'm thinking wrong, please tell me why.
 
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Xu/Add-PROG_TEST_RUN-support-to-BPF_PROG_TYPE_KPROBE/20220530-060742
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: s390-randconfig-r002-20220531 (https://download.01.org/0day-ci/archive/20220601/202206011814.9lsKlbB0-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project c825abd6b0198fb088d9752f556a70705bc99dfd)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install s390 cross compiling tool for clang build
-        # apt-get install binutils-s390x-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/a547a4c795103fd002d3bbb5ee4d7141113716c0
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Daniel-Xu/Add-PROG_TEST_RUN-support-to-BPF_PROG_TYPE_KPROBE/20220530-060742
-        git checkout a547a4c795103fd002d3bbb5ee4d7141113716c0
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=s390 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> /opt/cross/gcc-11.3.0-nolibc/s390x-linux/bin/s390x-linux-ld: kernel/trace/bpf_trace.o:kernel/trace/bpf_trace.c:1365: undefined reference to `bpf_prog_test_run_kprobe'
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
