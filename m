@@ -2,165 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FEE53A067
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 11:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D1853A142
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 11:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346601AbiFAJbt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 05:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
+        id S1351494AbiFAJuj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 05:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351074AbiFAJbd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 05:31:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF8287A15;
-        Wed,  1 Jun 2022 02:31:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E3C2561525;
-        Wed,  1 Jun 2022 09:31:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 075FBC385A5;
-        Wed,  1 Jun 2022 09:31:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654075889;
-        bh=q4poYj+BRht8GXruvK1w1TZdcsRrzubhd/fGLHHrnnk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=siA+xPQZb10gKzIYyU3EwcK9DwzYXbvARkuuf8KyXKLiIw33gbdSlv0jWxzWWxWyC
-         qz1ITlIeOjaO2NEoNkQmGO0cX4KmwC11DX6UkFYP4lNzTDIMh2KlNXmHeAR6C1pKTz
-         WCzUMiIfCLMmH43TFzq+osRyDNJpYmFfxLWRfBT2QOoIrNrRJ4UKMRfIdQmlJjgO9z
-         YbBb9GinP0eFBWgKOQ1nqJ69RvycfYG1XFfGEX5g8/re/Ftd20f2w0jW8z9Fri700a
-         m/p1G9YQxfp2DHnJT9HItFqicCGueOP5xZy0wFkPZOmlBSLWWMlv01rHdoOam8OhZj
-         GfukFZRhg/Ypg==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 50B3C4051AD; Wed,  1 Jun 2022 11:25:28 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Zhengchao Shao <shaozhengchao@huawei.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     weiyongjun1@huawei.com, shaozhengchao@huawei.com,
-        yuehaibing@huawei.com
-Subject: Re: [PATCH v4,bpf-next] samples/bpf: check detach prog exist or not
- in xdp_fwd
-In-Reply-To: <20220531121804.194901-1-shaozhengchao@huawei.com>
-References: <20220531121804.194901-1-shaozhengchao@huawei.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 01 Jun 2022 11:25:28 +0200
-Message-ID: <87pmjs7n1z.fsf@toke.dk>
+        with ESMTP id S1349979AbiFAJui (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 05:50:38 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D34E3120E;
+        Wed,  1 Jun 2022 02:50:37 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id q21so2637351ejm.1;
+        Wed, 01 Jun 2022 02:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zr1dEqY8ItmKj6ohcCJC2RtP4ZcxWkAs3yQd+Txnzkw=;
+        b=NbSD0Fzfdi4WUSxPtr2kR4w0l3Nd3CxV5KtHEJzuaEdXGauwqzKScfMeas0qdMZvB0
+         jBZ82G0LIjI6b3dLgUUOvRksGXMmo96wF0pcA2aMvkUiF0hWzA0lmcF+y8ILvJpuykS6
+         o9yIZP+mjEWpO7AhrMkLK0vcSjZHKbrOas1oeQPSgLDJeWuB6fEVRz3qZfw/YBU5acwf
+         NJarW5fNLvmAH10mcrTMFsnXZRT8+MTcZVXIafmBt2wVkFjuJv53msqKyFu5JMiHFA/n
+         CV4DSW//5ARJi3YFrDUu7Le39KtAa1eYZBmYsoirkhKWR10Mx9/CZ5xKLn/nxz2NRzt1
+         S3GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zr1dEqY8ItmKj6ohcCJC2RtP4ZcxWkAs3yQd+Txnzkw=;
+        b=Ik2IrMJqCfKboZXD1t5USQ/5xra3NABsBfdGnlGa7x/c82PaQtGrTyG8u+Tuarm4tf
+         0nLXff8U/Xnw3iIKIF6Ci9tyH/jqUUbW/gQyLA2ZJpYS458UlR4RfwW5RY4keAF74fUB
+         3kvTQC2p7IvoI3RSz8I1hq0iFhUHPvm/yyUfVvyPrF0KiHtYmlRsiAnyh5CMO9Du8Bnw
+         eRTeOuN+ientUkcRlZRlk39ZpUFWfEQqROs5eqDmZX7cWlXkArD5nng94FXBGHQrbtKj
+         7/7k1s02N271sfgnO41KweRE+hfDUOy/7nOj7MiWUkDBy1iDxTKaFu5vH9p3P9HZlURs
+         vLiQ==
+X-Gm-Message-State: AOAM533FGMtZ3p86KbRhjvvmlO4sLOG0uSYEDuZZc7Bcs2UglT8nNn5g
+        p3t5jA4CSufl/sShVEpWqGbDDPVAmFX5atISNSg=
+X-Google-Smtp-Source: ABdhPJxqaqpBZBYLdiostxr4W50UUd7RNPPL2tAsq8mQoC7Kn3GrovtFdMCboYpRkLzTj97+v+mTWnrKiHGKi4SP/i4=
+X-Received: by 2002:a17:907:3da1:b0:6fe:ae46:997d with SMTP id
+ he33-20020a1709073da100b006feae46997dmr49788697ejc.633.1654077035904; Wed, 01
+ Jun 2022 02:50:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220601084149.13097-1-zhoufeng.zf@bytedance.com> <20220601084149.13097-2-zhoufeng.zf@bytedance.com>
+In-Reply-To: <20220601084149.13097-2-zhoufeng.zf@bytedance.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 1 Jun 2022 11:50:23 +0200
+Message-ID: <CAADnVQJcbDXtQsYNn=j0NzKx3SFSPE1YTwbmtkxkpzmFt-zh9Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] bpf: avoid grabbing spin_locks of all cpus when no
+ free elems
+To:     Feng zhou <zhoufeng.zf@bytedance.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zhengchao Shao <shaozhengchao@huawei.com> writes:
-
-> Before detach the prog, we should check detach prog exist or not.
+On Wed, Jun 1, 2022 at 10:42 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
 >
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+>  static inline void ___pcpu_freelist_push(struct pcpu_freelist_head *head,
+> @@ -130,14 +134,19 @@ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+>         orig_cpu = cpu = raw_smp_processor_id();
+>         while (1) {
+>                 head = per_cpu_ptr(s->freelist, cpu);
+> +               if (READ_ONCE(head->is_empty))
+> +                       goto next_cpu;
+>                 raw_spin_lock(&head->lock);
+>                 node = head->first;
+>                 if (node) {
 
-The logic looks good now, just spotted one issue with the use of 'return
-errno' (which I just realised I suggested on the last version, sorry
-about that).
-
->  samples/bpf/xdp_fwd_user.c | 62 ++++++++++++++++++++++++++++++++------
->  1 file changed, 53 insertions(+), 9 deletions(-)
->
-> diff --git a/samples/bpf/xdp_fwd_user.c b/samples/bpf/xdp_fwd_user.c
-> index 1828487bae9a..a4ba53891653 100644
-> --- a/samples/bpf/xdp_fwd_user.c
-> +++ b/samples/bpf/xdp_fwd_user.c
-> @@ -47,17 +47,61 @@ static int do_attach(int idx, int prog_fd, int map_fd, const char *name)
->  	return err;
->  }
->  
-> -static int do_detach(int idx, const char *name)
-> +static int do_detach(int ifindex, const char *ifname, const char *app_name)
->  {
-> -	int err;
-> +	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> +	struct bpf_prog_info prog_info = {};
-> +	char prog_name[BPF_OBJ_NAME_LEN];
-> +	__u32 info_len, curr_prog_id;
-> +	int prog_fd;
-> +	int err = 1;
-> +
-> +	if (bpf_xdp_query_id(ifindex, xdp_flags, &curr_prog_id)) {
-> +		printf("ERROR: bpf_xdp_query_id failed (%s)\n",
-> +		       strerror(errno));
-> +		return -errno;
-
-The printf above may override errno, so this could return 0; the actual
-return value is not really used by the caller, so you could just always
-'return -1' or 'return err'.
-
-> +	}
-> +
-> +	if (!curr_prog_id) {
-> +		printf("ERROR: flags(0x%x) xdp prog is not attached to %s\n",
-> +		       xdp_flags, ifname);
-> +		goto err_out;
-
-Doesn't really need a label, just do a direct return here as well.
-
-> +	}
->  
-> -	err = bpf_xdp_detach(idx, xdp_flags, NULL);
-> -	if (err < 0)
-> -		printf("ERROR: failed to detach program from %s\n", name);
-> +	info_len = sizeof(prog_info);
-> +	prog_fd = bpf_prog_get_fd_by_id(curr_prog_id);
-> +	if (prog_fd < 0) {
-> +		printf("ERROR: bpf_prog_get_fd_by_id failed (%s)\n",
-> +		       strerror(errno));
-> +		return -errno;
-
-Same issue as above with errno being overwritten.
-
-> +	}
-> +
-> +	err = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &info_len);
-> +	if (err) {
-> +		printf("ERROR: bpf_obj_get_info_by_fd failed (%s)\n",
-> +		       strerror(errno));
-> +		goto close_out;
-> +	}
-> +	snprintf(prog_name, sizeof(prog_name), "%s_prog", app_name);
-> +	prog_name[BPF_OBJ_NAME_LEN - 1] = '\0';
-> +
-> +	if (strcmp(prog_info.name, prog_name)) {
-> +		printf("ERROR: %s isn't attached to %s\n", app_name, ifname);
-> +		err = 1;
-> +	} else {
-
-You can save a level of indentation by adding a 'goto close_out' after
-'err=1' instead of using an 'else' block.
-
-> +		opts.old_prog_fd = prog_fd;
-> +		err = bpf_xdp_detach(ifindex, xdp_flags, &opts);
-> +		if (err < 0)
-> +			printf("ERROR: failed to detach program from %s (%s)\n",
-> +			       ifname, strerror(errno));
-> +		/* TODO: Remember to cleanup map, when adding use of shared map
-> +		 *  bpf_map_delete_elem((map_fd, &idx);
-> +		 */
-> +	}
->  
-> -	/* TODO: Remember to cleanup map, when adding use of shared map
-> -	 *  bpf_map_delete_elem((map_fd, &idx);
-> -	 */
-> +close_out:
-> +	close(prog_fd);
-> +err_out:
-
-don't need the err_out label, see above.
-
--Toke
+extra bool is unnecessary.
+just READ_ONCE(head->first)
