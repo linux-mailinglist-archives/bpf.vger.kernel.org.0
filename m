@@ -2,59 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9A9539BF0
-	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 06:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3670539C4B
+	for <lists+bpf@lfdr.de>; Wed,  1 Jun 2022 06:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbiFAELR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 00:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
+        id S1349556AbiFAEfL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 00:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiFAELO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 00:11:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7950E90CE1
-        for <bpf@vger.kernel.org>; Tue, 31 May 2022 21:11:13 -0700 (PDT)
+        with ESMTP id S1349553AbiFAEfJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 00:35:09 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAB94D243;
+        Tue, 31 May 2022 21:35:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 35887B815FB
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 04:11:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4795C36AE3
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 04:11:10 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 7539CCE091C;
+        Wed,  1 Jun 2022 04:35:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2B1DC385A5;
+        Wed,  1 Jun 2022 04:35:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654056670;
-        bh=OyBxYFh4f/71XBJUEuQEiIIvQazODRG3fkYzsjVuQ2g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=K8mGaQXNqnMVShFGchDDCi/hiv5zsXPviwbPvQZD7O6+elAaLkWRARqGQIzYR1KDP
-         teLVoQpEnDkvaZ2av29y+SZFAUm6q5kVCL446l0YLl1UGlbZ2pRjxRr8IMwL9FXq3v
-         jb5kKDvxT+5GjfrpKJuGYrPShAvmUoN/9sAwZXusdGDYwNPMOyyxAoikeo5HcJUX+P
-         4rhvAe3o8fo9SVYPN5oQPUN+51wJzf/bQBhlQh/L3+GH3bXaKmwDRUeza/9rh4lCWa
-         ERpPhMCoLaGChbJzHKg/Weunmw1fy+OodPI7WZ7uZq8ltrC9KGW6TMRi91T0FPUiQg
-         M9xGncPMDjMoQ==
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-306b5b452b1so5690547b3.1
-        for <bpf@vger.kernel.org>; Tue, 31 May 2022 21:11:10 -0700 (PDT)
-X-Gm-Message-State: AOAM531lm2X3uG6l68nCUn/LjfVle/7226KnNoLUBLI/zW2Z1VqmAwiu
-        6rMdKU4OVHy3/4IZFxEpernUwlZTA/qbc7PAh2U=
-X-Google-Smtp-Source: ABdhPJxVD0KN8f7qQWalEeuDUpvQuBoSFJma4sKlcnDu28cj/aO8fncUrHvRX9Y4oleKzwW8Zqrh9oZqWX/72ri1lzE=
-X-Received: by 2002:a0d:eb4d:0:b0:30c:9849:27a1 with SMTP id
- u74-20020a0deb4d000000b0030c984927a1mr9505602ywe.472.1654056669852; Tue, 31
- May 2022 21:11:09 -0700 (PDT)
+        s=k20201202; t=1654058102;
+        bh=k4EuQkDYSzAkYwPH22pmDdWOjmPDDH1V9Dj2XG8IKs4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=b1S6GaoacgcOHBe1QCYWifE+JcY+iOIz3g9JWX6prMj4sVVYkZr3z72GPdmLCPGtd
+         O/ccAgc1oohxRtkU4ZUWBPlRb6wOHWGnMdAqnGpPps5GmmuiwsHWAH84EeZ//frNkk
+         t56B92nMBJyD6R0orTYRs+hl+Ipcd8jP7N1qLbe/DQJY8PSHrigOCmNSZdSMQA/zRD
+         kxVTG+gmZzpvpmesM0dgLRb5A/9uZN3aHSxebQ/TZ+CfG96riY48njrYQYR/YVrM8c
+         Y34bYTolhzOEeWHkL3CZIyd9OlEqeEa4zGFI1j0qoaOoJC5WUsX9FzbQVCPnpoimyz
+         3GoyMmGtCuR4Q==
+Date:   Tue, 31 May 2022 21:35:00 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     <davem@davemloft.net>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v3] ipv6: Fix signed integer overflow in
+ __ip6_append_data
+Message-ID: <20220531213500.521ef5cc@kernel.org>
+In-Reply-To: <20220528022312.2827597-1-wangyufen@huawei.com>
+References: <20220528022312.2827597-1-wangyufen@huawei.com>
 MIME-Version: 1.0
-References: <20220529223646.862464-1-eddyz87@gmail.com> <20220529223646.862464-3-eddyz87@gmail.com>
- <CAPhsuW7wwt+J=oHXeB_8s8Tu63dzgODh56aCFPv-Vp43bofutA@mail.gmail.com> <b517e19ffbd19b24b630cdeafdb4adb444a8dd56.camel@gmail.com>
-In-Reply-To: <b517e19ffbd19b24b630cdeafdb4adb444a8dd56.camel@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 31 May 2022 21:10:59 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7drtkMj_Yh6FaoGzfAg7K2q4Bpb4a3oG+w0qqACZMo=w@mail.gmail.com>
-Message-ID: <CAPhsuW7drtkMj_Yh6FaoGzfAg7K2q4Bpb4a3oG+w0qqACZMo=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/3] selftests/bpf: allow BTF specs and func
- infos in test_verifier tests
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,56 +58,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 31, 2022 at 4:20 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> > On Tue, 2022-05-31 at 13:52 -0700, Song Liu wrote:
->
-> Hi Song,
->
-> Thanks a lot for the review, I'll apply the suggested changes and
-> provide the v3 in one or two days. My only objection is below.
->
-> > >  {
-> > > -       int fd_prog, expected_ret, alignment_prevented_execution;
-> > > +       int fd_prog, btf_fd, expected_ret, alignment_prevented_execution;
-> > >         int prog_len, prog_type = test->prog_type;
-> > >         struct bpf_insn *prog = test->insns;
-> > >         LIBBPF_OPTS(bpf_prog_load_opts, opts);        __u32 pflags;
-> > >         int i, err;
-> > >
-> > > +       fd_prog = -1;
-> >
-> > This is not really necessary.
->
-> Actually this one is necessary to avoid compiler warning, note the
-> following fragment of the do_test_single function below:
->
-> static void do_test_single(...)
-> {
->         ...
->         if (...) {
->                 btf_fd = load_btf_for_test(...);
->                 if (btf_fd < 0)
->                         goto fail_log;
->                 opts.prog_btf_fd = btf_fd;
->         }
->         ...
->         fd_prog = bpf_prog_load(..., &opts);
->         ...
-> close_fds:
->         ...
->         close(fd_prog);
->         close(btf_fd);
->         ...
->         return;
-> fail_log:
->         ...
->         goto close_fds;
-> }
->
-> If load_btf_for_test fails the goto fail_log would eventually jump to
-> close_fds, where fd_prog would be in an uninitialised state.
+On Sat, 28 May 2022 10:23:12 +0800 Wang Yufen wrote:
+> diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+> index 55afd7f39c04..91704bbc7715 100644
+> --- a/net/ipv6/udp.c
+> +++ b/net/ipv6/udp.c
+> @@ -1308,7 +1308,7 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+>  	struct ipcm6_cookie ipc6;
+>  	int addr_len = msg->msg_namelen;
+>  	bool connected = false;
+> -	int ulen = len;
+> +	size_t ulen = len;
+>  	int corkreq = READ_ONCE(up->corkflag) || msg->msg_flags&MSG_MORE;
+>  	int err;
+>  	int is_udplite = IS_UDPLITE(sk);
 
-Got it. Thanks for the explanation!
-
-Song
+No need to change ulen neither, it will not overflow and will be
+promoted to size_t when passed to ip6_append_data() / ip6_make_skb().
