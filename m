@@ -2,107 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E0453BD60
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 19:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A1A53BD78
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 19:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237518AbiFBRhp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 13:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
+        id S237601AbiFBRoH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 13:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbiFBRho (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 13:37:44 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A639DF2;
-        Thu,  2 Jun 2022 10:37:43 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id r71so5364392pgr.0;
-        Thu, 02 Jun 2022 10:37:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VIw0jx/gMUEvsJmM+/5RlSJMb06H6BJ9K5QCFP2rQMg=;
-        b=KtlTfiCq4PT65fZ4LfDMNcvBagLpBZb2uplPAkwVnDKaP0Aqc/BBWCAzjjE9D4cQPr
-         G3jTTfXDqkoKwETeuNqYqCcuPIqp9QG00jyo1nHZ1j1w4w3/WJWsTxdIsH60Nm9MuSdp
-         gI3H6bssJdvBQzZbjg3G/xGe/kJObR8tfJP1RDKrjpjxJSey1v+VK6CE/FYg5rq9RTVj
-         wzEd3OIkBeY45OrX2JJ2mnihyo2QkppqMOrpR8c4aYaBAP9BYfWMH0BK0pE5A3DfUHSG
-         cnbLEPxrZMg+QRIPKSxqG2M+tI//RZ31kW56WDby0VrdehEkD8pwUqdMYb4hOY1PDpfL
-         gXPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VIw0jx/gMUEvsJmM+/5RlSJMb06H6BJ9K5QCFP2rQMg=;
-        b=Y3PtCuTLbO/guBsJzkK4oYcm/xAeP3/I0FtgDYqbw6DTi2liQbh+QR9Bh0fJRDkuu1
-         MmhrGg/9mQwzlrCyvXrZICHwhRuF+8WYMOc3JPOFbLre6P0dc6n68VaCa1HUO0O2ye4n
-         Ljw+sTWY+L7NWY6NBwXxd82cXKeiYTBwd52PToxchWtsJCJgJqhXG3XdEfoOat2tBm15
-         7Aihh+DPH0tvgxnhz9L/G+rb4xDm0SC6lyPIWbdzfMPn5r7/eb3n9LJMAKcAZLb/JnaG
-         FdbvuRfI6DC3CNJcHe20TwmTSOXQ9/yyYlEMxF4hr4FXPI7p8HUSuQ/4il+rJRiU1GRm
-         Cr+A==
-X-Gm-Message-State: AOAM530qXjTUz19m2NMPXZ/ye9Bt6wKH00wQw5YTLbw/QxLgSe6oHEX3
-        m17eic97+fmEDBgblix7X0Y=
-X-Google-Smtp-Source: ABdhPJwBC2SS+XVoOiwT4apRShJMjxpAz3y5y/KAfeeUbASgNegfjXk0ofOupgBnKGuMCTDiRAS+6w==
-X-Received: by 2002:a65:5cc2:0:b0:3fc:20d2:30ed with SMTP id b2-20020a655cc2000000b003fc20d230edmr5114720pgt.158.1654191462889;
-        Thu, 02 Jun 2022 10:37:42 -0700 (PDT)
-Received: from localhost.localdomain ([122.179.233.138])
-        by smtp.googlemail.com with ESMTPSA id a1-20020a056a001d0100b00518950bfc82sm3714767pfx.10.2022.06.02.10.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jun 2022 10:37:42 -0700 (PDT)
-From:   Varshini Elangovan <varshini.elangovan@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Varshini Elangovan <varshini.elangovan@gmail.com>
-Subject: [PATCH] staging: r8188eu: Add queue_index to xdp_rxq_info
-Date:   Thu,  2 Jun 2022 23:06:57 +0530
-Message-Id: <20220602173657.36252-1-varshini.elangovan@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S235859AbiFBRoG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 13:44:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72A1287F59
+        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 10:44:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CF9861677
+        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 17:44:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9DB8C34115
+        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 17:44:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654191844;
+        bh=aqSID2m9712ByluUqhDQ1HoQkIXevf4HnCCgTJ/K2gE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DbOfZUKadXxWTiLRGsLO4eG/DJbwl35S9zNTESyLtQ4Ms+nWdQglAdKOraYoC2CPO
+         DpQkQfkmY/XPOvq6zzcxqDtq/zpw9VAzmPgct4QoLskvBhVszT1RdOud8cXh6xA6/x
+         8lE8xMNvKe7Yru6Vd3/9gtGShwp/c2rWOjkegOot1ybzuivgong+j9JS14qbs6U/RK
+         y6pXu1jYL1tbowSEj5e0j73zphxB9lrQVCBh6crZk90drNS0++KjXKXDx110X9OIcA
+         peWgy5jiGE5wY9ScID1DApAg1QyZhu6Az2civJbo7qzxHot4qrJmx7xM6zZI+JpqMj
+         OxOLczCFQ1H8Q==
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-30c1b401711so59208077b3.2
+        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 10:44:04 -0700 (PDT)
+X-Gm-Message-State: AOAM533jgo0DHob8vMsNW0oKNzf/0Tu8WZWA6fymad0/JPUYSnTzhtk4
+        m5DtgKHdag95oGHtMw6jgl9xbSxKstHkly2NWTY=
+X-Google-Smtp-Source: ABdhPJxCzCkDHnPSm0IliNswknERGqtzf0+puwk5I5TUNjiaJ1wbM2Hsy3RNd6ioLXx/2PcbUR+jB3XEn1S6AHLDeeU=
+X-Received: by 2002:a81:7505:0:b0:30c:45e3:71bc with SMTP id
+ q5-20020a817505000000b0030c45e371bcmr6981178ywc.460.1654191843829; Thu, 02
+ Jun 2022 10:44:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220601234050.2572671-1-kafai@fb.com>
+In-Reply-To: <20220601234050.2572671-1-kafai@fb.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 2 Jun 2022 10:43:53 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6VcOLSakKAdT5WXvrGtmuFM8BKQUZi+JiQ38X25H8Pdw@mail.gmail.com>
+Message-ID: <CAPhsuW6VcOLSakKAdT5WXvrGtmuFM8BKQUZi+JiQ38X25H8Pdw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix tc_redirect_dtime
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Queue_index from the xdp_rxq_info is populated in cpumap file.
-Using the NR_CPUS, results in patch check warning, as recommended,
-using the num_possible_cpus() instead of NR_CPUS
+On Wed, Jun 1, 2022 at 4:40 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> tc_redirect_dtime was reported flaky from time to time.  It
+> always fails at the udp test and complains about the bpf@tc-ingress
+> got a skb->tstamp when handling udp packet.  It is unexpected
+> because the skb->tstamp should have been cleared when crossing
+> different netns.
+>
+> The most likely cause is that the skb is actually a tcp packet
+> from the earlier tcp test.  It could be the final TCP_FIN handling.
+>
+> This patch tightens the skb->tstamp check in the bpf prog.  It ensures
+> the skb is the current testing traffic.  First, it checks that skb
+> matches the IPPROTO of the running test (i.e. tcp vs udp).
+> Second, it checks the server port (dst_ns_port).  The server
+> port is unique for each test (50000 + test_enum).
+>
+> Also fixed a typo in test_udp_dtime(): s/P100/P101/
+>
+> Fixes: c803475fd8dd ("bpf: selftests: test skb->tstamp in redirect_neigh")
+> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 
-Signed-off-by: Varshini Elangovan <varshini.elangovan@gmail.com>
----
- kernel/bpf/cpumap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 650e5d21f90d..756fd81f474c 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -102,8 +102,8 @@ static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
- 
- 	bpf_map_init_from_attr(&cmap->map, attr);
- 
--	/* Pre-limit array size based on NR_CPUS, not final CPU check */
--	if (cmap->map.max_entries > NR_CPUS) {
-+	/* Pre-limit array size based on num_possible_cpus, not final CPU check */
-+	if (cmap->map.max_entries > num_possible_cpus()) {
- 		err = -E2BIG;
- 		goto free_cmap;
- 	}
-@@ -227,7 +227,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
- 
- 		rxq.dev = xdpf->dev_rx;
- 		rxq.mem = xdpf->mem;
--		/* TODO: report queue_index to xdp_rxq_info */
-+		rxq.queue_index = ++i;
- 
- 		xdp_convert_frame_to_buff(xdpf, &xdp);
- 
--- 
-2.25.1
-
+Acked-by: Song Liu <songliubraving@fb.com>
