@@ -2,101 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E2953B21A
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 05:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C512053B225
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 05:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbiFBDZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 23:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
+        id S233580AbiFBD2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 23:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233530AbiFBDZY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 23:25:24 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AE927F5CE;
-        Wed,  1 Jun 2022 20:25:23 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id j7so3753253pjn.4;
-        Wed, 01 Jun 2022 20:25:23 -0700 (PDT)
+        with ESMTP id S233578AbiFBD17 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 23:27:59 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC205F8DE
+        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 20:27:58 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id q12-20020a17090a304c00b001e2d4fb0eb4so8134331pjl.4
+        for <bpf@vger.kernel.org>; Wed, 01 Jun 2022 20:27:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AFDK2qPVxqM8+WUlL7u1WOST3T5Ymo7VG05+dcoLhgI=;
-        b=mAwnLs1Gaw5S8IQ/QnRPqUFhT9elf7uCzSLvr49n5ykg9KzBWWMviGC8tP2PwK+07c
-         mtJ5p2iA1+URyrwS4RqkadmzwJW5tr77bDilQvWgG2bUA+idyw3ErX7mGWMSkdpO50e7
-         QTu5kTv14PNv0u0MeQ+dZrYL8JuPcEvHWZ9fHYqPe585Gc+jBoqiippscuopkcX3+atc
-         LZETOKjU4eKZQQPxRHsxkHl/VHWY3LSjwcJPsTv886fuaBDR6AiLq8xGi8kL8FM46ecE
-         K45ZBma8mu8TbLBc7ooXtfyIEoK/QorYaTp62+n6yG+WhmaMMWGIwnVLs+oOwcG5UICG
-         4N/A==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=sZ8GzRUQBIRnVHILPlLfnQyD91gR78EWniMrsU1AmRw=;
+        b=nHuGvwI9o58j8lsqts87M+3kByKxsrc6rcVXPBo7v2yqnvCQuP72TbGLvtDo8h2mFj
+         8Xnpn2KWkwl1P+DnsYYpQTXW5BVC3B519Qv82bF5qq0UAX2M/jULgWfJbRC5MuMfMndm
+         cOND4RdcH1iH4+nwv5uyffzq51YTrhYJmoffPJYJF07Sq9zts008GlGbpDVWuMv1eEZ7
+         wzuTBOfdo6T3yf4aOYR3Ux6hh7ntQKdi7w+mZbiHD2I885cviqJsPzeP/vO8A7JvXoPt
+         hs19TKJ7omx4l47CplvvvddULcSUuUq4ZyUWL5ZNBjTRG92UMMPx+RC97qZ4Pne1KtDP
+         mIVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AFDK2qPVxqM8+WUlL7u1WOST3T5Ymo7VG05+dcoLhgI=;
-        b=UuNL4AmMvbV5JeBAOpiUbpF77Rou3tcPDE7voENy5YIQvvmB0TUD4xJ65NbDdEyyYl
-         kBJlZsBfr/r+RHe0Q39xPCOS0WlHrL50Zx069XLPwsgvUeiqfblgeSPJJ2WD3JMdKkPs
-         id/6ZOSCaHkwFnFsitya84vYyZbSh7sygzDydD3bWMJAvsYK2pgYyJroWwCnrefEnrvw
-         YWRIF73HkqdYQdOUP7q9vDYxHnvEGFGjRlESP0JuLJroqvtB6cYtfBuYNKMRYmpYgFW8
-         9MVAl/INNaCUa3pQ+xowMV1CFR3l0R9p+ko+dAIZfkWM1xa5R/vn6ofJQntDXCzHCA9P
-         c3jg==
-X-Gm-Message-State: AOAM532DQcICuoibsfnfrWTLEezC5DKPF+2e+vb4ZQZV8BVH+XUawHHN
-        meklsEovQFMc5JQEhZYkGUxrjC2cEXRICw==
-X-Google-Smtp-Source: ABdhPJz52twN/zD8CEgdGAN0wIH2Dp5PrfZ3jsI4fm+nCfmpGYnzQAmA5WcA39iOpQQvclRiGoC9OA==
-X-Received: by 2002:a17:90b:314b:b0:1e3:1033:f555 with SMTP id ip11-20020a17090b314b00b001e31033f555mr17899334pjb.245.1654140322762;
-        Wed, 01 Jun 2022 20:25:22 -0700 (PDT)
-Received: from Laptop-X1.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 84-20020a621857000000b0050dc7628158sm2200625pfy.50.2022.06.01.20.25.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jun 2022 20:25:22 -0700 (PDT)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     netdev@vger.kernel.org
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=sZ8GzRUQBIRnVHILPlLfnQyD91gR78EWniMrsU1AmRw=;
+        b=DW5noGghXRFt7Peczy6pb77zBpWkmJiQlxcS+TbhdCtKCLNKF2edcxAlKuhd2+I6a/
+         csAzzkHRqyvPDQVmKmYbebcmR7BbXcvyprxYTLrbfbZMofufXNTgJn7TGFEeNy3xQsud
+         1hENA2f0Ws2PwphGo0mUwogtc6ISUnlfKH8qNJ47UiC3UGl/k12mUcbkGH9CmymlwK0l
+         PbJYvML2h99AuDdqbAUeR9zaZkjfC6Zp31bfzwYcYSMGrD2djFu1iq2/nh3CZw2gAEwM
+         W+2LsgmHcFhguwmfau6VVLMYbeTOSF2nHirKWnacYeA66vaFmU8AWARlmJ+qLxyNdyrD
+         rRNw==
+X-Gm-Message-State: AOAM530K946kUES9JjrC56GDO1WlO+M5OY8+ykTs3DMgXBUL/moaANgE
+        O31HZvZgs0H4pjXVZLfIWGA5Lg==
+X-Google-Smtp-Source: ABdhPJzbui9XgIru9OSL8mR+ctNjeib5PVobaIezJORsGKxZXTGoi8iyoBq7eJRaZvW/YntSXpqDVA==
+X-Received: by 2002:a17:902:a605:b0:163:8e47:8929 with SMTP id u5-20020a170902a60500b001638e478929mr2701820plq.69.1654140477634;
+        Wed, 01 Jun 2022 20:27:57 -0700 (PDT)
+Received: from [10.71.57.194] ([139.177.225.241])
+        by smtp.gmail.com with ESMTPSA id p2-20020a170902c70200b001617541c94fsm2269689plp.60.2022.06.01.20.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Jun 2022 20:27:57 -0700 (PDT)
+Message-ID: <6aedba89-51f4-c889-d3cc-5f513defb920@bytedance.com>
+Date:   Thu, 2 Jun 2022 11:27:49 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.9.0
+Subject: Re: Re: [PATCH v4 1/2] bpf: avoid grabbing spin_locks of all cpus
+ when no free elems
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>,
-        William Tu <u9012063@gmail.com>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: add drv mode testing for xdping
-Date:   Thu,  2 Jun 2022 11:25:07 +0800
-Message-Id: <20220602032507.464453-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.35.1
-MIME-Version: 1.0
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20220601084149.13097-1-zhoufeng.zf@bytedance.com>
+ <20220601084149.13097-2-zhoufeng.zf@bytedance.com>
+ <CAADnVQJcbDXtQsYNn=j0NzKx3SFSPE1YTwbmtkxkpzmFt-zh9Q@mail.gmail.com>
+ <21ec90e3-2e89-09c1-fd22-de76e6794d68@bytedance.com>
+ <CAADnVQKdU-3uBE9tKifChUunmr=c=32M4GwP8qG1-S=Atf7fvw@mail.gmail.com>
+From:   Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <CAADnVQKdU-3uBE9tKifChUunmr=c=32M4GwP8qG1-S=Atf7fvw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As subject, we only test SKB mode for xdping at present.
-Now add DRV mode for xdping.
+在 2022/6/1 下午7:35, Alexei Starovoitov 写道:
+> On Wed, Jun 1, 2022 at 1:11 PM Feng Zhou <zhoufeng.zf@bytedance.com> wrote:
+>> 在 2022/6/1 下午5:50, Alexei Starovoitov 写道:
+>>> On Wed, Jun 1, 2022 at 10:42 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+>>>>    static inline void ___pcpu_freelist_push(struct pcpu_freelist_head *head,
+>>>> @@ -130,14 +134,19 @@ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+>>>>           orig_cpu = cpu = raw_smp_processor_id();
+>>>>           while (1) {
+>>>>                   head = per_cpu_ptr(s->freelist, cpu);
+>>>> +               if (READ_ONCE(head->is_empty))
+>>>> +                       goto next_cpu;
+>>>>                   raw_spin_lock(&head->lock);
+>>>>                   node = head->first;
+>>>>                   if (node) {
+>>> extra bool is unnecessary.
+>>> just READ_ONCE(head->first)
+>> As for why to add is_empty instead of directly judging head->first, my
+>> understanding is this, head->first is frequently modified during updating
+>> map, which will lead to invalid other cpus's cache, and is_empty is after
+>> freelist having no free elems will be changed, the performance will be
+>> better.
+> maybe. pls benchmark it.
+> imo wasting a bool for the corner case is not a good trade off.
 
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- tools/testing/selftests/bpf/test_xdping.sh | 4 ++++
- 1 file changed, 4 insertions(+)
+Yes, I will do and post the results as soon as possible, Thanks.
 
-diff --git a/tools/testing/selftests/bpf/test_xdping.sh b/tools/testing/selftests/bpf/test_xdping.sh
-index c2f0ddb45531..c3d82e0a7378 100755
---- a/tools/testing/selftests/bpf/test_xdping.sh
-+++ b/tools/testing/selftests/bpf/test_xdping.sh
-@@ -95,5 +95,9 @@ for server_args in "" "-I veth0 -s -S" ; do
- 	test "$client_args" "$server_args"
- done
- 
-+# Test drv mode
-+test "-I veth1 -N" "-I veth0 -s -N"
-+test "-I veth1 -N -c 10" "-I veth0 -s -N"
-+
- echo "OK. All tests passed"
- exit 0
--- 
-2.35.1
 
