@@ -2,77 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941C553B18B
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 04:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E2953B21A
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 05:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbiFBB77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 21:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
+        id S233550AbiFBDZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 23:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbiFBB7v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 21:59:51 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796492A7881;
-        Wed,  1 Jun 2022 18:59:50 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id q1so7175664ejz.9;
-        Wed, 01 Jun 2022 18:59:50 -0700 (PDT)
+        with ESMTP id S233530AbiFBDZY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 23:25:24 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AE927F5CE;
+        Wed,  1 Jun 2022 20:25:23 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id j7so3753253pjn.4;
+        Wed, 01 Jun 2022 20:25:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z4IPnbPTNMwJf1LxyY6++GFYBsXGCojv5YeZ4Ub3aDE=;
-        b=pRKKvgirCMFTSCZMzlVGZq7IphZBAx9dEqz7q54Bqg1Se69fbzXdkqcgoBih6MBjNR
-         0GTNToJKaPNfnngcEI3C7EZzngxFAITioQP0oTrWou+TtbmwcfxN8E9dhfSRBFWw4Li7
-         THJ9wEiQxvlY4fjdhulJbeRL//syvqFdB37y96yE2+HBSW6PYRWxaJAZ1MzT2RifC3OV
-         5a1k4YltSoK+e/farcWi6oIudYrvUc9F/lAl+oVKTVybBqDsEHhJcYYQThfQXTDpFqBK
-         DzknpVBge9fD/YQnbCw2q8KseGBSLutmSNOUu7zIgQyYo/BPzFhOPgQp3ldeeMb0Apmk
-         XPLA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AFDK2qPVxqM8+WUlL7u1WOST3T5Ymo7VG05+dcoLhgI=;
+        b=mAwnLs1Gaw5S8IQ/QnRPqUFhT9elf7uCzSLvr49n5ykg9KzBWWMviGC8tP2PwK+07c
+         mtJ5p2iA1+URyrwS4RqkadmzwJW5tr77bDilQvWgG2bUA+idyw3ErX7mGWMSkdpO50e7
+         QTu5kTv14PNv0u0MeQ+dZrYL8JuPcEvHWZ9fHYqPe585Gc+jBoqiippscuopkcX3+atc
+         LZETOKjU4eKZQQPxRHsxkHl/VHWY3LSjwcJPsTv886fuaBDR6AiLq8xGi8kL8FM46ecE
+         K45ZBma8mu8TbLBc7ooXtfyIEoK/QorYaTp62+n6yG+WhmaMMWGIwnVLs+oOwcG5UICG
+         4N/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z4IPnbPTNMwJf1LxyY6++GFYBsXGCojv5YeZ4Ub3aDE=;
-        b=2MrghoQS/1U9A+b+H/l5piV1G2gyRAFC4m1wV7U4lZqeS6lB1FLUODadt8Cvn6xh/6
-         XGpO12ZMY6GFDq0C4VRvoJFVSZVsLUyyMv7ckGM+iZfIXEvLOQFOtuhq/osNSDyJTH1v
-         TdD/Hz0DB8LlMTACJ5EITbJr2LHBrVcGIOjDJZ3O7+LNmpVsLg8B1uyhRS5HFSBDJxGq
-         wYm32hpdzRhaZ8LHeWf7Ex1geQ5UN9910rKqoveXVrjkZc69Ov7ONlINoEND5aerHD32
-         2OXToYERDYn6RLKiVhzbVu4zz7YPVJ0iKw8Ac/u3PYcM6AqHZupgEQt77YIiFvSmr6kh
-         znQg==
-X-Gm-Message-State: AOAM533h00YeAIAFmKSFhqo/qn5dghaE7mzJy1NXcVxv+dRPtHTpuuDh
-        3ivOmtUer1ipLf/LXoE711VagHUawPhFs3XW4HWQWAzC
-X-Google-Smtp-Source: ABdhPJwh5UBi1e7gXxPGe2haOG6Yf7w8BayPKw/4kniD+evcZGE8oi8w61fNRjPcj55/AWj43mhac+27PwP4JlxFZhw=
-X-Received: by 2002:a17:907:1b0c:b0:6fe:25bf:b3e5 with SMTP id
- mp12-20020a1709071b0c00b006fe25bfb3e5mr2185140ejc.689.1654135189019; Wed, 01
- Jun 2022 18:59:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220601065238.1357624-1-imagedong@tencent.com>
- <20220601065238.1357624-4-imagedong@tencent.com> <20220601174209.1afdb123@kernel.org>
-In-Reply-To: <20220601174209.1afdb123@kernel.org>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 2 Jun 2022 09:59:37 +0800
-Message-ID: <CADxym3ZfbPpJDxfGbyMQBH9OeQhrKrs+EvFBr9OopwcayP3Fng@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 3/3] net: dropreason: reformat the comment fo
- skb drop reasons
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AFDK2qPVxqM8+WUlL7u1WOST3T5Ymo7VG05+dcoLhgI=;
+        b=UuNL4AmMvbV5JeBAOpiUbpF77Rou3tcPDE7voENy5YIQvvmB0TUD4xJ65NbDdEyyYl
+         kBJlZsBfr/r+RHe0Q39xPCOS0WlHrL50Zx069XLPwsgvUeiqfblgeSPJJ2WD3JMdKkPs
+         id/6ZOSCaHkwFnFsitya84vYyZbSh7sygzDydD3bWMJAvsYK2pgYyJroWwCnrefEnrvw
+         YWRIF73HkqdYQdOUP7q9vDYxHnvEGFGjRlESP0JuLJroqvtB6cYtfBuYNKMRYmpYgFW8
+         9MVAl/INNaCUa3pQ+xowMV1CFR3l0R9p+ko+dAIZfkWM1xa5R/vn6ofJQntDXCzHCA9P
+         c3jg==
+X-Gm-Message-State: AOAM532DQcICuoibsfnfrWTLEezC5DKPF+2e+vb4ZQZV8BVH+XUawHHN
+        meklsEovQFMc5JQEhZYkGUxrjC2cEXRICw==
+X-Google-Smtp-Source: ABdhPJz52twN/zD8CEgdGAN0wIH2Dp5PrfZ3jsI4fm+nCfmpGYnzQAmA5WcA39iOpQQvclRiGoC9OA==
+X-Received: by 2002:a17:90b:314b:b0:1e3:1033:f555 with SMTP id ip11-20020a17090b314b00b001e31033f555mr17899334pjb.245.1654140322762;
+        Wed, 01 Jun 2022 20:25:22 -0700 (PDT)
+Received: from Laptop-X1.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 84-20020a621857000000b0050dc7628158sm2200625pfy.50.2022.06.01.20.25.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jun 2022 20:25:22 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Menglong Dong <imagedong@tencent.com>,
-        David Ahern <dsahern@kernel.org>,
-        Talal Ahmad <talalahmad@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Mathieu Xhonneux <m.xhonneux@gmail.com>,
+        William Tu <u9012063@gmail.com>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: add drv mode testing for xdping
+Date:   Thu,  2 Jun 2022 11:25:07 +0800
+Message-Id: <20220602032507.464453-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,13 +75,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 2, 2022 at 8:42 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> The patches LGTM now! net-next is closed until -rc1 is released
-> so please repost on/after Monday.
->
-> > + * en...maybe they should be splited by group?
->
-> nit: since we need a repost - I think we can drop this line.
+As subject, we only test SKB mode for xdping at present.
+Now add DRV mode for xdping.
 
-Okay!
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ tools/testing/selftests/bpf/test_xdping.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/test_xdping.sh b/tools/testing/selftests/bpf/test_xdping.sh
+index c2f0ddb45531..c3d82e0a7378 100755
+--- a/tools/testing/selftests/bpf/test_xdping.sh
++++ b/tools/testing/selftests/bpf/test_xdping.sh
+@@ -95,5 +95,9 @@ for server_args in "" "-I veth0 -s -S" ; do
+ 	test "$client_args" "$server_args"
+ done
+ 
++# Test drv mode
++test "-I veth1 -N" "-I veth0 -s -N"
++test "-I veth1 -N -c 10" "-I veth0 -s -N"
++
+ echo "OK. All tests passed"
+ exit 0
+-- 
+2.35.1
+
