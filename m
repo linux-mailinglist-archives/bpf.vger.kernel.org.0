@@ -2,84 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E142953BC79
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 18:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059C553BCA9
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 18:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbiFBQZl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 12:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59368 "EHLO
+        id S237154AbiFBQlS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 12:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbiFBQZk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 12:25:40 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3792B07DB
-        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 09:25:39 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id s68so5161707pgs.10
-        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 09:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Ptx9nKuMpe8cN9LSrB99oPepT7glRBTRuC8F0mpobtI=;
-        b=lwvLwCAZxW7Mdhe4b1idijTXLUAFniIA9oZKU3gDrHbAxJd4wggZo64h6tFIy7Zz9Q
-         wfD5yoHw6l7pVDROPmOfmHIgLwUIi3vlPGWI+AI8ncEjfpAYvZI2TMvVblW7XMFmRcQS
-         8HV4A8zcaFG4yzbLO9ze7Rxw3rkbl50ayvbeLFWSKc9x7nDGULudHGKdre4slZDhkKgF
-         KCOoT/jM/j89jF3YEGm5bvfppYFA/aL7mFodejrqSN8QZlJ2bi7+coTTqGRQQzzcRK1/
-         t0OKjBnmDJD0aiahy4xHvFpYlMOxz08ng2dpsBCndlWR966fT4Zr+Ic9U6o6190N+1W3
-         8K4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Ptx9nKuMpe8cN9LSrB99oPepT7glRBTRuC8F0mpobtI=;
-        b=y7dUSi0IUlGBcpwaLon1Y1ti6N8Gt6y1eX7caPfA5h+jubY+QUIFOGwrkltYVavs92
-         AWdjlACUqpvKoZj9Wz8gEfEbVuTqaLCtCr9JiqA4Ikfa/PmokxqdCS+2G0KP/5eQOZlW
-         u6/cdlu0P/sNXD3Oyk7AX6GmuJFVxs4oZT4xRsBv7bvUn+x3Ur2wiLM6nWx4xe2k2ZCc
-         o7M101LOEpJE7yxBqCqcuH9lmiX0JBTAZx0wJ1wQHrMBrirM3r3uGP3xTOFfkzAhrBn3
-         LdZPrmTFH6FCVGDQzTvcp8jSy+2mlc7hY/CcuyHiOmX44E1mx8UtaXRYlmBN4D51jUbm
-         JH8g==
-X-Gm-Message-State: AOAM531hb+Vx2JrkthbmKJs+XgHHxIuShg2wJR6azsH0tEvgzAdQRlTB
-        od6j8S1ttLJ78+hckp6wbBxF+g==
-X-Google-Smtp-Source: ABdhPJxCddjwyZ/cieUSoYmXsNWRjbeIQnp5P/tjSr/RKCa3xx43k+5umY+pgkmw0EF1j2qWMMBhtw==
-X-Received: by 2002:a63:4822:0:b0:3fa:8a91:267e with SMTP id v34-20020a634822000000b003fa8a91267emr4892371pga.240.1654187138793;
-        Thu, 02 Jun 2022 09:25:38 -0700 (PDT)
-Received: from [192.168.254.36] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id e17-20020a17090301d100b0015e8d4eb237sm3731554plh.129.2022.06.02.09.25.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jun 2022 09:25:38 -0700 (PDT)
-Message-ID: <21780d7b-2fe0-e6b8-6b4c-7053ec7b99ef@linaro.org>
-Date:   Thu, 2 Jun 2022 09:25:37 -0700
+        with ESMTP id S236745AbiFBQlS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 12:41:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BD813C1F2;
+        Thu,  2 Jun 2022 09:41:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3F1A5B82042;
+        Thu,  2 Jun 2022 16:41:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06BF7C34115;
+        Thu,  2 Jun 2022 16:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654188075;
+        bh=IFjttROKZGGylhevLsgEC2YyRTVJprcNcySxHaWLmhM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cZX264Y83XffDb1tW2vMmPRH1K8klxTPT/e+cvuQz0dmzJC5feTEBTLrRqEgmQ9tj
+         UXIWA33elL9JT1aQqiQTj5qDsVJXi4MB1I0c0DFXv2nDLbrH3DW3wEP571w0e9uO9P
+         1zk8FnWXFAybXLwcWPaI9L6R2erDoIBv+6VoBJWXvgwrrLO7ia+0Sl+XucPneeckbG
+         MXaAu3uuE4uCKknST+DZVa267C5rWrhbJq2cNi0vQ3NVaLrn496Qmjmlp99m2I01x/
+         l36lgO350XS9umzpAmXOeYp66dhC3jXCvIzVDL27p05Ig/51HkqOi7S7SaFDMa1B0R
+         Buqqh2+NZ8a9g==
+Received: by mail-yb1-f182.google.com with SMTP id v22so9273371ybd.5;
+        Thu, 02 Jun 2022 09:41:14 -0700 (PDT)
+X-Gm-Message-State: AOAM5325v4HHABqOBYXBpL0qotc2BusWlLx5jBpiSxpo3V21YflQGPes
+        zt6hawIMYApv/5RbGOzxKlx+AoyOoOCyOzk5Sl0=
+X-Google-Smtp-Source: ABdhPJxnHnGOKzXEJokcQ7meWgPecl2a8ESyM99K54n/4dSG3zP9J2fFux+owsd+ABqAB+C39rviJIUMsMibtSPSNr8=
+X-Received: by 2002:a05:6902:50f:b0:65c:d620:f6d3 with SMTP id
+ x15-20020a056902050f00b0065cd620f6d3mr6255270ybs.322.1654188074062; Thu, 02
+ Jun 2022 09:41:14 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v4] bpf: Fix KASAN use-after-free Read in
- compute_effective_progs
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20220602032507.464453-1-liuhangbin@gmail.com>
+In-Reply-To: <20220602032507.464453-1-liuhangbin@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 2 Jun 2022 09:41:03 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4eVM=3xkr3ocm7oYn1VxRY1Ws1msmq1O738_yBTK+qqQ@mail.gmail.com>
+Message-ID: <CAPhsuW4eVM=3xkr3ocm7oYn1VxRY1Ws1msmq1O738_yBTK+qqQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: add drv mode testing for xdping
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
-References: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
- <20220517180420.87954-1-tadeusz.struk@linaro.org>
- <7949d722-86e8-8122-e607-4b09944b76ae@linaro.org>
- <CAEf4BzaD1Z6uOZwbquPYWB0_Z0+CkEKiXQ6zS2imiSHpTgX3pg@mail.gmail.com>
- <41265f4d-45b4-a3a6-e0c0-5460d2a06377@linaro.org>
- <CAEf4Bza-fp-9j+dzwdJQagxVNseNofxY2aJV0E6eHw+eQyyeaQ@mail.gmail.com>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <CAEf4Bza-fp-9j+dzwdJQagxVNseNofxY2aJV0E6eHw+eQyyeaQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Mathieu Xhonneux <m.xhonneux@gmail.com>,
+        William Tu <u9012063@gmail.com>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,15 +69,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/2/22 09:11, Andrii Nakryiko wrote:
->> Did you get a chance to look at this yet?
->>
-> Hm.. I've applied it two days ago, but for some reason there was no
-> notification from the bot. It's now c89c79fda9b6 ("bpf: Fix KASAN
-> use-after-free Read in compute_effective_progs").
+On Wed, Jun 1, 2022 at 8:25 PM Hangbin Liu <liuhangbin@gmail.com> wrote:
+>
+> As subject, we only test SKB mode for xdping at present.
+> Now add DRV mode for xdping.
+>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 
-Great! Thank you.
+Acked-by: Song Liu <songliubraving@fb.com>
 
--- 
-Thanks,
-Tadeusz
+> ---
+>  tools/testing/selftests/bpf/test_xdping.sh | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/test_xdping.sh b/tools/testing/selftests/bpf/test_xdping.sh
+> index c2f0ddb45531..c3d82e0a7378 100755
+> --- a/tools/testing/selftests/bpf/test_xdping.sh
+> +++ b/tools/testing/selftests/bpf/test_xdping.sh
+> @@ -95,5 +95,9 @@ for server_args in "" "-I veth0 -s -S" ; do
+>         test "$client_args" "$server_args"
+>  done
+>
+> +# Test drv mode
+> +test "-I veth1 -N" "-I veth0 -s -N"
+> +test "-I veth1 -N -c 10" "-I veth0 -s -N"
+> +
+>  echo "OK. All tests passed"
+>  exit 0
+> --
+> 2.35.1
+>
