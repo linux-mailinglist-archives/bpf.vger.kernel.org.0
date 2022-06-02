@@ -2,51 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3667253B6AE
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 12:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CF253B6C2
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 12:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbiFBKMF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 06:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
+        id S233489AbiFBKQZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 06:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbiFBKME (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 06:12:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75137210FBF
-        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 03:12:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654164722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=8sGWDx8tIdBvhPO/h0ylxwLNV3dOuqabLVsz3GUUy20=;
-        b=S3p0PO0aftBa801tWfZkhA3WXXQWtrB8AHDNHA9fQZ74GQyhTxqW+1UBGv4ymoV2IzIJse
-        j4AXu4IenFrXjHu5F9ZZf2P3N/RYln4NJG8REBuwobWjR+4Iz1GlnCuJ7cKU3EkOl3lgdw
-        pUlwzwwTfUEjQnmrYK6AS8SLUVLHyjQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-117-F9VFEzAmNJyCeuHprWzn1g-1; Thu, 02 Jun 2022 06:12:01 -0400
-X-MC-Unique: F9VFEzAmNJyCeuHprWzn1g-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S230153AbiFBKQZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 06:16:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2262AD5CA;
+        Thu,  2 Jun 2022 03:16:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 27802185A79C
-        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 10:12:01 +0000 (UTC)
-Received: from astarta.redhat.com (unknown [10.39.195.14])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 67E34492C3B;
-        Thu,  2 Jun 2022 10:12:00 +0000 (UTC)
-From:   Yauheni Kaliuta <ykaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jiri Benc <jbenc@redhat.com>
-Subject: bpf_jit_blinding_enabled capabilities
-Date:   Thu, 02 Jun 2022 13:11:58 +0300
-Message-ID: <xuny1qw7xtld.fsf@redhat.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id D2C8BB81D81;
+        Thu,  2 Jun 2022 10:16:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41851C385A5;
+        Thu,  2 Jun 2022 10:16:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654164981;
+        bh=CL8CyiPJdPlBC+h4F1u1wxFNsh2k6bt2bGpU8CbPtYc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IKn9oGFrgl1Uz9rgQqJTOF9ephY80iOFywJgvMLFs/Ea0URR/91M9H0dFIAh3u8sK
+         Jr5nEXBevVoHoR2ZCQMffNW5EJJiMQdMED2FqAFjpfVgvFlgfMrQJS/W2UAkpfEYmZ
+         aCihRx503ZHgPH4cLSeADHBcOtoDfy2qGCbY2kIrTiTW39KKID5lljgIyMGw6l76cV
+         pO6e6n4jfQjc0tRR2NQAj/F5cc72dfqy5bGwgcOTkz+es2GtcZRCPtOi32FF3BXWI1
+         DxZNwOUM3aYD32Zc/V/xZ5ToNWlefyJD1tPyUe//r5N6bglrgVB3GT4litxqa79M5l
+         T2jpdqyZV4fhQ==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 9901140527B; Thu,  2 Jun 2022 12:16:16 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     shaozhengchao <shaozhengchao@huawei.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+Cc:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        yuehaibing <yuehaibing@huawei.com>
+Subject: Re: =?utf-8?B?562U5aSNOg==?= [PATCH v5,bpf-next] samples/bpf: check
+ detach prog exist or
+ not in xdp_fwd
+In-Reply-To: <f7e88b843e964632919c8efe16368786@huawei.com>
+References: <20220602011915.264431-1-shaozhengchao@huawei.com>
+ <87v8tjsavb.fsf@toke.dk> <f7e88b843e964632919c8efe16368786@huawei.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 02 Jun 2022 12:16:16 +0200
+Message-ID: <87leufs74f.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,34 +73,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi!
+shaozhengchao <shaozhengchao@huawei.com> writes:
 
-I'm wodering about the cap check against CAP_SYS_ADMIN:
+> -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+> =E5=8F=91=E4=BB=B6=E4=BA=BA: Toke H=C3=B8iland-J=C3=B8rgensen [mailto:tok=
+e@kernel.org]=20
+> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2022=E5=B9=B46=E6=9C=882=E6=97=A5 1=
+6:55
+> =E6=94=B6=E4=BB=B6=E4=BA=BA: shaozhengchao <shaozhengchao@huawei.com>; bp=
+f@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org; as=
+t@kernel.org; daniel@iogearbox.net; davem@davemloft.net; kuba@kernel.org; h=
+awk@kernel.org; john.fastabend@gmail.com; andrii@kernel.org; kafai@fb.com; =
+songliubraving@fb.com; yhs@fb.com; kpsingh@kernel.org
+> =E6=8A=84=E9=80=81: weiyongjun (A) <weiyongjun1@huawei.com>; shaozhengcha=
+o <shaozhengchao@huawei.com>; yuehaibing <yuehaibing@huawei.com>
+> =E4=B8=BB=E9=A2=98: Re: [PATCH v5,bpf-next] samples/bpf: check detach pro=
+g exist or not in xdp_fwd
+>
+> Zhengchao Shao <shaozhengchao@huawei.com> writes:
+>
+>> Before detach the prog, we should check detach prog exist or not.
+>>
+>> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+>
+> You missed one 'return errno', see below:
+>
+>> ---
+>>  samples/bpf/xdp_fwd_user.c | 55=20
+>> +++++++++++++++++++++++++++++++++-----
+>>  1 file changed, 49 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/samples/bpf/xdp_fwd_user.c b/samples/bpf/xdp_fwd_user.c=20
+>> index 1828487bae9a..d321e6aa9364 100644
+>> --- a/samples/bpf/xdp_fwd_user.c
+>> +++ b/samples/bpf/xdp_fwd_user.c
+>> @@ -47,17 +47,60 @@ static int do_attach(int idx, int prog_fd, int map_f=
+d, const char *name)
+>>  	return err;
+>>  }
+>>=20=20
+>> -static int do_detach(int idx, const char *name)
+>> +static int do_detach(int ifindex, const char *ifname, const char=20
+>> +*app_name)
+>>  {
+>> -	int err;
+>> +	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
+>> +	struct bpf_prog_info prog_info =3D {};
+>> +	char prog_name[BPF_OBJ_NAME_LEN];
+>> +	__u32 info_len, curr_prog_id;
+>> +	int prog_fd;
+>> +	int err =3D 1;
+>> +
+>> +	if (bpf_xdp_query_id(ifindex, xdp_flags, &curr_prog_id)) {
+>> +		printf("ERROR: bpf_xdp_query_id failed (%s)\n",
+>> +		       strerror(errno));
+>> +		return err;
+>> +	}
+>>=20=20
+>> -	err =3D bpf_xdp_detach(idx, xdp_flags, NULL);
+>> -	if (err < 0)
+>> -		printf("ERROR: failed to detach program from %s\n", name);
+>> +	if (!curr_prog_id) {
+>> +		printf("ERROR: flags(0x%x) xdp prog is not attached to %s\n",
+>> +		       xdp_flags, ifname);
+>> +		return err;
+>> +	}
+>>=20=20
+>> +	info_len =3D sizeof(prog_info);
+>> +	prog_fd =3D bpf_prog_get_fd_by_id(curr_prog_id);
+>> +	if (prog_fd < 0) {
+>> +		printf("ERROR: bpf_prog_get_fd_by_id failed (%s)\n",
+>> +		       strerror(errno));
+>> +		return errno;
+>
+> This should just be ' return prog_fd ' to propagate the error...
+>
+> -Toke
+>
+>
+> Hi Toke:
+> 	Use 'return prog_fd' instead of 'return errno' first. And Which
+> position missed one 'return errno'?
 
-static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
-{
-        /* These are the prerequisites, should someone ever have the
-         * idea to call blinding outside of them, we make sure to
-         * bail out.
-         */
-        if (!bpf_jit_is_ebpf())
-                return false;
-        if (!prog->jit_requested)
-                return false;
-        if (!bpf_jit_harden)
-                return false;
-        if (bpf_jit_harden == 1 && capable(CAP_SYS_ADMIN))
-                return false;
+Ah, no, that's the one I was talking about; I meant "missed one" as in
+"missed removing one of them", not "a return errno was missing but
+should be there"; so just changing that one to 'return prog_fd' should
+and I think we should be good :)
 
-        return true;
-}
-
-Is it intentional to provide more security or oversight in commit
-2c78ee898d8f ("bpf: Implement CAP_BPF")
-(and should be bpf_capable())?
-
-
--- 
-WBR,
-Yauheni Kaliuta
-
+-Toke
