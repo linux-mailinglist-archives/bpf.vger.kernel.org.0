@@ -2,176 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2688F53BCCB
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 18:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB6653BCD3
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 18:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbiFBQtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 12:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        id S237281AbiFBQvV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 12:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbiFBQtN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 12:49:13 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8AE13391E
-        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 09:49:12 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id u12-20020a17090a1d4c00b001df78c7c209so9964486pju.1
-        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 09:49:12 -0700 (PDT)
+        with ESMTP id S237260AbiFBQvS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 12:51:18 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7460C2B1976
+        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 09:51:17 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id q18so4948756pln.12
+        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 09:51:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x6W9lqOABj/IuyeX/kEf3h2qYQIbL/JOqbOELG9BS8g=;
-        b=MI25gcOh3o0jeE9iRB1jEklqftYxtPF+uGqvh7/9FBYYUQTIXLYZcgSQBHAmLA9xxH
-         H0pWozl/YTIogFh6TwCva5aWnPO5ZmvjAdyBvbyh6vIIRLjlPd0k2KZTc9kIxQ2Ra1hE
-         0/GZTBxz0kRi5dJsLcYzHvi+hhT1Z6aP/38yiEWDDcsPrrB+ys9uxake067el3jocuiS
-         u2dCZHr3HZ2cyIIpCgQh8LoiA3t7S4lqkKHGCdF6je52q1hGR32piQo8QdQrL+cdguae
-         rRoDFw/4khI2HwySDC42PqMLnIaBqpHohrVtyVJ6kj8RiN1+nV9uRzImY5k2pr8p71sH
-         ibeQ==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:cc:references:in-reply-to:content-transfer-encoding;
+        bh=TDQ+cU4491SkrItFnZHpClm+jYuYcgPGIy7tcDzQFG8=;
+        b=uOpcLIN9c4RrfisvBugPN3DU8GT5x7q/U3iglMCQS2iPkf6OGDg/RlBsS4TbrfuHa+
+         SF2uHL5r1DR1bUycKKwv4eHSrkxecyed8V89R24tG7kaZYXUpnYYnEB7FKXFMtiUNpcu
+         bD9YZs8MzgjVhzapu9xBK6NoVnvzgb9QwHMa/Nus9D2QIE167N2oav9Pst/sYQEhyW9P
+         eAu56AoaRhl33j/JSVbAUNYigMBLVC68FVIdZUrWi8MgzWb0atPoAZ/CukdYwy/HNS8N
+         Ot9ZWFGiAxMu2HaXyL4lzIaXLnSRACVX6pSCyvdAwZp56RWl8IxS4/ex0JjuzQd/jVHf
+         q58g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x6W9lqOABj/IuyeX/kEf3h2qYQIbL/JOqbOELG9BS8g=;
-        b=bx6aLJG1jSrfRVuMFZgt+KPPdgMYHHSM3Aq/RwsN5j2akZT6FPE8kju22gdcJyn3pZ
-         aAqQv4iu0cDIoaRJgWXTOHRioU/xXHQxqoctThlh3fdCoi7tHH5KMUd2TYYnG2Hhpfg3
-         WnXifgXB84G92+NItj7vGcZylgzL2fh4Ys+vV352mRJ2+yGDdqn67pNPdThUwaERiuje
-         7GNDy75C0PgQyBpz82PZZ11rRwhmzrCLqQ1ZcTYfPA0SzRyhcIKZ89+Ga1Tk/Qhbdx52
-         oWls3HBcH0sXZb769yelnXuZxuFqOtinzMGn7jgOAxsW19eX5XcSE3ifrt/fYgrZ8tUY
-         aCnQ==
-X-Gm-Message-State: AOAM531Qi4LcRla5Tg+dDJpzmWZt3fhGeA9Tav8xJrIRAsg6X8mQj3Lf
-        Gdx+ZYLUwN7ODL/2mN3qu2Tq4RyDT3QGvK1CinKYPClk0ROzAg==
-X-Google-Smtp-Source: ABdhPJzZbQNzSLyrWCzYUf6AavVw+4iamqCLVs6JaX/QzHUCTWUfxe7t9Tk6WIBs1yTmYTJR7utPd5kI5BaAS34u3XU=
-X-Received: by 2002:a17:902:cec2:b0:166:4e45:e1b2 with SMTP id
- d2-20020a170902cec200b001664e45e1b2mr1467444plg.73.1654188551460; Thu, 02 Jun
- 2022 09:49:11 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=TDQ+cU4491SkrItFnZHpClm+jYuYcgPGIy7tcDzQFG8=;
+        b=n+Tjlf4moa/DJJuu14QOVRZOglqJDwtIUSZUn3jMJIzyn/iim3FxuD3rNKYqEL+VoH
+         +Pv192VpG3EC/KnaLSKqkafl1Gns15eGPQNjSca96qo2aKhPClDxNP9Q9nAL0wSMoT3U
+         U1uL7ebLCXMTXkLpnD0oshaU4yla/Rv7sYt6zjafjN8Ja94Dy51PlJNsK9VEYFqJBbd0
+         A/wMpoMlGxWNNKwSFuxRpK9qa/9yVoWeSMrCHxunJ+DbuAKZ1RPNFUUqy1EC18dfLLrX
+         gjF1v13/b9kBkRstL3tzpRDZ34i+Qgt9yD4Pqu4DEE9cqilpNK5c3gc+J2+MeK7eunQj
+         3nWw==
+X-Gm-Message-State: AOAM531ugSBJsODLH0scN5Q9wYxR57EKcxIqEh7Z5nVnh2a2wnWfuWQ/
+        B9X845Ux5qerhvFQ/yzzqYfyZA==
+X-Google-Smtp-Source: ABdhPJxMosGB+Mky+SRCGAt1T9DAyMnXHNfnYdje10jH0ruMadl41RhUn/Hf0PTErE9vR4unxYUxWQ==
+X-Received: by 2002:a17:90a:fa5:b0:1e2:ee1b:8f85 with SMTP id 34-20020a17090a0fa500b001e2ee1b8f85mr6235190pjz.216.1654188676791;
+        Thu, 02 Jun 2022 09:51:16 -0700 (PDT)
+Received: from [192.168.254.36] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id u11-20020a63d34b000000b003c14af505f6sm3609472pgi.14.2022.06.02.09.51.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jun 2022 09:51:16 -0700 (PDT)
+Message-ID: <902f1d2b-9e71-753c-566b-62a7d245c3a3@linaro.org>
+Date:   Thu, 2 Jun 2022 09:51:15 -0700
 MIME-Version: 1.0
-References: <20220601190218.2494963-4-sdf@google.com> <202206021403.M9hFZdbY-lkp@intel.com>
-In-Reply-To: <202206021403.M9hFZdbY-lkp@intel.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 2 Jun 2022 09:49:00 -0700
-Message-ID: <CAKH8qBsyR1tJnLcJc=0p7Qxbh+nRGX0h+bb1STS6_=qA9iFVjw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 03/11] bpf: per-cgroup lsm flavor
-To:     kernel test robot <lkp@intel.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v4] bpf: Fix KASAN use-after-free Read in
+ compute_effective_progs
+Content-Language: en-US
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
+References: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
+ <20220517180420.87954-1-tadeusz.struk@linaro.org>
+ <7949d722-86e8-8122-e607-4b09944b76ae@linaro.org>
+ <CAEf4BzaD1Z6uOZwbquPYWB0_Z0+CkEKiXQ6zS2imiSHpTgX3pg@mail.gmail.com>
+ <41265f4d-45b4-a3a6-e0c0-5460d2a06377@linaro.org>
+ <CAEf4Bza-fp-9j+dzwdJQagxVNseNofxY2aJV0E6eHw+eQyyeaQ@mail.gmail.com>
+ <21780d7b-2fe0-e6b8-6b4c-7053ec7b99ef@linaro.org>
+In-Reply-To: <21780d7b-2fe0-e6b8-6b4c-7053ec7b99ef@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 1, 2022 at 11:17 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Stanislav,
->
-> Thank you for the patch! Perhaps something to improve:
+On 6/2/22 09:25, Tadeusz Struk wrote:
+> On 6/2/22 09:11, Andrii Nakryiko wrote:
+>>> Did you get a chance to look at this yet?
+>>>
+>> Hm.. I've applied it two days ago, but for some reason there was no
+>> notification from the bot. It's now c89c79fda9b6 ("bpf: Fix KASAN
+>> use-after-free Read in compute_effective_progs").
 
-This is a config without CONFIG_BPF_LSM and it makes CGROUP_LSM_START
-greater than CGROUP_LSM_END (to make sure we don't
-waste slots on non-CONFIG_BPF_LSM builds) and it screws up
-(atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END) check.
-I'll add an ifdef around that.
+FYI. Just requested a test on bpf-next and it passed fine.
+https://groups.google.com/g/syzkaller-android-bugs/c/nr6mD4vhRA4
 
-
-> [auto build test WARNING on bpf-next/master]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Fomichev/bpf-cgroup_sock-lsm-flavor/20220602-050600
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> config: i386-randconfig-a004 (https://download.01.org/0day-ci/archive/20220602/202206021403.M9hFZdbY-lkp@intel.com/config)
-> compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project b364c76683f8ef241025a9556300778c07b590c2)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/intel-lab-lkp/linux/commit/584b25fdd30894c312d577f4b6b83f93d64e464b
->         git remote add linux-review https://github.com/intel-lab-lkp/linux
->         git fetch --no-tags linux-review Stanislav-Fomichev/bpf-cgroup_sock-lsm-flavor/20220602-050600
->         git checkout 584b25fdd30894c312d577f4b6b83f93d64e464b
->         # save the config file
->         mkdir build_dir && cp config build_dir/.config
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash kernel/bpf/
->
-> If you fix the issue, kindly add following tag where applicable
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> kernel/bpf/cgroup.c:257:35: warning: overlapping comparisons always evaluate to false [-Wtautological-overlap-compare]
->                                    if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
->                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
->    kernel/bpf/cgroup.c:252:35: warning: overlapping comparisons always evaluate to false [-Wtautological-overlap-compare]
->                                    if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
->                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
->    2 warnings generated.
->
->
-> vim +257 kernel/bpf/cgroup.c
->
->    226
->    227  /**
->    228   * cgroup_bpf_release() - put references of all bpf programs and
->    229   *                        release all cgroup bpf data
->    230   * @work: work structure embedded into the cgroup to modify
->    231   */
->    232  static void cgroup_bpf_release(struct work_struct *work)
->    233  {
->    234          struct cgroup *p, *cgrp = container_of(work, struct cgroup,
->    235                                                 bpf.release_work);
->    236          struct bpf_prog_array *old_array;
->    237          struct list_head *storages = &cgrp->bpf.storages;
->    238          struct bpf_cgroup_storage *storage, *stmp;
->    239
->    240          unsigned int atype;
->    241
->    242          mutex_lock(&cgroup_mutex);
->    243
->    244          for (atype = 0; atype < ARRAY_SIZE(cgrp->bpf.progs); atype++) {
->    245                  struct hlist_head *progs = &cgrp->bpf.progs[atype];
->    246                  struct bpf_prog_list *pl;
->    247                  struct hlist_node *pltmp;
->    248
->    249                  hlist_for_each_entry_safe(pl, pltmp, progs, node) {
->    250                          hlist_del(&pl->node);
->    251                          if (pl->prog) {
->    252                                  if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
->    253                                          bpf_trampoline_unlink_cgroup_shim(pl->prog);
->    254                                  bpf_prog_put(pl->prog);
->    255                          }
->    256                          if (pl->link) {
->  > 257                                  if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
->    258                                          bpf_trampoline_unlink_cgroup_shim(pl->link->link.prog);
->    259                                  bpf_cgroup_link_auto_detach(pl->link);
->    260                          }
->    261                          kfree(pl);
->    262                          static_branch_dec(&cgroup_bpf_enabled_key[atype]);
->    263                  }
->    264                  old_array = rcu_dereference_protected(
->    265                                  cgrp->bpf.effective[atype],
->    266                                  lockdep_is_held(&cgroup_mutex));
->    267                  bpf_prog_array_free(old_array);
->    268          }
->    269
->    270          list_for_each_entry_safe(storage, stmp, storages, list_cg) {
->    271                  bpf_cgroup_storage_unlink(storage);
->    272                  bpf_cgroup_storage_free(storage);
->    273          }
->    274
->    275          mutex_unlock(&cgroup_mutex);
->    276
->    277          for (p = cgroup_parent(cgrp); p; p = cgroup_parent(p))
->    278                  cgroup_bpf_put(p);
->    279
->    280          percpu_ref_exit(&cgrp->bpf.refcnt);
->    281          cgroup_put(cgrp);
->    282  }
->    283
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://01.org/lkp
+-- 
+Thanks,
+Tadeusz
