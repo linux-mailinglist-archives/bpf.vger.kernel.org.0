@@ -2,100 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 059C553BCA9
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 18:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2688F53BCCB
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 18:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237154AbiFBQlS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 12:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
+        id S237094AbiFBQtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 12:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236745AbiFBQlS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 12:41:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BD813C1F2;
-        Thu,  2 Jun 2022 09:41:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3F1A5B82042;
-        Thu,  2 Jun 2022 16:41:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06BF7C34115;
-        Thu,  2 Jun 2022 16:41:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654188075;
-        bh=IFjttROKZGGylhevLsgEC2YyRTVJprcNcySxHaWLmhM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cZX264Y83XffDb1tW2vMmPRH1K8klxTPT/e+cvuQz0dmzJC5feTEBTLrRqEgmQ9tj
-         UXIWA33elL9JT1aQqiQTj5qDsVJXi4MB1I0c0DFXv2nDLbrH3DW3wEP571w0e9uO9P
-         1zk8FnWXFAybXLwcWPaI9L6R2erDoIBv+6VoBJWXvgwrrLO7ia+0Sl+XucPneeckbG
-         MXaAu3uuE4uCKknST+DZVa267C5rWrhbJq2cNi0vQ3NVaLrn496Qmjmlp99m2I01x/
-         l36lgO350XS9umzpAmXOeYp66dhC3jXCvIzVDL27p05Ig/51HkqOi7S7SaFDMa1B0R
-         Buqqh2+NZ8a9g==
-Received: by mail-yb1-f182.google.com with SMTP id v22so9273371ybd.5;
-        Thu, 02 Jun 2022 09:41:14 -0700 (PDT)
-X-Gm-Message-State: AOAM5325v4HHABqOBYXBpL0qotc2BusWlLx5jBpiSxpo3V21YflQGPes
-        zt6hawIMYApv/5RbGOzxKlx+AoyOoOCyOzk5Sl0=
-X-Google-Smtp-Source: ABdhPJxnHnGOKzXEJokcQ7meWgPecl2a8ESyM99K54n/4dSG3zP9J2fFux+owsd+ABqAB+C39rviJIUMsMibtSPSNr8=
-X-Received: by 2002:a05:6902:50f:b0:65c:d620:f6d3 with SMTP id
- x15-20020a056902050f00b0065cd620f6d3mr6255270ybs.322.1654188074062; Thu, 02
- Jun 2022 09:41:14 -0700 (PDT)
+        with ESMTP id S235563AbiFBQtN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 12:49:13 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8AE13391E
+        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 09:49:12 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id u12-20020a17090a1d4c00b001df78c7c209so9964486pju.1
+        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 09:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x6W9lqOABj/IuyeX/kEf3h2qYQIbL/JOqbOELG9BS8g=;
+        b=MI25gcOh3o0jeE9iRB1jEklqftYxtPF+uGqvh7/9FBYYUQTIXLYZcgSQBHAmLA9xxH
+         H0pWozl/YTIogFh6TwCva5aWnPO5ZmvjAdyBvbyh6vIIRLjlPd0k2KZTc9kIxQ2Ra1hE
+         0/GZTBxz0kRi5dJsLcYzHvi+hhT1Z6aP/38yiEWDDcsPrrB+ys9uxake067el3jocuiS
+         u2dCZHr3HZ2cyIIpCgQh8LoiA3t7S4lqkKHGCdF6je52q1hGR32piQo8QdQrL+cdguae
+         rRoDFw/4khI2HwySDC42PqMLnIaBqpHohrVtyVJ6kj8RiN1+nV9uRzImY5k2pr8p71sH
+         ibeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x6W9lqOABj/IuyeX/kEf3h2qYQIbL/JOqbOELG9BS8g=;
+        b=bx6aLJG1jSrfRVuMFZgt+KPPdgMYHHSM3Aq/RwsN5j2akZT6FPE8kju22gdcJyn3pZ
+         aAqQv4iu0cDIoaRJgWXTOHRioU/xXHQxqoctThlh3fdCoi7tHH5KMUd2TYYnG2Hhpfg3
+         WnXifgXB84G92+NItj7vGcZylgzL2fh4Ys+vV352mRJ2+yGDdqn67pNPdThUwaERiuje
+         7GNDy75C0PgQyBpz82PZZ11rRwhmzrCLqQ1ZcTYfPA0SzRyhcIKZ89+Ga1Tk/Qhbdx52
+         oWls3HBcH0sXZb769yelnXuZxuFqOtinzMGn7jgOAxsW19eX5XcSE3ifrt/fYgrZ8tUY
+         aCnQ==
+X-Gm-Message-State: AOAM531Qi4LcRla5Tg+dDJpzmWZt3fhGeA9Tav8xJrIRAsg6X8mQj3Lf
+        Gdx+ZYLUwN7ODL/2mN3qu2Tq4RyDT3QGvK1CinKYPClk0ROzAg==
+X-Google-Smtp-Source: ABdhPJzZbQNzSLyrWCzYUf6AavVw+4iamqCLVs6JaX/QzHUCTWUfxe7t9Tk6WIBs1yTmYTJR7utPd5kI5BaAS34u3XU=
+X-Received: by 2002:a17:902:cec2:b0:166:4e45:e1b2 with SMTP id
+ d2-20020a170902cec200b001664e45e1b2mr1467444plg.73.1654188551460; Thu, 02 Jun
+ 2022 09:49:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220602032507.464453-1-liuhangbin@gmail.com>
-In-Reply-To: <20220602032507.464453-1-liuhangbin@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 2 Jun 2022 09:41:03 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4eVM=3xkr3ocm7oYn1VxRY1Ws1msmq1O738_yBTK+qqQ@mail.gmail.com>
-Message-ID: <CAPhsuW4eVM=3xkr3ocm7oYn1VxRY1Ws1msmq1O738_yBTK+qqQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: add drv mode testing for xdping
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>,
-        William Tu <u9012063@gmail.com>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20220601190218.2494963-4-sdf@google.com> <202206021403.M9hFZdbY-lkp@intel.com>
+In-Reply-To: <202206021403.M9hFZdbY-lkp@intel.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 2 Jun 2022 09:49:00 -0700
+Message-ID: <CAKH8qBsyR1tJnLcJc=0p7Qxbh+nRGX0h+bb1STS6_=qA9iFVjw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 03/11] bpf: per-cgroup lsm flavor
+To:     kernel test robot <lkp@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 1, 2022 at 8:25 PM Hangbin Liu <liuhangbin@gmail.com> wrote:
+On Wed, Jun 1, 2022 at 11:17 PM kernel test robot <lkp@intel.com> wrote:
 >
-> As subject, we only test SKB mode for xdping at present.
-> Now add DRV mode for xdping.
+> Hi Stanislav,
 >
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> Thank you for the patch! Perhaps something to improve:
 
-Acked-by: Song Liu <songliubraving@fb.com>
+This is a config without CONFIG_BPF_LSM and it makes CGROUP_LSM_START
+greater than CGROUP_LSM_END (to make sure we don't
+waste slots on non-CONFIG_BPF_LSM builds) and it screws up
+(atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END) check.
+I'll add an ifdef around that.
 
-> ---
->  tools/testing/selftests/bpf/test_xdping.sh | 4 ++++
->  1 file changed, 4 insertions(+)
+
+> [auto build test WARNING on bpf-next/master]
 >
-> diff --git a/tools/testing/selftests/bpf/test_xdping.sh b/tools/testing/selftests/bpf/test_xdping.sh
-> index c2f0ddb45531..c3d82e0a7378 100755
-> --- a/tools/testing/selftests/bpf/test_xdping.sh
-> +++ b/tools/testing/selftests/bpf/test_xdping.sh
-> @@ -95,5 +95,9 @@ for server_args in "" "-I veth0 -s -S" ; do
->         test "$client_args" "$server_args"
->  done
+> url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Fomichev/bpf-cgroup_sock-lsm-flavor/20220602-050600
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> config: i386-randconfig-a004 (https://download.01.org/0day-ci/archive/20220602/202206021403.M9hFZdbY-lkp@intel.com/config)
+> compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project b364c76683f8ef241025a9556300778c07b590c2)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/intel-lab-lkp/linux/commit/584b25fdd30894c312d577f4b6b83f93d64e464b
+>         git remote add linux-review https://github.com/intel-lab-lkp/linux
+>         git fetch --no-tags linux-review Stanislav-Fomichev/bpf-cgroup_sock-lsm-flavor/20220602-050600
+>         git checkout 584b25fdd30894c312d577f4b6b83f93d64e464b
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash kernel/bpf/
 >
-> +# Test drv mode
-> +test "-I veth1 -N" "-I veth0 -s -N"
-> +test "-I veth1 -N -c 10" "-I veth0 -s -N"
-> +
->  echo "OK. All tests passed"
->  exit 0
+> If you fix the issue, kindly add following tag where applicable
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+> >> kernel/bpf/cgroup.c:257:35: warning: overlapping comparisons always evaluate to false [-Wtautological-overlap-compare]
+>                                    if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
+>                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+>    kernel/bpf/cgroup.c:252:35: warning: overlapping comparisons always evaluate to false [-Wtautological-overlap-compare]
+>                                    if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
+>                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+>    2 warnings generated.
+>
+>
+> vim +257 kernel/bpf/cgroup.c
+>
+>    226
+>    227  /**
+>    228   * cgroup_bpf_release() - put references of all bpf programs and
+>    229   *                        release all cgroup bpf data
+>    230   * @work: work structure embedded into the cgroup to modify
+>    231   */
+>    232  static void cgroup_bpf_release(struct work_struct *work)
+>    233  {
+>    234          struct cgroup *p, *cgrp = container_of(work, struct cgroup,
+>    235                                                 bpf.release_work);
+>    236          struct bpf_prog_array *old_array;
+>    237          struct list_head *storages = &cgrp->bpf.storages;
+>    238          struct bpf_cgroup_storage *storage, *stmp;
+>    239
+>    240          unsigned int atype;
+>    241
+>    242          mutex_lock(&cgroup_mutex);
+>    243
+>    244          for (atype = 0; atype < ARRAY_SIZE(cgrp->bpf.progs); atype++) {
+>    245                  struct hlist_head *progs = &cgrp->bpf.progs[atype];
+>    246                  struct bpf_prog_list *pl;
+>    247                  struct hlist_node *pltmp;
+>    248
+>    249                  hlist_for_each_entry_safe(pl, pltmp, progs, node) {
+>    250                          hlist_del(&pl->node);
+>    251                          if (pl->prog) {
+>    252                                  if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
+>    253                                          bpf_trampoline_unlink_cgroup_shim(pl->prog);
+>    254                                  bpf_prog_put(pl->prog);
+>    255                          }
+>    256                          if (pl->link) {
+>  > 257                                  if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
+>    258                                          bpf_trampoline_unlink_cgroup_shim(pl->link->link.prog);
+>    259                                  bpf_cgroup_link_auto_detach(pl->link);
+>    260                          }
+>    261                          kfree(pl);
+>    262                          static_branch_dec(&cgroup_bpf_enabled_key[atype]);
+>    263                  }
+>    264                  old_array = rcu_dereference_protected(
+>    265                                  cgrp->bpf.effective[atype],
+>    266                                  lockdep_is_held(&cgroup_mutex));
+>    267                  bpf_prog_array_free(old_array);
+>    268          }
+>    269
+>    270          list_for_each_entry_safe(storage, stmp, storages, list_cg) {
+>    271                  bpf_cgroup_storage_unlink(storage);
+>    272                  bpf_cgroup_storage_free(storage);
+>    273          }
+>    274
+>    275          mutex_unlock(&cgroup_mutex);
+>    276
+>    277          for (p = cgroup_parent(cgrp); p; p = cgroup_parent(p))
+>    278                  cgroup_bpf_put(p);
+>    279
+>    280          percpu_ref_exit(&cgrp->bpf.refcnt);
+>    281          cgroup_put(cgrp);
+>    282  }
+>    283
+>
 > --
-> 2.35.1
->
+> 0-DAY CI Kernel Test Service
+> https://01.org/lkp
