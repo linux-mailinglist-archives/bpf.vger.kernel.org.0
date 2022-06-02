@@ -2,57 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4403753B575
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 10:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1145153B674
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 11:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbiFBIz3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 04:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        id S231293AbiFBJ7r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 05:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbiFBIz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 04:55:29 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8273929C107;
-        Thu,  2 Jun 2022 01:55:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 14A8EB81EFC;
-        Thu,  2 Jun 2022 08:55:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DBC5C385A5;
-        Thu,  2 Jun 2022 08:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654160125;
-        bh=r78DM0Wp+cO4uP5J+DDcSdxZzpS4QO/M9XYiEnYZJd8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=HkN82rYCiYxiTa4GlCFcPgghdGCvF1ItoParmyyYidK2QTEsvMOqiV653dpSAFbHD
-         mxtGG2oH91TIGW/ZvbTKqUdU/LUbMc1AKpzkjpYurILBDLJeOLj8PxMzMvoKn2q/CI
-         2MR7w7DIzil6spbOIWPQs6PfC4z7EVSFpGUiQvFnsi+sIwEK8x34l4coGMGMHctmi2
-         ph0pMPK8h1+ZhjxAKz4j+Cq2hZO3dZzjup4ny297kAbryFuOhq90/LTCrkc4DeDYSW
-         5I+uh+ClobcJAG4Kvx9avtxOuYGhTfLw4JTbT0IK5mdYyoiWhp3VlvIsTTmvtQT/6S
-         Cz3Wt5ziLfSxw==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C0E30405243; Thu,  2 Jun 2022 10:55:20 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Zhengchao Shao <shaozhengchao@huawei.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     weiyongjun1@huawei.com, shaozhengchao@huawei.com,
-        yuehaibing@huawei.com
-Subject: Re: [PATCH v5,bpf-next] samples/bpf: check detach prog exist or not
+        with ESMTP id S233072AbiFBJ7r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 05:59:47 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9388FDF18;
+        Thu,  2 Jun 2022 02:59:45 -0700 (PDT)
+Received: from canpemm100010.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LDM0r3d5tzjXNk;
+        Thu,  2 Jun 2022 17:58:52 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
+ canpemm100010.china.huawei.com (7.192.104.38) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 2 Jun 2022 17:59:43 +0800
+Received: from dggpeml500026.china.huawei.com ([7.185.36.106]) by
+ dggpeml500026.china.huawei.com ([7.185.36.106]) with mapi id 15.01.2375.024;
+ Thu, 2 Jun 2022 17:59:43 +0800
+From:   shaozhengchao <shaozhengchao@huawei.com>
+To:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+CC:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        yuehaibing <yuehaibing@huawei.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjUsYnBmLW5leHRdIHNhbXBsZXMvYnBmOiBjaGVj?=
+ =?utf-8?Q?k_detach_prog_exist_or_not_in_xdp=5Ffwd?=
+Thread-Topic: [PATCH v5,bpf-next] samples/bpf: check detach prog exist or not
  in xdp_fwd
-In-Reply-To: <20220602011915.264431-1-shaozhengchao@huawei.com>
+Thread-Index: AQHYdh3mfF3YsnAkakOXItICkqOZQK07SqEAgACXBnA=
+Date:   Thu, 2 Jun 2022 09:59:43 +0000
+Message-ID: <f7e88b843e964632919c8efe16368786@huawei.com>
 References: <20220602011915.264431-1-shaozhengchao@huawei.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 02 Jun 2022 10:55:20 +0200
-Message-ID: <87v8tjsavb.fsf@toke.dk>
+ <87v8tjsavb.fsf@toke.dk>
+In-Reply-To: <87v8tjsavb.fsf@toke.dk>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.66]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,59 +70,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zhengchao Shao <shaozhengchao@huawei.com> writes:
-
-> Before detach the prog, we should check detach prog exist or not.
->
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-
-You missed one 'return errno', see below:
-
-> ---
->  samples/bpf/xdp_fwd_user.c | 55 +++++++++++++++++++++++++++++++++-----
->  1 file changed, 49 insertions(+), 6 deletions(-)
->
-> diff --git a/samples/bpf/xdp_fwd_user.c b/samples/bpf/xdp_fwd_user.c
-> index 1828487bae9a..d321e6aa9364 100644
-> --- a/samples/bpf/xdp_fwd_user.c
-> +++ b/samples/bpf/xdp_fwd_user.c
-> @@ -47,17 +47,60 @@ static int do_attach(int idx, int prog_fd, int map_fd, const char *name)
->  	return err;
->  }
->  
-> -static int do_detach(int idx, const char *name)
-> +static int do_detach(int ifindex, const char *ifname, const char *app_name)
->  {
-> -	int err;
-> +	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> +	struct bpf_prog_info prog_info = {};
-> +	char prog_name[BPF_OBJ_NAME_LEN];
-> +	__u32 info_len, curr_prog_id;
-> +	int prog_fd;
-> +	int err = 1;
-> +
-> +	if (bpf_xdp_query_id(ifindex, xdp_flags, &curr_prog_id)) {
-> +		printf("ERROR: bpf_xdp_query_id failed (%s)\n",
-> +		       strerror(errno));
-> +		return err;
-> +	}
->  
-> -	err = bpf_xdp_detach(idx, xdp_flags, NULL);
-> -	if (err < 0)
-> -		printf("ERROR: failed to detach program from %s\n", name);
-> +	if (!curr_prog_id) {
-> +		printf("ERROR: flags(0x%x) xdp prog is not attached to %s\n",
-> +		       xdp_flags, ifname);
-> +		return err;
-> +	}
->  
-> +	info_len = sizeof(prog_info);
-> +	prog_fd = bpf_prog_get_fd_by_id(curr_prog_id);
-> +	if (prog_fd < 0) {
-> +		printf("ERROR: bpf_prog_get_fd_by_id failed (%s)\n",
-> +		       strerror(errno));
-> +		return errno;
-
-This should just be 'return prog_fd' to propagate the error...
-
--Toke
+DQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCuWPkeS7tuS6ujogVG9rZSBIw7hpbGFuZC1Kw7hy
+Z2Vuc2VuIFttYWlsdG86dG9rZUBrZXJuZWwub3JnXSANCuWPkemAgeaXtumXtDogMjAyMuW5tDbm
+nIgy5pelIDE2OjU1DQrmlLbku7bkuro6IHNoYW96aGVuZ2NoYW8gPHNoYW96aGVuZ2NoYW9AaHVh
+d2VpLmNvbT47IGJwZkB2Z2VyLmtlcm5lbC5vcmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGFzdEBrZXJuZWwub3JnOyBkYW5pZWxAaW9nZWFy
+Ym94Lm5ldDsgZGF2ZW1AZGF2ZW1sb2Z0Lm5ldDsga3ViYUBrZXJuZWwub3JnOyBoYXdrQGtlcm5l
+bC5vcmc7IGpvaG4uZmFzdGFiZW5kQGdtYWlsLmNvbTsgYW5kcmlpQGtlcm5lbC5vcmc7IGthZmFp
+QGZiLmNvbTsgc29uZ2xpdWJyYXZpbmdAZmIuY29tOyB5aHNAZmIuY29tOyBrcHNpbmdoQGtlcm5l
+bC5vcmcNCuaKhOmAgTogd2VpeW9uZ2p1biAoQSkgPHdlaXlvbmdqdW4xQGh1YXdlaS5jb20+OyBz
+aGFvemhlbmdjaGFvIDxzaGFvemhlbmdjaGFvQGh1YXdlaS5jb20+OyB5dWVoYWliaW5nIDx5dWVo
+YWliaW5nQGh1YXdlaS5jb20+DQrkuLvpopg6IFJlOiBbUEFUQ0ggdjUsYnBmLW5leHRdIHNhbXBs
+ZXMvYnBmOiBjaGVjayBkZXRhY2ggcHJvZyBleGlzdCBvciBub3QgaW4geGRwX2Z3ZA0KDQpaaGVu
+Z2NoYW8gU2hhbyA8c2hhb3poZW5nY2hhb0BodWF3ZWkuY29tPiB3cml0ZXM6DQoNCj4gQmVmb3Jl
+IGRldGFjaCB0aGUgcHJvZywgd2Ugc2hvdWxkIGNoZWNrIGRldGFjaCBwcm9nIGV4aXN0IG9yIG5v
+dC4NCj4NCj4gU2lnbmVkLW9mZi1ieTogWmhlbmdjaGFvIFNoYW8gPHNoYW96aGVuZ2NoYW9AaHVh
+d2VpLmNvbT4NCg0KWW91IG1pc3NlZCBvbmUgJ3JldHVybiBlcnJubycsIHNlZSBiZWxvdzoNCg0K
+PiAtLS0NCj4gIHNhbXBsZXMvYnBmL3hkcF9md2RfdXNlci5jIHwgNTUgDQo+ICsrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgNDkgaW5zZXJ0
+aW9ucygrKSwgNiBkZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdpdCBhL3NhbXBsZXMvYnBmL3hk
+cF9md2RfdXNlci5jIGIvc2FtcGxlcy9icGYveGRwX2Z3ZF91c2VyLmMgDQo+IGluZGV4IDE4Mjg0
+ODdiYWU5YS4uZDMyMWU2YWE5MzY0IDEwMDY0NA0KPiAtLS0gYS9zYW1wbGVzL2JwZi94ZHBfZndk
+X3VzZXIuYw0KPiArKysgYi9zYW1wbGVzL2JwZi94ZHBfZndkX3VzZXIuYw0KPiBAQCAtNDcsMTcg
+KzQ3LDYwIEBAIHN0YXRpYyBpbnQgZG9fYXR0YWNoKGludCBpZHgsIGludCBwcm9nX2ZkLCBpbnQg
+bWFwX2ZkLCBjb25zdCBjaGFyICpuYW1lKQ0KPiAgCXJldHVybiBlcnI7DQo+ICB9DQo+ICANCj4g
+LXN0YXRpYyBpbnQgZG9fZGV0YWNoKGludCBpZHgsIGNvbnN0IGNoYXIgKm5hbWUpDQo+ICtzdGF0
+aWMgaW50IGRvX2RldGFjaChpbnQgaWZpbmRleCwgY29uc3QgY2hhciAqaWZuYW1lLCBjb25zdCBj
+aGFyIA0KPiArKmFwcF9uYW1lKQ0KPiAgew0KPiAtCWludCBlcnI7DQo+ICsJTElCQlBGX09QVFMo
+YnBmX3hkcF9hdHRhY2hfb3B0cywgb3B0cyk7DQo+ICsJc3RydWN0IGJwZl9wcm9nX2luZm8gcHJv
+Z19pbmZvID0ge307DQo+ICsJY2hhciBwcm9nX25hbWVbQlBGX09CSl9OQU1FX0xFTl07DQo+ICsJ
+X191MzIgaW5mb19sZW4sIGN1cnJfcHJvZ19pZDsNCj4gKwlpbnQgcHJvZ19mZDsNCj4gKwlpbnQg
+ZXJyID0gMTsNCj4gKw0KPiArCWlmIChicGZfeGRwX3F1ZXJ5X2lkKGlmaW5kZXgsIHhkcF9mbGFn
+cywgJmN1cnJfcHJvZ19pZCkpIHsNCj4gKwkJcHJpbnRmKCJFUlJPUjogYnBmX3hkcF9xdWVyeV9p
+ZCBmYWlsZWQgKCVzKVxuIiwNCj4gKwkJICAgICAgIHN0cmVycm9yKGVycm5vKSk7DQo+ICsJCXJl
+dHVybiBlcnI7DQo+ICsJfQ0KPiAgDQo+IC0JZXJyID0gYnBmX3hkcF9kZXRhY2goaWR4LCB4ZHBf
+ZmxhZ3MsIE5VTEwpOw0KPiAtCWlmIChlcnIgPCAwKQ0KPiAtCQlwcmludGYoIkVSUk9SOiBmYWls
+ZWQgdG8gZGV0YWNoIHByb2dyYW0gZnJvbSAlc1xuIiwgbmFtZSk7DQo+ICsJaWYgKCFjdXJyX3By
+b2dfaWQpIHsNCj4gKwkJcHJpbnRmKCJFUlJPUjogZmxhZ3MoMHgleCkgeGRwIHByb2cgaXMgbm90
+IGF0dGFjaGVkIHRvICVzXG4iLA0KPiArCQkgICAgICAgeGRwX2ZsYWdzLCBpZm5hbWUpOw0KPiAr
+CQlyZXR1cm4gZXJyOw0KPiArCX0NCj4gIA0KPiArCWluZm9fbGVuID0gc2l6ZW9mKHByb2dfaW5m
+byk7DQo+ICsJcHJvZ19mZCA9IGJwZl9wcm9nX2dldF9mZF9ieV9pZChjdXJyX3Byb2dfaWQpOw0K
+PiArCWlmIChwcm9nX2ZkIDwgMCkgew0KPiArCQlwcmludGYoIkVSUk9SOiBicGZfcHJvZ19nZXRf
+ZmRfYnlfaWQgZmFpbGVkICglcylcbiIsDQo+ICsJCSAgICAgICBzdHJlcnJvcihlcnJubykpOw0K
+PiArCQlyZXR1cm4gZXJybm87DQoNClRoaXMgc2hvdWxkIGp1c3QgYmUgJyByZXR1cm4gcHJvZ19m
+ZCAnIHRvIHByb3BhZ2F0ZSB0aGUgZXJyb3IuLi4NCg0KLVRva2UNCg0KDQpIaSBUb2tlOg0KCVVz
+ZSAncmV0dXJuIHByb2dfZmQnIGluc3RlYWQgb2YgJ3JldHVybiBlcnJubycgZmlyc3QuIEFuZCBX
+aGljaCBwb3NpdGlvbiBtaXNzZWQgb25lICdyZXR1cm4gZXJybm8nPw0KDQotWmhlbmdjaGFvIFNo
+YW8NCg==
