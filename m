@@ -2,146 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A43B053B141
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 03:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB87D53B19F
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 04:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbiFBBVY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 21:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38530 "EHLO
+        id S233122AbiFBBbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 21:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbiFBBVU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 21:21:20 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE39140424;
-        Wed,  1 Jun 2022 18:21:19 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id cv1so2677321qvb.5;
-        Wed, 01 Jun 2022 18:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/YIsaXDf0Vla/CpgZ3fY3VVxEFB+BQX409ICdnuhF6U=;
-        b=ZihXGbuxNpN6AzRAhkc0kafpiANTkruYdINgdmq/davY/ys00ajR6bejApb036Jvkv
-         xGhUaY7LKRYnZAtmucaHCYdATEjgx/ITfPDrDkf19+JHI+6JQ/kLucRgGL8gaKzNFxEr
-         2n0IaOJATOt8+OLnAQv1jpQGVGfBUBS3UuEn3Jo8FEVSUSw5gwGh7MYiPfnaiv7cqion
-         AZb6bNR5z3Q40jXULjq/pd+5jM06zEWZY6murrjb2LCWAvht+gfeEa9iAkbKl/BQMp+f
-         pE5r9SmxLn+3tKPM87f9cEgajCALh0+AEXG9aDom739az0e22Y67lYQIz1lKX7g1gZKt
-         rFiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/YIsaXDf0Vla/CpgZ3fY3VVxEFB+BQX409ICdnuhF6U=;
-        b=sAaWt/35ePqx58tpxQJAVxijoDclbCgg9YWZElZ0LFybSEs6xJvGwC0gO46l24Tbdz
-         wWnJcI4JDFs9+1GIHceT9ysAwrv4Eg4QaF+03B7guBUseg/dDp0P/nG0egE+WNb5jPf1
-         YzkLgKBIsTOgSc0Q5LUzzoR1vgFDIA86z4deoHHQfBWKYjBBXHfsNpWHkBo+2iU0B8Iz
-         mMLAN4KDi03ujbqDDorDKiWiNZOx+dvnwFgK2nKUefBpM7sN3fQVxCCPDZS5xjBFRzBX
-         6tk4MrL9nZ8fveEIqi0abXW8GTNloCYblaCsDhVLuQ6tnev0AHsf1xftb7UIwloy5jy4
-         6Cow==
-X-Gm-Message-State: AOAM53123rzNZjJ0jE5TTrPLDEJpnj07+vO82AbYFgsMdrbpl3xxGffZ
-        X35MUQz4zTw7wAth3CKXc8DdPA7rURg=
-X-Google-Smtp-Source: ABdhPJxzuq16EgE98GmaGvX5cKqdqj7tIfPsgQISU8VJRgsM3qhGzAAINd8setCBDJtzw8mYTLxGbw==
-X-Received: by 2002:a05:6214:dc3:b0:464:5efe:3d63 with SMTP id 3-20020a0562140dc300b004645efe3d63mr9854639qvt.92.1654132878489;
-        Wed, 01 Jun 2022 18:21:18 -0700 (PDT)
-Received: from pop-os.attlocal.net ([2600:1700:65a0:ab60:a168:6dba:43b7:3240])
-        by smtp.gmail.com with ESMTPSA id x4-20020ac87304000000b002f39b99f670sm2077654qto.10.2022.06.01.18.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jun 2022 18:21:17 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: [Patch bpf-next v3 4/4] skmsg: get rid of unncessary memset()
-Date:   Wed,  1 Jun 2022 18:21:05 -0700
-Message-Id: <20220602012105.58853-5-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220602012105.58853-1-xiyou.wangcong@gmail.com>
-References: <20220602012105.58853-1-xiyou.wangcong@gmail.com>
+        with ESMTP id S232837AbiFBBbh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 21:31:37 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93FE131F00;
+        Wed,  1 Jun 2022 18:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654133496; x=1685669496;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EICTw4lRgz1GEwBE23gGkyRblMBsQMnEDRc0oqq4R58=;
+  b=oIfVNUz+mlSurw/cgDrF0zzFCzBrNmgL83MCxU/0BlXaO7diLorH/yM9
+   jBBjP7272xbd6pwve/A+d3UkwQn4Tkt0IF8CmVI5NIuQAwHZNFiCGIHyr
+   Hb3qgg2rZS1IQcfWcazlAVJ7CugvqJ4A2Gav7JfBMtTcLFr/hbuvXrvDt
+   lAd9jNuaOrxw/BMijhhlWwtBPP1qu0m1JdL4Zo33K3v4DVQRKMKZqyXP/
+   UKO8GVJ2PB5mGutstOcKTezJWCNsndusdX8IZaxt+pPxOHEzSFilCwtMY
+   IPMYaaF5H1Fvyt/TEZLb6h5e+ga6hX8X7flY5zhUuKkowzyKswlzreQ3p
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10365"; a="257853196"
+X-IronPort-AV: E=Sophos;i="5.91,270,1647327600"; 
+   d="scan'208";a="257853196"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2022 18:31:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,270,1647327600"; 
+   d="scan'208";a="577237992"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 01 Jun 2022 18:31:32 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nwZgR-0004cS-TC;
+        Thu, 02 Jun 2022 01:31:31 +0000
+Date:   Thu, 2 Jun 2022 09:30:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Song Liu <song@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, rostedt@goodmis.org,
+        jolsa@kernel.org, Song Liu <song@kernel.org>
+Subject: Re: [PATCH bpf-next 5/5] bpf: trampoline: support
+ FTRACE_OPS_FL_SHARE_IPMODIFY
+Message-ID: <202206020957.KETjl2xP-lkp@intel.com>
+References: <20220601175749.3071572-6-song@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220601175749.3071572-6-song@kernel.org>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+Hi Song,
 
-We always allocate skmsg with kzalloc(), so there is no need
-to call memset(0) on it, the only thing we need from
-sk_msg_init() is sg_init_marker(). So introduce a new helper
-which is just kzalloc()+sg_init_marker(), this saves an
-unncessary memset(0) for skmsg on fast path.
+I love your patch! Yet something to improve:
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- net/core/skmsg.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+[auto build test ERROR on bpf-next/master]
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 8b248d289c11..4b297d67edb7 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -497,23 +497,27 @@ bool sk_msg_is_readable(struct sock *sk)
- }
- EXPORT_SYMBOL_GPL(sk_msg_is_readable);
- 
--static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
--						  struct sk_buff *skb)
-+static struct sk_msg *alloc_sk_msg(void)
- {
- 	struct sk_msg *msg;
- 
--	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
-+	msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_KERNEL);
-+	if (unlikely(!msg))
- 		return NULL;
-+	sg_init_marker(msg->sg.data, NR_MSG_FRAG_IDS);
-+	return msg;
-+}
- 
--	if (!sk_rmem_schedule(sk, skb, skb->truesize))
-+static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
-+						  struct sk_buff *skb)
-+{
-+	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
- 		return NULL;
- 
--	msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_KERNEL);
--	if (unlikely(!msg))
-+	if (!sk_rmem_schedule(sk, skb, skb->truesize))
- 		return NULL;
- 
--	sk_msg_init(msg);
--	return msg;
-+	return alloc_sk_msg();
- }
- 
- static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
-@@ -590,13 +594,12 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb,
- static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb,
- 				     u32 off, u32 len)
- {
--	struct sk_msg *msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
-+	struct sk_msg *msg = alloc_sk_msg();
- 	struct sock *sk = psock->sk;
- 	int err;
- 
- 	if (unlikely(!msg))
- 		return -EAGAIN;
--	sk_msg_init(msg);
- 	skb_set_owner_r(skb, sk);
- 	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
- 	if (err < 0)
+url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/ftrace-host-klp-and-bpf-trampoline-together/20220602-020112
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: x86_64-randconfig-a006 (https://download.01.org/0day-ci/archive/20220602/202206020957.KETjl2xP-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/7edcf1c49617641579f2bc36b86c7d59bea20aef
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Song-Liu/ftrace-host-klp-and-bpf-trampoline-together/20220602-020112
+        git checkout 7edcf1c49617641579f2bc36b86c7d59bea20aef
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   kernel/bpf/trampoline.c: In function 'bpf_trampoline_lookup':
+>> kernel/bpf/trampoline.c:101:17: error: 'struct ftrace_ops' has no member named 'ops_func'
+     101 |         tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
+         |                 ^~
+   kernel/bpf/trampoline.c: In function 'bpf_trampoline_update':
+>> kernel/bpf/trampoline.c:416:25: error: 'struct ftrace_ops' has no member named 'trampoline'
+     416 |                 tr->fops->trampoline = 0;
+         |                         ^~
+
+
+vim +101 kernel/bpf/trampoline.c
+
+    74	
+    75	static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+    76	{
+    77		struct bpf_trampoline *tr;
+    78		struct hlist_head *head;
+    79		int i;
+    80	
+    81		mutex_lock(&trampoline_mutex);
+    82		head = &trampoline_table[hash_64(key, TRAMPOLINE_HASH_BITS)];
+    83		hlist_for_each_entry(tr, head, hlist) {
+    84			if (tr->key == key) {
+    85				refcount_inc(&tr->refcnt);
+    86				goto out;
+    87			}
+    88		}
+    89		tr = kzalloc(sizeof(*tr), GFP_KERNEL);
+    90		if (!tr)
+    91			goto out;
+    92		tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
+    93		if (!tr->fops) {
+    94			kfree(tr);
+    95			tr = NULL;
+    96			goto out;
+    97		}
+    98	
+    99		tr->key = key;
+   100		tr->fops->private = tr;
+ > 101		tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
+   102		INIT_HLIST_NODE(&tr->hlist);
+   103		hlist_add_head(&tr->hlist, head);
+   104		refcount_set(&tr->refcnt, 1);
+   105		mutex_init(&tr->mutex);
+   106		for (i = 0; i < BPF_TRAMP_MAX; i++)
+   107			INIT_HLIST_HEAD(&tr->progs_hlist[i]);
+   108	out:
+   109		mutex_unlock(&trampoline_mutex);
+   110		return tr;
+   111	}
+   112	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
