@@ -2,146 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB87D53B19F
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 04:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941C553B18B
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 04:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbiFBBbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 21:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
+        id S233152AbiFBB77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 1 Jun 2022 21:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbiFBBbh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 21:31:37 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93FE131F00;
-        Wed,  1 Jun 2022 18:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654133496; x=1685669496;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EICTw4lRgz1GEwBE23gGkyRblMBsQMnEDRc0oqq4R58=;
-  b=oIfVNUz+mlSurw/cgDrF0zzFCzBrNmgL83MCxU/0BlXaO7diLorH/yM9
-   jBBjP7272xbd6pwve/A+d3UkwQn4Tkt0IF8CmVI5NIuQAwHZNFiCGIHyr
-   Hb3qgg2rZS1IQcfWcazlAVJ7CugvqJ4A2Gav7JfBMtTcLFr/hbuvXrvDt
-   lAd9jNuaOrxw/BMijhhlWwtBPP1qu0m1JdL4Zo33K3v4DVQRKMKZqyXP/
-   UKO8GVJ2PB5mGutstOcKTezJWCNsndusdX8IZaxt+pPxOHEzSFilCwtMY
-   IPMYaaF5H1Fvyt/TEZLb6h5e+ga6hX8X7flY5zhUuKkowzyKswlzreQ3p
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10365"; a="257853196"
-X-IronPort-AV: E=Sophos;i="5.91,270,1647327600"; 
-   d="scan'208";a="257853196"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2022 18:31:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,270,1647327600"; 
-   d="scan'208";a="577237992"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 01 Jun 2022 18:31:32 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nwZgR-0004cS-TC;
-        Thu, 02 Jun 2022 01:31:31 +0000
-Date:   Thu, 2 Jun 2022 09:30:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Song Liu <song@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, rostedt@goodmis.org,
-        jolsa@kernel.org, Song Liu <song@kernel.org>
-Subject: Re: [PATCH bpf-next 5/5] bpf: trampoline: support
- FTRACE_OPS_FL_SHARE_IPMODIFY
-Message-ID: <202206020957.KETjl2xP-lkp@intel.com>
-References: <20220601175749.3071572-6-song@kernel.org>
+        with ESMTP id S233160AbiFBB7v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 1 Jun 2022 21:59:51 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796492A7881;
+        Wed,  1 Jun 2022 18:59:50 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id q1so7175664ejz.9;
+        Wed, 01 Jun 2022 18:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z4IPnbPTNMwJf1LxyY6++GFYBsXGCojv5YeZ4Ub3aDE=;
+        b=pRKKvgirCMFTSCZMzlVGZq7IphZBAx9dEqz7q54Bqg1Se69fbzXdkqcgoBih6MBjNR
+         0GTNToJKaPNfnngcEI3C7EZzngxFAITioQP0oTrWou+TtbmwcfxN8E9dhfSRBFWw4Li7
+         THJ9wEiQxvlY4fjdhulJbeRL//syvqFdB37y96yE2+HBSW6PYRWxaJAZ1MzT2RifC3OV
+         5a1k4YltSoK+e/farcWi6oIudYrvUc9F/lAl+oVKTVybBqDsEHhJcYYQThfQXTDpFqBK
+         DzknpVBge9fD/YQnbCw2q8KseGBSLutmSNOUu7zIgQyYo/BPzFhOPgQp3ldeeMb0Apmk
+         XPLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z4IPnbPTNMwJf1LxyY6++GFYBsXGCojv5YeZ4Ub3aDE=;
+        b=2MrghoQS/1U9A+b+H/l5piV1G2gyRAFC4m1wV7U4lZqeS6lB1FLUODadt8Cvn6xh/6
+         XGpO12ZMY6GFDq0C4VRvoJFVSZVsLUyyMv7ckGM+iZfIXEvLOQFOtuhq/osNSDyJTH1v
+         TdD/Hz0DB8LlMTACJ5EITbJr2LHBrVcGIOjDJZ3O7+LNmpVsLg8B1uyhRS5HFSBDJxGq
+         wYm32hpdzRhaZ8LHeWf7Ex1geQ5UN9910rKqoveXVrjkZc69Ov7ONlINoEND5aerHD32
+         2OXToYERDYn6RLKiVhzbVu4zz7YPVJ0iKw8Ac/u3PYcM6AqHZupgEQt77YIiFvSmr6kh
+         znQg==
+X-Gm-Message-State: AOAM533h00YeAIAFmKSFhqo/qn5dghaE7mzJy1NXcVxv+dRPtHTpuuDh
+        3ivOmtUer1ipLf/LXoE711VagHUawPhFs3XW4HWQWAzC
+X-Google-Smtp-Source: ABdhPJwh5UBi1e7gXxPGe2haOG6Yf7w8BayPKw/4kniD+evcZGE8oi8w61fNRjPcj55/AWj43mhac+27PwP4JlxFZhw=
+X-Received: by 2002:a17:907:1b0c:b0:6fe:25bf:b3e5 with SMTP id
+ mp12-20020a1709071b0c00b006fe25bfb3e5mr2185140ejc.689.1654135189019; Wed, 01
+ Jun 2022 18:59:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220601175749.3071572-6-song@kernel.org>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220601065238.1357624-1-imagedong@tencent.com>
+ <20220601065238.1357624-4-imagedong@tencent.com> <20220601174209.1afdb123@kernel.org>
+In-Reply-To: <20220601174209.1afdb123@kernel.org>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Thu, 2 Jun 2022 09:59:37 +0800
+Message-ID: <CADxym3ZfbPpJDxfGbyMQBH9OeQhrKrs+EvFBr9OopwcayP3Fng@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 3/3] net: dropreason: reformat the comment fo
+ skb drop reasons
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Menglong Dong <imagedong@tencent.com>,
+        David Ahern <dsahern@kernel.org>,
+        Talal Ahmad <talalahmad@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Song,
+On Thu, Jun 2, 2022 at 8:42 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> The patches LGTM now! net-next is closed until -rc1 is released
+> so please repost on/after Monday.
+>
+> > + * en...maybe they should be splited by group?
+>
+> nit: since we need a repost - I think we can drop this line.
 
-I love your patch! Yet something to improve:
-
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/ftrace-host-klp-and-bpf-trampoline-together/20220602-020112
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: x86_64-randconfig-a006 (https://download.01.org/0day-ci/archive/20220602/202206020957.KETjl2xP-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-1) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/7edcf1c49617641579f2bc36b86c7d59bea20aef
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Song-Liu/ftrace-host-klp-and-bpf-trampoline-together/20220602-020112
-        git checkout 7edcf1c49617641579f2bc36b86c7d59bea20aef
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   kernel/bpf/trampoline.c: In function 'bpf_trampoline_lookup':
->> kernel/bpf/trampoline.c:101:17: error: 'struct ftrace_ops' has no member named 'ops_func'
-     101 |         tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
-         |                 ^~
-   kernel/bpf/trampoline.c: In function 'bpf_trampoline_update':
->> kernel/bpf/trampoline.c:416:25: error: 'struct ftrace_ops' has no member named 'trampoline'
-     416 |                 tr->fops->trampoline = 0;
-         |                         ^~
-
-
-vim +101 kernel/bpf/trampoline.c
-
-    74	
-    75	static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
-    76	{
-    77		struct bpf_trampoline *tr;
-    78		struct hlist_head *head;
-    79		int i;
-    80	
-    81		mutex_lock(&trampoline_mutex);
-    82		head = &trampoline_table[hash_64(key, TRAMPOLINE_HASH_BITS)];
-    83		hlist_for_each_entry(tr, head, hlist) {
-    84			if (tr->key == key) {
-    85				refcount_inc(&tr->refcnt);
-    86				goto out;
-    87			}
-    88		}
-    89		tr = kzalloc(sizeof(*tr), GFP_KERNEL);
-    90		if (!tr)
-    91			goto out;
-    92		tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
-    93		if (!tr->fops) {
-    94			kfree(tr);
-    95			tr = NULL;
-    96			goto out;
-    97		}
-    98	
-    99		tr->key = key;
-   100		tr->fops->private = tr;
- > 101		tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
-   102		INIT_HLIST_NODE(&tr->hlist);
-   103		hlist_add_head(&tr->hlist, head);
-   104		refcount_set(&tr->refcnt, 1);
-   105		mutex_init(&tr->mutex);
-   106		for (i = 0; i < BPF_TRAMP_MAX; i++)
-   107			INIT_HLIST_HEAD(&tr->progs_hlist[i]);
-   108	out:
-   109		mutex_unlock(&trampoline_mutex);
-   110		return tr;
-   111	}
-   112	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Okay!
