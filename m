@@ -2,135 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7735E53B21B
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 05:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C989E53B269
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 06:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbiFBD3Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 1 Jun 2022 23:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S229522AbiFBELA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 00:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233576AbiFBD3X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 1 Jun 2022 23:29:23 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4F4267CE6
-        for <bpf@vger.kernel.org>; Wed,  1 Jun 2022 20:29:17 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id c196so3661724pfb.1
-        for <bpf@vger.kernel.org>; Wed, 01 Jun 2022 20:29:17 -0700 (PDT)
+        with ESMTP id S229484AbiFBEK6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 00:10:58 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26B6202D22;
+        Wed,  1 Jun 2022 21:10:55 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id y15so2671454qtx.4;
+        Wed, 01 Jun 2022 21:10:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=d7/X5D/XlWDgxC+lr9ny4gEaWSqGcdWBVlXv9V2nJSc=;
-        b=4zgwd/soJ4OlZOpXRWMVKCorWv2P8U3su0NGdknMw1o/lf/a30yo2AcvaHVixK4JcF
-         HEf5qgd8iNm+Iu7TGuu2W1/UAlo7NIcftpk4VWQyeAjUF4m3RkS1x0+QylTvUiPn+dut
-         0gAvKdf3riJQgRXO4pz/G7rmweSBnWdvYJmsAYhq+wR364cs2wiiVzu7zzRMQYV3G109
-         HHJiCxvOCctMT0SRMlJaiGxpSd4U8IgIT8sP9fNkHkuXAPdeo3jrj/I2q0IP+EjNieEG
-         b22fM9Zpj5PBalBM5lVDOBwBkL7xz4P42CIx8Q1qgw1Xd2Kker2XfNkgN2SGUIn+IV3W
-         30rw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iyZ6bJR+lsrbo3POZbTSoU/ZS8d0/V/7sOK3LmVFXsc=;
+        b=WjaYY4ohWFcEZdaGjzQl61rz8G9jYL8KVOolAJAWVZtWe575XyayUyffwP42Au8EwB
+         MHHoPC804QODIPO46EKaWtCXFDyw5uBMj5PoAXLGYwDzZHDC8TH4UCLfERcQM630oxF9
+         5dZC5sbLraSMTh0tQs29GWbfmXXsdRaGhfuECLuecwhvzpRrmV5n3y2iV0Pu7paFFixb
+         AFFpknWasf9cSmVuNvSvg+PYOqYhORLR6v/PhRoCCYnQOfqLMbg9W9ugd3/imXDdNYcS
+         og8UlTuH+zTusAPYpAWLk8J21+dybay2vSFo6wv9w9RwyQqW1KC2oKNQzIGqWEdf0eti
+         pybw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=d7/X5D/XlWDgxC+lr9ny4gEaWSqGcdWBVlXv9V2nJSc=;
-        b=7s2fKbAKi+Ibl55ZD5bzDT5NnIvDsJ+IY0nge/W44yDE///8zwK6koCaHzu3/itADu
-         DTjzTWzPvQM+gqOFP681PgtXX3+JaIPLdW/9+OhzjYKfNTKXNpykw4dey+ksio+GbA7L
-         H2oNcImHx7qfqblZfBz2tQ5oWnReC1OeL7TWhRu5hlA/E5FqyWPFAOIsmybUrXikk2oc
-         wm76T5IoDnGlwIa5XI8JbepjFfBwYQdhwhU6JElYF8OP83EiFe8hWFWHhY4p5rjW7VqS
-         yZZt7cPPBMUYmAZU3jmGZOwbGPAY0eqkN5Fc4bPqI9YHmJGtXzZJZUhKtXgv5awKyRmE
-         tfXg==
-X-Gm-Message-State: AOAM531zDx5A5iYxMDENJsfttwMu0gB6rDKc3jSrhrB3txXm+CK2PypK
-        H5zfgycacZL85V9JeU/5q0fglA==
-X-Google-Smtp-Source: ABdhPJz5XXjx1kduDqvTabORmcqulZrn95ibw4rCM4QDXk4FGV+QJnfefUP2GHpZKCvFFGv71aOTSQ==
-X-Received: by 2002:a05:6a00:889:b0:510:91e6:6463 with SMTP id q9-20020a056a00088900b0051091e66463mr2840480pfj.58.1654140556716;
-        Wed, 01 Jun 2022 20:29:16 -0700 (PDT)
-Received: from [10.71.57.194] ([139.177.225.241])
-        by smtp.gmail.com with ESMTPSA id v4-20020a1709028d8400b00163cdf1a200sm2239756plo.38.2022.06.01.20.29.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jun 2022 20:29:16 -0700 (PDT)
-Message-ID: <6181d77a-66ed-76ff-35a4-b24134bc67fb@bytedance.com>
-Date:   Thu, 2 Jun 2022 11:29:09 +0800
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iyZ6bJR+lsrbo3POZbTSoU/ZS8d0/V/7sOK3LmVFXsc=;
+        b=Vua8Gtjvxf+qtCGgAnwZFLhhzzTvICy0LUHsvwhgUgwzfOO9OxmNJFivWmaA8D+7X3
+         bVG/vdzvGXm1q5GTKmmqbd2uUh68Ul0ypeMupSeWkhPVlkvbCgMLrwIyWb1GPfWpe5Y6
+         /t88RaoTw3R610UdVaKUT/UZvsbSWGS1diIWDEPY6mzq/t4OyExfabQrxz2Z5G8Tf4p4
+         mpRSvm/qzxMjVefbNIcd66pEXNO220lUmhcVRfOu9MSUG2WzKbRDgQ9i+qsMNqZZ8+XZ
+         edlvWlQNpc1DJp3YwcU4eDE9IOv7feZMZ5BW16hVC+YruKtp7zwmFlHJTJeVAVz9s0bb
+         glbg==
+X-Gm-Message-State: AOAM533mrKGUUvgQ9Q+od8rwzT02bGMLXytDzjg6u6PpOqa8LSjSzRdt
+        uiA3rA6myhj69l/I3hvHv69IGxoUgNo=
+X-Google-Smtp-Source: ABdhPJwqpdK9dRSnUKU2A+n02Mcf97M0Z0J3RSLPhAHLlb8CDraFFdRNy8YqBPb48bUeiqh/qP0ysA==
+X-Received: by 2002:ac8:7e8b:0:b0:302:2402:c5f5 with SMTP id w11-20020ac87e8b000000b003022402c5f5mr2347742qtj.200.1654143054292;
+        Wed, 01 Jun 2022 21:10:54 -0700 (PDT)
+Received: from pop-os.attlocal.net ([2600:1700:65a0:ab60:d7c6:fc22:5340:d891])
+        by smtp.gmail.com with ESMTPSA id i187-20020a3786c4000000b0069fc13ce1fesm2396654qkd.47.2022.06.01.21.10.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jun 2022 21:10:53 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Subject: [RFC Patch v5 0/5] net_sched: introduce eBPF based Qdisc
+Date:   Wed,  1 Jun 2022 21:10:23 -0700
+Message-Id: <20220602041028.95124-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: Re: Re: [PATCH v4 2/2] selftest/bpf/benchs: Add bpf_map benchmark
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20220601084149.13097-1-zhoufeng.zf@bytedance.com>
- <20220601084149.13097-3-zhoufeng.zf@bytedance.com>
- <CAADnVQ+qmvYK_Ttsjgo49Ga7paghicFg_O3=1sYZKbdps4877Q@mail.gmail.com>
- <041465f0-0fd3-fd39-0dac-8093a1c98c00@bytedance.com>
- <CAADnVQ+cCoH=DAoyLGtJ5HvdNVgFBgTW=wCHs1wvFQuwyhcWOw@mail.gmail.com>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <CAADnVQ+cCoH=DAoyLGtJ5HvdNVgFBgTW=wCHs1wvFQuwyhcWOw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2022/6/1 下午7:37, Alexei Starovoitov 写道:
-> On Wed, Jun 1, 2022 at 1:17 PM Feng Zhou <zhoufeng.zf@bytedance.com> wrote:
->> 在 2022/6/1 下午5:53, Alexei Starovoitov 写道:
->>> On Wed, Jun 1, 2022 at 10:42 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
->>>> +struct {
->>>> +       __uint(type, BPF_MAP_TYPE_HASH);
->>>> +       __type(key, u32);
->>>> +       __type(value, u64);
->>>> +       __uint(max_entries, MAX_ENTRIES);
->>>> +} hash_map_bench SEC(".maps");
->>>> +
->>>> +u64 __attribute__((__aligned__(256))) percpu_time[256];
->>> aligned 256 ?
->>> What is the point?
->> I didn't think too much about it here, just referenced it from
->> tools/testing/selftests/bpf/progs/bloom_filter_bench.c
->>
->>>> +u64 nr_loops;
->>>> +
->>>> +static int loop_update_callback(__u32 index, u32 *key)
->>>> +{
->>>> +       u64 init_val = 1;
->>>> +
->>>> +       bpf_map_update_elem(&hash_map_bench, key, &init_val, BPF_ANY);
->>>> +       return 0;
->>>> +}
->>>> +
->>>> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
->>>> +int benchmark(void *ctx)
->>>> +{
->>>> +       u32 key = bpf_get_prandom_u32() % MAX_ENTRIES + MAX_ENTRIES;
->>> What is the point of random ?
->>> just key = MAX_ENTRIES would be the same, no?
->>> or key = -1 ?
->> If all threads on different cpu trigger sys_getpgid and lookup the same
->> key, it will cause
->> "ret = htab_lock_bucket(htab, b, hash, &flags);"
->> the lock competition here is fierce, and unnecessary overhead is
->> introduced,
->> and I don't want it to interfere with the test.
-> I see.
-> but using random leaves it to chance.
-> Use cpu+max_entries then?
+From: Cong Wang <cong.wang@bytedance.com>
 
-Ok, will do. Thanks.
+This *incomplete* patchset introduces a programmable Qdisc with eBPF.
 
+There are a few use cases:
+
+1. Allow customizing Qdisc's in an easier way. So that people don't
+   have to write a complete Qdisc kernel module just to experiment
+   some new queuing theory.
+
+2. Solve EDT's problem. EDT calcuates the "tokens" in clsact which
+   is before enqueue, it is impossible to adjust those "tokens" after
+   packets get dropped in enqueue. With eBPF Qdisc, it is easy to
+   be solved with a shared map between clsact and sch_bpf.
+
+3. Replace qevents, as now the user gains much more control over the
+   skb and queues.
+
+4. Provide a new way to reuse TC filters. Currently TC relies on filter
+   chain and block to reuse the TC filters, but they are too complicated
+   to understand. With eBPF helper bpf_skb_tc_classify(), we can invoke
+   TC filters on _any_ Qdisc (even on a different netdev) to do the
+   classification.
+
+5. Potentially pave a way for ingress to queue packets, although
+   current implementation is still only for egress.
+
+6. Possibly pave a way for handling TCP protocol in TC, as rbtree itself
+   is already used by TCP to handle TCP retransmission.
+
+The goal here is to make this Qdisc as programmable as possible,
+that is, to replace as many existing Qdisc's as we can, no matter
+in tree or out of tree. This is why I give up on PIFO which has
+serious limitations on the programmablity.
+
+Here is a summary of design decisions I made:
+
+1. Avoid eBPF struct_ops, as it would be really hard to program
+   a Qdisc with this approach, literally all the struct Qdisc_ops
+   and struct Qdisc_class_ops are needed to implement. This is almost
+   as hard as programming a Qdisc kernel module.
+
+2. Introduce skb map, which will allow other eBPF programs to store skb's
+   too.
+
+   a) As eBPF maps are not directly visible to the kernel, we have to
+   dump the stats via eBPF map API's instead of netlink.
+
+   b) The user-space is not allowed to read the entire packets, only __sk_buff
+   itself is readable, because we don't have such a use case yet and it would
+   require a different API to read the data, as map values have fixed length.
+
+   c) Two eBPF helpers are introduced for skb map operations:
+   bpf_skb_map_push() and bpf_skb_map_pop(). Normal map update is
+   not allowed.
+
+   d) Multi-queue support is implemented via map-in-map, in a similar
+   push/pop fasion.
+
+   e) Use the netdevice notifier to reset the packets inside skb map upon
+   NETDEV_DOWN event.
+
+3. Integrate with existing TC infra. For example, if the user doesn't want
+   to implement her own filters (e.g. a flow dissector), she should be able
+   to re-use the existing TC filters. Another helper bpf_skb_tc_classify() is
+   introduced for this purpose.
+
+Any high-level feedback is welcome. Please kindly do not review any coding
+details until RFC tag is removed.
+
+TODO:
+1. actually test it
+2. write a document for this Qdisc
+3. add test cases and sample code
+
+Cc: Toke Høiland-Jørgensen <toke@redhat.com>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+---
+v5: mv kernel/bpf/skb_map.c net/core/skb_map.c
+    implement flow map as map-in-map
+    rename bpf_skb_tc_classify() and move it to net/sched/cls_api.c
+    clean up eBPF qdisc program context
+
+v4: get rid of PIFO, use rbtree directly
+
+v3: move priority queue from sch_bpf to skb map
+    introduce skb map and its helpers
+    introduce bpf_skb_classify()
+    use netdevice notifier to reset skb's
+    Rebase on latest bpf-next
+
+v2: Rebase on latest net-next
+    Make the code more complete (but still incomplete)
+
+Cong Wang (5):
+  net: introduce skb_rbtree_walk_safe()
+  bpf: move map in map declarations to bpf.h
+  bpf: introduce skb map and flow map
+  net_sched: introduce eBPF based Qdisc
+  net_sched: introduce helper bpf_skb_tc_classify()
+
+ include/linux/bpf.h            |   6 +
+ include/linux/bpf_types.h      |   4 +
+ include/linux/skbuff.h         |   9 +-
+ include/uapi/linux/bpf.h       |  23 ++
+ include/uapi/linux/pkt_sched.h |  17 ++
+ kernel/bpf/arraymap.c          |   2 -
+ kernel/bpf/hashtab.c           |   1 -
+ kernel/bpf/map_in_map.c        |   2 -
+ kernel/bpf/map_in_map.h        |  19 --
+ kernel/bpf/verifier.c          |  10 +
+ net/core/Makefile              |   1 +
+ net/core/filter.c              |  39 +++
+ net/core/skb_map.c             | 520 +++++++++++++++++++++++++++++++++
+ net/sched/Kconfig              |  15 +
+ net/sched/Makefile             |   1 +
+ net/sched/cls_api.c            |  69 +++++
+ net/sched/sch_bpf.c            | 485 ++++++++++++++++++++++++++++++
+ 17 files changed, 1198 insertions(+), 25 deletions(-)
+ delete mode 100644 kernel/bpf/map_in_map.h
+ create mode 100644 net/core/skb_map.c
+ create mode 100644 net/sched/sch_bpf.c
+
+-- 
+2.34.1
 
