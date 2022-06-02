@@ -2,104 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB6653BCD3
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 18:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E0453BD60
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 19:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237281AbiFBQvV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 12:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
+        id S237518AbiFBRhp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 13:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237260AbiFBQvS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 12:51:18 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7460C2B1976
-        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 09:51:17 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id q18so4948756pln.12
-        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 09:51:17 -0700 (PDT)
+        with ESMTP id S232302AbiFBRho (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 13:37:44 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A639DF2;
+        Thu,  2 Jun 2022 10:37:43 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id r71so5364392pgr.0;
+        Thu, 02 Jun 2022 10:37:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=TDQ+cU4491SkrItFnZHpClm+jYuYcgPGIy7tcDzQFG8=;
-        b=uOpcLIN9c4RrfisvBugPN3DU8GT5x7q/U3iglMCQS2iPkf6OGDg/RlBsS4TbrfuHa+
-         SF2uHL5r1DR1bUycKKwv4eHSrkxecyed8V89R24tG7kaZYXUpnYYnEB7FKXFMtiUNpcu
-         bD9YZs8MzgjVhzapu9xBK6NoVnvzgb9QwHMa/Nus9D2QIE167N2oav9Pst/sYQEhyW9P
-         eAu56AoaRhl33j/JSVbAUNYigMBLVC68FVIdZUrWi8MgzWb0atPoAZ/CukdYwy/HNS8N
-         Ot9ZWFGiAxMu2HaXyL4lzIaXLnSRACVX6pSCyvdAwZp56RWl8IxS4/ex0JjuzQd/jVHf
-         q58g==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VIw0jx/gMUEvsJmM+/5RlSJMb06H6BJ9K5QCFP2rQMg=;
+        b=KtlTfiCq4PT65fZ4LfDMNcvBagLpBZb2uplPAkwVnDKaP0Aqc/BBWCAzjjE9D4cQPr
+         G3jTTfXDqkoKwETeuNqYqCcuPIqp9QG00jyo1nHZ1j1w4w3/WJWsTxdIsH60Nm9MuSdp
+         gI3H6bssJdvBQzZbjg3G/xGe/kJObR8tfJP1RDKrjpjxJSey1v+VK6CE/FYg5rq9RTVj
+         wzEd3OIkBeY45OrX2JJ2mnihyo2QkppqMOrpR8c4aYaBAP9BYfWMH0BK0pE5A3DfUHSG
+         cnbLEPxrZMg+QRIPKSxqG2M+tI//RZ31kW56WDby0VrdehEkD8pwUqdMYb4hOY1PDpfL
+         gXPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TDQ+cU4491SkrItFnZHpClm+jYuYcgPGIy7tcDzQFG8=;
-        b=n+Tjlf4moa/DJJuu14QOVRZOglqJDwtIUSZUn3jMJIzyn/iim3FxuD3rNKYqEL+VoH
-         +Pv192VpG3EC/KnaLSKqkafl1Gns15eGPQNjSca96qo2aKhPClDxNP9Q9nAL0wSMoT3U
-         U1uL7ebLCXMTXkLpnD0oshaU4yla/Rv7sYt6zjafjN8Ja94Dy51PlJNsK9VEYFqJBbd0
-         A/wMpoMlGxWNNKwSFuxRpK9qa/9yVoWeSMrCHxunJ+DbuAKZ1RPNFUUqy1EC18dfLLrX
-         gjF1v13/b9kBkRstL3tzpRDZ34i+Qgt9yD4Pqu4DEE9cqilpNK5c3gc+J2+MeK7eunQj
-         3nWw==
-X-Gm-Message-State: AOAM531ugSBJsODLH0scN5Q9wYxR57EKcxIqEh7Z5nVnh2a2wnWfuWQ/
-        B9X845Ux5qerhvFQ/yzzqYfyZA==
-X-Google-Smtp-Source: ABdhPJxMosGB+Mky+SRCGAt1T9DAyMnXHNfnYdje10jH0ruMadl41RhUn/Hf0PTErE9vR4unxYUxWQ==
-X-Received: by 2002:a17:90a:fa5:b0:1e2:ee1b:8f85 with SMTP id 34-20020a17090a0fa500b001e2ee1b8f85mr6235190pjz.216.1654188676791;
-        Thu, 02 Jun 2022 09:51:16 -0700 (PDT)
-Received: from [192.168.254.36] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id u11-20020a63d34b000000b003c14af505f6sm3609472pgi.14.2022.06.02.09.51.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jun 2022 09:51:16 -0700 (PDT)
-Message-ID: <902f1d2b-9e71-753c-566b-62a7d245c3a3@linaro.org>
-Date:   Thu, 2 Jun 2022 09:51:15 -0700
+        bh=VIw0jx/gMUEvsJmM+/5RlSJMb06H6BJ9K5QCFP2rQMg=;
+        b=Y3PtCuTLbO/guBsJzkK4oYcm/xAeP3/I0FtgDYqbw6DTi2liQbh+QR9Bh0fJRDkuu1
+         MmhrGg/9mQwzlrCyvXrZICHwhRuF+8WYMOc3JPOFbLre6P0dc6n68VaCa1HUO0O2ye4n
+         Ljw+sTWY+L7NWY6NBwXxd82cXKeiYTBwd52PToxchWtsJCJgJqhXG3XdEfoOat2tBm15
+         7Aihh+DPH0tvgxnhz9L/G+rb4xDm0SC6lyPIWbdzfMPn5r7/eb3n9LJMAKcAZLb/JnaG
+         FdbvuRfI6DC3CNJcHe20TwmTSOXQ9/yyYlEMxF4hr4FXPI7p8HUSuQ/4il+rJRiU1GRm
+         Cr+A==
+X-Gm-Message-State: AOAM530qXjTUz19m2NMPXZ/ye9Bt6wKH00wQw5YTLbw/QxLgSe6oHEX3
+        m17eic97+fmEDBgblix7X0Y=
+X-Google-Smtp-Source: ABdhPJwBC2SS+XVoOiwT4apRShJMjxpAz3y5y/KAfeeUbASgNegfjXk0ofOupgBnKGuMCTDiRAS+6w==
+X-Received: by 2002:a65:5cc2:0:b0:3fc:20d2:30ed with SMTP id b2-20020a655cc2000000b003fc20d230edmr5114720pgt.158.1654191462889;
+        Thu, 02 Jun 2022 10:37:42 -0700 (PDT)
+Received: from localhost.localdomain ([122.179.233.138])
+        by smtp.googlemail.com with ESMTPSA id a1-20020a056a001d0100b00518950bfc82sm3714767pfx.10.2022.06.02.10.37.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jun 2022 10:37:42 -0700 (PDT)
+From:   Varshini Elangovan <varshini.elangovan@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Varshini Elangovan <varshini.elangovan@gmail.com>
+Subject: [PATCH] staging: r8188eu: Add queue_index to xdp_rxq_info
+Date:   Thu,  2 Jun 2022 23:06:57 +0530
+Message-Id: <20220602173657.36252-1-varshini.elangovan@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v4] bpf: Fix KASAN use-after-free Read in
- compute_effective_progs
-Content-Language: en-US
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com
-References: <CAEf4BzY-p13huoqo6N7LJRVVj8rcjPeP3Cp=KDX4N2x9BkC9Zw@mail.gmail.com>
- <20220517180420.87954-1-tadeusz.struk@linaro.org>
- <7949d722-86e8-8122-e607-4b09944b76ae@linaro.org>
- <CAEf4BzaD1Z6uOZwbquPYWB0_Z0+CkEKiXQ6zS2imiSHpTgX3pg@mail.gmail.com>
- <41265f4d-45b4-a3a6-e0c0-5460d2a06377@linaro.org>
- <CAEf4Bza-fp-9j+dzwdJQagxVNseNofxY2aJV0E6eHw+eQyyeaQ@mail.gmail.com>
- <21780d7b-2fe0-e6b8-6b4c-7053ec7b99ef@linaro.org>
-In-Reply-To: <21780d7b-2fe0-e6b8-6b4c-7053ec7b99ef@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/2/22 09:25, Tadeusz Struk wrote:
-> On 6/2/22 09:11, Andrii Nakryiko wrote:
->>> Did you get a chance to look at this yet?
->>>
->> Hm.. I've applied it two days ago, but for some reason there was no
->> notification from the bot. It's now c89c79fda9b6 ("bpf: Fix KASAN
->> use-after-free Read in compute_effective_progs").
+Queue_index from the xdp_rxq_info is populated in cpumap file.
+Using the NR_CPUS, results in patch check warning, as recommended,
+using the num_possible_cpus() instead of NR_CPUS
 
-FYI. Just requested a test on bpf-next and it passed fine.
-https://groups.google.com/g/syzkaller-android-bugs/c/nr6mD4vhRA4
+Signed-off-by: Varshini Elangovan <varshini.elangovan@gmail.com>
+---
+ kernel/bpf/cpumap.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 650e5d21f90d..756fd81f474c 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -102,8 +102,8 @@ static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
+ 
+ 	bpf_map_init_from_attr(&cmap->map, attr);
+ 
+-	/* Pre-limit array size based on NR_CPUS, not final CPU check */
+-	if (cmap->map.max_entries > NR_CPUS) {
++	/* Pre-limit array size based on num_possible_cpus, not final CPU check */
++	if (cmap->map.max_entries > num_possible_cpus()) {
+ 		err = -E2BIG;
+ 		goto free_cmap;
+ 	}
+@@ -227,7 +227,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+ 
+ 		rxq.dev = xdpf->dev_rx;
+ 		rxq.mem = xdpf->mem;
+-		/* TODO: report queue_index to xdp_rxq_info */
++		rxq.queue_index = ++i;
+ 
+ 		xdp_convert_frame_to_buff(xdpf, &xdp);
+ 
 -- 
-Thanks,
-Tadeusz
+2.25.1
+
