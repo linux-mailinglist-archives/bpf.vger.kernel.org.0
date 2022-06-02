@@ -2,191 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A2953BAEF
-	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 16:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE0F53BAD9
+	for <lists+bpf@lfdr.de>; Thu,  2 Jun 2022 16:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235993AbiFBOjl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 10:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44934 "EHLO
+        id S235361AbiFBOhz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 10:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236086AbiFBOjd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 10:39:33 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836FE20E6F0;
-        Thu,  2 Jun 2022 07:39:31 -0700 (PDT)
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LDT7T0DS0z688Mj;
-        Thu,  2 Jun 2022 22:35:01 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 2 Jun 2022 16:39:29 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kpsingh@kernel.org>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v2 7/9] bpftool: Add flags parameter in struct_ops functions
-Date:   Thu, 2 Jun 2022 16:37:46 +0200
-Message-ID: <20220602143748.673971-8-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220602143748.673971-1-roberto.sassu@huawei.com>
-References: <20220602143748.673971-1-roberto.sassu@huawei.com>
+        with ESMTP id S234681AbiFBOhy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 10:37:54 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1040B2DA9C;
+        Thu,  2 Jun 2022 07:37:51 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5ECCF5C00E0;
+        Thu,  2 Jun 2022 10:37:48 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 02 Jun 2022 10:37:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1654180668; x=1654267068; bh=BzjRBbEu68
+        Kzk8yC4V4e2pbTUKKqIZY45MXe4ZImIak=; b=WQRNUcou5TAqDeXht8BzuPsoBR
+        Crp+v/UFTBIxi0spr1Fxtb2gOq0OyUjgHlAKxwJisASxTD5dYqmvlDa2pTt6u8IC
+        HS/1DmzzDnkmSiNOZMWlTGXPz5bR2fJo73GPqD5Ik26netbJCWS0dD+yhbie74Ji
+        qyBUsgYEK1Y2zYvbIU7mj+kN9PZLR4rlVAXxN6GGjvdH7iCeJuwz4i5Mqa93E87y
+        mzO2rmYd4lkt8zv8FtBAd7NLxRFEmfw8I/bHp7c8cTnvFDt/7I8+0qyafMP2bdyt
+        Vl/Om8uMpeyDKBUU2b+UEgqXjvITQMasazi38tkGEnpztB5Ft8NEWXCpb44Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1654180668; x=1654267068; bh=BzjRBbEu68Kzk8yC4V4e2pbTUKKq
+        IZY45MXe4ZImIak=; b=uFZlaPl/p0d+T6LLoet0CnPwBL82RRIG+/GTxIrVhnhA
+        hIbAPnEPAspo3h5WLAG4K2KF48d4iNK6Cc47igpo2tyUgWc03pn8uTP8sUxMLxWE
+        mkvVRtG2uFiTBVAuWSjgZcPNuLrprQ5w4mh1LgR2ElX9de/kc4yCyGsfXjqEeGWL
+        hh/lognlm+8vf4XpcpNarLKSwxXNtYXpk5wZ5BzitAbpJJhRRYeKcWkF1EE4LOsv
+        u8Q7rvwT5umpdpb3XyVE4/kiuHugHXnY71v4NvstgOtn+n7p5uUC+KUKT9uJrXZ5
+        n7H0LXe16yBb/UmGROGx3rUTMQhEaoUu9AEALuOzew==
+X-ME-Sender: <xms:PMuYYg4FTL-ZO80AV-QyIuIIkAViJJWMz8Gorg_-1ujzsc-3mZDnGA>
+    <xme:PMuYYh7XxtRZ5sMpsv49QFiIjoYmkZLbI-K_QQnvw82E196dgKnhfZjxQMTRavKPO
+    V29zFDqUxsA_oUrjA>
+X-ME-Received: <xmr:PMuYYvfj9oivpHy5P8QRZ8jBnpkt6bchbjPiTvyKIVMh-KYkWb8fSe_x7oTNIWs7NautkrHEYw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrledvgdejiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddt
+    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpeevuddugeeihfdtffehgffgudeggeegheetgfevhfekkeeileeu
+    ieejleekiedvgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:PMuYYlJmhsCk7t3w5NQWbb53m-rwrBYVX77SAzgntwISoSAcU-YWEQ>
+    <xmx:PMuYYkIBA2X_EYIn79pJrhsUUGtACiCn90VETHRiSftH0ToCWSoiBQ>
+    <xmx:PMuYYmxxJ5v69nMQISt532WDmX63jmRma6rthPEYoW7yDr-fnggkQQ>
+    <xmx:PMuYYpHBhI55sVA2ccPy3RVnMWN8R7MrcbX4CqeWbjlMoY3c7rW3Wg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 2 Jun 2022 10:37:47 -0400 (EDT)
+Date:   Thu, 2 Jun 2022 09:37:46 -0500
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf, test_run: Add PROG_TEST_RUN support to
+ kprobe
+Message-ID: <20220602143746.dydumxrrvhb6jdv5@kashmir.localdomain>
+References: <cover.1653861287.git.dxu@dxuuu.xyz>
+ <b544771c7bce102f2a97a34e2f5e7ebbb9ea0a24.1653861287.git.dxu@dxuuu.xyz>
+ <CAADnVQL6Duc5qdwkqf+DWqYhngE3Dj-J37=7QoVA3ycFoWBU2w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.63.22]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQL6Duc5qdwkqf+DWqYhngE3Dj-J37=7QoVA3ycFoWBU2w@mail.gmail.com>
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add the flags parameter to struct_ops functions, to distinguish between
-read-like and write-like operations on struct_ops maps.
+On Tue, May 31, 2022 at 11:07:31AM -0700, Alexei Starovoitov wrote:
+> On Sun, May 29, 2022 at 3:06 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > This commit adds PROG_TEST_RUN support to BPF_PROG_TYPE_KPROBE progs. On
+> > top of being generally useful for unit testing kprobe progs, this commit
+> > more specifically helps solve a relability problem with bpftrace BEGIN
+> > and END probes.
+> >
+> > BEGIN and END probes are run exactly once at the beginning and end of a
+> > bpftrace tracing session, respectively. bpftrace currently implements
+> > the probes by creating two dummy functions and attaching the BEGIN and
+> > END progs, if defined, to those functions and calling the dummy
+> > functions as appropriate. This works pretty well most of the time except
+> > for when distros strip symbols from bpftrace. Every now and then this
+> > happens and users get confused. Having PROG_TEST_RUN support will help
+> > solve this issue by allowing us to directly trigger uprobes from
+> > userspace.
+> >
+> > Admittedly, this is a pretty specific problem and could probably be
+> > solved other ways. However, PROG_TEST_RUN also makes unit testing more
+> > convenient, especially as users start building more complex tracing
+> > applications. So I see this as killing two birds with one stone.
+> 
+> bpftrace approach of uprobe-ing into BEGIN_trigger can
+> be solved with raw_tp prog.
+> "BEGIN" bpftrace's program doesn't have to be uprobe.
+> I can be raw_tp and prog_test_run command is
+> already implemented for raw_tp.
+> 
+> kprobe prog has pt_regs as arguments,
+> raw_tp has tracepoint args.
+> Both progs expect kernel addresses in args.
+> Passing 'struct pt_regs' filled with integers and non-kernel addresses
+> won't help to unit test bpf-kprobe programs.
+> There is little use in creating a dummy kprobe-bpf prog
+> that expects RDI to be 1 and RSI to be 2
+> (like selftest from patch 2 does) and running it.
 
-Also, always perform the search with read-only permission, and eventually
-obtain a new file descriptor if the requested permission is different.
+Yeah that's a good point about the kprobe case. But AFAICT uprobes are
+implemented using a kprobe prog in which case it would be both possible
+and useful to insert userspace args and userspace addrspace addrs.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- tools/bpf/bpftool/struct_ops.c | 39 +++++++++++++++++++++++-----------
- 1 file changed, 27 insertions(+), 12 deletions(-)
+> We already have raw_tp with similar args and such
+> progs can be executed already.
+> Whether SEC() part says kprobe/ or raw_tp/ doesn't change
+> much in the prog itself.
 
-diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
-index 2535f079ed67..e8252a76e115 100644
---- a/tools/bpf/bpftool/struct_ops.c
-+++ b/tools/bpf/bpftool/struct_ops.c
-@@ -130,7 +130,8 @@ static struct bpf_map_info *map_info_alloc(__u32 *alloc_len)
-  *    -1: Error and the caller should abort the iteration.
-  */
- static int get_next_struct_ops_map(const char *name, int *res_fd,
--				   struct bpf_map_info *info, __u32 info_len)
-+				   struct bpf_map_info *info, __u32 info_len,
-+				   __u32 flags)
- {
- 	__u32 id = info->id;
- 	int err, fd;
-@@ -144,7 +145,7 @@ static int get_next_struct_ops_map(const char *name, int *res_fd,
- 			return -1;
- 		}
- 
--		fd = bpf_map_get_fd_by_id(id);
-+		fd = bpf_map_get_fd_by_id_flags(id, BPF_F_RDONLY);
- 		if (fd < 0) {
- 			if (errno == ENOENT)
- 				continue;
-@@ -162,6 +163,19 @@ static int get_next_struct_ops_map(const char *name, int *res_fd,
- 
- 		if (info->type == BPF_MAP_TYPE_STRUCT_OPS &&
- 		    (!name || !strcmp(name, info->name))) {
-+			if (flags != BPF_F_RDONLY) {
-+				close(fd);
-+
-+				fd = bpf_map_get_fd_by_id_flags(id, flags);
-+				if (fd < 0) {
-+					if (errno == ENOENT)
-+						continue;
-+					p_err("can't get map by id (%u): %s",
-+					      id, strerror(errno));
-+					return -1;
-+				}
-+			}
-+
- 			*res_fd = fd;
- 			return 1;
- 		}
-@@ -186,7 +200,7 @@ typedef int (*work_func)(int fd, const struct bpf_map_info *info, void *data,
-  * Then call "func(fd, info, data, wtr)" on each struct_ops map found.
-  */
- static struct res do_search(const char *name, work_func func, void *data,
--			    struct json_writer *wtr)
-+			    struct json_writer *wtr, __u32 flags)
- {
- 	struct bpf_map_info *info;
- 	struct res res = {};
-@@ -201,7 +215,8 @@ static struct res do_search(const char *name, work_func func, void *data,
- 
- 	if (wtr)
- 		jsonw_start_array(wtr);
--	while ((err = get_next_struct_ops_map(name, &fd, info, info_len)) == 1) {
-+	while ((err = get_next_struct_ops_map(name, &fd, info, info_len,
-+					      flags)) == 1) {
- 		res.nr_maps++;
- 		err = func(fd, info, data, wtr);
- 		if (err)
-@@ -235,7 +250,7 @@ static struct res do_search(const char *name, work_func func, void *data,
- }
- 
- static struct res do_one_id(const char *id_str, work_func func, void *data,
--			    struct json_writer *wtr)
-+			    struct json_writer *wtr, __u32 flags)
- {
- 	struct bpf_map_info *info;
- 	struct res res = {};
-@@ -251,7 +266,7 @@ static struct res do_one_id(const char *id_str, work_func func, void *data,
- 		return res;
- 	}
- 
--	fd = bpf_map_get_fd_by_id(id);
-+	fd = bpf_map_get_fd_by_id_flags(id, flags);
- 	if (fd < 0) {
- 		p_err("can't get map by id (%lu): %s", id, strerror(errno));
- 		res.nr_errs++;
-@@ -300,16 +315,16 @@ static struct res do_one_id(const char *id_str, work_func func, void *data,
- static struct res do_work_on_struct_ops(const char *search_type,
- 					const char *search_term,
- 					work_func func, void *data,
--					struct json_writer *wtr)
-+					struct json_writer *wtr, __u32 flags)
- {
- 	if (search_type) {
- 		if (is_prefix(search_type, "id"))
--			return do_one_id(search_term, func, data, wtr);
-+			return do_one_id(search_term, func, data, wtr, flags);
- 		else if (!is_prefix(search_type, "name"))
- 			usage();
- 	}
- 
--	return do_search(search_term, func, data, wtr);
-+	return do_search(search_term, func, data, wtr, flags);
- }
- 
- static int __do_show(int fd, const struct bpf_map_info *info, void *data,
-@@ -344,7 +359,7 @@ static int do_show(int argc, char **argv)
- 	}
- 
- 	res = do_work_on_struct_ops(search_type, search_term, __do_show,
--				    NULL, json_wtr);
-+				    NULL, json_wtr, 0);
- 
- 	return cmd_retval(&res, !!search_term);
- }
-@@ -433,7 +448,7 @@ static int do_dump(int argc, char **argv)
- 	d.prog_id_as_func_ptr = true;
- 
- 	res = do_work_on_struct_ops(search_type, search_term, __do_dump, &d,
--				    wtr);
-+				    wtr, 0);
- 
- 	if (!json_output)
- 		jsonw_destroy(&wtr);
-@@ -472,7 +487,7 @@ static int do_unregister(int argc, char **argv)
- 	search_term = GET_ARG();
- 
- 	res = do_work_on_struct_ops(search_type, search_term,
--				    __do_unregister, NULL, NULL);
-+				    __do_unregister, NULL, NULL, 0);
- 
- 	return cmd_retval(&res, true);
- }
--- 
-2.25.1
+I suppose so, and I guess you could always bpf_program__set_type(..).
 
+> More so raw_tp prog will work on all architectures,
+> whereas kprobe's pt_regs are arch specific.
+> So even if kprobe progs were runnable, bpftrace
+> should probably be using raw_tp to be arch independent.
+
+bpftrace has all the infra to pull arbitrary structs out of vmlinux BTF
+already. It should be fairly simple to get the arch-specific struct
+pt_regs size and construct a buffer of all 0s. And fall back to old
+logic (that'll be necessary for a while) if kprobe BPF_PROG_RUN or
+vmlinux BTF is missing.
+
+That being said, I didn't realize that when I put up the patch, so
+thanks for the hint. It sounds like it's probably simpler to just use
+raw_tp then.
+
+FWIW I still think this feature is useful, but since I probably won't
+use it in bpftrace I'm fine with dropping the patchset. If anyone still
+wants it in I'm also fine with continuing on it.
+
+Thanks,
+Daniel
