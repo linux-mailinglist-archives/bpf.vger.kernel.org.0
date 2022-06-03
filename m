@@ -2,187 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 927A553C1B3
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 04:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F62C53C35D
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 05:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239926AbiFCCAf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 22:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S238393AbiFCDBc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 23:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236046AbiFCCAe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 22:00:34 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27FF39698
-        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 19:00:32 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2530qg8c004409
-        for <bpf@vger.kernel.org>; Thu, 2 Jun 2022 19:00:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=QnLQousHmfIqt9QE+5H/OC11xEeDxU0pjPg9USgxfhU=;
- b=I903TvUQ/W5vcIEC8ejrSN1nr4vBKeswjyoP8XSUWiSjlr50cd2PoTntqWAANQnOD+24
- AlWzimBG0xmWgjrtubh3JSYc+oHVpzEK2uRFpUpsDkW+6s/woqvo7brDs5l3IxJOjQdk
- o5I3YYUA19lU4SFPxfedXBjQL3heeWGRbWw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3geu05da3b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 19:00:32 -0700
-Received: from twshared17349.03.ash7.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Thu, 2 Jun 2022 19:00:31 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id C09F6B29A01A; Thu,  2 Jun 2022 19:00:29 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v4 18/18] docs/bpf: Update documentation for BTF_KIND_ENUM64 support
-Date:   Thu, 2 Jun 2022 19:00:29 -0700
-Message-ID: <20220603020029.1195492-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220603015855.1187538-1-yhs@fb.com>
-References: <20220603015855.1187538-1-yhs@fb.com>
+        with ESMTP id S229494AbiFCDBb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 23:01:31 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4252B186
+        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 20:01:29 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id a2so10629380lfc.2
+        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 20:01:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O6DKVUl/g6k3RVPN7QfuXbNmFdbrva/qiXA3OgTOrck=;
+        b=kjCHaOZTLQf28kmnZc2Rwyi1zSUzZZt+zcFxUD16ZewjNuZdJdCxAQRynJRpH6L1a3
+         3v0+2LYRL1/v7uWVcKqqThxZLX1CVI6C8MRZQhX0aY2jMPxJF0k91iYPdwHLHoMjOCIe
+         zfsiTE3HXWr6bJpvjGZOJYSTcg5pLEFFHF7o80JH1rXMg4uVwl8v0Hfymkycx1FVhQz9
+         xzTct/VP4yK8dtfcHpibtqKLtIAXvRjjK/OD+yAticq6LbtuEoaq8c2hSOQu7JITtIWr
+         7foC/y2od8Yzc+G4lIweYQem2Ft3BrJ9SD+F3fINStTEzKXohXE5CHHWNqPbeQ0rRuDE
+         wvJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O6DKVUl/g6k3RVPN7QfuXbNmFdbrva/qiXA3OgTOrck=;
+        b=u2o2U41GRzUwR9PXVT2VCUQo9Gl0QctmQ3Me/ujYHiDnic6dn1RQtuEjA/h8G5APzZ
+         w6K/ZLO+RXXoOMaBZArMyUGDFfzczbISbXVeaHKzm/WbZj3M5w6mJ6tb025HSa5njGbJ
+         n4m2whcEesuFn3sAkE4QzWOwD+uHvfBFxEuUZ7Zvu5EV9zqWBquk+CAHEwYly7rDzPqZ
+         +serQ6irEfGXJ0p+sE8mWNvvdLiDuSzfbO7mhBfYx5x41dKXsIhrEfN7+MTqEPNM8RN7
+         5OOIpnm/7Mba9o1R6+Yd9b6hn6ZDpKJVQ4S7jAgIpKwsuBd3MSakClqxX1efHhLy9Eki
+         VnOw==
+X-Gm-Message-State: AOAM533/8qV95zf4I55rtxyZ++Hm44VbYNw2fvjK8ga0nAxpCUcR9o42
+        mwbBP+91pYK09dorY2NL1aG3fArzLXUCBgFhjGs=
+X-Google-Smtp-Source: ABdhPJzTPiR6PODFz/1bzzuKrDTLDoNc+OHV88WW+zq2ZZACii/eSsb+ArBciln1H6K8WUj4c1wYSufBnXwCIRAdo4Q=
+X-Received: by 2002:a05:6512:2625:b0:478:5a51:7fe3 with SMTP id
+ bt37-20020a056512262500b004785a517fe3mr5328193lfb.158.1654225287689; Thu, 02
+ Jun 2022 20:01:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: Nt2UjK3zqcefSQTkDdCGL76x9ki2QBgE
-X-Proofpoint-ORIG-GUID: Nt2UjK3zqcefSQTkDdCGL76x9ki2QBgE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-03_01,2022-06-02_01,2022-02-23_01
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAPxVHdL-dT2GQh-HEkNjNoTEzA9DRL4W4ZfmUzc1+Bdz89fftQ@mail.gmail.com>
+ <CAEf4BzZg0r4YptYPu8Y_-qp=rY__W6dmb9kLwMV5MAH6C-2PSg@mail.gmail.com>
+ <CAPxVHdJbnu5fk5btxATWM5NTd0NofeJREuX_8R_2i3GX_ho87g@mail.gmail.com>
+ <CAPxVHd+_fmCvhhYWCtjjjvzNi5GNfoDP3=aHgihVwzSwN9vKnQ@mail.gmail.com>
+ <CAEf4BzbhvD_f=y3SDAiFqNvuErcnXt4fErMRSfanjYQg5=7GJg@mail.gmail.com> <CAPxVHdLMsotw3wFDM05kzb7O6kA4PM_uQ4D+DCXYcZbtwdt_ag@mail.gmail.com>
+In-Reply-To: <CAPxVHdLMsotw3wFDM05kzb7O6kA4PM_uQ4D+DCXYcZbtwdt_ag@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 2 Jun 2022 20:01:16 -0700
+Message-ID: <CAEf4BzZnbQoHtFpi=xo7NjUHMTvXh0_TzV255Go=PMTBi4FxFQ@mail.gmail.com>
+Subject: Re: Tracing NVMe Driver with BPF missing events
+To:     John Mazzie <john.p.mazzie@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "John Mazzie (jmazzie)" <jmazzie@micron.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add BTF_KIND_ENUM64 documentation in btf.rst.
-Also fixed a typo for section number for BTF_KIND_TYPE_TAG
-from 2.2.17 to 2.2.18, and fixed a type size issue for
-BTF_KIND_ENUM.
+On Thu, Jun 2, 2022 at 6:52 PM John Mazzie <john.p.mazzie@gmail.com> wrote:
+>
+> Thanks for the help. fentry/fexit seem to be working to get every
+> event when tracing both events.
+>
+> I do have one question about how fentry/fexit work in regards to the
+> function parameters. fexit can access the function parameters in
+> addition to the return value. Let's say the parameters are pointers
+> whose value changes between entry and exit on the probed function. Are
+> the parameters being accessed on entry or exit in fexit. My assumption
+> would be exit, so I could access the modified values. Is that correct?
+> The data I'm pulling appears like it might just be the entry
+> (non-configured) values.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Documentation/bpf/btf.rst | 43 +++++++++++++++++++++++++++++++++------
- 1 file changed, 37 insertions(+), 6 deletions(-)
+For fexit programs values of registers corresponding to input
+arguments is stored before the function call. If function updates
+those register it won't be reflected.
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index 7940da9bc6c1..f49aeef62d0c 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -74,7 +74,7 @@ sequentially and type id is assigned to each recognized=
- type starting from id
-     #define BTF_KIND_ARRAY          3       /* Array        */
-     #define BTF_KIND_STRUCT         4       /* Struct       */
-     #define BTF_KIND_UNION          5       /* Union        */
--    #define BTF_KIND_ENUM           6       /* Enumeration  */
-+    #define BTF_KIND_ENUM           6       /* Enumeration up to 32-bit =
-values */
-     #define BTF_KIND_FWD            7       /* Forward      */
-     #define BTF_KIND_TYPEDEF        8       /* Typedef      */
-     #define BTF_KIND_VOLATILE       9       /* Volatile     */
-@@ -87,6 +87,7 @@ sequentially and type id is assigned to each recognized=
- type starting from id
-     #define BTF_KIND_FLOAT          16      /* Floating point       */
-     #define BTF_KIND_DECL_TAG       17      /* Decl Tag     */
-     #define BTF_KIND_TYPE_TAG       18      /* Type Tag     */
-+    #define BTF_KIND_ENUM64         19      /* Enumeration up to 64-bit =
-values */
-=20
- Note that the type section encodes debug info, not just pure types.
- ``BTF_KIND_FUNC`` is not a type, and it represents a defined subprogram.
-@@ -101,10 +102,10 @@ Each type contains the following common data::
-          * bits 24-28: kind (e.g. int, ptr, array...etc)
-          * bits 29-30: unused
-          * bit     31: kind_flag, currently used by
--         *             struct, union and fwd
-+         *             struct, union, fwd, enum and enum64.
-          */
-         __u32 info;
--        /* "size" is used by INT, ENUM, STRUCT and UNION.
-+        /* "size" is used by INT, ENUM, STRUCT, UNION and ENUM64.
-          * "size" tells the size of the type it is describing.
-          *
-          * "type" is used by PTR, TYPEDEF, VOLATILE, CONST, RESTRICT,
-@@ -281,10 +282,10 @@ modes exist:
-=20
- ``struct btf_type`` encoding requirement:
-   * ``name_off``: 0 or offset to a valid C identifier
--  * ``info.kind_flag``: 0
-+  * ``info.kind_flag``: 0 for unsigned, 1 for signed
-   * ``info.kind``: BTF_KIND_ENUM
-   * ``info.vlen``: number of enum values
--  * ``size``: 4
-+  * ``size``: 1/2/4/8
-=20
- ``btf_type`` is followed by ``info.vlen`` number of ``struct btf_enum``.=
-::
-=20
-@@ -297,6 +298,10 @@ The ``btf_enum`` encoding:
-   * ``name_off``: offset to a valid C identifier
-   * ``val``: any value
-=20
-+If the original enum value is signed and the size is less than 4,
-+that value will be sign extended into 4 bytes. If the size is 8,
-+the value will be truncated into 4 bytes.
-+
- 2.2.7 BTF_KIND_FWD
- ~~~~~~~~~~~~~~~~~~
-=20
-@@ -493,7 +498,7 @@ the attribute is applied to a ``struct``/``union`` me=
-mber or
- a ``func`` argument, and ``btf_decl_tag.component_idx`` should be a
- valid index (starting from 0) pointing to a member or an argument.
-=20
--2.2.17 BTF_KIND_TYPE_TAG
-+2.2.18 BTF_KIND_TYPE_TAG
- ~~~~~~~~~~~~~~~~~~~~~~~~
-=20
- ``struct btf_type`` encoding requirement:
-@@ -516,6 +521,32 @@ type_tag, then zero or more const/volatile/restrict/=
-typedef
- and finally the base type. The base type is one of
- int, ptr, array, struct, union, enum, func_proto and float types.
-=20
-+2.2.19 BTF_KIND_ENUM64
-+~~~~~~~~~~~~~~~~~~~~~~
-+
-+``struct btf_type`` encoding requirement:
-+  * ``name_off``: 0 or offset to a valid C identifier
-+  * ``info.kind_flag``: 0 for unsigned, 1 for signed
-+  * ``info.kind``: BTF_KIND_ENUM64
-+  * ``info.vlen``: number of enum values
-+  * ``size``: 1/2/4/8
-+
-+``btf_type`` is followed by ``info.vlen`` number of ``struct btf_enum64`=
-`.::
-+
-+    struct btf_enum64 {
-+        __u32   name_off;
-+        __u32   val_lo32;
-+        __u32   val_hi32;
-+    };
-+
-+The ``btf_enum64`` encoding:
-+  * ``name_off``: offset to a valid C identifier
-+  * ``val_lo32``: lower 32-bit value for a 64-bit value
-+  * ``val_hi32``: high 32-bit value for a 64-bit value
-+
-+If the original enum value is signed and the size is less than 8,
-+that value will be sign extended into 8 bytes.
-+
- 3. BTF Kernel API
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
---=20
-2.30.2
 
+>
+> On Tue, May 24, 2022 at 6:40 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, May 24, 2022 at 9:12 AM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> > >
+> > > After thinking about this more, maybe it's more to do with the
+> > > interrupt handler for nvme_complete_rq.
+> > >
+> > > In this situation, sometimes the handler for nvme_setup_cmd could be
+> > > interrupted to handle nvme_complete_rq and in this situation the
+> > > nvme_complete_rq handler wouldn't run. because the nvme_setup_cmd
+> > > handler is not complete.
+> > >
+> > > Is this understanding correct?
+> >
+> > Yes.
+> >
+> > > I'm assuming there is no real
+> > > workaround for this situation, so we may just need to accept some
+> > > missed events.
+> >
+> > Try using fentry/fexit programs instead. They use different reentrancy
+> > protection which is at a per-program level.
+> >
+> > >
+> > > John
+> > >
+> > > On Sat, May 21, 2022 at 11:52 AM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> > > >
+> > > > In this case is a BPF program the individual handler of a tracepoint,
+> > > > or in my context, a BPF program my compiled program that traces both
+> > > > tracepoints? We aren't running any other BPF tracing during these
+> > > > tests besides my program counting these 2 tracepoints.
+> > > >
+> > > > In my program I have 2 handlers, one for
+> > > > tracepoint:nvme:nvme_setup_cmd and another for
+> > > > tracepoint:nvme:nvme_complete_rq. I've created a PERCPU_HASH map for
+> > > > each handler (unique map for each) to use that keeps track of each
+> > > > time the handler is invoked. The only thing that handler is doing in
+> > > > each case is incrementing the count value in the map. Though I do
+> > > > filter by device on each tracepoint. If I comment out the
+> > > > nvme_setup_cmd code the nvme_complete_rq does get the correct count.
+> > > >
+> > > > The user side of my program just prints the values for each of these
+> > > > maps on a 10 second increment.
+> > > >
+> > > > I can share my code to make this easier, is it preferred that I upload
+> > > > my code to github and share the link in this thread?
+> > > >
+> > > > I agree that your suggestion could be my issue, but I just want to
+> > > > make sure we're on the same page since I'm less familiar with the
+> > > > internals of BPF.
+> > > >
+> > > > Thanks,
+> > > > John
+> > > >
+> > > > On Fri, May 20, 2022 at 7:10 PM Andrii Nakryiko
+> > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > >
+> > > > > On Wed, May 18, 2022 at 2:35 PM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> > > > > >
+> > > > > > My group at Micron is using BPF and love the tracing capabilities it
+> > > > > > provides. We are mainly focused on the storage subsystem and BPF has
+> > > > > > been really helpful in understanding how the storage subsystem
+> > > > > > interacts with our drives while running applications.
+> > > > > >
+> > > > > > In the process of developing a tool using BPF to trace the nvme
+> > > > > > driver, we ran into an issue with some missing events. I wanted to
+> > > > > > check to see if this is possibly a bug/limitation that I'm hitting or
+> > > > > > if it's expected behavior with heavy tracing. We are trying to trace 2
+> > > > > > trace points (nvme_setup_cmd and nvme_complete_rq) around 1M times a
+> > > > > > second.
+> > > > > > We noticed if we just trace one of the two, we see all the expected
+> > > > > > events, but if we trace both at the same time, the nvme_complete_rq
+> > > > >
+> > > > > kprobe programs have per-CPU reentrancy protection. That is, if some
+> > > > > BPF kprobe/tracepoint program is running and something happens (e.g.,
+> > > > > BPF program calls some kernel function that has another BPF program
+> > > > > attached to it, or preemption happens and another BPF program is
+> > > > > supposed to run) that would trigger another BPF program, then that
+> > > > > nested BPF program invocation will be skipped.
+> > > > >
+> > > > > This might be what happens in your case.
+> > > > >
+> > > > > > misses events. I am using two different percpu_hash maps to count both
+> > > > > > events. One for setup and another for complete. My expectation was
+> > > > > > that tracing these events would affect performance, somewhat, but not
+> > > > > > miss events. Ultimately the tool would be used to trace nvme latencies
+> > > > > > at the driver level by device and process.
+> > > > > >
+> > > > > > My tool was developed using libbpf v0.7, and I've tested on Rocky
+> > > > > > Linux 8.5 (Kernel 4.18.0), Ubuntu 20.04 (Kernel 5.4) and Fedora 36
+> > > > > > (Kernel 5.17.6) with the same results.
+> > > > > >
+> > > > > > Thanks,
+> > > > > > John Mazzie
+> > > > > > Principal Storage Solutions Engineer
+> > > > > > Micron Technology, Inc.
