@@ -2,138 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A95953C1E6
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 04:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7346A53C1DE
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 04:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240174AbiFCBwq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jun 2022 21:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
+        id S235708AbiFCBwm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jun 2022 21:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238094AbiFCBwp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jun 2022 21:52:45 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF5510C5;
-        Thu,  2 Jun 2022 18:52:44 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2530qxuK014107;
-        Thu, 2 Jun 2022 18:52:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=amFJiBSCq2W2nKB5c7h0LiN672ZzhaMya8L/bE0JjaE=;
- b=YJjAa85E7MIR//4tRNZ0ppGzEGg0TYLEGoje8Vz+vmauYC2pAKRBH6/6V87CYpBiUSIm
- dpO2OPvyXDFjsiiqGSg+J7eZirQrhIeHX/0/BeuVytk1bLzjdGTiEbKK0LLE7K5FM13y
- sKTrfwLtU7KF2TbMTd+ZvB6gdNoqThjDDBk= 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ge9m2ubvg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Jun 2022 18:52:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PkR07FpqbZz4LxggEnu2CW4TWYIf5sap+SXTrJNUPgyc/gnreK0jJcyWNL8QzbjXfh3k9fuCYBz/PrpyLD8f5+lmpxa0pwwizxg35gLJHXGRlBccSMWrBUnplhZgyUh7sDMgGDp64n+cwLnoZmwkgomcbHUdThAjUymwwxGJK2cX/iUwj/rdSTQnja690R+0XI7ahLi1xsjlPTJB+lCumAFmNOWlmZeqyjpcucvPQuy06fbN+ePdwaO1Sk7TEth9mAV2FSbIAsfKKfoKo7SAxBv8klEUbKfJAYVlrG/nqZ27B2iKf0KVUnqxCXEMr7N3RhAw92HkOEWMmYuj9sWWLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=amFJiBSCq2W2nKB5c7h0LiN672ZzhaMya8L/bE0JjaE=;
- b=ET6cUm/I/Ub8RnVn7hAT2L+UCQIhr+cQPP6ChAYCDm13j7Io+/CI4phvV3KuUJb0jBd6sXHTNbRgle8cVkDc9llbneQGojKtZ0SQ7/e1MAxGvcovTiFDuqo74Sv3UR4Nojmvn094/5AbOMqJpb4BcWeI3d7YTXWOiSycDmZcOaOADO3549XGGxnlQ2nb8ll/Jh430cgwO8z3K+Gkd/SXyA8amPwnTaGyVWg3n96ORRHB7S67+q7lQb3z8IDsIW08Pv44M++H9pLkwHEDjpXpG0AVInfAtVSAa68/TdWODDyEKSzM8K968UIq194ri47wNlNVZGNvHN3hv9IBdB4b5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SN6PR1501MB1983.namprd15.prod.outlook.com (2603:10b6:805:10::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.13; Fri, 3 Jun
- 2022 01:52:28 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::a09e:da84:3316:6eb0]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::a09e:da84:3316:6eb0%9]) with mapi id 15.20.5314.015; Fri, 3 Jun 2022
- 01:52:28 +0000
-Date:   Thu, 2 Jun 2022 18:52:25 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH bpf-next v8 11/11] selftests/bpf: verify lsm_cgroup
- struct sock access
-Message-ID: <20220603015225.lc4q3vkmsfnkgdq2@kafai-mbp>
-References: <20220601190218.2494963-1-sdf@google.com>
- <20220601190218.2494963-12-sdf@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220601190218.2494963-12-sdf@google.com>
-X-ClientProxiedBy: MW4PR04CA0126.namprd04.prod.outlook.com
- (2603:10b6:303:84::11) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        with ESMTP id S238094AbiFCBwl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jun 2022 21:52:41 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4133310C5
+        for <bpf@vger.kernel.org>; Thu,  2 Jun 2022 18:52:40 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id s23so6487973iog.13
+        for <bpf@vger.kernel.org>; Thu, 02 Jun 2022 18:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P4QoqGf+lZNXIWOxkAgl/BGLORs0Qx7HPXwKGTBwfro=;
+        b=k0fRqahWY6OiXNHa0BywgD0MqhfYzUw3Mh6CGsDDhr2nk9jD7DZHT5OpIwOIJ1L78H
+         JnJWHZNvI00ayN6Y5qrJbKWvWKK0xDAHATQPI8KjHacGUxUKpaTD37x7mSqze1zN4R9s
+         QGeatR19TfkgTDGcaMdDYw/A3O2Q3ISYHzA4NxtSjFlzccfUKk1L3a85NBJjni3qN+OY
+         mEhkPVnC0/Z1CkQyexvwqzMm0MNu5AsOYxF4qKinshwW9hCria+2OFo6peyymrQaGfMB
+         DCmpYB5A74vXTLf+D2tHv2QGL/sqMGJfBsB72HxrO0G7R1unhPiX6AXXMl85tuwqgVWX
+         cI6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P4QoqGf+lZNXIWOxkAgl/BGLORs0Qx7HPXwKGTBwfro=;
+        b=HJ4bmi71MEgrEv3+do8H1fV7WQMpxsazAq7zpYUpPovMu/mjcrCdZ/Av/DK+8EKhTl
+         y95EkGFCVWRjNKqqxLyzYyNp8a5fdZrz/cL3HfsVtVgYnZIOMQovQN4/3lJDiUD9f5ni
+         SqB9G36bRp8OloKK+m5pjBV7jbb8gqdte82qLcBdhfZT+lrfeexVMTORRdgccRApbjqI
+         KgfZ5N/Dm+y856/7J9sNZn2MY6F04kmQPXFG1ealQE9ekIH6+MJ3BL0fyZY1spIBjAdM
+         I7nf6suWZwTTPRj3fQ/odrDD7G9YX48YVUvxUvEmazD1/QQdvT3PQvo90Lc8LkDVijws
+         sdpQ==
+X-Gm-Message-State: AOAM530zsKJrRJSMCMkUrb40QWpypOLUIWy1XkBdy1WYuAsIfGWOJr1p
+        c54ZpTJQCjn2YbFXLtOKCwJdeX9pfSrgS/x6XLax/cUvqNY=
+X-Google-Smtp-Source: ABdhPJweWixJoRpuJQ30LEbpvj2VARwzg6MWahXC67zcXrdueuYMaP0VLFg5P7o0dvVWA+RRfsvSVCkEogh9FHvDutQ=
+X-Received: by 2002:a02:b18b:0:b0:331:6385:a257 with SMTP id
+ t11-20020a02b18b000000b003316385a257mr4026116jah.235.1654221159621; Thu, 02
+ Jun 2022 18:52:39 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48f872fe-6b4e-4e63-25bf-08da4503b6af
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB1983:EE_
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB1983354D16C1B422BA812DE9D5A19@SN6PR1501MB1983.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DEntr3yAd4rlt0QOI2nBZRl0ptG+6mio0zs6X3fiUVdCuoLPJUa5ZAoNWn9EMvCEYArJYmanoluz7vm3z2tnxj8xz6Y7EtVHiuL60/hTbFh621mIOhJmXsUgLN0tL8bOlU/Rjh6q4ofpPvGpEoSzPp3e8zFjWVIw3yLjOpy/+7KFa54Zvu1+Vr2yjhI+38naUafQ/OqXnsWkfdOkrpCIo1HxEGQge9PPr3CLl9g0j+Toh+GwnJbBG7OM6t8skL+KwOmOg9Tjr5BVEVQsoZMmnRqi28MkVeQ9Duz5/lsVGf9ur0RdAAGfEscWG84P8iitdRCT/aYGf6aLO21AIQi4TfNpg+V2XEjEqA8VV//KvTXjXUUJ1bGaQt8/g7TMOOMqi/tAg+ON+jx+jWkD6488g7+FZqShysainSOPVrEiep/CNUD/nQPV0SaxvKVud2318/KoaKPORPVi5LBa0+dQh2bgbJwE3MhnpFCrivUrum6G3RK2FWcJJu5+Lp4Hr4pO8pY3RhtqhBtLTS7yrkoSiSJwmCI+x7hh3zl2pF+zJwA+FxSs1IER4Q/lQ12c0J+cSEx/kBr8wWAGsCr+W/h4dvC9F4kal/S/cSwwYIw9IqZgoY4BDPraq+OMzQv8nhtKqIDNGzfDBJ8O9czxaaccPA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(8676002)(66476007)(66946007)(66556008)(86362001)(4326008)(38100700002)(6916009)(508600001)(1076003)(6486002)(186003)(6666004)(52116002)(316002)(9686003)(6506007)(6512007)(2906002)(5660300002)(8936002)(4744005)(33716001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bwTkBmwW3uHuFabttEGHfy7ExKbaLkjRGByqoSQ6eJeDiCxcHqvSv4q+MWcZ?=
- =?us-ascii?Q?sVK85/z4eVVyyorBLqb+8YeJRdzuY3yx8ZuxVbpWj0X+soLqKf28pgTxjjYR?=
- =?us-ascii?Q?YHOeAbhoqYf8T9kuJq/6hdYSGwCMDDpKK03DkHeVuc+5zflWysLc4ak0+L7g?=
- =?us-ascii?Q?ewfqqW+f09pW4RWdE4D+ZuaasWDnRYTQ1HBEbStplaG8fFV+838Svkmz0gQ1?=
- =?us-ascii?Q?K4sJghqepMVA5Bg6WHLKcRCpyfX4WHwyyP3Iw48ltTzTB0a1sT039e+TwbHW?=
- =?us-ascii?Q?ah98ZmwrxPD9j6FLUdQNNXr0xzcKVCL2OdbcHgsPjU3m96X8ypC1CeGvrAVv?=
- =?us-ascii?Q?Yy7ypgIJHr1G2MsQEOPip6jYD221gL9o2vH7q1URsstPRvA2y3gzWBr9i/nZ?=
- =?us-ascii?Q?5ug2Fb7YY0Lt/jsiC+nqOv2GpWGkRufK8ey79jRBFrlmJXKlHzD2EQQNZozL?=
- =?us-ascii?Q?r6zPAAPV1ebaxcExgnEvW4DkXKndjjkt7pl1YYS4DJnyX87iwu6TCyLkWDdm?=
- =?us-ascii?Q?p1BrmSiODEiKhS+OVAnGlD+7VdEzi34uYH8RWiPvJVoDPZmZoE6Gkf6msYTx?=
- =?us-ascii?Q?wQBZF2Ui9ZZeldhgiTUgEBrvfOIqToDjZpaJuEepus7bpO5wlUIRZm2tA8my?=
- =?us-ascii?Q?p/hNldoLClT9p6dWtcKAFyMRzMR9hA4yY5qx2oaLiEr1SxJsd0LbyDT6YinA?=
- =?us-ascii?Q?NCjaWXCN6eCBn4w15N4PjCEURJDMOke0+M07TbSqoJzeS+jGI+HiN27NW5ok?=
- =?us-ascii?Q?DKLGfhE+z3EaVUmMMOdRUW8PM/pApsadyoSngFKY1kZrJRGVTWmiEurxUedq?=
- =?us-ascii?Q?PYQndQh58W7QRvRH1rzp/LUDiK3aMuR4ldptzB5h0Qr9b4dYfFn7RkAw33xJ?=
- =?us-ascii?Q?sGVHY+7w3jwCqfvb+NJ9+6hAdKaCdMBzJKQc6s+8STMqb61kDSKDWgFnqnXD?=
- =?us-ascii?Q?WkNnnT0ZMv261/shixT3fqkQGsricfnlJXdvCf01ZMCH4SRX5Yfag2TpBvv0?=
- =?us-ascii?Q?epNls2z3YtqcKyTWXz6lDRAuCGbUTA+qaxfCwMYBxCBq+Mta1Uax6ghIHhp5?=
- =?us-ascii?Q?HukanEgzeAB1X9OylgX9LdEZy9yE6F0NXS7ssbiS8//DsEKISyzwPzMAia7C?=
- =?us-ascii?Q?bTyQm5biGnJ0ct0QOiglE23Gtcsa69luxqyqcnPJbeZnN8hZMuCme8LvPf+G?=
- =?us-ascii?Q?HPy5/7+QRBrKOnxWN2/nkGlVXgPxjjQRjBz0Em7TaOZ+gyofvnXQXQW6OqbD?=
- =?us-ascii?Q?ljOZlrgkjtjJ0aHq4LcCC/T7Oor27AFG3kpSCEZ7lqbFr/ijVF2r548Msgj6?=
- =?us-ascii?Q?C6a/qBKGtVIlVxLCh+Rn1Fi7CtCCrP92u8R9Okqmym9R7RvM83F5dEFXcDi6?=
- =?us-ascii?Q?pi5/chaA7sBwZ9lQgqs8V609Uiu9WzpnpVmqtlGpGEboD3prxzEKBO/6jF3y?=
- =?us-ascii?Q?VsXXD7O5Ai8Kzz88IlkA0VJ0jRmd37EqIisupNvoe3z/xlSEVc5p7KdAfM5Q?=
- =?us-ascii?Q?BFJ9/oenPgJwXb8aVSlKKvICcXbHpBE0bKzmon98BE/1NHOOdeWsNrXsPhTY?=
- =?us-ascii?Q?UXZ6pMRIgahV47+YAxOeFxcwoiORynJST/ljizcRUlLPDEC+V5zyD6heg6dv?=
- =?us-ascii?Q?G9B5NU8VX26VwdNw8B+NcooL+q3mEngoXLJnTDSHrCOyP7xn7ROlIFfhHnDK?=
- =?us-ascii?Q?AUniXgATy7iMWxJhiB3EyHvqJXZFdmE+V+/VaDwR7RnGDoobPElKlUMWk9UQ?=
- =?us-ascii?Q?/VjtSrv1gOSCfHPgW8G5P5KAZ3YlkXw=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48f872fe-6b4e-4e63-25bf-08da4503b6af
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2022 01:52:28.0215
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FSP55d7Gx/36A24vyalxKDRNXlT/4lGQHAbC+kRCesUCk5U4apgG1CnDdV0Q6LP7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB1983
-X-Proofpoint-GUID: MRWfGzpLfO4nSFPoamwzmC5q6LLfQ8DB
-X-Proofpoint-ORIG-GUID: MRWfGzpLfO4nSFPoamwzmC5q6LLfQ8DB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-03_01,2022-06-02_01,2022-02-23_01
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAPxVHdL-dT2GQh-HEkNjNoTEzA9DRL4W4ZfmUzc1+Bdz89fftQ@mail.gmail.com>
+ <CAEf4BzZg0r4YptYPu8Y_-qp=rY__W6dmb9kLwMV5MAH6C-2PSg@mail.gmail.com>
+ <CAPxVHdJbnu5fk5btxATWM5NTd0NofeJREuX_8R_2i3GX_ho87g@mail.gmail.com>
+ <CAPxVHd+_fmCvhhYWCtjjjvzNi5GNfoDP3=aHgihVwzSwN9vKnQ@mail.gmail.com> <CAEf4BzbhvD_f=y3SDAiFqNvuErcnXt4fErMRSfanjYQg5=7GJg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbhvD_f=y3SDAiFqNvuErcnXt4fErMRSfanjYQg5=7GJg@mail.gmail.com>
+From:   John Mazzie <john.p.mazzie@gmail.com>
+Date:   Thu, 2 Jun 2022 20:52:28 -0500
+Message-ID: <CAPxVHdLMsotw3wFDM05kzb7O6kA4PM_uQ4D+DCXYcZbtwdt_ag@mail.gmail.com>
+Subject: Re: Tracing NVMe Driver with BPF missing events
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "John Mazzie (jmazzie)" <jmazzie@micron.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 01, 2022 at 12:02:18PM -0700, Stanislav Fomichev wrote:
-> sk_priority & sk_mark are writable, the rest is readonly.
-> 
-> One interesting thing here is that the verifier doesn't
-> really force me to add NULL checks anywhere :-/
-Are you aware if it is possible to get a NULL sk from some of the
-bpf_lsm hooks ?
+Thanks for the help. fentry/fexit seem to be working to get every
+event when tracing both events.
+
+I do have one question about how fentry/fexit work in regards to the
+function parameters. fexit can access the function parameters in
+addition to the return value. Let's say the parameters are pointers
+whose value changes between entry and exit on the probed function. Are
+the parameters being accessed on entry or exit in fexit. My assumption
+would be exit, so I could access the modified values. Is that correct?
+The data I'm pulling appears like it might just be the entry
+(non-configured) values.
+
+On Tue, May 24, 2022 at 6:40 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, May 24, 2022 at 9:12 AM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> >
+> > After thinking about this more, maybe it's more to do with the
+> > interrupt handler for nvme_complete_rq.
+> >
+> > In this situation, sometimes the handler for nvme_setup_cmd could be
+> > interrupted to handle nvme_complete_rq and in this situation the
+> > nvme_complete_rq handler wouldn't run. because the nvme_setup_cmd
+> > handler is not complete.
+> >
+> > Is this understanding correct?
+>
+> Yes.
+>
+> > I'm assuming there is no real
+> > workaround for this situation, so we may just need to accept some
+> > missed events.
+>
+> Try using fentry/fexit programs instead. They use different reentrancy
+> protection which is at a per-program level.
+>
+> >
+> > John
+> >
+> > On Sat, May 21, 2022 at 11:52 AM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> > >
+> > > In this case is a BPF program the individual handler of a tracepoint,
+> > > or in my context, a BPF program my compiled program that traces both
+> > > tracepoints? We aren't running any other BPF tracing during these
+> > > tests besides my program counting these 2 tracepoints.
+> > >
+> > > In my program I have 2 handlers, one for
+> > > tracepoint:nvme:nvme_setup_cmd and another for
+> > > tracepoint:nvme:nvme_complete_rq. I've created a PERCPU_HASH map for
+> > > each handler (unique map for each) to use that keeps track of each
+> > > time the handler is invoked. The only thing that handler is doing in
+> > > each case is incrementing the count value in the map. Though I do
+> > > filter by device on each tracepoint. If I comment out the
+> > > nvme_setup_cmd code the nvme_complete_rq does get the correct count.
+> > >
+> > > The user side of my program just prints the values for each of these
+> > > maps on a 10 second increment.
+> > >
+> > > I can share my code to make this easier, is it preferred that I upload
+> > > my code to github and share the link in this thread?
+> > >
+> > > I agree that your suggestion could be my issue, but I just want to
+> > > make sure we're on the same page since I'm less familiar with the
+> > > internals of BPF.
+> > >
+> > > Thanks,
+> > > John
+> > >
+> > > On Fri, May 20, 2022 at 7:10 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Wed, May 18, 2022 at 2:35 PM John Mazzie <john.p.mazzie@gmail.com> wrote:
+> > > > >
+> > > > > My group at Micron is using BPF and love the tracing capabilities it
+> > > > > provides. We are mainly focused on the storage subsystem and BPF has
+> > > > > been really helpful in understanding how the storage subsystem
+> > > > > interacts with our drives while running applications.
+> > > > >
+> > > > > In the process of developing a tool using BPF to trace the nvme
+> > > > > driver, we ran into an issue with some missing events. I wanted to
+> > > > > check to see if this is possibly a bug/limitation that I'm hitting or
+> > > > > if it's expected behavior with heavy tracing. We are trying to trace 2
+> > > > > trace points (nvme_setup_cmd and nvme_complete_rq) around 1M times a
+> > > > > second.
+> > > > > We noticed if we just trace one of the two, we see all the expected
+> > > > > events, but if we trace both at the same time, the nvme_complete_rq
+> > > >
+> > > > kprobe programs have per-CPU reentrancy protection. That is, if some
+> > > > BPF kprobe/tracepoint program is running and something happens (e.g.,
+> > > > BPF program calls some kernel function that has another BPF program
+> > > > attached to it, or preemption happens and another BPF program is
+> > > > supposed to run) that would trigger another BPF program, then that
+> > > > nested BPF program invocation will be skipped.
+> > > >
+> > > > This might be what happens in your case.
+> > > >
+> > > > > misses events. I am using two different percpu_hash maps to count both
+> > > > > events. One for setup and another for complete. My expectation was
+> > > > > that tracing these events would affect performance, somewhat, but not
+> > > > > miss events. Ultimately the tool would be used to trace nvme latencies
+> > > > > at the driver level by device and process.
+> > > > >
+> > > > > My tool was developed using libbpf v0.7, and I've tested on Rocky
+> > > > > Linux 8.5 (Kernel 4.18.0), Ubuntu 20.04 (Kernel 5.4) and Fedora 36
+> > > > > (Kernel 5.17.6) with the same results.
+> > > > >
+> > > > > Thanks,
+> > > > > John Mazzie
+> > > > > Principal Storage Solutions Engineer
+> > > > > Micron Technology, Inc.
