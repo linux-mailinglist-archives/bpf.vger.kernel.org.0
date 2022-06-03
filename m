@@ -2,83 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530B253CD9B
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 18:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2900553CE1A
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 19:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243122AbiFCQ6F convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 3 Jun 2022 12:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
+        id S1344500AbiFCReI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 13:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343665AbiFCQ6E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 12:58:04 -0400
-X-Greylist: delayed 578 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Jun 2022 09:58:03 PDT
-Received: from relay5.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A848F13F1E
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 09:58:02 -0700 (PDT)
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay07.hostedemail.com (Postfix) with ESMTP id 839042171B;
-        Fri,  3 Jun 2022 16:48:22 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 2C8C620018;
-        Fri,  3 Jun 2022 16:48:20 +0000 (UTC)
-Message-ID: <495f2924138069abaf49269b2c3bd1e4f5f4362e.camel@perches.com>
-Subject: Re: [PATCH v2] libbpf: Fix is_pow_of_2
-From:   Joe Perches <joe@perches.com>
-To:     Ian Rogers <irogers@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1344493AbiFCReH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 13:34:07 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFD452B17;
+        Fri,  3 Jun 2022 10:34:07 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id u12-20020a17090a1d4c00b001df78c7c209so12622758pju.1;
+        Fri, 03 Jun 2022 10:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cdqPGWFLl2ixHd1tMn/2WHCtX6ExuPscFLYPj6FpsVc=;
+        b=G/aBmedgMCNwdkYurSzeGg6U347KOZwBCbhQhD8U5bB4BksJxHxUP//f+gV+haAaoW
+         YhXoYrmuWy8ETBTKEGR9VmBWsp4jmpy4408x44BH0C3CLFP8s//eMIFeeu8MilMDwtrd
+         O5LOmH3w88xxOwcK75Koa8BHsD7LBIzza81N6IY8snx/Rlgv40637dA7rcyhTk5C/ibq
+         QSMha8nPUCthYkVXJt5SxD4XJl4i9102sejCpVkd+JJzbFm6QVFkQRk4+Op4AWEnomga
+         ajnbCaopu2tIQ83VlfmVAszo8YzoABUDF8LhA9l68ebCrfRZT5M2jFKD9deekzndkCQp
+         r+WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cdqPGWFLl2ixHd1tMn/2WHCtX6ExuPscFLYPj6FpsVc=;
+        b=3hWB6DBYHf5ZOCZRLTAF8kKfuyqb+tmYUBb4eUk2P7T5XjqA46870rOqmUSErCoar6
+         BsdBTXEBueQJ+o6dmwVEAg6D9uZrNPiHCuk5YCYUU5sgpIkRGbh6fev5zcPVZtgQ2+wO
+         DQBQC7yZA8FTUiJMAUEw+nnjmrqg7LdfD8R4IYomGZIfleVBzK6HWm6qB9vQhq+8LWal
+         guOgkQFJeQh1YhCf8QA74bSsXFYJ+M9z0r54yNzmhqdOzAN+8qMJoETrF1KSC3id5Aas
+         tpwACr/3CIGv82Nl3zyYCB4APRiqBv23aEB95fk8ER5bP+ZnKh0gFvbHf3QHIGeRZgiH
+         JBMQ==
+X-Gm-Message-State: AOAM531yHQnlORcnzxuZMHaM/EuGyRDlGL9QoUBlVvyNfvoWL8xfHyEQ
+        WwQ5BDtBsianZz8k7FftNWU=
+X-Google-Smtp-Source: ABdhPJwRXdUOQd9XjVjtn6pEO6ZZ2k4haGF34IHOEqqx6CRNSXb1KbRUjNgeJIOanXTsB4txNWbIrQ==
+X-Received: by 2002:a17:902:ccc8:b0:162:6ea:4d with SMTP id z8-20020a170902ccc800b0016206ea004dmr11238123ple.144.1654277646375;
+        Fri, 03 Jun 2022 10:34:06 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d0c0:79de:f3f4:353c:8616])
+        by smtp.gmail.com with ESMTPSA id b10-20020a17090a5a0a00b001cd4989febcsm8087797pjd.8.2022.06.03.10.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jun 2022 10:34:06 -0700 (PDT)
+Date:   Fri, 3 Jun 2022 23:04:03 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Yuze Chi <chiyuze@google.com>
-Date:   Fri, 03 Jun 2022 09:48:19 -0700
-In-Reply-To: <CAP-5=fVhVLWg+c=WJyOD8FByg_4n6V0SLSLnaw7K0J=-oNnuaA@mail.gmail.com>
-References: <20220603055156.2830463-1-irogers@google.com>
-         <CAP-5=fVhVLWg+c=WJyOD8FByg_4n6V0SLSLnaw7K0J=-oNnuaA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.1-0ubuntu1 
+        KP Singh <kpsingh@kernel.org>,
+        Simon Sundberg <simon.sundberg@kau.se>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf 1/2] bpf: Fix calling global functions from
+ BPF_PROG_TYPE_EXT programs
+Message-ID: <20220603173403.rshyftcseryug4rm@apollo.legion>
+References: <20220603154028.24904-1-toke@redhat.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
-        KHOP_HELO_FCRDNS,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Stat-Signature: rzbx35joaqpa7bowsa6rnrkez3mwwwaa
-X-Rspamd-Server: rspamout06
-X-Rspamd-Queue-Id: 2C8C620018
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1984zn9Oltf4R7aHUeyWpSPbJhORpgNnjg=
-X-HE-Tag: 1654274900-542024
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220603154028.24904-1-toke@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2022-06-02 at 22:57 -0700, Ian Rogers wrote:
-> On Thu, Jun 2, 2022 at 10:52 PM Ian Rogers <irogers@google.com> wrote:
-> > From: Yuze Chi <chiyuze@google.com>
-[]
-> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-[]
-> > @@ -580,4 +580,9 @@ struct bpf_link * usdt_manager_attach_usdt(struct usdt_manager *man,
-> >                                            const char *usdt_provider, const char *usdt_name,
-> >                                            __u64 usdt_cookie);
-> > 
-> > +static inline bool is_pow_of_2(size_t x)
-> > +{
-> > +       return x && (x & (x - 1)) == 0;
-> > +}
-> > +
-> >  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+On Fri, Jun 03, 2022 at 09:10:26PM IST, Toke Høiland-Jørgensen wrote:
+> The verifier allows programs to call global functions as long as their
+> argument types match, using BTF to check the function arguments. One of the
+> allowed argument types to such global functions is PTR_TO_CTX; however the
+> check for this fails on BPF_PROG_TYPE_EXT functions because the verifier
+> uses the wrong type to fetch the vmlinux BTF ID for the program context
+> type. This failure is seen when an XDP program is loaded using
+> libxdp (which loads it as BPF_PROG_TYPE_EXT and attaches it to a global XDP
+> type program).
+>
+> Fix the issue by passing in the target program type instead of the
+> BPF_PROG_TYPE_EXT type to bpf_prog_get_ctx() when checking function
+> argument compatibility.
+>
+> The first Fixes tag refers to the latest commit that touched the code in
+> question, while the second one points to the code that first introduced
+> the global function call verification.
+>
+> Fixes: 3363bd0cfbb8 ("bpf: Extend kfunc with PTR_TO_CTX, PTR_TO_MEM argument support")
+> Fixes: 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
+> Reported-by: Simon Sundberg <simon.sundberg@kau.se>
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+>  kernel/bpf/btf.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 7bccaa4646e5..361de7304c4d 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6054,6 +6054,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>  				    struct bpf_reg_state *regs,
+>  				    bool ptr_to_mem_ok)
+>  {
+> +	enum bpf_prog_type prog_type = env->prog->type;
+>  	struct bpf_verifier_log *log = &env->log;
+>  	u32 i, nargs, ref_id, ref_obj_id = 0;
+>  	bool is_kfunc = btf_is_kernel(btf);
+> @@ -6095,6 +6096,9 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>  						     BTF_KFUNC_TYPE_KPTR_ACQUIRE, func_id);
+>  	}
+>
+> +	if (prog_type == BPF_PROG_TYPE_EXT && env->prog->aux->dst_prog)
+> +		prog_type = env->prog->aux->dst_prog->type;
+> +
 
-If speed of execution is a potential issue, maybe:
+nit: it might be better to reuse resolve_prog_type here.
 
-#if __has_builtin(__builtin_popcount)
-	return __builtin_popcount(x) == 1;
-#else
-	return x && (x & (x-1)) == 0;
-#endif
+>  	/* check that BTF function arguments match actual types that the
+>  	 * verifier sees.
+>  	 */
+> @@ -6171,7 +6175,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>  				return -EINVAL;
+>  			}
+>  			/* rest of the arguments can be anything, like normal kfunc */
+> -		} else if (btf_get_prog_ctx_type(log, btf, t, env->prog->type, i)) {
+> +		} else if (btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
+>  			/* If function expects ctx type in BTF check that caller
+>  			 * is passing PTR_TO_CTX.
+>  			 */
+> --
+> 2.36.1
+>
 
+--
+Kartikeya
