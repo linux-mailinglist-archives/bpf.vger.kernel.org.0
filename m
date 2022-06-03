@@ -2,67 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E35853D238
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2138C53D242
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239283AbiFCTI5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 15:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
+        id S1345655AbiFCTMd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 15:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349036AbiFCTI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 15:08:56 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5787839178;
-        Fri,  3 Jun 2022 12:08:55 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id x190so453739vkc.9;
-        Fri, 03 Jun 2022 12:08:55 -0700 (PDT)
+        with ESMTP id S1348811AbiFCTMc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 15:12:32 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F9439B82;
+        Fri,  3 Jun 2022 12:12:30 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id y29so9394220ljd.7;
+        Fri, 03 Jun 2022 12:12:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=b1C3mx7cWdTSh5LdHqF6IMGq/78DF/hK//5Y/LdUgog=;
-        b=B6sG99pnrbh8z2XmvEjW2ESlDOZUy9IwAWFNeLR8WLsaxWDidjaxpIDuUKZZIZUwbm
-         YNesHhr+5aCeQWPHDMHYKUW491FfJDtdLNwrHoiIIL4TuxG+DiPmywg/NFWxPUadwa35
-         Ea6kCI7BYinNSLk7B10ig6MEEbCHQkkwlxqxaraAEqmkhTNN0X7quEas5Ja4dyc1T4D+
-         vq/jmsDC0oIZ9tOnZ6UgokSFPu4u8rVfdHJw8RKAOvkb6C/E1Q/IL8y4hMMHyvVJOX7u
-         wyxPA0FPkhTfGWORyjLGmnEWR5JfQ0h47xI40AyZFlT2+iw4G6S8tHmXHoxUVb4YGGNi
-         zz1w==
+         :cc;
+        bh=s9H/2G67jjwwNRYeTE9y1UIake4ZPkc4A7dULW7T4YQ=;
+        b=KUmC6aDPHo7NEcOzM22l6XWST1a6GmF0lgIr4syhOJFztcCTOS4HWi8fFmavsI8oiw
+         x0AVco1dvYi0dHFkF97Gx6vdDFUVesOmkWluGriV2sIJTfYYsUinjdpPUEsfEu/q0ycJ
+         09B7m/o3Ve/ec5mb3YVLe7GId53U/eBRhSD2pmRvqYzC1fE9QS2zPZVTQB9s9Xe7uTht
+         X6Sb3/VxMGGjAHi1J1JlZoY0lC1WHH3wO8p0qjMVcHbKUCX92yiYSAX234MUgDPwgP6K
+         d8xJt3d2IPb4S4glMkLLLiPKiljF7+/3LKwm0bbuFUABxpSE3z3WlJgMXZi8eU42V5Cj
+         3WsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=b1C3mx7cWdTSh5LdHqF6IMGq/78DF/hK//5Y/LdUgog=;
-        b=1D0vlOajT/Enyso67mee87TV6Ff+gNlpETzKdmPoQOltxYdvf+I9un99SxtQ/YvIi/
-         r5pHwDxSfhcoRKBDi255CDnBtua0VFPKVDRuWo2xVjJyoXEHc0TzsHeVLMXo1Ih6/ZK/
-         h+VNCMEtbtMcSf77Q7j+K8LviVpt0y8rqdIFN/pstJiUKG0GOiopr4pSwIi9bDIIjEF+
-         qw9PZRhkZyqhNQfJlvkbegYryk3TmqSfibGsKaPsDuLKPD2eotkt2PNo6vIMOPzfxIge
-         1EVoNPnDWp2dxHgc6OKJCVlTPez2BGeWD7oHtDkNPYL2rSl7OxsoBTvGvW0fafKeONoo
-         F2tA==
-X-Gm-Message-State: AOAM530f+9OjLqrqR1SYPUYVOc/ad9afEe8zzQkeBQNNIxNfHU9UQ1n8
-        wOSTKh0X5JpHlmovNuhoSDkSE9NYwcURBh71R5X+bZQo
-X-Google-Smtp-Source: ABdhPJxBW76JZY06YxlUvaV0gjNppS15ZXq2lEOURo/UBz/vfJsn1eA0N5S8ttRxaTt+hsQkyfsDTofKZ7IOJNldQ7A=
-X-Received: by 2002:a1f:a9cc:0:b0:35c:8338:24f8 with SMTP id
- s195-20020a1fa9cc000000b0035c833824f8mr4967074vke.14.1654283334460; Fri, 03
- Jun 2022 12:08:54 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=s9H/2G67jjwwNRYeTE9y1UIake4ZPkc4A7dULW7T4YQ=;
+        b=EN9eOkzBoZDfrzQuIpEGb1BK9i0DqZKEktrP9zCbpy3hBJ2Wi9M/TUuYJE7qx+H5u+
+         ECM4unjo0RsLDXBu71MNYFSZaifJIFr6vzO+RI4Mq3Ci+8hm99zwvDgWTe9PnKePr6b0
+         PVDAg8bKbXSrcHwQ1Au+8kcIyblVlTc+8TAkylXueJgfLNp0QO67WtnXa/ixKPkLmdvF
+         j/yqh3rCBGdqhaCqHld9+ovWTjkc1hE0Km14n7mMWa38Z0p6QBEHO23ZU5G0bjPCbweJ
+         CDP1onGhz5ZQHuqHu63kKFh7Cqg4nWTCA/ceAzi7fjtP92bB+u+IKM0S3RAALeQgOmum
+         u4bw==
+X-Gm-Message-State: AOAM531GLZsKhpUHI6Uc7xoiCYTR+SivjDi/8Sxj1Xxmy08Jxj7H0DMF
+        zvBQlc1y9dOOEy+JXqfoF1ZA9RjwGLzVaDhHZmI=
+X-Google-Smtp-Source: ABdhPJwGXQxFgTK2T/bv5P8x3Kz0T1dUVfNZfOmtvJ1Qw7A98pFPzvyoUQEECwQKpYhS6Sh3aCQ+W+zB/33Qx88s9oM=
+X-Received: by 2002:a2e:a7c5:0:b0:253:ee97:f9b7 with SMTP id
+ x5-20020a2ea7c5000000b00253ee97f9b7mr33481530ljp.472.1654283549239; Fri, 03
+ Jun 2022 12:12:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220603154028.24904-1-toke@redhat.com> <20220603154028.24904-2-toke@redhat.com>
-In-Reply-To: <20220603154028.24904-2-toke@redhat.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Fri, 3 Jun 2022 12:08:43 -0700
-Message-ID: <CAJnrk1Y-_pCPLZfgzyC-4aq2dXf=yLFEm9xFiU0f87YWNqdhhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: Add selftest for calling global
- functions from freplace
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+References: <20220527205611.655282-1-jolsa@kernel.org> <20220527205611.655282-3-jolsa@kernel.org>
+ <CAEf4BzbfbPA-U+GObZy2cEZOn9qAHqRmKtKq-rPOVM=_+DGVww@mail.gmail.com> <YpnfldPKcEqesioK@krava>
+In-Reply-To: <YpnfldPKcEqesioK@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 3 Jun 2022 12:12:17 -0700
+Message-ID: <CAEf4BzZury5Tnm1xmAadeOqNEtbTifNZ7065C4ax-GkXaz6dog@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] ftrace: Keep address offset in ftrace_lookup_symbols
+To:     Jiri Olsa <olsajiri@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,87 +75,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 3, 2022 at 11:01 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Fri, Jun 3, 2022 at 3:16 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> Add a selftest that calls a global function with a context object paramet=
-er
-> from an freplace function to check that the program context type is
-> correctly converted to the freplace target when fetching the context type
-> from the kernel BTF.
+> On Thu, Jun 02, 2022 at 03:52:03PM -0700, Andrii Nakryiko wrote:
+> > On Fri, May 27, 2022 at 1:56 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > We want to store the resolved address on the same index as
+> > > the symbol string, because that's the user (bpf kprobe link)
+> > > code assumption.
+> > >
+> > > Also making sure we don't store duplicates that might be
+> > > present in kallsyms.
+> > >
+> > > Fixes: bed0d9a50dac ("ftrace: Add ftrace_lookup_symbols function")
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  kernel/trace/ftrace.c | 13 +++++++++++--
+> > >  1 file changed, 11 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > > index 674add0aafb3..00d0ba6397ed 100644
+> > > --- a/kernel/trace/ftrace.c
+> > > +++ b/kernel/trace/ftrace.c
+> > > @@ -7984,15 +7984,23 @@ static int kallsyms_callback(void *data, const char *name,
+> > >                              struct module *mod, unsigned long addr)
+> > >  {
+> > >         struct kallsyms_data *args = data;
+> > > +       const char **sym;
+> > > +       int idx;
+> > >
+> > > -       if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
+> > > +       sym = bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp);
+> > > +       if (!sym)
+> > > +               return 0;
+> > > +
+> > > +       idx = sym - args->syms;
+> > > +       if (args->addrs[idx])
+> >
+> > if we have duplicated symbols we won't increment args->found here,
+> > right? So we won't stop early. But we also don't want to increment
+> > args->found here because we use it to check that we don't have
+> > duplicates (in addition to making sure we resolved all the unique
+> > symbols), right?
+> >
+> > So I wonder if in this situation should we return some error code to
+> > signify that we encountered symbol duplicate?
 >
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 13 ++++++++++
->  .../bpf/progs/freplace_global_func.c          | 24 +++++++++++++++++++
->  2 files changed, 37 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/freplace_global_fun=
-c.c
+> hum, this callback is called for each kallsyms symbol and there
+> are duplicates in /proc/kallsyms.. so even if we have just single
+> copy of such symbol in args->syms, bsearch will find this single
+> symbol for all the duplicates in /proc/kallsyms and we will endup
+> in here.. and it's still fine, we should continue
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/too=
-ls/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> index d9aad15e0d24..6e86a1d92e97 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> @@ -395,6 +395,17 @@ static void test_func_map_prog_compatibility(void)
->                                      "./test_attach_probe.o");
->  }
+
+ah, ok, duplicate kallsyms entries, right, never mind then
+
+> jirka
 >
-> +static void test_func_replace_global_func(void)
-> +{
-> +       const char *prog_name[] =3D {
-> +               "freplace/test_pkt_access",
-> +       };
-> +       test_fexit_bpf2bpf_common("./freplace_global_func.o",
-> +                                 "./test_pkt_access.o",
-> +                                 ARRAY_SIZE(prog_name),
-> +                                 prog_name, false, NULL);
-> +}
-> +
->  /* NOTE: affect other tests, must run in serial mode */
->  void serial_test_fexit_bpf2bpf(void)
->  {
-> @@ -416,4 +427,6 @@ void serial_test_fexit_bpf2bpf(void)
->                 test_func_replace_multi();
->         if (test__start_subtest("fmod_ret_freplace"))
->                 test_fmod_ret_freplace();
-> +       if (test__start_subtest("func_replace_global_func"))
-> +               test_func_replace_global_func();
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/freplace_global_func.c b/t=
-ools/testing/selftests/bpf/progs/freplace_global_func.c
-> new file mode 100644
-> index 000000000000..d9f8276229cc
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/freplace_global_func.c
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019 Facebook */
-nit: I think you meant 2022, not 2019? :)
-> +#include <linux/stddef.h>
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +#include <bpf/bpf_tracing.h>
-nit: I think the only headers you need here are the linux/bpf.h and
-bpf/bpf_helpers.h ones.
-> +
-> +__attribute__ ((noinline))
-> +int test_ctx_global_func(struct __sk_buff *skb)
-> +{
-> +       volatile int retval =3D 1;
-> +       return retval;
-> +}
-> +
-> +__u64 test_pkt_access_global_func =3D 0;
-> +SEC("freplace/test_pkt_access")
-> +int new_test_pkt_access(struct __sk_buff *skb)
-> +{
-> +       test_pkt_access_global_func =3D test_ctx_global_func(skb);
-> +       return -1;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> --
-> 2.36.1
->
+> >
+> >
+> > >                 return 0;
+> > >
+> > >         addr = ftrace_location(addr);
+> > >         if (!addr)
+> > >                 return 0;
+> > >
+> > > -       args->addrs[args->found++] = addr;
+> > > +       args->addrs[idx] = addr;
+> > > +       args->found++;
+> > >         return args->found == args->cnt ? 1 : 0;
+> > >  }
+> > >
+> > > @@ -8017,6 +8025,7 @@ int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *a
+> > >         struct kallsyms_data args;
+> > >         int err;
+> > >
+> > > +       memset(addrs, 0x0, sizeof(*addrs) * cnt);
+> > >         args.addrs = addrs;
+> > >         args.syms = sorted_syms;
+> > >         args.cnt = cnt;
+> > > --
+> > > 2.35.3
+> > >
