@@ -2,106 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1888053D3C0
-	for <lists+bpf@lfdr.de>; Sat,  4 Jun 2022 01:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3FD53D3C9
+	for <lists+bpf@lfdr.de>; Sat,  4 Jun 2022 01:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244659AbiFCXB2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 19:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
+        id S1347862AbiFCXNb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 19:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240486AbiFCXB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 19:01:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB01957119
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 16:01:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 954D8B824CB
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 23:01:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B341C34115
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 23:01:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654297284;
-        bh=neTs2UogVGsv7hMlLFROJzXJHiBK4N737TkIAoFMFU8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ed03jMLS5fKYhDCEiZ0XhS9BDdulCcuEb/9oAIauC3JObql/95p/njrP5Y2Bq/eH9
-         UOtdxkv8+iRPyvFy1bMrwTF7J5EtFBjfXn9dUlEh/VrUH5ZApNU6G3bqYwQ3rXNGII
-         tAyMifnh8/V+WyhdaVKGfnW0DliKtG7QKJ1r0SchGWMrTMUGA1lnwDaKNB0uhL09cK
-         4vRoGWT1v7o9otwNUdbZRDjAg+4JD3REW3lFOa/TT7d8xXXEG0K3St4fWYy6QDNpxc
-         X5GUWBW/mNr0BvPdfQQh0/Zj8bWLW0t7SqKhW1ogumZJSjMUpTkdyyrcwAb2Wky6BI
-         U/49T+g763JJw==
-Received: by mail-yb1-f175.google.com with SMTP id p13so16240536ybm.1
-        for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 16:01:24 -0700 (PDT)
-X-Gm-Message-State: AOAM530PwXW51IphWuuW23QS7D9CACAyz/b/YOPkACNOVtco3WqYheXk
-        hI6UU6e+8ua1wHJlERgH64jlizguN1SaADJqIm0=
-X-Google-Smtp-Source: ABdhPJyP6WdLlX4hJjeymqU1fPilU3evefiDH0DIypZErHTgj+S416qqXeKgYW/GYMF3KrKpVv1C+s7jrjBYUy0qOUQ=
-X-Received: by 2002:a25:7e84:0:b0:650:10e0:87bd with SMTP id
- z126-20020a257e84000000b0065010e087bdmr13312405ybc.257.1654297283306; Fri, 03
- Jun 2022 16:01:23 -0700 (PDT)
+        with ESMTP id S231586AbiFCXNb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 19:13:31 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B18926104
+        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 16:13:30 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id o6-20020a17090a0a0600b001e2c6566046so13205932pjo.0
+        for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 16:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LSrraWC3tFCdgmhlnDY2Q6glgRYdmbP1A46BBlPMXug=;
+        b=mPnbBLsNswj0NyJHd+lqprKzMM5zKD6I2+2O5QpWxaQESJiAMNB7lAovfTYZTbsXjJ
+         zhn3YkH+hi0YSz8rU89s7iHfLggboLYuHpqtajlM8s+MDYVREZmCeP8m27APLvp4vmRe
+         8wG80mRcAca3rO0rNp+KmL+zUpfbs4jnH57LFBehc9dmcX0vnlA0oR1tUSBrm9Ed9SML
+         X77uh/oSropxwxJmGolg0sHZCCr88fwRu4LMneCNib+5AGcRo8WMPn3AG286x+ADAekG
+         Ft1SgO8xNleSLaM5CIck+CHmd5gJ4nxplaFefw+it3UXOol2kqCGDh2Pqp252NzJNAiV
+         Lu/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LSrraWC3tFCdgmhlnDY2Q6glgRYdmbP1A46BBlPMXug=;
+        b=uJD0e332XAYLlcKo8xcggen+UFYBzNpzF1vfGlDTIgYvu4A+2uDiYsSVgrQJtZAK0p
+         sFihCf3vs5fyIbTgFAubVoD/K3SPauMsmkf4/c4mMiz+hsR0TM1HJaWs8I5EDXZxS+GS
+         aW0pViVSg+1hGfuvR1wdPmV4dP5KdXT6gLAj/XtJWtFpFyh+85eCJX7zARFPKMcUcXgd
+         gOdZrctTJNEjbo/F7HJbnhRGYsaXJQ/cTfVn3Eh1klO5UI45r4xwYtxdcOqzBmjzzQDP
+         svhTmjS/8sApfID1xqCOy1YstykPOMxulXOwWgwYEJGUUXwFRbH4pT+Eln+DX5+JWN/8
+         NydA==
+X-Gm-Message-State: AOAM533qSJOvaN1K7UZSIQlWumsi+nUTZ1Wph6Ssqp2MUlQYCzrvt9RG
+        iWVXAcv0ztU1gB7SK+KnYaw5139nj9kJqfpY+YPhyA==
+X-Google-Smtp-Source: ABdhPJwM8lFiQp/MN8gj9lRHCvTXOTNTM8X6CoYUTUHkTKHuBtb10IqniEvi6toevkP/4NjlpsNO6dHD+F2gBFJZNZY=
+X-Received: by 2002:a17:90b:188:b0:1e3:1feb:edb2 with SMTP id
+ t8-20020a17090b018800b001e31febedb2mr13396373pjs.195.1654298009450; Fri, 03
+ Jun 2022 16:13:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220603141047.2163170-1-eddyz87@gmail.com> <20220603141047.2163170-2-eddyz87@gmail.com>
- <CAPhsuW5WrL-4qZz-NPufj7SWbWe+z4rVzc0cN3ufU2M_PnTwoQ@mail.gmail.com> <cd7821030cd2fca945592a935c2c0853dd2852a4.camel@gmail.com>
-In-Reply-To: <cd7821030cd2fca945592a935c2c0853dd2852a4.camel@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 3 Jun 2022 16:01:12 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6CgZQn_-uc1i7WVXcv2kGczEPEQRHGWAM5+S6dQyp9qQ@mail.gmail.com>
-Message-ID: <CAPhsuW6CgZQn_-uc1i7WVXcv2kGczEPEQRHGWAM5+S6dQyp9qQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/5] selftests/bpf: specify expected
- instructions in test_verifier tests
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20220601190218.2494963-1-sdf@google.com> <20220601190218.2494963-9-sdf@google.com>
+ <CAEf4BzYewhP+RbV9H1+8Htr73Y0fPNT4tN3E6v4-_GwEiJud-A@mail.gmail.com>
+In-Reply-To: <CAEf4BzYewhP+RbV9H1+8Htr73Y0fPNT4tN3E6v4-_GwEiJud-A@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 3 Jun 2022 16:13:15 -0700
+Message-ID: <CAKH8qBthw-7Nse+=xeys1t=Q+f8VwQWu-zuHMGC+_CJUSrX6zg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 08/11] libbpf: implement bpf_prog_query_opts
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 3, 2022 at 3:08 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Fri, Jun 3, 2022 at 2:35 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-[...]
-
+> On Wed, Jun 1, 2022 at 12:02 PM Stanislav Fomichev <sdf@google.com> wrote:
 > >
-> > for (int i = 0; ...)
->
-> Sorry, just to clarify, you want me to pull all loop counter
-> declarations to the top of the relevant functions, right? (Affecting 4
-> functions in this patch).
-
-Right. There are a few more in later patches.
-
->
-> [...]
->
-> > > +static int find_insn_subseq(struct bpf_insn *seq, struct bpf_insn *subseq,
-> > > +       if (check_unexpected &&
-> > > +           find_all_insn_subseqs(buf, test->unexpected_insns,
-> > > +                                 cnt, MAX_UNEXPECTED_INSNS)) {
+> > Implement bpf_prog_query_opts as a more expendable version of
+> > bpf_prog_query. Expose new prog_attach_flags and attach_btf_func_id as
+> > well:
 > >
-> > I wonder whether we want different logic for unexpected_insns. With multiple
-> > sub sequences, say seq-A and seq-B, it is more natural to reject any results
-> > with either seq-A or seq-B. However, current logic will reject seq-A => seq-B,
-> > but will accept seq-B => seq-A. Does this make sense?
+> > * prog_attach_flags is a per-program attach_type; relevant only for
+> >   lsm cgroup program which might have different attach_flags
+> >   per attach_btf_id
+> > * attach_btf_func_id is a new field expose for prog_query which
+> >   specifies real btf function id for lsm cgroup attachments
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/include/uapi/linux/bpf.h |  3 +++
+> >  tools/lib/bpf/bpf.c            | 40 +++++++++++++++++++++++++++-------
+> >  tools/lib/bpf/bpf.h            | 15 +++++++++++++
+> >  tools/lib/bpf/libbpf.map       |  2 +-
+> >  4 files changed, 51 insertions(+), 9 deletions(-)
+> >
 >
-> Have no strong opinion on this topic. In theory different variants
-> might be useful in different cases.
+> Few consistency nits, but otherwise:
 >
-> In the test cases for bpf_loop inlining I only had to match a single
-> unexpected instruction, so I opted to use same match function in both
-> expected and unexpected cases to keep things simple.
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-I think we can wait until we have an actual use case for multiple seq.
-For now, let's keep current logic and document this clearly in struct
-bpf_test.
-
-Thanks,
-Song
-[...]
+Thank you for the review, agreed, will address everything in a respin.
