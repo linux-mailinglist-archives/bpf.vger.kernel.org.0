@@ -2,68 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2138C53D242
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DB253D251
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345655AbiFCTMd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 15:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
+        id S1346938AbiFCTVf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 15:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348811AbiFCTMc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 15:12:32 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F9439B82;
-        Fri,  3 Jun 2022 12:12:30 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id y29so9394220ljd.7;
-        Fri, 03 Jun 2022 12:12:30 -0700 (PDT)
+        with ESMTP id S231741AbiFCTVe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 15:21:34 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FCD48889;
+        Fri,  3 Jun 2022 12:21:32 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id h23so14091369lfe.4;
+        Fri, 03 Jun 2022 12:21:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s9H/2G67jjwwNRYeTE9y1UIake4ZPkc4A7dULW7T4YQ=;
-        b=KUmC6aDPHo7NEcOzM22l6XWST1a6GmF0lgIr4syhOJFztcCTOS4HWi8fFmavsI8oiw
-         x0AVco1dvYi0dHFkF97Gx6vdDFUVesOmkWluGriV2sIJTfYYsUinjdpPUEsfEu/q0ycJ
-         09B7m/o3Ve/ec5mb3YVLe7GId53U/eBRhSD2pmRvqYzC1fE9QS2zPZVTQB9s9Xe7uTht
-         X6Sb3/VxMGGjAHi1J1JlZoY0lC1WHH3wO8p0qjMVcHbKUCX92yiYSAX234MUgDPwgP6K
-         d8xJt3d2IPb4S4glMkLLLiPKiljF7+/3LKwm0bbuFUABxpSE3z3WlJgMXZi8eU42V5Cj
-         3WsA==
+        bh=vRu2HMj+s0FqdXBsHbhcGVbuFfWd/V443d4ot13YWmo=;
+        b=OKV7tTcP036iyUftGLcun4D6VX/mIbJnOq4KbylU0UckLQV0YRi7rT20aalYukRkbB
+         x5ztf/ipTvP7Aclc2Yk8Oug9b6uiclWXsTxwWWHTfF2hnQ5DUra8Tc71Eeyzq5PzP4+7
+         jT7neRneUab4RjY5G+Q3SqnJMP5Oviq/ixZWD/HsQ4lHEeQNTh+o6OYeCG3pWn6bYI78
+         gzVzLvFBc/npFvyaFYPysstw+gN7bPMN44vtBD2k/yDBlGEnK+ks4pINO1n38lqH7y4S
+         OAjofZF6yPpvsFVMvdXpEwIvywbS8KtA8lq4NKFoC6hFvdkfVdo2KfVFCDlyUIO9fRUu
+         ta6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s9H/2G67jjwwNRYeTE9y1UIake4ZPkc4A7dULW7T4YQ=;
-        b=EN9eOkzBoZDfrzQuIpEGb1BK9i0DqZKEktrP9zCbpy3hBJ2Wi9M/TUuYJE7qx+H5u+
-         ECM4unjo0RsLDXBu71MNYFSZaifJIFr6vzO+RI4Mq3Ci+8hm99zwvDgWTe9PnKePr6b0
-         PVDAg8bKbXSrcHwQ1Au+8kcIyblVlTc+8TAkylXueJgfLNp0QO67WtnXa/ixKPkLmdvF
-         j/yqh3rCBGdqhaCqHld9+ovWTjkc1hE0Km14n7mMWa38Z0p6QBEHO23ZU5G0bjPCbweJ
-         CDP1onGhz5ZQHuqHu63kKFh7Cqg4nWTCA/ceAzi7fjtP92bB+u+IKM0S3RAALeQgOmum
-         u4bw==
-X-Gm-Message-State: AOAM531GLZsKhpUHI6Uc7xoiCYTR+SivjDi/8Sxj1Xxmy08Jxj7H0DMF
-        zvBQlc1y9dOOEy+JXqfoF1ZA9RjwGLzVaDhHZmI=
-X-Google-Smtp-Source: ABdhPJwGXQxFgTK2T/bv5P8x3Kz0T1dUVfNZfOmtvJ1Qw7A98pFPzvyoUQEECwQKpYhS6Sh3aCQ+W+zB/33Qx88s9oM=
-X-Received: by 2002:a2e:a7c5:0:b0:253:ee97:f9b7 with SMTP id
- x5-20020a2ea7c5000000b00253ee97f9b7mr33481530ljp.472.1654283549239; Fri, 03
- Jun 2022 12:12:29 -0700 (PDT)
+        bh=vRu2HMj+s0FqdXBsHbhcGVbuFfWd/V443d4ot13YWmo=;
+        b=neMM2MWL/UcMb2R0HfJVjEoYHu2gfUdiZULgI49Pj5lJBh76t/VT7KC2YBWV642HTf
+         2QWTK7mnh3ChT2zsRvGkcRCY4B+UEgOzrBd0leFFZ50xKHDvA+hvugNBtz7qZE93ufqQ
+         ZS4Zoik2YbPF2V+jNPOKdAdTTRemZ1tpjMTDY0u/6lpwb/5YIINPDRo6hja16dc3zSpX
+         ElsQYDNZl6nZH/pBhF+0+s3nCd9E1GvuLdogAYpnHX2BfZjkkZ8a4AAYGCAsaFi3Vsb4
+         C2oeclbRXbAk8TEAldHdmHUjIfIG56oKne19Q4gzmvGKWRJUSAZj4OD/16kcm62DdMXr
+         oWXg==
+X-Gm-Message-State: AOAM532x1TNX7Hs2Mw+aM0J1lBYbNVTRyP9JVJK57/VZ9SRRTx+8YfSF
+        NqKhETjpttxe8iiqbWy2ZWnSXuKCYxC/PaJhtcM=
+X-Google-Smtp-Source: ABdhPJwMLUFTdm93iXq8E4Z/0ob4mwl9RuQRIleNT7awKXEEwPxrOOobu6es6AroM4YQ/4R62QnGVt+d9OBosxaSwdc=
+X-Received: by 2002:a05:6512:685:b0:479:176c:5a5e with SMTP id
+ t5-20020a056512068500b00479176c5a5emr3578203lfe.408.1654284090835; Fri, 03
+ Jun 2022 12:21:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220527205611.655282-1-jolsa@kernel.org> <20220527205611.655282-3-jolsa@kernel.org>
- <CAEf4BzbfbPA-U+GObZy2cEZOn9qAHqRmKtKq-rPOVM=_+DGVww@mail.gmail.com> <YpnfldPKcEqesioK@krava>
-In-Reply-To: <YpnfldPKcEqesioK@krava>
+References: <165189881197.175864.14757002789194211860.stgit@devnote2>
+ <20220524192301.0c2ab08a@gandalf.local.home> <20220526232530.cb7d0aed0c60625ef093a735@kernel.org>
+ <Yo+TWcfpyHy55Il5@krava> <20220527011434.9e8c47d1b40f549baf2cf52a@kernel.org>
+ <YpFMQOjvV/tgwsuK@krava> <20220528101928.5118395f2d97142f7625b761@kernel.org>
+In-Reply-To: <20220528101928.5118395f2d97142f7625b761@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Jun 2022 12:12:17 -0700
-Message-ID: <CAEf4BzZury5Tnm1xmAadeOqNEtbTifNZ7065C4ax-GkXaz6dog@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] ftrace: Keep address offset in ftrace_lookup_symbols
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 3 Jun 2022 12:21:19 -0700
+Message-ID: <CAEf4BzZdPc3HVUwtuyifaPwz_=9VtykafJsSsvDbYonLA=K=2Q@mail.gmail.com>
+Subject: Re: [PATCH] rethook: Reject getting a rethook if RCU is not watching
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,85 +74,126 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 3, 2022 at 3:16 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Fri, May 27, 2022 at 6:19 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
-> On Thu, Jun 02, 2022 at 03:52:03PM -0700, Andrii Nakryiko wrote:
-> > On Fri, May 27, 2022 at 1:56 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > We want to store the resolved address on the same index as
-> > > the symbol string, because that's the user (bpf kprobe link)
-> > > code assumption.
-> > >
-> > > Also making sure we don't store duplicates that might be
-> > > present in kallsyms.
-> > >
-> > > Fixes: bed0d9a50dac ("ftrace: Add ftrace_lookup_symbols function")
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  kernel/trace/ftrace.c | 13 +++++++++++--
-> > >  1 file changed, 11 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > > index 674add0aafb3..00d0ba6397ed 100644
-> > > --- a/kernel/trace/ftrace.c
-> > > +++ b/kernel/trace/ftrace.c
-> > > @@ -7984,15 +7984,23 @@ static int kallsyms_callback(void *data, const char *name,
-> > >                              struct module *mod, unsigned long addr)
-> > >  {
-> > >         struct kallsyms_data *args = data;
-> > > +       const char **sym;
-> > > +       int idx;
-> > >
-> > > -       if (!bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp))
-> > > +       sym = bsearch(&name, args->syms, args->cnt, sizeof(*args->syms), symbols_cmp);
-> > > +       if (!sym)
-> > > +               return 0;
-> > > +
-> > > +       idx = sym - args->syms;
-> > > +       if (args->addrs[idx])
-> >
-> > if we have duplicated symbols we won't increment args->found here,
-> > right? So we won't stop early. But we also don't want to increment
-> > args->found here because we use it to check that we don't have
-> > duplicates (in addition to making sure we resolved all the unique
-> > symbols), right?
-> >
-> > So I wonder if in this situation should we return some error code to
-> > signify that we encountered symbol duplicate?
+> On Sat, 28 May 2022 00:10:08 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> hum, this callback is called for each kallsyms symbol and there
-> are duplicates in /proc/kallsyms.. so even if we have just single
-> copy of such symbol in args->syms, bsearch will find this single
-> symbol for all the duplicates in /proc/kallsyms and we will endup
-> in here.. and it's still fine, we should continue
+> > On Fri, May 27, 2022 at 01:14:34AM +0900, Masami Hiramatsu wrote:
+> > > On Thu, 26 May 2022 16:49:26 +0200
+> > > Jiri Olsa <olsajiri@gmail.com> wrote:
+> > >
+> > > > On Thu, May 26, 2022 at 11:25:30PM +0900, Masami Hiramatsu wrote:
+> > > > > On Tue, 24 May 2022 19:23:01 -0400
+> > > > > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > > >
+> > > > > > On Sat,  7 May 2022 13:46:52 +0900
+> > > > > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > > > >
+> > > > > > Is this expected to go through the BPF tree?
+> > > > > >
+> > > > >
+> > > > > Yes, since rethook (fprobe) is currently used only from eBPF.
+> > > > > Jiri, can you check this is good for your test case?
+> > > >
+> > > > sure I'll test it.. can't see the original email,
+> > > > perhaps I wasn't cc-ed.. but I'll find it
+> > >
+> > > Here it is. I Cc-ed your @kernel.org address.
+> > > https://lore.kernel.org/all/165189881197.175864.14757002789194211860.stgit@devnote2/T/#u
+> > >
+> > > >
+> > > > is this also related to tracing 'idle' functions,
+> > > > as discussed in here?
+> > > >   https://lore.kernel.org/bpf/20220515203653.4039075-1-jolsa@kernel.org/
+> > >
+> > > Ah, yes. So this may not happen with the above patch, but for the
+> > > hardening (ensuring it is always safe), I would like to add this.
+> > >
+> > > >
+> > > > because that's the one I can reproduce.. but I can
+> > > > certainly try that with your change as well
+> > >
+> > > Thank you!
+> >
+> > it did not help the idle warning as expected, but I did not
+> > see any problems running bpf tests on top of this
+>
+> Oops, right. I forgot this is only for the rethook, not protect the
+> fprobe handlers, since fprobe code doesn't involve the RCU code (it
+> depends on ftrace's check). Sorry about that.
+> Hmm, I need to add a test code for this issue, but that could be
+> solved by your noninstr patch.
 >
 
-ah, ok, duplicate kallsyms entries, right, never mind then
 
-> jirka
+Masami,
+
+It's not clear to me, do you intend to send a new revision with some
+more tests or this patch as is ready to go into bpf tree?
+
+
+> Thank you,
 >
 > >
+> > jirka
 > >
-> > >                 return 0;
 > > >
-> > >         addr = ftrace_location(addr);
-> > >         if (!addr)
-> > >                 return 0;
+> > > >
+> > > > jirka
+> > > >
+> > > > >
+> > > > > Thank you,
+> > > > >
+> > > > >
+> > > > > > -- Steve
+> > > > > >
+> > > > > >
+> > > > > > > Since the rethook_recycle() will involve the call_rcu() for reclaiming
+> > > > > > > the rethook_instance, the rethook must be set up at the RCU available
+> > > > > > > context (non idle). This rethook_recycle() in the rethook trampoline
+> > > > > > > handler is inevitable, thus the RCU available check must be done before
+> > > > > > > setting the rethook trampoline.
+> > > > > > >
+> > > > > > > This adds a rcu_is_watching() check in the rethook_try_get() so that
+> > > > > > > it will return NULL if it is called when !rcu_is_watching().
+> > > > > > >
+> > > > > > > Fixes: 54ecbe6f1ed5 ("rethook: Add a generic return hook")
+> > > > > > > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > > > > ---
+> > > > > > >  kernel/trace/rethook.c |    9 +++++++++
+> > > > > > >  1 file changed, 9 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+> > > > > > > index b56833700d23..c69d82273ce7 100644
+> > > > > > > --- a/kernel/trace/rethook.c
+> > > > > > > +++ b/kernel/trace/rethook.c
+> > > > > > > @@ -154,6 +154,15 @@ struct rethook_node *rethook_try_get(struct rethook *rh)
+> > > > > > >     if (unlikely(!handler))
+> > > > > > >             return NULL;
+> > > > > > >
+> > > > > > > +   /*
+> > > > > > > +    * This expects the caller will set up a rethook on a function entry.
+> > > > > > > +    * When the function returns, the rethook will eventually be reclaimed
+> > > > > > > +    * or released in the rethook_recycle() with call_rcu().
+> > > > > > > +    * This means the caller must be run in the RCU-availabe context.
+> > > > > > > +    */
+> > > > > > > +   if (unlikely(!rcu_is_watching()))
+> > > > > > > +           return NULL;
+> > > > > > > +
+> > > > > > >     fn = freelist_try_get(&rh->pool);
+> > > > > > >     if (!fn)
+> > > > > > >             return NULL;
+> > > > > >
+> > > > >
+> > > > >
+> > > > > --
+> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > > >
-> > > -       args->addrs[args->found++] = addr;
-> > > +       args->addrs[idx] = addr;
-> > > +       args->found++;
-> > >         return args->found == args->cnt ? 1 : 0;
-> > >  }
 > > >
-> > > @@ -8017,6 +8025,7 @@ int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *a
-> > >         struct kallsyms_data args;
-> > >         int err;
-> > >
-> > > +       memset(addrs, 0x0, sizeof(*addrs) * cnt);
-> > >         args.addrs = addrs;
-> > >         args.syms = sorted_syms;
-> > >         args.cnt = cnt;
 > > > --
-> > > 2.35.3
-> > >
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
