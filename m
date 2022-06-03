@@ -2,61 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFDA53CC7C
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 17:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD05353CC80
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 17:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238747AbiFCPn5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 11:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
+        id S244272AbiFCPo0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 11:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbiFCPn4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 11:43:56 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FAC6241;
-        Fri,  3 Jun 2022 08:43:53 -0700 (PDT)
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LF6WC5jGqz67yLV;
-        Fri,  3 Jun 2022 23:39:19 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 3 Jun 2022 17:43:51 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Fri, 3 Jun 2022 17:43:51 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     KP Singh <kpsingh@kernel.org>
-CC:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/3] bpf: Add BPF_F_VERIFY_ELEM to require signature
- verification on map values
-Thread-Topic: [PATCH 1/3] bpf: Add BPF_F_VERIFY_ELEM to require signature
- verification on map values
-Thread-Index: AQHYcDpckKyFNQT2PU2oWx8V6Vr5oK09gwmAgAAxm2CAAAOQgIAAJWng
-Date:   Fri, 3 Jun 2022 15:43:51 +0000
-Message-ID: <cfaafb3af5be40ec80f14e134a5702cf@huawei.com>
-References: <20220525132115.896698-1-roberto.sassu@huawei.com>
- <20220525132115.896698-2-roberto.sassu@huawei.com>
- <CACYkzJ7L-fE740t91amu4uiDA5dnDMU1D+c0vhb-sFHyQK08kA@mail.gmail.com>
- <89db5543066f4dccbfebd78ed3c025e7@huawei.com>
- <CACYkzJ4uD_k6sDktVaxkE_1QtSphZm+Rhjk4wrMm71LcmWRJ0w@mail.gmail.com>
-In-Reply-To: <CACYkzJ4uD_k6sDktVaxkE_1QtSphZm+Rhjk4wrMm71LcmWRJ0w@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.21]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S231160AbiFCPo0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 11:44:26 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AF062DE
+        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 08:44:24 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id w10so7726754vsa.4
+        for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 08:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=T/blLWTzm3edzIJzh9cdqF/JQAxQkYJjIod4C8ihcVs=;
+        b=hyle59WhKuNQqAY34rmg5Eo51OI2Vz04TA85J6K8Q9xUBJBk4gU0wW4hsBOWesi2Ax
+         j1P7O8AJZx7L0Uf53X7oh3Wcmf2DXafQBokfBOcFgmQ6CyOTXFCx0tTff5LNLhcAOynh
+         Rx5FKjpY+F1neVWLDgROnREQjrUfTbJEC/IE0Z5/bDC+NcBSZOMllMSLnvB7tghzyNnq
+         xMDnLTeuqTrm6Xw/IAhvL7QUipWGVN6oczNO0fcmu5oftZ4wnpayG9y+KCJvwOS/Ppn2
+         lwDYrAsf0oMkxNMxchrYx4WlBFypOLAHkLW4E5BqUQ8yCGybS+BMe9IGFCTKJ2RnTs8m
+         ed8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=T/blLWTzm3edzIJzh9cdqF/JQAxQkYJjIod4C8ihcVs=;
+        b=Ao8x0ym1EstriCIubKYJ5hSHeHOohacL1eRhMH8DdNKXDLsjWtHato2xY02f5olgKr
+         aCnfVzFNthm84AZMsRmJDRV/4qA3yeQGwJ1Cn3yHOB4WpeFUlT5MZFLGlnadQRhrGbC3
+         4gUikKVpf4JltQJIgR96WR3nI+rq0wvXZVdf6xI65vZ+Ke611HnQA1WuaQp4LkxE46kX
+         sLFPXU7TBuqqJUfVKtpOxN4xH7Nks51u4TWZa5glsJyActC+D04VN8E339K7UdseTBSm
+         I5MhVskXP4c2uIaQRg/fsvNpfpU3w/JXimJGAHJuH9K8Ze4uC06rnpWaTVAp6ybaYJKW
+         GEMw==
+X-Gm-Message-State: AOAM53160zfzcC3jmDsEyZ2uQTun33IW+d4GS5jwXs3gtXleTltJY2mz
+        C4wADbd1etDf/PzvlL8McuC9wjSqWjVNXN09VDujS2xfrym6Yg==
+X-Google-Smtp-Source: ABdhPJwpQa28uX3LT40zJq3ubGW4F1pJqimWDcOmhMp5hWlls6Nltmej/fRKinsoTJQwaQiHMTBt7tF4FFqdCKmXNoA=
+X-Received: by 2002:a05:6102:c50:b0:337:d28c:2853 with SMTP id
+ y16-20020a0561020c5000b00337d28c2853mr4435612vss.21.1654271063545; Fri, 03
+ Jun 2022 08:44:23 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+From:   Tatsuyuki Ishi <ishitatsuyuki@gmail.com>
+Date:   Sat, 4 Jun 2022 00:44:12 +0900
+Message-ID: <CANqewP1RFzD9TWgyyZy00ZVQhQr8QjmjUgyaaNK0g0_GJse=KA@mail.gmail.com>
+Subject: BPF ringbuf misses notifications due to improper coherence
+To:     bpf@vger.kernel.org
+Cc:     andriin@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,106 +60,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBLUCBTaW5naCBbbWFpbHRvOmtwc2luZ2hAa2VybmVsLm9yZ10NCj4gU2VudDogRnJp
-ZGF5LCBKdW5lIDMsIDIwMjIgNToxOCBQTQ0KPiBPbiBGcmksIEp1biAzLCAyMDIyIGF0IDM6MTEg
-UE0gUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3ZWkuY29tPg0KPiB3cm90ZToNCj4g
-Pg0KPiA+ID4gRnJvbTogS1AgU2luZ2ggW21haWx0bzprcHNpbmdoQGtlcm5lbC5vcmddDQo+ID4g
-PiBTZW50OiBGcmlkYXksIEp1bmUgMywgMjAyMiAyOjA4IFBNDQo+ID4gPiBPbiBXZWQsIE1heSAy
-NSwgMjAyMiBhdCAzOjIxIFBNIFJvYmVydG8gU2Fzc3UNCj4gPHJvYmVydG8uc2Fzc3VAaHVhd2Vp
-LmNvbT4NCj4gPiA+IHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBJbiBzb21lIGNhc2VzLCBpdCBp
-cyBkZXNpcmFibGUgdG8gZW5zdXJlIHRoYXQgYSBtYXAgY29udGFpbnMgZGF0YSBmcm9tDQo+ID4g
-PiA+IGF1dGhlbnRpY2F0ZWQgc291cmNlcywgZm9yIGV4YW1wbGUgaWYgbWFwIGRhdGEgYXJlIHVz
-ZWQgZm9yIG1ha2luZw0KPiBzZWN1cml0eQ0KPiA+ID4gPiBkZWNpc2lvbnMuDQo+ID4gPg0KPiA+
-ID4gSSBhbSBndWVzc2luZyB0aGlzIGNvbWVzIGZyb20gdGhlIGRpc2N1c3Npb24gd2UgaGFkIGFi
-b3V0IGRpZ2lsaW0uDQo+ID4gPiBJIHJlbWVtYmVyIHdlIGRpc2N1c3NlZCBhIEJQRiBoZWxwZXIg
-dGhhdCBjb3VsZCB2ZXJpZnkgc2lnbmF0dXJlcy4NCj4gPiA+IFdoeSB3b3VsZCB0aGF0IGFwcHJv
-YWNoIG5vdCB3b3JrPw0KPiA+DQo+ID4gVGhlIG1haW4gcmVhc29uIGlzIHRoYXQgc2lnbmF0dXJl
-IHZlcmlmaWNhdGlvbiBjYW4gYmUgZG9uZSBhbHNvDQo+ID4gZm9yIG5vbi1zbGVlcGFibGUgaG9v
-a3MuIEZvciBleGFtcGxlLCBvbmUgaXMgZmV4aXQvYXJyYXlfbWFwX3VwZGF0ZV9lbGVtLg0KPiAN
-Cj4gRm9yIHlvdXIgdXNlLWNhc2UsIHdoeSBpcyBpdCBub3QgcG9zc2libGUgdG8gaG9vayB0aGUg
-TFNNIGhvb2sgImJwZiINCj4gaS5lIHNlY3VyaXR5X2JwZiBhbmQgdGhlbiBjaGVjayBpZiB0aGVy
-ZSBpcyBhIE1BUF9VUERBVEVfRUxFTSBvcGVyYXRpb24/DQoNCkl0IHdvdWxkIHJlcXVpcmUgdGhl
-IGZvbGxvd2luZzogYSBuZXcgaGVscGVyIHRvIGNvbXBhcmUgdGhlIHVzZXIgc3BhY2UNCmZkIHdp
-dGggdGhlIGFkZHJlc3Mgb2YgdGhlIG1hcCBpbiB0aGUgZUJQRiBwcm9ncmFtOyBjb3B5IGRhdGEg
-ZnJvbQ0KdXNlciBzcGFjZSB0byBrZXJuZWwgc3BhY2UgKHZlcmlmeV9wa2NzN19zaWduYXR1cmVJ
-KCkgZXhwZWN0cyBrZXJuZWwNCm1lbW9yeSkuIFRoYXQgY29weSB3b3VsZCBoYXBwZW4gdHdpY2Uu
-DQoNCj4gPiBDdXJyZW50bHkgdGhlIGhlbHBlciBpbiBwYXRjaCAyIGp1c3QgcmV0dXJucyB0aGUg
-c2l6ZSBvZiB2ZXJpZmllZCBkYXRhLg0KPiA+IFdpdGggYW4gYWRkaXRpb25hbCBwYXJhbWV0ZXIs
-IGl0IGNvdWxkIGFsc28gYmUgdXNlZCBhcyBhIGhlbHBlciBmb3INCj4gPiBzaWduYXR1cmUgdmVy
-aWZpY2F0aW9uIGJ5IGFueSBlQlBGIHByb2dyYW1zLg0KPiA+DQo+IA0KPiBZb3VyIGJwZl9tYXBf
-dmVyaWZ5X3ZhbHVlX3NpZyBoYXJkIGNvZGVzIHRoZSB0eXBlIG9mIHNpZ25hdHVyZQ0KPiAoYnBm
-X21hcF92ZXJpZnlfdmFsdWVfc2lnIGFzIHZlcmlmeV9wa2NzN19zaWduYXR1cmUpDQo+IGl0cyBp
-bXBsZW1lbnRhdGlvbi4gVGhpcyBpcyBub3QgZXh0ZW5zaWJsZS4NCg0KSXQgaXMgaGFyZGNvZGVk
-IG5vdywgYnV0IGl0IHdvdWxkbid0IGlmIHRoZXJlIGFyZSBtb3JlIHZlcmlmaWNhdGlvbg0KZnVu
-Y3Rpb25zLiBGb3IgZXhhbXBsZSwgaWYgJ2lkX3R5cGUnIG9mIG1vZHVsZV9zaWduYXR1cmUgaXMg
-c2V0DQp0byBQS0VZX0lEX1BHUCwgYnBmX21hcF92ZXJpZnlfdmFsdWVfc2lnKCkgd291bGQgY2Fs
-bA0KdmVyaWZ5X3BncF9zaWduYXR1cmUoKSAoYXNzdW1pbmcgdGhhdCBzdXBwb3J0IGZvciBQR1Ag
-a2V5cyBhbmQNCnNpZ25hdHVyZXMgaXMgYWRkZWQgdG8gdGhlIGtlcm5lbCkuDQoNClJvYmVydG8N
-Cg0KSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYwNjMNCk1hbmFn
-aW5nIERpcmVjdG9yOiBMaSBQZW5nLCBZYW5nIFhpLCBMaSBIZQ0KDQo+IFdoYXQgd2UgZGlzY3Vz
-c2VkIHdhcyBhbiBleHRlbnNpYmxlIGhlbHBlciB0aGF0IGNhbiBiZSB1c2VkIGZvcg0KPiBkaWZm
-ZXJlbnQgc2lnbmF0dXJlIHR5cGVzLg0KPiANCj4gPiBUbyBiZSBob25lc3QsIEkgbGlrZSBtb3Jl
-IHRoZSBpZGVhIG9mIGEgbWFwIGZsYWcsIGFzIGl0IGlzIG1vcmUNCj4gPiBjbGVhciB0aGF0IHNp
-Z25hdHVyZSB2ZXJpZmljYXRpb24gaXMgYmVpbmcgZG9uZS4gT3RoZXJ3aXNlLA0KPiA+IHdlIHdv
-dWxkIG5lZWQgdG8gaW5mZXIgaXQgZnJvbSB0aGUgZUJQRiBwcm9ncmFtIGNvZGUuDQo+ID4NCj4g
-PiBUaGFua3MNCj4gPg0KPiA+IFJvYmVydG8NCj4gPg0KPiA+IEhVQVdFSSBURUNITk9MT0dJRVMg
-RHVlc3NlbGRvcmYgR21iSCwgSFJCIDU2MDYzDQo+ID4gTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBl
-bmcsIFlhbmcgWGksIExpIEhlDQo+ID4NCj4gPiA+ID4gU3VjaCByZXN0cmljdGlvbiBpcyBhY2hp
-ZXZlZCBieSB2ZXJpZnlpbmcgdGhlIHNpZ25hdHVyZSBvZiBtYXAgdmFsdWVzLCBhdA0KPiA+ID4g
-PiB0aGUgdGltZSB0aG9zZSB2YWx1ZXMgYXJlIGFkZGVkIHRvIHRoZSBtYXAgd2l0aCB0aGUgYnBm
-KCkgc3lzdGVtIGNhbGwNCj4gKG1vcmUNCj4gPiA+ID4gc3BlY2lmaWNhbGx5LCB3aGVuIHRoZSBj
-b21tYW5kcyBwYXNzZWQgdG8gYnBmKCkgYXJlDQo+IEJQRl9NQVBfVVBEQVRFX0VMRU0NCj4gPiA+
-IG9yDQo+ID4gPiA+IEJQRl9NQVBfVVBEQVRFX0JBVENIKS4gTW1hcHBhYmxlIG1hcHMgYXJlIG5v
-dCBhbGxvd2VkIGluIHRoaXMNCj4gY2FzZS4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmF0dXJlIHZl
-cmlmaWNhdGlvbiBpcyBpbml0aWFsbHkgZG9uZSB3aXRoIGtleXMgaW4gdGhlIHByaW1hcnkgYW5k
-DQo+ID4gPiA+IHNlY29uZGFyeSBrZXJuZWwga2V5cmluZ3MsIHNpbWlsYXJseSB0byBrZXJuZWwg
-bW9kdWxlcy4gVGhpcyBhbGxvd3Mgc3lzdGVtDQo+ID4gPiA+IG93bmVycyB0byBlbmZvcmNlIGEg
-c3lzdGVtLXdpZGUgcG9saWN5IGJhc2VkIG9uIHRoZSBrZXlzIHRoZXkgdHJ1c3QuDQo+ID4gPiA+
-IFN1cHBvcnQgZm9yIGFkZGl0aW9uYWwga2V5cmluZ3MgY291bGQgYmUgYWRkZWQgbGF0ZXIsIGJh
-c2VkIG9uIHVzZSBjYXNlDQo+ID4gPiA+IG5lZWRzLg0KPiA+ID4gPg0KPiA+ID4gPiBTaWduYXR1
-cmUgdmVyaWZpY2F0aW9uIGlzIGRvbmUgb25seSBmb3IgdGhvc2UgbWFwcyBmb3Igd2hpY2ggdGhl
-IG5ldyBtYXANCj4gPiA+ID4gZmxhZyBCUEZfRl9WRVJJRllfRUxFTSBpcyBzZXQuIFdoZW4gdGhl
-IGZsYWcgaXMgc2V0LCB0aGUga2VybmVsIGV4cGVjdHMNCj4gbWFwDQo+ID4gPiA+IHZhbHVlcyB0
-byBiZSBpbiB0aGUgZm9sbG93aW5nIGZvcm1hdDoNCj4gPiA+ID4NCj4gPiA+ID4gKy0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tKy0tLS0tKy0tLS0tLS0tLS0t
-LS0tLS0tKw0KPiA+ID4gPiB8IHZlcmlmaWVkIGRhdGErc2lnIHNpemUgKGJlMzIpIHwgdmVyaWZp
-ZWQgZGF0YSB8IHNpZyB8IHVudmVyaWZpZWQgZGF0YSB8DQo+ID4gPiA+ICstLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLSstLS0tLSstLS0tLS0tLS0tLS0tLS0t
-LSsNCj4gPiA+ID4NCj4gPiA+ID4gd2hlcmUgc2lnIGlzIGEgbW9kdWxlLXN0eWxlIGFwcGVuZGVk
-IHNpZ25hdHVyZSBhcyBnZW5lcmF0ZWQgYnkgdGhlDQo+ID4gPiA+IHNpZ24tZmlsZSB0b29sLiBU
-aGUgdmVyaWZpZWQgZGF0YStzaWcgc2l6ZSAoaW4gYmlnIGVuZGlhbikgbXVzdCBiZQ0KPiA+ID4g
-PiBleHBsaWNpdGx5IHByb3ZpZGVkIChpdCBpcyBub3QgZ2VuZXJhdGVkIGJ5IHNpZ24tZmlsZSks
-IGFzIGl0IGNhbm5vdCBiZQ0KPiA+ID4gPiBkZXRlcm1pbmVkIGluIG90aGVyIHdheXMgKGN1cnJl
-bnRseSwgdGhlIG1hcCB2YWx1ZSBzaXplIGlzIGZpeGVkKS4gSXQgY2FuDQo+ID4gPiA+IGJlIG9i
-dGFpbmVkIGZyb20gdGhlIHNpemUgb2YgdGhlIGZpbGUgY3JlYXRlZCBieSBzaWduLWZpbGUuDQo+
-ID4gPiA+DQo+ID4gPiA+IEludHJvZHVjZSB0aGUgbmV3IG1hcCBmbGFnIEJQRl9GX1ZFUklGWV9F
-TEVNLCBhbmQgYWRkaXRpb25hbGx5IGNhbGwgdGhlDQo+ID4gPiBuZXcNCj4gPiA+ID4gZnVuY3Rp
-b24gYnBmX21hcF92ZXJpZnlfdmFsdWVfc2lnKCkgZnJvbSBicGZfbWFwX3VwZGF0ZV92YWx1ZSgp
-IGlmIHRoZQ0KPiBmbGFnDQo+ID4gPiA+IGlzIHNldC4gYnBmX21hcF92ZXJpZnlfdmFsdWVfc2ln
-KCksIGRlY2xhcmVkIGFzIGdsb2JhbCBmb3IgYSBuZXcgaGVscGVyLCBpcw0KPiA+ID4gPiBiYXNp
-Y2FsbHkgZXF1aXZhbGVudCB0byBtb2RfdmVyaWZ5X3NpZygpLiBJdCBhZGRpdGlvbmFsbHkgZG9l
-cyB0aGUgbWFya2VyDQo+ID4gPiA+IGNoZWNrLCB0aGF0IGZvciBrZXJuZWwgbW9kdWxlcyBpcyBk
-b25lIGluIG1vZHVsZV9zaWdfY2hlY2soKSwgYW5kIHRoZQ0KPiA+ID4gPiBwYXJzaW5nIG9mIHRo
-ZSB2ZXJpZmllZCBkYXRhK3NpZyBzaXplLg0KPiA+ID4gPg0KPiA+ID4gPiBDdXJyZW50bHksIGVu
-YWJsZSB0aGUgdXNhZ2Ugb2YgdGhlIGZsYWcgb25seSBmb3IgdGhlIGFycmF5IG1hcC4gU3VwcG9y
-dCBmb3INCj4gPiA+ID4gbW9yZSBtYXAgdHlwZXMgY2FuIGJlIGFkZGVkIGxhdGVyLg0KPiA+ID4g
-Pg0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNhc3N1QGh1
-YXdlaS5jb20+DQo+ID4gPiA+IC0tLQ0KPiANCj4gWy4uLl0NCj4gDQo+ID4gPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIE5VTEwsIE5VTEwpOw0KPiA+ID4g
-PiArICAgICAgICAgICAgICAgaWYgKHJldCA8IDApDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAgIHJldHVybiByZXQ7DQo+ID4gPiA+ICsgICAgICAgfQ0KPiA+ID4gPiArDQo+ID4gPiA+
-ICsgICAgICAgcmV0dXJuIG1vZGxlbjsNCj4gPiA+ID4gK30NCj4gPiA+ID4gK0VYUE9SVF9TWU1C
-T0xfR1BMKGJwZl9tYXBfdmVyaWZ5X3ZhbHVlX3NpZyk7DQo+ID4gPiA+DQo+ID4gPiA+ICAjZGVm
-aW5lIEJQRl9NQVBfVVBEQVRFX0VMRU1fTEFTVF9GSUVMRCBmbGFncw0KPiA+ID4gPg0KPiA+ID4g
-PiBkaWZmIC0tZ2l0IGEvdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oIGIvdG9vbHMvaW5j
-bHVkZS91YXBpL2xpbnV4L2JwZi5oDQo+ID4gPiA+IGluZGV4IGY0MDA5ZGJkZjYyZC4uYThlNzgw
-M2QyNTkzIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS90b29scy9pbmNsdWRlL3VhcGkvbGludXgvYnBm
-LmgNCj4gPiA+ID4gKysrIGIvdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oDQo+ID4gPiA+
-IEBAIC0xMjI2LDYgKzEyMjYsOSBAQCBlbnVtIHsNCj4gPiA+ID4NCj4gPiA+ID4gIC8qIENyZWF0
-ZSBhIG1hcCB0aGF0IGlzIHN1aXRhYmxlIHRvIGJlIGFuIGlubmVyIG1hcCB3aXRoIGR5bmFtaWMg
-bWF4DQo+IGVudHJpZXMNCj4gPiA+ICovDQo+ID4gPiA+ICAgICAgICAgQlBGX0ZfSU5ORVJfTUFQ
-ICAgICAgICAgPSAoMVUgPDwgMTIpLA0KPiA+ID4gPiArDQo+ID4gPiA+ICsvKiBWZXJpZnkgbWFw
-IHZhbHVlIChmbXQ6IHZlciBkYXRhK3NpZyBzaXplKGJlMzIpLCB2ZXIgZGF0YSwgc2lnLCB1bnZl
-cg0KPiBkYXRhKSAqLw0KPiA+ID4gPiArICAgICAgIEJQRl9GX1ZFUklGWV9FTEVNICAgICAgID0g
-KDFVIDw8IDEzKQ0KPiA+ID4gPiAgfTsNCj4gPiA+ID4NCj4gPiA+ID4gIC8qIEZsYWdzIGZvciBC
-UEZfUFJPR19RVUVSWS4gKi8NCj4gPiA+ID4gLS0NCj4gPiA+ID4gMi4yNS4xDQo+ID4gPiA+DQo=
+The BPF ringbuf defaults to a mechanism to deliver epoll notifications
+only when the userspace seems to "catch up" to the last written entry.
+This is done by comparing the consumer pointer to the head of the last
+written entry, and if it's equal, a notification is sent.
+
+During the effort of implementing ringbuf in aya [1] I observed that
+the epoll loop will sometimes get stuck, entering the wait state but
+never getting the notification it's supposed to get. The
+implementation originally mirrored libbpf's logic, especially its use
+of acquire and release memory operations. However, it turned out that
+the use of causal memory model is not sufficient, and using a seq_cst
+store is required to avoid anomalies as outlined below.
+
+The release-acquire ordering permits the following anomaly to happen
+(in a simplified model where writing a new entry atomically completes
+without going through busy bit):
+
+kernel: write p 2 -> read c X -> write p 3 -> read c 1 (X doesn't matter)
+user  : write c 2 -> read p 2
+
+This is because the release-acquire model allows stale reads, and in
+the case above the stale reads means that none of the causal effect
+can prevent this anomaly from happening. In order to prevent this
+anomaly, a total ordering needs to be enforced on producer and
+consumer writes. (Interestingly, it doesn't need to be enforced on
+reads, however.)
+
+If this is correct, then the fix needed right now is to correct
+libbpf's stores to be sequentially consistent. On the kernel side,
+however, we have something weird, probably inoptimal, but still
+correct. The kernel uses xchg when clearing the BUSY flag [2]. This
+doesn't sound like a necessary thing, since making the written event
+visible only require release ordering. However, it's this xchg that
+provides the other half of total ordering in order to prevent the
+anomalies, as it performs a smp_mb, essentially upgrading the prior
+store to seq_cst. If the intention was actually that, it would be
+really obscure and hard-to-reason way to implement coherency. I'd
+appreciate a clarification on this.
+
+[1]: https://github.com/aya-rs/aya/pull/294#issuecomment-1144385687
+[2]: https://github.com/torvalds/linux/blob/50fd82b3a9a9335df5d50c7ddcb81c81d358c4fc/kernel/bpf/ringbuf.c#L384
