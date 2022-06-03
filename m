@@ -2,38 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9161453D216
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4252553D217
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245332AbiFCTDp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 3 Jun 2022 15:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56616 "EHLO
+        id S1348697AbiFCTDr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 3 Jun 2022 15:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348702AbiFCTDo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 15:03:44 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2C230F76
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 12:03:41 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 253GmLOO007240
+        with ESMTP id S1348707AbiFCTDp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 15:03:45 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C70430F7E
+        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 12:03:42 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 253GmHmR028310
         for <bpf@vger.kernel.org>; Fri, 3 Jun 2022 12:03:41 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gfnmv94q5-3
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gf4pap0yp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 12:03:41 -0700
-Received: from twshared0725.22.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+Received: from twshared31479.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Fri, 3 Jun 2022 12:03:39 -0700
+ 15.1.2375.28; Fri, 3 Jun 2022 12:03:38 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id C3E331AC9C388; Fri,  3 Jun 2022 12:03:31 -0700 (PDT)
+        id A3A471AC9C3A7; Fri,  3 Jun 2022 12:03:33 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>
-Subject: [PATCH bpf-next 01/15] libbpf: move xsk.{c,h} into selftests/bpf
-Date:   Fri, 3 Jun 2022 12:01:41 -0700
-Message-ID: <20220603190155.3924899-2-andrii@kernel.org>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 02/15] libbpf: remove deprecated low-level APIs
+Date:   Fri, 3 Jun 2022 12:01:42 -0700
+Message-ID: <20220603190155.3924899-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220603190155.3924899-1-andrii@kernel.org>
 References: <20220603190155.3924899-1-andrii@kernel.org>
@@ -41,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 52C1pHLn1WGGL-hDYZrBuZZZyjPtazB9
-X-Proofpoint-GUID: 52C1pHLn1WGGL-hDYZrBuZZZyjPtazB9
+X-Proofpoint-GUID: 3U9iFQTrz8N3HFPU9uTewY5BdLCcqnZK
+X-Proofpoint-ORIG-GUID: 3U9iFQTrz8N3HFPU9uTewY5BdLCcqnZK
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
  definitions=2022-06-03_06,2022-06-03_01,2022-02-23_01
@@ -56,384 +55,530 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove deprecated xsk APIs from libbpf. But given we have selftests
-relying on this, move those files (with minimal adjustments to make them
-compilable) under selftests/bpf.
+Drop low-level APIs as well as high-level (and very confusingly named)
+BPF object loading bpf_prog_load_xattr() and bpf_prog_load_deprecated()
+APIs.
 
-We also remove all the removed APIs from libbpf.map, while overall
-keeping version inheritance chain, as most APIs are backwards
-compatible so there is no need to reassign them as LIBBPF_1.0.0 versions.
-
-Cc: Magnus Karlsson <magnus.karlsson@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/Build                        |  2 +-
- tools/lib/bpf/Makefile                     |  2 +-
- tools/lib/bpf/libbpf.map                   | 12 ----
- tools/testing/selftests/bpf/Makefile       |  1 +
- tools/testing/selftests/bpf/xdpxceiver.c   |  2 +-
- tools/{lib => testing/selftests}/bpf/xsk.c | 76 ++++++++++++----------
- tools/{lib => testing/selftests}/bpf/xsk.h | 29 ++-------
- 7 files changed, 48 insertions(+), 76 deletions(-)
- rename tools/{lib => testing/selftests}/bpf/xsk.c (95%)
- rename tools/{lib => testing/selftests}/bpf/xsk.h (84%)
+ tools/lib/bpf/bpf.c      | 174 +--------------------------------------
+ tools/lib/bpf/bpf.h      |  83 -------------------
+ tools/lib/bpf/libbpf.c   |  89 --------------------
+ tools/lib/bpf/libbpf.h   |  16 ----
+ tools/lib/bpf/libbpf.map |  16 ----
+ 5 files changed, 4 insertions(+), 374 deletions(-)
 
-diff --git a/tools/lib/bpf/Build b/tools/lib/bpf/Build
-index 31a1a9015902..5a3dfb56d78f 100644
---- a/tools/lib/bpf/Build
-+++ b/tools/lib/bpf/Build
-@@ -1,4 +1,4 @@
- libbpf-y := libbpf.o bpf.o nlattr.o btf.o libbpf_errno.o str_error.o \
--	    netlink.o bpf_prog_linfo.o libbpf_probes.o xsk.o hashmap.o \
-+	    netlink.o bpf_prog_linfo.o libbpf_probes.o hashmap.o \
- 	    btf_dump.o ringbuf.o strset.o linker.o gen_loader.o relo_core.o \
- 	    usdt.o
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index a1265b152027..4c904ef0b47e 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -237,7 +237,7 @@ install_lib: all_cmd
- 		$(call do_install_mkdir,$(libdir_SQ)); \
- 		cp -fpR $(LIB_FILE) $(DESTDIR)$(libdir_SQ)
- 
--SRC_HDRS := bpf.h libbpf.h btf.h libbpf_common.h libbpf_legacy.h xsk.h	     \
-+SRC_HDRS := bpf.h libbpf.h btf.h libbpf_common.h libbpf_legacy.h	     \
- 	    bpf_helpers.h bpf_tracing.h bpf_endian.h bpf_core_read.h	     \
- 	    skel_internal.h libbpf_version.h usdt.bpf.h
- GEN_HDRS := $(BPF_GENERATED)
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 38e284ff057d..546214a7d41a 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -147,12 +147,6 @@ LIBBPF_0.0.2 {
- 		btf_ext__new;
- 		btf_ext__reloc_func_info;
- 		btf_ext__reloc_line_info;
--		xsk_umem__create;
--		xsk_socket__create;
--		xsk_umem__delete;
--		xsk_socket__delete;
--		xsk_umem__fd;
--		xsk_socket__fd;
- 		bpf_program__get_prog_info_linear;
- 		bpf_program__bpil_addr_to_offs;
- 		bpf_program__bpil_offs_to_addr;
-@@ -183,7 +177,6 @@ LIBBPF_0.0.4 {
- 		perf_buffer__new;
- 		perf_buffer__new_raw;
- 		perf_buffer__poll;
--		xsk_umem__create;
- } LIBBPF_0.0.3;
- 
- LIBBPF_0.0.5 {
-@@ -336,7 +329,6 @@ LIBBPF_0.2.0 {
- 		perf_buffer__buffer_fd;
- 		perf_buffer__epoll_fd;
- 		perf_buffer__consume_buffer;
--		xsk_socket__create_shared;
- } LIBBPF_0.1.0;
- 
- LIBBPF_0.3.0 {
-@@ -348,8 +340,6 @@ LIBBPF_0.3.0 {
- 		btf__new_empty_split;
- 		btf__new_split;
- 		ring_buffer__epoll_fd;
--		xsk_setup_xdp_prog;
--		xsk_socket__update_xskmap;
- } LIBBPF_0.2.0;
- 
- LIBBPF_0.4.0 {
-@@ -466,6 +456,4 @@ LIBBPF_1.0.0 {
- 		libbpf_bpf_link_type_str;
- 		libbpf_bpf_map_type_str;
- 		libbpf_bpf_prog_type_str;
--
--	local: *;
- };
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 2d3c8c8f558a..ead5f53081c1 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -221,6 +221,7 @@ $(OUTPUT)/xdping: $(TESTING_HELPERS)
- $(OUTPUT)/flow_dissector_load: $(TESTING_HELPERS)
- $(OUTPUT)/test_maps: $(TESTING_HELPERS)
- $(OUTPUT)/test_verifier: $(TESTING_HELPERS) $(CAP_HELPERS)
-+$(OUTPUT)/xdpxceiver: $(OUTPUT)/xsk.o
- 
- BPFTOOL ?= $(DEFAULT_BPFTOOL)
- $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index e5992a6b5e09..019c567b6b4e 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -97,7 +97,7 @@
- #include <time.h>
- #include <unistd.h>
- #include <stdatomic.h>
--#include <bpf/xsk.h>
-+#include "xsk.h"
- #include "xdpxceiver.h"
- #include "../kselftest.h"
- 
-diff --git a/tools/lib/bpf/xsk.c b/tools/testing/selftests/bpf/xsk.c
-similarity index 95%
-rename from tools/lib/bpf/xsk.c
-rename to tools/testing/selftests/bpf/xsk.c
-index af136f73b09d..eb50c3f336f8 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/testing/selftests/bpf/xsk.c
-@@ -30,16 +30,10 @@
- #include <sys/types.h>
- #include <linux/if_link.h>
- 
--#include "bpf.h"
--#include "libbpf.h"
--#include "libbpf_internal.h"
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
- #include "xsk.h"
- 
--/* entire xsk.h and xsk.c is going away in libbpf 1.0, so ignore all internal
-- * uses of deprecated APIs
-- */
--#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
--
- #ifndef SOL_XDP
-  #define SOL_XDP 283
- #endif
-@@ -52,6 +46,8 @@
-  #define PF_XDP AF_XDP
- #endif
- 
-+#define pr_warn(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
-+
- enum xsk_prog {
- 	XSK_PROG_FALLBACK,
- 	XSK_PROG_REDIRECT_FLAGS,
-@@ -286,11 +282,10 @@ static int xsk_create_umem_rings(struct xsk_umem *umem, int fd,
- 	return err;
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 240186aac8e6..2f3495d80d69 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -233,11 +233,10 @@ alloc_zero_tailing_info(const void *orecord, __u32 cnt,
+ 	return info;
  }
  
--DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
--int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
--			    __u64 size, struct xsk_ring_prod *fill,
--			    struct xsk_ring_cons *comp,
--			    const struct xsk_umem_config *usr_config)
-+int xsk_umem__create(struct xsk_umem **umem_ptr, void *umem_area,
-+		     __u64 size, struct xsk_ring_prod *fill,
-+		     struct xsk_ring_cons *comp,
-+		     const struct xsk_umem_config *usr_config)
+-DEFAULT_VERSION(bpf_prog_load_v0_6_0, bpf_prog_load, LIBBPF_0.6.0)
+-int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
+-		         const char *prog_name, const char *license,
+-		         const struct bpf_insn *insns, size_t insn_cnt,
+-		         const struct bpf_prog_load_opts *opts)
++int bpf_prog_load(enum bpf_prog_type prog_type,
++		  const char *prog_name, const char *license,
++		  const struct bpf_insn *insns, size_t insn_cnt,
++		  const struct bpf_prog_load_opts *opts)
  {
- 	struct xdp_umem_reg mr;
- 	struct xsk_umem *umem;
-@@ -351,25 +346,9 @@ struct xsk_umem_config_v1 {
- 	__u32 frame_headroom;
- };
+ 	void *finfo = NULL, *linfo = NULL;
+ 	const char *func_info, *line_info;
+@@ -384,94 +383,6 @@ int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
+ 	return libbpf_err_errno(fd);
+ }
  
--COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
--int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
--			    __u64 size, struct xsk_ring_prod *fill,
--			    struct xsk_ring_cons *comp,
--			    const struct xsk_umem_config *usr_config)
+-__attribute__((alias("bpf_load_program_xattr2")))
+-int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
+-			   char *log_buf, size_t log_buf_sz);
+-
+-static int bpf_load_program_xattr2(const struct bpf_load_program_attr *load_attr,
+-				   char *log_buf, size_t log_buf_sz)
 -{
--	struct xsk_umem_config config;
+-	LIBBPF_OPTS(bpf_prog_load_opts, p);
 -
--	memcpy(&config, usr_config, sizeof(struct xsk_umem_config_v1));
--	config.flags = 0;
+-	if (!load_attr || !log_buf != !log_buf_sz)
+-		return libbpf_err(-EINVAL);
 -
--	return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
--					&config);
+-	p.expected_attach_type = load_attr->expected_attach_type;
+-	switch (load_attr->prog_type) {
+-	case BPF_PROG_TYPE_STRUCT_OPS:
+-	case BPF_PROG_TYPE_LSM:
+-		p.attach_btf_id = load_attr->attach_btf_id;
+-		break;
+-	case BPF_PROG_TYPE_TRACING:
+-	case BPF_PROG_TYPE_EXT:
+-		p.attach_btf_id = load_attr->attach_btf_id;
+-		p.attach_prog_fd = load_attr->attach_prog_fd;
+-		break;
+-	default:
+-		p.prog_ifindex = load_attr->prog_ifindex;
+-		p.kern_version = load_attr->kern_version;
+-	}
+-	p.log_level = load_attr->log_level;
+-	p.log_buf = log_buf;
+-	p.log_size = log_buf_sz;
+-	p.prog_btf_fd = load_attr->prog_btf_fd;
+-	p.func_info_rec_size = load_attr->func_info_rec_size;
+-	p.func_info_cnt = load_attr->func_info_cnt;
+-	p.func_info = load_attr->func_info;
+-	p.line_info_rec_size = load_attr->line_info_rec_size;
+-	p.line_info_cnt = load_attr->line_info_cnt;
+-	p.line_info = load_attr->line_info;
+-	p.prog_flags = load_attr->prog_flags;
+-
+-	return bpf_prog_load(load_attr->prog_type, load_attr->name, load_attr->license,
+-			     load_attr->insns, load_attr->insns_cnt, &p);
 -}
 -
- static enum xsk_prog get_xsk_prog(void)
+-int bpf_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
+-		     size_t insns_cnt, const char *license,
+-		     __u32 kern_version, char *log_buf,
+-		     size_t log_buf_sz)
+-{
+-	struct bpf_load_program_attr load_attr;
+-
+-	memset(&load_attr, 0, sizeof(struct bpf_load_program_attr));
+-	load_attr.prog_type = type;
+-	load_attr.expected_attach_type = 0;
+-	load_attr.name = NULL;
+-	load_attr.insns = insns;
+-	load_attr.insns_cnt = insns_cnt;
+-	load_attr.license = license;
+-	load_attr.kern_version = kern_version;
+-
+-	return bpf_load_program_xattr2(&load_attr, log_buf, log_buf_sz);
+-}
+-
+-int bpf_verify_program(enum bpf_prog_type type, const struct bpf_insn *insns,
+-		       size_t insns_cnt, __u32 prog_flags, const char *license,
+-		       __u32 kern_version, char *log_buf, size_t log_buf_sz,
+-		       int log_level)
+-{
+-	union bpf_attr attr;
+-	int fd;
+-
+-	bump_rlimit_memlock();
+-
+-	memset(&attr, 0, sizeof(attr));
+-	attr.prog_type = type;
+-	attr.insn_cnt = (__u32)insns_cnt;
+-	attr.insns = ptr_to_u64(insns);
+-	attr.license = ptr_to_u64(license);
+-	attr.log_buf = ptr_to_u64(log_buf);
+-	attr.log_size = log_buf_sz;
+-	attr.log_level = log_level;
+-	log_buf[0] = 0;
+-	attr.kern_version = kern_version;
+-	attr.prog_flags = prog_flags;
+-
+-	fd = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+-	return libbpf_err_errno(fd);
+-}
+-
+ int bpf_map_update_elem(int fd, const void *key, const void *value,
+ 			__u64 flags)
  {
- 	enum xsk_prog detected = XSK_PROG_FALLBACK;
--	__u32 size_out, retval, duration;
- 	char data_in = 0, data_out;
- 	struct bpf_insn insns[] = {
- 		BPF_LD_MAP_FD(BPF_REG_1, 0),
-@@ -378,6 +357,12 @@ static enum xsk_prog get_xsk_prog(void)
- 		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
- 		BPF_EXIT_INSN(),
- 	};
-+	LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		.data_in = &data_in,
-+		.data_size_in = 1,
-+		.data_out = &data_out,
-+	);
-+
- 	int prog_fd, map_fd, ret, insn_cnt = ARRAY_SIZE(insns);
- 
- 	map_fd = bpf_map_create(BPF_MAP_TYPE_XSKMAP, NULL, sizeof(int), sizeof(int), 1, NULL);
-@@ -392,8 +377,8 @@ static enum xsk_prog get_xsk_prog(void)
- 		return detected;
- 	}
- 
--	ret = bpf_prog_test_run(prog_fd, 0, &data_in, 1, &data_out, &size_out, &retval, &duration);
--	if (!ret && retval == XDP_PASS)
-+	ret = bpf_prog_test_run_opts(prog_fd, &opts);
-+	if (!ret && opts.retval == XDP_PASS)
- 		detected = XSK_PROG_REDIRECT_FLAGS;
- 	close(prog_fd);
- 	close(map_fd);
-@@ -510,7 +495,7 @@ static int xsk_create_bpf_link(struct xsk_socket *xsk)
- 	int link_fd;
- 	int err;
- 
--	err = bpf_get_link_xdp_id(ctx->ifindex, &prog_id, xsk->config.xdp_flags);
-+	err = bpf_xdp_query_id(ctx->ifindex, xsk->config.xdp_flags, &prog_id);
- 	if (err) {
- 		pr_warn("getting XDP prog id failed\n");
- 		return err;
-@@ -536,6 +521,25 @@ static int xsk_create_bpf_link(struct xsk_socket *xsk)
- 	return 0;
+@@ -910,62 +821,6 @@ int bpf_prog_query(int target_fd, enum bpf_attach_type type, __u32 query_flags,
+ 	return libbpf_err_errno(ret);
  }
  
-+/* Copy up to sz - 1 bytes from zero-terminated src string and ensure that dst
-+ * is zero-terminated string no matter what (unless sz == 0, in which case
-+ * it's a no-op). It's conceptually close to FreeBSD's strlcpy(), but differs
-+ * in what is returned. Given this is internal helper, it's trivial to extend
-+ * this, when necessary. Use this instead of strncpy inside libbpf source code.
-+ */
-+static inline void libbpf_strlcpy(char *dst, const char *src, size_t sz)
-+{
-+        size_t i;
-+
-+        if (sz == 0)
-+                return;
-+
-+        sz--;
-+        for (i = 0; i < sz && src[i]; i++)
-+                dst[i] = src[i];
-+        dst[i] = '\0';
-+}
-+
- static int xsk_get_max_queues(struct xsk_socket *xsk)
+-int bpf_prog_test_run(int prog_fd, int repeat, void *data, __u32 size,
+-		      void *data_out, __u32 *size_out, __u32 *retval,
+-		      __u32 *duration)
+-{
+-	union bpf_attr attr;
+-	int ret;
+-
+-	memset(&attr, 0, sizeof(attr));
+-	attr.test.prog_fd = prog_fd;
+-	attr.test.data_in = ptr_to_u64(data);
+-	attr.test.data_out = ptr_to_u64(data_out);
+-	attr.test.data_size_in = size;
+-	attr.test.repeat = repeat;
+-
+-	ret = sys_bpf(BPF_PROG_TEST_RUN, &attr, sizeof(attr));
+-
+-	if (size_out)
+-		*size_out = attr.test.data_size_out;
+-	if (retval)
+-		*retval = attr.test.retval;
+-	if (duration)
+-		*duration = attr.test.duration;
+-
+-	return libbpf_err_errno(ret);
+-}
+-
+-int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr)
+-{
+-	union bpf_attr attr;
+-	int ret;
+-
+-	if (!test_attr->data_out && test_attr->data_size_out > 0)
+-		return libbpf_err(-EINVAL);
+-
+-	memset(&attr, 0, sizeof(attr));
+-	attr.test.prog_fd = test_attr->prog_fd;
+-	attr.test.data_in = ptr_to_u64(test_attr->data_in);
+-	attr.test.data_out = ptr_to_u64(test_attr->data_out);
+-	attr.test.data_size_in = test_attr->data_size_in;
+-	attr.test.data_size_out = test_attr->data_size_out;
+-	attr.test.ctx_in = ptr_to_u64(test_attr->ctx_in);
+-	attr.test.ctx_out = ptr_to_u64(test_attr->ctx_out);
+-	attr.test.ctx_size_in = test_attr->ctx_size_in;
+-	attr.test.ctx_size_out = test_attr->ctx_size_out;
+-	attr.test.repeat = test_attr->repeat;
+-
+-	ret = sys_bpf(BPF_PROG_TEST_RUN, &attr, sizeof(attr));
+-
+-	test_attr->data_size_out = attr.test.data_size_out;
+-	test_attr->ctx_size_out = attr.test.ctx_size_out;
+-	test_attr->retval = attr.test.retval;
+-	test_attr->duration = attr.test.duration;
+-
+-	return libbpf_err_errno(ret);
+-}
+-
+ int bpf_prog_test_run_opts(int prog_fd, struct bpf_test_run_opts *opts)
  {
- 	struct ethtool_channels channels = { .cmd = ETHTOOL_GCHANNELS };
-@@ -792,8 +796,8 @@ static int xsk_init_xdp_res(struct xsk_socket *xsk,
- 	if (ctx->has_bpf_link)
- 		err = xsk_create_bpf_link(xsk);
- 	else
--		err = bpf_set_link_xdp_fd(xsk->ctx->ifindex, ctx->prog_fd,
--					  xsk->config.xdp_flags);
-+		err = bpf_xdp_attach(xsk->ctx->ifindex, ctx->prog_fd,
-+				     xsk->config.xdp_flags, NULL);
+ 	union bpf_attr attr;
+@@ -1162,27 +1017,6 @@ int bpf_btf_load(const void *btf_data, size_t btf_size, const struct bpf_btf_loa
+ 	return libbpf_err_errno(fd);
+ }
  
- 	if (err)
- 		goto err_attach_xdp_prog;
-@@ -811,7 +815,7 @@ static int xsk_init_xdp_res(struct xsk_socket *xsk,
- 	if (ctx->has_bpf_link)
- 		close(ctx->link_fd);
- 	else
--		bpf_set_link_xdp_fd(ctx->ifindex, -1, 0);
-+		bpf_xdp_detach(ctx->ifindex, 0, NULL);
- err_attach_xdp_prog:
- 	close(ctx->prog_fd);
- err_load_xdp_prog:
-@@ -862,7 +866,7 @@ static int __xsk_setup_xdp_prog(struct xsk_socket *_xdp, int *xsks_map_fd)
- 	if (ctx->has_bpf_link)
- 		err = xsk_link_lookup(ctx->ifindex, &prog_id, &ctx->link_fd);
- 	else
--		err = bpf_get_link_xdp_id(ctx->ifindex, &prog_id, xsk->config.xdp_flags);
-+		err = bpf_xdp_query_id(ctx->ifindex, xsk->config.xdp_flags, &prog_id);
+-int bpf_load_btf(const void *btf, __u32 btf_size, char *log_buf, __u32 log_buf_size, bool do_log)
+-{
+-	LIBBPF_OPTS(bpf_btf_load_opts, opts);
+-	int fd;
+-
+-retry:
+-	if (do_log && log_buf && log_buf_size) {
+-		opts.log_buf = log_buf;
+-		opts.log_size = log_buf_size;
+-		opts.log_level = 1;
+-	}
+-
+-	fd = bpf_btf_load(btf, btf_size, &opts);
+-	if (fd < 0 && !do_log && log_buf && log_buf_size) {
+-		do_log = true;
+-		goto retry;
+-	}
+-
+-	return libbpf_err_errno(fd);
+-}
+-
+ int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf, __u32 *buf_len,
+ 		      __u32 *prog_id, __u32 *fd_type, __u64 *probe_offset,
+ 		      __u64 *probe_addr)
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index cabc03703e29..af7baf5da74d 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -103,54 +103,6 @@ LIBBPF_API int bpf_prog_load(enum bpf_prog_type prog_type,
+ 			     const char *prog_name, const char *license,
+ 			     const struct bpf_insn *insns, size_t insn_cnt,
+ 			     const struct bpf_prog_load_opts *opts);
+-/* this "specialization" should go away in libbpf 1.0 */
+-LIBBPF_API int bpf_prog_load_v0_6_0(enum bpf_prog_type prog_type,
+-				    const char *prog_name, const char *license,
+-				    const struct bpf_insn *insns, size_t insn_cnt,
+-				    const struct bpf_prog_load_opts *opts);
+-
+-/* This is an elaborate way to not conflict with deprecated bpf_prog_load()
+- * API, defined in libbpf.h. Once we hit libbpf 1.0, all this will be gone.
+- * With this approach, if someone is calling bpf_prog_load() with
+- * 4 arguments, they will use the deprecated API, which keeps backwards
+- * compatibility (both source code and binary). If bpf_prog_load() is called
+- * with 6 arguments, though, it gets redirected to __bpf_prog_load.
+- * So looking forward to libbpf 1.0 when this hack will be gone and
+- * __bpf_prog_load() will be called just bpf_prog_load().
+- */
+-#ifndef bpf_prog_load
+-#define bpf_prog_load(...) ___libbpf_overload(___bpf_prog_load, __VA_ARGS__)
+-#define ___bpf_prog_load4(file, type, pobj, prog_fd) \
+-	bpf_prog_load_deprecated(file, type, pobj, prog_fd)
+-#define ___bpf_prog_load6(prog_type, prog_name, license, insns, insn_cnt, opts) \
+-	bpf_prog_load(prog_type, prog_name, license, insns, insn_cnt, opts)
+-#endif /* bpf_prog_load */
+-
+-struct bpf_load_program_attr {
+-	enum bpf_prog_type prog_type;
+-	enum bpf_attach_type expected_attach_type;
+-	const char *name;
+-	const struct bpf_insn *insns;
+-	size_t insns_cnt;
+-	const char *license;
+-	union {
+-		__u32 kern_version;
+-		__u32 attach_prog_fd;
+-	};
+-	union {
+-		__u32 prog_ifindex;
+-		__u32 attach_btf_id;
+-	};
+-	__u32 prog_btf_fd;
+-	__u32 func_info_rec_size;
+-	const void *func_info;
+-	__u32 func_info_cnt;
+-	__u32 line_info_rec_size;
+-	const void *line_info;
+-	__u32 line_info_cnt;
+-	__u32 log_level;
+-	__u32 prog_flags;
+-};
  
- 	if (err)
- 		return err;
-diff --git a/tools/lib/bpf/xsk.h b/tools/testing/selftests/bpf/xsk.h
-similarity index 84%
-rename from tools/lib/bpf/xsk.h
-rename to tools/testing/selftests/bpf/xsk.h
-index 64e9c57fd792..915e7135337c 100644
---- a/tools/lib/bpf/xsk.h
-+++ b/tools/testing/selftests/bpf/xsk.h
-@@ -9,15 +9,15 @@
-  * Author(s): Magnus Karlsson <magnus.karlsson@intel.com>
+ /* Flags to direct loading requirements */
+ #define MAPS_RELAX_COMPAT	0x01
+@@ -158,22 +110,6 @@ struct bpf_load_program_attr {
+ /* Recommended log buffer size */
+ #define BPF_LOG_BUF_SIZE (UINT32_MAX >> 8) /* verifier maximum in kernels <= 5.1 */
+ 
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_load() instead")
+-LIBBPF_API int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
+-				      char *log_buf, size_t log_buf_sz);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_load() instead")
+-LIBBPF_API int bpf_load_program(enum bpf_prog_type type,
+-				const struct bpf_insn *insns, size_t insns_cnt,
+-				const char *license, __u32 kern_version,
+-				char *log_buf, size_t log_buf_sz);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_load() instead")
+-LIBBPF_API int bpf_verify_program(enum bpf_prog_type type,
+-				  const struct bpf_insn *insns,
+-				  size_t insns_cnt, __u32 prog_flags,
+-				  const char *license, __u32 kern_version,
+-				  char *log_buf, size_t log_buf_sz,
+-				  int log_level);
+-
+ struct bpf_btf_load_opts {
+ 	size_t sz; /* size of this struct for forward/backward compatibility */
+ 
+@@ -187,10 +123,6 @@ struct bpf_btf_load_opts {
+ LIBBPF_API int bpf_btf_load(const void *btf_data, size_t btf_size,
+ 			    const struct bpf_btf_load_opts *opts);
+ 
+-LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_btf_load() instead")
+-LIBBPF_API int bpf_load_btf(const void *btf, __u32 btf_size, char *log_buf,
+-			    __u32 log_buf_size, bool do_log);
+-
+ LIBBPF_API int bpf_map_update_elem(int fd, const void *key, const void *value,
+ 				   __u64 flags);
+ 
+@@ -353,10 +285,6 @@ LIBBPF_API int bpf_prog_attach(int prog_fd, int attachable_fd,
+ LIBBPF_API int bpf_prog_attach_opts(int prog_fd, int attachable_fd,
+ 				     enum bpf_attach_type type,
+ 				     const struct bpf_prog_attach_opts *opts);
+-LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_prog_attach_opts() instead")
+-LIBBPF_API int bpf_prog_attach_xattr(int prog_fd, int attachable_fd,
+-				     enum bpf_attach_type type,
+-				     const struct bpf_prog_attach_opts *opts);
+ LIBBPF_API int bpf_prog_detach(int attachable_fd, enum bpf_attach_type type);
+ LIBBPF_API int bpf_prog_detach2(int prog_fd, int attachable_fd,
+ 				enum bpf_attach_type type);
+@@ -422,17 +350,6 @@ struct bpf_prog_test_run_attr {
+ 			     * out: length of cxt_out */
+ };
+ 
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_test_run_opts() instead")
+-LIBBPF_API int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr);
+-
+-/*
+- * bpf_prog_test_run does not check that data_out is large enough. Consider
+- * using bpf_prog_test_run_opts instead.
+- */
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_test_run_opts() instead")
+-LIBBPF_API int bpf_prog_test_run(int prog_fd, int repeat, void *data,
+-				 __u32 size, void *data_out, __u32 *size_out,
+-				 __u32 *retval, __u32 *duration);
+ LIBBPF_API int bpf_prog_get_next_id(__u32 start_id, __u32 *next_id);
+ LIBBPF_API int bpf_map_get_next_id(__u32 start_id, __u32 *next_id);
+ LIBBPF_API int bpf_btf_get_next_id(__u32 start_id, __u32 *next_id);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index b03165687936..18af3f74e7a8 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10224,95 +10224,6 @@ long libbpf_get_error(const void *ptr)
+ 	return -errno;
+ }
+ 
+-__attribute__((alias("bpf_prog_load_xattr2")))
+-int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+-			struct bpf_object **pobj, int *prog_fd);
+-
+-static int bpf_prog_load_xattr2(const struct bpf_prog_load_attr *attr,
+-				struct bpf_object **pobj, int *prog_fd)
+-{
+-	struct bpf_object_open_attr open_attr = {};
+-	struct bpf_program *prog, *first_prog = NULL;
+-	struct bpf_object *obj;
+-	struct bpf_map *map;
+-	int err;
+-
+-	if (!attr)
+-		return libbpf_err(-EINVAL);
+-	if (!attr->file)
+-		return libbpf_err(-EINVAL);
+-
+-	open_attr.file = attr->file;
+-	open_attr.prog_type = attr->prog_type;
+-
+-	obj = __bpf_object__open_xattr(&open_attr, 0);
+-	err = libbpf_get_error(obj);
+-	if (err)
+-		return libbpf_err(-ENOENT);
+-
+-	bpf_object__for_each_program(prog, obj) {
+-		enum bpf_attach_type attach_type = attr->expected_attach_type;
+-		/*
+-		 * to preserve backwards compatibility, bpf_prog_load treats
+-		 * attr->prog_type, if specified, as an override to whatever
+-		 * bpf_object__open guessed
+-		 */
+-		if (attr->prog_type != BPF_PROG_TYPE_UNSPEC) {
+-			prog->type = attr->prog_type;
+-			prog->expected_attach_type = attach_type;
+-		}
+-		if (bpf_program__type(prog) == BPF_PROG_TYPE_UNSPEC) {
+-			/*
+-			 * we haven't guessed from section name and user
+-			 * didn't provide a fallback type, too bad...
+-			 */
+-			bpf_object__close(obj);
+-			return libbpf_err(-EINVAL);
+-		}
+-
+-		prog->prog_ifindex = attr->ifindex;
+-		prog->log_level = attr->log_level;
+-		prog->prog_flags |= attr->prog_flags;
+-		if (!first_prog)
+-			first_prog = prog;
+-	}
+-
+-	bpf_object__for_each_map(map, obj) {
+-		if (map->def.type != BPF_MAP_TYPE_PERF_EVENT_ARRAY)
+-			map->map_ifindex = attr->ifindex;
+-	}
+-
+-	if (!first_prog) {
+-		pr_warn("object file doesn't contain bpf program\n");
+-		bpf_object__close(obj);
+-		return libbpf_err(-ENOENT);
+-	}
+-
+-	err = bpf_object__load(obj);
+-	if (err) {
+-		bpf_object__close(obj);
+-		return libbpf_err(err);
+-	}
+-
+-	*pobj = obj;
+-	*prog_fd = bpf_program__fd(first_prog);
+-	return 0;
+-}
+-
+-COMPAT_VERSION(bpf_prog_load_deprecated, bpf_prog_load, LIBBPF_0.0.1)
+-int bpf_prog_load_deprecated(const char *file, enum bpf_prog_type type,
+-			     struct bpf_object **pobj, int *prog_fd)
+-{
+-	struct bpf_prog_load_attr attr;
+-
+-	memset(&attr, 0, sizeof(struct bpf_prog_load_attr));
+-	attr.file = file;
+-	attr.prog_type = type;
+-	attr.expected_attach_type = 0;
+-
+-	return bpf_prog_load_xattr2(&attr, pobj, prog_fd);
+-}
+-
+ /* Replace link's underlying BPF program with the new one */
+ int bpf_link__update_program(struct bpf_link *link, struct bpf_program *prog)
+ {
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index fa27969da0da..0b2de10b5878 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -1164,22 +1164,6 @@ LIBBPF_API int bpf_map__get_next_key(const struct bpf_map *map,
   */
+ LIBBPF_API long libbpf_get_error(const void *ptr);
  
--#ifndef __LIBBPF_XSK_H
--#define __LIBBPF_XSK_H
-+#ifndef __XSK_H
-+#define __XSK_H
- 
- #include <stdio.h>
- #include <stdint.h>
- #include <stdbool.h>
- #include <linux/if_xdp.h>
- 
--#include "libbpf.h"
-+#include <bpf/libbpf.h>
- 
- #ifdef __cplusplus
- extern "C" {
-@@ -251,9 +251,7 @@ static inline __u64 xsk_umem__add_offset_to_addr(__u64 addr)
- 	return xsk_umem__extract_addr(addr) + xsk_umem__extract_offset(addr);
- }
- 
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- int xsk_umem__fd(const struct xsk_umem *umem);
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- int xsk_socket__fd(const struct xsk_socket *xsk);
- 
- #define XSK_RING_CONS__DEFAULT_NUM_DESCS      2048
-@@ -271,9 +269,7 @@ struct xsk_umem_config {
- 	__u32 flags;
- };
- 
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- int xsk_setup_xdp_prog(int ifindex, int *xsks_map_fd);
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- int xsk_socket__update_xskmap(struct xsk_socket *xsk, int xsks_map_fd);
- 
- /* Flags for the libbpf_flags field. */
-@@ -288,32 +284,17 @@ struct xsk_socket_config {
- };
- 
- /* Set config to NULL to get the default configuration. */
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- int xsk_umem__create(struct xsk_umem **umem,
- 		     void *umem_area, __u64 size,
- 		     struct xsk_ring_prod *fill,
- 		     struct xsk_ring_cons *comp,
- 		     const struct xsk_umem_config *config);
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
--int xsk_umem__create_v0_0_2(struct xsk_umem **umem,
--			    void *umem_area, __u64 size,
--			    struct xsk_ring_prod *fill,
--			    struct xsk_ring_cons *comp,
--			    const struct xsk_umem_config *config);
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
--int xsk_umem__create_v0_0_4(struct xsk_umem **umem,
--			    void *umem_area, __u64 size,
--			    struct xsk_ring_prod *fill,
--			    struct xsk_ring_cons *comp,
--			    const struct xsk_umem_config *config);
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- int xsk_socket__create(struct xsk_socket **xsk,
- 		       const char *ifname, __u32 queue_id,
- 		       struct xsk_umem *umem,
- 		       struct xsk_ring_cons *rx,
- 		       struct xsk_ring_prod *tx,
- 		       const struct xsk_socket_config *config);
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
- 			      const char *ifname,
- 			      __u32 queue_id, struct xsk_umem *umem,
-@@ -324,13 +305,11 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
- 			      const struct xsk_socket_config *config);
- 
- /* Returns 0 for success and -EBUSY if the umem is still in use. */
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- int xsk_umem__delete(struct xsk_umem *umem);
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "AF_XDP support deprecated and moved to libxdp")
- void xsk_socket__delete(struct xsk_socket *xsk);
- 
- #ifdef __cplusplus
- } /* extern "C" */
- #endif
- 
--#endif /* __LIBBPF_XSK_H */
-+#endif /* __XSK_H */
+-struct bpf_prog_load_attr {
+-	const char *file;
+-	enum bpf_prog_type prog_type;
+-	enum bpf_attach_type expected_attach_type;
+-	int ifindex;
+-	int log_level;
+-	int prog_flags;
+-};
+-
+-LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_object__open() and bpf_object__load() instead")
+-LIBBPF_API int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr,
+-				   struct bpf_object **pobj, int *prog_fd);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_object__open() and bpf_object__load() instead")
+-LIBBPF_API int bpf_prog_load_deprecated(const char *file, enum bpf_prog_type type,
+-					struct bpf_object **pobj, int *prog_fd);
+-
+ /* XDP related API */
+ struct xdp_link_info {
+ 	__u32 prog_id;
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 546214a7d41a..bc5cbb0d16c2 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -1,15 +1,6 @@
+ LIBBPF_0.0.1 {
+ 	global:
+ 		bpf_btf_get_fd_by_id;
+-		bpf_create_map;
+-		bpf_create_map_in_map;
+-		bpf_create_map_in_map_node;
+-		bpf_create_map_name;
+-		bpf_create_map_node;
+-		bpf_create_map_xattr;
+-		bpf_load_btf;
+-		bpf_load_program;
+-		bpf_load_program_xattr;
+ 		bpf_map__btf_key_type_id;
+ 		bpf_map__btf_value_type_id;
+ 		bpf_map__def;
+@@ -61,11 +52,7 @@ LIBBPF_0.0.1 {
+ 		bpf_prog_detach2;
+ 		bpf_prog_get_fd_by_id;
+ 		bpf_prog_get_next_id;
+-		bpf_prog_load;
+-		bpf_prog_load_xattr;
+ 		bpf_prog_query;
+-		bpf_prog_test_run;
+-		bpf_prog_test_run_xattr;
+ 		bpf_program__fd;
+ 		bpf_program__is_kprobe;
+ 		bpf_program__is_perf_event;
+@@ -106,7 +93,6 @@ LIBBPF_0.0.1 {
+ 		bpf_raw_tracepoint_open;
+ 		bpf_set_link_xdp_fd;
+ 		bpf_task_fd_query;
+-		bpf_verify_program;
+ 		btf__fd;
+ 		btf__find_by_name;
+ 		btf__free;
+@@ -218,7 +204,6 @@ LIBBPF_0.0.7 {
+ 		bpf_object__load_skeleton;
+ 		bpf_object__open_skeleton;
+ 		bpf_probe_large_insn_limit;
+-		bpf_prog_attach_xattr;
+ 		bpf_program__attach;
+ 		bpf_program__name;
+ 		bpf_program__is_extension;
+@@ -387,7 +372,6 @@ LIBBPF_0.6.0 {
+ 		bpf_object__next_program;
+ 		bpf_object__prev_map;
+ 		bpf_object__prev_program;
+-		bpf_prog_load_deprecated;
+ 		bpf_prog_load;
+ 		bpf_program__flags;
+ 		bpf_program__insn_cnt;
 -- 
 2.30.2
 
