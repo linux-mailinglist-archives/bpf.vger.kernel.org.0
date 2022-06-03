@@ -2,74 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CC053D1B7
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 20:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB87B53D215
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347718AbiFCSrN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 14:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35710 "EHLO
+        id S1348692AbiFCTDk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 3 Jun 2022 15:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347884AbiFCSrK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 14:47:10 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C0E11833;
-        Fri,  3 Jun 2022 11:47:06 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id a17so7009730lfs.11;
-        Fri, 03 Jun 2022 11:47:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+4u6kVDW4HmyPiFNJKwOa+wDt+d0qY4cVuOS5P9jlgU=;
-        b=G0GlbfMDSx4cJ+0z+gggAxeiX7yEYlhYeUDBz1c2wHPIgvmNu8sl6WbjsJUaTbLp6I
-         cIkWUwbt1eiLVfYPdMXkj7L57tdUWcmQMaZdlk3GXoArbIkRW6/0GMrmNpx+fvZA44PJ
-         prL2tTi6sEviLrAueBoUZu6+MUM5dmDxRP/LtXbYlgXeF6E/Jq39vGE4+oOyIsZCf/OF
-         HnNJHt2t+SK/T+vT3a36ih8qvFtNzxtbJYwCSg5THzMZbD9FKO/EkPUwCMsakVmwcc4X
-         3edUBUITB8i6ovdjzXpwu3jxrNPaMfw5xoG/+ibSvavS5yYcM/QiCZgXmoNQ7EvVZzMW
-         Ezdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+4u6kVDW4HmyPiFNJKwOa+wDt+d0qY4cVuOS5P9jlgU=;
-        b=P38nUyiUigoLEUNJEBcWu46zGLwvR/qkK0/uFlI2A1Eeq1G+SV9MUvoW5XbguGch2N
-         qWxYyw9lLcoD+fmo96LSvX37Hp503dJ+7pSpIGnkTn39/kT74tCHlfJe3Lu2aeqHqRVD
-         +ZvufDkQRGkGVbLds9/Z24+ts7o6o7aMNt0z238YDCu5BsfndiQ2q+EcgVhMWU2opKGv
-         3rG2jotKWa5a1F73w0LaYyJa2OouLgMEGgrBgphgn0L/SYPQ7YHVswVGsCgRE8g37rTr
-         VM2+gVsdr2+HUeWjnH5taZJ7LWrm9Jj1+qDVibSQVySCBftdi/77+5pqbocISOnocYxr
-         JVVg==
-X-Gm-Message-State: AOAM533YxotCbI1suMkwa4JMkKqPxqPQAHY/BMtwf2O8AMHY5/4UatSx
-        tOMPYeMs11sKBET+xcZxVvCACqVmSVemEYa23NY=
-X-Google-Smtp-Source: ABdhPJxV9xeU45IgiSilfvyQA0Z99BTs9yjgeqcQ/qEH2sbr7iJatXqLpPyE4oq/tWsVOvAVVYgJq15Fwt0Thif9JmA=
-X-Received: by 2002:a05:6512:1398:b0:448:bda0:99f2 with SMTP id
- p24-20020a056512139800b00448bda099f2mr54449876lfa.681.1654282023944; Fri, 03
- Jun 2022 11:47:03 -0700 (PDT)
+        with ESMTP id S1348691AbiFCTDh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 15:03:37 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742FE30F7E
+        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 12:03:36 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 253GmI6Z020078
+        for <bpf@vger.kernel.org>; Fri, 3 Jun 2022 12:03:35 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3gevu51g7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 12:03:35 -0700
+Received: from twshared13315.14.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Fri, 3 Jun 2022 12:03:34 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id BCF8B1AC9C370; Fri,  3 Jun 2022 12:03:29 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 00/15] libbpf: remove deprecated APIs
+Date:   Fri, 3 Jun 2022 12:01:40 -0700
+Message-ID: <20220603190155.3924899-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: njDkcZySgeEfc4PkIY51xcDDD_8dkcEG
+X-Proofpoint-GUID: njDkcZySgeEfc4PkIY51xcDDD_8dkcEG
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20220603092110.1294855-1-jolsa@kernel.org> <20220603092110.1294855-3-jolsa@kernel.org>
-In-Reply-To: <20220603092110.1294855-3-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Jun 2022 11:46:52 -0700
-Message-ID: <CAEf4BzYB44Ht20mF2RtYezaJU_TfN+j8nvZNbd82uvN=TmCXAA@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 2/2] perf tools: Rework prologue generation code
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
+ definitions=2022-06-03_06,2022-06-03_01,2022-02-23_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,74 +54,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 3, 2022 at 2:21 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Some functions we use for bpf prologue generation are going to be
-> deprecated. This change reworks current code not to use them.
->
-> We need to replace following functions/struct:
->    bpf_program__set_prep
->    bpf_program__nth_fd
->    struct bpf_prog_prep_result
->
-> Currently we use bpf_program__set_prep to hook perf callback before
-> program is loaded and provide new instructions with the prologue.
->
-> We replace this function/ality by taking instructions for specific
-> program, attaching prologue to them and load such new ebpf programs
-> with prologue using separate bpf_prog_load calls (outside libbpf
-> load machinery).
->
-> Before we can take and use program instructions, we need libbpf to
-> actually load it. This way we get the final shape of its instructions
-> with all relocations and verifier adjustments).
->
-> There's one glitch though.. perf kprobe program already assumes
-> generated prologue code with proper values in argument registers,
-> so loading such program directly will fail in the verifier.
->
-> That's where the fallback pre-load handler fits in and prepends
-> the initialization code to the program. Once such program is loaded
-> we take its instructions, cut off the initialization code and prepend
-> the prologue.
->
-> I know.. sorry ;-)
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/bpf-loader.c | 128 ++++++++++++++++++++++++++++++-----
->  1 file changed, 110 insertions(+), 18 deletions(-)
->
-> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> index e7992a0eb477..2ce5f9684863 100644
-> --- a/tools/perf/util/bpf-loader.c
-> +++ b/tools/perf/util/bpf-loader.c
-> @@ -9,6 +9,7 @@
->  #include <linux/bpf.h>
->  #include <bpf/libbpf.h>
->  #include <bpf/bpf.h>
-> +#include <linux/filter.h>
->  #include <linux/err.h>
->  #include <linux/kernel.h>
->  #include <linux/string.h>
-> @@ -49,6 +50,7 @@ struct bpf_prog_priv {
->         struct bpf_insn *insns_buf;
->         int nr_types;
->         int *type_mapping;
-> +       int *proglogue_fds;
+This patch set removes all the deprecated APIs in preparation for 1.0 release.
+It also makes libbpf_set_strict_mode() a no-op (but keeps it to let per-1.0
+applications buildable and dynamically linkable against libbpf 1.0 if they
+were already libbpf-1.0 ready) and starts enforcing all the
+behaviors that were previously opt-in through libbpf_set_strict_mode().
 
-massively copy/pasted typo? prologue_fds?
+xsk.{c,h} parts that are now properly provided by libxdp ([0]) are still used
+by xdpxceiver.c in selftest/bpf, so I've moved xsk.{c,h} with barely any
+changes to under selftests/bpf.
 
-Other than that looks good to me, but we'll need Arnaldo's ack before
-merging into bpf-next.
+Other than that, apart from removing all the LIBBPF_DEPRECATED-marked APIs,
+there is a bunch of internal clean ups allowed by that. I've also "restored"
+libbpf.map inheritance chain while removing all the deprecated APIs. I think
+that's the right way to do this, as applications using libbpf as shared
+library but not relying on any deprecated APIs (i.e., "good citizens" that
+prepared for libbpf 1.0 release ahead of time to minimize disruption) should
+be able to link both against 0.x and 1.x versions. Either way, it doesn't seem
+to break anything and preserve a history on when each "surviving" API was
+added.
 
->  };
->
->  struct bpf_perf_object {
-> @@ -56,6 +58,11 @@ struct bpf_perf_object {
->         struct bpf_object *obj;
->  };
->
+NOTE. This shouldn't be yet landed until Jiri's changes ([1]) removing last
+deprecated API usage in perf lands. But I thought to post it now to get the
+ball rolling.
 
-[...]
+  [0] https://github.com/xdp-project/xdp-tools/tree/master/lib/libxdp
+  [1] https://patchwork.kernel.org/project/netdevbpf/list/?series=647121&state=*
+
+Andrii Nakryiko (15):
+  libbpf: move xsk.{c,h} into selftests/bpf
+  libbpf: remove deprecated low-level APIs
+  libbpf: remove deprecated XDP APIs
+  libbpf: remove deprecated probing APIs
+  libbpf: remove deprecated BTF APIs
+  libbpf: clean up perfbuf APIs
+  libbpf: remove prog_info_linear APIs
+  libbpf: remove most other deprecated high-level APIs
+  libbpf: remove multi-instance and custom private data APIs
+  libbpf: cleanup LIBBPF_DEPRECATED_SINCE supporting macros for v0.x
+  libbpf: remove internal multi-instance prog support
+  libbpf: clean up SEC() handling
+  selftests/bpf: remove last tests with legacy BPF map definitions
+  libbpf: enforce strict libbpf 1.0 behaviors
+  libbpf: fix up few libbpf.map problems
+
+ tools/lib/bpf/Build                           |    2 +-
+ tools/lib/bpf/Makefile                        |    2 +-
+ tools/lib/bpf/bpf.c                           |  178 +-
+ tools/lib/bpf/bpf.h                           |   83 -
+ tools/lib/bpf/btf.c                           |  183 +--
+ tools/lib/bpf/btf.h                           |   86 +-
+ tools/lib/bpf/btf_dump.c                      |   23 +-
+ tools/lib/bpf/libbpf.c                        | 1429 ++---------------
+ tools/lib/bpf/libbpf.h                        |  469 +-----
+ tools/lib/bpf/libbpf.map                      |  113 +-
+ tools/lib/bpf/libbpf_common.h                 |   16 +-
+ tools/lib/bpf/libbpf_internal.h               |   24 +-
+ tools/lib/bpf/libbpf_legacy.h                 |   28 +-
+ tools/lib/bpf/libbpf_probes.c                 |  125 +-
+ tools/lib/bpf/netlink.c                       |   62 +-
+ tools/testing/selftests/bpf/Makefile          |    1 +
+ tools/testing/selftests/bpf/bpf_legacy.h      |    9 -
+ tools/testing/selftests/bpf/prog_tests/btf.c  |    1 -
+ .../selftests/bpf/progs/test_btf_haskv.c      |   51 -
+ .../selftests/bpf/progs/test_btf_newkv.c      |   18 -
+ tools/testing/selftests/bpf/xdpxceiver.c      |    2 +-
+ tools/{lib => testing/selftests}/bpf/xsk.c    |   76 +-
+ tools/{lib => testing/selftests}/bpf/xsk.h    |   29 +-
+ 23 files changed, 260 insertions(+), 2750 deletions(-)
+ delete mode 100644 tools/testing/selftests/bpf/progs/test_btf_haskv.c
+ rename tools/{lib => testing/selftests}/bpf/xsk.c (95%)
+ rename tools/{lib => testing/selftests}/bpf/xsk.h (84%)
+
+-- 
+2.30.2
+
