@@ -2,110 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBB753D18C
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 20:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA8853D19D
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 20:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243042AbiFCSeb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 14:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S245133AbiFCSgk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 14:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347315AbiFCSdo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 14:33:44 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67912666B9;
-        Fri,  3 Jun 2022 11:20:05 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id a2so13881866lfc.2;
-        Fri, 03 Jun 2022 11:20:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RlH4HZM0GOqehDVq13X1kPLT+UzzEP8AsxwqPXI0mFY=;
-        b=bX//7ZiM/H5LhAkbNcM8/xvoODjgfNAHEhkyyI4yEL5mstgwWA+J3Bf0SS40+tDU+7
-         N9ikUcNaLvA2IWal7UZUsg2+rOiJ0A/g8b6WCWlucj5LRv/vFTwX70YGK89jvx5B+bId
-         93Sm8LkTanpXKOl90Rm+0Gz6ekRjFqlQW5A6jvYiAViz/9Lpix2m9VsgONUbbe2s5CXI
-         c5y9NartHaqWvzkKHl6/UIZGKeCbQGdh7hUSEVi4PbWxYNTtX/rBYRl+1+evWnrIYI8u
-         yvLwB0wj6ND5okCP1TW0YLVNANMrfIRfXC+DEqEBC6Ax159TkX6Vn0oWaeOSHkALE58d
-         9/+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RlH4HZM0GOqehDVq13X1kPLT+UzzEP8AsxwqPXI0mFY=;
-        b=5Fi29qONkuLeMCS8J8kBssTsS5pEz6SN5u8/E7I2rXfvznackLetPtNT3f3hh/Ue/B
-         ZODz7lL2Msp0ss3xtbxOO0tTkqyfbkI+ISS9s/vW3VnXEjqajeFGI1HbQ+VsZB2meXZ9
-         u/3dsEKhoMhTxcLAwfVMd/Fa+GWpLIhvCJP4qxrND+TRZAyJ6c7t1LYjsqooGD2txo8p
-         0piHcByL3K7xLTpUDIOFKfZdSzqQ6h8LeInLKY00Bq+P0D1+eFjRo7pFB3WgZKx3+U1L
-         +AabhlmulalA0JA6Rneg6wcHG7AMdkxHFqSXoZs5RnPQ4VG2e4PvfP3xurv0OBd1K4du
-         FArQ==
-X-Gm-Message-State: AOAM532E90rIhJohurdZnDyzgr8aGPd3Ry7wHWt/a8o4rylnF0hpD52B
-        uE1dyNE9uxtBHHdejitX7uh/b948JzV3JVAvCcG5TDbc
-X-Google-Smtp-Source: ABdhPJzsvLh0e0D18yiwXAEhbgT+zhG9khAkdXCw2/0TgwFPWS7jbqZ8EdMLwCo6xJnPcMmAeOWLMX7JyrgwCrzXXWc=
-X-Received: by 2002:a05:6512:b2a:b0:479:12f5:91ba with SMTP id
- w42-20020a0565120b2a00b0047912f591bamr5371166lfu.443.1654280402791; Fri, 03
- Jun 2022 11:20:02 -0700 (PDT)
+        with ESMTP id S244688AbiFCSg2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 14:36:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F66313F30;
+        Fri,  3 Jun 2022 11:30:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B6A46193C;
+        Fri,  3 Jun 2022 18:30:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6EE13C3411E;
+        Fri,  3 Jun 2022 18:30:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654281013;
+        bh=2WWPirMtJEQad0WrllwBwe0e+esqegyEkmVUAEx8SkY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=FAQk13VM/spdQMtvQ9gh4NJDXLHc7R6+9QysSWxYJkIbDaNExQQXZqDIg9us9U8i0
+         ZELe06fy0pnftEmWhlVzbevdEj0JKHIDi51CguJPRAmbZ7M5jutp7pCngWKllD5hz9
+         1FCFwc7jRaBHae7n3XSRhZ82EO2kw4gUEVEDG7hGDoLiKRqYQZBBUE6HVv4H5wvseq
+         MiD+oEwkMfhcLktTvyfpKn9ZZ97xTNV9fZFMRv5+1a6jTv8F0qt5In6BikJIAa3uFE
+         yzrKP0Uac09DOWUPOG6nOZz02PfcZVYavrUo1fLK7GWWzWHmldIVuoeUNiqKQ6Qvm0
+         F7Mw94P5OBB+g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 53246F03953;
+        Fri,  3 Jun 2022 18:30:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220603055156.2830463-1-irogers@google.com> <CAP-5=fVhVLWg+c=WJyOD8FByg_4n6V0SLSLnaw7K0J=-oNnuaA@mail.gmail.com>
- <495f2924138069abaf49269b2c3bd1e4f5f4362e.camel@perches.com>
-In-Reply-To: <495f2924138069abaf49269b2c3bd1e4f5f4362e.camel@perches.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Jun 2022 11:19:51 -0700
-Message-ID: <CAEf4Bzbwp0pgfDf-xUpWKzD2Eo=6JP0S-QrFKUZZffq49X=FQg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH v2] libbpf: Fix is_pow_of_2
-To:     Joe Perches <joe@perches.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Yuze Chi <chiyuze@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165428101333.23591.13242354654538988127.git-patchwork-notify@kernel.org>
+Date:   Fri, 03 Jun 2022 18:30:13 +0000
+References: <20220603055156.2830463-1-irogers@google.com>
+In-Reply-To: <20220603055156.2830463-1-irogers@google.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chiyuze@google.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 3, 2022 at 9:58 AM Joe Perches <joe@perches.com> wrote:
->
-> On Thu, 2022-06-02 at 22:57 -0700, Ian Rogers wrote:
-> > On Thu, Jun 2, 2022 at 10:52 PM Ian Rogers <irogers@google.com> wrote:
-> > > From: Yuze Chi <chiyuze@google.com>
-> []
-> > > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> []
-> > > @@ -580,4 +580,9 @@ struct bpf_link * usdt_manager_attach_usdt(struct usdt_manager *man,
-> > >                                            const char *usdt_provider, const char *usdt_name,
-> > >                                            __u64 usdt_cookie);
-> > >
-> > > +static inline bool is_pow_of_2(size_t x)
-> > > +{
-> > > +       return x && (x & (x - 1)) == 0;
-> > > +}
-> > > +
-> > >  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
->
-> If speed of execution is a potential issue, maybe:
+Hello:
 
-It's not, as it's not in any sort of high-frequency hot path. But even
-if it was, we should be careful with __builtin_popcount() because
-depending on target CPU architecture __builtin_popcount() can be
-turned into a helper function call instead of using hardware
-instruction. But either way, keeping it simple is prefereable.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
->
-> #if __has_builtin(__builtin_popcount)
->         return __builtin_popcount(x) == 1;
-> #else
->         return x && (x & (x-1)) == 0;
-> #endif
->
+On Thu,  2 Jun 2022 22:51:56 -0700 you wrote:
+> From: Yuze Chi <chiyuze@google.com>
+> 
+> Move the correct definition from linker.c into libbpf_internal.h.
+> 
+> Reported-by: Yuze Chi <chiyuze@google.com>
+> Signed-off-by: Yuze Chi <chiyuze@google.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] libbpf: Fix is_pow_of_2
+    https://git.kernel.org/bpf/bpf-next/c/f913ad6559e3
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
