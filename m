@@ -2,52 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B19C53D227
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E35853D238
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 21:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347977AbiFCTGh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 3 Jun 2022 15:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
+        id S239283AbiFCTI5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 15:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350034AbiFCTG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 15:06:28 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7659C31232
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 12:06:27 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 253GmQVb031332
-        for <bpf@vger.kernel.org>; Fri, 3 Jun 2022 12:06:27 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3geubb1tyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 12:06:26 -0700
-Received: from twshared31479.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Fri, 3 Jun 2022 12:06:25 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 4E1761AC9C469; Fri,  3 Jun 2022 12:04:02 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 15/15] libbpf: fix up few libbpf.map problems
-Date:   Fri, 3 Jun 2022 12:01:55 -0700
-Message-ID: <20220603190155.3924899-16-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220603190155.3924899-1-andrii@kernel.org>
-References: <20220603190155.3924899-1-andrii@kernel.org>
+        with ESMTP id S1349036AbiFCTI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 15:08:56 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5787839178;
+        Fri,  3 Jun 2022 12:08:55 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id x190so453739vkc.9;
+        Fri, 03 Jun 2022 12:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=b1C3mx7cWdTSh5LdHqF6IMGq/78DF/hK//5Y/LdUgog=;
+        b=B6sG99pnrbh8z2XmvEjW2ESlDOZUy9IwAWFNeLR8WLsaxWDidjaxpIDuUKZZIZUwbm
+         YNesHhr+5aCeQWPHDMHYKUW491FfJDtdLNwrHoiIIL4TuxG+DiPmywg/NFWxPUadwa35
+         Ea6kCI7BYinNSLk7B10ig6MEEbCHQkkwlxqxaraAEqmkhTNN0X7quEas5Ja4dyc1T4D+
+         vq/jmsDC0oIZ9tOnZ6UgokSFPu4u8rVfdHJw8RKAOvkb6C/E1Q/IL8y4hMMHyvVJOX7u
+         wyxPA0FPkhTfGWORyjLGmnEWR5JfQ0h47xI40AyZFlT2+iw4G6S8tHmXHoxUVb4YGGNi
+         zz1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=b1C3mx7cWdTSh5LdHqF6IMGq/78DF/hK//5Y/LdUgog=;
+        b=1D0vlOajT/Enyso67mee87TV6Ff+gNlpETzKdmPoQOltxYdvf+I9un99SxtQ/YvIi/
+         r5pHwDxSfhcoRKBDi255CDnBtua0VFPKVDRuWo2xVjJyoXEHc0TzsHeVLMXo1Ih6/ZK/
+         h+VNCMEtbtMcSf77Q7j+K8LviVpt0y8rqdIFN/pstJiUKG0GOiopr4pSwIi9bDIIjEF+
+         qw9PZRhkZyqhNQfJlvkbegYryk3TmqSfibGsKaPsDuLKPD2eotkt2PNo6vIMOPzfxIge
+         1EVoNPnDWp2dxHgc6OKJCVlTPez2BGeWD7oHtDkNPYL2rSl7OxsoBTvGvW0fafKeONoo
+         F2tA==
+X-Gm-Message-State: AOAM530f+9OjLqrqR1SYPUYVOc/ad9afEe8zzQkeBQNNIxNfHU9UQ1n8
+        wOSTKh0X5JpHlmovNuhoSDkSE9NYwcURBh71R5X+bZQo
+X-Google-Smtp-Source: ABdhPJxBW76JZY06YxlUvaV0gjNppS15ZXq2lEOURo/UBz/vfJsn1eA0N5S8ttRxaTt+hsQkyfsDTofKZ7IOJNldQ7A=
+X-Received: by 2002:a1f:a9cc:0:b0:35c:8338:24f8 with SMTP id
+ s195-20020a1fa9cc000000b0035c833824f8mr4967074vke.14.1654283334460; Fri, 03
+ Jun 2022 12:08:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: oUxE6nz70_pEK5h-swzYilaDU3161L0v
-X-Proofpoint-ORIG-GUID: oUxE6nz70_pEK5h-swzYilaDU3161L0v
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-03_06,2022-06-03_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220603154028.24904-1-toke@redhat.com> <20220603154028.24904-2-toke@redhat.com>
+In-Reply-To: <20220603154028.24904-2-toke@redhat.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Fri, 3 Jun 2022 12:08:43 -0700
+Message-ID: <CAJnrk1Y-_pCPLZfgzyC-4aq2dXf=yLFEm9xFiU0f87YWNqdhhQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: Add selftest for calling global
+ functions from freplace
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,47 +73,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Seems like we missed to add 2 APIs to libbpf.map and another API was
-misspelled. Fix it in libbpf.map.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.map      | 3 ++-
- tools/lib/bpf/libbpf_legacy.h | 4 ++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 38054248c942..9817ba8b61bd 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -326,10 +326,11 @@ LIBBPF_0.7.0 {
- 		bpf_xdp_detach;
- 		bpf_xdp_query;
- 		bpf_xdp_query_id;
-+		btf_ext__raw_data;
- 		libbpf_probe_bpf_helper;
- 		libbpf_probe_bpf_map_type;
- 		libbpf_probe_bpf_prog_type;
--		libbpf_set_memlock_rlim_max;
-+		libbpf_set_memlock_rlim;
- } LIBBPF_0.6.0;
- 
- LIBBPF_0.8.0 {
-diff --git a/tools/lib/bpf/libbpf_legacy.h b/tools/lib/bpf/libbpf_legacy.h
-index 863f49df8bf4..5b7e0155db6a 100644
---- a/tools/lib/bpf/libbpf_legacy.h
-+++ b/tools/lib/bpf/libbpf_legacy.h
-@@ -76,8 +76,8 @@ enum libbpf_strict_mode {
- 	 * first BPF program or map creation operation. This is done only if
- 	 * kernel is too old to support memcg-based memory accounting for BPF
- 	 * subsystem. By default, RLIMIT_MEMLOCK limit is set to RLIM_INFINITY,
--	 * but it can be overriden with libbpf_set_memlock_rlim_max() API.
--	 * Note that libbpf_set_memlock_rlim_max() needs to be called before
-+	 * but it can be overriden with libbpf_set_memlock_rlim() API.
-+	 * Note that libbpf_set_memlock_rlim() needs to be called before
- 	 * the very first bpf_prog_load(), bpf_map_create() or bpf_object__load()
- 	 * operation.
- 	 */
--- 
-2.30.2
-
+On Fri, Jun 3, 2022 at 11:01 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Add a selftest that calls a global function with a context object paramet=
+er
+> from an freplace function to check that the program context type is
+> correctly converted to the freplace target when fetching the context type
+> from the kernel BTF.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 13 ++++++++++
+>  .../bpf/progs/freplace_global_func.c          | 24 +++++++++++++++++++
+>  2 files changed, 37 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/freplace_global_fun=
+c.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/too=
+ls/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+> index d9aad15e0d24..6e86a1d92e97 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+> @@ -395,6 +395,17 @@ static void test_func_map_prog_compatibility(void)
+>                                      "./test_attach_probe.o");
+>  }
+>
+> +static void test_func_replace_global_func(void)
+> +{
+> +       const char *prog_name[] =3D {
+> +               "freplace/test_pkt_access",
+> +       };
+> +       test_fexit_bpf2bpf_common("./freplace_global_func.o",
+> +                                 "./test_pkt_access.o",
+> +                                 ARRAY_SIZE(prog_name),
+> +                                 prog_name, false, NULL);
+> +}
+> +
+>  /* NOTE: affect other tests, must run in serial mode */
+>  void serial_test_fexit_bpf2bpf(void)
+>  {
+> @@ -416,4 +427,6 @@ void serial_test_fexit_bpf2bpf(void)
+>                 test_func_replace_multi();
+>         if (test__start_subtest("fmod_ret_freplace"))
+>                 test_fmod_ret_freplace();
+> +       if (test__start_subtest("func_replace_global_func"))
+> +               test_func_replace_global_func();
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/freplace_global_func.c b/t=
+ools/testing/selftests/bpf/progs/freplace_global_func.c
+> new file mode 100644
+> index 000000000000..d9f8276229cc
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/freplace_global_func.c
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2019 Facebook */
+nit: I think you meant 2022, not 2019? :)
+> +#include <linux/stddef.h>
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_endian.h>
+> +#include <bpf/bpf_tracing.h>
+nit: I think the only headers you need here are the linux/bpf.h and
+bpf/bpf_helpers.h ones.
+> +
+> +__attribute__ ((noinline))
+> +int test_ctx_global_func(struct __sk_buff *skb)
+> +{
+> +       volatile int retval =3D 1;
+> +       return retval;
+> +}
+> +
+> +__u64 test_pkt_access_global_func =3D 0;
+> +SEC("freplace/test_pkt_access")
+> +int new_test_pkt_access(struct __sk_buff *skb)
+> +{
+> +       test_pkt_access_global_func =3D test_ctx_global_func(skb);
+> +       return -1;
+> +}
+> +
+> +char _license[] SEC("license") =3D "GPL";
+> --
+> 2.36.1
+>
