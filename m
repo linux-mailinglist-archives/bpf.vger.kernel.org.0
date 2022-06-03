@@ -2,253 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559EE53D342
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 23:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B929653D345
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 23:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344296AbiFCVbh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 17:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
+        id S1348897AbiFCVfJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 17:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348976AbiFCVbf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 17:31:35 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5899A5401C
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 14:31:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id AE91CCE24D3
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 21:31:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6CD6C3411D
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 21:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654291888;
-        bh=Ld9VEA2fUvzB18ooITpcWhty9tZaUFAuMrtwZvXWhNM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ck8ft9JKnaNVinL0ogQs8CGTmQagEQjSDfE1YBLgEgBxPPj73J6hB/r75s7lnH/6E
-         wDd1mCs81WmC47Ogdxdt5EkUl2ag8YxyjpXbwtucgt8JArGadSclsVe4Ze4rbGgXRo
-         tHLlzXJm/2IKyKIm2C7+bS/eYADVtJz/HN4+/GIgsfHhewOvwjNMfJK0XqnZnfVSwg
-         MVTj+AIDtvdEUhZbEEI3t0d9OBLo1cnprJAjitHNbj3MISuubZJUXQiRyYzmPMPXfK
-         leRWKyMoZOirVipCJE1+98oLNLX0W1pEmysl0Nu3FhHo7OTiOo+3TXCisd1NCla4R2
-         r/unrETQNozdQ==
-Received: by mail-yb1-f176.google.com with SMTP id a64so15883151ybg.11
-        for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 14:31:28 -0700 (PDT)
-X-Gm-Message-State: AOAM533Wz2ivPGKboJ+NjOUcPwQuH4Vbv4TN0Ws6bORiEbkk1xemiaAv
-        r86kX/NP0NJUjUZvqO4jV0l9wN/pp8hSIbuTZAI=
-X-Google-Smtp-Source: ABdhPJx6w1yfOLH3PhbfeYUrzAQj0fBojTTjMCcfOLavuihvA8iGJ0neRRRsViy9F6tlsJEk1yROx1kEJHY2Y8klz2M=
-X-Received: by 2002:a25:7e84:0:b0:650:10e0:87bd with SMTP id
- z126-20020a257e84000000b0065010e087bdmr13012659ybc.257.1654291887794; Fri, 03
- Jun 2022 14:31:27 -0700 (PDT)
+        with ESMTP id S1349191AbiFCVfH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 17:35:07 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7683DDD7;
+        Fri,  3 Jun 2022 14:35:05 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id q1so9730023ljb.5;
+        Fri, 03 Jun 2022 14:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8v76F/y6/MbjqM3o59kqOrykFh+Wdeo7EKyCKM8FAro=;
+        b=G/IMUz4AXagHtKwKz/0cM5KncgmL00Lr/4+KexXnLrFlEmUQvzio1nNOvPjmVMOUtA
+         a+QyPPW1uTrQkmdUd9+WUC2RO8XpyaJNlDeUavAglnk2k94AGmLcJGl+2aWa/uaGMfK9
+         BWEm3sxG3DKGGSlwv3HXPeO64atHAJj98pkJyG0QutfACMKQ7xSNZY/UjInhccbivHfa
+         Kg2XeoIgsbPZOQh2JYb41YIWD53+zY3Az5qX5KpbhzcWV/MjnaI9Xgrh7ASaMa8Hmy3s
+         XXH4+41XppL71u0Sh0oyKJDp/vsFoCv/TpBesp3KPKvUlX1zlrR8GRHds/Ir9GpaF5YP
+         M9KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8v76F/y6/MbjqM3o59kqOrykFh+Wdeo7EKyCKM8FAro=;
+        b=8FEcjyuLhZ/nC/3yKo1A/sZAbTvN3oWe/8vszcHCPPNZucSI7uP9+xgcgWS3Q886Fe
+         +O3pD5Fy+P6DlNpDl4SFpjt3eEWEOysmfY9k0J250+uO3PTFyU2QQ+1BhZnN9+VIfABw
+         9jP0vb7WNOGL+bgvND+RdqrldN4y8KECq7PPJ11UTQIuuXmm0NhfipM2j5zc0vcM5RF+
+         SIsUzi0SCJgZF0FeM0bYdX45Jn04l15uyey7ozpJub81WddobfpfcXtomJo/XfRqNlYn
+         qu/YWR3ykG/V7pblfCiHY6K0vibYVhHjvha8TwZD2vqehaHRGMj+HTljZ98/ZbqQ7jXA
+         40Ug==
+X-Gm-Message-State: AOAM532j2pIx2YMXz9hxmGZ6F7lRO/+x7RwHKjxwMqSUX6Xa7DEBp/Sg
+        Mw+pNkG94nuYT/5atAVHxpEEbqHhk4bQrG33L+0kr80H/Ec=
+X-Google-Smtp-Source: ABdhPJyUjHrmvehS2Lv5fKms+WVL07tJMSBLtK7DuhfMKXxdu7GqoyqbOyELcFuGAsFMDZFp7dS86KBXevDnDvT+RPw=
+X-Received: by 2002:a2e:9bc1:0:b0:253:e20a:7a79 with SMTP id
+ w1-20020a2e9bc1000000b00253e20a7a79mr38883935ljj.445.1654292104054; Fri, 03
+ Jun 2022 14:35:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220603141047.2163170-1-eddyz87@gmail.com> <20220603141047.2163170-2-eddyz87@gmail.com>
-In-Reply-To: <20220603141047.2163170-2-eddyz87@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 3 Jun 2022 14:31:17 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5WrL-4qZz-NPufj7SWbWe+z4rVzc0cN3ufU2M_PnTwoQ@mail.gmail.com>
-Message-ID: <CAPhsuW5WrL-4qZz-NPufj7SWbWe+z4rVzc0cN3ufU2M_PnTwoQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/5] selftests/bpf: specify expected
- instructions in test_verifier tests
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20220601190218.2494963-1-sdf@google.com> <20220601190218.2494963-9-sdf@google.com>
+In-Reply-To: <20220601190218.2494963-9-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 3 Jun 2022 14:34:52 -0700
+Message-ID: <CAEf4BzYewhP+RbV9H1+8Htr73Y0fPNT4tN3E6v4-_GwEiJud-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 08/11] libbpf: implement bpf_prog_query_opts
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 3, 2022 at 7:11 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Wed, Jun 1, 2022 at 12:02 PM Stanislav Fomichev <sdf@google.com> wrote:
 >
-[...]
-
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> Implement bpf_prog_query_opts as a more expendable version of
+> bpf_prog_query. Expose new prog_attach_flags and attach_btf_func_id as
+> well:
+>
+> * prog_attach_flags is a per-program attach_type; relevant only for
+>   lsm cgroup program which might have different attach_flags
+>   per attach_btf_id
+> * attach_btf_func_id is a new field expose for prog_query which
+>   specifies real btf function id for lsm cgroup attachments
+>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->  tools/testing/selftests/bpf/test_verifier.c | 222 ++++++++++++++++++++
->  1 file changed, 222 insertions(+)
+>  tools/include/uapi/linux/bpf.h |  3 +++
+>  tools/lib/bpf/bpf.c            | 40 +++++++++++++++++++++++++++-------
+>  tools/lib/bpf/bpf.h            | 15 +++++++++++++
+>  tools/lib/bpf/libbpf.map       |  2 +-
+>  4 files changed, 51 insertions(+), 9 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index 372579c9f45e..373f7661f4d0 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -51,6 +51,8 @@
->  #endif
->
->  #define MAX_INSNS      BPF_MAXINSNS
-> +#define MAX_EXPECTED_INSNS     32
-> +#define MAX_UNEXPECTED_INSNS   32
->  #define MAX_TEST_INSNS 1000000
->  #define MAX_FIXUPS     8
->  #define MAX_NR_MAPS    23
-> @@ -58,6 +60,10 @@
->  #define POINTER_VALUE  0xcafe4all
->  #define TEST_DATA_LEN  64
->
-> +#define INSN_OFF_MASK  ((s16)0xFFFF)
-> +#define INSN_IMM_MASK  ((s32)0xFFFFFFFF)
 
-Shall we use __s16 and __s32 to match struct bpf_insn exactly.
+Few consistency nits, but otherwise:
 
-> +#define SKIP_INSNS()   BPF_RAW_INSN(0xde, 0xa, 0xd, 0xbeef, 0xdeadbeef)
-> +
->  #define F_NEEDS_EFFICIENT_UNALIGNED_ACCESS     (1 << 0)
->  #define F_LOAD_WITH_STRICT_ALIGNMENT           (1 << 1)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index fa64b0b612fd..4271ef3c2afb 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1432,6 +1432,7 @@ union bpf_attr {
+>                 __u32           attach_flags;
+>                 __aligned_u64   prog_ids;
+>                 __u32           prog_cnt;
+> +               __aligned_u64   prog_attach_flags; /* output: per-program attach_flags */
+>         } query;
 >
-> @@ -79,6 +85,19 @@ struct bpf_test {
->         const char *descr;
->         struct bpf_insn insns[MAX_INSNS];
->         struct bpf_insn *fill_insns;
-> +       /* If specified, test engine looks for this sequence of
-> +        * instructions in the BPF program after loading. Allows to
-> +        * test rewrites applied by verifier.  Use values
-> +        * INSN_OFF_MASK and INSN_IMM_MASK to mask `off` and `imm`
-> +        * fields if content does not matter.  The test case fails if
-> +        * specified instructions are not found.
-> +        *
-> +        * The sequence could be split into sub-sequences by adding
-> +        * SKIP_INSNS instruction at the end of each sub-sequence. In
-> +        * such case sub-sequences are searched for one after another.
-> +        */
-> +       struct bpf_insn expected_insns[MAX_EXPECTED_INSNS];
-> +       struct bpf_insn unexpected_insns[MAX_UNEXPECTED_INSNS];
->         int fixup_map_hash_8b[MAX_FIXUPS];
->         int fixup_map_hash_48b[MAX_FIXUPS];
->         int fixup_map_hash_16b[MAX_FIXUPS];
-> @@ -1126,6 +1145,206 @@ static bool cmp_str_seq(const char *log, const char *exp)
->         return true;
+>         struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+> @@ -5996,6 +5997,8 @@ struct bpf_prog_info {
+>         __u64 run_cnt;
+>         __u64 recursion_misses;
+>         __u32 verified_insns;
+> +       __u32 attach_btf_obj_id;
+> +       __u32 attach_btf_id;
+>  } __attribute__((aligned(8)));
+>
+>  struct bpf_map_info {
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index 240186aac8e6..c7af7db53725 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -888,28 +888,52 @@ int bpf_iter_create(int link_fd)
+>         return libbpf_err_errno(fd);
 >  }
 >
-> +static int get_xlated_program(int fd_prog, struct bpf_insn **buf, int *cnt)
-> +{
-> +       struct bpf_prog_info info = {};
-> +       __u32 info_len = sizeof(info);
-> +       __u32 xlated_prog_len;
-> +       __u32 buf_elt_size = sizeof(**buf);
-
-I guess elt means "element"? I would recommend use sizeof(struct bpf_insn)
-directly.
-
-[...]
-
-> +static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
-> +{
-> +       for (int i = 0; i < max_len; ++i) {
-
-Sorry for missing this in v1. We should really pull variable
-declaration out, like
-
-int i;
-
-for (int i = 0; ...)
-
-> +               if (is_null_insn(&seq[i]))
-> +                       return i;
-> +       }
-> +       return max_len;
-> +}
-> +
-[...]
-
-> +
-> +static int find_insn_subseq(struct bpf_insn *seq, struct bpf_insn *subseq,
-> +                           int seq_len, int subseq_len)
-> +{
-> +       if (subseq_len > seq_len)
-> +               return -1;
-> +
-> +       for (int i = 0; i < seq_len - subseq_len + 1; ++i) {
-> +               bool found = true;
-> +
-> +               for (int j = 0; j < subseq_len; ++j) {
-> +                       if (!compare_masked_insn(&seq[i + j], &subseq[j])) {
-> +                               found = false;
-> +                               break;
-> +                       }
-> +               }
-> +               if (found)
-> +                       return i;
-> +       }
-> +
-> +       return -1;
-> +}
-> +
-
-[...]
-
-> +
-> +static bool check_xlated_program(struct bpf_test *test, int fd_prog)
-> +{
-> +       struct bpf_insn *buf;
-> +       int cnt;
-> +       bool result = true;
-> +       bool check_expected = !is_null_insn(test->expected_insns);
-> +       bool check_unexpected = !is_null_insn(test->unexpected_insns);
-> +
-> +       if (!check_expected && !check_unexpected)
-> +               goto out;
-> +
-> +       if (get_xlated_program(fd_prog, &buf, &cnt)) {
-> +               printf("FAIL: can't get xlated program\n");
-> +               result = false;
-> +               goto out;
-> +       }
-> +
-> +       if (check_expected &&
-> +           !find_all_insn_subseqs(buf, test->expected_insns,
-> +                                  cnt, MAX_EXPECTED_INSNS)) {
-> +               printf("FAIL: can't find expected subsequence of instructions\n");
-> +               result = false;
-> +               if (verbose) {
-> +                       printf("Program:\n");
-> +                       print_insn(buf, cnt);
-> +                       printf("Expected subsequence:\n");
-> +                       print_insn(test->expected_insns, MAX_EXPECTED_INSNS);
-> +               }
-> +       }
-> +
-> +       if (check_unexpected &&
-> +           find_all_insn_subseqs(buf, test->unexpected_insns,
-> +                                 cnt, MAX_UNEXPECTED_INSNS)) {
-
-I wonder whether we want different logic for unexpected_insns. With multiple
-sub sequences, say seq-A and seq-B, it is more natural to reject any results
-with either seq-A or seq-B. However, current logic will reject seq-A => seq-B,
-but will accept seq-B => seq-A. Does this make sense?
-
-> +               printf("FAIL: found unexpected subsequence of instructions\n");
-> +               result = false;
-> +               if (verbose) {
-> +                       printf("Program:\n");
-> +                       print_insn(buf, cnt);
-> +                       printf("Un-expected subsequence:\n");
-> +                       print_insn(test->unexpected_insns, MAX_UNEXPECTED_INSNS);
-> +               }
-> +       }
-> +
-> +       free(buf);
-> + out:
-> +       return result;
-> +}
-> +
->  static void do_test_single(struct bpf_test *test, bool unpriv,
->                            int *passes, int *errors)
+> -int bpf_prog_query(int target_fd, enum bpf_attach_type type, __u32 query_flags,
+> -                  __u32 *attach_flags, __u32 *prog_ids, __u32 *prog_cnt)
+> +int bpf_prog_query_opts(int target_fd,
+> +                       enum bpf_attach_type type,
+> +                       struct bpf_prog_query_opts *opts)
 >  {
-> @@ -1262,6 +1481,9 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->         if (verbose)
->                 printf(", verifier log:\n%s", bpf_vlog);
+>         union bpf_attr attr;
+>         int ret;
 >
-> +       if (!check_xlated_program(test, fd_prog))
-> +               goto fail_log;
+>         memset(&attr, 0, sizeof(attr));
 > +
->         run_errs = 0;
->         run_successes = 0;
->         if (!alignment_prevented_execution && fd_prog >= 0 && test->runs >= 0) {
-> --
-> 2.25.1
+> +       if (!OPTS_VALID(opts, bpf_prog_query_opts))
+> +               return libbpf_err(-EINVAL);
+> +
+
+nit: check input args before you do work (memset), but it's very minor
+
+>         attr.query.target_fd    = target_fd;
+>         attr.query.attach_type  = type;
+> -       attr.query.query_flags  = query_flags;
+> -       attr.query.prog_cnt     = *prog_cnt;
+> -       attr.query.prog_ids     = ptr_to_u64(prog_ids);
+> +       attr.query.query_flags  = OPTS_GET(opts, query_flags, 0);
+> +       attr.query.prog_cnt     = OPTS_GET(opts, prog_cnt, 0);
+> +       attr.query.prog_ids     = ptr_to_u64(OPTS_GET(opts, prog_ids, NULL));
+> +       attr.query.prog_attach_flags = ptr_to_u64(OPTS_GET(opts, prog_attach_flags, NULL));
 >
+>         ret = sys_bpf(BPF_PROG_QUERY, &attr, sizeof(attr));
+>
+> -       if (attach_flags)
+> -               *attach_flags = attr.query.attach_flags;
+> -       *prog_cnt = attr.query.prog_cnt;
+> +       OPTS_SET(opts, attach_flags, attr.query.attach_flags);
+> +       OPTS_SET(opts, prog_cnt, attr.query.prog_cnt);
+>
+>         return libbpf_err_errno(ret);
+>  }
+>
+> +int bpf_prog_query(int target_fd, enum bpf_attach_type type, __u32 query_flags,
+> +                  __u32 *attach_flags, __u32 *prog_ids, __u32 *prog_cnt)
+> +{
+> +       LIBBPF_OPTS(bpf_prog_query_opts, p);
+
+nit: for consistency it would be good to call variable "opts" as we do
+pretty much everywhere else?
+
+> +       int ret;
+> +
+> +       p.query_flags = query_flags;
+> +       p.prog_ids = prog_ids;
+> +       p.prog_cnt = *prog_cnt;
+> +
+> +       ret = bpf_prog_query_opts(target_fd, type, &p);
+> +
+> +       if (attach_flags)
+> +               *attach_flags = p.attach_flags;
+> +       *prog_cnt = p.prog_cnt;
+> +
+> +       return ret;
+
+maybe use libbpf_err() here for consistency and just in case we add
+something that can clobber errno
+
+> +}
+> +
+>  int bpf_prog_test_run(int prog_fd, int repeat, void *data, __u32 size,
+>                       void *data_out, __u32 *size_out, __u32 *retval,
+>                       __u32 *duration)
+
+[...]
