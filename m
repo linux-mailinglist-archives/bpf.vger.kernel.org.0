@@ -2,169 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E72A53D372
-	for <lists+bpf@lfdr.de>; Sat,  4 Jun 2022 00:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B48253D379
+	for <lists+bpf@lfdr.de>; Sat,  4 Jun 2022 00:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242962AbiFCWDg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 18:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
+        id S1345833AbiFCWIj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 18:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbiFCWDf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 18:03:35 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13842EA06;
-        Fri,  3 Jun 2022 15:03:33 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id a2so8494927lfg.5;
-        Fri, 03 Jun 2022 15:03:33 -0700 (PDT)
+        with ESMTP id S245510AbiFCWIi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 18:08:38 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D9E286DB
+        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 15:08:37 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id k16so11996738wrg.7
+        for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 15:08:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=a1myc0lWVIRaBDDSeIG8FJr0r1IURo36xvXnX0UOjLg=;
-        b=MtKblfTyGYADGkfglOzDTK7c9UOQgDfAObBS7PiDzB+ZWeCwOEc5l1AXTtx6BoFaGl
-         T+ULggabm9w080WxyI6g9PcHoYEImSFnK/gSkUKUMYEDrVm9AjtdVuNVn3lZcKmxl2cQ
-         y1fqnOe9iGDaDhl9F+V1ab5H5jgDCJnbaWKUaQeCpFYD1Gj7RWr98v0gjBB6mwAl2UfN
-         +gtaasxGFBldHRWBOgqPco/cf+t/6dc/h2cGRer9TIFgdJUZJKfFMAeyz2FVuzMliGou
-         0aj3AhOzzXoBXnrSaTOgh6gUlVoeZG5OjBDNQFc0sm09ZLNsf6TAOkeCpp0x1DDVpwrc
-         VoLg==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Kb3Ai6KpAfH2AH6K23uvOBhY7FmI+MMGOfztKiUG0zI=;
+        b=Z+236qXUs8BNmzDe5JNa/4ToDpDMSqb1ggqI4gUdnP9wLDXvrDLpYDzGWmAV0q9hd7
+         pCLuVg65WgqPtpUpm+v6c3qmjBRgMAHoyAyeIdopCBdkCB33zuE1sT6MhV2lWAzGsrfb
+         m7pIatkAS8uqwPnr6kgKHu6XGT9Jo1oS4e9M94K4YwOffPWeCIxB8t7blVZgAofXC2dm
+         +C3P+dLl8U9aLahXtNsBT/YJ5VCLjsO8G4+vQ5o/GBUwLSUqwtB01MEEdSu+iRvGvPxy
+         3i9LHoC7CgdGUf6uBiadrbvNUznDk30jn4MSN8lXiR+WHAdnVrixHDMuQs6iHEx3E3aF
+         8MiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=a1myc0lWVIRaBDDSeIG8FJr0r1IURo36xvXnX0UOjLg=;
-        b=aOyvVdnGnRrGRF+mjshpy3G3Fox60FxouGixqCc1UpcvK4kssMtre3dmKvcV96OyIj
-         9tM3kOPo8LmG3vf1AKNf93413eA9mfrWtFHptuBEDt280FmEjn82TCQwqQIZjWMNgizM
-         AH9aC1DHSMq3IB5FPNncAC+N8pvWgoF2Ffd7RFwjH5B6JhXC9vMtUrdd9Qq00XUjjYaR
-         y8tCPpo6arU8+NrKXdDc/0AO1/IBWBMH//5S1iJaQoUWlVDm6exPAzBBf4WlHBOf/us5
-         F7hPcx5wGpRGxj3GBwPL0rALdyh/5jIpkFXpbdfmqm+k+lCqTPIAzK57KgVOHpYpgVqD
-         mFwg==
-X-Gm-Message-State: AOAM530n0GqCKrzG4NXhTgptEssKV/2oPbKABenQZU0SZTwKRpVUW6XJ
-        JFTFrlCDLhkNAOimv/w7imsIsqPl1nu6Y3o0qWk=
-X-Google-Smtp-Source: ABdhPJwiQyqMY5Xc8IsTPi8IbW6Vqgt3//gTGqFpKJUV93+QJDn2qNIMN60999JWGQZKDNJ1SrosRseCUIB6klciVkc=
-X-Received: by 2002:a05:6512:1398:b0:448:bda0:99f2 with SMTP id
- p24-20020a056512139800b00448bda099f2mr54822718lfa.681.1654293812032; Fri, 03
- Jun 2022 15:03:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220603154028.24904-1-toke@redhat.com> <20220603154028.24904-2-toke@redhat.com>
-In-Reply-To: <20220603154028.24904-2-toke@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Jun 2022 15:03:20 -0700
-Message-ID: <CAEf4Bzak82RbCYethEN7u05UKkmY=DqCiX=oHAFnHocb4fEG6w@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] selftests/bpf: Add selftest for calling global
- functions from freplace
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Kb3Ai6KpAfH2AH6K23uvOBhY7FmI+MMGOfztKiUG0zI=;
+        b=FhN/U/Vr6vzKW0XTHKCiqhbbIKPxp5oqNpnaEfjY/5Bdr582wubfYjBwbMA+x6QYXb
+         B4RCc+YXLeOQUoKao2g+D55TiuvFKXyckWu8dVEsg8uqx2NbFKw5igVMiSqpCfBqnfDM
+         xzw9ZozV6ZS5otCI9rBs8l8m8CXm8DwBnDKjoMUqN0MRnVVkjrnpFGGeLhBcDRGJC2AP
+         QJQrq6PIsnWbGFUg5dRwtZAtft7ebfox1gzi+hQrloiK+H22CvX1Cbt3Lw05EFGK41lk
+         p7ZscfhqUyMWS6ztABydjZO/dHjjrJrcs6OpKO5Tqor1gwroo+AiARsDNvKo1WQvoein
+         bLqg==
+X-Gm-Message-State: AOAM533raNttYbsbQweXTNM37AxBNZxnPegDkGGG3mjNTq/3g2BGFWgq
+        CHcp/os8qaMkV+WRHNRacF1JxehSvCFLNw==
+X-Google-Smtp-Source: ABdhPJxkq+gxiYI65cIdljPEcfBWuRe8yqH4Re7DKCwBv0nLLi/TVgmSimW0wr9DC5xqXFQzVp3r6g==
+X-Received: by 2002:adf:e2cb:0:b0:20c:c1bb:9fcb with SMTP id d11-20020adfe2cb000000b0020cc1bb9fcbmr10209705wrj.35.1654294115623;
+        Fri, 03 Jun 2022 15:08:35 -0700 (PDT)
+Received: from pluto (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id p8-20020a1c5448000000b003942a244ed7sm9625062wmi.28.2022.06.03.15.08.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jun 2022 15:08:35 -0700 (PDT)
+Message-ID: <cd7821030cd2fca945592a935c2c0853dd2852a4.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/5] selftests/bpf: specify expected
+ instructions in test_verifier tests
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Song Liu <song@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Date:   Sat, 04 Jun 2022 01:08:33 +0300
+In-Reply-To: <CAPhsuW5WrL-4qZz-NPufj7SWbWe+z4rVzc0cN3ufU2M_PnTwoQ@mail.gmail.com>
+References: <20220603141047.2163170-1-eddyz87@gmail.com>
+         <20220603141047.2163170-2-eddyz87@gmail.com>
+         <CAPhsuW5WrL-4qZz-NPufj7SWbWe+z4rVzc0cN3ufU2M_PnTwoQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 3, 2022 at 8:42 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> Add a selftest that calls a global function with a context object paramet=
-er
-> from an freplace function to check that the program context type is
-> correctly converted to the freplace target when fetching the context type
-> from the kernel BTF.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 13 ++++++++++
->  .../bpf/progs/freplace_global_func.c          | 24 +++++++++++++++++++
->  2 files changed, 37 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/freplace_global_fun=
-c.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/too=
-ls/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> index d9aad15e0d24..6e86a1d92e97 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-> @@ -395,6 +395,17 @@ static void test_func_map_prog_compatibility(void)
->                                      "./test_attach_probe.o");
->  }
->
-> +static void test_func_replace_global_func(void)
-> +{
-> +       const char *prog_name[] =3D {
-> +               "freplace/test_pkt_access",
-> +       };
+> On Fri, 2022-06-03 at 14:31 -0700, Song Liu wrote:
+> > On Fri, Jun 3, 2022 at 7:11 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+> 
+> > +#define INSN_OFF_MASK  ((s16)0xFFFF)
+> > +#define INSN_IMM_MASK  ((s32)0xFFFFFFFF)
+> 
+> Shall we use __s16 and __s32 to match struct bpf_insn exactly.
 
-empty line between variables and statements
+Will do.
 
-> +       test_fexit_bpf2bpf_common("./freplace_global_func.o",
-> +                                 "./test_pkt_access.o",
-> +                                 ARRAY_SIZE(prog_name),
-> +                                 prog_name, false, NULL);
-> +}
-> +
->  /* NOTE: affect other tests, must run in serial mode */
->  void serial_test_fexit_bpf2bpf(void)
->  {
-> @@ -416,4 +427,6 @@ void serial_test_fexit_bpf2bpf(void)
->                 test_func_replace_multi();
->         if (test__start_subtest("fmod_ret_freplace"))
->                 test_fmod_ret_freplace();
-> +       if (test__start_subtest("func_replace_global_func"))
-> +               test_func_replace_global_func();
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/freplace_global_func.c b/t=
-ools/testing/selftests/bpf/progs/freplace_global_func.c
-> new file mode 100644
-> index 000000000000..d9f8276229cc
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/freplace_global_func.c
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019 Facebook */
-> +#include <linux/stddef.h>
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +__attribute__ ((noinline))
+[...]
 
-__noinline
+> > +       __u32 buf_elt_size = sizeof(**buf);
+> 
+> I guess elt means "element"? I would recommend use sizeof(struct bpf_insn)
+> directly.
 
-> +int test_ctx_global_func(struct __sk_buff *skb)
-> +{
-> +       volatile int retval =3D 1;
-> +       return retval;
+Will do.
 
-just curious, why volatile instead of direct `return 1;`? Also, empty
-line between variable and return.
+[...]
 
-> +}
-> +
-> +__u64 test_pkt_access_global_func =3D 0;
+> > +static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
+> > +{
+> > +       for (int i = 0; i < max_len; ++i) {
+> 
+> Sorry for missing this in v1. We should really pull variable
+> declaration out, like
+> 
+> int i;
+> 
+> for (int i = 0; ...)
 
-nit: it's a variable, please put it at the top before functions, or at
-the very least add empty line between it and SEC()
+Sorry, just to clarify, you want me to pull all loop counter
+declarations to the top of the relevant functions, right? (Affecting 4
+functions in this patch).
 
-> +SEC("freplace/test_pkt_access")
-> +int new_test_pkt_access(struct __sk_buff *skb)
-> +{
-> +       test_pkt_access_global_func =3D test_ctx_global_func(skb);
-> +       return -1;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> --
-> 2.36.1
->
+[...]
+
+> > +static int find_insn_subseq(struct bpf_insn *seq, struct bpf_insn *subseq,
+> > +       if (check_unexpected &&
+> > +           find_all_insn_subseqs(buf, test->unexpected_insns,
+> > +                                 cnt, MAX_UNEXPECTED_INSNS)) {
+> 
+> I wonder whether we want different logic for unexpected_insns. With multiple
+> sub sequences, say seq-A and seq-B, it is more natural to reject any results
+> with either seq-A or seq-B. However, current logic will reject seq-A => seq-B,
+> but will accept seq-B => seq-A. Does this make sense?
+
+Have no strong opinion on this topic. In theory different variants
+might be useful in different cases.
+
+In the test cases for bpf_loop inlining I only had to match a single
+unexpected instruction, so I opted to use same match function in both
+expected and unexpected cases to keep things simple.
+
+One thought that I had was that struct bpf_test might be extended in
+the future as follows:
+
+#define MAX_PATTERNS 4
+...
+struct bpf_test {
+	...
+	struct bpf_insn unexpected_insns[MAX_UNEXPECTED_INSNS][MAX_PATTERNS];
+	...
+}
+
+Where each pattern follows logic "seq-A => seq-B", but patterns are
+matched independently. So if the goal is to match either "seq-A" or
+"seq-B" these should be specified as separate patterns. However, this
+seems to be an overkill for the problem at hand.
+
+
