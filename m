@@ -2,102 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD05353CC80
-	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 17:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8DE53CD18
+	for <lists+bpf@lfdr.de>; Fri,  3 Jun 2022 18:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244272AbiFCPo0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jun 2022 11:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
+        id S236750AbiFCQWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jun 2022 12:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbiFCPo0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jun 2022 11:44:26 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AF062DE
-        for <bpf@vger.kernel.org>; Fri,  3 Jun 2022 08:44:24 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id w10so7726754vsa.4
-        for <bpf@vger.kernel.org>; Fri, 03 Jun 2022 08:44:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=T/blLWTzm3edzIJzh9cdqF/JQAxQkYJjIod4C8ihcVs=;
-        b=hyle59WhKuNQqAY34rmg5Eo51OI2Vz04TA85J6K8Q9xUBJBk4gU0wW4hsBOWesi2Ax
-         j1P7O8AJZx7L0Uf53X7oh3Wcmf2DXafQBokfBOcFgmQ6CyOTXFCx0tTff5LNLhcAOynh
-         Rx5FKjpY+F1neVWLDgROnREQjrUfTbJEC/IE0Z5/bDC+NcBSZOMllMSLnvB7tghzyNnq
-         xMDnLTeuqTrm6Xw/IAhvL7QUipWGVN6oczNO0fcmu5oftZ4wnpayG9y+KCJvwOS/Ppn2
-         lwDYrAsf0oMkxNMxchrYx4WlBFypOLAHkLW4E5BqUQ8yCGybS+BMe9IGFCTKJ2RnTs8m
-         ed8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=T/blLWTzm3edzIJzh9cdqF/JQAxQkYJjIod4C8ihcVs=;
-        b=Ao8x0ym1EstriCIubKYJ5hSHeHOohacL1eRhMH8DdNKXDLsjWtHato2xY02f5olgKr
-         aCnfVzFNthm84AZMsRmJDRV/4qA3yeQGwJ1Cn3yHOB4WpeFUlT5MZFLGlnadQRhrGbC3
-         4gUikKVpf4JltQJIgR96WR3nI+rq0wvXZVdf6xI65vZ+Ke611HnQA1WuaQp4LkxE46kX
-         sLFPXU7TBuqqJUfVKtpOxN4xH7Nks51u4TWZa5glsJyActC+D04VN8E339K7UdseTBSm
-         I5MhVskXP4c2uIaQRg/fsvNpfpU3w/JXimJGAHJuH9K8Ze4uC06rnpWaTVAp6ybaYJKW
-         GEMw==
-X-Gm-Message-State: AOAM53160zfzcC3jmDsEyZ2uQTun33IW+d4GS5jwXs3gtXleTltJY2mz
-        C4wADbd1etDf/PzvlL8McuC9wjSqWjVNXN09VDujS2xfrym6Yg==
-X-Google-Smtp-Source: ABdhPJwpQa28uX3LT40zJq3ubGW4F1pJqimWDcOmhMp5hWlls6Nltmej/fRKinsoTJQwaQiHMTBt7tF4FFqdCKmXNoA=
-X-Received: by 2002:a05:6102:c50:b0:337:d28c:2853 with SMTP id
- y16-20020a0561020c5000b00337d28c2853mr4435612vss.21.1654271063545; Fri, 03
- Jun 2022 08:44:23 -0700 (PDT)
+        with ESMTP id S1343851AbiFCQWw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jun 2022 12:22:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA90D255B2;
+        Fri,  3 Jun 2022 09:22:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D8E051F8E4;
+        Fri,  3 Jun 2022 16:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1654273369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=t/+AtZ+IDbMv3UT/dcTShtZtPHWiyNk8125DJlO9QaU=;
+        b=gMXET3lNPzF+uYOE4KQQ13gAYVSdhjnCHMidX2X6ERv+OQELUk+fiFAs5NMDvVYkmPyj+G
+        bDHyo+CLTowgn6Y4QEEVUTMkaSWcM3hnO7cLlI5AclJClQaxevRMRsRNoei+DxSv/BqJEO
+        7nQl4ugDZ6y4D/4PlNbi6+FM2AHu8LQ=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 62F0513AA2;
+        Fri,  3 Jun 2022 16:22:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Kw81F1k1mmLgQgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 03 Jun 2022 16:22:49 +0000
+Date:   Fri, 3 Jun 2022 18:22:48 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 0/5] bpf: rstat: cgroup hierarchical stats
+Message-ID: <20220603162247.GC16134@blackbody.suse.cz>
+References: <20220520012133.1217211-1-yosryahmed@google.com>
 MIME-Version: 1.0
-From:   Tatsuyuki Ishi <ishitatsuyuki@gmail.com>
-Date:   Sat, 4 Jun 2022 00:44:12 +0900
-Message-ID: <CANqewP1RFzD9TWgyyZy00ZVQhQr8QjmjUgyaaNK0g0_GJse=KA@mail.gmail.com>
-Subject: BPF ringbuf misses notifications due to improper coherence
-To:     bpf@vger.kernel.org
-Cc:     andriin@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220520012133.1217211-1-yosryahmed@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The BPF ringbuf defaults to a mechanism to deliver epoll notifications
-only when the userspace seems to "catch up" to the last written entry.
-This is done by comparing the consumer pointer to the head of the last
-written entry, and if it's equal, a notification is sent.
+Hello Yosry et al.
 
-During the effort of implementing ringbuf in aya [1] I observed that
-the epoll loop will sometimes get stuck, entering the wait state but
-never getting the notification it's supposed to get. The
-implementation originally mirrored libbpf's logic, especially its use
-of acquire and release memory operations. However, it turned out that
-the use of causal memory model is not sufficient, and using a seq_cst
-store is required to avoid anomalies as outlined below.
+This is an interesting piece of work, I'll add some questions and
+comments.
 
-The release-acquire ordering permits the following anomaly to happen
-(in a simplified model where writing a new entry atomically completes
-without going through busy bit):
+On Fri, May 20, 2022 at 01:21:28AM +0000, Yosry Ahmed <yosryahmed@google.com> wrote:
+> This patch series allows for using bpf to collect hierarchical cgroup
+> stats efficiently by integrating with the rstat framework. The rstat
+> framework provides an efficient way to collect cgroup stats and
+> propagate them through the cgroup hierarchy.
 
-kernel: write p 2 -> read c X -> write p 3 -> read c 1 (X doesn't matter)
-user  : write c 2 -> read p 2
+About the efficiency. Do you have any numbers or examples?
+IIUC the idea is to utilize the cgroup's rstat subgraph of full tree
+when flushing.
+I was looking at your selftest example and the measuring hooks call
+cgroup_rstat_updated() and they also allocate an entry bpf_map[cg_id].
+The flush callback then looks up the cg_id for cgroups in the rstat
+subgraph.
+(I'm not familiar with bpf_map implementation or performance but I
+imagine, you're potentially one step away from erasing bpf_map[cg_id] in
+the flush callback.)
+It seems to me that you're building a parallel structure (inside
+bpf_map(s)) with similar purpose to the rstat subgraph.
 
-This is because the release-acquire model allows stale reads, and in
-the case above the stale reads means that none of the causal effect
-can prevent this anomaly from happening. In order to prevent this
-anomaly, a total ordering needs to be enforced on producer and
-consumer writes. (Interestingly, it doesn't need to be enforced on
-reads, however.)
+So I wonder whether there remains any benefit of coupling this with
+rstat?
 
-If this is correct, then the fix needed right now is to correct
-libbpf's stores to be sequentially consistent. On the kernel side,
-however, we have something weird, probably inoptimal, but still
-correct. The kernel uses xchg when clearing the BUSY flag [2]. This
-doesn't sound like a necessary thing, since making the written event
-visible only require release ordering. However, it's this xchg that
-provides the other half of total ordering in order to prevent the
-anomalies, as it performs a smp_mb, essentially upgrading the prior
-store to seq_cst. If the intention was actually that, it would be
-really obscure and hard-to-reason way to implement coherency. I'd
-appreciate a clarification on this.
 
-[1]: https://github.com/aya-rs/aya/pull/294#issuecomment-1144385687
-[2]: https://github.com/torvalds/linux/blob/50fd82b3a9a9335df5d50c7ddcb81c81d358c4fc/kernel/bpf/ringbuf.c#L384
+Also, I'd expect the custom-processed data are useful in the
+structured form (within bpf_maps) but then there's the cgroup iter thing
+that takes available data and "flattens" them into text files.
+I see this was discussed in subthreads already so it's not necessary to
+return to it. IIUC you somehow intend to provide the custom info via the
+text files. If that's true, I'd include that in the next cover message
+(the purpose of the iterator).
+
+
+> * The second patch adds cgroup_rstat_updated() and cgorup_rstat_flush()
+> kfuncs, to allow bpf stat collectors and readers to communicate with rstat.
+
+kfunc means that it can be just called from any BPF program?
+(I'm thinking of an unprivileged user who issues cgroup_rstat_updated()
+deep down in the hierarchy repeatedly just to "spam" the rstat subgraph
+(which slows down flushers above). Arguably, this can be done already
+e.g. by causing certain MM events, so I'd like to just clarify if this
+can be a new source of such arbitrary updates.)
+
+> * The third patch is actually v2 of a previously submitted patch [1]
+> by Hao Luo. We agreed that it fits better as a part of this series. It
+> introduces cgroup_iter programs that can dump stats for cgroups to
+> userspace.
+> v1 - > v2:
+> - Getting the cgroup's reference at the time at attaching, instead of
+>   at the time when iterating. (Yonghong) (context [1])
+
+I noticed you take the reference to cgroup, that's fine.
+But the demo program also accesses via RCU pointers
+(memory_subsys_enabled():cgroup->subsys).
+Again, my BPF ignorance here, does the iterator framework somehow take
+care of RCU locks?
+
+
+Thanks,
+Michal
