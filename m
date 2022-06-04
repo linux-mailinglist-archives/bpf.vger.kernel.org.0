@@ -2,67 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2644853D641
-	for <lists+bpf@lfdr.de>; Sat,  4 Jun 2022 11:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D981653D646
+	for <lists+bpf@lfdr.de>; Sat,  4 Jun 2022 11:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbiFDJcb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Jun 2022 05:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+        id S233999AbiFDJew (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Jun 2022 05:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbiFDJca (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Jun 2022 05:32:30 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1886C26124;
-        Sat,  4 Jun 2022 02:32:29 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id q21so20131063ejm.1;
-        Sat, 04 Jun 2022 02:32:29 -0700 (PDT)
+        with ESMTP id S230351AbiFDJev (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Jun 2022 05:34:51 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0493F5007D
+        for <bpf@vger.kernel.org>; Sat,  4 Jun 2022 02:34:49 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id o10so12942119edi.1
+        for <bpf@vger.kernel.org>; Sat, 04 Jun 2022 02:34:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kEnlhjDu0FbGaaiDuZ0pof8c2vlmdAC3/VHnhWFqmg4=;
-        b=PnimOz8UTsnQrP+tEBJhi00bkQm619fcXVGRSpNRTJK4BE0FZCxeOMZ4tv3bK3fTQe
-         2VBpDrqigAmGMAgDTdPCoyUvjLVSBMLn3lNa52v+PG8+ODbpszGfmBc98L7MaP/Y2SCq
-         N5jAsIquHzKMtbi+8tjg1RkholuN6cahghqBcdKW4Vo8NUP1zO8nLOXiwKF6q0FuiE55
-         +KH9++ROi2nHfYjxrAR12tn52UFbbiXLiJCt2qJB4zlQL+2qJuTKc4JJvatCF/kLIPYd
-         +vF6sn8DssyO8XjdU19Y7jBHzks4YzZzauxaAd/udeWawZphiIZ9C4I+RPasgyVuyWAd
-         pguA==
+        bh=7dJpa1t9xEVh84iLXqhmSr0eTd2LkEIVgZpVw7qWhSY=;
+        b=SMtZIZJtjIIluboxh5NYEl4/2RusJN+dTFmnRbU1ywEopGj7IoJ7aLIKSEYZu/X8cb
+         eoPlhH+J7Yj6Q7tkm9KmsXrR1pfK70lW2fpUqxHobDL3H1DePD4pJHFbjwwwHyaFH6kO
+         ZdDxZDUX5r5NKLXP6cw0EZzHrzJQp2Yk5v3Ij04BDXUyDadaN9uwPsz+EVxDQGRN5jUN
+         uViOibzLTaONfbkvDPgxpbcNlg+euk1cVKG0NJFLrClTwNIEc5hT3M0QhdKuUo6C2S4b
+         2PSXe/ZMaUFkxqK/84CQZIAs05hhGs7BliMSZPEwzILFXGNYwjFc2DlRZ5NE+2INiuRm
+         jF5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kEnlhjDu0FbGaaiDuZ0pof8c2vlmdAC3/VHnhWFqmg4=;
-        b=SDCJG++6NlxUWbCBqMvQhp5toJGDxG0BLAEF00nFnoLUKxhMkFe19S2WwIsuey1uUk
-         iWwczzPlQ8bBOjt69cAbvicl/HjDRfGE6XI208HvmQkj4MeRnKzTfF1wS3j3+UBwiLTN
-         Mkb/Ja2v1nf5POi06E4RC7HQsSUR6t09hpqr4A3SDWqbdN5xyDuGvHBlLh14LXYACvcq
-         wcguKkPmdZXi1qQng+pgqrhJbEms5SiqzlXxh46lEK8ZJLUpVXOij7+TKJ+/SXPZM0NE
-         Liqi3sDs0KugViTxxp0CkEz+ECAf0Sm4+deF+0QQUMn2lqs6vVL75aEYQau0CE4oAuTK
-         H7Tw==
-X-Gm-Message-State: AOAM531xPd/fsXfqpVu8DaAZdSOU+6cS3iy2I6yO4tHkMCrOFMQ4Trwy
-        VH0sqSqFoG+PlTtqgTYTZDS7zdpUHy2DTmfVOLw=
-X-Google-Smtp-Source: ABdhPJzPjZrJ4eJvtFdkY3qOCuyVx7FzZONcP1b+1P5BVkPY2ID46v7ARm3OX9d9GsOfOQFTiXP0iWZFxzGOBMajY6E=
-X-Received: by 2002:a17:907:72c1:b0:6ff:c5f:6b7d with SMTP id
- du1-20020a17090772c100b006ff0c5f6b7dmr12395793ejc.676.1654335147423; Sat, 04
- Jun 2022 02:32:27 -0700 (PDT)
+        bh=7dJpa1t9xEVh84iLXqhmSr0eTd2LkEIVgZpVw7qWhSY=;
+        b=dLRJYxCk8zfWkS1w17STb1x3OQ9sfPfUVzjeMRzCsHxFbqPzyGXz8LveGQr5cuvt7C
+         oCuz4NPGKnanYKCtsPas+alBWkJI2guvgtBVJ4vKnjowbDb6pGxSTffQE2uA5HdPgvYI
+         CPewiZx/tbxrOxcDSc8rX04wHAhEgkrY3LTqKICC+c8mZw0N1c+hdhnZDh1fv6m54g2P
+         4u+bKIA7h/buJUsTwHySKrtCMRr9yRbeNuXv7uLAmPJtfLpdK1FFoAfFoH/jnds0+GYF
+         Ck3t1OHVAQtZVZOxLF2e0cv7eTeHgQCiQHsJIrvEjr4xrWCm25exErlqIVIT/sKLLT0t
+         qGEQ==
+X-Gm-Message-State: AOAM532//4hlWMAKu/EFthekmpq7M2UlJAhmWZ/Ng2IFU9wT/oJ2c9Rb
+        riNDGGE3UQbNO6VUeKACzXEGIkb5MX1C7qMjDqkSbWQYfl4=
+X-Google-Smtp-Source: ABdhPJyTyNaV/bUgWvx1VNHhzK6dpYoZd3fKm7yb5wtBVJhDtCZ0mMnjKCD/NPU1GdrQUE29vq2y8hkFaaJ3Lb6BkoA=
+X-Received: by 2002:a05:6402:3490:b0:42f:b592:f364 with SMTP id
+ v16-20020a056402349000b0042fb592f364mr3791110edc.66.1654335287502; Sat, 04
+ Jun 2022 02:34:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220525132115.896698-1-roberto.sassu@huawei.com>
- <20220525132115.896698-2-roberto.sassu@huawei.com> <CACYkzJ7L-fE740t91amu4uiDA5dnDMU1D+c0vhb-sFHyQK08kA@mail.gmail.com>
- <89db5543066f4dccbfebd78ed3c025e7@huawei.com> <CACYkzJ4uD_k6sDktVaxkE_1QtSphZm+Rhjk4wrMm71LcmWRJ0w@mail.gmail.com>
- <cfaafb3af5be40ec80f14e134a5702cf@huawei.com>
-In-Reply-To: <cfaafb3af5be40ec80f14e134a5702cf@huawei.com>
+References: <20220603015855.1187538-1-yhs@fb.com> <20220603020019.1193442-1-yhs@fb.com>
+ <CAADnVQJgH6X66Rg0Z5v8pTsnfZBsHeaEko6rYv=ON6RQ+2FVPA@mail.gmail.com> <dfbe2c95-b6d7-1e26-4c3d-9ae7513235d0@fb.com>
+In-Reply-To: <dfbe2c95-b6d7-1e26-4c3d-9ae7513235d0@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 4 Jun 2022 11:32:15 +0200
-Message-ID: <CAADnVQ+QL+rewHZ-Q=0W9o7VXKPvwHm=rmdGFKTqQBUxZhsnuQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] bpf: Add BPF_F_VERIFY_ELEM to require signature
- verification on map values
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     KP Singh <kpsingh@kernel.org>, "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Sat, 4 Jun 2022 11:34:34 +0200
+Message-ID: <CAADnVQKxkY2+guT8BD4+3JQarJ+iwHiegLiD9bMAT=MAaMw9OA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 16/18] selftests/bpf: Add a test for enum64
+ value relocations
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,18 +69,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 3, 2022 at 5:44 PM Roberto Sassu <roberto.sassu@huawei.com> wrote:
-> >
-> > Your bpf_map_verify_value_sig hard codes the type of signature
-> > (bpf_map_verify_value_sig as verify_pkcs7_signature)
-> > its implementation. This is not extensible.
+On Sat, Jun 4, 2022 at 4:51 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> It is hardcoded now, but it wouldn't if there are more verification
-> functions. For example, if 'id_type' of module_signature is set
-> to PKEY_ID_PGP, bpf_map_verify_value_sig() would call
-> verify_pgp_signature() (assuming that support for PGP keys and
-> signatures is added to the kernel).
+>
+>
+> On 6/3/22 8:14 AM, Alexei Starovoitov wrote:
+> > On Fri, Jun 3, 2022 at 4:00 AM Yonghong Song <yhs@fb.com> wrote:
+> >> +
+> >> +SEC("raw_tracepoint/sys_enter")
+> >> +int test_core_enum64val(void *ctx)
+> >> +{
+> >> +#if __has_builtin(__builtin_preserve_enum_value)
+> >> +       struct core_reloc_enum64val_output *out = (void *)&data.out;
+> >> +       enum named_unsigned_enum64 named_unsigned = 0;
+> >> +       enum named_signed_enum64 named_signed = 0;
+> >
+> > libbpf: prog 'test_core_enum64val': relo #0: unexpected insn #0
+> > (LDIMM64) value: got 8589934591, exp 18446744073709551615 ->
+> > 18446744073709551615
+> > libbpf: prog 'test_core_enum64val': relo #0: failed to patch insn #0: -22
+> > libbpf: failed to perform CO-RE relocations: -22
+> > libbpf: failed to load object 'test_core_reloc_enum64val.o'
+> >
+> > Is it failing in CI because clang is too old?
+>
+> Yes, the failure is due to that the llvm patch to support enum64
+> is not merged. The llvm patch is not merged because otherwise
+> people using latest compiler (with llvm patch) may fail to
+> latest libbpf.
+>
+> > CI will pick up newer clang sooner or later,
+> > but the users will be confused.
+> > The patch 17/18 that updates README certainly helps,
+> > but I was wondering whether we can do a similar trick
+> > to what Andrii did in libbpf and make the error more human readable?
+>
+> I think the above information is what current libbpf did for
+> relocation errors.
+>
+> Unless I missed something, Andrii's commit 9fdc4273b8da ("libbpf: Fix up
+> verifier log for unguarded failed CO-RE relos") is to improve kernel
+> verifier log w.r.t. relocation failures.
 
-I agree with KP. All hard coded things are hurting extensibility.
-we just need a helper that calls verify_pkcs7_signature
-where prog will specify len, keyring, etc.
+Right. I was referring to the spirit of that commit.
+libbpf can probably print more user friendly message and point out
+that enum64 is potentially missing in the clang?
