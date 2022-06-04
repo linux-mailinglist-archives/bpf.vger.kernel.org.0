@@ -2,120 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A47E53D5B5
-	for <lists+bpf@lfdr.de>; Sat,  4 Jun 2022 08:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CB753D5D4
+	for <lists+bpf@lfdr.de>; Sat,  4 Jun 2022 08:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbiFDGMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 4 Jun 2022 02:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46676 "EHLO
+        id S232773AbiFDGgS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Jun 2022 02:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbiFDGMV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 4 Jun 2022 02:12:21 -0400
+        with ESMTP id S232750AbiFDGgR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Jun 2022 02:36:17 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50246FD14;
-        Fri,  3 Jun 2022 23:12:18 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2543OOqM031231;
-        Fri, 3 Jun 2022 23:12:01 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6C015730;
+        Fri,  3 Jun 2022 23:36:17 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2546CYdV019106;
+        Fri, 3 Jun 2022 23:36:02 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=FkSx53UfUAA+RNa2q6GHsC+Jc5Eg9No/NQYUyNM80vo=;
- b=p1oO0WLfSz/ncfqCZhf4i/8xWzC2S2x7a4MpSDCFTTKuH0UJnfOwDxHXvwOsGDxY46GM
- lPqlLCUjhlyw4So4lacmHD7ZbOKLNbiZf1RAhg6xAsY/SGeRGCb2C+nUIiN6rovnyuZ0
- lu+CbENPiqVRjHdTE40cxeArBd0kk4gvufU= 
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2044.outbound.protection.outlook.com [104.47.57.44])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gfyesgc70-1
+ mime-version; s=facebook; bh=WRd/S0QNm0rQ88vGX7yhKv9z4gTY7A+X+WUTXBgC7x8=;
+ b=LT58pY4zm3YpOVfspa0zLOnPz22709mg1nwJRyCEJYoFv1r3Jh5aWGno2jcOD9zmaZdB
+ HbWnqXa0i4lcNjcigYZw+f6dnGl86smpEyWXPqJqTRrq3WefIclBM8dUYtxr8IxW0IPC
+ QXdqH3CuXUZmqo7KH9azAm6LnxwpouscgvA= 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gfydqgeb6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Jun 2022 23:12:01 -0700
+        Fri, 03 Jun 2022 23:36:01 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L4BRRKW9tmW/P+ZtaY4gKtTCrg5bHyO8LpTjpZaYKOlsKbGo57A1Et78v/yy93fB7NHKohY5bQmZhNfVwclZLpdEwcKwdc3S4kFOg0M4uazop0UmlVlM7zo031Lx/mVYPts9eguguYd77O4mYM3xUJwgnw6cYNG+UZvpdsg6phvHWR99yVu5AfS0IAGr0cUJwqK79a03joFieMmxUSaDpqGCZpvcfy8j1OLXubLT4s6hfb+B7H014Xaibn0M4HAcBgKkCzUN8x4saMuejVf7aijPAvBje9Zh9HNozhFn44akE/+nw/F6YLQAc+CTttz27NAqm+NVYP427nOWtMotpQ==
+ b=H1uSw0JHnuOcBKa/40liRwee6XoOvsAHkzR69Hx0WbPOmEriISLztY6P9k/LiExgvF6TjN15YtIwQ3BnDBSQUXQwmcXmsjWP735MFFxIktTCzYM75z93Vp7LkmVjXGUAysGv/M5bJF8VaDGundGlr6h7eRsIZBRcLuEpGzRbYtBJxk9kfdtGL1Qi/Yaaa2OBDoPjLTSXgX2JCrKwoJN8XhlsoudlUyo3hzLpBMTeO2+phqXwoWXi0Rx7yAdN6Ap6i46qnNeOLPsb/CUlM4HA0ThRlMGXi1KDPSeeCb4QOPLtIVHRbPcl3XKwEWS6yr15NqVlY5o5tVNXFTV5fVZQQA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FkSx53UfUAA+RNa2q6GHsC+Jc5Eg9No/NQYUyNM80vo=;
- b=ezsbTF4rojNacxya+uUTgq2V9y1hOSIevgafwAmLwR28mT/oCsQXNXknHGQDfzztXrmUT6Ubd5I37z/9Ht/a3xOQX0mx16B+s9UYXVLEyifnRvW3SpyX0J8OVt2l9wDc1UO6oSUgunVWcgvZoLX1Bs6Dt/J6MWVLU4+QOtyZYhPiBfw+fAqZpmL3ifSTmKfK2eHpk0AFJGjAKMo+LABgGHrxxUxC8ZJ0gaV4thQDAnQjwGD2OIeS8mIRZzMzjNQwj7ooE20/1PTjHQ55PA47phBmiFI9AO5kTmkEbRppwafUQU9RAUXqER5mwgrm7r+4PFifJ+KYGBD8OzygNcK38g==
+ bh=WRd/S0QNm0rQ88vGX7yhKv9z4gTY7A+X+WUTXBgC7x8=;
+ b=EVdg4Qg8NfGXxkdecn2Cdf6nyyslSgIm6oy93u7l6Y3rpibHjSBWx4ML2FNmZd8QJ/VwIKPWHa6HMlLm+tDPGRvHzbb4hJSA0vZYxQTNJTYtFH5OOcDC26LlDHEELZx38tW12dtE2M66JwKYi9FccGpjL0ED1ByGnnCsviDFE5DhQRehTorBb769pCzstyUcKPtOzBxa77/RMpXMHLvNbSFz198haTPCSNBHsBo8XBPY/elqt5ZQOUYbGDZciOoD7RpG9XD8HOvn3eTgqFpNIzt5zDsDRVuK2QD0R9O1pzwIEw3e0ZWH/lXYVf7jKRei3LlIrh4BDDCvFYbmMQfJxQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by CO1PR15MB4939.namprd15.prod.outlook.com (2603:10b6:303:e6::8) with
+ by SA1PR15MB5080.namprd15.prod.outlook.com (2603:10b6:806:1df::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.13; Sat, 4 Jun
- 2022 06:11:58 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.17; Sat, 4 Jun
+ 2022 06:35:59 +0000
 Received: from SA1PR15MB5016.namprd15.prod.outlook.com
  ([fe80::a09e:da84:3316:6eb0]) by SA1PR15MB5016.namprd15.prod.outlook.com
  ([fe80::a09e:da84:3316:6eb0%9]) with mapi id 15.20.5314.017; Sat, 4 Jun 2022
- 06:11:58 +0000
-Date:   Fri, 3 Jun 2022 23:11:54 -0700
+ 06:35:59 +0000
+Date:   Fri, 3 Jun 2022 23:35:56 -0700
 From:   Martin KaFai Lau <kafai@fb.com>
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH bpf-next v8 03/11] bpf: per-cgroup lsm flavor
-Message-ID: <20220604061154.kefsehmyrnwgxstk@kafai-mbp>
+Subject: Re: [PATCH bpf-next v8 04/11] bpf: minimize number of allocated lsm
+ slots per program
+Message-ID: <20220604063556.qyhsssqgp2stw73q@kafai-mbp>
 References: <20220601190218.2494963-1-sdf@google.com>
- <20220601190218.2494963-4-sdf@google.com>
+ <20220601190218.2494963-5-sdf@google.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220601190218.2494963-4-sdf@google.com>
-X-ClientProxiedBy: MWHPR14CA0025.namprd14.prod.outlook.com
- (2603:10b6:300:12b::11) To SA1PR15MB5016.namprd15.prod.outlook.com
+In-Reply-To: <20220601190218.2494963-5-sdf@google.com>
+X-ClientProxiedBy: MWHPR15CA0038.namprd15.prod.outlook.com
+ (2603:10b6:300:ad::24) To SA1PR15MB5016.namprd15.prod.outlook.com
  (2603:10b6:806:1db::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 25dc90e0-a136-4722-50e6-08da45f12131
-X-MS-TrafficTypeDiagnostic: CO1PR15MB4939:EE_
-X-Microsoft-Antispam-PRVS: <CO1PR15MB49396D1C2C722AC7CD8A69BED5A09@CO1PR15MB4939.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: cbc0f86f-775c-4247-a707-08da45f47c8a
+X-MS-TrafficTypeDiagnostic: SA1PR15MB5080:EE_
+X-Microsoft-Antispam-PRVS: <SA1PR15MB5080FED68929E91C4B648BABD5A09@SA1PR15MB5080.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 33EbVqFf+nryczJ6vcjxiD+D6K9pmzV06h3fZIemjQbyl0hW0qmGWDPvCsI3Bx95fizKO1UOwg8IrJ1joSfs1+OHEuHXSruifOrqxd0hI49L8uw10Kh2WjdYAyNBi1em/MhpvYIWKJZMyI/4GTgcfRbMw97F8XvY26JNlag2jsfhvEnBjHOzVbYuxmYGduH99IT6Ecy9OIXh9VvOG62EKavBeHHI2oC6G+pjmJmzuXCMGoFfFCcHFb0EK04TH+XKeVnIZl02oa60fw6jmBuLS+RQWQ7WpKKDfemzLaIIcOGg3iA44g4sD+edCwSjSTCU5CJUE3riQu1FeqUlUv4C0jbxZ8kX+4GXoEqXVBnHBXNzYos9VlfCM7Iax8ok91gyZdOKOuw9bu+TM+2Nb+KIkLxaO1hQE47afvEEQBq5R0l2L2ZM3H/ZDHpIPigDv9BW4eMKVbWe3FzNWAiYHJ3mJbAjuGIygCpR+gl6yLC4GAmA2B7IdfZLEnaxUS8LfVr3QETHQuqnKK6N9xLjLJ3MADNnXPyHpy8vCZ29iwzgjT0WVfyzrj7DasPQFy0o4TNBDu/WRs23BshtyqNdfxi97dew1wk6kT3HDzK41ErUu+YreaAUHxQpVTkNkvsmjRn8fjawv/OYv5cIUSieIaImbA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(4636009)(366004)(5660300002)(1076003)(186003)(8936002)(83380400001)(8676002)(3716004)(6486002)(30864003)(508600001)(2906002)(66946007)(66556008)(9686003)(6506007)(4326008)(6916009)(66476007)(6512007)(38100700002)(52116002)(86362001)(33716001)(6666004)(316002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: N46iOIGlt8ZZZvUBG6BQDCJ1WRBvd+ZEE+3gA24y/5ZGC7qcKau5SHypnRK4Q/X6cq1VvQanGNSfv7b7LpqR87lZUUvpOALpUS1tvDhSNxIORDrUy/bMj9c0aofJR/ZGWVZZVH0emxG6zsBa46WRrJ4alqMOpmSDCB7CYq+47vHLk4TLrIFcQQaB1ygoU+UtQFOQV99L4S2EY4fH3PBQPCyo0DN5N/Bbd2oQ7NOdDZz9uR2KdsWZpCOEs5rX4DTPL2ASAMQ+H11bnAVcQZNNYnLJQfR0C/SOxbZw3wIMPhv06QHyElmHKc69psB22RPQF2tJkgWgLHFsW63wy8iRLCffGf0zrSrm/fD7lysNEjJHM9YpbFCFj6AxUa/DDooxkbcXpOIOg3CbjuGg+y/ZiWh1uY+SubwHLv6sBzePnHVt1p5TtdOf2A0qPLoRoiv23U0kFIPZhEMmvRz52bRhgh527d715Ibh7cMNNpP8Dx5+k/y+B17aNY/clMZ2KAtPKe5wONxrslwunRCIjxAyDsPY1HfXoW85QRSG7AOLkg9nY0BJ/PygNiQ2/aS4OhfLtePp4s4TfLBX40ikih9Eeh2QG7Nxua6oRiy5S1eFdB6tcXT0Mqye5DhWxKZYvlUgPugp+JsoUz3PW+zs+vj3iA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(316002)(33716001)(508600001)(8936002)(6486002)(86362001)(5660300002)(6916009)(1076003)(186003)(83380400001)(2906002)(52116002)(38100700002)(6506007)(6666004)(9686003)(6512007)(8676002)(66946007)(66556008)(66476007)(4326008);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J4c8dY1lVKQcRuDJ4NAW9oyfcJtv1zSfLDPPbTvvUZ2xA5iLb/uVPzOPcfkr?=
- =?us-ascii?Q?Fb+JHKmGS7O6lSB5y0CtGi0nAn8WnRBsrdqoNWtagnI4kVkE8IsYVNsFmcnq?=
- =?us-ascii?Q?/YP+JW2/9NWRUdGTlBEwlt0NVdii4deL9YocRR8cJ5arA7rSff64gXlXA2Kj?=
- =?us-ascii?Q?WaI5r1zQQF18WgovUdy8232qrXj/cG3asjsyIN+vLPh+jJUKJsZ6hzH8SR6Q?=
- =?us-ascii?Q?8zXVw1q0D6TClnN9aILuo1xIifSUT8CGuboa37zDaNYibafCbaHBijXYsAaK?=
- =?us-ascii?Q?0Fgl1dA9/xHoeNlwea0LRMRsVrs7RSKymjUI4OQNJ7b9RgNnsrCbsVBfkA2J?=
- =?us-ascii?Q?PWBm7kPdu3YGB7j58PR29ft5JEFmeacaFLNAaYaGZrAWCki7BIg5dmqjiKfA?=
- =?us-ascii?Q?006s34Gb82XUhzgwyQL+Caq+oAsFIf2uygccViEUjYIuzz9n0UDWVuePp+Wr?=
- =?us-ascii?Q?LvISvMKKLMJCk+ggw6hJuQjPuCSlB6umsSAFsZWBxH0BbWZp3m/NtND+l2jT?=
- =?us-ascii?Q?bVt2tD9CMjiNUlCdLpob17SjTL0FPG6D4VwXUTcLJBUTs1Y6X66wZrmmrTfR?=
- =?us-ascii?Q?QqdM6AtvuwRb2I+03QBaNDFyonIkb0gxNa37MwRFx1O3BIPIfD3UmoK1Z0+u?=
- =?us-ascii?Q?HOwjUcaZEoXR6AtxyW+/nG5s8+BVPCq2oWrSNd3QrrHm/Ace3uHPpYuQBjiH?=
- =?us-ascii?Q?hRzeIC7NHGKdrQs8eeNvFrrdgluf1CXAHYnYIoywFaVpL+fex/buQiQUIRkA?=
- =?us-ascii?Q?2TRiwY1m7NSW3ZKwSC0MDfBynf0vvBEp95kQeNvSfg1siGWF9mlOcCA5U2R3?=
- =?us-ascii?Q?9sdZgLEA/VGtKQ7ysHv/C3npn++EtAbEU6h8zA+qjF290m/wKOQSaBcJVXea?=
- =?us-ascii?Q?EOATi+hjWc5RBKECDHyeRZRb6ZF3mBNzQ3QyH6Blun3S4WCRObZhh305kghW?=
- =?us-ascii?Q?x1wAkoA05B0zTgaopxqdStcteuRSb/Da5WPteKpsS2ruc2W2eltRWsE4EIwk?=
- =?us-ascii?Q?VXXn8CA7gBm5/TIzLL188yRG4V7SNb1yM8gMDkwS0SSLXWLdyaw4He28atiD?=
- =?us-ascii?Q?ZFFC1vfhF+igjh0/ECv+ALkBRUFe3FdASPN5PCQm4LMreRfR5/V4BHJs+Ls7?=
- =?us-ascii?Q?af/CCIUZRY6eztWc6rDZjdEiQh7KXkfO/YTNbkrfMdKxxwPjnRP1w5mq2pGS?=
- =?us-ascii?Q?dJZWYe9cfsslA8G6A2RksW79nFxCmgJvzE77QlIDnfIEEpNghgj+PwZC+pmc?=
- =?us-ascii?Q?UcYOxnhAsiki6S0foU+Y4K9QC5OKCzSPY9s24uR2de0CLK/aiQtbiH3Wp3FL?=
- =?us-ascii?Q?2BT2mORtMU2xV2uHmav1wT+bfrhF36lwjtywQ3N6W7rt00+66UGZgXNO9Lql?=
- =?us-ascii?Q?XoKyX0GQPG/mmdk1KOEc7gmh4YQM9m1QZCAGcomNP111sbwtYZ5rIfwGB+X+?=
- =?us-ascii?Q?W9s5Vfso9W8SCKuALvjZlxCw1Q1AC1Kg9C4cTXzFiNYDxkbCPGTrtjEH5tOx?=
- =?us-ascii?Q?f/SJtG1GqTu6oYbqG7tA5qNDaLanXlNAOlDgkrXr4cTQ1XeXAcUfAOGP870y?=
- =?us-ascii?Q?+oTMKylzy8XmYH0NQCgqcNTe5sTHhMN3SiGpq+wq5zhdOct+79SZlc5kIxfP?=
- =?us-ascii?Q?041jMVfIjDsogZ8NPgfgWxaL3MQNBY04l2gyuBGvmntO3Vbp9cVVaGCVURqo?=
- =?us-ascii?Q?2DdWZdyNLfXTpEwwe3JXKErb5Emll2X6k2Fts4uN/yh4/U9fkzgUaKX32E8D?=
- =?us-ascii?Q?QpwmSJL5s8gj4WbFOxCzOgGg37HR7SU=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FYKLpwk4hwLVTFjGkFBFJ4t/i4t5yAdkkq9OWD0bqDeXAvV38AhfmmVQcD2y?=
+ =?us-ascii?Q?fr8264SS/bqCdddA0SMYQrEk/xOXoUugCYb4CjW0zOfPG5AKXpG4G0CwlGk0?=
+ =?us-ascii?Q?IxoebPx0xlDRuXAPn90wFtT2QTpvcmXwvjdjauyaGRh9IPW9obUdUMo27sG9?=
+ =?us-ascii?Q?Gvg1LBwBwbVRfiBZTHQ3iMLx76YugRdXCvpZq5k6YsFz8i1z19LCKXuLIPXR?=
+ =?us-ascii?Q?P6zFqV6eI+WNmiv64IePzS+ngAk9swdsX/cfkYMTIiMOiSDzLhqFuiKRs416?=
+ =?us-ascii?Q?9/KZHjEniwdtwwp8LtOBBBa5DpQln2zGKT6wPdAPgYPntyuAVEsv6WKwB6bi?=
+ =?us-ascii?Q?nlcZB3TFl05O9G1mKotEZz4N0razysIqT1xtyo0wxZryrkFnNlYoEQh75DXg?=
+ =?us-ascii?Q?2YSe9wGlK8100G8KR680FaV1KDcAdSTEmzcHbfjHYUkawx7ZgOj4UFd46qnG?=
+ =?us-ascii?Q?ek0GkNNhT5rDPCiK+l4TFxO9HnpX8fg6sgbEljsJIS4dks200M3YU2NKKldb?=
+ =?us-ascii?Q?4QRALdKpemqWqZ8TGoVtSEeG4uldvS/HBF/TXkwOSJ8YlkR9aHqqVJazJVqC?=
+ =?us-ascii?Q?ibnyfsWTgGsCOQWgvjpjPaGYaFnrFCpSzI5ejy8abUUSZ3AAJ8I3Cu0AOqGB?=
+ =?us-ascii?Q?ZQNlpEXIkjKqUF8aljYtXLTj7kphucM2iQ4mNQuv4DJzl4tkqm5D9o61qynw?=
+ =?us-ascii?Q?Nm3O+BDJtHCJ0Iin9B18jsNPiFlmhF4mJqgHADQIp4TzHgvRe9dlD5h/CjF3?=
+ =?us-ascii?Q?gWG7QfyMDvI6clTwp/497jt1HhoAjmL8ovRPf38ecq9g5tBJFkld2NAYym6a?=
+ =?us-ascii?Q?mOdFC8BnaFqmmtquZ8UJ/R+f/54lrhqBjwtAfgvOSj4cApbPI5QKgKktTq7f?=
+ =?us-ascii?Q?o/K0Vgw6Yc0HsMYuEWCbst1GAVzR6M0dJ9+j941ZgoV6YlvlAhYFHsFcGWKF?=
+ =?us-ascii?Q?P/85ilaVTZ7/Ad4Hr/W6eiu6p5jeFjSy5d3G8sT+W3MsBWyWco/8Fnx1R32P?=
+ =?us-ascii?Q?9ve0lnUeQYLI9JAsZTNmQdbm6vGKjGsCQfeTBONTuV2LmmgJeCSkDDNySNbD?=
+ =?us-ascii?Q?vwPWTI3xTwUMts7QBu2y2cK/ywhBLDY44YhYVrDizVP6LW00OnLNVabNzR0L?=
+ =?us-ascii?Q?1x7BeUN/UZmItmCRlObis5oALxdnNmjbAUkUTOnrUPF03Crd6mskKGLuYLwz?=
+ =?us-ascii?Q?OWIeeiZEC2VNqJsFTuRVtNVu1oSn2K31c2MifH11Dii7ctiwzYiuo2HZ1nBE?=
+ =?us-ascii?Q?lQ3DK6GkmltWyJQZA+Ec89CQmdMQtQ00QqC7ZIuThI/QtuDVcCD8TTYB+rPG?=
+ =?us-ascii?Q?IhSROQ2qVvERbJUgu7B5ggTCtL/87Xb4BSSyDu+ysscYMUngPQmHaKJjgwok?=
+ =?us-ascii?Q?8bFG3n2QxtV+0E5UP84QiLbTUCUc5XAJHkIQVB7D08Hu4UjkWad4SFJr7s0Q?=
+ =?us-ascii?Q?njQaqPaw48J+iUoP9xajXFN4iigvXyqzNFMWYgB3W0qoS1jshvKC/AdBPBIz?=
+ =?us-ascii?Q?IVazim0rUwW+cVaLEFc46EDhHtqTJhFhMnJ40h+V1ddX4LRNys6PkuvNC68+?=
+ =?us-ascii?Q?fog2C0iSSZrHC36KsHvDFs103TsDFoIK98ls40GO/8pJZtpvwYsMrP0nJPt+?=
+ =?us-ascii?Q?1miq4cxqCjrjglyTE8qiTvLFe1EZONE3gbQrhf0m6xuvg1NWJPoUZBhRYepm?=
+ =?us-ascii?Q?vy9bR8MuS4uf0/Np90ddGAFpiK68QeJWnVJ8WfGG7oO/pwQxwhm275Iz/9dz?=
+ =?us-ascii?Q?xCXMqpuga6TuU7j376rQKD8hrg2NpSk=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25dc90e0-a136-4722-50e6-08da45f12131
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbc0f86f-775c-4247-a707-08da45f47c8a
 X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2022 06:11:57.9222
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2022 06:35:59.5317
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i+S0K+nxCeWhtQjLuwvvFKAVL3MccVuHZ9YxEm+uvWSXI2icq1BjCA69EAkF7Z/x
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR15MB4939
-X-Proofpoint-GUID: Mi_ii_-lQj8Ha-DkCpa5X_cLMP7YFpDf
-X-Proofpoint-ORIG-GUID: Mi_ii_-lQj8Ha-DkCpa5X_cLMP7YFpDf
+X-MS-Exchange-CrossTenant-UserPrincipalName: rZE19AGg+YEH6oYx3G5RrxD9DBz/nVG1bVt5Nxb3whjk31b9qlDYMymlRCge5oMQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5080
+X-Proofpoint-ORIG-GUID: pI_R760CCjJunxmF04T4DRNvybo-kbNU
+X-Proofpoint-GUID: pI_R760CCjJunxmF04T4DRNvybo-kbNU
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
  definitions=2022-06-03_08,2022-06-03_01,2022-02-23_01
@@ -129,573 +130,154 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 01, 2022 at 12:02:10PM -0700, Stanislav Fomichev wrote:
+On Wed, Jun 01, 2022 at 12:02:11PM -0700, Stanislav Fomichev wrote:
+> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> index 0f72020bfdcf..83aa431dd52e 100644
+> --- a/kernel/bpf/bpf_lsm.c
+> +++ b/kernel/bpf/bpf_lsm.c
+> @@ -69,11 +69,6 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+>  		*bpf_func = __cgroup_bpf_run_lsm_current;
+>  }
+>  
+> -int bpf_lsm_hook_idx(u32 btf_id)
+> -{
+> -	return btf_id_set_index(&bpf_lsm_hooks, btf_id);
+The implementation of btf_id_set_index() added in patch 3
+should be removed also.
+
+> -}
+> -
+>  int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+>  			const struct bpf_prog *prog)
+>  {
 > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 4adb4f3ecb7f..66b644a76a69 100644
+> index 66b644a76a69..a27a6a7bd852 100644
 > --- a/kernel/bpf/cgroup.c
 > +++ b/kernel/bpf/cgroup.c
-> @@ -14,6 +14,9 @@
->  #include <linux/string.h>
->  #include <linux/bpf.h>
->  #include <linux/bpf-cgroup.h>
-> +#include <linux/btf_ids.h>
-This should not be needed ?
-
-> +#include <linux/bpf_lsm.h>
-> +#include <linux/bpf_verifier.h>
->  #include <net/sock.h>
->  #include <net/bpf_sk_storage.h>
->  
-> @@ -61,6 +64,88 @@ bpf_prog_run_array_cg(const struct cgroup_bpf *cgrp,
->  	return run_ctx.retval;
+> @@ -129,12 +129,46 @@ unsigned int __cgroup_bpf_run_lsm_current(const void *ctx,
 >  }
 >  
-> +unsigned int __cgroup_bpf_run_lsm_sock(const void *ctx,
-> +				       const struct bpf_insn *insn)
-> +{
-> +	const struct bpf_prog *shim_prog;
-> +	struct sock *sk;
-> +	struct cgroup *cgrp;
-> +	int ret = 0;
-> +	u64 *args;
-> +
-> +	args = (u64 *)ctx;
-> +	sk = (void *)(unsigned long)args[0];
-> +	/*shim_prog = container_of(insn, struct bpf_prog, insnsi);*/
-> +	shim_prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
-> +
-> +	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> +	if (likely(cgrp))
-> +		ret = bpf_prog_run_array_cg(&cgrp->bpf,
-> +					    shim_prog->aux->cgroup_atype,
-> +					    ctx, bpf_prog_run, 0, NULL);
-> +	return ret;
-> +}
-> +
-> +unsigned int __cgroup_bpf_run_lsm_socket(const void *ctx,
-> +					 const struct bpf_insn *insn)
-> +{
-> +	const struct bpf_prog *shim_prog;
-> +	struct socket *sock;
-> +	struct cgroup *cgrp;
-> +	int ret = 0;
-> +	u64 *args;
-> +
-> +	args = (u64 *)ctx;
-> +	sock = (void *)(unsigned long)args[0];
-> +	/*shim_prog = container_of(insn, struct bpf_prog, insnsi);*/
-> +	shim_prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
-> +
-> +	cgrp = sock_cgroup_ptr(&sock->sk->sk_cgrp_data);
-> +	if (likely(cgrp))
-> +		ret = bpf_prog_run_array_cg(&cgrp->bpf,
-> +					    shim_prog->aux->cgroup_atype,
-> +					    ctx, bpf_prog_run, 0, NULL);
-> +	return ret;
-> +}
-> +
-> +unsigned int __cgroup_bpf_run_lsm_current(const void *ctx,
-> +					  const struct bpf_insn *insn)
-> +{
-> +	const struct bpf_prog *shim_prog;
-> +	struct cgroup *cgrp;
-> +	int ret = 0;
-> +
-> +	/*shim_prog = container_of(insn, struct bpf_prog, insnsi);*/
-> +	shim_prog = (const struct bpf_prog *)((void *)insn - offsetof(struct bpf_prog, insnsi));
-> +
-> +	rcu_read_lock();
-> +	cgrp = task_dfl_cgroup(current);
-> +	if (likely(cgrp))
-> +		ret = bpf_prog_run_array_cg(&cgrp->bpf,
-> +					    shim_prog->aux->cgroup_atype,
-> +					    ctx, bpf_prog_run, 0, NULL);
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
-> +
-> +#ifdef CONFIG_BPF_LSM
-> +static enum cgroup_bpf_attach_type
-> +bpf_cgroup_atype_find(enum bpf_attach_type attach_type, u32 attach_btf_id)
-> +{
-> +	if (attach_type != BPF_LSM_CGROUP)
-> +		return to_cgroup_bpf_attach_type(attach_type);
-> +	return CGROUP_LSM_START + bpf_lsm_hook_idx(attach_btf_id);
-> +}
-> +#else
-> +static enum cgroup_bpf_attach_type
-> +bpf_cgroup_atype_find(enum bpf_attach_type attach_type, u32 attach_btf_id)
-> +{
-> +	if (attach_type != BPF_LSM_CGROUP)
-> +		return to_cgroup_bpf_attach_type(attach_type);
-> +	return -EOPNOTSUPP;
-> +}
-> +#endif /* CONFIG_BPF_LSM */
-> +
->  void cgroup_bpf_offline(struct cgroup *cgrp)
->  {
->  	cgroup_get(cgrp);
-> @@ -163,10 +248,16 @@ static void cgroup_bpf_release(struct work_struct *work)
->  
->  		hlist_for_each_entry_safe(pl, pltmp, progs, node) {
->  			hlist_del(&pl->node);
-> -			if (pl->prog)
-> +			if (pl->prog) {
-> +				if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
-nit.  Check expected_attach_type == BPF_LSM_CGROUP like
-other places ?
+>  #ifdef CONFIG_BPF_LSM
+> +u32 cgroup_lsm_atype_btf_id[CGROUP_LSM_NUM];
+static
 
-> +					bpf_trampoline_unlink_cgroup_shim(pl->prog);
->  				bpf_prog_put(pl->prog);
-> -			if (pl->link)
-> +			}
-> +			if (pl->link) {
-> +				if (atype >= CGROUP_LSM_START && atype <= CGROUP_LSM_END)
+> +
+>  static enum cgroup_bpf_attach_type
+>  bpf_cgroup_atype_find(enum bpf_attach_type attach_type, u32 attach_btf_id)
+>  {
+> +	int i;
+> +
+> +	lockdep_assert_held(&cgroup_mutex);
+> +
+>  	if (attach_type != BPF_LSM_CGROUP)
+>  		return to_cgroup_bpf_attach_type(attach_type);
+> -	return CGROUP_LSM_START + bpf_lsm_hook_idx(attach_btf_id);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(cgroup_lsm_atype_btf_id); i++)
+> +		if (cgroup_lsm_atype_btf_id[i] == attach_btf_id)
+> +			return CGROUP_LSM_START + i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(cgroup_lsm_atype_btf_id); i++)
+> +		if (cgroup_lsm_atype_btf_id[i] == 0)
+> +			return CGROUP_LSM_START + i;
+> +
+> +	return -E2BIG;
+> +
+> +}
+> +
+> +static void bpf_cgroup_atype_alloc(u32 attach_btf_id, int cgroup_atype)
+> +{
+> +	int i = cgroup_atype - CGROUP_LSM_START;
+> +
+> +	lockdep_assert_held(&cgroup_mutex);
+> +
+> +	cgroup_lsm_atype_btf_id[i] = attach_btf_id;
+> +}
+> +
+> +void bpf_cgroup_atype_free(int cgroup_atype)
+> +{
+> +	int i = cgroup_atype - CGROUP_LSM_START;
+> +
+> +	mutex_lock(&cgroup_mutex);
+> +	cgroup_lsm_atype_btf_id[i] = 0;
+I think holding cgroup_mutex in the __cgroup_bpf_attach() and
+bpf_cgroup_atype_free() is not enough.
+
+Consider a case that __cgroup_bpf_attach() runs first and bpf_trampoline_link_cgroup_shim()
+cannot find the shim_link because it is unlinked and its shim_prog
+is currently still under the bpf_prog_free_deferred's deadrow.
+Then bpf_prog_free_deferred() got run and do the bpf_cgroup_atype_free().
+
+A refcnt is still needed.  It is better to put them together in a
+struct instead of having two arrays, like
+
+struct cgroup_lsm_atype {
+       u32 attach_btf_id;
+       u32 refcnt;
+};
+
+> +	mutex_unlock(&cgroup_mutex);
+>  }
+>  #else
+>  static enum cgroup_bpf_attach_type
+> @@ -144,6 +178,14 @@ bpf_cgroup_atype_find(enum bpf_attach_type attach_type, u32 attach_btf_id)
+>  		return to_cgroup_bpf_attach_type(attach_type);
+>  	return -EOPNOTSUPP;
+>  }
+> +
+> +static void bpf_cgroup_atype_alloc(u32 attach_btf_id, int cgroup_atype)
+> +{
+> +}
+> +
+> +void bpf_cgroup_atype_free(int cgroup_atype)
+> +{
+> +}
+>  #endif /* CONFIG_BPF_LSM */
+>  
+>  void cgroup_bpf_offline(struct cgroup *cgrp)
+> @@ -659,6 +701,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+>  		err = bpf_trampoline_link_cgroup_shim(new_prog, &tgt_info, atype);
+>  		if (err)
+>  			goto cleanup;
+> +		bpf_cgroup_atype_alloc(new_prog->aux->attach_btf_id, atype);
+This atype alloc (or refcnt inc) should be done in
+cgroup_shim_alloc() where the shim_prog is the one holding
+the refcnt of the atype.  If the above "!old_prog" needs to be
+removed as the earlier comment in patch 3, bumping the atype refcnt
+here will be wrong.
+
+>  	}
+>  
+>  	err = update_effective_progs(cgrp, atype);
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 091ee210842f..224bb4d4fe4e 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -107,6 +107,9 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
+>  	fp->aux->prog = fp;
+>  	fp->jit_requested = ebpf_jit_enabled();
+>  	fp->blinding_requested = bpf_jit_blinding_enabled(fp);
+> +#ifdef CONFIG_BPF_LSM
+I don't think this is needed.
+
+> +	aux->cgroup_atype = CGROUP_BPF_ATTACH_TYPE_INVALID;
+> +#endif
+>  
+>  	INIT_LIST_HEAD_RCU(&fp->aux->ksym.lnode);
+>  	mutex_init(&fp->aux->used_maps_mutex);
+> @@ -2558,6 +2561,10 @@ static void bpf_prog_free_deferred(struct work_struct *work)
+>  	aux = container_of(work, struct bpf_prog_aux, work);
+>  #ifdef CONFIG_BPF_SYSCALL
+>  	bpf_free_kfunc_btf_tab(aux->kfunc_btf_tab);
+> +#endif
+> +#ifdef CONFIG_BPF_LSM
 Same here.
 
-> +					bpf_trampoline_unlink_cgroup_shim(pl->link->link.prog);
->  				bpf_cgroup_link_auto_detach(pl->link);
-> +			}
->  			kfree(pl);
->  			static_branch_dec(&cgroup_bpf_enabled_key[atype]);
->  		}
-> @@ -479,6 +570,8 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
->  	struct bpf_prog *old_prog = NULL;
->  	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
->  	struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> +	struct bpf_prog *new_prog = prog ? : link->link.prog;
-> +	struct bpf_attach_target_info tgt_info = {};
->  	enum cgroup_bpf_attach_type atype;
->  	struct bpf_prog_list *pl;
->  	struct hlist_head *progs;
-> @@ -495,7 +588,20 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
->  		/* replace_prog implies BPF_F_REPLACE, and vice versa */
->  		return -EINVAL;
->  
-> -	atype = to_cgroup_bpf_attach_type(type);
-> +	if (type == BPF_LSM_CGROUP) {
-> +		if (replace_prog) {
-> +			if (replace_prog->aux->attach_btf_id !=
-> +			    new_prog->aux->attach_btf_id)
-> +				return -EINVAL;
-> +		}
-This is no longer needed if it does not reuse the
-replace_prog's cgroup_atype.
-
-If old_prog is not NULL, it must have the same attach_btf_id.
-
-This should still be true even bpf_cgroup_atype_find() return
-a new cgroup_atype.  In that case, 'pl = find_attach_entry();'
-must be NULL.
-
-WDYT?
-
-> +		err = bpf_check_attach_target(NULL, new_prog, NULL,
-> +					      new_prog->aux->attach_btf_id,
-> +					      &tgt_info);
-If the above attach_btf_id check in unnecessary,
-this can be done in bpf_trampoline_link_cgroup_shim() where
-it is the only place that tgt_info will be used.
-This should never fail also because this had been done
-once during the prog load time, so doing it later is fine.
-
-Then this whole "if (type == BPF_LSM_CGROUP)" case can be removed
-from __cgroup_bpf_attach().
-
-> +		if (err)
-> +			return -EINVAL;
-> +	}
-> +
-> +	atype = bpf_cgroup_atype_find(type, new_prog->aux->attach_btf_id);
->  	if (atype < 0)
->  		return -EINVAL;
->  
-> @@ -549,9 +655,15 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
->  	bpf_cgroup_storages_assign(pl->storage, storage);
->  	cgrp->bpf.flags[atype] = saved_flags;
->  
-> +	if (type == BPF_LSM_CGROUP && !old_prog) {
-hmm... I think this "!old_prog" test should not be here.
-
-In allow_multi, old_prog can be NULL but it still needs
-to bump the shim_link's refcnt by calling
-bpf_trampoline_link_cgroup_shim().
-
-This is a bit tricky.  Does it make sense ?
-
-> +		err = bpf_trampoline_link_cgroup_shim(new_prog, &tgt_info, atype);
-> +		if (err)
-> +			goto cleanup;
-> +	}
-> +
->  	err = update_effective_progs(cgrp, atype);
->  	if (err)
-> -		goto cleanup;
-> +		goto cleanup_trampoline;
->  
->  	if (old_prog)
-Then it needs a bpf_trampoline_unlink_cgroup_shim(old_prog) here.
-
->  		bpf_prog_put(old_prog);
-> @@ -560,6 +672,10 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
->  	bpf_cgroup_storages_link(new_storage, cgrp, type);
->  	return 0;
->  
-> +cleanup_trampoline:
-> +	if (type == BPF_LSM_CGROUP && !old_prog)
-The "!old_prog" test should also be removed.
-
-> +		bpf_trampoline_unlink_cgroup_shim(new_prog);
-> +
->  cleanup:
->  	if (old_prog) {
->  		pl->prog = old_prog;
-> @@ -651,7 +767,13 @@ static int __cgroup_bpf_replace(struct cgroup *cgrp,
->  	struct hlist_head *progs;
->  	bool found = false;
->  
-> -	atype = to_cgroup_bpf_attach_type(link->type);
-> +	if (link->type == BPF_LSM_CGROUP) {
-> +		if (new_prog->aux->attach_btf_id !=
-> +		    link->link.prog->aux->attach_btf_id)
-> +			return -EINVAL;
-This should be no longer needed also.
-It will return -ENOENT later.
-
-> +	}
-> +
-> +	atype = bpf_cgroup_atype_find(link->type, new_prog->aux->attach_btf_id);
->  	if (atype < 0)
->  		return -EINVAL;
->  
-> @@ -803,9 +925,15 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
->  	struct bpf_prog *old_prog;
->  	struct bpf_prog_list *pl;
->  	struct hlist_head *progs;
-> +	u32 attach_btf_id = 0;
->  	u32 flags;
->  
-> -	atype = to_cgroup_bpf_attach_type(type);
-> +	if (prog)
-> +		attach_btf_id = prog->aux->attach_btf_id;
-> +	if (link)
-> +		attach_btf_id = link->link.prog->aux->attach_btf_id;
-> +
-> +	atype = bpf_cgroup_atype_find(type, attach_btf_id);
->  	if (atype < 0)
->  		return -EINVAL;
->  
-> @@ -832,6 +960,10 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
->  		purge_effective_progs(cgrp, old_prog, link, atype);
->  	}
->  
-> +
-> +	if (type == BPF_LSM_CGROUP)
-> +		bpf_trampoline_unlink_cgroup_shim(old_prog ? : link->link.prog);
-For the '!old_prog' case (link case), do the
-bpf_trampoline_unlink_cgroup_shim() in bpf_cgroup_link_release().
-
-For the old_prog case (non-link case),
-the bpf_trampoline_unlink_cgroup_shim() can be done
-under the same 'if (old_prog)' check a few lines below.
-
-Then for both cases shim unlink will be closer to where bpf_prog_put()
-will be done and have similar pattern as in __cgroup_bpf_attach() and
-cgroup_bpf_release(), so easier to reason in the future:
-shim unlink and then prog put.
-
-[ ... ]
-
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 5466e15be61f..45dfcece76e7 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -11,6 +11,8 @@
->  #include <linux/rcupdate_wait.h>
->  #include <linux/module.h>
->  #include <linux/static_call.h>
-> +#include <linux/bpf_verifier.h>
-> +#include <linux/bpf_lsm.h>
->  
->  /* dummy _ops. The verifier will operate on target program's ops. */
->  const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-> @@ -496,6 +498,169 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
->  	return err;
->  }
->  
-> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
-> +static void bpf_shim_tramp_link_release(struct bpf_link *link)
-> +{
-> +	struct bpf_shim_tramp_link *shim_link =
-> +		container_of(link, struct bpf_shim_tramp_link, link.link);
-> +
-> +	if (!shim_link->trampoline)
-> +		return;
-> +
-> +	WARN_ON_ONCE(bpf_trampoline_unlink_prog(&shim_link->link, shim_link->trampoline));
-> +	bpf_trampoline_put(shim_link->trampoline);
-> +}
-> +
-> +static void bpf_shim_tramp_link_dealloc(struct bpf_link *link)
-> +{
-> +	struct bpf_shim_tramp_link *shim_link =
-> +		container_of(link, struct bpf_shim_tramp_link, link.link);
-> +
-> +	kfree(shim_link);
-> +}
-> +
-> +static const struct bpf_link_ops bpf_shim_tramp_link_lops = {
-> +	.release = bpf_shim_tramp_link_release,
-> +	.dealloc = bpf_shim_tramp_link_dealloc,
-> +};
-> +
-> +static struct bpf_shim_tramp_link *cgroup_shim_alloc(const struct bpf_prog *prog,
-> +						     bpf_func_t bpf_func,
-> +						     int cgroup_atype)
-> +{
-> +	struct bpf_shim_tramp_link *shim_link = NULL;
-> +	struct bpf_prog *p;
-> +
-> +	shim_link = kzalloc(sizeof(*shim_link), GFP_USER);
-> +	if (!shim_link)
-> +		return NULL;
-> +
-> +	p = bpf_prog_alloc(1, 0);
-> +	if (!p) {
-> +		kfree(shim_link);
-> +		return NULL;
-> +	}
-> +
-> +	p->jited = false;
-> +	p->bpf_func = bpf_func;
-> +
-> +	p->aux->cgroup_atype = cgroup_atype;
-> +	p->aux->attach_func_proto = prog->aux->attach_func_proto;
-> +	p->aux->attach_btf_id = prog->aux->attach_btf_id;
-> +	p->aux->attach_btf = prog->aux->attach_btf;
-> +	btf_get(p->aux->attach_btf);
-> +	p->type = BPF_PROG_TYPE_LSM;
-> +	p->expected_attach_type = BPF_LSM_MAC;
-> +	bpf_prog_inc(p);
-> +	bpf_link_init(&shim_link->link.link, BPF_LINK_TYPE_UNSPEC,
-> +		      &bpf_shim_tramp_link_lops, p);
-> +
-> +	return shim_link;
-> +}
-> +
-> +static struct bpf_shim_tramp_link *cgroup_shim_find(struct bpf_trampoline *tr,
-> +						    bpf_func_t bpf_func)
-> +{
-> +	struct bpf_tramp_link *link;
-> +	int kind;
-> +
-> +	for (kind = 0; kind < BPF_TRAMP_MAX; kind++) {
-> +		hlist_for_each_entry(link, &tr->progs_hlist[kind], tramp_hlist) {
-> +			struct bpf_prog *p = link->link.prog;
-> +
-> +			if (p->bpf_func == bpf_func)
-> +				return container_of(link, struct bpf_shim_tramp_link, link);
-> +		}
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
-> +				    struct bpf_attach_target_info *tgt_info,
-> +				    int cgroup_atype)
-> +{
-> +	struct bpf_shim_tramp_link *shim_link = NULL;
-> +	struct bpf_trampoline *tr;
-> +	bpf_func_t bpf_func;
-> +	u64 key;
-> +	int err;
-> +
-> +	key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
-> +					 prog->aux->attach_btf_id);
-Directly get tgt_info here instead of doing it
-in __cgroup_bpf_attach() and then passing in.
-This is the only place needed it.
-
-	err = bpf_check_attach_target(NULL, prog, NULL,
-				prog->aux->attach_btf_id,
-				&tgt_info);
-	if (err)
-		return err;
-
-> +
-> +	bpf_lsm_find_cgroup_shim(prog, &bpf_func);
-> +	tr = bpf_trampoline_get(key, tgt_info);
-> +	if (!tr)
-> +		return  -ENOMEM;
-> +
-> +	mutex_lock(&tr->mutex);
-> +
-> +	shim_link = cgroup_shim_find(tr, bpf_func);
-> +	if (shim_link) {
-> +		/* Reusing existing shim attached by the other program. */
-> +		atomic64_inc(&shim_link->link.link.refcnt);
-Use bpf_link_inc() instead to pair with bpf_link_put().
-
-> +		/* note, we're still holding tr refcnt from above */
-It has to do a bpf_trampoline_put(tr) after mutex_unlock(&tr->mutex).
-shim_link already holds one refcnt to tr.
-
-> +
-> +		mutex_unlock(&tr->mutex);
-> +		return 0;
-> +	}
-> +
-> +	/* Allocate and install new shim. */
-> +
-> +	shim_link = cgroup_shim_alloc(prog, bpf_func, cgroup_atype);
-> +	if (!shim_link) {
-> +		err = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	err = __bpf_trampoline_link_prog(&shim_link->link, tr);
-> +	if (err)
-> +		goto out;
-> +
-> +	shim_link->trampoline = tr;
-> +	/* note, we're still holding tr refcnt from above */
-> +
-> +	mutex_unlock(&tr->mutex);
-> +
-> +	return 0;
-> +out:
-> +	mutex_unlock(&tr->mutex);
-> +
-> +	if (shim_link)
-> +		bpf_link_put(&shim_link->link.link);
-> +
-> +	bpf_trampoline_put(tr); /* bpf_trampoline_get above */
-Doing it here is because mutex_unlock(&tr->mutex) has
-to be done first?  A comment will be useful.
-
-How about passing tr to cgroup_shim_alloc(..., tr)
-which is initializing everything else in shim_link anyway.
-Then the 'if (!shim_link->trampoline)' in bpf_shim_tramp_link_release()
-can go away also.
-
-Like:
-
-static struct bpf_shim_tramp_link *cgroup_shim_alloc(const struct bpf_prog *prog,
-						     bpf_func_t bpf_func,
-						     struct bpf_trampoline *tr)
-
-{
-	/* ... */
-	shim_link->trampoline = tr;
-
-	return shim_link;
-}
-
-int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
-				    int cgroup_atype)
-{
-
-	/* ... */
-
-	/* Allocate and install new shim. */
-
-	shim_link = cgroup_shim_alloc(prog, bpf_func, cgroup_atype, tr);
-	if (!shim_link) {
-		err = -ENOMEM;
-		goto error;
-	}
-
-	err = __bpf_trampoline_link_prog(&shim_link->link, tr);
-	if (err)
-		goto error;
-
-	mutex_unlock(&tr->mutex);
-
-	return 0;
-
-error:
-	mutex_unlock(&tr->mutex);
-	if (shim_link)
-		bpf_link_put(&shim_link->link.link);
-	else
-		bpf_trampoline_put(tr);
-
-	return err;
-}
-
-[ ... ]
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index aedac2ac02b9..caa5740b39b3 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -7264,6 +7264,18 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->  				reg_type_str(env, regs[BPF_REG_1].type));
->  			return -EACCES;
->  		}
-> +		break;
-> +	case BPF_FUNC_set_retval:
-> +		if (env->prog->expected_attach_type == BPF_LSM_CGROUP) {
-> +			if (!env->prog->aux->attach_func_proto->type) {
-> +				/* Make sure programs that attach to void
-> +				 * hooks don't try to modify return value.
-> +				 */
-> +				err = -EINVAL;
-nit. Directly 'return -EINVAL;' after verbose() logging.
-
-> +				verbose(env, "BPF_LSM_CGROUP that attach to void LSM hooks can't modify return value!\n");
-> +			}
-> +		}
-> +		break;
->  	}
->  
->  	if (err)
-> @@ -10474,6 +10486,23 @@ static int check_return_code(struct bpf_verifier_env *env)
->  	case BPF_PROG_TYPE_SK_LOOKUP:
->  		range = tnum_range(SK_DROP, SK_PASS);
->  		break;
-> +
-> +	case BPF_PROG_TYPE_LSM:
-> +		if (env->prog->expected_attach_type == BPF_LSM_CGROUP) {
-> +			if (!env->prog->aux->attach_func_proto->type) {
-nit. Check 'if ( ... != BPF_LSM_CGROUP) return 0;' first to remove
-one level of indentation.
-
-> +				/* Make sure programs that attach to void
-> +				 * hooks don't try to modify return value.
-> +				 */
-> +				range = tnum_range(1, 1);
-> +			}
-> +		} else {
-> +			/* regular BPF_PROG_TYPE_LSM programs can return
-> +			 * any value.
-> +			 */
-> +			return 0;
-> +		}
-> +		break;
-> +
->  	case BPF_PROG_TYPE_EXT:
->  		/* freplace program can return anything as its return value
->  		 * depends on the to-be-replaced kernel func or bpf program.
-> @@ -10490,6 +10519,8 @@ static int check_return_code(struct bpf_verifier_env *env)
->  
->  	if (!tnum_in(range, reg->var_off)) {
->  		verbose_invalid_scalar(env, reg, &range, "program exit", "R0");
-> +		if (env->prog->expected_attach_type == BPF_LSM_CGROUP)
-> +			verbose(env, "BPF_LSM_CGROUP that attach to void LSM hooks can't modify return value!\n");
-This is not accurate to verbose on void-return only.
-For int-return lsm look, the BPF_LSM_CGROUP prog returning
-neither 0 nor 1 will also trigger this range check failure.
-
->  		return -EINVAL;
->  	}
->  
-> @@ -14713,6 +14744,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
->  		fallthrough;
->  	case BPF_MODIFY_RETURN:
->  	case BPF_LSM_MAC:
-> +	case BPF_LSM_CGROUP:
->  	case BPF_TRACE_FENTRY:
->  	case BPF_TRACE_FEXIT:
->  		if (!btf_type_is_func(t)) {
+> +	if (aux->cgroup_atype != CGROUP_BPF_ATTACH_TYPE_INVALID)
+> +		bpf_cgroup_atype_free(aux->cgroup_atype);
+>  #endif
+>  	bpf_free_used_maps(aux);
+>  	bpf_free_used_btfs(aux);
+> -- 
+> 2.36.1.255.ge46751e96f-goog
+> 
