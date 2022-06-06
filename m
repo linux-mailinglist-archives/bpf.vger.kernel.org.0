@@ -2,65 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE3A53ED6F
-	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 20:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DF953ED99
+	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 20:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbiFFSDA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jun 2022 14:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
+        id S231192AbiFFSJP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jun 2022 14:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbiFFSC7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jun 2022 14:02:59 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEEE6FD15;
-        Mon,  6 Jun 2022 11:02:57 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id be31so24545047lfb.10;
-        Mon, 06 Jun 2022 11:02:57 -0700 (PDT)
+        with ESMTP id S231267AbiFFSJB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jun 2022 14:09:01 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD023CFFD
+        for <bpf@vger.kernel.org>; Mon,  6 Jun 2022 11:08:58 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id i186so14462127vsc.9
+        for <bpf@vger.kernel.org>; Mon, 06 Jun 2022 11:08:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=97rzWQFE1AtsQDQrkeu4wHy1IeluYAPjOrBN3JDfUAQ=;
-        b=mpXT18X63OmEoHZ3hFHcWblFdaKwXBAQMhZ+WYqGEfsmLoT3U7sLE124TUStzu6mHq
-         AHfrfXGbrbRGd7o0jM5pWhUB81F0X2DEVOG2YPad83PazQ3jgGmylZKpOBVQ5v/GCJie
-         YJ8IASvmXIEVcuDyD9bm+ZXPPrjihzwNYImxnUs3lakMD4ctX6bRzmGaZqqqXn8t+wCf
-         x0xdYypbguFmnxrDbe9EERWfyglU6pv82vwb/jMpZ8khA2YMfr/S128QhgrVaWbgcUBD
-         6uTp/Bs4Fezs6xqYOiTWi3wo0X9lXZvU1QRE3thiQaGmPJiGvqtKXHzeJK1GsZXm1+G8
-         o77w==
+        bh=7pibQo/tiGUQ6ymwdg8FCpNzUuYEjXV80KiCU7mhYWE=;
+        b=FmPacB2qlkXRaNfuaP7mchgALpy5TfmbECTCt5bIJCbTh0GqoYaw0pu64MxsR298wV
+         VAFVkIPT/52yagku8biMdiC083Z60phFZRIJ/zGLFeLTvYxnKXuMFftPrBiUBIJ49Cdl
+         on7aSal48RAX8PkuSfKFFzVfwj3ZbjoZjwJr4E1N/iFWvEXdiUW/+MsZDAMAE8hPNrKf
+         EtzHv41XJHvCFaF3nGETs8OBaPyFPCeStYrvoeMy9BbvoVXPhbOUIu72YxM4NEJGR9l9
+         NRQnr7RutLCVpYmFu7zx0VAx92SgAS8w0+FxuL4jREfpH0BwZpnchVuKJGemUH3I8BlT
+         mq0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=97rzWQFE1AtsQDQrkeu4wHy1IeluYAPjOrBN3JDfUAQ=;
-        b=eMhdRNHi/2ikiuFVr/E5WeXJaibVmfGC8hF61mqAESF3tPiKNQXJklxepmDbRwPH0f
-         e1QMGbaklFcimigc06WZvmnyT6n/Sxec0oq5I9yMMG632nN7b4dLGquyMNc/YmA7fIvx
-         ULJvXR5ufdn61V+vEUYEZAe59x5GW+aSIHV0z99SBxNxnDsuVCOknt/ifQ2hftixFNKO
-         MYodHAE3349CQjLRZMPepe+r3aLQS7MfEBNGdZOTAMLxH/hmUV5H1hxKEquW/LmCzhdv
-         LYSKnJ8jI6QZZeA2ZfWOiHYFdso4Xfy4BOOg6nxW8DkOADnWq20ubRu0mgq4SUNhoPtS
-         NVtQ==
-X-Gm-Message-State: AOAM532/8iJjD5N7aiJhknyzgZ8bB+FFSpUzCxEu9U18PJ56hsPgjXVP
-        4cY5vvKXx+/Q25kCHr87NT8uYTmz+0rdlukqVjw=
-X-Google-Smtp-Source: ABdhPJwBs78td/is/dI6ZXvJhu818Ge6Ngp3wjufF0A1i17eKnVOco6n20x7KMCDPDYiAmWDCWzyn36lAHFnYQ1p498=
-X-Received: by 2002:a05:6512:b2a:b0:479:12f5:91ba with SMTP id
- w42-20020a0565120b2a00b0047912f591bamr13971198lfu.443.1654538574348; Mon, 06
- Jun 2022 11:02:54 -0700 (PDT)
+        bh=7pibQo/tiGUQ6ymwdg8FCpNzUuYEjXV80KiCU7mhYWE=;
+        b=It2YbLQhejIgVRi4QFlnStyIbkeuZX3dWdwgiJeCOP+5ZLQqSYg8tHvWWA5fBL7hC5
+         p53fGZRcLQpcPkUEbP+hKtCOn2YBhrI/Qt8bJtL0Pl+jjW+b1ZXoVbNX7/UfFmZjaM8r
+         YyKv2Mx4GaO41i9xC+GUvJfTthCUQn4Fo3r0oFFDv3HNifUTM/Q0x9/iKCX7ud5ah2lw
+         vlOVaHVf+xR485t2prta8Hb5kQbNZrU5EI6olHXCxL9kpsrnw0AKPh5SkoQqz4GkPZr+
+         4rK94y0lkzmB2/DN/T5FjfIH2HOY1mNUB8eBas/mpXuVl8S0IcnRmoe475+iH3dea17o
+         4D7A==
+X-Gm-Message-State: AOAM531A1qMMrnHZHS4Vsm/4horHwkLYVMVP7Hcaw5GUHYNrTCGeBOUG
+        nY27jsTWj3ZMPTV4KYUZZHHRVmyY9e5fkPRyEoDqT4zCRjz6uw==
+X-Google-Smtp-Source: ABdhPJyMTMiTbmpws3f/Xy52ykJ+IWlMdYUrSGgbHCioSDck+1UJUhGBg1AFdt19Wg7Xj3QV8nReTzKqEWBQzam824I=
+X-Received: by 2002:a05:6102:3f4b:b0:337:c02d:f5d7 with SMTP id
+ l11-20020a0561023f4b00b00337c02df5d7mr10250442vsv.50.1654538937144; Mon, 06
+ Jun 2022 11:08:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220606132741.3462925-1-james.hilliard1@gmail.com>
-In-Reply-To: <20220606132741.3462925-1-james.hilliard1@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 6 Jun 2022 11:02:42 -0700
-Message-ID: <CAEf4BzZ8eTqVnsLqc52=AyHeAsuVB3Nv7uBW19t2pcb9h7p2hQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] libbpf: fix broken gcc pragma macros in bpf_helpers.h/bpf_tracing.h
-To:     James Hilliard <james.hilliard1@gmail.com>
+References: <20220603141047.2163170-1-eddyz87@gmail.com> <20220603141047.2163170-4-eddyz87@gmail.com>
+ <CAJnrk1YZB_9WNtUv1yU4VacDuMUSA_iB6=Nc14fR7sw9RadZ2Q@mail.gmail.com> <b6aa2c2c048cab8687bc22eb5ee14820cf6311f9.camel@gmail.com>
+In-Reply-To: <b6aa2c2c048cab8687bc22eb5ee14820cf6311f9.camel@gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Mon, 6 Jun 2022 11:08:46 -0700
+Message-ID: <CAJnrk1bSXoObt+b2YH+x5oyMSJYPE89pBUW7nJm2Upnumvs8ow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/5] bpf: Inline calls to bpf_loop when
+ callback is known
+To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        song@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -72,164 +69,144 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 6, 2022 at 6:28 AM James Hilliard <james.hilliard1@gmail.com> wrote:
+On Sat, Jun 4, 2022 at 5:51 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> It seems the gcc preprocessor breaks unless pragmas are wrapped
-> individually inside macros.
+> Hi Joanne, thanks for the review!
 >
-> Fixes errors like:
-> error: expected identifier or '(' before '#pragma'
->   106 | SEC("cgroup/bind6")
->       | ^~~
+> > On Fri, 2022-06-03 at 17:06 -0700, Joanne Koong wrote:
+[...]
 >
-> error: expected '=', ',', ';', 'asm' or '__attribute__' before '#pragma'
->   114 | char _license[] SEC("license") = "GPL";
->       | ^~~
+> > > +
+> > > +               if (fit_for_bpf_loop_inline(aux)) {
+> > > +                       if (!subprog_updated) {
+> > > +                               subprog_updated = true;
+> > > +                               subprogs[cur_subprog].stack_depth += BPF_REG_SIZE * 3;
+> > > +                               stack_base = -subprogs[cur_subprog].stack_depth;
+> > > +                       }
+> > > +                       aux->loop_inline_state.stack_base = stack_base;
+> > > +               }
+> > > +               if (i == subprog_end - 1) {
+> > > +                       subprog_updated = false;
+> > > +                       cur_subprog++;
+> > > +                       if (cur_subprog < env->subprog_cnt)
+> > > +                               subprog_end = subprogs[cur_subprog + 1].start;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       env->prog->aux->stack_depth = env->subprog_info[0].stack_depth;
+> >
+> > In the case where a subprogram that is not subprogram 0 is a fit for
+> > the bpf loop inline and thus increases its stack depth, won't
+> > env->prog->aux->stack_depth need to also be updated?
 >
+> As far as I understand the logic in `do_check_main` and `jit_subprogs`
+> `env->prog->aux->stack_depth` always reflects the stack depth of the
+> first sub-program (aka `env->subprog_info[0].stack_depth`). So the
+> last line of `adjust_stack_depth_for_loop_inlining` merely ensures
+> this invariant. The stack depth for each relevant subprogram is
+> updated earlier in the function:
+>
+> static void adjust_stack_depth_for_loop_inlining(struct bpf_verifier_env *env)
+> {
+>         ...
+>         for (i = 0; i < insn_cnt; i++) {
+>                 ...
+>                 if (fit_for_bpf_loop_inline(aux)) {
+>                         if (!subprog_updated) {
+>                                 subprog_updated = true;
+> here  ---->                     subprogs[cur_subprog].stack_depth += BPF_REG_SIZE * 3;
+>                                 ...
+>                         }
+>                         ...
+>                 }
+>                 if (i == subprog_end - 1) {
+>                         subprog_updated = false;
+>                         cur_subprog++;
+>                         ...
+>                 }
+>         }
+>         ...
+> }
+>
+> Also, the patch v3 4/5 in a series has a test case "bpf_loop_inline
+> stack locations for loop vars" which checks that stack offsets for
+> spilled registers are assigned correctly for subprogram that is not a
+> first subprogram.
+>
+Thanks for the explanation :) I misunderstood what
+prog->aux->stack_depth is used for
 
-We've been using this macro in this form for a while with no errors.
-How do you get these errors in the first place? _Pragma is supposed to
-be a full equivalent of #pragma specifically to be able to be used in
-macros, so these work-arounds shouldn't be necessary. Let's first try
-to root cause this.
+Looking at arch/arm64/net/bpf_jit_comp.c, I see this diagram
 
-> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> ---
->  tools/lib/bpf/bpf_helpers.h | 26 ++++++++++++++------------
->  tools/lib/bpf/bpf_tracing.h | 26 ++++++++++++++------------
->  2 files changed, 28 insertions(+), 24 deletions(-)
+        /*
+         * BPF prog stack layout
+         *
+         *                         high
+         * original A64_SP =>   0:+-----+ BPF prologue
+         *                        |FP/LR|
+         * current A64_FP =>  -16:+-----+
+         *                        | ... | callee saved registers
+         * BPF fp register => -64:+-----+ <= (BPF_FP)
+         *                        |     |
+         *                        | ... | BPF prog stack
+         *                        |     |
+         *                        +-----+ <= (BPF_FP - prog->aux->stack_depth)
+         *                        |RSVD | padding
+         * current A64_SP =>      +-----+ <= (BPF_FP - ctx->stack_size)
+         *                        |     |
+         *                        | ... | Function call stack
+         *                        |     |
+         *                        +-----+
+         *                          low
+         *
+         */
+It looks like prog->aux->stack_depth is used for the "BPF prog stack",
+which is the stack for the main bpf program (subprog 0)
+
+> > > @@ -15030,6 +15216,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
+> > >         if (ret == 0)
+> > >                 ret = check_max_stack_depth(env);
+> > >
+> > > +       if (ret == 0)
+> > > +               adjust_stack_depth_for_loop_inlining(env);
+> >
+> > Do we need to do this before the check_max_stack_depth() call above
+> > since adjust_stack_depth_for_loop_inlining() adjusts the stack depth?
 >
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index fb04eaf367f1..6d159082727d 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -22,11 +22,13 @@
->   * To allow use of SEC() with externs (e.g., for extern .maps declarations),
->   * make sure __attribute__((unused)) doesn't trigger compilation warning.
->   */
-> +#define __gcc_helpers_pragma(x) _Pragma(#x)
-> +#define __gcc_helpers_diag_pragma(x) __gcc_helpers_pragma("GCC diagnostic " #x)
->  #define SEC(name) \
-> -       _Pragma("GCC diagnostic push")                                      \
-> -       _Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")          \
-> +       __gcc_helpers_diag_pragma(push)                                     \
-> +       __gcc_helpers_diag_pragma(ignored "-Wignored-attributes")           \
->         __attribute__((section(name), used))                                \
-> -       _Pragma("GCC diagnostic pop")                                       \
-> +       __gcc_helpers_diag_pragma(pop)
+> This is an interesting question. I used the following reasoning
+> placing `adjust_stack_depth_for_loop_inlining` after the
+> `check_max_stack_depth`:
 >
->  /* Avoid 'linux/stddef.h' definition of '__always_inline'. */
->  #undef __always_inline
-> @@ -215,10 +217,10 @@ enum libbpf_tristate {
->         static const char ___fmt[] = fmt;                       \
->         unsigned long long ___param[___bpf_narg(args)];         \
->                                                                 \
-> -       _Pragma("GCC diagnostic push")                          \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> +       __gcc_helpers_diag_pragma(push)                         \
-> +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
->         ___bpf_fill(___param, args);                            \
-> -       _Pragma("GCC diagnostic pop")                           \
-> +       __gcc_helpers_diag_pragma(pop)                          \
->                                                                 \
->         bpf_seq_printf(seq, ___fmt, sizeof(___fmt),             \
->                        ___param, sizeof(___param));             \
-> @@ -233,10 +235,10 @@ enum libbpf_tristate {
->         static const char ___fmt[] = fmt;                       \
->         unsigned long long ___param[___bpf_narg(args)];         \
->                                                                 \
-> -       _Pragma("GCC diagnostic push")                          \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> +       __gcc_helpers_diag_pragma(push)                         \
-> +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
->         ___bpf_fill(___param, args);                            \
-> -       _Pragma("GCC diagnostic pop")                           \
-> +       __gcc_helpers_diag_pragma(pop)                          \
->                                                                 \
->         bpf_snprintf(out, out_size, ___fmt,                     \
->                      ___param, sizeof(___param));               \
-> @@ -264,10 +266,10 @@ enum libbpf_tristate {
->         static const char ___fmt[] = fmt;                       \
->         unsigned long long ___param[___bpf_narg(args)];         \
->                                                                 \
-> -       _Pragma("GCC diagnostic push")                          \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> +       __gcc_helpers_diag_pragma(push)                         \
-> +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
->         ___bpf_fill(___param, args);                            \
-> -       _Pragma("GCC diagnostic pop")                           \
-> +       __gcc_helpers_diag_pragma(pop)                          \
->                                                                 \
->         bpf_trace_vprintk(___fmt, sizeof(___fmt),               \
->                           ___param, sizeof(___param));          \
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index 01ce121c302d..e08ffc290b3e 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -422,16 +422,18 @@ struct pt_regs;
->   * This is useful when using BPF helpers that expect original context
->   * as one of the parameters (e.g., for bpf_perf_event_output()).
->   */
-> +#define __gcc_tracing_pragma(x) _Pragma(#x)
-> +#define __gcc_tracing_diag_pragma(x) __gcc_tracing_pragma("GCC diagnostic " #x)
->  #define BPF_PROG(name, args...)                                                    \
->  name(unsigned long long *ctx);                                             \
->  static __attribute__((always_inline)) typeof(name(0))                      \
->  ____##name(unsigned long long *ctx, ##args);                               \
->  typeof(name(0)) name(unsigned long long *ctx)                              \
->  {                                                                          \
-> -       _Pragma("GCC diagnostic push")                                      \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> +       __gcc_tracing_diag_pragma(push)                                     \
-> +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
->         return ____##name(___bpf_ctx_cast(args));                           \
-> -       _Pragma("GCC diagnostic pop")                                       \
-> +       __gcc_tracing_diag_pragma(pop)                                      \
->  }                                                                          \
->  static __attribute__((always_inline)) typeof(name(0))                      \
->  ____##name(unsigned long long *ctx, ##args)
-> @@ -462,10 +464,10 @@ static __attribute__((always_inline)) typeof(name(0))                         \
->  ____##name(struct pt_regs *ctx, ##args);                                   \
->  typeof(name(0)) name(struct pt_regs *ctx)                                  \
->  {                                                                          \
-> -       _Pragma("GCC diagnostic push")                                      \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> +       __gcc_tracing_diag_pragma(push)                                     \
-> +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
->         return ____##name(___bpf_kprobe_args(args));                        \
-> -       _Pragma("GCC diagnostic pop")                                       \
-> +       __gcc_tracing_diag_pragma(pop)                                      \
->  }                                                                          \
->  static __attribute__((always_inline)) typeof(name(0))                      \
->  ____##name(struct pt_regs *ctx, ##args)
-> @@ -486,10 +488,10 @@ static __attribute__((always_inline)) typeof(name(0))                         \
->  ____##name(struct pt_regs *ctx, ##args);                                   \
->  typeof(name(0)) name(struct pt_regs *ctx)                                  \
->  {                                                                          \
-> -       _Pragma("GCC diagnostic push")                                      \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> +       __gcc_tracing_diag_pragma(push)                                     \
-> +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
->         return ____##name(___bpf_kretprobe_args(args));                     \
-> -       _Pragma("GCC diagnostic pop")                                       \
-> +       __gcc_tracing_diag_pragma(pop)                                      \
->  }                                                                          \
->  static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+> 1. If `adjust_stack_depth_for_loop_inlining` is placed before
+>    `check_max_stack_depth` some of the existing BPF programs might
+>    stop loading, because of increased stack usage.
+> 2. To avoid (1) it is possible to do `check_max_stack_depth` first,
+>    remember actual max depth and apply
+>    `adjust_stack_depth_for_loop_inlining` only when there is enough
+>    stack space. However there are two downsides:
+>    - the optimization becomes flaky, similarly simple changes to the
+>      code of the BPF program might cause loop inlining to stop
+>      working;
+>    - the precise verification itself is non-trivial as each possible
+>      stack trace has to be analyzed in terms of stack size with loop
+>      inlining / stack size without loop inlining. If necessary, I will
+>      probably use a simpler heuristic where stack budget for register
+>      spilling would be computed as
+>      `MAX_BPF_STACK - actual_max_stack_depth`
+> 3. Things are simpler if MAX_BPF_STACK is a soft limit that ensures
+>    that BPF programs consume limited amount of stack. In such case
+>    current implementation is sufficient.
 >
-> @@ -520,10 +522,10 @@ ____##name(struct pt_regs *ctx, ##args);                              \
->  typeof(name(0)) name(struct pt_regs *ctx)                                  \
->  {                                                                          \
->         struct pt_regs *regs = PT_REGS_SYSCALL_REGS(ctx);                   \
-> -       _Pragma("GCC diagnostic push")                                      \
-> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> +       __gcc_tracing_diag_pragma(push)             \
-> +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
->         return ____##name(___bpf_syscall_args(args));                       \
-> -       _Pragma("GCC diagnostic pop")                                       \
-> +       __gcc_tracing_diag_pragma(pop)                                      \
->  }                                                                          \
->  static __attribute__((always_inline)) typeof(name(0))                      \
->  ____##name(struct pt_regs *ctx, ##args)
-> --
-> 2.25.1
+> So this boils down to the question what is `MAX_BPF_STACK`:
+> - a hard limit for the BPF program stack size?
+> - a soft limit used to verify that programs consume a limited amount
+>   of stack while executing?
+>
+> If the answer is "hard limit" I'll proceed with implementation for
+> option (2).
+I'm not sure either whether MAX_BPF_STACK is a hard limit or a soft
+limit. I'm curious to know as well.
+>
+> Thanks,
+> Eduard
 >
