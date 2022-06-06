@@ -2,256 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D3553F187
-	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 23:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6DF53F1EE
+	for <lists+bpf@lfdr.de>; Tue,  7 Jun 2022 00:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbiFFVUk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jun 2022 17:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S231964AbiFFWCQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 6 Jun 2022 18:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbiFFVUj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jun 2022 17:20:39 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30ABA180;
-        Mon,  6 Jun 2022 14:20:37 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-f2e0a41009so20733037fac.6;
-        Mon, 06 Jun 2022 14:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HuxHinGBrJBTK3TTWKqPn9B+ODkbbS/hGNHjx9GIcog=;
-        b=kMa1xkT91B+otL9XYAY5Ftp80mSKxNBhqXVlLmVwxQh/D2QjVBJTQa2j6ahKVSww5H
-         tBhUfvbHw+ZIHPhz6sia28yNt4o+xFkz7OL75a2Th7QzwIRF4ueLITrl2LDsElyIoJxW
-         xqg5M8KsgNyfYqXdOJHqLAPfAF2hhDoQ/WpQi1OQxWcj6gjwNyJiiVwkqj4EjlP6p3KV
-         PqQrbszBCbPdrMWPZctn3boOYJTLPWzMPKrcsybCl5NhZH1kRmOaIfshPhNGl09SVTpD
-         iAc3OLRSBJ4CIIQLZBE3yo9cWvP3ngKc6I0SAgQ5sdur6BcQ7NhJtyfD+PRxp+KU4k/m
-         Vg0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HuxHinGBrJBTK3TTWKqPn9B+ODkbbS/hGNHjx9GIcog=;
-        b=VRt0rfoFYQePMJiHP1w/eBCbPGwks7mDZQAn7LbR30ooXnA7oPwBoQ+/caFR7NlWw2
-         P36F8wIQsRvo9ea+cpP8HT8krRR2JWHaYWfXDLrbI8YDrVrHgyXZ1pU0a+awC37YZHGq
-         Q1doDx71EtFmLAJoToNc0OTgFqScLbjdhmr5TnJQirJli9fujYa4AjCrfA5fxSRGmeZl
-         p698mwX0VI6/AblMnIglz8cUhMuYzuisej2qeVh55QLUr/5Ttrq26110D6mR9ykGNIDf
-         0CLXfLHmfZ705RaZ5BtljZm3wKSKyP3HuABh2V9aa5m3QS6gxrv6uAdyRrDoHACbjfhb
-         XlJg==
-X-Gm-Message-State: AOAM530s+Nuc06QSRAg1ZfX80rHtUtHUiZCK50dkokdDZzemTinwgJ3+
-        fe1iAAEeVkWzSfUE6A5bIFxPKbFXukfSJmXA0326muqz4mM=
-X-Google-Smtp-Source: ABdhPJycZiOgkgYr6ckkBj/PLYQmTOLBoWRaZbnm03XSyIwTO35GvE2BqOvRcW9UKMyzg6Cf2K03IK4xe25QN4FMhDI=
-X-Received: by 2002:a05:6870:3105:b0:f2:9615:ff8e with SMTP id
- v5-20020a056870310500b000f29615ff8emr30161673oaa.200.1654550437084; Mon, 06
- Jun 2022 14:20:37 -0700 (PDT)
+        with ESMTP id S231645AbiFFWCP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jun 2022 18:02:15 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111105FC8
+        for <bpf@vger.kernel.org>; Mon,  6 Jun 2022 15:02:13 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 256Lq5hW012870
+        for <bpf@vger.kernel.org>; Mon, 6 Jun 2022 15:02:13 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gg4wxbatg-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 06 Jun 2022 15:02:13 -0700
+Received: from twshared3657.05.prn5.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Mon, 6 Jun 2022 15:02:10 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id A8B0C1AED15B2; Mon,  6 Jun 2022 15:01:45 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Riham Selim <rihams@fb.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf-next] libbpf: fix uprobe symbol file offset calculation logic
+Date:   Mon, 6 Jun 2022 15:01:43 -0700
+Message-ID: <20220606220143.3796908-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220606132741.3462925-1-james.hilliard1@gmail.com> <CAEf4BzZ8eTqVnsLqc52=AyHeAsuVB3Nv7uBW19t2pcb9h7p2hQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ8eTqVnsLqc52=AyHeAsuVB3Nv7uBW19t2pcb9h7p2hQ@mail.gmail.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Mon, 6 Jun 2022 15:20:25 -0600
-Message-ID: <CADvTj4o2cbCpC40487=rgzSJZ8i94U4RR3=_s8ANE=phPQA6VQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] libbpf: fix broken gcc pragma macros in bpf_helpers.h/bpf_tracing.h
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: gdPDWS6Ul5zrMcghMhZ-TwfSm6pa2JMN
+X-Proofpoint-GUID: gdPDWS6Ul5zrMcghMhZ-TwfSm6pa2JMN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
+ definitions=2022-06-06_07,2022-06-03_01,2022-02-23_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 6, 2022 at 12:02 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Jun 6, 2022 at 6:28 AM James Hilliard <james.hilliard1@gmail.com> wrote:
-> >
-> > It seems the gcc preprocessor breaks unless pragmas are wrapped
-> > individually inside macros.
-> >
-> > Fixes errors like:
-> > error: expected identifier or '(' before '#pragma'
-> >   106 | SEC("cgroup/bind6")
-> >       | ^~~
-> >
-> > error: expected '=', ',', ';', 'asm' or '__attribute__' before '#pragma'
-> >   114 | char _license[] SEC("license") = "GPL";
-> >       | ^~~
-> >
->
-> We've been using this macro in this form for a while with no errors.
-> How do you get these errors in the first place?
+Fix libbpf's bpf_program__attach_uprobe() logic of determining
+function's *file offset* (which is what kernel is actually expecting)
+when attaching uprobe/uretprobe by function name. Previously calculation
+was determining virtual address offset relative to base load address,
+which (offset) is not always the same as file offset (though very
+frequently it is which is why this went unnoticed for a while).
 
-I was attempting to compile the systemd bpf programs using gcc 12.1.
-https://github.com/systemd/systemd/tree/main/src/core/bpf
+Cc: Riham Selim <rihams@fb.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>
+Fixes: 433966e3ae04 ("libbpf: Support function name-based attach uprobes")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 63 +++++++++++++++---------------------------
+ 1 file changed, 22 insertions(+), 41 deletions(-)
 
-> _Pragma is supposed to
-> be a full equivalent of #pragma specifically to be able to be used in
-> macros, so these work-arounds shouldn't be necessary.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index b03165687936..6c4555d0ea07 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -11143,43 +11143,6 @@ static int perf_event_uprobe_open_legacy(const char *probe_name, bool retprobe,
+ 	return pfd;
+ }
+ 
+-/* uprobes deal in relative offsets; subtract the base address associated with
+- * the mapped binary.  See Documentation/trace/uprobetracer.rst for more
+- * details.
+- */
+-static long elf_find_relative_offset(const char *filename, Elf *elf, long addr)
+-{
+-	size_t n;
+-	int i;
+-
+-	if (elf_getphdrnum(elf, &n)) {
+-		pr_warn("elf: failed to find program headers for '%s': %s\n", filename,
+-			elf_errmsg(-1));
+-		return -ENOENT;
+-	}
+-
+-	for (i = 0; i < n; i++) {
+-		int seg_start, seg_end, seg_offset;
+-		GElf_Phdr phdr;
+-
+-		if (!gelf_getphdr(elf, i, &phdr)) {
+-			pr_warn("elf: failed to get program header %d from '%s': %s\n", i, filename,
+-				elf_errmsg(-1));
+-			return -ENOENT;
+-		}
+-		if (phdr.p_type != PT_LOAD || !(phdr.p_flags & PF_X))
+-			continue;
+-
+-		seg_start = phdr.p_vaddr;
+-		seg_end = seg_start + phdr.p_memsz;
+-		seg_offset = phdr.p_offset;
+-		if (addr >= seg_start && addr < seg_end)
+-			return addr - seg_start + seg_offset;
+-	}
+-	pr_warn("elf: failed to find prog header containing 0x%lx in '%s'\n", addr, filename);
+-	return -ENOENT;
+-}
+-
+ /* Return next ELF section of sh_type after scn, or first of that type if scn is NULL. */
+ static Elf_Scn *elf_find_next_scn_by_type(Elf *elf, int sh_type, Elf_Scn *scn)
+ {
+@@ -11266,6 +11229,8 @@ static long elf_find_func_offset(const char *binary_path, const char *name)
+ 		for (idx = 0; idx < nr_syms; idx++) {
+ 			int curr_bind;
+ 			GElf_Sym sym;
++			Elf_Scn *sym_scn;
++			GElf_Shdr sym_sh;
+ 
+ 			if (!gelf_getsym(symbols, idx, &sym))
+ 				continue;
+@@ -11303,12 +11268,28 @@ static long elf_find_func_offset(const char *binary_path, const char *name)
+ 					continue;
+ 				}
+ 			}
+-			ret = sym.st_value;
++
++			/* Transform symbol's virtual address (absolute for
++			 * binaries and relative for shared libs) into file
++			 * offset, which is what kernel is expecting for
++			 * uprobe/uretprobe attachment.
++			 * See Documentation/trace/uprobetracer.rst for more
++			 * details.
++			 * This is done by looking up symbol's containing
++			 * section's header and using it's virtual address
++			 * (sh_addr) and corresponding file offset (sh_offset)
++			 * to transform sym.st_value (virtual address) into
++			 * desired final file offset.
++			 */
++			sym_scn = elf_getscn(elf, sym.st_shndx);
++			if (!sym_scn)
++				continue;
++			if (!gelf_getshdr(sym_scn, &sym_sh))
++				continue;
++
++			ret = sym.st_value - sym_sh.sh_addr + sym_sh.sh_offset;
+ 			last_bind = curr_bind;
+ 		}
+-		/* For binaries that are not shared libraries, we need relative offset */
+-		if (ret > 0 && !is_shared_lib)
+-			ret = elf_find_relative_offset(binary_path, elf, ret);
+ 		if (ret > 0)
+ 			break;
+ 	}
+-- 
+2.30.2
 
-I did try and style this like the nested macro example here:
-https://gcc.gnu.org/onlinedocs/gcc/Diagnostic-Pragmas.html
-
-> Let's first try
-> to root cause this.
-
-I was looking around and it seems there's a bunch of gcc preprocessor
-pragma issues in general, restyling this seemed to be the best option
-at the moment since a lot looked to be unfixed:
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53431
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55578
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89718
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91669
-
->
-> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > ---
-> >  tools/lib/bpf/bpf_helpers.h | 26 ++++++++++++++------------
-> >  tools/lib/bpf/bpf_tracing.h | 26 ++++++++++++++------------
-> >  2 files changed, 28 insertions(+), 24 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> > index fb04eaf367f1..6d159082727d 100644
-> > --- a/tools/lib/bpf/bpf_helpers.h
-> > +++ b/tools/lib/bpf/bpf_helpers.h
-> > @@ -22,11 +22,13 @@
-> >   * To allow use of SEC() with externs (e.g., for extern .maps declarations),
-> >   * make sure __attribute__((unused)) doesn't trigger compilation warning.
-> >   */
-> > +#define __gcc_helpers_pragma(x) _Pragma(#x)
-> > +#define __gcc_helpers_diag_pragma(x) __gcc_helpers_pragma("GCC diagnostic " #x)
-> >  #define SEC(name) \
-> > -       _Pragma("GCC diagnostic push")                                      \
-> > -       _Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")          \
-> > +       __gcc_helpers_diag_pragma(push)                                     \
-> > +       __gcc_helpers_diag_pragma(ignored "-Wignored-attributes")           \
-> >         __attribute__((section(name), used))                                \
-> > -       _Pragma("GCC diagnostic pop")                                       \
-> > +       __gcc_helpers_diag_pragma(pop)
-> >
-> >  /* Avoid 'linux/stddef.h' definition of '__always_inline'. */
-> >  #undef __always_inline
-> > @@ -215,10 +217,10 @@ enum libbpf_tristate {
-> >         static const char ___fmt[] = fmt;                       \
-> >         unsigned long long ___param[___bpf_narg(args)];         \
-> >                                                                 \
-> > -       _Pragma("GCC diagnostic push")                          \
-> > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> > +       __gcc_helpers_diag_pragma(push)                         \
-> > +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
-> >         ___bpf_fill(___param, args);                            \
-> > -       _Pragma("GCC diagnostic pop")                           \
-> > +       __gcc_helpers_diag_pragma(pop)                          \
-> >                                                                 \
-> >         bpf_seq_printf(seq, ___fmt, sizeof(___fmt),             \
-> >                        ___param, sizeof(___param));             \
-> > @@ -233,10 +235,10 @@ enum libbpf_tristate {
-> >         static const char ___fmt[] = fmt;                       \
-> >         unsigned long long ___param[___bpf_narg(args)];         \
-> >                                                                 \
-> > -       _Pragma("GCC diagnostic push")                          \
-> > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> > +       __gcc_helpers_diag_pragma(push)                         \
-> > +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
-> >         ___bpf_fill(___param, args);                            \
-> > -       _Pragma("GCC diagnostic pop")                           \
-> > +       __gcc_helpers_diag_pragma(pop)                          \
-> >                                                                 \
-> >         bpf_snprintf(out, out_size, ___fmt,                     \
-> >                      ___param, sizeof(___param));               \
-> > @@ -264,10 +266,10 @@ enum libbpf_tristate {
-> >         static const char ___fmt[] = fmt;                       \
-> >         unsigned long long ___param[___bpf_narg(args)];         \
-> >                                                                 \
-> > -       _Pragma("GCC diagnostic push")                          \
-> > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> > +       __gcc_helpers_diag_pragma(push)                         \
-> > +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
-> >         ___bpf_fill(___param, args);                            \
-> > -       _Pragma("GCC diagnostic pop")                           \
-> > +       __gcc_helpers_diag_pragma(pop)                          \
-> >                                                                 \
-> >         bpf_trace_vprintk(___fmt, sizeof(___fmt),               \
-> >                           ___param, sizeof(___param));          \
-> > diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> > index 01ce121c302d..e08ffc290b3e 100644
-> > --- a/tools/lib/bpf/bpf_tracing.h
-> > +++ b/tools/lib/bpf/bpf_tracing.h
-> > @@ -422,16 +422,18 @@ struct pt_regs;
-> >   * This is useful when using BPF helpers that expect original context
-> >   * as one of the parameters (e.g., for bpf_perf_event_output()).
-> >   */
-> > +#define __gcc_tracing_pragma(x) _Pragma(#x)
-> > +#define __gcc_tracing_diag_pragma(x) __gcc_tracing_pragma("GCC diagnostic " #x)
-> >  #define BPF_PROG(name, args...)                                                    \
-> >  name(unsigned long long *ctx);                                             \
-> >  static __attribute__((always_inline)) typeof(name(0))                      \
-> >  ____##name(unsigned long long *ctx, ##args);                               \
-> >  typeof(name(0)) name(unsigned long long *ctx)                              \
-> >  {                                                                          \
-> > -       _Pragma("GCC diagnostic push")                                      \
-> > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> > +       __gcc_tracing_diag_pragma(push)                                     \
-> > +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
-> >         return ____##name(___bpf_ctx_cast(args));                           \
-> > -       _Pragma("GCC diagnostic pop")                                       \
-> > +       __gcc_tracing_diag_pragma(pop)                                      \
-> >  }                                                                          \
-> >  static __attribute__((always_inline)) typeof(name(0))                      \
-> >  ____##name(unsigned long long *ctx, ##args)
-> > @@ -462,10 +464,10 @@ static __attribute__((always_inline)) typeof(name(0))                         \
-> >  ____##name(struct pt_regs *ctx, ##args);                                   \
-> >  typeof(name(0)) name(struct pt_regs *ctx)                                  \
-> >  {                                                                          \
-> > -       _Pragma("GCC diagnostic push")                                      \
-> > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> > +       __gcc_tracing_diag_pragma(push)                                     \
-> > +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
-> >         return ____##name(___bpf_kprobe_args(args));                        \
-> > -       _Pragma("GCC diagnostic pop")                                       \
-> > +       __gcc_tracing_diag_pragma(pop)                                      \
-> >  }                                                                          \
-> >  static __attribute__((always_inline)) typeof(name(0))                      \
-> >  ____##name(struct pt_regs *ctx, ##args)
-> > @@ -486,10 +488,10 @@ static __attribute__((always_inline)) typeof(name(0))                         \
-> >  ____##name(struct pt_regs *ctx, ##args);                                   \
-> >  typeof(name(0)) name(struct pt_regs *ctx)                                  \
-> >  {                                                                          \
-> > -       _Pragma("GCC diagnostic push")                                      \
-> > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> > +       __gcc_tracing_diag_pragma(push)                                     \
-> > +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
-> >         return ____##name(___bpf_kretprobe_args(args));                     \
-> > -       _Pragma("GCC diagnostic pop")                                       \
-> > +       __gcc_tracing_diag_pragma(pop)                                      \
-> >  }                                                                          \
-> >  static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
-> >
-> > @@ -520,10 +522,10 @@ ____##name(struct pt_regs *ctx, ##args);                              \
-> >  typeof(name(0)) name(struct pt_regs *ctx)                                  \
-> >  {                                                                          \
-> >         struct pt_regs *regs = PT_REGS_SYSCALL_REGS(ctx);                   \
-> > -       _Pragma("GCC diagnostic push")                                      \
-> > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> > +       __gcc_tracing_diag_pragma(push)             \
-> > +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
-> >         return ____##name(___bpf_syscall_args(args));                       \
-> > -       _Pragma("GCC diagnostic pop")                                       \
-> > +       __gcc_tracing_diag_pragma(pop)                                      \
-> >  }                                                                          \
-> >  static __attribute__((always_inline)) typeof(name(0))                      \
-> >  ____##name(struct pt_regs *ctx, ##args)
-> > --
-> > 2.25.1
-> >
