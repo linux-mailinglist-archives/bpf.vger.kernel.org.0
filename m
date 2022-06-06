@@ -2,74 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E29353ED52
-	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 19:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE3A53ED6F
+	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 20:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbiFFR41 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jun 2022 13:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42578 "EHLO
+        id S230202AbiFFSDA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jun 2022 14:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiFFR4Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jun 2022 13:56:25 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDB92F9AD9;
-        Mon,  6 Jun 2022 10:56:24 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id k16so20871600wrg.7;
-        Mon, 06 Jun 2022 10:56:24 -0700 (PDT)
+        with ESMTP id S230057AbiFFSC7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jun 2022 14:02:59 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEEE6FD15;
+        Mon,  6 Jun 2022 11:02:57 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id be31so24545047lfb.10;
+        Mon, 06 Jun 2022 11:02:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nmpgefx9CrakDYJ0DI/wt/hXfm3ZGhdmY3ih8CZrWIs=;
-        b=XQK9xgPnFBRkFvPm8WZ/2MFf8ePoWbUOi7CbGEKLVRDk8ve0qbjt2lfKV3BrYD+5H8
-         leOTldL8EjsQfB9waT1Wpoo5Q9yDeOQtFPaYXggg5C96CrxU0OngXZ1iksJwIxbLmYi/
-         EAjVIdBVBZsEGOzlkanc8/qfItpcJI74+LiMwm5lK+W/HaJf3MOy8MlzyhkQfVQaMiY+
-         EWkS9VXD/3Kj8pWZ++Gpf2EDk3J79694oWvwntLeJRrhcM6aisMQny1MKvnGtn4Rj6ug
-         AdI5W0FaQ7dl2uZtFg7q8CUQE2x29DQiX9g10LreUoGJpWX/0NXJwaIrkmhv71cIdG3C
-         c9lA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=97rzWQFE1AtsQDQrkeu4wHy1IeluYAPjOrBN3JDfUAQ=;
+        b=mpXT18X63OmEoHZ3hFHcWblFdaKwXBAQMhZ+WYqGEfsmLoT3U7sLE124TUStzu6mHq
+         AHfrfXGbrbRGd7o0jM5pWhUB81F0X2DEVOG2YPad83PazQ3jgGmylZKpOBVQ5v/GCJie
+         YJ8IASvmXIEVcuDyD9bm+ZXPPrjihzwNYImxnUs3lakMD4ctX6bRzmGaZqqqXn8t+wCf
+         x0xdYypbguFmnxrDbe9EERWfyglU6pv82vwb/jMpZ8khA2YMfr/S128QhgrVaWbgcUBD
+         6uTp/Bs4Fezs6xqYOiTWi3wo0X9lXZvU1QRE3thiQaGmPJiGvqtKXHzeJK1GsZXm1+G8
+         o77w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nmpgefx9CrakDYJ0DI/wt/hXfm3ZGhdmY3ih8CZrWIs=;
-        b=CESYZ54oVZIqJOJZdVRl5cUwXGKFmMGcOphF1reISSFdZjDCRb49t/pbVFF/G7c+YD
-         EwpzRQmAuof+G27aqCSOeXa/6Pp/FGQ6tklMWDu8XZdrTYgMOUGeR0fSKj+5YiMTnreQ
-         R7W8ZWr+Ka7vQVAntZ760pgRSFS8XioCfJlbmgE5tbY6deKLrapBfXUccDw+i5VFDDis
-         rig4L8jgMJi9lPpmbPmsy/OEHNooikyXTQz/V9KZ77WFerxxxr+C9o1DXseuuAYP6z4x
-         UGUE8vrXD2/QFUcKdStb3W1jfKLGGxouP04q1xKIscQHSntp1ufz+ZaCRFTrUnI58Wnh
-         YxuQ==
-X-Gm-Message-State: AOAM533k9f//c8DFgg2cTFsIe8R/BEp347oXEDIVDzU7KuVztL8W3MhO
-        C8RmOuS2FJ12DP7+NdSxTsI=
-X-Google-Smtp-Source: ABdhPJxxdo11AcSvuyyFjM/sjmy+u7KO2UPnf3fIQSmp/nkSrpQVkDAaTqtSQ14WaU28wECHWTLPvw==
-X-Received: by 2002:adf:a3d3:0:b0:213:baff:7654 with SMTP id m19-20020adfa3d3000000b00213baff7654mr18123442wrb.158.1654538183170;
-        Mon, 06 Jun 2022 10:56:23 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id e40-20020a5d5968000000b00213ba0cab3asm11120694wri.44.2022.06.06.10.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jun 2022 10:56:22 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 6 Jun 2022 19:56:20 +0200
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=97rzWQFE1AtsQDQrkeu4wHy1IeluYAPjOrBN3JDfUAQ=;
+        b=eMhdRNHi/2ikiuFVr/E5WeXJaibVmfGC8hF61mqAESF3tPiKNQXJklxepmDbRwPH0f
+         e1QMGbaklFcimigc06WZvmnyT6n/Sxec0oq5I9yMMG632nN7b4dLGquyMNc/YmA7fIvx
+         ULJvXR5ufdn61V+vEUYEZAe59x5GW+aSIHV0z99SBxNxnDsuVCOknt/ifQ2hftixFNKO
+         MYodHAE3349CQjLRZMPepe+r3aLQS7MfEBNGdZOTAMLxH/hmUV5H1hxKEquW/LmCzhdv
+         LYSKnJ8jI6QZZeA2ZfWOiHYFdso4Xfy4BOOg6nxW8DkOADnWq20ubRu0mgq4SUNhoPtS
+         NVtQ==
+X-Gm-Message-State: AOAM532/8iJjD5N7aiJhknyzgZ8bB+FFSpUzCxEu9U18PJ56hsPgjXVP
+        4cY5vvKXx+/Q25kCHr87NT8uYTmz+0rdlukqVjw=
+X-Google-Smtp-Source: ABdhPJwBs78td/is/dI6ZXvJhu818Ge6Ngp3wjufF0A1i17eKnVOco6n20x7KMCDPDYiAmWDCWzyn36lAHFnYQ1p498=
+X-Received: by 2002:a05:6512:b2a:b0:479:12f5:91ba with SMTP id
+ w42-20020a0565120b2a00b0047912f591bamr13971198lfu.443.1654538574348; Mon, 06
+ Jun 2022 11:02:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220606132741.3462925-1-james.hilliard1@gmail.com>
+In-Reply-To: <20220606132741.3462925-1-james.hilliard1@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 6 Jun 2022 11:02:42 -0700
+Message-ID: <CAEf4BzZ8eTqVnsLqc52=AyHeAsuVB3Nv7uBW19t2pcb9h7p2hQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] libbpf: fix broken gcc pragma macros in bpf_helpers.h/bpf_tracing.h
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH bpf-next 2/3] ftrace: Keep address offset in
- ftrace_lookup_symbols
-Message-ID: <Yp4/xPVDN8IrbxG8@krava>
-References: <20220527205611.655282-1-jolsa@kernel.org>
- <20220527205611.655282-3-jolsa@kernel.org>
- <20220605125122.7b0e5b52@rorschach.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220605125122.7b0e5b52@rorschach.local.home>
+        KP Singh <kpsingh@kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,27 +72,164 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 05, 2022 at 12:51:22PM -0400, Steven Rostedt wrote:
-> On Fri, 27 May 2022 22:56:10 +0200
-> Jiri Olsa <jolsa@kernel.org> wrote:
-> 
-> > @@ -8017,6 +8025,7 @@ int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *a
-> >  	struct kallsyms_data args;
-> >  	int err;
-> >  
-> > +	memset(addrs, 0x0, sizeof(*addrs) * cnt);
-> 
-> Nit, but you don't need the "0x".
+On Mon, Jun 6, 2022 at 6:28 AM James Hilliard <james.hilliard1@gmail.com> wrote:
+>
+> It seems the gcc preprocessor breaks unless pragmas are wrapped
+> individually inside macros.
+>
+> Fixes errors like:
+> error: expected identifier or '(' before '#pragma'
+>   106 | SEC("cgroup/bind6")
+>       | ^~~
+>
+> error: expected '=', ',', ';', 'asm' or '__attribute__' before '#pragma'
+>   114 | char _license[] SEC("license") = "GPL";
+>       | ^~~
+>
 
-ok, will remove
+We've been using this macro in this form for a while with no errors.
+How do you get these errors in the first place? _Pragma is supposed to
+be a full equivalent of #pragma specifically to be able to be used in
+macros, so these work-arounds shouldn't be necessary. Let's first try
+to root cause this.
 
-thanks,
-jirka
-
-> 
-> -- Steve
-> 
-> >  	args.addrs = addrs;
-> >  	args.syms = sorted_syms;
-> >  	args.cnt = cnt;
-> > -- 
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> ---
+>  tools/lib/bpf/bpf_helpers.h | 26 ++++++++++++++------------
+>  tools/lib/bpf/bpf_tracing.h | 26 ++++++++++++++------------
+>  2 files changed, 28 insertions(+), 24 deletions(-)
+>
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index fb04eaf367f1..6d159082727d 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -22,11 +22,13 @@
+>   * To allow use of SEC() with externs (e.g., for extern .maps declarations),
+>   * make sure __attribute__((unused)) doesn't trigger compilation warning.
+>   */
+> +#define __gcc_helpers_pragma(x) _Pragma(#x)
+> +#define __gcc_helpers_diag_pragma(x) __gcc_helpers_pragma("GCC diagnostic " #x)
+>  #define SEC(name) \
+> -       _Pragma("GCC diagnostic push")                                      \
+> -       _Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")          \
+> +       __gcc_helpers_diag_pragma(push)                                     \
+> +       __gcc_helpers_diag_pragma(ignored "-Wignored-attributes")           \
+>         __attribute__((section(name), used))                                \
+> -       _Pragma("GCC diagnostic pop")                                       \
+> +       __gcc_helpers_diag_pragma(pop)
+>
+>  /* Avoid 'linux/stddef.h' definition of '__always_inline'. */
+>  #undef __always_inline
+> @@ -215,10 +217,10 @@ enum libbpf_tristate {
+>         static const char ___fmt[] = fmt;                       \
+>         unsigned long long ___param[___bpf_narg(args)];         \
+>                                                                 \
+> -       _Pragma("GCC diagnostic push")                          \
+> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
+> +       __gcc_helpers_diag_pragma(push)                         \
+> +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
+>         ___bpf_fill(___param, args);                            \
+> -       _Pragma("GCC diagnostic pop")                           \
+> +       __gcc_helpers_diag_pragma(pop)                          \
+>                                                                 \
+>         bpf_seq_printf(seq, ___fmt, sizeof(___fmt),             \
+>                        ___param, sizeof(___param));             \
+> @@ -233,10 +235,10 @@ enum libbpf_tristate {
+>         static const char ___fmt[] = fmt;                       \
+>         unsigned long long ___param[___bpf_narg(args)];         \
+>                                                                 \
+> -       _Pragma("GCC diagnostic push")                          \
+> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
+> +       __gcc_helpers_diag_pragma(push)                         \
+> +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
+>         ___bpf_fill(___param, args);                            \
+> -       _Pragma("GCC diagnostic pop")                           \
+> +       __gcc_helpers_diag_pragma(pop)                          \
+>                                                                 \
+>         bpf_snprintf(out, out_size, ___fmt,                     \
+>                      ___param, sizeof(___param));               \
+> @@ -264,10 +266,10 @@ enum libbpf_tristate {
+>         static const char ___fmt[] = fmt;                       \
+>         unsigned long long ___param[___bpf_narg(args)];         \
+>                                                                 \
+> -       _Pragma("GCC diagnostic push")                          \
+> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
+> +       __gcc_helpers_diag_pragma(push)                         \
+> +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
+>         ___bpf_fill(___param, args);                            \
+> -       _Pragma("GCC diagnostic pop")                           \
+> +       __gcc_helpers_diag_pragma(pop)                          \
+>                                                                 \
+>         bpf_trace_vprintk(___fmt, sizeof(___fmt),               \
+>                           ___param, sizeof(___param));          \
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 01ce121c302d..e08ffc290b3e 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -422,16 +422,18 @@ struct pt_regs;
+>   * This is useful when using BPF helpers that expect original context
+>   * as one of the parameters (e.g., for bpf_perf_event_output()).
+>   */
+> +#define __gcc_tracing_pragma(x) _Pragma(#x)
+> +#define __gcc_tracing_diag_pragma(x) __gcc_tracing_pragma("GCC diagnostic " #x)
+>  #define BPF_PROG(name, args...)                                                    \
+>  name(unsigned long long *ctx);                                             \
+>  static __attribute__((always_inline)) typeof(name(0))                      \
+>  ____##name(unsigned long long *ctx, ##args);                               \
+>  typeof(name(0)) name(unsigned long long *ctx)                              \
+>  {                                                                          \
+> -       _Pragma("GCC diagnostic push")                                      \
+> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
+> +       __gcc_tracing_diag_pragma(push)                                     \
+> +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
+>         return ____##name(___bpf_ctx_cast(args));                           \
+> -       _Pragma("GCC diagnostic pop")                                       \
+> +       __gcc_tracing_diag_pragma(pop)                                      \
+>  }                                                                          \
+>  static __attribute__((always_inline)) typeof(name(0))                      \
+>  ____##name(unsigned long long *ctx, ##args)
+> @@ -462,10 +464,10 @@ static __attribute__((always_inline)) typeof(name(0))                         \
+>  ____##name(struct pt_regs *ctx, ##args);                                   \
+>  typeof(name(0)) name(struct pt_regs *ctx)                                  \
+>  {                                                                          \
+> -       _Pragma("GCC diagnostic push")                                      \
+> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
+> +       __gcc_tracing_diag_pragma(push)                                     \
+> +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
+>         return ____##name(___bpf_kprobe_args(args));                        \
+> -       _Pragma("GCC diagnostic pop")                                       \
+> +       __gcc_tracing_diag_pragma(pop)                                      \
+>  }                                                                          \
+>  static __attribute__((always_inline)) typeof(name(0))                      \
+>  ____##name(struct pt_regs *ctx, ##args)
+> @@ -486,10 +488,10 @@ static __attribute__((always_inline)) typeof(name(0))                         \
+>  ____##name(struct pt_regs *ctx, ##args);                                   \
+>  typeof(name(0)) name(struct pt_regs *ctx)                                  \
+>  {                                                                          \
+> -       _Pragma("GCC diagnostic push")                                      \
+> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
+> +       __gcc_tracing_diag_pragma(push)                                     \
+> +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
+>         return ____##name(___bpf_kretprobe_args(args));                     \
+> -       _Pragma("GCC diagnostic pop")                                       \
+> +       __gcc_tracing_diag_pragma(pop)                                      \
+>  }                                                                          \
+>  static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+>
+> @@ -520,10 +522,10 @@ ____##name(struct pt_regs *ctx, ##args);                              \
+>  typeof(name(0)) name(struct pt_regs *ctx)                                  \
+>  {                                                                          \
+>         struct pt_regs *regs = PT_REGS_SYSCALL_REGS(ctx);                   \
+> -       _Pragma("GCC diagnostic push")                                      \
+> -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
+> +       __gcc_tracing_diag_pragma(push)             \
+> +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
+>         return ____##name(___bpf_syscall_args(args));                       \
+> -       _Pragma("GCC diagnostic pop")                                       \
+> +       __gcc_tracing_diag_pragma(pop)                                      \
+>  }                                                                          \
+>  static __attribute__((always_inline)) typeof(name(0))                      \
+>  ____##name(struct pt_regs *ctx, ##args)
+> --
+> 2.25.1
+>
