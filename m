@@ -2,108 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F68A53EE56
-	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 21:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CE253EEA7
+	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 21:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbiFFTK3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jun 2022 15:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S232399AbiFFTco (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jun 2022 15:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232111AbiFFTK2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jun 2022 15:10:28 -0400
-Received: from m12-13.163.com (m12-13.163.com [220.181.12.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78A7FF6D;
-        Mon,  6 Jun 2022 12:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ORwKW
-        Fk56HMzad/JWmbUIgh0dKgAvtfDALDjLaSv0do=; b=TGPcncl5Cva4ADwacH8jT
-        HJNPF7BgO5mrk1Mrqy0/04Eu1utNxUHG92/+AK1N5+G9gr1n2AnXKDS1zR5KMzSB
-        FJSIge+OLNhRChmOH6v8AWbskJX8IJQeKa7wd/nILR4aVdmabIOb+PNOuN4X5F5c
-        ehfzAOKPdveNyxqPa36DYE=
-Received: from localhost.localdomain (unknown [111.224.11.53])
-        by smtp9 (Coremail) with SMTP id DcCowAAXkuBRTZ5iPFaKHQ--.29251S2;
-        Tue, 07 Jun 2022 02:54:10 +0800 (CST)
-From:   mangosteen728 <mangosteen728@163.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        mangosteen728 <mangosteen728@163.com>
-Subject: [PATCH] bpf:add function bpf_get_task_exe_path
-Date:   Mon,  6 Jun 2022 18:54:01 +0000
-Message-Id: <20220606185401.3902-1-mangosteen728@163.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S232310AbiFFTco (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jun 2022 15:32:44 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725442BB0F
+        for <bpf@vger.kernel.org>; Mon,  6 Jun 2022 12:32:42 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id p10so21153674wrg.12
+        for <bpf@vger.kernel.org>; Mon, 06 Jun 2022 12:32:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=j/cPLNIZM1LCsTUDc6o0FCtYbw+beYsEKBGs5kqXcMs=;
+        b=lzQFh/atdk+9YeyfEh+QiYmsQCHdhCw9He8IoqDkUDh70z79xt9WOeE69lDZxpcNjT
+         bR141LudvjepsqtckXsTJExKjujhfBySeXX3lGBZdMyWw9Hj5GReFM3OKFmwi+TUoHQx
+         oZsvwJKkDPX7u3JPtJIYSiEXF4g85cRoAjyT5U30WiD4Rahyvl6mTNRbQ2VRSRHhrZnc
+         gLT5O+zMpFuaRqq5Q7CgrD1ALwUtROj44xO70cNoml5i78IH05nNERpThsHZQjrORuAS
+         J1Hqkgqr3u7D3bTCMmD0YQ1IC4S8CknEj7+oNzqmijDOQei148Z/nshaGmchHBnxO64F
+         DUFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=j/cPLNIZM1LCsTUDc6o0FCtYbw+beYsEKBGs5kqXcMs=;
+        b=56/ms1+DQSd7LRwf0zKZYJkbc6yaoKAc5R/DgbmUIKl2okP3Mkj0Dv4TCO/Ij7s6xg
+         hzTbU7tVfdOR827tkS8G/L9qT2Zj3p0+x1X6//uYL0wySv+IAirCdbRL7e4XZpBjQ+OG
+         VdrL0SRlwKrW29ErS2MmA52EMdpFEXWGGrQP9IICu+No6Pp5lvhj9BEoFdSu51Q/Xzdn
+         rFS3RacwZbDkiPhN4WfYgFc7Q5fQx5DUMej0NkYZlth7eYcuqQoMVBqEXJgfb552Rras
+         0hD93l+xKKYQ0MVyI2jzkXnAPbMYalj/tOcvrDTR6fiwys44/TDVRTVvb/MadckaGfxL
+         GWNQ==
+X-Gm-Message-State: AOAM5307ZTYDGXq7ddcLBpSc7EqMuX5P8zFuswBrAYRIHP9a/jtaAMwS
+        R5wfvGjLxW2e8arMJBLLdBngW/hr/lB3BJs7WGPMcw==
+X-Google-Smtp-Source: ABdhPJzOrH3W8CG5y0UhEiUwZCc/frlgpaMAC/wiDonpCoj3ndzKhQc7jzNy9XpNg/VeI6CYpTOKxRkUoRt6Vw65fS0=
+X-Received: by 2002:adf:f688:0:b0:215:6e4d:4103 with SMTP id
+ v8-20020adff688000000b002156e4d4103mr16603122wrp.372.1654543960673; Mon, 06
+ Jun 2022 12:32:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowAAXkuBRTZ5iPFaKHQ--.29251S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJr43JFW3GF4xWr1DZryrWFg_yoW8Wr1kpF
-        n5Jw15tr9Iqa93Jr1fJrs7C3W5u395Z347GFs2gr4Fyw1rXF1xWa4jyr1aqF9YqrnYkaya
-        vr4YkrZFk3srZrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07ULFxUUUUUU=
-X-Originating-IP: [111.224.11.53]
-X-CM-SenderInfo: 5pdqw0pvwhv0qxsyqiywtou0bp/1tbiRxIYLlc7YAQ4PwAAss
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220520012133.1217211-1-yosryahmed@google.com>
+ <20220603162247.GC16134@blackbody.suse.cz> <CAJD7tkbp9Tw4oGtxsnHQB+5VZHMFa4J0qvJGRyj3VuuQ4UPF=g@mail.gmail.com>
+ <20220606123209.GE6928@blackbody.suse.cz>
+In-Reply-To: <20220606123209.GE6928@blackbody.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 6 Jun 2022 12:32:04 -0700
+Message-ID: <CAJD7tkZeNhyEL4WtkEMOUeLsLX4x4roMuNCocEhz5yHm7=h4vw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 0/5] bpf: rstat: cgroup hierarchical stats
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add the absolute path to get the executable corresponding tothe task
+On Mon, Jun 6, 2022 at 5:32 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
+>
+> On Fri, Jun 03, 2022 at 12:47:19PM -0700, Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > In short, think of these bpf maps as equivalents to "struct
+> > memcg_vmstats" and "struct memcg_vmstats_percpu" in the memory
+> > controller. They are just containers to store the stats in, they do
+> > not have any subgraph structure and they have no use beyond storing
+> > percpu and total stats.
+>
+> Thanks for the explanation.
+>
+> > I run small microbenchmarks that are not worth posting, they compared
+> > the latency of bpf stats collection vs. in-kernel code that adds stats
+> > to struct memcg_vmstats[_percpu] and flushes them accordingly, the
+> > difference was marginal.
+>
+> OK, that's a reasonable comparison.
+>
+> > The main reason for this is to provide data in a similar fashion to
+> > cgroupfs, in text file per-cgroup. I will include this clearly in the
+> > next cover message.
+>
+> Thanks, it'd be great to have that use-case captured there.
+>
+> > AFAIK loading bpf programs requires a privileged user, so someone has
+> > to approve such a program. Am I missing something?
+>
+> A sysctl unprivileged_bpf_disabled somehow stuck in my head. But as I
+> wrote, this adds a way how to call cgroup_rstat_updated() directly, it's
+> not reserved for privilged users anyhow.
 
-Signed-off-by: mangosteen728 <mangosteen728@163.com>
----
-Hi
-This is my first attempt to submit patch, there are shortcomings please more but wait.
+I am not sure if kfuncs have different privilege requirements or if
+there is a way to mark a kfunc as privileged. Maybe someone with more
+bpf knowledge can help here. But I assume if unprivileged_bpf_disabled
+is not set then there is a certain amount of risk/trust that you are
+taking anyway?
 
-In security audit often need to get the absolute path to the executable of the process so I tried to add bpf_get_task_exe_path in the helpers function to get.
-
-The code currently only submits the implementation of the function and how is this patch merge possible if I then add the relevant places。
-
-thanks
-mangosteen728
-kernel/bpf/helpers.c | 37 +++++++++++++++++++++++++++++++++++++
-1 file changed, 37 insertions(+)
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 225806a..797f850 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -257,6 +257,43 @@
- 	.arg2_type	= ARG_CONST_SIZE,
- };
- 
-+BPF_CALL_3(bpf_get_task_exe_path, struct task_struct *, task, char *, buf, u32, sz)
-+{
-+	struct file *exe_file = NULL;
-+	char *p = NULL;
-+	long len = 0;
-+
-+	if (!sz)
-+		return 0;
-+	exe_file = get_task_exe_file(tsk);
-+	if (IS_ERR_OR_NULL(exe_file))
-+		return 0;
-+	p = d_path(&exe_file->f_path, buf, sz);
-+	if (IS_ERR_OR_NULL(path)) {
-+		len = PTR_ERR(p);
-+	} else {
-+		len = buf + sz - p;
-+		memmove(buf, p, len);
-+	}
-+	fput(exe_file);
-+	return len;
-+}
-+
-+static const struct bpf_func_proto bpf_get_task_exe_path_proto = {
-+	.func       = bpf_get_task_exe_path,
-+	.gpl_only   = false,
-+	.ret_type   = RET_INTEGER,
-+	.arg1_type  = ARG_PTR_TO_BTF_ID,
-+	.arg2_type  = ARG_PTR_TO_MEM,
-+	.arg3_type  = ARG_CONST_SIZE_OR_ZERO,
-+};
-+
--- 
-
+>
+> > bpf_iter_run_prog() is used to run bpf iterator programs, and it grabs
+> > rcu read lock before doing so. So AFAICT we are good on that front.
+>
+> Thanks for the clarification.
+>
+>
+> Michal
