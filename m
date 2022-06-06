@@ -2,424 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B03F53E380
-	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 10:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C27753EBD9
+	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 19:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbiFFGMh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jun 2022 02:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
+        id S233048AbiFFJa6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jun 2022 05:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbiFFGMd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jun 2022 02:12:33 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BF355B0
-        for <bpf@vger.kernel.org>; Sun,  5 Jun 2022 23:12:30 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id y187so12138223pgd.3
-        for <bpf@vger.kernel.org>; Sun, 05 Jun 2022 23:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=I35U8IHwcGdbtuU8lL8a+fUizJTm97HsipGrlcfOkcs=;
-        b=lR6RkHqNoa9D3MbxwZhoP83tgZYi189zO6RSTfCijp++GA+cLfIHdYsxxYEDk1M4nv
-         1kH22kDUrdwheC7fuwd3dlo0/2a4kM7uqlk3SunaapMQqOn5y2cXAlEprryEpJsb9pp9
-         Ov9iDcyZRNFpepV7UOnBbo3rTKe9aVjJ2uCu97M+cJysi+PJdS9TL7OZ/gY+Kqk6c/ov
-         sx8bsqkWWZHCNX3jpxxzTScYeT+uAYa+UWwSKLfhqG2tdWI7uBqxTi70oR9Uk54PFCGx
-         yspBpPWPzZW0tZy/pbm90YXKah9JqQLj+I6H0j1bOqUoVCdVSnsAC6hSk8WAX9y2ocQC
-         U03A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=I35U8IHwcGdbtuU8lL8a+fUizJTm97HsipGrlcfOkcs=;
-        b=5PWIwJ9t7hcbB4cZXJfcKHWoB8mvjN4pody1t3R5ogW5tr+jiP547XG3yaW8Rpthp5
-         dpbw+37yfBrdVtO5aRyDwdn+troJ0Ac8aEh+aMKgdZi/tkv6T5xcjJzqTv0KKOdka34S
-         BTydKa9HXhai7qodM1SGtplKVhDIWVzp1eS9wcPf8lxBlr3nDcBcB4DELhgbGhKMBPUB
-         5/U5HswLEBj5aY8DQ1MXrtFJS4o1mV9RKg1St0LcKIQs7pyyVhVTOkgeYrAtz3+0oIKT
-         9FOm1N6QtEPsQ6cBeJ9xzzonrTPzGrOX6tbZ6wPTwgl62Rh678cCt/yB1WZwTmswEnMT
-         nuUA==
-X-Gm-Message-State: AOAM531J+BijLO2EXKWm2ZQQvebxd8LMkj7j0QgIjdvseq7J+mnyjW42
-        BuGdJBEYYnaULZl6nIYRFd2VSg==
-X-Google-Smtp-Source: ABdhPJz5RmLQYLqzuaZtAtT5+rSs0hJtCHFTxV0RlOEQoCDagqY2ps+e6cljdFJVm+i2yZCctyltIg==
-X-Received: by 2002:aa7:85d1:0:b0:51b:f4b5:db7b with SMTP id z17-20020aa785d1000000b0051bf4b5db7bmr10688026pfn.41.1654495949649;
-        Sun, 05 Jun 2022 23:12:29 -0700 (PDT)
-Received: from [10.71.57.194] ([139.177.225.241])
-        by smtp.gmail.com with ESMTPSA id u188-20020a6279c5000000b0050dc76281aasm9887525pfc.132.2022.06.05.23.12.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Jun 2022 23:12:29 -0700 (PDT)
-Message-ID: <e0baaba8-9e7a-fc4e-c05b-56d552905127@bytedance.com>
-Date:   Mon, 6 Jun 2022 14:12:21 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: Re: [PATCH v4 1/2] bpf: avoid grabbing spin_locks of all cpus
- when no free elems
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S233039AbiFFJao (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jun 2022 05:30:44 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BD6CFE04;
+        Mon,  6 Jun 2022 02:30:36 -0700 (PDT)
+X-UUID: 9da0ca4ab9714784bc805696926d2f86-20220606
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.5,REQID:8a3a7e6c-ef0d-4a18-bce8-80824a24180b,OB:0,LO
+        B:0,IP:0,URL:5,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,RULE:Release_Ham,AC
+        TION:release,TS:105
+X-CID-INFO: VERSION:1.1.5,REQID:8a3a7e6c-ef0d-4a18-bce8-80824a24180b,OB:0,LOB:
+        0,IP:0,URL:5,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,RULE:Spam_GS981B3D,AC
+        TION:quarantine,TS:105
+X-CID-META: VersionHash:2a19b09,CLOUDID:a2a64f7e-c8dc-403a-96e8-6237210dceee,C
+        OID:0e4a7272b3e5,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,QS:0,BEC:nil
+X-UUID: 9da0ca4ab9714784bc805696926d2f86-20220606
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <lina.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1911604969; Mon, 06 Jun 2022 14:52:09 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3;
+ Mon, 6 Jun 2022 14:52:08 +0800
+Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.3 via Frontend Transport; Mon, 6 Jun 2022 14:52:04 +0800
+From:   Lina Wang <lina.wang@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20220601084149.13097-1-zhoufeng.zf@bytedance.com>
- <20220601084149.13097-2-zhoufeng.zf@bytedance.com>
- <CAADnVQJcbDXtQsYNn=j0NzKx3SFSPE1YTwbmtkxkpzmFt-zh9Q@mail.gmail.com>
- <21ec90e3-2e89-09c1-fd22-de76e6794d68@bytedance.com>
- <CAADnVQKdU-3uBE9tKifChUunmr=c=32M4GwP8qG1-S=Atf7fvw@mail.gmail.com>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <CAADnVQKdU-3uBE9tKifChUunmr=c=32M4GwP8qG1-S=Atf7fvw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Maciej enczykowski <maze@google.com>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Lina Wang <lina.wang@mediatek.com>
+Subject: [PATCH v3] selftests net: fix bpf build error
+Date:   Mon, 6 Jun 2022 14:45:17 +0800
+Message-ID: <20220606064517.8175-1-lina.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2022/6/1 下午7:35, Alexei Starovoitov 写道:
-> On Wed, Jun 1, 2022 at 1:11 PM Feng Zhou <zhoufeng.zf@bytedance.com> wrote:
->> 在 2022/6/1 下午5:50, Alexei Starovoitov 写道:
->>> On Wed, Jun 1, 2022 at 10:42 AM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
->>>>    static inline void ___pcpu_freelist_push(struct pcpu_freelist_head *head,
->>>> @@ -130,14 +134,19 @@ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
->>>>           orig_cpu = cpu = raw_smp_processor_id();
->>>>           while (1) {
->>>>                   head = per_cpu_ptr(s->freelist, cpu);
->>>> +               if (READ_ONCE(head->is_empty))
->>>> +                       goto next_cpu;
->>>>                   raw_spin_lock(&head->lock);
->>>>                   node = head->first;
->>>>                   if (node) {
->>> extra bool is unnecessary.
->>> just READ_ONCE(head->first)
->> As for why to add is_empty instead of directly judging head->first, my
->> understanding is this, head->first is frequently modified during updating
->> map, which will lead to invalid other cpus's cache, and is_empty is after
->> freelist having no free elems will be changed, the performance will be
->> better.
-> maybe. pls benchmark it.
-> imo wasting a bool for the corner case is not a good trade off.
+bpf_helpers.h has been moved to tools/lib/bpf since 5.10, so add more
+including path.
 
-before patch
-./map_perf_test 1
-35:hash_map_perf pre-alloc 1224983 events per sec
-38:hash_map_perf pre-alloc 1113232 events per sec
-27:hash_map_perf pre-alloc 1097989 events per sec
-19:hash_map_perf pre-alloc 1092061 events per sec
-21:hash_map_perf pre-alloc 1084639 events per sec
-29:hash_map_perf pre-alloc 1077162 events per sec
-4:hash_map_perf pre-alloc 1067511 events per sec
-9:hash_map_perf pre-alloc 1063166 events per sec
-33:hash_map_perf pre-alloc 1064487 events per sec
-8:hash_map_perf pre-alloc 1059271 events per sec
-32:hash_map_perf pre-alloc 1061351 events per sec
-1:hash_map_perf pre-alloc 1055527 events per sec
-15:hash_map_perf pre-alloc 1056587 events per sec
-2:hash_map_perf pre-alloc 1054106 events per sec
-13:hash_map_perf pre-alloc 1053028 events per sec
-25:hash_map_perf pre-alloc 1053575 events per sec
-26:hash_map_perf pre-alloc 1052503 events per sec
-7:hash_map_perf pre-alloc 1049950 events per sec
-39:hash_map_perf pre-alloc 1054421 events per sec
-28:hash_map_perf pre-alloc 1050109 events per sec
-6:hash_map_perf pre-alloc 1046496 events per sec
-44:hash_map_perf pre-alloc 1054757 events per sec
-34:hash_map_perf pre-alloc 1048549 events per sec
-31:hash_map_perf pre-alloc 1047911 events per sec
-18:hash_map_perf pre-alloc 1046435 events per sec
-41:hash_map_perf pre-alloc 1051626 events per sec
-0:hash_map_perf pre-alloc 1043397 events per sec
-10:hash_map_perf pre-alloc 1043903 events per sec
-20:hash_map_perf pre-alloc 1044380 events per sec
-24:hash_map_perf pre-alloc 1042957 events per sec
-47:hash_map_perf pre-alloc 1049337 events per sec
-17:hash_map_perf pre-alloc 1038108 events per sec
-42:hash_map_perf pre-alloc 1044159 events per sec
-45:hash_map_perf pre-alloc 1044698 events per sec
-37:hash_map_perf pre-alloc 1038156 events per sec
-46:hash_map_perf pre-alloc 1039755 events per sec
-22:hash_map_perf pre-alloc 1032287 events per sec
-14:hash_map_perf pre-alloc 1019353 events per sec
-30:hash_map_perf pre-alloc 1019358 events per sec
-43:hash_map_perf pre-alloc 1015956 events per sec
-36:hash_map_perf pre-alloc 997864 events per sec
-40:hash_map_perf pre-alloc 972771 events per sec
-12:hash_map_perf pre-alloc 891118 events per sec
-16:hash_map_perf pre-alloc 882166 events per sec
-23:hash_map_perf pre-alloc 882177 events per sec
-11:hash_map_perf pre-alloc 880153 events per sec
-3:hash_map_perf pre-alloc 843192 events per sec
-5:hash_map_perf pre-alloc 826944 events per sec
+Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Lina Wang <lina.wang@mediatek.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+---
+ tools/testing/selftests/net/bpf/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-./run_bench_bpf_hashmap_full_update.sh
-Setting up benchmark 'bpf-hashmap-ful-update'...
-Benchmark 'bpf-hashmap-ful-update' started.
-1:hash_map_full_perf 15687 events per sec
-2:hash_map_full_perf 15760 events per sec
-3:hash_map_full_perf 15699 events per sec
-4:hash_map_full_perf 15732 events per sec
-5:hash_map_full_perf 15633 events per sec
-6:hash_map_full_perf 15623 events per sec
-7:hash_map_full_perf 15678 events per sec
-8:hash_map_full_perf 15661 events per sec
-9:hash_map_full_perf 15659 events per sec
-10:hash_map_full_perf 15653 events per sec
-11:hash_map_full_perf 15632 events per sec
-12:hash_map_full_perf 16059 events per sec
-13:hash_map_full_perf 16055 events per sec
-14:hash_map_full_perf 16093 events per sec
-15:hash_map_full_perf 16053 events per sec
-16:hash_map_full_perf 16096 events per sec
-17:hash_map_full_perf 15977 events per sec
-18:hash_map_full_perf 15986 events per sec
-19:hash_map_full_perf 16109 events per sec
-20:hash_map_full_perf 16025 events per sec
-21:hash_map_full_perf 16052 events per sec
-22:hash_map_full_perf 16023 events per sec
-23:hash_map_full_perf 16008 events per sec
-24:hash_map_full_perf 16484 events per sec
-25:hash_map_full_perf 15684 events per sec
-26:hash_map_full_perf 15749 events per sec
-27:hash_map_full_perf 15677 events per sec
-28:hash_map_full_perf 15699 events per sec
-29:hash_map_full_perf 15630 events per sec
-30:hash_map_full_perf 15603 events per sec
-31:hash_map_full_perf 15664 events per sec
-32:hash_map_full_perf 15645 events per sec
-33:hash_map_full_perf 15682 events per sec
-34:hash_map_full_perf 15636 events per sec
-35:hash_map_full_perf 15628 events per sec
-36:hash_map_full_perf 16068 events per sec
-37:hash_map_full_perf 16056 events per sec
-38:hash_map_full_perf 16105 events per sec
-39:hash_map_full_perf 16077 events per sec
-40:hash_map_full_perf 16060 events per sec
-41:hash_map_full_perf 15986 events per sec
-42:hash_map_full_perf 15962 events per sec
-43:hash_map_full_perf 16074 events per sec
-44:hash_map_full_perf 16040 events per sec
-45:hash_map_full_perf 16035 events per sec
-46:hash_map_full_perf 16017 events per sec
-47:hash_map_full_perf 15957 events per sec
-
-after patch, use head->is_empty
-./map_perf_test 1
-6:hash_map_perf pre-alloc 1126051 events per sec
-34:hash_map_perf pre-alloc 1122413 events per sec
-42:hash_map_perf pre-alloc 1088827 events per sec
-39:hash_map_perf pre-alloc 1089041 events per sec
-2:hash_map_perf pre-alloc 1062943 events per sec
-33:hash_map_perf pre-alloc 1065414 events per sec
-4:hash_map_perf pre-alloc 1057170 events per sec
-3:hash_map_perf pre-alloc 1056752 events per sec
-7:hash_map_perf pre-alloc 1055573 events per sec
-1:hash_map_perf pre-alloc 1054998 events per sec
-27:hash_map_perf pre-alloc 1056539 events per sec
-28:hash_map_perf pre-alloc 1055846 events per sec
-14:hash_map_perf pre-alloc 1053706 events per sec
-25:hash_map_perf pre-alloc 1054690 events per sec
-31:hash_map_perf pre-alloc 1055151 events per sec
-13:hash_map_perf pre-alloc 1050262 events per sec
-38:hash_map_perf pre-alloc 1051390 events per sec
-37:hash_map_perf pre-alloc 1050348 events per sec
-44:hash_map_perf pre-alloc 1049442 events per sec
-45:hash_map_perf pre-alloc 1049346 events per sec
-5:hash_map_perf pre-alloc 1041591 events per sec
-16:hash_map_perf pre-alloc 1041668 events per sec
-22:hash_map_perf pre-alloc 1041963 events per sec
-23:hash_map_perf pre-alloc 1040848 events per sec
-11:hash_map_perf pre-alloc 1038474 events per sec
-0:hash_map_perf pre-alloc 1037474 events per sec
-29:hash_map_perf pre-alloc 1040162 events per sec
-12:hash_map_perf pre-alloc 1038138 events per sec
-24:hash_map_perf pre-alloc 1036339 events per sec
-36:hash_map_perf pre-alloc 1036703 events per sec
-35:hash_map_perf pre-alloc 1035780 events per sec
-46:hash_map_perf pre-alloc 1035651 events per sec
-47:hash_map_perf pre-alloc 1031633 events per sec
-26:hash_map_perf pre-alloc 1022568 events per sec
-9:hash_map_perf pre-alloc 1020232 events per sec
-21:hash_map_perf pre-alloc 1012416 events per sec
-20:hash_map_perf pre-alloc 1010835 events per sec
-15:hash_map_perf pre-alloc 998342 events per sec
-17:hash_map_perf pre-alloc 994979 events per sec
-43:hash_map_perf pre-alloc 995927 events per sec
-30:hash_map_perf pre-alloc 890710 events per sec
-10:hash_map_perf pre-alloc 886156 events per sec
-40:hash_map_perf pre-alloc 835611 events per sec
-18:hash_map_perf pre-alloc 826670 events per sec
-8:hash_map_perf pre-alloc 784346 events per sec
-41:hash_map_perf pre-alloc 781841 events per sec
-32:hash_map_perf pre-alloc 775770 events per sec
-19:hash_map_perf pre-alloc 774079 events per sec
-
-./run_bench_bpf_hashmap_full_update.sh
-Setting up benchmark 'bpf-hashmap-ful-update'...
-Benchmark 'bpf-hashmap-ful-update' started.
-1:hash_map_full_perf 607964 events per sec
-2:hash_map_full_perf 580060 events per sec
-3:hash_map_full_perf 617285 events per sec
-4:hash_map_full_perf 647106 events per sec
-5:hash_map_full_perf 578899 events per sec
-6:hash_map_full_perf 620514 events per sec
-7:hash_map_full_perf 601275 events per sec
-8:hash_map_full_perf 638629 events per sec
-9:hash_map_full_perf 587900 events per sec
-10:hash_map_full_perf 574542 events per sec
-11:hash_map_full_perf 575143 events per sec
-12:hash_map_full_perf 594191 events per sec
-13:hash_map_full_perf 587638 events per sec
-14:hash_map_full_perf 543425 events per sec
-15:hash_map_full_perf 566564 events per sec
-16:hash_map_full_perf 603950 events per sec
-17:hash_map_full_perf 567153 events per sec
-18:hash_map_full_perf 604260 events per sec
-19:hash_map_full_perf 581898 events per sec
-20:hash_map_full_perf 569864 events per sec
-21:hash_map_full_perf 307428 events per sec
-22:hash_map_full_perf 621568 events per sec
-23:hash_map_full_perf 568043 events per sec
-24:hash_map_full_perf 714765 events per sec
-25:hash_map_full_perf 613165 events per sec
-26:hash_map_full_perf 647286 events per sec
-27:hash_map_full_perf 610911 events per sec
-28:hash_map_full_perf 590805 events per sec
-29:hash_map_full_perf 621013 events per sec
-30:hash_map_full_perf 614053 events per sec
-31:hash_map_full_perf 618858 events per sec
-32:hash_map_full_perf 593847 events per sec
-33:hash_map_full_perf 648223 events per sec
-34:hash_map_full_perf 649868 events per sec
-35:hash_map_full_perf 657349 events per sec
-36:hash_map_full_perf 595112 events per sec
-37:hash_map_full_perf 595443 events per sec
-38:hash_map_full_perf 557591 events per sec
-39:hash_map_full_perf 591079 events per sec
-40:hash_map_full_perf 558251 events per sec
-41:hash_map_full_perf 572870 events per sec
-42:hash_map_full_perf 567184 events per sec
-43:hash_map_full_perf 604783 events per sec
-44:hash_map_full_perf 632444 events per sec
-45:hash_map_full_perf 307268 events per sec
-46:hash_map_full_perf 566827 events per sec
-47:hash_map_full_perf 626162 events per sec
-
-after patch, use head->first
-./map_perf_test 1
-45:hash_map_perf pre-alloc 1263804 events per sec
-4:hash_map_perf pre-alloc 1234841 events per sec
-6:hash_map_perf pre-alloc 1231915 events per sec
-11:hash_map_perf pre-alloc 1206927 events per sec
-20:hash_map_perf pre-alloc 1179066 events per sec
-32:hash_map_perf pre-alloc 1177190 events per sec
-23:hash_map_perf pre-alloc 1170498 events per sec
-12:hash_map_perf pre-alloc 1140194 events per sec
-37:hash_map_perf pre-alloc 1136824 events per sec
-9:hash_map_perf pre-alloc 1118735 events per sec
-39:hash_map_perf pre-alloc 1113166 events per sec
-3:hash_map_perf pre-alloc 1096464 events per sec
-19:hash_map_perf pre-alloc 1084696 events per sec
-43:hash_map_perf pre-alloc 1087715 events per sec
-14:hash_map_perf pre-alloc 1074943 events per sec
-38:hash_map_perf pre-alloc 1073905 events per sec
-2:hash_map_perf pre-alloc 1067794 events per sec
-17:hash_map_perf pre-alloc 1067320 events per sec
-26:hash_map_perf pre-alloc 1067185 events per sec
-41:hash_map_perf pre-alloc 1066780 events per sec
-15:hash_map_perf pre-alloc 1057620 events per sec
-0:hash_map_perf pre-alloc 1053298 events per sec
-10:hash_map_perf pre-alloc 1053699 events per sec
-24:hash_map_perf pre-alloc 1053075 events per sec
-34:hash_map_perf pre-alloc 1053347 events per sec
-18:hash_map_perf pre-alloc 1050559 events per sec
-42:hash_map_perf pre-alloc 1050033 events per sec
-33:hash_map_perf pre-alloc 1025317 events per sec
-29:hash_map_perf pre-alloc 1000465 events per sec
-28:hash_map_perf pre-alloc 975533 events per sec
-35:hash_map_perf pre-alloc 974307 events per sec
-44:hash_map_perf pre-alloc 966598 events per sec
-27:hash_map_perf pre-alloc 962746 events per sec
-36:hash_map_perf pre-alloc 945986 events per sec
-22:hash_map_perf pre-alloc 914717 events per sec
-13:hash_map_perf pre-alloc 901797 events per sec
-30:hash_map_perf pre-alloc 849463 events per sec
-5:hash_map_perf pre-alloc 842851 events per sec
-16:hash_map_perf pre-alloc 814149 events per sec
-1:hash_map_perf pre-alloc 798610 events per sec
-46:hash_map_perf pre-alloc 793487 events per sec
-40:hash_map_perf pre-alloc 772092 events per sec
-7:hash_map_perf pre-alloc 742190 events per sec
-21:hash_map_perf pre-alloc 714585 events per sec
-8:hash_map_perf pre-alloc 702297 events per sec
-31:hash_map_perf pre-alloc 700180 events per sec
-47:hash_map_perf pre-alloc 686786 events per sec
-25:hash_map_perf pre-alloc 655706 events per sec
-
-./run_bench_bpf_hashmap_full_update.sh
-Setting up benchmark 'bpf-hashmap-ful-update'...
-Benchmark 'bpf-hashmap-ful-update' started.
-1:hash_map_full_perf 555830 events per sec
-2:hash_map_full_perf 591009 events per sec
-3:hash_map_full_perf 585934 events per sec
-4:hash_map_full_perf 573066 events per sec
-5:hash_map_full_perf 586800 events per sec
-6:hash_map_full_perf 587997 events per sec
-7:hash_map_full_perf 610463 events per sec
-8:hash_map_full_perf 560239 events per sec
-9:hash_map_full_perf 612683 events per sec
-10:hash_map_full_perf 617636 events per sec
-11:hash_map_full_perf 558120 events per sec
-12:hash_map_full_perf 505507 events per sec
-13:hash_map_full_perf 509096 events per sec
-14:hash_map_full_perf 500372 events per sec
-15:hash_map_full_perf 495395 events per sec
-16:hash_map_full_perf 510147 events per sec
-17:hash_map_full_perf 511348 events per sec
-18:hash_map_full_perf 523750 events per sec
-19:hash_map_full_perf 508013 events per sec
-20:hash_map_full_perf 528064 events per sec
-21:hash_map_full_perf 543195 events per sec
-22:hash_map_full_perf 541737 events per sec
-23:hash_map_full_perf 528646 events per sec
-24:hash_map_full_perf 683963 events per sec
-25:hash_map_full_perf 598496 events per sec
-26:hash_map_full_perf 528436 events per sec
-27:hash_map_full_perf 576641 events per sec
-28:hash_map_full_perf 599424 events per sec
-29:hash_map_full_perf 575479 events per sec
-30:hash_map_full_perf 580070 events per sec
-31:hash_map_full_perf 563594 events per sec
-32:hash_map_full_perf 601996 events per sec
-33:hash_map_full_perf 548413 events per sec
-34:hash_map_full_perf 551068 events per sec
-35:hash_map_full_perf 605726 events per sec
-36:hash_map_full_perf 505460 events per sec
-37:hash_map_full_perf 519113 events per sec
-38:hash_map_full_perf 547602 events per sec
-39:hash_map_full_perf 547053 events per sec
-40:hash_map_full_perf 516993 events per sec
-41:hash_map_full_perf 506970 events per sec
-42:hash_map_full_perf 500630 events per sec
-43:hash_map_full_perf 553099 events per sec
-44:hash_map_full_perf 528657 events per sec
-45:hash_map_full_perf 517173 events per sec
-46:hash_map_full_perf 503649 events per sec
-47:hash_map_full_perf 527035 events per sec
-
- From the point of view of normal performance test, using head->first 
-and head->is_empty, compared
-with before patch, there is not much performance drop. In the worst 
-case, the comparison between
-head->first and head->is_empty is not much different as a whole.
+diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
+index f91bf14bbee7..8a69c91fcca0 100644
+--- a/tools/testing/selftests/net/bpf/Makefile
++++ b/tools/testing/selftests/net/bpf/Makefile
+@@ -2,6 +2,7 @@
+ 
+ CLANG ?= clang
+ CCINCLUDE += -I../../bpf
++CCINCLUDE += -I../../../lib
+ CCINCLUDE += -I../../../../../usr/include/
+ 
+ TEST_CUSTOM_PROGS = $(OUTPUT)/bpf/nat6to4.o
+@@ -10,5 +11,4 @@ all: $(TEST_CUSTOM_PROGS)
+ $(OUTPUT)/%.o: %.c
+ 	$(CLANG) -O2 -target bpf -c $< $(CCINCLUDE) -o $@
+ 
+-clean:
+-	rm -f $(TEST_CUSTOM_PROGS)
++EXTRA_CLEAN := $(TEST_CUSTOM_PROGS)
+-- 
+2.18.0
 
