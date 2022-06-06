@@ -2,105 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C2153E9BB
-	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 19:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9620753E671
+	for <lists+bpf@lfdr.de>; Mon,  6 Jun 2022 19:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbiFFKNv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jun 2022 06:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
+        id S233914AbiFFKil (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jun 2022 06:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233748AbiFFKN3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jun 2022 06:13:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0511BA0D27
-        for <bpf@vger.kernel.org>; Mon,  6 Jun 2022 03:10:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654510150;
+        with ESMTP id S233906AbiFFKil (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jun 2022 06:38:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679A11EEEA;
+        Mon,  6 Jun 2022 03:38:39 -0700 (PDT)
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1654511917;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WTpeojEBTrseUaMSVnCmShJgLb05X1O3wixL+XWUD1U=;
-        b=OMOaXy/VNFfHinihnlDEM8esewD6kzhZTY0BHPCg7b09F3wx+mHSSGYiupRzWjLsAqRoPC
-        QuvpOkPa7bD2b+OJqSejBN/k/mR1EuAzO+YX+Br9x9XG2l6se9aNlpnvAeOyQLsoJPbjin
-        AAJccHo/+so9blK5ZuZkHzaErtc0HrU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-335-dW0AuTE0Mb-Y8KRNO-ahUQ-1; Mon, 06 Jun 2022 06:09:09 -0400
-X-MC-Unique: dW0AuTE0Mb-Y8KRNO-ahUQ-1
-Received: by mail-wm1-f70.google.com with SMTP id bi22-20020a05600c3d9600b0039c4144992cso3686721wmb.5
-        for <bpf@vger.kernel.org>; Mon, 06 Jun 2022 03:09:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=WTpeojEBTrseUaMSVnCmShJgLb05X1O3wixL+XWUD1U=;
-        b=fiscbSyvrR3HSn72LgMYlz8hrClSF5buztMMLoO8hvE7AhvIQy8o7uu8A4D4+h5NAt
-         3arHFhOxZFr33+px8AUeHx+iXzKpk3dasAqFx341swXRYa462GM30LVH7EYmR8HLgNKl
-         1l/iXeiLA3Kv2k7roiQ5DjG4EUGu27Hg9/3a4od/yV17/UuDeVMMQwCX945wFS+nW+vF
-         /0lECFuP5nGernbb3GhEQ8O+Opgn9d262eVck8FFAH1mCXaZIoltnz1o4HgnkFslvs79
-         sI8+MyoWdoFRWEat5Te/A41uf9yB+ucSuHkKrXAP82e/ASy5uqAPo/fHBs8FcGM6DyBb
-         OJ4g==
-X-Gm-Message-State: AOAM5305iFHUm3rbO+Q9fDTIf8bQUr680rRUjxsz2QdP7NWBnWHBQelk
-        Kk8iyZRCgQLsNGSQgJPgr3rTa0Di7wUl7MbKysk2EapQ8pRMKl7G50Zf/hwiLODu4L9Asey3sFk
-        zh1dd/OLmSwRw
-X-Received: by 2002:a5d:6651:0:b0:210:3e1c:1343 with SMTP id f17-20020a5d6651000000b002103e1c1343mr20795213wrw.137.1654510148490;
-        Mon, 06 Jun 2022 03:09:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfuD0eMUP2v47G3d9f7pYllLF29ZboA6bfNKjPqw3VCslRaoPuPFtSStztMn0yQpS9t0z6uQ==
-X-Received: by 2002:a5d:6651:0:b0:210:3e1c:1343 with SMTP id f17-20020a5d6651000000b002103e1c1343mr20795194wrw.137.1654510148287;
-        Mon, 06 Jun 2022 03:09:08 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-112-184.dyn.eolo.it. [146.241.112.184])
-        by smtp.gmail.com with ESMTPSA id n5-20020a05600c3b8500b0039c4e2ff7cfsm3344360wms.43.2022.06.06.03.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jun 2022 03:09:07 -0700 (PDT)
-Message-ID: <c8031ab902a2636d4badfe3fdff65930a1f2ac56.camel@redhat.com>
-Subject: Re: [PATCH v3] selftests net: fix bpf build error
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Lina Wang <lina.wang@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=erdy93WinNJjx6uD82mv+yWGkqgDaA0e53sz3wPEsFQ=;
+        b=3UrNR+7IZ25/Ac1Qmcdc46k78hzdqV2gd78pScar/t9rp2sT4hSvEE7klo3xyQFQRoJ7sn
+        P/YhaWQto8MUrwEE1xhMUG9cuMMS+j77wbF3huxubSh00qd7XAxVZTLQmswKBJa6FLut+L
+        MlTwACnMnFg9VBYD6joZMkvARpkzRDZh3vTRyrYX5bETXM0BP1hIAtk/cTLD7HV8WLXZLB
+        erLXm6PEj8ONHeP3yEo59BaBB2iRYMhY+sIj63/wWx8vpjoP0Huigdi2SQOMoT5cIKLXxE
+        S/rQBq6I0G/jr8WgBuEqqyQXOa2/o2Z2atBSbGYukVEXS4NTD3HOz5HD9qdU7g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1654511917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=erdy93WinNJjx6uD82mv+yWGkqgDaA0e53sz3wPEsFQ=;
+        b=AeTkxR2jswDHlpY2O1kzWTPlLR8FdedY4RBvGXpFrNKULaFioC4TgCZznW0BPz00sLNWWk
+        eGBBiT1zU+UE/2Ag==
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Maciej enczykowski <maze@google.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Date:   Mon, 06 Jun 2022 12:09:06 +0200
-In-Reply-To: <20220606064517.8175-1-lina.wang@mediatek.com>
-References: <20220606064517.8175-1-lina.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
+        Joanne Koong <joannelkoong@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Geliang Tang <geliang.tang@suse.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>
+Subject: [PATCH bpf-next] bpf: Add BPF-helper for accessing CLOCK_TAI
+Date:   Mon,  6 Jun 2022 12:37:34 +0200
+Message-Id: <20220606103734.92423-1-kurt@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2022-06-06 at 14:45 +0800, Lina Wang wrote:
-> bpf_helpers.h has been moved to tools/lib/bpf since 5.10, so add more
-> including path.
-> 
-> Fixes: edae34a3ed92 ("selftests net: add UDP GRO fraglist + bpf self-tests")
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Signed-off-by: Lina Wang <lina.wang@mediatek.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
+From: Jesper Dangaard Brouer <brouer@redhat.com>
 
-LGTM, thanks!
+Commit 3dc6ffae2da2 ("timekeeping: Introduce fast accessor to clock tai")
+introduced a fast and NMI-safe accessor for CLOCK_TAI. Especially in time
+sensitive networks (TSN), where all nodes are synchronized by Precision Time
+Protocol (PTP), it's helpful to have the possibility to generate timestamps
+based on CLOCK_TAI instead of CLOCK_MONOTONIC. With a BPF helper for TAI in
+place, it becomes very convenient to correlate activity across different
+machines in the network.
 
-Acked-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+[Kurt: Wrote changelog and renamed helper]
+Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+---
+ include/uapi/linux/bpf.h       | 13 +++++++++++++
+ kernel/bpf/core.c              |  1 +
+ kernel/bpf/helpers.c           | 14 ++++++++++++++
+ tools/include/uapi/linux/bpf.h | 13 +++++++++++++
+ 4 files changed, 41 insertions(+)
 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f4009dbdf62d..5f240d5d30f6 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5249,6 +5249,18 @@ union bpf_attr {
+  *		Pointer to the underlying dynptr data, NULL if the dynptr is
+  *		read-only, if the dynptr is invalid, or if the offset and length
+  *		is out of bounds.
++ *
++ * u64 bpf_ktime_get_tai_ns(void)
++ *	Description
++ *		A nonsettable system-wide clock derived from wall-clock time but
++ *		ignoring leap seconds.  This clock does not experience
++ *		discontinuities and backwards jumps caused by NTP inserting leap
++ *		seconds as CLOCK_REALTIME does.
++ *
++ *		See: **clock_gettime**\ (**CLOCK_TAI**)
++ *	Return
++ *		Current *ktime*.
++ *
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5455,6 +5467,7 @@ union bpf_attr {
+ 	FN(dynptr_read),		\
+ 	FN(dynptr_write),		\
+ 	FN(dynptr_data),		\
++	FN(ktime_get_tai_ns),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index e78cc5eea4a5..edfa716c3528 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2641,6 +2641,7 @@ const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
+ const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
+ const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
+ const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto __weak;
++const struct bpf_func_proto bpf_ktime_get_tai_ns_proto __weak;
+ 
+ const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
+ const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 225806a02efb..981b34d1e551 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -198,6 +198,18 @@ const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto = {
+ 	.ret_type	= RET_INTEGER,
+ };
+ 
++BPF_CALL_0(bpf_ktime_get_tai_ns)
++{
++	/* NMI safe access to clock tai */
++	return ktime_get_tai_fast_ns();
++}
++
++const struct bpf_func_proto bpf_ktime_get_tai_ns_proto = {
++	.func		= bpf_ktime_get_tai_ns,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++};
++
+ BPF_CALL_0(bpf_get_current_pid_tgid)
+ {
+ 	struct task_struct *task = current;
+@@ -1613,6 +1625,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_ktime_get_ns_proto;
+ 	case BPF_FUNC_ktime_get_boot_ns:
+ 		return &bpf_ktime_get_boot_ns_proto;
++	case BPF_FUNC_ktime_get_tai_ns:
++		return &bpf_ktime_get_tai_ns_proto;
+ 	case BPF_FUNC_ringbuf_output:
+ 		return &bpf_ringbuf_output_proto;
+ 	case BPF_FUNC_ringbuf_reserve:
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index f4009dbdf62d..5f240d5d30f6 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5249,6 +5249,18 @@ union bpf_attr {
+  *		Pointer to the underlying dynptr data, NULL if the dynptr is
+  *		read-only, if the dynptr is invalid, or if the offset and length
+  *		is out of bounds.
++ *
++ * u64 bpf_ktime_get_tai_ns(void)
++ *	Description
++ *		A nonsettable system-wide clock derived from wall-clock time but
++ *		ignoring leap seconds.  This clock does not experience
++ *		discontinuities and backwards jumps caused by NTP inserting leap
++ *		seconds as CLOCK_REALTIME does.
++ *
++ *		See: **clock_gettime**\ (**CLOCK_TAI**)
++ *	Return
++ *		Current *ktime*.
++ *
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5455,6 +5467,7 @@ union bpf_attr {
+ 	FN(dynptr_read),		\
+ 	FN(dynptr_write),		\
+ 	FN(dynptr_data),		\
++	FN(ktime_get_tai_ns),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+-- 
+2.30.2
 
