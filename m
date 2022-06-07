@@ -2,46 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 740CF5402A8
-	for <lists+bpf@lfdr.de>; Tue,  7 Jun 2022 17:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3628454036B
+	for <lists+bpf@lfdr.de>; Tue,  7 Jun 2022 18:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344235AbiFGPlo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jun 2022 11:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
+        id S1344845AbiFGQK7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jun 2022 12:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245474AbiFGPln (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jun 2022 11:41:43 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED49FC8BF3;
-        Tue,  7 Jun 2022 08:41:40 -0700 (PDT)
+        with ESMTP id S1343591AbiFGQK7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jun 2022 12:10:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F86C85EC6;
+        Tue,  7 Jun 2022 09:10:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 2805FCE2261;
-        Tue,  7 Jun 2022 15:41:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8580C385A5;
-        Tue,  7 Jun 2022 15:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1654616497;
-        bh=l+5X2UysSRek17uhSCRhsYUdPC9HnxURWjLyyr9B1U8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LJRKSWL+bB2h3/PYLBLj68c/xV0Q5L1GHSFMPBkDcWFKldIxEdTny/qPVFoFfPvHl
-         smMJVtm7sg1wKE6U6992txTarsRq3JiJbIsQ2Pl7zrn2v/I5ENWOFCl+x512tV5/G6
-         IZ2yQTLZL6lqAHSvEU0w+le5tH19cYZrhhBccZ9M=
-Date:   Tue, 7 Jun 2022 17:41:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?5bGx56u55bCP?= <mangosteen728@gmail.com>
-Cc:     ast <ast@kernel.org>, daniel <daniel@iogearbox.net>,
-        andrii <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH] bpf:add function
-Message-ID: <Yp9xrkeqUEWvZm9x@kroah.com>
-References: <CAB8PBH+EVX3iTr7Nu-QFHAom+VnjPLEk0hpWSi0QiyD5u-bKag@mail.gmail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BE16261680;
+        Tue,  7 Jun 2022 16:10:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAA3C385A5;
+        Tue,  7 Jun 2022 16:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654618257;
+        bh=8ifnsinOmvqwHnK+WRL4Ye2Y78l6jmJecGk3v2CYFjA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WIA1F3GuuNqJ48lMQUzZ2T4uF5lmq1glfTX2D0NxtMUOwduOME6Gk5mS//U8QS1Lf
+         30ZF3mXk10JENt8XyziLxfHYTiIL2NiVsfha9qXUaMLzKqle2JyyzHTLY/hyZu3NMl
+         ZxtnOOA8Hqt+Ec/vsSo8Y1mezHiVwBDHS0KP+o1g0i8b6qlZuj9IqUfdgJ2KWOF3n+
+         nTi4oepvf/XYnvjDeSQL87hIQSuK7AJuxmOx+IiofF9Hjrb5bB7p64Z8tjQmD/OJmI
+         syuAM19WBW3ctP3ygJkOPNs0EHOtX9vCdDkMDxG5WefYdQpFj5ukEpRyIyVIPHXl1s
+         sVLGc+pBMPt6w==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf v2 0/2] rethook: Reject getting a rethook if RCU is not watching
+Date:   Wed,  8 Jun 2022 01:10:52 +0900
+Message-Id: <165461825202.280167.12903689442217921817.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAB8PBH+EVX3iTr7Nu-QFHAom+VnjPLEk0hpWSi0QiyD5u-bKag@mail.gmail.com>
 X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -52,80 +58,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 07, 2022 at 09:28:58PM +0800, 山竹小 wrote:
-> Add the absolute path to get the executable corresponding tothe task
-> 
-> Signed-off-by: mangosteen728 < mangosteen728@gmail.com>
-> ---
-> Hi
-> This is my first attempt to submit patch, there are shortcomings
-> please more but wait.
-> 
-> In security audit often need to get the absolute path to the
-> executable of the process so I tried to add bpf_get_task_exe_path in
-> the helpers function to get.
-> 
-> The code currently only submits the implementation of the function and
-> how is this patch merge possible if I then add the relevant places。
-> 
-> thanks
-> mangosteen728
-> kernel/bpf/helpers.c | 37 +++++++++++++++++++++++++++++++++++++
-> 1 file changed, 37 insertions(+)
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 225806a..797f 850 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -257,6 +257,43 @@
-> .arg2_type = ARG_CONST_SIZE,
-> };
-> 
-> +BPF_CALL_3(bpf_get_task_exe_path, struct task_struct *, task, char *,
-> buf, u32, sz)
-> +{
-> + struct file *exe_file = NULL;
-> + char *p = NULL;
-> + long len = 0;
-> +
-> + if (!sz)
-> + return 0;
-> + exe_file = get_task_exe_file(tsk);
-> + if (IS_ERR_OR_NULL(exe_file))
-> + return 0;
-> + p = d_path(&exe_file->f_path, buf, sz);
-> + if (IS_ERR_OR_NULL(path)) {
-> + len = PTR_ERR(p);
-> + } else {
-> + len = buf + sz - p;
-> + memmove(buf, p, len);
-> + }
-> + fput(exe_file);
-> + return len;
-> +}
-> +
-> +static const struct bpf_func_proto bpf_get_task_exe_path_proto = {
-> + .func       = bpf_get_task_exe_path,
-> + .gpl_only   = false,
-> + .ret_type   = RET_INTEGER,
-> + .arg1_type  = ARG_PTR_TO_BTF_ID,
-> + .arg2_type  = ARG_PTR_TO_MEM,
-> + .arg3_type  = ARG_CONST_SIZE_OR_ZERO,
-> +};
-> +
+Hi,
 
-Something went really wrong with your patch :(
+Here is the 2nd version of the patches to reject rethook if RCU is
+not watching. The 1st version is here;
 
-But the larger issue is, there is no such thing as a "absolute path to a
-file" within the kernel, sorry.  This just is not going to work, and it
-has come up again and again and again with regards to other kernel
-subsystems many times.
+https://lore.kernel.org/all/165189881197.175864.14757002789194211860.stgit@devnote2/
 
-Step back and answer "why" you think you need a path to an executable?
-What needs this that you can not do it in userspace?  What are you going
-to do with this supposed information if you get it?
+This is actually related to the idle function tracing issue
+reported by Jiri on LKML (*)
 
-And then think about filesystem namespaces...
+(*) https://lore.kernel.org/bpf/20220515203653.4039075-1-jolsa@kernel.org/
 
-sorry, this isn't going to work.
+Jiri reported that fprobe (and rethook) based kprobe-multi bpf
+trace kicks "suspicious RCU usage" warning. This is because the
+RCU operation is used in the kprobe-multi handler. However, I
+also found that the similar issue exists in the rethook because
+the rethook uses RCU operation.
 
-greg k-h
+I added a new patch [1/2] to test this issue by fprobe_example.ko.
+(with this patch, it can avoid using printk() which also involves
+the RCU operation.)
+
+ ------
+ # insmod fprobe_example.ko symbol=arch_cpu_idle use_trace=1 stackdump=0 
+ fprobe_init: Planted fprobe at arch_cpu_idle
+ # rmmod fprobe_example.ko 
+ 
+ =============================
+ WARNING: suspicious RCU usage
+ 5.18.0-rc5-00019-gcae4ec21e87a-dirty #30 Not tainted
+ -----------------------------
+ include/trace/events/lock.h:37 suspicious rcu_dereference_check() usage!
+ 
+ other info that might help us debug this:
+ 
+ rcu_scheduler_active = 2, debug_locks = 1
+ 
+ 
+ RCU used illegally from extended quiescent state!
+ no locks held by swapper/0/0.
+ 
+ stack backtrace:
+ CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.18.0-rc5-00019-gcae4ec21e87a-dirty #30
+ ------
+ 
+After applying [2/2] fix (which avoid initializing rethook on
+function entry if !rcu_watching()), this warning was gone.
+
+ ------
+ # insmod fprobe_example.ko symbol=arch_cpu_idle use_trace=1 stackdump=0
+ fprobe_init: Planted fprobe at arch_cpu_idle
+ # rmmod fprobe_example.ko 
+ fprobe_exit: fprobe at arch_cpu_idle unregistered. 225 times hit, 230 times missed
+ ------
+
+Note that you can test this program until the arch_cpu_idle()
+is marked as noinstr. After that, the function can not be
+traced.
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (2):
+      fprobe: samples: Add use_trace option and show hit/missed counter
+      rethook: Reject getting a rethook if RCU is not watching
+
+
+ kernel/trace/rethook.c          |    9 +++++++++
+ samples/fprobe/fprobe_example.c |   21 +++++++++++++++++----
+ 2 files changed, 26 insertions(+), 4 deletions(-)
+
+--
+Signature
