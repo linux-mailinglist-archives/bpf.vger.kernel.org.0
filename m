@@ -2,118 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E7D5416C4
-	for <lists+bpf@lfdr.de>; Tue,  7 Jun 2022 22:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6B1541753
+	for <lists+bpf@lfdr.de>; Tue,  7 Jun 2022 23:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358455AbiFGU4T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jun 2022 16:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
+        id S1377102AbiFGVCk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jun 2022 17:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377955AbiFGUvO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jun 2022 16:51:14 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3AC1FDE91;
-        Tue,  7 Jun 2022 11:41:01 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id b8so7451054edj.11;
-        Tue, 07 Jun 2022 11:41:01 -0700 (PDT)
+        with ESMTP id S1379231AbiFGVCN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jun 2022 17:02:13 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F32A2A270
+        for <bpf@vger.kernel.org>; Tue,  7 Jun 2022 11:47:02 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id h1so15533837plf.11
+        for <bpf@vger.kernel.org>; Tue, 07 Jun 2022 11:47:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GXW2rL4NXVvRk2JDX2m18WOLhnXkn5o6+TY+7wVjtRE=;
-        b=N1Vd8aWmM1ySk0mcW8trc9dPBtxtE5CftSphFS3k/DOJ5xs8NntlPTLMsbV9eB2G3s
-         jDH1jzVIBP9rhvsgxrEvleACfClys8746/KX2ydKGjWjNHjtdF8iixR/BIXxGhEXscDZ
-         RfZNydJIpQ6qHFpL/g/sKhupfs1rhEQJoqsECwgXUs7pH8Ks1HCpYqUr4YdgFnxEWJAn
-         skSU7VYd+Vf+n/AxTsPxO5cAJ4zEvaE71/vFjeQe9cCDcYGJbKG9KV4hF4756Z9ZRtH1
-         2t/SWs7guc+T8E6dUW+5Y2uy/A0DHimYVsTI3N9Wp1mAiFcX/S8c30nwBig5jyoQdwfi
-         sLbw==
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=ClvLn1v0KW5jcy2W1CElCvPJ8/3zjMIv2rSPG5d3wcg=;
+        b=tc1I+sdA0FwDJ/gsRcalhTdWIHb3oeBmUEKkK8g4OZEMjXtAlRTZvaNhHDSk/3+9Zf
+         ZCnTm71Ikwc9fj78Z6tJ+r+s3NKyZPGXQUM5GKc63uB2wcSoTM+yHLH1Ir/Fm51e9ot0
+         iPOjiMnofGcQT1I4z3zOljtH0zbFxSybwkGC8Uh8OTfQAgLL0VB/fu8yQm7VfTWTj1iK
+         ViabI4/ZPV3krTjB9RtlTrwxbRjkqxfKSGqc7GY05gqlqamDH4sYLLUCxRq+Tg2RE6e2
+         AQwMtPhyN/4yV7ZESuVPupvYQ3xLbWu98R4sqW9Vc3joiZka92axUvzIDfM/7JpyJlSZ
+         AErQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GXW2rL4NXVvRk2JDX2m18WOLhnXkn5o6+TY+7wVjtRE=;
-        b=GqUjQ1vyi6Xs6EpgmHIPe8z6BbgBYzkpkT+gibD1HhwXC1VOuSKAd99PfOYTZwxgIK
-         P4og1CSLQbpbB57KiQKMgUsvCnKkxy5yasyzZ1Nwr1uWJCY8+4XOppXudmxJfHT7nrOz
-         Em3sUbAGM7rEbiPmccrQ1cmRTlXE1xf+eIxts8pvnIZBg6Gcxe7+qYJTFAKQwk+b3OXb
-         k3kbpMyLOxl7ZoXN4163bP/OJovIshbMaIhSRR25aGYJRJhFqxgpzJTw6hdx5HVdeNhF
-         gilUHmXVHBgG3n4Q3CehKWzOZubrXU3nEb0ZfO9BC3IL48NrA69nEt2jaKjavlC2Xrpc
-         B9tA==
-X-Gm-Message-State: AOAM530Fmi9VClKsNQLBYwrivZ1KcDy1VXeeksb6RrBVTNtyNGG3UtcL
-        3cAdox2t9NMynTPH6MPHCJSB4b3hZgIGX1+JBME=
-X-Google-Smtp-Source: ABdhPJzFV7POzzYaS/eYvT70ZbJnT5xC9j9FFMEaFh9GOlCQHbKJzeMiTOD9OCYSb+pr7kVIj1bdTOlQrPIVFly5PwE=
-X-Received: by 2002:a05:6402:120b:b0:42f:aa44:4d85 with SMTP id
- c11-20020a056402120b00b0042faa444d85mr25727948edw.338.1654627259569; Tue, 07
- Jun 2022 11:40:59 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=ClvLn1v0KW5jcy2W1CElCvPJ8/3zjMIv2rSPG5d3wcg=;
+        b=xzYQBtk8/e8Ibf0RAuGBcEfwR+TptiZKgpu/J5gC9wlv0YG3edz31cMEW+skwd/lZx
+         vHmLSxxseIYXhdQo3osNe2PxpwSMREcDpdNs6t0danqTIChI7KU3rwQJRaRsSKwxhj7R
+         ipQbWHPmAxxwMde1R58liM6yfudE+qwJAI9Hc5aFufy7R3QDaueZXR9s3d/NA4ff3yQ7
+         pd1du0uccUlPYb6+S2K9uzaWgOHbKZdSLFk6qarjTDqjyidYJpvkGOc6yjVTh33LF5XH
+         bLzI+ZFgdOWlloR3vcJzgeDrHKOn2zYRy101inQpzAIVs2xOI7MC1OvvmyM0p9V7Xl8+
+         Swfw==
+X-Gm-Message-State: AOAM531cnp181pjK66lbL4QwPj+e4GWt/gwfMcVIaj6A9Q+f7P0/4Dgt
+        jw7ad5RHNPoa+sArHTszH4EjZQ==
+X-Google-Smtp-Source: ABdhPJzC+jPXqON9HpNHUt08r2bqtxWHt/ITCvwKc/1nQ9S2LBfu4fKx7HHimoSJfCLrrW0kyL4vcg==
+X-Received: by 2002:a17:902:ec92:b0:166:3502:ecb1 with SMTP id x18-20020a170902ec9200b001663502ecb1mr30357875plg.62.1654627621789;
+        Tue, 07 Jun 2022 11:47:01 -0700 (PDT)
+Received: from [192.168.254.36] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id a2-20020a170902710200b0016141e6c5acsm13036791pll.296.2022.06.07.11.47.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jun 2022 11:47:01 -0700 (PDT)
+Message-ID: <d079b7d4-c538-8a50-3375-fab0d3a0f0e6@linaro.org>
+Date:   Tue, 7 Jun 2022 11:47:00 -0700
 MIME-Version: 1.0
-References: <20220606184731.437300-1-jolsa@kernel.org> <20220606184731.437300-4-jolsa@kernel.org>
-In-Reply-To: <20220606184731.437300-4-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 7 Jun 2022 11:40:47 -0700
-Message-ID: <CAADnVQJA54Ra8+tV0e0KwSXAg93JRoiefDXWR-Lqatya5YWKpg@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf 3/3] bpf: Force cookies array to follow symbols sorting
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Content-Language: en-US
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+References: <20220603173455.441537-1-tadeusz.struk@linaro.org>
+ <20220603181321.443716-1-tadeusz.struk@linaro.org>
+ <20220606123910.GF6928@blackbody.suse.cz>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH v2] cgroup: serialize css kill and release paths
+In-Reply-To: <20220606123910.GF6928@blackbody.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 6, 2022 at 11:48 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> When user specifies symbols and cookies for kprobe_multi link
-> interface it's very likely the cookies will be misplaced and
-> returned to wrong functions (via get_attach_cookie helper).
->
-> The reason is that to resolve the provided functions we sort
-> them before passing them to ftrace_lookup_symbols, but we do
-> not do the same sort on the cookie values.
->
-> Fixing this by using sort_r function with custom swap callback
-> that swaps cookie values as well.
->
-> Fixes: 0236fec57a15 ("bpf: Resolve symbols with ftrace_lookup_symbols for kprobe multi link")
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On 6/6/22 05:39, Michal Koutný wrote:
+> On Fri, Jun 03, 2022 at 11:13:21AM -0700, Tadeusz Struk<tadeusz.struk@linaro.org>  wrote:
+>> In such scenario the css_killed_work_fn will be en-queued via
+>> cgroup_apply_control_disable(cgrp)->kill_css(css), and bail out to
+>> cgroup_kn_unlock(). Then cgroup_kn_unlock() will call:
+>> cgroup_put(cgrp)->css_put(&cgrp->self), which will try to enqueue
+>> css_release_work_fn for the same css instance, causing a list_add
+>> corruption bug, as can be seen in the syzkaller report [1].
+> This hypothesis doesn't add up to me (I am sorry).
+> 
+> The kill_css(css) would be a css associated with a subsys (css.ss !=
+> NULL) whereas css_put(&cgrp->self) is a different css just for the
+> cgroup (css.ss == NULL).
 
-It looks good, but something in this patch is causing a regression:
-./test_progs -t kprobe_multi
-test_kprobe_multi_test:PASS:load_kallsyms 0 nsec
-#80/1    kprobe_multi_test/skel_api:OK
-#80/2    kprobe_multi_test/link_api_addrs:OK
-#80/3    kprobe_multi_test/link_api_syms:OK
-#80/4    kprobe_multi_test/attach_api_pattern:OK
-#80/5    kprobe_multi_test/attach_api_addrs:OK
-#80/6    kprobe_multi_test/attach_api_syms:OK
-#80/7    kprobe_multi_test/attach_api_fails:OK
-test_bench_attach:PASS:get_syms 0 nsec
-test_bench_attach:PASS:kprobe_multi_empty__open_and_load 0 nsec
-libbpf: prog 'test_kprobe_empty': failed to attach: No such process
-test_bench_attach:FAIL:bpf_program__attach_kprobe_multi_opts
-unexpected error: -3
-#80/8    kprobe_multi_test/bench_attach:FAIL
-#80      kprobe_multi_test:FAIL
+Yes, you are right. I couldn't figure it out where the extra css_put()
+is called from, and the only place that fitted into my theory was from
+the cgroup_kn_unlock() in cgroup_apply_control_disable().
+After some more debugging I can see that, as you said, the cgrp->self
+is a different css. The offending _put() is actually called by the
+percpu_ref_kill_and_confirm(), as it not only calls the passed confirm_kill
+percpu_ref_func_t, but also it puts the refcnt iself.
+Because the cgroup_apply_control_disable() will loop for_each_live_descendant,
+and call css_kill() on all css'es, and css_killed_work_fn() will also loop
+and call css_put() on all parents, the css_release() will be called on the
+first parent prematurely, causing the BUG(). What I think should be done
+to balance put/get is to call css_get() for all the parents in kill_css():
 
-CI is unfortunately green, because we don't run it there:
-#80/1 kprobe_multi_test/skel_api:OK
-#80/2 kprobe_multi_test/link_api_addrs:OK
-#80/3 kprobe_multi_test/link_api_syms:OK
-#80/4 kprobe_multi_test/attach_api_pattern:OK
-#80/5 kprobe_multi_test/attach_api_addrs:OK
-#80/6 kprobe_multi_test/attach_api_syms:OK
-#80/7 kprobe_multi_test/attach_api_fails:OK
-#80 kprobe_multi_test:OK
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index c1e1a5c34e77..3ca61325bc4e 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5527,6 +5527,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
+   */
+  static void kill_css(struct cgroup_subsys_state *css)
+  {
++       struct cgroup_subsys_state *_css = css;
++
+         lockdep_assert_held(&cgroup_mutex);
+  
+         if (css->flags & CSS_DYING)
+@@ -5541,10 +5543,13 @@ static void kill_css(struct cgroup_subsys_state *css)
+         css_clear_dir(css);
+  
+         /*
+-        * Killing would put the base ref, but we need to keep it alive
+-        * until after ->css_offline().
++        * Killing would put the base ref, but we need to keep it alive,
++        * and all its parents, until after ->css_offline().
+          */
+-       css_get(css);
++       do {
++               css_get(_css);
++               _css = _css->parent;
++       } while (_css && atomic_read(&_css->online_cnt));
+  
+         /*
+          * cgroup core guarantees that, by the time ->css_offline() is
+
+This will be then "reverted" in css_killed_work_fn()
+Please let me know if it makes sense to you.
+I'm still testing it, but syzbot is very slow today.
+
+-- 
+Thanks,
+Tadeusz
