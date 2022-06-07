@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E2953F614
-	for <lists+bpf@lfdr.de>; Tue,  7 Jun 2022 08:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5457153F615
+	for <lists+bpf@lfdr.de>; Tue,  7 Jun 2022 08:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236977AbiFGG0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jun 2022 02:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
+        id S236981AbiFGG04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jun 2022 02:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236973AbiFGG0y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jun 2022 02:26:54 -0400
+        with ESMTP id S236973AbiFGG0z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jun 2022 02:26:55 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68A2C967B
-        for <bpf@vger.kernel.org>; Mon,  6 Jun 2022 23:26:53 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 257651hE015199
-        for <bpf@vger.kernel.org>; Mon, 6 Jun 2022 23:26:53 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691D6C9EC9
+        for <bpf@vger.kernel.org>; Mon,  6 Jun 2022 23:26:54 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25751Vsb023071
+        for <bpf@vger.kernel.org>; Mon, 6 Jun 2022 23:26:54 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=omhOly/JR+wQpeqJeZRWo3DIBiJzQKrss9f8zlTM+z0=;
- b=Q1uyNhz231lmgDR19fYV8wKwDEdIVoWHZsv3pYjGeDs18Ubm8H7UdUriMMyVnk/QCtWi
- ZdBWm7zVipsCelckniaD/rXHA/w9q9oBFlC9jfSHCUh8KTOXzui/RbfTIwQx6pbFxJDh
- tXc56qDMXC4OsyYgFKBsUCq8Qr58jx7Tsf4= 
+ bh=D4kQqRJEqvgKsASP908jBa0T56It5RBvl3RBC69+R4w=;
+ b=OYgfu5aGSjOu9/6hVuZrDrhgNM2OsumJaiPjjVIFx8Hh2C6vAAXjO2KVv8HzXcsH5E6d
+ Ce5+4klENrUUWA8o6GYUO3U7jTsueVownPzDaCd1Ezb4bIvm4KEgj5UF0o+JtzSFuo7L
+ 3W4t2ZSqyoneC3ECr3foEqAkeTPNS8De5Gw= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gj13cg2fp-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gg4grd8s0-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 06 Jun 2022 23:26:53 -0700
+        for <bpf@vger.kernel.org>; Mon, 06 Jun 2022 23:26:54 -0700
 Received: from twshared8508.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.28; Mon, 6 Jun 2022 23:26:52 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 394B4B52115B; Mon,  6 Jun 2022 23:26:42 -0700 (PDT)
+        id 73D91B521165; Mon,  6 Jun 2022 23:26:47 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v5 09/17] libbpf: Add enum64 support for bpf linking
-Date:   Mon, 6 Jun 2022 23:26:42 -0700
-Message-ID: <20220607062642.3721494-1-yhs@fb.com>
+Subject: [PATCH bpf-next v5 10/17] libbpf: Add enum64 relocation support
+Date:   Mon, 6 Jun 2022 23:26:47 -0700
+Message-ID: <20220607062647.3721719-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220607062554.3716237-1-yhs@fb.com>
 References: <20220607062554.3716237-1-yhs@fb.com>
@@ -49,8 +49,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: Ly3A0pSE95VVlyW4LscD68Zdws-jT5kO
-X-Proofpoint-ORIG-GUID: Ly3A0pSE95VVlyW4LscD68Zdws-jT5kO
+X-Proofpoint-GUID: tMD1pegAbIrMi-cOoSZ_PTkOHZet5cyx
+X-Proofpoint-ORIG-GUID: tMD1pegAbIrMi-cOoSZ_PTkOHZet5cyx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
  definitions=2022-06-07_02,2022-06-03_01,2022-02-23_01
@@ -64,37 +64,246 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add BTF_KIND_ENUM64 support for bpf linking, which is
-very similar to BTF_KIND_ENUM.
+The enum64 relocation support is added. The bpf local type
+could be either enum or enum64 and the remote type could be
+either enum or enum64 too. The all combinations of local enum/enum64
+and remote enum/enum64 are supported.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/lib/bpf/linker.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/lib/bpf/btf.h       |  7 +++++
+ tools/lib/bpf/libbpf.c    |  7 ++---
+ tools/lib/bpf/relo_core.c | 54 +++++++++++++++++++++++++++------------
+ 3 files changed, 48 insertions(+), 20 deletions(-)
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 85c0fddf55d1..4ac02c28e152 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -1335,6 +1335,7 @@ static bool glob_sym_btf_matches(const char *sym_na=
-me, bool exact,
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 83312c34007a..9fb416eb5644 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -537,6 +537,13 @@ static inline bool btf_is_any_enum(const struct btf_=
+type *t)
+ 	return btf_is_enum(t) || btf_is_enum64(t);
+ }
+=20
++static inline bool btf_kind_core_compat(const struct btf_type *t1,
++					const struct btf_type *t2)
++{
++	return btf_kind(t1) =3D=3D btf_kind(t2) ||
++	       (btf_is_any_enum(t1) && btf_is_any_enum(t2));
++}
++
+ static inline __u8 btf_int_encoding(const struct btf_type *t)
+ {
+ 	return BTF_INT_ENCODING(*(__u32 *)(t + 1));
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index a0f5aae8626b..ed3cf0911b98 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5524,7 +5524,7 @@ int bpf_core_add_cands(struct bpf_core_cand *local_=
+cand,
+ 	n =3D btf__type_cnt(targ_btf);
+ 	for (i =3D targ_start_id; i < n; i++) {
+ 		t =3D btf__type_by_id(targ_btf, i);
+-		if (btf_kind(t) !=3D btf_kind(local_t))
++		if (!btf_kind_core_compat(t, local_t))
+ 			continue;
+=20
+ 		targ_name =3D btf__name_by_offset(targ_btf, t->name_off);
+@@ -5738,7 +5738,7 @@ int bpf_core_types_are_compat(const struct btf *loc=
+al_btf, __u32 local_id,
+ 	/* caller made sure that names match (ignoring flavor suffix) */
+ 	local_type =3D btf__type_by_id(local_btf, local_id);
+ 	targ_type =3D btf__type_by_id(targ_btf, targ_id);
+-	if (btf_kind(local_type) !=3D btf_kind(targ_type))
++	if (!btf_kind_core_compat(local_type, targ_type))
+ 		return 0;
+=20
+ recur:
+@@ -5751,7 +5751,7 @@ int bpf_core_types_are_compat(const struct btf *loc=
+al_btf, __u32 local_id,
+ 	if (!local_type || !targ_type)
+ 		return -EINVAL;
+=20
+-	if (btf_kind(local_type) !=3D btf_kind(targ_type))
++	if (!btf_kind_core_compat(local_type, targ_type))
+ 		return 0;
+=20
+ 	switch (btf_kind(local_type)) {
+@@ -5759,6 +5759,7 @@ int bpf_core_types_are_compat(const struct btf *loc=
+al_btf, __u32 local_id,
  	case BTF_KIND_STRUCT:
  	case BTF_KIND_UNION:
  	case BTF_KIND_ENUM:
 +	case BTF_KIND_ENUM64:
  	case BTF_KIND_FWD:
- 	case BTF_KIND_FUNC:
- 	case BTF_KIND_VAR:
-@@ -1357,6 +1358,7 @@ static bool glob_sym_btf_matches(const char *sym_na=
-me, bool exact,
+ 		return 1;
  	case BTF_KIND_INT:
+diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+index 073a54ed7432..6ad3c3891a9a 100644
+--- a/tools/lib/bpf/relo_core.c
++++ b/tools/lib/bpf/relo_core.c
+@@ -186,7 +186,7 @@ int bpf_core_parse_spec(const char *prog_name, const =
+struct btf *btf,
+ 	struct bpf_core_accessor *acc;
+ 	const struct btf_type *t;
+ 	const char *name, *spec_str;
+-	__u32 id;
++	__u32 id, name_off;
+ 	__s64 sz;
+=20
+ 	spec_str =3D btf__name_by_offset(btf, relo->access_str_off);
+@@ -231,11 +231,13 @@ int bpf_core_parse_spec(const char *prog_name, cons=
+t struct btf *btf,
+ 	spec->len++;
+=20
+ 	if (core_relo_is_enumval_based(relo->kind)) {
+-		if (!btf_is_enum(t) || spec->raw_len > 1 || access_idx >=3D btf_vlen(t=
+))
++		if (!btf_is_any_enum(t) || spec->raw_len > 1 || access_idx >=3D btf_vl=
+en(t))
+ 			return -EINVAL;
+=20
+ 		/* record enumerator name in a first accessor */
+-		acc->name =3D btf__name_by_offset(btf, btf_enum(t)[access_idx].name_of=
+f);
++		name_off =3D btf_is_enum(t) ? btf_enum(t)[access_idx].name_off
++					  : btf_enum64(t)[access_idx].name_off;
++		acc->name =3D btf__name_by_offset(btf, name_off);
+ 		return 0;
+ 	}
+=20
+@@ -340,7 +342,7 @@ static int bpf_core_fields_are_compat(const struct bt=
+f *local_btf,
+=20
+ 	if (btf_is_composite(local_type) && btf_is_composite(targ_type))
+ 		return 1;
+-	if (btf_kind(local_type) !=3D btf_kind(targ_type))
++	if (!btf_kind_core_compat(local_type, targ_type))
+ 		return 0;
+=20
+ 	switch (btf_kind(local_type)) {
+@@ -348,6 +350,7 @@ static int bpf_core_fields_are_compat(const struct bt=
+f *local_btf,
  	case BTF_KIND_FLOAT:
- 	case BTF_KIND_ENUM:
+ 		return 1;
+ 	case BTF_KIND_FWD:
 +	case BTF_KIND_ENUM64:
- 		/* ignore encoding for int and enum values for enum */
- 		if (t1->size !=3D t2->size) {
- 			pr_warn("global '%s': incompatible %s '%s' size %u and %u\n",
+ 	case BTF_KIND_ENUM: {
+ 		const char *local_name, *targ_name;
+ 		size_t local_len, targ_len;
+@@ -477,6 +480,7 @@ static int bpf_core_spec_match(struct bpf_core_spec *=
+local_spec,
+ 	const struct bpf_core_accessor *local_acc;
+ 	struct bpf_core_accessor *targ_acc;
+ 	int i, sz, matched;
++	__u32 name_off;
+=20
+ 	memset(targ_spec, 0, sizeof(*targ_spec));
+ 	targ_spec->btf =3D targ_btf;
+@@ -494,18 +498,22 @@ static int bpf_core_spec_match(struct bpf_core_spec=
+ *local_spec,
+=20
+ 	if (core_relo_is_enumval_based(local_spec->relo_kind)) {
+ 		size_t local_essent_len, targ_essent_len;
+-		const struct btf_enum *e;
+ 		const char *targ_name;
+=20
+ 		/* has to resolve to an enum */
+ 		targ_type =3D skip_mods_and_typedefs(targ_spec->btf, targ_id, &targ_id=
+);
+-		if (!btf_is_enum(targ_type))
++		if (!btf_is_any_enum(targ_type))
+ 			return 0;
+=20
+ 		local_essent_len =3D bpf_core_essential_name_len(local_acc->name);
+=20
+-		for (i =3D 0, e =3D btf_enum(targ_type); i < btf_vlen(targ_type); i++,=
+ e++) {
+-			targ_name =3D btf__name_by_offset(targ_spec->btf, e->name_off);
++		for (i =3D 0; i < btf_vlen(targ_type); i++) {
++			if (btf_is_enum(targ_type))
++				name_off =3D btf_enum(targ_type)[i].name_off;
++			else
++				name_off =3D btf_enum64(targ_type)[i].name_off;
++
++			targ_name =3D btf__name_by_offset(targ_spec->btf, name_off);
+ 			targ_essent_len =3D bpf_core_essential_name_len(targ_name);
+ 			if (targ_essent_len !=3D local_essent_len)
+ 				continue;
+@@ -680,8 +688,7 @@ static int bpf_core_calc_field_relo(const char *prog_=
+name,
+ 		*val =3D byte_sz;
+ 		break;
+ 	case BPF_CORE_FIELD_SIGNED:
+-		/* enums will be assumed unsigned */
+-		*val =3D btf_is_enum(mt) ||
++		*val =3D (btf_is_any_enum(mt) && BTF_INFO_KFLAG(mt->info)) ||
+ 		       (btf_int_encoding(mt) & BTF_INT_SIGNED);
+ 		if (validate)
+ 			*validate =3D true; /* signedness is never ambiguous */
+@@ -754,7 +761,6 @@ static int bpf_core_calc_enumval_relo(const struct bp=
+f_core_relo *relo,
+ 				      __u64 *val)
+ {
+ 	const struct btf_type *t;
+-	const struct btf_enum *e;
+=20
+ 	switch (relo->kind) {
+ 	case BPF_CORE_ENUMVAL_EXISTS:
+@@ -764,8 +770,10 @@ static int bpf_core_calc_enumval_relo(const struct b=
+pf_core_relo *relo,
+ 		if (!spec)
+ 			return -EUCLEAN; /* request instruction poisoning */
+ 		t =3D btf_type_by_id(spec->btf, spec->spec[0].type_id);
+-		e =3D btf_enum(t) + spec->spec[0].idx;
+-		*val =3D e->val;
++		if (btf_is_enum(t))
++			*val =3D btf_enum(t)[spec->spec[0].idx].val;
++		else
++			*val =3D btf_enum64_value(btf_enum64(t) + spec->spec[0].idx);
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+@@ -1060,7 +1068,6 @@ int bpf_core_patch_insn(const char *prog_name, stru=
+ct bpf_insn *insn,
+ int bpf_core_format_spec(char *buf, size_t buf_sz, const struct bpf_core=
+_spec *spec)
+ {
+ 	const struct btf_type *t;
+-	const struct btf_enum *e;
+ 	const char *s;
+ 	__u32 type_id;
+ 	int i, len =3D 0;
+@@ -1089,10 +1096,23 @@ int bpf_core_format_spec(char *buf, size_t buf_sz=
+, const struct bpf_core_spec *s
+=20
+ 	if (core_relo_is_enumval_based(spec->relo_kind)) {
+ 		t =3D skip_mods_and_typedefs(spec->btf, type_id, NULL);
+-		e =3D btf_enum(t) + spec->raw_spec[0];
+-		s =3D btf__name_by_offset(spec->btf, e->name_off);
++		if (btf_is_enum(t)) {
++			const struct btf_enum *e;
++			const char *fmt_str;
++
++			e =3D btf_enum(t) + spec->raw_spec[0];
++			s =3D btf__name_by_offset(spec->btf, e->name_off);
++			fmt_str =3D BTF_INFO_KFLAG(t->info) ? "::%s =3D %d" : "::%s =3D %u";
++			append_buf(fmt_str, s, e->val);
++		} else {
++			const struct btf_enum64 *e;
++			const char *fmt_str;
+=20
+-		append_buf("::%s =3D %u", s, e->val);
++			e =3D btf_enum64(t) + spec->raw_spec[0];
++			s =3D btf__name_by_offset(spec->btf, e->name_off);
++			fmt_str =3D BTF_INFO_KFLAG(t->info) ? "::%s =3D %lld" : "::%s =3D %ll=
+u";
++			append_buf(fmt_str, s, (unsigned long long)btf_enum64_value(e));
++		}
+ 		return len;
+ 	}
+=20
 --=20
 2.30.2
 
