@@ -2,150 +2,309 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C89B542073
-	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 02:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23DB542071
+	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 02:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232311AbiFHA1l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jun 2022 20:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        id S233809AbiFHA1a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jun 2022 20:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391417AbiFGW40 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jun 2022 18:56:26 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C5730BF1F;
-        Tue,  7 Jun 2022 12:57:59 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 257G4Yv5029634;
-        Tue, 7 Jun 2022 12:57:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=U3grxyfNnh0m9nDuMCnMu1nYR+l1esuxZBU9SJVvghY=;
- b=ExgRo/PcSOAkb1H4PdALdnYIRgpXWOVslaf9Hbqx+uDKmCUuCaeDNWg6v+cCopfD1RA7
- 9AQSmxwGNm9hHwBcJysLm0hC8flHJgc2TqUxnXl0QQ8UdK859wqedpqVpzmtjn6kQNDa
- NSwncZVZ5sN+nq3NuPn3a0x3p0nmY51mJFw= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3ghy4sw2gg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Jun 2022 12:57:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X3Ys2NlxztQoG+dVtn6pCvMcIgDFrasi971JWSFfQ2y9eZhU3tYLbtwPq1SYMvxuig2T8CU/ATqIfm8AvvI3bwSsLJ/6etuNHGy13Btl7q6MG9gg389Ejc4OTH0ERpbb6U2eveYD7XN+0ajtwuHPPh1Q4L+C0Q+3zVEFsEcDm2UPA3pB10oNQb9MpDwbDJzM9QDLPAFqDL8s1ChsllTLGzWAOCWzCNZRsbrJuuWWemoDuzWxKF/JymvahIXGZh0SRZ1Dl+hepqPdNt6e8c4bDZtLa8gRD9NzCZjacWQCGY/sBorzJ8Mrxmwz3iFp0as4ABa2kPoaIKgJwjyxzcEOoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U3grxyfNnh0m9nDuMCnMu1nYR+l1esuxZBU9SJVvghY=;
- b=T4FVjsbe9ks2EhLh377ZS3FkvKQzMaS/8otNBpiOgwCwGD8iABTSRtnLUnKMHF0SrP9XWZrpPuDTIXKj8djyJmzuzU0952YlvxQ93oXmcvt5IqTrzxFlczq+QuFnhy9BZsq0kBlNfRa5yY8KN3mFPUAmxKhA5tgYF4DZXVK8+OeFXWhXiGdF/bQp0zEquvtRAQAqrFioi1qDptwZpYV2TAyuELnfn6asp8wgpo+31/moCqzbJCOM7AfGuZGmiNshS0PNZULi/0PmFdT6DILVuSTPU8U0MdFlKozELI8dn3jlrqaTg7Ps88P2fAoNfwV0h5sD+THsCA5VV7jSdgSHZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by MWHPR15MB1613.namprd15.prod.outlook.com (2603:10b6:300:123::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5314.19; Tue, 7 Jun
- 2022 19:57:19 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::a09e:da84:3316:6eb0]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::a09e:da84:3316:6eb0%9]) with mapi id 15.20.5314.019; Tue, 7 Jun 2022
- 19:57:19 +0000
-Date:   Tue, 7 Jun 2022 12:57:18 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: [PATCH bpf-next v8 04/11] bpf: minimize number of allocated lsm
- slots per program
-Message-ID: <20220607195718.v3ftibtcujcuzubr@kafai-mbp>
-References: <20220601190218.2494963-1-sdf@google.com>
- <20220601190218.2494963-5-sdf@google.com>
- <20220604063556.qyhsssqgp2stw73q@kafai-mbp>
- <CAKH8qBvY++bswS8ycJyGVR0DsKsyXNhKv=MzwD2FkJY4wSYFbg@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKH8qBvY++bswS8ycJyGVR0DsKsyXNhKv=MzwD2FkJY4wSYFbg@mail.gmail.com>
-X-ClientProxiedBy: BYAPR05CA0102.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::43) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        with ESMTP id S1444859AbiFGXCu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jun 2022 19:02:50 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E0134B188;
+        Tue,  7 Jun 2022 13:20:25 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id k4so17767729vsp.3;
+        Tue, 07 Jun 2022 13:20:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pIwx280greMynELa2baZ/JDaDGdhcRYDlmq5MlCPU+8=;
+        b=ieN/n/VeyoFu+MqTedbzfvv5SNvnIoPViWDR4kQY382EbBO+j+SRG7mhvtJ8G6X16w
+         zGerOMc0Divl5UYJSLPsHxlmMLXgjm0zNEbrQ/8S4FH6BD6bZfeT4yCgq29zeysxXCXc
+         i/Drnhlgf1+FPFIc+QWsVhHSbvQO8T0UJvecyvZf+eqqdNnX/4OsXAe9VwNbwavRTSPi
+         NeTbxCHnEI5STDgef6T0B/el36av31KJRmXXTSTKL9ZHeSJDALDm4yNi3Y/qijMJi48w
+         VUMDShCZ/laNhTU0nup23+FqcRCF+DR7fd/0dXPCIbpDQokfXwUd/SmJg4A3n0ASJ7nz
+         XJoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pIwx280greMynELa2baZ/JDaDGdhcRYDlmq5MlCPU+8=;
+        b=1Bkij5e9tumjcPzoC05gdE9L0Ewm1WtFduwkH39YOQGMD8hrkw9Czfsv+kryjd3W/o
+         ET8J2vSOaF8tWaY5muIFQoXByrlpkujQteO2EDaFfhPFJ5VojA2LBNHayU4XsGh+XP2n
+         PgaE9rSxlwQxyjbX1Ai+GxqWifFRGFPlNSPiZ/MQoBuL+oC36Aqe4lm0/hrShQcIkP28
+         vHFxhPpAVICsqTqtb3yvjWB0apVa3rdVNpgB2ojFPZ3SnL4/Htio3UV45fMKseWF5ip8
+         7mbbVW31Img6KYQFnwD4RKum9m77Y9oMRy2a66ujtXSIDfE/2rGsatApss9lakLSU7oX
+         lvOw==
+X-Gm-Message-State: AOAM530RZ2pUsDfp6RfrrIJ4arvl42t1VhS2+gkml0EROebl8BGbTn4a
+        gXVBbrEPsd9VOOodXpov318t01jm079g9UjCCW0=
+X-Google-Smtp-Source: ABdhPJzC8ALee7832B6/ijx30YULeOCsqKWLFcfL9wtjARZ6swbIbLgPY/WOy9WRyyYz3UHYvgusIB7MB/S/cCJKNBE=
+X-Received: by 2002:a05:6102:3f4d:b0:32a:101c:9b33 with SMTP id
+ l13-20020a0561023f4d00b0032a101c9b33mr39903402vsv.4.1654633224517; Tue, 07
+ Jun 2022 13:20:24 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3243f3b9-33f5-47c6-ca08-08da48bfedeb
-X-MS-TrafficTypeDiagnostic: MWHPR15MB1613:EE_
-X-Microsoft-Antispam-PRVS: <MWHPR15MB1613F28190DD5FB20892C26CD5A59@MWHPR15MB1613.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ON3plSSgwUMOYaUNbQmKf1cz0Fiai8RNBqIV89jrJoTDhPXBoC+I3L81h4j3dncvmxRfG9CnxODi27IBxDWuQ0ixbaBW67SR2f/gK4UGMx+BhIWXUTi8T9HFgeMZEh43ZZ2nsQvvBnEhhSIayCbtqEZbQsDCONubAXacUyXlEdwfudwwlA5JFVRKRqtf7dMdJf+O/SuXA7jskirmyd30irJB8U38vpeCmCABOFTFwSWD3cbGJAcOJvIIVx+/YFu+Jg/KWJhPC59HJKgZ5jDmCB7hFN5af+9N6zKjdKQL/xi3uAfydxjJNzNhonauaVav5hREOyXL2fmPiOwVkhBsnjJ6eUD/5k6w0DXGJp03Zi21fHHjN1hFkZPnb28WlAALkiOPy+J56GzIyNIlrDYaB/p50OazRBfF52vSBhLQkrgXny5YcE0GG1itgRZbhf7Rjw/WLB4QrdrU1XA9Pl6k8BEphrqj93UiTRGR3AXALX6lp1HVjAi+fvvfOGU5ZdqLwLppvliw17oxcZOoGpE1sbje0AqAFaLcSvbZepXR50NaWDEaLq8VGg/Cu9AyarIhxXvK0FdZe06nYYaPLqZa1gY/OeEPqWh0q8qV7s2oNQb6VtVtEKWAp51zAiY/LoMvcFeC4dBvy7r2PjXamFoALA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(66556008)(8676002)(83380400001)(2906002)(8936002)(33716001)(6512007)(9686003)(316002)(1076003)(6916009)(6506007)(52116002)(186003)(508600001)(66946007)(5660300002)(66476007)(4326008)(38100700002)(6486002)(4744005)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aDHj8N8y5mxJn0mylhe2kqetUtLeYrjf+1ZcFHV255pvYVXiJEyTPDWB9opu?=
- =?us-ascii?Q?CMgftIhQZVzcO6Cu8lHlNtYmXDGFzZX2+9PAi0SPwT2leBB6ks280RmsUBSh?=
- =?us-ascii?Q?IbKJe0511WEbfLI3nh0svzhgYqAGiu1IjZtgGuBJCUSe+nj/g78mbbvcfZpy?=
- =?us-ascii?Q?BpDfDP7bYt3LRTMh1UQzGsCILH0v2hrcj7t1FaLXzQu30BTqgjZhhZ4ZCoch?=
- =?us-ascii?Q?a5o33he4sKaAJENtn9JCK+Q5jKZEvbiG11odpWwX3sq9HcEb/AsVqNr+ZWAf?=
- =?us-ascii?Q?9pfK+fQKLP76QM3qtGXSkhANxSMIUguxECJ7xJCk0B33oGwRdjeTocpxGK04?=
- =?us-ascii?Q?XUmLJTvNCSHNiv7f3M/1BR7WMBEw317L1o+9smiZ4Y3crjAk0NBDoJzgOJJx?=
- =?us-ascii?Q?+ZKWIkcNQRhqicjl4QcS4i//vmDYOcemAAOssO/4vFOcXK0QPrHxFPY0aelQ?=
- =?us-ascii?Q?se4H9D2ZyZ2Q9qxIw5c5kYn7v2uWEwzcKmmazZadSZwX/FikbUmpeKzuvttA?=
- =?us-ascii?Q?IBxNxrIznbKDGzOthsVFsGdvWq7bR1aeQcDtnMnw00YjihV2BTXcIi4/oEQK?=
- =?us-ascii?Q?zY4LgSmb27uEQv7nYqh01IWbxHN3E7N611aIxJLHheB173k/dulfLt+5UxFq?=
- =?us-ascii?Q?MtgACdorTON8iV7skNQ1X3Sz+KE+28bVIOFqH+rtSqBUhy7/VwiQcBDp7rtq?=
- =?us-ascii?Q?uJSa9uVeLc7KGOE/I02ycq1pijWM9O+FgrnprT1qUG64Lmy6OCpof+R6ea3M?=
- =?us-ascii?Q?d2xkqRqmpPErwNe76zNvkEqQ41sGioalOegT7EoHoPaVNdlWyd+zEqwEMQRn?=
- =?us-ascii?Q?TaJBTI8lNoGWuzwn5/VhuySHmN99iiTU9hup7vSDREpqi4wyPqC6se1Yy8i2?=
- =?us-ascii?Q?T8Hzp7zgWBt1QvHOc8aanWQKgttSJvsf8AGdi169tVDLtXqd8sjY5dnMcfub?=
- =?us-ascii?Q?TnE1htNXvIU4PN4UImsBcEfNDMh8BgNXgtZuL36DsL2pHDXXwczHiRYDgLvK?=
- =?us-ascii?Q?ADSQ94s0bxTjtqrk/442qqmvKwH6s/7cJOJZvTdnBP8YLBSNECwvc/3psGy1?=
- =?us-ascii?Q?l5HmWIkwz/8zBCjRQAq18IMq+e3E4gJYxZo90UCb1CB+RLF+cVM8yS2KyXmZ?=
- =?us-ascii?Q?H8swgGto9p7DyNRbphasZAXpMTvZr0PtW/zPFvDwCsi//GIYUkh2Wo8JmRYj?=
- =?us-ascii?Q?jxs+i27YbSgrGH6rH31eOOE/1PJTR13uVX6tas1gnKymaIHwGZ2F4LTllbCH?=
- =?us-ascii?Q?llpr6gbk9U9+Hnj2j3nGoDer6zDYf+z75dAn2SEmWhxXwhF+3GXPJICrtTQH?=
- =?us-ascii?Q?So1Bq1w48c2UOghYnzzyN5ugebUOHE8t7iGyfUzswnqIfdNo8l5OdQeUYFK0?=
- =?us-ascii?Q?rULVQPed+TcbWoMRWP4mxIr1G621ROMXpwi7o8j51ujpHVVz1IWTmIUF5uW9?=
- =?us-ascii?Q?LM9QwD9ru5F4dvggYnKT52LPpB9H77ycTlI+YhXk847PAIWrX5187yPseoqd?=
- =?us-ascii?Q?u14CMC/HeRDE1y0MIlsy4igBKCERIlB1gHLSOc1OCUa8vCs6YGsr/NhlpVmv?=
- =?us-ascii?Q?QZ7M6jr7rL1g9/4k5fCsXRnij6aRWdEFgpa6c5O4wdCGq6boTWlseGuddQQ5?=
- =?us-ascii?Q?fxDgPuDz3HZ/VS+fjitarEhetuSVXDF3/zHW+qoNRezJkfEnPPskRGyxxXjE?=
- =?us-ascii?Q?HgbutxNLsGygIixiJpGaqAG6UKJL2aLjo/k2OJGgozcyUndGNt6xhz7+wGYb?=
- =?us-ascii?Q?DsO4r0hKYoqk6AlJJWuy6I3zaugR0Jk=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3243f3b9-33f5-47c6-ca08-08da48bfedeb
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jun 2022 19:57:19.5827
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RHj4dIXhpUZpHFPcCdOdJgfpdFfYWupLFhhazHlpTBBKwvB42TvCbzijrzTQM2Pv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1613
-X-Proofpoint-ORIG-GUID: vzD-gdskCa3qt6lRis-DyosVWnoBOeN8
-X-Proofpoint-GUID: vzD-gdskCa3qt6lRis-DyosVWnoBOeN8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-07_09,2022-06-07_02,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <00000000000022208805e0df247a@google.com>
+In-Reply-To: <00000000000022208805e0df247a@google.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 7 Jun 2022 13:20:12 -0700
+Message-ID: <CAJnrk1YyQnBGd9j_89vYxeZy0NWOGW=yJ+kdxYPvGPGpScX4dQ@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in inet_bind2_bucket_find
+To:     syzbot <syzbot+98fd2d1422063b0f8c44@syzkaller.appspotmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, dsahern@kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, kuniyu@amazon.co.jp,
+        linux-kernel@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 06, 2022 at 03:46:32PM -0700, Stanislav Fomichev wrote:
-> > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > > index 091ee210842f..224bb4d4fe4e 100644
-> > > --- a/kernel/bpf/core.c
-> > > +++ b/kernel/bpf/core.c
-> > > @@ -107,6 +107,9 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
-> > >       fp->aux->prog = fp;
-> > >       fp->jit_requested = ebpf_jit_enabled();
-> > >       fp->blinding_requested = bpf_jit_blinding_enabled(fp);
-> > > +#ifdef CONFIG_BPF_LSM
-> > I don't think this is needed.
-> 
-> enum cgroup_bpf_attach_type is under '#ifdef CONFIG_CGROUP_BPF', so it
-> fails in some configs without cgroup/bpf. I was trying to move that
-> enumo out of ifdef but then decided that it's easier to fix here.
-> Should I instead try to move ifdef in bpf-cgroup-defs.h around?
-Having ifdef here is ok.  Should CONFIG_CGROUP_BPF be checked ?
+On Tue, Jun 7, 2022 at 10:44 AM syzbot
+<syzbot+98fd2d1422063b0f8c44@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    664a393a2663 Merge tag 'input-for-v5.19-rc0' of git://git...
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10c9bf5bf00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9b19cdd2d45cc221
+> dashboard link: https://syzkaller.appspot.com/bug?extid=98fd2d1422063b0f8c44
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154a123df00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b9d8cdf00000
+>
+> The issue was bisected to:
+>
+> commit d5a42de8bdbe25081f07b801d8b35f4d75a791f4
+> Author: Joanne Koong <joannelkoong@gmail.com>
+> Date:   Fri May 20 00:18:33 2022 +0000
+>
+>     net: Add a second bind table hashed by port and address
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15c72eedf00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=17c72eedf00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13c72eedf00000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+98fd2d1422063b0f8c44@syzkaller.appspotmail.com
+> Fixes: d5a42de8bdbe ("net: Add a second bind table hashed by port and address")
+>
+> ==================================================================
+> BUG: KASAN: use-after-free in read_pnet include/net/net_namespace.h:361 [inline]
+> BUG: KASAN: use-after-free in ib2_net include/net/inet_hashtables.h:116 [inline]
+> BUG: KASAN: use-after-free in check_bind2_bucket_match net/ipv4/inet_hashtables.c:765 [inline]
+> BUG: KASAN: use-after-free in inet_bind2_bucket_find+0x562/0x620 net/ipv4/inet_hashtables.c:819
+> Read of size 8 at addr ffff888020cbc980 by task syz-executor537/3958
+>
+> CPU: 0 PID: 3958 Comm: syz-executor537 Not tainted 5.18.0-syzkaller-11080-g664a393a2663 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+>  print_address_description.constprop.0.cold+0xeb/0x495 mm/kasan/report.c:313
+>  print_report mm/kasan/report.c:429 [inline]
+>  kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
+>  read_pnet include/net/net_namespace.h:361 [inline]
+>  ib2_net include/net/inet_hashtables.h:116 [inline]
+>  check_bind2_bucket_match net/ipv4/inet_hashtables.c:765 [inline]
+>  inet_bind2_bucket_find+0x562/0x620 net/ipv4/inet_hashtables.c:819
+>  __inet_hash_connect+0xaaa/0x1450 net/ipv4/inet_hashtables.c:949
+>  dccp_v4_connect+0xc5c/0x16f0 net/dccp/ipv4.c:108
+>  __inet_stream_connect+0x8cf/0xed0 net/ipv4/af_inet.c:660
+>  inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:724
+>  __sys_connect_file+0x14f/0x190 net/socket.c:1979
+>  io_connect+0x15f/0x690 fs/io_uring.c:6724
+>  io_issue_sqe+0x40c6/0xa9c0 fs/io_uring.c:8351
+>  io_queue_sqe fs/io_uring.c:8706 [inline]
+>  io_req_task_submit+0xce/0x400 fs/io_uring.c:3066
+>  handle_tw_list fs/io_uring.c:2938 [inline]
+>  tctx_task_work+0x16a/0xe10 fs/io_uring.c:2967
+>  task_work_run+0xdd/0x1a0 kernel/task_work.c:177
+>  ptrace_notify+0x114/0x140 kernel/signal.c:2372
+>  ptrace_report_syscall include/linux/ptrace.h:427 [inline]
+>  ptrace_report_syscall_exit include/linux/ptrace.h:489 [inline]
+>  syscall_exit_work kernel/entry/common.c:249 [inline]
+>  syscall_exit_to_user_mode_prepare+0xdb/0x230 kernel/entry/common.c:276
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:281 [inline]
+>  syscall_exit_to_user_mode+0x9/0x50 kernel/entry/common.c:294
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> RIP: 0033:0x7f0041a50b99
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f0041a022f8 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+> RAX: 0000000000000200 RBX: 00007f0041ad8428 RCX: 00007f0041a50b99
+> RDX: 0000000000000000 RSI: 00000000000045f5 RDI: 0000000000000003
+> RBP: 00007f0041ad8420 R08: 0000000000000000 R09: 0000000000000004
+> R10: 0000000000000009 R11: 0000000000000246 R12: 00007f0041aa6064
+> R13: 0000000000000003 R14: 00007f0041a02400 R15: 0000000000022000
+>  </TASK>
+>
+> Allocated by task 3861:
+>  kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:45 [inline]
+>  set_alloc_info mm/kasan/common.c:436 [inline]
+>  __kasan_slab_alloc+0x90/0xc0 mm/kasan/common.c:469
+>  kasan_slab_alloc include/linux/kasan.h:224 [inline]
+>  slab_post_alloc_hook mm/slab.h:750 [inline]
+>  slab_alloc_node mm/slub.c:3214 [inline]
+>  slab_alloc mm/slub.c:3222 [inline]
+>  __kmem_cache_alloc_lru mm/slub.c:3229 [inline]
+>  kmem_cache_alloc+0x204/0x3b0 mm/slub.c:3239
+>  inet_bind2_bucket_create+0x37/0x360 net/ipv4/inet_hashtables.c:91
+>  __inet_hash_connect+0xef5/0x1450 net/ipv4/inet_hashtables.c:951
+>  dccp_v4_connect+0xc5c/0x16f0 net/dccp/ipv4.c:108
+>  __inet_stream_connect+0x8cf/0xed0 net/ipv4/af_inet.c:660
+>  inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:724
+>  __sys_connect_file+0x14f/0x190 net/socket.c:1979
+>  io_connect+0x15f/0x690 fs/io_uring.c:6724
+>  io_issue_sqe+0x40c6/0xa9c0 fs/io_uring.c:8351
+>  io_queue_sqe fs/io_uring.c:8706 [inline]
+>  io_submit_sqe fs/io_uring.c:8968 [inline]
+>  io_submit_sqes+0x16b0/0x8020 fs/io_uring.c:9079
+>  __do_sys_io_uring_enter+0x117f/0x2360 fs/io_uring.c:12008
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>
+> Freed by task 3861:
+>  kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
+>  kasan_set_track+0x21/0x30 mm/kasan/common.c:45
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
+>  ____kasan_slab_free mm/kasan/common.c:366 [inline]
+>  ____kasan_slab_free+0x166/0x1a0 mm/kasan/common.c:328
+>  kasan_slab_free include/linux/kasan.h:200 [inline]
+>  slab_free_hook mm/slub.c:1727 [inline]
+>  slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1753
+>  slab_free mm/slub.c:3507 [inline]
+>  kmem_cache_free+0xdd/0x5a0 mm/slub.c:3524
+>  inet_bind2_bucket_destroy net/ipv4/inet_hashtables.c:137 [inline]
+>  inet_bind2_bucket_destroy net/ipv4/inet_hashtables.c:133 [inline]
+>  __inet_put_port net/ipv4/inet_hashtables.c:174 [inline]
+>  inet_put_port+0x4a0/0x6f0 net/ipv4/inet_hashtables.c:182
+>  dccp_set_state+0x1be/0x3a0 net/dccp/proto.c:103
+>  dccp_done+0x19/0x100 net/dccp/proto.c:138
+>  dccp_rcv_state_process+0xc31/0x1820 net/dccp/input.c:662
+>  dccp_v4_do_rcv+0xf9/0x1a0 net/dccp/ipv4.c:695
+>  sk_backlog_rcv include/net/sock.h:1061 [inline]
+>  __release_sock+0x134/0x3b0 net/core/sock.c:2849
+>  release_sock+0x54/0x1b0 net/core/sock.c:3404
+>  inet_stream_connect+0x76/0xa0 net/ipv4/af_inet.c:725
+>  __sys_connect_file+0x14f/0x190 net/socket.c:1979
+>  io_connect+0x15f/0x690 fs/io_uring.c:6724
+>  io_issue_sqe+0x40c6/0xa9c0 fs/io_uring.c:8351
+>  io_queue_sqe fs/io_uring.c:8706 [inline]
+>  io_submit_sqe fs/io_uring.c:8968 [inline]
+>  io_submit_sqes+0x16b0/0x8020 fs/io_uring.c:9079
+>  __do_sys_io_uring_enter+0x117f/0x2360 fs/io_uring.c:12008
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>
+> The buggy address belongs to the object at ffff888020cbc980
+>  which belongs to the cache dccp_bind2_bucket of size 56
+> The buggy address is located 0 bytes inside of
+>  56-byte region [ffff888020cbc980, ffff888020cbc9b8)
+>
+> The buggy address belongs to the physical page:
+> page:ffffea0000832f00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x20cbc
+> flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+> raw: 00fff00000000200 0000000000000000 dead000000000122 ffff88802393ca00
+> raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12a20(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY), pid 3856, tgid 3855 (syz-executor537), ts 156131029362, free_ts 153495137859
+>  prep_new_page mm/page_alloc.c:2456 [inline]
+>  get_page_from_freelist+0x1290/0x3b70 mm/page_alloc.c:4198
+>  __alloc_pages+0x1c7/0x510 mm/page_alloc.c:5426
+>  alloc_pages+0x1aa/0x310 mm/mempolicy.c:2272
+>  alloc_slab_page mm/slub.c:1797 [inline]
+>  allocate_slab+0x26c/0x3c0 mm/slub.c:1942
+>  new_slab mm/slub.c:2002 [inline]
+>  ___slab_alloc+0x985/0xd90 mm/slub.c:3002
+>  __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3089
+>  slab_alloc_node mm/slub.c:3180 [inline]
+>  slab_alloc mm/slub.c:3222 [inline]
+>  __kmem_cache_alloc_lru mm/slub.c:3229 [inline]
+>  kmem_cache_alloc+0x360/0x3b0 mm/slub.c:3239
+>  inet_bind2_bucket_create+0x37/0x360 net/ipv4/inet_hashtables.c:91
+>  __inet_hash_connect+0xef5/0x1450 net/ipv4/inet_hashtables.c:951
+>  dccp_v4_connect+0xc5c/0x16f0 net/dccp/ipv4.c:108
+>  __inet_stream_connect+0x8cf/0xed0 net/ipv4/af_inet.c:660
+>  inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:724
+>  __sys_connect_file+0x14f/0x190 net/socket.c:1979
+>  io_connect+0x15f/0x690 fs/io_uring.c:6724
+>  io_issue_sqe+0x40c6/0xa9c0 fs/io_uring.c:8351
+>  io_queue_sqe fs/io_uring.c:8706 [inline]
+>  io_submit_sqe fs/io_uring.c:8968 [inline]
+>  io_submit_sqes+0x16b0/0x8020 fs/io_uring.c:9079
+> page last free stack trace:
+>  reset_page_owner include/linux/page_owner.h:24 [inline]
+>  free_pages_prepare mm/page_alloc.c:1371 [inline]
+>  free_pcp_prepare+0x549/0xd20 mm/page_alloc.c:1421
+>  free_unref_page_prepare mm/page_alloc.c:3343 [inline]
+>  free_unref_page+0x19/0x6a0 mm/page_alloc.c:3438
+>  __unfreeze_partials+0x17c/0x1a0 mm/slub.c:2521
+>  qlink_free mm/kasan/quarantine.c:168 [inline]
+>  qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:187
+>  kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:294
+>  __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:446
+>  kasan_slab_alloc include/linux/kasan.h:224 [inline]
+>  slab_post_alloc_hook mm/slab.h:750 [inline]
+>  slab_alloc_node mm/slub.c:3214 [inline]
+>  kmem_cache_alloc_node+0x255/0x3f0 mm/slub.c:3264
+>  __alloc_skb+0x215/0x340 net/core/skbuff.c:414
+>  alloc_skb include/linux/skbuff.h:1426 [inline]
+>  dccp_connect+0x204/0x720 net/dccp/output.c:560
+>  dccp_v4_connect+0x1140/0x16f0 net/dccp/ipv4.c:128
+>  __inet_stream_connect+0x8cf/0xed0 net/ipv4/af_inet.c:660
+>  inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:724
+>  __sys_connect_file+0x14f/0x190 net/socket.c:1979
+>  io_connect+0x15f/0x690 fs/io_uring.c:6724
+>  io_issue_sqe+0x40c6/0xa9c0 fs/io_uring.c:8351
+>  io_queue_sqe fs/io_uring.c:8706 [inline]
+>  io_submit_sqe fs/io_uring.c:8968 [inline]
+>  io_submit_sqes+0x16b0/0x8020 fs/io_uring.c:9079
+>
+> Memory state around the buggy address:
+>  ffff888020cbc880: fa fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
+>  ffff888020cbc900: fa fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
+> >ffff888020cbc980: fa fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
+>                    ^
+>  ffff888020cbca00: fa fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
+>  ffff888020cbca80: fa fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
+> ==================================================================
+>
+I will look into where inet_bind_bucket_create gets passed in a NULL
+net and submit a follow-up.
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
