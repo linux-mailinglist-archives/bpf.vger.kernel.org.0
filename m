@@ -2,120 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C616B54309D
-	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 14:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418E95430D0
+	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 14:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239398AbiFHMkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jun 2022 08:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
+        id S239733AbiFHMvH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jun 2022 08:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239512AbiFHMka (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jun 2022 08:40:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19EC2D80A9;
-        Wed,  8 Jun 2022 05:40:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BFE061975;
-        Wed,  8 Jun 2022 12:40:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F377C34116;
-        Wed,  8 Jun 2022 12:40:25 +0000 (UTC)
-Date:   Wed, 8 Jun 2022 08:40:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S239764AbiFHMvG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jun 2022 08:51:06 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1157B232DB8;
+        Wed,  8 Jun 2022 05:50:59 -0700 (PDT)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nyv9B-000A77-Kb; Wed, 08 Jun 2022 14:50:53 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nyv9B-000GGw-8K; Wed, 08 Jun 2022 14:50:53 +0200
+Subject: Re: [PATCH v2 1/1] libbpf: replace typeof with __typeof__
+To:     James Hilliard <james.hilliard1@gmail.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCHv2 bpf 3/3] bpf: Force cookies array to follow symbols
- sorting
-Message-ID: <20220608084023.4be8ffe2@gandalf.local.home>
-In-Reply-To: <YqBynO64am32z13X@krava>
-References: <20220606184731.437300-1-jolsa@kernel.org>
-        <20220606184731.437300-4-jolsa@kernel.org>
-        <CAADnVQJA54Ra8+tV0e0KwSXAg93JRoiefDXWR-Lqatya5YWKpg@mail.gmail.com>
-        <Yp+tTsqPOuVdjpba@krava>
-        <CAADnVQJGoM9eqcODx2LGo-qLo0=O05gSw=iifRsWXgU0XWifAA@mail.gmail.com>
-        <YqBW65t+hlWNok8e@krava>
-        <YqBynO64am32z13X@krava>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        KP Singh <kpsingh@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20220608064004.1493239-1-james.hilliard1@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <b05401b0-308e-03a2-af94-4ecc5322fd1f@iogearbox.net>
+Date:   Wed, 8 Jun 2022 14:50:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20220608064004.1493239-1-james.hilliard1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26566/Wed Jun  8 10:05:45 2022)
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 8 Jun 2022 11:57:48 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
+Hi James,
 
-> Steven,
-> is there a reason to show '__ftrace_invalid_address___*' symbols in
-> available_filter_functions? it seems more like debug message to me
+On 6/8/22 8:40 AM, James Hilliard wrote:
+> It seems the gcc preprocessor breaks when typeof is used with
+> macros.
 > 
+> Fixes errors like:
+> error: expected identifier or '(' before '#pragma'
+>    106 | SEC("cgroup/bind6")
+>        | ^~~
+> 
+> error: expected '=', ',', ';', 'asm' or '__attribute__' before '#pragma'
+>    114 | char _license[] SEC("license") = "GPL";
+>        | ^~~
+> 
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> ---
+> Changes v1 -> v2:
+>    - replace typeof with __typeof__ instead of changing pragma macros
+> ---
+>   tools/lib/bpf/bpf_core_read.h   | 16 ++++++++--------
+>   tools/lib/bpf/bpf_helpers.h     |  4 ++--
+>   tools/lib/bpf/bpf_tracing.h     | 24 ++++++++++++------------
+>   tools/lib/bpf/btf.h             |  4 ++--
+>   tools/lib/bpf/libbpf_internal.h |  6 +++---
+>   tools/lib/bpf/usdt.bpf.h        |  6 +++---
+>   tools/lib/bpf/xsk.h             | 12 ++++++------
+>   7 files changed, 36 insertions(+), 36 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+> index fd48b1ff59ca..d3a88721c9e7 100644
+> --- a/tools/lib/bpf/bpf_core_read.h
+> +++ b/tools/lib/bpf/bpf_core_read.h
+> @@ -111,7 +111,7 @@ enum bpf_enum_value_kind {
+>   })
+>   
+>   #define ___bpf_field_ref1(field)	(field)
+> -#define ___bpf_field_ref2(type, field)	(((typeof(type) *)0)->field)
+> +#define ___bpf_field_ref2(type, field)	(((__typeof__(type) *)0)->field)
+>   #define ___bpf_field_ref(args...)					    \
+>   	___bpf_apply(___bpf_field_ref, ___bpf_narg(args))(args)
+>   
 
-Yes, because set_ftrace_filter may be set by index. That is, if schedule is
-the 43,245th entry in available_filter_functions, then you can do:
+Can't we just add the below?
 
-  # echo 43245 > set_ftrace_filter
-  # cat set_ftrace_filter
-  schedule
+#ifndef typeof
+# define typeof __typeof__
+#endif
 
-That index must match the array index of the entries in the function list
-internally. The reason for this is that entering a name is an O(n)
-operation, where n is the number of functions in
-available_filter_functions. If you want to enable half of those functions,
-then it takes O(n^2) to do so.
-
-I first implemented this trick to help with bisecting bad functions. That
-is, every so often a function that should be annotated with notrace, isn't
-and if it gets traced it cause the machine to reboot. To bisect this, I
-would enable half the functions at a time and enable tracing to see if it
-reboots or not, and if it does, I know that one of the half I enabled is
-the culprit, if not, it's in the other half. It would take over 5 minutes
-to enable half the functions. Where as the number trick took one second,
-not only was it O(1) per function, but it did not need to do kallsym
-lookups either. It simply enabled the function at the index.
-
-Later, libtracefs (used by trace-cmd and others) would allow regex(3)
-enabling of functions. That is, it would search available_filter_functions
-in user space, match them via normal regex, create an index of the
-functions to know where they are, and then write in those numbers to enable
-them. It's much faster than writing in strings.
-
-My original fix was to simply ignore those functions, but then it would
-make the index no longer match what got set. I noticed this while writing
-my slides for Kernel Recipes, and then fixed it.
-
-The commit you mention above even states this:
-
-      __ftrace_invalid_address___<invalid-offset>
-    
-    (showing the offset that caused it to be invalid).
-    
-    This is required for tools that use libtracefs (like trace-cmd does) that
-    scan the available_filter_functions and enable set_ftrace_filter and
-    set_ftrace_notrace using indexes of the function listed in the file (this
-    is a speedup, as enabling thousands of files via names is an O(n^2)
-    operation and can take minutes to complete, where the indexing takes less
-    than a second).
-
-In other words, having a placeholder is required to keep from breaking user
-space.
-
--- Steve
-
-
+Thanks,
+Daniel
