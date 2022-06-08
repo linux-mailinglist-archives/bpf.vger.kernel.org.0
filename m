@@ -2,79 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6139A542DA0
-	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 12:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA094542EE9
+	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 13:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236582AbiFHKaQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jun 2022 06:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
+        id S237565AbiFHLPN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jun 2022 07:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237709AbiFHK3T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jun 2022 06:29:19 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C292914D5;
-        Wed,  8 Jun 2022 03:18:26 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id t2so17244795pld.4;
-        Wed, 08 Jun 2022 03:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yCIN8zmtYKmUc6gE3sX4s+xs23+eE1y5zPsSpSsh+RY=;
-        b=od2rKOLZW31v2f410YVvaGRCaMegoqlha4pAuZ+6iTjy4jC/3t0xNUlrJ0aeyj0zYQ
-         5YlpioYTK96fYXl1YODDxOgJmxKAcoPOJ1h81KbvEOhS9l0E9Zn5Oz/MAibExPoHqCY1
-         pMTWMUImVFNnPSBsZYVBo9p5by2qhxkit9E/OB4MihN+0jZM6G+NlguIQ7rI3ExS/SPs
-         9TZVKEo8ZSmDIhX5ARzAPZPid66dCd6LIE+Rt4cwznggJa5lPjRc8b8qonNSsk5ULP2l
-         ek+7k+CkrG9w/rJ7Wm4LCfSHITZoVdQ+6xokAa2PZTI6tktFKNqRiAncgRDBIlUYMCMT
-         hMIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yCIN8zmtYKmUc6gE3sX4s+xs23+eE1y5zPsSpSsh+RY=;
-        b=fFhvutMXOo4JHxFMiMefKL46nENsTnGAVFGvwpw61iItfdtsqC1EeGDqVX94v4priH
-         da6cZKPbKOypVyNHVGokTwsnoMT5cHHllpbY0BKuaH0T/+3OLpzZl0/iGJ4Mytso/28k
-         EuLrGccjPSZYz+7vGfys29T54QDhwGF7yHIaFOdUmsqDplj4uKQXwYnWdCQ2XUIu8Yes
-         0+yfEjiSLt9dq80nT/kwSa5ZOkVVxHSPFbPEImcgPxfDhqMOouOh+2Jh43426lY4AJfS
-         /nPfkZpIC/Y/phDZQPpt8HtR2/0EPeYSYKGHC93DrYM+sjIMnywHs0gLQ+Qs870UI6eN
-         AOrA==
-X-Gm-Message-State: AOAM530thFyD7w1hLi/ibo+KXOiZXCaYFoFexYJrm9v8RkIyhcVzOegS
-        1EgVm1q+rBg/+3clZuaq9TM3BiW/xpIsbNfoFWM=
-X-Google-Smtp-Source: ABdhPJw6x5ViqrQr+9JfJUDr4HSVTFqTOUXtqq822wxaCeilpF/AjG+z1rzZDKrA4DWvqsPBRE+E2dPqspNPvcT0VSU=
-X-Received: by 2002:a17:90b:1e42:b0:1e8:7669:8a1c with SMTP id
- pi2-20020a17090b1e4200b001e876698a1cmr18635833pjb.206.1654683505679; Wed, 08
- Jun 2022 03:18:25 -0700 (PDT)
+        with ESMTP id S237552AbiFHLPM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jun 2022 07:15:12 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1D93A1B1;
+        Wed,  8 Jun 2022 04:15:09 -0700 (PDT)
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LJ4JY6gJgz6GD5l;
+        Wed,  8 Jun 2022 19:10:21 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 8 Jun 2022 13:15:06 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kpsingh@kernel.org>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 0/3] bpf: Add bpf_verify_pkcs7_signature() helper
+Date:   Wed, 8 Jun 2022 13:12:18 +0200
+Message-ID: <20220608111221.373833-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220607084003.898387-1-liuhangbin@gmail.com> <87tu8w6cqa.fsf@toke.dk>
- <YqAJeHAL57cB9qJk@Laptop-X1>
-In-Reply-To: <YqAJeHAL57cB9qJk@Laptop-X1>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 8 Jun 2022 12:18:14 +0200
-Message-ID: <CAJ8uoz2g99N6HESyX1cGUWahSJRYQjXDG3m3f4_8APAvJNMHXw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] move AF_XDP APIs to libxdp
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml753-chm.china.huawei.com (10.201.108.203) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,50 +47,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 8, 2022 at 9:55 AM Hangbin Liu <liuhangbin@gmail.com> wrote:
->
-> On Tue, Jun 07, 2022 at 11:31:57AM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> > Hangbin Liu <liuhangbin@gmail.com> writes:
-> >
-> > > libbpf APIs for AF_XDP are deprecated starting from v0.7.
-> > > Let's move to libxdp.
-> > >
-> > > The first patch removed the usage of bpf_prog_load_xattr(). As we
-> > > will remove the GCC diagnostic declaration in later patches.
-> >
-> > Kartikeya started working on moving some of the XDP-related samples int=
-o
-> > the xdp-tools repo[0]; maybe it's better to just include these AF_XDP
-> > programs into that instead of adding a build-dep on libxdp to the kerne=
-l
-> > samples?
->
-> OK, makes sense to me. Should we remove these samples after the xdp-tools=
- PR
-> merged? What about xdpxceiver.c in selftests/bpf? Should that also be mov=
-ed to
-> xdp-tools?
+One of the desirable features in security is the ability to restrict import
+of data to a given system based on data authenticity. If data import can be
+restricted, it would be possible to enforce a system-wide policy based on
+the signing keys the system owner trusts.
 
-Andrii has submitted a patch [1] for moving xsk.[ch] from libbpf to
-the xsk selftests so it can be used by xdpxceiver. This is a good idea
-since xdpxceiver tests the low level kernel interfaces and should not
-be in libxdp. I can also use those files as a start for implementing
-control interface tests which are in the planning stages. But the
-xdpsock sample shows how to use libxdp to write an AF_XDP program and
-belongs more naturally with libxdp. So good that Kartikeya is moving
-it over. Thanks!
+This feature is widely used in the kernel. For example, if the restriction
+is enabled, kernel modules can be plugged in only if they are signed with a
+key whose public part is in the primary or secondary keyring.
 
-Another option would be to keep the xdpsock sample and require libxdp
-as in your patch set, but you would have to make sure that everything
-else in samples/bpf compiles neatly even if you do not have libxdp.
-Test for the presence of libxdp in the Makefile and degrade gracefully
-if you do not. But we would then have to freeze the xdpsock app as all
-new development of samples should be in libxdp. Or we just turn
-xdpsock into a README file and direct people to the samples in libxdp?
-What do you think?
+For eBPF, it can be useful as well. For example, it might be useful to
+authenticate data an eBPF program makes security decisions on.
 
-[1] https://lore.kernel.org/bpf/20220603190155.3924899-2-andrii@kernel.org/
+After a discussion in the eBPF mailing list, it was decided that the stated
+goal should be accomplished by introducing a new helper:
+bpf_verify_pkcs7_signature(). It is simply a wrapper of
+verify_pkcs7_signature(), and does the signature verification with a key in
+the selected keyring (primary, secondary or platform).
 
-> Thanks
-> Hangbin
+Since verify_pkcs7_signature() is doing crypto operations, it must be
+called by a sleepable program. This restricts the set of functions that can
+call the associated helper (for example, lsm.s/bpf is suitable,
+fexit/array_map_update_elem is not).
+
+The added test check the ability of an eBPF program to verify module-style
+appended signatures, as produced by the kernel tool sign-file, currently
+used to sign kernel modules.
+
+The patch set is organized as follows.
+
+Patch 1 introduces the new helper. Patch 2 adds two new options to
+test_progs (the eBPF selftest binary), to specify the path of sign-file and
+the file containing the kernel private key and certificate. Finally,
+patch 3 adds the test for the new helper.
+
+Roberto Sassu (3):
+  bpf: Add bpf_verify_pkcs7_signature() helper
+  selftests/bpf: Add test_progs opts for sign-file and kernel priv key +
+    cert
+  selftests/bpf: Add test for bpf_verify_pkcs7_signature() helper
+
+ include/uapi/linux/bpf.h                      |   8 +
+ kernel/bpf/bpf_lsm.c                          |  32 ++++
+ tools/include/uapi/linux/bpf.h                |   8 +
+ tools/testing/selftests/bpf/config            |   2 +
+ .../bpf/prog_tests/verify_pkcs7_sig.c         | 149 ++++++++++++++++++
+ .../bpf/progs/test_verify_pkcs7_sig.c         | 127 +++++++++++++++
+ tools/testing/selftests/bpf/test_progs.c      |  12 ++
+ tools/testing/selftests/bpf/test_progs.h      |   3 +
+ 8 files changed, 341 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
+
+-- 
+2.25.1
+
