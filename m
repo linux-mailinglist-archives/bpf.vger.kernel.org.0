@@ -2,120 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE23542BB0
-	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 11:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E99542CCA
+	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 12:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235193AbiFHJjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jun 2022 05:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
+        id S236419AbiFHKLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jun 2022 06:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbiFHJif (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jun 2022 05:38:35 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3BA194246
-        for <bpf@vger.kernel.org>; Wed,  8 Jun 2022 02:06:53 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id h19so26214171edj.0
-        for <bpf@vger.kernel.org>; Wed, 08 Jun 2022 02:06:53 -0700 (PDT)
+        with ESMTP id S236079AbiFHKKe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jun 2022 06:10:34 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB1E1F98ED;
+        Wed,  8 Jun 2022 02:55:49 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id f65so8223611pgc.7;
+        Wed, 08 Jun 2022 02:55:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=iJnORuRLN0xRXpCZ8w8em/W2iMONPbwIC+CvQgO2A0I=;
-        b=UToRZSO/tN0dJ8qwxtwgWX/l1tc+J1n3Xoq+P2JT8x1AUncVojcZA4k7ueS7gNi/DS
-         k9msMQ4/6iNezPx1qURXhbqTijNdjxpARyUUiek4laMy12eYo8p/tIeu51MfNmLD3XCN
-         TXNg7zbvXknd04bymXKcuzHKntpDmAn5v7GExEUPeqQ1T5sgRlo8FzcFU5kVIpL5OUD7
-         6aCR2Ky6m7g39zO7GJ6iUt3+w/mlBtbE2Iem2MRE3YobdwnuG0hBxJaUGTdaa0lblp8r
-         7n8QzJk3rR4mo5rBjJVJipYVAIiraS19FSDsSYuLh5GQvNKyy1OZYoDvnEzUmN+F2gXi
-         Lsow==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EQQonAR/17w7429qFSvl74TS1SwJXlMBX+AGITM2SpE=;
+        b=fF4Mmpd/Y/QkgrJOZAWtOY9fZ2suYowaB1GZQuFrfZczoKKtjLjGOg70nZ/P3ozQE5
+         BvAoxRoAvFOSZAJ5Ra11YGaN4yaKnS82bJqEI5FM+3aJd2YwI0WR1GCujxBFAn6m4a1X
+         1N6K6mDGloH7h1CD3IOPV4Z9pw590XNzkW40/BOxKjJvSArRgQ5iXEo47flnhFNcAUyR
+         gxJXc3O6KPYBKvVggfNmgZzAGMQ1DSgt9iSYNK1BmIx4ckq9ryQVqayQwwini0IE5Auj
+         0tQL7wer2qKtnNxfkIQH0YfvMJnJ+un65QiH1DPLFNTP0IVlbj0dZ+2R9q5f4tnIs952
+         rFmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=iJnORuRLN0xRXpCZ8w8em/W2iMONPbwIC+CvQgO2A0I=;
-        b=2mHN6OZbogf+lgwou4QjpmpiWhCzvdIb0oRzkkY1M7GR0Uw0BylzYeJ56+rp4F/gby
-         JqniuIwG8Up6GfQjtHOoPwvFXbXJ1q4Jeizsa+3Kxvs/v37mPtD2HMIZFJB+PGk8bSQP
-         3W0i7LzIQyB3pipKSxy3RcD/pcPX5nUZ5nilgiz5oRfmkQPY13h9ooJdjpCh2/LXvx1k
-         tUW5DmvBPECt06c6GTo2r/WVM0w5EtLcxyG4GlEjtsBOzq6VKkqRhbfAo8fawU27Evf7
-         wRUPOQCTIH0qejcKxti2Q1jgzmQfLwyv+dC7M1qNMfnPjDfQ7KfFDWqTN0UsZL5evGQp
-         QHRA==
-X-Gm-Message-State: AOAM533LdjcTldija4PNbHnJd5VUaiJd+JvCk2H2ABCsB8LlO8BK7PzZ
-        rA28I8We+BBVcIUcZZub/Yc=
-X-Google-Smtp-Source: ABdhPJw6sdQ0sdTjHQD6DwITfkFCrw0Fabm41+bIwtRR1j+7tP1GHghqlTIY+F1kaiwGj+3sGhE+Sg==
-X-Received: by 2002:aa7:d303:0:b0:42d:d192:4c41 with SMTP id p3-20020aa7d303000000b0042dd1924c41mr38601133edq.178.1654679212137;
-        Wed, 08 Jun 2022 02:06:52 -0700 (PDT)
-Received: from pluto (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id lj2-20020a170906f9c200b0070d9aad64a1sm6929059ejb.208.2022.06.08.02.06.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jun 2022 02:06:51 -0700 (PDT)
-Message-ID: <70fe617a25138f5f343298e08c8b89420913e82d.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/5] bpf: Inline calls to bpf_loop when
- callback is known
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        song@kernel.org
-Date:   Wed, 08 Jun 2022 12:06:49 +0300
-In-Reply-To: <CAJnrk1bSXoObt+b2YH+x5oyMSJYPE89pBUW7nJm2Upnumvs8ow@mail.gmail.com>
-References: <20220603141047.2163170-1-eddyz87@gmail.com>
-         <20220603141047.2163170-4-eddyz87@gmail.com>
-         <CAJnrk1YZB_9WNtUv1yU4VacDuMUSA_iB6=Nc14fR7sw9RadZ2Q@mail.gmail.com>
-         <b6aa2c2c048cab8687bc22eb5ee14820cf6311f9.camel@gmail.com>
-         <CAJnrk1bSXoObt+b2YH+x5oyMSJYPE89pBUW7nJm2Upnumvs8ow@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EQQonAR/17w7429qFSvl74TS1SwJXlMBX+AGITM2SpE=;
+        b=vOjEq7iDZQJvdN8i2OZh8j08V61DSRJPh7RS9UO/gDhVHsl49ByClX2wjFz7rEbfYX
+         296woGyZR5MRqVPIiesuCX/78z/Wh3nChev8RvoqCNJV1Z9przfIe4GHeYpg/UY4YJO2
+         isvYgT3vt5ZnG6J7zRrpKxi0o0+966QwEjS9XLsaqPQBw9nSYMvLmQYB49n4eVJE4vrM
+         5pcvI2AEK8RE0xJvNId1gVkLzjwdAohZ6zkFLiKY0scsZyhIaaUxnDTKr3GrS07cPB6v
+         AQ3MSvM0fzietCXGW9Akq62SBIp38qInAE7w/6nMKQ75lc0SYMH/+QFisdi+2jGoYrRt
+         Or1g==
+X-Gm-Message-State: AOAM531E5wUPbCtajmQJTdM0jluX/F9Ymxgbj26MMp8iKRSJHp4MCvVe
+        g3N9V62b+5XFVvXfUwFzzYulvQn3F9E0LxSeFmzm1044HCo+UQ==
+X-Google-Smtp-Source: ABdhPJxI45k6hpRTPF0dfmUz7W6IW9C5yI2jf78AE8/IXHDCrIns1Bea6cdgCUBEh7nuv66v7fmSC8k6xPbiLMGx5zk=
+X-Received: by 2002:a62:868c:0:b0:51b:bd62:4c87 with SMTP id
+ x134-20020a62868c000000b0051bbd624c87mr33401883pfd.83.1654682148458; Wed, 08
+ Jun 2022 02:55:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220607142200.576735-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220607142200.576735-1-maciej.fijalkowski@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 8 Jun 2022 11:55:37 +0200
+Message-ID: <CAJ8uoz0XWd=rWUupMnGEBTcwZ0xixKUx1pLuqGm=xXWJEnqvrA@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: Fix handling of invalid descriptors in XSK Tx
+ batching API
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Joanne,
+On Tue, Jun 7, 2022 at 7:16 PM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> Xdpxceiver run on a AF_XDP ZC enabled driver revealed a problem with XSK
+> Tx batching API. There is a test that checks how invalid Tx descriptors
+> are handled by AF_XDP. Each valid descriptor is followed by invalid one
+> on Tx side whereas the Rx side expects only to receive a set of valid
+> descriptors.
+>
+> In current xsk_tx_peek_release_desc_batch() function, the amount of
+> available descriptors is hidden inside xskq_cons_peek_desc_batch(). This
+> can be problematic in cases where invalid descriptors are present due to
+> the fact that xskq_cons_peek_desc_batch() returns only a count of valid
+> descriptors. This means that it is impossible to properly update XSK
+> ring state when calling xskq_cons_release_n().
+>
+> To address this issue, pull out the contents of
+> xskq_cons_peek_desc_batch() so that callers (currently only
+> xsk_tx_peek_release_desc_batch()) will always be able to update the
+> state of ring properly, as total count of entries is now available and
+> use this value as an argument in xskq_cons_release_n(). By
+> doing so, xskq_cons_peek_desc_batch() can be dropped altogether.
 
-> Looking at arch/arm64/net/bpf_jit_comp.c, I see this diagram
-> 
->         /*
->          * BPF prog stack layout
->          *
->          *                         high
->          * original A64_SP =>   0:+-----+ BPF prologue
->          *                        |FP/LR|
->          * current A64_FP =>  -16:+-----+
->          *                        | ... | callee saved registers
->          * BPF fp register => -64:+-----+ <= (BPF_FP)
->          *                        |     |
->          *                        | ... | BPF prog stack
->          *                        |     |
->          *                        +-----+ <= (BPF_FP - prog->aux->stack_depth)
->          *                        |RSVD | padding
->          * current A64_SP =>      +-----+ <= (BPF_FP - ctx->stack_size)
->          *                        |     |
->          *                        | ... | Function call stack
->          *                        |     |
->          *                        +-----+
->          *                          low
->          *
->          */
-> It looks like prog->aux->stack_depth is used for the "BPF prog stack",
-> which is the stack for the main bpf program (subprog 0)
+Thank you for catching this Maciej!
 
-Thanks for looking into this. Also note the verifier.c:jit_subprogs
-function which essentially "promotes" every sub-program to sub-program #0
-before calling bpf_jit_comp.c:bpf_int_jit_compile for that sub-program.
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-> I'm not sure either whether MAX_BPF_STACK is a hard limit or a soft
-> limit. I'm curious to know as well.
-
-Alexei had commented in a sibling thread that MAX_BPF_STACK should be
-considered a soft limit.
-
-Thanks,
-Eduard
-
+> Fixes: 9349eb3a9d2a ("xsk: Introduce batched Tx descriptor interfaces")
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  net/xdp/xsk.c       | 5 +++--
+>  net/xdp/xsk_queue.h | 8 --------
+>  2 files changed, 3 insertions(+), 10 deletions(-)
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index e0a4526ab66b..19ac872a6624 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -373,7 +373,8 @@ u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max_entries)
+>                 goto out;
+>         }
+>
+> -       nb_pkts = xskq_cons_peek_desc_batch(xs->tx, pool, max_entries);
+> +       max_entries = xskq_cons_nb_entries(xs->tx, max_entries);
+> +       nb_pkts = xskq_cons_read_desc_batch(xs->tx, pool, max_entries);
+>         if (!nb_pkts) {
+>                 xs->tx->queue_empty_descs++;
+>                 goto out;
+> @@ -389,7 +390,7 @@ u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max_entries)
+>         if (!nb_pkts)
+>                 goto out;
+>
+> -       xskq_cons_release_n(xs->tx, nb_pkts);
+> +       xskq_cons_release_n(xs->tx, max_entries);
+>         __xskq_cons_release(xs->tx);
+>         xs->sk.sk_write_space(&xs->sk);
+>
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index a794410989cc..fb20bf7207cf 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -282,14 +282,6 @@ static inline bool xskq_cons_peek_desc(struct xsk_queue *q,
+>         return xskq_cons_read_desc(q, desc, pool);
+>  }
+>
+> -static inline u32 xskq_cons_peek_desc_batch(struct xsk_queue *q, struct xsk_buff_pool *pool,
+> -                                           u32 max)
+> -{
+> -       u32 entries = xskq_cons_nb_entries(q, max);
+> -
+> -       return xskq_cons_read_desc_batch(q, pool, entries);
+> -}
+> -
+>  /* To improve performance in the xskq_cons_release functions, only update local state here.
+>   * Reflect this to global state when we get new entries from the ring in
+>   * xskq_cons_get_entries() and whenever Rx or Tx processing are completed in the NAPI loop.
+> --
+> 2.27.0
+>
