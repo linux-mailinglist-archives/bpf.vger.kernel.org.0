@@ -2,86 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A918A543098
-	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 14:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C616B54309D
+	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 14:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239454AbiFHMjG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jun 2022 08:39:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        id S239398AbiFHMkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jun 2022 08:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239345AbiFHMjF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jun 2022 08:39:05 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B777C2CDB2E;
-        Wed,  8 Jun 2022 05:39:03 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nyuxS-0008jR-SU; Wed, 08 Jun 2022 14:38:46 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nyuxR-000O0f-W8; Wed, 08 Jun 2022 14:38:46 +0200
-Subject: Re: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns
- NULL in kretprobe_dispatcher()
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <165366693881.797669.16926184644089588731.stgit@devnote2>
- <0204f480-cdb0-e49f-9034-602eced02966@iogearbox.net>
- <7619DB57-C39B-4A49-808C-7ACF12D58592@goodmis.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d28e1548-98fb-a533-4fdc-ae4f4568fb75@iogearbox.net>
-Date:   Wed, 8 Jun 2022 14:38:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S239512AbiFHMka (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jun 2022 08:40:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19EC2D80A9;
+        Wed,  8 Jun 2022 05:40:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BFE061975;
+        Wed,  8 Jun 2022 12:40:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F377C34116;
+        Wed,  8 Jun 2022 12:40:25 +0000 (UTC)
+Date:   Wed, 8 Jun 2022 08:40:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCHv2 bpf 3/3] bpf: Force cookies array to follow symbols
+ sorting
+Message-ID: <20220608084023.4be8ffe2@gandalf.local.home>
+In-Reply-To: <YqBynO64am32z13X@krava>
+References: <20220606184731.437300-1-jolsa@kernel.org>
+        <20220606184731.437300-4-jolsa@kernel.org>
+        <CAADnVQJA54Ra8+tV0e0KwSXAg93JRoiefDXWR-Lqatya5YWKpg@mail.gmail.com>
+        <Yp+tTsqPOuVdjpba@krava>
+        <CAADnVQJGoM9eqcODx2LGo-qLo0=O05gSw=iifRsWXgU0XWifAA@mail.gmail.com>
+        <YqBW65t+hlWNok8e@krava>
+        <YqBynO64am32z13X@krava>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <7619DB57-C39B-4A49-808C-7ACF12D58592@goodmis.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26566/Wed Jun  8 10:05:45 2022)
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/31/22 12:00 AM, Steven Rostedt wrote:
-> On May 30, 2022 9:33:23 PM GMT+02:00, Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 5/27/22 5:55 PM, Masami Hiramatsu (Google) wrote:
->>> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->>>
->>> There is a small chance that get_kretprobe(ri) returns NULL in
->>> kretprobe_dispatcher() when another CPU unregisters the kretprobe
->>> right after __kretprobe_trampoline_handler().
->>>
->>> To avoid this issue, kretprobe_dispatcher() checks the get_kretprobe()
->>> return value again. And if it is NULL, it returns soon because that
->>> kretprobe is under unregistering process.
->>>
->>> This issue has been introduced when the kretprobe is decoupled
->>> from the struct kretprobe_instance by commit d741bf41d7c7
->>> ("kprobes: Remove kretprobe hash"). Before that commit, the
->>> struct kretprob_instance::rp directly points the kretprobe
->>> and it is never be NULL.
->>>
->>> Reported-by: Yonghong Song <yhs@fb.com>
->>> Fixes: d741bf41d7c7 ("kprobes: Remove kretprobe hash")
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->>
->> Steven, I presume you'll pick this fix up?
-> 
-> I'm currently at Embedded/Kernel Recipes, but yeah, I'll take a look at it. (Just need to finish my slides first ;-)
+On Wed, 8 Jun 2022 11:57:48 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-Ok, thanks. If I don't hear back I presume you'll pick it up then.
+> Steven,
+> is there a reason to show '__ftrace_invalid_address___*' symbols in
+> available_filter_functions? it seems more like debug message to me
+> 
+
+Yes, because set_ftrace_filter may be set by index. That is, if schedule is
+the 43,245th entry in available_filter_functions, then you can do:
+
+  # echo 43245 > set_ftrace_filter
+  # cat set_ftrace_filter
+  schedule
+
+That index must match the array index of the entries in the function list
+internally. The reason for this is that entering a name is an O(n)
+operation, where n is the number of functions in
+available_filter_functions. If you want to enable half of those functions,
+then it takes O(n^2) to do so.
+
+I first implemented this trick to help with bisecting bad functions. That
+is, every so often a function that should be annotated with notrace, isn't
+and if it gets traced it cause the machine to reboot. To bisect this, I
+would enable half the functions at a time and enable tracing to see if it
+reboots or not, and if it does, I know that one of the half I enabled is
+the culprit, if not, it's in the other half. It would take over 5 minutes
+to enable half the functions. Where as the number trick took one second,
+not only was it O(1) per function, but it did not need to do kallsym
+lookups either. It simply enabled the function at the index.
+
+Later, libtracefs (used by trace-cmd and others) would allow regex(3)
+enabling of functions. That is, it would search available_filter_functions
+in user space, match them via normal regex, create an index of the
+functions to know where they are, and then write in those numbers to enable
+them. It's much faster than writing in strings.
+
+My original fix was to simply ignore those functions, but then it would
+make the index no longer match what got set. I noticed this while writing
+my slides for Kernel Recipes, and then fixed it.
+
+The commit you mention above even states this:
+
+      __ftrace_invalid_address___<invalid-offset>
+    
+    (showing the offset that caused it to be invalid).
+    
+    This is required for tools that use libtracefs (like trace-cmd does) that
+    scan the available_filter_functions and enable set_ftrace_filter and
+    set_ftrace_notrace using indexes of the function listed in the file (this
+    is a speedup, as enabling thousands of files via names is an O(n^2)
+    operation and can take minutes to complete, where the indexing takes less
+    than a second).
+
+In other words, having a placeholder is required to keep from breaking user
+space.
+
+-- Steve
+
+
