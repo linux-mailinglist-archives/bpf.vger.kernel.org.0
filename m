@@ -2,80 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3DF5421E0
-	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 08:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1E35426E5
+	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 08:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbiFHEkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jun 2022 00:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43838 "EHLO
+        id S233171AbiFHFfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jun 2022 01:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234596AbiFHEjh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jun 2022 00:39:37 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E436E40526D;
-        Tue,  7 Jun 2022 19:31:33 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id c14so17591294pgu.13;
-        Tue, 07 Jun 2022 19:31:33 -0700 (PDT)
+        with ESMTP id S234199AbiFHFe6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jun 2022 01:34:58 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08102200A7;
+        Tue,  7 Jun 2022 20:39:24 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id s12so31665549ejx.3;
+        Tue, 07 Jun 2022 20:39:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WQvQY+ADLGT2QDH70b+ZWh3UHUjombhATOznDP82LSo=;
-        b=Rpju3qHcdktw3PMpD8A6ZKaFhlg1gB3Gtg97W/kqWJ5nJPUPzDDtEFo1pmDglljD6k
-         dLd2+tLbNEO18a2tavZDzNlPNMlH1ZpA6YSE84mRz9hBZYtcMxI1Vh+WPoDbdWjc100K
-         mLOmuu+KwaiEgbFrSNtfsXxoxYrshVLNM0fqxuqKWFEM78WOS0GAR3uOfWZLflkZKCpV
-         kD35UuMSWMrC3yiX6ee1DgSeG3rNbSU4x7yticKnuqpQeF4KUb+zQ1fk42/j1NfCFL4B
-         PgxDUyMKtcxYqfZDNpcRFD/6vAW2rJqYKC+lzyScFmG+U2a4t9sgfrU5dsVB6yJNUwSz
-         VBUA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TIpn0h2PVrPJC3SI/KH0xb5zHLGy1ws/TaSSWL1fafE=;
+        b=ZRJirNsPmCJEJ8/xnwMXrjipNEdCoSO+YJlycAp6wr+Y+VIu9Qm0TsQ/xbl2UkI0+L
+         4WtwcGHsG9iVn4/DIpsadFXw37zZd/kzciybUhbJUVdirBgGDXwswi20O0rYsy33imxk
+         WOdvvDtoGHSR0AT1DeC5aC/zJU4qRzE9WDGZg4+yARXJ4aPFocpV1utF703vXaxXkcF8
+         2o99mSaoPk3pMZ0VXE1okpFArQCfwpN58epmZHq+KhOyf3XnBNjkKH9pB+rduYl6A+t1
+         6st4ECCjKlV3uSgIlbdKMgdHUbMOP4lsjNhBQm4/ewYKQUkQuwVd/k1SLR7fewMpO+g/
+         gsiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WQvQY+ADLGT2QDH70b+ZWh3UHUjombhATOznDP82LSo=;
-        b=lmj/Zpz0nedL6S1Ny5LFiz6mvgw+1yZ/ikUjm9zjIv90KFC5tLCt86F29KdOAWsDAV
-         6fEtlVKdrjOkBP303Sx/mDOOIsmRWU/uWf40ETSA1xWf2OjFYEeRc/bLFrHN/m+LuU8w
-         94YdpMKjaWkmq7+pwJgvNklbxXld3jkaUzBDva1dbns/uD6chsl/EkpPHuh/jQ3+Pf6S
-         IFiQQNTdb6Ki0/bpXzueves1RRZ4Qe3WlvDVWVdB7pshM2iuwZaf5O/W/M0BjviNaZo+
-         Drb/SRb9zgf7hF9SUl1QxeolKY6Y/54JXdYgsQemGkc6vF+JHy0oU//y4Tz/BNgNlF+T
-         4sGQ==
-X-Gm-Message-State: AOAM530GbL+Kt+h6EnRlosMuj9sZU0VBogTBBRy7B1t83AhkIPaMT/0J
-        sxIP9rrOnpoCLaA079Zh0Tg=
-X-Google-Smtp-Source: ABdhPJyf581BY03EAX1U/cMXItUsWEKvpexvxdCH9iuV/UNPQJkQ9Knw/ayTsyYNuPsUKpVmXIm7wA==
-X-Received: by 2002:aa7:8d11:0:b0:51c:4f6d:1562 with SMTP id j17-20020aa78d11000000b0051c4f6d1562mr2423956pfe.14.1654655490220;
-        Tue, 07 Jun 2022 19:31:30 -0700 (PDT)
-Received: from Laptop-X1 ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l5-20020a622505000000b0051c1b445094sm4905282pfl.7.2022.06.07.19.31.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jun 2022 19:31:29 -0700 (PDT)
-Date:   Wed, 8 Jun 2022 10:31:20 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TIpn0h2PVrPJC3SI/KH0xb5zHLGy1ws/TaSSWL1fafE=;
+        b=EEEXA3RYaiJi6o0uvuZoJi3ZUozJV1nktXisLztxtfl4J3UKIeQZQPyrxLDjGu/BRm
+         SEkaS2Z31MvSOChcwrQQFFLtjdNy9agZp9QPQB4SOYDOkV1svyG6iu3BTBbupWb5zR5G
+         JHlkuxUahnweg6NRS8gkjVBhTvaDs2zd0zzHiXSREsrNkjYlwZAJ5jfD48yI6U03ocQP
+         Oq9iFL3lYQ6MVODW2InpIPtHSnB9Y9KICqKmP+P1l0Nl73oY9iU+I/k9dBXAYk76MS9a
+         lyUu32tofN+hfGQoCxXRtfrzYqm1AdEaoqhERp9pDBCv8xcZ/czh4qivvQjcEfZRjBGK
+         hCQA==
+X-Gm-Message-State: AOAM532HIDNVwRxM7GaE8zyyj0JfjcSUDrVbUHbw/rSaA2IKaCK5n1Y1
+        OKevs7yVBKmK4NNp4CGt1fI4IE6GWtugg89TvxXpD/LT
+X-Google-Smtp-Source: ABdhPJwRFRiobbRMerKEWIQI1+TgMyhJlXgcDWNvSFn2bKG23OUrbLI/1rcC8WMLQLdj12I5e7ypkHrs+Lu0noqKSLg=
+X-Received: by 2002:a17:906:c156:b0:6ff:2415:fc18 with SMTP id
+ dp22-20020a170906c15600b006ff2415fc18mr29466294ejc.94.1654659563312; Tue, 07
+ Jun 2022 20:39:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220608021050.47279-1-zhoufeng.zf@bytedance.com> <20220608021050.47279-2-zhoufeng.zf@bytedance.com>
+In-Reply-To: <20220608021050.47279-2-zhoufeng.zf@bytedance.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 7 Jun 2022 20:39:11 -0700
+Message-ID: <CAADnVQ+kcONngR5mVm53KJZJOVQhR99TzZzv4KONcVY_H1rqEQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] bpf: avoid grabbing spin_locks of all cpus when no
+ free elems
+To:     Feng zhou <zhoufeng.zf@bytedance.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] move AF_XDP APIs to libxdp
-Message-ID: <YqAJ+N/ULcRf6ad2@Laptop-X1>
-References: <20220607084003.898387-1-liuhangbin@gmail.com>
- <87tu8w6cqa.fsf@toke.dk>
- <CAEf4BzYegArxq+apR+GZ+cYNQtAnnxaZWKOAKd+3tnqpKdq3ng@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYegArxq+apR+GZ+cYNQtAnnxaZWKOAKd+3tnqpKdq3ng@mail.gmail.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -86,24 +78,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 07, 2022 at 04:28:36PM -0700, Andrii Nakryiko wrote:
-> > Kartikeya started working on moving some of the XDP-related samples into
-> > the xdp-tools repo[0]; maybe it's better to just include these AF_XDP
-> > programs into that instead of adding a build-dep on libxdp to the kernel
-> > samples?
-> >
-> 
-> Agree. Meanwhile it's probably better to make samples/bpf just compile
-> and use xsk.{c,h} from selftests/bpf.
+On Tue, Jun 7, 2022 at 7:11 PM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
+>
+> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>
+> This patch use head->first in pcpu_freelist_head to check freelist
+> having free or not. If having, grab spin_lock, or check next cpu's
+> freelist.
+>
+> Before patch: hash_map performance
+> ./map_perf_test 1
+> 0:hash_map_perf pre-alloc 975345 events per sec
+> 4:hash_map_perf pre-alloc 855367 events per sec
+> 12:hash_map_perf pre-alloc 860862 events per sec
+> 8:hash_map_perf pre-alloc 849561 events per sec
+> 3:hash_map_perf pre-alloc 849074 events per sec
+> 6:hash_map_perf pre-alloc 847120 events per sec
+> 10:hash_map_perf pre-alloc 845047 events per sec
+> 5:hash_map_perf pre-alloc 841266 events per sec
+> 14:hash_map_perf pre-alloc 849740 events per sec
+> 2:hash_map_perf pre-alloc 839598 events per sec
+> 9:hash_map_perf pre-alloc 838695 events per sec
+> 11:hash_map_perf pre-alloc 845390 events per sec
+> 7:hash_map_perf pre-alloc 834865 events per sec
+> 13:hash_map_perf pre-alloc 842619 events per sec
+> 1:hash_map_perf pre-alloc 804231 events per sec
+> 15:hash_map_perf pre-alloc 795314 events per sec
+>
+> hash_map the worst: no free
+> ./map_perf_test 2048
 
-Hi Andrii,
-
-I didn't find xsk.{c,h} in selftests/bpf. Do you mean xsk.{c,h} in
-tools/lib/bpf? Should I add
-
-TPROGS_CFLAGS += -I$(srctree)/tools/lib/
-
-in samples/bpf/Makefile?
-
-Thanks
-Hangbin
+The commit log talks about some private patch
+you've made to map_perf_test.
+Please use numbers from the bench added in the 2nd patch.
+Also trim commit log to only relevant parts.
+ftrace dumps and numbers from all cpus are too verbose
+for commit log.
