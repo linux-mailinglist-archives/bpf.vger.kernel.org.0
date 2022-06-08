@@ -2,125 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0255428F3
-	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 10:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087765429E0
+	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 10:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbiFHIHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jun 2022 04:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
+        id S232467AbiFHIv4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jun 2022 04:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbiFHIGc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jun 2022 04:06:32 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C1615BAEF
-        for <bpf@vger.kernel.org>; Wed,  8 Jun 2022 00:37:56 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id c18so9821419pgh.11
-        for <bpf@vger.kernel.org>; Wed, 08 Jun 2022 00:37:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=6g4MB/2Lu7rQpbPpIMGixYDX9MXNU274v9OKdeffZbE=;
-        b=pSdZVDbLtC/3kmSefKRvlaXakVXelgwC1LmIxeoggEHIPsYTM9oY+c50BbB3MN1PzZ
-         ztRFxTMXCEi/LS6ReqEC+yhwuRpPNpew1aCkacxLjxR+6o8OvNELaAsWed2mu0Xy6sTg
-         LSC1LWWTeG7iGZRH05OvKUo0DiKuzpZmUSR8Sh65yaCZOFYdFx9/pz9EcoYZFEEkvYHA
-         0Hq4TPs+geit3UTfWCan84JbIcCbRdIQ3xXgpxpgMqodxhIEqGiSsIJmiXW2gxR0ahaw
-         nZkU0vR8+nCzgHPDxKmftwe6aafPfUhZlp/pF7dQ2WCZDa2ne/pn+zPxaN9gGS6BzQ9J
-         ANuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=6g4MB/2Lu7rQpbPpIMGixYDX9MXNU274v9OKdeffZbE=;
-        b=ungkl9OX+3NXAfzB3Qs+vLswuaC/QrKIQpmOgPitTW+0KSQQ4JDBdiFTMzXvqSZHWi
-         yzgr2CYtIxKUvpEgsUQL12jpJQXit+M5NMFMozAsG9CYc1ekaDLDzcasKKKErntBgvlJ
-         sj6kLkRvyOG3edYPI80W/VWklLEM7UzNt6GwjUG7dZaPMxpVF+zq0qH9ffCVuMsFEgst
-         ZY2W5BC6qW6OKarhMfXM/s39chcQhdRTsE5HDSG4fEaVAPFhVC6OaOQ6GsPS2HqWm/33
-         KabG3aphD86gySURGta7Am3JgV0O1saI7A5Kt2r5JtKgZ43LlGSEyXyB/McAB8gadw+s
-         QaEA==
-X-Gm-Message-State: AOAM531ZLf/hXDJCKklCCi9+yiGqH7gVwtQay7RPVkRBo6yShhAyAoE8
-        0ylwIHfyCN46lpMZA2HqjL+nKg==
-X-Google-Smtp-Source: ABdhPJxkwGanP9k5uHaWdzqLtlbIQi4vHZHZWqMwEnGtO1L9WgOz3dRcqHALXX5l8uFzidk/xR5LyQ==
-X-Received: by 2002:a65:668b:0:b0:3f6:4026:97cd with SMTP id b11-20020a65668b000000b003f6402697cdmr28764470pgw.420.1654673876321;
-        Wed, 08 Jun 2022 00:37:56 -0700 (PDT)
-Received: from [10.71.57.194] ([139.177.225.241])
-        by smtp.gmail.com with ESMTPSA id s18-20020aa78d52000000b0050dc76281fdsm14134299pfe.215.2022.06.08.00.37.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jun 2022 00:37:55 -0700 (PDT)
-Message-ID: <c227453a-273b-16d4-59f8-36dd05027e51@bytedance.com>
-Date:   Wed, 8 Jun 2022 15:37:48 +0800
+        with ESMTP id S229776AbiFHIvO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jun 2022 04:51:14 -0400
+X-Greylist: delayed 721 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Jun 2022 01:08:41 PDT
+Received: from mail.determinedfia.pl (mail.determinedfia.pl [46.183.184.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8826C1C286E
+        for <bpf@vger.kernel.org>; Wed,  8 Jun 2022 01:08:39 -0700 (PDT)
+Received: by mail.determinedfia.pl (Postfix, from userid 1001)
+        id AAB1244AA9; Wed,  8 Jun 2022 09:55:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=determinedfia.pl;
+        s=mail; t=1654674953;
+        bh=+v4TvgfMAIUHw3t+0TocdWSYyD3KeMvveWgkr5HZO0U=;
+        h=Date:From:To:Subject:From;
+        b=fmkV6o7HW/CVE8Fd5mkbtAE4IQauGD1zmWDMaAppoD9kzEFNQaIJHnuAGB08S8Dg4
+         7QabPQwQeAVI8RBgib4Ov6jFrO2663f+lc6TfLSyUmSpZuYXkV2O/8y/Rg+FOE7+e0
+         0Q2uUV5nrmDqLIg7FeDhqkcDPdkRz5aTM3B8+cq8Y1tvyg4GhnuywT8p8OFee0SQUc
+         3Oyogktlh3JsHCrKFEsHWMRGj9pdl4q9smaUfoZdRW7sCGCK/zxlnDYnWPKDrCh9nW
+         OSZT5+MWtwIYGipQcBLaJZPo42kGwLEDequPTGKMaaCLceDimL2EEwFW//spBn5aNM
+         rDpA52gEs8YQw==
+Received: by mail.determinedfia.pl for <bpf@vger.kernel.org>; Wed,  8 Jun 2022 07:55:18 GMT
+Message-ID: <20220608084500-0.1.3w.11bhp.0.plypofovp4@determinedfia.pl>
+Date:   Wed,  8 Jun 2022 07:55:18 GMT
+From:   "Adam Furgalski" <adam.furgalski@determinedfia.pl>
+To:     <bpf@vger.kernel.org>
+Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
+X-Mailer: mail.determinedfia.pl
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [External] Re: [PATCH v5 1/2] bpf: avoid grabbing spin_locks of
- all cpus when no free elems
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20220608021050.47279-1-zhoufeng.zf@bytedance.com>
- <20220608021050.47279-2-zhoufeng.zf@bytedance.com>
- <CAADnVQ+kcONngR5mVm53KJZJOVQhR99TzZzv4KONcVY_H1rqEQ@mail.gmail.com>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <CAADnVQ+kcONngR5mVm53KJZJOVQhR99TzZzv4KONcVY_H1rqEQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2022/6/8 上午11:39, Alexei Starovoitov 写道:
-> On Tue, Jun 7, 2022 at 7:11 PM Feng zhou <zhoufeng.zf@bytedance.com> wrote:
->> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>
->> This patch use head->first in pcpu_freelist_head to check freelist
->> having free or not. If having, grab spin_lock, or check next cpu's
->> freelist.
->>
->> Before patch: hash_map performance
->> ./map_perf_test 1
->> 0:hash_map_perf pre-alloc 975345 events per sec
->> 4:hash_map_perf pre-alloc 855367 events per sec
->> 12:hash_map_perf pre-alloc 860862 events per sec
->> 8:hash_map_perf pre-alloc 849561 events per sec
->> 3:hash_map_perf pre-alloc 849074 events per sec
->> 6:hash_map_perf pre-alloc 847120 events per sec
->> 10:hash_map_perf pre-alloc 845047 events per sec
->> 5:hash_map_perf pre-alloc 841266 events per sec
->> 14:hash_map_perf pre-alloc 849740 events per sec
->> 2:hash_map_perf pre-alloc 839598 events per sec
->> 9:hash_map_perf pre-alloc 838695 events per sec
->> 11:hash_map_perf pre-alloc 845390 events per sec
->> 7:hash_map_perf pre-alloc 834865 events per sec
->> 13:hash_map_perf pre-alloc 842619 events per sec
->> 1:hash_map_perf pre-alloc 804231 events per sec
->> 15:hash_map_perf pre-alloc 795314 events per sec
->>
->> hash_map the worst: no free
->> ./map_perf_test 2048
-> The commit log talks about some private patch
-> you've made to map_perf_test.
-> Please use numbers from the bench added in the 2nd patch.
-> Also trim commit log to only relevant parts.
-> ftrace dumps and numbers from all cpus are too verbose
-> for commit log.
+Dzie=C5=84 dobry,
 
-Ok, will do. Thanks.
+zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
+=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
+o dalszych rozm=C3=B3w.=20
 
+Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
+=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
+=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
+strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+
+Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+
+
+Pozdrawiam
+Adam Furgalski
