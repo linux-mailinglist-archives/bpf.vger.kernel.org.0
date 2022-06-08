@@ -2,207 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2320542BAB
-	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 11:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE23542BB0
+	for <lists+bpf@lfdr.de>; Wed,  8 Jun 2022 11:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234958AbiFHJhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jun 2022 05:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
+        id S235193AbiFHJjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jun 2022 05:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233958AbiFHJhE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jun 2022 05:37:04 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70F7D8D36;
-        Wed,  8 Jun 2022 02:00:05 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LJ1N573XvzgZhQ;
-        Wed,  8 Jun 2022 16:58:13 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 8 Jun 2022 17:00:02 +0800
-Subject: Re: [RFC PATCH bpf-next 0/2] bpf: Introduce ternary search tree for
- string key
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
+        with ESMTP id S235422AbiFHJif (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jun 2022 05:38:35 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3BA194246
+        for <bpf@vger.kernel.org>; Wed,  8 Jun 2022 02:06:53 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id h19so26214171edj.0
+        for <bpf@vger.kernel.org>; Wed, 08 Jun 2022 02:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=iJnORuRLN0xRXpCZ8w8em/W2iMONPbwIC+CvQgO2A0I=;
+        b=UToRZSO/tN0dJ8qwxtwgWX/l1tc+J1n3Xoq+P2JT8x1AUncVojcZA4k7ueS7gNi/DS
+         k9msMQ4/6iNezPx1qURXhbqTijNdjxpARyUUiek4laMy12eYo8p/tIeu51MfNmLD3XCN
+         TXNg7zbvXknd04bymXKcuzHKntpDmAn5v7GExEUPeqQ1T5sgRlo8FzcFU5kVIpL5OUD7
+         6aCR2Ky6m7g39zO7GJ6iUt3+w/mlBtbE2Iem2MRE3YobdwnuG0hBxJaUGTdaa0lblp8r
+         7n8QzJk3rR4mo5rBjJVJipYVAIiraS19FSDsSYuLh5GQvNKyy1OZYoDvnEzUmN+F2gXi
+         Lsow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=iJnORuRLN0xRXpCZ8w8em/W2iMONPbwIC+CvQgO2A0I=;
+        b=2mHN6OZbogf+lgwou4QjpmpiWhCzvdIb0oRzkkY1M7GR0Uw0BylzYeJ56+rp4F/gby
+         JqniuIwG8Up6GfQjtHOoPwvFXbXJ1q4Jeizsa+3Kxvs/v37mPtD2HMIZFJB+PGk8bSQP
+         3W0i7LzIQyB3pipKSxy3RcD/pcPX5nUZ5nilgiz5oRfmkQPY13h9ooJdjpCh2/LXvx1k
+         tUW5DmvBPECt06c6GTo2r/WVM0w5EtLcxyG4GlEjtsBOzq6VKkqRhbfAo8fawU27Evf7
+         wRUPOQCTIH0qejcKxti2Q1jgzmQfLwyv+dC7M1qNMfnPjDfQ7KfFDWqTN0UsZL5evGQp
+         QHRA==
+X-Gm-Message-State: AOAM533LdjcTldija4PNbHnJd5VUaiJd+JvCk2H2ABCsB8LlO8BK7PzZ
+        rA28I8We+BBVcIUcZZub/Yc=
+X-Google-Smtp-Source: ABdhPJw6sdQ0sdTjHQD6DwITfkFCrw0Fabm41+bIwtRR1j+7tP1GHghqlTIY+F1kaiwGj+3sGhE+Sg==
+X-Received: by 2002:aa7:d303:0:b0:42d:d192:4c41 with SMTP id p3-20020aa7d303000000b0042dd1924c41mr38601133edq.178.1654679212137;
+        Wed, 08 Jun 2022 02:06:52 -0700 (PDT)
+Received: from pluto (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id lj2-20020a170906f9c200b0070d9aad64a1sm6929059ejb.208.2022.06.08.02.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jun 2022 02:06:51 -0700 (PDT)
+Message-ID: <70fe617a25138f5f343298e08c8b89420913e82d.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/5] bpf: Inline calls to bpf_loop when
+ callback is known
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <20220331122822.14283-1-houtao1@huawei.com>
- <CAEf4Bzb7keBS8vXgV5JZzwgNGgMV0X3_guQ_m9JW3X6fJBDpPQ@mail.gmail.com>
- <5a990687-b336-6f44-589b-8bd972882beb@huawei.com>
- <CAEf4BzaUmqDUeKBjSQgLNULx=f-3ipK57Y2qEbND0XuuL9aNvw@mail.gmail.com>
- <8b4c1ad2-d6ba-a100-5438-a025ceb7f5e1@huawei.com>
- <CAEf4Bzbfct4G7AjVjbaL8LvSGy0NQWeEjoR1BCfeZzdmYx8Tpw@mail.gmail.com>
- <bcaef485-fca6-a5e3-68da-c895b802b352@huawei.com>
- <CAEf4Bzb5kiTgXwvR5DuTDJJQT=CtWhreyd=Y2eOMM19KTE_4kg@mail.gmail.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <503873ca-b094-961b-0fd6-cf842b39cf84@huawei.com>
-Date:   Wed, 8 Jun 2022 17:00:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        song@kernel.org
+Date:   Wed, 08 Jun 2022 12:06:49 +0300
+In-Reply-To: <CAJnrk1bSXoObt+b2YH+x5oyMSJYPE89pBUW7nJm2Upnumvs8ow@mail.gmail.com>
+References: <20220603141047.2163170-1-eddyz87@gmail.com>
+         <20220603141047.2163170-4-eddyz87@gmail.com>
+         <CAJnrk1YZB_9WNtUv1yU4VacDuMUSA_iB6=Nc14fR7sw9RadZ2Q@mail.gmail.com>
+         <b6aa2c2c048cab8687bc22eb5ee14820cf6311f9.camel@gmail.com>
+         <CAJnrk1bSXoObt+b2YH+x5oyMSJYPE89pBUW7nJm2Upnumvs8ow@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bzb5kiTgXwvR5DuTDJJQT=CtWhreyd=Y2eOMM19KTE_4kg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Hi Joanne,
 
-On 4/27/2022 11:57 AM, Andrii Nakryiko wrote:
-> On Tue, Apr 26, 2022 at 1:03 AM Hou Tao <houtao1@huawei.com> wrote:
-snip
->>> I'm biased :) But I like the idea of qp-trie as a general purpose
->>> ordered and dynamically sized BPF map. It makes no assumption about
->>> data being string-like and sharing common prefixes. It can be made to
->>> work just as fine with any array of bytes, making it very suitable as
->>> a generic lookup table map. Note that upstream implementation does
->>> assume zero-terminated strings and no key being a prefix of another
->>> key. But all that can be removed. For fixed-length keys this can never
->>> happen by construction, for variable-length keys (and we'll be able to
->>> support this finally with bpf_dynptr's help very soon), we can record
->>> length of the key in each leaf and use that during comparisons.
->> Using the trailing zero byte to make sure no key will be a prefix of another is
->> simple, but I will check whether or not there is other way to make the bytes
->> array key work out. Alexei had suggest me to use the length of key as part of
->> key just like bpf_lpm_trie_key does, maybe i can try it first.
-> Yeah, using key length as part of the key during comparison is what I
-> meant as well. I didn't mean to aritificially add trailing zero (this
-> idea doesn't work for arbitrary binary data).
->
->>> Also note that qp-trie can be internally used by BPF_MAP_TYPE_LPM_TRIE
->>> very efficiently and speed it up considerable in the process (and
->>> especially to get rid of the global lock).
->>>
->>> So if you were to invest in a proper full-featured production
->>> implementation of a BPF map, I'd start with qp-trie. From available
->>> benchmarks it's both faster and more memory efficient than Red-Black
->>> trees, which could be an alternative underlying implementation of such
->>> ordered and "resizable" map.
-Recently I tried to add concurrent update and deletion support for qp-trie, and
-found out that hand-over-hand lock scheme may don't work for qp-trie update. The
-short explanation is that update procedure needs traverse qp-trie twice and the
-position tuple got in the first pass may be stale due to concurrent updates
-occurred in the second pass. The detailed explanation is shown below.
+> Looking at arch/arm64/net/bpf_jit_comp.c, I see this diagram
+> 
+>         /*
+>          * BPF prog stack layout
+>          *
+>          *                         high
+>          * original A64_SP =>   0:+-----+ BPF prologue
+>          *                        |FP/LR|
+>          * current A64_FP =>  -16:+-----+
+>          *                        | ... | callee saved registers
+>          * BPF fp register => -64:+-----+ <= (BPF_FP)
+>          *                        |     |
+>          *                        | ... | BPF prog stack
+>          *                        |     |
+>          *                        +-----+ <= (BPF_FP - prog->aux->stack_depth)
+>          *                        |RSVD | padding
+>          * current A64_SP =>      +-----+ <= (BPF_FP - ctx->stack_size)
+>          *                        |     |
+>          *                        | ... | Function call stack
+>          *                        |     |
+>          *                        +-----+
+>          *                          low
+>          *
+>          */
+> It looks like prog->aux->stack_depth is used for the "BPF prog stack",
+> which is the stack for the main bpf program (subprog 0)
 
-To reduce space usage for qp-trie, there is no common prefix saved in branch
-node, so the update of qp-trie needs to traversing qp-trie to find the most
-similar key firstly, comparing with it to get a (index, flag,) tuple for the
-leaf key, then traversing qp-trie again to find the insert position by using the
-tuple. The problem is that, the position tuple may be stale due to concurrent
-updates occurred in different branch. Considering the following case:
+Thanks for looking into this. Also note the verifier.c:jit_subprogs
+function which essentially "promotes" every sub-program to sub-program #0
+before calling bpf_jit_comp.c:bpf_int_jit_compile for that sub-program.
 
-When inserting "aa_bind_mount" and "aa_buffers_lock" concurrently into the
-following qp-trie. The most similar key for "aa_bind_mount" is leaf X, and for
-"aa_buffers_lock" it is leaf Y. The calculated index tuple for both new keys are
-the same: (index=3, flag=2). Assuming "aa_bind_mount" is inserted firstly, so
-when inserting "aa_buffers_lock", the correct index will be (index=4, flag=1)
-instead of (index=3, flag=2) and the result will be incorrect.
+> I'm not sure either whether MAX_BPF_STACK is a hard limit or a soft
+> limit. I'm curious to know as well.
 
-branch: index  1 flags 1 bitmap 0x00088
-* leaf: a.81577 0
-* branch: index  4 flags 1 bitmap 0x00180
-* * branch: index  4 flags 2 bitmap 0x02080
-* * * leaf: aa_af_perm 1 (leaf X, for aa_bind_mount)
-* * branch: index  4 flags 2 bitmap 0x00052
-* * * leaf: aa_apply_modes_to_perms 6
-* * * leaf: aa_asprint_hashstr 7 (leaf Y, for aa_buffers_lock)
+Alexei had commented in a sibling thread that MAX_BPF_STACK should be
+considered a soft limit.
 
-In order to get a correct position tuple, the intuitive solution is adding
-common prefix in branch node and letting update procedure to find the insertion
-position by comparing with the prefix, so it only needs to traverse qp-trie once
-and hand-over-hand locking scheme can work. I plan to work on qp-trie with
-common prefix and will update its memory usage and concurrent update/insert
-speed in this thread once the demo is ready.  So any more suggestions ?
-
-Regards,
-Tao
-
->> Thanks for your suggestions. I will give it a try.
-> Awesome!
->
->> Regards,
->> Tao
->>
->>>> Regards,
->>>> Tao
->>>>>>> This prefix sharing is nice when you have a lot of long common
->>>>>>> prefixes, but I'm a bit skeptical that as a general-purpose BPF data
->>>>>>> structure it's going to be that beneficial. 192 bytes of common
->>>>>>> prefixes seems like a very unusual dataset :)
->>>>>> Yes. The case with common prefix I known is full file path.
->>>>>>> More specifically about TST implementation in your paches. One global
->>>>>>> per-map lock I think is a very big downside. We have LPM trie which is
->>>>>>> very slow in big part due to global lock. It might be possible to
->>>>>>> design more granular schema for TST, but this whole in-place splitting
->>>>>>> logic makes this harder. I think qp-trie can be locked in a granular
->>>>>>> fashion much more easily by having a "hand over hand" locking: lock
->>>>>>> parent, find child, lock child, unlock parent, move into child node.
->>>>>>> Something like that would be more scalable overall, especially if the
->>>>>>> access pattern is not focused on a narrow set of nodes.
->>>>>> Yes. The global lock is a problem but the splitting is not in-place. I will try
->>>>>> to figure out whether the lock can be more scalable after the benchmark test
->>>>>> between qp-trie and tst.
->>>>> Great, looking forward!
->>>>>
->>>>>> Regards,
->>>>>> Tao
->>>>>>
->>>>>> [0]: https://github.com/Tessil/hat-trie
->>>>>>> Anyways, I love data structures and this one is an interesting idea.
->>>>>>> But just my few cents of "production-readiness" for general-purpose
->>>>>>> data structures for BPF.
->>>>>>>
->>>>>>>   [0] https://dotat.at/prog/qp/README.html
->>>>>>>
->>>>>>>> Regards,
->>>>>>>> Tao
->>>>>>>>
->>>>>>>> [1]: https://lore.kernel.org/bpf/CAADnVQJUJp3YBcpESwR3Q1U6GS1mBM=Vp-qYuQX7eZOaoLjdUA@mail.gmail.com/
->>>>>>>>
->>>>>>>> Hou Tao (2):
->>>>>>>>   bpf: Introduce ternary search tree for string key
->>>>>>>>   selftests/bpf: add benchmark for ternary search tree map
->>>>>>>>
->>>>>>>>  include/linux/bpf_types.h                     |   1 +
->>>>>>>>  include/uapi/linux/bpf.h                      |   1 +
->>>>>>>>  kernel/bpf/Makefile                           |   1 +
->>>>>>>>  kernel/bpf/bpf_tst.c                          | 411 +++++++++++++++++
->>>>>>>>  tools/include/uapi/linux/bpf.h                |   1 +
->>>>>>>>  tools/testing/selftests/bpf/Makefile          |   5 +-
->>>>>>>>  tools/testing/selftests/bpf/bench.c           |   6 +
->>>>>>>>  .../selftests/bpf/benchs/bench_tst_map.c      | 415 ++++++++++++++++++
->>>>>>>>  .../selftests/bpf/benchs/run_bench_tst.sh     |  54 +++
->>>>>>>>  tools/testing/selftests/bpf/progs/tst_bench.c |  70 +++
->>>>>>>>  10 files changed, 964 insertions(+), 1 deletion(-)
->>>>>>>>  create mode 100644 kernel/bpf/bpf_tst.c
->>>>>>>>  create mode 100644 tools/testing/selftests/bpf/benchs/bench_tst_map.c
->>>>>>>>  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_tst.sh
->>>>>>>>  create mode 100644 tools/testing/selftests/bpf/progs/tst_bench.c
->>>>>>>>
->>>>>>>> --
->>>>>>>> 2.31.1
->>>>>>>>
->>>>>>> .
->>>>> .
->>> .
-> .
+Thanks,
+Eduard
 
