@@ -2,231 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E94DE5454B4
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 21:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853B75454FB
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 21:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbiFITMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 15:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
+        id S241870AbiFITax (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 15:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234774AbiFITMi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 15:12:38 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7713A2DC203;
-        Thu,  9 Jun 2022 12:12:37 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id f12so19466244ilj.1;
-        Thu, 09 Jun 2022 12:12:37 -0700 (PDT)
+        with ESMTP id S229573AbiFITaw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 15:30:52 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507624FC48;
+        Thu,  9 Jun 2022 12:30:51 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id q15so25694245wrc.11;
+        Thu, 09 Jun 2022 12:30:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=WshwSktjr4ExHmT7Y051X+8piGlXZxU0WO6vy/mEFlM=;
-        b=f8qg9Zif98yq6z2+YHbzSPJu+zUQ/biZnqzhbm92xQd9DChcTw548jyomskbv0ICCM
-         Ic5ab0/1sTIlKl823PbPDbQwuoznTjG3NnUfeuho7hu3z/4FqHpskiU457BqYQ/9yGdE
-         +14e8JBJfvS0P6wMchrSBDpSqMdEdDnOjdVIA6enSJ+iVbbtlCQhoBvvCzbLS4oxDaeJ
-         OL8JJL606Wf1zuYvBTUXMzcoIVdaNU8LC/EQ7oNZhojkvhELKqX3fnIV32DT/VIxiA77
-         2wVUVQV/Vk2WAkO4ivAW+b6GVB596HVLOE1+ZqIlauKUydBKGntWEkedPvqMfcUZyzGJ
-         Tpyg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gzR5jRpRXQZcGn409L4lYEhScWSi5XMrFvgTPUe9C24=;
+        b=iRsgDU+pSNYbsXFbM+nepB4iaycWhvjMctuerqCNGSOTERudA3GLSsR7er19srR2aN
+         ZLpgEBSAA+cTAUDBpNrxM9gFcv5T7PhY8iGPKOiF0uN3+LCnM3O83em3inJMnRMfIajI
+         c2gZ0tzqlsoUhmGbv8OhmBvhaiTYpjxrIHUnpQyTEgoA/tRPo/+ApQpTZ2MSQO+dQXoC
+         MlOcvH/6dfIw+NlycemSg6xwHskhcHW4xF9oiiAuBTy6cFXcfC6TbdLXrWQMTdzSMyUl
+         PZ1Zn7aNp2x+xy4ZhTSwz0fP5rV72wY8n2yJlXyKTLwMDDT1hObsKu5MdDoZZUUBI6JA
+         Mowg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=WshwSktjr4ExHmT7Y051X+8piGlXZxU0WO6vy/mEFlM=;
-        b=X2sjQiGsGwNrL2g4CZ3Fb4ilK2WLWceY4aft7Fo022eUa3De+jQL8r2FL8wi/e6v+T
-         tWgcGbj4U4Jr31akhaujWrFQ7Jup2IaEKUQhRnYtI99GSVH911ZX3sqQdM735rjL4X9N
-         6va+FgZs3gZ6PGkzxYFXRL7QZYVdO3E6fPbGwMZ6WeNf6rHe+el7dMrUP0lHuKbGROU+
-         EIHXiS5D5JtpnX0sQhvicEtmaD8bgkqR8QXXKV2b7Mx72iw+KQ1K6FLzZP7yE4jQx7Yc
-         tr8t+XVBV23dlhUP/+3rx226bg0fLdilMDMOiKwz31QSy6xdNR850J450D34dChKiQOX
-         LM4A==
-X-Gm-Message-State: AOAM531xTj7fp3P+/+QZxev7p2fTID43okSU/TemWnqqkYsW9irKyg26
-        KBwQdbUFkPtpyeDOWPL2JgM=
-X-Google-Smtp-Source: ABdhPJxEZ2e7Q8qYK50DUYfa9umQkfi3jO06g8LQ5g5XTQQiQZ5KxgKWtW+MpQrL4tOzUQSeKuTyJA==
-X-Received: by 2002:a05:6e02:b23:b0:2d1:b62a:d9ae with SMTP id e3-20020a056e020b2300b002d1b62ad9aemr21863319ilu.291.1654801956857;
-        Thu, 09 Jun 2022 12:12:36 -0700 (PDT)
-Received: from localhost ([172.243.153.43])
-        by smtp.gmail.com with ESMTPSA id k23-20020a5e9317000000b006696754eef5sm4566283iom.13.2022.06.09.12.12.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gzR5jRpRXQZcGn409L4lYEhScWSi5XMrFvgTPUe9C24=;
+        b=0q99uO2ji3VGQUChwTBE/8H9umo706idaKhJ5kKoLMHxI4od4D+eY5dwjo+YZE3Ukf
+         sZFp3+euW3wFBeJ1gcd8HyC1rV3ZzTt20RtUpPa6KrFPj3moDbkFWlA7RY1GtabRVGLt
+         GYfUOn987/fuE99XXGbCsJFUJGiGzpkK3ZRRxIiVQtyWBlGdf8MOubaHxUGLYxwE+1ow
+         d+RjqQhww3yG3PTBKe3h7//1lwkFY9HZXbZYF9iPw5QFmSiEhzm4KQQsY3w315JTD9Ja
+         gU5hycCMhr8lqSHUe1+g4ckzbUjlvQU0qxTqcpAL29tsi8+VhPgYjAtNJsmkJnaJQA9s
+         UjjQ==
+X-Gm-Message-State: AOAM531qgY3hxaKU9Bz3D7rbYQsHSjXavzZw43Ea4yOtPp+0XfXfBh6l
+        6+qAwEUFFMvBDU4aLVkwENDP27dyQKvM8Q==
+X-Google-Smtp-Source: ABdhPJy+D65/gGG91x9FifFZSsWzOEHrBoQ5R+lb7Go3HvfXzVg4Y7O26+a7YvSnKVOMeupOsouqzA==
+X-Received: by 2002:a05:6000:2cb:b0:210:33e9:2ec7 with SMTP id o11-20020a05600002cb00b0021033e92ec7mr38028965wry.317.1654803049619;
+        Thu, 09 Jun 2022 12:30:49 -0700 (PDT)
+Received: from erthalion.local (dslb-094-222-028-039.094.222.pools.vodafone-ip.de. [94.222.28.39])
+        by smtp.gmail.com with ESMTPSA id h12-20020a5d6e0c000000b0020ff877cfbdsm25039578wrz.87.2022.06.09.12.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jun 2022 12:12:36 -0700 (PDT)
-Date:   Thu, 09 Jun 2022 12:12:28 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Message-ID: <62a2461c2688b_bb7f820876@john.notmuch>
-In-Reply-To: <CAM_iQpWN-PidFerX+2jdKNaNpx4wTVRbp+gGDow=1qKx12i4qA@mail.gmail.com>
-References: <20220602012105.58853-1-xiyou.wangcong@gmail.com>
- <20220602012105.58853-2-xiyou.wangcong@gmail.com>
- <62a20ceaba3d4_b28ac2082c@john.notmuch>
- <CAM_iQpWN-PidFerX+2jdKNaNpx4wTVRbp+gGDow=1qKx12i4qA@mail.gmail.com>
-Subject: Re: [Patch bpf-next v3 1/4] tcp: introduce tcp_read_skb()
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 09 Jun 2022 12:30:49 -0700 (PDT)
+From:   Dmitrii Dolgov <9erthalion6@gmail.com>
+To:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        songliubraving@fb.com, rostedt@goodmis.org, peterz@infradead.org,
+        mingo@redhat.com
+Cc:     Dmitrii Dolgov <9erthalion6@gmail.com>
+Subject: [PATCH] perf/kprobe: maxactive for fd-based kprobe
+Date:   Thu,  9 Jun 2022 21:29:36 +0200
+Message-Id: <20220609192936.23985-1-9erthalion6@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> On Thu, Jun 9, 2022 at 8:08 AM John Fastabend <john.fastabend@gmail.com> wrote:
-> >
-> > Cong Wang wrote:
-> > > From: Cong Wang <cong.wang@bytedance.com>
-> > >
-> > > This patch inroduces tcp_read_skb() based on tcp_read_sock(),
-> > > a preparation for the next patch which actually introduces
-> > > a new sock ops.
-> > >
-> > > TCP is special here, because it has tcp_read_sock() which is
-> > > mainly used by splice(). tcp_read_sock() supports partial read
-> > > and arbitrary offset, neither of them is needed for sockmap.
-> > >
-> > > Cc: Eric Dumazet <edumazet@google.com>
-> > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > > ---
-> > >  include/net/tcp.h |  2 ++
-> > >  net/ipv4/tcp.c    | 47 +++++++++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 49 insertions(+)
-> > >
-> > > diff --git a/include/net/tcp.h b/include/net/tcp.h
-> > > index 1e99f5c61f84..878544d0f8f9 100644
-> > > --- a/include/net/tcp.h
-> > > +++ b/include/net/tcp.h
-> > > @@ -669,6 +669,8 @@ void tcp_get_info(struct sock *, struct tcp_info *);
-> > >  /* Read 'sendfile()'-style from a TCP socket */
-> > >  int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
-> > >                 sk_read_actor_t recv_actor);
-> > > +int tcp_read_skb(struct sock *sk, read_descriptor_t *desc,
-> > > +              sk_read_actor_t recv_actor);
-> > >
-> > >  void tcp_initialize_rcv_mss(struct sock *sk);
-> > >
-> > > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> > > index 9984d23a7f3e..a18e9ababf54 100644
-> > > --- a/net/ipv4/tcp.c
-> > > +++ b/net/ipv4/tcp.c
-> > > @@ -1709,6 +1709,53 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
-> > >  }
-> > >  EXPORT_SYMBOL(tcp_read_sock);
-> > >
-> > > +int tcp_read_skb(struct sock *sk, read_descriptor_t *desc,
-> > > +              sk_read_actor_t recv_actor)
-> > > +{
-> > > +     struct tcp_sock *tp = tcp_sk(sk);
-> > > +     u32 seq = tp->copied_seq;
-> > > +     struct sk_buff *skb;
-> > > +     int copied = 0;
-> > > +     u32 offset;
-> > > +
-> > > +     if (sk->sk_state == TCP_LISTEN)
-> > > +             return -ENOTCONN;
-> > > +
-> > > +     while ((skb = tcp_recv_skb(sk, seq, &offset)) != NULL) {
-> > > +             int used;
-> > > +
-> > > +             __skb_unlink(skb, &sk->sk_receive_queue);
-> > > +             used = recv_actor(desc, skb, 0, skb->len);
-> > > +             if (used <= 0) {
-> > > +                     if (!copied)
-> > > +                             copied = used;
-> > > +                     break;
-> > > +             }
-> > > +             seq += used;
-> > > +             copied += used;
-> > > +
-> > > +             if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN) {
-> > > +                     kfree_skb(skb);
-> >
-> > Hi Cong, can you elaborate here from v2 comment.
-> >
-> > "Hm, it is tricky here, we use the skb refcount after this patchset, so
-> > it could be a real drop from another kfree_skb() in net/core/skmsg.c
-> > which initiates the drop."
-> 
-> Sure.
-> 
-> This is the source code of consume_skb():
-> 
->  911 void consume_skb(struct sk_buff *skb)
->  912 {
->  913         if (!skb_unref(skb))
->  914                 return;
->  915
->  916         trace_consume_skb(skb);
->  917         __kfree_skb(skb);
->  918 }
-> 
-> and this is kfree_skb (or kfree_skb_reason()):
-> 
->  770 void kfree_skb_reason(struct sk_buff *skb, enum skb_drop_reason reason)
->  771 {
->  772         if (!skb_unref(skb))
->  773                 return;
->  774
->  775         DEBUG_NET_WARN_ON_ONCE(reason <= 0 || reason >=
-> SKB_DROP_REASON_MAX);
->  776
->  777         trace_kfree_skb(skb, __builtin_return_address(0), reason);
->  778         __kfree_skb(skb);
->  779 }
-> 
-> So, both do refcnt before tracing, very clearly.
-> 
-> Now, let's do a simple case:
-> 
-> tcp_read_skb():
->  -> tcp_recv_skb() // Let's assume skb refcnt == 1 here
->   -> recv_actor()
->    -> skb_get() // refcnt == 2
->    -> kfree_skb() // Let's assume users drop it intentionally
->  ->kfree_skb() // refcnt == 0 here, if we had consume_skb() it would
-> not be counted as a drop
+Enable specifying maxactive for fd based kretprobe. This will be useful
+for tracing tools like bcc and bpftrace (see for example discussion [1]).
+Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
 
-OK great thanks for that it matches what I was thinking as well.
+The original patch [2] seems to be fallen through the cracks and wasn't
+applied. I've merely rebased the work done by Song Liu and verififed it
+still works.
 
-> 
-> Of course you can give another example where consume_skb() is
-> correct, but the point here is it is very tricky when refcnt, I even doubt
-> we can do anything here, maybe moving trace before refcnt.
+[1]: https://github.com/iovisor/bpftrace/issues/835
+[2]: https://lore.kernel.org/all/20191007223111.1142454-1-songliubraving@fb.com/
 
-Considering, the other case where we do kfree_skb when consume_skb()
-is correct. We have logic in the Cilium tracing tools (tetragon) to
-trace kfree_skb's and count them. So in the good case here
-we end up tripping that logic even though its expected.
+Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
+---
+ include/linux/trace_events.h    |  3 ++-
+ kernel/events/core.c            | 20 ++++++++++++++++----
+ kernel/trace/trace_event_perf.c |  5 +++--
+ kernel/trace/trace_kprobe.c     |  4 ++--
+ kernel/trace/trace_probe.h      |  2 +-
+ 5 files changed, 24 insertions(+), 10 deletions(-)
 
-The question is which is better noisy kfree_skb even when
-expected or missing kfree_skb on the drops. I'm leaning
-to consume_skb() is safer instead of noisy kfree_skb().
-
-> 
-> >
-> > The tcp_read_sock() hook is using tcp_eat_recv_skb(). Are we going
-> > to kick tracing infra even on good cases with kfree_skb()? In
-> > sk_psock_verdict_recv() we do an skb_clone() there.
-> 
-> I don't get your point here, are you suggesting we should sacrifice
-> performance just to make the drop tracing more accurate??
-
-No lets not sacrifice the performance. I'm suggesting I would
-rather go with skb_consume() and miss some kfree_skb() than
-the other way around and have extra kfree_skb() that will
-trip monitoring. Does the question make sense? I guess we
-have to pick one.
-
-> 
-> Thanks.
-
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index e6e95a9f07a5..7ca453a73252 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -850,7 +850,8 @@ extern void perf_trace_destroy(struct perf_event *event);
+ extern int  perf_trace_add(struct perf_event *event, int flags);
+ extern void perf_trace_del(struct perf_event *event, int flags);
+ #ifdef CONFIG_KPROBE_EVENTS
+-extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe);
++extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe,
++			     int max_active);
+ extern void perf_kprobe_destroy(struct perf_event *event);
+ extern int bpf_get_kprobe_info(const struct perf_event *event,
+ 			       u32 *fd_type, const char **symbol,
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 23bb19716ad3..f0e936b3dfc4 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -9809,24 +9809,34 @@ static struct pmu perf_tracepoint = {
+  * PERF_PROBE_CONFIG_IS_RETPROBE if set, create kretprobe/uretprobe
+  *                               if not set, create kprobe/uprobe
+  *
+- * The following values specify a reference counter (or semaphore in the
+- * terminology of tools like dtrace, systemtap, etc.) Userspace Statically
+- * Defined Tracepoints (USDT). Currently, we use 40 bit for the offset.
++ * PERF_UPROBE_REF_CTR_OFFSET_* specify a reference counter (or semaphore
++ * in the terminology of tools like dtrace, systemtap, etc.) Userspace
++ * Statically Defined Tracepoints (USDT). Currently, we use 40 bit for the
++ * offset.
+  *
+  * PERF_UPROBE_REF_CTR_OFFSET_BITS	# of bits in config as th offset
+  * PERF_UPROBE_REF_CTR_OFFSET_SHIFT	# of bits to shift left
++ *
++ * PERF_KPROBE_MAX_ACTIVE_* defines max_active for kretprobe.
++ * KRETPROBE_MAXACTIVE_MAX is 4096. We allow 4095 here to save a bit.
+  */
+ enum perf_probe_config {
+ 	PERF_PROBE_CONFIG_IS_RETPROBE = 1U << 0,  /* [k,u]retprobe */
+ 	PERF_UPROBE_REF_CTR_OFFSET_BITS = 32,
+ 	PERF_UPROBE_REF_CTR_OFFSET_SHIFT = 64 - PERF_UPROBE_REF_CTR_OFFSET_BITS,
++	PERF_KPROBE_MAX_ACTIVE_BITS = 12,
++	PERF_KPROBE_MAX_ACTIVE_SHIFT = 64 - PERF_KPROBE_MAX_ACTIVE_BITS,
+ };
+ 
+ PMU_FORMAT_ATTR(retprobe, "config:0");
+ #endif
+ 
+ #ifdef CONFIG_KPROBE_EVENTS
++/* KRETPROBE_MAXACTIVE_MAX is 4096, only allow 4095 here to save a bit */
++PMU_FORMAT_ATTR(max_active, "config:52-63");
++
+ static struct attribute *kprobe_attrs[] = {
++	&format_attr_max_active.attr,
+ 	&format_attr_retprobe.attr,
+ 	NULL,
+ };
+@@ -9857,6 +9867,7 @@ static int perf_kprobe_event_init(struct perf_event *event)
+ {
+ 	int err;
+ 	bool is_retprobe;
++	int max_active;
+ 
+ 	if (event->attr.type != perf_kprobe.type)
+ 		return -ENOENT;
+@@ -9871,7 +9882,8 @@ static int perf_kprobe_event_init(struct perf_event *event)
+ 		return -EOPNOTSUPP;
+ 
+ 	is_retprobe = event->attr.config & PERF_PROBE_CONFIG_IS_RETPROBE;
+-	err = perf_kprobe_init(event, is_retprobe);
++	max_active = event->attr.config >> PERF_KPROBE_MAX_ACTIVE_SHIFT;
++	err = perf_kprobe_init(event, is_retprobe, max_active);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index a114549720d6..129000327809 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -245,7 +245,8 @@ void perf_trace_destroy(struct perf_event *p_event)
+ }
+ 
+ #ifdef CONFIG_KPROBE_EVENTS
+-int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
++int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe,
++					 int max_active)
+ {
+ 	int ret;
+ 	char *func = NULL;
+@@ -271,7 +272,7 @@ int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
+ 
+ 	tp_event = create_local_trace_kprobe(
+ 		func, (void *)(unsigned long)(p_event->attr.kprobe_addr),
+-		p_event->attr.probe_offset, is_retprobe);
++		p_event->attr.probe_offset, is_retprobe, max_active);
+ 	if (IS_ERR(tp_event)) {
+ 		ret = PTR_ERR(tp_event);
+ 		goto out;
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 47cebef78532..3ad30cfce9c3 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1784,7 +1784,7 @@ static int unregister_kprobe_event(struct trace_kprobe *tk)
+ /* create a trace_kprobe, but don't add it to global lists */
+ struct trace_event_call *
+ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+-			  bool is_return)
++			  bool is_return, int max_active)
+ {
+ 	enum probe_print_type ptype;
+ 	struct trace_kprobe *tk;
+@@ -1799,7 +1799,7 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+ 	event = func ? func : "DUMMY_EVENT";
+ 
+ 	tk = alloc_trace_kprobe(KPROBE_EVENT_SYSTEM, event, (void *)addr, func,
+-				offs, 0 /* maxactive */, 0 /* nargs */,
++				offs, max_active, 0 /* nargs */,
+ 				is_return);
+ 
+ 	if (IS_ERR(tk)) {
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index 92cc149af0fd..26fe21980793 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -376,7 +376,7 @@ extern int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_typ
+ #ifdef CONFIG_PERF_EVENTS
+ extern struct trace_event_call *
+ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+-			  bool is_return);
++			  bool is_return, int max_active);
+ extern void destroy_local_trace_kprobe(struct trace_event_call *event_call);
+ 
+ extern struct trace_event_call *
+-- 
+2.32.0
 
