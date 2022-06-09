@@ -2,291 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47555443D0
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 08:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3493E544523
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 09:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237963AbiFIGcd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 02:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
+        id S236277AbiFIHxy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 03:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbiFIGcc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 02:32:32 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D64A12AB6;
-        Wed,  8 Jun 2022 23:32:31 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-e5e433d66dso29909037fac.5;
-        Wed, 08 Jun 2022 23:32:31 -0700 (PDT)
+        with ESMTP id S232357AbiFIHxw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 03:53:52 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80FFF0
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 00:53:50 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id r82so40373972ybc.13
+        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 00:53:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DOoHRHCqF9Uw79QAov5iGk1D3tQsN8GR5CeCGUSa2eU=;
-        b=MZkkI1n/EvsXg4vs1Z+p//NsUcnFW8exdoABgPXG40amKrcMoCWUSK4BfFkEjg6f7W
-         RWyAl3DQkSWv+EOZ/J5pqjFvJY6B1k9ZHT4VciC8ye0FoTSFoipvVsA51m+4UL/XbwDi
-         HGEjD7AUvnuOPdrpZNHMj54Uqcl0Z/e5OXY9Dkw7mXcMHMUeBw18/KEaTzcWXCpbI9RK
-         VujHzMsrciXFIS+U7KN4h4Q+YJq2VRnVEIAMxzPfPbhj1lV0m0G8MVJyZIuoOWNMQsyP
-         hqF3I4eTuFVnikpp7H3U7IT95YWLMI7z4X8fQ/JZybr3XlNKO/UbP8q0FPZfEW/s8TAo
-         hYzA==
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=0XYuJwlWcPhF5wKwZj6AX0M1ehVlcZ8wjqHIDg46ZGY=;
+        b=nypacSP4qioBoDwoUOZWYWCy/zSH8uox6tcVb38tdwjrTGzmnrNKjfeOZLLfoE2bWM
+         u5o0RuYYJCB8QJBA8aCQ+Q0ydFj5xEtRAKT/IEomcUstThCwoB9dWHi2hOrjinTSLK83
+         tD60CBzQkF1QfrT33w2NfMEyCzhXbWKHwt7dv8a8h5qG3baGn7J2AHHXybT5fIeyg9m5
+         pWz4/qLkXDnzriV1feTdFJG/Zc6n9ivdZ1cGb+AsApY9v2MvwB6d1j4sn8HI3xkx08kQ
+         r1/tNE8BqmQ2e2RV0ZJ7BHPKYFe0mabVM7XrUFtm++zusiRwgZeppFJMSpeCDqbhhoae
+         MY1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DOoHRHCqF9Uw79QAov5iGk1D3tQsN8GR5CeCGUSa2eU=;
-        b=KsK/vj0msOwkzQ1XW36WUANYi0Tf4QRUqwoZi+eOcfWla2lMacOSgitET1zFhLsB5O
-         iFJVzp48ZkcbhT0XEbnImy3suIPcmDdZ5SbdgZvdv83596lvozEUBL6hfKslsahm8mDH
-         RLtLDi2JteaCkBXCAYDVEaRoggVeUeKJVDGGX9zZ1JyjtGhRJNXgvaGmZCWGXz2wEy+r
-         qLC1uNiTwNj3cr/vOkWzW2SfDw8YLndo8LH2TgqyB6REBeHtdjVY2LX2Z1nrVRlA74ZM
-         HU2OidquBNcWfF+IxwJlt6yjXo1JCH6oRTEoGXuIubhrp7rjUjgprqXwqI9X30s+puzx
-         FXxg==
-X-Gm-Message-State: AOAM531Kq3FneTPruzPVmHkDvAKr2xkKxXxYTUYGVQJHwH7e++3Nkspq
-        8/yotqtfhIOJd2p+hl905z0JyNwjfEvZgi6i9TU=
-X-Google-Smtp-Source: ABdhPJx7jfTF+1gqutoTuMpuHPyBNSohGVmVj2gONs6EyyZm8RdwWec5NrIoBw0CPdp4v8lGFPTb8RilUTYv62Jdf/w=
-X-Received: by 2002:a05:6870:3105:b0:f2:9615:ff8e with SMTP id
- v5-20020a056870310500b000f29615ff8emr825151oaa.200.1654756350402; Wed, 08 Jun
- 2022 23:32:30 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=0XYuJwlWcPhF5wKwZj6AX0M1ehVlcZ8wjqHIDg46ZGY=;
+        b=m3yJaNdbNkMG2RgqtX+xqOT3Q8ddUJmYHgSrbKjz+gZe/DW7vYhoclJvahYPspD8Gu
+         m0Jk31loY4RnzOSAnyJRniBjCRyaXU4UAdYxIsoAKbHTxXaG5bpKxDh0dRnLh8u5h3fd
+         z42IsvVMUf7VWoa3chu+wnFRuu5w4Wo2nO9eUjsG/dscyG3U1qgHRn+QvP24WnQc7vRQ
+         v7AMP0LCEgx9+w80Rm6PPthwwUUz0M96adF4evMBxkaHGqJuIftOjh7x1+2EMrnkl/Sa
+         VnQqB6qhAbFJV0r5BYgr+vDrtk20TdqzGzraX/WsLF11KnR2XfS1rv4/U7J9+kAyKNmj
+         mgcQ==
+X-Gm-Message-State: AOAM5304bNASkCBJsbJgxTXEbtnCfJdPcgnT89Zr0Xtk2z7T4/uvs/dS
+        NEBebiCCHhgBvQ3lqbMnEmrYv+YUT6ab2zZazJQ=
+X-Google-Smtp-Source: ABdhPJxcNEhPC7AeL9kaBqgCD24zfkjg2SQp/qCyj2QdxEpNS6YCUWIXSJROjitWpRK5IOVjFhBGEdjFtgEAOhw8Xno=
+X-Received: by 2002:a25:2003:0:b0:663:e799:4ab5 with SMTP id
+ g3-20020a252003000000b00663e7994ab5mr10204240ybg.403.1654761229477; Thu, 09
+ Jun 2022 00:53:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220606132741.3462925-1-james.hilliard1@gmail.com>
- <CAEf4BzZ8eTqVnsLqc52=AyHeAsuVB3Nv7uBW19t2pcb9h7p2hQ@mail.gmail.com>
- <CADvTj4o2cbCpC40487=rgzSJZ8i94U4RR3=_s8ANE=phPQA6VQ@mail.gmail.com> <CAEf4BzaH0ZzEabjq43eZ4pZ7=SufYswffHwi1POn93Ty9SPJ6Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzaH0ZzEabjq43eZ4pZ7=SufYswffHwi1POn93Ty9SPJ6Q@mail.gmail.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Thu, 9 Jun 2022 00:32:19 -0600
-Message-ID: <CADvTj4r_RmvPbz_+W-E3TFrPwwgHb4Z4XpWYYieTfPhcZWV39g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] libbpf: fix broken gcc pragma macros in bpf_helpers.h/bpf_tracing.h
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Sender: irenembogo22@gmail.com
+Received: by 2002:a05:7000:1f9d:0:0:0:0 with HTTP; Thu, 9 Jun 2022 00:53:49
+ -0700 (PDT)
+From:   Dina Mckenna <dinamckenna1894@gmail.com>
+Date:   Thu, 9 Jun 2022 07:53:49 +0000
+X-Google-Sender-Auth: j8gis2Kl3HtP1hbwGJhUycZy-L0
+Message-ID: <CALjO3ZGnx5O8SzbXpAfaa-oihBLOHUD6hhqyUxee4VNz21=ZUQ@mail.gmail.com>
+Subject: Please need your urgent assistance,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.2 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
+        BAYES_80,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,MONEY_FRAUD_8,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_MONEY,URG_BIZ autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b33 listed in]
+        [list.dnswl.org]
+        *  2.0 BAYES_80 BODY: Bayes spam probability is 80 to 95%
+        *      [score: 0.9256]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [irenembogo22[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [dinamckenna1894[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.6 URG_BIZ Contains urgent matter
+        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
+        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
+        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 7, 2022 at 5:21 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Jun 6, 2022 at 2:20 PM James Hilliard <james.hilliard1@gmail.com> wrote:
-> >
-> > On Mon, Jun 6, 2022 at 12:02 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Jun 6, 2022 at 6:28 AM James Hilliard <james.hilliard1@gmail.com> wrote:
-> > > >
-> > > > It seems the gcc preprocessor breaks unless pragmas are wrapped
-> > > > individually inside macros.
-> > > >
-> > > > Fixes errors like:
-> > > > error: expected identifier or '(' before '#pragma'
-> > > >   106 | SEC("cgroup/bind6")
-> > > >       | ^~~
-> > > >
-> > > > error: expected '=', ',', ';', 'asm' or '__attribute__' before '#pragma'
-> > > >   114 | char _license[] SEC("license") = "GPL";
-> > > >       | ^~~
-> > > >
-> > >
-> > > We've been using this macro in this form for a while with no errors.
-> > > How do you get these errors in the first place?
-> >
-> > I was attempting to compile the systemd bpf programs using gcc 12.1.
-> > https://github.com/systemd/systemd/tree/main/src/core/bpf
->
-> It would be great to be able to repro it as part of selftests. Can you
-> try gcc 12 with selftests/bpf and see if you get the same problem?
->
-> >
-> > > _Pragma is supposed to
-> > > be a full equivalent of #pragma specifically to be able to be used in
-> > > macros, so these work-arounds shouldn't be necessary.
-> >
-> > I did try and style this like the nested macro example here:
-> > https://gcc.gnu.org/onlinedocs/gcc/Diagnostic-Pragmas.html
->
->
-> If you are referring to DO_PRAGMA example? That example is done that
-> way to do argument stringification, but not because _Pragma can't be
-> used as is in macros.
->
-> >
-> > > Let's first try
-> > > to root cause this.
-> >
-> > I was looking around and it seems there's a bunch of gcc preprocessor
-> > pragma issues in general, restyling this seemed to be the best option
-> > at the moment since a lot looked to be unfixed:
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53431
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55578
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89718
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91669
-> >
->
-> I don't like the obscurity of the changes in this patch and don't see
-> how it fundamentally changes anything. So I'd like to actually try to
-> be able to repro it and see what other solutions there are before
-> committing to this.
->
-> I also suspect that it's only the SEC() macro that's problematic and
-> we shouldn't touch any other macro at all. But again, I'd like to get
-> a repro first.
+Hello my dear,
 
-Ok, yeah looks like it's just the SEC() macro, resent with just that changed:
-https://lore.kernel.org/bpf/20220609062412.3950380-1-james.hilliard1@gmail.com/
+ I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you.. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs. Dina Howley. Mckenna, a widow. I am
+suffering from a long time brain tumor, It has defiled all forms of
+medical treatment, and right now I have about a few months to leave,
+according to medical experts. The situation has gotten complicated
+recently with my inability to hear proper, am communicating with you
+with the help of the chief nurse herein the hospital, from all
+indication my conditions is really deteriorating and it is quite
+obvious that, according to my doctors they have advised me that I may
+not live too long, Because this illness has gotten to a very bad
+stage. I plead that you will not expose or betray this trust and
+confidence that I am about to repose on you for the mutual benefit of
+the orphans and the less privilege. I have some funds I inherited from
+my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
+Having known my condition, I decided to donate this fund to you
+believing that you will utilize it the way i am going to instruct
+herein. I need you to assist me and reclaim this money and use it for
+Charity works therein your country  for orphanages and gives justice
+and help to the poor, needy and widows says The Lord." Jeremiah
+22:15-16.=E2=80=9C and also build schools for less privilege that will be
+named after my late husband if possible and to promote the word of God
+and the effort that the house of God is maintained. I do not want a
+situation where this money will be used in an ungodly manner. That's
+why I'm taking this decision. I'm not afraid of death, so I know where
+I'm going. I accept this decision because I do not have any child who
+will inherit this money after I die.. Please I want your sincerely and
+urgent answer to know if you will be able to execute this project for
+the glory of God, and I will give you more information on how the fund
+will be transferred to your bank account. May the grace, peace, love
+and the truth in the Word of God be with you and all those that you
+love and care for.
 
-Seems there's a separate issue with -std=c17 and typeof():
-https://lore.kernel.org/bpf/20220609062829.293217-1-james.hilliard1@gmail.com/
+I'm waiting for your immediate reply.
 
->
-> > >
-> > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > > > ---
-> > > >  tools/lib/bpf/bpf_helpers.h | 26 ++++++++++++++------------
-> > > >  tools/lib/bpf/bpf_tracing.h | 26 ++++++++++++++------------
-> > > >  2 files changed, 28 insertions(+), 24 deletions(-)
-> > > >
-> > > > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> > > > index fb04eaf367f1..6d159082727d 100644
-> > > > --- a/tools/lib/bpf/bpf_helpers.h
-> > > > +++ b/tools/lib/bpf/bpf_helpers.h
-> > > > @@ -22,11 +22,13 @@
-> > > >   * To allow use of SEC() with externs (e.g., for extern .maps declarations),
-> > > >   * make sure __attribute__((unused)) doesn't trigger compilation warning.
-> > > >   */
-> > > > +#define __gcc_helpers_pragma(x) _Pragma(#x)
-> > > > +#define __gcc_helpers_diag_pragma(x) __gcc_helpers_pragma("GCC diagnostic " #x)
-> > > >  #define SEC(name) \
-> > > > -       _Pragma("GCC diagnostic push")                                      \
-> > > > -       _Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")          \
-> > > > +       __gcc_helpers_diag_pragma(push)                                     \
-> > > > +       __gcc_helpers_diag_pragma(ignored "-Wignored-attributes")           \
-> > > >         __attribute__((section(name), used))                                \
-> > > > -       _Pragma("GCC diagnostic pop")                                       \
-> > > > +       __gcc_helpers_diag_pragma(pop)
-> > > >
-> > > >  /* Avoid 'linux/stddef.h' definition of '__always_inline'. */
-> > > >  #undef __always_inline
-> > > > @@ -215,10 +217,10 @@ enum libbpf_tristate {
-> > > >         static const char ___fmt[] = fmt;                       \
-> > > >         unsigned long long ___param[___bpf_narg(args)];         \
-> > > >                                                                 \
-> > > > -       _Pragma("GCC diagnostic push")                          \
-> > > > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> > > > +       __gcc_helpers_diag_pragma(push)                         \
-> > > > +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
-> > > >         ___bpf_fill(___param, args);                            \
-> > > > -       _Pragma("GCC diagnostic pop")                           \
-> > > > +       __gcc_helpers_diag_pragma(pop)                          \
-> > > >                                                                 \
-> > > >         bpf_seq_printf(seq, ___fmt, sizeof(___fmt),             \
-> > > >                        ___param, sizeof(___param));             \
-> > > > @@ -233,10 +235,10 @@ enum libbpf_tristate {
-> > > >         static const char ___fmt[] = fmt;                       \
-> > > >         unsigned long long ___param[___bpf_narg(args)];         \
-> > > >                                                                 \
-> > > > -       _Pragma("GCC diagnostic push")                          \
-> > > > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> > > > +       __gcc_helpers_diag_pragma(push)                         \
-> > > > +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
-> > > >         ___bpf_fill(___param, args);                            \
-> > > > -       _Pragma("GCC diagnostic pop")                           \
-> > > > +       __gcc_helpers_diag_pragma(pop)                          \
-> > > >                                                                 \
-> > > >         bpf_snprintf(out, out_size, ___fmt,                     \
-> > > >                      ___param, sizeof(___param));               \
-> > > > @@ -264,10 +266,10 @@ enum libbpf_tristate {
-> > > >         static const char ___fmt[] = fmt;                       \
-> > > >         unsigned long long ___param[___bpf_narg(args)];         \
-> > > >                                                                 \
-> > > > -       _Pragma("GCC diagnostic push")                          \
-> > > > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")  \
-> > > > +       __gcc_helpers_diag_pragma(push)                         \
-> > > > +       __gcc_helpers_diag_pragma(ignored "-Wint-conversion")   \
-> > > >         ___bpf_fill(___param, args);                            \
-> > > > -       _Pragma("GCC diagnostic pop")                           \
-> > > > +       __gcc_helpers_diag_pragma(pop)                          \
-> > > >                                                                 \
-> > > >         bpf_trace_vprintk(___fmt, sizeof(___fmt),               \
-> > > >                           ___param, sizeof(___param));          \
-> > > > diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> > > > index 01ce121c302d..e08ffc290b3e 100644
-> > > > --- a/tools/lib/bpf/bpf_tracing.h
-> > > > +++ b/tools/lib/bpf/bpf_tracing.h
-> > > > @@ -422,16 +422,18 @@ struct pt_regs;
-> > > >   * This is useful when using BPF helpers that expect original context
-> > > >   * as one of the parameters (e.g., for bpf_perf_event_output()).
-> > > >   */
-> > > > +#define __gcc_tracing_pragma(x) _Pragma(#x)
-> > > > +#define __gcc_tracing_diag_pragma(x) __gcc_tracing_pragma("GCC diagnostic " #x)
-> > > >  #define BPF_PROG(name, args...)                                                    \
-> > > >  name(unsigned long long *ctx);                                             \
-> > > >  static __attribute__((always_inline)) typeof(name(0))                      \
-> > > >  ____##name(unsigned long long *ctx, ##args);                               \
-> > > >  typeof(name(0)) name(unsigned long long *ctx)                              \
-> > > >  {                                                                          \
-> > > > -       _Pragma("GCC diagnostic push")                                      \
-> > > > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> > > > +       __gcc_tracing_diag_pragma(push)                                     \
-> > > > +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
-> > > >         return ____##name(___bpf_ctx_cast(args));                           \
-> > > > -       _Pragma("GCC diagnostic pop")                                       \
-> > > > +       __gcc_tracing_diag_pragma(pop)                                      \
-> > > >  }                                                                          \
-> > > >  static __attribute__((always_inline)) typeof(name(0))                      \
-> > > >  ____##name(unsigned long long *ctx, ##args)
-> > > > @@ -462,10 +464,10 @@ static __attribute__((always_inline)) typeof(name(0))                         \
-> > > >  ____##name(struct pt_regs *ctx, ##args);                                   \
-> > > >  typeof(name(0)) name(struct pt_regs *ctx)                                  \
-> > > >  {                                                                          \
-> > > > -       _Pragma("GCC diagnostic push")                                      \
-> > > > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> > > > +       __gcc_tracing_diag_pragma(push)                                     \
-> > > > +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
-> > > >         return ____##name(___bpf_kprobe_args(args));                        \
-> > > > -       _Pragma("GCC diagnostic pop")                                       \
-> > > > +       __gcc_tracing_diag_pragma(pop)                                      \
-> > > >  }                                                                          \
-> > > >  static __attribute__((always_inline)) typeof(name(0))                      \
-> > > >  ____##name(struct pt_regs *ctx, ##args)
-> > > > @@ -486,10 +488,10 @@ static __attribute__((always_inline)) typeof(name(0))                         \
-> > > >  ____##name(struct pt_regs *ctx, ##args);                                   \
-> > > >  typeof(name(0)) name(struct pt_regs *ctx)                                  \
-> > > >  {                                                                          \
-> > > > -       _Pragma("GCC diagnostic push")                                      \
-> > > > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> > > > +       __gcc_tracing_diag_pragma(push)                                     \
-> > > > +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
-> > > >         return ____##name(___bpf_kretprobe_args(args));                     \
-> > > > -       _Pragma("GCC diagnostic pop")                                       \
-> > > > +       __gcc_tracing_diag_pragma(pop)                                      \
-> > > >  }                                                                          \
-> > > >  static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
-> > > >
-> > > > @@ -520,10 +522,10 @@ ____##name(struct pt_regs *ctx, ##args);                              \
-> > > >  typeof(name(0)) name(struct pt_regs *ctx)                                  \
-> > > >  {                                                                          \
-> > > >         struct pt_regs *regs = PT_REGS_SYSCALL_REGS(ctx);                   \
-> > > > -       _Pragma("GCC diagnostic push")                                      \
-> > > > -       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
-> > > > +       __gcc_tracing_diag_pragma(push)             \
-> > > > +       __gcc_tracing_diag_pragma(ignored "-Wint-conversion")               \
-> > > >         return ____##name(___bpf_syscall_args(args));                       \
-> > > > -       _Pragma("GCC diagnostic pop")                                       \
-> > > > +       __gcc_tracing_diag_pragma(pop)                                      \
-> > > >  }                                                                          \
-> > > >  static __attribute__((always_inline)) typeof(name(0))                      \
-> > > >  ____##name(struct pt_regs *ctx, ##args)
-> > > > --
-> > > > 2.25.1
-> > > >
+May God Bless you,
+Mrs. Dina Howley. Mckenna.
