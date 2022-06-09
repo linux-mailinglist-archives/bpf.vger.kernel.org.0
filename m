@@ -2,177 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82889544CAF
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 14:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C964544DF6
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 15:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243657AbiFIMzU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 08:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37532 "EHLO
+        id S239732AbiFINoW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 09:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242938AbiFIMzU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 08:55:20 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA4B60C6;
-        Thu,  9 Jun 2022 05:55:18 -0700 (PDT)
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LJkW201N5z6H784;
-        Thu,  9 Jun 2022 20:51:42 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 9 Jun 2022 14:55:15 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Thu, 9 Jun 2022 14:55:15 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 0/9] bpf: Per-operation map permissions
-Thread-Topic: [PATCH v2 0/9] bpf: Per-operation map permissions
-Thread-Index: AQHYdo5e8PiAHSOEuEKwSGGt9PxhiK0+C0EAgAkHoBA=
-Date:   Thu, 9 Jun 2022 12:55:15 +0000
-Message-ID: <4b6864c25f47419d99ed86873276ee59@huawei.com>
-References: <20220602143748.673971-1-roberto.sassu@huawei.com>
- <CAEf4BzbL6c7V+-REL7V=dERrpyTus9+9qW8nW0UZn49Y_5x-MA@mail.gmail.com>
-In-Reply-To: <CAEf4BzbL6c7V+-REL7V=dERrpyTus9+9qW8nW0UZn49Y_5x-MA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.21]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S237172AbiFINoV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 09:44:21 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8472D25597
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 06:44:20 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id a15so23966623wrh.2
+        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 06:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YW9wU4Ml3Gc4v0WwfEHU9uvOu4YoxGdWNjzJgfnoTJI=;
+        b=SDgk8MraMWSRR84fFBZDM7VtJ6s33T966lYq9TnLKu9jmKxXt1Ta5z73fVzUb1EWdW
+         s4a3pIFDbaGEIllsvnrzvTl9wmyPGEhBvmSxFiz36pQiqqa/uwjzwtmt03AmrbxpeFh7
+         8nBC2oq7J4K+PcVTEcHidmAmSU+PDUGPm9NW3T+MHeIXYOdPasaH0xj8n70Gh1nBd3zZ
+         60lZu0jwhuIfbsD0rIZiNj2sa29f3fSZbpOhYeNOTPjeO5+J7vGbzmoMyaP6vl+rleeU
+         BLLfGecaBVXRhSmnw94l+T/569ViYolnQFvkn2VvQmaWL1YneORqFPi50DMI4zYBn6iu
+         T2qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YW9wU4Ml3Gc4v0WwfEHU9uvOu4YoxGdWNjzJgfnoTJI=;
+        b=qumuVeNDKgN/XJXvFVPmM3+VV5E0jmfSKx/3zdZPsYf4UtV1yvO62QIEA9cqOswhpA
+         YRTJysREZizAdyFSwE4rYcHl6+nPLO46e/IdhHRMoKMgp+eW4vhJvsMKc8WMpZW5blQH
+         cVZNADTebtZtIqN9gDW/w7xagXPIPlytp5fdijsjODfqmi+MIEqnYueBSWduBCwo8EVe
+         vyCNWhq5AB1KaWsEJnCq69GPV+vzQmeTZ55B0VkN3s34d7PK657baRvk6XrN8jM1SuhB
+         H0NHN8/KYI7k2vDbmuFvsGVOKDRTlfUzXBkDF8IGQprO0k7gANg4uWfFxyVivpjXe97F
+         ybSg==
+X-Gm-Message-State: AOAM533ivDe4Gs+ggz/I9R02+LHxtEtRuVRvzjKczcafDJu67Dj9jiUX
+        pKwi3KbJYWugvwUy6vqNxAmthg==
+X-Google-Smtp-Source: ABdhPJyR/nh7pgv6msGgRl8oYN0HcwBjF4d5M4UNp1VbhaJHDKn3gUSp1+VdDCN5SoPLoYOD2Xd3Vg==
+X-Received: by 2002:a5d:484d:0:b0:215:e7bf:3e71 with SMTP id n13-20020a5d484d000000b00215e7bf3e71mr30112232wrs.435.1654782259036;
+        Thu, 09 Jun 2022 06:44:19 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id k5-20020adff285000000b002101ed6e70fsm20541472wro.37.2022.06.09.06.44.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jun 2022 06:44:18 -0700 (PDT)
+Date:   Thu, 9 Jun 2022 14:43:55 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH] bpftool: Fix bootstrapping during a cross compilation
+Message-ID: <YqH5G1DlKgbmRZzO@myrica>
+References: <8d297f0c-cfd0-ef6f-3970-6dddb3d9a87a@synopsys.com>
+ <474e37a8-0ce2-9d2e-5632-755a0746c8a8@isovalent.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <474e37a8-0ce2-9d2e-5632-755a0746c8a8@isovalent.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBBbmRyaWkgTmFrcnlpa28gW21haWx0bzphbmRyaWkubmFrcnlpa29AZ21haWwuY29t
-XQ0KPiBTZW50OiBGcmlkYXksIEp1bmUgMywgMjAyMiAxMTowMCBQTQ0KPiBPbiBUaHUsIEp1biAy
-LCAyMDIyIGF0IDc6MzggQU0gUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3ZWkuY29t
-Pg0KPiB3cm90ZToNCj4gPg0KPiA+IFdpdGggdGhlIGJwZl9tYXAgc2VjdXJpdHkgaG9vaywgYW4g
-ZUJQRiBwcm9ncmFtIGlzIGFibGUgdG8gcmVzdHJpY3QgYWNjZXNzDQo+ID4gdG8gYSBtYXAuIEZv
-ciBleGFtcGxlLCBpdCBtaWdodCBhbGxvdyBvbmx5IHJlYWQgYWNjZXNzZXMgYW5kIGRlbnkgd3Jp
-dGUNCj4gPiBhY2Nlc3Nlcy4NCj4gPg0KPiA+IFVuZm9ydHVuYXRlbHksIHBlcm1pc3Npb25zIGFy
-ZSBub3QgYWNjdXJhdGVseSBzcGVjaWZpZWQgYnkgbGliYnBmIGFuZA0KPiA+IGJwZnRvb2wuIEFz
-IGEgY29uc2VxdWVuY2UsIGV2ZW4gaWYgdGhleSBhcmUgcmVxdWVzdGVkIHRvIHBlcmZvcm0gYQ0K
-PiA+IHJlYWQtbGlrZSBvcGVyYXRpb24sIHN1Y2ggYXMgYSBtYXAgbG9va3VwLCB0aGF0IG9wZXJh
-dGlvbiBmYWlscyBldmVuIGlmIHRoZQ0KPiA+IGNhbGxlciBoYXMgdGhlIHJpZ2h0IHRvIGRvIHNv
-Lg0KPiA+DQo+ID4gRXZlbiB3b3JzZSwgdGhlIGl0ZXJhdGlvbiBvdmVyIGV4aXN0aW5nIG1hcHMg
-c3RvcHMgYXMgc29vbiBhcyBhDQo+ID4gd3JpdGUtcHJvdGVjdGVkIG9uZSBpcyBlbmNvdW50ZXJl
-ZC4gTWFwcyBhZnRlciB0aGUgd3JpdGUtcHJvdGVjdGVkIG9uZSBhcmUNCj4gPiBub3QgYWNjZXNz
-aWJsZSwgZXZlbiBpZiB0aGUgdXNlciBoYXMgdGhlIHJpZ2h0IHRvIHBlcmZvcm0gb3BlcmF0aW9u
-cyBvbg0KPiA+IHRoZW0uDQo+ID4NCj4gPiBBdCBsb3cgbGV2ZWwsIHRoZSBwcm9ibGVtIGlzIHRo
-YXQgb3Blbl9mbGFncyBhbmQgZmlsZV9mbGFncywgcmVzcGVjdGl2ZWx5DQo+ID4gaW4gdGhlIGJw
-Zl9tYXBfZ2V0X2ZkX2J5X2lkKCkgYW5kIGJwZl9vYmpfZ2V0KCksIGFyZSBzZXQgdG8gemVyby4g
-VGhlDQo+ID4ga2VybmVsIGludGVycHJldHMgdGhpcyBhcyBhIHJlcXVlc3QgdG8gb2J0YWluIGEg
-ZmlsZSBkZXNjcmlwdG9yIHdpdGggZnVsbA0KPiA+IHBlcm1pc3Npb25zLg0KPiA+DQo+ID4gRm9y
-IHNvbWUgb3BlcmF0aW9ucywgbGlrZSBzaG93IG9yIGR1bXAsIGEgcmVhZCBmaWxlIGRlc2NyaXB0
-b3IgaXMgZW5vdWdoLg0KPiA+IFRob3NlIG9wZXJhdGlvbnMgY291bGQgYmUgc3RpbGwgcGVyZm9y
-bWVkIGV2ZW4gaW4gYSB3cml0ZS1wcm90ZWN0ZWQgbWFwLg0KPiA+DQo+ID4gQWxzbyBmb3Igc2Vh
-cmNoaW5nIGEgbWFwIGJ5IG5hbWUsIHdoaWNoIHJlcXVpcmVzIGdldHRpbmcgdGhlIG1hcCBpbmZv
-LCBhDQo+ID4gcmVhZCBmaWxlIGRlc2NyaXB0b3IgaXMgZW5vdWdoLiBJZiBhbiBvcGVyYXRpb24g
-cmVxdWlyZXMgbW9yZSBwZXJtaXNzaW9ucywNCj4gPiB0aGV5IGNvdWxkIHN0aWxsIGJlIHJlcXVl
-c3RlZCBsYXRlciwgYWZ0ZXIgdGhlIHNlYXJjaC4NCj4gPg0KPiA+IEZpcnN0LCBzb2x2ZSBib3Ro
-IHByb2JsZW1zIGJ5IGV4dGVuZGluZyBsaWJicGYgd2l0aCB0d28gbmV3IGZ1bmN0aW9ucywNCj4g
-PiBicGZfbWFwX2dldF9mZF9ieV9pZF9mbGFncygpIGFuZCBicGZfb2JqX2dldF9mbGFncygpLCB3
-aGljaCB1bmxpa2UgdGhlaXINCj4gPiBjb3VudGVycGFydHMgYnBmX21hcF9nZXRfZmRfYnlfaWQo
-KSBhbmQgYnBmX29ial9nZXQoKSwgaGF2ZSB0aGUgYWRkaXRpb25hbA0KPiA+IHBhcmFtZXRlciBm
-bGFncyB0byBzcGVjaWZ5IHRoZSBuZWVkZWQgcGVybWlzc2lvbnMgZm9yIGFuIG9wZXJhdGlvbi4N
-Cj4gPg0KPiA+IFRoZW4sIHByb3BhZ2F0ZSB0aGUgZmxhZ3MgaW4gYnBmdG9vbCBmcm9tIHRoZSBm
-dW5jdGlvbnMgaW1wbGVtZW50aW5nIHRoZQ0KPiA+IHN1YmNvbW1hbmRzIGRvd24gdG8gdGhlIGZ1
-bmN0aW9ucyBjYWxsaW5nIGJwZl9tYXBfZ2V0X2ZkX2J5X2lkKCkgYW5kDQo+ID4gYnBmX29ial9n
-ZXQoKSwgYW5kIHJlcGxhY2UgdGhlIGxhdHRlciBmdW5jdGlvbnMgd2l0aCB0aGVpciBuZXcgdmFy
-aWFudC4NCj4gPiBJbml0aWFsbHksIHNldCB0aGUgZmxhZ3MgdG8gemVybywgc28gdGhhdCB0aGUg
-Y3VycmVudCBiZWhhdmlvciBkb2VzIG5vdA0KPiA+IGNoYW5nZS4NCj4gPg0KPiA+IFRoZSBvbmx5
-IGV4Y2VwdGlvbiBpcyBmb3IgbWFwIHNlYXJjaCBieSBuYW1lLCB3aGVyZSBhIHJlYWQtb25seSBw
-ZXJtaXNzaW9uDQo+ID4gaXMgcmVxdWVzdGVkLCByZWdhcmRsZXNzIG9mIHRoZSBvcGVyYXRpb24s
-IHRvIGdldCB0aGUgbWFwIGluZm8uIEluIHRoaXMNCj4gPiBjYXNlLCByZXF1ZXN0IGEgbmV3IGZp
-bGUgZGVzY3JpcHRvciBpZiBhIHdyaXRlLWxpa2Ugb3BlcmF0aW9uIG5lZWRzIHRvIGJlDQo+ID4g
-cGVyZm9ybWVkIGFmdGVyIHRoZSBzZWFyY2guDQo+ID4NCj4gPiBGaW5hbGx5LCBpZGVudGlmeSBv
-dGhlciByZWFkLWxpa2Ugb3BlcmF0aW9ucyBpbiBicGZ0b29sIGFuZCBmb3IgdGhvc2UNCj4gPiBy
-ZXBsYWNlIHRoZSB6ZXJvIHZhbHVlIGZvciBmbGFncyB3aXRoIEJQRl9GX1JET05MWS4NCj4gPg0K
-PiA+IFRoZSBwYXRjaCBzZXQgaXMgb3JnYW5pemVkIGFzIGZvbGxvd3MuDQo+ID4NCj4gPiBQYXRj
-aGVzIDEtMiBpbnRyb2R1Y2UgdGhlIHR3byBuZXcgdmFyaWFudHMgb2YgYnBmX21hcF9nZXRfZmRf
-YnlfaWQoKSBhbmQNCj4gPiBicGZfb2JqX2dldCgpIGluIGxpYmJwZiwgbmFtZWQgcmVzcGVjdGl2
-ZWx5IGJwZl9tYXBfZ2V0X2ZkX2J5X2lkX2ZsYWdzKCkNCj4gPiBhbmQgYnBmX29ial9nZXRfZmxh
-Z3MoKS4NCj4gPg0KPiA+IFBhdGNoZXMgMy03IHByb3BhZ2F0ZSB0aGUgZmxhZ3MgaW4gYnBmdG9v
-bCBmcm9tIHRoZSBmdW5jdGlvbnMgaW1wbGVtZW50aW5nDQo+ID4gdGhlIHN1YmNvbW1hbmRzIHRv
-IHRoZSB0d28gbmV3IGxpYmJwZiBmdW5jdGlvbnMsIGFuZCBhbHdheXMgc2V0IGZsYWdzIHRvDQo+
-ID4gQlBGX0ZfUkRPTkxZIGZvciB0aGUgbWFwIHNlYXJjaCBvcGVyYXRpb24uDQo+ID4NCj4gPiBQ
-YXRjaCA4IGFkanVzdHMgcGVybWlzc2lvbnMgZGVwZW5kaW5nIG9uIHRoZSBtYXAgb3BlcmF0aW9u
-IHBlcmZvcm1lZC4NCj4gPg0KPiA+IFBhdGNoIDkgZW5zdXJlcyB0aGF0IHJlYWQtb25seSBhY2Nl
-c3NlcyB0byBhIHdyaXRlLXByb3RlY3RlZCBtYXAgc3VjY2VlZA0KPiA+IGFuZCB3cml0ZSBhY2Nl
-c3NlcyBzdGlsbCBmYWlsLiBBbHNvIGVuc3VyZSB0aGF0IG1hcCBzZWFyY2ggaXMgYWx3YXlzDQo+
-ID4gc3VjY2Vzc2Z1bCBldmVuIGlmIHRoZXJlIGFyZSB3cml0ZS1wcm90ZWN0ZWQgbWFwcy4NCj4g
-Pg0KPiA+IENoYW5nZWxvZw0KPiA+DQo+ID4gdjE6DQo+ID4gICAtIERlZmluZSBwZXItb3BlcmF0
-aW9uIHBlcm1pc3Npb25zIHJhdGhlciB0aGFuIHJldHJ5aW5nIGFjY2VzcyB3aXRoDQo+ID4gICAg
-IHJlYWQtb25seSBwZXJtaXNzaW9uIChzdWdnZXN0ZWQgYnkgRGFuaWVsKQ0KPiA+ICAgICBodHRw
-czovL2xvcmUua2VybmVsLm9yZy9icGYvMjAyMjA1MzAwODQ1MTQuMTAxNzAtMS0NCj4gcm9iZXJ0
-by5zYXNzdUBodWF3ZWkuY29tLw0KPiA+DQo+ID4gUm9iZXJ0byBTYXNzdSAoOSk6DQo+ID4gICBs
-aWJicGY6IEludHJvZHVjZSBicGZfbWFwX2dldF9mZF9ieV9pZF9mbGFncygpDQo+ID4gICBsaWJi
-cGY6IEludHJvZHVjZSBicGZfb2JqX2dldF9mbGFncygpDQo+ID4gICBicGZ0b29sOiBBZGQgZmxh
-Z3MgcGFyYW1ldGVyIHRvIG9wZW5fb2JqX3Bpbm5lZF9hbnkoKSBhbmQNCj4gPiAgICAgb3Blbl9v
-YmpfcGlubmVkKCkNCj4gPiAgIGJwZnRvb2w6IEFkZCBmbGFncyBwYXJhbWV0ZXIgdG8gKl9wYXJz
-ZV9mZCgpIGZ1bmN0aW9ucw0KPiA+ICAgYnBmdG9vbDogQWRkIGZsYWdzIHBhcmFtZXRlciB0byBt
-YXBfcGFyc2VfZmRzKCkNCj4gPiAgIGJwZnRvb2w6IEFkZCBmbGFncyBwYXJhbWV0ZXIgdG8gbWFw
-X3BhcnNlX2ZkX2FuZF9pbmZvKCkNCj4gPiAgIGJwZnRvb2w6IEFkZCBmbGFncyBwYXJhbWV0ZXIg
-aW4gc3RydWN0X29wcyBmdW5jdGlvbnMNCj4gPiAgIGJwZnRvb2w6IEFkanVzdCBtYXAgcGVybWlz
-c2lvbnMNCj4gPiAgIHNlbGZ0ZXN0cy9icGY6IEFkZCBtYXAgYWNjZXNzIHRlc3RzDQo+ID4NCj4g
-PiAgdG9vbHMvYnBmL2JwZnRvb2wvYnRmLmMgICAgICAgICAgICAgICAgICAgICAgIHwgIDExICst
-DQo+ID4gIHRvb2xzL2JwZi9icGZ0b29sL2Nncm91cC5jICAgICAgICAgICAgICAgICAgICB8ICAg
-NCArLQ0KPiA+ICB0b29scy9icGYvYnBmdG9vbC9jb21tb24uYyAgICAgICAgICAgICAgICAgICAg
-fCAgNTIgKystLQ0KPiA+ICB0b29scy9icGYvYnBmdG9vbC9pdGVyLmMgICAgICAgICAgICAgICAg
-ICAgICAgfCAgIDIgKy0NCj4gPiAgdG9vbHMvYnBmL2JwZnRvb2wvbGluay5jICAgICAgICAgICAg
-ICAgICAgICAgIHwgICA5ICstDQo+ID4gIHRvb2xzL2JwZi9icGZ0b29sL21haW4uaCAgICAgICAg
-ICAgICAgICAgICAgICB8ICAxNyArLQ0KPiA+ICB0b29scy9icGYvYnBmdG9vbC9tYXAuYyAgICAg
-ICAgICAgICAgICAgICAgICAgfCAgMjQgKy0NCj4gPiAgdG9vbHMvYnBmL2JwZnRvb2wvbWFwX3Bl
-cmZfcmluZy5jICAgICAgICAgICAgIHwgICAzICstDQo+ID4gIHRvb2xzL2JwZi9icGZ0b29sL25l
-dC5jICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArLQ0KPiA+ICB0b29scy9icGYvYnBmdG9v
-bC9wcm9nLmMgICAgICAgICAgICAgICAgICAgICAgfCAgMTIgKy0NCj4gPiAgdG9vbHMvYnBmL2Jw
-ZnRvb2wvc3RydWN0X29wcy5jICAgICAgICAgICAgICAgIHwgIDM5ICsrLQ0KPiA+ICB0b29scy9s
-aWIvYnBmL2JwZi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTYgKy0NCj4gPiAgdG9v
-bHMvbGliL2JwZi9icGYuaCAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsNCj4gPiAg
-dG9vbHMvbGliL2JwZi9saWJicGYubWFwICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsNCj4g
-PiAgLi4uL2JwZi9wcm9nX3Rlc3RzL3Rlc3RfbWFwX2NoZWNrX2FjY2Vzcy5jICAgIHwgMjY0ICsr
-KysrKysrKysrKysrKysrKw0KPiA+ICAuLi4vc2VsZnRlc3RzL2JwZi9wcm9ncy9tYXBfY2hlY2tf
-YWNjZXNzLmMgICAgfCAgNjUgKysrKysNCj4gPiAgMTYgZmlsZXMgY2hhbmdlZCwgNDUyIGluc2Vy
-dGlvbnMoKyksIDcyIGRlbGV0aW9ucygtKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gdG9v
-bHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvdGVzdF9tYXBfY2hlY2tfYWNjZXNz
-LmMNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9w
-cm9ncy9tYXBfY2hlY2tfYWNjZXNzLmMNCj4gPg0KPiA+IC0tDQo+ID4gMi4yNS4xDQo+ID4NCj4g
-DQo+IEFsc28gY2hlY2sgQ0kgZmFpbHVyZXMgKFswXSkuDQoNClRoYW5rcyBmb3IgdGhlIHJldmll
-dyBBbmRyaWkuIFdpbGwgc2VuZCBhIG5ldyB2ZXJzaW9uIG9mIHRoZQ0KcGF0Y2ggc2V0IHNvb24u
-DQoNClJvYmVydG8NCg0KSFVBV0VJIFRFQ0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIg
-NTYwNjMNCk1hbmFnaW5nIERpcmVjdG9yOiBMaSBQZW5nLCBZYW5nIFhpLCBMaSBIZQ0KDQo+IHRl
-c3RfdGVzdF9tYXBfY2hlY2tfYWNjZXNzOlBBU1M6c2tlbCAwIG5zZWMNCj4gdGVzdF90ZXN0X21h
-cF9jaGVja19hY2Nlc3M6UEFTUzpza2VsIDAgbnNlYw0KPiB0ZXN0X3Rlc3RfbWFwX2NoZWNrX2Fj
-Y2VzczpQQVNTOmJwZl9vYmplY3RfX2ZpbmRfbWFwX2J5X25hbWUgMCBuc2VjDQo+IHRlc3RfdGVz
-dF9tYXBfY2hlY2tfYWNjZXNzOlBBU1M6YnBmX29ial9nZXRfaW5mb19ieV9mZCAwIG5zZWMNCj4g
-dGVzdF90ZXN0X21hcF9jaGVja19hY2Nlc3M6UEFTUzpicGZfbWFwX2dldF9mZF9ieV9pZCAwIG5z
-ZWMNCj4gdGVzdF90ZXN0X21hcF9jaGVja19hY2Nlc3M6UEFTUzpicGZfbWFwX2dldF9mZF9ieV9p
-ZF9mbGFncyAwIG5zZWMNCj4gdGVzdF90ZXN0X21hcF9jaGVja19hY2Nlc3M6UEFTUzpicGZfbWFw
-X2dldF9mZF9ieV9pZF9mbGFncyAwIG5zZWMNCj4gdGVzdF90ZXN0X21hcF9jaGVja19hY2Nlc3M6
-UEFTUzpicGZfbWFwX2xvb2t1cF9lbGVtIDAgbnNlYw0KPiB0ZXN0X3Rlc3RfbWFwX2NoZWNrX2Fj
-Y2VzczpQQVNTOmJwZl9tYXBfdXBkYXRlX2VsZW0gMCBuc2VjDQo+IHRlc3RfdGVzdF9tYXBfY2hl
-Y2tfYWNjZXNzOlBBU1M6YnBmX21hcF91cGRhdGVfZWxlbSAwIG5zZWMNCj4gdGVzdF90ZXN0X21h
-cF9jaGVja19hY2Nlc3M6UEFTUzpicGZfbWFwX19waW4gMCBuc2VjDQo+IHRlc3RfdGVzdF9tYXBf
-Y2hlY2tfYWNjZXNzOlBBU1M6YnBmX29ial9nZXRfZmxhZ3MgMCBuc2VjDQo+IHRlc3RfdGVzdF9t
-YXBfY2hlY2tfYWNjZXNzOlBBU1M6YnBmX29ial9nZXRfZmxhZ3MgMCBuc2VjDQo+IHRlc3RfdGVz
-dF9tYXBfY2hlY2tfYWNjZXNzOkZBSUw6YnBmdG9vbCBtYXAgbGlzdCAtIGVycm9yOiAxMjcNCj4g
-IzE4OSB0ZXN0X21hcF9jaGVja19hY2Nlc3M6RkFJTA0KPiANCj4gICBbMF0gaHR0cHM6Ly9naXRo
-dWIuY29tL2tlcm5lbC0NCj4gcGF0Y2hlcy9icGYvcnVucy82NzMwNzk2Njg5P2NoZWNrX3N1aXRl
-X2ZvY3VzPXRydWUNCg==
+On Wed, Jun 08, 2022 at 05:49:41PM +0100, Quentin Monnet wrote:
+> 2022-06-08 14:29 UTC+0000 ~ Shahab Vahedi <Shahab.Vahedi@synopsys.com>
+> > This change adjusts the Makefile to use "HOSTAR" as the archive tool
+> > to keep the sanity of the build process for the bootstrap part in
+> > check. For the rationale, please continue reading.
+> > 
+> > When cross compiling bpftool with buildroot, it leads to an invocation
+> > like:
+> > 
+> > $ AR="/path/to/buildroot/host/bin/arc-linux-gcc-ar" \
+> >   CC="/path/to/buildroot/host/bin/arc-linux-gcc"    \
+> >   ...
+> >   make
+> > 
+> > Which in return fails while building the bootstrap section:
+> > 
+> > ----------------------------------8<----------------------------------
+> > 
+> >   make: Entering directory '/src/bpftool-v6.7.0/src'
+> >   ...                        libbfd: [ on  ]
+> >   ...        disassembler-four-args: [ on  ]
+> >   ...                          zlib: [ on  ]
+> >   ...                        libcap: [ OFF ]
+> >   ...               clang-bpf-co-re: [ on  ] <-- triggers bootstrap
+> > 
+> >   .
+> >   .
+> >   .
+> > 
+> >     LINK     /src/bpftool-v6.7.0/src/bootstrap/bpftool
+> >   /usr/bin/ld: /src/bpftool-v6.7.0/src/bootstrap/libbpf/libbpf.a:
+> >                error adding symbols: archive has no index; run ranlib
+> >                to add one
+> >   collect2: error: ld returned 1 exit status
+> >   make: *** [Makefile:211: /src/bpftool-v6.7.0/src/bootstrap/bpftool]
+> >             Error 1
+> >   make: *** Waiting for unfinished jobs....
+> >     AR       /src/bpftool-v6.7.0/src/libbpf/libbpf.a
+> >     make[1]: Leaving directory '/src/bpftool-v6.7.0/libbpf/src'
+> >     make: Leaving directory '/src/bpftool-v6.7.0/src'
+> > 
+> > ---------------------------------->8----------------------------------
+> > 
+> > This occurs because setting "AR" confuses the build process for the
+> > bootstrap section and it calls "arc-linux-gcc-ar" to create and index
+> > "libbpf.a" instead of the host "ar".
+> > 
+> > Signed-off-by: Shahab Vahedi <shahab@synopsys.com>
+> > ---
+> >  tools/bpf/bpftool/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> > index c6d2c77d0252..c19e0e4c41bd 100644
+> > --- a/tools/bpf/bpftool/Makefile
+> > +++ b/tools/bpf/bpftool/Makefile
+> > @@ -53,7 +53,7 @@ $(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_
+> >  $(LIBBPF_BOOTSTRAP): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_BOOTSTRAP_OUTPUT)
+> >  	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_BOOTSTRAP_OUTPUT) \
+> >  		DESTDIR=$(LIBBPF_BOOTSTRAP_DESTDIR:/=) prefix= \
+> > -		ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) $@ install_headers
+> > +		ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) AR=$(HOSTAR) $@ install_headers
+> >  
+> >  $(LIBBPF_BOOTSTRAP_INTERNAL_HDRS): $(LIBBPF_BOOTSTRAP_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_BOOTSTRAP_HDRS_DIR)
+> >  	$(call QUIET_INSTALL, $@)
+> 
+> +Cc Jean-Philippe
+> 
+> Looks good to me, thank you!
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+
+Thanks, it makes sense to me as well
+
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
