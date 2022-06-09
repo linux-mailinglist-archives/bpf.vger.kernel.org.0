@@ -2,62 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C187544FFA
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 16:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E70545030
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 17:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244991AbiFIO4p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 10:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
+        id S1344141AbiFIPIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 11:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241672AbiFIO4n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 10:56:43 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BEC39BDB9
-        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 07:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654786601; x=1686322601;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cMlf7JU/ZvyPXyCSqmvxhcZQGfHSrOT8Ep9dWoQobNA=;
-  b=AtW2ykVDKTzoYMSFp5HwvY3fs9/rflYTIrBgS0D2NfTIAIIOudLAxwvS
-   II6Ay6wHY6Kw3G2n/ZiwICWeIXOmQ9Mkk0niRo2ZBJPg+4hD53gZUAZSp
-   +23gPGETyTsHFWIekmKzFkYgkdfaxVgTgH3eD3lqvP4UZPCU45Yaxz/RQ
-   RqbcTZsTn2PWCKEtCt6dSRf961jjMsN76glOQfQFhUMLO8wu5Df1VJ896
-   0sx73Wp6odii9wQNGgGSYq4S6HOi3//v0qHGpfO51hEjPURY4CA+qGrAo
-   U/LF/2W7RwBbsLs+kZxmZgBq+azZDFrjxGAF9IuZxXV0uajxDWBj5Qm1i
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="339067933"
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; 
-   d="scan'208";a="339067933"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2022 07:56:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; 
-   d="scan'208";a="671349491"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 09 Jun 2022 07:56:36 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nzJaO-000G53-2T;
-        Thu, 09 Jun 2022 14:56:36 +0000
-Date:   Thu, 9 Jun 2022 22:56:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, song@kernel.org, joannelkoong@gmail.com
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, eddyz87@gmail.com
-Subject: Re: [PATCH bpf-next v4 3/5] bpf: Inline calls to bpf_loop when
- callback is known
-Message-ID: <202206092228.SWNGbTFO-lkp@intel.com>
-References: <20220608192630.3710333-4-eddyz87@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220608192630.3710333-4-eddyz87@gmail.com>
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        with ESMTP id S1343967AbiFIPIh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 11:08:37 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3D33AB1D8;
+        Thu,  9 Jun 2022 08:08:36 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id f12so18982339ilj.1;
+        Thu, 09 Jun 2022 08:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=RuRAsoq3kuC2fdfy0p3uN9pJb+y+NfwDk7/S/TecTMU=;
+        b=PqErSSsTDO/K7H06mxzgyq3EqMjIORjKQKyE2pbepnVMmafrgl3CiJ5X/3+PXH0b2x
+         zYTFD1mSei9m2jigv/WB1JwXjvI5CDw6rSlpccX1RWtuvWjW6os5zrfDbTlSlIrYMTeZ
+         yIwnNmTuXM3RbLZvAWmPCSiWNZzU4YvLBstTFue4LLMsYksmOtBp09fZU1m3m4vGKVta
+         aDrKrCqv0ormdRcp94XUe/s4RDrWVchfSF3GdbI2I474+2OdwHdfwWnjopIbPeORryAj
+         ATPiAyM29GAdZkVjWg5At9Oq6eTOKZFbCfhF5LRO7NjUk22FE1riyKYyAnpoTXC6o+uK
+         sJpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=RuRAsoq3kuC2fdfy0p3uN9pJb+y+NfwDk7/S/TecTMU=;
+        b=7vWWQtl8i773V3gp/pzH+qR1Sm+ba72d5zAZdo/Daopc1y/MozN7stJWgkg3XmGvXT
+         A2erfHlX7Zy0kV9kXP5gnC8j159w7QnY3akRgyH6c8A300OceMXgHZK7dFsZOzBdPHQL
+         5spx8fg12yCMmr7/aa3WkcaoUOQEj2X9MqUhENe110vSqPTua8EC7pVEQ73cefi1eiSU
+         16RGh07RPXNdLRCmRhpP1Lmer5fg7ORKLpbaHqOaaChRmVrkCFvO/bPNQ0XLdkGnXHNj
+         EMg5jMe9gJI02YcHIFKXmMkQyzYld2vpNubejZ+5IN4YoAB3MwaLCnkVq9qUrIuz0WKZ
+         Yraw==
+X-Gm-Message-State: AOAM531skC33lK0JAG4T8cjtvtUBura+51pFm/MBwDk7OUN72t8qHcWo
+        8umPQ5KESaIJGhWb71OtjAQ=
+X-Google-Smtp-Source: ABdhPJwvuq5omzgm4ljNMtSKF7jLsO/HzGvkPNeItVjSPtaP4AlYNIsj0e+ylcXKzUf4luoG7SV4Vw==
+X-Received: by 2002:a05:6e02:1a8e:b0:2d3:bd16:40ee with SMTP id k14-20020a056e021a8e00b002d3bd1640eemr23091084ilv.20.1654787315336;
+        Thu, 09 Jun 2022 08:08:35 -0700 (PDT)
+Received: from localhost ([172.243.153.43])
+        by smtp.gmail.com with ESMTPSA id x8-20020a92d648000000b002d517c65c51sm6926875ilp.88.2022.06.09.08.08.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jun 2022 08:08:34 -0700 (PDT)
+Date:   Thu, 09 Jun 2022 08:08:26 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Message-ID: <62a20ceaba3d4_b28ac2082c@john.notmuch>
+In-Reply-To: <20220602012105.58853-2-xiyou.wangcong@gmail.com>
+References: <20220602012105.58853-1-xiyou.wangcong@gmail.com>
+ <20220602012105.58853-2-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next v3 1/4] tcp: introduce tcp_read_skb()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,75 +74,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Eduard,
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> This patch inroduces tcp_read_skb() based on tcp_read_sock(),
+> a preparation for the next patch which actually introduces
+> a new sock ops.
+> 
+> TCP is special here, because it has tcp_read_sock() which is
+> mainly used by splice(). tcp_read_sock() supports partial read
+> and arbitrary offset, neither of them is needed for sockmap.
+> 
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/net/tcp.h |  2 ++
+>  net/ipv4/tcp.c    | 47 +++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 49 insertions(+)
+> 
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index 1e99f5c61f84..878544d0f8f9 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -669,6 +669,8 @@ void tcp_get_info(struct sock *, struct tcp_info *);
+>  /* Read 'sendfile()'-style from a TCP socket */
+>  int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
+>  		  sk_read_actor_t recv_actor);
+> +int tcp_read_skb(struct sock *sk, read_descriptor_t *desc,
+> +		 sk_read_actor_t recv_actor);
+>  
+>  void tcp_initialize_rcv_mss(struct sock *sk);
+>  
+> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> index 9984d23a7f3e..a18e9ababf54 100644
+> --- a/net/ipv4/tcp.c
+> +++ b/net/ipv4/tcp.c
+> @@ -1709,6 +1709,53 @@ int tcp_read_sock(struct sock *sk, read_descriptor_t *desc,
+>  }
+>  EXPORT_SYMBOL(tcp_read_sock);
+>  
+> +int tcp_read_skb(struct sock *sk, read_descriptor_t *desc,
+> +		 sk_read_actor_t recv_actor)
+> +{
+> +	struct tcp_sock *tp = tcp_sk(sk);
+> +	u32 seq = tp->copied_seq;
+> +	struct sk_buff *skb;
+> +	int copied = 0;
+> +	u32 offset;
+> +
+> +	if (sk->sk_state == TCP_LISTEN)
+> +		return -ENOTCONN;
+> +
+> +	while ((skb = tcp_recv_skb(sk, seq, &offset)) != NULL) {
+> +		int used;
+> +
+> +		__skb_unlink(skb, &sk->sk_receive_queue);
+> +		used = recv_actor(desc, skb, 0, skb->len);
+> +		if (used <= 0) {
+> +			if (!copied)
+> +				copied = used;
+> +			break;
+> +		}
+> +		seq += used;
+> +		copied += used;
+> +
+> +		if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN) {
+> +			kfree_skb(skb);
 
-Thank you for the patch! Perhaps something to improve:
+Hi Cong, can you elaborate here from v2 comment.
 
-[auto build test WARNING on bpf-next/master]
+"Hm, it is tricky here, we use the skb refcount after this patchset, so
+it could be a real drop from another kfree_skb() in net/core/skmsg.c
+which initiates the drop."
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Eduard-Zingerman/bpf_loop-inlining/20220609-033007
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: arm-randconfig-r014-20220608 (https://download.01.org/0day-ci/archive/20220609/202206092228.SWNGbTFO-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 971e13d69e3e7b687213fef22952be6a328c426c)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm cross compiling tool for clang build
-        # apt-get install binutils-arm-linux-gnueabi
-        # https://github.com/intel-lab-lkp/linux/commit/10671a6a0479bb7ee4d437c4ce7307f198cb96fd
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Eduard-Zingerman/bpf_loop-inlining/20220609-033007
-        git checkout 10671a6a0479bb7ee4d437c4ce7307f198cb96fd
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash kernel/bpf/
+The tcp_read_sock() hook is using tcp_eat_recv_skb(). Are we going
+to kick tracing infra even on good cases with kfree_skb()? In
+sk_psock_verdict_recv() we do an skb_clone() there.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/verifier.c:7111:6: warning: no previous prototype for function 'update_loop_inline_state' [-Wmissing-prototypes]
-   void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
-        ^
-   kernel/bpf/verifier.c:7111:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
-   ^
-   static 
->> kernel/bpf/verifier.c:14318:18: warning: no previous prototype for function 'inline_bpf_loop' [-Wmissing-prototypes]
-   struct bpf_prog *inline_bpf_loop(struct bpf_verifier_env *env,
-                    ^
-   kernel/bpf/verifier.c:14318:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   struct bpf_prog *inline_bpf_loop(struct bpf_verifier_env *env,
-   ^
-   static 
-   2 warnings generated.
-
-
-vim +/update_loop_inline_state +7111 kernel/bpf/verifier.c
-
-  7110	
-> 7111	void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
-  7112	{
-  7113		struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
-  7114		struct bpf_reg_state *regs = cur_regs(env);
-  7115		struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
-  7116	
-  7117		int flags_is_zero =
-  7118			register_is_const(flags_reg) && flags_reg->var_off.value == 0;
-  7119	
-  7120		if (state->initialized) {
-  7121			state->fit_for_inline &=
-  7122				flags_is_zero &&
-  7123				state->callback_subprogno == subprogno;
-  7124		} else {
-  7125			state->initialized = 1;
-  7126			state->fit_for_inline = flags_is_zero;
-  7127			state->callback_subprogno = subprogno;
-  7128		}
-  7129	}
-  7130	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+.John
