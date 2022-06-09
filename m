@@ -2,196 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF7A54552E
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 21:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3E05455A2
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 22:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbiFIT5R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 15:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
+        id S233005AbiFIU3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 16:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbiFIT5Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 15:57:16 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977A51EAE2
-        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 12:57:13 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id a9so17278895qvt.6
-        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 12:57:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vzHrKikFkmIF6ny/D7XTKKS8xCl2YNNNxtNZO+KQjGQ=;
-        b=R9wurIPmzd3tUzlgX9+jDxuTVPWAVRkS2yilHiuK1HmEH862vfYY19+bi9uZEmJQmd
-         GCIFM3FSA9ozamXkrJC7crinnjbhnQaMS08BDCNejqyyusK5bHvokW0uSvnl6kF1lViF
-         KM6E/svUOYpgKbRcUoIegfC3hQlXVMpXdhSFgr6mHzAOyxSgRtK/Vjlxw8fq++u4lGjZ
-         Olcu7oVJ+2X1w7XC1tSQvTTkDrafvvHD40f25JlO8gIrMOcDNUuKMB8BAUKZRz462gRP
-         U7HKiUKzBM/Uo7vefVOE34DXpMxwWpdsq9NIGYD3LfKuFR/4DWCYqhS7J8a0unRJgz+i
-         ctOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vzHrKikFkmIF6ny/D7XTKKS8xCl2YNNNxtNZO+KQjGQ=;
-        b=bS3dmlJEu1Re33sqRRJUst5luWkk2Iosv/JpCnfS/maoDa056aJU9Wbw9uKkbzpQ6B
-         UtWhh34aXZ1+74oZWtTrI3Bivd/MRSmZmEOhxMrV6Y9ExgxBr2PrQOK9qy6XxNXl0aUl
-         /xMjSXUIiKIKCvldXTbDCCqPGcv0ppM8fbyFCQiDbJ+5an2QHtVRb/59/kk8JbshCCs4
-         PY2/PyIdvbCKbCUttadKUfdAPHRiwTsClHZ/3K575PrrGDLI5bLFu9PajWnVxdQmqrP8
-         S7Ghw9gaucu32qJkLYITI198gE8y3vz9NwFDglqUk0WSFGD5d3UYD8jHfz5YU7843uL1
-         TeWA==
-X-Gm-Message-State: AOAM533L1CH3Gm5EQalXurN10IOwnvyhszdYGbps11PL7cRCNaIae0tQ
-        oc2xxDJ3G9Qp+StqqvUk9pfaEQixW/3r2pbst7vKvA==
-X-Google-Smtp-Source: ABdhPJyAI1LzFdVJ0qepulozvV5tqrC3ccR52VhZMBEyYQAqmbjBKFn8zKC+QL1qc9ceZkrzENPjhxh7XY3rzTdXOuc=
-X-Received: by 2002:ad4:5ba4:0:b0:46d:8787:c902 with SMTP id
- 4-20020ad45ba4000000b0046d8787c902mr3710290qvq.107.1654804632692; Thu, 09 Jun
- 2022 12:57:12 -0700 (PDT)
+        with ESMTP id S234754AbiFIU32 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 16:29:28 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593E327234F;
+        Thu,  9 Jun 2022 13:29:20 -0700 (PDT)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nzOmK-000AgO-G9; Thu, 09 Jun 2022 22:29:16 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nzOmK-000MoD-5H; Thu, 09 Jun 2022 22:29:16 +0200
+Subject: Re: [PATCH net] net: bpf: fix request_sock leak in filter.c
+To:     Jon Maxwell <jmaxwell37@gmail.com>, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, atenart@kernel.org, cutaylor-pub@yahoo.com,
+        alexei.starovoitov@gmail.com, kafai@fb.com, joe@cilium.io,
+        i@lmb.io, bpf@vger.kernel.org
+References: <20220609011844.404011-1-jmaxwell37@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <56d6f898-bde0-bb25-3427-12a330b29fb8@iogearbox.net>
+Date:   Thu, 9 Jun 2022 22:29:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20220609143614.97837-1-quentin@isovalent.com> <YqI4XrKeQkENT/+w@google.com>
- <CAEf4BzZYWGKA7S_1jWcGcNyPmrDJeGo8YfKXpmboRdDSeEmOZw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZYWGKA7S_1jWcGcNyPmrDJeGo8YfKXpmboRdDSeEmOZw@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Thu, 9 Jun 2022 20:57:01 +0100
-Message-ID: <CACdoK4J0uJkWVavK3__FkfWBQoBWj4YpBK_+bkxz3vSPK5ztPA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Improve probing for memcg-based memory accounting
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Harsh Modi <harshmodi@google.com>,
-        Paul Chaignon <paul@cilium.io>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220609011844.404011-1-jmaxwell37@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26567/Thu Jun  9 10:06:06 2022)
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 9 Jun 2022 at 19:38, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Jun 9, 2022 at 11:13 AM <sdf@google.com> wrote:
-> >
-> > On 06/09, Quentin Monnet wrote:
-> > > To ensure that memory accounting will not hinder the load of BPF
-> > > objects, libbpf may raise the memlock rlimit before proceeding to some
-> > > operations. Whether this limit needs to be raised depends on the version
-> > > of the kernel: newer versions use cgroup-based (memcg) memory
-> > > accounting, and do not require any adjustment.
-> >
-> > > There is a probe in libbpf to determine whether memcg-based accounting
-> > > is supported. But this probe currently relies on the availability of a
-> > > given BPF helper, bpf_ktime_get_coarse_ns(), which landed in the same
-> > > kernel version as the memory accounting change. This works in the
-> > > generic case, but it may fail, for example, if the helper function has
-> > > been backported to an older kernel. This has been observed for Google
-> > > Cloud's Container-Optimized OS (COS), where the helper is available but
-> > > rlimit is still in use. The probe succeeds, the rlimit is not raised,
-> > > and probing features with bpftool, for example, fails.
-> >
-> > > Here we attempt to improve this probe and to effectively rely on memory
-> > > accounting. Function probe_memcg_account() in libbpf is updated to set
-> > > the rlimit to 0, then attempt to load a BPF object, and then to reset
-> > > the rlimit. If the load still succeeds, then this means we're running
-> > > with memcg-based accounting.
-> >
-> > > This probe was inspired by the similar one from the cilium/ebpf Go
-> > > library [0].
-> >
-> > > [0] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
-> >
-> > > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> > > ---
-> > >   tools/lib/bpf/bpf.c | 23 ++++++++++++++++++-----
-> > >   1 file changed, 18 insertions(+), 5 deletions(-)
-> >
-> > > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > > index 240186aac8e6..781387e6f66b 100644
-> > > --- a/tools/lib/bpf/bpf.c
-> > > +++ b/tools/lib/bpf/bpf.c
-> > > @@ -99,31 +99,44 @@ static inline int sys_bpf_prog_load(union bpf_attr
-> > > *attr, unsigned int size, int
-> >
-> > >   /* Probe whether kernel switched from memlock-based (RLIMIT_MEMLOCK) to
-> > >    * memcg-based memory accounting for BPF maps and progs. This was done
-> > > in [0].
-> > > - * We use the support for bpf_ktime_get_coarse_ns() helper, which was
-> > > added in
-> > > - * the same 5.11 Linux release ([1]), to detect memcg-based accounting
-> > > for BPF.
-> > > + * To do so, we lower the soft memlock rlimit to 0 and attempt to create
-> > > a BPF
-> > > + * object. If it succeeds, then memcg-based accounting for BPF is
-> > > available.
-> > >    *
-> > >    *   [0]
-> > > https://lore.kernel.org/bpf/20201201215900.3569844-1-guro@fb.com/
-> > > - *   [1] d05512618056 ("bpf: Add bpf_ktime_get_coarse_ns helper")
-> > >    */
-> > >   int probe_memcg_account(void)
-> > >   {
-> > >       const size_t prog_load_attr_sz = offsetofend(union bpf_attr,
-> > > attach_btf_obj_fd);
-> > >       struct bpf_insn insns[] = {
-> > > -             BPF_EMIT_CALL(BPF_FUNC_ktime_get_coarse_ns),
-> > >               BPF_EXIT_INSN(),
-> > >       };
-> > > +     struct rlimit rlim_init, rlim_cur_zero = {};
-> > >       size_t insn_cnt = ARRAY_SIZE(insns);
-> > >       union bpf_attr attr;
-> > >       int prog_fd;
-> >
-> > > -     /* attempt loading freplace trying to use custom BTF */
-> > >       memset(&attr, 0, prog_load_attr_sz);
-> > >       attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-> > >       attr.insns = ptr_to_u64(insns);
-> > >       attr.insn_cnt = insn_cnt;
-> > >       attr.license = ptr_to_u64("GPL");
-> >
-> > > +     if (getrlimit(RLIMIT_MEMLOCK, &rlim_init))
-> > > +             return -1;
-> > > +
-> > > +     /* Drop the soft limit to zero. We maintain the hard limit to its
-> > > +      * current value, because lowering it would be a permanent operation
-> > > +      * for unprivileged users.
-> > > +      */
-> > > +     rlim_cur_zero.rlim_max = rlim_init.rlim_max;
-> > > +     if (setrlimit(RLIMIT_MEMLOCK, &rlim_cur_zero))
-> > > +             return -1;
-> > > +
-> > >       prog_fd = sys_bpf_fd(BPF_PROG_LOAD, &attr, prog_load_attr_sz);
-> > > +
-> > > +     /* reset soft rlimit as soon as possible */
-> > > +     setrlimit(RLIMIT_MEMLOCK, &rlim_init);
-> >
-> > Isn't that adding more flakiness to the other daemons running as
-> > the same user? Also, there might be surprises if another daemon that
-> > has libbpf in it starts right when we've set the limit temporarily to zero.
-> >
->
-> I agree, it briefly changes global process state and can introduce
-> some undesirable (and very non-obvious) side effects.
->
-> > Can we push these decisions to the users as part of libbpf 1.0 cleanup?
->
->
-> Quentin, at least for bpftool, I think it's totally fine to just
-> always bump RLIMIT_MEMLOCK to avoid this issue. That would solve the
-> issue with probing, right? And for end applications I think I agree
-> with Stanislav that application might need to ensure rlimit bumping
-> for such backported changes.
+On 6/9/22 3:18 AM, Jon Maxwell wrote:
+> A customer reported a request_socket leak in a Calico cloud environment. We
+> found that a BPF program was doing a socket lookup with takes a refcnt on
+> the socket and that it was finding the request_socket but returning the parent
+> LISTEN socket via sk_to_full_sk() without decrementing the child request socket
+> 1st, resulting in request_sock slab object leak. This patch retains the
+> existing behaviour of returning full socks to the caller but it also decrements
+> the child request_socket if one is present before doing so to prevent the leak.
+> 
+> Thanks to Curtis Taylor for all the help in diagnosing and testing this. And
+> thanks to Antoine Tenart for the reproducer and patch input.
+> 
+> Fixes: f7355a6c0497 bpf: ("Check sk_fullsock() before returning from bpf_sk_lookup()")
+> Fixes: edbf8c01de5a bpf: ("add skc_lookup_tcp helper")
+> Tested-by: Curtis Taylor <cutaylor-pub@yahoo.com>
+> Co-developed-by: Antoine Tenart <atenart@kernel.org>
+> Signed-off-by:: Antoine Tenart <atenart@kernel.org>
+> Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+> ---
+>   net/core/filter.c | 20 ++++++++++++++------
+>   1 file changed, 14 insertions(+), 6 deletions(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 2e32cee2c469..e3c04ae7381f 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6202,13 +6202,17 @@ __bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+>   {
+>   	struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
+>   					   ifindex, proto, netns_id, flags);
+> +	struct sock *sk1 = sk;
+>   
+>   	if (sk) {
+>   		sk = sk_to_full_sk(sk);
+> -		if (!sk_fullsock(sk)) {
+> -			sock_gen_put(sk);
+> +		/* sk_to_full_sk() may return (sk)->rsk_listener, so make sure the original sk1
+> +		 * sock refcnt is decremented to prevent a request_sock leak.
+> +		 */
+> +		if (!sk_fullsock(sk1))
+> +			sock_gen_put(sk1);
+> +		if (!sk_fullsock(sk))
+>   			return NULL;
 
-Agreed, changing the rlimit in the probe is not ideal. We haven't
-managed to find a better way to probe the feature, unfortunately. I
-don't mind restoring the rlimit bump in bpftool - yes, it should be
-fine for our use case. We already raise the limit in Cilium, but after
-the feature probe from bpftool, so it's only the feature probing that
-is an issue at the moment. I'll send a patch for it tomorrow.
+[ +Martin/Joe/Lorenz ]
 
-I still believe it would be nice to improve the probe, I'll come back
-to it if we ever find a better way to proceed.
+I wonder, should we also add some asserts in here to ensure we don't get an unbalance for the
+bpf_sk_release() case later on? Rough pseudocode could be something like below:
+
+static struct sock *
+__bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+                 struct net *caller_net, u32 ifindex, u8 proto, u64 netns_id,
+                 u64 flags)
+{
+         struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
+                                            ifindex, proto, netns_id, flags);
+         if (sk) {
+                 struct sock *sk2 = sk_to_full_sk(sk);
+
+                 if (!sk_fullsock(sk2))
+                         sk2 = NULL;
+                 if (sk2 != sk) {
+                         sock_gen_put(sk);
+                         if (unlikely(sk2 && !sock_flag(sk2, SOCK_RCU_FREE))) {
+                                 WARN_ONCE(1, "Found non-RCU, unreferenced socket!");
+                                 sk2 = NULL;
+                         }
+                 }
+                 sk = sk2;
+         }
+         return sk;
+}
 
 Thanks,
-Quentin
+Daniel
