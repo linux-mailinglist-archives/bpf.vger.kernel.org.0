@@ -2,208 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD59B5456DB
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 00:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C7A54574C
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 00:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242184AbiFIWDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 18:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36586 "EHLO
+        id S1345239AbiFIWW3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 18:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245342AbiFIWDw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 18:03:52 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86A61C4B2B;
-        Thu,  9 Jun 2022 15:03:49 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id s12so42874975ejx.3;
-        Thu, 09 Jun 2022 15:03:49 -0700 (PDT)
+        with ESMTP id S1345457AbiFIWW2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 18:22:28 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C233A8880
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 15:22:25 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id p129so28914512oig.3
+        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 15:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=cilium-io.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2c696nvjvDCy1Wbo+Q23X3DfXs8Z3alK2xuA1jeSMN8=;
-        b=GZDejskhMA5wDj9AJ3NfW7b/wvckrr4cNYAMKJ2hKp/se8XSMfy3rgdOQf0qUVy9Sk
-         X+/O5j2+fvYm3KiFEmgV8x4Ha4Oe0aq2qeqLrYb2s2ThkvjzltWLbPnbFz0uHubcxSlN
-         k6J95P2klZ/yK8tYgtpq0A9nwAtlbcBxQMYJVabMaNnvIjTH0MrfN9Jtj0x4W4XaMfnX
-         tgJLCLZokR0S651V4VoVu0y+WQIGGONmCHaE90RBWByoW1THEoLFkjugi4LDmh1PGlVu
-         n8Qxx0NWrLiXZ0TOIIFD/XBU9V/sVvaBGZl2ssMrUkyxRGAuhkCHQ1XpZt/aM/DFQbGM
-         IqWw==
+        bh=mYG71zyz/SPXXyMsRW0M/+syUQ4xnWNQdng1XXVyMeg=;
+        b=kUYk5aKK8Gcenrn6VsrYrfD7GOTSn0xPHMsH7v5/p1KzkgwSpRj9nJoH/DIDBhUrrL
+         j+oGrjkg9457GhpZn/IRiDYnA6oQiMv91l4sak5sAppAxn3SzfNUG/OyJwrB0h3LXDqk
+         BpplcVZLalEAYDoRZO0dyjxONiEfxa3yYFJ1aJjQfVW6fD1cXn8gaHsxZ7lXLrVFmyAi
+         tu0nFnPYM9ilcHwzTPuDYdwaA8jsf+tZLUVnEXNIoQBLmLmgNVR59PDH4Lxdh+lVoLzS
+         TpDS0M+wsrI73UDcGzN5Gs5eRzjBFxvsfK2XAjNRsdkL840TrxsArxmlBcZdUwdcURCH
+         lk7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2c696nvjvDCy1Wbo+Q23X3DfXs8Z3alK2xuA1jeSMN8=;
-        b=CnzjukpwSD+MG0494r+z6nj0D9LtmcyvUXsvNE9b7kLP6vpZmhFKg3qIZcdCvNNBC3
-         hSusknbjtlXAxQOMgY0vonmdG8oNb7VSul4WEA6lXLyXcHA+DcFamlf6e9L8SL7Ydsoe
-         tIJPaSCakBKJ1U7CP5MKPgxVs8uT6BkENf91t5OPRo2WVa6kGcmRKAq/h8qsXk6g8zlQ
-         6X3Ea0II8mBai4od8XRggCWJr/4TsOW04/xR14rnWfaR3ORa2kVsG7j5sdLhWY7Deqvj
-         dv++SIocD8UzF9Td5GaBBirVcZUIeaPPj7Fxt6m0vGRjNhluh5HAFpXwbQvO2OeAuOAY
-         x9lw==
-X-Gm-Message-State: AOAM5303VbeR7EPlN4VHoPR/NP7DI1YNrZhUDbFmE4k2Fy8EVs74Cjmq
-        6GrRd7rIwQEIb0FEm5WHm2ZTBwPT+mshLMoFzv8=
-X-Google-Smtp-Source: ABdhPJwT58OV3UkXayMzXzFI31WUGe9HTJvETdRzqBmHhip386Fdqee3ENIMIPLLlwxFu91/ZW9ePAj5+HvHO7n1/q0=
-X-Received: by 2002:a17:906:586:b0:70d:9052:fdf0 with SMTP id
- 6-20020a170906058600b0070d9052fdf0mr32647917ejn.633.1654812228017; Thu, 09
- Jun 2022 15:03:48 -0700 (PDT)
+        bh=mYG71zyz/SPXXyMsRW0M/+syUQ4xnWNQdng1XXVyMeg=;
+        b=S0muPh6O1TmBRogBt3Bxk5AL8v3tc9SsgBN+sQ1OpHp9MOMmv7lsL7RUmtc6/2O3OF
+         0sMJzMkUT8pjSZwyK+ENaf1fhYSqEe7IZqlF5AwXmWmm94sTkryJ3Mm+UarFN+NHMKdt
+         wAvFkIKl1qlMOuNhJnSqCRMhz3fFp74IP7LOjapfAfbD+krNsjcRRqqB9AB12SUUVIDg
+         41utVq3KO+Fd5aDNzGzP+51/jvutb/1O2UMBJ9dgH0KsldPn8KN0l0/dMUoZBKrc8ynv
+         xmjTXcfvsSLXCxZUxUTELmzgQoIw92OZE6IFQMqy7Fz52O+qkACeoEuJ5KcrlRwvuQ5z
+         ZQtg==
+X-Gm-Message-State: AOAM531LoCl4iJoA2rh9c7rwl1SLq3vF5XeUUHSRcupCxozsgmdwlOOf
+        1NUQ35bFOT1Wo2PYmOF+ts4RVwcZ+Z+afH4pfrA=
+X-Google-Smtp-Source: ABdhPJyPIQLMoja685CD7b+09xLGlRe1+VADh35XIPvCRRa8/pqbl6myeEswQUAJr/6p6cedxD/MvA==
+X-Received: by 2002:a05:6808:14c5:b0:32e:f7b9:99a2 with SMTP id f5-20020a05680814c500b0032ef7b999a2mr1541235oiw.174.1654813345096;
+        Thu, 09 Jun 2022 15:22:25 -0700 (PDT)
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com. [209.85.210.44])
+        by smtp.gmail.com with ESMTPSA id bf1-20020a056808190100b0032af3cffac7sm14242848oib.2.2022.06.09.15.22.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jun 2022 15:22:22 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id g17-20020a9d6491000000b0060c0f0101ffso6118946otl.7;
+        Thu, 09 Jun 2022 15:22:22 -0700 (PDT)
+X-Received: by 2002:a05:6830:348e:b0:60b:f4b:c306 with SMTP id
+ c14-20020a056830348e00b0060b0f4bc306mr17525569otu.297.1654813342247; Thu, 09
+ Jun 2022 15:22:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220525114003.61890-1-jolsa@kernel.org> <CAEf4BzZ-xe-zSjbBpKLHfQKPnTRTBMA2Eg382+_4kQoTLnj4eQ@mail.gmail.com>
- <CAADnVQJcDKVAOeJ8LX9j-cUKdkptuFWFDnB3o9C_o0bSScGnsQ@mail.gmail.com> <CAEf4Bzay1-pRLw+zHG1TjHRTRpqQdtmpmDvNdq=ef-0OUQD0QQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzay1-pRLw+zHG1TjHRTRpqQdtmpmDvNdq=ef-0OUQD0QQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 9 Jun 2022 15:03:35 -0700
-Message-ID: <CAADnVQJtJEzsr4a+brn4n65Pt1dP-3WTSHZe23_AetxWRTm0Tg@mail.gmail.com>
-Subject: Re: [RFC bpf-next] bpf: Use prog->active instead of bpf_prog_active
- for kprobe_multi
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+References: <20220609011844.404011-1-jmaxwell37@gmail.com> <56d6f898-bde0-bb25-3427-12a330b29fb8@iogearbox.net>
+In-Reply-To: <56d6f898-bde0-bb25-3427-12a330b29fb8@iogearbox.net>
+From:   Joe Stringer <joe@cilium.io>
+Date:   Thu, 9 Jun 2022 15:22:10 -0700
+X-Gmail-Original-Message-ID: <CAOftzPgU6EaCgf9E407JrbTfWXBYZL=nECWjySVjw8EPtJb6Cg@mail.gmail.com>
+Message-ID: <CAOftzPgU6EaCgf9E407JrbTfWXBYZL=nECWjySVjw8EPtJb6Cg@mail.gmail.com>
+Subject: Re: [PATCH net] net: bpf: fix request_sock leak in filter.c
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jon Maxwell <jmaxwell37@gmail.com>, netdev@vger.kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, atenart@kernel.org, cutaylor-pub@yahoo.com,
+        alexei.starovoitov@gmail.com, kafai@fb.com, i@lmb.io,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 9, 2022 at 11:27 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Jun 9, 2022 at 1:30 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> On Tue, Jun 7, 2022 at 9:29 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On 6/9/22 3:18 AM, Jon Maxwell wrote:
+> > A customer reported a request_socket leak in a Calico cloud environment. We
+> > found that a BPF program was doing a socket lookup with takes a refcnt on
+> > the socket and that it was finding the request_socket but returning the parent
+> > LISTEN socket via sk_to_full_sk() without decrementing the child request socket
+> > 1st, resulting in request_sock slab object leak. This patch retains the
+> > existing behaviour of returning full socks to the caller but it also decrements
+> > the child request_socket if one is present before doing so to prevent the leak.
 > >
-> > On Tue, May 31, 2022 at 4:24 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, May 25, 2022 at 4:40 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > hi,
-> > > > Alexei suggested to use prog->active instead global bpf_prog_active
-> > > > for programs attached with kprobe multi [1].
-> > > >
-> > > > AFAICS this will bypass bpf_disable_instrumentation, which seems to be
-> > > > ok for some places like hash map update, but I'm not sure about other
-> > > > places, hence this is RFC post.
-> > > >
-> > > > I'm not sure how are kprobes different to trampolines in this regard,
-> > > > because trampolines use prog->active and it's not a problem.
-> > > >
-> > > > thoughts?
-> > > >
-> > >
-> > > Let's say we have two kernel functions A and B? B can be called from
-> > > BPF program though some BPF helper, ok? Now let's say I have two BPF
-> > > programs kprobeX and kretprobeX, both are attached to A and B. With
-> > > using prog->active instead of per-cpu bpf_prog_active, what would be
-> > > the behavior when A is called somewhere in the kernel.
-> > >
-> > > 1. A is called
-> > > 2. kprobeX is activated for A, calls some helper which eventually calls B
-> > >   3. kprobeX is attempted to be called for B, but is skipped due to prog->active
-> > >   4. B runs
-> > >   5. kretprobeX is activated for B, calls some helper which eventually calls B
-> > >     6. kprobeX is ignored (prog->active > 0)
-> > >     7. B runs
-> > >     8. kretprobeX is ignored (prog->active > 0)
-> > > 9. kretprobeX is activated for A, calls helper which calls B
-> > >   10. kprobeX is activated for B
-> > >     11. kprobeX is ignored (prog->active > 0)
+> > Thanks to Curtis Taylor for all the help in diagnosing and testing this. And
+> > thanks to Antoine Tenart for the reproducer and patch input.
 > >
-> > not correct. kprobeX actually runs.
-> > but the end result is correct.
+> > Fixes: f7355a6c0497 bpf: ("Check sk_fullsock() before returning from bpf_sk_lookup()")
+> > Fixes: edbf8c01de5a bpf: ("add skc_lookup_tcp helper")
+> > Tested-by: Curtis Taylor <cutaylor-pub@yahoo.com>
+> > Co-developed-by: Antoine Tenart <atenart@kernel.org>
+> > Signed-off-by:: Antoine Tenart <atenart@kernel.org>
+> > Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+> > ---
+> >   net/core/filter.c | 20 ++++++++++++++------
+> >   1 file changed, 14 insertions(+), 6 deletions(-)
 > >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 2e32cee2c469..e3c04ae7381f 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -6202,13 +6202,17 @@ __bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+> >   {
+> >       struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
+> >                                          ifindex, proto, netns_id, flags);
+> > +     struct sock *sk1 = sk;
+> >
+> >       if (sk) {
+> >               sk = sk_to_full_sk(sk);
+> > -             if (!sk_fullsock(sk)) {
+> > -                     sock_gen_put(sk);
+> > +             /* sk_to_full_sk() may return (sk)->rsk_listener, so make sure the original sk1
+> > +              * sock refcnt is decremented to prevent a request_sock leak.
+> > +              */
+> > +             if (!sk_fullsock(sk1))
+> > +                     sock_gen_put(sk1);
+> > +             if (!sk_fullsock(sk))
+> >                       return NULL;
 >
-> Right, it was a long sequence, but you got the idea :)
+> [ +Martin/Joe/Lorenz ]
 >
-> > >     12. B runs
-> > >     13. kretprobeX is ignored (prog->active > 0)
-> > >   14. B runs
-> > >   15. kretprobeX is ignored (prog->active > 0)
-> > >
-> > >
-> > > If that's correct, we get:
-> > >
-> > > 1. kprobeX for A
-> > > 2. kretprobeX for B
-> > > 3. kretprobeX for A
-> > > 4. kprobeX for B
-> >
-> > Here it's correct.
-> >
-> > > It's quite mind-boggling and annoying in practice. I'd very much
-> > > prefer just kprobeX for A followed by kretprobeX for A. That's it.
-> > >
-> > > I'm trying to protect against this in retsnoop with custom per-cpu
-> > > logic in each program, but I so much more prefer bpf_prog_active,
-> > > which basically says "no nested kprobe calls while kprobe program is
-> > > running", which makes a lot of sense in practice.
-> >
-> > It makes sense for retsnoop, but does not make sense in general.
-> >
-> > > Given kprobe already used global bpf_prog_active I'd say multi-kprobe
-> > > should stick to bpf_prog_active as well.
-> >
-> > I strongly disagree.
-> > Both multi kprobe and kprobe should move to per prog counter
-> > plus some other protection
-> > (we cannot just move to per-prog due to syscalls).
-> > It's true that the above order is mind-boggling,
-> > but it's much better than
-> > missing kprobe invocation completely just because
-> > another kprobe is running on the same cpu.
-> > People complained numerous times about this kprobe behavior.
-> > kprobeX attached to A
-> > kprobeY attached to B.
-> > If kprobeX calls B kprobeY is not going to be called.
-> > Means that anything that bpf is using is lost.
-> > spin locks, lists, rcu, etc.
-> > Sleepable uprobes are coming.
-> > iirc Delyan's patch correctly.
-> > We will do migrate_disable and inc bpf_prog_active.
+> I wonder, should we also add some asserts in here to ensure we don't get an unbalance for the
+> bpf_sk_release() case later on? Rough pseudocode could be something like below:
 >
-> This might be a different issue, I'm not sure why uprobes should be
-> protected by the same global bpf_prog_active, you can't trigger uprobe
-> from uprobe program. And especially for sleepable programs it makes no
-> sense to use per-CPU protection (we have bpf_run_ctx for such
-> protections, if needed).
-
-you're forgetting about tracepoints and perf_events.
-'perf record' will capture everything.
-Whereas bpf powered 'perf record' will not see bpf progs
-attached to [ku]probe, tp, events.
-
-> > Now random kprobes on that cpu will be lost.
+> static struct sock *
+> __bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+>                  struct net *caller_net, u32 ifindex, u8 proto, u64 netns_id,
+>                  u64 flags)
+> {
+>          struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
+>                                             ifindex, proto, netns_id, flags);
+>          if (sk) {
+>                  struct sock *sk2 = sk_to_full_sk(sk);
 >
-> It's not random. The rule is you can't kernel functions and
-> tracepoints triggered from BPF kprobes/tracepoints. This prevents
-> nasty reentrance problems and makes sense.
+>                  if (!sk_fullsock(sk2))
+>                          sk2 = NULL;
+>                  if (sk2 != sk) {
+>                          sock_gen_put(sk);
+>                          if (unlikely(sk2 && !sock_flag(sk2, SOCK_RCU_FREE))) {
+>                                  WARN_ONCE(1, "Found non-RCU, unreferenced socket!");
+>                                  sk2 = NULL;
+>                          }
+>                  }
+>                  sk = sk2;
+>          }
+>          return sk;
+> }
 
-From the user point of view it makes no sense whatsoever.
-bperf is losing info.
-Try explaining that to users.
-
-> Isn't kernel tracing infra
-> is protecting itself similarly, preventing reentrancy and recursion?
-
-Yes and that's what it should be doing.
-It's not the job of the kernel to implement the policy.
-"run one bpf prog per cpu at a time" is a policy
-and very much a broken one.
-
-> > It's awful. We have to fix it.
->
-> You can call it "a fix" if you'd like, but it's changing a very
-> user-visible behavior and guarantees on which users relied for a
-> while. So even if we switch to per-prog protection it will have to be
-> some sort of opt-in (flag, new program type, whatever).
-
-No opt-in allowed for fixes and it's a bug fix.
-No one should rely on broken kernel behavior.
-If retsnoop rely on that it's really retsnoop's fault.
+This seems a bit more readable to me from the perspective of
+understanding the way that the socket references are tracked & freed.
