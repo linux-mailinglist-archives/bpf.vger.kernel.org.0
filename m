@@ -2,52 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DF3544B5D
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 14:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B8A544B5C
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 14:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245160AbiFIMKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 08:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
+        id S245159AbiFIMKP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 08:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245164AbiFIMKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 08:10:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9960B26520D;
-        Thu,  9 Jun 2022 05:10:15 -0700 (PDT)
+        with ESMTP id S235532AbiFIMKP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 08:10:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC011265226
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 05:10:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2789BB82D53;
-        Thu,  9 Jun 2022 12:10:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D3690C341C4;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CE47615C7
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 12:10:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CE152C341C0;
         Thu,  9 Jun 2022 12:10:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1654776612;
-        bh=PwBBBz/dC7cgFr8moGbFG7v4skdx3aTmukVX1l9htzc=;
+        bh=ZRnKmqgbZIH88lyZI+bE8XLsegzarvxIWLntuCr14f0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FR3+qoKH0jU5DSwFRsaTQE1ge6SqA5GUN785MvKid/Thz3i12gHRQ0eu3WmqFxSyD
-         QSKmG2Jhu5+qsRV5iWrTMz8NKtzNENDaaAnAvo5IO/bPPsW4GdGpqHSvlYHKmyBr/i
-         vQfeAzs9+WxUrO2gm7+s6xBY2O/qNY5yN4GMBZaNU8/hoRr841q+smeZIIevlI6cTr
-         2TOIvgn+V3H//SxBBFT5UPf9Q76ZU6xhiTPyvhukwWDnywvAFlIYtuyqBgFVhxEMjR
-         Ax2OV10TWbsJAgiLVradd8N05imn/PzdOwI//bt0CwkDDbutYFq1zBpgeYQfFZChXE
-         XRr5Zh14c8w9g==
+        b=k5HMssAktRmsrB27mj+LNyOi0ll4OJy7ljcM7AGC8UztW10sYhvHcliZfEpzg2qzf
+         17tsloUbyEX4lYeUxp9ADyeVuJQkDnGYMn9kUjq5AfWrjBeP52BHzUBqzZAQI3nbrl
+         PpHyZ/K9zMC08lzhoYTCaEQbNNUTLG+H+4grCXUw0jdBL7VeWZh+vXGz4DAezLJKsc
+         42V0vM6YU23EfrdAHToBoxRQ/ZuEtnXAFou5SvE9NM9apujgA4GnJCXjnE9bciUH6O
+         +bulUUfG7ewyEj+ep48z9Hv8f4wrj2WH6gjS8qhAaWQj7nUPJSTlAwfsD2Sev3TylY
+         GF0n1YYqKjreA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B9B4AE737F0;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B13A9E737E8;
         Thu,  9 Jun 2022 12:10:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf, docs: Fix typo "BFP_ALU" to "BPF_ALU"
+Subject: Re: [PATCH] bpftool: Fix bootstrapping during a cross compilation
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165477661275.11342.4271222664827162362.git-patchwork-notify@kernel.org>
+Message-Id: <165477661272.11342.13015777410417612477.git-patchwork-notify@kernel.org>
 Date:   Thu, 09 Jun 2022 12:10:12 +0000
-References: <20220609083937.245749-1-fujimotoksouke0@gmail.com>
-In-Reply-To: <20220609083937.245749-1-fujimotoksouke0@gmail.com>
-To:     Kosuke Fujimoto <fujimotokosuke0@gmail.com>
-Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, linux-doc@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, fujimotoksouke0@gmail.com
+References: <8d297f0c-cfd0-ef6f-3970-6dddb3d9a87a@synopsys.com>
+In-Reply-To: <8d297f0c-cfd0-ef6f-3970-6dddb3d9a87a@synopsys.com>
+To:     Shahab Vahedi <Shahab.Vahedi@synopsys.com>
+Cc:     bpf@vger.kernel.org
 X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,17 +60,19 @@ Hello:
 This patch was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Thu,  9 Jun 2022 04:39:37 -0400 you wrote:
-> "BFP" should be "BPF"
+On Wed, 8 Jun 2022 14:29:28 +0000 you wrote:
+> This change adjusts the Makefile to use "HOSTAR" as the archive tool
+> to keep the sanity of the build process for the bootstrap part in
+> check. For the rationale, please continue reading.
 > 
-> Signed-off-by: Kosuke Fujimoto <fujimotokosuke0@gmail.com>
-> ---
->  Documentation/bpf/instruction-set.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> When cross compiling bpftool with buildroot, it leads to an invocation
+> like:
+> 
+> [...]
 
 Here is the summary with links:
-  - bpf, docs: Fix typo "BFP_ALU" to "BPF_ALU"
-    https://git.kernel.org/bpf/bpf-next/c/492f99e4190a
+  - bpftool: Fix bootstrapping during a cross compilation
+    https://git.kernel.org/bpf/bpf-next/c/0b817059a883
 
 You are awesome, thank you!
 -- 
