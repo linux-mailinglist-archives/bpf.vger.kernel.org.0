@@ -2,159 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CFB544FA0
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 16:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF456544FE9
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 16:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343924AbiFIOhX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 10:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36080 "EHLO
+        id S245738AbiFIOz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 10:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344155AbiFIOgY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 10:36:24 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BDF323889
-        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 07:36:22 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id j5-20020a05600c1c0500b0039c5dbbfa48so3471147wms.5
-        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 07:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XXt0AjifX4sZi/mItsYRB7C1EVTETD4Ra1f87tpY7Po=;
-        b=mjg+gBqRQTviC0qWMlPAM4XmBRuRW2tvScNKNjmS5UNrlPcdwRrKmKMSGLReHjXlIb
-         /sPnrwD0bc2p2/fGWJUkk0NqThc6r/Pu+8ICvVDYE3CsjCQjTs56OugKlVSVp8sdfPJ8
-         LbmxLC6ZqBZuBc2gLZ4IjNb8VNJYaDzUrJeMdEGP4W2sMBShk+XOH8djtFRelFvRXOcN
-         bFbIPb8A4LxZ+4SJgmL7G9hAVbECI+uap1rygytw5Z45AqiML5zXVsNg9SmzfBYjbj9T
-         pNbicTExPsane7ACp9N3rqsE9M8+ASOauzM/neiZnYPeaAdmxIWonmeNYQG+uQqs++d2
-         YWyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XXt0AjifX4sZi/mItsYRB7C1EVTETD4Ra1f87tpY7Po=;
-        b=UsFhGVD8sP84d/xL8nKqVYvcVQjPcQL0+RpUFTXB/RfmPMm3XmUjXu8Z/0jd1DpAXX
-         J4Y1rl9Kba9PyWTJ+ARncVPjQaBdaZeX4/xmTuP/ikYCL7XKxApK+GyQ8/aMq+xDvC3I
-         mByyAf+HaQPHvLR9L2uC+rXwEtiZOwk9inG//2RKjAB8TiJp0OTUp3HBHbgVT4k90U2s
-         r88Mdk3qId+kZ1Wh0brNtS0xctXXpYhKhcl3qZ2jV7GweSW6sHK5i8M31FdfqwYSjKUk
-         1PgKRRwrBG9ArTXRt6jMZsVWbvMlacKNIodKK2xEdFgOuIQQrbkC/aev8FMVMza/Cuoc
-         STWA==
-X-Gm-Message-State: AOAM531S3HRmrymuiuZI+c7Tntwk+RHV/cAHsVu7v2hIkChuuH1u5sBv
-        j1En6QgfQZzevY6lD2r5bWbQ1A==
-X-Google-Smtp-Source: ABdhPJxlMte9LkEGe+Gi0Q6FGEuK/JeL1kIj0MDHeLRaombVGYD6rGuvGMddiguz5mEZZFXMrofpUw==
-X-Received: by 2002:a05:600c:19cb:b0:397:51db:446f with SMTP id u11-20020a05600c19cb00b0039751db446fmr3673983wmq.182.1654785381264;
-        Thu, 09 Jun 2022 07:36:21 -0700 (PDT)
-Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id k1-20020a1ca101000000b0039c4ff5e0a7sm13265207wme.38.2022.06.09.07.36.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jun 2022 07:36:20 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1343489AbiFIOzy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 10:55:54 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DDF37F906;
+        Thu,  9 Jun 2022 07:55:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4BFC121FA9;
+        Thu,  9 Jun 2022 14:55:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1654786551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OP+FCzdv75xf3AHqKnJ+4LChpmPuksRBqF0JcYhkehA=;
+        b=SQObC06khT/SS84YZt1lyljm9Cr5+NeogHGlZxt5pxfF9ZvnQLukKnj55bh+5fUCYBr7Yi
+        NlraG861F/YQs96MkzjDx/3/U+FfUtp5HlV7liTe3y13/Ld9SWoy9qp1WgypBmB1npDRMw
+        KIkohhqcvxF2/4K0d+30WALHcLZjlZg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E70FD13A8C;
+        Thu,  9 Jun 2022 14:55:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OFs0N/YJomK9fAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Thu, 09 Jun 2022 14:55:50 +0000
+Date:   Thu, 9 Jun 2022 16:55:49 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Harsh Modi <harshmodi@google.com>, Paul Chaignon <paul@cilium.io>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next] libbpf: Improve probing for memcg-based memory accounting
-Date:   Thu,  9 Jun 2022 15:36:14 +0100
-Message-Id: <20220609143614.97837-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        lkp@lists.01.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+e42ae441c3b10acf9e9d@syzkaller.appspotmail.com
+Subject: Re: [cgroup] 3c87862ca1:
+ WARNING:at_kernel/softirq.c:#__local_bh_enable_ip
+Message-ID: <20220609145549.GA28484@blackbody.suse.cz>
+References: <20220609085641.GB17678@xsang-OptiPlex-9020>
+ <b39cdb9c-aa2a-0f49-318b-8632b2989433@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b39cdb9c-aa2a-0f49-318b-8632b2989433@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To ensure that memory accounting will not hinder the load of BPF
-objects, libbpf may raise the memlock rlimit before proceeding to some
-operations. Whether this limit needs to be raised depends on the version
-of the kernel: newer versions use cgroup-based (memcg) memory
-accounting, and do not require any adjustment.
+Hello Tadeusz.
 
-There is a probe in libbpf to determine whether memcg-based accounting
-is supported. But this probe currently relies on the availability of a
-given BPF helper, bpf_ktime_get_coarse_ns(), which landed in the same
-kernel version as the memory accounting change. This works in the
-generic case, but it may fail, for example, if the helper function has
-been backported to an older kernel. This has been observed for Google
-Cloud's Container-Optimized OS (COS), where the helper is available but
-rlimit is still in use. The probe succeeds, the rlimit is not raised,
-and probing features with bpftool, for example, fails.
+On Thu, Jun 09, 2022 at 07:30:41AM -0700, Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+> Are you interested in fixing this at syzbot issue all?
 
-Here we attempt to improve this probe and to effectively rely on memory
-accounting. Function probe_memcg_account() in libbpf is updated to set
-the rlimit to 0, then attempt to load a BPF object, and then to reset
-the rlimit. If the load still succeeds, then this means we're running
-with memcg-based accounting.
+The (original) syzbot report is conditioned by allocation failure that's
+unlikely under normal conditions (AFAIU). Hence I don't treat it extra
+high urgent.
+OTOH, it's interesting and it points to some disparity worth fixing --
+so I try helping (as time permits, so far I can only run the reproducers
+via the syzbot).
 
-This probe was inspired by the similar one from the cilium/ebpf Go
-library [0].
+> Do you have any more feedback on this?
 
-[0] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
+Ad the patch v2 with spinlock per css -- that looks like an overkill to
+me, I didn't look deeper into it.
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/lib/bpf/bpf.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+Ad the in-thread patch with ancestry css_get(), the ->parent ref:
+  - is inc'd in init_and_link_css(),
+  - is dec'd in css_free_rwork_fn()
+and thanks to ->online_cnt offlining is ordered (child before parent).
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 240186aac8e6..781387e6f66b 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -99,31 +99,44 @@ static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int
- 
- /* Probe whether kernel switched from memlock-based (RLIMIT_MEMLOCK) to
-  * memcg-based memory accounting for BPF maps and progs. This was done in [0].
-- * We use the support for bpf_ktime_get_coarse_ns() helper, which was added in
-- * the same 5.11 Linux release ([1]), to detect memcg-based accounting for BPF.
-+ * To do so, we lower the soft memlock rlimit to 0 and attempt to create a BPF
-+ * object. If it succeeds, then memcg-based accounting for BPF is available.
-  *
-  *   [0] https://lore.kernel.org/bpf/20201201215900.3569844-1-guro@fb.com/
-- *   [1] d05512618056 ("bpf: Add bpf_ktime_get_coarse_ns helper")
-  */
- int probe_memcg_account(void)
- {
- 	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, attach_btf_obj_fd);
- 	struct bpf_insn insns[] = {
--		BPF_EMIT_CALL(BPF_FUNC_ktime_get_coarse_ns),
- 		BPF_EXIT_INSN(),
- 	};
-+	struct rlimit rlim_init, rlim_cur_zero = {};
- 	size_t insn_cnt = ARRAY_SIZE(insns);
- 	union bpf_attr attr;
- 	int prog_fd;
- 
--	/* attempt loading freplace trying to use custom BTF */
- 	memset(&attr, 0, prog_load_attr_sz);
- 	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
- 	attr.insns = ptr_to_u64(insns);
- 	attr.insn_cnt = insn_cnt;
- 	attr.license = ptr_to_u64("GPL");
- 
-+	if (getrlimit(RLIMIT_MEMLOCK, &rlim_init))
-+		return -1;
-+
-+	/* Drop the soft limit to zero. We maintain the hard limit to its
-+	 * current value, because lowering it would be a permanent operation
-+	 * for unprivileged users.
-+	 */
-+	rlim_cur_zero.rlim_max = rlim_init.rlim_max;
-+	if (setrlimit(RLIMIT_MEMLOCK, &rlim_cur_zero))
-+		return -1;
-+
- 	prog_fd = sys_bpf_fd(BPF_PROG_LOAD, &attr, prog_load_attr_sz);
-+
-+	/* reset soft rlimit as soon as possible */
-+	setrlimit(RLIMIT_MEMLOCK, &rlim_init);
-+
- 	if (prog_fd >= 0) {
- 		close(prog_fd);
- 		return 1;
--- 
-2.34.1
+Where does your patch dec these ancestry references? (Or why would they
+be missing in the first place?)
 
+Thanks for digging into this!
+Michal
