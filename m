@@ -2,67 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3FD5453DC
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 20:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E46E54541F
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 20:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242818AbiFISOC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 14:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
+        id S231542AbiFIS1N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 14:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345327AbiFISN4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 14:13:56 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4319A3B1E87
-        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 11:13:54 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id e18-20020a656492000000b003fa4033f9a7so12097841pgv.17
-        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 11:13:54 -0700 (PDT)
+        with ESMTP id S230129AbiFIS1M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 14:27:12 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D146FF5537;
+        Thu,  9 Jun 2022 11:27:10 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id s6so39254887lfo.13;
+        Thu, 09 Jun 2022 11:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vluAGTMIfwVyo7bLiqlBGz2BhUJzgDYPHPvvS9bz/gU=;
-        b=sKuaXpkxCNRxo4dKoyS/7EaD6laN/vydpvteaS6Qcx2qD5Okb8+50GLBkgQZcj0Aut
-         6whls+bSF1ucm3CgKvkJzF37xZCxTwUnd0CqPEzn+fYc3Md1E3RcsS9/G9b6ApvlkmoU
-         xmL7rvMSOot/6pzYdi+AULDuNTiH2YBFZTd+9s+qND2lP2+PBpe2MMghlECLiooPn5Ts
-         AnSymca/eMo5hCNs7QDD9GmRZrJElEXHa6VHZCN5W9yQJLuO73qtKSxia83oXWcJmQrG
-         +pIcn1ejPJA583jdZlI0VV77B1D3Je1BJItw15xjaBU8oskgF8KaxGspK87a6TVIS7wv
-         kcLg==
+        bh=AhmBOTJY8amk0N1XljgJRz/lxToy2L4Z1S8IA0lM0a4=;
+        b=JKdsW4M/5b0xswfjyJ9Po84LMJR6RtHicDkvP4L6WrSNv6HPDMPG+mlg0SzEr3fXIz
+         9k/6yYFcZZ7JXj0DNgU2zUVW/gG0+jn5L7oDxxu54Su5vkjz+g9SPxsYDc7ohDIO4f99
+         J8xb909ZKmoziU91OGwsq0oYfnmUDzIhcHV9I9bjoELHQQ6GQpJDndwns8xc08cSSYDv
+         0sHfZ4WQrnplrOReP4U9Qe9LOHkD+UrMFKZidmBiIC7JoZiNBhXRcxQfmJXdillacsjn
+         Kj2Es3lpu1Si/5QtH1k+7fKE9U6lIuQHO1yF9aaUuiUkcSYZ9kXtHYNuUgmssT1rJWNy
+         8aig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=vluAGTMIfwVyo7bLiqlBGz2BhUJzgDYPHPvvS9bz/gU=;
-        b=jnESUKL/CZvM9b2nAEnAcN7bHbk3zJnjD20JyJhwMvBcy+Gz/yhIoJLIFUNvAfzopG
-         n2TtfSKJQvXDp9D4UkSqzTfVIkzP7Uy8xTpmmF46QTxuIvuIO2VS/lHKCp9IOum95IU+
-         bC+zz6AAw/5SFyV6HCY3riP1lqbOuQbBEUJ876VaE1nRi9IM9dkfh0qS0MBhsQr7rJap
-         DnXQrbAwTmVKeHM+urFxaWN8LJ0D5AokM6i1aI7v1LOoKYpIDgXYzaX4p19P6wGlLfc9
-         wOp7InKQ8TTDRcJbep9djdoxpAkS4wYOlM+nz/xKoS54aTqOouBmleV3XC8chSARDW8s
-         wXZg==
-X-Gm-Message-State: AOAM532k/+B57EhyiqPu5+sxnytEX9NdnG3wtqErNcxgir+6ELK+ZrcE
-        DZrBTpTG2Gm/yC3opYtMs6RlfT4=
-X-Google-Smtp-Source: ABdhPJyRYCta6Vqo5XxGqBx/s8D7LTEKhczS3RZ8AIhOsjvPbLChu+PT5zTb9YKRfwRK1G07opyciQs=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:249:b0:1e0:a8a3:3c6c with SMTP id
- t9-20020a17090a024900b001e0a8a33c6cmr112410pje.0.1654798432681; Thu, 09 Jun
- 2022 11:13:52 -0700 (PDT)
-Date:   Thu, 9 Jun 2022 11:13:50 -0700
-In-Reply-To: <20220609143614.97837-1-quentin@isovalent.com>
-Message-Id: <YqI4XrKeQkENT/+w@google.com>
-Mime-Version: 1.0
-References: <20220609143614.97837-1-quentin@isovalent.com>
-Subject: Re: [PATCH bpf-next] libbpf: Improve probing for memcg-based memory accounting
-From:   sdf@google.com
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AhmBOTJY8amk0N1XljgJRz/lxToy2L4Z1S8IA0lM0a4=;
+        b=bQS7xpkedYWnFgIaot/PVOldQlFD09GNLmpGWZosotjwwbkwHpwgA6g39jBcYaOsOw
+         frF4tSx35ds68jthNnmZm9G5rjuOF9xwa0lGnVJNQL+9EYgelzhsw9DYFaTUKIkmvTYV
+         nammp8z8AWG0YUWFvUARVumri3ifYkdfW8wRT2oFl8eYQromxvL8AZVoyZqQLPtf2HHC
+         c811h6DXBAQ/J955vMJPZh8DM8JnOMgpq7eK7zd3LUr4/k7lxzUNSLPhfsrv5Dv8rhIW
+         b7D9YA/peRW4yrWJq9oYiVdF8xGIF3UhBWaLOzAsbRmtop7WXfIbfqrdjUnuiV3Uctks
+         Zvxw==
+X-Gm-Message-State: AOAM532/IpErj2K1oLQ14QIxwiM2xGbQyVYOylNSoKTLQ2oQ7T8lUDEC
+        O/QfZkuv7B5iyJtIbxGdfmGYUCtwgKcqxpGj3ZY=
+X-Google-Smtp-Source: ABdhPJwwsqXPmHoicC+bnRDVoPHXDWaNbFPAGRJZRG8wMVtfxhOutw+MN/PaK7jQL9d6MHouqIHxKZzybmPvPOc7tNs=
+X-Received: by 2002:a05:6512:2296:b0:479:5805:6f05 with SMTP id
+ f22-20020a056512229600b0047958056f05mr10829913lfu.302.1654799229020; Thu, 09
+ Jun 2022 11:27:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220525114003.61890-1-jolsa@kernel.org> <CAEf4BzZ-xe-zSjbBpKLHfQKPnTRTBMA2Eg382+_4kQoTLnj4eQ@mail.gmail.com>
+ <CAADnVQJcDKVAOeJ8LX9j-cUKdkptuFWFDnB3o9C_o0bSScGnsQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJcDKVAOeJ8LX9j-cUKdkptuFWFDnB3o9C_o0bSScGnsQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 9 Jun 2022 11:26:57 -0700
+Message-ID: <CAEf4Bzay1-pRLw+zHG1TjHRTRpqQdtmpmDvNdq=ef-0OUQD0QQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next] bpf: Use prog->active instead of bpf_prog_active
+ for kprobe_multi
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Harsh Modi <harshmodi@google.com>,
-        Paul Chaignon <paul@cilium.io>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,108 +73,114 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/09, Quentin Monnet wrote:
-> To ensure that memory accounting will not hinder the load of BPF
-> objects, libbpf may raise the memlock rlimit before proceeding to some
-> operations. Whether this limit needs to be raised depends on the version
-> of the kernel: newer versions use cgroup-based (memcg) memory
-> accounting, and do not require any adjustment.
+On Tue, Jun 7, 2022 at 9:29 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, May 31, 2022 at 4:24 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, May 25, 2022 at 4:40 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > hi,
+> > > Alexei suggested to use prog->active instead global bpf_prog_active
+> > > for programs attached with kprobe multi [1].
+> > >
+> > > AFAICS this will bypass bpf_disable_instrumentation, which seems to be
+> > > ok for some places like hash map update, but I'm not sure about other
+> > > places, hence this is RFC post.
+> > >
+> > > I'm not sure how are kprobes different to trampolines in this regard,
+> > > because trampolines use prog->active and it's not a problem.
+> > >
+> > > thoughts?
+> > >
+> >
+> > Let's say we have two kernel functions A and B? B can be called from
+> > BPF program though some BPF helper, ok? Now let's say I have two BPF
+> > programs kprobeX and kretprobeX, both are attached to A and B. With
+> > using prog->active instead of per-cpu bpf_prog_active, what would be
+> > the behavior when A is called somewhere in the kernel.
+> >
+> > 1. A is called
+> > 2. kprobeX is activated for A, calls some helper which eventually calls B
+> >   3. kprobeX is attempted to be called for B, but is skipped due to prog->active
+> >   4. B runs
+> >   5. kretprobeX is activated for B, calls some helper which eventually calls B
+> >     6. kprobeX is ignored (prog->active > 0)
+> >     7. B runs
+> >     8. kretprobeX is ignored (prog->active > 0)
+> > 9. kretprobeX is activated for A, calls helper which calls B
+> >   10. kprobeX is activated for B
+> >     11. kprobeX is ignored (prog->active > 0)
+>
+> not correct. kprobeX actually runs.
+> but the end result is correct.
+>
 
-> There is a probe in libbpf to determine whether memcg-based accounting
-> is supported. But this probe currently relies on the availability of a
-> given BPF helper, bpf_ktime_get_coarse_ns(), which landed in the same
-> kernel version as the memory accounting change. This works in the
-> generic case, but it may fail, for example, if the helper function has
-> been backported to an older kernel. This has been observed for Google
-> Cloud's Container-Optimized OS (COS), where the helper is available but
-> rlimit is still in use. The probe succeeds, the rlimit is not raised,
-> and probing features with bpftool, for example, fails.
+Right, it was a long sequence, but you got the idea :)
 
-> Here we attempt to improve this probe and to effectively rely on memory
-> accounting. Function probe_memcg_account() in libbpf is updated to set
-> the rlimit to 0, then attempt to load a BPF object, and then to reset
-> the rlimit. If the load still succeeds, then this means we're running
-> with memcg-based accounting.
+> >     12. B runs
+> >     13. kretprobeX is ignored (prog->active > 0)
+> >   14. B runs
+> >   15. kretprobeX is ignored (prog->active > 0)
+> >
+> >
+> > If that's correct, we get:
+> >
+> > 1. kprobeX for A
+> > 2. kretprobeX for B
+> > 3. kretprobeX for A
+> > 4. kprobeX for B
+>
+> Here it's correct.
+>
+> > It's quite mind-boggling and annoying in practice. I'd very much
+> > prefer just kprobeX for A followed by kretprobeX for A. That's it.
+> >
+> > I'm trying to protect against this in retsnoop with custom per-cpu
+> > logic in each program, but I so much more prefer bpf_prog_active,
+> > which basically says "no nested kprobe calls while kprobe program is
+> > running", which makes a lot of sense in practice.
+>
+> It makes sense for retsnoop, but does not make sense in general.
+>
+> > Given kprobe already used global bpf_prog_active I'd say multi-kprobe
+> > should stick to bpf_prog_active as well.
+>
+> I strongly disagree.
+> Both multi kprobe and kprobe should move to per prog counter
+> plus some other protection
+> (we cannot just move to per-prog due to syscalls).
+> It's true that the above order is mind-boggling,
+> but it's much better than
+> missing kprobe invocation completely just because
+> another kprobe is running on the same cpu.
+> People complained numerous times about this kprobe behavior.
+> kprobeX attached to A
+> kprobeY attached to B.
+> If kprobeX calls B kprobeY is not going to be called.
+> Means that anything that bpf is using is lost.
+> spin locks, lists, rcu, etc.
+> Sleepable uprobes are coming.
+> iirc Delyan's patch correctly.
+> We will do migrate_disable and inc bpf_prog_active.
 
-> This probe was inspired by the similar one from the cilium/ebpf Go
-> library [0].
+This might be a different issue, I'm not sure why uprobes should be
+protected by the same global bpf_prog_active, you can't trigger uprobe
+from uprobe program. And especially for sleepable programs it makes no
+sense to use per-CPU protection (we have bpf_run_ctx for such
+protections, if needed).
 
-> [0] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
+> Now random kprobes on that cpu will be lost.
 
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->   tools/lib/bpf/bpf.c | 23 ++++++++++++++++++-----
->   1 file changed, 18 insertions(+), 5 deletions(-)
+It's not random. The rule is you can't kernel functions and
+tracepoints triggered from BPF kprobes/tracepoints. This prevents
+nasty reentrance problems and makes sense. Isn't kernel tracing infra
+is protecting itself similarly, preventing reentrancy and recursion?
 
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 240186aac8e6..781387e6f66b 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -99,31 +99,44 @@ static inline int sys_bpf_prog_load(union bpf_attr  
-> *attr, unsigned int size, int
+> It's awful. We have to fix it.
 
->   /* Probe whether kernel switched from memlock-based (RLIMIT_MEMLOCK) to
->    * memcg-based memory accounting for BPF maps and progs. This was done  
-> in [0].
-> - * We use the support for bpf_ktime_get_coarse_ns() helper, which was  
-> added in
-> - * the same 5.11 Linux release ([1]), to detect memcg-based accounting  
-> for BPF.
-> + * To do so, we lower the soft memlock rlimit to 0 and attempt to create  
-> a BPF
-> + * object. If it succeeds, then memcg-based accounting for BPF is  
-> available.
->    *
->    *   [0]  
-> https://lore.kernel.org/bpf/20201201215900.3569844-1-guro@fb.com/
-> - *   [1] d05512618056 ("bpf: Add bpf_ktime_get_coarse_ns helper")
->    */
->   int probe_memcg_account(void)
->   {
->   	const size_t prog_load_attr_sz = offsetofend(union bpf_attr,  
-> attach_btf_obj_fd);
->   	struct bpf_insn insns[] = {
-> -		BPF_EMIT_CALL(BPF_FUNC_ktime_get_coarse_ns),
->   		BPF_EXIT_INSN(),
->   	};
-> +	struct rlimit rlim_init, rlim_cur_zero = {};
->   	size_t insn_cnt = ARRAY_SIZE(insns);
->   	union bpf_attr attr;
->   	int prog_fd;
-
-> -	/* attempt loading freplace trying to use custom BTF */
->   	memset(&attr, 0, prog_load_attr_sz);
->   	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
->   	attr.insns = ptr_to_u64(insns);
->   	attr.insn_cnt = insn_cnt;
->   	attr.license = ptr_to_u64("GPL");
-
-> +	if (getrlimit(RLIMIT_MEMLOCK, &rlim_init))
-> +		return -1;
-> +
-> +	/* Drop the soft limit to zero. We maintain the hard limit to its
-> +	 * current value, because lowering it would be a permanent operation
-> +	 * for unprivileged users.
-> +	 */
-> +	rlim_cur_zero.rlim_max = rlim_init.rlim_max;
-> +	if (setrlimit(RLIMIT_MEMLOCK, &rlim_cur_zero))
-> +		return -1;
-> +
->   	prog_fd = sys_bpf_fd(BPF_PROG_LOAD, &attr, prog_load_attr_sz);
-> +
-> +	/* reset soft rlimit as soon as possible */
-> +	setrlimit(RLIMIT_MEMLOCK, &rlim_init);
-
-Isn't that adding more flakiness to the other daemons running as
-the same user? Also, there might be surprises if another daemon that
-has libbpf in it starts right when we've set the limit temporarily to zero.
-
-Can we push these decisions to the users as part of libbpf 1.0 cleanup?
-
-> +
->   	if (prog_fd >= 0) {
->   		close(prog_fd);
->   		return 1;
-> --
-> 2.34.1
-
+You can call it "a fix" if you'd like, but it's changing a very
+user-visible behavior and guarantees on which users relied for a
+while. So even if we switch to per-prog protection it will have to be
+some sort of opt-in (flag, new program type, whatever).
