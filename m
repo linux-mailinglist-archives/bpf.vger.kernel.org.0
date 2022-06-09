@@ -2,67 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 054BE545108
-	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 17:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBA8545135
+	for <lists+bpf@lfdr.de>; Thu,  9 Jun 2022 17:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344569AbiFIPio (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 11:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
+        id S243225AbiFIPtb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 11:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237587AbiFIPik (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 11:38:40 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF6326329E;
-        Thu,  9 Jun 2022 08:38:37 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id o10so31705776edi.1;
-        Thu, 09 Jun 2022 08:38:37 -0700 (PDT)
+        with ESMTP id S236467AbiFIPta (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 11:49:30 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4418C10789B
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 08:49:29 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id h19so31808653edj.0
+        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 08:49:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Mg7JMiMVAhUH8K1hucSMpRfWYhKs0b5aSTxdi9koiAw=;
-        b=fVwBnNiAwp7xgtTmQYNF749ks9JXSD2bg2YjxxWGiObTL28ROuVZJuS22JONbKHEAM
-         lpRS4XfSOioN2mWEYrgpimmQQL7pECXClPcZB1GqYXg9wPYtYmk2wg1MNDbKNS/MSt9d
-         zH6m3leRaqH5tMseU5MZBbi4/I/VyO2gr3c8yu6L0WkB1I3eTvJGYDsHWtpY8ZkpXPEy
-         hLytZNL+EO17uuMVHm8bFCS46vRBe2enbDBwmQdVoeXcubs7OBJ6DnFQWZE/cR7u3CVL
-         wysjuiqrIiWLhqjdwx+NPj2cZmu01pjCHMweqPROWobGuyXIXsEz+vP8nzzRVN6ZHbCx
-         0zbQ==
+        bh=3OhCiSaVtT7PzOt/+N9WARlegY6/nQxckbmVX3EBXzw=;
+        b=Yrn1SM70gINJwTXekRwIHZyoXYUfYA9MQgEUvyt4//S3iIKz4gs8/fPq2SuwZtcEip
+         OYPzREzRFkIt6/INCBOcTHn2N/tMmAX/hLqfpy+VvFNOAiJYeh09w1/JP0YHbofQSYtC
+         YAav+BLYMhioXaOwDrcBkYFG6JWHRbx0eZS82hDeEVfSaA/Z5PIN5kOzs+74/u7pPDUr
+         fcepX6ZmpPpAUWqCM+gtUpaoD/EgteNvM9YBiUxOLOWcNrCJpI8aJUuFNfyBuxiwnuRt
+         VE7hm5F6/Q0zT5j2VFwsC25cMCAYPJQEaeSsBXCgBj/ReUl/qgTc57fdGRKjUcyNPESI
+         ugcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Mg7JMiMVAhUH8K1hucSMpRfWYhKs0b5aSTxdi9koiAw=;
-        b=YqxlWM0JXoMczTTZ5T7eAoofSO3EzuEcpgEzAK88Fi77tzzHw8GLJnSLOg40q3WVeH
-         ToTFJKds0dErQyX5ivlCRGH+Dtp784UH511JOA7ej9/ggSTcYPla6lVMv952Ji13OL0Y
-         zDhD5DPg1hCctHRTsmAcEsPF2Q6hMj6n5C5fe152+UddizYaE+PqzepIjM9FlK1sbMbv
-         8GfSWcLGsaSh0a496yaTm0mE9xm/dmXXC4dL5YasW9GBHjuWJu7/7GF9HnGeJGVCFxZn
-         pmI5dV7NQZVX3PnW4vIQrLlikNhGlxUTj/k9T+DCvh339Skekt0Pa57zBARtfXaeE2v+
-         uejw==
-X-Gm-Message-State: AOAM533jBfOZG/A4Qdke12+xQiF4VpQHUxMLOJZqV/MBK3+xWZ+iOWhH
-        3/ODuB70Wlpaut3tv+9Hy9P+yrRSCRdtgq/4kY2fMOf5rp4=
-X-Google-Smtp-Source: ABdhPJz3cHnciiAj2zKCGvjtUPGW1JPISEltKYJUwf/VFV3cj1sIWruCAc+UarPUfh5NMJr73eST6atzEIAwdI3MyPo=
-X-Received: by 2002:a05:6402:11d1:b0:433:4a09:3f49 with SMTP id
- j17-20020a05640211d100b004334a093f49mr884992edw.357.1654789116109; Thu, 09
- Jun 2022 08:38:36 -0700 (PDT)
+        bh=3OhCiSaVtT7PzOt/+N9WARlegY6/nQxckbmVX3EBXzw=;
+        b=olSN2wlaQN9kcbfm2sUDq+zhCnvnm489aujASfm/023usXnLRcETJjNoZj05QMcCbx
+         Uy8FM1icvLinnrYQbvtaJK7WJuWt8mUaSC+raXddLfWQF2szAp5H1aHeZBku4RCT7FL/
+         a7EFtAGofd1cGWqj7K+brWSnoX/iJFRD8ibFPraz03LVha46Pr5/cZBQsucg6xlJMBCF
+         o82uR7WhX25f9GJsY/y56ABT9l5MiesuDWnvbAWbjUa/MYOey2AMa/jRihI820eO9Ete
+         GGYOdGZFJ+4GW/gotqE3kTV+1OwprOnzA/C3DIYZgcuFLLCnh8x5bvvfAlKGz+BSoGo7
+         CrnQ==
+X-Gm-Message-State: AOAM531f8rtZ0XEM0DCsoOpT8LIbFVmVQu3nYLWZL1NEfYR7wlvjKP+/
+        r0oVg1ZvS95aT2ru71XM6xbxHOO5dVWiQ9xBExk=
+X-Google-Smtp-Source: ABdhPJxPO4OWX+ToybIoWqe0Vfaxm6C2bzCCxst3F02Bj3kLoEwMi+ZGlVffRwt3AgDTaxn8LvnTMP8n9BiWkbQS9xk=
+X-Received: by 2002:a05:6402:56:b0:431:6f7b:533 with SMTP id
+ f22-20020a056402005600b004316f7b0533mr21202063edu.333.1654789767805; Thu, 09
+ Jun 2022 08:49:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220608111221.373833-1-roberto.sassu@huawei.com>
- <20220608111221.373833-3-roberto.sassu@huawei.com> <CAADnVQJ4RCSAeDMqFpF5bQznPQaTWFr=kL7GdssDQuzLof06fg@mail.gmail.com>
- <92d8b9c08e20449782f19f64cc3ec5fa@huawei.com>
-In-Reply-To: <92d8b9c08e20449782f19f64cc3ec5fa@huawei.com>
+References: <20220604222006.3006708-1-davemarchevsky@fb.com>
+ <20220608230226.jywist5cdgu3ntss@kafai-mbp> <79b4e95c-437d-45c5-c7a8-c077f692c18a@fb.com>
+In-Reply-To: <79b4e95c-437d-45c5-c7a8-c077f692c18a@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 9 Jun 2022 08:38:24 -0700
-Message-ID: <CAADnVQLd2d+_2iJ84u9zK3Nnb+LL3Gw7k=XQCVOHuekb2hLf_g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] selftests/bpf: Add test_progs opts for sign-file
- and kernel priv key + cert
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 9 Jun 2022 08:49:15 -0700
+Message-ID: <CAADnVQJ+q6gmSt6E7YmhrdbNbW53tAwC3JKHEF1ts7VBU=x5GQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next] selftests/bpf: Add benchmark for
+ local_storage get
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,106 +70,23 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 9, 2022 at 2:00 AM Roberto Sassu <roberto.sassu@huawei.com> wrote:
->
-> > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
-> > Sent: Thursday, June 9, 2022 2:13 AM
-> > On Wed, Jun 8, 2022 at 4:15 AM Roberto Sassu <roberto.sassu@huawei.com>
-> > wrote:
-> > >
-> > > According to the logs of the eBPF CI, built kernel and tests are copied to
-> > > a virtual machine to run there.
-> > >
-> > > Since a test for a new helper to verify PKCS#7 signatures requires to sign
-> > > data to be verified, extend test_progs to store in the test_env data
-> > > structure (accessible by individual tests) the path of sign-file and of the
-> > > kernel private key and cert.
-> > >
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/test_progs.c | 12 ++++++++++++
-> > >  tools/testing/selftests/bpf/test_progs.h |  3 +++
-> > >  2 files changed, 15 insertions(+)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/test_progs.c
-> > b/tools/testing/selftests/bpf/test_progs.c
-> > > index c639f2e56fc5..90ce2c06a15e 100644
-> > > --- a/tools/testing/selftests/bpf/test_progs.c
-> > > +++ b/tools/testing/selftests/bpf/test_progs.c
-> > > @@ -707,6 +707,8 @@ enum ARG_KEYS {
-> > >         ARG_TEST_NAME_GLOB_DENYLIST = 'd',
-> > >         ARG_NUM_WORKERS = 'j',
-> > >         ARG_DEBUG = -1,
-> > > +       ARG_SIGN_FILE = 'S',
-> > > +       ARG_KERNEL_PRIV_CERT = 'C',
-> > >  };
-> > >
-> > >  static const struct argp_option opts[] = {
-> > > @@ -732,6 +734,10 @@ static const struct argp_option opts[] = {
-> > >           "Number of workers to run in parallel, default to number of cpus." },
-> > >         { "debug", ARG_DEBUG, NULL, 0,
-> > >           "print extra debug information for test_progs." },
-> > > +       { "sign-file", ARG_SIGN_FILE, "PATH", 0,
-> > > +         "sign-file path " },
-> > > +       { "kernel-priv-cert", ARG_KERNEL_PRIV_CERT, "PATH", 0,
-> > > +         "kernel private key and cert path " },
-> > >         {},
-> > >  };
-> > >
-> > > @@ -862,6 +868,12 @@ static error_t parse_arg(int key, char *arg, struct
-> > argp_state *state)
-> > >         case ARG_DEBUG:
-> > >                 env->debug = true;
-> > >                 break;
-> > > +       case ARG_SIGN_FILE:
-> > > +               env->sign_file_path = arg;
-> > > +               break;
-> > > +       case ARG_KERNEL_PRIV_CERT:
-> > > +               env->kernel_priv_cert_path = arg;
-> > > +               break;
+On Thu, Jun 9, 2022 at 7:27 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+> >> +
+> >> +    if (use_hashmap) {
+> >> +            idx = bpf_get_prandom_u32() % hashmap_num_keys;
+> >> +            bpf_map_lookup_elem(inner_map, &idx);
+> > Is the hashmap populated ?
 > >
-> > That's cumbersome approach to use to force CI and
-> > users to pass these args on command line.
-> > The test has to be self contained.
-> > test_progs should execute it without any additional input.
-> > For example by having test-only private/public key
-> > that is used to sign and verify the signature.
 >
-> I thought a bit about this. Just generating a test key does not work,
-> as it must be signed by the kernel signing key (otherwise, loading
-> in the secondary keyring will be rejected). Having the test key around
-> is as dangerous as having the kernel signing key around copied
-> somewhere.
->
-> Allowing users to specify a test keyring in the helper is possible.
+> Nope. Do you expect this to make a difference? Will try when confirming key /
+> val size above.
 
-We shouldn't need to load into the secondary keyring.
-The helper needs to support an arbitrary key ring.
-The kernel shouldn't interfere with loading that test key into
-a test ring.
-
-> But it would introduce unnecessary code, plus the keyring identifier
-
-What kind of 'unnecessary code' ?
-
-> will be understood by eBPF only and not by verify_pkcs7_signature(),
-> as it happens for other keyring identifiers.
-
-Maybe wrapping verify_pkcs7_signature as a helper is too high level?
-
-> We may have environment variables directly in the eBPF test, to
-> specify the location of the signing key, but there is a risk of
-> duplication, as other tests wanting the same information might
-> not be aware of them.
-
-That's no go.
-
-> I would not introduce any code that handles the kernel signing
-> key (in the Makefile, or in a separate script). This information is
-> so sensible, that it must be responsibility of an external party
-> to do the work of making that key available and tell where it is.
->
-> Roberto
->
-> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-> Managing Director: Li Peng, Yang Xi, Li He
+Martin brought up an important point.
+The map should be populated.
+If the map is empty lookup_nulls_elem_raw() will select a bucket,
+it will be empty and it will return NULL.
+Whereas the more accurates apples to apples comparison
+would be to find a task in a map, since bpf_task_storage_get(,F_CREATE);
+will certainly find it.
+Then if (l->hash == hash && !memcmp ... will be triggered.
+When we're counting nsecs that should be noticeable.
