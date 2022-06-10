@@ -2,65 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2710547055
-	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 02:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBA754705C
+	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 02:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235625AbiFJXzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 19:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
+        id S1347794AbiFJX5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 19:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235486AbiFJXzf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 19:55:35 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25AC12740;
-        Fri, 10 Jun 2022 16:55:33 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id kq6so802558ejb.11;
-        Fri, 10 Jun 2022 16:55:33 -0700 (PDT)
+        with ESMTP id S235486AbiFJX5I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 19:57:08 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA26B179960;
+        Fri, 10 Jun 2022 16:57:07 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id v1so788736ejg.13;
+        Fri, 10 Jun 2022 16:57:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=m2fXIIXeQGxSM/RZDHtCli6wPQtwAxjAErth8QWW4uE=;
-        b=gh9IKPSk1pn6D61IY2qGzrrdlbFPdi6uDVVHGEiANe4eqku4MXjhjo94lxlNnTGyqo
-         XNN3xX5yKDybwSWyHzr/RabT3R6UjhGKDUzLGrgCAjfACG1fx8AActWd6o5vphRBZzfu
-         QWDzrmY2j/uv0P1CJw+Q37UUcUSdXZ6Wh2SsplOvCLtUNCgWN9i4NCSmaMEigpnUBDUa
-         eEzHnuy2hjXL8rgWZiIonw53AZsUk56UiDP/Okh3JGo0adQawskZldyIWre0ScH4F3JE
-         yG5UnX66j8zXsylLjAdoDHIbgxAuIraVeiJxf12Mm8ZeoOQdF9tawbKqAOv2oAaCj4rF
-         1jzg==
+        bh=jQmPRsTR95ymz+EPvppaVNmzqWaaicoojJhIHHo9hvI=;
+        b=pWoyzC8h/FhE6fU9Yh3CiG/b9TsFgd5VDusl8nHM1Heuatmuka6s14VpcXnC8xpKDh
+         wRa6T9khqo3gG7zDZUp1+w3EE1bL01z3yI3RICEuvO9hDnRobOJLXux4looeAGsQIf51
+         jYVEfZlEd6FF8heTjX8bdo4yrcYAq67wkaHvEyehY9ta3EKJwi6Xa4O6R/e7qmpDbWLs
+         cJFP9nwXQtPqvPuzlsNeq1L2S0ILfAhQRZXZKfS9juVBzNYbr6D1DC0WPkamN8/8bV+7
+         PwNE5rQaiqla7aum1tRJX1O+C8opIL74OpyHlK46s1KwmHh+N7NfgfuJTkxOizjbVQPA
+         pCpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=m2fXIIXeQGxSM/RZDHtCli6wPQtwAxjAErth8QWW4uE=;
-        b=XZe+j8leGPXzxeBEOHbsONPzSx9hrVSbjOPocJSZ8dql1uJ20zXJ8fjfu92yCXitKM
-         ciXxTn4d5l50qJ13P9YBVPo2kOsVHhILB27cgiKIMqvFoTfmdIJawfmZ1ZZk0zH4lYTr
-         ZCtQLgkpZJcryaerJ3RFI1en2UnafvozriEoi6KNFNB8xBxwCojnvQ87dUrANtqMikUZ
-         eaODPIJCD3be9iXcD6HtEt0gC+tOevyqJjkjj1f8dWCi1wDEw//cL3XYPKJ3mrnmbfrl
-         x1X01czAxKWIz0Q4LaEcjzI/uRktqBvW7Lit4oOHNrRNXMoeZH5GRnxfwn/3Iuk9MbPV
-         j42Q==
-X-Gm-Message-State: AOAM533wO+BJseIxSTqwxT9Q5ShH8eKVqZGBFOsoD+4qfyoavuI5y0eM
-        TfG2keQgwxVYmrBSBwR9RiBPTy8Kad+qpR4XU+Aqvwn2
-X-Google-Smtp-Source: ABdhPJzZ/P/FaQm3gPaq3MIw10TqMwsCUU//pYhOgtv3RX4Oh+ktO3ddpaHHI6WiN9T7zxGH8qULKAmnSPrQ5p6v78E=
-X-Received: by 2002:a17:906:586:b0:70d:9052:fdf0 with SMTP id
- 6-20020a170906058600b0070d9052fdf0mr37262501ejn.633.1654905332409; Fri, 10
- Jun 2022 16:55:32 -0700 (PDT)
+        bh=jQmPRsTR95ymz+EPvppaVNmzqWaaicoojJhIHHo9hvI=;
+        b=PyLqe+/jwcV21mvsoNztjXyDF1lFlEGllomMlaYcZAwH71kd9qvKRx78fjODtQyhnd
+         hQYHDygGTq2xGBiOTiNdW39RXaKhTBJm8xe5enif9+KOUUQdGFowi6uDhE5Yaf8cIXE/
+         vh25TUPEcodNBMpbooeAwpIUczI1fSbi5NUSTqT1AtWlVO8tHuy9WPH8QXrs7BrGpMz2
+         TSH0e39LsxzUtzjWkcNAFJ2u2m1hIKcYr/mhe/ZqAE8gud6DQndSxo20DLvKiR3+59TX
+         7RFkr+2vfnda8MNMLsIRgYr6Uye6n5jp2qbnr4dBaajmgwhbC1R4r3jxc2fpkAPtmRsh
+         ow/Q==
+X-Gm-Message-State: AOAM532933s8Dm6Q3D8mwqDFzwHTnUGud4TPw2gfEow7fN/AHK1EgCNM
+        rh/8QcOIw+Do0Cbn33o/o/2juHUvf6l8c3O1/qI=
+X-Google-Smtp-Source: ABdhPJwNEr9ctOLJamvMSijPc7FQAKaxX0cnirbr532zEVadx9l03L/RdP5Ck+qc6L27B8L2cezX93j48N0bJi0QeZ8=
+X-Received: by 2002:a17:906:51d0:b0:6ff:2415:fc18 with SMTP id
+ v16-20020a17090651d000b006ff2415fc18mr2360086ejk.94.1654905426298; Fri, 10
+ Jun 2022 16:57:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220609234601.2026362-1-kpsingh@kernel.org> <bc4fe45a-b730-1832-7476-8ecb10ae5f90@schaufler-ca.com>
- <CACYkzJ6e2f+vdQmWBvRaQCJJ1ABPrfw4hYU231LbwhB_03GWLQ@mail.gmail.com>
-In-Reply-To: <CACYkzJ6e2f+vdQmWBvRaQCJJ1ABPrfw4hYU231LbwhB_03GWLQ@mail.gmail.com>
+References: <20220610135916.1285509-1-roberto.sassu@huawei.com>
+ <20220610135916.1285509-2-roberto.sassu@huawei.com> <ce56c551-019f-9e10-885f-4e88001a8f6b@iogearbox.net>
+ <4b877d4877be495787cb431d0a42cbc9@huawei.com> <1a5534e6-4d63-7c91-8dcd-41b22f1ea2ba@iogearbox.net>
+ <CACYkzJ7-b7orpuUf-Uy7zLGufi8JJFGyWeH0SKwS_GsZVdQWeg@mail.gmail.com>
+In-Reply-To: <CACYkzJ7-b7orpuUf-Uy7zLGufi8JJFGyWeH0SKwS_GsZVdQWeg@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 10 Jun 2022 16:55:20 -0700
-Message-ID: <CAADnVQJrbySvD9UB8POyhL6hKx6mEkh1EZfeWbmm5nTrfsyViQ@mail.gmail.com>
-Subject: Re: [PATCH linux-next] security: Fix side effects of default BPF LSM hooks
+Date:   Fri, 10 Jun 2022 16:56:54 -0700
+Message-ID: <CAADnVQLL_5NHxNJytDrZCKkQpHx6zLTJYVFzYwPxyWVJZHE-FQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] bpf: Add bpf_verify_signature() helper
 To:     KP Singh <kpsingh@kernel.org>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -72,25 +76,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 4:49 PM KP Singh <kpsingh@kernel.org> wrote:
+On Fri, Jun 10, 2022 at 4:53 PM KP Singh <kpsingh@kernel.org> wrote:
+> > >>> +static const struct bpf_func_proto bpf_verify_signature_proto = {
+> > >>> +   .func           = bpf_verify_signature,
+> > >>> +   .gpl_only       = false,
+> > >>> +   .ret_type       = RET_INTEGER,
+> > >>> +   .arg1_type      = ARG_PTR_TO_MEM,
+> > >>> +   .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
+> > >>
+> > >> Can verify_pkcs7_signature() handle null/0 len for data* args?
+> > >
+> > > Shouldn't ARG_PTR_TO_MEM require valid memory? 0 len should
+> > > not be a problem.
 > >
-> > > In order to reliably fix this issue and also allow LSM Hooks and BPF
-> > > programs which implement hook logic to choose to not make a decision
-> > > in certain conditions (e.g. when BPF programs are used for auditing),
-> > > introduce a special return value LSM_HOOK_NO_EFFECT which can be used
-> > > by the hook to indicate to the framework that it does not intend to
-> > > make a decision.
+> > check_helper_mem_access() has:
 > >
-> > The LSM infrastructure already has a convention of returning
-> > -EOPNOTSUPP for this condition. Why add another value to check?'
+> >       /* Allow zero-byte read from NULL, regardless of pointer type */
+> >       if (zero_size_allowed && access_size == 0 &&
+> >           register_is_null(reg))
+> >               return 0;
 >
-> This is not the case in call_int_hook currently.
+> Daniel, makes a fair point here. Alexei, what do you think?
 >
-> If we can update the LSM infra to imply that  -EOPNOTSUPP means
-> that the hook iteration can continue as that implies "no decision"
-> this would be okay as well.
+> I wonder if some "future" signature verification would need even more
+> / different arguments so a unified bpf_verify_signature might get more
+> complex / not easy to extend.
 
-Agree that it's cleaner to use existing code like EOPNOTSUPP
-to indicate 'ignore this lsm'.
-
-Folks, reminder, please trim your replies.
+You mean a pkcs7 specific helper for now?
+Makes sense.
