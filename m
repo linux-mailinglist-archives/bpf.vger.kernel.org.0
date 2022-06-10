@@ -2,116 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D23975467FB
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 16:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44AA546838
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 16:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbiFJOBU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 10:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+        id S1345636AbiFJOXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 10:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349985AbiFJN7i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 09:59:38 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FDF1F5E24;
-        Fri, 10 Jun 2022 06:59:32 -0700 (PDT)
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LKMtf5cfmz67NMW;
-        Fri, 10 Jun 2022 21:55:54 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 10 Jun 2022 15:59:29 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kpsingh@kernel.org>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v3 0/2] bpf: Add bpf_verify_signature() helper
-Date:   Fri, 10 Jun 2022 15:59:14 +0200
-Message-ID: <20220610135916.1285509-1-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S1349311AbiFJOXa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 10:23:30 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2D7170648
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 07:23:21 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id i16-20020a056e021d1000b002d3bbe39232so19705233ila.20
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 07:23:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=XjrtYqNiT5vEa6+Vuf9aZLxSiV1HsY2+vhx3VyfeILM=;
+        b=G3dKt+hM0scnCjkDDGsO2fRGQ5ol1KhNvAuzAh6Iq1LcCJY3tlIKuo9/Nsn8yKDH7R
+         H8b3/Fc7mJIrU9/GUtVM6C2xXpWnL/3qhAi7o7z1ZXbYlWq31tUIY0zTwlF/nHIbcxML
+         zFvUj+JxSHdao/fsNFcxFeczovDMbggVL8xZA85BHQ/mNM6hN+7Hqh9M9zv6kYmN/5Xg
+         QHUQMbZJMjUlJl5zEuwK0HslhQUZ3Ls+7Fvwiw3k9rd9LW9AIJiwlRg1Zvp6/nx7rRGh
+         ws4qDTxRx0Foe3Y2aZBnhuUXYW7gIKKFUVedrFA+3z89ZWLwz1XwzHWgJWA40gery2Q0
+         YYuA==
+X-Gm-Message-State: AOAM531JYdZuGZDfXLde5IXWJcMffMfqrEWlgq0ETdwZBi5l2V/RUi2S
+        MCgl2PHlTeajtCbdYozawcDeEX2gO/GnoODDInWmniADGyH/
+X-Google-Smtp-Source: ABdhPJxdU7ph+1O6uNJ43i/VXnOf3VJRWymxSsZwPNYAarUi5cziesFNY651vf+6wPlOBYjUuUfeeiPPjH2vVsVR8oHmyxQcKU96
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.63.22]
-X-ClientProxiedBy: lhreml753-chm.china.huawei.com (10.201.108.203) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:12ce:b0:2d3:de67:9f96 with SMTP id
+ i14-20020a056e0212ce00b002d3de679f96mr26904551ilm.261.1654871001228; Fri, 10
+ Jun 2022 07:23:21 -0700 (PDT)
+Date:   Fri, 10 Jun 2022 07:23:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002d6bc305e118ae24@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in sk_psock_stop
+From:   syzbot <syzbot+140186ceba0c496183bc@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jakub@cloudflare.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, wangyufen@huawei.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-One of the desirable features in security is the ability to restrict import
-of data to a given system based on data authenticity. If data import can be
-restricted, it would be possible to enforce a system-wide policy based on
-the signing keys the system owner trusts.
+Hello,
 
-This feature is widely used in the kernel. For example, if the restriction
-is enabled, kernel modules can be plugged in only if they are signed with a
-key whose public part is in the primary or secondary keyring.
+syzbot found the following issue on:
 
-For eBPF, it can be useful as well. For example, it might be useful to
-authenticate data an eBPF program makes security decisions on.
+HEAD commit:    ff539ac73ea5 Add linux-next specific files for 20220609
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=176c121bf00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a5002042f00a8bce
+dashboard link: https://syzkaller.appspot.com/bug?extid=140186ceba0c496183bc
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13083353f00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=173e67f0080000
 
-After a discussion in the eBPF mailing list, it was decided that the stated
-goal should be accomplished by introducing a new helper:
-bpf_verify_signature(). Its job is simply to call the signature verification
-function corresponding to the passed signature type, with the keyring selected
-through the passed keyring identifier.
+The issue was bisected to:
 
-Since verify_pkcs7_signature() is doing crypto operations, it must be
-called by a sleepable program. This restricts the set of functions that can
-call the associated helper (for example, lsm.s/bpf is suitable,
-fexit/array_map_update_elem is not).
+commit d8616ee2affcff37c5d315310da557a694a3303d
+Author: Wang Yufen <wangyufen@huawei.com>
+Date:   Tue May 24 07:53:11 2022 +0000
 
-The added test checks the ability of an eBPF program to verify module-style
-appended signatures, as produced by the kernel tool sign-file, currently
-used to sign kernel modules.
+    bpf, sockmap: Fix sk->sk_forward_alloc warn_on in sk_stream_kill_queues
 
-The patch set is organized as follows.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1556d7cff00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1756d7cff00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1356d7cff00000
 
-Patch 1 introduces the new helper. Patch 2 adds the test for the new
-helper.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+140186ceba0c496183bc@syzkaller.appspotmail.com
+Fixes: d8616ee2affc ("bpf, sockmap: Fix sk->sk_forward_alloc warn_on in sk_stream_kill_queues")
 
-Changelog
+BUG: sleeping function called from invalid context at kernel/workqueue.c:3010
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3612, name: syz-executor475
+preempt_count: 201, expected: 0
+RCU nest depth: 0, expected: 0
+3 locks held by syz-executor475/3612:
+ #0: ffff888072eb9410 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:740 [inline]
+ #0: ffff888072eb9410 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:649
+ #1: ffff888027259ab0 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1691 [inline]
+ #1: ffff888027259ab0 (sk_lock-AF_INET6){+.+.}-{0:0}, at: tcp_close+0x1e/0xc0 net/ipv4/tcp.c:2908
+ #2: ffff888027259a30 (slock-AF_INET6){+...}-{2:2}, at: spin_lock include/linux/spinlock.h:360 [inline]
+ #2: ffff888027259a30 (slock-AF_INET6){+...}-{2:2}, at: __tcp_close+0x722/0x12b0 net/ipv4/tcp.c:2830
+Preemption disabled at:
+[<ffffffff87ddddca>] local_bh_disable include/linux/bottom_half.h:20 [inline]
+[<ffffffff87ddddca>] __tcp_close+0x71a/0x12b0 net/ipv4/tcp.c:2829
+CPU: 1 PID: 3612 Comm: syz-executor475 Not tainted 5.19.0-rc1-next-20220609-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ __might_resched.cold+0x222/0x26b kernel/sched/core.c:9823
+ start_flush_work kernel/workqueue.c:3010 [inline]
+ __flush_work+0x109/0xb10 kernel/workqueue.c:3074
+ __cancel_work_timer+0x3f9/0x570 kernel/workqueue.c:3162
+ sk_psock_stop+0x4cb/0x630 net/core/skmsg.c:802
+ sock_map_destroy+0x333/0x760 net/core/sock_map.c:1581
+ inet_csk_destroy_sock+0x196/0x440 net/ipv4/inet_connection_sock.c:1130
+ __tcp_close+0xd5b/0x12b0 net/ipv4/tcp.c:2897
+ tcp_close+0x29/0xc0 net/ipv4/tcp.c:2909
+ sock_map_close+0x3b9/0x780 net/core/sock_map.c:1607
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:428
+ inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:481
+ __sock_release+0xcd/0x280 net/socket.c:650
+ sock_close+0x18/0x20 net/socket.c:1365
+ __fput+0x277/0x9d0 fs/file_table.c:317
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:177
+ ptrace_notify+0x114/0x140 kernel/signal.c:2353
+ ptrace_report_syscall include/linux/ptrace.h:420 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:482 [inline]
+ syscall_exit_work kernel/entry/common.c:249 [inline]
+ syscall_exit_to_user_mode_prepare+0xdb/0x230 kernel/entry/common.c:276
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:281 [inline]
+ syscall_exit_to_user_mode+0x9/0x50 kernel/entry/common.c:294
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x46/0xb0
+RIP: 0033:0x7fe7b3b8b6a3
+Code: c7 c2 c0 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb ba 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8
+RSP: 002b:00007ffce5903258 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000005 RCX: 00007fe7b3b8b6a3
+RDX: 0000000000000020 RSI: 0000000020000240 RDI: 0000000000000004
+RBP: 0000000000000000 R08: 00007fe7b3c36e40 R09: 00007fe7b3c36e40
+R10: 00007fe7b3c36e40 R11: 0000000000000246 R12: 00007ffce5903290
+R13: 00007ffce5903280 R14: 00007ffce5903270 R15: 0000000000000000
+ </TASK>
 
-v1:
- - Don't define new map flag but introduce simple wrapper of
-   verify_pkcs7_signature() (suggested by Alexei and KP)
 
-v2:
- - Rename bpf_verify_pkcs7_signature() to a more generic
-   bpf_verify_signature() and pass the signature type (suggested by KP)
- - Move the helper and prototype declaration under #ifdef so that user
-   space can probe for support for the helper (suggested by Daniel)
- - Describe better the keyring types (suggested by Daniel)
- - Include linux/bpf.h instead of vmlinux.h to avoid implicit or
-   redeclaration
- - Make the test selfcontained (suggested by Alexei)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Roberto Sassu (2):
-  bpf: Add bpf_verify_signature() helper
-  selftests/bpf: Add test for bpf_verify_signature() helper
-
- include/uapi/linux/bpf.h                      |  17 ++
- kernel/bpf/bpf_lsm.c                          |  46 ++++
- tools/include/uapi/linux/bpf.h                |  17 ++
- tools/testing/selftests/bpf/Makefile          |  11 +-
- tools/testing/selftests/bpf/config            |   1 +
- .../selftests/bpf/prog_tests/verify_sig.c     | 200 ++++++++++++++++++
- .../selftests/bpf/progs/test_verify_sig.c     | 160 ++++++++++++++
- .../testing/selftests/bpf/verify_sig_setup.sh | 100 +++++++++
- 8 files changed, 549 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/verify_sig.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_verify_sig.c
- create mode 100755 tools/testing/selftests/bpf/verify_sig_setup.sh
-
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
