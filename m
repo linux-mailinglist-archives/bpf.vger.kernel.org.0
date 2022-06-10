@@ -2,198 +2,244 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0D1546AC1
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 18:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19D2546B1C
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 19:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346037AbiFJQqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 12:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
+        id S1349904AbiFJQ6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 12:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241580AbiFJQqX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 12:46:23 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885343D6CC9
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:46:21 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 129so25308420pgc.2
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:46:21 -0700 (PDT)
+        with ESMTP id S1346418AbiFJQ6J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 12:58:09 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8735B10C3
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:58:06 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id e189-20020a6369c6000000b003fd31d5990fso10242026pgc.20
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:58:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ecpvMPuAyXcCjvwI1Npa8TvEd7kevWUyn9zD5VUs/PE=;
-        b=XiSiLvofh+Rrlod91RsrLAeXHYUPt0jR9Q5YzAM+O+8ALxrQimD3f33qUqjsbxbhnD
-         CV2uPoA3Pg1qqaiTM9HORR/8Y1NrKmlsXlDo+yJDlp6KfH9qDyzA0AdtOG4ZwBAiESBz
-         CcdMjt3YohoyryfEMuxVLP+wywth51Odiyk0Rbapn1n5GdE//wmrh2jK4h4IsVg+zZMU
-         RxoEA2AMjLLr6dI/4XHvSgN8mOACIXtVAnTdsSOhpbl+IEmpjEzz4m+xxWwHAKGBoJUB
-         f6d/WM6Wcuw8iKTVUQp8QPd93u+yDStERQClF8UnI+r9jYZfdiZH+TaKdtzM0jklj6LR
-         E1Jg==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=C2Epa9iSd5RL+UL7LHQMLz+46ZPmdUGYavsxZYIOEsA=;
+        b=SFwikgVk1+rxTNNL9khMMp+uIIiUfVuSIFykBG+2oPoJD+DpOUs3j2gRKvFrIQqysP
+         laYkFbJc8gOr2dGMAL4uNtFNB7LdhMb8m7GxY1+UDNU3FH5LfDhQUlFmZ5e7Gnp1V/k/
+         0Ufsqasr2Pex6BKKnw/ScwgwUv+vTf1cmUAb1qW99uFZc9ZXlu7NUdtoxusVcojvkUcg
+         axHicSs9tP176wiHfdhxR0Hogp26/CBc0OQnfbAATYyZaXecYBQN5EkDgQkWQTKOr3Eq
+         hlEoaPCcK0OpCiRWTx/1mp1BirbHrdsVQOk4zimRp/kbyjHCYwbk8ApjBEVsdsWhhplY
+         X1RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ecpvMPuAyXcCjvwI1Npa8TvEd7kevWUyn9zD5VUs/PE=;
-        b=6pC8CDwD2jrhnDRvE9X7bps46tyO3ZjCcYJihz6zw02voabvyFFEmBX0Zyzloo/g8I
-         EibtKrcuYxYkiS/7c+6Z/eqo1HKkSD4Q8obFt47bKDh7O3CSu4Zvg9MSonncOFZu8qAM
-         21QsMfbrOPHc5shmCw40k1R4SdDznXlrY30ieFZIk3/PdT/o9cmprMuStIyH761ZJga+
-         Ww7D5JmZandI9sJNDCyox8jSHVG1LRYeBOG5pHMp1fbLXNFhmJPWarAq3B2EYjHxz/iF
-         fTS3yU2Yf2badKuhtUSbUVxdNfSg4Or8LpFYXKNdXf3C8LOBDpwI2tv1/wtwMskht5Qz
-         n+3g==
-X-Gm-Message-State: AOAM533X5m8uSWgT8kCeoqCa6h7YCZ+rtmqNuBBSJBOnd3kt37LrM0sG
-        ULF6E8cMFiCTWruL9ETgiFn5IJCDtg2RiBZ4W4PrDQ==
-X-Google-Smtp-Source: ABdhPJwiIpPHxVZlw/H96OZQ+sBcfoH5Rz9RKwAJH1LQ5d0DaPM0F/uRmKEcD+UA0+3CzoRFNrWIpTAlgzdnwgR5nmo=
-X-Received: by 2002:a65:6bce:0:b0:3f2:5f88:6f7d with SMTP id
- e14-20020a656bce000000b003f25f886f7dmr41568649pgw.253.1654879580595; Fri, 10
- Jun 2022 09:46:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220610112648.29695-1-quentin@isovalent.com> <20220610112648.29695-2-quentin@isovalent.com>
- <YqNsWAH24bAIPjqy@google.com> <cb05a59e-07d5-ddd1-b028-82133faaf67e@isovalent.com>
-In-Reply-To: <cb05a59e-07d5-ddd1-b028-82133faaf67e@isovalent.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=C2Epa9iSd5RL+UL7LHQMLz+46ZPmdUGYavsxZYIOEsA=;
+        b=w7GJyoj47z91E7jtB8N2n3zq4/bY/bduyDVfsUfbs8ZM5W0I8pTI1te4eixr+3k782
+         SpixD58Tmx+tTNcDwDMHucO8nlpsdIvZursxzs/eGmh2wNACTqExMXenWD0HEUKWn3rB
+         Ej3bL/PfXvhNfFBaiZFKZEs2n3MGTIF4cKfb+e0fQKUOHbzcqsCqjLbE91pr3UpectQ3
+         /LDREdnfwOznjGoeLOKHHNEU43tPph4de2XEzcAoyv1h0mtNC3PJlxXYr7OWbA8V+POb
+         TchGsztjYyAzgwbRn7o6zQvDSkUKjRNzbniKrtyUYiM1287pPBOGVxIJDEf2198rNtK5
+         h5dA==
+X-Gm-Message-State: AOAM533obwJBZWKpGqn9aMfDXwWbtxfvO9VDWN6DrVQugyXaZ3DECpGZ
+        664A3VS5VKYjifcJYYvyqUI+sx0=
+X-Google-Smtp-Source: ABdhPJxnbW9g3wVaD5uGrfJXYnSRSWQrTTOy2bmQqVaiXWGfPGD9c/jCd4EFIJRE/x1n5z/0qiJ8YeE=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:178f:b0:1e3:3ba:c185 with SMTP id
+ q15-20020a17090a178f00b001e303bac185mr1248pja.1.1654880285301; Fri, 10 Jun
+ 2022 09:58:05 -0700 (PDT)
+Date:   Fri, 10 Jun 2022 09:57:53 -0700
+Message-Id: <20220610165803.2860154-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.36.1.476.g0c4daa206d-goog
+Subject: [PATCH bpf-next v9 00/10] bpf: cgroup_sock lsm flavor
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 10 Jun 2022 09:46:09 -0700
-Message-ID: <CAKH8qBvvq0f+D8BXChw_8krH896J_cYg0yhRfnDOSO_U1n394w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] Revert "bpftool: Use libbpf 1.0 API mode
- instead of RLIMIT_MEMLOCK"
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Harsh Modi <harshmodi@google.com>,
-        Paul Chaignon <paul@cilium.io>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>, kafai@fb.com,
+        kpsingh@kernel.org, jakub@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 9:34 AM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> 2022-06-10 09:07 UTC-0700 ~ sdf@google.com
-> > On 06/10, Quentin Monnet wrote:
-> >> This reverts commit a777e18f1bcd32528ff5dfd10a6629b655b05eb8.
-> >
-> >> In commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of
-> >> RLIMIT_MEMLOCK"), we removed the rlimit bump in bpftool, because the
-> >> kernel has switched to memcg-based memory accounting. Thanks to the
-> >> LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK, we attempted to keep compatibility
-> >> with other systems and ask libbpf to raise the limit for us if
-> >> necessary.
-> >
-> >> How do we know if memcg-based accounting is supported? There is a probe
-> >> in libbpf to check this. But this probe currently relies on the
-> >> availability of a given BPF helper, bpf_ktime_get_coarse_ns(), which
-> >> landed in the same kernel version as the memory accounting change. This
-> >> works in the generic case, but it may fail, for example, if the helper
-> >> function has been backported to an older kernel. This has been observed
-> >> for Google Cloud's Container-Optimized OS (COS), where the helper is
-> >> available but rlimit is still in use. The probe succeeds, the rlimit is
-> >> not raised, and probing features with bpftool, for example, fails.
-> >
-> >> A patch was submitted [0] to update this probe in libbpf, based on what
-> >> the cilium/ebpf Go library does [1]. It would lower the soft rlimit to
-> >> 0, attempt to load a BPF object, and reset the rlimit. But it may induce
-> >> some hard-to-debug flakiness if another process starts, or the current
-> >> application is killed, while the rlimit is reduced, and the approach was
-> >> discarded.
-> >
-> >> As a workaround to ensure that the rlimit bump does not depend on the
-> >> availability of a given helper, we restore the unconditional rlimit bump
-> >> in bpftool for now.
-> >
-> >> [0]
-> >> https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/
-> >> [1] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
-> >
-> >> Cc: Yafang Shao <laoar.shao@gmail.com>
-> >> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> >> ---
-> >>   tools/bpf/bpftool/common.c     | 8 ++++++++
-> >>   tools/bpf/bpftool/feature.c    | 2 ++
-> >>   tools/bpf/bpftool/main.c       | 6 +++---
-> >>   tools/bpf/bpftool/main.h       | 2 ++
-> >>   tools/bpf/bpftool/map.c        | 2 ++
-> >>   tools/bpf/bpftool/pids.c       | 1 +
-> >>   tools/bpf/bpftool/prog.c       | 3 +++
-> >>   tools/bpf/bpftool/struct_ops.c | 2 ++
-> >>   8 files changed, 23 insertions(+), 3 deletions(-)
-> >
-> >> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> >> index a45b42ee8ab0..a0d4acd7c54a 100644
-> >> --- a/tools/bpf/bpftool/common.c
-> >> +++ b/tools/bpf/bpftool/common.c
-> >> @@ -17,6 +17,7 @@
-> >>   #include <linux/magic.h>
-> >>   #include <net/if.h>
-> >>   #include <sys/mount.h>
-> >> +#include <sys/resource.h>
-> >>   #include <sys/stat.h>
-> >>   #include <sys/vfs.h>
-> >
-> >> @@ -72,6 +73,13 @@ static bool is_bpffs(char *path)
-> >>       return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
-> >>   }
-> >
-> >> +void set_max_rlimit(void)
-> >> +{
-> >> +    struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
-> >> +
-> >> +    setrlimit(RLIMIT_MEMLOCK, &rinf);
-> >
-> > Do you think it might make sense to print to stderr some warning if
-> > we actually happen to adjust this limit?
-> >
-> > if (getrlimit(MEMLOCK) != RLIM_INFINITY) {
-> >     fprintf(stderr, "Warning: resetting MEMLOCK rlimit to
-> >     infinity!\n");
-> >     setrlimit(RLIMIT_MEMLOCK, &rinf);
-> > }
-> >
-> > ?
-> >
-> > Because while it's nice that we automatically do this, this might still
-> > lead to surprises for some users. OTOH, not sure whether people
-> > actually read those warnings? :-/
->
-> I'm not strictly opposed to a warning, but I'm not completely sure this
-> is desirable.
->
-> Bpftool has raised the rlimit for a long time, it changed only in April,
-> so I don't think it would come up as a surprise for people who have used
-> it for a while. I think this is also something that several other
-> BPF-related applications (BCC I think?, bpftrace, Cilium come to mind)
-> have been doing too.
+This series implements new lsm flavor for attaching per-cgroup programs to
+existing lsm hooks. The cgroup is taken out of 'current', unless
+the first argument of the hook is 'struct socket'. In this case,
+the cgroup association is taken out of socket. The attachment
+looks like a regular per-cgroup attachment: we add new BPF_LSM_CGROUP
+attach type which, together with attach_btf_id, signals per-cgroup lsm.
+Behind the scenes, we allocate trampoline shim program and
+attach to lsm. This program looks up cgroup from current/socket
+and runs cgroup's effective prog array. The rest of the per-cgroup BPF
+stays the same: hierarchy, local storage, retval conventions
+(return 1 == success).
 
-In this case ignore me and let's continue doing that :-)
+Current limitations:
+* haven't considered sleepable bpf; can be extended later on
+* not sure the verifier does the right thing with null checks;
+  see latest selftest for details
+* total of 10 (global) per-cgroup LSM attach points
 
-Btw, eventually we'd still like to stop doing that I'd presume? Should
-we at some point follow up with something like:
+Cc: ast@kernel.org
+Cc: daniel@iogearbox.net
+Cc: kafai@fb.com
+Cc: kpsingh@kernel.org
+Cc: jakub@cloudflare.com
 
-if (kernel_version >= 5.11) { don't touch memlock; }
+v9:
+Major change since last version is the switch to bpf_setsockopt to
+change the socket state instead of letting the progs poke socket directly.
+This, in turn, highlights the challenge that we need to care about whether
+the socket is locked or not when we call bpf_setsockopt. (with my original
+example selftest, the hooks are running early in the init phase for this
+not to matter).
 
-?
+For now, I've added two btf id lists:
+* hooks where we know the socket is locked and it's safe to call bpf_setsockopt
+* hooks where we know the socket is _not_ locked, but the hook works on
+  the socket that's not yet exposed to userspace so it should be safe
+  (for this mode, special new set of bpf_{s,g}etsockopt helpers
+   is added; they don't have sock_owned_by_me check)
 
-I guess we care only about <5.11 because of the backports, but 5.11+
-kernels are guaranteed to have memcg.
+Going forward, for the rest of the hooks, this might be a good motivation
+to expand lsm cgroup to support sleeping bpf and allow the callers to
+lock/unlock sockets or have a new bpf_setsockopt variant that does the
+locking.
 
-I'm not sure whether memlock is used out there in the distros (and
-especially for root/bpf_capable), so I'm also not sure whether we
-really care or not.
+- ifdef around cleanup in cgroup_bpf_release
+- Andrii: a few nits in libbpf patches
+- Martin: remove unused btf_id_set_index
+- Martin: bring back refcnt for cgroup_atype
+- Martin: make __cgroup_bpf_query a bit more readable
+- Martin: expose dst_prog->aux->attach_btf as attach_btf_obj_id as well
+- Martin: reorg check_return_code path for BPF_LSM_CGROUP
+- Martin: return directly from check_helper_call (instead of goto err)
+- Martin: add note to new warning in check_return_code, print only for void hooks
+- Martin: remove confusing shim reuse
+- Martin: use bpf_{s,g}etsockopt instead of poking into socket data
+- Martin: use CONFIG_CGROUP_BPF in bpf_prog_alloc_no_stats/bpf_prog_free_deferred
 
-> For new users, I agree the warning may be helpful. But then the message
-> is likely to appear the very first time a user runs the command - likely
-> as root - and I fear this might worry people not familiar with rlimits,
-> who would wonder if they just broke something on their system? Maybe
-> with a different phrasing.
->
-> Alternatively we could document it in the relevant man pages (not that
-> people would see it better, but at least it would be mentioned somewhere
-> if people take the time to read the docs)? What do you think?
->
-> Quentin
+v8:
+- CI: fix compile issue
+- CI: fix broken bpf_cookie
+- Yonghong: remove __bpf_trampoline_unlink_prog comment
+- Yonghong: move cgroup_atype around to fill the gap
+- Yonghong: make bpf_lsm_find_cgroup_shim void
+- Yonghong: rename regs to args
+- Yonghong: remove if(current) check
+- Martin: move refcnt into bpf_link
+- Martin: move shim management to bpf_link ops
+- Martin: use cgroup_atype for shim only
+- Martin: go back to arrays for managing cgroup_atype(s)
+- Martin: export bpf_obj_id(aux->attach_btf)
+- Andrii: reorder SEC_DEF("lsm_cgroup+")
+- Andrii: OPTS_SET instead of OPTS_HAS
+- Andrii: rename attach_btf_func_id
+- Andrii: move into 1.0 map
+
+v7:
+- there were a lot of comments last time, hope I didn't forget anything,
+  some of the bigger ones:
+  - Martin: use/extend BTF_SOCK_TYPE_SOCKET
+  - Martin: expose bpf_set_retval
+  - Martin: reject 'return 0' at the verifier for 'void' hooks
+  - Martin: prog_query returns all BPF_LSM_CGROUP, prog_info
+    returns attach_btf_func_id
+  - Andrii: split libbpf changes
+  - Andrii: add field access test to test_progs, not test_verifier (still
+    using asm though)
+- things that I haven't addressed, stating them here explicitly, let
+  me know if some of these are still problematic:
+  1. Andrii: exposing only link-based api: seems like the changes
+     to support non-link-based ones are minimal, couple of lines,
+     so seems like it worth having it?
+  2. Alexei: applying cgroup_atype for all cgroup hooks, not only
+     cgroup lsm: looks a bit harder to apply everywhere that I
+     originally thought; with lsm cgroup, we have a shim_prog pointer where
+     we store cgroup_atype; for non-lsm programs, we don't have a
+     trace program where to store it, so we still need some kind
+     of global table to map from "static" hook to "dynamic" slot.
+     So I'm dropping this "can be easily extended" clause from the
+     description for now. I have converted this whole machinery
+     to an RCU-managed list to remove synchronize_rcu().
+- also note that I had to introduce new bpf_shim_tramp_link and
+  moved refcnt there; we need something to manage new bpf_tramp_link
+
+v6:
+- remove active count & stats for shim program (Martin KaFai Lau)
+- remove NULL/error check for btf_vmlinux (Martin)
+- don't check cgroup_atype in bpf_cgroup_lsm_shim_release (Martin)
+- use old_prog (instead of passed one) in __cgroup_bpf_detach (Martin)
+- make sure attach_btf_id is the same in __cgroup_bpf_replace (Martin)
+- enable cgroup local storage and test it (Martin)
+- properly implement prog query and add bpftool & tests (Martin)
+- prohibit non-shared cgroup storage mode for BPF_LSM_CGROUP (Martin)
+
+v5:
+- __cgroup_bpf_run_lsm_socket remove NULL sock/sk checks (Martin KaFai Lau)
+- __cgroup_bpf_run_lsm_{socket,current} s/prog/shim_prog/ (Martin)
+- make sure bpf_lsm_find_cgroup_shim works for hooks without args (Martin)
+- __cgroup_bpf_attach make sure attach_btf_id is the same when replacing (Martin)
+- call bpf_cgroup_lsm_shim_release only for LSM_CGROUP (Martin)
+- drop BPF_LSM_CGROUP from bpf_attach_type_to_tramp (Martin)
+- drop jited check from cgroup_shim_find (Martin)
+- new patch to convert cgroup_bpf to hlist_node (Jakub Sitnicki)
+- new shim flavor for 'struct sock' + list of exceptions (Martin)
+
+v4:
+- fix build when jit is on but syscall is off
+
+v3:
+- add BPF_LSM_CGROUP to bpftool
+- use simple int instead of refcnt_t (to avoid use-after-free
+  false positive)
+
+v2:
+- addressed build bot failures
+
+Stanislav Fomichev (10):
+  bpf: add bpf_func_t and trampoline helpers
+  bpf: convert cgroup_bpf.progs to hlist
+  bpf: per-cgroup lsm flavor
+  bpf: minimize number of allocated lsm slots per program
+  bpf: implement BPF_PROG_QUERY for BPF_LSM_CGROUP
+  bpf: expose bpf_{g,s}etsockopt to lsm cgroup
+  libbpf: add lsm_cgoup_sock type
+  libbpf: implement bpf_prog_query_opts
+  bpftool: implement cgroup tree for BPF_LSM_CGROUP
+  selftests/bpf: lsm_cgroup functional test
+
+ arch/x86/net/bpf_jit_comp.c                   |  24 +-
+ include/linux/bpf-cgroup-defs.h               |  13 +-
+ include/linux/bpf-cgroup.h                    |   9 +-
+ include/linux/bpf.h                           |  39 +-
+ include/linux/bpf_lsm.h                       |   7 +
+ include/linux/btf_ids.h                       |   3 +-
+ include/uapi/linux/bpf.h                      |   4 +
+ kernel/bpf/bpf_lsm.c                          |  83 ++++
+ kernel/bpf/btf.c                              |   1 +
+ kernel/bpf/cgroup.c                           | 360 ++++++++++++++----
+ kernel/bpf/core.c                             |   9 +
+ kernel/bpf/syscall.c                          |  18 +-
+ kernel/bpf/trampoline.c                       | 262 +++++++++++--
+ kernel/bpf/verifier.c                         |  32 ++
+ net/core/filter.c                             |  60 ++-
+ tools/bpf/bpftool/cgroup.c                    |  80 ++--
+ tools/include/linux/btf_ids.h                 |   4 +-
+ tools/include/uapi/linux/bpf.h                |   4 +
+ tools/lib/bpf/bpf.c                           |  38 +-
+ tools/lib/bpf/bpf.h                           |  15 +
+ tools/lib/bpf/libbpf.c                        |   3 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/lsm_cgroup.c     | 277 ++++++++++++++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+ .../testing/selftests/bpf/progs/lsm_cgroup.c  | 180 +++++++++
+ 25 files changed, 1369 insertions(+), 158 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/lsm_cgroup.c
+
+-- 
+2.36.1.476.g0c4daa206d-goog
+
