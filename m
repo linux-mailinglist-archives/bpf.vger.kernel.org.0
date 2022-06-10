@@ -2,139 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EDC546FB0
-	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 00:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D187546FBE
+	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 00:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344553AbiFJWlL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 18:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
+        id S233931AbiFJWts (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 18:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245351AbiFJWlJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 18:41:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11765234299
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 15:41:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A02AA61DE9
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 22:41:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01205C3411B
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 22:41:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654900867;
-        bh=LqsUJEqgt11ycioHOgucsXWjsd4ID62QbzR8vgoC8kI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G7dnv7LcN5+Qxm3WrjskPRcure5wpsTO5EygBI5usUFpDuIFpL4uvrSEPYmiOULZ1
-         j4WopCs6/Bqg42mn19oVqbsjLmkNVyKsW5gZpZMxieVF/RMGtLcPBpmZmmd/8wp20D
-         XHqtN1OL7ovJ08GaBZQ8p4+f4KRDjuaeljKI5QCu9w6Ol4WZ6lyWs0Rl2IWK780K1y
-         Gkc1UkH8Khla8LwvIPyra0B44yk/ZZgvR908gZkS2KTr6YX8yIs/fbgnmOT6nwD+0F
-         5ttbaxaMc0eog2EQE5qSZxI4Nr/dDXK5vW8ixH9zPdax8cfSDKnaWsw1w0gVaEdbEL
-         tHxrfuMdgzeKg==
-Received: by mail-yb1-f177.google.com with SMTP id u99so896000ybi.11
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 15:41:06 -0700 (PDT)
-X-Gm-Message-State: AOAM531KfJI7dQ4i0zO9pqZC2vq00p/MjfxhpiF9UXialsKond0WO1+j
-        1m3+SZ/frQezcVANMgpZln7AurUMhPugm57kv6I=
-X-Google-Smtp-Source: ABdhPJxWYHavZufZQZlI0mj4GwFHgaiwD7pZuJQ360CVCAjCBBQByQXhYseV+rX6IqVcmcM0Eq2y+rGp6tHK7RY7Ca8=
-X-Received: by 2002:a25:7e84:0:b0:650:10e0:87bd with SMTP id
- z126-20020a257e84000000b0065010e087bdmr46273639ybc.257.1654900866030; Fri, 10
- Jun 2022 15:41:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220608192630.3710333-1-eddyz87@gmail.com> <20220608192630.3710333-4-eddyz87@gmail.com>
- <CAPhsuW6RfokP8U6tDX+Qg+ufxpHfvgm_f=giE0nOUXONmV+iGA@mail.gmail.com> <23ad183ee89f016f7b5cbc1f08ff086b44d9fc0d.camel@gmail.com>
-In-Reply-To: <23ad183ee89f016f7b5cbc1f08ff086b44d9fc0d.camel@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 10 Jun 2022 15:40:55 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7wPz+jwdT01BjLgpr0zPCkhc2gFzXBhph64FDvjh0oCQ@mail.gmail.com>
-Message-ID: <CAPhsuW7wPz+jwdT01BjLgpr0zPCkhc2gFzXBhph64FDvjh0oCQ@mail.gmail.com>
+        with ESMTP id S233888AbiFJWts (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 18:49:48 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2469F13D6E
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 15:49:47 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id h23so600166ljl.3
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 15:49:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=jT16PEmliFp9eTUOD0V8gocYnIgpzgvBEMAvU4L9B1o=;
+        b=XCAlasstefYHvxtWE5k7j60tRhrzkdcUZrNub+o5GtfZoHozMgZdhXfWcsqShFhxcg
+         ABEEDwAgUj7FKD9Ts59RAGDTwzAJVuyI/1nvaPNfjwUsJ46A/zIsIy2Vg8v14/1hzZCz
+         f3WVlBuGwOm/O+M4sBUC92Qw1JUCU19H7lxrTGJiDvtVbco/w7J/vHrWYIKg8VxYwa92
+         6gjYp1b7rD7Npl8IXeGDZkZwc7WFIyzAjCTjf9QyUKPit+Grt2AoEptY1jZOQMA8IP07
+         iRe5TDdmmWE2Hz/8WGEULhfVaBC92k1mS0Hdey1z9O6/jEGB+RfM1fJhWPCu9bQzvK1G
+         iFNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=jT16PEmliFp9eTUOD0V8gocYnIgpzgvBEMAvU4L9B1o=;
+        b=OvzP64WEOsLUg++Oles9t+OoSVmwQu+tuAughqd05McauOeT1Nqz7nbouddtMzxsoq
+         /AdleLfw06iNS8TOJ4o3lZqmr5I99lwcXS8cE9atn1CxeP5/QmbZMbBq7b7dSrz6Nkw9
+         Z6HRIUfsQodFakwneOMvXZhEzMmI3qVE7/gafUEhEJcybMC4seQ/mLZGPmMf6WXJa280
+         TGY5j1UFJOPhIM41ZGwrnJhAWM8tnZKdiZwnflOCpqscRGUuex7WM3Fk20fqphbIdD3r
+         dhKDHGAl7OHO8Ug8+XJBYMGTs1mdcQ9m1w5xqQqnrS4tWA/eNbtyRb+7uFmnsjDSFlRj
+         kbsA==
+X-Gm-Message-State: AOAM533uzEIl2sgm2E1We04/3+cLXDvCRbyQinlLd0RgoTpsXjmvc0z1
+        lRHZXLuisHwn5S4VURsNLECGbHFC663Eeg==
+X-Google-Smtp-Source: ABdhPJz80aXCvIlFRhvJjNPFWOGBbqfVVmsGfXXs6J+tdRhXmobS7TyTbiQVGmEu4snduZsw/kxdQw==
+X-Received: by 2002:a2e:8648:0:b0:255:8acd:1e8 with SMTP id i8-20020a2e8648000000b002558acd01e8mr17991410ljj.395.1654901385394;
+        Fri, 10 Jun 2022 15:49:45 -0700 (PDT)
+Received: from pluto (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id c23-20020a056512325700b00477a287438csm26300lfr.2.2022.06.10.15.49.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jun 2022 15:49:44 -0700 (PDT)
+Message-ID: <f712fb0e6e0d72542b047f174f8590888d025918.camel@gmail.com>
 Subject: Re: [PATCH bpf-next v4 3/5] bpf: Inline calls to bpf_loop when
  callback is known
-To:     Eduard Zingerman <eddyz87@gmail.com>
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Song Liu <song@kernel.org>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>, joannelkoong@gmail.com
+Date:   Sat, 11 Jun 2022 01:49:43 +0300
+In-Reply-To: <CAPhsuW7wPz+jwdT01BjLgpr0zPCkhc2gFzXBhph64FDvjh0oCQ@mail.gmail.com>
+References: <20220608192630.3710333-1-eddyz87@gmail.com>
+         <20220608192630.3710333-4-eddyz87@gmail.com>
+         <CAPhsuW6RfokP8U6tDX+Qg+ufxpHfvgm_f=giE0nOUXONmV+iGA@mail.gmail.com>
+         <23ad183ee89f016f7b5cbc1f08ff086b44d9fc0d.camel@gmail.com>
+         <CAPhsuW7wPz+jwdT01BjLgpr0zPCkhc2gFzXBhph64FDvjh0oCQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 2:55 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> > On Fri, 2022-06-10 at 13:54 -0700, Song Liu wrote:
->
-> > > +
-> > > +void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
-> >
-> > static void ...
-> >
-> > > +{
-> > > +       struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
-> > > +       struct bpf_reg_state *regs = cur_regs(env);
-> > > +       struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
-> > > +
-> >
-> > nit: we usually don't have empty lines here.
-> >
-> > > +       int flags_is_zero =
-> > > +               register_is_const(flags_reg) && flags_reg->var_off.value == 0;
-> >
-> > If we replace "fit_for_inline" with "not_fit_for_inline", we can make the cannot
-> > inline case faster with:
-> >
-> >   if (state->not_fit_for_inline)
-> >       return;
-> >
-> > > +
-> > > +       if (state->initialized) {
-> > > +               state->fit_for_inline &=
-> > > +                       flags_is_zero &&
-> > > +                       state->callback_subprogno == subprogno;
-> > > +       } else {
-> > > +               state->initialized = 1;
-> > > +               state->fit_for_inline = flags_is_zero;
-> > > +               state->callback_subprogno = subprogno;
-> > > +       }
-> > > +}
-> > > +
->
-> Sorry, I'm not sure that I understand you correctly. Do you want me to
-> rewrite the code as follows:
+> On Fri, 2022-06-10 at 15:40 -0700, Song Liu wrote:
+> Yes, I was thinking about this change. I guess it can also be clear:
+> 
+> static void update_loop_inline_state(struct bpf_verifier_env *env, u32
+> subprogno)
+> {
+>         struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
+>         struct bpf_reg_state *regs = cur_regs(env);
+>         struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
+>         int flags_is_zero;
+> 
+>         if (state->cannot_inline)
+>                 return;
+> 
+>         flags_is_zero = register_is_const(flags_reg) &&
+> flags_reg->var_off.value == 0;
+> 
+>         if (!state->initialized) {
+>                 state->initialized = 1;
+>                 state->cannot_inline = !flags_is_zero;
+>                 state->callback_subprogno = subprogno;
+>                 return;
+>         }
+> 
+>         state->cannot_inline = !flags_is_zero ||
+>                 state->callback_subprogno != subprogno;
+> }
+> 
+> What do you think about this version?
 
-Yes, I was thinking about this change. I guess it can also be clear:
+Maybe keep `fit_for_inline` to minimize amount of negations?
+As below:
 
-static void update_loop_inline_state(struct bpf_verifier_env *env, u32
-subprogno)
+static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
 {
         struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
         struct bpf_reg_state *regs = cur_regs(env);
         struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
         int flags_is_zero;
 
-        if (state->cannot_inline)
+/* this should be compiled as a single instruction anyway */
+        if (!state->fit_for_inline)
                 return;
 
-        flags_is_zero = register_is_const(flags_reg) &&
-flags_reg->var_off.value == 0;
+        flags_is_zero = register_is_const(flags_reg) && flags_reg->var_off.value == 0;
 
         if (!state->initialized) {
                 state->initialized = 1;
-                state->cannot_inline = !flags_is_zero;
+                state->fit_for_inline = flags_is_zero;
                 state->callback_subprogno = subprogno;
                 return;
         }
 
-        state->cannot_inline = !flags_is_zero ||
-                state->callback_subprogno != subprogno;
+        state->fit_for_inline = flags_is_zero &&
+                state->callback_subprogno == subprogno;
 }
 
-What do you think about this version?
+// ...
+
+static int optimize_bpf_loop(struct bpf_verifier_env *env)
+{
+	if (is_bpf_loop_call(insn) && inline_state->fit_for_inline) { ... }
+// vs
+	if (is_bpf_loop_call(insn) && !inline_state->cannot_inline) { ... }
+}
 
 Thanks,
-Song
+Eduard
+
