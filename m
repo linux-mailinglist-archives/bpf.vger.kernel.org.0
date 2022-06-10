@@ -2,568 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B227546B20
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 19:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D41F546B2B
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 19:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346047AbiFJQ66 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 12:58:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33198 "EHLO
+        id S232819AbiFJRAl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 13:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350030AbiFJQ62 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 12:58:28 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5B131DC6
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:58:23 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id l2-20020a17090a72c200b001e325e14e3eso13517707pjk.7
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:58:23 -0700 (PDT)
+        with ESMTP id S1349836AbiFJRA3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 13:00:29 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B853733A00
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 10:00:27 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id r187-20020a1c44c4000000b0039c76434147so1440682wma.1
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 10:00:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=XPlVIGcuyESqI9K2qw2nIwxLGEd6+5Om5+wZM5PYzXk=;
-        b=a7efYLh6zKTiEPp2rBqj3EsmNpB/h6KYufSZFitEzGragalQxSp5p/EtWCnBm8A4et
-         TsAR4XcZNQaEmBgyq5MDcJLWHuTx6dlD+Rt9ddLNx/YqDweEjOAVFWb/RdoY0cdii/MI
-         8WN941IIyE+NKOvmhbQqBDMFKAg/JzjInAPjdIvQc4eYhd6cJ6PuzBNpPImDcaeak911
-         E7PeqcLY4oaB8aW0pK/RYummkKxCj/O8nksrd7dEyWU99i935cNVRpzqoajBQK9GK7X4
-         oC0VZqdPPoLmhdcOwg4eRYo1RrixfC5bwW2J0xyYhpTV3EdnkMdo18lOujWdwhdu7mVe
-         NjQw==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=mxkfsPOt+1BiFyYRQAUT1EkyhPIhrJYMCJ92Su1aMxY=;
+        b=LJO3jmKOWerFx3arypxcX4r5bwfzwip2rU2HA2Nk7sz+JJO9ztX+KpJfdlSH1dB1lt
+         eRErQx71aRMDbF781RiPdkpXAmEHYu+jsi7/mlR5muapj40wAvUYTeS70mEw81h5zFSg
+         niCJ+px+TExjUzm2WEGzMZJlLGfGl+n4HAcVjyXFmzJ9dV/AHkN3Y7wNJevrdQ+rCJbR
+         c7K0p8mDq2DvcRO3CkM1zOvH/c5+IZf3evkw4fSGGJJARYFvYHtHTdTAz0gN75hCN7dJ
+         bw5K+RlGBEFVXruE8G1l4NAfHKjy7ZmOmokHaWK2IP13kT98hkl5pcRPa2vnPawBdh7p
+         CoCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=XPlVIGcuyESqI9K2qw2nIwxLGEd6+5Om5+wZM5PYzXk=;
-        b=4/YcnofbfS4iSHHQyc2XfXJ1aoeP+NFap8HAFQyKP68AKii+iidJTAoMhnwLKpVgfm
-         89Iqjtzb6MTXbL5EWu1Gx6NaR21K6OMhLDGf0YEVLtC99slLR7N8GdsZOT5x6m2mc2D4
-         pDE+rZTmK8pD/xLaGwp7hv6XMEQLmwe99BTJ+iiB1FxSevv66j2S3eoGbikmwibRLcNa
-         vqO00SCxIfUcSQ2sAIrfBRjFVN7WEBltEY3U0WlamJxAWzfpSGiQEVyIDBFyathijxzB
-         289WdbVt0pNtyqrtnXnOBnk4MyQv2j3Z+LTWDZccX/ygwAyotXkyBgeMjJpVHRydJwWf
-         aiEg==
-X-Gm-Message-State: AOAM5319phhcJQO8ksTGppfceHX0bFsQN6zjKSJ3VJXsrIMa8wKQKi8Q
-        lYHvjzc+/xS5j9CQh4L2Z75zdfk=
-X-Google-Smtp-Source: ABdhPJxAASSWmcQ8ya61FB6iw2Zms+TFac3XGw5Pm94Pwr7NetJXUQ7VkUYCiRQI96OsFnTTl7P39ZY=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:2181:b0:51b:560b:dd30 with SMTP id
- h1-20020a056a00218100b0051b560bdd30mr60202007pfi.44.1654880302827; Fri, 10
- Jun 2022 09:58:22 -0700 (PDT)
-Date:   Fri, 10 Jun 2022 09:58:03 -0700
-In-Reply-To: <20220610165803.2860154-1-sdf@google.com>
-Message-Id: <20220610165803.2860154-11-sdf@google.com>
-Mime-Version: 1.0
-References: <20220610165803.2860154-1-sdf@google.com>
-X-Mailer: git-send-email 2.36.1.476.g0c4daa206d-goog
-Subject: [PATCH bpf-next v9 10/10] selftests/bpf: lsm_cgroup functional test
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=mxkfsPOt+1BiFyYRQAUT1EkyhPIhrJYMCJ92Su1aMxY=;
+        b=JY/Eo54V/SOrPP6id+sA8ezcueiau1T9XePhe6FNlyR6Bdbx1PIVCPd8Wdp0vZeldm
+         gQiTdNZASo47eSH+h0kPua5KrPpJkoUkDE4TQeboXOqQDAZwnvTxFQZsZe/CE44yjADo
+         aKLpmqQ+KhPPxm6RlZ+EnY8vl6eglqiEdEhD+FQshCVUOq/fsB6iPdZaRHY3+o2FGBUu
+         yKkgA7TzplxaK6vVxoFDiCsgKLQdrZJzF3sgbi0cENCk59ktai2xYny0AMnVbaARL6of
+         i0EzP6P75MfiL/0WZ+ZFrWVoTbQQ53wj4ACMS0BGofU1xi2d/zv/6J7MCXK486tnOzxh
+         CpsQ==
+X-Gm-Message-State: AOAM5325y0JyLjYMotP9i/7cct4LmUKu9LF4WusYxAW8+U+qZpZqY387
+        tkxemABBAtPrW8BxcnJIkBN2dg==
+X-Google-Smtp-Source: ABdhPJxBSwG/R7c5/8gnmc3VIvpFjAaaDK4o2lqKSoq4Q2auWa7nMVlNgwuebDXQqjbv+hmK59tVCw==
+X-Received: by 2002:a05:600c:3790:b0:39c:62b9:b164 with SMTP id o16-20020a05600c379000b0039c62b9b164mr726820wmr.0.1654880426109;
+        Fri, 10 Jun 2022 10:00:26 -0700 (PDT)
+Received: from [192.168.178.21] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id q17-20020adff951000000b002103bd9c5acsm27840901wrr.105.2022.06.10.10.00.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jun 2022 10:00:25 -0700 (PDT)
+Message-ID: <71b56050-11ad-bd06-09c9-1a8c61b4c1b4@isovalent.com>
+Date:   Fri, 10 Jun 2022 18:00:24 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH bpf-next 1/2] Revert "bpftool: Use libbpf 1.0 API mode
+ instead of RLIMIT_MEMLOCK"
+Content-Language: en-GB
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Harsh Modi <harshmodi@google.com>,
+        Paul Chaignon <paul@cilium.io>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20220610112648.29695-1-quentin@isovalent.com>
+ <20220610112648.29695-2-quentin@isovalent.com> <YqNsWAH24bAIPjqy@google.com>
+ <cb05a59e-07d5-ddd1-b028-82133faaf67e@isovalent.com>
+ <CAKH8qBvvq0f+D8BXChw_8krH896J_cYg0yhRfnDOSO_U1n394w@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CAKH8qBvvq0f+D8BXChw_8krH896J_cYg0yhRfnDOSO_U1n394w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Functional test that exercises the following:
+2022-06-10 09:46 UTC-0700 ~ Stanislav Fomichev <sdf@google.com>
+> On Fri, Jun 10, 2022 at 9:34 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> 2022-06-10 09:07 UTC-0700 ~ sdf@google.com
+>>> On 06/10, Quentin Monnet wrote:
+>>>> This reverts commit a777e18f1bcd32528ff5dfd10a6629b655b05eb8.
+>>>
+>>>> In commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of
+>>>> RLIMIT_MEMLOCK"), we removed the rlimit bump in bpftool, because the
+>>>> kernel has switched to memcg-based memory accounting. Thanks to the
+>>>> LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK, we attempted to keep compatibility
+>>>> with other systems and ask libbpf to raise the limit for us if
+>>>> necessary.
+>>>
+>>>> How do we know if memcg-based accounting is supported? There is a probe
+>>>> in libbpf to check this. But this probe currently relies on the
+>>>> availability of a given BPF helper, bpf_ktime_get_coarse_ns(), which
+>>>> landed in the same kernel version as the memory accounting change. This
+>>>> works in the generic case, but it may fail, for example, if the helper
+>>>> function has been backported to an older kernel. This has been observed
+>>>> for Google Cloud's Container-Optimized OS (COS), where the helper is
+>>>> available but rlimit is still in use. The probe succeeds, the rlimit is
+>>>> not raised, and probing features with bpftool, for example, fails.
+>>>
+>>>> A patch was submitted [0] to update this probe in libbpf, based on what
+>>>> the cilium/ebpf Go library does [1]. It would lower the soft rlimit to
+>>>> 0, attempt to load a BPF object, and reset the rlimit. But it may induce
+>>>> some hard-to-debug flakiness if another process starts, or the current
+>>>> application is killed, while the rlimit is reduced, and the approach was
+>>>> discarded.
+>>>
+>>>> As a workaround to ensure that the rlimit bump does not depend on the
+>>>> availability of a given helper, we restore the unconditional rlimit bump
+>>>> in bpftool for now.
+>>>
+>>>> [0]
+>>>> https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/
+>>>> [1] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
+>>>
+>>>> Cc: Yafang Shao <laoar.shao@gmail.com>
+>>>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>>>> ---
+>>>>   tools/bpf/bpftool/common.c     | 8 ++++++++
+>>>>   tools/bpf/bpftool/feature.c    | 2 ++
+>>>>   tools/bpf/bpftool/main.c       | 6 +++---
+>>>>   tools/bpf/bpftool/main.h       | 2 ++
+>>>>   tools/bpf/bpftool/map.c        | 2 ++
+>>>>   tools/bpf/bpftool/pids.c       | 1 +
+>>>>   tools/bpf/bpftool/prog.c       | 3 +++
+>>>>   tools/bpf/bpftool/struct_ops.c | 2 ++
+>>>>   8 files changed, 23 insertions(+), 3 deletions(-)
+>>>
+>>>> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+>>>> index a45b42ee8ab0..a0d4acd7c54a 100644
+>>>> --- a/tools/bpf/bpftool/common.c
+>>>> +++ b/tools/bpf/bpftool/common.c
+>>>> @@ -17,6 +17,7 @@
+>>>>   #include <linux/magic.h>
+>>>>   #include <net/if.h>
+>>>>   #include <sys/mount.h>
+>>>> +#include <sys/resource.h>
+>>>>   #include <sys/stat.h>
+>>>>   #include <sys/vfs.h>
+>>>
+>>>> @@ -72,6 +73,13 @@ static bool is_bpffs(char *path)
+>>>>       return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
+>>>>   }
+>>>
+>>>> +void set_max_rlimit(void)
+>>>> +{
+>>>> +    struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
+>>>> +
+>>>> +    setrlimit(RLIMIT_MEMLOCK, &rinf);
+>>>
+>>> Do you think it might make sense to print to stderr some warning if
+>>> we actually happen to adjust this limit?
+>>>
+>>> if (getrlimit(MEMLOCK) != RLIM_INFINITY) {
+>>>     fprintf(stderr, "Warning: resetting MEMLOCK rlimit to
+>>>     infinity!\n");
+>>>     setrlimit(RLIMIT_MEMLOCK, &rinf);
+>>> }
+>>>
+>>> ?
+>>>
+>>> Because while it's nice that we automatically do this, this might still
+>>> lead to surprises for some users. OTOH, not sure whether people
+>>> actually read those warnings? :-/
+>>
+>> I'm not strictly opposed to a warning, but I'm not completely sure this
+>> is desirable.
+>>
+>> Bpftool has raised the rlimit for a long time, it changed only in April,
+>> so I don't think it would come up as a surprise for people who have used
+>> it for a while. I think this is also something that several other
+>> BPF-related applications (BCC I think?, bpftrace, Cilium come to mind)
+>> have been doing too.
+> 
+> In this case ignore me and let's continue doing that :-)
+> 
+> Btw, eventually we'd still like to stop doing that I'd presume?
 
-1. apply default sk_priority policy
-2. permit TX-only AF_PACKET socket
-3. cgroup attach/detach/replace
-4. reusing trampoline shim
+Agreed. I was thinking either finding a way to improve the probe in
+libbpf, or waiting for some more time until 5.11 gets old, but this may
+take years :/
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/lsm_cgroup.c     | 277 ++++++++++++++++++
- .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
- .../testing/selftests/bpf/progs/lsm_cgroup.c  | 180 ++++++++++++
- 3 files changed, 458 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
- create mode 100644 tools/testing/selftests/bpf/progs/lsm_cgroup.c
+> Should
+> we at some point follow up with something like:
+> 
+> if (kernel_version >= 5.11) { don't touch memlock; }
+> 
+> ?
+> 
+> I guess we care only about <5.11 because of the backports, but 5.11+
+> kernels are guaranteed to have memcg.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-new file mode 100644
-index 000000000000..a96057ec7dd4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-@@ -0,0 +1,277 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+
-+#include "lsm_cgroup.skel.h"
-+#include "cgroup_helpers.h"
-+#include "network_helpers.h"
-+
-+static __u32 query_prog_cnt(int cgroup_fd, const char *attach_func)
-+{
-+	LIBBPF_OPTS(bpf_prog_query_opts, p);
-+	static struct btf *btf;
-+	int cnt = 0;
-+	int i;
-+
-+	ASSERT_OK(bpf_prog_query_opts(cgroup_fd, BPF_LSM_CGROUP, &p), "prog_query");
-+
-+	if (!attach_func)
-+		return p.prog_cnt;
-+
-+	/* When attach_func is provided, count the number of progs that
-+	 * attach to the given symbol.
-+	 */
-+
-+	if (!btf)
-+		btf = btf__load_vmlinux_btf();
-+	if (!ASSERT_OK(libbpf_get_error(btf), "btf_vmlinux"))
-+		return -1;
-+
-+	p.prog_ids = malloc(sizeof(u32) * p.prog_cnt);
-+	p.prog_attach_flags = malloc(sizeof(u32) * p.prog_cnt);
-+	ASSERT_OK(bpf_prog_query_opts(cgroup_fd, BPF_LSM_CGROUP, &p), "prog_query");
-+
-+	for (i = 0; i < p.prog_cnt; i++) {
-+		struct bpf_prog_info info = {};
-+		__u32 info_len = sizeof(info);
-+		int fd;
-+
-+		fd = bpf_prog_get_fd_by_id(p.prog_ids[i]);
-+		ASSERT_GE(fd, 0, "prog_get_fd_by_id");
-+		ASSERT_OK(bpf_obj_get_info_by_fd(fd, &info, &info_len), "prog_info_by_fd");
-+		close(fd);
-+
-+		if (info.attach_btf_id ==
-+		    btf__find_by_name_kind(btf, attach_func, BTF_KIND_FUNC))
-+			cnt++;
-+	}
-+
-+	return cnt;
-+}
-+
-+static void test_lsm_cgroup_functional(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, attach_opts);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, update_opts);
-+	int cgroup_fd, cgroup_fd2, err, fd, prio;
-+	int listen_fd, client_fd, accepted_fd;
-+	struct lsm_cgroup *skel = NULL;
-+	int post_create_prog_fd2 = -1;
-+	int post_create_prog_fd = -1;
-+	int bind_link_fd2 = -1;
-+	int bind_prog_fd2 = -1;
-+	int alloc_prog_fd = -1;
-+	int bind_prog_fd = -1;
-+	int bind_link_fd = -1;
-+	int clone_prog_fd = -1;
-+	socklen_t socklen;
-+
-+	cgroup_fd = test__join_cgroup("/sock_policy");
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
-+		goto close_skel;
-+
-+	cgroup_fd2 = create_and_get_cgroup("/sock_policy2");
-+	if (!ASSERT_GE(cgroup_fd2, 0, "create second cgroup"))
-+		goto close_skel;
-+
-+	skel = lsm_cgroup__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		goto close_cgroup;
-+
-+	post_create_prog_fd = bpf_program__fd(skel->progs.socket_post_create);
-+	post_create_prog_fd2 = bpf_program__fd(skel->progs.socket_post_create2);
-+	bind_prog_fd = bpf_program__fd(skel->progs.socket_bind);
-+	bind_prog_fd2 = bpf_program__fd(skel->progs.socket_bind2);
-+	alloc_prog_fd = bpf_program__fd(skel->progs.socket_alloc);
-+	clone_prog_fd = bpf_program__fd(skel->progs.socket_clone);
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 0, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 0, "total prog count");
-+	err = bpf_prog_attach(alloc_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
-+	if (!ASSERT_OK(err, "attach alloc_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 1, "total prog count");
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_inet_csk_clone"), 0, "prog count");
-+	err = bpf_prog_attach(clone_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
-+	if (!ASSERT_OK(err, "attach clone_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_inet_csk_clone"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 2, "total prog count");
-+
-+	/* Make sure replacing works. */
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_post_create"), 0, "prog count");
-+	err = bpf_prog_attach(post_create_prog_fd, cgroup_fd,
-+			      BPF_LSM_CGROUP, 0);
-+	if (!ASSERT_OK(err, "attach post_create_prog_fd"))
-+		goto close_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_post_create"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 3, "total prog count");
-+
-+	attach_opts.replace_prog_fd = post_create_prog_fd;
-+	err = bpf_prog_attach_opts(post_create_prog_fd2, cgroup_fd,
-+				   BPF_LSM_CGROUP, &attach_opts);
-+	if (!ASSERT_OK(err, "prog replace post_create_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_post_create"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 3, "total prog count");
-+
-+	/* Try the same attach/replace via link API. */
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_bind"), 0, "prog count");
-+	bind_link_fd = bpf_link_create(bind_prog_fd, cgroup_fd,
-+				       BPF_LSM_CGROUP, NULL);
-+	if (!ASSERT_GE(bind_link_fd, 0, "link create bind_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_bind"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
-+
-+	update_opts.old_prog_fd = bind_prog_fd;
-+	update_opts.flags = BPF_F_REPLACE;
-+
-+	err = bpf_link_update(bind_link_fd, bind_prog_fd2, &update_opts);
-+	if (!ASSERT_OK(err, "link update bind_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_bind"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
-+
-+	/* Attach another instance of bind program to another cgroup.
-+	 * This should trigger the reuse of the trampoline shim (two
-+	 * programs attaching to the same btf_id).
-+	 */
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_bind"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd2, "bpf_lsm_socket_bind"), 0, "prog count");
-+	bind_link_fd2 = bpf_link_create(bind_prog_fd2, cgroup_fd2,
-+					BPF_LSM_CGROUP, NULL);
-+	if (!ASSERT_GE(bind_link_fd2, 0, "link create bind_prog_fd2"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd2, "bpf_lsm_socket_bind"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd2, NULL), 1, "total prog count");
-+
-+	/* AF_UNIX is prohibited. */
-+
-+	fd = socket(AF_UNIX, SOCK_STREAM, 0);
-+	ASSERT_LT(fd, 0, "socket(AF_UNIX)");
-+
-+	/* AF_INET6 gets default policy (sk_priority). */
-+
-+	fd = socket(AF_INET6, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(fd, 0, "socket(SOCK_STREAM)"))
-+		goto detach_cgroup;
-+
-+	prio = 0;
-+	socklen = sizeof(prio);
-+	ASSERT_GE(getsockopt(fd, SOL_SOCKET, SO_PRIORITY, &prio, &socklen), 0,
-+		  "getsockopt");
-+	ASSERT_EQ(prio, 123, "sk_priority");
-+
-+	close(fd);
-+
-+	/* TX-only AF_PACKET is allowed. */
-+
-+	ASSERT_LT(socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL)), 0,
-+		  "socket(AF_PACKET, ..., ETH_P_ALL)");
-+
-+	fd = socket(AF_PACKET, SOCK_RAW, 0);
-+	ASSERT_GE(fd, 0, "socket(AF_PACKET, ..., 0)");
-+
-+	/* TX-only AF_PACKET can not be rebound. */
-+
-+	struct sockaddr_ll sa = {
-+		.sll_family = AF_PACKET,
-+		.sll_protocol = htons(ETH_P_ALL),
-+	};
-+	ASSERT_LT(bind(fd, (struct sockaddr *)&sa, sizeof(sa)), 0,
-+		  "bind(ETH_P_ALL)");
-+
-+	close(fd);
-+
-+	/* Trigger passive open. */
-+
-+	listen_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-+	ASSERT_GE(listen_fd, 0, "start_server");
-+	client_fd = connect_to_fd(listen_fd, 0);
-+	ASSERT_GE(client_fd, 0, "connect_to_fd");
-+	accepted_fd = accept(listen_fd, NULL, NULL);
-+	ASSERT_GE(accepted_fd, 0, "accept");
-+
-+	prio = 0;
-+	socklen = sizeof(prio);
-+	ASSERT_GE(getsockopt(accepted_fd, SOL_SOCKET, SO_PRIORITY, &prio, &socklen), 0,
-+		  "getsockopt");
-+	ASSERT_EQ(prio, 234, "sk_priority");
-+
-+	/* These are replaced and never called. */
-+	ASSERT_EQ(skel->bss->called_socket_post_create, 0, "called_create");
-+	ASSERT_EQ(skel->bss->called_socket_bind, 0, "called_bind");
-+
-+	/* AF_INET6+SOCK_STREAM
-+	 * AF_PACKET+SOCK_RAW
-+	 * listen_fd
-+	 * client_fd
-+	 * accepted_fd
-+	 */
-+	ASSERT_EQ(skel->bss->called_socket_post_create2, 5, "called_create2");
-+
-+	/* start_server
-+	 * bind(ETH_P_ALL)
-+	 */
-+	ASSERT_EQ(skel->bss->called_socket_bind2, 2, "called_bind2");
-+	/* Single accept(). */
-+	ASSERT_EQ(skel->bss->called_socket_clone, 1, "called_clone");
-+
-+	/* AF_UNIX+SOCK_STREAM (failed)
-+	 * AF_INET6+SOCK_STREAM
-+	 * AF_PACKET+SOCK_RAW (failed)
-+	 * AF_PACKET+SOCK_RAW
-+	 * listen_fd
-+	 * client_fd
-+	 * accepted_fd
-+	 */
-+	ASSERT_EQ(skel->bss->called_socket_alloc, 7, "called_alloc");
-+
-+	/* Make sure other cgroup doesn't trigger the programs. */
-+
-+	if (!ASSERT_OK(join_cgroup(""), "join root cgroup"))
-+		goto detach_cgroup;
-+
-+	fd = socket(AF_INET6, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(fd, 0, "socket(SOCK_STREAM)"))
-+		goto detach_cgroup;
-+
-+	prio = 0;
-+	socklen = sizeof(prio);
-+	ASSERT_GE(getsockopt(fd, SOL_SOCKET, SO_PRIORITY, &prio, &socklen), 0,
-+		  "getsockopt");
-+	ASSERT_EQ(prio, 0, "sk_priority");
-+
-+	close(fd);
-+
-+detach_cgroup:
-+	ASSERT_GE(bpf_prog_detach2(post_create_prog_fd2, cgroup_fd,
-+				   BPF_LSM_CGROUP), 0, "detach_create");
-+	close(bind_link_fd);
-+	/* Don't close bind_link_fd2, exercise cgroup release cleanup. */
-+	ASSERT_GE(bpf_prog_detach2(alloc_prog_fd, cgroup_fd,
-+				   BPF_LSM_CGROUP), 0, "detach_alloc");
-+	ASSERT_GE(bpf_prog_detach2(clone_prog_fd, cgroup_fd,
-+				   BPF_LSM_CGROUP), 0, "detach_clone");
-+
-+close_cgroup:
-+	close(cgroup_fd);
-+close_skel:
-+	lsm_cgroup__destroy(skel);
-+}
-+
-+void test_lsm_cgroup(void)
-+{
-+	if (test__start_subtest("functional"))
-+		test_lsm_cgroup_functional();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-index 1c1289ba5fc5..98dd2c4815f0 100644
---- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-@@ -8,6 +8,7 @@
- #define SOL_SOCKET		1
- #define SO_SNDBUF		7
- #define __SO_ACCEPTCON		(1 << 16)
-+#define SO_PRIORITY		12
- 
- #define SOL_TCP			6
- #define TCP_CONGESTION		13
-diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup.c b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-new file mode 100644
-index 000000000000..89f3b1e961a8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-@@ -0,0 +1,180 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include "bpf_tracing_net.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#ifndef AF_PACKET
-+#define AF_PACKET 17
-+#endif
-+
-+#ifndef AF_UNIX
-+#define AF_UNIX 1
-+#endif
-+
-+#ifndef EPERM
-+#define EPERM 1
-+#endif
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
-+	__type(key, __u64);
-+	__type(value, __u64);
-+} cgroup_storage SEC(".maps");
-+
-+int called_socket_post_create;
-+int called_socket_post_create2;
-+int called_socket_bind;
-+int called_socket_bind2;
-+int called_socket_alloc;
-+int called_socket_clone;
-+
-+static __always_inline int test_local_storage(void)
-+{
-+	__u64 *val;
-+
-+	val = bpf_get_local_storage(&cgroup_storage, 0);
-+	if (!val)
-+		return 0;
-+	*val += 1;
-+
-+	return 1;
-+}
-+
-+static __always_inline int real_create(struct socket *sock, int family,
-+				       int protocol)
-+{
-+	struct sock *sk;
-+	int prio = 123;
-+
-+	/* Reject non-tx-only AF_PACKET. */
-+	if (family == AF_PACKET && protocol != 0)
-+		return 0; /* EPERM */
-+
-+	sk = sock->sk;
-+	if (!sk)
-+		return 1;
-+
-+	/* The rest of the sockets get default policy. */
-+	if (bpf_setsockopt(sk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0; /* EPERM */
-+
-+	/* Make sure bpf_getsockopt is allowed and works. */
-+	prio = 0;
-+	if (bpf_getsockopt(sk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0; /* EPERM */
-+	if (prio != 123)
-+		return 0; /* EPERM */
-+
-+	/* Can access cgroup local storage. */
-+	if (!test_local_storage())
-+		return 0; /* EPERM */
-+
-+	return 1;
-+}
-+
-+/* __cgroup_bpf_run_lsm_socket */
-+SEC("lsm_cgroup/socket_post_create")
-+int BPF_PROG(socket_post_create, struct socket *sock, int family,
-+	     int type, int protocol, int kern)
-+{
-+	called_socket_post_create++;
-+	return real_create(sock, family, protocol);
-+}
-+
-+/* __cgroup_bpf_run_lsm_socket */
-+SEC("lsm_cgroup/socket_post_create")
-+int BPF_PROG(socket_post_create2, struct socket *sock, int family,
-+	     int type, int protocol, int kern)
-+{
-+	called_socket_post_create2++;
-+	return real_create(sock, family, protocol);
-+}
-+
-+static __always_inline int real_bind(struct socket *sock,
-+				     struct sockaddr *address,
-+				     int addrlen)
-+{
-+	struct sockaddr_ll sa = {};
-+
-+	if (sock->sk->__sk_common.skc_family != AF_PACKET)
-+		return 1;
-+
-+	if (sock->sk->sk_kern_sock)
-+		return 1;
-+
-+	bpf_probe_read_kernel(&sa, sizeof(sa), address);
-+	if (sa.sll_protocol)
-+		return 0; /* EPERM */
-+
-+	/* Can access cgroup local storage. */
-+	if (!test_local_storage())
-+		return 0; /* EPERM */
-+
-+	return 1;
-+}
-+
-+/* __cgroup_bpf_run_lsm_socket */
-+SEC("lsm_cgroup/socket_bind")
-+int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
-+	     int addrlen)
-+{
-+	called_socket_bind++;
-+	return real_bind(sock, address, addrlen);
-+}
-+
-+/* __cgroup_bpf_run_lsm_socket */
-+SEC("lsm_cgroup/socket_bind")
-+int BPF_PROG(socket_bind2, struct socket *sock, struct sockaddr *address,
-+	     int addrlen)
-+{
-+	called_socket_bind2++;
-+	return real_bind(sock, address, addrlen);
-+}
-+
-+/* __cgroup_bpf_run_lsm_current (via bpf_lsm_current_hooks) */
-+SEC("lsm_cgroup/sk_alloc_security")
-+int BPF_PROG(socket_alloc, struct sock *sk, int family, gfp_t priority)
-+{
-+	called_socket_alloc++;
-+	if (family == AF_UNIX)
-+		return 0; /* EPERM */
-+
-+	/* Can access cgroup local storage. */
-+	if (!test_local_storage())
-+		return 0; /* EPERM */
-+
-+	return 1;
-+}
-+
-+/* __cgroup_bpf_run_lsm_sock */
-+SEC("lsm_cgroup/inet_csk_clone")
-+int BPF_PROG(socket_clone, struct sock *newsk, const struct request_sock *req)
-+{
-+	int prio = 234;
-+
-+	called_socket_clone++;
-+
-+	if (!newsk)
-+		return 1;
-+
-+	/* Accepted request sockets get a different priority. */
-+	if (bpf_setsockopt(newsk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0; /* EPERM */
-+
-+	/* Make sure bpf_getsockopt is allowed and works. */
-+	prio = 0;
-+	if (bpf_getsockopt(newsk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0; /* EPERM */
-+	if (prio != 234)
-+		return 0; /* EPERM */
-+
-+	/* Can access cgroup local storage. */
-+	if (!test_local_storage())
-+		return 0; /* EPERM */
-+
-+	return 1;
-+}
--- 
-2.36.1.476.g0c4daa206d-goog
+You mean from uname() and parsing the release? Yes I suppose we could do
+that, can do as a follow-up.
 
+> 
+> I'm not sure whether memlock is used out there in the distros (and
+> especially for root/bpf_capable), so I'm also not sure whether we
+> really care or not.
+
+Not sure either. For what it's worth, I've never seen complaints so far
+from users about the rlimit being raised (from bpftool or other BPF apps).
