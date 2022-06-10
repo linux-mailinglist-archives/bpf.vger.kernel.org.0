@@ -2,142 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5288545954
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 02:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18DF54595B
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 02:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbiFJAxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 20:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
+        id S239884AbiFJAzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 20:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238951AbiFJAw7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 20:52:59 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3002158970;
-        Thu,  9 Jun 2022 17:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654822377; x=1686358377;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=hfzqHZ9WZZKqlNxOYXcLszDyFwmAwNzB+DvcFyJmCZE=;
-  b=a7MoYxdT9wnD3BoHPI9+ZcohzKFsE1gec17kZekr5Wo350h6cHI4szF4
-   7HaD+xJhswA6Rx6rgk8cGjDaAHbY1/bpg9vmupNstJh9Yzw8zC2eyo8UY
-   XLO3lM8s4/aqSM6UhlCxdoYn7iDAWpeYqHiizzfhqr69v87TypCSYgSw2
-   sPhvtZzS1SLz/RddBS3m5qGhVE0deRKmP+VBlvQ92TUXxEnCf8YPkMpzk
-   H+rVxQSxIXcjlJzpw3PGDsVTCjbEap9L7TymjQG48c5J0jqwloZbjTzDj
-   zGP1Y3+MnDAGDz5X4LfHjkH6z7doqjU/psLO1YPUpLIm4m9yddxy2Gbrf
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="341537502"
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; 
-   d="scan'208";a="341537502"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jun 2022 17:52:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; 
-   d="scan'208";a="533855446"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 09 Jun 2022 17:52:54 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nzStS-000GXR-2d;
-        Fri, 10 Jun 2022 00:52:54 +0000
-Date:   Fri, 10 Jun 2022 08:52:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?J=F6rn-Thorben?= Hinz 
-        <jthinz@mailbox.tu-berlin.de>, bpf@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        with ESMTP id S238951AbiFJAzu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 20:55:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC444D634
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 17:55:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EE714612EA
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 00:55:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60646C3411E
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 00:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654822548;
+        bh=tPPcB6qg2ZDplGPe5r34eX0A1FBrYHTtZQ+pNqpv4cA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rN5vKZT7vMn0D59pBjQMR6mer6VECxTn1hYov3KEh5snnj1z7CwMg13lMNf9o7IUA
+         lF9I8W0oA15/RX9rX7hvXCCv6D4Gl/uuANjLnuDTJt36EPbFmvkXNUfMUw3eIyRTqQ
+         KPez9+0cjELSSt72zYM5K+D/Lp0VG4PW3Z/U4PGvGDcTkxetZJyTohPfopkrwDUQJ5
+         874N91QIlhffz1T9+T+DvffzZLX8R8lnFhW/tw8vQlh8uWmCcaMqLiAXD2pvRPgWVq
+         zEzffesV+lvotIb7YSb5M59646RksweW82+DEAsqhuW5kQVqkgpxB8TMt0GCCplgPT
+         mm5MjSG1/tlAA==
+Received: by mail-yb1-f172.google.com with SMTP id s39so16975329ybi.0
+        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 17:55:48 -0700 (PDT)
+X-Gm-Message-State: AOAM531s+y3NlgBbLsB3x8PmdH2K3F0J4jKPThpTqmynl8QhHsJmK29Z
+        EcQs9rg6t2kg/RG4sGjxvW8jGftcyduwla8RdVvneQ==
+X-Google-Smtp-Source: ABdhPJyUNbhO6WzB5L/SFE1CmuOEdZh1ZSad2If7CbByV6A9zwXVh1jSuEqwGjwBpyNA794D0lNgL1YDOJF2KTfy2ZM=
+X-Received: by 2002:a5b:10b:0:b0:654:74c1:61cf with SMTP id
+ 11-20020a5b010b000000b0065474c161cfmr43467397ybx.42.1654822547386; Thu, 09
+ Jun 2022 17:55:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220609234601.2026362-1-kpsingh@kernel.org> <CAADnVQJSijXmDG0C+U101ahgOYTmHEuyBu_=CS87rJ9GchFQyA@mail.gmail.com>
+In-Reply-To: <CAADnVQJSijXmDG0C+U101ahgOYTmHEuyBu_=CS87rJ9GchFQyA@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 10 Jun 2022 02:55:36 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ4L=SxggPxrqEC1yzv-DzM1-w0ZPo-E1HPE-8ob-r0UTw@mail.gmail.com>
+Message-ID: <CACYkzJ4L=SxggPxrqEC1yzv-DzM1-w0ZPo-E1HPE-8ob-r0UTw@mail.gmail.com>
+Subject: Re: [PATCH linux-next] security: Fix side effects of default BPF LSM hooks
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     LSM List <linux-security-module@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jann Horn <jannh@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        =?iso-8859-1?Q?J=F6rn-Thorben?= Hinz 
-        <jthinz@mailbox.tu-berlin.de>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf: Require only one of cong_avoid()
- and cong_control() from a TCP CC
-Message-ID: <202206100820.VN7PQCkp-lkp@intel.com>
-References: <20220609204702.2351369-3-jthinz@mailbox.tu-berlin.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220609204702.2351369-3-jthinz@mailbox.tu-berlin.de>
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi "Jörn-Thorben,
+On Fri, Jun 10, 2022 at 2:44 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Jun 9, 2022 at 4:46 PM KP Singh <kpsingh@kernel.org> wrote:
+> >
+> > BPF LSM currently has a default implementation for each LSM hooks which
+> > return a default value defined in include/linux/lsm_hook_defs.h. These
+> > hooks should have no functional effect when there is no BPF program
+> > loaded to implement the hook logic.
+> >
+> > Some LSM hooks treat any return value of the hook as policy decision
+> > which results in destructive side effects.
+> >
+> > This issue and the effects were reported to me by Jann Horn:
+> >
+> > For a system configured with CONFIG_BPF_LSM and the bpf lsm is enabled
+> > (via lsm= or CONFIG_LSM) an unprivileged user can vandalize the system
+> > by removing the security.capability xattrs from binaries, preventing
+> > them from working normally:
+> >
+> > $ getfattr -d -m- /bin/ping
+> > getfattr: Removing leading '/' from absolute path names
+> > security.capability=0sAQAAAgAgAAAAAAAAAAAAAAAAAAA=
+> >
+> > $ setfattr -x security.capability /bin/ping
+> > $ getfattr -d -m- /bin/ping
+> > $ ping 1.2.3.4
+> > $ ping google.com
+> > $ echo $?
+> > 2
+> >
+> > The above reproduces with:
+> >
+> > cat /sys/kernel/security/lsm
+> > capability,apparmor,bpf
+>
+> Why is this bpf related?
+> apparmor doesn't have that hook,
+> while capability returns 0.
+> So bpf's default==0 doesn't change the situation.
+>
+> Just
+> cat /sys/kernel/security/lsm
+> capability
+>
+> would reproduce the issue?
+> what am I missing?
 
-Thank you for the patch! Perhaps something to improve:
+capability does not define the inode_removexattr LSM hook:
 
-[auto build test WARNING on bpf-next/master]
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/commoncap.c#n1449
 
-url:    https://github.com/intel-lab-lkp/linux/commits/J-rn-Thorben-Hinz/bpf-Allow-a-TCP-CC-to-write-sk_pacing_rate-and-sk_pacing_status/20220610-054718
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: i386-randconfig-a015 (https://download.01.org/0day-ci/archive/20220610/202206100820.VN7PQCkp-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 70d35fe1257e429266b83025997b400e9f79110e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/ac2a3c95ce28ad79c2ef7e6c52c4fd25af9f3c6d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review J-rn-Thorben-Hinz/bpf-Allow-a-TCP-CC-to-write-sk_pacing_rate-and-sk_pacing_status/20220610-054718
-        git checkout ac2a3c95ce28ad79c2ef7e6c52c4fd25af9f3c6d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash net/ipv4/
+It's only when the return value of the hook is 1, it checks for
+cap_inode_removexattr.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/security.c#n1408
 
-All warnings (new ones prefixed by >>):
+Only 3 LSMs define the hook (bpf, smack and selinux):
 
->> net/ipv4/bpf_tcp_ca.c:225:6: warning: unused variable 'prog_fd' [-Wunused-variable]
-           int prog_fd;
-               ^
-   1 warning generated.
+fgrep -R LSM_HOOK_INIT *  | grep inode_removexattr
+selinux/hooks.c: LSM_HOOK_INIT(inode_removexattr, selinux_inode_removexattr),
+smack/smack_lsm.c: LSM_HOOK_INIT(inode_removexattr, smack_inode_removexattr),
 
-
-vim +/prog_fd +225 net/ipv4/bpf_tcp_ca.c
-
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  218  
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  219  static int bpf_tcp_ca_init_member(const struct btf_type *t,
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  220  				  const struct btf_member *member,
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  221  				  void *kdata, const void *udata)
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  222  {
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  223  	const struct tcp_congestion_ops *utcp_ca;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  224  	struct tcp_congestion_ops *tcp_ca;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08 @225  	int prog_fd;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  226  	u32 moff;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  227  
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  228  	utcp_ca = (const struct tcp_congestion_ops *)udata;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  229  	tcp_ca = (struct tcp_congestion_ops *)kdata;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  230  
-8293eb995f349a Alexei Starovoitov 2021-12-01  231  	moff = __btf_member_bit_offset(t, member) / 8;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  232  	switch (moff) {
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  233  	case offsetof(struct tcp_congestion_ops, flags):
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  234  		if (utcp_ca->flags & ~TCP_CONG_MASK)
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  235  			return -EINVAL;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  236  		tcp_ca->flags = utcp_ca->flags;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  237  		return 1;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  238  	case offsetof(struct tcp_congestion_ops, name):
-8e7ae2518f5265 Martin KaFai Lau   2020-03-13  239  		if (bpf_obj_name_cpy(tcp_ca->name, utcp_ca->name,
-8e7ae2518f5265 Martin KaFai Lau   2020-03-13  240  				     sizeof(tcp_ca->name)) <= 0)
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  241  			return -EINVAL;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  242  		if (tcp_ca_find(utcp_ca->name))
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  243  			return -EEXIST;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  244  		return 1;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  245  	}
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  246  
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  247  	return 0;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  248  }
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  249  
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+The BPF LSM default hooks intend to provide no side-effects when the
+LSM is enabled and
+for the hooks that the patch updates, there is a side-effect.
