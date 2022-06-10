@@ -2,67 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1106654675B
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 15:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C9B5467E7
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 16:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347741AbiFJN1p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 09:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        id S232920AbiFJN7w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 09:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237423AbiFJN1o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 09:27:44 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB1E206113;
-        Fri, 10 Jun 2022 06:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654867662; x=1686403662;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=eTW19iyv8bmGlE74qdXZDVFsCItRJ8cEpvPZFZ3XmRo=;
-  b=HVLl6o+jVNSa3OLtunwQvY85fPJ/Np6OqEL7J5tduz+2iv7SGrBlLt/I
-   mpSUF6KcB3KArBqX6ghJG1jwTRr3HW7OQBmarr3pw92WFty8hEcs/g+rv
-   gkA9IHpeHId7LNs1+arhqbS+kj0FDvXfW1VaUa3nG8KGzhmyBqKH5E0wM
-   Azw1T5h0BIDDFqV/mNyBJRwllrLi4PyO2qnwkLWaTOndl60ufBhYQJbnm
-   Ebk3s/SrZWV+enDBkPJEsHlwT3CgiDqev/OP4YoRb1cVM4hUGTtwTrVAJ
-   sULBBi9g0wYwKdUhK0EpLnnSVGBPpvzVzumUC0dWgur6m8PBOV1i71LfL
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="277662252"
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
-   d="scan'208";a="277662252"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 06:27:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
-   d="scan'208";a="724969786"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Jun 2022 06:27:40 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nzefr-000HyT-Sf;
-        Fri, 10 Jun 2022 13:27:39 +0000
-Date:   Fri, 10 Jun 2022 21:26:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?J=F6rn-Thorben?= Hinz 
-        <jthinz@mailbox.tu-berlin.de>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        =?iso-8859-1?Q?J=F6rn-Thorben?= Hinz 
-        <jthinz@mailbox.tu-berlin.de>
-Subject: Re: [PATCH bpf-next v2 2/2] bpf: Require only one of cong_avoid()
- and cong_control() from a TCP CC
-Message-ID: <202206102106.exquHIbr-lkp@intel.com>
-References: <20220609204702.2351369-3-jthinz@mailbox.tu-berlin.de>
+        with ESMTP id S236558AbiFJN7i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 09:59:38 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7254203A2A;
+        Fri, 10 Jun 2022 06:59:32 -0700 (PDT)
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LKMtg3YYhz683Pb;
+        Fri, 10 Jun 2022 21:55:55 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 10 Jun 2022 15:59:30 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kpsingh@kernel.org>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v3 1/2] bpf: Add bpf_verify_signature() helper
+Date:   Fri, 10 Jun 2022 15:59:15 +0200
+Message-ID: <20220610135916.1285509-2-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220610135916.1285509-1-roberto.sassu@huawei.com>
+References: <20220610135916.1285509-1-roberto.sassu@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220609204702.2351369-3-jthinz@mailbox.tu-berlin.de>
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml753-chm.china.huawei.com (10.201.108.203) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,71 +50,178 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi "Jörn-Thorben,
+Add the bpf_verify_signature() helper, to give eBPF security modules the
+ability to check the validity of a signature against supplied data, by
+using system-provided keys as trust anchor.
 
-Thank you for the patch! Perhaps something to improve:
+The new helper makes it possible to enforce mandatory policies, as eBPF
+programs might be allowed to make security decisions only based on data
+sources the system administrator approves.
 
-[auto build test WARNING on bpf-next/master]
+The caller should specify the identifier of the keyring containing the keys
+for signature verification: 0 for the primary keyring (immutable keyring of
+system keys); 1 for both the primary and secondary keyring (where keys can
+be added only if they are vouched for by existing keys in those keyrings);
+2 for the platform keyring (primarily used by the integrity subsystem to
+verify a kexec'ed kerned image and, possibly, the initramfs signature);
+0xffff for the session keyring (for testing purposes).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/J-rn-Thorben-Hinz/bpf-Allow-a-TCP-CC-to-write-sk_pacing_rate-and-sk_pacing_status/20220610-054718
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: i386-randconfig-a003 (https://download.01.org/0day-ci/archive/20220610/202206102106.exquHIbr-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/ac2a3c95ce28ad79c2ef7e6c52c4fd25af9f3c6d
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review J-rn-Thorben-Hinz/bpf-Allow-a-TCP-CC-to-write-sk_pacing_rate-and-sk_pacing_status/20220610-054718
-        git checkout ac2a3c95ce28ad79c2ef7e6c52c4fd25af9f3c6d
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash net/ipv4/
+The caller should also specify the type of signature. Currently only PKCS#7
+is supported.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Since the maximum number of parameters of an eBPF helper is 5, the keyring
+and signature types share one (keyring ID: low 16 bits, signature type:
+high 16 bits).
 
-All warnings (new ones prefixed by >>):
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reported-by: kernel test robot <lkp@intel.com> (cast warning)
+---
+ include/uapi/linux/bpf.h       | 17 +++++++++++++
+ kernel/bpf/bpf_lsm.c           | 46 ++++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h | 17 +++++++++++++
+ 3 files changed, 80 insertions(+)
 
-   net/ipv4/bpf_tcp_ca.c: In function 'bpf_tcp_ca_init_member':
->> net/ipv4/bpf_tcp_ca.c:225:13: warning: unused variable 'prog_fd' [-Wunused-variable]
-     225 |         int prog_fd;
-         |             ^~~~~~~
-
-
-vim +/prog_fd +225 net/ipv4/bpf_tcp_ca.c
-
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  218  
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  219  static int bpf_tcp_ca_init_member(const struct btf_type *t,
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  220  				  const struct btf_member *member,
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  221  				  void *kdata, const void *udata)
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  222  {
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  223  	const struct tcp_congestion_ops *utcp_ca;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  224  	struct tcp_congestion_ops *tcp_ca;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08 @225  	int prog_fd;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  226  	u32 moff;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  227  
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  228  	utcp_ca = (const struct tcp_congestion_ops *)udata;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  229  	tcp_ca = (struct tcp_congestion_ops *)kdata;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  230  
-8293eb995f349a Alexei Starovoitov 2021-12-01  231  	moff = __btf_member_bit_offset(t, member) / 8;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  232  	switch (moff) {
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  233  	case offsetof(struct tcp_congestion_ops, flags):
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  234  		if (utcp_ca->flags & ~TCP_CONG_MASK)
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  235  			return -EINVAL;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  236  		tcp_ca->flags = utcp_ca->flags;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  237  		return 1;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  238  	case offsetof(struct tcp_congestion_ops, name):
-8e7ae2518f5265 Martin KaFai Lau   2020-03-13  239  		if (bpf_obj_name_cpy(tcp_ca->name, utcp_ca->name,
-8e7ae2518f5265 Martin KaFai Lau   2020-03-13  240  				     sizeof(tcp_ca->name)) <= 0)
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  241  			return -EINVAL;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  242  		if (tcp_ca_find(utcp_ca->name))
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  243  			return -EEXIST;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  244  		return 1;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  245  	}
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  246  
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  247  	return 0;
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  248  }
-0baf26b0fcd74b Martin KaFai Lau   2020-01-08  249  
-
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f4009dbdf62d..97521857e44a 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5249,6 +5249,22 @@ union bpf_attr {
+  *		Pointer to the underlying dynptr data, NULL if the dynptr is
+  *		read-only, if the dynptr is invalid, or if the offset and length
+  *		is out of bounds.
++ *
++ * long bpf_verify_signature(u8 *data, u32 datalen, u8 *sig, u32 siglen, u32 info)
++ *	Description
++ *		Verify a signature of length *siglen* against the supplied data
++ *		with length *datalen*. *info* contains the keyring identifier
++ *		(low 16 bits) and the signature type (high 16 bits). The keyring
++ *		identifier can have the following values (some defined in
++ *		verification.h): 0 for the primary keyring (immutable keyring of
++ *		system keys); 1 for both the primary and secondary keyring
++ *		(where keys can be added only if they are vouched for by
++ *		existing keys in those keyrings); 2 for the platform keyring
++ *		(primarily used by the integrity subsystem to verify a kexec'ed
++ *		kerned image and, possibly, the initramfs signature); 0xffff for
++ *		the session keyring (for testing purposes).
++ *	Return
++ *		0 on success, a negative value on error.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5455,6 +5471,7 @@ union bpf_attr {
+ 	FN(dynptr_read),		\
+ 	FN(dynptr_write),		\
+ 	FN(dynptr_data),		\
++	FN(verify_signature),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index c1351df9f7ee..20bd850ea3ee 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -16,6 +16,8 @@
+ #include <linux/bpf_local_storage.h>
+ #include <linux/btf_ids.h>
+ #include <linux/ima.h>
++#include <linux/verification.h>
++#include <linux/module_signature.h>
+ 
+ /* For every LSM hook that allows attachment of BPF programs, declare a nop
+  * function where a BPF program can be attached.
+@@ -132,6 +134,46 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto = {
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ };
+ 
++#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
++BPF_CALL_5(bpf_verify_signature, u8 *, data, u32, datalen, u8 *, sig,
++	   u32, siglen, u32, info)
++{
++	unsigned long keyring_id = info & U16_MAX;
++	enum pkey_id_type id_type = info >> 16;
++	const struct cred *cred = current_cred();
++	struct key *keyring;
++
++	if (keyring_id > (unsigned long)VERIFY_USE_PLATFORM_KEYRING &&
++	    keyring_id != U16_MAX)
++		return -EINVAL;
++
++	keyring = (keyring_id == U16_MAX) ?
++		  cred->session_keyring : (struct key *)keyring_id;
++
++	switch (id_type) {
++	case PKEY_ID_PKCS7:
++		return verify_pkcs7_signature(data, datalen, sig, siglen,
++					      keyring,
++					      VERIFYING_UNSPECIFIED_SIGNATURE,
++					      NULL, NULL);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static const struct bpf_func_proto bpf_verify_signature_proto = {
++	.func		= bpf_verify_signature,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_MEM,
++	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
++	.arg3_type	= ARG_PTR_TO_MEM,
++	.arg4_type	= ARG_CONST_SIZE_OR_ZERO,
++	.arg5_type	= ARG_ANYTHING,
++	.allowed	= bpf_ima_inode_hash_allowed,
++};
++#endif
++
+ static const struct bpf_func_proto *
+ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -158,6 +200,10 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return prog->aux->sleepable ? &bpf_ima_file_hash_proto : NULL;
+ 	case BPF_FUNC_get_attach_cookie:
+ 		return bpf_prog_has_trampoline(prog) ? &bpf_get_attach_cookie_proto : NULL;
++#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
++	case BPF_FUNC_verify_signature:
++		return prog->aux->sleepable ? &bpf_verify_signature_proto : NULL;
++#endif
+ 	default:
+ 		return tracing_prog_func_proto(func_id, prog);
+ 	}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index f4009dbdf62d..97521857e44a 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5249,6 +5249,22 @@ union bpf_attr {
+  *		Pointer to the underlying dynptr data, NULL if the dynptr is
+  *		read-only, if the dynptr is invalid, or if the offset and length
+  *		is out of bounds.
++ *
++ * long bpf_verify_signature(u8 *data, u32 datalen, u8 *sig, u32 siglen, u32 info)
++ *	Description
++ *		Verify a signature of length *siglen* against the supplied data
++ *		with length *datalen*. *info* contains the keyring identifier
++ *		(low 16 bits) and the signature type (high 16 bits). The keyring
++ *		identifier can have the following values (some defined in
++ *		verification.h): 0 for the primary keyring (immutable keyring of
++ *		system keys); 1 for both the primary and secondary keyring
++ *		(where keys can be added only if they are vouched for by
++ *		existing keys in those keyrings); 2 for the platform keyring
++ *		(primarily used by the integrity subsystem to verify a kexec'ed
++ *		kerned image and, possibly, the initramfs signature); 0xffff for
++ *		the session keyring (for testing purposes).
++ *	Return
++ *		0 on success, a negative value on error.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5455,6 +5471,7 @@ union bpf_attr {
+ 	FN(dynptr_read),		\
+ 	FN(dynptr_write),		\
+ 	FN(dynptr_data),		\
++	FN(verify_signature),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.25.1
+
