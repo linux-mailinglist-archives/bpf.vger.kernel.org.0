@@ -2,191 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B10715469EF
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 17:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3AA546A1A
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 18:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346076AbiFJP5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 11:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
+        id S244729AbiFJQID (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 12:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349342AbiFJP5C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 11:57:02 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FB21C425E;
-        Fri, 10 Jun 2022 08:56:56 -0700 (PDT)
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25AEuah3007690;
-        Fri, 10 Jun 2022 15:56:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=s32GZyBD7QhYHjhNHiY86tpczYjEJMbszSFFN4zdBfM=;
- b=mgB29cJuYGOYivogWqXHujPbuYV5E+MCcRdo8ImqyvKOvDyUPLPfwdPyLUs6rGz5Wm4G
- O2vm0i3/8TKYsQOOyQcPB1AfuRMSvVAZRyBOGvNP4ddMevgimvCZQWmt3UrAEqEjZ1c+
- UnR/Vyv+YNNTHAx4uCLGghwjtdxr3/5sZb3N03Rrg1bA1rn4ZsANsMHWOACFs6eeYpsR
- +5FDc0TYWpJxDjWzgE0B5YlBnaa8fOkCU3saJsbwFoVnG7dGZ6xH3A18hYhtA/gPsUOS
- Ox1phGpED0+NsfmGeWRw3uQfqeYRO+w4an0qu9PqoidgpWY3SuvJD440U2rQmOd5SwIc HA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3gm85ps2c9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jun 2022 15:56:21 +0000
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 25AF0ZEX016927;
-        Fri, 10 Jun 2022 15:56:20 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3gm85ps2bs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jun 2022 15:56:20 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 25AFpdpW020876;
-        Fri, 10 Jun 2022 15:56:18 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 3gfy18xp6v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jun 2022 15:56:18 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 25AFuGCJ22479224
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Jun 2022 15:56:16 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 02A064C046;
-        Fri, 10 Jun 2022 15:56:16 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0975A4C040;
-        Fri, 10 Jun 2022 15:56:13 +0000 (GMT)
-Received: from hbathini-workstation.in.ibm.com (unknown [9.203.106.231])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 10 Jun 2022 15:56:12 +0000 (GMT)
-From:   Hari Bathini <hbathini@linux.ibm.com>
-To:     bpf@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        netdev@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S239010AbiFJQH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 12:07:59 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB5C3DDC4
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:07:54 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id t1-20020a170902e84100b001689cab0be3so4092836plg.11
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:07:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=RI91aW8cZyD67UWTksa3KG7d6VMjCPYeqBCH2eNuiD0=;
+        b=IbXs4/WG8QMmH3w3ZThCjgaOXlx8ua5YqnsL2uRqEPItRD2dKYaxmuGTAQc5DuGoOy
+         zlpJAhzqc8xl0dtiwOSV/OCTgMHhIO38EBpEkVmiI217Ku1n4v7eXp7yZI9qUHSa//Vz
+         u8iGJqIDzZ8e7Zqh180kJ+DCGKkbow6se6eRKIU5i/N7FQdyKqqaaJZmHUMqimLdXJ91
+         rfNzWhPZrOBQAwyZDJYrN7DSWSEtH4yPu9LnrnnVmep8/D0KxspfXaqU1Ew26+zYjDU0
+         /mnWn0811tMLe3HKSjTwC6j3PMhObv4mWk0YBFv85ilT0Bq1X0ylCnqyUWHFWAyMACb0
+         HQXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=RI91aW8cZyD67UWTksa3KG7d6VMjCPYeqBCH2eNuiD0=;
+        b=NH0guD8k1KXsLj2I1opPA7bchUoqbP4TL1t30WQNQbOKIt8L8tPFAqKcF5bHJegxy/
+         4cxwPU+3MyK9Dg9gAjxjZtYpAxatDl4Bf672ropq3mMJigw+YvSTzkbu2Kjl49V/T4nH
+         To205AkQgZ1jEvjQsRqO4QbIhn3t/UMakdAhTJ8ve4bi2A/DaD3E6/pO+Ilj+jqawEde
+         Q7TA69sTMd5sCKnrzjESUyqB9JF3/B2pM8GaAbbvwYsW4/QV1fMGbYhwAQVQRbUIngkX
+         OJkch2oKTWKGVlJOOkYRW1vAqvMZrZim612qA13J7Q4z0fS+xtrJ5fF9njyxY0AayN9k
+         hnWQ==
+X-Gm-Message-State: AOAM531V8WBwDpPoZJbYp56HrHR+ma4yKNm4+6IE08ilyKpLtkeY8lTN
+        vRhYEzkoz+X4yGyGlBAWmVacAAA=
+X-Google-Smtp-Source: ABdhPJymzvAlb1/m3wrvUtxNOPXT6DPITNVoP1xrY2Zh4En96XXv2mDz/T1Beiut8R3PjewNDtQv0WQ=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a62:6407:0:b0:519:3571:903e with SMTP id
+ y7-20020a626407000000b005193571903emr51807051pfb.30.1654877273944; Fri, 10
+ Jun 2022 09:07:53 -0700 (PDT)
+Date:   Fri, 10 Jun 2022 09:07:52 -0700
+In-Reply-To: <20220610112648.29695-2-quentin@isovalent.com>
+Message-Id: <YqNsWAH24bAIPjqy@google.com>
+Mime-Version: 1.0
+References: <20220610112648.29695-1-quentin@isovalent.com> <20220610112648.29695-2-quentin@isovalent.com>
+Subject: Re: [PATCH bpf-next 1/2] Revert "bpftool: Use libbpf 1.0 API mode
+ instead of RLIMIT_MEMLOCK"
+From:   sdf@google.com
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Russell Currey <ruscur@russell.cc>
-Subject: [PATCH v2 5/5] bpf ppc32: Add instructions for atomic_[cmp]xchg
-Date:   Fri, 10 Jun 2022 21:25:52 +0530
-Message-Id: <20220610155552.25892-6-hbathini@linux.ibm.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220610155552.25892-1-hbathini@linux.ibm.com>
-References: <20220610155552.25892-1-hbathini@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ZetIobXS02btdggG2UPwAI2nq-1RNAk7
-X-Proofpoint-ORIG-GUID: xVhgE7kk95bUxARjKoukvRZo7kdqN2Gm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-10_06,2022-06-09_02,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- clxscore=1015 impostorscore=0 malwarescore=0 bulkscore=0 phishscore=0
- mlxscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2204290000 definitions=main-2206100061
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Yafang Shao <laoar.shao@gmail.com>,
+        Harsh Modi <harshmodi@google.com>,
+        Paul Chaignon <paul@cilium.io>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds two atomic opcodes BPF_XCHG and BPF_CMPXCHG on ppc32, both
-of which include the BPF_FETCH flag.  The kernel's atomic_cmpxchg
-operation fundamentally has 3 operands, but we only have two register
-fields. Therefore the operand we compare against (the kernel's API
-calls it 'old') is hard-coded to be BPF_REG_R0. Also, kernel's
-atomic_cmpxchg returns the previous value at dst_reg + off. JIT the
-same for BPF too with return value put in BPF_REG_0.
+On 06/10, Quentin Monnet wrote:
+> This reverts commit a777e18f1bcd32528ff5dfd10a6629b655b05eb8.
 
-  BPF_REG_R0 = atomic_cmpxchg(dst_reg + off, BPF_REG_R0, src_reg);
+> In commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of
+> RLIMIT_MEMLOCK"), we removed the rlimit bump in bpftool, because the
+> kernel has switched to memcg-based memory accounting. Thanks to the
+> LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK, we attempted to keep compatibility
+> with other systems and ask libbpf to raise the limit for us if
+> necessary.
 
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
----
+> How do we know if memcg-based accounting is supported? There is a probe
+> in libbpf to check this. But this probe currently relies on the
+> availability of a given BPF helper, bpf_ktime_get_coarse_ns(), which
+> landed in the same kernel version as the memory accounting change. This
+> works in the generic case, but it may fail, for example, if the helper
+> function has been backported to an older kernel. This has been observed
+> for Google Cloud's Container-Optimized OS (COS), where the helper is
+> available but rlimit is still in use. The probe succeeds, the rlimit is
+> not raised, and probing features with bpftool, for example, fails.
 
-Changes in v2:
-* Moved variable declaration to avoid late declaration error on
-  some compilers.
-* Tried to make code readable and compact.
+> A patch was submitted [0] to update this probe in libbpf, based on what
+> the cilium/ebpf Go library does [1]. It would lower the soft rlimit to
+> 0, attempt to load a BPF object, and reset the rlimit. But it may induce
+> some hard-to-debug flakiness if another process starts, or the current
+> application is killed, while the rlimit is reduced, and the approach was
+> discarded.
 
+> As a workaround to ensure that the rlimit bump does not depend on the
+> availability of a given helper, we restore the unconditional rlimit bump
+> in bpftool for now.
 
- arch/powerpc/net/bpf_jit_comp32.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+> [0]  
+> https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/
+> [1] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
 
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 28dc6a1a8f2f..43f1c76d48ce 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -297,6 +297,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		u32 ax_reg = bpf_to_ppc(BPF_REG_AX);
- 		u32 tmp_reg = bpf_to_ppc(TMP_REG);
- 		u32 size = BPF_SIZE(code);
-+		u32 save_reg, ret_reg;
- 		s16 off = insn[i].off;
- 		s32 imm = insn[i].imm;
- 		bool func_addr_fixed;
-@@ -799,6 +800,9 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 		 * BPF_STX ATOMIC (atomic ops)
- 		 */
- 		case BPF_STX | BPF_ATOMIC | BPF_W:
-+			save_reg = _R0;
-+			ret_reg = src_reg;
-+
- 			bpf_set_seen_register(ctx, tmp_reg);
- 			bpf_set_seen_register(ctx, ax_reg);
- 
-@@ -829,6 +833,21 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 			case BPF_XOR | BPF_FETCH:
- 				EMIT(PPC_RAW_XOR(_R0, _R0, src_reg));
- 				break;
-+			case BPF_CMPXCHG:
-+				/*
-+				 * Return old value in BPF_REG_0 for BPF_CMPXCHG &
-+				 * in src_reg for other cases.
-+				 */
-+				ret_reg = bpf_to_ppc(BPF_REG_0);
-+
-+				/* Compare with old value in BPF_REG_0 */
-+				EMIT(PPC_RAW_CMPW(bpf_to_ppc(BPF_REG_0), _R0));
-+				/* Don't set if different from old value */
-+				PPC_BCC_SHORT(COND_NE, (ctx->idx + 3) * 4);
-+				fallthrough;
-+			case BPF_XCHG:
-+				save_reg = src_reg;
-+				break;
- 			default:
- 				pr_err_ratelimited("eBPF filter atomic op code %02x (@%d) unsupported\n",
- 						   code, i);
-@@ -836,15 +855,15 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
- 			}
- 
- 			/* store new value */
--			EMIT(PPC_RAW_STWCX(_R0, tmp_reg, dst_reg));
-+			EMIT(PPC_RAW_STWCX(save_reg, tmp_reg, dst_reg));
- 			/* we're done if this succeeded */
- 			PPC_BCC_SHORT(COND_NE, tmp_idx);
- 
- 			/* For the BPF_FETCH variant, get old data into src_reg */
- 			if (imm & BPF_FETCH) {
--				EMIT(PPC_RAW_MR(src_reg, ax_reg));
-+				EMIT(PPC_RAW_MR(ret_reg, ax_reg));
- 				if (!fp->aux->verifier_zext)
--					EMIT(PPC_RAW_LI(src_reg_h, 0));
-+					EMIT(PPC_RAW_LI(ret_reg - 1, 0)); /* higher 32-bit */
- 			}
- 			break;
- 
--- 
-2.35.3
+> Cc: Yafang Shao <laoar.shao@gmail.com>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>   tools/bpf/bpftool/common.c     | 8 ++++++++
+>   tools/bpf/bpftool/feature.c    | 2 ++
+>   tools/bpf/bpftool/main.c       | 6 +++---
+>   tools/bpf/bpftool/main.h       | 2 ++
+>   tools/bpf/bpftool/map.c        | 2 ++
+>   tools/bpf/bpftool/pids.c       | 1 +
+>   tools/bpf/bpftool/prog.c       | 3 +++
+>   tools/bpf/bpftool/struct_ops.c | 2 ++
+>   8 files changed, 23 insertions(+), 3 deletions(-)
+
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index a45b42ee8ab0..a0d4acd7c54a 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -17,6 +17,7 @@
+>   #include <linux/magic.h>
+>   #include <net/if.h>
+>   #include <sys/mount.h>
+> +#include <sys/resource.h>
+>   #include <sys/stat.h>
+>   #include <sys/vfs.h>
+
+> @@ -72,6 +73,13 @@ static bool is_bpffs(char *path)
+>   	return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
+>   }
+
+> +void set_max_rlimit(void)
+> +{
+> +	struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
+> +
+> +	setrlimit(RLIMIT_MEMLOCK, &rinf);
+
+Do you think it might make sense to print to stderr some warning if
+we actually happen to adjust this limit?
+
+if (getrlimit(MEMLOCK) != RLIM_INFINITY) {
+	fprintf(stderr, "Warning: resetting MEMLOCK rlimit to
+	infinity!\n");
+	setrlimit(RLIMIT_MEMLOCK, &rinf);
+}
+
+?
+
+Because while it's nice that we automatically do this, this might still
+lead to surprises for some users. OTOH, not sure whether people
+actually read those warnings? :-/
+
+> +}
+> +
+>   static int
+>   mnt_fs(const char *target, const char *type, char *buff, size_t bufflen)
+>   {
+> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+> index cc9e4df8c58e..bac4ef428a02 100644
+> --- a/tools/bpf/bpftool/feature.c
+> +++ b/tools/bpf/bpftool/feature.c
+> @@ -1167,6 +1167,8 @@ static int do_probe(int argc, char **argv)
+>   	__u32 ifindex = 0;
+>   	char *ifname;
+
+> +	set_max_rlimit();
+> +
+>   	while (argc) {
+>   		if (is_prefix(*argv, "kernel")) {
+>   			if (target != COMPONENT_UNSPEC) {
+> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> index 9062ef2b8767..e81227761f5d 100644
+> --- a/tools/bpf/bpftool/main.c
+> +++ b/tools/bpf/bpftool/main.c
+> @@ -507,9 +507,9 @@ int main(int argc, char **argv)
+>   		 * It will still be rejected if users use LIBBPF_STRICT_ALL
+>   		 * mode for loading generated skeleton.
+>   		 */
+> -		libbpf_set_strict_mode(LIBBPF_STRICT_ALL &  
+> ~LIBBPF_STRICT_MAP_DEFINITIONS);
+> -	} else {
+> -		libbpf_set_strict_mode(LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK);
+> +		ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL &  
+> ~LIBBPF_STRICT_MAP_DEFINITIONS);
+> +		if (ret)
+> +			p_err("failed to enable libbpf strict mode: %d", ret);
+>   	}
+
+>   	argc -= optind;
+> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+> index 6c311f47147e..589cb76b227a 100644
+> --- a/tools/bpf/bpftool/main.h
+> +++ b/tools/bpf/bpftool/main.h
+> @@ -96,6 +96,8 @@ int detect_common_prefix(const char *arg, ...);
+>   void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
+>   void usage(void) __noreturn;
+
+> +void set_max_rlimit(void);
+> +
+>   int mount_tracefs(const char *target);
+
+>   struct obj_ref {
+> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> index 800834be1bcb..38b6bc9c26c3 100644
+> --- a/tools/bpf/bpftool/map.c
+> +++ b/tools/bpf/bpftool/map.c
+> @@ -1326,6 +1326,8 @@ static int do_create(int argc, char **argv)
+>   		goto exit;
+>   	}
+
+> +	set_max_rlimit();
+> +
+>   	fd = bpf_map_create(map_type, map_name, key_size, value_size,  
+> max_entries, &attr);
+>   	if (fd < 0) {
+>   		p_err("map create failed: %s", strerror(errno));
+> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> index e2d00d3cd868..bb6c969a114a 100644
+> --- a/tools/bpf/bpftool/pids.c
+> +++ b/tools/bpf/bpftool/pids.c
+> @@ -108,6 +108,7 @@ int build_obj_refs_table(struct hashmap **map, enum  
+> bpf_obj_type type)
+>   		p_err("failed to create hashmap for PID references");
+>   		return -1;
+>   	}
+> +	set_max_rlimit();
+
+>   	skel = pid_iter_bpf__open();
+>   	if (!skel) {
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index e71f0b2da50b..f081de398b60 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1590,6 +1590,8 @@ static int load_with_options(int argc, char **argv,  
+> bool first_prog_only)
+>   		}
+>   	}
+
+> +	set_max_rlimit();
+> +
+>   	if (verifier_logs)
+>   		/* log_level1 + log_level2 + stats, but not stable UAPI */
+>   		open_opts.kernel_log_level = 1 + 2 + 4;
+> @@ -2287,6 +2289,7 @@ static int do_profile(int argc, char **argv)
+>   		}
+>   	}
+
+> +	set_max_rlimit();
+>   	err = profiler_bpf__load(profile_obj);
+>   	if (err) {
+>   		p_err("failed to load profile_obj");
+> diff --git a/tools/bpf/bpftool/struct_ops.c  
+> b/tools/bpf/bpftool/struct_ops.c
+> index 2535f079ed67..e08a6ff2866c 100644
+> --- a/tools/bpf/bpftool/struct_ops.c
+> +++ b/tools/bpf/bpftool/struct_ops.c
+> @@ -501,6 +501,8 @@ static int do_register(int argc, char **argv)
+>   	if (libbpf_get_error(obj))
+>   		return -1;
+
+> +	set_max_rlimit();
+> +
+>   	if (bpf_object__load(obj)) {
+>   		bpf_object__close(obj);
+>   		return -1;
+> --
+> 2.34.1
 
