@@ -2,116 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6AE545948
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 02:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E7154594A
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 02:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235953AbiFJAou (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 20:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        id S234177AbiFJAqK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 20:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235447AbiFJAot (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 20:44:49 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5363BF6F5;
-        Thu,  9 Jun 2022 17:44:48 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id fu3so49091344ejc.7;
-        Thu, 09 Jun 2022 17:44:48 -0700 (PDT)
+        with ESMTP id S229833AbiFJAqI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 20:46:08 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201DC193C6;
+        Thu,  9 Jun 2022 17:46:08 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id y12so23870040ior.7;
+        Thu, 09 Jun 2022 17:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P9j4hMC8yZPUVWHlh5QqDt7MKf3QVHD/GceSSuONapU=;
-        b=nru09NlCRUkTOI3AvrZn0DPpOJgNEWzujsqAea7RBHiH39Vg+1HC0KXmzC4T1Epa66
-         U6L7f4/47EvjlJ0iQUhaOrKb879ZtamK4bY0FZfX3b1zA/hwMhXTqxREL98K3usZzEhE
-         cswPsF0b3bafKubNawLZnPiaXZG0JdEe4nMJOjhahdCqRJcEObG+PUF6FkT9UQ0kKJCF
-         /dmGIj9QcbWgFIONv0TXsaYdp8cWoKttv8BP1lQOMGYwVGVGisLyCA7b4V0cl2XZJ65p
-         3XrXdFdTnuokFi5MuLUgtsSBvuWc7MAkw5tcoSkYD5dVhPLp4L1W6KZfElgETpoDLx+C
-         5qKg==
+        bh=OcK2QN5/PiNUvbtjPZDIGAbjMN6dtBXh5a4hrmLad/c=;
+        b=FVdj/W15FdXHqDx3W7NnDw8AEDU0qQXbvyrF7PD1qnW3sr4DfvLUyTaCLNsSxFNrdF
+         UR5nmjeov50wNYd42zUic2nAleIYxcmwbLRneJEkVRdCexiHyTzEPxm25sBdldoXh9ok
+         UlsRTSNJ8jldfirjUN5tIYcQVIfRGuvGLuXRaq1fJKZzyvkjyL3vN4rstXH9t6o4SvDF
+         JPyd5jc6wQ9PCBN2fuLwZ2/DPCBB0AluWbT6/QsCaT2c8x4RrZnOYMxUSxJNOVBR5Afe
+         Qf75fDp5BfKqccEkUQ3yjEDyVpza0mlF3EBO3x434drCuiz203zLt+sWqjAeD2a3q/vu
+         VKOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P9j4hMC8yZPUVWHlh5QqDt7MKf3QVHD/GceSSuONapU=;
-        b=J3KvzTZA9GLOKuSJ2G53ylZtAyFnZIEjmR+Izg9D/HM0Pn7Hd5wGqoXwPVXnSdJDST
-         qyOiJUn1kH3kuOkakGgpFRuIUMdDqYZoK2sqZM6C78XRUqAeoKK2z6xNjo/xIFrGR5Qf
-         b+9ra046h1oOrJzoczO0hV8I3611lHhQo33iD+naEI/uepaZogmucCco7mwVmirFtqEm
-         xAPX4e7JTtmc9aOaBhqiqM8pM4LbsIskKdqwQlH3tHArOE7kIHTaEcuLjeFOTvBr+BYD
-         hdRgkoyjgY3+xdpvW0XLy+p+FHcWP9wPcHJhnfbJf70F1xF/uEdEzuWs+/vwQUHyQXmc
-         yU5A==
-X-Gm-Message-State: AOAM533wcLDqab5rbEmFDHntkEmkJ1ULupcGd2WP48SROiSkPtQ2Cj2h
-        TvSF91BchbzCsPj1SYwClO6X48SRuRFALvsvZMI=
-X-Google-Smtp-Source: ABdhPJyLOCIxjIfbzNWU7I7gk3D/rmHCGERnsVC9S6afxRJafqMz38/6sjnWkks2UfDC6nyME+4z8+h1VVJX77xBJYY=
-X-Received: by 2002:a17:906:586:b0:70d:9052:fdf0 with SMTP id
- 6-20020a170906058600b0070d9052fdf0mr33113584ejn.633.1654821886569; Thu, 09
- Jun 2022 17:44:46 -0700 (PDT)
+        bh=OcK2QN5/PiNUvbtjPZDIGAbjMN6dtBXh5a4hrmLad/c=;
+        b=jGFRQobOi7IwnQAlovfxtvijeHwfBpzPlElubriyMrS3hZguT0TtJDfagZdLseej5n
+         VHycKRcq+fkvcW10x2F5hGj8k5VI7MUlxi65Vu/YwxJjKsJJJVWBBJM4Os6Z7ujsjAIb
+         XRBYWSaEhiVG+AL6G+vwBrSGk/ghH7dnxn2d7qtM2kJbPt7lR/JMr6xCdlVHjbM8c8xy
+         T3Rhdk2ueHEhS62PV7s2D6Lhn/qCWjSvOF0UDCk7gULNM+DIlSGTKupzk/4ciE13auBv
+         7EGWZngDwTOwGoU4/ST2lpe9Yvdl6foQHcWUJ1boYcco10rhHJBp+lHmllwXQCqaBUXz
+         pd1g==
+X-Gm-Message-State: AOAM5337Be0zex8Ll8ksZJxbijgcYCTVZUOdEbRBPmXeeFVEhxVqG9tH
+        VuUXTZMM6cAXG2ZFYyO4Gk2Uhg+fO5w8MuYzj5A=
+X-Google-Smtp-Source: ABdhPJxJShuK296mfpYdwrysYgkpiqlKWZbQ2qjze0jwq7pDRyV02ujQOjEXVBFwmLhb3EUlDrlc2OG0kBa1MR9FlFI=
+X-Received: by 2002:a05:6638:138f:b0:332:1c0:1e81 with SMTP id
+ w15-20020a056638138f00b0033201c01e81mr2728500jad.293.1654821967536; Thu, 09
+ Jun 2022 17:46:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220609234601.2026362-1-kpsingh@kernel.org>
-In-Reply-To: <20220609234601.2026362-1-kpsingh@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 9 Jun 2022 17:44:34 -0700
-Message-ID: <CAADnVQJSijXmDG0C+U101ahgOYTmHEuyBu_=CS87rJ9GchFQyA@mail.gmail.com>
-Subject: Re: [PATCH linux-next] security: Fix side effects of default BPF LSM hooks
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     LSM List <linux-security-module@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
+References: <20220609011844.404011-1-jmaxwell37@gmail.com> <56d6f898-bde0-bb25-3427-12a330b29fb8@iogearbox.net>
+ <20220610001743.z5nxapagwknlfjqi@kafai-mbp> <20220610003618.um4qya5rl6hirvnz@kafai-mbp>
+In-Reply-To: <20220610003618.um4qya5rl6hirvnz@kafai-mbp>
+From:   Jonathan Maxwell <jmaxwell37@gmail.com>
+Date:   Fri, 10 Jun 2022 10:45:31 +1000
+Message-ID: <CAGHK07BQZj4D1=KUmuWOjYS+4Hm3gq6_GJoWRt=Css9atL5U8w@mail.gmail.com>
+Subject: Re: [PATCH net] net: bpf: fix request_sock leak in filter.c
+To:     Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, pabeni@redhat.com,
+        Antoine Tenart <atenart@kernel.org>, cutaylor-pub@yahoo.com,
+        alexei.starovoitov@gmail.com, joe@cilium.io, i@lmb.io,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 9, 2022 at 4:46 PM KP Singh <kpsingh@kernel.org> wrote:
+On Fri, Jun 10, 2022 at 10:36 AM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> BPF LSM currently has a default implementation for each LSM hooks which
-> return a default value defined in include/linux/lsm_hook_defs.h. These
-> hooks should have no functional effect when there is no BPF program
-> loaded to implement the hook logic.
+> On Thu, Jun 09, 2022 at 05:17:47PM -0700, Martin KaFai Lau wrote:
+> > On Thu, Jun 09, 2022 at 10:29:15PM +0200, Daniel Borkmann wrote:
+> > > On 6/9/22 3:18 AM, Jon Maxwell wrote:
+> > > > A customer reported a request_socket leak in a Calico cloud environment. We
+> > > > found that a BPF program was doing a socket lookup with takes a refcnt on
+> > > > the socket and that it was finding the request_socket but returning the parent
+> > > > LISTEN socket via sk_to_full_sk() without decrementing the child request socket
+> > > > 1st, resulting in request_sock slab object leak. This patch retains the
+> > Great catch and debug indeed!
+> >
+> > > > existing behaviour of returning full socks to the caller but it also decrements
+> > > > the child request_socket if one is present before doing so to prevent the leak.
+> > > >
+> > > > Thanks to Curtis Taylor for all the help in diagnosing and testing this. And
+> > > > thanks to Antoine Tenart for the reproducer and patch input.
+> > > >
+> > > > Fixes: f7355a6c0497 bpf: ("Check sk_fullsock() before returning from bpf_sk_lookup()")
+> > > > Fixes: edbf8c01de5a bpf: ("add skc_lookup_tcp helper")
+> > Instead of the above commits, I think this dated back to
+> > 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
 >
-> Some LSM hooks treat any return value of the hook as policy decision
-> which results in destructive side effects.
->
-> This issue and the effects were reported to me by Jann Horn:
->
-> For a system configured with CONFIG_BPF_LSM and the bpf lsm is enabled
-> (via lsm= or CONFIG_LSM) an unprivileged user can vandalize the system
-> by removing the security.capability xattrs from binaries, preventing
-> them from working normally:
->
-> $ getfattr -d -m- /bin/ping
-> getfattr: Removing leading '/' from absolute path names
-> security.capability=0sAQAAAgAgAAAAAAAAAAAAAAAAAAA=
->
-> $ setfattr -x security.capability /bin/ping
-> $ getfattr -d -m- /bin/ping
-> $ ping 1.2.3.4
-> $ ping google.com
-> $ echo $?
-> 2
->
-> The above reproduces with:
->
-> cat /sys/kernel/security/lsm
-> capability,apparmor,bpf
+> Since this is more bpf specific, I think it could go to the bpf tree.
+> In v2, please cc bpf@vger.kernel.org and tag it with 'PATCH v2 bpf'.
 
-Why is this bpf related?
-apparmor doesn't have that hook,
-while capability returns 0.
-So bpf's default==0 doesn't change the situation.
+Okay thanks will do.
 
-Just
-cat /sys/kernel/security/lsm
-capability
+Daniel, are you okay with omitting 'if (unlikely...) { WARN_ONCE(...); }'?
 
-would reproduce the issue?
-what am I missing?
+If so I'll stick to the rest of the logic of your suggestion and omit that
+check in v1.
+
+Regards
+
+Jon
