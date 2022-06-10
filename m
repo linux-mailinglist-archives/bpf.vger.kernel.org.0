@@ -2,69 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1E9546957
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 17:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E365469E3
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 17:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbiFJPYS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 11:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
+        id S243751AbiFJP4l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 11:56:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbiFJPYQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 11:24:16 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD18635B
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 08:24:14 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x17so36982966wrg.6
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 08:24:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=zdnlR199A5rHfHQzkHqSQo1rmxRTA9oX0cSemBZ61Po=;
-        b=A3YbFwjHa11/tMWATopSLeHWGMYPWZ5Yhir/6dD1yEEmMpPgrTLuc51jszOu/Vz53y
-         o8H2DbQbyu34J0aDr/riTUW30o65MQvQD9ajZ3iamglpJ/eCf5jS2tPsnrRpmD/UQ5z6
-         D5Xaow1zg2n3ysVn51fUF98/bIeoHG7iIIheg4gCUdNP+L4sp8T6WYPECfNciKVNlp68
-         auHKYr007xlHHLSiHqUw1KLiyGfuK3P9Kz/2UuUA6u/PsTKuLjdCdqPhrWwQobMWLQ7P
-         tA1/vJFAgscZgeFUjjHZUsgGc02CxJS5kgnflJeUJAS4nr6AZTLzgQvCdp7VJdVhmH7A
-         K0YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=zdnlR199A5rHfHQzkHqSQo1rmxRTA9oX0cSemBZ61Po=;
-        b=gWg2xNY1STWuNYU8JZesKig691Pe/d+UgFuHwCQLNmLr8T1zgVToK6pM8fAB19zUKZ
-         sSnYNrsyMDARh3EW6YvJIpKZUdd/eFXZ3mkhLMvC979sgTfqbTEInh9PcCUNBF4FufGc
-         +rnw9yhqLQzn+FEV84KOIpVnYvPdC5Be1/J720YZiPC+ndXe5Mi0SxjAPX+r/ZnZ4r/6
-         QVOnM87e7NRm0aS7pJi2JfEZ/N27ZWi2mfuAW1LbmqdoV7DunqjZTK5DNLpgxW7xMOjU
-         0GaoX4hifE7pS3eoHMhRJNtCDqFPKlo6zgJRGcFQJqSteYhEPa4JsmmcE1ZDgt1I+X2R
-         tBAQ==
-X-Gm-Message-State: AOAM531txiWB+DD9/2fkaDtst6EfeppFuGjQz070NYmMV1Ef+UjkMWKJ
-        SYUCrNWR+mO6Ag+w12D58h3rMg==
-X-Google-Smtp-Source: ABdhPJwEFNd2LK9f14APy/YJRQucj+r1WjPYCSCSY7uEEzuqMf+QKCGRFRdEfif8/k51JNSLGlJbww==
-X-Received: by 2002:adf:fec3:0:b0:216:ea3d:b118 with SMTP id q3-20020adffec3000000b00216ea3db118mr33407915wrs.517.1654874652480;
-        Fri, 10 Jun 2022 08:24:12 -0700 (PDT)
-Received: from [192.168.178.21] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id i8-20020a5d5588000000b00219e4ebf549sm2672399wrv.56.2022.06.10.08.24.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jun 2022 08:24:12 -0700 (PDT)
-Message-ID: <b1a604e1-be09-ac0b-ff22-b194ae9ce886@isovalent.com>
-Date:   Fri, 10 Jun 2022 16:24:11 +0100
+        with ESMTP id S243656AbiFJP4k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 11:56:40 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179C6344FE8;
+        Fri, 10 Jun 2022 08:56:37 -0700 (PDT)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25ADgdQU000459;
+        Fri, 10 Jun 2022 15:56:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=f+2+C36wMDbP1Lz6kw2wjIMFQljszvrYMVi61I/EaUA=;
+ b=FWmKbiDJd2hMIVcRSAsC4RD99mvXZTnqbEz0n2BOVOW0ojB61vc4GTIFJIYDafVpX4Hm
+ 6rifSTp8zRCEm69RvTlKjWLfdilvBGOYNXx/+FTDHEiULdoju1GHNiZqC0EPBiECGIjP
+ C8bCX9OJ2EZjVXC4nFxxYv0GZTlZlDripJBDmEz8ypKXN9blux203jCs8wyYBUfOJ6iI
+ XY4CXxq3RBmUaPsazgtGUuOHCIFFdRDjpuW/jICrxdb0oqAZGZ5sSyzEAlg1CV25oKu3
+ c7UVS/poNClquXL1pWk5yYiu8DpV3rs0j4tWxuCgVjj1x1ZiFex+D6Pw0uyMBBwtpxWq Mg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3gm72vtmpb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jun 2022 15:56:02 +0000
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 25AFu1c1008835;
+        Fri, 10 Jun 2022 15:56:02 GMT
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3gm72vtmnj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jun 2022 15:56:01 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 25AFq2XM015689;
+        Fri, 10 Jun 2022 15:55:59 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 3gfy196n47-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jun 2022 15:55:59 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 25AFtZMc22020402
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jun 2022 15:55:35 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F09834C046;
+        Fri, 10 Jun 2022 15:55:56 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A6294C040;
+        Fri, 10 Jun 2022 15:55:53 +0000 (GMT)
+Received: from hbathini-workstation.in.ibm.com (unknown [9.203.106.231])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 10 Jun 2022 15:55:53 +0000 (GMT)
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     bpf@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        netdev@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Russell Currey <ruscur@russell.cc>
+Subject: [PATCH v2 0/5] Atomics support for eBPF on powerpc
+Date:   Fri, 10 Jun 2022 21:25:47 +0530
+Message-Id: <20220610155552.25892-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: Building release 6.8.0 on Debian 11
-Content-Language: en-GB
-To:     Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>
-References: <c47f732d-dba8-2c13-7c72-3a651bf72353@synopsys.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <c47f732d-dba8-2c13-7c72-3a651bf72353@synopsys.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: aemJ9QPeFSbAkEg-8m6HjSLmexGHySvC
+X-Proofpoint-GUID: 9KDPoPBpEuTS3D55lso3y3lSDnxBOj3a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
+ definitions=2022-06-10_06,2022-06-09_02,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 clxscore=1011
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2204290000 definitions=main-2206100061
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,63 +99,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022-06-10 11:28 UTC+0000 ~ Shahab Vahedi <Shahab.Vahedi@synopsys.com>
-> Hi,
-> 
-> This email is in the form of an inquiry and not a bug report.
-> 
-> When I tried to build bpftool 6.8.0 on my Debian 11 (bullseye) machine it
-> failed with errors like:
-> 
-> -----------------------------------8<-----------------------------------
-> $ make
->   .
->   .
->   .
->   CLANG    pid_iter.bpf.o
-> skeleton/pid_iter.bpf.c:47:14: error: incomplete definition of type
->                                'struct bpf_perf_link'
->         perf_link = container_of(link, struct bpf_perf_link, link);
->   .
->   .
->   .
-> skeleton/pid_iter.bpf.c:49:30: error: no member named 'bpf_cookie' in
->                                'struct perf_event'
->         return BPF_CORE_READ(event, bpf_cookie);
->   .
->   .
->   .
-> 10 errors generated.
-> make: *** [Makefile:176: pid_iter.bpf.o] Error 1
-> 
-> ----------------------------------->8-----------------------------------
-> 
-> This happens because in the generated vmlinux.h from my 5.10 kernel there is
-> no relevant types regarding the bpf_cookies.
-> 
-> Release v6.7.0 builds fine because it doesn't have this commit [1]. That
-> leaves me with the following questions:
-> 
-> - Should I stick to v6.7.0?
-> - Maybe I could use a version of 6.8.0 that reverts the commit [1]?
-> - Should the newly added bpf cookie section be guarded somehow?
-> 
-> [1] bpftool: Add bpf_cookie to link output
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=cbdaf71f
-> 
-> 
-> Cheers,
-> Shahab
+This patchset adds atomic operations to the eBPF instruction set on
+powerpc. The instructions that are added here can be summarised with
+this list of kernel operations for ppc64:
 
-Hi Shahab,
+* atomic[64]_[fetch_]add
+* atomic[64]_[fetch_]and
+* atomic[64]_[fetch_]or
+* atomic[64]_[fetch_]xor
+* atomic[64]_xchg
+* atomic[64]_cmpxchg
 
-I think we want to guard that section in the skeleton indeed. There was
-a patch submitted for that purpose some time ago (motivated by the fact
-this struct can also be missing on new kernels, if CONFIG_PERF_EVENTS is
-not enabled in the kernel config) [0].
+and this list of kernel operations for ppc32:
 
-Alexander (+Cc): Hi, are you still working on this series?
+* atomic_[fetch_]add
+* atomic_[fetch_]and
+* atomic_[fetch_]or
+* atomic_[fetch_]xor
+* atomic_xchg
+* atomic_cmpxchg
 
-[0] https://lore.kernel.org/bpf/20220421003152.339542-3-alobakin@pm.me/T/#u
+The following are left out of scope for this effort:
 
-Quentin
+* 64 bit operations on ppc32.
+* Explicit memory barriers, 16 and 8 bit operations on both ppc32
+  & ppc64.
+
+The first patch adds support for bitwsie atomic operations on ppc64.
+The next patch adds fetch variant support for these instructions. The
+third patch adds support for xchg and cmpxchg atomic operations on
+ppc64. Patch #4 adds support for 32-bit atomic bitwise operations on
+ppc32. patch #5 adds support for xchg and cmpxchg atomic operations
+on ppc32.
+
+Validated these changes successfully with atomics test cases in
+test_bpf testsuite and  test_verifier & test_progs selftests.
+With test_bpf testsuite:
+
+  all 147 atomics related test cases (both 32-bit & 64-bit) JIT'ed
+  successfully on ppc64:
+
+    test_bpf: Summary: 1026 PASSED, 0 FAILED, [1014/1014 JIT'ed]
+
+  all 76 atomics related test cases (32-bit) JIT'ed successfully
+  on ppc32:
+
+    test_bpf: Summary: 1027 PASSED, 0 FAILED, [915/1015 JIT'ed]
+
+Changes in v2:
+* Moved variable declaration to avoid late declaration error on
+  some compilers. Thanks to Russell for pointing this out.
+* For ppc64, added an optimization for 32-bit cmpxchg with regard
+  to commit 39491867ace5.
+* For ppc32, used an additional register (BPF_REG_AX):
+    - to avoid clobbering src_reg.
+    - to keep the lwarx reservation as intended.
+    - to avoid the odd switch/goto construct.
+* For ppc32, zero'ed out the higher 32-bit explicitly when required.
+
+
+Hari Bathini (5):
+  bpf ppc64: add support for BPF_ATOMIC bitwise operations
+  bpf ppc64: add support for atomic fetch operations
+  bpf ppc64: Add instructions for atomic_[cmp]xchg
+  bpf ppc32: add support for BPF_ATOMIC bitwise operations
+  bpf ppc32: Add instructions for atomic_[cmp]xchg
+
+ arch/powerpc/net/bpf_jit_comp32.c | 72 +++++++++++++++++++----
+ arch/powerpc/net/bpf_jit_comp64.c | 96 ++++++++++++++++++++++---------
+ 2 files changed, 129 insertions(+), 39 deletions(-)
+
+-- 
+2.35.3
+
