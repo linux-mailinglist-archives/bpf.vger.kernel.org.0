@@ -2,69 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3AA546A1A
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 18:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84A6546A43
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 18:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244729AbiFJQID (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 12:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56286 "EHLO
+        id S1349422AbiFJQVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 12:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239010AbiFJQH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 12:07:59 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB5C3DDC4
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:07:54 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id t1-20020a170902e84100b001689cab0be3so4092836plg.11
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 09:07:54 -0700 (PDT)
+        with ESMTP id S242991AbiFJQU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 12:20:59 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EB3392A0B;
+        Fri, 10 Jun 2022 09:20:58 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id z7so35938510edm.13;
+        Fri, 10 Jun 2022 09:20:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RI91aW8cZyD67UWTksa3KG7d6VMjCPYeqBCH2eNuiD0=;
-        b=IbXs4/WG8QMmH3w3ZThCjgaOXlx8ua5YqnsL2uRqEPItRD2dKYaxmuGTAQc5DuGoOy
-         zlpJAhzqc8xl0dtiwOSV/OCTgMHhIO38EBpEkVmiI217Ku1n4v7eXp7yZI9qUHSa//Vz
-         u8iGJqIDzZ8e7Zqh180kJ+DCGKkbow6se6eRKIU5i/N7FQdyKqqaaJZmHUMqimLdXJ91
-         rfNzWhPZrOBQAwyZDJYrN7DSWSEtH4yPu9LnrnnVmep8/D0KxspfXaqU1Ew26+zYjDU0
-         /mnWn0811tMLe3HKSjTwC6j3PMhObv4mWk0YBFv85ilT0Bq1X0ylCnqyUWHFWAyMACb0
-         HQXg==
+        bh=L4it2eyJHyN8t1fOMqjVlgvqQJ+rz5N7UVDB3nB9u44=;
+        b=K50pcIsA+qwcFU9iH9P9p8e1nglHZJAOqtEakftPNdwSO2KzgxX4z+gbz8vSQU9fV8
+         vz3g/9+5n4Z+lo0PTGSRt063uif4BRt2/AnKW5/it3n0o7BX4lZDNSmGyvcMixu4bfLr
+         CBmd+6daJMpQOWH3Hu+YbWkOIkRJGIHVy9nmvqtMoWNB/6iK4jHgeONxWrgzrTF0ZwSQ
+         TCvd3QTJqsO/4/sZKzDMKfbUWZtM+ycNJQpz6FrdGnPdTahuTwi/DoeKGOwOoyT6HSOG
+         ZCelkPytaS/Wrx8JN8FBd6/R4fZrkl5939p7y2eCRQWsuFWvawK3NrzaCJ5cnSoHRRZj
+         pzSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=RI91aW8cZyD67UWTksa3KG7d6VMjCPYeqBCH2eNuiD0=;
-        b=NH0guD8k1KXsLj2I1opPA7bchUoqbP4TL1t30WQNQbOKIt8L8tPFAqKcF5bHJegxy/
-         4cxwPU+3MyK9Dg9gAjxjZtYpAxatDl4Bf672ropq3mMJigw+YvSTzkbu2Kjl49V/T4nH
-         To205AkQgZ1jEvjQsRqO4QbIhn3t/UMakdAhTJ8ve4bi2A/DaD3E6/pO+Ilj+jqawEde
-         Q7TA69sTMd5sCKnrzjESUyqB9JF3/B2pM8GaAbbvwYsW4/QV1fMGbYhwAQVQRbUIngkX
-         OJkch2oKTWKGVlJOOkYRW1vAqvMZrZim612qA13J7Q4z0fS+xtrJ5fF9njyxY0AayN9k
-         hnWQ==
-X-Gm-Message-State: AOAM531V8WBwDpPoZJbYp56HrHR+ma4yKNm4+6IE08ilyKpLtkeY8lTN
-        vRhYEzkoz+X4yGyGlBAWmVacAAA=
-X-Google-Smtp-Source: ABdhPJymzvAlb1/m3wrvUtxNOPXT6DPITNVoP1xrY2Zh4En96XXv2mDz/T1Beiut8R3PjewNDtQv0WQ=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a62:6407:0:b0:519:3571:903e with SMTP id
- y7-20020a626407000000b005193571903emr51807051pfb.30.1654877273944; Fri, 10
- Jun 2022 09:07:53 -0700 (PDT)
-Date:   Fri, 10 Jun 2022 09:07:52 -0700
-In-Reply-To: <20220610112648.29695-2-quentin@isovalent.com>
-Message-Id: <YqNsWAH24bAIPjqy@google.com>
-Mime-Version: 1.0
-References: <20220610112648.29695-1-quentin@isovalent.com> <20220610112648.29695-2-quentin@isovalent.com>
-Subject: Re: [PATCH bpf-next 1/2] Revert "bpftool: Use libbpf 1.0 API mode
- instead of RLIMIT_MEMLOCK"
-From:   sdf@google.com
-To:     Quentin Monnet <quentin@isovalent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L4it2eyJHyN8t1fOMqjVlgvqQJ+rz5N7UVDB3nB9u44=;
+        b=tfO6CtXsiy9NnqS1rCagoa/M6SZFzPgMW3GEiBDkZY1v7pKtnU2c8UFfPMOJSgxSM1
+         HqVFW38z+YRcvGfbbjtqDB3wu/k2FWBL8uTwSwLHHHOHpU0bxaE2UUpmVjPIcplBGW0U
+         d9t+SHGRW5erESscC2kPQf7KQIEcp6k+HVonvCQ+nDduAWGBIdpOgswjEezKfAgisq0r
+         vyG+NYrj7Z3lposFiESQ6UXXvSv+SQlk1KZKnCL2GKvNzvj8DBrq/PU65l20887l7Q78
+         ohIxgigO7rINXnJKbjO0Y1SMYY/jB2+dMKxeC9IPDzLeXLMoOSMvt9muJc1VWXxHmCr+
+         1ClQ==
+X-Gm-Message-State: AOAM533IpZe5haL/OqPCJntgK2Weg9/2t69tvPTyR6vKxePReri0Axl9
+        s0j6W6fiN9tSNbDBBO026Wk8Ww67wtfko2ZaF6VKjOnDFm8=
+X-Google-Smtp-Source: ABdhPJyfLZAobuekWBFHlpOaOs5JxtoWWf3vcfvczaZsS7370i2OnQVyszhKYnZqfsdDp1FfbvC8KFe9Q/atGTNyjr4=
+X-Received: by 2002:a05:6402:120b:b0:42f:aa44:4d85 with SMTP id
+ c11-20020a056402120b00b0042faa444d85mr42817903edw.338.1654878056591; Fri, 10
+ Jun 2022 09:20:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220610135916.1285509-1-roberto.sassu@huawei.com> <20220610135916.1285509-2-roberto.sassu@huawei.com>
+In-Reply-To: <20220610135916.1285509-2-roberto.sassu@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 10 Jun 2022 09:20:44 -0700
+Message-ID: <CAADnVQLOWsqs1=MS=k2uJu01vNJzd9EZxtEwHW24t4+myj5s0w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] bpf: Add bpf_verify_signature() helper
+To:     Roberto Sassu <roberto.sassu@huawei.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Harsh Modi <harshmodi@google.com>,
-        Paul Chaignon <paul@cilium.io>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,204 +72,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/10, Quentin Monnet wrote:
-> This reverts commit a777e18f1bcd32528ff5dfd10a6629b655b05eb8.
+On Fri, Jun 10, 2022 at 6:59 AM Roberto Sassu <roberto.sassu@huawei.com> wrote:
+>
+> Since the maximum number of parameters of an eBPF helper is 5, the keyring
+> and signature types share one (keyring ID: low 16 bits, signature type:
+> high 16 bits).
+...
+> + * long bpf_verify_signature(u8 *data, u32 datalen, u8 *sig, u32 siglen, u32 info)
+> + *     Description
+> + *             Verify a signature of length *siglen* against the supplied data
+> + *             with length *datalen*. *info* contains the keyring identifier
+> + *             (low 16 bits) and the signature type (high 16 bits). The keyring
+> + *             identifier can have the following values (some defined in
+> + *             verification.h): 0 for the primary keyring (immutable keyring of
+> + *             system keys); 1 for both the primary and secondary keyring
+> + *             (where keys can be added only if they are vouched for by
+> + *             existing keys in those keyrings); 2 for the platform keyring
+> + *             (primarily used by the integrity subsystem to verify a kexec'ed
+> + *             kerned image and, possibly, the initramfs signature); 0xffff for
+> + *             the session keyring (for testing purposes).
 
-> In commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of
-> RLIMIT_MEMLOCK"), we removed the rlimit bump in bpftool, because the
-> kernel has switched to memcg-based memory accounting. Thanks to the
-> LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK, we attempted to keep compatibility
-> with other systems and ask libbpf to raise the limit for us if
-> necessary.
-
-> How do we know if memcg-based accounting is supported? There is a probe
-> in libbpf to check this. But this probe currently relies on the
-> availability of a given BPF helper, bpf_ktime_get_coarse_ns(), which
-> landed in the same kernel version as the memory accounting change. This
-> works in the generic case, but it may fail, for example, if the helper
-> function has been backported to an older kernel. This has been observed
-> for Google Cloud's Container-Optimized OS (COS), where the helper is
-> available but rlimit is still in use. The probe succeeds, the rlimit is
-> not raised, and probing features with bpftool, for example, fails.
-
-> A patch was submitted [0] to update this probe in libbpf, based on what
-> the cilium/ebpf Go library does [1]. It would lower the soft rlimit to
-> 0, attempt to load a BPF object, and reset the rlimit. But it may induce
-> some hard-to-debug flakiness if another process starts, or the current
-> application is killed, while the rlimit is reduced, and the approach was
-> discarded.
-
-> As a workaround to ensure that the rlimit bump does not depend on the
-> availability of a given helper, we restore the unconditional rlimit bump
-> in bpftool for now.
-
-> [0]  
-> https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/
-> [1] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
-
-> Cc: Yafang Shao <laoar.shao@gmail.com>
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->   tools/bpf/bpftool/common.c     | 8 ++++++++
->   tools/bpf/bpftool/feature.c    | 2 ++
->   tools/bpf/bpftool/main.c       | 6 +++---
->   tools/bpf/bpftool/main.h       | 2 ++
->   tools/bpf/bpftool/map.c        | 2 ++
->   tools/bpf/bpftool/pids.c       | 1 +
->   tools/bpf/bpftool/prog.c       | 3 +++
->   tools/bpf/bpftool/struct_ops.c | 2 ++
->   8 files changed, 23 insertions(+), 3 deletions(-)
-
-> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> index a45b42ee8ab0..a0d4acd7c54a 100644
-> --- a/tools/bpf/bpftool/common.c
-> +++ b/tools/bpf/bpftool/common.c
-> @@ -17,6 +17,7 @@
->   #include <linux/magic.h>
->   #include <net/if.h>
->   #include <sys/mount.h>
-> +#include <sys/resource.h>
->   #include <sys/stat.h>
->   #include <sys/vfs.h>
-
-> @@ -72,6 +73,13 @@ static bool is_bpffs(char *path)
->   	return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
->   }
-
-> +void set_max_rlimit(void)
-> +{
-> +	struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
-> +
-> +	setrlimit(RLIMIT_MEMLOCK, &rinf);
-
-Do you think it might make sense to print to stderr some warning if
-we actually happen to adjust this limit?
-
-if (getrlimit(MEMLOCK) != RLIM_INFINITY) {
-	fprintf(stderr, "Warning: resetting MEMLOCK rlimit to
-	infinity!\n");
-	setrlimit(RLIMIT_MEMLOCK, &rinf);
-}
-
-?
-
-Because while it's nice that we automatically do this, this might still
-lead to surprises for some users. OTOH, not sure whether people
-actually read those warnings? :-/
-
-> +}
-> +
->   static int
->   mnt_fs(const char *target, const char *type, char *buff, size_t bufflen)
->   {
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index cc9e4df8c58e..bac4ef428a02 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -1167,6 +1167,8 @@ static int do_probe(int argc, char **argv)
->   	__u32 ifindex = 0;
->   	char *ifname;
-
-> +	set_max_rlimit();
-> +
->   	while (argc) {
->   		if (is_prefix(*argv, "kernel")) {
->   			if (target != COMPONENT_UNSPEC) {
-> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-> index 9062ef2b8767..e81227761f5d 100644
-> --- a/tools/bpf/bpftool/main.c
-> +++ b/tools/bpf/bpftool/main.c
-> @@ -507,9 +507,9 @@ int main(int argc, char **argv)
->   		 * It will still be rejected if users use LIBBPF_STRICT_ALL
->   		 * mode for loading generated skeleton.
->   		 */
-> -		libbpf_set_strict_mode(LIBBPF_STRICT_ALL &  
-> ~LIBBPF_STRICT_MAP_DEFINITIONS);
-> -	} else {
-> -		libbpf_set_strict_mode(LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK);
-> +		ret = libbpf_set_strict_mode(LIBBPF_STRICT_ALL &  
-> ~LIBBPF_STRICT_MAP_DEFINITIONS);
-> +		if (ret)
-> +			p_err("failed to enable libbpf strict mode: %d", ret);
->   	}
-
->   	argc -= optind;
-> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> index 6c311f47147e..589cb76b227a 100644
-> --- a/tools/bpf/bpftool/main.h
-> +++ b/tools/bpf/bpftool/main.h
-> @@ -96,6 +96,8 @@ int detect_common_prefix(const char *arg, ...);
->   void fprint_hex(FILE *f, void *arg, unsigned int n, const char *sep);
->   void usage(void) __noreturn;
-
-> +void set_max_rlimit(void);
-> +
->   int mount_tracefs(const char *target);
-
->   struct obj_ref {
-> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> index 800834be1bcb..38b6bc9c26c3 100644
-> --- a/tools/bpf/bpftool/map.c
-> +++ b/tools/bpf/bpftool/map.c
-> @@ -1326,6 +1326,8 @@ static int do_create(int argc, char **argv)
->   		goto exit;
->   	}
-
-> +	set_max_rlimit();
-> +
->   	fd = bpf_map_create(map_type, map_name, key_size, value_size,  
-> max_entries, &attr);
->   	if (fd < 0) {
->   		p_err("map create failed: %s", strerror(errno));
-> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-> index e2d00d3cd868..bb6c969a114a 100644
-> --- a/tools/bpf/bpftool/pids.c
-> +++ b/tools/bpf/bpftool/pids.c
-> @@ -108,6 +108,7 @@ int build_obj_refs_table(struct hashmap **map, enum  
-> bpf_obj_type type)
->   		p_err("failed to create hashmap for PID references");
->   		return -1;
->   	}
-> +	set_max_rlimit();
-
->   	skel = pid_iter_bpf__open();
->   	if (!skel) {
-> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-> index e71f0b2da50b..f081de398b60 100644
-> --- a/tools/bpf/bpftool/prog.c
-> +++ b/tools/bpf/bpftool/prog.c
-> @@ -1590,6 +1590,8 @@ static int load_with_options(int argc, char **argv,  
-> bool first_prog_only)
->   		}
->   	}
-
-> +	set_max_rlimit();
-> +
->   	if (verifier_logs)
->   		/* log_level1 + log_level2 + stats, but not stable UAPI */
->   		open_opts.kernel_log_level = 1 + 2 + 4;
-> @@ -2287,6 +2289,7 @@ static int do_profile(int argc, char **argv)
->   		}
->   	}
-
-> +	set_max_rlimit();
->   	err = profiler_bpf__load(profile_obj);
->   	if (err) {
->   		p_err("failed to load profile_obj");
-> diff --git a/tools/bpf/bpftool/struct_ops.c  
-> b/tools/bpf/bpftool/struct_ops.c
-> index 2535f079ed67..e08a6ff2866c 100644
-> --- a/tools/bpf/bpftool/struct_ops.c
-> +++ b/tools/bpf/bpftool/struct_ops.c
-> @@ -501,6 +501,8 @@ static int do_register(int argc, char **argv)
->   	if (libbpf_get_error(obj))
->   		return -1;
-
-> +	set_max_rlimit();
-> +
->   	if (bpf_object__load(obj)) {
->   		bpf_object__close(obj);
->   		return -1;
-> --
-> 2.34.1
-
+Muxing all kinds of info in the 5th arg isn't great.
+It's better to use dynptr here for data and sig.
+It will free up two extra arguments.
