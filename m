@@ -2,96 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9A0546E7E
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 22:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBFB546E82
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 22:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347934AbiFJUeb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 16:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
+        id S1348279AbiFJUfz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 16:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350378AbiFJUea (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 16:34:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CC62C302233
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 13:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654893265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D+aGFkn3MMYrpYUMA1fpcNyVhojWLAMYD9npxZIcNjY=;
-        b=inj+FjTL2Zgjyvy8+cFIKVwue6d5r2zU6R+/GpVI8qkhVqsZk95qvM2lJamI7XSClChP+T
-        wMBFhGThj95y76w0LfI0zx4SjUoGMuZ+diursiqHCDugbrlfysJJAhQvaGLW602myoN1SH
-        0YUO6S56eonQy44YqyxNRrRCcxF3mSg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-315-QGuvHLU0O5u1ltSp7PCvRA-1; Fri, 10 Jun 2022 16:34:23 -0400
-X-MC-Unique: QGuvHLU0O5u1ltSp7PCvRA-1
-Received: by mail-ed1-f69.google.com with SMTP id x8-20020a056402414800b0042d8498f50aso141924eda.23
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 13:34:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=D+aGFkn3MMYrpYUMA1fpcNyVhojWLAMYD9npxZIcNjY=;
-        b=rwxh+ITunZj78jfK/g0eTe/cw7VGVepId5JwrhxbWpv5k8rY1uUECVK203rBfDql9Q
-         wQOk5I7NA1USIrqn7HOqCYw2DkKYqaAAHKuwAeXfRv7HQkq/uGDW3V49qVJ/mqnUPY5A
-         dv2i41hodP7ZKU1eTkh/bvDPG3q6aGT36pTCuB8va4JF1HDE/GO8NQ5uNAbaCkuyPRmx
-         g5OUuEbUHz7gGAf4fMedlu+/dswGOAIce+GO2Xi7tiVcN6K3XOeSzAYCHINTxBKWoweY
-         V0Ttbo+3nN188gBVvsoG95wEO9ig2SPYdq51FKgPUyOsXOADSjM3qMkjwvx98RQkjCqC
-         cgZw==
-X-Gm-Message-State: AOAM532DCh5HYi8tjsdrsjk+Z/W4u08Up1kkFvT+XBLw17OWrvl8mEeT
-        sS61ZO+VyPBE2UINpvGbjQsE4SCRXnbBr6Sj/umlKT9Vn1HPK5pMyEfPacPK2LgWNpooXau8mq+
-        jnhRJG1Vr2caK
-X-Received: by 2002:a17:906:6a23:b0:711:ea9b:89ba with SMTP id qw35-20020a1709066a2300b00711ea9b89bamr16479281ejc.740.1654893262623;
-        Fri, 10 Jun 2022 13:34:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy54XjL5JCCSDth3af7e2nucI8bVR0HXVWY21qrdLfe3Lb/fYbqAbb0m4MQ/MCGGL7tfpObLA==
-X-Received: by 2002:a17:906:6a23:b0:711:ea9b:89ba with SMTP id qw35-20020a1709066a2300b00711ea9b89bamr16479269ejc.740.1654893262291;
-        Fri, 10 Jun 2022 13:34:22 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id jw15-20020a17090776af00b006fec9cf9237sm29367ejc.130.2022.06.10.13.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jun 2022 13:34:21 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 8E880405EFB; Fri, 10 Jun 2022 22:34:20 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Zhengchao Shao <shaozhengchao@huawei.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     weiyongjun1@huawei.com, shaozhengchao@huawei.com,
-        yuehaibing@huawei.com
-Subject: Re: [PATCH v6,bpf-next] samples/bpf: check detach prog exist or not
- in xdp_fwd
-In-Reply-To: <20220606005425.261967-1-shaozhengchao@huawei.com>
-References: <20220606005425.261967-1-shaozhengchao@huawei.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 10 Jun 2022 22:34:20 +0200
-Message-ID: <87edzw2r77.fsf@toke.dk>
+        with ESMTP id S1347158AbiFJUfz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 16:35:55 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDADE347875;
+        Fri, 10 Jun 2022 13:35:53 -0700 (PDT)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nzlME-0008Pn-Ar; Fri, 10 Jun 2022 22:35:50 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nzlME-000NnL-0C; Fri, 10 Jun 2022 22:35:50 +0200
+Subject: Re: [PATCH bpf-next v2 0/7] Add bpf_link based TC-BPF API
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev <netdev@vger.kernel.org>
+References: <20210604063116.234316-1-memxor@gmail.com>
+ <CAJnrk1YJe-wtXFF0U2cuZUdd-gH1Y80Ewf3ePo=vh-nbsSBZgg@mail.gmail.com>
+ <20220610125830.2tx6syagl2rphl35@apollo.legion>
+ <CAJnrk1YCBn2EkVK89f5f3ijFYUDhLNpjiH8buw8K3p=JMwAc1Q@mail.gmail.com>
+ <CAJnrk1YCSaRjd88WCzg4ccv59h0Dn99XXsDDT4ddzz4UYiZmbg@mail.gmail.com>
+ <20220610193418.4kqpu7crwfb5efzy@apollo.legion> <87h74s2s19.fsf@toke.dk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2f98188b-813b-e226-4962-5c2848998af2@iogearbox.net>
+Date:   Fri, 10 Jun 2022 22:35:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <87h74s2s19.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26568/Fri Jun 10 10:06:23 2022)
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zhengchao Shao <shaozhengchao@huawei.com> writes:
+On 6/10/22 10:16 PM, Toke Høiland-Jørgensen wrote:
+> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+> 
+>> On Sat, Jun 11, 2022 at 12:37:50AM IST, Joanne Koong wrote:
+>>> On Fri, Jun 10, 2022 at 10:23 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+>>>>
+>>>> On Fri, Jun 10, 2022 at 5:58 AM Kumar Kartikeya Dwivedi
+>>>> <memxor@gmail.com> wrote:
+>>>>>
+>>>>> On Fri, Jun 10, 2022 at 05:54:27AM IST, Joanne Koong wrote:
+>>>>>> On Thu, Jun 3, 2021 at 11:31 PM Kumar Kartikeya Dwivedi
+>>>>>> <memxor@gmail.com> wrote:
+>>>>>>>
+>>>>>>> This is the second (non-RFC) version.
+>>>>>>>
+>>>>>>> This adds a bpf_link path to create TC filters tied to cls_bpf classifier, and
+>>>>>>> introduces fd based ownership for such TC filters. Netlink cannot delete or
+>>>>>>> replace such filters, but the bpf_link is severed on indirect destruction of the
+>>>>>>> filter (backing qdisc being deleted, or chain being flushed, etc.). To ensure
+>>>>>>> that filters remain attached beyond process lifetime, the usual bpf_link fd
+>>>>>>> pinning approach can be used.
+>>>>>>>
+>>>>>>> The individual patches contain more details and comments, but the overall kernel
+>>>>>>> API and libbpf helper mirrors the semantics of the netlink based TC-BPF API
+>>>>>>> merged recently. This means that we start by always setting direct action mode,
+>>>>>>> protocol to ETH_P_ALL, chain_index as 0, etc. If there is a need for more
+>>>>>>> options in the future, they can be easily exposed through the bpf_link API in
+>>>>>>> the future.
+>>>>>>>
+>>>>>>> Patch 1 refactors cls_bpf change function to extract two helpers that will be
+>>>>>>> reused in bpf_link creation.
+>>>>>>>
+>>>>>>> Patch 2 exports some bpf_link management functions to modules. This is needed
+>>>>>>> because our bpf_link object is tied to the cls_bpf_prog object. Tying it to
+>>>>>>> tcf_proto would be weird, because the update path has to replace offloaded bpf
+>>>>>>> prog, which happens using internal cls_bpf helpers, and would in general be more
+>>>>>>> code to abstract over an operation that is unlikely to be implemented for other
+>>>>>>> filter types.
+>>>>>>>
+>>>>>>> Patch 3 adds the main bpf_link API. A function in cls_api takes care of
+>>>>>>> obtaining block reference, creating the filter object, and then calls the
+>>>>>>> bpf_link_change tcf_proto op (only supported by cls_bpf) that returns a fd after
+>>>>>>> setting up the internal structures. An optimization is made to not keep around
+>>>>>>> resources for extended actions, which is explained in a code comment as it wasn't
+>>>>>>> immediately obvious.
+>>>>>>>
+>>>>>>> Patch 4 adds an update path for bpf_link. Since bpf_link_update only supports
+>>>>>>> replacing the bpf_prog, we can skip tc filter's change path by reusing the
+>>>>>>> filter object but swapping its bpf_prog. This takes care of replacing the
+>>>>>>> offloaded prog as well (if that fails, update is aborted). So far however,
+>>>>>>> tcf_classify could do normal load (possibly torn) as the cls_bpf_prog->filter
+>>>>>>> would never be modified concurrently. This is no longer true, and to not
+>>>>>>> penalize the classify hot path, we also cannot impose serialization around
+>>>>>>> its load. Hence the load is changed to READ_ONCE, so that the pointer value is
+>>>>>>> always consistent. Due to invocation in a RCU critical section, the lifetime of
+>>>>>>> the prog is guaranteed for the duration of the call.
+>>>>>>>
+>>>>>>> Patch 5, 6 take care of updating the userspace bits and add a bpf_link returning
+>>>>>>> function to libbpf.
+>>>>>>>
+>>>>>>> Patch 7 adds a selftest that exercises all possible problematic interactions
+>>>>>>> that I could think of.
+>>>>>>>
+>>>>>>> Design:
+>>>>>>>
+>>>>>>> This is where in the object hierarchy our bpf_link object is attached.
+>>>>>>>
+>>>>>>>                                                                              ┌─────┐
+>>>>>>>                                                                              │     │
+>>>>>>>                                                                              │ BPF │
+>>>>>>>                                                                              program
+>>>>>>>                                                                              │     │
+>>>>>>>                                                                              └──▲──┘
+>>>>>>>                                                        ┌───────┐                │
+>>>>>>>                                                        │       │         ┌──────┴───────┐
+>>>>>>>                                                        │  mod  ├─────────► cls_bpf_prog │
+>>>>>>> ┌────────────────┐                                    │cls_bpf│         └────┬───▲─────┘
+>>>>>>> │    tcf_block   │                                    │       │              │   │
+>>>>>>> └────────┬───────┘                                    └───▲───┘              │   │
+>>>>>>>           │          ┌─────────────┐                       │                ┌─▼───┴──┐
+>>>>>>>           └──────────►  tcf_chain  │                       │                │bpf_link│
+>>>>>>>                      └───────┬─────┘                       │                └────────┘
+>>>>>>>                              │          ┌─────────────┐    │
+>>>>>>>                              └──────────►  tcf_proto  ├────┘
+>>>>>>>                                         └─────────────┘
+>>>>>>>
+>>>>>>> The bpf_link is detached on destruction of the cls_bpf_prog.  Doing it this way
+>>>>>>> allows us to implement update in a lightweight manner without having to recreate
+>>>>>>> a new filter, where we can just replace the BPF prog attached to cls_bpf_prog.
+>>>>>>>
+>>>>>>> The other way to do it would be to link the bpf_link to tcf_proto, there are
+>>>>>>> numerous downsides to this:
+>>>>>>>
+>>>>>>> 1. All filters have to embed the pointer even though they won't be using it when
+>>>>>>> cls_bpf is compiled in.
+>>>>>>> 2. This probably won't make sense to be extended to other filter types anyway.
+>>>>>>> 3. We aren't able to optimize the update case without adding another bpf_link
+>>>>>>> specific update operation to tcf_proto ops.
+>>>>>>>
+>>>>>>> The downside with tying this to the module is having to export bpf_link
+>>>>>>> management functions and introducing a tcf_proto op. Hopefully the cost of
+>>>>>>> another operation func pointer is not big enough (as there is only one ops
+>>>>>>> struct per module).
+>>>>>>>
+>>>>>> Hi Kumar,
+>>>>>>
+>>>>>> Do you have any plans / bandwidth to land this feature upstream? If
+>>>>>> so, do you have a tentative estimation for when you'll be able to work
+>>>>>> on this? And if not, are you okay with someone else working on this to
+>>>>>> get it merged in?
+>>>>>>
+>>>>>
+>>>>> I can have a look at resurrecting it later this month, if you're ok with waiting
+>>>>> until then, otherwise if someone else wants to pick this up before that it's
+>>>>> fine by me, just let me know so we avoid duplicated effort. Note that the
+>>>>> approach in v2 is dead/unlikely to get accepted by the TC maintainers, so we'd
+>>>>> have to implement the way Daniel mentioned in [0].
+>>>>
+>>>> Sounds great! We'll wait and check back in with you later this month.
+>>>>
+>>> After reading the linked thread (which I should have done before
+>>> submitting my previous reply :)),  if I'm understanding it correctly,
+>>> it seems then that the work needed for tc bpf_link will be in a new
+>>> direction that's not based on the code in this v2 patchset. I'm
+>>> interested in learning more about bpf link and tc - I can pick this up
+>>> to work on. But if this was something you wanted to work on though,
+>>> please don't hesitate to let me know; I can find some other bpf link
+>>> thing to work on instead if that's the case.
+>>
+>> Feel free to take it. And yes, it's going to be much simpler than this. I think
+>> you can just add two bpf_prog pointers in struct net_device, use rtnl_lock to
+>> protect the updates, and invoke using bpf_prog_run in sch_handle_ingress and
+>> sch_handle_egress.
+> 
+> Except we'd want to also support multiple programs on different
+> priorities? I don't think requiring a libxdp-like dispatcher to achieve
+> this is a good idea if we can just have it be part of the API from the
+> get-go...
 
-> Before detach the prog, we should check detach prog exist or not.
->
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-
-LGTM!
-
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-
+Yes, it will be multi-prog to avoid a situation where dispatcher is needed.
