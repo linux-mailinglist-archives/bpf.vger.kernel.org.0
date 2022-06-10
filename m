@@ -2,134 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18DF54595B
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 02:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4285E545A1C
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 04:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239884AbiFJAzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 20:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S240245AbiFJCdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 22:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238951AbiFJAzu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 20:55:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC444D634
-        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 17:55:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE714612EA
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 00:55:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60646C3411E
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 00:55:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654822548;
-        bh=tPPcB6qg2ZDplGPe5r34eX0A1FBrYHTtZQ+pNqpv4cA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rN5vKZT7vMn0D59pBjQMR6mer6VECxTn1hYov3KEh5snnj1z7CwMg13lMNf9o7IUA
-         lF9I8W0oA15/RX9rX7hvXCCv6D4Gl/uuANjLnuDTJt36EPbFmvkXNUfMUw3eIyRTqQ
-         KPez9+0cjELSSt72zYM5K+D/Lp0VG4PW3Z/U4PGvGDcTkxetZJyTohPfopkrwDUQJ5
-         874N91QIlhffz1T9+T+DvffzZLX8R8lnFhW/tw8vQlh8uWmCcaMqLiAXD2pvRPgWVq
-         zEzffesV+lvotIb7YSb5M59646RksweW82+DEAsqhuW5kQVqkgpxB8TMt0GCCplgPT
-         mm5MjSG1/tlAA==
-Received: by mail-yb1-f172.google.com with SMTP id s39so16975329ybi.0
-        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 17:55:48 -0700 (PDT)
-X-Gm-Message-State: AOAM531s+y3NlgBbLsB3x8PmdH2K3F0J4jKPThpTqmynl8QhHsJmK29Z
-        EcQs9rg6t2kg/RG4sGjxvW8jGftcyduwla8RdVvneQ==
-X-Google-Smtp-Source: ABdhPJyUNbhO6WzB5L/SFE1CmuOEdZh1ZSad2If7CbByV6A9zwXVh1jSuEqwGjwBpyNA794D0lNgL1YDOJF2KTfy2ZM=
-X-Received: by 2002:a5b:10b:0:b0:654:74c1:61cf with SMTP id
- 11-20020a5b010b000000b0065474c161cfmr43467397ybx.42.1654822547386; Thu, 09
- Jun 2022 17:55:47 -0700 (PDT)
+        with ESMTP id S1345610AbiFJCdW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 22:33:22 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7957EB5247
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 19:33:19 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id e11so22657736pfj.5
+        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 19:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CbbZx2zk8AYEZVW7p2BT5m2zFh5Pea8yTg+uQSbw+ZM=;
+        b=6NnaToAenAf+1qTbIO8zMXZDwLs6CWBr6sCZKb9/F0o+JhBfLDqqpgoqUOYSBqTJaj
+         x0ynwxQfKHhGu/udqoOK3RIeIiU1k789L4oWGS09xStR4TasotWxwyepaAwm+VdDlsI+
+         FSUPa5OgAP+YhMXO4d3jLQZecJzdJVgiR45HPPP35dvaVN+O9MWOXawywsD7ZvruDkb+
+         9WX2Btc2oNDTSwAOsrfYOORjCV0O4/cWiMP/sVIgEVyc2Bf3qF81Af4lVf+ReemhYhpg
+         Mg8MusUoBJqfquaQHpLwwvSAvwOIXtZLjDUMoD9L6xdvx8/BR4QJBPcyEeDLPdTiXepU
+         4PZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CbbZx2zk8AYEZVW7p2BT5m2zFh5Pea8yTg+uQSbw+ZM=;
+        b=PEqa2FNHZuU2Q95TkxOxZ+48vsblP6zJPagUZxQOVxgI5JMRwWpQQAJczGYEXNNpXW
+         dYtSWjjbj8qPSor+mKqOxdAIlH3uh+tX32zGw0VhU8+oeBmAT8t7kPpxWRiu3fmkdJ+D
+         Bu5LREbydBejZtYflOxg4iUjLaJvCkLY87kgLYrsPynUdk5xy+CDT1OKdC1AIuLYcMyT
+         LI6uBr016UCm/2vOvhvv1ikAAAlo/eZXWeTWlJRqKUZ9ddRhBrVFSSu7eBaUMg4xdBCq
+         EfXAZrf9sJWipY4B5ob60tmWOUD3PsGZYCLgVXR/ZWmSNzT62iTfYCHmyeSGn7xpaaV8
+         9/Ug==
+X-Gm-Message-State: AOAM533vGF0CRSUNZ6X1YHbTpKyN9eZWLjrO4GiQTIIn4fQm9lhO4hDF
+        95QEQQ+yf4IaBSlQKyvmw2DFIQ==
+X-Google-Smtp-Source: ABdhPJzVM6pjqOZnA+9cgMO+iSFC75/9wKzJNgQBPVUrKEjdQv6By7SzmplxtEqU1WI1H1mgdM+Viw==
+X-Received: by 2002:a63:1a1d:0:b0:3f5:eb02:b6b4 with SMTP id a29-20020a631a1d000000b003f5eb02b6b4mr37655988pga.343.1654828398929;
+        Thu, 09 Jun 2022 19:33:18 -0700 (PDT)
+Received: from C02F52LSML85.bytedance.net ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id o19-20020a170903009300b001620db30cd6sm17432481pld.201.2022.06.09.19.33.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Jun 2022 19:33:18 -0700 (PDT)
+From:   Feng zhou <zhoufeng.zf@bytedance.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
+        songmuchun@bytedance.com, wangdongdong.6@bytedance.com,
+        cong.wang@bytedance.com, zhouchengming@bytedance.com,
+        zhoufeng.zf@bytedance.com
+Subject: [PATCH v6 0/2] Optimize performance of update hash-map when free is zero
+Date:   Fri, 10 Jun 2022 10:33:06 +0800
+Message-Id: <20220610023308.93798-1-zhoufeng.zf@bytedance.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-References: <20220609234601.2026362-1-kpsingh@kernel.org> <CAADnVQJSijXmDG0C+U101ahgOYTmHEuyBu_=CS87rJ9GchFQyA@mail.gmail.com>
-In-Reply-To: <CAADnVQJSijXmDG0C+U101ahgOYTmHEuyBu_=CS87rJ9GchFQyA@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Fri, 10 Jun 2022 02:55:36 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4L=SxggPxrqEC1yzv-DzM1-w0ZPo-E1HPE-8ob-r0UTw@mail.gmail.com>
-Message-ID: <CACYkzJ4L=SxggPxrqEC1yzv-DzM1-w0ZPo-E1HPE-8ob-r0UTw@mail.gmail.com>
-Subject: Re: [PATCH linux-next] security: Fix side effects of default BPF LSM hooks
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     LSM List <linux-security-module@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 2:44 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Jun 9, 2022 at 4:46 PM KP Singh <kpsingh@kernel.org> wrote:
-> >
-> > BPF LSM currently has a default implementation for each LSM hooks which
-> > return a default value defined in include/linux/lsm_hook_defs.h. These
-> > hooks should have no functional effect when there is no BPF program
-> > loaded to implement the hook logic.
-> >
-> > Some LSM hooks treat any return value of the hook as policy decision
-> > which results in destructive side effects.
-> >
-> > This issue and the effects were reported to me by Jann Horn:
-> >
-> > For a system configured with CONFIG_BPF_LSM and the bpf lsm is enabled
-> > (via lsm= or CONFIG_LSM) an unprivileged user can vandalize the system
-> > by removing the security.capability xattrs from binaries, preventing
-> > them from working normally:
-> >
-> > $ getfattr -d -m- /bin/ping
-> > getfattr: Removing leading '/' from absolute path names
-> > security.capability=0sAQAAAgAgAAAAAAAAAAAAAAAAAAA=
-> >
-> > $ setfattr -x security.capability /bin/ping
-> > $ getfattr -d -m- /bin/ping
-> > $ ping 1.2.3.4
-> > $ ping google.com
-> > $ echo $?
-> > 2
-> >
-> > The above reproduces with:
-> >
-> > cat /sys/kernel/security/lsm
-> > capability,apparmor,bpf
->
-> Why is this bpf related?
-> apparmor doesn't have that hook,
-> while capability returns 0.
-> So bpf's default==0 doesn't change the situation.
->
-> Just
-> cat /sys/kernel/security/lsm
-> capability
->
-> would reproduce the issue?
-> what am I missing?
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-capability does not define the inode_removexattr LSM hook:
+We encountered bad case on big system with 96 CPUs that
+alloc_htab_elem() would last for 1ms. The reason is that after the
+prealloc hashtab has no free elems, when trying to update, it will still
+grab spin_locks of all cpus. If there are multiple update users, the
+competition is very serious.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/commoncap.c#n1449
+0001: Use head->first to check whether the free list is empty or not before taking
+the lock.
+0002: Add benchmark to reproduce this worst case.
 
-It's only when the return value of the hook is 1, it checks for
-cap_inode_removexattr.
+Changelog:
+v5->v6: Addressed comments from Alexei Starovoitov.
+- Adjust the commit log.
+some details in here:
+https://lore.kernel.org/all/20220608021050.47279-1-zhoufeng.zf@bytedance.com/
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/security.c#n1408
+v4->v5: Addressed comments from Alexei Starovoitov.
+- Use head->first.
+- Use cpu+max_entries.
+some details in here:
+https://lore.kernel.org/bpf/20220601084149.13097-1-zhoufeng.zf@bytedance.com/
 
-Only 3 LSMs define the hook (bpf, smack and selinux):
+v3->v4: Addressed comments from Daniel Borkmann.
+- Use READ_ONCE/WRITE_ONCE.
+some details in here:
+https://lore.kernel.org/all/20220530091340.53443-1-zhoufeng.zf@bytedance.com/
 
-fgrep -R LSM_HOOK_INIT *  | grep inode_removexattr
-selinux/hooks.c: LSM_HOOK_INIT(inode_removexattr, selinux_inode_removexattr),
-smack/smack_lsm.c: LSM_HOOK_INIT(inode_removexattr, smack_inode_removexattr),
+v2->v3: Addressed comments from Alexei Starovoitov, Andrii Nakryiko.
+- Adjust the way the benchmark is tested.
+- Adjust the code format.
+some details in here:
+https://lore.kernel.org/all/20220524075306.32306-1-zhoufeng.zf@bytedance.com/T/
 
-The BPF LSM default hooks intend to provide no side-effects when the
-LSM is enabled and
-for the hooks that the patch updates, there is a side-effect.
+v1->v2: Addressed comments from Alexei Starovoitov.
+- add a benchmark to reproduce the issue.
+- Adjust the code format that avoid adding indent.
+some details in here:
+https://lore.kernel.org/all/877ac441-045b-1844-6938-fcaee5eee7f2@bytedance.com/T/
+
+Feng Zhou (2):
+  bpf: avoid grabbing spin_locks of all cpus when no free elems
+  selftest/bpf/benchs: Add bpf_map benchmark
+
+ kernel/bpf/percpu_freelist.c                  | 20 ++--
+ tools/testing/selftests/bpf/Makefile          |  4 +-
+ tools/testing/selftests/bpf/bench.c           |  2 +
+ .../benchs/bench_bpf_hashmap_full_update.c    | 96 +++++++++++++++++++
+ .../run_bench_bpf_hashmap_full_update.sh      | 11 +++
+ .../bpf/progs/bpf_hashmap_full_update_bench.c | 40 ++++++++
+ 6 files changed, 166 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_hashmap_full_update_bench.c
+
+-- 
+2.20.1
+
