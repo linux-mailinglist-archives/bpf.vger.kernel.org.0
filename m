@@ -2,89 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B384546F7F
-	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 00:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EDC546FB0
+	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 00:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345418AbiFJWDE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 18:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
+        id S1344553AbiFJWlL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 18:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344309AbiFJWDC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 18:03:02 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DFC274D77;
-        Fri, 10 Jun 2022 15:03:01 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nzmiY-0001ia-W2; Sat, 11 Jun 2022 00:02:59 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nzmiY-0001CB-ML; Sat, 11 Jun 2022 00:02:58 +0200
-Subject: Re: [PATCH bpf-next v2 0/7] Add bpf_link based TC-BPF API
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev <netdev@vger.kernel.org>
-References: <20210604063116.234316-1-memxor@gmail.com>
- <CAJnrk1YJe-wtXFF0U2cuZUdd-gH1Y80Ewf3ePo=vh-nbsSBZgg@mail.gmail.com>
- <20220610125830.2tx6syagl2rphl35@apollo.legion>
- <CAJnrk1YCBn2EkVK89f5f3ijFYUDhLNpjiH8buw8K3p=JMwAc1Q@mail.gmail.com>
- <CAJnrk1YCSaRjd88WCzg4ccv59h0Dn99XXsDDT4ddzz4UYiZmbg@mail.gmail.com>
- <20220610193418.4kqpu7crwfb5efzy@apollo.legion> <87h74s2s19.fsf@toke.dk>
- <2f98188b-813b-e226-4962-5c2848998af2@iogearbox.net> <87bkv02qva.fsf@toke.dk>
- <CAADnVQLbC-KVNRPgbJP3rokgLELam5ao1-Fnpej8d-9JaHMJPA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <15bdc24c-fe85-479a-83fe-921da04cb6b1@iogearbox.net>
-Date:   Sat, 11 Jun 2022 00:02:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S245351AbiFJWlJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 18:41:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11765234299
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 15:41:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A02AA61DE9
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 22:41:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01205C3411B
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 22:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654900867;
+        bh=LqsUJEqgt11ycioHOgucsXWjsd4ID62QbzR8vgoC8kI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=G7dnv7LcN5+Qxm3WrjskPRcure5wpsTO5EygBI5usUFpDuIFpL4uvrSEPYmiOULZ1
+         j4WopCs6/Bqg42mn19oVqbsjLmkNVyKsW5gZpZMxieVF/RMGtLcPBpmZmmd/8wp20D
+         XHqtN1OL7ovJ08GaBZQ8p4+f4KRDjuaeljKI5QCu9w6Ol4WZ6lyWs0Rl2IWK780K1y
+         Gkc1UkH8Khla8LwvIPyra0B44yk/ZZgvR908gZkS2KTr6YX8yIs/fbgnmOT6nwD+0F
+         5ttbaxaMc0eog2EQE5qSZxI4Nr/dDXK5vW8ixH9zPdax8cfSDKnaWsw1w0gVaEdbEL
+         tHxrfuMdgzeKg==
+Received: by mail-yb1-f177.google.com with SMTP id u99so896000ybi.11
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 15:41:06 -0700 (PDT)
+X-Gm-Message-State: AOAM531KfJI7dQ4i0zO9pqZC2vq00p/MjfxhpiF9UXialsKond0WO1+j
+        1m3+SZ/frQezcVANMgpZln7AurUMhPugm57kv6I=
+X-Google-Smtp-Source: ABdhPJxWYHavZufZQZlI0mj4GwFHgaiwD7pZuJQ360CVCAjCBBQByQXhYseV+rX6IqVcmcM0Eq2y+rGp6tHK7RY7Ca8=
+X-Received: by 2002:a25:7e84:0:b0:650:10e0:87bd with SMTP id
+ z126-20020a257e84000000b0065010e087bdmr46273639ybc.257.1654900866030; Fri, 10
+ Jun 2022 15:41:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLbC-KVNRPgbJP3rokgLELam5ao1-Fnpej8d-9JaHMJPA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26568/Fri Jun 10 10:06:23 2022)
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220608192630.3710333-1-eddyz87@gmail.com> <20220608192630.3710333-4-eddyz87@gmail.com>
+ <CAPhsuW6RfokP8U6tDX+Qg+ufxpHfvgm_f=giE0nOUXONmV+iGA@mail.gmail.com> <23ad183ee89f016f7b5cbc1f08ff086b44d9fc0d.camel@gmail.com>
+In-Reply-To: <23ad183ee89f016f7b5cbc1f08ff086b44d9fc0d.camel@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 10 Jun 2022 15:40:55 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7wPz+jwdT01BjLgpr0zPCkhc2gFzXBhph64FDvjh0oCQ@mail.gmail.com>
+Message-ID: <CAPhsuW7wPz+jwdT01BjLgpr0zPCkhc2gFzXBhph64FDvjh0oCQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/5] bpf: Inline calls to bpf_loop when
+ callback is known
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, joannelkoong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/10/22 11:52 PM, Alexei Starovoitov wrote:
-> On Fri, Jun 10, 2022 at 1:41 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->>
->>>> Except we'd want to also support multiple programs on different
->>>> priorities? I don't think requiring a libxdp-like dispatcher to achieve
->>>> this is a good idea if we can just have it be part of the API from the
->>>> get-go...
->>>
->>> Yes, it will be multi-prog to avoid a situation where dispatcher is needed.
->>
->> Awesome! :)
-> 
-> Let's keep it simple to start.
-> Priorities or anything fancy can be added later if really necessary.
-> Otherwise, I'm afraid, we will go into endless bikeshedding
-> or the best priority scheme.
-> 
-> A link list of bpf progs like cls_bpf with the same semantics as
-> cls_bpf_classify.
-> With prog->exts_integrated always true and no classid, since this
-> concept doesn't apply.
-Yes, semantics must be that TC_ACT_UNSPEC continues in the list and
-everything else as return code would terminate the evaluation.
+On Fri, Jun 10, 2022 at 2:55 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> > On Fri, 2022-06-10 at 13:54 -0700, Song Liu wrote:
+>
+> > > +
+> > > +void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
+> >
+> > static void ...
+> >
+> > > +{
+> > > +       struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
+> > > +       struct bpf_reg_state *regs = cur_regs(env);
+> > > +       struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
+> > > +
+> >
+> > nit: we usually don't have empty lines here.
+> >
+> > > +       int flags_is_zero =
+> > > +               register_is_const(flags_reg) && flags_reg->var_off.value == 0;
+> >
+> > If we replace "fit_for_inline" with "not_fit_for_inline", we can make the cannot
+> > inline case faster with:
+> >
+> >   if (state->not_fit_for_inline)
+> >       return;
+> >
+> > > +
+> > > +       if (state->initialized) {
+> > > +               state->fit_for_inline &=
+> > > +                       flags_is_zero &&
+> > > +                       state->callback_subprogno == subprogno;
+> > > +       } else {
+> > > +               state->initialized = 1;
+> > > +               state->fit_for_inline = flags_is_zero;
+> > > +               state->callback_subprogno = subprogno;
+> > > +       }
+> > > +}
+> > > +
+>
+> Sorry, I'm not sure that I understand you correctly. Do you want me to
+> rewrite the code as follows:
+
+Yes, I was thinking about this change. I guess it can also be clear:
+
+static void update_loop_inline_state(struct bpf_verifier_env *env, u32
+subprogno)
+{
+        struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
+        struct bpf_reg_state *regs = cur_regs(env);
+        struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
+        int flags_is_zero;
+
+        if (state->cannot_inline)
+                return;
+
+        flags_is_zero = register_is_const(flags_reg) &&
+flags_reg->var_off.value == 0;
+
+        if (!state->initialized) {
+                state->initialized = 1;
+                state->cannot_inline = !flags_is_zero;
+                state->callback_subprogno = subprogno;
+                return;
+        }
+
+        state->cannot_inline = !flags_is_zero ||
+                state->callback_subprogno != subprogno;
+}
+
+What do you think about this version?
+
+Thanks,
+Song
