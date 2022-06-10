@@ -2,351 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AD7546CE7
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 21:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41AD546D17
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 21:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348164AbiFJTIF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 15:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
+        id S241779AbiFJTQM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 15:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347158AbiFJTIE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 15:08:04 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1997338A7;
-        Fri, 10 Jun 2022 12:08:02 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id d2so10914333vkg.5;
-        Fri, 10 Jun 2022 12:08:02 -0700 (PDT)
+        with ESMTP id S229571AbiFJTQM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 15:16:12 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E12BBF7E
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 12:16:09 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 20so4762460lfz.8
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 12:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/wKpsUZTVZzFsn+0pB4qY49TnnBFteH3SawTEzaMwX0=;
-        b=fAwFzTd3IGelw1Bn4tuJ3Cktuit62ljIqAGXnlrBhdmZR423btKpXGi/Nk+RXM5bvz
-         dZnjjknk8dsvAEBOObEZBxL/OUyru7+W/BAeqMpOHfJwpCjv+kY9JBaFGcKjPAjr9exw
-         0iQjl0bHCxquxhPjUOOAep/pZAnYb3UN0wouvZ8eerILqxKEiz8Eb9UXhfvo+nIz/1L/
-         iLBgcwJcPj+4ts8q2YZ4ptmEBP8y7FQrhdE1zdw4uVBEH7ithChKnmi+mGEce8zXLKtc
-         YjxWZvEDTFK3ZXU0JSl+WdzE5XlSESE5cGXzBc0Q6SpgpJHUQyyBZmOpP5TTQ3cNNLPc
-         Z6iQ==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=AwH7cWH8CRbU3S3asji2KJakuCBfz0S9BYpqSFK7hLk=;
+        b=MSapt3v0gS/8z2itHc8B5fk31XYAW0+WoinaB0vGnZOf6bUv/DXAmUkqrPWuLt+ejY
+         dINwAUaFUmTNCtx747bg7dA7hfKcBBBiJvQD6nyakk0kOw13MWojxsThuIhEZOy88WaW
+         BleacvS+pqrDNOmohit6bBGVRbNcBAqP80F/ClGqJACkhv6HrL1n3UJCBki/Ordbz0fw
+         ehA9ycLSIC6hSr2jUsQDpUOzvfLRN7JBqORiC3pbi7R3+IYTajzXX68Ir9UoIZZ2Z2LQ
+         6jNJAy+BKHZ4Hlxmz3TLNO2ZoBvgwotORHF3TqasMnE/++/F4t7MygzYLoykOiq06VbY
+         aHkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/wKpsUZTVZzFsn+0pB4qY49TnnBFteH3SawTEzaMwX0=;
-        b=ZBNH3XRQ3a2VZZ17AJEgq2I3bOAyeFjNgqt6i7wGpqO24Tg6eonuU2M9q2/YIC595T
-         wKg4ROZHf6uJ9mRRvz+fAyyOhnT6n/k+lVQcdfAfp+JMF8GiWeLQVwEPpUKt63UKGr1d
-         QNq9DEm/P5z9WnPqgEsp+YpyjwCZg4E6iHvg+lT81tCiPSWUXXNsW5yytm4+gOlYVy2B
-         xvLD7lRi0hDko5kA3yi3fP6ykvxw9FL5IQzNbI9W8yphzjHj2NVpq7bxe+RtoUfQccp0
-         EDIetODcLnunrVdURH7yxjUSxRMnUbIw0AGCLdVtT94/ZrjFBFxsgd2FqnPw/6c9M92h
-         dMZg==
-X-Gm-Message-State: AOAM533aJ+4yyd1qIbYLGAG/TbwB9PkdqsCoyn3yykncdcqUGOsDM4ZW
-        6czRp78VU2JZcdc8i4ddS/AArHGFuxcYgPhWGNM=
-X-Google-Smtp-Source: ABdhPJxLfXe7yOz3armlBoECQN961LlhqEjCUN1lANq0D6k5xqQh5ZYjGBM82oOaeH9b9Xa0Ehbf/luVgytb1LMjd5E=
-X-Received: by 2002:ac5:c902:0:b0:35d:aee2:dc50 with SMTP id
- t2-20020ac5c902000000b0035daee2dc50mr14088600vkl.23.1654888081792; Fri, 10
- Jun 2022 12:08:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210604063116.234316-1-memxor@gmail.com> <CAJnrk1YJe-wtXFF0U2cuZUdd-gH1Y80Ewf3ePo=vh-nbsSBZgg@mail.gmail.com>
- <20220610125830.2tx6syagl2rphl35@apollo.legion> <CAJnrk1YCBn2EkVK89f5f3ijFYUDhLNpjiH8buw8K3p=JMwAc1Q@mail.gmail.com>
-In-Reply-To: <CAJnrk1YCBn2EkVK89f5f3ijFYUDhLNpjiH8buw8K3p=JMwAc1Q@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Fri, 10 Jun 2022 12:07:50 -0700
-Message-ID: <CAJnrk1YCSaRjd88WCzg4ccv59h0Dn99XXsDDT4ddzz4UYiZmbg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/7] Add bpf_link based TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=AwH7cWH8CRbU3S3asji2KJakuCBfz0S9BYpqSFK7hLk=;
+        b=iGmuYSTufOTW2GbxGarYRX+5sey4g8YxX4e/rI+xcRDehRnpP+/b1acbLqbcz6R1so
+         LN8Cy8VMo2EWs0t74tONcsNZpzFg1X8KdLxYrLC8wdT4A2NyZPEt7nj6CalGdygxgjCg
+         xFwT5h0t2B40fnJ5wDLfzPmVn2Z1E1LxTkSutHhE+Pb9JZeqMD+zlSJ6XyJUcly9VwOl
+         FC7au8RW6gIL2lvveVZ2cq97eanmx9b/FLfW2dPt7/NVW7jlLzCdL2y4VrfJR7bcjjB9
+         bzwBKlGIELPNEV6Tc9jGIwXH3MagoC6pzVg7gdacjUb1rwMXnK9t/PaC6HHbjYPrQ8G6
+         qBUw==
+X-Gm-Message-State: AOAM531ju8MjFnKJERYM7YaXjwHVlZ0tn8tgiU3OH+Or3Tj27r/SLVxG
+        7Xae+uVdimd2tYrKJXDsmWk=
+X-Google-Smtp-Source: ABdhPJxeWBM4sfQtAbnRF3/4kowTFh1SwFaF/AhWxejJ6VHrkuRC5Y9R/iIVG7fRlGgRkSVNQGn7zw==
+X-Received: by 2002:a05:6512:a90:b0:478:f288:f1b5 with SMTP id m16-20020a0565120a9000b00478f288f1b5mr27648922lfu.614.1654888567817;
+        Fri, 10 Jun 2022 12:16:07 -0700 (PDT)
+Received: from pluto (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id r10-20020a2e8e2a000000b0024f3d1daee3sm28434ljk.107.2022.06.10.12.16.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jun 2022 12:16:07 -0700 (PDT)
+Message-ID: <d28e28eafdd3f62160aa01f21d75b5c6581aaac2.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/5] selftests/bpf: allow BTF specs and func
+ infos in test_verifier tests
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Song Liu <song@kernel.org>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        netdev <netdev@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, joannelkoong@gmail.com
+Date:   Fri, 10 Jun 2022 22:16:05 +0300
+In-Reply-To: <CAPhsuW4+BVYjodLT2tH3emqXzZxv1D7c3Tu5YuYtpB-1Vwtn5w@mail.gmail.com>
+References: <20220608192630.3710333-1-eddyz87@gmail.com>
+         <20220608192630.3710333-3-eddyz87@gmail.com>
+         <CAPhsuW4+BVYjodLT2tH3emqXzZxv1D7c3Tu5YuYtpB-1Vwtn5w@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 10:23 AM Joanne Koong <joannelkoong@gmail.com> wrot=
-e:
->
-> On Fri, Jun 10, 2022 at 5:58 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Fri, Jun 10, 2022 at 05:54:27AM IST, Joanne Koong wrote:
-> > > On Thu, Jun 3, 2021 at 11:31 PM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > This is the second (non-RFC) version.
-> > > >
-> > > > This adds a bpf_link path to create TC filters tied to cls_bpf clas=
-sifier, and
-> > > > introduces fd based ownership for such TC filters. Netlink cannot d=
-elete or
-> > > > replace such filters, but the bpf_link is severed on indirect destr=
-uction of the
-> > > > filter (backing qdisc being deleted, or chain being flushed, etc.).=
- To ensure
-> > > > that filters remain attached beyond process lifetime, the usual bpf=
-_link fd
-> > > > pinning approach can be used.
-> > > >
-> > > > The individual patches contain more details and comments, but the o=
-verall kernel
-> > > > API and libbpf helper mirrors the semantics of the netlink based TC=
--BPF API
-> > > > merged recently. This means that we start by always setting direct =
-action mode,
-> > > > protocol to ETH_P_ALL, chain_index as 0, etc. If there is a need fo=
-r more
-> > > > options in the future, they can be easily exposed through the bpf_l=
-ink API in
-> > > > the future.
-> > > >
-> > > > Patch 1 refactors cls_bpf change function to extract two helpers th=
-at will be
-> > > > reused in bpf_link creation.
-> > > >
-> > > > Patch 2 exports some bpf_link management functions to modules. This=
- is needed
-> > > > because our bpf_link object is tied to the cls_bpf_prog object. Tyi=
-ng it to
-> > > > tcf_proto would be weird, because the update path has to replace of=
-floaded bpf
-> > > > prog, which happens using internal cls_bpf helpers, and would in ge=
-neral be more
-> > > > code to abstract over an operation that is unlikely to be implement=
-ed for other
-> > > > filter types.
-> > > >
-> > > > Patch 3 adds the main bpf_link API. A function in cls_api takes car=
-e of
-> > > > obtaining block reference, creating the filter object, and then cal=
-ls the
-> > > > bpf_link_change tcf_proto op (only supported by cls_bpf) that retur=
-ns a fd after
-> > > > setting up the internal structures. An optimization is made to not =
-keep around
-> > > > resources for extended actions, which is explained in a code commen=
-t as it wasn't
-> > > > immediately obvious.
-> > > >
-> > > > Patch 4 adds an update path for bpf_link. Since bpf_link_update onl=
-y supports
-> > > > replacing the bpf_prog, we can skip tc filter's change path by reus=
-ing the
-> > > > filter object but swapping its bpf_prog. This takes care of replaci=
-ng the
-> > > > offloaded prog as well (if that fails, update is aborted). So far h=
-owever,
-> > > > tcf_classify could do normal load (possibly torn) as the cls_bpf_pr=
-og->filter
-> > > > would never be modified concurrently. This is no longer true, and t=
-o not
-> > > > penalize the classify hot path, we also cannot impose serialization=
- around
-> > > > its load. Hence the load is changed to READ_ONCE, so that the point=
-er value is
-> > > > always consistent. Due to invocation in a RCU critical section, the=
- lifetime of
-> > > > the prog is guaranteed for the duration of the call.
-> > > >
-> > > > Patch 5, 6 take care of updating the userspace bits and add a bpf_l=
-ink returning
-> > > > function to libbpf.
-> > > >
-> > > > Patch 7 adds a selftest that exercises all possible problematic int=
-eractions
-> > > > that I could think of.
-> > > >
-> > > > Design:
-> > > >
-> > > > This is where in the object hierarchy our bpf_link object is attach=
-ed.
-> > > >
-> > > >                                                                    =
-         =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
-> > > >                                                                    =
-         =E2=94=82     =E2=94=82
-> > > >                                                                    =
-         =E2=94=82 BPF =E2=94=82
-> > > >                                                                    =
-         program
-> > > >                                                                    =
-         =E2=94=82     =E2=94=82
-> > > >                                                                    =
-         =E2=94=94=E2=94=80=E2=94=80=E2=96=B2=E2=94=80=E2=94=80=E2=94=98
-> > > >                                                       =E2=94=8C=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90      =
-          =E2=94=82
-> > > >                                                       =E2=94=82    =
-   =E2=94=82         =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=B4=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=90
-> > > >                                                       =E2=94=82  mo=
-d  =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=96=BA cls_bpf_prog =E2=94=82
-> > > > =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=90                                    =E2=94=82cls_bpf=
-=E2=94=82         =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=AC=E2=
-=94=80=E2=94=80=E2=94=80=E2=96=B2=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=98
-> > > > =E2=94=82    tcf_block   =E2=94=82                                 =
-   =E2=94=82       =E2=94=82              =E2=94=82   =E2=94=82
-> > > > =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=AC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=98                                    =E2=94=94=E2=94=80=
-=E2=94=80=E2=94=80=E2=96=B2=E2=94=80=E2=94=80=E2=94=80=E2=94=98            =
-  =E2=94=82   =E2=94=82
-> > > >          =E2=94=82          =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=90                       =E2=94=82                =E2=94=
-=8C=E2=94=80=E2=96=BC=E2=94=80=E2=94=80=E2=94=80=E2=94=B4=E2=94=80=E2=94=80=
-=E2=94=90
-> > > >          =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=96=BA  tcf_chain  =E2=94=82  =
-                     =E2=94=82                =E2=94=82bpf_link=E2=94=82
-> > > >                     =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=AC=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=98                       =E2=94=82                =E2=94=94=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=98
-> > > >                             =E2=94=82          =E2=94=8C=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90    =E2=94=82
-> > > >                             =E2=94=94=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=96=BA  tcf_=
-proto  =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=98
-> > > >                                        =E2=94=94=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=98
-> > > >
-> > > > The bpf_link is detached on destruction of the cls_bpf_prog.  Doing=
- it this way
-> > > > allows us to implement update in a lightweight manner without havin=
-g to recreate
-> > > > a new filter, where we can just replace the BPF prog attached to cl=
-s_bpf_prog.
-> > > >
-> > > > The other way to do it would be to link the bpf_link to tcf_proto, =
-there are
-> > > > numerous downsides to this:
-> > > >
-> > > > 1. All filters have to embed the pointer even though they won't be =
-using it when
-> > > > cls_bpf is compiled in.
-> > > > 2. This probably won't make sense to be extended to other filter ty=
-pes anyway.
-> > > > 3. We aren't able to optimize the update case without adding anothe=
-r bpf_link
-> > > > specific update operation to tcf_proto ops.
-> > > >
-> > > > The downside with tying this to the module is having to export bpf_=
-link
-> > > > management functions and introducing a tcf_proto op. Hopefully the =
-cost of
-> > > > another operation func pointer is not big enough (as there is only =
-one ops
-> > > > struct per module).
-> > > >
-> > > Hi Kumar,
-> > >
-> > > Do you have any plans / bandwidth to land this feature upstream? If
-> > > so, do you have a tentative estimation for when you'll be able to wor=
-k
-> > > on this? And if not, are you okay with someone else working on this t=
-o
-> > > get it merged in?
-> > >
-> >
-> > I can have a look at resurrecting it later this month, if you're ok wit=
-h waiting
-> > until then, otherwise if someone else wants to pick this up before that=
- it's
-> > fine by me, just let me know so we avoid duplicated effort. Note that t=
-he
-> > approach in v2 is dead/unlikely to get accepted by the TC maintainers, =
-so we'd
-> > have to implement the way Daniel mentioned in [0].
->
-> Sounds great! We'll wait and check back in with you later this month.
->
-After reading the linked thread (which I should have done before
-submitting my previous reply :)),  if I'm understanding it correctly,
-it seems then that the work needed for tc bpf_link will be in a new
-direction that's not based on the code in this v2 patchset. I'm
-interested in learning more about bpf link and tc - I can pick this up
-to work on. But if this was something you wanted to work on though,
-please don't hesitate to let me know; I can find some other bpf link
-thing to work on instead if that's the case.
+> On Fri, 2022-06-10 at 11:09 -0700, Song Liu wrote:
 
+> > +static int load_btf_for_test(struct bpf_test *test)
+> > +{
+> > +       int types_num = 0;
+> > +
+> > +       while (types_num < MAX_BTF_TYPES &&
+> > +              test->btf_types[types_num] != BTF_END_RAW)
+> > +               ++types_num;
+> > +
+> > +       int types_len = types_num * sizeof(test->btf_types[0]);
+> > +
+> > +       return load_btf_spec(test->btf_types, types_len,
+> > +                            test->btf_strings, sizeof(test->btf_strings));
+> 
+> IIUC, strings_len is always 256. Is this expected?
 
-> >
-> >   [0]: https://lore.kernel.org/bpf/15cd0a9c-95a1-9766-fca1-4bf9d09e4100=
-@iogearbox.net
-> >
-> > > The reason I'm asking is because there are a few networking teams
-> > > within Meta that have been requesting this feature :)
-> > >
-> > > Thanks,
-> > > Joanne
-> > >
-> > > > Changelog:
-> > > > ----------
-> > > > v1 (RFC) -> v2
-> > > > v1: https://lore.kernel.org/bpf/20210528195946.2375109-1-memxor@gma=
-il.com
-> > > >
-> > > >  * Avoid overwriting other members of union in bpf_attr (Andrii)
-> > > >  * Set link to NULL after bpf_link_cleanup to avoid double free (An=
-drii)
-> > > >  * Use __be16 to store the result of htons (Kernel Test Robot)
-> > > >  * Make assignment of tcf_exts::net conditional on CONFIG_NET_CLS_A=
-CT
-> > > >    (Kernel Test Robot)
-> > > >
-> > > > Kumar Kartikeya Dwivedi (7):
-> > > >   net: sched: refactor cls_bpf creation code
-> > > >   bpf: export bpf_link functions for modules
-> > > >   net: sched: add bpf_link API for bpf classifier
-> > > >   net: sched: add lightweight update path for cls_bpf
-> > > >   tools: bpf.h: sync with kernel sources
-> > > >   libbpf: add bpf_link based TC-BPF management API
-> > > >   libbpf: add selftest for bpf_link based TC-BPF management API
-> > > >
-> > > >  include/linux/bpf_types.h                     |   3 +
-> > > >  include/net/pkt_cls.h                         |  13 +
-> > > >  include/net/sch_generic.h                     |   6 +-
-> > > >  include/uapi/linux/bpf.h                      |  15 +
-> > > >  kernel/bpf/syscall.c                          |  14 +-
-> > > >  net/sched/cls_api.c                           | 139 ++++++-
-> > > >  net/sched/cls_bpf.c                           | 389 ++++++++++++++=
-++--
-> > > >  tools/include/uapi/linux/bpf.h                |  15 +
-> > > >  tools/lib/bpf/bpf.c                           |   8 +-
-> > > >  tools/lib/bpf/bpf.h                           |   8 +-
-> > > >  tools/lib/bpf/libbpf.c                        |  59 ++-
-> > > >  tools/lib/bpf/libbpf.h                        |  17 +
-> > > >  tools/lib/bpf/libbpf.map                      |   1 +
-> > > >  tools/lib/bpf/netlink.c                       |   5 +-
-> > > >  tools/lib/bpf/netlink.h                       |   8 +
-> > > >  .../selftests/bpf/prog_tests/tc_bpf_link.c    | 285 +++++++++++++
-> > > >  16 files changed, 940 insertions(+), 45 deletions(-)
-> > > >  create mode 100644 tools/lib/bpf/netlink.h
-> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_bpf_l=
-ink.c
-> > > >
-> > > > --
-> > > > 2.31.1
-> > > >
-> >
-> > --
-> > Kartikeya
+Yes, as long as strings are zero terminated the actual buffer size
+shouldn't matter. So I decided that it would be better to avoid
+strings length specification in the test definition to keep things
+simpler.
+
+Thanks,
+Eduard
+
