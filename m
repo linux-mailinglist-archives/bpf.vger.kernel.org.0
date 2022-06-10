@@ -2,152 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E44AA546838
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 16:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5A054683A
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 16:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345636AbiFJOXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 10:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
+        id S231187AbiFJOYB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 10:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349311AbiFJOXa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 10:23:30 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2D7170648
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 07:23:21 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id i16-20020a056e021d1000b002d3bbe39232so19705233ila.20
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 07:23:21 -0700 (PDT)
+        with ESMTP id S1344905AbiFJOX7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 10:23:59 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8861C15E4B2
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 07:23:56 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id o6so17813954plg.2
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 07:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ustad4Oit1LbdSHBANPMFYdxqbyRopb/4kSjojaTPVc=;
+        b=OrgRGDm/dh2PW8HyRJ9FFqEEmhHOjNIlI10/GRr+lH7RQu29CIg5kawYFLj0GByn/z
+         bkfl0rLBcMKLG7Jv2gonuUumAUlSDmY70l5C8JO0b0XffStMlhA2x6EH+ukil3abNF/D
+         ekq9QvvOBGmNXV2KFhGadm0lS6Ht7WGEM6kGd3xH0K1aDXTZGtwic7PwQnGPFPVppBPQ
+         PyNwWxHF8lD0H7xCzURFgECsrfHwo8y0nkpZLcFFYV3N94QjuNFDfJakxbsVi1S8dCWf
+         3LDLC7RmOC+78AA+HgIg0vAFwd9cLzSSnORdtisGKdR3JtePH+ebrENxE9sbjIkolbgj
+         9RoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XjrtYqNiT5vEa6+Vuf9aZLxSiV1HsY2+vhx3VyfeILM=;
-        b=G3dKt+hM0scnCjkDDGsO2fRGQ5ol1KhNvAuzAh6Iq1LcCJY3tlIKuo9/Nsn8yKDH7R
-         H8b3/Fc7mJIrU9/GUtVM6C2xXpWnL/3qhAi7o7z1ZXbYlWq31tUIY0zTwlF/nHIbcxML
-         zFvUj+JxSHdao/fsNFcxFeczovDMbggVL8xZA85BHQ/mNM6hN+7Hqh9M9zv6kYmN/5Xg
-         QHUQMbZJMjUlJl5zEuwK0HslhQUZ3Ls+7Fvwiw3k9rd9LW9AIJiwlRg1Zvp6/nx7rRGh
-         ws4qDTxRx0Foe3Y2aZBnhuUXYW7gIKKFUVedrFA+3z89ZWLwz1XwzHWgJWA40gery2Q0
-         YYuA==
-X-Gm-Message-State: AOAM531JYdZuGZDfXLde5IXWJcMffMfqrEWlgq0ETdwZBi5l2V/RUi2S
-        MCgl2PHlTeajtCbdYozawcDeEX2gO/GnoODDInWmniADGyH/
-X-Google-Smtp-Source: ABdhPJxdU7ph+1O6uNJ43i/VXnOf3VJRWymxSsZwPNYAarUi5cziesFNY651vf+6wPlOBYjUuUfeeiPPjH2vVsVR8oHmyxQcKU96
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ustad4Oit1LbdSHBANPMFYdxqbyRopb/4kSjojaTPVc=;
+        b=U7hPWJB9n/y+i12JdO1oztJq4a3QS2DFbjGs5IFTauGZLCPHfkqoDEge3fBcj6u6+w
+         U+S2N8kpxaaeB1UinjfNsaZJE/tAIflxV5fL9tCC9nKndjVqr86QC5CvJGnNetYfOr14
+         Akv9gR4c012160u4QbZ+rPEpr3u3PV1RW8ZBHaAWDva9gcrB3+XmJxkTiWNi+2e+pryO
+         CUnDVYWL2x/IhI431g+2w7F6yOZwbF5x+UxC+jQ0FR1HfKY0dsNuY4Yv26+Rxpsh3h6h
+         dmsvNULfC1jj2jZlhYP1iNUftw9XVG97V3ZkG78Yr3MIPxZPVTIMyc0t8x+V2O+AQBkS
+         qUcw==
+X-Gm-Message-State: AOAM5334y8NLDUWzUxlgC17uOZhG0gLlO8QZA6KMygHnVdTmZEXk7+/X
+        w4KRe7jo2ezVg2va52L2gLVFHpTabgbsmTXHGtk=
+X-Google-Smtp-Source: ABdhPJwx3RzALuJfV3enwvX2pQKkC9Yp61IsJMSiIlbX3ys58flRLOXHg9V+wJ483TgJu9+w28j26fPfuj8ntMFnZKA=
+X-Received: by 2002:a17:902:9a49:b0:162:20d3:6756 with SMTP id
+ x9-20020a1709029a4900b0016220d36756mr44502462plv.124.1654871036131; Fri, 10
+ Jun 2022 07:23:56 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12ce:b0:2d3:de67:9f96 with SMTP id
- i14-20020a056e0212ce00b002d3de679f96mr26904551ilm.261.1654871001228; Fri, 10
- Jun 2022 07:23:21 -0700 (PDT)
-Date:   Fri, 10 Jun 2022 07:23:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002d6bc305e118ae24@google.com>
-Subject: [syzbot] BUG: sleeping function called from invalid context in sk_psock_stop
-From:   syzbot <syzbot+140186ceba0c496183bc@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        jakub@cloudflare.com, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, wangyufen@huawei.com, yhs@fb.com
+Received: by 2002:a05:6a21:3283:b0:83:f648:207 with HTTP; Fri, 10 Jun 2022
+ 07:23:55 -0700 (PDT)
+Reply-To: rl715537@gmail.com
+From:   Rebecca Lawrence <corrinc2017@gmail.com>
+Date:   Fri, 10 Jun 2022 14:23:55 +0000
+Message-ID: <CAAgAnQFo=oVcwMAyqgqeumj7vSn6tq_UTJh3n5w1OU2WCtrVrA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=4.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    ff539ac73ea5 Add linux-next specific files for 20220609
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=176c121bf00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a5002042f00a8bce
-dashboard link: https://syzkaller.appspot.com/bug?extid=140186ceba0c496183bc
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13083353f00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=173e67f0080000
-
-The issue was bisected to:
-
-commit d8616ee2affcff37c5d315310da557a694a3303d
-Author: Wang Yufen <wangyufen@huawei.com>
-Date:   Tue May 24 07:53:11 2022 +0000
-
-    bpf, sockmap: Fix sk->sk_forward_alloc warn_on in sk_stream_kill_queues
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1556d7cff00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1756d7cff00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1356d7cff00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+140186ceba0c496183bc@syzkaller.appspotmail.com
-Fixes: d8616ee2affc ("bpf, sockmap: Fix sk->sk_forward_alloc warn_on in sk_stream_kill_queues")
-
-BUG: sleeping function called from invalid context at kernel/workqueue.c:3010
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3612, name: syz-executor475
-preempt_count: 201, expected: 0
-RCU nest depth: 0, expected: 0
-3 locks held by syz-executor475/3612:
- #0: ffff888072eb9410 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:740 [inline]
- #0: ffff888072eb9410 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:649
- #1: ffff888027259ab0 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1691 [inline]
- #1: ffff888027259ab0 (sk_lock-AF_INET6){+.+.}-{0:0}, at: tcp_close+0x1e/0xc0 net/ipv4/tcp.c:2908
- #2: ffff888027259a30 (slock-AF_INET6){+...}-{2:2}, at: spin_lock include/linux/spinlock.h:360 [inline]
- #2: ffff888027259a30 (slock-AF_INET6){+...}-{2:2}, at: __tcp_close+0x722/0x12b0 net/ipv4/tcp.c:2830
-Preemption disabled at:
-[<ffffffff87ddddca>] local_bh_disable include/linux/bottom_half.h:20 [inline]
-[<ffffffff87ddddca>] __tcp_close+0x71a/0x12b0 net/ipv4/tcp.c:2829
-CPU: 1 PID: 3612 Comm: syz-executor475 Not tainted 5.19.0-rc1-next-20220609-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- __might_resched.cold+0x222/0x26b kernel/sched/core.c:9823
- start_flush_work kernel/workqueue.c:3010 [inline]
- __flush_work+0x109/0xb10 kernel/workqueue.c:3074
- __cancel_work_timer+0x3f9/0x570 kernel/workqueue.c:3162
- sk_psock_stop+0x4cb/0x630 net/core/skmsg.c:802
- sock_map_destroy+0x333/0x760 net/core/sock_map.c:1581
- inet_csk_destroy_sock+0x196/0x440 net/ipv4/inet_connection_sock.c:1130
- __tcp_close+0xd5b/0x12b0 net/ipv4/tcp.c:2897
- tcp_close+0x29/0xc0 net/ipv4/tcp.c:2909
- sock_map_close+0x3b9/0x780 net/core/sock_map.c:1607
- inet_release+0x12e/0x280 net/ipv4/af_inet.c:428
- inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:481
- __sock_release+0xcd/0x280 net/socket.c:650
- sock_close+0x18/0x20 net/socket.c:1365
- __fput+0x277/0x9d0 fs/file_table.c:317
- task_work_run+0xdd/0x1a0 kernel/task_work.c:177
- ptrace_notify+0x114/0x140 kernel/signal.c:2353
- ptrace_report_syscall include/linux/ptrace.h:420 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:482 [inline]
- syscall_exit_work kernel/entry/common.c:249 [inline]
- syscall_exit_to_user_mode_prepare+0xdb/0x230 kernel/entry/common.c:276
- __syscall_exit_to_user_mode_work kernel/entry/common.c:281 [inline]
- syscall_exit_to_user_mode+0x9/0x50 kernel/entry/common.c:294
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7fe7b3b8b6a3
-Code: c7 c2 c0 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb ba 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8
-RSP: 002b:00007ffce5903258 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 00007fe7b3b8b6a3
-RDX: 0000000000000020 RSI: 0000000020000240 RDI: 0000000000000004
-RBP: 0000000000000000 R08: 00007fe7b3c36e40 R09: 00007fe7b3c36e40
-R10: 00007fe7b3c36e40 R11: 0000000000000246 R12: 00007ffce5903290
-R13: 00007ffce5903280 R14: 00007ffce5903270 R15: 0000000000000000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Hello Dear,
+My name is Rebecca, I am a United States and a military woman who has
+never married with no kids yet. I came across your profile, and I
+personally took interest in being your friend. For confidential
+matters, please contact me back through my private email
+rl715537@gmail.com to enable me to send you my pictures and give you
+more details about me. I Hope to hear from you soon.
+Regards
+Rebecca.
