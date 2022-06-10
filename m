@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B76E54691E
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 17:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3158F54693A
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 17:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344583AbiFJPKR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 11:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40672 "EHLO
+        id S231665AbiFJPOi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 11:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbiFJPKD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 11:10:03 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D910194776;
-        Fri, 10 Jun 2022 08:10:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1654873802; x=1686409802;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=uK9feCzJyWVxsXstrkwuXfwAcoACL2f1OuMl21Og3ow=;
-  b=mhahifiuMoBNUZFeSknXpCeYvLUGfmXW/KFMc8NdFBcm8p92FuNB8l1I
-   SlFOPYiP/cz1sio6TGjujCov+1JHdMdWDTnw2JgUfVjWnNWjRgcFu9iiU
-   q5fGwukYSJynw6dsNmE72A12yUwaTgB8Cc6Mygge/saL2IA8FaeyTk5cO
-   pwWnZHMESRUUaG66igcZDRV/CIA2bwt0r9BG9W2wDnaHWwv2iwWHDHCJd
-   /9zWoYDH3tjA4nDVESke6vD7yvr1v0GWZ6OZiYS0BE7g+gkxTd2j1pC7b
-   +gtT9xlwXS2H+e765DYrqNrJf4/IxcQfZgTOrrgud5tiQ9m06HQ0fJu8U
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10374"; a="278788497"
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
-   d="scan'208";a="278788497"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 08:10:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
-   d="scan'208";a="638176277"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Jun 2022 08:10:00 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
-        bjorn@kernel.org, Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next 10/10] selftests: xsk: add support for zero copy testing
-Date:   Fri, 10 Jun 2022 17:09:23 +0200
-Message-Id: <20220610150923.583202-11-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20220610150923.583202-1-maciej.fijalkowski@intel.com>
-References: <20220610150923.583202-1-maciej.fijalkowski@intel.com>
+        with ESMTP id S229553AbiFJPOh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 11:14:37 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC4E95A3;
+        Fri, 10 Jun 2022 08:14:35 -0700 (PDT)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nzgLE-0003a9-0M; Fri, 10 Jun 2022 17:14:28 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nzgLD-000Tc0-Mu; Fri, 10 Jun 2022 17:14:27 +0200
+Subject: Re: [PATCH v3 1/2] bpf: Add bpf_verify_signature() helper
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>
+References: <20220610135916.1285509-1-roberto.sassu@huawei.com>
+ <20220610135916.1285509-2-roberto.sassu@huawei.com>
+ <ce56c551-019f-9e10-885f-4e88001a8f6b@iogearbox.net>
+ <4b877d4877be495787cb431d0a42cbc9@huawei.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1a5534e6-4d63-7c91-8dcd-41b22f1ea2ba@iogearbox.net>
+Date:   Fri, 10 Jun 2022 17:14:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <4b877d4877be495787cb431d0a42cbc9@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26568/Fri Jun 10 10:06:23 2022)
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,164 +60,204 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce new mode to xdpxceiver responsible for testing AF_XDP zero
-copy support of driver that serves underlying physical device. When
-setting up test suite, determine whether driver has ZC support or not by
-trying to bind XSK ZC socket to the interface. If it succeeded,
-interpret it as ZC support being in place and do softirq and busy poll
-tests for zero copy mode.
+On 6/10/22 4:59 PM, Roberto Sassu wrote:
+>> From: Daniel Borkmann [mailto:daniel@iogearbox.net]
+>> Sent: Friday, June 10, 2022 4:49 PM
+>> On 6/10/22 3:59 PM, Roberto Sassu wrote:
+>>> Add the bpf_verify_signature() helper, to give eBPF security modules the
+>>> ability to check the validity of a signature against supplied data, by
+>>> using system-provided keys as trust anchor.
+>>>
+>>> The new helper makes it possible to enforce mandatory policies, as eBPF
+>>> programs might be allowed to make security decisions only based on data
+>>> sources the system administrator approves.
+>>>
+>>> The caller should specify the identifier of the keyring containing the keys
+>>> for signature verification: 0 for the primary keyring (immutable keyring of
+>>> system keys); 1 for both the primary and secondary keyring (where keys can
+>>> be added only if they are vouched for by existing keys in those keyrings);
+>>> 2 for the platform keyring (primarily used by the integrity subsystem to
+>>> verify a kexec'ed kerned image and, possibly, the initramfs signature);
+>>> 0xffff for the session keyring (for testing purposes).
+>>>
+>>> The caller should also specify the type of signature. Currently only PKCS#7
+>>> is supported.
+>>>
+>>> Since the maximum number of parameters of an eBPF helper is 5, the keyring
+>>> and signature types share one (keyring ID: low 16 bits, signature type:
+>>> high 16 bits).
+>>>
+>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+>>> Reported-by: kernel test robot <lkp@intel.com> (cast warning)
+>>> ---
+>>>    include/uapi/linux/bpf.h       | 17 +++++++++++++
+>>>    kernel/bpf/bpf_lsm.c           | 46 ++++++++++++++++++++++++++++++++++
+>>>    tools/include/uapi/linux/bpf.h | 17 +++++++++++++
+>>>    3 files changed, 80 insertions(+)
+>>>
+>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>> index f4009dbdf62d..97521857e44a 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -5249,6 +5249,22 @@ union bpf_attr {
+>>>     *		Pointer to the underlying dynptr data, NULL if the dynptr is
+>>>     *		read-only, if the dynptr is invalid, or if the offset and length
+>>>     *		is out of bounds.
+>>> + *
+>>> + * long bpf_verify_signature(u8 *data, u32 datalen, u8 *sig, u32 siglen, u32
+>> info)
+>>> + *	Description
+>>> + *		Verify a signature of length *siglen* against the supplied data
+>>> + *		with length *datalen*. *info* contains the keyring identifier
+>>> + *		(low 16 bits) and the signature type (high 16 bits). The keyring
+>>> + *		identifier can have the following values (some defined in
+>>> + *		verification.h): 0 for the primary keyring (immutable keyring of
+>>> + *		system keys); 1 for both the primary and secondary keyring
+>>> + *		(where keys can be added only if they are vouched for by
+>>> + *		existing keys in those keyrings); 2 for the platform keyring
+>>> + *		(primarily used by the integrity subsystem to verify a kexec'ed
+>>> + *		kerned image and, possibly, the initramfs signature); 0xffff for
+>>> + *		the session keyring (for testing purposes).
+>>> + *	Return
+>>> + *		0 on success, a negative value on error.
+>>>     */
+>>>    #define __BPF_FUNC_MAPPER(FN)		\
+>>>    	FN(unspec),			\
+>>> @@ -5455,6 +5471,7 @@ union bpf_attr {
+>>>    	FN(dynptr_read),		\
+>>>    	FN(dynptr_write),		\
+>>>    	FN(dynptr_data),		\
+>>> +	FN(verify_signature),		\
+>>>    	/* */
+>>>
+>>>    /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>>> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+>>> index c1351df9f7ee..20bd850ea3ee 100644
+>>> --- a/kernel/bpf/bpf_lsm.c
+>>> +++ b/kernel/bpf/bpf_lsm.c
+>>> @@ -16,6 +16,8 @@
+>>>    #include <linux/bpf_local_storage.h>
+>>>    #include <linux/btf_ids.h>
+>>>    #include <linux/ima.h>
+>>> +#include <linux/verification.h>
+>>> +#include <linux/module_signature.h>
+>>>
+>>>    /* For every LSM hook that allows attachment of BPF programs, declare a
+>> nop
+>>>     * function where a BPF program can be attached.
+>>> @@ -132,6 +134,46 @@ static const struct bpf_func_proto
+>> bpf_get_attach_cookie_proto = {
+>>>    	.arg1_type	= ARG_PTR_TO_CTX,
+>>>    };
+>>>
+>>> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+>>> +BPF_CALL_5(bpf_verify_signature, u8 *, data, u32, datalen, u8 *, sig,
+>>> +	   u32, siglen, u32, info)
+>>> +{
+>>> +	unsigned long keyring_id = info & U16_MAX;
+>>> +	enum pkey_id_type id_type = info >> 16;
+>>> +	const struct cred *cred = current_cred();
+>>> +	struct key *keyring;
+>>> +
+>>> +	if (keyring_id > (unsigned long)VERIFY_USE_PLATFORM_KEYRING &&
+>>> +	    keyring_id != U16_MAX)
+>>> +		return -EINVAL;
+>>> +
+>>> +	keyring = (keyring_id == U16_MAX) ?
+>>> +		  cred->session_keyring : (struct key *)keyring_id;
+>>> +
+>>> +	switch (id_type) {
+>>> +	case PKEY_ID_PKCS7:
+>>> +		return verify_pkcs7_signature(data, datalen, sig, siglen,
+>>> +					      keyring,
+>>> +
+>> VERIFYING_UNSPECIFIED_SIGNATURE,
+>>> +					      NULL, NULL);
+>>> +	default:
+>>> +		return -EOPNOTSUPP;
+>>
+>> Question to you & KP:
+>>
+>>   > Can we keep the helper generic so that it can be extended to more types of
+>>   > signatures and pass the signature type as an enum?
+>>
+>> How many different signature types do we expect, say, in the next 6mo, to land
+>> here? Just thinking out loud whether it is better to keep it simple as with the
+>> last iteration where we have a helper specific to pkcs7, and if needed in future
+>> we add others. We only have the last reg as auxillary arg where we need to
+>> squeeze
+>> all info into it now. What if for other, future signature types this won't suffice?
+> 
+> I would add at least another for PGP, assuming that the code will be
+> upstreamed. But I agree, the number should not be that high.
 
-Note that Rx dropped tests are skipped since ZC path is not touching
-rx_dropped stat at all.
+If realistically expected is really just two helpers, what speaks against a
+bpf_verify_signature_pkcs7() and bpf_verify_signature_pgp() in that case, for
+sake of better user experience?
 
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- tools/testing/selftests/bpf/xdpxceiver.c | 80 ++++++++++++++++++++++--
- tools/testing/selftests/bpf/xdpxceiver.h |  2 +
- 2 files changed, 77 insertions(+), 5 deletions(-)
+Maybe one other angle.. if CONFIG_SYSTEM_DATA_VERIFICATION is enabled, it may
+not be clear whether verify_pkcs7_signature() or a verify_pgp_signature() are
+both always builtin. And then, we run into the issue again of more complex probing
+for availability of the algs compared to simple ...
 
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index a2aa652d0bb8..beef8d694fa6 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -124,9 +124,20 @@ static void __exit_with_error(int error, const char *file, const char *func, int
- }
- 
- #define exit_with_error(error) __exit_with_error(error, __FILE__, __func__, __LINE__)
--
--#define mode_string(test) (test)->ifobj_tx->xdp_flags & XDP_FLAGS_SKB_MODE ? "SKB" : "DRV"
- #define busy_poll_string(test) (test)->ifobj_tx->busy_poll ? "BUSY-POLL " : ""
-+static char *mode_string(struct test_spec *test)
-+{
-+	switch (test->mode) {
-+	case TEST_MODE_SKB:
-+		return "SKB";
-+	case TEST_MODE_DRV:
-+		return "DRV";
-+	case TEST_MODE_ZC:
-+		return "ZC";
-+	default:
-+		return "BOGUS";
-+	}
-+}
- 
- static void report_failure(struct test_spec *test)
- {
-@@ -317,6 +328,53 @@ static int __xsk_configure_socket(struct xsk_socket_info *xsk, struct xsk_umem_i
- 	return xsk_socket__create(&xsk->xsk, ifobject->ifname, 0, umem->umem, rxr, txr, &cfg);
- }
- 
-+static bool ifobj_zc_avail(struct ifobject *ifobject)
-+{
-+	size_t umem_sz = DEFAULT_UMEM_BUFFERS * XSK_UMEM__DEFAULT_FRAME_SIZE;
-+	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-+	struct xsk_socket_info *xsk;
-+	struct xsk_umem_info *umem;
-+	bool zc_avail = false;
-+	void *bufs;
-+	int ret;
-+
-+	bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
-+	if (bufs == MAP_FAILED)
-+		exit_with_error(errno);
-+
-+	umem = calloc(1, sizeof(struct xsk_umem_info));
-+	if (!umem) {
-+		munmap(bufs, umem_sz);
-+		exit_with_error(-ENOMEM);
-+	}
-+	umem->frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
-+	ret = xsk_configure_umem(umem, bufs, umem_sz);
-+	if (ret)
-+		exit_with_error(-ret);
-+
-+	xsk = calloc(1, sizeof(struct xsk_socket_info));
-+	if (!xsk)
-+		goto out;
-+	ifobject->xdp_flags = 0;
-+	ifobject->xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
-+	ifobject->xdp_flags |= XDP_FLAGS_DRV_MODE;
-+	ifobject->bind_flags = XDP_USE_NEED_WAKEUP | XDP_ZEROCOPY;
-+	ifobject->rx_on = true;
-+	xsk->rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-+	ret = __xsk_configure_socket(xsk, umem, ifobject, false);
-+	if (!ret)
-+		zc_avail = true;
-+
-+	ifobject->xdp_flags = 0;
-+	xsk_socket__delete(xsk->xsk);
-+	free(xsk);
-+out:
-+	munmap(umem->buffer, umem_sz);
-+	xsk_umem__delete(umem->umem);
-+	free(umem);
-+	return zc_avail;
-+}
-+
- static struct option long_options[] = {
- 	{"interface", required_argument, 0, 'i'},
- 	{"busy-poll", no_argument, 0, 'b'},
-@@ -483,9 +541,14 @@ static void test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
- 		else
- 			ifobj->xdp_flags |= XDP_FLAGS_DRV_MODE;
- 
--		ifobj->bind_flags = XDP_USE_NEED_WAKEUP | XDP_COPY;
-+		ifobj->bind_flags = XDP_USE_NEED_WAKEUP;
-+		if (mode == TEST_MODE_ZC)
-+			ifobj->bind_flags |= XDP_ZEROCOPY;
-+		else
-+			ifobj->bind_flags |= XDP_COPY;
- 	}
- 
-+	test->mode = mode;
- 	__test_spec_init(test, ifobj_tx, ifobj_rx);
- }
- 
-@@ -1543,6 +1606,10 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- {
- 	switch (type) {
- 	case TEST_TYPE_STATS_RX_DROPPED:
-+		if (mode == TEST_MODE_ZC) {
-+			ksft_test_result_skip("Can not run RX_DROPPED test for ZC mode\n");
-+			return;
-+		}
- 		testapp_stats_rx_dropped(test);
- 		break;
- 	case TEST_TYPE_STATS_TX_INVALID_DESCS:
-@@ -1723,8 +1790,11 @@ int main(int argc, char **argv)
- 	init_iface(ifobj_rx, MAC2, MAC1, IP2, IP1, UDP_PORT2, UDP_PORT1,
- 		   worker_testapp_validate_rx);
- 
--	if (is_xdp_supported(ifobj_tx))
--		modes++;
-+	if (is_xdp_supported(ifobj_tx)) {
-+		modes++;
-+		if (ifobj_zc_avail(ifobj_tx))
-+			modes++;
-+	}
- 
- 	test_spec_init(&test, ifobj_tx, ifobj_rx, 0);
- 	tx_pkt_stream_default = pkt_stream_generate(ifobj_tx->umem, DEFAULT_PKT_CNT, PKT_SIZE);
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-index 12b792004163..a86331c6b0c5 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.h
-+++ b/tools/testing/selftests/bpf/xdpxceiver.h
-@@ -61,6 +61,7 @@
- enum test_mode {
- 	TEST_MODE_SKB,
- 	TEST_MODE_DRV,
-+	TEST_MODE_ZC,
- 	TEST_MODE_MAX
- };
- 
-@@ -162,6 +163,7 @@ struct test_spec {
- 	u16 current_step;
- 	u16 nb_sockets;
- 	bool fail;
-+	enum test_mode mode;
- 	char name[MAX_TEST_NAME_SIZE];
- };
- 
--- 
-2.27.0
+#if defined(CONFIG_SYSTEM_DATA_VERIFICATION) && defined(CONFIG_XYZ)
+	case BPF_FUNC_verify_signature_xyz:
+		return ..._proto;
+#endif
+
+... which bpftool and others easily understand.
+
+>>> +	}
+>>> +}
+>>> +
+>>> +static const struct bpf_func_proto bpf_verify_signature_proto = {
+>>> +	.func		= bpf_verify_signature,
+>>> +	.gpl_only	= false,
+>>> +	.ret_type	= RET_INTEGER,
+>>> +	.arg1_type	= ARG_PTR_TO_MEM,
+>>> +	.arg2_type	= ARG_CONST_SIZE_OR_ZERO,
+>>
+>> Can verify_pkcs7_signature() handle null/0 len for data* args?
+> 
+> Shouldn't ARG_PTR_TO_MEM require valid memory? 0 len should
+> not be a problem.
+
+check_helper_mem_access() has:
+
+      /* Allow zero-byte read from NULL, regardless of pointer type */
+      if (zero_size_allowed && access_size == 0 &&
+          register_is_null(reg))
+              return 0;
+
+So NULL/0 pair can be passed. Maybe good to add these corner cases to the test_progs
+selftest additions then if it's needed.
+
+>>> +	.arg3_type	= ARG_PTR_TO_MEM,
+>>> +	.arg4_type	= ARG_CONST_SIZE_OR_ZERO,
+>>
+>> Ditto for sig* args?
+>>
+>>> +	.arg5_type	= ARG_ANYTHING,
+>>> +	.allowed	= bpf_ima_inode_hash_allowed,
+>>> +};
+>>> +#endif
+>>> +
+>>>    static const struct bpf_func_proto *
+>>>    bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>>>    {
+>>> @@ -158,6 +200,10 @@ bpf_lsm_func_proto(enum bpf_func_id func_id,
+>> const struct bpf_prog *prog)
+>>>    		return prog->aux->sleepable ? &bpf_ima_file_hash_proto :
+>> NULL;
+>>>    	case BPF_FUNC_get_attach_cookie:
+>>>    		return bpf_prog_has_trampoline(prog) ?
+>> &bpf_get_attach_cookie_proto : NULL;
+>>> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+>>> +	case BPF_FUNC_verify_signature:
+>>> +		return prog->aux->sleepable ? &bpf_verify_signature_proto :
+>> NULL;
+>>> +#endif
+>>>    	default:
+>>>    		return tracing_prog_func_proto(func_id, prog);
+>>>    	}
 
