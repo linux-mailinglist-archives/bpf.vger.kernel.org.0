@@ -2,309 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B07A545A1F
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 04:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE79C545A2F
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 04:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345644AbiFJCdh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 22:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42826 "EHLO
+        id S237665AbiFJCjb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 22:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345013AbiFJCde (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 22:33:34 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA7C16608F
-        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 19:33:31 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id e9so12370282pju.5
-        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 19:33:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=h5wjvAfvmc3hQDHOJgTAUHot2+LF/XxihF052IFv5TI=;
-        b=3VaZpqIvI/J1A3re8Htg7EDIVwMo6MeNwaxFNAqEj4v6OHRj8ES9oG9J5XtMQYG496
-         7fuaJxYoKdl+tN792AhGFiOy7Fpfc8Lr+haRviqE7FGOit3QVBh9Zmzl+k9zQNQMP2pi
-         by/ZedpyoWU9HJSGy5YnZ3Zm/+U0Y85AFknQf7O8ttv1PicS3Qlz5/R1y3Nh9CZ6Npu2
-         BYZVTuHV28eow0HBJEnEmJHn/2hwO1XxtFIu0qxE4DmRKFSLUzK4rOjI+Ocd8Z+WDk0+
-         /pSV8ekFC2sP2zflSDn/kWpDXejSvoZsVzCq8tP8lHnzSYZiBUmRrM0y4GxkVl8c9Htt
-         mQSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h5wjvAfvmc3hQDHOJgTAUHot2+LF/XxihF052IFv5TI=;
-        b=cI9MvhOv6VY77Ed0YOhIymI3PPdXaWgJz13BcWTtYY8Iy2gH3rxuZi6O8c7U4803O7
-         iZB006lq57LVxtKa9XcBM3K4Rzw1MVkMNHWyz9Ll2ZmsEH734HDkFaA+yEDCbUR6I4eE
-         hsvEbcI82kwCqNU9EslWVJeum13oYPrQnNpO6bRM0jexdvSZWp3x1HlX9AxIvHa+Y5vR
-         eBNjGQJEKWjD989lQUlQDpB786ykcwpY3qFP0WBK5DTjsfdLlGfBOD1Q122q+Rm2UiUd
-         8hpT5yk1kilbLoKAEI4+Qwj/7Rsxh+8TQaBjNm/u2sHNqVriL+zmCR+DFPPhAA2dAq8t
-         eD4Q==
-X-Gm-Message-State: AOAM533zFGZ770o9nqLaTNC5LGM0ENBRPex5108d1n+VE0Tj3sGX36KU
-        xQZx05icAnFCJjuY/xFgOFl72A==
-X-Google-Smtp-Source: ABdhPJwvi9kLXUS59J0d4sPwKM8mXEyRW0q+S6pGLzLrfPy+fr86kvrWBwDqb1tD8jUxoeJEn3wyww==
-X-Received: by 2002:a17:90b:3c4e:b0:1e3:36c8:8496 with SMTP id pm14-20020a17090b3c4e00b001e336c88496mr6322932pjb.82.1654828411413;
-        Thu, 09 Jun 2022 19:33:31 -0700 (PDT)
-Received: from C02F52LSML85.bytedance.net ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id o19-20020a170903009300b001620db30cd6sm17432481pld.201.2022.06.09.19.33.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Jun 2022 19:33:31 -0700 (PDT)
-From:   Feng zhou <zhoufeng.zf@bytedance.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, duanxiongchun@bytedance.com,
-        songmuchun@bytedance.com, wangdongdong.6@bytedance.com,
-        cong.wang@bytedance.com, zhouchengming@bytedance.com,
-        zhoufeng.zf@bytedance.com
-Subject: [PATCH v6 2/2] selftest/bpf/benchs: Add bpf_map benchmark
-Date:   Fri, 10 Jun 2022 10:33:08 +0800
-Message-Id: <20220610023308.93798-3-zhoufeng.zf@bytedance.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20220610023308.93798-1-zhoufeng.zf@bytedance.com>
-References: <20220610023308.93798-1-zhoufeng.zf@bytedance.com>
+        with ESMTP id S230371AbiFJCja (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 22:39:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24BC166896
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 19:39:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 820E461C17
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 02:39:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7279C341C0
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 02:39:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654828767;
+        bh=rsmpjQKyhTk7pqGkO4fYTQg8y7bY511N7uz04exIUZI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a9n/XmZYq7xcguH7yVhiZiLJyfmqkVyvsJ+7fC9AwJlZ4F7U66kEmZ7kgSXyybTYV
+         n7xbHu8mxN3sqjzvVZOe57wTbsJKVBY175ACD6Dzsc9EVcatyTwFnWjSJq8tSzX06L
+         Efjy/yQ6HPWtgsGaSGL8h/dfqtUblx+4mT9p3itJODqH+pxkbb1ml5DxaYkTQRJ3iK
+         e11n1xa65CbZckq+6oDBJfADxRrndU1wOwJfPqxQgMvCqAe73BimLt21tpqI/jKxZt
+         S/7sAfDsgcK8G7aB53vWqv/8HJpnpv99n4WZ+EyXem9hAMLm1gM+fXSzKKaEwAjB8G
+         NY/p3MNVzPiLA==
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-3137eb64b67so58049457b3.12
+        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 19:39:27 -0700 (PDT)
+X-Gm-Message-State: AOAM532e9eroVRTvaAZtuLRI/1OrAErgjHBe2BQwbHc9CDWL7JXhmL7G
+        fxEt0xJyuX4YxHMStydVXLEGnxaQG10EbZitPTFoEw==
+X-Google-Smtp-Source: ABdhPJyjn/3sT5tAZubi103CMBTjOKQAmXzbIkVasMHwP55lWHnixOhFNhO1ozS/oK6gxaVpaoEMSUoq7o/F1DOycc4=
+X-Received: by 2002:a81:b0b:0:b0:2e5:dcc1:3d49 with SMTP id
+ 11-20020a810b0b000000b002e5dcc13d49mr45112515ywl.210.1654828766880; Thu, 09
+ Jun 2022 19:39:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220609234601.2026362-1-kpsingh@kernel.org> <CAADnVQJSijXmDG0C+U101ahgOYTmHEuyBu_=CS87rJ9GchFQyA@mail.gmail.com>
+ <CACYkzJ4L=SxggPxrqEC1yzv-DzM1-w0ZPo-E1HPE-8ob-r0UTw@mail.gmail.com>
+In-Reply-To: <CACYkzJ4L=SxggPxrqEC1yzv-DzM1-w0ZPo-E1HPE-8ob-r0UTw@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 10 Jun 2022 04:39:15 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ4TDp1=-h0+1z+dvjs5eEGjQhMhrvi=4Yck3wp8dVD0hA@mail.gmail.com>
+Message-ID: <CACYkzJ4TDp1=-h0+1z+dvjs5eEGjQhMhrvi=4Yck3wp8dVD0hA@mail.gmail.com>
+Subject: Re: [PATCH linux-next] security: Fix side effects of default BPF LSM hooks
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     LSM List <linux-security-module@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
+On Fri, Jun 10, 2022 at 2:55 AM KP Singh <kpsingh@kernel.org> wrote:
+>
+> On Fri, Jun 10, 2022 at 2:44 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Thu, Jun 9, 2022 at 4:46 PM KP Singh <kpsingh@kernel.org> wrote:
+> > >
+> > > BPF LSM currently has a default implementation for each LSM hooks which
+> > > return a default value defined in include/linux/lsm_hook_defs.h. These
+> > > hooks should have no functional effect when there is no BPF program
+> > > loaded to implement the hook logic.
+> > >
+> > > Some LSM hooks treat any return value of the hook as policy decision
+> > > which results in destructive side effects.
+> > >
+> > > This issue and the effects were reported to me by Jann Horn:
+> > >
+> > > For a system configured with CONFIG_BPF_LSM and the bpf lsm is enabled
+> > > (via lsm= or CONFIG_LSM) an unprivileged user can vandalize the system
+> > > by removing the security.capability xattrs from binaries, preventing
+> > > them from working normally:
+> > >
+> > > $ getfattr -d -m- /bin/ping
+> > > getfattr: Removing leading '/' from absolute path names
+> > > security.capability=0sAQAAAgAgAAAAAAAAAAAAAAAAAAA=
+> > >
+> > > $ setfattr -x security.capability /bin/ping
+> > > $ getfattr -d -m- /bin/ping
+> > > $ ping 1.2.3.4
+> > > $ ping google.com
+> > > $ echo $?
+> > > 2
+> > >
+> > > The above reproduces with:
+> > >
+> > > cat /sys/kernel/security/lsm
+> > > capability,apparmor,bpf
+> >
+> > Why is this bpf related?
+> > apparmor doesn't have that hook,
+> > while capability returns 0.
+> > So bpf's default==0 doesn't change the situation.
+> >
+> > Just
+> > cat /sys/kernel/security/lsm
+> > capability
+> >
+> > would reproduce the issue?
 
-Add benchmark for hash_map to reproduce the worst case
-that non-stop update when map's free is zero.
+Just to clarify, when one just has:
 
-Just like this:
-./run_bench_bpf_hashmap_full_update.sh
-Setting up benchmark 'bpf-hashmap-ful-update'...
-Benchmark 'bpf-hashmap-ful-update' started.
-1:hash_map_full_perf 555830 events per sec
-...
+cat /sys/kernel/security/lsm
+capability
 
-Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
----
- tools/testing/selftests/bpf/Makefile          |  4 +-
- tools/testing/selftests/bpf/bench.c           |  2 +
- .../benchs/bench_bpf_hashmap_full_update.c    | 96 +++++++++++++++++++
- .../run_bench_bpf_hashmap_full_update.sh      | 11 +++
- .../bpf/progs/bpf_hashmap_full_update_bench.c | 40 ++++++++
- 5 files changed, 152 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
- create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_hashmap_full_update_bench.c
+call_int_hook would return the IRC (i.e 1) which would lead the code
+to the capability check. (i.e. cap_inode_removexattr)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 2d3c8c8f558a..8ad7a733a505 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -560,6 +560,7 @@ $(OUTPUT)/bench_ringbufs.o: $(OUTPUT)/ringbuf_bench.skel.h \
- $(OUTPUT)/bench_bloom_filter_map.o: $(OUTPUT)/bloom_filter_bench.skel.h
- $(OUTPUT)/bench_bpf_loop.o: $(OUTPUT)/bpf_loop_bench.skel.h
- $(OUTPUT)/bench_strncmp.o: $(OUTPUT)/strncmp_bench.skel.h
-+$(OUTPUT)/bench_bpf_hashmap_full_update.o: $(OUTPUT)/bpf_hashmap_full_update_bench.skel.h
- $(OUTPUT)/bench.o: bench.h testing_helpers.h $(BPFOBJ)
- $(OUTPUT)/bench: LDLIBS += -lm
- $(OUTPUT)/bench: $(OUTPUT)/bench.o \
-@@ -571,7 +572,8 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
- 		 $(OUTPUT)/bench_ringbufs.o \
- 		 $(OUTPUT)/bench_bloom_filter_map.o \
- 		 $(OUTPUT)/bench_bpf_loop.o \
--		 $(OUTPUT)/bench_strncmp.o
-+		 $(OUTPUT)/bench_strncmp.o \
-+		 $(OUTPUT)/bench_bpf_hashmap_full_update.o
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
- 
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index f061cc20e776..d8aa62be996b 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -396,6 +396,7 @@ extern const struct bench bench_hashmap_with_bloom;
- extern const struct bench bench_bpf_loop;
- extern const struct bench bench_strncmp_no_helper;
- extern const struct bench bench_strncmp_helper;
-+extern const struct bench bench_bpf_hashmap_full_update;
- 
- static const struct bench *benchs[] = {
- 	&bench_count_global,
-@@ -430,6 +431,7 @@ static const struct bench *benchs[] = {
- 	&bench_bpf_loop,
- 	&bench_strncmp_no_helper,
- 	&bench_strncmp_helper,
-+	&bench_bpf_hashmap_full_update,
- };
- 
- static void setup_benchmark()
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c b/tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
-new file mode 100644
-index 000000000000..cec51e0ff4b8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Bytedance */
-+
-+#include <argp.h>
-+#include "bench.h"
-+#include "bpf_hashmap_full_update_bench.skel.h"
-+#include "bpf_util.h"
-+
-+/* BPF triggering benchmarks */
-+static struct ctx {
-+	struct bpf_hashmap_full_update_bench *skel;
-+} ctx;
-+
-+#define MAX_LOOP_NUM 10000
-+
-+static void validate(void)
-+{
-+	if (env.consumer_cnt != 1) {
-+		fprintf(stderr, "benchmark doesn't support multi-consumer!\n");
-+		exit(1);
-+	}
-+}
-+
-+static void *producer(void *input)
-+{
-+	while (true) {
-+		/* trigger the bpf program */
-+		syscall(__NR_getpgid);
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *consumer(void *input)
-+{
-+	return NULL;
-+}
-+
-+static void measure(struct bench_res *res)
-+{
-+}
-+
-+static void setup(void)
-+{
-+	struct bpf_link *link;
-+	int map_fd, i, max_entries;
-+
-+	setup_libbpf();
-+
-+	ctx.skel = bpf_hashmap_full_update_bench__open_and_load();
-+	if (!ctx.skel) {
-+		fprintf(stderr, "failed to open skeleton\n");
-+		exit(1);
-+	}
-+
-+	ctx.skel->bss->nr_loops = MAX_LOOP_NUM;
-+
-+	link = bpf_program__attach(ctx.skel->progs.benchmark);
-+	if (!link) {
-+		fprintf(stderr, "failed to attach program!\n");
-+		exit(1);
-+	}
-+
-+	/* fill hash_map */
-+	map_fd = bpf_map__fd(ctx.skel->maps.hash_map_bench);
-+	max_entries = bpf_map__max_entries(ctx.skel->maps.hash_map_bench);
-+	for (i = 0; i < max_entries; i++)
-+		bpf_map_update_elem(map_fd, &i, &i, BPF_ANY);
-+}
-+
-+void hashmap_report_final(struct bench_res res[], int res_cnt)
-+{
-+	unsigned int nr_cpus = bpf_num_possible_cpus();
-+	int i;
-+
-+	for (i = 0; i < nr_cpus; i++) {
-+		u64 time = ctx.skel->bss->percpu_time[i];
-+
-+		if (!time)
-+			continue;
-+
-+		printf("%d:hash_map_full_perf %lld events per sec\n",
-+		       i, ctx.skel->bss->nr_loops * 1000000000ll / time);
-+	}
-+}
-+
-+const struct bench bench_bpf_hashmap_full_update = {
-+	.name = "bpf-hashmap-ful-update",
-+	.validate = validate,
-+	.setup = setup,
-+	.producer_thread = producer,
-+	.consumer_thread = consumer,
-+	.measure = measure,
-+	.report_progress = NULL,
-+	.report_final = hashmap_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh b/tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
-new file mode 100755
-index 000000000000..1e2de838f9fa
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
-@@ -0,0 +1,11 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+source ./benchs/run_common.sh
-+
-+set -eufo pipefail
-+
-+nr_threads=`expr $(cat /proc/cpuinfo | grep "processor"| wc -l) - 1`
-+summary=$($RUN_BENCH -p $nr_threads bpf-hashmap-ful-update)
-+printf "$summary"
-+printf "\n"
-diff --git a/tools/testing/selftests/bpf/progs/bpf_hashmap_full_update_bench.c b/tools/testing/selftests/bpf/progs/bpf_hashmap_full_update_bench.c
-new file mode 100644
-index 000000000000..56957557e3e1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_hashmap_full_update_bench.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Bytedance */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define MAX_ENTRIES 1000
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, u32);
-+	__type(value, u64);
-+	__uint(max_entries, MAX_ENTRIES);
-+} hash_map_bench SEC(".maps");
-+
-+u64 __attribute__((__aligned__(256))) percpu_time[256];
-+u64 nr_loops;
-+
-+static int loop_update_callback(__u32 index, u32 *key)
-+{
-+	u64 init_val = 1;
-+
-+	bpf_map_update_elem(&hash_map_bench, key, &init_val, BPF_ANY);
-+	return 0;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_getpgid")
-+int benchmark(void *ctx)
-+{
-+	u32 cpu = bpf_get_smp_processor_id();
-+	u32 key = cpu + MAX_ENTRIES;
-+	u64 start_time = bpf_ktime_get_ns();
-+
-+	bpf_loop(nr_loops, loop_update_callback, &key, 0);
-+	percpu_time[cpu & 255] = bpf_ktime_get_ns() - start_time;
-+	return 0;
-+}
--- 
-2.20.1
+ret = call_int_hook(inode_removexattr, 1, mnt_userns, dentry, name);
+if (ret == 1)
+    ret = cap_inode_removexattr(mnt_userns, dentry, name);
 
+cap_inode_removexattr restricts setting security.* xattrs to only CAP_SYS_ADMIN.
+
+Now, since BPF's hook returns 0 here, the capability check is skipped.
+
+But then again, this is just one of the hooks which has the issue.
+
+
+
+
+> > what am I missing?
+>
+> capability does not define the inode_removexattr LSM hook:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/commoncap.c#n1449
+>
+> It's only when the return value of the hook is 1, it checks for
+> cap_inode_removexattr.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/security/security.c#n1408
+>
+> Only 3 LSMs define the hook (bpf, smack and selinux):
+>
+> fgrep -R LSM_HOOK_INIT *  | grep inode_removexattr
+> selinux/hooks.c: LSM_HOOK_INIT(inode_removexattr, selinux_inode_removexattr),
+> smack/smack_lsm.c: LSM_HOOK_INIT(inode_removexattr, smack_inode_removexattr),
+>
+> The BPF LSM default hooks intend to provide no side-effects when the
+> LSM is enabled and
+> for the hooks that the patch updates, there is a side-effect.
