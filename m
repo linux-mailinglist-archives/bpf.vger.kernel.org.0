@@ -2,88 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6558E546DA5
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 21:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDB0546DF6
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 22:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350429AbiFJTwX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 15:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53568 "EHLO
+        id S1347704AbiFJUE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 16:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350382AbiFJTwW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 15:52:22 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C8B23CCF4
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 12:52:19 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id v14so11555527wra.5
-        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 12:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x81CyVir3pjK/ztFro5SKkqWERq2me/APMv8atNQetU=;
-        b=y3UITEx0SBsS5g1x4ULHaE+KbdORxtcufS3I0QAPCfO7rtbWxyDxBifiPRqpMkPjus
-         X0sbLUkmKgfJJrjCa5GcA1ZmTsM0uVG5p3FSerp8mgTJDqYzZ0Dd+0w8n+ZqqlZCMhFx
-         gqR+XnYmehwlcDxCZ6WGP1BL5334b88RrOQmFrgNaFHzzk72zUGuTQKkEYAMCW4oqMak
-         O7tp4NaIScT82Cf4oFocLCBqueORdOGv1sW98SblpZ+FIX3X+MMo/dv5P0BkfAeHVoSN
-         CgYDNH6EWMFDwa3blv4+sp0n2zD09/4LQ4PJ1rb+i93BTauFioHs9iM2Nm1KavIWTw2q
-         LRFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x81CyVir3pjK/ztFro5SKkqWERq2me/APMv8atNQetU=;
-        b=uC0XNgc/DngnHOhIFbGaCjyL9mVnDwomWgvv8nDRHCMtyQRRZ1J9aAGZjYtq+COt6Z
-         vZ0+zAt7lRqEeMq5ghA4aYHSNCRyeGqgud8KfJ6cQuIdx6uIIBvagAtanEZkVWiEHSOn
-         W8ska1a8FU4zdpG7UpVdFMK6JRh/KdyOwB6Hxo93gS+a3GjsKyPkAxzWPYwR3cUV6YQf
-         hePw67K42zvJBOrANA7FWSVV6YURTPTbbwWGNbYikxb3FznY9rI4AsEnscySAmHyGane
-         oAyCg1m+0MxPMHsJKJ/9DrcEtrMXG8VkZeOIFGaQIqBLEoBgWtsGbxis3onRZKT4tCih
-         JZqQ==
-X-Gm-Message-State: AOAM531RQ4jdlApV7eEDiKPmO7W16GyuT6gv3rq0LX6h1HYLRXR735RW
-        ZULf5LMdx3ml9XpsfCuWJUsEFX2skuyi7+48jyxB
-X-Google-Smtp-Source: ABdhPJxM/c/b1H9ScCDVgTvg2CB9+5vuNvzZtf1lT8GASYKGK0T+lA3Wsnt70X/aY1aiYxbBDIvNYa/0m9HC35uYgEY=
-X-Received: by 2002:a5d:64c7:0:b0:216:5021:687f with SMTP id
- f7-20020a5d64c7000000b002165021687fmr36417844wri.295.1654890738143; Fri, 10
- Jun 2022 12:52:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220608223619.2287162-1-jolindner@gmx.de>
-In-Reply-To: <20220608223619.2287162-1-jolindner@gmx.de>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 10 Jun 2022 15:52:07 -0400
-Message-ID: <CAHC9VhRfM0_zA6TbZiOGo8nCSRoh-g_J3iZG14DemnXTxGRsoA@mail.gmail.com>
-Subject: Re: [PATCH] selinux: fix typos in comments
-To:     Jonas Lindner <jolindner@gmx.de>
-Cc:     stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        trivial@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S1347324AbiFJUEY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 16:04:24 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0463C4A3;
+        Fri, 10 Jun 2022 13:04:22 -0700 (PDT)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nzkrk-0004ln-KS; Fri, 10 Jun 2022 22:04:20 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nzkrk-000NXv-Aq; Fri, 10 Jun 2022 22:04:20 +0200
+Subject: Re: [PATCH bpf-next v2 0/7] Add bpf_link based TC-BPF API
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        netdev <netdev@vger.kernel.org>, john.fastabend@gmail.com
+References: <20210604063116.234316-1-memxor@gmail.com>
+ <CAJnrk1YJe-wtXFF0U2cuZUdd-gH1Y80Ewf3ePo=vh-nbsSBZgg@mail.gmail.com>
+ <20220610125830.2tx6syagl2rphl35@apollo.legion>
+ <CAJnrk1YCBn2EkVK89f5f3ijFYUDhLNpjiH8buw8K3p=JMwAc1Q@mail.gmail.com>
+ <CAJnrk1YCSaRjd88WCzg4ccv59h0Dn99XXsDDT4ddzz4UYiZmbg@mail.gmail.com>
+ <20220610193418.4kqpu7crwfb5efzy@apollo.legion>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e82d41e4-c1c0-7387-8c83-b71ecb9d92d2@iogearbox.net>
+Date:   Fri, 10 Jun 2022 22:04:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20220610193418.4kqpu7crwfb5efzy@apollo.legion>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26568/Fri Jun 10 10:06:23 2022)
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 8, 2022 at 6:37 PM Jonas Lindner <jolindner@gmx.de> wrote:
->
-> selinux: fix typos in comments
-> Signed-off-by: Jonas Lindner <jolindner@gmx.de>
-> ---
->  security/selinux/hooks.c         | 4 ++--
->  security/selinux/include/audit.h | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
+Hi Joanne, hi Kumar,
 
-Merged into selinux/next (with the duplicated subject line removed), thanks!
+On 6/10/22 9:34 PM, Kumar Kartikeya Dwivedi wrote:
+> On Sat, Jun 11, 2022 at 12:37:50AM IST, Joanne Koong wrote:
+>> On Fri, Jun 10, 2022 at 10:23 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+>>> On Fri, Jun 10, 2022 at 5:58 AM Kumar Kartikeya Dwivedi
+>>> <memxor@gmail.com> wrote:
+>>>> On Fri, Jun 10, 2022 at 05:54:27AM IST, Joanne Koong wrote:
+>>>>> On Thu, Jun 3, 2021 at 11:31 PM Kumar Kartikeya Dwivedi
+>>>>> <memxor@gmail.com> wrote:
+[...]
+>>>> I can have a look at resurrecting it later this month, if you're ok with waiting
+>>>> until then, otherwise if someone else wants to pick this up before that it's
+>>>> fine by me, just let me know so we avoid duplicated effort. Note that the
+>>>> approach in v2 is dead/unlikely to get accepted by the TC maintainers, so we'd
+>>>> have to implement the way Daniel mentioned in [0].
+>>>
+>>> Sounds great! We'll wait and check back in with you later this month.
+>>>
+>> After reading the linked thread (which I should have done before
+>> submitting my previous reply :)),  if I'm understanding it correctly,
+>> it seems then that the work needed for tc bpf_link will be in a new
+>> direction that's not based on the code in this v2 patchset. I'm
+>> interested in learning more about bpf link and tc - I can pick this up
+>> to work on. But if this was something you wanted to work on though,
+>> please don't hesitate to let me know; I can find some other bpf link
+>> thing to work on instead if that's the case.
 
--- 
-paul-moore.com
+The tc ingress/egress overhaul we also discussed at lsf/mm/bpf in our session
+with John and pretty much is along the lines as in the earlier link you sent.
+We need it from Cilium & Tetragon as well, so it's wip from our side at the
+moment, modulo the bpf link part. Would you be okay if I pinged you once something
+that is plateable is ready?
+
+Thanks,
+Daniel
