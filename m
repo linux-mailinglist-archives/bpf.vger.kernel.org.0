@@ -2,151 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FECC54664D
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 14:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404915466F7
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 14:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240337AbiFJMKM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 08:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
+        id S236365AbiFJM6m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 08:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345027AbiFJMKL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 08:10:11 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA8E104;
-        Fri, 10 Jun 2022 05:10:06 -0700 (PDT)
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LKKSN66TKz683mZ;
-        Fri, 10 Jun 2022 20:06:28 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 10 Jun 2022 14:10:04 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Fri, 10 Jun 2022 14:10:04 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1348547AbiFJM6g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 08:58:36 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7A2183142;
+        Fri, 10 Jun 2022 05:58:33 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t3-20020a17090a510300b001ea87ef9a3dso378200pjh.4;
+        Fri, 10 Jun 2022 05:58:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=WmXfkduD9Oup6fZ4HH529ls5n+lk4ZC7zc8XhY4/rpU=;
+        b=faRfjhEUgbso+i9MdPHDP/V9uHrTiQ22s18XESaDPNUys59eEbkBhp5WScYloMkFx/
+         vVqHgWRew88sH86rsM3JAdze39RPihyaAV4QHeEth8/8DBPX52Wbpqj+sj7AFOhI0Bl4
+         oco/UU0OaYm3ifDerCI09NAJnnmDvfOq8WcnhpdeOEUUYKapS4G9ekfWjpiVsZZz6oWP
+         hmaLgo5M4Xk6p3M7IvLw54JV1UZ1hLV5Y9r1A0LNzFs9VnjBdTnvocxayIzM4l4CrYeK
+         90lbW18sjT3Pv+bw8Et+Rj/15t7/bqoNQAfyvch6yT3MLaPw8Q7UOwhvpY3j2NKmUygr
+         kXCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=WmXfkduD9Oup6fZ4HH529ls5n+lk4ZC7zc8XhY4/rpU=;
+        b=7aXYlD8k0CvnIhjJ52FduxwIRXAGhdApOD4j9hqs9iXQxVTlAdSzlS/YbCBkOunbBO
+         JpEFzlKSk/8hg2o/ttiXJjmiAgIJX+QXv88VvY7Df56Kv43NbUGimb3akhZSrd824s+y
+         hBBWFPdEZolyIq59l/ISUZS9VTS4Yfn+47q6QFxyl5NMwiMKM+TfAET0DywfgLK/dlj9
+         0JCVrvXMFKhrqVVx31+8gLNetQFMyUdAUHM5XV2sKRKV624B/tnJZWiz/t3v1qjPRtsi
+         8Pjo301IOmh2Hyb4sNRgTx28d1erSXc7f5FZ3lJrid2kjHIjxcO44HYxMQwVIqji3Y1i
+         TNMA==
+X-Gm-Message-State: AOAM5305RIOC22VJbL5L6ri4VFC5hGFsGvXVimK1WO2mODlPqq0G+fc3
+        qwBdD8hNhvRUMSl6WlaNMWw=
+X-Google-Smtp-Source: ABdhPJzdHlgVT8BCAvSSqD2iB10oY9JMm3YMmNu5Jz0qA3gn3B7DUuh4LeqrGF2cBisVaU9P9qDekw==
+X-Received: by 2002:a17:902:788b:b0:168:bffe:4049 with SMTP id q11-20020a170902788b00b00168bffe4049mr1995633pll.75.1654865913311;
+        Fri, 10 Jun 2022 05:58:33 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d0c0:79de:f3f4:353c:8616])
+        by smtp.gmail.com with ESMTPSA id 69-20020a621648000000b0050dc76281e3sm16607333pfw.189.2022.06.10.05.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jun 2022 05:58:33 -0700 (PDT)
+Date:   Fri, 10 Jun 2022 18:28:30 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 2/3] selftests/bpf: Add test_progs opts for sign-file
- and kernel priv key + cert
-Thread-Topic: [PATCH v2 2/3] selftests/bpf: Add test_progs opts for sign-file
- and kernel priv key + cert
-Thread-Index: AQHYeykDmMQe6s5OOEy585q2owjOQ61GE2uAgACxe7CAAFEpAIABeTEA
-Date:   Fri, 10 Jun 2022 12:10:04 +0000
-Message-ID: <f09b219668ee45e087f47d87cf2962f1@huawei.com>
-References: <20220608111221.373833-1-roberto.sassu@huawei.com>
- <20220608111221.373833-3-roberto.sassu@huawei.com>
- <CAADnVQJ4RCSAeDMqFpF5bQznPQaTWFr=kL7GdssDQuzLof06fg@mail.gmail.com>
- <92d8b9c08e20449782f19f64cc3ec5fa@huawei.com>
- <CAADnVQLd2d+_2iJ84u9zK3Nnb+LL3Gw7k=XQCVOHuekb2hLf_g@mail.gmail.com>
-In-Reply-To: <CAADnVQLd2d+_2iJ84u9zK3Nnb+LL3Gw7k=XQCVOHuekb2hLf_g@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.21]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2 0/7] Add bpf_link based TC-BPF API
+Message-ID: <20220610125830.2tx6syagl2rphl35@apollo.legion>
+References: <20210604063116.234316-1-memxor@gmail.com>
+ <CAJnrk1YJe-wtXFF0U2cuZUdd-gH1Y80Ewf3ePo=vh-nbsSBZgg@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJnrk1YJe-wtXFF0U2cuZUdd-gH1Y80Ewf3ePo=vh-nbsSBZgg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBBbGV4ZWkgU3Rhcm92b2l0b3YgW21haWx0bzphbGV4ZWkuc3Rhcm92b2l0b3ZAZ21h
-aWwuY29tXQ0KPiBTZW50OiBUaHVyc2RheSwgSnVuZSA5LCAyMDIyIDU6MzggUE0NCj4gT24gVGh1
-LCBKdW4gOSwgMjAyMiBhdCAyOjAwIEFNIFJvYmVydG8gU2Fzc3UgPHJvYmVydG8uc2Fzc3VAaHVh
-d2VpLmNvbT4NCj4gd3JvdGU6DQo+ID4NCj4gPiA+IEZyb206IEFsZXhlaSBTdGFyb3ZvaXRvdiBb
-bWFpbHRvOmFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb21dDQo+ID4gPiBTZW50OiBUaHVyc2Rh
-eSwgSnVuZSA5LCAyMDIyIDI6MTMgQU0NCj4gPiA+IE9uIFdlZCwgSnVuIDgsIDIwMjIgYXQgNDox
-NSBBTSBSb2JlcnRvIFNhc3N1DQo+IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+DQo+ID4gPiB3
-cm90ZToNCj4gPiA+ID4NCj4gPiA+ID4gQWNjb3JkaW5nIHRvIHRoZSBsb2dzIG9mIHRoZSBlQlBG
-IENJLCBidWlsdCBrZXJuZWwgYW5kIHRlc3RzIGFyZSBjb3BpZWQgdG8NCj4gPiA+ID4gYSB2aXJ0
-dWFsIG1hY2hpbmUgdG8gcnVuIHRoZXJlLg0KPiA+ID4gPg0KPiA+ID4gPiBTaW5jZSBhIHRlc3Qg
-Zm9yIGEgbmV3IGhlbHBlciB0byB2ZXJpZnkgUEtDUyM3IHNpZ25hdHVyZXMgcmVxdWlyZXMgdG8g
-c2lnbg0KPiA+ID4gPiBkYXRhIHRvIGJlIHZlcmlmaWVkLCBleHRlbmQgdGVzdF9wcm9ncyB0byBz
-dG9yZSBpbiB0aGUgdGVzdF9lbnYgZGF0YQ0KPiA+ID4gPiBzdHJ1Y3R1cmUgKGFjY2Vzc2libGUg
-YnkgaW5kaXZpZHVhbCB0ZXN0cykgdGhlIHBhdGggb2Ygc2lnbi1maWxlIGFuZCBvZiB0aGUNCj4g
-PiA+ID4ga2VybmVsIHByaXZhdGUga2V5IGFuZCBjZXJ0Lg0KPiA+ID4gPg0KPiA+ID4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+DQo+ID4g
-PiA+IC0tLQ0KPiA+ID4gPiAgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Rlc3RfcHJvZ3Mu
-YyB8IDEyICsrKysrKysrKysrKw0KPiA+ID4gPiAgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBm
-L3Rlc3RfcHJvZ3MuaCB8ICAzICsrKw0KPiA+ID4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxNSBpbnNl
-cnRpb25zKCspDQo+ID4gPiA+DQo+ID4gPiA+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3Nl
-bGZ0ZXN0cy9icGYvdGVzdF9wcm9ncy5jDQo+ID4gPiBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3Rz
-L2JwZi90ZXN0X3Byb2dzLmMNCj4gPiA+ID4gaW5kZXggYzYzOWYyZTU2ZmM1Li45MGNlMmMwNmEx
-NWUgMTAwNjQ0DQo+ID4gPiA+IC0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi90ZXN0
-X3Byb2dzLmMNCj4gPiA+ID4gKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Rlc3Rf
-cHJvZ3MuYw0KPiA+ID4gPiBAQCAtNzA3LDYgKzcwNyw4IEBAIGVudW0gQVJHX0tFWVMgew0KPiA+
-ID4gPiAgICAgICAgIEFSR19URVNUX05BTUVfR0xPQl9ERU5ZTElTVCA9ICdkJywNCj4gPiA+ID4g
-ICAgICAgICBBUkdfTlVNX1dPUktFUlMgPSAnaicsDQo+ID4gPiA+ICAgICAgICAgQVJHX0RFQlVH
-ID0gLTEsDQo+ID4gPiA+ICsgICAgICAgQVJHX1NJR05fRklMRSA9ICdTJywNCj4gPiA+ID4gKyAg
-ICAgICBBUkdfS0VSTkVMX1BSSVZfQ0VSVCA9ICdDJywNCj4gPiA+ID4gIH07DQo+ID4gPiA+DQo+
-ID4gPiA+ICBzdGF0aWMgY29uc3Qgc3RydWN0IGFyZ3Bfb3B0aW9uIG9wdHNbXSA9IHsNCj4gPiA+
-ID4gQEAgLTczMiw2ICs3MzQsMTAgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBhcmdwX29wdGlvbiBv
-cHRzW10gPSB7DQo+ID4gPiA+ICAgICAgICAgICAiTnVtYmVyIG9mIHdvcmtlcnMgdG8gcnVuIGlu
-IHBhcmFsbGVsLCBkZWZhdWx0IHRvIG51bWJlciBvZiBjcHVzLiIgfSwNCj4gPiA+ID4gICAgICAg
-ICB7ICJkZWJ1ZyIsIEFSR19ERUJVRywgTlVMTCwgMCwNCj4gPiA+ID4gICAgICAgICAgICJwcmlu
-dCBleHRyYSBkZWJ1ZyBpbmZvcm1hdGlvbiBmb3IgdGVzdF9wcm9ncy4iIH0sDQo+ID4gPiA+ICsg
-ICAgICAgeyAic2lnbi1maWxlIiwgQVJHX1NJR05fRklMRSwgIlBBVEgiLCAwLA0KPiA+ID4gPiAr
-ICAgICAgICAgInNpZ24tZmlsZSBwYXRoICIgfSwNCj4gPiA+ID4gKyAgICAgICB7ICJrZXJuZWwt
-cHJpdi1jZXJ0IiwgQVJHX0tFUk5FTF9QUklWX0NFUlQsICJQQVRIIiwgMCwNCj4gPiA+ID4gKyAg
-ICAgICAgICJrZXJuZWwgcHJpdmF0ZSBrZXkgYW5kIGNlcnQgcGF0aCAiIH0sDQo+ID4gPiA+ICAg
-ICAgICAge30sDQo+ID4gPiA+ICB9Ow0KPiA+ID4gPg0KPiA+ID4gPiBAQCAtODYyLDYgKzg2OCwx
-MiBAQCBzdGF0aWMgZXJyb3JfdCBwYXJzZV9hcmcoaW50IGtleSwgY2hhciAqYXJnLCBzdHJ1Y3QN
-Cj4gPiA+IGFyZ3Bfc3RhdGUgKnN0YXRlKQ0KPiA+ID4gPiAgICAgICAgIGNhc2UgQVJHX0RFQlVH
-Og0KPiA+ID4gPiAgICAgICAgICAgICAgICAgZW52LT5kZWJ1ZyA9IHRydWU7DQo+ID4gPiA+ICAg
-ICAgICAgICAgICAgICBicmVhazsNCj4gPiA+ID4gKyAgICAgICBjYXNlIEFSR19TSUdOX0ZJTEU6
-DQo+ID4gPiA+ICsgICAgICAgICAgICAgICBlbnYtPnNpZ25fZmlsZV9wYXRoID0gYXJnOw0KPiA+
-ID4gPiArICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4gPiA+ICsgICAgICAgY2FzZSBBUkdfS0VS
-TkVMX1BSSVZfQ0VSVDoNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIGVudi0+a2VybmVsX3ByaXZf
-Y2VydF9wYXRoID0gYXJnOw0KPiA+ID4gPiArICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4gPg0K
-PiA+ID4gVGhhdCdzIGN1bWJlcnNvbWUgYXBwcm9hY2ggdG8gdXNlIHRvIGZvcmNlIENJIGFuZA0K
-PiA+ID4gdXNlcnMgdG8gcGFzcyB0aGVzZSBhcmdzIG9uIGNvbW1hbmQgbGluZS4NCj4gPiA+IFRo
-ZSB0ZXN0IGhhcyB0byBiZSBzZWxmIGNvbnRhaW5lZC4NCj4gPiA+IHRlc3RfcHJvZ3Mgc2hvdWxk
-IGV4ZWN1dGUgaXQgd2l0aG91dCBhbnkgYWRkaXRpb25hbCBpbnB1dC4NCj4gPiA+IEZvciBleGFt
-cGxlIGJ5IGhhdmluZyB0ZXN0LW9ubHkgcHJpdmF0ZS9wdWJsaWMga2V5DQo+ID4gPiB0aGF0IGlz
-IHVzZWQgdG8gc2lnbiBhbmQgdmVyaWZ5IHRoZSBzaWduYXR1cmUuDQo+ID4NCj4gPiBJIHRob3Vn
-aHQgYSBiaXQgYWJvdXQgdGhpcy4gSnVzdCBnZW5lcmF0aW5nIGEgdGVzdCBrZXkgZG9lcyBub3Qg
-d29yaywNCj4gPiBhcyBpdCBtdXN0IGJlIHNpZ25lZCBieSB0aGUga2VybmVsIHNpZ25pbmcga2V5
-IChvdGhlcndpc2UsIGxvYWRpbmcNCj4gPiBpbiB0aGUgc2Vjb25kYXJ5IGtleXJpbmcgd2lsbCBi
-ZSByZWplY3RlZCkuIEhhdmluZyB0aGUgdGVzdCBrZXkgYXJvdW5kDQo+ID4gaXMgYXMgZGFuZ2Vy
-b3VzIGFzIGhhdmluZyB0aGUga2VybmVsIHNpZ25pbmcga2V5IGFyb3VuZCBjb3BpZWQNCj4gPiBz
-b21ld2hlcmUuDQo+ID4NCj4gPiBBbGxvd2luZyB1c2VycyB0byBzcGVjaWZ5IGEgdGVzdCBrZXly
-aW5nIGluIHRoZSBoZWxwZXIgaXMgcG9zc2libGUuDQo+IA0KPiBXZSBzaG91bGRuJ3QgbmVlZCB0
-byBsb2FkIGludG8gdGhlIHNlY29uZGFyeSBrZXlyaW5nLg0KPiBUaGUgaGVscGVyIG5lZWRzIHRv
-IHN1cHBvcnQgYW4gYXJiaXRyYXJ5IGtleSByaW5nLg0KPiBUaGUga2VybmVsIHNob3VsZG4ndCBp
-bnRlcmZlcmUgd2l0aCBsb2FkaW5nIHRoYXQgdGVzdCBrZXkgaW50bw0KPiBhIHRlc3QgcmluZy4N
-Cj4gDQo+ID4gQnV0IGl0IHdvdWxkIGludHJvZHVjZSB1bm5lY2Vzc2FyeSBjb2RlLCBwbHVzIHRo
-ZSBrZXlyaW5nIGlkZW50aWZpZXINCj4gDQo+IFdoYXQga2luZCBvZiAndW5uZWNlc3NhcnkgY29k
-ZScgPw0KDQpUaGUgY29kZSBmb3IgaGFuZGxpbmcgZUJQRi1zcGVjaWZpYyBrZXlyaW5nIGlkZW50
-aWZpZXJzLg0KDQpCdXQgYXQgdGhlIGVuZCwgaXQgaXMgbm90IHRoYXQgbXVjaC4NCg0KUm9iZXJ0
-bw0KDQpIVUFXRUkgVEVDSE5PTE9HSUVTIER1ZXNzZWxkb3JmIEdtYkgsIEhSQiA1NjA2Mw0KTWFu
-YWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIFlhbmcgWGksIExpIEhlDQoNCj4gPiB3aWxsIGJlIHVu
-ZGVyc3Rvb2QgYnkgZUJQRiBvbmx5IGFuZCBub3QgYnkgdmVyaWZ5X3BrY3M3X3NpZ25hdHVyZSgp
-LA0KPiA+IGFzIGl0IGhhcHBlbnMgZm9yIG90aGVyIGtleXJpbmcgaWRlbnRpZmllcnMuDQo+IA0K
-PiBNYXliZSB3cmFwcGluZyB2ZXJpZnlfcGtjczdfc2lnbmF0dXJlIGFzIGEgaGVscGVyIGlzIHRv
-byBoaWdoIGxldmVsPw0KPiANCj4gPiBXZSBtYXkgaGF2ZSBlbnZpcm9ubWVudCB2YXJpYWJsZXMg
-ZGlyZWN0bHkgaW4gdGhlIGVCUEYgdGVzdCwgdG8NCj4gPiBzcGVjaWZ5IHRoZSBsb2NhdGlvbiBv
-ZiB0aGUgc2lnbmluZyBrZXksIGJ1dCB0aGVyZSBpcyBhIHJpc2sgb2YNCj4gPiBkdXBsaWNhdGlv
-biwgYXMgb3RoZXIgdGVzdHMgd2FudGluZyB0aGUgc2FtZSBpbmZvcm1hdGlvbiBtaWdodA0KPiA+
-IG5vdCBiZSBhd2FyZSBvZiB0aGVtLg0KPiANCj4gVGhhdCdzIG5vIGdvLg0KPiANCj4gPiBJIHdv
-dWxkIG5vdCBpbnRyb2R1Y2UgYW55IGNvZGUgdGhhdCBoYW5kbGVzIHRoZSBrZXJuZWwgc2lnbmlu
-Zw0KPiA+IGtleSAoaW4gdGhlIE1ha2VmaWxlLCBvciBpbiBhIHNlcGFyYXRlIHNjcmlwdCkuIFRo
-aXMgaW5mb3JtYXRpb24gaXMNCj4gPiBzbyBzZW5zaWJsZSwgdGhhdCBpdCBtdXN0IGJlIHJlc3Bv
-bnNpYmlsaXR5IG9mIGFuIGV4dGVybmFsIHBhcnR5DQo+ID4gdG8gZG8gdGhlIHdvcmsgb2YgbWFr
-aW5nIHRoYXQga2V5IGF2YWlsYWJsZSBhbmQgdGVsbCB3aGVyZSBpdCBpcy4NCj4gPg0KPiA+IFJv
-YmVydG8NCj4gPg0KPiA+IEhVQVdFSSBURUNITk9MT0dJRVMgRHVlc3NlbGRvcmYgR21iSCwgSFJC
-IDU2MDYzDQo+ID4gTWFuYWdpbmcgRGlyZWN0b3I6IExpIFBlbmcsIFlhbmcgWGksIExpIEhlDQo=
+On Fri, Jun 10, 2022 at 05:54:27AM IST, Joanne Koong wrote:
+> On Thu, Jun 3, 2021 at 11:31 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > This is the second (non-RFC) version.
+> >
+> > This adds a bpf_link path to create TC filters tied to cls_bpf classifier, and
+> > introduces fd based ownership for such TC filters. Netlink cannot delete or
+> > replace such filters, but the bpf_link is severed on indirect destruction of the
+> > filter (backing qdisc being deleted, or chain being flushed, etc.). To ensure
+> > that filters remain attached beyond process lifetime, the usual bpf_link fd
+> > pinning approach can be used.
+> >
+> > The individual patches contain more details and comments, but the overall kernel
+> > API and libbpf helper mirrors the semantics of the netlink based TC-BPF API
+> > merged recently. This means that we start by always setting direct action mode,
+> > protocol to ETH_P_ALL, chain_index as 0, etc. If there is a need for more
+> > options in the future, they can be easily exposed through the bpf_link API in
+> > the future.
+> >
+> > Patch 1 refactors cls_bpf change function to extract two helpers that will be
+> > reused in bpf_link creation.
+> >
+> > Patch 2 exports some bpf_link management functions to modules. This is needed
+> > because our bpf_link object is tied to the cls_bpf_prog object. Tying it to
+> > tcf_proto would be weird, because the update path has to replace offloaded bpf
+> > prog, which happens using internal cls_bpf helpers, and would in general be more
+> > code to abstract over an operation that is unlikely to be implemented for other
+> > filter types.
+> >
+> > Patch 3 adds the main bpf_link API. A function in cls_api takes care of
+> > obtaining block reference, creating the filter object, and then calls the
+> > bpf_link_change tcf_proto op (only supported by cls_bpf) that returns a fd after
+> > setting up the internal structures. An optimization is made to not keep around
+> > resources for extended actions, which is explained in a code comment as it wasn't
+> > immediately obvious.
+> >
+> > Patch 4 adds an update path for bpf_link. Since bpf_link_update only supports
+> > replacing the bpf_prog, we can skip tc filter's change path by reusing the
+> > filter object but swapping its bpf_prog. This takes care of replacing the
+> > offloaded prog as well (if that fails, update is aborted). So far however,
+> > tcf_classify could do normal load (possibly torn) as the cls_bpf_prog->filter
+> > would never be modified concurrently. This is no longer true, and to not
+> > penalize the classify hot path, we also cannot impose serialization around
+> > its load. Hence the load is changed to READ_ONCE, so that the pointer value is
+> > always consistent. Due to invocation in a RCU critical section, the lifetime of
+> > the prog is guaranteed for the duration of the call.
+> >
+> > Patch 5, 6 take care of updating the userspace bits and add a bpf_link returning
+> > function to libbpf.
+> >
+> > Patch 7 adds a selftest that exercises all possible problematic interactions
+> > that I could think of.
+> >
+> > Design:
+> >
+> > This is where in the object hierarchy our bpf_link object is attached.
+> >
+> >                                                                             ┌─────┐
+> >                                                                             │     │
+> >                                                                             │ BPF │
+> >                                                                             program
+> >                                                                             │     │
+> >                                                                             └──▲──┘
+> >                                                       ┌───────┐                │
+> >                                                       │       │         ┌──────┴───────┐
+> >                                                       │  mod  ├─────────► cls_bpf_prog │
+> > ┌────────────────┐                                    │cls_bpf│         └────┬───▲─────┘
+> > │    tcf_block   │                                    │       │              │   │
+> > └────────┬───────┘                                    └───▲───┘              │   │
+> >          │          ┌─────────────┐                       │                ┌─▼───┴──┐
+> >          └──────────►  tcf_chain  │                       │                │bpf_link│
+> >                     └───────┬─────┘                       │                └────────┘
+> >                             │          ┌─────────────┐    │
+> >                             └──────────►  tcf_proto  ├────┘
+> >                                        └─────────────┘
+> >
+> > The bpf_link is detached on destruction of the cls_bpf_prog.  Doing it this way
+> > allows us to implement update in a lightweight manner without having to recreate
+> > a new filter, where we can just replace the BPF prog attached to cls_bpf_prog.
+> >
+> > The other way to do it would be to link the bpf_link to tcf_proto, there are
+> > numerous downsides to this:
+> >
+> > 1. All filters have to embed the pointer even though they won't be using it when
+> > cls_bpf is compiled in.
+> > 2. This probably won't make sense to be extended to other filter types anyway.
+> > 3. We aren't able to optimize the update case without adding another bpf_link
+> > specific update operation to tcf_proto ops.
+> >
+> > The downside with tying this to the module is having to export bpf_link
+> > management functions and introducing a tcf_proto op. Hopefully the cost of
+> > another operation func pointer is not big enough (as there is only one ops
+> > struct per module).
+> >
+> Hi Kumar,
+>
+> Do you have any plans / bandwidth to land this feature upstream? If
+> so, do you have a tentative estimation for when you'll be able to work
+> on this? And if not, are you okay with someone else working on this to
+> get it merged in?
+>
+
+I can have a look at resurrecting it later this month, if you're ok with waiting
+until then, otherwise if someone else wants to pick this up before that it's
+fine by me, just let me know so we avoid duplicated effort. Note that the
+approach in v2 is dead/unlikely to get accepted by the TC maintainers, so we'd
+have to implement the way Daniel mentioned in [0].
+
+  [0]: https://lore.kernel.org/bpf/15cd0a9c-95a1-9766-fca1-4bf9d09e4100@iogearbox.net
+
+> The reason I'm asking is because there are a few networking teams
+> within Meta that have been requesting this feature :)
+>
+> Thanks,
+> Joanne
+>
+> > Changelog:
+> > ----------
+> > v1 (RFC) -> v2
+> > v1: https://lore.kernel.org/bpf/20210528195946.2375109-1-memxor@gmail.com
+> >
+> >  * Avoid overwriting other members of union in bpf_attr (Andrii)
+> >  * Set link to NULL after bpf_link_cleanup to avoid double free (Andrii)
+> >  * Use __be16 to store the result of htons (Kernel Test Robot)
+> >  * Make assignment of tcf_exts::net conditional on CONFIG_NET_CLS_ACT
+> >    (Kernel Test Robot)
+> >
+> > Kumar Kartikeya Dwivedi (7):
+> >   net: sched: refactor cls_bpf creation code
+> >   bpf: export bpf_link functions for modules
+> >   net: sched: add bpf_link API for bpf classifier
+> >   net: sched: add lightweight update path for cls_bpf
+> >   tools: bpf.h: sync with kernel sources
+> >   libbpf: add bpf_link based TC-BPF management API
+> >   libbpf: add selftest for bpf_link based TC-BPF management API
+> >
+> >  include/linux/bpf_types.h                     |   3 +
+> >  include/net/pkt_cls.h                         |  13 +
+> >  include/net/sch_generic.h                     |   6 +-
+> >  include/uapi/linux/bpf.h                      |  15 +
+> >  kernel/bpf/syscall.c                          |  14 +-
+> >  net/sched/cls_api.c                           | 139 ++++++-
+> >  net/sched/cls_bpf.c                           | 389 ++++++++++++++++--
+> >  tools/include/uapi/linux/bpf.h                |  15 +
+> >  tools/lib/bpf/bpf.c                           |   8 +-
+> >  tools/lib/bpf/bpf.h                           |   8 +-
+> >  tools/lib/bpf/libbpf.c                        |  59 ++-
+> >  tools/lib/bpf/libbpf.h                        |  17 +
+> >  tools/lib/bpf/libbpf.map                      |   1 +
+> >  tools/lib/bpf/netlink.c                       |   5 +-
+> >  tools/lib/bpf/netlink.h                       |   8 +
+> >  .../selftests/bpf/prog_tests/tc_bpf_link.c    | 285 +++++++++++++
+> >  16 files changed, 940 insertions(+), 45 deletions(-)
+> >  create mode 100644 tools/lib/bpf/netlink.h
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_bpf_link.c
+> >
+> > --
+> > 2.31.1
+> >
+
+--
+Kartikeya
