@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4285E545A1C
-	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 04:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4331545A22
+	for <lists+bpf@lfdr.de>; Fri, 10 Jun 2022 04:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240245AbiFJCdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jun 2022 22:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
+        id S1345610AbiFJCdg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jun 2022 22:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345610AbiFJCdW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jun 2022 22:33:22 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7957EB5247
-        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 19:33:19 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id e11so22657736pfj.5
-        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 19:33:19 -0700 (PDT)
+        with ESMTP id S242350AbiFJCd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jun 2022 22:33:27 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E1C4F44E
+        for <bpf@vger.kernel.org>; Thu,  9 Jun 2022 19:33:25 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y187so23545150pgd.3
+        for <bpf@vger.kernel.org>; Thu, 09 Jun 2022 19:33:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CbbZx2zk8AYEZVW7p2BT5m2zFh5Pea8yTg+uQSbw+ZM=;
-        b=6NnaToAenAf+1qTbIO8zMXZDwLs6CWBr6sCZKb9/F0o+JhBfLDqqpgoqUOYSBqTJaj
-         x0ynwxQfKHhGu/udqoOK3RIeIiU1k789L4oWGS09xStR4TasotWxwyepaAwm+VdDlsI+
-         FSUPa5OgAP+YhMXO4d3jLQZecJzdJVgiR45HPPP35dvaVN+O9MWOXawywsD7ZvruDkb+
-         9WX2Btc2oNDTSwAOsrfYOORjCV0O4/cWiMP/sVIgEVyc2Bf3qF81Af4lVf+ReemhYhpg
-         Mg8MusUoBJqfquaQHpLwwvSAvwOIXtZLjDUMoD9L6xdvx8/BR4QJBPcyEeDLPdTiXepU
-         4PZQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mF4zImcP1gOdN8UvsBrqYtbmiABYejHvUvi0EZlW7oI=;
+        b=hgWxeUrVNLD6xuo/sbHEeTPmXp2NhZny0ThVZKmw6RtWaSwUUbNpi4Z3Y1UdSL6b2M
+         Tyta/BfIoBl9kOl2B/zs9N01bG8tebru/PXcZVTVYKmLpxr4KgRCBN01PyVINbeLGq8G
+         +xk9qR/DHuSBXRXubnx2WMMk5XF7ghs4W1Hnn9KvEpqaBGW2vS7qaPcbBDAzDPaMNKb+
+         4lkof0i8/ad2vw66cpalcjGxJoIoTFyyWjArfLLVtBweoiQhaqO9W6BzXkjjqZ7qcgyD
+         ILHt2s74NhcSSB/4S843Mw3susyrmFUP/WRTUkFd1VqMlgwXijm/W297orMx59aVDDxu
+         xp6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CbbZx2zk8AYEZVW7p2BT5m2zFh5Pea8yTg+uQSbw+ZM=;
-        b=PEqa2FNHZuU2Q95TkxOxZ+48vsblP6zJPagUZxQOVxgI5JMRwWpQQAJczGYEXNNpXW
-         dYtSWjjbj8qPSor+mKqOxdAIlH3uh+tX32zGw0VhU8+oeBmAT8t7kPpxWRiu3fmkdJ+D
-         Bu5LREbydBejZtYflOxg4iUjLaJvCkLY87kgLYrsPynUdk5xy+CDT1OKdC1AIuLYcMyT
-         LI6uBr016UCm/2vOvhvv1ikAAAlo/eZXWeTWlJRqKUZ9ddRhBrVFSSu7eBaUMg4xdBCq
-         EfXAZrf9sJWipY4B5ob60tmWOUD3PsGZYCLgVXR/ZWmSNzT62iTfYCHmyeSGn7xpaaV8
-         9/Ug==
-X-Gm-Message-State: AOAM533vGF0CRSUNZ6X1YHbTpKyN9eZWLjrO4GiQTIIn4fQm9lhO4hDF
-        95QEQQ+yf4IaBSlQKyvmw2DFIQ==
-X-Google-Smtp-Source: ABdhPJzVM6pjqOZnA+9cgMO+iSFC75/9wKzJNgQBPVUrKEjdQv6By7SzmplxtEqU1WI1H1mgdM+Viw==
-X-Received: by 2002:a63:1a1d:0:b0:3f5:eb02:b6b4 with SMTP id a29-20020a631a1d000000b003f5eb02b6b4mr37655988pga.343.1654828398929;
-        Thu, 09 Jun 2022 19:33:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mF4zImcP1gOdN8UvsBrqYtbmiABYejHvUvi0EZlW7oI=;
+        b=D3bu3o5k86XXDgeTIQg/3kyuQ2Azhiy+TmSQJ4NcXYQS6Dq0CWjLaSKxpNPJmMXL8F
+         UpNy3Sjd3sRUPzqmoDTFmSiBmxL7Ddd3Y8atQB1pZzrSkpJks9ckS65zzhKBgiBek170
+         LL50dPhVftqzb1yAPx6ZVLRMGpkYxvwGehTKRQIcGIukMk1lm/1vSIkvVs6hA7F8qiH2
+         JXkNYFDN8PLlIn288L+N0gQXK/LR3kGcEUd/Gr/YKlaAAjTqKd0CDEH9FdOFhI/3UBxW
+         HQ3SJxscFH2gyDEs4v/axYcoHr8g1OuaLViRXOk4HD/nPttUr+GD4mzXfgKgJ/Zo23Q7
+         6gig==
+X-Gm-Message-State: AOAM531IxNecFu1zeIBmhjZQW47pxcmE1p0c3ysxL0z/LMNqPyr8plVM
+        VBGwuDphVv/WHfvJ9eRw5cPaBGjBaGRxBA==
+X-Google-Smtp-Source: ABdhPJzrHcDnf8fUQlMQt/1PC+8KzbX6TvprSOKOfQpymsCfKFAZv/REJxP3/uLeNIABQfdTs7g/9A==
+X-Received: by 2002:a05:6a00:1811:b0:51b:fec8:be7b with SMTP id y17-20020a056a00181100b0051bfec8be7bmr29391769pfa.22.1654828405113;
+        Thu, 09 Jun 2022 19:33:25 -0700 (PDT)
 Received: from C02F52LSML85.bytedance.net ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id o19-20020a170903009300b001620db30cd6sm17432481pld.201.2022.06.09.19.33.12
+        by smtp.gmail.com with ESMTPSA id o19-20020a170903009300b001620db30cd6sm17432481pld.201.2022.06.09.19.33.19
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Jun 2022 19:33:18 -0700 (PDT)
+        Thu, 09 Jun 2022 19:33:24 -0700 (PDT)
 From:   Feng zhou <zhoufeng.zf@bytedance.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -56,10 +56,12 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         songmuchun@bytedance.com, wangdongdong.6@bytedance.com,
         cong.wang@bytedance.com, zhouchengming@bytedance.com,
         zhoufeng.zf@bytedance.com
-Subject: [PATCH v6 0/2] Optimize performance of update hash-map when free is zero
-Date:   Fri, 10 Jun 2022 10:33:06 +0800
-Message-Id: <20220610023308.93798-1-zhoufeng.zf@bytedance.com>
+Subject: [PATCH v6 1/2] bpf: avoid grabbing spin_locks of all cpus when no free elems
+Date:   Fri, 10 Jun 2022 10:33:07 +0800
+Message-Id: <20220610023308.93798-2-zhoufeng.zf@bytedance.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20220610023308.93798-1-zhoufeng.zf@bytedance.com>
+References: <20220610023308.93798-1-zhoufeng.zf@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,60 +76,148 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Feng Zhou <zhoufeng.zf@bytedance.com>
 
-We encountered bad case on big system with 96 CPUs that
-alloc_htab_elem() would last for 1ms. The reason is that after the
-prealloc hashtab has no free elems, when trying to update, it will still
-grab spin_locks of all cpus. If there are multiple update users, the
-competition is very serious.
+This patch use head->first in pcpu_freelist_head to check freelist
+having free or not. If having, grab spin_lock, or check next cpu's
+freelist.
 
-0001: Use head->first to check whether the free list is empty or not before taking
-the lock.
-0002: Add benchmark to reproduce this worst case.
+Before patch: hash_map performance
+./map_perf_test 1
+0:hash_map_perf pre-alloc 1043397 events per sec
+...
+The average of the test results is around 1050000 events per sec.
 
-Changelog:
-v5->v6: Addressed comments from Alexei Starovoitov.
-- Adjust the commit log.
-some details in here:
-https://lore.kernel.org/all/20220608021050.47279-1-zhoufeng.zf@bytedance.com/
+hash_map the worst: no free
+./run_bench_bpf_hashmap_full_update.sh
+Setting up benchmark 'bpf-hashmap-ful-update'...
+Benchmark 'bpf-hashmap-ful-update' started.
+1:hash_map_full_perf 15687 events per sec
+...
+The average of the test results is around 16000 events per sec.
 
-v4->v5: Addressed comments from Alexei Starovoitov.
-- Use head->first.
-- Use cpu+max_entries.
-some details in here:
-https://lore.kernel.org/bpf/20220601084149.13097-1-zhoufeng.zf@bytedance.com/
+ftrace trace:
+0)               |  htab_map_update_elem() {
+0)               |      __pcpu_freelist_pop() {
+0)               |        _raw_spin_lock()
+0)               |        _raw_spin_unlock()
+0)               |        ...
+0) + 25.188 us   |      }
+0) + 28.439 us   |  }
 
-v3->v4: Addressed comments from Daniel Borkmann.
-- Use READ_ONCE/WRITE_ONCE.
-some details in here:
-https://lore.kernel.org/all/20220530091340.53443-1-zhoufeng.zf@bytedance.com/
+The test machine is 16C, trying to get spin_lock 17 times, in addition
+to 16c, there is an extralist.
 
-v2->v3: Addressed comments from Alexei Starovoitov, Andrii Nakryiko.
-- Adjust the way the benchmark is tested.
-- Adjust the code format.
-some details in here:
-https://lore.kernel.org/all/20220524075306.32306-1-zhoufeng.zf@bytedance.com/T/
+after patch: hash_map performance
+./map_perf_test 1
+0:hash_map_perf pre-alloc 1053298 events per sec
+...
+The average of the test results is around 1050000 events per sec.
 
-v1->v2: Addressed comments from Alexei Starovoitov.
-- add a benchmark to reproduce the issue.
-- Adjust the code format that avoid adding indent.
-some details in here:
-https://lore.kernel.org/all/877ac441-045b-1844-6938-fcaee5eee7f2@bytedance.com/T/
+hash_map worst: no free
+./run_bench_bpf_hashmap_full_update.sh
+Setting up benchmark 'bpf-hashmap-ful-update'...
+Benchmark 'bpf-hashmap-ful-update' started.
+1:hash_map_full_perf 555830 events per sec
+...
+The average of the test results is around 550000 events per sec.
 
-Feng Zhou (2):
-  bpf: avoid grabbing spin_locks of all cpus when no free elems
-  selftest/bpf/benchs: Add bpf_map benchmark
+ftrace trace:
+0)               |  htab_map_update_elem() {
+0)               |    alloc_htab_elem() {
+0)   0.586 us    |      __pcpu_freelist_pop();
+0)   0.945 us    |    }
+0)   8.669 us    |  }
 
- kernel/bpf/percpu_freelist.c                  | 20 ++--
- tools/testing/selftests/bpf/Makefile          |  4 +-
- tools/testing/selftests/bpf/bench.c           |  2 +
- .../benchs/bench_bpf_hashmap_full_update.c    | 96 +++++++++++++++++++
- .../run_bench_bpf_hashmap_full_update.sh      | 11 +++
- .../bpf/progs/bpf_hashmap_full_update_bench.c | 40 ++++++++
- 6 files changed, 166 insertions(+), 7 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_hashmap_full_update.c
- create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_hashmap_full_update.sh
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_hashmap_full_update_bench.c
+It can be seen that after adding this patch, the map performance is
+almost not degraded, and when free=0, first check head->first instead of
+directly acquiring spin_lock.
 
+Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+---
+ kernel/bpf/percpu_freelist.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+index 3d897de89061..00b874c8e889 100644
+--- a/kernel/bpf/percpu_freelist.c
++++ b/kernel/bpf/percpu_freelist.c
+@@ -31,7 +31,7 @@ static inline void pcpu_freelist_push_node(struct pcpu_freelist_head *head,
+ 					   struct pcpu_freelist_node *node)
+ {
+ 	node->next = head->first;
+-	head->first = node;
++	WRITE_ONCE(head->first, node);
+ }
+ 
+ static inline void ___pcpu_freelist_push(struct pcpu_freelist_head *head,
+@@ -130,14 +130,17 @@ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+ 	orig_cpu = cpu = raw_smp_processor_id();
+ 	while (1) {
+ 		head = per_cpu_ptr(s->freelist, cpu);
++		if (!READ_ONCE(head->first))
++			goto next_cpu;
+ 		raw_spin_lock(&head->lock);
+ 		node = head->first;
+ 		if (node) {
+-			head->first = node->next;
++			WRITE_ONCE(head->first, node->next);
+ 			raw_spin_unlock(&head->lock);
+ 			return node;
+ 		}
+ 		raw_spin_unlock(&head->lock);
++next_cpu:
+ 		cpu = cpumask_next(cpu, cpu_possible_mask);
+ 		if (cpu >= nr_cpu_ids)
+ 			cpu = 0;
+@@ -146,10 +149,12 @@ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+ 	}
+ 
+ 	/* per cpu lists are all empty, try extralist */
++	if (!READ_ONCE(s->extralist.first))
++		return NULL;
+ 	raw_spin_lock(&s->extralist.lock);
+ 	node = s->extralist.first;
+ 	if (node)
+-		s->extralist.first = node->next;
++		WRITE_ONCE(s->extralist.first, node->next);
+ 	raw_spin_unlock(&s->extralist.lock);
+ 	return node;
+ }
+@@ -164,15 +169,18 @@ ___pcpu_freelist_pop_nmi(struct pcpu_freelist *s)
+ 	orig_cpu = cpu = raw_smp_processor_id();
+ 	while (1) {
+ 		head = per_cpu_ptr(s->freelist, cpu);
++		if (!READ_ONCE(head->first))
++			goto next_cpu;
+ 		if (raw_spin_trylock(&head->lock)) {
+ 			node = head->first;
+ 			if (node) {
+-				head->first = node->next;
++				WRITE_ONCE(head->first, node->next);
+ 				raw_spin_unlock(&head->lock);
+ 				return node;
+ 			}
+ 			raw_spin_unlock(&head->lock);
+ 		}
++next_cpu:
+ 		cpu = cpumask_next(cpu, cpu_possible_mask);
+ 		if (cpu >= nr_cpu_ids)
+ 			cpu = 0;
+@@ -181,11 +189,11 @@ ___pcpu_freelist_pop_nmi(struct pcpu_freelist *s)
+ 	}
+ 
+ 	/* cannot pop from per cpu lists, try extralist */
+-	if (!raw_spin_trylock(&s->extralist.lock))
++	if (!READ_ONCE(s->extralist.first) || !raw_spin_trylock(&s->extralist.lock))
+ 		return NULL;
+ 	node = s->extralist.first;
+ 	if (node)
+-		s->extralist.first = node->next;
++		WRITE_ONCE(s->extralist.first, node->next);
+ 	raw_spin_unlock(&s->extralist.lock);
+ 	return node;
+ }
 -- 
 2.20.1
 
